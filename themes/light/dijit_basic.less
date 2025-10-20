@@ -4,11 +4,11 @@
 		padding: 2px;
 	}
 
-	/*#feedTree {
+	/* #feedTree {
 		.dijitTreeContent .dijitInline {
 			vertical-align : baseline;
 		}
-	}*/
+	} */
 
 	.dijitButton i.material-icons {
 		position: relative;
@@ -60,7 +60,7 @@
 	}
 
 	.dijitAccordionContainer {
-		box-shadow : 0px 0px 8px rgba(0,0,0,0.1);
+		box-shadow : 0 0 8px rgb(0 0 0 / 10%);
 	}
 
 	.dijitCheckBox.dijitCheckBoxChecked {
@@ -87,8 +87,8 @@
 	.dijitCheckBox {
 		margin : 1px;
 
-		&:before {
-			font-family: "flat-icon";
+		&::before {
+			font-family: flat-icon;
 			content: "\f00c";
 			color: white;
 		}
@@ -143,10 +143,10 @@
 			color : white;
 		}
 
-		/*.dijitTreeRow .dijitTreeExpando {
+		/* .dijitTreeRow .dijitTreeExpando {
 			position : relative;
 			top : -2px;
-		}*/
+		} */
 
 		.dijitTreeRow.filterDisabled {
 			opacity : 0.5;
@@ -195,7 +195,7 @@
 
 	.dijitTree {
 		.dijitTreeNode .dijitTreeRow {
-			padding : 4px 0px 4px;
+			padding : 4px 0;
 			border-width : 1px;
 			color : @default-text;
 		}

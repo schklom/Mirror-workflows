@@ -41,7 +41,7 @@ body.ttrss_prefs {
 	#footer {
 		background-color : @color-panel-bg;
 		font-size : 13px;
-		border : 0px;
+		border : 0;
 		text-align : center;
 	}
 
@@ -93,7 +93,7 @@ body.ttrss_prefs {
 	}
 
 	.dijitDialog #pref-profiles-list .dijitInlineEditBoxDisplayMode {
-		padding : 0px;
+		padding : 0;
 	}
 
 	#pref_feeds_errors_btn {
@@ -310,12 +310,12 @@ body.ttrss_main {
 body.ttrss_prefs,
 body.ttrss_utility {
 	fieldset {
-		border-width : 0px;
-		padding : 5px 0px;
+		border-width : 0;
+		padding : 5px 0;
 	}
 
 	fieldset.narrow {
-		padding : 2px 0px;
+		padding : 2px 0;
 	}
 
 	fieldset.align-right {
@@ -345,11 +345,11 @@ body.ttrss_prefs[hide-filter-rules="true"] {
 		display : inline;
 	}
 
-	ul.actions_summary li:after {
+	ul.actions_summary li::after {
 		content: ", ";
 	}
 
-	ul.actions_summary li:last-child:after {
+	ul.actions_summary li:last-child::after {
 		content: " ";
 	}
 

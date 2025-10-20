@@ -47,7 +47,7 @@ body.ttrss_main {
 			}
 
 			img, i.material-icons {
-				margin : 0px 4px;
+				margin : 0 4px;
 				vertical-align: middle;
 				color : @color-icon;
 			}
@@ -75,7 +75,7 @@ body.ttrss_main {
 
 			img,
 			video {
-				border-width : 0px;
+				border-width : 0;
 				max-width : 98%;
 				height: auto;
 			}
@@ -181,7 +181,7 @@ body.ttrss_main {
 		align-items : center;
 		padding : 10px;
 		transition: opacity 0.2s linear;
-		box-shadow : 0px 0px 8px rgba(0,0,0,0.1);
+		box-shadow : 0 0 8px rgb(0 0 0 / 10%);
 
 		img {
 			vertical-align : middle;
@@ -245,12 +245,11 @@ body.ttrss_main {
 	}
 
 	.hl {
-		border: 0px solid @border-default;
+		border: 0 solid @border-default;
 		border-bottom-width: 1px;
 		transition : color 0.2s, background 0.2s;
 		display : flex;
-		flex-direction : row;
-		flex-wrap : nowrap;
+		flex-flow : row nowrap;
 		background : @color-panel-bg;
 		align-items : center;
 		user-select : none;
@@ -342,7 +341,7 @@ body.ttrss_main {
 		}
 
 		a.title.high, span.hl-content.high .preview {
-			color : #00aa00;
+			color : #0a0;
 		}
 
 		&.vgrlf .feed {
@@ -383,29 +382,29 @@ body.ttrss_main {
 	#content-insert blockquote,
 	#headlines-frame blockquote,
 	.dijitContentPane blockquote {
-		margin : 5px 0px 5px 0px;
+		margin : 5px 0;
 		color : @default-text;
 		padding-left : 10px;
-		border: 0px solid #ccc;
+		border: 0 solid #ccc;
 		border-left-width: 4px;
 	}
 
 	#content-insert code,
 	#headlines-frame code,
 	.dijitContentPane code {
-		color : #009900;
+		color : #090;
 		font-family : monospace;
 	}
 
 	#content-insert pre,
 	#headlines-frame pre,
 	.dijitContentPane pre {
-		margin: 5px 0px 5px 0px;
+		margin: 5px 0;
 		padding: 10px;
 		color: @default-text;
 		font-family: monospace;
 		font-size: 12px;
-		border: 0px solid #ccc;
+		border: 0 solid #ccc;
 		background: @color-panel-bg;
 		display: block;
 		max-width: 98%;
@@ -442,7 +441,7 @@ body.ttrss_main {
 		color : @color-hl-icon;
 	}
 
-	/*ul.compact {
+	/* ul.compact {
 		list-style-type : none;
 		margin : 0;
 		padding : 0;
@@ -451,7 +450,7 @@ body.ttrss_main {
 			margin : 0;
 			padding : 0;
 		}
-	}*/
+	} */
 
 	#overlay {
 		background : @default-bg;
@@ -471,9 +470,9 @@ body.ttrss_main {
 	div.whiteBox {
 		margin-left : 1px;
 		text-align : center;
-		padding : 1em 1em 0px 1em;
+		padding : 1em 1em 0;
 		font-size : @font-size-small;
-		border: 0px solid @border-default;
+		border: 0 solid @border-default;
 		border-bottom-width: 1px;
 	}
 
@@ -524,11 +523,11 @@ body.ttrss_main {
 			}
 
 			fieldset {
-				border-width : 0px;
-				padding : 5px 0px;
+				border-width : 0;
+				padding : 5px 0;
 
 				&.narrow {
-					padding : 2px 0px;
+					padding : 2px 0;
 				}
 
 				&.align-right {
@@ -567,7 +566,7 @@ body.ttrss_main {
 		font-weight : bold;
 		background-color : @default-bg;
 		border : 1px solid @color-accent;
-		padding : 3px 5px 3px 5px;
+		padding : 3px 5px;
 		z-index : 5;
 	}
 
@@ -594,7 +593,7 @@ body.ttrss_main {
 		border: 0 solid @border-default;
 		overflow : hidden;
 		background : @color-panel-bg;
-		box-shadow : inset -1px 0px 2px -1px rgba(0,0,0,0.1);
+		box-shadow : inset -1px 0 2px -1px rgb(0 0 0 / 10%);
 		-webkit-overflow-scrolling : touch;
 
 		#feedTree {
@@ -684,7 +683,7 @@ body.ttrss_main {
 						position : relative;
 
 						// Segoe UI (@fonts-ui) seems to have wrong baseline set
-						// top : -0.5px;
+						// top : -0.5px;SegoeUIseemstohavewrongbaselinesettop
 
 						&.Unread {
 							font-weight : bold;
@@ -696,7 +695,7 @@ body.ttrss_main {
 					}
 
 					&.dijitTreeRowSelected {
-						box-shadow : -1px 0px 2px -1px rgba(0,0,0,0.1);
+						box-shadow : -1px 0 2px -1px rgb(0 0 0 / 10%);
 						border-color : @border-default transparent;
 						background : @default-bg;
 						color : @default-text;
@@ -772,7 +771,7 @@ body.ttrss_main {
 
 			.content {
 				border-top-width : 0;
-				padding : 0 4px 4px 4px;
+				padding : 0 4px 4px;
 
 				.content-inner {
 					a {
@@ -872,7 +871,7 @@ body.ttrss_main {
 		}
 
 		.feed-title {
-			border: 0px solid @color-link;
+			border: 0 solid @color-link;
 			border-bottom-width: 1px;
 			padding: 5px 8px;
 
@@ -915,8 +914,7 @@ body.ttrss_main {
 			padding-left : 4px;
 			height : 32px;
 			display : flex;
-			flex-direction : row;
-			flex-wrap : nowrap;
+			flex-flow : row nowrap;
 			color : @default-text;
 			font-size : @font-size-toolbar;
 			align-items : center;
@@ -1000,7 +998,7 @@ body.ttrss_main {
 	#header {
 		text-align : right;
 		color : @default-text;
-		padding : 5px 5px 0 0px;
+		padding : 5px 5px 0 0;
 		position : absolute;
 		border : 0;
 		margin : 0;
@@ -1075,7 +1073,7 @@ body.ttrss_main {
 		}
 
 		h3 {
-			margin : 8px 0px;
+			margin : 8px 0;
 		}
 	}
 
@@ -1095,7 +1093,7 @@ body.ttrss_main {
 	}
 
 	span.highlight {
-		background-color : #ffff00;
+		background-color : #ff0;
 		color : #cc90cc;
 	}
 
@@ -1131,14 +1129,14 @@ body.ttrss_main {
 	}
 }
 
-/*body.ttrss_main .dijitDialog {
+/* body.ttrss_main .dijitDialog {
 	h1:first-of-type,
 	h2:first-of-type,
 	h3:first-of-type,
 	h4:first-of-type {
 		margin-top: 0px;
 	}
-}*/
+} */
 
 body.ttrss_main[view-mode="marked"] #feeds-holder #feedTree {
 	.dijitTreeRow.Has_Marked .dijitTreeLabel {
@@ -1159,26 +1157,26 @@ body.ttrss_main[view-mode="published"] #feeds-holder #feedTree {
 }
 
 body.ttrss_main[view-mode="marked"][hide-read-feeds="true"][hide-read-shows-special="true"] #feeds-holder #feedTree
-	.dijitTreeRow:not(.AlwaysVisible):not(.Special):not(.Has_Marked) {
+	.dijitTreeRow:not(.AlwaysVisible, .Special, .Has_Marked) {
 		display : none;
 }
 
 body.ttrss_main[view-mode="published"][hide-read-feeds="true"][hide-read-shows-special="true"] #feeds-holder #feedTree
-	.dijitTreeRow:not(.AlwaysVisible):not(.Special):not(.Has_Published) {
+	.dijitTreeRow:not(.AlwaysVisible, .Special, .Has_Published) {
 		display : none;
 }
 
 body.ttrss_main[view-mode="marked"][hide-read-feeds="true"][hide-read-shows-special="false"] #feeds-holder #feedTree
-	.dijitTreeRow:not(.AlwaysVisible):not(.Has_Marked) {
+	.dijitTreeRow:not(.AlwaysVisible, .Has_Marked) {
 		display : none;
 }
 
 body.ttrss_main[view-mode="published"][hide-read-feeds="true"][hide-read-shows-special="false"] #feeds-holder #feedTree
-	.dijitTreeRow:not(.AlwaysVisible):not(.Has_Published) {
+	.dijitTreeRow:not(.AlwaysVisible, .Has_Published) {
 		display : none;
 }
 
-body.ttrss_main:not([view-mode="marked"]):not([view-mode="published"]) #feeds-holder #feedTree {
+body.ttrss_main:not([view-mode="marked"], [view-mode="published"]) #feeds-holder #feedTree {
 	.dijitTreeRow.Unread .counterNode.unread {
 		display : inline-block;
 	}
@@ -1187,13 +1185,13 @@ body.ttrss_main:not([view-mode="marked"]):not([view-mode="published"]) #feeds-ho
 	}
 }
 
-body.ttrss_main:not([view-mode="marked"]):not([view-mode="published"])[hide-read-feeds="true"][hide-read-shows-special="true"] #feeds-holder #feedTree
-	.dijitTreeRow:not(.Unread):not(.AlwaysVisible):not(.Special) {
+body.ttrss_main:not([view-mode="marked"], [view-mode="published"])[hide-read-feeds="true"][hide-read-shows-special="true"] #feeds-holder #feedTree
+	.dijitTreeRow:not(.Unread, .AlwaysVisible, .Special) {
 		display : none;
 }
 
-body.ttrss_main:not([view-mode="marked"]):not([view-mode="published"])[hide-read-feeds="true"][hide-read-shows-special="false"] #feeds-holder #feedTree
-	.dijitTreeRow:not(.Unread):not(.AlwaysVisible) {
+body.ttrss_main:not([view-mode="marked"], [view-mode="published"])[hide-read-feeds="true"][hide-read-shows-special="false"] #feeds-holder #feedTree
+	.dijitTreeRow:not(.Unread, .AlwaysVisible) {
 		display : none;
 }
 
@@ -1244,9 +1242,9 @@ body.ttrss_main {
 		color : #500;
 	}
 
-	/*.score-neutral i.icon-score {
+	/* .score-neutral i.icon-score {
 		opacity : 0.5;
-	}*/
+	} */
 
 	i.icon-score, i.icon-grid-span {
 		cursor : pointer;
@@ -1427,11 +1425,11 @@ body.ttrss_main, body.ttrss_utility {
 	}
 
 	hr {
-		border: 0px solid #ccc;
+		border: 0 solid #ccc;
 		border-bottom-width: 1px;
 	}
 
-	/*div.autocomplete {
+	/* div.autocomplete {
 		position : absolute;
 		width : 250px;
 		background-color : @default-bg;
@@ -1456,7 +1454,7 @@ body.ttrss_main, body.ttrss_utility {
 			padding : 2px;
 			cursor : pointer;
 		}
-	}*/
+	} */
 }
 
 ::selection {
@@ -1476,7 +1474,7 @@ body.ttrss_main, body.ttrss_utility {
 	background-color: #eee;
 }
 
-/*video::-webkit-media-controls-overlay-play-button {
+/* video::-webkit-media-controls-overlay-play-button {
 	display: none;
-}*/
+} */
 

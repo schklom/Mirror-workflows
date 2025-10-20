@@ -1,4 +1,4 @@
-@import "../lib/flat-ttrss/flat_combined.css";
+@import url("../lib/flat-ttrss/flat_combined.css");
 body.ttrss_main,
 body.ttrss_prefs,
 #main {
@@ -15,7 +15,7 @@ body.ttrss_main {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
   overflow: hidden;
-  /*ul.compact {
+  /* ul.compact {
 		list-style-type : none;
 		margin : 0;
 		padding : 0;
@@ -24,7 +24,7 @@ body.ttrss_main {
 			margin : 0;
 			padding : 0;
 		}
-	}*/
+	} */
 }
 body.ttrss_main :focus {
   outline: none;
@@ -64,7 +64,7 @@ body.ttrss_main .post .header .date {
 }
 body.ttrss_main .post .header img,
 body.ttrss_main .post .header i.material-icons {
-  margin: 0px 4px;
+  margin: 0 4px;
   vertical-align: middle;
   color: #777;
 }
@@ -88,7 +88,7 @@ body.ttrss_main .post div.content {
 }
 body.ttrss_main .post div.content img,
 body.ttrss_main .post div.content video {
-  border-width: 0px;
+  border-width: 0;
   max-width: 98%;
   height: auto;
 }
@@ -173,7 +173,7 @@ body.ttrss_main #notify {
   align-items: center;
   padding: 10px;
   transition: opacity 0.2s linear;
-  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
 }
 body.ttrss_main #notify img {
   vertical-align: middle;
@@ -222,12 +222,11 @@ body.ttrss_main .action-chooser .action-button .dijitArrowButtonInner {
   display: none;
 }
 body.ttrss_main .hl {
-  border: 0px solid #ddd;
+  border: 0 solid #ddd;
   border-bottom-width: 1px;
   transition: color 0.2s, background 0.2s;
   display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
+  flex-flow: row nowrap;
   background: #f5f5f5;
   align-items: center;
   user-select: none;
@@ -306,7 +305,7 @@ body.ttrss_main .hl div.title a {
 }
 body.ttrss_main .hl a.title.high,
 body.ttrss_main .hl span.hl-content.high .preview {
-  color: #00aa00;
+  color: #0a0;
 }
 body.ttrss_main .hl.vgrlf .feed {
   display: none;
@@ -342,27 +341,27 @@ body.ttrss_main .hl.Selected span {
 body.ttrss_main #content-insert blockquote,
 body.ttrss_main #headlines-frame blockquote,
 body.ttrss_main .dijitContentPane blockquote {
-  margin: 5px 0px 5px 0px;
+  margin: 5px 0;
   color: black;
   padding-left: 10px;
-  border: 0px solid #ccc;
+  border: 0 solid #ccc;
   border-left-width: 4px;
 }
 body.ttrss_main #content-insert code,
 body.ttrss_main #headlines-frame code,
 body.ttrss_main .dijitContentPane code {
-  color: #009900;
+  color: #090;
   font-family: monospace;
 }
 body.ttrss_main #content-insert pre,
 body.ttrss_main #headlines-frame pre,
 body.ttrss_main .dijitContentPane pre {
-  margin: 5px 0px 5px 0px;
+  margin: 5px 0;
   padding: 10px;
   color: black;
   font-family: monospace;
   font-size: 12px;
-  border: 0px solid #ccc;
+  border: 0 solid #ccc;
   background: #f5f5f5;
   display: block;
   max-width: 98%;
@@ -411,9 +410,9 @@ body.ttrss_main #overlay_inner {
 body.ttrss_main div.whiteBox {
   margin-left: 1px;
   text-align: center;
-  padding: 1em 1em 0px 1em;
+  padding: 1em 1em 0;
   font-size: 11px;
-  border: 0px solid #ddd;
+  border: 0 solid #ddd;
   border-bottom-width: 1px;
 }
 body.ttrss_main .dijitDialog header,
@@ -459,13 +458,13 @@ body.ttrss_main .dijitDialog div.dlgSecSimple fieldset > label.inline {
 body.ttrss_main .dijitDialog section fieldset,
 body.ttrss_main .dijitDialog div.dlgSecCont fieldset,
 body.ttrss_main .dijitDialog div.dlgSecSimple fieldset {
-  border-width: 0px;
-  padding: 5px 0px;
+  border-width: 0;
+  padding: 5px 0;
 }
 body.ttrss_main .dijitDialog section fieldset.narrow,
 body.ttrss_main .dijitDialog div.dlgSecCont fieldset.narrow,
 body.ttrss_main .dijitDialog div.dlgSecSimple fieldset.narrow {
-  padding: 2px 0px;
+  padding: 2px 0;
 }
 body.ttrss_main .dijitDialog section fieldset.align-right,
 body.ttrss_main .dijitDialog div.dlgSecCont fieldset.align-right,
@@ -497,7 +496,7 @@ body.ttrss_main div#cmdline {
   font-weight: bold;
   background-color: white;
   border: 1px solid #257aa7;
-  padding: 3px 5px 3px 5px;
+  padding: 3px 5px;
   z-index: 5;
 }
 body.ttrss_main .exception-contents h3 {
@@ -519,7 +518,7 @@ body.ttrss_main #feeds-holder {
   border: 0 solid #ddd;
   overflow: hidden;
   background: #f5f5f5;
-  box-shadow: inset -1px 0px 2px -1px rgba(0, 0, 0, 0.1);
+  box-shadow: inset -1px 0 2px -1px rgba(0, 0, 0, 0.1);
   -webkit-overflow-scrolling: touch;
 }
 body.ttrss_main #feeds-holder #feedTree {
@@ -599,7 +598,7 @@ body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow.Error .diji
   color: red;
 }
 body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow.dijitTreeRowSelected {
-  box-shadow: -1px 0px 2px -1px rgba(0, 0, 0, 0.1);
+  box-shadow: -1px 0 2px -1px rgba(0, 0, 0, 0.1);
   border-color: #ddd transparent;
   background: white;
   color: black;
@@ -659,7 +658,7 @@ body.ttrss_main #headlines-frame:not([data-headlines-count="0"])[data-is-cdm="tr
 }
 body.ttrss_main #headlines-frame:not([data-headlines-count="0"])[data-is-cdm="true"][data-is-cdm-expanded="true"][data-enable-grid="true"] .cdm.expanded .content {
   border-top-width: 0;
-  padding: 0 4px 4px 4px;
+  padding: 0 4px 4px;
 }
 body.ttrss_main #headlines-frame:not([data-headlines-count="0"])[data-is-cdm="true"][data-is-cdm-expanded="true"][data-enable-grid="true"] .cdm.expanded .content .content-inner a {
   word-break: break-all;
@@ -735,7 +734,7 @@ body.ttrss_main #headlines-frame #headlines-spacer a:hover {
   color: #257aa7;
 }
 body.ttrss_main #headlines-frame .feed-title {
-  border: 0px solid #257aa7;
+  border: 0 solid #257aa7;
   border-bottom-width: 1px;
   padding: 5px 8px;
 }
@@ -771,8 +770,7 @@ body.ttrss_main #toolbar-frame #toolbar {
   padding-left: 4px;
   height: 32px;
   display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
+  flex-flow: row nowrap;
   color: black;
   font-size: 13px;
   align-items: center;
@@ -843,7 +841,7 @@ body.ttrss_main #toolbar-frame #toolbar #selected_prompt {
 body.ttrss_main #header {
   text-align: right;
   color: black;
-  padding: 5px 5px 0 0px;
+  padding: 5px 5px 0 0;
   position: absolute;
   border: 0;
   margin: 0;
@@ -909,7 +907,7 @@ body.ttrss_main ul.hotkeys-help .hk {
   width: 100px;
 }
 body.ttrss_main ul.hotkeys-help h3 {
-  margin: 8px 0px;
+  margin: 8px 0;
 }
 body.ttrss_main select.attachments {
   display: block;
@@ -924,7 +922,7 @@ body.ttrss_main #filterDlg_feeds select {
   width: 410px;
 }
 body.ttrss_main span.highlight {
-  background-color: #ffff00;
+  background-color: #ff0;
   color: #cc90cc;
 }
 body.ttrss_main #feedEditDlg img.feedIcon {
@@ -952,14 +950,14 @@ body.ttrss_main .dijitTooltipBelow .dijitTooltipConnector {
 body.ttrss_main .dijitTooltipAbove .dijitTooltipConnector {
   border-top-color: #1c5c7d;
 }
-/*body.ttrss_main .dijitDialog {
+/* body.ttrss_main .dijitDialog {
 	h1:first-of-type,
 	h2:first-of-type,
 	h3:first-of-type,
 	h4:first-of-type {
 		margin-top: 0px;
 	}
-}*/
+} */
 body.ttrss_main[view-mode="marked"] #feeds-holder #feedTree .dijitTreeRow.Has_Marked .dijitTreeLabel {
   color: #257aa7;
 }
@@ -972,34 +970,34 @@ body.ttrss_main[view-mode="published"] #feeds-holder #feedTree .dijitTreeRow.Has
 body.ttrss_main[view-mode="published"] #feeds-holder #feedTree .dijitTreeRow.Has_Published .counterNode.published {
   display: inline-block;
 }
-body.ttrss_main[view-mode="marked"][hide-read-feeds="true"][hide-read-shows-special="true"] #feeds-holder #feedTree .dijitTreeRow:not(.AlwaysVisible):not(.Special):not(.Has_Marked) {
+body.ttrss_main[view-mode="marked"][hide-read-feeds="true"][hide-read-shows-special="true"] #feeds-holder #feedTree .dijitTreeRow:not(.AlwaysVisible, .Special, .Has_Marked) {
   display: none;
 }
-body.ttrss_main[view-mode="published"][hide-read-feeds="true"][hide-read-shows-special="true"] #feeds-holder #feedTree .dijitTreeRow:not(.AlwaysVisible):not(.Special):not(.Has_Published) {
+body.ttrss_main[view-mode="published"][hide-read-feeds="true"][hide-read-shows-special="true"] #feeds-holder #feedTree .dijitTreeRow:not(.AlwaysVisible, .Special, .Has_Published) {
   display: none;
 }
-body.ttrss_main[view-mode="marked"][hide-read-feeds="true"][hide-read-shows-special="false"] #feeds-holder #feedTree .dijitTreeRow:not(.AlwaysVisible):not(.Has_Marked) {
+body.ttrss_main[view-mode="marked"][hide-read-feeds="true"][hide-read-shows-special="false"] #feeds-holder #feedTree .dijitTreeRow:not(.AlwaysVisible, .Has_Marked) {
   display: none;
 }
-body.ttrss_main[view-mode="published"][hide-read-feeds="true"][hide-read-shows-special="false"] #feeds-holder #feedTree .dijitTreeRow:not(.AlwaysVisible):not(.Has_Published) {
+body.ttrss_main[view-mode="published"][hide-read-feeds="true"][hide-read-shows-special="false"] #feeds-holder #feedTree .dijitTreeRow:not(.AlwaysVisible, .Has_Published) {
   display: none;
 }
-body.ttrss_main:not([view-mode="marked"]):not([view-mode="published"]) #feeds-holder #feedTree .dijitTreeRow.Unread .counterNode.unread {
+body.ttrss_main:not([view-mode="marked"], [view-mode="published"]) #feeds-holder #feedTree .dijitTreeRow.Unread .counterNode.unread {
   display: inline-block;
 }
-body.ttrss_main:not([view-mode="marked"]):not([view-mode="published"]) #feeds-holder #feedTree .dijitTreeRow.Has_Aux:not(.Unread) .counterNode.aux {
+body.ttrss_main:not([view-mode="marked"], [view-mode="published"]) #feeds-holder #feedTree .dijitTreeRow.Has_Aux:not(.Unread) .counterNode.aux {
   display: inline-block;
 }
-body.ttrss_main:not([view-mode="marked"]):not([view-mode="published"])[hide-read-feeds="true"][hide-read-shows-special="true"] #feeds-holder #feedTree .dijitTreeRow:not(.Unread):not(.AlwaysVisible):not(.Special) {
+body.ttrss_main:not([view-mode="marked"], [view-mode="published"])[hide-read-feeds="true"][hide-read-shows-special="true"] #feeds-holder #feedTree .dijitTreeRow:not(.Unread, .AlwaysVisible, .Special) {
   display: none;
 }
-body.ttrss_main:not([view-mode="marked"]):not([view-mode="published"])[hide-read-feeds="true"][hide-read-shows-special="false"] #feeds-holder #feedTree .dijitTreeRow:not(.Unread):not(.AlwaysVisible) {
+body.ttrss_main:not([view-mode="marked"], [view-mode="published"])[hide-read-feeds="true"][hide-read-shows-special="false"] #feeds-holder #feedTree .dijitTreeRow:not(.Unread, .AlwaysVisible) {
   display: none;
 }
 body.ttrss_main {
-  /*.score-neutral i.icon-score {
+  /* .score-neutral i.icon-score {
 		opacity : 0.5;
-	}*/
+	} */
 }
 body.ttrss_main #toolbar-headlines i.icon-syndicate {
   color: #ff7c4b;
@@ -1101,7 +1099,7 @@ body.ttrss_main .icon-three-dots {
 }
 body.ttrss_main,
 body.ttrss_utility {
-  /*div.autocomplete {
+  /* div.autocomplete {
 		position : absolute;
 		width : 250px;
 		background-color : @default-bg;
@@ -1126,7 +1124,7 @@ body.ttrss_utility {
 			padding : 2px;
 			cursor : pointer;
 		}
-	}*/
+	} */
 }
 body.ttrss_main .alert,
 body.ttrss_utility .alert {
@@ -1228,7 +1226,7 @@ body.ttrss_utility .alert-info h4 {
 }
 body.ttrss_main hr,
 body.ttrss_utility hr {
-  border: 0px solid #ccc;
+  border: 0 solid #ccc;
   border-bottom-width: 1px;
 }
 ::selection {
@@ -1244,19 +1242,18 @@ body.ttrss_utility hr {
 ::-webkit-scrollbar-track {
   background-color: #eee;
 }
-/*video::-webkit-media-controls-overlay-play-button {
+/* video::-webkit-media-controls-overlay-play-button {
 	display: none;
-}*/
+} */
 .cdm {
-  /*i.material-icons {
+  /* i.material-icons {
 		color : @color-icon;
-	}*/
+	} */
 }
 .cdm .header,
 .cdm .footer {
   display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
+  flex-flow: row nowrap;
 }
 .cdm .header img,
 .cdm .footer img,
@@ -1301,7 +1298,7 @@ body.ttrss_utility hr {
   white-space: nowrap;
 }
 .cdm .header input {
-  margin: 0px 4px;
+  margin: 0 4px;
 }
 .cdm .header .feed {
   font-weight: normal;
@@ -1366,7 +1363,7 @@ body.ttrss_utility hr {
 }
 .cdm .content-inner img,
 .cdm .content-inner video {
-  border-width: 0px;
+  border-width: 0;
   max-width: 98%;
   width: auto;
   height: auto;
@@ -1380,7 +1377,7 @@ body.ttrss_utility hr {
   word-break: break-all;
 }
 .cdm.expanded .footer {
-  border: 0px solid #ddd;
+  border: 0 solid #ddd;
   border-bottom-width: 1px;
 }
 .cdm.expanded > hr {
@@ -1412,7 +1409,7 @@ body.ttrss_utility hr {
   display: none;
 }
 .cdm .feed-title {
-  border: 0px solid #257aa7;
+  border: 0 solid #257aa7;
   border-bottom-width: 1px;
   padding: 5px 3px 5px 5px;
 }
@@ -1442,7 +1439,7 @@ body.ttrss_utility hr {
 }
 .cdm.expandable {
   background-color: #f5f5f5;
-  border: 0px solid #ddd;
+  border: 0 solid #ddd;
   border-bottom-width: 1px;
 }
 .cdm.expandable > hr {
@@ -1558,7 +1555,7 @@ body.ttrss_prefs #footer_splitter {
 body.ttrss_prefs #footer {
   background-color: #f5f5f5;
   font-size: 13px;
-  border: 0px;
+  border: 0;
   text-align: center;
 }
 body.ttrss_prefs #header img {
@@ -1596,7 +1593,7 @@ body.ttrss_prefs #feedTree .dijitTreeContent {
   flex-grow: 2;
 }
 body.ttrss_prefs .dijitDialog #pref-profiles-list .dijitInlineEditBoxDisplayMode {
-  padding: 0px;
+  padding: 0;
 }
 body.ttrss_prefs #pref_feeds_errors_btn {
   color: red;
@@ -1767,12 +1764,12 @@ body.ttrss_main #filterNewRuleDlg .dijitValidationTextArea:not(.dijitValidationT
 }
 body.ttrss_prefs fieldset,
 body.ttrss_utility fieldset {
-  border-width: 0px;
-  padding: 5px 0px;
+  border-width: 0;
+  padding: 5px 0;
 }
 body.ttrss_prefs fieldset.narrow,
 body.ttrss_utility fieldset.narrow {
-  padding: 2px 0px;
+  padding: 2px 0;
 }
 body.ttrss_prefs fieldset.align-right,
 body.ttrss_utility fieldset.align-right {
@@ -1797,10 +1794,10 @@ body.ttrss_prefs[hide-filter-rules="true"] ul.filterRules {
 body.ttrss_prefs[hide-filter-rules="true"] ul.actions_summary li {
   display: inline;
 }
-body.ttrss_prefs[hide-filter-rules="true"] ul.actions_summary li:after {
+body.ttrss_prefs[hide-filter-rules="true"] ul.actions_summary li::after {
   content: ", ";
 }
-body.ttrss_prefs[hide-filter-rules="true"] ul.actions_summary li:last-child:after {
+body.ttrss_prefs[hide-filter-rules="true"] ul.actions_summary li:last-child::after {
   content: " ";
 }
 body.ttrss_utility.sanity_failed {
@@ -1817,7 +1814,7 @@ body.ttrss_utility .content {
   background: white;
   border: 1px solid #ddd;
   padding: 20px;
-  box-shadow: 0px 1px 1px -1px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 1px -1px rgba(0, 0, 0, 0.1);
 }
 body.ttrss_utility .content h2:first-of-type {
   margin-top: 0;
@@ -1847,7 +1844,7 @@ body.ttrss_utility h1 {
   color: gray;
   font-family: system-ui, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 18px;
-  margin: 10px 0 0 0;
+  margin: 10px 0 0;
 }
 body.ttrss_utility .footer {
   text-align: center;
@@ -1902,11 +1899,11 @@ body.ttrss_utility.share_popup .content {
   box-shadow: none;
 }
 .flat {
-  /*#feedTree {
+  /* #feedTree {
 		.dijitTreeContent .dijitInline {
 			vertical-align : baseline;
 		}
-	}*/
+	} */
 }
 .flat li {
   padding: 2px;
@@ -1949,7 +1946,7 @@ body.ttrss_utility.share_popup .content {
   top: 2px;
 }
 .flat .dijitAccordionContainer {
-  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
 }
 .flat .dijitCheckBox.dijitCheckBoxChecked {
   background-color: #69C671;
@@ -1969,8 +1966,8 @@ body.ttrss_utility.share_popup .content {
 .flat .dijitCheckBox {
   margin: 1px;
 }
-.flat .dijitCheckBox:before {
-  font-family: "flat-icon";
+.flat .dijitCheckBox::before {
+  font-family: flat-icon;
   content: "\f00c";
   color: white;
 }
@@ -1983,10 +1980,10 @@ body.ttrss_utility.share_popup .content {
   color: #257aa7;
 }
 .flat .dijitTree {
-  /*.dijitTreeRow .dijitTreeExpando {
+  /* .dijitTreeRow .dijitTreeExpando {
 			position : relative;
 			top : -2px;
-		}*/
+		} */
 }
 .flat .dijitTree .dijitTreeRowFlex {
   display: flex;
@@ -2050,7 +2047,7 @@ body.ttrss_utility.share_popup .content {
   background-color: #f5f5f5;
 }
 .flat .dijitTree .dijitTreeNode .dijitTreeRow {
-  padding: 4px 0px 4px;
+  padding: 4px 0;
   border-width: 1px;
   color: black;
 }
@@ -2061,9 +2058,9 @@ body.ttrss_utility.share_popup .content {
   font-family: 'Material Icons';
   font-style: normal;
   font-weight: 400;
-  src: url(../vendor/mervick/material-design-icons/fonts/MaterialIcons-Regular.eot);
+  src: url("../vendor/mervick/material-design-icons/fonts/MaterialIcons-Regular.eot");
   /* For IE6-8 */
-  src: local('Material Icons'), local('MaterialIcons-Regular'), url(../vendor/mervick/material-design-icons/fonts/MaterialIcons-Regular.woff2) format('woff2'), url(../vendor/mervick/material-design-icons/fonts/MaterialIcons-Regular.woff) format('woff'), url(../vendor/mervick/material-design-icons/fonts/MaterialIcons-Regular.ttf) format('truetype');
+  src: local('Material Icons'), local('MaterialIcons-Regular'), url("../vendor/mervick/material-design-icons/fonts/MaterialIcons-Regular.woff2") format('woff2'), url("../vendor/mervick/material-design-icons/fonts/MaterialIcons-Regular.woff") format('woff'), url("../vendor/mervick/material-design-icons/fonts/MaterialIcons-Regular.ttf") format('truetype');
 }
 .material-icons {
   font-family: 'Material Icons';
@@ -2082,7 +2079,7 @@ body.ttrss_utility.share_popup .content {
   /* Support for all WebKit browsers. */
   -webkit-font-smoothing: antialiased;
   /* Support for Safari and Chrome. */
-  text-rendering: optimizeLegibility;
+  text-rendering: optimizelegibility;
   /* Support for Firefox. */
   -moz-osx-font-smoothing: grayscale;
   /* Support for IE. */
@@ -2104,7 +2101,7 @@ body.ttrss_zoom {
 body.ttrss_zoom div.post {
   border: 1px solid #ddd;
   background: white;
-  box-shadow: 0px 1px 1px -1px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 1px -1px rgba(0, 0, 0, 0.1);
 }
 body.ttrss_zoom div.post .attachments {
   display: none;
@@ -2141,14 +2138,14 @@ body.ttrss_zoom div.post .content video {
   height: auto;
 }
 body.ttrss_zoom div.post .content blockquote {
-  margin: 5px 0px 5px 0px;
+  margin: 5px 0;
   color: black;
   padding-left: 8px;
-  border: 0px solid #ddd;
+  border: 0 solid #ddd;
   border-left-width: 4px;
 }
 body.ttrss_zoom div.post .content code {
-  color: #009900;
+  color: #090;
   font-family: monospace;
   font-size: 12px;
 }
@@ -2157,7 +2154,7 @@ body.ttrss_zoom div.post .content pre {
   color: black;
   font-family: monospace;
   font-size: 12px;
-  border: 0px solid #ccc;
+  border: 0 solid #ccc;
   background: #f5f5f5;
   display: block;
   max-width: 98%;

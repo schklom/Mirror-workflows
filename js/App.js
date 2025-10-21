@@ -427,6 +427,31 @@ const App = {
 
       return p.replace(/[&<>"'/]/g, m => map[m]);
    },
+   /**
+    * Sanitize a URL for safe use in href attributes and window.open()
+    * @param {string} url - URL to sanitize
+    * @param {string} fallback - Optional fallback value if URL is invalid (default: empty string)
+    * @return {string} Safe URL or fallback
+    */
+   sanitizeUrl: function(url, fallback = '') {
+      if (!url || typeof url !== 'string') return fallback;
+
+      // Remove NULL bytes and other control characters
+      // eslint-disable-next-line no-control-regex
+      const cleaned = url.replace(/[\x00-\x1F\x7F]/g, '');
+
+      const trimmed = cleaned.trim();
+      if (!trimmed) return fallback;
+
+      return /^https?:\/\/.+/i.test(trimmed) ? trimmed : fallback;
+   },
+   openUrl: function(url) {
+      const sanitized = this.sanitizeUrl(url);
+      if (sanitized) {
+         const w = window.open(sanitized);
+         w.opener = null;
+      }
+   },
    unescapeHtml: function(p) {
       if (typeof p !== 'string' || p.indexOf('&') === -1)
          return p;

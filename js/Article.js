@@ -76,12 +76,6 @@ const Article = {
 			}
 		}
 	},
-	popupOpenUrl: function(url) {
-		const w = window.open("");
-
-		w.opener = null;
-		w.location = url;
-	},
 	cdmToggleGridSpan: function(id) {
 		const row = document.getElementById(`RROW-${id}`);
 
@@ -134,7 +128,7 @@ const Article = {
 	renderTags: function (id, tags) {
 		return `<span class="tags" title="${tags.join(", ")}" data-tags-for="${id}">
 			${tags.length > 0 ? tags.map((tag) => `
-				<a href="#" onclick="Feeds.open({feed: '${tag.trim()}'})" class="tag">${tag}</a>`
+				<a href="#" onclick='Feeds.open({feed: ${JSON.stringify(tag.trim())}})' class="tag">${tag}</a>`
 			).join(", ") : `${__("no tags")}`}</span>`;
 	},
 	renderLabels: function(id, labels) {
@@ -142,7 +136,7 @@ const Article = {
 			${labels.map((label) => `
 				<a href="#" class="label" data-label-id="${label[0]}"
 					style="color : ${label[2]}; background-color : ${label[3]}"
-					onclick="event.stopPropagation(); Feeds.open({feed:'${label[0]}'})">
+					onclick="event.stopPropagation(); Feeds.open({feed:${label[0]}})">
 						${App.escapeHtml(label[1])}
 				</a>`
 			).join("")}
@@ -191,7 +185,7 @@ const Article = {
 					<span>${__('Attachments')}</span>
 					<div dojoType="dijit.Menu" style="display: none">
 					${enclosures.entries.map((enc) => `
-							<div onclick='Article.popupOpenUrl("${App.escapeHtml(enc.content_url)}")'
+							<div onclick='App.openUrl(${JSON.stringify(enc.content_url)})'
 								title="${App.escapeHtml(enc.title ? enc.title : enc.content_url)}" dojoType="dijit.MenuItem">
 									${enc.title ? enc.title : enc.filename}
 							</div>
@@ -233,7 +227,7 @@ const Article = {
 				comments_msg = hl.num_comments + " " + ngettext("comment", "comments", hl.num_comments)
 			}
 
-			comments = `<a target="_blank" rel="noopener noreferrer" href="${App.escapeHtml(hl.comments ? hl.comments : hl.link)}">(${comments_msg})</a>`;
+			comments = `<a target="_blank" rel="noopener noreferrer" href="${App.escapeHtml(App.sanitizeUrl(hl.comments ? hl.comments : hl.link))}">(${comments_msg})</a>`;
 		}
 
 		return comments;
@@ -288,7 +282,7 @@ const Article = {
 						<div class="row">
 							<div class="title"><a target="_blank" rel="noopener noreferrer"
 								title="${App.escapeHtml(hl.title)}"
-								href="${App.escapeHtml(hl.link)}">${hl.title}</a></div>
+								href="${App.escapeHtml(App.sanitizeUrl(hl.link))}">${hl.title}</a></div>
 							<div class="date">${hl.updated_long}</div>
 						</div>
 						<div class="row">
@@ -303,7 +297,7 @@ const Article = {
 						</div>
 					</div>
 					${Article.renderNote(hl.id, hl.note)}
-					<div class="content" lang="${hl.lang ? hl.lang : 'en'}">
+					<div class="content" lang="${hl.lang ? App.escapeHtml(hl.lang) : 'en'}">
 						${hl.content}
 						${Article.renderEnclosures(hl.enclosures)}
 					</div>

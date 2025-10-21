@@ -57,4 +57,4 @@ jobs:
         key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
 
     - name: Run ESLint
-      run: npx eslint js plugins
+      run: npm run lint:js

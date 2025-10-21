@@ -681,7 +681,7 @@ const	CommonDialogs = {
 								<button dojoType='dijit.form.Button' style='float : left' class='alt-info'
 									onclick='window.open("https://github.com/tt-rss/tt-rss/wiki/Generated-Feeds")'>
 									<i class='material-icons'>help</i> ${__("More info...")}</button>
-								<button dojoType='dijit.form.Button' onclick="return App.dialogOf(this).regenFeedKey('${feed}', '${is_cat}')">
+								<button dojoType='dijit.form.Button' onclick='return App.dialogOf(this).regenFeedKey(${JSON.stringify(feed)}, ${JSON.stringify(is_cat)})'>
 									${App.FormFields.icon("refresh")}
 									${__('Generate new URL')}
 								</button>

@@ -128,15 +128,15 @@ const Article = {
 	renderTags: function (id, tags) {
 		return `<span class="tags" title="${tags.join(", ")}" data-tags-for="${id}">
 			${tags.length > 0 ? tags.map((tag) => `
-				<a href="#" onclick="Feeds.open({feed: '${App.escapeHtml(tag.trim())}'})" class="tag">${tag}</a>`
+				<a href="#" onclick='Feeds.open({feed: ${JSON.stringify(tag.trim())}})' class="tag">${tag}</a>`
 			).join(", ") : `${__("no tags")}`}</span>`;
 	},
 	renderLabels: function(id, labels) {
 		return `<span class="labels" data-labels-for="${id}">
 			${labels.map((label) => `
 				<a href="#" class="label" data-label-id="${label[0]}"
-					style="color : ${App.escapeHtml(label[2])}; background-color : ${App.escapeHtml(label[3])}"
-					onclick="event.stopPropagation(); Feeds.open({feed:'${label[0]}'})">
+					style="color : ${label[2]}; background-color : ${label[3]}"
+					onclick="event.stopPropagation(); Feeds.open({feed:${label[0]}})">
 						${App.escapeHtml(label[1])}
 				</a>`
 			).join("")}
@@ -154,26 +154,26 @@ const Article = {
 										<img loading="lazy"
 											width="${enc.width ? enc.width : ''}"
 											height="${enc.height ? enc.height : ''}"
-											src="${App.escapeHtml(App.sanitizeUrl(enc.content_url))}"
+											src="${App.escapeHtml(enc.content_url)}"
 											title="${App.escapeHtml(enc.title ? enc.title : enc.content_url)}"/>
 									</p>`
 								} else if (enc.content_type && enc.content_type.indexOf("audio/") !== -1 && App.audioCanPlay(enc.content_type)) {
 									return `<p class='inline-player' title="${App.escapeHtml(enc.content_url)}">
 										<audio preload="none" controls="controls">
-											<source type="${App.escapeHtml(enc.content_type)}" src="${App.escapeHtml(App.sanitizeUrl(enc.content_url))}"/>
+											<source type="${App.escapeHtml(enc.content_type)}" src="${App.escapeHtml(enc.content_url)}"/>
 										</audio>
 									</p>
 									`;
 								} else {
 									return `<p>
-										<a target="_blank" href="${App.escapeHtml(App.sanitizeUrl(enc.content_url))}"
+										<a target="_blank" href="${App.escapeHtml(enc.content_url)}"
 											title="${App.escapeHtml(enc.title ? enc.title : enc.content_url)}"
 											rel="noopener noreferrer">${App.escapeHtml(enc.content_url)}</a>
 										</p>`
 								}
 							} else {
 								return `<p>
-									<a target="_blank" href="${App.escapeHtml(App.sanitizeUrl(enc.content_url))}"
+									<a target="_blank" href="${App.escapeHtml(enc.content_url)}"
 										title="${App.escapeHtml(enc.title ? enc.title : enc.content_url)}"
 										rel="noopener noreferrer">${App.escapeHtml(enc.content_url)}</a>
 									</p>`
@@ -185,7 +185,7 @@ const Article = {
 					<span>${__('Attachments')}</span>
 					<div dojoType="dijit.Menu" style="display: none">
 					${enclosures.entries.map((enc) => `
-							<div onclick="App.openUrl('${App.escapeHtml(enc.content_url)}')"
+							<div onclick='App.openUrl(${JSON.stringify(enc.content_url)})'
 								title="${App.escapeHtml(enc.title ? enc.title : enc.content_url)}" dojoType="dijit.MenuItem">
 									${enc.title ? enc.title : enc.filename}
 							</div>
@@ -297,7 +297,7 @@ const Article = {
 						</div>
 					</div>
 					${Article.renderNote(hl.id, hl.note)}
-					<div class="content" lang="${hl.lang ? hl.lang : 'en'}">
+					<div class="content" lang="${hl.lang ? App.escapeHtml(hl.lang) : 'en'}">
 						${hl.content}
 						${Article.renderEnclosures(hl.enclosures)}
 					</div>

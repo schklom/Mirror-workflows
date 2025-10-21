@@ -609,7 +609,7 @@ const	CommonDialogs = {
 								</section>
 							</div>
 							<div dojoType="dijit.layout.ContentPane" title="${__('Icon')}">
-								<div><img class='feedIcon' style="${feed.icon ? "" : "display : none"}" src="${feed.icon ? App.escapeHtml(App.sanitizeUrl(feed.icon)) : ""}"></div>
+								<div><img class='feedIcon' style="${feed.icon ? "" : "display : none"}" src="${feed.icon ? App.escapeHtml(feed.icon) : ""}"></div>
 
 								<label class="dijitButton">
 									${App.FormFields.icon("file_upload")}
@@ -674,14 +674,14 @@ const	CommonDialogs = {
 							<header>${__("%s can be accessed via the following secret URL:").replace("%s", App.escapeHtml(reply.title))}</header>
 							<section>
 								<div class='panel text-center'>
-									<a class='generated_url' href="${App.escapeHtml(App.sanitizeUrl(reply.link))}" target='_blank'>${App.escapeHtml(reply.link)}</a>
+									<a class='generated_url' href="${App.escapeHtml(reply.link)}" target='_blank'>${App.escapeHtml(reply.link)}</a>
 								</div>
 							</section>
 							<footer>
 								<button dojoType='dijit.form.Button' style='float : left' class='alt-info'
 									onclick='window.open("https://github.com/tt-rss/tt-rss/wiki/Generated-Feeds")'>
 									<i class='material-icons'>help</i> ${__("More info...")}</button>
-								<button dojoType='dijit.form.Button' onclick="return App.dialogOf(this).regenFeedKey('${feed}', '${is_cat}')">
+								<button dojoType='dijit.form.Button' onclick='return App.dialogOf(this).regenFeedKey(${JSON.stringify(feed)}, ${JSON.stringify(is_cat)})'>
 									${App.FormFields.icon("refresh")}
 									${__('Generate new URL')}
 								</button>

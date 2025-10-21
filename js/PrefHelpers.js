@@ -411,17 +411,17 @@ const	Helpers = {
 											{disabled: true}) : ''}
 									${plugin.more_info ?
 											App.FormFields.button_tag(App.FormFields.icon("help"), "",
-												{class: 'alt-info', onclick: `App.openUrl('${App.escapeHtml(plugin.more_info)}')`}) : ''}
+												{class: 'alt-info', onclick: `App.openUrl(${JSON.stringify(plugin.more_info)})`}) : ''}
 									${is_admin && plugin.is_local ?
 										App.FormFields.button_tag(App.FormFields.icon("update"), "",
 											{title: __("Update"), class: 'alt-warning', "data-update-btn-for-plugin": plugin.name, style: 'display : none',
-												onclick: `Helpers.Plugins.update("${App.escapeHtml(plugin.name)}")`}) : ''}
+												onclick: `Helpers.Plugins.update(${JSON.stringify(plugin.name)})`}) : ''}
 									${is_admin && plugin.has_data ?
 										App.FormFields.button_tag(App.FormFields.icon("clear"), "",
-											{title: __("Clear data"), onclick: `Helpers.Plugins.clearData("${App.escapeHtml(plugin.name)}")`}) : ''}
+											{title: __("Clear data"), onclick: `Helpers.Plugins.clearData(${JSON.stringify(plugin.name)})`}) : ''}
 									${is_admin && plugin.is_local ?
 										App.FormFields.button_tag(App.FormFields.icon("delete"), "",
-											{title: __("Uninstall"), onclick: `Helpers.Plugins.uninstall("${App.escapeHtml(plugin.name)}")`}) : ''}
+											{title: __("Uninstall"), onclick: `Helpers.Plugins.uninstall(${JSON.stringify(plugin.name)})`}) : ''}
 								</div>
 								<div class='version text-muted'>${plugin.version}</div>
 							</li>
@@ -575,7 +575,7 @@ const	Helpers = {
 												App.FormFields.icon("check") + " " +__("Already installed") :
 												App.FormFields.icon("file_download") + " " +__('Install')), "", {class: 'alt-primary pull-right',
 											disabled: is_installed,
-											onclick: `App.dialogOf(this).performInstall("${App.escapeHtml(plugin.name)}")`})}
+											onclick: `App.dialogOf(this).performInstall(${JSON.stringify(plugin.name)})`})}
 
 										<h3>${plugin.name}
 											<a target="_blank" rel="noopener noreferrer" href="${App.escapeHtml(App.sanitizeUrl(plugin.html_url))}">

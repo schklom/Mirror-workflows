@@ -702,3 +702,6 @@ const	CommonDialogs = {
 			});
 		},
 	};
+
+// Expose to global scope for Dojo widget onclick handlers (needed since Dojo 1.17.3)
+window.CommonDialogs = CommonDialogs;

@@ -76,12 +76,6 @@ const Article = {
 			}
 		}
 	},
-	popupOpenUrl: function(url) {
-		const w = window.open("");
-
-		w.opener = null;
-		w.location = url;
-	},
 	cdmToggleGridSpan: function(id) {
 		const row = document.getElementById(`RROW-${id}`);
 
@@ -160,26 +154,26 @@ const Article = {
 										<img loading="lazy"
 											width="${enc.width ? enc.width : ''}"
 											height="${enc.height ? enc.height : ''}"
-											src="${App.escapeHtml(enc.content_url)}"
+											src="${App.escapeHtml(App.sanitizeUrl(enc.content_url))}"
 											title="${App.escapeHtml(enc.title ? enc.title : enc.content_url)}"/>
 									</p>`
 								} else if (enc.content_type && enc.content_type.indexOf("audio/") !== -1 && App.audioCanPlay(enc.content_type)) {
 									return `<p class='inline-player' title="${App.escapeHtml(enc.content_url)}">
 										<audio preload="none" controls="controls">
-											<source type="${App.escapeHtml(enc.content_type)}" src="${App.escapeHtml(enc.content_url)}"/>
+											<source type="${App.escapeHtml(enc.content_type)}" src="${App.escapeHtml(App.sanitizeUrl(enc.content_url))}"/>
 										</audio>
 									</p>
 									`;
 								} else {
 									return `<p>
-										<a target="_blank" href="${App.escapeHtml(enc.content_url)}"
+										<a target="_blank" href="${App.escapeHtml(App.sanitizeUrl(enc.content_url))}"
 											title="${App.escapeHtml(enc.title ? enc.title : enc.content_url)}"
 											rel="noopener noreferrer">${App.escapeHtml(enc.content_url)}</a>
 										</p>`
 								}
 							} else {
 								return `<p>
-									<a target="_blank" href="${App.escapeHtml(enc.content_url)}"
+									<a target="_blank" href="${App.escapeHtml(App.sanitizeUrl(enc.content_url))}"
 										title="${App.escapeHtml(enc.title ? enc.title : enc.content_url)}"
 										rel="noopener noreferrer">${App.escapeHtml(enc.content_url)}</a>
 									</p>`
@@ -191,7 +185,7 @@ const Article = {
 					<span>${__('Attachments')}</span>
 					<div dojoType="dijit.Menu" style="display: none">
 					${enclosures.entries.map((enc) => `
-							<div onclick='Article.popupOpenUrl("${App.escapeHtml(enc.content_url)}")'
+							<div onclick="App.openUrl('${enc.content_url}')"
 								title="${App.escapeHtml(enc.title ? enc.title : enc.content_url)}" dojoType="dijit.MenuItem">
 									${enc.title ? enc.title : enc.filename}
 							</div>
@@ -233,7 +227,7 @@ const Article = {
 				comments_msg = hl.num_comments + " " + ngettext("comment", "comments", hl.num_comments)
 			}
 
-			comments = `<a target="_blank" rel="noopener noreferrer" href="${App.escapeHtml(hl.comments ? hl.comments : hl.link)}">(${comments_msg})</a>`;
+			comments = `<a target="_blank" rel="noopener noreferrer" href="${App.escapeHtml(App.sanitizeUrl(hl.comments ? hl.comments : hl.link))}">(${comments_msg})</a>`;
 		}
 
 		return comments;
@@ -288,7 +282,7 @@ const Article = {
 						<div class="row">
 							<div class="title"><a target="_blank" rel="noopener noreferrer"
 								title="${App.escapeHtml(hl.title)}"
-								href="${App.escapeHtml(hl.link)}">${hl.title}</a></div>
+								href="${App.escapeHtml(App.sanitizeUrl(hl.link))}">${hl.title}</a></div>
 							<div class="date">${hl.updated_long}</div>
 						</div>
 						<div class="row">

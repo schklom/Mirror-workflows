@@ -741,7 +741,7 @@ const	Feeds = {
 		const icon_url = App.getInitParam('icons_url') + '?' + dojo.objectToQuery({op: 'feed_icon', id: feed_id});
 
 		return feed_id && exists ?
-			`<img class='icon' src='${App.escapeHtml(icon_url)}' width='16' height='16' alt='feed icon' onerror='Feeds._handleIconError(this)'>` :
+			`<img class='icon' src='${App.escapeHtml(App.sanitizeUrl(icon_url))}' width='16' height='16' alt='feed icon' onerror='Feeds._handleIconError(this)'>` :
 				`<i class='icon-no-feed material-icons'>rss_feed</i>`;
 	},
 	_handleIconError: (img) => {

@@ -411,7 +411,7 @@ const	Helpers = {
 											{disabled: true}) : ''}
 									${plugin.more_info ?
 											App.FormFields.button_tag(App.FormFields.icon("help"), "",
-												{class: 'alt-info', onclick: `window.open("${App.escapeHtml(plugin.more_info)}")`}) : ''}
+												{class: 'alt-info', onclick: `App.openUrl('${plugin.more_info}')`}) : ''}
 									${is_admin && plugin.is_local ?
 										App.FormFields.button_tag(App.FormFields.icon("update"), "",
 											{title: __("Update"), class: 'alt-warning', "data-update-btn-for-plugin": plugin.name, style: 'display : none',
@@ -578,7 +578,7 @@ const	Helpers = {
 											onclick: `App.dialogOf(this).performInstall("${App.escapeHtml(plugin.name)}")`})}
 
 										<h3>${plugin.name}
-											<a target="_blank" href="${App.escapeHtml(plugin.html_url)}">
+											<a target="_blank" rel="noopener noreferrer" href="${App.escapeHtml(App.sanitizeUrl(plugin.html_url))}">
 												${App.FormFields.icon("open_in_new_window")}
 											</a>
 										</h3>

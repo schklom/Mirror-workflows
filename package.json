@@ -4,7 +4,8 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "lint:css": "stylelint 'lib/flat-ttrss/**/*.css' 'plugins/**/*.css' 'themes/**/*.less'"
+    "lint:css": "stylelint 'lib/flat-ttrss/**/*.css' 'plugins/**/*.css' 'themes/**/*.less'",
+    "lint:js": "eslint js plugins"
   },
   "devDependencies": {
     "@stylistic/eslint-plugin": "^5.4.0",

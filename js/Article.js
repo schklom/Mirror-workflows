@@ -128,14 +128,14 @@ const Article = {
 	renderTags: function (id, tags) {
 		return `<span class="tags" title="${tags.join(", ")}" data-tags-for="${id}">
 			${tags.length > 0 ? tags.map((tag) => `
-				<a href="#" onclick="Feeds.open({feed: '${tag.trim()}'})" class="tag">${tag}</a>`
+				<a href="#" onclick="Feeds.open({feed: '${App.escapeHtml(tag.trim())}'})" class="tag">${tag}</a>`
 			).join(", ") : `${__("no tags")}`}</span>`;
 	},
 	renderLabels: function(id, labels) {
 		return `<span class="labels" data-labels-for="${id}">
 			${labels.map((label) => `
 				<a href="#" class="label" data-label-id="${label[0]}"
-					style="color : ${label[2]}; background-color : ${label[3]}"
+					style="color : ${App.escapeHtml(label[2])}; background-color : ${App.escapeHtml(label[3])}"
 					onclick="event.stopPropagation(); Feeds.open({feed:'${label[0]}'})">
 						${App.escapeHtml(label[1])}
 				</a>`
@@ -185,7 +185,7 @@ const Article = {
 					<span>${__('Attachments')}</span>
 					<div dojoType="dijit.Menu" style="display: none">
 					${enclosures.entries.map((enc) => `
-							<div onclick="App.openUrl('${enc.content_url}')"
+							<div onclick="App.openUrl('${App.escapeHtml(enc.content_url)}')"
 								title="${App.escapeHtml(enc.title ? enc.title : enc.content_url)}" dojoType="dijit.MenuItem">
 									${enc.title ? enc.title : enc.filename}
 							</div>

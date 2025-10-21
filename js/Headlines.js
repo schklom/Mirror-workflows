@@ -511,7 +511,7 @@ const Headlines = {
 								${hl.cdm_excerpt ? hl.cdm_excerpt : ""}
 							</span>
 
-							<a class="feed vfeedMenuAttach" style="background-color: ${hl.feed_bg_color}" data-feed-id="${hl.feed_id}"
+							<a class="feed vfeedMenuAttach" style="background-color: ${App.escapeHtml(hl.feed_bg_color)}" data-feed-id="${hl.feed_id}"
 								title="${__('Open site')}" target="_blank" rel="noopener noreferrer" href="${App.escapeHtml(App.sanitizeUrl(hl.site_url))}">${hl.feed_title}</a>
 
 							<span class="updated" title="${hl.imported}">${hl.updated}</span>
@@ -581,7 +581,7 @@ const Headlines = {
 				</span>
 			</div>
 			<span class="feed vfeedMenuAttach" data-feed-id="${hl.feed_id}">
-				<a title="${__('Open site')}" style="background : ${hl.feed_bg_color}" target="_blank" rel="noopener noreferrer" href="${App.escapeHtml(App.sanitizeUrl(hl.site_url))}">${hl.feed_title}</a>
+				<a title="${__('Open site')}" style="background : ${App.escapeHtml(hl.feed_bg_color)}" target="_blank" rel="noopener noreferrer" href="${App.escapeHtml(App.sanitizeUrl(hl.site_url))}">${hl.feed_title}</a>
 			</span>
 			<div title="${hl.imported}">
 				<span class="updated">${hl.updated}</span>

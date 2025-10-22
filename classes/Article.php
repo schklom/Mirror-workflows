@@ -12,8 +12,8 @@ class Article extends Handler_Protected {
 		$article = ORM::for_table('ttrss_entries')
 			->table_alias('e')
 			->join('ttrss_user_entries', [ 'ref_id', '=', 'e.id'], 'ue')
-				->where('ue.owner_uid', $_SESSION['uid'])
-				->find_one((int)$_REQUEST['id']);
+			->where('ue.owner_uid', $_SESSION['uid'])
+			->find_one((int)$_REQUEST['id']);
 
 		if ($article) {
 			$article_url = UrlHelper::validate($article->link);
@@ -22,10 +22,14 @@ class Article extends Handler_Protected {
 				header("Location: $article_url");
 				return;
 			}
+
+			header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found');
+			print 'Article URL did not pass validation.  No redirection performed.';
+			return;
 		}
 
-		header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
-		print "Article not found or has an empty URL.";
+		header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found');
+		print 'Article not found.';
 	}
 
 	static function _create_published_article(string $title, string $url, string $content, string $labels_str, int $owner_uid): bool {

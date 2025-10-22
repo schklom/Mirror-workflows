@@ -46,13 +46,8 @@ html.is-mobile #mw-head {
   padding: 8px 12px;
   gap: 8px;
   box-sizing: border-box;
-  backdrop-filter: blur(6px);
-  opacity: 0.98;
-  transition: opacity 0.25s ease;
-}
-
-html.is-mobile #mw-head:hover {
-  opacity: 1;
+  transition: transform 0.3s ease;
+  will-change: transform;
 }
 
 html.is-mobile #searchform {
@@ -61,7 +56,6 @@ html.is-mobile #searchform {
   align-items: center;
   max-width: 600px;
 }
-
 html.is-mobile #searchInput {
   width: 100%;
   font-size: 15px;

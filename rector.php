@@ -18,4 +18,6 @@ return RectorConfig::configure()
 		Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector::class,
 		// noisy at the moment (needs more review)
 		Rector\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector::class,
+		// TODO: remove after Rector 2.2.4 bug is fixed
+		Rector\CodingStyle\Rector\FunctionLike\FunctionLikeToFirstClassCallableRector::class => [__DIR__ . '/classes/Scheduler.php'],
 	]);

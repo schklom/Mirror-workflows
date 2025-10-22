@@ -11,7 +11,7 @@ class Logger_Stdout implements Logger_Adapter {
 
 		$errname = Logger::ERROR_NAMES[$errno] . " ($errno)";
 
-		print "[EEE] $priority $errname ($file:$line) $errstr\n";
+		file_put_contents("php://stdout", "[EEE] $priority $errname ($file:$line) $errstr\n");
 
 		return true;
 	}

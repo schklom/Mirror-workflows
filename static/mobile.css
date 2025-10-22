@@ -33,7 +33,7 @@ html.is-mobile:not(.home) #mw-panel {
 }
 
 html.is-mobile #mw-head {
-  position: fixed;
+  position: sticky;
   top: 0;
   left: 0;
   right: 0;
@@ -46,6 +46,13 @@ html.is-mobile #mw-head {
   padding: 8px 12px;
   gap: 8px;
   box-sizing: border-box;
+  backdrop-filter: blur(6px);
+  opacity: 0.98;
+  transition: opacity 0.25s ease;
+}
+
+html.is-mobile #mw-head:hover {
+  opacity: 1;
 }
 
 html.is-mobile #searchform {
@@ -54,6 +61,7 @@ html.is-mobile #searchform {
   align-items: center;
   max-width: 600px;
 }
+
 html.is-mobile #searchInput {
   width: 100%;
   font-size: 15px;
@@ -81,7 +89,7 @@ html.is-mobile #p-personal a:hover {
 }
 
 html.is-mobile body {
-  padding-top: 70px !important;
+  padding-top: 0 !important;
 }
 
 html.is-mobile #content,
@@ -177,7 +185,6 @@ html.is-mobile .mw-parser-output > table.infobox-vevent {
   overflow: hidden;
 }
 
-/* remove fixed colgroup widths */
 html.is-mobile table.infobox colgroup,
 html.is-mobile table.infobox col {
   width: auto !important;

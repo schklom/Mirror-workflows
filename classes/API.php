@@ -313,7 +313,7 @@ class API extends Handler {
 					'hide_images' => '(SELECT hide_images FROM ttrss_feeds WHERE id = feed_id)',
 				])
 				->join('ttrss_user_entries', [ 'ue.ref_id', '=', 'e.id'], 'ue')
-				->where_in('e.id', array_map('intval', $article_ids))
+				->where_in('e.id', array_map(intval(...), $article_ids))
 				->where('ue.owner_uid', $_SESSION['uid'])
 				->find_many();
 

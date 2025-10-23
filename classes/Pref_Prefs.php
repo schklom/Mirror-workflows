@@ -630,10 +630,10 @@ class Pref_Prefs extends Handler_Protected {
 
 					} else if ($pref_name == Prefs::USER_CSS_THEME) {
 
-						$theme_files = array_map("basename", [
-							...glob("themes/*.php") ?: [],
-							...glob("themes/*.css") ?: [],
-							...glob("themes.local/*.css") ?: [],
+						$theme_files = array_map(basename(...), [
+							...glob('themes/*.php') ?: [],
+							...glob('themes/*.css') ?: [],
+							...glob('themes.local/*.css') ?: [],
 						]);
 
 						asort($theme_files);
@@ -795,8 +795,8 @@ class Pref_Prefs extends Handler_Protected {
 	}
 
 	function getPluginsList(): void {
-		$system_enabled = array_map("trim", explode(",", (string)Config::get(Config::PLUGINS)));
-		$user_enabled = array_map('trim', explode(',', Prefs::get(Prefs::_ENABLED_PLUGINS, $_SESSION['uid'], $_SESSION['profile'] ?? null)));
+		$system_enabled = array_map(trim(...), explode(',', (string)Config::get(Config::PLUGINS)));
+		$user_enabled = array_map(trim(...), explode(',', Prefs::get(Prefs::_ENABLED_PLUGINS, $_SESSION['uid'], $_SESSION['profile'] ?? null)));
 
 		$tmppluginhost = new PluginHost();
 		$tmppluginhost->load_all($tmppluginhost::KIND_ALL, $_SESSION["uid"], true);
@@ -1023,7 +1023,7 @@ class Pref_Prefs extends Handler_Protected {
 	}
 
 	function setplugins(): void {
-		$plugins = array_filter($_REQUEST["plugins"] ?? [], 'clean');
+		$plugins = array_filter($_REQUEST['plugins'] ?? [], clean(...));
 
 		Prefs::set(Prefs::_ENABLED_PLUGINS, implode(',', $plugins), $_SESSION['uid'], $_SESSION['profile'] ?? null);
 	}
@@ -1057,7 +1057,7 @@ class Pref_Prefs extends Handler_Protected {
 	 */
 	static function _get_updated_plugins(): array {
 		$root_dir = Config::get_self_dir();
-		$plugin_dirs = array_filter(glob("$root_dir/plugins.local/*"), "is_dir");
+		$plugin_dirs = array_filter(glob("$root_dir/plugins.local/*"), is_dir(...));
 		$rv = [];
 
 		foreach ($plugin_dirs as $dir) {
@@ -1356,7 +1356,7 @@ class Pref_Prefs extends Handler_Protected {
 					array_push($rv, ["plugin" => $plugin_name, "rv" => $this->_update_plugin($root_dir, $plugin_name)]);
 				}
 			} else {
-				$plugin_dirs = array_filter(glob("$root_dir/plugins.local/*"), "is_dir");
+				$plugin_dirs = array_filter(glob("$root_dir/plugins.local/*"), is_dir(...));
 
 				foreach ($plugin_dirs as $dir) {
 					if (is_dir("$dir/.git")) {

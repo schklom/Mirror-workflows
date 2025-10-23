@@ -15,7 +15,7 @@ class Pref_Feeds extends Handler_Protected {
 	 * @return array<int, string>
 	 */
 	public static function get_ts_languages(): array {
-		return array_map('ucfirst',
+		return array_map(ucfirst(...),
 			array_column(ORM::for_table('pg_ts_config')->select('cfgname')->find_array(), 'cfgname'));
 	}
 
@@ -877,7 +877,7 @@ class Pref_Feeds extends Handler_Protected {
 
 	function remove(): void {
 		/** @var array<int, int> */
-		$ids = array_map('intval', explode(",", clean($_REQUEST["ids"])));
+		$ids = array_map(intval(...), explode(',', clean($_REQUEST['ids'])));
 
 		foreach ($ids as $id) {
 			self::remove_feed($id, $_SESSION["uid"]);

@@ -174,7 +174,7 @@ class Article extends Handler_Protected {
 	}
 
 	function setScore(): void {
-		$ids = array_map("intval", clean($_REQUEST['ids'] ?? []));
+		$ids = array_map(intval(...), clean($_REQUEST['ids'] ?? []));
 		$score = (int)clean($_REQUEST['score']);
 
 		$ids_qmarks = arr_qmarks($ids);
@@ -274,7 +274,7 @@ class Article extends Handler_Protected {
 	private function _label_ops(bool $assign): void {
 		$reply = [];
 
-		$ids = array_map('intval',
+		$ids = array_map(intval(...),
 			array_filter(explode(',', clean($_REQUEST['ids'] ?? '')), fn($i) => strlen($i) > 0));
 
 		$label_id = clean($_REQUEST['lid']);

@@ -15,7 +15,7 @@ class Scheduler {
 
 		if ($name === self::DEFAULT_NAME) {
 			$this->add_scheduled_task('purge_orphaned_scheduled_tasks', '@weekly',
-				fn() => $this->purge_orphaned_tasks()
+				$this->purge_orphaned_tasks(...)
 			);
 		}
 	}

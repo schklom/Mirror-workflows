@@ -767,7 +767,7 @@ class Feeds extends Handler_Protected {
 					} else {
 						$children = self::_get_child_cats($feed_id, $owner_uid);
 						array_push($children, $feed_id);
-						$children = array_map("intval", $children);
+						$children = array_map(intval(...), $children);
 
 						$children = join(",", $children);
 
@@ -1510,7 +1510,7 @@ class Feeds extends Handler_Protected {
 						# sub-cats
 						$subcats = self::_get_child_cats($feed, $owner_uid);
 						array_push($subcats, $feed);
-						$subcats = array_map("intval", $subcats);
+						$subcats = array_map(intval(...), $subcats);
 
 						$query_strategy_part = "cat_id IN (".
 							implode(",", $subcats).")";

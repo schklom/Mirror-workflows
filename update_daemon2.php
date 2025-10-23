@@ -235,7 +235,7 @@
 						Debug::log("Installing shutdown handlers");
 						pcntl_signal(SIGINT, 'sigint_handler');
 						pcntl_signal(SIGTERM, 'sigint_handler');
-						register_shutdown_function('shutdown', posix_getpid());
+						register_shutdown_function(shutdown(...), posix_getpid());
 						$master_handlers_installed = true;
 					}
 
@@ -246,7 +246,7 @@
 					pcntl_signal(SIGCHLD, SIG_IGN);
 					pcntl_signal(SIGINT, 'task_sigint_handler');
 
-					register_shutdown_function('task_shutdown');
+					register_shutdown_function(task_shutdown(...));
 
 					$quiet = (isset($options["quiet"])) ? "--quiet" : "";
 					$log = function_exists("flock") && isset($options['log']) ? '--log '.$options['log'] : '';

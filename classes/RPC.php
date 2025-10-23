@@ -120,12 +120,12 @@ class RPC extends Handler_Protected {
 		if ($feed_id_count == -1)
 			$feed_ids = null;
 		else
-			$feed_ids = array_map("intval", clean($_REQUEST["feed_ids"] ?? []));
+			$feed_ids = array_map(intval(...), clean($_REQUEST['feed_ids'] ?? []));
 
 		if ($label_id_count == -1)
 			$label_ids = null;
 		else
-			$label_ids = array_map("intval", clean($_REQUEST["label_ids"] ?? []));
+			$label_ids = array_map(intval(...), clean($_REQUEST['label_ids'] ?? []));
 
 		$counters = is_array($feed_ids)
 			&& !Prefs::get(Prefs::DISABLE_CONDITIONAL_COUNTERS, $_SESSION['uid'], $_SESSION['profile'] ?? null) ?
@@ -141,7 +141,7 @@ class RPC extends Handler_Protected {
 
 	/* GET["cmode"] = 0 - mark as read, 1 - as unread, 2 - toggle */
 	function catchupSelected(): void {
-		$ids = array_map("intval", clean($_REQUEST["ids"] ?? []));
+		$ids = array_map(intval(...), clean($_REQUEST['ids'] ?? []));
 		$cmode = (int)clean($_REQUEST["cmode"]);
 
 		if (count($ids) > 0)
@@ -153,7 +153,7 @@ class RPC extends Handler_Protected {
 	}
 
 	function markSelected(): void {
-		$ids = array_map("intval", clean($_REQUEST["ids"] ?? []));
+		$ids = array_map(intval(...), clean($_REQUEST['ids'] ?? []));
 		$cmode = (int)clean($_REQUEST["cmode"]);
 
 		if (count($ids) > 0)
@@ -165,7 +165,7 @@ class RPC extends Handler_Protected {
 	}
 
 	function publishSelected(): void {
-		$ids = array_map("intval", clean($_REQUEST["ids"] ?? []));
+		$ids = array_map(intval(...), clean($_REQUEST['ids'] ?? []));
 		$cmode = (int)clean($_REQUEST["cmode"]);
 
 		if (count($ids) > 0)

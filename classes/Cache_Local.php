@@ -97,7 +97,7 @@ class Cache_Local implements Cache_Adapter {
 	}
 
 	public function expire_all(): void {
-		$dirs = array_filter(glob(Config::get(Config::CACHE_DIR) . "/*"), "is_dir");
+		$dirs = array_filter(glob(Config::get(Config::CACHE_DIR) . '/*'), is_dir(...));
 
 		foreach ($dirs as $cache_dir) {
 			$num_deleted = 0;

@@ -707,7 +707,7 @@ class Pref_Filters extends Handler_Protected {
 
 	function clone(): void {
 		/** @var array<int, int> */
-		$src_filter_ids = array_map('intval', array_filter(explode(',', clean($_REQUEST['ids'] ?? ''))));
+		$src_filter_ids = array_map(intval(...), array_filter(explode(',', clean($_REQUEST['ids'] ?? ''))));
 		$new_filter_title = count($src_filter_ids) === 1 ? clean($_REQUEST['new_filter_title'] ?? null) : null;
 
 		$src_filters = ORM::for_table('ttrss_filters2')
@@ -869,7 +869,7 @@ class Pref_Filters extends Handler_Protected {
 
 	function join(): void {
 		/** @var array<int, int> */
-		$ids = array_map("intval", explode(",", clean($_REQUEST["ids"])));
+		$ids = array_map(intval(...), explode(',', clean($_REQUEST['ids'])));
 
 		// fail early if any provided filter IDs aren't owned by the current user
 		$unowned_filter_count = ORM::for_table('ttrss_filters2')

@@ -425,8 +425,8 @@ class PluginHost {
 	 */
 	function load_all(int $kind, ?int $owner_uid = null, bool $skip_init = false): void {
 		$plugins = [...(glob("plugins/*") ?: []), ...(glob("plugins.local/*") ?: [])];
-		$plugins = array_filter($plugins, "is_dir");
-		$plugins = array_map("basename", $plugins);
+		$plugins = array_filter($plugins, is_dir(...));
+		$plugins = array_map(basename(...), $plugins);
 
 		asort($plugins);
 

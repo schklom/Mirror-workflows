@@ -175,10 +175,10 @@ class UrlHelper {
 		$tokens_filter_var = $tokens;
 
 		if ($tokens['path'] ?? false) {
-			$tokens_filter_var['path'] = implode("/",
-										array_map("rawurlencode",
-											array_map("rawurldecode",
-												explode("/", $tokens['path']))));
+			$tokens_filter_var['path'] = implode('/',
+										array_map(rawurlencode(...),
+											array_map(rawurldecode(...),
+												explode('/', $tokens['path']))));
 		}
 
 		$url = self::build_url($tokens);

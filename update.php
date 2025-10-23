@@ -330,7 +330,7 @@
 	if (isset($options["plugins-list"])) {
 		$tmppluginhost = new PluginHost();
 		$tmppluginhost->load_all($tmppluginhost::KIND_ALL);
-		$enabled = array_map("trim", explode(",", Config::get(Config::PLUGINS)));
+		$enabled = array_map(trim(...), explode(',', Config::get(Config::PLUGINS)));
 
 		echo "List of all available plugins:\n";
 

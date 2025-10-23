@@ -260,16 +260,16 @@
 	/* end compat shims */
 
 	/**
-	 * This is used for user http parameters unless HTML code is actually needed.
+	 * This is used for user HTTP parameters unless HTML code is actually needed.
 	 */
 	function clean(mixed $param): mixed {
-		if (is_array($param)) {
-			return array_map("trim", array_map("strip_tags", $param));
-		} else if (is_string($param)) {
-			return trim(strip_tags($param));
-		} else {
-			return $param;
-		}
+		$filter = static fn($v) => is_string($v) ? trim(strip_tags($v)) : $v;
+
+		return match (true) {
+			is_array($param) => array_map($filter, $param),
+			is_string($param) => $filter($param),
+			default => $param,
+		};
 	}
 
 	function with_trailing_slash(string $str) : string {

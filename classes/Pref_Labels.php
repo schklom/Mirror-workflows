@@ -149,7 +149,7 @@ class Pref_Labels extends Handler_Protected {
 
 	function remove(): void {
 		/** @var array<int, int> */
-		$ids = array_map("intval", explode(",", clean($_REQUEST["ids"])));
+		$ids = array_map(intval(...), explode(',', clean($_REQUEST['ids'])));
 
 		foreach ($ids as $id) {
 			Labels::remove($id, $_SESSION["uid"]);

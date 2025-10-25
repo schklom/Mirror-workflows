@@ -5,6 +5,8 @@ import (
 	"crypto/rand"
 	"errors"
 	"fmd-server/metrics"
+	"fmd-server/version"
+	"fmt"
 	"math/big"
 	"net/http"
 	"regexp"
@@ -441,6 +443,7 @@ func (u *UserRepository) pushUser(user *FMDUser) {
 	request.Header.Set("Content-Encoding", "aes128gcm")
 	request.Header.Set("TTL", "86400") // cache for one day max
 	request.Header.Set("Urgency", "high")
+	request.Header.Set("User-Agent", fmt.Sprintf("fmd-server/%s", version.VERSION))
 
 	client := &http.Client{}
 	_, err = client.Do(request)

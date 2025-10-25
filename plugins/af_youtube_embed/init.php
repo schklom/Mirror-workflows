@@ -28,7 +28,7 @@ class Af_Youtube_Embed extends Plugin {
 				<iframe class='youtube-player'
 					type='text/html' width='640' height='385'
 					title='YouTube video player'
-					src=\"https://www.youtube.com/embed/$vid_id\"
+					src=\"https://www.youtube-nocookie.com/embed/$vid_id\"
 					referrerpolicy='strict-origin-when-cross-origin'
 					allowfullscreen frameborder='0'></iframe>
 				</div>";

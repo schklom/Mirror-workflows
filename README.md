@@ -278,12 +278,17 @@ less /var/log/syslog | grep fmd-server
 ## Metrics
 
 FMD Server exposes metrics that can be scraped by [Prometheus](https://prometheus.io/).
+There is also a [Grafana template](grafana-template.json).
 
-By default, they are only exposed on localhost for security reasons.
-You can change this to a different IP address.
+By default, metrics are exposed on `[::1]:9100/metrics`.
+Using localhost is intentional, for security reasons.
+
+Note that the metrics address/port is independent of the main server address/port.
+FMD Server can serve both independently of each other, including on separate addresses and ports.
+
+You can change the metrics endpoint to a different address and port in the `config.yml`.
 For example, when running in a container you want to listen on a specific IP address
 or on all interfaces *inside* the container.
-The default port is 9100, which is also configurable.
 
 ## Donate
 

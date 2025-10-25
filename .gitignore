@@ -20,7 +20,9 @@ cmd/__debug_bin378745479
 
 # Certs
 *.crt
+*.csr
 *.key
+*.pem
 cmd/test/web
 
 # Release builds

@@ -406,12 +406,8 @@ module.exports = function(redis) {
     if(!lang) return config.default_lang
     const l = String(lang).toLowerCase()
     const map = {
-      'zh-cn': 'zh',
       'zh-hans': 'zh',
-      'zh-sg': 'zh',
-      'zh-my': 'zh',
       'zh-tw': 'zh',
-      'zh-hant': 'zh',
       'zh-hk': 'zh',
       'zh-mo': 'zh',
       'zh-min-nan': 'nan',
@@ -426,7 +422,7 @@ module.exports = function(redis) {
   this.isSimplifiedChinese = (lang) => {
     if(!lang) return false
     const l = String(lang).toLowerCase()
-    return l === 'zh-cn' || l === 'zh-hans' || l === 'zh-sg' || l === 'zh-my'
+    return l === 'zh-hans'
   }
 
   this.validLang = (lang, return_langs=false) => {
@@ -445,7 +441,7 @@ module.exports = function(redis) {
       'tet','tg','th','ti','tk','tl','tn','to','tpi','tr','ts','tt','tum','tw','ty','tyv','udm','ug','uk','ur','uz','ve','vec','vep','vi','vls','vo','wa',
       'war','wo','wuu','xal','xh','xmf','yi','yo','za','zea','zh','zh-classical','zh-min-nan','zh-yue','zu',
       // explicit Chinese variants for manual selection
-      'zh-hans','zh-hant','zh-cn','zh-hk','zh-mo','zh-my','zh-sg','zh-tw'
+      'zh-hans','zh-tw','zh-hk','zh-mo'
     ]
 
     if(return_langs) {
@@ -531,10 +527,8 @@ module.exports = function(redis) {
 
     // special mapping for Chinese variants as requested
     const specialMap = {
-      'zh-cn': '简体中文',
       'zh-hans': '简体中文',
       'zh': '繁體中文',
-      'zh-hant': '繁體中文',
       'zh-tw': '繁體中文 台湾',
       'zh-hk': '繁體中文 香港',
       'zh-mo': '繁體中文 澳門',

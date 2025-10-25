@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"fmd-server/user"
+	"fmd-server/version"
 
 	"github.com/rs/zerolog/log"
 )
@@ -487,7 +488,7 @@ func (h createDeviceHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 // ------- Main Web Request Handling -------
 
 func getVersion(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, VERSION)
+	fmt.Fprint(w, version.VERSION)
 }
 
 func mainLocation(w http.ResponseWriter, r *http.Request) {

@@ -135,7 +135,7 @@ func AESEncrypt(src string, keyString string) string {
 func AESDecrypt(src string, keyString string) string {
 	salt := src[:keySize/8]
 	// iv := src[keySize/8 : keySize/8+IV_SIZE/8]
-	msg := src[(keySize/8)+(IV_SIZE/8) : len(src)]
+	msg := src[(keySize/8)+(IV_SIZE/8):]
 
 	key := pbkdf2.Key([]byte(keyString), fromHex(salt), iterationCount, keySize/8, sha1.New)
 

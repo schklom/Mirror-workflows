@@ -17,32 +17,35 @@ variables:
   - go get gopkg.in/yaml.v3
 
 stages:
+  - lint
   - test
   - build
 
 format:
-  stage: test
+  stage: lint
   script:
     - *go-setup
     - go mod tidy
     - go fmt $(go list ./... | grep -v /vendor/)
     - go vet $(go list ./... | grep -v /vendor/)
 
-unit-test:
-  stage: test
+# https://staticcheck.dev/
+staticcheck:
+  stage: lint
   script:
     - *go-setup
-    - go test -race $(go list ./... | grep -v /vendor/)\
+    - go install honnef.co/go/tools/cmd/staticcheck@latest
+    - staticcheck $(go list ./...)
 
 nil-safety:
-  stage: test
+  stage: lint
   script:
     - *go-setup
     - go install go.uber.org/nilaway/cmd/nilaway@latest
     - nilaway -include-pkgs="fmd-server" ./...
 
 sonarcloud-check:
-  stage: test
+  stage: lint
   image:
     name: sonarsource/sonar-scanner-cli:latest
     entrypoint: [""]
@@ -55,6 +58,12 @@ sonarcloud-check:
   rules:
     - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+
+unit-test:
+  stage: test
+  script:
+    - *go-setup
+    - go test -race $(go list ./... | grep -v /vendor/)\
 
 compile:
   stage: build

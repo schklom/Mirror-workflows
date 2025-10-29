@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-05-04 13:44+0300\n"
-"PO-Revision-Date: 2025-09-27 10:02+0000\n"
-"Last-Translator: BlueTurtle <skayzmomo@hotmail.com>\n"
+"PO-Revision-Date: 2025-10-28 13:04+0000\n"
+"Last-Translator: LaurentC <laurentc@users.noreply.hosted.weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/tt-rss/webui/fr/>"
 "\n"
 "Language: fr_FR\n"
@@ -22,7 +22,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.14-dev\n"
+"X-Generator: Weblate 5.14.1-dev\n"
 
 #: backend.php:61
 msgid "Use default"
@@ -54,7 +54,7 @@ msgstr "Au bout de 3 mois"
 
 #: backend.php:70
 msgid "Default interval"
-msgstr "Fréquence de mise à jour par défaut"
+msgstr "Fréquence par défaut"
 
 #: backend.php:71 backend.php:81
 msgid "Disable updates"
@@ -166,7 +166,7 @@ msgstr "Avec annotation"
 
 #: index.php:189
 msgid "Sort articles"
-msgstr "Classer les articles"
+msgstr "Trier les articles"
 
 #: index.php:193
 msgid "Default"
@@ -241,7 +241,7 @@ msgstr "Tous les flux :"
 
 #: index.php:262
 msgid "(Un)hide read feeds"
-msgstr "Masquer/afficher les flux lus"
+msgstr "Afficher/masquer les flux lus"
 
 #: index.php:263
 msgid "UI layout:"
@@ -290,7 +290,7 @@ msgstr "Filtres"
 
 #: prefs.php:146 classes/Feeds.php:1316 classes/Pref_Labels.php:23
 msgid "Labels"
-msgstr "Etiquettes"
+msgstr "Étiquettes"
 
 #: prefs.php:151
 msgid "Users"
@@ -337,7 +337,7 @@ msgstr "Identifiant :"
 
 #: classes/Handler_Public.php:513
 msgid "Email:"
-msgstr "Adresse mail :"
+msgstr "Adresse courriel :"
 
 #: classes/Handler_Public.php:521
 #, php-format
@@ -362,7 +362,7 @@ msgstr "[tt-rss] Demande de réinitialisation de mot de passe"
 
 #: classes/Handler_Public.php:590
 msgid "Sorry, login and email combination not found."
-msgstr "Désolé, ce couple identifiant et mail n’a pas été trouvé."
+msgstr "Désolé, ce couple identifiant et courriel n’a pas été trouvé."
 
 #: classes/Handler_Public.php:610
 msgid "Your access level is insufficient to run this script."
@@ -533,7 +533,7 @@ msgstr "Ouvrir l’article précédent (défiler vers le haut en mode combiné)"
 
 #: classes/RPC.php:499
 msgid "Scroll headlines by one page down"
-msgstr "Fait défiler les titres d’une page vers le bas"
+msgstr "Faire défiler les titres d’une page vers le bas"
 
 #: classes/RPC.php:500
 msgid "Scroll headlines by one page up"
@@ -617,7 +617,7 @@ msgstr "Sélectionner l’article sous le curseur"
 
 #: classes/RPC.php:520
 msgid "Email article"
-msgstr "Envoyer l’article par mail"
+msgstr "Envoyer l’article par courriel"
 
 #: classes/RPC.php:521
 msgid "Close/collapse article"
@@ -629,11 +629,11 @@ msgstr "Basculer le développement (mode combiné)"
 
 #: classes/RPC.php:524
 msgid "Toggle full article text via Readability"
-msgstr "Bascule vers l’affichage du texte complet en utilisant Readability"
+msgstr "Basculer vers l’affichage du texte complet en utilisant Readability"
 
 #: classes/RPC.php:525
 msgid "Article selection"
-msgstr "Sélection d’article"
+msgstr "Sélection d’articles"
 
 #: classes/RPC.php:526
 msgid "Select all articles"
@@ -669,7 +669,7 @@ msgstr "Actualiser le flux actif"
 
 #: classes/RPC.php:534
 msgid "Un/hide read feeds"
-msgstr "Masquer/afficher les flux lus"
+msgstr "Afficher/masquer les flux lus"
 
 #: classes/RPC.php:535 classes/Pref_Feeds.php:952 js/CommonDialogs.js:34
 msgid "Subscribe to feed"
@@ -682,7 +682,7 @@ msgstr "Modifier le flux"
 
 #: classes/RPC.php:538
 msgid "Reverse headlines"
-msgstr "Inverser l’ordre des en-têtes"
+msgstr "Inverser l’ordre des titres"
 
 #: classes/RPC.php:539
 msgid "Toggle headline grouping"
@@ -801,7 +801,7 @@ msgstr "Créer l’utilisateur"
 
 #: classes/Pref_Users.php:252 js/PrefFeedTree.js:457 js/CommonDialogs.js:90
 msgid "Login"
-msgstr "Se connecter"
+msgstr "Identifiant"
 
 #: classes/Pref_Users.php:253
 msgid "Access level"
@@ -857,7 +857,7 @@ msgstr "(%d jours)"
 
 #: classes/Pref_Feeds.php:627 js/CommonDialogs.js:511
 msgid "Include in e-mail digest"
-msgstr "Inclure dans la synthèse quotidienne par courrier électronique"
+msgstr "Inclure dans la synthèse quotidienne par courriel"
 
 #: classes/Pref_Feeds.php:628 js/CommonDialogs.js:512
 msgid "Always display image attachments"
@@ -891,7 +891,7 @@ msgstr "Langue :"
 
 #: classes/Pref_Feeds.php:663 js/CommonDialogs.js:67 js/CommonDialogs.js:577
 msgid "Update interval:"
-msgstr "Intervalle :"
+msgstr "Fréquence de mise à jour :"
 
 #: classes/Pref_Feeds.php:670 js/CommonDialogs.js:583
 msgid "Article purging:"
@@ -954,7 +954,7 @@ msgstr "Ajouter une catégorie"
 
 #: classes/Pref_Feeds.php:973 classes/Pref_Prefs.php:411 js/PrefHelpers.js:227
 msgid "Remove selected"
-msgstr "Supprimer les flux sélectionnés"
+msgstr "Supprimer les éléments sélectionnés"
 
 #: classes/Pref_Feeds.php:1008
 msgid "Choose file..."
@@ -1121,7 +1121,7 @@ msgstr "Ajout du filtre %s…"
 #: classes/OPML.php:571
 #, php-format
 msgid "Processing category: %s"
-msgstr "Placer dans la catégorie : %s"
+msgstr "Traitement de la catégorie : %s"
 
 #: classes/OPML.php:613
 #, php-format
@@ -1158,7 +1158,8 @@ msgstr "%d min"
 #, php-format
 msgid "Unknown error while sending mail. Hooks tried: %d."
 msgstr ""
-"Erreur inconnue lors de l’envoi du courriel. Inspecteurs de contenu : %d."
+"Erreur inconnue lors de l’envoi du courriel. Inspecteurs de contenu essayés :"
+" %d."
 
 #: classes/Pref_Prefs.php:57
 msgid "Articles"
@@ -1199,7 +1200,7 @@ msgstr "Marquer comme lu lors du défilement"
 
 #: classes/Pref_Prefs.php:100
 msgid "Mark articles as read as you scroll past them"
-msgstr "Marque les articles comme lus après les avoir faits défiler en entier"
+msgstr "Marquer les articles comme lus après les avoir faits défiler en entier"
 
 #: classes/Pref_Prefs.php:101
 msgid "Always expand articles"
@@ -1212,7 +1213,7 @@ msgstr "Mode combiné"
 #: classes/Pref_Prefs.php:102
 msgid "Show flat list of articles instead of separate panels"
 msgstr ""
-"Affiche tous les articles en enfilade, au lieu d'utiliser des panneaux "
+"Afficher tous les articles en enfilade, au lieu d'utiliser des panneaux "
 "séparés"
 
 #: classes/Pref_Prefs.php:103
@@ -1275,7 +1276,7 @@ msgstr "Toujours afficher les flux spéciaux"
 
 #: classes/Pref_Prefs.php:112
 msgid "While hiding read feeds"
-msgstr "Lorsque les flux lus sont masqués"
+msgstr "Tout en cachant les flux lus"
 
 #: classes/Pref_Prefs.php:113
 msgid "Long date format"
@@ -1286,8 +1287,8 @@ msgid ""
 "Syntax is identical to PHP <a href='http://php.net/manual/function.date."
 "php'>date()</a> function."
 msgstr ""
-"La syntaxe est identique à la fonction PHP <a href='http://php.net/manual/"
-"function.date.php'>date()</a>."
+"La syntaxe est identique à la fonction PHP <a href='https://www.php.net/"
+"manual/fr/function.date.php'>date()</a>."
 
 #: classes/Pref_Prefs.php:114
 msgid "Automatically show next feed"
@@ -1315,7 +1316,7 @@ msgstr "Format de date court"
 
 #: classes/Pref_Prefs.php:118
 msgid "Show content preview in headlines"
-msgstr "Afficher l’aperçu du contenu avec les en-têtes"
+msgstr "Afficher l’aperçu du contenu avec les titres"
 
 #: classes/Pref_Prefs.php:119
 msgid "SSL client certificate"
@@ -1331,7 +1332,7 @@ msgstr "Grouper par flux"
 
 #: classes/Pref_Prefs.php:122
 msgid "Group multiple-feed output by originating feed"
-msgstr "Regroupe les flux multiples selon le flux d’origine"
+msgstr "Regrouper les flux multiples selon le flux d’origine"
 
 #: classes/Pref_Prefs.php:123
 msgid "Language"
@@ -1375,11 +1376,11 @@ msgstr "Sur les écrans larges, si toujours étendu"
 
 #: classes/Pref_Prefs.php:129
 msgid "Required score"
-msgstr "Score requise"
+msgstr "Score requis"
 
 #: classes/Pref_Prefs.php:129
 msgid "Include articles with this or above score"
-msgstr "Inclure des articles avec un score égal ou supérieur"
+msgstr "Inclure les articles avec un score égal ou supérieur"
 
 #: classes/Pref_Prefs.php:229
 msgid "The configuration was saved."
@@ -1420,7 +1421,7 @@ msgid ""
 "ability to set passwords."
 msgstr ""
 "Le module d’authentification utilisé pour cette session (<b>%s</b>) ne "
-"permet pas de changer de définir un mot de passe."
+"permet pas de définir un mot de passe."
 
 #: classes/Pref_Prefs.php:405
 msgid "Generate password"
@@ -1460,11 +1461,11 @@ msgstr "Mots de passe d’applications"
 
 #: classes/Pref_Prefs.php:539
 msgid "Authenticator (OTP)"
-msgstr "Authenticator (Mot de passe à usage unique)"
+msgstr "Authenticator (mot de passe à usage unique)"
 
 #: classes/Pref_Prefs.php:550
 msgid "Some preferences are only available in default profile."
-msgstr "Certaines options ne sont disponibles que dans le profil par défaut."
+msgstr "Certaines options sont seulement disponibles dans le profil par défaut."
 
 #: classes/Pref_Prefs.php:639
 msgid "default"
@@ -1628,7 +1629,7 @@ msgstr "Nom de tâche"
 
 #: classes/Pref_System.php:36
 msgid "Last executed"
-msgstr "Dernière exécuté"
+msgstr "Dernière exécution"
 
 #: classes/Pref_System.php:37
 msgid "Duration (seconds)"
@@ -1827,7 +1828,7 @@ msgstr ""
 
 #: plugins/bookmarklets/init.php:130
 msgid "Multiple feed URLs found:"
-msgstr "Plusieurs flux trouvés :"
+msgstr "Plusieurs URL de flux trouvés :"
 
 #: plugins/bookmarklets/init.php:138
 msgid "Subscribe to selected feed"
@@ -2143,7 +2144,7 @@ msgstr "Raccourcis clavier"
 
 #: js/App.js:506
 msgid "Update daemon is not running."
-msgstr "Le service de mise à jour n’est pas démarré."
+msgstr "Le service de mise à jour n’est pas actif."
 
 #: js/App.js:519
 msgid "Update daemon is not updating feeds."
@@ -2242,7 +2243,7 @@ msgstr "Cloner des filtres sélectionnés ?"
 
 #: js/PrefFilterTree.js:191
 msgid "Cloning selected filters..."
-msgstr "Cloner des filtres sélectionnés…"
+msgstr "Clonage des filtres sélectionnés…"
 
 #: js/CommonFilters.js:14
 msgid "Edit filter"
@@ -2264,7 +2265,7 @@ msgstr "Articles correspondants à ce filtre :"
 #: js/CommonFilters.js:70
 #, java-printf-format, javascript-format
 msgid "Found at least %d articles matching this filter:"
-msgstr "Du moins %d articles correspondent à ce filtre :"
+msgstr "Au moins %d articles correspondent à ce filtre :"
 
 #: js/CommonFilters.js:77
 msgid "Error while trying to get filter test results."
@@ -2342,7 +2343,7 @@ msgstr "URL de l’article :"
 
 #: js/Article.js:132
 msgid "No URL could be displayed for this article."
-msgstr "Aucune URL ne peut-être affiché pour cet article."
+msgstr "Aucune URL ne peut-être affichée pour cet article."
 
 #: js/Article.js:152
 msgid "no tags"
@@ -2364,7 +2365,7 @@ msgstr "Étiquettes des articles"
 
 #: js/Article.js:359
 msgid "Tags for this article (separated by commas):"
-msgstr "Tags pour cet article (séparés par des virgules) :"
+msgstr "Tags pour cet article (séparés par des virgules) :"
 
 #: js/Article.js:379
 msgid "Saving article tags..."
@@ -2385,7 +2386,7 @@ msgid ""
 msgstr ""
 "Erreur lors de la lecture de la réponse. Cela peut être dû à une expiration "
 "de la requête au serveur et/ou à des problèmes du réseau. La réponse du "
-"serveur a été tracé dans la console du navigateur."
+"serveur a été tracée dans la console du navigateur."
 
 #: js/CommonDialogs.js:155
 msgid "You are already subscribed to this feed."
@@ -2772,7 +2773,7 @@ msgstr "Mise à jour en cours, veuillez patienter…"
 
 #: js/PrefHelpers.js:680
 msgid "Update done."
-msgstr "Mis à jour terminée."
+msgstr "Mise à jour terminée."
 
 #: js/PrefHelpers.js:704
 msgid "No updates available"
@@ -2985,7 +2986,7 @@ msgstr "Actions effectuées"
 
 #: js/Article.js:205
 msgid "Attachments"
-msgstr "Fichier attaché"
+msgstr "Fichiers attachés"
 
 #: js/Article.js:317 js/Headlines.js:554
 msgid "Edit tags for this article"
@@ -3046,7 +3047,7 @@ msgstr "Étaler sur toutes les colonnes"
 
 #: js/Headlines.js:666
 msgid "Invert"
-msgstr "Inverse"
+msgstr "Inverser"
 
 #: js/Headlines.js:674
 msgid "Set score"
@@ -3061,8 +3062,8 @@ msgid ""
 "Could not update headlines (invalid object received - see error console for "
 "details)"
 msgstr ""
-"Impossible de mettre à jour les en-têtes (objet reçu invalide − voir la "
-"console d’erreur pour plus de détails)"
+"Impossible de mettre à jour les titres "
+"(objet reçu invalide − voir la console d’erreur pour plus de détails)"
 
 #: js/PrefHelpers.js:231
 msgid "Activate"

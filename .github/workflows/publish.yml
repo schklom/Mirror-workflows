@@ -65,7 +65,7 @@ jobs:
 
     - name: Get commit timestamp
       run: |
-        COMMIT_TIMESTAMP="$(git show -s --format=%ct HEAD)"
+        COMMIT_TIMESTAMP="$(git show -s --format=%cI HEAD)"
         echo "COMMIT_TIMESTAMP=$COMMIT_TIMESTAMP" >> "$GITHUB_ENV"
 
     - name: Get commit short SHA

@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-05-04 13:44+0300\n"
-"PO-Revision-Date: 2025-10-28 13:04+0000\n"
+"PO-Revision-Date: 2025-11-01 10:51+0000\n"
 "Last-Translator: LaurentC <laurentc@users.noreply.hosted.weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/tt-rss/webui/fr/>"
 "\n"
@@ -257,7 +257,7 @@ msgstr "Basculer le mode écran large"
 
 #: index.php:268
 msgid "Toggle expand all articles"
-msgstr "Basculer le développement de tous les articles"
+msgstr "Développer/réduire tous les articles"
 
 #: index.php:269
 msgid "Other actions:"
@@ -569,15 +569,15 @@ msgstr "Article"
 
 #: classes/RPC.php:508 js/Headlines.js:1447 js/Headlines.js:670
 msgid "Toggle starred"
-msgstr "Ajouter/enlever des favoris"
+msgstr "Inverser le statut Favori"
 
 #: classes/RPC.php:509 js/Headlines.js:1459 js/Headlines.js:671
 msgid "Toggle published"
-msgstr "Basculer la publication (publié/non publié)"
+msgstr "Inverser le statut Publié"
 
 #: classes/RPC.php:510 js/Headlines.js:1434 js/Headlines.js:669
 msgid "Toggle unread"
-msgstr "Basculer l'état de lecture (lu/non lu)"
+msgstr "Inverser le statut Lu"
 
 #: classes/RPC.php:511
 msgid "Edit tags"
@@ -686,7 +686,7 @@ msgstr "Inverser l’ordre des titres"
 
 #: classes/RPC.php:539
 msgid "Toggle headline grouping"
-msgstr "(Dé)grouper les titres"
+msgstr "Grouper/séparer les titres"
 
 #: classes/RPC.php:540
 msgid "Toggle grid view"
@@ -706,7 +706,7 @@ msgstr "Marquer tous les flux comme lus"
 
 #: classes/RPC.php:544
 msgid "Un/collapse current category"
-msgstr "Étendre/contracter la catégorie"
+msgstr "Développer/réduire la catégorie courante"
 
 #: classes/RPC.php:545
 msgid "Toggle auto expand in combined mode"
@@ -738,7 +738,7 @@ msgstr "Créer une étiquette"
 
 #: classes/RPC.php:557
 msgid "Un/collapse sidebar"
-msgstr "Ouvrir/fermer la barre latérale"
+msgstr "Afficher/masquer la barre latérale"
 
 #: classes/RPC.php:558
 msgid "Show help dialog"
@@ -883,7 +883,7 @@ msgstr "Général"
 #: classes/Pref_Feeds.php:646 js/PrefFeedTree.js:447 js/CommonDialogs.js:61
 #: js/CommonDialogs.js:551
 msgid "Place in category:"
-msgstr "Placer dans la catégorie :"
+msgstr "Placer en catégorie :"
 
 #: classes/Pref_Feeds.php:653 js/Feeds.js:650 js/CommonDialogs.js:567
 msgid "Language:"
@@ -1007,7 +1007,7 @@ msgstr "Articles archivés"
 
 #: classes/Feeds.php:313
 msgid "Collapse article"
-msgstr "Fermer l’article"
+msgstr "Contracter l’article"
 
 #: classes/Feeds.php:332
 #, php-format
@@ -1192,7 +1192,7 @@ msgstr "Langue par défaut"
 
 #: classes/Pref_Prefs.php:99
 msgid "Used for full-text search"
-msgstr "Utile pour la recherche sur l’intégralité du texte"
+msgstr "Utile pour générer les variations du texte cherché"
 
 #: classes/Pref_Prefs.php:100
 msgid "Mark read on scroll"
@@ -1218,11 +1218,11 @@ msgstr ""
 
 #: classes/Pref_Prefs.php:103
 msgid "Confirm marking feeds as read"
-msgstr "Demander confirmation pour marquer un flux comme lu"
+msgstr "Confirmer pour marquer un flux comme lu"
 
 #: classes/Pref_Prefs.php:104
 msgid "Default update interval"
-msgstr "Fréquence de mise à jour par défaut"
+msgstr "Fréquence par défaut"
 
 #: classes/Pref_Prefs.php:105
 msgid "Mark sent articles as read"
@@ -1287,8 +1287,8 @@ msgid ""
 "Syntax is identical to PHP <a href='http://php.net/manual/function.date."
 "php'>date()</a> function."
 msgstr ""
-"La syntaxe est identique à la fonction PHP <a href='https://www.php.net/"
-"manual/fr/function.date.php'>date()</a>."
+"La syntaxe est identique à la fonction PHP <a href='http://php.net/manual/"
+"function.date.php'>date()</a>."
 
 #: classes/Pref_Prefs.php:114
 msgid "Automatically show next feed"
@@ -2974,7 +2974,7 @@ msgstr "Au moins une correspondance"
 
 #: js/CommonFilters.js:416
 msgid "Inverse matching"
-msgstr "Correspondance inverse"
+msgstr "Inverser la correspondance"
 
 #: js/CommonFilters.js:434
 msgid "Match"

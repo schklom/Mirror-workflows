@@ -6,7 +6,7 @@ html.is-mobile body {
   background: #fff;
   line-height: 1.7;
   overflow-x: hidden;
-  font-size: 1.58rem !important;
+  font-size: 1.4rem !important;
   color: #111 !important;
 }
 
@@ -97,7 +97,7 @@ html.is-mobile .mw-parser-output {
   max-width: 100% !important;
   overflow-wrap: break-word;
   box-sizing: border-box;
-  font-size: 1.58rem !important;
+  font-size: 1.4rem !important;
   line-height: 1.7 !important;
   color: #111 !important;
 }
@@ -129,7 +129,7 @@ html.is-mobile #p-lang a {
   border: 1px solid rgba(0,0,0,0.1);
   text-decoration: none;
   color: #000;
-  font-size: 1.35rem !important;
+  font-size: 1.25rem !important;
 }
 
 html.is-mobile table {
@@ -141,7 +141,7 @@ html.is-mobile th,
 html.is-mobile td {
   border-bottom: 1px solid rgba(0,0,0,0.05);
   padding: 9px 12px;
-  font-size: 1.58rem !important;
+  font-size: 1.4rem !important;
   line-height: 1.7 !important;
 }
 html.is-mobile .thumb img {
@@ -152,7 +152,7 @@ html.is-mobile .thumb img {
 }
 
 html.is-mobile #footer {
-  font-size: 1.43rem;
+  font-size: 1.26rem;
   padding: 24px;
   text-align: center;
   color: #444;
@@ -161,7 +161,7 @@ html.is-mobile #footer {
 html.is-mobile .firstHeading {
   margin-top: 1em !important;
   padding-top: 0.5em !important;
-  font-size: 1.9rem !important;
+  font-size: 1.7rem !important;
 }
 
 html.is-mobile table.infobox,
@@ -190,7 +190,7 @@ html.is-mobile table.infobox td {
   padding: 12px 14px !important;
   border: none !important;
   box-sizing: border-box !important;
-  font-size: 1.58rem !important;
+  font-size: 1.4rem !important;
   line-height: 1.7 !important;
   color: #111 !important;
 }
@@ -199,7 +199,7 @@ html.is-mobile table.infobox caption {
   caption-side: top !important;
   text-align: center !important;
   font-weight: 700 !important;
-  font-size: 1.65rem !important;
+  font-size: 1.5rem !important;
   padding: 9px 14px !important;
   background: #fafafa !important;
 }

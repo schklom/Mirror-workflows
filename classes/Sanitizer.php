@@ -4,42 +4,38 @@ class Sanitizer {
 	 * @param array<int, string> $allowed_elements
 	 * @param array<int, string> $disallowed_attributes
 	 */
-	private static function strip_harmful_tags(DOMDocument $doc, array $allowed_elements, $disallowed_attributes): DOMDocument {
+	private static function strip_harmful_tags(DOMDocument $doc, array $allowed_elements, array $disallowed_attributes): DOMDocument {
+		$allowed_elements = array_map(strtolower(...), $allowed_elements);
+		$disallowed_attributes = array_map(strtolower(...), $disallowed_attributes);
+
 		$xpath = new DOMXPath($doc);
 		$entries = $xpath->query('//*');
 
 		foreach ($entries as $entry) {
 			/** @var DOMElement $entry */
+			$element_lower = strtolower($entry->nodeName);
 
-			if (!in_array($entry->nodeName, $allowed_elements)) {
+			if (!in_array($element_lower, $allowed_elements)) {
 				$entry->parentNode->removeChild($entry);
+				continue;
 			}
 
 			if ($entry->hasAttributes()) {
 				$attrs_to_remove = [];
 
 				foreach ($entry->attributes as $attr) {
+					$attr_lower = strtolower($attr->nodeName);
 
-					if (str_starts_with($attr->nodeName, 'on')) {
-						array_push($attrs_to_remove, $attr);
-					}
-
-					if (str_starts_with($attr->nodeName, 'data-')) {
-						array_push($attrs_to_remove, $attr);
-					}
-
-					if ($attr->nodeName == 'href' && stripos($attr->value, 'javascript:') === 0) {
-						array_push($attrs_to_remove, $attr);
-					}
-
-					if (in_array($attr->nodeName, $disallowed_attributes)) {
-						array_push($attrs_to_remove, $attr);
+					if (str_starts_with($attr_lower, 'on')
+							|| str_starts_with($attr_lower, 'data-')
+							|| ($attr_lower == 'href' && str_starts_with(strtolower(mb_ereg_replace('^\s+', '', $attr->value)), 'javascript:'))
+							|| in_array($attr_lower, $disallowed_attributes)) {
+						$attrs_to_remove[] = $attr;
 					}
 				}
 
-				foreach ($attrs_to_remove as $attr) {
+				foreach ($attrs_to_remove as $attr)
 					$entry->removeAttributeNode($attr);
-				}
 			}
 		}
 

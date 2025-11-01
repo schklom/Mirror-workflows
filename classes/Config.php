@@ -519,99 +519,81 @@ class Config {
 
 			it is a bit of a hack, maybe ORM should be initialized somewhere else (functions.php?)
 		*/
-
 		$pdo = Db::pdo();
 
 		$errors = [];
 
 		if (!str_contains(self::get(Config::PLUGINS), "auth_")) {
-			array_push($errors, "Please enable at least one authentication module via PLUGINS");
+			$errors[] = 'Please enable at least one authentication module via PLUGINS';
 		}
 
 		/* we assume our dependencies are sane under docker, so some sanity checks are skipped.
 			this also allows tt-rss process to run under root if requested (I'm using this for development
 			under podman because of uidmapping issues with rootless containers, don't use in production -fox) */
-		if (!getenv("container")) {
-			if (function_exists('posix_getuid') && posix_getuid() == 0) {
-				array_push($errors, "Please don't run this script as root.");
-			}
+		if (!getenv('container')) {
+			if (function_exists('posix_getuid') && posix_getuid() == 0)
+				$errors[] = "Please don't run this script as root.";
 
 			if (version_compare(PHP_VERSION, '8.2.0', '<')) {
-				array_push($errors, "PHP version 8.2.0 or newer required. You're using " . PHP_VERSION . ".");
+				$errors[] = "PHP version 8.2.0 or newer required. You're using " . PHP_VERSION . '.';
 			}
 
-			if (!class_exists("UConverter")) {
-				array_push($errors, "PHP UConverter class is missing, it's provided by the Internationalization (intl) module.");
-			}
+			if (!class_exists('UConverter'))
+				$errors[] = "PHP UConverter class is missing, it's provided by the Internationalization (intl) module.";
 
-			if (!function_exists("curl_init") && !ini_get("allow_url_fopen")) {
-				array_push($errors, "PHP configuration option allow_url_fopen is disabled, and CURL functions are not present. Either enable allow_url_fopen or install PHP extension for CURL.");
-			}
+			if (!function_exists('curl_init') && !ini_get('allow_url_fopen'))
+				$errors[] = 'PHP configuration option allow_url_fopen is disabled, and CURL functions are not present. Either enable allow_url_fopen or install PHP extension for CURL.';
 
-			if (!function_exists("json_encode")) {
-				array_push($errors, "PHP support for JSON is required, but was not found.");
-			}
+			if (!function_exists('json_encode'))
+				$errors[] = 'PHP support for JSON is required, but was not found.';
 
-			if (!function_exists("flock")) {
-				array_push($errors, "PHP support for flock() function is required.");
-			}
+			if (!function_exists('flock'))
+				$errors[] = 'PHP support for flock() function is required.';
 
-			if (!class_exists("PDO")) {
-				array_push($errors, "PHP support for PDO is required but was not found.");
-			}
+			if (!class_exists('PDO'))
+				$errors[] = 'PHP support for PDO is required but was not found.';
 
-			if (!function_exists("mb_strlen")) {
-				array_push($errors, "PHP support for mbstring functions is required but was not found.");
-			}
+			if (!function_exists('mb_strlen'))
+				$errors[] = 'PHP support for mbstring functions is required but was not found.';
 
-			if (!function_exists("hash")) {
-				array_push($errors, "PHP support for hash() function is required but was not found.");
-			}
+			if (!function_exists('hash'))
+				$errors[] = 'PHP support for hash() function is required but was not found.';
 
-			if (ini_get("safe_mode")) {
-				array_push($errors, "PHP safe mode setting is obsolete and not supported by tt-rss.");
-			}
+			if (ini_get('safe_mode'))
+				$errors[] = 'PHP safe mode setting is obsolete and not supported by tt-rss.';
 
-			if (!function_exists("mime_content_type")) {
-				array_push($errors, "PHP function mime_content_type() is missing, try enabling fileinfo module.");
-			}
+			if (!function_exists('mime_content_type'))
+				$errors[] = 'PHP function mime_content_type() is missing, try enabling fileinfo module.';
 
-			if (!class_exists("DOMDocument")) {
-				array_push($errors, "PHP support for DOMDocument is required, but was not found.");
-			}
+			if (!class_exists('DOMDocument'))
+				$errors[] = 'PHP support for DOMDocument is required, but was not found.';
 		}
 
-		if (!is_writable(self::get(Config::CACHE_DIR) . "/images")) {
-			array_push($errors, "Image cache is not writable (chmod -R 777 ".self::get(Config::CACHE_DIR)."/images)");
-		}
+		if (!is_writable(self::get(Config::CACHE_DIR) . '/images'))
+			$errors[] = 'Image cache is not writable (chmod -R 777 ' . self::get(Config::CACHE_DIR) . '/images)';
 
-		if (!is_writable(self::get(Config::CACHE_DIR) . "/upload")) {
-			array_push($errors, "Upload cache is not writable (chmod -R 777 ".self::get(Config::CACHE_DIR)."/upload)");
-		}
+		if (!is_writable(self::get(Config::CACHE_DIR) . '/upload'))
+			$errors[] = 'Upload cache is not writable (chmod -R 777 ' . self::get(Config::CACHE_DIR) . '/upload)';
 
-		if (!is_writable(self::get(Config::CACHE_DIR) . "/export")) {
-			array_push($errors, "Data export cache is not writable (chmod -R 777 ".self::get(Config::CACHE_DIR)."/export)");
-		}
+		if (!is_writable(self::get(Config::CACHE_DIR) . '/export'))
+			$errors[] = 'Data export cache is not writable (chmod -R 777 ' . self::get(Config::CACHE_DIR) . '/export)';
 
-		if (!is_writable(self::get(Config::LOCK_DIRECTORY))) {
-			array_push($errors, "LOCK_DIRECTORY is not writable (chmod -R 777 ".self::get(Config::LOCK_DIRECTORY).").\n");
-		}
+		if (!is_writable(self::get(Config::LOCK_DIRECTORY)))
+			$errors[] = 'LOCK_DIRECTORY is not writable (chmod -R 777 ' . self::get(Config::LOCK_DIRECTORY) . ').';
 
 		// ttrss_users won't be there on initial startup (before migrations are done)
 		if (!Config::is_migration_needed() && self::get(Config::SINGLE_USER_MODE)) {
-			if (UserHelper::get_login_by_id(1) != "admin") {
-				array_push($errors, "SINGLE_USER_MODE is enabled but default admin account (ID: 1) is not found.");
-			}
+			if (UserHelper::get_login_by_id(1) != 'admin')
+				$errors[] = 'SINGLE_USER_MODE is enabled but default admin account (ID: 1) is not found.';
 		}
 
 		// skip check for CLI scripts so that we could install database schema if it is missing.
-		if (php_sapi_name() != "cli") {
-			if (self::get_schema_version() < 0) {
-				array_push($errors, "Base database schema is missing. Either load it manually or perform a migration (<code>update.php --update-schema</code>)");
-			}
+		if (php_sapi_name() != 'cli') {
+			if (self::get_schema_version() < 0)
+				$errors[] = 'Base database schema is missing. Either load it manually or perform a migration (<code>update.php --update-schema</code>)';
 		}
 
-		if (count($errors) > 0 && php_sapi_name() != "cli") {
+		if (count($errors) > 0 && php_sapi_name() != 'cli') {
 			http_response_code(503); ?>
 
 			<!DOCTYPE html>

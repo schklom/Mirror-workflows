@@ -58,16 +58,17 @@ class Counters {
 	 * @return array<int, array{id: int, kind: 'cat', counter: int, markedcounter?: int, publishedcounter?: int}>
 	 */
 	private static function get_cats(?array $cat_ids = null): array {
-		$ret = [];
+		$pdo = Db::pdo();
 
 		/* Labels category */
 
-		$cv = ["id" => Feeds::CATEGORY_LABELS, "kind" => "cat",
-			"counter" => Feeds::_get_cat_unread(Feeds::CATEGORY_LABELS)];
-
-		array_push($ret, $cv);
-
-		$pdo = Db::pdo();
+		$ret = [
+			[
+				'id' => Feeds::CATEGORY_LABELS,
+				'kind' => 'cat',
+				'counter' => Feeds::_get_cat_unread(Feeds::CATEGORY_LABELS),
+			],
+		];
 
 		if (is_array($cat_ids)) {
 			if (count($cat_ids) == 0)
@@ -134,15 +135,13 @@ class Counters {
 				$child_published_counter = 0;
 			}
 
-			$cv = [
-				"id" => (int)$line["id"],
-				"kind" => "cat",
-				"markedcounter" => (int) $line["count_marked"] + $child_marked_counter,
-				"publishedcounter" => (int) $line["count_published"] + $child_published_counter,
-				"counter" => (int) $line["count"] + $child_counter
+			$ret[] = [
+				'id' => (int) $line['id'],
+				'kind' => 'cat',
+				'markedcounter' => (int) $line['count_marked'] + $child_marked_counter,
+				'publishedcounter' => (int) $line['count_published'] + $child_published_counter,
+				'counter' => (int) $line['count'] + $child_counter,
 			];
-
-			array_push($ret, $cv);
 		}
 
 		return $ret;
@@ -194,23 +193,10 @@ class Counters {
 	 * @return array<int, array{id: string, counter: int}>
 	 */
 	private static function get_global(): array {
-		$ret = [
-			[
-				"id" => "global-unread",
-				"counter" => (int) Feeds::_get_global_unread()
-			]
+		return [
+			['id' => 'global-unread', 'counter' => (int) Feeds::_get_global_unread()],
+			['id' => 'subscribed-feeds', 'counter' => ORM::for_table('ttrss_feeds')->where('owner_uid', $_SESSION['uid'])->count()],
 		];
-
-		$subcribed_feeds = ORM::for_table('ttrss_feeds')
-			->where('owner_uid', $_SESSION['uid'])
-			->count();
-
-		array_push($ret, [
-			"id" => "subscribed-feeds",
-			"counter" => $subcribed_feeds
-		]);
-
-		return $ret;
 	}
 
 	/**
@@ -241,7 +227,7 @@ class Counters {
 			if ($feed_id == Feeds::FEED_PUBLISHED)
 				$cv["publishedcounter"] = $auxctr;
 
-			array_push($ret, $cv);
+			$ret[] = $cv;
 		}
 
 		foreach (PluginHost::getInstance()->get_feeds(Feeds::CATEGORY_SPECIAL) as $feed) {
@@ -258,7 +244,7 @@ class Counters {
 			if (method_exists($feed['sender'], 'get_total'))
 				$cv["auxcounter"] = $feed['sender']->get_total($feed['id']);
 
-			array_push($ret, $cv);
+			$ret[] = $cv;
 		}
 
 		return $ret;
@@ -319,7 +305,7 @@ class Counters {
 				"description" => $line["caption"]
 			];
 
-			array_push($ret, $cv);
+			$ret[] = $cv;
 		}
 
 		return $ret;

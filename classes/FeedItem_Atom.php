@@ -159,15 +159,14 @@ class FeedItem_Atom extends FeedItem_Common {
 		$cats = [];
 
 		foreach ($categories as $cat) {
-			if ($cat->hasAttribute("term"))
-				array_push($cats, $cat->getAttribute("term"));
+			if ($cat->hasAttribute('term'))
+				$cats[] = $cat->getAttribute('term');
 		}
 
 		$categories = $this->xpath->query("dc:subject", $this->elem);
 
-		foreach ($categories as $cat) {
-			array_push($cats, $cat->nodeValue);
-		}
+		foreach ($categories as $cat)
+			$cats[] = $cat->nodeValue;
 
 		return $this->normalize_categories($cats);
 	}
@@ -194,7 +193,7 @@ class FeedItem_Atom extends FeedItem_Common {
 						$enc->link = UrlHelper::rewrite_relative($base, $enc->link);
 					}
 
-					array_push($encs, $enc);
+					$encs[] = $enc;
 				}
 			}
 		}

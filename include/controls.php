@@ -4,20 +4,19 @@
 	/**
 	 * @param array<string, mixed> $attributes
 	 */
-   function attributes_to_string(array $attributes): string {
-      $rv = [];
+	function attributes_to_string(array $attributes): string {
+		$rv = [];
 
-      foreach ($attributes as $k => $v) {
+		foreach ($attributes as $k => $v) {
+			// special handling for "disabled"
+			if ($k === 'disabled' && !sql_bool_to_bool($v))
+				continue;
 
-         // special handling for "disabled"
-         if ($k === "disabled" && !sql_bool_to_bool($v))
-            continue;
+			$rv[] = $k . '="' . htmlspecialchars($v) . '"';
+		}
 
-         array_push($rv, "$k=\"" . htmlspecialchars($v) . "\"");
-      }
-
-      return implode(" ", $rv);
-   }
+		return implode(' ', $rv);
+	}
 
    // shortcut syntax (disabled)
    /* function pluginhandler_tags(\Plugin $plugin, string $method) {

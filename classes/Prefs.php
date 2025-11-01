@@ -204,11 +204,11 @@ class Prefs {
 			if (isset($this::_DEFAULTS[$const])) {
 				[$def_val, $type_hint] = $this::_DEFAULTS[$const];
 
-				array_push($rv, [
-					"pref_name" => $const,
-					"value" => $this->_get($const, $owner_uid, $profile_id),
-					"type_hint" => $type_hint,
-				]);
+				$rv[] = [
+					'pref_name' => $const,
+					'value' => $this->_get($const, $owner_uid, $profile_id),
+					'type_hint' => $type_hint,
+				];
 			}
 		}
 

@@ -50,13 +50,11 @@ class API extends Handler {
 	}
 
 	function getVersion(): bool {
-		$rv = ["version" => Config::get_version()];
-		return $this->_wrap(self::STATUS_OK, $rv);
+		return $this->_wrap(self::STATUS_OK, ['version' => Config::get_version()]);
 	}
 
 	function getApiLevel(): bool {
-		$rv = ["level" => self::API_LEVEL];
-		return $this->_wrap(self::STATUS_OK, $rv);
+		return $this->_wrap(self::STATUS_OK, ['level' => self::API_LEVEL]);
 	}
 
 	function login(): bool {
@@ -158,12 +156,12 @@ class API extends Handler {
 					$unread += Feeds::_get_cat_children_unread($category->id);
 
 				if ($unread || !$unread_only) {
-					array_push($cats, [
+					$cats[] = [
 						'id' => (int) $category->id,
 						'title' => $category->title,
 						'unread' => (int) $unread,
 						'order_id' => (int) $category->order_id,
-					]);
+					];
 				}
 			}
 		}
@@ -173,11 +171,11 @@ class API extends Handler {
 				$unread = Feeds::_get_counters($cat_id, true, true);
 
 				if ($unread || !$unread_only) {
-					array_push($cats, [
+					$cats[] = [
 						'id' => $cat_id,
 						'title' => Feeds::_get_cat_title($cat_id, $_SESSION['uid']),
 						'unread' => (int) $unread,
-					]);
+					];
 				}
 			}
 		}
@@ -359,7 +357,7 @@ class API extends Handler {
 
 				$article['content'] = DiskCache::rewrite_urls($article['content']);
 
-				array_push($articles, $article);
+				$articles[] = $article;
 			}
 
 			return $this->_wrap(self::STATUS_OK, $articles);
@@ -445,13 +443,13 @@ class API extends Handler {
 				}
 			}
 
-			array_push($rv, [
+			$rv[] = [
 				'id' => (int) Labels::label_to_feed_id($label->id),
 				'caption' => $label->caption,
 				'fg_color' => $label->fg_color,
 				'bg_color' => $label->bg_color,
 				'checked' => $checked,
-			]);
+			];
 		}
 
 		return $this->_wrap(self::STATUS_OK, $rv);
@@ -532,14 +530,12 @@ class API extends Handler {
 					$unread = $cv['counter'];
 
 					if ($unread || !$unread_only) {
-						$row = [
+						$feeds[] = [
 							'id' => (int) $cv['id'],
 							'title' => $cv['description'],
 							'unread' => $cv['counter'],
 							'cat_id' => Feeds::CATEGORY_LABELS,
 						];
-
-						array_push($feeds, $row);
 					}
 				}
 			}
@@ -554,14 +550,12 @@ class API extends Handler {
 				$unread = $feed['sender']->get_unread($feed['id']);
 
 				if ($unread || !$unread_only) {
-					$row = [
+					$feeds[] = [
 						'id' => PluginHost::pfeed_to_feed_id($feed['id']),
 						'title' => $feed['title'],
 						'unread' => $unread,
 						'cat_id' => Feeds::CATEGORY_SPECIAL,
 					];
-
-					array_push($feeds, $row);
 				}
 			}
 
@@ -573,14 +567,12 @@ class API extends Handler {
 					if ($unread || !$unread_only) {
 						$title = Feeds::_get_title($i, $_SESSION['uid']);
 
-						$row = [
+						$feeds[] = [
 							'id' => $i,
 							'title' => $title,
 							'unread' => $unread,
 							'cat_id' => Feeds::CATEGORY_SPECIAL,
 						];
-
-						array_push($feeds, $row);
 					}
 				}
 			}
@@ -599,14 +591,13 @@ class API extends Handler {
 						Feeds::_get_cat_children_unread($category->id);
 
 					if ($unread || !$unread_only) {
-						$row = [
+						$feeds[] = [
 							'id' => (int) $category->id,
 							'title' => $category->title,
 							'unread' => $unread,
 							'is_cat' => true,
 							'order_id' => (int) $category->order_id,
 						];
-						array_push($feeds, $row);
 					}
 				}
 			}
@@ -633,7 +624,7 @@ class API extends Handler {
 				$has_icon = Feeds::_has_icon($feed->id);
 
 				if ($unread || !$unread_only) {
-					$row = [
+					$feeds[] = [
 						'feed_url' => $feed->feed_url,
 						'title' => $feed->title,
 						'id' => (int) $feed->id,
@@ -645,8 +636,6 @@ class API extends Handler {
 						'last_error' => $feed->last_error,
 						'update_interval' => (int) $feed->update_interval,
 					];
-
-					array_push($feeds, $row);
 				}
 			}
 
@@ -848,7 +837,7 @@ class API extends Handler {
 						$headline_row["content"] = DiskCache::rewrite_urls($headline_row['content']);
 					}
 
-					array_push($headlines, $headline_row);
+					$headlines[] = $headline_row;
 				}
 			} else if ($result == -1) {
 				$headlines_header['first_id_changed'] = true;

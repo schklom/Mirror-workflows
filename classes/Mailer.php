@@ -43,9 +43,11 @@ class Mailer {
 			++$hooks_tried;
 		}
 
-		$headers = [ "From: $from_combined", "Content-Type: text/plain; charset=UTF-8" ];
-
-		$rc = mail($to_combined, $subject, $message, implode("\r\n", [...$headers, ...$additional_headers]));
+		$rc = mail($to_combined, $subject, $message, implode("\r\n", [
+			"From: $from_combined",
+			'Content-Type: text/plain; charset=UTF-8',
+			...$additional_headers,
+		]));
 
 		if (!$rc) {
 			$this->set_error(error_get_last()['message'] ?? T_sprintf("Unknown error while sending mail. Hooks tried: %d.", $hooks_tried));

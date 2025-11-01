@@ -137,9 +137,8 @@ class RSSUtils {
 		$res = $pdo->query($query);
 
 		$feeds_to_update = [];
-		while ($line = $res->fetch()) {
-			array_push($feeds_to_update, $line['feed_url']);
-		}
+		while ($line = $res->fetch())
+			$feeds_to_update[] = $line['feed_url'];
 
 		Debug::log(sprintf("Scheduled %d feeds to update...", count($feeds_to_update)));
 
@@ -188,8 +187,8 @@ class RSSUtils {
 					$tline["owner"], $tline["owner_uid"],
 					$tline["last_updated"] ?: "never"));
 
-				if (!in_array($tline["owner_uid"], $batch_owners))
-					array_push($batch_owners, $tline["owner_uid"]);
+				if (!in_array($tline['owner_uid'], $batch_owners))
+					$batch_owners[] = $tline['owner_uid'];
 
 				$fstarted = microtime(true);
 
@@ -801,7 +800,7 @@ class RSSUtils {
 						continue;
 					}
 
-					array_push($enclosures, $e);
+					$enclosures[] = $e;
 				}
 
 				$article = ["owner_uid" => $feed_obj->owner_uid, // read only
@@ -1134,7 +1133,7 @@ class RSSUtils {
 
 					// it's pointless to update base record we've just created
 					if (!$base_record_created) {
-						$sth = $pdo->prepare("UPDATE ttrss_entries
+						$sth = $pdo->prepare('UPDATE ttrss_entries
 							SET title = :title,
 								tsvector_combined = to_tsvector(:ts_lang, :ts_content),
 								content = :content,
@@ -1145,22 +1144,21 @@ class RSSUtils {
 								plugin_data = :plugin_data,
 								author = :author,
 								lang = :lang
-							WHERE id = :id");
+							WHERE id = :id');
 
-						$params = [":title" => $entry_title,
-							":content" => "$entry_content",
-							":content_hash" => $entry_current_hash,
-							":updated" => $entry_timestamp_fmt,
-							":num_comments" => (int)$num_comments,
-							":plugin_data" => $entry_plugin_data,
-							":author" => "$entry_author",
-							":lang" => $entry_language,
-							":id" => $ref_id,
-							":ts_lang" => $feed_language,
-							":ts_content" => mb_substr(strip_tags($entry_title) . " " . \Soundasleep\Html2Text::convert($entry_content), 0, 900000)
-							];
-
-						$sth->execute($params);
+						$sth->execute([
+							':title' => $entry_title,
+							':content' => "$entry_content",
+							':content_hash' => $entry_current_hash,
+							':updated' => $entry_timestamp_fmt,
+							':num_comments' => (int)$num_comments,
+							':plugin_data' => $entry_plugin_data,
+							':author' => "$entry_author",
+							':lang' => $entry_language,
+							':id' => $ref_id,
+							':ts_lang' => $feed_language,
+							':ts_content' => mb_substr(strip_tags($entry_title) . ' ' . \Soundasleep\Html2Text::convert($entry_content), 0, 900000),
+						]);
 					}
 
 					// update aux data
@@ -1492,7 +1490,7 @@ class RSSUtils {
 						break;
 					case "tag":
 						if (count($tags) == 0)
-							array_push($tags, ''); // allow matching if there are no tags
+							$tags[] = ''; // allow matching if there are no tags
 
 						foreach ($tags as $tag) {
 							if (@preg_match("/$reg_exp/iu", $tag, $regexp_matches)) {
@@ -1524,14 +1522,18 @@ class RSSUtils {
 			if ($filter_match) {
 				$last_processed_rule["regexp_matches"] = $regexp_matches;
 
-				if (is_array($matched_rules)) array_push($matched_rules, $last_processed_rule);
-				if (is_array($matched_filters)) array_push($matched_filters, $filter);
+				if (is_array($matched_rules))
+					$matched_rules[] = $last_processed_rule;
 
-				foreach ($filter["actions"] AS $action) {
-					array_push($matches, $action);
+				if (is_array($matched_filters))
+					$matched_filters[] = $filter;
+
+				foreach ($filter['actions'] as $action) {
+					$matches[] = $action;
 
 					// if Stop action encountered, perform no further processing
-					if (isset($action["type"]) && $action["type"] == "stop") return $matches;
+					if (isset($action['type']) && $action['type'] == 'stop')
+						return $matches;
 				}
 			}
 		}
@@ -1559,14 +1561,7 @@ class RSSUtils {
 	 * @return array<int, array{'type': string, 'param': string}> An array of filter actions of type $filter_action_type
 	 */
 	static function find_article_filter_actions(array $filter_actions, string $filter_action_type): array {
-		$results = [];
-
-		foreach ($filter_actions as $fa) {
-			if ($fa["type"] == $filter_action_type) {
-				array_push($results, $fa);
-			};
-		}
-		return $results;
+		return array_filter($filter_actions, fn(array $fa) => $fa['type'] === $filter_action_type);
 	}
 
 	/**
@@ -1863,11 +1858,11 @@ class RSSUtils {
 					$match_on = json_decode($rule_line["match_on"], true);
 
 					if (in_array("0", $match_on) || in_array($feed_id, $match_on) || count(array_intersect($check_cats_fullids, $match_on)) > 0) {
-						array_push($rules, [
+						$rules[] = [
 							'reg_exp' => $rule_line['reg_exp'],
 							'type' => $rule_line['type_name'],
 							'inverse' => sql_bool_to_bool($rule_line['inverse']),
-						]);
+						];
 					} else if (!$match_any_rule) {
 						// this filter contains a rule that doesn't match to this feed/category combination
 						// thus filter has to be rejected
@@ -1877,11 +1872,11 @@ class RSSUtils {
 					}
 
 				} else {
-					array_push($rules, [
+					$rules[] = [
 						'reg_exp' => $rule_line['reg_exp'],
 						'type' => $rule_line['type_name'],
 						'inverse' => sql_bool_to_bool($rule_line['inverse']),
-					]);
+					];
 				}
 			}
 
@@ -1894,21 +1889,21 @@ class RSSUtils {
 				$sth2->execute([$filter_id]);
 
 				while ($action_line = $sth2->fetch()) {
-					array_push($actions, [
+					$actions[] = [
 						'type' => $action_line['type_name'],
 						'param' => $action_line['action_param'],
-					]);
+					];
 				}
 			}
 
 			if (count($rules) > 0 && count($actions) > 0) {
-				array_push($filters, [
+				$filters[] = [
 					'id' => $filter_id,
 					'match_any_rule' => sql_bool_to_bool($line['match_any_rule']),
 					'inverse' => sql_bool_to_bool($line['inverse']),
 					'rules' => $rules,
 					'actions' => $actions,
-				]);
+				];
 			}
 		}
 
@@ -1965,16 +1960,16 @@ class RSSUtils {
 					$favicon_url = UrlHelper::rewrite_relative($url, $entry->getAttribute("href"));
 
 					if ($favicon_url)
-						array_push($favicon_urls, $favicon_url);
+						$favicon_urls[] = $favicon_url;
 				}
 			}
 		}
 
 		if (count($favicon_urls) == 0) {
-			$favicon_url = UrlHelper::rewrite_relative($url, "/favicon.ico");
+			$favicon_url = UrlHelper::rewrite_relative($url, '/favicon.ico');
 
 			if ($favicon_url)
-							array_push($favicon_urls, $favicon_url);
+				$favicon_urls[] = $favicon_url;
 		}
 
 		return $favicon_urls;

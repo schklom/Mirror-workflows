@@ -45,7 +45,7 @@
 			if (pcntl_waitpid($pid, $status, WNOHANG) != $pid) {
 
 				if (file_is_locked("update_daemon-$pid.lock")) {
-					array_push($tmp, $pid);
+					$tmp[] = $pid;
 				} else {
 					Debug::log("Child process with PID $pid seems active but lockfile is unlocked.");
 					unset($ctimes[$pid]);
@@ -240,7 +240,7 @@
 					}
 
 					Debug::log("Spawned child process with PID $pid for task $j.");
-					array_push($children, $pid);
+					$children[] = $pid;
 					$ctimes[$pid] = time();
 				} else {
 					pcntl_signal(SIGCHLD, SIG_IGN);

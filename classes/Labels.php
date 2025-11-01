@@ -63,9 +63,8 @@ class Labels
 			WHERE owner_uid = ? ORDER BY caption");
 		$sth->execute([$owner_uid]);
 
-		while ($line = $sth->fetch(PDO::FETCH_ASSOC)) {
-			array_push($rv, $line);
-		}
+		while ($line = $sth->fetch(PDO::FETCH_ASSOC))
+			$rv[] = $line;
 
 		return $rv;
 	}

@@ -2,9 +2,7 @@
 class Pref_Labels extends Handler_Protected {
 
 	function csrf_ignore(string $method): bool {
-		$csrf_ignored = ["index", "getlabeltree"];
-
-		return array_search($method, $csrf_ignored) !== false;
+		return in_array($method, ['index', 'getlabeltree']);
 	}
 
 	function edit(): void {
@@ -30,24 +28,22 @@ class Pref_Labels extends Handler_Protected {
 		$sth->execute([$_SESSION['uid']]);
 
 		while ($line = $sth->fetch()) {
-			$label = [];
-			$label['id'] = 'LABEL:' . $line['id'];
-			$label['bare_id'] = $line['id'];
-			$label['name'] = $line['caption'];
-			$label['fg_color'] = $line['fg_color'];
-			$label['bg_color'] = $line['bg_color'];
-			$label['type'] = 'label';
-			$label['checkbox'] = false;
-
-			array_push($root['items'], $label);
+			$root['items'][] = [
+				'type' => 'label',
+				'id' => 'LABEL:' . $line['id'],
+				'bare_id' => $line['id'],
+				'name' => $line['caption'],
+				'fg_color' => $line['fg_color'],
+				'bg_color' => $line['bg_color'],
+				'checkbox' => false,
+			];
 		}
 
-		$fl = [];
-		$fl['identifier'] = 'id';
-		$fl['label'] = 'name';
-		$fl['items'] = [$root];
-
-		print json_encode($fl);
+		print json_encode([
+			'identifier' => 'id',
+			'label' => 'name',
+			'items' => [$root],
+		]);
 	}
 
 	function colorset(): void {

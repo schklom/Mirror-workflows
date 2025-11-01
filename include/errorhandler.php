@@ -12,15 +12,14 @@ function format_backtrace(array $trace): string {
 
 			if (is_array($e["args"] ?? false)) {
 				foreach ($e["args"] as $a) {
-					if (is_object($a)) {
-						array_push($fmt_args, "{" . $a::class . "}");
-					} else if (is_array($a)) {
-						array_push($fmt_args, "[" . truncate_string(json_encode($a), 256, "...")) . "]";
-					} else if (is_resource($a)) {
-						array_push($fmt_args, truncate_string(get_resource_type($a), 256, "..."));
-					} else if (is_string($a)) {
-						array_push($fmt_args, truncate_string($a, 256, "..."));
-					}
+					if (is_object($a))
+						$fmt_args[] = '{' . $a::class . '}';
+					elseif (is_array($a))
+						$fmt_args[] = '[' . truncate_string(json_encode($a), 256, '...') . ']';
+					elseif (is_resource($a))
+						$fmt_args[] = truncate_string(get_resource_type($a), 256, '...');
+					elseif (is_string($a))
+						$fmt_args[] = truncate_string($a, 256, '...');
 				}
 			}
 

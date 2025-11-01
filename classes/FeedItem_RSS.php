@@ -117,18 +117,13 @@ class FeedItem_RSS extends FeedItem_Common {
 	 * @return array<int, string>
 	 */
 	function get_categories(): array {
-		$categories = $this->elem->getElementsByTagName("category");
 		$cats = [];
 
-		foreach ($categories as $cat) {
-			array_push($cats, $cat->nodeValue);
-		}
+		foreach ($this->elem->getElementsByTagName('category') as $cat)
+			$cats[] = $cat->nodeValue;
 
-		$categories = $this->xpath->query("dc:subject", $this->elem);
-
-		foreach ($categories as $cat) {
-			array_push($cats, $cat->nodeValue);
-		}
+		foreach ($this->xpath->query('dc:subject', $this->elem) as $cat)
+			$cats[] = $cat->nodeValue;
 
 		return $this->normalize_categories($cats);
 	}
@@ -149,7 +144,7 @@ class FeedItem_RSS extends FeedItem_Common {
 			$enc->height = clean($enclosure->getAttribute('height'));
 			$enc->width = clean($enclosure->getAttribute('width'));
 
-			array_push($encs, $enc);
+			$encs[] = $enc;
 		}
 
 		array_push($encs, ...parent::get_enclosures());

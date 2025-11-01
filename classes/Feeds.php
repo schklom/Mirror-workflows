@@ -47,9 +47,7 @@ class Feeds extends Handler_Protected {
 	const NEVER_GROUP_BY_DATE = [ Feeds::FEED_PUBLISHED, Feeds::FEED_STARRED, Feeds::FEED_FRESH ];
 
 	function csrf_ignore(string $method): bool {
-		$csrf_ignored = ["index"];
-
-		return array_search($method, $csrf_ignored) !== false;
+		return $method === 'index';
 	}
 
 	/**
@@ -253,9 +251,8 @@ class Feeds extends Handler_Protected {
 					$line["labels"] = [];
 				}
 
-				if (count($topmost_article_ids) < 3) {
-					array_push($topmost_article_ids, $id);
-				}
+				if (count($topmost_article_ids) < 3)
+					$topmost_article_ids[] = $id;
 
 				$line["feed_title"] ??= "";
 
@@ -376,7 +373,7 @@ class Feeds extends Handler_Protected {
 								"uuid", "label_cache", "yyiw", "num_enclosures"] as $k)
 					unset($line[$k]);
 
-				array_push($reply['content'], $line);
+				$reply['content'][] = $line;
 			}
 		}
 
@@ -771,11 +768,8 @@ class Feeds extends Handler_Protected {
 					if ($feed_id == Feeds::CATEGORY_UNCATEGORIZED) {
 						$cat_qpart = "cat_id IS NULL";
 					} else {
-						$children = self::_get_child_cats($feed_id, $owner_uid);
-						array_push($children, $feed_id);
-						$children = array_map(intval(...), $children);
-
-						$children = join(",", $children);
+						$children = implode(',',
+							array_map(intval(...), [...self::_get_child_cats($feed_id, $owner_uid), $feed_id]));
 
 						$cat_qpart = "cat_id IN ($children)";
 					}
@@ -1524,12 +1518,10 @@ class Feeds extends Handler_Protected {
 				if ($feed > 0) {
 					if ($include_children) {
 						# sub-cats
-						$subcats = self::_get_child_cats($feed, $owner_uid);
-						array_push($subcats, $feed);
-						$subcats = array_map(intval(...), $subcats);
+						$subcats = implode(',',
+							array_map(intval(...), [...self::_get_child_cats($feed, $owner_uid), $feed]));
 
-						$query_strategy_part = "cat_id IN (".
-							implode(",", $subcats).")";
+						$query_strategy_part = "cat_id IN ($subcats)";
 
 					} else {
 						$query_strategy_part = "cat_id = " . $pdo->quote((string)$feed);
@@ -1927,9 +1919,8 @@ class Feeds extends Handler_Protected {
 		$rv = [];
 
 		if ($row = $sth->fetch()) {
-			$cat_id = (int) $row["cat_id"];
+			$cat_id = (int) $row['cat_id'];
 			$rv[] = $cat_id;
-			array_push($rv, (int)$row["cat_id"]);
 
 			if ($with_parents && $row["parent_cat"]) {
 				array_push($rv, ...self::_get_parent_cats($cat_id, $owner_uid));
@@ -2195,61 +2186,62 @@ class Feeds extends Handler_Protected {
 			switch ($keyword_name) {
 				case "title":
 					if ($keyword_value) {
-						array_push($query_keywords, "($not (LOWER(ttrss_entries.title) LIKE ".
-							$pdo->quote("%{$keyword_value}%") ."))");
+						$query_keywords[] = "($not (LOWER(ttrss_entries.title) LIKE " .
+							$pdo->quote("%{$keyword_value}%") . "))";
 					} else {
-						array_push($query_keywords, "(UPPER(ttrss_entries.title) $not LIKE UPPER(".$pdo->quote("%$k%").")
-								OR UPPER(ttrss_entries.content) $not LIKE UPPER(".$pdo->quote("%$k%")."))");
-						array_push($search_words, $k);
+						$query_keywords[] = "(UPPER(ttrss_entries.title) $not LIKE UPPER(" . $pdo->quote("%$k%") . ")
+								OR UPPER(ttrss_entries.content) $not LIKE UPPER(" . $pdo->quote("%$k%") . "))";
+						$search_words[] = $k;
 					}
 					break;
 				case "author":
 					if ($keyword_value) {
-						array_push($query_keywords, "($not (LOWER(author) LIKE ".
-							$pdo->quote("%{$keyword_value}%")."))");
+						$query_keywords[] = "($not (LOWER(author) LIKE " . $pdo->quote("%{$keyword_value}%") . "))";
 					} else {
-						array_push($query_keywords, "(UPPER(ttrss_entries.title) $not LIKE UPPER(".$pdo->quote("%$k%").")
-								OR UPPER(ttrss_entries.content) $not LIKE UPPER(".$pdo->quote("%$k%")."))");
-						array_push($search_words, $k);
+						$query_keywords[] = "(UPPER(ttrss_entries.title) $not LIKE UPPER(" . $pdo->quote("%$k%").")
+								OR UPPER(ttrss_entries.content) $not LIKE UPPER(" . $pdo->quote("%$k%") . "))";
+						$search_words[] = $k;
 					}
 					break;
 				case "note":
 					if ($keyword_value) {
 						if ($keyword_value == "true")
-							array_push($query_keywords, "($not (note IS NOT NULL AND note != ''))");
+							$query_keywords[] = "($not (note IS NOT NULL AND note != ''))";
 						else if ($keyword_value == "false")
-							array_push($query_keywords, "($not (note IS NULL OR note = ''))");
+							$query_keywords[] = "($not (note IS NULL OR note = ''))";
 						else
-							array_push($query_keywords, "($not (LOWER(note) LIKE ".
-								$pdo->quote("%{$keyword_value}%")."))");
+							$query_keywords[] = "($not (LOWER(note) LIKE " . $pdo->quote("%{$keyword_value}%") . "))";
 					} else {
-						array_push($query_keywords, "(UPPER(ttrss_entries.title) $not LIKE UPPER(".$pdo->quote("%$k%").")
-								OR UPPER(ttrss_entries.content) $not LIKE UPPER(".$pdo->quote("%$k%")."))");
-						if (!$not) array_push($search_words, $k);
+						$query_keywords[] = "(UPPER(ttrss_entries.title) $not LIKE UPPER(" . $pdo->quote("%$k%") . ")
+								OR UPPER(ttrss_entries.content) $not LIKE UPPER(" . $pdo->quote("%$k%") . "))";
+						if (!$not)
+							$search_words[] = $k;
 					}
 					break;
 				case "star":
 					if ($keyword_value) {
 						if ($keyword_value == "true")
-							array_push($query_keywords, "($not (marked = true))");
+							$query_keywords[] = "($not (marked = true))";
 						else
-							array_push($query_keywords, "($not (marked = false))");
+							$query_keywords[] = "($not (marked = false))";
 					} else {
-						array_push($query_keywords, "(UPPER(ttrss_entries.title) $not LIKE UPPER(".$pdo->quote("%$k%").")
-								OR UPPER(ttrss_entries.content) $not LIKE UPPER(".$pdo->quote("%$k%")."))");
-						if (!$not) array_push($search_words, $k);
+						$query_keywords[] = "(UPPER(ttrss_entries.title) $not LIKE UPPER(" . $pdo->quote("%$k%") . ")
+								OR UPPER(ttrss_entries.content) $not LIKE UPPER(" . $pdo->quote("%$k%") . "))";
+						if (!$not)
+							$search_words[] = $k;
 					}
 					break;
 				case "pub":
 					if ($keyword_value) {
 						if ($keyword_value == "true")
-							array_push($query_keywords, "($not (published = true))");
+							$query_keywords[] = "($not (published = true))";
 						else
-							array_push($query_keywords, "($not (published = false))");
+							$query_keywords[] = "($not (published = false))";
 					} else {
-						array_push($query_keywords, "(UPPER(ttrss_entries.title) $not LIKE UPPER('%$k%')
-								OR UPPER(ttrss_entries.content) $not LIKE UPPER(".$pdo->quote("%$k%")."))");
-						if (!$not) array_push($search_words, $k);
+						$query_keywords[] = "(UPPER(ttrss_entries.title) $not LIKE UPPER('%$k%')
+								OR UPPER(ttrss_entries.content) $not LIKE UPPER(" . $pdo->quote("%$k%") . "))";
+						if (!$not)
+							$search_words[] = $k;
 					}
 					break;
 				case "label":
@@ -2257,42 +2249,45 @@ class Feeds extends Handler_Protected {
 						$label_id = Labels::find_id($keyword_value, $owner_uid);
 
 						if ($label_id) {
-							array_push($query_keywords, "($not
+							$query_keywords[] = "($not
 								(ttrss_entries.id IN (
 									SELECT article_id FROM ttrss_user_labels2 WHERE
-										label_id = $label_id)))");
+										label_id = $label_id)))";
 						} else {
-							array_push($query_keywords, "(false)");
+							$query_keywords[] = "(false)";
 						}
 					} else {
-						array_push($query_keywords, "(UPPER(ttrss_entries.title) $not LIKE UPPER(".$pdo->quote("%$k%").")
-								OR UPPER(ttrss_entries.content) $not LIKE UPPER(".$pdo->quote("%$k%")."))");
-						if (!$not) array_push($search_words, $k);
+						$query_keywords[] = "(UPPER(ttrss_entries.title) $not LIKE UPPER(" . $pdo->quote("%$k%") . ")
+								OR UPPER(ttrss_entries.content) $not LIKE UPPER(" . $pdo->quote("%$k%") . "))";
+						if (!$not)
+							$search_words[] = $k;
 					}
 					break;
 				case "tag":
 					if ($keyword_value) {
-							array_push($query_keywords, "($not
+							$query_keywords[] = "($not
 								(ttrss_user_entries.int_id IN (
 									SELECT post_int_id FROM ttrss_tags WHERE
-										tag_name = ".$pdo->quote($keyword_value).")))");
+										tag_name = " . $pdo->quote($keyword_value) . ")))";
 					} else {
-						array_push($query_keywords, "(UPPER(ttrss_entries.title) $not LIKE UPPER(".$pdo->quote("%$k%").")
-								OR UPPER(ttrss_entries.content) $not LIKE UPPER(".$pdo->quote("%$k%")."))");
-						if (!$not) array_push($search_words, $k);
+						$query_keywords[] = "(UPPER(ttrss_entries.title) $not LIKE UPPER(" . $pdo->quote("%$k%") . ")
+								OR UPPER(ttrss_entries.content) $not LIKE UPPER(" . $pdo->quote("%$k%") . "))";
+						if (!$not)
+							$search_words[] = $k;
 					}
 					break;
 				case "unread":
 					if ($keyword_value) {
 						if ($keyword_value == "true")
-							array_push($query_keywords, "($not (unread = true))");
+							$query_keywords[] = "($not (unread = true))";
 						else
-							array_push($query_keywords, "($not (unread = false))");
+							$query_keywords[] = "($not (unread = false))";
 
 					} else {
-						array_push($query_keywords, "(UPPER(ttrss_entries.title) $not LIKE UPPER(".$pdo->quote("%$k%").")
-								OR UPPER(ttrss_entries.content) $not LIKE UPPER(".$pdo->quote("%$k%")."))");
-						if (!$not) array_push($search_words, $k);
+						$query_keywords[] = "(UPPER(ttrss_entries.title) $not LIKE UPPER(" . $pdo->quote("%$k%") . ")
+								OR UPPER(ttrss_entries.content) $not LIKE UPPER(" . $pdo->quote("%$k%") . "))";
+						if (!$not)
+							$search_words[] = $k;
 					}
 					break;
 				default:
@@ -2302,7 +2297,7 @@ class Feeds extends Handler_Protected {
 						$orig_ts = strtotime(substr($k, 1));
 						$k = date("Y-m-d", TimeHelper::convert_timestamp($orig_ts, $user_tz_string, 'UTC'));
 
-						array_push($query_keywords, "(SUBSTRING_FOR_DATE(updated,1,LENGTH(".$pdo->quote($k).")) $not = ".$pdo->quote($k).")");
+						$query_keywords[] = "(SUBSTRING_FOR_DATE(updated,1,LENGTH(" . $pdo->quote($k) . ")) $not = " . $pdo->quote($k) . ")";
 					} else {
 						// treat as leftover text
 
@@ -2313,9 +2308,10 @@ class Feeds extends Handler_Protected {
 						if (preg_match('/\s+/', $k))
 							$k = '(' . preg_replace('/\s+/', ' <-> ', $k) . ')';
 
-						array_push($search_query_leftover, $not ? "!$k" : $k);
+						$search_query_leftover[] = $not ? "!$k" : $k;
 
-						if (!$not) array_push($search_words, $k);
+						if (!$not)
+							$search_words[] = $k;
 					}
 			}
 		}
@@ -2332,8 +2328,7 @@ class Feeds extends Handler_Protected {
 
 			$search_language = $pdo->quote(mb_strtolower($search_language ?: Prefs::get(Prefs::DEFAULT_SEARCH_LANGUAGE, $owner_uid, $profile)));
 
-			array_push($query_keywords,
-				"(tsvector_combined @@ to_tsquery($search_language, $tsquery))");
+			$query_keywords[] = "(tsvector_combined @@ to_tsquery($search_language, $tsquery))";
 		}
 
 		if (count($query_keywords) > 0)

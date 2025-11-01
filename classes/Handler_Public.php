@@ -247,7 +247,7 @@ class Handler_Public extends Handler {
 					}
 				}
 
-				array_push($feed['articles'], $article);
+				$feed['articles'][] = $article;
 			}
 
 			header("Content-Type: application/json; charset=utf-8");
@@ -287,11 +287,12 @@ class Handler_Public extends Handler {
 				->order_by_asc('title')
 				->find_many();
 
-			$rv = [ [ "value" => 0, "label" => __("Default profile") ] ];
+			$rv = [
+				['label' => __('Default profile'), 'value' => 0],
+			];
 
-			foreach ($profiles as $profile) {
-				array_push($rv, [ "label" => $profile->title, "value" => $profile->id ]);
-			}
+			foreach ($profiles as $profile)
+				$rv[] = ['label' => $profile->title, 'value' => $profile->id];
 		}
 
 		print json_encode($rv);

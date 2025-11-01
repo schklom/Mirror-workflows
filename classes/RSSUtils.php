@@ -1981,7 +1981,7 @@ class RSSUtils {
 	}
 
 	/**
-	 * @return array<int, array<string, string>> An array of srcset subitem arrays with keys "url" and "size"
+	 * @return array<int, array{url: string, size: string}> An array of srcset subitem arrays
 	 */
 	static function decode_srcset(string $srcset): array {
 		$matches = [];
@@ -1995,7 +1995,7 @@ class RSSUtils {
 	}
 
 	/**
-	 * @param array<int, array<string, string>> $matches An array of srcset subitem arrays with keys "url" and "size"
+	 * @param array<int, array{url: string, size: string}> $matches An array of srcset subitem arrays
 	 */
 	static function encode_srcset(array $matches): string {
 		return implode(',', array_map(fn(array $m) => trim($m['url']) . ' ' . trim($m['size']), $matches));

@@ -3,7 +3,7 @@ class Mailer {
 	private string $last_error = "";
 
 	/**
-	 * @param array<string, mixed> $params
+	 * @param array{to_name?: string, to_address: string, subject: string, message: string, from_name?: string, from_address?: string, headers?: array<string, mixed>} $params
 	 * @return bool|int bool if the default mail function handled the request, otherwise an int as described in Mailer#mail()
 	 */
 	function mail(array $params): bool|int {

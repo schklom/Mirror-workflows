@@ -53,7 +53,13 @@ class Feeds extends Handler_Protected {
 	}
 
 	/**
-	 * @return array{0: array<int, int>, 1: int, 2: int, 3: bool, 4: array<string, mixed>} $topmost_article_ids, $headlines_count, $feed, $disable_cache, $reply
+	 * @return array{
+	 *   0: array<int, int>,
+	 *   1: int,
+	 *   2: int,
+	 *   3: bool,
+	 *   4: array{content: string|array<string, mixed>, first_id: int, is_vfeed: bool, search_query: array{0: string, 1: string}, vfeed_group_enabled: bool, toolbar: array<string, mixed>}
+	 * } $topmost_article_ids, $headlines_count, $feed, $disable_cache, $reply
 	 */
 	private function _format_headlines_list(int|string $feed, string $method, string $view_mode, int $limit, bool $cat_view,
 					int $offset, string $override_order, bool $include_children, ?int $check_first_id = null,
@@ -536,19 +542,19 @@ class Feeds extends Handler_Protected {
 	 * @return array<string, mixed>
 	 */
 	private function _generate_error_feed(string $error): array {
-		$reply = [];
-
-		$reply['headlines']['id'] = Feeds::FEED_ERROR;
-		$reply['headlines']['is_cat'] = false;
-
-		$reply['headlines']['toolbar'] = '';
-		$reply['headlines']['content'] = "<div class='whiteBox'>". $error . "</div>";
-
-		$reply['headlines-info'] = ["count" => 0,
-			"unread" => 0,
-			"disable_cache" => true];
-
-		return $reply;
+		return [
+			'headlines' => [
+				'id' => Feeds::FEED_ERROR,
+				'is_cat' => false,
+				'toolbar' => '',
+				'content' => '<div class="whiteBox">'. $error . '</div>',
+			],
+			'headlines-info' => [
+				'count' => 0,
+				'unread' => 0,
+				'disable_cache' => true,
+			]
+		];
 	}
 
 	function subscribeToFeed(): void {
@@ -1379,7 +1385,17 @@ class Feeds extends Handler_Protected {
 
 	/**
 	 * @param array<string, mixed> $params
-	 * @return array<int, mixed> $result, $feed_title, $feed_site_url, $last_error, $last_updated, $highlight_words, $first_id, $is_vfeed, $query_error_override
+	 * @return array{
+	 *   0: PDOStatement|false|-1,
+	 *   1: string,
+	 *   2: string,
+	 *   3: string,
+	 *   4: string,
+	 *   5: array<string>,
+	 *   6: int,
+	 *   7: bool,
+	 *   8: string
+	 * } $result, $feed_title, $feed_site_url, $last_error, $last_updated, $highlight_words, $first_id, $is_vfeed, $query_error_override
 	 */
 	static function _get_headlines($params): array {
 		$pdo = Db::pdo();

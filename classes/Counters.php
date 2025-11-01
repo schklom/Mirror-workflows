@@ -55,7 +55,7 @@ class Counters {
 
 	/**
 	 * @param array<int>|null $cat_ids
-	 * @return array<int, array<string, int|string>>
+	 * @return array<int, array{id: int, kind: 'cat', counter: int, markedcounter?: int, publishedcounter?: int}>
 	 */
 	private static function get_cats(?array $cat_ids = null): array {
 		$ret = [];
@@ -150,7 +150,7 @@ class Counters {
 
 	/**
 	 * @param array<int>|null $feed_ids
-	 * @return array<int, array<string, int|string>>
+	 * @return array<int, array{id: int, title: string, error: string, updated: string, counter: int, markedcounter: int, publishedcounter: int, ts: int}>
 	 */
 	private static function get_feeds(?array $feed_ids = null): array {
 		$ret = [];
@@ -191,7 +191,7 @@ class Counters {
 	}
 
 	/**
-	 * @return array<int, array<string, int|string>>
+	 * @return array<int, array{id: string, counter: int}>
 	 */
 	private static function get_global(): array {
 		$ret = [
@@ -214,7 +214,7 @@ class Counters {
 	}
 
 	/**
-	 * @return array<int, array<string, int|string>>
+	 * @return array<int, array{id: int, counter: int, auxcounter: int, markedcounter?: int, publishedcounter?: int}>
 	 */
 	private static function get_virt(): array {
 		$ret = [];
@@ -266,7 +266,7 @@ class Counters {
 
 	/**
 	 * @param array<int>|null $label_ids
-	 * @return array<int, array<string, int|string>>
+	 * @return array<int, array{id: int, counter: int, auxcounter: int, markedcounter: int, publishedcounter: int, description: string}>
 	 */
 	static function get_labels(?array $label_ids = null): array {
 		$ret = [];

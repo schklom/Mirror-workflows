@@ -295,8 +295,8 @@ class Config {
 	/** @var array<string, array<bool|int|string>> */
 	private array $params = [];
 
-	/** @var array<string, mixed> */
-	private array $version = [];
+	/** @var array{branch: string, timestamp: int, version: string, commit: string, status: int}|array{version: string, status: int} */
+	private array $version;
 
 	private Db_Migrations $migrations;
 
@@ -348,49 +348,46 @@ class Config {
 	}
 
 	/**
-	 * @return array<string, mixed>|string
+	 * @return array{branch: string, timestamp: int, version: string, commit: string, status: int}|array{version: string}|string
 	 */
 	private function _get_version(bool $as_string = true): array|string {
 		$root_dir = self::get_self_dir();
 
 		if (empty($this->version)) {
-			$this->version["status"] = -1;
-
-			if (getenv("CI_COMMIT_SHORT_SHA") && getenv("CI_COMMIT_TIMESTAMP")) {
-
-				$this->version["branch"] = getenv("CI_COMMIT_BRANCH");
-				$this->version["timestamp"] = strtotime(getenv("CI_COMMIT_TIMESTAMP"));
-				$this->version["version"] = sprintf("%s-%s", date("y.m", $this->version["timestamp"]), getenv("CI_COMMIT_SHORT_SHA"));
-				$this->version["commit"] = getenv("CI_COMMIT_SHORT_SHA");
-				$this->version["status"] = 0;
-
-			} else if (PHP_OS === "Darwin") {
-				$this->version["version"] = "UNKNOWN (Unsupported, Darwin)";
+			if (getenv('CI_COMMIT_SHORT_SHA') && getenv('CI_COMMIT_TIMESTAMP')) {
+				$this->version = [
+					'branch' => getenv('CI_COMMIT_BRANCH'),
+					'timestamp' => strtotime(getenv('CI_COMMIT_TIMESTAMP')),
+					'version' => sprintf('%s-%s', date('y.m', $this->version['timestamp']), getenv('CI_COMMIT_SHORT_SHA')),
+					'commit' => getenv('CI_COMMIT_SHORT_SHA'),
+					'status' => 0,
+				];
+			} else if (PHP_OS === 'Darwin') {
+				$this->version = ['version' => 'UNKNOWN (Unsupported, Darwin)', 'status' => -1];
 			} else if (file_exists("$root_dir/version_static.txt")) {
-				$this->version["version"] = trim(file_get_contents("$root_dir/version_static.txt")) . " (Unsupported)";
+				$this->version = ['version' => trim(file_get_contents("$root_dir/version_static.txt")) . ' (Unsupported)', 'status' => -1];
 			} else if (ini_get("open_basedir")) {
-				$this->version["version"] = "UNKNOWN (Unsupported, open_basedir)";
+				$this->version = ['version' => 'UNKNOWN (Unsupported, open_basedir)', 'status' => -1];
 			} else if (is_dir("$root_dir/.git")) {
 				$this->version = self::get_version_from_git($root_dir);
 
-				if ($this->version["status"] != 0) {
-					user_error("Unable to determine version: " . $this->version["version"], E_USER_WARNING);
+				if ($this->version['status'] != 0) {
+					user_error('Unable to determine version: ' . $this->version['version'], E_USER_WARNING);
 
-					$this->version["version"] = "UNKNOWN (Unsupported, Git error)";
-				} else if (!getenv("SCRIPT_ROOT") || !file_exists("/.dockerenv")) {
-					$this->version["version"] .= " (Unsupported)";
+					$this->version = ['version' => 'UNKNOWN (Unsupported, Git error)', 'status' => -1];
+				} else if (!getenv('SCRIPT_ROOT') || !file_exists('/.dockerenv')) {
+					$this->version['version'] .= ' (Unsupported)';
 				}
-
 			} else {
-				$this->version["version"] = "UNKNOWN (Unsupported)";
+				$this->version = ['version' => 'UNKNOWN (Unsupported)', 'status' => -1];
 			}
 		}
 
-		return $as_string ? $this->version["version"] : $this->version;
+		return $as_string ? $this->version['version'] : $this->version;
 	}
 
 	/**
-	 * @return array<string, int|string>
+	 * @return array{status: int, version: string, branch: string, commit: string, timestamp: string}
 	 */
 	static function get_version_from_git(string $dir): array {
 		$descriptorspec = [
@@ -403,7 +400,7 @@ class Config {
 			"version" => "",
 			"branch" => "",
 			"commit" => "",
-			"timestamp" => 0,
+			"timestamp" => "0",
 		];
 
 		$proc = proc_open('git --no-pager log --pretty="version-%ct-%h" --abbrev=8 -n1 HEAD',

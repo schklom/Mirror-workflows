@@ -186,14 +186,14 @@ class Prefs {
 	}
 
 	/**
-	 * @return array<int, array<string, bool|int|null|string>>
+	 * @return array<int, array{pref_name: string, value: bool|int|string|null, type_hint: Config::T_*}>
 	 */
 	static function get_all(int $owner_uid, ?int $profile_id = null): array {
 		return self::get_instance()->_get_all($owner_uid, $profile_id);
 	}
 
 	/**
-	 * @return array<int, array<string, bool|int|null|string>>
+	 * @return array<int, array{pref_name: string, value: bool|int|string|null, type_hint: Config::T_*}>
 	 */
 	private function _get_all(int $owner_uid, ?int $profile_id = null): array {
 		$rv = [];

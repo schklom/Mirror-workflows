@@ -112,7 +112,7 @@ class Pref_Feeds extends Handler_Protected {
 	}
 
 	/**
-	 * @return array<string, array<int|string, mixed>|string>
+	 * @return array{identifier: 'id', label: 'name', items: array{id: 'root', name: string, items: array<mixed>, param: string, type: 'category'}|array<mixed>}
 	 */
 	function _makefeedtree(): array {
 		$profile = $_SESSION['profile'] ?? null;
@@ -126,7 +126,7 @@ class Pref_Feeds extends Handler_Protected {
 		$root['id'] = 'root';
 		$root['name'] = __('Feeds');
 		$root['items'] = [];
-		$root['param'] = 0;
+		$root['param'] = '0';
 		$root['type'] = 'category';
 
 		$enable_cats = Prefs::get(Prefs::ENABLE_FEED_CATS, $_SESSION['uid'], $profile);

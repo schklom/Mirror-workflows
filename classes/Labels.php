@@ -38,7 +38,7 @@ class Labels
 	}
 
 	/**
-	 * @return array<int, array<string, string>>
+	 * @return array<int, array{id: int, fg_color: string, bg_color: string, caption: string}>
 	 */
 	static function get_as_hash(int $owner_uid): array {
 		$rv = [];
@@ -52,7 +52,7 @@ class Labels
 	}
 
 	/**
-	 * @return array<int, array<string, string>> An array of label detail arrays
+	 * @return array<int, array{id: int, fg_color: string, bg_color: string, caption: string}> An array of label detail arrays
 	 */
 	static function get_all(int $owner_uid)	{
 		$rv = [];

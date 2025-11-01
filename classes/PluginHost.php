@@ -8,7 +8,7 @@ class PluginHost {
 	 */
 	private ?PDO $pdo_data = null;
 
-	/** @var array<string, array<int, array<int, Plugin>>> hook types -> priority levels -> Plugins */
+	/** @var array<PluginHost::HOOK_*, array<int, array<int, Plugin>>> hook types -> priority levels -> Plugins */
 	private array $hooks = [];
 
 	/** @var array<string, Plugin> */

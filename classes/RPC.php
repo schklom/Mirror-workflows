@@ -331,10 +331,11 @@ class RPC extends Handler_Protected {
 				$content = json_decode($content, true);
 
 				if ($content && isset($content["changeset"])) {
-					if ($git_timestamp < (int)$content["changeset"]["timestamp"] &&
-						$git_commit != $content["changeset"]["id"]) {
-
-						$rv["changeset"] = $content["changeset"];
+					if ($git_timestamp < (int)$content['changeset']['timestamp'] && $git_commit != $content['changeset']['id']) {
+						$rv['changeset'] = [
+							...$content['changeset'],
+							'compare_url' => "https://github.com/tt-rss/tt-rss/compare/{$git_commit}...{$content['changeset']['id']}",
+						];
 					}
 				}
 			}

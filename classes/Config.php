@@ -295,7 +295,7 @@ class Config {
 	/** @var array<string, array<bool|int|string>> */
 	private array $params = [];
 
-	/** @var array{branch: string, timestamp: int, version: string, commit: string, status: int}|array{version: string, status: int} */
+	/** @var array<string, mixed> */
 	private array $version;
 
 	private Db_Migrations $migrations;
@@ -358,10 +358,10 @@ class Config {
 				$this->version = [
 					'branch' => getenv('CI_COMMIT_BRANCH'),
 					'timestamp' => strtotime(getenv('CI_COMMIT_TIMESTAMP')),
-					'version' => sprintf('%s-%s', date('y.m', $this->version['timestamp']), getenv('CI_COMMIT_SHORT_SHA')),
 					'commit' => getenv('CI_COMMIT_SHORT_SHA'),
 					'status' => 0,
 				];
+				$this->version['version'] = sprintf('%s-%s', date('y.m', $this->version['timestamp']), getenv('CI_COMMIT_SHORT_SHA'));
 			} else if (PHP_OS === 'Darwin') {
 				$this->version = ['version' => 'UNKNOWN (Unsupported, Darwin)', 'status' => -1];
 			} else if (file_exists("$root_dir/version_static.txt")) {

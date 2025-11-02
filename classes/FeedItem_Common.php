@@ -44,9 +44,8 @@ abstract class FeedItem_Common extends FeedItem {
 		$author_elems = $this->xpath->query("dc:creator", $this->elem);
 		$authors = [];
 
-		foreach ($author_elems as $author) {
-			array_push($authors, clean($author->nodeValue));
-		}
+		foreach ($author_elems as $author)
+			$authors[] = clean($author->nodeValue);
 
 		return implode(", ", $authors);
 	}
@@ -109,7 +108,7 @@ abstract class FeedItem_Common extends FeedItem {
 			$desc = $this->xpath->query("media:description", $enclosure)->item(0);
 			if ($desc) $enc->title = clean($desc->nodeValue);
 
-			array_push($encs, $enc);
+			$encs[] = $enc;
 		}
 
 		$enclosures = $this->xpath->query("media:group", $this->elem);
@@ -139,7 +138,7 @@ abstract class FeedItem_Common extends FeedItem {
 					if ($desc) $enc->title = clean($desc->nodeValue);
 				}
 
-				array_push($encs, $enc);
+				$encs[] = $enc;
 			}
 		}
 
@@ -153,7 +152,7 @@ abstract class FeedItem_Common extends FeedItem {
 			$enc->height = clean($enclosure->getAttribute('height'));
 			$enc->width = clean($enclosure->getAttribute('width'));
 
-			array_push($encs, $enc);
+			$encs[] = $enc;
 		}
 
 		return $encs;

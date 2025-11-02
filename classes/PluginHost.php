@@ -8,7 +8,7 @@ class PluginHost {
 	 */
 	private ?PDO $pdo_data = null;
 
-	/** @var array<string, array<int, array<int, Plugin>>> hook types -> priority levels -> Plugins */
+	/** @var array<PluginHost::HOOK_*, array<int, array<int, Plugin>>> hook types -> priority levels -> Plugins */
 	private array $hooks = [];
 
 	/** @var array<string, Plugin> */
@@ -233,7 +233,6 @@ class PluginHost {
 	}
 
 	private function register_plugin(string $name, Plugin $plugin): void {
-		//array_push($this->plugins, $plugin);
 		$this->plugins[$name] = $plugin;
 	}
 
@@ -257,9 +256,8 @@ class PluginHost {
 	function get_plugin_names(): array {
 		$names = [];
 
-		foreach ($this->plugins as $p) {
-			array_push($names, $p::class);
-		}
+		foreach ($this->plugins as $p)
+			$names[] = $p::class;
 
 		return $names;
 	}
@@ -384,7 +382,7 @@ class PluginHost {
 			$this->hooks[$type][$priority] = [];
 		}
 
-		array_push($this->hooks[$type][$priority], $sender);
+		$this->hooks[$type][$priority][] = $sender;
 		ksort($this->hooks[$type]);
 	}
 

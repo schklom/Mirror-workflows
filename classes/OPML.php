@@ -2,9 +2,7 @@
 class OPML extends Handler_Protected {
 
 	function csrf_ignore(string $method): bool {
-		$csrf_ignored = ["export", "import"];
-
-		return array_search($method, $csrf_ignored) !== false;
+		return in_array($method, ['export', 'import']);
 	}
 
 	/**
@@ -193,17 +191,15 @@ class OPML extends Handler_Protected {
 
 							if (str_starts_with($feed_id, "CAT:")) {
 								$feed_id = (int)substr($feed_id, 4);
-								if ($feed_id) {
-									array_push($match, [Feeds::_get_cat_title($feed_id, $owner_uid), true, false]);
-								} else {
-									array_push($match, [0, true, true]);
-								}
+								if ($feed_id)
+									$match[] = [Feeds::_get_cat_title($feed_id, $owner_uid), true, false];
+								else
+									$match[] = [0, true, true];
 							} else {
-								if ($feed_id) {
-									array_push($match, [Feeds::_get_title((int)$feed_id, $owner_uid), false, false]);
-								} else {
-									array_push($match, [0, false, true]);
-								}
+								if ($feed_id)
+									$match[] = [Feeds::_get_title((int)$feed_id, $owner_uid), false, false];
+								else
+									$match[] = [0, false, true];
 							}
 						}
 
@@ -214,7 +210,7 @@ class OPML extends Handler_Protected {
 					unset($tmp_line["feed_id"]);
 					unset($tmp_line["cat_id"]);
 
-					array_push($line["rules"], $tmp_line);
+					$line['rules'][] = $tmp_line;
 				}
 
 				$tmph = $this->pdo->prepare("SELECT * FROM ttrss_filters2_actions
@@ -225,7 +221,7 @@ class OPML extends Handler_Protected {
 					unset($tmp_line["id"]);
 					unset($tmp_line["filter_id"]);
 
-					array_push($line["actions"], $tmp_line);
+					$line['actions'][] = $tmp_line;
 				}
 
 				unset($line["id"]);
@@ -395,18 +391,12 @@ class OPML extends Handler_Protected {
 								[$name, $is_cat, $is_id] = $match;
 
 								if ($is_id) {
-									array_push($match_on, ($is_cat ? "CAT:" : "") . $name);
+									$match_on[] = ($is_cat ? 'CAT:' : '') . $name;
 								} else {
-
 									$match_id = Feeds::_find_by_title($name, $is_cat, $owner_uid);
 
-									if ($match_id) {
-										if ($is_cat) {
-											array_push($match_on, "CAT:$match_id");
-										} else {
-											array_push($match_on, $match_id);
-										}
-									}
+									if ($match_id)
+											$match_on[] = $is_cat ? "CAT:$match_id" : $match_id;
 
 									/*if (!$is_cat) {
 										$tsth = $this->pdo->prepare("SELECT id FROM ttrss_feeds

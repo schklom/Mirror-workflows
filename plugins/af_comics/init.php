@@ -28,18 +28,18 @@ class Af_Comics extends Plugin {
 		foreach ($filters as $file) {
 			$filter_name = preg_replace("/\..*$/", "", basename($file));
 
-			if (array_search($filter_name, $names) === false) {
+			if (!in_array($filter_name, $names)) {
 				if (!class_exists($filter_name)) {
 					require_once $file;
 				}
 
-				array_push($names, $filter_name);
+				$names[] = $filter_name;
 
 				$filter = new $filter_name($host);
 
 				if (is_subclass_of($filter, "Af_ComicFilter")) {
-					array_push($this->filters, $filter);
-					array_push($names, $filter_name);
+					$this->filters[] = $filter;
+					$names[] = $filter_name;
 				}
 			}
 		}
@@ -51,9 +51,8 @@ class Af_Comics extends Plugin {
 		$comics = [];
 
 		foreach ($this->filters as $f) {
-			foreach ($f->supported() as $comic) {
-				array_push($comics, $comic);
-			}
+			foreach ($f->supported() as $comic)
+				$comics[] = $comic;
 		}
 
 		asort($comics);

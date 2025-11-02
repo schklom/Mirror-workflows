@@ -9,12 +9,9 @@
 	else
 		$method = strtolower($method);
 
-	/* Public calls compatibility shim */
-
-	$public_calls = ["rss", "getUnread", "getProfiles", "share"];
-
-	if (array_search($op, $public_calls) !== false) {
-		header("Location: public.php?" . $_SERVER['QUERY_STRING']);
+	// Public calls compatibility shim
+	if (in_array($op, ['rss', 'getUnread', 'getProfiles', 'share'])) {
+		header('Location: public.php?' . $_SERVER['QUERY_STRING']);
 		return;
 	}
 

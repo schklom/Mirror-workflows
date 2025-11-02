@@ -3,7 +3,7 @@ class Mailer {
 	private string $last_error = "";
 
 	/**
-	 * @param array<string, mixed> $params
+	 * @param array{to_name?: string, to_address: string, subject: string, message: string, from_name?: string, from_address?: string, headers?: array<string, mixed>} $params
 	 * @return bool|int bool if the default mail function handled the request, otherwise an int as described in Mailer#mail()
 	 */
 	function mail(array $params): bool|int {
@@ -43,9 +43,11 @@ class Mailer {
 			++$hooks_tried;
 		}
 
-		$headers = [ "From: $from_combined", "Content-Type: text/plain; charset=UTF-8" ];
-
-		$rc = mail($to_combined, $subject, $message, implode("\r\n", [...$headers, ...$additional_headers]));
+		$rc = mail($to_combined, $subject, $message, implode("\r\n", [
+			"From: $from_combined",
+			'Content-Type: text/plain; charset=UTF-8',
+			...$additional_headers,
+		]));
 
 		if (!$rc) {
 			$this->set_error(error_get_last()['message'] ?? T_sprintf("Unknown error while sending mail. Hooks tried: %d.", $hooks_tried));

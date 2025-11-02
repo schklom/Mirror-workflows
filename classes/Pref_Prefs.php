@@ -26,9 +26,7 @@ class Pref_Prefs extends Handler_Protected {
 	private const PLUGIN_UPDATE_ALLOWED_BRANCHES = ['main', 'master'];
 
 	function csrf_ignore(string $method) : bool {
-		$csrf_ignored = ["index", "updateself", "otpqrcode"];
-
-		return array_search($method, $csrf_ignored) !== false;
+		return in_array($method, ['index', 'updateself', 'otpqrcode']);
 	}
 
 	function __construct($args) {
@@ -665,7 +663,7 @@ class Pref_Prefs extends Handler_Protected {
 
 					} else if ($type_hint == Config::T_BOOL) {
 
-						array_push($listed_boolean_prefs, $pref_name);
+						$listed_boolean_prefs[] = $pref_name;
 
 						if ($pref_name == Prefs::PURGE_UNREAD_ARTICLES && Config::get(Config::FORCE_ARTICLE_PURGE) != 0) {
 							$is_disabled = true;
@@ -808,18 +806,18 @@ class Pref_Prefs extends Handler_Protected {
 			$is_local = $tmppluginhost->is_local($plugin);
 			$version = htmlspecialchars($this->_get_plugin_version($plugin));
 
-			array_push($rv, [
-				"name" => $name,
-				"is_local" => $is_local,
-				"system_enabled" => in_array($name, $system_enabled),
-				"user_enabled" => in_array($name, $user_enabled),
-				"has_data" => count($tmppluginhost->get_all($plugin)) > 0,
-				"is_system" => (bool)($about[3] ?? false),
-				"version" => $version,
-				"author" => $about[2] ?? "",
-				"description" => $about[1] ?? "",
-				"more_info" => $about[4] ?? "",
-			]);
+			$rv[] = [
+				'name' => $name,
+				'is_local' => $is_local,
+				'system_enabled' => in_array($name, $system_enabled),
+				'user_enabled' => in_array($name, $user_enabled),
+				'has_data' => count($tmppluginhost->get_all($plugin)) > 0,
+				'is_system' => (bool)($about[3] ?? false),
+				'version' => $version,
+				'author' => $about[2] ?? '',
+				'description' => $about[1] ?? '',
+				'more_info' => $about[4] ?? '',
+			];
 		}
 
 		usort($rv, fn($a, $b) => strcmp($a["name"], $b["name"]));
@@ -1064,7 +1062,10 @@ class Pref_Prefs extends Handler_Protected {
 			if (is_dir("$dir/.git")) {
 				$plugin_name = basename($dir);
 
-				array_push($rv, ["plugin" => $plugin_name, "rv" => self::_plugin_needs_update($root_dir, $plugin_name)]);
+				$rv[] = [
+					'plugin' => $plugin_name,
+					'rv' => self::_plugin_needs_update($root_dir, $plugin_name),
+				];
 			}
 		}
 
@@ -1257,9 +1258,11 @@ class Pref_Prefs extends Handler_Protected {
 											$descriptor_spec, $pipes, sys_get_temp_dir());
 
 							if (is_resource($proc)) {
-								$rv["stdout"] = stream_get_contents($pipes[1]);
-								$rv["stderr"] = stream_get_contents($pipes[2]);
-								$rv["git_status"] = proc_close($proc);
+								$rv = [
+									'stdout' => stream_get_contents($pipes[1]),
+									'stderr' => stream_get_contents($pipes[2]),
+									'git_status' => proc_close($proc),
+								];
 
 								// yeah I know about mysterious RC = -1
 								if (file_exists("$tmp_dir/init.php")) {
@@ -1281,7 +1284,6 @@ class Pref_Prefs extends Handler_Protected {
 								} else {
 									$rv['result'] = self::PI_ERR_NO_INIT_PHP;
 								}
-
 							} else {
 								$rv['result'] = self::PI_ERR_EXEC_FAILED;
 							}
@@ -1353,7 +1355,7 @@ class Pref_Prefs extends Handler_Protected {
 
 			if ($plugins) {
 				foreach ($plugins as $plugin_name) {
-					array_push($rv, ["plugin" => $plugin_name, "rv" => $this->_update_plugin($root_dir, $plugin_name)]);
+					$rv[] = ['plugin' => $plugin_name, 'rv' => $this->_update_plugin($root_dir, $plugin_name)];
 				}
 			} else {
 				$plugin_dirs = array_filter(glob("$root_dir/plugins.local/*"), is_dir(...));
@@ -1365,7 +1367,7 @@ class Pref_Prefs extends Handler_Protected {
 						$test = self::_plugin_needs_update($root_dir, $plugin_name);
 
 						if (!empty($test["stdout"]))
-							array_push($rv, ["plugin" => $plugin_name, "rv" => $this->_update_plugin($root_dir, $plugin_name)]);
+							$rv[] = ['plugin' => $plugin_name, 'rv' => $this->_update_plugin($root_dir, $plugin_name)];
 					}
 				}
 			}
@@ -1477,18 +1479,19 @@ class Pref_Prefs extends Handler_Protected {
 
 	// TODO: this maybe needs to be unified with Public::getProfiles()
 	function getProfiles(): void {
-		$rv = [];
+		$rv = [
+			[
+				'title' => __('Default profile'),
+				'id' => 0,
+				'initialized' => true,
+				'active' => empty($_SESSION['profile']),
+			],
+		];
 
 		$profiles = ORM::for_table('ttrss_settings_profiles')
 							->where('owner_uid', $_SESSION['uid'])
 							->order_by_expr('title')
 							->find_many();
-
-		array_push($rv, ["title" => __("Default profile"),
-				"id" => 0,
-				"initialized" => true,
-				"active" => empty($_SESSION["profile"])
-			]);
 
 		foreach ($profiles as $profile) {
 			$profile['active'] = ($_SESSION["profile"] ?? 0) == $profile->id;
@@ -1499,7 +1502,7 @@ class Pref_Prefs extends Handler_Protected {
 
 			$profile['initialized'] = $num_settings > 0;
 
-			array_push($rv, $profile->as_array());
+			$rv[] = $profile->as_array();
 		};
 
 		print json_encode($rv);

@@ -648,9 +648,8 @@ class RPC extends Handler_Protected {
 		foreach (array_keys($hotkeys) as $hotkey) {
 			$pair = explode(" ", (string)$hotkey, 2);
 
-			if (count($pair) > 1 && !in_array($pair[0], $prefixes)) {
-				array_push($prefixes, $pair[0]);
-			}
+			if (count($pair) > 1 && !in_array($pair[0], $prefixes))
+				$prefixes[] = $pair[0];
 		}
 
 		return [$prefixes, $hotkeys];

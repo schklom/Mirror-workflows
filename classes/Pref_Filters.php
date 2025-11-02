@@ -27,9 +27,7 @@ class Pref_Filters extends Handler_Protected {
 	}
 
 	function csrf_ignore(string $method): bool {
-		$csrf_ignored = ["index", "getfiltertree", "savefilterorder"];
-
-		return array_search($method, $csrf_ignored) !== false;
+		return in_array($method, ['index', 'getfiltertree', 'savefilterorder']);
 	}
 
 	function filtersortreset(): void {
@@ -96,25 +94,22 @@ class Pref_Filters extends Handler_Protected {
 			if (is_array($rule)) {
 				$rule['type'] = $filter_types[$rule['filter_type']];
 				$rule['inverse'] ??= false;
-				array_push($filter['rules'], $rule);
+				$filter['rules'][] = $rule;
 
 				$scope_inner_qparts = [];
 
 				/** @var int|string $feed_id may be a category string (e.g. 'CAT:7') or feed ID int */
-				foreach ($rule["feed_id"] as $feed_id) {
-					if (str_starts_with("$feed_id", "CAT:")) {
+				foreach ($rule['feed_id'] as $feed_id) {
+					if (str_starts_with("$feed_id", 'CAT:')) {
 						$cat_id = (int) substr("$feed_id", 4);
-						if ($cat_id > 0)
-							array_push($scope_inner_qparts, "cat_id = " . $cat_id);
-						else
-							array_push($scope_inner_qparts, "cat_id IS NULL");
-					} else if (is_numeric($feed_id) && $feed_id > 0) {
-						array_push($scope_inner_qparts, "feed_id = " . (int)$feed_id);
+						$scope_inner_qparts[] = $cat_id > 0 ? "cat_id = $cat_id" : 'cat_id IS NULL';
+					} elseif (is_numeric($feed_id) && $feed_id > 0) {
+						$scope_inner_qparts[] = 'feed_id = ' . (int)$feed_id;
 					}
 				}
 
 				if (count($scope_inner_qparts) > 0)
-					array_push($scope_qparts, '(' . implode(' OR ', $scope_inner_qparts) . ')');
+					$scope_qparts[] = '(' . implode(' OR ', $scope_inner_qparts) . ')';
 			}
 		}
 
@@ -258,19 +253,15 @@ class Pref_Filters extends Handler_Protected {
 					$feeds_fmt = [];
 
 					foreach ($feeds as $feed_id) {
-
 						if (str_starts_with($feed_id, "CAT:")) {
-							$feed_id = (int)substr($feed_id, 4);
-							array_push($feeds_fmt, Feeds::_get_cat_title($feed_id, $_SESSION['uid']));
+							$feed_id = (int) substr($feed_id, 4);
+							$feeds_fmt[] = Feeds::_get_cat_title($feed_id, $_SESSION['uid']);
 						} else {
-							if ($feed_id)
-								array_push($feeds_fmt, Feeds::_get_title((int)$feed_id, $_SESSION['uid']));
-							else
-								array_push($feeds_fmt, __("All feeds"));
+							$feeds_fmt[] = $feed_id ? Feeds::_get_title((int) $feed_id, $_SESSION['uid']) : __('All feeds');
 						}
 					}
 
-					$where = implode(", ", $feeds_fmt);
+					$where = implode(', ', $feeds_fmt);
 
 			} else {
 				$where = $rule->cat_filter ?
@@ -323,7 +314,7 @@ class Pref_Filters extends Handler_Protected {
 					continue;
 			}
 
-			$item = [
+			$folder['items'][] = [
 				'id' => 'FILTER:' . $filter->id,
 				'bare_id' => $filter->id,
 				'bare_name' => $details['title'],
@@ -332,10 +323,8 @@ class Pref_Filters extends Handler_Protected {
 				'checkbox' => false,
 				'last_triggered' => $filter->last_triggered ? TimeHelper::make_local_datetime($filter->last_triggered) : null,
 				'enabled' => sql_bool_to_bool($filter->enabled),
-				'rules' => $this->_get_rules_list($filter->id)
+				'rules' => $this->_get_rules_list($filter->id),
 			];
-
-			array_push($folder['items'], $item);
 		}
 
 		$root['items'] = $folder['items'];
@@ -402,6 +391,8 @@ class Pref_Filters extends Handler_Protected {
 				$rules_sth->execute([$filter_id]);
 
 				while ($rrow = $rules_sth->fetch(PDO::FETCH_ASSOC)) {
+					$rrow['name'] = $this->_get_rule_name($rrow);
+
 					if ($rrow["match_on"]) {
 						$rrow["feed_id"] = json_decode($rrow["match_on"], true);
 					} else {
@@ -414,16 +405,12 @@ class Pref_Filters extends Handler_Protected {
 						$rrow["feed_id"] = ["" . $feed_id]; // set item type to string for in_array()
 					}
 
-					unset($rrow["cat_filter"]);
-					unset($rrow["cat_id"]);
-					unset($rrow["filter_id"]);
-					unset($rrow["id"]);
-					if (!$rrow["inverse"]) unset($rrow["inverse"]);
-					unset($rrow["match_on"]);
+					unset($rrow['cat_filter'], $rrow['cat_id'], $rrow['filter_id'], $rrow['id'], $rrow['match_on']);
 
-					$rrow["name"] = $this->_get_rule_name($rrow);
+					if (!$rrow['inverse'])
+						unset($rrow['inverse']);
 
-					array_push($rv["rules"], $rrow);
+					$rv['rules'][] = $rrow;
 				}
 
 				$actions_sth = $this->pdo->prepare("SELECT * FROM ttrss_filters2_actions
@@ -438,7 +425,7 @@ class Pref_Filters extends Handler_Protected {
 
 					$arow["name"] = $this->_get_action_name($arow);
 
-					array_push($rv["actions"], $arow);
+					$rv['actions'][] = $arow;
 				}
 			}
 			print json_encode($rv);
@@ -454,22 +441,19 @@ class Pref_Filters extends Handler_Protected {
 		$feeds = $rule["feed_id"];
 		$feeds_fmt = [];
 
-		if (!is_array($feeds)) $feeds = [$feeds];
+		if (!is_array($feeds))
+			$feeds = [$feeds];
 
 		foreach ($feeds as $feed_id) {
+			if (str_starts_with($feed_id, "CAT:")) {
+					$feed_id = (int) substr($feed_id, 4);
+					$feeds_fmt[] = Feeds::_get_cat_title($feed_id, $_SESSION['uid']);
+			} else {
+					$feeds_fmt[] = $feed_id ? Feeds::_get_title((int) $feed_id, $_SESSION['uid']) : __('All feeds');
+			}
+		}
 
-            if (str_starts_with($feed_id, "CAT:")) {
-                $feed_id = (int)substr($feed_id, 4);
-                array_push($feeds_fmt, Feeds::_get_cat_title($feed_id, $_SESSION['uid']));
-            } else {
-                if ($feed_id)
-                    array_push($feeds_fmt, Feeds::_get_title((int)$feed_id, $_SESSION['uid']));
-                else
-                    array_push($feeds_fmt, __("All feeds"));
-            }
-        }
-
-        $feed = implode(", ", $feeds_fmt);
+		$feed = implode(', ', $feeds_fmt);
 
 		$sth = $this->pdo->prepare("SELECT description FROM ttrss_filter_types
 			WHERE id = ?");
@@ -603,18 +587,16 @@ class Pref_Filters extends Handler_Protected {
 				$rule = json_decode($rule, true);
 				unset($rule["id"]);
 
-				if (array_search($rule, $rules) === false) {
-					array_push($rules, $rule);
-				}
+				if (!in_array($rule, $rules))
+					$rules[] = $rule;
 			}
 
 			foreach (clean($_REQUEST["action"]) as $action) {
 				$action = json_decode($action, true);
 				unset($action["id"]);
 
-				if (array_search($action, $actions) === false) {
-					array_push($actions, $action);
-				}
+				if (!in_array($action, $actions))
+					$actions[] = $action;
 			}
 
 			$rsth = $this->pdo->prepare("INSERT INTO ttrss_filters2_rules
@@ -818,14 +800,18 @@ class Pref_Filters extends Handler_Protected {
 			->find_one();
 
 		$title = $filter->title ?: __('[No caption]');
+
 		$title_summary = [
 			sprintf(
 			_ngettext("%s (%d rule)", "%s (%d rules)", (int) $filter->num_rules),
 			$title,
 			$filter->num_rules)];
 
-		if ($filter->match_any_rule) array_push($title_summary, __("matches any rule"));
-		if ($filter->inverse) array_push($title_summary, __("inverse"));
+		if ($filter->match_any_rule)
+			$title_summary[] = __('matches any rule');
+
+		if ($filter->inverse)
+			$title_summary[] = __('inverse');
 
 		$actions = ORM::for_table("ttrss_filters2_actions")
 			->where("filter_id", $id)
@@ -843,7 +829,7 @@ class Pref_Filters extends Handler_Protected {
 				continue;
 			}
 
-			array_push($actions_summary, "<li>" . self::_get_action_name($action) . "</li>");
+			$actions_summary[] = '<li>' . self::_get_action_name($action) . '</li>';
 		}
 
 		// inject a fake action description using cumulative filter score
@@ -856,8 +842,8 @@ class Pref_Filters extends Handler_Protected {
 			$actions_not_shown = count($actions_summary) - self::MAX_ACTIONS_TO_DISPLAY;
 			$actions_summary = array_slice($actions_summary, 0, self::MAX_ACTIONS_TO_DISPLAY);
 
-			array_push($actions_summary,
-				"<li class='text-muted'><em>" . sprintf(_ngettext("(+%d action)", "(+%d actions)", $actions_not_shown), $actions_not_shown)) . "</em></li>";
+			$actions_summary[] =
+				'<li class="text-muted"><em>' . sprintf(_ngettext('(+%d action)', '(+%d actions)', $actions_not_shown), $actions_not_shown) . '</em></li>';
 		}
 
 		return [
@@ -922,11 +908,10 @@ class Pref_Filters extends Handler_Protected {
 			$id = $line["id"];
 			unset($line["id"]);
 
-			if (array_search($line, $tmp) === false) {
-				array_push($tmp, $line);
-			} else {
-				array_push($dupe_ids, $id);
-			}
+			if (in_array($line, $tmp))
+				$dupe_ids[] = $id;
+			else
+				$tmp[] = $line;
 		}
 
 		if (count($dupe_ids) > 0) {
@@ -946,11 +931,10 @@ class Pref_Filters extends Handler_Protected {
 			$id = $line["id"];
 			unset($line["id"]);
 
-			if (array_search($line, $tmp) === false) {
-				array_push($tmp, $line);
-			} else {
-				array_push($dupe_ids, $id);
-			}
+			if (in_array($line, $tmp))
+				$dupe_ids[] = $id;
+			else
+				$tmp[] = $line;
 		}
 
 		if (count($dupe_ids) > 0) {

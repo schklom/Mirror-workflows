@@ -244,13 +244,11 @@ class Af_Psql_Trgm extends Plugin {
 		$key = array_search($feed_id, $enabled_feeds);
 
 		if ($enable) {
-			if ($key === false) {
-				array_push($enabled_feeds, $feed_id);
-			}
+			if ($key === false)
+				$enabled_feeds[] = $feed_id;
 		} else {
-			if ($key !== false) {
+			if ($key !== false)
 				unset($enabled_feeds[$key]);
-			}
 		}
 
 		$this->host->set($this, "enabled_feeds", $enabled_feeds);
@@ -344,13 +342,11 @@ class Af_Psql_Trgm extends Plugin {
 		$tmp = [];
 
 		foreach ($enabled_feeds as $feed) {
-
 			$sth = $this->pdo->prepare("SELECT id FROM ttrss_feeds WHERE id = ? AND owner_uid = ?");
 			$sth->execute([$feed, $_SESSION['uid']]);
 
-			if ($sth->fetch()) {
-				array_push($tmp, $feed);
-			}
+			if ($sth->fetch())
+				$tmp[] = $feed;
 		}
 
 		return $tmp;

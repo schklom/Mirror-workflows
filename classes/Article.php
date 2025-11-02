@@ -226,7 +226,7 @@ class Article extends Handler_Protected {
 					$usth->execute([$int_id, $_SESSION['uid'], $tag]);
 				}
 
-				array_push($tags_to_cache, $tag);
+				$tags_to_cache[] = $tag;
 			}
 
 			/* update tag cache */
@@ -256,9 +256,8 @@ class Article extends Handler_Protected {
 
 		$results = [];
 
-		while ($line = $sth->fetch()) {
-			array_push($results, $line["tag_name"]);
-		}
+		while ($line = $sth->fetch())
+			$results[] = $line['tag_name'];
 
 		print json_encode($results);
 	}
@@ -289,8 +288,10 @@ class Article extends Handler_Protected {
 				else
 					Labels::remove_article($id, $label, $_SESSION["uid"]);
 
-				array_push($reply["labels-for"],
-					["id" => (int)$id, "labels" => static::_get_labels($id)]);
+				$reply['labels-for'][] = [
+					'id' => (int) $id,
+					'labels' => static::_get_labels($id),
+				];
 			}
 		}
 
@@ -369,7 +370,7 @@ class Article extends Handler_Protected {
 					},
 					$enc, $id, $rv);
 
-				array_push($rv['entries'], $enc);
+				$rv['entries'][] = $enc;
 			}
 		}
 
@@ -413,9 +414,8 @@ class Article extends Handler_Protected {
 
 			$sth->execute([$a_id, $owner_uid]);
 
-			while ($tmp_line = $sth->fetch()) {
-				array_push($tags, $tmp_line["tag_name"]);
-			}
+			while ($tmp_line = $sth->fetch())
+				$tags[] = $tmp_line['tag_name'];
 
 			/* update the cache */
 
@@ -462,7 +462,7 @@ class Article extends Handler_Protected {
 				$enc->content_url = $cache->get_url($cache_key);
 			}
 
-			array_push($rv, $enc->as_array());
+			$rv[] = $enc->as_array();
 		}
 
 		return $rv;
@@ -669,8 +669,8 @@ class Article extends Handler_Protected {
 
 			if (isset($labels) && is_array($labels)) {
 				foreach ($labels as $label) {
-					if (empty($label["no-labels"]))
-						array_push($rv, Labels::feed_to_label_id($label[0]));
+					if (empty($label['no-labels']))
+						$rv[] = Labels::feed_to_label_id($label[0]);
 				}
 			}
 		}
@@ -696,9 +696,8 @@ class Article extends Handler_Protected {
 
 		$rv = [];
 
-		foreach ($entries as $entry) {
-			array_push($rv, $entry->feed_id);
-		}
+		foreach ($entries as $entry)
+			$rv[] = $entry->feed_id;
 
 		return array_unique($rv);
 	}

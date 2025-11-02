@@ -105,9 +105,8 @@ class FeedParser {
 					$articles = $xpath->query("//atom03:entry");
 
 				/** @var DOMElement $article */
-				foreach ($articles as $article) {
-					array_push($this->items, new FeedItem_Atom($article, $this->doc, $this->xpath));
-				}
+				foreach ($articles as $article)
+					$this->items[] = new FeedItem_Atom($article, $this->doc, $this->xpath);
 
 				break;
 			case $this::FEED_RSS:
@@ -127,12 +126,9 @@ class FeedParser {
 						$this->link = $link->nodeValue;
 				}
 
-				$articles = $xpath->query("//channel/item");
-
 				/** @var DOMElement $article */
-				foreach ($articles as $article) {
-					array_push($this->items, new FeedItem_RSS($article, $this->doc, $this->xpath));
-				}
+				foreach ($xpath->query('//channel/item') as $article)
+					$this->items[] = new FeedItem_RSS($article, $this->doc, $this->xpath);
 
 				break;
 			case $this::FEED_RDF:
@@ -150,12 +146,9 @@ class FeedParser {
 					$this->link = $link->nodeValue;
 				}
 
-				$articles = $xpath->query("//rssfake:item");
-
 				/** @var DOMElement $article */
-				foreach ($articles as $article) {
-					array_push($this->items, new FeedItem_RSS($article, $this->doc, $this->xpath));
-				}
+				foreach ($xpath->query('//rssfake:item') as $article)
+					$this->items[] = new FeedItem_RSS($article, $this->doc, $this->xpath);
 
 				break;
 		}
@@ -234,9 +227,8 @@ class FeedParser {
 
 			/** @var DOMElement $link */
 			foreach ($links as $link) {
-				if (!$rel || $link->hasAttribute('rel') && $link->getAttribute('rel') == $rel) {
-					array_push($rv, clean(trim($link->getAttribute('href'))));
-				}
+				if (!$rel || $link->hasAttribute('rel') && $link->getAttribute('rel') == $rel)
+					$rv[] = clean(trim($link->getAttribute('href')));
 			}
 			break;
 		case $this::FEED_RSS:
@@ -244,9 +236,8 @@ class FeedParser {
 
 			/** @var DOMElement $link */
 			foreach ($links as $link) {
-				if (!$rel || $link->hasAttribute('rel') && $link->getAttribute('rel') == $rel) {
-					array_push($rv, clean(trim($link->getAttribute('href'))));
-				}
+				if (!$rel || $link->hasAttribute('rel') && $link->getAttribute('rel') == $rel)
+					$rv[] = clean(trim($link->getAttribute('href')));
 			}
 			break;
 		}

@@ -6,9 +6,7 @@ class Pref_Feeds extends Handler_Protected {
 	const E_ICON_UPLOAD_SUCCESS = 'E_ICON_UPLOAD_SUCCESS';
 
 	function csrf_ignore(string $method): bool {
-		$csrf_ignored = ["index", "getfeedtree", "savefeedorder"];
-
-		return array_search($method, $csrf_ignored) !== false;
+		return in_array($method, ['index', 'getfeedtree', 'savefeedorder']);
 	}
 
 	/**
@@ -68,7 +66,7 @@ class Pref_Feeds extends Handler_Protected {
 			$cat['param'] = sprintf(_ngettext('(%d feed)', '(%d feeds)', (int) $num_children), $num_children);
 
 			if ($num_children > 0 || $show_empty_cats)
-				array_push($items, $cat);
+				$items[] = $cat;
 		}
 
 		$feeds_obj = ORM::for_table('ttrss_feeds')
@@ -87,7 +85,7 @@ class Pref_Feeds extends Handler_Protected {
 		}
 
 		foreach ($feeds_obj->find_many() as $feed) {
-			array_push($items, [
+			$items[] = [
 				'id' => 'FEED:' . $feed->id,
 				'bare_id' => (int) $feed->id,
 				'auxcounter' => -1,
@@ -101,7 +99,7 @@ class Pref_Feeds extends Handler_Protected {
 					$feed->num_articles,
 					TimeHelper::make_local_datetime($feed->last_updated)),
 				'updates_disabled' => (int)($feed->update_interval < 0),
-			]);
+			];
 		}
 
 		return $items;
@@ -112,7 +110,7 @@ class Pref_Feeds extends Handler_Protected {
 	}
 
 	/**
-	 * @return array<string, array<int|string, mixed>|string>
+	 * @return array{identifier: 'id', label: 'name', items: array{id: 'root', name: string, items: array<mixed>, param: string, type: 'category'}|array<mixed>}
 	 */
 	function _makefeedtree(): array {
 		$profile = $_SESSION['profile'] ?? null;
@@ -126,7 +124,7 @@ class Pref_Feeds extends Handler_Protected {
 		$root['id'] = 'root';
 		$root['name'] = __('Feeds');
 		$root['items'] = [];
-		$root['param'] = 0;
+		$root['param'] = '0';
 		$root['type'] = 'category';
 
 		$enable_cats = Prefs::get(Prefs::ENABLE_FEED_CATS, $_SESSION['uid'], $profile);
@@ -141,7 +139,7 @@ class Pref_Feeds extends Handler_Protected {
 
 			foreach ([Feeds::FEED_ALL, Feeds::FEED_FRESH, Feeds::FEED_STARRED, Feeds::FEED_PUBLISHED,
 				Feeds::FEED_ARCHIVED, Feeds::FEED_RECENTLY_READ] as $feed_id) {
-				array_push($cat['items'], $this->feedlist_init_feed($feed_id));
+				$cat['items'][] = $this->feedlist_init_feed($feed_id);
 			}
 
 			/* Plugin feeds for -1 (Feeds::CATEGORY_SPECIAL) */
@@ -152,28 +150,25 @@ class Pref_Feeds extends Handler_Protected {
 				foreach ($feeds as $feed) {
 					$feed_id = PluginHost::pfeed_to_feed_id($feed['id']);
 
-					$item = [];
-					$item['id'] = 'FEED:' . $feed_id;
-					$item['bare_id'] = (int)$feed_id;
-					$item['auxcounter'] = -1;
-					$item['name'] = $feed['title'];
-					$item['checkbox'] = false;
-					$item['error'] = '';
-					$item['icon'] = $feed['icon'];
-
-					$item['param'] = '';
-					$item['unread'] = -1;
-					$item['type'] = 'feed';
-
-					array_push($cat['items'], $item);
+					$cat['items'][] = [
+						'type' => 'feed',
+						'id' => 'FEED:' . $feed_id,
+						'bare_id' => (int) $feed_id,
+						'auxcounter' => -1,
+						'name' => $feed['title'],
+						'checkbox' => false,
+						'error' => '',
+						'icon' => $feed['icon'],
+						'param' => '',
+						'unread' => -1,
+					];
 				}
 			}
 
-			if ($enable_cats) {
-				array_push($root['items'], $cat);
-			} else {
+			if ($enable_cats)
+				$root['items'][] = $cat;
+			else
 				array_push($root['items'], ...$cat['items']);
-			}
 
 			$sth = $this->pdo->prepare("SELECT * FROM
 				ttrss_labels2 WHERE owner_uid = ? ORDER by caption");
@@ -196,14 +191,13 @@ class Pref_Feeds extends Handler_Protected {
 					$feed = $this->feedlist_init_feed($label_id, null, false);
 					$feed['fg_color'] = $label->fg_color;
 					$feed['bg_color'] = $label->bg_color;
-					array_push($cat['items'], $feed);
+					$cat['items'][] = $feed;
 				}
 
-				if ($enable_cats) {
-					array_push($root['items'], $cat);
-				} else {
+				if ($enable_cats)
+					$root['items'][] = $cat;
+				else
 					array_push($root['items'], ...$cat['items']);
-				}
 			}
 		}
 
@@ -236,7 +230,7 @@ class Pref_Feeds extends Handler_Protected {
 				$cat['param'] = sprintf(_ngettext('(%d feed)', '(%d feeds)', (int) $num_children), $num_children);
 
 				if ($num_children > 0 || $show_empty_cats)
-					array_push($root['items'], $cat);
+					$root['items'][] = $cat;
 
 				//$root['param'] += count($cat['items']);
 			}
@@ -275,7 +269,7 @@ class Pref_Feeds extends Handler_Protected {
 			}
 
 			foreach ($feeds_obj->find_many() as $feed) {
-				array_push($cat['items'], [
+				$cat['items'][] = [
 					'id' => 'FEED:' . $feed->id,
 					'bare_id' => (int) $feed->id,
 					'auxcounter' => -1,
@@ -290,13 +284,13 @@ class Pref_Feeds extends Handler_Protected {
 					'unread' => -1,
 					'type' => 'feed',
 					'updates_disabled' => (int)($feed->update_interval < 0),
-				]);
+				];
 			}
 
 			$cat['param'] = sprintf(_ngettext('(%d feed)', '(%d feeds)', count($cat['items'])), count($cat['items']));
 
 			if (count($cat['items']) > 0 || $show_empty_cats)
-				array_push($root['items'], $cat);
+				$root['items'][] = $cat;
 
 			$num_children = $this->calculate_children_count($root);
 			$root['param'] = sprintf(_ngettext('(%d feed)', '(%d feeds)', (int) $num_children), $num_children);
@@ -318,7 +312,7 @@ class Pref_Feeds extends Handler_Protected {
 			}
 
 			foreach ($feeds_obj->find_many() as $feed) {
-				array_push($root['items'], [
+				$root['items'][] = [
 					'id' => 'FEED:' . $feed->id,
 					'bare_id' => (int) $feed->id,
 					'auxcounter' => -1,
@@ -333,7 +327,7 @@ class Pref_Feeds extends Handler_Protected {
 					'unread' => -1,
 					'type' => 'feed',
 					'updates_disabled' => (int)($feed->update_interval < 0),
-				]);
+				];
 			}
 
 			$root['param'] = sprintf(_ngettext('(%d feed)', '(%d feeds)', count($root['items'])), count($root['items']));

@@ -159,14 +159,19 @@
 
 				<!-- order 5: alert icons -->
 
-            <i class="material-icons net-alert" style="display : none; order : 5"
-                title="<?= __("Communication problem with server.") ?>">error_outline</i>
+						<i class="material-icons net-alert" style="display : none; order : 5"
+							title="<?= __("Communication problem with server.") ?>">error_outline</i>
 
-            <i class="material-icons log-alert" style="display : none; order : 5" onclick="App.openPreferences('system')"
-                 title="<?= __("Recent entries found in event log.") ?>">warning</i>
+						<i class="material-icons log-alert" style="display : none; order : 5" onclick="App.openPreferences('system')"
+							title="<?= __("Recent entries found in event log.") ?>">warning</i>
 
-            <i id="updates-available" class="material-icons icon-new-version" style="display : none; order: 5"
-               title="<?= __('Updates are available from Git.') ?>">new_releases</i>
+						<a id="updates-available" target="_blank" rel="noopener noreferrer" href="" style="display: none; order: 5">
+							<i class="material-icons icon-new-version" title="<?= __('Updates for Tiny Tiny RSS are available.') ?>">new_releases</i>
+						</a>
+
+						<a id="plugin-updates-available" href="prefs.php?tab=prefs" style="display: none; order: 5">
+							<i class="material-icons icon-new-version" title="<?= __('Updates for some local plugins are available.') ?>">new_releases</i>
+						</a>
 
 				<!-- order 10: headlines toolbar -->
 

@@ -821,6 +821,12 @@ body.ttrss_main #toolbar-frame #toolbar #toolbar-headlines .right {
 body.ttrss_main #toolbar-frame #toolbar #updates-available {
   color: #69C671;
   padding-right: 4px;
+  text-decoration: none;
+}
+body.ttrss_main #toolbar-frame #toolbar #plugin-updates-available {
+  color: #b3e2b7;
+  padding-right: 4px;
+  text-decoration: none;
 }
 body.ttrss_main #toolbar-frame #toolbar #selected_prompt {
   font-style: italic;
@@ -861,6 +867,12 @@ body.ttrss_main #header i.log-alert {
 body.ttrss_main #header #updates-available {
   color: #69C671;
   padding-right: 4px;
+  text-decoration: none;
+}
+body.ttrss_main #header #plugin-updates-available {
+  color: #8ed494;
+  padding-right: 4px;
+  text-decoration: none;
 }
 body.ttrss_main #header i {
   margin: 0 4px;

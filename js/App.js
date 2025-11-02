@@ -881,30 +881,25 @@ const App = {
       console.log("second stage ok");
 
    },
-   checkForUpdates: function() {
-      xhr.json("backend.php", {op: 'RPC', method: 'checkforupdates'})
-         .then((reply) => {
+	checkForUpdates: function() {
+		xhr.json("backend.php", {op: 'RPC', method: 'checkforupdates'})
+			.then((reply) => {
+				const ttrss_icon_a = document.getElementById('updates-available');
+				const plugin_icon_a = document.getElementById('plugin-updates-available');
 
-            const icon = document.getElementById("updates-available");
+				if (reply.changeset.id) {
+					ttrss_icon_a.href = reply.changeset.compare_url;
+					ttrss_icon_a.show();
+				} else {
+					ttrss_icon_a.hide();
+				}
 
-            if (reply.changeset.id || reply.plugins.length > 0) {
-               icon.show();
-
-               const tips = [];
-
-               if (reply.changeset.id)
-                  tips.push(__("Updates for Tiny Tiny RSS are available."));
-
-               if (reply.plugins.length > 0)
-                  tips.push(__("Updates for some local plugins are available."));
-
-               icon.setAttribute("title", tips.join("\n"));
-
-            } else {
-               icon.hide();
-            }
-         });
-   },
+				if (reply.plugins.length)
+					plugin_icon_a.show()
+				else
+					plugin_icon_a.hide();
+			});
+	},
    updateTitle: function() {
       let tmp = "Tiny Tiny RSS";
 

@@ -82,8 +82,8 @@ const USERNAME_MAX_LENGTH = 64
 func (u *UserRepository) CreateNewUser(
 	privKey string,
 	pubKey string,
-	salt string,
-	hashedPassword string,
+	innerSalt string,
+	innerPwHash string,
 	requestedUsername string,
 ) (string, error) {
 	id := ""
@@ -114,16 +114,23 @@ func (u *UserRepository) CreateNewUser(
 	}
 	log.Info().Str("userid", requestedUsername).Msg("registering new user")
 
-	u.UB.Create(&FMDUser{UID: id, Salt: salt, HashedPassword: hashedPassword, PrivateKey: privKey, PublicKey: pubKey})
+	newUser := FMDUser{
+		UID:        id,
+		PrivateKey: privKey,
+		PublicKey:  pubKey,
+	}
+	newUser.setPasswordData(innerSalt, innerPwHash)
+
+	u.UB.Create(&newUser)
 	metrics.Accounts.Inc()
+
 	return id, nil
 }
 
-func (u *UserRepository) UpdateUserPassword(user *FMDUser, privKey string, salt string, hashedPassword string) {
+func (u *UserRepository) UpdateUserPassword(user *FMDUser, privKey string, innerSalt string, innerPwHash string) {
 	log.Info().Str("userid", user.UID).Msg("changing password for user")
 
-	user.HashedPassword = hashedPassword
-	user.Salt = salt
+	user.setPasswordData(innerSalt, innerPwHash)
 	user.PrivateKey = privKey
 	u.UB.Save(&user)
 }
@@ -355,15 +362,13 @@ func (u *UserRepository) GetSalt(id string) string {
 	if err != nil {
 		return ""
 	}
-	if user.Salt != "" {
-		return user.Salt
-	}
-	return getSaltFromArgon2EncodedHash(user.HashedPassword)
+	// migrateToV2Passwords should ensure that all users have Salt set
+	return user.Salt
 }
 
 var ErrAccountLocked = errors.New("too many attempts, account locked")
 
-func (u *UserRepository) RequestAccess(id string, hashedPW string, sessionDurationSeconds uint64, remoteIp string) (*AccessToken, error) {
+func (u *UserRepository) RequestAccess(id string, innerPwHash string, sessionDurationSeconds uint64, remoteIp string) (*AccessToken, error) {
 	log.Debug().Msg("new login attempt")
 
 	user, err := u.UB.GetByID(id)
@@ -383,7 +388,10 @@ func (u *UserRepository) RequestAccess(id string, hashedPW string, sessionDurati
 		return nil, ErrAccountLocked
 	}
 
-	if user.HashedPassword == hashedPW {
+	expected := user.HashedPassword
+	actual := hashPasswordForLogin(innerPwHash)
+
+	if actual == expected {
 		u.ACC.ResetLock(id)
 		token := u.ACC.CreateNewAccessToken(id, sessionDurationSeconds)
 

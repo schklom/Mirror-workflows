@@ -5,12 +5,13 @@ import (
 	"fmd-server/migrations"
 	"fmt"
 	"strconv"
+	"strings"
 
 	"github.com/rs/zerolog/log"
 	"gorm.io/gorm"
 )
 
-const CurrentSqlVersion = 2
+const CurrentSqlVersion = 3
 
 const KeyVersion = "fmd_db_version"
 
@@ -59,6 +60,10 @@ func migrateDatabase(db *gorm.DB) {
 		}
 	}
 
+	if actualVersion < 3 {
+		migrateToV2Passwords(db)
+	}
+
 	// Use this to let GORM write a migration. Then inspect the created SQLite schema,
 	// and write an "up" migration from hand.
 	// db.AutoMigrate(&DBSetting{})
@@ -77,4 +82,29 @@ func runMigration(name string, db *gorm.DB) error {
 	}
 	err = db.Exec(string(sql)).Error
 	return err
+}
+
+// DB Version 3 / Password version 2
+
+func migrateToV2Passwords(db *gorm.DB) {
+	var users []FMDUser
+	db.Find(&users)
+
+	for idx, u := range users {
+		// Log progress every few users (because hashing can take some time).
+		if idx%100 == 0 {
+			log.Info().
+				Int("current", idx+1).
+				Int("total", len(users)).
+				Msg("migrating user")
+		}
+
+		if strings.HasPrefix(u.HashedPassword, PwPrefixV2) {
+			// Idempotence: skip already migrated passwords
+			return
+		}
+
+		u.setPasswordData(u.Salt, u.HashedPassword)
+		db.Save(u)
+	}
 }

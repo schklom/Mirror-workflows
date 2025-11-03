@@ -21,7 +21,7 @@ type FMDDB struct {
 type FMDUser struct {
 	Id             uint64 `gorm:"primaryKey"`
 	UID            string `gorm:"uniqueIndex"`
-	Salt           string // may be empty. In Argon2 the HashedPassword contains the salt.
+	Salt           string // salt for the inner password hash performed by the client. This is stored for returning it to the client. It is not used by the server.
 	HashedPassword string
 	PrivateKey     string
 	PublicKey      string

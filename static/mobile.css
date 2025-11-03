@@ -228,3 +228,12 @@ html.is-mobile table.infobox [style*="width"] {
     table-layout: auto !important;
   }
 }
+
+html.is-mobile .mw-parser-output > p,
+html.is-mobile .mw-parser-output > ul,
+html.is-mobile .mw-parser-output > ol,
+html.is-mobile .mw-parser-output > div:not([class]),
+html.is-mobile .mw-parser-output > span:not([class]) {
+  font-size: 1.55rem !important;
+  line-height: 1.75 !important;
+}

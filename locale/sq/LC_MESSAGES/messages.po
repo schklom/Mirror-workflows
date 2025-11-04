@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-04 02:48+0000\n"
-"PO-Revision-Date: 2025-10-10 18:07+0000\n"
+"PO-Revision-Date: 2025-11-04 16:58+0000\n"
 "Last-Translator: Besnik Bleta <besnik@programeshqip.org>\n"
 "Language-Team: Albanian <https://hosted.weblate.org/projects/tt-rss/webui/sq/"
 ">\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.14-dev\n"
+"X-Generator: Weblate 5.14.1-dev\n"
 
 #: backend.php:55
 msgid "Use default"
@@ -202,35 +202,27 @@ msgstr "Më të vjetër se dy javë"
 
 #: index.php:228
 msgid "Switch to three panel view"
-msgstr ""
+msgstr "Kalo nën pamjen me tre panele"
 
 #: index.php:229
 msgid "Switch to combined view"
-msgstr ""
+msgstr "Kalo nën pamjen e ndërthurur"
 
 #: index.php:230
-#, fuzzy
-#| msgid "Toggle widescreen mode"
 msgid "Disable widescreen mode"
-msgstr "Kalo/dil nga mënyra “Me ekran të gjerë”"
+msgstr "Çaktivizo mënyrën “Me ekran të gjerë”"
 
 #: index.php:231
-#, fuzzy
-#| msgid "Toggle widescreen mode"
 msgid "Enable widescreen mode"
-msgstr "Kalo/dil nga mënyra “Me ekran të gjerë”"
+msgstr "Aktivizo mënyrën “Me ekran të gjerë”"
 
 #: index.php:232
-#, fuzzy
-#| msgid "Expand article"
 msgid "Expand selected article only"
-msgstr "Zgjeroje artikullin"
+msgstr "Zgjero vetëm artikullin e përzgjedhur"
 
 #: index.php:233
-#, fuzzy
-#| msgid "Expand article"
 msgid "Expand all articles"
-msgstr "Zgjeroje artikullin"
+msgstr "Zgjeroji krejt artikujt"
 
 #: index.php:236
 msgid "Actions..."
@@ -1321,10 +1313,8 @@ msgid "Your access level is insufficient to run this script."
 msgstr "Lejet tuaja janë të pamjaftueshme për xhirimin e këtij programthi."
 
 #: classes/Handler_Public.php:689
-#, fuzzy
-#| msgid "Feeds with update errors"
 msgid "Proceed with update?"
-msgstr "Prurje me gabime përditësimi"
+msgstr "Të vazhdohet me përditësimin?"
 
 #: classes/Handler_Public.php:694
 msgid "Database Updater"
@@ -1586,10 +1576,8 @@ msgid "Task name"
 msgstr "Emër pune"
 
 #: classes/Pref_System.php:34
-#, fuzzy
-#| msgid "Scheduled tasks"
 msgid "Schedule"
-msgstr "Punë të vëna në plan"
+msgstr "Plan"
 
 #: classes/Pref_System.php:35
 msgid "Last executed"
@@ -1662,7 +1650,7 @@ msgstr "Formësim poste"
 
 #: classes/Pref_System.php:213
 msgid "Mail sent."
-msgstr ""
+msgstr "Mesazhi u dërgua."
 
 #: classes/Pref_System.php:233
 msgid "To:"
@@ -2816,17 +2804,15 @@ msgstr "URL-ja e treguar s’duket se përmban ndonjë prurje."
 
 #: js/CommonDialogs.js:177
 msgid "Expand to select feed"
-msgstr ""
+msgstr "Zgjeroje për përzgjedhje prurjeje"
 
 #: js/CommonDialogs.js:189
-#, fuzzy
-#| msgid "Couldn't download the specified URL: %s"
 msgid "Couldn't download the specified URL."
-msgstr "S’u shkarkua dot URL-ja e treguar: %s"
+msgstr "S’u shkarkua dot URL-ja e treguar."
 
 #: js/CommonDialogs.js:192
 msgid "Invalid content."
-msgstr ""
+msgstr "Lëndë e pavlefshme."
 
 #: js/CommonDialogs.js:195
 msgid "Error while creating feed database entry."

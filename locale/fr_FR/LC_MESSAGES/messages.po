@@ -13,10 +13,10 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-04 02:48+0000\n"
-"PO-Revision-Date: 2025-11-03 10:51+0000\n"
-"Last-Translator: Glandos <bugs-github@antipoul.fr>\n"
-"Language-Team: French <https://hosted.weblate.org/projects/tt-rss/webui/fr/"
-">\n"
+"PO-Revision-Date: 2025-11-04 16:58+0000\n"
+"Last-Translator: LaurentC <laurentc@users.noreply.hosted.weblate.org>\n"
+"Language-Team: French <https://hosted.weblate.org/projects/tt-rss/webui/fr/>"
+"\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -207,37 +207,27 @@ msgstr "Âgé d’au moins deux semaines"
 
 #: index.php:228
 msgid "Switch to three panel view"
-msgstr ""
+msgstr "Afficher sur trois panneaux"
 
 #: index.php:229
-#, fuzzy
-#| msgid "Switch to digest..."
 msgid "Switch to combined view"
-msgstr "Basculer en mode résumé..."
+msgstr "Afficher en mode combiné"
 
 #: index.php:230
-#, fuzzy
-#| msgid "Toggle widescreen mode"
 msgid "Disable widescreen mode"
-msgstr "Basculer le mode écran large"
+msgstr "Désactiver le mode écran large"
 
 #: index.php:231
-#, fuzzy
-#| msgid "Toggle widescreen mode"
 msgid "Enable widescreen mode"
-msgstr "Basculer le mode écran large"
+msgstr "Activer le mode écran large"
 
 #: index.php:232
-#, fuzzy
-#| msgid "Expand article"
 msgid "Expand selected article only"
-msgstr "Étendre l’article"
+msgstr "Étendre l’article sélectionné"
 
 #: index.php:233
-#, fuzzy
-#| msgid "Expand article"
 msgid "Expand all articles"
-msgstr "Étendre l’article"
+msgstr "Étendre tous les articles"
 
 #: index.php:236
 msgid "Actions..."
@@ -1329,10 +1319,8 @@ msgid "Your access level is insufficient to run this script."
 msgstr "Vous n’avez pas les permissions nécessaires pour exécuter ce script."
 
 #: classes/Handler_Public.php:689
-#, fuzzy
-#| msgid "Feeds with update errors"
 msgid "Proceed with update?"
-msgstr "Flux avec des erreurs de mise à jour"
+msgstr "Effectuer la mise à jour ?"
 
 #: classes/Handler_Public.php:694
 msgid "Database Updater"
@@ -1595,10 +1583,8 @@ msgid "Task name"
 msgstr "Nom de tâche"
 
 #: classes/Pref_System.php:34
-#, fuzzy
-#| msgid "Scheduled tasks"
 msgid "Schedule"
-msgstr "Tâches planifiées"
+msgstr "Planification"
 
 #: classes/Pref_System.php:35
 msgid "Last executed"
@@ -1671,7 +1657,7 @@ msgstr "Configuration des courriels"
 
 #: classes/Pref_System.php:213
 msgid "Mail sent."
-msgstr ""
+msgstr "E-mail envoyé."
 
 #: classes/Pref_System.php:233
 msgid "To:"
@@ -1972,7 +1958,7 @@ msgstr "S’abonner à %s dans Tiny Tiny RSS ?"
 
 #: plugins/bookmarklets/init.php:359
 msgid "Bookmarklets"
-msgstr "Bookmarklets"
+msgstr "Signets"
 
 #: plugins/bookmarklets/init.php:361
 msgid ""
@@ -1989,7 +1975,7 @@ msgstr "S’abonner dans Tiny Tiny RSS"
 
 #: plugins/bookmarklets/init.php:367
 msgid "Use this bookmarklet to publish arbitrary pages using Tiny Tiny RSS"
-msgstr "Utilisez ce bookmarklet pour publier des pages avec Tiny Tiny RSS"
+msgstr "Utilisez ce signet pour publier des pages avec Tiny Tiny RSS"
 
 #: include/login_form.php:150
 msgid "I forgot my password"
@@ -2835,16 +2821,12 @@ msgid "Expand to select feed"
 msgstr "Développer jusqu’au flux sélectionné"
 
 #: js/CommonDialogs.js:189
-#, fuzzy
-#| msgid "Couldn't download the specified URL: %s"
 msgid "Couldn't download the specified URL."
-msgstr "L’URL spécifiée n’a pas pu être téléchargée : %s"
+msgstr "L’URL spécifiée n’a pas pu être téléchargée."
 
 #: js/CommonDialogs.js:192
-#, fuzzy
-#| msgid "Inline content"
 msgid "Invalid content."
-msgstr "Contenu intégré"
+msgstr "Contenu invalide."
 
 #: js/CommonDialogs.js:195
 msgid "Error while creating feed database entry."

@@ -12,16 +12,16 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS sv_SE\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-04 17:27+0000\n"
-"PO-Revision-Date: 2018-12-27 20:12+0000\n"
-"Last-Translator: Dennis Öberg <deob83@gmail.com>\n"
-"Language-Team: Swedish <https://weblate.tt-rss.org/projects/tt-rss/messages/"
-"sv/>\n"
+"PO-Revision-Date: 2025-11-05 17:51+0000\n"
+"Last-Translator: LaurentC <laurentc@users.noreply.hosted.weblate.org>\n"
+"Language-Team: Swedish <https://hosted.weblate.org/projects/tt-rss/webui/sv/>"
+"\n"
 "Language: sv_SE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.3\n"
+"X-Generator: Weblate 5.15-dev\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: backend.php:55
@@ -774,12 +774,11 @@ msgid "Long date format"
 msgstr "Långa datum"
 
 #: classes/Pref_Prefs.php:113
-#, fuzzy
 msgid ""
 "Syntax is identical to PHP <a href='https://www.php.net/manual/"
 "function.date.php'>date()</a> function."
 msgstr ""
-"Den syntax som används är identisk med <a href='http://php.net/manual/"
+"Den syntax som används är identisk med <a href='https://www.php.net/manual/"
 "function.date.php'>date()</a>-funktinen i PHP."
 
 #: classes/Pref_Prefs.php:114

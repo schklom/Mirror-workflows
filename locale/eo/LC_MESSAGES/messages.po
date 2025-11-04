@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-04 16:49+0000\n"
+"POT-Creation-Date: 2025-11-04 17:27+0000\n"
 "PO-Revision-Date: 2019-12-10 18:38+0000\n"
 "Last-Translator: Nikolay Korotkiy <sikmir@gmail.com>\n"
 "Language-Team: Esperanto <https://weblate.tt-rss.org/projects/tt-rss/"
@@ -91,7 +91,7 @@ msgstr ""
 msgid "Read Only"
 msgstr ""
 
-#: backend.php:87 classes/Pref_System.php:151
+#: backend.php:87 classes/Pref_System.php:152
 msgid "User"
 msgstr "Uzanto"
 
@@ -105,7 +105,7 @@ msgstr "Administranto"
 
 #: index.php:124 index.php:138 index.php:298 prefs.php:116
 #: classes/Pref_Prefs.php:887 classes/Pref_Prefs.php:937
-#: classes/Pref_System.php:250 classes/Pref_System.php:261 js/PrefUsers.js:112
+#: classes/Pref_System.php:251 classes/Pref_System.php:262 js/PrefUsers.js:112
 #: js/PrefFeedTree.js:183 js/PrefFeedTree.js:190 js/PrefFeedTree.js:314
 #: js/PrefFeedTree.js:386 js/PrefFilterTree.js:124 js/Article.js:265
 #: js/Article.js:341 js/Headlines.js:351 js/Headlines.js:534
@@ -728,7 +728,7 @@ msgstr ""
 
 #: classes/Pref_Prefs.php:113
 msgid ""
-"Syntax is identical to PHP <a href='http://php.net/manual/"
+"Syntax is identical to PHP <a href='https://www.php.net/manual/"
 "function.date.php'>date()</a> function."
 msgstr ""
 
@@ -946,7 +946,7 @@ msgstr ""
 msgid "Register"
 msgstr ""
 
-#: classes/Pref_Prefs.php:710 classes/Pref_System.php:128
+#: classes/Pref_Prefs.php:710 classes/Pref_System.php:129
 msgid "Clear"
 msgstr ""
 
@@ -1565,109 +1565,109 @@ msgid_plural "(+%d actions)"
 msgstr[0] "Aliaj agoj:"
 msgstr[1] "Aliaj agoj:"
 
-#: classes/Pref_System.php:22
+#: classes/Pref_System.php:23
 msgid "Test message from tt-rss"
 msgstr ""
 
-#: classes/Pref_System.php:23
+#: classes/Pref_System.php:24
 msgid "This message confirms that tt-rss can send outgoing email."
 msgstr ""
 
-#: classes/Pref_System.php:33
+#: classes/Pref_System.php:34
 msgid "Task name"
 msgstr ""
 
-#: classes/Pref_System.php:34
+#: classes/Pref_System.php:35
 msgid "Schedule"
 msgstr ""
 
-#: classes/Pref_System.php:35
+#: classes/Pref_System.php:36
 #, fuzzy
 msgid "Last executed"
 msgstr "Lasta ĝisdatigo:"
 
-#: classes/Pref_System.php:36
+#: classes/Pref_System.php:37
 msgid "Duration (seconds)"
 msgstr ""
 
-#: classes/Pref_System.php:37
+#: classes/Pref_System.php:38
 msgid "Return code"
 msgstr ""
 
-#: classes/Pref_System.php:109 js/PrefHelpers.js:621
+#: classes/Pref_System.php:110 js/PrefHelpers.js:621
 msgid "Refresh"
 msgstr ""
 
-#: classes/Pref_System.php:114
+#: classes/Pref_System.php:115
 msgid "&lt;&lt;"
 msgstr ""
 
-#: classes/Pref_System.php:118
+#: classes/Pref_System.php:119
 #, php-format
 msgid "Page %d of %d"
 msgstr ""
 
-#: classes/Pref_System.php:123
+#: classes/Pref_System.php:124
 msgid "&gt;&gt;"
 msgstr ""
 
-#: classes/Pref_System.php:132
+#: classes/Pref_System.php:133
 msgid "Severity:"
 msgstr ""
 
-#: classes/Pref_System.php:136
+#: classes/Pref_System.php:137
 msgid "Errors"
 msgstr ""
 
-#: classes/Pref_System.php:137
+#: classes/Pref_System.php:138
 msgid "Warnings"
 msgstr ""
 
-#: classes/Pref_System.php:138
+#: classes/Pref_System.php:139
 msgid "Everything"
 msgstr ""
 
-#: classes/Pref_System.php:148
+#: classes/Pref_System.php:149
 msgid "Error"
 msgstr ""
 
-#: classes/Pref_System.php:149
+#: classes/Pref_System.php:150
 msgid "Filename"
 msgstr ""
 
-#: classes/Pref_System.php:150
+#: classes/Pref_System.php:151
 msgid "Message"
 msgstr ""
 
-#: classes/Pref_System.php:152
+#: classes/Pref_System.php:153
 msgid "Date"
 msgstr ""
 
-#: classes/Pref_System.php:196
+#: classes/Pref_System.php:197
 msgid "Event log"
 msgstr ""
 
-#: classes/Pref_System.php:202
+#: classes/Pref_System.php:203
 msgid "Email configuration"
 msgstr ""
 
-#: classes/Pref_System.php:213
+#: classes/Pref_System.php:214
 msgid "Email sent."
 msgstr ""
 
-#: classes/Pref_System.php:233
+#: classes/Pref_System.php:234
 msgid "To:"
 msgstr ""
 
-#: classes/Pref_System.php:235
+#: classes/Pref_System.php:236
 msgid "Send test email"
 msgstr ""
 
-#: classes/Pref_System.php:241
+#: classes/Pref_System.php:242
 msgid "Scheduled tasks"
 msgstr ""
 
-#: classes/Pref_System.php:252
+#: classes/Pref_System.php:253
 msgid "PHP Information"
 msgstr ""
 

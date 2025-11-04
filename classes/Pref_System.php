@@ -210,7 +210,7 @@ class Pref_System extends Handler_Administrative {
 									const msg = document.getElementById("mail-test-result");
 
 									if (reply.rc) {
-										msg.innerHTML = __("Mail sent.");
+										msg.innerHTML = <?= json_encode(__('Email sent.')) ?>;
 										msg.className = 'alert alert-success';
 									} else {
 										msg.innerHTML = reply.error;

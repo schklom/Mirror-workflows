@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tt-rss unstable\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-04 02:48+0000\n"
+"POT-Creation-Date: 2025-11-04 16:49+0000\n"
 "PO-Revision-Date: 2019-10-04 07:56+0000\n"
 "Last-Translator: Gorfiend <gorfiend@gmail.com>\n"
 "Language-Team: Japanese <https://weblate.tt-rss.org/projects/tt-rss/messages/"
@@ -701,7 +701,10 @@ msgid "Enable digest"
 msgstr "ダイジェストを有効にする"
 
 #: classes/Pref_Prefs.php:106
-msgid "Send daily digest of new (and unread) headlines to your e-mail address"
+#, fuzzy
+#| msgid ""
+#| "Send daily digest of new (and unread) headlines to your e-mail address"
+msgid "Send daily digest of new (and unread) headlines to your email address"
 msgstr ""
 "設定された電子メールアドレスに毎日新しい(かつ未読の)ヘッドラインのダイジェス"
 "トを送る"
@@ -876,9 +879,9 @@ msgstr "個人データを変更しました。"
 msgid "Full name:"
 msgstr "フルネーム:"
 
-#: classes/Pref_Prefs.php:306 js/PrefUsers.js:98
-msgid "E-mail:"
-msgstr "電子メール:"
+#: classes/Pref_Prefs.php:306 classes/Handler_Public.php:534 js/PrefUsers.js:98
+msgid "Email:"
+msgstr "メールアドレス:"
 
 #: classes/Pref_Prefs.php:314 classes/Pref_Feeds.php:703
 #: plugins/note/init.php:49 plugins/nsfw/init.php:105
@@ -1305,8 +1308,8 @@ msgid "Password recovery"
 msgstr "パスワードの復旧"
 
 #: classes/Handler_Public.php:519 classes/Handler_Public.php:549
-#: classes/Handler_Public.php:609 classes/Handler_Public.php:727
-#: classes/Handler_Public.php:734 classes/Handler_Public.php:757
+#: classes/Handler_Public.php:609 classes/Handler_Public.php:726
+#: classes/Handler_Public.php:733 classes/Handler_Public.php:756
 #: plugins/bookmarklets/init.php:97 plugins/bookmarklets/init.php:142
 #: plugins/bookmarklets/init.php:160 plugins/bookmarklets/init.php:165
 msgid "Return to Tiny Tiny RSS"
@@ -1325,10 +1328,6 @@ msgstr ""
 #: js/PrefUsers.js:64 js/CommonDialogs.js:585
 msgid "Login:"
 msgstr "ログイン:"
-
-#: classes/Handler_Public.php:534
-msgid "Email:"
-msgstr "メールアドレス:"
 
 #: classes/Handler_Public.php:542
 #, php-format
@@ -1360,27 +1359,27 @@ msgstr ""
 msgid "Your access level is insufficient to run this script."
 msgstr "あなたの権限では、このスクリプトを実行できません。"
 
-#: classes/Handler_Public.php:689
+#: classes/Handler_Public.php:688
 #, fuzzy
 #| msgid "Feeds with update errors"
 msgid "Proceed with update?"
 msgstr "更新エラーのあるフィード"
 
-#: classes/Handler_Public.php:694
+#: classes/Handler_Public.php:693
 msgid "Database Updater"
 msgstr "データベースアップデーター"
 
-#: classes/Handler_Public.php:707
+#: classes/Handler_Public.php:706
 #, php-format
 msgid "Performing updates to version %d"
 msgstr "バージョン %d に更新を実行している"
 
-#: classes/Handler_Public.php:722 classes/Handler_Public.php:749
+#: classes/Handler_Public.php:721 classes/Handler_Public.php:748
 #: js/PrefHelpers.js:417 js/PrefHelpers.js:760
 msgid "Update"
 msgstr "更新"
 
-#: classes/Handler_Public.php:742
+#: classes/Handler_Public.php:741
 #, fuzzy, php-format
 #| msgid ""
 #| "Tiny Tiny RSS database needs update to the latest version (%d to %d)."
@@ -1428,7 +1427,9 @@ msgid "(%d days)"
 msgstr "(%d フィード)"
 
 #: classes/Pref_Feeds.php:621 js/CommonDialogs.js:500
-msgid "Include in e-mail digest"
+#, fuzzy
+#| msgid "Include in e-mail digest"
+msgid "Include in email digest"
 msgstr "電子メールダイジェストに含む"
 
 #: classes/Pref_Feeds.php:622 js/CommonDialogs.js:501
@@ -1629,6 +1630,10 @@ msgstr[0] "%s (+%d 操作)"
 msgid "Test message from tt-rss"
 msgstr ""
 
+#: classes/Pref_System.php:23
+msgid "This message confirms that tt-rss can send outgoing email."
+msgstr ""
+
 #: classes/Pref_System.php:33
 msgid "Task name"
 msgstr ""
@@ -1710,11 +1715,11 @@ msgstr "ログの消去"
 #: classes/Pref_System.php:202
 #, fuzzy
 #| msgid "Save configuration"
-msgid "Mail configuration"
+msgid "Email configuration"
 msgstr "設定を保存する"
 
 #: classes/Pref_System.php:213
-msgid "Mail sent."
+msgid "Email sent."
 msgstr ""
 
 #: classes/Pref_System.php:233
@@ -1736,7 +1741,7 @@ msgstr "PHP 情報"
 
 #: classes/Mailer.php:53
 #, php-format
-msgid "Unknown error while sending mail. Hooks tried: %d."
+msgid "Unknown error while sending email. Hooks tried: %d."
 msgstr ""
 
 #: classes/Pref_Users.php:49 classes/Pref_Users.php:239
@@ -3263,6 +3268,9 @@ msgstr "サイトの URL"
 #: js/CommonDialogs.js:611
 msgid "Icon"
 msgstr "アイコン"
+
+#~ msgid "E-mail:"
+#~ msgstr "電子メール:"
 
 #~ msgid "Updates are available from Git."
 #~ msgstr "Gitからのアップデートが利用できます。"

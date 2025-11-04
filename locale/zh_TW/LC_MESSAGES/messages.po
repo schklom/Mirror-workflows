@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-04 02:48+0000\n"
+"POT-Creation-Date: 2025-11-04 16:49+0000\n"
 "PO-Revision-Date: 2025-06-01 23:37+0000\n"
 "Last-Translator: TonyRL <TonyRL@users.noreply.github.com>\n"
 "Language-Team: Chinese (Traditional Han script) <https://hosted.weblate.org/"
@@ -676,7 +676,10 @@ msgid "Enable digest"
 msgstr "啟用電子郵件摘要"
 
 #: classes/Pref_Prefs.php:106
-msgid "Send daily digest of new (and unread) headlines to your e-mail address"
+#, fuzzy
+#| msgid ""
+#| "Send daily digest of new (and unread) headlines to your e-mail address"
+msgid "Send daily digest of new (and unread) headlines to your email address"
 msgstr "每天將更新的和未讀的文章標題透過郵件發送摘要到您設定的信箱中"
 
 #: classes/Pref_Prefs.php:107
@@ -840,8 +843,8 @@ msgstr "您的個人資料已儲存。"
 msgid "Full name:"
 msgstr "全名："
 
-#: classes/Pref_Prefs.php:306 js/PrefUsers.js:98
-msgid "E-mail:"
+#: classes/Pref_Prefs.php:306 classes/Handler_Public.php:534 js/PrefUsers.js:98
+msgid "Email:"
 msgstr "電子郵件："
 
 #: classes/Pref_Prefs.php:314 classes/Pref_Feeds.php:703
@@ -1255,8 +1258,8 @@ msgid "Password recovery"
 msgstr "密碼救援"
 
 #: classes/Handler_Public.php:519 classes/Handler_Public.php:549
-#: classes/Handler_Public.php:609 classes/Handler_Public.php:727
-#: classes/Handler_Public.php:734 classes/Handler_Public.php:757
+#: classes/Handler_Public.php:609 classes/Handler_Public.php:726
+#: classes/Handler_Public.php:733 classes/Handler_Public.php:756
 #: plugins/bookmarklets/init.php:97 plugins/bookmarklets/init.php:142
 #: plugins/bookmarklets/init.php:160 plugins/bookmarklets/init.php:165
 msgid "Return to Tiny Tiny RSS"
@@ -1273,10 +1276,6 @@ msgstr "您需要提供有效的電子郵件以及帳號名稱，密碼重設連
 #: js/PrefUsers.js:64 js/CommonDialogs.js:585
 msgid "Login:"
 msgstr "登入："
-
-#: classes/Handler_Public.php:534
-msgid "Email:"
-msgstr "電子郵件："
 
 #: classes/Handler_Public.php:542
 #, php-format
@@ -1307,27 +1306,27 @@ msgstr "對不起，沒有找到符合的帳號密碼。"
 msgid "Your access level is insufficient to run this script."
 msgstr "此帳號等級不足，無法運行腳本。"
 
-#: classes/Handler_Public.php:689
+#: classes/Handler_Public.php:688
 #, fuzzy
 #| msgid "Feeds with update errors"
 msgid "Proceed with update?"
 msgstr "更新錯誤的摘要"
 
-#: classes/Handler_Public.php:694
+#: classes/Handler_Public.php:693
 msgid "Database Updater"
 msgstr "資料庫更新管理器"
 
-#: classes/Handler_Public.php:707
+#: classes/Handler_Public.php:706
 #, php-format
 msgid "Performing updates to version %d"
 msgstr "正在更新到版本 %d"
 
-#: classes/Handler_Public.php:722 classes/Handler_Public.php:749
+#: classes/Handler_Public.php:721 classes/Handler_Public.php:748
 #: js/PrefHelpers.js:417 js/PrefHelpers.js:760
 msgid "Update"
 msgstr "更新列表"
 
-#: classes/Handler_Public.php:742
+#: classes/Handler_Public.php:741
 #, php-format
 msgid "Database schema needs update to the latest version (%d to %d)."
 msgstr "資料庫需要升級到最新版（%d 到 %d）。"
@@ -1369,7 +1368,9 @@ msgid "(%d days)"
 msgstr "（%d 天）"
 
 #: classes/Pref_Feeds.php:621 js/CommonDialogs.js:500
-msgid "Include in e-mail digest"
+#, fuzzy
+#| msgid "Include in e-mail digest"
+msgid "Include in email digest"
 msgstr "包含電子郵件摘要"
 
 #: classes/Pref_Feeds.php:622 js/CommonDialogs.js:501
@@ -1561,6 +1562,10 @@ msgstr[0] "（+%d 個操作）"
 msgid "Test message from tt-rss"
 msgstr "來自tt-rss的測試訊息"
 
+#: classes/Pref_System.php:23
+msgid "This message confirms that tt-rss can send outgoing email."
+msgstr ""
+
 #: classes/Pref_System.php:33
 msgid "Task name"
 msgstr "工作名稱"
@@ -1637,11 +1642,13 @@ msgid "Event log"
 msgstr "事件紀錄檔"
 
 #: classes/Pref_System.php:202
-msgid "Mail configuration"
+#, fuzzy
+#| msgid "Mail configuration"
+msgid "Email configuration"
 msgstr "電郵設定"
 
 #: classes/Pref_System.php:213
-msgid "Mail sent."
+msgid "Email sent."
 msgstr ""
 
 #: classes/Pref_System.php:233
@@ -1661,8 +1668,9 @@ msgid "PHP Information"
 msgstr "PHP 資訊"
 
 #: classes/Mailer.php:53
-#, php-format
-msgid "Unknown error while sending mail. Hooks tried: %d."
+#, fuzzy, php-format
+#| msgid "Unknown error while sending mail. Hooks tried: %d."
+msgid "Unknown error while sending email. Hooks tried: %d."
 msgstr "發送郵件時遇到不明錯誤。已嘗試：%d。"
 
 #: classes/Pref_Users.php:49 classes/Pref_Users.php:239
@@ -3086,6 +3094,9 @@ msgstr "網站"
 #: js/CommonDialogs.js:611
 msgid "Icon"
 msgstr "圖示"
+
+#~ msgid "E-mail:"
+#~ msgstr "電子郵件："
 
 #~ msgid "Updates are available from Git."
 #~ msgstr "可從Git獲取更新。"

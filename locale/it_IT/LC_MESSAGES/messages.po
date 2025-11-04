@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-04 02:48+0000\n"
+"POT-Creation-Date: 2025-11-04 16:49+0000\n"
 "PO-Revision-Date: 2025-06-03 19:38+0000\n"
 "Last-Translator: Dario Di Ludovico <dariottolo@gmail.com>\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/tt-rss/webui/it/"
@@ -679,7 +679,10 @@ msgid "Enable digest"
 msgstr "Attiva sommario"
 
 #: classes/Pref_Prefs.php:106
-msgid "Send daily digest of new (and unread) headlines to your e-mail address"
+#, fuzzy
+#| msgid ""
+#| "Send daily digest of new (and unread) headlines to your e-mail address"
+msgid "Send daily digest of new (and unread) headlines to your email address"
 msgstr ""
 "Invia un sommario di articoli nuovi (e non letti) al tuo indirizzo email"
 
@@ -845,8 +848,8 @@ msgstr "I dati personali sono stati salvati."
 msgid "Full name:"
 msgstr "Nome completo:"
 
-#: classes/Pref_Prefs.php:306 js/PrefUsers.js:98
-msgid "E-mail:"
+#: classes/Pref_Prefs.php:306 classes/Handler_Public.php:534 js/PrefUsers.js:98
+msgid "Email:"
 msgstr "Email:"
 
 #: classes/Pref_Prefs.php:314 classes/Pref_Feeds.php:703
@@ -1267,8 +1270,8 @@ msgid "Password recovery"
 msgstr "Recupera password"
 
 #: classes/Handler_Public.php:519 classes/Handler_Public.php:549
-#: classes/Handler_Public.php:609 classes/Handler_Public.php:727
-#: classes/Handler_Public.php:734 classes/Handler_Public.php:757
+#: classes/Handler_Public.php:609 classes/Handler_Public.php:726
+#: classes/Handler_Public.php:733 classes/Handler_Public.php:756
 #: plugins/bookmarklets/init.php:97 plugins/bookmarklets/init.php:142
 #: plugins/bookmarklets/init.php:160 plugins/bookmarklets/init.php:165
 msgid "Return to Tiny Tiny RSS"
@@ -1287,10 +1290,6 @@ msgstr ""
 #: js/PrefUsers.js:64 js/CommonDialogs.js:585
 msgid "Login:"
 msgstr "Nome utente:"
-
-#: classes/Handler_Public.php:534
-msgid "Email:"
-msgstr "Email:"
 
 #: classes/Handler_Public.php:542
 #, php-format
@@ -1321,27 +1320,27 @@ msgstr "Mi dispiace, nome utente e email non trovati."
 msgid "Your access level is insufficient to run this script."
 msgstr "Il livello di accesso non è sufficiente per eseguire questo script."
 
-#: classes/Handler_Public.php:689
+#: classes/Handler_Public.php:688
 #, fuzzy
 #| msgid "Feeds with update errors"
 msgid "Proceed with update?"
 msgstr "Notiziari con errori di aggiornamento"
 
-#: classes/Handler_Public.php:694
+#: classes/Handler_Public.php:693
 msgid "Database Updater"
 msgstr "Aggiornatore database"
 
-#: classes/Handler_Public.php:707
+#: classes/Handler_Public.php:706
 #, php-format
 msgid "Performing updates to version %d"
 msgstr "Esecuzione dell'aggiornamento alla versione %d"
 
-#: classes/Handler_Public.php:722 classes/Handler_Public.php:749
+#: classes/Handler_Public.php:721 classes/Handler_Public.php:748
 #: js/PrefHelpers.js:417 js/PrefHelpers.js:760
 msgid "Update"
 msgstr "Aggiorna"
 
-#: classes/Handler_Public.php:742
+#: classes/Handler_Public.php:741
 #, php-format
 msgid "Database schema needs update to the latest version (%d to %d)."
 msgstr ""
@@ -1389,7 +1388,9 @@ msgid "(%d days)"
 msgstr "(%d giorni)"
 
 #: classes/Pref_Feeds.php:621 js/CommonDialogs.js:500
-msgid "Include in e-mail digest"
+#, fuzzy
+#| msgid "Include in e-mail digest"
+msgid "Include in email digest"
 msgstr "Includere nell'email riassunto"
 
 #: classes/Pref_Feeds.php:622 js/CommonDialogs.js:501
@@ -1583,6 +1584,10 @@ msgstr[1] "(+%d azioni)"
 msgid "Test message from tt-rss"
 msgstr "Messaggio di test da tt-rss"
 
+#: classes/Pref_System.php:23
+msgid "This message confirms that tt-rss can send outgoing email."
+msgstr ""
+
 #: classes/Pref_System.php:33
 msgid "Task name"
 msgstr "Nome dell'attività"
@@ -1659,11 +1664,13 @@ msgid "Event log"
 msgstr "Log degli eventi"
 
 #: classes/Pref_System.php:202
-msgid "Mail configuration"
+#, fuzzy
+#| msgid "Mail configuration"
+msgid "Email configuration"
 msgstr "Invia la configurazione via mail"
 
 #: classes/Pref_System.php:213
-msgid "Mail sent."
+msgid "Email sent."
 msgstr ""
 
 #: classes/Pref_System.php:233
@@ -1683,8 +1690,9 @@ msgid "PHP Information"
 msgstr "Informazioni PHP"
 
 #: classes/Mailer.php:53
-#, php-format
-msgid "Unknown error while sending mail. Hooks tried: %d."
+#, fuzzy, php-format
+#| msgid "Unknown error while sending mail. Hooks tried: %d."
+msgid "Unknown error while sending email. Hooks tried: %d."
 msgstr "Errore sconosciuto durante invio della mail. Ganci usati: %d."
 
 #: classes/Pref_Users.php:49 classes/Pref_Users.php:239
@@ -3144,6 +3152,9 @@ msgstr "URL del sito"
 #: js/CommonDialogs.js:611
 msgid "Icon"
 msgstr "Icona"
+
+#~ msgid "E-mail:"
+#~ msgstr "Email:"
 
 #~ msgid "Updates are available from Git."
 #~ msgstr "Ci sono aggiornamenti disponibili via Git."

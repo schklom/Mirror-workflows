@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TT-RSS CZech\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-04 02:48+0000\n"
+"POT-Creation-Date: 2025-11-04 16:49+0000\n"
 "PO-Revision-Date: 2025-02-11 21:01+0000\n"
 "Last-Translator: Patrik Coch <patrikcoch16@gmail.com>\n"
 "Language-Team: Czech <https://hosted.weblate.org/projects/tt-rss/webui/cs/>\n"
@@ -677,7 +677,10 @@ msgid "Enable digest"
 msgstr "Povolit výtah"
 
 #: classes/Pref_Prefs.php:106
-msgid "Send daily digest of new (and unread) headlines to your e-mail address"
+#, fuzzy
+#| msgid ""
+#| "Send daily digest of new (and unread) headlines to your e-mail address"
+msgid "Send daily digest of new (and unread) headlines to your email address"
 msgstr ""
 "Odeslat denní výtah nových (a nepřečtených) nadpisů na vaši e-mailovou adresu"
 
@@ -844,8 +847,8 @@ msgstr "Vaše osobní údaje byly uloženy."
 msgid "Full name:"
 msgstr "Celé jméno:"
 
-#: classes/Pref_Prefs.php:306 js/PrefUsers.js:98
-msgid "E-mail:"
+#: classes/Pref_Prefs.php:306 classes/Handler_Public.php:534 js/PrefUsers.js:98
+msgid "Email:"
 msgstr "E-mail:"
 
 #: classes/Pref_Prefs.php:314 classes/Pref_Feeds.php:703
@@ -1265,8 +1268,8 @@ msgid "Password recovery"
 msgstr "Obnovení hesla"
 
 #: classes/Handler_Public.php:519 classes/Handler_Public.php:549
-#: classes/Handler_Public.php:609 classes/Handler_Public.php:727
-#: classes/Handler_Public.php:734 classes/Handler_Public.php:757
+#: classes/Handler_Public.php:609 classes/Handler_Public.php:726
+#: classes/Handler_Public.php:733 classes/Handler_Public.php:756
 #: plugins/bookmarklets/init.php:97 plugins/bookmarklets/init.php:142
 #: plugins/bookmarklets/init.php:160 plugins/bookmarklets/init.php:165
 msgid "Return to Tiny Tiny RSS"
@@ -1285,10 +1288,6 @@ msgstr ""
 #: js/PrefUsers.js:64 js/CommonDialogs.js:585
 msgid "Login:"
 msgstr "Přihlášení:"
-
-#: classes/Handler_Public.php:534
-msgid "Email:"
-msgstr "E-mail:"
 
 #: classes/Handler_Public.php:542
 #, php-format
@@ -1319,27 +1318,27 @@ msgstr "Bohužel, kombinace přihlašovacího jména a e-mailu nebyla nalezena."
 msgid "Your access level is insufficient to run this script."
 msgstr "Nemáte dostatečnou úroveň přístupu pro spuštění tohoto skriptu."
 
-#: classes/Handler_Public.php:689
+#: classes/Handler_Public.php:688
 #, fuzzy
 #| msgid "Feeds with update errors"
 msgid "Proceed with update?"
 msgstr "Kanály s chybami aktualizace"
 
-#: classes/Handler_Public.php:694
+#: classes/Handler_Public.php:693
 msgid "Database Updater"
 msgstr "Aktualizační nástroj databáze"
 
-#: classes/Handler_Public.php:707
+#: classes/Handler_Public.php:706
 #, php-format
 msgid "Performing updates to version %d"
 msgstr "Provádění aktualizace na verzi %d"
 
-#: classes/Handler_Public.php:722 classes/Handler_Public.php:749
+#: classes/Handler_Public.php:721 classes/Handler_Public.php:748
 #: js/PrefHelpers.js:417 js/PrefHelpers.js:760
 msgid "Update"
 msgstr "Aktualizovat"
 
-#: classes/Handler_Public.php:742
+#: classes/Handler_Public.php:741
 #, php-format
 msgid "Database schema needs update to the latest version (%d to %d)."
 msgstr "Schéma databáze potřebuje aktualizaci na nejnovější verzi (%d na %d)."
@@ -1391,7 +1390,9 @@ msgid "(%d days)"
 msgstr "(%d dní)"
 
 #: classes/Pref_Feeds.php:621 js/CommonDialogs.js:500
-msgid "Include in e-mail digest"
+#, fuzzy
+#| msgid "Include in e-mail digest"
+msgid "Include in email digest"
 msgstr "Zahrnout do e-mailového výtahu"
 
 #: classes/Pref_Feeds.php:622 js/CommonDialogs.js:501
@@ -1591,6 +1592,10 @@ msgstr[2] "%s (+%d akcí)"
 msgid "Test message from tt-rss"
 msgstr "Testovací zpráva z tt-rss"
 
+#: classes/Pref_System.php:23
+msgid "This message confirms that tt-rss can send outgoing email."
+msgstr ""
+
 #: classes/Pref_System.php:33
 msgid "Task name"
 msgstr ""
@@ -1667,11 +1672,13 @@ msgid "Event log"
 msgstr "Protokol událostí"
 
 #: classes/Pref_System.php:202
-msgid "Mail configuration"
+#, fuzzy
+#| msgid "Mail configuration"
+msgid "Email configuration"
 msgstr "Konfigurace e-mailu"
 
 #: classes/Pref_System.php:213
-msgid "Mail sent."
+msgid "Email sent."
 msgstr ""
 
 #: classes/Pref_System.php:233
@@ -1691,8 +1698,9 @@ msgid "PHP Information"
 msgstr "Informace o PHP"
 
 #: classes/Mailer.php:53
-#, php-format
-msgid "Unknown error while sending mail. Hooks tried: %d."
+#, fuzzy, php-format
+#| msgid "Unknown error while sending mail. Hooks tried: %d."
+msgid "Unknown error while sending email. Hooks tried: %d."
 msgstr "Neznámá chyba při odesílání e-mailu. Vyzkoušené vychytávky: %d."
 
 #: classes/Pref_Users.php:49 classes/Pref_Users.php:239
@@ -3164,6 +3172,9 @@ msgstr "URL stránky"
 #: js/CommonDialogs.js:611
 msgid "Icon"
 msgstr "Ikona"
+
+#~ msgid "E-mail:"
+#~ msgstr "E-mail:"
 
 #~ msgid "Updates are available from Git."
 #~ msgstr "Jsou dostupné aktualizace z Git."

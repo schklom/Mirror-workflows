@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tt-rss-hu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-04 02:48+0000\n"
+"POT-Creation-Date: 2025-11-04 16:49+0000\n"
 "PO-Revision-Date: 2013-05-15 01:19+0100\n"
 "Last-Translator: Faludi Zoltán <zoltan.faludi@gmail.com>\n"
 "Language-Team: HUNGARIAN\n"
@@ -712,7 +712,7 @@ msgstr "Hírösszefoglaló e-mail engedélyezése"
 
 #: classes/Pref_Prefs.php:106
 #, fuzzy
-msgid "Send daily digest of new (and unread) headlines to your e-mail address"
+msgid "Send daily digest of new (and unread) headlines to your email address"
 msgstr ""
 "Itt engedélyezheti a friss és olvasatlan cikkek napi elküldését a megadott e-"
 "mail címére.."
@@ -905,9 +905,8 @@ msgstr "A személyes adatai el lettek mentve."
 msgid "Full name:"
 msgstr "Teljes név"
 
-#: classes/Pref_Prefs.php:306 js/PrefUsers.js:98
-#, fuzzy
-msgid "E-mail:"
+#: classes/Pref_Prefs.php:306 classes/Handler_Public.php:534 js/PrefUsers.js:98
+msgid "Email:"
 msgstr "E-mail:"
 
 #: classes/Pref_Prefs.php:314 classes/Pref_Feeds.php:703
@@ -1343,8 +1342,8 @@ msgid "Password recovery"
 msgstr "Jelszó helyreállítás"
 
 #: classes/Handler_Public.php:519 classes/Handler_Public.php:549
-#: classes/Handler_Public.php:609 classes/Handler_Public.php:727
-#: classes/Handler_Public.php:734 classes/Handler_Public.php:757
+#: classes/Handler_Public.php:609 classes/Handler_Public.php:726
+#: classes/Handler_Public.php:733 classes/Handler_Public.php:756
 #: plugins/bookmarklets/init.php:97 plugins/bookmarklets/init.php:142
 #: plugins/bookmarklets/init.php:160 plugins/bookmarklets/init.php:165
 msgid "Return to Tiny Tiny RSS"
@@ -1364,10 +1363,6 @@ msgstr ""
 #: js/PrefUsers.js:64 js/CommonDialogs.js:585
 msgid "Login:"
 msgstr "Felhasználó:"
-
-#: classes/Handler_Public.php:534
-msgid "Email:"
-msgstr "E-mail:"
 
 #: classes/Handler_Public.php:542
 #, fuzzy, php-format
@@ -1399,27 +1394,27 @@ msgstr "Sajnálom, a belépési és email kombináció nem található."
 msgid "Your access level is insufficient to run this script."
 msgstr "A hozzáférési szinted nem elég magasa script futtatásához"
 
-#: classes/Handler_Public.php:689
+#: classes/Handler_Public.php:688
 #, fuzzy
 #| msgid "Feeds with update errors"
 msgid "Proceed with update?"
 msgstr "Hírcsatornák frissítési hibával"
 
-#: classes/Handler_Public.php:694
+#: classes/Handler_Public.php:693
 msgid "Database Updater"
 msgstr "Adatbázis-frissítő"
 
-#: classes/Handler_Public.php:707
+#: classes/Handler_Public.php:706
 #, fuzzy, php-format
 msgid "Performing updates to version %d"
 msgstr "Frissítések végrehajtása"
 
-#: classes/Handler_Public.php:722 classes/Handler_Public.php:749
+#: classes/Handler_Public.php:721 classes/Handler_Public.php:748
 #: js/PrefHelpers.js:417 js/PrefHelpers.js:760
 msgid "Update"
 msgstr "Frissítés"
 
-#: classes/Handler_Public.php:742
+#: classes/Handler_Public.php:741
 #, fuzzy, php-format
 msgid "Database schema needs update to the latest version (%d to %d)."
 msgstr "A Tiny Tiny RSS adatbázis frissítő szkript."
@@ -1467,7 +1462,9 @@ msgid "(%d days)"
 msgstr "(%d hírcsatorna)"
 
 #: classes/Pref_Feeds.php:621 js/CommonDialogs.js:500
-msgid "Include in e-mail digest"
+#, fuzzy
+#| msgid "Include in e-mail digest"
+msgid "Include in email digest"
 msgstr "Hozzáadás az e-mail összefoglalóhoz"
 
 #: classes/Pref_Feeds.php:622 js/CommonDialogs.js:501
@@ -1675,6 +1672,10 @@ msgstr[1] "%s (+%d művelet)"
 msgid "Test message from tt-rss"
 msgstr ""
 
+#: classes/Pref_System.php:23
+msgid "This message confirms that tt-rss can send outgoing email."
+msgstr ""
+
 #: classes/Pref_System.php:33
 msgid "Task name"
 msgstr ""
@@ -1756,11 +1757,11 @@ msgstr "Napló törlés"
 #: classes/Pref_System.php:202
 #, fuzzy
 #| msgid "Save configuration"
-msgid "Mail configuration"
+msgid "Email configuration"
 msgstr "Beállítások mentése"
 
 #: classes/Pref_System.php:213
-msgid "Mail sent."
+msgid "Email sent."
 msgstr ""
 
 #: classes/Pref_System.php:233
@@ -1783,7 +1784,7 @@ msgstr "Műveletek"
 
 #: classes/Mailer.php:53
 #, php-format
-msgid "Unknown error while sending mail. Hooks tried: %d."
+msgid "Unknown error while sending email. Hooks tried: %d."
 msgstr ""
 
 #: classes/Pref_Users.php:49 classes/Pref_Users.php:239
@@ -3352,6 +3353,10 @@ msgstr "Hírcsatorna URL"
 #: js/CommonDialogs.js:611
 msgid "Icon"
 msgstr "Ikon"
+
+#, fuzzy
+#~ msgid "E-mail:"
+#~ msgstr "E-mail:"
 
 #~ msgid "OPML Utility"
 #~ msgstr "OMPL-segédprogram"

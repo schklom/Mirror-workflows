@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-04 17:27+0000\n"
-"PO-Revision-Date: 2025-10-20 04:54+0000\n"
-"Last-Translator: \"josé m.\" <correoxm@disroot.org>\n"
+"PO-Revision-Date: 2025-11-05 17:51+0000\n"
+"Last-Translator: LaurentC <laurentc@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Galician <https://hosted.weblate.org/projects/tt-rss/webui/gl/"
 ">\n"
 "Language: gl\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.14-dev\n"
+"X-Generator: Weblate 5.15-dev\n"
 
 #: backend.php:55
 msgid "Use default"
@@ -727,15 +727,11 @@ msgid "Long date format"
 msgstr "Formato longo da data"
 
 #: classes/Pref_Prefs.php:113
-#, fuzzy
-#| msgid ""
-#| "Syntax is identical to PHP <a href='http://php.net/manual/"
-#| "function.date.php'>date()</a> function."
 msgid ""
 "Syntax is identical to PHP <a href='https://www.php.net/manual/"
 "function.date.php'>date()</a> function."
 msgstr ""
-"A sintaxe é a da función PHP <a href='http://php.net/manual/"
+"A sintaxe é a da función PHP <a href='https://www.php.net/manual/"
 "function.date.php'>date()</a>."
 
 #: classes/Pref_Prefs.php:114

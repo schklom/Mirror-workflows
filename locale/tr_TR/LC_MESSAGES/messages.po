@@ -8,16 +8,16 @@ msgstr ""
 "Project-Id-Version: tt-rss git\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-04 17:27+0000\n"
-"PO-Revision-Date: 2024-06-24 19:09+0000\n"
-"Last-Translator: Oğuz Ersen <oguz@ersen.moe>\n"
-"Language-Team: Turkish <https://hosted.weblate.org/projects/tt-rss/webui/tr/"
-">\n"
+"PO-Revision-Date: 2025-11-05 17:51+0000\n"
+"Last-Translator: LaurentC <laurentc@users.noreply.hosted.weblate.org>\n"
+"Language-Team: Turkish <https://hosted.weblate.org/projects/tt-rss/webui/tr/>"
+"\n"
 "Language: tr_TR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.6-rc\n"
+"X-Generator: Weblate 5.15-dev\n"
 
 #: backend.php:55
 msgid "Use default"
@@ -759,15 +759,11 @@ msgid "Long date format"
 msgstr "Uzun tarih formatı"
 
 #: classes/Pref_Prefs.php:113
-#, fuzzy
-#| msgid ""
-#| "Syntax is identical to PHP <a href='http://php.net/manual/"
-#| "function.date.php'>date()</a> function."
 msgid ""
 "Syntax is identical to PHP <a href='https://www.php.net/manual/"
 "function.date.php'>date()</a> function."
 msgstr ""
-"Söz dizimi PHP'deki <a href='http://php.net/manual/"
+"Söz dizimi PHP'deki <a href='https://www.php.net/manual/"
 "function.date.php'>date()</a> fonksiyonuyla aynıdır."
 
 #: classes/Pref_Prefs.php:114

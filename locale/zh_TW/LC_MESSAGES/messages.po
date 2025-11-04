@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-04 17:27+0000\n"
 "PO-Revision-Date: 2025-11-05 17:51+0000\n"
-"Last-Translator: LaurentC <laurentc@users.noreply.hosted.weblate.org>\n"
+"Last-Translator: TonyRL <TonyRL@users.noreply.github.com>\n"
 "Language-Team: Chinese (Traditional Han script) <https://hosted.weblate.org/"
 "projects/tt-rss/webui/zh_Hant/>\n"
 "Language: zh_TW\n"
@@ -53,7 +53,7 @@ msgstr "預設間隔"
 
 #: backend.php:65 backend.php:75
 msgid "Disable updates"
-msgstr "禁用更新"
+msgstr "停用更新"
 
 #: backend.php:66 backend.php:76
 msgid "15 minutes"
@@ -205,34 +205,24 @@ msgid "Switch to three panel view"
 msgstr ""
 
 #: index.php:229
-#, fuzzy
-#| msgid "Switch to digest..."
 msgid "Switch to combined view"
-msgstr "切換至摘要模式"
+msgstr "切換至合併檢視"
 
 #: index.php:230
-#, fuzzy
-#| msgid "Toggle widescreen mode"
 msgid "Disable widescreen mode"
-msgstr "切換版面顯示"
+msgstr "停用寬螢幕模式"
 
 #: index.php:231
-#, fuzzy
-#| msgid "Toggle widescreen mode"
 msgid "Enable widescreen mode"
-msgstr "切換版面顯示"
+msgstr "啟用寬螢幕模式"
 
 #: index.php:232
-#, fuzzy
-#| msgid "Expand article"
 msgid "Expand selected article only"
-msgstr "展開文章"
+msgstr "只展開選取的文章"
 
 #: index.php:233
-#, fuzzy
-#| msgid "Expand article"
 msgid "Expand all articles"
-msgstr "展開文章"
+msgstr "展開全部文章"
 
 #: index.php:236
 msgid "Actions..."
@@ -286,7 +276,7 @@ msgstr "切換合併模式"
 
 #: index.php:274 classes/RPC.php:523
 msgid "Toggle widescreen mode"
-msgstr "切換版面顯示"
+msgstr "切換寬螢幕模式"
 
 #: index.php:276
 msgid "Toggle expand all articles"
@@ -676,11 +666,8 @@ msgid "Enable digest"
 msgstr "啟用電子郵件摘要"
 
 #: classes/Pref_Prefs.php:106
-#, fuzzy
-#| msgid ""
-#| "Send daily digest of new (and unread) headlines to your e-mail address"
 msgid "Send daily digest of new (and unread) headlines to your email address"
-msgstr "每天將更新的和未讀的文章標題透過郵件發送摘要到您設定的信箱中"
+msgstr "每天將新增（且未讀）的摘要標題發送到您的電子郵件位址"
 
 #: classes/Pref_Prefs.php:107
 msgid "Try to send around this time"
@@ -1307,10 +1294,8 @@ msgid "Your access level is insufficient to run this script."
 msgstr "此帳號等級不足，無法運行腳本。"
 
 #: classes/Handler_Public.php:688
-#, fuzzy
-#| msgid "Feeds with update errors"
 msgid "Proceed with update?"
-msgstr "更新錯誤的摘要"
+msgstr "是否繼續更新？"
 
 #: classes/Handler_Public.php:693
 msgid "Database Updater"
@@ -1368,8 +1353,6 @@ msgid "(%d days)"
 msgstr "（%d 天）"
 
 #: classes/Pref_Feeds.php:621 js/CommonDialogs.js:500
-#, fuzzy
-#| msgid "Include in e-mail digest"
 msgid "Include in email digest"
 msgstr "包含電子郵件摘要"
 
@@ -1571,10 +1554,8 @@ msgid "Task name"
 msgstr "工作名稱"
 
 #: classes/Pref_System.php:35
-#, fuzzy
-#| msgid "Scheduled tasks"
 msgid "Schedule"
-msgstr "已排程的工作"
+msgstr "排程"
 
 #: classes/Pref_System.php:36
 msgid "Last executed"
@@ -1642,14 +1623,12 @@ msgid "Event log"
 msgstr "事件紀錄檔"
 
 #: classes/Pref_System.php:203
-#, fuzzy
-#| msgid "Mail configuration"
 msgid "Email configuration"
 msgstr "電郵設定"
 
 #: classes/Pref_System.php:214
 msgid "Email sent."
-msgstr ""
+msgstr "已發送郵件。"
 
 #: classes/Pref_System.php:234
 msgid "To:"
@@ -1668,8 +1647,7 @@ msgid "PHP Information"
 msgstr "PHP 資訊"
 
 #: classes/Mailer.php:53
-#, fuzzy, php-format
-#| msgid "Unknown error while sending mail. Hooks tried: %d."
+#, php-format
 msgid "Unknown error while sending email. Hooks tried: %d."
 msgstr "發送郵件時遇到不明錯誤。已嘗試：%d。"
 
@@ -2778,16 +2756,12 @@ msgid "Expand to select feed"
 msgstr "展開選定的摘要"
 
 #: js/CommonDialogs.js:189
-#, fuzzy
-#| msgid "Couldn't download the specified URL: %s"
 msgid "Couldn't download the specified URL."
-msgstr "無法下載指定的 URL ：%s"
+msgstr "無法下載指定的 URL。"
 
 #: js/CommonDialogs.js:192
-#, fuzzy
-#| msgid "Inline content"
 msgid "Invalid content."
-msgstr "內嵌內容"
+msgstr "無效內容。"
 
 #: js/CommonDialogs.js:195
 msgid "Error while creating feed database entry."

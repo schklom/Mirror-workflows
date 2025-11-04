@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-04 17:27+0000\n"
-"PO-Revision-Date: 2025-11-04 17:29+0000\n"
-"Last-Translator: Besnik Bleta <besnik@programeshqip.org>\n"
+"PO-Revision-Date: 2025-11-05 17:51+0000\n"
+"Last-Translator: LaurentC <laurentc@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Albanian <https://hosted.weblate.org/projects/tt-rss/webui/sq/"
 ">\n"
 "Language: sq\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.14.1-dev\n"
+"X-Generator: Weblate 5.15-dev\n"
 
 #: backend.php:55
 msgid "Use default"
@@ -719,15 +719,11 @@ msgid "Long date format"
 msgstr "Format i gjatë datash"
 
 #: classes/Pref_Prefs.php:113
-#, fuzzy
-#| msgid ""
-#| "Syntax is identical to PHP <a href='http://php.net/manual/"
-#| "function.date.php'>date()</a> function."
 msgid ""
 "Syntax is identical to PHP <a href='https://www.php.net/manual/"
 "function.date.php'>date()</a> function."
 msgstr ""
-"Sintaksa është identike me funksionin <a href='http://php.net/manual/"
+"Sintaksa është identike me funksionin <a href='https://www.php.net/manual/"
 "function.date.php'>date()</a> të PHP-së."
 
 #: classes/Pref_Prefs.php:114

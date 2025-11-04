@@ -685,7 +685,7 @@ class Handler_Public extends Handler {
 				}
 
 				function confirmDbUpdate() {
-					return confirm(__("Proceed with update?"));
+					return confirm(<?= json_encode(__('Proceed with update?')) ?>);
 				}
 			</script>
 

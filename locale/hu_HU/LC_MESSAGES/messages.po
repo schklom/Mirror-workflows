@@ -8,15 +8,16 @@ msgstr ""
 "Project-Id-Version: tt-rss-hu\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-04 17:27+0000\n"
-"PO-Revision-Date: 2013-05-15 01:19+0100\n"
-"Last-Translator: Faludi Zoltán <zoltan.faludi@gmail.com>\n"
-"Language-Team: HUNGARIAN\n"
+"PO-Revision-Date: 2025-11-05 17:51+0000\n"
+"Last-Translator: LaurentC <laurentc@users.noreply.hosted.weblate.org>\n"
+"Language-Team: Hungarian <https://hosted.weblate.org/projects/tt-rss/webui/"
+"hu/>\n"
 "Language: hu_HU\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.15-dev\n"
 
 #: backend.php:55
 msgid "Use default"
@@ -773,12 +774,11 @@ msgid "Long date format"
 msgstr "Dátum/idő hosszú formátuma"
 
 #: classes/Pref_Prefs.php:113
-#, fuzzy
 msgid ""
 "Syntax is identical to PHP <a href='https://www.php.net/manual/"
 "function.date.php'>date()</a> function."
 msgstr ""
-"A szintaxis megegyezik a PHP  <a href='http://php.net/manual/"
+"A szintaxis megegyezik a PHP  <a href='https://www.php.net/manual/"
 "function.date.php'>date()</a> függvényével."
 
 #: classes/Pref_Prefs.php:114

@@ -110,7 +110,7 @@ class Pref_Prefs extends Handler_Protected {
 			Prefs::FRESH_ARTICLE_MAX_AGE => [__("Maximum age of fresh articles"), "<strong>" . __("hours") . "</strong>"],
 			Prefs::HIDE_READ_FEEDS => [__("Hide read feeds")],
 			Prefs::HIDE_READ_SHOWS_SPECIAL => [__("Always show special feeds"), __("While hiding read feeds")],
-			Prefs::LONG_DATE_FORMAT => [__("Long date format"), __("Syntax is identical to PHP <a href='http://php.net/manual/function.date.php'>date()</a> function.")],
+			Prefs::LONG_DATE_FORMAT => [__("Long date format"), __("Syntax is identical to PHP <a href='https://www.php.net/manual/function.date.php'>date()</a> function.")],
 			Prefs::ON_CATCHUP_SHOW_NEXT_FEED => [__("Automatically show next feed"), __("After marking one as read")],
 			Prefs::PURGE_OLD_DAYS => [__("Purge articles older than"), __("<strong>days</strong> (0 disables)")],
 			Prefs::PURGE_UNREAD_ARTICLES => [__("Purge unread articles")],

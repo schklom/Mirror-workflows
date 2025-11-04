@@ -8,16 +8,16 @@ msgstr ""
 "Project-Id-Version: TinyTinyRSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-04 17:27+0000\n"
-"PO-Revision-Date: 2024-10-24 14:15+0000\n"
-"Last-Translator: Younes <git@younes.io>\n"
-"Language-Team: Arabic (Saudi Arabia) <https://hosted.weblate.org/projects/tt-"
-"rss/webui/ar_SA/>\n"
+"PO-Revision-Date: 2025-11-05 17:51+0000\n"
+"Last-Translator: LaurentC <laurentc@users.noreply.hosted.weblate.org>\n"
+"Language-Team: Arabic (Saudi Arabia) <https://hosted.weblate.org/projects/"
+"tt-rss/webui/ar_SA/>\n"
 "Language: ar_SA\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Weblate 5.8.2-dev\n"
+"X-Generator: Weblate 5.15-dev\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: backend.php:55
@@ -769,12 +769,11 @@ msgid "Long date format"
 msgstr "الصيغة الطويلة للتاريخ"
 
 #: classes/Pref_Prefs.php:113
-#, fuzzy
 msgid ""
 "Syntax is identical to PHP <a href='https://www.php.net/manual/"
 "function.date.php'>date()</a> function."
 msgstr ""
-"النحو المستخدم مماثل لدالة PHP <a href='http://php.net/manual/"
+"النحو المستخدم مماثل لدالة PHP <a href='https://www.php.net/manual/"
 "function.date.php'>date()</a> ."
 
 #: classes/Pref_Prefs.php:114

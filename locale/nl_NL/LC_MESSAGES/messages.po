@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tt-rss git\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-04 02:48+0000\n"
+"POT-Creation-Date: 2025-11-04 16:49+0000\n"
 "PO-Revision-Date: 2025-06-03 12:01+0000\n"
 "Last-Translator: Patrick Ahles <p.ahles@gmail.com>\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/tt-rss/webui/nl/>\n"
@@ -680,7 +680,10 @@ msgid "Enable digest"
 msgstr "Schakel e-mailsamenvatting in"
 
 #: classes/Pref_Prefs.php:106
-msgid "Send daily digest of new (and unread) headlines to your e-mail address"
+#, fuzzy
+#| msgid ""
+#| "Send daily digest of new (and unread) headlines to your e-mail address"
+msgid "Send daily digest of new (and unread) headlines to your email address"
 msgstr ""
 "Verstuur een dagelijkse samenvatting van nieuwe (en ongelezen) kopteksten "
 "naar uw e-mailadres"
@@ -846,8 +849,8 @@ msgstr "Uw persoonlijke gegevens zijn opgeslagen."
 msgid "Full name:"
 msgstr "Volledige naam:"
 
-#: classes/Pref_Prefs.php:306 js/PrefUsers.js:98
-msgid "E-mail:"
+#: classes/Pref_Prefs.php:306 classes/Handler_Public.php:534 js/PrefUsers.js:98
+msgid "Email:"
 msgstr "E-mail:"
 
 #: classes/Pref_Prefs.php:314 classes/Pref_Feeds.php:703
@@ -1267,8 +1270,8 @@ msgid "Password recovery"
 msgstr "Wachtwoordherstel"
 
 #: classes/Handler_Public.php:519 classes/Handler_Public.php:549
-#: classes/Handler_Public.php:609 classes/Handler_Public.php:727
-#: classes/Handler_Public.php:734 classes/Handler_Public.php:757
+#: classes/Handler_Public.php:609 classes/Handler_Public.php:726
+#: classes/Handler_Public.php:733 classes/Handler_Public.php:756
 #: plugins/bookmarklets/init.php:97 plugins/bookmarklets/init.php:142
 #: plugins/bookmarklets/init.php:160 plugins/bookmarklets/init.php:165
 msgid "Return to Tiny Tiny RSS"
@@ -1287,10 +1290,6 @@ msgstr ""
 #: js/PrefUsers.js:64 js/CommonDialogs.js:585
 msgid "Login:"
 msgstr "Aanmelden:"
-
-#: classes/Handler_Public.php:534
-msgid "Email:"
-msgstr "E-mail:"
 
 #: classes/Handler_Public.php:542
 #, php-format
@@ -1321,27 +1320,27 @@ msgstr "Sorry, deze combinatie van naam en wachtwoord is onbekend."
 msgid "Your access level is insufficient to run this script."
 msgstr "Uw toegangsrechten zijn niet voldoende om dit script uit te voeren."
 
-#: classes/Handler_Public.php:689
+#: classes/Handler_Public.php:688
 #, fuzzy
 #| msgid "Feeds with update errors"
 msgid "Proceed with update?"
 msgstr "Feeds met update-fouten"
 
-#: classes/Handler_Public.php:694
+#: classes/Handler_Public.php:693
 msgid "Database Updater"
 msgstr "Database-updater"
 
-#: classes/Handler_Public.php:707
+#: classes/Handler_Public.php:706
 #, php-format
 msgid "Performing updates to version %d"
 msgstr "Uitvoeren updates naar versie %d"
 
-#: classes/Handler_Public.php:722 classes/Handler_Public.php:749
+#: classes/Handler_Public.php:721 classes/Handler_Public.php:748
 #: js/PrefHelpers.js:417 js/PrefHelpers.js:760
 msgid "Update"
 msgstr "Bijwerken"
 
-#: classes/Handler_Public.php:742
+#: classes/Handler_Public.php:741
 #, php-format
 msgid "Database schema needs update to the latest version (%d to %d)."
 msgstr ""
@@ -1388,7 +1387,9 @@ msgid "(%d days)"
 msgstr "(%d dagen)"
 
 #: classes/Pref_Feeds.php:621 js/CommonDialogs.js:500
-msgid "Include in e-mail digest"
+#, fuzzy
+#| msgid "Include in e-mail digest"
+msgid "Include in email digest"
 msgstr "Toevoegen aan e-mailsamenvatting"
 
 #: classes/Pref_Feeds.php:622 js/CommonDialogs.js:501
@@ -1582,6 +1583,10 @@ msgstr[1] "(+%d acties)"
 msgid "Test message from tt-rss"
 msgstr "Testbericht van tt-rss"
 
+#: classes/Pref_System.php:23
+msgid "This message confirms that tt-rss can send outgoing email."
+msgstr ""
+
 #: classes/Pref_System.php:33
 msgid "Task name"
 msgstr "Taaknaam"
@@ -1658,11 +1663,13 @@ msgid "Event log"
 msgstr "Gebeurtenissenlogboek"
 
 #: classes/Pref_System.php:202
-msgid "Mail configuration"
+#, fuzzy
+#| msgid "Mail configuration"
+msgid "Email configuration"
 msgstr "Mail configuratie"
 
 #: classes/Pref_System.php:213
-msgid "Mail sent."
+msgid "Email sent."
 msgstr ""
 
 #: classes/Pref_System.php:233
@@ -1682,8 +1689,9 @@ msgid "PHP Information"
 msgstr "PHP-informatie"
 
 #: classes/Mailer.php:53
-#, php-format
-msgid "Unknown error while sending mail. Hooks tried: %d."
+#, fuzzy, php-format
+#| msgid "Unknown error while sending mail. Hooks tried: %d."
+msgid "Unknown error while sending email. Hooks tried: %d."
 msgstr "Onbekende fout bij het versturen van email. Geprobeerde hooks: %d."
 
 #: classes/Pref_Users.php:49 classes/Pref_Users.php:239
@@ -3138,6 +3146,9 @@ msgstr "Site URL"
 #: js/CommonDialogs.js:611
 msgid "Icon"
 msgstr "Pictogram"
+
+#~ msgid "E-mail:"
+#~ msgstr "E-mail:"
 
 #~ msgid "Updates are available from Git."
 #~ msgstr "Er zijn updates beschikbaar via Git."

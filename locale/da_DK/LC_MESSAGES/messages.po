@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tt-rss git\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-04 02:48+0000\n"
+"POT-Creation-Date: 2025-11-04 16:49+0000\n"
 "Last-Translator: Brendan <brendan@tucows.com>\n"
 "Language-Team: OpenSRS brendan@tucows.com>\n"
 "Language: da_DK\n"
@@ -702,7 +702,7 @@ msgid "Enable digest"
 msgstr "Aktiver e-mail-digest"
 
 #: classes/Pref_Prefs.php:106
-msgid "Send daily digest of new (and unread) headlines to your e-mail address"
+msgid "Send daily digest of new (and unread) headlines to your email address"
 msgstr ""
 
 #: classes/Pref_Prefs.php:107
@@ -883,10 +883,9 @@ msgstr ""
 msgid "Full name:"
 msgstr "Fulde navn"
 
-#: classes/Pref_Prefs.php:306 js/PrefUsers.js:98
-#, fuzzy
-msgid "E-mail:"
-msgstr "E-mail"
+#: classes/Pref_Prefs.php:306 classes/Handler_Public.php:534 js/PrefUsers.js:98
+msgid "Email:"
+msgstr "E-mail:"
 
 #: classes/Pref_Prefs.php:314 classes/Pref_Feeds.php:703
 #: plugins/note/init.php:49 plugins/nsfw/init.php:105
@@ -1315,8 +1314,8 @@ msgid "Password recovery"
 msgstr "Genoprettelse af adgangskode"
 
 #: classes/Handler_Public.php:519 classes/Handler_Public.php:549
-#: classes/Handler_Public.php:609 classes/Handler_Public.php:727
-#: classes/Handler_Public.php:734 classes/Handler_Public.php:757
+#: classes/Handler_Public.php:609 classes/Handler_Public.php:726
+#: classes/Handler_Public.php:733 classes/Handler_Public.php:756
 #: plugins/bookmarklets/init.php:97 plugins/bookmarklets/init.php:142
 #: plugins/bookmarklets/init.php:160 plugins/bookmarklets/init.php:165
 #, fuzzy
@@ -1334,10 +1333,6 @@ msgstr ""
 #: js/PrefUsers.js:64 js/CommonDialogs.js:585
 msgid "Login:"
 msgstr "Logon:"
-
-#: classes/Handler_Public.php:534
-msgid "Email:"
-msgstr "E-mail:"
 
 #: classes/Handler_Public.php:542
 #, php-format
@@ -1369,27 +1364,27 @@ msgstr ""
 msgid "Your access level is insufficient to run this script."
 msgstr ""
 
-#: classes/Handler_Public.php:689
+#: classes/Handler_Public.php:688
 #, fuzzy
 #| msgid "Feeds with update errors"
 msgid "Proceed with update?"
 msgstr "Feeds med opdateringsfejl"
 
-#: classes/Handler_Public.php:694
+#: classes/Handler_Public.php:693
 msgid "Database Updater"
 msgstr "Opdatering af database"
 
-#: classes/Handler_Public.php:707
+#: classes/Handler_Public.php:706
 #, fuzzy, php-format
 msgid "Performing updates to version %d"
 msgstr "Udfør opdateringer"
 
-#: classes/Handler_Public.php:722 classes/Handler_Public.php:749
+#: classes/Handler_Public.php:721 classes/Handler_Public.php:748
 #: js/PrefHelpers.js:417 js/PrefHelpers.js:760
 msgid "Update"
 msgstr "Opdater"
 
-#: classes/Handler_Public.php:742
+#: classes/Handler_Public.php:741
 #, php-format
 msgid "Database schema needs update to the latest version (%d to %d)."
 msgstr ""
@@ -1435,7 +1430,9 @@ msgid "(%d days)"
 msgstr "Rediger feed"
 
 #: classes/Pref_Feeds.php:621 js/CommonDialogs.js:500
-msgid "Include in e-mail digest"
+#, fuzzy
+#| msgid "Include in e-mail digest"
+msgid "Include in email digest"
 msgstr "Inkluder i e-mail-digest"
 
 #: classes/Pref_Feeds.php:622 js/CommonDialogs.js:501
@@ -1642,6 +1639,10 @@ msgstr[1] "Tilføj handling"
 msgid "Test message from tt-rss"
 msgstr ""
 
+#: classes/Pref_System.php:23
+msgid "This message confirms that tt-rss can send outgoing email."
+msgstr ""
+
 #: classes/Pref_System.php:33
 msgid "Task name"
 msgstr ""
@@ -1723,11 +1724,11 @@ msgstr "Ryd log"
 #: classes/Pref_System.php:202
 #, fuzzy
 #| msgid "Save configuration"
-msgid "Mail configuration"
+msgid "Email configuration"
 msgstr "Gem konfiguration"
 
 #: classes/Pref_System.php:213
-msgid "Mail sent."
+msgid "Email sent."
 msgstr ""
 
 #: classes/Pref_System.php:233
@@ -1750,7 +1751,7 @@ msgstr "Udfør handling"
 
 #: classes/Mailer.php:53
 #, php-format
-msgid "Unknown error while sending mail. Hooks tried: %d."
+msgid "Unknown error while sending email. Hooks tried: %d."
 msgstr ""
 
 #: classes/Pref_Users.php:49 classes/Pref_Users.php:239
@@ -3294,6 +3295,10 @@ msgstr "Feedets webadresse"
 #: js/CommonDialogs.js:611
 msgid "Icon"
 msgstr "Ikon"
+
+#, fuzzy
+#~ msgid "E-mail:"
+#~ msgstr "E-mail"
 
 #~ msgid "OPML Utility"
 #~ msgstr "OPML-hjælpeprogram"

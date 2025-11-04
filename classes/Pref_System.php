@@ -17,11 +17,12 @@ class Pref_System extends Handler_Administrative {
 
 		$mailer = new Mailer();
 
-		$rc = $mailer->mail(["to_name" => "",
-			"to_address" => $mail_address,
-			"subject" => __("Test message from tt-rss"),
-			"message" => ("This message confirms that tt-rss can send outgoing email.")
-			]);
+		$rc = $mailer->mail([
+			'to_name' => '',
+			'to_address' => $mail_address,
+			'subject' => __('Test message from tt-rss'),
+			'message' => __('This message confirms that tt-rss can send outgoing email.'),
+		]);
 
 		print json_encode(['rc' => $rc, 'error' => $mailer->error()]);
 	}

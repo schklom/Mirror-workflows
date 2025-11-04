@@ -8,14 +8,16 @@ msgstr ""
 "Project-Id-Version: tt-rss git\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-04 17:27+0000\n"
-"PO-Revision-Date: 2015-03-09 17:43+0200\n"
-"Last-Translator: Neter <neter@moyat.net>\n"
-"Language-Team: Bulgarian <>\n"
+"PO-Revision-Date: 2025-11-05 17:51+0000\n"
+"Last-Translator: LaurentC <laurentc@users.noreply.hosted.weblate.org>\n"
+"Language-Team: Bulgarian <https://hosted.weblate.org/projects/tt-rss/webui/"
+"bg/>\n"
 "Language: bg_BG\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.15-dev\n"
 
 #: backend.php:55
 msgid "Use default"
@@ -774,13 +776,12 @@ msgid "Long date format"
 msgstr "Дълъг формат на дата"
 
 #: classes/Pref_Prefs.php:113
-#, fuzzy
 msgid ""
 "Syntax is identical to PHP <a href='https://www.php.net/manual/"
 "function.date.php'>date()</a> function."
 msgstr ""
-"Синтаксисът е същият като на PHP функцията <a href='http://php.net/manual/"
-"function.date.php'>date()</a>."
+"Синтаксисът е същият като на PHP функцията <a href='https://www.php.net/"
+"manual/function.date.php'>date()</a>."
 
 #: classes/Pref_Prefs.php:114
 #, fuzzy

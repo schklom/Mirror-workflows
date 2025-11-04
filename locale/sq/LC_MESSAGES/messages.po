@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-04 16:49+0000\n"
-"PO-Revision-Date: 2025-11-04 16:58+0000\n"
+"PO-Revision-Date: 2025-11-04 17:29+0000\n"
 "Last-Translator: Besnik Bleta <besnik@programeshqip.org>\n"
 "Language-Team: Albanian <https://hosted.weblate.org/projects/tt-rss/webui/sq/"
 ">\n"
@@ -669,13 +669,10 @@ msgid "Enable digest"
 msgstr "Aktivizo përmbledhje"
 
 #: classes/Pref_Prefs.php:106
-#, fuzzy
-#| msgid ""
-#| "Send daily digest of new (and unread) headlines to your e-mail address"
 msgid "Send daily digest of new (and unread) headlines to your email address"
 msgstr ""
-"Dërgoni te adresa juaj email përmbledhje të përditshme titujsh të rinj (dhe "
-"të palexuar)"
+"Dërgoni te adresa juaj email përmbledhje të përditshme titujsh të rinj "
+"(dhe të palexuar)"
 
 #: classes/Pref_Prefs.php:107
 msgid "Try to send around this time"
@@ -1376,8 +1373,6 @@ msgid "(%d days)"
 msgstr "(%d ditë)"
 
 #: classes/Pref_Feeds.php:621 js/CommonDialogs.js:500
-#, fuzzy
-#| msgid "Include in e-mail digest"
 msgid "Include in email digest"
 msgstr "Përfshije në përmbledhje me email"
 
@@ -1650,10 +1645,8 @@ msgid "Event log"
 msgstr "Regjistër veprimtarish"
 
 #: classes/Pref_System.php:202
-#, fuzzy
-#| msgid "Mail configuration"
 msgid "Email configuration"
-msgstr "Formësim poste"
+msgstr "Formësim email-i"
 
 #: classes/Pref_System.php:213
 #, fuzzy

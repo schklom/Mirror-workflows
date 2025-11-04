@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-04 16:49+0000\n"
+"POT-Creation-Date: 2025-11-04 17:27+0000\n"
 "PO-Revision-Date: 2025-11-04 17:29+0000\n"
 "Last-Translator: Besnik Bleta <besnik@programeshqip.org>\n"
 "Language-Team: Albanian <https://hosted.weblate.org/projects/tt-rss/webui/sq/"
@@ -91,7 +91,7 @@ msgstr "Të çaktivizuara"
 msgid "Read Only"
 msgstr "Vetëm Lexim"
 
-#: backend.php:87 classes/Pref_System.php:151
+#: backend.php:87 classes/Pref_System.php:152
 msgid "User"
 msgstr "Përdorues"
 
@@ -105,7 +105,7 @@ msgstr "Përgjegjës"
 
 #: index.php:124 index.php:138 index.php:298 prefs.php:116
 #: classes/Pref_Prefs.php:887 classes/Pref_Prefs.php:937
-#: classes/Pref_System.php:250 classes/Pref_System.php:261 js/PrefUsers.js:112
+#: classes/Pref_System.php:251 classes/Pref_System.php:262 js/PrefUsers.js:112
 #: js/PrefFeedTree.js:183 js/PrefFeedTree.js:190 js/PrefFeedTree.js:314
 #: js/PrefFeedTree.js:386 js/PrefFilterTree.js:124 js/Article.js:265
 #: js/Article.js:341 js/Headlines.js:351 js/Headlines.js:534
@@ -671,8 +671,8 @@ msgstr "Aktivizo përmbledhje"
 #: classes/Pref_Prefs.php:106
 msgid "Send daily digest of new (and unread) headlines to your email address"
 msgstr ""
-"Dërgoni te adresa juaj email përmbledhje të përditshme titujsh të rinj "
-"(dhe të palexuar)"
+"Dërgoni te adresa juaj email përmbledhje të përditshme titujsh të rinj (dhe "
+"të palexuar)"
 
 #: classes/Pref_Prefs.php:107
 msgid "Try to send around this time"
@@ -719,8 +719,12 @@ msgid "Long date format"
 msgstr "Format i gjatë datash"
 
 #: classes/Pref_Prefs.php:113
+#, fuzzy
+#| msgid ""
+#| "Syntax is identical to PHP <a href='http://php.net/manual/"
+#| "function.date.php'>date()</a> function."
 msgid ""
-"Syntax is identical to PHP <a href='http://php.net/manual/"
+"Syntax is identical to PHP <a href='https://www.php.net/manual/"
 "function.date.php'>date()</a> function."
 msgstr ""
 "Sintaksa është identike me funksionin <a href='http://php.net/manual/"
@@ -940,7 +944,7 @@ msgstr "Paraparje"
 msgid "Register"
 msgstr ""
 
-#: classes/Pref_Prefs.php:710 classes/Pref_System.php:128
+#: classes/Pref_Prefs.php:710 classes/Pref_System.php:129
 msgid "Clear"
 msgstr "Spastroje"
 
@@ -1563,110 +1567,110 @@ msgid_plural "(+%d actions)"
 msgstr[0] "(+%d veprim)"
 msgstr[1] "(+%d veprime)"
 
-#: classes/Pref_System.php:22
+#: classes/Pref_System.php:23
 msgid "Test message from tt-rss"
 msgstr "Mesazh provë nga tt-rss"
 
-#: classes/Pref_System.php:23
+#: classes/Pref_System.php:24
 msgid "This message confirms that tt-rss can send outgoing email."
 msgstr ""
 
-#: classes/Pref_System.php:33
+#: classes/Pref_System.php:34
 msgid "Task name"
 msgstr "Emër pune"
 
-#: classes/Pref_System.php:34
+#: classes/Pref_System.php:35
 msgid "Schedule"
 msgstr "Plan"
 
-#: classes/Pref_System.php:35
+#: classes/Pref_System.php:36
 msgid "Last executed"
 msgstr "Ekzekutuar së fundi më"
 
-#: classes/Pref_System.php:36
+#: classes/Pref_System.php:37
 msgid "Duration (seconds)"
 msgstr "Kohëzgjatje (sekonda)"
 
-#: classes/Pref_System.php:37
+#: classes/Pref_System.php:38
 msgid "Return code"
 msgstr ""
 
-#: classes/Pref_System.php:109 js/PrefHelpers.js:621
+#: classes/Pref_System.php:110 js/PrefHelpers.js:621
 msgid "Refresh"
 msgstr "Rifreskoje"
 
-#: classes/Pref_System.php:114
+#: classes/Pref_System.php:115
 msgid "&lt;&lt;"
 msgstr "&lt;&lt;"
 
-#: classes/Pref_System.php:118
+#: classes/Pref_System.php:119
 #, php-format
 msgid "Page %d of %d"
 msgstr "Faqe %d nga %d"
 
-#: classes/Pref_System.php:123
+#: classes/Pref_System.php:124
 msgid "&gt;&gt;"
 msgstr "&gt;&gt;"
 
-#: classes/Pref_System.php:132
+#: classes/Pref_System.php:133
 msgid "Severity:"
 msgstr "Rëndësi:"
 
-#: classes/Pref_System.php:136
+#: classes/Pref_System.php:137
 msgid "Errors"
 msgstr "Gabime"
 
-#: classes/Pref_System.php:137
+#: classes/Pref_System.php:138
 msgid "Warnings"
 msgstr "Sinjalizime"
 
-#: classes/Pref_System.php:138
+#: classes/Pref_System.php:139
 msgid "Everything"
 msgstr "Gjithçka"
 
-#: classes/Pref_System.php:148
+#: classes/Pref_System.php:149
 msgid "Error"
 msgstr "Gabim"
 
-#: classes/Pref_System.php:149
+#: classes/Pref_System.php:150
 msgid "Filename"
 msgstr "Emër kartele"
 
-#: classes/Pref_System.php:150
+#: classes/Pref_System.php:151
 msgid "Message"
 msgstr "Mesazh"
 
-#: classes/Pref_System.php:152
+#: classes/Pref_System.php:153
 msgid "Date"
 msgstr "Datë"
 
-#: classes/Pref_System.php:196
+#: classes/Pref_System.php:197
 msgid "Event log"
 msgstr "Regjistër veprimtarish"
 
-#: classes/Pref_System.php:202
+#: classes/Pref_System.php:203
 msgid "Email configuration"
 msgstr "Formësim email-i"
 
-#: classes/Pref_System.php:213
+#: classes/Pref_System.php:214
 #, fuzzy
 #| msgid "Mail sent."
 msgid "Email sent."
 msgstr "Mesazhi u dërgua."
 
-#: classes/Pref_System.php:233
+#: classes/Pref_System.php:234
 msgid "To:"
 msgstr "Për:"
 
-#: classes/Pref_System.php:235
+#: classes/Pref_System.php:236
 msgid "Send test email"
 msgstr "Dërgo email provë"
 
-#: classes/Pref_System.php:241
+#: classes/Pref_System.php:242
 msgid "Scheduled tasks"
 msgstr "Punë të vëna në plan"
 
-#: classes/Pref_System.php:252
+#: classes/Pref_System.php:253
 msgid "PHP Information"
 msgstr "Informacion PHP"
 

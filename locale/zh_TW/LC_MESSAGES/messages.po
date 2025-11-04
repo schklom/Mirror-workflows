@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-04 16:49+0000\n"
+"POT-Creation-Date: 2025-11-04 17:27+0000\n"
 "PO-Revision-Date: 2025-06-01 23:37+0000\n"
 "Last-Translator: TonyRL <TonyRL@users.noreply.github.com>\n"
 "Language-Team: Chinese (Traditional Han script) <https://hosted.weblate.org/"
@@ -91,7 +91,7 @@ msgstr "已停用"
 msgid "Read Only"
 msgstr "唯讀"
 
-#: backend.php:87 classes/Pref_System.php:151
+#: backend.php:87 classes/Pref_System.php:152
 msgid "User"
 msgstr "使用者"
 
@@ -105,7 +105,7 @@ msgstr "管理員"
 
 #: index.php:124 index.php:138 index.php:298 prefs.php:116
 #: classes/Pref_Prefs.php:887 classes/Pref_Prefs.php:937
-#: classes/Pref_System.php:250 classes/Pref_System.php:261 js/PrefUsers.js:112
+#: classes/Pref_System.php:251 classes/Pref_System.php:262 js/PrefUsers.js:112
 #: js/PrefFeedTree.js:183 js/PrefFeedTree.js:190 js/PrefFeedTree.js:314
 #: js/PrefFeedTree.js:386 js/PrefFilterTree.js:124 js/Article.js:265
 #: js/Article.js:341 js/Headlines.js:351 js/Headlines.js:534
@@ -727,8 +727,12 @@ msgid "Long date format"
 msgstr "較長的日期時間格式"
 
 #: classes/Pref_Prefs.php:113
+#, fuzzy
+#| msgid ""
+#| "Syntax is identical to PHP <a href='http://php.net/manual/"
+#| "function.date.php'>date()</a> function."
 msgid ""
-"Syntax is identical to PHP <a href='http://php.net/manual/"
+"Syntax is identical to PHP <a href='https://www.php.net/manual/"
 "function.date.php'>date()</a> function."
 msgstr ""
 "語法和 PHP <a href='http://php.net/manual/function.date.php'>date()</a> 函數"
@@ -946,7 +950,7 @@ msgstr "預覽"
 msgid "Register"
 msgstr "註冊"
 
-#: classes/Pref_Prefs.php:710 classes/Pref_System.php:128
+#: classes/Pref_Prefs.php:710 classes/Pref_System.php:129
 msgid "Clear"
 msgstr "清空"
 
@@ -1558,112 +1562,112 @@ msgid "(+%d action)"
 msgid_plural "(+%d actions)"
 msgstr[0] "（+%d 個操作）"
 
-#: classes/Pref_System.php:22
+#: classes/Pref_System.php:23
 msgid "Test message from tt-rss"
 msgstr "來自tt-rss的測試訊息"
 
-#: classes/Pref_System.php:23
+#: classes/Pref_System.php:24
 msgid "This message confirms that tt-rss can send outgoing email."
 msgstr ""
 
-#: classes/Pref_System.php:33
+#: classes/Pref_System.php:34
 msgid "Task name"
 msgstr "工作名稱"
 
-#: classes/Pref_System.php:34
+#: classes/Pref_System.php:35
 #, fuzzy
 #| msgid "Scheduled tasks"
 msgid "Schedule"
 msgstr "已排程的工作"
 
-#: classes/Pref_System.php:35
+#: classes/Pref_System.php:36
 msgid "Last executed"
 msgstr "上次執行"
 
-#: classes/Pref_System.php:36
+#: classes/Pref_System.php:37
 msgid "Duration (seconds)"
 msgstr "持續時間（秒）"
 
-#: classes/Pref_System.php:37
+#: classes/Pref_System.php:38
 msgid "Return code"
 msgstr "結束代碼"
 
-#: classes/Pref_System.php:109 js/PrefHelpers.js:621
+#: classes/Pref_System.php:110 js/PrefHelpers.js:621
 msgid "Refresh"
 msgstr "重新整理"
 
-#: classes/Pref_System.php:114
+#: classes/Pref_System.php:115
 msgid "&lt;&lt;"
 msgstr "&lt;&lt;"
 
-#: classes/Pref_System.php:118
+#: classes/Pref_System.php:119
 #, php-format
 msgid "Page %d of %d"
 msgstr "第%d頁，共%d頁"
 
-#: classes/Pref_System.php:123
+#: classes/Pref_System.php:124
 msgid "&gt;&gt;"
 msgstr "&gt;&gt;"
 
-#: classes/Pref_System.php:132
+#: classes/Pref_System.php:133
 msgid "Severity:"
 msgstr "嚴重程度："
 
-#: classes/Pref_System.php:136
+#: classes/Pref_System.php:137
 msgid "Errors"
 msgstr "錯誤"
 
-#: classes/Pref_System.php:137
+#: classes/Pref_System.php:138
 msgid "Warnings"
 msgstr "警告"
 
-#: classes/Pref_System.php:138
+#: classes/Pref_System.php:139
 msgid "Everything"
 msgstr "所有"
 
-#: classes/Pref_System.php:148
+#: classes/Pref_System.php:149
 msgid "Error"
 msgstr "錯誤"
 
-#: classes/Pref_System.php:149
+#: classes/Pref_System.php:150
 msgid "Filename"
 msgstr "檔案名稱"
 
-#: classes/Pref_System.php:150
+#: classes/Pref_System.php:151
 msgid "Message"
 msgstr "訊息"
 
-#: classes/Pref_System.php:152
+#: classes/Pref_System.php:153
 msgid "Date"
 msgstr "日期"
 
-#: classes/Pref_System.php:196
+#: classes/Pref_System.php:197
 msgid "Event log"
 msgstr "事件紀錄檔"
 
-#: classes/Pref_System.php:202
+#: classes/Pref_System.php:203
 #, fuzzy
 #| msgid "Mail configuration"
 msgid "Email configuration"
 msgstr "電郵設定"
 
-#: classes/Pref_System.php:213
+#: classes/Pref_System.php:214
 msgid "Email sent."
 msgstr ""
 
-#: classes/Pref_System.php:233
+#: classes/Pref_System.php:234
 msgid "To:"
 msgstr "收信人："
 
-#: classes/Pref_System.php:235
+#: classes/Pref_System.php:236
 msgid "Send test email"
 msgstr "發送測試郵件"
 
-#: classes/Pref_System.php:241
+#: classes/Pref_System.php:242
 msgid "Scheduled tasks"
 msgstr "已排程的工作"
 
-#: classes/Pref_System.php:252
+#: classes/Pref_System.php:253
 msgid "PHP Information"
 msgstr "PHP 資訊"
 

@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-04 17:27+0000\n"
 "PO-Revision-Date: 2025-11-05 17:51+0000\n"
-"Last-Translator: LaurentC <laurentc@users.noreply.hosted.weblate.org>\n"
+"Last-Translator: Edgars Andersons <Edgars+Weblate@gaitenis.id.lv>\n"
 "Language-Team: Latvian <https://hosted.weblate.org/projects/tt-rss/webui/lv/>"
 "\n"
 "Language: lv_LV\n"
@@ -202,37 +202,27 @@ msgstr "Vecākus par divām nedēļām"
 
 #: index.php:228
 msgid "Switch to three panel view"
-msgstr ""
+msgstr "Pārslēgties uz trīs paneļu skatu"
 
 #: index.php:229
-#, fuzzy
-#| msgid "Switch to digest..."
 msgid "Switch to combined view"
-msgstr "Pārslēgties uz īssavilkumu..."
+msgstr "Pārslēgties uz apvienoto skatu"
 
 #: index.php:230
-#, fuzzy
-#| msgid "Toggle widescreen mode"
 msgid "Disable widescreen mode"
-msgstr "Pārslēgt platekrāna režīmu"
+msgstr "Atspējot platekrāna režīmu"
 
 #: index.php:231
-#, fuzzy
-#| msgid "Toggle widescreen mode"
 msgid "Enable widescreen mode"
-msgstr "Pārslēgt platekrāna režīmu"
+msgstr "Iespējot platekrāna režīmu"
 
 #: index.php:232
-#, fuzzy
-#| msgid "Expand article"
 msgid "Expand selected article only"
-msgstr "Izvērst rakstu"
+msgstr "Izvērst tikai atlasīto rakstu"
 
 #: index.php:233
-#, fuzzy
-#| msgid "Expand article"
 msgid "Expand all articles"
-msgstr "Izvērst rakstu"
+msgstr "Izvērst visus rakstus"
 
 #: index.php:236
 msgid "Actions..."
@@ -677,9 +667,6 @@ msgid "Enable digest"
 msgstr "Iespējot īssavilkumu"
 
 #: classes/Pref_Prefs.php:106
-#, fuzzy
-#| msgid ""
-#| "Send daily digest of new (and unread) headlines to your e-mail address"
 msgid "Send daily digest of new (and unread) headlines to your email address"
 msgstr ""
 "Nosūtīt e-pastā ikdienas īssavilkumu par jauniem (un nelasītiem) ziņu "
@@ -1320,10 +1307,8 @@ msgid "Your access level is insufficient to run this script."
 msgstr "Piekļuves līmenis ir nepietiekams, lai izpildītu šo skriptu."
 
 #: classes/Handler_Public.php:688
-#, fuzzy
-#| msgid "Feeds with update errors"
 msgid "Proceed with update?"
-msgstr "Barotnes ar atjaunināšanas kļūdām"
+msgstr "Turpināt ar atjaunināšanu?"
 
 #: classes/Handler_Public.php:693
 msgid "Database Updater"
@@ -1385,8 +1370,6 @@ msgid "(%d days)"
 msgstr "(%d dienas)"
 
 #: classes/Pref_Feeds.php:621 js/CommonDialogs.js:500
-#, fuzzy
-#| msgid "Include in e-mail digest"
 msgid "Include in email digest"
 msgstr "Iekļaut e-pasta īssavilkumu"
 
@@ -1583,17 +1566,15 @@ msgstr "Pārbaudes ziņojums no tt-rss"
 
 #: classes/Pref_System.php:24
 msgid "This message confirms that tt-rss can send outgoing email."
-msgstr ""
+msgstr "Šis ziņojumus apstiprina, ka tt-rss var nosūtīt izejošo e-pastu."
 
 #: classes/Pref_System.php:34
 msgid "Task name"
 msgstr "Uzdevuma nosaukums"
 
 #: classes/Pref_System.php:35
-#, fuzzy
-#| msgid "Scheduled tasks"
 msgid "Schedule"
-msgstr "Paredzētie uzdevumi"
+msgstr "Grafiks"
 
 #: classes/Pref_System.php:36
 msgid "Last executed"
@@ -1661,14 +1642,12 @@ msgid "Event log"
 msgstr "Notikumu žurnāls"
 
 #: classes/Pref_System.php:203
-#, fuzzy
-#| msgid "Mail configuration"
 msgid "Email configuration"
-msgstr "Pasta konfigurācija"
+msgstr "E-pasta konfigurācija"
 
 #: classes/Pref_System.php:214
 msgid "Email sent."
-msgstr ""
+msgstr "E-pasta ziņojums nosūtīts."
 
 #: classes/Pref_System.php:234
 msgid "To:"
@@ -1687,8 +1666,7 @@ msgid "PHP Information"
 msgstr "Informācija par PHP"
 
 #: classes/Mailer.php:53
-#, fuzzy, php-format
-#| msgid "Unknown error while sending mail. Hooks tried: %d."
+#, php-format
 msgid "Unknown error while sending email. Hooks tried: %d."
 msgstr "Nezināma kļūda e-pasta sūtīšanas laikā. Mēģinātās aizķeres: %d."
 
@@ -2817,15 +2795,12 @@ msgid "Expand to select feed"
 msgstr "Izvērst līdz atlasītajai barotnei"
 
 #: js/CommonDialogs.js:189
-#, fuzzy
-#| msgid "Couldn't download the specified URL: %s"
 msgid "Couldn't download the specified URL."
-msgstr "Neizdevās lejuplādēt norādīto URL: %s"
+msgstr "Nevarēja lejupielādēt norādīto URL."
 
 #: js/CommonDialogs.js:192
-#, fuzzy
 msgid "Invalid content."
-msgstr "Pārtīt raksta saturu"
+msgstr "Nederīgs saturs."
 
 #: js/CommonDialogs.js:195
 msgid "Error while creating feed database entry."

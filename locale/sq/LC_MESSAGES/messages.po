@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-04 17:27+0000\n"
 "PO-Revision-Date: 2025-11-05 17:51+0000\n"
-"Last-Translator: LaurentC <laurentc@users.noreply.hosted.weblate.org>\n"
+"Last-Translator: Besnik Bleta <besnik@programeshqip.org>\n"
 "Language-Team: Albanian <https://hosted.weblate.org/projects/tt-rss/webui/sq/"
 ">\n"
 "Language: sq\n"
@@ -1569,7 +1569,7 @@ msgstr "Mesazh provë nga tt-rss"
 
 #: classes/Pref_System.php:24
 msgid "This message confirms that tt-rss can send outgoing email."
-msgstr ""
+msgstr "Ky mesazh ripohon se tt-rss mund të dërgojë email."
 
 #: classes/Pref_System.php:34
 msgid "Task name"
@@ -1649,10 +1649,8 @@ msgid "Email configuration"
 msgstr "Formësim email-i"
 
 #: classes/Pref_System.php:214
-#, fuzzy
-#| msgid "Mail sent."
 msgid "Email sent."
-msgstr "Mesazhi u dërgua."
+msgstr "Email-i u dërgua."
 
 #: classes/Pref_System.php:234
 msgid "To:"
@@ -1671,10 +1669,9 @@ msgid "PHP Information"
 msgstr "Informacion PHP"
 
 #: classes/Mailer.php:53
-#, fuzzy, php-format
-#| msgid "Unknown error while sending mail. Hooks tried: %d."
+#, php-format
 msgid "Unknown error while sending email. Hooks tried: %d."
-msgstr "Gabim i panjohur teksa dërgohej postë. Hook-e të përdorur: %d."
+msgstr "Gabim i panjohur teksa dërgohej email. Hook-e të përdorur: %d."
 
 #: classes/Pref_Users.php:49 classes/Pref_Users.php:239
 msgid "Registered"

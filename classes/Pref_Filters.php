@@ -12,16 +12,38 @@ class Pref_Filters extends Handler_Protected {
 
 	const MAX_ACTIONS_TO_DISPLAY = 3;
 
-	/** @var array<int,array<mixed>> $action_descriptions */
-	private array $action_descriptions = [];
+	/** @var array<int,array<mixed>> */
+	private array $filter_actions;
+
+	/** @var array<int,array<mixed>> */
+	private array $filter_types;
 
 	function before(string $method) : bool {
+		// ttrss_filters2_actions, but here to support translations
+		$this->filter_actions = [
+			1 => ['name' => 'filter', 'description' => __('Delete article')],
+			2 => ['name' => 'catchup', 'description' => __('Mark as read')],
+			3 => ['name' => 'mark', 'description' => __('Set starred')],
+			4 => ['name' => 'tag', 'description' => __('Assign tags')],
+			5 => ['name' => 'publish', 'description' => __('Publish article')],
+			6 => ['name' => 'score', 'description' => __('Modify score')],
+			7 => ['name' => 'label', 'description' => __('Assign label')],
+			8 => ['name' => 'stop', 'description' => __('Stop / Do nothing')],
+			9 => ['name' => 'plugin', 'description' => __('Invoke plugin')],
+			10 => ['name' => 'ignore-tag', 'description' => __('Ignore tags')],
+		];
 
-		$descriptions = ORM::for_table("ttrss_filter_actions")->find_array();
-
-		foreach ($descriptions as $desc) {
-			$this->action_descriptions[$desc['id']] = $desc;
-		}
+		// // ttrss_filter_types, but here to support translations
+		$this->filter_types = [
+			1 => ['name' => 'title', 'description' => __('Title')],
+			2 => ['name' => 'content', 'description' => __('Content')],
+			3 => ['name' => 'both', 'description' => __('Title or Content')],
+			4 => ['name' => 'link', 'description' => __('Link')],
+			// preserving the original behavior of this type not being supported
+			// 5 => ['name' => 'date', 'description' => __('Article Date')],
+			6 => ['name' => 'author', 'description' => __('Author')],
+			7 => ['name' => 'tag', 'description' => __('Article Tags')],
+		];
 
 		return parent::before($method);
 	}
@@ -77,13 +99,6 @@ class Pref_Filters extends Handler_Protected {
 			'actions' => ['dummy-action'],
 		];
 
-		/** @var array<int, string> */
-		$filter_types = [];
-
-		foreach (ORM::for_table('ttrss_filter_types')->find_many() as $filter_type) {
-			$filter_types[$filter_type->id] = $filter_type->name;
-		}
-
 		$scope_qparts = [];
 
 		/** @var string $rule_json */
@@ -92,7 +107,7 @@ class Pref_Filters extends Handler_Protected {
 			$rule = json_decode($rule_json, true);
 
 			if (is_array($rule)) {
-				$rule['type'] = $filter_types[$rule['filter_type']];
+				$rule['type'] = $this->filter_types[$rule['filter_type']]['name'];
 				$rule['inverse'] ??= false;
 				$filter['rules'][] = $rule;
 
@@ -239,10 +254,7 @@ class Pref_Filters extends Handler_Protected {
 
 	private function _get_rules_list(int $filter_id): string {
 		$rules = ORM::for_table('ttrss_filters2_rules')
-			->table_alias('r')
-			->join('ttrss_filter_types', ['r.filter_type', '=', 't.id'], 't')
 			->where('filter_id', $filter_id)
-			->select_many(['r.*', 'field' => 't.description'])
 			->find_many();
 
 		$rv = "";
@@ -274,7 +286,7 @@ class Pref_Filters extends Handler_Protected {
 
 			$rv .= "<li class='$inverse_class'>" . T_sprintf("%s on %s in %s %s",
 				htmlspecialchars($rule->reg_exp),
-				$rule->field,
+				$this->filter_types[$rule->filter_type]['description'],
 				$where,
 				$rule->inverse ? __("(inverse)") : "") . "</li>";
 		}
@@ -361,25 +373,14 @@ class Pref_Filters extends Handler_Protected {
 				"labels" => Labels::get_all($_SESSION["uid"])
 			];
 
-			$res = $this->pdo->query("SELECT id,description
-				FROM ttrss_filter_types WHERE id != 5 ORDER BY description");
+			foreach ($this->filter_types as $id => $details)
+				$rv['filter_types'][$id] = $details['description'];
 
-			while ($line = $res->fetch()) {
-				$rv["filter_types"][$line["id"]] = __($line["description"]);
-			}
+			foreach ($this->filter_actions as $id => $details)
+				$rv['action_types'][$id] = $details['description'];
 
-			$res = $this->pdo->query("SELECT id,description FROM ttrss_filter_actions
-				ORDER BY name");
-
-			while ($line = $res->fetch()) {
-				$rv["action_types"][$line["id"]] = __($line["description"]);
-			}
-
-			$filter_actions = PluginHost::getInstance()->get_filter_actions();
-
-			foreach ($filter_actions as $fclass => $factions) {
+			foreach (PluginHost::getInstance()->get_filter_actions() as $fclass => $factions) {
 				foreach ($factions as $faction) {
-
 					$rv["plugin_actions"][$fclass . ":" . $faction["action"]] =
 						$fclass . ": " . $faction["description"];
 				}
@@ -391,8 +392,6 @@ class Pref_Filters extends Handler_Protected {
 				$rules_sth->execute([$filter_id]);
 
 				while ($rrow = $rules_sth->fetch(PDO::FETCH_ASSOC)) {
-					$rrow['name'] = $this->_get_rule_name($rrow);
-
 					if ($rrow["match_on"]) {
 						$rrow["feed_id"] = json_decode($rrow["match_on"], true);
 					} else {
@@ -404,6 +403,9 @@ class Pref_Filters extends Handler_Protected {
 
 						$rrow["feed_id"] = ["" . $feed_id]; // set item type to string for in_array()
 					}
+
+					// NOTE: '_get_rule_name()' depends upon the 'match_on'/'feed_id' massaging that happens above.
+					$rrow['name'] = $this->_get_rule_name($rrow);
 
 					unset($rrow['cat_filter'], $rrow['cat_id'], $rrow['filter_id'], $rrow['id'], $rrow['match_on']);
 
@@ -454,17 +456,7 @@ class Pref_Filters extends Handler_Protected {
 		}
 
 		$feed = implode(', ', $feeds_fmt);
-
-		$sth = $this->pdo->prepare("SELECT description FROM ttrss_filter_types
-			WHERE id = ?");
-		$sth->execute([(int)$rule["filter_type"]]);
-
-		if ($row = $sth->fetch()) {
-			$filter_type = $row["description"];
-		} else {
-			$filter_type = "?UNKNOWN?";
-		}
-
+		$filter_type = $this->filter_types[(int) $rule['filter_type']]['description'] ?? '?UNKNOWN?';
 		$inverse = isset($rule["inverse"]) ? "inverse" : "";
 
 		if ($format === 'html')
@@ -484,14 +476,13 @@ class Pref_Filters extends Handler_Protected {
 	 * @param array<string,mixed>|ArrayAccess<string, mixed>|null $action
 	 */
 	private function _get_action_name(array|ArrayAccess|null $action = null): string {
-		if (!$action) {
-			return "";
-		}
+		if (!$action)
+			return '';
 
-		$title = __($this->action_descriptions[$action['action_id']]['description']) ??
-			T_sprintf('Unknown action: %d', $action['action_id']);
+		$action_id = (int) $action['action_id'];
+		$title = $this->filter_actions[$action_id]['description'] ?? T_sprintf('Unknown action: %d', $action_id);
 
-		if ($action["action_id"] == self::ACTION_PLUGIN) {
+		if ($action_id == self::ACTION_PLUGIN) {
 			[$pfclass, $pfaction] = explode(":", $action["action_param"]);
 
 			$filter_actions = PluginHost::getInstance()->get_filter_actions();
@@ -504,7 +495,7 @@ class Pref_Filters extends Handler_Protected {
 					}
 				}
 			}
-		} else if (in_array($action["action_id"], self::PARAM_ACTIONS)) {
+		} else if (in_array($action_id, self::PARAM_ACTIONS)) {
 			$title .= ": " . $action["action_param"];
 		}
 

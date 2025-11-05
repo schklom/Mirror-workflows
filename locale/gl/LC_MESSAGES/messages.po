@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-04 17:27+0000\n"
 "PO-Revision-Date: 2025-11-05 17:51+0000\n"
-"Last-Translator: LaurentC <laurentc@users.noreply.hosted.weblate.org>\n"
+"Last-Translator: \"josé m.\" <correoxm@disroot.org>\n"
 "Language-Team: Galician <https://hosted.weblate.org/projects/tt-rss/webui/gl/"
 ">\n"
 "Language: gl\n"
@@ -202,35 +202,27 @@ msgstr "Anterior a dúas semanas"
 
 #: index.php:228
 msgid "Switch to three panel view"
-msgstr ""
+msgstr "Cambiar á vista de tres paneis"
 
 #: index.php:229
 msgid "Switch to combined view"
-msgstr ""
+msgstr "Cambiar á vista combinada"
 
 #: index.php:230
-#, fuzzy
-#| msgid "Toggle widescreen mode"
 msgid "Disable widescreen mode"
-msgstr "Activar modo pantalla completa"
+msgstr "Desactivar modo pantalla completa"
 
 #: index.php:231
-#, fuzzy
-#| msgid "Toggle widescreen mode"
 msgid "Enable widescreen mode"
 msgstr "Activar modo pantalla completa"
 
 #: index.php:232
-#, fuzzy
-#| msgid "Expand article"
 msgid "Expand selected article only"
-msgstr "Despregrar artigo"
+msgstr "Despregrar só o artigo seleccioando"
 
 #: index.php:233
-#, fuzzy
-#| msgid "Expand article"
 msgid "Expand all articles"
-msgstr "Despregrar artigo"
+msgstr "Despregrar todos os artigos"
 
 #: index.php:236
 msgid "Actions..."
@@ -284,7 +276,7 @@ msgstr "Activar modo combinado"
 
 #: index.php:274 classes/RPC.php:523
 msgid "Toggle widescreen mode"
-msgstr "Activar modo pantalla completa"
+msgstr "Cambiar o modo pantalla completa"
 
 #: index.php:276
 msgid "Toggle expand all articles"
@@ -445,7 +437,7 @@ msgstr "Seleccionar artigo baixo o cursor"
 
 #: classes/RPC.php:520
 msgid "Email article"
-msgstr "Enviar por email"
+msgstr "Enviar por correo"
 
 #: classes/RPC.php:521
 msgid "Close/collapse article"
@@ -675,12 +667,9 @@ msgid "Enable digest"
 msgstr "Activar resumo"
 
 #: classes/Pref_Prefs.php:106
-#, fuzzy
-#| msgid ""
-#| "Send daily digest of new (and unread) headlines to your e-mail address"
 msgid "Send daily digest of new (and unread) headlines to your email address"
 msgstr ""
-"Envia un resumo diario coas novidades (e non lidos) a o enderezo de email"
+"Envia un resumo diario coas novidades (e non lidos) a o enderezo de correo"
 
 #: classes/Pref_Prefs.php:107
 msgid "Try to send around this time"
@@ -845,7 +834,7 @@ msgstr "Nome completo:"
 
 #: classes/Pref_Prefs.php:306 classes/Handler_Public.php:534 js/PrefUsers.js:98
 msgid "Email:"
-msgstr "Email:"
+msgstr "Enderezo:"
 
 #: classes/Pref_Prefs.php:314 classes/Pref_Feeds.php:703
 #: plugins/note/init.php:49 plugins/nsfw/init.php:105
@@ -1276,8 +1265,8 @@ msgid ""
 "You will need to provide valid account name and email. Password reset link "
 "will be sent to your email address."
 msgstr ""
-"Terás que proporcionar un nome válido de conta e email. Enviarase unha "
-"ligazón para restablecer o contrasinal."
+"Terás que proporcionar un nome de conta válido e enderezo de correo. "
+"Enviarase unha ligazón para restablecer o contrasinal."
 
 #: classes/Handler_Public.php:529 classes/Pref_Feeds.php:674
 #: plugins/bookmarklets/init.php:312 include/login_form.php:127
@@ -1315,10 +1304,8 @@ msgid "Your access level is insufficient to run this script."
 msgstr "O teu nivel de acceso non é suficiente para executar este script."
 
 #: classes/Handler_Public.php:688
-#, fuzzy
-#| msgid "Feeds with update errors"
 msgid "Proceed with update?"
-msgstr "Fontes con fallo na actualización"
+msgstr "Facer a actualización?"
 
 #: classes/Handler_Public.php:693
 msgid "Database Updater"
@@ -1381,10 +1368,8 @@ msgid "(%d days)"
 msgstr "(%d días)"
 
 #: classes/Pref_Feeds.php:621 js/CommonDialogs.js:500
-#, fuzzy
-#| msgid "Include in e-mail digest"
 msgid "Include in email digest"
-msgstr "Incluír no resumo por email"
+msgstr "Incluír no resumo por correo"
 
 #: classes/Pref_Feeds.php:622 js/CommonDialogs.js:501
 msgid "Always display image attachments"
@@ -1579,17 +1564,15 @@ msgstr "Mensaxe de proba desde tt-rss"
 
 #: classes/Pref_System.php:24
 msgid "This message confirms that tt-rss can send outgoing email."
-msgstr ""
+msgstr "Esta mensaxe confirma que tt-rss pode enviar correos electrónicos."
 
 #: classes/Pref_System.php:34
 msgid "Task name"
 msgstr "Nome da tarefa"
 
 #: classes/Pref_System.php:35
-#, fuzzy
-#| msgid "Scheduled tasks"
 msgid "Schedule"
-msgstr "Tarefas programadas"
+msgstr "Programar"
 
 #: classes/Pref_System.php:36
 msgid "Last executed"
@@ -1657,14 +1640,12 @@ msgid "Event log"
 msgstr "Rexistro do evento"
 
 #: classes/Pref_System.php:203
-#, fuzzy
-#| msgid "Mail configuration"
 msgid "Email configuration"
-msgstr "Configuración de email"
+msgstr "Configuración do correo"
 
 #: classes/Pref_System.php:214
 msgid "Email sent."
-msgstr ""
+msgstr "Correo enviado."
 
 #: classes/Pref_System.php:234
 msgid "To:"
@@ -1672,7 +1653,7 @@ msgstr "Para:"
 
 #: classes/Pref_System.php:236
 msgid "Send test email"
-msgstr "Enviar email de proba"
+msgstr "Enviar correo de proba"
 
 #: classes/Pref_System.php:242
 msgid "Scheduled tasks"
@@ -1683,10 +1664,9 @@ msgid "PHP Information"
 msgstr "Info PHP"
 
 #: classes/Mailer.php:53
-#, fuzzy, php-format
-#| msgid "Unknown error while sending mail. Hooks tried: %d."
+#, php-format
 msgid "Unknown error while sending email. Hooks tried: %d."
-msgstr "Erro descoñecido ao enviar o email. Intentouse: %d."
+msgstr "Erro descoñecido ao enviar o correo. Intentouse: %d."
 
 #: classes/Pref_Users.php:49 classes/Pref_Users.php:239
 msgid "Registered"
@@ -2816,16 +2796,12 @@ msgid "Expand to select feed"
 msgstr "Desprega para seleccionar a canle"
 
 #: js/CommonDialogs.js:189
-#, fuzzy
-#| msgid "Couldn't download the specified URL: %s"
 msgid "Couldn't download the specified URL."
-msgstr "Non se puido descargar o URL indicado: %s"
+msgstr "Non se puido descargar o URL indicado."
 
 #: js/CommonDialogs.js:192
-#, fuzzy
-#| msgid "Inline content"
 msgid "Invalid content."
-msgstr "Contido en liña"
+msgstr "Contido non válido."
 
 #: js/CommonDialogs.js:195
 msgid "Error while creating feed database entry."

@@ -325,7 +325,7 @@ const	CommonDialogs = {
 		addLabel: function() {
 			const caption = prompt(__("Please enter label caption:"), "");
 
-			if (caption !== undefined && caption.trim().length > 0) {
+			if (caption && caption.trim().length > 0) {
 
 				const query = {op: "Pref_Labels", method: "add", caption: caption.trim()};
 

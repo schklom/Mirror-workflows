@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-04 17:27+0000\n"
-"PO-Revision-Date: 2025-11-05 17:51+0000\n"
+"PO-Revision-Date: 2025-11-05 19:20+0000\n"
 "Last-Translator: LaurentC <laurentc@users.noreply.hosted.weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/tt-rss/webui/fr/>"
 "\n"
@@ -883,7 +883,7 @@ msgstr "Générer un mot de passe"
 
 #: classes/Pref_Prefs.php:411 classes/Pref_Feeds.php:967 js/PrefHelpers.js:226
 msgid "Remove selected"
-msgstr "Supprimer les éléments sélectionnés"
+msgstr "Supprimer les sélectionnés"
 
 #: classes/Pref_Prefs.php:447 classes/Pref_Prefs.php:499
 msgid "Your password:"

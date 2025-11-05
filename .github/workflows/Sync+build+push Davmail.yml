@@ -48,7 +48,7 @@ jobs:
           ref: 'Davmail' # branch
       # https://github.com/docker/setup-qemu-action#usage
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3.6.0
+        uses: docker/setup-qemu-action@v3.7.0
         #with:
           #image: tonistiigi/binfmt:latest
           #platforms: all

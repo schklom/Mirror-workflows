@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-05 19:10+0000\n"
-"PO-Revision-Date: 2025-11-05 17:51+0000\n"
+"PO-Revision-Date: 2025-11-06 20:51+0000\n"
 "Last-Translator: Besnik Bleta <besnik@programeshqip.org>\n"
 "Language-Team: Albanian <https://hosted.weblate.org/projects/tt-rss/webui/sq/"
 ">\n"
@@ -1496,32 +1496,24 @@ msgid "Sharing"
 msgstr "Ndarje me të tjerë"
 
 #: classes/Pref_Filters.php:24
-#, fuzzy
-#| msgid "Related articles"
 msgid "Delete article"
-msgstr "Artikuj të afërt"
+msgstr "Fshije artikullin"
 
 #: classes/Pref_Filters.php:26
-#, fuzzy
-#| msgid "Select starred"
 msgid "Set starred"
-msgstr "Përzgjidh ata me yll"
+msgstr "Vëre si me yll"
 
 #: classes/Pref_Filters.php:27
-#, fuzzy
-#| msgid "Assign label"
 msgid "Assign tags"
-msgstr "Caktojini etiketë"
+msgstr "Caktojini etiketa"
 
 #: classes/Pref_Filters.php:28
-#, fuzzy
-#| msgid "Published articles"
 msgid "Publish article"
-msgstr "Artikuj të botuar"
+msgstr "Botoje artikullin"
 
 #: classes/Pref_Filters.php:29
 msgid "Modify score"
-msgstr ""
+msgstr "Ndryshojini pikët"
 
 #: classes/Pref_Filters.php:30 js/Headlines.js:1500
 msgid "Assign label"
@@ -1529,43 +1521,35 @@ msgstr "Caktojini etiketë"
 
 #: classes/Pref_Filters.php:31
 msgid "Stop / Do nothing"
-msgstr ""
+msgstr "Ndale / Mos bëj gjë"
 
 #: classes/Pref_Filters.php:32
-#, fuzzy
-#| msgid "Install plugin"
 msgid "Invoke plugin"
-msgstr "Instaloje shtojcën"
+msgstr ""
 
 #: classes/Pref_Filters.php:33
-#, fuzzy
-#| msgid "no tags"
 msgid "Ignore tags"
-msgstr "s’ka etiketa"
+msgstr "Shpërfill etiketa"
 
 #: classes/Pref_Filters.php:39
-#, fuzzy
-#| msgid "Content:"
 msgid "Content"
-msgstr "Lëndë:"
+msgstr "Lëndë"
 
 #: classes/Pref_Filters.php:40
 msgid "Title or Content"
-msgstr ""
+msgstr "Titull ose Lëndë"
 
 #: classes/Pref_Filters.php:41
 msgid "Link"
-msgstr ""
+msgstr "Lidhje"
 
 #: classes/Pref_Filters.php:44
 msgid "Author"
-msgstr ""
+msgstr "Autor"
 
 #: classes/Pref_Filters.php:45
-#, fuzzy
-#| msgid "Article tags"
 msgid "Article Tags"
-msgstr "Etiketa artikulli"
+msgstr "Etiketa Artikulli"
 
 #: classes/Pref_Filters.php:272 classes/Pref_Filters.php:282
 #: classes/Pref_Filters.php:454 classes/Pref_Filters.php:956

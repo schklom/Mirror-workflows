@@ -404,13 +404,16 @@ class Pref_Filters extends Handler_Protected {
 						$rrow["feed_id"] = ["" . $feed_id]; // set item type to string for in_array()
 					}
 
+                    // The function _get_rule_name() expects $rrow['inverse'] to be unset
+                    // to mean "false", in order to have a behavior similar to the HTML
+                    // checkbox which is unset when not checked on the web page.
+					if (!$rrow['inverse'])
+						unset($rrow['inverse']);
+
 					// NOTE: '_get_rule_name()' depends upon the 'match_on'/'feed_id' massaging that happens above.
 					$rrow['name'] = $this->_get_rule_name($rrow);
 
 					unset($rrow['cat_filter'], $rrow['cat_id'], $rrow['filter_id'], $rrow['id'], $rrow['match_on']);
-
-					if (!$rrow['inverse'])
-						unset($rrow['inverse']);
 
 					$rv['rules'][] = $rrow;
 				}

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-05 19:10+0000\n"
-"PO-Revision-Date: 2025-11-05 17:51+0000\n"
+"PO-Revision-Date: 2025-11-06 20:51+0000\n"
 "Last-Translator: TonyRL <TonyRL@users.noreply.github.com>\n"
 "Language-Team: Chinese (Traditional Han script) <https://hosted.weblate.org/"
 "projects/tt-rss/webui/zh_Hant/>\n"
@@ -203,7 +203,7 @@ msgstr "兩個禮拜以前"
 
 #: index.php:228
 msgid "Switch to three panel view"
-msgstr ""
+msgstr "切換至三面板檢視"
 
 #: index.php:229
 msgid "Switch to combined view"
@@ -314,7 +314,7 @@ msgstr "過濾器"
 
 #: prefs.php:152 classes/Feeds.php:1349 classes/Pref_Labels.php:21
 msgid "Labels"
-msgstr "預定義標籤"
+msgstr "標籤"
 
 #: prefs.php:157
 msgid "Users"
@@ -402,7 +402,7 @@ msgstr "標記為未讀"
 
 #: classes/RPC.php:511
 msgid "Edit tags"
-msgstr "編輯自訂標籤"
+msgstr "編輯標籤"
 
 #: classes/RPC.php:512
 msgid "Open in new window"
@@ -438,7 +438,7 @@ msgstr "選擇滑鼠指到的文章"
 
 #: classes/RPC.php:520
 msgid "Email article"
-msgstr "透過郵件發送文章"
+msgstr "透過電子郵件發送文章"
 
 #: classes/RPC.php:521
 msgid "Close/collapse article"
@@ -555,7 +555,7 @@ msgstr "其他"
 
 #: classes/RPC.php:555
 msgid "Create label"
-msgstr "建立預定義標籤"
+msgstr "建立標籤"
 
 #: classes/RPC.php:556 classes/Pref_Filters.php:736
 msgid "Create filter"
@@ -833,7 +833,7 @@ msgstr "全名："
 
 #: classes/Pref_Prefs.php:306 classes/Handler_Public.php:534 js/PrefUsers.js:98
 msgid "Email:"
-msgstr "電子郵件："
+msgstr "電郵地址："
 
 #: classes/Pref_Prefs.php:314 classes/Pref_Feeds.php:703
 #: plugins/note/init.php:49 plugins/nsfw/init.php:105
@@ -1173,7 +1173,7 @@ msgstr "搜尋結果： %s"
 #: classes/Pref_Labels.php:163
 #, php-format
 msgid "Created label <b>%s</b>"
-msgstr "建立預定義標籤 <b>%s</b>"
+msgstr "建立標籤 <b>%s</b>"
 
 #: classes/OPML.php:295
 #, php-format
@@ -1476,9 +1476,8 @@ msgid "Sharing"
 msgstr "分享"
 
 #: classes/Pref_Filters.php:24
-#, fuzzy
 msgid "Delete article"
-msgstr "選擇所有文章"
+msgstr "刪除文章"
 
 #: classes/Pref_Filters.php:26
 msgid "Set starred"
@@ -1486,7 +1485,7 @@ msgstr "加星標"
 
 #: classes/Pref_Filters.php:27
 msgid "Assign tags"
-msgstr "添加自訂標籤"
+msgstr "添加標籤"
 
 #: classes/Pref_Filters.php:28
 msgid "Publish article"
@@ -1494,33 +1493,27 @@ msgstr "發布文章"
 
 #: classes/Pref_Filters.php:29
 msgid "Modify score"
-msgstr ""
+msgstr "修改分數"
 
 #: classes/Pref_Filters.php:30 js/Headlines.js:1500
 msgid "Assign label"
-msgstr "添加預定義標籤"
+msgstr "添加標籤"
 
 #: classes/Pref_Filters.php:31
 msgid "Stop / Do nothing"
-msgstr ""
+msgstr "停止／不執行任何動作"
 
 #: classes/Pref_Filters.php:32
-#, fuzzy
-#| msgid "Install plugin"
 msgid "Invoke plugin"
-msgstr "安裝擴充套件"
+msgstr "呼叫擴充套件"
 
 #: classes/Pref_Filters.php:33
-#, fuzzy
-#| msgid "no tags"
 msgid "Ignore tags"
-msgstr "無標籤"
+msgstr "忽略標籤"
 
 #: classes/Pref_Filters.php:39
-#, fuzzy
-#| msgid "Content:"
 msgid "Content"
-msgstr "內容："
+msgstr "內容"
 
 #: classes/Pref_Filters.php:40
 msgid "Title or Content"
@@ -1535,8 +1528,6 @@ msgid "Author"
 msgstr "作者"
 
 #: classes/Pref_Filters.php:45
-#, fuzzy
-#| msgid "Article tags"
 msgid "Article Tags"
 msgstr "文章標籤"
 
@@ -1548,7 +1539,7 @@ msgstr "全部摘要"
 #: classes/Pref_Filters.php:291 classes/Pref_Filters.php:465
 #: classes/Pref_Filters.php:468
 msgid "(inverse)"
-msgstr "反向選取"
+msgstr "（反向選取）"
 
 #: classes/Pref_Filters.php:287 classes/Pref_Filters.php:464
 #: classes/Pref_Filters.php:467
@@ -1609,11 +1600,11 @@ msgstr[0] "（+%d 個操作）"
 
 #: classes/Pref_System.php:23
 msgid "Test message from tt-rss"
-msgstr "來自tt-rss的測試訊息"
+msgstr "來自 tt-rss 的測試訊息"
 
 #: classes/Pref_System.php:24
 msgid "This message confirms that tt-rss can send outgoing email."
-msgstr ""
+msgstr "此訊息確認 tt-rss 可以傳送電子郵件。"
 
 #: classes/Pref_System.php:34
 msgid "Task name"
@@ -1694,7 +1685,7 @@ msgstr "電郵設定"
 
 #: classes/Pref_System.php:214
 msgid "Email sent."
-msgstr "已發送郵件。"
+msgstr "已傳送郵件。"
 
 #: classes/Pref_System.php:234
 msgid "To:"
@@ -1702,7 +1693,7 @@ msgstr "收信人："
 
 #: classes/Pref_System.php:236
 msgid "Send test email"
-msgstr "發送測試郵件"
+msgstr "傳送測試電子郵件"
 
 #: classes/Pref_System.php:242
 msgid "Scheduled tasks"
@@ -1715,7 +1706,7 @@ msgstr "PHP 資訊"
 #: classes/Mailer.php:53
 #, php-format
 msgid "Unknown error while sending email. Hooks tried: %d."
-msgstr "發送郵件時遇到不明錯誤。已嘗試：%d。"
+msgstr "傳送郵件時遇到不明錯誤。已嘗試：%d。"
 
 #: classes/Pref_Users.php:49 classes/Pref_Users.php:239
 msgid "Registered"
@@ -2008,7 +1999,7 @@ msgstr "使用書籤小程式經 Tiny Tiny RSS 發布任意頁面"
 
 #: include/login_form.php:150
 msgid "I forgot my password"
-msgstr "我忘記密碼了"
+msgstr "忘記密碼"
 
 #: include/login_form.php:156
 msgid "Profile:"
@@ -2292,7 +2283,7 @@ msgstr "沒有選取任何標籤。"
 
 #: js/PrefLabelTree.js:207
 msgid "Remove selected labels?"
-msgstr "移除選取的預定義標籤？"
+msgstr "移除選取的標籤？"
 
 #: js/PrefLabelTree.js:208
 msgid "Removing selected labels..."
@@ -2371,7 +2362,7 @@ msgstr[0] "已選取 %d 篇文章"
 #, java-printf-format, javascript-format
 msgid "Delete %d selected article in %s?"
 msgid_plural "Delete %d selected articles in %s?"
-msgstr[0] "要刪除 %d 篇選取的文章（在 %s 中）嗎？"
+msgstr[0] "要刪除 %d 篇在 %s 中選取的文章嗎？"
 
 #: js/Headlines.js:1145
 #, java-printf-format, javascript-format
@@ -2383,7 +2374,7 @@ msgstr[0] "要刪除選取的 %d 篇文章嗎？"
 #, java-printf-format, javascript-format
 msgid "Mark %d selected article in %s as read?"
 msgid_plural "Mark %d selected articles in %s as read?"
-msgstr[0] "要將選取的 %d 篇文章（在 %s 中）標記為已讀嗎？"
+msgstr[0] "要將 %d 篇在 %s 中選取的文章標記為已讀嗎？"
 
 #: js/Headlines.js:1292
 msgid "No article is selected."
@@ -2409,7 +2400,7 @@ msgstr "顯示文章網址"
 
 #: js/Headlines.js:1505
 msgid "Remove label"
-msgstr "移除預定義標籤"
+msgstr "移除標籤"
 
 #: js/Headlines.js:1554 js/FeedTree.js:107 js/Headlines.js:466
 #: js/Headlines.js:515 js/Headlines.js:584
@@ -2713,7 +2704,7 @@ msgstr "匯入中，請稍候……"
 
 #: js/PrefHelpers.js:799
 msgid "OPML Import"
-msgstr "OPML 匯入"
+msgstr "匯入 OPML"
 
 #: js/PrefHelpers.js:810
 msgid ""
@@ -2746,15 +2737,15 @@ msgstr "標記所有摘要為已讀..."
 
 #: js/Feeds.js:469
 msgid "Mark %w in %s older than 1 day as read?"
-msgstr "要將 %s 中1天前的文章標記為已讀嗎？"
+msgstr "要將 %s 中 %w 1 天前的文章標記為已讀嗎？"
 
 #: js/Feeds.js:472
 msgid "Mark %w in %s older than 1 week as read?"
-msgstr "要將 %s 中 %w 1星期前的文章標記為已讀嗎？"
+msgstr "要將 %s 中 %w 1 星期前的文章標記為已讀嗎？"
 
 #: js/Feeds.js:475
 msgid "Mark %w in %s older than 2 weeks as read?"
-msgstr "要將 %s 中的 %w 2星期前的文章標記為已讀嗎？"
+msgstr "要將 %s 中 %w 2 星期前的文章標記為已讀嗎？"
 
 #: js/Feeds.js:478
 msgid "Mark %w in %s as read?"
@@ -2847,7 +2838,7 @@ msgstr "正在為選取的摘要啟動偵錯器…"
 
 #: js/CommonDialogs.js:326
 msgid "Please enter label caption:"
-msgstr "請填寫預定義標籤的說明："
+msgstr "請填寫標籤說明："
 
 #: js/CommonDialogs.js:348
 msgid "Removing feed..."
@@ -2980,7 +2971,7 @@ msgstr "附件"
 
 #: js/Article.js:294 js/Headlines.js:547
 msgid "Edit tags for this article"
-msgstr "為本文編輯自訂標籤"
+msgstr "為本文編輯標籤"
 
 #: js/Headlines.js:467
 msgid "mark feed as read"
@@ -3068,7 +3059,7 @@ msgstr "更新完成"
 #, javascript-format
 msgid "Updates pending for %d plugin"
 msgid_plural "Updates pending for %d plugins"
-msgstr[0] "%d 個擴充套件準備更新"
+msgstr[0] "準備更新 %d 個擴充套件"
 
 #: js/Feeds.js:291
 msgid "Open Preferences"

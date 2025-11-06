@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-05 19:10+0000\n"
-"PO-Revision-Date: 2025-11-05 17:51+0000\n"
+"PO-Revision-Date: 2025-11-06 20:51+0000\n"
 "Last-Translator: \"josé m.\" <correoxm@disroot.org>\n"
 "Language-Team: Galician <https://hosted.weblate.org/projects/tt-rss/webui/gl/"
 ">\n"
@@ -1491,32 +1491,24 @@ msgid "Sharing"
 msgstr "Compartir"
 
 #: classes/Pref_Filters.php:24
-#, fuzzy
-#| msgid "Related articles"
 msgid "Delete article"
-msgstr "Artigos relacionados"
+msgstr "Eliminar artigo"
 
 #: classes/Pref_Filters.php:26
-#, fuzzy
-#| msgid "Select starred"
 msgid "Set starred"
-msgstr "Seleccionar favoritos"
+msgstr "Pór estrela"
 
 #: classes/Pref_Filters.php:27
-#, fuzzy
-#| msgid "Assign label"
 msgid "Assign tags"
 msgstr "Asignar etiqueta"
 
 #: classes/Pref_Filters.php:28
-#, fuzzy
-#| msgid "Published articles"
 msgid "Publish article"
-msgstr "Artigos publicados"
+msgstr "Publicar artigo"
 
 #: classes/Pref_Filters.php:29
 msgid "Modify score"
-msgstr ""
+msgstr "Modificar puntuación"
 
 #: classes/Pref_Filters.php:30 js/Headlines.js:1500
 msgid "Assign label"
@@ -1524,41 +1516,33 @@ msgstr "Asignar etiqueta"
 
 #: classes/Pref_Filters.php:31
 msgid "Stop / Do nothing"
-msgstr ""
+msgstr "Deter / Facer nada"
 
 #: classes/Pref_Filters.php:32
-#, fuzzy
-#| msgid "Install plugin"
 msgid "Invoke plugin"
-msgstr "Instalar complemento"
+msgstr "Cargar complemento"
 
 #: classes/Pref_Filters.php:33
-#, fuzzy
-#| msgid "no tags"
 msgid "Ignore tags"
-msgstr "sen etiquetas"
+msgstr "Ignorar etiquetas"
 
 #: classes/Pref_Filters.php:39
-#, fuzzy
-#| msgid "Content:"
 msgid "Content"
-msgstr "Contido:"
+msgstr "Contido"
 
 #: classes/Pref_Filters.php:40
 msgid "Title or Content"
-msgstr ""
+msgstr "Título ou Contido"
 
 #: classes/Pref_Filters.php:41
 msgid "Link"
-msgstr ""
+msgstr "Ligazón"
 
 #: classes/Pref_Filters.php:44
 msgid "Author"
-msgstr ""
+msgstr "Autoría"
 
 #: classes/Pref_Filters.php:45
-#, fuzzy
-#| msgid "Article tags"
 msgid "Article Tags"
 msgstr "Etiquetas do artigo"
 

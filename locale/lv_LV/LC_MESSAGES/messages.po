@@ -8,10 +8,10 @@ msgstr ""
 "Project-Id-Version: tt-rss git\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-05 19:10+0000\n"
-"PO-Revision-Date: 2025-11-05 17:51+0000\n"
+"PO-Revision-Date: 2025-11-06 20:51+0000\n"
 "Last-Translator: Edgars Andersons <Edgars+Weblate@gaitenis.id.lv>\n"
-"Language-Team: Latvian <https://hosted.weblate.org/projects/tt-rss/webui/lv/"
-">\n"
+"Language-Team: Latvian <https://hosted.weblate.org/projects/tt-rss/webui/lv/>"
+"\n"
 "Language: lv_LV\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1493,17 +1493,16 @@ msgid "Sharing"
 msgstr "Kopīgošana"
 
 #: classes/Pref_Filters.php:24
-#, fuzzy
 msgid "Delete article"
-msgstr "Iezīmēt visus rakstus"
+msgstr "Izdzēst rakstu"
 
 #: classes/Pref_Filters.php:26
 msgid "Set starred"
-msgstr "Uzlikt zvaigzni"
+msgstr "Atzīmēt ar zvaigzni"
 
 #: classes/Pref_Filters.php:27
 msgid "Assign tags"
-msgstr "Pievienot iezīmi"
+msgstr "Piešķirt birkas"
 
 #: classes/Pref_Filters.php:28
 msgid "Publish article"
@@ -1519,25 +1518,19 @@ msgstr "Piešķirt iezīmi"
 
 #: classes/Pref_Filters.php:31
 msgid "Stop / Do nothing"
-msgstr ""
+msgstr "Apturēt / Neko nedarīt"
 
 #: classes/Pref_Filters.php:32
-#, fuzzy
-#| msgid "Install plugin"
 msgid "Invoke plugin"
-msgstr "Uzstādīt spraudni"
+msgstr "Izmantot spraudni"
 
 #: classes/Pref_Filters.php:33
-#, fuzzy
-#| msgid "no tags"
 msgid "Ignore tags"
-msgstr "nav iezīmju"
+msgstr "Neņemt vērā birkas"
 
 #: classes/Pref_Filters.php:39
-#, fuzzy
-#| msgid "Content:"
 msgid "Content"
-msgstr "Saturs:"
+msgstr "Saturs"
 
 #: classes/Pref_Filters.php:40
 msgid "Title or Content"
@@ -1552,8 +1545,6 @@ msgid "Author"
 msgstr "Autors"
 
 #: classes/Pref_Filters.php:45
-#, fuzzy
-#| msgid "Article tags"
 msgid "Article Tags"
 msgstr "Rakstu birkas"
 

@@ -861,9 +861,12 @@ const App = {
          Headlines.initScrollHandler();
 
          if (this.getInitParam('check_for_updates')) {
-            window.setInterval(() => {
-               this.checkForUpdates();
-            }, 3600 * 1000);
+			window.setTimeout(() => {
+              this.checkForUpdates();
+              window.setInterval(() => {
+                 this.checkForUpdates();
+              }, 3600 * 1000);
+            }, 60 * 1000);
          }
 
          PluginHost.run(PluginHost.HOOK_INIT_COMPLETE, null);

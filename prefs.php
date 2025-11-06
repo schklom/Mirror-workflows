@@ -106,7 +106,7 @@
 
 <body class="flat ttrss_main ttrss_prefs css_loading">
 
-<noscript class="alert alert-error"><?= ('Javascript is disabled. Please enable it.') ?></noscript>
+<noscript class="alert alert-error"><?= __('Javascript is disabled. Please enable it.') ?></noscript>
 
 <div id="notify" class="notify"></div>
 <div id="cmdline" style="display : none"></div>

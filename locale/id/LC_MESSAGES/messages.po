@@ -8,98 +8,100 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-05 19:10+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2025-11-06 20:51+0000\n"
+"Last-Translator: Dony Wibowo <dony@dony.me>\n"
+"Language-Team: Indonesian <https://hosted.weblate.org/projects/tt-rss/webui/"
+"id/>\n"
 "Language: id\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 5.15-dev\n"
 
 #: backend.php:55
 msgid "Use default"
-msgstr ""
+msgstr "Setelan standar"
 
 #: backend.php:56
 msgid "Never purge"
-msgstr ""
+msgstr "Jangan dihapus"
 
 #: backend.php:57
 msgid "1 week old"
-msgstr ""
+msgstr "1 minggu"
 
 #: backend.php:58
 msgid "2 weeks old"
-msgstr ""
+msgstr "2 minggu﻿"
 
 #: backend.php:59
 msgid "1 month old"
-msgstr ""
+msgstr "1 bulan"
 
 #: backend.php:60
 msgid "2 months old"
-msgstr ""
+msgstr "2 bulan"
 
 #: backend.php:61
 msgid "3 months old"
-msgstr ""
+msgstr "3 bulan"
 
 #: backend.php:64
 msgid "Default interval"
-msgstr ""
+msgstr "Interval bawaan"
 
 #: backend.php:65 backend.php:75
 msgid "Disable updates"
-msgstr ""
+msgstr "Nonaktifkan pembaruan"
 
 #: backend.php:66 backend.php:76
 msgid "15 minutes"
-msgstr ""
+msgstr "15 menit"
 
 #: backend.php:67 backend.php:77
 msgid "30 minutes"
-msgstr ""
+msgstr "30 menit"
 
 #: backend.php:68 backend.php:78
 msgid "Hourly"
-msgstr ""
+msgstr "Setiap jam"
 
 #: backend.php:69 backend.php:79
 msgid "4 hours"
-msgstr ""
+msgstr "4 jam"
 
 #: backend.php:70 backend.php:80
 msgid "12 hours"
-msgstr ""
+msgstr "12 jam"
 
 #: backend.php:71 backend.php:81
 msgid "Daily"
-msgstr ""
+msgstr "Harian"
 
 #: backend.php:72 backend.php:82
 msgid "Weekly"
-msgstr ""
+msgstr "Mingguan"
 
 #: backend.php:85 classes/Pref_Feeds.php:565 classes/Pref_Feeds.php:618
 msgid "Disabled"
-msgstr ""
+msgstr "Dinonaktifkan"
 
 #: backend.php:86
 msgid "Read Only"
-msgstr ""
+msgstr "Hanya Baca"
 
 #: backend.php:87 classes/Pref_System.php:152
 msgid "User"
-msgstr ""
+msgstr "Pengguna"
 
 #: backend.php:88
 msgid "Power User"
-msgstr ""
+msgstr "Pengguna Andal"
 
 #: backend.php:89
 msgid "Administrator"
-msgstr ""
+msgstr "Administrator"
 
 #: index.php:124 index.php:138 index.php:298 prefs.php:116
 #: classes/Pref_Prefs.php:887 classes/Pref_Prefs.php:937
@@ -115,167 +117,167 @@ msgstr ""
 #: plugins/af_psql_trgm/init.js:7 plugins/share/share.js:48
 #: js/CommonFilters.js:171
 msgid "Loading, please wait..."
-msgstr ""
+msgstr "Memuat, mohon tunggu..."
 
 #: index.php:163 prefs.php:125 js/App.js:533
 msgid "Communication problem with server."
-msgstr ""
+msgstr "Masalah komunikasi dengan server."
 
 #: index.php:166 prefs.php:127
 msgid "Recent entries found in event log."
-msgstr ""
+msgstr "Entri terbaru ditemukan dalam log peristiwa."
 
 #: index.php:169 prefs.php:129
 msgid "Updates for Tiny Tiny RSS are available."
-msgstr ""
+msgstr "Pembaruan untuk Tiny Tiny RSS tersedia."
 
 #: index.php:173 prefs.php:132
 msgid "Updates for some local plugins are available."
-msgstr ""
+msgstr "Pembaruan untuk beberapa plugin lokal tersedia."
 
 #: index.php:181 js/Headlines.js:655
 msgid "Show articles"
-msgstr ""
+msgstr "Tampilkan artikel"
 
 #: index.php:184
 msgid "Adaptive"
-msgstr ""
+msgstr "Adaptif"
 
 #: index.php:185
 msgid "All Articles"
-msgstr ""
+msgstr "Semua Artikel"
 
 #: index.php:186 classes/RPC.php:550
 msgid "Starred"
-msgstr ""
+msgstr "Berbintang"
 
 #: index.php:187 classes/RPC.php:551
 msgid "Published"
-msgstr ""
+msgstr "Dipublikasikan"
 
 #: index.php:188 js/Headlines.js:658
 msgid "Unread"
-msgstr ""
+msgstr "Belum dibaca"
 
 #: index.php:189
 msgid "With Note"
-msgstr ""
+msgstr "Dengan Catatan"
 
 #: index.php:192
 msgid "Sort articles"
-msgstr ""
+msgstr "Urutkan artikel"
 
 #: index.php:196
 msgid "Default"
-msgstr ""
+msgstr "Standar"
 
 #: index.php:197
 msgid "Newest first"
-msgstr ""
+msgstr "Terbaru terlebih dahulu"
 
 #: index.php:198
 msgid "Oldest first"
-msgstr ""
+msgstr "Tertua terlebih dahulu"
 
 #: index.php:199 classes/Pref_Filters.php:38 js/CommonFilters.js:418
 msgid "Title"
-msgstr ""
+msgstr "Judul"
 
 #: index.php:212 index.php:269 classes/RPC.php:537 classes/Pref_Filters.php:25
 #: js/Headlines.js:1542 js/FeedTree.js:94 js/FeedTree.js:133
 #: js/Headlines.js:666
 msgid "Mark as read"
-msgstr ""
+msgstr "Tandai sebagai dibaca"
 
 #: index.php:213
 msgid "Older than one day"
-msgstr ""
+msgstr "Lebih tua dari satu hari"
 
 #: index.php:214
 msgid "Older than one week"
-msgstr ""
+msgstr "Lebih tua dari satu minggu"
 
 #: index.php:215
 msgid "Older than two weeks"
-msgstr ""
+msgstr "Lebih tua dari dua minggu"
 
 #: index.php:228
 msgid "Switch to three panel view"
-msgstr ""
+msgstr "Beralih ke tampilan gabungan"
 
 #: index.php:229
 msgid "Switch to combined view"
-msgstr ""
+msgstr "Beralih ke tampilan gabungan"
 
 #: index.php:230
 msgid "Disable widescreen mode"
-msgstr ""
+msgstr "Nonaktifkan mode layar lebar"
 
 #: index.php:231
 msgid "Enable widescreen mode"
-msgstr ""
+msgstr "Aktifkan mode layar lebar"
 
 #: index.php:232
 msgid "Expand selected article only"
-msgstr ""
+msgstr "Perluas hanya artikel yang dipilih"
 
 #: index.php:233
 msgid "Expand all articles"
-msgstr ""
+msgstr "Kembangkan semua artikel"
 
 #: index.php:236
 msgid "Actions..."
-msgstr ""
+msgstr "Tindakan..."
 
 #: index.php:261
 msgid "Preferences..."
-msgstr ""
+msgstr "Pengaturan..."
 
 #: index.php:262 js/PrefHelpers.js:613
 msgid "Search..."
-msgstr ""
+msgstr "Cari..."
 
 #: index.php:263
 msgid "Search feeds..."
-msgstr ""
+msgstr "Cari feed..."
 
 #: index.php:264
 msgid "Feed actions:"
-msgstr ""
+msgstr "Tindakan pakan:"
 
 #: index.php:265 plugins/bookmarklets/init.php:40
 #: plugins/bookmarklets/init.php:78
 msgid "Subscribe to feed..."
-msgstr ""
+msgstr "Langgani pakan..."
 
 #: index.php:266
 msgid "Edit this feed..."
-msgstr ""
+msgstr "Edit pakan ini ..."
 
 #: index.php:267 classes/Pref_Feeds.php:954 js/PrefFeedTree.js:119
 #: js/CommonDialogs.js:627
 msgid "Unsubscribe"
-msgstr ""
+msgstr "Berhenti berlangganan"
 
 #: index.php:268
 msgid "All feeds:"
-msgstr ""
+msgstr "Semua pakan:"
 
 #: index.php:270
 msgid "(Un)hide read feeds"
-msgstr ""
+msgstr "(Tidak)sembunyi pakan"
 
 #: index.php:271
 msgid "UI layout:"
-msgstr ""
+msgstr "Tata letak UI:"
 
 #: index.php:272 classes/RPC.php:546
 msgid "Toggle combined mode"
-msgstr ""
+msgstr "Alihkan mode gabungan"
 
 #: index.php:274 classes/RPC.php:523
 msgid "Toggle widescreen mode"
-msgstr ""
+msgstr "Alihkan mode layar lebar"
 
 #: index.php:276
 msgid "Toggle expand all articles"

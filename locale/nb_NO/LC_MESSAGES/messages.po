@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tiny Tiny RSS 1.3.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-04 17:27+0000\n"
+"POT-Creation-Date: 2025-11-05 19:10+0000\n"
 "PO-Revision-Date: 2020-07-19 16:40+0000\n"
 "Last-Translator: Jan Espen Pedersen <hphjanni@gmail.com>\n"
 "Language-Team: Norwegian Bokmål <https://weblate.tt-rss.org/projects/tt-rss/"
@@ -183,12 +183,13 @@ msgstr "Nyeste først"
 msgid "Oldest first"
 msgstr "Eldste først"
 
-#: index.php:199 js/CommonFilters.js:418
+#: index.php:199 classes/Pref_Filters.php:38 js/CommonFilters.js:418
 msgid "Title"
 msgstr "Tittel"
 
-#: index.php:212 index.php:269 classes/RPC.php:537 js/Headlines.js:1542
-#: js/FeedTree.js:94 js/FeedTree.js:133 js/Headlines.js:666
+#: index.php:212 index.php:269 classes/RPC.php:537 classes/Pref_Filters.php:25
+#: js/Headlines.js:1542 js/FeedTree.js:94 js/FeedTree.js:133
+#: js/Headlines.js:666
 msgid "Mark as read"
 msgstr "Marker som lest"
 
@@ -325,7 +326,7 @@ msgstr "Forlat innstillinger"
 msgid "Feeds"
 msgstr "Nyhetsstrømmer"
 
-#: prefs.php:148 classes/Pref_Filters.php:288
+#: prefs.php:148 classes/Pref_Filters.php:300
 msgid "Filters"
 msgstr "Filtre"
 
@@ -600,7 +601,7 @@ msgstr "Andre:"
 msgid "Create label"
 msgstr "Lag etikett"
 
-#: classes/RPC.php:556 classes/Pref_Filters.php:745
+#: classes/RPC.php:556 classes/Pref_Filters.php:736
 msgid "Create filter"
 msgstr "Lag filter"
 
@@ -1062,14 +1063,14 @@ msgid "Reset to defaults"
 msgstr "Tilbake til standard"
 
 #: classes/Pref_Prefs.php:840 classes/Pref_Feeds.php:928
-#: classes/Pref_Filters.php:730 classes/Pref_Users.php:199 js/Feeds.js:662
+#: classes/Pref_Filters.php:721 classes/Pref_Users.php:199 js/Feeds.js:662
 #: js/Feeds.js:657 js/Feeds.js:712
 msgid "Search"
 msgstr "Søk"
 
 #: classes/Pref_Prefs.php:845 classes/Pref_Prefs.php:1523
 #: classes/Pref_Labels.php:175 classes/Pref_Feeds.php:933
-#: classes/Pref_Filters.php:735 classes/Pref_Users.php:205
+#: classes/Pref_Filters.php:726 classes/Pref_Users.php:205
 #: js/CommonFilters.js:426 js/CommonFilters.js:459 js/PrefFeedTree.js:516
 #: js/PrefHelpers.js:183 js/CommonDialogs.js:276
 #, fuzzy
@@ -1077,7 +1078,7 @@ msgid "Select"
 msgstr "Velg:"
 
 #: classes/Pref_Prefs.php:848 classes/Pref_Prefs.php:1526
-#: classes/Pref_Feeds.php:936 classes/Pref_Filters.php:738
+#: classes/Pref_Feeds.php:936 classes/Pref_Filters.php:729
 #: classes/Pref_Users.php:208 js/CommonFilters.js:430 js/CommonFilters.js:462
 #: js/PrefFeedTree.js:519 js/Headlines.js:657 js/PrefHelpers.js:186
 #: js/CommonDialogs.js:279
@@ -1085,7 +1086,7 @@ msgid "All"
 msgstr "Alle"
 
 #: classes/Pref_Prefs.php:850 classes/Pref_Prefs.php:1528
-#: classes/Pref_Feeds.php:938 classes/Pref_Filters.php:740
+#: classes/Pref_Feeds.php:938 classes/Pref_Filters.php:731
 #: classes/Pref_Users.php:210 js/CommonFilters.js:432 js/CommonFilters.js:464
 #: js/PrefFeedTree.js:521 js/Headlines.js:660 js/PrefHelpers.js:188
 #: js/CommonDialogs.js:281
@@ -1261,7 +1262,7 @@ msgid "Fresh articles"
 msgstr "Ferske artikler"
 
 #: classes/Feeds.php:1345 classes/OPML.php:532 classes/Digest.php:107
-#: classes/Pref_Feeds.php:247 classes/Pref_Filters.php:1018
+#: classes/Pref_Feeds.php:247 classes/Pref_Filters.php:1009
 #: include/controls.php:215
 msgid "Uncategorized"
 msgstr "Ukategorisert"
@@ -1551,7 +1552,7 @@ msgid "Edit selected feeds"
 msgstr "Sletter den valgte nyhetsstrømmen..."
 
 #: classes/Pref_Feeds.php:950 classes/Pref_Feeds.php:965
-#: classes/Pref_Filters.php:753
+#: classes/Pref_Filters.php:744
 #, fuzzy
 msgid "Reset sort order"
 msgstr "Nullstill passordet"
@@ -1611,74 +1612,135 @@ msgstr "OPML"
 msgid "Sharing"
 msgstr ""
 
-#: classes/Pref_Filters.php:260 classes/Pref_Filters.php:270
-#: classes/Pref_Filters.php:452 classes/Pref_Filters.php:965
+#: classes/Pref_Filters.php:24
+#, fuzzy
+msgid "Delete article"
+msgstr "Velg alle artikler"
+
+#: classes/Pref_Filters.php:26
+msgid "Set starred"
+msgstr "Sett som favorittartikkel"
+
+#: classes/Pref_Filters.php:27
+msgid "Assign tags"
+msgstr "Tildel stikkord"
+
+#: classes/Pref_Filters.php:28
+msgid "Publish article"
+msgstr "Publiser artiklen"
+
+#: classes/Pref_Filters.php:29
+msgid "Modify score"
+msgstr ""
+
+#: classes/Pref_Filters.php:30 js/Headlines.js:1500
+msgid "Assign label"
+msgstr "Tildel etikett"
+
+#: classes/Pref_Filters.php:31
+msgid "Stop / Do nothing"
+msgstr ""
+
+#: classes/Pref_Filters.php:32
+#, fuzzy
+msgid "Invoke plugin"
+msgstr "Alle Nyhetsstrømmer"
+
+#: classes/Pref_Filters.php:33
+#, fuzzy
+msgid "Ignore tags"
+msgstr "Ingen stikkord"
+
+#: classes/Pref_Filters.php:39
+#, fuzzy
+msgid "Content"
+msgstr "Innhold"
+
+#: classes/Pref_Filters.php:40
+msgid "Title or Content"
+msgstr "Tittel eller innhold"
+
+#: classes/Pref_Filters.php:41
+msgid "Link"
+msgstr "Lenke"
+
+#: classes/Pref_Filters.php:44
+msgid "Author"
+msgstr ""
+
+#: classes/Pref_Filters.php:45
+#, fuzzy
+msgid "Article Tags"
+msgstr "Alle artikler"
+
+#: classes/Pref_Filters.php:272 classes/Pref_Filters.php:282
+#: classes/Pref_Filters.php:454 classes/Pref_Filters.php:956
 msgid "All feeds"
 msgstr "Alle Nyhetsstrømmer"
 
-#: classes/Pref_Filters.php:279 classes/Pref_Filters.php:473
-#: classes/Pref_Filters.php:476
+#: classes/Pref_Filters.php:291 classes/Pref_Filters.php:465
+#: classes/Pref_Filters.php:468
 #, fuzzy
 msgid "(inverse)"
 msgstr "(Motsatt)"
 
-#: classes/Pref_Filters.php:275 classes/Pref_Filters.php:472
-#: classes/Pref_Filters.php:475
+#: classes/Pref_Filters.php:287 classes/Pref_Filters.php:464
+#: classes/Pref_Filters.php:467
 #, php-format
 msgid "%s on %s in %s %s"
 msgstr ""
 
-#: classes/Pref_Filters.php:492
+#: classes/Pref_Filters.php:483
 #, fuzzy, php-format
 #| msgid "Unknown option: %s"
 msgid "Unknown action: %d"
 msgstr "Ukjent valg: %s"
 
-#: classes/Pref_Filters.php:704 js/PrefFilterTree.js:178
+#: classes/Pref_Filters.php:695 js/PrefFilterTree.js:178
 #, java-printf-format, javascript-format, php-format
 msgid "Clone of %s"
 msgstr ""
 
-#: classes/Pref_Filters.php:747 js/PrefHelpers.js:228
+#: classes/Pref_Filters.php:738 js/PrefHelpers.js:228
 msgid "Clone"
 msgstr ""
 
-#: classes/Pref_Filters.php:749
+#: classes/Pref_Filters.php:740
 msgid "Combine"
 msgstr ""
 
-#: classes/Pref_Filters.php:751 classes/Pref_Users.php:219
+#: classes/Pref_Filters.php:742 classes/Pref_Users.php:219
 #: js/CommonFilters.js:504 js/CommonDialogs.js:620
 msgid "Remove"
 msgstr "Fjern"
 
-#: classes/Pref_Filters.php:755
+#: classes/Pref_Filters.php:746
 #, fuzzy
 msgid "Toggle rule display"
 msgstr "Vis nyhetskanallisten"
 
-#: classes/Pref_Filters.php:802
+#: classes/Pref_Filters.php:793
 msgid "[No caption]"
 msgstr "Ingen bildetekst"
 
-#: classes/Pref_Filters.php:806
+#: classes/Pref_Filters.php:797
 #, fuzzy, php-format
 msgid "%s (%d rule)"
 msgid_plural "%s (%d rules)"
 msgstr[0] "Legger til kategori for nyhetsstrømmer"
 msgstr[1] "Legger til kategori for nyhetsstrømmer"
 
-#: classes/Pref_Filters.php:811
+#: classes/Pref_Filters.php:802
 #, fuzzy
 msgid "matches any rule"
 msgstr "Match på:"
 
-#: classes/Pref_Filters.php:814
+#: classes/Pref_Filters.php:805
 #, fuzzy
 msgid "inverse"
 msgstr "(Motsatt)"
 
-#: classes/Pref_Filters.php:846
+#: classes/Pref_Filters.php:837
 #, fuzzy, php-format
 msgid "(+%d action)"
 msgid_plural "(+%d actions)"
@@ -2556,10 +2618,6 @@ msgstr "Vis opprinnelig artikkel"
 #: js/Headlines.js:1396
 msgid "Display article URL"
 msgstr "Vis artikkel URL"
-
-#: js/Headlines.js:1500
-msgid "Assign label"
-msgstr "Tildel etikett"
 
 #: js/Headlines.js:1505
 msgid "Remove label"
@@ -3729,10 +3787,6 @@ msgstr "Handling"
 #~ msgid "Last updated: %s"
 #~ msgstr "Siste oppdatering: %s"
 
-#, fuzzy
-#~ msgid "Select articles"
-#~ msgstr "Velg alle artikler"
-
 #~ msgid "unknown type"
 #~ msgstr "Ukjent type"
 
@@ -4187,9 +4241,6 @@ msgstr "Handling"
 #~ msgid "Unpublish article"
 #~ msgstr "Fjern publiseringen av artikkelen."
 
-#~ msgid "Publish article"
-#~ msgstr "Publiser artiklen"
-
 #, fuzzy
 #~ msgid "Resubscribe to push updates"
 #~ msgstr "Abonnerer på følgende nyhetsstrømmer:"
@@ -4492,20 +4543,8 @@ msgstr "Handling"
 #~ "Med dette valget haket av så vil overskriftene i spesielle nyhetskanaler "
 #~ "og merkelapper grupperes etter nyhetskanalene"
 
-#~ msgid "Title or Content"
-#~ msgstr "Tittel eller innhold"
-
-#~ msgid "Link"
-#~ msgstr "Lenke"
-
 #~ msgid "Article Date"
 #~ msgstr "Artikkeldato"
-
-#~ msgid "Set starred"
-#~ msgstr "Sett som favorittartikkel"
-
-#~ msgid "Assign tags"
-#~ msgstr "Tildel stikkord"
 
 #~ msgid ""
 #~ "This option is useful when you are reading several planet-type "
@@ -5065,10 +5104,6 @@ msgstr "Handling"
 
 #~ msgid "Showing most popular tags "
 #~ msgstr "Vis mest populære stikkord"
-
-#, fuzzy
-#~ msgid "more tags"
-#~ msgstr "Ingen stikkord"
 
 #~ msgid "Link to feed:"
 #~ msgstr "Lenk til nyhetsstrøm:"

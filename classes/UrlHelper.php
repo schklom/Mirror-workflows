@@ -193,12 +193,75 @@ class UrlHelper {
 			if (!in_array($tokens['port'] ?? '', [80, 443, '']))
 				return false;
 
-			if (strtolower($tokens['host']) == 'localhost' || $tokens['host'] == '::1'
-				|| str_starts_with($tokens['host'], '127.'))
+			if (self::has_disallowed_ip($url))
 				return false;
 		}
 
 		return $url;
+	}
+
+	/**
+	 * Check if a URL targets a disallowed IP (localhost, loopback, or private IPs on non-standard ports).
+	 *
+	 * Traffic to private IPs on standard ports (80 and 443) is allowed to mimic the original behavior of
+	 * tt-rss, which (by omitting the port number in URLs) effectively only allowed the default ports.
+	 *
+	 * @param string $url URL to check
+	 * @return bool true if the URL should be rejected, false otherwise
+	 */
+	static function has_disallowed_ip(string $url): bool {
+		$tokens = parse_url($url);
+
+		if (empty($tokens['host']))
+			return false;
+
+		$host = strtolower($tokens['host']);
+
+		$port = $tokens['port'] ?? null;
+		$standard_port = (($tokens['scheme'] ?? 'http') === 'https') ? 443 : 80;
+		$is_standard_port = ($port === null || $port === $standard_port);
+
+		// strip IPv6 brackets
+		if (str_starts_with($host, '[') && str_ends_with($host, ']'))
+			$host = substr($host, 1, -1);
+
+		if ($host === 'localhost' || str_starts_with($host, '127.'))
+			return true;
+
+		if ($host === '::1' || $host === '0:0:0:0:0:0:0:1')
+			return true;
+
+		// TODO: Improve IPv6 support (fc00::/7 unique local, fe80::/10 link-local)
+
+		// IPv4 link-local / cloud metadata
+		if (str_starts_with($host, '169.254.'))
+			return true;
+
+		if (!$is_standard_port && preg_match('/^(10\.|192\.168\.|172\.(1[6-9]|2[0-9]|3[0-1])\.)/', $host))
+			return true;
+
+		// if needed, try resolving the hostname and checking the resulting IP
+		if (!str_contains($host, ':') && !preg_match('/^\d+\./', $host)) {
+			$ip_addr = gethostbyname($host);
+
+			// failed to resolve
+			// TODO: return true instead?
+			if (!$ip_addr || $ip_addr === $host)
+				return false;
+
+			if (str_starts_with($ip_addr, '127.'))
+				return true;
+
+			// TODO: maybe check for IPv6 loopback (::1) using dns_get_record()
+
+			if (str_starts_with($ip_addr, '169.254.'))
+				return true;
+
+			if (!$is_standard_port && preg_match('/^(10\.|192\.168\.|172\.(1[6-9]|2[0-9]|3[0-1])\.)/', $ip_addr))
+					return true;
+		}
+
+		return false;
 	}
 
 	static function resolve_redirects(string $url, int $timeout): false|string {

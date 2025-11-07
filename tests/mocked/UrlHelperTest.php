@@ -378,6 +378,101 @@ final class UrlHelperTest extends TestCase {
 		$this->assertEquals('https://example.com/page', $result);
 	}
 
+	// ===== has_disallowed_ip() Tests =====
+
+	public function testIsDisallowedIpDetectsLocalhost(): void {
+		$this->assertTrue(UrlHelper::has_disallowed_ip('http://localhost/path'));
+		$this->assertTrue(UrlHelper::has_disallowed_ip('https://localhost:8080/'));
+		$this->assertTrue(UrlHelper::has_disallowed_ip('http://LOCALHOST/'));
+	}
+
+	public function testIsDisallowedIpDetects127Loopback(): void {
+		$this->assertTrue(UrlHelper::has_disallowed_ip('http://127.0.0.1/'));
+		$this->assertTrue(UrlHelper::has_disallowed_ip('http://127.0.0.1:8080/path'));
+		$this->assertTrue(UrlHelper::has_disallowed_ip('http://127.1.2.3/'));
+		$this->assertTrue(UrlHelper::has_disallowed_ip('https://127.255.255.255/'));
+	}
+
+	public function testIsDisallowedIpDetectsIPv6Loopback(): void {
+		$this->assertTrue(UrlHelper::has_disallowed_ip('http://[::1]/'));
+		$this->assertTrue(UrlHelper::has_disallowed_ip('http://[::1]:8080/path'));
+		$this->assertTrue(UrlHelper::has_disallowed_ip('https://[::1]:443/'));
+		$this->assertTrue(UrlHelper::has_disallowed_ip('http://[0:0:0:0:0:0:0:1]/'));
+		$this->assertTrue(UrlHelper::has_disallowed_ip('https://[0:0:0:0:0:0:0:1]:443/'));
+	}
+
+	public function testIsDisallowedIpAllowsExternalHosts(): void {
+		$this->assertFalse(UrlHelper::has_disallowed_ip('http://example.com/'));
+		$this->assertFalse(UrlHelper::has_disallowed_ip('https://example.org:8080/'));
+		$this->assertFalse(UrlHelper::has_disallowed_ip('http://8.8.8.8/'));
+	}
+
+	public function testIsDisallowedIpReturnsFalseForInvalidUrl(): void {
+		$this->assertFalse(UrlHelper::has_disallowed_ip('not-a-url'));
+		$this->assertFalse(UrlHelper::has_disallowed_ip(''));
+	}
+
+	// ===== has_disallowed_ip() - Link-Local / Cloud Metadata Tests =====
+
+	public function testIsDisallowedIpBlocksLinkLocalOnAllPorts(): void {
+		// 169.254.x.x is link-local (cloud metadata) - always blocked
+		$this->assertTrue(UrlHelper::has_disallowed_ip('http://169.254.169.254/'));
+		$this->assertTrue(UrlHelper::has_disallowed_ip('https://169.254.0.1/'));
+		$this->assertTrue(UrlHelper::has_disallowed_ip('http://169.254.169.254:80/'));
+		$this->assertTrue(UrlHelper::has_disallowed_ip('http://169.254.169.254:8080/'));
+	}
+
+	// ===== has_disallowed_ip() - RFC 1918 Private IP Tests =====
+
+	public function testIsDisallowedIpAllowsPrivateIP10OnStandardPorts(): void {
+		$this->assertFalse(UrlHelper::has_disallowed_ip('http://10.0.0.1/'));
+		$this->assertFalse(UrlHelper::has_disallowed_ip('http://10.255.255.255/path'));
+		$this->assertFalse(UrlHelper::has_disallowed_ip('https://10.0.0.1/'));
+		$this->assertFalse(UrlHelper::has_disallowed_ip('https://10.0.0.1:443/'));
+		$this->assertFalse(UrlHelper::has_disallowed_ip('http://10.0.0.1:80/'));
+	}
+
+	public function testIsDisallowedIpBlocksPrivateIP10OnNonStandardPorts(): void {
+		$this->assertTrue(UrlHelper::has_disallowed_ip('http://10.0.0.1:8080/'));
+		$this->assertTrue(UrlHelper::has_disallowed_ip('https://10.0.0.1:8443/'));
+		$this->assertTrue(UrlHelper::has_disallowed_ip('http://10.0.0.1:6379/'));
+		$this->assertTrue(UrlHelper::has_disallowed_ip('http://10.255.255.255:3000/'));
+	}
+
+	public function testIsDisallowedIpAllowsPrivateIP192OnStandardPorts(): void {
+		$this->assertFalse(UrlHelper::has_disallowed_ip('http://192.168.0.1/'));
+		$this->assertFalse(UrlHelper::has_disallowed_ip('https://192.168.255.255/'));
+		$this->assertFalse(UrlHelper::has_disallowed_ip('https://192.168.1.100:443/'));
+		$this->assertFalse(UrlHelper::has_disallowed_ip('http://192.168.1.1:80/'));
+	}
+
+	public function testIsDisallowedIpBlocksPrivateIP192OnNonStandardPorts(): void {
+		$this->assertTrue(UrlHelper::has_disallowed_ip('http://192.168.1.1:8080/'));
+		$this->assertTrue(UrlHelper::has_disallowed_ip('https://192.168.1.1:8443/'));
+		$this->assertTrue(UrlHelper::has_disallowed_ip('http://192.168.0.1:9200/'));
+	}
+
+	public function testIsDisallowedIpAllowsPrivateIP172OnStandardPorts(): void {
+		$this->assertFalse(UrlHelper::has_disallowed_ip('http://172.16.0.1/'));
+		$this->assertFalse(UrlHelper::has_disallowed_ip('https://172.31.255.255/'));
+		$this->assertFalse(UrlHelper::has_disallowed_ip('http://172.20.10.5:80/'));
+		$this->assertFalse(UrlHelper::has_disallowed_ip('https://172.16.0.1:443/'));
+	}
+
+	public function testIsDisallowedIpBlocksPrivateIP172OnNonStandardPorts(): void {
+		$this->assertTrue(UrlHelper::has_disallowed_ip('http://172.16.0.1:8080/'));
+		$this->assertTrue(UrlHelper::has_disallowed_ip('https://172.31.0.1:8443/'));
+		$this->assertTrue(UrlHelper::has_disallowed_ip('http://172.20.10.5:5432/'));
+	}
+
+	public function testIsDisallowedIpAllowsNonPrivateIP172(): void {
+		// 172.15.x.x and 172.32.x.x are NOT in private range (172.16.0.0/12)
+		$this->assertFalse(UrlHelper::has_disallowed_ip('http://172.15.0.1/'));
+		$this->assertFalse(UrlHelper::has_disallowed_ip('http://172.32.0.1/'));
+		$this->assertFalse(UrlHelper::has_disallowed_ip('http://172.15.0.1:8080/'));
+		$this->assertFalse(UrlHelper::has_disallowed_ip('http://172.32.0.1:9999/'));
+	}
+
 	// ===== Edge Cases =====
 
 	public function testRewriteRelativeWithBaseUrlWithoutPath(): void {

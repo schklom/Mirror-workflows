@@ -149,8 +149,23 @@ class Sanitizer {
 			}
 
 			if ($entry->hasAttribute('src')) {
-				$entry->setAttribute('src',
-					UrlHelper::rewrite_relative($rewrite_base_url, $entry->getAttribute('src'), $entry->tagName, "src"));
+				$rewritten_url = UrlHelper::rewrite_relative($rewrite_base_url, $entry->getAttribute('src'), $entry->tagName, 'src');
+
+				if (!preg_match('/^data:/i', $rewritten_url)) {
+					$validated_url = UrlHelper::validate($rewritten_url);
+
+					if ($validated_url && !UrlHelper::has_disallowed_ip($validated_url)) {
+						$entry->setAttribute('src', $validated_url);
+					} else {
+						// invalid URL-- show the HTML representation of the element
+						$escaped_html = htmlspecialchars($doc->saveHTML($entry), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+						$text_node = $doc->createTextNode($escaped_html);
+						$entry->parentNode->replaceChild($text_node, $entry);
+						continue;
+					}
+				} else {
+					$entry->setAttribute('src', $rewritten_url);
+				}
 			}
 
 			if ($entry->nodeName == 'img') {
@@ -160,17 +175,33 @@ class Sanitizer {
 
 			if ($entry->hasAttribute('srcset')) {
 				$matches = RSSUtils::decode_srcset($entry->getAttribute('srcset'));
+				$validated_srcset = [];
 
 				for ($i = 0; $i < count($matches); $i++) {
-					$matches[$i]["url"] = UrlHelper::rewrite_relative($rewrite_base_url, $matches[$i]["url"]);
+					$rewritten_url = UrlHelper::rewrite_relative($rewrite_base_url, $matches[$i]['url']);
+					$validated_url = UrlHelper::validate($rewritten_url);
+
+					// only keep srcset items that are valid
+					if ($validated_url && !UrlHelper::has_disallowed_ip($validated_url)) {
+						$matches[$i]['url'] = $validated_url;
+						$validated_srcset[] = $matches[$i];
+					}
 				}
 
-				$entry->setAttribute("srcset", RSSUtils::encode_srcset($matches));
+				if (count($validated_srcset) > 0)
+					$entry->setAttribute('srcset', RSSUtils::encode_srcset($validated_srcset));
+				else
+					$entry->removeAttribute('srcset');
 			}
 
 			if ($entry->hasAttribute('poster')) {
-				$entry->setAttribute('poster',
-					UrlHelper::rewrite_relative($rewrite_base_url, $entry->getAttribute('poster'), $entry->tagName, "poster"));
+				$rewritten_url = UrlHelper::rewrite_relative($rewrite_base_url, $entry->getAttribute('poster'), $entry->tagName, 'poster');
+				$validated_url = UrlHelper::validate($rewritten_url);
+
+				if ($validated_url && !UrlHelper::has_disallowed_ip($validated_url))
+					$entry->setAttribute('poster', $validated_url);
+				else
+					$entry->removeAttribute('poster');
 			}
 
 			if ($entry->hasAttribute('src') &&

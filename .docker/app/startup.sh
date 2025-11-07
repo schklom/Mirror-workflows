@@ -3,6 +3,11 @@
 # this script initializes the working copy on a persistent volume and starts PHP FPM
 #
 
+DST_DIR=$APP_INSTALL_BASE_DIR/tt-rss
+
+# Remove the previous file indicating the app is ready.
+[ -e $DST_DIR ] && rm -f $DST_DIR/.app_is_ready
+
 # helper to run git commands as the 'app' user while preserving proxy environment variables
 git_as_app() {
     sudo -u app \
@@ -53,10 +58,6 @@ if ! id app >/dev/null 2>&1; then
 fi
 
 update-ca-certificates || true
-
-DST_DIR=$APP_INSTALL_BASE_DIR/tt-rss
-
-[ -e $DST_DIR ] && rm -f $DST_DIR/.app_is_ready
 
 export PGPASSWORD=$TTRSS_DB_PASS
 

@@ -555,7 +555,7 @@ class RPC extends Handler_Protected {
 				"create_label" => __("Create label"),
 				"create_filter" => __("Create filter"),
 				"collapse_sidebar" => __("Un/collapse sidebar"),
-				"help_dialog" => __("Show help dialog")]
+				"help_dialog" => __("Keyboard shortcuts help")]
 		];
 
 		PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_HOTKEY_INFO,

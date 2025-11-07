@@ -152,10 +152,8 @@ class Sanitizer {
 				$rewritten_url = UrlHelper::rewrite_relative($rewrite_base_url, $entry->getAttribute('src'), $entry->tagName, 'src');
 
 				if (!preg_match('/^data:/i', $rewritten_url)) {
-					$validated_url = UrlHelper::validate($rewritten_url);
-
-					if ($validated_url && !UrlHelper::has_disallowed_ip($validated_url)) {
-						$entry->setAttribute('src', $validated_url);
+					if ($rewritten_url && !UrlHelper::has_disallowed_ip($rewritten_url)) {
+						$entry->setAttribute('src', $rewritten_url);
 					} else {
 						// Replace with escaped ('<' and '>', at least) text
 						$element_html = $doc->saveHTML($entry);
@@ -179,11 +177,10 @@ class Sanitizer {
 
 				for ($i = 0; $i < count($matches); $i++) {
 					$rewritten_url = UrlHelper::rewrite_relative($rewrite_base_url, $matches[$i]['url']);
-					$validated_url = UrlHelper::validate($rewritten_url);
 
 					// only keep srcset items that are valid
-					if ($validated_url && !UrlHelper::has_disallowed_ip($validated_url)) {
-						$matches[$i]['url'] = $validated_url;
+					if ($rewritten_url && !UrlHelper::has_disallowed_ip($rewritten_url)) {
+						$matches[$i]['url'] = $rewritten_url;
 						$validated_srcset[] = $matches[$i];
 					}
 				}
@@ -196,10 +193,9 @@ class Sanitizer {
 
 			if ($entry->hasAttribute('poster')) {
 				$rewritten_url = UrlHelper::rewrite_relative($rewrite_base_url, $entry->getAttribute('poster'), $entry->tagName, 'poster');
-				$validated_url = UrlHelper::validate($rewritten_url);
 
-				if ($validated_url && !UrlHelper::has_disallowed_ip($validated_url))
-					$entry->setAttribute('poster', $validated_url);
+				if ($rewritten_url && !UrlHelper::has_disallowed_ip($rewritten_url))
+					$entry->setAttribute('poster', $rewritten_url);
 				else
 					$entry->removeAttribute('poster');
 			}

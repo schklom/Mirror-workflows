@@ -195,7 +195,7 @@ class UrlHelper {
 			if (!in_array($tokens['port'] ?? '', [80, 443, '']))
 				return false;
 
-			if (self::has_disallowed_ip($url))
+			if (self::has_disallowed_ip($tokens))
 				return false;
 		}
 
@@ -208,11 +208,11 @@ class UrlHelper {
 	 * Traffic to private IPs on standard ports (80 and 443) is allowed to mimic the original behavior of
 	 * tt-rss, which (by omitting the port number in URLs) effectively only allowed the default ports.
 	 *
-	 * @param string $url URL to check
+	 * @param string|array{scheme?: string, host?: string, port?: int} $url_or_tokens URL or pre-parsed URL tokens array
 	 * @return bool true if the URL should be rejected, false otherwise
 	 */
-	static function has_disallowed_ip(string $url): bool {
-		$tokens = parse_url($url);
+	static function has_disallowed_ip(string|array $url_or_tokens): bool {
+		$tokens = is_array($url_or_tokens)? $url_or_tokens : parse_url($url_or_tokens);
 
 		if (empty($tokens['host']))
 			return false;

@@ -40,8 +40,9 @@ class UrlHelper {
 	 * @param array<string, string|int> $parts
 	 */
 	static function build_url(array $parts): string {
-		$tmp = $parts['scheme'] . "://" . $parts['host'];
+		$tmp = $parts['scheme'] . '://' . $parts['host'];
 
+		if (isset($parts['port'])) $tmp .= ':' . $parts['port'];
 		if (isset($parts['path'])) $tmp .= $parts['path'];
 		if (isset($parts['query'])) $tmp .= '?' . $parts['query'];
 		if (isset($parts['fragment'])) $tmp .= '#' . $parts['fragment'];
@@ -107,8 +108,9 @@ class UrlHelper {
 		} else {
 			$base_parts = parse_url($base_url);
 
-			$rel_parts['host'] = $base_parts['host'] ?? "";
-			$rel_parts['scheme'] = $base_parts['scheme'] ?? "";
+			$rel_parts['scheme'] = $base_parts['scheme'] ?? '';
+			$rel_parts['host'] = $base_parts['host'] ?? '';
+			$rel_parts['port'] = $base_parts['port'] ?? '';
 
 			if ($rel_parts['path'] ?? "") {
 

@@ -42,6 +42,76 @@ final class UrlHelperTest extends TestCase {
 		$this->assertEquals('https://example.com/about', $result);
 	}
 
+	public function testBuildUrlWithNonStandardPort(): void {
+		$parts = [
+			'scheme' => 'http',
+			'host' => 'example.org',
+			'port' => 8080
+		];
+
+		$result = UrlHelper::build_url($parts);
+		$this->assertEquals('http://example.org:8080', $result);
+	}
+
+	public function testBuildUrlWithNonStandardPortAndPath(): void {
+		$parts = [
+			'scheme' => 'http',
+			'host' => 'example.org',
+			'port' => 8080,
+			'path' => '/test.jpg'
+		];
+
+		$result = UrlHelper::build_url($parts);
+		$this->assertEquals('http://example.org:8080/test.jpg', $result);
+	}
+
+	public function testBuildUrlWithNonStandardPortAndAllParts(): void {
+		$parts = [
+			'scheme' => 'https',
+			'host' => 'example.org',
+			'port' => 8443,
+			'path' => '/api/endpoint',
+			'query' => 'key=value',
+			'fragment' => 'section'
+		];
+
+		$result = UrlHelper::build_url($parts);
+		$this->assertEquals('https://example.org:8443/api/endpoint?key=value#section', $result);
+	}
+
+	public function testBuildUrlWithStandardHttpPort(): void {
+		$parts = [
+			'scheme' => 'http',
+			'host' => 'example.com',
+			'port' => 80
+		];
+
+		$result = UrlHelper::build_url($parts);
+		$this->assertEquals('http://example.com:80', $result);
+	}
+
+	public function testBuildUrlWithStandardHttpsPort(): void {
+		$parts = [
+			'scheme' => 'https',
+			'host' => 'example.com',
+			'port' => 443
+		];
+
+		$result = UrlHelper::build_url($parts);
+		$this->assertEquals('https://example.com:443', $result);
+	}
+
+	public function testBuildUrlWithPortAsString(): void {
+		$parts = [
+			'scheme' => 'http',
+			'host' => 'example.org',
+			'port' => '8080'
+		];
+
+		$result = UrlHelper::build_url($parts);
+		$this->assertEquals('http://example.org:8080', $result);
+	}
+
 	// ===== rewrite_relative() - Absolute URLs =====
 
 	public function testRewriteRelativeWithAbsoluteUrl(): void {
@@ -105,6 +175,66 @@ final class UrlHelperTest extends TestCase {
 		// But actually dirname() on path ending with / returns the parent: dirname('/blog/') = '/blog'
 		// Actually, the behavior is: dirname('/blog/') returns '/', so result is '/image.jpg'
 		$this->assertEquals('https://example.com/image.jpg', $result);
+	}
+
+	// ===== rewrite_relative() - Port Preservation =====
+
+	public function testRewriteRelativePreservesPortFromBaseUrl(): void {
+		$base = 'http://example.org:8080/blog/post';
+		$rel = 'image.jpg';
+
+		$result = UrlHelper::rewrite_relative($base, $rel);
+		$this->assertEquals('http://example.org:8080/blog/image.jpg', $result);
+	}
+
+	public function testRewriteRelativePreservesPortWithAbsolutePath(): void {
+		$base = 'http://example.org:8080/blog/post';
+		$rel = '/assets/image.jpg';
+
+		$result = UrlHelper::rewrite_relative($base, $rel);
+		$this->assertEquals('http://example.org:8080/assets/image.jpg', $result);
+	}
+
+	public function testRewriteRelativePreservesPortWithDotSlashPath(): void {
+		$base = 'http://example.org:8080/blog/post';
+		$rel = './image.jpg';
+
+		$result = UrlHelper::rewrite_relative($base, $rel);
+		$this->assertEquals('http://example.org:8080/blog/image.jpg', $result);
+	}
+
+	public function testRewriteRelativePreservesPortWithQueryString(): void {
+		$base = 'http://example.org:8080/blog/post';
+		$rel = 'api/data?key=value';
+
+		$result = UrlHelper::rewrite_relative($base, $rel);
+		$this->assertEquals('http://example.org:8080/blog/api/data?key=value', $result);
+	}
+
+	public function testRewriteRelativePreservesNonStandardHttpsPort(): void {
+		$base = 'https://example.org:8443/feed.xml';
+		$rel = 'article.html';
+
+		$result = UrlHelper::rewrite_relative($base, $rel);
+		$this->assertEquals('https://example.org:8443/article.html', $result);
+	}
+
+	public function testRewriteRelativeWithBaseUrlPortButAbsoluteRelUrl(): void {
+		$base = 'http://example.org:8080/blog/post';
+		$rel = 'https://other.com/resource';
+
+		$result = UrlHelper::rewrite_relative($base, $rel);
+		// Absolute URLs should not inherit port from base
+		$this->assertEquals('https://other.com/resource', $result);
+	}
+
+	public function testRewriteRelativeWithBaseUrlPortAndProtocolRelativeUrl(): void {
+		$base = 'http://example.org:8080/blog/post';
+		$rel = '//cdn.example.com/resource.js';
+
+		$result = UrlHelper::rewrite_relative($base, $rel);
+		// Protocol-relative URLs should not inherit port from base
+		$this->assertEquals('https://cdn.example.com/resource.js', $result);
 	}
 
 	// ===== rewrite_relative() - Special Schemes =====

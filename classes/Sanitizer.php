@@ -135,7 +135,7 @@ class Sanitizer {
 		// $rewrite_base_url = $site_url ? $site_url : Config::get_self_url();
 		$rewrite_base_url = $site_url ?: "http://domain.invalid/";
 
-		$entries = $xpath->query('(//a[@href]|//img[@src]|//source[@srcset|@src]|//video[@poster])');
+		$entries = $xpath->query('(//a[@href]|//img[@src|@srcset]|//source[@src|@srcset]|//video[@poster])');
 
 		/** @var DOMElement $entry */
 		foreach ($entries as $entry) {
@@ -145,32 +145,74 @@ class Sanitizer {
 					UrlHelper::rewrite_relative($rewrite_base_url, $entry->getAttribute('href'), $entry->tagName, "href"));
 
 				$entry->setAttribute('rel', 'noopener noreferrer');
-				$entry->setAttribute("target", "_blank");
+				$entry->setAttribute('target', '_blank');
 			}
 
+			// used to determine whether the element should be replaced with escaped text
+			$should_replace_element = false;
+			$src_valid = true;
+
 			if ($entry->hasAttribute('src')) {
-				$entry->setAttribute('src',
-					UrlHelper::rewrite_relative($rewrite_base_url, $entry->getAttribute('src'), $entry->tagName, "src"));
+				$rewritten_url = UrlHelper::rewrite_relative($rewrite_base_url, $entry->getAttribute('src'), $entry->tagName, 'src');
+
+				if (preg_match('/^data:/i', $rewritten_url)) {
+					$entry->setAttribute('src', $rewritten_url);
+				} else {
+					if ($rewritten_url && !UrlHelper::has_disallowed_ip($rewritten_url)) {
+						$entry->setAttribute('src', $rewritten_url);
+					} else {
+						$should_replace_element = true;
+						$src_valid = false;
+					}
+				}
 			}
+
+			if ($entry->hasAttribute('srcset')) {
+				$matches = RSSUtils::decode_srcset($entry->getAttribute('srcset'));
+				$validated_srcset = [];
+
+				for ($i = 0; $i < count($matches); $i++) {
+					$rewritten_url = UrlHelper::rewrite_relative($rewrite_base_url, $matches[$i]['url']);
+
+					// only keep srcset items that are valid
+					if ($rewritten_url && !UrlHelper::has_disallowed_ip($rewritten_url)) {
+						$matches[$i]['url'] = $rewritten_url;
+						$validated_srcset[] = $matches[$i];
+					}
+				}
+
+				if (count($validated_srcset) > 0) {
+					$entry->setAttribute('srcset', RSSUtils::encode_srcset($validated_srcset));
+					$should_replace_element = false;
+				} else {
+					$entry->removeAttribute('srcset');
+				}
+			}
+
+			// replace with escaped text if 'src' and 'srcset' are invalid
+			if ($should_replace_element) {
+				$element_html = $doc->saveHTML($entry);
+				$text_node = new DOMText($element_html);
+				$entry->parentNode->replaceChild($text_node, $entry);
+				continue;
+			}
+
+			// drop 'src' if invalid and the element wasn't replaced (i.e. 'srcset' was acceptable)
+			if (!$src_valid && $entry->hasAttribute('src'))
+				$entry->removeAttribute('src');
 
 			if ($entry->nodeName == 'img') {
 				$entry->setAttribute('referrerpolicy', 'no-referrer');
 				$entry->setAttribute('loading', 'lazy');
 			}
 
-			if ($entry->hasAttribute('srcset')) {
-				$matches = RSSUtils::decode_srcset($entry->getAttribute('srcset'));
-
-				for ($i = 0; $i < count($matches); $i++) {
-					$matches[$i]["url"] = UrlHelper::rewrite_relative($rewrite_base_url, $matches[$i]["url"]);
-				}
-
-				$entry->setAttribute("srcset", RSSUtils::encode_srcset($matches));
-			}
-
 			if ($entry->hasAttribute('poster')) {
-				$entry->setAttribute('poster',
-					UrlHelper::rewrite_relative($rewrite_base_url, $entry->getAttribute('poster'), $entry->tagName, "poster"));
+				$rewritten_url = UrlHelper::rewrite_relative($rewrite_base_url, $entry->getAttribute('poster'), $entry->tagName, 'poster');
+
+				if ($rewritten_url && !UrlHelper::has_disallowed_ip($rewritten_url))
+					$entry->setAttribute('poster', $rewritten_url);
+				else
+					$entry->removeAttribute('poster');
 			}
 
 			if ($entry->hasAttribute('src') &&

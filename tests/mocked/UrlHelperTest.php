@@ -42,6 +42,76 @@ final class UrlHelperTest extends TestCase {
 		$this->assertEquals('https://example.com/about', $result);
 	}
 
+	public function testBuildUrlWithNonStandardPort(): void {
+		$parts = [
+			'scheme' => 'http',
+			'host' => 'example.org',
+			'port' => 8080
+		];
+
+		$result = UrlHelper::build_url($parts);
+		$this->assertEquals('http://example.org:8080', $result);
+	}
+
+	public function testBuildUrlWithNonStandardPortAndPath(): void {
+		$parts = [
+			'scheme' => 'http',
+			'host' => 'example.org',
+			'port' => 8080,
+			'path' => '/test.jpg'
+		];
+
+		$result = UrlHelper::build_url($parts);
+		$this->assertEquals('http://example.org:8080/test.jpg', $result);
+	}
+
+	public function testBuildUrlWithNonStandardPortAndAllParts(): void {
+		$parts = [
+			'scheme' => 'https',
+			'host' => 'example.org',
+			'port' => 8443,
+			'path' => '/api/endpoint',
+			'query' => 'key=value',
+			'fragment' => 'section'
+		];
+
+		$result = UrlHelper::build_url($parts);
+		$this->assertEquals('https://example.org:8443/api/endpoint?key=value#section', $result);
+	}
+
+	public function testBuildUrlWithStandardHttpPort(): void {
+		$parts = [
+			'scheme' => 'http',
+			'host' => 'example.com',
+			'port' => 80
+		];
+
+		$result = UrlHelper::build_url($parts);
+		$this->assertEquals('http://example.com:80', $result);
+	}
+
+	public function testBuildUrlWithStandardHttpsPort(): void {
+		$parts = [
+			'scheme' => 'https',
+			'host' => 'example.com',
+			'port' => 443
+		];
+
+		$result = UrlHelper::build_url($parts);
+		$this->assertEquals('https://example.com:443', $result);
+	}
+
+	public function testBuildUrlWithPortAsString(): void {
+		$parts = [
+			'scheme' => 'http',
+			'host' => 'example.org',
+			'port' => '8080'
+		];
+
+		$result = UrlHelper::build_url($parts);
+		$this->assertEquals('http://example.org:8080', $result);
+	}
+
 	// ===== rewrite_relative() - Absolute URLs =====
 
 	public function testRewriteRelativeWithAbsoluteUrl(): void {
@@ -101,10 +171,67 @@ final class UrlHelperTest extends TestCase {
 		$rel = 'image.jpg';
 
 		$result = UrlHelper::rewrite_relative($base, $rel);
-		// dirname('/blog/') returns '/blog', then with_trailing_slash makes it '/blog/'
-		// But actually dirname() on path ending with / returns the parent: dirname('/blog/') = '/blog'
-		// Actually, the behavior is: dirname('/blog/') returns '/', so result is '/image.jpg'
-		$this->assertEquals('https://example.com/image.jpg', $result);
+		$this->assertEquals('https://example.com/blog/image.jpg', $result);
+	}
+
+	// ===== rewrite_relative() - Port Preservation =====
+
+	public function testRewriteRelativePreservesPortFromBaseUrl(): void {
+		$base = 'http://example.org:8080/blog/post';
+		$rel = 'image.jpg';
+
+		$result = UrlHelper::rewrite_relative($base, $rel);
+		$this->assertEquals('http://example.org:8080/blog/image.jpg', $result);
+	}
+
+	public function testRewriteRelativePreservesPortWithAbsolutePath(): void {
+		$base = 'http://example.org:8080/blog/post';
+		$rel = '/assets/image.jpg';
+
+		$result = UrlHelper::rewrite_relative($base, $rel);
+		$this->assertEquals('http://example.org:8080/assets/image.jpg', $result);
+	}
+
+	public function testRewriteRelativePreservesPortWithDotSlashPath(): void {
+		$base = 'http://example.org:8080/blog/post';
+		$rel = './image.jpg';
+
+		$result = UrlHelper::rewrite_relative($base, $rel);
+		$this->assertEquals('http://example.org:8080/blog/image.jpg', $result);
+	}
+
+	public function testRewriteRelativePreservesPortWithQueryString(): void {
+		$base = 'http://example.org:8080/blog/post';
+		$rel = 'api/data?key=value';
+
+		$result = UrlHelper::rewrite_relative($base, $rel);
+		$this->assertEquals('http://example.org:8080/blog/api/data?key=value', $result);
+	}
+
+	public function testRewriteRelativePreservesNonStandardHttpsPort(): void {
+		$base = 'https://example.org:8443/feed.xml';
+		$rel = 'article.html';
+
+		$result = UrlHelper::rewrite_relative($base, $rel);
+		$this->assertEquals('https://example.org:8443/article.html', $result);
+	}
+
+	public function testRewriteRelativeWithBaseUrlPortButAbsoluteRelUrl(): void {
+		$base = 'http://example.org:8080/blog/post';
+		$rel = 'https://other.com/resource';
+
+		$result = UrlHelper::rewrite_relative($base, $rel);
+		// Absolute URLs should not inherit port from base
+		$this->assertEquals('https://other.com/resource', $result);
+	}
+
+	public function testRewriteRelativeWithBaseUrlPortAndProtocolRelativeUrl(): void {
+		$base = 'http://example.org:8080/blog/post';
+		$rel = '//cdn.example.com/resource.js';
+
+		$result = UrlHelper::rewrite_relative($base, $rel);
+		// Protocol-relative URLs should not inherit port from base
+		$this->assertEquals('https://cdn.example.com/resource.js', $result);
 	}
 
 	// ===== rewrite_relative() - Special Schemes =====
@@ -246,6 +373,101 @@ final class UrlHelperTest extends TestCase {
 		$result = UrlHelper::validate('  https://example.com/page  ');
 		// clean() should strip tags and trim
 		$this->assertEquals('https://example.com/page', $result);
+	}
+
+	// ===== has_disallowed_ip() Tests =====
+
+	public function testIsDisallowedIpDetectsLocalhost(): void {
+		$this->assertTrue(UrlHelper::has_disallowed_ip('http://localhost/path'));
+		$this->assertTrue(UrlHelper::has_disallowed_ip('https://localhost:8080/'));
+		$this->assertTrue(UrlHelper::has_disallowed_ip('http://LOCALHOST/'));
+	}
+
+	public function testIsDisallowedIpDetects127Loopback(): void {
+		$this->assertTrue(UrlHelper::has_disallowed_ip('http://127.0.0.1/'));
+		$this->assertTrue(UrlHelper::has_disallowed_ip('http://127.0.0.1:8080/path'));
+		$this->assertTrue(UrlHelper::has_disallowed_ip('http://127.1.2.3/'));
+		$this->assertTrue(UrlHelper::has_disallowed_ip('https://127.255.255.255/'));
+	}
+
+	public function testIsDisallowedIpDetectsIPv6Loopback(): void {
+		$this->assertTrue(UrlHelper::has_disallowed_ip('http://[::1]/'));
+		$this->assertTrue(UrlHelper::has_disallowed_ip('http://[::1]:8080/path'));
+		$this->assertTrue(UrlHelper::has_disallowed_ip('https://[::1]:443/'));
+		$this->assertTrue(UrlHelper::has_disallowed_ip('http://[0:0:0:0:0:0:0:1]/'));
+		$this->assertTrue(UrlHelper::has_disallowed_ip('https://[0:0:0:0:0:0:0:1]:443/'));
+	}
+
+	public function testIsDisallowedIpAllowsExternalHosts(): void {
+		$this->assertFalse(UrlHelper::has_disallowed_ip('http://example.com/'));
+		$this->assertFalse(UrlHelper::has_disallowed_ip('https://example.org:8080/'));
+		$this->assertFalse(UrlHelper::has_disallowed_ip('http://8.8.8.8/'));
+	}
+
+	public function testIsDisallowedIpReturnsFalseForInvalidUrl(): void {
+		$this->assertFalse(UrlHelper::has_disallowed_ip('not-a-url'));
+		$this->assertFalse(UrlHelper::has_disallowed_ip(''));
+	}
+
+	// ===== has_disallowed_ip() - Link-Local / Cloud Metadata Tests =====
+
+	public function testIsDisallowedIpBlocksLinkLocalOnAllPorts(): void {
+		// 169.254.x.x is link-local (cloud metadata) - always blocked
+		$this->assertTrue(UrlHelper::has_disallowed_ip('http://169.254.169.254/'));
+		$this->assertTrue(UrlHelper::has_disallowed_ip('https://169.254.0.1/'));
+		$this->assertTrue(UrlHelper::has_disallowed_ip('http://169.254.169.254:80/'));
+		$this->assertTrue(UrlHelper::has_disallowed_ip('http://169.254.169.254:8080/'));
+	}
+
+	// ===== has_disallowed_ip() - RFC 1918 Private IP Tests =====
+
+	public function testIsDisallowedIpAllowsPrivateIP10OnStandardPorts(): void {
+		$this->assertFalse(UrlHelper::has_disallowed_ip('http://10.0.0.1/'));
+		$this->assertFalse(UrlHelper::has_disallowed_ip('http://10.255.255.255/path'));
+		$this->assertFalse(UrlHelper::has_disallowed_ip('https://10.0.0.1/'));
+		$this->assertFalse(UrlHelper::has_disallowed_ip('https://10.0.0.1:443/'));
+		$this->assertFalse(UrlHelper::has_disallowed_ip('http://10.0.0.1:80/'));
+	}
+
+	public function testIsDisallowedIpBlocksPrivateIP10OnNonStandardPorts(): void {
+		$this->assertTrue(UrlHelper::has_disallowed_ip('http://10.0.0.1:8080/'));
+		$this->assertTrue(UrlHelper::has_disallowed_ip('https://10.0.0.1:8443/'));
+		$this->assertTrue(UrlHelper::has_disallowed_ip('http://10.0.0.1:6379/'));
+		$this->assertTrue(UrlHelper::has_disallowed_ip('http://10.255.255.255:3000/'));
+	}
+
+	public function testIsDisallowedIpAllowsPrivateIP192OnStandardPorts(): void {
+		$this->assertFalse(UrlHelper::has_disallowed_ip('http://192.168.0.1/'));
+		$this->assertFalse(UrlHelper::has_disallowed_ip('https://192.168.255.255/'));
+		$this->assertFalse(UrlHelper::has_disallowed_ip('https://192.168.1.100:443/'));
+		$this->assertFalse(UrlHelper::has_disallowed_ip('http://192.168.1.1:80/'));
+	}
+
+	public function testIsDisallowedIpBlocksPrivateIP192OnNonStandardPorts(): void {
+		$this->assertTrue(UrlHelper::has_disallowed_ip('http://192.168.1.1:8080/'));
+		$this->assertTrue(UrlHelper::has_disallowed_ip('https://192.168.1.1:8443/'));
+		$this->assertTrue(UrlHelper::has_disallowed_ip('http://192.168.0.1:9200/'));
+	}
+
+	public function testIsDisallowedIpAllowsPrivateIP172OnStandardPorts(): void {
+		$this->assertFalse(UrlHelper::has_disallowed_ip('http://172.16.0.1/'));
+		$this->assertFalse(UrlHelper::has_disallowed_ip('https://172.31.255.255/'));
+		$this->assertFalse(UrlHelper::has_disallowed_ip('http://172.20.10.5:80/'));
+		$this->assertFalse(UrlHelper::has_disallowed_ip('https://172.16.0.1:443/'));
+	}
+
+	public function testIsDisallowedIpBlocksPrivateIP172OnNonStandardPorts(): void {
+		$this->assertTrue(UrlHelper::has_disallowed_ip('http://172.16.0.1:8080/'));
+		$this->assertTrue(UrlHelper::has_disallowed_ip('https://172.31.0.1:8443/'));
+		$this->assertTrue(UrlHelper::has_disallowed_ip('http://172.20.10.5:5432/'));
+	}
+
+	public function testIsDisallowedIpAllowsNonPrivateIP172(): void {
+		// 172.15.x.x and 172.32.x.x are NOT in private range (172.16.0.0/12)
+		$this->assertFalse(UrlHelper::has_disallowed_ip('http://172.15.0.1/'));
+		$this->assertFalse(UrlHelper::has_disallowed_ip('http://172.32.0.1/'));
+		$this->assertFalse(UrlHelper::has_disallowed_ip('http://172.15.0.1:8080/'));
+		$this->assertFalse(UrlHelper::has_disallowed_ip('http://172.32.0.1:9999/'));
 	}
 
 	// ===== Edge Cases =====

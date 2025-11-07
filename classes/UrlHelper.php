@@ -115,7 +115,9 @@ class UrlHelper {
 			if ($rel_parts['path'] ?? "") {
 
 				// we append dirname() of base path to relative URL path as per RFC 3986 section 5.2.2
-				$base_path = with_trailing_slash(dirname($base_parts['path'] ?? ""));
+				// if base path ends with / use it directly
+				$base_path = $base_parts['path'] ?? '';
+				$base_path = str_ends_with($base_path, '/') ? $base_path : with_trailing_slash(dirname($base_path));
 
 				// 1. absolute relative path (/test.html) = no-op, proceed as is
 

@@ -135,7 +135,7 @@ class Sanitizer {
 		// $rewrite_base_url = $site_url ? $site_url : Config::get_self_url();
 		$rewrite_base_url = $site_url ?: "http://domain.invalid/";
 
-		$entries = $xpath->query('(//a[@href]|//img[@src]|//source[@srcset|@src]|//video[@poster])');
+		$entries = $xpath->query('(//a[@href]|//img[@src|@srcset]|//source[@srcset|@src]|//video[@poster])');
 
 		/** @var DOMElement $entry */
 		foreach ($entries as $entry) {
@@ -157,9 +157,9 @@ class Sanitizer {
 					if ($validated_url && !UrlHelper::has_disallowed_ip($validated_url)) {
 						$entry->setAttribute('src', $validated_url);
 					} else {
-						// invalid URL-- show the HTML representation of the element
-						$escaped_html = htmlspecialchars($doc->saveHTML($entry), ENT_QUOTES | ENT_HTML5, 'UTF-8');
-						$text_node = $doc->createTextNode($escaped_html);
+						// Replace with escaped ('<' and '>', at least) text
+						$element_html = $doc->saveHTML($entry);
+						$text_node = new DOMText($element_html);
 						$entry->parentNode->replaceChild($text_node, $entry);
 						continue;
 					}

@@ -171,10 +171,7 @@ final class UrlHelperTest extends TestCase {
 		$rel = 'image.jpg';
 
 		$result = UrlHelper::rewrite_relative($base, $rel);
-		// dirname('/blog/') returns '/blog', then with_trailing_slash makes it '/blog/'
-		// But actually dirname() on path ending with / returns the parent: dirname('/blog/') = '/blog'
-		// Actually, the behavior is: dirname('/blog/') returns '/', so result is '/image.jpg'
-		$this->assertEquals('https://example.com/image.jpg', $result);
+		$this->assertEquals('https://example.com/blog/image.jpg', $result);
 	}
 
 	// ===== rewrite_relative() - Port Preservation =====

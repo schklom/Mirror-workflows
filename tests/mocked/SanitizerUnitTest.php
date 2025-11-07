@@ -541,7 +541,8 @@ final class SanitizerUnitTest extends TestCase {
 
 		$this->assertNotFalse($result);
 		$this->assertStringNotContainsString('<img', $result);
-		$this->assertStringContainsString('&lt;img src=&quot;http://192.168.1.1:8080/image.jpg&quot;', $result);
+		$this->assertStringContainsString('&lt;img', $result);
+		$this->assertStringContainsString('http://192.168.1.1:8080/image.jpg', $result);
 	}
 
 	public function test_sanitize_blocks_link_local_on_standard_port(): void {
@@ -550,7 +551,8 @@ final class SanitizerUnitTest extends TestCase {
 
 		$this->assertNotFalse($result);
 		$this->assertStringNotContainsString('<img', $result);
-		$this->assertStringContainsString('&lt;img src=&quot;http://169.254.169.254/latest/meta-data/&quot;', $result);
+		$this->assertStringContainsString('&lt;img', $result);
+		$this->assertStringContainsString('http://169.254.169.254/latest/meta-data/', $result);
 	}
 
 	public function test_sanitize_allows_standard_port_in_img_src(): void {

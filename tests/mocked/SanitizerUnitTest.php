@@ -686,4 +686,123 @@ final class SanitizerUnitTest extends TestCase {
 		$this->assertStringContainsString('<img', $result);
 		$this->assertStringContainsString('http://example.org:8080/feed/image.jpg', $result);
 	}
+
+	public function test_sanitize_img_with_valid_srcset_but_invalid_src(): void {
+		$input = '<img src="http://127.0.0.1:8080/bad.jpg" srcset="https://example.org/img1.jpg 1x, https://example.org/img2.jpg 2x" alt="test">';
+		$result = Sanitizer::sanitize($input, false, false, 'http://example.com');
+
+		$this->assertNotFalse($result);
+		// Element should be preserved because srcset is valid
+		$this->assertStringContainsString('<img', $result);
+		// Invalid src should be removed
+		$this->assertStringNotContainsString('127.0.0.1', $result);
+		// Valid srcset should be preserved
+		$this->assertStringContainsString('srcset=', $result);
+		$this->assertStringContainsString('https://example.org/img1.jpg', $result);
+		$this->assertStringContainsString('https://example.org/img2.jpg', $result);
+	}
+
+	public function test_sanitize_img_with_only_srcset_no_src(): void {
+		$input = '<img srcset="https://example.org/img1.jpg 1x, https://example.org/img2.jpg 2x" alt="test">';
+		$result = Sanitizer::sanitize($input, false, false, 'http://example.com');
+
+		$this->assertNotFalse($result);
+		// Element should be preserved because srcset is valid
+		$this->assertStringContainsString('<img', $result);
+		// srcset should be preserved
+		$this->assertStringContainsString('srcset=', $result);
+		$this->assertStringContainsString('https://example.org/img1.jpg', $result);
+		$this->assertStringContainsString('https://example.org/img2.jpg', $result);
+	}
+
+	public function test_sanitize_img_with_invalid_src_and_invalid_srcset(): void {
+		$input = '<img src="http://127.0.0.1:8080/bad.jpg" srcset="http://localhost:8080/img1.jpg 1x" alt="test">';
+		$result = Sanitizer::sanitize($input, false, false, 'http://example.com');
+
+		$this->assertNotFalse($result);
+		// Element should be replaced with escaped text
+		$this->assertStringNotContainsString('<img', $result);
+		$this->assertStringContainsString('&lt;img', $result);
+		$this->assertStringContainsString('127.0.0.1:8080', $result);
+	}
+
+	public function test_sanitize_img_with_invalid_src_and_no_srcset(): void {
+		$input = '<img src="http://127.0.0.1:8080/bad.jpg" alt="test">';
+		$result = Sanitizer::sanitize($input, false, false, 'http://example.com');
+
+		$this->assertNotFalse($result);
+		// Element should be replaced with escaped text
+		$this->assertStringNotContainsString('<img', $result);
+		$this->assertStringContainsString('&lt;img', $result);
+		$this->assertStringContainsString('127.0.0.1:8080', $result);
+	}
+
+	public function test_sanitize_source_with_valid_srcset_but_invalid_src(): void {
+		$input = '<picture><source src="http://localhost:8080/bad.jpg" srcset="https://example.org/img1.jpg 1x, https://example.org/img2.jpg 2x"><img src="https://example.org/fallback.jpg"></picture>';
+		$result = Sanitizer::sanitize($input, false, false, 'http://example.com');
+
+		$this->assertNotFalse($result);
+		// Source element should be preserved because srcset is valid
+		$this->assertStringContainsString('<source', $result);
+		// Invalid src should be removed
+		$this->assertStringNotContainsString('localhost:8080', $result);
+		// Valid srcset should be preserved
+		$this->assertStringContainsString('srcset=', $result);
+		$this->assertStringContainsString('https://example.org/img1.jpg', $result);
+		$this->assertStringContainsString('https://example.org/img2.jpg', $result);
+	}
+
+	public function test_sanitize_source_with_only_srcset_no_src(): void {
+		$input = '<picture><source srcset="https://example.org/img1.jpg 1x, https://example.org/img2.jpg 2x"><img src="https://example.org/fallback.jpg"></picture>';
+		$result = Sanitizer::sanitize($input, false, false, 'http://example.com');
+
+		$this->assertNotFalse($result);
+		// Source element should be preserved (valid HTML - source can have srcset without src)
+		$this->assertStringContainsString('<source', $result);
+		$this->assertStringContainsString('srcset=', $result);
+		$this->assertStringContainsString('https://example.org/img1.jpg', $result);
+		$this->assertStringContainsString('https://example.org/img2.jpg', $result);
+	}
+
+	public function test_sanitize_source_with_invalid_src_and_invalid_srcset(): void {
+		$input = '<picture><source src="http://127.0.0.1:8080/bad.jpg" srcset="http://localhost:8080/img1.jpg 1x"><img src="https://example.org/fallback.jpg"></picture>';
+		$result = Sanitizer::sanitize($input, false, false, 'http://example.com');
+
+		$this->assertNotFalse($result);
+		// Source element should be replaced with escaped text
+		$this->assertStringNotContainsString('<source', $result);
+		$this->assertStringContainsString('&lt;source', $result);
+		$this->assertStringContainsString('127.0.0.1:8080', $result);
+	}
+
+	public function test_sanitize_srcset_with_mixed_valid_and_invalid_urls(): void {
+		$input = '<img srcset="https://example.org/good1.jpg 1x, http://localhost:8080/bad.jpg 2x, https://example.org/good2.jpg 3x" alt="test">';
+		$result = Sanitizer::sanitize($input, false, false, 'http://example.com');
+
+		$this->assertNotFalse($result);
+		// Element should be preserved because some srcset URLs are valid
+		$this->assertStringContainsString('<img', $result);
+		$this->assertStringContainsString('srcset=', $result);
+		// Valid URLs should be preserved
+		$this->assertStringContainsString('https://example.org/good1.jpg', $result);
+		$this->assertStringContainsString('https://example.org/good2.jpg', $result);
+		// Invalid URL should be removed
+		$this->assertStringNotContainsString('localhost:8080', $result);
+	}
+
+	public function test_sanitize_img_with_valid_src_and_partially_valid_srcset(): void {
+		$input = '<img src="https://example.org/main.jpg" srcset="https://example.org/good.jpg 1x, http://127.0.0.1:8080/bad.jpg 2x" alt="test">';
+		$result = Sanitizer::sanitize($input, false, false, 'http://example.com');
+
+		$this->assertNotFalse($result);
+		// Element should be preserved
+		$this->assertStringContainsString('<img', $result);
+		// Valid src should be preserved
+		$this->assertStringContainsString('src="https://example.org/main.jpg"', $result);
+		// Valid srcset URL should be preserved
+		$this->assertStringContainsString('https://example.org/good.jpg', $result);
+		// Invalid srcset URL should be removed
+		$this->assertStringNotContainsString('127.0.0.1', $result);
+	}
 }
+

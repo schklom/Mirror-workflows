@@ -148,6 +148,10 @@ class Sanitizer {
 				$entry->setAttribute('target', '_blank');
 			}
 
+			// used to determine whether the element should be replaced with escaped text
+			$should_replace_element = false;
+			$src_valid = true;
+
 			if ($entry->hasAttribute('src')) {
 				$rewritten_url = UrlHelper::rewrite_relative($rewrite_base_url, $entry->getAttribute('src'), $entry->tagName, 'src');
 
@@ -157,18 +161,10 @@ class Sanitizer {
 					if ($rewritten_url && !UrlHelper::has_disallowed_ip($rewritten_url)) {
 						$entry->setAttribute('src', $rewritten_url);
 					} else {
-						// Replace with escaped ('<' and '>', at least) text
-						$element_html = $doc->saveHTML($entry);
-						$text_node = new DOMText($element_html);
-						$entry->parentNode->replaceChild($text_node, $entry);
-						continue;
+						$should_replace_element = true;
+						$src_valid = false;
 					}
 				}
-			}
-
-			if ($entry->nodeName == 'img') {
-				$entry->setAttribute('referrerpolicy', 'no-referrer');
-				$entry->setAttribute('loading', 'lazy');
 			}
 
 			if ($entry->hasAttribute('srcset')) {
@@ -185,10 +181,29 @@ class Sanitizer {
 					}
 				}
 
-				if (count($validated_srcset) > 0)
+				if (count($validated_srcset) > 0) {
 					$entry->setAttribute('srcset', RSSUtils::encode_srcset($validated_srcset));
-				else
+					$should_replace_element = false;
+				} else {
 					$entry->removeAttribute('srcset');
+				}
+			}
+
+			// replace with escaped text if 'src' and 'srcset' are invalid
+			if ($should_replace_element) {
+				$element_html = $doc->saveHTML($entry);
+				$text_node = new DOMText($element_html);
+				$entry->parentNode->replaceChild($text_node, $entry);
+				continue;
+			}
+
+			// drop 'src' if invalid and the element wasn't replaced (i.e. 'srcset' was acceptable)
+			if (!$src_valid && $entry->hasAttribute('src'))
+				$entry->removeAttribute('src');
+
+			if ($entry->nodeName == 'img') {
+				$entry->setAttribute('referrerpolicy', 'no-referrer');
+				$entry->setAttribute('loading', 'lazy');
 			}
 
 			if ($entry->hasAttribute('poster')) {

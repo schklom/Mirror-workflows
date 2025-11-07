@@ -117,7 +117,7 @@
 
 <body class="flat ttrss_main ttrss_index css_loading">
 
-<noscript class="alert alert-error"><?= ('Javascript is disabled. Please enable it.') ?></noscript>
+<noscript class="alert alert-error"><?= __('Javascript is disabled. Please enable it.') ?></noscript>
 
 <div id="overlay">
 	<div id="overlay_inner">

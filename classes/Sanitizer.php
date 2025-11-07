@@ -135,7 +135,7 @@ class Sanitizer {
 		// $rewrite_base_url = $site_url ? $site_url : Config::get_self_url();
 		$rewrite_base_url = $site_url ?: "http://domain.invalid/";
 
-		$entries = $xpath->query('(//a[@href]|//img[@src|@srcset]|//source[@srcset|@src]|//video[@poster])');
+		$entries = $xpath->query('(//a[@href]|//img[@src|@srcset]|//source[@src|@srcset]|//video[@poster])');
 
 		/** @var DOMElement $entry */
 		foreach ($entries as $entry) {
@@ -145,13 +145,15 @@ class Sanitizer {
 					UrlHelper::rewrite_relative($rewrite_base_url, $entry->getAttribute('href'), $entry->tagName, "href"));
 
 				$entry->setAttribute('rel', 'noopener noreferrer');
-				$entry->setAttribute("target", "_blank");
+				$entry->setAttribute('target', '_blank');
 			}
 
 			if ($entry->hasAttribute('src')) {
 				$rewritten_url = UrlHelper::rewrite_relative($rewrite_base_url, $entry->getAttribute('src'), $entry->tagName, 'src');
 
-				if (!preg_match('/^data:/i', $rewritten_url)) {
+				if (preg_match('/^data:/i', $rewritten_url)) {
+					$entry->setAttribute('src', $rewritten_url);
+				} else {
 					if ($rewritten_url && !UrlHelper::has_disallowed_ip($rewritten_url)) {
 						$entry->setAttribute('src', $rewritten_url);
 					} else {
@@ -161,8 +163,6 @@ class Sanitizer {
 						$entry->parentNode->replaceChild($text_node, $entry);
 						continue;
 					}
-				} else {
-					$entry->setAttribute('src', $rewritten_url);
 				}
 			}
 

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-05 19:10+0000\n"
-"PO-Revision-Date: 2025-11-06 20:51+0000\n"
+"PO-Revision-Date: 2025-11-08 02:51+0000\n"
 "Last-Translator: Dony Wibowo <dony@dony.me>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/tt-rss/webui/"
 "id/>\n"
@@ -239,20 +239,20 @@ msgstr "Cari..."
 
 #: index.php:263
 msgid "Search feeds..."
-msgstr "Cari feed..."
+msgstr "Cari umpan..."
 
 #: index.php:264
 msgid "Feed actions:"
-msgstr "Tindakan pakan:"
+msgstr "Tindakan umpan:"
 
 #: index.php:265 plugins/bookmarklets/init.php:40
 #: plugins/bookmarklets/init.php:78
 msgid "Subscribe to feed..."
-msgstr "Langgani pakan..."
+msgstr "Langgani umpan..."
 
 #: index.php:266
 msgid "Edit this feed..."
-msgstr "Edit pakan ini ..."
+msgstr "Edit umpan ini ..."
 
 #: index.php:267 classes/Pref_Feeds.php:954 js/PrefFeedTree.js:119
 #: js/CommonDialogs.js:627
@@ -261,11 +261,11 @@ msgstr "Berhenti berlangganan"
 
 #: index.php:268
 msgid "All feeds:"
-msgstr "Semua pakan:"
+msgstr "Semua umpan:"
 
 #: index.php:270
 msgid "(Un)hide read feeds"
-msgstr "(Tidak)sembunyi pakan"
+msgstr "(Tidak)sembunyi umpan"
 
 #: index.php:271
 msgid "UI layout:"
@@ -281,108 +281,108 @@ msgstr "Alihkan mode layar lebar"
 
 #: index.php:276
 msgid "Toggle expand all articles"
-msgstr ""
+msgstr "Alihkan perluas semua artikel﻿"
 
 #: index.php:277
 msgid "Other actions:"
-msgstr ""
+msgstr "Tindakan lain:"
 
 #: index.php:278
 msgid "Keyboard shortcuts help"
-msgstr ""
+msgstr "Bantuan pintasan keyboard"
 
 #: index.php:287
 msgid "Logout"
-msgstr ""
+msgstr "Keluar"
 
 #: prefs.php:16 prefs.php:141 classes/RPC.php:553 classes/Pref_Prefs.php:939
 msgid "Preferences"
-msgstr ""
+msgstr "Preferensi"
 
 #: prefs.php:134
 msgid "Exit preferences"
-msgstr ""
+msgstr "Keluar preferensi"
 
 #: prefs.php:144 classes/Pref_Prefs.php:44 classes/Pref_Feeds.php:125
 #: classes/Pref_Feeds.php:943
 msgid "Feeds"
-msgstr ""
+msgstr "Umpan"
 
 #: prefs.php:148 classes/Pref_Filters.php:300
 msgid "Filters"
-msgstr ""
+msgstr "Filter"
 
 #: prefs.php:152 classes/Feeds.php:1349 classes/Pref_Labels.php:21
 msgid "Labels"
-msgstr ""
+msgstr "Label"
 
 #: prefs.php:157
 msgid "Users"
-msgstr ""
+msgstr "Pengguna"
 
 #: prefs.php:160
 msgid "System"
-msgstr ""
+msgstr "Sistem"
 
 #: classes/RPC.php:492
 msgid "Navigation"
-msgstr ""
+msgstr "Navigasi"
 
 #: classes/RPC.php:493
 msgid "Open next feed"
-msgstr ""
+msgstr "Buka umpan berikutnya"
 
 #: classes/RPC.php:494
 msgid "Open next unread feed"
-msgstr ""
+msgstr "Buka umpan belum dibaca berikutnya"
 
 #: classes/RPC.php:495
 msgid "Open previous feed"
-msgstr ""
+msgstr "Buka umpan sebelumnya"
 
 #: classes/RPC.php:496
 msgid "Open previous unread feed"
-msgstr ""
+msgstr "Buka umpan belum dibaca sebelumnya"
 
 #: classes/RPC.php:497
 msgid "Open next article (in combined mode, scroll down)"
-msgstr ""
+msgstr "Buka artikel berikutnya (dalam mode gabungan, gulir ke bawah)"
 
 #: classes/RPC.php:498
 msgid "Open previous article (in combined mode, scroll up)"
-msgstr ""
+msgstr "Buka artikel sebelumnya (dalam mode gabungan, gulir ke atas)"
 
 #: classes/RPC.php:499
 msgid "Scroll headlines by one page down"
-msgstr ""
+msgstr "Gulir judul satu halaman ke bawah"
 
 #: classes/RPC.php:500
 msgid "Scroll headlines by one page up"
-msgstr ""
+msgstr "Gulir judul satu halaman ke atas"
 
 #: classes/RPC.php:501
 msgid "Open next article"
-msgstr ""
+msgstr "Buka artikel berikutnya"
 
 #: classes/RPC.php:502
 msgid "Open previous article"
-msgstr ""
+msgstr "Buka artikel sebelumnya"
 
 #: classes/RPC.php:503
 msgid "Move to next article (don't expand)"
-msgstr ""
+msgstr "Pindah ke artikel berikutnya (jangan perluas)"
 
 #: classes/RPC.php:504
 msgid "Move to previous article (don't expand)"
-msgstr ""
+msgstr "Pindah ke artikel sebelumnya (jangan perluas)"
 
 #: classes/RPC.php:505
 msgid "Show search dialog"
-msgstr ""
+msgstr "Tampilkan dialog pencarian"
 
 #: classes/RPC.php:506
 msgid "Cancel active search"
-msgstr ""
+msgstr "Batalkan pencarian aktif"
 
 #: classes/RPC.php:507
 msgid "Article"

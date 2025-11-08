@@ -665,6 +665,7 @@ const Headlines = {
 						<option></option>
 						<option value='headlines_catchupSelection'>${__('Mark as read')}</option>
 						<option value='article_selectionSetScore'>${__('Set score')}</option>
+						<option value='article_selectionOpenInNewWindow'>${__('Open original article')}</option>
 						${tb.plugin_menu_items !== '' ?
 							`
 							<option></option>
@@ -717,6 +718,9 @@ const Headlines = {
 						break;
 					case 'article_selectionSetScore':
 						Article.selectionSetScore();
+						break;
+					case 'article_selectionOpenInNewWindow':
+						Article.selectionOpenInNewWindow();
 						break;
 					case 'headlines_deleteSelection':
 						Headlines.deleteSelection();

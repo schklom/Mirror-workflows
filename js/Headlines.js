@@ -659,13 +659,14 @@ const Headlines = {
 						<option value='headlines_select_invert'>${__('Invert')}</option>
 						<option value='headlines_select_none'>${__('None')}</option>
 						<option></option>
+						<option value='article_selectionOpenInNewWindow'>${__('Open original article')}</option>
+						<option></option>
 						<option value='headlines_selectionToggleUnread'>${__('Toggle unread')}</option>
 						<option value='headlines_selectionToggleMarked'>${__('Toggle starred')}</option>
 						<option value='headlines_selectionTogglePublished'>${__('Toggle published')}</option>
 						<option></option>
 						<option value='headlines_catchupSelection'>${__('Mark as read')}</option>
 						<option value='article_selectionSetScore'>${__('Set score')}</option>
-						<option value='article_selectionOpenInNewWindow'>${__('Open original article')}</option>
 						${tb.plugin_menu_items !== '' ?
 							`
 							<option></option>

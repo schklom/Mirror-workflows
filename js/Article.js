@@ -120,6 +120,17 @@ const Article = {
 
 		Headlines.toggleUnread(id, 0);
 	},
+    selectionOpenInNewWindow: function () {
+        const ids = Headlines.getSelected();
+
+        if (ids.length > 0) {
+            ids.forEach((id) => {
+		        Article.openInNewWindow(id);
+            });
+        } else {
+            alert(__("No articles selected."));
+        }
+    },
 	renderNote: function (id, note) {
 		return `<div class="article-note" data-note-for="${id}" style="display : ${note ? "" : "none"}">
 				${App.FormFields.icon('note')} <div onclick class='body'>${note ? App.escapeHtml(note) : ""}</div>

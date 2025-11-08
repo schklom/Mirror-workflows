@@ -9,9 +9,9 @@ class OPML extends Handler_Protected {
 	 * @return bool|int|null false if writing the file failed, true if printing succeeded, int if bytes were written to a file, or null if $owner_uid is missing
 	 */
 	function export(): bool|int|null {
-		$output_name = sprintf("tt-rss_%s_%s.opml", $_SESSION["name"], date("Y-m-d"));
-		$include_settings = $_REQUEST["include_settings"] == "1";
-		$owner_uid = $_SESSION["uid"];
+		$output_name = sprintf('tt-rss_%s_%s.opml', $_SESSION['name'], date('Y-m-d'));
+		$include_settings = ($_REQUEST['include_settings'] ?? null) == '1';
+		$owner_uid = $_SESSION['uid'];
 
 		$rc = $this->opml_export($output_name, $owner_uid, false, $include_settings);
 
@@ -275,13 +275,9 @@ class OPML extends Handler_Protected {
 	private function opml_import_feed(DOMNode $node, int $cat_id, int $owner_uid, int $nest): void {
 		$attrs = $node->attributes;
 
-		$feed_title = mb_substr($attrs->getNamedItem('text')->nodeValue, 0, 250);
-		if (!$feed_title) $feed_title = mb_substr($attrs->getNamedItem('title')->nodeValue, 0, 250);
-
-		$feed_url = $attrs->getNamedItem('xmlUrl')->nodeValue;
-		if (!$feed_url) $feed_url = $attrs->getNamedItem('xmlURL')->nodeValue;
-
-		$site_url = mb_substr($attrs->getNamedItem('htmlUrl')->nodeValue, 0, 250);
+		$feed_title = mb_substr($attrs->getNamedItem('text')->nodeValue ?? $attrs->getNamedItem('title')->nodeValue ?? '', 0, 250);
+		$feed_url = $attrs->getNamedItem('xmlUrl')->nodeValue ?? $attrs->getNamedItem('xmlURL')?->nodeValue;
+		$site_url = mb_substr($attrs->getNamedItem('htmlUrl')->nodeValue ?? '', 0, 250);
 
 		if ($feed_url) {
 			$sth = $this->pdo->prepare("SELECT id FROM ttrss_feeds WHERE
@@ -296,13 +292,13 @@ class OPML extends Handler_Protected {
 
 				if (!$cat_id) $cat_id = null;
 
-				$update_interval = (int) $attrs->getNamedItem('ttrssUpdateInterval')->nodeValue;
+				$update_interval = (int) $attrs->getNamedItem('ttrssUpdateInterval')?->nodeValue;
 				if (!$update_interval) $update_interval = 0;
 
-				$order_id = (int) $attrs->getNamedItem('ttrssSortOrder')->nodeValue;
+				$order_id = (int) $attrs->getNamedItem('ttrssSortOrder')?->nodeValue;
 				if (!$order_id) $order_id = 0;
 
-				$purge_interval = (int) $attrs->getNamedItem('ttrssPurgeInterval')->nodeValue;
+				$purge_interval = (int) $attrs->getNamedItem('ttrssPurgeInterval')?->nodeValue;
 				if (!$purge_interval) $purge_interval = 0;
 
 				$sth = $this->pdo->prepare("INSERT INTO ttrss_feeds
@@ -504,22 +500,20 @@ class OPML extends Handler_Protected {
 			if (!$cat_title)
 				$cat_title = mb_substr($root_node->attributes->getNamedItem('title')->nodeValue, 0, 250);
 
-			if (!in_array($cat_title, ["tt-rss-filters", "tt-rss-labels", "tt-rss-prefs"])) {
+			if (!in_array($cat_title, ['tt-rss-filters', 'tt-rss-labels', 'tt-rss-prefs'])) {
 				$cat_id = $this->get_feed_category($cat_title, $owner_uid, $parent_id);
 
 				if ($cat_id === 0) {
-					$order_id = (int) $root_node->attributes->getNamedItem('ttrssSortOrder')->nodeValue;
+					$order_id = (int) $root_node->attributes->getNamedItem('ttrssSortOrder')?->nodeValue;
 
-					Feeds::_add_cat($cat_title, $owner_uid, $parent_id ?: null, (int)$order_id);
+					Feeds::_add_cat($cat_title, $owner_uid, $parent_id ?: null, $order_id);
 					$cat_id = $this->get_feed_category($cat_title, $owner_uid, $parent_id);
 				}
-
 			} else {
 				$cat_id = 0;
 			}
 
 			$outlines = $root_node->childNodes;
-
 		} else {
 			$xpath = new DOMXPath($doc);
 			$outlines = $xpath->query("//opml/body/outline");
@@ -533,24 +527,15 @@ class OPML extends Handler_Protected {
 
 		/** @var DOMElement $node */
 		foreach ($outlines as $node) {
-			if ($node->hasAttributes() && strtolower($node->tagName) == "outline") {
+			if ($node->hasAttributes() && strtolower($node->tagName) == 'outline') {
 				$attrs = $node->attributes;
-				$node_cat_title = $attrs->getNamedItem('text') ? $attrs->getNamedItem('text')->nodeValue : false;
-
-				if (!$node_cat_title)
-					$node_cat_title = $attrs->getNamedItem('title') ? $attrs->getNamedItem('title')->nodeValue : false;
-
-				$node_feed_url = $attrs->getNamedItem('xmlUrl') ? $attrs->getNamedItem('xmlUrl')->nodeValue : false;
+				$node_cat_title = $attrs->getNamedItem('text')->nodeValue ?? $attrs->getNamedItem('title')?->nodeValue;
+				$node_feed_url = $attrs->getNamedItem('xmlUrl')?->nodeValue;
 
 				if ($node_cat_title && !$node_feed_url) {
 					$this->opml_import_category($doc, $node, $owner_uid, $cat_id, $nest+1);
 				} else {
-
-					if (!$cat_id) {
-						$dst_cat_id = $default_cat_id;
-					} else {
-						$dst_cat_id = $cat_id;
-					}
+					$dst_cat_id = $cat_id ?: $default_cat_id;
 
 					match ($cat_title) {
 						'tt-rss-prefs' => $this->opml_import_preference($node, $owner_uid, $nest+1),

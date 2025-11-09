@@ -912,24 +912,35 @@ const App = {
 
       document.title = tmp;
    },
-   hotkeyHandler: function(event) {
-      if (event.target.nodeName === "INPUT" || event.target.nodeName === "TEXTAREA") return;
+	hotkeyHandler: function(event) {
+		if (event.target.nodeName === 'TEXTAREA')
+			return;
 
-      // Arrow buttons and escape are not reported via keypress, handle them via keydown.
-      // escape = 27, left = 37, up = 38, right = 39, down = 40, pgup = 33, pgdn = 34, insert = 45, delete = 46
-      if (event.type === "keydown" && event.which !== 27 && (event.which < 33 || event.which > 46)) return;
-      const action_name = this.keyeventToAction(event);
+		if (event.target.nodeName === 'INPUT') {
+			const type = (event.target.type || 'text').toLowerCase();
+			const text_input_types = ['text', 'password', 'email', 'search', 'tel', 'url', 'number', 'date', 'datetime-local', 'month', 'time', 'week'];
 
-      if (action_name) {
-         const action_func = this.hotkey_actions[action_name];
+			if (text_input_types.includes(type))
+				return;
+		}
 
-         if (typeof action_func === 'function') {
-            action_func(event);
-            event.stopPropagation();
-            return false;
-         }
-      }
-   },
+		// Arrow buttons and escape are not reported via keypress, handle them via keydown.
+		if (event.type === 'keydown'
+			&& !['Escape', 'ArrowLeft', 'ArrowUp', 'ArrowRight', 'ArrowDown', 'PageUp', 'PageDown', 'Insert', 'Delete'].includes(event.key))
+			return;
+
+		const action_name = this.keyeventToAction(event);
+
+		if (action_name) {
+			const action_func = this.hotkey_actions[action_name];
+
+			if (typeof action_func === 'function') {
+				action_func(event);
+				event.stopPropagation();
+				return false;
+			}
+		}
+	},
 	isWideScreenMode: function() {
 		return !!this._widescreen_mode;
 	},

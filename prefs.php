@@ -34,6 +34,16 @@
 
 	<?php UserHelper::print_user_stylesheet() ?>
 
+	<style>
+	<?php
+		foreach (PluginHost::getInstance()->get_plugins() as $p) {
+			$css = $p->get_prefs_css();
+			if ($css)
+				echo $css;
+		}
+	?>
+	</style>
+
 	<link rel="shortcut icon" type="image/png" href="images/favicon.png"/>
 	<link rel="icon" type="image/png" sizes="72x72" href="images/favicon-72px.png" />
 

@@ -64,6 +64,11 @@ abstract class Plugin {
 		return "";
 	}
 
+	/** @return string */
+	function get_prefs_css() {
+		return "";
+	}
+
 	/** @return int */
 	function api_version() {
 		return Plugin::API_VERSION_COMPAT;

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-05 19:10+0000\n"
-"PO-Revision-Date: 2025-11-08 02:51+0000\n"
+"PO-Revision-Date: 2025-11-09 20:34+0000\n"
 "Last-Translator: Dony Wibowo <dony@dony.me>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/tt-rss/webui/"
 "id/>\n"
@@ -386,140 +386,140 @@ msgstr "Batalkan pencarian aktif"
 
 #: classes/RPC.php:507
 msgid "Article"
-msgstr ""
+msgstr "Artikel"
 
 #: classes/RPC.php:508 js/Headlines.js:1418 js/Headlines.js:663
 msgid "Toggle starred"
-msgstr ""
+msgstr "Alihkan bintang"
 
 #: classes/RPC.php:509 js/Headlines.js:1430 js/Headlines.js:664
 msgid "Toggle published"
-msgstr ""
+msgstr "Alihkan dipublikasikan"
 
 #: classes/RPC.php:510 js/Headlines.js:1406 js/Headlines.js:662
 msgid "Toggle unread"
-msgstr ""
+msgstr "Alihkan belum dibaca"
 
 #: classes/RPC.php:511
 msgid "Edit tags"
-msgstr ""
+msgstr "Sunting tag"
 
 #: classes/RPC.php:512
 msgid "Open in new window"
-msgstr ""
+msgstr "Buka di jendela baru"
 
 #: classes/RPC.php:513 js/Headlines.js:1451
 msgid "Mark below as read"
-msgstr ""
+msgstr "Tandai di bawah sebagai dibaca"
 
 #: classes/RPC.php:514 js/Headlines.js:1444
 msgid "Mark above as read"
-msgstr ""
+msgstr "Tandai di atas sebagai dibaca"
 
 #: classes/RPC.php:515
 msgid "Scroll down"
-msgstr ""
+msgstr "Gulir ke bawah"
 
 #: classes/RPC.php:516
 msgid "Scroll up"
-msgstr ""
+msgstr "Gulir ke atas"
 
 #: classes/RPC.php:517
 msgid "Scroll down page"
-msgstr ""
+msgstr "Gulir ke bawah halaman"
 
 #: classes/RPC.php:518
 msgid "Scroll up page"
-msgstr ""
+msgstr "Gulir ke atas halaman"
 
 #: classes/RPC.php:519
 msgid "Select article under cursor"
-msgstr ""
+msgstr "Pilih artikel di bawah kursor"
 
 #: classes/RPC.php:520
 msgid "Email article"
-msgstr ""
+msgstr "Email artikel"
 
 #: classes/RPC.php:521
 msgid "Close/collapse article"
-msgstr ""
+msgstr "Tutup/lipat artikel"
 
 #: classes/RPC.php:522
 msgid "Toggle article expansion (combined mode)"
-msgstr ""
+msgstr "Alihkan ekspansi artikel (mode gabungan)"
 
 #: classes/RPC.php:524
 msgid "Toggle full article text via Readability"
-msgstr ""
+msgstr "Alihkan teks artikel lengkap melalui Readability"
 
 #: classes/RPC.php:525
 msgid "Article selection"
-msgstr ""
+msgstr "Pemilihan artikel"
 
 #: classes/RPC.php:526
 msgid "Select all articles"
-msgstr ""
+msgstr "Pilih semua artikel"
 
 #: classes/RPC.php:527
 msgid "Select unread"
-msgstr ""
+msgstr "Pilih belum dibaca"
 
 #: classes/RPC.php:528
 msgid "Select starred"
-msgstr ""
+msgstr "Pilih berbintang"
 
 #: classes/RPC.php:529
 msgid "Select published"
-msgstr ""
+msgstr "Pilih dipublikasikan"
 
 #: classes/RPC.php:530
 msgid "Invert selection"
-msgstr ""
+msgstr "Balik pilihan"
 
 #: classes/RPC.php:531
 msgid "Deselect everything"
-msgstr ""
+msgstr "Batalkan semua pilihan"
 
 #: classes/RPC.php:532
 msgid "Feed"
-msgstr ""
+msgstr "Umpan"
 
 #: classes/RPC.php:533
 msgid "Refresh current feed"
-msgstr ""
+msgstr "Muat ulang umpan saat ini"
 
 #: classes/RPC.php:534
 msgid "Un/hide read feeds"
-msgstr ""
+msgstr "Tampilkan/sembunyikan umpan yang sudah dibaca"
 
 #: classes/RPC.php:535 classes/Pref_Feeds.php:946 js/CommonDialogs.js:31
 msgid "Subscribe to feed"
-msgstr ""
+msgstr "Berlangganan umpan"
 
 #: classes/RPC.php:536 js/PrefFeedTree.js:113 js/Headlines.js:1548
 #: js/Headlines.js:1613 js/FeedTree.js:101 js/CommonDialogs.js:375
 msgid "Edit feed"
-msgstr ""
+msgstr "Edit umpan"
 
 #: classes/RPC.php:538
 msgid "Reverse headlines"
-msgstr ""
+msgstr "Balik urutan judul"
 
 #: classes/RPC.php:539
 msgid "Toggle headline grouping"
-msgstr ""
+msgstr "Alihkan pengelompokan judul"
 
 #: classes/RPC.php:540
 msgid "Toggle grid view"
-msgstr ""
+msgstr "Alihkan tampilan grid"
 
 #: classes/RPC.php:541
 msgid "Debug feed update"
-msgstr ""
+msgstr "Debug pembaruan umpan"
 
 #: classes/RPC.php:542
 msgid "Debug viewfeed()"
-msgstr ""
+msgstr "Debug viewfeed()"
 
 #: classes/RPC.php:543 js/FeedTree.js:166
 msgid "Mark all feeds as read"

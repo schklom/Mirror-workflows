@@ -256,9 +256,6 @@ body.ttrss_main .hl .right i.material-icons {
   user-select: none;
   font-size: 21px;
 }
-body.ttrss_main .hl .left input {
-  margin: 0 4px;
-}
 body.ttrss_main .hl .right {
   text-align: right;
 }
@@ -1309,9 +1306,6 @@ body.ttrss_utility hr {
   font-weight: normal;
   font-size: 11px;
   white-space: nowrap;
-}
-.cdm .header input {
-  margin: 0 4px;
 }
 .cdm .header .feed {
   font-weight: normal;

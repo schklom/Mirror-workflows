@@ -116,13 +116,13 @@ body.flat.ttrss_main {
 	}
 
 	#headlines-frame {
-		.hl:not(.active, .Selected, .Unread),
-		.cdm.expandable:not(.active, .Selected, .Unread) {
+		.hl:not(.active):not(.Selected):not(.Unread),
+		.cdm.expandable:not(.active):not(.Selected):not(.Unread) {
 			background : @default-bg;
 		}
 
-		.hl.Unread:not(.active, .Selected),
-		.cdm.expandable.Unread:not(.active, .Selected) {
+		.hl.Unread:not(.active):not(.Selected),
+		.cdm.expandable.Unread:not(.active):not(.Selected) {
 			background : @color-panel-bg;
 		}
 
@@ -225,10 +225,10 @@ body.flat.ttrss_main {
 	}
 
 	.dijitSplitterHover {
-		background-color : rgb(255 255 255 / 25%);
+		background-color: rgba(255, 255, 255, 0.25);
 	}
 
-	.dijitCheckBox:not(.dijitChecked)::before {
+	.dijitCheckBox:not(.dijitChecked):before {
 		color : @fg-text-muted;
 		background: @color-panel-bg;
 	}

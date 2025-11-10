@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: tt-rss git\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-05 19:10+0000\n"
-"PO-Revision-Date: 2025-11-05 17:51+0000\n"
-"Last-Translator: LaurentC <laurentc@users.noreply.hosted.weblate.org>\n"
+"PO-Revision-Date: 2025-11-10 23:51+0000\n"
+"Last-Translator: Patrick Ahles <p.ahles@gmail.com>\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/tt-rss/webui/nl/>\n"
 "Language: nl_NL\n"
 "MIME-Version: 1.0\n"
@@ -205,37 +205,27 @@ msgstr "Ouder dan twee weken"
 
 #: index.php:228
 msgid "Switch to three panel view"
-msgstr ""
+msgstr "Schakel naar driedelig overzicht"
 
 #: index.php:229
-#, fuzzy
-#| msgid "Switch to digest..."
 msgid "Switch to combined view"
-msgstr "Omschakelen naar samenvatting…"
+msgstr "Omschakelen naar gecombineerd overzicht"
 
 #: index.php:230
-#, fuzzy
-#| msgid "Toggle widescreen mode"
 msgid "Disable widescreen mode"
-msgstr "Wisselen breedbeeldmodus"
+msgstr "Uitschakelen breedbeeldmodus"
 
 #: index.php:231
-#, fuzzy
-#| msgid "Toggle widescreen mode"
 msgid "Enable widescreen mode"
-msgstr "Wisselen breedbeeldmodus"
+msgstr "Inschakelen breedbeeldmodus"
 
 #: index.php:232
-#, fuzzy
-#| msgid "Expand article"
 msgid "Expand selected article only"
-msgstr "Open artikel"
+msgstr "Open alleen geselecteerd artikel"
 
 #: index.php:233
-#, fuzzy
-#| msgid "Expand article"
 msgid "Expand all articles"
-msgstr "Open artikel"
+msgstr "Open alle artikelen"
 
 #: index.php:236
 msgid "Actions..."
@@ -681,9 +671,6 @@ msgid "Enable digest"
 msgstr "Schakel e-mailsamenvatting in"
 
 #: classes/Pref_Prefs.php:106
-#, fuzzy
-#| msgid ""
-#| "Send daily digest of new (and unread) headlines to your e-mail address"
 msgid "Send daily digest of new (and unread) headlines to your email address"
 msgstr ""
 "Verstuur een dagelijkse samenvatting van nieuwe (en ongelezen) kopteksten "
@@ -1322,10 +1309,8 @@ msgid "Your access level is insufficient to run this script."
 msgstr "Uw toegangsrechten zijn niet voldoende om dit script uit te voeren."
 
 #: classes/Handler_Public.php:688
-#, fuzzy
-#| msgid "Feeds with update errors"
 msgid "Proceed with update?"
-msgstr "Feeds met update-fouten"
+msgstr "Doorgaan met update?"
 
 #: classes/Handler_Public.php:693
 msgid "Database Updater"
@@ -1388,8 +1373,6 @@ msgid "(%d days)"
 msgstr "(%d dagen)"
 
 #: classes/Pref_Feeds.php:621 js/CommonDialogs.js:500
-#, fuzzy
-#| msgid "Include in e-mail digest"
 msgid "Include in email digest"
 msgstr "Toevoegen aan e-mailsamenvatting"
 
@@ -1512,9 +1495,8 @@ msgid "Sharing"
 msgstr "Delen"
 
 #: classes/Pref_Filters.php:24
-#, fuzzy
 msgid "Delete article"
-msgstr "Selecteer alle artikelen"
+msgstr "Verwijder artikel"
 
 #: classes/Pref_Filters.php:26
 msgid "Set starred"
@@ -1538,25 +1520,19 @@ msgstr "Labels toevoegen"
 
 #: classes/Pref_Filters.php:31
 msgid "Stop / Do nothing"
-msgstr ""
+msgstr "Stop / Doe niets"
 
 #: classes/Pref_Filters.php:32
-#, fuzzy
-#| msgid "Install plugin"
 msgid "Invoke plugin"
-msgstr "Installeer plug-in"
+msgstr "Roep plug-in aan"
 
 #: classes/Pref_Filters.php:33
-#, fuzzy
-#| msgid "no tags"
 msgid "Ignore tags"
-msgstr "geen tags"
+msgstr "Negeer tags"
 
 #: classes/Pref_Filters.php:39
-#, fuzzy
-#| msgid "Content:"
 msgid "Content"
-msgstr "Inhoud:"
+msgstr "Inhoud"
 
 #: classes/Pref_Filters.php:40
 msgid "Title or Content"
@@ -1571,8 +1547,6 @@ msgid "Author"
 msgstr "Auteur"
 
 #: classes/Pref_Filters.php:45
-#, fuzzy
-#| msgid "Article tags"
 msgid "Article Tags"
 msgstr "Artikel-labels"
 
@@ -1651,17 +1625,15 @@ msgstr "Testbericht van tt-rss"
 
 #: classes/Pref_System.php:24
 msgid "This message confirms that tt-rss can send outgoing email."
-msgstr ""
+msgstr "Dit bericht toont aan dat tt-rss uitgaande e-mail kan verzenden."
 
 #: classes/Pref_System.php:34
 msgid "Task name"
 msgstr "Taaknaam"
 
 #: classes/Pref_System.php:35
-#, fuzzy
-#| msgid "Scheduled tasks"
 msgid "Schedule"
-msgstr "Geagendeerde taken"
+msgstr "Agenda"
 
 #: classes/Pref_System.php:36
 msgid "Last executed"
@@ -1729,14 +1701,12 @@ msgid "Event log"
 msgstr "Gebeurtenissenlogboek"
 
 #: classes/Pref_System.php:203
-#, fuzzy
-#| msgid "Mail configuration"
 msgid "Email configuration"
-msgstr "Mail configuratie"
+msgstr "E-mail configuratie"
 
 #: classes/Pref_System.php:214
 msgid "Email sent."
-msgstr ""
+msgstr "E-mail is verstuurd."
 
 #: classes/Pref_System.php:234
 msgid "To:"
@@ -1755,10 +1725,9 @@ msgid "PHP Information"
 msgstr "PHP-informatie"
 
 #: classes/Mailer.php:53
-#, fuzzy, php-format
-#| msgid "Unknown error while sending mail. Hooks tried: %d."
+#, php-format
 msgid "Unknown error while sending email. Hooks tried: %d."
-msgstr "Onbekende fout bij het versturen van email. Geprobeerde hooks: %d."
+msgstr "Onbekende fout bij het versturen van e-mail. Geprobeerde hooks: %d."
 
 #: classes/Pref_Users.php:49 classes/Pref_Users.php:239
 msgid "Registered"
@@ -2888,16 +2857,12 @@ msgid "Expand to select feed"
 msgstr "Uitklappen tot geselecteerde feed"
 
 #: js/CommonDialogs.js:189
-#, fuzzy
-#| msgid "Couldn't download the specified URL: %s"
 msgid "Couldn't download the specified URL."
-msgstr "Kon de gespecificeerde URL: %s niet downloaden"
+msgstr "Kon de gespecificeerde URL niet downloaden"
 
 #: js/CommonDialogs.js:192
-#, fuzzy
-#| msgid "Inline content"
 msgid "Invalid content."
-msgstr "Inhoud weergeven"
+msgstr "Ongeldige inhoud."
 
 #: js/CommonDialogs.js:195
 msgid "Error while creating feed database entry."

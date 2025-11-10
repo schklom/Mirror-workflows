@@ -226,7 +226,8 @@ body.ttrss_main .hl {
   border-bottom-width: 1px;
   transition: color 0.2s, background 0.2s;
   display: flex;
-  flex-flow: row nowrap;
+  flex-direction: row;
+  flex-wrap: nowrap;
   background: #222;
   align-items: center;
   user-select: none;
@@ -767,7 +768,8 @@ body.ttrss_main #toolbar-frame #toolbar {
   padding-left: 4px;
   height: 32px;
   display: flex;
-  flex-flow: row nowrap;
+  flex-direction: row;
+  flex-wrap: nowrap;
   color: #ccc;
   font-size: 13px;
   align-items: center;
@@ -979,28 +981,28 @@ body.ttrss_main[view-mode="published"] #feeds-holder #feedTree .dijitTreeRow.Has
 body.ttrss_main[view-mode="published"] #feeds-holder #feedTree .dijitTreeRow.Has_Published .counterNode.published {
   display: inline-block;
 }
-body.ttrss_main[view-mode="marked"][hide-read-feeds="true"][hide-read-shows-special="true"] #feeds-holder #feedTree .dijitTreeRow:not(.AlwaysVisible, .Special, .Has_Marked) {
+body.ttrss_main[view-mode="marked"][hide-read-feeds="true"][hide-read-shows-special="true"] #feeds-holder #feedTree .dijitTreeRow:not(.AlwaysVisible):not(.Special):not(.Has_Marked) {
   display: none;
 }
-body.ttrss_main[view-mode="published"][hide-read-feeds="true"][hide-read-shows-special="true"] #feeds-holder #feedTree .dijitTreeRow:not(.AlwaysVisible, .Special, .Has_Published) {
+body.ttrss_main[view-mode="published"][hide-read-feeds="true"][hide-read-shows-special="true"] #feeds-holder #feedTree .dijitTreeRow:not(.AlwaysVisible):not(.Special):not(.Has_Published) {
   display: none;
 }
-body.ttrss_main[view-mode="marked"][hide-read-feeds="true"][hide-read-shows-special="false"] #feeds-holder #feedTree .dijitTreeRow:not(.AlwaysVisible, .Has_Marked) {
+body.ttrss_main[view-mode="marked"][hide-read-feeds="true"][hide-read-shows-special="false"] #feeds-holder #feedTree .dijitTreeRow:not(.AlwaysVisible):not(.Has_Marked) {
   display: none;
 }
-body.ttrss_main[view-mode="published"][hide-read-feeds="true"][hide-read-shows-special="false"] #feeds-holder #feedTree .dijitTreeRow:not(.AlwaysVisible, .Has_Published) {
+body.ttrss_main[view-mode="published"][hide-read-feeds="true"][hide-read-shows-special="false"] #feeds-holder #feedTree .dijitTreeRow:not(.AlwaysVisible):not(.Has_Published) {
   display: none;
 }
-body.ttrss_main:not([view-mode="marked"], [view-mode="published"]) #feeds-holder #feedTree .dijitTreeRow.Unread .counterNode.unread {
+body.ttrss_main:not([view-mode="marked"]):not([view-mode="published"]) #feeds-holder #feedTree .dijitTreeRow.Unread .counterNode.unread {
   display: inline-block;
 }
-body.ttrss_main:not([view-mode="marked"], [view-mode="published"]) #feeds-holder #feedTree .dijitTreeRow.Has_Aux:not(.Unread) .counterNode.aux {
+body.ttrss_main:not([view-mode="marked"]):not([view-mode="published"]) #feeds-holder #feedTree .dijitTreeRow.Has_Aux:not(.Unread) .counterNode.aux {
   display: inline-block;
 }
-body.ttrss_main:not([view-mode="marked"], [view-mode="published"])[hide-read-feeds="true"][hide-read-shows-special="true"] #feeds-holder #feedTree .dijitTreeRow:not(.Unread, .AlwaysVisible, .Special) {
+body.ttrss_main:not([view-mode="marked"], [view-mode="published"])[hide-read-feeds="true"][hide-read-shows-special="true"] #feeds-holder #feedTree .dijitTreeRow:not(.Unread):not(.AlwaysVisible):not(.Special) {
   display: none;
 }
-body.ttrss_main:not([view-mode="marked"], [view-mode="published"])[hide-read-feeds="true"][hide-read-shows-special="false"] #feeds-holder #feedTree .dijitTreeRow:not(.Unread, .AlwaysVisible) {
+body.ttrss_main:not([view-mode="marked"]):not([view-mode="published"])[hide-read-feeds="true"][hide-read-shows-special="false"] #feeds-holder #feedTree .dijitTreeRow:not(.Unread):not(.AlwaysVisible) {
   display: none;
 }
 body.ttrss_main {
@@ -1262,7 +1264,8 @@ body.ttrss_utility hr {
 .cdm .header,
 .cdm .footer {
   display: flex;
-  flex-flow: row nowrap;
+  flex-direction: row;
+  flex-wrap: nowrap;
 }
 .cdm .header img,
 .cdm .footer img,
@@ -1800,10 +1803,10 @@ body.ttrss_prefs[hide-filter-rules="true"] ul.filterRules {
 body.ttrss_prefs[hide-filter-rules="true"] ul.actions_summary li {
   display: inline;
 }
-body.ttrss_prefs[hide-filter-rules="true"] ul.actions_summary li::after {
+body.ttrss_prefs[hide-filter-rules="true"] ul.actions_summary li:after {
   content: ", ";
 }
-body.ttrss_prefs[hide-filter-rules="true"] ul.actions_summary li:last-child::after {
+body.ttrss_prefs[hide-filter-rules="true"] ul.actions_summary li:last-child:after {
   content: " ";
 }
 .flat {
@@ -1874,7 +1877,7 @@ body.ttrss_prefs[hide-filter-rules="true"] ul.actions_summary li:last-child::aft
 .flat .dijitCheckBox {
   margin: 1px;
 }
-.flat .dijitCheckBox.dijitCheckBoxChecked::before {
+.flat .dijitCheckBox.dijitCheckBoxChecked:before {
   font-family: flat-icon;
   content: "\f00c";
   color: white;
@@ -2223,12 +2226,12 @@ body.flat.ttrss_main #headlines-frame {
 			background: @default-bg;
 		} */
 }
-body.flat.ttrss_main #headlines-frame .hl:not(.active, .Selected, .Unread),
-body.flat.ttrss_main #headlines-frame .cdm.expandable:not(.active, .Selected, .Unread) {
+body.flat.ttrss_main #headlines-frame .hl:not(.active):not(.Selected):not(.Unread),
+body.flat.ttrss_main #headlines-frame .cdm.expandable:not(.active):not(.Selected):not(.Unread) {
   background: #333;
 }
-body.flat.ttrss_main #headlines-frame .hl.Unread:not(.active, .Selected),
-body.flat.ttrss_main #headlines-frame .cdm.expandable.Unread:not(.active, .Selected) {
+body.flat.ttrss_main #headlines-frame .hl.Unread:not(.active):not(.Selected),
+body.flat.ttrss_main #headlines-frame .cdm.expandable.Unread:not(.active):not(.Selected) {
   background: #222;
 }
 body.flat.ttrss_main #headlines-frame .hl.Unread .title,
@@ -2308,7 +2311,7 @@ body.flat.ttrss_main .dijitToolbar .dijitSelect:not(.dijitHover) .dijitButtonNod
 body.flat.ttrss_main .dijitSplitterHover {
   background-color: rgba(255, 255, 255, 0.25);
 }
-body.flat.ttrss_main .dijitCheckBox:not(.dijitChecked)::before {
+body.flat.ttrss_main .dijitCheckBox:not(.dijitChecked):before {
   color: #999999;
   background: #222;
 }

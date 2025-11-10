@@ -181,7 +181,7 @@ body.ttrss_main {
 		align-items : center;
 		padding : 10px;
 		transition: opacity 0.2s linear;
-		box-shadow : 0 0 8px rgb(0 0 0 / 10%);
+		box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
 
 		img {
 			vertical-align : middle;
@@ -249,7 +249,8 @@ body.ttrss_main {
 		border-bottom-width: 1px;
 		transition : color 0.2s, background 0.2s;
 		display : flex;
-		flex-flow : row nowrap;
+		flex-direction: row;
+		flex-wrap: nowrap;
 		background : @color-panel-bg;
 		align-items : center;
 		user-select : none;
@@ -587,7 +588,7 @@ body.ttrss_main {
 		border: 0 solid @border-default;
 		overflow : hidden;
 		background : @color-panel-bg;
-		box-shadow : inset -1px 0 2px -1px rgb(0 0 0 / 10%);
+		box-shadow: inset -1px 0 2px -1px rgba(0, 0, 0, 0.1);
 		-webkit-overflow-scrolling : touch;
 
 		#feedTree {
@@ -677,7 +678,7 @@ body.ttrss_main {
 						position : relative;
 
 						// Segoe UI (@fonts-ui) seems to have wrong baseline set
-						// top : -0.5px;SegoeUIseemstohavewrongbaselinesettop
+						// top : -0.5px;
 
 						&.Unread {
 							font-weight : bold;
@@ -689,7 +690,7 @@ body.ttrss_main {
 					}
 
 					&.dijitTreeRowSelected {
-						box-shadow : -1px 0 2px -1px rgb(0 0 0 / 10%);
+						box-shadow: -1px 0 2px -1px rgba(0, 0, 0, 0.1);
 						border-color : @border-default transparent;
 						background : @default-bg;
 						color : @default-text;
@@ -908,7 +909,8 @@ body.ttrss_main {
 			padding-left : 4px;
 			height : 32px;
 			display : flex;
-			flex-flow : row nowrap;
+			flex-direction: row;
+			flex-wrap: nowrap;
 			color : @default-text;
 			font-size : @font-size-toolbar;
 			align-items : center;
@@ -1165,26 +1167,26 @@ body.ttrss_main[view-mode="published"] #feeds-holder #feedTree {
 }
 
 body.ttrss_main[view-mode="marked"][hide-read-feeds="true"][hide-read-shows-special="true"] #feeds-holder #feedTree
-	.dijitTreeRow:not(.AlwaysVisible, .Special, .Has_Marked) {
+	.dijitTreeRow:not(.AlwaysVisible):not(.Special):not(.Has_Marked) {
 		display : none;
 }
 
 body.ttrss_main[view-mode="published"][hide-read-feeds="true"][hide-read-shows-special="true"] #feeds-holder #feedTree
-	.dijitTreeRow:not(.AlwaysVisible, .Special, .Has_Published) {
+	.dijitTreeRow:not(.AlwaysVisible):not(.Special):not(.Has_Published) {
 		display : none;
 }
 
 body.ttrss_main[view-mode="marked"][hide-read-feeds="true"][hide-read-shows-special="false"] #feeds-holder #feedTree
-	.dijitTreeRow:not(.AlwaysVisible, .Has_Marked) {
+	.dijitTreeRow:not(.AlwaysVisible):not(.Has_Marked) {
 		display : none;
 }
 
 body.ttrss_main[view-mode="published"][hide-read-feeds="true"][hide-read-shows-special="false"] #feeds-holder #feedTree
-	.dijitTreeRow:not(.AlwaysVisible, .Has_Published) {
+	.dijitTreeRow:not(.AlwaysVisible):not(.Has_Published) {
 		display : none;
 }
 
-body.ttrss_main:not([view-mode="marked"], [view-mode="published"]) #feeds-holder #feedTree {
+body.ttrss_main:not([view-mode="marked"]):not([view-mode="published"]) #feeds-holder #feedTree {
 	.dijitTreeRow.Unread .counterNode.unread {
 		display : inline-block;
 	}
@@ -1194,12 +1196,12 @@ body.ttrss_main:not([view-mode="marked"], [view-mode="published"]) #feeds-holder
 }
 
 body.ttrss_main:not([view-mode="marked"], [view-mode="published"])[hide-read-feeds="true"][hide-read-shows-special="true"] #feeds-holder #feedTree
-	.dijitTreeRow:not(.Unread, .AlwaysVisible, .Special) {
+	.dijitTreeRow:not(.Unread):not(.AlwaysVisible):not(.Special) {
 		display : none;
 }
 
-body.ttrss_main:not([view-mode="marked"], [view-mode="published"])[hide-read-feeds="true"][hide-read-shows-special="false"] #feeds-holder #feedTree
-	.dijitTreeRow:not(.Unread, .AlwaysVisible) {
+body.ttrss_main:not([view-mode="marked"]):not([view-mode="published"])[hide-read-feeds="true"][hide-read-shows-special="false"] #feeds-holder #feedTree
+	.dijitTreeRow:not(.Unread):not(.AlwaysVisible) {
 		display : none;
 }
 

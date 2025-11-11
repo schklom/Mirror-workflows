@@ -36,6 +36,9 @@ jobs:
   php-code-quality:
     uses: ./.github/workflows/php-code-quality.yml
 
+  shell-code-quality:
+    uses: ./.github/workflows/shell-code-quality.yml
+
   publish:
     name: Publish Docker image ${{ matrix.image.name }}
     needs:

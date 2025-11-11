@@ -1,0 +1,39 @@
+name: Shell Code Quality
+
+on:
+  pull_request:
+    paths:
+    - '.docker/**.sh'
+    - 'lib/dojo-src/rebuild-dojo.sh'
+    - 'utils/**.sh'
+  # Allow manual triggering
+  workflow_dispatch:
+  # Allow other workflows (e.g. Publish) to invoke this one.
+  workflow_call:
+
+
+env:
+  fail-fast: true
+
+
+permissions:
+  contents: read
+
+
+jobs:
+  shellcheck:
+    name: ShellCheck
+    runs-on: ubuntu-latest
+    container:
+      image: koalaman/shellcheck:stable
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v5
+
+    - name: Run ShellCheck
+      # TODO: Remove after addressing initial issues
+      continue-on-error: true
+      run: |
+        shellcheck --version
+        find .docker lib/dojo-src/rebuild-dojo.sh utils -type f -name '*.sh' -print0 | xargs -0 shellcheck --shell=busybox

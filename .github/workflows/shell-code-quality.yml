@@ -33,5 +33,6 @@ jobs:
       # TODO: Remove after addressing initial issues
       continue-on-error: true
       run: |
-        shellcheck --version
-        find .docker lib/dojo-src/rebuild-dojo.sh utils -type f -name '*.sh' -print0 | xargs -0 shellcheck --shell=busybox
+        docker run --rm koalaman/shellcheck:stable --version
+        find .docker lib/dojo-src utils -type f -name '*.sh' -exec \
+          docker run --rm -v "$PWD:/mnt" -w /mnt koalaman/shellcheck:stable --shell=busybox {} +

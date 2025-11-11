@@ -62,7 +62,7 @@ if [ -z $SKIP_RSYNC_ON_STARTUP ]; then
 			$SRC_DIR/ $DST_DIR/
 
 		sudo -u app rsync -a --no-owner --delete \
-			$SRC_DIR/plugins.local/nginx_xaccel \
+			$SRC_DIR/plugins.local/nginx_xaccel/ \
 			$DST_DIR/plugins.local/nginx_xaccel
 	fi
 else

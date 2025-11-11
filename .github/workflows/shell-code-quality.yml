@@ -24,8 +24,6 @@ jobs:
   shellcheck:
     name: ShellCheck
     runs-on: ubuntu-latest
-    container:
-      image: koalaman/shellcheck:stable
 
     steps:
     - name: Check out code

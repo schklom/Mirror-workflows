@@ -38,7 +38,9 @@ func handleRequests(config *viper.Viper) {
 			log.Fatal().Str(conf.CONF_SERVER_KEY, serverKey).Msg("TLS key file not found")
 		}
 		log.Info().
-			Int("PortSecure", portSecure).
+			Str(conf.CONF_SERVER_KEY, serverKey).
+			Str(conf.CONF_SERVER_CERT, serverCrt).
+			Int(conf.CONF_PORT_SECURE, portSecure).
 			Msg("listening on secure port")
 		securePort := ":" + strconv.Itoa(portSecure)
 		err := http.ListenAndServeTLS(securePort, serverCrt, serverKey, mux)
@@ -47,7 +49,7 @@ func handleRequests(config *viper.Viper) {
 		}
 	} else if portInsecure > -1 {
 		log.Info().
-			Int("PortInsecure", portInsecure).
+			Int(conf.CONF_PORT_INSECURE, portInsecure).
 			Msg("listening on insecure port")
 		insecureAddr := ":" + strconv.Itoa(portInsecure)
 		err := http.ListenAndServe(insecureAddr, mux)

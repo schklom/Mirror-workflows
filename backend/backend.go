@@ -30,7 +30,13 @@ func handleRequests(config *viper.Viper) {
 
 	if len(socketPath) > 0 {
 		handleRequestsSocket(mux, socketPath, socketChmod)
-	} else if portSecure > -1 && fileExists(serverCrt) && fileExists(serverKey) {
+	} else if portSecure > -1 && (serverCrt != "" || serverKey != "") {
+		if !fileExists(serverCrt) {
+			log.Fatal().Str(conf.CONF_SERVER_CERT, serverCrt).Msg("TLS certificate file not found")
+		}
+		if !fileExists(serverKey) {
+			log.Fatal().Str(conf.CONF_SERVER_KEY, serverKey).Msg("TLS key file not found")
+		}
 		log.Info().
 			Int("PortSecure", portSecure).
 			Msg("listening on secure port")

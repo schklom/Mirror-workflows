@@ -1413,14 +1413,14 @@ class Pref_Prefs extends Handler_Protected {
 			$new_profile->owner_uid = $_SESSION['uid'];
 
 			if ($new_profile->save()) {
-				$sth = $this->pdo->prepare("INSERT INTO ttrss_user_prefs
+				$sth = $this->pdo->prepare("INSERT INTO ttrss_user_prefs2
 					(owner_uid, pref_name, profile, value)
 						SELECT
 							:uid,
 							pref_name,
 							:new_profile,
 							value
-						FROM ttrss_user_prefs
+						FROM ttrss_user_prefs2
 						WHERE owner_uid = :uid AND profile = :old_profile");
 
 				$sth->execute([
@@ -1496,7 +1496,7 @@ class Pref_Prefs extends Handler_Protected {
 		foreach ($profiles as $profile) {
 			$profile['active'] = ($_SESSION["profile"] ?? 0) == $profile->id;
 
-			$num_settings = ORM::for_table('ttrss_user_prefs')
+			$num_settings = ORM::for_table('ttrss_user_prefs2')
 				->where('profile', $profile->id)
 				->count();
 

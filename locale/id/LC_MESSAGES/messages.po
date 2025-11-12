@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-05 19:10+0000\n"
-"PO-Revision-Date: 2025-11-09 20:34+0000\n"
+"PO-Revision-Date: 2025-11-10 23:51+0000\n"
 "Last-Translator: Dony Wibowo <dony@dony.me>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/tt-rss/webui/"
 "id/>\n"
@@ -523,11 +523,11 @@ msgstr "Debug viewfeed()"
 
 #: classes/RPC.php:543 js/FeedTree.js:166
 msgid "Mark all feeds as read"
-msgstr ""
+msgstr "Tandai semua umpan sudah dibaca"
 
 #: classes/RPC.php:544
 msgid "Un/collapse current category"
-msgstr ""
+msgstr "Perluas/lipat kategori saat ini"
 
 #: classes/RPC.php:545
 msgid "Toggle auto expand in combined mode"

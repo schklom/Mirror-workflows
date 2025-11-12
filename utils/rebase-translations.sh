@@ -1,14 +1,22 @@
-#!/bin/sh
+#!/bin/bash
+set -euo pipefail
+
 TEMPLATE=messages.pot
 
-xgettext -kT_sprintf -kT_nsprintf:1,2 -k_ngettext:1,2 -kT_ngettext:1,2 -k__ \
-	-L PHP -o $TEMPLATE *.php `find classes plugins include -iname '*.php' -type f -not -path '*/vendor/*'`
+# Remove the current template to start fresh
+rm -f "$TEMPLATE"
 
-xgettext --from-code utf-8 -k__ -kNotify.info -kNotify.error -kNotify.progress \
-	-kngettext:1,2 -L Java -j -o $TEMPLATE `find js plugins -iname '*.js' -type f -not -path '*/vendor/*'`
+find classes plugins include -iname '*.php' -type f -not -path '*/vendor/*' -print0 | \
+	xargs -0 xgettext -kT_sprintf -kT_nsprintf:1,2 -k_ngettext:1,2 -kT_ngettext:1,2 -k__ \
+	-L PHP -o "$TEMPLATE" *.php
 
-xgettext --from-code utf-8 -k__ -kNotify.info -kNotify.error -kNotify.progress \
-	-kngettext:1,2 -L JavaScript -j -o $TEMPLATE `find js plugins -iname '*.js' -type f -not -path '*/vendor/*'`
+find js plugins -iname '*.js' -type f -not -path '*/vendor/*' -print0 | \
+	xargs -0 xgettext --from-code utf-8 -k__ -kNotify.info -kNotify.error -kNotify.progress \
+	-kngettext:1,2 -L Java -j -o "$TEMPLATE"
+
+find js plugins -iname '*.js' -type f -not -path '*/vendor/*' -print0 | \
+	xargs -0 xgettext --from-code utf-8 -k__ -kNotify.info -kNotify.error -kNotify.progress \
+	-kngettext:1,2 -L JavaScript -j -o "$TEMPLATE"
 
 # leave weblate to deal with .po/.mo files
 exit 0

@@ -1426,8 +1426,31 @@ class Pref_Prefs extends Handler_Protected {
 		if (!$new_profile->save())
 			return;
 
+		$params = [
+			'uid' => $_SESSION['uid'],
+			'new_profile' => $new_profile->id,
+		];
+
 		// NOTE: In 'ttrss_user_prefs2' the default profile is represented by 'profile' being null,
 		// but 0 is what gets used as its representative ID on the frontend.
+		if ($old_profile_id === 0) {
+			// The old/source profile is the default.  Exclude copying over preferences only valid for the default profile.
+			$blacklist_params = [];
+			$blacklist_placeholders = [];
+
+			foreach (Prefs::_PROFILE_BLACKLIST as $i => $pref) {
+				$key = ":blacklist_{$i}";
+				$blacklist_placeholders[] = $key;
+				$blacklist_params[$key] = $pref;
+			}
+
+			$profile_qpart = 'profile IS NULL AND pref_name NOT IN (' . implode(', ', $blacklist_placeholders) . ')';
+			$params = array_merge($params, $blacklist_params);
+		} else {
+			$profile_qpart = 'profile = :old_profile_id';
+			$params['old_profile_id'] = $old_profile_id;
+		}
+
 		$sth = $this->pdo->prepare('INSERT INTO ttrss_user_prefs2
 			(owner_uid, pref_name, profile, value)
 				SELECT
@@ -1437,15 +1460,7 @@ class Pref_Prefs extends Handler_Protected {
 					value
 				FROM ttrss_user_prefs2
 				WHERE owner_uid = :uid
-				AND ' . ($old_profile_id === 0 ? 'profile IS NULL' : 'profile = :old_profile_id'));
-
-		$params = [
-			'uid' => $_SESSION['uid'],
-			'new_profile' => $new_profile->id,
-		];
-
-		if ($old_profile_id !== 0)
-			$params['old_profile_id'] = $old_profile_id;
+				AND ' . $profile_qpart);
 
 		$sth->execute($params);
 	}

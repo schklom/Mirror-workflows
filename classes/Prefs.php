@@ -216,7 +216,10 @@ class Prefs {
 	}
 
 	private function cache_all(int $owner_uid, ?int $profile_id): void {
-		if (!$profile_id) $profile_id = null;
+		// If explicitly null, 0 (e.g. from the frontend), or otherwise falsy,
+		// normalize to null to represent the default profile.
+		if (!$profile_id)
+			$profile_id = null;
 
 		// fill cache with defaults
 		$ref = new ReflectionClass(static::class);
@@ -303,7 +306,10 @@ class Prefs {
 	}
 
 	private function _set(string $pref_name, bool|int|string $value, int $owner_uid, ?int $profile_id, bool $strip_tags = true): bool {
-		if (!$profile_id) $profile_id = null;
+		// If explicitly null, 0 (e.g. from the frontend), or otherwise falsy,
+		// normalize to null to represent the default profile.
+		if (!$profile_id)
+			$profile_id = null;
 
 		if ($profile_id && in_array($pref_name, self::_PROFILE_BLACKLIST))
 			return false;
@@ -355,7 +361,10 @@ class Prefs {
 		if (Config::get_schema_version() < 141)
 			return;
 
-		if (!$profile_id) $profile_id = null;
+		// If explicitly null, 0 (e.g. from the frontend), or otherwise falsy,
+		// normalize to null to represent the default profile.
+		if (!$profile_id)
+			$profile_id = null;
 
 		if (!$this->_get(Prefs::_PREFS_MIGRATED, $owner_uid, $profile_id)) {
 
@@ -394,7 +403,10 @@ class Prefs {
 	}
 
 	static function reset(int $owner_uid, ?int $profile_id): void {
-		if (!$profile_id) $profile_id = null;
+		// If explicitly null, 0 (e.g. from the frontend), or otherwise falsy,
+		// normalize to null to represent the default profile.
+		if (!$profile_id)
+			$profile_id = null;
 
 		$sth = Db::pdo()->prepare("DELETE FROM ttrss_user_prefs2
 								WHERE owner_uid = :uid AND pref_name != :mig_key AND

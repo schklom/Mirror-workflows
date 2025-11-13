@@ -1403,33 +1403,51 @@ class Pref_Prefs extends Handler_Protected {
 		}
 	}
 
+	/**
+	 * @todo this should result in an error on failures
+	 */
 	function cloneprofile(): void {
-		$old_profile = $_REQUEST["old_profile"] ?? 0;
-		$new_title = clean($_REQUEST["new_title"]);
+		$old_profile_id = $_REQUEST['old_profile'] ?? '';
 
-		if ($old_profile && $new_title) {
-			$new_profile = ORM::for_table('ttrss_settings_profiles')->create();
-			$new_profile->title = $new_title;
-			$new_profile->owner_uid = $_SESSION['uid'];
+		if (ctype_digit($old_profile_id))
+			$old_profile_id = (int) $old_profile_id;
+		else
+			return;
 
-			if ($new_profile->save()) {
-				$sth = $this->pdo->prepare("INSERT INTO ttrss_user_prefs2
-					(owner_uid, pref_name, profile, value)
-						SELECT
-							:uid,
-							pref_name,
-							:new_profile,
-							value
-						FROM ttrss_user_prefs2
-						WHERE owner_uid = :uid AND profile = :old_profile");
+		$new_title = clean($_REQUEST['new_title']);
 
-				$sth->execute([
-					"uid" => $_SESSION["uid"],
-					"new_profile" => $new_profile->id,
-					"old_profile" => $old_profile,
-				]);
-			}
-		}
+		if (!$new_title)
+			return;
+
+		$new_profile = ORM::for_table('ttrss_settings_profiles')->create();
+		$new_profile->title = $new_title;
+		$new_profile->owner_uid = $_SESSION['uid'];
+
+		if (!$new_profile->save())
+			return;
+
+		// NOTE: In 'ttrss_user_prefs2' the default profile is represented by 'profile' being null,
+		// but 0 is what gets used as its representative ID on the frontend.
+		$sth = $this->pdo->prepare('INSERT INTO ttrss_user_prefs2
+			(owner_uid, pref_name, profile, value)
+				SELECT
+					:uid,
+					pref_name,
+					:new_profile,
+					value
+				FROM ttrss_user_prefs2
+				WHERE owner_uid = :uid
+				AND ' . ($old_profile_id === 0 ? 'profile IS NULL' : 'profile = :old_profile_id'));
+
+		$params = [
+			'uid' => $_SESSION['uid'],
+			'new_profile' => $new_profile->id,
+		];
+
+		if ($old_profile_id !== 0)
+			$params['old_profile_id'] = $old_profile_id;
+
+		$sth->execute($params);
 	}
 
 	function remprofiles(): void {

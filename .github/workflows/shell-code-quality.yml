@@ -34,5 +34,11 @@ jobs:
       continue-on-error: true
       run: |
         docker run --rm koalaman/shellcheck:stable --version
-        find .docker lib/dojo-src utils -type f -name '*.sh' -exec \
-          docker run --rm -v "$PWD:/mnt" -w /mnt koalaman/shellcheck:stable --shell=busybox {} +
+
+        # Scripts ran in the container (Alpine uses BusyBox to provide the ash shell [with bash compatibility enabled])
+        find .docker -type f -name '*.sh' -exec \
+          docker run --rm -v "$PWD:/mnt" -w /mnt koalaman/shellcheck:stable --severity=warning --shell=busybox {} +
+
+        # Project utility scripts (use of bash or compatible assumed)
+        find lib/dojo-src utils -type f -name '*.sh' -exec \
+          docker run --rm -v "$PWD:/mnt" -w /mnt koalaman/shellcheck:stable --severity=warning --shell=bash {} +

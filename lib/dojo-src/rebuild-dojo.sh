@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 # This script rebuilds customized layer of Dojo for tt-rss
 # Place unpacked Dojo source release in this directory and run this script.

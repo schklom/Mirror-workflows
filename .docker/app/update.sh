@@ -8,12 +8,13 @@
 unset HTTP_PORT
 unset HTTP_HOST
 
-# allow setting environment variables with docker secrets 
-# the format is <variable-name>__FILE
+# Allow setting environment variables with Docker secrets.
+# The format is '<variable-name>__FILE'.
 SUFFIX="__FILE"
 
 # loop through all environment variables
 for VAR in $(printenv | awk -F= '{print $1}'); do
+	# shellcheck disable=SC2330 # https://github.com/koalaman/shellcheck/issues/2998
 	if [[ $VAR == *"$SUFFIX" ]]; then
 		ENV_FILE_NAME="$(printenv "${VAR}")"
 		ENV_VAR="${VAR%$SUFFIX}"
@@ -88,7 +89,8 @@ chmod 644 $DST_DIR/config.php
 
 if [ ! -z "${TTRSS_XDEBUG_ENABLED}" ]; then
 	if [ -z "${TTRSS_XDEBUG_HOST}" ]; then
-		export TTRSS_XDEBUG_HOST=$(ip ro sh 0/0 | cut -d " " -f 3)
+		TTRSS_XDEBUG_HOST=$(ip ro sh 0/0 | cut -d " " -f 3)
+		export TTRSS_XDEBUG_HOST
 	fi
 	echo enabling xdebug with the following parameters:
 	env | grep TTRSS_XDEBUG

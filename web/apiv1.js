@@ -4,7 +4,7 @@
 async function getPushUrl(accessToken) {
     if (!accessToken) {
         console.log("Missing accessToken!");
-        throw Error("Missing accessToken!");
+        throw new Error("Missing accessToken!");
     }
 
     const response = await fetch("api/v1/push", {
@@ -19,7 +19,7 @@ async function getPushUrl(accessToken) {
     });
     if (response.status == 401) {
         tokenExpiredRedirect();
-        throw Error("Token expired");
+        throw new Error("Token expired");
     }
     if (!response.ok) {
         throw response.status;

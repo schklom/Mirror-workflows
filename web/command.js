@@ -5,7 +5,7 @@ async function parseCommandLogs(rsaCryptoKey, commandLogsData) {
         if (logEntry != "") {
             const logData = await decryptPacket(rsaCryptoKey, logEntry);
             const logDataObj = JSON.parse(logData)
-            const timestamp = new Date(parseInt(logDataObj.TimeStamp) * 1000);
+            const timestamp = new Date(Number.parseInt(logDataObj.TimeStamp) * 1000);
             logResult += timestamp.toLocaleString() + ": " + logDataObj.Log + "\n"
         }
     }

@@ -44,7 +44,7 @@ function init() {
     } else {
         div = document.getElementById("mobile");
     }
-    div.parentNode.removeChild(div);
+    div.remove();
 
     const element = document.getElementById('map');
     map = L.map(element);
@@ -111,7 +111,7 @@ function setupOnClicks() {
 }
 
 function checkWebCryptoApiAvailable() {
-    if (typeof (window.crypto.subtle) == "undefined") {
+    if (window.crypto.subtle == undefined) {
         alert("FMD Server won't work because the WebCrypto API is not available.\n\n"
             + "This is most likely because you are visiting this site over insecure HTTP. "
             + "Please use HTTPS. If you are self-hosting, see the README.");
@@ -189,7 +189,7 @@ async function doLogin(fmdid, password, useLongSession) {
 
     const loginDiv = document.getElementById("loginContainer");
     if (loginDiv != null) {
-        loginDiv.parentNode.removeChild(loginDiv);
+        loginDiv.remove();
     }
 
     setupPushWarning();
@@ -303,7 +303,7 @@ async function locate(requestedIndex) {
         throw response.status;
     }
     const locationDataSizeJson = await response.json();
-    const highestLocIndex = parseInt(locationDataSizeJson.Data, 10) - 1;
+    const highestLocIndex = Number.parseInt(locationDataSizeJson.Data, 10) - 1;
 
     if (requestedIndex > highestLocIndex) {
         currentLocIdx = highestLocIndex; // reset
@@ -370,7 +370,7 @@ async function locate(requestedIndex) {
     accuracyCircles.clearLayers();
 
     // Iterate through the cache and add every point to the map
-    locCache.forEach((locPair) => {
+    for (const locPair of locCache) {
         const index = locPair["idx"];
         const locEntry = locPair["loc"];
 
@@ -422,7 +422,7 @@ async function locate(requestedIndex) {
                 accCirc.setStyle({ color: "#e5528c" });
             }
         }
-    });
+    }
 
     // Add the lines between the points
     L.polyline(lat_long).addTo(markers);
@@ -574,7 +574,7 @@ async function showLatestPicture() {
         toasted.show('No picture available')
         return;
     }
-    const newestPictureSize = parseInt(json.Data, 10);
+    const newestPictureSize = Number.parseInt(json.Data, 10);
     newestPictureIndex = newestPictureSize - 1
     currentPictureIndex = newestPictureSize - 1;
     await loadPicture(currentPictureIndex);
@@ -629,7 +629,7 @@ function displaySinglePicture(picture) {
     const beforeBtn = document.createElement("button");
     beforeBtn.textContent = "<-"
     beforeBtn.addEventListener('click', function () {
-        document.body.removeChild(div)
+        div.remove()
         currentPictureIndex -= 1;
         if (currentPictureIndex < 0) {
             currentPictureIndex = newestPictureIndex;
@@ -642,7 +642,7 @@ function displaySinglePicture(picture) {
     const btn = document.createElement("button");
     btn.textContent = "close"
     btn.addEventListener('click', function () {
-        document.body.removeChild(div)
+        div.remove()
     }, false);
     buttonDiv.appendChild(btn)
 
@@ -650,7 +650,7 @@ function displaySinglePicture(picture) {
     const afterBtn = document.createElement("button");
     afterBtn.textContent = "->"
     afterBtn.addEventListener('click', function () {
-        document.body.removeChild(div)
+        div.remove()
         currentPictureIndex += 1;
         if (currentPictureIndex > newestPictureIndex) {
             currentPictureIndex = 0;
@@ -678,7 +678,7 @@ function displayCommandLogs(logs) {
     const btn = document.createElement("button");
     btn.textContent = "close";
     btn.addEventListener('click', function () {
-        document.body.removeChild(div);
+        div.remove()
     }, false);
     buttonDiv.appendChild(btn);
 
@@ -733,14 +733,14 @@ function prepareDeleteDevice() {
         if (event.keyCode == KEYCODE_ENTER) {
             const pin = input.value;
             if (pin != "") {
-                document.body.removeChild(div);
+                div.remove()
                 sendToPhone("delete " + pin);
             }
         }
     }, false);
     window.addEventListener("keyup", function removeDeletePinDialog(event) {
         if (event.keyCode == KEYCODE_ESCAPE) {
-            document.body.removeChild(div);
+            div.remove()
             window.removeEventListener("keyup", removeDeletePinDialog);
         }
     }, false);
@@ -867,5 +867,5 @@ async function exportData() {
     link.click();
 
     // Clean up
-    document.body.removeChild(link);
+    link.remove();
 }

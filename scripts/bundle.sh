@@ -9,9 +9,9 @@ set -eu
 
 REF=${1-}
 
-if [ -z "$REF" ]; then
-    echo "Error: missing git ref to build"
-    echo "Usage: $0 <git-ref>"
+if [[ -z "$REF" ]]; then
+    echo "Error: missing git ref to build" >&2
+    echo "Usage: $0 <git-ref>" >&2
     exit 1
 fi
 

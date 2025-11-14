@@ -192,7 +192,7 @@ class Article extends Handler_Protected {
 		$id = clean($_REQUEST["id"]);
 
 		// When user enters linefeeds, also process them as a separator.
-		$tags = FeedItem_Common::normalize_categories(preg_split("/[,\n]/", clean($_REQUEST["tags_str"] ?? "")));
+		$tags = FeedItem_Common::normalize_categories(preg_split('/[,\r\n]+/', clean($_REQUEST['tags_str'] ?? ''), -1, PREG_SPLIT_NO_EMPTY));
 
 		$this->pdo->beginTransaction();
 

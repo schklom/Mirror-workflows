@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-05 19:10+0000\n"
-"PO-Revision-Date: 2025-11-06 20:51+0000\n"
+"PO-Revision-Date: 2025-11-14 07:51+0000\n"
 "Last-Translator: LaurentC <laurentc@users.noreply.hosted.weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/tt-rss/webui/fr/>"
 "\n"
@@ -2449,7 +2449,7 @@ msgstr "Ouvrir l’article original"
 
 #: js/Headlines.js:1396
 msgid "Display article URL"
-msgstr "Afficher l’URL"
+msgstr "Afficher l’URL de l’article"
 
 #: js/Headlines.js:1505
 msgid "Remove label"

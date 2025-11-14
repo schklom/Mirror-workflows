@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM debian:trixie-slim AS builder
+FROM --platform=$BUILDPLATFORM docker.io/library/debian:trixie-slim AS builder
 
 ARG FMD_SERVER_VERSION
 
@@ -12,7 +12,7 @@ RUN curl -o server.zip "https://packages.fmd-foss.org/server/fmd-server-v${FMD_S
     unzip server.zip
 
 
-FROM alpine:3
+FROM docker.io/library/alpine:3
 
 ARG TARGETARCH
 

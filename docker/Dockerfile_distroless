@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM debian:trixie-slim AS builder
+FROM --platform=$BUILDPLATFORM docker.io/library/debian:trixie-slim AS builder
 
 ARG FMD_SERVER_VERSION
 

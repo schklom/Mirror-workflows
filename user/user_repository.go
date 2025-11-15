@@ -44,6 +44,8 @@ func NewUserRepository(dbDir string, userIDLength int, maxSavedLoc int, maxSaved
 	db.DB.Model(&FMDUser{}).Where("command_to_user IS NOT NULL AND command_to_user <> ''").Count(&pendingCommandCount)
 	metrics.PendingCommands.Set(float64(pendingCommandCount))
 
+	InitializePushServerMetrics(db)
+
 	return UserRepository{
 		userIDLength: userIDLength,
 		maxSavedLoc:  maxSavedLoc,
@@ -324,6 +326,9 @@ func (u *UserRepository) GetCommandLog(user *FMDUser) string {
 */
 
 func (u *UserRepository) SetPushUrl(user *FMDUser, pushUrl string) {
+	old := user.PushUrl
+	UpdatePushServerMetrics(old, pushUrl)
+
 	user.PushUrl = pushUrl
 	u.UB.Save(&user)
 }

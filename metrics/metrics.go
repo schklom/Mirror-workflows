@@ -39,6 +39,11 @@ var (
 		Name: "fmd_pending_commands",
 		Help: "Number of pending commands",
 	})
+
+	PushServers = promauto.NewGaugeVec(prometheus.GaugeOpts{
+		Name: "fmd_push_server",
+		Help: "Number of used push servers",
+	}, []string{"server_type"})
 )
 
 // Run the metrics server.

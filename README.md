@@ -292,8 +292,8 @@ or on all interfaces *inside* the container.
 
 ## Donate
 
-<script src="https://liberapay.com/Nulide/widgets/button.js"></script>
-<noscript><a href="https://liberapay.com/Nulide/donate"><img alt="Donate using Liberapay" src="https://liberapay.com/assets/widgets/donate.svg"></a></noscript>
+<script src="https://liberapay.com/FMD/widgets/button.js"></script>
+<noscript><a href="https://liberapay.com/FMD/donate"><img alt="Donate using Liberapay" src="https://liberapay.com/assets/widgets/donate.svg"></a></noscript>
 
 <a href='https://ko-fi.com/H2H35JLOY' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://cdn.ko-fi.com/cdn/kofi4.png?v=2' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
 

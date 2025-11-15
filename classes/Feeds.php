@@ -1449,7 +1449,7 @@ class Feeds extends Handler_Protected {
 				// looks like tsquery syntax is invalid
 				$search_query_part = "false";
 
-				$query_error_override = T_sprintf(__("Incorrect search syntax: %s."), implode(" ", $search_words));
+				$query_error_override = T_sprintf("Incorrect search syntax: %s.", implode(" ", $search_words));
 			}
 
 			$search_query_part .= " AND ";
@@ -2150,12 +2150,6 @@ class Feeds extends Handler_Protected {
 	 * @return array{0: string, 1: array<int, string>} [$search_query_part, $search_words]
 	 */
 	private static function _search_to_sql(string $search, string $search_language, int $owner_uid, ?int $profile): array {
-		// This function does not implement a full parser. It is maintained with best effort
-		// until someone volunteers to create a full parser with:
-		//  - logical operators and grouping : & | ! - ( )
-		//  - highlighting supporting all cases.
-		//  - detection of invalid queries, with a warning displayed to user UI.
-
 		// A Search Query contains one or several Keyword(s).
 		// Keywords containing spaces must be surrounded by quotes (").
 		// Keywords can be negated by preceding them with the '-' character. No space
@@ -2349,7 +2343,7 @@ class Feeds extends Handler_Protected {
 						$search_query_leftover[] = $not ? "!$k" : $k;
 
 						if (!$not)
-				            // Known issue: a '|' or '&' alone is highlighted in the found aticles (if these
+				            // Known issue: a '|' or '&' alone is highlighted in the found articles (if these
 							// articles contain such characters).
 							$search_words[] = $k;
 					}

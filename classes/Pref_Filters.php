@@ -253,8 +253,11 @@ class Pref_Filters extends Handler_Protected {
 	}
 
 	private function _get_rules_list(int $filter_id): string {
+		// keep sort order in sync with Pref_Filters#edit()
 		$rules = ORM::for_table('ttrss_filters2_rules')
 			->where('filter_id', $filter_id)
+			->order_by_asc('reg_exp')
+			->order_by_asc('id')
 			->find_many();
 
 		$rv = "";
@@ -387,6 +390,7 @@ class Pref_Filters extends Handler_Protected {
 			}
 
 			if ($filter_id) {
+				// keep sort order in sync with Pref_Filters#_get_rules_list()
 				$rules_sth = $this->pdo->prepare("SELECT * FROM ttrss_filters2_rules
 					WHERE filter_id = ? ORDER BY reg_exp, id");
 				$rules_sth->execute([$filter_id]);

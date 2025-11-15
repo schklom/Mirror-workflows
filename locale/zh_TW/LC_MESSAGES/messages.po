@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-15 03:54+0000\n"
-"PO-Revision-Date: 2025-11-06 20:51+0000\n"
+"PO-Revision-Date: 2025-11-16 04:51+0000\n"
 "Last-Translator: TonyRL <TonyRL@users.noreply.github.com>\n"
 "Language-Team: Chinese (Traditional Han script) <https://hosted.weblate.org/"
 "projects/tt-rss/webui/zh_Hant/>\n"
@@ -105,7 +105,7 @@ msgstr "管理員"
 
 #: index.php:120 prefs.php:119
 msgid "Javascript is disabled. Please enable it."
-msgstr ""
+msgstr "JavaScript 已被停用。請啟用它。"
 
 #: index.php:124 index.php:138 index.php:298 prefs.php:126
 #: classes/Pref_Prefs.php:887 classes/Pref_Prefs.php:937
@@ -797,7 +797,7 @@ msgstr "在標題緩衝區"
 
 #: classes/Pref_Prefs.php:127
 msgid "Disable conditional counter updates"
-msgstr "禁用條件計數器更新"
+msgstr "停用條件計數器更新"
 
 #: classes/Pref_Prefs.php:127
 msgid "May increase server load"
@@ -880,7 +880,7 @@ msgstr "您的密碼："
 
 #: classes/Pref_Prefs.php:455
 msgid "Disable OTP"
-msgstr "禁用 OTP 動態密碼"
+msgstr "停用 OTP 動態密碼"
 
 #: classes/Pref_Prefs.php:477
 msgid "OTP secret:"

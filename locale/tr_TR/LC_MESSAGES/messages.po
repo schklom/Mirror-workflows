@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tt-rss git\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-05 19:10+0000\n"
+"POT-Creation-Date: 2025-11-15 03:54+0000\n"
 "PO-Revision-Date: 2025-11-05 17:51+0000\n"
 "Last-Translator: LaurentC <laurentc@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Turkish <https://hosted.weblate.org/projects/tt-rss/webui/tr/"
@@ -107,12 +107,16 @@ msgstr "Yetkili kullanıcı"
 msgid "Administrator"
 msgstr "Yönetici"
 
-#: index.php:124 index.php:138 index.php:298 prefs.php:116
+#: index.php:120 prefs.php:119
+msgid "Javascript is disabled. Please enable it."
+msgstr ""
+
+#: index.php:124 index.php:138 index.php:298 prefs.php:126
 #: classes/Pref_Prefs.php:887 classes/Pref_Prefs.php:937
 #: classes/Pref_System.php:251 classes/Pref_System.php:262 js/PrefUsers.js:112
 #: js/PrefFeedTree.js:183 js/PrefFeedTree.js:190 js/PrefFeedTree.js:314
-#: js/PrefFeedTree.js:386 js/PrefFilterTree.js:124 js/Article.js:265
-#: js/Article.js:341 js/Headlines.js:351 js/Headlines.js:534
+#: js/PrefFeedTree.js:386 js/PrefFilterTree.js:124 js/Article.js:276
+#: js/Article.js:352 js/Headlines.js:351 js/Headlines.js:534
 #: js/CommonFilters.js:265 js/CommonFilters.js:391 js/PrefHelpers.js:26
 #: js/PrefHelpers.js:38 js/PrefHelpers.js:61 js/PrefHelpers.js:114
 #: js/PrefHelpers.js:242 js/PrefHelpers.js:293 js/PrefHelpers.js:444
@@ -123,19 +127,19 @@ msgstr "Yönetici"
 msgid "Loading, please wait..."
 msgstr "Yükleniyor, lütfen bekleyin..."
 
-#: index.php:163 prefs.php:125 js/App.js:533
+#: index.php:163 prefs.php:135 js/App.js:533
 msgid "Communication problem with server."
 msgstr "Sunucu ile iletişimde problem var."
 
-#: index.php:166 prefs.php:127
+#: index.php:166 prefs.php:137
 msgid "Recent entries found in event log."
 msgstr ""
 
-#: index.php:169 prefs.php:129
+#: index.php:169 prefs.php:139
 msgid "Updates for Tiny Tiny RSS are available."
 msgstr "Tiny Tiny RSS için güncellemeler var."
 
-#: index.php:173 prefs.php:132
+#: index.php:173 prefs.php:142
 msgid "Updates for some local plugins are available."
 msgstr "Bazı yerel eklentiler için güncellemeler var."
 
@@ -188,8 +192,8 @@ msgid "Title"
 msgstr "Başlık"
 
 #: index.php:212 index.php:269 classes/RPC.php:537 classes/Pref_Filters.php:25
-#: js/Headlines.js:1542 js/FeedTree.js:94 js/FeedTree.js:133
-#: js/Headlines.js:666
+#: js/Headlines.js:1547 js/FeedTree.js:94 js/FeedTree.js:133
+#: js/Headlines.js:668
 msgid "Mark as read"
 msgstr "Okundu olarak işaretle"
 
@@ -301,7 +305,7 @@ msgstr "Yazıyı genişletmek için tıklayın"
 msgid "Other actions:"
 msgstr "Diğerleri:"
 
-#: index.php:278
+#: index.php:278 classes/RPC.php:558
 msgid "Keyboard shortcuts help"
 msgstr "Klavye kısayolları yardım"
 
@@ -309,32 +313,32 @@ msgstr "Klavye kısayolları yardım"
 msgid "Logout"
 msgstr "Oturumu kapat"
 
-#: prefs.php:16 prefs.php:141 classes/RPC.php:553 classes/Pref_Prefs.php:939
+#: prefs.php:16 prefs.php:151 classes/RPC.php:553 classes/Pref_Prefs.php:939
 msgid "Preferences"
 msgstr "Tercihler"
 
-#: prefs.php:134
+#: prefs.php:144
 msgid "Exit preferences"
 msgstr "Tercihleri kapat"
 
-#: prefs.php:144 classes/Pref_Prefs.php:44 classes/Pref_Feeds.php:125
+#: prefs.php:154 classes/Pref_Prefs.php:44 classes/Pref_Feeds.php:125
 #: classes/Pref_Feeds.php:943
 msgid "Feeds"
 msgstr "Özet akışları"
 
-#: prefs.php:148 classes/Pref_Filters.php:300
+#: prefs.php:158 classes/Pref_Filters.php:300
 msgid "Filters"
 msgstr "Filtreler"
 
-#: prefs.php:152 classes/Feeds.php:1349 classes/Pref_Labels.php:21
+#: prefs.php:162 classes/Feeds.php:1349 classes/Pref_Labels.php:21
 msgid "Labels"
 msgstr "Arama başlıkları"
 
-#: prefs.php:157
+#: prefs.php:167
 msgid "Users"
 msgstr "Kullanıcılar"
 
-#: prefs.php:160
+#: prefs.php:170
 msgid "System"
 msgstr "Sistem"
 
@@ -413,15 +417,15 @@ msgstr "Aramayı iptal et"
 msgid "Article"
 msgstr "Yazı"
 
-#: classes/RPC.php:508 js/Headlines.js:1418 js/Headlines.js:663
+#: classes/RPC.php:508 js/Headlines.js:1423 js/Headlines.js:665
 msgid "Toggle starred"
 msgstr "Favorileri değişir"
 
-#: classes/RPC.php:509 js/Headlines.js:1430 js/Headlines.js:664
+#: classes/RPC.php:509 js/Headlines.js:1435 js/Headlines.js:666
 msgid "Toggle published"
 msgstr "Yayınlanmışları değiştir"
 
-#: classes/RPC.php:510 js/Headlines.js:1406 js/Headlines.js:662
+#: classes/RPC.php:510 js/Headlines.js:1411 js/Headlines.js:664
 msgid "Toggle unread"
 msgstr "Okunmamışları değiştir"
 
@@ -433,11 +437,11 @@ msgstr "Etiketleri değiştir"
 msgid "Open in new window"
 msgstr "Yeni bir pencerede aç"
 
-#: classes/RPC.php:513 js/Headlines.js:1451
+#: classes/RPC.php:513 js/Headlines.js:1456
 msgid "Mark below as read"
 msgstr "Aşağıdakini okundu işaretle"
 
-#: classes/RPC.php:514 js/Headlines.js:1444
+#: classes/RPC.php:514 js/Headlines.js:1449
 msgid "Mark above as read"
 msgstr "Yukarıdakini okundu işaretle"
 
@@ -523,8 +527,8 @@ msgstr "Okunmuş özet akışlarını gizle(me)"
 msgid "Subscribe to feed"
 msgstr "Özet akışına abone ol"
 
-#: classes/RPC.php:536 js/PrefFeedTree.js:113 js/Headlines.js:1548
-#: js/Headlines.js:1613 js/FeedTree.js:101 js/CommonDialogs.js:375
+#: classes/RPC.php:536 js/PrefFeedTree.js:113 js/Headlines.js:1553
+#: js/Headlines.js:1618 js/FeedTree.js:101 js/CommonDialogs.js:375
 msgid "Edit feed"
 msgstr "Veri akışı aboneliğini düzenle"
 
@@ -582,21 +586,17 @@ msgstr "Yakın zamanda okunanlar"
 msgid "Other"
 msgstr "Diğer"
 
-#: classes/RPC.php:555
+#: classes/RPC.php:555 classes/Pref_Labels.php:183
 msgid "Create label"
 msgstr "Arama başlığı tanımla"
 
-#: classes/RPC.php:556 classes/Pref_Filters.php:736
+#: classes/RPC.php:556 classes/Pref_Filters.php:739
 msgid "Create filter"
 msgstr "Filtre tanımla"
 
 #: classes/RPC.php:557
 msgid "Un/collapse sidebar"
 msgstr "Kenar çubuğunu aç/kapa"
-
-#: classes/RPC.php:558
-msgid "Show help dialog"
-msgstr "Yardım diyaloğunu göster"
 
 #: classes/RPC.php:694
 msgid "Shift"
@@ -897,7 +897,7 @@ msgstr "E-posta:"
 #: plugins/note/init.php:49 plugins/nsfw/init.php:105
 #: plugins/af_psql_trgm/init.php:193 js/CommonFilters.js:224
 #: js/CommonFilters.js:306 js/CommonFilters.js:506 js/CommonDialogs.js:628
-#: js/PrefUsers.js:119 js/PrefLabelTree.js:168 js/Article.js:347
+#: js/PrefUsers.js:119 js/PrefLabelTree.js:168 js/Article.js:358
 msgid "Save"
 msgstr "Kaydet"
 
@@ -1024,32 +1024,32 @@ msgid "Reset to defaults"
 msgstr "Öntanımlılara geri dön"
 
 #: classes/Pref_Prefs.php:840 classes/Pref_Feeds.php:928
-#: classes/Pref_Filters.php:721 classes/Pref_Users.php:199 js/Feeds.js:662
+#: classes/Pref_Filters.php:724 classes/Pref_Users.php:199 js/Feeds.js:662
 #: js/Feeds.js:657 js/Feeds.js:712
 msgid "Search"
 msgstr "Ara"
 
-#: classes/Pref_Prefs.php:845 classes/Pref_Prefs.php:1523
+#: classes/Pref_Prefs.php:845 classes/Pref_Prefs.php:1556
 #: classes/Pref_Labels.php:175 classes/Pref_Feeds.php:933
-#: classes/Pref_Filters.php:726 classes/Pref_Users.php:205
+#: classes/Pref_Filters.php:729 classes/Pref_Users.php:205
 #: js/CommonFilters.js:426 js/CommonFilters.js:459 js/PrefFeedTree.js:516
 #: js/PrefHelpers.js:183 js/CommonDialogs.js:276
 msgid "Select"
 msgstr "Seç"
 
-#: classes/Pref_Prefs.php:848 classes/Pref_Prefs.php:1526
-#: classes/Pref_Feeds.php:936 classes/Pref_Filters.php:729
-#: classes/Pref_Users.php:208 js/CommonFilters.js:430 js/CommonFilters.js:462
-#: js/PrefFeedTree.js:519 js/Headlines.js:657 js/PrefHelpers.js:186
-#: js/CommonDialogs.js:279
+#: classes/Pref_Prefs.php:848 classes/Pref_Prefs.php:1559
+#: classes/Pref_Labels.php:177 classes/Pref_Feeds.php:936
+#: classes/Pref_Filters.php:732 classes/Pref_Users.php:208
+#: js/CommonFilters.js:430 js/CommonFilters.js:462 js/PrefFeedTree.js:519
+#: js/Headlines.js:657 js/PrefHelpers.js:186 js/CommonDialogs.js:279
 msgid "All"
 msgstr "Tümü"
 
-#: classes/Pref_Prefs.php:850 classes/Pref_Prefs.php:1528
-#: classes/Pref_Feeds.php:938 classes/Pref_Filters.php:731
-#: classes/Pref_Users.php:210 js/CommonFilters.js:432 js/CommonFilters.js:464
-#: js/PrefFeedTree.js:521 js/Headlines.js:660 js/PrefHelpers.js:188
-#: js/CommonDialogs.js:281
+#: classes/Pref_Prefs.php:850 classes/Pref_Prefs.php:1561
+#: classes/Pref_Labels.php:178 classes/Pref_Feeds.php:938
+#: classes/Pref_Filters.php:734 classes/Pref_Users.php:210
+#: js/CommonFilters.js:432 js/CommonFilters.js:464 js/PrefFeedTree.js:521
+#: js/Headlines.js:660 js/PrefHelpers.js:188 js/CommonDialogs.js:281
 msgid "None"
 msgstr "Hiçbiri"
 
@@ -1108,26 +1108,26 @@ msgstr ""
 msgid "v%s, by %s"
 msgstr ""
 
-#: classes/Pref_Prefs.php:1484 classes/Handler_Public.php:291
+#: classes/Pref_Prefs.php:1517 classes/Handler_Public.php:291
 #: include/login_form.php:159
 msgid "Default profile"
 msgstr "Öntanımlı profil"
 
-#: classes/Pref_Prefs.php:1537
+#: classes/Pref_Prefs.php:1570
 msgid "Description"
 msgstr "Tanım"
 
-#: classes/Pref_Prefs.php:1538
+#: classes/Pref_Prefs.php:1571
 #, fuzzy
 msgid "Created"
 msgstr "Tanımla"
 
-#: classes/Pref_Prefs.php:1539
+#: classes/Pref_Prefs.php:1572
 #, fuzzy
 msgid "Last used"
 msgstr "Son yenileme:"
 
-#: classes/Pref_Prefs.php:1584
+#: classes/Pref_Prefs.php:1617
 #, php-format
 msgid ""
 "Generated password <strong>%s</strong> for %s. Please remember it for future "
@@ -1211,8 +1211,8 @@ msgstr "Yayınlanmış yazılar"
 msgid "Fresh articles"
 msgstr "Tazeler"
 
-#: classes/Feeds.php:1345 classes/OPML.php:532 classes/Digest.php:107
-#: classes/Pref_Feeds.php:247 classes/Pref_Filters.php:1009
+#: classes/Feeds.php:1345 classes/OPML.php:526 classes/Digest.php:107
+#: classes/Pref_Feeds.php:247 classes/Pref_Filters.php:1012
 #: include/controls.php:215
 msgid "Uncategorized"
 msgstr "Kategorilenmemiş"
@@ -1236,60 +1236,69 @@ msgstr "Arama sonuçları: %s"
 msgid "Created label <b>%s</b>"
 msgstr "Arama başlığı tanımlandı <b>%s</b>"
 
-#: classes/OPML.php:295
+#: classes/Pref_Labels.php:186 classes/Pref_Filters.php:745
+#: classes/Pref_Users.php:219 js/CommonFilters.js:504 js/CommonDialogs.js:620
+msgid "Remove"
+msgstr "Kaldır"
+
+#: classes/Pref_Labels.php:189
+msgid "Clear colors"
+msgstr "Renkleri kaldır"
+
+#: classes/OPML.php:291
 #, php-format
 msgid "Adding feed: %s"
 msgstr "Özet akışı ekleniyor: %s"
 
-#: classes/OPML.php:315
+#: classes/OPML.php:311
 #, php-format
 msgid "Duplicate feed: %s"
 msgstr "Zaten var olan özet akışı: %s"
 
-#: classes/OPML.php:329
+#: classes/OPML.php:325
 #, php-format
 msgid "Adding label %s"
 msgstr "Arama başlığı ekleniyor %s"
 
-#: classes/OPML.php:332
+#: classes/OPML.php:328
 #, php-format
 msgid "Duplicate label: %s"
 msgstr "Aynı arama başlığı mevcut: %s"
 
-#: classes/OPML.php:347
+#: classes/OPML.php:343
 #, php-format
 msgid "Setting preference key %s to %s"
 msgstr "Tercih anahtarı %s %s'e ayarlanıyor"
 
-#: classes/OPML.php:379
+#: classes/OPML.php:375
 #, php-format
 msgid "Adding filter %s..."
 msgstr "%s filtresi ekleniyor..."
 
-#: classes/OPML.php:532
+#: classes/OPML.php:526
 #, php-format
 msgid "Processing category: %s"
 msgstr "Kategori işleniyor: %s"
 
-#: classes/OPML.php:575
+#: classes/OPML.php:560
 #, php-format
 msgid "Upload failed with error code %d"
 msgstr "Yükleme başarısız oldu hata kodu %d"
 
-#: classes/OPML.php:587
+#: classes/OPML.php:572
 msgid "Unable to move uploaded file."
 msgstr "Yüklenen dosya taşınamadı."
 
-#: classes/OPML.php:591
+#: classes/OPML.php:576
 msgid "Error: please upload OPML file."
 msgstr "Hata: lütfen OPML dosyasını yükleyin."
 
-#: classes/OPML.php:599
+#: classes/OPML.php:584
 #, php-format
 msgid "Error: file is not readable: %s"
 msgstr "Hata: dosya okunabilir değil: %s"
 
-#: classes/OPML.php:617
+#: classes/OPML.php:602
 msgid "Error while parsing document."
 msgstr "Belge çözümlenirken hata oluştu."
 
@@ -1476,7 +1485,7 @@ msgstr "Opsiyonlar"
 #: plugins/bookmarklets/init.php:292 js/CommonFilters.js:225
 #: js/CommonFilters.js:307 js/CommonFilters.js:507 js/CommonFilters.js:511
 #: js/CommonDialogs.js:629 js/PrefUsers.js:122 js/PrefFeedTree.js:467
-#: js/PrefLabelTree.js:171 js/Article.js:350 js/PrefHelpers.js:231
+#: js/PrefLabelTree.js:171 js/Article.js:361 js/PrefHelpers.js:231
 #: js/PrefHelpers.js:305 js/Feeds.js:658 js/Feeds.js:713
 #: js/CommonDialogs.js:113
 msgid "Cancel"
@@ -1495,7 +1504,7 @@ msgid "Edit selected feeds"
 msgstr "Seçili özet akışlarını düzenle"
 
 #: classes/Pref_Feeds.php:950 classes/Pref_Feeds.php:965
-#: classes/Pref_Filters.php:744
+#: classes/Pref_Filters.php:747
 msgid "Reset sort order"
 msgstr "Sıralamayı eski haline getir"
 
@@ -1573,7 +1582,7 @@ msgstr "Yazıyı yayınla"
 msgid "Modify score"
 msgstr ""
 
-#: classes/Pref_Filters.php:30 js/Headlines.js:1500
+#: classes/Pref_Filters.php:30 js/Headlines.js:1505
 msgid "Assign label"
 msgstr "Arama başlığı tayin et"
 
@@ -1619,73 +1628,68 @@ msgid "Article Tags"
 msgstr "Yazı"
 
 #: classes/Pref_Filters.php:272 classes/Pref_Filters.php:282
-#: classes/Pref_Filters.php:454 classes/Pref_Filters.php:956
+#: classes/Pref_Filters.php:457 classes/Pref_Filters.php:959
 msgid "All feeds"
 msgstr "Tüm özet akışları"
 
-#: classes/Pref_Filters.php:291 classes/Pref_Filters.php:465
-#: classes/Pref_Filters.php:468
+#: classes/Pref_Filters.php:291 classes/Pref_Filters.php:468
+#: classes/Pref_Filters.php:471
 msgid "(inverse)"
 msgstr "(ters çevir)"
 
-#: classes/Pref_Filters.php:287 classes/Pref_Filters.php:464
-#: classes/Pref_Filters.php:467
+#: classes/Pref_Filters.php:287 classes/Pref_Filters.php:467
+#: classes/Pref_Filters.php:470
 #, php-format
 msgid "%s on %s in %s %s"
 msgstr "%s de %s de %s %s"
 
-#: classes/Pref_Filters.php:483
+#: classes/Pref_Filters.php:486
 #, fuzzy, php-format
 #| msgid "Unknown option: %s"
 msgid "Unknown action: %d"
 msgstr "Bilinmeyen opsiyon: %s"
 
-#: classes/Pref_Filters.php:695 js/PrefFilterTree.js:178
+#: classes/Pref_Filters.php:698 js/PrefFilterTree.js:178
 #, fuzzy, java-printf-format, javascript-format, php-format
 #| msgid "Clone"
 msgid "Clone of %s"
 msgstr "Kopyala"
 
-#: classes/Pref_Filters.php:738 js/PrefHelpers.js:228
+#: classes/Pref_Filters.php:741 js/PrefHelpers.js:228
 msgid "Clone"
 msgstr "Kopyala"
 
-#: classes/Pref_Filters.php:740
+#: classes/Pref_Filters.php:743
 msgid "Combine"
 msgstr "Birleştir"
 
-#: classes/Pref_Filters.php:742 classes/Pref_Users.php:219
-#: js/CommonFilters.js:504 js/CommonDialogs.js:620
-msgid "Remove"
-msgstr "Kaldır"
-
-#: classes/Pref_Filters.php:746
+#: classes/Pref_Filters.php:749
 #, fuzzy
 msgid "Toggle rule display"
 msgstr "Özet akışı listesini kapat"
 
-#: classes/Pref_Filters.php:793
+#: classes/Pref_Filters.php:796
 msgid "[No caption]"
 msgstr "[altyazısız]"
 
-#: classes/Pref_Filters.php:797
+#: classes/Pref_Filters.php:800
 #, php-format
 msgid "%s (%d rule)"
 msgid_plural "%s (%d rules)"
 msgstr[0] "%s (%d kural)"
 msgstr[1] "%s (%d kurallar)"
 
-#: classes/Pref_Filters.php:802
+#: classes/Pref_Filters.php:805
 #, fuzzy
 msgid "matches any rule"
 msgstr "Herhangi bir kurala eşle"
 
-#: classes/Pref_Filters.php:805
+#: classes/Pref_Filters.php:808
 #, fuzzy
 msgid "inverse"
 msgstr "(ters çevir)"
 
-#: classes/Pref_Filters.php:837
+#: classes/Pref_Filters.php:840
 #, fuzzy, php-format
 msgid "(+%d action)"
 msgid_plural "(+%d actions)"
@@ -2169,31 +2173,31 @@ msgstr "Önemli hata"
 msgid "Unhandled exception"
 msgstr ""
 
-#: js/App.js:936
+#: js/App.js:950
 msgid "Widescreen is not available in combined mode."
 msgstr "Geniş ekran birleşik modda kullanılabilir değildir."
 
-#: js/App.js:1133
+#: js/App.js:1147
 msgid "Please enable mail or mailto plugin first."
 msgstr "Lütfen önce e-posta veya mailto eklentisini etkinleştirin."
 
-#: js/App.js:1196 js/App.js:1309 js/CommonDialogs.js:371
+#: js/App.js:1210 js/App.js:1323 js/CommonDialogs.js:371
 msgid "You can't edit this kind of feed."
 msgstr "Bu türde bir özet akışını düzenleyemezsiniz."
 
-#: js/App.js:1264
+#: js/App.js:1278
 msgid "Please enable af_readability first."
 msgstr "Lütfen önce af_readability özelliğini etkinleştirin."
 
-#: js/App.js:1318
+#: js/App.js:1332
 msgid "Please select some feed first."
 msgstr "Lütfen önce özet akışı seçin."
 
-#: js/App.js:1323
+#: js/App.js:1337
 msgid "You can't unsubscribe from the category."
 msgstr "Kategori aboneliğinden ayrılamazsınız."
 
-#: js/App.js:1329 js/CommonDialogs.js:345 js/CommonDialogs.js:382
+#: js/App.js:1343 js/CommonDialogs.js:345 js/CommonDialogs.js:382
 #, java-printf-format, javascript-format
 msgid "Unsubscribe from %s?"
 msgstr "%s abonelikten ayrıl?"
@@ -2415,9 +2419,9 @@ msgstr "Seçilen arama başlıkları kaldırılıyor..."
 msgid "Please enter new score for selected articles:"
 msgstr "Seçilen yazılar için yeni skor girin:"
 
-#: js/Article.js:56 js/Headlines.js:933 js/Headlines.js:959
-#: js/Headlines.js:1101 js/Headlines.js:1118 js/Headlines.js:1135
-#: js/Headlines.js:1270 js/Headlines.js:971
+#: js/Article.js:56 js/Article.js:131 js/Headlines.js:938 js/Headlines.js:964
+#: js/Headlines.js:1106 js/Headlines.js:1123 js/Headlines.js:1140
+#: js/Headlines.js:1275 js/Headlines.js:976
 #, fuzzy
 msgid "No articles selected."
 msgstr "Hiçbir yazı seçilmedi."
@@ -2435,30 +2439,30 @@ msgstr "Yazı adresi:"
 msgid "No URL could be displayed for this article."
 msgstr "Bu yazı için paylaşım kaldırılsın mı?"
 
-#: js/Article.js:132
+#: js/Article.js:143
 msgid "no tags"
 msgstr "Etiketi yok"
 
-#: js/Article.js:224
+#: js/Article.js:235
 msgid "comments"
 msgstr "Yorumlar"
 
-#: js/Article.js:227
+#: js/Article.js:238
 msgid "comment"
 msgid_plural "comments"
 msgstr[0] "yorum"
 msgstr[1] "yorumlar"
 
-#: js/Article.js:329
+#: js/Article.js:340
 #, fuzzy
 msgid "Article tags"
 msgstr "Yazı"
 
-#: js/Article.js:336
+#: js/Article.js:347
 msgid "Tags for this article (separated by commas):"
 msgstr "Bu yazı için etiketler (virgülle ayrılmış):"
 
-#: js/Article.js:356
+#: js/Article.js:367
 msgid "Saving article tags..."
 msgstr "Yazı etiketlerini kaydediyor..."
 
@@ -2470,92 +2474,92 @@ msgstr "Aramayı iptal et"
 msgid "Select..."
 msgstr "Seç..."
 
-#: js/Headlines.js:812 js/Headlines.js:864 js/Headlines.js:879
+#: js/Headlines.js:817 js/Headlines.js:869 js/Headlines.js:884
 #, fuzzy
 msgid "Click to open next unread feed."
 msgstr "Özet akışını düzenlemek için tıklayın"
 
-#: js/Headlines.js:876
+#: js/Headlines.js:881
 #, fuzzy
 msgid "New articles found, reload feed to continue."
 msgstr "Yazı bulunamadı."
 
-#: js/Headlines.js:1072
+#: js/Headlines.js:1077
 #, fuzzy, java-printf-format, javascript-format
 msgid "%d article selected"
 msgid_plural "%d articles selected"
 msgstr[0] "%d yazı seçildi"
 msgstr[1] "%d yazı seçildi"
 
-#: js/Headlines.js:1143
+#: js/Headlines.js:1148
 #, fuzzy, java-printf-format, javascript-format
 msgid "Delete %d selected article in %s?"
 msgid_plural "Delete %d selected articles in %s?"
 msgstr[0] "%s'de seçilen %d yazı silinsin mi? "
 msgstr[1] "%s'de seçilen %d yazı silinsin mi? "
 
-#: js/Headlines.js:1145
+#: js/Headlines.js:1150
 #, fuzzy, java-printf-format, javascript-format
 msgid "Delete %d selected article?"
 msgid_plural "Delete %d selected articles?"
 msgstr[0] "Seçilen %d yazı silinsin mi?"
 msgstr[1] "Seçilen %d yazı silinsin mi?"
 
-#: js/Headlines.js:1276
+#: js/Headlines.js:1281
 #, fuzzy, java-printf-format, javascript-format
 msgid "Mark %d selected article in %s as read?"
 msgid_plural "Mark %d selected articles in %s as read?"
 msgstr[0] "%s'de %d yazı okunmuş olarak işaretlensin mi?"
 msgstr[1] "%s'de %d yazı okunmuş olarak işaretlensin mi?"
 
-#: js/Headlines.js:1292
+#: js/Headlines.js:1297
 msgid "No article is selected."
 msgstr "Hiçbir yazı seçilmedi."
 
-#: js/Headlines.js:1327
+#: js/Headlines.js:1332
 msgid "No articles found to mark"
 msgstr "Hiçbir yazı bulunamadı. "
 
-#: js/Headlines.js:1329
+#: js/Headlines.js:1334
 #, fuzzy, java-printf-format, javascript-format
 msgid "Mark %d article as read?"
 msgid_plural "Mark %d articles as read?"
 msgstr[0] "%d yazı okudu olarak işaretlensin mi?"
 msgstr[1] "%d yazı okudu olarak işaretlensin mi?"
 
-#: js/Headlines.js:1388
+#: js/Headlines.js:1393 js/Headlines.js:662
 msgid "Open original article"
 msgstr "Yazının aslını aç"
 
-#: js/Headlines.js:1396
+#: js/Headlines.js:1401
 msgid "Display article URL"
 msgstr "Yazı adresini göster "
 
-#: js/Headlines.js:1505
+#: js/Headlines.js:1510
 msgid "Remove label"
 msgstr "Arama başlığını kaldır"
 
-#: js/Headlines.js:1554 js/FeedTree.js:107 js/Headlines.js:466
+#: js/Headlines.js:1559 js/FeedTree.js:107 js/Headlines.js:466
 #: js/Headlines.js:515 js/Headlines.js:584
 msgid "Open site"
 msgstr "Siteyi aç"
 
-#: js/Headlines.js:1563 js/FeedTree.js:116
+#: js/Headlines.js:1568 js/FeedTree.js:116
 #, fuzzy
 msgid "Debug feed"
 msgstr "Özet akışı yenilemesinde hata ayıkla"
 
-#: js/Headlines.js:1584
+#: js/Headlines.js:1589
 #, fuzzy
 msgid "Select articles in group"
 msgstr "İmleç altındaki yazıyı seç"
 
-#: js/Headlines.js:1594
+#: js/Headlines.js:1599
 #, fuzzy
 msgid "Mark group as read"
 msgstr "Okundu olarak işaretle"
 
-#: js/Headlines.js:1606
+#: js/Headlines.js:1611
 #, fuzzy
 msgid "Mark feed as read"
 msgstr "Tüm özet akışlarını okundu işaretle"
@@ -3140,11 +3144,11 @@ msgstr "Seçilen özet akışlarının aboneliğinden ayrıl"
 msgid "Caption"
 msgstr "Altyazı"
 
-#: js/Article.js:185
+#: js/Article.js:196
 msgid "Attachments"
 msgstr "Ekler"
 
-#: js/Article.js:294 js/Headlines.js:547
+#: js/Article.js:305 js/Headlines.js:547
 msgid "Edit tags for this article"
 msgstr "Bu yazı için etiketler tanımla"
 
@@ -3161,15 +3165,15 @@ msgstr ""
 msgid "Invert"
 msgstr "Ters çevir"
 
-#: js/Headlines.js:667
+#: js/Headlines.js:669
 msgid "Set score"
 msgstr "Skor ata"
 
-#: js/Headlines.js:676
+#: js/Headlines.js:678
 msgid "Delete permanently"
 msgstr "Kalıcı olarak sil"
 
-#: js/Headlines.js:899
+#: js/Headlines.js:904
 msgid ""
 "Could not update headlines (invalid object received - see error console for "
 "details)"
@@ -3303,6 +3307,9 @@ msgstr "Site URL'si"
 #: js/CommonDialogs.js:611
 msgid "Icon"
 msgstr "İkon"
+
+#~ msgid "Show help dialog"
+#~ msgstr "Yardım diyaloğunu göster"
 
 #~ msgid "E-mail:"
 #~ msgstr "E-posta adresi:"
@@ -3638,9 +3645,6 @@ msgstr "İkon"
 
 #~ msgid "Replace"
 #~ msgstr "Değiştir"
-
-#~ msgid "Clear colors"
-#~ msgstr "Renkleri kaldır"
 
 #~ msgid "One time passwords / Authenticator"
 #~ msgstr "Tek seferlik şifreler / Yetkilendirici"

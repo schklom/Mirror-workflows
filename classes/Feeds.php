@@ -1449,7 +1449,7 @@ class Feeds extends Handler_Protected {
 				// looks like tsquery syntax is invalid
 				$search_query_part = "false";
 
-				$query_error_override = T_sprintf("Incorrect search syntax: %s.", implode(" ", $search_words));
+				$query_error_override = T_sprintf(__("Incorrect search syntax: %s."), implode(" ", $search_words));
 			}
 
 			$search_query_part .= " AND ";
@@ -2150,6 +2150,28 @@ class Feeds extends Handler_Protected {
 	 * @return array{0: string, 1: array<int, string>} [$search_query_part, $search_words]
 	 */
 	private static function _search_to_sql(string $search, string $search_language, int $owner_uid, ?int $profile): array {
+		// This function does not implement a full parser. It is maintained with best effort
+		// until someone volunteers to create a full parser with:
+		//  - logical operators and grouping : & | ! - ( )
+		//  - highlighting supporting all cases.
+		//  - detection of invalid queries, with a warning displayed to user UI.
+
+		// A Search Query contains one or several Keyword(s).
+		// Keywords containing spaces must be surrounded by quotes (").
+		// Keywords can be negated by preceding them with the '-' character. No space
+		// is allowed after the '-'.
+		// Keywords can be (note: the character '_' is used as a surrounding tag because
+		// surrounding with quotes may be confusing):
+		//  - a specific _key:value_ pair supported by tt-rss.
+		//  - a specific _@time_ value supported by tt-rss, provided by strtotime()
+		//    such as _@yesterday_ or _"@last week"_ or a localized date.
+		//  - any part of a tsquery of PostgreSQL Full Text Search: a string, but also
+		//    operators such as '&' or '|' (other operators are not well supported).
+		//  - a list of words between quotes, such as _"one two three"_, which is handled 
+		//    via PostgreSQL Full Text Search operator '<->' as a list of consecutive words.
+		// Known issue: Logical operators & | ! and parenthesis are only partially supported
+		// in a tsquery. For example _pub:true | (title:price & ! "hello")_ does not work.
+		
 		// Modify the search string so that 'keyword:"foo bar"' becomes '"keyword:foo bar"'.
 		// This is needed so potential command pairs are grouped correctly.
 		$search_csv_str = preg_replace('/(-?\w+)\:"(\w+)/', '"$1:$2', trim($search));
@@ -2157,7 +2179,10 @@ class Feeds extends Handler_Protected {
 		// '-"hello world"' --> '"-hello world"' so negated phrases work
 		$search_csv_str = preg_replace('/-"([^"]+?")/', '"-$1', $search_csv_str);
 
-		// $keywords will be an array like ['"title:hello world"', 'some', 'words']
+		// If the Search String is _"title:hello world" some -words_, then
+		// $keywords will be an array like ['title:hello world', 'some', '-words']
+		// Known issue: we suppose the user has correctly formatted the Query String,
+		// with quote paired in the good place. Otherwise, there is no warning.
 		$keywords = str_getcsv($search_csv_str, ' ', '"', '');
 
 		$query_keywords = [];
@@ -2183,6 +2208,8 @@ class Feeds extends Handler_Protected {
 
 			// NOTE: If there's a keyword match but no keyword value we fall back to doing
 			// a search in article title and content.
+			// Known issue: if the Search Query is _author_, it will fallback to a simple
+			// SQL query with LIKE, instead of using the power of PosgreSQL Full Text Search.
 			switch ($keyword_name) {
 				case "title":
 					if ($keyword_value) {
@@ -2191,7 +2218,8 @@ class Feeds extends Handler_Protected {
 					} else {
 						$query_keywords[] = "(UPPER(ttrss_entries.title) $not LIKE UPPER(" . $pdo->quote("%$k%") . ")
 								OR UPPER(ttrss_entries.content) $not LIKE UPPER(" . $pdo->quote("%$k%") . "))";
-						$search_words[] = $k;
+						if (!$not)
+						    $search_words[] = $k;
 					}
 					break;
 				case "author":
@@ -2200,7 +2228,8 @@ class Feeds extends Handler_Protected {
 					} else {
 						$query_keywords[] = "(UPPER(ttrss_entries.title) $not LIKE UPPER(" . $pdo->quote("%$k%").")
 								OR UPPER(ttrss_entries.content) $not LIKE UPPER(" . $pdo->quote("%$k%") . "))";
-						$search_words[] = $k;
+						if (!$not)
+						    $search_words[] = $k;
 					}
 					break;
 				case "note":
@@ -2210,6 +2239,9 @@ class Feeds extends Handler_Protected {
 						else if ($keyword_value == "false")
 							$query_keywords[] = "($not (note IS NULL OR note = ''))";
 						else
+							// Known issue: when this Keyword is negated like _-note:store_ it only
+							// selects articles with a note different of "store", but article with no
+							// notes are not selected (whereas it should also select them).
 							$query_keywords[] = "($not (LOWER(note) LIKE " . $pdo->quote("%{$keyword_value}%") . "))";
 					} else {
 						$query_keywords[] = "(UPPER(ttrss_entries.title) $not LIKE UPPER(" . $pdo->quote("%$k%") . ")
@@ -2238,7 +2270,7 @@ class Feeds extends Handler_Protected {
 						else
 							$query_keywords[] = "($not (published = false))";
 					} else {
-						$query_keywords[] = "(UPPER(ttrss_entries.title) $not LIKE UPPER('%$k%')
+						$query_keywords[] = "(UPPER(ttrss_entries.title) $not LIKE UPPER(" . $pdo->quote("%$k%") . ")
 								OR UPPER(ttrss_entries.content) $not LIKE UPPER(" . $pdo->quote("%$k%") . "))";
 						if (!$not)
 							$search_words[] = $k;
@@ -2254,8 +2286,10 @@ class Feeds extends Handler_Protected {
 									SELECT article_id FROM ttrss_user_labels2 WHERE
 										label_id = $label_id)))";
 						} else {
-							$query_keywords[] = "(false)";
+							$query_keywords[] = ($not ? "(true)" : "(false)");
 						}
+						// Idea: support _label:true_ and _label:false_ to search articles
+						// with(out) a label, whatever its name is.
 					} else {
 						$query_keywords[] = "(UPPER(ttrss_entries.title) $not LIKE UPPER(" . $pdo->quote("%$k%") . ")
 								OR UPPER(ttrss_entries.content) $not LIKE UPPER(" . $pdo->quote("%$k%") . "))";
@@ -2269,6 +2303,8 @@ class Feeds extends Handler_Protected {
 								(ttrss_user_entries.int_id IN (
 									SELECT post_int_id FROM ttrss_tags WHERE
 										tag_name = " . $pdo->quote($keyword_value) . ")))";
+						// Idea: support _tag:true_ and _tag:false_ to search articles
+						// with(out) a tag, whatever its value is.
 					} else {
 						$query_keywords[] = "(UPPER(ttrss_entries.title) $not LIKE UPPER(" . $pdo->quote("%$k%") . ")
 								OR UPPER(ttrss_entries.content) $not LIKE UPPER(" . $pdo->quote("%$k%") . "))";
@@ -2297,7 +2333,7 @@ class Feeds extends Handler_Protected {
 						$orig_ts = strtotime(substr($k, 1));
 						$k = date("Y-m-d", TimeHelper::convert_timestamp($orig_ts, $user_tz_string, 'UTC'));
 
-						$query_keywords[] = "(SUBSTRING_FOR_DATE(updated,1,LENGTH(" . $pdo->quote($k) . ")) $not = " . $pdo->quote($k) . ")";
+						$query_keywords[] = "( $not SUBSTRING_FOR_DATE(updated,1,LENGTH(" . $pdo->quote($k) . ")) = " . $pdo->quote($k) . ")";
 					} else {
 						// treat as leftover text
 
@@ -2307,10 +2343,14 @@ class Feeds extends Handler_Protected {
 						// Term '"foo bar baz"' becomes '(foo <-> bar <-> baz)' ("<->" meaning "immediately followed by").
 						if (preg_match('/\s+/', $k))
 							$k = '(' . preg_replace('/\s+/', ' <-> ', $k) . ')';
+							// Known issue: this new $k value will be added in $search_words, but multiple
+							// keyworks are not highlighted.
 
 						$search_query_leftover[] = $not ? "!$k" : $k;
 
 						if (!$not)
+				            // Known issue: a '|' or '&' alone is highlighted in the found aticles (if these
+							// articles contain such characters).
 							$search_words[] = $k;
 					}
 			}
@@ -2321,6 +2361,8 @@ class Feeds extends Handler_Protected {
 			// if there's no joiners consider this a "simple" search and
 			// concatenate everything with &, otherwise don't try to mess with tsquery syntax
 			if (preg_match("/[&|]/", implode(" " , $search_query_leftover))) {
+			    // Known issue: other operators such as ! and parenthesis are not detected.
+				// Allowing them may have side effects, so change nothing for now.
 				$tsquery = $pdo->quote(implode(" ", $search_query_leftover));
 			} else {
 				$tsquery = $pdo->quote(implode(" & ", $search_query_leftover));

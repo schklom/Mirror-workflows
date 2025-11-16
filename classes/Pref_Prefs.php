@@ -1069,7 +1069,7 @@ class Pref_Prefs extends Handler_Protected {
 			}
 		}
 
-		$rv = array_values(array_filter($rv, fn($item) => $item["rv"]["need_update"]));
+		$rv = array_values(array_filter($rv, fn(?array $item): bool => $item['rv'] !== null && $item['rv']['need_update']));
 
 		return $rv;
 	}

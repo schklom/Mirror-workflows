@@ -222,7 +222,7 @@ const App = {
 
 			this.nightModeChanged(mql.matches, link);
 
-			document.head.appendChild(link);
+			document.head.prepend(link);
 		} else {
 			document.body.classList.remove('css_loading');
 

@@ -1,0 +1,49 @@
+# This is an example config file for FMD Server
+
+# You can comment out or completely delete settings that you don't need.
+# FMD Server will automatically fall back to the default value if a field is not set.
+
+# Listening precedence: socket > HTTPS > HTTP
+
+DatabaseDir: "$DB_DST" # /var/lib/fmd-server/db/
+#WebDir: "" # /usr/share/fmd-server/web/
+
+# Path to listening UNIX socket. If empty, no unix sockets will be used.
+#UnixSocketPath: "" # /tmp/fmd.sock
+# Permissions to set on the socket after it is created. If < 0, no
+# modifications are made. This considered insecure practice, if you
+# do it, consider setting a umask for the daemon user before starting it.
+# Must start with a leading 0.
+#UnixSocketChmod: 0660
+
+# The ports FMD Server should listen on.
+# Set the port value to -1 to disable it.
+# The secure port is only used if the cert and key are set (see below).
+PortSecure: 8443
+PortInsecure: 8080
+
+# The length for the user IDs that are generated
+UserIdLength: 5
+
+# How many location points or pictures FMD Server should save per account
+MaxSavedLoc: 1000
+MaxSavedPic: 10
+
+# If RegistrationToken is non-empty, FMD Server will require the FMD app to provide this token during registration.
+# Set this to a long random string if you want your instance to be private and not open to registrations by anyone.
+# You can e.g. generate a 32 character string with your password manager.
+RegistrationToken: ""
+
+# Paths to the server cert and private key (for letting Go terminate TLS)
+#ServerCrt: "" # /path/to/fullchain.pem
+#ServerKey: "" # /path/to/privkey.pem
+
+# The name of the header field in which your reverse proxy records the remote IP of the client being proxied.
+# Keep this empty if you are not using a reverse proxy.
+# Security warning: your reverse proxy MUST set this header!
+# If the value of this header comes from an untrusted location (e.g., it is set by the original client), this can lead to security issues.
+RemoteIpHeader: "" # X-Real-IP
+
+# Custom OpenStreetMap tile server
+# https://wiki.openstreetmap.org/wiki/Tile_servers
+TileServerUrl: "" # https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png

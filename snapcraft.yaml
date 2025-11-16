@@ -1,0 +1,63 @@
+name: fmd-server
+title: Find My Device Server
+license: GPL-3.0
+source-code: https://gitlab.com/fmd-foss/fmd-server
+issues: https://gitlab.com/fmd-foss/fmd-server/-/issues
+website: https://fmd-foss.org/
+base: core24 # the base snap is the execution environment for this snap
+version: '0.11.0'
+summary: A server to communicate with the FMD Android app.
+description: |
+  This is the official server for FMD Android written in Go.
+  The FMD app can register an account on FMD Server.
+  The app can then upload its location at regular intervals.
+  You can also push commands to the FMD app on your device from FMD Server, e.g. to make your device ring.
+donation: https://liberapay.com/FMD/donate
+grade: stable # must be 'stable' to release into candidate/stable channels
+confinement: strict # use 'strict' once you have the right plugs and slots
+
+plugs:
+  network:
+    interface: network
+
+parts:
+
+  # Replace with dump in the future for pre-built-app
+  # https://documentation.ubuntu.com/snapcraft/stable/how-to/integrations/craft-a-pre-built-app/
+  fmd-server:
+    plugin: go
+    source: .
+    build-snaps:
+      - go/latest/stable
+
+  start-script:
+    plugin: dump
+    source: snapconfig
+    source-type: local
+    organize:
+      fmd-server.sh: bin/fmd-server.sh
+    override-build: |
+      craftctl default
+      echo "Part install dir: $CRAFT_PART_INSTALL"
+      ls -l $CRAFT_PART_INSTALL
+      chmod +x $CRAFT_PART_INSTALL/fmd-server.sh
+
+  config-files:
+    plugin: dump
+    source: snapconfig
+    source-type: local
+    organize:
+      default.yml: default.yml
+
+apps:
+  fmd-server:
+    command: bin/fmd-server.sh
+    plugs:
+      - network
+
+  fmd-serverd:
+    command: bin/fmd-server.sh serve
+    daemon: simple
+    restart-condition: on-failure
+    plugs:
+      - network

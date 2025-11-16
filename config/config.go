@@ -102,6 +102,10 @@ func ReadConfigFile(config *viper.Viper, configFilePath string) {
 		// DO NOT fall back to these locations.
 		// Better to fail reading the file below to let the admin know something is wrong,
 		// than silently using a different file (which can be hard to debug).
+		snapPath, isSnap := os.LookupEnv("SNAP_USER_COMMON")
+    	if isSnap {		
+			config.AddConfigPath(snapPath)
+		}
 		config.AddConfigPath("/etc/fmd-server/")
 		config.AddConfigPath(".")
 	}

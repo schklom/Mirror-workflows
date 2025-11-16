@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-15 03:54+0000\n"
-"PO-Revision-Date: 2025-11-06 20:51+0000\n"
+"PO-Revision-Date: 2025-11-16 16:17+0000\n"
 "Last-Translator: Besnik Bleta <besnik@programeshqip.org>\n"
 "Language-Team: Albanian <https://hosted.weblate.org/projects/tt-rss/webui/sq/"
 ">\n"
@@ -105,7 +105,7 @@ msgstr "Përgjegjës"
 
 #: index.php:120 prefs.php:119
 msgid "Javascript is disabled. Please enable it."
-msgstr ""
+msgstr "Javascript-i është i çaktivizuar. Ju lutemi, aktivizojeni."
 
 #: index.php:124 index.php:138 index.php:298 prefs.php:126
 #: classes/Pref_Prefs.php:887 classes/Pref_Prefs.php:937
@@ -1194,7 +1194,7 @@ msgstr "Hiqe"
 
 #: classes/Pref_Labels.php:189
 msgid "Clear colors"
-msgstr ""
+msgstr "Spastro ngjyrat"
 
 #: classes/OPML.php:291
 #, php-format

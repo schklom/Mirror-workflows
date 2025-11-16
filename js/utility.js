@@ -38,7 +38,7 @@ window.addEventListener("load", function() {
                 console.warn("exception while trying to set MQL event listener");
             }
 
-            document.querySelector("head").appendChild(link);
+            document.head.prepend(link);
 
             UtilityJS.apply_night_mode(mql.matches, link);
         }

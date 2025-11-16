@@ -395,7 +395,13 @@ class Feeds extends Handler_Protected {
 				}
 
 				if (!$offset && $message) {
-					$reply['content'] = "<div class='whiteBox'>$message";
+					$reply['content'] = "<div class='whiteBox'>";
+					if ($query_error_override) {
+						// This message should be red, but this requires editing CSS themes.
+						$reply['content'] .= '<strong>'.$message.'</strong>';
+					} else {
+						$reply['content'] .= $message;
+					}
 
 					$reply['content'] .= "<p><span class=\"text-muted\">";
 
@@ -2150,21 +2156,23 @@ class Feeds extends Handler_Protected {
 	 * @return array{0: string, 1: array<int, string>} [$search_query_part, $search_words]
 	 */
 	private static function _search_to_sql(string $search, string $search_language, int $owner_uid, ?int $profile): array {
-		// A Search Query contains one or several Keyword(s).
-		// Keywords containing spaces must be surrounded by quotes (").
-		// Keywords can be negated by preceding them with the '-' character. No space
-		// is allowed after the '-'.
-		// Keywords can be (note: the character '_' is used as a surrounding tag because
-		// surrounding with quotes may be confusing):
-		//  - a specific _key:value_ pair supported by tt-rss.
-		//  - a specific _@time_ value supported by tt-rss, provided by strtotime()
-		//    such as _@yesterday_ or _"@last week"_ or a localized date.
-		//  - any part of a tsquery of PostgreSQL Full Text Search: a string, but also
-		//    operators such as '&' or '|' (other operators are not well supported).
-		//  - a list of words between quotes, such as _"one two three"_, which is handled 
-		//    via PostgreSQL Full Text Search operator '<->' as a list of consecutive words.
-		// Known issue: Logical operators & | ! and parenthesis are only partially supported
-		// in a tsquery. For example _pub:true | (title:price & ! "hello")_ does not work.
+		/**
+		 * A Search Query contains one or several Keyword(s).
+		 * Keywords containing spaces must be surrounded by quotes (").
+		 * Keywords can be negated by preceding them with the '-' character. No space
+		 * is allowed after the '-'.
+		 * Keywords can be (note: the character '_' is used as a surrounding tag because
+		 * surrounding with quotes may be confusing):
+		 *  - a specific _key:value_ pair supported by tt-rss.
+		 *  - a specific _@time_ value supported by tt-rss, provided by strtotime()
+		 *    such as _@yesterday_ or _"@last week"_ or a localized date.
+		 *  - any part of a tsquery of PostgreSQL Full Text Search: a string, but also
+		 *    operators such as '&' or '|' (other operators are not well supported).
+		 *  - a list of words between quotes, such as _"one two three"_, which is handled 
+		 *    via PostgreSQL Full Text Search operator '<->' as a list of consecutive words.
+		 * Known issue: Logical operators & | ! and parenthesis are only partially supported
+		 * in a tsquery. For example _pub:true | (title:price & ! "hello")_ does not work.
+		 */
 		
 		// Modify the search string so that 'keyword:"foo bar"' becomes '"keyword:foo bar"'.
 		// This is needed so potential command pairs are grouped correctly.
@@ -2173,10 +2181,12 @@ class Feeds extends Handler_Protected {
 		// '-"hello world"' --> '"-hello world"' so negated phrases work
 		$search_csv_str = preg_replace('/-"([^"]+?")/', '"-$1', $search_csv_str);
 
-		// If the Search String is _"title:hello world" some -words_, then
-		// $keywords will be an array like ['title:hello world', 'some', '-words']
-		// Known issue: we suppose the user has correctly formatted the Query String,
-		// with quote paired in the good place. Otherwise, there is no warning.
+		/**
+		 * If the Search String is _"title:hello world" some -words_, then
+		 * $keywords will be an array like ['title:hello world', 'some', '-words']
+		 * Known issue: we suppose the user has correctly formatted the Query String,
+		 * with quote paired in the good place. Otherwise, there is no warning.
+		 */
 		$keywords = str_getcsv($search_csv_str, ' ', '"', '');
 
 		$query_keywords = [];
@@ -2187,91 +2197,96 @@ class Feeds extends Handler_Protected {
 
 		/** @var string $k a keyword pair (not yet split) or standalone value */
 		foreach ($keywords as $k) {
-			if (str_starts_with($k, "-")) {
+			if (str_starts_with($k, '-')) {
 				$k = substr($k, 1);
-				$not = "NOT";
+				$not = 'NOT';
 			} else {
-				$not = "";
+				$not = '';
 			}
 
 			$k = trim($k);
 
-			$keyword_pair = explode(':', mb_strtolower($k), 2);
-			$keyword_name = $keyword_pair[0];
-			$keyword_value = empty($keyword_pair[1]) ? '' : trim($keyword_pair[1]);
+			$valid_keyword_processed = false;
 
-			// NOTE: If there's a keyword match but no keyword value we fall back to doing
-			// a search in article title and content.
-			// Known issue: if the Search Query is _author_, it will fallback to a simple
-			// SQL query with LIKE, instead of using the power of PosgreSQL Full Text Search.
-			switch ($keyword_name) {
-				case "title":
-					if ($keyword_value) {
+			/**
+			 * First, try to process a specific _key:value_ pair supported by tt-rss.
+			 * NOTE: If there's a keyword match but no keyword value, or an unsupported
+			 * value, we fall back to doing a Full Text Search.
+			 * NOTE: The separator ':' is also a valid Full Text Search separator,
+			 * such as _secu:*_ which matches all words starting by "secu". Here, we
+			 * only process tt-rss keyword pairs, not PostgreSQL pairs.
+			 */
+			$keyword_pair = explode(':', mb_strtolower($k), 2);
+			if (!empty($keyword_pair[1])) {
+				$keyword_name = $keyword_pair[0];
+				$keyword_value = trim($keyword_pair[1]);
+
+				switch ($keyword_name) {
+					case 'title':
 						$query_keywords[] = "($not (LOWER(ttrss_entries.title) LIKE " .
-							$pdo->quote("%{$keyword_value}%") . "))";
-					} else {
-						$query_keywords[] = "(UPPER(ttrss_entries.title) $not LIKE UPPER(" . $pdo->quote("%$k%") . ")
-								OR UPPER(ttrss_entries.content) $not LIKE UPPER(" . $pdo->quote("%$k%") . "))";
-						if (!$not)
-						    $search_words[] = $k;
-					}
-					break;
-				case "author":
-					if ($keyword_value) {
-						$query_keywords[] = "($not (LOWER(author) LIKE " . $pdo->quote("%{$keyword_value}%") . "))";
-					} else {
-						$query_keywords[] = "(UPPER(ttrss_entries.title) $not LIKE UPPER(" . $pdo->quote("%$k%").")
-								OR UPPER(ttrss_entries.content) $not LIKE UPPER(" . $pdo->quote("%$k%") . "))";
-						if (!$not)
-						    $search_words[] = $k;
-					}
-					break;
-				case "note":
-					if ($keyword_value) {
-						if ($keyword_value == "true")
+							$pdo->quote("%{$keyword_value}%") . '))';
+						$valid_keyword_processed = true;
+						break;
+					case 'author':
+						$query_keywords[] = "($not (LOWER(author) LIKE " . $pdo->quote("%{$keyword_value}%") . '))';
+						$valid_keyword_processed = true;
+						break;
+					case 'note':
+						if ($keyword_value == 'true')
 							$query_keywords[] = "($not (note IS NOT NULL AND note != ''))";
-						else if ($keyword_value == "false")
+						else if ($keyword_value == 'false')
 							$query_keywords[] = "($not (note IS NULL OR note = ''))";
 						else
-							// Known issue: when this Keyword is negated like _-note:store_ it only
-							// selects articles with a note different of "store", but article with no
-							// notes are not selected (whereas it should also select them).
-							$query_keywords[] = "($not (LOWER(note) LIKE " . $pdo->quote("%{$keyword_value}%") . "))";
-					} else {
-						$query_keywords[] = "(UPPER(ttrss_entries.title) $not LIKE UPPER(" . $pdo->quote("%$k%") . ")
-								OR UPPER(ttrss_entries.content) $not LIKE UPPER(" . $pdo->quote("%$k%") . "))";
-						if (!$not)
-							$search_words[] = $k;
-					}
-					break;
-				case "star":
-					if ($keyword_value) {
-						if ($keyword_value == "true")
+							/**
+							 * Known issue: when this Keyword is negated like _-note:store_ it only
+							 * selects articles with a note different of "store", but article with no
+							 * notes are not selected (whereas it should also select them).
+							 */
+							$query_keywords[] = "($not (LOWER(note) LIKE " . $pdo->quote("%{$keyword_value}%") . '))';
+						$valid_keyword_processed = true;
+						break;
+					case 'star':
+						if ($keyword_value == 'true') {
 							$query_keywords[] = "($not (marked = true))";
-						else
+							$valid_keyword_processed = true;
+						} else if ($keyword_value == 'false') {
 							$query_keywords[] = "($not (marked = false))";
-					} else {
-						$query_keywords[] = "(UPPER(ttrss_entries.title) $not LIKE UPPER(" . $pdo->quote("%$k%") . ")
-								OR UPPER(ttrss_entries.content) $not LIKE UPPER(" . $pdo->quote("%$k%") . "))";
-						if (!$not)
-							$search_words[] = $k;
-					}
-					break;
-				case "pub":
-					if ($keyword_value) {
-						if ($keyword_value == "true")
+							$valid_keyword_processed = true;
+						} else {
+							/**
+							 * Not valid, so fall back to Full Text Search. As _star:something_
+							 * is not valid for a tsquery (because ':' is also a special separator
+							 * in PostgreSQL tsquery), the $test_sth->execute() will fail, and
+							 * the warning "Incorrect search syntax: star:something" will be
+							 * displayed. This is not perfect, but at least, there is a warning.
+							 */
+						}
+						break;
+					case 'pub':
+						if ($keyword_value == 'true') {
 							$query_keywords[] = "($not (published = true))";
-						else
+							$valid_keyword_processed = true;
+						} else if ($keyword_value == 'false') {
 							$query_keywords[] = "($not (published = false))";
-					} else {
-						$query_keywords[] = "(UPPER(ttrss_entries.title) $not LIKE UPPER(" . $pdo->quote("%$k%") . ")
-								OR UPPER(ttrss_entries.content) $not LIKE UPPER(" . $pdo->quote("%$k%") . "))";
-						if (!$not)
-							$search_words[] = $k;
-					}
-					break;
-				case "label":
-					if ($keyword_value) {
+							$valid_keyword_processed = true;
+						} else {
+							// Not valid, so fall back to Full Text Search. A message will be
+							// displayed as above.
+						}
+						break;
+					case 'unread':
+						if ($keyword_value == 'true') {
+							$query_keywords[] = "($not (unread = true))";
+							$valid_keyword_processed = true;
+						} else if ($keyword_value == 'false') {
+							$query_keywords[] = "($not (unread = false))";
+							$valid_keyword_processed = true;
+						} else {
+							// Not valid, so fall back to Full Text Search. A message will be
+							// displayed as above.
+						}
+						break;
+					case 'label':
 						$label_id = Labels::find_id($keyword_value, $owner_uid);
 
 						if ($label_id) {
@@ -2280,73 +2295,72 @@ class Feeds extends Handler_Protected {
 									SELECT article_id FROM ttrss_user_labels2 WHERE
 										label_id = $label_id)))";
 						} else {
-							$query_keywords[] = ($not ? "(true)" : "(false)");
+							$query_keywords[] = ($not ? '(true)' : '(false)');
 						}
+						$valid_keyword_processed = true;
 						// Idea: support _label:true_ and _label:false_ to search articles
 						// with(out) a label, whatever its name is.
-					} else {
-						$query_keywords[] = "(UPPER(ttrss_entries.title) $not LIKE UPPER(" . $pdo->quote("%$k%") . ")
-								OR UPPER(ttrss_entries.content) $not LIKE UPPER(" . $pdo->quote("%$k%") . "))";
-						if (!$not)
-							$search_words[] = $k;
-					}
-					break;
-				case "tag":
-					if ($keyword_value) {
-							$query_keywords[] = "($not
-								(ttrss_user_entries.int_id IN (
-									SELECT post_int_id FROM ttrss_tags WHERE
-										tag_name = " . $pdo->quote($keyword_value) . ")))";
+						break;
+					case 'tag':
+						$query_keywords[] = "($not
+							(ttrss_user_entries.int_id IN (
+								SELECT post_int_id FROM ttrss_tags WHERE
+									tag_name = " . $pdo->quote($keyword_value) . ')))';
+						$valid_keyword_processed = true;
 						// Idea: support _tag:true_ and _tag:false_ to search articles
 						// with(out) a tag, whatever its value is.
+						break;
+					default:
+						/**
+						 * Not valid, so fall back to Full Text Search. This is perhaps the
+						 * special _secu:*_ syntax presented above. Unless it is a valid
+						 * Full Text Search suffix like '*', a message will be displayed
+						 * as above.
+						 */
+				}
+			}
+
+			// Second, try to process a specific _@time_ value supported by tt-rss.
+			if (!$valid_keyword_processed) {
+				if (str_starts_with($k, '@')) {
+					$user_tz_string = Prefs::get(Prefs::USER_TIMEZONE, $owner_uid);
+					$orig_ts = strtotime(substr($k, 1));
+					if ($orig_ts !== false) {
+						$k = date('Y-m-d', TimeHelper::convert_timestamp($orig_ts, $user_tz_string, 'UTC'));
+						$query_keywords[] = "( $not SUBSTRING_FOR_DATE(updated,1,LENGTH(" . $pdo->quote($k) . ")) = " . $pdo->quote($k) . ')';
+						$valid_keyword_processed = true;
 					} else {
-						$query_keywords[] = "(UPPER(ttrss_entries.title) $not LIKE UPPER(" . $pdo->quote("%$k%") . ")
-								OR UPPER(ttrss_entries.content) $not LIKE UPPER(" . $pdo->quote("%$k%") . "))";
-						if (!$not)
-							$search_words[] = $k;
+						/**
+						 * Not valid, so fall back to Full Text Search. Unfortunately,
+						 * in this case, there will be no warning, and _@something_
+						 * will never match a word.
+						 */
 					}
-					break;
-				case "unread":
-					if ($keyword_value) {
-						if ($keyword_value == "true")
-							$query_keywords[] = "($not (unread = true))";
-						else
-							$query_keywords[] = "($not (unread = false))";
+				}
+			}
 
-					} else {
-						$query_keywords[] = "(UPPER(ttrss_entries.title) $not LIKE UPPER(" . $pdo->quote("%$k%") . ")
-								OR UPPER(ttrss_entries.content) $not LIKE UPPER(" . $pdo->quote("%$k%") . "))";
-						if (!$not)
-							$search_words[] = $k;
-					}
-					break;
-				default:
-					// @{date} handling
-					if (str_starts_with($k, "@")) {
-						$user_tz_string = Prefs::get(Prefs::USER_TIMEZONE, $owner_uid);
-						$orig_ts = strtotime(substr($k, 1));
-						$k = date("Y-m-d", TimeHelper::convert_timestamp($orig_ts, $user_tz_string, 'UTC'));
+			// Third, process as a Full Text Search.
+			if (!$valid_keyword_processed) {
+				$k = mb_strtolower($k);
 
-						$query_keywords[] = "( $not SUBSTRING_FOR_DATE(updated,1,LENGTH(" . $pdo->quote($k) . ")) = " . $pdo->quote($k) . ")";
-					} else {
-						// treat as leftover text
+				/**
+				 * A hacky way for phrases (e.g. "hello world") to get through PDO quoting.
+				 * Term _"foo bar baz"_ becomes _(foo <-> bar <-> baz)_ ("<->" meaning
+				 * "immediately followed by").
+				 */
+				if (preg_match('/\s+/', $k)) {
+					$k = '(' . preg_replace('/\s+/', ' <-> ', $k) . ')';
+					// Known issue: this new $k value will be added in $search_words, but
+					// multiple keyworks are not highlighted (currently unsupported).
+				}
 
-						$k = mb_strtolower($k);
+				$search_query_leftover[] = $not ? "!$k" : $k;
 
-						// A hacky way for phrases (e.g. "hello world") to get through PDO quoting.
-						// Term '"foo bar baz"' becomes '(foo <-> bar <-> baz)' ("<->" meaning "immediately followed by").
-						if (preg_match('/\s+/', $k))
-							$k = '(' . preg_replace('/\s+/', ' <-> ', $k) . ')';
-							// Known issue: this new $k value will be added in $search_words, but multiple
-							// keyworks are not highlighted.
-
-						$search_query_leftover[] = $not ? "!$k" : $k;
-
-						if (!$not)
-				            // Known issue: a '|' or '&' alone is highlighted in the found articles (if these
-							// articles contain such characters).
-							$search_words[] = $k;
-					}
+				if (!$not) {
+					// Known issue: a '|' or '&' alone is highlighted in the found articles
+					// (if these articles contain such characters).
+					$search_words[] = $k;
+				}
 			}
 		}
 
@@ -2354,12 +2368,12 @@ class Feeds extends Handler_Protected {
 
 			// if there's no joiners consider this a "simple" search and
 			// concatenate everything with &, otherwise don't try to mess with tsquery syntax
-			if (preg_match("/[&|]/", implode(" " , $search_query_leftover))) {
-			    // Known issue: other operators such as ! and parenthesis are not detected.
+			if (preg_match('/[&|]/', implode(' ', $search_query_leftover))) {
+				// Known issue: other operators such as ! and parenthesis are not detected.
 				// Allowing them may have side effects, so change nothing for now.
-				$tsquery = $pdo->quote(implode(" ", $search_query_leftover));
+				$tsquery = $pdo->quote(implode(' ', $search_query_leftover));
 			} else {
-				$tsquery = $pdo->quote(implode(" & ", $search_query_leftover));
+				$tsquery = $pdo->quote(implode(' & ', $search_query_leftover));
 			}
 
 			$search_language = $pdo->quote(mb_strtolower($search_language ?: Prefs::get(Prefs::DEFAULT_SEARCH_LANGUAGE, $owner_uid, $profile)));
@@ -2368,11 +2382,11 @@ class Feeds extends Handler_Protected {
 		}
 
 		if (count($query_keywords) > 0)
-			$search_query_part = implode("AND ", $query_keywords);
+			$search_query_part = implode(' AND ', $query_keywords);
 		else
-			$search_query_part = "false";
+			$search_query_part = 'false';
 
-		if (!empty($_REQUEST["debug"])) {
+		if (!empty($_REQUEST['debug'])) {
 			print "\n*** SEARCH_TO_SQL ***\n";
 			print "QUERY: $search_query_part\n";
 			print "WORDS: " . json_encode($search_words) . "\n";

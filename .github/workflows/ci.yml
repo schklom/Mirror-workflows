@@ -15,7 +15,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [25.x, 24.x, 22.x, 20.x]
+        node-version: [25.x, 24.x, 22.x]
 
     steps:
       - name: Checkout code
@@ -31,8 +31,6 @@ jobs:
         run: npm ci
 
       - name: Run tests
-        env:
-          NODE_OPTIONS: '--no-experimental-webstorage'
         run: npm test
 
       - name: Security audit

@@ -2223,6 +2223,11 @@ class Feeds extends Handler_Protected {
 
 				switch ($keyword_name) {
 					case 'title':
+						/**
+						 * Known issue: a Search Query containing spaces like _title:" be "_
+						 * matches "cyBErspace", and not only " be ", because the spaces
+						 * are trimmed by the two trim() above.
+						 */
 						$query_keywords[] = "($not (LOWER(ttrss_entries.title) LIKE " .
 							$pdo->quote("%{$keyword_value}%") . '))';
 						$valid_keyword_processed = true;
@@ -2237,12 +2242,7 @@ class Feeds extends Handler_Protected {
 						else if ($keyword_value == 'false')
 							$query_keywords[] = "($not (note IS NULL OR note = ''))";
 						else
-							/**
-							 * Known issue: when this Keyword is negated like _-note:store_ it only
-							 * selects articles with a note different of "store", but article with no
-							 * notes are not selected (whereas it should also select them).
-							 */
-							$query_keywords[] = "($not (LOWER(note) LIKE " . $pdo->quote("%{$keyword_value}%") . '))';
+							$query_keywords[] = "($not (LOWER(COALESCE(note, '')) LIKE " . $pdo->quote("%{$keyword_value}%") . '))';
 						$valid_keyword_processed = true;
 						break;
 					case 'star':

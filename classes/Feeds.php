@@ -2165,7 +2165,7 @@ class Feeds extends Handler_Protected {
 		 * surrounding with quotes may be confusing):
 		 *  - a specific _key:value_ pair supported by tt-rss.
 		 *  - a specific _@time_ value supported by tt-rss, provided by strtotime()
-		 *    such as _@yesterday_ or _"@last week"_ or a localized date.
+		 *    such as _@yesterday_ or _"@last Monday"_ or a date.
 		 *  - any part of a tsquery of PostgreSQL Full Text Search: a string, but also
 		 *    operators such as '&' or '|' (other operators are not well supported).
 		 *  - a list of words between quotes, such as _"one two three"_, which is handled 
@@ -2174,12 +2174,16 @@ class Feeds extends Handler_Protected {
 		 * in a tsquery. For example _pub:true | (title:price & ! "hello")_ does not work.
 		 */
 		
-		// Modify the search string so that 'keyword:"foo bar"' becomes '"keyword:foo bar"'.
-		// This is needed so potential command pairs are grouped correctly.
-		$search_csv_str = preg_replace('/(-?\w+)\:"(\w+)/', '"$1:$2', trim($search));
-
-		// '-"hello world"' --> '"-hello world"' so negated phrases work
-		$search_csv_str = preg_replace('/-"([^"]+?")/', '"-$1', $search_csv_str);
+		/**
+		 * Modify the Search Query so that:
+		 *  _keyword:"foo bar"_ becomes _"keyword:foo bar"_
+		 *  _-"hello world"_ becomes _"-hello world"_
+		 *  _@"last Tuesday"_ becomes _"@last Tuesday"_
+		 * This is needed so potential command pairs are grouped correctly.
+		 */
+		$search_csv_str = preg_replace('/(-?\w+):"([^"]+?)"/', '"$1:$2"', trim($search));
+		$search_csv_str = preg_replace('/-"([^"]+?)"/', '"-$1"', $search_csv_str);
+		$search_csv_str = preg_replace('/(-?\@)"([^"]+?)"/', '"$1$2"', $search_csv_str);
 
 		/**
 		 * If the Search String is _"title:hello world" some -words_, then
@@ -2204,7 +2208,13 @@ class Feeds extends Handler_Protected {
 				$not = '';
 			}
 
-			$k = trim($k);
+			// Only a left trim, so spaces are kept in the value part of keyword
+			// pairs. They are needed for precise searches in title/author/note.
+			$k = ltrim($k);
+
+			// In the three Keyword types, uppercase is never required. So convert
+			// only once, globally.
+			$k = mb_strtolower($k);
 
 			$valid_keyword_processed = false;
 
@@ -2216,24 +2226,22 @@ class Feeds extends Handler_Protected {
 			 * such as _secu:*_ which matches all words starting by "secu". Here, we
 			 * only process tt-rss keyword pairs, not PostgreSQL pairs.
 			 */
-			$keyword_pair = explode(':', mb_strtolower($k), 2);
+			$keyword_pair = explode(':', $k, 2);
 			if (!empty($keyword_pair[1])) {
 				$keyword_name = $keyword_pair[0];
-				$keyword_value = trim($keyword_pair[1]);
+				$keyword_value_untrimmed = $keyword_pair[1];
+				$keyword_value = trim($keyword_value_untrimmed);
 
 				switch ($keyword_name) {
 					case 'title':
-						/**
-						 * Known issue: a Search Query containing spaces like _title:" be "_
-						 * matches "cyBErspace", and not only " be ", because the spaces
-						 * are trimmed by the two trim() above.
-						 */
+						// Use the untrimmed value, so a Search Query containing spaces like
+						// _title:" be "_ matches only " be " and not "cyBErspace".
 						$query_keywords[] = "($not (LOWER(ttrss_entries.title) LIKE " .
-							$pdo->quote("%{$keyword_value}%") . '))';
+							$pdo->quote("%{$keyword_value_untrimmed}%") . '))';
 						$valid_keyword_processed = true;
 						break;
 					case 'author':
-						$query_keywords[] = "($not (LOWER(author) LIKE " . $pdo->quote("%{$keyword_value}%") . '))';
+						$query_keywords[] = "($not (LOWER(author) LIKE " . $pdo->quote("%{$keyword_value_untrimmed}%") . '))';
 						$valid_keyword_processed = true;
 						break;
 					case 'note':
@@ -2242,7 +2250,7 @@ class Feeds extends Handler_Protected {
 						else if ($keyword_value == 'false')
 							$query_keywords[] = "($not (note IS NULL OR note = ''))";
 						else
-							$query_keywords[] = "($not (LOWER(COALESCE(note, '')) LIKE " . $pdo->quote("%{$keyword_value}%") . '))';
+							$query_keywords[] = "($not (LOWER(COALESCE(note, '')) LIKE " . $pdo->quote("%{$keyword_value_untrimmed}%") . '))';
 						$valid_keyword_processed = true;
 						break;
 					case 'star':
@@ -2324,7 +2332,7 @@ class Feeds extends Handler_Protected {
 			if (!$valid_keyword_processed) {
 				if (str_starts_with($k, '@')) {
 					$user_tz_string = Prefs::get(Prefs::USER_TIMEZONE, $owner_uid);
-					$orig_ts = strtotime(substr($k, 1));
+					$orig_ts = strtotime(trim(substr($k, 1)));
 					if ($orig_ts !== false) {
 						$k = date('Y-m-d', TimeHelper::convert_timestamp($orig_ts, $user_tz_string, 'UTC'));
 						$query_keywords[] = "( $not SUBSTRING_FOR_DATE(updated,1,LENGTH(" . $pdo->quote($k) . ")) = " . $pdo->quote($k) . ')';
@@ -2341,7 +2349,6 @@ class Feeds extends Handler_Protected {
 
 			// Third, process as a Full Text Search.
 			if (!$valid_keyword_processed) {
-				$k = mb_strtolower($k);
 
 				/**
 				 * A hacky way for phrases (e.g. "hello world") to get through PDO quoting.

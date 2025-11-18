@@ -2373,12 +2373,16 @@ class Feeds extends Handler_Protected {
 
 		if (count($search_query_leftover) > 0) {
 
-			// if there's no joiners consider this a "simple" search and
-			// concatenate everything with &, otherwise don't try to mess with tsquery syntax
-			if (preg_match('/[&|]/', implode(' ', $search_query_leftover))) {
-				// Known issue: other operators such as ! and parenthesis are not detected.
-				// Allowing them may have side effects, so change nothing for now.
-				$tsquery = $pdo->quote(implode(' ', $search_query_leftover));
+			/**
+			 * If there is no logical operator, consider this a "simple" search and
+			 * concatenate everything with &, otherwise don't try to mess with tsquery
+			 * syntax.
+			 * Known issue : Once the user is using at least one logical operator, he
+			 * has to ensure his query is well formatted. No warning will be displayed.
+			 */
+			$concatenated_leftovers = implode(' ', $search_query_leftover);
+			if (preg_match('/[&|!()]/', $concatenated_leftovers)) {
+				$tsquery = $pdo->quote($concatenated_leftovers);
 			} else {
 				$tsquery = $pdo->quote(implode(' & ', $search_query_leftover));
 			}

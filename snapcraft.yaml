@@ -49,7 +49,6 @@ apps:
   fmd-serverd:
     command: bin/fmd-server.sh serve
     daemon: simple
-    install-mode: disable
     restart-condition: on-failure
     plugs:
       - network

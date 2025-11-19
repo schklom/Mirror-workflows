@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-SRC="$SNAP/default.yml"
+SRC="$SNAP/config.example.yml"
 DST="$SNAP_USER_COMMON/config.yml"
 
 # Copy config only if not present
@@ -10,8 +10,9 @@ if [[ ! -f "$DST" ]]; then
     mkdir -p "$DB_DST"
 
     cp "$SRC" "$DST"
-    # Replace Keyword with DB_DST
-    sed -i "s|\$DB_DST|$DB_DST|g" $DST
+    chmod 600 "$DST"
+    # Set Database directory
+    sed -i "s|DatabaseDir: \"\"|DatabaseDir: \"$DB_DST\"|g" $DST
 fi
 
 # Start your actual app

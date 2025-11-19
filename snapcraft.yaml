@@ -22,13 +22,16 @@ plugs:
 
 parts:
 
-  # Replace with dump in the future for pre-built-app
-  # https://documentation.ubuntu.com/snapcraft/stable/how-to/integrations/craft-a-pre-built-app/
   fmd-server:
-    plugin: go
-    source: .
-    build-snaps:
-      - go/latest/stable
+    plugin: dump
+    source: https://packages.fmd-foss.org/server/fmd-server-v0.12.0.zip
+    organize:
+      fmd-server: bin/fmd-server
+      config.example.yml: config.example.yml
+    override-build: |
+      craftctl default
+      chmod +x $CRAFT_PART_INSTALL/fmd-server
+      chmod 644 $CRAFT_PART_INSTALL/config.example.yml
 
   start-script:
     plugin: dump
@@ -42,13 +45,6 @@ parts:
       ls -l $CRAFT_PART_INSTALL
       chmod +x $CRAFT_PART_INSTALL/fmd-server.sh
 
-  config-files:
-    plugin: dump
-    source: snapconfig
-    source-type: local
-    organize:
-      default.yml: default.yml
-
 apps:
   fmd-server:
     command: bin/fmd-server.sh
@@ -58,6 +54,7 @@ apps:
   fmd-serverd:
     command: bin/fmd-server.sh serve
     daemon: simple
+    install-mode: disable
     restart-condition: on-failure
     plugs:
       - network

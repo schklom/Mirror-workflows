@@ -46,11 +46,6 @@ parts:
       chmod +x $CRAFT_PART_INSTALL/fmd-server.sh
 
 apps:
-  fmd-server:
-    command: bin/fmd-server.sh
-    plugs:
-      - network
-
   fmd-serverd:
     command: bin/fmd-server.sh serve
     daemon: simple

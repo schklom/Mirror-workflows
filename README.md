@@ -5,7 +5,7 @@ Tiny Tiny RSS (tt-rss) is a free, flexible, open-source, web-based news feed (RS
 
 ## Getting started
 
-Please refer to [the wiki](https://github.com/tt-rss/tt-rss/wiki).
+Please refer to [the installation guide](https://tt-rss.org/docs/Installation-Guide.html).
 
 ## Some notes about this project
 
@@ -22,7 +22,7 @@ Please refer to [the wiki](https://github.com/tt-rss/tt-rss/wiki).
   * Developer note: Due to use of `invalid@email.com` on `supahgreg`'s pre-2025-10-03 commits (which were done on `tt-rss.org`) GitHub incorrectly shows `ivanivanov884`
     (the GitHub user associated with that e-mail address) as the author instead of `wn_`/`supahgreg`.  Apologies for any confusion.  `¯\_(ツ)_/¯`
 * Docker images (for `linux/amd64` and `linux/arm64`; drop-in replacements for the old images;
-  see [the installation guide](https://github.com/tt-rss/tt-rss/wiki/Installation-Guide)) are being built and published
+  see [the installation guide](https://tt-rss.org/docs/Installation-Guide.html)) are being built and published
   ([via GitHub Actions](https://github.com/tt-rss/tt-rss/actions/workflows/publish.yml)) to:
   * Docker Hub (as [supahgreg/tt-rss](https://hub.docker.com/r/supahgreg/tt-rss/) and [supahgreg/tt-rss-web-nginx](https://hub.docker.com/r/supahgreg/tt-rss-web-nginx/)).
   * GitHub Container Registry (as [ghcr.io/tt-rss/tt-rss](https://github.com/orgs/tt-rss/packages/container/package/tt-rss)

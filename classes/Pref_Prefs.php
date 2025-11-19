@@ -646,8 +646,10 @@ class Pref_Prefs extends Handler_Protected {
 						<?= \Controls\select_hash($pref_name, $value, $themes) ?>
 						<?= \Controls\button_tag(\Controls\icon("palette") . " " . __("Customize"), "",
 								["onclick" => "Helpers.Prefs.customizeCSS()"]) ?>
-						<?= \Controls\button_tag(\Controls\icon("open_in_new") . " " . __("More themes..."), "",
-								["class" => "alt-info", "onclick" => "window.open(\"https://github.com/tt-rss/tt-rss/wiki/Themes\")"]) ?>
+						<?= \Controls\button_tag(\Controls\icon('open_in_new') . ' ' . __('More themes...'), '', [
+							'class' => 'alt-info',
+							'onclick' => 'window.open("https://tt-rss.org/docs/Themes.html", "_blank", "noreferrer")',
+						]) ?>
 
 						<?php
 
@@ -711,9 +713,10 @@ class Pref_Prefs extends Handler_Protected {
 							"class" => "alt-danger",
 							"onclick" => "dijit.byId('SSL_CERT_SERIAL').attr('value', '')"]);
 
-						print \Controls\button_tag(\Controls\icon("help") . " " . __("More info..."), "", [
-							"class" => "alt-info",
-							"onclick" => "window.open('https://github.com/tt-rss/tt-rss/wiki/SSL-Certificate-Authentication')"]);
+						print \Controls\button_tag(\Controls\icon('help') . ' ' . __('More info...'), '', [
+							'class' => 'alt-info',
+							'onclick' => 'window.open("https://tt-rss.org/docs/SSL-Certificate-Authentication.html", "_blank", "noreferrer")',
+						]);
 
 					} else if ($pref_name == Prefs::DIGEST_PREFERRED_TIME) {
 						print "<input dojoType=\"dijit.form.ValidationTextBox\"
@@ -878,7 +881,7 @@ class Pref_Prefs extends Handler_Protected {
 							print_error(
 								T_sprintf("The following plugins use per-feed content hooks. This may cause excessive data usage and origin server load resulting in a ban of your instance: <b>%s</b>" ,
 									implode(", ", array_map(fn($plugin) => $plugin::class, $feed_handlers))
-								) . " (<a href='https://github.com/tt-rss/tt-rss/wiki/Feed-Handler-Plugins' target='_blank'>".__("More info...")."</a>)"
+								) . " (<a href='https://tt-rss.org/docs/Feed-Handler-Plugins.html' target='_blank' rel='noreferrer'>".__("More info...")."</a>)"
 							);
 						}
 					?> -->
@@ -890,7 +893,7 @@ class Pref_Prefs extends Handler_Protected {
 				</div>
 				<div dojoType="dijit.layout.ContentPane" region="bottom">
 
-					<button dojoType='dijit.form.Button' class="alt-info pull-right" onclick='window.open("https://github.com/tt-rss/tt-rss/wiki/Plugins")'>
+					<button dojoType='dijit.form.Button' class="alt-info pull-right" onclick='window.open("https://tt-rss.org/docs/Plugins.html", "_blank", "noreferrer")'>
 						<i class='material-icons'>help</i>
 						<?= __("More info") ?>
 					</button>

@@ -1,10 +1,10 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 SRC="$SNAP/default.yml"
 DST="$SNAP_USER_COMMON/config.yml"
 
 # Copy config only if not present
-if [ ! -f "$DST" ]; then
+if [[ ! -f "$DST" ]]; then
     # Create directory if needed
     DB_DST="$SNAP_USER_COMMON/db"
     mkdir -p "$DB_DST"

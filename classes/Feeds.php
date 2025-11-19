@@ -2350,23 +2350,25 @@ class Feeds extends Handler_Protected {
 			// Third, process as a Full Text Search.
 			if (!$valid_keyword_processed) {
 
-				/**
-				 * A hacky way for phrases (e.g. "hello world") to get through PDO quoting.
-				 * Term _"foo bar baz"_ becomes _(foo <-> bar <-> baz)_ ("<->" meaning
-				 * "immediately followed by").
-				 */
+				$k = trim($k);
+				$k_sql = $k;
 				if (preg_match('/\s+/', $k)) {
-					$k = '(' . preg_replace('/\s+/', ' <-> ', $k) . ')';
-					// Known issue: this new $k value will be added in $search_words, but
-					// multiple keyworks are not highlighted (currently unsupported).
+					/**
+						* This is a list of consecutive words. Convert _"foo bar baz"_
+						* to _(foo <-> bar <-> baz)_ where "<->" means immediately
+						* followed by".
+						*/
+					$k_sql = '(' . preg_replace('/\s+/', ' <-> ', $k) . ')';
 				}
 
-				$search_query_leftover[] = $not ? "!$k" : $k;
+				$search_query_leftover[] = $not ? '!'.$k_sql : $k_sql;
 
 				if (!$not) {
-					// Known issue: a '|' or '&' alone is highlighted in the found articles
-					// (if these articles contain such characters).
-					$search_words[] = $k;
+					// Add the word (or the words with spaces) to highlight.
+					// Ignore logical operators alone.
+					if (!preg_match('/^[&|!()]$/', $k)) {
+						$search_words[] = $k;
+					}
 				}
 			}
 		}

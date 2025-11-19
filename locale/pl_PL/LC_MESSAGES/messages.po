@@ -10,16 +10,16 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-15 03:54+0000\n"
-"PO-Revision-Date: 2025-11-05 17:51+0000\n"
-"Last-Translator: LaurentC <laurentc@users.noreply.hosted.weblate.org>\n"
-"Language-Team: Polish <https://hosted.weblate.org/projects/tt-rss/webui/pl/"
-">\n"
+"PO-Revision-Date: 2025-11-18 06:51+0000\n"
+"Last-Translator: Anarion Dunedain <anarion@go2.pl>\n"
+"Language-Team: Polish <https://hosted.weblate.org/projects/tt-rss/webui/pl/>"
+"\n"
 "Language: pl_PL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
-"|| n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural="
+"(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 5.15-dev\n"
 
 #: backend.php:55
@@ -108,7 +108,7 @@ msgstr "Administrator"
 
 #: index.php:120 prefs.php:119
 msgid "Javascript is disabled. Please enable it."
-msgstr ""
+msgstr "Obsługa JavaScript jest wyłączona. Włącz ją."
 
 #: index.php:124 index.php:138 index.php:298 prefs.php:126
 #: classes/Pref_Prefs.php:887 classes/Pref_Prefs.php:937
@@ -210,37 +210,27 @@ msgstr "Starsze niż dwa tygodnie"
 
 #: index.php:228
 msgid "Switch to three panel view"
-msgstr ""
+msgstr "Przełącz na tryb trzypanelowy"
 
 #: index.php:229
-#, fuzzy
-#| msgid "Switch to digest..."
 msgid "Switch to combined view"
-msgstr "Przełącz na przegląd..."
+msgstr "Przełącz na widok scalony"
 
 #: index.php:230
-#, fuzzy
-#| msgid "Toggle widescreen mode"
 msgid "Disable widescreen mode"
-msgstr "Przełącz tryb szerokoekranowy"
+msgstr "Wyłącz tryb szerokoekranowy"
 
 #: index.php:231
-#, fuzzy
-#| msgid "Toggle widescreen mode"
 msgid "Enable widescreen mode"
-msgstr "Przełącz tryb szerokoekranowy"
+msgstr "Włącz tryb szerokoekranowy"
 
 #: index.php:232
-#, fuzzy
-#| msgid "Expand article"
 msgid "Expand selected article only"
-msgstr "Rozwiń artykuł"
+msgstr "Rozwiń tylko zaznaczone artykuły"
 
 #: index.php:233
-#, fuzzy
-#| msgid "Expand article"
 msgid "Expand all articles"
-msgstr "Rozwiń artykuł"
+msgstr "Rozwiń wszystkie artykuły"
 
 #: index.php:236
 msgid "Actions..."
@@ -683,9 +673,6 @@ msgid "Enable digest"
 msgstr "Włącz przegląd e-mail"
 
 #: classes/Pref_Prefs.php:106
-#, fuzzy
-#| msgid ""
-#| "Send daily digest of new (and unread) headlines to your e-mail address"
 msgid "Send daily digest of new (and unread) headlines to your email address"
 msgstr ""
 "Wysyłaj codzienny przegląd nowych i nieprzeczytanych nagłówków na twój adres "
@@ -1340,10 +1327,8 @@ msgstr ""
 "Twój poziom dostępu jest niewystarczający do uruchomienia tego skryptu."
 
 #: classes/Handler_Public.php:688
-#, fuzzy
-#| msgid "Feeds with update errors"
 msgid "Proceed with update?"
-msgstr "Kanały z błędami aktualizacji"
+msgstr "Kontynuować aktualizację?"
 
 #: classes/Handler_Public.php:693
 msgid "Database Updater"
@@ -1411,8 +1396,6 @@ msgid "(%d days)"
 msgstr "(%d dni)"
 
 #: classes/Pref_Feeds.php:621 js/CommonDialogs.js:500
-#, fuzzy
-#| msgid "Include in e-mail digest"
 msgid "Include in email digest"
 msgstr "Umieść w przeglądzie e-mailowym"
 
@@ -1535,9 +1518,8 @@ msgid "Sharing"
 msgstr "Udostępnianie"
 
 #: classes/Pref_Filters.php:24
-#, fuzzy
 msgid "Delete article"
-msgstr "Wybierz wszystkie artykuły"
+msgstr "Usuń artykuł"
 
 #: classes/Pref_Filters.php:26
 msgid "Set starred"
@@ -1561,25 +1543,19 @@ msgstr "Przypisz etykietę"
 
 #: classes/Pref_Filters.php:31
 msgid "Stop / Do nothing"
-msgstr ""
+msgstr "Zatrzymaj / Nic nie rób"
 
 #: classes/Pref_Filters.php:32
-#, fuzzy
-#| msgid "Install plugin"
 msgid "Invoke plugin"
-msgstr "Zainstaluj wtyczkę"
+msgstr "Wywołaj wtyczkę"
 
 #: classes/Pref_Filters.php:33
-#, fuzzy
-#| msgid "no tags"
 msgid "Ignore tags"
-msgstr "brak etykiet"
+msgstr "Ignoruj etykiety"
 
 #: classes/Pref_Filters.php:39
-#, fuzzy
-#| msgid "Content:"
 msgid "Content"
-msgstr "Treść:"
+msgstr "Treść"
 
 #: classes/Pref_Filters.php:40
 msgid "Title or Content"
@@ -1594,10 +1570,8 @@ msgid "Author"
 msgstr "Autor"
 
 #: classes/Pref_Filters.php:45
-#, fuzzy
-#| msgid "Article tags"
 msgid "Article Tags"
-msgstr "Etykiety artykułu"
+msgstr "Etykiety Artykułu"
 
 #: classes/Pref_Filters.php:272 classes/Pref_Filters.php:282
 #: classes/Pref_Filters.php:457 classes/Pref_Filters.php:959
@@ -1621,10 +1595,9 @@ msgid "Unknown action: %d"
 msgstr "Nieznana akcja: %d"
 
 #: classes/Pref_Filters.php:698 js/PrefFilterTree.js:178
-#, fuzzy, java-printf-format, javascript-format, php-format
-#| msgid "Clone"
+#, java-printf-format, javascript-format, php-format
 msgid "Clone of %s"
-msgstr "Sklonuj"
+msgstr "Klon %s"
 
 #: classes/Pref_Filters.php:741 js/PrefHelpers.js:228
 msgid "Clone"
@@ -1672,29 +1645,27 @@ msgstr "Testowa wiadomość od tt-rss"
 
 #: classes/Pref_System.php:24
 msgid "This message confirms that tt-rss can send outgoing email."
-msgstr ""
+msgstr "Ta wiadomość potwierdza, że tt-rss może wysyłać pocztę wychodzącą."
 
 #: classes/Pref_System.php:34
 msgid "Task name"
-msgstr ""
+msgstr "Nazwa zadania"
 
 #: classes/Pref_System.php:35
 msgid "Schedule"
-msgstr ""
+msgstr "Harmonogram"
 
 #: classes/Pref_System.php:36
-#, fuzzy
-#| msgid "Last connected"
 msgid "Last executed"
-msgstr "Ostatnio połączony"
+msgstr "Ostatnio uruchomiony"
 
 #: classes/Pref_System.php:37
 msgid "Duration (seconds)"
-msgstr ""
+msgstr "Czas trwania (sekundy)"
 
 #: classes/Pref_System.php:38
 msgid "Return code"
-msgstr ""
+msgstr "Kod zwrotny"
 
 #: classes/Pref_System.php:110 js/PrefHelpers.js:621
 msgid "Refresh"
@@ -1750,14 +1721,12 @@ msgid "Event log"
 msgstr "Dziennik zdarzeń"
 
 #: classes/Pref_System.php:203
-#, fuzzy
-#| msgid "Mail configuration"
 msgid "Email configuration"
-msgstr "Wyślij konfigurację"
+msgstr "Konfiguracja poczty email"
 
 #: classes/Pref_System.php:214
 msgid "Email sent."
-msgstr ""
+msgstr "Email wysłany."
 
 #: classes/Pref_System.php:234
 msgid "To:"
@@ -1769,15 +1738,14 @@ msgstr "Wyślij testowy e-mail"
 
 #: classes/Pref_System.php:242
 msgid "Scheduled tasks"
-msgstr ""
+msgstr "Zaplanowane zadania"
 
 #: classes/Pref_System.php:253
 msgid "PHP Information"
 msgstr "Informacje o PHP"
 
 #: classes/Mailer.php:53
-#, fuzzy, php-format
-#| msgid "Unknown error while sending mail. Hooks tried: %d."
+#, php-format
 msgid "Unknown error while sending email. Hooks tried: %d."
 msgstr "Nieznany błąd podczas wysyłania poczty. Wypróbowane haki: %d."
 
@@ -2335,22 +2303,16 @@ msgid "Removing selected filters..."
 msgstr "Usuwanie wybranych filtrów..."
 
 #: js/PrefFilterTree.js:177
-#, fuzzy
-#| msgid "Name for cloned profile:"
 msgid "Name for new filter:"
-msgstr "Nazwa dla sklonowanego profilu:"
+msgstr "Nazwa dla nowego filtra:"
 
 #: js/PrefFilterTree.js:185
-#, fuzzy
-#| msgid "Combine selected filters?"
 msgid "Clone selected filters?"
-msgstr "Połączyć wybrane filtry?"
+msgstr "Sklonować wybrane filtry?"
 
 #: js/PrefFilterTree.js:189
-#, fuzzy
-#| msgid "Removing selected filters..."
 msgid "Cloning selected filters..."
-msgstr "Usuwanie wybranych filtrów..."
+msgstr "Klonowanie wybranych filtrów..."
 
 #: js/PrefLabelTree.js:69
 msgid "Edit label"
@@ -2544,10 +2506,9 @@ msgid "Articles matching this filter:"
 msgstr "Artykuły pasujące do tego filtra:"
 
 #: js/CommonFilters.js:68
-#, fuzzy, java-printf-format, javascript-format
-#| msgid "Found %d articles matching this filter:"
+#, java-printf-format, javascript-format
 msgid "Found at least %d articles matching this filter:"
-msgstr "Znaleziono %d artykułów pasujących do tego filtra:"
+msgstr "Znaleziono co najmniej %d artykułów pasujących do tego filtra:"
 
 #: js/CommonFilters.js:75
 msgid "Error while trying to get filter test results."
@@ -2925,16 +2886,12 @@ msgid "Expand to select feed"
 msgstr "Rozwiń aby wybrać kanał"
 
 #: js/CommonDialogs.js:189
-#, fuzzy
-#| msgid "Couldn't download the specified URL: %s"
 msgid "Couldn't download the specified URL."
-msgstr "Nie udało się pobrać wprowadzonego adresu: %s"
+msgstr "Nie udało się pobrać wprowadzonego adresu."
 
 #: js/CommonDialogs.js:192
-#, fuzzy
-#| msgid "Inline content"
 msgid "Invalid content."
-msgstr "Treść osadzona"
+msgstr "Niepoprawna treść."
 
 #: js/CommonDialogs.js:195
 msgid "Error while creating feed database entry."

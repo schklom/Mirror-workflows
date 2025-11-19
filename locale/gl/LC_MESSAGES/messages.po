@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-15 03:54+0000\n"
-"PO-Revision-Date: 2025-11-06 20:51+0000\n"
+"PO-Revision-Date: 2025-11-18 06:51+0000\n"
 "Last-Translator: \"josé m.\" <correoxm@disroot.org>\n"
 "Language-Team: Galician <https://hosted.weblate.org/projects/tt-rss/webui/gl/"
 ">\n"
@@ -105,7 +105,7 @@ msgstr "Administración"
 
 #: index.php:120 prefs.php:119
 msgid "Javascript is disabled. Please enable it."
-msgstr ""
+msgstr "Javascript está desactivado. Por favor actívao."
 
 #: index.php:124 index.php:138 index.php:298 prefs.php:126
 #: classes/Pref_Prefs.php:887 classes/Pref_Prefs.php:937
@@ -1190,7 +1190,7 @@ msgstr "Eliminar"
 
 #: classes/Pref_Labels.php:189
 msgid "Clear colors"
-msgstr ""
+msgstr "Limpar cores"
 
 #: classes/OPML.php:291
 #, php-format

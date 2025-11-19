@@ -1,6 +1,6 @@
 name: fmd-server
-title: Find My Device Server
-license: GPL-3.0
+title: FMD Server
+license: GPL-3.0-or-later
 source-code: https://gitlab.com/fmd-foss/fmd-server
 issues: https://gitlab.com/fmd-foss/fmd-server/-/issues
 website: https://fmd-foss.org/

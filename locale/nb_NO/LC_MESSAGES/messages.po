@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tiny Tiny RSS 1.3.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-15 03:54+0000\n"
+"POT-Creation-Date: 2025-11-20 18:16+0000\n"
 "PO-Revision-Date: 2020-07-19 16:40+0000\n"
 "Last-Translator: Jan Espen Pedersen <hphjanni@gmail.com>\n"
 "Language-Team: Norwegian Bokmål <https://weblate.tt-rss.org/projects/tt-rss/"
@@ -110,7 +110,7 @@ msgid "Javascript is disabled. Please enable it."
 msgstr ""
 
 #: index.php:124 index.php:138 index.php:298 prefs.php:126
-#: classes/Pref_Prefs.php:887 classes/Pref_Prefs.php:937
+#: classes/Pref_Prefs.php:890 classes/Pref_Prefs.php:940
 #: classes/Pref_System.php:251 classes/Pref_System.php:262 js/PrefUsers.js:112
 #: js/PrefFeedTree.js:183 js/PrefFeedTree.js:190 js/PrefFeedTree.js:314
 #: js/PrefFeedTree.js:386 js/PrefFilterTree.js:124 js/Article.js:276
@@ -317,7 +317,7 @@ msgstr "Tastatursnarveier"
 msgid "Logout"
 msgstr "Logg ut"
 
-#: prefs.php:16 prefs.php:151 classes/RPC.php:553 classes/Pref_Prefs.php:939
+#: prefs.php:16 prefs.php:151 classes/RPC.php:553 classes/Pref_Prefs.php:942
 msgid "Preferences"
 msgstr "Innstillinger"
 
@@ -330,11 +330,11 @@ msgstr "Forlat innstillinger"
 msgid "Feeds"
 msgstr "Nyhetsstrømmer"
 
-#: prefs.php:158 classes/Pref_Filters.php:300
+#: prefs.php:158 classes/Pref_Filters.php:303
 msgid "Filters"
 msgstr "Filtre"
 
-#: prefs.php:162 classes/Feeds.php:1349 classes/Pref_Labels.php:21
+#: prefs.php:162 classes/Feeds.php:1355 classes/Pref_Labels.php:21
 msgid "Labels"
 msgstr "Etiketter"
 
@@ -583,7 +583,7 @@ msgstr "Tillatt endringer i kategorirekkefølgen?"
 msgid "Go to"
 msgstr "Gå til..."
 
-#: classes/RPC.php:548 classes/Feeds.php:1187
+#: classes/RPC.php:548 classes/Feeds.php:1193
 msgid "All articles"
 msgstr "Alle artikler"
 
@@ -592,7 +592,7 @@ msgstr "Alle artikler"
 msgid "Fresh"
 msgstr "Oppdater"
 
-#: classes/RPC.php:552 classes/Feeds.php:1191
+#: classes/RPC.php:552 classes/Feeds.php:1197
 msgid "Recently read"
 msgstr "Nylig lest"
 
@@ -605,7 +605,7 @@ msgstr "Andre:"
 msgid "Create label"
 msgstr "Lag etikett"
 
-#: classes/RPC.php:556 classes/Pref_Filters.php:739
+#: classes/RPC.php:556 classes/Pref_Filters.php:743
 msgid "Create filter"
 msgstr "Lag filter"
 
@@ -1019,80 +1019,80 @@ msgstr "URL til brukerbestemt utseendemal (CSS)"
 msgid "More themes..."
 msgstr "Flere nyhetsstrømmer..."
 
-#: classes/Pref_Prefs.php:680
+#: classes/Pref_Prefs.php:682
 #, fuzzy
 msgid "Preview"
 msgstr "Filtrer artikkel"
 
-#: classes/Pref_Prefs.php:706
+#: classes/Pref_Prefs.php:708
 #, fuzzy
 msgid "Register"
 msgstr "Registrert"
 
-#: classes/Pref_Prefs.php:710 classes/Pref_System.php:129
+#: classes/Pref_Prefs.php:712 classes/Pref_System.php:129
 msgid "Clear"
 msgstr ""
 
-#: classes/Pref_Prefs.php:714 classes/Pref_Prefs.php:881
+#: classes/Pref_Prefs.php:716 classes/Pref_Prefs.php:884
 #: plugins/bookmarklets/init.php:373 js/CommonDialogs.js:683
 msgid "More info..."
 msgstr "Mer info..."
 
-#: classes/Pref_Prefs.php:722
+#: classes/Pref_Prefs.php:725
 #, php-format
 msgid "Current server time: %s"
 msgstr ""
 
-#: classes/Pref_Prefs.php:770
+#: classes/Pref_Prefs.php:773
 msgid "Save configuration"
 msgstr "Lagre konfigurasjonen"
 
-#: classes/Pref_Prefs.php:773
+#: classes/Pref_Prefs.php:776
 #, fuzzy
 msgid "Save and exit"
 msgstr "Marker ovenfor som lest"
 
-#: classes/Pref_Prefs.php:780 js/PrefHelpers.js:126
+#: classes/Pref_Prefs.php:783 js/PrefHelpers.js:126
 #, fuzzy
 msgid "Manage profiles"
 msgstr "Lag filter"
 
-#: classes/Pref_Prefs.php:785
+#: classes/Pref_Prefs.php:788
 msgid "Reset to defaults"
 msgstr "Tilbake til standard"
 
-#: classes/Pref_Prefs.php:840 classes/Pref_Feeds.php:928
-#: classes/Pref_Filters.php:724 classes/Pref_Users.php:199 js/Feeds.js:662
+#: classes/Pref_Prefs.php:843 classes/Pref_Feeds.php:928
+#: classes/Pref_Filters.php:728 classes/Pref_Users.php:199 js/Feeds.js:662
 #: js/Feeds.js:657 js/Feeds.js:712
 msgid "Search"
 msgstr "Søk"
 
-#: classes/Pref_Prefs.php:845 classes/Pref_Prefs.php:1556
+#: classes/Pref_Prefs.php:848 classes/Pref_Prefs.php:1557
 #: classes/Pref_Labels.php:175 classes/Pref_Feeds.php:933
-#: classes/Pref_Filters.php:729 classes/Pref_Users.php:205
+#: classes/Pref_Filters.php:733 classes/Pref_Users.php:205
 #: js/CommonFilters.js:426 js/CommonFilters.js:459 js/PrefFeedTree.js:516
 #: js/PrefHelpers.js:183 js/CommonDialogs.js:276
 #, fuzzy
 msgid "Select"
 msgstr "Velg:"
 
-#: classes/Pref_Prefs.php:848 classes/Pref_Prefs.php:1559
+#: classes/Pref_Prefs.php:851 classes/Pref_Prefs.php:1560
 #: classes/Pref_Labels.php:177 classes/Pref_Feeds.php:936
-#: classes/Pref_Filters.php:732 classes/Pref_Users.php:208
+#: classes/Pref_Filters.php:736 classes/Pref_Users.php:208
 #: js/CommonFilters.js:430 js/CommonFilters.js:462 js/PrefFeedTree.js:519
 #: js/Headlines.js:657 js/PrefHelpers.js:186 js/CommonDialogs.js:279
 msgid "All"
 msgstr "Alle"
 
-#: classes/Pref_Prefs.php:850 classes/Pref_Prefs.php:1561
+#: classes/Pref_Prefs.php:853 classes/Pref_Prefs.php:1562
 #: classes/Pref_Labels.php:178 classes/Pref_Feeds.php:938
-#: classes/Pref_Filters.php:734 classes/Pref_Users.php:210
+#: classes/Pref_Filters.php:738 classes/Pref_Users.php:210
 #: js/CommonFilters.js:432 js/CommonFilters.js:464 js/PrefFeedTree.js:521
 #: js/Headlines.js:660 js/PrefHelpers.js:188 js/CommonDialogs.js:281
 msgid "None"
 msgstr "Ingen"
 
-#: classes/Pref_Prefs.php:879
+#: classes/Pref_Prefs.php:882
 #, php-format
 msgid ""
 "The following plugins use per-feed content hooks. This may cause excessive "
@@ -1100,80 +1100,80 @@ msgid ""
 "<b>%s</b>"
 msgstr ""
 
-#: classes/Pref_Prefs.php:895 js/CommonFilters.js:222
+#: classes/Pref_Prefs.php:898 js/CommonFilters.js:222
 #, fuzzy
 msgid "More info"
 msgstr "Mer info..."
 
-#: classes/Pref_Prefs.php:898
+#: classes/Pref_Prefs.php:901
 #, fuzzy
 #| msgid "Enable selected plugins"
 msgid "Enable selected"
 msgstr "Aktiver merkede programtillegg"
 
-#: classes/Pref_Prefs.php:901
+#: classes/Pref_Prefs.php:904
 msgid "Reload"
 msgstr ""
 
-#: classes/Pref_Prefs.php:908
+#: classes/Pref_Prefs.php:911
 #, fuzzy
 #| msgid "Perform updates"
 msgid "Check for updates"
 msgstr "Utfør oppdateringene"
 
-#: classes/Pref_Prefs.php:915
+#: classes/Pref_Prefs.php:918
 msgid "Install plugin"
 msgstr ""
 
-#: classes/Pref_Prefs.php:928
+#: classes/Pref_Prefs.php:931
 #, fuzzy
 msgid "Personal data / Authentication"
 msgstr "Autentifisering"
 
-#: classes/Pref_Prefs.php:942 classes/Pref_Feeds.php:1082
+#: classes/Pref_Prefs.php:945 classes/Pref_Feeds.php:1082
 #: js/CommonDialogs.js:622
 msgid "Plugins"
 msgstr ""
 
-#: classes/Pref_Prefs.php:976
+#: classes/Pref_Prefs.php:979
 msgid "Incorrect one time password"
 msgstr "Feil engangspassord"
 
-#: classes/Pref_Prefs.php:979 classes/Pref_Prefs.php:1018
+#: classes/Pref_Prefs.php:982 classes/Pref_Prefs.php:1021
 msgid "Incorrect password"
 msgstr "Feil passord"
 
-#: classes/Pref_Prefs.php:1033
+#: classes/Pref_Prefs.php:1036
 #, php-format
 msgid "v%.2f, by %s"
 msgstr ""
 
-#: classes/Pref_Prefs.php:1047
+#: classes/Pref_Prefs.php:1050
 #, php-format
 msgid "v%s, by %s"
 msgstr ""
 
-#: classes/Pref_Prefs.php:1517 classes/Handler_Public.php:291
+#: classes/Pref_Prefs.php:1518 classes/Handler_Public.php:291
 #: include/login_form.php:159
 msgid "Default profile"
 msgstr "Standard profil"
 
-#: classes/Pref_Prefs.php:1570
+#: classes/Pref_Prefs.php:1571
 #, fuzzy
 msgid "Description"
 msgstr "beskrivelse"
 
-#: classes/Pref_Prefs.php:1571
+#: classes/Pref_Prefs.php:1572
 #, fuzzy
 msgid "Created"
 msgstr "Lag"
 
-#: classes/Pref_Prefs.php:1572
+#: classes/Pref_Prefs.php:1573
 #, fuzzy
 msgid "Last used"
 msgstr "Siste oppdatering:"
 
-#: classes/Pref_Prefs.php:1617
+#: classes/Pref_Prefs.php:1618
 #, php-format
 msgid ""
 "Generated password <strong>%s</strong> for %s. Please remember it for future "
@@ -1195,11 +1195,11 @@ msgstr "Sesjonen kunne ikke valideres (feil IP)"
 msgid "Session failed to validate (user not found)"
 msgstr "Sesjonen kunne ikke valideres (feil IP)"
 
-#: classes/Feeds.php:97 classes/Feeds.php:482
+#: classes/Feeds.php:97 classes/Feeds.php:488
 msgid "Feed not found."
 msgstr "Nyhetsstrømmen ble ikke funnet."
 
-#: classes/Feeds.php:227 classes/Feeds.php:1189
+#: classes/Feeds.php:227 classes/Feeds.php:1195
 msgid "Archived articles"
 msgstr "Arkiverte artikler"
 
@@ -1239,53 +1239,58 @@ msgstr ""
 msgid "No articles found to display."
 msgstr "Ingen artikler funnet som kan vises."
 
-#: classes/Feeds.php:409
+#: classes/Feeds.php:415
 #, php-format
 msgid "Feeds last updated at %s"
 msgstr "Nyhetsstrøm sist oppdatert: %s"
 
-#: classes/Feeds.php:420
+#: classes/Feeds.php:426
 msgid "Some feeds have update errors (click for details)"
 msgstr "Noen nyhetsstrømmer har oppdateringsfeil (trykk for detaljer)"
 
-#: classes/Feeds.php:1181
+#: classes/Feeds.php:1187
 msgid "Starred articles"
 msgstr "Favorittartikler"
 
-#: classes/Feeds.php:1183
+#: classes/Feeds.php:1189
 msgid "Published articles"
 msgstr "Publiserte artikler"
 
-#: classes/Feeds.php:1185
+#: classes/Feeds.php:1191
 msgid "Fresh articles"
 msgstr "Ferske artikler"
 
-#: classes/Feeds.php:1345 classes/OPML.php:526 classes/Digest.php:107
-#: classes/Pref_Feeds.php:247 classes/Pref_Filters.php:1012
+#: classes/Feeds.php:1351 classes/OPML.php:526 classes/Digest.php:107
+#: classes/Pref_Feeds.php:247 classes/Pref_Filters.php:1016
 #: include/controls.php:215
 msgid "Uncategorized"
 msgstr "Ukategorisert"
 
-#: classes/Feeds.php:1347
+#: classes/Feeds.php:1353
 msgid "Special"
 msgstr "Snarveier"
 
-#: classes/Feeds.php:1452
+#: classes/Feeds.php:1458
 #, php-format
 msgid "Incorrect search syntax: %s."
 msgstr ""
 
-#: classes/Feeds.php:1629
+#: classes/Feeds.php:1635
 #, fuzzy, php-format
 msgid "Search results: %s"
 msgstr "Søkeresultat"
+
+#: classes/Feeds.php:2371
+#, php-format
+msgid "The date keyword \"%s\" was not recognized."
+msgstr ""
 
 #: classes/Pref_Labels.php:163
 #, php-format
 msgid "Created label <b>%s</b>"
 msgstr "Laget merkelappen <b>%s</b>"
 
-#: classes/Pref_Labels.php:186 classes/Pref_Filters.php:745
+#: classes/Pref_Labels.php:186 classes/Pref_Filters.php:749
 #: classes/Pref_Users.php:219 js/CommonFilters.js:504 js/CommonDialogs.js:620
 msgid "Remove"
 msgstr "Fjern"
@@ -1560,7 +1565,7 @@ msgid "Edit selected feeds"
 msgstr "Sletter den valgte nyhetsstrømmen..."
 
 #: classes/Pref_Feeds.php:950 classes/Pref_Feeds.php:965
-#: classes/Pref_Filters.php:747
+#: classes/Pref_Filters.php:751
 #, fuzzy
 msgid "Reset sort order"
 msgstr "Nullstill passordet"
@@ -1681,69 +1686,69 @@ msgstr ""
 msgid "Article Tags"
 msgstr "Alle artikler"
 
-#: classes/Pref_Filters.php:272 classes/Pref_Filters.php:282
-#: classes/Pref_Filters.php:457 classes/Pref_Filters.php:959
+#: classes/Pref_Filters.php:275 classes/Pref_Filters.php:285
+#: classes/Pref_Filters.php:461 classes/Pref_Filters.php:963
 msgid "All feeds"
 msgstr "Alle Nyhetsstrømmer"
 
-#: classes/Pref_Filters.php:291 classes/Pref_Filters.php:468
-#: classes/Pref_Filters.php:471
+#: classes/Pref_Filters.php:294 classes/Pref_Filters.php:472
+#: classes/Pref_Filters.php:475
 #, fuzzy
 msgid "(inverse)"
 msgstr "(Motsatt)"
 
-#: classes/Pref_Filters.php:287 classes/Pref_Filters.php:467
-#: classes/Pref_Filters.php:470
+#: classes/Pref_Filters.php:290 classes/Pref_Filters.php:471
+#: classes/Pref_Filters.php:474
 #, php-format
 msgid "%s on %s in %s %s"
 msgstr ""
 
-#: classes/Pref_Filters.php:486
+#: classes/Pref_Filters.php:490
 #, fuzzy, php-format
 #| msgid "Unknown option: %s"
 msgid "Unknown action: %d"
 msgstr "Ukjent valg: %s"
 
-#: classes/Pref_Filters.php:698 js/PrefFilterTree.js:178
+#: classes/Pref_Filters.php:702 js/PrefFilterTree.js:178
 #, java-printf-format, javascript-format, php-format
 msgid "Clone of %s"
 msgstr ""
 
-#: classes/Pref_Filters.php:741 js/PrefHelpers.js:228
+#: classes/Pref_Filters.php:745 js/PrefHelpers.js:228
 msgid "Clone"
 msgstr ""
 
-#: classes/Pref_Filters.php:743
+#: classes/Pref_Filters.php:747
 msgid "Combine"
 msgstr ""
 
-#: classes/Pref_Filters.php:749
+#: classes/Pref_Filters.php:753
 #, fuzzy
 msgid "Toggle rule display"
 msgstr "Vis nyhetskanallisten"
 
-#: classes/Pref_Filters.php:796
+#: classes/Pref_Filters.php:800
 msgid "[No caption]"
 msgstr "Ingen bildetekst"
 
-#: classes/Pref_Filters.php:800
+#: classes/Pref_Filters.php:804
 #, fuzzy, php-format
 msgid "%s (%d rule)"
 msgid_plural "%s (%d rules)"
 msgstr[0] "Legger til kategori for nyhetsstrømmer"
 msgstr[1] "Legger til kategori for nyhetsstrømmer"
 
-#: classes/Pref_Filters.php:805
+#: classes/Pref_Filters.php:809
 #, fuzzy
 msgid "matches any rule"
 msgstr "Match på:"
 
-#: classes/Pref_Filters.php:808
+#: classes/Pref_Filters.php:812
 #, fuzzy
 msgid "inverse"
 msgstr "(Motsatt)"
 
-#: classes/Pref_Filters.php:840
+#: classes/Pref_Filters.php:844
 #, fuzzy, php-format
 msgid "(+%d action)"
 msgid_plural "(+%d actions)"

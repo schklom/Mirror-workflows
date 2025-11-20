@@ -404,11 +404,11 @@ const Notify = {
 		this.msg(msg, keep, this.KIND_INFO);
 	},
 	progress: function(msg, keep) {
-		keep = keep || true;
+		keep = (keep === undefined) || keep; // Means true by default.
 		this.msg(msg, keep, this.KIND_PROGRESS);
 	},
 	error: function(msg, keep) {
-		keep = keep || true;
+		keep = (keep === undefined) || keep; // Means true by default.
 		this.msg(msg, keep, this.KIND_ERROR);
 	}
 };

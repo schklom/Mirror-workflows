@@ -253,8 +253,8 @@ const	CommonDialogs = {
 						const sel_rows = this.getSelectedFeeds();
 
 						if (sel_rows.length > 0) {
-							if (confirm(__("Debug selected feeds?"))) {
-								Notify.progress("Opening debugger for selected feeds...", true);
+							if (sel_rows.length === 1 || confirm(__("Debug selected feeds?"))) {
+								Notify.progress("Opening debugger for selected feeds...", false);
 
 								for (let i = 0; i < sel_rows.length; i++) {
 									/* global __csrf_token */

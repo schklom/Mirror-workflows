@@ -20,7 +20,7 @@ jobs:
       LOCAL: ${{ steps.commits.outputs.SETLOCAL }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           repository: 'schklom/Infinity-For-Reddit'
           ref: 'master' # branch
@@ -62,7 +62,7 @@ jobs:
           destination_ssh_private_key: ${{ secrets.GITSYNCACTION }}
 
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           repository: 'schklom/Infinity-For-Reddit'
           ref: 'master' # branch
@@ -192,7 +192,7 @@ jobs:
 #       CHANGESONBUILDYML: ${{ steps.changes.outputs.SETCHANGESONBUILDYML }}
 #     steps:
 #       - name: Checkout main repo to fix a reusable workflow bug
-#         uses: actions/checkout@v5
+#         uses: actions/checkout@v6
 #         with:
 #           repository: 'schklom/Mirror-workflows'
 #           ref: 'main' # branch
@@ -237,7 +237,7 @@ jobs:
 #     #if: false
 #     steps:
 #       - name: Checkout
-#         uses: actions/checkout@v5
+#         uses: actions/checkout@v6
 #         with:
 #           repository: 'schklom/Infinity-For-Reddit'
 #           ref: 'master' # branch

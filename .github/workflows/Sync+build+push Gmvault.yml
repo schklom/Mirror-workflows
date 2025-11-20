@@ -15,7 +15,7 @@ jobs:
       REMOTE: ${{ steps.commits.outputs.SETREMOTE }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           ref: 'Gmvault' # branch
       - name: set commits as environment variables
@@ -46,7 +46,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           ref: 'Gmvault' # branch
       # https://github.com/docker/setup-qemu-action#usage

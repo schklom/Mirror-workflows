@@ -399,16 +399,13 @@ const Notify = {
 			}, this.default_timeout);
 
 	},
-	info: function(msg, keep) {
-		keep = keep || false;
+	info: function(msg, keep = false) {
 		this.msg(msg, keep, this.KIND_INFO);
 	},
-	progress: function(msg, keep) {
-		keep = keep || true;
+	progress: function(msg, keep = true) {
 		this.msg(msg, keep, this.KIND_PROGRESS);
 	},
-	error: function(msg, keep) {
-		keep = keep || true;
+	error: function(msg, keep = true) {
 		this.msg(msg, keep, this.KIND_ERROR);
 	}
 };

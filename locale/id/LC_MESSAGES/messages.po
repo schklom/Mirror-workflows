@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-15 03:54+0000\n"
+"POT-Creation-Date: 2025-11-20 18:16+0000\n"
 "PO-Revision-Date: 2025-11-19 01:35+0000\n"
 "Last-Translator: Dony Wibowo <dony@dony.me>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/tt-rss/webui/"
@@ -108,7 +108,7 @@ msgid "Javascript is disabled. Please enable it."
 msgstr "JavaScript dinonaktifkan. Silakan aktifkan."
 
 #: index.php:124 index.php:138 index.php:298 prefs.php:126
-#: classes/Pref_Prefs.php:887 classes/Pref_Prefs.php:937
+#: classes/Pref_Prefs.php:890 classes/Pref_Prefs.php:940
 #: classes/Pref_System.php:251 classes/Pref_System.php:262 js/PrefUsers.js:112
 #: js/PrefFeedTree.js:183 js/PrefFeedTree.js:190 js/PrefFeedTree.js:314
 #: js/PrefFeedTree.js:386 js/PrefFilterTree.js:124 js/Article.js:276
@@ -299,7 +299,7 @@ msgstr "Bantuan pintasan keyboard"
 msgid "Logout"
 msgstr "Keluar"
 
-#: prefs.php:16 prefs.php:151 classes/RPC.php:553 classes/Pref_Prefs.php:939
+#: prefs.php:16 prefs.php:151 classes/RPC.php:553 classes/Pref_Prefs.php:942
 msgid "Preferences"
 msgstr "Preferensi"
 
@@ -312,11 +312,11 @@ msgstr "Keluar preferensi"
 msgid "Feeds"
 msgstr "Umpan"
 
-#: prefs.php:158 classes/Pref_Filters.php:300
+#: prefs.php:158 classes/Pref_Filters.php:303
 msgid "Filters"
 msgstr "Filter"
 
-#: prefs.php:162 classes/Feeds.php:1349 classes/Pref_Labels.php:21
+#: prefs.php:162 classes/Feeds.php:1355 classes/Pref_Labels.php:21
 msgid "Labels"
 msgstr "Label"
 
@@ -541,7 +541,7 @@ msgstr "Alihkan perluas otomatis pada mode gabungan﻿"
 msgid "Go to"
 msgstr "Menuju ke"
 
-#: classes/RPC.php:548 classes/Feeds.php:1187
+#: classes/RPC.php:548 classes/Feeds.php:1193
 msgid "All articles"
 msgstr "Semua artikel"
 
@@ -549,7 +549,7 @@ msgstr "Semua artikel"
 msgid "Fresh"
 msgstr "Terbaru﻿"
 
-#: classes/RPC.php:552 classes/Feeds.php:1191
+#: classes/RPC.php:552 classes/Feeds.php:1197
 msgid "Recently read"
 msgstr "Baru dibaca﻿"
 
@@ -561,7 +561,7 @@ msgstr "Lainnya﻿"
 msgid "Create label"
 msgstr "Buat label﻿"
 
-#: classes/RPC.php:556 classes/Pref_Filters.php:739
+#: classes/RPC.php:556 classes/Pref_Filters.php:743
 msgid "Create filter"
 msgstr "Buat filter﻿"
 
@@ -931,75 +931,75 @@ msgstr "Kustomisasi"
 msgid "More themes..."
 msgstr "Lebih banyak tema..."
 
-#: classes/Pref_Prefs.php:680
+#: classes/Pref_Prefs.php:682
 msgid "Preview"
 msgstr "Pratinjau﻿"
 
-#: classes/Pref_Prefs.php:706
+#: classes/Pref_Prefs.php:708
 msgid "Register"
 msgstr "Daftar﻿"
 
-#: classes/Pref_Prefs.php:710 classes/Pref_System.php:129
+#: classes/Pref_Prefs.php:712 classes/Pref_System.php:129
 msgid "Clear"
 msgstr "Bersihkan﻿"
 
-#: classes/Pref_Prefs.php:714 classes/Pref_Prefs.php:881
+#: classes/Pref_Prefs.php:716 classes/Pref_Prefs.php:884
 #: plugins/bookmarklets/init.php:373 js/CommonDialogs.js:683
 msgid "More info..."
 msgstr "Info lebih lanjut...﻿"
 
-#: classes/Pref_Prefs.php:722
+#: classes/Pref_Prefs.php:725
 #, php-format
 msgid "Current server time: %s"
 msgstr "Waktu server saat ini: %s"
 
-#: classes/Pref_Prefs.php:770
+#: classes/Pref_Prefs.php:773
 msgid "Save configuration"
 msgstr "Simpan konfigurasi﻿"
 
-#: classes/Pref_Prefs.php:773
+#: classes/Pref_Prefs.php:776
 msgid "Save and exit"
 msgstr "Simpan dan keluar﻿"
 
-#: classes/Pref_Prefs.php:780 js/PrefHelpers.js:126
+#: classes/Pref_Prefs.php:783 js/PrefHelpers.js:126
 msgid "Manage profiles"
 msgstr "Kelola profil﻿"
 
-#: classes/Pref_Prefs.php:785
+#: classes/Pref_Prefs.php:788
 msgid "Reset to defaults"
 msgstr "Setel ulang ke standar"
 
-#: classes/Pref_Prefs.php:840 classes/Pref_Feeds.php:928
-#: classes/Pref_Filters.php:724 classes/Pref_Users.php:199 js/Feeds.js:662
+#: classes/Pref_Prefs.php:843 classes/Pref_Feeds.php:928
+#: classes/Pref_Filters.php:728 classes/Pref_Users.php:199 js/Feeds.js:662
 #: js/Feeds.js:657 js/Feeds.js:712
 msgid "Search"
 msgstr "Cari﻿"
 
-#: classes/Pref_Prefs.php:845 classes/Pref_Prefs.php:1556
+#: classes/Pref_Prefs.php:848 classes/Pref_Prefs.php:1557
 #: classes/Pref_Labels.php:175 classes/Pref_Feeds.php:933
-#: classes/Pref_Filters.php:729 classes/Pref_Users.php:205
+#: classes/Pref_Filters.php:733 classes/Pref_Users.php:205
 #: js/CommonFilters.js:426 js/CommonFilters.js:459 js/PrefFeedTree.js:516
 #: js/PrefHelpers.js:183 js/CommonDialogs.js:276
 msgid "Select"
 msgstr "Pilih﻿"
 
-#: classes/Pref_Prefs.php:848 classes/Pref_Prefs.php:1559
+#: classes/Pref_Prefs.php:851 classes/Pref_Prefs.php:1560
 #: classes/Pref_Labels.php:177 classes/Pref_Feeds.php:936
-#: classes/Pref_Filters.php:732 classes/Pref_Users.php:208
+#: classes/Pref_Filters.php:736 classes/Pref_Users.php:208
 #: js/CommonFilters.js:430 js/CommonFilters.js:462 js/PrefFeedTree.js:519
 #: js/Headlines.js:657 js/PrefHelpers.js:186 js/CommonDialogs.js:279
 msgid "All"
 msgstr "Semua﻿"
 
-#: classes/Pref_Prefs.php:850 classes/Pref_Prefs.php:1561
+#: classes/Pref_Prefs.php:853 classes/Pref_Prefs.php:1562
 #: classes/Pref_Labels.php:178 classes/Pref_Feeds.php:938
-#: classes/Pref_Filters.php:734 classes/Pref_Users.php:210
+#: classes/Pref_Filters.php:738 classes/Pref_Users.php:210
 #: js/CommonFilters.js:432 js/CommonFilters.js:464 js/PrefFeedTree.js:521
 #: js/Headlines.js:660 js/PrefHelpers.js:188 js/CommonDialogs.js:281
 msgid "None"
 msgstr "Tidak ada﻿"
 
-#: classes/Pref_Prefs.php:879
+#: classes/Pref_Prefs.php:882
 #, php-format
 msgid ""
 "The following plugins use per-feed content hooks. This may cause excessive "
@@ -1010,71 +1010,71 @@ msgstr ""
 "penggunaan data yang berlebih dan beban server asal, yang dapat menyebabkan "
 "instans Anda diblokir: <b>%s</b>"
 
-#: classes/Pref_Prefs.php:895 js/CommonFilters.js:222
+#: classes/Pref_Prefs.php:898 js/CommonFilters.js:222
 msgid "More info"
 msgstr "Info lebih lanjut﻿"
 
-#: classes/Pref_Prefs.php:898
+#: classes/Pref_Prefs.php:901
 msgid "Enable selected"
 msgstr "Aktifkan yang dipilih﻿"
 
-#: classes/Pref_Prefs.php:901
+#: classes/Pref_Prefs.php:904
 msgid "Reload"
 msgstr "Muat ulang﻿"
 
-#: classes/Pref_Prefs.php:908
+#: classes/Pref_Prefs.php:911
 msgid "Check for updates"
 msgstr "Periksa pembaruan﻿"
 
-#: classes/Pref_Prefs.php:915
+#: classes/Pref_Prefs.php:918
 msgid "Install plugin"
 msgstr "Pasang plugin﻿"
 
-#: classes/Pref_Prefs.php:928
+#: classes/Pref_Prefs.php:931
 msgid "Personal data / Authentication"
 msgstr "Data pribadi / Otentikasi﻿"
 
-#: classes/Pref_Prefs.php:942 classes/Pref_Feeds.php:1082
+#: classes/Pref_Prefs.php:945 classes/Pref_Feeds.php:1082
 #: js/CommonDialogs.js:622
 msgid "Plugins"
 msgstr "Plugin﻿"
 
-#: classes/Pref_Prefs.php:976
+#: classes/Pref_Prefs.php:979
 msgid "Incorrect one time password"
 msgstr "Kata sandi satu kali salah﻿"
 
-#: classes/Pref_Prefs.php:979 classes/Pref_Prefs.php:1018
+#: classes/Pref_Prefs.php:982 classes/Pref_Prefs.php:1021
 msgid "Incorrect password"
 msgstr "Kata sandi salah﻿"
 
-#: classes/Pref_Prefs.php:1033
+#: classes/Pref_Prefs.php:1036
 #, php-format
 msgid "v%.2f, by %s"
 msgstr "v%.2f, oleh%s"
 
-#: classes/Pref_Prefs.php:1047
+#: classes/Pref_Prefs.php:1050
 #, php-format
 msgid "v%s, by %s"
 msgstr "v%s, oleh %s"
 
-#: classes/Pref_Prefs.php:1517 classes/Handler_Public.php:291
+#: classes/Pref_Prefs.php:1518 classes/Handler_Public.php:291
 #: include/login_form.php:159
 msgid "Default profile"
 msgstr "Profil standar﻿"
 
-#: classes/Pref_Prefs.php:1570
+#: classes/Pref_Prefs.php:1571
 msgid "Description"
 msgstr "Deskripsi﻿"
 
-#: classes/Pref_Prefs.php:1571
+#: classes/Pref_Prefs.php:1572
 msgid "Created"
 msgstr "Dibuat﻿"
 
-#: classes/Pref_Prefs.php:1572
+#: classes/Pref_Prefs.php:1573
 msgid "Last used"
 msgstr "Terakhir digunakan﻿"
 
-#: classes/Pref_Prefs.php:1617
+#: classes/Pref_Prefs.php:1618
 #, php-format
 msgid ""
 "Generated password <strong>%s</strong> for %s. Please remember it for future "
@@ -1095,11 +1095,11 @@ msgstr "Sesi gagal memvalidasi (akun dinonaktifkan)﻿"
 msgid "Session failed to validate (user not found)"
 msgstr "Sesi gagal divalidasi (pengguna tidak ditemukan)﻿"
 
-#: classes/Feeds.php:97 classes/Feeds.php:482
+#: classes/Feeds.php:97 classes/Feeds.php:488
 msgid "Feed not found."
 msgstr "Umpan tidak ditemukan."
 
-#: classes/Feeds.php:227 classes/Feeds.php:1189
+#: classes/Feeds.php:227 classes/Feeds.php:1195
 msgid "Archived articles"
 msgstr "Artikel diarsipkan﻿"
 
@@ -1131,60 +1131,65 @@ msgid ""
 "filter."
 msgstr ""
 "Tidak ada artikel ditemukan untuk ditampilkan. Anda bisa menetapkan artikel "
-"ke label secara manual dari menu konteks header artikel "
-"(berlaku pada semua artikel dipilih) atau menggunakan filter."
+"ke label secara manual dari menu konteks header artikel (berlaku pada semua "
+"artikel dipilih) atau menggunakan filter."
 
 #: classes/Feeds.php:393
 msgid "No articles found to display."
 msgstr "Tidak ada artikel ditemukan untuk ditampilkan."
 
-#: classes/Feeds.php:409
+#: classes/Feeds.php:415
 #, php-format
 msgid "Feeds last updated at %s"
 msgstr "RSS terakhir diperbarui pada %s"
 
-#: classes/Feeds.php:420
+#: classes/Feeds.php:426
 msgid "Some feeds have update errors (click for details)"
 msgstr "Beberapa umpan mengalami kesalahan pembaruan (klik untuk detail)﻿"
 
-#: classes/Feeds.php:1181
+#: classes/Feeds.php:1187
 msgid "Starred articles"
 msgstr "Artikel berbintang﻿"
 
-#: classes/Feeds.php:1183
+#: classes/Feeds.php:1189
 msgid "Published articles"
 msgstr "Artikel dipublikasikan﻿"
 
-#: classes/Feeds.php:1185
+#: classes/Feeds.php:1191
 msgid "Fresh articles"
 msgstr "Artikel terbaru﻿"
 
-#: classes/Feeds.php:1345 classes/OPML.php:526 classes/Digest.php:107
-#: classes/Pref_Feeds.php:247 classes/Pref_Filters.php:1012
+#: classes/Feeds.php:1351 classes/OPML.php:526 classes/Digest.php:107
+#: classes/Pref_Feeds.php:247 classes/Pref_Filters.php:1016
 #: include/controls.php:215
 msgid "Uncategorized"
 msgstr "Belum dikategorikan﻿"
 
-#: classes/Feeds.php:1347
+#: classes/Feeds.php:1353
 msgid "Special"
 msgstr "Khusus﻿"
 
-#: classes/Feeds.php:1452
+#: classes/Feeds.php:1458
 #, php-format
 msgid "Incorrect search syntax: %s."
 msgstr "Sintak pencarian salah: %s."
 
-#: classes/Feeds.php:1629
+#: classes/Feeds.php:1635
 #, php-format
 msgid "Search results: %s"
 msgstr "Hasil pencarian: %s"
+
+#: classes/Feeds.php:2371
+#, php-format
+msgid "The date keyword \"%s\" was not recognized."
+msgstr ""
 
 #: classes/Pref_Labels.php:163
 #, php-format
 msgid "Created label <b>%s</b>"
 msgstr "Label dibuat <b>%s</b>"
 
-#: classes/Pref_Labels.php:186 classes/Pref_Filters.php:745
+#: classes/Pref_Labels.php:186 classes/Pref_Filters.php:749
 #: classes/Pref_Users.php:219 js/CommonFilters.js:504 js/CommonDialogs.js:620
 msgid "Remove"
 msgstr "Hapus﻿"
@@ -1445,7 +1450,7 @@ msgid "Edit selected feeds"
 msgstr ""
 
 #: classes/Pref_Feeds.php:950 classes/Pref_Feeds.php:965
-#: classes/Pref_Filters.php:747
+#: classes/Pref_Filters.php:751
 msgid "Reset sort order"
 msgstr ""
 
@@ -1553,64 +1558,64 @@ msgstr ""
 msgid "Article Tags"
 msgstr ""
 
-#: classes/Pref_Filters.php:272 classes/Pref_Filters.php:282
-#: classes/Pref_Filters.php:457 classes/Pref_Filters.php:959
+#: classes/Pref_Filters.php:275 classes/Pref_Filters.php:285
+#: classes/Pref_Filters.php:461 classes/Pref_Filters.php:963
 msgid "All feeds"
 msgstr ""
 
-#: classes/Pref_Filters.php:291 classes/Pref_Filters.php:468
-#: classes/Pref_Filters.php:471
+#: classes/Pref_Filters.php:294 classes/Pref_Filters.php:472
+#: classes/Pref_Filters.php:475
 msgid "(inverse)"
 msgstr ""
 
-#: classes/Pref_Filters.php:287 classes/Pref_Filters.php:467
-#: classes/Pref_Filters.php:470
+#: classes/Pref_Filters.php:290 classes/Pref_Filters.php:471
+#: classes/Pref_Filters.php:474
 #, php-format
 msgid "%s on %s in %s %s"
 msgstr ""
 
-#: classes/Pref_Filters.php:486
+#: classes/Pref_Filters.php:490
 #, php-format
 msgid "Unknown action: %d"
 msgstr ""
 
-#: classes/Pref_Filters.php:698 js/PrefFilterTree.js:178
+#: classes/Pref_Filters.php:702 js/PrefFilterTree.js:178
 #, java-printf-format, javascript-format, php-format
 msgid "Clone of %s"
 msgstr ""
 
-#: classes/Pref_Filters.php:741 js/PrefHelpers.js:228
+#: classes/Pref_Filters.php:745 js/PrefHelpers.js:228
 msgid "Clone"
 msgstr ""
 
-#: classes/Pref_Filters.php:743
+#: classes/Pref_Filters.php:747
 msgid "Combine"
 msgstr ""
 
-#: classes/Pref_Filters.php:749
+#: classes/Pref_Filters.php:753
 msgid "Toggle rule display"
 msgstr ""
 
-#: classes/Pref_Filters.php:796
+#: classes/Pref_Filters.php:800
 msgid "[No caption]"
 msgstr ""
 
-#: classes/Pref_Filters.php:800
+#: classes/Pref_Filters.php:804
 #, php-format
 msgid "%s (%d rule)"
 msgid_plural "%s (%d rules)"
 msgstr[0] ""
 msgstr[1] ""
 
-#: classes/Pref_Filters.php:805
+#: classes/Pref_Filters.php:809
 msgid "matches any rule"
 msgstr ""
 
-#: classes/Pref_Filters.php:808
+#: classes/Pref_Filters.php:812
 msgid "inverse"
 msgstr ""
 
-#: classes/Pref_Filters.php:840
+#: classes/Pref_Filters.php:844
 #, php-format
 msgid "(+%d action)"
 msgid_plural "(+%d actions)"

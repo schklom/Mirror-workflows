@@ -2295,28 +2295,33 @@ class Feeds extends Handler_Protected {
 						}
 						break;
 					case 'label':
-						$label_id = Labels::find_id($keyword_value, $owner_uid);
-
-						if ($label_id) {
-							$query_keywords[] = "($not
-								(ttrss_entries.id IN (
-									SELECT article_id FROM ttrss_user_labels2 WHERE
-										label_id = $label_id)))";
+						$sql_start = '(ttrss_entries.id ' . $not . ' IN (SELECT article_id FROM ttrss_user_labels2';
+						$sql_end = '))';
+						if ($keyword_value == 'true') {
+							$query_keywords[] = $sql_start . $sql_end;
+						} else if ($keyword_value == 'false') {
+							$query_keywords[] = '(NOT ' . $sql_start . $sql_end . ')';
 						} else {
-							$query_keywords[] = ($not ? '(true)' : '(false)');
+							$label_id = Labels::find_id($keyword_value, $owner_uid);
+							if ($label_id) {
+								$query_keywords[] = $sql_start . ' WHERE label_id = ' . $label_id . $sql_end;
+							} else {
+								$query_keywords[] = ($not ? '(true)' : '(false)');
+							}
 						}
 						$valid_keyword_processed = true;
-						// Idea: support _label:true_ and _label:false_ to search articles
-						// with(out) a label, whatever its name is.
 						break;
 					case 'tag':
-						$query_keywords[] = "($not
-							(ttrss_user_entries.int_id IN (
-								SELECT post_int_id FROM ttrss_tags WHERE
-									tag_name = " . $pdo->quote($keyword_value) . ')))';
+						$sql_start = '(ttrss_user_entries.int_id ' . $not . ' IN (SELECT post_int_id FROM ttrss_tags';
+						$sql_end = '))';
+						if ($keyword_value == 'true') {
+							$query_keywords[] = $sql_start . $sql_end;
+						} else if ($keyword_value == 'false') {
+							$query_keywords[] = '(NOT ' . $sql_start . $sql_end . ')';
+						} else {
+							$query_keywords[] = $sql_start . ' WHERE tag_name = ' . $pdo->quote($keyword_value) . $sql_end;
+						}
 						$valid_keyword_processed = true;
-						// Idea: support _tag:true_ and _tag:false_ to search articles
-						// with(out) a tag, whatever its value is.
 						break;
 					default:
 						/**

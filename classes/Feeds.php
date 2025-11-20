@@ -2164,10 +2164,10 @@ class Feeds extends Handler_Protected {
 		 * Keywords can be (note: the character '_' is used as a surrounding tag because
 		 * surrounding with quotes may be confusing):
 		 *  - a specific _key:value_ pair supported by tt-rss.
-		 *  - a specific _@time_ value supported by tt-rss, provided by strtotime()
+		 *  - a specific _@date_ value supported by tt-rss, provided by DateTime class
 		 *    such as _@yesterday_ or _"@last Monday"_ or a date.
-		 *  - any part of a tsquery of PostgreSQL Full Text Search: a string, but also
-		 *    operators such as '&' or '|' (other operators are not well supported).
+		 *  - a tsquery of PostgreSQL Full Text Search: a string, but also operators
+		 *    such as '&', '|', '!' and parenthesis.
 		 *  - a list of words between quotes, such as _"one two three"_, which is handled 
 		 *    via PostgreSQL Full Text Search operator '<->' as a list of consecutive words.
 		 * Known issue: Logical operators & | ! and parenthesis are only partially supported
@@ -2333,21 +2333,43 @@ class Feeds extends Handler_Protected {
 				}
 			}
 
-			// Second, try to process a specific _@time_ value supported by tt-rss.
+			// Second, try to process a specific _@date_ value supported by tt-rss.
 			if (!$valid_keyword_processed) {
 				if (str_starts_with($k, '@')) {
-					$user_tz_string = Prefs::get(Prefs::USER_TIMEZONE, $owner_uid);
-					$orig_ts = strtotime(trim(substr($k, 1)));
-					if ($orig_ts !== false) {
-						$k = date('Y-m-d', TimeHelper::convert_timestamp($orig_ts, $user_tz_string, 'UTC'));
-						$query_keywords[] = "( $not SUBSTRING_FOR_DATE(updated,1,LENGTH(" . $pdo->quote($k) . ")) = " . $pdo->quote($k) . ')';
+					try {
+						$tz = new DateTimeZone(Prefs::get(Prefs::USER_TIMEZONE, $owner_uid));
+					} catch (Exception) {
+					 	$tz = new DateTimeZone('UTC');
+					}
+					/* This class supports days expressed as 2024-11-28, 2025/11/28,
+					 * 16-11-2025, 17 nov 2025, november 17 (current year), today,
+					 * yesterday, last monday, 2 days ago, etc. See "Relative Formats" of
+					 *   https://www.php.net/manual/en/datetime.formats.php
+					 */
+					try {
+						$query_date = trim(substr($k, 1));
+						// If $query_date is invalid, an exception is launched.
+						$dt = new DateTime($query_date, $tz);
+						// Obtain the first and last UTC seconds of the queried date.
+						// We only support days, not weeks/months ranges.
+						$ts_first_second = (int)$dt->setTime(0, 0, 0)->format('U');
+						$ts_last_second = (int)$dt->setTime(23, 59, 59)->format('U');
+						// Search this range. The database time is already in UTC.
+						$ts_first_second_sql = date('Y-m-d H:i:s', $ts_first_second);
+						$ts_last_second_sql = date('Y-m-d H:i:s', $ts_last_second);
+						$query_keywords[] = '( ' . $not . ' (updated >= ' . $pdo->quote($ts_first_second_sql) .' AND updated <= ' . $pdo->quote($ts_last_second_sql) . '))';
 						$valid_keyword_processed = true;
-					} else {
+					} catch (Exception) {
 						/**
-						 * Not valid, so fall back to Full Text Search. Unfortunately,
+						 * Not valid. We could fall back to Full Text Search. Unfortunately,
 						 * in this case, there will be no warning, and _@something_
 						 * will never match a word.
+						 * So, to have an error message, we use the trick bellow. Remove
+						 * this trick once a full error processing will be implemented.
 						 */
+						$query_keywords[] = '( will generate an error )'; // Wrong SQL.
+						$search_words[] = sprintf(__('The date keyword "%s" was not recognized.'), htmlspecialchars($query_date));
+						$valid_keyword_processed = true; // Fake: to obtain the warning.
 					}
 				}
 			}

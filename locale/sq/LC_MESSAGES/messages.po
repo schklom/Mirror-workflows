@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-20 18:16+0000\n"
-"PO-Revision-Date: 2025-11-16 16:17+0000\n"
+"PO-Revision-Date: 2025-11-21 19:51+0000\n"
 "Last-Translator: Besnik Bleta <besnik@programeshqip.org>\n"
 "Language-Team: Albanian <https://hosted.weblate.org/projects/tt-rss/webui/sq/"
 ">\n"
@@ -1185,7 +1185,7 @@ msgstr "Përfundime kërkimi: %s"
 #: classes/Feeds.php:2371
 #, php-format
 msgid "The date keyword \"%s\" was not recognized."
-msgstr ""
+msgstr "Fjalëkyçi \"%s\" për datat s’u njoh."
 
 #: classes/Pref_Labels.php:163
 #, php-format

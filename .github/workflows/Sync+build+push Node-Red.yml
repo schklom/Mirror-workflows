@@ -28,7 +28,7 @@ jobs:
       REMOTE: ${{ steps.commits.outputs.SETREMOTE }} 
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           ref: ${{ needs.parameters.outputs.LOCAL_BRANCH }}
       - name: set commits as environment variables
@@ -47,7 +47,7 @@ jobs:
     if: ${{ needs.get_commits.outputs.LOCAL != needs.get_commits.outputs.REMOTE || github.event_name == 'workflow_dispatch' }}
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           ref: ${{ needs.parameters.outputs.LOCAL_BRANCH }}
       - name: get most recent commit id on original repo, for next comparison on sync
@@ -63,7 +63,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           ref: ${{ needs.parameters.outputs.LOCAL_BRANCH }}
       # https://github.com/docker/setup-qemu-action#usage

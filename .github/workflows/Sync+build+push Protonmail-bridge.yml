@@ -26,7 +26,7 @@ jobs:
       REMOTE_PARENT: ${{ steps.commits.outputs.SETREMOTE_PARENT }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           ref: 'Protonmail-bridge' # branch
       - name: set local and remote latest commit as environment variables
@@ -61,7 +61,7 @@ jobs:
           # destination_branch: "Protonmail-bridge"
           # github_token: ${{ secrets.REPO_SYNC_GITHUB_SYNC_PERSONAL_ACCESS_TOKEN }}
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           ref: 'Protonmail-bridge' # branch
       - name: get most recent commit id on original repo, for next comparison on sync PART 1
@@ -90,7 +90,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           #repository: 'schklom/Protonmail-bridge'
           ref: 'Protonmail-bridge' # branch
@@ -134,7 +134,7 @@ jobs:
     runs-on: ubuntu-24.04-arm
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           #repository: 'schklom/Protonmail-bridge'
           ref: 'Protonmail-bridge' # branch

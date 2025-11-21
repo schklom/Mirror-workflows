@@ -17,7 +17,7 @@ jobs:
       REMOTE_REPO: ${{ steps.commits.outputs.SETREMOTE_REPO }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           ref: 'Proxigram' # branch
       - name: set local and remote latest commit as environment variables
@@ -50,7 +50,7 @@ jobs:
           # destination_branch: "SimplyTranslate"
           # github_token: ${{ secrets.REPO_SYNC_GITHUB_SYNC_PERSONAL_ACCESS_TOKEN }}
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           ref: 'Proxigram' # branch
       - name: get most recent commit id on original repo, for next comparison on sync
@@ -74,7 +74,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           #repository: 'schklom/SimplyTranslate'
           ref: 'Proxigram' # branch

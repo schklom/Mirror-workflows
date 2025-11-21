@@ -28,21 +28,7 @@ func NewUserRepository(dbDir string, userIDLength int, maxSavedLoc int, maxSaved
 	db := NewFMDDB(dbDir)
 
 	// Initialise all metrics. Later, they are kept up-to-date incrementally.
-	var userCount int64
-	db.DB.Model(&FMDUser{}).Count(&userCount)
-	metrics.Accounts.Set(float64(userCount))
-
-	var locationCount int64
-	db.DB.Model(&Location{}).Count(&locationCount)
-	metrics.Locations.Set(float64(locationCount))
-
-	var pictureCount int64
-	db.DB.Model(&Picture{}).Count(&pictureCount)
-	metrics.Pictures.Set(float64(pictureCount))
-
-	var pendingCommandCount int64
-	db.DB.Model(&FMDUser{}).Where("command_to_user IS NOT NULL AND command_to_user <> ''").Count(&pendingCommandCount)
-	metrics.PendingCommands.Set(float64(pendingCommandCount))
+	initializeUserMetrics(db)
 
 	InitializePushServerMetrics(db)
 
@@ -179,7 +165,14 @@ func (u *UserRepository) DeleteUser(user *FMDUser) {
 	log.Info().Str("userid", user.UID).Msg("deleting user")
 
 	u.UB.Delete(&user)
-	metrics.Accounts.Dec()
+
+	// Reload the metrics by fully re-initializing them.
+	// These are simpler DB queries than JOIN-ing tables to find out how many
+	// locs/pics were deleted and then decrementing all metrics.
+	initializeUserMetrics(u.UB)
+
+	u.ACC.ResetLock(user.UID)
+	u.ACC.ResetTokensForUser(user.UID)
 }
 
 func (u *UserRepository) GetLocation(user *FMDUser, idx int) string {

@@ -43,9 +43,9 @@ func NewAccessController() AccessController {
 	return controller
 }
 
-func (a *AccessController) IncrementLock(id string) {
+func (a *AccessController) IncrementLock(userId string) {
 	now := time.Now().Unix()
-	lId, exists := a.lockedIDs[id]
+	lId, exists := a.lockedIDs[userId]
 
 	if exists {
 		if lId.ExpirationTime < now {
@@ -62,7 +62,7 @@ func (a *AccessController) IncrementLock(id string) {
 	// Extend lock time
 	lId.ExpirationTime = now + DURATION_LOCKED_SECS
 
-	a.lockedIDs[id] = lId
+	a.lockedIDs[userId] = lId
 
 	// It is fiddly to distinguish between "locked accounts" (attemps >= 5)
 	// and "accounts with failed login attempts".
@@ -70,8 +70,8 @@ func (a *AccessController) IncrementLock(id string) {
 	metrics.FailedLoginAccounts.Set(float64(len(a.lockedIDs)))
 }
 
-func (a *AccessController) ResetLock(id string) {
-	delete(a.lockedIDs, id)
+func (a *AccessController) ResetLock(userId string) {
+	delete(a.lockedIDs, userId)
 	metrics.FailedLoginAccounts.Set(float64(len(a.lockedIDs)))
 }
 
@@ -160,4 +160,15 @@ func (a *AccessController) cronRemoveExpired() {
 		metrics.ActiveSessions.Set(float64(len(a.accessTokens)))
 		metrics.FailedLoginAccounts.Set(float64(len(a.lockedIDs)))
 	}
+}
+
+func (a *AccessController) ResetTokensForUser(userId string) {
+	// XXX: This is not very efficient
+	for key, value := range a.accessTokens {
+		if value.DeviceId == userId {
+			delete(a.accessTokens, key)
+		}
+	}
+
+	metrics.ActiveSessions.Set(float64(len(a.accessTokens)))
 }

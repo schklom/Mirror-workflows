@@ -1,4 +1,5 @@
-#!/usr/bin/env bash
+#!/bin/sh
+# bash is not available in Docker-in-Docker in Gitlab CI
 
 # Script to rebuild all Docker images for the latest FMD Server release.
 #

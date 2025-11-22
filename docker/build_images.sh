@@ -1,15 +1,16 @@
-#!/usr/bin/env bash
+#!/bin/sh
+# bash is not available in Docker-in-Docker in Gitlab CI
 
 # Script to build all Docker images for FMD Server.
 # When run in the CI, it will push the images to the container registry.
 
 # This script is designed to be executed from the root of the git repository.
 
-set -eu
+set -eux
 
 VERSION=${1-}
 
-if [[ -z "$VERSION" ]]; then
+if [ -z "${VERSION}" ]; then
     echo "Error: missing version to build" >&2
     echo "Usage: $0 <version>" >&2
     exit 1
@@ -25,20 +26,20 @@ VERSION=${VERSION#v}
 # https://www.gnu.org/software/bash/manual/html_node/Shell-Parameter-Expansion.html
 MAJOR_VERSION=${VERSION%%.*}
 
-IMAGE_NAME="${CI_REGISTRY:-docker.io}/fmd-foss/fmd-server"
+IMAGE_NAME="${CI_REGISTRY_IMAGE:-docker.io/fmdfoss/fmd-server}"
 
 ARG_ANNOTATION="--annotation org.opencontainers.image.version=${VERSION} --annotation org.opencontainers.image.source=https://gitlab.com/fmd-foss/fmd-server --annotation org.opencontainers.image.licenses=GPL-3.0-or-later"
 
 ARG_MULTI_PLATFORM="--platform linux/amd64,linux/arm/v7,linux/arm64/v8"
 
-if [[ "${CI-}" ]]; then
+if [ "${CI-}" ]; then
     # buildx multiplatform build sometimes fails in Gitlab CI: https://github.com/docker/buildx/issues/584
     docker run --rm --privileged multiarch/qemu-user-static --reset -p yes; docker buildx create --use
 fi
 
 ARG_PUSH=""
-if [[ "${CI-}" ]]; then
-    docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+if [ "${CI-}" ]; then
+    docker login -u "${CI_REGISTRY_USER}" -p "${CI_REGISTRY_PASSWORD}" "${CI_REGISTRY}"
     ARG_PUSH="--push"
 fi
 
@@ -51,7 +52,7 @@ for BASE in "debian" "alpine" "distroless"; do
 
     ARG_TAGS="--tag ${IMAGE_NAME}:${VERSION}-${BASE} --tag ${IMAGE_NAME}:${MAJOR_VERSION}-${BASE}"
 
-    if [[ "$BASE" = "debian" ]]; then
+    if [ "${BASE}" = "debian" ]; then
         # same, but without the -base suffix
         ARG_TAGS="$ARG_TAGS --tag ${IMAGE_NAME}:${VERSION} --tag ${IMAGE_NAME}:${MAJOR_VERSION}"
     fi

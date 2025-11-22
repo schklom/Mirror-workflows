@@ -8,62 +8,63 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-20 18:16+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2025-11-23 20:51+0000\n"
+"Last-Translator: liilliil <liilliil@liilliil.net>\n"
+"Language-Team: Tatar <https://hosted.weblate.org/projects/tt-rss/webui/tt/>\n"
 "Language: tt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 5.15-dev\n"
 
 #: backend.php:55
 msgid "Use default"
-msgstr ""
+msgstr "Килешү буенча куллану"
 
 #: backend.php:56
 msgid "Never purge"
-msgstr ""
+msgstr "Беркайчан да чистартма"
 
 #: backend.php:57
 msgid "1 week old"
-msgstr ""
+msgstr "1 атналык"
 
 #: backend.php:58
 msgid "2 weeks old"
-msgstr ""
+msgstr "2 атналык"
 
 #: backend.php:59
 msgid "1 month old"
-msgstr ""
+msgstr "1 айлык"
 
 #: backend.php:60
 msgid "2 months old"
-msgstr ""
+msgstr "2 айлык"
 
 #: backend.php:61
 msgid "3 months old"
-msgstr ""
+msgstr "3 айлык"
 
 #: backend.php:64
 msgid "Default interval"
-msgstr ""
+msgstr "Төп интервал"
 
 #: backend.php:65 backend.php:75
 msgid "Disable updates"
-msgstr ""
+msgstr "Яңартуларны сүндерү"
 
 #: backend.php:66 backend.php:76
 msgid "15 minutes"
-msgstr ""
+msgstr "15 минут"
 
 #: backend.php:67 backend.php:77
 msgid "30 minutes"
-msgstr ""
+msgstr "30 минут"
 
 #: backend.php:68 backend.php:78
 msgid "Hourly"
-msgstr ""
+msgstr "Сәгатьлек"
 
 #: backend.php:69 backend.php:79
 msgid "4 hours"

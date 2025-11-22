@@ -8,14 +8,16 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-20 18:16+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2025-11-22 20:01+0000\n"
+"Last-Translator: liilliil <liilliil@liilliil.net>\n"
+"Language-Team: Rusyn <https://hosted.weblate.org/projects/tt-rss/webui/rue/>"
+"\n"
 "Language: rue\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.15-dev\n"
 
 #: backend.php:55
 msgid "Use default"
@@ -63,23 +65,23 @@ msgstr ""
 
 #: backend.php:68 backend.php:78
 msgid "Hourly"
-msgstr ""
+msgstr "Каждодобно"
 
 #: backend.php:69 backend.php:79
 msgid "4 hours"
-msgstr ""
+msgstr "4 добы"
 
 #: backend.php:70 backend.php:80
 msgid "12 hours"
-msgstr ""
+msgstr "12 доб"
 
 #: backend.php:71 backend.php:81
 msgid "Daily"
-msgstr ""
+msgstr "Каждоденно"
 
 #: backend.php:72 backend.php:82
 msgid "Weekly"
-msgstr ""
+msgstr "Тыжднёво"
 
 #: backend.php:85 classes/Pref_Feeds.php:565 classes/Pref_Feeds.php:618
 msgid "Disabled"
@@ -841,19 +843,19 @@ msgstr ""
 
 #: classes/Pref_Prefs.php:363
 msgid "Old password:"
-msgstr ""
+msgstr "Старе гесло:"
 
 #: classes/Pref_Prefs.php:368 js/PrefUsers.js:84
 msgid "New password:"
-msgstr ""
+msgstr "Нове гесло:"
 
 #: classes/Pref_Prefs.php:373
 msgid "Confirm password:"
-msgstr ""
+msgstr "Потвердьте гесло:"
 
 #: classes/Pref_Prefs.php:381 js/PrefUsers.js:86
 msgid "Change password"
-msgstr ""
+msgstr "Змінити гесло"
 
 #: classes/Pref_Prefs.php:388
 #, php-format
@@ -896,7 +898,7 @@ msgstr ""
 
 #: classes/Pref_Prefs.php:529 js/PrefFeedTree.js:450 js/CommonDialogs.js:91
 msgid "Password"
-msgstr ""
+msgstr "Гесло"
 
 #: classes/Pref_Prefs.php:532
 msgid "App passwords"

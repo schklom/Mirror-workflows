@@ -17,6 +17,7 @@ COPY metrics/ metrics/
 COPY migrations/ migrations/
 COPY user/ user/
 COPY utils/ utils/
+COPY version/ version/
 COPY web/ web/
 
 RUN go build -o /tmp/fmd main.go

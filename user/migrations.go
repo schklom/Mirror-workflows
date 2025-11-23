@@ -101,7 +101,7 @@ func migrateToV2Passwords(db *gorm.DB) {
 
 		if strings.HasPrefix(u.HashedPassword, PwPrefixV2) {
 			// Idempotence: skip already migrated passwords
-			return
+			continue
 		}
 
 		u.setPasswordData(u.Salt, u.HashedPassword)

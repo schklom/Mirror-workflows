@@ -53,11 +53,7 @@ class Article extends Handler_Protected {
 
 		$content_hash = sha1($content);
 
-		if ($labels_str != "") {
-			$labels = explode(",", $labels_str);
-		} else {
-			$labels = [];
-		}
+		$labels = $labels_str == '' ? [] : explode(',', $labels_str);
 
 		$rc = false;
 
@@ -174,8 +170,12 @@ class Article extends Handler_Protected {
 	}
 
 	function setScore(): void {
-		$ids = array_map(intval(...), clean($_REQUEST['ids'] ?? []));
-		$score = (int)clean($_REQUEST['score']);
+		$ids = self::_param_to_int_array($_REQUEST['ids'] ?? '');
+
+		if (!$ids)
+			return;
+
+		$score = (int) clean($_REQUEST['score']);
 
 		$ids_qmarks = arr_qmarks($ids);
 
@@ -271,8 +271,7 @@ class Article extends Handler_Protected {
 	private function _label_ops(bool $assign): void {
 		$reply = [];
 
-		$ids = array_map(intval(...),
-			array_filter(explode(',', clean($_REQUEST['ids'] ?? '')), fn($i) => strlen($i) > 0));
+		$ids = self::_param_to_int_array($_REQUEST['ids'] ?? '');
 
 		$label_id = clean($_REQUEST['lid']);
 		$label = Labels::find_caption($label_id, $_SESSION['uid']);

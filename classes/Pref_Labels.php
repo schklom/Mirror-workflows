@@ -48,7 +48,7 @@ class Pref_Labels extends Handler_Protected {
 
 	function colorset(): void {
 		$kind = clean($_REQUEST["kind"]);
-		$ids = explode(',', clean($_REQUEST["ids"]));
+		$ids = self::_param_to_int_array($_REQUEST['ids'] ?? '');
 		$color = clean($_REQUEST["color"]);
 		$fg = clean($_REQUEST["fg"]);
 		$bg = clean($_REQUEST["bg"]);
@@ -80,7 +80,7 @@ class Pref_Labels extends Handler_Protected {
 	}
 
 	function colorreset(): void {
-		$ids = explode(',', clean($_REQUEST["ids"]));
+		$ids = self::_param_to_int_array($_REQUEST['ids'] ?? '');
 
 		foreach ($ids as $id) {
 			$sth = $this->pdo->prepare("UPDATE ttrss_labels2 SET
@@ -144,8 +144,7 @@ class Pref_Labels extends Handler_Protected {
 	}
 
 	function remove(): void {
-		/** @var array<int, int> */
-		$ids = array_map(intval(...), explode(',', clean($_REQUEST['ids'])));
+		$ids = self::_param_to_int_array($_REQUEST['ids'] ?? '');
 
 		foreach ($ids as $id) {
 			Labels::remove($id, $_SESSION["uid"]);

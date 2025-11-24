@@ -209,10 +209,7 @@ class UserHelper {
 		$user = ORM::for_table('ttrss_users')
 			->find_one($id);
 
-		if ($user)
-			return $user->login;
-		else
-			return null;
+		return $user ? $user->login : null;
 	}
 
 	static function find_user_by_login(string $login): ?int {
@@ -220,10 +217,7 @@ class UserHelper {
 			->where_raw('LOWER(login) = LOWER(?)', [$login])
 			->find_one();
 
-		if ($user)
-			return $user->id;
-		else
-			return null;
+		return $user ? $user->id : null;
 	}
 
 	static function logout(): void {
@@ -316,12 +310,7 @@ class UserHelper {
 
 	static function is_otp_enabled(int $owner_uid) : bool {
 		$user = ORM::for_table('ttrss_users')->find_one($owner_uid);
-
-		if ($user) {
-			return $user->otp_enabled;
-		} else {
-			return false;
-		}
+		return $user ? $user->otp_enabled : false;
 	}
 
 	static function get_otp_secret(int $owner_uid, bool $show_if_enabled = false): ?string {
@@ -335,14 +324,8 @@ class UserHelper {
 				$secret = $user->otp_secret;
 
 				if (empty($secret)) {
-
 					/* migrate secret if OTP is already enabled, otherwise make a new one */
-					if ($user->otp_enabled) {
-						$user->otp_secret = $salt_based_secret;
-					} else {
-						$user->otp_secret = bin2hex(get_random_bytes(10));
-					}
-
+					$user->otp_secret = $user->otp_enabled ? $salt_based_secret : bin2hex(get_random_bytes(10));
 					$user->save();
 
 					$secret = $user->otp_secret;

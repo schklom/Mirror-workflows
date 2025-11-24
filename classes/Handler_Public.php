@@ -265,12 +265,10 @@ class Handler_Public extends Handler {
 		if ($uid) {
 			print Feeds::_get_global_unread($uid);
 
-			if ($fresh) {
-				print ";";
-				print Feeds::_get_counters(Feeds::FEED_FRESH, false, true, $uid);
-			}
+			if ($fresh)
+				print ';' . Feeds::_get_counters(Feeds::FEED_FRESH, false, true, $uid);
 		} else {
-			print "-1;User not found";
+			print '-1;User not found';
 		}
 	}
 

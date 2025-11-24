@@ -21,11 +21,7 @@ class OPML extends Handler_Protected {
 	// Export
 
 	private function opml_export_category(int $owner_uid, int $cat_id, bool $hide_private_feeds = false, bool $include_settings = true): string {
-
-		if ($hide_private_feeds)
-			$hide_qpart = "(private IS false AND auth_login = '' AND auth_pass = '')";
-		else
-			$hide_qpart = "true";
+		$hide_qpart = $hide_private_feeds ? "(private IS false AND auth_login = '' AND auth_pass = '')" : 'true';
 
 		$out = "";
 
@@ -82,11 +78,7 @@ class OPML extends Handler_Protected {
 				$ttrss_specific_qpart = "";
 			}
 
-			if ($site_url) {
-				$html_url_qpart = "htmlUrl=\"$site_url\"";
-			} else {
-				$html_url_qpart = "";
-			}
+			$html_url_qpart = $site_url ? "htmlUrl=\"$site_url\"" : '';
 
 			$out .= "<outline type=\"rss\" text=\"$title\" xmlUrl=\"$url\" $ttrss_specific_qpart $html_url_qpart/>\n";
 		}
@@ -188,18 +180,11 @@ class OPML extends Handler_Protected {
 					} else {
 						$match = [];
 						foreach (json_decode($tmp_line["match_on"], true) as $feed_id) {
-
-							if (str_starts_with($feed_id, "CAT:")) {
-								$feed_id = (int)substr($feed_id, 4);
-								if ($feed_id)
-									$match[] = [Feeds::_get_cat_title($feed_id, $owner_uid), true, false];
-								else
-									$match[] = [0, true, true];
+							if (str_starts_with($feed_id, 'CAT:')) {
+								$feed_id = (int) substr($feed_id, 4);
+								$match[] = $feed_id ? [Feeds::_get_cat_title($feed_id, $owner_uid), true, false] : [0, true, true];
 							} else {
-								if ($feed_id)
-									$match[] = [Feeds::_get_title((int)$feed_id, $owner_uid), false, false];
-								else
-									$match[] = [0, false, true];
+								$match[] = $feed_id ? [Feeds::_get_title((int)$feed_id, $owner_uid), false, false] : [0, false, true];
 							}
 						}
 

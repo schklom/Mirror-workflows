@@ -383,11 +383,7 @@ class DiskCache implements Cache_Adapter {
 
 	public function get_fake_extension(string $filename): string {
 		$mimetype = $this->adapter->get_mime_type(basename($filename));
-
-		if ($mimetype)
-			return $this->mimeMap[$mimetype] ?? "";
-		else
-			return "";
+		return $mimetype ? ($this->mimeMap[$mimetype] ?? '') : '';
 	}
 
 	public function get_url(string $filename): string {

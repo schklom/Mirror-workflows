@@ -19,10 +19,6 @@ class ComposerStaticInit83a70fee85897d2afa1e766a13e36778
             'chillerlan\\Settings\\' => 20,
             'chillerlan\\QRCode\\' => 18,
         ),
-        'W' =>
-        array (
-            'Webmozart\\Assert\\' => 17,
-        ),
         'S' =>
         array (
             'Soundasleep\\' => 12,
@@ -58,10 +54,6 @@ class ComposerStaticInit83a70fee85897d2afa1e766a13e36778
         'chillerlan\\QRCode\\' =>
         array (
             0 => __DIR__ . '/..' . '/chillerlan/php-qrcode/src',
-        ),
-        'Webmozart\\Assert\\' =>
-        array (
-            0 => __DIR__ . '/..' . '/webmozart/assert/src',
         ),
         'Soundasleep\\' =>
         array (
@@ -313,9 +305,6 @@ class ComposerStaticInit83a70fee85897d2afa1e766a13e36778
         'TimeHelper' => __DIR__ . '/../..' . '/classes/TimeHelper.php',
         'UrlHelper' => __DIR__ . '/../..' . '/classes/UrlHelper.php',
         'UserHelper' => __DIR__ . '/../..' . '/classes/UserHelper.php',
-        'Webmozart\\Assert\\Assert' => __DIR__ . '/..' . '/webmozart/assert/src/Assert.php',
-        'Webmozart\\Assert\\InvalidArgumentException' => __DIR__ . '/..' . '/webmozart/assert/src/InvalidArgumentException.php',
-        'Webmozart\\Assert\\Mixin' => __DIR__ . '/..' . '/webmozart/assert/src/Mixin.php',
         'chillerlan\\QRCode\\Common\\BitBuffer' => __DIR__ . '/..' . '/chillerlan/php-qrcode/src/Common/BitBuffer.php',
         'chillerlan\\QRCode\\Common\\ECICharset' => __DIR__ . '/..' . '/chillerlan/php-qrcode/src/Common/ECICharset.php',
         'chillerlan\\QRCode\\Common\\EccLevel' => __DIR__ . '/..' . '/chillerlan/php-qrcode/src/Common/EccLevel.php',

@@ -223,11 +223,7 @@ class Pref_Prefs extends Handler_Protected {
 			}
 		}
 
-		if ($need_reload) {
-			print "PREFS_NEED_RELOAD";
-		} else {
-			print __("The configuration was saved.");
-		}
+		print ($need_reload ? 'PREFS_NEED_RELOAD' : __('The configuration was saved.'));
 	}
 
 	function changePersonalData(): void {
@@ -318,11 +314,7 @@ class Pref_Prefs extends Handler_Protected {
 	}
 
 	private function index_auth_password(): void {
-		if ($_SESSION["auth_module"]) {
-			$authenticator = PluginHost::getInstance()->get_plugin($_SESSION["auth_module"]);
-		} else {
-			$authenticator = false;
-		}
+		$authenticator = $_SESSION['auth_module'] ? PluginHost::getInstance()->get_plugin($_SESSION['auth_module']) : false;
 
 		if ($authenticator && implements_interface($authenticator, "IAuthModule2")) {
 			?>
@@ -1397,11 +1389,7 @@ class Pref_Prefs extends Handler_Protected {
 			->where('owner_uid', $_SESSION['uid'])
 			->find_one($id);
 
-		if ($profile) {
-			$_SESSION["profile"] = $id;
-		} else {
-			$_SESSION["profile"] = null;
-		}
+		$_SESSION['profile'] = $profile ? $id : null;
 	}
 
 	/**

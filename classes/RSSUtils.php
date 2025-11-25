@@ -1816,10 +1816,7 @@ class RSSUtils {
 		$feed_id = (int) $feed_id;
 		$cat_id = Feeds::_cat_of($feed_id);
 
-		if (!$cat_id)
-			$null_cat_qpart = "cat_id IS NULL OR";
-		else
-			$null_cat_qpart = "";
+		$null_cat_qpart = $cat_id ? '' : 'cat_id IS NULL OR';
 
 		$pdo = Db::pdo();
 
@@ -1917,13 +1914,8 @@ class RSSUtils {
 	 * @return false|string The favicon URL string, or false if none was found.
 	 */
 	static function get_favicon_url(string $url): false|string {
-
 		$favicon_urls = self::get_favicon_urls($url);
-
-		if (count($favicon_urls) > 0)
-			return $favicon_urls[0];
-		else
-			return false;
+		return count($favicon_urls) > 0 ? $favicon_urls[0] : false;
 	}
 
 	/**

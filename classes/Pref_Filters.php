@@ -205,15 +205,13 @@ class Pref_Filters extends Handler_Protected {
 
 						if ($match_index > 0)
 							$content_preview = '&hellip;' . $content_preview;
-
-					} else if ($rule['type'] == 'link') {
-						$content_preview = $entry['link'];
-					} else if ($rule['type'] == 'author') {
-						$content_preview = $entry['author'];
-					} else if ($rule['type'] == 'tag') {
-						$content_preview = '<i class="material-icons">label_outline</i> ' . implode(', ', $entry_tags);
 					} else {
-						$content_preview = "&mdash;";
+						$content_preview = match ($rule['type']) {
+							'link' => $entry['link'],
+							'author' => $entry['author'],
+							'tag' => '<i class="material-icons">label_outline</i> ' . implode(', ', $entry_tags),
+							default => '&mdash;',
+						};
 					}
 
 					switch ($rule['type']) {
@@ -536,13 +534,15 @@ class Pref_Filters extends Handler_Protected {
 	}
 
 	function remove(): void {
+		$ids = self::_param_to_int_array($_REQUEST['ids'] ?? '');
 
-		$ids = explode(",", clean($_REQUEST["ids"]));
-		$ids_qmarks = arr_qmarks($ids);
+		if (!$ids)
+			return;
 
-		$sth = $this->pdo->prepare("DELETE FROM ttrss_filters2 WHERE id IN ($ids_qmarks)
-			AND owner_uid = ?");
-		$sth->execute([...$ids, $_SESSION['uid']]);
+		ORM::for_table('ttrss_filters2')
+			->where_in('id', $ids)
+			->where('owner_uid', $_SESSION['uid'])
+			->delete_many();
 	}
 
 	private function _clone_rules_and_actions(int $filter_id, ?int $src_filter_id = null): bool {
@@ -625,18 +625,12 @@ class Pref_Filters extends Handler_Protected {
 					$action_param = $action["action_param"];
 					$action_param_label = $action["action_param_label"];
 
-					if ($action_id == self::ACTION_LABEL) {
-						$action_param = $action_param_label;
-					}
-
-					if ($action_id == self::ACTION_SCORE) {
-						$action_param = (int)str_replace("+", "", $action_param);
-					}
-
-					if (in_array($action_id, [self::ACTION_TAG, self::ACTION_REMOVE_TAG])) {
-						$action_param = implode(", ", FeedItem_Common::normalize_categories(
-							explode(",", $action_param)));
-					}
+					$action_param = match ($action_id) {
+						self::ACTION_LABEL => $action_param_label,
+						self::ACTION_SCORE => (int) str_replace('+', '', $action_param),
+						self::ACTION_TAG, self::ACTION_REMOVE_TAG => implode(', ', FeedItem_Common::normalize_categories(explode(',', $action_param))),
+						default => $action_param,
+					};
 
 					$asth->execute([$filter_id, $action_id, $action_param]);
 				}
@@ -686,8 +680,11 @@ class Pref_Filters extends Handler_Protected {
 	}
 
 	function clone(): void {
-		/** @var array<int, int> */
-		$src_filter_ids = array_map(intval(...), array_filter(explode(',', clean($_REQUEST['ids'] ?? ''))));
+		$src_filter_ids = self::_param_to_int_array($_REQUEST['ids'] ?? '');
+
+		if (!$src_filter_ids)
+			return;
+
 		$new_filter_title = count($src_filter_ids) === 1 ? clean($_REQUEST['new_filter_title'] ?? null) : null;
 
 		$src_filters = ORM::for_table('ttrss_filters2')
@@ -772,6 +769,7 @@ class Pref_Filters extends Handler_Protected {
 	}
 
 	function editrule(): void {
+		// may contain category strings, so don't use self::_param_to_int_array() here
 		$feed_ids = explode(",", clean($_REQUEST["ids"]));
 
 		print json_encode([
@@ -852,8 +850,10 @@ class Pref_Filters extends Handler_Protected {
 	}
 
 	function join(): void {
-		/** @var array<int, int> */
-		$ids = array_map(intval(...), explode(',', clean($_REQUEST['ids'])));
+		$ids = self::_param_to_int_array($_REQUEST['ids'] ?? '');
+
+		if (!$ids)
+			return;
 
 		// fail early if any provided filter IDs aren't owned by the current user
 		$unowned_filter_count = ORM::for_table('ttrss_filters2')

@@ -222,10 +222,9 @@ class Counters {
 			];
 
 			if ($feed_id == Feeds::FEED_STARRED)
-				$cv["markedcounter"] = $auxctr;
-
-			if ($feed_id == Feeds::FEED_PUBLISHED)
-				$cv["publishedcounter"] = $auxctr;
+				$cv['markedcounter'] = $auxctr;
+			elseif ($feed_id == Feeds::FEED_PUBLISHED)
+				$cv['publishedcounter'] = $auxctr;
 
 			$ret[] = $cv;
 		}

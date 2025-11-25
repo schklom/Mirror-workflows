@@ -144,11 +144,7 @@ class Bookmarklets extends Plugin {
 					<?php
 				}
 
-				if ($rc['code'] <= 2) {
-					$feed_id = Feeds::_find_by_url($feed_url, $_SESSION["uid"]);
-				} else {
-					$feed_id = 0;
-				}
+				$feed_id = $rc['code'] <= 2 ? Feeds::_find_by_url($feed_url, $_SESSION['uid']) : 0;
 
 				if ($feed_id) {
 					?>

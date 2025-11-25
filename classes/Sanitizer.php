@@ -125,7 +125,10 @@ class Sanitizer {
 
 		$profile = isset($_SESSION['uid']) && $owner == $_SESSION['uid'] && isset($_SESSION['profile']) ? $_SESSION['profile'] : null;
 
-		$res = trim($str); if (!$res) return '';
+		$res = trim($str);
+
+		if (!$res)
+			return '';
 
 		$doc = new DOMDocument();
 		$doc->loadHTML('<?xml encoding="UTF-8">' . $res);

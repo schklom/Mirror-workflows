@@ -75,12 +75,15 @@ class RPC extends Handler_Protected {
 	}
 
 	function delete(): void {
-		$ids = explode(",", clean($_REQUEST["ids"]));
-		$ids_qmarks = arr_qmarks($ids);
+		$ids = self::_param_to_int_array($_REQUEST['ids'] ?? '');
 
-		$sth = $this->pdo->prepare("DELETE FROM ttrss_user_entries
-			WHERE ref_id IN ($ids_qmarks) AND owner_uid = ?");
-		$sth->execute([...$ids, $_SESSION['uid']]);
+		if (!$ids)
+			return;
+
+		ORM::for_table('ttrss_user_entries')
+			->where_in('ref_id', $ids)
+			->where('owner_uid', $_SESSION['uid'])
+			->delete_many();
 
 		print json_encode(["message" => "UPDATE_COUNTERS"]);
 	}
@@ -117,31 +120,22 @@ class RPC extends Handler_Protected {
 		// it seems impossible to distinguish empty array [] from a null - both become unset in $_REQUEST
 		// so, count is >= 0 means we had an array, -1 means null
 		// we need null because it means "return all counters"; [] would return nothing
-		if ($feed_id_count == -1)
-			$feed_ids = null;
-		else
-			$feed_ids = array_map(intval(...), clean($_REQUEST['feed_ids'] ?? []));
-
-		if ($label_id_count == -1)
-			$label_ids = null;
-		else
-			$label_ids = array_map(intval(...), clean($_REQUEST['label_ids'] ?? []));
+		$feed_ids = $feed_id_count == -1 ? null : (self::_param_to_int_array($_REQUEST['feed_ids'] ?? '') ?? []);
+		$label_ids = $label_id_count == -1 ? null : (self::_param_to_int_array($_REQUEST['label_ids'] ?? '') ?? []);
 
 		$counters = is_array($feed_ids)
 			&& !Prefs::get(Prefs::DISABLE_CONDITIONAL_COUNTERS, $_SESSION['uid'], $_SESSION['profile'] ?? null) ?
 			Counters::get_conditional($feed_ids, $label_ids) : Counters::get_all();
 
-		$reply = [
+		print json_encode([
 			'counters' => $counters,
-			'seq' => $seq
-		];
-
-		print json_encode($reply);
+			'seq' => $seq,
+		]);
 	}
 
 	/* GET["cmode"] = 0 - mark as read, 1 - as unread, 2 - toggle */
 	function catchupSelected(): void {
-		$ids = array_map(intval(...), clean($_REQUEST['ids'] ?? []));
+		$ids = self::_param_to_int_array($_REQUEST['ids'] ?? '') ?? [];
 		$cmode = (int)clean($_REQUEST["cmode"]);
 
 		if (count($ids) > 0)
@@ -153,7 +147,7 @@ class RPC extends Handler_Protected {
 	}
 
 	function markSelected(): void {
-		$ids = array_map(intval(...), clean($_REQUEST['ids'] ?? []));
+		$ids = self::_param_to_int_array($_REQUEST['ids'] ?? '') ?? [];
 		$cmode = (int)clean($_REQUEST["cmode"]);
 
 		if (count($ids) > 0)
@@ -165,7 +159,7 @@ class RPC extends Handler_Protected {
 	}
 
 	function publishSelected(): void {
-		$ids = array_map(intval(...), clean($_REQUEST['ids'] ?? []));
+		$ids = self::_param_to_int_array($_REQUEST['ids'] ?? '') ?? [];
 		$cmode = (int)clean($_REQUEST["cmode"]);
 
 		if (count($ids) > 0)
@@ -198,13 +192,11 @@ class RPC extends Handler_Protected {
 		}
 
 		if ($error == Errors::E_SUCCESS) {
-			$reply = [];
-
-			$reply['init-params'] = $this->_make_init_params();
-			$reply['runtime-info'] = static::_make_runtime_info();
-			$reply['translations'] = $this->_translations_as_array();
-
-			print json_encode($reply);
+			print json_encode([
+				'init-params' => $this->_make_init_params(),
+				'runtime-info' => static::_make_runtime_info(),
+				'translations' => $this->_translations_as_array(),
+			]);
 		} else {
 			print Errors::to_json($error, $error_params);
 		}
@@ -283,19 +275,15 @@ class RPC extends Handler_Protected {
 
 		$ids_qmarks = arr_qmarks($ids);
 
-		if ($cmode == Article::CATCHUP_MODE_MARK_AS_READ) {
-			$sth = $this->pdo->prepare("UPDATE ttrss_user_entries SET
-				published = false, last_published = NOW()
-					WHERE ref_id IN ($ids_qmarks) AND owner_uid = ?");
-		} else if ($cmode == Article::CATCHUP_MODE_MARK_AS_UNREAD) {
-			$sth = $this->pdo->prepare("UPDATE ttrss_user_entries SET
-				published = true, last_published = NOW()
-					WHERE ref_id IN ($ids_qmarks) AND owner_uid = ?");
-		} else {
-			$sth = $this->pdo->prepare("UPDATE ttrss_user_entries SET
-				published = NOT published,last_published = NOW()
-					WHERE ref_id IN ($ids_qmarks) AND owner_uid = ?");
-		}
+		$published_val = match($cmode) {
+			Article::CATCHUP_MODE_MARK_AS_READ => 'false',
+			Article::CATCHUP_MODE_MARK_AS_UNREAD => 'true',
+			default => 'NOT published',
+		};
+
+		$sth = $this->pdo->prepare("UPDATE ttrss_user_entries
+			SET published = {$published_val}, last_published = NOW()
+			WHERE ref_id IN ($ids_qmarks) AND owner_uid = ?");
 
 		$sth->execute([...$ids, $_SESSION['uid']]);
 
@@ -421,8 +409,6 @@ class RPC extends Handler_Protected {
 	 * @return array<string, mixed>
 	 */
 	static function _make_runtime_info(): array {
-		$data = [];
-
 		$pdo = Db::pdo();
 
 		$sth = $pdo->prepare("SELECT MAX(id) AS mid, COUNT(*) AS nf FROM
@@ -433,10 +419,12 @@ class RPC extends Handler_Protected {
 		$max_feed_id = $row['mid'];
 		$num_feeds = $row['nf'];
 
-		$data["max_feed_id"] = (int) $max_feed_id;
-		$data["num_feeds"] = (int) $num_feeds;
-		$data['cdm_expanded'] = Prefs::get(Prefs::CDM_EXPANDED, $_SESSION['uid'], $_SESSION['profile'] ?? null);
-		$data["labels"] = Labels::get_all($_SESSION["uid"]);
+		$data = [
+			'max_feed_id' => (int) $max_feed_id,
+			'num_feeds' => (int) $num_feeds,
+			'cdm_expanded' => Prefs::get(Prefs::CDM_EXPANDED, $_SESSION['uid'], $_SESSION['profile'] ?? null),
+			'labels' => Labels::get_all($_SESSION["uid"]),
+		];
 
 		if (Config::get(Config::LOG_DESTINATION) == 'sql' && $_SESSION['access_level'] >= UserHelper::ACCESS_LEVEL_ADMIN) {
 

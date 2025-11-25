@@ -119,10 +119,10 @@ class Pref_Users extends Handler_Administrative {
 		}
 
 		function remove(): void {
-			$ids = explode(",", clean($_REQUEST["ids"]));
+			$ids = self::_param_to_int_array($_REQUEST['ids']);
 
 			foreach ($ids as $id) {
-				if ($id != $_SESSION["uid"] && $id != 1) {
+				if ($id != $_SESSION['uid'] && $id != 1) {
 					ORM::for_table('ttrss_tags')->where('owner_uid', $id)->delete_many();
 					ORM::for_table('ttrss_feeds')->where('owner_uid', $id)->delete_many();
 					ORM::for_table('ttrss_users')->where('id', $id)->delete_many();

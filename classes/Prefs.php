@@ -163,10 +163,7 @@ class Prefs {
 	}
 
 	static function get_default(string $pref_name): bool|int|null|string {
-		if (self::is_valid($pref_name))
-			return self::_DEFAULTS[$pref_name][0];
-		else
-			return null;
+		return self::is_valid($pref_name) ? self::_DEFAULTS[$pref_name][0] : null;
 	}
 
 	function __construct() {

@@ -229,7 +229,10 @@ class API extends Handler {
 	}
 
 	function updateArticle(): bool {
-		$article_ids = array_filter(explode(",", clean($_REQUEST["article_ids"] ?? "")));
+		$article_ids = self::_param_to_int_array($_REQUEST['article_ids'] ?? '');
+		if (!$article_ids)
+			return $this->_wrap(self::STATUS_ERR, ['error' => self::E_INCORRECT_USAGE]);
+
 		$mode = (int) clean($_REQUEST["mode"]);
 		$data = clean($_REQUEST["data"] ?? "");
 		$field_raw = (int)clean($_REQUEST["field"]);
@@ -270,7 +273,7 @@ class API extends Handler {
 		elseif ($field == 'score')
 			$set_to = (int) $data;
 
-		if ($field && $set_to && count($article_ids) > 0) {
+		if ($field && $set_to) {
 
 			$article_qmarks = arr_qmarks($article_ids);
 
@@ -281,8 +284,7 @@ class API extends Handler {
 
 			if ($field == 'marked')
 				PluginHost::getInstance()->run_hooks(PluginHost::HOOK_ARTICLES_MARK_TOGGLED, $article_ids);
-
-			if ($field == 'published')
+			elseif ($field == 'published')
 				PluginHost::getInstance()->run_hooks(PluginHost::HOOK_ARTICLES_PUBLISH_TOGGLED, $article_ids);
 
 			$num_updated = $sth->rowCount();
@@ -296,10 +298,10 @@ class API extends Handler {
 	}
 
 	function getArticle(): bool {
-		$article_ids = array_filter(explode(',', clean($_REQUEST['article_id'] ?? '')));
+		$article_ids = self::_param_to_int_array($_REQUEST['article_id'] ?? '');
 		$sanitize_content = self::_param_to_bool($_REQUEST['sanitize'] ?? true);
 
-		if (count($article_ids)) {
+		if ($article_ids) {
 			$entries = ORM::for_table('ttrss_entries')
 				->table_alias('e')
 				->select_many('e.id', 'e.guid', 'e.title', 'e.link', 'e.author', 'e.content', 'e.lang', 'e.comments',
@@ -311,7 +313,7 @@ class API extends Handler {
 					'hide_images' => '(SELECT hide_images FROM ttrss_feeds WHERE id = feed_id)',
 				])
 				->join('ttrss_user_entries', [ 'ue.ref_id', '=', 'e.id'], 'ue')
-				->where_in('e.id', array_map(intval(...), $article_ids))
+				->where_in('e.id', $article_ids)
 				->where('ue.owner_uid', $_SESSION['uid'])
 				->find_many();
 
@@ -429,10 +431,7 @@ class API extends Handler {
 			->order_by_asc('caption')
 			->find_many();
 
-		if ($article_id)
-			$article_labels = Article::_get_labels($article_id);
-		else
-			$article_labels = [];
+		$article_labels = $article_id ? Article::_get_labels($article_id) : [];
 
 		foreach ($labels as $label) {
 			$checked = false;
@@ -456,8 +455,7 @@ class API extends Handler {
 	}
 
 	function setArticleLabel(): bool {
-
-		$article_ids = explode(",", clean($_REQUEST["article_ids"]));
+		$article_ids = self::_param_to_int_array($_REQUEST['article_ids'] ?? '');
 		$label_id = (int) clean($_REQUEST['label_id']);
 		$assign = self::_param_to_bool(clean($_REQUEST['assign']));
 
@@ -468,11 +466,10 @@ class API extends Handler {
 		if ($label) {
 
 			foreach ($article_ids as $id) {
-
 				if ($assign)
-					Labels::add_article((int)$id, $label, $_SESSION["uid"]);
+					Labels::add_article($id, $label, $_SESSION["uid"]);
 				else
-					Labels::remove_article((int)$id, $label, $_SESSION["uid"]);
+					Labels::remove_article($id, $label, $_SESSION["uid"]);
 
 				++$num_updated;
 
@@ -502,10 +499,7 @@ class API extends Handler {
 		$url = clean($_REQUEST["url"]);
 		$sanitize_content = self::_param_to_bool($_REQUEST["sanitize"] ?? true);
 
-		if ($sanitize_content)
-			$content = clean($_REQUEST["content"]);
-		else
-			$content = $_REQUEST["content"];
+		$content = $sanitize_content ? clean($_REQUEST['content']) : $_REQUEST['content'];
 
 		if (Article::_create_published_article($title, $url, $content, "", $_SESSION["uid"])) {
 			return $this->_wrap(self::STATUS_OK, ["status" => 'OK']);
@@ -749,12 +743,8 @@ class API extends Handler {
 					if ($label_cache) {
 						$label_cache = json_decode($label_cache, true);
 
-						if ($label_cache) {
-							if (($label_cache["no-labels"] ?? 0) == 1)
-								$labels = [];
-							else
-								$labels = $label_cache;
-						}
+						if ($label_cache)
+							$labels = ($label_cache['no-labels'] ?? 0) == 1 ? [] : $label_cache;
 					}
 
 					if (!is_array($labels)) $labels = Article::_get_labels($line["id"]);

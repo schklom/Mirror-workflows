@@ -158,11 +158,7 @@
         }
     }
 
-	if (!isset($options["daemon"])) {
-		$lock_filename = "update.lock";
-	} else {
-		$lock_filename = "update_daemon.lock";
-	}
+	$lock_filename = isset($options['daemon']) ? 'update_daemon.lock' : 'update.lock';
 
 	if (isset($options["task"])) {
 		Debug::log("Using task id " . $options["task"]);
@@ -214,7 +210,7 @@
 			$log = isset($options['log']) ? '--log '.$options['log'] : '';
 			$log_level = isset($options['log-level']) ? '--log-level '.$options['log-level'] : '';
 
-			passthru(Config::get(Config::PHP_EXECUTABLE) . " " . $argv[0] ." --daemon-loop $quiet $log $log_level");
+			passthru(Config::get(Config::PHP_EXECUTABLE) . ' ' . $_SERVER['SCRIPT_FILENAME'] . " --daemon-loop $quiet $log $log_level");
 
 			// let's enforce a minimum spawn interval as to not forkbomb the host
 			$spawn_interval = max(60, Config::get(Config::DAEMON_SLEEP_INTERVAL));

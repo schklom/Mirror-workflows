@@ -120,22 +120,18 @@ class Pref_Feeds extends Handler_Protected {
 		else
 			$search = $_REQUEST['search'] ?? '';
 
-		$root = [];
-		$root['id'] = 'root';
-		$root['name'] = __('Feeds');
-		$root['items'] = [];
-		$root['param'] = '0';
-		$root['type'] = 'category';
+		$root = [
+			'id' => 'root',
+			'name' => __('Feeds'),
+			'items' => [],
+			'param' => '0',
+			'type' => 'category',
+		];
 
 		$enable_cats = Prefs::get(Prefs::ENABLE_FEED_CATS, $_SESSION['uid'], $profile);
 
 		if (clean($_REQUEST['mode'] ?? 0) == 2) {
-
-			if ($enable_cats) {
-				$cat = $this->feedlist_init_cat(Feeds::CATEGORY_SPECIAL);
-			} else {
-				$cat['items'] = [];
-			}
+			$cat = $enable_cats ? $this->feedlist_init_cat(Feeds::CATEGORY_SPECIAL) : ['items' => []];
 
 			foreach ([Feeds::FEED_ALL, Feeds::FEED_FRESH, Feeds::FEED_STARRED, Feeds::FEED_PUBLISHED,
 				Feeds::FEED_ARCHIVED, Feeds::FEED_RECENTLY_READ] as $feed_id) {
@@ -295,7 +291,7 @@ class Pref_Feeds extends Handler_Protected {
 			$num_children = $this->calculate_children_count($root);
 			$root['param'] = sprintf(_ngettext('(%d feed)', '(%d feeds)', (int) $num_children), $num_children);
 
-		} else {
+		} else { // cats not enabled
 			$feeds_obj = ORM::for_table('ttrss_feeds')
 				->table_alias('f')
 				->select_many('id', 'title', 'last_error', 'update_interval')
@@ -356,10 +352,7 @@ class Pref_Feeds extends Handler_Protected {
 	 * @param array<string, mixed> $data_map
 	 */
 	private function process_category_order(array &$data_map, string $item_id = '', string $parent_id = '', int $nest_level = 0): void {
-
-		$prefix = "";
-		for ($i = 0; $i < $nest_level; $i++)
-			$prefix .= "   ";
+		$prefix = str_repeat('   ', $nest_level);
 
 		Debug::log("$prefix C: $item_id P: $parent_id");
 
@@ -430,34 +423,20 @@ class Pref_Feeds extends Handler_Protected {
 	function savefeedorder(): void {
 		$data = json_decode($_POST['payload'], true);
 
-		#file_put_contents("/tmp/saveorder.json", clean($_POST['payload']));
-		#$data = json_decode(file_get_contents("/tmp/saveorder.json"), true);
-
 		if (!is_array($data['items']))
 			$data['items'] = json_decode($data['items'], true);
 
-#		print_r($data['items']);
-
 		if (is_array($data) && is_array($data['items'])) {
-#			$cat_order_id = 0;
-
 			/** @var array<int, mixed> */
 			$data_map = [];
 			$root_item = '';
 
 			foreach ($data['items'] as $item) {
+				if (is_array($item['items'] ?? false))
+					$data_map[$item['id']] = isset($item['items']['_reference']) ? [$item['items']] : $item['items'];
 
-#				if ($item['id'] != 'root') {
-					if (is_array($item['items'] ?? false)) {
-						if (isset($item['items']['_reference'])) {
-							$data_map[$item['id']] = [$item['items']];
-						} else {
-							$data_map[$item['id']] = $item['items'];
-						}
-					}
-				if ($item['id'] == 'root') {
+				if ($item['id'] == 'root')
 					$root_item = $item['id'];
-				}
 			}
 
 			$this->process_category_order($data_map, $root_item);
@@ -560,9 +539,9 @@ class Pref_Feeds extends Handler_Protected {
 				$default_purge_interval = Prefs::get(Prefs::PURGE_OLD_DAYS, $_SESSION['uid']);
 
 				if ($default_purge_interval > 0)
-				$local_purge_intervals[0] .= " " . T_nsprintf('(%d day)', '(%d days)', $default_purge_interval, $default_purge_interval);
-			else
-				$local_purge_intervals[0] .= " " . sprintf("(%s)", __("Disabled"));
+					$local_purge_intervals[0] .= " " . T_nsprintf('(%d day)', '(%d days)', $default_purge_interval, $default_purge_interval);
+				else
+					$local_purge_intervals[0] .= " " . sprintf("(%s)", __("Disabled"));
 
 			} else {
 				$purge_interval = Config::get(Config::FORCE_ARTICLE_PURGE);
@@ -722,7 +701,7 @@ class Pref_Feeds extends Handler_Protected {
 		$upd_intl = (int) clean($_POST["update_interval"] ?? 0);
 		$purge_intl = (int) clean($_POST["purge_interval"] ?? 0);
 		$feed_id = (int) clean($_POST["id"] ?? 0); /* editSave */
-		$feed_ids = explode(",", clean($_POST["ids"] ?? "")); /* batchEditSave */
+		$feed_ids = self::_param_to_int_array($_POST['ids'] ?? ''); /* batchEditSave */
 		$cat_id = (int) clean($_POST["cat_id"] ?? 0);
 		$auth_login = clean($_POST["auth_login"] ?? "");
 		$auth_pass = clean($_POST["auth_pass"] ?? "");
@@ -776,6 +755,9 @@ class Pref_Feeds extends Handler_Protected {
 			}
 
 		} else {
+			if (!$feed_ids)
+				return;
+
 			$feed_data = [];
 
 			foreach (array_keys($_POST) as $k) {
@@ -870,19 +852,17 @@ class Pref_Feeds extends Handler_Protected {
 	}
 
 	function remove(): void {
-		/** @var array<int, int> */
-		$ids = array_map(intval(...), explode(',', clean($_REQUEST['ids'])));
+		$ids = self::_param_to_int_array($_REQUEST['ids'] ?? '');
 
-		foreach ($ids as $id) {
+		foreach ($ids as $id)
 			self::remove_feed($id, $_SESSION["uid"]);
-		}
 	}
 
 	function removeCat(): void {
-		$ids = explode(",", clean($_REQUEST["ids"]));
-		foreach ($ids as $id) {
-			Feeds::_remove_cat((int)$id, $_SESSION["uid"]);
-		}
+		$ids = self::_param_to_int_array($_REQUEST['ids'] ?? '');
+
+		foreach ($ids as $id)
+			Feeds::_remove_cat($id, $_SESSION["uid"]);
 	}
 
 	function addCat(): void {

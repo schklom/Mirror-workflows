@@ -102,6 +102,8 @@ jobs:
           type=raw,value=latest
           # short SHA with a 'sha-' prefix (e.g. sha-abc123)
           type=sha
+          # date of the associated commit (e.g. 20251126-133700)
+          type=raw,value={{commit_date 'YYYYMMDD-HHmmss'}}
 
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v3

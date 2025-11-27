@@ -195,7 +195,7 @@ class UrlHelper {
 			if (!in_array($tokens['port'] ?? '', [80, 443, '']))
 				return false;
 
-			if (self::has_disallowed_ip($tokens))
+			if (self::has_disallowed_ip($tokens, true))
 				return false;
 		}
 
@@ -208,10 +208,15 @@ class UrlHelper {
 	 * Traffic to private IPs on standard ports (80 and 443) is allowed to mimic the original behavior of
 	 * tt-rss, which (by omitting the port number in URLs) effectively only allowed the default ports.
 	 *
+	 * By default there will not be resolution of a host to IP, and validation of that IP, as it can introduce
+	 * noticeable slowness when DNS is slow (or times out, etc.).  'UrlHelper::fetch()', at minimum, will have
+	 * this additional validation enabled.
+	 *
 	 * @param string|array{scheme?: string, host?: string, port?: int} $url_or_tokens URL or pre-parsed URL tokens array
+	 * @param bool $validate_resolved_ip whether to perform additional validation by resolving the host to an IP and validating that IP
 	 * @return bool true if the URL should be rejected, false otherwise
 	 */
-	static function has_disallowed_ip(string|array $url_or_tokens): bool {
+	static function has_disallowed_ip(string|array $url_or_tokens, bool $validate_resolved_ip = false): bool {
 		$tokens = is_array($url_or_tokens)? $url_or_tokens : parse_url($url_or_tokens);
 
 		if (empty($tokens['host']))
@@ -243,7 +248,7 @@ class UrlHelper {
 			return true;
 
 		// if needed, try resolving the hostname and checking the resulting IP
-		if (!str_contains($host, ':') && !preg_match('/^\d+\./', $host)) {
+		if ($validate_resolved_ip && !str_contains($host, ':') && !preg_match('/^\d+\./', $host)) {
 			$ip_addr = gethostbyname($host);
 
 			// failed to resolve
@@ -361,7 +366,7 @@ class UrlHelper {
 		}
 
 		// this skip is needed for integration tests, please don't enable in production
-		if (!getenv('__URLHELPER_ALLOW_LOOPBACK')) {
+		/* if (!getenv('__URLHELPER_ALLOW_LOOPBACK')) {
 			$url_host = parse_url($url, PHP_URL_HOST);
 			$ip_addr = gethostbyname($url_host);
 
@@ -369,7 +374,7 @@ class UrlHelper {
 				self::$fetch_last_error = "URL hostname failed to resolve or resolved to a loopback address ($ip_addr)";
 				return false;
 			}
-		}
+		} */
 
 		$req_options = [
 			GuzzleHttp\RequestOptions::CONNECT_TIMEOUT => $timeout ?: Config::get(Config::FILE_FETCH_CONNECT_TIMEOUT),
@@ -505,13 +510,13 @@ class UrlHelper {
 		self::$fetch_effective_ip_addr = gethostbyname(parse_url(self::$fetch_effective_url, PHP_URL_HOST));
 
 		// this skip is needed for integration tests, please don't enable in production
-		if (!getenv('__URLHELPER_ALLOW_LOOPBACK')) {
+		/* if (!getenv('__URLHELPER_ALLOW_LOOPBACK')) {
 			if (!self::$fetch_effective_ip_addr || str_starts_with(self::$fetch_effective_ip_addr, '127.')) {
 				self::$fetch_last_error = 'URL hostname received after redirection failed to resolve or resolved to a loopback address (' .
 					self::$fetch_effective_ip_addr . ')';
 				return false;
 			}
-		}
+		} */
 
 		$body = (string) $response->getBody();
 

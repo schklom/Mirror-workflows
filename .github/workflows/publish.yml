@@ -46,6 +46,7 @@ jobs:
     - docker-code-quality
     - javascript-code-quality
     - php-code-quality
+    - shell-code-quality
     runs-on: ubuntu-latest
     permissions:
       contents: read

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-20 18:16+0000\n"
+"POT-Creation-Date: 2025-11-28 21:06+0000\n"
 "PO-Revision-Date: 2025-10-01 13:02+0000\n"
 "Last-Translator: Rivo Zängov <rivozangov@gmail.com>\n"
 "Language-Team: Estonian <https://hosted.weblate.org/projects/tt-rss/webui/et/"
@@ -83,7 +83,7 @@ msgstr "Iga päev"
 msgid "Weekly"
 msgstr "Iga nädal"
 
-#: backend.php:85 classes/Pref_Feeds.php:565 classes/Pref_Feeds.php:618
+#: backend.php:85 classes/Pref_Feeds.php:544 classes/Pref_Feeds.php:597
 msgid "Disabled"
 msgstr "Välja lülitatud"
 
@@ -108,11 +108,11 @@ msgid "Javascript is disabled. Please enable it."
 msgstr ""
 
 #: index.php:124 index.php:138 index.php:298 prefs.php:126
-#: classes/Pref_Prefs.php:890 classes/Pref_Prefs.php:940
+#: classes/Pref_Prefs.php:882 classes/Pref_Prefs.php:932
 #: classes/Pref_System.php:251 classes/Pref_System.php:262 js/PrefUsers.js:112
 #: js/PrefFeedTree.js:183 js/PrefFeedTree.js:190 js/PrefFeedTree.js:314
-#: js/PrefFeedTree.js:386 js/PrefFilterTree.js:124 js/Article.js:276
-#: js/Article.js:352 js/Headlines.js:351 js/Headlines.js:534
+#: js/PrefFeedTree.js:386 js/PrefFilterTree.js:124 js/Article.js:280
+#: js/Article.js:356 js/Headlines.js:351 js/Headlines.js:534
 #: js/CommonFilters.js:265 js/CommonFilters.js:391 js/PrefHelpers.js:26
 #: js/PrefHelpers.js:38 js/PrefHelpers.js:61 js/PrefHelpers.js:114
 #: js/PrefHelpers.js:242 js/PrefHelpers.js:293 js/PrefHelpers.js:444
@@ -151,11 +151,11 @@ msgstr "Kohanduv"
 msgid "All Articles"
 msgstr "Kõik artiklid"
 
-#: index.php:186 classes/RPC.php:550
+#: index.php:186 classes/RPC.php:538
 msgid "Starred"
 msgstr ""
 
-#: index.php:187 classes/RPC.php:551
+#: index.php:187 classes/RPC.php:539
 msgid "Published"
 msgstr ""
 
@@ -187,7 +187,7 @@ msgstr "Vanemad eespool"
 msgid "Title"
 msgstr "Pealkiri"
 
-#: index.php:212 index.php:269 classes/RPC.php:537 classes/Pref_Filters.php:25
+#: index.php:212 index.php:269 classes/RPC.php:525 classes/Pref_Filters.php:25
 #: js/Headlines.js:1547 js/FeedTree.js:94 js/FeedTree.js:133
 #: js/Headlines.js:668
 msgid "Mark as read"
@@ -262,7 +262,7 @@ msgstr "Telli uudisvoog..."
 msgid "Edit this feed..."
 msgstr "Muuda seda uudisvoogu..."
 
-#: index.php:267 classes/Pref_Feeds.php:954 js/PrefFeedTree.js:119
+#: index.php:267 classes/Pref_Feeds.php:934 js/PrefFeedTree.js:119
 #: js/CommonDialogs.js:627
 msgid "Unsubscribe"
 msgstr "Tühista tellimus"
@@ -279,11 +279,11 @@ msgstr ""
 msgid "UI layout:"
 msgstr "UI paigutus:"
 
-#: index.php:272 classes/RPC.php:546
+#: index.php:272 classes/RPC.php:534
 msgid "Toggle combined mode"
 msgstr ""
 
-#: index.php:274 classes/RPC.php:523
+#: index.php:274 classes/RPC.php:511
 msgid "Toggle widescreen mode"
 msgstr ""
 
@@ -295,7 +295,7 @@ msgstr ""
 msgid "Other actions:"
 msgstr ""
 
-#: index.php:278 classes/RPC.php:558
+#: index.php:278 classes/RPC.php:546
 msgid "Keyboard shortcuts help"
 msgstr ""
 
@@ -303,7 +303,7 @@ msgstr ""
 msgid "Logout"
 msgstr "Logi välja"
 
-#: prefs.php:16 prefs.php:151 classes/RPC.php:553 classes/Pref_Prefs.php:942
+#: prefs.php:16 prefs.php:151 classes/RPC.php:541 classes/Pref_Prefs.php:934
 msgid "Preferences"
 msgstr "Eelistused"
 
@@ -312,15 +312,15 @@ msgid "Exit preferences"
 msgstr "Väljumise eelistused"
 
 #: prefs.php:154 classes/Pref_Prefs.php:44 classes/Pref_Feeds.php:125
-#: classes/Pref_Feeds.php:943
+#: classes/Pref_Feeds.php:923
 msgid "Feeds"
 msgstr "Uudisvood"
 
-#: prefs.php:158 classes/Pref_Filters.php:303
+#: prefs.php:158 classes/Pref_Filters.php:301
 msgid "Filters"
 msgstr "Filtrid"
 
-#: prefs.php:162 classes/Feeds.php:1355 classes/Pref_Labels.php:21
+#: prefs.php:162 classes/Feeds.php:1315 classes/Pref_Labels.php:21
 msgid "Labels"
 msgstr "Sildid"
 
@@ -332,256 +332,256 @@ msgstr "Kasutajad"
 msgid "System"
 msgstr "Süsteem"
 
-#: classes/RPC.php:492
+#: classes/RPC.php:480
 msgid "Navigation"
 msgstr "Navigeerimine"
 
-#: classes/RPC.php:493
+#: classes/RPC.php:481
 msgid "Open next feed"
 msgstr "Ava järgmine uudisvoog"
 
-#: classes/RPC.php:494
+#: classes/RPC.php:482
 msgid "Open next unread feed"
 msgstr "Ava järgmine lugemata uudisvoog"
 
-#: classes/RPC.php:495
+#: classes/RPC.php:483
 msgid "Open previous feed"
 msgstr "Ava eelmine uudisvoog"
 
-#: classes/RPC.php:496
+#: classes/RPC.php:484
 msgid "Open previous unread feed"
 msgstr "Ava eelmine lugemata uudisvoog"
 
-#: classes/RPC.php:497
+#: classes/RPC.php:485
 msgid "Open next article (in combined mode, scroll down)"
 msgstr "Ava järgmine artikkel (kombineeritud režiimis, keri alla)"
 
-#: classes/RPC.php:498
+#: classes/RPC.php:486
 msgid "Open previous article (in combined mode, scroll up)"
 msgstr "Ava eelmine artikkel (kombineeritud režiimis, keri üles)"
 
-#: classes/RPC.php:499
+#: classes/RPC.php:487
 msgid "Scroll headlines by one page down"
 msgstr ""
 
-#: classes/RPC.php:500
+#: classes/RPC.php:488
 msgid "Scroll headlines by one page up"
 msgstr ""
 
-#: classes/RPC.php:501
+#: classes/RPC.php:489
 msgid "Open next article"
 msgstr "Ava järgmine artikkel"
 
-#: classes/RPC.php:502
+#: classes/RPC.php:490
 msgid "Open previous article"
 msgstr "Ava eelmine artikkel"
 
-#: classes/RPC.php:503
+#: classes/RPC.php:491
 msgid "Move to next article (don't expand)"
 msgstr "Liigu järgmisele artiklile (ära laienda)"
 
-#: classes/RPC.php:504
+#: classes/RPC.php:492
 msgid "Move to previous article (don't expand)"
 msgstr "Liigu eelmisele artiklile (ära laienda)"
 
-#: classes/RPC.php:505
+#: classes/RPC.php:493
 msgid "Show search dialog"
 msgstr "Näita otsingu dialoogi"
 
-#: classes/RPC.php:506
+#: classes/RPC.php:494
 msgid "Cancel active search"
 msgstr ""
 
-#: classes/RPC.php:507
+#: classes/RPC.php:495
 msgid "Article"
 msgstr "Artikkel"
 
-#: classes/RPC.php:508 js/Headlines.js:1423 js/Headlines.js:665
+#: classes/RPC.php:496 js/Headlines.js:1423 js/Headlines.js:665
 msgid "Toggle starred"
 msgstr ""
 
-#: classes/RPC.php:509 js/Headlines.js:1435 js/Headlines.js:666
+#: classes/RPC.php:497 js/Headlines.js:1435 js/Headlines.js:666
 msgid "Toggle published"
 msgstr ""
 
-#: classes/RPC.php:510 js/Headlines.js:1411 js/Headlines.js:664
+#: classes/RPC.php:498 js/Headlines.js:1411 js/Headlines.js:664
 msgid "Toggle unread"
 msgstr ""
 
-#: classes/RPC.php:511
+#: classes/RPC.php:499
 msgid "Edit tags"
 msgstr "Muuda silte"
 
-#: classes/RPC.php:512
+#: classes/RPC.php:500
 msgid "Open in new window"
 msgstr "Ava uues aknas"
 
-#: classes/RPC.php:513 js/Headlines.js:1456
+#: classes/RPC.php:501 js/Headlines.js:1456
 msgid "Mark below as read"
 msgstr ""
 
-#: classes/RPC.php:514 js/Headlines.js:1449
+#: classes/RPC.php:502 js/Headlines.js:1449
 msgid "Mark above as read"
 msgstr ""
 
-#: classes/RPC.php:515
+#: classes/RPC.php:503
 msgid "Scroll down"
 msgstr "Keri alla"
 
-#: classes/RPC.php:516
+#: classes/RPC.php:504
 msgid "Scroll up"
 msgstr "Keri üles"
 
-#: classes/RPC.php:517
+#: classes/RPC.php:505
 msgid "Scroll down page"
 msgstr ""
 
-#: classes/RPC.php:518
+#: classes/RPC.php:506
 msgid "Scroll up page"
 msgstr ""
 
-#: classes/RPC.php:519
+#: classes/RPC.php:507
 msgid "Select article under cursor"
 msgstr ""
 
-#: classes/RPC.php:520
+#: classes/RPC.php:508
 msgid "Email article"
 msgstr "Saada artikkel meiliga"
 
-#: classes/RPC.php:521
+#: classes/RPC.php:509
 msgid "Close/collapse article"
 msgstr ""
 
-#: classes/RPC.php:522
+#: classes/RPC.php:510
 msgid "Toggle article expansion (combined mode)"
 msgstr ""
 
-#: classes/RPC.php:524
+#: classes/RPC.php:512
 msgid "Toggle full article text via Readability"
 msgstr ""
 
-#: classes/RPC.php:525
+#: classes/RPC.php:513
 msgid "Article selection"
 msgstr ""
 
-#: classes/RPC.php:526
+#: classes/RPC.php:514
 msgid "Select all articles"
 msgstr ""
 
-#: classes/RPC.php:527
+#: classes/RPC.php:515
 msgid "Select unread"
 msgstr ""
 
-#: classes/RPC.php:528
+#: classes/RPC.php:516
 msgid "Select starred"
 msgstr ""
 
-#: classes/RPC.php:529
+#: classes/RPC.php:517
 msgid "Select published"
 msgstr ""
 
-#: classes/RPC.php:530
+#: classes/RPC.php:518
 msgid "Invert selection"
 msgstr ""
 
-#: classes/RPC.php:531
+#: classes/RPC.php:519
 msgid "Deselect everything"
 msgstr ""
 
-#: classes/RPC.php:532
+#: classes/RPC.php:520
 msgid "Feed"
 msgstr "Uudisvoog"
 
-#: classes/RPC.php:533
+#: classes/RPC.php:521
 msgid "Refresh current feed"
 msgstr ""
 
-#: classes/RPC.php:534
+#: classes/RPC.php:522
 msgid "Un/hide read feeds"
 msgstr ""
 
-#: classes/RPC.php:535 classes/Pref_Feeds.php:946 js/CommonDialogs.js:31
+#: classes/RPC.php:523 classes/Pref_Feeds.php:926 js/CommonDialogs.js:31
 msgid "Subscribe to feed"
 msgstr ""
 
-#: classes/RPC.php:536 js/PrefFeedTree.js:113 js/Headlines.js:1553
+#: classes/RPC.php:524 js/PrefFeedTree.js:113 js/Headlines.js:1553
 #: js/Headlines.js:1618 js/FeedTree.js:101 js/CommonDialogs.js:375
 msgid "Edit feed"
 msgstr "Muuda uudisvoogu"
 
-#: classes/RPC.php:538
+#: classes/RPC.php:526
 msgid "Reverse headlines"
 msgstr ""
 
-#: classes/RPC.php:539
+#: classes/RPC.php:527
 msgid "Toggle headline grouping"
 msgstr ""
 
-#: classes/RPC.php:540
+#: classes/RPC.php:528
 msgid "Toggle grid view"
 msgstr ""
 
-#: classes/RPC.php:541
+#: classes/RPC.php:529
 msgid "Debug feed update"
 msgstr ""
 
-#: classes/RPC.php:542
+#: classes/RPC.php:530
 msgid "Debug viewfeed()"
 msgstr ""
 
-#: classes/RPC.php:543 js/FeedTree.js:166
+#: classes/RPC.php:531 js/FeedTree.js:166
 msgid "Mark all feeds as read"
 msgstr ""
 
-#: classes/RPC.php:544
+#: classes/RPC.php:532
 msgid "Un/collapse current category"
 msgstr ""
 
-#: classes/RPC.php:545
+#: classes/RPC.php:533
 msgid "Toggle auto expand in combined mode"
 msgstr ""
 
-#: classes/RPC.php:547
+#: classes/RPC.php:535
 msgid "Go to"
 msgstr ""
 
-#: classes/RPC.php:548 classes/Feeds.php:1193
+#: classes/RPC.php:536 classes/Feeds.php:1153
 msgid "All articles"
 msgstr "Kõik artiklid"
 
-#: classes/RPC.php:549
+#: classes/RPC.php:537
 msgid "Fresh"
 msgstr "Värske"
 
-#: classes/RPC.php:552 classes/Feeds.php:1197
+#: classes/RPC.php:540 classes/Feeds.php:1157
 msgid "Recently read"
 msgstr "Hiljuti loetud"
 
-#: classes/RPC.php:554
+#: classes/RPC.php:542
 msgid "Other"
 msgstr "Muu"
 
-#: classes/RPC.php:555 classes/Pref_Labels.php:183
+#: classes/RPC.php:543 classes/Pref_Labels.php:182
 msgid "Create label"
 msgstr "Loo silt"
 
-#: classes/RPC.php:556 classes/Pref_Filters.php:743
+#: classes/RPC.php:544 classes/Pref_Filters.php:740
 msgid "Create filter"
 msgstr "Loo filter"
 
-#: classes/RPC.php:557
+#: classes/RPC.php:545
 msgid "Un/collapse sidebar"
 msgstr ""
 
-#: classes/RPC.php:694
+#: classes/RPC.php:682
 msgid "Shift"
 msgstr "Shift"
 
-#: classes/RPC.php:695
+#: classes/RPC.php:683
 msgid "Ctrl"
 msgstr "Ctrl"
 
-#: classes/RPC.php:718 plugins/af_psql_trgm/init.php:116
+#: classes/RPC.php:706 plugins/af_psql_trgm/init.php:116
 #: plugins/share/init.php:284 js/PrefHelpers.js:497 js/App.js:691
 #: js/PrefFeedTree.js:550 js/CommonFilters.js:91 js/PrefHelpers.js:65
 #: js/PrefHelpers.js:817 js/Feeds.js:294 js/CommonDialogs.js:19
@@ -598,7 +598,7 @@ msgstr "Mitte kunagi"
 msgid "%d min"
 msgstr "%d min"
 
-#: classes/Pref_Prefs.php:36 classes/Pref_Feeds.php:636 js/CommonDialogs.js:511
+#: classes/Pref_Prefs.php:36 classes/Pref_Feeds.php:615 js/CommonDialogs.js:511
 msgid "General"
 msgstr "Üldine"
 
@@ -756,7 +756,7 @@ msgstr ""
 msgid "SSL client certificate"
 msgstr ""
 
-#: classes/Pref_Prefs.php:120 classes/Pref_Feeds.php:623
+#: classes/Pref_Prefs.php:120 classes/Pref_Feeds.php:602
 #: js/CommonDialogs.js:502
 msgid "Do not embed media"
 msgstr ""
@@ -821,182 +821,182 @@ msgstr ""
 msgid "Include articles with this or above score"
 msgstr ""
 
-#: classes/Pref_Prefs.php:229
+#: classes/Pref_Prefs.php:226
 msgid "The configuration was saved."
 msgstr ""
 
-#: classes/Pref_Prefs.php:271
+#: classes/Pref_Prefs.php:267
 msgid "Your personal data has been saved."
 msgstr ""
 
-#: classes/Pref_Prefs.php:301
+#: classes/Pref_Prefs.php:297
 msgid "Full name:"
 msgstr "Täispikk nimi:"
 
-#: classes/Pref_Prefs.php:306 classes/Handler_Public.php:534 js/PrefUsers.js:98
+#: classes/Pref_Prefs.php:302 classes/Handler_Public.php:532 js/PrefUsers.js:98
 msgid "Email:"
 msgstr "E-post:"
 
-#: classes/Pref_Prefs.php:314 classes/Pref_Feeds.php:703
+#: classes/Pref_Prefs.php:310 classes/Pref_Feeds.php:682
 #: plugins/note/init.php:49 plugins/nsfw/init.php:105
 #: plugins/af_psql_trgm/init.php:193 js/CommonFilters.js:224
 #: js/CommonFilters.js:306 js/CommonFilters.js:506 js/CommonDialogs.js:628
-#: js/PrefUsers.js:119 js/PrefLabelTree.js:168 js/Article.js:358
+#: js/PrefUsers.js:119 js/PrefLabelTree.js:168 js/Article.js:362
 msgid "Save"
 msgstr "Salvesta"
 
-#: classes/Pref_Prefs.php:363
+#: classes/Pref_Prefs.php:355
 msgid "Old password:"
 msgstr "Vana parool:"
 
-#: classes/Pref_Prefs.php:368 js/PrefUsers.js:84
+#: classes/Pref_Prefs.php:360 js/PrefUsers.js:84
 msgid "New password:"
 msgstr "Uus parool:"
 
-#: classes/Pref_Prefs.php:373
+#: classes/Pref_Prefs.php:365
 msgid "Confirm password:"
 msgstr "Kinnita parool:"
 
-#: classes/Pref_Prefs.php:381 js/PrefUsers.js:86
+#: classes/Pref_Prefs.php:373 js/PrefUsers.js:86
 msgid "Change password"
 msgstr "Muuda parooli"
 
-#: classes/Pref_Prefs.php:388
+#: classes/Pref_Prefs.php:380
 #, php-format
 msgid ""
 "Authentication module used for this session (<b>%s</b>) does not provide an "
 "ability to set passwords."
 msgstr ""
 
-#: classes/Pref_Prefs.php:405
+#: classes/Pref_Prefs.php:397
 msgid "Generate password"
 msgstr "Genereeri parool"
 
-#: classes/Pref_Prefs.php:411 classes/Pref_Feeds.php:967 js/PrefHelpers.js:226
+#: classes/Pref_Prefs.php:403 classes/Pref_Feeds.php:947 js/PrefHelpers.js:226
 msgid "Remove selected"
 msgstr "Eemalda valitud"
 
-#: classes/Pref_Prefs.php:447 classes/Pref_Prefs.php:499
+#: classes/Pref_Prefs.php:439 classes/Pref_Prefs.php:491
 msgid "Your password:"
 msgstr "Sinu parool:"
 
-#: classes/Pref_Prefs.php:455
+#: classes/Pref_Prefs.php:447
 msgid "Disable OTP"
 msgstr ""
 
-#: classes/Pref_Prefs.php:477
+#: classes/Pref_Prefs.php:469
 msgid "OTP secret:"
 msgstr ""
 
-#: classes/Pref_Prefs.php:504
+#: classes/Pref_Prefs.php:496
 msgid "Verification code:"
 msgstr "Kinnituskood:"
 
-#: classes/Pref_Prefs.php:512
+#: classes/Pref_Prefs.php:504
 msgid "Enable OTP"
 msgstr ""
 
-#: classes/Pref_Prefs.php:526
+#: classes/Pref_Prefs.php:518
 msgid "Personal data"
 msgstr "Isiklikud andmed"
 
-#: classes/Pref_Prefs.php:529 js/PrefFeedTree.js:450 js/CommonDialogs.js:91
+#: classes/Pref_Prefs.php:521 js/PrefFeedTree.js:450 js/CommonDialogs.js:91
 msgid "Password"
 msgstr "Parool"
 
-#: classes/Pref_Prefs.php:532
+#: classes/Pref_Prefs.php:524
 msgid "App passwords"
 msgstr "Rakenduste paroolid"
 
-#: classes/Pref_Prefs.php:539
+#: classes/Pref_Prefs.php:531
 msgid "Authenticator (OTP)"
 msgstr ""
 
-#: classes/Pref_Prefs.php:550
+#: classes/Pref_Prefs.php:542
 msgid "Some preferences are only available in default profile."
 msgstr ""
 
-#: classes/Pref_Prefs.php:639
+#: classes/Pref_Prefs.php:631
 msgid "default"
 msgstr "vaikeväärtud"
 
-#: classes/Pref_Prefs.php:647
+#: classes/Pref_Prefs.php:639
 msgid "Customize"
 msgstr "Kohanda"
 
-#: classes/Pref_Prefs.php:649
+#: classes/Pref_Prefs.php:641
 msgid "More themes..."
 msgstr "Veel teemasid..."
 
-#: classes/Pref_Prefs.php:682
+#: classes/Pref_Prefs.php:674
 msgid "Preview"
 msgstr "Eelvaade"
 
-#: classes/Pref_Prefs.php:708
+#: classes/Pref_Prefs.php:700
 msgid "Register"
 msgstr "Registreeru"
 
-#: classes/Pref_Prefs.php:712 classes/Pref_System.php:129
+#: classes/Pref_Prefs.php:704 classes/Pref_System.php:129
 msgid "Clear"
 msgstr "Tühjenda"
 
-#: classes/Pref_Prefs.php:716 classes/Pref_Prefs.php:884
-#: plugins/bookmarklets/init.php:373 js/CommonDialogs.js:683
+#: classes/Pref_Prefs.php:708 classes/Pref_Prefs.php:876
+#: plugins/bookmarklets/init.php:369 js/CommonDialogs.js:683
 msgid "More info..."
 msgstr "Lisainfo..."
 
-#: classes/Pref_Prefs.php:725
+#: classes/Pref_Prefs.php:717
 #, php-format
 msgid "Current server time: %s"
 msgstr "Praegune sirveri aeg: %s"
 
-#: classes/Pref_Prefs.php:773
+#: classes/Pref_Prefs.php:765
 msgid "Save configuration"
 msgstr "Salvesta seaded"
 
-#: classes/Pref_Prefs.php:776
+#: classes/Pref_Prefs.php:768
 msgid "Save and exit"
 msgstr "Salvesta ja muuda"
 
-#: classes/Pref_Prefs.php:783 js/PrefHelpers.js:126
+#: classes/Pref_Prefs.php:775 js/PrefHelpers.js:126
 msgid "Manage profiles"
 msgstr "Halda profiile"
 
-#: classes/Pref_Prefs.php:788
+#: classes/Pref_Prefs.php:780
 msgid "Reset to defaults"
 msgstr ""
 
-#: classes/Pref_Prefs.php:843 classes/Pref_Feeds.php:928
-#: classes/Pref_Filters.php:728 classes/Pref_Users.php:199 js/Feeds.js:662
+#: classes/Pref_Prefs.php:835 classes/Pref_Feeds.php:908
+#: classes/Pref_Filters.php:725 classes/Pref_Users.php:199 js/Feeds.js:662
 #: js/Feeds.js:657 js/Feeds.js:712
 msgid "Search"
 msgstr "Otsi"
 
-#: classes/Pref_Prefs.php:848 classes/Pref_Prefs.php:1557
-#: classes/Pref_Labels.php:175 classes/Pref_Feeds.php:933
-#: classes/Pref_Filters.php:733 classes/Pref_Users.php:205
+#: classes/Pref_Prefs.php:840 classes/Pref_Prefs.php:1545
+#: classes/Pref_Labels.php:174 classes/Pref_Feeds.php:913
+#: classes/Pref_Filters.php:730 classes/Pref_Users.php:205
 #: js/CommonFilters.js:426 js/CommonFilters.js:459 js/PrefFeedTree.js:516
 #: js/PrefHelpers.js:183 js/CommonDialogs.js:276
 msgid "Select"
 msgstr "Vali"
 
-#: classes/Pref_Prefs.php:851 classes/Pref_Prefs.php:1560
-#: classes/Pref_Labels.php:177 classes/Pref_Feeds.php:936
-#: classes/Pref_Filters.php:736 classes/Pref_Users.php:208
+#: classes/Pref_Prefs.php:843 classes/Pref_Prefs.php:1548
+#: classes/Pref_Labels.php:176 classes/Pref_Feeds.php:916
+#: classes/Pref_Filters.php:733 classes/Pref_Users.php:208
 #: js/CommonFilters.js:430 js/CommonFilters.js:462 js/PrefFeedTree.js:519
 #: js/Headlines.js:657 js/PrefHelpers.js:186 js/CommonDialogs.js:279
 msgid "All"
 msgstr "Kõik"
 
-#: classes/Pref_Prefs.php:853 classes/Pref_Prefs.php:1562
-#: classes/Pref_Labels.php:178 classes/Pref_Feeds.php:938
-#: classes/Pref_Filters.php:738 classes/Pref_Users.php:210
+#: classes/Pref_Prefs.php:845 classes/Pref_Prefs.php:1550
+#: classes/Pref_Labels.php:177 classes/Pref_Feeds.php:918
+#: classes/Pref_Filters.php:735 classes/Pref_Users.php:210
 #: js/CommonFilters.js:432 js/CommonFilters.js:464 js/PrefFeedTree.js:521
 #: js/Headlines.js:660 js/PrefHelpers.js:188 js/CommonDialogs.js:281
 msgid "None"
 msgstr "Pole"
 
-#: classes/Pref_Prefs.php:882
+#: classes/Pref_Prefs.php:874
 #, php-format
 msgid ""
 "The following plugins use per-feed content hooks. This may cause excessive "
@@ -1004,71 +1004,71 @@ msgid ""
 "<b>%s</b>"
 msgstr ""
 
-#: classes/Pref_Prefs.php:898 js/CommonFilters.js:222
+#: classes/Pref_Prefs.php:890 js/CommonFilters.js:222
 msgid "More info"
 msgstr "Rohkem infot"
 
-#: classes/Pref_Prefs.php:901
+#: classes/Pref_Prefs.php:893
 msgid "Enable selected"
 msgstr ""
 
-#: classes/Pref_Prefs.php:904
+#: classes/Pref_Prefs.php:896
 msgid "Reload"
 msgstr "Laadi uuesti"
 
-#: classes/Pref_Prefs.php:911
+#: classes/Pref_Prefs.php:903
 msgid "Check for updates"
 msgstr ""
 
-#: classes/Pref_Prefs.php:918
+#: classes/Pref_Prefs.php:910
 msgid "Install plugin"
 msgstr "Paigalda plugin"
 
-#: classes/Pref_Prefs.php:931
+#: classes/Pref_Prefs.php:923
 msgid "Personal data / Authentication"
 msgstr "Isiklikud andmed /Autentimine"
 
-#: classes/Pref_Prefs.php:945 classes/Pref_Feeds.php:1082
+#: classes/Pref_Prefs.php:937 classes/Pref_Feeds.php:1062
 #: js/CommonDialogs.js:622
 msgid "Plugins"
 msgstr "Pluginad"
 
-#: classes/Pref_Prefs.php:979
+#: classes/Pref_Prefs.php:971
 msgid "Incorrect one time password"
 msgstr ""
 
-#: classes/Pref_Prefs.php:982 classes/Pref_Prefs.php:1021
+#: classes/Pref_Prefs.php:974 classes/Pref_Prefs.php:1013
 msgid "Incorrect password"
 msgstr ""
 
-#: classes/Pref_Prefs.php:1036
+#: classes/Pref_Prefs.php:1028
 #, php-format
 msgid "v%.2f, by %s"
 msgstr ""
 
-#: classes/Pref_Prefs.php:1050
+#: classes/Pref_Prefs.php:1042
 #, php-format
 msgid "v%s, by %s"
 msgstr ""
 
-#: classes/Pref_Prefs.php:1518 classes/Handler_Public.php:291
+#: classes/Pref_Prefs.php:1506 classes/Handler_Public.php:289
 #: include/login_form.php:159
 msgid "Default profile"
 msgstr "Vaikimisi profiil"
 
-#: classes/Pref_Prefs.php:1571
+#: classes/Pref_Prefs.php:1559
 msgid "Description"
 msgstr "Kirjeldus"
 
-#: classes/Pref_Prefs.php:1572
+#: classes/Pref_Prefs.php:1560
 msgid "Created"
 msgstr "Loodud"
 
-#: classes/Pref_Prefs.php:1573
+#: classes/Pref_Prefs.php:1561
 msgid "Last used"
 msgstr "Viimati kasutatud"
 
-#: classes/Pref_Prefs.php:1618
+#: classes/Pref_Prefs.php:1606
 #, php-format
 msgid ""
 "Generated password <strong>%s</strong> for %s. Please remember it for future "
@@ -1087,160 +1087,160 @@ msgstr ""
 msgid "Session failed to validate (user not found)"
 msgstr ""
 
-#: classes/Feeds.php:97 classes/Feeds.php:488
+#: classes/Feeds.php:97 classes/Feeds.php:471
 msgid "Feed not found."
 msgstr "Uudisvoogi ei leitud."
 
-#: classes/Feeds.php:227 classes/Feeds.php:1195
+#: classes/Feeds.php:227 classes/Feeds.php:1155
 msgid "Archived articles"
 msgstr "Arhiveeritud artiklid"
 
-#: classes/Feeds.php:316
+#: classes/Feeds.php:312
 msgid "Collapse article"
 msgstr "Sulge artikkel"
 
-#: classes/Feeds.php:335
+#: classes/Feeds.php:331
 #, php-format
 msgid "Imported at %s"
 msgstr ""
 
-#: classes/Feeds.php:388
+#: classes/Feeds.php:377
 msgid "No unread articles found to display."
 msgstr ""
 
-#: classes/Feeds.php:389
+#: classes/Feeds.php:378
 msgid "No updated articles found to display."
 msgstr ""
 
-#: classes/Feeds.php:390
+#: classes/Feeds.php:379
 msgid "No starred articles found to display."
 msgstr ""
 
-#: classes/Feeds.php:392
+#: classes/Feeds.php:381
 msgid ""
 "No articles found to display. You can assign articles to labels manually "
 "from article header context menu (applies to all selected articles) or use a "
 "filter."
 msgstr ""
 
-#: classes/Feeds.php:393
+#: classes/Feeds.php:382
 msgid "No articles found to display."
 msgstr ""
 
-#: classes/Feeds.php:415
+#: classes/Feeds.php:399
 #, php-format
 msgid "Feeds last updated at %s"
 msgstr ""
 
-#: classes/Feeds.php:426
+#: classes/Feeds.php:409
 msgid "Some feeds have update errors (click for details)"
 msgstr ""
 
-#: classes/Feeds.php:1187
+#: classes/Feeds.php:1147
 msgid "Starred articles"
 msgstr ""
 
-#: classes/Feeds.php:1189
+#: classes/Feeds.php:1149
 msgid "Published articles"
 msgstr ""
 
-#: classes/Feeds.php:1191
+#: classes/Feeds.php:1151
 msgid "Fresh articles"
 msgstr ""
 
-#: classes/Feeds.php:1351 classes/OPML.php:526 classes/Digest.php:107
-#: classes/Pref_Feeds.php:247 classes/Pref_Filters.php:1016
+#: classes/Feeds.php:1311 classes/OPML.php:511 classes/Digest.php:107
+#: classes/Pref_Feeds.php:243 classes/Pref_Filters.php:1016
 #: include/controls.php:215
 msgid "Uncategorized"
 msgstr "Liigitamata"
 
-#: classes/Feeds.php:1353
+#: classes/Feeds.php:1313
 msgid "Special"
 msgstr ""
 
-#: classes/Feeds.php:1458
+#: classes/Feeds.php:1408
 #, php-format
 msgid "Incorrect search syntax: %s."
 msgstr ""
 
-#: classes/Feeds.php:1635
+#: classes/Feeds.php:1572
 #, php-format
 msgid "Search results: %s"
 msgstr ""
 
-#: classes/Feeds.php:2371
+#: classes/Feeds.php:2274
 #, php-format
 msgid "The date keyword \"%s\" was not recognized."
 msgstr ""
 
-#: classes/Pref_Labels.php:163
+#: classes/Pref_Labels.php:162
 #, php-format
 msgid "Created label <b>%s</b>"
 msgstr ""
 
-#: classes/Pref_Labels.php:186 classes/Pref_Filters.php:749
+#: classes/Pref_Labels.php:185 classes/Pref_Filters.php:746
 #: classes/Pref_Users.php:219 js/CommonFilters.js:504 js/CommonDialogs.js:620
 msgid "Remove"
 msgstr "Eemalda"
 
-#: classes/Pref_Labels.php:189
+#: classes/Pref_Labels.php:188
 msgid "Clear colors"
 msgstr ""
 
-#: classes/OPML.php:291
+#: classes/OPML.php:276
 #, php-format
 msgid "Adding feed: %s"
 msgstr ""
 
-#: classes/OPML.php:311
+#: classes/OPML.php:296
 #, php-format
 msgid "Duplicate feed: %s"
 msgstr ""
 
-#: classes/OPML.php:325
+#: classes/OPML.php:310
 #, php-format
 msgid "Adding label %s"
 msgstr ""
 
-#: classes/OPML.php:328
+#: classes/OPML.php:313
 #, php-format
 msgid "Duplicate label: %s"
 msgstr ""
 
-#: classes/OPML.php:343
+#: classes/OPML.php:328
 #, php-format
 msgid "Setting preference key %s to %s"
 msgstr ""
 
-#: classes/OPML.php:375
+#: classes/OPML.php:360
 #, php-format
 msgid "Adding filter %s..."
 msgstr ""
 
-#: classes/OPML.php:526
+#: classes/OPML.php:511
 #, php-format
 msgid "Processing category: %s"
 msgstr ""
 
-#: classes/OPML.php:560
+#: classes/OPML.php:545
 #, php-format
 msgid "Upload failed with error code %d"
 msgstr ""
 
-#: classes/OPML.php:572
+#: classes/OPML.php:557
 msgid "Unable to move uploaded file."
 msgstr ""
 
-#: classes/OPML.php:576
+#: classes/OPML.php:561
 msgid "Error: please upload OPML file."
 msgstr ""
 
-#: classes/OPML.php:584
+#: classes/OPML.php:569
 #, php-format
 msgid "Error: file is not readable: %s"
 msgstr ""
 
-#: classes/OPML.php:602
+#: classes/OPML.php:587
 msgid "Error while parsing document."
 msgstr ""
 
@@ -1249,245 +1249,245 @@ msgstr ""
 msgid "Git error [RC=%d]: %s"
 msgstr ""
 
-#: classes/Handler_Public.php:401
+#: classes/Handler_Public.php:399
 msgid "Incorrect username or password"
 msgstr "Vale kasutajanimi või parool"
 
-#: classes/Handler_Public.php:482
+#: classes/Handler_Public.php:480
 msgid "Password recovery"
 msgstr "Parooli taastamine"
 
-#: classes/Handler_Public.php:519 classes/Handler_Public.php:549
-#: classes/Handler_Public.php:609 classes/Handler_Public.php:726
-#: classes/Handler_Public.php:733 classes/Handler_Public.php:756
+#: classes/Handler_Public.php:517 classes/Handler_Public.php:547
+#: classes/Handler_Public.php:607 classes/Handler_Public.php:724
+#: classes/Handler_Public.php:731 classes/Handler_Public.php:754
 #: plugins/bookmarklets/init.php:97 plugins/bookmarklets/init.php:142
-#: plugins/bookmarklets/init.php:160 plugins/bookmarklets/init.php:165
+#: plugins/bookmarklets/init.php:156 plugins/bookmarklets/init.php:161
 msgid "Return to Tiny Tiny RSS"
 msgstr ""
 
-#: classes/Handler_Public.php:522
+#: classes/Handler_Public.php:520
 msgid ""
 "You will need to provide valid account name and email. Password reset link "
 "will be sent to your email address."
 msgstr ""
 
-#: classes/Handler_Public.php:529 classes/Pref_Feeds.php:674
-#: plugins/bookmarklets/init.php:312 include/login_form.php:127
+#: classes/Handler_Public.php:527 classes/Pref_Feeds.php:653
+#: plugins/bookmarklets/init.php:308 include/login_form.php:127
 #: js/PrefUsers.js:64 js/CommonDialogs.js:585
 msgid "Login:"
 msgstr "Kasutajanimi:"
 
-#: classes/Handler_Public.php:542
+#: classes/Handler_Public.php:540
 #, php-format
 msgid "How much is %d + %d:"
 msgstr ""
 
-#: classes/Handler_Public.php:548 classes/Pref_Users.php:223
+#: classes/Handler_Public.php:546 classes/Pref_Users.php:223
 msgid "Reset password"
 msgstr ""
 
-#: classes/Handler_Public.php:559
+#: classes/Handler_Public.php:557
 msgid "Some of the required form parameters are missing or incorrect."
 msgstr ""
 
-#: classes/Handler_Public.php:563 classes/Handler_Public.php:615
+#: classes/Handler_Public.php:561 classes/Handler_Public.php:613
 msgid "Go back"
 msgstr "Mine tagasi"
 
-#: classes/Handler_Public.php:601
+#: classes/Handler_Public.php:599
 msgid "[tt-rss] Password reset request"
 msgstr ""
 
-#: classes/Handler_Public.php:611
+#: classes/Handler_Public.php:609
 msgid "Sorry, login and email combination not found."
 msgstr ""
 
-#: classes/Handler_Public.php:631
+#: classes/Handler_Public.php:629
 msgid "Your access level is insufficient to run this script."
 msgstr ""
 
-#: classes/Handler_Public.php:688
+#: classes/Handler_Public.php:686
 msgid "Proceed with update?"
 msgstr ""
 
-#: classes/Handler_Public.php:693
+#: classes/Handler_Public.php:691
 msgid "Database Updater"
 msgstr ""
 
-#: classes/Handler_Public.php:706
+#: classes/Handler_Public.php:704
 #, php-format
 msgid "Performing updates to version %d"
 msgstr ""
 
-#: classes/Handler_Public.php:721 classes/Handler_Public.php:748
+#: classes/Handler_Public.php:719 classes/Handler_Public.php:746
 #: js/PrefHelpers.js:417 js/PrefHelpers.js:760
 msgid "Update"
 msgstr "Värskenda"
 
-#: classes/Handler_Public.php:741
+#: classes/Handler_Public.php:739
 #, php-format
 msgid "Database schema needs update to the latest version (%d to %d)."
 msgstr ""
 
-#: classes/Pref_Feeds.php:66 classes/Pref_Feeds.php:230
-#: classes/Pref_Feeds.php:290 classes/Pref_Feeds.php:296
-#: classes/Pref_Feeds.php:333
+#: classes/Pref_Feeds.php:66 classes/Pref_Feeds.php:226
+#: classes/Pref_Feeds.php:286 classes/Pref_Feeds.php:292
+#: classes/Pref_Feeds.php:329
 #, php-format
 msgid "(%d feed)"
 msgid_plural "(%d feeds)"
 msgstr[0] ""
 msgstr[1] ""
 
-#: classes/Pref_Feeds.php:98 classes/Pref_Feeds.php:281
-#: classes/Pref_Feeds.php:324
+#: classes/Pref_Feeds.php:98 classes/Pref_Feeds.php:277
+#: classes/Pref_Feeds.php:320
 #, php-format
 msgid "(%d article / %s)"
 msgid_plural "(%d articles / %s)"
 msgstr[0] ""
 msgstr[1] ""
 
-#: classes/Pref_Feeds.php:563
+#: classes/Pref_Feeds.php:542
 #, php-format
 msgid "(%d day)"
 msgid_plural "(%d days)"
 msgstr[0] ""
 msgstr[1] ""
 
-#: classes/Pref_Feeds.php:569
+#: classes/Pref_Feeds.php:548
 #, php-format
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] "%d päev"
 msgstr[1] "%d päeva"
 
-#: classes/Pref_Feeds.php:600
+#: classes/Pref_Feeds.php:579
 msgid "Check to enable field"
 msgstr "Märgi, et väli sisse lülitada"
 
-#: classes/Pref_Feeds.php:616
+#: classes/Pref_Feeds.php:595
 #, php-format
 msgid "(%d days)"
 msgstr "(%d päeva)"
 
-#: classes/Pref_Feeds.php:621 js/CommonDialogs.js:500
+#: classes/Pref_Feeds.php:600 js/CommonDialogs.js:500
 msgid "Include in email digest"
 msgstr ""
 
-#: classes/Pref_Feeds.php:622 js/CommonDialogs.js:501
+#: classes/Pref_Feeds.php:601 js/CommonDialogs.js:501
 msgid "Always display image attachments"
 msgstr ""
 
-#: classes/Pref_Feeds.php:624 js/CommonDialogs.js:503
+#: classes/Pref_Feeds.php:603 js/CommonDialogs.js:503
 msgid "Cache media"
 msgstr ""
 
-#: classes/Pref_Feeds.php:625 js/CommonDialogs.js:504
+#: classes/Pref_Feeds.php:604 js/CommonDialogs.js:504
 msgid "Mark updated articles as unread"
 msgstr ""
 
-#: classes/Pref_Feeds.php:640 js/PrefFeedTree.js:439 js/CommonDialogs.js:58
+#: classes/Pref_Feeds.php:619 js/PrefFeedTree.js:439 js/CommonDialogs.js:58
 #: js/CommonDialogs.js:540
 msgid "Place in category:"
 msgstr "Paiguta kategooriasse:"
 
-#: classes/Pref_Feeds.php:647 js/Feeds.js:644 js/CommonDialogs.js:556
+#: classes/Pref_Feeds.php:626 js/Feeds.js:644 js/CommonDialogs.js:556
 msgid "Language:"
 msgstr "Keel:"
 
-#: classes/Pref_Feeds.php:657 js/CommonDialogs.js:64 js/CommonDialogs.js:566
+#: classes/Pref_Feeds.php:636 js/CommonDialogs.js:64 js/CommonDialogs.js:566
 msgid "Update interval:"
 msgstr "Uuendamise intervall:"
 
-#: classes/Pref_Feeds.php:664 js/CommonDialogs.js:572
+#: classes/Pref_Feeds.php:643 js/CommonDialogs.js:572
 msgid "Article purging:"
 msgstr ""
 
-#: classes/Pref_Feeds.php:671 plugins/auth_internal/init.php:85
+#: classes/Pref_Feeds.php:650 plugins/auth_internal/init.php:85
 #: js/PrefFeedTree.js:447 js/CommonDialogs.js:582
 msgid "Authentication"
 msgstr ""
 
-#: classes/Pref_Feeds.php:680 plugins/bookmarklets/init.php:319
+#: classes/Pref_Feeds.php:659 plugins/bookmarklets/init.php:315
 #: include/login_form.php:137 js/CommonDialogs.js:591
 msgid "Password:"
 msgstr ""
 
-#: classes/Pref_Feeds.php:687 js/CommonDialogs.js:598
+#: classes/Pref_Feeds.php:666 js/CommonDialogs.js:598
 msgid "Options"
 msgstr "Valikud"
 
-#: classes/Pref_Feeds.php:704 plugins/note/init.php:50
-#: plugins/bookmarklets/init.php:292 js/CommonFilters.js:225
+#: classes/Pref_Feeds.php:683 plugins/note/init.php:50
+#: plugins/bookmarklets/init.php:288 js/CommonFilters.js:225
 #: js/CommonFilters.js:307 js/CommonFilters.js:507 js/CommonFilters.js:511
 #: js/CommonDialogs.js:629 js/PrefUsers.js:122 js/PrefFeedTree.js:467
-#: js/PrefLabelTree.js:171 js/Article.js:361 js/PrefHelpers.js:231
+#: js/PrefLabelTree.js:171 js/Article.js:365 js/PrefHelpers.js:231
 #: js/PrefHelpers.js:305 js/Feeds.js:658 js/Feeds.js:713
 #: js/CommonDialogs.js:113
 msgid "Cancel"
 msgstr "Loobu"
 
-#: classes/Pref_Feeds.php:903
+#: classes/Pref_Feeds.php:883
 msgid "Feeds with errors"
 msgstr "Uudisvood veaga"
 
-#: classes/Pref_Feeds.php:909
+#: classes/Pref_Feeds.php:889
 msgid "Inactive feeds"
 msgstr "Mitteaktiivsed uudisvood"
 
-#: classes/Pref_Feeds.php:948
+#: classes/Pref_Feeds.php:928
 msgid "Edit selected feeds"
 msgstr "Muuda valitud uudisvooge"
 
-#: classes/Pref_Feeds.php:950 classes/Pref_Feeds.php:965
-#: classes/Pref_Filters.php:751
+#: classes/Pref_Feeds.php:930 classes/Pref_Feeds.php:945
+#: classes/Pref_Filters.php:748
 msgid "Reset sort order"
 msgstr ""
 
-#: classes/Pref_Feeds.php:952 js/PrefFeedTree.js:409
+#: classes/Pref_Feeds.php:932 js/PrefFeedTree.js:409
 msgid "Batch subscribe"
 msgstr ""
 
-#: classes/Pref_Feeds.php:960
+#: classes/Pref_Feeds.php:940
 msgid "Categories"
 msgstr "Kategooriad"
 
-#: classes/Pref_Feeds.php:963
+#: classes/Pref_Feeds.php:943
 msgid "Add category"
 msgstr "Lisa kategooria"
 
-#: classes/Pref_Feeds.php:1002
+#: classes/Pref_Feeds.php:982
 msgid "Choose file..."
 msgstr "Vali fail..."
 
-#: classes/Pref_Feeds.php:1010
+#: classes/Pref_Feeds.php:990
 msgid "Import OPML"
 msgstr "Impordi OPML"
 
-#: classes/Pref_Feeds.php:1021
+#: classes/Pref_Feeds.php:1001
 msgid "Export OPML"
 msgstr "Ekspordi OPML"
 
-#: classes/Pref_Feeds.php:1026
+#: classes/Pref_Feeds.php:1006
 msgid "Include tt-rss settings"
 msgstr ""
 
-#: classes/Pref_Feeds.php:1042
+#: classes/Pref_Feeds.php:1022
 msgid "Display URL"
 msgstr ""
 
-#: classes/Pref_Feeds.php:1047
+#: classes/Pref_Feeds.php:1027
 msgid "Clear all generated URLs"
 msgstr ""
 
-#: classes/Pref_Feeds.php:1059
+#: classes/Pref_Feeds.php:1039
 msgid "My feeds"
 msgstr "Minu uudisvood"
 
-#: classes/Pref_Feeds.php:1064
+#: classes/Pref_Feeds.php:1044
 msgid "OPML"
 msgstr "OPML"
 
-#: classes/Pref_Feeds.php:1069
+#: classes/Pref_Feeds.php:1049
 msgid "Sharing"
 msgstr "Jagamine"
 
@@ -1561,64 +1561,64 @@ msgstr ""
 msgid "Article Tags"
 msgstr "Artikli sildid"
 
-#: classes/Pref_Filters.php:275 classes/Pref_Filters.php:285
-#: classes/Pref_Filters.php:461 classes/Pref_Filters.php:963
+#: classes/Pref_Filters.php:273 classes/Pref_Filters.php:283
+#: classes/Pref_Filters.php:459 classes/Pref_Filters.php:963
 msgid "All feeds"
 msgstr "Kõik uudisvood"
 
-#: classes/Pref_Filters.php:294 classes/Pref_Filters.php:472
-#: classes/Pref_Filters.php:475
+#: classes/Pref_Filters.php:292 classes/Pref_Filters.php:470
+#: classes/Pref_Filters.php:473
 msgid "(inverse)"
 msgstr ""
 
-#: classes/Pref_Filters.php:290 classes/Pref_Filters.php:471
-#: classes/Pref_Filters.php:474
+#: classes/Pref_Filters.php:288 classes/Pref_Filters.php:469
+#: classes/Pref_Filters.php:472
 #, php-format
 msgid "%s on %s in %s %s"
 msgstr ""
 
-#: classes/Pref_Filters.php:490
+#: classes/Pref_Filters.php:488
 #, php-format
 msgid "Unknown action: %d"
 msgstr ""
 
-#: classes/Pref_Filters.php:702 js/PrefFilterTree.js:178
+#: classes/Pref_Filters.php:699 js/PrefFilterTree.js:178
 #, java-printf-format, javascript-format, php-format
 msgid "Clone of %s"
 msgstr ""
 
-#: classes/Pref_Filters.php:745 js/PrefHelpers.js:228
+#: classes/Pref_Filters.php:742 js/PrefHelpers.js:228
 msgid "Clone"
 msgstr "Klooni"
 
-#: classes/Pref_Filters.php:747
+#: classes/Pref_Filters.php:744
 msgid "Combine"
 msgstr "Kombineeri"
 
-#: classes/Pref_Filters.php:753
+#: classes/Pref_Filters.php:750
 msgid "Toggle rule display"
 msgstr ""
 
-#: classes/Pref_Filters.php:800
+#: classes/Pref_Filters.php:798
 msgid "[No caption]"
 msgstr ""
 
-#: classes/Pref_Filters.php:804
+#: classes/Pref_Filters.php:802
 #, php-format
 msgid "%s (%d rule)"
 msgid_plural "%s (%d rules)"
 msgstr[0] ""
 msgstr[1] ""
 
-#: classes/Pref_Filters.php:809
+#: classes/Pref_Filters.php:807
 msgid "matches any rule"
 msgstr ""
 
-#: classes/Pref_Filters.php:812
+#: classes/Pref_Filters.php:810
 msgid "inverse"
 msgstr ""
 
-#: classes/Pref_Filters.php:844
+#: classes/Pref_Filters.php:842
 #, php-format
 msgid "(+%d action)"
 msgid_plural "(+%d actions)"
@@ -1755,7 +1755,7 @@ msgstr "Tellitud uudisvood"
 msgid "Stored articles"
 msgstr "Salvestatud artiklid"
 
-#: classes/Pref_Users.php:87 classes/UserHelper.php:264
+#: classes/Pref_Users.php:87 classes/UserHelper.php:258
 msgid "User not found"
 msgstr "Kasutajat ei leitud"
 
@@ -1794,7 +1794,7 @@ msgstr "Viimane sisselogimine"
 msgid "Click to edit"
 msgstr "Muutmiseks kliki"
 
-#: classes/UserHelper.php:262
+#: classes/UserHelper.php:256
 #, php-format
 msgid "Changed password of user %s to %s"
 msgstr ""
@@ -1965,62 +1965,62 @@ msgstr ""
 msgid "Subscribe to selected feed"
 msgstr ""
 
-#: plugins/bookmarklets/init.php:159
+#: plugins/bookmarklets/init.php:155
 msgid "Edit subscription options"
 msgstr ""
 
-#: plugins/bookmarklets/init.php:190 plugins/bookmarklets/init.php:370
+#: plugins/bookmarklets/init.php:186 plugins/bookmarklets/init.php:366
 msgid "Share with Tiny Tiny RSS"
 msgstr ""
 
-#: plugins/bookmarklets/init.php:266
+#: plugins/bookmarklets/init.php:262
 msgid "Title:"
 msgstr "Pealkiri:"
 
-#: plugins/bookmarklets/init.php:271 js/CommonDialogs.js:525
+#: plugins/bookmarklets/init.php:267 js/CommonDialogs.js:525
 msgid "URL:"
 msgstr "URL:"
 
-#: plugins/bookmarklets/init.php:276
+#: plugins/bookmarklets/init.php:272
 msgid "Content:"
 msgstr "Sisu:"
 
-#: plugins/bookmarklets/init.php:281
+#: plugins/bookmarklets/init.php:277
 msgid "Labels:"
 msgstr "Sildid:"
 
-#: plugins/bookmarklets/init.php:291
+#: plugins/bookmarklets/init.php:287
 msgid "Share"
 msgstr "Jaga"
 
-#: plugins/bookmarklets/init.php:293
+#: plugins/bookmarklets/init.php:289
 msgid "Shared article will appear in the Published feed."
 msgstr ""
 
-#: plugins/bookmarklets/init.php:332 include/login_form.php:205
+#: plugins/bookmarklets/init.php:328 include/login_form.php:205
 msgid "Log in"
 msgstr "Logi sisse"
 
-#: plugins/bookmarklets/init.php:352
+#: plugins/bookmarklets/init.php:348
 #, php-format
 msgid "Subscribe to %s in Tiny Tiny RSS?"
 msgstr ""
 
-#: plugins/bookmarklets/init.php:359
+#: plugins/bookmarklets/init.php:355
 msgid "Bookmarklets"
 msgstr ""
 
-#: plugins/bookmarklets/init.php:361
+#: plugins/bookmarklets/init.php:357
 msgid ""
 "Drag the link below to your browser toolbar, open the feed you're interested "
 "in in your browser and click on the link to subscribe to it."
 msgstr ""
 
-#: plugins/bookmarklets/init.php:364
+#: plugins/bookmarklets/init.php:360
 msgid "Subscribe in Tiny Tiny RSS"
 msgstr ""
 
-#: plugins/bookmarklets/init.php:367
+#: plugins/bookmarklets/init.php:363
 msgid "Use this bookmarklet to publish arbitrary pages using Tiny Tiny RSS"
 msgstr ""
 
@@ -2318,7 +2318,7 @@ msgstr "Valitud siltide eemaldamine..."
 msgid "Please enter new score for selected articles:"
 msgstr ""
 
-#: js/Article.js:56 js/Article.js:131 js/Headlines.js:938 js/Headlines.js:964
+#: js/Article.js:56 js/Article.js:135 js/Headlines.js:938 js/Headlines.js:964
 #: js/Headlines.js:1106 js/Headlines.js:1123 js/Headlines.js:1140
 #: js/Headlines.js:1275 js/Headlines.js:976
 msgid "No articles selected."
@@ -2328,37 +2328,29 @@ msgstr ""
 msgid "Please enter new score for this article:"
 msgstr ""
 
-#: js/Article.js:112
-msgid "Article URL:"
-msgstr "Artikli URL:"
-
-#: js/Article.js:114
-msgid "No URL could be displayed for this article."
-msgstr ""
-
-#: js/Article.js:143
+#: js/Article.js:147
 msgid "no tags"
 msgstr "silte pole"
 
-#: js/Article.js:235
+#: js/Article.js:239
 msgid "comments"
 msgstr "kommentaarid"
 
-#: js/Article.js:238
+#: js/Article.js:242
 msgid "comment"
 msgid_plural "comments"
 msgstr[0] "kommentaar"
 msgstr[1] "kommentaari"
 
-#: js/Article.js:340
+#: js/Article.js:344
 msgid "Article tags"
 msgstr "Artikli sildid"
 
-#: js/Article.js:347
+#: js/Article.js:351
 msgid "Tags for this article (separated by commas):"
 msgstr ""
 
-#: js/Article.js:367
+#: js/Article.js:371
 msgid "Saving article tags..."
 msgstr "Artikli siltide salvestamine..."
 
@@ -2423,10 +2415,6 @@ msgstr[1] ""
 
 #: js/Headlines.js:1393 js/Headlines.js:662
 msgid "Open original article"
-msgstr ""
-
-#: js/Headlines.js:1401
-msgid "Display article URL"
 msgstr ""
 
 #: js/Headlines.js:1510
@@ -2992,11 +2980,19 @@ msgstr ""
 msgid "Caption"
 msgstr "Pealkiri"
 
-#: js/Article.js:196
+#: js/Article.js:114
+msgid "Copied to clipboard."
+msgstr ""
+
+#: js/Article.js:116
+msgid "Article URL:"
+msgstr "Artikli URL:"
+
+#: js/Article.js:200
 msgid "Attachments"
 msgstr "Lisatud failid"
 
-#: js/Article.js:305 js/Headlines.js:547
+#: js/Article.js:309 js/Headlines.js:547
 msgid "Edit tags for this article"
 msgstr ""
 
@@ -3025,6 +3021,12 @@ msgid ""
 "Could not update headlines (invalid object received - see error console for "
 "details)"
 msgstr ""
+
+#: js/Headlines.js:1401
+#, fuzzy
+#| msgid "Article URL:"
+msgid "Copy article URL"
+msgstr "Artikli URL:"
 
 #: js/CommonFilters.js:64
 msgid "No recent articles matching this filter have been found."

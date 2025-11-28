@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-20 18:16+0000\n"
-"PO-Revision-Date: 2025-11-19 01:35+0000\n"
+"PO-Revision-Date: 2025-11-28 21:30+0000\n"
 "Last-Translator: Dony Wibowo <dony@dony.me>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/tt-rss/webui/"
 "id/>\n"
@@ -1484,63 +1484,63 @@ msgstr ""
 
 #: classes/Pref_Feeds.php:1042
 msgid "Display URL"
-msgstr ""
+msgstr "Tampilkan URL"
 
 #: classes/Pref_Feeds.php:1047
 msgid "Clear all generated URLs"
-msgstr ""
+msgstr "Hapus semua URL yang dibuat"
 
 #: classes/Pref_Feeds.php:1059
 msgid "My feeds"
-msgstr ""
+msgstr "Umpan saya"
 
 #: classes/Pref_Feeds.php:1064
 msgid "OPML"
-msgstr ""
+msgstr "OPML"
 
 #: classes/Pref_Feeds.php:1069
 msgid "Sharing"
-msgstr ""
+msgstr "Berbagi"
 
 #: classes/Pref_Filters.php:24
 msgid "Delete article"
-msgstr ""
+msgstr "Hapus artikel"
 
 #: classes/Pref_Filters.php:26
 msgid "Set starred"
-msgstr ""
+msgstr "Tandai berbintang"
 
 #: classes/Pref_Filters.php:27
 msgid "Assign tags"
-msgstr ""
+msgstr "Tetapkan label"
 
 #: classes/Pref_Filters.php:28
 msgid "Publish article"
-msgstr ""
+msgstr "Publikasikan artikel"
 
 #: classes/Pref_Filters.php:29
 msgid "Modify score"
-msgstr ""
+msgstr "Ubah skor"
 
 #: classes/Pref_Filters.php:30 js/Headlines.js:1505
 msgid "Assign label"
-msgstr ""
+msgstr "Tetapkan label"
 
 #: classes/Pref_Filters.php:31
 msgid "Stop / Do nothing"
-msgstr ""
+msgstr "Hentikan / Jangan lakukan apa-apa"
 
 #: classes/Pref_Filters.php:32
 msgid "Invoke plugin"
-msgstr ""
+msgstr "Jalankan plugin"
 
 #: classes/Pref_Filters.php:33
 msgid "Ignore tags"
-msgstr ""
+msgstr "Abaikan label"
 
 #: classes/Pref_Filters.php:39
 msgid "Content"
-msgstr ""
+msgstr "Konten"
 
 #: classes/Pref_Filters.php:40
 msgid "Title or Content"

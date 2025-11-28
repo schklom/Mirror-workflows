@@ -105,13 +105,17 @@ const Article = {
 
 		Article.setActive(0);
 	},
-	displayUrl: function (id) {
+	copyUrl: async function (id) {
 		const hl = Headlines.objectById(id);
 
-		if (hl?.link)
-			prompt(__("Article URL:"), hl.link);
-		else
-			alert(__("No URL could be displayed for this article."));
+		if (hl?.link) {
+			try {
+				await navigator.clipboard.writeText(hl.link);
+				Notify.info(__('Copied to clipboard.'));
+			} catch {
+				prompt(__('Article URL:'), hl.link);
+			}
+		}
 	},
 	openInNewWindow: function (id) {
 		/* global __csrf_token */

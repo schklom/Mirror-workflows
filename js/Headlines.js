@@ -1398,10 +1398,10 @@ const Headlines = {
 		}));
 
 		menu.addChild(new dijit.MenuItem({
-			label: __("Display article URL"),
+			label: __('Copy article URL'),
 			onClick: function (/* event */) {
 				const id = parseInt(this.getParent().currentTarget.getAttribute('data-article-id'));
-				Article.displayUrl(id);
+				Article.copyUrl(id);
 			}
 		}));
 

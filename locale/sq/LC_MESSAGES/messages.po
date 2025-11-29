@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-28 21:06+0000\n"
-"PO-Revision-Date: 2025-11-21 19:51+0000\n"
+"PO-Revision-Date: 2025-11-29 22:00+0000\n"
 "Last-Translator: Besnik Bleta <besnik@programeshqip.org>\n"
 "Language-Team: Albanian <https://hosted.weblate.org/projects/tt-rss/webui/sq/"
 ">\n"
@@ -3017,7 +3017,7 @@ msgstr "Përshkrim"
 
 #: js/Article.js:114
 msgid "Copied to clipboard."
-msgstr ""
+msgstr "I kopjua në të papastër."
 
 #: js/Article.js:116
 msgid "Article URL:"
@@ -3060,10 +3060,8 @@ msgstr ""
 "konsolën e gabimeve)"
 
 #: js/Headlines.js:1401
-#, fuzzy
-#| msgid "Display article URL"
 msgid "Copy article URL"
-msgstr "Shfaq URL artikulli"
+msgstr "Kopjo URL artikulli"
 
 #: js/CommonFilters.js:64
 msgid "No recent articles matching this filter have been found."

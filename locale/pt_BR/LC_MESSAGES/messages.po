@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: tt-rss git\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-28 21:06+0000\n"
-"PO-Revision-Date: 2025-11-05 17:51+0000\n"
-"Last-Translator: LaurentC <laurentc@users.noreply.hosted.weblate.org>\n"
+"PO-Revision-Date: 2025-12-01 22:00+0000\n"
+"Last-Translator: Gian Jaskulski <gianfj@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/tt-"
 "rss/webui/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -109,7 +109,7 @@ msgstr "Administrador"
 
 #: index.php:120 prefs.php:119
 msgid "Javascript is disabled. Please enable it."
-msgstr ""
+msgstr "O Javascript está desabilitado. Por favor, habilite-o."
 
 #: index.php:124 index.php:138 index.php:298 prefs.php:126
 #: classes/Pref_Prefs.php:882 classes/Pref_Prefs.php:932
@@ -136,14 +136,12 @@ msgid "Recent entries found in event log."
 msgstr "Foram encontradas entradas recentes no log de eventos."
 
 #: index.php:169 prefs.php:139
-#, fuzzy
-#| msgid "Updates are available from Git."
 msgid "Updates for Tiny Tiny RSS are available."
-msgstr "Atualizações estão disponíveis via Git."
+msgstr "Atualizações do Tiny Tiny RSS estão disponíveis."
 
 #: index.php:173 prefs.php:142
 msgid "Updates for some local plugins are available."
-msgstr ""
+msgstr "Atualizações para alguns plugins locais estão disponíveis."
 
 #: index.php:181 js/Headlines.js:655
 msgid "Show articles"
@@ -212,36 +210,29 @@ msgid "Older than two weeks"
 msgstr "Com mais de duas semanas"
 
 #: index.php:228
+#, fuzzy
 msgid "Switch to three panel view"
-msgstr ""
+msgstr "Trocar para a visualização de três painéis."
 
 #: index.php:229
 msgid "Switch to combined view"
-msgstr ""
+msgstr "Trocar para visualização combinada"
 
 #: index.php:230
-#, fuzzy
-#| msgid "Toggle widescreen mode"
 msgid "Disable widescreen mode"
-msgstr "Ativa/Desativa modo tela-cheia"
+msgstr "Desativa modo tela cheia"
 
 #: index.php:231
-#, fuzzy
-#| msgid "Toggle widescreen mode"
 msgid "Enable widescreen mode"
-msgstr "Ativa/Desativa modo tela-cheia"
+msgstr "Ativa modo tela cheia"
 
 #: index.php:232
-#, fuzzy
-#| msgid "Email article"
 msgid "Expand selected article only"
-msgstr "Enviar artigo por e-mail"
+msgstr "Expandir somente artigo selecionado"
 
 #: index.php:233
-#, fuzzy
-#| msgid "Email article"
 msgid "Expand all articles"
-msgstr "Enviar artigo por e-mail"
+msgstr "Expandir todos os artigos"
 
 #: index.php:236
 msgid "Actions..."
@@ -256,10 +247,8 @@ msgid "Search..."
 msgstr "Pesquisar..."
 
 #: index.php:263
-#, fuzzy
-#| msgid "Search %s..."
 msgid "Search feeds..."
-msgstr "Pesquisar %s..."
+msgstr "Pesquisar feeds..."
 
 #: index.php:264
 msgid "Feed actions:"
@@ -289,7 +278,7 @@ msgstr "Mostrar/Ocultar feeds lidos"
 
 #: index.php:271
 msgid "UI layout:"
-msgstr ""
+msgstr "Layout do UI:"
 
 #: index.php:272 classes/RPC.php:534
 msgid "Toggle combined mode"

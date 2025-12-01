@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: tt-rss git\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-28 21:06+0000\n"
-"PO-Revision-Date: 2025-11-10 23:51+0000\n"
+"PO-Revision-Date: 2025-12-01 22:00+0000\n"
 "Last-Translator: Patrick Ahles <p.ahles@gmail.com>\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/tt-rss/webui/nl/>\n"
 "Language: nl_NL\n"
@@ -107,7 +107,7 @@ msgstr "Beheerder"
 
 #: index.php:120 prefs.php:119
 msgid "Javascript is disabled. Please enable it."
-msgstr ""
+msgstr "Javascript staat uit. Zet het aan."
 
 #: index.php:124 index.php:138 index.php:298 prefs.php:126
 #: classes/Pref_Prefs.php:882 classes/Pref_Prefs.php:932
@@ -1185,7 +1185,7 @@ msgstr "Zoekresultaten: %s"
 #: classes/Feeds.php:2274
 #, php-format
 msgid "The date keyword \"%s\" was not recognized."
-msgstr ""
+msgstr "Het datum sleutelwoord \"%s\" werd niet herkend."
 
 #: classes/Pref_Labels.php:162
 #, php-format
@@ -2855,7 +2855,7 @@ msgstr "Uitklappen tot geselecteerde feed"
 
 #: js/CommonDialogs.js:189
 msgid "Couldn't download the specified URL."
-msgstr "Kon de gespecificeerde URL niet downloaden"
+msgstr "Kon de gespecificeerde URL niet downloaden."
 
 #: js/CommonDialogs.js:192
 msgid "Invalid content."
@@ -3012,7 +3012,7 @@ msgstr "Onderschrift"
 
 #: js/Article.js:114
 msgid "Copied to clipboard."
-msgstr ""
+msgstr "Gekopieerd naar het klembord."
 
 #: js/Article.js:116
 msgid "Article URL:"
@@ -3055,10 +3055,8 @@ msgstr ""
 "voor details)"
 
 #: js/Headlines.js:1401
-#, fuzzy
-#| msgid "Display article URL"
 msgid "Copy article URL"
-msgstr "Toon artikel-URL"
+msgstr "Kopieer artikel-URL"
 
 #: js/CommonFilters.js:64
 msgid "No recent articles matching this filter have been found."

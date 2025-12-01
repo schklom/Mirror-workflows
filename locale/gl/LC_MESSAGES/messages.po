@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-28 21:06+0000\n"
-"PO-Revision-Date: 2025-11-18 06:51+0000\n"
+"PO-Revision-Date: 2025-11-29 22:00+0000\n"
 "Last-Translator: \"josé m.\" <correoxm@disroot.org>\n"
 "Language-Team: Galician <https://hosted.weblate.org/projects/tt-rss/webui/gl/"
 ">\n"
@@ -1181,7 +1181,7 @@ msgstr "Resultados da busca: %s"
 #: classes/Feeds.php:2274
 #, php-format
 msgid "The date keyword \"%s\" was not recognized."
-msgstr ""
+msgstr "Non se recoñece a clave \"%s\" da data."
 
 #: classes/Pref_Labels.php:162
 #, php-format
@@ -3005,7 +3005,7 @@ msgstr "Texto"
 
 #: js/Article.js:114
 msgid "Copied to clipboard."
-msgstr ""
+msgstr "Copiado ao portapapeis."
 
 #: js/Article.js:116
 msgid "Article URL:"
@@ -3048,10 +3048,8 @@ msgstr ""
 "consola o detalle do erro)"
 
 #: js/Headlines.js:1401
-#, fuzzy
-#| msgid "Display article URL"
 msgid "Copy article URL"
-msgstr "Mostrar URL do artigo"
+msgstr "Copiar URL do artigo"
 
 #: js/CommonFilters.js:64
 msgid "No recent articles matching this filter have been found."

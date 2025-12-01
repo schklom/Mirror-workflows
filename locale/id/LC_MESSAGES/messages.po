@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-28 21:06+0000\n"
-"PO-Revision-Date: 2025-11-28 21:30+0000\n"
+"PO-Revision-Date: 2025-12-01 22:00+0000\n"
 "Last-Translator: Dony Wibowo <dony@dony.me>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/tt-rss/webui/"
 "id/>\n"
@@ -1080,8 +1080,8 @@ msgid ""
 "Generated password <strong>%s</strong> for %s. Please remember it for future "
 "reference."
 msgstr ""
-"Kata sandi <strong>%s</strong> untuk %s. Harap ingat untuk referensi "
-"berikutnya."
+"Kata sandi dibuat <strong>%s</strong> untuk %s. Harap ingat untuk masa "
+"mendatang."
 
 #: classes/Sessions.php:121
 msgid "Session failed to validate (password changed)"
@@ -1182,7 +1182,7 @@ msgstr "Hasil pencarian: %s"
 #: classes/Feeds.php:2274
 #, php-format
 msgid "The date keyword \"%s\" was not recognized."
-msgstr ""
+msgstr "Kata kunci tanggal \"%s\" tidak dikenali."
 
 #: classes/Pref_Labels.php:162
 #, php-format
@@ -1211,62 +1211,62 @@ msgstr "Duplikat umpan: %s"
 #: classes/OPML.php:310
 #, php-format
 msgid "Adding label %s"
-msgstr ""
+msgstr "Menambahkan label %s"
 
 #: classes/OPML.php:313
 #, php-format
 msgid "Duplicate label: %s"
-msgstr ""
+msgstr "Label duplikat: %s"
 
 #: classes/OPML.php:328
 #, php-format
 msgid "Setting preference key %s to %s"
-msgstr ""
+msgstr "Mengatur kunci preferensi %s ke %s"
 
 #: classes/OPML.php:360
 #, php-format
 msgid "Adding filter %s..."
-msgstr ""
+msgstr "Menambahkan filter %s..."
 
 #: classes/OPML.php:511
 #, php-format
 msgid "Processing category: %s"
-msgstr ""
+msgstr "Memproses kategori: %s"
 
 #: classes/OPML.php:545
 #, php-format
 msgid "Upload failed with error code %d"
-msgstr ""
+msgstr "Unggah gagal dengan kode kesalahan %d"
 
 #: classes/OPML.php:557
 msgid "Unable to move uploaded file."
-msgstr ""
+msgstr "Tidak dapat memindahkan berkas yang diunggah."
 
 #: classes/OPML.php:561
 msgid "Error: please upload OPML file."
-msgstr ""
+msgstr "Kesalahan: silakan unggah file OPML."
 
 #: classes/OPML.php:569
 #, php-format
 msgid "Error: file is not readable: %s"
-msgstr ""
+msgstr "Kesalahan: file tidak dapat dibaca: %s"
 
 #: classes/OPML.php:587
 msgid "Error while parsing document."
-msgstr ""
+msgstr "Kesalahan saat mengurai dokumen."
 
 #: classes/Config.php:431
 #, php-format
 msgid "Git error [RC=%d]: %s"
-msgstr ""
+msgstr "Kesalahan Git [RC=%d]: %s"
 
 #: classes/Handler_Public.php:399
 msgid "Incorrect username or password"
-msgstr ""
+msgstr "Nama pengguna atau kata sandi salah"
 
 #: classes/Handler_Public.php:480
 msgid "Password recovery"
-msgstr ""
+msgstr "Pemulihan kata sandi"
 
 #: classes/Handler_Public.php:517 classes/Handler_Public.php:547
 #: classes/Handler_Public.php:607 classes/Handler_Public.php:724
@@ -1274,71 +1274,73 @@ msgstr ""
 #: plugins/bookmarklets/init.php:97 plugins/bookmarklets/init.php:142
 #: plugins/bookmarklets/init.php:156 plugins/bookmarklets/init.php:161
 msgid "Return to Tiny Tiny RSS"
-msgstr ""
+msgstr "Kembali ke Tiny Tiny RSS"
 
 #: classes/Handler_Public.php:520
 msgid ""
 "You will need to provide valid account name and email. Password reset link "
 "will be sent to your email address."
 msgstr ""
+"Anda harus memberikan nama akun dan email yang valid. Tautan pengaturan "
+"ulang kata sandi akan dikirim ke alamat email Anda."
 
 #: classes/Handler_Public.php:527 classes/Pref_Feeds.php:653
 #: plugins/bookmarklets/init.php:308 include/login_form.php:127
 #: js/PrefUsers.js:64 js/CommonDialogs.js:585
 msgid "Login:"
-msgstr ""
+msgstr "Masuk:"
 
 #: classes/Handler_Public.php:540
 #, php-format
 msgid "How much is %d + %d:"
-msgstr ""
+msgstr "Berapa banyak %d + %d:"
 
 #: classes/Handler_Public.php:546 classes/Pref_Users.php:223
 msgid "Reset password"
-msgstr ""
+msgstr "Pemulihan kata sandi"
 
 #: classes/Handler_Public.php:557
 msgid "Some of the required form parameters are missing or incorrect."
-msgstr ""
+msgstr "Beberapa parameter formulir yang diperlukan hilang atau salah."
 
 #: classes/Handler_Public.php:561 classes/Handler_Public.php:613
 msgid "Go back"
-msgstr ""
+msgstr "Kembali"
 
 #: classes/Handler_Public.php:599
 msgid "[tt-rss] Password reset request"
-msgstr ""
+msgstr "[tt-rss] Permintaan reset kata sandi"
 
 #: classes/Handler_Public.php:609
 msgid "Sorry, login and email combination not found."
-msgstr ""
+msgstr "Maaf, kombinasi login dan email tidak ditemukan."
 
 #: classes/Handler_Public.php:629
 msgid "Your access level is insufficient to run this script."
-msgstr ""
+msgstr "Tingkat akses Anda tidak cukup untuk menjalankan skrip ini."
 
 #: classes/Handler_Public.php:686
 msgid "Proceed with update?"
-msgstr ""
+msgstr "Lanjutkan pembaruan?"
 
 #: classes/Handler_Public.php:691
 msgid "Database Updater"
-msgstr ""
+msgstr "Pemutakhiran Basis Data"
 
 #: classes/Handler_Public.php:704
 #, php-format
 msgid "Performing updates to version %d"
-msgstr ""
+msgstr "Melakukan pembaruan ke versi %d"
 
 #: classes/Handler_Public.php:719 classes/Handler_Public.php:746
 #: js/PrefHelpers.js:417 js/PrefHelpers.js:760
 msgid "Update"
-msgstr ""
+msgstr "Perbarui"
 
 #: classes/Handler_Public.php:739
 #, php-format
 msgid "Database schema needs update to the latest version (%d to %d)."
-msgstr ""
+msgstr "Skema basis data perlu diperbarui ke versi terbaru (%d ke %d)."
 
 #: classes/Pref_Feeds.php:66 classes/Pref_Feeds.php:226
 #: classes/Pref_Feeds.php:286 classes/Pref_Feeds.php:292

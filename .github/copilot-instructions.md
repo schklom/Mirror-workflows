@@ -409,10 +409,10 @@ cd lib/dojo-src
   - GitHub Container Registry: `ghcr.io/tt-rss/tt-rss` (app) and `ghcr.io/tt-rss/tt-rss-web-nginx` (web)
   - Docker Hub: `supahgreg/tt-rss` (app) and `supahgreg/tt-rss-web-nginx` (web)
 - **PHP Version Strategy**:
-  - Docker images use `PHP_SUFFIX` env var (currently `84`) to determine PHP version → runs on PHP 8.4
+  - Docker images use `PHP_SUFFIX` env var (currently `85`) to determine PHP version → runs on PHP 8.5
   - Codebase maintains backward compatibility with PHP 8.2 for non-Docker users
   - Source of truth for minimum version: `Config::sanity_check()` checks PHP 8.2.0
-  - When updating Docker PHP version: change `ENV PHP_SUFFIX=84` in `.docker/app/Dockerfile`
+  - When updating Docker PHP version: change `ENV PHP_SUFFIX=85` in `.docker/app/Dockerfile`
 - **Architecture**: Multi-container setup
   - **app**: Alpine-based PHP-FPM container (`.docker/app/Dockerfile`)
     - Installs PHP extensions via Alpine packages: `php${PHP_SUFFIX}-<extension>`

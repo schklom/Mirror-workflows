@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-28 21:06+0000\n"
-"PO-Revision-Date: 2025-11-16 04:51+0000\n"
+"PO-Revision-Date: 2025-12-03 03:00+0000\n"
 "Last-Translator: TonyRL <TonyRL@users.noreply.github.com>\n"
 "Language-Team: Chinese (Traditional Han script) <https://hosted.weblate.org/"
 "projects/tt-rss/webui/zh_Hant/>\n"
@@ -1173,7 +1173,7 @@ msgstr "搜尋結果： %s"
 #: classes/Feeds.php:2274
 #, php-format
 msgid "The date keyword \"%s\" was not recognized."
-msgstr ""
+msgstr "無法辨識日期關鍵字「%s」。"
 
 #: classes/Pref_Labels.php:162
 #, php-format
@@ -2964,7 +2964,7 @@ msgstr "標題"
 
 #: js/Article.js:114
 msgid "Copied to clipboard."
-msgstr ""
+msgstr "已複製到剪貼簿。"
 
 #: js/Article.js:116
 msgid "Article URL:"
@@ -3005,10 +3005,8 @@ msgid ""
 msgstr "無法更新標題（收到無效的物件-詳細請參考錯誤控制台）"
 
 #: js/Headlines.js:1401
-#, fuzzy
-#| msgid "Display article URL"
 msgid "Copy article URL"
-msgstr "顯示文章網址"
+msgstr "複製文章網址"
 
 #: js/CommonFilters.js:64
 msgid "No recent articles matching this filter have been found."

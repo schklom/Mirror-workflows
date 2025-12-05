@@ -32,7 +32,7 @@ jobs:
     - name: Set up PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.4'
+        php-version: '8.5'
         coverage: none
         # PHPUnit is installed to support PHPStan checking tests/
         tools: phpstan/phpstan:^2.1, phpunit/phpunit:^12.4

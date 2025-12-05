@@ -1,4 +1,4 @@
-FROM alpine:3.22.2
+FROM alpine:3.23.0
 
 EXPOSE 9000/tcp
 
@@ -11,13 +11,13 @@ ENV SRC_DIR=/src/tt-rss/
 ENV APP_INSTALL_BASE_DIR=/var/www/html
 
 # Used to centralize the PHP version suffix for packages and paths
-ENV PHP_SUFFIX=84
+ENV PHP_SUFFIX=85
 
 RUN [ ! -z ${ALPINE_MIRROR} ] && \
 	sed -i.bak "s#dl-cdn.alpinelinux.org#${ALPINE_MIRROR}#" /etc/apk/repositories ; \
 	apk add --no-cache ca-certificates dcron git postgresql-client rsync sudo tzdata \
 		php${PHP_SUFFIX} \
-		$(for p in ctype curl dom exif fileinfo fpm gd iconv intl json mbstring opcache \
+		$(for p in ctype curl dom exif fileinfo fpm gd iconv intl json mbstring \
 			openssl pcntl pdo pdo_pgsql pecl-apcu pecl-xdebug phar posix session simplexml sockets sodium tokenizer xml xmlwriter zip; do \
 			php_pkgs="$php_pkgs php${PHP_SUFFIX}-$p"; \
 		done; \

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-28 21:06+0000\n"
-"PO-Revision-Date: 2025-12-08 13:00+0000\n"
+"PO-Revision-Date: 2025-12-09 12:20+0000\n"
 "Last-Translator: Dony Wibowo <dony@dony.me>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/tt-rss/webui/"
 "id/>\n"
@@ -2138,144 +2138,147 @@ msgstr "Tidak ada pengguna yang diplih."
 
 #: js/PrefUsers.js:141
 msgid "Please select one user."
-msgstr ""
+msgstr "Silakan pilih satu pengguna."
 
 #: js/PrefUsers.js:145
 msgid "Reset password of selected user?"
-msgstr ""
+msgstr "Setel ulang kata sandi pengguna yang dipilih?"
 
 #: js/PrefUsers.js:146
 msgid "Resetting password for selected user..."
-msgstr ""
+msgstr "Mengatur ulang kata sandi untuk pengguna yang dipilih..."
 
 #: js/PrefUsers.js:161
 msgid ""
 "Remove selected users? Neither default admin nor your account will be "
 "removed."
 msgstr ""
+"Hapus pengguna yang dipilih? Baik admin standar maupun akun Anda tidak akan "
+"dihapus."
 
 #: js/PrefUsers.js:162
 msgid "Removing selected users..."
-msgstr ""
+msgstr "Menghapus pengguna yang dipilih..."
 
 #: js/common.js:391
 msgid "Click to close"
-msgstr ""
+msgstr "Klik untuk menutup"
 
 #: js/PrefFeedTree.js:93
 msgid "Edit category"
-msgstr ""
+msgstr "Sunting kategori"
 
 #: js/PrefFeedTree.js:100
 msgid "Remove category"
-msgstr ""
+msgstr "Hapus kategori"
 
 #: js/PrefFeedTree.js:197
 #, java-printf-format, javascript-format
 msgid ""
 "Remove category %s? Any nested feeds would be placed into Uncategorized."
 msgstr ""
+"Hapus kategori %s? Semua umpan yang tertanam dipindah ke Tanpa Kategori."
 
 #: js/PrefFeedTree.js:198
 msgid "Removing category..."
-msgstr ""
+msgstr "Menghapus kategori..."
 
 #: js/PrefFeedTree.js:210
 msgid "Unsubscribe from selected feeds?"
-msgstr ""
+msgstr "Berhenti berlangganan dari umpan dipilih?"
 
 #: js/PrefFeedTree.js:212
 msgid "Unsubscribing from selected feeds..."
-msgstr ""
+msgstr "Berhenti berlangganan dari umpan dipilih..."
 
 #: js/PrefFeedTree.js:225 js/PrefFeedTree.js:294 js/PrefFeedTree.js:310
 #: js/PrefFeedTree.js:510 js/CommonDialogs.js:249 js/CommonDialogs.js:270
 msgid "No feeds selected."
-msgstr ""
+msgstr "Tidak ada umpan dipilih."
 
 #: js/PrefFeedTree.js:260
 msgid "Remove selected categories?"
-msgstr ""
+msgstr "Hapus kategori dipilih?"
 
 #: js/PrefFeedTree.js:261
 msgid "Removing selected categories..."
-msgstr ""
+msgstr "Menghapus kategori dipilih..."
 
 #: js/PrefFeedTree.js:273
 msgid "No categories selected."
-msgstr ""
+msgstr "Tidak ada kategori dipilih."
 
 #: js/PrefFeedTree.js:321
 msgid "Edit multiple feeds"
-msgstr ""
+msgstr "Sunting beberapa umpan"
 
 #: js/PrefFeedTree.js:345
 msgid "Save changes to selected feeds?"
-msgstr ""
+msgstr "Simpan perubahan umpan dipilih?"
 
 #: js/PrefFeedTree.js:394
 msgid "Category title:"
-msgstr ""
+msgstr "Judul kategori:"
 
 #: js/PrefFeedTree.js:397
 msgid "Creating category..."
-msgstr ""
+msgstr "Membuat kategori..."
 
 #: js/PrefFeedTree.js:412
 msgid "Subscribing to feeds..."
-msgstr ""
+msgstr "Berlangganan umpan..."
 
 #: js/PrefFeedTree.js:430
 msgid "One valid feed per line (no detection is done)"
-msgstr ""
+msgstr "Satu umpan yang sah per baris (tidak dideteksi)"
 
 #: js/PrefFeedTree.js:483
 msgid "Feeds without recent updates"
-msgstr ""
+msgstr "Umpan tanpa pembaruan"
 
 #: js/PrefFeedTree.js:491 js/CommonDialogs.js:228
 msgid "Remove selected feeds?"
-msgstr ""
+msgstr "Hapus umpan dipilih?"
 
 #: js/PrefFeedTree.js:492 js/CommonDialogs.js:229
 msgid "Removing selected feeds..."
-msgstr ""
+msgstr "Menghapus umpan dipilih..."
 
 #: js/PrefFeedTree.js:533 js/CommonDialogs.js:296
 msgid "Click to edit feed"
-msgstr ""
+msgstr "Klik untuk sunting umpan"
 
 #: js/PrefFilterTree.js:62 js/CommonFilters.js:212
 msgid "in"
-msgstr ""
+msgstr "dalam"
 
 #: js/PrefFilterTree.js:65
 msgid "Inverse"
-msgstr ""
+msgstr "Terbalik"
 
 #: js/PrefFilterTree.js:134 js/PrefFilterTree.js:163 js/PrefFilterTree.js:196
 msgid "No filters selected."
-msgstr ""
+msgstr "Tidak ada saringan dipilih."
 
 #: js/PrefFilterTree.js:138
 msgid "Combine selected filters?"
-msgstr ""
+msgstr "Gabung saringan dipilih?"
 
 #: js/PrefFilterTree.js:139
 msgid "Joining filters..."
-msgstr ""
+msgstr "Menggabungkan saringan..."
 
 #: js/PrefFilterTree.js:150
 msgid "Remove selected filters?"
-msgstr ""
+msgstr "Hapus saringan dipilih?"
 
 #: js/PrefFilterTree.js:151
 msgid "Removing selected filters..."
-msgstr ""
+msgstr "Menghapus filter dipilih..."
 
 #: js/PrefFilterTree.js:177
 msgid "Name for new filter:"
-msgstr ""
+msgstr "Nama untuk filter baru:"
 
 #: js/PrefFilterTree.js:185
 msgid "Clone selected filters?"

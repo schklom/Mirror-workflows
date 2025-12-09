@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-28 21:06+0000\n"
-"PO-Revision-Date: 2025-12-01 22:00+0000\n"
+"PO-Revision-Date: 2025-12-09 12:20+0000\n"
 "Last-Translator: Dony Wibowo <dony@dony.me>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/tt-rss/webui/"
 "id/>\n"
@@ -1080,8 +1080,8 @@ msgid ""
 "Generated password <strong>%s</strong> for %s. Please remember it for future "
 "reference."
 msgstr ""
-"Kata sandi dibuat <strong>%s</strong> untuk %s. Harap ingat untuk masa "
-"mendatang."
+"Kata sandi dihasilkan <strong>%s</strong> untuk %s. Mohon ingat kata sandi "
+"ini untuk referensi di masa mendatang."
 
 #: classes/Sessions.php:121
 msgid "Session failed to validate (password changed)"
@@ -1348,86 +1348,82 @@ msgstr "Skema basis data perlu diperbarui ke versi terbaru (%d ke %d)."
 #, php-format
 msgid "(%d feed)"
 msgid_plural "(%d feeds)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "(%d umpan)"
 
 #: classes/Pref_Feeds.php:98 classes/Pref_Feeds.php:277
 #: classes/Pref_Feeds.php:320
 #, php-format
 msgid "(%d article / %s)"
 msgid_plural "(%d articles / %s)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "(%d artikel / %s)"
 
 #: classes/Pref_Feeds.php:542
 #, php-format
 msgid "(%d day)"
 msgid_plural "(%d days)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "(%d hari)"
 
 #: classes/Pref_Feeds.php:548
 #, php-format
 msgid "%d day"
 msgid_plural "%d days"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d hari"
 
 #: classes/Pref_Feeds.php:579
 msgid "Check to enable field"
-msgstr ""
+msgstr "Centang untuk mengaktifkan bidang"
 
 #: classes/Pref_Feeds.php:595
 #, php-format
 msgid "(%d days)"
-msgstr ""
+msgstr "(%d hari)"
 
 #: classes/Pref_Feeds.php:600 js/CommonDialogs.js:500
 msgid "Include in email digest"
-msgstr ""
+msgstr "Sertakan dalam ringkasan email"
 
 #: classes/Pref_Feeds.php:601 js/CommonDialogs.js:501
 msgid "Always display image attachments"
-msgstr ""
+msgstr "Selalu tampilkan lampiran gambar"
 
 #: classes/Pref_Feeds.php:603 js/CommonDialogs.js:503
 msgid "Cache media"
-msgstr ""
+msgstr "Cache media"
 
 #: classes/Pref_Feeds.php:604 js/CommonDialogs.js:504
 msgid "Mark updated articles as unread"
-msgstr ""
+msgstr "Tandai artikel diperbarui belum dibaca"
 
 #: classes/Pref_Feeds.php:619 js/PrefFeedTree.js:439 js/CommonDialogs.js:58
 #: js/CommonDialogs.js:540
 msgid "Place in category:"
-msgstr ""
+msgstr "Masukkan dalam kategori:"
 
 #: classes/Pref_Feeds.php:626 js/Feeds.js:644 js/CommonDialogs.js:556
 msgid "Language:"
-msgstr ""
+msgstr "Bahasa:"
 
 #: classes/Pref_Feeds.php:636 js/CommonDialogs.js:64 js/CommonDialogs.js:566
 msgid "Update interval:"
-msgstr ""
+msgstr "Interval pembaruan:"
 
 #: classes/Pref_Feeds.php:643 js/CommonDialogs.js:572
 msgid "Article purging:"
-msgstr ""
+msgstr "Pembersihan artikel:"
 
 #: classes/Pref_Feeds.php:650 plugins/auth_internal/init.php:85
 #: js/PrefFeedTree.js:447 js/CommonDialogs.js:582
 msgid "Authentication"
-msgstr ""
+msgstr "Otentikasi"
 
 #: classes/Pref_Feeds.php:659 plugins/bookmarklets/init.php:315
 #: include/login_form.php:137 js/CommonDialogs.js:591
 msgid "Password:"
-msgstr ""
+msgstr "Kata sandi:"
 
 #: classes/Pref_Feeds.php:666 js/CommonDialogs.js:598
 msgid "Options"
-msgstr ""
+msgstr "Pilihan"
 
 #: classes/Pref_Feeds.php:683 plugins/note/init.php:50
 #: plugins/bookmarklets/init.php:288 js/CommonFilters.js:225
@@ -1437,52 +1433,52 @@ msgstr ""
 #: js/PrefHelpers.js:305 js/Feeds.js:658 js/Feeds.js:713
 #: js/CommonDialogs.js:113
 msgid "Cancel"
-msgstr ""
+msgstr "Batalkan"
 
 #: classes/Pref_Feeds.php:883
 msgid "Feeds with errors"
-msgstr ""
+msgstr "Umpan dengan kesalahan"
 
 #: classes/Pref_Feeds.php:889
 msgid "Inactive feeds"
-msgstr ""
+msgstr "Umpan tidak aktif"
 
 #: classes/Pref_Feeds.php:928
 msgid "Edit selected feeds"
-msgstr ""
+msgstr "Edit Umpan dipilih"
 
 #: classes/Pref_Feeds.php:930 classes/Pref_Feeds.php:945
 #: classes/Pref_Filters.php:748
 msgid "Reset sort order"
-msgstr ""
+msgstr "Atur ulang urutan penyortiran"
 
 #: classes/Pref_Feeds.php:932 js/PrefFeedTree.js:409
 msgid "Batch subscribe"
-msgstr ""
+msgstr "Berlangganan kelompok"
 
 #: classes/Pref_Feeds.php:940
 msgid "Categories"
-msgstr ""
+msgstr "Kategori"
 
 #: classes/Pref_Feeds.php:943
 msgid "Add category"
-msgstr ""
+msgstr "Tambahkan kategori"
 
 #: classes/Pref_Feeds.php:982
 msgid "Choose file..."
-msgstr ""
+msgstr "Pilih file..."
 
 #: classes/Pref_Feeds.php:990
 msgid "Import OPML"
-msgstr ""
+msgstr "Impor OPML"
 
 #: classes/Pref_Feeds.php:1001
 msgid "Export OPML"
-msgstr ""
+msgstr "Ekspor OPML"
 
 #: classes/Pref_Feeds.php:1006
 msgid "Include tt-rss settings"
-msgstr ""
+msgstr "Sertakan pengaturan tt-rss"
 
 #: classes/Pref_Feeds.php:1022
 msgid "Display URL"
@@ -1546,314 +1542,312 @@ msgstr "Konten"
 
 #: classes/Pref_Filters.php:40
 msgid "Title or Content"
-msgstr ""
+msgstr "Judul atau Isi"
 
 #: classes/Pref_Filters.php:41
 msgid "Link"
-msgstr ""
+msgstr "Tautan"
 
 #: classes/Pref_Filters.php:44
 msgid "Author"
-msgstr ""
+msgstr "Penulis"
 
 #: classes/Pref_Filters.php:45
 msgid "Article Tags"
-msgstr ""
+msgstr "Label Artikel"
 
 #: classes/Pref_Filters.php:273 classes/Pref_Filters.php:283
 #: classes/Pref_Filters.php:459 classes/Pref_Filters.php:963
 msgid "All feeds"
-msgstr ""
+msgstr "Semua umpan"
 
 #: classes/Pref_Filters.php:292 classes/Pref_Filters.php:470
 #: classes/Pref_Filters.php:473
 msgid "(inverse)"
-msgstr ""
+msgstr "(terbalik)"
 
 #: classes/Pref_Filters.php:288 classes/Pref_Filters.php:469
 #: classes/Pref_Filters.php:472
 #, php-format
 msgid "%s on %s in %s %s"
-msgstr ""
+msgstr "%s pada %s dalam %s %s"
 
 #: classes/Pref_Filters.php:488
 #, php-format
 msgid "Unknown action: %d"
-msgstr ""
+msgstr "Aksi tidak dikenal: %d"
 
 #: classes/Pref_Filters.php:699 js/PrefFilterTree.js:178
 #, java-printf-format, javascript-format, php-format
 msgid "Clone of %s"
-msgstr ""
+msgstr "Salinan dari %s"
 
 #: classes/Pref_Filters.php:742 js/PrefHelpers.js:228
 msgid "Clone"
-msgstr ""
+msgstr "Salinan"
 
 #: classes/Pref_Filters.php:744
 msgid "Combine"
-msgstr ""
+msgstr "Gabungkan"
 
 #: classes/Pref_Filters.php:750
 msgid "Toggle rule display"
-msgstr ""
+msgstr "Alihkan tampilan aturan"
 
 #: classes/Pref_Filters.php:798
 msgid "[No caption]"
-msgstr ""
+msgstr "[Tanpa keterangan]"
 
 #: classes/Pref_Filters.php:802
 #, php-format
 msgid "%s (%d rule)"
 msgid_plural "%s (%d rules)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s (%d aturan)"
 
 #: classes/Pref_Filters.php:807
 msgid "matches any rule"
-msgstr ""
+msgstr "cocok dengan aturan apa pun"
 
 #: classes/Pref_Filters.php:810
 msgid "inverse"
-msgstr ""
+msgstr "terbalik"
 
 #: classes/Pref_Filters.php:842
 #, php-format
 msgid "(+%d action)"
 msgid_plural "(+%d actions)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "(+%d aksi)"
 
 #: classes/Pref_System.php:23
 msgid "Test message from tt-rss"
-msgstr ""
+msgstr "Pesan pengujian dari tt-rss"
 
 #: classes/Pref_System.php:24
 msgid "This message confirms that tt-rss can send outgoing email."
-msgstr ""
+msgstr "Pesan ini mengkonfirmasi bahwa tt-rss dapat mengirim email keluar."
 
 #: classes/Pref_System.php:34
 msgid "Task name"
-msgstr ""
+msgstr "Nama tugas"
 
 #: classes/Pref_System.php:35
 msgid "Schedule"
-msgstr ""
+msgstr "Jadwal"
 
 #: classes/Pref_System.php:36
 msgid "Last executed"
-msgstr ""
+msgstr "Terakhir dijalankan"
 
 #: classes/Pref_System.php:37
 msgid "Duration (seconds)"
-msgstr ""
+msgstr "Durasi (detik)"
 
 #: classes/Pref_System.php:38
 msgid "Return code"
-msgstr ""
+msgstr "Kode pengembalian"
 
 #: classes/Pref_System.php:110 js/PrefHelpers.js:621
 msgid "Refresh"
-msgstr ""
+msgstr "Segarkan"
 
 #: classes/Pref_System.php:115
 msgid "&lt;&lt;"
-msgstr ""
+msgstr "<<"
 
 #: classes/Pref_System.php:119
 #, php-format
 msgid "Page %d of %d"
-msgstr ""
+msgstr "Halaman %d dari %d"
 
 #: classes/Pref_System.php:124
 msgid "&gt;&gt;"
-msgstr ""
+msgstr ">>"
 
 #: classes/Pref_System.php:133
 msgid "Severity:"
-msgstr ""
+msgstr "Tingkat Keparahan:"
 
 #: classes/Pref_System.php:137
 msgid "Errors"
-msgstr ""
+msgstr "Kesalahan"
 
 #: classes/Pref_System.php:138
 msgid "Warnings"
-msgstr ""
+msgstr "Peringatan"
 
 #: classes/Pref_System.php:139
 msgid "Everything"
-msgstr ""
+msgstr "Segalanya"
 
 #: classes/Pref_System.php:149
 msgid "Error"
-msgstr ""
+msgstr "Kesalahan"
 
 #: classes/Pref_System.php:150
 msgid "Filename"
-msgstr ""
+msgstr "Nama berkas"
 
 #: classes/Pref_System.php:151
 msgid "Message"
-msgstr ""
+msgstr "Pesan"
 
 #: classes/Pref_System.php:153
 msgid "Date"
-msgstr ""
+msgstr "Tanggal"
 
 #: classes/Pref_System.php:197
 msgid "Event log"
-msgstr ""
+msgstr "Log acara"
 
 #: classes/Pref_System.php:203
 msgid "Email configuration"
-msgstr ""
+msgstr "Konfigurasi email"
 
 #: classes/Pref_System.php:214
 msgid "Email sent."
-msgstr ""
+msgstr "Email terkirim."
 
 #: classes/Pref_System.php:234
 msgid "To:"
-msgstr ""
+msgstr "Kepada:"
 
 #: classes/Pref_System.php:236
 msgid "Send test email"
-msgstr ""
+msgstr "Kirim email pengujian"
 
 #: classes/Pref_System.php:242
 msgid "Scheduled tasks"
-msgstr ""
+msgstr "Tugas terjadwal"
 
 #: classes/Pref_System.php:253
 msgid "PHP Information"
-msgstr ""
+msgstr "Informasi PHP"
 
 #: classes/Mailer.php:53
 #, php-format
 msgid "Unknown error while sending email. Hooks tried: %d."
-msgstr ""
+msgstr "Kesalahan tidak dikenal saat mengirim email. Hook yang dicoba: %d."
 
 #: classes/Pref_Users.php:49 classes/Pref_Users.php:239
 msgid "Registered"
-msgstr ""
+msgstr "Terdaftar"
 
 #: classes/Pref_Users.php:54
 msgid "Last logged in"
-msgstr ""
+msgstr "Terakhir masuk"
 
 #: classes/Pref_Users.php:59 classes/Pref_Users.php:238
 msgid "Subscribed feeds"
-msgstr ""
+msgstr "Feed berlangganan"
 
 #: classes/Pref_Users.php:64
 msgid "Stored articles"
-msgstr ""
+msgstr "Artikel tersimpan"
 
 #: classes/Pref_Users.php:87 classes/UserHelper.php:258
 msgid "User not found"
-msgstr ""
+msgstr "Pengguna tidak ditemukan"
 
 #: classes/Pref_Users.php:152
 #, php-format
 msgid "Added user %s with password %s"
-msgstr ""
+msgstr "Pengguna %s ditambahkan dengan kata sandi %s"
 
 #: classes/Pref_Users.php:155
 #, php-format
 msgid "Could not create user %s"
-msgstr ""
+msgstr "Tidak dapat membuat pengguna %s"
 
 #: classes/Pref_Users.php:158
 #, php-format
 msgid "User %s already exists."
-msgstr ""
+msgstr "Pengguna %s sudah ada."
 
 #: classes/Pref_Users.php:215
 msgid "Create user"
-msgstr ""
+msgstr "Buat pengguna"
 
 #: classes/Pref_Users.php:236 js/PrefFeedTree.js:449 js/CommonDialogs.js:87
 msgid "Login"
-msgstr ""
+msgstr "Masuk"
 
 #: classes/Pref_Users.php:237
 msgid "Access level"
-msgstr ""
+msgstr "Tingkat akses"
 
 #: classes/Pref_Users.php:240
 msgid "Last login"
-msgstr ""
+msgstr "Masuk terakhir"
 
 #: classes/Pref_Users.php:255
 msgid "Click to edit"
-msgstr ""
+msgstr "Klik untuk menyunting"
 
 #: classes/UserHelper.php:256
 #, php-format
 msgid "Changed password of user %s to %s"
-msgstr ""
+msgstr "Kata sandi pengguna %s diubah menjadi %s"
 
 #: plugins/note/init.php:24 plugins/note/note.js:16
 msgid "Edit article note"
-msgstr ""
+msgstr "Sunting catatan artikel"
 
 #: plugins/auth_internal/init.php:96
 msgid "Please enter verification code (OTP):"
-msgstr ""
+msgstr "Harap masukkan kode verifikasi (OTP):"
 
 #: plugins/auth_internal/init.php:98
 msgid "Continue"
-msgstr ""
+msgstr "Lanjutkan"
 
 #: plugins/auth_internal/init.php:140
 msgid "Too many authentication attempts, throttled."
-msgstr ""
+msgstr "Terlalu banyak upaya autentikasi, dibatasi."
 
 #: plugins/auth_internal/init.php:247
 msgid "Password has been changed."
-msgstr ""
+msgstr "Kata sandi telah diubah."
 
 #: plugins/auth_internal/init.php:249
 msgid "Old password is incorrect."
-msgstr ""
+msgstr "Kata sandi lama tidak benar."
 
 #: plugins/toggle_sidebar/init.php:23
 msgid "Toggle sidebar"
-msgstr ""
+msgstr "Alihkan bilah samping"
 
 #: plugins/nsfw/init.php:46
 msgid "Not safe for work (click to toggle)"
-msgstr ""
+msgstr "Tidak aman untuk kerja (klik untuk alihkan)"
 
 #: plugins/nsfw/init.php:80
 msgid "NSFW Plugin"
-msgstr ""
+msgstr "Plugin NSFW"
 
 #: plugins/nsfw/init.php:95
 msgid "Tags to consider NSFW (comma-separated):"
-msgstr ""
+msgstr "Tag untuk dianggap NSFW (dipisahkan koma):"
 
 #: plugins/nsfw/init.php:117
 msgid "Configuration saved."
-msgstr ""
+msgstr "Konfigurasi tersimpan."
 
 #: plugins/af_psql_trgm/init.php:34
 #, php-format
 msgid "Data saved (%s, %d)"
-msgstr ""
+msgstr "Data tersimpan (%s, %d)"
 
 #: plugins/af_psql_trgm/init.php:125
 msgid "Show related articles"
-msgstr ""
+msgstr "Tampilkan artikel terkait"
 
 #: plugins/af_psql_trgm/init.php:138
 msgid "Mark similar articles as read (af_psql_trgm)"
-msgstr ""
+msgstr "Tandai artikel serupa sebagai dibaca (af_psql_trgm)"
 
 #: plugins/af_psql_trgm/init.php:164
 msgid "Minimum similarity:"
-msgstr ""
+msgstr "Kesamaan minimum:"
 
 #: plugins/af_psql_trgm/init.php:172
 msgid ""
@@ -1861,211 +1855,219 @@ msgid ""
 "number (0-1). Setting it too low might produce false positives, zero "
 "disables checking."
 msgstr ""
+"Ekstensi trigram PostgreSQL mengembalikan kesamaan string sebagai angka "
+"titik mengambang (0-1). Mengaturnya terlalu rendah mungkin menghasilkan "
+"positif palsu, nol menonaktifkan pemeriksaan."
 
 #: plugins/af_psql_trgm/init.php:177
 msgid "Minimum title length:"
-msgstr ""
+msgstr "Panjang judul minimum:"
 
 #: plugins/af_psql_trgm/init.php:187
 msgid "Enable for all feeds."
-msgstr ""
+msgstr "Aktifkan untuk semua feed."
 
 #: plugins/af_psql_trgm/init.php:206
 msgid "Currently enabled for (click to edit):"
-msgstr ""
+msgstr "Saat ini diaktifkan untuk (klik untuk menyunting):"
 
 #: plugins/af_psql_trgm/init.php:226
 msgid "Similarity (af_psql_trgm)"
-msgstr ""
+msgstr "Kesamaan (af_psql_trgm)"
 
 #: plugins/af_psql_trgm/init.php:232
 msgid "Mark similar articles as read"
-msgstr ""
+msgstr "Tandai artikel serupa sebagai dibaca"
 
 #: plugins/share/init.php:43
 msgid "Article unshared"
-msgstr ""
+msgstr "Artikel tidak dibagikan"
 
 #: plugins/share/init.php:58
 msgid "Unshare all articles"
-msgstr ""
+msgstr "Batalkan bagikan semua artikel"
 
 #: plugins/share/init.php:69
 msgid "Shared URLs cleared."
-msgstr ""
+msgstr "URL bersama dihapus."
 
 #: plugins/share/init.php:93
 msgid "Share by URL"
-msgstr ""
+msgstr "Bagikan melalui URL"
 
 #: plugins/share/init.php:265
 msgid "You can share this article by the following unique URL:"
-msgstr ""
+msgstr "Anda dapat membagikan artikel ini melalui URL unik berikut:"
 
 #: plugins/share/init.php:277
 msgid "Article not found."
-msgstr ""
+msgstr "Artikel tidak ditemukan."
 
 #: plugins/share/init.php:282
 msgid "Unshare article"
-msgstr ""
+msgstr "Hapus berbagi artikel"
 
 #: plugins/share/init.php:283 js/CommonDialogs.js:686
 msgid "Generate new URL"
-msgstr ""
+msgstr "Buat URL baru"
 
 #: plugins/af_comics/init.php:62
 msgid "Feeds supported by af_comics"
-msgstr ""
+msgstr "Umpan didukung af_comics"
 
 #: plugins/af_comics/init.php:64
 msgid "The following comics are currently supported:"
-msgstr ""
+msgstr "Komik berikut saat ini didukung:"
 
 #: plugins/bookmarklets/init.php:94 js/PrefFeedTree.js:464
 #: js/CommonDialogs.js:110
 msgid "Subscribe"
-msgstr ""
+msgstr "Berlangganan"
 
 #: plugins/bookmarklets/init.php:107
 #, php-format
 msgid "Already subscribed to <b>%s</b>."
-msgstr ""
+msgstr "Sudah berlangganan ke <b>%s</b>."
 
 #: plugins/bookmarklets/init.php:110
 #, php-format
 msgid "Subscribed to <b>%s</b>."
-msgstr ""
+msgstr "Berlangganan ke <b>%s</b>."
 
 #: plugins/bookmarklets/init.php:113
 #, php-format
 msgid "Could not subscribe to <b>%s</b>."
-msgstr ""
+msgstr "Tidak dapat berlangganan ke <b>%s</b>."
 
 #: plugins/bookmarklets/init.php:116
 #, php-format
 msgid "No feeds found in <b>%s</b>."
-msgstr ""
+msgstr "Tidak ditemukan umpan di <b>%s</b>."
 
 #: plugins/bookmarklets/init.php:122
 #, php-format
 msgid "Could not subscribe to <b>%s</b>.<br>Can't download the Feed URL."
 msgstr ""
+"Tidak dapat berlangganan ke <b>%s</b>.<br>Tidak dapat mengunduh URL Umpan."
 
 #: plugins/bookmarklets/init.php:133
 msgid "Multiple feed URLs found:"
-msgstr ""
+msgstr "Ditemukan beberapa URL umpan:"
 
 #: plugins/bookmarklets/init.php:141
 msgid "Subscribe to selected feed"
-msgstr ""
+msgstr "Berlangganan ke umpan yang dipilih"
 
 #: plugins/bookmarklets/init.php:155
 msgid "Edit subscription options"
-msgstr ""
+msgstr "Edit opsi langganan"
 
 #: plugins/bookmarklets/init.php:186 plugins/bookmarklets/init.php:366
 msgid "Share with Tiny Tiny RSS"
-msgstr ""
+msgstr "Bagikan dengan Tiny Tiny RSS"
 
 #: plugins/bookmarklets/init.php:262
 msgid "Title:"
-msgstr ""
+msgstr "Judul:"
 
 #: plugins/bookmarklets/init.php:267 js/CommonDialogs.js:525
 msgid "URL:"
-msgstr ""
+msgstr "URL:"
 
 #: plugins/bookmarklets/init.php:272
 msgid "Content:"
-msgstr ""
+msgstr "Isi:"
 
 #: plugins/bookmarklets/init.php:277
 msgid "Labels:"
-msgstr ""
+msgstr "Label:"
 
 #: plugins/bookmarklets/init.php:287
 msgid "Share"
-msgstr ""
+msgstr "Bagikan"
 
 #: plugins/bookmarklets/init.php:289
 msgid "Shared article will appear in the Published feed."
-msgstr ""
+msgstr "Artikel yang dibagikan akan muncul di umpan Terbit."
 
 #: plugins/bookmarklets/init.php:328 include/login_form.php:205
 msgid "Log in"
-msgstr ""
+msgstr "Masuk"
 
 #: plugins/bookmarklets/init.php:348
 #, php-format
 msgid "Subscribe to %s in Tiny Tiny RSS?"
-msgstr ""
+msgstr "Berlangganan ke %s di Tiny Tiny RSS?"
 
 #: plugins/bookmarklets/init.php:355
 msgid "Bookmarklets"
-msgstr ""
+msgstr "Bookmarklet"
 
 #: plugins/bookmarklets/init.php:357
 msgid ""
 "Drag the link below to your browser toolbar, open the feed you're interested "
 "in in your browser and click on the link to subscribe to it."
 msgstr ""
+"Seret tautan di bawah ini ke bilah alat peramban Anda, buka umpan yang Anda "
+"minati di peramban Anda, lalu klik tautan tersebut untuk berlangganan."
 
 #: plugins/bookmarklets/init.php:360
 msgid "Subscribe in Tiny Tiny RSS"
-msgstr ""
+msgstr "Berlangganan di Tiny Tiny RSS"
 
 #: plugins/bookmarklets/init.php:363
 msgid "Use this bookmarklet to publish arbitrary pages using Tiny Tiny RSS"
 msgstr ""
+"Gunakan bookmarklet ini untuk mempublikasikan halaman apa pun menggunakan "
+"Tiny Tiny RSS"
 
 #: include/login_form.php:150
 msgid "I forgot my password"
-msgstr ""
+msgstr "Saya lupa kata sandi"
 
 #: include/login_form.php:156
 msgid "Profile:"
-msgstr ""
+msgstr "Profil:"
 
 #: include/login_form.php:169
 msgid "Use less traffic"
-msgstr ""
+msgstr "Gunakan lebih sedikit lalu lintas"
 
 #: include/login_form.php:173
 msgid "Does not display images in articles, reduces automatic refreshes."
-msgstr ""
+msgstr "Tidak menampilkan gambar dalam artikel, mengurangi pembaruan otomatis."
 
 #: include/login_form.php:181 js/CommonDialogs.js:13
 msgid "Safe mode"
-msgstr ""
+msgstr "Mode aman"
 
 #: include/login_form.php:186
 msgid "Uses default theme and prevents all plugins from loading."
-msgstr ""
+msgstr "Gunakan tema standar dan cegah semua plugin untuk dimuat."
 
 #: include/login_form.php:194
 msgid "Remember me"
-msgstr ""
+msgstr "Ingat saya"
 
 #: include/functions.php:50
 msgid "Detect automatically"
-msgstr ""
+msgstr "Deteksi otomatis"
 
 #: js/App.js:332
 msgid "This function is only available in combined mode."
-msgstr ""
+msgstr "Fungsi ini hanya tersedia dalam mode gabungan."
 
 #: js/App.js:485
 msgid "Keyboard shortcuts"
-msgstr ""
+msgstr "Pintas keyboard"
 
 #: js/App.js:543
 msgid "Update daemon is not running."
-msgstr ""
+msgstr "Pembaruan daemon tidak berjalan."
 
 #: js/App.js:556
 msgid "Update daemon is not updating feeds."
-msgstr ""
+msgstr "Pembaruan daemon tidak memperbarui umpan."
 
 #: js/App.js:639
 #, java-printf-format
@@ -2073,205 +2075,210 @@ msgid ""
 "URL scheme reported by your browser (%a) doesn't match server-configured "
 "SELF_URL_PATH (%b), check X-Forwarded-Proto."
 msgstr ""
+"Skema URL yang dilaporkan oleh peramban Anda (%a) tidak sesuai dengan "
+"SELF_URL_PATH yang dikonfigurasi di server (%b), periksa X-Forwarded-Proto."
 
 #: js/App.js:646
 msgid "Fatal error"
-msgstr ""
+msgstr "Kesalahan fatal"
 
 #: js/App.js:668
 msgid "Unhandled exception"
-msgstr ""
+msgstr "Pengecualian tidak ditangani"
 
 #: js/App.js:950
 msgid "Widescreen is not available in combined mode."
-msgstr ""
+msgstr "Layar lebar tidak tersedia dalam mode gabungan."
 
 #: js/App.js:1147
 msgid "Please enable mail or mailto plugin first."
-msgstr ""
+msgstr "Silakan aktifkan plugin email atau mailto dahulu."
 
 #: js/App.js:1210 js/App.js:1323 js/CommonDialogs.js:371
 msgid "You can't edit this kind of feed."
-msgstr ""
+msgstr "Anda tidak dapat menyunting jenis umpan ini."
 
 #: js/App.js:1278
 msgid "Please enable af_readability first."
-msgstr ""
+msgstr "Silakan aktifkan af_readability dahulu."
 
 #: js/App.js:1332
 msgid "Please select some feed first."
-msgstr ""
+msgstr "Silakan pilih beberapa umpan dahulu."
 
 #: js/App.js:1337
 msgid "You can't unsubscribe from the category."
-msgstr ""
+msgstr "Anda tidak dapat berhenti berlangganan dari kategori."
 
 #: js/App.js:1343 js/CommonDialogs.js:345 js/CommonDialogs.js:382
 #, java-printf-format, javascript-format
 msgid "Unsubscribe from %s?"
-msgstr ""
+msgstr "Berhenti berlangganan dari %s?"
 
 #: js/PrefUsers.js:19
 msgid "Please enter username:"
-msgstr ""
+msgstr "Silakan masukkan pengguna:"
 
 #: js/PrefUsers.js:22
 msgid "Adding user..."
-msgstr ""
+msgstr "Menambahkan pengguna..."
 
 #: js/PrefUsers.js:39 js/PrefUsers.js:60
 msgid "Edit user"
-msgstr ""
+msgstr "Sunting pengguna"
 
 #: js/PrefUsers.js:42 js/PrefFeedTree.js:357 js/CommonFilters.js:379
 #: js/CommonDialogs.js:469
 msgid "Saving data..."
-msgstr ""
+msgstr "Menyimpan data..."
 
 #: js/PrefUsers.js:136 js/PrefUsers.js:175
 msgid "No users selected."
-msgstr ""
+msgstr "Tidak ada pengguna yang diplih."
 
 #: js/PrefUsers.js:141
 msgid "Please select one user."
-msgstr ""
+msgstr "Silakan pilih satu pengguna."
 
 #: js/PrefUsers.js:145
 msgid "Reset password of selected user?"
-msgstr ""
+msgstr "Setel ulang kata sandi pengguna yang dipilih?"
 
 #: js/PrefUsers.js:146
 msgid "Resetting password for selected user..."
-msgstr ""
+msgstr "Mengatur ulang kata sandi untuk pengguna yang dipilih..."
 
 #: js/PrefUsers.js:161
 msgid ""
 "Remove selected users? Neither default admin nor your account will be "
 "removed."
 msgstr ""
+"Hapus pengguna yang dipilih? Baik admin standar maupun akun Anda tidak akan "
+"dihapus."
 
 #: js/PrefUsers.js:162
 msgid "Removing selected users..."
-msgstr ""
+msgstr "Menghapus pengguna yang dipilih..."
 
 #: js/common.js:391
 msgid "Click to close"
-msgstr ""
+msgstr "Klik untuk menutup"
 
 #: js/PrefFeedTree.js:93
 msgid "Edit category"
-msgstr ""
+msgstr "Sunting kategori"
 
 #: js/PrefFeedTree.js:100
 msgid "Remove category"
-msgstr ""
+msgstr "Hapus kategori"
 
 #: js/PrefFeedTree.js:197
 #, java-printf-format, javascript-format
 msgid ""
 "Remove category %s? Any nested feeds would be placed into Uncategorized."
 msgstr ""
+"Hapus kategori %s? Semua umpan yang tertanam dipindah ke Tanpa Kategori."
 
 #: js/PrefFeedTree.js:198
 msgid "Removing category..."
-msgstr ""
+msgstr "Menghapus kategori..."
 
 #: js/PrefFeedTree.js:210
 msgid "Unsubscribe from selected feeds?"
-msgstr ""
+msgstr "Berhenti berlangganan dari umpan dipilih?"
 
 #: js/PrefFeedTree.js:212
 msgid "Unsubscribing from selected feeds..."
-msgstr ""
+msgstr "Berhenti berlangganan dari umpan dipilih..."
 
 #: js/PrefFeedTree.js:225 js/PrefFeedTree.js:294 js/PrefFeedTree.js:310
 #: js/PrefFeedTree.js:510 js/CommonDialogs.js:249 js/CommonDialogs.js:270
 msgid "No feeds selected."
-msgstr ""
+msgstr "Tidak ada umpan dipilih."
 
 #: js/PrefFeedTree.js:260
 msgid "Remove selected categories?"
-msgstr ""
+msgstr "Hapus kategori dipilih?"
 
 #: js/PrefFeedTree.js:261
 msgid "Removing selected categories..."
-msgstr ""
+msgstr "Menghapus kategori dipilih..."
 
 #: js/PrefFeedTree.js:273
 msgid "No categories selected."
-msgstr ""
+msgstr "Tidak ada kategori dipilih."
 
 #: js/PrefFeedTree.js:321
 msgid "Edit multiple feeds"
-msgstr ""
+msgstr "Sunting beberapa umpan"
 
 #: js/PrefFeedTree.js:345
 msgid "Save changes to selected feeds?"
-msgstr ""
+msgstr "Simpan perubahan umpan dipilih?"
 
 #: js/PrefFeedTree.js:394
 msgid "Category title:"
-msgstr ""
+msgstr "Judul kategori:"
 
 #: js/PrefFeedTree.js:397
 msgid "Creating category..."
-msgstr ""
+msgstr "Membuat kategori..."
 
 #: js/PrefFeedTree.js:412
 msgid "Subscribing to feeds..."
-msgstr ""
+msgstr "Berlangganan umpan..."
 
 #: js/PrefFeedTree.js:430
 msgid "One valid feed per line (no detection is done)"
-msgstr ""
+msgstr "Satu umpan yang sah per baris (tidak dideteksi)"
 
 #: js/PrefFeedTree.js:483
 msgid "Feeds without recent updates"
-msgstr ""
+msgstr "Umpan tanpa pembaruan"
 
 #: js/PrefFeedTree.js:491 js/CommonDialogs.js:228
 msgid "Remove selected feeds?"
-msgstr ""
+msgstr "Hapus umpan dipilih?"
 
 #: js/PrefFeedTree.js:492 js/CommonDialogs.js:229
 msgid "Removing selected feeds..."
-msgstr ""
+msgstr "Menghapus umpan dipilih..."
 
 #: js/PrefFeedTree.js:533 js/CommonDialogs.js:296
 msgid "Click to edit feed"
-msgstr ""
+msgstr "Klik untuk sunting umpan"
 
 #: js/PrefFilterTree.js:62 js/CommonFilters.js:212
 msgid "in"
-msgstr ""
+msgstr "dalam"
 
 #: js/PrefFilterTree.js:65
 msgid "Inverse"
-msgstr ""
+msgstr "Terbalik"
 
 #: js/PrefFilterTree.js:134 js/PrefFilterTree.js:163 js/PrefFilterTree.js:196
 msgid "No filters selected."
-msgstr ""
+msgstr "Tidak ada saringan dipilih."
 
 #: js/PrefFilterTree.js:138
 msgid "Combine selected filters?"
-msgstr ""
+msgstr "Gabung saringan dipilih?"
 
 #: js/PrefFilterTree.js:139
 msgid "Joining filters..."
-msgstr ""
+msgstr "Menggabungkan saringan..."
 
 #: js/PrefFilterTree.js:150
 msgid "Remove selected filters?"
-msgstr ""
+msgstr "Hapus saringan dipilih?"
 
 #: js/PrefFilterTree.js:151
 msgid "Removing selected filters..."
-msgstr ""
+msgstr "Menghapus filter dipilih..."
 
 #: js/PrefFilterTree.js:177
 msgid "Name for new filter:"
-msgstr ""
+msgstr "Nama untuk filter baru:"
 
 #: js/PrefFilterTree.js:185
 msgid "Clone selected filters?"

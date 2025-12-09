@@ -1032,7 +1032,9 @@ class Feeds extends Handler_Protected {
 
 		// Don't allow subscribing if the content is invalid
 		$fp = new FeedParser($contents);
-		if ($fp->error() || $fp->get_type() === FeedParser::FEED_UNKNOWN)
+		if ($fp->error())
+			return ['code' => 6, 'message' => truncate_string(clean($fp->error()), 250, '…')];
+		if ($fp->get_type() === FeedParser::FEED_UNKNOWN)
 			return ['code' => 6, 'message' => truncate_string(clean($contents), 250, '…')];
 
 		$feed = ORM::for_table('ttrss_feeds')

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-28 21:06+0000\n"
-"PO-Revision-Date: 2025-12-09 12:20+0000\n"
+"PO-Revision-Date: 2025-12-10 16:00+0000\n"
 "Last-Translator: Dony Wibowo <dony@dony.me>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/tt-rss/webui/"
 "id/>\n"
@@ -2282,872 +2282,883 @@ msgstr "Nama untuk filter baru:"
 
 #: js/PrefFilterTree.js:185
 msgid "Clone selected filters?"
-msgstr ""
+msgstr "Klonkan filter terpilih?"
 
 #: js/PrefFilterTree.js:189
 msgid "Cloning selected filters..."
-msgstr ""
+msgstr "Mengklonkan filter terpilih..."
 
 #: js/PrefLabelTree.js:69
 msgid "Edit label"
-msgstr ""
+msgstr "Sunting label"
 
 #: js/PrefLabelTree.js:141
 msgid "Foreground:"
-msgstr ""
+msgstr "Latar depan:"
 
 #: js/PrefLabelTree.js:142
 msgid "Background:"
-msgstr ""
+msgstr "Latar belakang:"
 
 #: js/PrefLabelTree.js:187
 msgid "Reset selected labels to default colors?"
-msgstr ""
+msgstr "Atur ulang warna label yang dipilih ke warna default?"
 
 #: js/PrefLabelTree.js:200 js/PrefLabelTree.js:220
 msgid "No labels selected."
-msgstr ""
+msgstr "Tidak ada label yang dipilih."
 
 #: js/PrefLabelTree.js:207
 msgid "Remove selected labels?"
-msgstr ""
+msgstr "Hapus label yang dipilih?"
 
 #: js/PrefLabelTree.js:208
 msgid "Removing selected labels..."
-msgstr ""
+msgstr "Menghapus label yang dipilih..."
 
 #: js/Article.js:35
 msgid "Please enter new score for selected articles:"
-msgstr ""
+msgstr "Silakan masukkan nilai baru untuk artikel yang dipilih:"
 
 #: js/Article.js:56 js/Article.js:135 js/Headlines.js:938 js/Headlines.js:964
 #: js/Headlines.js:1106 js/Headlines.js:1123 js/Headlines.js:1140
 #: js/Headlines.js:1275 js/Headlines.js:976
 msgid "No articles selected."
-msgstr ""
+msgstr "Tidak ada artikel yang dipilih."
 
 #: js/Article.js:64
 msgid "Please enter new score for this article:"
-msgstr ""
+msgstr "Silakan masukkan nilai baru untuk artikel ini:"
 
 #: js/Article.js:147
 msgid "no tags"
-msgstr ""
+msgstr "tidak ada tag"
 
 #: js/Article.js:239
 msgid "comments"
-msgstr ""
+msgstr "komentar"
 
 #: js/Article.js:242
 msgid "comment"
 msgid_plural "comments"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "komentar"
 
 #: js/Article.js:344
 msgid "Article tags"
-msgstr ""
+msgstr "Tag artikel"
 
 #: js/Article.js:351
 msgid "Tags for this article (separated by commas):"
-msgstr ""
+msgstr "Tag untuk artikel ini (dipisahkan dengan koma):"
 
 #: js/Article.js:371
 msgid "Saving article tags..."
-msgstr ""
+msgstr "Menyimpan tag artikel..."
 
 #: js/Headlines.js:642
 msgid "Cancel search"
-msgstr ""
+msgstr "Batalkan pencarian"
 
 #: js/Headlines.js:656
 msgid "Select..."
-msgstr ""
+msgstr "Pilih..."
 
 #: js/Headlines.js:817 js/Headlines.js:869 js/Headlines.js:884
 msgid "Click to open next unread feed."
-msgstr ""
+msgstr "Klik untuk membuka umpan yang belum dibaca berikutnya."
 
 #: js/Headlines.js:881
 msgid "New articles found, reload feed to continue."
-msgstr ""
+msgstr "Artikel baru ditemukan, muat ulang umpan untuk melanjutkan."
 
 #: js/Headlines.js:1077
 #, java-printf-format, javascript-format
 msgid "%d article selected"
 msgid_plural "%d articles selected"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d artikel dipilih"
 
 #: js/Headlines.js:1148
 #, java-printf-format, javascript-format
 msgid "Delete %d selected article in %s?"
 msgid_plural "Delete %d selected articles in %s?"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Hapus %d artikel yang dipilih di %s?"
 
 #: js/Headlines.js:1150
 #, java-printf-format, javascript-format
 msgid "Delete %d selected article?"
 msgid_plural "Delete %d selected articles?"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Hapus %d artikel yang dipilih?"
 
 #: js/Headlines.js:1281
 #, java-printf-format, javascript-format
 msgid "Mark %d selected article in %s as read?"
 msgid_plural "Mark %d selected articles in %s as read?"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tandai %d artikel yang dipilih di %s sebagai sudah dibaca?"
 
 #: js/Headlines.js:1297
 msgid "No article is selected."
-msgstr ""
+msgstr "Tidak ada artikel dipilih."
 
 #: js/Headlines.js:1332
 msgid "No articles found to mark"
-msgstr ""
+msgstr "Tidak ditemukan artikel dapat ditandai"
 
 #: js/Headlines.js:1334
 #, java-printf-format, javascript-format
 msgid "Mark %d article as read?"
 msgid_plural "Mark %d articles as read?"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tandai artikel %d sudah dibaca?"
 
 #: js/Headlines.js:1393 js/Headlines.js:662
 msgid "Open original article"
-msgstr ""
+msgstr "Buka artikel asli"
 
 #: js/Headlines.js:1510
 msgid "Remove label"
-msgstr ""
+msgstr "Hapus label"
 
 #: js/Headlines.js:1559 js/FeedTree.js:107 js/Headlines.js:466
 #: js/Headlines.js:515 js/Headlines.js:584
 msgid "Open site"
-msgstr ""
+msgstr "Buka situs"
 
 #: js/Headlines.js:1568 js/FeedTree.js:116
 msgid "Debug feed"
-msgstr ""
+msgstr "Debug umpan"
 
 #: js/Headlines.js:1589
 msgid "Select articles in group"
-msgstr ""
+msgstr "Pilih artikel dalam grup"
 
 #: js/Headlines.js:1599
 msgid "Mark group as read"
-msgstr ""
+msgstr "Tandai grup sudah dibaca"
 
 #: js/Headlines.js:1611
 msgid "Mark feed as read"
-msgstr ""
+msgstr "Tandai umpan sudah dibaca"
 
 #: js/CommonFilters.js:12
 msgid "Edit filter"
-msgstr ""
+msgstr "Sunting saringan"
 
 #: js/CommonFilters.js:12
 msgid "Create new filter"
-msgstr ""
+msgstr "Buat filter baru"
 
 #: js/CommonFilters.js:40
 #, java-printf-format, javascript-format
 msgid "Looking for articles (%d processed, %f found)..."
-msgstr ""
+msgstr "Mencari artikel (%d diproses, %f ditemukan)..."
 
 #: js/CommonFilters.js:66
 msgid "Articles matching this filter:"
-msgstr ""
+msgstr "Artikel sesuai dengan saringan ini:"
 
 #: js/CommonFilters.js:68
 #, java-printf-format, javascript-format
 msgid "Found at least %d articles matching this filter:"
-msgstr ""
+msgstr "Ditemukan setidaknya %d artikel sesuai dengan saringan ini:"
 
 #: js/CommonFilters.js:75
 msgid "Error while trying to get filter test results."
-msgstr ""
+msgstr "Terjadi kesalahan saat mencoba mendapatkan hasil tes saringan."
 
 #: js/CommonFilters.js:85
 msgid "Looking for articles..."
-msgstr ""
+msgstr "Mencari artikel..."
 
 #: js/CommonFilters.js:164
 msgid "Edit rule"
-msgstr ""
+msgstr "Sunting aturan"
 
 #: js/CommonFilters.js:164
 msgid "Add rule"
-msgstr ""
+msgstr "Tambah aturan"
 
 #: js/CommonFilters.js:206
 msgid "Inverse regular expression matching"
-msgstr ""
+msgstr "Pencocokan ekspresi reguler terbalik"
 
 #: js/CommonFilters.js:210
 msgid "on"
-msgstr ""
+msgstr "pada"
 
 #: js/CommonFilters.js:238
 msgid "Edit action"
-msgstr ""
+msgstr "Sunting tindakan"
 
 #: js/CommonFilters.js:238
 msgid "Add action"
-msgstr ""
+msgstr "Tambah tindakan"
 
 #: js/CommonFilters.js:348
 msgid "Remove filter?"
-msgstr ""
+msgstr "Hapus saringan?"
 
 #: js/CommonFilters.js:353
 msgid "Removing filter..."
-msgstr ""
+msgstr "Menghapus saringan..."
 
 #: js/CommonFilters.js:436 js/CommonFilters.js:468 js/PrefHelpers.js:194
 msgid "Add"
-msgstr ""
+msgstr "Tambah"
 
 #: js/CommonFilters.js:439 js/CommonFilters.js:471
 msgid "Delete"
-msgstr ""
+msgstr "Hapus"
 
 #: js/CommonFilters.js:505 js/CommonFilters.js:509
 msgid "Test"
-msgstr ""
+msgstr "Tes"
 
 #: js/CommonFilters.js:510
 msgid "Create"
-msgstr ""
+msgstr "Buat"
 
 #: js/PrefHelpers.js:19
 msgid "Remove selected app passwords?"
-msgstr ""
+msgstr "Hapus kata sandi aplikasi dipilih?"
 
 #: js/PrefHelpers.js:44
 msgid "This will invalidate all previously generated feed URLs. Continue?"
 msgstr ""
+"Ini akan membuat semua URL umpan dihasilkan sebelumnya tidak valid. "
+"Lanjutkan?"
 
 #: js/PrefHelpers.js:45 plugins/share/share_prefs.js:6
 msgid "Clearing URLs..."
-msgstr ""
+msgstr "Membersihkan URL..."
 
 #: js/PrefHelpers.js:48
 msgid "Generated URLs cleared."
-msgstr ""
+msgstr "URL dihasilkan telah dihapus."
 
 #: js/PrefHelpers.js:58
 msgid "Digest preview"
-msgstr ""
+msgstr "Ringkasan pratinjau"
 
 #: js/PrefHelpers.js:112
 msgid "Clear event log?"
-msgstr ""
+msgstr "Hapus log peristiwa?"
 
 #: js/PrefHelpers.js:134
 msgid "Name for cloned profile:"
-msgstr ""
+msgstr "Nama untuk profil klon:"
 
 #: js/PrefHelpers.js:144
 msgid "Please select a single profile to clone."
-msgstr ""
+msgstr "Silakan pilih satu profil untuk dikloning."
 
 #: js/PrefHelpers.js:152
 msgid ""
 "Remove selected profiles? Active and default profiles will not be removed."
-msgstr ""
+msgstr "Hapus profil dipilih? Profil aktif dan standar tidak akan dihapus."
 
 #: js/PrefHelpers.js:153
 msgid "Removing selected profiles..."
-msgstr ""
+msgstr "Menghapus profil dipilih..."
 
 #: js/PrefHelpers.js:162
 msgid "No profiles selected."
-msgstr ""
+msgstr "Tidak ada profil dipilih."
 
 #: js/PrefHelpers.js:167
 msgid "Creating profile..."
-msgstr ""
+msgstr "Membuat profil..."
 
 #: js/PrefHelpers.js:217
 msgid "(active)"
-msgstr ""
+msgstr "(aktif)"
 
 #: js/PrefHelpers.js:218
 msgid "(empty)"
-msgstr ""
+msgstr "(kosong)"
 
 #: js/PrefHelpers.js:241
 msgid "Activate selected profile?"
-msgstr ""
+msgstr "Aktifkan profil dipilih?"
 
 #: js/PrefHelpers.js:250
 msgid "Please choose a profile to activate."
-msgstr ""
+msgstr "Silakan pilih profil untuk diaktifkan."
 
 #: js/PrefHelpers.js:263
 msgid "Customize stylesheet"
-msgstr ""
+msgstr "Sesuaikan lembar gaya"
 
 #: js/PrefHelpers.js:279
 msgid ""
 "You can override colors, fonts and layout of your currently selected theme "
 "with custom CSS declarations here."
 msgstr ""
+"Anda dapat mengganti warna, font, dan tata letak tema saat ini dipilih "
+"dengan deklarasi CSS kustom di sini."
 
 #: js/PrefHelpers.js:288
 msgid ""
 "User CSS has been applied, you might need to reload the page to see all "
 "changes."
 msgstr ""
+"CSS pengguna telah dipakai, Anda mungkin perlu memuat ulang halaman untuk "
+"melihat semua perubahan."
 
 #: js/PrefHelpers.js:328
 msgid "Reset to defaults?"
-msgstr ""
+msgstr "Kembalikan ke pengaturan standar?"
 
 #: js/PrefHelpers.js:372
 #, java-printf-format, javascript-format
 msgid "Error while loading plugins list: %s."
-msgstr ""
+msgstr "Kesalahan saat memuat daftar plugin: %s."
 
 #: js/PrefHelpers.js:421
 msgid "Clear data"
-msgstr ""
+msgstr "Hapus data"
 
 #: js/PrefHelpers.js:424
 msgid "Uninstall"
-msgstr ""
+msgstr "Copot"
 
 #: js/PrefHelpers.js:436 js/PrefHelpers.js:595
 msgid "Could not find any plugins for this search query."
-msgstr ""
+msgstr "Tidak ditemukan plugin untuk pencarian ini."
 
 #: js/PrefHelpers.js:443
 #, java-printf-format, javascript-format
 msgid "Clear stored data for %s?"
-msgstr ""
+msgstr "Hapus data disimpan untuk %s?"
 
 #: js/PrefHelpers.js:452
 #, java-printf-format, javascript-format
 msgid "Uninstall plugin %s?"
-msgstr ""
+msgstr "Copot plugin %s?"
 
 #: js/PrefHelpers.js:461
 msgid "Plugin uninstallation failed."
-msgstr ""
+msgstr "Pencopotan plugin gagal."
 
 #: js/PrefHelpers.js:477
 msgid "Available plugins"
-msgstr ""
+msgstr "Plugin tersedia"
 
 #: js/PrefHelpers.js:490
 msgid "Plugin installer"
-msgstr ""
+msgstr "Pemasang plugin"
 
 #: js/PrefHelpers.js:493
 #, java-printf-format, javascript-format
 msgid "Installing %s, please wait..."
-msgstr ""
+msgstr "Memasang %s, harap tunggu..."
 
 #: js/PrefHelpers.js:508 js/PrefHelpers.js:550 js/PrefHelpers.js:660
 msgid "Operation failed: check event log."
-msgstr ""
+msgstr "Operasi gagal: periksa log peristiwa."
 
 #: js/PrefHelpers.js:512
 msgid "Plugin has been installed."
-msgstr ""
+msgstr "Plugin telah dipasang."
 
 #: js/PrefHelpers.js:516
 msgid "Plugin is already installed."
-msgstr ""
+msgstr "Plugin sudah terpasang."
 
 #: js/PrefHelpers.js:526 js/PrefHelpers.js:677 js/PrefHelpers.js:741
 #, java-printf-format, javascript-format
 msgid "Exited with RC: %d"
-msgstr ""
+msgstr "Keluar dengan RC: %d"
 
 #: js/PrefHelpers.js:575
 msgid "Already installed"
-msgstr ""
+msgstr "Sudah terpasang"
 
 #: js/PrefHelpers.js:586
 #, java-printf-format, javascript-format
 msgid "Updated: %s"
-msgstr ""
+msgstr "Diperbarui: %s"
 
 #: js/PrefHelpers.js:603
 msgid "Looking for plugins..."
-msgstr ""
+msgstr "Mencari plugin..."
 
 #: js/PrefHelpers.js:622 js/PrefHelpers.js:761
 msgid "Close"
-msgstr ""
+msgstr "Tutup"
 
 #: js/PrefHelpers.js:640
 msgid "Update plugins"
-msgstr ""
+msgstr "Perbarui plugin"
 
 #: js/PrefHelpers.js:654
 msgid "Updating, please wait..."
-msgstr ""
+msgstr "Memperbarui, harap tunggu..."
 
 #: js/PrefHelpers.js:678
 msgid "Update done."
-msgstr ""
+msgstr "Pembaruan selesai."
 
 #: js/PrefHelpers.js:702
 msgid "No updates available"
-msgstr ""
+msgstr "Tidak ada pembaruan tersedia"
 
 #: js/PrefHelpers.js:712
 #, java-printf-format, javascript-format
 msgid "Checking: %s"
-msgstr ""
+msgstr "Memeriksa: %s"
 
 #: js/PrefHelpers.js:719
 #, java-printf-format, javascript-format
 msgid "%s: Operation failed: check event log."
-msgstr ""
+msgstr "%s: Operasi gagal: periksa log peristiwa."
 
 #: js/PrefHelpers.js:742
 msgid "Ready to update"
-msgstr ""
+msgstr "Siap diperbarui"
 
 #: js/PrefHelpers.js:787
 msgid "Please choose an OPML file first."
-msgstr ""
+msgstr "Silakan pilih berkas OPML dahulu."
 
 #: js/PrefHelpers.js:790
 msgid "Importing, please wait..."
-msgstr ""
+msgstr "Mengimpor, harap tunggu..."
 
 #: js/PrefHelpers.js:799
 msgid "OPML Import"
-msgstr ""
+msgstr "Impor OPML"
 
 #: js/PrefHelpers.js:810
 msgid ""
 "If you have imported labels and/or filters, you might need to reload "
 "preferences to see your new data."
 msgstr ""
+"Jika Anda telah mengimpor label dan/atau saringan, Anda mungkin perlu memuat "
+"ulang preferensi untuk melihat data baru."
 
 #: js/FeedTree.js:139
 msgid "(Un)collapse"
-msgstr ""
+msgstr "(Ciut)Buka"
 
 #: js/Feeds.js:284
 msgid "Your password is at default value"
-msgstr ""
+msgstr "Kata sandi Anda masih menggunakan nilai bawaan"
 
 #: js/Feeds.js:286
 msgid ""
 "You are using default tt-rss password. Please change it in the Preferences "
 "(Personal data / Authentication)."
 msgstr ""
+"Anda masih menggunakan kata sandi bawaan tt-rss. Mohon ubah kata sandi "
+"tersebut di menu Preferensi (Data pribadi / Autentikasi)."
 
 #: js/Feeds.js:448
 msgid "Mark all articles as read?"
-msgstr ""
+msgstr "Tandai semua artikel telah dibaca?"
 
 #: js/Feeds.js:452
 msgid "Marking all feeds as read..."
-msgstr ""
+msgstr "Menandai semua umpan telah dibaca..."
 
 #: js/Feeds.js:469
 msgid "Mark %w in %s older than 1 day as read?"
-msgstr ""
+msgstr "Tandai %w di %s lebih lama dari 1 hari telah dibaca?"
 
 #: js/Feeds.js:472
 msgid "Mark %w in %s older than 1 week as read?"
-msgstr ""
+msgstr "Tandai %w di %s lebih lama dari 1 minggu telah dibaca?"
 
 #: js/Feeds.js:475
 msgid "Mark %w in %s older than 2 weeks as read?"
-msgstr ""
+msgstr "Tandai %w di %s lebih lama dari 2 minggu telah dibaca?"
 
 #: js/Feeds.js:478
 msgid "Mark %w in %s as read?"
-msgstr ""
+msgstr "Tandai %w di %s telah dibaca?"
 
 #: js/Feeds.js:481
 msgid "search results"
-msgstr ""
+msgstr "hasil pencarian"
 
 #: js/Feeds.js:481
 msgid "all articles"
-msgstr ""
+msgstr "semua artikel"
 
 #: js/Feeds.js:522
 #, java-printf-format, javascript-format
 msgid "Mark all articles in %s as read?"
-msgstr ""
+msgstr "Tandai semua artikel di %s telah dibaca?"
 
 #: js/Feeds.js:653
 msgid "Search syntax"
-msgstr ""
+msgstr "Pencarian sintaks"
 
 #: js/Feeds.js:717
 msgid "Search feeds"
-msgstr ""
+msgstr "Cari umpan"
 
 #: js/CommonDialogs.js:42
 msgid ""
 "Provided URL is a HTML page referencing multiple feeds, please select "
 "required feed from the dropdown menu below."
 msgstr ""
+"URL adalah halaman HTML dengan banyak umpan, pilih umpan diinginkan dari "
+"menu tarik-turun di bawah."
 
 #: js/CommonDialogs.js:137
 msgid ""
 "Failed to parse output. This can indicate server timeout and/or network "
 "issues. Backend output was logged to browser console."
 msgstr ""
+"Gagal memproses keluaran. Kemungkinan disebabkan oleh waktu server habis dan/"
+"atau masalah jaringan. Keluaran backend telah dicatat di konsol peramban."
 
 #: js/CommonDialogs.js:148
 msgid "You are already subscribed to this feed."
-msgstr ""
+msgstr "Anda sudah berlangganan umpan ini."
 
 #: js/CommonDialogs.js:152
 #, java-printf-format, javascript-format
 msgid "Subscribed to %s"
-msgstr ""
+msgstr "Berlangganan ke %s"
 
 #: js/CommonDialogs.js:161
 msgid "Specified URL seems to be invalid."
-msgstr ""
+msgstr "URL yang ditentukan tampaknya tidak valid."
 
 #: js/CommonDialogs.js:164
 msgid "Specified URL doesn't seem to contain any feeds."
-msgstr ""
+msgstr "URL yang ditentukan tampaknya tidak berisi umpan apa pun."
 
 #: js/CommonDialogs.js:177
 msgid "Expand to select feed"
-msgstr ""
+msgstr "Perluas untuk memilih umpan"
 
 #: js/CommonDialogs.js:189
 msgid "Couldn't download the specified URL."
-msgstr ""
+msgstr "Tidak dapat mengunduh URL yang ditentukan."
 
 #: js/CommonDialogs.js:192
 msgid "Invalid content."
-msgstr ""
+msgstr "Konten tidak valid."
 
 #: js/CommonDialogs.js:195
 msgid "Error while creating feed database entry."
-msgstr ""
+msgstr "Terjadi galat saat membuat entri basis data umpan."
 
 #: js/CommonDialogs.js:198
 msgid "You are not allowed to perform this operation."
-msgstr ""
+msgstr "Anda tidak diizinkan melakukan operasi ini."
 
 #: js/CommonDialogs.js:220
 msgid "Feeds with update errors"
-msgstr ""
+msgstr "Umpan dengan galat pembaruan"
 
 #: js/CommonDialogs.js:256
 msgid "Debug selected feeds?"
-msgstr ""
+msgstr "Debug umpan dipilih?"
 
 #: js/CommonDialogs.js:257
 msgid "Opening debugger for selected feeds..."
-msgstr ""
+msgstr "Membuka debugger untuk umpan dipilih..."
 
 #: js/CommonDialogs.js:326
 msgid "Please enter label caption:"
-msgstr ""
+msgstr "Masukkan judul label:"
 
 #: js/CommonDialogs.js:348
 msgid "Removing feed..."
-msgstr ""
+msgstr "Menghapus umpan..."
 
 #: js/CommonDialogs.js:392
 msgid "Please select an image file."
-msgstr ""
+msgstr "Pilih berkas gambar."
 
 #: js/CommonDialogs.js:412
 msgid "Icon file is too large."
-msgstr ""
+msgstr "Berkas ikon terlalu besar."
 
 #: js/CommonDialogs.js:415
 msgid "Upload failed."
-msgstr ""
+msgstr "Unggahan gagal."
 
 #: js/CommonDialogs.js:445
 msgid "Remove stored feed icon?"
-msgstr ""
+msgstr "Hapus ikon umpan tersimpan?"
 
 #: js/CommonDialogs.js:446
 msgid "Removing feed icon..."
-msgstr ""
+msgstr "Menghapus ikon umpan..."
 
 #: js/CommonDialogs.js:449
 msgid "Feed icon removed."
-msgstr ""
+msgstr "Ikon umpan telah dihapus."
 
 #: js/CommonDialogs.js:616
 msgid "Upload new icon..."
-msgstr ""
+msgstr "Unggah ikon baru..."
 
 #: js/CommonDialogs.js:645 js/Headlines.js:635
 msgid "Show as feed"
-msgstr ""
+msgstr "Tampilkan sebagai umpan"
 
 #: js/CommonDialogs.js:647
 msgid "Generate new syndication address for this feed?"
-msgstr ""
+msgstr "Buat alamat syndication baru untuk umpan ini?"
 
 #: js/CommonDialogs.js:649
 msgid "Trying to change address..."
-msgstr ""
+msgstr "Mencoba mengubah alamat..."
 
 #: js/CommonDialogs.js:667
 msgid "Could not change feed URL."
-msgstr ""
+msgstr "Tidak dapat mengubah URL umpan."
 
 #: js/CommonDialogs.js:674
 #, java-printf-format, javascript-format
 msgid "%s can be accessed via the following secret URL:"
-msgstr ""
+msgstr "%s dapat diakses melalui URL rahasia berikut:"
 
 #: plugins/note/note.js:19
 msgid "Saving article note..."
-msgstr ""
+msgstr "Menyimpan catatan artikel..."
 
 #: plugins/shorten_expanded/init.js:35
 msgid "Expand article"
-msgstr ""
+msgstr "Perluas artikel"
 
 #: plugins/af_psql_trgm/init.js:6
 msgid "Related articles"
-msgstr ""
+msgstr "Artikel terkait"
 
 #: plugins/share/share.js:7
 msgid "Share article by URL"
-msgstr ""
+msgstr "Bagikan artikel melalui URL"
 
 #: plugins/share/share.js:9
 msgid "Generate new share URL for this article?"
-msgstr ""
+msgstr "Buat URL berbagi baru untuk artikel ini?"
 
 #: plugins/share/share.js:11
 msgid "Trying to change URL..."
-msgstr ""
+msgstr "Mencoba mengubah URL..."
 
 #: plugins/share/share.js:31
 msgid "Could not change URL."
-msgstr ""
+msgstr "Tidak dapat mengubah URL."
 
 #: plugins/share/share.js:39
 msgid "Remove sharing for this article?"
-msgstr ""
+msgstr "Hapus pembagian untuk artikel ini?"
 
 #: plugins/share/share_prefs.js:5
 msgid "This will invalidate all previously shared article URLs. Continue?"
 msgstr ""
+"Ini akan membuat semua URL artikel sebelumnya dibagikan tidak berlaku. "
+"Lanjutkan?"
 
 #: js/App.js:676
 msgid "Stack trace"
-msgstr ""
+msgstr "Jejak tumpukan"
 
 #: js/App.js:683 js/CommonDialogs.js:121
 msgid "Additional information"
-msgstr ""
+msgstr "Informasi tambahan"
 
 #: js/PrefUsers.js:76
 msgid "Access level: "
-msgstr ""
+msgstr "Tingkat akses: · "
 
 #: js/PrefUsers.js:92
 msgid "OTP enabled"
-msgstr ""
+msgstr "OTP diaktifkan"
 
 #: js/PrefUsers.js:104
 msgid "User details"
-msgstr ""
+msgstr "Detail pengguna"
 
 #: js/PrefFeedTree.js:382
 msgid "Rename category to:"
-msgstr ""
+msgstr "Ganti nama kategori menjadi:"
 
 #: js/PrefFeedTree.js:458
 msgid "Feeds require authentication."
-msgstr ""
+msgstr "Umpan memerlukan autentikasi."
 
 #: js/PrefFeedTree.js:547 js/CommonDialogs.js:310
 msgid "Unsubscribe from selected feeds"
-msgstr ""
+msgstr "Berhenti berlangganan dari umpan dipilih"
 
 #: js/PrefLabelTree.js:124
 msgid "Caption"
-msgstr ""
+msgstr "Judul"
 
 #: js/Article.js:114
 msgid "Copied to clipboard."
-msgstr ""
+msgstr "Disalin ke papan klip."
 
 #: js/Article.js:116
 msgid "Article URL:"
-msgstr ""
+msgstr "URL artikel:"
 
 #: js/Article.js:200
 msgid "Attachments"
-msgstr ""
+msgstr "Lampiran"
 
 #: js/Article.js:309 js/Headlines.js:547
 msgid "Edit tags for this article"
-msgstr ""
+msgstr "Sunting tag untuk artikel ini"
 
 #: js/Headlines.js:467
 msgid "mark feed as read"
-msgstr ""
+msgstr "Tandai umpan sebagai telah dibaca"
 
 #: js/Headlines.js:520
 msgid "Span all columns"
-msgstr ""
+msgstr "Rentangkan semua kolom"
 
 #: js/Headlines.js:659
 msgid "Invert"
-msgstr ""
+msgstr "Kebalikan"
 
 #: js/Headlines.js:669
 msgid "Set score"
-msgstr ""
+msgstr "Atur skor"
 
 #: js/Headlines.js:678
 msgid "Delete permanently"
-msgstr ""
+msgstr "Hapus permanen"
 
 #: js/Headlines.js:904
 msgid ""
 "Could not update headlines (invalid object received - see error console for "
 "details)"
 msgstr ""
+"Tidak dapat memperbarui judul (objek tidak valid diterima - lihat konsol "
+"galat untuk detail)"
 
 #: js/Headlines.js:1401
-#, fuzzy
-#| msgid "Collapse article"
 msgid "Copy article URL"
-msgstr "Ciutkan artikel﻿"
+msgstr "Salin URL artikel"
 
 #: js/CommonFilters.js:64
 msgid "No recent articles matching this filter have been found."
-msgstr ""
+msgstr "Tidak ditemukan artikel terbaru yang cocok dengan saringan ini."
 
 #: js/CommonFilters.js:402
 msgid "Enabled"
-msgstr ""
+msgstr "Diaktifkan"
 
 #: js/CommonFilters.js:403
 msgid "Match any rule"
-msgstr ""
+msgstr "Cocokkan aturan apapun"
 
 #: js/CommonFilters.js:404
 msgid "Inverse matching"
-msgstr ""
+msgstr "Pencocokan terbalik"
 
 #: js/CommonFilters.js:422
 msgid "Match"
-msgstr ""
+msgstr "Cocok"
 
 #: js/CommonFilters.js:455
 msgid "Apply actions"
-msgstr ""
+msgstr "Terapkan tindakan"
 
 #: js/PrefHelpers.js:230
 msgid "Activate"
-msgstr ""
+msgstr "Aktifkan"
 
 #: js/PrefHelpers.js:298
 msgid "Apply"
-msgstr ""
+msgstr "Terapkan"
 
 #: js/PrefHelpers.js:302
 msgid "Save and reload"
-msgstr ""
+msgstr "Simpan dan muat ulang"
 
 #: js/PrefHelpers.js:351
 msgid "Selected plugins have been enabled. Reload?"
-msgstr ""
+msgstr "Plugin yang dipilih telah diaktifkan. Muat ulang?"
 
 #: js/PrefHelpers.js:399
 msgid "System plugins are enabled using global configuration."
-msgstr ""
+msgstr "Plugin sistem diaktifkan menggunakan konfigurasi global."
 
 #: js/PrefHelpers.js:576
 msgid "Install"
-msgstr ""
+msgstr "Instal"
 
 #: js/PrefHelpers.js:652
 msgid "Updating..."
-msgstr ""
+msgstr "Memperbarui..."
 
 #: js/PrefHelpers.js:685
 msgid "Updates complete"
-msgstr ""
+msgstr "Pembaruan selesai"
 
 #: js/PrefHelpers.js:699
 #, javascript-format
 msgid "Updates pending for %d plugin"
 msgid_plural "Updates pending for %d plugins"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Ada %d plugin perlu diperbarui"
 
 #: js/Feeds.js:291
 msgid "Open Preferences"
-msgstr ""
+msgstr "Buka Preferensi"
 
 #: js/Feeds.js:637
 #, javascript-format
 msgid "Search %s..."
-msgstr ""
+msgstr "Cari %s..."
 
 #: js/Feeds.js:646
 msgid "Used for word stemming"
-msgstr ""
+msgstr "Digunakan untuk stemming kata"
 
 #: js/Feeds.js:706
 msgid "Show feeds matching..."
-msgstr ""
+msgstr "Tampilkan umpan yang cocok..."
 
 #: js/CommonDialogs.js:15
 msgid ""
 "Tiny Tiny RSS is running in safe mode. All themes and plugins are disabled. "
 "You will need to log out and back in to disable it."
 msgstr ""
+"Tiny Tiny RSS berjalan dalam mode aman. Semua tema dan plugin dinonaktifkan. "
+"Anda harus keluar dan kembali masuk untuk menonaktifkannya."
 
 #: js/CommonDialogs.js:50
 msgid "Feed or site URL"
-msgstr ""
+msgstr "URL umpan atau situs"
 
 #: js/CommonDialogs.js:70
 msgid "Available feeds"
-msgstr ""
+msgstr "Umpan yang tersedia"
 
 #: js/CommonDialogs.js:103
 msgid "This feed requires authentication."
-msgstr ""
+msgstr "Umpan ini memerlukan autentikasi."
 
 #: js/CommonDialogs.js:313
 msgid "Debug selected feeds"
-msgstr ""
+msgstr "Debug umpan yang dipilih"
 
 #: js/CommonDialogs.js:520
 msgid "Feed title"
-msgstr ""
+msgstr "Judul umpan"
 
 #: js/CommonDialogs.js:527
 msgid "Feed URL"
-msgstr ""
+msgstr "URL Umpan"
 
 #: js/CommonDialogs.js:546
 msgid "Site URL:"
-msgstr ""
+msgstr "URL Situs:"
 
 #: js/CommonDialogs.js:548
 msgid "Site URL"
-msgstr ""
+msgstr "URL Situs"
 
 #: js/CommonDialogs.js:611
 msgid "Icon"
-msgstr ""
+msgstr "Ikon"

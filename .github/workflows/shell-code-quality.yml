@@ -30,8 +30,6 @@ jobs:
       uses: actions/checkout@v6
 
     - name: Run ShellCheck
-      # TODO: Remove after addressing initial issues
-      continue-on-error: true
       run: |
         docker run --rm koalaman/shellcheck:stable --version
 

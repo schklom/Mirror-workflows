@@ -425,6 +425,9 @@ class Handler_Public extends Handler {
 		startup_gettext();
 		session_start();
 
+		if (empty($_SESSION['csrf_token']))
+			$_SESSION['csrf_token'] = bin2hex(get_random_bytes(16));
+
 		$hash = clean($_REQUEST["hash"] ?? '');
 
 		header('Content-Type: text/html; charset=utf-8');
@@ -448,8 +451,6 @@ class Handler_Public extends Handler {
 		<div class='container'>
 
 		<script type="text/javascript">
-			const __csrf_token = "<?= $_SESSION["csrf_token"]; ?>";
-
 			const __default_light_theme = "<?= get_theme_path(Config::get(Config::DEFAULT_LIGHT_THEME), 'themes/light.css') ?>";
 			const __default_dark_theme = "<?= get_theme_path(Config::get(Config::DEFAULT_DARK_THEME), 'themes/night.css') ?>";
 		</script>
@@ -522,6 +523,7 @@ class Handler_Public extends Handler {
 			print "<form method='POST' action='public.php'>
 				<input type='hidden' name='method' value='do'>
 				<input type='hidden' name='op' value='forgotpass'>
+				<input type='hidden' name='csrf_token' value='{$_SESSION['csrf_token']}'>
 
 				<fieldset>
 				<label>".__("Login:")."</label>
@@ -552,8 +554,9 @@ class Handler_Public extends Handler {
 			$login = clean($_POST["login"]);
 			$email = clean($_POST["email"]);
 			$test = clean($_POST["test"]);
+			$csrf_token = clean($_POST['csrf_token'] ?? '');
 
-			if ($test != ($_SESSION["pwdreset:testvalue1"] + $_SESSION["pwdreset:testvalue2"]) || !$email || !$login) {
+			if (!validate_csrf($csrf_token) || $test != ($_SESSION['pwdreset:testvalue1'] + $_SESSION['pwdreset:testvalue2']) || !$email || !$login) {
 				print_error(__('Some of the required form parameters are missing or incorrect.'));
 
 				print "<form method='GET' action='public.php'>

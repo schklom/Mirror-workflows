@@ -102,9 +102,13 @@ class Pref_Filters extends Handler_Protected {
 		$scope_qparts = [];
 
 		/** @var string $rule_json */
-		foreach (clean($_REQUEST['rule']) as $rule_json) {
-			/** @var array{reg_exp: string, filter_type: int, feed_id: array<int, int|string>, name: string, inverse?: bool}|null */
-			$rule = json_decode($rule_json, true);
+		foreach ($_REQUEST['rule'] as $rule_json) {
+			try {
+				/** @var array{reg_exp: string, filter_type: int, feed_id: array<int, int|string>, name: string, inverse?: bool}|null */
+				$rule = json_decode($rule_json, true, flags: JSON_THROW_ON_ERROR);
+			} catch (Exception) {
+				continue;
+			}
 
 			if (is_array($rule)) {
 				$rule['type'] = $this->filter_types[$rule['filter_type']]['name'];
@@ -194,7 +198,7 @@ class Pref_Filters extends Handler_Protected {
 
 					$matches[] = $rule_regexp_match;
 
-					$rules[] = self::_get_rule_name($rule, '');
+					$rules[] = self::_get_rule_name($rule, false);
 
 					if (in_array($rule['type'], ['content', 'both'])) {
 						// also stripping [\r\n\t] to match what's done for content in RSSUtils#eval_article_filters()
@@ -288,7 +292,7 @@ class Pref_Filters extends Handler_Protected {
 			$rv .= "<li class='$inverse_class'>" . T_sprintf("%s on %s in %s %s",
 				htmlspecialchars($rule->reg_exp),
 				$this->filter_types[$rule->filter_type]['description'],
-				$where,
+				htmlspecialchars($where),
 				$rule->inverse ? __("(inverse)") : "") . "</li>";
 		}
 
@@ -315,8 +319,6 @@ class Pref_Filters extends Handler_Protected {
 		];
 
 		foreach ($filters as $filter) {
-			$details = $this->_get_details($filter->id);
-
 			if ($filter_search &&
 				mb_stripos($filter->title, $filter_search) === false &&
 					!ORM::for_table('ttrss_filters2_rules')
@@ -326,6 +328,8 @@ class Pref_Filters extends Handler_Protected {
 
 					continue;
 			}
+
+			$details = $this->_get_details($filter->id);
 
 			$folder['items'][] = [
 				'id' => 'FILTER:' . $filter->id,
@@ -440,41 +444,52 @@ class Pref_Filters extends Handler_Protected {
 	}
 
 	/**
-	 * @param array<string, mixed>|null $rule
+	 * @param array<string, mixed> $rule
+	 * @param bool|null $html_format Whether to return a HTML-formatted string or plain text.
 	 */
-	private function _get_rule_name(?array $rule = null, string $format = 'html'): string {
-		if (!$rule) $rule = json_decode(clean($_REQUEST["rule"]), true);
-
-		$feeds = $rule["feed_id"];
+	private function _get_rule_name(array $rule, ?bool $html_format = true): string {
+		$feeds = $rule['feed_id'];
 		$feeds_fmt = [];
 
 		if (!is_array($feeds))
 			$feeds = [$feeds];
 
 		foreach ($feeds as $feed_id) {
-			if (str_starts_with($feed_id, "CAT:")) {
-					$feed_id = (int) substr($feed_id, 4);
-					$feeds_fmt[] = Feeds::_get_cat_title($feed_id, $_SESSION['uid']);
+			if (str_starts_with($feed_id, 'CAT:')) {
+				$feed_id = (int) substr($feed_id, 4);
+				$feeds_fmt[] = Feeds::_get_cat_title($feed_id, $_SESSION['uid']);
 			} else {
-					$feeds_fmt[] = $feed_id ? Feeds::_get_title((int) $feed_id, $_SESSION['uid']) : __('All feeds');
+				$feeds_fmt[] = $feed_id ? Feeds::_get_title((int) $feed_id, $_SESSION['uid']) : __('All feeds');
 			}
 		}
 
 		$feed = implode(', ', $feeds_fmt);
-		$filter_type = $this->filter_types[(int) $rule['filter_type']]['description'] ?? '?UNKNOWN?';
-		$inverse = isset($rule["inverse"]) ? "inverse" : "";
+		$filter_type = $this->filter_types[(int) $rule['filter_type']]['description'] ?? 'unknown filter type';
+		$inverse = isset($rule['inverse']) ? 'inverse' : '';
 
-		if ($format === 'html')
+		if ($html_format) {
 			return "<span class='filterRule $inverse'>" .
-				T_sprintf("%s on %s in %s %s", htmlspecialchars($rule["reg_exp"]),
-				"<span class='field'>$filter_type</span>", "<span class='feed'>$feed</span>", isset($rule["inverse"]) ? __("(inverse)") : "") . "</span>";
-		else
-			return T_sprintf("%s on %s in %s %s", $rule["reg_exp"],
-				$filter_type, $feed, isset($rule["inverse"]) ? __("(inverse)") : "");
+				T_sprintf('%s on %s in %s %s',
+					htmlspecialchars($rule['reg_exp']),
+					"<span class='field'>" . htmlspecialchars($filter_type) . '</span>',
+					"<span class='feed'>" . htmlspecialchars($feed) . '</span>',
+					$inverse ? __('(inverse)') : '') .
+				'</span>';
 		}
 
+		return T_sprintf('%s on %s in %s %s', $rule['reg_exp'],
+			$filter_type, $feed, $inverse ? __('(inverse)') : '');
+	}
+
 	function printRuleName(): void {
-		print $this->_get_rule_name(json_decode(clean($_REQUEST["rule"]), true));
+		try {
+			$rule = json_decode($_REQUEST['rule'], true, flags: JSON_THROW_ON_ERROR);
+		} catch (Exception) {
+			print 'malformed rule JSON';
+			return;
+		}
+
+		print is_array($rule) ? $this->_get_rule_name($rule) : 'invalid rule JSON';
 	}
 
 	/**
@@ -508,7 +523,14 @@ class Pref_Filters extends Handler_Protected {
 	}
 
 	function printActionName(): void {
-		print $this->_get_action_name(json_decode(clean($_REQUEST["action"] ?? ""), true));
+		try {
+			$action = json_decode($_REQUEST['action'], true, flags: JSON_THROW_ON_ERROR);
+		} catch (Exception) {
+			print 'malformed action JSON';
+			return;
+		}
+
+		print is_array($action) ? $this->_get_action_name($action) : 'invalid action JSON';
 	}
 
 	function editSave(): void {
@@ -516,7 +538,8 @@ class Pref_Filters extends Handler_Protected {
 		$enabled = checkbox_to_sql_bool($_REQUEST["enabled"] ?? false);
 		$match_any_rule = checkbox_to_sql_bool($_REQUEST["match_any_rule"] ?? false);
 		$inverse = checkbox_to_sql_bool($_REQUEST["inverse"] ?? false);
-		$title = clean($_REQUEST["title"]);
+		// intentionally not doing clean() here to allow for '<', etc. in titles
+		$title = trim($_REQUEST['title'] ?? '');
 
 		$this->pdo->beginTransaction();
 
@@ -581,17 +604,33 @@ class Pref_Filters extends Handler_Protected {
 			$rules = [];
 			$actions = [];
 
-			foreach (clean($_REQUEST["rule"]) as $rule) {
-				$rule = json_decode($rule, true);
-				unset($rule["id"]);
+			foreach ($_REQUEST['rule'] as $rule) {
+				try {
+					$rule = json_decode($rule, true, flags: JSON_THROW_ON_ERROR);
+				} catch (Exception) {
+					continue;
+				}
+
+				if (!is_array($rule))
+					continue;
+
+				unset($rule['id']);
 
 				if (!in_array($rule, $rules))
 					$rules[] = $rule;
 			}
 
-			foreach (clean($_REQUEST["action"]) as $action) {
-				$action = json_decode($action, true);
-				unset($action["id"]);
+			foreach ($_REQUEST['action'] as $action) {
+				try {
+					$action = json_decode($action, true, flags: JSON_THROW_ON_ERROR);
+				} catch (Exception) {
+					continue;
+				}
+
+				if (!is_array($action))
+					continue;
+
+				unset($action['id']);
 
 				if (!in_array($action, $actions))
 					$actions[] = $action;
@@ -644,14 +683,16 @@ class Pref_Filters extends Handler_Protected {
 	function add(?array $props = null): void {
 		if ($props === null) {
 			$src_filter_id = null;
-			$title = clean($_REQUEST['title']);
+			// intentionally not doing clean() here to allow for '<', etc. in titles
+			$title = trim($_REQUEST['title']);
 			$enabled = checkbox_to_sql_bool($_REQUEST['enabled'] ?? false);
 			$match_any_rule = checkbox_to_sql_bool($_REQUEST['match_any_rule'] ?? false);
 			$inverse = checkbox_to_sql_bool($_REQUEST['inverse'] ?? false);
 		} else {
 			// see checkbox_to_sql_bool() for 0 vs false justification
 			$src_filter_id = $props['src_filter_id'];
-			$title = clean($props['title']);
+			// intentionally not doing clean() here to allow for '<', etc. in titles
+			$title = trim($props['title']);
 			$enabled = $props['enabled'];
 			$match_any_rule = $props['match_any_rule'];
 			$inverse = $props['inverse'];
@@ -685,7 +726,8 @@ class Pref_Filters extends Handler_Protected {
 		if (!$src_filter_ids)
 			return;
 
-		$new_filter_title = count($src_filter_ids) === 1 ? clean($_REQUEST['new_filter_title'] ?? null) : null;
+		// intentionally not doing clean() here to allow for '<', etc. in titles
+		$new_filter_title = count($src_filter_ids) === 1 ? trim($_REQUEST['new_filter_title'] ?? null) : null;
 
 		$src_filters = ORM::for_table('ttrss_filters2')
 			->where('owner_uid', $_SESSION['uid'])
@@ -825,13 +867,13 @@ class Pref_Filters extends Handler_Protected {
 				continue;
 			}
 
-			$actions_summary[] = '<li>' . self::_get_action_name($action) . '</li>';
+			$actions_summary[] = '<li>' . htmlspecialchars(self::_get_action_name($action)) . '</li>';
 		}
 
 		// inject a fake action description using cumulative filter score
 		if ($cumulative_score != 0) {
 			array_unshift($actions_summary,
-				"<li>" . self::_get_action_name(["action_id" => self::ACTION_SCORE, "action_param" => $cumulative_score]) . "</li>");
+				"<li>" . htmlspecialchars(self::_get_action_name(["action_id" => self::ACTION_SCORE, "action_param" => $cumulative_score])) . "</li>");
 		}
 
 		if (count($actions_summary) > self::MAX_ACTIONS_TO_DISPLAY) {

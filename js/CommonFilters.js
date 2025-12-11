@@ -142,7 +142,7 @@ const	Filters = {
 						li.classList.add('action');
 
 						li.innerHTML = `${App.FormFields.checkbox_tag("", false, "", {onclick: 'Lists.onRowChecked(this)'})}
-								<span class="name" onclick='App.dialogOf(this).onActionClicked(this)'>${reply}</span>
+								<span class="name" onclick='App.dialogOf(this).onActionClicked(this)'>${App.escapeHtml(reply)}</span>
 								<span class="payload">${App.FormFields.hidden_tag("action[]", action)}</span>`;
 
 						dojo.parser.parse(li);

@@ -528,7 +528,7 @@ abstract class Plugin {
 
 	/** Invoked when file (e.g. cache entry, static data) is being sent to client, may override default mechanism
 	 * using faster httpd-specific implementation (see nginx_xaccel)
-	 * @param string $filename
+	 * @param string $filename The full path of the file to send.
 	 * @return bool
 	 * @see PluginHost::HOOK_SEND_LOCAL_FILE
 	 */

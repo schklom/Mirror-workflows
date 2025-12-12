@@ -129,6 +129,7 @@ class Cache_Local implements Cache_Adapter {
 	 * note that this can be called without user context so the plugin to handle this
 	 * should be loaded systemwide in config.php
 	 *
+	 * @param string $filename The full path of the file to send.
 	 * @return bool|int false if the file doesn't exist (or unreadable) or isn't audio/video, true if a plugin handled, otherwise int of bytes sent
 	 */
 	private function send_local_file(string $filename) {

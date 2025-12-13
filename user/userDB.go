@@ -114,7 +114,7 @@ func initSQLite(path string) *FMDDB {
 
 	// XXX: FK cascading deletion doesn't seem to work. But enabled FK anyway, just to be sure.
 	// https://www.sqlite.org/foreignkeys.html#fk_enable
-	res := db.Exec("PRAGMA foreign_keys = ON; PRAGMA secure_delete = ON")
+	res := db.Exec("PRAGMA foreign_keys = ON; PRAGMA secure_delete = ON; PRAGMA journal_mode=WAL;")
 	if res.Error != nil {
 		log.Fatal().Err(err).Msg("failed setting pragmas")
 		os.Exit(1) // make nilaway happy

@@ -8,84 +8,82 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-28 21:06+0000\n"
-"PO-Revision-Date: 2025-12-14 01:27+0000\n"
-"Last-Translator: γλωσσολαλιά <glossolalia@kropotk.in>\n"
-"Language-Team: Esperanto <https://hosted.weblate.org/projects/tt-rss/webui/"
-"eo/>\n"
-"Language: eo\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: isv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.15-dev\n"
 
 #: backend.php:55
 msgid "Use default"
-msgstr "Uzu defaŭltan"
+msgstr ""
 
 #: backend.php:56
 msgid "Never purge"
-msgstr "Neniam purigu"
+msgstr ""
 
 #: backend.php:57
 msgid "1 week old"
-msgstr "unu-semajnaĝa"
+msgstr ""
 
 #: backend.php:58
 msgid "2 weeks old"
-msgstr "du semajnojn aĝa"
+msgstr ""
 
 #: backend.php:59
 msgid "1 month old"
-msgstr "unu monata"
+msgstr ""
 
 #: backend.php:60
 msgid "2 months old"
-msgstr "2 monatojn aĝa"
+msgstr ""
 
 #: backend.php:61
 msgid "3 months old"
-msgstr "3-monata"
+msgstr ""
 
 #: backend.php:64
 msgid "Default interval"
-msgstr "Defaŭlta intervalo"
+msgstr ""
 
 #: backend.php:65 backend.php:75
 msgid "Disable updates"
-msgstr "Malŝalti ĝisdatigojn"
+msgstr ""
 
 #: backend.php:66 backend.php:76
 msgid "15 minutes"
-msgstr "15 minutoj"
+msgstr ""
 
 #: backend.php:67 backend.php:77
 msgid "30 minutes"
-msgstr "30 minutoj"
+msgstr ""
 
 #: backend.php:68 backend.php:78
 msgid "Hourly"
-msgstr "Ĉiuhora"
+msgstr ""
 
 #: backend.php:69 backend.php:79
 msgid "4 hours"
-msgstr "4 horoj"
+msgstr ""
 
 #: backend.php:70 backend.php:80
 msgid "12 hours"
-msgstr "12 horoj"
+msgstr ""
 
 #: backend.php:71 backend.php:81
 msgid "Daily"
-msgstr "Ĉiutage"
+msgstr ""
 
 #: backend.php:72 backend.php:82
 msgid "Weekly"
-msgstr "Semajne"
+msgstr ""
 
 #: backend.php:85 classes/Pref_Feeds.php:544 classes/Pref_Feeds.php:597
 msgid "Disabled"
-msgstr "Malkapabla"
+msgstr ""
 
 #: backend.php:86
 msgid "Read Only"
@@ -93,7 +91,7 @@ msgstr ""
 
 #: backend.php:87 classes/Pref_System.php:152
 msgid "User"
-msgstr "Uzanto"
+msgstr ""
 
 #: backend.php:88
 msgid "Power User"
@@ -101,7 +99,7 @@ msgstr ""
 
 #: backend.php:89
 msgid "Administrator"
-msgstr "Administranto"
+msgstr ""
 
 #: index.php:120 prefs.php:119
 msgid "Javascript is disabled. Please enable it."
@@ -149,7 +147,7 @@ msgstr ""
 
 #: index.php:185
 msgid "All Articles"
-msgstr "Ĉiuj artikoloj"
+msgstr ""
 
 #: index.php:186 classes/RPC.php:538
 msgid "Starred"
@@ -157,11 +155,11 @@ msgstr ""
 
 #: index.php:187 classes/RPC.php:539
 msgid "Published"
-msgstr "Eldonita"
+msgstr ""
 
 #: index.php:188 js/Headlines.js:658
 msgid "Unread"
-msgstr "Nelegita"
+msgstr ""
 
 #: index.php:189
 msgid "With Note"
@@ -173,25 +171,25 @@ msgstr ""
 
 #: index.php:196
 msgid "Default"
-msgstr "Defaŭlto"
+msgstr ""
 
 #: index.php:197
 msgid "Newest first"
-msgstr "Plej nova unue"
+msgstr ""
 
 #: index.php:198
 msgid "Oldest first"
-msgstr "Plej malnova unue"
+msgstr ""
 
 #: index.php:199 classes/Pref_Filters.php:38 js/CommonFilters.js:418
 msgid "Title"
-msgstr "Titolo"
+msgstr ""
 
 #: index.php:212 index.php:269 classes/RPC.php:525 classes/Pref_Filters.php:25
 #: js/Headlines.js:1547 js/FeedTree.js:94 js/FeedTree.js:133
 #: js/Headlines.js:668
 msgid "Mark as read"
-msgstr "Marki kiel legita"
+msgstr ""
 
 #: index.php:213
 msgid "Older than one day"
@@ -222,34 +220,28 @@ msgid "Enable widescreen mode"
 msgstr ""
 
 #: index.php:232
-#, fuzzy
-#| msgid "Close article"
 msgid "Expand selected article only"
-msgstr "Fermi artikolon"
+msgstr ""
 
 #: index.php:233
-#, fuzzy
-#| msgid "Close article"
 msgid "Expand all articles"
-msgstr "Fermi artikolon"
+msgstr ""
 
 #: index.php:236
 msgid "Actions..."
-msgstr "Agoj…"
+msgstr ""
 
 #: index.php:261
 msgid "Preferences..."
-msgstr "Agordoj…"
+msgstr ""
 
 #: index.php:262 js/PrefHelpers.js:613
 msgid "Search..."
-msgstr "Serĉi…"
+msgstr ""
 
 #: index.php:263
-#, fuzzy
-#| msgid "Search %s..."
 msgid "Search feeds..."
-msgstr "Serĉi %s…"
+msgstr ""
 
 #: index.php:264
 msgid "Feed actions:"
@@ -267,11 +259,11 @@ msgstr ""
 #: index.php:267 classes/Pref_Feeds.php:934 js/PrefFeedTree.js:119
 #: js/CommonDialogs.js:627
 msgid "Unsubscribe"
-msgstr "Malaboni"
+msgstr ""
 
 #: index.php:268
 msgid "All feeds:"
-msgstr "Ĉiuj fluoj:"
+msgstr ""
 
 #: index.php:270
 msgid "(Un)hide read feeds"
@@ -290,14 +282,12 @@ msgid "Toggle widescreen mode"
 msgstr ""
 
 #: index.php:276
-#, fuzzy
-#| msgid "Close article"
 msgid "Toggle expand all articles"
-msgstr "Fermi artikolon"
+msgstr ""
 
 #: index.php:277
 msgid "Other actions:"
-msgstr "Aliaj agoj:"
+msgstr ""
 
 #: index.php:278 classes/RPC.php:546
 msgid "Keyboard shortcuts help"
@@ -305,11 +295,11 @@ msgstr ""
 
 #: index.php:287
 msgid "Logout"
-msgstr "Elsaluto"
+msgstr ""
 
 #: prefs.php:16 prefs.php:151 classes/RPC.php:541 classes/Pref_Prefs.php:934
 msgid "Preferences"
-msgstr "Agordoj"
+msgstr ""
 
 #: prefs.php:144
 msgid "Exit preferences"
@@ -318,11 +308,11 @@ msgstr ""
 #: prefs.php:154 classes/Pref_Prefs.php:44 classes/Pref_Feeds.php:125
 #: classes/Pref_Feeds.php:923
 msgid "Feeds"
-msgstr "Fluoj"
+msgstr ""
 
 #: prefs.php:158 classes/Pref_Filters.php:301
 msgid "Filters"
-msgstr "Filtriloj"
+msgstr ""
 
 #: prefs.php:162 classes/Feeds.php:1315 classes/Pref_Labels.php:21
 msgid "Labels"
@@ -330,11 +320,11 @@ msgstr ""
 
 #: prefs.php:167
 msgid "Users"
-msgstr "Uzantoj"
+msgstr ""
 
 #: prefs.php:170
 msgid "System"
-msgstr "Sistemo"
+msgstr ""
 
 #: classes/RPC.php:480
 msgid "Navigation"
@@ -342,23 +332,19 @@ msgstr ""
 
 #: classes/RPC.php:481
 msgid "Open next feed"
-msgstr "Malfermi sekvan fluon"
+msgstr ""
 
 #: classes/RPC.php:482
-#, fuzzy
-#| msgid "Open next feed"
 msgid "Open next unread feed"
-msgstr "Malfermi sekvan fluon"
+msgstr ""
 
 #: classes/RPC.php:483
 msgid "Open previous feed"
-msgstr "Malfermi antaŭan fluon"
+msgstr ""
 
 #: classes/RPC.php:484
-#, fuzzy
-#| msgid "Open previous feed"
 msgid "Open previous unread feed"
-msgstr "Malfermi antaŭan fluon"
+msgstr ""
 
 #: classes/RPC.php:485
 msgid "Open next article (in combined mode, scroll down)"
@@ -378,20 +364,19 @@ msgstr ""
 
 #: classes/RPC.php:489
 msgid "Open next article"
-msgstr "Malfermi sekvan artikolon"
+msgstr ""
 
 #: classes/RPC.php:490
 msgid "Open previous article"
-msgstr "Malfermi antaŭan artikolon"
+msgstr ""
 
 #: classes/RPC.php:491
 msgid "Move to next article (don't expand)"
 msgstr ""
 
 #: classes/RPC.php:492
-#, fuzzy
 msgid "Move to previous article (don't expand)"
-msgstr "Malfermi antaŭan artikolon"
+msgstr ""
 
 #: classes/RPC.php:493
 msgid "Show search dialog"
@@ -403,7 +388,7 @@ msgstr ""
 
 #: classes/RPC.php:495
 msgid "Article"
-msgstr "Artikolo"
+msgstr ""
 
 #: classes/RPC.php:496 js/Headlines.js:1423 js/Headlines.js:665
 msgid "Toggle starred"
@@ -499,7 +484,7 @@ msgstr ""
 
 #: classes/RPC.php:520
 msgid "Feed"
-msgstr "Fluo"
+msgstr ""
 
 #: classes/RPC.php:521
 msgid "Refresh current feed"
@@ -516,7 +501,7 @@ msgstr ""
 #: classes/RPC.php:524 js/PrefFeedTree.js:113 js/Headlines.js:1553
 #: js/Headlines.js:1618 js/FeedTree.js:101 js/CommonDialogs.js:375
 msgid "Edit feed"
-msgstr "Redakti fluon"
+msgstr ""
 
 #: classes/RPC.php:526
 msgid "Reverse headlines"
@@ -556,7 +541,7 @@ msgstr ""
 
 #: classes/RPC.php:536 classes/Feeds.php:1153
 msgid "All articles"
-msgstr "Ĉiuj artikoloj"
+msgstr ""
 
 #: classes/RPC.php:537
 msgid "Fresh"
@@ -568,7 +553,7 @@ msgstr ""
 
 #: classes/RPC.php:542
 msgid "Other"
-msgstr "Alia"
+msgstr ""
 
 #: classes/RPC.php:543 classes/Pref_Labels.php:182
 msgid "Create label"
@@ -584,11 +569,11 @@ msgstr ""
 
 #: classes/RPC.php:682
 msgid "Shift"
-msgstr "Shift"
+msgstr ""
 
 #: classes/RPC.php:683
 msgid "Ctrl"
-msgstr "Ctrl"
+msgstr ""
 
 #: classes/RPC.php:706 plugins/af_psql_trgm/init.php:116
 #: plugins/share/init.php:284 js/PrefHelpers.js:497 js/App.js:691
@@ -596,16 +581,16 @@ msgstr "Ctrl"
 #: js/PrefHelpers.js:817 js/Feeds.js:294 js/CommonDialogs.js:19
 #: js/CommonDialogs.js:316 js/CommonDialogs.js:689
 msgid "Close this window"
-msgstr "Fermi ĉi tiun fenestron"
+msgstr ""
 
 #: classes/TimeHelper.php:7
 msgid "Never"
-msgstr "Neniam"
+msgstr ""
 
 #: classes/TimeHelper.php:13
 #, php-format
 msgid "%d min"
-msgstr "%d min"
+msgstr ""
 
 #: classes/Pref_Prefs.php:36 classes/Pref_Feeds.php:615 js/CommonDialogs.js:511
 msgid "General"
@@ -729,8 +714,8 @@ msgstr ""
 
 #: classes/Pref_Prefs.php:113
 msgid ""
-"Syntax is identical to PHP <a href='https://www.php.net/manual/"
-"function.date.php'>date()</a> function."
+"Syntax is identical to PHP <a href='https://www.php.net/manual/function.date."
+"php'>date()</a> function."
 msgstr ""
 
 #: classes/Pref_Prefs.php:114
@@ -840,11 +825,11 @@ msgstr ""
 
 #: classes/Pref_Prefs.php:297
 msgid "Full name:"
-msgstr "Plena nomo:"
+msgstr ""
 
 #: classes/Pref_Prefs.php:302 classes/Handler_Public.php:532 js/PrefUsers.js:98
 msgid "Email:"
-msgstr "Retpoŝtadreso:"
+msgstr ""
 
 #: classes/Pref_Prefs.php:310 classes/Pref_Feeds.php:682
 #: plugins/note/init.php:49 plugins/nsfw/init.php:105
@@ -852,15 +837,15 @@ msgstr "Retpoŝtadreso:"
 #: js/CommonFilters.js:306 js/CommonFilters.js:506 js/CommonDialogs.js:628
 #: js/PrefUsers.js:119 js/PrefLabelTree.js:168 js/Article.js:362
 msgid "Save"
-msgstr "Konservi"
+msgstr ""
 
 #: classes/Pref_Prefs.php:355
 msgid "Old password:"
-msgstr "Malnova pasvorto:"
+msgstr ""
 
 #: classes/Pref_Prefs.php:360 js/PrefUsers.js:84
 msgid "New password:"
-msgstr "Nova pasvorto:"
+msgstr ""
 
 #: classes/Pref_Prefs.php:365
 msgid "Confirm password:"
@@ -868,7 +853,7 @@ msgstr ""
 
 #: classes/Pref_Prefs.php:373 js/PrefUsers.js:86
 msgid "Change password"
-msgstr "Ŝanĝi pasvorton"
+msgstr ""
 
 #: classes/Pref_Prefs.php:380
 #, php-format
@@ -878,9 +863,8 @@ msgid ""
 msgstr ""
 
 #: classes/Pref_Prefs.php:397
-#, fuzzy
 msgid "Generate password"
-msgstr "Restarigi pasvorton"
+msgstr ""
 
 #: classes/Pref_Prefs.php:403 classes/Pref_Feeds.php:947 js/PrefHelpers.js:226
 msgid "Remove selected"
@@ -888,7 +872,7 @@ msgstr ""
 
 #: classes/Pref_Prefs.php:439 classes/Pref_Prefs.php:491
 msgid "Your password:"
-msgstr "Via pasvorto:"
+msgstr ""
 
 #: classes/Pref_Prefs.php:447
 msgid "Disable OTP"
@@ -912,12 +896,11 @@ msgstr ""
 
 #: classes/Pref_Prefs.php:521 js/PrefFeedTree.js:450 js/CommonDialogs.js:91
 msgid "Password"
-msgstr "Pasvorto"
+msgstr ""
 
 #: classes/Pref_Prefs.php:524
-#, fuzzy
 msgid "App passwords"
-msgstr "Malnova pasvorto:"
+msgstr ""
 
 #: classes/Pref_Prefs.php:531
 msgid "Authenticator (OTP)"
@@ -954,7 +937,7 @@ msgstr ""
 #: classes/Pref_Prefs.php:708 classes/Pref_Prefs.php:876
 #: plugins/bookmarklets/init.php:369 js/CommonDialogs.js:683
 msgid "More info..."
-msgstr "Pli da informoj…"
+msgstr ""
 
 #: classes/Pref_Prefs.php:717
 #, php-format
@@ -981,7 +964,7 @@ msgstr ""
 #: classes/Pref_Filters.php:725 classes/Pref_Users.php:199 js/Feeds.js:662
 #: js/Feeds.js:657 js/Feeds.js:712
 msgid "Search"
-msgstr "Serĉi"
+msgstr ""
 
 #: classes/Pref_Prefs.php:840 classes/Pref_Prefs.php:1545
 #: classes/Pref_Labels.php:174 classes/Pref_Feeds.php:913
@@ -997,7 +980,7 @@ msgstr ""
 #: js/CommonFilters.js:430 js/CommonFilters.js:462 js/PrefFeedTree.js:519
 #: js/Headlines.js:657 js/PrefHelpers.js:186 js/CommonDialogs.js:279
 msgid "All"
-msgstr "Ĉiuj"
+msgstr ""
 
 #: classes/Pref_Prefs.php:845 classes/Pref_Prefs.php:1550
 #: classes/Pref_Labels.php:177 classes/Pref_Feeds.php:918
@@ -1005,7 +988,7 @@ msgstr "Ĉiuj"
 #: js/CommonFilters.js:432 js/CommonFilters.js:464 js/PrefFeedTree.js:521
 #: js/Headlines.js:660 js/PrefHelpers.js:188 js/CommonDialogs.js:281
 msgid "None"
-msgstr "Nenio"
+msgstr ""
 
 #: classes/Pref_Prefs.php:874
 #, php-format
@@ -1016,9 +999,8 @@ msgid ""
 msgstr ""
 
 #: classes/Pref_Prefs.php:890 js/CommonFilters.js:222
-#, fuzzy
 msgid "More info"
-msgstr "Pli da informoj…"
+msgstr ""
 
 #: classes/Pref_Prefs.php:893
 msgid "Enable selected"
@@ -1066,21 +1048,19 @@ msgstr ""
 #: classes/Pref_Prefs.php:1506 classes/Handler_Public.php:289
 #: include/login_form.php:159
 msgid "Default profile"
-msgstr "Defaŭlta profilo"
+msgstr ""
 
 #: classes/Pref_Prefs.php:1559
 msgid "Description"
 msgstr ""
 
 #: classes/Pref_Prefs.php:1560
-#, fuzzy
 msgid "Created"
-msgstr "Krei uzanton"
+msgstr ""
 
 #: classes/Pref_Prefs.php:1561
-#, fuzzy
 msgid "Last used"
-msgstr "Lasta ĝisdatigo:"
+msgstr ""
 
 #: classes/Pref_Prefs.php:1606
 #, php-format
@@ -1103,7 +1083,7 @@ msgstr ""
 
 #: classes/Feeds.php:97 classes/Feeds.php:471
 msgid "Feed not found."
-msgstr "Fluo ne trovita."
+msgstr ""
 
 #: classes/Feeds.php:227 classes/Feeds.php:1155
 msgid "Archived articles"
@@ -1269,7 +1249,7 @@ msgstr ""
 
 #: classes/Handler_Public.php:480
 msgid "Password recovery"
-msgstr "Pasvorta reakiro"
+msgstr ""
 
 #: classes/Handler_Public.php:517 classes/Handler_Public.php:547
 #: classes/Handler_Public.php:607 classes/Handler_Public.php:724
@@ -1289,16 +1269,16 @@ msgstr ""
 #: plugins/bookmarklets/init.php:308 include/login_form.php:127
 #: js/PrefUsers.js:64 js/CommonDialogs.js:585
 msgid "Login:"
-msgstr "Salutnomo:"
+msgstr ""
 
 #: classes/Handler_Public.php:540
 #, php-format
 msgid "How much is %d + %d:"
-msgstr "Kiom estas %d + %d:"
+msgstr ""
 
 #: classes/Handler_Public.php:546 classes/Pref_Users.php:223
 msgid "Reset password"
-msgstr "Restarigi pasvorton"
+msgstr ""
 
 #: classes/Handler_Public.php:557
 msgid "Some of the required form parameters are missing or incorrect."
@@ -1321,10 +1301,8 @@ msgid "Your access level is insufficient to run this script."
 msgstr ""
 
 #: classes/Handler_Public.php:686
-#, fuzzy
-#| msgid "Last update:"
 msgid "Proceed with update?"
-msgstr "Lasta ĝisdatigo:"
+msgstr ""
 
 #: classes/Handler_Public.php:691
 msgid "Database Updater"
@@ -1351,23 +1329,23 @@ msgstr ""
 #, php-format
 msgid "(%d feed)"
 msgid_plural "(%d feeds)"
-msgstr[0] "(%d fluo)"
-msgstr[1] "(%d fluoj)"
+msgstr[0] ""
+msgstr[1] ""
 
 #: classes/Pref_Feeds.php:98 classes/Pref_Feeds.php:277
 #: classes/Pref_Feeds.php:320
-#, fuzzy, php-format
+#, php-format
 msgid "(%d article / %s)"
 msgid_plural "(%d articles / %s)"
-msgstr[0] "Ĉiuj artikoloj"
-msgstr[1] "Ĉiuj artikoloj"
+msgstr[0] ""
+msgstr[1] ""
 
 #: classes/Pref_Feeds.php:542
-#, fuzzy, php-format
+#, php-format
 msgid "(%d day)"
 msgid_plural "(%d days)"
-msgstr[0] "(%d fluo)"
-msgstr[1] "(%d fluoj)"
+msgstr[0] ""
+msgstr[1] ""
 
 #: classes/Pref_Feeds.php:548
 #, php-format
@@ -1381,9 +1359,9 @@ msgid "Check to enable field"
 msgstr ""
 
 #: classes/Pref_Feeds.php:595
-#, fuzzy, php-format
+#, php-format
 msgid "(%d days)"
-msgstr "(%d fluo)"
+msgstr ""
 
 #: classes/Pref_Feeds.php:600 js/CommonDialogs.js:500
 msgid "Include in email digest"
@@ -1408,12 +1386,11 @@ msgstr ""
 
 #: classes/Pref_Feeds.php:626 js/Feeds.js:644 js/CommonDialogs.js:556
 msgid "Language:"
-msgstr "Lingvo:"
+msgstr ""
 
 #: classes/Pref_Feeds.php:636 js/CommonDialogs.js:64 js/CommonDialogs.js:566
-#, fuzzy
 msgid "Update interval:"
-msgstr "Defaŭlta intervalo"
+msgstr ""
 
 #: classes/Pref_Feeds.php:643 js/CommonDialogs.js:572
 msgid "Article purging:"
@@ -1427,7 +1404,7 @@ msgstr ""
 #: classes/Pref_Feeds.php:659 plugins/bookmarklets/init.php:315
 #: include/login_form.php:137 js/CommonDialogs.js:591
 msgid "Password:"
-msgstr "Pasvorto:"
+msgstr ""
 
 #: classes/Pref_Feeds.php:666 js/CommonDialogs.js:598
 msgid "Options"
@@ -1441,7 +1418,7 @@ msgstr ""
 #: js/PrefHelpers.js:305 js/Feeds.js:658 js/Feeds.js:713
 #: js/CommonDialogs.js:113
 msgid "Cancel"
-msgstr "Nuligi"
+msgstr ""
 
 #: classes/Pref_Feeds.php:883
 msgid "Feeds with errors"
@@ -1497,40 +1474,32 @@ msgid "Clear all generated URLs"
 msgstr ""
 
 #: classes/Pref_Feeds.php:1039
-#, fuzzy
 msgid "My feeds"
-msgstr "Ĉiuj fluoj"
+msgstr ""
 
 #: classes/Pref_Feeds.php:1044
 msgid "OPML"
 msgstr ""
 
 #: classes/Pref_Feeds.php:1049
-#, fuzzy
 msgid "Sharing"
-msgstr "Kunhavigi"
+msgstr ""
 
 #: classes/Pref_Filters.php:24
-#, fuzzy
-#| msgid "Close article"
 msgid "Delete article"
-msgstr "Fermi artikolon"
+msgstr ""
 
 #: classes/Pref_Filters.php:26
 msgid "Set starred"
 msgstr ""
 
 #: classes/Pref_Filters.php:27
-#, fuzzy
-#| msgid "Article"
 msgid "Assign tags"
-msgstr "Artikolo"
+msgstr ""
 
 #: classes/Pref_Filters.php:28
-#, fuzzy
-#| msgid "Close article"
 msgid "Publish article"
-msgstr "Fermi artikolon"
+msgstr ""
 
 #: classes/Pref_Filters.php:29
 msgid "Modify score"
@@ -1549,16 +1518,12 @@ msgid "Invoke plugin"
 msgstr ""
 
 #: classes/Pref_Filters.php:33
-#, fuzzy
-#| msgid "Article"
 msgid "Ignore tags"
-msgstr "Artikolo"
+msgstr ""
 
 #: classes/Pref_Filters.php:39
-#, fuzzy
-#| msgid "Content:"
 msgid "Content"
-msgstr "Enhavo:"
+msgstr ""
 
 #: classes/Pref_Filters.php:40
 msgid "Title or Content"
@@ -1573,15 +1538,13 @@ msgid "Author"
 msgstr ""
 
 #: classes/Pref_Filters.php:45
-#, fuzzy
-#| msgid "Article"
 msgid "Article Tags"
-msgstr "Artikolo"
+msgstr ""
 
 #: classes/Pref_Filters.php:273 classes/Pref_Filters.php:283
 #: classes/Pref_Filters.php:459 classes/Pref_Filters.php:963
 msgid "All feeds"
-msgstr "Ĉiuj fluoj"
+msgstr ""
 
 #: classes/Pref_Filters.php:292 classes/Pref_Filters.php:470
 #: classes/Pref_Filters.php:473
@@ -1636,12 +1599,11 @@ msgid "inverse"
 msgstr ""
 
 #: classes/Pref_Filters.php:842
-#, fuzzy, php-format
-#| msgid "Other actions:"
+#, php-format
 msgid "(+%d action)"
 msgid_plural "(+%d actions)"
-msgstr[0] "Aliaj agoj:"
-msgstr[1] "Aliaj agoj:"
+msgstr[0] ""
+msgstr[1] ""
 
 #: classes/Pref_System.php:23
 msgid "Test message from tt-rss"
@@ -1660,9 +1622,8 @@ msgid "Schedule"
 msgstr ""
 
 #: classes/Pref_System.php:36
-#, fuzzy
 msgid "Last executed"
-msgstr "Lasta ĝisdatigo:"
+msgstr ""
 
 #: classes/Pref_System.php:37
 msgid "Duration (seconds)"
@@ -1772,7 +1733,7 @@ msgstr ""
 
 #: classes/Pref_Users.php:87 classes/UserHelper.php:258
 msgid "User not found"
-msgstr "Uzanto ne trovita"
+msgstr ""
 
 #: classes/Pref_Users.php:152
 #, php-format
@@ -1791,21 +1752,19 @@ msgstr ""
 
 #: classes/Pref_Users.php:215
 msgid "Create user"
-msgstr "Krei uzanton"
+msgstr ""
 
 #: classes/Pref_Users.php:236 js/PrefFeedTree.js:449 js/CommonDialogs.js:87
 msgid "Login"
-msgstr "Salutnomo"
+msgstr ""
 
 #: classes/Pref_Users.php:237
 msgid "Access level"
 msgstr ""
 
 #: classes/Pref_Users.php:240
-#, fuzzy
-#| msgid "Login"
 msgid "Last login"
-msgstr "Salutnomo"
+msgstr ""
 
 #: classes/Pref_Users.php:255
 msgid "Click to edit"
@@ -1825,10 +1784,8 @@ msgid "Please enter verification code (OTP):"
 msgstr ""
 
 #: plugins/auth_internal/init.php:98
-#, fuzzy
-#| msgid "Content:"
 msgid "Continue"
-msgstr "Enhavo:"
+msgstr ""
 
 #: plugins/auth_internal/init.php:140
 msgid "Too many authentication attempts, throttled."
@@ -1907,9 +1864,8 @@ msgid "Mark similar articles as read"
 msgstr ""
 
 #: plugins/share/init.php:43
-#, fuzzy
 msgid "Article unshared"
-msgstr "Artikolo ne trovita."
+msgstr ""
 
 #: plugins/share/init.php:58
 msgid "Unshare all articles"
@@ -1929,7 +1885,7 @@ msgstr ""
 
 #: plugins/share/init.php:277
 msgid "Article not found."
-msgstr "Artikolo ne trovita."
+msgstr ""
 
 #: plugins/share/init.php:282
 msgid "Unshare article"
@@ -1950,7 +1906,7 @@ msgstr ""
 #: plugins/bookmarklets/init.php:94 js/PrefFeedTree.js:464
 #: js/CommonDialogs.js:110
 msgid "Subscribe"
-msgstr "Aboni"
+msgstr ""
 
 #: plugins/bookmarklets/init.php:107
 #, php-format
@@ -1995,15 +1951,15 @@ msgstr ""
 
 #: plugins/bookmarklets/init.php:262
 msgid "Title:"
-msgstr "Titolo:"
+msgstr ""
 
 #: plugins/bookmarklets/init.php:267 js/CommonDialogs.js:525
 msgid "URL:"
-msgstr "URL:"
+msgstr ""
 
 #: plugins/bookmarklets/init.php:272
 msgid "Content:"
-msgstr "Enhavo:"
+msgstr ""
 
 #: plugins/bookmarklets/init.php:277
 msgid "Labels:"
@@ -2011,7 +1967,7 @@ msgstr ""
 
 #: plugins/bookmarklets/init.php:287
 msgid "Share"
-msgstr "Kunhavigi"
+msgstr ""
 
 #: plugins/bookmarklets/init.php:289
 msgid "Shared article will appear in the Published feed."
@@ -2019,7 +1975,7 @@ msgstr ""
 
 #: plugins/bookmarklets/init.php:328 include/login_form.php:205
 msgid "Log in"
-msgstr "Ensaluti"
+msgstr ""
 
 #: plugins/bookmarklets/init.php:348
 #, php-format
@@ -2046,11 +2002,11 @@ msgstr ""
 
 #: include/login_form.php:150
 msgid "I forgot my password"
-msgstr "Mi forgesis mian pasvorton"
+msgstr ""
 
 #: include/login_form.php:156
 msgid "Profile:"
-msgstr "Profilo:"
+msgstr ""
 
 #: include/login_form.php:169
 msgid "Use less traffic"
@@ -2070,7 +2026,7 @@ msgstr ""
 
 #: include/login_form.php:194
 msgid "Remember me"
-msgstr "Memoru min"
+msgstr ""
 
 #: include/functions.php:50
 msgid "Detect automatically"
@@ -2082,7 +2038,7 @@ msgstr ""
 
 #: js/App.js:485
 msgid "Keyboard shortcuts"
-msgstr "Fulmoklavoj"
+msgstr ""
 
 #: js/App.js:543
 msgid "Update daemon is not running."
@@ -2145,9 +2101,8 @@ msgid "Adding user..."
 msgstr ""
 
 #: js/PrefUsers.js:39 js/PrefUsers.js:60
-#, fuzzy
 msgid "Edit user"
-msgstr "Redakti fluon"
+msgstr ""
 
 #: js/PrefUsers.js:42 js/PrefFeedTree.js:357 js/CommonFilters.js:379
 #: js/CommonDialogs.js:469
@@ -2177,9 +2132,8 @@ msgid ""
 msgstr ""
 
 #: js/PrefUsers.js:162
-#, fuzzy
 msgid "Removing selected users..."
-msgstr "Restarigi pasvorton"
+msgstr ""
 
 #: js/common.js:391
 msgid "Click to close"
@@ -2221,19 +2175,16 @@ msgid "Remove selected categories?"
 msgstr ""
 
 #: js/PrefFeedTree.js:261
-#, fuzzy
 msgid "Removing selected categories..."
-msgstr "Restarigi pasvorton"
+msgstr ""
 
 #: js/PrefFeedTree.js:273
 msgid "No categories selected."
 msgstr ""
 
 #: js/PrefFeedTree.js:321
-#, fuzzy
-#| msgid "Edit feed"
 msgid "Edit multiple feeds"
-msgstr "Redakti fluon"
+msgstr ""
 
 #: js/PrefFeedTree.js:345
 msgid "Save changes to selected feeds?"
@@ -2264,9 +2215,8 @@ msgid "Remove selected feeds?"
 msgstr ""
 
 #: js/PrefFeedTree.js:492 js/CommonDialogs.js:229
-#, fuzzy
 msgid "Removing selected feeds..."
-msgstr "Restarigi pasvorton"
+msgstr ""
 
 #: js/PrefFeedTree.js:533 js/CommonDialogs.js:296
 msgid "Click to edit feed"
@@ -2297,30 +2247,24 @@ msgid "Remove selected filters?"
 msgstr ""
 
 #: js/PrefFilterTree.js:151
-#, fuzzy
 msgid "Removing selected filters..."
-msgstr "Restarigi pasvorton"
+msgstr ""
 
 #: js/PrefFilterTree.js:177
-#, fuzzy
-#| msgid "Create user"
 msgid "Name for new filter:"
-msgstr "Krei uzanton"
+msgstr ""
 
 #: js/PrefFilterTree.js:185
-#, fuzzy
 msgid "Clone selected filters?"
-msgstr "Restarigi pasvorton"
+msgstr ""
 
 #: js/PrefFilterTree.js:189
-#, fuzzy
 msgid "Cloning selected filters..."
-msgstr "Restarigi pasvorton"
+msgstr ""
 
 #: js/PrefLabelTree.js:69
-#, fuzzy
 msgid "Edit label"
-msgstr "Redakti fluon"
+msgstr ""
 
 #: js/PrefLabelTree.js:141
 msgid "Foreground:"
@@ -2343,9 +2287,8 @@ msgid "Remove selected labels?"
 msgstr ""
 
 #: js/PrefLabelTree.js:208
-#, fuzzy
 msgid "Removing selected labels..."
-msgstr "Restarigi pasvorton"
+msgstr ""
 
 #: js/Article.js:35
 msgid "Please enter new score for selected articles:"
@@ -2376,10 +2319,8 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: js/Article.js:344
-#, fuzzy
-#| msgid "Article"
 msgid "Article tags"
-msgstr "Artikolo"
+msgstr ""
 
 #: js/Article.js:351
 msgid "Tags for this article (separated by commas):"
@@ -2395,7 +2336,7 @@ msgstr ""
 
 #: js/Headlines.js:656
 msgid "Select..."
-msgstr "Elekti…"
+msgstr ""
 
 #: js/Headlines.js:817 js/Headlines.js:869 js/Headlines.js:884
 msgid "Click to open next unread feed."
@@ -2458,10 +2399,8 @@ msgstr ""
 
 #: js/Headlines.js:1559 js/FeedTree.js:107 js/Headlines.js:466
 #: js/Headlines.js:515 js/Headlines.js:584
-#, fuzzy
-#| msgid "Open next feed"
 msgid "Open site"
-msgstr "Malfermi sekvan fluon"
+msgstr ""
 
 #: js/Headlines.js:1568 js/FeedTree.js:116
 msgid "Debug feed"
@@ -2480,15 +2419,12 @@ msgid "Mark feed as read"
 msgstr ""
 
 #: js/CommonFilters.js:12
-#, fuzzy
 msgid "Edit filter"
-msgstr "Redakti fluon"
+msgstr ""
 
 #: js/CommonFilters.js:12
-#, fuzzy
-#| msgid "Create user"
 msgid "Create new filter"
-msgstr "Krei uzanton"
+msgstr ""
 
 #: js/CommonFilters.js:40
 #, java-printf-format, javascript-format
@@ -2513,9 +2449,8 @@ msgid "Looking for articles..."
 msgstr ""
 
 #: js/CommonFilters.js:164
-#, fuzzy
 msgid "Edit rule"
-msgstr "Redakti fluon"
+msgstr ""
 
 #: js/CommonFilters.js:164
 msgid "Add rule"
@@ -2526,9 +2461,8 @@ msgid "Inverse regular expression matching"
 msgstr ""
 
 #: js/CommonFilters.js:210
-#, fuzzy
 msgid "on"
-msgstr "Nenio"
+msgstr ""
 
 #: js/CommonFilters.js:238
 msgid "Edit action"
@@ -2552,7 +2486,7 @@ msgstr ""
 
 #: js/CommonFilters.js:439 js/CommonFilters.js:471
 msgid "Delete"
-msgstr "Forigi"
+msgstr ""
 
 #: js/CommonFilters.js:505 js/CommonFilters.js:509
 msgid "Test"
@@ -2563,9 +2497,8 @@ msgid "Create"
 msgstr ""
 
 #: js/PrefHelpers.js:19
-#, fuzzy
 msgid "Remove selected app passwords?"
-msgstr "Restarigi pasvorton"
+msgstr ""
 
 #: js/PrefHelpers.js:44
 msgid "This will invalidate all previously generated feed URLs. Continue?"
@@ -2601,19 +2534,16 @@ msgid ""
 msgstr ""
 
 #: js/PrefHelpers.js:153
-#, fuzzy
 msgid "Removing selected profiles..."
-msgstr "Restarigi pasvorton"
+msgstr ""
 
 #: js/PrefHelpers.js:162
 msgid "No profiles selected."
 msgstr ""
 
 #: js/PrefHelpers.js:167
-#, fuzzy
-#| msgid "Default profile"
 msgid "Creating profile..."
-msgstr "Defaŭlta profilo"
+msgstr ""
 
 #: js/PrefHelpers.js:217
 msgid "(active)"
@@ -2730,18 +2660,16 @@ msgid "Close"
 msgstr ""
 
 #: js/PrefHelpers.js:640
-#, fuzzy
 msgid "Update plugins"
-msgstr "Defaŭlta intervalo"
+msgstr ""
 
 #: js/PrefHelpers.js:654
 msgid "Updating, please wait..."
 msgstr ""
 
 #: js/PrefHelpers.js:678
-#, fuzzy
 msgid "Update done."
-msgstr "Defaŭlta intervalo"
+msgstr ""
 
 #: js/PrefHelpers.js:702
 msgid "No updates available"
@@ -2758,10 +2686,8 @@ msgid "%s: Operation failed: check event log."
 msgstr ""
 
 #: js/PrefHelpers.js:742
-#, fuzzy
-#| msgid "Last update:"
 msgid "Ready to update"
-msgstr "Lasta ĝisdatigo:"
+msgstr ""
 
 #: js/PrefHelpers.js:787
 msgid "Please choose an OPML file first."
@@ -2800,10 +2726,8 @@ msgid "Mark all articles as read?"
 msgstr ""
 
 #: js/Feeds.js:452
-#, fuzzy
-#| msgid "Mark as read"
 msgid "Marking all feeds as read..."
-msgstr "Marki kiel legita"
+msgstr ""
 
 #: js/Feeds.js:469
 msgid "Mark %w in %s older than 1 day as read?"
@@ -2839,10 +2763,8 @@ msgid "Search syntax"
 msgstr ""
 
 #: js/Feeds.js:717
-#, fuzzy
-#| msgid "Search %s..."
 msgid "Search feeds"
-msgstr "Serĉi %s…"
+msgstr ""
 
 #: js/CommonDialogs.js:42
 msgid ""
@@ -2898,14 +2820,12 @@ msgid "Feeds with update errors"
 msgstr ""
 
 #: js/CommonDialogs.js:256
-#, fuzzy
 msgid "Debug selected feeds?"
-msgstr "Restarigi pasvorton"
+msgstr ""
 
 #: js/CommonDialogs.js:257
-#, fuzzy
 msgid "Opening debugger for selected feeds..."
-msgstr "Restarigi pasvorton"
+msgstr ""
 
 #: js/CommonDialogs.js:326
 msgid "Please enter label caption:"
@@ -2936,10 +2856,8 @@ msgid "Removing feed icon..."
 msgstr ""
 
 #: js/CommonDialogs.js:449
-#, fuzzy
-#| msgid "Feed not found."
 msgid "Feed icon removed."
-msgstr "Fluo ne trovita."
+msgstr ""
 
 #: js/CommonDialogs.js:616
 msgid "Upload new icon..."
@@ -2971,10 +2889,8 @@ msgid "Saving article note..."
 msgstr ""
 
 #: plugins/shorten_expanded/init.js:35
-#, fuzzy
-#| msgid "Close article"
 msgid "Expand article"
-msgstr "Fermi artikolon"
+msgstr ""
 
 #: plugins/af_psql_trgm/init.js:6
 msgid "Related articles"
@@ -3050,17 +2966,15 @@ msgstr ""
 
 #: js/Article.js:200
 msgid "Attachments"
-msgstr "Aldonaĵoj"
+msgstr ""
 
 #: js/Article.js:309 js/Headlines.js:547
 msgid "Edit tags for this article"
 msgstr ""
 
 #: js/Headlines.js:467
-#, fuzzy
-#| msgid "Mark as read"
 msgid "mark feed as read"
-msgstr "Marki kiel legita"
+msgstr ""
 
 #: js/Headlines.js:520
 msgid "Span all columns"
@@ -3085,10 +2999,8 @@ msgid ""
 msgstr ""
 
 #: js/Headlines.js:1401
-#, fuzzy
-#| msgid "Close article"
 msgid "Copy article URL"
-msgstr "Fermi artikolon"
+msgstr ""
 
 #: js/CommonFilters.js:64
 msgid "No recent articles matching this filter have been found."
@@ -3111,15 +3023,12 @@ msgid "Match"
 msgstr ""
 
 #: js/CommonFilters.js:455
-#, fuzzy
-#| msgid "Actions..."
 msgid "Apply actions"
-msgstr "Agoj…"
+msgstr ""
 
 #: js/PrefHelpers.js:230
-#, fuzzy
 msgid "Activate"
-msgstr "Defaŭlta profilo"
+msgstr ""
 
 #: js/PrefHelpers.js:298
 msgid "Apply"
@@ -3142,9 +3051,8 @@ msgid "Install"
 msgstr ""
 
 #: js/PrefHelpers.js:652
-#, fuzzy
 msgid "Updating..."
-msgstr "Defaŭlta intervalo"
+msgstr ""
 
 #: js/PrefHelpers.js:685
 msgid "Updates complete"
@@ -3158,15 +3066,13 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: js/Feeds.js:291
-#, fuzzy
-#| msgid "Preferences"
 msgid "Open Preferences"
-msgstr "Agordoj"
+msgstr ""
 
 #: js/Feeds.js:637
 #, javascript-format
 msgid "Search %s..."
-msgstr "Serĉi %s…"
+msgstr ""
 
 #: js/Feeds.js:646
 msgid "Used for word stemming"
@@ -3195,67 +3101,25 @@ msgid "This feed requires authentication."
 msgstr ""
 
 #: js/CommonDialogs.js:313
-#, fuzzy
 msgid "Debug selected feeds"
-msgstr "Restarigi pasvorton"
+msgstr ""
 
 #: js/CommonDialogs.js:520
 msgid "Feed title"
 msgstr ""
 
 #: js/CommonDialogs.js:527
-#, fuzzy
-#| msgid "Feed"
 msgid "Feed URL"
-msgstr "Fluo"
+msgstr ""
 
 #: js/CommonDialogs.js:546
-#, fuzzy
 msgid "Site URL:"
-msgstr "URL:"
+msgstr ""
 
 #: js/CommonDialogs.js:548
-#, fuzzy
 msgid "Site URL"
-msgstr "URL:"
+msgstr ""
 
 #: js/CommonDialogs.js:611
 msgid "Icon"
 msgstr ""
-
-#, fuzzy
-#~| msgid "Default profile"
-#~ msgid "Create profile"
-#~ msgstr "Defaŭlta profilo"
-
-#, fuzzy
-#~ msgid "Remove selected profiles"
-#~ msgstr "Restarigi pasvorton"
-
-#~ msgid "Try again"
-#~ msgstr "Provu denove"
-
-#, fuzzy
-#~ msgid "Remove selected passwords"
-#~ msgstr "Restarigi pasvorton"
-
-#~ msgid "Edit Feed"
-#~ msgstr "Redakti fluon"
-
-#~ msgid "Plugin not found"
-#~ msgstr "Kromprogramo ne trovita"
-
-#~ msgid "unknown type"
-#~ msgstr "nekonata tipo"
-
-#~ msgid "How much is two plus two:"
-#~ msgstr "Kiom estas du plus du:"
-
-#~ msgid "Archive"
-#~ msgstr "Arkivo"
-
-#~ msgid "Feed:"
-#~ msgstr "Fluo:"
-
-#~ msgid "Keyboard Shortcuts"
-#~ msgstr "Fulmoklavoj"

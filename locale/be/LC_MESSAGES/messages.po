@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-28 21:06+0000\n"
-"PO-Revision-Date: 2025-11-05 17:51+0000\n"
-"Last-Translator: LaurentC <laurentc@users.noreply.hosted.weblate.org>\n"
+"PO-Revision-Date: 2025-12-14 01:27+0000\n"
+"Last-Translator: γλωσσολαλιά <glossolalia@kropotk.in>\n"
 "Language-Team: Belarusian <https://hosted.weblate.org/projects/tt-rss/webui/"
 "be/>\n"
 "Language: be\n"
@@ -106,7 +106,7 @@ msgstr "Адміністратар"
 
 #: index.php:120 prefs.php:119
 msgid "Javascript is disabled. Please enable it."
-msgstr ""
+msgstr "JavaScript адключаны. Калі ласка, уключыце яго."
 
 #: index.php:124 index.php:138 index.php:298 prefs.php:126
 #: classes/Pref_Prefs.php:882 classes/Pref_Prefs.php:932
@@ -208,35 +208,27 @@ msgstr "Старэй за 2 тыдні"
 
 #: index.php:228
 msgid "Switch to three panel view"
-msgstr ""
+msgstr "Перайсці да трохпанэльнага выгляду"
 
 #: index.php:229
 msgid "Switch to combined view"
-msgstr ""
+msgstr "Перайсці да камбінаванага выгляду"
 
 #: index.php:230
-#, fuzzy
-#| msgid "Toggle widescreen mode"
 msgid "Disable widescreen mode"
-msgstr "Пераключыць рэжым шырокага экрана"
+msgstr "Адключыць шырокаэкранны рэжым"
 
 #: index.php:231
-#, fuzzy
-#| msgid "Toggle widescreen mode"
 msgid "Enable widescreen mode"
-msgstr "Пераключыць рэжым шырокага экрана"
+msgstr "Уключыць шырокаэкранны рэжым"
 
 #: index.php:232
-#, fuzzy
-#| msgid "Expand article"
 msgid "Expand selected article only"
-msgstr "Разгарнуць артыкул"
+msgstr "Разгарнуць толькі абраны артыкул"
 
 #: index.php:233
-#, fuzzy
-#| msgid "Expand article"
 msgid "Expand all articles"
-msgstr "Разгарнуць артыкул"
+msgstr "Разгарнуць усе артыкулы"
 
 #: index.php:236
 msgid "Actions..."
@@ -678,13 +670,10 @@ msgid "Enable digest"
 msgstr "Уключыць дайджэст па e-mail"
 
 #: classes/Pref_Prefs.php:106
-#, fuzzy
-#| msgid ""
-#| "Send daily digest of new (and unread) headlines to your e-mail address"
 msgid "Send daily digest of new (and unread) headlines to your email address"
 msgstr ""
-"Адпраўляць штодзённы агляд новых і непрачытаных артыкулаў на ваш адрас "
-"электроннай пошты"
+"Адпраўляць штодзённы агляд новых і непрачытаных артыкулаў на ваш адрас эл. "
+"пошты"
 
 #: classes/Pref_Prefs.php:107
 msgid "Try to send around this time"
@@ -1196,7 +1185,7 @@ msgstr "Вынікі пошуку: %s"
 #: classes/Feeds.php:2274
 #, php-format
 msgid "The date keyword \"%s\" was not recognized."
-msgstr ""
+msgstr "Ключавое слова даты \"%s\" не было распазнана."
 
 #: classes/Pref_Labels.php:162
 #, php-format
@@ -1210,7 +1199,7 @@ msgstr "Выдаліць"
 
 #: classes/Pref_Labels.php:188
 msgid "Clear colors"
-msgstr ""
+msgstr "Ясныя колеры"
 
 #: classes/OPML.php:276
 #, php-format
@@ -1334,10 +1323,8 @@ msgid "Your access level is insufficient to run this script."
 msgstr "Ваш узровень доступу недастатковы для запуску гэтага скрыпта."
 
 #: classes/Handler_Public.php:686
-#, fuzzy
-#| msgid "Feeds with update errors"
 msgid "Proceed with update?"
-msgstr "Каналы з памылкамі абнаўлення"
+msgstr "Працягнуць абнаўленне?"
 
 #: classes/Handler_Public.php:691
 msgid "Database Updater"
@@ -1403,8 +1390,6 @@ msgid "(%d days)"
 msgstr "(%d дзён)"
 
 #: classes/Pref_Feeds.php:600 js/CommonDialogs.js:500
-#, fuzzy
-#| msgid "Include in e-mail digest"
 msgid "Include in email digest"
 msgstr "Дадаць да e-mail дайдэсту"
 
@@ -1527,32 +1512,24 @@ msgid "Sharing"
 msgstr "Публікацыя"
 
 #: classes/Pref_Filters.php:24
-#, fuzzy
-#| msgid "Related articles"
 msgid "Delete article"
-msgstr "Звязаныя артыкулы"
+msgstr "Выдаліць артыкул"
 
 #: classes/Pref_Filters.php:26
-#, fuzzy
-#| msgid "Select starred"
 msgid "Set starred"
-msgstr "Выбраць упадабанае"
+msgstr "Пазначыць упадабанае"
 
 #: classes/Pref_Filters.php:27
-#, fuzzy
-#| msgid "Assign label"
 msgid "Assign tags"
-msgstr "Ужыць пазнаку"
+msgstr "Ужыць тэгі"
 
 #: classes/Pref_Filters.php:28
-#, fuzzy
-#| msgid "Published articles"
 msgid "Publish article"
-msgstr "Апублікаваныя артыкулы"
+msgstr "Апублікаваць артыкул"
 
 #: classes/Pref_Filters.php:29
 msgid "Modify score"
-msgstr ""
+msgstr "Змяніць лік"
 
 #: classes/Pref_Filters.php:30 js/Headlines.js:1505
 msgid "Assign label"
@@ -1560,43 +1537,35 @@ msgstr "Ужыць пазнаку"
 
 #: classes/Pref_Filters.php:31
 msgid "Stop / Do nothing"
-msgstr ""
+msgstr "Спыніцца / Нічога не рабіць"
 
 #: classes/Pref_Filters.php:32
-#, fuzzy
-#| msgid "Install plugin"
 msgid "Invoke plugin"
-msgstr "Усталяваць плагін"
+msgstr "Выклікаць плагін"
 
 #: classes/Pref_Filters.php:33
-#, fuzzy
-#| msgid "no tags"
 msgid "Ignore tags"
-msgstr "няма тэгаў"
+msgstr "Ігнараваць тэгі"
 
 #: classes/Pref_Filters.php:39
-#, fuzzy
-#| msgid "Content:"
 msgid "Content"
-msgstr "Кантэнт:"
+msgstr "Кантэнт"
 
 #: classes/Pref_Filters.php:40
 msgid "Title or Content"
-msgstr ""
+msgstr "Назва або Змест"
 
 #: classes/Pref_Filters.php:41
 msgid "Link"
-msgstr ""
+msgstr "Спасылка"
 
 #: classes/Pref_Filters.php:44
 msgid "Author"
-msgstr ""
+msgstr "Аўтар"
 
 #: classes/Pref_Filters.php:45
-#, fuzzy
-#| msgid "Article tags"
 msgid "Article Tags"
-msgstr "Тэгі артыкула"
+msgstr "Тэгі Артыкула"
 
 #: classes/Pref_Filters.php:273 classes/Pref_Filters.php:283
 #: classes/Pref_Filters.php:459 classes/Pref_Filters.php:963
@@ -1620,10 +1589,9 @@ msgid "Unknown action: %d"
 msgstr "Невядомае дзеянне: %d"
 
 #: classes/Pref_Filters.php:699 js/PrefFilterTree.js:178
-#, fuzzy, java-printf-format, javascript-format, php-format
-#| msgid "Clone"
+#, java-printf-format, javascript-format, php-format
 msgid "Clone of %s"
-msgstr "Кланаваць"
+msgstr "Клон %s"
 
 #: classes/Pref_Filters.php:742 js/PrefHelpers.js:228
 msgid "Clone"
@@ -1672,28 +1640,27 @@ msgstr "Тэставае паведамленне ад tt-rss"
 #: classes/Pref_System.php:24
 msgid "This message confirms that tt-rss can send outgoing email."
 msgstr ""
+"Гэта паведамленне пацвярджае, што tt-rss можа адпраўляць зыходную эл. пошту."
 
 #: classes/Pref_System.php:34
 msgid "Task name"
-msgstr ""
+msgstr "Назва задання"
 
 #: classes/Pref_System.php:35
 msgid "Schedule"
-msgstr ""
+msgstr "Расклад"
 
 #: classes/Pref_System.php:36
-#, fuzzy
-#| msgid "Last used"
 msgid "Last executed"
-msgstr "Апошняе выкарыстанне"
+msgstr "Апошні выкананы"
 
 #: classes/Pref_System.php:37
 msgid "Duration (seconds)"
-msgstr ""
+msgstr "Працягласць (секунды)"
 
 #: classes/Pref_System.php:38
 msgid "Return code"
-msgstr ""
+msgstr "Код вяртання"
 
 #: classes/Pref_System.php:110 js/PrefHelpers.js:621
 msgid "Refresh"
@@ -1749,14 +1716,12 @@ msgid "Event log"
 msgstr "Журнал падзей"
 
 #: classes/Pref_System.php:203
-#, fuzzy
-#| msgid "Mail configuration"
 msgid "Email configuration"
 msgstr "Канфігурацыя e-mail"
 
 #: classes/Pref_System.php:214
 msgid "Email sent."
-msgstr ""
+msgstr "Ліст адпраўлены."
 
 #: classes/Pref_System.php:234
 msgid "To:"
@@ -1768,17 +1733,16 @@ msgstr "Адправіць тэставае паведамленне"
 
 #: classes/Pref_System.php:242
 msgid "Scheduled tasks"
-msgstr ""
+msgstr "Запланаваныя заданні"
 
 #: classes/Pref_System.php:253
 msgid "PHP Information"
 msgstr "Інфармацыя пра PHP"
 
 #: classes/Mailer.php:53
-#, fuzzy, php-format
-#| msgid "Unknown error while sending mail. Hooks tried: %d."
+#, php-format
 msgid "Unknown error while sending email. Hooks tried: %d."
-msgstr "Невядомая памылка пры дасыланні пісьма. Спрабавалі хукі: %d."
+msgstr "Невядомая памылка пры дасыланні ліста. Спрабавалі хукі: %d."
 
 #: classes/Pref_Users.php:49 classes/Pref_Users.php:239
 msgid "Registered"
@@ -2335,22 +2299,16 @@ msgid "Removing selected filters..."
 msgstr "Выдаленне выбраных фільтраў..."
 
 #: js/PrefFilterTree.js:177
-#, fuzzy
-#| msgid "Name for cloned profile:"
 msgid "Name for new filter:"
-msgstr "Назва кланаванага профілю:"
+msgstr "Назва новага фільтра:"
 
 #: js/PrefFilterTree.js:185
-#, fuzzy
-#| msgid "Combine selected filters?"
 msgid "Clone selected filters?"
-msgstr "Аб'яднаць выбраныя фільтры?"
+msgstr "Склонаваць абраныя фільтры?"
 
 #: js/PrefFilterTree.js:189
-#, fuzzy
-#| msgid "Removing selected filters..."
 msgid "Cloning selected filters..."
-msgstr "Выдаленне выбраных фільтраў..."
+msgstr "Клонаванне выбраных фільтраў…"
 
 #: js/PrefLabelTree.js:69
 msgid "Edit label"
@@ -2532,10 +2490,9 @@ msgid "Articles matching this filter:"
 msgstr "Артыкулы, якія адпавядаюць гэтаму фільтру:"
 
 #: js/CommonFilters.js:68
-#, fuzzy, java-printf-format, javascript-format
-#| msgid "Found %d articles matching this filter:"
+#, java-printf-format, javascript-format
 msgid "Found at least %d articles matching this filter:"
-msgstr "Знойдзена %d артыкулаў, якія адпавядаюць гэтаму фільтру:"
+msgstr "Знойдзена як мінімум %d артыкулаў, якія адпавядаюць гэтаму фільтру:"
 
 #: js/CommonFilters.js:75
 msgid "Error while trying to get filter test results."
@@ -2913,16 +2870,12 @@ msgid "Expand to select feed"
 msgstr "Разгарніце, каб выбраць канал"
 
 #: js/CommonDialogs.js:189
-#, fuzzy
-#| msgid "Couldn't download the specified URL: %s"
 msgid "Couldn't download the specified URL."
-msgstr "Не атрымалася спампаваць зазначаную спасылку: %s"
+msgstr "Не атрымалася спампаваць зазначаную спасылку."
 
 #: js/CommonDialogs.js:192
-#, fuzzy
-#| msgid "Inline content"
 msgid "Invalid content."
-msgstr "Убудаваць кантэнт"
+msgstr "Несапраўдны змест."
 
 #: js/CommonDialogs.js:195
 msgid "Error while creating feed database entry."
@@ -3077,7 +3030,7 @@ msgstr "Загаловак"
 
 #: js/Article.js:114
 msgid "Copied to clipboard."
-msgstr ""
+msgstr "Скапіявана ў буфер абмену."
 
 #: js/Article.js:116
 msgid "Article URL:"
@@ -3120,10 +3073,8 @@ msgstr ""
 "падрабязную інфармацыю глядзіце ў кансолі памылак)"
 
 #: js/Headlines.js:1401
-#, fuzzy
-#| msgid "Display article URL"
 msgid "Copy article URL"
-msgstr "Паказаць спасылку на артыкул"
+msgstr "Скапіяваць спасылку артыкула"
 
 #: js/CommonFilters.js:64
 msgid "No recent articles matching this filter have been found."

@@ -8,10 +8,10 @@ msgstr ""
 "Project-Id-Version: tt-rss git\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-28 21:06+0000\n"
-"PO-Revision-Date: 2025-11-22 19:27+0000\n"
-"Last-Translator: liilliil <liilliil@liilliil.net>\n"
-"Language-Team: Russian <https://hosted.weblate.org/projects/tt-rss/webui/ru/"
-">\n"
+"PO-Revision-Date: 2025-12-14 01:27+0000\n"
+"Last-Translator: γλωσσολαλιά <glossolalia@kropotk.in>\n"
+"Language-Team: Russian <https://hosted.weblate.org/projects/tt-rss/webui/ru/>"
+"\n"
 "Language: ru_RU\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2871,7 +2871,7 @@ msgstr "Не могу скачать с этого URL."
 
 #: js/CommonDialogs.js:192
 msgid "Invalid content."
-msgstr "Плохой контент"
+msgstr "Контент — шлак."
 
 #: js/CommonDialogs.js:195
 msgid "Error while creating feed database entry."
@@ -3026,7 +3026,7 @@ msgstr "Заголовок"
 
 #: js/Article.js:114
 msgid "Copied to clipboard."
-msgstr ""
+msgstr "Ушло в буфер обмена."
 
 #: js/Article.js:116
 msgid "Article URL:"
@@ -3069,10 +3069,8 @@ msgstr ""
 "в консоли ошибок)"
 
 #: js/Headlines.js:1401
-#, fuzzy
-#| msgid "Display article URL"
 msgid "Copy article URL"
-msgstr "Отобразить URL-адрес статьи"
+msgstr "Скопировать URL статьи"
 
 #: js/CommonFilters.js:64
 msgid "No recent articles matching this filter have been found."

@@ -669,9 +669,8 @@ class RSSUtils {
 
 			$filters = self::load_filters($feed, $feed_obj->owner_uid);
 
-			if (Debug::get_loglevel() >= Debug::LOG_EXTENDED) {
-				print_r($filters);
-			}
+			if (Debug::get_loglevel() >= Debug::LOG_EXTENDED)
+				Debug::log(print_r($filters, true), Debug::LOG_VERBOSE);
 
 			Debug::log("" . count($filters) . " filters loaded.", Debug::LOG_VERBOSE);
 
@@ -697,9 +696,8 @@ class RSSUtils {
 			foreach ($items as $item) {
 				Debug::log(Debug::SEPARATOR, Debug::LOG_VERBOSE);
 
-				if (Debug::get_loglevel() >= 3) {
-					print_r($item);
-				}
+				if (Debug::get_loglevel() >= 3)
+					Debug::log(print_r($item, true), Debug::LOG_VERBOSE);
 
 				if (ini_get("max_execution_time") > 0 && time() - $tstart >= ((float)ini_get("max_execution_time") * 0.7)) {
 					Debug::log("looks like there's too many articles to process at once, breaking out.", Debug::LOG_VERBOSE);
@@ -897,21 +895,18 @@ class RSSUtils {
 				if (Debug::get_loglevel() >= Debug::LOG_EXTENDED) {
 					Debug::log("matched filters: ", Debug::LOG_VERBOSE);
 
-					if (count($matched_filters) != 0) {
-						print_r($matched_filters);
-					}
+					if (count($matched_filters) != 0)
+						Debug::log(print_r($matched_filters, true), Debug::LOG_VERBOSE);
 
 					Debug::log("matched filter rules: ", Debug::LOG_VERBOSE);
 
-					if (count($matched_rules) != 0) {
-						print_r($matched_rules);
-					}
+					if (count($matched_rules) != 0)
+						Debug::log(print_r($matched_rules, true), Debug::LOG_VERBOSE);
 
 					Debug::log("filter actions: ", Debug::LOG_VERBOSE);
 
-					if (count($article_filter_actions) != 0) {
-						print_r($article_filter_actions);
-					}
+					if (count($article_filter_actions) != 0)
+						Debug::log(print_r($article_filter_actions, true), Debug::LOG_VERBOSE);
 				}
 
 				// filter actions of type 'plugin' sourced from filters that matched the article
@@ -971,9 +966,8 @@ class RSSUtils {
 				if (Debug::get_loglevel() >= Debug::LOG_EXTENDED) {
 					Debug::log("article labels:", Debug::LOG_VERBOSE);
 
-					if (count($article_labels) != 0) {
-						print_r($article_labels);
-					}
+					if (count($article_labels) != 0)
+						Debug::log(print_r($article_labels, true), Debug::LOG_VERBOSE);
 				}
 
 				Debug::log("force catchup: $entry_force_catchup", Debug::LOG_VERBOSE);
@@ -1196,7 +1190,7 @@ class RSSUtils {
 
 				if (Debug::get_loglevel() >= Debug::LOG_EXTENDED) {
 					Debug::log("article enclosures:", Debug::LOG_VERBOSE);
-					print_r($enclosures);
+					Debug::log(print_r($enclosures, true), Debug::LOG_VERBOSE);
 				}
 
 				$esth = $pdo->prepare("SELECT id FROM ttrss_enclosures

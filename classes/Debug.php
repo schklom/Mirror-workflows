@@ -149,7 +149,7 @@ class Debug {
 			if ($orig_message === self::SEPARATOR) {
 				print "$message\n";
 			} else {
-				print "<span class='log-timestamp'>$ts</span> <span class='log-message'>$message</span>\n";
+				print "<span class='log-timestamp'>$ts</span> <span class='log-message'>" . htmlspecialchars($message) . "</span>\n";
 			}
 		} else {
 			print "[$ts] $message\n";

@@ -8,44 +8,44 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-28 21:06+0000\n"
-"PO-Revision-Date: 2019-12-10 18:38+0000\n"
-"Last-Translator: Nikolay Korotkiy <sikmir@gmail.com>\n"
-"Language-Team: Esperanto <https://weblate.tt-rss.org/projects/tt-rss/"
-"messages/eo/>\n"
+"PO-Revision-Date: 2025-12-14 01:27+0000\n"
+"Last-Translator: γλωσσολαλιά <glossolalia@kropotk.in>\n"
+"Language-Team: Esperanto <https://hosted.weblate.org/projects/tt-rss/webui/"
+"eo/>\n"
 "Language: eo\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.7.1\n"
+"X-Generator: Weblate 5.15-dev\n"
 
 #: backend.php:55
 msgid "Use default"
-msgstr ""
+msgstr "Uzu defaŭltan"
 
 #: backend.php:56
 msgid "Never purge"
-msgstr ""
+msgstr "Neniam purigu"
 
 #: backend.php:57
 msgid "1 week old"
-msgstr ""
+msgstr "unu-semajnaĝa"
 
 #: backend.php:58
 msgid "2 weeks old"
-msgstr ""
+msgstr "du semajnojn aĝa"
 
 #: backend.php:59
 msgid "1 month old"
-msgstr ""
+msgstr "unu monata"
 
 #: backend.php:60
 msgid "2 months old"
-msgstr ""
+msgstr "2 monatojn aĝa"
 
 #: backend.php:61
 msgid "3 months old"
-msgstr ""
+msgstr "3-monata"
 
 #: backend.php:64
 msgid "Default interval"
@@ -53,7 +53,7 @@ msgstr "Defaŭlta intervalo"
 
 #: backend.php:65 backend.php:75
 msgid "Disable updates"
-msgstr ""
+msgstr "Malŝalti ĝisdatigojn"
 
 #: backend.php:66 backend.php:76
 msgid "15 minutes"
@@ -65,7 +65,7 @@ msgstr "30 minutoj"
 
 #: backend.php:68 backend.php:78
 msgid "Hourly"
-msgstr ""
+msgstr "Ĉiuhora"
 
 #: backend.php:69 backend.php:79
 msgid "4 hours"
@@ -85,7 +85,7 @@ msgstr "Semajne"
 
 #: backend.php:85 classes/Pref_Feeds.php:544 classes/Pref_Feeds.php:597
 msgid "Disabled"
-msgstr ""
+msgstr "Malkapabla"
 
 #: backend.php:86
 msgid "Read Only"

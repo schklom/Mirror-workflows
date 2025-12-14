@@ -10,10 +10,10 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-28 21:06+0000\n"
-"PO-Revision-Date: 2025-11-22 19:27+0000\n"
-"Last-Translator: liilliil <liilliil@liilliil.net>\n"
-"Language-Team: Polish <https://hosted.weblate.org/projects/tt-rss/webui/pl/"
-">\n"
+"PO-Revision-Date: 2025-12-14 01:27+0000\n"
+"Last-Translator: γλωσσολαλιά <glossolalia@kropotk.in>\n"
+"Language-Team: Polish <https://hosted.weblate.org/projects/tt-rss/webui/pl/>"
+"\n"
 "Language: pl_PL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -3039,7 +3039,7 @@ msgstr "Opis"
 
 #: js/Article.js:114
 msgid "Copied to clipboard."
-msgstr ""
+msgstr "Skopiowano do schowka."
 
 #: js/Article.js:116
 msgid "Article URL:"
@@ -3082,10 +3082,8 @@ msgstr ""
 "zobacz szczegóły w konsoli błędów)"
 
 #: js/Headlines.js:1401
-#, fuzzy
-#| msgid "Display article URL"
 msgid "Copy article URL"
-msgstr "Wyświetl adres artykułu"
+msgstr "Kopiuj adres artykułu"
 
 #: js/CommonFilters.js:64
 msgid "No recent articles matching this filter have been found."

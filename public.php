@@ -8,7 +8,7 @@
 
 	if (!init_plugins()) return;
 
-	$method = (string)clean($_REQUEST["op"]);
+	$method = (string) clean($_REQUEST['op'] ?? '');
 
 	// shortcut syntax for public (exposed) methods (?op=plugin--pmethod&...params)
 	if (str_contains($method, PluginHost::PUBLIC_METHOD_DELIMITER)) {
@@ -21,14 +21,6 @@
 		$method = "pluginhandler";
 	}
 
-	$override = PluginHost::getInstance()->lookup_handler("public", $method);
-
-	if ($override) {
-		$handler = $override;
-	} else {
-		$handler = new Handler_Public($_REQUEST);
-	}
-
 	if (str_starts_with($method, "_")) {
 		user_error("Refusing to invoke method $method which starts with underscore.", E_USER_WARNING);
 		header("Content-Type: application/json");
@@ -36,6 +28,8 @@
 
 		return;
 	}
+
+	$handler = PluginHost::getInstance()->lookup_handler('public', $method) ?: new Handler_Public($_REQUEST);
 
 	if (implements_interface($handler, "IHandler") && $handler->before($method)) {
 

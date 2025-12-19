@@ -139,7 +139,6 @@ func (db *FMDDB) GetByID(id string) (*FMDUser, error) {
 	var user = FMDUser{UID: id}
 	db.DB.Where(&user).Find(&user)
 	if user.Id == 0 {
-		log.Warn().Str("userid", id).Msg("user not found")
 		return nil, errors.New("user not found")
 	}
 	return &user, nil

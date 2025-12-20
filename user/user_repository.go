@@ -175,7 +175,9 @@ func (u *UserRepository) DeleteUser(user *FMDUser) {
 	u.ACC.ResetTokensForUser(user.UID)
 }
 
-func (u *UserRepository) GetLocation(user *FMDUser, idx int) string {
+var ErrIndexOutOfBounds = errors.New("requested index is out of bounds")
+
+func (u *UserRepository) GetLocation(user *FMDUser, idx int) (string, error) {
 	u.UB.PreloadLocations(user)
 
 	if idx < 0 || idx >= len(user.Locations) {
@@ -183,9 +185,9 @@ func (u *UserRepository) GetLocation(user *FMDUser, idx int) string {
 			Int("idx", idx).
 			Int("max", len(user.Locations)-1).
 			Msg("requested location is out of bounds")
-		return ""
+		return "", ErrIndexOutOfBounds
 	}
-	return user.Locations[idx].Position
+	return user.Locations[idx].Position, nil
 }
 
 func (u *UserRepository) GetAllLocations(user *FMDUser) []string {
@@ -199,13 +201,17 @@ func (u *UserRepository) GetAllLocations(user *FMDUser) []string {
 	return locations
 }
 
-func (u *UserRepository) GetPicture(user *FMDUser, idx int) string {
+func (u *UserRepository) GetPicture(user *FMDUser, idx int) (string, error) {
 	u.UB.PreloadPictures(user)
 
-	if len(user.Pictures) == 0 {
-		return "Picture not found"
+	if idx < 0 || idx >= len(user.Pictures) {
+		log.Warn().
+			Int("idx", idx).
+			Int("max", len(user.Pictures)-1).
+			Msg("requested picture is out of bounds")
+		return "", ErrIndexOutOfBounds
 	}
-	return user.Pictures[idx].Content
+	return user.Pictures[idx].Content, nil
 }
 
 func (u *UserRepository) GetAllPictures(user *FMDUser) []string {

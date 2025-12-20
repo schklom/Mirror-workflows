@@ -72,11 +72,18 @@ func getLocation(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, ERR_ACCESS_TOKEN_INVALID, http.StatusUnauthorized)
 		return
 	}
+
 	index, _ := strconv.Atoi(request.Data)
 	if index == -1 {
-		index = uio.GetLocationSize(user)
+		index = uio.GetLocationSize(user) - 1
 	}
-	data := uio.GetLocation(user, index)
+
+	data, err := uio.GetLocation(user, index)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
 	w.Header().Set(HEADER_CONTENT_TYPE, CT_APPLICATION_JSON)
 	w.Write([]byte(fmt.Sprint(string(data))))
 }
@@ -159,9 +166,15 @@ func getPicture(w http.ResponseWriter, r *http.Request) {
 
 	index, _ := strconv.Atoi(request.Data)
 	if index == -1 {
-		index = uio.GetPictureSize(user)
+		index = uio.GetPictureSize(user) - 1
 	}
-	data := uio.GetPicture(user, index)
+
+	data, err := uio.GetPicture(user, index)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
 	w.Header().Set(HEADER_CONTENT_TYPE, "text/plain")
 	w.Write([]byte(fmt.Sprint(string(data))))
 }

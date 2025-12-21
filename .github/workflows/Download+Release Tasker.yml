@@ -37,7 +37,7 @@ jobs:
           #curl -L "${url}=${fileid}" -o ${filename}
 
           # Get the dropbox link and remove the quotation marks
-          url="$(curl -is https://tasker.joaoapps.com/direct_purchase_download | grep -o '".*dropbox.*"' | tr -d '"')"
+          url="$(curl -i https://tasker.joaoapps.com/direct_purchase_download | grep -o '".*dropbox.*"' | tr -d '"')"
           curl -L "${url}" -o ${filename}
       
       - name: Store md5 hash of new apk

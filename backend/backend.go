@@ -62,7 +62,7 @@ func handleRequests(config *viper.Viper) {
 	}
 }
 
-func handleRequestsSocket(mux *http.ServeMux, socketPath string, socketChmod int) {
+func handleRequestsSocket(handler http.Handler, socketPath string, socketChmod int) {
 	_, err := os.Stat(socketPath)
 	if err == nil { // socket already exists
 		err = os.Remove(socketPath)
@@ -92,7 +92,7 @@ func handleRequestsSocket(mux *http.ServeMux, socketPath string, socketChmod int
 			Msg("error modifying unix socket permissions")
 	}
 
-	server := http.Server{Handler: mux}
+	server := http.Server{Handler: handler}
 	err = server.Serve(unixListener)
 	if err != nil {
 		log.Error().Err(err).Msg("error serving unix server")

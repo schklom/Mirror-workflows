@@ -46,7 +46,7 @@ func securityHeadersMiddleware(next http.Handler, tileServerOrigin string) http.
 	})
 }
 
-func buildServeMux(config *viper.Viper) *http.ServeMux {
+func buildServeMux(config *viper.Viper) http.Handler {
 	// Workaround: cache value in global field to avoid needing to pass down the config into the API code
 	remoteIpHeaderName = config.GetString(conf.CONF_REMOTE_IP_HEADER)
 
@@ -100,11 +100,13 @@ func buildServeMux(config *viper.Viper) *http.ServeMux {
 		apiV1Mux.Handle("/", http.FileServer(http.Dir(config.GetString(conf.CONF_WEB_DIR))))
 	}
 
-	muxFinal := http.NewServeMux()
-	// muxFinal.Handle("/", securityHeadersMiddleware(staticFilesMux, clean_tile_server_url))
-	muxFinal.Handle("/", securityHeadersMiddleware(apiV1Mux, tileServerOrigin)) // deprecated
-	muxFinal.Handle("/api/v1/", http.StripPrefix("/api/v1", securityHeadersMiddleware(apiV1Mux, tileServerOrigin)))
-	muxFinal.Handle("/config.js", securityHeadersMiddleware(createConfigJs(tileServerUrl), tileServerOrigin))
+	apiMux := http.NewServeMux()
+	// muxFinal.Handle("/", staticFilesMux)
+	apiMux.Handle("/", apiV1Mux) // deprecated
+	apiMux.Handle("/api/v1/", http.StripPrefix("/api/v1", apiV1Mux))
+	apiMux.Handle("/config.js", createConfigJs(tileServerUrl))
 
-	return muxFinal
+	// Apply to all endpoints
+	handler := securityHeadersMiddleware(apiMux, tileServerOrigin)
+	return handler
 }

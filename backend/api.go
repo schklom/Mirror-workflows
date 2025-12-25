@@ -108,5 +108,7 @@ func buildServeMux(config *viper.Viper) http.Handler {
 
 	// Apply to all endpoints
 	handler := securityHeadersMiddleware(apiMux, tileServerOrigin)
+	handler = http.MaxBytesHandler(handler, 15<<20) // 15 MB because 2^20 is a MB
+
 	return handler
 }

@@ -73,6 +73,10 @@ Running electron on a server requires some workarounds with Xvfb. See docker-ent
 
 ## Changelog
 
+# 2025-12-27
+
+- updated dependencies
+
 ### 2023-11-22
 
 - completely ported project to TS, Vue3

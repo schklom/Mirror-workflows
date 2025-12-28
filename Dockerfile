@@ -28,7 +28,8 @@ FROM node:24-trixie-slim as run
 ENV DEBIAN_FRONTEND noninteractive
 ENV HOME /home/node
 RUN apt-get update \
- && apt-get install -y xvfb libasound2t64 libnss3 libxss1 libgtk-3-0t64 libgbm-dev --no-install-recommends #libgconf-2-4
+ && apt-get install -y python3 build-essential xvfb libasound2t64 libnss3 libxss1 libgtk-3-0t64 libgbm-dev --no-install-recommends #libgconf-2-4
+RUN npm install -g vite
 
 COPY --from=build /app /app/
 

@@ -1,20 +1,26 @@
 name: fmd-server
 title: FMD Server
+version: '0.13.0'
 license: GPL-3.0-or-later
+
 source-code: https://gitlab.com/fmd-foss/fmd-server
 issues: https://gitlab.com/fmd-foss/fmd-server/-/issues
+donation: https://liberapay.com/FMD/donate
 website: https://fmd-foss.org/
-base: core24 # the base snap is the execution environment for this snap
-version: '0.12.0'
+contact:
+  - https://fmd-foss.org/about
+
 summary: A server to communicate with the FMD Android app.
 description: |
   This is the official server for FMD Android written in Go.
   The FMD app can register an account on FMD Server.
   The app can then upload its location at regular intervals.
   You can also push commands to the FMD app on your device from FMD Server, e.g. to make your device ring.
-donation: https://liberapay.com/FMD/donate
-grade: stable # must be 'stable' to release into candidate/stable channels
-confinement: strict # use 'strict' once you have the right plugs and slots
+icon: snap/gui/icon.svg
+
+base: core24
+grade: stable
+confinement: strict
 
 plugs:
   network:

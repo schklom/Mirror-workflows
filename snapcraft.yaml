@@ -22,39 +22,49 @@ base: core24
 grade: stable
 confinement: strict
 
-plugs:
-  network:
-    interface: network
+platforms:
+  amd64:
+  arm64:
+    build-on: [amd64]
+  armhf:
+    build-on: [amd64]
 
 parts:
 
+  # Get the general FMD Server things from the pre-compiled release.
+  # The `%%hf` suffix is to remove the suffix to map "armhf" (Snap-style) to "arm" (FMD-style).
   fmd-server:
     plugin: dump
-    source: https://packages.fmd-foss.org/server/fmd-server-v0.12.0.zip
+    source: https://packages.fmd-foss.org/server/fmd-server-v${SNAPCRAFT_PROJECT_VERSION}.zip
     organize:
       fmd-server: bin/fmd-server
-      config.example.yml: config.example.yml
     override-build: |
       craftctl default
-      chmod +x $CRAFT_PART_INSTALL/fmd-server
-      chmod 644 $CRAFT_PART_INSTALL/config.example.yml
+      cp "${CRAFT_PART_INSTALL}/fmd-server-${CRAFT_ARCH_BUILD_FOR%%hf}" "${CRAFT_PART_INSTALL}/fmd-server"
+      chmod +x "${CRAFT_PART_INSTALL}/fmd-server"
+      chmod 644 "${CRAFT_PART_INSTALL}/config.example.yml"
+    stage:
+      - bin/fmd-server
+      - config.example.yml
 
+  # Get the Snap-specific things from the current git repo state.
   start-script:
     plugin: dump
-    source: snapconfig
+    source: snap/
     source-type: local
     organize:
       fmd-server.sh: bin/fmd-server.sh
     override-build: |
       craftctl default
-      echo "Part install dir: $CRAFT_PART_INSTALL"
-      ls -l $CRAFT_PART_INSTALL
-      chmod +x $CRAFT_PART_INSTALL/fmd-server.sh
+      chmod +x "${CRAFT_PART_INSTALL}/fmd-server.sh"
+    stage:
+      - bin/fmd-server.sh
 
 apps:
-  fmd-serverd:
+  fmd-server:
     command: bin/fmd-server.sh serve
     daemon: simple
     restart-condition: on-failure
     plugs:
       - network
+      - network-bind

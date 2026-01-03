@@ -109,7 +109,7 @@ web:typecheck:
       - web/**/*
 
 web:build:
-  stage: build
+  stage: lint
   image: node:24-alpine
   <<: *pnpm-cache
   before_script:

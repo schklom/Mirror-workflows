@@ -16,7 +16,7 @@ const nextConfig: NextConfig = {
       {
         source: '/api/v1/:path*',
         destination: 'http://localhost:8080/api/v1/:path*',
-        //destination: 'https://fmd.nulide.de:1008/api/v1/:path*',
+        //destination: 'https://server.fmd-foss.org/api/v1/:path*',
       },
     ],
   }),

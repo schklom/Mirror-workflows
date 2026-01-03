@@ -39,7 +39,7 @@ Next.js will proxy `/api/v1/*` requests to the Go server on port 8080.
 You can also proxy to an external server for testing by modifying the proxy configuration:
 
 ```typescript
-destination: 'https://fmd.nulide.de:1008/api/v1/:path*';
+destination: 'https://server.fmd-foss.org/api/v1/:path*';
 ```
 
 ## Build

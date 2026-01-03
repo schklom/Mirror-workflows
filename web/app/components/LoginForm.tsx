@@ -8,6 +8,7 @@ import { saveSession } from '@/lib/storage';
 import { storeKeys } from '@/lib/keystore';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { PasswordInput } from '@/components/PasswordInput';
 import { Checkbox } from '@/components/Checkbox';
 
 interface LoginFormProps {
@@ -93,8 +94,7 @@ export const LoginForm = ({ onLoginSuccess }: LoginFormProps) => {
               required
             />
 
-            <Input
-              type="password"
+            <PasswordInput
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Password"

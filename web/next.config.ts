@@ -15,8 +15,9 @@ const nextConfig: NextConfig = {
     rewrites: async () => [
       {
         source: '/api/v1/:path*',
-        destination: 'http://localhost:8080/api/v1/:path*',
-        //destination: 'https://server.fmd-foss.org/api/v1/:path*',
+        destination:
+          process.env.NEXT_PUBLIC_API_URL ||
+          'http://localhost:8080/api/v1/:path*',
       },
     ],
   }),

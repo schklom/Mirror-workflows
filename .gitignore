@@ -37,7 +37,7 @@ cmd/test/web
 node_modules/
 dist/
 .next/
-.env
+.env.local
 .DS_Store
 *.tsbuildinfo
 next-env.d.ts

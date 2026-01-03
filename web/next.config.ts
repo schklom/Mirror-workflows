@@ -15,9 +15,8 @@ const nextConfig: NextConfig = {
     rewrites: async () => [
       {
         source: '/api/v1/:path*',
-        //destination: 'http://localhost:8080/api/v1/:path*',
+        destination: 'http://localhost:8080/api/v1/:path*',
         //destination: 'https://fmd.nulide.de:1008/api/v1/:path*',
-        destination: 'https://fmd.philippov.ca/api/v1/:path*',
       },
     ],
   }),

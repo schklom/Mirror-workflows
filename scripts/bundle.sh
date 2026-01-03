@@ -36,6 +36,15 @@ git checkout --quiet "$REF"
 export CGO_ENABLED=0
 export GOOS=linux
 
+# Build web frontend first (required for Go embed)
+echo "Building web frontend..."
+pushd web
+export NEXT_TELEMETRY_DISABLED=1
+export NODE_ENV=production
+pnpm install --frozen-lockfile
+pnpm build
+popd
+
 # go tool dist list
 for ARCH in "amd64" "arm" "arm64"; do
     export GOARCH=$ARCH

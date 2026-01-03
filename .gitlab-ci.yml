@@ -17,18 +17,24 @@ variables:
   - go get gopkg.in/yaml.v3
 
 stages:
+  - web
   - lint
   - test
   - build
 
-# pnpm cache configuration
-.pnpm-cache: &pnpm-cache
+.web:
+  image: node:24-alpine
   cache:
     key:
       files:
         - web/pnpm-lock.yaml
     paths:
       - .pnpm-store
+  before_script:
+    - cd web
+    - corepack enable
+    - pnpm config set store-dir ../.pnpm-store
+    - pnpm install --frozen-lockfile
 
 format:
   stage: lint
@@ -79,14 +85,8 @@ sonarcloud-check:
   allow_failure: true # This step fails in forks due to the missing API key.
 
 web:format:
+  extends: .web
   stage: lint
-  image: node:24-alpine
-  <<: *pnpm-cache
-  before_script:
-    - cd web
-    - corepack enable
-    - pnpm config set store-dir ../.pnpm-store
-    - pnpm install --frozen-lockfile
   script:
     - pnpm format:check
   only:
@@ -94,14 +94,8 @@ web:format:
       - web/**/*
 
 web:typecheck:
+  extends: .web
   stage: lint
-  image: node:24-alpine
-  <<: *pnpm-cache
-  before_script:
-    - cd web
-    - corepack enable
-    - pnpm config set store-dir ../.pnpm-store
-    - pnpm install --frozen-lockfile
   script:
     - pnpm type-check
   only:
@@ -109,14 +103,8 @@ web:typecheck:
       - web/**/*
 
 web:build:
-  stage: lint
-  image: node:24-alpine
-  <<: *pnpm-cache
-  before_script:
-    - cd web
-    - corepack enable
-    - pnpm config set store-dir ../.pnpm-store
-    - pnpm install --frozen-lockfile
+  extends: .web
+  stage: web
   script:
     - pnpm build
   artifacts:

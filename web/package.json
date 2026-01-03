@@ -1,8 +1,64 @@
 {
+  "name": "fmd-server-web",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "FMD Server web interface",
+  "engines": {
+    "node": ">=24.0.0",
+    "pnpm": ">=10.0.0"
+  },
+  "packageManager": "pnpm@10.27.0",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "npx serve@latest dist -p 3000",
+    "start:server": "next start",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "type-check": "tsc --noEmit",
+    "format": "prettier --write . --ignore-path ../.gitignore | grep -v '(unchanged)' || true",
+    "format:check": "prettier --check . --ignore-path ../.gitignore",
+    "check": "pnpm run type-check && pnpm run lint && pnpm run format && pnpm run format:check",
+    "analyze": "ANALYZE=true next build --webpack"
+  },
   "dependencies": {
-    "argon2-browser": "^1.18.0",
-    "jszip": "^3.10.1",
+    "@noble/hashes": "^2.0.1",
+    "@radix-ui/react-checkbox": "^1.3.3",
+    "@radix-ui/react-dialog": "^1.1.15",
+    "@radix-ui/react-label": "^2.1.8",
+    "@radix-ui/react-slot": "^1.2.4",
+    "@radix-ui/react-tabs": "^1.1.13",
+    "@radix-ui/react-toggle": "^1.1.10",
+    "@radix-ui/react-toggle-group": "^1.1.11",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "leaflet": "^1.9.4",
-    "toastedjs": "^0.0.2"
+    "lucide-react": "^0.562.0",
+    "next": "^16.1.1",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "sonner": "^2.0.7",
+    "tailwind-merge": "^3.4.0"
+  },
+  "devDependencies": {
+    "@next/bundle-analyzer": "^16.1.1",
+    "@shadcn/ui": "^0.0.4",
+    "@tailwindcss/postcss": "^4.1.18",
+    "@types/leaflet": "^1.9.21",
+    "@types/node": "^25.0.3",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "autoprefixer": "^10.4.23",
+    "eslint": "^9.39.2",
+    "eslint-config-next": "^16.1.1",
+    "eslint-plugin-sonarjs": "^3.0.5",
+    "eslint-plugin-tailwindcss": "4.0.0-beta.0",
+    "postcss": "^8.5.6",
+    "prettier": "^3.7.4",
+    "tailwindcss": "^4.1.18",
+    "tw-animate-css": "^1.4.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.51.0"
   }
 }

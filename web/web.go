@@ -5,9 +5,10 @@ import (
 	"io/fs"
 )
 
-//go:embed assets node_modules *.html *.css *.js *.svg *.ico *.json *.txt
+//go:embed all:dist
 var webDir embed.FS
 
 func WebDir() fs.FS {
-	return webDir
+	sub, _ := fs.Sub(webDir, "dist")
+	return sub
 }

@@ -12,6 +12,9 @@ e.g. to make your device ring.
 
 At its core, FMD is just a Go binary that you can build and run directly.
 
+If you want to see the web server UI you will also need to build the web bundle which requires Node.js. See [web/README.md](web/README.md) for instructions on how to do that.
+
+
 ```bash
 go run main.go serve
 # or

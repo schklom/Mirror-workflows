@@ -37,3 +37,4 @@ See:
 - <https://documentation.ubuntu.com/snapcraft/latest/how-to/publishing/>
 - <https://forum.snapcraft.io/t/restrictions-on-screenshots-and-videos-in-snap-listings/3087/7>
 - <https://askubuntu.com/questions/1162798/how-do-i-view-the-contents-of-a-snap-file>
+

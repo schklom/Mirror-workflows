@@ -6,12 +6,17 @@ FROM golang:1.24-bookworm AS builder
 WORKDIR /go/src/fmd-server
 ENV GOPATH=/go
 
-# pre-download and only redownload in subsequent builds if they change
+# Install Node.js and pnpm for building the web frontend
+RUN curl -fsSL https://deb.nodesource.com/setup_24.x | bash - && \
+    apt-get install -y nodejs && \
+    corepack enable && \
+    corepack prepare pnpm@latest --activate
+
+# Pre-download and only redownload in subsequent builds if they change
 COPY go.mod go.sum ./
 RUN go mod download && go mod verify
 
-COPY go.mod .
-COPY go.sum .
+# Copy Go source files first (needed for embedding web assets)
 COPY main.go .
 COPY cmd/ cmd/
 COPY backend/ backend/
@@ -21,8 +26,24 @@ COPY migrations/ migrations/
 COPY user/ user/
 COPY utils/ utils/
 COPY version/ version/
-COPY web/ web/
 
+# Copy web frontend files and build
+COPY web/package.json web/pnpm-lock.yaml web/
+WORKDIR /go/src/fmd-server/web
+RUN pnpm install --frozen-lockfile
+
+WORKDIR /go/src/fmd-server
+# Copy web source files (excluding dist, node_modules, .next which may exist locally)
+COPY web/*.go web/*.json web/*.ts web/*.mjs ./web/
+COPY web/app ./web/app
+COPY web/public ./web/public
+WORKDIR /go/src/fmd-server/web
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV NODE_ENV=production
+RUN pnpm build
+
+# Build Go binary (will embed the web/dist directory)
+WORKDIR /go/src/fmd-server
 RUN go build -o /tmp/fmd main.go
 
 

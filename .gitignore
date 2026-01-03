@@ -33,3 +33,12 @@ cmd/test/web
 # Varia
 *.patch
 
+# Node / Frontend
+node_modules/
+dist/
+.next/
+.env
+.DS_Store
+*.tsbuildinfo
+next-env.d.ts
+

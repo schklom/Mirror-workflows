@@ -17,8 +17,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "type-check": "tsc --noEmit",
-    "format": "prettier --write . --ignore-path ../.gitignore | grep -v '(unchanged)' || true",
-    "format:check": "prettier --check . --ignore-path ../.gitignore",
+    "format": "prettier --write . | grep -v '(unchanged)' || true",
+    "format:check": "prettier --check .",
     "check": "pnpm run type-check && pnpm run lint && pnpm run format && pnpm run format:check",
     "analyze": "ANALYZE=true next build --webpack"
   },

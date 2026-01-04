@@ -1,6 +1,6 @@
 import { Checkbox as CheckboxPrimitive } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
-import { cn } from '@/lib/utils';
+import { cn } from '@/utils/cn';
 
 interface CheckboxProps extends React.ComponentPropsWithoutRef<
   typeof CheckboxPrimitive

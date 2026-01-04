@@ -1,6 +1,7 @@
 'use client';
 
 import { sendCommand, getPushUrl } from '../lib/api';
+import { useStore } from '@/lib/store';
 import { sign } from '../lib/crypto';
 import { toast } from 'sonner';
 import { useState, useEffect } from 'react';
@@ -15,24 +16,16 @@ import {
   ChevronRight,
   ChevronLeft,
   Smartphone,
+  Bluetooth,
+  Satellite,
+  Bell,
+  BellOff,
 } from 'lucide-react';
 import { ConfirmModal } from '@/components/ConfirmModal';
 import { ActionItem } from '@/components/ActionItem';
 import { BatteryIndicator } from '@/components/BatteryIndicator';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
-import type { Location } from '@/lib/api';
-
-interface DevicePanelProps {
-  sessionToken: string;
-  rsaSigKey: CryptoKey;
-  onViewPhotos: () => void;
-  onLocateCommand?: () => void;
-  loadingLocation?: boolean;
-  locations?: Location[];
-  currentLocationIndex?: number;
-  onSelectLocation?: (index: number) => void;
-}
 
 const COMMANDS = {
   LOCATE_ALL: 'locate',
@@ -42,52 +35,78 @@ const COMMANDS = {
   RING: 'ring',
   LOCK: 'lock',
   DELETE: 'delete',
-  CAMERA_FRONT: 'picture front',
-  CAMERA_BACK: 'picture back',
+  CAMERA_FRONT: 'camera front',
+  CAMERA_BACK: 'camera back',
+  BLUETOOTH_ON: 'bluetooth on',
+  BLUETOOTH_OFF: 'bluetooth off',
+  GPS_ON: 'gps on',
+  GPS_OFF: 'gps off',
+  RINGERMODE_NORMAL: 'ringermode normal',
+  RINGERMODE_VIBRATE: 'ringermode vibrate',
+  RINGERMODE_SILENT: 'ringermode silent',
+  NODISTURB_ON: 'nodisturb on',
+  NODISTURB_OFF: 'nodisturb off',
 } as const;
 
 const COMMAND_SUCCESS_MESSAGES: Record<string, string> = {
   [COMMANDS.LOCATE_ALL]: 'Requesting fresh location...',
   [COMMANDS.LOCATE_LAST]: 'Requesting last known location...',
-  [COMMANDS.RING]: 'Ring command sent successfully',
-  [COMMANDS.LOCK]: 'Lock command sent successfully',
-  [COMMANDS.DELETE]: 'Factory reset command sent',
-  [COMMANDS.CAMERA_FRONT]: 'Front camera photo requested',
-  [COMMANDS.CAMERA_BACK]: 'Back camera photo requested',
+  [COMMANDS.RING]: 'Ringing device...',
+  [COMMANDS.LOCK]: 'Locking device...',
+  [COMMANDS.DELETE]: 'Factory reset initiated',
+  [COMMANDS.CAMERA_FRONT]: 'Capturing photo...',
+  [COMMANDS.CAMERA_BACK]: 'Capturing photo...',
+  [COMMANDS.BLUETOOTH_ON]: 'Enabling Bluetooth...',
+  [COMMANDS.BLUETOOTH_OFF]: 'Disabling Bluetooth...',
+  [COMMANDS.GPS_ON]: 'Enabling GPS...',
+  [COMMANDS.GPS_OFF]: 'Disabling GPS...',
+  [COMMANDS.RINGERMODE_NORMAL]: 'Setting ringer to normal...',
+  [COMMANDS.RINGERMODE_VIBRATE]: 'Setting ringer to vibrate...',
+  [COMMANDS.RINGERMODE_SILENT]: 'Setting ringer to silent...',
+  [COMMANDS.NODISTURB_ON]: 'Enabling Do Not Disturb...',
+  [COMMANDS.NODISTURB_OFF]: 'Disabling Do Not Disturb...',
 };
 
+interface DevicePanelProps {
+  onViewPhotos: () => void;
+  onLocateCommand?: () => void;
+  currentLocationIndex?: number;
+  onSelectLocation?: (index: number) => void;
+}
+
 export const DevicePanel = ({
-  sessionToken,
-  rsaSigKey,
   onLocateCommand,
   onViewPhotos,
-  loadingLocation,
-  locations = [],
   currentLocationIndex = 0,
   onSelectLocation,
 }: DevicePanelProps) => {
+  const { userData, locations, isLocationsLoading, pushUrl, setPushUrl, isPushUrlLoading, setPushUrlLoading } = useStore();
   const [loading, setLoading] = useState(false);
   const [showFactoryResetConfirm, setShowFactoryResetConfirm] = useState(false);
-  const [pushUrl, setPushUrl] = useState<string | undefined>(undefined);
-  const [pushUrlLoading, setPushUrlLoading] = useState(true);
 
   useEffect(() => {
+    if (!userData) return;
     setPushUrlLoading(true);
-    void getPushUrl(sessionToken)
+    void getPushUrl(userData.sessionToken)
       .then(setPushUrl)
       .finally(() => setPushUrlLoading(false));
-  }, [sessionToken]);
+  }, [userData, setPushUrl, setPushUrlLoading]);
 
   const executeCommand = async (command: string) => {
+    if (!userData) return;
+
     setLoading(true);
     try {
       const timestamp = Date.now();
-      const signature = await sign(rsaSigKey, `${timestamp}:${command}`);
+      const signature = await sign(
+        userData.rsaSigKey,
+        `${timestamp}:${command}`
+      );
 
       if (command.startsWith('locate') && onLocateCommand) {
         onLocateCommand();
       }
-      await sendCommand(sessionToken, command, signature, timestamp);
+      await sendCommand(userData.sessionToken, command, signature, timestamp);
 
       const successMessage =
         COMMAND_SUCCESS_MESSAGES[command] || 'Command sent successfully';
@@ -149,6 +168,60 @@ export const DevicePanel = ({
       description: 'View photos taken by the device',
       onClick: onViewPhotos,
     },
+    {
+      icon: Satellite,
+      title: 'Enable GPS',
+      description: 'Turn on GPS',
+      onClick: () => void executeCommand(COMMANDS.GPS_ON),
+    },
+    {
+      icon: Satellite,
+      title: 'Disable GPS',
+      description: 'Turn off GPS',
+      onClick: () => void executeCommand(COMMANDS.GPS_OFF),
+    },
+    {
+      icon: Bluetooth,
+      title: 'Enable Bluetooth',
+      description: 'Turn on Bluetooth',
+      onClick: () => void executeCommand(COMMANDS.BLUETOOTH_ON),
+    },
+    {
+      icon: Bluetooth,
+      title: 'Disable Bluetooth',
+      description: 'Turn off Bluetooth',
+      onClick: () => void executeCommand(COMMANDS.BLUETOOTH_OFF),
+    },
+    {
+      icon: Bell,
+      title: 'Ringer: Normal',
+      description: 'Set ringer mode to normal',
+      onClick: () => void executeCommand(COMMANDS.RINGERMODE_NORMAL),
+    },
+    {
+      icon: Volume2,
+      title: 'Ringer: Vibrate',
+      description: 'Set ringer mode to vibrate',
+      onClick: () => void executeCommand(COMMANDS.RINGERMODE_VIBRATE),
+    },
+    {
+      icon: BellOff,
+      title: 'Ringer: Silent',
+      description: 'Set ringer mode to silent',
+      onClick: () => void executeCommand(COMMANDS.RINGERMODE_SILENT),
+    },
+    {
+      icon: BellOff,
+      title: 'Do Not Disturb On',
+      description: 'Enable Do Not Disturb mode',
+      onClick: () => void executeCommand(COMMANDS.NODISTURB_ON),
+    },
+    {
+      icon: Bell,
+      title: 'Do Not Disturb Off',
+      description: 'Disable Do Not Disturb mode',
+      onClick: () => void executeCommand(COMMANDS.NODISTURB_OFF),
+    },
   ];
 
   const currentLocation = locations[currentLocationIndex];
@@ -156,12 +229,12 @@ export const DevicePanel = ({
   return (
     <div className="flex h-full flex-col gap-4">
       <div className="dark:border-fmd-dark-border dark:bg-fmd-dark rounded-lg border border-gray-200 bg-white p-4">
-        {loadingLocation && (
+        {isLocationsLoading && (
           <div className="flex h-18 items-center justify-center">
             <Spinner />
           </div>
         )}
-        {!loadingLocation && currentLocation && (
+        {!isLocationsLoading && currentLocation && (
           <div className="space-y-3">
             <div className="flex items-center gap-3">
               <div className="bg-fmd-green/10 rounded-full p-3">
@@ -209,7 +282,7 @@ export const DevicePanel = ({
             )}
           </div>
         )}
-        {!loadingLocation && !currentLocation && (
+        {!isLocationsLoading && !currentLocation && (
           <div className="flex h-18 items-center justify-center text-sm text-gray-500 dark:text-gray-400">
             No location data yet
           </div>
@@ -217,7 +290,7 @@ export const DevicePanel = ({
       </div>
 
       <div className="flex flex-1 flex-col gap-4 overflow-y-auto [scrollbar-width:thin] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-thumb]:bg-gray-700 [&::-webkit-scrollbar-track]:bg-transparent">
-        {!pushUrlLoading && !pushUrl && (
+        {!isPushUrlLoading && !pushUrl && (
           <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4 dark:border-yellow-900/50 dark:bg-yellow-900/20">
             <p className="text-sm text-yellow-800 dark:text-yellow-200">
               No push URL configured. The device will not receive commands until

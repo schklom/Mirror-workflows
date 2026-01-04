@@ -18,12 +18,14 @@ const RootLayout = ({ children }: RootLayoutProps) => (
         dangerouslySetInnerHTML={{
           __html: `
             (function() {
-              const theme = localStorage.getItem('theme') || 'system';
-              const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-              document.documentElement.classList.remove('dark');
-              if (isDark) {
-                document.documentElement.classList.add('dark');
-              }
+              try {
+                const stored = localStorage.getItem('fmd-storage');
+                const theme = stored ? JSON.parse(stored).state.theme : 'system';
+                const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                if (isDark) {
+                  document.documentElement.classList.add('dark');
+                }
+              } catch {}
             })();
           `,
         }}

@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
 import { ExternalLink, Shield } from 'lucide-react';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { toast } from 'sonner';
 import { deleteAccount, getLocations } from '@/lib/api';
 import { decryptData } from '@/lib/crypto';
+import { useStore, logout, type UnitSystem } from '@/lib/store';
 import {
   Dialog,
   DialogContent,
@@ -17,53 +18,30 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Button } from '@/components/ui/button';
 import { ConfirmModal } from '@/components/ConfirmModal';
-import {
-  getUnitPreference,
-  setUnitPreference,
-  type UnitSystem,
-  clearSession,
-} from '@/lib/storage';
-import { clearKeys } from '@/lib/keystore';
 
 interface SettingsModalProps {
   isOpen: boolean;
   onClose: () => void;
-  sessionToken?: string;
-  rsaEncKey?: CryptoKey;
 }
 
-export const SettingsModal = ({
-  isOpen,
-  onClose,
-  sessionToken,
-  rsaEncKey,
-}: SettingsModalProps) => {
-  const [units, setUnits] = useState<UnitSystem>(() => getUnitPreference());
+export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
+  const { userData, units, setUnits } = useStore();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
-  useEffect(() => {
-    const handleStorage = () => setUnits(getUnitPreference());
-    window.addEventListener('storage', handleStorage);
-    return () => window.removeEventListener('storage', handleStorage);
-  }, []);
-
-  const handleUnitChange = (system: UnitSystem) => {
-    setUnits(system);
-    setUnitPreference(system);
-    window.dispatchEvent(new Event('storage'));
-  };
-
   const handleExport = async () => {
-    if (!sessionToken || !rsaEncKey) {
+    if (!userData) {
       toast.error('Not logged in');
       return;
     }
 
     try {
-      const encryptedLocations = await getLocations(sessionToken);
+      const encryptedLocations = await getLocations(userData.sessionToken);
       const decryptedLocations = await Promise.all(
         encryptedLocations.map(async (encryptedLoc) => {
-          const decrypted = await decryptData(rsaEncKey, encryptedLoc.Position);
+          const decrypted = await decryptData(
+            userData.rsaEncKey,
+            encryptedLoc.Position
+          );
           return JSON.parse(decrypted) as unknown;
         })
       );
@@ -113,7 +91,7 @@ export const SettingsModal = ({
                 type="single"
                 value={units}
                 onValueChange={(value) =>
-                  value && handleUnitChange(value as UnitSystem)
+                  value && setUnits(value as UnitSystem)
                 }
               >
                 <ToggleGroupItem value="metric">Metric</ToggleGroupItem>
@@ -211,13 +189,11 @@ export const SettingsModal = ({
         onClose={() => setShowDeleteConfirm(false)}
         onConfirm={() => {
           void (async () => {
-            if (!sessionToken) return;
+            if (!userData) return;
 
             try {
-              await deleteAccount(sessionToken);
-              clearSession();
-              await clearKeys();
-              window.dispatchEvent(new Event('session-updated'));
+              await deleteAccount(userData.sessionToken);
+              await logout();
               setShowDeleteConfirm(false);
               onClose();
             } catch (error) {

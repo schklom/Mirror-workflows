@@ -10,23 +10,21 @@ import { Header } from '@/components/Header';
 import { Spinner } from '@/components/ui/spinner';
 import { getLocations } from '@/lib/api';
 import { decryptData } from '@/lib/crypto';
-import { useAuth } from '@/hooks/useAuth';
+import { useStore } from '@/lib/store';
 import type { Location } from '@/lib/api';
 import { toast } from 'sonner';
 
 const Home = () => {
-  const { isLoggedIn, userData, checkingSession, login } = useAuth();
-  const [locations, setLocations] = useState<Location[]>([]);
+  const { isLoggedIn, userData, isCheckingSession, locations, setLocations, setLocationsLoading } = useStore();
   const [currentLocationIndex, setCurrentLocationIndex] = useState(0);
   const [photosOpen, setPhotosOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [lastLocateTime, setLastLocateTime] = useState<number | null>(null);
 
   const fetchLocations = async (showLoading = true) => {
     if (!userData) return;
 
-    if (showLoading) setLoading(true);
+    if (showLoading) setLocationsLoading(true);
     try {
       const encryptedLocations = await getLocations(userData.sessionToken);
 
@@ -40,23 +38,20 @@ const Home = () => {
         })
       );
 
-      setLocations((prevLocations) => {
-        const isFirstLoad = prevLocations.length === 0;
-        const hasNewLocations =
-          decryptedLocations.length > prevLocations.length;
+      const isFirstLoad = locations.length === 0;
+      const hasNewLocations = decryptedLocations.length > locations.length;
 
-        if (isFirstLoad || hasNewLocations) {
-          setCurrentLocationIndex(decryptedLocations.length - 1);
-        }
+      if (isFirstLoad || hasNewLocations) {
+        setCurrentLocationIndex(decryptedLocations.length - 1);
+      }
 
-        return decryptedLocations;
-      });
+      setLocations(decryptedLocations);
     } catch (error) {
       const message =
         error instanceof Error ? error.message : 'Failed to fetch locations';
       toast.error(message || 'An unknown error occurred');
     } finally {
-      if (showLoading) setLoading(false);
+      if (showLoading) setLocationsLoading(false);
     }
   };
 
@@ -94,7 +89,7 @@ const Home = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoggedIn, userData, lastLocateTime]);
 
-  if (checkingSession) {
+  if (isCheckingSession) {
     return (
       <div className="dark:bg-fmd-dark-lighter flex min-h-screen items-center justify-center bg-white">
         <Spinner size="lg" />
@@ -103,7 +98,7 @@ const Home = () => {
   }
 
   if (!isLoggedIn) {
-    return <LoginForm onLoginSuccess={login} />;
+    return <LoginForm />;
   }
 
   return (
@@ -114,12 +109,8 @@ const Home = () => {
           {userData && (
             <div className="order-2 w-full lg:order-1 lg:w-80 lg:shrink-0">
               <DevicePanel
-                sessionToken={userData.sessionToken}
-                rsaSigKey={userData.rsaSigKey}
                 onViewPhotos={() => setPhotosOpen(true)}
                 onLocateCommand={() => setLastLocateTime(Date.now())}
-                loadingLocation={loading}
-                locations={locations}
                 currentLocationIndex={currentLocationIndex}
                 onSelectLocation={setCurrentLocationIndex}
               />
@@ -127,25 +118,16 @@ const Home = () => {
           )}
 
           <div className="order-1 min-h-64 flex-1 rounded-lg lg:order-2 lg:min-h-0">
-            <LocationMap
-              locations={locations}
-              currentIndex={currentLocationIndex}
-            />
+            <LocationMap currentIndex={currentLocationIndex} />
           </div>
         </div>
       </div>
 
-      <PhotosModal
-        isOpen={photosOpen}
-        onClose={() => setPhotosOpen(false)}
-        sessionToken={userData?.sessionToken}
-      />
+      <PhotosModal isOpen={photosOpen} onClose={() => setPhotosOpen(false)} />
 
       <SettingsModal
         isOpen={settingsOpen}
         onClose={() => setSettingsOpen(false)}
-        sessionToken={userData?.sessionToken}
-        rsaEncKey={userData?.rsaEncKey}
       />
     </>
   );

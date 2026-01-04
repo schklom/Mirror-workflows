@@ -1,12 +1,16 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Settings, ChevronDown, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { getSession, clearSession } from '@/lib/storage';
-import { clearKeys } from '@/lib/keystore';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { useStore } from '@/lib/store';
 
 interface HeaderProps {
   onSettingsClick?: () => void;
@@ -17,48 +21,7 @@ export const Header = ({
   onSettingsClick,
   showSettings = true,
 }: HeaderProps) => {
-  const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const [fmdId, setFmdId] = useState<string | null>(null);
-  const menuRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleSessionUpdate = () => {
-      const session = getSession();
-      setFmdId(session?.fmdId ?? null);
-    };
-
-    handleSessionUpdate();
-
-    window.addEventListener('session-updated', handleSessionUpdate);
-    window.addEventListener('storage', handleSessionUpdate);
-
-    return () => {
-      window.removeEventListener('session-updated', handleSessionUpdate);
-      window.removeEventListener('storage', handleSessionUpdate);
-    };
-  }, []);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setUserMenuOpen(false);
-      }
-    };
-
-    if (userMenuOpen) {
-      // Delay adding the listener to avoid catching the click that opened the menu
-      setTimeout(() => {
-        document.addEventListener('click', handleClickOutside);
-      }, 0);
-      return () => document.removeEventListener('click', handleClickOutside);
-    }
-  }, [userMenuOpen]);
-
-  const handleLogout = async () => {
-    clearSession();
-    await clearKeys();
-    window.dispatchEvent(new Event('session-updated'));
-  };
+  const { userData, logout } = useStore();
 
   return (
     <header className="dark:bg-fmd-dark flex items-center justify-between border-b border-gray-200 bg-white px-4 py-2 dark:border-gray-800">
@@ -74,7 +37,7 @@ export const Header = ({
           FMD Server
         </h1>
       </Link>
-      {fmdId && (
+      {userData && (
         <div className="flex items-center gap-2">
           {showSettings && onSettingsClick && (
             <Button
@@ -87,43 +50,22 @@ export const Header = ({
               <Settings className="h-5 w-5" />
             </Button>
           )}
-          <div className="relative" ref={menuRef}>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={(e) => {
-                e.stopPropagation();
-                setUserMenuOpen(!userMenuOpen);
-              }}
-              className="gap-2"
-            >
-              <div className="text-right">
-                <div className="text-xs font-semibold">{fmdId}</div>
-              </div>
-              <ChevronDown
-                className={`h-4 w-4 transition-transform ${
-                  userMenuOpen ? 'rotate-180' : ''
-                }`}
-              />
-            </Button>
-
-            {userMenuOpen && (
-              <div className="dark:bg-fmd-dark absolute top-full right-0 z-9999 mt-2 w-40 rounded-lg border border-gray-200 bg-white py-1 shadow-lg dark:border-gray-700">
-                <Button
-                  variant="ghost"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setUserMenuOpen(false);
-                    void handleLogout();
-                  }}
-                  className="w-full justify-center"
-                >
-                  <LogOut className="h-4 w-4" />
-                  Logout
-                </Button>
-              </div>
-            )}
-          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="sm" className="gap-2">
+                <div className="text-right">
+                  <div className="text-xs font-semibold">{userData.fmdId}</div>
+                </div>
+                <ChevronDown className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="z-1000 w-40 bg-white dark:bg-gray-800">
+              <DropdownMenuItem onClick={() => void logout()}>
+                <LogOut className="mr-2 h-4 w-4" />
+                Logout
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       )}
     </header>

@@ -4,23 +4,14 @@ import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import { getSalt, login, getWrappedPrivateKey, getVersion } from '@/lib/api';
 import { hashPasswordForLogin, unwrapPrivateKey } from '@/lib/crypto';
-import { saveSession } from '@/lib/storage';
-import { storeKeys } from '@/lib/keystore';
+import { useStore } from '@/lib/store';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { PasswordInput } from '@/components/PasswordInput';
 import { Checkbox } from '@/components/Checkbox';
 
-interface LoginFormProps {
-  onLoginSuccess: (data: {
-    fmdId: string;
-    rsaEncKey: CryptoKey;
-    rsaSigKey: CryptoKey;
-    sessionToken: string;
-  }) => void;
-}
-
-export const LoginForm = ({ onLoginSuccess }: LoginFormProps) => {
+export const LoginForm = () => {
+  const { setUserData } = useStore();
   const [fmdId, setFmdId] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
@@ -39,6 +30,13 @@ export const LoginForm = ({ onLoginSuccess }: LoginFormProps) => {
 
     try {
       const salt = await getSalt(fmdId);
+
+      if (!salt) {
+        toast.error('Account not found. Please register on FMD Android first.');
+        setLoading(false);
+        return;
+      }
+
       const passwordHash = hashPasswordForLogin(password, salt);
       const sessionDurationSeconds = rememberMe ? 604800 : 0;
       const sessionToken = await login(
@@ -53,17 +51,15 @@ export const LoginForm = ({ onLoginSuccess }: LoginFormProps) => {
         wrappedPrivateKey
       );
 
-      saveSession({ fmdId, sessionToken }, rememberMe);
-      if (rememberMe) {
-        await storeKeys({ rsaEncKey, rsaSigKey });
-      }
-
-      onLoginSuccess({
-        fmdId,
-        rsaEncKey,
-        rsaSigKey,
-        sessionToken,
-      });
+      await setUserData(
+        {
+          fmdId,
+          rsaEncKey,
+          rsaSigKey,
+          sessionToken,
+        },
+        rememberMe
+      );
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Login failed');
     } finally {

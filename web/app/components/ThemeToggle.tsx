@@ -1,19 +1,17 @@
 'use client';
 
 import { Sun, Moon, Monitor } from 'lucide-react';
-import { useTheme } from '@/hooks/useTheme';
+import { useStore, type Theme } from '@/lib/store';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 
 export const ThemeToggle = () => {
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme } = useStore();
 
   return (
     <ToggleGroup
       type="single"
       value={theme}
-      onValueChange={(value) =>
-        value && setTheme(value as 'light' | 'dark' | 'system')
-      }
+      onValueChange={(value) => value && setTheme(value as Theme)}
     >
       <ToggleGroupItem value="light" aria-label="Light mode" className="w-24">
         <Sun className="mr-2 h-4 w-4" />

@@ -1,5 +1,5 @@
-import { clearSession } from './storage';
-import { clearKeys } from './keystore';
+import { logout } from '@/lib/store';
+import { decryptData } from './crypto';
 
 interface DataPackage {
   IDT: string;
@@ -51,8 +51,7 @@ const request = async <T>(endpoint: string, method: string, body: object) => {
     const text = await response.text();
 
     if (response.status === 401) {
-      clearSession();
-      void clearKeys();
+      void logout();
     }
 
     throw new Error(text || 'Request failed');
@@ -123,11 +122,25 @@ export const sendCommand = (
     CmdSig: signature,
   });
 
-export const getPictures = async (sessionToken: string) => {
-  const response = await request<string[]>(ENDPOINTS.PICTURES, HTTP.POST, {
-    IDT: sessionToken,
-  });
-  return response;
+export const getPictures = async (
+  sessionToken: string,
+  rsaEncKey: CryptoKey
+) => {
+  const encryptedPictures = await request<string[]>(
+    ENDPOINTS.PICTURES,
+    HTTP.POST,
+    {
+      IDT: sessionToken,
+    }
+  );
+
+  const decryptedPictures = await Promise.all(
+    encryptedPictures.map((encryptedPic) =>
+      decryptData(rsaEncKey, encryptedPic)
+    )
+  );
+
+  return decryptedPictures;
 };
 
 export const deleteAccount = (sessionToken: string) =>
@@ -143,8 +156,7 @@ export const getPushUrl = async (sessionToken: string) => {
   if (!response.ok) {
     const text = await response.text();
     if (response.status === 401) {
-      clearSession();
-      void clearKeys();
+      void logout();
     }
     throw new Error(text || 'Request failed');
   }

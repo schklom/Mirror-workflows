@@ -1,10 +1,9 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import type * as LeafletType from 'leaflet';
-import type { Location } from '@/lib/api';
-import { getUnitPreference, type UnitSystem } from '@/lib/storage';
-import { convertDistance, convertSpeed, convertAltitude } from '@/lib/units';
+import { useStore } from '@/lib/store';
+import { convertDistance, convertSpeed } from '@/utils/units';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import 'leaflet/dist/leaflet.css';
 
@@ -17,11 +16,11 @@ const formatProvider = (provider: string): string => {
 };
 
 interface LocationMapProps {
-  locations: Location[];
   currentIndex: number;
 }
 
-export const LocationMap = ({ locations, currentIndex }: LocationMapProps) => {
+export const LocationMap = ({ currentIndex }: LocationMapProps) => {
+  const { locations, units } = useStore();
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<LeafletType.Map | null>(null);
   const markerRef = useRef<LeafletType.Marker | null>(null);
@@ -30,13 +29,6 @@ export const LocationMap = ({ locations, currentIndex }: LocationMapProps) => {
   const lastLocationRef = useRef<{ lat: number; lon: number } | null>(null);
   const tileLayerRef = useRef<LeafletType.TileLayer | null>(null);
   const { accentColor } = useThemeColors();
-  const [units, setUnits] = useState<UnitSystem>(() => getUnitPreference());
-
-  useEffect(() => {
-    const handleStorage = () => setUnits(getUnitPreference());
-    window.addEventListener('storage', handleStorage);
-    return () => window.removeEventListener('storage', handleStorage);
-  }, []);
 
   useEffect(() => {
     if (!mapRef.current || typeof window === 'undefined') return;
@@ -72,7 +64,7 @@ export const LocationMap = ({ locations, currentIndex }: LocationMapProps) => {
       if (!mapInstanceRef.current && mapRef.current) {
         mapInstanceRef.current = leafletRef.current
           .map(mapRef.current)
-          .setView([0, 0], 13);
+          .setView([20, 0], 2);
 
         tileLayerRef.current = leafletRef.current
           .tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -135,7 +127,7 @@ export const LocationMap = ({ locations, currentIndex }: LocationMapProps) => {
           <strong>Battery:</strong> ${location.bat}%<br/>
           ${location.provider ? `<strong>Provider:</strong> ${formatProvider(location.provider)}<br/>` : ''}
           ${location.accuracy ? `<strong>Accuracy:</strong> ${convertDistance(location.accuracy, units)}<br/>` : ''}
-          ${location.altitude !== undefined ? `<strong>Altitude:</strong> ${convertAltitude(location.altitude, units)}<br/>` : ''}
+          ${location.altitude !== undefined ? `<strong>Altitude:</strong> ${convertDistance(location.altitude, units)}<br/>` : ''}
           ${location.speed !== undefined ? `<strong>Speed:</strong> ${convertSpeed(location.speed, units)}<br/>` : ''}
           ${location.bearing !== undefined ? `<strong>Bearing:</strong> ${location.bearing.toFixed(0)}°` : ''}
         </div>

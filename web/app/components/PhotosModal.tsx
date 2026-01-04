@@ -1,8 +1,9 @@
 'use client';
 
-import Image from 'next/image';
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { getPictures } from '@/lib/api';
+import { useStore } from '@/lib/store';
 import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -11,25 +12,22 @@ import { Spinner } from '@/components/ui/spinner';
 
 interface PhotosModalProps {
   isOpen: boolean;
-  sessionToken?: string;
   onClose: () => void;
 }
 
-export const PhotosModal = ({
-  isOpen,
-  sessionToken,
-  onClose,
-}: PhotosModalProps) => {
-  const [pictures, setPictures] = useState<string[]>([]);
-  const [loading, setLoading] = useState(false);
+export const PhotosModal = ({ isOpen, onClose }: PhotosModalProps) => {
+  const { userData, pictures, setPictures, isPicturesLoading, setPicturesLoading } = useStore();
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   useEffect(() => {
-    if (isOpen && sessionToken) {
+    if (isOpen && userData) {
       void (async () => {
-        setLoading(true);
+        setPicturesLoading(true);
         try {
-          const pics = await getPictures(sessionToken);
+          const pics = await getPictures(
+            userData.sessionToken,
+            userData.rsaEncKey
+          );
           setPictures(pics);
           setSelectedIndex(pics.length - 1);
         } catch (err) {
@@ -37,28 +35,28 @@ export const PhotosModal = ({
             err instanceof Error ? err.message : 'Failed to load photos'
           );
         } finally {
-          setLoading(false);
+          setPicturesLoading(false);
         }
       })();
     }
-  }, [isOpen, sessionToken]);
+  }, [isOpen, userData, setPictures, setPicturesLoading]);
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-200">
+      <DialogContent className="max-w-6xl">
         <DialogTitle className="sr-only">Device Photos</DialogTitle>
-        <div className="max-h-[80vh] overflow-auto">
-          {loading && (
+        <div className="max-h-[90vh] overflow-auto">
+          {isPicturesLoading && (
             <div className="flex items-center justify-center p-8">
               <Spinner size="lg" />
             </div>
           )}
-          {!loading && pictures.length === 0 && (
-            <div className="p-8 text-center text-white">
+          {!isPicturesLoading && pictures.length === 0 && (
+            <div className="p-8 text-center text-gray-900 dark:text-white">
               No photos available
             </div>
           )}
-          {!loading && pictures.length > 0 && (
+          {!isPicturesLoading && pictures.length > 0 && (
             <div className="flex flex-col gap-4">
               <div className="flex items-center justify-center gap-3">
                 <Button
@@ -73,7 +71,7 @@ export const PhotosModal = ({
                   <ChevronLeft className="h-4 w-4" />
                   Older
                 </Button>
-                <span className="text-sm text-white">
+                <span className="text-sm text-gray-900 dark:text-white">
                   {selectedIndex + 1} of {pictures.length}
                 </span>
                 <Button
@@ -91,14 +89,15 @@ export const PhotosModal = ({
                   <ChevronRight className="h-4 w-4" />
                 </Button>
               </div>
-              <Image
-                src={`data:image/jpeg;base64,${pictures[selectedIndex]}`}
-                alt={`Device capture ${selectedIndex + 1}`}
-                className="max-h-full max-w-full"
-                width={800}
-                height={600}
-                unoptimized
-              />
+              <div className="relative h-[70vh] w-full">
+                <Image
+                  src={`data:image/jpeg;base64,${pictures[selectedIndex]}`}
+                  alt={`Device capture ${selectedIndex + 1}`}
+                  fill
+                  unoptimized
+                  className="rounded object-contain"
+                />
+              </div>
             </div>
           )}
         </div>

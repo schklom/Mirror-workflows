@@ -16,7 +16,13 @@ interface PhotosModalProps {
 }
 
 export const PhotosModal = ({ isOpen, onClose }: PhotosModalProps) => {
-  const { userData, pictures, setPictures, isPicturesLoading, setPicturesLoading } = useStore();
+  const {
+    userData,
+    pictures,
+    setPictures,
+    isPicturesLoading,
+    setPicturesLoading,
+  } = useStore();
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   useEffect(() => {

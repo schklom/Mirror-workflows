@@ -15,7 +15,14 @@ import type { Location } from '@/lib/api';
 import { toast } from 'sonner';
 
 const Home = () => {
-  const { isLoggedIn, userData, isCheckingSession, locations, setLocations, setLocationsLoading } = useStore();
+  const {
+    isLoggedIn,
+    userData,
+    isCheckingSession,
+    locations,
+    setLocations,
+    setLocationsLoading,
+  } = useStore();
   const [currentLocationIndex, setCurrentLocationIndex] = useState(0);
   const [photosOpen, setPhotosOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);

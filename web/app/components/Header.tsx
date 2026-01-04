@@ -59,7 +59,10 @@ export const Header = ({
                 <ChevronDown className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="z-1000 w-40 bg-white dark:bg-gray-800">
+            <DropdownMenuContent
+              align="end"
+              className="z-1000 w-40 bg-white dark:bg-gray-800"
+            >
               <DropdownMenuItem onClick={() => void logout()}>
                 <LogOut className="mr-2 h-4 w-4" />
                 Logout

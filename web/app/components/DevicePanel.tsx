@@ -80,7 +80,15 @@ export const DevicePanel = ({
   currentLocationIndex = 0,
   onSelectLocation,
 }: DevicePanelProps) => {
-  const { userData, locations, isLocationsLoading, pushUrl, setPushUrl, isPushUrlLoading, setPushUrlLoading } = useStore();
+  const {
+    userData,
+    locations,
+    isLocationsLoading,
+    pushUrl,
+    setPushUrl,
+    isPushUrlLoading,
+    setPushUrlLoading,
+  } = useStore();
   const [loading, setLoading] = useState(false);
   const [showFactoryResetConfirm, setShowFactoryResetConfirm] = useState(false);
 

@@ -42,3 +42,5 @@ dist/
 *.tsbuildinfo
 next-env.d.ts
 
+db/fmd.sqlite-wal
+db/fmd.sqlite-shm

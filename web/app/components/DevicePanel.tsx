@@ -70,15 +70,11 @@ const COMMAND_SUCCESS_MESSAGES: Record<string, string> = {
 interface DevicePanelProps {
   onViewPhotos: () => void;
   onLocateCommand?: () => void;
-  currentLocationIndex?: number;
-  onSelectLocation?: (index: number) => void;
 }
 
 export const DevicePanel = ({
   onLocateCommand,
   onViewPhotos,
-  currentLocationIndex = 0,
-  onSelectLocation,
 }: DevicePanelProps) => {
   const {
     userData,
@@ -88,16 +84,24 @@ export const DevicePanel = ({
     setPushUrl,
     isPushUrlLoading,
     setPushUrlLoading,
+    currentLocationIndex,
+    setCurrentLocationIndex,
   } = useStore();
   const [loading, setLoading] = useState(false);
   const [showFactoryResetConfirm, setShowFactoryResetConfirm] = useState(false);
 
   useEffect(() => {
     if (!userData) return;
-    setPushUrlLoading(true);
-    void getPushUrl(userData.sessionToken)
-      .then(setPushUrl)
-      .finally(() => setPushUrlLoading(false));
+    const fetchPushUrl = async () => {
+      setPushUrlLoading(true);
+      try {
+        const url = await getPushUrl(userData.sessionToken);
+        setPushUrl(url);
+      } finally {
+        setPushUrlLoading(false);
+      }
+    };
+    void fetchPushUrl();
   }, [userData, setPushUrl, setPushUrlLoading]);
 
   const executeCommand = async (command: string) => {
@@ -258,14 +262,16 @@ export const DevicePanel = ({
                 </div>
               </div>
             </div>
-            {locations.length > 1 && onSelectLocation && (
+            {locations.length > 1 && (
               <div className="flex gap-2">
                 <Button
                   variant="outline"
                   size="sm"
                   className="flex-1 font-semibold"
                   onClick={() =>
-                    onSelectLocation(Math.max(0, currentLocationIndex - 1))
+                    setCurrentLocationIndex(
+                      Math.max(0, currentLocationIndex - 1)
+                    )
                   }
                   disabled={currentLocationIndex === 0}
                 >
@@ -277,7 +283,7 @@ export const DevicePanel = ({
                   size="sm"
                   className="flex-1 font-semibold"
                   onClick={() =>
-                    onSelectLocation(
+                    setCurrentLocationIndex(
                       Math.min(locations.length - 1, currentLocationIndex + 1)
                     )
                   }

@@ -31,6 +31,7 @@ interface AppState {
   units: UnitSystem;
   pushUrl: string | null;
   locations: Location[];
+  currentLocationIndex: number;
   pictures: string[];
   isPushUrlLoading: boolean;
   isLocationsLoading: boolean;
@@ -42,6 +43,7 @@ interface AppState {
   setUnits: (units: UnitSystem) => void;
   setPushUrl: (url: string | null) => void;
   setLocations: (locations: Location[]) => void;
+  setCurrentLocationIndex: (index: number) => void;
   setPictures: (pictures: string[]) => void;
   setPushUrlLoading: (loading: boolean) => void;
   setLocationsLoading: (loading: boolean) => void;
@@ -74,6 +76,7 @@ export const useStore = create<AppState>()(
       units: 'metric',
       pushUrl: null,
       locations: [],
+      currentLocationIndex: 0,
       pictures: [],
       isPushUrlLoading: false,
       isLocationsLoading: false,
@@ -137,6 +140,10 @@ export const useStore = create<AppState>()(
 
       setLocations: (locations: Location[]) => {
         set({ locations });
+      },
+
+      setCurrentLocationIndex: (currentLocationIndex: number) => {
+        set({ currentLocationIndex });
       },
 
       setPictures: (pictures: string[]) => {

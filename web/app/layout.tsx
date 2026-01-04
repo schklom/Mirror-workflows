@@ -33,7 +33,7 @@ const RootLayout = ({ children }: RootLayoutProps) => (
     </head>
     <body>
       {children}
-      <Toaster position="top-right" />
+      <Toaster position="top-right" richColors closeButton expand />
     </body>
   </html>
 );

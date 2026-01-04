@@ -15,12 +15,8 @@ const formatProvider = (provider: string): string => {
   return providerMap[provider] ?? provider;
 };
 
-interface LocationMapProps {
-  currentIndex: number;
-}
-
-export const LocationMap = ({ currentIndex }: LocationMapProps) => {
-  const { locations, units } = useStore();
+export const LocationMap = () => {
+  const { locations, units, currentLocationIndex } = useStore();
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<LeafletType.Map | null>(null);
   const markerRef = useRef<LeafletType.Marker | null>(null);
@@ -98,7 +94,7 @@ export const LocationMap = ({ currentIndex }: LocationMapProps) => {
     )
       return;
 
-    const location = locations[currentIndex];
+    const location = locations[currentLocationIndex];
     if (!location) return;
 
     const { lat, lon } = location;
@@ -159,7 +155,7 @@ export const LocationMap = ({ currentIndex }: LocationMapProps) => {
       lastLocationRef.current = { lat, lon };
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentIndex, units]);
+  }, [currentLocationIndex, units]);
 
   return (
     <div className="bg-fmd-light dark:bg-fmd-dark flex h-full w-full flex-col rounded-lg">

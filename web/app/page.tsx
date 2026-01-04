@@ -22,8 +22,8 @@ const Home = () => {
     locations,
     setLocations,
     setLocationsLoading,
+    setCurrentLocationIndex,
   } = useStore();
-  const [currentLocationIndex, setCurrentLocationIndex] = useState(0);
   const [photosOpen, setPhotosOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [lastLocateTime, setLastLocateTime] = useState<number | null>(null);
@@ -118,14 +118,12 @@ const Home = () => {
               <DevicePanel
                 onViewPhotos={() => setPhotosOpen(true)}
                 onLocateCommand={() => setLastLocateTime(Date.now())}
-                currentLocationIndex={currentLocationIndex}
-                onSelectLocation={setCurrentLocationIndex}
               />
             </div>
           )}
 
           <div className="order-1 min-h-64 flex-1 rounded-lg lg:order-2 lg:min-h-0">
-            <LocationMap currentIndex={currentLocationIndex} />
+            <LocationMap />
           </div>
         </div>
       </div>

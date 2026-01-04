@@ -84,6 +84,23 @@ const eslintConfig = defineConfig([
           ],
         },
       ],
+      // Ban .then/.catch - use async/await instead
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: 'CallExpression[callee.property.name="then"]',
+          message: 'Use async/await instead of .then()',
+        },
+        {
+          selector: 'CallExpression[callee.property.name="catch"]',
+          message: 'Use try/catch with async/await instead of .catch()',
+        },
+        {
+          selector: 'CallExpression[callee.property.name="finally"]',
+          message:
+            'Use try/catch/finally with async/await instead of .finally()',
+        },
+      ],
     },
   },
   {

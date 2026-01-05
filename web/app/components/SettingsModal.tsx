@@ -25,7 +25,7 @@ interface SettingsModalProps {
 }
 
 export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
-  const { userData, units, setUnits } = useStore();
+  const { userData, units } = useStore();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const handleExport = async () => {
@@ -91,7 +91,7 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
                 type="single"
                 value={units}
                 onValueChange={(value) =>
-                  value && setUnits(value as UnitSystem)
+                  value && useStore.setState({ units: value as UnitSystem })
                 }
               >
                 <ToggleGroupItem value="metric">Metric</ToggleGroupItem>

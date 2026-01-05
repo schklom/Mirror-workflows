@@ -24,11 +24,12 @@ import {
 import { ConfirmModal } from '@/components/ConfirmModal';
 import { ActionItem } from '@/components/ActionItem';
 import { BatteryIndicator } from '@/components/BatteryIndicator';
+import { PasswordInput } from '@/components/PasswordInput';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
 
 const COMMANDS = {
-  LOCATE_ALL: 'locate',
+  LOCATE_ALL: 'locate all',
   LOCATE_GPS: 'locate gps',
   LOCATE_CELL: 'locate cell',
   LOCATE_LAST: 'locate last',
@@ -81,28 +82,28 @@ export const DevicePanel = ({
     locations,
     isLocationsLoading,
     pushUrl,
-    setPushUrl,
     isPushUrlLoading,
-    setPushUrlLoading,
     currentLocationIndex,
-    setCurrentLocationIndex,
   } = useStore();
   const [loading, setLoading] = useState(false);
   const [showFactoryResetConfirm, setShowFactoryResetConfirm] = useState(false);
+  const [deletePin, setDeletePin] = useState('');
 
   useEffect(() => {
     if (!userData) return;
     const fetchPushUrl = async () => {
-      setPushUrlLoading(true);
+      useStore.setState({ isPushUrlLoading: true });
       try {
         const url = await getPushUrl(userData.sessionToken);
-        setPushUrl(url);
+        useStore.setState({ pushUrl: url });
+      } catch {
+        useStore.setState({ pushUrl: null });
       } finally {
-        setPushUrlLoading(false);
+        useStore.setState({ isPushUrlLoading: false });
       }
     };
     void fetchPushUrl();
-  }, [userData, setPushUrl, setPushUrlLoading]);
+  }, [userData]);
 
   const executeCommand = async (command: string) => {
     if (!userData) return;
@@ -269,9 +270,12 @@ export const DevicePanel = ({
                   size="sm"
                   className="flex-1 font-semibold"
                   onClick={() =>
-                    setCurrentLocationIndex(
-                      Math.max(0, currentLocationIndex - 1)
-                    )
+                    useStore.setState({
+                      currentLocationIndex: Math.max(
+                        0,
+                        currentLocationIndex - 1
+                      ),
+                    })
                   }
                   disabled={currentLocationIndex === 0}
                 >
@@ -283,9 +287,12 @@ export const DevicePanel = ({
                   size="sm"
                   className="flex-1 font-semibold"
                   onClick={() =>
-                    setCurrentLocationIndex(
-                      Math.min(locations.length - 1, currentLocationIndex + 1)
-                    )
+                    useStore.setState({
+                      currentLocationIndex: Math.min(
+                        locations.length - 1,
+                        currentLocationIndex + 1
+                      ),
+                    })
                   }
                   disabled={currentLocationIndex === locations.length - 1}
                 >
@@ -330,12 +337,35 @@ export const DevicePanel = ({
 
       <ConfirmModal
         isOpen={showFactoryResetConfirm}
-        onClose={() => setShowFactoryResetConfirm(false)}
-        onConfirm={() => void executeCommand(COMMANDS.DELETE)}
+        onClose={() => {
+          setShowFactoryResetConfirm(false);
+          setDeletePin('');
+        }}
+        onConfirm={() => {
+          if (deletePin.trim()) {
+            void executeCommand(`delete ${deletePin.trim()}`);
+            setDeletePin('');
+          } else {
+            toast.error('Please enter your device PIN');
+          }
+        }}
         title="Factory Reset Device?"
         message="This will permanently delete all data from your device and restore it to factory settings. This action cannot be undone."
         confirmText="Factory Reset"
-      />
+        confirmDisabled={!deletePin.trim()}
+      >
+        <PasswordInput
+          id="delete-pin"
+          value={deletePin}
+          onChange={(e) => setDeletePin(e.target.value)}
+          placeholder="Enter your device PIN"
+          autoComplete="off"
+        />
+        <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+          This is the PIN configured in your FMD Android app, not your server
+          password.
+        </p>
+      </ConfirmModal>
     </div>
   );
 };

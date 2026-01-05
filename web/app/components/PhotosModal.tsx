@@ -16,36 +16,30 @@ interface PhotosModalProps {
 }
 
 export const PhotosModal = ({ isOpen, onClose }: PhotosModalProps) => {
-  const {
-    userData,
-    pictures,
-    setPictures,
-    isPicturesLoading,
-    setPicturesLoading,
-  } = useStore();
+  const { userData, pictures, isPicturesLoading } = useStore();
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   useEffect(() => {
     if (isOpen && userData) {
       void (async () => {
-        setPicturesLoading(true);
+        useStore.setState({ isPicturesLoading: true });
         try {
           const pics = await getPictures(
             userData.sessionToken,
             userData.rsaEncKey
           );
-          setPictures(pics);
+          useStore.setState({ pictures: pics });
           setSelectedIndex(pics.length - 1);
         } catch (err) {
           toast.error(
             err instanceof Error ? err.message : 'Failed to load photos'
           );
         } finally {
-          setPicturesLoading(false);
+          useStore.setState({ isPicturesLoading: false });
         }
       })();
     }
-  }, [isOpen, userData, setPictures, setPicturesLoading]);
+  }, [isOpen, userData]);
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>

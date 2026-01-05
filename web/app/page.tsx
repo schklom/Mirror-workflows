@@ -15,15 +15,7 @@ import type { Location } from '@/lib/api';
 import { toast } from 'sonner';
 
 const Home = () => {
-  const {
-    isLoggedIn,
-    userData,
-    isCheckingSession,
-    locations,
-    setLocations,
-    setLocationsLoading,
-    setCurrentLocationIndex,
-  } = useStore();
+  const { isLoggedIn, userData, wasAuthChecked, locations } = useStore();
   const [photosOpen, setPhotosOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [lastLocateTime, setLastLocateTime] = useState<number | null>(null);
@@ -31,7 +23,7 @@ const Home = () => {
   const fetchLocations = async (showLoading = true) => {
     if (!userData) return;
 
-    if (showLoading) setLocationsLoading(true);
+    if (showLoading) useStore.setState({ isLocationsLoading: true });
     try {
       const encryptedLocations = await getLocations(userData.sessionToken);
 
@@ -49,16 +41,18 @@ const Home = () => {
       const hasNewLocations = decryptedLocations.length > locations.length;
 
       if (isFirstLoad || hasNewLocations) {
-        setCurrentLocationIndex(decryptedLocations.length - 1);
+        useStore.setState({
+          currentLocationIndex: decryptedLocations.length - 1,
+        });
       }
 
-      setLocations(decryptedLocations);
+      useStore.setState({ locations: decryptedLocations });
     } catch (error) {
       const message =
         error instanceof Error ? error.message : 'Failed to fetch locations';
       toast.error(message || 'An unknown error occurred');
     } finally {
-      if (showLoading) setLocationsLoading(false);
+      if (showLoading) useStore.setState({ isLocationsLoading: false });
     }
   };
 
@@ -96,7 +90,7 @@ const Home = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoggedIn, userData, lastLocateTime]);
 
-  if (isCheckingSession) {
+  if (!wasAuthChecked) {
     return (
       <div className="dark:bg-fmd-dark-lighter flex min-h-screen items-center justify-center bg-white">
         <Spinner size="lg" />

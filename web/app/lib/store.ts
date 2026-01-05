@@ -1,11 +1,9 @@
 'use client';
 
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import { getKeys, storeKeys, clearKeys } from '@/lib/keystore';
+import { persist, createJSONStorage } from 'zustand/middleware';
+import { storeKeys, clearKeys, getKeys } from '@/lib/keystore';
 import type { Location } from '@/lib/api';
-
-const SESSION_KEY = 'fmd_session';
 
 export type Theme = 'light' | 'dark' | 'system';
 export type UnitSystem = 'metric' | 'imperial';
@@ -17,16 +15,10 @@ interface UserData {
   rsaSigKey: CryptoKey;
 }
 
-interface PersistedAuthState {
-  fmdId: string;
-  sessionToken: string;
-  persistent: boolean;
-}
-
 interface AppState {
   isLoggedIn: boolean;
   userData: UserData | null;
-  isCheckingSession: boolean;
+  wasAuthChecked: boolean;
   theme: Theme;
   units: UnitSystem;
   pushUrl: string | null;
@@ -39,39 +31,18 @@ interface AppState {
 
   setUserData: (data: UserData, persistent: boolean) => Promise<void>;
   logout: () => Promise<void>;
+  restoreAuth: () => Promise<void>;
   setTheme: (theme: Theme) => void;
-  setUnits: (units: UnitSystem) => void;
-  setPushUrl: (url: string | null) => void;
-  setLocations: (locations: Location[]) => void;
-  setCurrentLocationIndex: (index: number) => void;
-  setPictures: (pictures: string[]) => void;
-  setPushUrlLoading: (loading: boolean) => void;
-  setLocationsLoading: (loading: boolean) => void;
-  setPicturesLoading: (loading: boolean) => void;
 }
 
-const applyTheme = (theme: Theme) => {
-  if (typeof window === 'undefined') return;
-
-  const root = document.documentElement;
-  const isDark =
-    theme === 'dark' ||
-    (theme === 'system' &&
-      window.matchMedia('(prefers-color-scheme: dark)').matches);
-
-  if (isDark) {
-    root.classList.add('dark');
-  } else {
-    root.classList.remove('dark');
-  }
-};
+const AUTH_KEY = 'fmd-auth';
 
 export const useStore = create<AppState>()(
   persist(
     (set) => ({
       isLoggedIn: false,
       userData: null,
-      isCheckingSession: true,
+      wasAuthChecked: false,
       theme: 'system',
       units: 'metric',
       pushUrl: null,
@@ -89,81 +60,76 @@ export const useStore = create<AppState>()(
             rsaSigKey: data.rsaSigKey,
           });
 
-          const authState: PersistedAuthState = {
-            fmdId: data.fmdId,
-            sessionToken: data.sessionToken,
-            persistent: true,
-          };
-          localStorage.setItem(SESSION_KEY, JSON.stringify(authState));
-        } else {
-          const authState: PersistedAuthState = {
-            fmdId: data.fmdId,
-            sessionToken: data.sessionToken,
-            persistent: false,
-          };
-          sessionStorage.setItem(SESSION_KEY, JSON.stringify(authState));
+          localStorage.setItem(
+            AUTH_KEY,
+            JSON.stringify({
+              fmdId: data.fmdId,
+              sessionToken: data.sessionToken,
+            })
+          );
         }
 
-        set({ userData: data, isLoggedIn: true });
+        set({
+          userData: data,
+          isLoggedIn: true,
+        });
       },
 
       logout: async () => {
+        localStorage.removeItem(AUTH_KEY);
+        await clearKeys();
+        set({
+          userData: null,
+          isLoggedIn: false,
+          pushUrl: null,
+          locations: [],
+          pictures: [],
+        });
+      },
+
+      restoreAuth: async () => {
         try {
-          localStorage.removeItem(SESSION_KEY);
-          sessionStorage.removeItem(SESSION_KEY);
-          await clearKeys();
+          const authData = localStorage.getItem(AUTH_KEY);
+          if (!authData) return;
+
+          const parsed = JSON.parse(authData) as {
+            fmdId: string;
+            sessionToken: string;
+          };
+          const keys = await getKeys();
+
+          if (keys) {
+            set({
+              userData: {
+                fmdId: parsed.fmdId,
+                sessionToken: parsed.sessionToken,
+                rsaEncKey: keys.rsaEncKey,
+                rsaSigKey: keys.rsaSigKey,
+              },
+              isLoggedIn: true,
+            });
+          }
         } catch {
-          // Ignore errors during logout
+          localStorage.removeItem(AUTH_KEY);
+          await clearKeys();
         } finally {
-          set({
-            userData: null,
-            isLoggedIn: false,
-            pushUrl: null,
-            locations: [],
-            pictures: [],
-          });
+          set({ wasAuthChecked: true });
         }
       },
 
       setTheme: (theme: Theme) => {
         set({ theme });
-        applyTheme(theme);
-      },
 
-      setUnits: (units: UnitSystem) => {
-        set({ units });
-      },
-
-      setPushUrl: (pushUrl: string | null) => {
-        set({ pushUrl });
-      },
-
-      setLocations: (locations: Location[]) => {
-        set({ locations });
-      },
-
-      setCurrentLocationIndex: (currentLocationIndex: number) => {
-        set({ currentLocationIndex });
-      },
-
-      setPictures: (pictures: string[]) => {
-        set({ pictures });
-      },
-
-      setPushUrlLoading: (isPushUrlLoading: boolean) => {
-        set({ isPushUrlLoading });
-      },
-
-      setLocationsLoading: (isLocationsLoading: boolean) => {
-        set({ isLocationsLoading });
-      },
-
-      setPicturesLoading: (isPicturesLoading: boolean) => {
-        set({ isPicturesLoading });
+        const isDark =
+          theme === 'dark' ||
+          (theme === 'system' &&
+            window.matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.classList.toggle('dark', isDark);
       },
     }),
     {
       name: 'fmd-storage',
+      storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         theme: state.theme,
         units: state.units,
@@ -173,59 +139,3 @@ export const useStore = create<AppState>()(
 );
 
 export const logout = () => useStore.getState().logout();
-
-if (typeof window !== 'undefined') {
-  const state = useStore.getState();
-  applyTheme(state.theme);
-
-  void (async () => {
-    try {
-      const fromLocal = localStorage.getItem(SESSION_KEY);
-      const fromSession = sessionStorage.getItem(SESSION_KEY);
-      const raw = fromLocal || fromSession;
-
-      if (!raw) {
-        useStore.setState({ isCheckingSession: false });
-        return;
-      }
-
-      const session = JSON.parse(raw) as PersistedAuthState;
-
-      if (session.persistent) {
-        const keys = await getKeys();
-
-        if (keys) {
-          useStore.setState({
-            userData: {
-              fmdId: session.fmdId,
-              sessionToken: session.sessionToken,
-              rsaEncKey: keys.rsaEncKey,
-              rsaSigKey: keys.rsaSigKey,
-            },
-            isLoggedIn: true,
-            isCheckingSession: false,
-          });
-        } else {
-          localStorage.removeItem(SESSION_KEY);
-          useStore.setState({ isCheckingSession: false });
-        }
-      } else {
-        sessionStorage.removeItem(SESSION_KEY);
-        useStore.setState({ isCheckingSession: false });
-      }
-    } catch {
-      localStorage.removeItem(SESSION_KEY);
-      sessionStorage.removeItem(SESSION_KEY);
-      await clearKeys();
-      useStore.setState({ isCheckingSession: false });
-    }
-  })();
-
-  const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-  mediaQuery.addEventListener('change', () => {
-    const currentTheme = useStore.getState().theme;
-    if (currentTheme === 'system') {
-      applyTheme('system');
-    }
-  });
-}

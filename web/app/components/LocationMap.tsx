@@ -1,10 +1,12 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type * as LeafletType from 'leaflet';
 import { useStore } from '@/lib/store';
 import { convertDistance, convertSpeed } from '@/utils/units';
 import { useThemeColors } from '@/hooks/useThemeColors';
+import { Spinner } from '@/components/ui/spinner';
+
 import 'leaflet/dist/leaflet.css';
 
 const formatProvider = (provider: string): string => {
@@ -15,8 +17,23 @@ const formatProvider = (provider: string): string => {
   return providerMap[provider] ?? provider;
 };
 
+const calculateZoomLevel = (accuracy?: number): number => {
+  if (!accuracy) return 16;
+
+  // accuracy < 100m: zoom 16-17 (street level)
+  // accuracy 100-500m: zoom 14-15
+  // accuracy 500-2000m: zoom 12-13
+  // accuracy > 2000m: zoom 10-11
+  const zoom = Math.max(
+    10,
+    Math.min(17, 17 - Math.floor(Math.log2(accuracy / 100)))
+  );
+  return zoom;
+};
+
 export const LocationMap = () => {
-  const { locations, units, currentLocationIndex } = useStore();
+  const { locations, units, currentLocationIndex, isLocationsLoading } =
+    useStore();
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<LeafletType.Map | null>(null);
   const markerRef = useRef<LeafletType.Marker | null>(null);
@@ -25,9 +42,12 @@ export const LocationMap = () => {
   const lastLocationRef = useRef<{ lat: number; lon: number } | null>(null);
   const tileLayerRef = useRef<LeafletType.TileLayer | null>(null);
   const { accentColor } = useThemeColors();
+  const [mapReady, setMapReady] = useState(false);
 
   useEffect(() => {
-    if (!mapRef.current || typeof window === 'undefined') return;
+    if (!mapRef.current || mapInstanceRef.current || isLocationsLoading) {
+      return;
+    }
 
     const loadLeaflet = async () => {
       if (!leafletRef.current) {
@@ -58,9 +78,17 @@ export const LocationMap = () => {
       }
 
       if (!mapInstanceRef.current && mapRef.current) {
+        const firstLocation = locations[0];
+        const initialView: [number, number] = firstLocation
+          ? [firstLocation.lat, firstLocation.lon]
+          : [20, 0];
+        const initialZoom = firstLocation
+          ? calculateZoomLevel(firstLocation.accuracy)
+          : 2;
+
         mapInstanceRef.current = leafletRef.current
           .map(mapRef.current)
-          .setView([20, 0], 2);
+          .setView(initialView, initialZoom);
 
         tileLayerRef.current = leafletRef.current
           .tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -73,6 +101,8 @@ export const LocationMap = () => {
         if (mapInstanceRef.current.attributionControl) {
           mapInstanceRef.current.attributionControl.setPrefix('');
         }
+
+        setMapReady(true);
       }
     };
 
@@ -84,7 +114,9 @@ export const LocationMap = () => {
         mapInstanceRef.current = null;
       }
     };
-  }, []);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLocationsLoading]);
 
   useEffect(() => {
     if (
@@ -98,10 +130,14 @@ export const LocationMap = () => {
     if (!location) return;
 
     const { lat, lon } = location;
+
+    // Force update if this is the first location (map was initialized at default position)
+    const isFirstLocation = lastLocationRef.current === null;
     const locationChanged =
-      !lastLocationRef.current ||
-      lastLocationRef.current.lat !== lat ||
-      lastLocationRef.current.lon !== lon;
+      isFirstLocation ||
+      (lastLocationRef.current !== null &&
+        (lastLocationRef.current.lat !== lat ||
+          lastLocationRef.current.lon !== lon));
 
     if (markerRef.current) {
       markerRef.current.remove();
@@ -151,15 +187,20 @@ export const LocationMap = () => {
     }
 
     if (locationChanged) {
-      mapInstanceRef.current.setView([lat, lon], 16);
+      const zoom = calculateZoomLevel(location.accuracy);
+      mapInstanceRef.current.setView([lat, lon], zoom);
       lastLocationRef.current = { lat, lon };
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentLocationIndex, units]);
+  }, [currentLocationIndex, units, locations, accentColor, mapReady]);
 
   return (
-    <div className="bg-fmd-light dark:bg-fmd-dark flex h-full w-full flex-col rounded-lg">
+    <div className="bg-fmd-light dark:bg-fmd-dark relative flex h-full w-full flex-col rounded-lg">
       <div ref={mapRef} className="relative flex-1" />
+      {isLocationsLoading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-white/80 dark:bg-gray-900/80">
+          <Spinner />
+        </div>
+      )}
     </div>
   );
 };

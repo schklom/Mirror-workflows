@@ -119,7 +119,14 @@ const eslintConfig = defineConfig([
       'sonarjs/prefer-read-only-props': 'off', // Props aren't marked readonly
     },
   },
-  globalIgnores(['.next/**', 'out/**', 'build/**', 'next-env.d.ts', 'dist/**']),
+  globalIgnores([
+    '.next/**',
+    'out/**',
+    'build/**',
+    'next-env.d.ts',
+    'dist/**',
+    'public/**',
+  ]),
 ]);
 
 export default eslintConfig;

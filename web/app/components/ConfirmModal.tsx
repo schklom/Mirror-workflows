@@ -1,5 +1,6 @@
 'use client';
 
+import { ReactNode } from 'react';
 import { AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -20,6 +21,8 @@ interface ConfirmModalProps {
   confirmText?: string;
   cancelText?: string;
   variant?: 'destructive' | 'default';
+  children?: ReactNode;
+  confirmDisabled?: boolean;
 }
 
 export const ConfirmModal = ({
@@ -31,6 +34,8 @@ export const ConfirmModal = ({
   confirmText = 'Confirm',
   cancelText = 'Cancel',
   variant = 'destructive',
+  children,
+  confirmDisabled = false,
 }: ConfirmModalProps) => (
   <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
     <DialogContent className="sm:max-w-md">
@@ -43,6 +48,7 @@ export const ConfirmModal = ({
         </div>
         <DialogDescription>{message}</DialogDescription>
       </DialogHeader>
+      {children && <div className="py-4">{children}</div>}
       <DialogFooter className="gap-3 sm:gap-3">
         <Button onClick={onClose} variant="outline" className="flex-1">
           {cancelText}
@@ -54,6 +60,7 @@ export const ConfirmModal = ({
           }}
           variant={variant}
           className="flex-1"
+          disabled={confirmDisabled}
         >
           {confirmText}
         </Button>

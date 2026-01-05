@@ -6,7 +6,7 @@ interface DataPackage {
   Data: string;
 }
 
-const API_BASE = '/api/v1';
+const API_BASE = 'api/v1';
 
 const ENDPOINTS = {
   SALT: `${API_BASE}/salt`,
@@ -147,7 +147,7 @@ export const deleteAccount = (sessionToken: string) =>
   request(ENDPOINTS.DEVICE, HTTP.POST, { IDT: sessionToken, Data: '' });
 
 export const getPushUrl = async (sessionToken: string) => {
-  const response = await fetch(`${API_BASE}/push`, {
+  const response = await fetch(ENDPOINTS.PUSH, {
     method: HTTP.POST,
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ IDT: sessionToken, Data: '' }),

@@ -1,8 +1,6 @@
-.next
-dist
-node_modules
-
 .next/
+dist/
+node_modules/
 out/
 
 pnpm-lock.yaml

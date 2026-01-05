@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Toaster } from 'sonner';
+import { ClientLayout } from '@/components/ClientLayout';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -14,6 +14,8 @@ interface RootLayoutProps {
 const RootLayout = ({ children }: RootLayoutProps) => (
   <html lang="en" suppressHydrationWarning>
     <head>
+      {/* Inline theme script to prevent FOUC. Must run before body renders.
+          Using inline script since CSP already requires 'unsafe-inline' for Next.js. */}
       <script
         dangerouslySetInnerHTML={{
           __html: `
@@ -32,8 +34,7 @@ const RootLayout = ({ children }: RootLayoutProps) => (
       />
     </head>
     <body>
-      {children}
-      <Toaster position="top-right" richColors closeButton expand />
+      <ClientLayout>{children}</ClientLayout>
     </body>
   </html>
 );

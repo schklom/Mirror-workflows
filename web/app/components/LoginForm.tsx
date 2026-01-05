@@ -19,15 +19,14 @@ export const LoginForm = () => {
   const [version, setVersion] = useState('');
 
   useEffect(() => {
-    const fetchVersion = async () => {
+    void (async () => {
       try {
-        const v = await getVersion();
-        setVersion(v);
+        const ver = await getVersion();
+        setVersion(ver);
       } catch {
-        // Ignore version fetch errors
+        // Failed to fetch version, ignore
       }
-    };
-    void fetchVersion();
+    })();
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {

@@ -8,10 +8,8 @@ import { PhotosModal } from '@/components/PhotosModal';
 import { SettingsModal } from '@/components/SettingsModal';
 import { Header } from '@/components/Header';
 import { Spinner } from '@/components/ui/spinner';
-import { getLocations } from '@/lib/api';
-import { decryptData } from '@/lib/crypto';
+import { getLocations, decryptLocations } from '@/lib/api';
 import { useStore } from '@/lib/store';
-import type { Location } from '@/lib/api';
 import { toast } from 'sonner';
 
 const Home = () => {
@@ -26,15 +24,9 @@ const Home = () => {
     if (showLoading) useStore.setState({ isLocationsLoading: true });
     try {
       const encryptedLocations = await getLocations(userData.sessionToken);
-
-      const decryptedLocations = await Promise.all(
-        encryptedLocations.map(async (encryptedLoc) => {
-          const decrypted = await decryptData(
-            userData.rsaEncKey,
-            encryptedLoc.Position
-          );
-          return JSON.parse(decrypted) as Location;
-        })
+      const decryptedLocations = await decryptLocations(
+        encryptedLocations,
+        userData.rsaEncKey
       );
 
       const isFirstLoad = locations.length === 0;

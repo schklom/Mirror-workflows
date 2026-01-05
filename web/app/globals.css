@@ -23,6 +23,14 @@
     @apply h-full scroll-smooth;
   }
 
+  html:not(.dark) {
+    color-scheme: light;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
   body {
     @apply h-full font-sans;
     @apply bg-fmd-light text-gray-900;

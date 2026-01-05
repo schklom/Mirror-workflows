@@ -5,8 +5,7 @@ import Image from 'next/image';
 import { ExternalLink, Shield } from 'lucide-react';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { toast } from 'sonner';
-import { deleteAccount, getLocations } from '@/lib/api';
-import { decryptData } from '@/lib/crypto';
+import { deleteAccount, getLocations, decryptLocations } from '@/lib/api';
 import { useStore, logout, type UnitSystem } from '@/lib/store';
 import {
   Dialog,
@@ -36,14 +35,9 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
 
     try {
       const encryptedLocations = await getLocations(userData.sessionToken);
-      const decryptedLocations = await Promise.all(
-        encryptedLocations.map(async (encryptedLoc) => {
-          const decrypted = await decryptData(
-            userData.rsaEncKey,
-            encryptedLoc.Position
-          );
-          return JSON.parse(decrypted) as unknown;
-        })
+      const decryptedLocations = await decryptLocations(
+        encryptedLocations,
+        userData.rsaEncKey
       );
 
       const dataStr = JSON.stringify(decryptedLocations, null, 2);

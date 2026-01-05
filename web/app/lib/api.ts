@@ -8,7 +8,7 @@ interface DataPackage {
 
 const API_BASE = 'api/v1';
 
-const ENDPOINTS = {
+export const ENDPOINTS = {
   SALT: `${API_BASE}/salt`,
   REQUEST_ACCESS: `${API_BASE}/requestAccess`,
   PRIVATE_KEY: `${API_BASE}/key`,
@@ -25,7 +25,10 @@ const ENDPOINTS = {
 const HTTP = {
   POST: 'POST',
   PUT: 'PUT',
+  GET: 'GET',
 } as const;
+
+const JSON_HEADER = { 'Content-Type': 'application/json' } as const;
 
 export interface Location {
   lat: number;
@@ -43,7 +46,7 @@ export interface Location {
 const request = async <T>(endpoint: string, method: string, body: object) => {
   const response = await fetch(endpoint, {
     method,
-    headers: { 'Content-Type': 'application/json' },
+    headers: JSON_HEADER,
     body: JSON.stringify(body),
   });
 
@@ -109,6 +112,17 @@ export const getLocations = async (sessionToken: string) => {
   });
 };
 
+export const decryptLocations = async (
+  encryptedLocations: { Position: string }[],
+  rsaEncKey: CryptoKey
+) =>
+  Promise.all(
+    encryptedLocations.map(async (encryptedLoc) => {
+      const decrypted = await decryptData(rsaEncKey, encryptedLoc.Position);
+      return JSON.parse(decrypted) as Location;
+    })
+  );
+
 export const sendCommand = (
   sessionToken: string,
   command: string,
@@ -149,7 +163,7 @@ export const deleteAccount = (sessionToken: string) =>
 export const getPushUrl = async (sessionToken: string) => {
   const response = await fetch(ENDPOINTS.PUSH, {
     method: HTTP.POST,
-    headers: { 'Content-Type': 'application/json' },
+    headers: JSON_HEADER,
     body: JSON.stringify({ IDT: sessionToken, Data: '' }),
   });
 

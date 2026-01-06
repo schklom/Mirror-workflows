@@ -36,11 +36,8 @@ cmd/test/web
 # Node / Frontend
 node_modules/
 dist/
-.next/
 .env.local
-.DS_Store
 *.tsbuildinfo
-next-env.d.ts
 
 db/fmd.sqlite-wal
 db/fmd.sqlite-shm

@@ -1,6 +1,6 @@
 # FMD Server Web
 
-Modern web interface for FMD Server built with Next.js, TypeScript, and Tailwind CSS.
+Modern web interface for FMD Server built with React, TypeScript, Vite and Tailwind.
 
 ## Requirements
 
@@ -28,13 +28,13 @@ Start the Go backend (in project root):
 cd .. && go run . serve
 ```
 
-In another terminal, start Next.js dev server:
+In another terminal, start Vite dev server:
 
 ```bash
 pnpm dev
 ```
 
-Next.js will proxy `/api/v1/*` requests to the Go server on port 8080.
+Vite will proxy `/api/v1/*` requests to the Go server on port 8080.
 
 You can also proxy to an external server for testing by modifying the proxy configuration:
 

@@ -39,7 +39,6 @@ export GOOS=linux
 # Build web frontend first (required for Go embed)
 echo "Building web frontend..."
 pushd web
-export NEXT_TELEMETRY_DISABLED=1
 export NODE_ENV=production
 pnpm install --frozen-lockfile
 pnpm build

@@ -15,6 +15,7 @@ export const ThemeToggle = () => {
         <Sun className="mr-2 h-4 w-4" />
         Light
       </ToggleGroupItem>
+
       <ToggleGroupItem
         value="system"
         aria-label="System theme"
@@ -23,6 +24,7 @@ export const ThemeToggle = () => {
         <Monitor className="mr-2 h-4 w-4" />
         System
       </ToggleGroupItem>
+
       <ToggleGroupItem value="dark" aria-label="Dark mode" className="w-24">
         <Moon className="mr-2 h-4 w-4" />
         Dark

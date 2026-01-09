@@ -82,7 +82,7 @@ export const Home = () => {
 
   if (!wasAuthRestoreTried) {
     return (
-      <div className="dark:bg-fmd-dark-lighter flex min-h-screen items-center justify-center bg-white">
+      <div className="dark:bg-fmd-dark-lighter flex min-h-screen items-center justify-center bg-gray-50">
         <Spinner size="lg" />
       </div>
     );
@@ -90,7 +90,7 @@ export const Home = () => {
 
   if (!isLoggedIn) {
     return (
-      <div className="dark:bg-fmd-dark-lighter flex min-h-screen items-center justify-center bg-white">
+      <div className="dark:bg-fmd-dark-lighter flex min-h-screen items-center justify-center bg-gray-50">
         <LoginForm />
       </div>
     );
@@ -99,10 +99,11 @@ export const Home = () => {
   return (
     <>
       <Header onSettingsClick={() => setSettingsOpen(true)} />
+
       <div className="dark:bg-fmd-dark-lighter flex h-[calc(100vh-3.1rem)] flex-col bg-gray-50 text-gray-900 dark:text-white">
         <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-4 lg:flex-row lg:overflow-hidden">
           {userData && (
-            <div className="order-2 w-full lg:order-1 lg:w-80 lg:shrink-0">
+            <div className="order-2 w-full lg:order-1 lg:w-100 lg:shrink-0">
               <DevicePanel
                 onViewPhotos={() => setPhotosOpen(true)}
                 onLocateCommand={() => setLastLocateTime(Date.now())}
@@ -110,7 +111,7 @@ export const Home = () => {
             </div>
           )}
 
-          <div className="order-1 min-h-64 flex-1 rounded-lg lg:order-2 lg:min-h-0">
+          <div className="order-1 min-h-72 flex-1 rounded-lg lg:order-2 lg:min-h-0">
             <LocationMap />
           </div>
         </div>

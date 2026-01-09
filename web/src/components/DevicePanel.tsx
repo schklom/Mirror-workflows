@@ -372,7 +372,7 @@ export const DevicePanel = ({
 
       <ConfirmModal
         isOpen={showFactoryResetConfirm}
-        onClose={() => {
+        onCancel={() => {
           setShowFactoryResetConfirm(false);
           setDeletePin('');
         }}
@@ -383,10 +383,11 @@ export const DevicePanel = ({
           } else {
             toast.error('Please enter your device PIN');
           }
+          setShowFactoryResetConfirm(false);
         }}
         title="Factory reset the device?"
         message="This will permanently delete all data from your device and restore it to factory settings. This action cannot be undone."
-        confirmText="Factory Reset"
+        confirmText="Factory reset"
         confirmDisabled={!deletePin.trim()}
       >
         <PasswordInput

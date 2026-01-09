@@ -179,7 +179,7 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
 
       <ConfirmModal
         isOpen={showDeleteConfirm}
-        onClose={() => setShowDeleteConfirm(false)}
+        onCancel={() => setShowDeleteConfirm(false)}
         onConfirm={() => {
           void (async () => {
             if (!userData) return;

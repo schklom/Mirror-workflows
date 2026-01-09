@@ -22,12 +22,11 @@ import {
   Bell,
   BellOff,
 } from 'lucide-react';
-import { ConfirmModal } from '@/components/modals/ConfirmModal';
 import { ActionItem } from '@/components/ActionItem';
 import { BatteryIndicator } from '@/components/BatteryIndicator';
-import { PasswordInput } from '@/components/PasswordInput';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
+import { FactoryResetModal } from './modals/FactoryResetModal';
 
 // Across this file and the UI, commands are ordered by perceived importance.
 // If you change the order in one place, make sure to keep it aligned everywhere!
@@ -98,7 +97,6 @@ export const DevicePanel = ({
 
   const [loading, setLoading] = useState(false);
   const [showFactoryResetConfirm, setShowFactoryResetConfirm] = useState(false);
-  const [deletePin, setDeletePin] = useState('');
 
   useEffect(() => {
     if (!userData) return;
@@ -370,38 +368,11 @@ export const DevicePanel = ({
         </div>
       </div>
 
-      <ConfirmModal
+      <FactoryResetModal
         isOpen={showFactoryResetConfirm}
-        onCancel={() => {
-          setShowFactoryResetConfirm(false);
-          setDeletePin('');
-        }}
-        onConfirm={() => {
-          if (deletePin.trim()) {
-            void executeCommand(`delete ${deletePin.trim()}`);
-            setDeletePin('');
-          } else {
-            toast.error('Please enter your device PIN');
-          }
-          setShowFactoryResetConfirm(false);
-        }}
-        title="Factory reset the device?"
-        message="This will permanently delete all data from your device and restore it to factory settings. This action cannot be undone."
-        confirmText="Factory reset"
-        confirmDisabled={!deletePin.trim()}
-      >
-        <PasswordInput
-          id="delete-pin"
-          value={deletePin}
-          onChange={(e) => setDeletePin(e.target.value)}
-          placeholder="Enter your device PIN"
-          autoComplete="off"
-        />
-        <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
-          This is the PIN configured in your FMD Android app, not your server
-          password.
-        </p>
-      </ConfirmModal>
+        onClose={() => setShowFactoryResetConfirm(false)}
+        executeCommand={(cmd) => void executeCommand(cmd)}
+      />
     </div>
   );
 };

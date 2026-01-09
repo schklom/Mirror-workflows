@@ -155,7 +155,7 @@ export const LocationMap = () => {
         <div style="min-width: 5rem;">
           <strong>Time:</strong> ${new Date(location.date).toLocaleString()}<br/>
           <strong>Battery:</strong> ${location.bat}%<br/>
-          ${location.provider ? `<strong>Provider:</strong> ${formatProvider(location.provider)}<br/>` : ''}
+          <strong>Provider:</strong> ${formatProvider(location.provider)}<br/>
           ${location.accuracy ? `<strong>Accuracy:</strong> ${convertDistance(location.accuracy, units)}<br/>` : ''}
           ${location.altitude !== undefined ? `<strong>Altitude:</strong> ${convertDistance(location.altitude, units)}<br/>` : ''}
           ${location.speed !== undefined ? `<strong>Speed:</strong> ${convertSpeed(location.speed, units)}<br/>` : ''}

@@ -1,6 +1,5 @@
 import { sendCommand, getPushUrl } from '../lib/api';
 import { useStore } from '@/lib/store';
-import { sign } from '../lib/crypto';
 import { toast } from 'sonner';
 import { useState, useEffect } from 'react';
 import {
@@ -108,16 +107,10 @@ export const DevicePanel = ({
 
     setLoading(true);
     try {
-      const timestamp = Date.now();
-      const signature = await sign(
-        userData.rsaSigKey,
-        `${timestamp}:${command}`
-      );
-
       if (command.startsWith('locate') && onLocateCommand) {
         onLocateCommand();
       }
-      await sendCommand(userData.sessionToken, command, signature, timestamp);
+      await sendCommand(userData.sessionToken, command, userData.rsaSigKey);
 
       const successMessage =
         COMMAND_SUCCESS_MESSAGES[command] || 'Command sent successfully';

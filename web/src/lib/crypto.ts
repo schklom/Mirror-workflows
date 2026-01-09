@@ -29,6 +29,8 @@ const base64Encode = (bytesToEncode: Uint8Array) => {
   return btoa(binString);
 };
 
+// Section: Password and hashing
+
 export const hashPasswordForLogin = (password: string, salt: string) => {
   const saltBytes = base64Decode(salt);
   const contextPassword = CONTEXT_STRING_LOGIN + password;
@@ -61,6 +63,8 @@ const hashPasswordForKeyWrap = (password: string, salt: Uint8Array) => {
     dkLen: ARGON2_HASH_LENGTH,
   });
 };
+
+// Section: Asymmetric crypto
 
 export const unwrapPrivateKey = async (password: string, keyData: string) => {
   const concatBytes = base64Decode(keyData);
@@ -99,8 +103,8 @@ export const unwrapPrivateKey = async (password: string, keyData: string) => {
     'pkcs8',
     binaryDer,
     { name: 'RSA-OAEP', hash: 'SHA-256' },
-    false,
-    ['decrypt']
+    false, // extractability
+    ['decrypt'] // keyUsages
   );
 
   const rsaSigKey = await crypto.subtle.importKey(
@@ -122,6 +126,8 @@ export const sign = async (rsaCryptoKey: CryptoKey, msg: string) => {
   return base64Encode(sigBytes);
 };
 
+// Section: Symmetric crypto
+
 export const decryptData = async (
   rsaCryptoKey: CryptoKey,
   encryptedBase64: string
@@ -132,8 +138,13 @@ export const decryptData = async (
     const allBytes = base64Decode(encryptedBase64);
 
     const encryptedAesKeyBytes = allBytes.slice(0, RSA_KEY_SIZE_BYTES);
-    const ivBytes = allBytes.slice(RSA_KEY_SIZE_BYTES, RSA_KEY_SIZE_BYTES + 12);
-    const encryptedDataBytes = allBytes.slice(RSA_KEY_SIZE_BYTES + 12);
+    const ivBytes = allBytes.slice(
+      RSA_KEY_SIZE_BYTES,
+      RSA_KEY_SIZE_BYTES + AES_GCM_IV_SIZE_BYTES
+    );
+    const encryptedDataBytes = allBytes.slice(
+      RSA_KEY_SIZE_BYTES + AES_GCM_IV_SIZE_BYTES
+    );
 
     const aesKeyBytes = await crypto.subtle.decrypt(
       { name: 'RSA-OAEP' },

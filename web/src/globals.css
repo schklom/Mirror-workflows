@@ -71,6 +71,10 @@
       @apply text-white hover:text-fmd-green;
     }
   }
+
+  p a {
+    @apply underline;
+  }
 }
 
 @theme inline {

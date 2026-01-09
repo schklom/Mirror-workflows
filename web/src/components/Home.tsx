@@ -11,7 +11,8 @@ import { useStore } from '@/lib/store';
 import { toast } from 'sonner';
 
 export const Home = () => {
-  const { isLoggedIn, userData, wasAuthChecked, locations } = useStore();
+  const { isLoggedIn, userData, wasAuthRestoreTried, locations } = useStore();
+
   const [photosOpen, setPhotosOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [lastLocateTime, setLastLocateTime] = useState<number | null>(null);
@@ -79,7 +80,7 @@ export const Home = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoggedIn, userData, lastLocateTime]);
 
-  if (!wasAuthChecked) {
+  if (!wasAuthRestoreTried) {
     return (
       <div className="dark:bg-fmd-dark-lighter flex min-h-screen items-center justify-center bg-white">
         <Spinner size="lg" />

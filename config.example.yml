@@ -26,7 +26,7 @@ PortInsecure: 8080
 UserIdLength: 5
 
 # How many location points or pictures FMD Server should save per account
-MaxSavedLoc: 1000
+MaxSavedLoc: 500
 MaxSavedPic: 10
 
 # If RegistrationToken is non-empty, FMD Server will require the FMD app to provide this token during registration.

@@ -56,7 +56,7 @@ func setDefaults(config *viper.Viper) {
 
 	config.SetDefault(CONF_USER_ID_LENGTH, 5)
 
-	config.SetDefault(CONF_MAX_SAVED_LOC, 1000)
+	config.SetDefault(CONF_MAX_SAVED_LOC, 500)
 	config.SetDefault(CONF_MAX_SAVED_PIC, 10)
 
 	config.SetDefault(CONF_REGISTRATION_TOKEN, "")

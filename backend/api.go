@@ -85,7 +85,7 @@ func buildServeMux(config *viper.Viper) http.Handler {
 	// staticFilesMux.Handle("/", http.FileServer(http.FS(frontend.WebDir())))
 	// Handling --web-dir parameter/config
 	if config.GetString(conf.CONF_WEB_DIR) == "" {
-		apiV1Mux.Handle("/", frontend.FileServerWithHTML(frontend.WebDir()))
+		apiV1Mux.Handle("/", frontend.FileServerWithFallback(frontend.WebDir()))
 	} else {
 		apiV1Mux.Handle("/", http.FileServer(http.Dir(config.GetString(conf.CONF_WEB_DIR))))
 	}

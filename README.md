@@ -10,19 +10,7 @@ e.g. to make your device ring.
 
 ## Running FMD Server
 
-At its core, FMD is just a Go binary that you can build and run directly.
-
-If you want to see the web server UI you will also need to build the web bundle which requires Node.js. See [web/README.md](web/README.md) for instructions on how to do that.
-
-
-```bash
-go run main.go serve
-# or
-go build
-./fmd-server serve
-```
-
-Alternatively, you can try FMD Server on your laptop with Docker.
+You can try FMD Server on your laptop with Docker.
 
 ```bash
 docker run --rm -p 8080:8080 registry.gitlab.com/fmd-foss/fmd-server:0.13.0
@@ -40,6 +28,24 @@ For self-hosting instructions, see the [installation guide](https://fmd-foss.org
 ## Community projects
 
 See [this list](https://fmd-foss.org/docs/fmd-server/community) of community-maintained projects related to FMD Server.
+
+## Building
+
+FMD Server consists of two parts: a web frontend written in React and a Go backend.
+
+You first need to compile the React app as a static site.
+See the [web/README.md](web/README.md) for instructions on how to build the web app.
+
+In a second step, compile the Go code into a static Go binary.
+This binary is stand-alone, and includes both the frontend and the backend.
+To build the Go app:
+
+```bash
+go run . serve
+# or
+go build
+./fmd-server serve
+```
 
 ## Donate
 

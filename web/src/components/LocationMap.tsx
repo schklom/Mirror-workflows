@@ -32,6 +32,7 @@ const calculateZoomLevel = (accuracy?: number): number => {
 export const LocationMap = () => {
   const { locations, units, currentLocationIndex, isLocationsLoading } =
     useStore();
+
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<LeafletType.Map | null>(null);
   const markerRef = useRef<LeafletType.Marker | null>(null);
@@ -39,9 +40,11 @@ export const LocationMap = () => {
   const leafletRef = useRef<typeof LeafletType | null>(null);
   const lastLocationRef = useRef<{ lat: number; lon: number } | null>(null);
   const tileLayerRef = useRef<LeafletType.TileLayer | null>(null);
-  const { accentColor } = useThemeColors();
+
+  const { mapAccentColor } = useThemeColors();
   const [mapReady, setMapReady] = useState(false);
 
+  // The basic map view
   useEffect(() => {
     if (!mapRef.current || mapInstanceRef.current || isLocationsLoading) {
       return;
@@ -116,6 +119,7 @@ export const LocationMap = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLocationsLoading]);
 
+  // The markers shown on the map
   useEffect(() => {
     if (
       !mapInstanceRef.current ||
@@ -176,10 +180,10 @@ export const LocationMap = () => {
       circleRef.current = leafletRef.current
         .circle([lat, lon], {
           radius: location.accuracy,
-          color: accentColor,
-          fillColor: accentColor,
-          fillOpacity: 0.1,
-          weight: 2,
+          color: mapAccentColor,
+          fillColor: mapAccentColor,
+          fillOpacity: 0.25,
+          weight: 0,
         })
         .addTo(mapInstanceRef.current);
     }
@@ -189,11 +193,12 @@ export const LocationMap = () => {
       mapInstanceRef.current.setView([lat, lon], zoom);
       lastLocationRef.current = { lat, lon };
     }
-  }, [currentLocationIndex, units, locations, accentColor, mapReady]);
+  }, [currentLocationIndex, units, locations, mapAccentColor, mapReady]);
 
   return (
     <div className="bg-fmd-light dark:bg-fmd-dark relative flex h-full w-full flex-col rounded-lg">
-      <div ref={mapRef} className="relative flex-1" />
+      <div ref={mapRef} className="relative flex-1 rounded-lg" />
+
       {isLocationsLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-white/80 dark:bg-gray-900/80">
           <Spinner />

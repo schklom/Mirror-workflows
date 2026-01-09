@@ -6,14 +6,15 @@ import { visualizer } from 'rollup-plugin-visualizer';
 export default defineConfig({
   plugins: [
     react(),
-    visualizer({
-      open: true,
-      gzipSize: true,
-      brotliSize: true,
-      template: 'treemap',
-      filename: 'dist/stats.html',
-    }),
-  ],
+    process.env.ANALYZE &&
+      visualizer({
+        open: true,
+        gzipSize: true,
+        brotliSize: true,
+        template: 'treemap',
+        filename: 'dist/stats.html',
+      }),
+  ].filter(Boolean) as any,
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),

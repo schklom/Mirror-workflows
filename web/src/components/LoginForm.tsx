@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { PasswordInput } from '@/components/PasswordInput';
 import { Checkbox } from '@/components/Checkbox';
+import { WebCryptoWarningModal } from './modals/WebCryptoWarningModal';
 
 const ONE_WEEK_SECONDS = 7 * 24 * 60 * 60;
 
@@ -130,6 +131,8 @@ export const LoginForm = () => {
               {loading ? 'Logging in...' : 'Log in'}
             </Button>
           </form>
+
+          <WebCryptoWarningModal />
         </div>
       </div>
 

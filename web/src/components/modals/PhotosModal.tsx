@@ -42,17 +42,20 @@ export const PhotosModal = ({ isOpen, onClose }: PhotosModalProps) => {
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-6xl">
         <DialogTitle className="sr-only">Device Photos</DialogTitle>
+
         <div className="max-h-[90vh] overflow-auto">
           {isPicturesLoading && (
             <div className="flex items-center justify-center p-8">
               <Spinner size="lg" />
             </div>
           )}
+
           {!isPicturesLoading && pictures.length === 0 && (
             <div className="p-8 text-center text-gray-900 dark:text-white">
               No photos available
             </div>
           )}
+
           {!isPicturesLoading && pictures.length > 0 && (
             <div className="flex flex-col gap-4">
               <div className="flex items-center justify-center gap-3">
@@ -68,9 +71,11 @@ export const PhotosModal = ({ isOpen, onClose }: PhotosModalProps) => {
                   <ChevronLeft className="h-4 w-4" />
                   Older
                 </Button>
+
                 <span className="text-sm text-gray-900 dark:text-white">
                   {selectedIndex + 1} of {pictures.length}
                 </span>
+
                 <Button
                   variant="outline"
                   size="sm"
@@ -86,6 +91,7 @@ export const PhotosModal = ({ isOpen, onClose }: PhotosModalProps) => {
                   <ChevronRight className="h-4 w-4" />
                 </Button>
               </div>
+
               <div className="relative flex h-[70vh] w-full items-center justify-center">
                 <img
                   src={`data:image/jpeg;base64,${pictures[selectedIndex]}`}

@@ -42,11 +42,15 @@ export const ConfirmModal = ({
           <div className="rounded-full bg-red-100 p-3 dark:bg-red-950">
             <AlertTriangle className="h-6 w-6 text-red-600 dark:text-red-400" />
           </div>
-          <DialogTitle>{title}</DialogTitle>
+          <DialogTitle className="text-red-600 dark:text-red-400">
+            {title}
+          </DialogTitle>
         </div>
-        <DialogDescription>{message}</DialogDescription>
+        {message && <DialogDescription>{message}</DialogDescription>}
       </DialogHeader>
+
       {children && <div className="py-4">{children}</div>}
+
       <DialogFooter className="gap-3 sm:gap-3">
         <Button onClick={onClose} variant="outline" className="flex-1">
           {cancelText}

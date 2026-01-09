@@ -22,7 +22,7 @@ import {
   Bell,
   BellOff,
 } from 'lucide-react';
-import { ConfirmModal } from '@/components/ConfirmModal';
+import { ConfirmModal } from '@/components/modals/ConfirmModal';
 import { ActionItem } from '@/components/ActionItem';
 import { BatteryIndicator } from '@/components/BatteryIndicator';
 import { PasswordInput } from '@/components/PasswordInput';

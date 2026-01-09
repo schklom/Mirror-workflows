@@ -10,18 +10,14 @@ import { useStore } from '@/lib/store';
 
 interface HeaderProps {
   onSettingsClick?: () => void;
-  showSettings?: boolean;
 }
 
-export const Header = ({
-  onSettingsClick,
-  showSettings = true,
-}: HeaderProps) => {
+export const Header = ({ onSettingsClick }: HeaderProps) => {
   const { userData, logout } = useStore();
 
   return (
-    <header className="dark:bg-fmd-dark flex items-center justify-between border-b border-gray-200 bg-white px-4 py-2 dark:border-gray-800">
-      <a href="/" className="flex items-center gap-2">
+    <header className="dark:bg-fmd-dark flex items-center justify-between border-b border-gray-200 bg-white px-4 py-4 dark:border-gray-800">
+      <a href="/" className="ms-2 flex items-center gap-2">
         <img
           src="/icon.svg"
           alt="FMD"
@@ -35,7 +31,7 @@ export const Header = ({
       </a>
       {userData && (
         <div className="flex items-center gap-2">
-          {showSettings && onSettingsClick && (
+          {onSettingsClick && (
             <Button
               variant="ghost"
               size="icon-sm"
@@ -50,7 +46,7 @@ export const Header = ({
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="sm" className="gap-2">
                 <div className="text-right">
-                  <div className="text-xs font-semibold">{userData.fmdId}</div>
+                  <div className="text font-semibold">{userData.fmdId}</div>
                 </div>
                 <ChevronDown className="h-4 w-4" />
               </Button>
@@ -61,7 +57,7 @@ export const Header = ({
             >
               <DropdownMenuItem onClick={() => void logout()}>
                 <LogOut className="mr-2 h-4 w-4" />
-                Logout
+                Log out
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

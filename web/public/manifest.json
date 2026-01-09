@@ -1,11 +1,11 @@
 {
   "name": "FMD Server",
   "short_name": "FMD",
-  "description": "Find My Device Server - Locate and control your Android devices",
+  "description": "Locate and control your devices.",
   "start_url": "/",
   "display": "standalone",
   "theme_color": "#4cb050",
-  "background_color": "#ffffff",
+  "background_color": "#232323",
   "icons": [
     {
       "src": "/icon.svg",

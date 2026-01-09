@@ -3,7 +3,6 @@ package backend
 import (
 	conf "fmd-server/config"
 	frontend "fmd-server/web"
-	"fmt"
 	"net/http"
 
 	"github.com/spf13/viper"
@@ -17,18 +16,6 @@ func getRemoteIp(r *http.Request) string {
 		remoteIp = r.RemoteAddr
 	}
 	return remoteIp
-}
-
-// Create content for config.js from config
-func createConfigJs(tileServerUrl string) http.HandlerFunc {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		const content = `
-		/* js config from config.yml (or env-var or ...) */
-		const tileServerUrl = "%s";
-		`
-		w.Header().Set(HEADER_CONTENT_TYPE, CT_TEXT_JAVASCRIPT)
-		w.Write([]byte(fmt.Sprintf(content, tileServerUrl)))
-	})
 }
 
 // Adds various security headers.
@@ -51,6 +38,7 @@ func buildServeMux(config *viper.Viper) http.Handler {
 	remoteIpHeaderName = config.GetString(conf.CONF_REMOTE_IP_HEADER)
 
 	tileServerUrl, tileServerOrigin := conf.ValidateTileServerUrl(config.GetString(conf.CONF_TILE_SERVER_URL))
+	tileServerUrlHandler := tileServerUrlHandler{tileServerUrl}
 
 	mainDeviceHandler := mainDeviceHandler{createDeviceHandler{config.GetString(conf.CONF_REGISTRATION_TOKEN)}}
 
@@ -86,6 +74,8 @@ func buildServeMux(config *viper.Viper) http.Handler {
 	apiV1Mux.HandleFunc("/salt/", requestSalt)
 	apiV1Mux.HandleFunc("/requestAccess", requestAccess)
 	apiV1Mux.HandleFunc("/requestAccess/", requestAccess)
+	apiV1Mux.Handle("/tileServerUrl", tileServerUrlHandler)
+	apiV1Mux.Handle("/tileServerUrl/", tileServerUrlHandler)
 	apiV1Mux.HandleFunc("/version", getVersion)
 	apiV1Mux.HandleFunc("/version/", getVersion)
 
@@ -104,7 +94,6 @@ func buildServeMux(config *viper.Viper) http.Handler {
 	// muxFinal.Handle("/", staticFilesMux)
 	apiMux.Handle("/", apiV1Mux) // deprecated
 	apiMux.Handle("/api/v1/", http.StripPrefix("/api/v1", apiV1Mux))
-	apiMux.Handle("/config.js", createConfigJs(tileServerUrl))
 
 	// Apply to all endpoints
 	handler := securityHeadersMiddleware(apiMux, tileServerOrigin)

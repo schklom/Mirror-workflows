@@ -6,6 +6,7 @@ import { useThemeColors } from '@/hooks/useThemeColors';
 import { Spinner } from '@/components/ui/spinner';
 
 import 'leaflet/dist/leaflet.css';
+import { getTileServerUrl } from '@/lib/api';
 
 const formatProvider = (provider: string): string => {
   const providerMap: Record<string, string> = {
@@ -44,9 +45,27 @@ export const LocationMap = () => {
   const { mapAccentColor } = useThemeColors();
   const [mapReady, setMapReady] = useState(false);
 
+  const [tileServerUrl, setTileServerUrl] = useState('');
+
+  useEffect(() => {
+    void (async () => {
+      try {
+        const url = await getTileServerUrl();
+        setTileServerUrl(url);
+      } catch {
+        setTileServerUrl('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+      }
+    })();
+  }, []);
+
   // The basic map view
   useEffect(() => {
-    if (!mapRef.current || mapInstanceRef.current || isLocationsLoading) {
+    if (
+      !mapRef.current ||
+      mapInstanceRef.current ||
+      isLocationsLoading ||
+      !tileServerUrl
+    ) {
       return;
     }
 
@@ -92,7 +111,7 @@ export const LocationMap = () => {
           .setView(initialView, initialZoom);
 
         tileLayerRef.current = leafletRef.current
-          .tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          .tileLayer(tileServerUrl, {
             attribution:
               '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
             maxZoom: 19,
@@ -117,7 +136,7 @@ export const LocationMap = () => {
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLocationsLoading]);
+  }, [isLocationsLoading, tileServerUrl]);
 
   // The markers shown on the map
   useEffect(() => {

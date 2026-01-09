@@ -6,6 +6,10 @@ interface DataPackage {
   Data: string;
 }
 
+interface TileServerUrlResponse {
+  TileServerUrl: string;
+}
+
 const API_BASE = 'api/v1';
 
 export const ENDPOINTS = {
@@ -17,8 +21,9 @@ export const ENDPOINTS = {
   COMMAND: `${API_BASE}/command`,
   DEVICE: `${API_BASE}/device`,
   PICTURES: `${API_BASE}/pictures`,
-  VERSION: `${API_BASE}/version`,
   PUSH: `${API_BASE}/push`,
+  TILE_SERVER: `${API_BASE}/tileServerUrl`,
+  VERSION: `${API_BASE}/version`,
 } as const;
 
 const HTTP = {
@@ -180,6 +185,18 @@ export const getPushUrl = async (sessionToken: string) => {
   }
 
   return response.text();
+};
+
+export const getTileServerUrl = async () => {
+  const response = await fetch(ENDPOINTS.TILE_SERVER);
+
+  const text = await response.text();
+  if (!response.ok) {
+    throw new Error(text || 'Request failed');
+  }
+
+  const json = JSON.parse(text) as TileServerUrlResponse;
+  return json.TileServerUrl;
 };
 
 export const getVersion = async () => {

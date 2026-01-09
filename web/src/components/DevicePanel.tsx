@@ -4,16 +4,20 @@ import { toast } from 'sonner';
 import { useState, useEffect } from 'react';
 import {
   Navigation,
+  RadioTower,
   History,
   Volume2,
+  Flashlight,
   Lock,
   Trash2,
   Camera,
   UserCircle,
+  Image,
   ChevronRight,
   ChevronLeft,
   Smartphone,
   Bluetooth,
+  BluetoothOff,
   Satellite,
   Bell,
   BellOff,
@@ -25,12 +29,17 @@ import { PasswordInput } from '@/components/PasswordInput';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
 
+// Across this file and the UI, commands are ordered by perceived importance.
+// If you change the order in one place, make sure to keep it aligned everywhere!
+
 const COMMANDS = {
   LOCATE_ALL: 'locate all',
+  LOCATE_FUSED: 'locate fused',
   LOCATE_GPS: 'locate gps',
   LOCATE_CELL: 'locate cell',
   LOCATE_LAST: 'locate last',
   RING: 'ring',
+  FLASH: 'flash',
   LOCK: 'lock',
   DELETE: 'delete',
   CAMERA_FRONT: 'camera front',
@@ -47,17 +56,21 @@ const COMMANDS = {
 } as const;
 
 const COMMAND_SUCCESS_MESSAGES: Record<string, string> = {
-  [COMMANDS.LOCATE_ALL]: 'Requesting fresh location...',
+  [COMMANDS.LOCATE_ALL]: 'Requesting location...',
+  [COMMANDS.LOCATE_FUSED]: 'Requesting location...',
+  [COMMANDS.LOCATE_GPS]: 'Requesting location...',
+  [COMMANDS.LOCATE_CELL]: 'Requesting location...',
   [COMMANDS.LOCATE_LAST]: 'Requesting last known location...',
   [COMMANDS.RING]: 'Ringing device...',
+  [COMMANDS.FLASH]: 'Flashing torch light...',
   [COMMANDS.LOCK]: 'Locking device...',
   [COMMANDS.DELETE]: 'Factory reset initiated',
   [COMMANDS.CAMERA_FRONT]: 'Capturing photo...',
   [COMMANDS.CAMERA_BACK]: 'Capturing photo...',
   [COMMANDS.BLUETOOTH_ON]: 'Enabling Bluetooth...',
   [COMMANDS.BLUETOOTH_OFF]: 'Disabling Bluetooth...',
-  [COMMANDS.GPS_ON]: 'Enabling GPS...',
-  [COMMANDS.GPS_OFF]: 'Disabling GPS...',
+  [COMMANDS.GPS_ON]: 'Enabling Location Services...',
+  [COMMANDS.GPS_OFF]: 'Disabling Location Services...',
   [COMMANDS.RINGERMODE_NORMAL]: 'Setting ringer to normal...',
   [COMMANDS.RINGERMODE_VIBRATE]: 'Setting ringer to vibrate...',
   [COMMANDS.RINGERMODE_SILENT]: 'Setting ringer to silent...',
@@ -82,6 +95,7 @@ export const DevicePanel = ({
     isPushUrlLoading,
     currentLocationIndex,
   } = useStore();
+
   const [loading, setLoading] = useState(false);
   const [showFactoryResetConfirm, setShowFactoryResetConfirm] = useState(false);
   const [deletePin, setDeletePin] = useState('');
@@ -125,13 +139,32 @@ export const DevicePanel = ({
   const actions = [
     {
       icon: Navigation,
-      title: 'Locate',
-      description: 'Get fresh location from GPS/network',
+      title: 'Locate: All',
+      description: 'Get a location from all location providers',
       onClick: () => void executeCommand(COMMANDS.LOCATE_ALL),
     },
     {
+      icon: Navigation,
+      title: 'Locate: Fused',
+      description: 'Get a location from network/GPS',
+      onClick: () => void executeCommand(COMMANDS.LOCATE_FUSED),
+    },
+    {
+      icon: Satellite,
+      title: 'Locate: GPS',
+      description: 'Get a location from GPS',
+      onClick: () => void executeCommand(COMMANDS.LOCATE_GPS),
+    },
+    {
+      icon: RadioTower,
+      title: 'Locate: Cell',
+      description:
+        'Get a location from the surrounding cell towers with OpenCelliD and/or BeaconDB',
+      onClick: () => void executeCommand(COMMANDS.LOCATE_CELL),
+    },
+    {
       icon: History,
-      title: 'Last Known',
+      title: 'Locate: Last Known',
       description: 'Get cached location (faster, may be outdated)',
       onClick: () => void executeCommand(COMMANDS.LOCATE_LAST),
     },
@@ -140,6 +173,12 @@ export const DevicePanel = ({
       title: 'Ring',
       description: 'Play a loud sound on the device',
       onClick: () => void executeCommand(COMMANDS.RING),
+    },
+    {
+      icon: Flashlight,
+      title: 'Flash',
+      description: 'Flash the torch light',
+      onClick: () => void executeCommand(COMMANDS.FLASH),
     },
     {
       icon: Lock,
@@ -167,21 +206,21 @@ export const DevicePanel = ({
       onClick: () => void executeCommand(COMMANDS.CAMERA_BACK),
     },
     {
-      icon: Camera,
+      icon: Image,
       title: 'View Photos',
       description: 'View photos taken by the device',
       onClick: onViewPhotos,
     },
     {
       icon: Satellite,
-      title: 'Enable GPS',
-      description: 'Turn on GPS',
+      title: 'Enable Location Services',
+      description: 'Turn on Location Services',
       onClick: () => void executeCommand(COMMANDS.GPS_ON),
     },
     {
       icon: Satellite,
-      title: 'Disable GPS',
-      description: 'Turn off GPS',
+      title: 'Disable Location Services',
+      description: 'Turn off Location Services',
       onClick: () => void executeCommand(COMMANDS.GPS_OFF),
     },
     {
@@ -191,7 +230,7 @@ export const DevicePanel = ({
       onClick: () => void executeCommand(COMMANDS.BLUETOOTH_ON),
     },
     {
-      icon: Bluetooth,
+      icon: BluetoothOff,
       title: 'Disable Bluetooth',
       description: 'Turn off Bluetooth',
       onClick: () => void executeCommand(COMMANDS.BLUETOOTH_OFF),
@@ -238,22 +277,25 @@ export const DevicePanel = ({
             <Spinner />
           </div>
         )}
+
         {!isLocationsLoading && currentLocation && (
           <div className="space-y-3">
             <div className="flex items-center gap-3">
               <div className="bg-fmd-green/10 rounded-full p-3">
                 <Smartphone className="text-fmd-green h-6 w-6" />
               </div>
+
               <div className="flex-1">
                 <BatteryIndicator percentage={currentLocation.bat} />
-                <div className="text-xs text-gray-500 dark:text-gray-500">
-                  Last contact
+                <div className="text-xs text-gray-500 dark:text-gray-300">
+                  Recorded at
                 </div>
                 <div className="text-sm font-medium text-gray-900 dark:text-white">
                   {new Date(currentLocation.date).toLocaleString()}
                 </div>
               </div>
             </div>
+
             {locations.length > 1 && (
               <div className="flex gap-2">
                 <Button
@@ -273,6 +315,7 @@ export const DevicePanel = ({
                   <ChevronLeft className="h-4 w-4" />
                   Older
                 </Button>
+
                 <Button
                   variant="outline"
                   size="sm"
@@ -294,6 +337,7 @@ export const DevicePanel = ({
             )}
           </div>
         )}
+
         {!isLocationsLoading && !currentLocation && (
           <div className="flex h-18 items-center justify-center text-sm text-gray-500 dark:text-gray-400">
             No location data yet
@@ -340,7 +384,7 @@ export const DevicePanel = ({
             toast.error('Please enter your device PIN');
           }
         }}
-        title="Factory Reset Device?"
+        title="Factory reset the device?"
         message="This will permanently delete all data from your device and restore it to factory settings. This action cannot be undone."
         confirmText="Factory Reset"
         confirmDisabled={!deletePin.trim()}

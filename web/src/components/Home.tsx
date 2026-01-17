@@ -10,7 +10,7 @@ import { getLocations } from '@/lib/api';
 import { useStore } from '@/lib/store';
 import { toast } from 'sonner';
 
-export const Home = () => {
+const Home = () => {
   const { isLoggedIn, userData, wasAuthRestoreTried, locations } = useStore();
 
   const [photosOpen, setPhotosOpen] = useState(false);
@@ -126,3 +126,5 @@ export const Home = () => {
     </>
   );
 };
+
+export default Home;

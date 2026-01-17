@@ -1,7 +1,7 @@
 import { FileQuestion } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-export const NotFound = () => (
+const NotFound = () => (
   <div className="flex min-h-screen max-w-screen items-center justify-center text-center">
     <div>
       <div className="mb-4">
@@ -22,3 +22,5 @@ export const NotFound = () => (
     </div>
   </div>
 );
+
+export default NotFound;

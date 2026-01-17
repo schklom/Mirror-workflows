@@ -1,4 +1,6 @@
 import tseslint from 'typescript-eslint';
+// @ts-ignore - no types available
+import js from '@eslint/js';
 import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 // @ts-ignore - no types available
@@ -17,6 +19,7 @@ export default [
       'public/**',
     ],
   },
+  js.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
   {
     languageOptions: {

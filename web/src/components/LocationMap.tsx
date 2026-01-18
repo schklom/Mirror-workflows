@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type * as LeafletType from 'leaflet';
+import { FullScreen } from 'leaflet.fullscreen';
 import { useStore } from '@/lib/store';
 import { convertDistance, convertSpeed } from '@/utils/units';
 import { useThemeColors } from '@/hooks/useThemeColors';
@@ -139,6 +140,8 @@ export const LocationMap = () => {
         if (mapInstanceRef.current.attributionControl) {
           mapInstanceRef.current.attributionControl.setPrefix('');
         }
+
+        mapInstanceRef.current.addControl(new FullScreen());
 
         setMapReady(true);
       }

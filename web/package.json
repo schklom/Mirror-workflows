@@ -36,6 +36,7 @@
     "clsx": "^2.1.1",
     "jszip": "^3.10.1",
     "leaflet": "^1.9.4",
+    "leaflet.fullscreen": "^5.3.0",
     "lucide-react": "^0.562.0",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",

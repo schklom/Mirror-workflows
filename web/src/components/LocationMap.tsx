@@ -245,7 +245,7 @@ export const LocationMap = () => {
           ? mapAccentColor
           : mapPrimaryColor;
 
-          leafletRef.current
+        leafletRef.current
           .circle([loc.lat, loc.lon], {
             radius: loc.accuracy,
             color: circleColor,

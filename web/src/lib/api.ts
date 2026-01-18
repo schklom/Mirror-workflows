@@ -59,6 +59,7 @@ const request = async <T>(endpoint: string, method: string, body: object) => {
 
     if (response.status === 401) {
       void logout();
+      throw new Error('Session expired');
     }
 
     throw new Error(text || 'Request failed');
@@ -180,6 +181,7 @@ export const getPushUrl = async (sessionToken: string) => {
     const text = await response.text();
     if (response.status === 401) {
       void logout();
+      throw new Error('Session expired');
     }
     throw new Error(text || 'Request failed');
   }

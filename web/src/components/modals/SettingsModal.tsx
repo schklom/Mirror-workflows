@@ -19,6 +19,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Button } from '@/components/ui/button';
 import { ConfirmModal } from '@/components/modals/ConfirmModal';
+import { LoadingModal } from '@/components/modals/LoadingModal';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -28,12 +29,15 @@ interface SettingsModalProps {
 export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
   const { userData, units } = useStore();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showExportLoading, setShowExportLoading] = useState(false);
 
   const handleExport = async () => {
     if (!userData) {
       toast.error('Not logged in');
       return;
     }
+
+    setShowExportLoading(true);
 
     try {
       const [locations, pictures, pushUrl] = await Promise.all([
@@ -82,6 +86,8 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Export failed');
     }
+
+    setShowExportLoading(false);
   };
 
   return (
@@ -206,6 +212,11 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
           </TabsContent>
         </Tabs>
       </DialogContent>
+
+      <LoadingModal
+        isOpen={showExportLoading}
+        message="Downloading data. This can take some time, especially if you have many pictures."
+      />
 
       <ConfirmModal
         isOpen={showDeleteConfirm}

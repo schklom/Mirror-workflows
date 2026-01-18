@@ -8,6 +8,14 @@ import { Spinner } from '@/components/ui/spinner';
 import 'leaflet/dist/leaflet.css';
 import { getTileServerUrl } from '@/lib/api';
 
+const POLYLINE_OPACITY = 0.6;
+const POLYLINE_WEIGHT = 3;
+
+const CIRCLE_FILL_OPACITY = 0.25;
+const CIRCLE_WEIGHT = 0;
+
+const ACCURACY_CIRCLE_RANGE = 5;
+
 const formatProvider = (provider: string): string => {
   const providerMap: Record<string, string> = {
     gps: 'GPS',
@@ -36,13 +44,18 @@ export const LocationMap = () => {
 
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<LeafletType.Map | null>(null);
-  const markerRef = useRef<LeafletType.Marker | null>(null);
-  const circleRef = useRef<LeafletType.Circle | null>(null);
   const leafletRef = useRef<typeof LeafletType | null>(null);
-  const lastLocationRef = useRef<{ lat: number; lon: number } | null>(null);
-  const tileLayerRef = useRef<LeafletType.TileLayer | null>(null);
 
-  const { mapAccentColor } = useThemeColors();
+  const tileLayerRef = useRef<LeafletType.TileLayer | null>(null);
+  const markersLayerRef = useRef<LeafletType.LayerGroup | null>(null);
+  const accuracyCirclesLayerRef = useRef<LeafletType.LayerGroup | null>(null);
+  const polylineRef = useRef<LeafletType.Polyline | null>(null);
+  const selectedIconRef = useRef<LeafletType.Icon | null>(null);
+
+  const locationCacheRef = useRef<Set<number>>(new Set());
+  const lastLocationRef = useRef<{ lat: number; lon: number } | null>(null);
+
+  const { mapPrimaryColor, mapAccentColor } = useThemeColors();
   const [mapReady, setMapReady] = useState(false);
 
   const [tileServerUrl, setTileServerUrl] = useState('');
@@ -82,7 +95,7 @@ export const LocationMap = () => {
           shadowUrl: '/marker-shadow.png',
         });
 
-        const selectedIcon = new L.Icon({
+        selectedIconRef.current = new L.Icon({
           iconRetinaUrl: '/marker-icon-2x.png',
           iconUrl: '/marker-icon.png',
           shadowUrl: '/marker-shadow.png',
@@ -92,9 +105,6 @@ export const LocationMap = () => {
           shadowSize: [41, 41],
           className: 'marker-selected',
         });
-        (
-          leafletRef.current as typeof L & { selectedIcon?: L.Icon }
-        ).selectedIcon = selectedIcon;
       }
 
       if (!mapInstanceRef.current && mapRef.current) {
@@ -109,6 +119,14 @@ export const LocationMap = () => {
         mapInstanceRef.current = leafletRef.current
           .map(mapRef.current)
           .setView(initialView, initialZoom);
+
+        markersLayerRef.current = leafletRef.current
+          .layerGroup()
+          .addTo(mapInstanceRef.current);
+
+        accuracyCirclesLayerRef.current = leafletRef.current
+          .layerGroup()
+          .addTo(mapInstanceRef.current);
 
         tileLayerRef.current = leafletRef.current
           .tileLayer(tileServerUrl, {
@@ -143,6 +161,8 @@ export const LocationMap = () => {
     if (
       !mapInstanceRef.current ||
       !leafletRef.current ||
+      !markersLayerRef.current ||
+      !accuracyCirclesLayerRef.current ||
       locations.length === 0
     )
       return;
@@ -152,64 +172,103 @@ export const LocationMap = () => {
 
     const { lat, lon } = location;
 
-    // Force update if this is the first location (map was initialized at default position)
-    const isFirstLocation = lastLocationRef.current === null;
-    const locationChanged =
-      isFirstLocation ||
-      (lastLocationRef.current !== null &&
-        (lastLocationRef.current.lat !== lat ||
-          lastLocationRef.current.lon !== lon));
+    locationCacheRef.current.add(currentLocationIndex);
 
-    if (markerRef.current) {
-      markerRef.current.remove();
-    }
-    if (circleRef.current) {
-      circleRef.current.remove();
+    const cachedIndices = Array.from(locationCacheRef.current).sort(
+      (a, b) => a - b
+    );
+    const cachedLocations = cachedIndices.map((idx) => locations[idx]);
+
+    markersLayerRef.current.clearLayers();
+    accuracyCirclesLayerRef.current.clearLayers();
+    if (polylineRef.current) {
+      polylineRef.current.remove();
     }
 
-    markerRef.current = leafletRef.current
-      .marker([lat, lon], {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        icon: (leafletRef.current as any).selectedIcon,
-      })
-      .addTo(mapInstanceRef.current)
-      .bindPopup(
-        `
-        <div style="min-width: 5rem;">
-          <strong>Time:</strong> ${new Date(location.date).toLocaleString()}<br/>
-          <strong>Battery:</strong> ${location.bat}%<br/>
-          <strong>Provider:</strong> ${formatProvider(location.provider)}<br/>
-          ${location.accuracy ? `<strong>Accuracy:</strong> ${convertDistance(location.accuracy, units)}<br/>` : ''}
-          ${location.altitude !== undefined ? `<strong>Altitude:</strong> ${convertDistance(location.altitude, units)}<br/>` : ''}
-          ${location.speed !== undefined ? `<strong>Speed:</strong> ${convertSpeed(location.speed, units)}<br/>` : ''}
-          ${location.bearing !== undefined ? `<strong>Bearing:</strong> ${location.bearing.toFixed(0)}°` : ''}
-        </div>
-      `,
-        { autoClose: false, closeOnClick: false, closeButton: false }
-      );
+    const latLngs: [number, number][] = cachedLocations.map((loc) => [
+      loc.lat,
+      loc.lon,
+    ]);
 
-    markerRef.current.on('mouseover', () => {
-      markerRef.current?.openPopup();
-    });
-    markerRef.current.on('mouseout', () => {
-      markerRef.current?.closePopup();
-    });
-
-    if (location.accuracy) {
-      circleRef.current = leafletRef.current
-        .circle([lat, lon], {
-          radius: location.accuracy,
-          color: mapAccentColor,
-          fillColor: mapAccentColor,
-          fillOpacity: 0.25,
-          weight: 0,
+    if (latLngs.length > 1) {
+      polylineRef.current = leafletRef.current
+        .polyline(latLngs, {
+          color: mapPrimaryColor,
+          weight: POLYLINE_WEIGHT,
+          opacity: POLYLINE_OPACITY,
         })
         .addTo(mapInstanceRef.current);
     }
 
+    for (let i = 0; i < cachedIndices.length; i++) {
+      const idx = cachedIndices[i];
+      const loc = cachedLocations[i];
+      const isCurrentLocation = idx === currentLocationIndex;
+
+      const marker = leafletRef.current
+        .marker(
+          [loc.lat, loc.lon],
+          isCurrentLocation && selectedIconRef.current
+            ? { icon: selectedIconRef.current, zIndexOffset: 1000 }
+            : {}
+        )
+        .addTo(markersLayerRef.current)
+        .bindPopup(
+          `
+        <div style="min-width: 5rem;">
+          <strong>Time:</strong> ${new Date(loc.date).toLocaleString()}<br/>
+          <strong>Battery:</strong> ${loc.bat}%<br/>
+          <strong>Provider:</strong> ${formatProvider(loc.provider)}<br/>
+          ${loc.accuracy ? `<strong>Accuracy:</strong> ${convertDistance(loc.accuracy, units)}<br/>` : ''}
+          ${loc.altitude !== undefined ? `<strong>Altitude:</strong> ${convertDistance(loc.altitude, units)}<br/>` : ''}
+          ${loc.speed !== undefined ? `<strong>Speed:</strong> ${convertSpeed(loc.speed, units)}<br/>` : ''}
+          ${loc.bearing !== undefined ? `<strong>Bearing:</strong> ${loc.bearing.toFixed(0)}°` : ''}
+        </div>
+      `,
+          { autoClose: false, closeOnClick: false, closeButton: false }
+        );
+
+      marker.on('mouseover', () => {
+        marker.openPopup();
+      });
+      marker.on('mouseout', () => {
+        marker.closePopup();
+      });
+
+      // show accuracy circles only for locations within ACCURACY_CIRCLE_RANGE of current
+      if (
+        loc.accuracy &&
+        idx >= currentLocationIndex - ACCURACY_CIRCLE_RANGE &&
+        idx <= currentLocationIndex + ACCURACY_CIRCLE_RANGE
+      ) {
+        const circleColor = isCurrentLocation
+          ? mapAccentColor
+          : mapPrimaryColor;
+
+          leafletRef.current
+          .circle([loc.lat, loc.lon], {
+            radius: loc.accuracy,
+            color: circleColor,
+            fillColor: circleColor,
+            fillOpacity: CIRCLE_FILL_OPACITY,
+            weight: CIRCLE_WEIGHT,
+          })
+          .addTo(accuracyCirclesLayerRef.current);
+      }
+    }
+
+    const locationChanged =
+      lastLocationRef.current === null ||
+      lastLocationRef.current.lat !== lat ||
+      lastLocationRef.current.lon !== lon;
+
     if (locationChanged) {
-      const zoom = calculateZoomLevel(location.accuracy);
-      mapInstanceRef.current.setView([lat, lon], zoom);
+      if (locationCacheRef.current.size === 1) {
+        const zoom = calculateZoomLevel(location.accuracy);
+        mapInstanceRef.current.setView([lat, lon], zoom);
+      } else {
+        mapInstanceRef.current.panTo([lat, lon]);
+      }
       lastLocationRef.current = { lat, lon };
     }
   }, [currentLocationIndex, units, locations, mapAccentColor, mapReady]);

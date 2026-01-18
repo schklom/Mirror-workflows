@@ -3,7 +3,7 @@ import { ArrowLeft, ArrowUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useSearchParams } from 'react-router-dom';
 
-export const PrivacyContent = () => {
+const PrivacyContent = () => {
   const [showScrollTop, setShowScrollTop] = useState(false);
 
   // FMD Android shows the "/privacy?embedded=true" page as part of the registration flow
@@ -271,3 +271,5 @@ export const PrivacyContent = () => {
     </div>
   );
 };
+
+export default PrivacyContent;

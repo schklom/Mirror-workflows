@@ -2,7 +2,12 @@ import { useState } from 'react';
 import { ExternalLink, Shield } from 'lucide-react';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { toast } from 'sonner';
-import { deleteAccount, getLocations } from '@/lib/api';
+import {
+  deleteAccount,
+  getLocations,
+  getPictures,
+  getPushUrl,
+} from '@/lib/api';
 import { useStore, logout, type UnitSystem } from '@/lib/store';
 import {
   Dialog,
@@ -31,22 +36,47 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
     }
 
     try {
-      const decryptedLocations = await getLocations(
-        userData.sessionToken,
-        userData.rsaEncKey
-      );
+      const [locations, pictures, pushUrl] = await Promise.all([
+        getLocations(userData.sessionToken, userData.rsaEncKey),
+        getPictures(userData.sessionToken, userData.rsaEncKey),
+        getPushUrl(userData.sessionToken),
+      ]);
 
-      const dataStr = JSON.stringify(decryptedLocations, null, 2);
+      let locationsCSV =
+        'Date,Provider,Battery,Latitude,Longitude,Accuracy,Altitude,Speed,Bearing\n';
 
-      const stream = new Blob([dataStr])
-        .stream()
-        .pipeThrough(new CompressionStream('gzip'));
-      const compressedBlob = await new Response(stream).blob();
+      for (const loc of locations) {
+        const date = new Date(loc.time).toISOString();
+        const accuracy = loc.accuracy || '';
+        const altitude = loc.altitude || '';
+        const speed = loc.speed || '';
+        const bearing = loc.bearing || '';
+        locationsCSV += `${date},${loc.provider},${loc.bat},${loc.lat},${loc.lon},${accuracy},${altitude},${speed},${bearing}\n`;
+      }
 
-      const url = URL.createObjectURL(compressedBlob);
+      const generalInfo = {
+        fmdId: userData.fmdId,
+        pushUrl: pushUrl,
+      };
+
+      const JSZip = (await import('jszip')).default; // lazy-load
+      const zip = new JSZip();
+      zip.file('info.json', JSON.stringify(generalInfo));
+      zip.file('locations.csv', locationsCSV);
+
+      const picturesFolder = zip.folder('pictures');
+      if (picturesFolder) {
+        for (let i = 0; i < pictures.length; i++) {
+          picturesFolder.file(`${i}.png`, pictures[i], { base64: true });
+        }
+      }
+
+      const content = await zip.generateAsync({ type: 'blob' });
+
+      const url = URL.createObjectURL(content);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `fmd-locations-${new Date().toISOString().split('T')[0]}.json.gz`;
+      link.download = `fmd-export-${new Date().toISOString().split('T')[0]}.zip`;
       link.click();
       URL.revokeObjectURL(url);
     } catch (error) {

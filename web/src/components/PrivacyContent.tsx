@@ -1,15 +1,14 @@
 import { useState, useEffect } from 'react';
 import { ArrowLeft, ArrowUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useSearchParams } from 'react-router-dom';
 
-interface PrivacyContentProps {
-  showBackButton?: boolean;
-}
-
-export const PrivacyContent = ({
-  showBackButton = true,
-}: PrivacyContentProps) => {
+export const PrivacyContent = () => {
   const [showScrollTop, setShowScrollTop] = useState(false);
+
+  // FMD Android shows the "/privacy?embedded=true" page as part of the registration flow
+  const [searchParams] = useSearchParams();
+  const isEmbedded = searchParams.get('embedded') === 'true';
 
   useEffect(() => {
     const handleScroll = () => {
@@ -24,7 +23,7 @@ export const PrivacyContent = ({
     <div className="dark:bg-fmd-dark-lighter min-h-screen bg-white">
       <div className="px-4 py-8">
         <div className="mx-auto max-w-3xl">
-          {showBackButton && (
+          {!isEmbedded && (
             <a
               href="/"
               className="hover:text-fmd-green dark:hover:text-fmd-green mb-8 inline-flex items-center gap-1.5 text-sm text-gray-500 transition-colors dark:text-gray-400"
@@ -157,7 +156,7 @@ export const PrivacyContent = ({
                     <li>If uploaded: pictures</li>
                     <li>
                       If uploaded: locations (lat, lon, battery level,
-                      timestamp)
+                      timestamp, etc.)
                     </li>
                   </ul>
                 </div>
@@ -166,7 +165,7 @@ export const PrivacyContent = ({
                   <strong className="text-gray-900 dark:text-white">
                     Important:
                   </strong>{' '}
-                  you need to keep your password safe! Your password is used to
+                  You need to keep your password safe! Your password is used to
                   unlock the encrypted private key.
                 </p>
               </div>

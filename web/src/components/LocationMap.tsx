@@ -6,6 +6,7 @@ import { useThemeColors } from '@/hooks/useThemeColors';
 import { Spinner } from '@/components/ui/spinner';
 
 import 'leaflet/dist/leaflet.css';
+import { getTileServerUrl } from '@/lib/api';
 
 const formatProvider = (provider: string): string => {
   const providerMap: Record<string, string> = {
@@ -32,6 +33,7 @@ const calculateZoomLevel = (accuracy?: number): number => {
 export const LocationMap = () => {
   const { locations, units, currentLocationIndex, isLocationsLoading } =
     useStore();
+
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<LeafletType.Map | null>(null);
   const markerRef = useRef<LeafletType.Marker | null>(null);
@@ -39,11 +41,31 @@ export const LocationMap = () => {
   const leafletRef = useRef<typeof LeafletType | null>(null);
   const lastLocationRef = useRef<{ lat: number; lon: number } | null>(null);
   const tileLayerRef = useRef<LeafletType.TileLayer | null>(null);
-  const { accentColor } = useThemeColors();
+
+  const { mapAccentColor } = useThemeColors();
   const [mapReady, setMapReady] = useState(false);
 
+  const [tileServerUrl, setTileServerUrl] = useState('');
+
   useEffect(() => {
-    if (!mapRef.current || mapInstanceRef.current || isLocationsLoading) {
+    void (async () => {
+      try {
+        const url = await getTileServerUrl();
+        setTileServerUrl(url);
+      } catch {
+        setTileServerUrl('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+      }
+    })();
+  }, []);
+
+  // The basic map view
+  useEffect(() => {
+    if (
+      !mapRef.current ||
+      mapInstanceRef.current ||
+      isLocationsLoading ||
+      !tileServerUrl
+    ) {
       return;
     }
 
@@ -89,7 +111,7 @@ export const LocationMap = () => {
           .setView(initialView, initialZoom);
 
         tileLayerRef.current = leafletRef.current
-          .tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          .tileLayer(tileServerUrl, {
             attribution:
               '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
             maxZoom: 19,
@@ -114,8 +136,9 @@ export const LocationMap = () => {
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLocationsLoading]);
+  }, [isLocationsLoading, tileServerUrl]);
 
+  // The markers shown on the map
   useEffect(() => {
     if (
       !mapInstanceRef.current ||
@@ -155,7 +178,7 @@ export const LocationMap = () => {
         <div style="min-width: 5rem;">
           <strong>Time:</strong> ${new Date(location.date).toLocaleString()}<br/>
           <strong>Battery:</strong> ${location.bat}%<br/>
-          ${location.provider ? `<strong>Provider:</strong> ${formatProvider(location.provider)}<br/>` : ''}
+          <strong>Provider:</strong> ${formatProvider(location.provider)}<br/>
           ${location.accuracy ? `<strong>Accuracy:</strong> ${convertDistance(location.accuracy, units)}<br/>` : ''}
           ${location.altitude !== undefined ? `<strong>Altitude:</strong> ${convertDistance(location.altitude, units)}<br/>` : ''}
           ${location.speed !== undefined ? `<strong>Speed:</strong> ${convertSpeed(location.speed, units)}<br/>` : ''}
@@ -176,10 +199,10 @@ export const LocationMap = () => {
       circleRef.current = leafletRef.current
         .circle([lat, lon], {
           radius: location.accuracy,
-          color: accentColor,
-          fillColor: accentColor,
-          fillOpacity: 0.1,
-          weight: 2,
+          color: mapAccentColor,
+          fillColor: mapAccentColor,
+          fillOpacity: 0.25,
+          weight: 0,
         })
         .addTo(mapInstanceRef.current);
     }
@@ -189,11 +212,12 @@ export const LocationMap = () => {
       mapInstanceRef.current.setView([lat, lon], zoom);
       lastLocationRef.current = { lat, lon };
     }
-  }, [currentLocationIndex, units, locations, accentColor, mapReady]);
+  }, [currentLocationIndex, units, locations, mapAccentColor, mapReady]);
 
   return (
     <div className="bg-fmd-light dark:bg-fmd-dark relative flex h-full w-full flex-col rounded-lg">
-      <div ref={mapRef} className="relative flex-1" />
+      <div ref={mapRef} className="relative flex-1 rounded-lg" />
+
       {isLocationsLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-white/80 dark:bg-gray-900/80">
           <Spinner />

@@ -1,5 +1,3 @@
-'use client';
-
 export const useThemeColors = () => {
   const getCssVariable = (name: string) => {
     if (typeof window === 'undefined') return '';
@@ -9,7 +7,6 @@ export const useThemeColors = () => {
   };
 
   return {
-    accentColor: getCssVariable('--color-fmd-accent'),
     green: getCssVariable('--color-fmd-green'),
     greenDark: getCssVariable('--color-fmd-green-dark'),
     dark: getCssVariable('--color-fmd-dark'),
@@ -18,5 +15,7 @@ export const useThemeColors = () => {
     light: getCssVariable('--color-fmd-light'),
     lightDarker: getCssVariable('--color-fmd-light-darker'),
     lightBorder: getCssVariable('--color-fmd-light-border'),
+    mapPrimaryColor: getCssVariable('--color-fmd-map-primary'),
+    mapAccentColor: getCssVariable('--color-fmd-map-accent'),
   };
 };

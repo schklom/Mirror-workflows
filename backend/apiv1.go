@@ -58,6 +58,10 @@ type DataPackage struct {
 	Data string
 }
 
+type TileServeUrlResponse struct {
+	TileServerUrl string
+}
+
 // ------- Location -------
 
 func getLocation(w http.ResponseWriter, r *http.Request) {
@@ -494,6 +498,19 @@ func (h createDeviceHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	accessToken := user.AccessToken{DeviceId: id, Token: ""}
 	result, _ := json.Marshal(accessToken)
+	w.Header().Set(HEADER_CONTENT_TYPE, CT_APPLICATION_JSON)
+	w.Write(result)
+}
+
+// ------- Tile Server URL -------
+
+type tileServerUrlHandler struct {
+	tileServerUrl string
+}
+
+func (h tileServerUrlHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	response := TileServeUrlResponse{TileServerUrl: h.tileServerUrl}
+	result, _ := json.Marshal(response)
 	w.Header().Set(HEADER_CONTENT_TYPE, CT_APPLICATION_JSON)
 	w.Write(result)
 }

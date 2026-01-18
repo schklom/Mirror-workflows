@@ -2,16 +2,17 @@ import { useState, useEffect } from 'react';
 import { LoginForm } from '@/components/LoginForm';
 import { DevicePanel } from '@/components/DevicePanel';
 import { LocationMap } from '@/components/LocationMap';
-import { PhotosModal } from '@/components/PhotosModal';
-import { SettingsModal } from '@/components/SettingsModal';
+import { PhotosModal } from '@/components/modals/PhotosModal';
+import { SettingsModal } from '@/components/modals/SettingsModal';
 import { Header } from '@/components/Header';
 import { Spinner } from '@/components/ui/spinner';
-import { getLocations, decryptLocations } from '@/lib/api';
+import { getLocations } from '@/lib/api';
 import { useStore } from '@/lib/store';
 import { toast } from 'sonner';
 
 export const Home = () => {
-  const { isLoggedIn, userData, wasAuthChecked, locations } = useStore();
+  const { isLoggedIn, userData, wasAuthRestoreTried, locations } = useStore();
+
   const [photosOpen, setPhotosOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [lastLocateTime, setLastLocateTime] = useState<number | null>(null);
@@ -21,9 +22,8 @@ export const Home = () => {
 
     if (showLoading) useStore.setState({ isLocationsLoading: true });
     try {
-      const encryptedLocations = await getLocations(userData.sessionToken);
-      const decryptedLocations = await decryptLocations(
-        encryptedLocations,
+      const decryptedLocations = await getLocations(
+        userData.sessionToken,
         userData.rsaEncKey
       );
 
@@ -80,9 +80,9 @@ export const Home = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoggedIn, userData, lastLocateTime]);
 
-  if (!wasAuthChecked) {
+  if (!wasAuthRestoreTried) {
     return (
-      <div className="dark:bg-fmd-dark-lighter flex min-h-screen items-center justify-center bg-white">
+      <div className="dark:bg-fmd-dark-lighter flex min-h-screen items-center justify-center bg-gray-50">
         <Spinner size="lg" />
       </div>
     );
@@ -90,7 +90,7 @@ export const Home = () => {
 
   if (!isLoggedIn) {
     return (
-      <div className="dark:bg-fmd-dark-lighter flex min-h-screen items-center justify-center bg-white">
+      <div className="dark:bg-fmd-dark-lighter flex min-h-screen items-center justify-center bg-gray-50">
         <LoginForm />
       </div>
     );
@@ -99,10 +99,11 @@ export const Home = () => {
   return (
     <>
       <Header onSettingsClick={() => setSettingsOpen(true)} />
+
       <div className="dark:bg-fmd-dark-lighter flex h-[calc(100vh-3.1rem)] flex-col bg-gray-50 text-gray-900 dark:text-white">
         <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-4 lg:flex-row lg:overflow-hidden">
           {userData && (
-            <div className="order-2 w-full lg:order-1 lg:w-80 lg:shrink-0">
+            <div className="order-2 w-full lg:order-1 lg:w-100 lg:shrink-0">
               <DevicePanel
                 onViewPhotos={() => setPhotosOpen(true)}
                 onLocateCommand={() => setLastLocateTime(Date.now())}
@@ -110,7 +111,7 @@ export const Home = () => {
             </div>
           )}
 
-          <div className="order-1 min-h-64 flex-1 rounded-lg lg:order-2 lg:min-h-0">
+          <div className="order-1 min-h-72 flex-1 rounded-lg lg:order-2 lg:min-h-0">
             <LocationMap />
           </div>
         </div>

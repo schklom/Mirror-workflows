@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ExternalLink, Shield } from 'lucide-react';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { toast } from 'sonner';
-import { deleteAccount, getLocations, decryptLocations } from '@/lib/api';
+import { deleteAccount, getLocations } from '@/lib/api';
 import { useStore, logout, type UnitSystem } from '@/lib/store';
 import {
   Dialog,
@@ -13,7 +13,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Button } from '@/components/ui/button';
-import { ConfirmModal } from '@/components/ConfirmModal';
+import { ConfirmModal } from '@/components/modals/ConfirmModal';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -31,9 +31,8 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
     }
 
     try {
-      const encryptedLocations = await getLocations(userData.sessionToken);
-      const decryptedLocations = await decryptLocations(
-        encryptedLocations,
+      const decryptedLocations = await getLocations(
+        userData.sessionToken,
         userData.rsaEncKey
       );
 
@@ -61,11 +60,13 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
         <DialogHeader>
           <DialogTitle>Settings</DialogTitle>
         </DialogHeader>
+
         <Tabs defaultValue="settings" className="w-full">
           <TabsList className="mb-6 w-full">
             <TabsTrigger value="settings" className="flex-1">
               General
             </TabsTrigger>
+
             <TabsTrigger value="about" className="flex-1">
               About
             </TabsTrigger>
@@ -76,6 +77,7 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
               <h3 className="text-fmd-green mb-3 font-semibold">Theme</h3>
               <ThemeToggle />
             </div>
+
             <div>
               <h3 className="text-fmd-green mb-3 font-semibold">Units</h3>
               <ToggleGroup
@@ -89,12 +91,14 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
                 <ToggleGroupItem value="imperial">Imperial</ToggleGroupItem>
               </ToggleGroup>
             </div>
+
             <div>
               <h3 className="text-fmd-green mb-3 font-semibold">Data</h3>
               <div className="flex flex-wrap gap-3">
                 <Button variant="secondary" onClick={() => void handleExport()}>
                   Export Data
                 </Button>
+
                 <Button
                   variant="destructive"
                   onClick={() => setShowDeleteConfirm(true)}
@@ -112,8 +116,8 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
             <div>
               <h3 className="text-fmd-green font-semibold">FMD Server</h3>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                Find My Device Server - A server to communicate with the FMD
-                Android app, to locate and control your devices.
+                A server to communicate with the FMD Android app, to locate and
+                control your devices.
               </p>
             </div>
 
@@ -175,7 +179,7 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
 
       <ConfirmModal
         isOpen={showDeleteConfirm}
-        onClose={() => setShowDeleteConfirm(false)}
+        onCancel={() => setShowDeleteConfirm(false)}
         onConfirm={() => {
           void (async () => {
             if (!userData) return;

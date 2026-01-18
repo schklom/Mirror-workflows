@@ -6,14 +6,15 @@ import { visualizer } from 'rollup-plugin-visualizer';
 export default defineConfig({
   plugins: [
     react(),
-    visualizer({
-      open: true,
-      gzipSize: true,
-      brotliSize: true,
-      template: 'treemap',
-      filename: 'dist/stats.html',
-    }),
-  ],
+    process.env.ANALYZE &&
+      visualizer({
+        open: true,
+        gzipSize: true,
+        brotliSize: true,
+        template: 'treemap',
+        filename: 'dist/stats.html',
+      }),
+  ].filter(Boolean) as any,
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
@@ -26,7 +27,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://fmd.philippov.ca',
+        target: 'http://localhost:8080',
         changeOrigin: true,
         secure: true,
       },

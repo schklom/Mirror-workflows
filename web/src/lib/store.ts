@@ -1,5 +1,3 @@
-'use client';
-
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { storeKeys, clearKeys, getKeys } from '@/lib/keystore';
@@ -18,15 +16,17 @@ interface UserData {
 interface AppState {
   isLoggedIn: boolean;
   userData: UserData | null;
-  wasAuthChecked: boolean;
+  wasAuthRestoreTried: boolean;
   theme: Theme;
   units: UnitSystem;
   pushUrl: string | null;
+  isPushUrlLoading: boolean;
+
   locations: Location[];
   currentLocationIndex: number;
-  pictures: string[];
-  isPushUrlLoading: boolean;
   isLocationsLoading: boolean;
+
+  pictures: string[];
   isPicturesLoading: boolean;
 
   setUserData: (data: UserData, persistent: boolean) => Promise<void>;
@@ -35,14 +35,15 @@ interface AppState {
   setTheme: (theme: Theme) => void;
 }
 
-const AUTH_KEY = 'fmd-auth';
+const KEY_AUTH = 'fmd-auth';
+const KEY_SETTINGS = 'fmd-settings';
 
 export const useStore = create<AppState>()(
   persist(
     (set) => ({
       isLoggedIn: false,
       userData: null,
-      wasAuthChecked: false,
+      wasAuthRestoreTried: false,
       theme: 'system',
       units: 'metric',
       pushUrl: null,
@@ -61,7 +62,7 @@ export const useStore = create<AppState>()(
           });
 
           localStorage.setItem(
-            AUTH_KEY,
+            KEY_AUTH,
             JSON.stringify({
               fmdId: data.fmdId,
               sessionToken: data.sessionToken,
@@ -76,7 +77,7 @@ export const useStore = create<AppState>()(
       },
 
       logout: async () => {
-        localStorage.removeItem(AUTH_KEY);
+        localStorage.removeItem(KEY_AUTH);
         await clearKeys();
         set({
           userData: null,
@@ -89,7 +90,7 @@ export const useStore = create<AppState>()(
 
       restoreAuth: async () => {
         try {
-          const authData = localStorage.getItem(AUTH_KEY);
+          const authData = localStorage.getItem(KEY_AUTH);
           if (!authData) return;
 
           const parsed = JSON.parse(authData) as {
@@ -110,10 +111,10 @@ export const useStore = create<AppState>()(
             });
           }
         } catch {
-          localStorage.removeItem(AUTH_KEY);
+          localStorage.removeItem(KEY_AUTH);
           await clearKeys();
         } finally {
-          set({ wasAuthChecked: true });
+          set({ wasAuthRestoreTried: true });
         }
       },
 
@@ -124,11 +125,15 @@ export const useStore = create<AppState>()(
           theme === 'dark' ||
           (theme === 'system' &&
             window.matchMedia('(prefers-color-scheme: dark)').matches);
+
         document.documentElement.classList.toggle('dark', isDark);
       },
     }),
+
+    // Persist some of the state
+    // https://github.com/pmndrs/zustand/blob/main/docs/integrations/persisting-store-data.md
     {
-      name: 'fmd-storage',
+      name: KEY_SETTINGS,
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         theme: state.theme,

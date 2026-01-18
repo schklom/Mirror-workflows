@@ -1,9 +1,13 @@
 import { logout } from '@/lib/store';
-import { decryptData } from './crypto';
+import { decryptData, sign } from './crypto';
 
 interface DataPackage {
   IDT: string;
   Data: string;
+}
+
+interface TileServerUrlResponse {
+  TileServerUrl: string;
 }
 
 const API_BASE = 'api/v1';
@@ -16,10 +20,10 @@ export const ENDPOINTS = {
   LOCATIONS: `${API_BASE}/locations`,
   COMMAND: `${API_BASE}/command`,
   DEVICE: `${API_BASE}/device`,
-  PICTURE: `${API_BASE}/picture`,
   PICTURES: `${API_BASE}/pictures`,
-  VERSION: `${API_BASE}/version`,
   PUSH: `${API_BASE}/push`,
+  TILE_SERVER: `${API_BASE}/tileServerUrl`,
+  VERSION: `${API_BASE}/version`,
 } as const;
 
 const HTTP = {
@@ -36,7 +40,7 @@ export interface Location {
   bat: number;
   date: number;
   time: string;
-  provider?: string;
+  provider: string;
   accuracy?: number;
   altitude?: number;
   speed?: number;
@@ -90,7 +94,7 @@ export const login = async (
       SessionDurationSeconds: sessionDurationSeconds,
     }
   );
-  return response.Data;
+  return response.Data; // session token
 };
 
 export const getWrappedPrivateKey = async (sessionToken: string) => {
@@ -101,40 +105,45 @@ export const getWrappedPrivateKey = async (sessionToken: string) => {
   return response.Data;
 };
 
-export const getLocations = async (sessionToken: string) => {
+export const getLocations = async (
+  sessionToken: string,
+  rsaEncKey: CryptoKey
+) => {
   const response = await request<string[]>(ENDPOINTS.LOCATIONS, HTTP.POST, {
     IDT: sessionToken,
     Data: '',
   });
-  return response.map((jsonStr) => {
-    const parsed = JSON.parse(jsonStr) as DataPackage;
-    return { Position: parsed.Data };
-  });
-};
 
-export const decryptLocations = async (
-  encryptedLocations: { Position: string }[],
-  rsaEncKey: CryptoKey
-) =>
-  Promise.all(
+  const encryptedLocations = response.map((jsonStr) => {
+    const parsed = JSON.parse(jsonStr) as DataPackage;
+    return parsed.Data;
+  });
+
+  const decryptedLocations = await Promise.all(
     encryptedLocations.map(async (encryptedLoc) => {
-      const decrypted = await decryptData(rsaEncKey, encryptedLoc.Position);
+      const decrypted = await decryptData(rsaEncKey, encryptedLoc);
       return JSON.parse(decrypted) as Location;
     })
   );
 
-export const sendCommand = (
+  return decryptedLocations;
+};
+
+export const sendCommand = async (
   sessionToken: string,
   command: string,
-  signature: string,
-  timestamp: number
-) =>
-  request(ENDPOINTS.COMMAND, HTTP.POST, {
+  rsaSigKey: CryptoKey
+) => {
+  const timestamp = Date.now();
+  const signature = await sign(rsaSigKey, `${timestamp}:${command}`);
+
+  return request(ENDPOINTS.COMMAND, HTTP.POST, {
     IDT: sessionToken,
     Data: command,
     UnixTime: timestamp,
     CmdSig: signature,
   });
+};
 
 export const getPictures = async (
   sessionToken: string,
@@ -176,6 +185,18 @@ export const getPushUrl = async (sessionToken: string) => {
   }
 
   return response.text();
+};
+
+export const getTileServerUrl = async () => {
+  const response = await fetch(ENDPOINTS.TILE_SERVER);
+
+  const text = await response.text();
+  if (!response.ok) {
+    throw new Error(text || 'Request failed');
+  }
+
+  const json = JSON.parse(text) as TileServerUrlResponse;
+  return json.TileServerUrl;
 };
 
 export const getVersion = async () => {

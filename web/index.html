@@ -1,234 +1,35 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      // FOUC prevention - runs before anything renders
+      try {
+        const stored = localStorage.getItem('fmd-storage');
+        const theme = stored ? JSON.parse(stored).state.theme : 'system';
+        const isDark =
+          theme === 'dark' ||
+          (theme === 'system' &&
+            window.matchMedia('(prefers-color-scheme: dark)').matches);
+        if (isDark) {
+          document.documentElement.classList.add('dark');
+        }
+      } catch (_) {}
+    </script>
+    <meta
+      name="description"
+      content="Find My Device Server - Locate and control your Android devices"
+    />
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.json" />
     <title>FMD Server</title>
-
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="cache-control" content="no-cache, no-store must-revalidate, post-check=0, pre-check=0" />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="cache-control" content="max-age=0" />
-    <meta http-equiv="expires" content="0" />
-
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link rel="manifest" href="manifest.json">
-
-    <link rel="stylesheet" href="style.css">
-
-    <script src="node_modules/leaflet/dist/leaflet.js"></script>
-    <link rel="stylesheet" href="node_modules/leaflet/dist/leaflet.css" />
-
-    <script src="node_modules/toastedjs/dist/toasted.min.js"></script>
-    <link rel="stylesheet" href="node_modules/toastedjs/dist/toasted.min.css">
-
-    <!-- Not an actual file, created dynamically by the server -->
-    <script src="config.js"></script>
-
-    <script src="apiv1.js"></script>
-    <script src="locate.js"></script>
-    <script src="command.js"></script>
-    <script src="logic.js"></script>
-    <script src="fmdcrypto.js"></script>
-    <script src="picture.js"></script>
-    <script src="node_modules/argon2-browser/lib/argon2.js"></script>
-    <script src="node_modules/jszip/dist/jszip.min.js"></script>
-</head>
-
-<body>
-
-    <h2 class="center-column">FMD Server</h2>
-
-    <div id="loginContainer" class="center-column">
-        <p>
-            This platform is for locating and controlling your devices.
-            To get started, install FMD Android on your mobile device and use it to register an account on FMD Server.
-        </p>
-        <br>
-        <form id="loginForm" class="center-column">
-            <input type="text" id="fmdid" name="fmdid" placeholder="FMD ID" required>
-
-            <input type="password" id="password" name="password" placeholder="Password" required>
-
-            <div>
-                <input type="checkbox" id="useLongSession">
-                <label for="useLongSession">Remember me for one week</label>
-            </div>
-
-            <button id="loginButton" type="submit">Log in</button>
-        </form>
-    </div>
-
-    <div id="dataView">
-        <div id="map"></div>
-    </div>
-
-    <div class="deviceInfo" id="desktop">
-        <div class="row">
-            <div class="column-left">
-                <div class="center-row">
-                    <img src="assets/Smartphone.png" height="96" alt="" />
-                </div>
-                <div class="center-row margin-top">
-                    <p id="batView">Data</p>
-                </div>
-            </div>
-            <div class="column-middle">
-                <h3 id="idView" class="inline">ID</h3>
-                <span id="locationInfo"></span>
-
-                <div id="pushWarning"> </div>
-
-                <div>
-                    <button type="button" class="imageButton" title="Previous Location" id="locateOlder">
-                        <img src="assets/Left.png" height="24" alt="" />
-                    </button>
-                    <button type="button" class="imageButton" title="Next Location" id="locateNewer">
-                        <img src="assets/Right.png" height="24" alt="" />
-                    </button>
-                    Auto-refreshing locations is not yet supported. Press the right arrow to query the next location.
-                </div>
-
-                <div class="dropdown">
-                    <button type="button" class="imageButton dropDownBtn" title="Locate" id="locate">
-                        <img src="assets/Locate.png" height="36" id="locateDropDownButtonInner" alt="" />
-                    </button>
-                    <div id="locateDropDown" class="dropdown-content">
-                        <button title="All" id="locateAll">All</button>
-                        <button title="GPS" id="locateGps">GPS</button>
-                        <button title="Cellular" id="locateCellular">Cellular</button>
-                        <button title="Last" id="locateLast">Last</button>
-                    </div>
-                </div>
-                <button type="button" class="imageButton" title="Ring" id="ring">
-                    <img src="assets/Ring.png" height="36" alt="" />
-                </button>
-                <button type="button" class="imageButton" title="Lock" id="lock">
-                    <img src="assets/Locked.png" height="36" alt="" />
-                </button>
-                <button type="button" class="imageButton" title="Delete" id="delete">
-                    <img src="assets/Delete.png" height="36" alt="" />
-                </button>
-                <div class="dropdown">
-                    <button type="button" class="imageButton dropDownBtn" title="Camera" id="takePicture">
-                        <img src="assets/Camera.png" height="36" id="cameraDropDownButtonInner" alt="" />
-                    </button>
-                    <div id="cameraDropDown" class="dropdown-content">
-                        <button title="front" id="cameraFront">Front</button>
-                        <button title="back" id="cameraBack">Back</button>
-                    </div>
-                </div>
-                <button type="button" class="imageButton" title="Picture" id="showPicture">
-                    <img src="assets/Picture.png" height="36" alt="" />
-                </button>
-                <div class="dropdown">
-                    <button type="button" class="imageButton dropDownBtn" title="Settings" id="openSettings">
-                        <img src="assets/Settings.png" height="36" id="settingsDropDownButtonInner" alt="" />
-                    </button>
-                    <div id="settingsDropDown" class="dropdown-content">
-                        <button title="Export Data" id="exportData">Export Data</button>
-                        <button title="Delete Account" id="deleteAccount">Delete Account</button>
-                    </div>
-                </div>
-                <!-- Disabled Feature: CommandLogs
-                <button type="button" class="imageButton" title="CommandLogs" id="showCommandLogs">
-                    <img src="assets/CommandLogs.png" height="36" alt="" />
-                </button> -->
-            </div>
-
-        </div>
-    </div>
-
-    <div class="deviceInfo" id="mobile">
-        <div class="row">
-            <div class="column-left">
-                <div class="center-row">
-                    <img src="assets/Smartphone.png" height="48" alt="" />
-                </div>
-                <div class="center-row margin-top">
-                    <p id="batView">Data</p>
-                </div>
-            </div>
-            <div class="column-middle">
-                <h3 id="idView">ID</h3>
-                <span id="locationInfo"></span>
-
-                <div id="pushWarning"> </div>
-
-                <div>
-                    <button type="button" class="imageButton" title="Previous Location" id="locateOlder">
-                        <img src="assets/Left.png" height="24" alt="" />
-                    </button>
-                    <button type="button" class="imageButton" title="Next Location" id="locateNewer">
-                        <img src="assets/Right.png" height="24" alt="" />
-                    </button>
-                </div>
-                <p>Auto-refreshing locations is not yet supported. Press the right arrow to query the next location.</p>
-
-                <div class="dropdown">
-                    <button type="button" class="imageButton dropDownBtn" title="Locate" id="locate">
-                        <img src="assets/Locate.png" height="24" id="locateDropDownButtonInner" alt="" />
-                    </button>
-                    <div id="locateDropDown" class="dropdown-content">
-                        <button title="All" id="locateAll">All</button>
-                        <button title="GPS" id="locateGps">GPS</button>
-                        <button title="Cellular" id="locateCellular">Cellular</button>
-                        <button title="Last" id="locateLast">Last</button>
-                    </div>
-                </div>
-                <button type="button" class="imageButton" title="Ring" id="ring">
-                    <img src="assets/Ring.png" height="24" alt="" />
-                </button>
-                <button type="button" class="imageButton" title="Lock" id="lock">
-                    <img src="assets/Locked.png" height="24" alt="" />
-                </button>
-                <button type="button" class="imageButton" title="Delete" id="delete">
-                    <img src="assets/Delete.png" height="24" alt="" />
-                </button>
-                <div class="dropdown">
-                    <button type="button" class="imageButton dropDownBtn" title="Camera" id="takePicture">
-                        <img src="assets/Camera.png" height="24" id="cameraDropDownButtonInner" alt="" />
-                    </button>
-                    <div id="cameraDropDown" class="dropdown-content">
-                        <button title="front" id="cameraFront">Front</button>
-                        <button title="back" id="cameraBack">Back</button>
-                    </div>
-                </div>
-                <button type="button" class="imageButton" title="Picture" id="showPicture">
-                    <img src="assets/Picture.png" height="24" alt="" />
-                </button>
-                <div class="dropdown">
-                    <button type="button" class="imageButton dropDownBtn" title="Settings" id="openSettings">
-                        <img src="assets/Settings.png" height="36" id="settingsDropDownButtonInner" alt="" />
-                    </button>
-                    <div id="settingsDropDown" class="dropdown-content">
-                        <button title="Export Data" id="exportData">Export Data</button>
-                        <button title="Delete Account" id="deleteAccount">Delete Account</button>
-                    </div>
-                </div>
-                <!-- Disabled Feature: CommandLogs
-                <button type="button" class="imageButton" title="CommandLogs" id="showCommandLogs">
-                    <img src="assets/CommandLogs.png" height="36" alt="" />
-                </button> -->
-
-            </div>
-        </div>
-    </div>
-
-    <footer>
-        <div class="center-row">
-            <p>FMD Server</p>
-            <a href="https://gitlab.com/fmd-foss/fmd-server/-/releases" target="_blank" id="version">v0.0.0</a>
-            &nbsp;&nbsp;&nbsp;
-            <a href="https://gitlab.com/fmd-foss/fmd-server/" target="_blank">Source Code</a>
-            &nbsp;&nbsp;&nbsp;
-            <a href="ds.html">Privacy Notice</a>
-
-            <a href="https://f-droid.org/packages/de.nulide.findmydevice/" target="_blank">
-                <img src="assets/f-droid-badge.png" alt="Get it on F-Droid badge" id="f-droid-badge">
-            </a>
-        </div>
-    </footer>
-
-</body>
-
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>

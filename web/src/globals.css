@@ -1,0 +1,141 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-fmd-green: #4cb050;
+  --color-fmd-green-dark: #318f2f;
+  --color-fmd-dark: #1a1a1a;
+  --color-fmd-dark-lighter: #0f0f0f;
+  --color-fmd-dark-border: #2a2a2a;
+  --color-fmd-light: #f5f5f5;
+  --color-fmd-light-darker: #e0e0e0;
+  --color-fmd-light-border: #d0d0d0;
+  --color-fmd-accent: #e5528c;
+
+  --font-family-sans:
+    'Gill Sans', 'Gill Sans MT', 'Calibri', 'Trebuchet MS', sans-serif;
+}
+
+@layer base {
+  html {
+    @apply h-full scroll-smooth;
+  }
+
+  html:not(.dark) {
+    color-scheme: light;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
+  body {
+    @apply h-full font-sans;
+    @apply bg-fmd-light text-gray-900;
+  }
+
+  .dark body {
+    @apply bg-fmd-dark text-white;
+  }
+
+  /* https://stackoverflow.com/a/61982880/11076036 */
+  .marker-selected {
+    filter: hue-rotate(130deg);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    body {
+      @apply bg-fmd-dark text-white;
+    }
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply text-fmd-green;
+  }
+
+  a {
+    @apply transition-colors text-gray-900 hover:text-fmd-green;
+  }
+
+  .dark a {
+    @apply text-white hover:text-fmd-green;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    a {
+      @apply text-white hover:text-fmd-green;
+    }
+  }
+}
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+}
+
+:root {
+  --radius: 0.625rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --primary: oklch(0.683 0.163 142.495); /* FMD Green #4cb050 */
+  --primary-foreground: oklch(1 0 0); /* White text on green */
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --primary: oklch(0.683 0.163 142.495); /* FMD Green #4cb050 */
+  --primary-foreground: oklch(1 0 0); /* White text on green */
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.708 0 0);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}

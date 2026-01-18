@@ -38,7 +38,7 @@ func securityHeadersMiddleware(next http.Handler, tileServerOrigin string) http.
 		w.Header().Set("X-Frame-Options", "DENY")
 		w.Header().Set("X-Content-Type-Options", "nosniff")
 		w.Header().Set("X-Xss-Protection", "1; mode=block")
-		w.Header().Set("Content-Security-Policy", "default-src 'self' ; img-src 'self' data: "+tileServerOrigin+" ; script-src 'self' 'wasm-unsafe-eval' ; upgrade-insecure-requests")
+		w.Header().Set("Content-Security-Policy", "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: "+tileServerOrigin+"; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests")
 		w.Header().Set("Permissions-Policy", "camera=(), microphone=()")
 		w.Header().Set("Referrer-Policy", "same-origin")
 
@@ -95,7 +95,7 @@ func buildServeMux(config *viper.Viper) http.Handler {
 	// staticFilesMux.Handle("/", http.FileServer(http.FS(frontend.WebDir())))
 	// Handling --web-dir parameter/config
 	if config.GetString(conf.CONF_WEB_DIR) == "" {
-		apiV1Mux.Handle("/", http.FileServer(http.FS(frontend.WebDir())))
+		apiV1Mux.Handle("/", frontend.FileServerWithHTML(frontend.WebDir()))
 	} else {
 		apiV1Mux.Handle("/", http.FileServer(http.Dir(config.GetString(conf.CONF_WEB_DIR))))
 	}

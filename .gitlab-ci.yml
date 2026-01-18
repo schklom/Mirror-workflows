@@ -17,12 +17,30 @@ variables:
   - go get gopkg.in/yaml.v3
 
 stages:
+  - web
   - lint
   - test
   - build
 
+.web:
+  image: node:24-alpine
+  cache:
+    key:
+      files:
+        - web/pnpm-lock.yaml
+    paths:
+      - .pnpm-store
+  before_script:
+    - cd web
+    - corepack enable
+    - pnpm config set store-dir ../.pnpm-store
+    - pnpm install --frozen-lockfile
+
 format:
   stage: lint
+  needs:
+    - job: web:build
+      artifacts: true
   script:
     - *go-setup
     - go mod tidy
@@ -32,6 +50,9 @@ format:
 # https://staticcheck.dev/
 staticcheck:
   stage: lint
+  needs:
+    - job: web:build
+      artifacts: true
   script:
     - *go-setup
     - go install honnef.co/go/tools/cmd/staticcheck@latest
@@ -39,6 +60,9 @@ staticcheck:
 
 nil-safety:
   stage: lint
+  needs:
+    - job: web:build
+      artifacts: true
   script:
     - *go-setup
     - go install go.uber.org/nilaway/cmd/nilaway@latest
@@ -60,6 +84,34 @@ sonarcloud-check:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
   allow_failure: true # This step fails in forks due to the missing API key.
 
+web:format:
+  extends: .web
+  stage: lint
+  script:
+    - pnpm format:check
+  only:
+    changes:
+      - web/**/*
+
+web:typecheck:
+  extends: .web
+  stage: lint
+  script:
+    - pnpm type-check
+  only:
+    changes:
+      - web/**/*
+
+web:build:
+  extends: .web
+  stage: web
+  script:
+    - pnpm build
+  artifacts:
+    paths:
+      - web/dist/
+    expire_in: 1 week
+
 unit-test:
   stage: test
   script:
@@ -68,6 +120,9 @@ unit-test:
 
 compile:
   stage: build
+  needs:
+    - job: web:build
+      artifacts: true
   script:
     - *go-setup
     - go build -o fmdserver

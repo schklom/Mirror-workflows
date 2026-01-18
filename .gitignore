@@ -33,3 +33,11 @@ cmd/test/web
 # Varia
 *.patch
 
+# Node / Frontend
+node_modules/
+dist/
+.env.local
+*.tsbuildinfo
+
+db/fmd.sqlite-wal
+db/fmd.sqlite-shm

@@ -10,12 +10,17 @@ import { getLocations } from '@/lib/api';
 import { useStore } from '@/lib/store';
 import { toast } from 'sonner';
 
+const minute = 60 * 1000;
+
 const Home = () => {
   const { isLoggedIn, userData, wasAuthRestoreTried, locations } = useStore();
 
   const [photosOpen, setPhotosOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [lastLocateTime, setLastLocateTime] = useState<number | null>(null);
+  const [lastLocationsFetchedTime, setLastLocationsFetchedTime] = useState<
+    number | null
+  >(null);
 
   const fetchLocations = async (showLoading = true) => {
     if (!userData) return;
@@ -36,6 +41,7 @@ const Home = () => {
         });
       }
 
+      setLastLocationsFetchedTime(Date.now());
       useStore.setState({ locations: decryptedLocations });
     } catch (error) {
       const message =
@@ -53,24 +59,27 @@ const Home = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoggedIn]);
 
+  // Regular background polling while browser tab is visibile
   useEffect(() => {
     if (!isLoggedIn || !userData) return;
 
     const getPollingInterval = () => {
-      if (!lastLocateTime) return 15 * 60 * 1000; // 15 minutes
+      if (!lastLocateTime) return 15 * minute;
 
+      // If just after a locate command, poll more often
       const timeSinceLocate = Date.now() - lastLocateTime;
-      const twoMinutes = 2 * 60 * 1000;
-
-      // If within 2 minutes of locate command, poll every 20 seconds
-      if (timeSinceLocate < twoMinutes) {
+      if (timeSinceLocate < 1 * minute) {
+        return 15 * 1000; // 15 seconds
+      }
+      if (timeSinceLocate < 2 * minute) {
         return 20 * 1000; // 20 seconds
       }
 
-      return 15 * 60 * 1000; // 15 minutes
+      return 15 * minute;
     };
 
     const poll = () => {
+      if (document.hidden) return;
       void fetchLocations(false);
     };
 
@@ -79,6 +88,26 @@ const Home = () => {
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoggedIn, userData, lastLocateTime]);
+
+  // Poll when browser tab is resumed
+  useEffect(() => {
+    if (!isLoggedIn || !userData) return;
+
+    const poll = () => {
+      if (document.hidden) return;
+
+      if (!lastLocationsFetchedTime) return;
+
+      const timeSinceLocate = Date.now() - lastLocationsFetchedTime;
+      if (timeSinceLocate < 5 * minute) return;
+
+      void fetchLocations(false);
+    };
+
+    window.addEventListener('visibilitychange', poll);
+    return () => window.removeEventListener('visibilitychange', poll);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoggedIn, userData, lastLocationsFetchedTime]);
 
   if (!wasAuthRestoreTried) {
     return (

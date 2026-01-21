@@ -39,6 +39,7 @@ jobs:
           # Forecefully update CAs to prevent expired certificates in curl commands
           sudo apt update
           sudo apt install --reinstall -y ca-certificates
+          sudo update-ca-certificates --fresh
           
           # Get the dropbox link and remove the quotation marks
           url=$(curl -sS "https://tasker.joaoapps.com/direct_purchase_download" | grep -o '".*dropbox.*"' | tr -d '"')

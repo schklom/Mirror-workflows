@@ -21,6 +21,7 @@ import {
   Satellite,
   Bell,
   BellOff,
+  Vibrate,
 } from 'lucide-react';
 import { ActionItem } from '@/components/ActionItem';
 import { BatteryIndicator } from '@/components/BatteryIndicator';
@@ -258,7 +259,7 @@ export const DevicePanel = ({
       onClick: () => void executeCommand(COMMANDS.RINGERMODE_NORMAL),
     },
     {
-      icon: Volume2,
+      icon: Vibrate,
       title: 'Ringer: Vibrate',
       description: 'Set ringer mode to vibrate',
       onClick: () => void executeCommand(COMMANDS.RINGERMODE_VIBRATE),

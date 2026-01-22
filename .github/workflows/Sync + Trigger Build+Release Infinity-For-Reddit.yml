@@ -171,7 +171,13 @@ jobs:
           echo "        repository: schklom/Infinity-For-Reddit" >> $file
           echo "        token: ${{ '\${{ secrets.PAT_GITHUB_ACTION }}' }}" >> $file
           
-      
+      - name: Increase memory size for Gradle (2048M -> 4096M)
+        run: |
+          # https://github.com/schklom/Infinity-For-Reddit/actions/runs/21232799403/job/61135876104
+          # solved by https://github.com/schklom/Infinity-For-Reddit/commit/d656e1eef3571d61090c1cb9e76c5e4b00e5ad61
+          file="gradle.properties"
+          sed -i "s/org.gradle.jvmargs=-Xmx2048m/org.gradle.jvmargs=-Xmx4096m/" "$file"
+        
       - name: Remove pointless workflow
         run: rm .github/workflows/codeql*
           # Reuse app build workflow
@@ -183,7 +189,7 @@ jobs:
       - name: Commit and push the change
         uses: stefanzweifel/git-auto-commit-action@v7
         with:
-          commit_message: Add Change API key + change User-Agent + Keystore + remove codeql workflow + Add last_sync_with_original_repo_version
+          commit_message: Add Change API key + change User-Agent + Keystore + remove codeql workflow + Add last_sync_with_original_repo_version + Increase Gradle memory size
 
 #   fix_for_workflow:
 #     needs: [repo_sync_master]

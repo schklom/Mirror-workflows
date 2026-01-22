@@ -56,7 +56,7 @@ export const ActionItem = ({
         >
           {title}
         </div>
-        <div className="text-sm whitespace-normal text-gray-600 dark:text-gray-400">
+        <div className="pt-1 text-sm whitespace-normal text-gray-600 dark:text-gray-400">
           {description}
         </div>
       </div>

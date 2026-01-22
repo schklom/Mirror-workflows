@@ -82,6 +82,14 @@ interface DevicePanelProps {
   onLocateCommand?: () => void;
 }
 
+interface ActionData {
+  icon: any;
+  title: string;
+  description: string;
+  onClick: () => void;
+  variant?: 'default' | 'destructive'; // same as ActionItemProps
+}
+
 export const DevicePanel = ({
   onLocateCommand,
   onViewPhotos,
@@ -134,7 +142,7 @@ export const DevicePanel = ({
     }
   };
 
-  const actions = [
+  const groupLocations = [
     {
       icon: Navigation,
       title: 'Locate: All',
@@ -166,6 +174,8 @@ export const DevicePanel = ({
       description: 'Get cached location (faster, may be outdated)',
       onClick: () => void executeCommand(COMMANDS.LOCATE_LAST),
     },
+  ];
+  const groupGeneral = [
     {
       icon: Volume2,
       title: 'Ring',
@@ -191,6 +201,8 @@ export const DevicePanel = ({
       onClick: () => setShowFactoryResetConfirm(true),
       variant: 'destructive' as const,
     },
+  ];
+  const groupPictures = [
     {
       icon: UserCircle,
       title: 'Front Camera',
@@ -209,6 +221,8 @@ export const DevicePanel = ({
       description: 'View photos taken by the device',
       onClick: onViewPhotos,
     },
+  ];
+  const groupLocationServices = [
     {
       icon: Satellite,
       title: 'Enable Location Services',
@@ -221,6 +235,8 @@ export const DevicePanel = ({
       description: 'Turn off Location Services',
       onClick: () => void executeCommand(COMMANDS.GPS_OFF),
     },
+  ];
+  const groupBluetooth = [
     {
       icon: Bluetooth,
       title: 'Enable Bluetooth',
@@ -233,6 +249,8 @@ export const DevicePanel = ({
       description: 'Turn off Bluetooth',
       onClick: () => void executeCommand(COMMANDS.BLUETOOTH_OFF),
     },
+  ];
+  const groupRinger = [
     {
       icon: Bell,
       title: 'Ringer: Normal',
@@ -251,6 +269,8 @@ export const DevicePanel = ({
       description: 'Set ringer mode to silent',
       onClick: () => void executeCommand(COMMANDS.RINGERMODE_SILENT),
     },
+  ];
+  const groupDnd = [
     {
       icon: BellOff,
       title: 'Do Not Disturb On',
@@ -263,6 +283,15 @@ export const DevicePanel = ({
       description: 'Disable Do Not Disturb mode',
       onClick: () => void executeCommand(COMMANDS.NODISTURB_OFF),
     },
+  ];
+  const actionGroups: Array<Array<ActionData>> = [
+    groupLocations,
+    groupGeneral,
+    groupPictures,
+    groupLocationServices,
+    groupBluetooth,
+    groupRinger,
+    groupDnd,
   ];
 
   const currentLocation = locations[currentLocationIndex];
@@ -353,19 +382,24 @@ export const DevicePanel = ({
           </div>
         )}
 
-        <div className="dark:border-fmd-dark-border dark:bg-fmd-dark rounded-lg border border-gray-200 bg-white">
-          {actions.map((action, index) => (
-            <ActionItem
-              key={index}
-              icon={action.icon}
-              title={action.title}
-              description={action.description}
-              onClick={action.onClick}
-              disabled={loading}
-              variant={action.variant}
-            />
-          ))}
-        </div>
+        {actionGroups.map((group, groupIndex) => (
+          <div
+            key={groupIndex}
+            className="dark:border-fmd-dark-border dark:bg-fmd-dark rounded-lg border border-gray-200 bg-white"
+          >
+            {group.map((action, index) => (
+              <ActionItem
+                key={index}
+                icon={action.icon}
+                title={action.title}
+                description={action.description}
+                onClick={action.onClick}
+                disabled={loading}
+                variant={action.variant}
+              />
+            ))}
+          </div>
+        ))}
       </div>
 
       <FactoryResetModal

@@ -274,7 +274,14 @@ export const LocationMap = () => {
       }
       lastLocationRef.current = { lat, lon };
     }
-  }, [currentLocationIndex, units, locations, mapAccentColor, mapReady]);
+  }, [
+    currentLocationIndex,
+    units,
+    locations,
+    mapPrimaryColor,
+    mapAccentColor,
+    mapReady,
+  ]);
 
   return (
     <div className="bg-fmd-light dark:bg-fmd-dark relative flex h-full w-full flex-col rounded-lg">

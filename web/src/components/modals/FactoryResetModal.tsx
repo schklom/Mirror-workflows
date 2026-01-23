@@ -14,38 +14,38 @@ export const FactoryResetModal = ({
   onClose,
   executeCommand,
 }: FactoryResetModalProps) => {
-  const [deletePin, setDeletePin] = useState('');
+  const [deletePassword, setDeletePassword] = useState('');
 
   return (
     <ConfirmModal
       isOpen={isOpen}
       onCancel={() => {
         onClose();
-        setDeletePin('');
+        setDeletePassword('');
       }}
       onConfirm={() => {
-        if (deletePin.trim()) {
-          executeCommand(`delete ${deletePin.trim()}`);
-          setDeletePin('');
+        if (deletePassword.trim()) {
+          executeCommand(`delete ${deletePassword.trim()}`);
+          setDeletePassword('');
         } else {
-          toast.error('Please enter your device PIN');
+          toast.error('Please enter your delete password');
         }
         onClose();
       }}
       title="Factory reset the device?"
       message="This will permanently delete all data from your device and restore it to factory settings. This action cannot be undone."
       confirmText="Factory reset"
-      confirmDisabled={!deletePin.trim()}
+      confirmDisabled={!deletePassword.trim()}
     >
       <PasswordInput
         id="delete-pin"
-        value={deletePin}
-        onChange={(e) => setDeletePin(e.target.value)}
-        placeholder="Enter your device PIN"
+        value={deletePassword}
+        onChange={(e) => setDeletePassword(e.target.value)}
+        placeholder="Enter your delete password"
         autoComplete="off"
       />
       <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
-        This is the PIN configured in your FMD Android app, not your server
+        This is the password configured in your FMD Android app, not your server
         password.
       </p>
     </ConfirmModal>

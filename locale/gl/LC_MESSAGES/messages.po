@@ -8,16 +8,16 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-01-17 17:45+0000\n"
-"PO-Revision-Date: 2025-11-29 22:00+0000\n"
+"PO-Revision-Date: 2026-01-25 21:59+0000\n"
 "Last-Translator: \"josé m.\" <correoxm@disroot.org>\n"
-"Language-Team: Galician <https://hosted.weblate.org/projects/tt-rss/webui/gl/"
-">\n"
+"Language-Team: Galician <https://hosted.weblate.org/projects/tt-rss/webui/"
+"gl/>\n"
 "Language: gl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.15-dev\n"
+"X-Generator: Weblate 5.16-dev\n"
 
 #: backend.php:55
 msgid "Use default"
@@ -701,10 +701,8 @@ msgid "hours"
 msgstr "horas"
 
 #: classes/Pref_Prefs.php:112
-#, fuzzy
-#| msgid "Maximum age of fresh articles"
 msgid "Maximum age of recently read articles"
-msgstr "Idade máxima das novidades"
+msgstr "Idade máxima dos artigos lidos recentemente"
 
 #: classes/Pref_Prefs.php:113
 msgid "Hide read feeds"

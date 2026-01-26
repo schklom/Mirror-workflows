@@ -4,9 +4,7 @@ import (
 	"fmd-server/backend"
 	conf "fmd-server/config"
 
-	"fmt"
 	"io"
-	"log/syslog"
 	"os"
 	"time"
 
@@ -49,13 +47,7 @@ func setupLogging(jsonLog bool) {
 	}
 
 	// syslog
-	syslog, err := syslog.New(syslog.LOG_INFO|syslog.LOG_USER, "fmd-server")
-	if err != nil {
-		// failed to connect to syslog
-		fmt.Printf("Failed to connect to syslog: %s\n", err)
-	} else {
-		writers = append(writers, zerolog.SyslogLevelWriter(syslog))
-	}
+	addPlatformLogWriters(&writers)
 
 	multi := zerolog.MultiLevelWriter(writers...)
 	log.Logger = log.Output(multi)

@@ -28,6 +28,7 @@ import { BatteryIndicator } from '@/components/BatteryIndicator';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
 import { FactoryResetModal } from './modals/FactoryResetModal';
+import { LockMessageModal } from './modals/LockMessageModal';
 
 // Across this file and the UI, commands are ordered by perceived importance.
 // If you change the order in one place, make sure to keep it aligned everywhere!
@@ -106,6 +107,7 @@ export const DevicePanel = ({
 
   const [loading, setLoading] = useState(false);
   const [showFactoryResetConfirm, setShowFactoryResetConfirm] = useState(false);
+  const [showLockMessageConfirm, setShowLockMessageConfirm] = useState(false);
 
   useEffect(() => {
     if (!userData) return;
@@ -193,7 +195,7 @@ export const DevicePanel = ({
       icon: Lock,
       title: 'Lock',
       description: 'Lock the device screen',
-      onClick: () => void executeCommand(COMMANDS.LOCK),
+      onClick: () => setShowLockMessageConfirm(true),
     },
     {
       icon: Trash2,
@@ -402,6 +404,12 @@ export const DevicePanel = ({
           </div>
         ))}
       </div>
+
+      <LockMessageModal
+        isOpen={showLockMessageConfirm}
+        onClose={() => setShowLockMessageConfirm(false)}
+        executeCommand={(cmd) => void executeCommand(cmd)}
+      />
 
       <FactoryResetModal
         isOpen={showFactoryResetConfirm}

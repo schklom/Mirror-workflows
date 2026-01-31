@@ -2,7 +2,7 @@
 # Simple Debian/stable.
 # Installs all the build dependencies from the main Debian repository.
 
-FROM debian:13-slim
+FROM debian:forky-slim
 
 RUN apt update && \
     apt install --no-install-recommends -y ca-certificates git golang zip nodejs && \

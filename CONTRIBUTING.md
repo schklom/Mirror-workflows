@@ -38,3 +38,13 @@ See:
 - <https://forum.snapcraft.io/t/restrictions-on-screenshots-and-videos-in-snap-listings/3087/7>
 - <https://askubuntu.com/questions/1162798/how-do-i-view-the-contents-of-a-snap-file>
 
+## Versions
+
+Because we use Debian as the primary build environment for releases,
+the [Go](https://packages.debian.org/testing/golang) and
+[NodeJS](https://packages.debian.org/testing/nodejs) major versions should track
+the versions that are available in Debian testing.
+
+Motivation: Debian stable can be a bit outdated (especially with NodeJS).
+And in a build environment, we don't need the absolute reliability that stable provides.
+As a rolling release, testing is a good balance between stability and freshness.

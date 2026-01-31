@@ -8,13 +8,12 @@ variables:
   # https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#docker-in-docker-with-tls-enabled-in-the-docker-executor
   DOCKER_TLS_CERT_DIR: "/certs"
   # SonarQube
-  SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
-  GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
+  SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar" # Defines the location of the analysis task cache
+  GIT_DEPTH: "0" # Tells git to fetch all the branches of the project, required by the analysis task
 
 # https://docs.gitlab.com/ci/yaml/yaml_optimization/#yaml-anchors-for-scripts
 .go-setup: &go-setup
-  # Fix "cmd/fmdserver.go:19:2: no required module provides package gopkg.in/yaml.v3; to add it:" (only an issue in CI...)
-  - go get gopkg.in/yaml.v3
+  - go get gopkg.in/yaml.v3 # Fix "cmd/fmdserver.go:19:2: no required module provides package gopkg.in/yaml.v3; to add it:" (only an issue in CI...)
 
 stages:
   - web
@@ -23,7 +22,7 @@ stages:
   - build
 
 .web:
-  image: node:24-alpine
+  image: node:22-alpine
   cache:
     key:
       files:
@@ -144,8 +143,8 @@ docker-build:
       fi
   retry: 2
   rules:
-      # Only run this job on tagging a release. This is to save pipeline minutes.
-      # This step takes 10 to 40 mins, thus quickly eating up pipeline minutes.
+    # Only run this job on tagging a release. This is to save pipeline minutes.
+    # This step takes 10 to 40 mins, thus quickly eating up pipeline minutes.
     - if: $CI_COMMIT_TAG =~ /^v?[0-9\.]+$/
 
 docker-rebuild:

@@ -44,6 +44,7 @@ COPY --from=builder \
 
 EXPOSE 8080/tcp
 EXPOSE 8443/tcp
+EXPOSE 9100/tcp
 
 # XXX: Using $BIN_FILE doesn't work
 ENTRYPOINT ["/opt/fmd-server", "serve", "--db-dir", "/var/lib/fmd-server/db"]

@@ -20,6 +20,8 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  // https://vite.dev/guide/build#relative-base
+  base: './',
   build: {
     outDir: 'dist',
     emptyOutDir: true,

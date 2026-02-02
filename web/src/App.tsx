@@ -17,8 +17,8 @@ const App = () => (
     }
   >
     <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/privacy" element={<PrivacyContent />} />
+      <Route index element={<Home />} />
+      <Route path="privacy" element={<PrivacyContent />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   </Suspense>

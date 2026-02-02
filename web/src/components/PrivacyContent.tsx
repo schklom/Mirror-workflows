@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { ArrowLeft, ArrowUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 
 const PrivacyContent = () => {
   const [showScrollTop, setShowScrollTop] = useState(false);
@@ -24,13 +24,13 @@ const PrivacyContent = () => {
       <div className="px-4 py-8">
         <div className="mx-auto max-w-3xl">
           {!isEmbedded && (
-            <a
-              href="/"
+            <Link
+              to="/"
               className="hover:text-fmd-green dark:hover:text-fmd-green mb-8 inline-flex items-center gap-1.5 text-sm text-gray-500 transition-colors dark:text-gray-400"
             >
               <ArrowLeft className="h-3.5 w-3.5" />
               <span>Back</span>
-            </a>
+            </Link>
           )}
 
           <div className="mb-8">

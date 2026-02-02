@@ -8,6 +8,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useStore } from '@/lib/store';
+import { Link } from 'react-router-dom';
 
 interface HeaderProps {
   onSettingsClick?: () => void;
@@ -19,9 +20,9 @@ export const Header = ({ onSettingsClick }: HeaderProps) => {
 
   return (
     <header className="dark:bg-fmd-dark flex items-center justify-between border-b border-gray-200 bg-white px-4 py-4 dark:border-gray-800">
-      <a href="/" className="ms-2 flex items-center gap-2">
+      <Link to="/" className="ms-2 flex items-center gap-2">
         <img
-          src="/icon.svg"
+          src="./icon.svg"
           alt="FMD"
           width="24"
           height="24"
@@ -30,7 +31,7 @@ export const Header = ({ onSettingsClick }: HeaderProps) => {
         <h1 className="text-lg font-bold text-gray-900 dark:text-white">
           FMD Server
         </h1>
-      </a>
+      </Link>
       {userData && (
         <div className="flex items-center gap-2">
           {onSettingsClick && (

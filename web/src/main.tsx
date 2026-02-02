@@ -28,6 +28,22 @@ const ErrorFallback = () => (
   </div>
 );
 
+// Workaround to get hosting in subdirectories to work.
+// All the static files should use relative paths.
+// Here, we make the BrowserRouter aware of the relative base,
+// by dynamically detecting where we are being hosted.
+const getBasePath = () => {
+  const scripts = document.getElementsByTagName('script');
+  for (const script of scripts) {
+    if (script.src.includes('/assets/index-')) {
+      const url = new URL(script.src);
+      const match = url.pathname.match(/^(.*?)\/assets\//);
+      return match?.[1] || '/';
+    }
+  }
+  return '/';
+};
+
 const Root = () => {
   const { language } = useStore();
   const { i18n: i18nInstance } = useTranslation();
@@ -43,7 +59,7 @@ const Root = () => {
 
   return (
     <StrictMode>
-      <BrowserRouter>
+      <BrowserRouter basename={getBasePath()}>
         <ErrorBoundary FallbackComponent={ErrorFallback}>
           <ClientLayout>
             <App />

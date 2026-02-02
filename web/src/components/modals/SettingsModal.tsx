@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { ExternalLink, Shield } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
+import { ExternalLink, Shield } from 'lucide-react';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { toast } from 'sonner';
 import {
@@ -202,13 +203,13 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
                   </a>
                 </li>
                 <li>
-                  <a
-                    href="/privacy"
+                  <Link
+                    to="/privacy"
                     className="hover:text-fmd-green dark:hover:text-fmd-green flex items-center gap-2 text-gray-700 dark:text-gray-300"
                   >
                     <Shield className="h-4 w-4" />
                     {t('login:privacy_notice')}
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -222,7 +223,7 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
                 className="mt-2 inline-block"
               >
                 <img
-                  src="/fdroid-badge.png"
+                  src="./fdroid-badge.png"
                   alt="Get it on F-Droid"
                   className="h-16 w-auto"
                 />

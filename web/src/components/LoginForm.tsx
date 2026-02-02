@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
+
 import { getSalt, login, getWrappedPrivateKey, getVersion } from '@/lib/api';
 import { hashPasswordForLogin, unwrapPrivateKey } from '@/lib/crypto';
 import { useStore } from '@/lib/store';
@@ -164,12 +166,12 @@ export const LoginForm = () => {
             {t('source_code')}
           </a>
           <span>·</span>
-          <a
-            href="/privacy"
+          <Link
+            to="/privacy"
             className="hover:text-fmd-green text-gray-600 transition-colors duration-200 dark:text-gray-400"
           >
             {t('privacy_notice')}
-          </a>
+          </Link>
         </div>
 
         <div className="mt-2 h-4">

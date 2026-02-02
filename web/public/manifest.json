@@ -8,12 +8,12 @@
   "background_color": "#232323",
   "icons": [
     {
-      "src": "/icon.svg",
+      "src": "icon.svg",
       "type": "image/svg+xml",
       "sizes": "any"
     },
     {
-      "src": "/apple-touch-icon.png",
+      "src": "apple-touch-icon.png",
       "type": "image/png",
       "sizes": "180x180"
     }

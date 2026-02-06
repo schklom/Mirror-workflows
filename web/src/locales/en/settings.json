@@ -18,7 +18,8 @@
   "language": {
     "title": "Language",
     "en": "English",
-    "de": "German"
+    "de": "German",
+    "pt-BR": "Portuguese (Brazil)"
   },
   "about_text": "A server to communicate with the FMD Android app, to locate and control your devices."
 }

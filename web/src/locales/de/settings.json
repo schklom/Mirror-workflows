@@ -18,7 +18,8 @@
   "language": {
     "title": "Sprache",
     "en": "Englisch",
-    "de": "Deutsch"
+    "de": "Deutsch",
+    "pt-BR": "Portugiesisch (Brasilien)"
   },
   "about_text": "Ein Server, um mit der FMD Android-App zu kommunizieren, um deine Geräte zu orten und zu steuern."
 }

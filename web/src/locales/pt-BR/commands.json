@@ -1,0 +1,102 @@
+{
+  "locate_all": {
+    "title": "Localizar: Tudo",
+    "description": "Receba uma localização de todos os provedores de localização"
+  },
+  "locate_fused": {
+    "title": "Localizar: Fundido",
+    "description": "Receba uma localização da rede/GPS"
+  },
+  "locate_gps": {
+    "title": "Localizar: GPS",
+    "description": "Receba uma localização do GPS"
+  },
+  "locate_cell": {
+    "title": "Localizar: Redes móveis",
+    "description": "Receba uma localização das torres celulares ao redor com o OpenCelliD e/ou BeaconDB"
+  },
+  "locate_last": {
+    "title": "Localizar: Última conhecida",
+    "description": "Receba a última localização conhecida (rápido, mas pode ser desatualizada)"
+  },
+  "ring": {
+    "title": "Tocar",
+    "description": "Toque um som alto no dispositivo"
+  },
+  "flash": {
+    "title": "Lanterna",
+    "description": "Ligar a lanterna"
+  },
+  "lock": {
+    "title": "Bloqueio",
+    "description": "Bloquear a tela do dispositivo"
+  },
+  "factory_reset": {
+    "title": "Apagar dados do dispositivo",
+    "description": "Apague todos os dados e restaure o dispositivo para as configurações de fábrica"
+  },
+  "camera_front": {
+    "title": "Câmera frontal",
+    "description": "Tire uma foto com a câmera frontal"
+  },
+  "camera_back": {
+    "title": "Câmera traseira",
+    "description": "Tire uma foto com a câmera traseira"
+  },
+  "view_photos": {
+    "title": "Ver fotos",
+    "description": "Veja as fotos tiradas pelo dispositivo"
+  },
+  "gps_on": {
+    "title": "Ativar serviços de localização"
+  },
+  "gps_off": {
+    "title": "Desativar serviços de localização"
+  },
+  "bluetooth_on": {
+    "title": "Ativar Bluetooth"
+  },
+  "bluetooth_off": {
+    "title": "Desativar Bluetooth"
+  },
+  "ringer_normal": {
+    "title": "Toque: Normal",
+    "description": "Configure o modo de toque para o normal"
+  },
+  "ringer_vibrate": {
+    "title": "Toque: Vibrar",
+    "description": "Configure o modo de toque para vibrar"
+  },
+  "ringer_silent": {
+    "title": "Toque: Silencioso",
+    "description": "Configure o modo de toque para silencioso"
+  },
+  "dnd_on": {
+    "title": "Ativar modo Não Perturbe"
+  },
+  "dnd_off": {
+    "title": "Desativar modo Não Perturbe"
+  },
+  "success": {
+    "locate_all": "Solicitando a localização…",
+    "locate_fused": "Solicitando a localização…",
+    "locate_gps": "Solicitando a localização…",
+    "locate_cell": "Solicitando a localização…",
+    "locate_last": "Solicitando a última localização conhecida…",
+    "ring": "Fazendo o dispositivo tocar…",
+    "flash": "Ativando a lanterna…",
+    "lock": "Bloqueando o dispositivo…",
+    "delete": "Apagando os dados…",
+    "camera_front": "Tirando a foto…",
+    "camera_back": "Tirando a foto…",
+    "bluetooth_on": "Ativando o Bluetooth…",
+    "bluetooth_off": "Desativando o Bluetooth…",
+    "gps_on": "Ativando os serviços de localização…",
+    "gps_off": "Desativando os serviços de localização…",
+    "ringermode_normal": "Configurando o toque para o normal…",
+    "ringermode_vibrate": "Configurando o toque para vibrar…",
+    "ringermode_silent": "Configurando o toque para silencioso…",
+    "nodisturb_on": "Ativando o Não Perturbe…",
+    "nodisturb_off": "Desativando o Não Perturbe…"
+  }
+}

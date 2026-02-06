@@ -1,0 +1,31 @@
+{
+  "factory_reset": {
+    "title": "Apagar os dados do dispositivo?",
+    "message": "Ao fazer isso, todos os dados do seu dispositivo serão apagados e as configurações voltarão para como de fábrica. Isso não pode ser desfeito.",
+    "confirm": "Apagar tudo",
+    "password_placeholder": "Digite a sua senha de apagar",
+    "password_hint": "A senha de apagar não está configurada no seu app do FMD Android. Ela não é a senha do FMD Server.",
+    "error_empty_password": "Digite sua senha de apagar"
+  },
+  "loading": {
+    "title": "Carregando"
+  },
+  "lock": {
+    "title": "Bloquear o dispositivo?",
+    "message": "Depois que o dispositivo for bloqueado, será necessária o PIN ou senha dele para desbloquear o dispositivo. O desbloqueio biométrico não funcionará até que o PIN ou senha forem digitados.",
+    "confirm": "Bloquear",
+    "message_placeholder": "Digite a mensagem",
+    "message_hint": "Digite uma mensagem para mostra-lá na tela de bloqueio. Se deixar vazio, a mensagem que foi configurada nas configurações do app será usada."
+  },
+  "pictures": {
+    "title": "Fotos",
+    "empty": "Não há fotos disponíveis",
+    "of": "de"
+  },
+  "webcrypto_warning": {
+    "title": "A API WebCrypto não está disponível",
+    "message": "O FMD Server não funcionará, pois a API WebCrypto não está disponível.",
+    "detail": "Provavelmente é porque você deve estar usando o site pelo HTTP inseguro. Use o HTTPS. Se estiver auto-hospedando, visite o",
+    "link_text": "guia de instalação"
+  }
+}

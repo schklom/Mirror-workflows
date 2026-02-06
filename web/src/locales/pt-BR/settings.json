@@ -1,0 +1,25 @@
+{
+  "title": "Configurações",
+  "general": "Geral",
+  "about": "Sobre",
+  "theme": "Tema",
+  "theme_dark": "Escuro",
+  "theme_light": "Claro",
+  "theme_system": "Sistema",
+  "units": "Unidades",
+  "units_metric": "Métricas",
+  "units_imperial": "Imperiais",
+  "account": "Conta",
+  "export_data": "Exportar dados",
+  "export_data_loading_message": "Baixando os dados. Isso pode demorar um tempo, especialmente se tiver muitas fotos.",
+  "delete_account": "Apagar conta",
+  "delete_account_title": "Apagar conta?",
+  "delete_account_description": "A sua conta e todos os dados serão apagados do servidor. Isso não pode ser desfeito.",
+  "language": {
+    "title": "Idioma",
+    "en": "Inglês",
+    "de": "Alemão",
+    "pt-BR": "Português do Brasil"
+  },
+  "about_text": "Um servidor usado para se comunicar com o app do FMD Android, para localizar e controlar seus dispositivos."
+}

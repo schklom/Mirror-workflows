@@ -1,0 +1,21 @@
+{
+  "loading": "Carregando…",
+  "no_devices": "Nenhum dispositivo",
+  "last_location": "Última localização",
+  "updated": "Atualizado",
+  "location": {
+    "recorded_at": "Registrada em",
+    "no_data": "Não há dados de localização ainda. Envie um comando de localizar com os botões abaixo!",
+    "older": "Antiga",
+    "newer": "Nova",
+    "no_push_url": "Nenhuma URL de push foi configurada. O dispositivo não receberá comandos até que configure as notificações push no app."
+  },
+  "command_failed": "O comando falhou!",
+  "time": "Horário",
+  "battery": "Bateria",
+  "provider": "Provedor",
+  "accuracy": "Precisão",
+  "altitude": "Altitude",
+  "speed": "Velocidade",
+  "bearing": "Distância"
+}

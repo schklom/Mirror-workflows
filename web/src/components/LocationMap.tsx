@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type * as LeafletType from 'leaflet';
 import { FullScreen } from 'leaflet.fullscreen';
 import { useStore } from '@/lib/store';
@@ -42,6 +43,8 @@ const calculateZoomLevel = (accuracy?: number): number => {
 export const LocationMap = () => {
   const { locations, units, currentLocationIndex, isLocationsLoading } =
     useStore();
+
+  const { t } = useTranslation('dashboard');
 
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<LeafletType.Map | null>(null);
@@ -219,13 +222,13 @@ export const LocationMap = () => {
         .bindPopup(
           `
         <div style="min-width: 5rem;">
-          <strong>Time:</strong> ${new Date(loc.date).toLocaleString()}<br/>
-          <strong>Battery:</strong> ${loc.bat}%<br/>
-          <strong>Provider:</strong> ${formatProvider(loc.provider)}<br/>
-          ${loc.accuracy ? `<strong>Accuracy:</strong> ${convertDistance(loc.accuracy, units)}<br/>` : ''}
-          ${loc.altitude !== undefined ? `<strong>Altitude:</strong> ${convertDistance(loc.altitude, units)}<br/>` : ''}
-          ${loc.speed !== undefined ? `<strong>Speed:</strong> ${convertSpeed(loc.speed, units)}<br/>` : ''}
-          ${loc.bearing !== undefined ? `<strong>Bearing:</strong> ${loc.bearing.toFixed(0)}°` : ''}
+          <strong>${t('time')}:</strong> ${new Date(loc.date).toLocaleString()}<br/>
+          <strong>${t('battery')}:</strong> ${loc.bat}%<br/>
+          <strong>${t('provider')}:</strong> ${formatProvider(loc.provider)}<br/>
+          ${loc.accuracy ? `<strong>${t('accuracy')}:</strong> ${convertDistance(loc.accuracy, units)}<br/>` : ''}
+          ${loc.altitude !== undefined ? `<strong>${t('altitude')}:</strong> ${convertDistance(loc.altitude, units)}<br/>` : ''}
+          ${loc.speed !== undefined ? `<strong>${t('speed')}:</strong> ${convertSpeed(loc.speed, units)}<br/>` : ''}
+          ${loc.bearing !== undefined ? `<strong>${t('bearing')}:</strong> ${loc.bearing.toFixed(0)}°` : ''}
         </div>
       `,
           { autoClose: false, closeOnClick: false, closeButton: false }

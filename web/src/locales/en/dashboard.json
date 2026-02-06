@@ -10,5 +10,12 @@
     "newer": "Newer",
     "no_push_url": "No push URL configured. The device will not receive commands until you set up push notifications in the Android app."
   },
-  "command_failed": "Command failed!"
+  "command_failed": "Command failed!",
+  "time": "Time",
+  "battery": "Battery",
+  "provider": "Provider",
+  "accuracy": "Accuracy",
+  "altitude": "Altitude",
+  "speed": "Speed",
+  "bearing": "Bearing"
 }

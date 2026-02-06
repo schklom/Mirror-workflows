@@ -10,5 +10,12 @@
     "newer": "Neuer",
     "no_push_url": "Keine Push-URL konfiguriert. Das Gerät empfängt keine Befehle, bis du Push-Benachrichtigungen in der Android-App einrichtest."
   },
-  "command_failed": "Befehl fehlgeschlagen!"
+  "command_failed": "Befehl fehlgeschlagen!",
+  "time": "Uhrzeit",
+  "battery": "Batterie",
+  "provider": "Anbieter",
+  "accuracy": "Genauigkeit",
+  "altitude": "Höhe",
+  "speed": "Geschwindigkeit",
+  "bearing": "Peilung"
 }

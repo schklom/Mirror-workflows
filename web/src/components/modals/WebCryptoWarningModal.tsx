@@ -1,28 +1,27 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ConfirmModal } from './ConfirmModal';
 
 export const WebCryptoWarningModal = () => {
+  const { t } = useTranslation(['modals', 'common']);
   const [show, setShow] = useState(window.crypto.subtle === undefined);
 
   return (
     <ConfirmModal
       isOpen={show}
       onConfirm={() => setShow(false)}
-      title="WebCrypto API not available"
-      confirmText="Okay"
+      title={t('webcrypto_warning.title')}
+      confirmText={t('common:okay')}
     >
-      <p>
-        FMD Server won&apos;t work because the WebCrypto API is not available.
-      </p>
+      <p>{t('webcrypto_warning.message')}</p>
       <p className="mt-4">
-        This is most likely because you are visiting this site over insecure
-        HTTP. Please use HTTPS. If you are self-hosting, see the{' '}
+        {t('webcrypto_warning.detail')}{' '}
         <a
           href="https://fmd-foss.org/docs/fmd-server/installation/overview"
           target="_blank"
           rel="noopener noreferrer"
         >
-          installation guide
+          {t('webcrypto_warning.link_text')}
         </a>
         .
       </p>

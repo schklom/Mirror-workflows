@@ -1,0 +1,28 @@
+{
+  "factory_reset": {
+    "title": "Gerät auf Werkseinstellungen zurücksetzen?",
+    "message": "Dies löscht alle Daten auf deinem Gerät dauerhaft und setzt es auf die Werkseinstellungen zurück. Dies kann nicht rückgängig gemacht werden.",
+    "confirm": "Zurücksetzen",
+    "password_placeholder": "Gib dein Löschpasswort ein",
+    "password_hint": "Das Löschpasswort ist in der FMD Android App konfiguriert. Es ist nicht dein Server-Passwort.",
+    "error_empty_password": "Bitte gib dein Löschpasswort ein"
+  },
+  "lock": {
+    "title": "Gerät sperren?",
+    "message": "Nach dem Sperren des Geräts ist deine Geräte-PIN oder dein Passwort erforderlich, um das Gerät zu entsperren. Die biometrische Entsperrung funktioniert erst wieder, nachdem die PIN oder das Passwort eingegeben wurde.",
+    "confirm": "Sperren",
+    "message_placeholder": "Nachricht eingeben",
+    "message_hint": "Gib eine Nachricht ein, die auf dem Sperrbildschirm angezeigt werden soll. Wenn du dies leer lässt, wird die in den FMD Android-Einstellungen konfigurierte Nachricht stattdessen auf dem Sperrbildschirm angezeigt."
+  },
+  "pictures": {
+    "title": "Fotos",
+    "empty": "Keine Fotos verfügbar",
+    "of": "von"
+  },
+  "webcrypto_warning": {
+    "title": "WebCrypto API nicht verfügbar",
+    "message": "FMD Server funktioniert nicht, da die WebCrypto API nicht verfügbar ist.",
+    "detail": "Dies liegt wahrscheinlich daran, dass du diese Website über unsicheres HTTP aufrufst. Bitte verwende HTTPS. Falls du selber hostest, lies bitte die",
+    "link_text": "Installationsanleitung"
+  }
+}

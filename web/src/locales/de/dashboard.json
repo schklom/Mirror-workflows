@@ -1,0 +1,14 @@
+{
+  "loading": "Wird geladen...",
+  "no_devices": "Keine Geräte",
+  "last_location": "Letzte Position",
+  "updated": "Aktualisiert",
+  "location": {
+    "recorded_at": "Aufgezeichnet um",
+    "no_data": "Noch keine Standortdaten. Schicke einen Ortungsbefehl mit den Knöpfen weiter unten!",
+    "older": "Älter",
+    "newer": "Neuer",
+    "no_push_url": "Keine Push-URL konfiguriert. Das Gerät empfängt keine Befehle, bis du Push-Benachrichtigungen in der Android-App einrichtest."
+  },
+  "command_failed": "Befehl fehlgeschlagen!"
+}

@@ -10,6 +10,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { cn } from '@/utils/cn';
+import { useTranslation } from 'react-i18next';
 
 interface ConfirmModalProps {
   isOpen: boolean;
@@ -30,13 +31,17 @@ export const ConfirmModal = ({
   onCancel,
   title,
   message,
-  confirmText = 'Confirm',
-  cancelText = 'Cancel',
+  confirmText,
+  cancelText,
   variant = 'destructive',
   children,
   confirmDisabled = false,
 }: ConfirmModalProps) => {
   const isDestructive = variant === 'destructive';
+
+  const { t } = useTranslation('common');
+  confirmText = confirmText ?? t('confirm');
+  cancelText = cancelText ?? t('cancel');
 
   return (
     <Dialog

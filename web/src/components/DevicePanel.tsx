@@ -2,6 +2,7 @@ import { sendCommand, getPushUrl } from '../lib/api';
 import { useStore } from '@/lib/store';
 import { toast } from 'sonner';
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Navigation,
   RadioTower,
@@ -33,7 +34,7 @@ import { LockMessageModal } from './modals/LockMessageModal';
 // Across this file and the UI, commands are ordered by perceived importance.
 // If you change the order in one place, make sure to keep it aligned everywhere!
 
-const COMMANDS = {
+export const COMMANDS = {
   LOCATE_ALL: 'locate all',
   LOCATE_FUSED: 'locate fused',
   LOCATE_GPS: 'locate gps',
@@ -56,29 +57,6 @@ const COMMANDS = {
   NODISTURB_OFF: 'nodisturb off',
 } as const;
 
-const COMMAND_SUCCESS_MESSAGES: Record<string, string> = {
-  [COMMANDS.LOCATE_ALL]: 'Requesting location...',
-  [COMMANDS.LOCATE_FUSED]: 'Requesting location...',
-  [COMMANDS.LOCATE_GPS]: 'Requesting location...',
-  [COMMANDS.LOCATE_CELL]: 'Requesting location...',
-  [COMMANDS.LOCATE_LAST]: 'Requesting last known location...',
-  [COMMANDS.RING]: 'Ringing device...',
-  [COMMANDS.FLASH]: 'Flashing torch light...',
-  [COMMANDS.LOCK]: 'Locking device...',
-  [COMMANDS.DELETE]: 'Factory reset initiated',
-  [COMMANDS.CAMERA_FRONT]: 'Capturing photo...',
-  [COMMANDS.CAMERA_BACK]: 'Capturing photo...',
-  [COMMANDS.BLUETOOTH_ON]: 'Enabling Bluetooth...',
-  [COMMANDS.BLUETOOTH_OFF]: 'Disabling Bluetooth...',
-  [COMMANDS.GPS_ON]: 'Enabling Location Services...',
-  [COMMANDS.GPS_OFF]: 'Disabling Location Services...',
-  [COMMANDS.RINGERMODE_NORMAL]: 'Setting ringer to normal...',
-  [COMMANDS.RINGERMODE_VIBRATE]: 'Setting ringer to vibrate...',
-  [COMMANDS.RINGERMODE_SILENT]: 'Setting ringer to silent...',
-  [COMMANDS.NODISTURB_ON]: 'Enabling Do Not Disturb...',
-  [COMMANDS.NODISTURB_OFF]: 'Disabling Do Not Disturb...',
-};
-
 interface DevicePanelProps {
   onViewPhotos: () => void;
   onLocateCommand?: () => void;
@@ -87,7 +65,7 @@ interface DevicePanelProps {
 interface ActionData {
   icon: any;
   title: string;
-  description: string;
+  description: string | null;
   onClick: () => void;
   variant?: 'default' | 'destructive'; // same as ActionItemProps
 }
@@ -105,6 +83,8 @@ export const DevicePanel = ({
     currentLocationIndex,
   } = useStore();
 
+  const { t: tCommands } = useTranslation('commands');
+  const { t: tDashboard } = useTranslation('dashboard');
   const [loading, setLoading] = useState(false);
   const [showFactoryResetConfirm, setShowFactoryResetConfirm] = useState(false);
   const [showLockMessageConfirm, setShowLockMessageConfirm] = useState(false);
@@ -125,7 +105,10 @@ export const DevicePanel = ({
     void fetchPushUrl();
   }, [userData]);
 
-  const executeCommand = async (command: string) => {
+  const executeCommand = async (
+    command: string,
+    baseCommand: string | null = null
+  ) => {
     if (!userData) return;
 
     setLoading(true);
@@ -135,11 +118,16 @@ export const DevicePanel = ({
       }
       await sendCommand(userData.sessionToken, command, userData.rsaSigKey);
 
-      const successMessage =
-        COMMAND_SUCCESS_MESSAGES[command] || 'Command sent successfully';
-      toast.success(successMessage);
+      // baseCommand is for handling commands such as "locate custom message"
+      if (!baseCommand) {
+        baseCommand = command;
+      }
+      const msg = tCommands(`success.${baseCommand?.replace(' ', '_')}`);
+      toast.success(msg);
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Command failed');
+      toast.error(
+        error instanceof Error ? error.message : tDashboard('command_failed')
+      );
     } finally {
       setLoading(false);
     }
@@ -148,59 +136,58 @@ export const DevicePanel = ({
   const groupLocations = [
     {
       icon: Navigation,
-      title: 'Locate: All',
-      description: 'Get a location from all location providers',
+      title: tCommands('locate_all.title'),
+      description: tCommands('locate_all.description'),
       onClick: () => void executeCommand(COMMANDS.LOCATE_ALL),
     },
     {
       icon: Navigation,
-      title: 'Locate: Fused',
-      description: 'Get a location from network/GPS',
+      title: tCommands('locate_fused.title'),
+      description: tCommands('locate_fused.description'),
       onClick: () => void executeCommand(COMMANDS.LOCATE_FUSED),
     },
     {
       icon: Satellite,
-      title: 'Locate: GPS',
-      description: 'Get a location from GPS',
+      title: tCommands('locate_gps.title'),
+      description: tCommands('locate_gps.description'),
       onClick: () => void executeCommand(COMMANDS.LOCATE_GPS),
     },
     {
       icon: RadioTower,
-      title: 'Locate: Cell',
-      description:
-        'Get a location from the surrounding cell towers with OpenCelliD and/or BeaconDB',
+      title: tCommands('locate_cell.title'),
+      description: tCommands('locate_cell.description'),
       onClick: () => void executeCommand(COMMANDS.LOCATE_CELL),
     },
     {
       icon: History,
-      title: 'Locate: Last Known',
-      description: 'Get cached location (faster, may be outdated)',
+      title: tCommands('locate_last.title'),
+      description: tCommands('locate_last.description'),
       onClick: () => void executeCommand(COMMANDS.LOCATE_LAST),
     },
   ];
   const groupGeneral = [
     {
       icon: Volume2,
-      title: 'Ring',
-      description: 'Play a loud sound on the device',
+      title: tCommands('ring.title'),
+      description: tCommands('ring.description'),
       onClick: () => void executeCommand(COMMANDS.RING),
     },
     {
       icon: Flashlight,
-      title: 'Flash',
-      description: 'Flash the torch light',
+      title: tCommands('flash.title'),
+      description: tCommands('flash.description'),
       onClick: () => void executeCommand(COMMANDS.FLASH),
     },
     {
       icon: Lock,
-      title: 'Lock',
-      description: 'Lock the device screen',
+      title: tCommands('lock.title'),
+      description: tCommands('lock.description'),
       onClick: () => setShowLockMessageConfirm(true),
     },
     {
       icon: Trash2,
-      title: 'Factory Reset',
-      description: 'Wipe all data and reset device to factory settings',
+      title: tCommands('factory_reset.title'),
+      description: tCommands('factory_reset.description'),
       onClick: () => setShowFactoryResetConfirm(true),
       variant: 'destructive' as const,
     },
@@ -208,82 +195,82 @@ export const DevicePanel = ({
   const groupPictures = [
     {
       icon: UserCircle,
-      title: 'Front Camera',
-      description: 'Take a photo with the front camera',
+      title: tCommands('camera_front.title'),
+      description: tCommands('camera_front.description'),
       onClick: () => void executeCommand(COMMANDS.CAMERA_FRONT),
     },
     {
       icon: Camera,
-      title: 'Back Camera',
-      description: 'Take a photo with the back camera',
+      title: tCommands('camera_back.title'),
+      description: tCommands('camera_back.description'),
       onClick: () => void executeCommand(COMMANDS.CAMERA_BACK),
     },
     {
       icon: Image,
-      title: 'View Photos',
-      description: 'View photos taken by the device',
+      title: tCommands('view_photos.title'),
+      description: tCommands('view_photos.description'),
       onClick: onViewPhotos,
     },
   ];
   const groupLocationServices = [
     {
       icon: Satellite,
-      title: 'Enable Location Services',
-      description: 'Turn on Location Services',
+      title: tCommands('gps_on.title'),
+      description: null,
       onClick: () => void executeCommand(COMMANDS.GPS_ON),
     },
     {
       icon: Satellite,
-      title: 'Disable Location Services',
-      description: 'Turn off Location Services',
+      title: tCommands('gps_off.title'),
+      description: null,
       onClick: () => void executeCommand(COMMANDS.GPS_OFF),
     },
   ];
   const groupBluetooth = [
     {
       icon: Bluetooth,
-      title: 'Enable Bluetooth',
-      description: 'Turn on Bluetooth',
+      title: tCommands('bluetooth_on.title'),
+      description: null,
       onClick: () => void executeCommand(COMMANDS.BLUETOOTH_ON),
     },
     {
       icon: BluetoothOff,
-      title: 'Disable Bluetooth',
-      description: 'Turn off Bluetooth',
+      title: tCommands('bluetooth_off.title'),
+      description: null,
       onClick: () => void executeCommand(COMMANDS.BLUETOOTH_OFF),
     },
   ];
   const groupRinger = [
     {
       icon: Bell,
-      title: 'Ringer: Normal',
-      description: 'Set ringer mode to normal',
+      title: tCommands('ringer_normal.title'),
+      description: tCommands('ringer_normal.description'),
       onClick: () => void executeCommand(COMMANDS.RINGERMODE_NORMAL),
     },
     {
       icon: Vibrate,
-      title: 'Ringer: Vibrate',
-      description: 'Set ringer mode to vibrate',
+      title: tCommands('ringer_vibrate.title'),
+      description: tCommands('ringer_vibrate.description'),
       onClick: () => void executeCommand(COMMANDS.RINGERMODE_VIBRATE),
     },
     {
       icon: BellOff,
-      title: 'Ringer: Silent',
-      description: 'Set ringer mode to silent',
+      title: tCommands('ringer_silent.title'),
+      description: tCommands('ringer_silent.description'),
       onClick: () => void executeCommand(COMMANDS.RINGERMODE_SILENT),
     },
   ];
   const groupDnd = [
     {
       icon: BellOff,
-      title: 'Do Not Disturb On',
-      description: 'Enable Do Not Disturb mode',
+      title: tCommands('dnd_on.title'),
+      description: null,
       onClick: () => void executeCommand(COMMANDS.NODISTURB_ON),
     },
     {
       icon: Bell,
-      title: 'Do Not Disturb Off',
-      description: 'Disable Do Not Disturb mode',
+      title: tCommands('dnd_off.title'),
+      description: null,
       onClick: () => void executeCommand(COMMANDS.NODISTURB_OFF),
     },
   ];
@@ -318,7 +305,7 @@ export const DevicePanel = ({
               <div className="flex-1">
                 <BatteryIndicator percentage={currentLocation.bat} />
                 <div className="text-xs text-gray-500 dark:text-gray-300">
-                  Recorded at
+                  {tDashboard('location.recorded_at')}
                 </div>
                 <div className="text-sm font-medium text-gray-900 dark:text-white">
                   {new Date(currentLocation.date).toLocaleString()}
@@ -343,7 +330,7 @@ export const DevicePanel = ({
                   disabled={currentLocationIndex === 0}
                 >
                   <ChevronLeft className="h-4 w-4" />
-                  Older
+                  {tDashboard('location.older')}
                 </Button>
 
                 <Button
@@ -360,7 +347,7 @@ export const DevicePanel = ({
                   }
                   disabled={currentLocationIndex === locations.length - 1}
                 >
-                  Newer
+                  {tDashboard('location.newer')}
                   <ChevronRight className="h-4 w-4" />
                 </Button>
               </div>
@@ -370,7 +357,7 @@ export const DevicePanel = ({
 
         {!isLocationsLoading && !currentLocation && (
           <div className="flex h-18 items-center justify-center text-sm text-gray-500 dark:text-gray-400">
-            No location data yet
+            {tDashboard('location.no_data')}
           </div>
         )}
       </div>
@@ -379,8 +366,7 @@ export const DevicePanel = ({
         {!isPushUrlLoading && !pushUrl && (
           <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4 dark:border-yellow-900/50 dark:bg-yellow-900/20">
             <p className="text-sm text-yellow-800 dark:text-yellow-200">
-              No push URL configured. The device will not receive commands until
-              you set up push notifications in the Android app.
+              {tDashboard('location.no_push_url')}
             </p>
           </div>
         )}
@@ -408,13 +394,13 @@ export const DevicePanel = ({
       <LockMessageModal
         isOpen={showLockMessageConfirm}
         onClose={() => setShowLockMessageConfirm(false)}
-        executeCommand={(cmd) => void executeCommand(cmd)}
+        executeCommand={(cmd, base) => void executeCommand(cmd, base)}
       />
 
       <FactoryResetModal
         isOpen={showFactoryResetConfirm}
         onClose={() => setShowFactoryResetConfirm(false)}
-        executeCommand={(cmd) => void executeCommand(cmd)}
+        executeCommand={(cmd, base) => void executeCommand(cmd, base)}
       />
     </div>
   );

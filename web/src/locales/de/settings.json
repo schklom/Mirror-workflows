@@ -1,0 +1,22 @@
+{
+  "title": "Einstellungen",
+  "general": "Allgemein",
+  "about": "Über",
+  "theme": "Design",
+  "theme_dark": "Dunkel",
+  "theme_light": "Hell",
+  "theme_system": "System",
+  "units": "Einheiten",
+  "units_metric": "Metrisch",
+  "units_imperial": "Imperial",
+  "account": "Konto",
+  "export_data": "Daten exportieren",
+  "delete_account": "Konto löschen",
+  "delete_account_title": "Konto löschen?",
+  "delete_account_description": "Dein Konto und alle Daten werden dauerhaft vom Server gelöscht. Dies kann nicht rückgängig gemacht werden.",
+  "language": {
+    "title": "Sprache",
+    "en": "Englisch",
+    "de": "Deutsch"
+  }
+}

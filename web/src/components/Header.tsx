@@ -1,4 +1,5 @@
 import { Settings, ChevronDown, LogOut } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -14,6 +15,7 @@ interface HeaderProps {
 
 export const Header = ({ onSettingsClick }: HeaderProps) => {
   const { userData, logout } = useStore();
+  const { t } = useTranslation('common');
 
   return (
     <header className="dark:bg-fmd-dark flex items-center justify-between border-b border-gray-200 bg-white px-4 py-4 dark:border-gray-800">
@@ -36,7 +38,7 @@ export const Header = ({ onSettingsClick }: HeaderProps) => {
               variant="ghost"
               size="icon-sm"
               onClick={onSettingsClick}
-              title="Settings"
+              title={t('settings')}
               className="rounded-lg"
             >
               <Settings className="h-5 w-5" />
@@ -57,7 +59,7 @@ export const Header = ({ onSettingsClick }: HeaderProps) => {
             >
               <DropdownMenuItem onClick={() => void logout()}>
                 <LogOut className="mr-2 h-4 w-4" />
-                Log out
+                {t('logout')}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

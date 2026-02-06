@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 import { getSalt, login, getWrappedPrivateKey, getVersion } from '@/lib/api';
 import { hashPasswordForLogin, unwrapPrivateKey } from '@/lib/crypto';
 import { useStore } from '@/lib/store';
@@ -8,11 +9,13 @@ import { Input } from '@/components/ui/input';
 import { PasswordInput } from '@/components/PasswordInput';
 import { Checkbox } from '@/components/Checkbox';
 import { WebCryptoWarningModal } from './modals/WebCryptoWarningModal';
+import { LanguageNativeSelect } from './LanguageNativeSelect';
 
 const ONE_WEEK_SECONDS = 7 * 24 * 60 * 60;
 
 export const LoginForm = () => {
   const { setUserData } = useStore();
+  const { t } = useTranslation(['login', 'errors']);
 
   const [fmdId, setFmdId] = useState('');
   const [password, setPassword] = useState('');
@@ -39,7 +42,7 @@ export const LoginForm = () => {
       const salt = await getSalt(fmdId);
 
       if (!salt) {
-        toast.error('Account not found. Please register on FMD Android first.');
+        toast.error(t('errors:account_not_found'));
         setLoading(false);
         return;
       }
@@ -68,7 +71,9 @@ export const LoginForm = () => {
         rememberMe
       );
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Login failed');
+      toast.error(
+        error instanceof Error ? error.message : t('errors:login_failed')
+      );
     } finally {
       setLoading(false);
     }
@@ -76,6 +81,10 @@ export const LoginForm = () => {
 
   return (
     <div className="flex min-h-full flex-col px-4">
+      <div className="flex justify-end pt-8">
+        <LanguageNativeSelect />
+      </div>
+
       <div className="flex flex-1 flex-col items-center justify-center py-8">
         <div className="dark:border-fmd-dark-border dark:bg-fmd-dark w-full max-w-md rounded-lg border border-gray-200 bg-white p-8 shadow-sm">
           <h1 className="text-fmd-green mb-6 text-center text-2xl font-bold">
@@ -83,20 +92,19 @@ export const LoginForm = () => {
           </h1>
 
           <p className="mb-2 text-center text-sm text-gray-700 dark:text-gray-300">
-            This platform is for locating and controlling your devices.
+            {t('subtitle')}
           </p>
           <p className="mb-8 text-center text-sm text-gray-700 dark:text-gray-300">
-            To get started,{' '}
+            {t('setup_instruction_1')}{' '}
             <a
               href="https://f-droid.org/packages/de.nulide.findmydevice/"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-fmd-green text-gray-600 transition-colors duration-200 dark:text-gray-400"
             >
-              install the FMD Android app
+              {t('setup_instruction_2')}
             </a>{' '}
-            on your mobile device. Then use the app to register an account on
-            FMD Server.
+            {t('setup_instruction_3')}
           </p>
 
           <form onSubmit={(e) => void handleSubmit(e)} className="space-y-6">
@@ -104,20 +112,20 @@ export const LoginForm = () => {
               type="text"
               value={fmdId}
               onChange={(e) => setFmdId(e.target.value)}
-              placeholder="FMD ID"
+              placeholder={t('username_placeholder')}
               required
             />
 
             <PasswordInput
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Password"
+              placeholder={t('password_placeholder')}
               required
             />
 
             <Checkbox
               id="rememberMe"
-              label="Remember me"
+              label={t('remember_me')}
               checked={rememberMe}
               onCheckedChange={(checked) => setRememberMe(checked === true)}
             />
@@ -128,7 +136,7 @@ export const LoginForm = () => {
               size="lg"
               className="w-full text-lg"
             >
-              {loading ? 'Logging in...' : 'Log in'}
+              {loading ? t('logging_in') : t('log_in')}
             </Button>
           </form>
 

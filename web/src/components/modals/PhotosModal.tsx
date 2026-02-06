@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
+import { useTranslation } from 'react-i18next';
 
 interface PhotosModalProps {
   isOpen: boolean;
@@ -13,6 +14,7 @@ interface PhotosModalProps {
 }
 
 export const PhotosModal = ({ isOpen, onClose }: PhotosModalProps) => {
+  const { t } = useTranslation(['modals', 'dashboard']);
   const { userData, pictures, isPicturesLoading } = useStore();
   const [selectedIndex, setSelectedIndex] = useState(0);
 
@@ -41,7 +43,7 @@ export const PhotosModal = ({ isOpen, onClose }: PhotosModalProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-6xl">
-        <DialogTitle className="sr-only">Device Photos</DialogTitle>
+        <DialogTitle className="sr-only">{t('pictures.title')}</DialogTitle>
 
         <div className="max-h-[90vh] overflow-auto">
           {isPicturesLoading && (
@@ -52,7 +54,7 @@ export const PhotosModal = ({ isOpen, onClose }: PhotosModalProps) => {
 
           {!isPicturesLoading && pictures.length === 0 && (
             <div className="p-8 text-center text-gray-900 dark:text-white">
-              No photos available
+              {t('pictures.empty')}
             </div>
           )}
 
@@ -69,11 +71,11 @@ export const PhotosModal = ({ isOpen, onClose }: PhotosModalProps) => {
                   disabled={selectedIndex === 0}
                 >
                   <ChevronLeft className="h-4 w-4" />
-                  Older
+                  {t('dashboard:location.older')}
                 </Button>
 
                 <span className="text-sm text-gray-900 dark:text-white">
-                  {selectedIndex + 1} of {pictures.length}
+                  {selectedIndex + 1} {t('pictures.of')} {pictures.length}
                 </span>
 
                 <Button
@@ -87,7 +89,7 @@ export const PhotosModal = ({ isOpen, onClose }: PhotosModalProps) => {
                   }
                   disabled={selectedIndex === pictures.length - 1}
                 >
-                  Newer
+                  {t('dashboard:location.newer')}
                   <ChevronRight className="h-4 w-4" />
                 </Button>
               </div>

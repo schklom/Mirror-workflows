@@ -5,7 +5,7 @@ import { cn } from '@/utils/cn';
 interface ActionItemProps {
   icon: LucideIcon;
   title: string;
-  description: string;
+  description: string | null;
   onClick: () => void;
   disabled?: boolean;
   variant?: 'default' | 'destructive';
@@ -56,9 +56,11 @@ export const ActionItem = ({
         >
           {title}
         </div>
-        <div className="pt-1 text-sm whitespace-normal text-gray-600 dark:text-gray-400">
-          {description}
-        </div>
+        {description && (
+          <div className="pt-1 text-sm whitespace-normal text-gray-600 dark:text-gray-400">
+            {description}
+          </div>
+        )}
       </div>
       <ChevronRight className="h-5 w-5 text-gray-400" />
     </Button>

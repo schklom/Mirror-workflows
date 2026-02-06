@@ -2,9 +2,11 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { storeKeys, clearKeys, getKeys } from '@/lib/keystore';
 import type { Location } from '@/lib/api';
+import type { Language } from '@/lib/i18n';
 
 export type Theme = 'light' | 'dark' | 'system';
 export type UnitSystem = 'metric' | 'imperial';
+export type { Language } from '@/lib/i18n';
 
 interface UserData {
   fmdId: string;
@@ -19,6 +21,7 @@ interface AppState {
   wasAuthRestoreTried: boolean;
   theme: Theme;
   units: UnitSystem;
+  language: Language;
   pushUrl: string | null;
   isPushUrlLoading: boolean;
 
@@ -33,6 +36,7 @@ interface AppState {
   logout: () => Promise<void>;
   restoreAuth: () => Promise<void>;
   setTheme: (theme: Theme) => void;
+  setLanguage: (language: Language) => void;
 }
 
 const KEY_AUTH = 'fmd-auth';
@@ -46,6 +50,7 @@ export const useStore = create<AppState>()(
       wasAuthRestoreTried: false,
       theme: 'system',
       units: 'metric',
+      language: 'en',
       pushUrl: null,
       locations: [],
       currentLocationIndex: 0,
@@ -128,6 +133,11 @@ export const useStore = create<AppState>()(
 
         document.documentElement.classList.toggle('dark', isDark);
       },
+
+      setLanguage: (language: Language) => {
+        set({ language });
+        // Language change is synced from main.tsx Root component
+      },
     }),
 
     // Persist some of the state
@@ -138,6 +148,7 @@ export const useStore = create<AppState>()(
       partialize: (state) => ({
         theme: state.theme,
         units: state.units,
+        language: state.language,
       }),
     }
   )

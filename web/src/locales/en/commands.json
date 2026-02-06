@@ -1,0 +1,102 @@
+{
+  "locate_all": {
+    "title": "Locate: All",
+    "description": "Get a location from all location providers"
+  },
+  "locate_fused": {
+    "title": "Locate: Fused",
+    "description": "Get a location from network/GPS"
+  },
+  "locate_gps": {
+    "title": "Locate: GPS",
+    "description": "Get a location from GPS"
+  },
+  "locate_cell": {
+    "title": "Locate: Cell",
+    "description": "Get a location from the surrounding cell towers with OpenCelliD and/or BeaconDB"
+  },
+  "locate_last": {
+    "title": "Locate: Last Known",
+    "description": "Get last known location (fast, but may be outdated)"
+  },
+  "ring": {
+    "title": "Ring",
+    "description": "Play a loud sound on the device"
+  },
+  "flash": {
+    "title": "Flash",
+    "description": "Flash the torch light"
+  },
+  "lock": {
+    "title": "Lock",
+    "description": "Lock the device screen"
+  },
+  "factory_reset": {
+    "title": "Factory Reset",
+    "description": "Wipe all data and reset device to factory settings"
+  },
+  "camera_front": {
+    "title": "Front Camera",
+    "description": "Take a photo with the front camera"
+  },
+  "camera_back": {
+    "title": "Back Camera",
+    "description": "Take a photo with the back camera"
+  },
+  "view_photos": {
+    "title": "View Photos",
+    "description": "View photos taken by the device"
+  },
+  "gps_on": {
+    "title": "Enable Location Services"
+  },
+  "gps_off": {
+    "title": "Disable Location Services"
+  },
+  "bluetooth_on": {
+    "title": "Enable Bluetooth"
+  },
+  "bluetooth_off": {
+    "title": "Disable Bluetooth"
+  },
+  "ringer_normal": {
+    "title": "Ringer: Normal",
+    "description": "Set ringer mode to normal"
+  },
+  "ringer_vibrate": {
+    "title": "Ringer: Vibrate",
+    "description": "Set ringer mode to vibrate"
+  },
+  "ringer_silent": {
+    "title": "Ringer: Silent",
+    "description": "Set ringer mode to silent"
+  },
+  "dnd_on": {
+    "title": "Enable Do Not Disturb mode"
+  },
+  "dnd_off": {
+    "title": "Disable Do Not Disturb mode"
+  },
+  "success": {
+    "locate_all": "Requesting location...",
+    "locate_fused": "Requesting location...",
+    "locate_gps": "Requesting location...",
+    "locate_cell": "Requesting location...",
+    "locate_last": "Requesting last known location...",
+    "ring": "Ringing device...",
+    "flash": "Flashing torch light...",
+    "lock": "Locking device...",
+    "delete": "Factory reset initiated",
+    "camera_front": "Capturing photo...",
+    "camera_back": "Capturing photo...",
+    "bluetooth_on": "Enabling Bluetooth...",
+    "bluetooth_off": "Disabling Bluetooth...",
+    "gps_on": "Enabling Location Services...",
+    "gps_off": "Disabling Location Services...",
+    "ringermode_normal": "Setting ringer to normal...",
+    "ringermode_vibrate": "Setting ringer to vibrate...",
+    "ringermode_silent": "Setting ringer to silent...",
+    "nodisturb_on": "Enabling Do Not Disturb...",
+    "nodisturb_off": "Disabling Do Not Disturb..."
+  }
+}

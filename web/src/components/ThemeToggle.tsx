@@ -1,9 +1,11 @@
 import { Sun, Moon, Monitor } from 'lucide-react';
 import { useStore, type Theme } from '@/lib/store';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { useTranslation } from 'react-i18next';
 
 export const ThemeToggle = () => {
   const { theme, setTheme } = useStore();
+  const { t } = useTranslation('settings');
 
   return (
     <ToggleGroup
@@ -13,7 +15,7 @@ export const ThemeToggle = () => {
     >
       <ToggleGroupItem value="light" aria-label="Light mode" className="w-24">
         <Sun className="mr-2 h-4 w-4" />
-        Light
+        {t('theme_light')}
       </ToggleGroupItem>
 
       <ToggleGroupItem
@@ -22,12 +24,12 @@ export const ThemeToggle = () => {
         className="w-24"
       >
         <Monitor className="mr-2 h-4 w-4" />
-        System
+        {t('theme_system')}
       </ToggleGroupItem>
 
       <ToggleGroupItem value="dark" aria-label="Dark mode" className="w-24">
         <Moon className="mr-2 h-4 w-4" />
-        Dark
+        {t('theme_dark')}
       </ToggleGroupItem>
     </ToggleGroup>
   );

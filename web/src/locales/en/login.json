@@ -1,0 +1,11 @@
+{
+  "subtitle": "This platform is for locating and controlling your devices.",
+  "setup_instruction_1": "To get started,",
+  "setup_instruction_2": "install the FMD Android app",
+  "setup_instruction_3": "on your mobile device. Then use the app to register an account on FMD Server.",
+  "username_placeholder": "Username",
+  "password_placeholder": "Password",
+  "remember_me": "Remember me",
+  "log_in": "Log in",
+  "logging_in": "Logging in..."
+}

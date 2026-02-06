@@ -1,8 +1,13 @@
-import { StrictMode } from 'react';
+import { StrictMode, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { ErrorBoundary } from 'react-error-boundary';
+import { useTranslation } from 'react-i18next';
+
+import { useStore } from '@/lib/store';
 import { ClientLayout } from '@/components/ClientLayout';
+import '@/lib/i18n'; // Initialize i18n
+
 import App from './App';
 import './globals.css';
 
@@ -23,14 +28,30 @@ const ErrorFallback = () => (
   </div>
 );
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <BrowserRouter>
-      <ErrorBoundary FallbackComponent={ErrorFallback}>
-        <ClientLayout>
-          <App />
-        </ClientLayout>
-      </ErrorBoundary>
-    </BrowserRouter>
-  </StrictMode>
-);
+const Root = () => {
+  const { language } = useStore();
+  const { i18n: i18nInstance } = useTranslation();
+
+  useEffect(() => {
+    // Sync cached language with i18n
+    if (i18nInstance.language !== language) {
+      void i18nInstance.changeLanguage(language);
+    }
+    // Update HTML lang attribute
+    document.documentElement.lang = language;
+  }, [language, i18nInstance]);
+
+  return (
+    <StrictMode>
+      <BrowserRouter>
+        <ErrorBoundary FallbackComponent={ErrorFallback}>
+          <ClientLayout>
+            <App />
+          </ClientLayout>
+        </ErrorBoundary>
+      </BrowserRouter>
+    </StrictMode>
+  );
+};
+
+createRoot(document.getElementById('root')!).render(<Root />);

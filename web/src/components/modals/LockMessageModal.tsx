@@ -1,11 +1,13 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ConfirmModal } from './ConfirmModal';
 import { Input } from '../ui/input';
+import { COMMANDS } from '../DevicePanel';
 
 interface LockMessageModalProps {
   isOpen: boolean;
   onClose: () => void;
-  executeCommand: (cmd: string) => void;
+  executeCommand: (command: string, baseCommand: string) => void;
 }
 
 export const LockMessageModal = ({
@@ -13,6 +15,7 @@ export const LockMessageModal = ({
   onClose,
   executeCommand,
 }: LockMessageModalProps) => {
+  const { t } = useTranslation('modals');
   const [message, setMessage] = useState('');
 
   return (
@@ -23,26 +26,24 @@ export const LockMessageModal = ({
         onClose();
       }}
       onConfirm={() => {
-        executeCommand(`lock ${message.trim()}`);
+        executeCommand(`lock ${message.trim()}`, COMMANDS.LOCK);
         setMessage('');
         onClose();
       }}
-      title="Lock the device?"
-      message="After the device has been locked, your device PIN or password is required to unlock the device. Biometric unlock won't work until the PIN or password is entered."
-      confirmText="Lock"
+      title={t('lock.title')}
+      message={t('lock.message')}
+      confirmText={t('lock.confirm')}
       variant="default"
     >
       <Input
         id="lockmessage"
         value={message}
         onChange={(e) => setMessage(e.target.value)}
-        placeholder="Enter message"
+        placeholder={t('lock.message_placeholder')}
         autoComplete="off"
       />
       <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
-        Enter a message to show on the lockscreen. If you leave this empty, the
-        message that is configured in the FMD Android settings will be shown on
-        the lockscreen instead.
+        {t('lock.message_hint')}
       </p>
     </ConfirmModal>
   );

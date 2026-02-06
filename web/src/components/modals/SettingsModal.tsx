@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ExternalLink, Shield } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { toast } from 'sonner';
 import {
@@ -20,6 +21,7 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Button } from '@/components/ui/button';
 import { ConfirmModal } from '@/components/modals/ConfirmModal';
 import { LoadingModal } from '@/components/modals/LoadingModal';
+import { LanguageNativeSelect } from '../LanguageNativeSelect';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -28,6 +30,7 @@ interface SettingsModalProps {
 
 export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
   const { userData, units } = useStore();
+  const { t } = useTranslation('settings');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showExportLoading, setShowExportLoading] = useState(false);
 
@@ -94,28 +97,32 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Settings</DialogTitle>
+          <DialogTitle>{t('title')}</DialogTitle>
         </DialogHeader>
 
         <Tabs defaultValue="settings" className="w-full">
           <TabsList className="mb-6 w-full">
             <TabsTrigger value="settings" className="flex-1">
-              General
+              {t('general')}
             </TabsTrigger>
 
             <TabsTrigger value="about" className="flex-1">
-              About
+              {t('about')}
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="settings" className="space-y-6">
             <div>
-              <h3 className="text-fmd-green mb-3 font-semibold">Theme</h3>
+              <h3 className="text-fmd-green mb-3 font-semibold">
+                {t('theme')}
+              </h3>
               <ThemeToggle />
             </div>
 
             <div>
-              <h3 className="text-fmd-green mb-3 font-semibold">Units</h3>
+              <h3 className="text-fmd-green mb-3 font-semibold">
+                {t('units')}
+              </h3>
               <ToggleGroup
                 type="single"
                 value={units}
@@ -123,23 +130,36 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
                   value && useStore.setState({ units: value as UnitSystem })
                 }
               >
-                <ToggleGroupItem value="metric">Metric</ToggleGroupItem>
-                <ToggleGroupItem value="imperial">Imperial</ToggleGroupItem>
+                <ToggleGroupItem value="metric">
+                  {t('units_metric')}
+                </ToggleGroupItem>
+                <ToggleGroupItem value="imperial">
+                  {t('units_imperial')}
+                </ToggleGroupItem>
               </ToggleGroup>
             </div>
 
             <div>
-              <h3 className="text-fmd-green mb-3 font-semibold">Data</h3>
+              <h3 className="text-fmd-green mb-3 font-semibold">
+                {t('language.title')}
+              </h3>
+              <LanguageNativeSelect />
+            </div>
+
+            <div>
+              <h3 className="text-fmd-green mb-3 font-semibold">
+                {t('account')}
+              </h3>
               <div className="flex flex-wrap gap-3">
                 <Button variant="secondary" onClick={() => void handleExport()}>
-                  Export Data
+                  {t('export_data')}
                 </Button>
 
                 <Button
                   variant="destructive"
                   onClick={() => setShowDeleteConfirm(true)}
                 >
-                  Delete Account
+                  {t('delete_account')}
                 </Button>
               </div>
             </div>
@@ -237,9 +257,9 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
             }
           })();
         }}
-        title="Delete Account?"
-        message="This will permanently delete your account and all associated data from the server. This action cannot be undone."
-        confirmText="Delete Account"
+        title={t('delete_account_title')}
+        message={t('delete_account_description')}
+        confirmText={t('delete_account')}
       />
     </Dialog>
   );

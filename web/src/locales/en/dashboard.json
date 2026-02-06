@@ -1,0 +1,14 @@
+{
+  "loading": "Loading...",
+  "no_devices": "No devices",
+  "last_location": "Last location",
+  "updated": "Updated",
+  "location": {
+    "recorded_at": "Recorded at",
+    "no_data": "No location data yet. Send a locate command with the buttons below!",
+    "older": "Older",
+    "newer": "Newer",
+    "no_push_url": "No push URL configured. The device will not receive commands until you set up push notifications in the Android app."
+  },
+  "command_failed": "Command failed!"
+}

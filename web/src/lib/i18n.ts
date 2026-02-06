@@ -3,7 +3,7 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
 
 // Maintain manual control over the order and which languages are shown.
-export const SUPPORTED_LANGUAGES = ['en', 'de', 'pt-BR'] as const;
+export const SUPPORTED_LANGUAGES = ['en', 'de', 'fr', 'pt-BR', 'sl', 'zh-Hant'] as const;
 
 export type Language = (typeof SUPPORTED_LANGUAGES)[number];
 

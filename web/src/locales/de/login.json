@@ -7,5 +7,8 @@
   "password_placeholder": "Passwort",
   "remember_me": "Login merken",
   "log_in": "Anmelden",
-  "logging_in": "Anmeldung läuft…"
+  "logging_in": "Anmeldung läuft…",
+  "project_website": "Projekt-Webseite",
+  "source_code": "Quellcode",
+  "privacy_notice": "Datenschutz"
 }

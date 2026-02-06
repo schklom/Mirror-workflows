@@ -7,6 +7,9 @@
     "password_hint": "The delete password is configured in your FMD Android app. It is not your server password.",
     "error_empty_password": "Please enter your delete password"
   },
+  "loading": {
+    "title": "Loading"
+  },
   "lock": {
     "title": "Lock the device?",
     "message": "After the device has been locked, your device PIN or password is required to unlock the device. Biometric unlock won't work until the PIN or password is entered.",

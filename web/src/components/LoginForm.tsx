@@ -152,7 +152,7 @@ export const LoginForm = () => {
             rel="noopener noreferrer"
             className="hover:text-fmd-green text-gray-600 transition-colors duration-200 dark:text-gray-400"
           >
-            Project Website
+            {t('project_website')}
           </a>
           <span>·</span>
           <a
@@ -161,14 +161,14 @@ export const LoginForm = () => {
             rel="noopener noreferrer"
             className="hover:text-fmd-green text-gray-600 transition-colors duration-200 dark:text-gray-400"
           >
-            Source Code
+            {t('source_code')}
           </a>
           <span>·</span>
           <a
             href="/privacy"
             className="hover:text-fmd-green text-gray-600 transition-colors duration-200 dark:text-gray-400"
           >
-            Privacy Notice
+            {t('privacy_notice')}
           </a>
         </div>
 

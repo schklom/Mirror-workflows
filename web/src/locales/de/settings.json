@@ -11,6 +11,7 @@
   "units_imperial": "Imperial",
   "account": "Konto",
   "export_data": "Daten exportieren",
+  "export_data_loading_message": "Daten werden heruntergeladen. Dies kann etwas dauern, vor allem wenn du viele Bilder hast.",
   "delete_account": "Konto löschen",
   "delete_account_title": "Konto löschen?",
   "delete_account_description": "Dein Konto und alle Daten werden dauerhaft vom Server gelöscht. Dies kann nicht rückgängig gemacht werden.",
@@ -18,5 +19,6 @@
     "title": "Sprache",
     "en": "Englisch",
     "de": "Deutsch"
-  }
+  },
+  "about_text": "Ein Server, um mit der FMD Android-App zu kommunizieren, um deine Geräte zu orten und zu steuern."
 }

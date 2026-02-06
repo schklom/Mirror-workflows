@@ -11,6 +11,7 @@
   "units_imperial": "Imperial",
   "account": "Account",
   "export_data": "Export data",
+  "export_data_loading_message": "Downloading data. This can take some time, especially if you have many pictures.",
   "delete_account": "Delete account",
   "delete_account_title": "Delete account?",
   "delete_account_description": "Your account and all data will be permanently deleted from the server. This cannot be undone.",
@@ -18,5 +19,6 @@
     "title": "Language",
     "en": "English",
     "de": "German"
-  }
+  },
+  "about_text": "A server to communicate with the FMD Android app, to locate and control your devices."
 }

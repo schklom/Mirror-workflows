@@ -7,6 +7,9 @@
     "password_hint": "Das Löschpasswort ist in der FMD Android App konfiguriert. Es ist nicht dein Server-Passwort.",
     "error_empty_password": "Bitte gib dein Löschpasswort ein"
   },
+  "loading": {
+    "title": "Laden"
+  },
   "lock": {
     "title": "Gerät sperren?",
     "message": "Nach dem Sperren des Geräts ist deine Geräte-PIN oder dein Passwort erforderlich, um das Gerät zu entsperren. Die biometrische Entsperrung funktioniert erst wieder, nachdem die PIN oder das Passwort eingegeben wurde.",

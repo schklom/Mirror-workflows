@@ -30,7 +30,7 @@ interface SettingsModalProps {
 
 export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
   const { userData, units } = useStore();
-  const { t } = useTranslation('settings');
+  const { t } = useTranslation(['settings', 'login']);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showExportLoading, setShowExportLoading] = useState(false);
 
@@ -172,8 +172,7 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
             <div>
               <h3 className="text-fmd-green font-semibold">FMD Server</h3>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                A server to communicate with the FMD Android app, to locate and
-                control your devices.
+                {t('about_text')}
               </p>
             </div>
 
@@ -188,7 +187,7 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
                     className="hover:text-fmd-green dark:hover:text-fmd-green flex items-center gap-2 text-gray-700 dark:text-gray-300"
                   >
                     <ExternalLink className="h-4 w-4" />
-                    GitLab Repository
+                    {t('login:source_code')}
                   </a>
                 </li>
                 <li>
@@ -199,7 +198,7 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
                     className="hover:text-fmd-green dark:hover:text-fmd-green flex items-center gap-2 text-gray-700 dark:text-gray-300"
                   >
                     <ExternalLink className="h-4 w-4" />
-                    Project Website
+                    {t('login:project_website')}
                   </a>
                 </li>
                 <li>
@@ -208,14 +207,14 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
                     className="hover:text-fmd-green dark:hover:text-fmd-green flex items-center gap-2 text-gray-700 dark:text-gray-300"
                   >
                     <Shield className="h-4 w-4" />
-                    Privacy Notice
+                    {t('login:privacy_notice')}
                   </a>
                 </li>
               </ul>
             </div>
 
             <div>
-              <h3 className="text-fmd-green font-semibold">Get the App</h3>
+              <h3 className="text-fmd-green font-semibold">FMD Android</h3>
               <a
                 href="https://f-droid.org/packages/de.nulide.findmydevice/"
                 target="_blank"
@@ -235,7 +234,7 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
 
       <LoadingModal
         isOpen={showExportLoading}
-        message="Downloading data. This can take some time, especially if you have many pictures."
+        message={t('export_data_loading_message')}
       />
 
       <ConfirmModal

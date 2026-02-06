@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import {
   Dialog,
   DialogContent,
@@ -15,20 +16,25 @@ interface LoadingModalProps {
 
 export const LoadingModal = ({
   isOpen,
-  title = 'Loading',
+  title,
   message = '',
-}: LoadingModalProps) => (
-  <Dialog open={isOpen} onOpenChange={(open) => !open}>
-    <DialogContent className="sm:max-w-md" showCloseButton={false}>
-      <DialogHeader>
-        <div className="flex items-center gap-3">
-          <Spinner size="sm" />
+}: LoadingModalProps) => {
+  const { t } = useTranslation('modals');
+  title = title ?? t('loading.title');
 
-          <DialogTitle>{title}</DialogTitle>
-        </div>
+  return (
+    <Dialog open={isOpen} onOpenChange={(open) => !open}>
+      <DialogContent className="sm:max-w-md" showCloseButton={false}>
+        <DialogHeader>
+          <div className="flex items-center gap-3">
+            <Spinner size="sm" />
 
-        {message && <DialogDescription>{message}</DialogDescription>}
-      </DialogHeader>
-    </DialogContent>
-  </Dialog>
-);
+            <DialogTitle>{title}</DialogTitle>
+          </div>
+
+          {message && <DialogDescription>{message}</DialogDescription>}
+        </DialogHeader>
+      </DialogContent>
+    </Dialog>
+  );
+};

@@ -1,1 +1,14 @@
-{}
+{
+  "subtitle": "此平台用於定位與控制您的裝置。",
+  "setup_instruction_1": "開始使用前，請先",
+  "setup_instruction_2": "安裝 FMD Android 應用程式",
+  "setup_instruction_3": "於您的行動裝置上。接著使用該應用程式於 FMD Server 註冊帳號。",
+  "username_placeholder": "使用者名稱",
+  "password_placeholder": "密碼",
+  "remember_me": "記住我",
+  "log_in": "登入",
+  "logging_in": "登入中…",
+  "project_website": "專案網站",
+  "source_code": "原始碼",
+  "privacy_notice": "隱私權聲明"
+}

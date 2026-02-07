@@ -1,1 +1,22 @@
-{}
+{
+  "title": "設定",
+  "general": "一般",
+  "about": "關於",
+  "theme": "佈景主題",
+  "theme_dark": "深色",
+  "theme_light": "淺色",
+  "theme_system": "系統預設",
+  "units": "單位",
+  "units_metric": "公制",
+  "units_imperial": "英制",
+  "account": "帳號",
+  "export_data": "匯出資料",
+  "export_data_loading_message": "正在下載資料。若您有較多照片，可能需要一些時間。",
+  "delete_account": "刪除帳號",
+  "delete_account_title": "確定要刪除帳號？",
+  "delete_account_description": "您的帳號及所有資料將永久從伺服器刪除，且無法復原。",
+  "language": {
+    "title": "語言"
+  },
+  "about_text": "此伺服器用於與 FMD Android 應用程式通訊，以定位並控制您的裝置。"
+}

@@ -1,1 +1,4 @@
-{}
+{
+  "account_not_found": "找不到帳號。請透過 FMD Android 應用程式註冊帳號。",
+  "login_failed": "登入失敗"
+}

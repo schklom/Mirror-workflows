@@ -1,1 +1,102 @@
-{}
+{
+  "locate_all": {
+    "title": "定位：全部來源",
+    "description": "透過所有定位來源取得位置"
+  },
+  "locate_fused": {
+    "title": "定位：整合來源",
+    "description": "透過網路 / GPS 取得位置"
+  },
+  "locate_gps": {
+    "title": "定位：GPS",
+    "description": "透過 GPS 取得位置"
+  },
+  "locate_cell": {
+    "title": "定位：基地台",
+    "description": "透過周遭基地台（OpenCelliD 與/或 BeaconDB）取得位置"
+  },
+  "locate_last": {
+    "title": "定位：最後已知位置",
+    "description": "取得最後已知位置（速度快，但可能是過時的）"
+  },
+  "ring": {
+    "title": "響鈴",
+    "description": "讓裝置播放高音量提示音"
+  },
+  "flash": {
+    "title": "手電筒閃爍",
+    "description": "閃爍裝置手電筒燈光"
+  },
+  "lock": {
+    "title": "鎖定",
+    "description": "鎖定裝置畫面"
+  },
+  "factory_reset": {
+    "title": "恢復原廠設定",
+    "description": "清除所有資料並將裝置恢復原廠設定"
+  },
+  "camera_front": {
+    "title": "前鏡頭",
+    "description": "使用前鏡頭拍照"
+  },
+  "camera_back": {
+    "title": "後鏡頭",
+    "description": "使用後鏡頭拍照"
+  },
+  "view_photos": {
+    "title": "查看照片",
+    "description": "查看裝置拍攝的照片"
+  },
+  "gps_on": {
+    "title": "開啟定位服務"
+  },
+  "gps_off": {
+    "title": "關閉定位服務"
+  },
+  "bluetooth_on": {
+    "title": "開啟藍牙"
+  },
+  "bluetooth_off": {
+    "title": "關閉藍牙"
+  },
+  "ringer_normal": {
+    "title": "鈴聲模式：一般",
+    "description": "將鈴聲模式設定為一般"
+  },
+  "ringer_vibrate": {
+    "title": "鈴聲模式：震動",
+    "description": "將鈴聲模式設定為震動"
+  },
+  "ringer_silent": {
+    "title": "鈴聲模式：靜音",
+    "description": "將鈴聲模式設定為靜音"
+  },
+  "dnd_on": {
+    "title": "開啟勿擾模式"
+  },
+  "dnd_off": {
+    "title": "關閉勿擾模式"
+  },
+  "success": {
+    "locate_all": "正在要求位置…",
+    "locate_fused": "正在要求位置…",
+    "locate_gps": "正在要求位置…",
+    "locate_cell": "正在要求位置…",
+    "locate_last": "正在取得最後已知位置…",
+    "ring": "裝置響鈴中…",
+    "flash": "手電筒閃爍中…",
+    "lock": "鎖定裝置中…",
+    "delete": "已啟動恢復原廠設定…",
+    "camera_front": "拍照中…",
+    "camera_back": "拍照中…",
+    "bluetooth_on": "藍牙開啟中…",
+    "bluetooth_off": "藍牙關閉中…",
+    "gps_on": "定位服務開啟中…",
+    "gps_off": "定位服務關閉中…",
+    "ringermode_normal": "鈴聲設定為一般中…",
+    "ringermode_vibrate": "鈴聲設定為震動中…",
+    "ringermode_silent": "鈴聲設定為靜音中…",
+    "nodisturb_on": "勿擾模式開啟中…",
+    "nodisturb_off": "勿擾模式關閉中…"
+  }
+}

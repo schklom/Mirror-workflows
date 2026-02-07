@@ -1,1 +1,21 @@
-{}
+{
+  "loading": "載入中…",
+  "no_devices": "沒有裝置",
+  "last_location": "最後位置",
+  "updated": "更新時間",
+  "location": {
+    "recorded_at": "記錄於",
+    "no_data": "尚無位置資料。請使用下方按鈕傳送定位指令！",
+    "older": "較舊",
+    "newer": "較新",
+    "no_push_url": "尚未設定推播 URL。在 Android 應用程式設定推播通知前，裝置將無法接收指令。"
+  },
+  "command_failed": "指令執行失敗！",
+  "time": "時間",
+  "battery": "電量",
+  "provider": "定位來源",
+  "accuracy": "精準度",
+  "altitude": "高度",
+  "speed": "速度",
+  "bearing": "方向"
+}

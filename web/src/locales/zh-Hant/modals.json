@@ -1,1 +1,31 @@
-{}
+{
+  "factory_reset": {
+    "title": "是否要將裝置恢復原廠設定？",
+    "message": "此操作會永久刪除裝置內所有資料並恢復原廠設定，且無法復原。",
+    "confirm": "恢復原廠設定",
+    "password_placeholder": "請輸入刪除密碼",
+    "password_hint": "刪除密碼需於 FMD Android 應用程式內設定，並非伺服器密碼。",
+    "error_empty_password": "請輸入刪除密碼"
+  },
+  "loading": {
+    "title": "載入中"
+  },
+  "lock": {
+    "title": "是否鎖定裝置？",
+    "message": "裝置鎖定後，需輸入裝置 PIN 或密碼才能解鎖。在輸入 PIN 或密碼前，生物辨識將無法使用。",
+    "confirm": "鎖定",
+    "message_placeholder": "輸入訊息",
+    "message_hint": "輸入要顯示於鎖定畫面的訊息。若留空，將顯示 FMD Android 設定內的預設訊息。"
+  },
+  "pictures": {
+    "title": "照片",
+    "empty": "沒有可用照片",
+    "of": "/"
+  },
+  "webcrypto_warning": {
+    "title": "無法使用 WebCrypto API",
+    "message": "FMD Server 無法運作，因為 WebCrypto API 不可用。",
+    "detail": "這通常是因為您透過不安全的 HTTP 存取本網站。請改用 HTTPS。若您是自行架設伺服器，請參考",
+    "link_text": "安裝指南"
+  }
+}

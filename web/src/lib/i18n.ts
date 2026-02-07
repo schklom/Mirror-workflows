@@ -5,8 +5,10 @@ import { initReactI18next } from 'react-i18next';
 // Maintain manual control over the order and which languages are shown.
 export const SUPPORTED_LANGUAGES = [
   'en',
+  'et',
   'de',
   'fr',
+  'nl',
   'pt-BR',
   'sl',
   'zh-Hant',

@@ -18,8 +18,10 @@
   "language": {
     "title": "Language",
     "en": "English",
+    "et": "Estonian",
     "de": "German",
     "fr": "French",
+    "nl": "Dutch",
     "pt-BR": "Portuguese (Brazil)",
     "sl": "Slovenian",
     "zh-Hant": "Chinese (Traditional)"

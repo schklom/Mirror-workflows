@@ -47,6 +47,16 @@ go build
 ./fmd-server serve
 ```
 
+To easily build from source with Docker Compose, replace `image:` with `build:` as shown below.
+Then run `docker compose build && docker compose up`.
+
+```yaml
+services:
+  fmd:
+#    image: registry.gitlab.com/fmd-foss/fmd-server:v0.14.0
+    build: https://gitlab.com/fmd-foss/fmd-server.git#master
+```
+
 ## Donate
 
 <script src="https://liberapay.com/FMD/widgets/button.js"></script>

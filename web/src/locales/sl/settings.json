@@ -1,0 +1,28 @@
+{
+  "title": "Nastavitve",
+  "general": "Splošno",
+  "about": "O strežniku",
+  "theme": "Tema",
+  "theme_dark": "Temna",
+  "export_data": "Izvozi podatke",
+  "export_data_loading_message": "Prenos podatkov. To lahko traja nekaj časa, še posebej, če imate veliko fotografij.",
+  "delete_account": "Izbriši račun",
+  "delete_account_title": "Izbrišem račun?",
+  "delete_account_description": "Vaš račun in vsi podatki bodo trajno izbrisani s strežnika. Tega ni mogoče razveljaviti.",
+  "language": {
+    "title": "Jezik",
+    "en": "Angleščina",
+    "de": "Nemščina",
+    "fr": "Francoščina",
+    "pt-BR": "Portugalščina (Brazilija)",
+    "sl": "Slovenščina",
+    "zh-Hant": "Kitajščina (tradicionalna)"
+  },
+  "theme_light": "Svetla",
+  "theme_system": "Sistem",
+  "units": "Enote",
+  "units_metric": "Metrične",
+  "units_imperial": "Imperialne",
+  "account": "Račun",
+  "about_text": "Strežnik za komunikacijo z aplikacijo FMD za Android, za lociranje in upravljanje vaših naprav."
+}

@@ -1,0 +1,31 @@
+{
+  "factory_reset": {
+    "title": "Ponastavitev naprave na tovarniške nastavitve?",
+    "message": "S tem boste trajno izbrisali vse podatke iz svoje naprave in jo ponastavili na tovarniške nastavitve. Tega ni mogoče razveljaviti.",
+    "confirm": "Ponastavitev na tovarniške nastavitve",
+    "password_placeholder": "Vnesite svoje geslo za potrditev brisanja",
+    "password_hint": "Geslo za potrditev brisanja je nastavljeno v vaši aplikaciji FMD za Android. To ni vaše geslo za strežnik.",
+    "error_empty_password": "Prosim, vnesite svoje geslo za potrditev brisanja"
+  },
+  "lock": {
+    "message_hint": "Vnesite sporočilo, ki bo prikazano na zaklenjenem zaslonu. Če to polje pustite prazno, se bo na zaklenjenem zaslonu namesto tega prikazalo sporočilo, ki je določeno v nastavitvah FMD Android.",
+    "title": "Zaklenem napravo?",
+    "message": "Ko je naprava zaklenjena, jo je potrebno odkleniti s PIN-kodo ali geslom. Biometrično odklepanje ne bo delovalo, dokler ne vnesete PIN-a ali gesla.",
+    "confirm": "Zakleni",
+    "message_placeholder": "Vnesite sporočilo"
+  },
+  "pictures": {
+    "title": "Fotografije",
+    "empty": "Ni fotografij",
+    "of": "od"
+  },
+  "webcrypto_warning": {
+    "title": "WebCrypto API ni na voljo",
+    "message": "FMD strežnik ne bo deloval, ker WebCrypto API ni na voljo.",
+    "detail": "To je najverjetneje zato, ker to spletno mesto obiskujete prek nezaščitenega HTTP-ja. Uporabite HTTPS. Če imate lastno gostovanje, preberite",
+    "link_text": "navodila za namestitev"
+  },
+  "loading": {
+    "title": "Nalaganje"
+  }
+}

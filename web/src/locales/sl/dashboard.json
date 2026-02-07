@@ -1,0 +1,21 @@
+{
+  "loading": "Nalaganje…",
+  "no_devices": "Ni naprav",
+  "last_location": "Zadnja lokacija",
+  "updated": "Posodobljeno",
+  "location": {
+    "recorded_at": "Zabeleženo ob",
+    "no_data": "Podatkov o lokaciji še ni. Pošljite ukaz za lociranje s spodnjimi gumbi!",
+    "older": "Starejše",
+    "newer": "Novejši",
+    "no_push_url": "URL za potisna obvestila ni nastavljen. Naprava ne bo prejemala ukazov, dokler v aplikaciji za Android ne nastavite potisnih obvestil."
+  },
+  "time": "Čas",
+  "battery": "Baterija",
+  "provider": "Ponudnik",
+  "accuracy": "Natančnost",
+  "altitude": "Nadmorska višina",
+  "speed": "Hitrost",
+  "bearing": "Smer kompasa",
+  "command_failed": "Ukaz ni uspel!"
+}

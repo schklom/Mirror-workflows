@@ -1,0 +1,14 @@
+{
+  "subtitle": "Ta platforma je namenjena lociranju in nadzoru vaših naprav.",
+  "setup_instruction_2": "namestite aplikacijo FMD Android",
+  "setup_instruction_3": "na vaši mobilni napravi. Nato uporabite aplikacijo za registracijo računa na FMD strežniku.",
+  "username_placeholder": "Uporabniško ime",
+  "privacy_notice": "Obvestilo o zasebnosti",
+  "setup_instruction_1": "Za začetek",
+  "password_placeholder": "Geslo",
+  "remember_me": "Zapomni si me",
+  "log_in": "Prijava",
+  "logging_in": "Prijavljanje…",
+  "project_website": "Spletna stran projekta",
+  "source_code": "Izvorna koda"
+}

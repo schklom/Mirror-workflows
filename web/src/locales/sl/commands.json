@@ -1,0 +1,102 @@
+{
+  "locate_all": {
+    "title": "Lociraj: vse",
+    "description": "Pridobi lokacijo od vseh ponudnikov lokacij"
+  },
+  "locate_fused": {
+    "title": "Lociraj: kombinirano",
+    "description": "Pridobi lokacijo iz omrežja/GPS"
+  },
+  "locate_gps": {
+    "title": "Lociraj: GPS",
+    "description": "Pridobi lokacijo iz GPS-a"
+  },
+  "ring": {
+    "description": "Na napravi predvajaj glasen zvok",
+    "title": "Pozvoni"
+  },
+  "flash": {
+    "title": "Bliskavica",
+    "description": "Pobliskaj z lučjo svetilke"
+  },
+  "lock": {
+    "title": "Zakleni",
+    "description": "Zakleni zaslon naprave"
+  },
+  "factory_reset": {
+    "title": "Ponastavitev na tovarniške nastavitve",
+    "description": "Izbriši vse podatke in ponastavi napravo na tovarniške nastavitve"
+  },
+  "camera_front": {
+    "title": "Sprednja kamera",
+    "description": "Zajemi fotografijo s sprednjo kamero"
+  },
+  "camera_back": {
+    "title": "Zadnja kamera",
+    "description": "Zajemi fotografijo z zadnjo kamero"
+  },
+  "locate_cell": {
+    "title": "Lociraj: bazna postaja",
+    "description": "Pridobite lokacijo okoliških baznih postaj mobilnih omrežij z OpenCelliD in/ali BeaconDB"
+  },
+  "locate_last": {
+    "title": "Lociraj: zadnja znana lokacija",
+    "description": "Pridobi zadnjo znano lokacijo (hitro, vendar je lahko zastarelo)"
+  },
+  "view_photos": {
+    "title": "Preglej fotografije",
+    "description": "Ogled fotografij, posnetih z napravo"
+  },
+  "gps_on": {
+    "title": "Omogoči lokacijske storitve"
+  },
+  "gps_off": {
+    "title": "Onemogoči lokacijske storitve"
+  },
+  "bluetooth_on": {
+    "title": "Omogoči Bluetooth"
+  },
+  "bluetooth_off": {
+    "title": "Onemogoči Bluetooth"
+  },
+  "ringer_normal": {
+    "title": "Zvonjenje: Običajno",
+    "description": "Nastavi način zvonjenja na normalen"
+  },
+  "ringer_vibrate": {
+    "title": "Zvonjenje: Vibriranje",
+    "description": "Nastavi način zvonjenja na vibriranje"
+  },
+  "ringer_silent": {
+    "title": "Zvonjenje: Tiho",
+    "description": "Nastavi način zvonjenja na tiho"
+  },
+  "dnd_on": {
+    "title": "Omogoči način \"ne moti\""
+  },
+  "dnd_off": {
+    "title": "Onemogoči način \"ne moti\""
+  },
+  "success": {
+    "locate_all": "Zahtevam lokacijo…",
+    "locate_fused": "Zahtevam lokacijo…",
+    "locate_gps": "Zahtevam lokacijo…",
+    "locate_cell": "Zahtevam lokacijo…",
+    "locate_last": "Zahtevam zadnjo znano lokacijo…",
+    "ring": "Zvonjenje naprave…",
+    "flash": "Utripanje luči svetilke…",
+    "lock": "Zaklepanje naprave…",
+    "delete": "Ponastavitev na tovarniške nastavitve se je začela…",
+    "camera_front": "Zajemanje fotografije…",
+    "camera_back": "Zajemanje fotografije…",
+    "bluetooth_on": "Omogočanje Bluetootha…",
+    "bluetooth_off": "Onemogočanje Bluetootha…",
+    "gps_on": "Omogočanje lokacijskih storitev…",
+    "gps_off": "Onemogočanje lokacijskih storitev…",
+    "ringermode_normal": "Nastavljanje zvonjenja na normalno…",
+    "ringermode_vibrate": "Nastavljanje zvonjenja na vibriranje…",
+    "ringermode_silent": "Nastavljanje zvonjenja na tiho…",
+    "nodisturb_on": "Omogočanje načina \"ne moti\"…",
+    "nodisturb_off": "Onemogočanje načina \"ne moti\"…"
+  }
+}

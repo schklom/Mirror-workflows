@@ -1,0 +1,11 @@
+{
+  "subtitle": "Cette plateforme permet de localiser et contrôler vos appareils.",
+  "setup_instruction_1": "Pour démarrer,",
+  "setup_instruction_2": "Installer l'application Android FMD",
+  "setup_instruction_3": "sur votre appareil mobile. Puis utilisez l'application pour enregistrer un compte sur le serveur FMD.",
+  "username_placeholder": "Nom d'utilisateur",
+  "password_placeholder": "Mot de passe",
+  "project_website": "Site web du projet",
+  "remember_me": "Se souvenir de moi",
+  "logging_in": "Connexion…"
+}

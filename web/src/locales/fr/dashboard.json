@@ -1,0 +1,20 @@
+{
+  "loading": "Chargement…",
+  "no_devices": "Aucun appareil",
+  "last_location": "Dernière localisation",
+  "updated": "Mis à jour",
+  "location": {
+    "recorded_at": "Enregistré le",
+    "no_data": "Aucune donnée de localisation pour le moment. Envoyer une commande de localisation avec les boutons ci-dessous !",
+    "older": "Plus ancien",
+    "newer": "Plus récent"
+  },
+  "command_failed": "Échec  de la commande !",
+  "time": "Heure",
+  "battery": "Batterie",
+  "provider": "Fournisseur",
+  "accuracy": "Précision",
+  "altitude": "Altitude",
+  "speed": "Vitesse",
+  "bearing": "Angle par rapport à l'horizon (relèvement)"
+}

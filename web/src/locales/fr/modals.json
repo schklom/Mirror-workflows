@@ -1,0 +1,18 @@
+{
+  "factory_reset": {
+    "title": "Réinitialiser l'appareil à ses paramètres d'usine ?",
+    "message": "Cela va supprimer définitivement toutes les données be votre appareil et le remettre aux paramètres d'usine. Cela ne peut pas être annulé.",
+    "confirm": "Réinitialiser l'appareil",
+    "password_placeholder": "Entrer votre mot de passe de réinitialisation",
+    "password_hint": "Le mot de passe de réinitialisation est configuré dans votre application Android FMD. Ce n'est pas votre mot de passe de serveur.",
+    "error_empty_password": "Veuillez rentrer votre mot de passe de réinitialisation"
+  },
+  "lock": {
+    "confirm": "Verrouiller",
+    "title": "Verrouiller l'appareil ?",
+    "message": "Après le verrouillage de l'appareil, votre mot de passe ou code PIN est nécessaire pour déverrouiller l'appareil. Le déverrouillage par biométrie ne fonctionnera pas tant que vous n'aurez pas renseigné votre mot de passe ou code PIN."
+  },
+  "loading": {
+    "title": "Chargement"
+  }
+}

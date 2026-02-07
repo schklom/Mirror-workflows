@@ -1,0 +1,41 @@
+{
+  "locate_all": {
+    "title": "Localiser : Tous",
+    "description": "Obtenir une localisation depuis tous les fournisseurs de localisation"
+  },
+  "factory_reset": {
+    "title": "Réinitialiser l'appareil",
+    "description": "Supprimer toutes les données et réinitialiser l'appareil aux paramètres d'usine"
+  },
+  "locate_fused": {
+    "title": "Localisation : fusionnée",
+    "description": "Obtenir une localisation depuis le réseau mobile / GPS"
+  },
+  "locate_gps": {
+    "title": "Localisation : GPS",
+    "description": "Obtenir une localisation depuis le GPS"
+  },
+  "locate_cell": {
+    "title": "Localisation : réseau mobile",
+    "description": "Obtenir une localisation à partir des antennes réseaux alentours, grâce à OpenCelliD et/ou BeaconDB"
+  },
+  "locate_last": {
+    "title": "Localisation : dernière connue",
+    "description": "Obtenir la dernière localisation (rapide, mais elle peut être obsolète)"
+  },
+  "ring": {
+    "title": "Sonnerie",
+    "description": "Jouer un son à volume élevé sur l'appareil"
+  },
+  "flash": {
+    "title": "Flash",
+    "description": "Allumer la lampe torche"
+  },
+  "lock": {
+    "title": "Verrouiller",
+    "description": "Verrouiller l'écran de l'appareil"
+  },
+  "bluetooth_on": {
+    "title": "Activer le Bluetooth"
+  }
+}

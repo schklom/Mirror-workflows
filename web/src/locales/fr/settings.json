@@ -1,0 +1,11 @@
+{
+  "title": "Paramètres",
+  "general": "Général",
+  "about": "À propos",
+  "theme": "Thème",
+  "theme_dark": "Sombre",
+  "theme_light": "Clair",
+  "theme_system": "Système",
+  "units": "Unités",
+  "units_metric": "Métrique"
+}

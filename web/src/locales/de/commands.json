@@ -32,7 +32,7 @@
     "description": "Gerätebildschirm sperren"
   },
   "factory_reset": {
-    "title": "Werkseinstellung",
+    "title": "Werkseinstellungen",
     "description": "Alle Daten löschen und Gerät auf Werkseinstellungen zurücksetzen"
   },
   "camera_front": {

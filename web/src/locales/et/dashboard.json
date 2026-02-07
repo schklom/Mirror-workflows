@@ -1,0 +1,20 @@
+{
+  "loading": "Laadin…",
+  "no_devices": "Seadmeid pole",
+  "last_location": "Viimane teadaolev asukoht",
+  "updated": "Uuendatud",
+  "location": {
+    "no_data": "Asukohaandmeid veel ei leidu. Saada järgnevate nuppudega asukoha tuvastamise käsk!",
+    "older": "Vanem",
+    "newer": "Uuem",
+    "no_push_url": "Tõuketeenuse võrguaadress on salvestamata. Seade ei suuda käske vastu võtta enne, kui sa pole Androidi rakenduses tõuketeavitusi seadistanud."
+  },
+  "command_failed": "Käsk ei toiminud!",
+  "time": "Aeg",
+  "battery": "Aku",
+  "provider": "Teenusepakkuja",
+  "accuracy": "Täpsus",
+  "altitude": "Kõrgus",
+  "speed": "Kiirus",
+  "bearing": "Suund"
+}

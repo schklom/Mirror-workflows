@@ -1,0 +1,14 @@
+{
+  "subtitle": "See platvorm on mõeldud sinu seadmete asukoha tuvastamiseks ja nende jutimiseks.",
+  "setup_instruction_1": "Alustamiseks palun",
+  "setup_instruction_2": "paigalda FMD Androidi rakendus",
+  "setup_instruction_3": "oma nutiseadmesse. Seejärel kasuta rakendust konto registreerimiseks FMD Serveris.",
+  "username_placeholder": "Kasutajanimi",
+  "password_placeholder": "Salasõna",
+  "remember_me": "Jäta mind meelde",
+  "log_in": "Logi sisse",
+  "logging_in": "Login sisse…",
+  "project_website": "Projekti veebisait",
+  "source_code": "Lähtekood",
+  "privacy_notice": "Privaatsusteade"
+}

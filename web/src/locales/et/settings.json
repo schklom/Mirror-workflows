@@ -1,0 +1,21 @@
+{
+  "about": "Rakenduse teave",
+  "title": "Seadistused",
+  "general": "Üldist",
+  "theme": "Kujundus",
+  "theme_dark": "Tume kujundus",
+  "theme_light": "Hele kujundus",
+  "theme_system": "Süsteemi kujundus",
+  "units": "Ühikud",
+  "units_metric": "Meetermõõdustik",
+  "units_imperial": "Inglise mõõdustik",
+  "account": "Kasutajakonto",
+  "language": {
+    "title": "Keel",
+    "en": "inglise keel",
+    "de": "saksa keel",
+    "fr": "prantsuse keel",
+    "sl": "sloveeni keel"
+  },
+  "export_data": "Ekspordi andmeid"
+}

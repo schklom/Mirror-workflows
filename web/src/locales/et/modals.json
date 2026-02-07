@@ -1,0 +1,14 @@
+{
+  "factory_reset": {
+    "title": "Kas lähtestad nutiseadme tootja algolekusse?"
+  },
+  "loading": {
+    "title": "Laadin andmeid"
+  },
+  "lock": {
+    "confirm": "Lukusta"
+  },
+  "pictures": {
+    "title": "Fotod"
+  }
+}

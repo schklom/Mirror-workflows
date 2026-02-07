@@ -1,7 +1,7 @@
 # FMD Server
 
 This is the official server for [FMD Android](https://gitlab.com/fmd-foss/fmd-android)
-written in Go.
+written in Go and React.
 
 The FMD app can register an account on FMD Server.
 The app can then upload its location at regular intervals.

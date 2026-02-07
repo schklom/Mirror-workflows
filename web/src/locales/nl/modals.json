@@ -1,0 +1,31 @@
+{
+  "factory_reset": {
+    "title": "Apparaat terugzetten naar fabrieksinstellingen?",
+    "message": "Hierdoor worden alle gegevens permanent van uw apparaat verwijderd en naar de fabrieksinstellingen hersteld. Dit kan niet ongedaan worden gemaakt.",
+    "confirm": "Herstellen naar fabrieksinstellingen",
+    "password_placeholder": "Voer uw verwijderwachtwoord in",
+    "password_hint": "Het verwijderingswachtwoord is geconfigureerd in uw FMD Android app Het is niet uw server-wachtwoord.",
+    "error_empty_password": "Voer uw verwijderingswachtwoord in"
+  },
+  "loading": {
+    "title": "Laden"
+  },
+  "lock": {
+    "title": "Apparaat vergrendelen?",
+    "message": "Nadat het apparaat is vergrendeld, is de pincode of het wachtwoord van uw apparaat vereist om het te ontgrendelen. Biometrische ontgrendeling werkt pas nadat de pincode of het wachtwoord is ingevoerd.",
+    "confirm": "Vergrendelen",
+    "message_placeholder": "Bericht invoeren",
+    "message_hint": "Voer een bericht in dat op het vergrendelingsscherm moet worden weergegeven. Als u dit leeg laat, wordt het in de instellingen van FMD Android geconfigureerde bericht op het vergrendelingsscherm weergegeven."
+  },
+  "pictures": {
+    "title": "Foto's",
+    "empty": "Geen foto's beschikbaar",
+    "of": "van"
+  },
+  "webcrypto_warning": {
+    "title": "WebCrypto-API niet beschikbaar",
+    "message": "FMD Server zal niet werken omdat de WebCrypto-API niet beschikbaar is.",
+    "detail": "Dit komt hoogstwaarschijnlijk omdat u deze site bezoekt via onveilige HTTP. Gebruik HTTPS. Bent u zelfhosting, lees dan de",
+    "link_text": "installatiegids"
+  }
+}

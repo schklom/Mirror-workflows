@@ -1,0 +1,28 @@
+{
+  "title": "Instellingen",
+  "general": "Algemeen",
+  "about": "Over",
+  "theme": "Thema",
+  "theme_dark": "Donker",
+  "theme_light": "Licht",
+  "theme_system": "Systeem",
+  "units": "Eenheden",
+  "units_metric": "Metrisch",
+  "units_imperial": "Brits-Amerikaans",
+  "account": "Account",
+  "export_data": "Gegevens exporteren",
+  "export_data_loading_message": "Gegevens downloaden. Dit kan even duren, zeker wanneer het veel foto's behelst.",
+  "delete_account": "Account verwijderen",
+  "delete_account_title": "Account verwijderen?",
+  "delete_account_description": "Uw account en alle gegevens worden permanent van de server verwijderd. Dit kan niet ongedaan worden gemaakt.",
+  "language": {
+    "title": "Taal",
+    "en": "Engels",
+    "de": "Duits",
+    "fr": "Frans",
+    "pt-BR": "Portugees (Brazilië)",
+    "sl": "Sloveens",
+    "zh-Hant": "Chinees (traditioneel)"
+  },
+  "about_text": "Een server om te communiceren met de FMD Android-app, om uw apparaten te lokaliseren en te besturen."
+}

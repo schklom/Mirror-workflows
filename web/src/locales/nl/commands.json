@@ -1,0 +1,102 @@
+{
+  "locate_all": {
+    "title": "Localiseren: Alle",
+    "description": "Een locatie verkrijgen van alle locatieleveranciers"
+  },
+  "locate_fused": {
+    "title": "Lokaliseren: Samengesteld",
+    "description": "Een locatie verkrijgen van netwerk/GPS"
+  },
+  "locate_gps": {
+    "title": "Localiseren: GPS",
+    "description": "Een locatie verkrijgen van GPS"
+  },
+  "locate_cell": {
+    "title": "Localiseren: Zendmasten",
+    "description": "Een locatie verkrijgen van de nabije zendmasten met OpenCelliD en/of BeaconDB"
+  },
+  "locate_last": {
+    "title": "Localiseren: Laatst bekende positie",
+    "description": "De laatst bekende locatie (snel, maar mogelijk verouderd)"
+  },
+  "ring": {
+    "title": "Bellen",
+    "description": "Een luid geluid op het apparaat afspelen"
+  },
+  "flash": {
+    "title": "Flitsen",
+    "description": "Zaklamp flitsen"
+  },
+  "lock": {
+    "title": "Vergrendelen",
+    "description": "Apparaatscherm vergrendelen"
+  },
+  "factory_reset": {
+    "title": "Fabrieksinstellingen",
+    "description": "Alle gegevens wissen en het apparaat herstellen naar fabrieksinstellingen"
+  },
+  "camera_front": {
+    "title": "Camera voorkant",
+    "description": "Maak een foto met de camera aan de voorkant"
+  },
+  "camera_back": {
+    "title": "Camera achterkant",
+    "description": "Maak een foto met de camera aan de achterkant"
+  },
+  "view_photos": {
+    "title": "Foto's weergeven",
+    "description": "Foto's gemaakt door het apparaat weergeven"
+  },
+  "gps_on": {
+    "title": "Locatieservices inschakelen"
+  },
+  "gps_off": {
+    "title": "Locatieservices uitschakelen"
+  },
+  "bluetooth_on": {
+    "title": "Bluetooth inschakelen"
+  },
+  "bluetooth_off": {
+    "title": "Bluetooth uitschakelen"
+  },
+  "ringer_normal": {
+    "title": "Bellen: Normaal",
+    "description": "Bellen instellen op normaal"
+  },
+  "ringer_vibrate": {
+    "title": "Bellen: Vibreren",
+    "description": "Bellen instellen op vibreren"
+  },
+  "ringer_silent": {
+    "title": "Bellen: Stil",
+    "description": "Bellen instellen op stil"
+  },
+  "dnd_on": {
+    "title": "\"Niet storen\" inschakelen"
+  },
+  "dnd_off": {
+    "title": "\"Niet storen\" uitschakelen"
+  },
+  "success": {
+    "locate_all": "Locatie opvragen…",
+    "locate_fused": "Locatie opvragen…",
+    "locate_gps": "Locatie ophalen…",
+    "locate_cell": "Locatie opvragen…",
+    "locate_last": "Laatst bekende locatie opvragen…",
+    "ring": "Apparaat bellen…",
+    "flash": "Zaklamp flitsen…",
+    "lock": "Apparaat vergrendelen…",
+    "delete": "Apparaat wordt teruggezet naar fabrieksinstellingen…",
+    "camera_front": "Foto nemen…",
+    "camera_back": "Foto nemen…",
+    "bluetooth_on": "Bluetooth inschakelen…",
+    "bluetooth_off": "Bluetooth uitschakelen…",
+    "gps_on": "Locatieservices inschakelen…",
+    "gps_off": "Locatieservices uitschakelen…",
+    "ringermode_normal": "Bellen instellen op normaal…",
+    "ringermode_vibrate": "Bellen instellen op vibreren…",
+    "ringermode_silent": "Bellen instellen op stil…",
+    "nodisturb_on": "\"Niet storen\" inschakelen…",
+    "nodisturb_off": "\"Niet storen\" uitschakelen…"
+  }
+}

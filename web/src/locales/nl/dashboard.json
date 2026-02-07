@@ -1,0 +1,21 @@
+{
+  "loading": "Laden…",
+  "no_devices": "Geen apparaten",
+  "last_location": "Laatste locatie",
+  "updated": "Bijgewerkt",
+  "location": {
+    "recorded_at": "Opgenomen op",
+    "no_data": "Nog geen locatiegegevens. Stuur een locate-opdracht met de onderstaande knoppen!",
+    "older": "Ouder",
+    "newer": "Nieuwer",
+    "no_push_url": "Geen push-URL geconfigureerd. Het apparaat ontvangt geen opdrachten totdat u pushmeldingen instelt in de Android-app."
+  },
+  "command_failed": "Opdracht is mislukt!",
+  "time": "Tijd",
+  "battery": "Batterij",
+  "provider": "Provider",
+  "accuracy": "Nauwkeurigheid",
+  "altitude": "Hoogte",
+  "speed": "Snelheid",
+  "bearing": "Koers"
+}

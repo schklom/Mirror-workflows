@@ -1,0 +1,14 @@
+{
+  "subtitle": "Dit platform is bedoeld voor het lokaliseren en besturen van uw apparaten.",
+  "setup_instruction_1": "Om te beginnen,",
+  "setup_instruction_2": "installeer de FMD Android app",
+  "setup_instruction_3": "op je mobiele apparaat. Gebruik vervolgens de app om een account op FMD Server te registreren.",
+  "username_placeholder": "Gebruikersnaam",
+  "password_placeholder": "Wachtwoord",
+  "remember_me": "Onthoud mij",
+  "log_in": "Aanmelden",
+  "logging_in": "Aanmelden…",
+  "project_website": "Project-website",
+  "source_code": "Broncode",
+  "privacy_notice": "Privacyverklaring"
+}

@@ -13,7 +13,7 @@ export const ThemeToggle = () => {
       value={theme}
       onValueChange={(value) => value && setTheme(value as Theme)}
     >
-      <ToggleGroupItem value="light" aria-label="Light mode" className="w-24">
+      <ToggleGroupItem value="light" aria-label="Light mode" className="min-w-24">
         <Sun className="mr-2 h-4 w-4" />
         {t('theme_light')}
       </ToggleGroupItem>
@@ -21,13 +21,13 @@ export const ThemeToggle = () => {
       <ToggleGroupItem
         value="system"
         aria-label="System theme"
-        className="w-24"
+        className="min-w-24"
       >
         <Monitor className="mr-2 h-4 w-4" />
         {t('theme_system')}
       </ToggleGroupItem>
 
-      <ToggleGroupItem value="dark" aria-label="Dark mode" className="w-24">
+      <ToggleGroupItem value="dark" aria-label="Dark mode" className="min-w-24">
         <Moon className="mr-2 h-4 w-4" />
         {t('theme_dark')}
       </ToggleGroupItem>

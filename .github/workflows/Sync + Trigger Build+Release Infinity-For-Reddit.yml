@@ -1,20 +1,16 @@
 name: Sync + Trigger Build+Release Infinity-For-Reddit
 
-# Controls when the workflow will run
 on:
   schedule:
     # * is a special character in YAML so you have to quote this string
     - cron:  '0 0 * * *'
 
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
 
   get_version:
     runs-on: ubuntu-latest
-    # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
     outputs:
       REMOTE: ${{ steps.commits.outputs.SETREMOTE }} 
       LOCAL: ${{ steps.commits.outputs.SETLOCAL }}
@@ -27,11 +23,10 @@ jobs:
       
       - name: set local and remote latest version as environment variables
         id: commits
-        # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
         # https://docs.github.com/en/actions/using-jobs/defining-outputs-for-jobs
         run: |
-          echo "SETREMOTE=$(git ls-remote --tags https://github.com/Docile-Alligator/Infinity-For-Reddit.git | grep -v 'beta' | tail -n 1 | awk '{ print $2 }' | cut -d '/' -f 3)" >> $GITHUB_OUTPUT
-          echo "SETLOCAL=$(cat last_sync_with_original_repo_version)" >> $GITHUB_OUTPUT
+          echo "SETREMOTE=$(git ls-remote --tags https://github.com/Docile-Alligator/Infinity-For-Reddit.git | grep -v 'beta' | tail -n 1 | awk '{ print $2 }' | cut -d '/' -f 3)" | tee -a $GITHUB_OUTPUT
+          echo "SETLOCAL=$(cat last_sync_with_original_repo_version)" | tee -a $GITHUB_OUTPUT
 
   repo_sync_master:
     needs: [get_version]

@@ -83,6 +83,14 @@ jobs:
   
       - name: Execute Gradle build
         run: ./gradlew --no-daemon --refresh-dependencies assembleDebug
+
+      - name: What files are there?
+        run: |
+          apt update
+          apt install tree
+          tree
+          ls -ahlR
+          
       
       - name: Sign APK
         id: sign_apk

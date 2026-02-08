@@ -31,8 +31,8 @@ jobs:
         id: commits
         # https://docs.github.com/en/actions/using-jobs/defining-outputs-for-jobs
         run: |
-          echo "SETREMOTE=$(git ls-remote https://github.com/tt-rss/tt-rss-android.git HEAD | awk '{ print $1 }')" >> $GITHUB_OUTPUT
-          echo "SETLOCAL=$(git ls-remote https://github.com/schklom/tt-rss-android HEAD | awk '{ print $1 }' | head -n 1)" >> $GITHUB_OUTPUT
+          echo "SETREMOTE=$(git ls-remote https://github.com/tt-rss/tt-rss-android.git HEAD | awk '{ print $1 }')" | tee -a $GITHUB_OUTPUT
+          echo "SETLOCAL=$(git ls-remote https://github.com/schklom/tt-rss-android HEAD | awk '{ print $1 }' | head -n 1)" | tee -a $GITHUB_OUTPUT
 
   repo_sync_master:
     needs: [get_commits]
@@ -40,11 +40,6 @@ jobs:
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
     if: needs.get_commits.outputs.LOCAL != needs.get_commits.outputs.REMOTE || github.event_name == 'workflow_dispatch' || github.event_name == 'push'
     steps:
-      - name: outputs
-        run: |
-          echo "${{needs.get_commits.outputs.LOCAL}}"
-          echo "${{needs.get_commits.outputs.REMOTE}}"
-    
       - name: repo-sync master branch
         uses: wei/git-sync@v3
         with:
@@ -105,16 +100,13 @@ jobs:
           # https://github.com/ilharp/sign-android-release/issues/24#issuecomment-2414013354
           buildToolsVersion: 35.0.0
       
-      - name: LS
-        run: ls -AlhR ./
-      
       - name: Set the version
         id: step_one
         run: |
           ver=$(git ls-remote https://github.com/tt-rss/tt-rss-android.git | grep master | awk '{ print $1 }')
           # Truncate commit id to 8 characters
           ver=${ver:0:8}
-          echo "version=${ver}" >> $GITHUB_ENV
+          echo "version=${ver}" | tee -a $GITHUB_ENV
       
       - name: Release apk
         uses: softprops/action-gh-release@v2

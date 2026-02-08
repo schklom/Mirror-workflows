@@ -89,19 +89,7 @@ jobs:
       - name: Find directory name to apk file
         run: |
           # -print -quit -> print the first result and exit
-          echo 'find . -name "*.apk" -type f -print -quit'
-          find . -name "*.apk" -type f -print -quit
-          
-          echo 'realpath $(find . -name "*.apk" -type f -print -quit)'
-          realpath $(find . -name "*.apk" -type f -print -quit)
-
-          echo 'dirname $(find . -name "*.apk" -type f -print -quit)'
-          dirname $(find . -name "*.apk" -type f -print -quit)
-
-          echo 'dirname $(realpath $(find . -name "*.apk" -type f -print -quit))'
-          dirname $(realpath $(find . -name "*.apk" -type f -print -quit))
-          
-          apk_folder=dirname $(realpath $(find . -name "*.apk" -type f -print -quit))
+          apk_folder="$(dirname $(find . -name "*.apk" -type f -print -quit))"
           echo "apk_folder=${apk_folder}" | tee -a $GITHUB_ENV
           # should be org.fox.ttrss/build/outputs/apk/debug
       

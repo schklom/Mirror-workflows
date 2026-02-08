@@ -6,6 +6,10 @@ on:
     # * is a special character in YAML so you have to quote this string
     #- cron:  '0 0 * * *'
 
+  push:
+    paths:
+      - '.github/workflows/Sync+Build+Release tt-rss-android.yaml'
+
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -72,7 +76,7 @@ jobs:
       - name: Gradlew executable
         run: chmod +x gradlew
 
-      - name: Set-up JDK 11
+      - name: Set-up Java
         uses: actions/setup-java@v5
         with:
           java-version: '17'
@@ -86,11 +90,10 @@ jobs:
 
       - name: What files are there?
         run: |
-          apt update
-          apt install tree
+          sudo apt update
+          sudo apt install tree
           tree
           ls -ahlR
-          
       
       - name: Sign APK
         id: sign_apk

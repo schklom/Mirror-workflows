@@ -29,7 +29,7 @@ jobs:
         # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
         # https://docs.github.com/en/actions/using-jobs/defining-outputs-for-jobs
         run: |
-          echo "SETREMOTE=$(git ls-remote https://gitlab.tt-rss.org/tt-rss/tt-rss-android.git HEAD | awk '{ print $1 }')" >> $GITHUB_OUTPUT
+          echo "SETREMOTE=$(git ls-remote https://github.com/tt-rss/tt-rss-android.git HEAD | awk '{ print $1 }')" >> $GITHUB_OUTPUT
           echo "SETLOCAL=$(git ls-remote https://github.com/schklom/tt-rss-android HEAD | awk '{ print $1 }' | head -n 1)" >> $GITHUB_OUTPUT
 
   repo_sync_master:
@@ -46,7 +46,7 @@ jobs:
       - name: repo-sync master branch
         uses: wei/git-sync@v3
         with:
-          source_repo: "https://gitlab.tt-rss.org/tt-rss/tt-rss-android.git"
+          source_repo: "https://github.com/tt-rss/tt-rss-android.git"
           source_branch: "refs/remotes/source/*"
           #source_branch: "master"
           ####destination_repo: "git@github.com:schklom/Mirror-workflows.git"
@@ -102,7 +102,7 @@ jobs:
       - name: Set the version
         id: step_one
         run: |
-          ver=$(git ls-remote https://gitlab.tt-rss.org/tt-rss/tt-rss-android.git | grep master | awk '{ print $1 }')
+          ver=$(git ls-remote https://github.com/tt-rss/tt-rss-android.git | grep master | awk '{ print $1 }')
           # Truncate commit id to 8 characters
           ver=${ver:0:8}
           echo "version=${ver}" >> $GITHUB_ENV

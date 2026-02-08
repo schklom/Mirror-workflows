@@ -113,12 +113,11 @@ jobs:
         with:
           ####tag_name: Gadgetbridge-osmand-experiments-${{ needs.get_commit_and_tag.outputs.REMOTETAG }}
           tag_name: "${{ env.version }}"
-          body: "app-main-debug.apk is the tt-rss-android file"
           #files: |
             # ./app/build/outputs/apk/app-debug.apk
           #files: ./app/build/outputs/apk/main/release/app-main-release-unsigned.apk
           #files: ./app/build/outputs/apk/main/debug/app-main-debug.apk
-          files: ./org.fox.ttrss/build/outputs/apk/debug/org.fox.ttrss-debug.apk
+          files: $ANDROID_SIGNED_FILES
           repository: "schklom/tt-rss-android"
           token: ${{ secrets.PAT_GITHUB_ACTION }}
 

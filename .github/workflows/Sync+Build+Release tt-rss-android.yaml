@@ -79,7 +79,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v5
   
       - name: Execute Gradle build
-        run: ./gradlew --no-daemon --refresh-dependencies assembleDebug
+        run: ./gradlew --no-daemon --refresh-dependencies assembleRelease
 
       - name: Find directory name to apk file
         run: |

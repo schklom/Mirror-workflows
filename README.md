@@ -36,4 +36,4 @@ The Actions are defined in the directory .github/workflows. Secrets are used for
 - ~Quetre~
 - ~Mango [![Sync+build+push Mango](https://github.com/schklom/Mirror-workflows/actions/workflows/Sync+build+push%20Mango.yml/badge.svg)](https://github.com/schklom/Mirror-workflows/actions/workflows/Sync+build+push%20Mango.yml)~ Archived as of March 23 2025
 - ~Nitter~ (bug)
-- tt-rss-android (complete repo, not branch) ~(Can be updated on Obtainium from https://srv.tt-rss.org/fdroid/updates/org.fox.ttrss.json with Override Source set to HTML)~
+- tt-rss-android (complete repo, not branch) [![Sync+Build+Release tt-rss-android](https://github.com/schklom/Mirror-workflows/actions/workflows/Sync+Build+Release%20tt-rss-android.yaml/badge.svg)](https://github.com/schklom/Mirror-workflows/actions/workflows/Sync+Build+Release%20tt-rss-android.yaml) ~(Can be updated on Obtainium from https://srv.tt-rss.org/fdroid/updates/org.fox.ttrss.json with Override Source set to HTML)~

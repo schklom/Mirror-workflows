@@ -2,15 +2,15 @@ name: Sync+Build+Release tt-rss-android
 
 # Controls when the workflow will run
 on:
-  #schedule:
-    # * is a special character in YAML so you have to quote this string
-    #- cron:  '0 0 * * *'
-
   push:
     paths:
       - '.github/workflows/Sync+Build+Release tt-rss-android.yaml'
     branches:
       - main
+  
+  #schedule:
+    # * is a special character in YAML so you have to quote this string
+    #- cron:  '0 0 * * *'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:

@@ -117,7 +117,7 @@ jobs:
             # ./app/build/outputs/apk/app-debug.apk
           #files: ./app/build/outputs/apk/main/release/app-main-release-unsigned.apk
           #files: ./app/build/outputs/apk/main/debug/app-main-debug.apk
-          files: $ANDROID_SIGNED_FILE
+          files: "${{ env.ANDROID_SIGNED_FILE }}"
           repository: "schklom/tt-rss-android"
           token: ${{ secrets.PAT_GITHUB_ACTION }}
 

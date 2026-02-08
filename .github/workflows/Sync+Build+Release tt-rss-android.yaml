@@ -90,18 +90,18 @@ jobs:
       - name: Execute Gradle build
         run: ./gradlew --no-daemon --refresh-dependencies assembleDebug
 
-      - name: What files are there?
+      - name: Find directory name to apk file
         run: |
-          sudo apt update
-          sudo apt install tree
-          tree
-          ls -ahlR
+          # -print -quit -> print the first result and exit
+          apk_folder=dirname $(realpath $(find . -name "*.apk" -type f -print -quit))
+          echo "apk_folder=${apk_folder}" | tee -a $GITHUB_ENV
+          # should be org.fox.ttrss/build/outputs/apk/debug
       
       - name: Sign APK
         id: sign_apk
         uses: ilharp/sign-android-release@v2
         with:
-          releaseDir: app/build/outputs/apk/
+          releaseDir: ${{ env.apk_folder }}
           signingKey: ${{ secrets.APK_KEYSTORE_FILE_BASE64 }}
           keyAlias: ${{ secrets.APK_KEYSTORE_ALIAS }}
           keyStorePassword: ${{ secrets.APK_KEYSTORE_PASSWORD }}

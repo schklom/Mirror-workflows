@@ -724,13 +724,7 @@ class API extends Handler {
 
 			if (!is_numeric($result)) {
 				while ($line = $result->fetch()) {
-					$content = Sanitizer::sanitize(
-								$line['content'], self::_param_to_bool($line['hide_images']),
-								site_url: $line['site_url'], article_id: $line['id']);
-					if(! $content) $content = '';
-
-					$line["content_preview"] = truncate_string(strip_tags($content), $excerpt_length);
-					unset($content);
+					$line["content_preview"] = truncate_string(strip_tags($line["content"]), $excerpt_length);
 
 					PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_QUERY_HEADLINES,
 						function ($result) use (&$line) {

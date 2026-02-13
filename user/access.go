@@ -5,10 +5,17 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmd-server/metrics"
+	"sync"
 	"time"
 )
 
 type AccessController struct {
+	// Locking to prevent concurrent accesses on the maps.
+	// Needed due to cronRemoveExpired and due to HTTP request handlers being concurrent goroutines.
+	// See https://gitlab.com/fmd-foss/fmd-server/-/issues/134
+	// Note: Avoid member functions calling each other! This can cause deadlocks.
+	mu sync.RWMutex
+
 	// map token values to token structs
 	// This is because a given username can have multiple active sessions
 	// in parallel, for example, Android and web.
@@ -36,8 +43,8 @@ const DURATION_LOCKED_SECS = 10 * 60          // 10 mins
 const DEFAULT_TOKEN_VALID_SECS = 15 * 60      // 15 mins
 const MAX_TOKEN_VALID_SECS = 7 * 24 * 60 * 60 // 1 week
 
-func NewAccessController() AccessController {
-	controller := AccessController{
+func NewAccessController() *AccessController {
+	controller := &AccessController{
 		accessTokens: make(map[string]AccessToken),
 		lockedUsers:  make(map[string]LockedUser),
 	}
@@ -46,6 +53,9 @@ func NewAccessController() AccessController {
 }
 
 func (a *AccessController) IncrementLock(username string) {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+
 	now := time.Now().Unix()
 	lockedUser, exists := a.lockedUsers[username]
 
@@ -73,11 +83,17 @@ func (a *AccessController) IncrementLock(username string) {
 }
 
 func (a *AccessController) ResetLock(username string) {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+
 	delete(a.lockedUsers, username)
 	metrics.FailedLoginAccounts.Set(float64(len(a.lockedUsers)))
 }
 
 func (a *AccessController) IsLocked(username string) bool {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+
 	locked, exists := a.lockedUsers[username]
 
 	if !exists {
@@ -99,6 +115,9 @@ func (a *AccessController) IsLocked(username string) bool {
 }
 
 func (a *AccessController) CheckAccessToken(tokenToCheck string) (string, error) {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+
 	tk, exists := a.accessTokens[tokenToCheck]
 
 	if !exists {
@@ -116,6 +135,9 @@ func (a *AccessController) CheckAccessToken(tokenToCheck string) (string, error)
 }
 
 func (a *AccessController) CreateNewAccessToken(username string, sessionDurationSeconds uint64) AccessToken {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+
 	if sessionDurationSeconds == 0 {
 		sessionDurationSeconds = DEFAULT_TOKEN_VALID_SECS
 	} else if sessionDurationSeconds > MAX_TOKEN_VALID_SECS {
@@ -144,6 +166,9 @@ func generateToken(numBytes int) string {
 }
 
 func (a *AccessController) RevokeAccessToken(token string) {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+
 	delete(a.accessTokens, token)
 	metrics.ActiveSessions.Dec()
 }
@@ -152,6 +177,8 @@ func (a *AccessController) RevokeAccessToken(token string) {
 func (a *AccessController) cronRemoveExpired() {
 	for range time.Tick(15 * time.Minute) {
 		now := time.Now().Unix()
+
+		a.mu.Lock()
 
 		// Remove expired access tokens
 		// Note the deleting elements while iterating over the map is safe:
@@ -171,10 +198,15 @@ func (a *AccessController) cronRemoveExpired() {
 
 		metrics.ActiveSessions.Set(float64(len(a.accessTokens)))
 		metrics.FailedLoginAccounts.Set(float64(len(a.lockedUsers)))
+
+		a.mu.Unlock()
 	}
 }
 
 func (a *AccessController) ResetTokensForUser(username string) {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+
 	// XXX: This is not very efficient
 	for key, value := range a.accessTokens {
 		if value.Username == username {

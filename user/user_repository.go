@@ -19,7 +19,7 @@ import (
 type UserRepository struct {
 	maxSavedLoc int
 	maxSavedPic int
-	ACC         AccessController
+	ACC         *AccessController
 	UB          *FMDDB
 }
 

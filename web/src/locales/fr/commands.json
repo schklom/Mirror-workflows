@@ -37,5 +37,66 @@
   },
   "bluetooth_on": {
     "title": "Activer le Bluetooth"
+  },
+  "camera_front": {
+    "title": "Caméra frontale",
+    "description": "Prendre une photo avec la caméra frontale"
+  },
+  "camera_back": {
+    "title": "Caméra arrière",
+    "description": "Prendre une photo avec la caméra arrière"
+  },
+  "view_photos": {
+    "title": "Voir les photos",
+    "description": "Voir les photos prises par l'appareil"
+  },
+  "gps_on": {
+    "title": "Activer les services de localisation"
+  },
+  "gps_off": {
+    "title": "Désactiver les services de localisation"
+  },
+  "bluetooth_off": {
+    "title": "Désactiver le Bluetooth"
+  },
+  "ringer_normal": {
+    "title": "Sonnerie : Normale",
+    "description": "Définir le mode de sonnerie sur normal"
+  },
+  "ringer_vibrate": {
+    "title": "Sonnerie : Vibreur",
+    "description": "Définir le mode de sonnerie sur vibreur"
+  },
+  "ringer_silent": {
+    "title": "Sonnerie : silencieux",
+    "description": "Définir le mode de sonnerie sur silencieux"
+  },
+  "dnd_on": {
+    "title": "Activer le mode Ne pas déranger"
+  },
+  "dnd_off": {
+    "title": "Désactiver le mode Ne pas déranger"
+  },
+  "success": {
+    "locate_all": "Demande de localisation…",
+    "locate_fused": "Demande de localisation…",
+    "locate_gps": "Demande de localisation…",
+    "locate_cell": "Demande de localisation…",
+    "locate_last": "Demande de dernière localisation connue…",
+    "flash": "Allumage de la lampe torche…",
+    "lock": "Verrouillage de l'appareil…",
+    "delete": "Lancement de la réinitialisation de l'appareil…",
+    "camera_front": "Prise de photo…",
+    "camera_back": "Prise de photo…",
+    "bluetooth_on": "Activation du Bluetooth…",
+    "bluetooth_off": "Désactivation du Bluetooth…",
+    "gps_on": "Activation des services de localisation…",
+    "gps_off": "Désactivation des services de localisation…",
+    "ringermode_normal": "Passage en mode sonnerie…",
+    "ringermode_vibrate": "Passage en mode vibreur…",
+    "ringermode_silent": "Passage en mode silencieux…",
+    "nodisturb_on": "Activation de Ne pas déranger…",
+    "nodisturb_off": "Désactivation de Ne pas déranger…",
+    "ring": "Sonnerie en cours sur l'appareil…"
   }
 }

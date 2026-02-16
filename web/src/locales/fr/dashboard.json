@@ -7,7 +7,8 @@
     "recorded_at": "Enregistré le",
     "no_data": "Aucune donnée de localisation pour le moment. Envoyer une commande de localisation avec les boutons ci-dessous !",
     "older": "Plus ancien",
-    "newer": "Plus récent"
+    "newer": "Plus récent",
+    "no_push_url": "Aucune URL Push configurée. L'appareil ne peut pas recevoir de commande tant que vous n'avez pas défini de notifications push dans l'application Android."
   },
   "command_failed": "Échec  de la commande !",
   "time": "Heure",

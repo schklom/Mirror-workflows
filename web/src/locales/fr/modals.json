@@ -10,9 +10,22 @@
   "lock": {
     "confirm": "Verrouiller",
     "title": "Verrouiller l'appareil ?",
-    "message": "Après le verrouillage de l'appareil, votre mot de passe ou code PIN est nécessaire pour déverrouiller l'appareil. Le déverrouillage par biométrie ne fonctionnera pas tant que vous n'aurez pas renseigné votre mot de passe ou code PIN."
+    "message": "Après le verrouillage de l'appareil, votre mot de passe ou code PIN est nécessaire pour déverrouiller l'appareil. Le déverrouillage par biométrie ne fonctionnera pas tant que vous n'aurez pas renseigné votre mot de passe ou code PIN.",
+    "message_placeholder": "Renseigner un message",
+    "message_hint": "Renseigner un message qui apparaîtra sur l'écran de verrouillage. Si vous laissez ceci vide, le message qui est configuré dans les paramètres de FMD sur Android ser affiché à la place sur l'écran de verrouillage."
   },
   "loading": {
     "title": "Chargement"
+  },
+  "pictures": {
+    "title": "Photos",
+    "empty": "Aucune photo disponible",
+    "of": "de"
+  },
+  "webcrypto_warning": {
+    "title": "API WebCrypt non disponible",
+    "message": "Le serveur FMD ne fonctionnera pas car l'API WebCrypt n'est pas disponible.",
+    "detail": "Ceci est probablement car vous accédez à ce site via du HTTP non sécurisé. Merci d'utiliser HTTPS. Si vous auto-hébergez le service, merci de lire le",
+    "link_text": "guide d'installation"
   }
 }

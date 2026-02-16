@@ -22,7 +22,9 @@
     "pt-BR": "Português do Brasil",
     "fr": "Francês",
     "sl": "Esloveno",
-    "zh-Hant": "Chinês (Tradicional)"
+    "zh-Hant": "Chinês (Tradicional)",
+    "et": "Estoniano",
+    "nl": "Holandês"
   },
   "about_text": "Um servidor usado para se comunicar com o app do FMD Android, para localizar e controlar seus dispositivos."
 }

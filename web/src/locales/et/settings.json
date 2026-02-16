@@ -15,7 +15,16 @@
     "en": "inglise keel",
     "de": "saksa keel",
     "fr": "prantsuse keel",
-    "sl": "sloveeni keel"
+    "sl": "sloveeni keel",
+    "et": "eesti keel",
+    "nl": "hollandi keel",
+    "pt-BR": "portugali keel (Brasiilia)",
+    "zh-Hant": "hiina keel (traditsiooniline)"
   },
-  "export_data": "Ekspordi andmeid"
+  "export_data": "Ekspordi andmeid",
+  "export_data_loading_message": "Laadin andmeid alla. Kui sul on palju pilte, siis selleks võib kuluda aega.",
+  "delete_account": "Kustuta kasutajakonto",
+  "delete_account_title": "Kas kustutame kasutajakonto?",
+  "delete_account_description": "Kõik kasutajakonto andmed kustutatakse serverist jäädavalt. Seda tegevust ei saa tagasi pöörata.",
+  "about_text": "Server, mis on mõeldud FMD Androidi rakenduste haldamiseks ning seeläbi sinu seadmete juhtumiseks ja asukoha tuvastamiseks."
 }

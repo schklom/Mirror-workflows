@@ -1,11 +1,102 @@
 {
   "ring": {
-    "title": "Lase heliseda"
+    "title": "Lase heliseda",
+    "description": "Lase nutiseadmel heliseda valjult"
   },
   "flash": {
-    "title": "Välguta lampi"
+    "title": "Välguta lampi",
+    "description": "Välguta nutiseadme välklampi"
   },
   "lock": {
-    "title": "Lukusta"
+    "title": "Lukusta",
+    "description": "Lukusta nutiseadme ekraan"
+  },
+  "locate_all": {
+    "title": "Asukohatuvastus: kõik allikad",
+    "description": "Asukoht tuvastatakse kõikide teenusepakkujate abil"
+  },
+  "locate_fused": {
+    "title": "Asukohatuvastus: ühendatud allikad",
+    "description": "Asukoht tuvastatakse võrgu ja GPS-i abil"
+  },
+  "locate_gps": {
+    "title": "Asukohatuvastus: GPS",
+    "description": "Asukoht tuvastatakse GPS-i abil"
+  },
+  "locate_cell": {
+    "title": "Asukohatuvastus: mobiilivõrk",
+    "description": "Asukoht tuvastatakse mobiilivõrgu abil, kasutades OpenCelliD ja/või BeaconDB andmekogusid"
+  },
+  "locate_last": {
+    "title": "Asukohatuvastus: viimane teadaolev",
+    "description": "Asukohaks nimetatakse viimati tuvastatud asukoht (kiire, aga ei pruugi olla täpne)"
+  },
+  "camera_front": {
+    "title": "Eeskaamera",
+    "description": "Pildista eeskaameraga"
+  },
+  "camera_back": {
+    "title": "Tagakaameraga",
+    "description": "Pildista tagakaameraga"
+  },
+  "view_photos": {
+    "title": "Vaata fotosid",
+    "description": "Vaata varasemalt pildistatud fotosod"
+  },
+  "gps_on": {
+    "title": "Lülita asukohateenused sisse"
+  },
+  "gps_off": {
+    "title": "Lülita asukohateenused välja"
+  },
+  "bluetooth_on": {
+    "title": "Lülita Blietooth sisse"
+  },
+  "bluetooth_off": {
+    "title": "Lülita Blietooth välja"
+  },
+  "factory_reset": {
+    "title": "Tehaseseadistuste taastamine",
+    "description": "Tühjenda kogu seade ja taasta tehaseseadistused"
+  },
+  "ringer_normal": {
+    "title": "Helin: tavaline",
+    "description": "Määra tavaline telefonihelin"
+  },
+  "ringer_vibrate": {
+    "title": "Helin: värin",
+    "description": "Määra telefonivärin"
+  },
+  "ringer_silent": {
+    "title": "Helin: vaikne",
+    "description": "Määra telefonihelin vaikseks"
+  },
+  "dnd_on": {
+    "title": "Lülita „Ära sega mind“ režiim sisse"
+  },
+  "dnd_off": {
+    "title": "Lülita „Ära sega mind“ režiim välja"
+  },
+  "success": {
+    "locate_all": "Palun tuvastada asukohta…",
+    "locate_fused": "Palun tuvastada asukohta…",
+    "locate_gps": "Palun tuvastada asukohta…",
+    "locate_cell": "Palun tuvastada asukohta…",
+    "locate_last": "Palun kuvada viimast teadaolevat asukohta…",
+    "ring": "Nutiseade heliseb…",
+    "flash": "Nutiseade välgutab tuld…",
+    "lock": "Lukustan nutiseadet…",
+    "delete": "Tehaseseadistuste taastamine on käivitatud…",
+    "camera_front": "Pildistan…",
+    "camera_back": "Pildistan…",
+    "bluetooth_on": "Lülitan Bluetoothi sisse…",
+    "bluetooth_off": "Lülitan Bluetoothi välja…",
+    "gps_on": "Lülitan asukohateenused sisse…",
+    "gps_off": "Lülitan asukohateenused välja…",
+    "ringermode_normal": "Seadistan helina tavaliseks…",
+    "ringermode_vibrate": "Seadistan helina värinaks…",
+    "ringermode_silent": "Seadistan helina vaikseks…",
+    "nodisturb_on": "Lülitan „Ära sega mind“ režiimi sisse…",
+    "nodisturb_off": "Lülitan „Ära sega mind“ režiimi välja…"
   }
 }

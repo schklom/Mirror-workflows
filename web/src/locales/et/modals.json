@@ -1,14 +1,31 @@
 {
   "factory_reset": {
-    "title": "Kas lähtestad nutiseadme tootja algolekusse?"
+    "title": "Kas lähtestad nutiseadme tootja algolekusse?",
+    "confirm": "Tehaseaseadistused",
+    "message": "Sellega kustutad kõik oma seadme andmed ja taastad tehaseseadistused. Seda tegevust ei saa tagasi pöörata.",
+    "password_placeholder": "Sisesta kustutamiseks mõeldud salasõna",
+    "error_empty_password": "Sisesta oma kustutamiseks mõeldud salasõna",
+    "password_hint": "See salasõna on sisestatud FMD Androidi rakendusest. See ei ole serveri salasõna."
   },
   "loading": {
     "title": "Laadin andmeid"
   },
   "lock": {
-    "confirm": "Lukusta"
+    "confirm": "Lukusta",
+    "title": "Kas lukustad seadme?",
+    "message": "Peale seadme lukustamist saad seda avada vaid PIN-koodi või salasõnaga. Kuni õige PIN-koodi või salasõna sisestamiseni pole võimalik kasutada biomeetrilist lukustuse eemaldamist.",
+    "message_placeholder": "Sisesta sõnum",
+    "message_hint": "Näita lukustusvaates kuvatav sõnum. Kui jätad ta tühjaks, siis selle asemel kuvatakse FMD Androidi rakenduses seadistatud sõnum."
   },
   "pictures": {
-    "title": "Fotod"
+    "title": "Fotod",
+    "empty": "Fotosid pole saadaval",
+    "of": "/"
+  },
+  "webcrypto_warning": {
+    "title": "WebCrypto API pole saadaval",
+    "message": "Kuna WebCrypto API pole saadaval, siis FMD Server ei toimi.",
+    "link_text": "paigaldusjuhendist",
+    "detail": "Ilmselt on põhjuseks ebaturvalise HTTP kasutamine. Palun kasuta HTTPS-i. Kui server on sinu enda hallatud, siis lisateavet leiad"
   }
 }

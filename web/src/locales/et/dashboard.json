@@ -7,7 +7,8 @@
     "no_data": "Asukohaandmeid veel ei leidu. Saada järgnevate nuppudega asukoha tuvastamise käsk!",
     "older": "Vanem",
     "newer": "Uuem",
-    "no_push_url": "Tõuketeenuse võrguaadress on salvestamata. Seade ei suuda käske vastu võtta enne, kui sa pole Androidi rakenduses tõuketeavitusi seadistanud."
+    "no_push_url": "Tõuketeenuse võrguaadress on salvestamata. Seade ei suuda käske vastu võtta enne, kui sa pole Androidi rakenduses tõuketeavitusi seadistanud.",
+    "recorded_at": "Salvestamise aeg"
   },
   "command_failed": "Käsk ei toiminud!",
   "time": "Aeg",

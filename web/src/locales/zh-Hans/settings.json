@@ -1,0 +1,30 @@
+{
+  "title": "设置",
+  "general": "通用",
+  "about": "关于",
+  "theme": "主题",
+  "theme_dark": "深色",
+  "theme_light": "浅色",
+  "theme_system": "跟随系统",
+  "units": "单位制",
+  "units_metric": "公制",
+  "units_imperial": "英制",
+  "account": "账户",
+  "export_data": "导出数据",
+  "export_data_loading_message": "正在下载数据。这可能需要一些时间，尤其是在您有大量照片时。",
+  "delete_account": "删除账户",
+  "delete_account_title": "删除账户？",
+  "delete_account_description": "您的账户及所有数据将从服务器永久删除。此操作不可撤销。",
+  "language": {
+    "title": "语言",
+    "en": "英语",
+    "et": "爱沙尼亚语",
+    "de": "德语",
+    "fr": "法语",
+    "nl": "荷兰语",
+    "pt-BR": "葡萄牙语（巴西）",
+    "sl": "斯洛文尼亚语",
+    "zh-Hant": "中文（繁体）"
+  },
+  "about_text": "一个用于与 FMD 应用通信、定位和控制您设备的服务器。"
+}

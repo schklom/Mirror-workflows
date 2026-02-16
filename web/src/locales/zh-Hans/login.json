@@ -1,0 +1,14 @@
+{
+  "subtitle": "此平台用于定位和控制您的设备。",
+  "setup_instruction_1": "开始使用前，",
+  "setup_instruction_2": "安装 FMD 安卓应用",
+  "setup_instruction_3": "到您的移动设备上。然后通过应用在 FMD 服务器上注册账户。",
+  "username_placeholder": "用户名",
+  "password_placeholder": "密码",
+  "remember_me": "记住我",
+  "log_in": "登录",
+  "logging_in": "登录中…",
+  "project_website": "项目网站",
+  "source_code": "源代码",
+  "privacy_notice": "隐私声明"
+}

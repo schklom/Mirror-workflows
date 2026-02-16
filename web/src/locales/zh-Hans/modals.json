@@ -1,0 +1,31 @@
+{
+  "factory_reset": {
+    "title": "恢复设备出厂设置？",
+    "message": "此操作会永久删除设备上的所有数据并将其恢复至出厂设置。此操作不可撤销。",
+    "confirm": "恢复出厂设置",
+    "password_placeholder": "输入您的删除密码",
+    "password_hint": "在您的 FMD 安卓应用中配置删除密码。此密码不是您的服务器密码。",
+    "error_empty_password": "请输入您的删除密码"
+  },
+  "loading": {
+    "title": "正在加载"
+  },
+  "lock": {
+    "title": "锁定设备？",
+    "message": "设备锁定后，需要输入设备 PIN 或密码才能解锁，输入之前将无法使用生物识别解锁。",
+    "confirm": "锁定",
+    "message_placeholder": "输入消息",
+    "message_hint": "输入要在锁屏界面显示的消息。如果留空，则将显示 FMD 应用设置中配置的默认消息。"
+  },
+  "pictures": {
+    "title": "照片",
+    "empty": "暂无照片",
+    "of": "的"
+  },
+  "webcrypto_warning": {
+    "title": "WebCrypto API 不可用",
+    "message": "由于 WebCrypto API 不可用，FMD 服务器将无法工作。",
+    "detail": "这很可能是因为您正在通过不安全的 HTTP 访问此网站，请改用 HTTPS。如果您是自托管，请阅读",
+    "link_text": "安装指南"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "loading": "加载中…",
+  "no_devices": "无设备",
+  "last_location": "最后位置",
+  "updated": "已更新",
+  "location": {
+    "recorded_at": "记录于",
+    "no_data": "尚无位置数据，请使用下方按钮发送定位指令！",
+    "older": "更早",
+    "newer": "更近",
+    "no_push_url": "未配置推送 URL。在安卓应用中设置推送通知前，设备将无法接收指令。"
+  },
+  "command_failed": "指令执行失败！",
+  "time": "时间",
+  "battery": "电量",
+  "provider": "定位源",
+  "accuracy": "精度",
+  "altitude": "海拔",
+  "speed": "速度",
+  "bearing": "方位角"
+}

@@ -2,7 +2,7 @@ module fmd-server
 
 go 1.24.0
 
-toolchain go1.24.4
+toolchain go1.24.13
 
 require (
 	github.com/glebarez/sqlite v1.11.0

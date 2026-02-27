@@ -18,13 +18,15 @@
   "language": {
     "title": "Language",
     "en": "English",
+    "el": "Greek",
     "et": "Estonian",
     "de": "German",
     "fr": "French",
     "nl": "Dutch",
     "pt-BR": "Portuguese (Brazil)",
     "sl": "Slovenian",
-    "zh-Hant": "Chinese (Traditional)"
+    "zh-Hant": "Chinese (Traditional)",
+    "zh-Hans": "Chinese (Simplified)"
   },
   "about_text": "A server to communicate with the FMD Android app, to locate and control your devices."
 }

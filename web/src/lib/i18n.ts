@@ -8,10 +8,12 @@ export const SUPPORTED_LANGUAGES = [
   'et',
   'de',
   'fr',
+  'el',
   'nl',
   'pt-BR',
   'sl',
   'zh-Hant',
+  'zh-Hans',
 ] as const;
 
 export type Language = (typeof SUPPORTED_LANGUAGES)[number];

@@ -3,19 +3,24 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
 
 // Maintain manual control over the order and which languages are shown.
-export const SUPPORTED_LANGUAGES = [
-  'en',
-  // English at the top than alphabetically
-  'de',
-  'el',
-  'et',
-  'fr',
-  'nl',
-  'pt-BR',
-  'sl',
-  'zh-Hans',
-  'zh-Hant',
+// For easy discoverability by native speakers, hardcode the language name in the language itself.
+export const SUPPORTED_LANGUAGES_PAIRS = [
+  { code: 'en', label: 'English' },
+  // English at the top, then alphabetically
+  { code: 'de', label: 'Deutsch' },
+  { code: 'el', label: 'ελληνικά' },
+  { code: 'et', label: 'eesti keel' },
+  { code: 'fr', label: 'Français' },
+  { code: 'nl', label: 'Nederlands' },
+  { code: 'pt-BR', label: 'Português do Brasil' },
+  { code: 'sl', label: 'Slovenščina' },
+  { code: 'zh-Hans', label: 'Chinese Simplified' },
+  { code: 'zh-Hant', label: '中文（繁體）' }, // Chinese Traditional
 ] as const;
+
+export const SUPPORTED_LANGUAGES = SUPPORTED_LANGUAGES_PAIRS.flatMap(
+  (ele) => ele.code
+);
 
 export type Language = (typeof SUPPORTED_LANGUAGES)[number];
 

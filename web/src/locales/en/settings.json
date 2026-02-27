@@ -16,17 +16,7 @@
   "delete_account_title": "Delete account?",
   "delete_account_description": "Your account and all data will be permanently deleted from the server. This cannot be undone.",
   "language": {
-    "title": "Language",
-    "en": "English",
-    "el": "Greek",
-    "et": "Estonian",
-    "de": "German",
-    "fr": "French",
-    "nl": "Dutch",
-    "pt-BR": "Portuguese (Brazil)",
-    "sl": "Slovenian",
-    "zh-Hant": "Chinese (Traditional)",
-    "zh-Hans": "Chinese (Simplified)"
+    "title": "Language"
   },
   "about_text": "A server to communicate with the FMD Android app, to locate and control your devices."
 }

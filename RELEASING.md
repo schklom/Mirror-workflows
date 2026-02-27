@@ -7,6 +7,7 @@ Preparation:
 1. Build and test both the binary **and** the Docker container.
 1. Update the `const VERSION = ...` in Go.
 1. Update the version examples in the README.
+1. Update the version in the `snapcraft.yaml`.
 1. Commit and push.
 
 Building the package:

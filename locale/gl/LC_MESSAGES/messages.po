@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-01-17 17:45+0000\n"
-"PO-Revision-Date: 2026-01-25 21:59+0000\n"
+"PO-Revision-Date: 2026-02-25 04:09+0000\n"
 "Last-Translator: \"josé m.\" <correoxm@disroot.org>\n"
 "Language-Team: Galician <https://hosted.weblate.org/projects/tt-rss/webui/"
 "gl/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.16-dev\n"
+"X-Generator: Weblate 5.16.1-dev\n"
 
 #: backend.php:55
 msgid "Use default"
@@ -310,7 +310,7 @@ msgstr "Saír dos axustes"
 #: prefs.php:154 classes/Pref_Prefs.php:44 classes/Pref_Feeds.php:125
 #: classes/Pref_Feeds.php:923
 msgid "Feeds"
-msgstr "Fontes"
+msgstr "Canles"
 
 #: prefs.php:158 classes/Pref_Filters.php:305
 msgid "Filters"
@@ -486,7 +486,7 @@ msgstr "Non seleccionar nada"
 
 #: classes/RPC.php:520
 msgid "Feed"
-msgstr "Fonte"
+msgstr "Canle"
 
 #: classes/RPC.php:521
 msgid "Refresh current feed"
@@ -1445,11 +1445,11 @@ msgstr "Cancelar"
 
 #: classes/Pref_Feeds.php:883
 msgid "Feeds with errors"
-msgstr "Fontes con erros"
+msgstr "Canles con erros"
 
 #: classes/Pref_Feeds.php:889
 msgid "Inactive feeds"
-msgstr "Fontes inactivas"
+msgstr "Canles inactivas"
 
 #: classes/Pref_Feeds.php:928
 msgid "Edit selected feeds"
@@ -1498,7 +1498,7 @@ msgstr "Limpar todos os URLs creados"
 
 #: classes/Pref_Feeds.php:1039
 msgid "My feeds"
-msgstr "Fontes"
+msgstr "Canles"
 
 #: classes/Pref_Feeds.php:1044
 msgid "OPML"
@@ -1748,7 +1748,7 @@ msgstr "Última conexión"
 
 #: classes/Pref_Users.php:59 classes/Pref_Users.php:238
 msgid "Subscribed feeds"
-msgstr "Fontes subscritas"
+msgstr "Canles subscritas"
 
 #: classes/Pref_Users.php:64
 msgid "Stored articles"
@@ -1923,7 +1923,7 @@ msgstr "Crear novo URL"
 
 #: plugins/af_comics/init.php:62
 msgid "Feeds supported by af_comics"
-msgstr "Fontes con soporte af_comics"
+msgstr "Canles compatibles con af_comics"
 
 #: plugins/af_comics/init.php:64
 msgid "The following comics are currently supported:"
@@ -1958,7 +1958,7 @@ msgstr "Non se atopan canles en <b>%s</b>."
 #, php-format
 msgid "Could not subscribe to <b>%s</b>.<br>Can't download the Feed URL."
 msgstr ""
-"Non se puido subscribir a <b>%s</b>.<br>Non se descargou o URL da Fonte."
+"Non se puido subscribir a <b>%s</b>.<br>Non se descargou o URL da canle."
 
 #: plugins/bookmarklets/init.php:133
 msgid "Multiple feed URLs found:"
@@ -2243,7 +2243,7 @@ msgstr "Unha soa canle válida por liña (non se validarán)"
 
 #: js/PrefFeedTree.js:483
 msgid "Feeds without recent updates"
-msgstr "Fontes sen actualizacións recentes"
+msgstr "Canles sen actualizacións recentes"
 
 #: js/PrefFeedTree.js:491 js/CommonDialogs.js:228
 msgid "Remove selected feeds?"
@@ -2867,7 +2867,7 @@ msgstr "Non tes permiso para executar esta operación."
 
 #: js/CommonDialogs.js:220
 msgid "Feeds with update errors"
-msgstr "Fontes con fallo na actualización"
+msgstr "Canles con fallo na actualización"
 
 #: js/CommonDialogs.js:256
 msgid "Debug selected feeds?"
@@ -3151,7 +3151,7 @@ msgstr "URL do sitio ou canle"
 
 #: js/CommonDialogs.js:70
 msgid "Available feeds"
-msgstr "Fontes dispoñibles"
+msgstr "Canles dispoñibles"
 
 #: js/CommonDialogs.js:103
 msgid "This feed requires authentication."

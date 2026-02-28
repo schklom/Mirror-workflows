@@ -9,8 +9,9 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-01-17 17:45+0000\n"
-"PO-Revision-Date: 2025-11-05 17:51+0000\n"
-"Last-Translator: LaurentC <laurentc@users.noreply.hosted.weblate.org>\n"
+"PO-Revision-Date: 2026-02-28 22:07+0000\n"
+"Last-Translator: 大王叫我来巡山 "
+"<hamburger2048@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
 "projects/tt-rss/webui/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -18,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.15-dev\n"
+"X-Generator: Weblate 5.16.1-dev\n"
 
 #: backend.php:55
 msgid "Use default"
@@ -106,7 +107,7 @@ msgstr "管理员"
 
 #: index.php:120 prefs.php:119
 msgid "Javascript is disabled. Please enable it."
-msgstr ""
+msgstr "禁用了 JavaScript。请启用它。"
 
 #: index.php:124 index.php:138 index.php:298 prefs.php:126
 #: classes/Pref_Prefs.php:884 classes/Pref_Prefs.php:934
@@ -208,37 +209,27 @@ msgstr "两周前"
 
 #: index.php:228
 msgid "Switch to three panel view"
-msgstr ""
+msgstr "切换到三面板视图"
 
 #: index.php:229
-#, fuzzy
-#| msgid "Switch to digest..."
 msgid "Switch to combined view"
-msgstr "切换至摘要模式"
+msgstr "切换至合并视图"
 
 #: index.php:230
-#, fuzzy
-#| msgid "Toggle widescreen mode"
 msgid "Disable widescreen mode"
-msgstr "切换宽屏模式"
+msgstr "禁用宽屏模式"
 
 #: index.php:231
-#, fuzzy
-#| msgid "Toggle widescreen mode"
 msgid "Enable widescreen mode"
-msgstr "切换宽屏模式"
+msgstr "启用宽屏模式"
 
 #: index.php:232
-#, fuzzy
-#| msgid "Expand article"
 msgid "Expand selected article only"
-msgstr "展开文章"
+msgstr "只展开所选文章"
 
 #: index.php:233
-#, fuzzy
-#| msgid "Expand article"
 msgid "Expand all articles"
-msgstr "展开文章"
+msgstr "展开所有文章"
 
 #: index.php:236
 msgid "Actions..."
@@ -678,9 +669,6 @@ msgid "Enable digest"
 msgstr "启用电子邮件摘要"
 
 #: classes/Pref_Prefs.php:107
-#, fuzzy
-#| msgid ""
-#| "Send daily digest of new (and unread) headlines to your e-mail address"
 msgid "Send daily digest of new (and unread) headlines to your email address"
 msgstr "每天将更新的和未读的文章标题通过邮件发送摘要到您设置的邮箱中"
 
@@ -713,10 +701,8 @@ msgid "hours"
 msgstr "小时"
 
 #: classes/Pref_Prefs.php:112
-#, fuzzy
-#| msgid "Maximum age of fresh articles"
 msgid "Maximum age of recently read articles"
-msgstr "最新更新文章的保鲜期（以小时为单位）"
+msgstr "最近阅读文章的最大年龄"
 
 #: classes/Pref_Prefs.php:113
 msgid "Hide read feeds"
@@ -966,7 +952,7 @@ msgstr "更多信息..."
 #: classes/Pref_Prefs.php:719
 #, php-format
 msgid "Current server time: %s"
-msgstr "当前服务器系统时间: %s (UTC)"
+msgstr "当前服务器时间: %s"
 
 #: classes/Pref_Prefs.php:767
 msgid "Save configuration"
@@ -1093,7 +1079,7 @@ msgstr "最后使用"
 msgid ""
 "Generated password <strong>%s</strong> for %s. Please remember it for future "
 "reference."
-msgstr "生成密码<strong>%s</strong>为%s . 请记住它，以备将来参考。"
+msgstr "生成了 %s 的 <strong>%s</strong> 密码。请记住它，以备将来参考。"
 
 #: classes/Sessions.php:121
 msgid "Session failed to validate (password changed)"
@@ -1191,7 +1177,7 @@ msgstr "搜索结果：%s"
 #: classes/Feeds.php:2278
 #, php-format
 msgid "The date keyword \"%s\" was not recognized."
-msgstr ""
+msgstr "未识别日期关键词“%s”。"
 
 #: classes/Pref_Labels.php:162
 #, php-format
@@ -1327,10 +1313,8 @@ msgid "Your access level is insufficient to run this script."
 msgstr "访问级别不足，无法运行脚本。"
 
 #: classes/Handler_Public.php:689
-#, fuzzy
-#| msgid "Feeds with update errors"
 msgid "Proceed with update?"
-msgstr "供稿更新错误"
+msgstr "继续更新吗？"
 
 #: classes/Handler_Public.php:694
 msgid "Database Updater"
@@ -1388,10 +1372,8 @@ msgid "(%d days)"
 msgstr "(%d 天)"
 
 #: classes/Pref_Feeds.php:600 js/CommonDialogs.js:500
-#, fuzzy
-#| msgid "Include in e-mail digest"
 msgid "Include in email digest"
-msgstr "包含电子邮件摘要"
+msgstr "包含在电子邮件摘要中"
 
 #: classes/Pref_Feeds.php:601 js/CommonDialogs.js:501
 msgid "Always display image attachments"
@@ -1512,9 +1494,8 @@ msgid "Sharing"
 msgstr "分享"
 
 #: classes/Pref_Filters.php:24
-#, fuzzy
 msgid "Delete article"
-msgstr "选择所有文章"
+msgstr "删除文章"
 
 #: classes/Pref_Filters.php:26
 msgid "Set starred"
@@ -1530,7 +1511,7 @@ msgstr "发布文章"
 
 #: classes/Pref_Filters.php:29
 msgid "Modify score"
-msgstr ""
+msgstr "修改分数"
 
 #: classes/Pref_Filters.php:30 js/Headlines.js:1506
 msgid "Assign label"
@@ -1538,25 +1519,19 @@ msgstr "添加预定义标签"
 
 #: classes/Pref_Filters.php:31
 msgid "Stop / Do nothing"
-msgstr ""
+msgstr "停止/什么也不做"
 
 #: classes/Pref_Filters.php:32
-#, fuzzy
-#| msgid "Install plugin"
 msgid "Invoke plugin"
-msgstr "安装插件"
+msgstr "调用插件"
 
 #: classes/Pref_Filters.php:33
-#, fuzzy
-#| msgid "no tags"
 msgid "Ignore tags"
-msgstr "无标签"
+msgstr "忽略标签"
 
 #: classes/Pref_Filters.php:39
-#, fuzzy
-#| msgid "Content:"
 msgid "Content"
-msgstr "内容:"
+msgstr "内容"
 
 #: classes/Pref_Filters.php:40
 msgid "Title or Content"
@@ -1571,8 +1546,6 @@ msgid "Author"
 msgstr "作者"
 
 #: classes/Pref_Filters.php:45
-#, fuzzy
-#| msgid "Article tags"
 msgid "Article Tags"
 msgstr "文章标签"
 
@@ -1644,17 +1617,15 @@ msgstr "来自tt-rss的测试消息"
 
 #: classes/Pref_System.php:24
 msgid "This message confirms that tt-rss can send outgoing email."
-msgstr ""
+msgstr "此消息确认 tt-rss 可对外发送电子邮件。"
 
 #: classes/Pref_System.php:34
 msgid "Task name"
 msgstr "任务名称"
 
 #: classes/Pref_System.php:35
-#, fuzzy
-#| msgid "Scheduled tasks"
 msgid "Schedule"
-msgstr "计划的任务"
+msgstr "计划"
 
 #: classes/Pref_System.php:36
 msgid "Last executed"
@@ -1722,14 +1693,12 @@ msgid "Event log"
 msgstr "事件日志"
 
 #: classes/Pref_System.php:203
-#, fuzzy
-#| msgid "Mail configuration"
 msgid "Email configuration"
 msgstr "邮件配置"
 
 #: classes/Pref_System.php:214
 msgid "Email sent."
-msgstr ""
+msgstr "发送了电子邮件。"
 
 #: classes/Pref_System.php:234
 msgid "To:"
@@ -1748,8 +1717,7 @@ msgid "PHP Information"
 msgstr "PHP信息"
 
 #: classes/Mailer.php:53
-#, fuzzy, php-format
-#| msgid "Unknown error while sending mail. Hooks tried: %d."
+#, php-format
 msgid "Unknown error while sending email. Hooks tried: %d."
 msgstr "发送邮件时出现未知错误。尝试的挂钩：%d。"
 
@@ -2842,16 +2810,12 @@ msgid "Expand to select feed"
 msgstr "展开选择的供稿"
 
 #: js/CommonDialogs.js:189
-#, fuzzy
-#| msgid "Couldn't download the specified URL: %s"
 msgid "Couldn't download the specified URL."
-msgstr "无法从指定的网址下载:%s"
+msgstr "无法下载指定的 URL。"
 
 #: js/CommonDialogs.js:192
-#, fuzzy
-#| msgid "Inline content"
 msgid "Invalid content."
-msgstr "Inline 内容"
+msgstr "无效内容。"
 
 #: js/CommonDialogs.js:195
 msgid "Error while creating feed database entry."
@@ -3004,7 +2968,7 @@ msgstr "标题"
 
 #: js/Article.js:114
 msgid "Copied to clipboard."
-msgstr ""
+msgstr "已复制到剪贴板。"
 
 #: js/Article.js:116
 msgid "Article URL:"
@@ -3045,10 +3009,8 @@ msgid ""
 msgstr "无法显示文章（收到无效对象 - 有关详细信息，请参阅错误控制台）"
 
 #: js/Headlines.js:1402
-#, fuzzy
-#| msgid "Display article URL"
 msgid "Copy article URL"
-msgstr "显示网址"
+msgstr "复制文章 URL"
 
 #: js/CommonFilters.js:64
 msgid "No recent articles matching this filter have been found."

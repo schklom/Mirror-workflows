@@ -24,7 +24,9 @@
     "sl": "Sloveens",
     "zh-Hant": "Chinees (traditioneel)",
     "et": "Estisch",
-    "nl": "Nederlands"
+    "nl": "Nederlands",
+    "el": "Grieks",
+    "zh-Hans": "Chinees (vereenvoudigd)"
   },
   "about_text": "Een server om te communiceren met de FMD Android-app, om uw apparaten te lokaliseren en te besturen."
 }

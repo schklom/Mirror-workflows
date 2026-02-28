@@ -19,7 +19,9 @@
     "et": "eesti keel",
     "nl": "hollandi keel",
     "pt-BR": "portugali keel (Brasiilia)",
-    "zh-Hant": "hiina keel (traditsiooniline)"
+    "zh-Hant": "hiina keel (traditsiooniline)",
+    "el": "kreeka keel",
+    "zh-Hans": "hiina keel (lihtsustatud)"
   },
   "export_data": "Ekspordi andmeid",
   "export_data_loading_message": "Laadin andmeid alla. Kui sul on palju pilte, siis selleks võib kuluda aega.",

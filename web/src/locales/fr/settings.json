@@ -24,7 +24,9 @@
     "nl": "Néerlandais",
     "pt-BR": "Portugais (Brésil)",
     "sl": "Slovène",
-    "zh-Hant": "Chinois (Traditionnel)"
+    "zh-Hant": "Chinois (Traditionnel)",
+    "el": "Grec",
+    "zh-Hans": "Chinois (simplifié)"
   },
   "about_text": "Un serveur pour communiquer avec l'application Android FMD, pour localiser et contrôler vos appareils."
 }

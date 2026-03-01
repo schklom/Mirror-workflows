@@ -1,8 +1,10 @@
 package metrics
 
 import (
+	"context"
 	conf "fmd-server/config"
 	"net/http"
+	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
@@ -46,6 +48,8 @@ var (
 	}, []string{"server_type"})
 )
 
+var server *http.Server
+
 // Run the metrics server.
 // This is blocking, consider calling it in a goroutine.
 func HandleMetrics(config *viper.Viper) {
@@ -76,8 +80,17 @@ func HandleMetrics(config *viper.Viper) {
 		Str("MetricsAddrPort", addrPort).
 		Msg("listening for metrics")
 
-	err := http.ListenAndServe(addrPort, mux)
-	if err != nil {
+	server = &http.Server{Addr: addrPort, Handler: mux}
+	err := server.ListenAndServe()
+	if err != nil && err != http.ErrServerClosed {
 		log.Fatal().Err(err).Msg("failed to serve with HTTP")
+	}
+}
+
+func StopMetrics() {
+	if server != nil {
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+		server.Shutdown(ctx)
 	}
 }

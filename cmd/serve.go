@@ -3,9 +3,11 @@ package cmd
 import (
 	"fmd-server/backend"
 	conf "fmd-server/config"
+	"os/signal"
 
 	"io"
 	"os"
+	"syscall"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -28,8 +30,14 @@ var (
 		Short: "Run the server",
 		Run: func(cmd *cobra.Command, args []string) {
 			setupLogging(jsonLog)
+			shutdown := catchSignalShutdown()
 			conf.ReadConfigFile(&config, configPath)
 			backend.RunServer(&config)
+
+			sig := <-shutdown
+			log.Info().Str("signal", sig.String()).Msg("received signal, stopping server")
+
+			backend.StopServer()
 		},
 	}
 )
@@ -51,6 +59,12 @@ func setupLogging(jsonLog bool) {
 
 	multi := zerolog.MultiLevelWriter(writers...)
 	log.Logger = log.Output(multi)
+}
+
+func catchSignalShutdown() chan os.Signal {
+	shutdown := make(chan os.Signal, 1)
+	signal.Notify(shutdown, syscall.SIGINT, syscall.SIGTERM)
+	return shutdown
 }
 
 func init() {

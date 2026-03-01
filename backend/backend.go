@@ -1,6 +1,7 @@
 package backend
 
 import (
+	"context"
 	conf "fmd-server/config"
 	"fmd-server/metrics"
 	"fmd-server/user"
@@ -10,12 +11,14 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/viper"
 )
 
 var uio user.UserRepository
+var server *http.Server
 
 func handleRequests(config *viper.Viper) {
 	mux := buildServeMux(config)
@@ -43,8 +46,9 @@ func handleRequests(config *viper.Viper) {
 			Int(conf.CONF_PORT_SECURE, portSecure).
 			Msg("listening on secure port")
 		securePort := ":" + strconv.Itoa(portSecure)
-		err := http.ListenAndServeTLS(securePort, serverCrt, serverKey, mux)
-		if err != nil {
+		server = &http.Server{Addr: securePort, Handler: mux}
+		err := server.ListenAndServeTLS(serverCrt, serverKey)
+		if err != nil && err != http.ErrServerClosed {
 			log.Fatal().Err(err).Msg("failed to serve with TLS")
 		}
 	} else if portInsecure > -1 {
@@ -52,8 +56,9 @@ func handleRequests(config *viper.Viper) {
 			Int(conf.CONF_PORT_INSECURE, portInsecure).
 			Msg("listening on insecure port")
 		insecureAddr := ":" + strconv.Itoa(portInsecure)
-		err := http.ListenAndServe(insecureAddr, mux)
-		if err != nil {
+		server = &http.Server{Addr: insecureAddr, Handler: mux}
+		err := server.ListenAndServe()
+		if err != nil && err != http.ErrServerClosed {
 			log.Fatal().Err(err).Msg("failed to serve with HTTP")
 		}
 
@@ -92,9 +97,9 @@ func handleRequestsSocket(handler http.Handler, socketPath string, socketChmod i
 			Msg("error modifying unix socket permissions")
 	}
 
-	server := http.Server{Handler: handler}
+	server = &http.Server{Handler: handler}
 	err = server.Serve(unixListener)
-	if err != nil {
+	if err != nil && err != http.ErrServerClosed {
 		log.Error().Err(err).Msg("error serving unix server")
 	}
 
@@ -105,7 +110,10 @@ func handleRequestsSocket(handler http.Handler, socketPath string, socketChmod i
 
 	err = unixListener.Close()
 	if err != nil {
-		log.Error().Err(err).Msg("error closing unix listener")
+		// Log error only when socket wasn't closed
+		if opErr, ok := err.(*net.OpError); !ok || opErr.Err != net.ErrClosed {
+			log.Error().Err(err).Msg("error closing unix listener")
+		}
 	}
 	// ignore error for now
 	os.Remove(socketPath)
@@ -141,5 +149,22 @@ func RunServer(config *viper.Viper) {
 
 	// Run server
 	go metrics.HandleMetrics(config)
-	handleRequests(config)
+	go handleRequests(config)
+}
+
+func StopServer() {
+	metrics.StopMetrics()
+
+	if server != nil {
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+		server.Shutdown(ctx)
+	}
+
+	db, err := uio.UB.DB.DB()
+	if err != nil {
+		db.Close()
+	}
+
+	log.Info().Msg("Stopped fmd-server")
 }

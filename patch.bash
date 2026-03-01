@@ -8,5 +8,5 @@ sed -i "s/build-essential/build-essential libfido2-dev libcbor-dev/" build/Docke
 sed -i "s/ca-certificates/ca-certificates libfido2-1/" build/Dockerfile
 
 echo "Changes in build/Dockerfile"
-diff build/Dockerfile build/Dockerfile.bak
+diff build/Dockerfile.bak build/Dockerfile
 rm build/Dockerfile.bak

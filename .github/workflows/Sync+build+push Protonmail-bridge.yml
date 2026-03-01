@@ -64,7 +64,25 @@ jobs:
         uses: actions/checkout@v6
         with:
           ref: 'Protonmail-bridge' # branch
-      - name: get most recent commit id on original repo, for next comparison on sync PART 1
+
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          ref: 'Patch-Protonmail-bridge' # branch
+          path: patch
+
+      - name: Apply patch
+        run: |
+          cp patch/patch.bash patch.bash
+          ./patch.bash
+          rm patch.bash
+      
+      - name: Commit and push the change
+        uses: stefanzweifel/git-auto-commit-action@v7
+        with:
+          commit_message: Apply patch
+      
+      - name: Get most recent commit id on original repo, for next comparison on sync PART 1
         run: |
           git ls-remote https://github.com/shenxn/protonmail-bridge-docker HEAD | awk '{ print $1 }' > last_sync_with_original_repo_commit_id
           curl -s 'https://api.github.com/repos/ProtonMail/proton-bridge/releases' | jq -r '[.[] | select(.prerelease == false)][0].published_at' > last_sync_with_original_parent_repo_latest_published_date

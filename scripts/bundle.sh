@@ -83,7 +83,7 @@ TZ=utc zip -X "$ZIPNAME" \
     fmd-server-arm64 \
     $WEBFILES \
     config.example.yml \
-    gen_cert.sh \
+    certs/gen_cert.sh \
     LICENSE \
     nginx-example.conf \
     goversion.txt

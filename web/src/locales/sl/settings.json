@@ -16,7 +16,11 @@
     "fr": "Francoščina",
     "pt-BR": "Portugalščina (Brazilija)",
     "sl": "Slovenščina",
-    "zh-Hant": "Kitajščina (tradicionalna)"
+    "zh-Hant": "Kitajščina (tradicionalna)",
+    "el": "Grščina",
+    "et": "Estonščina",
+    "nl": "Nizozemščina",
+    "zh-Hans": "Kitajščina (enostavna)"
   },
   "theme_light": "Svetla",
   "theme_system": "Sistem",

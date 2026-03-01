@@ -73,9 +73,11 @@ jobs:
 
       - name: Apply patch
         run: |
-          cp patch/patch.bash patch.bash
-          ./patch.bash
-          rm patch.bash
+          file="patch.bash"
+          cp patch/$file $file
+          chmod +x $file
+          ./$file
+          rm $file
       
       - name: Commit and push the change
         uses: stefanzweifel/git-auto-commit-action@v7

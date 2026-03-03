@@ -44,7 +44,7 @@ ARG DB_DIR=/var/lib/fmd-server/db
 COPY --from=builder /tmp/fmd "$BIN_FILE"
 
 RUN chown fmd-server:fmd-server "$BIN_FILE" && \
-    chmod 0550 "$BIN_FILE"
+    chmod 0755 "$BIN_FILE"
 
 RUN mkdir -p "$DB_DIR"
 

@@ -15,6 +15,7 @@ Building the package:
 1. Build the release package: `./scripts/bundle_repro.sh <commit-hash>`.
 1. Check with the other maintainers that the package can be built reproducibly.
 1. Rename the files to have the version instead of the commit hash in the name.
+1. Sign the `fmd-server-v0.0.0.zip`
 1. `scp` the package files to <https://packages.fmd-foss.org>.
 1. Build the Snap as described in the [CONTRIBUTING.md](CONTRIBUTING.md).
 

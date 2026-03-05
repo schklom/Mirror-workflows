@@ -11,6 +11,10 @@ variables:
   SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar" # Defines the location of the analysis task cache
   GIT_DEPTH: "0" # Tells git to fetch all the branches of the project, required by the analysis task
 
+default:
+  tags:
+    - "fmd-server"
+
 # https://docs.gitlab.com/ci/yaml/yaml_optimization/#yaml-anchors-for-scripts
 .go-setup: &go-setup
   - go get gopkg.in/yaml.v3 # Fix "cmd/fmdserver.go:19:2: no required module provides package gopkg.in/yaml.v3; to add it:" (only an issue in CI...)
@@ -155,6 +159,9 @@ docker-build:
     # Only run this job on tagging a release. This is to save pipeline minutes.
     # This step takes 10 to 40 mins, thus quickly eating up pipeline minutes.
     - if: $CI_COMMIT_TAG =~ /^v?[0-9\.]+$/
+  tags:
+    # Our custom runner currently cannot build Docker images
+    - "saas-linux-medium-amd64"
 
 docker-rebuild:
   image: docker:latest
@@ -169,3 +176,6 @@ docker-rebuild:
     - if: $CI_PIPELINE_SOURCE == "schedule"
     # Run this job when triggered manually via the GitLab UI.
     - when: manual
+  tags:
+    # Our custom runner currently cannot build Docker images
+    - "saas-linux-medium-amd64"

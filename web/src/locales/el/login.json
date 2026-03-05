@@ -3,5 +3,12 @@
   "setup_instruction_1": "Για να ξεκινήσετε,",
   "setup_instruction_2": "εγκαταστήστε την εφαρμογή FMD για Android",
   "setup_instruction_3": "στην κινητή συσκευή σας. Έπειτα χρησιμοποιήστε την εφαρμογή για να δημιουργήσετε ένα λογαριασμό στον διακομιστή FMD.",
-  "username_placeholder": "Όνομα χρήστη"
+  "username_placeholder": "Όνομα χρήστη",
+  "password_placeholder": "Κωδικός",
+  "remember_me": "Θυμίσου με",
+  "log_in": "Σύνδεση",
+  "logging_in": "Γίνεται είσοδος…",
+  "project_website": "Ιστοσελίδα Εγχειρήματος",
+  "source_code": "Πηγαίος Κώδικας",
+  "privacy_notice": "Δήλωση απορρήτου"
 }

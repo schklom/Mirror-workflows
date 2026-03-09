@@ -1969,9 +1969,9 @@ body.ttrss_prefs[hide-filter-rules="true"] ul.actions_summary li:last-child:afte
   font-family: 'Material Icons';
   font-style: normal;
   font-weight: 400;
-  src: url("../vendor/mervick/material-design-icons/fonts/MaterialIcons-Regular.eot");
+  src: url("../vendor/mervick/material-design-icons/fonts/4.0.0/material-icons.eot");
   /* For IE6-8 */
-  src: local('Material Icons'), local('MaterialIcons-Regular'), url("../vendor/mervick/material-design-icons/fonts/MaterialIcons-Regular.woff2") format('woff2'), url("../vendor/mervick/material-design-icons/fonts/MaterialIcons-Regular.woff") format('woff'), url("../vendor/mervick/material-design-icons/fonts/MaterialIcons-Regular.ttf") format('truetype');
+  src: local('Material Icons'), local('MaterialIcons-Regular'), url("../vendor/mervick/material-design-icons/fonts/4.0.0/material-icons.woff2") format('woff2'), url("../vendor/mervick/material-design-icons/fonts/4.0.0/material-icons.woff") format('woff'), url("../vendor/mervick/material-design-icons/fonts/4.0.0/material-icons.ttf") format('truetype');
 }
 .material-icons {
   font-family: 'Material Icons';

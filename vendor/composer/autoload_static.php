@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit83a70fee85897d2afa1e766a13e36778
+class ComposerStaticInitc1ccf6f83f08665eefb73e187ca64b0a
 {
     public static $files = array (
         '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
@@ -244,6 +244,12 @@ class ComposerStaticInit83a70fee85897d2afa1e766a13e36778
         'Mailer' => __DIR__ . '/../..' . '/classes/Mailer.php',
         'OPML' => __DIR__ . '/../..' . '/classes/OPML.php',
         'ORM' => __DIR__ . '/..' . '/j4mie/idiorm/idiorm.php',
+        'OTPHP\\Exception\\InvalidLabelException' => __DIR__ . '/..' . '/spomky-labs/otphp/src/Exception/InvalidLabelException.php',
+        'OTPHP\\Exception\\InvalidParameterException' => __DIR__ . '/..' . '/spomky-labs/otphp/src/Exception/InvalidParameterException.php',
+        'OTPHP\\Exception\\InvalidProvisioningUriException' => __DIR__ . '/..' . '/spomky-labs/otphp/src/Exception/InvalidProvisioningUriException.php',
+        'OTPHP\\Exception\\OTPExceptionInterface' => __DIR__ . '/..' . '/spomky-labs/otphp/src/Exception/OTPExceptionInterface.php',
+        'OTPHP\\Exception\\ParameterNotFoundException' => __DIR__ . '/..' . '/spomky-labs/otphp/src/Exception/ParameterNotFoundException.php',
+        'OTPHP\\Exception\\SecretDecodingException' => __DIR__ . '/..' . '/spomky-labs/otphp/src/Exception/SecretDecodingException.php',
         'OTPHP\\Factory' => __DIR__ . '/..' . '/spomky-labs/otphp/src/Factory.php',
         'OTPHP\\FactoryInterface' => __DIR__ . '/..' . '/spomky-labs/otphp/src/FactoryInterface.php',
         'OTPHP\\HOTP' => __DIR__ . '/..' . '/spomky-labs/otphp/src/HOTP.php',
@@ -251,7 +257,6 @@ class ComposerStaticInit83a70fee85897d2afa1e766a13e36778
         'OTPHP\\InternalClock' => __DIR__ . '/..' . '/spomky-labs/otphp/src/InternalClock.php',
         'OTPHP\\OTP' => __DIR__ . '/..' . '/spomky-labs/otphp/src/OTP.php',
         'OTPHP\\OTPInterface' => __DIR__ . '/..' . '/spomky-labs/otphp/src/OTPInterface.php',
-        'OTPHP\\ParameterTrait' => __DIR__ . '/..' . '/spomky-labs/otphp/src/ParameterTrait.php',
         'OTPHP\\TOTP' => __DIR__ . '/..' . '/spomky-labs/otphp/src/TOTP.php',
         'OTPHP\\TOTPInterface' => __DIR__ . '/..' . '/spomky-labs/otphp/src/TOTPInterface.php',
         'OTPHP\\Url' => __DIR__ . '/..' . '/spomky-labs/otphp/src/Url.php',
@@ -374,10 +379,10 @@ class ComposerStaticInit83a70fee85897d2afa1e766a13e36778
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit83a70fee85897d2afa1e766a13e36778::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit83a70fee85897d2afa1e766a13e36778::$prefixDirsPsr4;
-            $loader->fallbackDirsPsr4 = ComposerStaticInit83a70fee85897d2afa1e766a13e36778::$fallbackDirsPsr4;
-            $loader->classMap = ComposerStaticInit83a70fee85897d2afa1e766a13e36778::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitc1ccf6f83f08665eefb73e187ca64b0a::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitc1ccf6f83f08665eefb73e187ca64b0a::$prefixDirsPsr4;
+            $loader->fallbackDirsPsr4 = ComposerStaticInitc1ccf6f83f08665eefb73e187ca64b0a::$fallbackDirsPsr4;
+            $loader->classMap = ComposerStaticInitc1ccf6f83f08665eefb73e187ca64b0a::$classMap;
 
         }, null, ClassLoader::class);
     }

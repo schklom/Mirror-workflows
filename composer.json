@@ -17,13 +17,14 @@
 				"name": "mervick/material-design-icons",
 				"version": "4.0.1",
 				"dist": {
-					"url": "https://github.com/mervick/material-design-icons/archive/fef8017b22997a103a51ea4412029b9100e665db.zip",
-					"type": "zip"
+					"url": "https://github.com/mervick/material-design-icons/archive/refs/tags/v4.0.1.zip",
+					"type": "zip",
+					"shasum": "fc3e19a58c37306b3565e52a4fa911bbb31882e5"
 				},
 				"source": {
 					"url": "https://github.com/mervick/material-design-icons.git",
 					"type": "git",
-					"reference": "fef8017b22997a103a51ea4412029b9100e665db"
+					"reference": "v4.0.1"
 				}
 			}
 		}

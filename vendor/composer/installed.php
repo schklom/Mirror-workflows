@@ -3,7 +3,7 @@
         'name' => '__root__',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '4755adcf125509ea80dc84a28bc2de0ba3b17e80',
+        'reference' => '50011476cd7aae0e27a7cd1d20428282fe8c803e',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         '__root__' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '4755adcf125509ea80dc84a28bc2de0ba3b17e80',
+            'reference' => '50011476cd7aae0e27a7cd1d20428282fe8c803e',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -87,7 +87,7 @@
         'mervick/material-design-icons' => array(
             'pretty_version' => '4.0.1',
             'version' => '4.0.1.0',
-            'reference' => 'fef8017b22997a103a51ea4412029b9100e665db',
+            'reference' => 'v4.0.1',
             'type' => 'library',
             'install_path' => __DIR__ . '/../mervick/material-design-icons',
             'aliases' => array(),

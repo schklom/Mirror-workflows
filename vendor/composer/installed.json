@@ -647,11 +647,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/mervick/material-design-icons.git",
-                "reference": "fef8017b22997a103a51ea4412029b9100e665db"
+                "reference": "v4.0.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/mervick/material-design-icons/archive/fef8017b22997a103a51ea4412029b9100e665db.zip"
+                "url": "https://github.com/mervick/material-design-icons/archive/refs/tags/v4.0.1.zip",
+                "shasum": "fc3e19a58c37306b3565e52a4fa911bbb31882e5"
             },
             "type": "library",
             "installation-source": "dist",

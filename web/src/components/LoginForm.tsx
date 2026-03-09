@@ -15,6 +15,9 @@ import { LanguageNativeSelect } from './LanguageNativeSelect';
 
 const ONE_WEEK_SECONDS = 7 * 24 * 60 * 60;
 
+const SLOW_LOGIN_THRESHOLD_MS = 10_000;
+const SLOW_LOGIN_TOAST_DURATION_MS = 30_000;
+
 export const LoginForm = () => {
   const { setUserData } = useStore();
   const { t } = useTranslation(['login', 'errors']);
@@ -36,6 +39,31 @@ export const LoginForm = () => {
     })();
   }, []);
 
+  // Hash the password on a Web Worker background thread
+  const hashPasswordInWorker = (
+    password: string,
+    salt: string
+  ): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const worker = new Worker(
+        new URL('../workers/passwordHashing.ts', import.meta.url),
+        { type: 'module' }
+      );
+
+      worker.onmessage = (ev) => {
+        resolve(ev.data as string);
+        worker.terminate();
+      };
+
+      worker.onerror = (err) => {
+        reject(new Error(err.message));
+        worker.terminate();
+      };
+
+      worker.postMessage([password, salt]);
+    });
+
+  // Send the login request
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -49,7 +77,28 @@ export const LoginForm = () => {
         return;
       }
 
-      const passwordHash = hashPasswordForLogin(password, salt);
+      // When JavaScript JIT is disabled (Jitless mode), password hashing is very slow (>= 2 mins)
+      // https://gitlab.com/fmd-foss/fmd-server/-/issues/142
+      const timeOut = setTimeout(() => {
+        const msg = t(`login_slow`);
+        toast.warning(msg, { duration: SLOW_LOGIN_TOAST_DURATION_MS });
+      }, SLOW_LOGIN_THRESHOLD_MS);
+
+      let passwordHash;
+      if (window.Worker) {
+        // We need to launch the hashing in a background thread.
+        // Otherwise, the timeout won't run, since the UI thread is blocked by the hashing.
+        passwordHash = await hashPasswordInWorker(password, salt);
+      } else {
+        // Browser does not support Web Workers
+        toast.warning(
+          'Web Workers are not supported by this browser. Hashing password on main thread.'
+        );
+        passwordHash = hashPasswordForLogin(password, salt);
+      }
+
+      clearTimeout(timeOut);
+
       const sessionDurationSeconds = rememberMe ? ONE_WEEK_SECONDS : 0;
       const sessionToken = await login(
         fmdId,

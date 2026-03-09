@@ -8,6 +8,7 @@
   "remember_me": "Remember me",
   "log_in": "Log in",
   "logging_in": "Logging in…",
+  "login_slow": "Password hashing appears to be slow. This usually happens when JavaScript JIT is disabled in your browser. Either enable JIT, or be patient and wait up to 5 minutes.",
   "project_website": "Project Website",
   "source_code": "Source Code",
   "privacy_notice": "Privacy Notice"

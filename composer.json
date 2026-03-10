@@ -10,6 +10,23 @@
 			"name": "j4mie/idiorm",
 			"type": "vcs",
 			"url": "https://github.com/tt-rss/tt-rss-idiorm.git"
+		},
+		{
+			"type": "package",
+			"package": {
+				"name": "mervick/material-design-icons",
+				"version": "4.0.1",
+				"dist": {
+					"url": "https://github.com/mervick/material-design-icons/archive/refs/tags/v4.0.1.zip",
+					"type": "zip",
+					"shasum": "fc3e19a58c37306b3565e52a4fa911bbb31882e5"
+				},
+				"source": {
+					"url": "https://github.com/mervick/material-design-icons.git",
+					"type": "git",
+					"reference": "v4.0.1"
+				}
+			}
 		}
 	],
 	"autoload": {
@@ -23,7 +40,7 @@
 	"require": {
 		"spomky-labs/otphp": "^11.3",
 		"chillerlan/php-qrcode": "^5.0.5",
-		"mervick/material-design-icons": "^2.2",
+		"mervick/material-design-icons": "4.0.1",
 		"j4mie/idiorm": "dev-master",
 		"soundasleep/html2text": "^2.1",
 		"guzzlehttp/guzzle": "^7.0",

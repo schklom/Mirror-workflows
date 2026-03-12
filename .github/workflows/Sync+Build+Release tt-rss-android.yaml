@@ -125,4 +125,6 @@ jobs:
           files: "${{ env.ANDROID_SIGNED_FILE }}"
           repository: "schklom/tt-rss-android"
           token: ${{ secrets.PAT_GITHUB_ACTION }}
+          draft: false
+          make_latest: true
 

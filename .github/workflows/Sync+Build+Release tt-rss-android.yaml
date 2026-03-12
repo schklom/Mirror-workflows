@@ -78,8 +78,13 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
   
-      - name: Execute Gradle build
-        run: ./gradlew --no-daemon --refresh-dependencies assembleRelease
+      - name: Execute Gradle build with special env variable
+        # https://github.com/tt-rss/tt-rss-android/blob/390807b797cec3fab900545182afc272ee5fc3fa/org.fox.ttrss/build.gradle#L87-L88
+        # `new Date(getGitTimestamp()).format('yyyyMMdd').toInteger()
+        # checks CI_COMMIT_TIMESTAMP, but that only exists in Gitlab
+        # and the fallback `git --no-pager log --pretty=%ct -n1 HEAD` fails (exit code non-zero) in the shallow GitHub Actions checkout (fetch depth 1 by default)
+        # checkout `fetch-depth: 0` would work, but can be heavy. Setting the environment variable that is expected is much easier and robust.
+        run: CI_COMMIT_TIMESTAMP=$(git show -s --format=%cI HEAD) ./gradlew --no-daemon --refresh-dependencies assembleRelease
 
       - name: Find directory name to apk file
         run: |

@@ -27,7 +27,10 @@ func securityHeadersMiddleware(next http.Handler, tileServerOrigin string) http.
 		w.Header().Set("X-Xss-Protection", "1; mode=block")
 		w.Header().Set("Content-Security-Policy", "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: "+tileServerOrigin+"; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests")
 		w.Header().Set("Permissions-Policy", "camera=(), microphone=()")
-		w.Header().Set("Referrer-Policy", "same-origin")
+
+		// OpenStreetMap requires Referrer headers to be sent:
+		// https://operations.osmfoundation.org/policies/tiles/
+		w.Header().Set("Referrer-Policy", "strict-origin-when-cross-origin")
 
 		next.ServeHTTP(w, r)
 	})

@@ -42,14 +42,14 @@ function format_error(string $msg, string $id = ""): string {
 	return "<div class=\"alert alert-danger\" id=\"$id\">$msg</div>";
 }
 
-function print_notice(string $msg): string {
-	return print format_notice($msg);
+function print_notice(string $msg): void {
+	print format_notice($msg);
 }
 
-function print_warning(string $msg): string {
-	return print format_warning($msg);
+function print_warning(string $msg): void {
+	print format_warning($msg);
 }
 
-function print_error(string $msg): string {
-	return print format_error($msg);
+function print_error(string $msg): void {
+	print format_error($msg);
 }

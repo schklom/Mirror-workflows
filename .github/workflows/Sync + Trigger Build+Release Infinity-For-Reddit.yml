@@ -165,8 +165,8 @@ jobs:
           echo "          app/build/outputs/apk/debug/app-debug-signed.apk" >> $file
           echo "        repository: schklom/Infinity-For-Reddit" >> $file
           echo "        token: ${{ '\${{ secrets.PAT_GITHUB_ACTION }}' }}" >> $file
-          echo "        draft: false >> $file
-          echo "        make_latest: true >> $file
+          echo "        draft: false" >> $file
+          echo "        make_latest: true" >> $file
           
       - name: Increase memory size for Gradle (2048M -> 4096M)
         run: |

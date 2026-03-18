@@ -86,10 +86,11 @@ jobs:
 
       # Inspired by https://www.reddit.com/r/Infinity_For_Reddit/comments/14c2v5x/build_your_own_apk_with_your_personal_api_key_in/
       # which links specifically to https://colab.research.google.com/drive/13AE8RvjnCfuBJGaACEqxeBIMo33_l-Sc
+      # New on https://github.com/KobeW50/ReVanced-Documentation/blob/main/Reddit-Client-ID-Guide.md
       - name: Changes for personal API key
         run: |
           api_token=${{ secrets.INFINITY_FOR_REDDIT_API_KEY }}
-          redirect_uri="http://127.0.0.1"
+          redirect_uri="infinity://localhost"
           reddit_username=${{ secrets.REDDIT_USERNAME }}
           user_agent="android:personal-app:0.0.1 (by /u/$reddit_username)"
           # https://github.com/Docile-Alligator/Infinity-For-Reddit/issues/1648#issuecomment-2140935760

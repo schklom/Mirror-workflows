@@ -155,7 +155,7 @@ jobs:
           
           # Rename release file to be clearer
           echo "    - name: Rename APK" >> $file
-          echo "      run: mv 'app/build/outputs/apk/release/app-release-unsigned-signed.apk' 'app/build/outputs/apk/release/Infinity-For-Reddit.apk' >> $file
+          echo "      run: mv 'app/build/outputs/apk/release/app-release-unsigned-signed.apk' 'app/build/outputs/apk/release/Infinity-For-Reddit.apk'" >> $file
           echo "" >> $file
           
           # Add the release of the artifact at the end of the build action

@@ -76,7 +76,7 @@ jobs:
           distribution: 'temurin'
   
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v5
+        uses: gradle/actions/setup-gradle@v6
   
       - name: Execute Gradle build with special env variable
         # https://github.com/tt-rss/tt-rss-android/blob/390807b797cec3fab900545182afc272ee5fc3fa/org.fox.ttrss/build.gradle#L87-L88

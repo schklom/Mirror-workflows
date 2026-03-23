@@ -11,7 +11,7 @@ contact:
   - https://fmd-foss.org/about
 
 summary: A server to communicate with the FMD Android app.
-description: |
+description: >
   This is the official server for FMD Android written in Go.
   The FMD app can register an account on FMD Server.
   The app can then upload its location at regular intervals.

@@ -13,7 +13,7 @@ e.g. to make your device ring.
 You can try FMD Server on your laptop with Docker.
 
 ```bash
-docker run --rm -p 8080:8080 registry.gitlab.com/fmd-foss/fmd-server:0.14.1
+docker run --rm -p 8080:8080 registry.gitlab.com/fmd-foss/fmd-server:0.14.2
 ```
 
 You can now visit FMD Server's web interface in your browser at <http://localhost:8080>.
@@ -53,7 +53,7 @@ Then run `docker compose build && docker compose up`.
 ```yaml
 services:
   fmd:
-#    image: registry.gitlab.com/fmd-foss/fmd-server:v0.14.1
+#    image: registry.gitlab.com/fmd-foss/fmd-server:v0.14.2
     build: https://gitlab.com/fmd-foss/fmd-server.git#master
 ```
 

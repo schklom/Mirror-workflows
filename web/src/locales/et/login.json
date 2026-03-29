@@ -10,5 +10,6 @@
   "logging_in": "Login sisse…",
   "project_website": "Projekti veebisait",
   "source_code": "Lähtekood",
-  "privacy_notice": "Privaatsusteade"
+  "privacy_notice": "Privaatsusteade",
+  "login_slow": "Salasõnadest räside koostamine tundub olema aeglasevõitu. Tavaliselt juhtub see siis, kui JavaScripti reaalajas kompileerimine (JIT) on sinu veebibrauseris keelatud. Üks võimalus on see, et lülitad ta sisse ning teine see, et ootad kuni 5 minutit."
 }

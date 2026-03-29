@@ -10,5 +10,6 @@
   "logging_in": "Connexion…",
   "log_in": "Se connecter",
   "source_code": "Code source",
-  "privacy_notice": "Mentions d'informations sur les données personnelles"
+  "privacy_notice": "Mentions d'informations sur les données personnelles",
+  "login_slow": "Le hachage de mot de passe semble être lent. Cela survient souvent lorsque le JIT JavaScript est désactivé dans le navigateur. Vous pouvez le réactiver, ou patienter et attendre jusqu'à 5 minutes."
 }

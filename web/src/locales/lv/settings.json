@@ -1,0 +1,22 @@
+{
+  "title": "Iestatījumi",
+  "general": "Vispārīgie",
+  "about": "Par lietotni",
+  "theme": "Motīvs",
+  "theme_dark": "Tumšs",
+  "theme_light": "Gaišs",
+  "theme_system": "Sistēmas",
+  "units": "Mērvienības",
+  "units_metric": "Metriskā sistēma",
+  "units_imperial": "Imperiālā sistēma",
+  "account": "Konts",
+  "export_data": "Izgūt datus",
+  "export_data_loading_message": "Lejupielādē datus. Tas var aizņemt kādu laiku, it īpaši, ja jums ir daudz attēlu.",
+  "delete_account": "Dzēst kontu",
+  "delete_account_title": "Vai tiešām vēlaties dzēst kontu?",
+  "delete_account_description": "Jūsu konts un visi dati tiks neatgriezeniski dzēsti no servera. Šo darbību nevar atsaukt.",
+  "language": {
+    "title": "Valoda"
+  },
+  "about_text": "Serveris, ko izmanto saziņai ar FMD Android lietotni, lai atrastu un kontrolētu savas ierīces."
+}

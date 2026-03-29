@@ -1,0 +1,15 @@
+{
+  "setup_instruction_2": "uzstādiet FMD Android lietotni",
+  "setup_instruction_3": "savā mobilajā ierīcē. Pēc tam izmantojiet lietotni, lai reģistrētu kontu FMD serverī.",
+  "username_placeholder": "Lietotājvārds",
+  "password_placeholder": "Parole",
+  "remember_me": "Atcerēties mani",
+  "log_in": "Autorizēties",
+  "logging_in": "Autorizējas…",
+  "project_website": "Projekta vietne",
+  "source_code": "Pirmkods",
+  "privacy_notice": "Konfidencialitātes paziņojums",
+  "subtitle": "Šo platformu izmantoto, lai atrastu un kontrolētu savas ierīces.",
+  "setup_instruction_1": "Vispirms",
+  "login_slow": "Izskatās, ka paroles jaucējfunkcijas aprēķins notiek lēni. Tas parasti notiek, ja JavaScript JIT ir atspējots pārlūkā. Vai nu iespējojiet JIT, vai arī esiet pacietīgi un uzgaidiet vismaz 5 minūtes."
+}

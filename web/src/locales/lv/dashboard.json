@@ -1,0 +1,21 @@
+{
+  "loading": "Ielādē…",
+  "last_location": "Pēdējā atrašanās vieta",
+  "updated": "Atjaunināta",
+  "location": {
+    "recorded_at": "Reģistrēta pulksten",
+    "no_data": "Vēl nav atrašanās vietas datu. Nosūtiet atrašanās vietas noteikšanas komandu, izmantojot zemāk esošās pogas!",
+    "older": "Vecāka",
+    "newer": "Jaunāka",
+    "no_push_url": "Nav konfigurēts nevienas pašpiegādes URL adreses. Ierīce nesaņems komandas, kamēr Android lietotnē nebūs iestatīti pašpiegādes paziņojumi."
+  },
+  "command_failed": "Komanda neizdevās!",
+  "time": "Laiks",
+  "battery": "Akumulators",
+  "provider": "Pakalpojumu sniedzējs",
+  "accuracy": "Precizitāte",
+  "altitude": "Augstums",
+  "speed": "Ātrums",
+  "bearing": "Azimuts",
+  "no_devices": "Nav ierīču"
+}

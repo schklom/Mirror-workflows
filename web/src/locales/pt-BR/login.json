@@ -10,5 +10,6 @@
   "logging_in": "Conectando…",
   "project_website": "Site do projeto",
   "source_code": "Código-fonte",
-  "privacy_notice": "Informações de privacidade"
+  "privacy_notice": "Informações de privacidade",
+  "login_slow": "O hashing da senha parece lento. Isso novamente acontece quando o JIT do JavaScript está desativado no seu navegador. Você pode ativar o JIT, ou ser paciente e esperar até 5 minutos."
 }

@@ -10,5 +10,6 @@
   "logging_in": "Anmeldung läuft…",
   "project_website": "Projekt-Webseite",
   "source_code": "Quellcode",
-  "privacy_notice": "Datenschutz"
+  "privacy_notice": "Datenschutz",
+  "login_slow": "Das Passwort-Hashing scheint langsam zu sein. Dies passiert normalerweise, wenn JavaScript JIT in deinem Browser deaktiviert ist. Aktiviere entweder JIT oder gedulde dich und warte bis zu 5 Minuten."
 }

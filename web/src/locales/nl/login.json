@@ -10,5 +10,6 @@
   "logging_in": "Aanmelden…",
   "project_website": "Project-website",
   "source_code": "Broncode",
-  "privacy_notice": "Privacyverklaring"
+  "privacy_notice": "Privacyverklaring",
+  "login_slow": "Wachtwoordhashing lijkt traag te gaan. Dit gebeurt meestal wanneer JavaScript JIT is uitgeschakeld in uw browser. Schakel JIT in of wees geduldig en wacht tot 5 minuten."
 }

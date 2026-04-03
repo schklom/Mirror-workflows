@@ -168,10 +168,25 @@ export const LocationMap = () => {
       !mapInstanceRef.current ||
       !leafletRef.current ||
       !markersLayerRef.current ||
-      !accuracyCirclesLayerRef.current ||
-      locations.length === 0
+      !accuracyCirclesLayerRef.current
     )
       return;
+
+    // Reset map when locations is empty (e.g., all deleted)
+    if (locations.length === 0) {
+      markersLayerRef.current.clearLayers();
+      accuracyCirclesLayerRef.current.clearLayers();
+
+      polylineRef.current?.remove();
+      polylineRef.current = null;
+
+      locationCacheRef.current.clear();
+      lastLocationRef.current = null;
+
+      mapInstanceRef.current.setView([20, 2], 2); // same as initial
+
+      return;
+    }
 
     const location = locations[currentLocationIndex];
     if (!location) return;

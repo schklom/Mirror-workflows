@@ -18,6 +18,7 @@ export const ENDPOINTS = {
   PRIVATE_KEY: `${API_BASE}/key`,
   PUBLIC_KEY: `${API_BASE}/pubKey`,
   LOCATIONS: `${API_BASE}/locations`,
+  LOCATIONS_DELETE: `${API_BASE}/locations/delete`,
   COMMAND: `${API_BASE}/command`,
   DEVICE: `${API_BASE}/device`,
   PICTURES: `${API_BASE}/pictures`,
@@ -167,6 +168,12 @@ export const getPictures = async (
 
   return decryptedPictures;
 };
+
+export const deleteLocations = (sessionToken: string) =>
+  request(ENDPOINTS.LOCATIONS_DELETE, HTTP.POST, {
+    IDT: sessionToken,
+    Data: '',
+  });
 
 export const deletePictures = (sessionToken: string) =>
   request(ENDPOINTS.PICTURES_DELETE, HTTP.POST, {

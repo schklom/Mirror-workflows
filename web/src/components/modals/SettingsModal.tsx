@@ -6,6 +6,7 @@ import { ThemeToggle } from '@/components/ThemeToggle';
 import { toast } from 'sonner';
 import {
   deleteAccount,
+  deleteLocations,
   deletePictures,
   getLocations,
   getPictures,
@@ -34,6 +35,8 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
   const { userData, units } = useStore();
   const { t } = useTranslation(['settings', 'login']);
 
+  const [showDeleteLocationsConfirm, setShowDeleteLocationsConfirm] =
+    useState(false);
   const [showDeletePicturesConfirm, setShowDeletePicturesConfirm] =
     useState(false);
   const [showDeleteAccountConfirm, setShowDeleteAccountConfirm] =
@@ -166,6 +169,13 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
               <div className="flex flex-wrap gap-3">
                 <Button
                   variant="destructive"
+                  onClick={() => setShowDeleteLocationsConfirm(true)}
+                >
+                  {t('delete_locations.button')}
+                </Button>
+
+                <Button
+                  variant="destructive"
                   onClick={() => setShowDeletePicturesConfirm(true)}
                 >
                   {t('delete_pictures.button')}
@@ -251,6 +261,31 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
       <LoadingModal
         isOpen={showExportLoading}
         message={t('export_data_loading_message')}
+      />
+
+      <ConfirmModal
+        isOpen={showDeleteLocationsConfirm}
+        onCancel={() => setShowDeleteLocationsConfirm(false)}
+        onConfirm={() => {
+          void (async () => {
+            if (!userData) return;
+
+            try {
+              await deleteLocations(userData.sessionToken);
+              useStore.setState({ locations: [], currentLocationIndex: 0 });
+
+              setShowDeleteLocationsConfirm(false);
+              toast.info(t('delete_locations.success'));
+            } catch (error) {
+              toast.error(
+                error instanceof Error ? error.message : 'Delete failed'
+              );
+            }
+          })();
+        }}
+        title={t('delete_locations.title')}
+        message={t('delete_locations.description')}
+        confirmText={t('delete_locations.button')}
       />
 
       <ConfirmModal

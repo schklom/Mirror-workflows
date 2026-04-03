@@ -21,6 +21,7 @@ export const ENDPOINTS = {
   COMMAND: `${API_BASE}/command`,
   DEVICE: `${API_BASE}/device`,
   PICTURES: `${API_BASE}/pictures`,
+  PICTURES_DELETE: `${API_BASE}/pictures/delete`,
   PUSH: `${API_BASE}/push`,
   TILE_SERVER: `${API_BASE}/tileServerUrl`,
   VERSION: `${API_BASE}/version`,
@@ -166,6 +167,12 @@ export const getPictures = async (
 
   return decryptedPictures;
 };
+
+export const deletePictures = (sessionToken: string) =>
+  request(ENDPOINTS.PICTURES_DELETE, HTTP.POST, {
+    IDT: sessionToken,
+    Data: '',
+  });
 
 export const deleteAccount = (sessionToken: string) =>
   request(ENDPOINTS.DEVICE, HTTP.POST, { IDT: sessionToken, Data: '' });

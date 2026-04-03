@@ -6,6 +6,7 @@ import { ThemeToggle } from '@/components/ThemeToggle';
 import { toast } from 'sonner';
 import {
   deleteAccount,
+  deletePictures,
   getLocations,
   getPictures,
   getPushUrl,
@@ -32,8 +33,12 @@ interface SettingsModalProps {
 export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
   const { userData, units } = useStore();
   const { t } = useTranslation(['settings', 'login']);
+
+  const [showDeletePicturesConfirm, setShowDeletePicturesConfirm] =
+    useState(false);
   const [showDeleteAccountConfirm, setShowDeleteAccountConfirm] =
     useState(false);
+
   const [showExportLoading, setShowExportLoading] = useState(false);
 
   const handleExport = async () => {
@@ -161,6 +166,13 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
               <div className="flex flex-wrap gap-3">
                 <Button
                   variant="destructive"
+                  onClick={() => setShowDeletePicturesConfirm(true)}
+                >
+                  {t('delete_pictures.button')}
+                </Button>
+
+                <Button
+                  variant="destructive"
                   onClick={() => setShowDeleteAccountConfirm(true)}
                 >
                   {t('delete_account')}
@@ -239,6 +251,31 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
       <LoadingModal
         isOpen={showExportLoading}
         message={t('export_data_loading_message')}
+      />
+
+      <ConfirmModal
+        isOpen={showDeletePicturesConfirm}
+        onCancel={() => setShowDeletePicturesConfirm(false)}
+        onConfirm={() => {
+          void (async () => {
+            if (!userData) return;
+
+            try {
+              await deletePictures(userData.sessionToken);
+              useStore.setState({ pictures: [] });
+
+              setShowDeletePicturesConfirm(false);
+              toast.info(t('delete_pictures.success'));
+            } catch (error) {
+              toast.error(
+                error instanceof Error ? error.message : 'Delete failed'
+              );
+            }
+          })();
+        }}
+        title={t('delete_pictures.title')}
+        message={t('delete_pictures.description')}
+        confirmText={t('delete_pictures.button')}
       />
 
       <ConfirmModal

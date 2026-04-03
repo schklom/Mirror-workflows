@@ -205,6 +205,23 @@ func getAllPictures(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(fmt.Sprint(string(jsonData))))
 }
 
+func deleteAllPictures(w http.ResponseWriter, r *http.Request) {
+	var data DataPackage
+	err := json.NewDecoder(r.Body).Decode(&data)
+	if err != nil {
+		http.Error(w, ERR_JSON_INVALID, http.StatusBadRequest)
+		return
+	}
+	user, err := uio.CheckAccessTokenAndGetUser(data.IDT)
+	if err != nil {
+		http.Error(w, ERR_ACCESS_TOKEN_INVALID, http.StatusUnauthorized)
+		return
+	}
+
+	uio.DeleteAllPictures(user)
+	w.WriteHeader(http.StatusOK)
+}
+
 func getPictureSize(w http.ResponseWriter, r *http.Request) {
 	var request DataPackage
 	err := json.NewDecoder(r.Body).Decode(&request)

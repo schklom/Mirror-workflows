@@ -161,6 +161,12 @@ func (u *UserRepository) prunePictures(user *FMDUser) {
 	}
 }
 
+func (u *UserRepository) DeleteAllPictures(user *FMDUser) {
+	log.Info().Str("userid", user.UID).Msg("deleting all pictures")
+	rowsDeleted := u.UB.DeletePictures(user)
+	metrics.Pictures.Sub(float64(rowsDeleted))
+}
+
 func (u *UserRepository) DeleteUser(user *FMDUser) {
 	log.Info().Str("userid", user.UID).Msg("deleting user")
 

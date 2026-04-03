@@ -61,6 +61,8 @@ func buildServeMux(config *viper.Viper) http.Handler {
 	apiV1Mux.HandleFunc("/picture/", mainPicture)
 	apiV1Mux.HandleFunc("/pictures", getAllPictures)
 	apiV1Mux.HandleFunc("/pictures/", getAllPictures)
+	apiV1Mux.HandleFunc("/pictures/delete", deleteAllPictures)
+	apiV1Mux.HandleFunc("/pictures/delete/", deleteAllPictures)
 	apiV1Mux.HandleFunc("/pictureSize", getPictureSize)
 	apiV1Mux.HandleFunc("/pictureSize/", getPictureSize)
 	apiV1Mux.HandleFunc("/key", getPrivKey)

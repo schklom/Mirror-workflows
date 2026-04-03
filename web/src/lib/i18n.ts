@@ -11,6 +11,7 @@ export const SUPPORTED_LANGUAGES_PAIRS = [
   { code: 'el', label: 'ελληνικά' },
   { code: 'et', label: 'eesti keel' },
   { code: 'fr', label: 'Français' },
+  { code: 'lv', label: 'Latviešu' },
   { code: 'nl', label: 'Nederlands' },
   { code: 'pt-BR', label: 'Português do Brasil' },
   { code: 'sl', label: 'Slovenščina' },

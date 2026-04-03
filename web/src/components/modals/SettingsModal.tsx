@@ -32,7 +32,8 @@ interface SettingsModalProps {
 export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
   const { userData, units } = useStore();
   const { t } = useTranslation(['settings', 'login']);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showDeleteAccountConfirm, setShowDeleteAccountConfirm] =
+    useState(false);
   const [showExportLoading, setShowExportLoading] = useState(false);
 
   const handleExport = async () => {
@@ -151,14 +152,16 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
               <h3 className="text-fmd-green mb-3 font-semibold">
                 {t('account')}
               </h3>
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-wrap gap-3 mb-3">
                 <Button variant="secondary" onClick={() => void handleExport()}>
                   {t('export_data')}
                 </Button>
+              </div>
 
+              <div className="flex flex-wrap gap-3">
                 <Button
                   variant="destructive"
-                  onClick={() => setShowDeleteConfirm(true)}
+                  onClick={() => setShowDeleteAccountConfirm(true)}
                 >
                   {t('delete_account')}
                 </Button>
@@ -239,8 +242,8 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
       />
 
       <ConfirmModal
-        isOpen={showDeleteConfirm}
-        onCancel={() => setShowDeleteConfirm(false)}
+        isOpen={showDeleteAccountConfirm}
+        onCancel={() => setShowDeleteAccountConfirm(false)}
         onConfirm={() => {
           void (async () => {
             if (!userData) return;
@@ -248,7 +251,7 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
             try {
               await deleteAccount(userData.sessionToken);
               await logout();
-              setShowDeleteConfirm(false);
+              setShowDeleteAccountConfirm(false);
               onClose();
             } catch (error) {
               toast.error(

@@ -26,6 +26,7 @@ export default defineConfig({
     outDir: 'dist',
     emptyOutDir: true,
   },
+  // Proxying only works with "npm run dev", not "npm run start"!
   server: {
     proxy: {
       '/api': {

@@ -9,7 +9,7 @@
   "units": "Units",
   "units_metric": "Metric",
   "units_imperial": "Imperial",
-  "account": "Account",
+  "account": "Account & Data",
   "export_data": "Export data",
   "export_data_loading_message": "Downloading data. This can take some time, especially if you have many pictures.",
   "delete_account": "Delete account",

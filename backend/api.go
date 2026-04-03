@@ -55,6 +55,8 @@ func buildServeMux(config *viper.Viper) http.Handler {
 	apiV1Mux.HandleFunc("/location/", mainLocation)
 	apiV1Mux.HandleFunc("/locations", getAllLocations)
 	apiV1Mux.HandleFunc("/locations/", getAllLocations)
+	apiV1Mux.HandleFunc("/locations/delete", deleteAllLocations)
+	apiV1Mux.HandleFunc("/locations/delete/", deleteAllLocations)
 	apiV1Mux.HandleFunc("/locationDataSize", getLocationDataSize)
 	apiV1Mux.HandleFunc("/locationDataSize/", getLocationDataSize)
 	apiV1Mux.HandleFunc("/picture", mainPicture)

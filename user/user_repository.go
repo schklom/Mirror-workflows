@@ -142,6 +142,12 @@ func (u *UserRepository) pruneLocations(user *FMDUser) {
 	}
 }
 
+func (u *UserRepository) DeleteAllLocations(user *FMDUser) {
+	log.Info().Str("userid", user.UID).Msg("deleting all locations")
+	rowsDeleted := u.UB.DeleteLocations(user)
+	metrics.Locations.Sub(float64(rowsDeleted))
+}
+
 func (u *UserRepository) AddPicture(user *FMDUser, pic string) {
 	u.UB.Create(&Picture{Content: pic, UserID: user.Id})
 	metrics.Pictures.Inc()

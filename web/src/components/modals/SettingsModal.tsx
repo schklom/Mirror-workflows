@@ -1,7 +1,14 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { ExternalLink, Shield } from 'lucide-react';
+import {
+  Download,
+  ExternalLink,
+  ImageMinus,
+  MapPinMinus,
+  Shield,
+  Trash2,
+} from 'lucide-react';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { toast } from 'sonner';
 import {
@@ -162,6 +169,7 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
               </h3>
               <div className="flex flex-wrap gap-3 mb-3">
                 <Button variant="secondary" onClick={() => void handleExport()}>
+                  <Download className="h-4 w-4" />
                   {t('export_data')}
                 </Button>
               </div>
@@ -171,6 +179,7 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
                   variant="destructive"
                   onClick={() => setShowDeleteLocationsConfirm(true)}
                 >
+                  <MapPinMinus className="h-4 w-4" />
                   {t('delete_locations.button')}
                 </Button>
 
@@ -178,6 +187,7 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
                   variant="destructive"
                   onClick={() => setShowDeletePicturesConfirm(true)}
                 >
+                  <ImageMinus className="h-4 w-4" />
                   {t('delete_pictures.button')}
                 </Button>
 
@@ -185,6 +195,7 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
                   variant="destructive"
                   onClick={() => setShowDeleteAccountConfirm(true)}
                 >
+                  <Trash2 className="h-4 w-4" />
                   {t('delete_account')}
                 </Button>
               </div>

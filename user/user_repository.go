@@ -121,6 +121,9 @@ func (u *UserRepository) UpdateUserPassword(user *FMDUser, privKey string, inner
 	user.setPasswordData(innerSalt, innerPwHash)
 	user.PrivateKey = privKey
 	u.UB.Save(&user)
+
+	// Security: Revoke all active sessions. This forces them to log in again with the new password.
+	u.ACC.ResetTokensForUser(user.UID)
 }
 
 func (u *UserRepository) AddLocation(user *FMDUser, loc string) {

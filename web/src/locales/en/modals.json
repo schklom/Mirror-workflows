@@ -23,8 +23,8 @@
     "of": "of"
   },
   "webcrypto_warning": {
-    "title": "WebCrypto API not available",
-    "message": "FMD Server won't work because the WebCrypto API is not available.",
+    "title": "Web Cryptography API not available",
+    "message": "FMD Server won't work because the Web Cryptography API is not available.",
     "detail": "This is most likely because you are visiting this site over insecure HTTP. Please use HTTPS. If you are self-hosting, please read the",
     "link_text": "installation guide"
   }

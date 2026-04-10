@@ -10,6 +10,11 @@ import (
 	"github.com/spf13/viper"
 )
 
+const HEADER_CONTENT_TYPE = "Content-Type"
+const CT_APPLICATION_JSON = "application/json"
+
+const ERR_JSON_INVALID = "Invalid JSON"
+
 var remoteIpHeaderName string = ""
 
 func getRemoteIp(r *http.Request) string {

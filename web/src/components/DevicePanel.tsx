@@ -1,4 +1,4 @@
-import { sendCommand, getPushUrl } from '../lib/api';
+import { sendCommand, getPushUrl } from '../lib/apiv1';
 import { useStore } from '@/lib/store';
 import { toast } from 'sonner';
 import { useState, useEffect } from 'react';

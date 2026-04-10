@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { storeKeys, clearKeys, getKeys } from '@/lib/keystore';
-import type { Location } from '@/lib/api';
+import type { Location } from '@/lib/apiv1';
 import type { Language } from '@/lib/i18n';
 
 export type Theme = 'light' | 'dark' | 'system';

@@ -6,7 +6,7 @@ import { PhotosModal } from '@/components/modals/PhotosModal';
 import { SettingsModal } from '@/components/modals/SettingsModal';
 import { Header } from '@/components/Header';
 import { Spinner } from '@/components/ui/spinner';
-import { getLocations } from '@/lib/api';
+import { getLocations } from '@/lib/apiv1';
 import { useStore } from '@/lib/store';
 import { toast } from 'sonner';
 

@@ -18,7 +18,7 @@ import {
   getLocations,
   getPictures,
   getPushUrl,
-} from '@/lib/api';
+} from '@/lib/apiv1';
 import { useStore, logout, type UnitSystem } from '@/lib/store';
 import {
   Dialog,

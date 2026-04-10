@@ -3,7 +3,7 @@ import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
-import { getSalt, login, getWrappedPrivateKey, getVersion } from '@/lib/api';
+import { getSalt, login, getWrappedPrivateKey, getVersion } from '@/lib/apiv1';
 import { hashPasswordForLogin, unwrapPrivateKey } from '@/lib/crypto';
 import { useStore } from '@/lib/store';
 import { Button } from '@/components/ui/button';

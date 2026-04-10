@@ -8,7 +8,7 @@ import { useThemeColors } from '@/hooks/useThemeColors';
 import { Spinner } from '@/components/ui/spinner';
 
 import 'leaflet/dist/leaflet.css';
-import { getTileServerUrl } from '@/lib/api';
+import { getTileServerUrl } from '@/lib/apiv1';
 
 const POLYLINE_OPACITY = 0.6;
 const POLYLINE_WEIGHT = 3;

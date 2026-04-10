@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getPictures } from '@/lib/api';
+import { getPictures } from '@/lib/apiv1';
 import { useStore } from '@/lib/store';
 import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';

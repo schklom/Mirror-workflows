@@ -176,10 +176,13 @@ func (u *UserRepository) DeleteAllPictures(user *FMDUser) {
 	metrics.Pictures.Sub(float64(rowsDeleted))
 }
 
-func (u *UserRepository) DeleteUser(user *FMDUser) {
+func (u *UserRepository) DeleteUser(user *FMDUser) error {
 	log.Info().Str("userid", user.UID).Msg("deleting user")
 
-	u.UB.Delete(&user)
+	rowsDeleted := u.UB.Delete(&user)
+	if rowsDeleted == 0 {
+		return errors.New("database error")
+	}
 
 	// Reload the metrics by fully re-initializing them.
 	// These are simpler DB queries than JOIN-ing tables to find out how many
@@ -188,6 +191,8 @@ func (u *UserRepository) DeleteUser(user *FMDUser) {
 
 	u.ACC.ResetLock(user.UID)
 	u.ACC.ResetTokensForUser(user.UID)
+
+	return nil
 }
 
 var ErrIndexOutOfBounds = errors.New("requested index is out of bounds")

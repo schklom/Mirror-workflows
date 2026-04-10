@@ -156,10 +156,11 @@ func (db *FMDDB) Create(value interface{}) {
 	db.DB.Create(value)
 }
 
-func (db *FMDDB) Delete(value interface{}) {
+func (db *FMDDB) Delete(value interface{}) int64 {
 	// Theoretically, this should work via foreign key + cascade.
 	// It works when manually executing SQL commands via DB Browser, but not via gorm??
 	// Thus, we manually select the associations here to do the cascading deletion.
 	// https://gorm.io/docs/associations.html#Delete-Associations
-	db.DB.Select(clause.Associations).Delete(value)
+	var result = db.DB.Select(clause.Associations).Delete(value)
+	return result.RowsAffected
 }

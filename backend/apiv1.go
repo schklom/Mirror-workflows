@@ -476,7 +476,13 @@ func deleteDevice(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, ERR_ACCESS_TOKEN_INVALID, http.StatusUnauthorized)
 		return
 	}
-	uio.DeleteUser(user)
+
+	err = uio.DeleteUser(user)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Failed to delete account: %s", err.Error()), http.StatusInternalServerError)
+		return
+	}
+
 	w.WriteHeader(http.StatusOK)
 }
 

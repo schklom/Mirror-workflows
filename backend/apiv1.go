@@ -7,7 +7,6 @@ import (
 	"strconv"
 
 	"fmd-server/user"
-	"fmd-server/version"
 
 	"github.com/rs/zerolog/log"
 )
@@ -550,10 +549,6 @@ func (h tileServerUrlHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 }
 
 // ------- Main Web Request Handling -------
-
-func getVersion(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, version.VERSION)
-}
 
 func mainLocation(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {

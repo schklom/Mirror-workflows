@@ -2,7 +2,9 @@ package backend
 
 import (
 	conf "fmd-server/config"
+	"fmd-server/version"
 	frontend "fmd-server/web"
+	"fmt"
 	"net/http"
 
 	"github.com/spf13/viper"
@@ -34,6 +36,10 @@ func securityHeadersMiddleware(next http.Handler, tileServerOrigin string) http.
 
 		next.ServeHTTP(w, r)
 	})
+}
+
+func getVersion(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprint(w, version.VERSION)
 }
 
 func buildServeMux(config *viper.Viper) http.Handler {
@@ -101,6 +107,10 @@ func buildServeMux(config *viper.Viper) http.Handler {
 	// muxFinal.Handle("/", staticFilesMux)
 	apiMux.Handle("/", apiV1Mux) // deprecated
 	apiMux.Handle("/api/v1/", http.StripPrefix("/api/v1", apiV1Mux))
+
+	// Also serve the version in the root path
+	apiMux.HandleFunc("/version", getVersion)
+	apiMux.HandleFunc("/version/", getVersion)
 
 	// Apply to all endpoints
 	handler := securityHeadersMiddleware(apiMux, tileServerOrigin)

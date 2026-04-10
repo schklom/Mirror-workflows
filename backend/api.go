@@ -59,9 +59,6 @@ func buildServeMux(config *viper.Viper) http.Handler {
 	apiV1Mux := http.NewServeMux()
 	apiV1Mux.HandleFunc("/command", mainCommand)
 	apiV1Mux.HandleFunc("/command/", mainCommand)
-	//Disabled Feature: CommandLogs
-	//apiV1Mux.HandleFunc("/commandLogs", getCommandLog)
-	//apiV1Mux.HandleFunc("/commandLogs/", getCommandLog)
 	apiV1Mux.HandleFunc("/location", mainLocation)
 	apiV1Mux.HandleFunc("/location/", mainLocation)
 	apiV1Mux.HandleFunc("/locations", getAllLocations)

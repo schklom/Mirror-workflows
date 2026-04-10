@@ -351,30 +351,6 @@ func postCommand(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-/*
-func getCommandLog(w http.ResponseWriter, r *http.Request) {
-	var data DataPackage
-	err := json.NewDecoder(r.Body).Decode(&data)
-	if err != nil {
-		http.Error(w, ERR_JSON_INVALID, http.StatusBadRequest)
-		return
-	}
-	user, err := uio.CheckAccessTokenAndGetUser(data.IDT)
-	if err != nil {
-		http.Error(w, ERR_ACCESS_TOKEN_INVALID, http.StatusUnauthorized)
-		return
-	}
-
-	commandLog := uio.GetCommandLog(user)
-
-	// commandLogs may be empty, that's fine
-	reply := DataPackage{IDT: data.IDT, Data: commandLog}
-	result, _ := json.Marshal(reply)
-	w.Header().Set(HEADER_CONTENT_TYPE, CT_APPLICATION_JSON)
-	w.Write([]byte(result))
-}
-*/
-
 // ------- Push -------
 
 func getPushUrl(w http.ResponseWriter, r *http.Request) {

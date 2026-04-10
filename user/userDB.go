@@ -32,7 +32,6 @@ type FMDUser struct {
 	LastSeenTime   int64
 	Locations      []Location `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE;"`
 	Pictures       []Picture  `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE;"`
-	//CommandLogs    []CommandLogEntry `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE;"`
 }
 
 // Location Table of the Users
@@ -48,21 +47,6 @@ type Picture struct {
 	UserID  uint64 `gorm:"index"`
 	Content string // elements are base64 encoded encrypted images
 }
-
-/*
-// Location Table of the Users
-type CommandLogEntry struct {
-	Id      uint64 `gorm:"primaryKey"`
-	UserID  uint64 `gorm:"index"`
-	Content string // encrypted CommandLogEntryContent
-}
-
-// Content of the CommandLogEntry
-type CommandLogEntryContent struct {
-	Timestamp int64
-	Log       string
-}
-*/
 
 // Settings Table GORM (SQL)
 type DBSetting struct {

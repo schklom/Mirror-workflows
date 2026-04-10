@@ -274,20 +274,6 @@ func (u *UserRepository) SetPublicKey(user *FMDUser, key string) {
 	u.UB.Save(&user)
 }
 
-/*
-func (u *UserRepository) addCommandLogEntry(user *FMDUser, entry string) {
-	timestamp := time.Now().Unix()
-
-	logEntry := CommandLogEntryContent{Timestamp: timestamp, Log: entry}
-	jsonLog, _ := json.Marshal(logEntry)
-
-	logEntryEncrypted := utils.RsaEncrypt(user.PublicKey, jsonLog)
-	comLogEntry := CommandLogEntry{UserID: user.Id, Content: logEntryEncrypted}
-
-	u.UB.Create(&comLogEntry)
-}
-*/
-
 func (u *UserRepository) SetCommandToUser(user *FMDUser, cmd string, cmdTime uint64, cmdSig string) {
 	if cmd != "" {
 		// Only increment if this is not overwriting an existing pending command.
@@ -302,9 +288,6 @@ func (u *UserRepository) SetCommandToUser(user *FMDUser, cmd string, cmdTime uin
 	user.CommandSig = cmdSig
 
 	if cmd != "" {
-		//logEntry := fmt.Sprintf("Command \"%s\" sent to server!", cmd)
-		//u.addCommandLogEntry(user, logEntry)
-
 		u.pushUser(user)
 	}
 
@@ -312,11 +295,6 @@ func (u *UserRepository) SetCommandToUser(user *FMDUser, cmd string, cmdTime uin
 }
 
 func (u *UserRepository) GetCommandToUser(user *FMDUser) (string, uint64, string) {
-	// if user.CommandToUser != "" {
-	// 	logEntry := fmt.Sprintf("Command \"%s\" received by device!", user.CommandToUser)
-	// 	u.addCommandLogEntry(user, logEntry)
-	// }
-
 	c, t, s := user.CommandToUser, user.CommandTime, user.CommandSig
 
 	if user.CommandToUser != "" {
@@ -328,16 +306,6 @@ func (u *UserRepository) GetCommandToUser(user *FMDUser) (string, uint64, string
 
 	return c, t, s
 }
-
-/*
-func (u *UserRepository) GetCommandLog(user *FMDUser) string {
-	commandLog := ""
-	for _, logEntry := range user.CommandLogs {
-		commandLog += logEntry.Content + "\n"
-	}
-	return commandLog
-}
-*/
 
 func (u *UserRepository) SetPushUrl(user *FMDUser, pushUrl string) {
 	old := user.PushUrl

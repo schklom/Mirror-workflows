@@ -1,5 +1,13 @@
-import { logout } from '@/lib/store';
-import { decryptData, sign } from './crypto';
+import { logout, useStore } from '@/lib/store';
+import { decryptData, sign, unwrapPrivateKey } from './crypto';
+import {
+  BaseApiService,
+  HTTP,
+  JSON_HEADER,
+  Location,
+  ONE_WEEK_SECONDS,
+  requestObject,
+} from './api';
 
 interface DataPackage {
   IDT: string;
@@ -28,199 +36,189 @@ export const ENDPOINTS = {
   VERSION: `${API_BASE}/version`,
 } as const;
 
-const HTTP = {
-  POST: 'POST',
-  PUT: 'PUT',
-  GET: 'GET',
-} as const;
+export class ApiV1Service extends BaseApiService {
+  async getSalt(userName: string): Promise<string> {
+    const response = await requestObject<DataPackage>(
+      ENDPOINTS.SALT,
+      HTTP.PUT,
+      {
+        IDT: userName,
+        Data: 'unused',
+      }
+    );
+    return response.Data;
+  }
 
-const JSON_HEADER = { 'Content-Type': 'application/json' } as const;
+  async login(
+    userName: string,
+    password: string,
+    passwordAuthHash: string,
+    rememberMe: boolean
+  ): Promise<void> {
+    const sessionDurationSeconds = rememberMe ? ONE_WEEK_SECONDS : 0;
 
-export interface Location {
-  lat: number;
-  lon: number;
-  bat: number;
-  date: number;
-  time: string;
-  provider: string;
-  accuracy?: number;
-  altitude?: number;
-  speed?: number;
-  bearing?: number;
+    const response = await requestObject<DataPackage>(
+      ENDPOINTS.REQUEST_ACCESS,
+      HTTP.PUT,
+      {
+        IDT: userName,
+        Data: passwordAuthHash,
+        SessionDurationSeconds: sessionDurationSeconds,
+      }
+    );
+    const sessionToken = response.Data;
+
+    const wrappedPrivateKey = await this.getWrappedPrivateKey(sessionToken);
+
+    const { rsaEncKey, rsaSigKey } = await unwrapPrivateKey(
+      password,
+      wrappedPrivateKey
+    );
+
+    const { setUserData } = useStore.getState();
+    await setUserData(
+      {
+        fmdId: userName,
+        rsaEncKey,
+        rsaSigKey,
+        sessionToken,
+      },
+      rememberMe
+    );
+  }
+
+  async getWrappedPrivateKey(sessionToken: string) {
+    const response = await requestObject<DataPackage>(
+      ENDPOINTS.PRIVATE_KEY,
+      HTTP.PUT,
+      {
+        IDT: sessionToken,
+        Data: 'unused',
+      }
+    );
+    return response.Data;
+  }
+
+  async logout(): Promise<void> {
+    // not implemented in API v1
+  }
+
+  async getPushUrl(): Promise<string> {
+    const { userData } = useStore.getState();
+
+    const response = await fetch(ENDPOINTS.PUSH, {
+      method: HTTP.POST,
+      headers: JSON_HEADER,
+      body: JSON.stringify({ IDT: userData!.sessionToken, Data: '' }),
+    });
+
+    if (!response.ok) {
+      const text = await response.text();
+      if (response.status === 401) {
+        void logout();
+        throw new Error('Session expired');
+      }
+      throw new Error(text || 'Request failed');
+    }
+
+    return response.text();
+  }
+
+  async deleteAccount(): Promise<void> {
+    const { userData } = useStore.getState();
+    await requestObject(ENDPOINTS.DEVICE, HTTP.POST, {
+      IDT: userData!.sessionToken,
+      Data: '',
+    });
+  }
+
+  async deleteAllLocations(): Promise<void> {
+    const { userData } = useStore.getState();
+    await requestObject(ENDPOINTS.LOCATIONS_DELETE, HTTP.POST, {
+      IDT: userData!.sessionToken,
+      Data: '',
+    });
+  }
+
+  async deleteAllPictures(): Promise<void> {
+    const { userData } = useStore.getState();
+    await requestObject(ENDPOINTS.PICTURES_DELETE, HTTP.POST, {
+      IDT: userData!.sessionToken,
+      Data: '',
+    });
+  }
+
+  async sendCommand(command: string): Promise<void> {
+    const { userData } = useStore.getState();
+
+    const timestamp = Date.now();
+    const signature = await sign(
+      userData!.rsaSigKey,
+      `${timestamp}:${command}`
+    );
+
+    return requestObject(ENDPOINTS.COMMAND, HTTP.POST, {
+      IDT: userData!.sessionToken,
+      Data: command,
+      UnixTime: timestamp,
+      CmdSig: signature,
+    });
+  }
+
+  async getLocations(): Promise<Location[]> {
+    const { userData } = useStore.getState();
+
+    const response = await requestObject<string[]>(
+      ENDPOINTS.LOCATIONS,
+      HTTP.POST,
+      {
+        IDT: userData!.sessionToken,
+        Data: '',
+      }
+    );
+
+    const encryptedLocations = response.map((jsonStr) => {
+      const parsed = JSON.parse(jsonStr) as DataPackage;
+      return parsed.Data;
+    });
+
+    const decryptedLocations = await Promise.all(
+      encryptedLocations.map(async (encryptedLoc) => {
+        const decrypted = await decryptData(userData!.rsaEncKey, encryptedLoc);
+        return JSON.parse(decrypted) as Location;
+      })
+    );
+
+    return decryptedLocations;
+  }
+
+  async getPictures(): Promise<string[]> {
+    const { userData } = useStore.getState();
+
+    const encryptedPictures = await requestObject<string[]>(
+      ENDPOINTS.PICTURES,
+      HTTP.POST,
+      { IDT: userData!.sessionToken }
+    );
+
+    const decryptedPictures = await Promise.all(
+      encryptedPictures.map((encryptedPic) =>
+        decryptData(userData!.rsaEncKey, encryptedPic)
+      )
+    );
+
+    return decryptedPictures;
+  }
+
+  async getTileServerUrl(): Promise<string> {
+    const response = await fetch(ENDPOINTS.TILE_SERVER);
+
+    const text = await response.text();
+    if (!response.ok) {
+      throw new Error(text || 'Request failed');
+    }
+
+    const json = JSON.parse(text) as TileServerUrlResponse;
+    return json.TileServerUrl;
+  }
 }
-
-const request = async <T>(endpoint: string, method: string, body: object) => {
-  const response = await fetch(endpoint, {
-    method,
-    headers: JSON_HEADER,
-    body: JSON.stringify(body),
-  });
-
-  if (!response.ok) {
-    const text = await response.text();
-
-    if (response.status === 401) {
-      void logout();
-      throw new Error('Session expired');
-    }
-
-    throw new Error(text || 'Request failed');
-  }
-
-  const text = await response.text();
-  if (!text) {
-    return {} as T;
-  }
-
-  return JSON.parse(text) as T;
-};
-
-export const getSalt = async (fmdId: string) => {
-  const response = await request<DataPackage>(ENDPOINTS.SALT, HTTP.PUT, {
-    IDT: fmdId,
-    Data: 'unused',
-  });
-  return response.Data;
-};
-
-export const login = async (
-  fmdId: string,
-  passwordHash: string,
-  sessionDurationSeconds = 0
-) => {
-  const response = await request<DataPackage>(
-    ENDPOINTS.REQUEST_ACCESS,
-    HTTP.PUT,
-    {
-      IDT: fmdId,
-      Data: passwordHash,
-      SessionDurationSeconds: sessionDurationSeconds,
-    }
-  );
-  return response.Data; // session token
-};
-
-export const getWrappedPrivateKey = async (sessionToken: string) => {
-  const response = await request<DataPackage>(ENDPOINTS.PRIVATE_KEY, HTTP.PUT, {
-    IDT: sessionToken,
-    Data: 'unused',
-  });
-  return response.Data;
-};
-
-export const getLocations = async (
-  sessionToken: string,
-  rsaEncKey: CryptoKey
-) => {
-  const response = await request<string[]>(ENDPOINTS.LOCATIONS, HTTP.POST, {
-    IDT: sessionToken,
-    Data: '',
-  });
-
-  const encryptedLocations = response.map((jsonStr) => {
-    const parsed = JSON.parse(jsonStr) as DataPackage;
-    return parsed.Data;
-  });
-
-  const decryptedLocations = await Promise.all(
-    encryptedLocations.map(async (encryptedLoc) => {
-      const decrypted = await decryptData(rsaEncKey, encryptedLoc);
-      return JSON.parse(decrypted) as Location;
-    })
-  );
-
-  return decryptedLocations;
-};
-
-export const sendCommand = async (
-  sessionToken: string,
-  command: string,
-  rsaSigKey: CryptoKey
-) => {
-  const timestamp = Date.now();
-  const signature = await sign(rsaSigKey, `${timestamp}:${command}`);
-
-  return request(ENDPOINTS.COMMAND, HTTP.POST, {
-    IDT: sessionToken,
-    Data: command,
-    UnixTime: timestamp,
-    CmdSig: signature,
-  });
-};
-
-export const getPictures = async (
-  sessionToken: string,
-  rsaEncKey: CryptoKey
-) => {
-  const encryptedPictures = await request<string[]>(
-    ENDPOINTS.PICTURES,
-    HTTP.POST,
-    {
-      IDT: sessionToken,
-    }
-  );
-
-  const decryptedPictures = await Promise.all(
-    encryptedPictures.map((encryptedPic) =>
-      decryptData(rsaEncKey, encryptedPic)
-    )
-  );
-
-  return decryptedPictures;
-};
-
-export const deleteLocations = (sessionToken: string) =>
-  request(ENDPOINTS.LOCATIONS_DELETE, HTTP.POST, {
-    IDT: sessionToken,
-    Data: '',
-  });
-
-export const deletePictures = (sessionToken: string) =>
-  request(ENDPOINTS.PICTURES_DELETE, HTTP.POST, {
-    IDT: sessionToken,
-    Data: '',
-  });
-
-export const deleteAccount = (sessionToken: string) =>
-  request(ENDPOINTS.DEVICE, HTTP.POST, { IDT: sessionToken, Data: '' });
-
-export const getPushUrl = async (sessionToken: string) => {
-  const response = await fetch(ENDPOINTS.PUSH, {
-    method: HTTP.POST,
-    headers: JSON_HEADER,
-    body: JSON.stringify({ IDT: sessionToken, Data: '' }),
-  });
-
-  if (!response.ok) {
-    const text = await response.text();
-    if (response.status === 401) {
-      void logout();
-      throw new Error('Session expired');
-    }
-    throw new Error(text || 'Request failed');
-  }
-
-  return response.text();
-};
-
-export const getTileServerUrl = async () => {
-  const response = await fetch(ENDPOINTS.TILE_SERVER);
-
-  const text = await response.text();
-  if (!response.ok) {
-    throw new Error(text || 'Request failed');
-  }
-
-  const json = JSON.parse(text) as TileServerUrlResponse;
-  return json.TileServerUrl;
-};
-
-export const getVersion = async () => {
-  const response = await fetch(ENDPOINTS.VERSION);
-
-  if (!response.ok) {
-    throw new Error('Failed to fetch version');
-  }
-
-  return response.text();
-};

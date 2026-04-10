@@ -3,6 +3,8 @@ import react from '@vitejs/plugin-react';
 import path from 'node:path';
 import { visualizer } from 'rollup-plugin-visualizer';
 
+const backend = 'http://localhost:8080';
+
 export default defineConfig({
   plugins: [
     react(),
@@ -30,7 +32,12 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:8080',
+        target: backend,
+        changeOrigin: true,
+        secure: true,
+      },
+      '/version': {
+        target: backend,
         changeOrigin: true,
         secure: true,
       },

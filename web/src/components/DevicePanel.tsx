@@ -1,4 +1,4 @@
-import { sendCommand, getPushUrl } from '../lib/apiv1';
+import { apiService } from '@/lib/apiService';
 import { useStore } from '@/lib/store';
 import { toast } from 'sonner';
 import { useState, useEffect } from 'react';
@@ -94,7 +94,7 @@ export const DevicePanel = ({
     const fetchPushUrl = async () => {
       useStore.setState({ isPushUrlLoading: true });
       try {
-        const url = await getPushUrl(userData.sessionToken);
+        const url = await apiService.getPushUrl();
         useStore.setState({ pushUrl: url });
       } catch {
         useStore.setState({ pushUrl: null });
@@ -116,7 +116,7 @@ export const DevicePanel = ({
       if (command.startsWith('locate') && onLocateCommand) {
         onLocateCommand();
       }
-      await sendCommand(userData.sessionToken, command, userData.rsaSigKey);
+      await apiService.sendCommand(command);
 
       // baseCommand is for handling commands such as "locate custom message"
       if (!baseCommand) {

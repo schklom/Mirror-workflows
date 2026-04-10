@@ -11,14 +11,7 @@ import {
 } from 'lucide-react';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { toast } from 'sonner';
-import {
-  deleteAccount,
-  deleteLocations,
-  deletePictures,
-  getLocations,
-  getPictures,
-  getPushUrl,
-} from '@/lib/apiv1';
+import { apiService } from '@/lib/apiService';
 import { useStore, logout, type UnitSystem } from '@/lib/store';
 import {
   Dialog,
@@ -61,9 +54,9 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
 
     try {
       const [locations, pictures, pushUrl] = await Promise.all([
-        getLocations(userData.sessionToken, userData.rsaEncKey),
-        getPictures(userData.sessionToken, userData.rsaEncKey),
-        getPushUrl(userData.sessionToken),
+        apiService.getLocations(),
+        apiService.getPictures(),
+        apiService.getPushUrl(),
       ]);
 
       let locationsCSV =
@@ -282,7 +275,7 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
             if (!userData) return;
 
             try {
-              await deleteLocations(userData.sessionToken);
+              await apiService.deleteAllLocations();
               useStore.setState({ locations: [], currentLocationIndex: 0 });
 
               setShowDeleteLocationsConfirm(false);
@@ -307,7 +300,7 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
             if (!userData) return;
 
             try {
-              await deletePictures(userData.sessionToken);
+              await apiService.deleteAllPictures();
               useStore.setState({ pictures: [] });
 
               setShowDeletePicturesConfirm(false);
@@ -332,7 +325,7 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
             if (!userData) return;
 
             try {
-              await deleteAccount(userData.sessionToken);
+              await apiService.deleteAccount();
               await logout();
               setShowDeleteAccountConfirm(false);
               onClose();

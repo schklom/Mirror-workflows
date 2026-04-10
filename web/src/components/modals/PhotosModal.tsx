@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getPictures } from '@/lib/apiv1';
+import { apiService } from '@/lib/apiService';
 import { useStore } from '@/lib/store';
 import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
@@ -23,10 +23,7 @@ export const PhotosModal = ({ isOpen, onClose }: PhotosModalProps) => {
       void (async () => {
         useStore.setState({ isPicturesLoading: true });
         try {
-          const pics = await getPictures(
-            userData.sessionToken,
-            userData.rsaEncKey
-          );
+          const pics = await apiService.getPictures();
           useStore.setState({ pictures: pics });
           setSelectedIndex(pics.length - 1);
         } catch (err) {

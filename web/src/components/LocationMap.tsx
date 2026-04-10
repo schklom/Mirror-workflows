@@ -8,7 +8,7 @@ import { useThemeColors } from '@/hooks/useThemeColors';
 import { Spinner } from '@/components/ui/spinner';
 
 import 'leaflet/dist/leaflet.css';
-import { getTileServerUrl } from '@/lib/apiv1';
+import { apiService } from '@/lib/apiService';
 
 const POLYLINE_OPACITY = 0.6;
 const POLYLINE_WEIGHT = 3;
@@ -67,7 +67,7 @@ export const LocationMap = () => {
   useEffect(() => {
     void (async () => {
       try {
-        const url = await getTileServerUrl();
+        const url = await apiService.getTileServerUrl();
         setTileServerUrl(url);
       } catch {
         setTileServerUrl('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');

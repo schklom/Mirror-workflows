@@ -6,7 +6,7 @@ import { PhotosModal } from '@/components/modals/PhotosModal';
 import { SettingsModal } from '@/components/modals/SettingsModal';
 import { Header } from '@/components/Header';
 import { Spinner } from '@/components/ui/spinner';
-import { getLocations } from '@/lib/apiv1';
+import { apiService } from '@/lib/apiService';
 import { useStore } from '@/lib/store';
 import { toast } from 'sonner';
 
@@ -27,10 +27,7 @@ const Home = () => {
 
     if (showLoading) useStore.setState({ isLocationsLoading: true });
     try {
-      const decryptedLocations = await getLocations(
-        userData.sessionToken,
-        userData.rsaEncKey
-      );
+      const decryptedLocations = await apiService.getLocations();
 
       const isFirstLoad = locations.length === 0;
       const hasNewLocations = decryptedLocations.length > locations.length;

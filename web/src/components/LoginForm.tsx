@@ -3,9 +3,9 @@ import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
-import { getSalt, login, getWrappedPrivateKey, getVersion } from '@/lib/apiv1';
-import { hashPasswordForLogin, unwrapPrivateKey } from '@/lib/crypto';
-import { useStore } from '@/lib/store';
+import { getVersion } from '@/lib/api';
+import { apiService } from '@/lib/apiService';
+import { hashPasswordForLogin } from '@/lib/crypto';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { PasswordInput } from '@/components/PasswordInput';
@@ -13,13 +13,10 @@ import { Checkbox } from '@/components/Checkbox';
 import { WebCryptoWarningModal } from './modals/WebCryptoWarningModal';
 import { LanguageNativeSelect } from './LanguageNativeSelect';
 
-const ONE_WEEK_SECONDS = 7 * 24 * 60 * 60;
-
 const SLOW_LOGIN_THRESHOLD_MS = 10_000;
 const SLOW_LOGIN_TOAST_DURATION_MS = 30_000;
 
 export const LoginForm = () => {
-  const { setUserData } = useStore();
   const { t } = useTranslation(['login', 'errors']);
 
   const [fmdId, setFmdId] = useState('');
@@ -69,7 +66,7 @@ export const LoginForm = () => {
     setLoading(true);
 
     try {
-      const salt = await getSalt(fmdId);
+      const salt = await apiService.getSalt(fmdId);
 
       if (!salt) {
         toast.error(t('errors:account_not_found'));
@@ -99,28 +96,7 @@ export const LoginForm = () => {
 
       clearTimeout(timeOut);
 
-      const sessionDurationSeconds = rememberMe ? ONE_WEEK_SECONDS : 0;
-      const sessionToken = await login(
-        fmdId,
-        passwordHash,
-        sessionDurationSeconds
-      );
-      const wrappedPrivateKey = await getWrappedPrivateKey(sessionToken);
-
-      const { rsaEncKey, rsaSigKey } = await unwrapPrivateKey(
-        password,
-        wrappedPrivateKey
-      );
-
-      await setUserData(
-        {
-          fmdId,
-          rsaEncKey,
-          rsaSigKey,
-          sessionToken,
-        },
-        rememberMe
-      );
+      await apiService.login(fmdId, password, passwordHash, rememberMe);
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : t('errors:login_failed')

@@ -385,12 +385,13 @@ func (u *UserRepository) GetSalt(id string) string {
 	return user.Salt
 }
 
+var ErrNotFound = errors.New("account not found")
 var ErrAccountLocked = errors.New("too many attempts, account locked")
 
 func (u *UserRepository) RequestAccess(id string, innerPwHash string, sessionDurationSeconds uint64, remoteIp string) (*AccessToken, error) {
 	user, err := u.UB.GetByID(id)
 	if err != nil {
-		return nil, err
+		return nil, ErrNotFound
 	}
 
 	if u.ACC.IsLocked(id) {

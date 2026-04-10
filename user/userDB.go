@@ -23,15 +23,17 @@ type FMDUser struct {
 	UID            string `gorm:"uniqueIndex"`
 	Salt           string // salt for the inner password hash performed by the client. This is stored for returning it to the client. It is not used by the server.
 	HashedPassword string
-	PrivateKey     string
-	PublicKey      string
-	CommandToUser  string
-	CommandTime    uint64
-	CommandSig     string
 	PushUrl        string
 	LastSeenTime   int64
-	Locations      []Location `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE;"`
-	Pictures       []Picture  `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE;"`
+
+	// Deprecated crypto protocol
+	PrivateKey    string
+	PublicKey     string
+	CommandToUser string
+	CommandTime   uint64
+	CommandSig    string
+	Locations     []Location `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE;"`
+	Pictures      []Picture  `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE;"`
 }
 
 // Location Table of the Users

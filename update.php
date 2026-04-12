@@ -459,7 +459,7 @@
 
 		Debug::log("Changing password of user $login...");
 
-		if (UserHelper::user_modify($uid, $password)) {
+		if (UserHelper::user_has_password($uid, $password) || UserHelper::user_modify($uid, $password)) {
 			Debug::log("Success.");
 		} else {
 			Debug::log("Operation failed, check the logs for more information.");

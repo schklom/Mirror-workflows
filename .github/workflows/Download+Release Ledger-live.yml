@@ -64,7 +64,7 @@ jobs:
         
       - name: Release file if versions are different
         if: ${{ env.version_current_appimage != env.version_new_appimage }}
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ env.tagname }}
           body: "New version of Ledger-live AppImage"

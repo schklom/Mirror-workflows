@@ -1062,7 +1062,7 @@ class Pref_Prefs extends Handler_Protected {
 
 				$rv[] = [
 					'plugin' => $plugin_name,
-					'rv' => self::_plugin_needs_update($root_dir, $plugin_name),
+					'rv' => self::_plugin_needs_update($plugin_name),
 				];
 			}
 		}
@@ -1112,7 +1112,7 @@ class Pref_Prefs extends Handler_Protected {
 	/**
 	 * @return array{'stdout': false|string, 'stderr': false|string, 'git_status': int, 'need_update': bool}|null
 	 */
-	private static function _plugin_needs_update(string $root_dir, string $plugin_name): ?array {
+	private static function _plugin_needs_update(string $plugin_name): ?array {
 		$plugin_dir = Config::get(Config::LOCAL_PLUGINS_DIR) . "/" . basename($plugin_name);
 		$rv = null;
 
@@ -1143,7 +1143,7 @@ class Pref_Prefs extends Handler_Protected {
 	/**
 	 * @return array{}|array{stdout: false|string, stderr: false|string, git_status: int}
 	 */
-	private function _update_plugin(string $root_dir, string $plugin_name): array {
+	private function _update_plugin(string $plugin_name): array {
 		$plugin_dir = Config::get(Config::LOCAL_PLUGINS_DIR) . "/" . basename($plugin_name);
 
 		if (is_dir($plugin_dir) && is_dir("$plugin_dir/.git")) {
@@ -1336,7 +1336,7 @@ class Pref_Prefs extends Handler_Protected {
 			$root_dir = Config::get_self_dir();
 
 			$rv = empty($plugin_name) ? self::_get_updated_plugins() : [
-				["plugin" => $plugin_name, "rv" => self::_plugin_needs_update($root_dir, $plugin_name)],
+				["plugin" => $plugin_name, "rv" => self::_plugin_needs_update($plugin_name)],
 			];
 
 			print json_encode($rv);
@@ -1351,7 +1351,7 @@ class Pref_Prefs extends Handler_Protected {
 
 			if ($plugins) {
 				foreach ($plugins as $plugin_name) {
-					$rv[] = ['plugin' => $plugin_name, 'rv' => $this->_update_plugin($root_dir, $plugin_name)];
+					$rv[] = ['plugin' => $plugin_name, 'rv' => $this->_update_plugin($plugin_name)];
 				}
 			} else {
 				$plugin_root_dir = Config::get(Config::LOCAL_PLUGINS_DIR);
@@ -1361,10 +1361,10 @@ class Pref_Prefs extends Handler_Protected {
 					if (is_dir("$dir/.git")) {
 						$plugin_name = basename($dir);
 
-						$test = self::_plugin_needs_update($root_dir, $plugin_name);
+						$test = self::_plugin_needs_update($plugin_name);
 
 						if (!empty($test["stdout"]))
-							$rv[] = ['plugin' => $plugin_name, 'rv' => $this->_update_plugin($root_dir, $plugin_name)];
+							$rv[] = ['plugin' => $plugin_name, 'rv' => $this->_update_plugin($plugin_name)];
 					}
 				}
 			}

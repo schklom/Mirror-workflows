@@ -57,11 +57,12 @@ class Article extends Handler_Protected {
 
 		$rc = false;
 
-		if (!$title) $title = $url;
-
-		// TODO: look into this
-		// @phpstan-ignore booleanNot.alwaysTrue
-		if (!$title && !$url) return false;
+		if (!$title) {
+			if ($url)
+				$title = $url;
+			else
+				return false;
+		}
 
 		if (filter_var($url, FILTER_VALIDATE_URL) === false) return false;
 

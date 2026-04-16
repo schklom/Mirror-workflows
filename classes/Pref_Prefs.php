@@ -1051,7 +1051,6 @@ class Pref_Prefs extends Handler_Protected {
 	 * @return array<int, array{'plugin': string, 'rv': array{'stdout': false|string, 'stderr': false|string, 'git_status': int, 'need_update': bool}|null}>
 	 */
 	static function _get_updated_plugins(): array {
-		$root_dir = Config::get_self_dir();
 		$plugin_root_dir = Config::get(Config::LOCAL_PLUGINS_DIR);
 		$plugin_dirs = array_filter(glob("$plugin_root_dir/*"), is_dir(...));
 		$rv = [];
@@ -1333,7 +1332,6 @@ class Pref_Prefs extends Handler_Protected {
 	function checkForPluginUpdates(): void {
 		if ($_SESSION["access_level"] >= UserHelper::ACCESS_LEVEL_ADMIN && Config::get(Config::CHECK_FOR_UPDATES) && Config::get(Config::CHECK_FOR_PLUGIN_UPDATES)) {
 			$plugin_name = $_REQUEST["name"] ?? "";
-			$root_dir = Config::get_self_dir();
 
 			$rv = empty($plugin_name) ? self::_get_updated_plugins() : [
 				["plugin" => $plugin_name, "rv" => self::_plugin_needs_update($plugin_name)],
@@ -1346,7 +1344,6 @@ class Pref_Prefs extends Handler_Protected {
 	function updateLocalPlugins(): void {
 		if ($_SESSION["access_level"] >= UserHelper::ACCESS_LEVEL_ADMIN) {
 			$plugins = array_filter(explode(',', $_REQUEST['plugins'] ?? ''), fn($p) => strlen($p) > 0);
-			$root_dir = Config::get_self_dir();
 			$rv = [];
 
 			if ($plugins) {

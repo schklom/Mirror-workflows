@@ -711,7 +711,8 @@ body.ttrss_main #headlines-frame .dijitCheckBox {
   margin-right: 4px;
 }
 body.ttrss_main #headlines-frame[data-is-wide-screen="true"] .title {
-  overflow: visible;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: normal;
 }
 body.ttrss_main #headlines-frame[data-is-wide-screen="true"] .hl .feed {

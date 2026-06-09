@@ -38,48 +38,9 @@ func handleRequests(config *viper.Viper) {
 	if len(socketPath) > 0 {
 		handleRequestsSocket(mux, socketPath, socketChmod)
 	} else if portSecure > -1 && (serverCrt != "" || serverKey != "") {
-		if !fileExists(serverCrt) {
-			log.Fatal().Str(conf.CONF_SERVER_CERT, serverCrt).Msg("TLS certificate file not found")
-		}
-		if !fileExists(serverKey) {
-			log.Fatal().Str(conf.CONF_SERVER_KEY, serverKey).Msg("TLS key file not found")
-		}
-		log.Info().
-			Str(conf.CONF_SERVER_KEY, serverKey).
-			Str(conf.CONF_SERVER_CERT, serverCrt).
-			Int(conf.CONF_PORT_SECURE, portSecure).
-			Msg("listening on secure port")
-		securePort := ":" + strconv.Itoa(portSecure)
-
-		server = &http.Server{
-			Addr:         securePort,
-			Handler:      mux,
-			ReadTimeout:  readTimeout,
-			WriteTimeout: writeTimeout,
-		}
-
-		err := server.ListenAndServeTLS(serverCrt, serverKey)
-		if err != nil && err != http.ErrServerClosed {
-			log.Fatal().Err(err).Msg("failed to serve with TLS")
-		}
+		handleSecure(mux, portSecure, serverKey, serverCrt)
 	} else if portInsecure > -1 {
-		log.Info().
-			Int(conf.CONF_PORT_INSECURE, portInsecure).
-			Msg("listening on insecure port")
-		insecureAddr := ":" + strconv.Itoa(portInsecure)
-
-		server = &http.Server{
-			Addr:         insecureAddr,
-			Handler:      mux,
-			ReadTimeout:  readTimeout,
-			WriteTimeout: writeTimeout,
-		}
-
-		err := server.ListenAndServe()
-		if err != nil && err != http.ErrServerClosed {
-			log.Fatal().Err(err).Msg("failed to serve with HTTP")
-		}
-
+		handleInsecure(mux, portInsecure)
 	} else {
 		log.Fatal().Msg("no address to listen on")
 	}
@@ -140,6 +101,52 @@ func handleRequestsSocket(handler http.Handler, socketPath string, socketChmod i
 	}
 	// ignore error for now
 	os.Remove(socketPath)
+}
+
+func handleSecure(handler http.Handler, portSecure int, serverKey, serverCrt string) {
+	if !fileExists(serverCrt) {
+		log.Fatal().Str(conf.CONF_SERVER_CERT, serverCrt).Msg("TLS certificate file not found")
+	}
+	if !fileExists(serverKey) {
+		log.Fatal().Str(conf.CONF_SERVER_KEY, serverKey).Msg("TLS key file not found")
+	}
+	log.Info().
+		Str(conf.CONF_SERVER_KEY, serverKey).
+		Str(conf.CONF_SERVER_CERT, serverCrt).
+		Int(conf.CONF_PORT_SECURE, portSecure).
+		Msg("listening on secure port")
+	securePort := ":" + strconv.Itoa(portSecure)
+
+	server = &http.Server{
+		Addr:         securePort,
+		Handler:      handler,
+		ReadTimeout:  readTimeout,
+		WriteTimeout: writeTimeout,
+	}
+
+	err := server.ListenAndServeTLS(serverCrt, serverKey)
+	if err != nil && err != http.ErrServerClosed {
+		log.Fatal().Err(err).Msg("failed to serve with TLS")
+	}
+}
+
+func handleInsecure(handler http.Handler, portInsecure int) {
+	log.Info().
+		Int(conf.CONF_PORT_INSECURE, portInsecure).
+		Msg("listening on insecure port")
+	insecureAddr := ":" + strconv.Itoa(portInsecure)
+
+	server = &http.Server{
+		Addr:         insecureAddr,
+		Handler:      handler,
+		ReadTimeout:  readTimeout,
+		WriteTimeout: writeTimeout,
+	}
+
+	err := server.ListenAndServe()
+	if err != nil && err != http.ErrServerClosed {
+		log.Fatal().Err(err).Msg("failed to serve with HTTP")
+	}
 }
 
 func initDb(config *viper.Viper) {

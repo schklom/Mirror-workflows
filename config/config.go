@@ -51,8 +51,8 @@ func setDefaults(config *viper.Viper) {
 	config.SetDefault(CONF_UNIX_SOCKET_PATH, "")
 	config.SetDefault(CONF_UNIX_SOCKET_CHMOD, 0600)
 
-	config.SetDefault(CONF_PORT_SECURE, 8443)
-	config.SetDefault(CONF_PORT_INSECURE, 8080)
+	config.SetDefault(CONF_PORT_SECURE, "8443")
+	config.SetDefault(CONF_PORT_INSECURE, "8080")
 
 	config.SetDefault(CONF_USER_ID_LENGTH, 5)
 

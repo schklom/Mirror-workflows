@@ -30,20 +30,33 @@ func handleRequests(config *viper.Viper) {
 	// Cache config values (to avoid re-reading them between usages, which has the risk of them changing)
 	socketPath := config.GetString(conf.CONF_UNIX_SOCKET_PATH)
 	socketChmod := config.GetInt(conf.CONF_UNIX_SOCKET_CHMOD)
-	portSecure := config.GetInt(conf.CONF_PORT_SECURE)
-	portInsecure := config.GetInt(conf.CONF_PORT_INSECURE)
+	addrSecure := portToListenAddr(config.GetString(conf.CONF_PORT_SECURE))
+	addrInsecure := portToListenAddr(config.GetString(conf.CONF_PORT_INSECURE))
 	serverCrt := config.GetString(conf.CONF_SERVER_CERT)
 	serverKey := config.GetString(conf.CONF_SERVER_KEY)
 
 	if len(socketPath) > 0 {
 		handleRequestsSocket(mux, socketPath, socketChmod)
-	} else if portSecure > -1 && (serverCrt != "" || serverKey != "") {
-		handleSecure(mux, portSecure, serverKey, serverCrt)
-	} else if portInsecure > -1 {
-		handleInsecure(mux, portInsecure)
+	} else if addrSecure != "" && (serverCrt != "" || serverKey != "") {
+		handleSecure(mux, addrSecure, serverKey, serverCrt)
+	} else if addrInsecure != "" {
+		handleInsecure(mux, addrInsecure)
 	} else {
 		log.Fatal().Msg("no address to listen on")
 	}
+}
+
+func portToListenAddr(portStr string) string {
+	portInt, err := strconv.Atoi(portStr)
+	if err == nil {
+		// Old way to disable the (in)secure port
+		if portInt == -1 {
+			return ""
+		} else {
+			return ":" + strconv.Itoa(portInt)
+		}
+	}
+	return portStr
 }
 
 func handleRequestsSocket(handler http.Handler, socketPath string, socketChmod int) {
@@ -103,7 +116,7 @@ func handleRequestsSocket(handler http.Handler, socketPath string, socketChmod i
 	os.Remove(socketPath)
 }
 
-func handleSecure(handler http.Handler, portSecure int, serverKey, serverCrt string) {
+func handleSecure(handler http.Handler, addrSecure string, serverKey, serverCrt string) {
 	if !fileExists(serverCrt) {
 		log.Fatal().Str(conf.CONF_SERVER_CERT, serverCrt).Msg("TLS certificate file not found")
 	}
@@ -113,12 +126,11 @@ func handleSecure(handler http.Handler, portSecure int, serverKey, serverCrt str
 	log.Info().
 		Str(conf.CONF_SERVER_KEY, serverKey).
 		Str(conf.CONF_SERVER_CERT, serverCrt).
-		Int(conf.CONF_PORT_SECURE, portSecure).
+		Str("AddrSecure", addrSecure).
 		Msg("listening on secure port")
-	securePort := ":" + strconv.Itoa(portSecure)
 
 	server = &http.Server{
-		Addr:         securePort,
+		Addr:         addrSecure,
 		Handler:      handler,
 		ReadTimeout:  readTimeout,
 		WriteTimeout: writeTimeout,
@@ -130,14 +142,13 @@ func handleSecure(handler http.Handler, portSecure int, serverKey, serverCrt str
 	}
 }
 
-func handleInsecure(handler http.Handler, portInsecure int) {
+func handleInsecure(handler http.Handler, addrInsecure string) {
 	log.Info().
-		Int(conf.CONF_PORT_INSECURE, portInsecure).
+		Str("AddrInsecure", addrInsecure).
 		Msg("listening on insecure port")
-	insecureAddr := ":" + strconv.Itoa(portInsecure)
 
 	server = &http.Server{
-		Addr:         insecureAddr,
+		Addr:         addrInsecure,
 		Handler:      handler,
 		ReadTimeout:  readTimeout,
 		WriteTimeout: writeTimeout,

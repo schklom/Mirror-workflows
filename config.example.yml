@@ -17,10 +17,11 @@ UnixSocketPath: "" # /tmp/fmd.sock
 UnixSocketChmod: 0660
 
 # The ports FMD Server should listen on.
-# Set the port value to -1 to disable it.
+# Set the port value to "" to disable it.
 # The secure port is only used if the cert and key are set (see below).
-PortSecure: 8443
-PortInsecure: 8080
+# Optionally, you can set a full address and port, for example "[::1]:8080".
+PortSecure: "8443"
+PortInsecure: "8080"
 
 # The length for the user IDs that are generated
 UserIdLength: 5

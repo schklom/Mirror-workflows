@@ -5,8 +5,9 @@
 FROM debian:forky-slim
 
 RUN apt update && \
-    apt install --no-install-recommends -y ca-certificates git golang zip nodejs && \
+    apt install --no-install-recommends -y ca-certificates git golang zip nodejs npm && \
     rm -rf /var/lib/apt/lists/* && \
+    npm install -g corepack@latest && \
     corepack enable
 
 # TODO: This builds as root, so the files end up being owned as root.

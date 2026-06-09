@@ -2,22 +2,23 @@
 # The "real" pre-built images are built using the scripts in the docker/ directory.
 # For development, install all tools locally (don't use this Dockerfile).
 
-FROM golang:1.24-trixie AS builder
+# pnpm 11 requires NodeJS 22, but trixie comes with 20
+FROM debian:forky-slim AS builder
 
 ENV NODE_ENV=production
 
 RUN apt update && \
-    apt install --no-install-recommends -y ca-certificates git golang zip nodejs && \
+    apt install --no-install-recommends -y ca-certificates git golang zip nodejs npm && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /go/src/fmd-server
-ENV GOPATH=/go
 ENV CI=true
 
 COPY . .
 
 # Build web frontend, then build Go binary
 RUN cd web && \
+    npm install -g corepack@latest && \
     corepack enable && \
     pnpm install --frozen-lockfile && \
     pnpm build && \

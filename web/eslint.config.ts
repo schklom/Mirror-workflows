@@ -32,7 +32,7 @@ export default [
   react.configs.flat?.recommended ?? {},
   react.configs.flat?.['jsx-runtime'] ?? {},
   jsxA11y.flatConfigs?.recommended ?? {},
-  ...tailwindcss.configs['flat/recommended'],
+  tailwindcss.configs?.recommended ?? {},
   {
     plugins: {
       'react-hooks': reactHooks,

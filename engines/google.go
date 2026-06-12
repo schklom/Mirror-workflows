@@ -72,12 +72,15 @@ func (_ *GoogleTranslate) getLangs(type_ string) (Language, error) {
 	return langs, nil
 }
 
+var SourceLanguagesCached Language
+var TargetLanguagesCached Language
+
 func (e *GoogleTranslate) SourceLanguages() (Language, error) {
-	return e.getLangs("source")
+	return SourceLanguagesCached, nil
 }
 
 func (e *GoogleTranslate) TargetLanguages() (Language, error) {
-	return e.getLangs("target")
+	return TargetLanguagesCached, nil
 }
 
 func (e *GoogleTranslate) Tts(text, lang string) (string, error) {
@@ -303,4 +306,19 @@ func (_ *GoogleTranslate) Translate(text string, from, to string) (TranslationRe
 		TranslatedText: translatedText,
 		Pronunciation:  pronunciation,
 	}, nil
+}
+
+func init() {
+	e := GoogleTranslate{}
+	var err error
+	SourceLanguagesCached, err = e.getLangs("source")
+	fmt.Println(SourceLanguagesCached)
+	if err != nil {
+		panic("Google Source Languages couldn't be cached")
+	}
+
+	TargetLanguagesCached, err = e.getLangs("target")
+	if err != nil {
+		panic("Google Target Languages couldn't be cached")
+	}
 }

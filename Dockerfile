@@ -1,8 +1,7 @@
-FROM golang:1.20-alpine
+FROM golang:1.26.3-alpine
 
 COPY . .
 WORKDIR web/
 RUN go mod download
 RUN go build -o simplytranslate
-EXPOSE 5000
 CMD [ "./simplytranslate" ]

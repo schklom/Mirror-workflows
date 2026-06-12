@@ -5,3 +5,22 @@ A privacy friendly frontend to multiple Translation Engines.
 1. SimplyTranslate was founded by [metalune and fattalion](https://codeberg.org/SimpleWeb/SimplyTranslate-Web). It was written in Python.
 2. Fattalion created a Go implementation.
 3. Both metalune and fattalion retired, and they handed SimplyTranslate over to ManeraKai.
+
+### Development
+
+```sh
+cd web/
+go mod download
+go run .
+```
+
+### Production
+```sh
+docker compose up
+```
+Then open http://127.0.0.1:5000
+
+### Production (exposing a UNIX Socket instead of TCP/IP)
+```sh
+docker compose up -f docker-compose.unix.yml
+```

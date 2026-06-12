@@ -9,8 +9,9 @@ import (
 	"time"
 
 	"codeberg.org/SimpleWeb/SimplyTranslate/engines"
-	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/template/html/v2"
+	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v3/middleware/static"
+	"github.com/gofiber/template/html/v3"
 )
 
 func indexOf(arr []string, candidate string) int {
@@ -46,10 +47,15 @@ func main() {
 	engine.AddFunc("inc", func(i int) int { return i + 1 })
 
 	app := fiber.New(fiber.Config{
-		Views: engine,
+		Views:       engine,
+		TrustProxy:  true,
+		ProxyHeader: fiber.HeaderXForwardedFor,
+		TrustProxyConfig: fiber.TrustProxyConfig{
+			UnixSocket: true,
+		},
 	})
 
-	app.All("/", func(c *fiber.Ctx) error {
+	app.All("/", func(c fiber.Ctx) error {
 		engine := c.Cookies("engine")
 		if c.Query("engine") != "" {
 			engine = c.Query("engine")
@@ -151,7 +157,7 @@ func main() {
 		})
 	})
 
-	app.All("/api/translate", func(c *fiber.Ctx) error {
+	app.All("/api/translate", func(c fiber.Ctx) error {
 		c.Append("Access-Control-Allow-Origin", "*")
 		from := ""
 		to := ""
@@ -183,7 +189,7 @@ func main() {
 		}
 	})
 
-	app.Get("/api/source_languages", func(c *fiber.Ctx) error {
+	app.Get("/api/source_languages", func(c fiber.Ctx) error {
 		c.Append("Access-Control-Allow-Origin", "*")
 		engine := c.Query("engine")
 		if _, ok := engines.Engines[engine]; !ok || engine == "" {
@@ -196,7 +202,7 @@ func main() {
 		}
 	})
 
-	app.Get("/api/target_languages", func(c *fiber.Ctx) error {
+	app.Get("/api/target_languages", func(c fiber.Ctx) error {
 		engine := c.Query("engine")
 		if _, ok := engines.Engines[engine]; !ok || engine == "" {
 			engine = "google"
@@ -208,7 +214,7 @@ func main() {
 		}
 	})
 
-	app.Get("/api/tts", func(c *fiber.Ctx) error {
+	app.Get("/api/tts", func(c fiber.Ctx) error {
 		c.Append("Access-Control-Allow-Origin", "*")
 		engine := c.Query("engine")
 		if _, ok := engines.Engines[engine]; !ok || engine == "" {
@@ -231,13 +237,13 @@ func main() {
 				defer response.Body.Close()
 				var buf bytes.Buffer
 				response.Write(&buf)
-				c.Context().SetContentType("audio/mpeg")
+				c.RequestCtx().SetContentType("audio/mpeg")
 				return c.Send(buf.Bytes())
 			}
 		}
 	})
 
-	app.Post("/switchlanguages", func(c *fiber.Ctx) error {
+	app.Post("/switchlanguages", func(c fiber.Ctx) error {
 		if c.Cookies("from") != "" {
 			fromCookie := new(fiber.Cookie)
 			fromCookie.Name = "from"
@@ -252,14 +258,21 @@ func main() {
 			c.Cookie(fromCookie)
 			c.Cookie(toCookie)
 		}
-		return c.Redirect("/")
+		return c.Redirect().To("/")
 	})
 
-	app.Static("/static", "./static")
+	app.Use("/static", static.New("./static"))
 
-	address := os.Getenv("ADDRESS")
-	if address == "" {
-		address = ":5000"
+	if os.Getenv("LISTEN_UNIX") == "true" {
+		app.Listen("./sockets/simplytranslate.sock", fiber.ListenConfig{
+			ListenerNetwork:    fiber.NetworkUnix,
+			UnixSocketFileMode: 0777,
+		})
+	} else {
+		address := os.Getenv("ADDRESS")
+		if address == "" {
+			address = ":5000"
+		}
+		app.Listen(address)
 	}
-	app.Listen(address)
 }

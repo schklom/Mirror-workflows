@@ -7,10 +7,11 @@ services:
       context: .
       dockerfile: Dockerfile
     restart: unless-stopped
-    ports:
-      - 5000:5000
+    volumes:
+      - ./sockets:/go/web/sockets
     environment:
-      - ADDRESS=0.0.0.0:5000
+      - LISTEN_UNIX=true
       - GOOGLETRANSLATE_ENABLE=true
       - ICIBA_ENABLE=true
       - REVERSO_ENABLE=true
+    

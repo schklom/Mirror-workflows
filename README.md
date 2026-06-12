@@ -22,5 +22,5 @@ Then open http://127.0.0.1:5000
 
 ### Production (exposing a UNIX Socket instead of TCP/IP)
 ```sh
-docker compose up -f docker-compose.unix.yml
+docker compose -f docker-compose.unix.yml up
 ```

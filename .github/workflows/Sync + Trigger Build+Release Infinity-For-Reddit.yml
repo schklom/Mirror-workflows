@@ -28,7 +28,7 @@ jobs:
           echo "SETREMOTE=$(git ls-remote --tags https://github.com/Docile-Alligator/Infinity-For-Reddit.git | grep -v 'beta' | tail -n 1 | awk '{ print $2 }' | cut -d '/' -f 3)" | tee -a $GITHUB_OUTPUT
           echo "SETLOCAL=$(cat last_sync_with_original_repo_version)" | tee -a $GITHUB_OUTPUT
 
-  repo_sync_master:
+  repo_sync:
     needs: [get_version]
     runs-on: ubuntu-latest
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
@@ -39,7 +39,7 @@ jobs:
           echo "${{ needs.get_version.outputs.LOCAL }}"
           echo "${{ needs.get_version.outputs.REMOTE }}"
     
-      - name: repo-sync master branch
+      - name: repo-sync all branches
         uses: wei/git-sync@v3
         with:
           source_repo: "https://github.com/Docile-Alligator/Infinity-For-Reddit.git"
@@ -47,8 +47,21 @@ jobs:
           #source_branch: "refs/remotes/source/*"
           #destination_branch: "refs/heads/*"
           
-          source_branch: "master"
-          destination_branch: "master"
+          source_branch: "refs/remotes/source/*"
+          destination_branch: "refs/heads/*"
+          
+          #source_branch: "refs/tags/*"
+          #destination_branch: "refs/tags/*"
+          destination_ssh_private_key: ${{ secrets.GITSYNCACTION }}
+    
+      - name: repo-sync all tags
+        uses: wei/git-sync@v3
+        with:
+          source_repo: "https://github.com/Docile-Alligator/Infinity-For-Reddit.git"
+          destination_repo: "git@github.com:schklom/Infinity-For-Reddit.git"
+
+          source_branch: "refs/tags/*"
+          destination_branch: "refs/tags/*"
           
           ####destination_repo: "git@github.com:schklom/Mirror-workflows.git"
           ####destination_branch: "Gadgetbridge-osmand-experiments"
@@ -56,7 +69,7 @@ jobs:
           #destination_branch: "refs/tags/*"
           destination_ssh_private_key: ${{ secrets.GITSYNCACTION }}
 
-      - name: Checkout
+      - name: Checkout master
         uses: actions/checkout@v6
         with:
           repository: 'schklom/Infinity-For-Reddit'
@@ -81,8 +94,24 @@ jobs:
             echo "HEAD branch does not exist in the foreign repository. No action required."
           fi
       
-      - name: get most recent version on original repo, for next comparison on sync
-        run: git ls-remote --tags https://github.com/Docile-Alligator/Infinity-For-Reddit.git | grep -v 'beta' | tail -n 1 | awk '{ print $2 }' | cut -d '/' -f 3 > last_sync_with_original_repo_version
+      - name: Get most recent version on original repo, for next comparison on sync
+        run: echo "${{ needs.get_version.outputs.REMOTE }}" > last_sync_with_original_repo_version
+
+      - name: Remove pointless workflows on master
+        run: rm -rf .github/workflows
+
+      - name: Commit and push the change
+        uses: stefanzweifel/git-auto-commit-action@v7
+        with:
+          branch: master
+          commit_message: Remove workflows + Add last_sync_with_original_repo_version
+
+      - name: Checkout ${{ needs.get_version.outputs.REMOTE }}
+        uses: actions/checkout@v6
+        with:
+          repository: 'schklom/Infinity-For-Reddit'
+          ref: '${{ needs.get_version.outputs.REMOTE }}' # branch
+          token: ${{ secrets.PAT_GITHUB_ACTION }}
 
       # Inspired by https://www.reddit.com/r/Infinity_For_Reddit/comments/14c2v5x/build_your_own_apk_with_your_personal_api_key_in/
       # which links specifically to https://colab.research.google.com/drive/13AE8RvjnCfuBJGaACEqxeBIMo33_l-Sc
@@ -189,12 +218,24 @@ jobs:
 
           # Not reusable workflow, because it preloads before modifications
           # Instead, we trigger a push if there was a change, because "push" is a trigger for the build
-      
-      - name: Commit and push the change
-        uses: stefanzweifel/git-auto-commit-action@v7
-        with:
-          commit_message: Add Change API key + change User-Agent + Keystore + remove codeql workflow + Add last_sync_with_original_repo_version + Increase Gradle memory size
 
+      - name: Update tag
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Create a new commit on current HEAD
+          git add .
+          git commit -m "Change API key + change User-Agent + Keystore + remove codeql workflow + Increase Gradle memory size"
+
+          # Get the new commit SHA
+          NEW_COMMIT=$(git rev-parse HEAD)
+
+          # Create a new tag e.g. v8.2.5-rebuilt
+          TAG_NAME="${{ needs.get_version.outputs.REMOTE }}-rebuilt"
+          git tag "$TAG_NAME" "$NEW_COMMIT"
+          git push origin "$TAG_NAME"
+          
 #   fix_for_workflow:
 #     needs: [repo_sync_master]
 #     runs-on: ubuntu-latest

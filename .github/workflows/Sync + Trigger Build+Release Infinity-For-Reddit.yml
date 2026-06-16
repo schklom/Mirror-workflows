@@ -177,9 +177,12 @@ jobs:
           where_to_add="arguments: build -x lint"
           sed -i "\|$where_to_add|r"<(echo "$what_to_add") $file
 
+      - name: Work on another workflow build-2.yml
+        run: cp .github/workflows/build.yml .github/workflows/build-2.yml
+
       - name: Changes to release the APKs
         run: |
-          file=".github/workflows/build.yml"
+          file=".github/workflows/build-2.yml"
           echo "" >> $file
           
           # Rename release file to be clearer
@@ -210,14 +213,28 @@ jobs:
           # solved by https://github.com/schklom/Infinity-For-Reddit/commit/d656e1eef3571d61090c1cb9e76c5e4b00e5ad61
           file="gradle.properties"
           sed -i "s/org.gradle.jvmargs=-Xmx2048m/org.gradle.jvmargs=-Xmx4096m/" "$file"
+
+      - name: Build app only on tag
+        run: |
+          file=".github/workflows/build-2.yml"
+          # multi-line insert before match "   signingConfigs {" (add one space after "i"
+          # This feels dirty, if someone knows how to do it better please tell me
+          # Need to backslash the first delimeter since I don't use "s"
+          # Need to escape the first space after "i" then sed escapes the others
+          #sed -i '\|    buildTypes {|i\    signingConfigs {\n        release {\n            storeFile file("/Infinity.jks")\n            storePassword "Infinity"\n            keyAlias "Infinity"\n            keyPassword "Infinity"\n        }\n    }' $file
+          # Try the same with a heredoc?
+          where_to_add="    runs-on: ubuntu-latest"
+          what_to_add="    if: |
+                github.event_name == 'push' && github.ref == format('refs/tags/{0}', ${{ needs.get_version.outputs.REMOTE }})"
+          sed -i "\|$where_to_add|r"<(echo "$what_to_add") $file
         
       - name: Remove pointless workflow
         run: rm .github/workflows/codeql*
-          # Reuse app build workflow
-          # https://github.blog/2022-02-10-using-reusable-workflows-github-actions/
+        # Reuse app build workflow
+        # https://github.blog/2022-02-10-using-reusable-workflows-github-actions/
 
-          # Not reusable workflow, because it preloads before modifications
-          # Instead, we trigger a push if there was a change, because "push" is a trigger for the build
+        # Not reusable workflow, because it preloads before modifications
+        # Instead, we trigger a push if there was a change, because "push" is a trigger for the build
 
       - name: Update tag
         run: |

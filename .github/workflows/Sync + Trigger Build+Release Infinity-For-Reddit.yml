@@ -225,8 +225,13 @@ jobs:
           # Try the same with a heredoc?
           where_to_add="    runs-on: ubuntu-latest"
           what_to_add="    if: |
-                github.event_name == 'push' && github.ref == format('refs/tags/{0}', ${{ needs.get_version.outputs.REMOTE }})"
+                github.event_name == 'push' && github.ref == format('refs/tags/{0}', '${{ needs.get_version.outputs.REMOTE }}')"
           sed -i "\|$where_to_add|r"<(echo "$what_to_add") $file
+
+      - name: Change build-2 title
+        run: |
+          file=".github/workflows/build-2.yml"
+          sed -Ei "s/name: (.*)/name: \1 2/g"
         
       - name: Remove pointless workflow
         run: rm .github/workflows/codeql*

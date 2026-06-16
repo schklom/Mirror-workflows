@@ -231,7 +231,7 @@ jobs:
       - name: Change build-2 title
         run: |
           file=".github/workflows/build-2.yml"
-          sed -Ei "s/name: (.*)/name: \1 2/g"
+          sed -Ei "s/name: (.*)/name: \1 2/g" $file
         
       - name: Remove pointless workflow
         run: rm .github/workflows/codeql*

@@ -1,16 +1,132 @@
 {
   "locate_all": {
-    "title": "Keresés: Mind",
+    "title": "Mind",
     "description": "Helyadatok lekérése az összes helyszolgáltatótól"
   },
   "locate_fused": {
-    "title": "Lokalizáció: egyesített",
-    "description": "Helymeghatározás hálózaton/GPS-en keresztül"
+    "title": "Összevont",
+    "description": "Helymeghatározás hálózaton/GPS segítségével"
   },
   "locate_gps": {
-    "title": "Lokalizáció: GPS"
+    "title": "GPS",
+    "description": "Helymeghatározás GPS segítségével"
   },
   "ring": {
-    "description": "Játsszon le egy hangos hangjelzést az eszközön"
-  }
+    "description": "Játsszon le egy hangos hangjelzést az eszközön",
+    "title": "Csörgetés"
+  },
+  "bluetooth_group": {
+    "title": "Bluetooth",
+    "description": "Bluetooth ki/bekapcsolása"
+  },
+  "general_group": {
+    "title": "Általános",
+    "description": "Néhány hasznos általános parancs"
+  },
+  "camera_group": {
+    "title": "Kamera",
+    "description": "Kép készítése vagy megtekintése"
+  },
+  "ringer_group": {
+    "title": "Csengőhang",
+    "description": "Csengőhang módosítása"
+  },
+  "dnd_group": {
+    "title": "Ne zavarjanak",
+    "description": "\"Ne zavarjanak\" mód ki/bekapcsolása"
+  },
+  "flash": {
+    "title": "Villogás",
+    "description": "Villogtassa az eszköz lámpáját"
+  },
+  "lock": {
+    "title": "Lezárás",
+    "description": "Az eszköz kijelzőjének lezárása"
+  },
+  "factory_reset": {
+    "title": "Gyári visszaállítás",
+    "description": "Minden adat törlése és a gyári beállítások visszaállítása"
+  },
+  "camera_front": {
+    "title": "Elülső kamera",
+    "description": "Kép készítése az elülső kamerával"
+  },
+  "camera_back": {
+    "title": "Hátsó kamera",
+    "description": "Kép készítése a hátsó kamerával"
+  },
+  "view_photos": {
+    "title": "Képek megtekintése",
+    "description": "Az eszköz által készített képek megtekintése"
+  },
+  "bluetooth_on": {
+    "title": "Bluetooth bekapcsolása"
+  },
+  "bluetooth_off": {
+    "title": "Bluetooth kikapcsolása"
+  },
+  "ringer_normal": {
+    "title": "Normál",
+    "description": "Csengőhang normálra állítása"
+  },
+  "ringer_vibrate": {
+    "title": "Rezgés",
+    "description": "Csengőhang rezgésre állítása"
+  },
+  "ringer_silent": {
+    "title": "Néma",
+    "description": "Csengőhang némára állítása"
+  },
+  "dnd_on": {
+    "title": "\"Ne zavarjanak\" mód bekapcsolása"
+  },
+  "dnd_off": {
+    "title": "\"Ne zavarjanak\" mód kikapcsolása"
+  },
+  "success": {
+    "ring": "Az eszköz csörgetése…",
+    "flash": "A lámpa villogtatása…",
+    "camera_front": "Kép készítése…",
+    "camera_back": "Kép készítése…",
+    "bluetooth_on": "Bluetooth bekapcsolása…",
+    "bluetooth_off": "Bluetooth kikapcsolása…",
+    "locate_all": "Hely lekérése…",
+    "locate_fused": "Hely lekérése…",
+    "locate_gps": "Hely lekérése…",
+    "locate_cell": "Hely lekérése…",
+    "locate_last": "Utolsó ismert hely lekérése…",
+    "lock": "Eszköz lezárása…",
+    "delete": "Gyári visszaállítás elindítva…",
+    "gps_on": "Helyszolgáltatások bekapcsolása…",
+    "gps_off": "Helyszolgáltatások kikapcsolása…",
+    "ringermode_normal": "Csengőhang normálra állítása…",
+    "ringermode_vibrate": "Csengőhang rezgésre állítása…",
+    "ringermode_silent": "Csengőhang némára állítása…",
+    "nodisturb_on": "\"Ne zavarjanak\" mód bekapcsolása…",
+    "nodisturb_off": "\"Ne zavarjanak\" mód kikapcsolása…"
+  },
+  "locate_group": {
+    "title": "Helymeghatározása",
+    "description": "Hely meghatározása egy helyszolgáltató segítségével"
+  },
+  "location_service_group": {
+    "title": "Helyszolgáltatások",
+    "description": "Helyszolgáltatások ki/bekapcsolása"
+  },
+  "locate_cell": {
+    "title": "Cellainformációk",
+    "description": "Helymeghatározás a környező mobil cellák segítségével az OpenCelliD és/vagy BeaconDB szolgáltatásokon keresztül"
+  },
+  "locate_last": {
+    "title": "Utolsó ismert",
+    "description": "Az utolsó ismert helyzet lekérése (gyors, de elavult lehet)"
+  },
+  "gps_on": {
+    "title": "Helyszolgáltatások bekapcsolása"
+  },
+  "gps_off": {
+    "title": "Helyszolgáltatások kikapcsolása"
+  },
+  "enable": "Bekapcsol",
+  "disable": "Kikapcsol"
 }

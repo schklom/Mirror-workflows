@@ -3,5 +3,7 @@
   "logout": "Kijelentkezés",
   "cancel": "Mégse",
   "confirm": "Rendben",
-  "close": "Bezárás"
+  "close": "Bezárás",
+  "okay": "Ok",
+  "language": "Nyelv"
 }

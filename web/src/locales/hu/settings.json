@@ -4,5 +4,31 @@
   "about": "Rólunk",
   "theme": "Téma",
   "theme_dark": "Sötét",
-  "account": "Fiók"
+  "account": "Fiók és adatok",
+  "theme_light": "Világos",
+  "theme_system": "Rendszertéma",
+  "units": "Mértékegységek",
+  "units_metric": "Metrikus",
+  "units_imperial": "Birodalmi",
+  "export_data": "Adatok exportálása",
+  "export_data_loading_message": "Adatok letöltése. Ez eltarthat egy darabig, főleg ha sok képed van.",
+  "delete_locations": {
+    "button": "Helyek törlése",
+    "title": "Összes hely törlése?",
+    "description": "Minden hely véglegesen törölve lesz a szerverről. Ezt nem lehet visszavonni.",
+    "success": "A helyek sikeresen törölve lettek."
+  },
+  "delete_pictures": {
+    "button": "Képek törlése",
+    "title": "Összes kép törlése?",
+    "description": "Minden kép véglegesen törölve lesz a szerverről. Ezt nem lehet visszavonni.",
+    "success": "A képek sikeresen törölve lettek."
+  },
+  "delete_account": "Fiók törlése",
+  "delete_account_title": "Fiók törlése?",
+  "delete_account_description": "A fiókod és annak összes adata véglegesen törölve lesz a szerverről. Ezt nem lehet visszavonni.",
+  "language": {
+    "title": "Nyelv"
+  },
+  "about_text": "Egy szerver, amin keresztül az FMD Android alkalmazással lehet kommunikálni, az eszközeid helyét meghatározni és vezérelni őket."
 }

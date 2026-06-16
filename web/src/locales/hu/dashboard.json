@@ -5,6 +5,17 @@
   "updated": "Frissített",
   "time": "Idő",
   "location": {
-    "recorded_at": "Felvett"
-  }
+    "recorded_at": "Felvett",
+    "older": "Régebbi",
+    "newer": "Újabb",
+    "no_push_url": "Nincs push URL konfigurálva. Az eszköz nem fog parancsokat fogadni, amíg az Android alkalmazásban a push értesítések beállításra nem kerülnek.",
+    "no_data": "Nincs még információ a helyről. Küldj egy helymeghatározó parancsot a lenti gombokkal!"
+  },
+  "command_failed": "Parancs sikertelen!",
+  "battery": "Akkumulátor",
+  "provider": "Szolgáltató",
+  "accuracy": "Pontosság",
+  "altitude": "Magasság",
+  "speed": "Sebesség",
+  "bearing": "Irány"
 }

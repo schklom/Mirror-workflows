@@ -12,7 +12,7 @@ export const SUPPORTED_LANGUAGES_PAIRS = [
   { code: 'el', label: 'ελληνικά' },
   { code: 'et', label: 'eesti keel' },
   { code: 'fr', label: 'Français' },
-  // { code: 'hu', label: 'Magyar' },
+  { code: 'hu', label: 'Magyar' },
   { code: 'it', label: 'Italiano' },
   { code: 'lv', label: 'Latviešu' },
   { code: 'nl', label: 'Nederlands' },

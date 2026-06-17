@@ -1,6 +1,6 @@
 name: fmd-server
 title: FMD Server
-version: "0.15.0"
+version: "0.16.0"
 license: GPL-3.0-or-later
 
 source-code: https://gitlab.com/fmd-foss/fmd-server

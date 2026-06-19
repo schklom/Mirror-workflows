@@ -23,7 +23,7 @@ jobs:
       REMOTE: ${{ steps.commits.outputs.SETREMOTE }} 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: 'schklom/tt-rss-android'
           ref: 'master' # branch
@@ -59,7 +59,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: 'schklom/tt-rss-android'
           ####ref: 'Gadgetbridge-osmand-experiments' # branch

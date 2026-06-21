@@ -397,8 +397,8 @@ func requestSalt(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, ERR_JSON_INVALID, http.StatusBadRequest)
 		return
 	}
-	if !user.IsUserIdValid(data.IDT) {
-		http.Error(w, "Invalid FMD ID", http.StatusBadRequest)
+	if !user.IsUsernameValid(data.IDT) {
+		http.Error(w, "Invalid username", http.StatusBadRequest)
 		return
 	}
 	salt := uio.GetSalt(data.IDT)
@@ -416,8 +416,8 @@ func requestAccess(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, ERR_JSON_INVALID, http.StatusBadRequest)
 		return
 	}
-	if !user.IsUserIdValid(data.IDT) {
-		http.Error(w, "Invalid FMD ID", http.StatusBadRequest)
+	if !user.IsUsernameValid(data.IDT) {
+		http.Error(w, "Invalid username", http.StatusBadRequest)
 		return
 	}
 

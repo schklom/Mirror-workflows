@@ -11,7 +11,7 @@ import (
 )
 
 var pushUsersCmd = &cobra.Command{
-	Use:   "pushusers [...userid]",
+	Use:   "pushusers [...username]",
 	Short: "Push users to wake up their app",
 	Long: "Push users to wake up their app.\n\n" +
 		"This is useful to find users who still have FMD installed but don't use actively use the server. " +
@@ -41,14 +41,14 @@ func runPush(args []string) {
 
 	log.Info().Msg(fmt.Sprintf("pushing %d users", len(args)))
 
-	for _, userId := range args {
-		user, err := uio.UB.GetByID(userId)
+	for _, username := range args {
+		user, err := uio.UB.GetByName(username)
 		if err != nil {
 			// No log message, GetByID already logs one.
 			continue
 		}
 
-		log.Info().Str("userid", userId).Msg("pushing user")
+		log.Info().Str("user", username).Msg("pushing user")
 		uio.PushUser(user)
 	}
 

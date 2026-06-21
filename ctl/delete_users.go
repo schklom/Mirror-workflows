@@ -14,7 +14,7 @@ import (
 )
 
 var deleteUsersCmd = &cobra.Command{
-	Use:   "deleteusers [...userid]",
+	Use:   "deleteusers [...username]",
 	Short: "Delete users",
 	Long: "Delete users\n\n" +
 		"THIS COMMAND IS DESTRUCTIVE! " +
@@ -60,8 +60,8 @@ func runDelete(args []string) {
 		return
 	}
 
-	for _, userId := range args {
-		user, err := uio.UB.GetByID(userId)
+	for _, username := range args {
+		user, err := uio.UB.GetByName(username)
 		if err != nil {
 			// No log message, GetByID already logs one.
 			continue

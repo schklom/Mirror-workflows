@@ -132,8 +132,8 @@ func (db *FMDDB) GetLastID() int {
 	return int(user.Id)
 }
 
-func (db *FMDDB) GetByID(id string) (*FMDUser, error) {
-	var user = FMDUser{UID: id}
+func (db *FMDDB) GetByName(username string) (*FMDUser, error) {
+	var user = FMDUser{UID: username}
 	db.DB.Where(&user).Find(&user)
 	if user.Id == 0 {
 		return nil, errors.New("user not found")

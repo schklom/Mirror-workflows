@@ -111,7 +111,7 @@ const PrivacyContent = () => {
                 <div>
                   <p className="mb-2 font-medium text-gray-900 dark:text-white">In plaintext:</p>
                   <ul className="ml-4 list-inside list-disc space-y-1 text-gray-700 dark:text-gray-300">
-                    <li>FMD ID</li>
+                    <li>Username</li>
                     <li>Password Hash</li>
                     <li>Public key</li>
                     <li>Push URL</li>

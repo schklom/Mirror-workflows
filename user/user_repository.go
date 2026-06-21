@@ -89,7 +89,7 @@ func (u *UserRepository) CreateNewUser(
 	} else {
 		username = u.generateNewId()
 	}
-	log.Info().Str("username", requestedUsername).Msg("registering new user")
+	log.Info().Str("username", username).Msg("registering new user")
 
 	newUser := FMDUser{
 		UID:        username,

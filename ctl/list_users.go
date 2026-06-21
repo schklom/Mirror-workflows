@@ -85,7 +85,7 @@ func runQuery() {
 
 func printSpaceSeparatedList(max int, users []user.FMDUser) {
 	for i := range max {
-		print(users[i].UID)
+		print(users[i].Username)
 		print(" ")
 	}
 	println()
@@ -105,6 +105,6 @@ func printTable(max int, users []user.FMDUser) {
 			pushUrl = users[i].PushUrl[:24]
 		}
 
-		fmt.Printf("%-24s %-28s %-24s\n", users[i].UID, t.Format(time.RFC3339), pushUrl)
+		fmt.Printf("%-24s %-28s %-24s\n", users[i].Username, t.Format(time.RFC3339), pushUrl)
 	}
 }

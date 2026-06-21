@@ -92,7 +92,7 @@ func (u *UserRepository) CreateNewUser(
 	log.Info().Str("username", username).Msg("registering new user")
 
 	newUser := FMDUser{
-		UID:        username,
+		Username:   username,
 		PrivateKey: privKey,
 		PublicKey:  pubKey,
 	}
@@ -105,14 +105,14 @@ func (u *UserRepository) CreateNewUser(
 }
 
 func (u *UserRepository) UpdateUserPassword(user *FMDUser, privKey string, innerSalt string, innerPwHash string) {
-	log.Info().Str("user", user.UID).Msg("changing password for user")
+	log.Info().Str("user", user.Username).Msg("changing password for user")
 
 	user.setPasswordData(innerSalt, innerPwHash)
 	user.PrivateKey = privKey
 	u.UB.Save(&user)
 
 	// Security: Revoke all active sessions. This forces them to log in again with the new password.
-	u.ACC.ResetTokensForUser(user.UID)
+	u.ACC.ResetTokensForUser(user.Username)
 }
 
 func (u *UserRepository) AddLocation(user *FMDUser, loc string) {
@@ -135,7 +135,7 @@ func (u *UserRepository) pruneLocations(user *FMDUser) {
 }
 
 func (u *UserRepository) DeleteAllLocations(user *FMDUser) {
-	log.Info().Str("user", user.UID).Msg("deleting all locations")
+	log.Info().Str("user", user.Username).Msg("deleting all locations")
 	rowsDeleted := u.UB.DeleteLocations(user)
 	metrics.Locations.Sub(float64(rowsDeleted))
 }
@@ -160,13 +160,13 @@ func (u *UserRepository) prunePictures(user *FMDUser) {
 }
 
 func (u *UserRepository) DeleteAllPictures(user *FMDUser) {
-	log.Info().Str("user", user.UID).Msg("deleting all pictures")
+	log.Info().Str("user", user.Username).Msg("deleting all pictures")
 	rowsDeleted := u.UB.DeletePictures(user)
 	metrics.Pictures.Sub(float64(rowsDeleted))
 }
 
 func (u *UserRepository) DeleteUser(user *FMDUser) error {
-	log.Info().Str("user", user.UID).Msg("deleting user")
+	log.Info().Str("user", user.Username).Msg("deleting user")
 
 	rowsDeleted := u.UB.Delete(&user)
 	if rowsDeleted == 0 {
@@ -178,8 +178,8 @@ func (u *UserRepository) DeleteUser(user *FMDUser) error {
 	// locs/pics were deleted and then decrementing all metrics.
 	initializeUserMetrics(u.UB)
 
-	u.ACC.ResetLock(user.UID)
-	u.ACC.ResetTokensForUser(user.UID)
+	u.ACC.ResetLock(user.Username)
+	u.ACC.ResetTokensForUser(user.Username)
 
 	return nil
 }
@@ -253,7 +253,7 @@ func (u *UserRepository) GetPrivateKey(user *FMDUser) string {
 }
 
 func (u *UserRepository) SetPrivateKey(user *FMDUser, key string) {
-	log.Info().Str("user", user.UID).Msg("changing private key for user")
+	log.Info().Str("user", user.Username).Msg("changing private key for user")
 	user.PrivateKey = key
 	u.UB.Save(&user)
 }
@@ -263,7 +263,7 @@ func (u *UserRepository) GetPublicKey(user *FMDUser) string {
 }
 
 func (u *UserRepository) SetPublicKey(user *FMDUser, key string) {
-	log.Info().Str("user", user.UID).Msg("changing public key for user")
+	log.Info().Str("user", user.Username).Msg("changing public key for user")
 	user.PublicKey = key
 	u.UB.Save(&user)
 }
@@ -358,7 +358,7 @@ func (u *UserRepository) RequestAccess(id string, innerPwHash string, sessionDur
 
 	if u.ACC.IsLocked(id) {
 		log.Warn().
-			Str("user", user.UID).
+			Str("user", user.Username).
 			Str("remoteIp", remoteIp).
 			Msg("blocked login attempt")
 
@@ -395,7 +395,7 @@ func (u *UserRepository) RequestAccess(id string, innerPwHash string, sessionDur
 	} else {
 		u.ACC.IncrementLock(id)
 		log.Warn().
-			Str("user", user.UID).
+			Str("user", user.Username).
 			Str("remoteIp", remoteIp).
 			Msg("failed login attempt")
 		return nil, errors.New("wrong password")
@@ -406,7 +406,7 @@ func (u *UserRepository) PushUser(user *FMDUser) {
 	pushUrl := strings.Replace(u.GetPushUrl(user), "/UP?", "/message?", -1)
 
 	if len(pushUrl) == 0 {
-		log.Warn().Str("user", user.UID).Msg("cannot push user, no push URL, they need to install a UnifiedPush distributor app")
+		log.Warn().Str("user", user.Username).Msg("cannot push user, no push URL, they need to install a UnifiedPush distributor app")
 		return
 	}
 
@@ -425,7 +425,7 @@ func (u *UserRepository) PushUser(user *FMDUser) {
 	}`)
 	request, err := http.NewRequest("POST", pushUrl, bytes.NewBuffer(jsonData))
 	if err != nil {
-		log.Error().Err(err).Str("user", user.UID).Msg("failed to build push request")
+		log.Error().Err(err).Str("user", user.Username).Msg("failed to build push request")
 		return
 	}
 	request.Header.Set("Content-Encoding", "aes128gcm")
@@ -436,7 +436,7 @@ func (u *UserRepository) PushUser(user *FMDUser) {
 	client := &http.Client{Timeout: 10 * time.Second}
 	_, err = client.Do(request)
 	if err != nil {
-		log.Error().Err(err).Str("user", user.UID).Msg("failed to send push to user")
+		log.Error().Err(err).Str("user", user.Username).Msg("failed to send push to user")
 		return
 	}
 }

@@ -11,7 +11,7 @@ import (
 	"gorm.io/gorm"
 )
 
-const CurrentSqlVersion = 3
+const CurrentSqlVersion = 4
 
 const KeyVersion = "fmd_db_version"
 
@@ -62,6 +62,14 @@ func migrateDatabase(db *gorm.DB) {
 
 	if actualVersion < 3 {
 		migrateToV2Passwords(db)
+	}
+
+	if actualVersion < 4 {
+		err := runMigration("000004_rename_user_id_name", db)
+		if err != nil {
+			log.Fatal().Err(err).Msg("failed migration=000004_rename_user_id_name")
+			return
+		}
 	}
 
 	// Use this to let GORM write a migration. Then inspect the created SQLite schema,

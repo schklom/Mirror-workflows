@@ -11,6 +11,7 @@ import { apiService } from '@/lib/apiService';
 import { useStore } from '@/lib/store';
 import { toast } from 'sonner';
 
+const second = 1000;
 const minute = 60 * 1000;
 
 const Home = () => {
@@ -67,10 +68,10 @@ const Home = () => {
       // If just after a locate command, poll more often
       const timeSinceLocate = Date.now() - lastLocateTime;
       if (timeSinceLocate < 1 * minute) {
-        return 15 * 1000; // 15 seconds
+        return 10 * second;
       }
       if (timeSinceLocate < 2 * minute) {
-        return 20 * 1000; // 20 seconds
+        return 20 * second;
       }
 
       return 15 * minute;

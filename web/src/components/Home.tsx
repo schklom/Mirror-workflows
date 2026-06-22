@@ -59,6 +59,8 @@ const Home = () => {
   useEffect(() => {
     if (!isLoggedIn || !userData) return;
 
+    let timeoutId: NodeJS.Timeout;
+
     const getPollingInterval = () => {
       if (!lastLocateTime) return 15 * minute;
 
@@ -75,13 +77,15 @@ const Home = () => {
     };
 
     const poll = () => {
-      if (document.hidden) return;
-      void fetchLocations(false);
+      if (!document.hidden) {
+        void fetchLocations(false);
+      }
+      timeoutId = setTimeout(poll, getPollingInterval()); // reschedule
     };
 
-    const interval = setInterval(poll, getPollingInterval());
+    timeoutId = setTimeout(poll, getPollingInterval()); // initial schedule
 
-    return () => clearInterval(interval);
+    return () => clearTimeout(timeoutId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoggedIn, userData, lastLocateTime]);
 

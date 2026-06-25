@@ -1,4 +1,4 @@
-import { Settings, ChevronDown, LogOut } from 'lucide-react';
+import { Settings, ChevronDown, LogOut, Info } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import {
@@ -11,10 +11,11 @@ import { useStore } from '@/lib/store';
 import { Link } from 'react-router-dom';
 
 interface HeaderProps {
-  onSettingsClick?: () => void;
+  onSettingsClick: () => void;
+  onAccountInfoClick: () => void;
 }
 
-export const Header = ({ onSettingsClick }: HeaderProps) => {
+export const Header = ({ onSettingsClick, onAccountInfoClick }: HeaderProps) => {
   const { userData, logout } = useStore();
   const { t } = useTranslation('common');
 
@@ -26,17 +27,16 @@ export const Header = ({ onSettingsClick }: HeaderProps) => {
       </Link>
       {userData && (
         <div className="flex items-center gap-2">
-          {onSettingsClick && (
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              onClick={onSettingsClick}
-              title={t('settings')}
-              className="rounded-lg"
-            >
-              <Settings className="h-5 w-5" />
-            </Button>
-          )}
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            onClick={onSettingsClick}
+            title={t('settings')}
+            className="rounded-lg"
+          >
+            <Settings className="h-5 w-5" />
+          </Button>
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="sm" className="gap-2">
@@ -47,6 +47,11 @@ export const Header = ({ onSettingsClick }: HeaderProps) => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="z-1000 w-40 bg-white dark:bg-gray-800">
+              <DropdownMenuItem onClick={() => void onAccountInfoClick()}>
+                <Info className="mr-2 h-4 w-4" />
+                {t('account_info')}
+              </DropdownMenuItem>
+
               <DropdownMenuItem onClick={() => void logout()}>
                 <LogOut className="mr-2 h-4 w-4" />
                 {t('logout')}

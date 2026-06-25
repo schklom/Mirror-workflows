@@ -62,7 +62,10 @@ export class ApiV1Service extends BaseApiService {
 
     const wrappedPrivateKey = await this.getWrappedPrivateKey(sessionToken);
 
-    const { rsaEncKey, rsaSigKey } = await unwrapPrivateKey(password, wrappedPrivateKey);
+    const { rsaEncKey, rsaSigKey, fingerprint } = await unwrapPrivateKey(
+      password,
+      wrappedPrivateKey
+    );
 
     const { setUserData } = useStore.getState();
     await setUserData(
@@ -71,6 +74,7 @@ export class ApiV1Service extends BaseApiService {
         rsaEncKey,
         rsaSigKey,
         sessionToken,
+        fingerprint,
       },
       rememberMe
     );

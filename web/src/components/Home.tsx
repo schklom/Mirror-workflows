@@ -3,6 +3,7 @@ import { LoginForm } from '@/components/LoginForm';
 import { DevicePanel } from '@/components/DevicePanel';
 import { LocationMap } from '@/components/LocationMap';
 import { PhotosModal } from '@/components/modals/PhotosModal';
+import { AccountInfoModal } from '@/components/modals/AccountInfoModal';
 import { SettingsModal } from '@/components/modals/SettingsModal';
 import { Header } from '@/components/Header';
 import { Spinner } from '@/components/ui/spinner';
@@ -17,6 +18,7 @@ const Home = () => {
 
   const [photosOpen, setPhotosOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [accountInfoOpen, setAccountInfoOpen] = useState(false);
   const [lastLocateTime, setLastLocateTime] = useState<number | null>(null);
   const [lastLocationsFetchedTime, setLastLocationsFetchedTime] = useState<number | null>(null);
 
@@ -121,7 +123,10 @@ const Home = () => {
 
   return (
     <>
-      <Header onSettingsClick={() => setSettingsOpen(true)} />
+      <Header
+        onSettingsClick={() => setSettingsOpen(true)}
+        onAccountInfoClick={() => setAccountInfoOpen(true)}
+      />
 
       <div className="dark:bg-fmd-dark-lighter flex h-[calc(100vh-3.1rem)] flex-col bg-gray-50 text-gray-900 dark:text-white">
         <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-4 lg:flex-row lg:overflow-hidden">
@@ -141,6 +146,8 @@ const Home = () => {
       </div>
 
       <PhotosModal isOpen={photosOpen} onClose={() => setPhotosOpen(false)} />
+
+      <AccountInfoModal isOpen={accountInfoOpen} onClose={() => setAccountInfoOpen(false)} />
 
       <SettingsModal isOpen={settingsOpen} onClose={() => setSettingsOpen(false)} />
     </>

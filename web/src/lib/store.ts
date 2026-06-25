@@ -13,6 +13,7 @@ interface UserData {
   sessionToken: string;
   rsaEncKey: CryptoKey;
   rsaSigKey: CryptoKey;
+  fingerprint: string;
 }
 
 interface AppState {
@@ -71,6 +72,7 @@ export const useStore = create<AppState>()(
             JSON.stringify({
               fmdId: data.fmdId,
               sessionToken: data.sessionToken,
+              fingerprint: data.fingerprint,
             })
           );
         }
@@ -101,6 +103,7 @@ export const useStore = create<AppState>()(
           const parsed = JSON.parse(authData) as {
             fmdId: string;
             sessionToken: string;
+            fingerprint: string;
           };
           const keys = await getKeys();
 
@@ -111,6 +114,7 @@ export const useStore = create<AppState>()(
                 sessionToken: parsed.sessionToken,
                 rsaEncKey: keys.rsaEncKey,
                 rsaSigKey: keys.rsaSigKey,
+                fingerprint: parsed.fingerprint,
               },
               isLoggedIn: true,
             });

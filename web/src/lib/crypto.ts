@@ -108,7 +108,38 @@ export const unwrapPrivateKey = async (password: string, keyData: string) => {
     ['sign']
   );
 
-  return { rsaEncKey, rsaSigKey };
+  const fingerprint = await getFingerprint(binaryDer);
+
+  return { rsaEncKey, rsaSigKey, fingerprint };
+};
+
+const getFingerprint = async (binaryDer: Uint8Array<ArrayBuffer>) => {
+  // This import is only needed to be able to "export" the key, which in turn is needed to convert to SPKI format.
+  // Afterwards, we forget this key, because we don't want to have exportable keys around.
+  const privateCryptoKey = await crypto.subtle.importKey(
+    'pkcs8',
+    binaryDer,
+    { name: 'RSA-OAEP', hash: 'SHA-256' },
+    true, // extractability
+    ['decrypt'] // keyUsages
+  );
+
+  // Ideally, we could export with format "spki". But that is not supported for private keys.
+  // So we use the JWK workaround described here: https://stackoverflow.com/a/72153942/11076036
+  const jwk = await crypto.subtle.exportKey('jwk', privateCryptoKey);
+
+  const publicCryptoKey = await crypto.subtle.importKey(
+    'jwk',
+    { alg: jwk.alg, kty: jwk.kty, n: jwk.n, e: jwk.e },
+    { name: 'RSA-OAEP', hash: 'SHA-256' },
+    true, // extractability
+    ['encrypt'] // keyUsages
+  );
+
+  const spkiBuf = await crypto.subtle.exportKey('spki', publicCryptoKey);
+  const hashBuf = await crypto.subtle.digest('SHA-256', spkiBuf);
+
+  return new Uint8Array(hashBuf).toHex();
 };
 
 export const sign = async (rsaCryptoKey: CryptoKey, msg: string) => {

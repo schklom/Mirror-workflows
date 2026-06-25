@@ -21,7 +21,7 @@ interface SettingsModalProps {
 
 export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
   const { userData, units } = useStore();
-  const { t } = useTranslation(['settings', 'login']);
+  const { t } = useTranslation(['settings', 'login', 'common']);
 
   const [showDeleteLocationsConfirm, setShowDeleteLocationsConfirm] = useState(false);
   const [showDeletePicturesConfirm, setShowDeletePicturesConfirm] = useState(false);
@@ -92,7 +92,7 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{t('title')}</DialogTitle>
+          <DialogTitle>{t('common:settings')}</DialogTitle>
         </DialogHeader>
 
         <Tabs defaultValue="settings" className="w-full">

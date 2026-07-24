@@ -338,9 +338,11 @@ export function parseWorkoutCSV(text, { unit = 'kg' } = {}) {
     }
 
     const isCardio = (km > 0 || mins > 0) && !reps
+    // `u` carries the row's own unit into the conversion pass below and is dropped there —
+    // it never reaches the stored set.
     const set = isCardio
       ? { min: mins || 0, speed: mins > 0 ? Math.round(km / (mins / 60) * 10) / 10 : 0, done: true }
-      : { w, r: reps || 0, done: true }
+      : { w, r: reps || 0, done: true, u: rowUnit }
 
     let day = byDate.get(when.d)
     if (!day) {
@@ -355,19 +357,29 @@ export function parseWorkoutCSV(text, { unit = 'kg' } = {}) {
     sets++
   }
 
-  // lb -> kg only when the file disagrees with the profile. The app never converts units
-  // on its own, so importing unconverted would silently rewrite someone's numbers.
+  // lb -> kg only where a row disagrees with the profile. The app never converts units on
+  // its own, so importing unconverted would silently rewrite someone's numbers.
+  // Converting PER ROW matters: apps like FitNotes write the unit next to every set, and a
+  // history recorded partly in lb and partly in kg used to be taken over as-is, turning
+  // "185 lb" into 185 kg.
   const fileUnit = sawLb && !sawKg ? 'lb' : sawKg && !sawLb ? 'kg' : ''
-  const converted = !!fileUnit && fileUnit !== unit
-  const conv = converted
-    ? (fileUnit === 'lb' ? x => Math.round(x * LB_TO_KG * 10) / 10 : x => Math.round(x / LB_TO_KG * 10) / 10)
-    : x => x
+  const mixedUnits = sawLb && sawKg
+  const toKg = x => Math.round(x * LB_TO_KG * 10) / 10
+  const toLb = x => Math.round(x / LB_TO_KG * 10) / 10
+  // A row without its own unit follows the file's, and a file that says nothing is taken
+  // to already be in the profile's unit.
+  const convRow = s => {
+    const u = s.u || fileUnit
+    if (!u || u === unit) return s.w
+    return u === 'lb' ? toKg(s.w) : toLb(s.w)
+  }
+  const converted = (!!fileUnit && fileUnit !== unit) || mixedUnits
 
   const dates = [...byDate.keys()].sort()
   const workouts = dates.map(d => {
     const day = byDate.get(d)
     const entries = [...day.ex.entries()].map(([id, ss]) => {
-      const conv2 = ss.map(s => (s.w !== undefined ? { ...s, w: conv(s.w) } : s))
+      const conv2 = ss.map(({ u, ...s }) => (s.w !== undefined ? { ...s, w: convRow({ ...s, u }) } : s))
       const mx = Math.max(0, ...conv2.map(s => s.w || 0))
       return { id, sets: conv2, topW: mx || null }
     })
@@ -384,8 +396,12 @@ export function parseWorkoutCSV(text, { unit = 'kg' } = {}) {
 
   return {
     kind: 'workouts', source, workouts, customEx: [...created.values()],
-    matched, created: created.size, unmatchedNames: [...unmatched].sort(),
-    sets, skipped, warmups, fileUnit, converted,
+    // distinct library exercises behind the matched rows — the summary calls this
+    // "exercises matched", and counting rows there made three exercises read as five
+    matched: new Set([...resolved.values()].filter(Boolean)).size,
+    matchedSets: matched,
+    created: created.size, unmatchedNames: [...unmatched].sort(),
+    sets, skipped, warmups, fileUnit, mixedUnits, converted,
     from: dates[0] || null, to: dates[dates.length - 1] || null,
   }
 }

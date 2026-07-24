@@ -168,10 +168,12 @@ function ImportSummary({ parsed, close }) {
       </>}
     </div>
 
-    {parsed.converted && <div className="small" style={{ color: 'var(--yellow)', marginBottom: 10 }}>
+    {parsed.mixedUnits ? <div className="small" style={{ color: 'var(--yellow)', marginBottom: 10 }}>
+      {t('The file mixes kg and lb — each set is converted to {0}.', st.unit)}
+    </div> : parsed.converted ? <div className="small" style={{ color: 'var(--yellow)', marginBottom: 10 }}>
       {t('The file is in {0} and your profile is in {1} — weights will be converted.', parsed.fileUnit, st.unit)}
-    </div>}
-    {!isBW && !parsed.fileUnit && <div className="small dim" style={{ marginBottom: 10 }}>
+    </div> : null}
+    {!isBW && !parsed.fileUnit && !parsed.mixedUnits && <div className="small dim" style={{ marginBottom: 10 }}>
       {t('The file does not say which unit it uses — numbers are imported as they are.')}
     </div>}
     {have > 0 && <div className="small dim" style={{ marginBottom: 10 }}>

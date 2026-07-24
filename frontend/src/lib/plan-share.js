@@ -9,7 +9,7 @@
 //     a page break — each exercise, and each routine that fits, stays in one place.
 
 import { EXIDX, isCardio } from './exercises.js'
-import { uid, todayISO, DAYN, fmtNum } from './format.js'
+import { uid, todayISO, DAYN, fmtNum, exCount } from './format.js'
 import { t } from './i18n.js'
 
 const PLAN_FMT = 1
@@ -43,18 +43,37 @@ export function buildPlanBundle(S, name) {
   return { opengym_plan: PLAN_FMT, exported: todayISO(), name: name || '', week, routines, customEx }
 }
 
-/** Validate + normalise an imported file. Throws with a friendly message if it isn't one. */
+/**
+ * Validate + normalise an imported file. Throws with a friendly message if it isn't one.
+ *
+ * Every exercise id has to resolve — either to the built-in library or to a custom
+ * exercise carried in the same file. An id that resolves to neither (a hand-edited file,
+ * an export from a build with a different exercise dataset) is dropped here: kept, it
+ * would sit invisibly in the routine and only surface as a blank screen when the routine
+ * is trained.
+ */
 export function parsePlan(raw) {
   const data = typeof raw === 'string' ? JSON.parse(raw) : raw
   if (!data || !data.opengym_plan || !Array.isArray(data.routines)) {
     throw new Error(t('this isn’t an openGym plan file'))
   }
-  const routines = data.routines.filter(r => r && Array.isArray(r.ex))
+  const customEx = (Array.isArray(data.customEx) ? data.customEx : []).filter(c => c && c.id)
+  const known = new Set(customEx.map(c => c.id))
+  let dropped = 0
+  const routines = data.routines.filter(r => r && Array.isArray(r.ex)).map(r => ({
+    ...r,
+    ex: r.ex.filter(e => {
+      const ok = !!e && (known.has(e.id) || !!EXIDX[e.id])
+      if (!ok) dropped++
+      return ok
+    })
+  }))
   return {
     name: (data.name || '').trim(),
     routines,
     week: data.week || {},
-    customEx: Array.isArray(data.customEx) ? data.customEx : [],
+    customEx,
+    dropped,
     routineCount: routines.length,
     exerciseCount: routines.reduce((n, r) => n + r.ex.length, 0),
     scheduledDays: WEEK_ORDER.filter(d => data.week?.[d]).length
@@ -65,7 +84,8 @@ export function parsePlan(raw) {
  * Merge a parsed bundle into a draft state `s` (call inside store.update).
  *  - customs: reuse one you already have with the same name + body part, else add it fresh
  *  - routines: always added as NEW routines (fresh ids) — never overwrites yours
- *  - schedule: optional; when on, points your week at the freshly-added routines
+ *  - schedule: optional; when on, the shared week REPLACES yours (days the shared plan
+ *    leaves empty become rest days — a half-overwritten week would silently mix two plans)
  */
 export function mergePlan(s, bundle, { schedule } = {}) {
   s.customEx = s.customEx || []
@@ -89,6 +109,7 @@ export function mergePlan(s, bundle, { schedule } = {}) {
     })
   })
   if (schedule) {
+    WEEK_ORDER.forEach(d => { delete s.week[d] })
     Object.entries(bundle.week || {}).forEach(([d, oldId]) => {
       if (ridMap[oldId]) s.week[d] = ridMap[oldId]
     })
@@ -136,7 +157,7 @@ function routineHTML(r, unit) {
       ? `<div class="ss"><div class="ss-tag">${esc(t('Superset'))}</div><div class="ss-items">${items}</div></div>`
       : items
   }).join('')
-  const count = t('{0} exercises', r.ex.length).replace('{0}', r.ex.length)
+  const count = exCount(r.ex.length)
   return `<section class="routine">
     <div class="r-head"><h2>${esc(r.name)}</h2><span class="r-count">${esc(count)}</span></div>
     <div class="ex-list">${rows || `<div class="ex empty">${esc(t('No exercises yet.'))}</div>`}</div>

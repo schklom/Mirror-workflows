@@ -1,4 +1,5 @@
 import { EXDB } from './exercises-data.js'
+import { t } from './i18n.js'
 
 export { EXDB }
 export const EXIDX = {}
@@ -35,3 +36,10 @@ export const gifSrc = ex => GIF_BASE + ex.gif
 
 // Cardio exercises log time + speed instead of weight × reps.
 export const isCardio = idOrEx => (typeof idOrEx === 'string' ? EXIDX[idOrEx] : idOrEx)?.bp === 'cardio'
+
+// An id that resolves to nothing — a plan file built against a different exercise dataset,
+// a custom exercise deleted on another device before the sync arrived — still has to
+// render. A placeholder keeps it visible (and removable) instead of taking the whole view
+// down on the first `ex.n`.
+export const exOr = id => EXIDX[id] ||
+  { id, n: t('Unknown exercise'), bp: '', tg: '', eq: '', sm: [], st: [], missing: true }

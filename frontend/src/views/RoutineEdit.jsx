@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from 'react-router-dom'
 import { useEffect } from 'react'
 import { useStore } from '../store/useStore.js'
-import { EXIDX, isCardio } from '../lib/exercises.js'
+import { exOr, isCardio } from '../lib/exercises.js'
 import { fmtNum, uid } from '../lib/format.js'
 import { t } from '../lib/i18n.js'
 import { supersetUnits, cleanupSg } from '../lib/history.js'
@@ -47,7 +47,9 @@ export default function RoutineEdit() {
     </div>
 
     {r.ex.length ? <div className="list">{r.ex.map((e, i) => {
-      const ex = EXIDX[e.id]; if (!ex) return null
+      // An unresolvable id is shown rather than skipped — hiding it left an entry you
+      // could neither see nor delete, but that still turned up in the workout.
+      const ex = exOr(e.id)
       const linkedPrev = i > 0 && e.sg && r.ex[i - 1].sg === e.sg
       return <div key={i}>
         {unitFirst.has(i) && <div className="ss-label"><Icon name="link" />{t('Superset')}</div>}

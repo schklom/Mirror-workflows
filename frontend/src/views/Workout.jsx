@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/useStore.js'
 import { useUI } from '../store/useUI.js'
-import { EXIDX, isCardio } from '../lib/exercises.js'
+import { exOr, isCardio } from '../lib/exercises.js'
 import { effectiveRoutine, lastEntryFor, bestWeightFor, buildSets, setsDoneActive, supersetUnits, unitOf, setLabel } from '../lib/history.js'
-import { fmtNum, fmtDate, todayISO, DAYN } from '../lib/format.js'
+import { fmtNum, fmtDate, todayISO, exCount, DAYN } from '../lib/format.js'
 import { beep, vibrate } from '../lib/sound.js'
 import { t } from '../lib/i18n.js'
 import { api } from '../lib/api.js'
@@ -26,7 +26,7 @@ function StartChooser() {
     {todayR && <div className="card" style={{ borderColor: 'var(--acc)' }}>
       <h2 className="accent">{t("Today's plan")}{todayOvr ? ' · ' + t('rescheduled') : ''}</h2>
       <div className="row between" style={{ marginBottom: 12 }}>
-        <div><div className="big">{todayR.name}</div><div className="muted small">{t('{0} exercises', todayR.ex.length)}</div></div>
+        <div><div className="big">{todayR.name}</div><div className="muted small">{exCount(todayR.ex.length)}</div></div>
         <span className="lrow-i" style={{ width: 38, height: 38, borderRadius: 9, fontSize: 22 }}><Icon name={glyphOf(todayR.emoji)} /></span>
       </div>
       <Button variant="primary" icon="play" onClick={() => startFlow(todayR.id)}>{t('Start {0}', todayR.name)}</Button>
@@ -34,7 +34,7 @@ function StartChooser() {
     {others.length > 0 && <><h4 className="sec">{t('Other routines')}</h4>
       <div className="list">{others.map(r => <div key={r.id} className="item" onClick={() => startFlow(r.id)}>
         <span className="lrow-i"><Icon name={glyphOf(r.emoji)} /></span>
-        <div className="grow"><div className="tt">{r.name}</div><div className="ss">{t('{0} exercises', r.ex.length)}</div></div>
+        <div className="grow"><div className="tt">{r.name}</div><div className="ss">{exCount(r.ex.length)}</div></div>
         <span className="tag acc">{t('Start')}</span></div>)}</div></>}
     <div style={{ height: 14 }} />
     <Button icon="shuffle" onClick={() => startFlow(null)}>{t('Freestyle workout (pick as you go)')}</Button>
@@ -56,10 +56,12 @@ function Elapsed({ start }) {
 function ExerciseBlock({ entryIdx, compact, onToggle, onField, onBumpAll, onAddSet, onRemoveSet }) {
   const S = useStore(s => s.S)
   const entry = S.active.entries[entryIdx]
-  const ex = EXIDX[entry.id]
+  const ex = exOr(entry.id)
   const cardio = isCardio(ex)
   const last = lastEntryFor(S, entry.id)
-  const best = cardio ? 0 : bestWeightFor(S, entry.id)
+  // The same number the "confirm your working weight" sheet calls your best, so the two
+  // never disagree inside one session: heaviest logged set, or the working weight you kept.
+  const best = cardio ? 0 : Math.max(bestWeightFor(S, entry.id), (S.exWeights[entry.id] || {}).w || 0)
   const hint = !cardio && last && last.sets.length >= (entry.target.sets || 1) && last.sets.every(s => s.r >= entry.target.reps) && last.sets[0].w > 0
     ? Math.max(...last.sets.map(s => s.w)) + 2.5 : null
   const col1 = cardio ? { f: 'min', step: 1, dec: false, hd: t('Duration (min)') } : { f: 'w', step: 2.5, dec: true, hd: t('Weight ({0})', S.unit) }
@@ -81,11 +83,12 @@ function ExerciseBlock({ entryIdx, compact, onToggle, onField, onBumpAll, onAddS
     </div>
     <div className="row" style={{ gap: 6, flexWrap: 'wrap', marginBottom: 8 }}>
       {cardio && <span className="tag acc"><Icon name="figureRun" />{t('Cardio')}</span>}
-      <span className="tag">{t(ex.tg || ex.bp)}</span><span className="tag">{t(ex.eq)}</span>
-      {best > 0 && <span className="tag">{t('Best:')} {fmtNum(best)} {S.unit}</span>}
+      {(ex.tg || ex.bp) && <span className="tag">{t(ex.tg || ex.bp)}</span>}
+      {ex.eq && <span className="tag">{t(ex.eq)}</span>}
+      {best > 0 && <span className="tag nocap">{t('Best:')} {fmtNum(best)} {S.unit}</span>}
     </div>
     {last && <div className="small dim" style={{ marginBottom: 4 }}>{t('Last time')} ({fmtDate(last.d)}): {last.sets.map(s => setLabel(entry.id, s)).join(', ')}</div>}
-    {hint && <button className="tag acc" style={{ border: 'none', textAlign: 'left' }} onClick={() => { onBumpAll('w', hint); useUI.getState().toast(t('Weights bumped to {0}', fmtNum(hint) + ' ' + S.unit)) }}><Icon name="lightbulb" />{t('Last time you hit all reps — try {0}', fmtNum(hint) + ' ' + S.unit)}</button>}
+    {hint && <button className="tag acc nocap" style={{ border: 'none', textAlign: 'left' }} onClick={() => { onBumpAll('w', hint); useUI.getState().toast(t('Weights bumped to {0}', fmtNum(hint) + ' ' + S.unit)) }}><Icon name="lightbulb" />{t('Last time you hit all reps — try {0}', fmtNum(hint) + ' ' + S.unit)}</button>}
     <div className="card" style={{ marginTop: 10, marginBottom: 0 }}>
       <div className="sethead"><span className="n-sp" /><span className="w-sp">{col1.hd}</span><span className="r-sp">{col2.hd}</span><span className="ck-sp" /></div>
       {entry.sets.map((s, i) => <div key={i} className={'setrow' + (s.done ? ' done' : '')}>

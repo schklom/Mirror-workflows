@@ -153,10 +153,12 @@ button,.chip,.tile,.item,.wday,.cal-d,.swatch,.hm-c,.lrow,.seg button,.stp butto
 .small{font-size:13px;line-height:1.38}
 .accent{color:var(--acc)}
 .capitalize{text-transform:capitalize}
-.nocap{text-transform:none}
 /* exercise names and body-part/equipment terms arrive lowercase from the dataset,
-   so capitalising is opt-in per element — blanket-capitalising a row also turned
-   "60 kg" into "60 Kg" and whole sentences into Title Case. */
+   so tags and chips capitalise by default. Anything that is a unit or a sentence opts
+   back out — blanket-capitalising turned "60 kg" into "60 Kg" and a whole hint into
+   Title Case. The compound selectors are needed: .tag/.chip come later in this file
+   and would otherwise win on source order. */
+.nocap,.tag.nocap,.chip.nocap{text-transform:none}
 
 /* ---------------------------------------------------------------- layout -- */
 #app{

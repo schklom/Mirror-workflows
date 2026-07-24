@@ -532,10 +532,18 @@ function PlanImport({ bundle, close }) {
   return <>
     <h3>{bundle.name ? t('Import “{0}”', bundle.name) : t('Import this plan')}</h3>
     <div className="muted small" style={{ marginBottom: 14 }}>
-      {t('{0} routines · {1} exercises', bundle.routineCount, bundle.exerciseCount)}
-      {bundle.scheduledDays > 0 ? ' · ' + t('scheduled on {0} days', bundle.scheduledDays) : ''}
+      {t(bundle.routineCount === 1 ? '{0} routine' : '{0} routines', bundle.routineCount)}
+      {' · ' + exCount(bundle.exerciseCount)}
+      {bundle.scheduledDays > 0
+        ? ' · ' + t(bundle.scheduledDays === 1 ? 'scheduled on {0} day' : 'scheduled on {0} days', bundle.scheduledDays)
+        : ''}
     </div>
     <div className="dim small" style={{ marginBottom: 14, lineHeight: 1.4 }}>{t('These are added as new routines — nothing you already have is changed.')}</div>
+    {bundle.dropped > 0 && <div className="small" style={{ color: 'var(--yellow)', marginBottom: 14, lineHeight: 1.4 }}>
+      {t(bundle.dropped === 1
+        ? '{0} exercise in the file isn’t in your library and was left out.'
+        : '{0} exercises in the file aren’t in your library and were left out.', bundle.dropped)}
+    </div>}
     {bundle.scheduledDays > 0 && <div className="row between" style={{ padding: '10px 2px', borderTop: '1px solid var(--sep)', borderBottom: '1px solid var(--sep)', marginBottom: 16, gap: 12 }}>
       <div><div className="tt" style={{ fontSize: 15 }}>{t('Use this weekly schedule')}</div><div className="small dim">{t('Replaces your current Mon–Sun assignments.')}</div></div>
       <Switch checked={schedule} onChange={setSchedule} />

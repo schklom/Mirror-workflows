@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useUI } from '../store/useUI.js'
 import { t } from '../lib/i18n.js'
 import { Button } from './ui.jsx'
@@ -5,6 +6,12 @@ import { Button } from './ui.jsx'
 export default function RestTimer() {
   const timer = useUI(s => s.timer)
   const { addRest, stopRest } = useUI()
+  // The bar is fixed above the tab bar and floats over whatever is beneath it — during a
+  // rest that was the next set's row. Extra bottom padding lets the page scroll clear.
+  useEffect(() => {
+    document.body.classList.toggle('resting', !!timer)
+    return () => document.body.classList.remove('resting')
+  }, [!!timer])
   if (!timer) return null
   const pct = (timer.left / timer.total) * 100
   const m = Math.floor(timer.left / 60), s = String(timer.left % 60).padStart(2, '0')

@@ -97,9 +97,10 @@ export default function Home() {
       {bw ? <>
         <div className="row" style={{ gap: 8, alignItems: 'baseline' }}>
           <div className="big">{fmtNum(bw.w)} <span className="muted" style={{ fontSize: '1rem' }}>{S.unit}</span></div>
-          {delta !== null && (
+          {/* only when it actually moved — an unchanged weight used to read as "− 0" */}
+          {!!delta && (
             <span className="small row" style={{ gap: 2, fontWeight: 500, color: bwDeltaColor(delta, bw.w) }}>
-              <Icon name={delta > 0 ? 'arrowUp' : delta < 0 ? 'arrowDown' : 'minus'} style={{ fontSize: 12 }} />
+              <Icon name={delta > 0 ? 'arrowUp' : 'arrowDown'} style={{ fontSize: 12 }} />
               {fmtNum(Math.abs(delta))}
             </span>
           )}

@@ -1,9 +1,93 @@
 # Changelog
 
-## v1.2.2 — 2026-07-23
+## v1.2.2 — 2026-07-25
 
-One codebase, two flavors: openGym is now also a standalone mobile app — and it ships as a
-direct APK download, not through app stores.
+Training that moves on its own: an exercise can now be logged by time instead of reps, the
+next weight follows a progression rule you choose rather than a single hard-coded hint, and
+every lift carries an estimated 1RM. Plus a standalone mobile app, a shareable plan, and an
+importer for your history from other apps.
+
+### Timed sets and a timer for the set itself (#16)
+
+- ⏱️ **Reps or time, per exercise.** Planks, hangs, wall sits, dead hangs and loaded
+  carries no longer have to be filed under cardio to be timed. Each exercise in a routine
+  picks its own mode, and a timed set can still carry weight for a weighted plank or a
+  farmer's walk.
+- ▶️ **A work timer, separate from the rest timer.** Start a timed set and it counts the
+  hold down, beeping and buzzing at zero exactly as the rest timer does, then checks the
+  set off itself. The two timers can never run at once — they mean opposite things.
+- Finishing a hold early logs **the time you actually held**, not the target. A 38-second
+  hold against a 45-second target is recorded as 38 seconds.
+- The mode travels everywhere it should: routine editor, workout, history, exercise
+  statistics (timed exercises chart their longest hold), the printable plan and the shared
+  plan file.
+- Plans made before this release are read exactly as they always were — nothing to migrate.
+
+### Progression rules you can read (#17)
+
+- 📈 **Pick a rule per routine, override it per exercise.** Linear progression, **Greyskull
+  LP** (two straight sets plus an AMRAP final set, with double jumps and a 10 % reset),
+  double progression through a rep range, or adding time for timed work. Or none at all.
+- 🧾 **Every target explains itself.** "Every rep last time — 2.5 kg more." "Missed reps
+  3 sessions running — reset to 55 kg and work back up." The rule is visible before you
+  train, not after.
+- The session opens with the right weights already in the rows, instead of suggesting them
+  once you are standing at the bar.
+- 🚫 **A bad session can't look like a good one.** Short reps count as a miss even when you
+  checked the set off; a set you never checked counts as a miss because you did not do it.
+  Nothing advances the load on a session that fell apart.
+- Stalls and deloads are worked out from your log every time they are needed. Nothing is
+  written back into a finished workout and no counters are stored, so fixing a mistyped set
+  immediately produces the right next target.
+- Lower-body lifts step up in larger jumps than upper-body ones by default, and any
+  exercise can set its own step.
+- Bodyweight exercises progress in **reps**, because there is no load to add to a push-up
+  and no load to take off it either.
+
+### Estimated 1RM (#18)
+
+- 💪 **An estimated one-rep max for every lift**, in the exercise progress card (with its
+  own curve you can switch to) and in the exercise detail sheet.
+- It always names the set it came from — "from 90 kg × 5 on 15 Jul" — because an estimate
+  off a heavy triple and one off a set of ten are very different claims.
+- 🧮 **A calculator** for a set you have not done yet, so the number is reachable before
+  there is any history.
+- Epley by default, and it **refuses to guess above 12 reps**, where the common formulas
+  disagree by double digits.
+- A new best estimate is reported at the end of a workout separately from a weight PR —
+  same weight for more reps is real progress, but it is not a heavier lift.
+
+### Share a plan
+
+- 📤 **Send someone your plan.** Plan → *Share your plan* writes a small file with your
+  routines, the week schedule and any custom exercises they use — and nothing else. No
+  workouts, no weigh-ins, no settings.
+- Importing **merges**: shared routines arrive as new ones with fresh ids, custom exercises
+  are matched by name so they are not duplicated, and your own plan is never overwritten.
+  Taking the week schedule with it is optional.
+- 🖨️ **A printable plan** (Save as PDF) laid out so a single exercise never breaks across
+  a page.
+
+### Fixes
+
+- A shared plan file naming an exercise this build doesn't have can no longer take the app
+  down. Unknown ids are dropped on import, anything that slips through renders as a
+  placeholder you can delete, and an error boundary around the screens means a bad state is
+  recoverable by switching tabs instead of reloading.
+- Importing from another app converts weights **per row**, not per file. FitNotes writes the
+  unit on each set, so a mixed export used to land 185 lb as 185 kg.
+- Numbers follow the UI language instead of a hardcoded locale, which was putting Swiss
+  apostrophes ("7'535 kg") in front of everyone. Volume stays in your own unit rather than
+  switching to tonnes, which was wrong for pound profiles.
+- Taking over a week schedule from a shared plan now really replaces Monday–Sunday instead
+  of only the days the shared file happened to fill.
+- The body-weight slider's ceiling follows your unit (300 kg / 660 lb).
+- "Best: 85 Kg" is capitalised correctly again.
+
+### One codebase, two flavors
+
+openGym is also a standalone mobile app — and it ships as a direct APK download, not
+through app stores.
 
 - 📱 **Standalone mobile app.** The same frontend now also builds as a native iPhone /
   Android app (Capacitor) — the install-and-done flavor of openGym: no account, no server,

@@ -21,6 +21,8 @@ cp .env.example .env
 docker compose up -d --build      # api + web + media on :8080
 # frontend hot reload:
 cd frontend && npm install && npm run dev
+# training logic (progression rules, 1RM, how a session is read back):
+cd frontend && npm test
 ```
 
 ## Guidelines
@@ -32,12 +34,17 @@ cd frontend && npm install && npm run dev
 - **Don't commit** the exercise media (`media/`) or `data/` — they're gitignored.
 - **Test the flow** you touched — click through the affected screens (and the workout flow) in a
   browser before opening a PR.
+- **Training logic gets a unit test.** Anything deciding what you lift next, or reading a logged
+  session back, belongs in a pure helper in `src/lib` with tests beside it (`npm test`). These
+  rules are easy to get subtly wrong and nearly impossible to verify by clicking — the
+  progression engine grew two real bugs that only a test pinned down.
 
 ## Good first issues
 
 - Additional starter plans (upper/lower, full-body, 5×5…)
 - More languages for the exercise instructions (the dataset ships several)
-- Importers from other trackers (Strong, Hevy CSV → openGym JSON)
+- Percentage / training-max programming (5/3/1-style) on top of the progression engine in
+  `src/lib/progression.js` — the policy interface is already there
 - Accessibility passes on the workout and chart screens
 
 ## Reporting bugs

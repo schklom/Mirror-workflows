@@ -61,7 +61,11 @@ as a home-screen app, passkey sign-in, offline support, sync across your phone a
 - 🗓️ **Reschedule any day** — sick, missed a session, or fewer gym days this week? Move a workout to another day without touching your weekly plan
 - ▶️ **Guided workouts** — it knows what day it is and starts today's session; asks your body weight first, pre-fills your weights from last time, rest timer, PR detection, per-exercise weight tracking
 - 🔗 **Supersets** — build them, and log them back-to-back with a rest only after the pair
+- ⏱️ **Timed exercises** — planks, hangs, wall sits and loaded carries are logged by time, not reps, with a work timer that counts the set itself (separate from the rest timer) and logs the time you actually held. They can carry weight too
+- 📈 **Progression that follows a rule** — pick one per routine, override it per exercise: linear, **Greyskull LP** (AMRAP top set, double jumps, 10 % resets), double progression through a rep range, or adding time. Your weights are already right when the session opens, and every target says *why* it's that number. Missed reps never advance the load, stalls trigger a deload, and bodyweight exercises progress in reps instead
+- 💪 **Estimated 1RM** — per exercise, from your best eligible set (it names which one), with its own progress curve and a calculator for sets you haven't done. Won't guess above 12 reps
 - 🏃 **Cardio** — log time + speed, not just weight × reps
+- 📤 **Share a plan** — send someone your routines and week schedule as a small file (no workouts, no weigh-ins), or print it as a clean PDF. Importing merges, so their plan is never overwritten
 - 🔧 **Filter by equipment** — narrow the library to what you actually own; the options adapt to what you've picked, so every combination on screen has results behind it
 - ✨ **Your own exercises** — a name and a body part is enough; they behave like built-in ones everywhere, with an optional description instead of an animation
 - 🟩 **Activity heatmap** — a GitHub-style year view, shaded by time spent training
@@ -154,6 +158,9 @@ Push notification keys are generated on first run and saved to `./data/vapid.jso
 Rough, community-driven — ideas and PRs welcome:
 
 - [x] Standalone mobile app — Android APK to sideload ([download](https://opengym.duarte-santos.ch)); on iOS as a self-hosted PWA (no store listings planned)
+- [x] Automatic progression programs (linear, Greyskull LP, double progression) with stalls and deloads
+- [x] Estimated 1RM per exercise
+- [ ] Percentage / training-max programming (5/3/1-style) on top of the progression engine
 - [ ] More starter plans (upper/lower, full-body, 5×5)
 - [x] Importers from FitNotes / Strong / Hevy, and body weight from Apple Health
 - [ ] Body measurements (waist, arms…) alongside weight
@@ -166,6 +173,11 @@ React 19 + Vite (React Router, Zustand) · Node (no framework) · nginx · Docke
 WebAuthn · exercise data from [hasaneyldrm/exercises-dataset](https://github.com/hasaneyldrm/exercises-dataset).
 No database server, no cloud dependencies — the frontend builds inside Docker, so self-hosting
 stays a one-command `docker compose up`.
+
+The training logic — progression rules, 1RM estimation, how a logged session is read back —
+lives in pure functions under `frontend/src/lib/` with tests next to them: `npm test` in
+`frontend/`. Vitest is a dev dependency; the app itself ships no runtime dependencies beyond
+React, the router and Zustand.
 
 ## Contributing
 

@@ -3,7 +3,7 @@ import { useStore } from './store/useStore.js'
 import { useUI } from './store/useUI.js'
 import { EXDB, EXIDX, BODYPARTS, isCardio, allExercises, equipmentOf } from './lib/exercises.js'
 import { fmtDate, fmtNum, fmtVol, fmtDur, durPart, todayISO, uid, exCount, DAYN, MONTHS_LONG, ACCENTS } from './lib/format.js'
-import { lastEntryFor, bestWeightFor, buildSets, effectiveRoutineId, workoutVolume, setsDone, setsDoneActive, lastBW, supersetUnits, unitOf, setLabel, defaultConfig, cleanupSg } from './lib/history.js'
+import { lastEntryFor, bestWeightFor, buildSets, effectiveRoutineId, workoutVolume, setsDone, setsDoneActive, lastBW, supersetUnits, unitOf, setLabel, defaultConfig, cleanupSg, modeOf } from './lib/history.js'
 import { beep, vibrate } from './lib/sound.js'
 import { t, instrFor, getLang, INSTR_LANGS } from './lib/i18n.js'
 import { nav } from './lib/nav.js'
@@ -11,12 +11,14 @@ import { starterRoutines } from './lib/starter.js'
 import Media, { Thumb } from './components/Media.jsx'
 import Stepper from './components/Stepper.jsx'
 import Icon from './components/Icon.jsx'
-import { Button, Slider, Switch } from './components/ui.jsx'
+import { Button, Slider, Switch, Segmented, SelectRow } from './components/ui.jsx'
 import { glyphOf, GLYPH_GROUPS, DEFAULT_GLYPH } from './lib/glyphs.js'
 import BodyMap from './components/BodyMap.jsx'
 import { loadOfWorkouts } from './lib/muscles.js'
 import { parseImport, mergeImport } from './lib/import-csv.js'
 import { buildPlanBundle, parsePlan, mergePlan, printPlan } from './lib/plan-share.js'
+import { estimate1RM, best1RM, is1RMRecord, REP_CAP } from './lib/onerm.js'
+import { nextPrescription, applyPrescription, policyFor, defaultIncrement, POLICIES_FOR, POLICY_NAME, POLICY_DESC } from './lib/progression.js'
 import { MOBILE, shareExport } from './lib/mobile.js'
 
 const S = () => useStore.getState().S
@@ -242,6 +244,34 @@ function GoalSheet({ close }) {
 export const goalSheet = () => ui().openSheet(close => <GoalSheet close={close} />)
 
 /* ============================ exercise detail ============================ */
+// Estimated 1RM for one exercise (issue #18): what the log already implies, plus a calculator
+// for a set you have not done — so the number is reachable before there is any history.
+function OneRM({ ex }) {
+  const st = useStore(s => s.S)
+  const best = best1RM(st, ex.id)
+  const [w, setW] = useState(best ? best.w : (st.exWeights[ex.id] || {}).w || 20)
+  const [r, setR] = useState(best ? best.r : 5)
+  const est = estimate1RM(w, r)
+  return <>
+    <h4 className="sec">{t('Estimated 1RM')}</h4>
+    {best && <div className="small" style={{ marginBottom: 8 }}>
+      {t('From your log:')} <b className="accent">{fmtNum(best.est)} {st.unit}</b>
+      <span className="dim"> · {t('{0} × {1} on {2}', fmtNum(best.w) + ' ' + st.unit, best.r, fmtDate(best.d, true))}</span>
+    </div>}
+    <div className="row cfgrow" style={{ marginBottom: 10 }}>
+      <Stepper label={t('Weight ({0})', st.unit)} value={w} step={2.5} onChange={setW} />
+      <Stepper label={t('Reps')} value={r} step={1} decimal={false} onChange={setR} />
+    </div>
+    <div className="row between" style={{ marginBottom: 4 }}>
+      <span className="muted small">{t('Estimate')}</span>
+      <b className="accent" style={{ fontSize: 20 }}>{est === null ? '—' : fmtNum(est) + ' ' + st.unit}</b>
+    </div>
+    <div className="small dim">{est === null
+      ? t('Enter a weight and 1–{0} reps — beyond that an estimate is guesswork.', REP_CAP)
+      : t('Epley formula — a calculation from one set, not a tested max.')}</div>
+  </>
+}
+
 function ExerciseDetail({ ex, close }) {
   const st = useStore(s => s.S)
   const last = lastEntryFor(st, ex.id)
@@ -256,13 +286,14 @@ function ExerciseDetail({ ex, close }) {
       {(ex.sm || []).slice(0, 3).map((s, i) => <span key={i} className="tag">{t(s)}</span>)}
     </div>
     {ex.desc && <div className="exnote">{ex.desc}</div>}
-    {best > 0 && <div className="small row" style={{ marginBottom: 6, gap: 5 }}><Icon name="trophy" style={{ fontSize: 14, color: 'var(--yellow)' }} />{t('Best:')} <b className="accent">{fmtNum(best)} {st.unit}</b>{last ? ` · ${t('last')} ${fmtDate(last.d)}: ${last.sets.map(s => setLabel(ex.id, s)).join(', ')}` : ''}</div>}
+    {best > 0 && <div className="small row" style={{ marginBottom: 6, gap: 5 }}><Icon name="trophy" style={{ fontSize: 14, color: 'var(--yellow)' }} />{t('Best:')} <b className="accent">{fmtNum(best)} {st.unit}</b>{last ? ` · ${t('last')} ${fmtDate(last.d)}: ${last.sets.map(s => setLabel(ex.id, s, last.target)).join(', ')}` : ''}</div>}
     <Button variant="primary" icon="plus" style={{ margin: '10px 0 4px' }} onClick={() => addToRoutineSheet(ex)}>{t('Add to my plan')}</Button>
     {ex.custom && <div className="row" style={{ gap: 8, marginTop: 8 }}>
       <Button icon="pencil" style={{ flex: 1 }} onClick={() => { close(); customExSheet(ex) }}>{t('Edit')}</Button>
       <Button variant="danger" icon="trash" style={{ flex: 1 }} onClick={() => deleteCustomEx(ex, close)}>{t('Delete')}</Button>
     </div>}
-    {instrFor(ex).length > 0 && <><h4 className="sec">{t('How to')}{!INSTR_LANGS.includes(getLang()) && <span className="dim" style={{ textTransform: 'none', letterSpacing: 0 }}> · {t('instructions in English')}</span>}</h4><ol className="steps-list">{instrFor(ex).map((s, i) => <li key={i}>{s}</li>)}</ol></>}
+    {!isCardio(ex) && <OneRM ex={ex} />}
+    {instrFor(ex).length > 0 &&<><h4 className="sec">{t('How to')}{!INSTR_LANGS.includes(getLang()) && <span className="dim" style={{ textTransform: 'none', letterSpacing: 0 }}> · {t('instructions in English')}</span>}</h4><ol className="steps-list">{instrFor(ex).map((s, i) => <li key={i}>{s}</li>)}</ol></>}
   </>
 }
 export const exerciseDetailSheet = ex => ui().openSheet(close => <ExerciseDetail ex={ex} close={close} />)
@@ -282,7 +313,7 @@ function AddToRoutine({ ex, close }) {
       const r = isNew ? S().routines[S().routines.length - 1] : st.routines.find(x => x.id === rid)
       toast(t('“{0}” added to {1}', ex.n, r ? r.name : t('routine')))
       if (isNew && r) nav('/plan/r/' + r.id)
-    })
+    }, null, isNew ? null : st.routines.find(x => x.id === rid))
   }
   return <>
     <h3 className="capitalize">{t('Add “{0}”', ex.n)}</h3>
@@ -417,14 +448,57 @@ function ExercisePicker({ onPick, close }) {
 export const exercisePicker = onPick => ui().openSheet(close => <ExercisePicker onPick={onPick} close={close} />)
 
 /* ============================ exercise config ============================ */
-function ExConfig({ ex, existing, onSave, onDelete, close }) {
+// Progression settings for one exercise (issue #17). Shown inside the config sheet because
+// "how does this lift go up" belongs next to sets and reps, not in a separate screen. Left
+// on "follow the routine" it inherits, so most people never touch it.
+function ProgressionFields({ ex, mode, c, setC, routine, unit }) {
+  const options = POLICIES_FOR[mode] || ['off']
+  if (options.length < 2) return null
+  const inherited = policyFor({ id: ex.id }, routine, mode)
+  const active = policyFor({ ...c, id: ex.id }, routine, mode)
+  const inc = c.inc > 0 ? c.inc : (mode === 'time' ? 5 : defaultIncrement(ex.id, unit))
+  return <>
+    <h4 className="sec">{t('Progression')}</h4>
+    <div className="sect-b" style={{ marginBottom: 8 }}>
+      <SelectRow title={t('Rule')} sheetTitle={t('Progression')} value={c.prog || ''} onChange={v => setC(x => ({ ...x, prog: v || undefined }))}
+        options={[{ value: '', label: t('Follow the routine ({0})', t(POLICY_NAME[inherited])) },
+          ...options.map(p => ({ value: p, label: t(POLICY_NAME[p]) }))]} />
+    </div>
+    <div className="small dim" style={{ marginBottom: active === 'off' ? 18 : 10 }}>{t(POLICY_DESC[active])}</div>
+    {active !== 'off' && <div className="row cfgrow" style={{ marginBottom: 18 }}>
+      <Stepper label={mode === 'time' ? t('Step (seconds)') : t('Step ({0})', unit)} value={inc}
+        step={mode === 'time' ? 5 : 1.25} decimal={mode !== 'time'} onChange={v => setC(x => ({ ...x, inc: v }))} />
+      {active === 'double' && <Stepper label={t('Reps from')} value={c.repsMin || Math.max(1, (c.reps || 10) - 2)}
+        step={1} decimal={false} onChange={v => setC(x => ({ ...x, repsMin: v }))} />}
+    </div>}
+  </>
+}
+
+function ExConfig({ ex, existing, onSave, onDelete, close, routine }) {
   const st = useStore(s => s.S)
   const cardio = isCardio(ex.id)
   const [c, setC] = useState(existing || defaultConfig(ex.id))
+  // Cardio keeps its own duration+speed form; the reps/time choice (issue #16) is offered for
+  // everything else, which is where the gap was — planks, hangs, wall sits, loaded carries.
+  const mode = cardio ? 'cardio' : modeOf({ ...c, id: ex.id })
+  // Keep whatever the other mode already had (sets, weight) and fill only what is missing.
+  const setMode = m => setC(x => ({ ...defaultConfig(ex.id, m), ...x, mode: m }))
   const save = () => {
     close()
-    if (cardio) onSave({ sets: Math.max(1, Math.round(c.sets) || 1), min: Math.max(1, Math.round(c.min) || 20), speed: Math.max(0, c.speed || 8) })
-    else onSave({ sets: Math.max(1, Math.round(c.sets) || 3), reps: Math.max(1, Math.round(c.reps) || 10), weight: Math.max(0, c.weight || 0) })
+    const sets = Math.max(1, Math.round(c.sets) || (cardio ? 1 : 3))
+    // Only carry progression settings that differ from the inherited default, so a plan file
+    // stays readable and "follow the routine" keeps meaning exactly that.
+    const prog = {}
+    if (c.prog) prog.prog = c.prog
+    if (c.inc > 0) prog.inc = c.inc
+    if (cardio) onSave({ sets, min: Math.max(1, Math.round(c.min) || 20), speed: Math.max(0, c.speed || 8) })
+    else if (mode === 'time') onSave({ sets, mode: 'time', sec: Math.max(1, Math.round(c.sec) || 45), weight: Math.max(0, c.weight || 0), ...prog })
+    else {
+      const reps = Math.max(1, Math.round(c.reps) || 10)
+      const out = { sets, mode: 'reps', reps, weight: Math.max(0, c.weight || 0), ...prog }
+      if (policyFor({ ...c, id: ex.id }, routine, 'reps') === 'double') out.repsMin = Math.min(reps, Math.max(1, Math.round(c.repsMin) || Math.max(1, reps - 2)))
+      onSave(out)
+    }
   }
   return <>
     <h3 className="capitalize">{ex.n}</h3>
@@ -434,23 +508,35 @@ function ExConfig({ ex, existing, onSave, onDelete, close }) {
       <span className="tag">{t(ex.tg || ex.bp)}</span><span className="tag">{t(ex.eq)}</span>
     </div>
     {ex.desc && <div className="exnote">{ex.desc}</div>}
-    <div className="row cfgrow" style={{ marginBottom: 18 }}>
+    {!cardio && <div style={{ marginBottom: 14 }}>
+      <Segmented className="seg-range" value={mode} onChange={setMode}
+        options={[{ value: 'reps', label: t('Reps') }, { value: 'time', label: t('Time') }]} />
+    </div>}
+    <div className="row cfgrow" style={{ marginBottom: mode === 'time' ? 8 : 18 }}>
       {cardio ? <>
         <Stepper label={t('Intervals')} value={c.sets} step={1} decimal={false} onChange={v => setC(x => ({ ...x, sets: v }))} />
         <Stepper label={t('Minutes')} value={c.min} step={1} decimal={false} onChange={v => setC(x => ({ ...x, min: v }))} />
         <Stepper label={t('Speed (km/h)')} value={c.speed} step={0.5} onChange={v => setC(x => ({ ...x, speed: v }))} />
+      </> : mode === 'time' ? <>
+        <Stepper label={t('Sets')} value={c.sets} step={1} decimal={false} onChange={v => setC(x => ({ ...x, sets: v }))} />
+        <Stepper label={t('Seconds')} value={c.sec} step={5} decimal={false} onChange={v => setC(x => ({ ...x, sec: v }))} />
+        <Stepper label={t('Weight ({0})', st.unit)} value={c.weight} step={2.5} onChange={v => setC(x => ({ ...x, weight: v }))} />
       </> : <>
         <Stepper label={t('Sets')} value={c.sets} step={1} decimal={false} onChange={v => setC(x => ({ ...x, sets: v }))} />
         <Stepper label={t('Reps')} value={c.reps} step={1} decimal={false} onChange={v => setC(x => ({ ...x, reps: v }))} />
         <Stepper label={t('Weight ({0})', st.unit)} value={c.weight} step={2.5} onChange={v => setC(x => ({ ...x, weight: v }))} />
       </>}
     </div>
+    {mode === 'time' && <div className="small dim" style={{ marginBottom: 18 }}>
+      {t('A timer runs while you hold the set. Leave the weight at 0 for bodyweight holds.')}
+    </div>}
+    <ProgressionFields ex={ex} mode={mode} c={c} setC={setC} routine={routine} unit={st.unit} />
     <Button variant="primary" onClick={save}>{existing ? t('Save') : t('Add to routine')}</Button>
     {ex.custom && <><div style={{ height: 8 }} /><Button icon="pencil" onClick={() => { close(); customExSheet(ex) }}>{t('Edit or delete this exercise')}</Button></>}
     {onDelete && <><div style={{ height: 8 }} /><Button variant="danger" onClick={() => { close(); onDelete() }}>{t('Remove from routine')}</Button></>}
   </>
 }
-export const exConfigSheet = (ex, existing, onSave, onDelete) => ui().openSheet(close => <ExConfig ex={ex} existing={existing} onSave={onSave} onDelete={onDelete} close={close} />)
+export const exConfigSheet = (ex, existing, onSave, onDelete, routine) => ui().openSheet(close => <ExConfig ex={ex} existing={existing} onSave={onSave} onDelete={onDelete} routine={routine} close={close} />)
 
 /* ============================ glyph picker ============================ */
 // Grouped by what the glyph means for a training day, so picking one is a scan
@@ -610,7 +696,7 @@ function WorkoutDetail({ w, close }) {
       return <div key={i} className="row" style={{ marginBottom: 12, alignItems: 'flex-start' }}>
         {ex && <Thumb ex={ex} />}
         <div className="grow"><div className="tt capitalize" style={{ fontWeight: 600 }}>{ex ? ex.n : (e.n || e.id)} {w.prs && w.prs.includes(e.id) && <span className="pr"><Icon name="trophy" />PR</span>}</div>
-          <div className="ss">{e.sets.filter(s => s.done).map(s => setLabel(e.id, s)).join('  ·  ') || t('no sets')}</div></div>
+          <div className="ss">{e.sets.filter(s => s.done).map(s => setLabel(e.id, s, e.target)).join('  ·  ') || t('no sets')}</div></div>
       </div>
     })}
     <Button variant="danger" onClick={() => confirmSheet({ title: t('Delete workout?'), message: t('This removes it from your history for good.'), confirmText: t('Delete'), danger: true, onConfirm: () => { update(s => { s.workouts = s.workouts.filter(x => x.id !== w.id) }); close(); toast(t('Workout deleted')) } })}>{t('Delete workout')}</Button>
@@ -680,7 +766,13 @@ export function startFlow(routineId) {
 export function beginWorkout(routineId, bw) {
   const st = S()
   const r = routineId ? st.routines.find(x => x.id === routineId) : null
-  const entries = (r ? r.ex : []).map(cfg => ({ id: cfg.id, sg: cfg.sg, target: { ...cfg }, sets: buildSets(st, cfg) }))
+  // The prescription is applied as the session is built, so you walk up to the bar with the
+  // right weight already on the screen instead of being told about it afterwards. `plan` is
+  // kept on the entry purely so the workout can explain the number it chose.
+  const entries = (r ? r.ex : []).map(cfg => {
+    const plan = nextPrescription(st, cfg, r)
+    return { id: cfg.id, sg: cfg.sg, target: { ...cfg }, plan, sets: applyPrescription(buildSets(st, cfg), plan) }
+  })
   update(s => {
     s.active = { id: uid(), d: todayISO(), start: Date.now(), routineId, name: r ? r.name : t('Freestyle'), bw: bw || null, cur: 0, entries }
   })
@@ -750,7 +842,7 @@ function WorkoutComplete({ close }) {
 }
 export const workoutCompleteSheet = () => ui().openSheet(close => <WorkoutComplete close={close} />, { kind: 'center' })
 
-function FinishSummary({ w, prs, close }) {
+function FinishSummary({ w, prs, e1prs = [], close }) {
   const st = useStore(s => s.S)
   return <div style={{ textAlign: 'center', padding: '8px 0' }}>
     <div style={{ fontSize: 44, display: 'flex', justifyContent: 'center', color: 'var(--acc)' }}><Icon name="trophy" /></div>
@@ -761,7 +853,10 @@ function FinishSummary({ w, prs, close }) {
       <div className="tile"><div className="l">{t('Sets')}</div><div className="v" style={{ fontSize: '1.1rem' }}>{setsDone(w)}</div></div>
       <div className="tile"><div className="l">{t('PRs')}</div><div className="v" style={{ fontSize: 20 }}>{prs.length || '—'}</div></div>
     </div>
-    {prs.length > 0 && <div style={{ textAlign: 'left', marginBottom: 12 }}>{prs.map(id => <div key={id} className="small accent capitalize row" style={{ gap: 5 }}><Icon name="trophy" style={{ fontSize: 13 }} />{t('New PR:')} {(EXIDX[id] || {}).n || id}</div>)}</div>}
+    {(prs.length > 0 || e1prs.length > 0) && <div style={{ textAlign: 'left', marginBottom: 12 }}>
+      {prs.map(id => <div key={id} className="small accent capitalize row" style={{ gap: 5 }}><Icon name="trophy" style={{ fontSize: 13 }} />{t('New PR:')} {(EXIDX[id] || {}).n || id}</div>)}
+      {e1prs.map(p => <div key={p.id} className="small accent capitalize row" style={{ gap: 5 }}><Icon name="chartLine" style={{ fontSize: 13 }} />{t('Best estimated 1RM:')} {(EXIDX[p.id] || {}).n || p.id} · {fmtNum(p.est)} {st.unit}</div>)}
+    </div>}
     <h4 className="sec" style={{ textAlign: 'left' }}>{t('What you just trained')}</h4>
     <BodyMap load={loadOfWorkouts([w])} body={st.body} />
     <div style={{ height: 14 }} />
@@ -782,13 +877,21 @@ function doFinishWorkout() {
   const A = st.active
   if (!A) return
   const prs = []
+  const e1prs = []
   A.entries.forEach(e => {
     const mx = Math.max(0, ...e.sets.filter(s => s.done).map(s => s.w))
     if (mx > 0 && mx > bestWeightFor(st, e.id)) prs.push(e.id)
+    // A heavier estimate without a heavier top set is its own kind of progress —
+    // same weight for more reps. Reported separately so it can't be read as a load PR.
+    const rec = is1RMRecord(st, e.id, e)
+    if (rec && !prs.includes(e.id)) e1prs.push({ id: e.id, ...rec })
   })
   const w = {
     id: A.id, d: A.d, start: A.start, end: Date.now(), routineId: A.routineId, name: A.name, bw: A.bw,
-    entries: A.entries.map(e => ({ id: e.id, sets: e.sets, topW: e.topW || null })).filter(e => e.sets.some(s => s.done)),
+    // `target` (what the session prescribed) is kept alongside the sets: without it a
+    // finished workout cannot say whether it hit its reps, and a timed session reads back
+    // as "0 reps". It is what the progression engine works from.
+    entries: A.entries.map(e => ({ id: e.id, sets: e.sets, topW: e.topW || null, target: e.target || null })).filter(e => e.sets.some(s => s.done)),
     prs
   }
   w.vol = workoutVolume(w)
@@ -802,5 +905,5 @@ function doFinishWorkout() {
   })
   useUI.getState().stopRest()
   beep(snd(), 880, 0.15); beep(snd(), 1100, 0.15, 0.18); beep(snd(), 1320, 0.3, 0.36)
-  ui().openSheet(close => <FinishSummary w={w} prs={prs} close={close} />, { kind: 'center', locked: true })
+  ui().openSheet(close => <FinishSummary w={w} prs={prs} e1prs={e1prs} close={close} />, { kind: 'center', locked: true })
 }

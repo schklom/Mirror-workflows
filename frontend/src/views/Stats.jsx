@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/useStore.js'
-import { EXIDX, isCardio } from '../lib/exercises.js'
-import { bestWeightFor, lastBW, streakWeeks, setLabel } from '../lib/history.js'
+import { EXIDX } from '../lib/exercises.js'
+import { lastBW, streakWeeks, setLabel, modeOf } from '../lib/history.js'
 import { fmtNum, fmtDate, fmtVol, todayISO, weekKey } from '../lib/format.js'
 import { t } from '../lib/i18n.js'
 import { bwSheet, goalSheet, calendarSheet, workoutDetailSheet, WorkoutRow, bwDeltaColor } from '../sheets.jsx'
@@ -11,6 +11,7 @@ import Heatmap from '../components/Heatmap.jsx'
 import Icon from '../components/Icon.jsx'
 import BodyMap, { BodyMapLegend } from '../components/BodyMap.jsx'
 import { loadOfWorkouts, rankOf, MUSCLE_NAME } from '../lib/muscles.js'
+import { e1rmSeries, best1RM } from '../lib/onerm.js'
 import { Button, Segmented, SelectRow } from '../components/ui.jsx'
 
 // Which muscles the training in a window actually hit — and, the point of the card,
@@ -62,6 +63,7 @@ export default function Stats() {
   const S = useStore(s => s.S)
   const [range, setRange] = useState(90)
   const [exId, setExId] = useState(null)
+  const [exMetric, setExMetric] = useState('top')
   const now = Date.now()
 
   const bwPts = S.bodyweight.filter(b => range === 0 || (b.t || new Date(b.d).getTime()) > now - range * 86400000)
@@ -72,17 +74,34 @@ export default function Stats() {
 
   const exHist = [...new Set(S.workouts.flatMap(w => w.entries.map(e => e.id)))].filter(id => EXIDX[id]).sort((a, b) => EXIDX[a].n < EXIDX[b].n ? -1 : 1)
   const curEx = exId && exHist.includes(exId) ? exId : exHist[0] || null
-  const curCardio = curEx && isCardio(curEx)
-  const metric = s => curCardio ? (s.speed || 0) : (s.w || 0)
-  const exUnit = curCardio ? 'km/h' : S.unit
+  // How this exercise was logged most recently decides what the curve means: top weight,
+  // longest hold or top speed. Sets logged in another mode lack the field and score 0, so a
+  // switched exercise drops its old points instead of mixing seconds into a weight chart.
+  const curMode = curEx ? (() => {
+    for (let i = S.workouts.length - 1; i >= 0; i--) {
+      const en = S.workouts[i].entries.find(e => e.id === curEx)
+      if (en) return modeOf({ ...(en.target || {}), id: curEx })
+    }
+    return modeOf({ id: curEx })
+  })() : 'reps'
+  const curCardio = curMode === 'cardio'
+  const curTimed = curMode === 'time'
+  const metric = s => curCardio ? (s.speed || 0) : curTimed ? (s.sec || 0) : (s.w || 0)
+  const exUnit = curCardio ? 'km/h' : curTimed ? 's' : S.unit
   let exPts = [], exList = [], exBest = 0
   if (curEx) {
     S.workouts.forEach(w => {
       const en = w.entries.find(e => e.id === curEx)
-      if (en) { const mx = Math.max(0, ...en.sets.filter(s => s.done).map(metric), curCardio ? 0 : (en.topW || 0)); if (mx > 0) { exPts.push({ t: w.start, y: mx, d: w.d, sets: en.sets.filter(s => s.done) }); if (mx > exBest) exBest = mx } }
+      if (en) { const mx = Math.max(0, ...en.sets.filter(s => s.done).map(metric), curCardio || curTimed ? 0 : (en.topW || 0)); if (mx > 0) { exPts.push({ t: w.start, y: mx, d: w.d, sets: en.sets.filter(s => s.done), target: en.target }); if (mx > exBest) exBest = mx } }
     })
     exList = exPts.slice(-5).reverse()
   }
+  // Estimated 1RM (issue #18) — only reps-mode training produces one, so cardio and timed
+  // work simply have no points and the toggle stays hidden.
+  const e1Pts = curEx ? e1rmSeries(S, curEx) : []
+  const e1Best = curEx ? best1RM(S, curEx) : null
+  const showE1 = e1Pts.length > 0
+  const onE1 = showE1 && exMetric === 'e1rm'
 
   return <>
     <div className="hdr"><div><h1>{t('Stats')}</h1><div className="sub">{t('Progress & history')}</div></div>
@@ -123,10 +142,18 @@ export default function Stats() {
             <SelectRow title={t('Exercise')} sheetTitle={t('Exercise progress')} value={curEx} onChange={setExId}
               options={exHist.map(id => ({ value: id, label: EXIDX[id].n }))} />
           </div>
-          <div className="chart"><LineChart points={exPts.map(p => ({ t: p.t, y: p.y, d: p.d }))} h={150} unit={exUnit} color="var(--blue)" /></div>
+          {showE1 && <Segmented className="seg-range" value={exMetric} onChange={setExMetric}
+            options={[{ value: 'top', label: t('Top set') }, { value: 'e1rm', label: t('Est. 1RM') }]} />}
+          <div className="chart"><LineChart points={(onE1 ? e1Pts : exPts).map(p => ({ t: p.t, y: p.y, d: p.d }))} h={150} unit={exUnit} color="var(--blue)" /></div>
           <div style={{ marginTop: 8 }}>{exList.map((p, i) => <div key={i} className="row between small" style={{ padding: '6px 0', borderBottom: 'var(--hair) solid var(--sep)' }}>
-            <span className="muted">{fmtDate(p.d, true)}</span><span>{p.sets.map(s => setLabel(curEx, s)).join('  ')}</span></div>)}</div>
-          <div className="small dim" style={{ marginTop: 8 }}>{curCardio ? t('Top speed per workout') : t('Best set weight per workout')} · {t('Best:')} <b className="accent">{fmtNum(exBest)} {exUnit}</b></div>
+            <span className="muted">{fmtDate(p.d, true)}</span><span>{p.sets.map(s => setLabel(curEx, s, p.target)).join('  ')}</span></div>)}</div>
+          <div className="small dim" style={{ marginTop: 8 }}>
+            {onE1 ? t('Estimated 1RM per workout') : curCardio ? t('Top speed per workout') : curTimed ? t('Longest hold per workout') : t('Best set weight per workout')} · {t('Best:')}
+            {' '}<b className="accent">{fmtNum(onE1 ? e1Best.est : exBest)} {onE1 ? S.unit : exUnit}</b>
+          </div>
+          {showE1 && <div className="small dim" style={{ marginTop: 4 }}>
+            {t('Best estimate from {0} on {1} — an estimate, not a tested max.', fmtNum(e1Best.w) + ' ' + S.unit + ' × ' + e1Best.r, fmtDate(e1Best.d, true))}
+          </div>}
         </> : <div className="muted small">{t('Finish your first workout to see progress curves here.')}</div>}
       </div>
     </div>

@@ -554,6 +554,23 @@ h4.sec{
 .setrow .stp button{width:32px;height:40px}
 .setrow.done .n{background:var(--acc);color:var(--on-acc)}
 .setrow.done{opacity:.45}
+/* why the next target is what it is (issue #17) */
+.progline{
+  display:flex;align-items:flex-start;gap:7px;margin:6px 0 2px;
+  font-size:13px;line-height:1.38;color:var(--acc);
+}
+.progline.warn{color:var(--yellow)}
+.progline svg{flex:none;margin-top:2px}
+
+/* start a timed set (issue #16) — sits where you'd otherwise reach for the checkbox */
+.setrow .setgo{
+  width:30px;height:30px;border-radius:50%;flex:none;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--surface-2);color:var(--acc);font-size:14px;
+  transition:background var(--fast),opacity var(--fast);
+}
+.setrow .setgo:disabled{opacity:.3;cursor:default}
+.setrow .setgo:not(:disabled):active{background:var(--surface-3)}
 /* exercise-config sheet: three steppers side by side on narrow phones */
 .cfgrow{gap:8px}
 .cfgrow>div{flex:1;min-width:0}
@@ -574,6 +591,15 @@ h4.sec{
 #timer .t{font-size:26px;font-weight:600;letter-spacing:-.026em;font-variant-numeric:tabular-nums;min-width:66px}
 #timer .bar{flex:1;height:4px;background:var(--surface-3);border-radius:99px;overflow:hidden}
 #timer .bar i{display:block;height:100%;background:var(--acc);transition:width 1s linear}
+/* work timer (issue #16): the same bar doing the opposite job — outlined and tinted so a
+   glance tells "you are holding this" apart from "you are recovering". */
+#timer.working{border:var(--hair) solid var(--acc)}
+#timer.working .t{color:var(--acc)}
+#timer.working .grow{flex:1;min-width:0}
+#timer.working .lbl{
+  font-size:12px;color:var(--label-2);margin-bottom:5px;text-transform:capitalize;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
 
 /* ---------------------------------------------------------------- modal -- */
 #modal-root{position:fixed;inset:0;z-index:100;display:none}

@@ -1,15 +1,16 @@
 import { useNavigate, useParams } from 'react-router-dom'
 import { useEffect } from 'react'
 import { useStore } from '../store/useStore.js'
-import { exOr, isCardio } from '../lib/exercises.js'
-import { fmtNum, uid } from '../lib/format.js'
+import { exOr } from '../lib/exercises.js'
+import { uid } from '../lib/format.js'
 import { t } from '../lib/i18n.js'
-import { supersetUnits, cleanupSg } from '../lib/history.js'
+import { supersetUnits, cleanupSg, exLine } from '../lib/history.js'
 import { Thumb } from '../components/Media.jsx'
 import { glyphPicker, exercisePicker, exConfigSheet, confirmSheet } from '../sheets.jsx'
 import Icon from '../components/Icon.jsx'
 import { glyphOf } from '../lib/glyphs.js'
-import { Button } from '../components/ui.jsx'
+import { Button, SelectRow } from '../components/ui.jsx'
+import { POLICIES_FOR, POLICY_NAME, POLICY_DESC } from '../lib/progression.js'
 import BodyMap from '../components/BodyMap.jsx'
 import { loadOfRoutine, rankOf, MUSCLE_NAME } from '../lib/muscles.js'
 
@@ -46,6 +47,15 @@ export default function RoutineEdit() {
       <button className="iconbtn" aria-label={t('Pick an icon')} onClick={() => glyphPicker(r.emoji, g => update(s => { s.routines.find(x => x.id === id).emoji = g }))}><Icon name={glyphOf(r.emoji)} /></button>
     </div>
 
+    <div className="sect-b" style={{ marginBottom: 16 }}>
+      <SelectRow icon="chartLine" title={t('Progression')} sheetTitle={t('Progression')}
+        value={r.prog || 'linear'} onChange={v => update(s => { s.routines.find(x => x.id === id).prog = v })}
+        options={POLICIES_FOR.reps.map(p => ({ value: p, label: t(POLICY_NAME[p]), subtitle: t(POLICY_DESC[p]) }))} />
+    </div>
+    <div className="small dim" style={{ margin: '-10px 2px 16px' }}>
+      {t('Applies to every exercise in this routine that does not set its own rule.')}
+    </div>
+
     {r.ex.length ? <div className="list">{r.ex.map((e, i) => {
       // An unresolvable id is shown rather than skipped — hiding it left an entry you
       // could neither see nor delete, but that still turned up in the workout.
@@ -54,10 +64,10 @@ export default function RoutineEdit() {
       return <div key={i}>
         {unitFirst.has(i) && <div className="ss-label"><Icon name="link" />{t('Superset')}</div>}
         <div className={'item' + (inSS.has(i) ? ' in-ss' : '')} onClick={() => {
-          exConfigSheet(ex, e, cfg => edit(x => { Object.assign(x[i], cfg) }), () => edit(x => { x.splice(i, 1); cleanupSg(x) }))
+          exConfigSheet(ex, e, cfg => edit(x => { x[i] = { id: x[i].id, sg: x[i].sg, ...cfg } }), () => edit(x => { x.splice(i, 1); cleanupSg(x) }), r)
         }}>
           <Thumb ex={ex} />
-          <div className="grow"><div className="tt capitalize">{ex.n}</div><div className="ss">{isCardio(e.id) ? `${e.sets} × ${e.min || 20} min @ ${fmtNum(e.speed || 8)} km/h` : `${e.sets} × ${e.reps}${e.weight ? ' · ' + fmtNum(e.weight) + ' ' + S.unit : ''}`}</div></div>
+          <div className="grow"><div className="tt capitalize">{ex.n}</div><div className="ss">{exLine(e, S.unit)}</div></div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 2, flex: 'none', alignItems: 'center' }}>
             {i > 0 && <button className={'iconbtn' + (linkedPrev ? ' on-ss' : '')} title={t('Superset with exercise above')} style={{ width: 32, height: 28, borderRadius: 8, fontSize: 15 }} onClick={ev => { ev.stopPropagation(); toggleLink(i) }}><Icon name="link" /></button>}
             <div style={{ display: 'flex', gap: 2 }}>
@@ -84,7 +94,7 @@ export default function RoutineEdit() {
     })()}
 
     <div className="small dim row" style={{ margin: '10px 2px', gap: 5 }}><Icon name="link" style={{ fontSize: 13 }} />{t('Tap the link button on an exercise to superset it with the one above — you’ll do them back-to-back.')}</div>
-    <Button variant="primary" onClick={() => exercisePicker(ex => exConfigSheet(ex, null, cfg => edit(x => { x.push({ id: ex.id, ...cfg }) })))} icon="plus">{t('Add exercise')}</Button>
+    <Button variant="primary" onClick={() => exercisePicker(ex => exConfigSheet(ex, null, cfg => edit(x => { x.push({ id: ex.id, ...cfg }) }), null, r))} icon="plus">{t('Add exercise')}</Button>
     <div style={{ height: 10 }} />
     <Button variant="danger" onClick={() => confirmSheet({
       title: t('Delete routine?'), message: t('“{0}” and its exercises will be removed.', r.name), confirmText: t('Delete'), danger: true,

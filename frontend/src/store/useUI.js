@@ -13,11 +13,15 @@ const cancelPushRestTimer = () => { if (useStore.getState().user) api('/api/push
 let toastTm = null
 let timerInt = null
 let timerTick = null
+let workInt = null
+let workTick = null
+let workDone = null
 
 export const useUI = create((set, get) => ({
   sheets: [],          // { id, render:(close)=>JSX, kind:'sheet'|'center', locked }
   toastMsg: '',
-  timer: null,         // { left, total }
+  timer: null,         // rest countdown between sets — { left, total, endsAt }
+  work: null,          // work countdown DURING a timed set (issue #16) — { left, total, endsAt, label }
 
   openSheet(render, { kind = 'sheet', locked = false } = {}) {
     const id = uid()
@@ -67,5 +71,58 @@ export const useUI = create((set, get) => ({
     if (timerTick) document.removeEventListener('visibilitychange', timerTick); timerTick = null
     if (get().timer) cancelPushRestTimer()
     set({ timer: null })
+  },
+
+  /* ---- work timer (issue #16) ----
+     Times the set itself, not the recovery after it. Kept separate from the rest timer on
+     purpose: the two mean opposite things, they must never run together, and a work set is
+     something you are watching — so it gets no server push (that endpoint says "rest over",
+     and a plank does not need a notification you are staring at anyway).
+     `onDone(elapsedSec)` is called both when the countdown reaches zero and on an early
+     finish; the elapsed time is what actually gets logged, so stopping at 0:38 of a 0:45
+     hold records 0:38 rather than crediting the full target. */
+  startWork(sec, label, onDone) {
+    get().stopWork()
+    get().stopRest()
+    const total = Math.max(1, Math.round(sec) || 1)
+    const endsAt = Date.now() + total * 1000
+    workDone = onDone
+    set({ work: { left: total, total, endsAt, label } })
+    workTick = () => {
+      const wk = get().work
+      if (!wk) return
+      const left = Math.max(0, Math.round((wk.endsAt - Date.now()) / 1000))
+      if (left === wk.left) return
+      const snd = useStore.getState().S.sound
+      if (left <= 0) {
+        beep(snd, 880, 0.15); beep(snd, 880, 0.15, 0.25); beep(snd, 1320, 0.4, 0.5)
+        vibrate([200, 100, 200])
+        const done = workDone
+        get().stopWork()
+        if (done) done(wk.total)
+        return
+      }
+      if (left <= 3) beep(snd, 660, 0.1)
+      set({ work: { ...wk, left } })
+    }
+    workInt = setInterval(workTick, 1000)
+    document.addEventListener('visibilitychange', workTick)
+  },
+  // Ended the hold early — log what was actually held.
+  finishWorkEarly() {
+    const wk = get().work
+    if (!wk) return
+    const elapsed = Math.max(1, wk.total - wk.left)
+    const done = workDone
+    vibrate(30)
+    get().stopWork()
+    if (done) done(elapsed)
+  },
+  // Abandon without logging anything.
+  stopWork() {
+    if (workInt) clearInterval(workInt); workInt = null
+    if (workTick) document.removeEventListener('visibilitychange', workTick); workTick = null
+    workDone = null
+    set({ work: null })
   }
 }))

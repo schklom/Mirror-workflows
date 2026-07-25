@@ -8,7 +8,8 @@
 //  2. A clean, printable page (Save as PDF) where a single exercise never splits across
 //     a page break — each exercise, and each routine that fits, stays in one place.
 
-import { EXIDX, isCardio } from './exercises.js'
+import { EXIDX } from './exercises.js'
+import { modeOf, fmtSec } from './history.js'
 import { uid, todayISO, DAYN, fmtNum, exCount } from './format.js'
 import { t } from './i18n.js'
 
@@ -18,13 +19,25 @@ const WEEK_ORDER = [1, 2, 3, 4, 5, 6, 0]   // Mon-first, matching the Plan scree
 // Keep only the meaningful config fields, so the file stays small and readable.
 function cleanEx(e) {
   const o = { id: e.id, sets: e.sets }
-  if (isCardio(e.id)) {
+  const mode = modeOf(e)
+  if (mode === 'cardio') {
     if (e.min != null) o.min = e.min
     if (e.speed != null) o.speed = e.speed
+  } else if (mode === 'time') {
+    // Written out even though 'reps' is the fallback for a non-cardio id: a plan file that
+    // dropped the mode would turn a 45-second plank into a 45-rep one at the other end.
+    o.mode = 'time'
+    if (e.sec != null) o.sec = e.sec
+    if (e.weight) o.weight = e.weight
   } else {
     if (e.reps != null) o.reps = e.reps
     if (e.weight) o.weight = e.weight
   }
+  // Progression settings travel with the plan — a shared Greyskull routine that arrives
+  // without its rule is just a list of weights.
+  if (e.prog) o.prog = e.prog
+  if (e.inc > 0) o.inc = e.inc
+  if (e.repsMin != null) o.repsMin = e.repsMin
   if (e.sg) o.sg = e.sg
   return o
 }
@@ -32,7 +45,7 @@ function cleanEx(e) {
 /** Build the shareable bundle: every routine, the week schedule, referenced customs. */
 export function buildPlanBundle(S, name) {
   const routines = (S.routines || []).map(r => ({
-    id: r.id, name: r.name, emoji: r.emoji, ex: (r.ex || []).map(cleanEx)
+    id: r.id, name: r.name, emoji: r.emoji, ...(r.prog ? { prog: r.prog } : {}), ex: (r.ex || []).map(cleanEx)
   }))
   const usedIds = new Set(routines.flatMap(r => r.ex.map(e => e.id)))
   const customEx = (S.customEx || [])
@@ -105,6 +118,7 @@ export function mergePlan(s, bundle, { schedule } = {}) {
       id: nid,
       name: r.name || t('Shared routine'),
       emoji: r.emoji,
+      ...(r.prog ? { prog: r.prog } : {}),
       ex: (r.ex || []).map(e => ({ ...e, id: exIdMap[e.id] || e.id }))
     })
   })
@@ -122,14 +136,15 @@ export function mergePlan(s, bundle, { schedule } = {}) {
 const esc = str => String(str == null ? '' : str)
   .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 
-// One exercise's scheme, e.g. "3 × 10 · 60 kg" or "2 × 20 min @ 8 km/h".
+// One exercise's scheme, e.g. "3 × 10 · 60 kg", "3 × 0:45" or "2 × 20 min @ 8 km/h".
 function scheme(e, unit) {
   const sets = e.sets || 1
-  if (isCardio(e.id)) {
+  const mode = modeOf(e)
+  if (mode === 'cardio') {
     const body = `${e.min || 20} min @ ${fmtNum(e.speed || 8)} km/h`
     return sets > 1 ? `${sets} × ${body}` : body
   }
-  let s = `${sets} × ${e.reps ?? 10}`
+  let s = mode === 'time' ? `${sets} × ${fmtSec(e.sec || 45)}` : `${sets} × ${e.reps ?? 10}`
   if (e.weight) s += ` · ${fmtNum(e.weight)} ${unit}`
   return s
 }

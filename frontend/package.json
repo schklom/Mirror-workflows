@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "vite build",
     "build:mobile": "VITE_MOBILE=1 VITE_IMG_BASE=https://cdn.jsdelivr.net/gh/hasaneyldrm/exercises-dataset@7455efae41b330c265e7cd4b78dfa848e7ce5ebd/images/ VITE_GIF_BASE=https://cdn.jsdelivr.net/gh/hasaneyldrm/exercises-dataset@7455efae41b330c265e7cd4b78dfa848e7ce5ebd/videos/ vite build && cap sync",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "license": "AGPL-3.0-or-later",
   "dependencies": {
@@ -26,6 +28,7 @@
     "@capacitor/cli": "^7.6.8",
     "@capacitor/ios": "^7.6.8",
     "@vitejs/plugin-react": "^6.0.3",
-    "vite": "^8.1.5"
+    "vite": "^8.1.5",
+    "vitest": "^4.1.10"
   }
 }

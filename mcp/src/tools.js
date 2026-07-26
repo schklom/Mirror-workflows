@@ -1,13 +1,6 @@
-// The eight v1 tools — read-only views over a user's openGym state, computed by the same
-// pure helpers the React UI uses (frontend/src/lib/*.js). Each handler returns JSON-shaped
-// data the LLM can format as it likes; `labels.js` pre-substitutes any {0}/{1} template the
-// lib returns so the LLM never re-implements the wording.
-//
-// Scope rules for these 8:
-//   • No passkey material, VAPID keys, session secrets — handlers never read or return them.
-//   • No raw db.json — only `getUser()` (id + name) plus the state file.
-//   • No in-progress ("active") workout data — the API never persists it; the file has none.
-//   • ISO dates validated (`YYYY-MM-DD`) so an LLM passing "yesterday" is rejected explicitly.
+/* The eight read-only tools. Each handler returns JSON; labels.js pre-substitutes any
+   {0}/{1} template the lib returns so the LLM gets final text, not template strings.
+   ISO dates are validated on the way in; the handlers never see 'yesterday'. */
 import { z } from 'zod'
 import { getState, getUser } from './state.js'
 import {
@@ -31,8 +24,7 @@ function requireIso(v, name) {
   return s || null
 }
 
-// Convert a workout entry into the JSON shape the tools expose. Everything the LLM needs to
-// answer "what did I lift for X on day Y" lives here, including the mode tag and target.
+// Drops ISO dates so an LLM passing 'yesterday' is rejected.
 function entryView(e, S) {
   const ex = exOr(e.id)
   const mode = modeOf(e.target || { id: e.id })
@@ -54,9 +46,7 @@ function entryView(e, S) {
   }
 }
 
-// Best effort 1RM computation per exercise across a user's history. Mirrors newStats which
-// powers the UI's PR table: take every eligible set across every workout and keep the biggest
-// estimate per exercise, eligible = done + reps-mode + 1 <= reps <= REP_CAP (see onerm.js).
+// Best estimate per exercise, mirroring the UI's PR table: every eligible set across history, biggest wins.
 function prTable(S, formula) {
   const byId = new Map()
   for (const w of (S.workouts || [])) {
@@ -68,10 +58,8 @@ function prTable(S, formula) {
         const ex = exOr(e.id)
         const prev = byId.get(e.id)
         if (!prev || est > prev.est) {
-          // exId is included alongside exName because the consumer (the LLM, or our own
-          // estimate_1rm tool when called with one specific id) needs the id, not the name —
-          // exOr() falls back to treating any string as both id and name, so a caller passing
-          // exName where exId belongs would silently "work" against unknown exercises.
+          // exId as well as exName: the consumer needs an id, not a name — exOr() treats any
+          // string as both, so passing exName where exId belongs would silently "work" wrong.
           byId.set(e.id, { exId: e.id, exName: ex.n, bp: ex.bp || null, est, w: Number(s.w), r: Math.round(Number(s.r)), date: w.d })
         }
       }
@@ -82,7 +70,7 @@ function prTable(S, formula) {
 
 /* ---------- the 8 tools ---------- */
 
-/** 1. list_routines — names + counts of each routine in the user's plan. */
+/** list_routines — names + counts of each routine in the user's plan. */
 export const listRoutines = {
   name: 'list_routines',
   description: 'List the workout routines saved in the user\'s openGym profile (the same list the Plan screen shows). Each routine is a named set of exercises with set/rep targets. Use this to discover the plan structure before diving into a specific routine or today\'s workout.',
@@ -104,7 +92,7 @@ export const listRoutines = {
   }
 }
 
-/** 2. get_routine — the full exercise list for one routine, including set/rep targets. */
+/** get_routine — the full exercise list for one routine, including set/rep targets. */
 export const getRoutine = {
   name: 'get_routine',
   description: 'Get the full exercise list for a single routine (the same view the routine editor shows). Returns mode (reps/time/cardio), set/rep/weight targets, superset links, and any per-exercise custom increment you can override. Use routine_id from list_routines.',
@@ -147,7 +135,7 @@ export const getRoutine = {
   }
 }
 
-/** 3. get_week_plan — what's scheduled each weekday + today. */
+/** get_week_plan — what's scheduled each weekday + today. */
 export const getWeekPlan = {
   name: 'get_week_plan',
   description: 'Show the user\'s weekly plan: which routine (if any) is assigned to each weekday, keyed by JS getDay() (Sunday=0, Monday=1, … Saturday=6 — the same convention the openGym state file uses). Also reports today\'s date and what routine applies today, accounting for one-off overrides the user may have set for a specific date (a "rest" override cancels the day).',
@@ -181,7 +169,7 @@ export const getWeekPlan = {
   }
 }
 
-/** 4. list_workouts — newest-first summary of recent sessions. */
+/** list_workouts — newest-first summary of recent sessions. */
 export const listWorkouts = {
   name: 'list_workouts',
   description: 'List recent finished workouts, newest first. Each item summarises the date, exercise count, sets done / planned, total volume (in the user\'s unit), duration and whether PRs were set. Use this before drilling into a specific date with get_workout.',
@@ -228,7 +216,7 @@ function plannedSets(w) {
   return n
 }
 
-/** 5. get_workout — full entry/set breakdown for one date. */
+/** get_workout — full entry/set breakdown for one date. */
 export const getWorkout = {
   name: 'get_workout',
   description: 'Get the full breakdown of one workout: every exercise, its mode (reps/time/cardio), the target, and per-set labels (e.g. "5 @ 60 kg", "1:30 · 20 kg"). Use list_workouts first if you don\'t know the exact date.',
@@ -254,7 +242,7 @@ export const getWorkout = {
   }
 }
 
-/** 6. get_bodyweight — recent weigh-ins with the goal line. */
+/** get_bodyweight — recent weigh-ins with the goal line. */
 export const getBodyweight = {
   name: 'get_bodyweight',
   description: 'Get the body-weight log: chronological weigh-ins with weights, current goal, deltas vs goal (signed positive = above goal), and a latest summary. Useful for "am I trending toward my weight goal?" questions.',
@@ -286,7 +274,7 @@ export const getBodyweight = {
   }
 }
 
-/** 7. estimate_1rm — best-ever 1RM for one exercise or a PR table across all reps-mode exercises. */
+/** estimate_1rm — best-ever 1RM for one exercise or a PR table across all reps-mode exercises. */
 export const estimate1rm = {
   name: 'estimate_1rm',
   description: `Estimate one-rep max using Epley, Brzycki or Lombardi formulas. If an exercise_id is given, returns the all-time best estimate for that exercise with the source set (weight × reps + date) and the trend across history. If no exercise_id is given, returns a PR table across all reps-mode exercises (sorted highest first). Refuses to guess above ${REP_CAP} reps — above that, formulas diverge past 10% and "work capacity" is read instead of "maximal strength".`,
@@ -302,8 +290,7 @@ export const estimate1rm = {
       const ex = exOr(exercise_id)
       const best = best1RM(S, exercise_id, f)
       const series = e1rmSeries(S, exercise_id, f)
-      // `w`/`r` (not `weight`/`reps`) match the field names used in pr_table and in
-      // get_workout's entry view — every set in the API surface uses the same couple.
+      // w/r (not weight/reps) matches pr_table and entry-view — every set in the API surface uses the same couple.
       return {
         exercise: { id: exercise_id, name: ex.n, body_part: ex.bp || null },
         formula: f,
@@ -319,7 +306,7 @@ export const estimate1rm = {
   }
 }
 
-/** 8. muscle_balance — training distribution per muscle over a period (week/month/all). */
+/** muscle_balance — training distribution per muscle over a period (week/month/all). */
 export const muscleBalance = {
   name: 'muscle_balance',
   description: 'Show which muscles the user has trained in a period, ranked by "effective sets" (volume in kg is intentionally not used — 100 kg leg press vs 12 kg lateral raise say nothing about which muscle worked harder). Reports worked muscles with a 0-4 relative level (1 = some work, 4 = most worked) and the muscles trained zero times in that period — useful for "what am I neglecting?" questions.',

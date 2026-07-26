@@ -1,28 +1,14 @@
-// Tool-layer tests against the demo seed fixture (frontend/src/lib/demoSeed.js) — the same
-// data the public demo deployment at https://opengym.duarte-santos.ch runs on.
-//
-// What this file pins (and what it doesn't):
-//   • The JSON shape each tool returns (fields + types) for the happy path.
-//   • The actual computed VALUES for a few representative cases (1RM via Epley/Brzycki,
-//     workoutVolume, body-weight delta). The pure lib functions have their own 92 tests in
-//     frontend/src/lib/*.test.js — here we only sanity-check the wiring.
-//   • Edge cases that are easy to silently mishandle: rest-day override, ISO-date validation,
-//     no-workout history, no synced state, superset linking, time/cardio mode tags.
-//
-// "Today" is pinned to a fixed Monday (2026-07-27) so date-dependent tools (get_week_plan,
-//         muscle_balance) see consistent values regardless of when the suite runs. The demo
-//         state is built relative to that pinned time, so internal dates (e.g. dayPlan) align.
-//
-// We deliberately don't test the LLM-facing JSON-RPC transport here — that's the SDK's job,
-//         and the smoke test in scripts/ covers the wire-level handshake. Here we call the
-//         handler functions directly with already-validated args.
+// Tool-layer tests for mcp/src/tools.js, seeded from frontend/src/lib/demoSeed.js — the same
+// deterministic fixture the public demo runs on. The pure lib functions have their own 92
+// tests in frontend/src/lib/*.test.js; here we pin JSON shape + the user-facing edge cases
+// (rest-day override, missing routine, zero-workout history, no synced state, superset links).
 import { describe, beforeAll, afterAll, beforeEach, test, expect, vi } from 'vitest'
 import { buildDemoState } from '../../frontend/src/lib/demoSeed.js'
 import { _seedStateForTests } from '../src/state.js'
 import { TOOLS } from '../src/tools.js'
 
-// Constants that originate from the lib (re-stated here so the assertions don't rely on a
-//computer reading the lib to know what to expect — these are the values the demo state yields).
+// Re-stated here so the assertions stand alone without reaching into lib internals to learn
+// the demo state's exact values.
 const FAKE_TODAY_ISO = '2026-07-27'                         // Monday — Push Day is scheduled
 const GOAL_WEIGHT = 77
 const NEWEST_WORKOUT = { date: '2026-07-24', name: 'Leg Day', volume: 18500, bw: 78.6, sets_done: 20, sets_total: 20, duration_min: 51 }
@@ -47,8 +33,7 @@ function freshState() {
 }
 
 // Pin "today" before building state so dayPlan/week alignment matches the assertions below.
-// `toFake: ['Date']` only mocks the Date object — fs.watch / setTimeout in state.js keep
-// working with the real event loop, so file watching and reaping stay untouched.
+// `toFake: ['Date']` only — keeps fs.watch and the rest of the event loop real.
 beforeAll(() => {
   vi.useFakeTimers({ now: new Date(FAKE_TODAY_ISO + 'T12:00:00Z'), toFake: ['Date'] })
   S = freshState()
@@ -59,8 +44,7 @@ afterAll(() => {
   vi.useRealTimers()
 })
 
-// Each test sees a fresh clone of the seeded state — tests that mutate S.dayPlan (etc.) can
-// never leak into a sibling test. ~1ms overhead per test, buys isolation.
+// Fresh state per test — tests that mutate dayPlan can't leak into siblings.
 beforeEach(() => {
   S = freshState()
   _seedStateForTests(S)
@@ -110,7 +94,7 @@ describe('get_routine', () => {
     })
   })
 
-  test('throws ENOENT on a bogus routine id (does not silently return empty)', () => {
+  test('throws ENOENT on a bogus routine id', () => {
     expect(() => call('get_routine', { routine_id: 'bogus' })).toThrow()
   })
 

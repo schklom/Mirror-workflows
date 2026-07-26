@@ -1,6 +1,4 @@
 // Formatting + date helpers (ported from the vanilla app, unit taken from the store where needed).
-// Imports i18n-core (not i18n.js) so this pure helper stays loadable from plain Node — that's
-// what lets the MCP server reuse it instead of reimplementing number/date formatting.
 import { dateLocale, t } from './i18n-core.js'
 export const todayISO = () => {
   const d = new Date()

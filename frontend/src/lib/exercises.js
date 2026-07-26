@@ -1,6 +1,4 @@
 import { EXDB } from './exercises-data.js'
-// Imports i18n-core (not i18n.js) so this stays loadable from plain Node — the MCP server
-// reuses EXIDX/musclesOf/etc. without dragging in the React + Vite-only i18n.js.
 import { t } from './i18n-core.js'
 
 export { EXDB }
@@ -31,7 +29,7 @@ export const allExercises = st => [...(st.customEx || []), ...EXDB]
 // Media normally sits next to the app (img/ and gif/, mounted into the web container).
 // A build can point them somewhere else — the demo build pulls them off a CDN instead of
 // shipping ~140 MB of images into the deployment. `import.meta.env` is undefined in plain
-// Node; guard with `?.` so this module is loadable from Node without Vite (see i18n-core.js).
+// Node; the guard keeps this module loadable without Vite.
 const ENV = import.meta.env || {}
 const IMG_BASE = ENV.VITE_IMG_BASE || 'img/'
 const GIF_BASE = ENV.VITE_GIF_BASE || 'gif/'

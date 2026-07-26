@@ -86,35 +86,25 @@ re-interpret them.
 
 ## How it reuses the training logic
 
-openGym deliberately keeps its training logic in pure functions under `frontend/src/lib/` with
-unit tests next to them (see `CONTRIBUTING.md` — "Training logic gets a unit test"). The MCP
-server imports those files directly as Node ESM and calls the same functions the UI does:
+The MCP server imports the training helpers under `frontend/src/lib/` directly as Node ESM
+and calls the same functions the React UI does (`history.js`, `onerm.js`, `muscles.js`,
+`exercises.js`). The numbers it returns match what the Stats screen shows, because they are
+the same code.
 
-```
-mcp/src/tools.js
-  └── list_workouts handler ──▶ frontend/src/lib/history.js  (workoutVolume, setsDone)
-  └── estimate_1rm handler  ──▶ frontend/src/lib/onerm.js    (best1RM, e1rmSeries)
-  └── muscle_balance        ──▶ frontend/src/lib/muscles.js  (loadOfWorkouts, rankOf, levelsOf)
-  └── get_week_plan         ──▶ frontend/src/lib/history.js  (effectiveRoutine, effectiveRoutineId)
-```
-
-The one lib file that wasn't Node-safe was `i18n.js` (it used Vite's `import.meta.glob`)
-— split into `i18n-core.js` (pure, Node-safe) + `i18n.js` (Vite/React-specific bits, re-exports
-from core). `exercises.js` got a one-line guard against `import.meta.env` being undefined in
-plain Node. No new dependencies landed in `frontend/`, no public exports changed.
+The one lib file that wasn't Node-safe was `i18n.js` (Vite's `import.meta.glob` at module
+top level) — split into `i18n-core.js` (pure, Node-safe) + `i18n.js` (Vite/React bits,
+re-exports from core). `exercises.js` got a one-line `import.meta.env || {}` guard. No new
+dependencies landed in `frontend/`, no public exports changed.
 
 ## Design constraints honoured
 
-- **One runtime dependency beyond the MCP SDK:** none. `mcp/package.json` declares only
-  `@modelcontextprotocol/sdk` + its transitive `zod`. No database driver, no HTTP framework.
+- **One runtime dependency beyond the MCP SDK:** none. No database driver, no HTTP framework.
 - **No new container.** stdio transport is spawned by the LLM client; nothing to add to
   `docker-compose.yml`.
 - **No new auth.** The filesystem is the boundary — same as `docker compose` running on the
-  user's box. The MCP server only sees what its host process can already see.
+  user's box. No passkey material, VAPID keys, or session secrets ever cross it.
 - **No telemetry, no network.** Reads `./data/*.json` and exits when the LLM client
-  disconnects. Matches the openGym ethos from `README.md`.
-- **State-On-Disk source of truth.** Uses `fs.watch` to pick up sessions the web UI just
-  finished, with an mtime fallback for platforms where watchers are flaky.
+  disconnects.
 
 ## Tests
 
@@ -122,21 +112,12 @@ plain Node. No new dependencies landed in `frontend/`, no public exports changed
 cd mcp && npm test
 ```
 
-Tool-layer tests (32 of them) seed state from `frontend/src/lib/demoSeed.js` — the same
-deterministic fixture the public demo deployment runs on. The pure lib functions themselves
-already have 92 tests of their own in `frontend/src/lib/*.test.js`.
-
-Three things the suite is deliberate about:
-- **Pinned fake time.** `vi.useFakeTimers({ now: new Date('2026-07-27T12:00:00Z'), toFake:
-  ['Date'] })` freezes "today" to a Monday so date-dependent tools (`get_week_plan`,
-  `muscle_balance`) see consistent values. `toFake: ['Date']` only mocks the Date object —
-  `fs.watch`, `setTimeout` etc. keep working with the real event loop.
-- **Real numeric assertions** for a representative case per tool: hand-computed Epley 1RM
-  (`152.5×12 → 213.5`), hand-computed body-weight delta (`78.5 − 77 = 1.5`), exact workout
-  volume (`18500` kg). Structure-only assertions ("est > 0") are kept for the cases where the
-  pure lib has its own tests already.
-- **Negative cases.** Empty state, missing routine, missing workout, reversed date range,
-  no goal set, zero-workout `muscle_balance`, fresh-account no-state fallback for every tool.
+32 cases seeding state from `frontend/src/lib/demoSeed.js` (the same deterministic fixture
+the public demo runs on). Pins JSON shape and the user-facing edge cases: rest-day override,
+missing routine, zero-workout history, no synced state, superset links, three 1RM formulas.
+"Today" is pinned via `vi.useFakeTimers({ now: ..., toFake: ['Date'] })` so date-dependent
+tools see consistent values regardless of when the suite runs. The pure lib functions have
+their own 92 tests in `frontend/src/lib/*.test.js`.
 
 ## Mutation testing
 
@@ -144,34 +125,16 @@ Three things the suite is deliberate about:
 cd mcp && npm run mutation:test
 ```
 
-Uses [Stryker](https://stryker-mutator.io) to mutate `src/state.js`, `src/labels.js` and
-`src/tools.js` (the three MCP-only modules — the reused pure lib in `frontend/src/lib/` is
-excluded since it has its own 92-test vitest suite). Config lives at `.stryker.conf.json`.
+[Stryker](https://stryker-mutator.io) 9.6.1 against the three MCP-only modules in `src/`
+(`frontend/src/lib/` is excluded — it has its own 92-test suite). Config at
+`.stryker.conf.json`. Run uses `inPlace: true` so the test file's relative imports
+`../../frontend/src/lib/*.js` keep resolving; Stryker keeps a backup in `.stryker-tmp/`
+during the run and restores on exit.
 
-**Run mode:** `inPlace: true`. Stryker mutates files where they live (so the test file's
-relative imports `../../frontend/src/lib/*.js` keep resolving), keeps a backup in
-`.stryker-tmp/backup-*/` during the run, and restores on exit — verified: after the run,
-`git diff` shows no changes and all tests still pass. If Stryker is killed hard (SIGKILL,
-power loss) the next run restores from the backup before mutating again.
-
-**Baseline (first run, 847 mutants):**
-
-| File | Score | Killed | Survived | No cov |
-|---|---:|---:|---:|---:|
-| `state.js`   |  3.92% |   6 |  26 | 121 |
-| `labels.js`  | 23.64% |  13 |  25 |  17 |
-| `tools.js`   | 49.14% | 314 | 279 |  46 |
-| **Total**    | **39.32%** | 333 | 330 | 184 |
-
-The 39% baseline is honest about how much of the *handler* logic the test suite genuinely
-exercises — many of the survivors are zod schema declarations (e.g. `period:
-z.enum(['week', 'month', 'all'])`) which mutation-testing finds hard to kill without testing
-the SDK's validation layer that the unit suite deliberately bypasses. Treat the score as a
-lower bound: every "no cov" mutant is a code path the suite hasn't even reached; each is a
-TODO on its own. Iterate; aim for 70%+ before the MCP server moves from v0.1 to v1.
-
-Report at `mcp/reports/mutation/mutation.html` (open in a browser, click any file to see
-survived mutants inline).
+Baseline: 39% mutation score (333 killed / 330 survived / 184 no-coverage). Most of the
+survivors are zod schema string literals; the bulk of the no-coverage debt lives in
+`state.js` (file watching, multi-user resolution, mtime fallback). HTML report at
+`mcp/reports/mutation/mutation.html` (gitignored, regenerated per run).
 
 ## Roadmap
 

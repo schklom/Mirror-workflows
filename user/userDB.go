@@ -2,10 +2,11 @@ package user
 
 import (
 	"errors"
+	"net/url"
 	"os"
 	"path/filepath"
 
-	"github.com/glebarez/sqlite"
+	"github.com/ncruces/go-sqlite3/gormlite"
 	"github.com/rs/zerolog/log"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -100,20 +101,26 @@ func initSQLite(path string) *FMDDB {
 		},
 	)
 
-	db, err := gorm.Open(sqlite.Open(path), &gorm.Config{
+	// These PRAGMAs must be set for every connection opened by database/sql.
+	// In particular, foreign_keys is connection-local, so executing it once
+	// after gorm.Open does not reliably enable it for the whole connection pool.
+	query := url.Values{}
+	query.Add("_pragma", "busy_timeout(5000)")
+	query.Add("_pragma", "foreign_keys(ON)")
+	query.Add("_pragma", "secure_delete(ON)")
+	query.Add("_pragma", "journal_mode(WAL)")
+	dsn := (&url.URL{
+		Scheme:   "file",
+		OmitHost: true,
+		Path:     filepath.ToSlash(path),
+		RawQuery: query.Encode(),
+	}).String()
+
+	db, err := gorm.Open(gormlite.Open(dsn), &gorm.Config{
 		Logger: newLogger,
 	})
 	if err != nil {
 		log.Fatal().Err(err).Msg("failed to open database")
-		os.Exit(1) // make nilaway happy
-		return nil
-	}
-
-	// XXX: FK cascading deletion doesn't seem to work. But enabled FK anyway, just to be sure.
-	// https://www.sqlite.org/foreignkeys.html#fk_enable
-	res := db.Exec("PRAGMA foreign_keys = ON; PRAGMA secure_delete = ON; PRAGMA journal_mode=WAL;")
-	if res.Error != nil {
-		log.Fatal().Err(err).Msg("failed setting pragmas")
 		os.Exit(1) // make nilaway happy
 		return nil
 	}

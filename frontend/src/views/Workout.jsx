@@ -79,13 +79,21 @@ function ExerciseBlock({ entryIdx, compact, onToggle, onField, onAddSet, onRemov
   const col3 = mode === 'reps' ? { f: 'rir', step: 0.5, dec: true, hd: t('RIR') } : null
   // Uses the shared stepper markup so a set row picks up the same control styling
   // as every other +/- field in the app.
-  const cell = (s, i, col, cls) => (
-    <div className={'stp ' + cls}>
-      <button aria-label="Decrease" onClick={() => onField(i, col.f, Math.max(0, Math.round(((s[col.f] || 0) - col.step) * 100) / 100))}><Icon name="minus" /></button>
-      <span className="val"><NumberField decimal={col.dec} value={s[col.f] ?? ''} onChange={v => onField(i, col.f, v)} /></span>
-      <button aria-label="Increase" onClick={() => onField(i, col.f, Math.max(0, Math.round(((s[col.f] || 0) + col.step) * 100) / 100))}><Icon name="plus" /></button>
-    </div>
-  )
+  const cell = (s, i, col, cls) => {
+    // Logging RIR is the last thing you do for a set — it means you just finished it, so it
+    // checks the set off by itself instead of making you tap Done separately. Only fires once
+    // (guarded by !s.done) so editing RIR on an already-done set doesn't re-trigger the beep/
+    // rest timer, and never applies to weight/reps, which you can set before you've lifted.
+    const markDoneFromRir = () => { if (col.f === 'rir' && !s.done) onToggle(i) }
+    const set = v => { onField(i, col.f, v); markDoneFromRir() }
+    return (
+      <div className={'stp ' + cls}>
+        <button aria-label="Decrease" onClick={() => set(Math.max(0, Math.round(((s[col.f] || 0) - col.step) * 100) / 100))}><Icon name="minus" /></button>
+        <span className="val"><NumberField decimal={col.dec} value={s[col.f] ?? ''} onChange={set} /></span>
+        <button aria-label="Increase" onClick={() => set(Math.max(0, Math.round(((s[col.f] || 0) + col.step) * 100) / 100))}><Icon name="plus" /></button>
+      </div>
+    )
+  }
   return <>
     <Media ex={ex} key={entry.id} compact={compact} minimizable />
     <div className="row between" style={{ marginBottom: 6 }}>

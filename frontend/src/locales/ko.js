@@ -507,5 +507,5 @@ export default {
   'Three more reps': '세 개 더 남았음',
   'Easy — warm-up territory': '가벼움 — 웜업 구간',
   'RIR counts the reps you left; RPE reads the same effort off a 10-point scale — so RPE ≈ 10 − RIR. Pick the one you already think in.': 'RIR은 남긴 횟수를 세고, RPE는 같은 노력을 10점 척도로 읽습니다 — 즉 RPE ≈ 10 − RIR. 평소에 쓰던 쪽을 고르세요.',
-  'The highlighted row is where the first + lands. Sets you have already logged keep their own scale, and nothing else reads the value — progression and estimated 1RM are unaffected.': '강조된 줄이 첫 + 를 눌렀을 때 들어가는 값입니다. 이미 기록한 세트는 원래 척도를 그대로 유지하며, 이 값을 읽는 곳은 없습니다 — 프로그레션과 예상 1RM은 영향을 받지 않습니다.',
+  'The highlighted row is where most working sets land. Sets you have already logged keep their own scale, and nothing else reads the value — progression and estimated 1RM are unaffected.': '강조된 줄은 대부분의 본세트가 들어가는 구간입니다. 이미 기록한 세트는 원래 척도를 그대로 유지하며, 이 값을 읽는 곳은 없습니다 — 프로그레션과 예상 1RM은 영향을 받지 않습니다.',
 }

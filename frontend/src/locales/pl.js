@@ -507,5 +507,5 @@ export default {
   'Three more reps': 'Jeszcze trzy powtórzenia',
   'Easy — warm-up territory': 'Lekko — poziom rozgrzewki',
   'RIR counts the reps you left; RPE reads the same effort off a 10-point scale — so RPE ≈ 10 − RIR. Pick the one you already think in.': 'RIR liczy powtórzenia, które zostały w zapasie; RPE odczytuje ten sam wysiłek w skali 10 — czyli RPE ≈ 10 − RIR. Wybierz tę, w której już myślisz.',
-  'The highlighted row is where the first + lands. Sets you have already logged keep their own scale, and nothing else reads the value — progression and estimated 1RM are unaffected.': 'Wyróżniony wiersz to miejsce, w które trafia pierwsze +. Zapisane wcześniej serie zachowują swoją skalę, a wartości nic więcej nie czyta — progresja i szacowany 1RM pozostają bez zmian.',
+  'The highlighted row is where most working sets land. Sets you have already logged keep their own scale, and nothing else reads the value — progression and estimated 1RM are unaffected.': 'Wyróżniony wiersz to miejsce, w które trafia większość serii roboczych. Zapisane wcześniej serie zachowują swoją skalę, a wartości nic więcej nie czyta — progresja i szacowany 1RM pozostają bez zmian.',
 }

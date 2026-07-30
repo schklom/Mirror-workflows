@@ -185,7 +185,8 @@ const EFFORT_ROWS = [
   ['3', '7', 'Three more reps'],
   ['4+', '≤6', 'Easy — warm-up territory'],
 ]
-// RIR 2 / RPE 8: the row a working set usually lands on, and where the first + puts you.
+// RIR 2 / RPE 8: the row a working set usually lands on — the anchor the others are read
+// against. Not where the stepper starts; + walks up from the bottom of the scale.
 const EFFORT_TYPICAL = 2
 
 function effortHelpSheet() {
@@ -204,7 +205,7 @@ function effortHelpSheet() {
     </div>
     <div className="dim small" style={{ lineHeight: 1.5, display: 'grid', gap: 8 }}>
       <div>{t('RIR counts the reps you left; RPE reads the same effort off a 10-point scale — so RPE ≈ 10 − RIR. Pick the one you already think in.')}</div>
-      <div>{t('The highlighted row is where the first + lands. Sets you have already logged keep their own scale, and nothing else reads the value — progression and estimated 1RM are unaffected.')}</div>
+      <div>{t('The highlighted row is where most working sets land. Sets you have already logged keep their own scale, and nothing else reads the value — progression and estimated 1RM are unaffected.')}</div>
     </div>
     <div style={{ height: 8 }} />
   </>)

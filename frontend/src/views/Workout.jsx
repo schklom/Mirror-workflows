@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/useStore.js'
 import { useUI } from '../store/useUI.js'
 import { exOr } from '../lib/exercises.js'
-import { effectiveRoutine, lastEntryFor, bestWeightFor, buildSets, setsDoneActive, supersetUnits, unitOf, setLabel, modeOf, EFFORT, effortOf } from '../lib/history.js'
+import { effectiveRoutine, lastEntryFor, bestWeightFor, buildSets, setsDoneActive, supersetUnits, unitOf, setLabel, modeOf, EFFORT, effortOf, stepEffort, capEffort } from '../lib/history.js'
 import { fmtNum, fmtDate, todayISO, exCount, DAYN } from '../lib/format.js'
 import { beep, vibrate } from '../lib/sound.js'
 import { t } from '../lib/i18n.js'
@@ -78,25 +78,23 @@ function ExerciseBlock({ entryIdx, compact, onToggle, onField, onAddSet, onRemov
   // Effort (RIR or RPE, whichever the profile logs) only makes sense for weighted rep sets,
   // not cardio/timed holds, and is opt-in since it adds a third stepper to every row. `opt`
   // because an unlogged effort is not the same as 0 — RIR 0 says the set went to failure.
-  const eff = EFFORT[effortOf(S)]
-  const col3 = mode === 'reps' && eff ? { ...eff, dec: true, opt: true, hd: t(eff.hd) } : null
-  // Stepping an optional field that was never filled in must not clamp to 0: one stray − on a
-  // fresh row would stamp "(RIR 0)" — to failure — on the set for good. − leaves it empty, and
-  // the first + lands on a typical working set (RIR 2 / RPE 8) rather than the end of the scale.
+  const kind = effortOf(S)
+  const eff = EFFORT[kind]
+  const col3 = mode === 'reps' && eff ? { ...eff, eff: kind, dec: true, opt: true, hd: t(eff.hd) } : null
+  // The effort column walks its own scale — see stepEffort. Weight and reps step up from 0
+  // with no ceiling, as they always did.
   const bump = (s, i, col, dir) => {
-    const cur = s[col.f]
-    if (col.opt && cur == null) return dir < 0 ? undefined : onField(i, col.f, col.start)
-    const n = Math.round(((cur || 0) + dir * col.step) * 100) / 100
-    onField(i, col.f, Math.min(col.max ?? Infinity, Math.max(0, n)))
+    if (col.eff) return onField(i, col.f, stepEffort(col.eff, s[col.f], dir))
+    onField(i, col.f, Math.max(0, Math.round(((s[col.f] || 0) + dir * col.step) * 100) / 100))
   }
   // Uses the shared stepper markup so a set row picks up the same control styling
   // as every other +/- field in the app.
   const cell = (s, i, col, cls) => (
     <div className={'stp ' + cls}>
       <button aria-label="Decrease" onClick={() => bump(s, i, col, -1)}><Icon name="minus" /></button>
-      {/* a typed value is capped too — RPE has no 12, and 12 reps in reserve is a warm-up */}
+      {/* a typed effort is capped — there is no RPE 12, and 12 reps in reserve is a warm-up */}
       <span className="val"><NumberField decimal={col.dec} nullable={col.opt} value={s[col.f] ?? ''}
-        onChange={v => onField(i, col.f, v == null || col.max == null ? v : Math.min(col.max, v))} /></span>
+        onChange={v => onField(i, col.f, col.eff ? capEffort(col.eff, v) : v)} /></span>
       <button aria-label="Increase" onClick={() => bump(s, i, col, 1)}><Icon name="plus" /></button>
     </div>
   )

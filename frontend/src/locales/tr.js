@@ -507,5 +507,5 @@ export default {
   'Three more reps': 'Üç tekrar daha vardı',
   'Easy — warm-up territory': 'Kolay — ısınma bölgesi',
   'RIR counts the reps you left; RPE reads the same effort off a 10-point scale — so RPE ≈ 10 − RIR. Pick the one you already think in.': 'RIR yedekte bıraktığın tekrarları sayar; RPE aynı eforu 10’luk ölçekte okur — yani RPE ≈ 10 − RIR. Zaten hangisiyle düşünüyorsan onu seç.',
-  'The highlighted row is where the first + lands. Sets you have already logged keep their own scale, and nothing else reads the value — progression and estimated 1RM are unaffected.': 'Vurgulanan satır, ilk + dokunuşunun geldiği yerdir. Daha önce kaydettiğin setler kendi ölçeğini korur ve bu değeri başka hiçbir şey okumaz — ilerleme ve tahmini 1RM etkilenmez.',
+  'The highlighted row is where most working sets land. Sets you have already logged keep their own scale, and nothing else reads the value — progression and estimated 1RM are unaffected.': 'Vurgulanan satır, çalışma setlerinin çoğunun denk geldiği yerdir. Daha önce kaydettiğin setler kendi ölçeğini korur ve bu değeri başka hiçbir şey okumaz — ilerleme ve tahmini 1RM etkilenmez.',
 }

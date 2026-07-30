@@ -21,15 +21,18 @@ import Icon from './Icon.jsx'
 // Numeric input accepting "," as decimal separator — iOS decimal keypads in many
 // locales only offer a comma, and type="number" reports "" for it (value snaps to
 // 0). Keeps a local string draft while focused so partial input like "33," survives.
-export function NumberField({ value, onChange, decimal = true, className = '', ...rest }) {
+// `nullable` is for fields where "nothing entered" and 0 mean different things (RIR: a
+// logged 0 is a set taken to failure). Those clear back to null instead of snapping to 0.
+export function NumberField({ value, onChange, decimal = true, nullable = false, className = '', ...rest }) {
   const [draft, setDraft] = useState(null)
   const committed = useRef(null)
-  if (draft !== null && committed.current !== value) { setDraft(null); committed.current = null }
+  // null and undefined are the same "empty" here — a nullable field's key is dropped once cleared.
+  if (draft !== null && (committed.current ?? null) !== (value ?? null)) { setDraft(null); committed.current = null }
   const commit = raw => {
     let s = raw.replace(/,/g, '.').replace(/[^0-9.]/g, '')
     const i = s.indexOf('.')
     if (i !== -1) s = decimal ? s.slice(0, i + 1) + s.slice(i + 1).replace(/\./g, '') : s.slice(0, i)
-    const n = s === '' || s === '.' ? 0 : Math.max(0, parseFloat(s))
+    const n = s === '' || s === '.' ? (nullable ? null : 0) : Math.max(0, parseFloat(s))
     committed.current = n
     setDraft(s)
     onChange(n)

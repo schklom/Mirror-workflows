@@ -76,15 +76,24 @@ function ExerciseBlock({ entryIdx, compact, onToggle, onField, onAddSet, onRemov
     : timed ? { f: 'w', step: 2.5, dec: true, hd: t('Weight ({0})', S.unit) }
       : { f: 'r', step: 1, dec: false, hd: t('Reps') }
   // RIR (reps in reserve) only makes sense for weighted rep sets, not cardio/timed holds,
-  // and is opt-in (Settings) since it adds a third stepper to every row.
-  const col3 = mode === 'reps' && S.showRir ? { f: 'rir', step: 0.5, dec: true, hd: t('RIR') } : null
+  // and is opt-in (Settings) since it adds a third stepper to every row. `opt` because an
+  // unlogged RIR is not the same as RIR 0 — 0 says the set went to failure.
+  const col3 = mode === 'reps' && S.showRir ? { f: 'rir', step: 0.5, dec: true, opt: true, hd: t('RIR') } : null
+  // Stepping an optional field that was never filled in stays empty rather than clamping to 0:
+  // otherwise one stray − on a fresh row stamps "(RIR 0)" on the set for good. Going down from
+  // 0.5 still reaches a real 0.
+  const bump = (s, i, col, dir) => {
+    const cur = s[col.f]
+    if (col.opt && cur == null && dir < 0) return
+    onField(i, col.f, Math.max(0, Math.round(((cur || 0) + dir * col.step) * 100) / 100))
+  }
   // Uses the shared stepper markup so a set row picks up the same control styling
   // as every other +/- field in the app.
   const cell = (s, i, col, cls) => (
     <div className={'stp ' + cls}>
-      <button aria-label="Decrease" onClick={() => onField(i, col.f, Math.max(0, Math.round(((s[col.f] || 0) - col.step) * 100) / 100))}><Icon name="minus" /></button>
-      <span className="val"><NumberField decimal={col.dec} value={s[col.f] ?? ''} onChange={v => onField(i, col.f, v)} /></span>
-      <button aria-label="Increase" onClick={() => onField(i, col.f, Math.max(0, Math.round(((s[col.f] || 0) + col.step) * 100) / 100))}><Icon name="plus" /></button>
+      <button aria-label="Decrease" onClick={() => bump(s, i, col, -1)}><Icon name="minus" /></button>
+      <span className="val"><NumberField decimal={col.dec} nullable={col.opt} value={s[col.f] ?? ''} onChange={v => onField(i, col.f, v)} /></span>
+      <button aria-label="Increase" onClick={() => bump(s, i, col, 1)}><Icon name="plus" /></button>
     </div>
   )
   return <>
@@ -105,7 +114,8 @@ function ExerciseBlock({ entryIdx, compact, onToggle, onField, onAddSet, onRemov
       <span>{t(...plan.why)}</span>
     </div>}
     <div className="card" style={{ marginTop: 10, marginBottom: 0 }}>
-      <div className="sethead"><span className="n-sp" /><span className="w-sp">{col1.hd}</span><span className="r-sp">{col2.hd}</span>{col3 && <span className="rir-sp">{col3.hd}</span>}{timed && <span className="ck-sp" />}<span className="ck-sp" /></div>
+      {/* the header carries the same rir3 sizing as the rows, or the labels drift off their columns */}
+      <div className={'sethead' + (col3 ? ' rir3' : '')}><span className="n-sp" /><span className="w-sp">{col1.hd}</span><span className="r-sp">{col2.hd}</span>{col3 && <span className="rir-sp">{col3.hd}</span>}{timed && <span className="ck-sp" />}<span className="ck-sp" /></div>
       {entry.sets.map((s, i) => <div key={i} className={'setrow' + (s.done ? ' done' : '') + (col3 ? ' rir3' : '')}>
         <div className="n">{i + 1}</div>
         {cell(s, i, col1, 'w')}
@@ -143,7 +153,11 @@ function ActiveWorkout() {
   const done = setsDoneActive(A)
 
   const mutEntry = (idx, fn) => update(s => { fn(s.active.entries[idx]) }, true)
-  const setField = (idx, i, field, v) => mutEntry(idx, e => { e.sets[i][field] = v })
+  // Clearing an optional field drops the key rather than storing null, so a set only carries
+  // what was actually logged — in the session, in history and in a backup.
+  const setField = (idx, i, field, v) => mutEntry(idx, e => {
+    if (v == null) delete e.sets[i][field]; else e.sets[i][field] = v
+  })
   const modeAt = idx => modeOf({ ...(A.entries[idx].target || {}), id: A.entries[idx].id })
   const addSet = idx => mutEntry(idx, e => {
     const l = e.sets[e.sets.length - 1]

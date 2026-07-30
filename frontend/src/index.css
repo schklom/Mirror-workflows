@@ -539,7 +539,7 @@ h4.sec{
 .sethead .n-sp{width:24px;flex:none}
 .sethead .w-sp{flex:1.4;text-align:center}
 .sethead .r-sp{flex:1;text-align:center}
-.sethead .rir-sp{flex:1.1;text-align:center}
+.sethead .rir-sp{text-align:center}
 .sethead .ck-sp{width:30px;flex:none}
 .setrow{display:flex;align-items:center;gap:8px;padding:7px 0;position:relative}
 .setrow+.setrow::before{
@@ -557,11 +557,12 @@ h4.sec{
 /* a 3rd stepper (RIR) needs narrower buttons and a tighter row gap to fit next to weight+reps
    on narrow phones, same technique as the exercise-config sheet's three-steppers-in-a-row
    (.cfgrow below) — RIR's own value is short ("1.5") so its buttons shrink the most, weight/reps
-   just enough to make room since their values ("82.5", "12") need more of what's left. */
-.setrow.rir3{gap:6px}
-.setrow.rir3 .stp.w{flex:1.2}
-.setrow.rir3 .stp.r{flex:1}
-.setrow.rir3 .stp.rir{flex:.85}
+   just enough to make room since their values ("82.5", "12") need more of what's left.
+   The header shares the numbers so its labels stay centred over the steppers they name. */
+.setrow.rir3,.sethead.rir3{gap:6px}
+.setrow.rir3 .stp.w,.sethead.rir3 .w-sp{flex:1.2}
+.setrow.rir3 .stp.r,.sethead.rir3 .r-sp{flex:1}
+.setrow.rir3 .stp.rir,.sethead.rir3 .rir-sp{flex:.85}
 .setrow.rir3 .stp button{width:23px}
 .setrow.rir3 .stp.rir button{width:20px}
 .setrow.rir3 .stp .num{font-size:14px}

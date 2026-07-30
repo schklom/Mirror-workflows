@@ -494,7 +494,20 @@ export default {
   'Bodyweight — every rep last time, so go for {0} this time.': 'Poids du corps — toutes les répétitions la dernière fois, alors vise {0} cette fois.',
   'Bodyweight — same target again until every set is clean.': 'Poids du corps — même objectif jusqu’à ce que chaque série soit propre.',
 
-  // --- RIR (reps in reserve) ---
+  // --- effort per set (RIR / RPE) ---
+  '{0} sets bring an {1} with them — switch on Effort per set in Settings to see it.': '{0} séries arrivent avec un {1} — active « Effort par série » dans les réglages pour le voir.',
+  '{0} sets bring an {1} with them.': '{0} séries arrivent avec un {1}.',
   'RIR': 'RIR',
-  'Show RIR column': 'Afficher la colonne RIR',
+  'RPE': 'RPE',
+  'Effort per set': 'Effort par série',
+  'What are RIR and RPE?': 'Que sont le RIR et le RPE ?',
+  'How hard a set was, logged next to weight and reps. Two scales for the same judgement, counted from opposite ends.': 'La difficulté d’une série, à côté du poids et des répétitions. Deux échelles pour la même appréciation, comptées par les deux bouts.',
+  'How it felt': 'La sensation',
+  'Nothing left — went to failure': 'Plus rien — jusqu’à l’échec',
+  'One more rep in the tank': 'Encore une répétition en réserve',
+  'Two more reps': 'Encore deux répétitions',
+  'Three more reps': 'Encore trois répétitions',
+  'Easy — warm-up territory': 'Facile — zone d’échauffement',
+  'RIR counts the reps you left; RPE reads the same effort off a 10-point scale — so RPE ≈ 10 − RIR. Pick the one you already think in.': 'Le RIR compte les répétitions qu’il te restait ; le RPE lit le même effort sur une échelle de 10 — donc RPE ≈ 10 − RIR. Prends celle dans laquelle tu penses déjà.',
+  'The highlighted row is where most working sets land. Sets you have already logged keep their own scale, and nothing else reads the value — progression and estimated 1RM are unaffected.': 'La ligne mise en avant est celle où tombent la plupart des séries de travail. Les séries déjà enregistrées gardent leur échelle, et rien d’autre ne lit la valeur — la progression et le 1RM estimé ne changent pas.',
 }

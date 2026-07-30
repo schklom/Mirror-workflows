@@ -494,7 +494,20 @@ export default {
   'Bodyweight — every rep last time, so go for {0} this time.': '徒手动作——上次全部完成，这次冲 {0} 次。',
   'Bodyweight — same target again until every set is clean.': '徒手动作——保持同样的目标，直到每组都做干净。',
 
-  // --- RIR (reps in reserve) ---
+  // --- effort per set (RIR / RPE) ---
+  '{0} sets bring an {1} with them — switch on Effort per set in Settings to see it.': '{0} 组自带 {1}——在设置中打开“每组强度”即可看到。',
+  '{0} sets bring an {1} with them.': '{0} 组自带 {1}。',
   'RIR': 'RIR',
-  'Show RIR column': '显示RIR列',
+  'RPE': 'RPE',
+  'Effort per set': '每组强度',
+  'What are RIR and RPE?': 'RIR 和 RPE 是什么？',
+  'How hard a set was, logged next to weight and reps. Two scales for the same judgement, counted from opposite ends.': '记录这一组有多吃力，就写在重量和次数旁边。同一个判断的两种标度，只是从相反的一端开始数。',
+  'How it felt': '感受',
+  'Nothing left — went to failure': '一点不剩——做到力竭',
+  'One more rep in the tank': '还能再做一次',
+  'Two more reps': '还能再做两次',
+  'Three more reps': '还能再做三次',
+  'Easy — warm-up territory': '轻松——热身区间',
+  'RIR counts the reps you left; RPE reads the same effort off a 10-point scale — so RPE ≈ 10 − RIR. Pick the one you already think in.': 'RIR 数的是你还留了几次；RPE 把同样的吃力程度换成 10 分制来读——所以 RPE ≈ 10 − RIR。选你习惯的那一种。',
+  'The highlighted row is where most working sets land. Sets you have already logged keep their own scale, and nothing else reads the value — progression and estimated 1RM are unaffected.': '高亮那一行是大多数正式组落在的位置。已经记录的组保留原来的标度，而且这个值不会被别处读取——进阶计划和预估 1RM 都不受影响。',
 }

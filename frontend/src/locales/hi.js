@@ -494,7 +494,20 @@ export default {
   'Bodyweight — every rep last time, so go for {0} this time.': 'बॉडीवेट — पिछली बार सारे रेप्स, तो इस बार {0} का लक्ष्य रखें।',
   'Bodyweight — same target again until every set is clean.': 'बॉडीवेट — जब तक हर सेट साफ़ न हो, वही लक्ष्य।',
 
-  // --- RIR (reps in reserve) ---
+  // --- effort per set (RIR / RPE) ---
+  '{0} sets bring an {1} with them — switch on Effort per set in Settings to see it.': '{0} सेट अपने साथ {1} लाते हैं — इसे देखने के लिए सेटिंग्स में “प्रति सेट मेहनत” चालू करें।',
+  '{0} sets bring an {1} with them.': '{0} सेट अपने साथ {1} लाते हैं।',
   'RIR': 'RIR',
-  'Show RIR column': 'RIR कॉलम दिखाएं',
+  'RPE': 'RPE',
+  'Effort per set': 'हर सेट की मेहनत',
+  'What are RIR and RPE?': 'RIR और RPE क्या हैं?',
+  'How hard a set was, logged next to weight and reps. Two scales for the same judgement, counted from opposite ends.': 'सेट कितना भारी था, वज़न और रेप्स के बगल में दर्ज। एक ही आकलन के लिए दो पैमाने, उलटे सिरों से गिने हुए।',
+  'How it felt': 'कैसा लगा',
+  'Nothing left — went to failure': 'कुछ नहीं बचा — फेलियर तक',
+  'One more rep in the tank': 'एक रेप और बाकी था',
+  'Two more reps': 'दो रेप और बाकी',
+  'Three more reps': 'तीन रेप और बाकी',
+  'Easy — warm-up territory': 'आसान — वॉर्म-अप का दायरा',
+  'RIR counts the reps you left; RPE reads the same effort off a 10-point scale — so RPE ≈ 10 − RIR. Pick the one you already think in.': 'RIR बचे हुए रेप्स गिनता है; RPE उसी मेहनत को 10 के पैमाने पर पढ़ता है — यानी RPE ≈ 10 − RIR. वही चुनें जिसमें आप पहले से सोचते हैं।',
+  'The highlighted row is where most working sets land. Sets you have already logged keep their own scale, and nothing else reads the value — progression and estimated 1RM are unaffected.': 'हाइलाइट की गई पंक्ति वह है जहाँ ज़्यादातर वर्किंग सेट आते हैं। पहले दर्ज किए सेट अपना पैमाना बनाए रखते हैं, और इस मान को और कुछ नहीं पढ़ता — प्रोग्रेशन और अनुमानित 1RM अछूते रहते हैं।',
 }

@@ -23,13 +23,56 @@ export function fmtSec(sec) {
   return Math.floor(n / 60) + ':' + String(n % 60).padStart(2, '0')
 }
 
+// How hard a set felt, if the profile logs it at all. Two scales for the same thing, kept in
+// their own fields: RIR counts the reps still in the tank, RPE reads the same effort off a
+// 10-point scale from the top (RPE 8 ≈ RIR 2). A set logged on one scale is never silently
+// rewritten as the other — switching the setting changes what new sets ask for, nothing else.
+// `min`..`max` is the range the stepper walks. RIR bottoms out at 0 (a set taken to failure);
+// RPE bottoms out at 6, since the scale is only meaningful for working sets and anything
+// lighter is a warm-up nobody rates.
+export const EFFORT = {
+  rir: { f: 'rir', hd: 'RIR', step: 0.5, min: 0, max: 10 },
+  rpe: { f: 'rpe', hd: 'RPE', step: 0.5, min: 6, max: 10 }
+}
+// One tap of an effort stepper. Empty is not 0 — an unlogged effort must not become "went to
+// failure" from one stray tap — so − on an empty cell leaves it empty, and + starts at the
+// bottom of the scale and walks up from there in even steps. Stepping back off the bottom
+// clears the cell again, so a mistap is undoable. null means "nothing logged"; the caller
+// stores that by dropping the key rather than writing a null.
+export function stepEffort(kind, cur, dir) {
+  const e = EFFORT[kind]
+  if (!e) return cur ?? null
+  if (cur == null) return dir < 0 ? null : e.min
+  const n = Math.round((cur + dir * e.step) * 100) / 100
+  if (dir < 0 && n < e.min) return null
+  // only the ceiling is enforced on the way up: a value typed below the floor (nothing stops
+  // someone entering RPE 3) still steps in even increments instead of snapping to the floor.
+  return dir > 0 ? Math.min(e.max, n) : Math.max(e.min, n)
+}
+// A typed effort is capped but not floored — clamping up while someone types "10" would turn
+// the first keystroke into the floor and fight the input.
+export const capEffort = (kind, v) =>
+  (v == null || !EFFORT[kind] ? v : Math.min(EFFORT[kind].max, v))
+// Which scale a profile logs. `showRir` is the boolean this replaced and is only consulted
+// when the profile has no answer of its own — an explicit 'none' has to win over it, or a
+// backup or another device that still carries the old flag would switch the column back on.
+export const effortOf = S => {
+  const e = S && S.effort
+  return e === 'none' || EFFORT[e] ? e : (S && S.showRir ? 'rir' : 'none')
+}
+// The "(RIR 2)" / "(RPE 8)" tail on a set summary, empty when nothing was logged.
+const effortTail = s => {
+  const k = s.rir != null ? 'rir' : s.rpe != null ? 'rpe' : null
+  return k ? ` (${EFFORT[k].hd} ${fmtNum(s[k])})` : ''
+}
+
 // One-line summary of a logged set. `cfg` carries the mode when the caller has it (a routine
 // entry or a workout entry); passing an id alone keeps the old body-part behaviour.
 export function setLabel(id, s, cfg) {
   const mode = modeOf(cfg || { id })
   if (mode === 'cardio') return `${s.min || 0} min @ ${fmtNum(s.speed || 0)} km/h`
   if (mode === 'time') return fmtSec(s.sec) + (s.w > 0 ? ` · ${fmtNum(s.w)}` : '')
-  return `${fmtNum(s.w || 0)}×${s.r || 0}` + (s.rir != null ? ` (RIR ${fmtNum(s.rir)})` : '')
+  return `${fmtNum(s.w || 0)}×${s.r || 0}` + effortTail(s)
 }
 // Default config for a freshly added exercise.
 export function defaultConfig(id, mode) {

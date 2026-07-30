@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { modeOf, isTimed, fmtSec, setLabel, defaultConfig, buildSets, exLine, workoutVolume } from './history.js'
+import { modeOf, isTimed, fmtSec, setLabel, defaultConfig, buildSets, exLine, workoutVolume, effortOf, stepEffort, capEffort } from './history.js'
 import { EXDB } from './exercises.js'
 
 // Real ids out of the shipped catalogue, so the body-part fallback is exercised for real.
@@ -74,6 +74,178 @@ describe('setLabel', () => {
     expect(setLabel(LIFT, { w: 60, r: 10 })).toBe('60×10')
     // cleared in the UI: the key is dropped, but a null must read the same as absent
     expect(setLabel(LIFT, { w: 60, r: 10, rir: null })).toBe('60×10')
+  })
+
+  it('appends RPE for a set logged on that scale', () => {
+    expect(setLabel(LIFT, { w: 60, r: 10, rpe: 8 })).toBe('60×10 (RPE 8)')
+    expect(setLabel(LIFT, { w: 60, r: 10, rpe: 9.5 })).toBe('60×10 (RPE 9.5)')
+    expect(setLabel(LIFT, { w: 60, r: 10, rpe: null })).toBe('60×10')
+  })
+
+  it('keeps each set on the scale it was logged with', () => {
+    // switching the setting must not rewrite history: an old RIR set still reads as RIR
+    expect(setLabel(LIFT, { w: 60, r: 10, rir: 2 })).toBe('60×10 (RIR 2)')
+    // and a set that somehow carries both is described once, by the one it was logged with
+    expect(setLabel(LIFT, { w: 60, r: 10, rir: 2, rpe: 8 })).toBe('60×10 (RIR 2)')
+  })
+})
+
+describe('effortOf', () => {
+  it('reads the scale a profile logs', () => {
+    expect(effortOf({ effort: 'rpe' })).toBe('rpe')
+    expect(effortOf({ effort: 'rir' })).toBe('rir')
+    expect(effortOf({ effort: 'none' })).toBe('none')
+    expect(effortOf({})).toBe('none')
+  })
+
+  it('keeps the column for a profile still carrying the old showRir flag', () => {
+    expect(effortOf({ showRir: true })).toBe('rir')
+    // what a stored profile actually looks like once it is overlaid on DEF
+    expect(effortOf({ effort: null, showRir: true })).toBe('rir')
+    expect(effortOf({ effort: null })).toBe('none')
+    expect(effortOf({ showRir: false })).toBe('none')
+    // once the new setting is chosen it wins, whatever the old flag said
+    expect(effortOf({ showRir: true, effort: 'rpe' })).toBe('rpe')
+    expect(effortOf({ showRir: true, effort: 'none' })).toBe('none')
+  })
+
+  // The store cannot be imported here (it reaches for `navigator` at module load), so the
+  // overlay it performs is reproduced literally: stored profile spread over the defaults.
+  // DEF.effort is null precisely so this lands on the showRir fallback rather than on 'none'.
+  const overlay = stored => ({ unit: 'kg', effort: null, ...stored })
+
+  it('survives the overlay every load path performs', () => {
+    // upgrading with the column on: local state, a server pull and a restored backup all
+    // arrive as a stored object spread over the defaults, and all must keep the column
+    expect(effortOf(overlay({ showRir: true }))).toBe('rir')
+    expect(effortOf(overlay({ showRir: false }))).toBe('none')
+    // a profile predating the RIR feature entirely
+    expect(effortOf(overlay({}))).toBe('none')
+    // and one written by this version
+    expect(effortOf(overlay({ effort: 'rpe' }))).toBe('rpe')
+    // an old backup restored over a profile that had already chosen: the file wins, because
+    // an import replaces state wholesale rather than merging
+    expect(effortOf(overlay({ showRir: true, effort: undefined }))).toBe('rir')
+  })
+
+  it('is not fooled by a junk value', () => {
+    expect(effortOf({ effort: 'rpe10' })).toBe('none')
+    expect(effortOf({ effort: 'RIR' })).toBe('none')
+    expect(effortOf({ effort: 'f' })).toBe('none')
+    expect(effortOf(null)).toBe('none')
+    expect(effortOf(undefined)).toBe('none')
+    // a junk value with the old flag still set falls back rather than showing nothing
+    expect(effortOf({ effort: 'nope', showRir: true })).toBe('rir')
+  })
+})
+
+describe('stepEffort', () => {
+  it('starts at the bottom of the scale and walks up', () => {
+    // the first + on an empty cell lands on the lowest value, not on some "typical" middle:
+    // the stepper counts up from the floor the way every other stepper in the app does
+    expect(stepEffort('rir', null, 1)).toBe(0)
+    expect(stepEffort('rpe', null, 1)).toBe(6)
+    // and then in even steps
+    expect(stepEffort('rir', 0, 1)).toBe(0.5)
+    expect(stepEffort('rir', 0.5, 1)).toBe(1)
+    expect(stepEffort('rpe', 6, 1)).toBe(6.5)
+  })
+
+  it('leaves an untouched cell unlogged when stepped down', () => {
+    // one stray − on a fresh row must not stamp "(RIR 0)" — went to failure — on the set
+    expect(stepEffort('rir', null, -1)).toBe(null)
+    expect(stepEffort('rpe', null, -1)).toBe(null)
+    expect(stepEffort('rir', undefined, -1)).toBe(null)
+  })
+
+  it('clears the cell again when stepped back off the floor', () => {
+    // so a mistap is undoable rather than sticking at the floor for good
+    expect(stepEffort('rir', 0, -1)).toBe(null)
+    expect(stepEffort('rpe', 6, -1)).toBe(null)
+    // but a step that stays inside the scale is an ordinary step
+    expect(stepEffort('rir', 0.5, -1)).toBe(0)
+    expect(stepEffort('rpe', 6.5, -1)).toBe(6)
+  })
+
+  it('stops at the top of the scale', () => {
+    expect(stepEffort('rir', 9.5, 1)).toBe(10)
+    expect(stepEffort('rir', 10, 1)).toBe(10)
+    expect(stepEffort('rpe', 10, 1)).toBe(10)
+  })
+
+  it('keeps halves clean instead of drifting into float dust', () => {
+    let v = null
+    for (let i = 0; i < 6; i++) v = stepEffort('rpe', v, 1)
+    expect(v).toBe(8.5)
+    expect(stepEffort('rir', 0.1 + 0.2, 1)).toBe(0.8)
+  })
+
+  it('steps evenly from a value typed below the floor rather than snapping', () => {
+    // nothing stops someone typing RPE 3; the stepper must not jump them to 6 on one tap
+    expect(stepEffort('rpe', 3, 1)).toBe(3.5)
+    // stepping down out of the scale from there just clears it
+    expect(stepEffort('rpe', 3, -1)).toBe(null)
+  })
+
+  it('does nothing when the profile logs no effort at all', () => {
+    expect(stepEffort('none', null, 1)).toBe(null)
+    expect(stepEffort('none', 2, 1)).toBe(2)
+    expect(stepEffort(undefined, 2, -1)).toBe(2)
+  })
+})
+
+describe('capEffort', () => {
+  it('caps a typed value at the top of the scale', () => {
+    expect(capEffort('rir', 12)).toBe(10)
+    expect(capEffort('rpe', 99)).toBe(10)
+    expect(capEffort('rpe', 8)).toBe(8)
+  })
+
+  it('does not floor a typed value, so typing "10" survives its first keystroke', () => {
+    // clamping up would turn the "1" of "10" into 6 and fight the input
+    expect(capEffort('rpe', 1)).toBe(1)
+    expect(capEffort('rir', 0)).toBe(0)
+  })
+
+  it('passes an emptied field through untouched', () => {
+    expect(capEffort('rir', null)).toBe(null)
+    expect(capEffort('rpe', undefined)).toBe(undefined)
+    expect(capEffort('none', 12)).toBe(12)
+  })
+})
+
+// End-to-end on the data, not the pixels: what a set carries after the taps a real session
+// makes, and what it reads back as afterwards.
+describe('logging effort across a session', () => {
+  it('logs a working set on the chosen scale', () => {
+    // four + taps from empty on an RPE profile: 6, 6.5, 7, 7.5
+    let v = null
+    for (let i = 0; i < 4; i++) v = stepEffort('rpe', v, 1)
+    expect(setLabel(LIFT, { w: 80, r: 5, rpe: v })).toBe('80×5 (RPE 7.5)')
+  })
+
+  it('a set taken to failure is logged, not left blank', () => {
+    const v = stepEffort('rir', null, 1)      // one + on an RIR profile
+    expect(v).toBe(0)
+    expect(setLabel(LIFT, { w: 100, r: 3, rir: v })).toBe('100×3 (RIR 0)')
+  })
+
+  it('switching the setting mid-history rewrites nothing', () => {
+    const old = { w: 60, r: 10, rir: 2 }      // logged while the profile was on RIR
+    const fresh = { w: 60, r: 10, rpe: 8 }    // logged after switching to RPE
+    expect(effortOf({ effort: 'rpe' })).toBe('rpe')
+    expect(setLabel(LIFT, old)).toBe('60×10 (RIR 2)')
+    expect(setLabel(LIFT, fresh)).toBe('60×10 (RPE 8)')
+    // turning the column off entirely hides the control but keeps both sets readable
+    expect(effortOf({ effort: 'none' })).toBe('none')
+    expect(setLabel(LIFT, old)).toBe('60×10 (RIR 2)')
+  })
+
+  it('never attaches effort to a mode that has no place for it', () => {
+    // cardio and timed sets have no third stepper, and their labels ignore the field even
+    // if an import or an old file put one there
+    expect(setLabel(CARDIO, { min: 20, speed: 9, rpe: 8 })).toBe('20 min @ 9 km/h')
+    expect(setLabel(LIFT, { sec: 45, rir: 2 }, { id: LIFT, mode: 'time' })).toBe('0:45')
   })
 })
 

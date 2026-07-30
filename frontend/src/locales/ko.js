@@ -494,7 +494,20 @@ export default {
   'Bodyweight — every rep last time, so go for {0} this time.': '맨몸 운동 — 지난번 전 세트 완수, 이번엔 {0}회를 노려보세요.',
   'Bodyweight — same target again until every set is clean.': '맨몸 운동 — 모든 세트가 깔끔해질 때까지 같은 목표로.',
 
-  // --- RIR (reps in reserve) ---
+  // --- effort per set (RIR / RPE) ---
+  '{0} sets bring an {1} with them — switch on Effort per set in Settings to see it.': '{0}개 세트에 {1}이(가) 함께 들어 있습니다 — 설정에서 ‘세트당 강도’를 켜면 보입니다.',
+  '{0} sets bring an {1} with them.': '{0}개 세트에 {1}이(가) 함께 들어 있습니다.',
   'RIR': 'RIR',
-  'Show RIR column': 'RIR 열 표시',
+  'RPE': 'RPE',
+  'Effort per set': '세트당 강도',
+  'What are RIR and RPE?': 'RIR과 RPE란?',
+  'How hard a set was, logged next to weight and reps. Two scales for the same judgement, counted from opposite ends.': '세트가 얼마나 힘들었는지를 무게·횟수 옆에 함께 기록합니다. 같은 판단을 양쪽 끝에서 세는 두 가지 척도입니다.',
+  'How it felt': '느낌',
+  'Nothing left — went to failure': '더는 못 함 — 실패 지점까지',
+  'One more rep in the tank': '한 개 더 남았음',
+  'Two more reps': '두 개 더 남았음',
+  'Three more reps': '세 개 더 남았음',
+  'Easy — warm-up territory': '가벼움 — 웜업 구간',
+  'RIR counts the reps you left; RPE reads the same effort off a 10-point scale — so RPE ≈ 10 − RIR. Pick the one you already think in.': 'RIR은 남긴 횟수를 세고, RPE는 같은 노력을 10점 척도로 읽습니다 — 즉 RPE ≈ 10 − RIR. 평소에 쓰던 쪽을 고르세요.',
+  'The highlighted row is where most working sets land. Sets you have already logged keep their own scale, and nothing else reads the value — progression and estimated 1RM are unaffected.': '강조된 줄은 대부분의 본세트가 들어가는 구간입니다. 이미 기록한 세트는 원래 척도를 그대로 유지하며, 이 값을 읽는 곳은 없습니다 — 프로그레션과 예상 1RM은 영향을 받지 않습니다.',
 }

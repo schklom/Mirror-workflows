@@ -494,7 +494,20 @@ export default {
   'Bodyweight — every rep last time, so go for {0} this time.': 'Masa własna — ostatnio wszystkie powtórzenia, więc tym razem celuj w {0}.',
   'Bodyweight — same target again until every set is clean.': 'Masa własna — ten sam cel, dopóki każda seria nie będzie czysta.',
 
-  // --- RIR (reps in reserve) ---
+  // --- effort per set (RIR / RPE) ---
+  '{0} sets bring an {1} with them — switch on Effort per set in Settings to see it.': '{0} serii ma zapisane {1} — włącz „Wysiłek w serii” w ustawieniach, aby to zobaczyć.',
+  '{0} sets bring an {1} with them.': '{0} serii ma zapisane {1}.',
   'RIR': 'RIR',
-  'Show RIR column': 'Pokaż kolumnę RIR',
+  'RPE': 'RPE',
+  'Effort per set': 'Wysiłek na serię',
+  'What are RIR and RPE?': 'Czym są RIR i RPE?',
+  'How hard a set was, logged next to weight and reps. Two scales for the same judgement, counted from opposite ends.': 'Jak ciężka była seria, zapisane obok ciężaru i powtórzeń. Dwie skale tej samej oceny, liczone z przeciwnych stron.',
+  'How it felt': 'Jak to było',
+  'Nothing left — went to failure': 'Nic nie zostało — do upadku',
+  'One more rep in the tank': 'Jeszcze jedno powtórzenie w zapasie',
+  'Two more reps': 'Jeszcze dwa powtórzenia',
+  'Three more reps': 'Jeszcze trzy powtórzenia',
+  'Easy — warm-up territory': 'Lekko — poziom rozgrzewki',
+  'RIR counts the reps you left; RPE reads the same effort off a 10-point scale — so RPE ≈ 10 − RIR. Pick the one you already think in.': 'RIR liczy powtórzenia, które zostały w zapasie; RPE odczytuje ten sam wysiłek w skali 10 — czyli RPE ≈ 10 − RIR. Wybierz tę, w której już myślisz.',
+  'The highlighted row is where most working sets land. Sets you have already logged keep their own scale, and nothing else reads the value — progression and estimated 1RM are unaffected.': 'Wyróżniony wiersz to miejsce, w które trafia większość serii roboczych. Zapisane wcześniej serie zachowują swoją skalę, a wartości nic więcej nie czyta — progresja i szacowany 1RM pozostają bez zmian.',
 }

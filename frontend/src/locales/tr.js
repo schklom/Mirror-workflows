@@ -494,7 +494,20 @@ export default {
   'Bodyweight — every rep last time, so go for {0} this time.': 'Vücut ağırlığı — geçen sefer bütün tekrarlar tamamdı, bu sefer {0} hedefle.',
   'Bodyweight — same target again until every set is clean.': 'Vücut ağırlığı — her set temiz çıkana kadar aynı hedef.',
 
-  // --- RIR (reps in reserve) ---
+  // --- effort per set (RIR / RPE) ---
+  '{0} sets bring an {1} with them — switch on Effort per set in Settings to see it.': '{0} set beraberinde bir {1} getiriyor — görmek için Ayarlar’da «Set başına efor» seçeneğini aç.',
+  '{0} sets bring an {1} with them.': '{0} set beraberinde bir {1} getiriyor.',
   'RIR': 'RIR',
-  'Show RIR column': 'RIR sütununu göster',
+  'RPE': 'RPE',
+  'Effort per set': 'Set başına zorluk',
+  'What are RIR and RPE?': 'RIR ve RPE nedir?',
+  'How hard a set was, logged next to weight and reps. Two scales for the same judgement, counted from opposite ends.': 'Bir setin ne kadar zor geçtiği, ağırlık ve tekrarların yanında. Aynı değerlendirme için iki ölçek, ters uçlardan sayılıyor.',
+  'How it felt': 'Nasıl hissettirdi',
+  'Nothing left — went to failure': 'Hiç kalmadı — tükenmeye kadar',
+  'One more rep in the tank': 'Bir tekrar daha vardı',
+  'Two more reps': 'İki tekrar daha vardı',
+  'Three more reps': 'Üç tekrar daha vardı',
+  'Easy — warm-up territory': 'Kolay — ısınma bölgesi',
+  'RIR counts the reps you left; RPE reads the same effort off a 10-point scale — so RPE ≈ 10 − RIR. Pick the one you already think in.': 'RIR yedekte bıraktığın tekrarları sayar; RPE aynı eforu 10’luk ölçekte okur — yani RPE ≈ 10 − RIR. Zaten hangisiyle düşünüyorsan onu seç.',
+  'The highlighted row is where most working sets land. Sets you have already logged keep their own scale, and nothing else reads the value — progression and estimated 1RM are unaffected.': 'Vurgulanan satır, çalışma setlerinin çoğunun denk geldiği yerdir. Daha önce kaydettiğin setler kendi ölçeğini korur ve bu değeri başka hiçbir şey okumaz — ilerleme ve tahmini 1RM etkilenmez.',
 }

@@ -494,7 +494,20 @@ export default {
   'Bodyweight — every rep last time, so go for {0} this time.': 'Собственный вес — в прошлый раз все повторения, так что в этот раз целься на {0}.',
   'Bodyweight — same target again until every set is clean.': 'Собственный вес — та же цель, пока все подходы не станут чистыми.',
 
-  // --- RIR (reps in reserve) ---
+  // --- effort per set (RIR / RPE) ---
+  '{0} sets bring an {1} with them — switch on Effort per set in Settings to see it.': '{0} подходов несут с собой {1} — включите «Усилие в подходе» в настройках, чтобы увидеть.',
+  '{0} sets bring an {1} with them.': '{0} подходов несут с собой {1}.',
   'RIR': 'RIR',
-  'Show RIR column': 'Показывать столбец RIR',
+  'RPE': 'RPE',
+  'Effort per set': 'Усилие в подходе',
+  'What are RIR and RPE?': 'Что такое RIR и RPE?',
+  'How hard a set was, logged next to weight and reps. Two scales for the same judgement, counted from opposite ends.': 'Насколько тяжёлым был подход — рядом с весом и повторениями. Две шкалы для одной и той же оценки, отсчитанные с разных концов.',
+  'How it felt': 'Ощущения',
+  'Nothing left — went to failure': 'Ничего не осталось — до отказа',
+  'One more rep in the tank': 'Ещё одно повторение в запасе',
+  'Two more reps': 'Ещё два повторения',
+  'Three more reps': 'Ещё три повторения',
+  'Easy — warm-up territory': 'Легко — разминочная зона',
+  'RIR counts the reps you left; RPE reads the same effort off a 10-point scale — so RPE ≈ 10 − RIR. Pick the one you already think in.': 'RIR считает повторения, оставшиеся в запасе; RPE читает то же усилие по 10-балльной шкале — то есть RPE ≈ 10 − RIR. Выберите ту, в которой вы уже думаете.',
+  'The highlighted row is where most working sets land. Sets you have already logged keep their own scale, and nothing else reads the value — progression and estimated 1RM are unaffected.': 'Выделенная строка — это диапазон, в который попадает большинство рабочих подходов. Уже записанные подходы сохраняют свою шкалу, и больше это значение нигде не используется: прогрессия и расчётный 1ПМ не меняются.',
 }

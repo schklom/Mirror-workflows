@@ -494,7 +494,20 @@ export default {
   'Bodyweight — every rep last time, so go for {0} this time.': 'Peso corporal: la última vez todas las repeticiones, así que ve a por {0} esta vez.',
   'Bodyweight — same target again until every set is clean.': 'Peso corporal: el mismo objetivo hasta que todas las series salgan limpias.',
 
-  // --- RIR (reps in reserve) ---
+  // --- effort per set (RIR / RPE) ---
+  '{0} sets bring an {1} with them — switch on Effort per set in Settings to see it.': '{0} series traen un {1} — activa «Esfuerzo por serie» en Ajustes para verlo.',
+  '{0} sets bring an {1} with them.': '{0} series traen un {1}.',
   'RIR': 'RIR',
-  'Show RIR column': 'Mostrar columna de RIR',
+  'RPE': 'RPE',
+  'Effort per set': 'Esfuerzo por serie',
+  'What are RIR and RPE?': '¿Qué son RIR y RPE?',
+  'How hard a set was, logged next to weight and reps. Two scales for the same judgement, counted from opposite ends.': 'Lo dura que fue una serie, junto al peso y las repeticiones. Dos escalas para lo mismo, contadas desde extremos opuestos.',
+  'How it felt': 'Cómo se sintió',
+  'Nothing left — went to failure': 'Nada más — hasta el fallo',
+  'One more rep in the tank': 'Una repetición más en reserva',
+  'Two more reps': 'Dos repeticiones más',
+  'Three more reps': 'Tres repeticiones más',
+  'Easy — warm-up territory': 'Fácil — zona de calentamiento',
+  'RIR counts the reps you left; RPE reads the same effort off a 10-point scale — so RPE ≈ 10 − RIR. Pick the one you already think in.': 'El RIR cuenta las repeticiones que dejas; el RPE lee ese mismo esfuerzo en una escala de 10 — así que RPE ≈ 10 − RIR. Elige la que ya usas para pensar.',
+  'The highlighted row is where most working sets land. Sets you have already logged keep their own scale, and nothing else reads the value — progression and estimated 1RM are unaffected.': 'La fila resaltada es donde cae la mayoría de las series efectivas. Las series ya registradas conservan su escala, y nada más lee el valor: la progresión y el 1RM estimado no cambian.',
 }

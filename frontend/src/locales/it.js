@@ -494,7 +494,20 @@ export default {
   'Bodyweight — every rep last time, so go for {0} this time.': 'Corpo libero — l’ultima volta tutte le ripetizioni, quindi punta a {0} stavolta.',
   'Bodyweight — same target again until every set is clean.': 'Corpo libero — stesso obiettivo finché ogni serie non è pulita.',
 
-  // --- RIR (reps in reserve) ---
+  // --- effort per set (RIR / RPE) ---
+  '{0} sets bring an {1} with them — switch on Effort per set in Settings to see it.': '{0} serie portano con sé un {1} — attiva «Sforzo per serie» nelle impostazioni per vederlo.',
+  '{0} sets bring an {1} with them.': '{0} serie portano con sé un {1}.',
   'RIR': 'RIR',
-  'Show RIR column': 'Mostra colonna RIR',
+  'RPE': 'RPE',
+  'Effort per set': 'Sforzo per serie',
+  'What are RIR and RPE?': 'Che cosa sono RIR e RPE?',
+  'How hard a set was, logged next to weight and reps. Two scales for the same judgement, counted from opposite ends.': 'Quanto è stata dura una serie, accanto a peso e ripetizioni. Due scale per lo stesso giudizio, contate dai lati opposti.',
+  'How it felt': 'Come è andata',
+  'Nothing left — went to failure': 'Niente più — fino a cedimento',
+  'One more rep in the tank': 'Un’altra ripetizione in canna',
+  'Two more reps': 'Altre due ripetizioni',
+  'Three more reps': 'Altre tre ripetizioni',
+  'Easy — warm-up territory': 'Facile — zona riscaldamento',
+  'RIR counts the reps you left; RPE reads the same effort off a 10-point scale — so RPE ≈ 10 − RIR. Pick the one you already think in.': 'Il RIR conta le ripetizioni che ti restavano; l’RPE legge lo stesso sforzo su una scala da 10 — quindi RPE ≈ 10 − RIR. Scegli quella con cui già ragioni.',
+  'The highlighted row is where most working sets land. Sets you have already logged keep their own scale, and nothing else reads the value — progression and estimated 1RM are unaffected.': 'La riga evidenziata è dove finisce la maggior parte delle serie di lavoro. Le serie già registrate mantengono la loro scala, e nient’altro legge il valore: progressione e 1RM stimato non cambiano.',
 }

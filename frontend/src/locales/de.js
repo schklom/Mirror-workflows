@@ -512,7 +512,20 @@ export default {
   'Bodyweight — every rep last time, so go for {0} this time.': 'Körpergewicht — letztes Mal jede Wiederholung, also diesmal {0} anpeilen.',
   'Bodyweight — same target again until every set is clean.': 'Körpergewicht — dieselbe Vorgabe, bis jeder Satz sauber sitzt.',
 
-  // --- RIR (reps in reserve) ---
+  // --- effort per set (RIR / RPE) ---
+  '{0} sets bring an {1} with them — switch on Effort per set in Settings to see it.': '{0} Sätze bringen ein {1} mit — schalte in den Einstellungen „Anstrengung pro Satz“ ein, um es zu sehen.',
+  '{0} sets bring an {1} with them.': '{0} Sätze bringen ein {1} mit.',
   'RIR': 'RIR',
-  'Show RIR column': 'RIR-Spalte anzeigen',
+  'RPE': 'RPE',
+  'Effort per set': 'Anstrengung pro Satz',
+  'What are RIR and RPE?': 'Was sind RIR und RPE?',
+  'How hard a set was, logged next to weight and reps. Two scales for the same judgement, counted from opposite ends.': 'Wie schwer ein Satz war, direkt neben Gewicht und Wiederholungen. Zwei Skalen für dieselbe Einschätzung, von entgegengesetzten Enden gezählt.',
+  'How it felt': 'Wie es sich anfühlte',
+  'Nothing left — went to failure': 'Nichts mehr übrig — bis zum Muskelversagen',
+  'One more rep in the tank': 'Eine Wiederholung wäre noch gegangen',
+  'Two more reps': 'Zwei Wiederholungen übrig',
+  'Three more reps': 'Drei Wiederholungen übrig',
+  'Easy — warm-up territory': 'Locker — Aufwärmbereich',
+  'RIR counts the reps you left; RPE reads the same effort off a 10-point scale — so RPE ≈ 10 − RIR. Pick the one you already think in.': 'RIR zählt die Wiederholungen, die du übrig lässt; RPE liest dieselbe Anstrengung auf einer 10er-Skala ab — also RPE ≈ 10 − RIR. Nimm die Skala, in der du ohnehin denkst.',
+  'The highlighted row is where most working sets land. Sets you have already logged keep their own scale, and nothing else reads the value — progression and estimated 1RM are unaffected.': 'Die hervorgehobene Zeile ist der Bereich, in dem die meisten Arbeitssätze landen. Bereits protokollierte Sätze behalten ihre eigene Skala, und sonst liest den Wert nichts — Progression und geschätztes 1RM bleiben unberührt.',
 }

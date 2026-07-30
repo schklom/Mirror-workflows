@@ -1,5 +1,43 @@
 # Changelog
 
+## v1.2.3 — 2026-07-31
+
+How hard a set was, in whichever of the two scales you already think in — and the ratings your
+old app recorded come across with the rest of your history.
+
+### Effort per set: RIR or RPE (#21)
+
+- 🎯 **A third column on a working set, off by default.** Settings → *Effort per set* switches
+  it between **Off**, **RIR** and **RPE**. It only appears on weighted rep sets: a plank or a
+  treadmill row has nowhere to put it.
+- **Two names for the same judgement.** RIR counts the reps you left in the tank; RPE reads the
+  same effort off a 10-point scale, so RPE ≈ 10 − RIR. The setting has an (i) that lays the two
+  scales side by side in a conversion table rather than explaining them in a paragraph.
+- **Each set keeps the scale it was logged with.** Switching the setting changes what new sets
+  ask for and nothing else — history is never silently rewritten, and a set logged as RIR 2
+  still reads back as RIR 2 years later.
+- **An unrated set stays unrated.** Blank and 0 are different things: RIR 0 says the set went to
+  failure. So `−` on an untouched cell leaves it empty, `+` starts at the bottom of the scale
+  and walks up in even steps, and stepping back off the bottom clears the cell again — a mistap
+  is always undoable.
+- **Nothing else reads the value.** Progression rules and estimated 1RM are unaffected; the
+  rating is yours to look at, not an input to the maths.
+- Upgrading keeps the column you had: a profile still carrying the old `showRir` flag — from
+  this device, a sync, or a backup restored later — comes across as RIR.
+
+### Import brings your ratings with it
+
+- 📥 **The RPE Hevy and Strong export is no longer dropped.** An `RPE` column is read into the
+  set, as is an `RIR` column if a file has one, and the import summary says how many sets
+  arrived with a rating — plus where to switch the column on if it's off.
+- A blank cell stays unrated rather than becoming 0. A written-out `0` counts as a rating on the
+  RIR scale (a set to failure) but not on RPE, which starts at 1 — apps write 0 there to mean
+  "nothing here", and reading it as an effort would stamp one on every unrated set in the file.
+- Ratings above the scale are capped instead of thrown away, and junk in the column is ignored
+  without losing the set.
+- Backups already carried both fields and the setting, since a backup is the whole state — there
+  are now tests pinning that, so it can't quietly stop being true.
+
 ## v1.2.2 — 2026-07-25
 
 Training that moves on its own: an exercise can now be logged by time instead of reps, the

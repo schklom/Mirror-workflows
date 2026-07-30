@@ -511,4 +511,8 @@ export default {
   'Missed reps last time — same weight again ({0} of {1} to go).': 'Letztes Mal Wiederholungen verfehlt — dasselbe Gewicht noch einmal (noch {0} von {1}).',
   'Bodyweight — every rep last time, so go for {0} this time.': 'Körpergewicht — letztes Mal jede Wiederholung, also diesmal {0} anpeilen.',
   'Bodyweight — same target again until every set is clean.': 'Körpergewicht — dieselbe Vorgabe, bis jeder Satz sauber sitzt.',
+
+  // --- RIR (reps in reserve) ---
+  'RIR': 'RIR',
+  'Show RIR column': 'RIR-Spalte anzeigen',
 }

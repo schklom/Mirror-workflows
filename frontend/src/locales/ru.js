@@ -493,4 +493,8 @@ export default {
   'Missed reps last time — same weight again ({0} of {1} to go).': 'В прошлый раз повторения не дались — тот же вес ещё раз (осталось {0} из {1}).',
   'Bodyweight — every rep last time, so go for {0} this time.': 'Собственный вес — в прошлый раз все повторения, так что в этот раз целься на {0}.',
   'Bodyweight — same target again until every set is clean.': 'Собственный вес — та же цель, пока все подходы не станут чистыми.',
+
+  // --- RIR (reps in reserve) ---
+  'RIR': 'RIR',
+  'Show RIR column': 'Показывать столбец RIR',
 }

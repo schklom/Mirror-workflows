@@ -63,6 +63,18 @@ describe('setLabel', () => {
     expect(setLabel(LIFT, { w: 0, r: 0 })).toBe('0×0')
     expect(setLabel(CARDIO, {})).toBe('0 min @ 0 km/h')
   })
+
+  it('appends RIR when present, including a valid 0', () => {
+    expect(setLabel(LIFT, { w: 60, r: 10, rir: 2 })).toBe('60×10 (RIR 2)')
+    expect(setLabel(LIFT, { w: 60, r: 10, rir: 1.5 })).toBe('60×10 (RIR 1.5)')
+    expect(setLabel(LIFT, { w: 60, r: 10, rir: 0 })).toBe('60×10 (RIR 0)')
+  })
+
+  it('says nothing about RIR on a set that never logged one', () => {
+    expect(setLabel(LIFT, { w: 60, r: 10 })).toBe('60×10')
+    // cleared in the UI: the key is dropped, but a null must read the same as absent
+    expect(setLabel(LIFT, { w: 60, r: 10, rir: null })).toBe('60×10')
+  })
 })
 
 describe('defaultConfig', () => {

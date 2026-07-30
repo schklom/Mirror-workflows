@@ -493,4 +493,8 @@ export default {
   'Missed reps last time — same weight again ({0} of {1} to go).': 'Geçen sefer tekrarlar eksikti — aynı ağırlık bir kez daha ({1} denemeden {0} kaldı).',
   'Bodyweight — every rep last time, so go for {0} this time.': 'Vücut ağırlığı — geçen sefer bütün tekrarlar tamamdı, bu sefer {0} hedefle.',
   'Bodyweight — same target again until every set is clean.': 'Vücut ağırlığı — her set temiz çıkana kadar aynı hedef.',
+
+  // --- RIR (reps in reserve) ---
+  'RIR': 'RIR',
+  'Show RIR column': 'RIR sütununu göster',
 }

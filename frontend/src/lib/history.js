@@ -29,7 +29,7 @@ export function setLabel(id, s, cfg) {
   const mode = modeOf(cfg || { id })
   if (mode === 'cardio') return `${s.min || 0} min @ ${fmtNum(s.speed || 0)} km/h`
   if (mode === 'time') return fmtSec(s.sec) + (s.w > 0 ? ` · ${fmtNum(s.w)}` : '')
-  return `${fmtNum(s.w || 0)}×${s.r || 0}`
+  return `${fmtNum(s.w || 0)}×${s.r || 0}` + (s.rir != null ? ` (RIR ${fmtNum(s.rir)})` : '')
 }
 // Default config for a freshly added exercise.
 export function defaultConfig(id, mode) {

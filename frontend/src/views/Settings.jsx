@@ -133,6 +133,9 @@ export default function Settings() {
       <Row icon="bell" iconTint="var(--pink)" title={t('Sounds')}>
         <Switch checked={!!S.sound} onChange={v => update(s => { s.sound = v })} />
       </Row>
+      <Row icon="target" iconTint="var(--purple)" title={t('Show RIR column')}>
+        <Switch checked={!!S.showRir} onChange={v => update(s => { s.showRir = v })} />
+      </Row>
     </Section>
 
     {(user || MOBILE) && <NotificationsCard S={S} update={update} toast={toast} />}

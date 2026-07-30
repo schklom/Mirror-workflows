@@ -66,6 +66,10 @@ const COLUMNS = [
   ['weight', ['weight']],
   ['weightUnit', ['weight unit', 'unit']],
   ['reps', ['reps', 'repetitions']],
+  // Hevy and Strong both write an RPE per set. Nothing mainstream exports RIR, but read it
+  // when it is there rather than dropping the column on the floor.
+  ['rpe', ['rpe', 'rpe rating']],
+  ['rir', ['rir', 'reps in reserve']],
   ['distanceKm', ['distance km']],
   ['distance', ['distance']],
   ['distanceUnit', ['distance unit']],
@@ -226,6 +230,18 @@ const CATEGORY_BP = {
 /* ----------------------------------------------------------- conversion --- */
 
 const num = v => { const n = parseFloat(String(v ?? '').replace(',', '.')); return isFinite(n) ? n : 0 }
+// An effort rating out of someone else's export. A blank cell means "not rated" and has to
+// stay absent rather than becoming 0 — and 0 itself means opposite things on the two scales:
+// RIR 0 is a set taken to failure and worth keeping, while RPE has no 0 (the scale is 1–10),
+// so an app writing 0 for "nothing here" must not be read as an effort. Ratings above the
+// scale are capped rather than dropped — the set was still rated, just written oddly.
+const effortNum = (raw, zeroMeansRated) => {
+  const s = String(raw ?? '').trim()
+  if (!s) return null
+  const n = parseFloat(s.replace(',', '.'))
+  if (!isFinite(n) || n < 0 || (n === 0 && !zeroMeansRated)) return null
+  return Math.min(10, Math.round(n * 100) / 100)
+}
 const LB_TO_KG = 0.45359237
 const p2 = n => String(n).padStart(2, '0')
 const MON = { jan: 1, feb: 2, mar: 3, apr: 4, may: 5, jun: 6, jul: 7, aug: 8, sep: 9, oct: 10, nov: 11, dec: 12 }
@@ -288,7 +304,7 @@ export function parseWorkoutCSV(text, { unit = 'kg' } = {}) {
   const byDate = new Map()
   const created = new Map()
   const unmatched = new Set()
-  let sets = 0, skipped = 0, matched = 0, warmups = 0
+  let sets = 0, skipped = 0, matched = 0, warmups = 0, rpeSets = 0, rirSets = 0
   let sawLb = false, sawKg = false
 
   const cell = (r, f) => (map[f] === undefined ? '' : String(r[map[f]] ?? '').trim())
@@ -343,6 +359,15 @@ export function parseWorkoutCSV(text, { unit = 'kg' } = {}) {
     const set = isCardio
       ? { min: mins || 0, speed: mins > 0 ? Math.round(km / (mins / 60) * 10) / 10 : 0, done: true }
       : { w, r: reps || 0, done: true, u: rowUnit }
+    // Effort rides along only where the app can show it again: a weighted rep set. A treadmill
+    // row with an RPE would have nowhere to put it. A set is kept on one scale, so a file
+    // carrying both columns is read as RIR — the same precedence setLabel reads them back with.
+    if (!isCardio) {
+      const rir = effortNum(cell(r, 'rir'), true)
+      const rpe = rir == null ? effortNum(cell(r, 'rpe'), false) : null
+      if (rir != null) { set.rir = rir; rirSets++ }
+      else if (rpe != null) { set.rpe = rpe; rpeSets++ }
+    }
 
     let day = byDate.get(when.d)
     if (!day) {
@@ -401,7 +426,7 @@ export function parseWorkoutCSV(text, { unit = 'kg' } = {}) {
     matched: new Set([...resolved.values()].filter(Boolean)).size,
     matchedSets: matched,
     created: created.size, unmatchedNames: [...unmatched].sort(),
-    sets, skipped, warmups, fileUnit, mixedUnits, converted,
+    sets, skipped, warmups, fileUnit, mixedUnits, converted, rpeSets, rirSets,
     from: dates[0] || null, to: dates[dates.length - 1] || null,
   }
 }

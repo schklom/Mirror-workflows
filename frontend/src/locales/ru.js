@@ -495,6 +495,8 @@ export default {
   'Bodyweight — same target again until every set is clean.': 'Собственный вес — та же цель, пока все подходы не станут чистыми.',
 
   // --- effort per set (RIR / RPE) ---
+  '{0} sets bring an {1} with them — switch on Effort per set in Settings to see it.': '{0} подходов несут с собой {1} — включите «Усилие в подходе» в настройках, чтобы увидеть.',
+  '{0} sets bring an {1} with them.': '{0} подходов несут с собой {1}.',
   'RIR': 'RIR',
   'RPE': 'RPE',
   'Effort per set': 'Усилие в подходе',

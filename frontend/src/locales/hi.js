@@ -495,6 +495,8 @@ export default {
   'Bodyweight — same target again until every set is clean.': 'बॉडीवेट — जब तक हर सेट साफ़ न हो, वही लक्ष्य।',
 
   // --- effort per set (RIR / RPE) ---
+  '{0} sets bring an {1} with them — switch on Effort per set in Settings to see it.': '{0} सेट अपने साथ {1} लाते हैं — इसे देखने के लिए सेटिंग्स में “प्रति सेट मेहनत” चालू करें।',
+  '{0} sets bring an {1} with them.': '{0} सेट अपने साथ {1} लाते हैं।',
   'RIR': 'RIR',
   'RPE': 'RPE',
   'Effort per set': 'हर सेट की मेहनत',

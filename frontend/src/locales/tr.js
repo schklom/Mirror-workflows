@@ -495,6 +495,8 @@ export default {
   'Bodyweight — same target again until every set is clean.': 'Vücut ağırlığı — her set temiz çıkana kadar aynı hedef.',
 
   // --- effort per set (RIR / RPE) ---
+  '{0} sets bring an {1} with them — switch on Effort per set in Settings to see it.': '{0} set beraberinde bir {1} getiriyor — görmek için Ayarlar’da «Set başına efor» seçeneğini aç.',
+  '{0} sets bring an {1} with them.': '{0} set beraberinde bir {1} getiriyor.',
   'RIR': 'RIR',
   'RPE': 'RPE',
   'Effort per set': 'Set başına zorluk',

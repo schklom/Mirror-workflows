@@ -513,6 +513,8 @@ export default {
   'Bodyweight — same target again until every set is clean.': 'Körpergewicht — dieselbe Vorgabe, bis jeder Satz sauber sitzt.',
 
   // --- effort per set (RIR / RPE) ---
+  '{0} sets bring an {1} with them — switch on Effort per set in Settings to see it.': '{0} Sätze bringen ein {1} mit — schalte in den Einstellungen „Anstrengung pro Satz“ ein, um es zu sehen.',
+  '{0} sets bring an {1} with them.': '{0} Sätze bringen ein {1} mit.',
   'RIR': 'RIR',
   'RPE': 'RPE',
   'Effort per set': 'Anstrengung pro Satz',

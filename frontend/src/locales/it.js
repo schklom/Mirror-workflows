@@ -495,6 +495,8 @@ export default {
   'Bodyweight — same target again until every set is clean.': 'Corpo libero — stesso obiettivo finché ogni serie non è pulita.',
 
   // --- effort per set (RIR / RPE) ---
+  '{0} sets bring an {1} with them — switch on Effort per set in Settings to see it.': '{0} serie portano con sé un {1} — attiva «Sforzo per serie» nelle impostazioni per vederlo.',
+  '{0} sets bring an {1} with them.': '{0} serie portano con sé un {1}.',
   'RIR': 'RIR',
   'RPE': 'RPE',
   'Effort per set': 'Sforzo per serie',

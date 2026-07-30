@@ -495,6 +495,8 @@ export default {
   'Bodyweight — same target again until every set is clean.': 'Masa własna — ten sam cel, dopóki każda seria nie będzie czysta.',
 
   // --- effort per set (RIR / RPE) ---
+  '{0} sets bring an {1} with them — switch on Effort per set in Settings to see it.': '{0} serii ma zapisane {1} — włącz „Wysiłek w serii” w ustawieniach, aby to zobaczyć.',
+  '{0} sets bring an {1} with them.': '{0} serii ma zapisane {1}.',
   'RIR': 'RIR',
   'RPE': 'RPE',
   'Effort per set': 'Wysiłek na serię',

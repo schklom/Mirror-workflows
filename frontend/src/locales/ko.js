@@ -495,6 +495,8 @@ export default {
   'Bodyweight — same target again until every set is clean.': '맨몸 운동 — 모든 세트가 깔끔해질 때까지 같은 목표로.',
 
   // --- effort per set (RIR / RPE) ---
+  '{0} sets bring an {1} with them — switch on Effort per set in Settings to see it.': '{0}개 세트에 {1}이(가) 함께 들어 있습니다 — 설정에서 ‘세트당 강도’를 켜면 보입니다.',
+  '{0} sets bring an {1} with them.': '{0}개 세트에 {1}이(가) 함께 들어 있습니다.',
   'RIR': 'RIR',
   'RPE': 'RPE',
   'Effort per set': '세트당 강도',

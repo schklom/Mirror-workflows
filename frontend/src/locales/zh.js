@@ -495,6 +495,8 @@ export default {
   'Bodyweight — same target again until every set is clean.': '徒手动作——保持同样的目标，直到每组都做干净。',
 
   // --- effort per set (RIR / RPE) ---
+  '{0} sets bring an {1} with them — switch on Effort per set in Settings to see it.': '{0} 组自带 {1}——在设置中打开“每组强度”即可看到。',
+  '{0} sets bring an {1} with them.': '{0} 组自带 {1}。',
   'RIR': 'RIR',
   'RPE': 'RPE',
   'Effort per set': '每组强度',

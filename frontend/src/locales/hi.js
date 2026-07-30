@@ -494,7 +494,13 @@ export default {
   'Bodyweight — every rep last time, so go for {0} this time.': 'बॉडीवेट — पिछली बार सारे रेप्स, तो इस बार {0} का लक्ष्य रखें।',
   'Bodyweight — same target again until every set is clean.': 'बॉडीवेट — जब तक हर सेट साफ़ न हो, वही लक्ष्य।',
 
-  // --- RIR (reps in reserve) ---
+  // --- effort per set (RIR / RPE) ---
   'RIR': 'RIR',
-  'Show RIR column': 'RIR कॉलम दिखाएं',
+  'RPE': 'RPE',
+  'Effort per set': 'हर सेट की मेहनत',
+  'What are RIR and RPE?': 'RIR और RPE क्या हैं?',
+  'How hard a set was, logged next to weight and reps. Nothing else reads it — your progression and estimated 1RM are unaffected.': 'सेट कितना कठिन था, यह वज़न और रेप्स के साथ दर्ज होता है। इसे और कुछ नहीं पढ़ता — आपकी प्रोग्रेशन और अनुमानित 1RM वैसे ही रहते हैं।',
+  'RIR — reps in reserve: how many more reps you had in you. 2 means two left, 0 means you went to failure.': 'RIR — रिज़र्व में रेप्स: आप और कितने रेप्स कर सकते थे। 2 यानी दो बाकी, 0 यानी पूरी थकान तक।',
+  'RPE — perceived exertion, the same effort read off a 10-point scale: RPE 8 means two reps left, RPE 10 means failure.': 'RPE — महसूस की गई मेहनत, वही बात 10 अंकों के पैमाने पर: RPE 8 यानी दो रेप्स बाकी, RPE 10 यानी पूरी थकान।',
+  'So RPE ≈ 10 − RIR. Pick the one you already think in; sets you have already logged keep their own scale.': 'यानी RPE ≈ 10 − RIR। जिस पैमाने में आप पहले से सोचते हैं वही चुनें; पहले दर्ज सेट अपने पैमाने पर बने रहते हैं।',
 }

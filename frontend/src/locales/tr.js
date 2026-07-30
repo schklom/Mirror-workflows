@@ -494,7 +494,13 @@ export default {
   'Bodyweight — every rep last time, so go for {0} this time.': 'Vücut ağırlığı — geçen sefer bütün tekrarlar tamamdı, bu sefer {0} hedefle.',
   'Bodyweight — same target again until every set is clean.': 'Vücut ağırlığı — her set temiz çıkana kadar aynı hedef.',
 
-  // --- RIR (reps in reserve) ---
+  // --- effort per set (RIR / RPE) ---
   'RIR': 'RIR',
-  'Show RIR column': 'RIR sütununu göster',
+  'RPE': 'RPE',
+  'Effort per set': 'Set başına zorluk',
+  'What are RIR and RPE?': 'RIR ve RPE nedir?',
+  'How hard a set was, logged next to weight and reps. Nothing else reads it — your progression and estimated 1RM are unaffected.': 'Bir setin ne kadar zor geçtiği; ağırlık ve tekrarın yanına yazılır. Başka hiçbir yer bunu okumaz — ilerleme ve tahmini 1TM etkilenmez.',
+  'RIR — reps in reserve: how many more reps you had in you. 2 means two left, 0 means you went to failure.': 'RIR — yedekteki tekrar: kaç tekrar daha yapabilirdin. 2 iki tekrar kaldı, 0 tükenene kadar demek.',
+  'RPE — perceived exertion, the same effort read off a 10-point scale: RPE 8 means two reps left, RPE 10 means failure.': 'RPE — algılanan zorluk, aynı şey 10’luk ölçekte: RPE 8 iki tekrar kaldı, RPE 10 tükenme demek.',
+  'So RPE ≈ 10 − RIR. Pick the one you already think in; sets you have already logged keep their own scale.': 'Yani RPE ≈ 10 − RIR. Zaten hangisiyle düşünüyorsan onu seç; kayıtlı setler kendi ölçeğinde kalır.',
 }

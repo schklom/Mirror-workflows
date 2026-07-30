@@ -512,7 +512,13 @@ export default {
   'Bodyweight — every rep last time, so go for {0} this time.': 'Körpergewicht — letztes Mal jede Wiederholung, also diesmal {0} anpeilen.',
   'Bodyweight — same target again until every set is clean.': 'Körpergewicht — dieselbe Vorgabe, bis jeder Satz sauber sitzt.',
 
-  // --- RIR (reps in reserve) ---
+  // --- effort per set (RIR / RPE) ---
   'RIR': 'RIR',
-  'Show RIR column': 'RIR-Spalte anzeigen',
+  'RPE': 'RPE',
+  'Effort per set': 'Anstrengung pro Satz',
+  'What are RIR and RPE?': 'Was sind RIR und RPE?',
+  'How hard a set was, logged next to weight and reps. Nothing else reads it — your progression and estimated 1RM are unaffected.': 'Wie schwer ein Satz war, direkt neben Gewicht und Wiederholungen. Sonst liest das nichts — Progression und geschätztes 1RM bleiben unberührt.',
+  'RIR — reps in reserve: how many more reps you had in you. 2 means two left, 0 means you went to failure.': 'RIR — Wiederholungen in Reserve: wie viele du noch geschafft hättest. 2 heißt zwei übrig, 0 heißt bis zum Muskelversagen.',
+  'RPE — perceived exertion, the same effort read off a 10-point scale: RPE 8 means two reps left, RPE 10 means failure.': 'RPE — empfundene Anstrengung, dasselbe auf einer 10er-Skala: RPE 8 heißt zwei Wiederholungen übrig, RPE 10 heißt Muskelversagen.',
+  'So RPE ≈ 10 − RIR. Pick the one you already think in; sets you have already logged keep their own scale.': 'Also RPE ≈ 10 − RIR. Nimm die Skala, in der du ohnehin denkst; bereits protokollierte Sätze behalten ihre eigene.',
 }

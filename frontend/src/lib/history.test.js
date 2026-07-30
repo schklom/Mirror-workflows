@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { modeOf, isTimed, fmtSec, setLabel, defaultConfig, buildSets, exLine, workoutVolume } from './history.js'
+import { modeOf, isTimed, fmtSec, setLabel, defaultConfig, buildSets, exLine, workoutVolume, effortOf } from './history.js'
 import { EXDB } from './exercises.js'
 
 // Real ids out of the shipped catalogue, so the body-part fallback is exercised for real.
@@ -74,6 +74,39 @@ describe('setLabel', () => {
     expect(setLabel(LIFT, { w: 60, r: 10 })).toBe('60×10')
     // cleared in the UI: the key is dropped, but a null must read the same as absent
     expect(setLabel(LIFT, { w: 60, r: 10, rir: null })).toBe('60×10')
+  })
+
+  it('appends RPE for a set logged on that scale', () => {
+    expect(setLabel(LIFT, { w: 60, r: 10, rpe: 8 })).toBe('60×10 (RPE 8)')
+    expect(setLabel(LIFT, { w: 60, r: 10, rpe: 9.5 })).toBe('60×10 (RPE 9.5)')
+    expect(setLabel(LIFT, { w: 60, r: 10, rpe: null })).toBe('60×10')
+  })
+
+  it('keeps each set on the scale it was logged with', () => {
+    // switching the setting must not rewrite history: an old RIR set still reads as RIR
+    expect(setLabel(LIFT, { w: 60, r: 10, rir: 2 })).toBe('60×10 (RIR 2)')
+    // and a set that somehow carries both is described once, by the one it was logged with
+    expect(setLabel(LIFT, { w: 60, r: 10, rir: 2, rpe: 8 })).toBe('60×10 (RIR 2)')
+  })
+})
+
+describe('effortOf', () => {
+  it('reads the scale a profile logs', () => {
+    expect(effortOf({ effort: 'rpe' })).toBe('rpe')
+    expect(effortOf({ effort: 'rir' })).toBe('rir')
+    expect(effortOf({ effort: 'none' })).toBe('none')
+    expect(effortOf({})).toBe('none')
+  })
+
+  it('keeps the column for a profile still carrying the old showRir flag', () => {
+    expect(effortOf({ showRir: true })).toBe('rir')
+    // what a stored profile actually looks like once it is overlaid on DEF
+    expect(effortOf({ effort: null, showRir: true })).toBe('rir')
+    expect(effortOf({ effort: null })).toBe('none')
+    expect(effortOf({ showRir: false })).toBe('none')
+    // once the new setting is chosen it wins, whatever the old flag said
+    expect(effortOf({ showRir: true, effort: 'rpe' })).toBe('rpe')
+    expect(effortOf({ showRir: true, effort: 'none' })).toBe('none')
   })
 })
 

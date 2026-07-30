@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useStore, DEF, hasData } from '../store/useStore.js'
 import { useUI } from '../store/useUI.js'
 import { ACCENTS, todayISO, localTZ } from '../lib/format.js'
+import { effortOf } from '../lib/history.js'
 import { webauthnOK, passkeyLogin, passkeyRegister, IS_ANDROID } from '../lib/api.js'
 import { pushSupported, enablePush, disablePush, sendTestPush } from '../lib/push.js'
 import { t, LANGS, INSTR_LANGS } from '../lib/i18n.js'
@@ -133,8 +134,13 @@ export default function Settings() {
       <Row icon="bell" iconTint="var(--pink)" title={t('Sounds')}>
         <Switch checked={!!S.sound} onChange={v => update(s => { s.sound = v })} />
       </Row>
-      <Row icon="target" iconTint="var(--purple)" title={t('Show RIR column')}>
-        <Switch checked={!!S.showRir} onChange={v => update(s => { s.showRir = v })} />
+      {/* Two names for the same judgement, so the column asks in the scale you already think in.
+          The (i) explains the difference rather than making the row title carry it. */}
+      <Row icon="target" iconTint="var(--purple)" title={t('Effort per set')}>
+        <Segmented className="seg-inline"
+          options={[{ value: 'none', label: t('Off') }, { value: 'rir', label: t('RIR') }, { value: 'rpe', label: t('RPE') }]}
+          value={effortOf(S)} onChange={v => update(s => { s.effort = v; delete s.showRir })} />
+        <button className="helpbtn" aria-label={t('What are RIR and RPE?')} onClick={effortHelpSheet}><Icon name="info" /></button>
       </Row>
     </Section>
 
@@ -167,6 +173,21 @@ export default function Settings() {
       <a href="https://github.com/DuarteSantos8/openGym" target="_blank" rel="noopener">source code</a> · exercise data: hasaneyldrm/exercises-dataset (CC)
     </div>
   </div>
+}
+
+// Short on purpose: the two scales measure the same thing from opposite ends, and that one
+// sentence is what people actually come looking for.
+function effortHelpSheet() {
+  useUI.getState().openSheet(close => <>
+    <h3>{t('Effort per set')}</h3>
+    <div className="muted small" style={{ lineHeight: 1.55, display: 'grid', gap: 10 }}>
+      <div>{t('How hard a set was, logged next to weight and reps. Nothing else reads it — your progression and estimated 1RM are unaffected.')}</div>
+      <div>{t('RIR — reps in reserve: how many more reps you had in you. 2 means two left, 0 means you went to failure.')}</div>
+      <div>{t('RPE — perceived exertion, the same effort read off a 10-point scale: RPE 8 means two reps left, RPE 10 means failure.')}</div>
+      <div>{t('So RPE ≈ 10 − RIR. Pick the one you already think in; sets you have already logged keep their own scale.')}</div>
+    </div>
+    <div style={{ height: 8 }} />
+  </>)
 }
 
 function NotificationsCard({ S, update, toast }) {

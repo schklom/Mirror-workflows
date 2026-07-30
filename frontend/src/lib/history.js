@@ -23,13 +23,35 @@ export function fmtSec(sec) {
   return Math.floor(n / 60) + ':' + String(n % 60).padStart(2, '0')
 }
 
+// How hard a set felt, if the profile logs it at all. Two scales for the same thing, kept in
+// their own fields: RIR counts the reps still in the tank, RPE reads the same effort off a
+// 10-point scale from the top (RPE 8 ≈ RIR 2). A set logged on one scale is never silently
+// rewritten as the other — switching the setting changes what new sets ask for, nothing else.
+// `start` is where the first + tap lands: a typical working set, not the end of the scale.
+export const EFFORT = {
+  rir: { f: 'rir', hd: 'RIR', step: 0.5, max: 10, start: 2 },
+  rpe: { f: 'rpe', hd: 'RPE', step: 0.5, max: 10, start: 8 }
+}
+// Which scale a profile logs. `showRir` is the boolean this replaced and is only consulted
+// when the profile has no answer of its own — an explicit 'none' has to win over it, or a
+// backup or another device that still carries the old flag would switch the column back on.
+export const effortOf = S => {
+  const e = S && S.effort
+  return e === 'none' || EFFORT[e] ? e : (S && S.showRir ? 'rir' : 'none')
+}
+// The "(RIR 2)" / "(RPE 8)" tail on a set summary, empty when nothing was logged.
+const effortTail = s => {
+  const k = s.rir != null ? 'rir' : s.rpe != null ? 'rpe' : null
+  return k ? ` (${EFFORT[k].hd} ${fmtNum(s[k])})` : ''
+}
+
 // One-line summary of a logged set. `cfg` carries the mode when the caller has it (a routine
 // entry or a workout entry); passing an id alone keeps the old body-part behaviour.
 export function setLabel(id, s, cfg) {
   const mode = modeOf(cfg || { id })
   if (mode === 'cardio') return `${s.min || 0} min @ ${fmtNum(s.speed || 0)} km/h`
   if (mode === 'time') return fmtSec(s.sec) + (s.w > 0 ? ` · ${fmtNum(s.w)}` : '')
-  return `${fmtNum(s.w || 0)}×${s.r || 0}` + (s.rir != null ? ` (RIR ${fmtNum(s.rir)})` : '')
+  return `${fmtNum(s.w || 0)}×${s.r || 0}` + effortTail(s)
 }
 // Default config for a freshly added exercise.
 export function defaultConfig(id, mode) {

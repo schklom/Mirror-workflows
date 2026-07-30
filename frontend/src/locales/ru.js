@@ -494,7 +494,13 @@ export default {
   'Bodyweight — every rep last time, so go for {0} this time.': 'Собственный вес — в прошлый раз все повторения, так что в этот раз целься на {0}.',
   'Bodyweight — same target again until every set is clean.': 'Собственный вес — та же цель, пока все подходы не станут чистыми.',
 
-  // --- RIR (reps in reserve) ---
+  // --- effort per set (RIR / RPE) ---
   'RIR': 'RIR',
-  'Show RIR column': 'Показывать столбец RIR',
+  'RPE': 'RPE',
+  'Effort per set': 'Усилие в подходе',
+  'What are RIR and RPE?': 'Что такое RIR и RPE?',
+  'How hard a set was, logged next to weight and reps. Nothing else reads it — your progression and estimated 1RM are unaffected.': 'Насколько тяжёлым был подход — рядом с весом и повторениями. Больше это нигде не используется: прогрессия и расчётный 1ПМ не меняются.',
+  'RIR — reps in reserve: how many more reps you had in you. 2 means two left, 0 means you went to failure.': 'RIR — повторения в запасе: сколько ещё могли бы сделать. 2 — два в запасе, 0 — до отказа.',
+  'RPE — perceived exertion, the same effort read off a 10-point scale: RPE 8 means two reps left, RPE 10 means failure.': 'RPE — воспринимаемое усилие, то же самое по 10-балльной шкале: RPE 8 — два повторения в запасе, RPE 10 — отказ.',
+  'So RPE ≈ 10 − RIR. Pick the one you already think in; sets you have already logged keep their own scale.': 'То есть RPE ≈ 10 − RIR. Выберите шкалу, в которой вы уже думаете; уже записанные подходы сохраняют свою.',
 }

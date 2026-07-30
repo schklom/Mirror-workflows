@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/useStore.js'
 import { useUI } from '../store/useUI.js'
 import { exOr } from '../lib/exercises.js'
-import { effectiveRoutine, lastEntryFor, bestWeightFor, buildSets, setsDoneActive, supersetUnits, unitOf, setLabel, modeOf } from '../lib/history.js'
+import { effectiveRoutine, lastEntryFor, bestWeightFor, buildSets, setsDoneActive, supersetUnits, unitOf, setLabel, modeOf, EFFORT, effortOf } from '../lib/history.js'
 import { fmtNum, fmtDate, todayISO, exCount, DAYN } from '../lib/format.js'
 import { beep, vibrate } from '../lib/sound.js'
 import { t } from '../lib/i18n.js'
@@ -75,24 +75,28 @@ function ExerciseBlock({ entryIdx, compact, onToggle, onField, onAddSet, onRemov
   const col2 = cardio ? { f: 'speed', step: 0.5, dec: true, hd: t('Speed (km/h)') }
     : timed ? { f: 'w', step: 2.5, dec: true, hd: t('Weight ({0})', S.unit) }
       : { f: 'r', step: 1, dec: false, hd: t('Reps') }
-  // RIR (reps in reserve) only makes sense for weighted rep sets, not cardio/timed holds,
-  // and is opt-in (Settings) since it adds a third stepper to every row. `opt` because an
-  // unlogged RIR is not the same as RIR 0 — 0 says the set went to failure.
-  const col3 = mode === 'reps' && S.showRir ? { f: 'rir', step: 0.5, dec: true, opt: true, hd: t('RIR') } : null
-  // Stepping an optional field that was never filled in stays empty rather than clamping to 0:
-  // otherwise one stray − on a fresh row stamps "(RIR 0)" on the set for good. Going down from
-  // 0.5 still reaches a real 0.
+  // Effort (RIR or RPE, whichever the profile logs) only makes sense for weighted rep sets,
+  // not cardio/timed holds, and is opt-in since it adds a third stepper to every row. `opt`
+  // because an unlogged effort is not the same as 0 — RIR 0 says the set went to failure.
+  const eff = EFFORT[effortOf(S)]
+  const col3 = mode === 'reps' && eff ? { ...eff, dec: true, opt: true, hd: t(eff.hd) } : null
+  // Stepping an optional field that was never filled in must not clamp to 0: one stray − on a
+  // fresh row would stamp "(RIR 0)" — to failure — on the set for good. − leaves it empty, and
+  // the first + lands on a typical working set (RIR 2 / RPE 8) rather than the end of the scale.
   const bump = (s, i, col, dir) => {
     const cur = s[col.f]
-    if (col.opt && cur == null && dir < 0) return
-    onField(i, col.f, Math.max(0, Math.round(((cur || 0) + dir * col.step) * 100) / 100))
+    if (col.opt && cur == null) return dir < 0 ? undefined : onField(i, col.f, col.start)
+    const n = Math.round(((cur || 0) + dir * col.step) * 100) / 100
+    onField(i, col.f, Math.min(col.max ?? Infinity, Math.max(0, n)))
   }
   // Uses the shared stepper markup so a set row picks up the same control styling
   // as every other +/- field in the app.
   const cell = (s, i, col, cls) => (
     <div className={'stp ' + cls}>
       <button aria-label="Decrease" onClick={() => bump(s, i, col, -1)}><Icon name="minus" /></button>
-      <span className="val"><NumberField decimal={col.dec} nullable={col.opt} value={s[col.f] ?? ''} onChange={v => onField(i, col.f, v)} /></span>
+      {/* a typed value is capped too — RPE has no 12, and 12 reps in reserve is a warm-up */}
+      <span className="val"><NumberField decimal={col.dec} nullable={col.opt} value={s[col.f] ?? ''}
+        onChange={v => onField(i, col.f, v == null || col.max == null ? v : Math.min(col.max, v))} /></span>
       <button aria-label="Increase" onClick={() => bump(s, i, col, 1)}><Icon name="plus" /></button>
     </div>
   )
@@ -114,13 +118,13 @@ function ExerciseBlock({ entryIdx, compact, onToggle, onField, onAddSet, onRemov
       <span>{t(...plan.why)}</span>
     </div>}
     <div className="card" style={{ marginTop: 10, marginBottom: 0 }}>
-      {/* the header carries the same rir3 sizing as the rows, or the labels drift off their columns */}
-      <div className={'sethead' + (col3 ? ' rir3' : '')}><span className="n-sp" /><span className="w-sp">{col1.hd}</span><span className="r-sp">{col2.hd}</span>{col3 && <span className="rir-sp">{col3.hd}</span>}{timed && <span className="ck-sp" />}<span className="ck-sp" /></div>
-      {entry.sets.map((s, i) => <div key={i} className={'setrow' + (s.done ? ' done' : '') + (col3 ? ' rir3' : '')}>
+      {/* the header carries the same eff3 sizing as the rows, or the labels drift off their columns */}
+      <div className={'sethead' + (col3 ? ' eff3' : '')}><span className="n-sp" /><span className="w-sp">{col1.hd}</span><span className="r-sp">{col2.hd}</span>{col3 && <span className="eff-sp">{col3.hd}</span>}{timed && <span className="ck-sp" />}<span className="ck-sp" /></div>
+      {entry.sets.map((s, i) => <div key={i} className={'setrow' + (s.done ? ' done' : '') + (col3 ? ' eff3' : '')}>
         <div className="n">{i + 1}</div>
         {cell(s, i, col1, 'w')}
         {cell(s, i, col2, 'r')}
-        {col3 && cell(s, i, col3, 'rir')}
+        {col3 && cell(s, i, col3, 'eff')}
         {/* A timed set is started, not typed: the timer counts the hold down and checks the
             set off itself. The checkbox stays for anyone who timed it on their own watch. */}
         {timed && <button className="setgo" aria-label={t('Start set')} disabled={s.done || !!working}

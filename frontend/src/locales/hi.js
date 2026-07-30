@@ -493,4 +493,8 @@ export default {
   'Missed reps last time — same weight again ({0} of {1} to go).': 'पिछली बार रेप्स चूके — वही वज़न दोबारा ({1} में से {0} बाकी)।',
   'Bodyweight — every rep last time, so go for {0} this time.': 'बॉडीवेट — पिछली बार सारे रेप्स, तो इस बार {0} का लक्ष्य रखें।',
   'Bodyweight — same target again until every set is clean.': 'बॉडीवेट — जब तक हर सेट साफ़ न हो, वही लक्ष्य।',
+
+  // --- RIR (reps in reserve) ---
+  'RIR': 'RIR',
+  'Show RIR column': 'RIR कॉलम दिखाएं',
 }

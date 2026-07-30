@@ -493,4 +493,8 @@ export default {
   'Missed reps last time — same weight again ({0} of {1} to go).': '上次次数未完成——再用同样的重量（还剩 {0}/{1} 次）。',
   'Bodyweight — every rep last time, so go for {0} this time.': '徒手动作——上次全部完成，这次冲 {0} 次。',
   'Bodyweight — same target again until every set is clean.': '徒手动作——保持同样的目标，直到每组都做干净。',
+
+  // --- RIR (reps in reserve) ---
+  'RIR': 'RIR',
+  'Show RIR column': '显示RIR列',
 }

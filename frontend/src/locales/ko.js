@@ -493,4 +493,8 @@ export default {
   'Missed reps last time — same weight again ({0} of {1} to go).': '지난번 목표 횟수 미달 — 같은 무게로 한 번 더 ({1}회 중 {0}회 남음).',
   'Bodyweight — every rep last time, so go for {0} this time.': '맨몸 운동 — 지난번 전 세트 완수, 이번엔 {0}회를 노려보세요.',
   'Bodyweight — same target again until every set is clean.': '맨몸 운동 — 모든 세트가 깔끔해질 때까지 같은 목표로.',
+
+  // --- RIR (reps in reserve) ---
+  'RIR': 'RIR',
+  'Show RIR column': 'RIR 열 표시',
 }

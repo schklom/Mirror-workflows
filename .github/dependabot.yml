@@ -43,6 +43,13 @@ updates:
     schedule:
       interval: monthly
     open-pull-requests-limit: 1
+    ignore:
+      # Odd-numbered Node majors are "Current", never LTS — they stop getting fixes in about
+      # six months. Dependabot's first run offered 22 → 25, which for something other people
+      # self-host is a stability downgrade for nothing. Even majors (22 → 24 → 26) still get
+      # proposed, which is the move actually worth reviewing.
+      - dependency-name: node
+        versions: ['25.x', '27.x', '29.x', '31.x', '33.x']
 
   # Base images — web/Dockerfile (node:22-alpine build stage + nginx:alpine)
   - package-ecosystem: docker
@@ -50,6 +57,9 @@ updates:
     schedule:
       interval: monthly
     open-pull-requests-limit: 1
+    ignore:
+      - dependency-name: node
+        versions: ['25.x', '27.x', '29.x', '31.x', '33.x']
 
   # Workflow actions — everything under .github/workflows/
   - package-ecosystem: github-actions

@@ -182,10 +182,26 @@ lives in pure functions under `frontend/src/lib/` with tests next to them: `npm 
 `frontend/`. Vitest is a dev dependency; the app itself ships no runtime dependencies beyond
 React, the router and Zustand.
 
+## Community
+
+- **[Q&A](https://github.com/DuarteSantos8/openGym/discussions/categories/q-a)** — self-hosting
+  help, passkey/login trouble, "how do I…". Most login problems turn out to be an `RP_ID`/`ORIGIN`
+  mismatch.
+- **[Ideas](https://github.com/DuarteSantos8/openGym/discussions/categories/ideas)** — features
+  worth talking through before anyone writes code.
+- **[Show and tell](https://github.com/DuarteSantos8/openGym/discussions/categories/show-and-tell)**
+  — your setup, your plan templates, whatever you built on top.
+- **[Issues](https://github.com/DuarteSantos8/openGym/issues)** — bugs, and work that's already
+  been agreed on.
+
 ## Contributing
 
 Issues and PRs welcome — see [CONTRIBUTING.md](CONTRIBUTING.md). Good first issues: more starter
 plans, exercise-data languages, import from other trackers. **A ⭐ helps more people find it.**
+
+openGym is free and stays free: AGPL, no subscription, no paid tier, nothing held back for
+sponsors. If it replaced a paid tracker for you and you want to chip in, the Sponsor button at the
+top of the page is there — a star, a bug report or a PR is worth just as much.
 
 ## License
 

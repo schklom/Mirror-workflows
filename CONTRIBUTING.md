@@ -47,6 +47,18 @@ cd frontend && npm test
   `src/lib/progression.js` — the policy interface is already there
 - Accessibility passes on the workout and chart screens
 
+## Where to ask what
+
+| You have | Goes to |
+| --- | --- |
+| A question, or self-hosting that won't behave | [Discussions → Q&A](https://github.com/DuarteSantos8/openGym/discussions/categories/q-a) |
+| An idea you're not sure about yet | [Discussions → Ideas](https://github.com/DuarteSantos8/openGym/discussions/categories/ideas) |
+| A reproducible bug | [Issues](https://github.com/DuarteSantos8/openGym/issues) |
+| A change you've already built | A pull request |
+
+An answered question in Q&A is worth more than the same answer buried in a closed issue — the
+next person searching "passkey login fails behind my reverse proxy" actually finds it.
+
 ## Reporting bugs
 
 Open an issue with: what you did, what you expected, what happened, and your browser/OS. If it's

@@ -135,20 +135,5 @@ export function effortHistogram(S, days) {
   return bins.map((n, i) => ({ rir: i, tail: i === BUCKETS, n, pct: rated ? n / rated : 0 }))
 }
 
-/**
- * Average effort per session for one exercise, oldest first. Sessions where the exercise was
- * logged but never rated are absent, not zero — an unrated set must never read as failure.
- */
-export function exerciseEffort(S, exId) {
-  const pts = []
-  ;(S.workouts || []).forEach(w => {
-    const en = (w.entries || []).find(e => e.id === exId)
-    if (!en) return
-    const r = avgRir((en.sets || []).filter(s => s.done))
-    if (r != null) pts.push({ t: w.start || new Date(w.d).getTime(), d: w.d, rir: r })
-  })
-  return pts
-}
-
 /** A set that counts as hard — the filter behind the muscle map's "hard sets" mode. */
 export const isHardSet = s => { const r = rirOf(s); return r != null && r <= HARD_RIR }

@@ -1,16 +1,16 @@
 import { describe, it, expect } from 'vitest'
 import {
   rirOf, toScale, displayScale, avgRir, effortSummary, hasEffort, effortWeeks,
-  effortHistogram, exerciseEffort, isHardSet, HARD_RIR, MIN_RATED
+  effortHistogram, isHardSet, HARD_RIR, MIN_RATED
 } from './effort.js'
 import { isoOf } from './format.js'
 
 const daysAgo = n => { const d = new Date(); d.setDate(d.getDate() - n); return d }
 // One workout on a day, with the sets given. Everything here is a finished set unless a set
 // says otherwise, because that is what the stats read.
-const W = (n, sets, id = '0025') => {
+const W = (n, sets) => {
   const d = daysAgo(n)
-  return { id: 'w' + n, d: isoOf(d), start: +d, entries: [{ id, sets: sets.map(s => ({ w: 60, r: 8, done: true, ...s })) }] }
+  return { id: 'w' + n, d: isoOf(d), start: +d, entries: [{ id: '0025', sets: sets.map(s => ({ w: 60, r: 8, done: true, ...s })) }] }
 }
 const S = (...workouts) => ({ workouts })
 
@@ -162,22 +162,6 @@ describe('effortHistogram', () => {
   it('is all zeroes, not NaN, when nothing is rated', () => {
     const h = effortHistogram(S(W(2, [{}])), 0)
     expect(h.every(b => b.n === 0 && b.pct === 0)).toBe(true)
-  })
-})
-
-describe('exerciseEffort', () => {
-  it('gives one point per session, in order', () => {
-    const st = S(W(20, [{ rir: 4 }, { rir: 2 }]), W(2, [{ rir: 1 }]))
-    expect(exerciseEffort(st, '0025').map(p => p.rir)).toEqual([3, 1])
-  })
-
-  it('skips a session where the exercise was logged but never rated', () => {
-    const st = S(W(20, [{}]), W(2, [{ rir: 1 }]))
-    expect(exerciseEffort(st, '0025')).toHaveLength(1)
-  })
-
-  it('does not pick up another exercise', () => {
-    expect(exerciseEffort(S(W(2, [{ rir: 1 }], '0047')), '0025')).toEqual([])
   })
 })
 

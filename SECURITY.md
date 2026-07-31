@@ -80,17 +80,22 @@ Read this before hosting openGym for anyone other than yourself.
 - **Passkeys only.** No passwords, no email addresses, no reset flow. Registration and login are
   verified server-side by `@simplewebauthn/server` against `expectedOrigin: ORIGIN` and
   `expectedRPID: RP_ID`, and the authenticator's signature counter is stored and updated on every
-  login (`api/server.js:277-303`, `api/server.js:323-343`).
-- **Sessions are a signed cookie.** `gymsid` carries `<uid>:<expiry>` plus an HMAC-SHA256 tag
-  over it, compared in constant time (`api/server.js:144-157`). The key is 32 random bytes
-  generated on first run and written to `./data/secret` with mode `0600` (`api/server.js:30-32`).
-  The cookie is `HttpOnly` and `SameSite=Lax`, and gets `Secure` **only when `ORIGIN` starts with
-  `https:`** (`api/server.js:25`, `api/server.js:183-186`).
+  login (`api/server.js:292-318`, `api/server.js:338-358`).
+- **Sessions are a signed cookie.** `gymsid` carries `<uid>:<expiry>:<version>` plus an
+  HMAC-SHA256 tag over it, compared in constant time (`api/server.js:148-161`). The key is 32
+  random bytes generated on first run and written to `./data/secret` with mode `0600`
+  (`api/server.js:34-36`). The cookie is `HttpOnly` and `SameSite=Lax`, and gets `Secure` **only
+  when `ORIGIN` starts with `https:`** (`api/server.js:29`, `api/server.js:198-201`).
+- **Any user can end every session they have.** `POST /api/logout/all` increments that account's
+  session version, and every authenticated request checks the version in the cookie against the
+  one on the user record (`api/server.js:167`, `api/server.js:187-188`), so every cookie ever
+  issued for the account — on every device, including a copy someone walked off with — stops
+  verifying at once. Passkeys are untouched; signing back in works immediately.
 - **Data is isolated per user by the session's uid.** `GET`/`PUT /api/data` only ever touch
-  `state-<uid>.json` for the caller (`api/server.js:348-365`); no route lets a normal user name
+  `state-<uid>.json` for the caller (`api/server.js:375-392`); no route lets a normal user name
   another user.
 - **Disabling an account takes effect immediately.** Every authenticated request and every login
-  is rejected for a disabled user (`api/server.js:173`, `api/server.js:342`).
+  is rejected for a disabled user (`api/server.js:184`, `api/server.js:357`).
 
 ### What it does not do
 
@@ -102,19 +107,22 @@ Read this before hosting openGym for anyone other than yourself.
   people, they are trusting you exactly as much as they'd trust any server operator.**
 - **Admins can read everything.** A user listed in `ADMIN_UIDS` (or flagged `admin: true` in
   `db.json`) gets every user's full history and body weight, can disable accounts, and can create
-  or revoke invite codes (`api/server.js:433-510`). Off by default — a fresh instance has no admin.
-- **Sessions can't be revoked individually.** They're stateless and last **365 days**
-  (`api/server.js:22`); `POST /api/logout` just clears the cookie in that one browser
-  (`api/server.js:346`). A copied cookie stays valid until it expires. To invalidate every
-  session on the instance, delete `./data/secret` and restart — everyone signs in again, passkeys
-  are unaffected. Disabling the account works too, for one user.
+  or revoke invite codes (`api/server.js:460-540`). Off by default — a fresh instance has no admin.
+- **Sessions can't be revoked one device at a time.** Revocation is per *account*, not per
+  session: `POST /api/logout/all` kills all of them at once and there is no device list to pick
+  from. `POST /api/logout` on its own only clears the cookie in that one browser
+  (`api/server.js:361`) — a copy taken beforehand keeps working. Sessions last **90 days** by
+  default, settable with `SESSION_DAYS` (`api/server.js:26`); each cookie carries the lifetime it
+  was issued with, so changing the setting doesn't reach cookies that are already out. Deleting
+  `./data/secret` and restarting still works as the instance-wide reset, and disabling an account
+  still locks out one user completely.
 - **CSRF protection is `SameSite=Lax` and nothing else.** There are no CSRF tokens.
 - **User verification is preferred, not required.** Both handshakes pass
-  `requireUserVerification: false` (`api/server.js:282`, `api/server.js:328`), so a passkey
+  `requireUserVerification: false` (`api/server.js:297`, `api/server.js:343`), so a passkey
   released without a biometric or PIN is still accepted. In practice: unlocked device ≈ account
   access.
 - **One passkey per profile, and no recovery.** Every successful registration creates a *new*
-  profile (`api/server.js:294-304`); there is no route to attach a second passkey to an existing
+  profile (`api/server.js:309-319`); there is no route to attach a second passkey to an existing
   one, and no email or reset path. Lose the passkey and that profile is unreachable — only direct
   surgery on `./data` gets it back.
 - **Disabling someone isn't a ban.** They can still register a fresh profile with a new passkey
@@ -123,11 +131,14 @@ Read this before hosting openGym for anyone other than yourself.
   nginx listens on `:80` (`web/nginx.conf`); TLS is your reverse proxy's job. Without it,
   browsers won't do passkeys at all (except on `http://localhost`) and the session cookie is sent
   in the clear.
-- **No rate limiting anywhere.** Nothing throttles logins, registrations or writes. Invite codes
-  are 8 hex characters — 32 bits (`api/server.js:494`) — and `POST /api/register/options` answers
-  whether a code is valid (`api/server.js:257`), so an invite-only instance on the open internet
-  should have a rate limit in front of it. The only hard limit in the app is a 5 MB request body
-  (`api/server.js:23`).
+- **No rate limiting anywhere.** Nothing throttles logins, registrations or writes, and
+  `POST /api/register/options` still answers whether an invite code is valid
+  (`api/server.js:272`), so an invite-only instance on the open internet should have a rate limit
+  in front of it. New invite codes are 16 hex characters — 64 bits (`api/server.js:525`) — which
+  makes guessing one impractical even unthrottled; codes generated by earlier versions are 8
+  characters / 32 bits and still work, so revoke and reissue any that are still unused. The only
+  hard limit
+  in the app is a 5 MB request body (`api/server.js:27`).
 - **A few endpoints answer without a session:** `/api/health` (which includes the total user
   count), `/api/config` (whether invite-only is on), `/api/push/public-key`, and the
   register/login handshakes.

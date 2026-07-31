@@ -19,7 +19,11 @@ const RP_NAME = process.env.RP_NAME || 'openGym';
 // code the admin generates. Both default off so a fresh self-hosted instance stays open.
 const ADMIN_UIDS = (process.env.ADMIN_UIDS || '').split(',').map(s => s.trim()).filter(Boolean);
 const INVITE_ONLY = /^(1|true|yes|on)$/i.test(process.env.INVITE_ONLY || '');
-const SESSION_DAYS = 365;
+// 90 days keeps someone who trains a few times a week permanently signed in without a stolen
+// cookie staying good for a year. Overridable because a family instance and one on the open
+// internet don't want the same number. Only affects cookies minted from now on — the expiry is
+// baked into each cookie when it's issued, so lowering this never cuts an existing session short.
+const SESSION_DAYS = Math.max(1, +(process.env.SESSION_DAYS || 90) || 90);
 const MAX_BODY = 5 * 1024 * 1024;
 // Secure cookies require HTTPS; over plain http://localhost the flag would drop the cookie
 const SECURE = /^https:/i.test(ORIGIN) ? ' Secure;' : '';
@@ -155,9 +159,15 @@ function verifySig(token) {
   } catch { return null; }
   return payload;
 }
-function makeSession(uid) {
+// Session payload is `<uid>:<expiry>:<version>`, where the version is the user's `sv` counter.
+// Bumping `sv` (POST /api/logout/all) makes every cookie ever handed out for that account stop
+// verifying, which is the only revocation there was before short of deleting ./data/secret and
+// signing out the whole instance. Cookies minted before `sv` existed have no third field and are
+// read as version 0, matching a user who has never bumped — they stay valid until they expire.
+const sessionVersion = user => user.sv || 0;
+function makeSession(user) {
   const exp = Date.now() + SESSION_DAYS * 86400000;
-  return sign(uid + ':' + exp);
+  return sign(user.id + ':' + exp + ':' + sessionVersion(user));
 }
 function readSession(req) {
   const cookies = Object.fromEntries((req.headers.cookie || '').split(';').map(c => {
@@ -167,10 +177,15 @@ function readSession(req) {
   if (!tok) return null;
   const payload = verifySig(tok);
   if (!payload) return null;
-  const [uid, exp] = payload.split(':');
+  const [uid, exp, ver] = payload.split(':');
   if (!uid || +exp < Date.now()) return null;
   const user = db.users.find(u => u.id === uid) || null;
-  if (user && user.disabled) return null;   // disabled accounts are locked out everywhere
+  if (!user) return null;
+  if (user.disabled) return null;           // disabled accounts are locked out everywhere
+  // Missing third field = pre-versioning cookie = version 0. Anything non-numeric is a malformed
+  // payload (it still had to pass the HMAC, so this is belt-and-braces) and is refused outright.
+  const claimed = ver === undefined ? 0 : Number(ver);
+  if (!Number.isInteger(claimed) || claimed !== sessionVersion(user)) return null;
   return user;
 }
 // Guard for /api/admin/* — resolves the caller and 401/403s if they aren't an admin.
@@ -180,8 +195,8 @@ function requireAdmin(req, res) {
   if (!isAdmin(user)) { json(res, 403, { error: 'forbidden' }); return null; }
   return user;
 }
-function sessionCookie(uid) {
-  return `gymsid=${makeSession(uid)}; Path=/; Max-Age=${SESSION_DAYS * 86400}; HttpOnly;${SECURE} SameSite=Lax`;
+function sessionCookie(user) {
+  return `gymsid=${makeSession(user)}; Path=/; Max-Age=${SESSION_DAYS * 86400}; HttpOnly;${SECURE} SameSite=Lax`;
 }
 const clearCookie = `gymsid=; Path=/; Max-Age=0; HttpOnly;${SECURE} SameSite=Lax`;
 
@@ -301,7 +316,7 @@ const routes = {
       transports: body.credential?.response?.transports || []
     });
     saveDb();
-    json(res, 200, { user: { id: user.id, name: user.name, admin: isAdmin(user) } }, { 'Set-Cookie': sessionCookie(user.id) });
+    json(res, 200, { user: { id: user.id, name: user.name, admin: isAdmin(user) } }, { 'Set-Cookie': sessionCookie(user) });
   },
 
   'POST /api/login/options': async (req, res) => {
@@ -340,10 +355,22 @@ const routes = {
     const user = db.users.find(u => u.id === cred.userId);
     if (!user) return json(res, 500, { error: 'user missing' });
     if (user.disabled) return json(res, 403, { error: 'this account has been disabled' });
-    json(res, 200, { user: { id: user.id, name: user.name, admin: isAdmin(user) } }, { 'Set-Cookie': sessionCookie(user.id) });
+    json(res, 200, { user: { id: user.id, name: user.name, admin: isAdmin(user) } }, { 'Set-Cookie': sessionCookie(user) });
   },
 
   'POST /api/logout': async (req, res) => json(res, 200, { ok: true }, { 'Set-Cookie': clearCookie }),
+
+  // "Sign out everywhere" — bumps this user's session version, which invalidates every cookie
+  // ever issued for the account, on every device, including a copy someone else walked off with.
+  // The caller's own cookie is cleared here too, so the browser doing it doesn't sit on a token
+  // it no longer accepts. Passkeys are untouched: signing back in works immediately.
+  'POST /api/logout/all': async (req, res) => {
+    const user = readSession(req);
+    if (!user) return json(res, 401, { error: 'not signed in' });
+    user.sv = sessionVersion(user) + 1;
+    saveDb();
+    json(res, 200, { ok: true }, { 'Set-Cookie': clearCookie });
+  },
 
   'GET /api/data': async (req, res) => {
     const user = readSession(req);
@@ -491,7 +518,11 @@ const routes = {
     const admin = requireAdmin(req, res); if (!admin) return;
     const body = await readBody(req);
     let code;
-    do { code = crypto.randomBytes(4).toString('hex').toUpperCase(); } while (db.invites.some(i => i.code === code));
+    // 16 hex chars = 64 bits, up from 8 chars / 32 bits. The app has no rate limiting by design
+    // (that's the reverse proxy's job) and /api/register/options tells a caller whether a code is
+    // good, so the code itself has to be the thing that isn't worth guessing. Codes already in
+    // db.json keep working — validation is an exact string compare, never a length or format check.
+    do { code = crypto.randomBytes(8).toString('hex').toUpperCase(); } while (db.invites.some(i => i.code === code));
     const invite = { code, note: String(body.note || '').slice(0, 60), createdBy: admin.id, created: new Date().toISOString() };
     db.invites.push(invite);
     saveDb();

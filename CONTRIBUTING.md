@@ -28,7 +28,8 @@ cd frontend && npm test
 ## Guidelines
 
 - **Keep it dependency-light.** The frontend uses React + Router + Zustand and nothing else;
-  new deps (front or back) are a hard sell. `api/` has exactly one dependency — keep it that way.
+  new deps (front or back) are a hard sell. `api/` has two (`@simplewebauthn/server` for passkeys,
+  `web-push` for notifications) — keep it near that.
 - **Match the style.** Small components, clear names, comments only where the "why" isn't obvious.
   State lives in the Zustand store (`src/store`); pure helpers in `src/lib`.
 - **Don't commit** the exercise media (`media/`) or `data/` — they're gitignored.

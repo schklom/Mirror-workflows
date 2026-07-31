@@ -1,0 +1,64 @@
+# Dependency updates, deliberately quiet.
+#
+# openGym is dependency-light on purpose: the frontend is React + Router + Zustand, and api/
+# has two runtime dependencies. A default Dependabot setup would still open a PR per package
+# per week, which on a solo project means the alerts stop being read — the opposite of what
+# this is for. So: monthly, everything in an ecosystem grouped into a single PR, and a low
+# cap on open PRs. Security advisories are unaffected by any of this; GitHub raises those
+# regardless of schedule.
+#
+# Only manifests that actually exist here are listed. Deliberately NOT covered:
+#   - gradle (frontend/android) and cocoapods (frontend/ios) — Capacitor generates those shells
+#     and pins the native versions to the @capacitor/* npm packages. Bumping them independently
+#     desyncs the two and breaks the mobile build; they follow the npm update instead.
+version: 2
+
+updates:
+  # Frontend app — frontend/package.json
+  - package-ecosystem: npm
+    directory: /frontend
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 2
+    groups:
+      # One PR for the whole frontend. Runtime and build tooling move together anyway
+      # (a Vite bump usually wants its plugin bumped), and splitting them just doubles the
+      # review without splitting the risk.
+      frontend:
+        patterns: ["*"]
+
+  # Backend — api/package.json (@simplewebauthn/server, web-push)
+  - package-ecosystem: npm
+    directory: /api
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 2
+    groups:
+      api:
+        patterns: ["*"]
+
+  # Base images — api/Dockerfile (node:22-alpine)
+  - package-ecosystem: docker
+    directory: /api
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 1
+
+  # Base images — web/Dockerfile (node:22-alpine build stage + nginx:alpine)
+  - package-ecosystem: docker
+    directory: /web
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 1
+
+  # Workflow actions — everything under .github/workflows/
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 1
+    groups:
+      # These are all first-party actions/* and docker/* pinned to a major tag; they update
+      # in lockstep and none of them is worth a PR of its own.
+      actions:
+        patterns: ["*"]

@@ -1,0 +1,43 @@
+# Runs on pull requests too — the other two workflows only fire on push to main, so
+# contributed changes used to reach main without anything ever having been run.
+name: Tests
+
+on:
+  pull_request:
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/test.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/test.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: test-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # node:22-alpine in web/Dockerfile and api/Dockerfile — CI must match production.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+        working-directory: frontend
+      - run: npm test
+        working-directory: frontend
+      # A broken import or bad JSX fails the build long before any test covers it.
+      - run: npm run build
+        working-directory: frontend
+      - run: node scripts/check-locales.mjs
+        working-directory: frontend

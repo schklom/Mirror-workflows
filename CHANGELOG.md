@@ -1,5 +1,35 @@
 # Changelog
 
+## Unreleased
+
+### The effort ratings, read back as statistics
+
+v1.2.3 let you rate how hard a set was. Nothing then read that rating back — it lived in the set
+label and nowhere else. Stats now answers the question the number was recorded for.
+
+- 📊 **An Effort card in Stats** over 30d / 90d / 1Y / all time: average effort, the share of sets
+  taken close to failure, and — always alongside them — how much of your training was rated at
+  all. Rating is optional and off by default, so a partly rated history is normal; an average
+  without its denominator would quietly speak for sets you never rated.
+- **Week by week.** The weekly average with that week's set count in the tooltip, because the
+  pair is the reading: volume up with effort up is fatigue accumulating, volume up with effort
+  flat is the adaptation you were training for. Weeks resting on a single rated set are dropped
+  rather than drawn.
+- **Where the sets land.** The spread across the scale, not just the middle of it. Half your sets
+  at failure and half in warm-up territory average out to a healthy-looking number; this is the
+  chart that shows it.
+- 🔥 **Hard-sets mode on the muscle map.** The same body diagram, counting only sets taken near
+  failure — "where did the stimulus go" rather than "where did the volume go". A muscle can lead
+  on set count and still never be trained hard.
+- **Effort on the exercise curve.** Each session's dot on the top-set chart fills in as less is
+  left in the tank, so the same weight moved with more in reserve stops reading as a flat line.
+  Exercises with enough ratings also get an Effort curve of their own.
+- **One history, whichever scale you use.** Everything aggregates internally in RIR and converts
+  back for display, so a history that mixes your own RIR logs with imported RPE averages as one
+  series instead of two half-empty ones. RIR charts count downward on the axis, so harder sets
+  sit higher.
+- Translated into all 12 UI languages.
+
 ## v1.2.3 — 2026-07-31
 
 How hard a set was, in whichever of the two scales you already think in — and the ratings your

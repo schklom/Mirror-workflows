@@ -4,8 +4,15 @@ import { t } from '../lib/i18n.js'
 
 const W = 340   // viewBox width; the svg stretches to its container, height comes from `h`
 
-// points: [{ t: ms, y: num, d?: iso }] sorted by t. opts: { h, unit, color, axes, goal }
-export default function LineChart({ points, h = 150, unit = '', color = 'var(--acc)', axes = true, goal = null }) {
+// points: [{ t: ms, y: num, d?: iso, m?: 0..1, note?: str }] sorted by t.
+//   m    marks the point — a second reading carried by the same dot (bigger and more solid =
+//        more of it). Used for effort on the weight curve, where the two belong on one line:
+//        the same weight with less left in the tank is not the same session.
+//   note extra text for that point's tooltip.
+// opts: { h, unit, color, axes, goal, invert }
+//   invert flips the y axis, for a scale that counts down as it gets harder (RIR). Without it
+//   a curve of reps-in-reserve reads upside down, with the hardest sets at the floor.
+export default function LineChart({ points, h = 150, unit = '', color = 'var(--acc)', axes = true, goal = null, invert = false }) {
   const svgRef = useRef(null)
   const wrapRef = useRef(null)
   const tipRef = useRef(null)
@@ -42,7 +49,10 @@ export default function LineChart({ points, h = 150, unit = '', color = 'var(--a
   const pad = (ymax - ymin) * 0.12; ymin -= pad; ymax += pad
   const t0 = pts[0].t, t1 = pts[pts.length - 1].t || t0 + 1
   const X = t => (t1 === t0 ? (P.l + W - P.r) / 2 : P.l + (t - t0) / (t1 - t0) * (W - P.l - P.r))
-  const Y = y => P.t + (1 - (y - ymin) / (ymax - ymin)) * (H - P.t - P.b)
+  const Y = y => {
+    const f = (y - ymin) / (ymax - ymin)
+    return P.t + (invert ? f : 1 - f) * (H - P.t - P.b)
+  }
 
   const gridlines = []
   if (axes) {
@@ -81,7 +91,8 @@ export default function LineChart({ points, h = 150, unit = '', color = 'var(--a
   const poly = pts.map(p => X(p.t).toFixed(1) + ',' + Y(p.y).toFixed(1)).join(' ')
   const last = pts[pts.length - 1]
   const gid = 'g' + Math.round(t0 % 1e7) + '_' + H
-  const hoverPts = (single ? [points[0]] : points).map(p => ({ x: X(p.t), y: Y(p.y), iso: p.d || isoOf(new Date(p.t)), v: p.y }))
+  const hoverPts = (single ? [points[0]] : points).map(p => ({ x: X(p.t), y: Y(p.y), iso: p.d || isoOf(new Date(p.t)), v: p.y, note: p.note }))
+  const marked = points.some(p => p.m != null)
 
   const onMove = e => {
     const c = e.touches ? e.touches[0] : e
@@ -111,6 +122,8 @@ export default function LineChart({ points, h = 150, unit = '', color = 'var(--a
         </>}
         <polygon points={`${P.l},${H - P.b} ${poly} ${X(last.t).toFixed(1)},${H - P.b}`} fill={`url(#${gid})`} />
         <polyline points={poly} fill="none" stroke={color} strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round" />
+        {marked && pts.map((p, i) => (p.m == null ? null :
+          <circle key={'m' + i} cx={X(p.t)} cy={Y(p.y)} r={2.4 + p.m * 3} fill={color} opacity={0.3 + p.m * 0.7} />))}
         <circle cx={X(last.t)} cy={Y(last.y)} r="4" fill={color} />
         {hover && <g>
           <line className="cvl" x1={hover.x} y1={P.t} x2={hover.x} y2={H - P.b} stroke="var(--label-3)" strokeWidth="1" strokeDasharray="3 3" />
@@ -119,7 +132,7 @@ export default function LineChart({ points, h = 150, unit = '', color = 'var(--a
         </g>}
       </svg>
       {hover && <div className="ctip" ref={tipRef}>
-        {fmtDate(hover.iso, true)} · {fmtNum(hover.v)}{unit ? ' ' + unit : ''}
+        {fmtDate(hover.iso, true)} · {fmtNum(hover.v)}{unit ? ' ' + unit : ''}{hover.note ? ' · ' + hover.note : ''}
       </div>}
     </div>
   )

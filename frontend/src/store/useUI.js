@@ -63,6 +63,9 @@ export const useUI = create((set, get) => ({
     const tm = get().timer
     if (!tm) return
     const left = tm.left + sec
+    // taking off more than is left means "I'm ready now" — same as skipping, and it keeps a
+    // negative duration out of both the progress bar and the server-side push schedule
+    if (left <= 0) { get().stopRest(); return }
     set({ timer: { ...tm, left, total: tm.total + sec, endsAt: tm.endsAt + sec * 1000 } })
     pushRestTimer(left)
   },

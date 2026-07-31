@@ -165,8 +165,9 @@ button,.chip,.tile,.item,.wday,.cal-d,.swatch,.hm-c,.lrow,.seg button,.stp butto
   padding:calc(var(--sat) + 8px) var(--pad) calc(128px + var(--sab));
   max-width:560px;margin:0 auto;
 }
-/* while the rest timer floats above the tab bar, keep its height scrollable-past */
-body.resting #app{padding-bottom:calc(206px + var(--sab))}
+/* while the rest timer floats above the tab bar, keep its height scrollable-past
+   (the rest variant is two rows tall — ~44px more than the single-row work timer) */
+body.resting #app{padding-bottom:calc(250px + var(--sab))}
 @keyframes viewfade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 #app.vfade{animation:viewfade var(--med) var(--ease)}
 
@@ -603,7 +604,9 @@ h4.sec{
 /* --- rest timer --- */
 #timer{
   position:fixed;left:12px;right:12px;bottom:calc(88px + var(--sab));z-index:60;
-  background:color-mix(in srgb,var(--surface) 82%,transparent);
+  /* nearly opaque: the set rows underneath were reading through the old 82% and made the
+     clock hard to pick out mid-set. The blur stays, so it still sits above the page. */
+  background:color-mix(in srgb,var(--surface) 97%,transparent);
   backdrop-filter:saturate(180%) blur(24px);-webkit-backdrop-filter:saturate(180%) blur(24px);
   border-radius:var(--r-lg);padding:12px 14px;
   display:flex;align-items:center;gap:12px;
@@ -614,6 +617,14 @@ h4.sec{
 #timer .t{font-size:26px;font-weight:600;letter-spacing:-.026em;font-variant-numeric:tabular-nums;min-width:66px}
 #timer .bar{flex:1;height:4px;background:var(--surface-3);border-radius:99px;overflow:hidden}
 #timer .bar i{display:block;height:100%;background:var(--acc);transition:width 1s linear}
+/* rest variant: −15/+15/Skip and the clock won't share one line on a phone, so the clock and
+   bar take the top row and the controls take their own. The work timer keeps a single row —
+   it only ever has two buttons. */
+#timer.rest{flex-direction:column;align-items:stretch;gap:10px}
+#timer.rest .head{display:flex;align-items:center;gap:12px}
+#timer.rest .acts{display:flex;align-items:center;gap:8px}
+#timer.rest .acts .btn{padding-top:11px;padding-bottom:11px}   /* sweaty hands, mid-set */
+#timer.rest .acts .skip{margin-left:auto;min-width:84px}
 /* work timer (issue #16): the same bar doing the opposite job — outlined and tinted so a
    glance tells "you are holding this" apart from "you are recovering". */
 #timer.working{border:var(--hair) solid var(--acc)}
@@ -893,6 +904,9 @@ h4.sec{
   .sheet{left:50%;right:auto;margin-left:-320px;width:640px;border-radius:var(--r-xl) var(--r-xl) 0 0}
   .center{width:340px}
   #timer{left:50%;right:auto;margin-left:-260px;width:520px;bottom:112px}
+  /* 520px fits the clock, the bar and all three controls on one line again */
+  #timer.rest{flex-direction:row;align-items:center;gap:14px}
+  #timer.rest .head{flex:1;min-width:0}
   .exmedia img{height:380px}
   .hm-wrap{display:flex;flex-direction:column;align-items:center}
 }

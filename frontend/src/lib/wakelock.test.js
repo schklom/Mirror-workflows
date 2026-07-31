@@ -5,6 +5,13 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 // otherwise the tests pass against a one-shot implementation that dies on the first tab switch.
 let requests, released, live, listeners, reject
 
+// Node 21+ defines globalThis.navigator itself, as a getter with no setter — a plain
+// assignment throws under ESM's strict mode. defineProperty works on both that and the older
+// runtimes where the global simply doesn't exist. Production images are node:22-alpine, so
+// the tests have to run there too.
+const setNavigator = value =>
+  Object.defineProperty(globalThis, 'navigator', { value, configurable: true, writable: true })
+
 function fakeBrowser() {
   requests = 0; released = 0; live = null; reject = false
   listeners = new Set()
@@ -13,7 +20,7 @@ function fakeBrowser() {
     addEventListener: (type, fn) => { if (type === 'visibilitychange') listeners.add(fn) },
     removeEventListener: (type, fn) => { if (type === 'visibilitychange') listeners.delete(fn) },
   }
-  globalThis.navigator = {
+  setNavigator({
     wakeLock: {
       request: async () => {
         requests++
@@ -24,7 +31,7 @@ function fakeBrowser() {
         return s
       },
     },
-  }
+  })
 }
 const fire = () => listeners.forEach(fn => fn())
 const settle = () => new Promise(r => setTimeout(r, 0))
@@ -42,7 +49,7 @@ afterEach(() => { delete globalThis.document; delete globalThis.navigator })
 
 describe('wakeLockSupported', () => {
   it('is false when the browser has no wakeLock at all', () => {
-    globalThis.navigator = {}
+    setNavigator({})
     expect(wakeLockSupported()).toBe(false)
   })
   it('is true when it does', () => {

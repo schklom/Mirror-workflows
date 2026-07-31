@@ -6,6 +6,7 @@ import { ACCENTS, todayISO, localTZ } from '../lib/format.js'
 import { effortOf } from '../lib/history.js'
 import { webauthnOK, passkeyLogin, passkeyRegister, IS_ANDROID } from '../lib/api.js'
 import { pushSupported, enablePush, disablePush, sendTestPush } from '../lib/push.js'
+import { wakeLockSupported } from '../lib/wakelock.js'
 import { t, LANGS, INSTR_LANGS } from '../lib/i18n.js'
 import { DEMO, REPO } from '../lib/demo.js'
 import { MOBILE, shareExport, syncReminder } from '../lib/mobile.js'
@@ -21,6 +22,7 @@ export default function Settings() {
   const toast = useUI(s => s.toast)
   const fileRef = useRef(null)
   const importRef = useRef(null)
+  const wakeOK = wakeLockSupported()
 
   const doExport = async () => {
     const json = JSON.stringify(S, null, 2)
@@ -83,8 +85,8 @@ export default function Settings() {
     </Section>
     {!user && !DEMO && !MOBILE && <p className="sect-f" style={{ marginTop: -18, marginBottom: 22 }}>{t('Guest mode — data lives only in this browser.')}</p>}
 
-    {/* ---------- appearance ---------- */}
-    <Section title={t('Appearance')} footer={DEMO || MOBILE ? undefined : t('synced with your profile')}>
+    {/* ---------- general ---------- */}
+    <Section title={t('General')} footer={t('Note: switching units only changes the label — logged numbers are not converted.')}>
       <SelectRow
         icon="globe" iconTint="var(--blue)" title={t('Language')}
         value={S.lang || 'en'} onChange={v => update(s => { s.lang = v })}
@@ -93,6 +95,42 @@ export default function Settings() {
           subtitle: INSTR_LANGS.includes(k) ? null : t("Exercise instructions aren't available in this language yet — they stay in English."),
         }))}
       />
+      <Row icon="scale" iconTint="var(--teal)" title={t('Weight unit')}>
+        <Segmented className="seg-inline"
+          options={[{ value: 'kg', label: 'kg' }, { value: 'lb', label: 'lb' }]}
+          value={S.unit} onChange={v => update(s => { s.unit = v })} />
+      </Row>
+    </Section>
+
+    {/* ---------- during a workout ---------- */}
+    <Section title={t('During a workout')} footer={wakeOK ? t('The screen stays on while a workout is running, so you don’t have to unlock your phone between sets.') : null}>
+      <SelectRow icon="timer" iconTint="var(--orange)" title={t('Rest timer')}
+        value={S.restSec} onChange={v => update(s => { s.restSec = v })}
+        options={[60, 90, 120, 150, 180].map(v => ({ value: v, label: v + 's' }))} />
+      {(wakeOK || !MOBILE) && (
+        <Row icon="sun" iconTint="var(--yellow)" title={t('Keep screen awake')}
+          subtitle={wakeOK ? null : t('Not supported in this browser.')}>
+          <Switch checked={wakeOK && S.keepAwake !== false} disabled={!wakeOK}
+            onChange={v => update(s => { s.keepAwake = v })} />
+        </Row>
+      )}
+      <Row icon="bell" iconTint="var(--pink)" title={t('Sounds')}>
+        <Switch checked={!!S.sound} onChange={v => update(s => { s.sound = v })} />
+      </Row>
+      {/* Two names for the same judgement, so the column asks in the scale you already think in.
+          The (i) sits before the control — you read it on the way to the choice, not after it. */}
+      <Row icon="target" iconTint="var(--purple)" title={t('Effort per set')}>
+        <button className="helpbtn" aria-label={t('What are RIR and RPE?')} onClick={effortHelpSheet}><Icon name="info" /></button>
+        <Segmented className="seg-inline"
+          options={[{ value: 'none', label: t('Off') }, { value: 'rir', label: t('RIR') }, { value: 'rpe', label: t('RPE') }]}
+          value={effortOf(S)} onChange={v => update(s => { s.effort = v; delete s.showRir })} />
+      </Row>
+    </Section>
+
+    {(user || MOBILE) && <NotificationsCard S={S} update={update} toast={toast} />}
+
+    {/* ---------- appearance ---------- */}
+    <Section title={t('Appearance')} footer={DEMO || MOBILE ? undefined : t('synced with your profile')}>
       <Row icon="moon" iconTint="var(--indigo)" title={t('Theme')}>
         <Segmented
           className="seg-inline"
@@ -121,39 +159,14 @@ export default function Settings() {
       </div>
     </Section>
 
-    {/* ---------- units & timer ---------- */}
-    <Section title={t('Units & timer')} footer={t('Note: switching units only changes the label — logged numbers are not converted.')}>
-      <Row icon="scale" iconTint="var(--teal)" title={t('Weight unit')}>
-        <Segmented className="seg-inline"
-          options={[{ value: 'kg', label: 'kg' }, { value: 'lb', label: 'lb' }]}
-          value={S.unit} onChange={v => update(s => { s.unit = v })} />
-      </Row>
-      <SelectRow icon="timer" iconTint="var(--orange)" title={t('Rest timer')}
-        value={S.restSec} onChange={v => update(s => { s.restSec = v })}
-        options={[60, 90, 120, 150, 180].map(v => ({ value: v, label: v + 's' }))} />
-      <Row icon="bell" iconTint="var(--pink)" title={t('Sounds')}>
-        <Switch checked={!!S.sound} onChange={v => update(s => { s.sound = v })} />
-      </Row>
-      {/* Two names for the same judgement, so the column asks in the scale you already think in.
-          The (i) sits before the control — you read it on the way to the choice, not after it. */}
-      <Row icon="target" iconTint="var(--purple)" title={t('Effort per set')}>
-        <button className="helpbtn" aria-label={t('What are RIR and RPE?')} onClick={effortHelpSheet}><Icon name="info" /></button>
-        <Segmented className="seg-inline"
-          options={[{ value: 'none', label: t('Off') }, { value: 'rir', label: t('RIR') }, { value: 'rpe', label: t('RPE') }]}
-          value={effortOf(S)} onChange={v => update(s => { s.effort = v; delete s.showRir })} />
-      </Row>
-    </Section>
-
-    {(user || MOBILE) && <NotificationsCard S={S} update={update} toast={toast} />}
-
-    {/* ---------- data ---------- */}
+    {/* ---------- data: fill it, bring things over, back it up, wipe it ---------- */}
     <Section title={t('Data')}>
-      <Row icon="download" iconTint="var(--blue)" title={t('Export backup (JSON)')} accessory="chevron" onClick={doExport} />
-      <Row icon="upload" iconTint="var(--blue)" title={t('Import backup')} accessory="chevron" onClick={() => fileRef.current.click()} />
+      <Row icon="sparkles" iconTint="var(--acc)" title={t('Load starter plan (PPL)')} accessory="chevron" onClick={loadStarterPlan} />
       <Row icon="shuffle" iconTint="var(--teal)" title={t('Import from another app')}
         subtitle={t('FitNotes, Strong, Hevy — or body weight from Apple Health')}
         accessory="chevron" onClick={() => importRef.current.click()} />
-      <Row icon="sparkles" iconTint="var(--acc)" title={t('Load starter plan (PPL)')} accessory="chevron" onClick={loadStarterPlan} />
+      <Row icon="upload" iconTint="var(--blue)" title={t('Import backup')} accessory="chevron" onClick={() => fileRef.current.click()} />
+      <Row icon="download" iconTint="var(--blue)" title={t('Export backup (JSON)')} accessory="chevron" onClick={doExport} />
       <Row icon="trash" iconTint="var(--red)" title={t('Reset everything')} danger onClick={() => confirmSheet({ title: t('Reset everything?'), message: t('Deletes your plan, workouts and body weight on this device. This cannot be undone.'), confirmText: t('Delete everything'), danger: true, onConfirm: () => { replaceState(JSON.parse(JSON.stringify(DEF)), true); nav('/home'); toast(t('All data reset')) } })} />
     </Section>
     <input ref={fileRef} type="file" accept=".json,application/json" style={{ display: 'none' }} onChange={doImport} />

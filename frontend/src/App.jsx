@@ -6,6 +6,7 @@ import { bindUI } from './components/ui.jsx'
 import { ACCENTS } from './lib/format.js'
 import { setLang, useLang } from './lib/i18n.js'
 import { setNav } from './lib/nav.js'
+import { useWakeLock } from './lib/wakelock.js'
 import { startFlow } from './sheets.jsx'
 import Icon from './components/Icon.jsx'
 import TabBar from './components/TabBar.jsx'
@@ -46,6 +47,8 @@ function Shell() {
   useEffect(() => { document.documentElement.lang = S.lang || 'en' }, [langV, S.lang])
   // every tab/route change starts at the top of the page
   useEffect(() => { window.scrollTo(0, 0) }, [loc.pathname])
+  // bound to the workout, not to the route — checking Stats mid-session keeps the screen on
+  useWakeLock(!!S.active && S.keepAwake !== false)
 
   const authed = user || isGuest
   if (!ready && !authed) return (

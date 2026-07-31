@@ -130,6 +130,11 @@ first run and saved to `./data/vapid.json`, and each user's browser reports its 
 automatically when they turn the reminder on — it fires at their local time, and follows them if
 they travel, regardless of what timezone the server itself runs in.
 
+**Keep screen awake** (Settings → *During a workout*) has the same transport requirement: the
+Wake Lock API is only available over HTTPS or on `http://localhost`, so on a plain-LAN-IP
+instance the switch shows as unsupported. Nothing to configure server-side either way, and iOS
+refuses the lock while the phone is in Low Power Mode.
+
 ## 7. Updating
 
 Running prebuilt images:

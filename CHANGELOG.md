@@ -3,7 +3,47 @@
 ## v1.2.3 — 2026-07-31
 
 How hard a set was, in whichever of the two scales you already think in — and the ratings your
-old app recorded come across with the rest of your history.
+old app recorded come across with the rest of your history. Plus: the phone stops locking itself
+mid-workout, the rest timer can hand time back as well as take it, and Settings is grouped by
+what each thing actually affects.
+
+### The screen stays on while you train
+
+- ☀️ **Keep screen awake — Settings → *During a workout*, on by default.** Locking, unlocking
+  and finding your place again between every set was the single most annoying thing about
+  logging on a phone. The screen now stays lit for as long as a workout is running and lets go
+  the moment you finish it, so nothing is held while you are not training.
+- **It survives a tab switch.** Browsers release the lock whenever the page stops being visible,
+  which is exactly what happens when you glance at a message. The lock is taken again each time
+  the app comes back, rather than dying the first time you look away.
+- **It follows the workout, not the screen you are on.** Checking Stats mid-session keeps the
+  screen awake.
+- **Where it isn't available, it says so.** iOS grants no wake lock in Low Power Mode, and older
+  browsers have no Wake Lock API at all — the first is silent, the second shows the row disabled
+  rather than offering a switch that does nothing. Needs HTTPS, like every other modern browser
+  capability.
+
+### Rest timer: take 15 seconds off, too
+
+- ⏳ **A −15s button next to +15s.** The timer could only ever be extended or skipped outright;
+  now it goes both ways. Taking off more than is left finishes the rest rather than counting
+  into the negative — the same thing Skip does.
+- **Rearranged so three controls fit.** The clock and the progress bar take the top row and the
+  controls sit underneath: −15 and +15 together in number-line order, Skip pushed to the far
+  edge so the button that ends the rest is not next to the one you tap to buy more time. On a
+  wide screen it stays on one line. Tap targets are bigger than they were.
+- **The bar is nearly opaque.** The set rows underneath were reading through it and making the
+  clock hard to pick out.
+
+### Settings, grouped by what it affects
+
+- **General** (language, units) · **During a workout** (rest timer, keep screen awake, sounds,
+  effort per set) · **Notifications** · **Appearance** (theme, body diagram, accent) · **Data**.
+- The old grouping mixed axes: "Units & timer" put a display preference next to two workout
+  behaviours, language sat under Appearance, and *Load starter plan* was buried between the
+  backup actions and the destructive reset. Data now reads in the order you would use it — fill
+  the plan, bring history over from another app, restore a backup, export one, wipe everything.
+- Nothing was removed and no setting changed its meaning.
 
 ### Effort per set: RIR or RPE (#21)
 

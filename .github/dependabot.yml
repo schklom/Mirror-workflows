@@ -19,23 +19,44 @@ updates:
     directory: /frontend
     schedule:
       interval: monthly
-    open-pull-requests-limit: 2
+    open-pull-requests-limit: 3
     groups:
-      # One PR for the whole frontend. Runtime and build tooling move together anyway
-      # (a Vite bump usually wants its plugin bumped), and splitting them just doubles the
-      # review without splitting the risk.
+      # Routine bumps arrive as one PR. Runtime and build tooling move together anyway (a Vite
+      # bump usually wants its plugin bumped), and splitting them doubles the review without
+      # splitting the risk.
       frontend:
-        patterns: ["*"]
+        patterns: ['*']
+        update-types: ['minor', 'patch']
+      # Majors get their own PR. The first grouped run bundled a Capacitor 7 → 8 migration in
+      # with six siblings, where it read as housekeeping — and CI would have gone green on it,
+      # because the test workflow builds the web app and never touches the mobile flavour. A
+      # major that lands alone is at least obviously a decision.
+      frontend-major:
+        patterns: ['*']
+        update-types: ['major']
+    ignore:
+      # Capacitor 8 needs Node >= 22 (its own `engines` field) and the build host is on 20, and
+      # `frontend/android` + `frontend/ios` are committed, so a major also means migrating the
+      # native projects — Gradle/AGP, the Podfile. That is a deliberate piece of work, not a
+      # dependency bump. Drop this ignore once the build host is on Node 22 and you want it.
+      - dependency-name: '@capacitor/*'
+        update-types: ['version-update:semver-major']
 
   # Backend — api/package.json (@simplewebauthn/server, web-push)
   - package-ecosystem: npm
     directory: /api
     schedule:
       interval: monthly
-    open-pull-requests-limit: 2
+    open-pull-requests-limit: 3
     groups:
       api:
-        patterns: ["*"]
+        patterns: ['*']
+        update-types: ['minor', 'patch']
+      # Two dependencies, but one of them verifies passkeys — a major there is worth reading on
+      # its own rather than alongside anything else.
+      api-major:
+        patterns: ['*']
+        update-types: ['major']
 
   # Base images — api/Dockerfile (node:22-alpine)
   - package-ecosystem: docker
@@ -66,9 +87,16 @@ updates:
     directory: /
     schedule:
       interval: monthly
-    open-pull-requests-limit: 1
+    open-pull-requests-limit: 2
     groups:
       # These are all first-party actions/* and docker/* pinned to a major tag; they update
       # in lockstep and none of them is worth a PR of its own.
       actions:
-        patterns: ["*"]
+        patterns: ['*']
+        update-types: ['minor', 'patch']
+      # Action majors are usually a runner or Node-version change and usually harmless — but
+      # these workflows publish the ghcr images and deploy the live demo, so the blast radius
+      # is real. Separate PR, so a failure has an obvious cause.
+      actions-major:
+        patterns: ['*']
+        update-types: ['major']

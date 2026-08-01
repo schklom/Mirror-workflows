@@ -1,6 +1,10 @@
 # Changelog
 
-## Unreleased
+## v1.2.4 — 2026-08-01
+
+The effort ratings you have been recording since v1.2.3 now answer questions, and bodyweight
+training stops being treated as barbell training with the weight left at zero. Plus: creating a
+profile from Settings works on an invite-only instance, which it never has.
 
 ### The effort ratings, read back as statistics
 
@@ -57,6 +61,14 @@ progress lived in the load. It doesn't, for the exercises most people actually s
   disagree with the catalogue — every existing plan, workout and backup is read unchanged and
   none of it needs migrating.
 - Translated into all 12 UI languages.
+
+### Fixed
+
+- **Creating a profile from Settings on an invite-only instance.** The sign-in screen asks for
+  the invite code when the server needs one; the same registration reached from Settings never
+  did, so it was refused with nothing on screen explaining why. It now asks on the same terms.
+- **A long value no longer runs through its own label** in a settings row — "Follow the routine
+  (Linear progression)" overlapped "Rule" rather than shortening itself.
 
 ## v1.2.3 — 2026-07-31
 

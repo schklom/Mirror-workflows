@@ -4,7 +4,7 @@ import { useStore, DEF, hasData } from '../store/useStore.js'
 import { useUI } from '../store/useUI.js'
 import { ACCENTS, todayISO, localTZ } from '../lib/format.js'
 import { effortOf } from '../lib/history.js'
-import { webauthnOK, passkeyLogin, passkeyRegister, IS_ANDROID } from '../lib/api.js'
+import { api, webauthnOK, passkeyLogin, passkeyRegister, IS_ANDROID } from '../lib/api.js'
 import { pushSupported, enablePush, disablePush, sendTestPush } from '../lib/push.js'
 import { wakeLockSupported } from '../lib/wakelock.js'
 import { t, LANGS, INSTR_LANGS } from '../lib/i18n.js'
@@ -327,13 +327,20 @@ function PushCard({ S, update, toast }) {
   </>
 }
 
+// The same registration as the sign-in screen's, reached from Settings instead. It asks for
+// the invite code on the same terms: an invite-only instance rejects a registration without
+// one, so a form that cannot collect it is a form that cannot succeed.
 function RegisterInline({ close, setUser, pushState, pullState, toast }) {
   const nameRef = useRef(null)
+  const [code, setCode] = useState('')
+  const [inviteOnly, setInviteOnly] = useState(false)
+  useEffect(() => { api('/api/config').then(c => setInviteOnly(!!c.invite_only)).catch(() => {}) }, [])
   const go = async () => {
     const n = (nameRef.current.value || '').trim()
     if (!n) { toast(t('Enter a name')); return }
+    if (inviteOnly && !code.trim()) { toast(t('An invite code is required')); return }
     try {
-      const u = await passkeyRegister(n); setUser(u); close()
+      const u = await passkeyRegister(n, code.trim()); setUser(u); close()
       if (hasData(useStore.getState().S)) { await pushState(); toast(t('Profile created — data moved into it')) }
       else { await pullState(); toast(t('Welcome, {0}', u.name)) }
     } catch (e) { if (e.name !== 'NotAllowedError' && e.name !== 'AbortError') toast(e.message || t('Registration failed')) }
@@ -342,6 +349,12 @@ function RegisterInline({ close, setUser, pushState, pullState, toast }) {
     <h3>{t('Create your profile')}</h3>
     <div className="muted small" style={{ marginBottom: 14 }}>{t('Pick a name, then confirm with your device.')}</div>
     <TextField ref={nameRef} placeholder={t('Your name')} maxLength={40} />
+    {inviteOnly && <>
+      <div style={{ height: 10 }} />
+      <input className="input" placeholder={t('Invite code')} maxLength={40} value={code}
+        onChange={e => setCode(e.target.value.toUpperCase())} style={{ letterSpacing: '.14em', fontWeight: 600, textAlign: 'center' }} />
+      <div className="dim small" style={{ marginTop: 6 }}>{t('This app is invite-only — enter the code you were given.')}</div>
+    </>}
     <div style={{ height: 12 }} /><Button variant="primary" onClick={go}>{t('Create passkey')}</Button>
   </>
 }

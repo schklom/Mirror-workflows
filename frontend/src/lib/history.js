@@ -1,6 +1,7 @@
 // Pure helpers over the state object S (ported 1:1 from the vanilla app).
 import { todayISO, isoOf, weekKey, fmtNum } from './format.js'
-import { isCardio } from './exercises.js'
+import { isCardio, isBodyweightEq } from './exercises.js'
+import { t } from './i18n.js'
 
 // How an exercise is logged (issue #16). This used to be derived from the body part alone,
 // which meant a plank or a farmer's carry could only be timed by filing it under cardio.
@@ -16,6 +17,25 @@ export function modeOf(cfg) {
   return isCardio(cfg && cfg.id) ? 'cardio' : 'reps'
 }
 export const isTimed = cfg => modeOf(cfg) === 'time'
+
+// Two flags that ride on top of a mode rather than making new ones (issues #31/#32), because
+// "bodyweight" and "per side" are true of a rep set and of a timed hold alike:
+//   bodyweight — the exercise carries no load of its own, so `w` means *added* weight and is
+//                asked for only once you say there is some. Seeded from the equipment field.
+//                Spelled out rather than `bw`, which a workout already uses for the weigh-in
+//                it was logged at — two different things one letter apart is a bug waiting.
+//   side       — the logged reps are what one side did: 8 logged is 8 per side, 16 in total.
+// Both are absent on every plan, workout and backup written before they existed, and absent
+// reads as false, so nothing needs migrating.
+export const isBw = cfg => (cfg && cfg.bodyweight != null ? !!cfg.bodyweight : isBodyweightEq(cfg && cfg.id))
+export const isPerSide = cfg => !!(cfg && cfg.side)
+// Reps as they are counted rather than as they are logged. Only this function knows that a
+// per-side set is worth double, so stats and volume cannot disagree with the set row.
+export const totalReps = (cfg, reps) => (isPerSide(cfg) ? 2 : 1) * (reps || 0)
+// Reps as they are written on a row: "8" bilateral, "8/side" unilateral. The total is left
+// off here — a set row is already narrow, and "8/side · 16 total" belongs in the one place
+// that has the width for it (the exercise line), not repeated down every row.
+export const repLabel = (cfg, reps) => (isPerSide(cfg) ? t('{0}/side', reps) : String(reps))
 
 // mm:ss for a work duration — seconds alone read badly past a minute ("90 s" vs "1:30").
 export function fmtSec(sec) {
@@ -69,27 +89,41 @@ const effortTail = s => {
 // One-line summary of a logged set. `cfg` carries the mode when the caller has it (a routine
 // entry or a workout entry); passing an id alone keeps the old body-part behaviour.
 export function setLabel(id, s, cfg) {
-  const mode = modeOf(cfg || { id })
+  const c = cfg || { id }
+  const mode = modeOf(c)
   if (mode === 'cardio') return `${s.min || 0} min @ ${fmtNum(s.speed || 0)} km/h`
   if (mode === 'time') return fmtSec(s.sec) + (s.w > 0 ? ` · ${fmtNum(s.w)}` : '')
-  return `${fmtNum(s.w || 0)}×${s.r || 0}` + effortTail(s)
+  // Bodyweight reads as what you did — "12", or "+10 × 12" once there is a belt involved —
+  // rather than "0×12", which says a set was performed with no weight and means nothing.
+  const reps = repLabel(c, s.r || 0)
+  if (isBw({ ...c, id: c.id ?? id })) {
+    const load = s.w > 0 ? `+${fmtNum(s.w)} × ` : ''
+    return `${load}${reps}` + effortTail(s)
+  }
+  return `${fmtNum(s.w || 0)}×${reps}` + effortTail(s)
 }
 // Default config for a freshly added exercise.
 export function defaultConfig(id, mode) {
   const m = mode || modeOf({ id })
   if (m === 'cardio') return { sets: 1, min: 20, speed: 8 }
-  if (m === 'time') return { sets: 3, sec: 45, weight: 0, mode: 'time' }
-  return { sets: 3, reps: 10, weight: 0, mode: 'reps' }
+  // Written only when it is true, so a barbell config is byte-for-byte what it was before
+  // the flag existed and a plan file gains nothing it does not need.
+  const bw = isBodyweightEq(id) ? { bodyweight: true } : {}
+  if (m === 'time') return { sets: 3, sec: 45, weight: 0, mode: 'time', ...bw }
+  return { sets: 3, reps: 10, weight: 0, mode: 'reps', ...bw }
 }
 // One-line summary of a planned exercise ("3 × 10 · 60 kg"), shared by the routine editor
 // and the plan export so a mode is described the same way everywhere.
 export function exLine(cfg, unit) {
   const mode = modeOf(cfg)
   const n = cfg.sets || 1
-  const load = cfg.weight ? ' · ' + fmtNum(cfg.weight) + ' ' + unit : ''
+  // Added weight reads as added: "+10 kg" on a dip belt, "60 kg" on a barbell.
+  const load = cfg.weight ? ' · ' + (isBw(cfg) ? '+' : '') + fmtNum(cfg.weight) + ' ' + unit : ''
   if (mode === 'cardio') return `${n} × ${cfg.min || 20} min @ ${fmtNum(cfg.speed || 8)} km/h`
   if (mode === 'time') return `${n} × ${fmtSec(cfg.sec || 45)}${load}`
-  return `${n} × ${cfg.reps}${load}`
+  // This is the line with room for the arithmetic, so per side spells it out in full.
+  const total = isPerSide(cfg) ? ' · ' + t('{0} in total', totalReps(cfg, cfg.reps) * n) : ''
+  return `${n} × ${repLabel(cfg, cfg.reps)}${load}${total}`
 }
 
 // Drop superset ids that no longer have an adjacent partner (after unlink/reorder/remove).
@@ -166,7 +200,9 @@ export function buildSets(S, cfg) {
 }
 export function workoutVolume(w) {
   let v = 0
-  w.entries.forEach(e => e.sets.forEach(s => { if (s.done) v += (s.w || 0) * (s.r || 0) }))
+  // A per-side set moved its load twice, so it counts twice — otherwise a routine that
+  // switched to single-arm rows would show as half the work for the same session.
+  w.entries.forEach(e => e.sets.forEach(s => { if (s.done) v += (s.w || 0) * totalReps(e.target, s.r) }))
   return v
 }
 export function setsDone(w) {

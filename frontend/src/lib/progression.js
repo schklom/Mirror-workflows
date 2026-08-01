@@ -60,6 +60,9 @@ export function defaultIncrement(exId, unit) {
   return heavy ? 5 : 2.5
 }
 export const DEFAULT_SEC_INCREMENT = 5
+// Where adding another set of push-ups stops being progress and starts being a way to spend
+// an evening. Past this the honest advice is load or a harder variation (issue #33).
+export const MAX_BW_SETS = 6
 
 // The policy in force for one exercise: its own override, else the routine's default, else
 // the mode's default. Reps keeps behaving the way the app always did (all reps → add a step).
@@ -117,6 +120,7 @@ export function readSession(entry, fallback) {
   return {
     mode, goal, reps,
     weight: Math.max(0, ...sets.filter(s => s.done).map(s => s.w || 0)),
+    count: reps.length,                                   // the dimension bodyweight work grows (#33)
     low: reps.length ? Math.min(...reps) : 0,
     amrap: reps.length ? reps[reps.length - 1] : 0,       // Greyskull's final set
     ok: goal > 0 && enough && reps.length > 0 && reps.every(r => r >= goal)
@@ -179,14 +183,26 @@ export function nextPrescription(S, cfg, routine) {
 
   const w = last.weight
   // Bodyweight work carries no external load, so there is nothing to add or take away —
-  // "deload your push-ups to 2.5 kg" is not advice. Progress in reps instead. This runs
-  // ahead of the individual policies because it is true for all of them; a rep range set on
-  // top of it simply gets passed once you exceed it, which is the right moment to add load
-  // or move to a harder variation anyway.
+  // "deload your push-ups to 2.5 kg" is not advice. Progress in reps instead. This runs ahead
+  // of the individual policies because it is true for all of them. Note the trigger is the
+  // *logged* weight, not the `bw` flag: a dip done with a belt has a load to progress and
+  // belongs on the normal policies, and a barbell lift logged at 0 has nothing to add to.
   if (w <= 0) {
     const goal = last.goal || cfg.reps || 0
-    if (last.ok && goal > 0) return { policy, kind: 'up', weight: 0, reps: goal + 1, why: ['Bodyweight — every rep last time, so go for {0} this time.', goal + 1] }
-    return { policy, kind: 'hold', weight: 0, reps: goal || undefined, why: ['Bodyweight — same target again until every set is clean.'] }
+    if (!last.ok || goal <= 0) return { policy, kind: 'hold', weight: 0, reps: goal || undefined, why: ['Bodyweight — same target again until every set is clean.'] }
+    // A ceiling turns "+1 rep forever" into a plan (issue #33). Past the top of the range the
+    // reps go back to the bottom and a set is added instead, which is how bodyweight work
+    // actually progresses once a set of 30 push-ups stops being a strength stimulus.
+    const top = cfg.repsMax > 0 ? cfg.repsMax : 0
+    if (top > 0 && goal >= top) {
+      const sets = Math.max(1, cfg.sets || last.count || 1) + 1
+      const bottom = Math.max(1, Math.min(cfg.reps || top, top))
+      if (sets <= MAX_BW_SETS) return { policy, kind: 'up', weight: 0, reps: bottom, sets, why: ['{0} reps in every set — add a set and go back to {1}.', goal, bottom] }
+      // Out of sets worth adding: more volume is no longer the answer, load or a harder
+      // variation is — and that is a decision for a person, not a policy.
+      return { policy, kind: 'hold', weight: 0, reps: goal, why: ['{0} sets of {1} — time to add weight or move to a harder variation.', sets - 1, goal] }
+    }
+    return { policy, kind: 'up', weight: 0, reps: goal + 1, why: ['Bodyweight — every rep last time, so go for {0} this time.', goal + 1] }
   }
   if (policy === 'double') {
     const top = cfg.reps || last.goal || 10
@@ -231,12 +247,20 @@ export function nextPrescription(S, cfg, routine) {
  */
 export function applyPrescription(sets, p) {
   if (!p || p.kind === 'off' || p.kind === 'first') return sets
-  return sets.map(s => {
+  const out = sets.map(s => {
     if (s.done) return s
-    const out = { ...s }
-    if (p.weight != null) out.w = p.weight
-    if (p.reps != null) out.r = p.reps
-    if (p.sec != null) out.sec = p.sec
-    return out
+    const o = { ...s }
+    if (p.weight != null) o.w = p.weight
+    if (p.reps != null) o.r = p.reps
+    if (p.sec != null) o.sec = p.sec
+    return o
   })
+  // A policy that decided on a set count gets to grow the list — bodyweight progression adds
+  // a set where a barbell would have added a plate. Only ever upwards, and only by copying a
+  // row that is already there: a session in progress must not lose a set it has logged.
+  if (p.sets > out.length) {
+    const seed = out[out.length - 1]
+    while (out.length < p.sets) out.push({ ...seed, done: false })
+  }
+  return out
 }

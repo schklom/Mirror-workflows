@@ -537,4 +537,21 @@ export default {
   'Most working sets belong close to failure without living there — half at the floor and half at the top average out to a healthy-looking middle.': 'Większość serii roboczych należy blisko upadku, ale nie na nim — połowa na dole i połowa na górze uśrednia się do zdrowo wyglądającego środka.',
   'Average effort per workout': 'Średni wysiłek na trening',
   'A fuller dot means less left in the tank — the same weight at a lower {0} is progress the line alone does not show.': 'Pełniejsza kropka znaczy mniej zapasu — ten sam ciężar przy niższym {0} to postęp, którego sama linia nie pokazuje.',
+
+  // --- bodyweight & per side ---
+  'Bodyweight': 'Masa własna',
+  'No weight to enter — just log the reps.': 'Nie podajesz ciężaru — zapisujesz tylko powtórzenia.',
+  'Ask for a weight on every set.': 'Pytaj o ciężar przy każdej serii.',
+  'For dips or pull-ups with a belt. Progression then follows the weight.': 'Do dipów albo podciągania z pasem. Progresja idzie wtedy za ciężarem.',
+  'Reps per side': 'Powtórzenia na stronę',
+  'For lunges, single-arm rows and the like.': 'Do wykroków, wiosłowania jednorącz i podobnych.',
+  'Top of the range': 'Górna granica zakresu',
+  'Reps climb by one whenever every set was clean. Set a ceiling to add sets instead of reps forever.': 'Powtórzenia rosną o jedno, gdy każda seria jest czysta. Ustaw górną granicę, aby zamiast powtórzeń w nieskończoność dochodziły serie.',
+  'Reps climb to {0}, then a set is added and the reps start over. At {1} sets it asks you to add weight instead.': 'Powtórzenia rosną do {0}, potem dochodzi seria, a powtórzenia zaczynają od nowa. Przy {1} seriach aplikacja poprosi zamiast tego o dodanie ciężaru.',
+  'Added ({0})': 'Dodane ({0})',
+  '{0}/side': '{0}/str.',
+  '{0} reps in every set — add a set and go back to {1}.': 'Wszystkie serie po {0} powt. — dodaj serię i wróć do {1}.',
+  '{0} sets of {1} — time to add weight or move to a harder variation.': '{0} × {1} powt. — czas dodać ciężar albo przejść na trudniejszy wariant.',
+  '{0} per side': '{0} na stronę',
+  'You still log the total: {0} is {1} per side.': 'Nadal zapisujesz łączną liczbę: {0} to {1} na stronę.',
 }

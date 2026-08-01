@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import {
   readSession, sessionsFor, stallCount, nextPrescription, applyPrescription,
-  policyFor, defaultIncrement, POLICIES_FOR, DELOAD_AFTER
+  policyFor, defaultIncrement, POLICIES_FOR, DELOAD_AFTER, MAX_BW_SETS
 } from './progression.js'
 import { EXDB } from './exercises.js'
 
@@ -187,6 +187,54 @@ describe('bodyweight exercises', () => {
     expect(p.kind).toBe('up')
     expect(p.weight).toBe(0)
     expect(p.reps).toBe(11)
+  })
+
+  /* A ceiling turns "+1 rep forever" into a plan — issue #33. */
+  it('climbs to the ceiling one rep at a time', () => {
+    const p = nextPrescription(bw([[0, 10, 10, 10]]), { ...cfg, repsMax: 15 })
+    expect(p.kind).toBe('up')
+    expect(p.reps).toBe(11)
+    expect(p.sets).toBeUndefined()
+  })
+
+  it('adds a set and restarts the range once the ceiling is reached', () => {
+    const at15 = hist(LIFT, [[0, 15, 15, 15]], { sets: 3, reps: 15 })
+    const p = nextPrescription(at15, { ...cfg, reps: 10, repsMax: 15 })
+    expect(p.kind).toBe('up')
+    expect(p.sets).toBe(4)
+    expect(p.reps).toBe(10)
+    expect(p.weight).toBe(0)
+  })
+
+  it('stops adding sets at the cap and says what to do instead', () => {
+    const at15 = hist(LIFT, [[0, 15, 15, 15]], { sets: 3, reps: 15 })
+    const p = nextPrescription(at15, { ...cfg, sets: MAX_BW_SETS, reps: 10, repsMax: 15 })
+    expect(p.kind).toBe('hold')
+    expect(p.sets).toBeUndefined()
+    expect(p.why[0]).toMatch(/harder variation/)
+  })
+
+  it('leaves a belted set to the normal policies — there is a load to add now', () => {
+    const belted = hist(LIFT, [[10, 10, 10, 10]], { sets: 3, reps: 10 })
+    const p = nextPrescription(belted, { ...cfg, bodyweight: true, repsMax: 15 })
+    expect(p.kind).toBe('up')
+    expect(p.weight).toBeGreaterThan(10)
+    expect(p.sets).toBeUndefined()
+  })
+
+  it('steps a unilateral total by two, so it lands on 16, 18, 20 (issue #31)', () => {
+    const at16 = hist(LIFT, [[0, 16, 16, 16]], { sets: 3, reps: 16 })
+    expect(nextPrescription(at16, { ...cfg, reps: 16, side: true }).reps).toBe(18)
+    // and by one when it is not
+    expect(nextPrescription(at16, { ...cfg, reps: 16 }).reps).toBe(17)
+  })
+
+  it('keeps climbing reps forever when no ceiling was set — the old behaviour', () => {
+    const at30 = hist(LIFT, [[0, 30, 30, 30]], { sets: 3, reps: 30 })
+    const p = nextPrescription(at30, cfg)
+    expect(p.kind).toBe('up')
+    expect(p.reps).toBe(31)
+    expect(p.sets).toBeUndefined()
   })
 
   it('applies to every policy, not just linear', () => {
@@ -389,5 +437,16 @@ describe('applyPrescription', () => {
   it('adjusts a timed set without inventing a weight', () => {
     const timed = [{ sec: 45, w: 0, done: false }]
     expect(applyPrescription(timed, { kind: 'up', sec: 50 })).toEqual([{ sec: 50, w: 0, done: false }])
+  })
+
+  it('grows the list when the policy added a set (issue #33)', () => {
+    const three = [{ w: 0, r: 10, done: false }, { w: 0, r: 10, done: false }, { w: 0, r: 10, done: false }]
+    const out = applyPrescription(three, { kind: 'up', weight: 0, reps: 10, sets: 4 })
+    expect(out).toHaveLength(4)
+    expect(out[3]).toEqual({ w: 0, r: 10, done: false })
+  })
+
+  it('never shrinks a session that has already logged sets', () => {
+    expect(applyPrescription(sets, { kind: 'up', weight: 60, sets: 1 })).toHaveLength(sets.length)
   })
 })

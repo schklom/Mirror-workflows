@@ -537,4 +537,21 @@ export default {
   'Most working sets belong close to failure without living there — half at the floor and half at the top average out to a healthy-looking middle.': 'ज़्यादातर वर्किंग सेट फेलियर के पास होने चाहिए, पर वहीं बसे नहीं — आधे सबसे नीचे और आधे सबसे ऊपर मिलकर एक ऐसा औसत बनाते हैं जो सिर्फ़ देखने में सेहतमंद लगता है।',
   'Average effort per workout': 'हर वर्कआउट की औसत मेहनत',
   'A fuller dot means less left in the tank — the same weight at a lower {0} is progress the line alone does not show.': 'ज़्यादा भरा बिंदु मतलब टंकी में कम बचा — वही वज़न कम {0} पर उठाना वह प्रगति है जो अकेली लाइन नहीं दिखाती।',
+
+  // --- bodyweight & per side ---
+  'Bodyweight': 'बॉडीवेट',
+  'No weight to enter — just log the reps.': 'कोई वज़न नहीं डालना — बस रेप्स दर्ज करें।',
+  'Ask for a weight on every set.': 'हर सेट पर वज़न पूछें।',
+  'For dips or pull-ups with a belt. Progression then follows the weight.': 'बेल्ट के साथ डिप्स या पुल-अप्स के लिए। फिर प्रोग्रेशन वज़न के हिसाब से चलता है।',
+  'Reps per side': 'प्रति तरफ़ रेप्स',
+  'For lunges, single-arm rows and the like.': 'लंजेस, सिंगल-आर्म रो और ऐसे व्यायामों के लिए।',
+  'Top of the range': 'रेंज का ऊपरी सिरा',
+  'Reps climb by one whenever every set was clean. Set a ceiling to add sets instead of reps forever.': 'हर सेट साफ़ रहने पर रेप्स एक-एक बढ़ते हैं। ऊपरी सीमा तय करें ताकि रेप्स हमेशा बढ़ने के बजाय एक सेट जुड़ जाए।',
+  'Reps climb to {0}, then a set is added and the reps start over. At {1} sets it asks you to add weight instead.': 'रेप्स {0} तक बढ़ते हैं, फिर एक सेट जुड़ता है और रेप्स दोबारा शुरू होते हैं। {1} सेट पर यह वज़न बढ़ाने को कहता है।',
+  'Added ({0})': 'अतिरिक्त ({0})',
+  '{0}/side': '{0}/तरफ़',
+  '{0} reps in every set — add a set and go back to {1}.': 'हर सेट में {0} रेप्स — एक सेट जोड़ें और वापस {1} पर।',
+  '{0} sets of {1} — time to add weight or move to a harder variation.': '{1} रेप्स के {0} सेट — अब वज़न बढ़ाने या किसी कठिन वैरिएशन पर जाने का समय।',
+  '{0} per side': 'प्रति तरफ़ {0}',
+  'You still log the total: {0} is {1} per side.': 'आप कुल ही दर्ज करते हैं: {0} यानी प्रति तरफ़ {1}।',
 }

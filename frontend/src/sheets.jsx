@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { useStore } from './store/useStore.js'
 import { useUI } from './store/useUI.js'
-import { EXDB, EXIDX, BODYPARTS, isCardio, allExercises, equipmentOf } from './lib/exercises.js'
+import { EXDB, EXIDX, BODYPARTS, isCardio, isBodyweightEq, allExercises, equipmentOf } from './lib/exercises.js'
 import { fmtDate, fmtNum, fmtVol, fmtDur, durPart, todayISO, uid, exCount, DAYN, MONTHS_LONG, ACCENTS } from './lib/format.js'
-import { lastEntryFor, bestWeightFor, buildSets, effectiveRoutineId, workoutVolume, setsDone, setsDoneActive, lastBW, supersetUnits, unitOf, setLabel, defaultConfig, cleanupSg, modeOf, effortOf } from './lib/history.js'
+import { lastEntryFor, bestWeightFor, buildSets, effectiveRoutineId, workoutVolume, setsDone, setsDoneActive, lastBW, supersetUnits, unitOf, setLabel, defaultConfig, cleanupSg, modeOf, effortOf, isBw, isPerSide, sideReps } from './lib/history.js'
 import { beep, vibrate } from './lib/sound.js'
 import { t, instrFor, getLang, INSTR_LANGS } from './lib/i18n.js'
 import { nav } from './lib/nav.js'
@@ -11,14 +11,14 @@ import { starterRoutines } from './lib/starter.js'
 import Media, { Thumb } from './components/Media.jsx'
 import Stepper from './components/Stepper.jsx'
 import Icon from './components/Icon.jsx'
-import { Button, Slider, Switch, Segmented, SelectRow } from './components/ui.jsx'
+import { Button, Slider, Switch, Segmented, SelectRow, Row } from './components/ui.jsx'
 import { glyphOf, GLYPH_GROUPS, DEFAULT_GLYPH } from './lib/glyphs.js'
 import BodyMap from './components/BodyMap.jsx'
 import { loadOfWorkouts } from './lib/muscles.js'
 import { parseImport, mergeImport } from './lib/import-csv.js'
 import { buildPlanBundle, parsePlan, mergePlan, printPlan } from './lib/plan-share.js'
 import { estimate1RM, best1RM, is1RMRecord, REP_CAP } from './lib/onerm.js'
-import { nextPrescription, applyPrescription, policyFor, defaultIncrement, POLICIES_FOR, POLICY_NAME, POLICY_DESC } from './lib/progression.js'
+import { nextPrescription, applyPrescription, policyFor, defaultIncrement, POLICIES_FOR, POLICY_NAME, POLICY_DESC, MAX_BW_SETS } from './lib/progression.js'
 import { MOBILE, shareExport } from './lib/mobile.js'
 
 const S = () => useStore.getState().S
@@ -489,6 +489,9 @@ function ExConfig({ ex, existing, onSave, onDelete, close, routine }) {
   // Cardio keeps its own duration+speed form; the reps/time choice (issue #16) is offered for
   // everything else, which is where the gap was — planks, hangs, wall sits, loaded carries.
   const mode = cardio ? 'cardio' : modeOf({ ...c, id: ex.id })
+  // Both default from the dataset and are then whatever the config says — see isBw.
+  const bw = !cardio && isBw({ ...c, id: ex.id })
+  const perSide = isPerSide(c)
   // Keep whatever the other mode already had (sets, weight) and fill only what is missing.
   const setMode = m => setC(x => ({ ...defaultConfig(ex.id, m), ...x, mode: m }))
   const save = () => {
@@ -499,12 +502,24 @@ function ExConfig({ ex, existing, onSave, onDelete, close, routine }) {
     const prog = {}
     if (c.prog) prog.prog = c.prog
     if (c.inc > 0) prog.inc = c.inc
+    // Written only when it differs from what the dataset already says, so a barbell config
+    // stays exactly the shape it was before these flags existed.
+    // `bodyweight` is true of a hold as much as of a set of reps; `side` is not — it counts
+    // reps, and a timed hold has none. Switching an exercise to Time therefore drops it
+    // rather than carrying a flag nothing downstream can read.
+    const flags = {}
+    if (bw !== isBodyweightEq(ex.id)) flags.bodyweight = bw
     if (cardio) onSave({ sets, min: Math.max(1, Math.round(c.min) || 20), speed: Math.max(0, c.speed || 8) })
-    else if (mode === 'time') onSave({ sets, mode: 'time', sec: Math.max(1, Math.round(c.sec) || 45), weight: Math.max(0, c.weight || 0), ...prog })
+    else if (mode === 'time') onSave({ sets, mode: 'time', sec: Math.max(1, Math.round(c.sec) || 45), weight: Math.max(0, c.weight || 0), ...flags, ...prog })
     else {
-      const reps = Math.max(1, Math.round(c.reps) || 10)
-      const out = { sets, mode: 'reps', reps, weight: Math.max(0, c.weight || 0), ...prog }
+      // A unilateral target is stored even: the split has to divide, and a typed 15 would
+      // otherwise plan seven reps on one side and eight on the other, every session.
+      const typed = Math.max(1, Math.round(c.reps) || 10)
+      const reps = perSide ? Math.ceil(typed / 2) * 2 : typed
+      const out = { sets, mode: 'reps', reps, weight: Math.max(0, c.weight || 0), ...flags, ...(perSide ? { side: true } : {}), ...prog }
       if (policyFor({ ...c, id: ex.id }, routine, 'reps') === 'double') out.repsMin = Math.min(reps, Math.max(1, Math.round(c.repsMin) || Math.max(1, reps - 2)))
+      // A ceiling below the working reps would tell you to add a set on day one.
+      if (bw && !(out.weight > 0) && c.repsMax > 0) out.repsMax = Math.max(reps, Math.round(c.repsMax))
       onSave(out)
     }
   }
@@ -531,12 +546,49 @@ function ExConfig({ ex, existing, onSave, onDelete, close, routine }) {
         <Stepper label={t('Weight ({0})', st.unit)} value={c.weight} step={2.5} onChange={v => setC(x => ({ ...x, weight: v }))} />
       </> : <>
         <Stepper label={t('Sets')} value={c.sets} step={1} decimal={false} onChange={v => setC(x => ({ ...x, sets: v }))} />
-        <Stepper label={t('Reps')} value={c.reps} step={1} decimal={false} onChange={v => setC(x => ({ ...x, reps: v }))} />
-        <Stepper label={t('Weight ({0})', st.unit)} value={c.weight} step={2.5} onChange={v => setC(x => ({ ...x, weight: v }))} />
+        <Stepper label={t('Reps')} value={c.reps} step={perSide ? 2 : 1} decimal={false} onChange={v => setC(x => ({ ...x, reps: v }))} />
+        {/* On bodyweight work the weight stepper is the click #32 is about, so it is not here
+            until there is a belt to describe — see the added-weight row below. */}
+        {!bw && <Stepper label={t('Weight ({0})', st.unit)} value={c.weight} step={2.5} onChange={v => setC(x => ({ ...x, weight: v }))} />}
       </>}
     </div>
-    {mode === 'time' && <div className="small dim" style={{ marginBottom: 18 }}>
+    {mode === 'time' && !bw && <div className="small dim" style={{ marginBottom: 18 }}>
       {t('A timer runs while you hold the set. Leave the weight at 0 for bodyweight holds.')}
+    </div>}
+    {/* ---------- bodyweight + per side (issues #31/#32/#33) ---------- */}
+    {!cardio && <div className="sect-b" style={{ marginBottom: 8 }}>
+      <Row icon="figureStrength" iconTint="var(--acc)" title={t('Bodyweight')}
+        subtitle={bw ? t('No weight to enter — just log the reps.') : t('Ask for a weight on every set.')}>
+        <Switch checked={bw} onChange={v => setC(x => ({ ...x, bodyweight: v, weight: v ? 0 : x.weight }))} />
+      </Row>
+      {mode === 'reps' && <Row icon="shuffle" iconTint="var(--blue)" title={t('Reps per side')}
+        subtitle={perSide ? t('You still log the total: {0} is {1} per side.', c.reps || 0, fmtNum(sideReps(c.reps))) : t('For lunges, single-arm rows and the like.')}>
+        {/* Turning it on rounds the target up to an even number, since half of an odd
+            total is a rep one side does not get. */}
+        <Switch checked={perSide} onChange={v => setC(x => ({ ...x, side: v || undefined, reps: v ? Math.ceil((x.reps || 0) / 2) * 2 : x.reps }))} />
+      </Row>}
+    </div>}
+    {/* A stepper is too wide to sit in a list row next to a label — it squeezes the text to
+        one word per line — so added weight gets the same full-width treatment as sets and
+        reps, with its explanation underneath. */}
+    {bw && <>
+      <div className="row cfgrow" style={{ marginBottom: 8 }}>
+        <Stepper label={t('Added ({0})', st.unit)} value={c.weight || 0} step={2.5}
+          onChange={v => setC(x => ({ ...x, weight: v }))} />
+      </div>
+      <div className="small dim" style={{ marginBottom: 18 }}>
+        {t('For dips or pull-ups with a belt. Progression then follows the weight.')}
+      </div>
+    </>}
+    {/* The rep ceiling only means something when there is no load to add instead. */}
+    {mode === 'reps' && bw && !(c.weight > 0) && <div className="row cfgrow" style={{ marginBottom: 18 }}>
+      <Stepper label={t('Top of the range')} value={c.repsMax || 0} step={1} decimal={false}
+        onChange={v => setC(x => ({ ...x, repsMax: v }))} />
+    </div>}
+    {mode === 'reps' && bw && !(c.weight > 0) && <div className="small dim" style={{ marginTop: -10, marginBottom: 18 }}>
+      {c.repsMax > 0
+        ? t('Reps climb to {0}, then a set is added and the reps start over. At {1} sets it asks you to add weight instead.', c.repsMax, MAX_BW_SETS)
+        : t('Reps climb by one whenever every set was clean. Set a ceiling to add sets instead of reps forever.')}
     </div>}
     <ProgressionFields ex={ex} mode={mode} c={c} setC={setC} routine={routine} unit={st.unit} />
     <Button variant="primary" onClick={save}>{existing ? t('Save') : t('Add to routine')}</Button>

@@ -30,6 +30,34 @@ label and nowhere else. Stats now answers the question the number was recorded f
   sit higher.
 - Translated into all 12 UI languages.
 
+### Bodyweight training, logged the way it is done
+
+A push-up has no weight to type, and the app asked for one anyway — every set, on a quarter of
+the catalogue. Three reports (#31, #32, #33) turned out to be the same gap: the app assumed
+progress lived in the load. It doesn't, for the exercises most people actually start with.
+
+- 💪 **Exercises know they are bodyweight.** Seeded from the equipment the dataset already
+  records, so push-ups, pull-ups, dips and 300-odd others arrive marked. The weight column is
+  not shown, the set row is one stepper instead of two, and the "confirm your working weight"
+  prompt at the end of an exercise stops asking about a weight that was never there. (#32)
+- **Added weight when there is any.** A dip belt or a weighted vest is entered once in the
+  exercise settings and reads as an addition — "+10 × 8", not "10×8" — everywhere it is shown
+  back. With load on the belt the normal progression rules take over again, because now there
+  is something to add.
+- 📈 **Reps and sets are the progression.** Clean session, one more rep. Set a top of the range
+  and reaching it adds a set and starts the reps over instead of climbing forever; at six sets
+  it says what it should have said all along, which is that it is time for weight or a harder
+  variation. No ceiling set keeps the old behaviour exactly. (#33)
+- ↔️ **Reps per side.** For lunges, single-arm rows and every other unilateral movement. You
+  log what you did — 16, the total — and the app shows the split, "8 per side", so the set in
+  front of you is unambiguous without the rep count meaning one thing here and another there.
+  The target steps in twos, 16 → 18 → 20, because half of an odd total is a rep one side never
+  gets. (#31)
+- Both settings travel with a shared plan, and are written to a plan file only when they
+  disagree with the catalogue — every existing plan, workout and backup is read unchanged and
+  none of it needs migrating.
+- Translated into all 12 UI languages.
+
 ## v1.2.3 — 2026-07-31
 
 How hard a set was, in whichever of the two scales you already think in — and the ratings your

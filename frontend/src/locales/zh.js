@@ -537,4 +537,21 @@ export default {
   'Most working sets belong close to failure without living there — half at the floor and half at the top average out to a healthy-looking middle.': '大多数正式组应该接近力竭，但不要一直待在那里——一半在最底、一半在最顶，平均下来只是看着健康。',
   'Average effort per workout': '每次训练的平均强度',
   'A fuller dot means less left in the tank — the same weight at a lower {0} is progress the line alone does not show.': '点越实，油箱里剩得越少——同样的重量配上更低的 {0}，是曲线本身看不出的进步。',
+
+  // --- bodyweight & per side ---
+  'Bodyweight': '徒手动作',
+  'No weight to enter — just log the reps.': '无需输入重量——只记录次数。',
+  'Ask for a weight on every set.': '每组都询问重量。',
+  'For dips or pull-ups with a belt. Progression then follows the weight.': '用于系负重腰带做双杠臂屈伸或引体向上。此时进阶方式跟随重量。',
+  'Reps per side': '每侧次数',
+  'For lunges, single-arm rows and the like.': '用于弓步蹲、单臂划船之类的动作。',
+  'Top of the range': '次数上限',
+  'Reps climb by one whenever every set was clean. Set a ceiling to add sets instead of reps forever.': '每组都做干净，次数就加一。设置上限后，达到上限会加一组，而不是一直加次数。',
+  'Reps climb to {0}, then a set is added and the reps start over. At {1} sets it asks you to add weight instead.': '次数升到 {0} 后加一组，次数重新开始。到 {1} 组时会改为提示你加重量。',
+  'Added ({0})': '负重（{0}）',
+  '{0}/side': '{0}/侧',
+  '{0} reps in every set — add a set and go back to {1}.': '每组都做到 {0} 次——加一组，次数回到 {1}。',
+  '{0} sets of {1} — time to add weight or move to a harder variation.': '{0} 组 × {1} 次——该加重量或换更难的变式了。',
+  '{0} per side': '每侧 {0} 次',
+  'You still log the total: {0} is {1} per side.': '你记录的仍然是总数：{0} 表示每侧 {1} 次。',
 }

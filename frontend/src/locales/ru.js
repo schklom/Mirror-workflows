@@ -537,4 +537,21 @@ export default {
   'Most working sets belong close to failure without living there — half at the floor and half at the top average out to a healthy-looking middle.': 'Большинство рабочих подходов должны идти близко к отказу, но не жить на нём — половина внизу и половина вверху дают среднее, которое лишь выглядит здоровым.',
   'Average effort per workout': 'Среднее усилие за тренировку',
   'A fuller dot means less left in the tank — the same weight at a lower {0} is progress the line alone does not show.': 'Более плотная точка означает меньше запаса — тот же вес при меньшем {0} это прогресс, которого одна линия не показывает.',
+
+  // --- bodyweight & per side ---
+  'Bodyweight': 'Собственный вес',
+  'No weight to enter — just log the reps.': 'Вес вводить не нужно — записывай только повторения.',
+  'Ask for a weight on every set.': 'Спрашивать вес в каждом подходе.',
+  'For dips or pull-ups with a belt. Progression then follows the weight.': 'Для отжиманий на брусьях или подтягиваний с поясом. Тогда прогрессия идёт по весу.',
+  'Reps per side': 'Повторения на сторону',
+  'For lunges, single-arm rows and the like.': 'Для выпадов, тяг одной рукой и тому подобного.',
+  'Top of the range': 'Верх диапазона',
+  'Reps climb by one whenever every set was clean. Set a ceiling to add sets instead of reps forever.': 'Повторения растут на одно, когда все подходы чистые. Задай потолок, чтобы вместо бесконечного роста повторений добавлялся подход.',
+  'Reps climb to {0}, then a set is added and the reps start over. At {1} sets it asks you to add weight instead.': 'Повторения растут до {0}, затем добавляется подход и повторения начинаются заново. Дойдя до {1} подходов, приложение предложит вместо этого добавить вес.',
+  'Added ({0})': 'Доп. ({0})',
+  '{0}/side': '{0}/стор.',
+  '{0} reps in every set — add a set and go back to {1}.': 'Во всех подходах {0} повт. — добавь подход и вернись к {1}.',
+  '{0} sets of {1} — time to add weight or move to a harder variation.': '{0} × {1} — пора добавить вес или перейти к более сложному варианту.',
+  '{0} per side': '{0} на сторону',
+  'You still log the total: {0} is {1} per side.': 'Ты по-прежнему записываешь общее число: {0} — это {1} на сторону.',
 }

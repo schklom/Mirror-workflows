@@ -537,4 +537,21 @@ export default {
   'Most working sets belong close to failure without living there — half at the floor and half at the top average out to a healthy-looking middle.': 'Çalışma setlerinin çoğu tükenmeye yakın olmalı ama orada yaşamamalı — yarısı en altta yarısı en üstte, ortalaması sağlıklı görünür.',
   'Average effort per workout': 'Antrenman başına ortalama zorluk',
   'A fuller dot means less left in the tank — the same weight at a lower {0} is progress the line alone does not show.': 'Daha dolu bir nokta depoda daha az kaldı demek — aynı ağırlığı daha düşük {0} ile kaldırmak, çizginin tek başına göstermediği bir ilerlemedir.',
+
+  // --- bodyweight & per side ---
+  'Bodyweight': 'Vücut ağırlığı',
+  'No weight to enter — just log the reps.': 'Girilecek ağırlık yok — sadece tekrarları kaydet.',
+  'Ask for a weight on every set.': 'Her sette ağırlık sorulsun.',
+  'For dips or pull-ups with a belt. Progression then follows the weight.': 'Kemerle yapılan dips veya barfiks için. İlerleme o zaman ağırlığı izler.',
+  'Reps per side': 'Taraf başına tekrar',
+  'For lunges, single-arm rows and the like.': 'Lunge, tek kol çekiş ve benzeri hareketler için.',
+  'Top of the range': 'Aralığın üst sınırı',
+  'Reps climb by one whenever every set was clean. Set a ceiling to add sets instead of reps forever.': 'Her set temiz çıktığında tekrarlar birer artar. Sonsuza kadar tekrar eklemek yerine set eklemek için bir üst sınır belirle.',
+  'Reps climb to {0}, then a set is added and the reps start over. At {1} sets it asks you to add weight instead.': 'Tekrarlar {0} değerine çıkar, sonra bir set eklenir ve tekrarlar baştan başlar. {1} sette ise bunun yerine ağırlık eklemen istenir.',
+  'Added ({0})': 'Ek ({0})',
+  '{0}/side': '{0}/taraf',
+  '{0} reps in every set — add a set and go back to {1}.': 'Her sette {0} tekrar — bir set ekle ve {1} tekrara dön.',
+  '{0} sets of {1} — time to add weight or move to a harder variation.': '{1} tekrarlık {0} set — ağırlık ekleme ya da daha zor bir varyasyona geçme zamanı.',
+  '{0} per side': 'Taraf başına {0}',
+  'You still log the total: {0} is {1} per side.': 'Toplamı kaydetmeye devam ediyorsun: {0}, taraf başına {1} demek.',
 }

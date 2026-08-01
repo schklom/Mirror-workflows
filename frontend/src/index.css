@@ -233,7 +233,11 @@ h4.sec{
 .lrow-m{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
 .lrow-t{font-size:17px;letter-spacing:-.012em;line-height:1.25}
 .lrow-s{font-size:13px;color:var(--label-2);line-height:1.3}
-.lrow-v{color:var(--label-2);font-size:17px;letter-spacing:-.012em;flex:none}
+/* flex:none would let a long value ("Follow the routine (Linear progression)") run straight
+   through the title next to it, since the title's column is already free to shrink to nothing.
+   Letting the value shrink and ellipsise instead keeps the two out of each other's way. */
+.lrow-v{color:var(--label-2);font-size:17px;letter-spacing:-.012em;flex:0 1 auto;min-width:0;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:right}
 .lrow-c{color:var(--label);font-size:15px;flex:none;--icon-stroke:2.4}
 .lrow-k{color:var(--acc);font-size:17px;flex:none;--icon-stroke:2.4}
 .lrow.danger,.lrow.danger .lrow-t{color:var(--red)}

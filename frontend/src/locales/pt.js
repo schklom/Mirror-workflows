@@ -537,4 +537,21 @@ export default {
   'Most working sets belong close to failure without living there — half at the floor and half at the top average out to a healthy-looking middle.': 'A maioria das séries de trabalho fica perto da falha sem viver lá — metade no fundo e metade no topo dão uma média que só parece saudável.',
   'Average effort per workout': 'Esforço médio por treino',
   'A fuller dot means less left in the tank — the same weight at a lower {0} is progress the line alone does not show.': 'Um ponto mais cheio significa menos margem — o mesmo peso com um {0} mais baixo é progresso que a linha sozinha não mostra.',
+
+  // --- bodyweight & per side ---
+  'Bodyweight': 'Peso do corpo',
+  'No weight to enter — just log the reps.': 'Sem peso para introduzir — regista só as repetições.',
+  'Ask for a weight on every set.': 'Pedir um peso em cada série.',
+  'For dips or pull-ups with a belt. Progression then follows the weight.': 'Para dips ou pull-ups com cinto. A progressão passa então a seguir o peso.',
+  'Reps per side': 'Reps por lado',
+  'For lunges, single-arm rows and the like.': 'Para afundos, remadas a um braço e afins.',
+  'Top of the range': 'Topo do intervalo',
+  'Reps climb by one whenever every set was clean. Set a ceiling to add sets instead of reps forever.': 'As repetições sobem uma sempre que todas as séries saem limpas. Define um limite para acrescentar séries em vez de repetições para sempre.',
+  'Reps climb to {0}, then a set is added and the reps start over. At {1} sets it asks you to add weight instead.': 'As repetições sobem até {0}, depois acrescenta-se uma série e as repetições recomeçam. Com {1} séries passa a pedir-te peso extra.',
+  'Added ({0})': 'Extra ({0})',
+  '{0}/side': '{0}/lado',
+  '{0} reps in every set — add a set and go back to {1}.': '{0} repetições em todas as séries — acrescenta uma série e volta a {1}.',
+  '{0} sets of {1} — time to add weight or move to a harder variation.': '{0} séries de {1} — hora de acrescentar peso ou passar a uma variação mais difícil.',
+  '{0} per side': '{0} por lado',
+  'You still log the total: {0} is {1} per side.': 'Continuas a registar o total: {0} são {1} por lado.',
 }

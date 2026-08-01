@@ -537,4 +537,21 @@ export default {
   'Most working sets belong close to failure without living there — half at the floor and half at the top average out to a healthy-looking middle.': 'La maggior parte delle serie di lavoro sta vicino al cedimento senza viverci — metà in fondo e metà in cima danno una media che sembra sana solo all’apparenza.',
   'Average effort per workout': 'Sforzo medio per allenamento',
   'A fuller dot means less left in the tank — the same weight at a lower {0} is progress the line alone does not show.': 'Un punto più pieno significa meno riserva — lo stesso peso con un {0} più basso è progresso che la linea da sola non mostra.',
+
+  // --- bodyweight & per side ---
+  'Bodyweight': 'Corpo libero',
+  'No weight to enter — just log the reps.': 'Nessun peso da inserire — registra solo le ripetizioni.',
+  'Ask for a weight on every set.': 'Chiedi un peso a ogni serie.',
+  'For dips or pull-ups with a belt. Progression then follows the weight.': 'Per dip o trazioni con la cintura. La progressione segue poi il peso.',
+  'Reps per side': 'Ripetizioni per lato',
+  'For lunges, single-arm rows and the like.': 'Per affondi, rematori a un braccio e simili.',
+  'Top of the range': 'Massimo dell\'intervallo',
+  'Reps climb by one whenever every set was clean. Set a ceiling to add sets instead of reps forever.': 'Le ripetizioni salgono di una ogni volta che tutte le serie sono pulite. Imposta un massimo per aggiungere serie invece di ripetizioni all\'infinito.',
+  'Reps climb to {0}, then a set is added and the reps start over. At {1} sets it asks you to add weight instead.': 'Le ripetizioni salgono fino a {0}, poi viene aggiunta una serie e le ripetizioni ripartono da capo. A {1} serie ti chiede invece di aggiungere peso.',
+  'Added ({0})': 'Aggiunto ({0})',
+  '{0}/side': '{0}/lato',
+  '{0} reps in every set — add a set and go back to {1}.': '{0} ripetizioni in ogni serie — aggiungi una serie e torna a {1}.',
+  '{0} sets of {1} — time to add weight or move to a harder variation.': '{0} serie da {1} — è ora di aggiungere peso o passare a una variante più difficile.',
+  '{0} per side': '{0} per lato',
+  'You still log the total: {0} is {1} per side.': 'Registri sempre il totale: {0} sono {1} per lato.',
 }

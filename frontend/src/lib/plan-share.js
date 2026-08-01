@@ -8,8 +8,8 @@
 //  2. A clean, printable page (Save as PDF) where a single exercise never splits across
 //     a page break — each exercise, and each routine that fits, stays in one place.
 
-import { EXIDX } from './exercises.js'
-import { modeOf, fmtSec } from './history.js'
+import { EXIDX, isBodyweightEq } from './exercises.js'
+import { modeOf, fmtSec, isBw, isPerSide, sideReps } from './history.js'
 import { uid, todayISO, DAYN, fmtNum, exCount } from './format.js'
 import { t } from './i18n.js'
 
@@ -33,11 +33,17 @@ function cleanEx(e) {
     if (e.reps != null) o.reps = e.reps
     if (e.weight) o.weight = e.weight
   }
+  // How the exercise is logged travels too (issues #31/#32) — the bodyweight flag only when
+  // it disagrees with the catalogue, since agreeing is what the other end already assumes.
+  if (e.bodyweight != null && e.bodyweight !== isBodyweightEq(e.id)) o.bodyweight = e.bodyweight
+  // Only on reps work — `side` counts reps, and a timed hold has none to split.
+  if (e.side && mode !== 'time' && mode !== 'cardio') o.side = true
   // Progression settings travel with the plan — a shared Greyskull routine that arrives
   // without its rule is just a list of weights.
   if (e.prog) o.prog = e.prog
   if (e.inc > 0) o.inc = e.inc
   if (e.repsMin != null) o.repsMin = e.repsMin
+  if (e.repsMax != null) o.repsMax = e.repsMax
   if (e.sg) o.sg = e.sg
   return o
 }
@@ -145,7 +151,9 @@ function scheme(e, unit) {
     return sets > 1 ? `${sets} × ${body}` : body
   }
   let s = mode === 'time' ? `${sets} × ${fmtSec(e.sec || 45)}` : `${sets} × ${e.reps ?? 10}`
-  if (e.weight) s += ` · ${fmtNum(e.weight)} ${unit}`
+  if (e.weight) s += ` · ${isBw(e) ? '+' : ''}${fmtNum(e.weight)} ${unit}`
+  // A printed plan is read at the rack, so the split earns its four characters.
+  if (mode !== 'time' && isPerSide(e)) s += ` · ${t('{0}/side', fmtNum(sideReps(e.reps ?? 10)))}`
   return s
 }
 

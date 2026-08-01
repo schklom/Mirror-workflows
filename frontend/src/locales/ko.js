@@ -537,4 +537,21 @@ export default {
   'Most working sets belong close to failure without living there — half at the floor and half at the top average out to a healthy-looking middle.': '대부분의 본세트는 실패 지점 가까이에 있어야 하지만 거기 머물면 안 됩니다 — 절반은 바닥에 절반은 꼭대기에 있으면 평균만 건강해 보입니다.',
   'Average effort per workout': '운동당 평균 강도',
   'A fuller dot means less left in the tank — the same weight at a lower {0} is progress the line alone does not show.': '점이 진할수록 남은 여력이 적다는 뜻입니다 — 같은 무게를 더 낮은 {0}로 든 것은 선만 봐서는 알 수 없는 발전입니다.',
+
+  // --- bodyweight & per side ---
+  'Bodyweight': '맨몸 운동',
+  'No weight to enter — just log the reps.': '입력할 무게 없음 — 횟수만 기록합니다.',
+  'Ask for a weight on every set.': '세트마다 무게를 물어봅니다.',
+  'For dips or pull-ups with a belt. Progression then follows the weight.': '벨트를 차고 하는 딥스나 풀업용. 그러면 점진적 증가가 무게를 따라갑니다.',
+  'Reps per side': '한쪽당 횟수',
+  'For lunges, single-arm rows and the like.': '런지, 한팔 로우 같은 운동용.',
+  'Top of the range': '범위 상한',
+  'Reps climb by one whenever every set was clean. Set a ceiling to add sets instead of reps forever.': '모든 세트가 깔끔하면 횟수가 하나씩 올라갑니다. 상한을 정하면 횟수를 계속 늘리는 대신 세트를 추가합니다.',
+  'Reps climb to {0}, then a set is added and the reps start over. At {1} sets it asks you to add weight instead.': '횟수가 {0}회까지 오르면 세트가 하나 추가되고 횟수는 처음부터 다시 시작합니다. {1}세트가 되면 대신 무게를 올리라고 안내합니다.',
+  'Added ({0})': '추가 ({0})',
+  '{0}/side': '한쪽 {0}회',
+  '{0} reps in every set — add a set and go back to {1}.': '모든 세트 {0}회 달성 — 세트를 추가하고 {1}회로 돌아갑니다.',
+  '{0} sets of {1} — time to add weight or move to a harder variation.': '{1}회 {0}세트 — 이제 무게를 올리거나 더 어려운 동작으로 넘어가세요.',
+  '{0} per side': '한쪽당 {0}회',
+  'You still log the total: {0} is {1} per side.': '기록은 그대로 합계로 합니다: {0}회는 한쪽당 {1}회입니다.',
 }

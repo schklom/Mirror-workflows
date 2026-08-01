@@ -24,18 +24,21 @@ export const isTimed = cfg => modeOf(cfg) === 'time'
 //                asked for only once you say there is some. Seeded from the equipment field.
 //                Spelled out rather than `bw`, which a workout already uses for the weigh-in
 //                it was logged at — two different things one letter apart is a bug waiting.
-//   side       — the logged reps are what one side did: 8 logged is 8 per side, 16 in total.
+//   side       — the exercise is unilateral. You still log what you did: 16, the total across
+//                both sides. The split is derived for planning ("8 per side"), never entered
+//                — a number that sometimes means one side and sometimes both is the thing
+//                that made this ambiguous in the first place, and one rep count that always
+//                means the same thing beats two that need a legend.
 // Both are absent on every plan, workout and backup written before they existed, and absent
 // reads as false, so nothing needs migrating.
 export const isBw = cfg => (cfg && cfg.bodyweight != null ? !!cfg.bodyweight : isBodyweightEq(cfg && cfg.id))
 export const isPerSide = cfg => !!(cfg && cfg.side)
-// Reps as they are counted rather than as they are logged. Only this function knows that a
-// per-side set is worth double, so stats and volume cannot disagree with the set row.
-export const totalReps = (cfg, reps) => (isPerSide(cfg) ? 2 : 1) * (reps || 0)
-// Reps as they are written on a row: "8" bilateral, "8/side" unilateral. The total is left
-// off here — a set row is already narrow, and "8/side · 16 total" belongs in the one place
-// that has the width for it (the exercise line), not repeated down every row.
-export const repLabel = (cfg, reps) => (isPerSide(cfg) ? t('{0}/side', reps) : String(reps))
+// What one side did, for display only. Half of an odd total is shown as it falls (8.5) rather
+// than rounded away: it means the sides were not even, which is worth seeing.
+export const sideReps = reps => (reps || 0) / 2
+// Unilateral work moves in pairs, so its rep target steps by two — 16, 18, 20 — and a total
+// that stayed odd would put a rep on one side and not the other.
+export const repStep = cfg => (isPerSide(cfg) ? 2 : 1)
 
 // mm:ss for a work duration — seconds alone read badly past a minute ("90 s" vs "1:30").
 export function fmtSec(sec) {
@@ -95,7 +98,9 @@ export function setLabel(id, s, cfg) {
   if (mode === 'time') return fmtSec(s.sec) + (s.w > 0 ? ` · ${fmtNum(s.w)}` : '')
   // Bodyweight reads as what you did — "12", or "+10 × 12" once there is a belt involved —
   // rather than "0×12", which says a set was performed with no weight and means nothing.
-  const reps = repLabel(c, s.r || 0)
+  // A per-side set needs no mark here: the number logged is the total, the same as every
+  // other set in the app.
+  const reps = s.r || 0
   if (isBw({ ...c, id: c.id ?? id })) {
     const load = s.w > 0 ? `+${fmtNum(s.w)} × ` : ''
     return `${load}${reps}` + effortTail(s)
@@ -121,9 +126,9 @@ export function exLine(cfg, unit) {
   const load = cfg.weight ? ' · ' + (isBw(cfg) ? '+' : '') + fmtNum(cfg.weight) + ' ' + unit : ''
   if (mode === 'cardio') return `${n} × ${cfg.min || 20} min @ ${fmtNum(cfg.speed || 8)} km/h`
   if (mode === 'time') return `${n} × ${fmtSec(cfg.sec || 45)}${load}`
-  // This is the line with room for the arithmetic, so per side spells it out in full.
-  const total = isPerSide(cfg) ? ' · ' + t('{0} in total', totalReps(cfg, cfg.reps) * n) : ''
-  return `${n} × ${repLabel(cfg, cfg.reps)}${load}${total}`
+  // This is the line with room for it, so the split is spelled out: "3 × 16 · 8/side".
+  const split = isPerSide(cfg) ? ' · ' + t('{0}/side', fmtNum(sideReps(cfg.reps))) : ''
+  return `${n} × ${cfg.reps}${load}${split}`
 }
 
 // Drop superset ids that no longer have an adjacent partner (after unlink/reorder/remove).
@@ -200,9 +205,9 @@ export function buildSets(S, cfg) {
 }
 export function workoutVolume(w) {
   let v = 0
-  // A per-side set moved its load twice, so it counts twice — otherwise a routine that
-  // switched to single-arm rows would show as half the work for the same session.
-  w.entries.forEach(e => e.sets.forEach(s => { if (s.done) v += (s.w || 0) * totalReps(e.target, s.r) }))
+  // No special case for unilateral work: a per-side set logs its total, so both sides are
+  // already in the rep count that arrives here.
+  w.entries.forEach(e => e.sets.forEach(s => { if (s.done) v += (s.w || 0) * (s.r || 0) }))
   return v
 }
 export function setsDone(w) {

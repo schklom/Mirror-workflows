@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { modeOf, isTimed, fmtSec, setLabel, defaultConfig, buildSets, exLine, workoutVolume, effortOf, stepEffort, capEffort, isBw, isPerSide, totalReps } from './history.js'
+import { modeOf, isTimed, fmtSec, setLabel, defaultConfig, buildSets, exLine, workoutVolume, effortOf, stepEffort, capEffort, isBw, isPerSide, sideReps, repStep } from './history.js'
 import { EXDB } from './exercises.js'
 
 // Real ids out of the shipped catalogue, so the body-part fallback is exercised for real.
@@ -278,11 +278,21 @@ describe('isBw', () => {
   })
 })
 
-describe('totalReps', () => {
-  it('doubles a per-side set and leaves a bilateral one alone', () => {
-    expect(totalReps({ side: true }, 8)).toBe(16)
-    expect(totalReps({}, 8)).toBe(8)
-    expect(totalReps({ side: true }, 0)).toBe(0)
+describe('sideReps', () => {
+  it('halves the logged total, because the total is what was logged', () => {
+    expect(sideReps(16)).toBe(8)
+    expect(sideReps(0)).toBe(0)
+  })
+  it('shows an odd total as it falls rather than rounding the imbalance away', () => {
+    expect(sideReps(17)).toBe(8.5)
+  })
+})
+
+describe('repStep', () => {
+  it('steps unilateral work in twos so the total stays splittable', () => {
+    expect(repStep({ side: true })).toBe(2)
+    expect(repStep({})).toBe(1)
+    expect(repStep(null)).toBe(1)
   })
 })
 
@@ -293,9 +303,9 @@ describe('setLabel — bodyweight', () => {
   it('spells out a belt as an addition', () => {
     expect(setLabel(BW, { w: 10, r: 8 }, { id: BW })).toBe('+10 × 8')
   })
-  it('marks a per-side set on both paths', () => {
-    expect(setLabel(BW, { w: 0, r: 8 }, { id: BW, side: true })).toBe('8/side')
-    expect(setLabel(LIFT, { w: 20, r: 8 }, { id: LIFT, side: true })).toBe('20×8/side')
+  it('logs a per-side set as the plain total, like every other set in the app', () => {
+    expect(setLabel(BW, { w: 0, r: 16 }, { id: BW, side: true })).toBe('16')
+    expect(setLabel(LIFT, { w: 20, r: 16 }, { id: LIFT, side: true })).toBe('20×16')
   })
   it('keeps the effort tail', () => {
     expect(setLabel(BW, { w: 0, r: 12, rir: 2 }, { id: BW })).toBe('12 (RIR 2)')
@@ -303,8 +313,8 @@ describe('setLabel — bodyweight', () => {
 })
 
 describe('exLine', () => {
-  it('shows the per-side arithmetic where there is room for it', () => {
-    expect(exLine({ id: LIFT, sets: 3, reps: 8, side: true }, 'kg')).toBe('3 × 8/side · 48 in total')
+  it('shows the split where there is room for it, next to the total you log', () => {
+    expect(exLine({ id: LIFT, sets: 3, reps: 16, side: true }, 'kg')).toBe('3 × 16 · 8/side')
   })
   it('marks added weight as added', () => {
     expect(exLine({ id: BW, sets: 3, reps: 8, weight: 10 }, 'kg')).toBe('3 × 8 · +10 kg')
@@ -370,8 +380,8 @@ describe('workoutVolume', () => {
     expect(workoutVolume(w)).toBe(600)
   })
 
-  it('counts a per-side set twice — the load moved twice (issue #31)', () => {
-    const w = { entries: [{ id: LIFT, target: { side: true }, sets: [{ w: 20, r: 8, done: true }] }] }
+  it('needs no per-side case — the logged reps are already both sides (issue #31)', () => {
+    const w = { entries: [{ id: LIFT, target: { side: true }, sets: [{ w: 20, r: 16, done: true }] }] }
     expect(workoutVolume(w)).toBe(320)
   })
 

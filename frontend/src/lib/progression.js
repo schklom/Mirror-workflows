@@ -16,7 +16,7 @@
 //   · fewer sets than prescribed                       → miss
 // So a session that fell apart can never advance the load as though it had succeeded.
 
-import { modeOf } from './history.js'
+import { modeOf, repStep } from './history.js'
 import { EXIDX } from './exercises.js'
 
 export const POLICIES = ['off', 'linear', 'greyskull', 'double', 'time']
@@ -202,7 +202,9 @@ export function nextPrescription(S, cfg, routine) {
       // variation is — and that is a decision for a person, not a policy.
       return { policy, kind: 'hold', weight: 0, reps: goal, why: ['{0} sets of {1} — time to add weight or move to a harder variation.', sets - 1, goal] }
     }
-    return { policy, kind: 'up', weight: 0, reps: goal + 1, why: ['Bodyweight — every rep last time, so go for {0} this time.', goal + 1] }
+    // Unilateral work steps by two, so the total stays even and both sides get the rep.
+    const next = goal + repStep(cfg)
+    return { policy, kind: 'up', weight: 0, reps: next, why: ['Bodyweight — every rep last time, so go for {0} this time.', next] }
   }
   if (policy === 'double') {
     const top = cfg.reps || last.goal || 10
@@ -212,7 +214,7 @@ export function nextPrescription(S, cfg, routine) {
       const dw = deloadTo(w, inc)
       return { policy, kind: 'deload', weight: dw, reps: bottom, why: ['Stalled {0} sessions — deload to {1} {2}.', stalls, dw, unit] }
     }
-    const aim = Math.min(top, Math.max(bottom, last.low + 1))
+    const aim = Math.min(top, Math.max(bottom, last.low + repStep(cfg)))
     return { policy, kind: 'hold', weight: w, reps: aim, why: ['Same weight — aim for {0} reps this time.', aim] }
   }
 

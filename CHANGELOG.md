@@ -48,10 +48,11 @@ progress lived in the load. It doesn't, for the exercises most people actually s
   and reaching it adds a set and starts the reps over instead of climbing forever; at six sets
   it says what it should have said all along, which is that it is time for weight or a harder
   variation. No ceiling set keeps the old behaviour exactly. (#33)
-- ↔️ **Reps per side.** For lunges, single-arm rows and every other unilateral movement: log 8,
-  read "8/side", and the total is spelled out where there is room for it. Volume counts both
-  sides, so switching a routine to single-arm work no longer halves the session on the chart.
-  (#31)
+- ↔️ **Reps per side.** For lunges, single-arm rows and every other unilateral movement. You
+  log what you did — 16, the total — and the app shows the split, "8 per side", so the set in
+  front of you is unambiguous without the rep count meaning one thing here and another there.
+  The target steps in twos, 16 → 18 → 20, because half of an odd total is a rep one side never
+  gets. (#31)
 - Both settings travel with a shared plan, and are written to a plan file only when they
   disagree with the catalogue — every existing plan, workout and backup is read unchanged and
   none of it needs migrating.

@@ -222,6 +222,13 @@ describe('bodyweight exercises', () => {
     expect(p.sets).toBeUndefined()
   })
 
+  it('steps a unilateral total by two, so it lands on 16, 18, 20 (issue #31)', () => {
+    const at16 = hist(LIFT, [[0, 16, 16, 16]], { sets: 3, reps: 16 })
+    expect(nextPrescription(at16, { ...cfg, reps: 16, side: true }).reps).toBe(18)
+    // and by one when it is not
+    expect(nextPrescription(at16, { ...cfg, reps: 16 }).reps).toBe(17)
+  })
+
   it('keeps climbing reps forever when no ceiling was set — the old behaviour', () => {
     const at30 = hist(LIFT, [[0, 30, 30, 30]], { sets: 3, reps: 30 })
     const p = nextPrescription(at30, cfg)

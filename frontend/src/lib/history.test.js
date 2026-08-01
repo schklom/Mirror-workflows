@@ -288,6 +288,12 @@ describe('sideReps', () => {
   })
 })
 
+describe('exLine — per side never reaches a timed hold', () => {
+  it('ignores a stale side flag on a hold, which has no reps to split', () => {
+    expect(exLine({ id: LIFT, sets: 3, sec: 45, mode: 'time', side: true }, 'kg')).toBe('3 × 0:45')
+  })
+})
+
 describe('repStep', () => {
   it('steps unilateral work in twos so the total stays splittable', () => {
     expect(repStep({ side: true })).toBe(2)

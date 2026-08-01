@@ -36,7 +36,8 @@ function cleanEx(e) {
   // How the exercise is logged travels too (issues #31/#32) — the bodyweight flag only when
   // it disagrees with the catalogue, since agreeing is what the other end already assumes.
   if (e.bodyweight != null && e.bodyweight !== isBodyweightEq(e.id)) o.bodyweight = e.bodyweight
-  if (e.side) o.side = true
+  // Only on reps work — `side` counts reps, and a timed hold has none to split.
+  if (e.side && mode !== 'time' && mode !== 'cardio') o.side = true
   // Progression settings travel with the plan — a shared Greyskull routine that arrives
   // without its rule is just a list of weights.
   if (e.prog) o.prog = e.prog

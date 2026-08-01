@@ -542,7 +542,6 @@ export default {
   'Bodyweight': 'Vücut ağırlığı',
   'No weight to enter — just log the reps.': 'Girilecek ağırlık yok — sadece tekrarları kaydet.',
   'Ask for a weight on every set.': 'Her sette ağırlık sorulsun.',
-  'Added weight': 'Ek ağırlık',
   'For dips or pull-ups with a belt. Progression then follows the weight.': 'Kemerle yapılan dips veya barfiks için. İlerleme o zaman ağırlığı izler.',
   'Reps per side': 'Taraf başına tekrar',
   'For lunges, single-arm rows and the like.': 'Lunge, tek kol çekiş ve benzeri hareketler için.',

@@ -542,7 +542,6 @@ export default {
   'Bodyweight': 'Poids du corps',
   'No weight to enter — just log the reps.': 'Pas de poids à saisir — note simplement les répétitions.',
   'Ask for a weight on every set.': 'Demander un poids à chaque série.',
-  'Added weight': 'Poids ajouté',
   'For dips or pull-ups with a belt. Progression then follows the weight.': 'Pour les dips ou les tractions avec une ceinture. La progression suit alors le poids.',
   'Reps per side': 'Reps par côté',
   'For lunges, single-arm rows and the like.': 'Pour les fentes, les rowings à un bras et compagnie.',

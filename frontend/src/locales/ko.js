@@ -542,7 +542,6 @@ export default {
   'Bodyweight': '맨몸 운동',
   'No weight to enter — just log the reps.': '입력할 무게 없음 — 횟수만 기록합니다.',
   'Ask for a weight on every set.': '세트마다 무게를 물어봅니다.',
-  'Added weight': '추가 무게',
   'For dips or pull-ups with a belt. Progression then follows the weight.': '벨트를 차고 하는 딥스나 풀업용. 그러면 점진적 증가가 무게를 따라갑니다.',
   'Reps per side': '한쪽당 횟수',
   'For lunges, single-arm rows and the like.': '런지, 한팔 로우 같은 운동용.',

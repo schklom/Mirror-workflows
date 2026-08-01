@@ -542,7 +542,6 @@ export default {
   'Bodyweight': 'बॉडीवेट',
   'No weight to enter — just log the reps.': 'कोई वज़न नहीं डालना — बस रेप्स दर्ज करें।',
   'Ask for a weight on every set.': 'हर सेट पर वज़न पूछें।',
-  'Added weight': 'अतिरिक्त वज़न',
   'For dips or pull-ups with a belt. Progression then follows the weight.': 'बेल्ट के साथ डिप्स या पुल-अप्स के लिए। फिर प्रोग्रेशन वज़न के हिसाब से चलता है।',
   'Reps per side': 'प्रति तरफ़ रेप्स',
   'For lunges, single-arm rows and the like.': 'लंजेस, सिंगल-आर्म रो और ऐसे व्यायामों के लिए।',

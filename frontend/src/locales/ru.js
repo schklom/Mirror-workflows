@@ -542,7 +542,6 @@ export default {
   'Bodyweight': 'Собственный вес',
   'No weight to enter — just log the reps.': 'Вес вводить не нужно — записывай только повторения.',
   'Ask for a weight on every set.': 'Спрашивать вес в каждом подходе.',
-  'Added weight': 'Дополнительный вес',
   'For dips or pull-ups with a belt. Progression then follows the weight.': 'Для отжиманий на брусьях или подтягиваний с поясом. Тогда прогрессия идёт по весу.',
   'Reps per side': 'Повторения на сторону',
   'For lunges, single-arm rows and the like.': 'Для выпадов, тяг одной рукой и тому подобного.',

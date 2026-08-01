@@ -561,10 +561,6 @@ function ExConfig({ ex, existing, onSave, onDelete, close, routine }) {
         subtitle={bw ? t('No weight to enter — just log the reps.') : t('Ask for a weight on every set.')}>
         <Switch checked={bw} onChange={v => setC(x => ({ ...x, bodyweight: v, weight: v ? 0 : x.weight }))} />
       </Row>
-      {bw && <Row icon="plus" iconTint="var(--indigo)" title={t('Added weight')}
-        subtitle={t('For dips or pull-ups with a belt. Progression then follows the weight.')}>
-        <Stepper value={c.weight || 0} step={2.5} onChange={v => setC(x => ({ ...x, weight: v }))} />
-      </Row>}
       {mode === 'reps' && <Row icon="shuffle" iconTint="var(--blue)" title={t('Reps per side')}
         subtitle={perSide ? t('You still log the total: {0} is {1} per side.', c.reps || 0, fmtNum(sideReps(c.reps))) : t('For lunges, single-arm rows and the like.')}>
         {/* Turning it on rounds the target up to an even number, since half of an odd
@@ -572,6 +568,18 @@ function ExConfig({ ex, existing, onSave, onDelete, close, routine }) {
         <Switch checked={perSide} onChange={v => setC(x => ({ ...x, side: v || undefined, reps: v ? Math.ceil((x.reps || 0) / 2) * 2 : x.reps }))} />
       </Row>}
     </div>}
+    {/* A stepper is too wide to sit in a list row next to a label — it squeezes the text to
+        one word per line — so added weight gets the same full-width treatment as sets and
+        reps, with its explanation underneath. */}
+    {bw && <>
+      <div className="row cfgrow" style={{ marginBottom: 8 }}>
+        <Stepper label={t('Added ({0})', st.unit)} value={c.weight || 0} step={2.5}
+          onChange={v => setC(x => ({ ...x, weight: v }))} />
+      </div>
+      <div className="small dim" style={{ marginBottom: 18 }}>
+        {t('For dips or pull-ups with a belt. Progression then follows the weight.')}
+      </div>
+    </>}
     {/* The rep ceiling only means something when there is no load to add instead. */}
     {mode === 'reps' && bw && !(c.weight > 0) && <div className="row cfgrow" style={{ marginBottom: 18 }}>
       <Stepper label={t('Top of the range')} value={c.repsMax || 0} step={1} decimal={false}

@@ -559,7 +559,6 @@ export default {
   'Bodyweight': 'Körpergewicht',
   'No weight to enter — just log the reps.': 'Kein Gewicht einzutragen — nur die Wiederholungen.',
   'Ask for a weight on every set.': 'Bei jedem Satz nach dem Gewicht fragen.',
-  'Added weight': 'Zusatzgewicht',
   'For dips or pull-ups with a belt. Progression then follows the weight.': 'Für Dips oder Klimmzüge mit Gürtel. Die Progression folgt dann dem Gewicht.',
   'Reps per side': 'Wiederholungen pro Seite',
   'For lunges, single-arm rows and the like.': 'Für Ausfallschritte, einarmiges Rudern und Ähnliches.',

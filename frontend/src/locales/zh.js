@@ -542,7 +542,6 @@ export default {
   'Bodyweight': '徒手动作',
   'No weight to enter — just log the reps.': '无需输入重量——只记录次数。',
   'Ask for a weight on every set.': '每组都询问重量。',
-  'Added weight': '额外负重',
   'For dips or pull-ups with a belt. Progression then follows the weight.': '用于系负重腰带做双杠臂屈伸或引体向上。此时进阶方式跟随重量。',
   'Reps per side': '每侧次数',
   'For lunges, single-arm rows and the like.': '用于弓步蹲、单臂划船之类的动作。',

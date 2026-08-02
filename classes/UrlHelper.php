@@ -392,7 +392,7 @@ class UrlHelper {
 				'on_redirect' => function(RequestInterface $request, ResponseInterface $response, UriInterface $uri) {
 					if (!self::validate($uri, true)) {
 						self::$fetch_effective_url = (string) $uri;
-						throw new GuzzleHttp\Exception\RequestException('URL received during redirection failed extended validation.',
+						throw new GuzzleHttp\Exception\ResponseException('URL received during redirection failed extended validation.',
 							$request, $response);
 					}
 				},
@@ -457,7 +457,7 @@ class UrlHelper {
 		} catch (GuzzleHttp\Exception\GuzzleException $ex) {
 			self::$fetch_last_error = $ex->getMessage();
 
-			if ($ex instanceof GuzzleHttp\Exception\RequestException) {
+			if ($ex instanceof GuzzleHttp\Exception\ResponseException) {
 				if ($ex instanceof GuzzleHttp\Exception\BadResponseException) {
 					// 4xx or 5xx
 					self::$fetch_last_error_code = $ex->getResponse()->getStatusCode();
@@ -473,14 +473,12 @@ class UrlHelper {
 
 					if ($type && !str_contains(self::$fetch_last_content_type, "$type"))
 						self::$fetch_last_error_content = (string) $ex->getResponse()->getBody();
-				} elseif (array_key_exists('errno', $ex->getHandlerContext())) {
-					$errno = (int) $ex->getHandlerContext()['errno'];
-
+				} elseif ($ex instanceof GuzzleHttp\Exception\ResponseTransferException) {
 					// By default, all supported encoding types are sent via `Accept-Encoding` and decoding of
 					// responses with `Content-Encoding` is automatically attempted.  If this fails, we do a
-					// single retry with `Accept-Encoding: none` to try and force an unencoded response.
-					if (($errno === \CURLE_WRITE_ERROR || $errno === \CURLE_BAD_CONTENT_ENCODING) &&
-						$ex->getRequest()->getHeaderLine('accept-encoding') !== 'none') {
+					// single retry with `Accept-Encoding: none` (intentionally invalid) to try and force an
+					// unencoded response.
+					if ($ex->getRequest()->getHeaderLine('accept-encoding') !== 'none') {
 						$options['encoding'] = 'none';
 						return self::fetch($options);
 					}

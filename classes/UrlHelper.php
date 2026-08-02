@@ -413,11 +413,10 @@ class UrlHelper {
 		if  ($http_referrer)
 			$req_options[GuzzleHttp\RequestOptions::HEADERS]['Referer'] = $http_referrer;
 
-		if ($login && $pass && in_array($auth_type, ['basic', 'digest', 'ntlm'])) {
+		if (in_array($auth_type, ['basic', 'digest']) && $login && $pass) {
 			// Let Guzzle handle the details for auth types it supports
 			$req_options[GuzzleHttp\RequestOptions::AUTH] = [$login, $pass, $auth_type];
 		} elseif ($auth_type === 'any') {
-			// https://docs.guzzlephp.org/en/stable/faq.html#how-can-i-add-custom-curl-options
 			$req_options['curl'][\CURLOPT_HTTPAUTH] = \CURLAUTH_ANY;
 			if ($login && $pass)
 				$req_options['curl'][\CURLOPT_USERPWD] = "$login:$pass";

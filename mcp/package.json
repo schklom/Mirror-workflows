@@ -11,16 +11,13 @@
   },
   "scripts": {
     "start": "node src/index.js",
-    "test": "vitest run",
-    "mutation:test": "stryker run"
+    "test": "vitest run"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.4",
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@stryker-mutator/core": "^9.6.1",
-    "@stryker-mutator/vitest-runner": "^9.6.1",
     "vitest": "^4.1.10"
   }
 }

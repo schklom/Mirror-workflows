@@ -40,6 +40,12 @@ function resolveUid() {
     reloadDb()
     if (_db.users.length === 1) return _db.users[0].id
     if (_db.users.length === 0) throw new Error(`no openGym users found in ${path.join(DATA_DIR, 'db.json')} — sign in at least once on a device`)
+    // Multiple users in db.json but no state files yet — list their ids, not the (empty)
+    // files list. Hit when accounts exist but none has signed in on a device.
+    throw new Error(
+      `multiple openGym users found — set OPENGYM_UID to one of: ${_db.users.map(u => u.id).join(', ')}\n` +
+      `  (look them up in ${path.join(DATA_DIR, 'db.json')} under "users"[].id)`
+    )
   }
   throw new Error(
     `multiple openGym users found — set OPENGYM_UID to one of: ${files.join(', ')}\n` +

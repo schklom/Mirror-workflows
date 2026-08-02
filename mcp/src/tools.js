@@ -4,7 +4,7 @@
 import { z } from 'zod'
 import { getState, getUser } from './state.js'
 import {
-  fmt, setLabel, exLine, muscleName, policyName, friendlyDate, friendlyDuration, ratio, muscleOrder
+  setLabel, exLine, muscleName, policyName, friendlyDuration, ratio, muscleOrder
 } from './labels.js'
 import {
   modeOf, workoutVolume, setsDone, effectiveRoutine, effectiveRoutineId
@@ -13,21 +13,17 @@ import { EXIDX, exOr } from '../../frontend/src/lib/exercises.js'
 import {
   estimate1RM, best1RM, e1rmSeries, FORMULAS, DEFAULT_FORMULA, REP_CAP
 } from '../../frontend/src/lib/onerm.js'
-import { loadOfWorkouts, rankOf, levelsOf, MUSCLES } from '../../frontend/src/lib/muscles.js'
+import { loadOfWorkouts, rankOf, levelsOf } from '../../frontend/src/lib/muscles.js'
 
 /* ---------- helpers ---------- */
 
-const ISO = /^\d{4}-\d{2}-\d{2}$/
-function requireIso(v, name) {
-  const s = typeof v === 'string' ? v : ''
-  if (s && !ISO.test(s)) throw new Error(`${name} must be YYYY-MM-DD (got ${JSON.stringify(v)})`)
-  return s || null
-}
-
-// Drops ISO dates so an LLM passing 'yesterday' is rejected.
 function entryView(e, S) {
   const ex = exOr(e.id)
-  const mode = modeOf(e.target || { id: e.id })
+  // Spread id into the cfg the way every call site in the app does (Workout.jsx, Stats.jsx,
+  // progression.js) — the sheet saves a cardio target as {sets, min, speed} with no id and no
+  // mode, so modeOf needs the id to fall through to isCardio(id).
+  const cfg = { ...(e.target || {}), id: e.id }
+  const mode = modeOf(cfg)
   return {
     id: e.id,
     name: ex.n,
@@ -36,7 +32,7 @@ function entryView(e, S) {
     target: e.target || null,
     sets: (e.sets || []).map(s => ({
       done: !!s.done,
-      label: setLabel(e.id, { ...s, done: undefined }, e.target || { id: e.id }),
+      label: setLabel(e.id, { ...s, done: undefined }, cfg),
       w: Number(s.w) || 0,
       r: Number(s.r) || 0,
       sec: Number(s.sec) || 0,
@@ -279,7 +275,7 @@ export const estimate1rm = {
   name: 'estimate_1rm',
   description: `Estimate one-rep max using Epley, Brzycki or Lombardi formulas. If an exercise_id is given, returns the all-time best estimate for that exercise with the source set (weight × reps + date) and the trend across history. If no exercise_id is given, returns a PR table across all reps-mode exercises (sorted highest first). Refuses to guess above ${REP_CAP} reps — above that, formulas diverge past 10% and "work capacity" is read instead of "maximal strength".`,
   schema: {
-    exercise_id: z.string().optional().describe('An exercise id from list_routines, get_workout entries, or search_exercises (v1.5). If omitted, returns a full PR table.'),
+    exercise_id: z.string().optional().describe('An exercise id from list_routines or get_workout entries. If omitted, returns a full PR table.'),
     formula: z.enum(['epley', 'brzycki', 'lombardi']).optional().describe(`Formula to use. Defaults to ${DEFAULT_FORMULA}.`)
   },
   handler: ({ exercise_id, formula }) => {

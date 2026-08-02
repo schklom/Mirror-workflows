@@ -13,8 +13,3 @@ frontend/dist/
 node_modules/
 *.log
 .DS_Store
-
-# Mutation-testing artifacts (mcp/) — reports/ is the HTML output, .stryker-tmp/ holds the
-# backing copy used by `inPlace` mode during a run. Both regenerated on every `stryker run`.
-mcp/reports/
-mcp/.stryker-tmp/

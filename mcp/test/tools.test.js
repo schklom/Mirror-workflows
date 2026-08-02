@@ -4,6 +4,7 @@
 // (rest-day override, missing routine, zero-workout history, no synced state, superset links).
 import { describe, beforeAll, afterAll, beforeEach, test, expect, vi } from 'vitest'
 import { buildDemoState } from '../../frontend/src/lib/demoSeed.js'
+import { EXDB } from '../../frontend/src/lib/exercises.js'
 import { _seedStateForTests } from '../src/state.js'
 import { TOOLS } from '../src/tools.js'
 
@@ -280,6 +281,23 @@ describe('get_workout', () => {
     expect(w.entries[1].sets[0].label).toBe('1:30')             // 90 s in mm:ss, no weight
     expect(w.entries[2].sets[0].label).toBe('1:30 · 20')        // weighted plank
     expect(w.entries[3].sets[0].label).toBe('20 min @ 8 km/h')   // cardio
+  })
+
+  test('infers cardio mode from the exercise id when the target has no mode key', () => {
+    // Reproduces the review bug: the sheet saves a cardio target as {sets, min, speed} with
+    // no mode and no id. modeOf must fall through to isCardio(id), which needs the id on the
+    // cfg — entryView has to spread id into the cfg the way every app call site does.
+    const CARDIO_ID = EXDB.find(e => e.bp === 'cardio').id
+    S.workouts = [{
+      id: 'synth-cardio', d: '2026-07-25', start: 0, end: 1800000, routineId: 'x', name: 'Synth',
+      bw: 78, vol: 0, prs: [],
+      entries: [
+        { id: CARDIO_ID, target: { sets: 1, min: 20, speed: 8 }, sets: [{ min: 20, speed: 8, done: true }] }
+      ]
+    }]
+    const w = call('get_workout', { date: '2026-07-25' })
+    expect(w.entries[0].mode).toBe('cardio')
+    expect(w.entries[0].sets[0].label).toBe('20 min @ 8 km/h')
   })
 })
 

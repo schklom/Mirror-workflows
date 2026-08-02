@@ -119,28 +119,11 @@ missing routine, zero-workout history, no synced state, superset links, three 1R
 tools see consistent values regardless of when the suite runs. The pure lib functions have
 their own 92 tests in `frontend/src/lib/*.test.js`.
 
-## Mutation testing
-
-```bash
-cd mcp && npm run mutation:test
-```
-
-[Stryker](https://stryker-mutator.io) 9.6.1 against the three MCP-only modules in `src/`
-(`frontend/src/lib/` is excluded — it has its own 92-test suite). Config at
-`.stryker.conf.json`. Run uses `inPlace: true` so the test file's relative imports
-`../../frontend/src/lib/*.js` keep resolving; Stryker keeps a backup in `.stryker-tmp/`
-during the run and restores on exit.
-
-Baseline: 39% mutation score (333 killed / 330 survived / 184 no-coverage). Most of the
-survivors are zod schema string literals; the bulk of the no-coverage debt lives in
-`state.js` (file watching, multi-user resolution, mtime fallback). HTML report at
-`mcp/reports/mutation/mutation.html` (gitignored, regenerated per run).
-
 ## Roadmap
 
 - **Done (Phase 1):** read-only stdio, 8 tools, direct `./data` access.
-- **Phase 1.5:** `progression_next` (what does the policy prescribe next?) + `search_exercises`
-  (search the catalog). No new deps; small surface area.
+- **Phase 1.5:** a `progression_next` tool (what does the policy prescribe next?). No new
+  deps; small surface area.
 - **Phase 2:** read+write over stdio. Requires a long-lived token auth path minted from the
   admin dashboard (new `./data/tokens.json`) and a write-lock against the web UI's read-modify-
   write of `state-<uid>.json`. Tools: `log_workout`, `add_bodyweight`, `edit_routine`,

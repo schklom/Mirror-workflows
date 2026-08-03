@@ -6,11 +6,15 @@ on:
   pull_request:
     paths:
       - 'frontend/**'
+      - 'api/**'
+      - 'scripts/build-coach-library.mjs'
       - '.github/workflows/test.yml'
   push:
     branches: [main]
     paths:
       - 'frontend/**'
+      - 'api/**'
+      - 'scripts/build-coach-library.mjs'
       - '.github/workflows/test.yml'
   workflow_dispatch:
 
@@ -41,3 +45,19 @@ jobs:
         working-directory: frontend
       - run: node scripts/check-locales.mjs
         working-directory: frontend
+
+  api:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+      # Nothing to install: the Coach tests run on node:test and drive the in-repo fixture
+      # provider, so the whole job works without an AI account, a network, or a dependency.
+      - run: npm test
+        working-directory: api
+      # The api's copy of the exercise catalogue is generated and committed. A dataset change
+      # that forgets to regenerate it would otherwise only surface as "the Coach can't find
+      # that exercise" on somebody's instance.
+      - run: node scripts/build-coach-library.mjs --check

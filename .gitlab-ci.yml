@@ -10,10 +10,18 @@ variables:
   # SonarQube
   SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar" # Defines the location of the analysis task cache
   GIT_DEPTH: "0" # Tells git to fetch all the branches of the project, required by the analysis task
+  RUNNER_TAG: "saas-linux-medium-amd64" # gitlab.com shared runner (fallback for forks)
+
+workflow:
+  rules:
+    - if: '$CI_PROJECT_ROOT_NAMESPACE == "fmd-foss"'
+      variables:
+        RUNNER_TAG: "fmd-server"
+    - when: always
 
 default:
   tags:
-    - "fmd-server"
+    - "$RUNNER_TAG"
 
 # https://docs.gitlab.com/ci/yaml/yaml_optimization/#yaml-anchors-for-scripts
 .go-setup: &go-setup

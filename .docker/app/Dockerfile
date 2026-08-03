@@ -15,6 +15,7 @@ ENV PHP_SUFFIX=85
 
 RUN [ ! -z ${ALPINE_MIRROR} ] && \
 	sed -i.bak "s#dl-cdn.alpinelinux.org#${ALPINE_MIRROR}#" /etc/apk/repositories ; \
+	apk update && \
 	apk add --no-cache ca-certificates dcron git postgresql-client rsync sudo tzdata \
 		php${PHP_SUFFIX} \
 		$(for p in ctype curl dom exif fileinfo fpm gd iconv intl json mbstring \

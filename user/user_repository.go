@@ -357,6 +357,7 @@ func (u *UserRepository) RequestAccess(id string, innerPwHash string, sessionDur
 	}
 
 	if u.ACC.IsLocked(id) {
+		// This log message is used by fail2ban, do NOT change!
 		log.Warn().
 			Str("user", user.Username).
 			Str("remoteIp", remoteIp).
@@ -394,6 +395,8 @@ func (u *UserRepository) RequestAccess(id string, innerPwHash string, sessionDur
 		return &token, nil
 	} else {
 		u.ACC.IncrementLock(id)
+
+		// This log message is used by fail2ban, do NOT change!
 		log.Warn().
 			Str("user", user.Username).
 			Str("remoteIp", remoteIp).

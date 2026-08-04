@@ -1,7 +1,11 @@
 // Pure helpers over the state object S (ported 1:1 from the vanilla app).
 import { todayISO, isoOf, weekKey, fmtNum } from './format.js'
 import { isCardio, isBodyweightEq } from './exercises.js'
-import { t } from './i18n.js'
+// i18n-core, not i18n: this file is imported by mcp/, which is plain Node with no Vite and no
+// React. i18n.js is the Vite half — import.meta.glob over the locale packs, useSyncExternalStore
+// for the hook — and it re-exports this very `t` from core, so nothing changes here except what
+// gets dragged along behind it.
+import { t } from './i18n-core.js'
 
 // How an exercise is logged (issue #16). This used to be derived from the body part alone,
 // which meant a plank or a farmer's carry could only be timed by filing it under cardio.

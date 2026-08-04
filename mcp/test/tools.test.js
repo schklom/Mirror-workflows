@@ -12,8 +12,11 @@ import { TOOLS } from '../src/tools.js'
 // the demo state's exact values.
 const FAKE_TODAY_ISO = '2026-07-27'                         // Monday — Push Day is scheduled
 const GOAL_WEIGHT = 77
-const NEWEST_WORKOUT = { date: '2026-07-24', name: 'Leg Day', volume: 18500, bw: 78.6, sets_done: 20, sets_total: 20, duration_min: 51 }
-const LATEST_BW = { date: '2026-07-27', weight: 78.5, delta: 1.5 }
+// Re-pinned against the v1.2.4 seed, which moved when the demo learned about bodyweight work
+// and effort. Hand-checked rather than copied off a failing run: 18412.5 is the sum of w×r
+// over the twenty completed sets, and 1.3 is 78.3 − 77.
+const NEWEST_WORKOUT = { date: '2026-07-24', name: 'Leg Day', volume: 18412.5, bw: 78.4, sets_done: 20, sets_total: 20, duration: '1h 11m' }
+const LATEST_BW = { date: '2026-07-27', weight: 78.3, delta: 1.3 }
 const LEG_PRESS_ID = '0739'                                 // sled 45° leg press in the demo data
 const LEG_PRESS_BEST = { w: 152.5, r: 12, epley: 213.5, brzycki: 219.6 }
 
@@ -207,7 +210,9 @@ describe('list_workouts', () => {
     expect(r.workouts[0].sets_done).toBe(NEWEST_WORKOUT.sets_done)
     expect(r.workouts[0].sets_planned).toBe(NEWEST_WORKOUT.sets_total)
     expect(r.workouts[0].sets_ratio).toBe(`${NEWEST_WORKOUT.sets_done}/${NEWEST_WORKOUT.sets_total}`)
-    expect(r.workouts[0].duration).toBe(`${NEWEST_WORKOUT.duration_min} min`)
+    // Past the hour the lib switches format, so the expectation carries the rendered string
+    // rather than assuming a "N min" shape that only held while the session was shorter.
+    expect(r.workouts[0].duration).toBe(NEWEST_WORKOUT.duration)
     expect(r.workouts[0].bodyweight_at_workout).toBe(NEWEST_WORKOUT.bw)
     r.workouts.forEach(w => {
       expect(w.sets_done).toBeLessThanOrEqual(w.sets_planned)

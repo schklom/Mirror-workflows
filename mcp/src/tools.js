@@ -11,7 +11,7 @@ import {
 } from '../../frontend/src/lib/history.js'
 import { EXIDX, exOr } from '../../frontend/src/lib/exercises.js'
 import {
-  estimate1RM, best1RM, e1rmSeries, FORMULAS, DEFAULT_FORMULA, REP_CAP
+  estimate1RM, best1RM, e1rmSeries, DEFAULT_FORMULA, REP_CAP
 } from '../../frontend/src/lib/onerm.js'
 import { loadOfWorkouts, rankOf, levelsOf } from '../../frontend/src/lib/muscles.js'
 

@@ -9,7 +9,7 @@
 //
 // Like the demo build, MOBILE is replaced at build time, so all of this folds away in
 // web bundles; the Capacitor plugins are only ever imported behind it.
-import { t } from './i18n.js'
+import { t } from './i18n-core.js'
 
 export const MOBILE = import.meta.env.VITE_MOBILE === '1'
 

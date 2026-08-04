@@ -41,8 +41,11 @@ export function coachRoutes({ json, readBody, readSession, requireAdmin }) {
     /* ------------------------------ user ------------------------------ */
 
     // What the consent screen has to disclose, straight from the module that builds payloads,
-    // so the screen cannot drift from what actually leaves (FR-09).
+    // so the screen cannot drift from what actually leaves (FR-09). Signed in only: the screen
+    // that reads it sits behind a session anyway, and on an invite-only instance which provider
+    // this box is wired to is nobody's business who has not been let in.
     'GET /api/coach/disclosure': async (req, res) => {
+      if (!readSession(req)) return json(res, 401, { error: 'not signed in' });
       const cfg = cfgStore.load();
       json(res, 200, {
         provider: cfg.provider,

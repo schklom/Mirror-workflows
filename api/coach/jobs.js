@@ -90,7 +90,9 @@ export function status(uid) {
   const rec = readUser(uid);
   if (rec.pending && rec.pending.expiresAt && rec.pending.expiresAt < Date.now()) {
     archive(uid, rec, 'expired');
-    return { job: null, pending: null };
+    // Same shape as every other answer: the poll that happens to be the one which expires a
+    // proposal must not be the one where the client's cap readout goes undefined.
+    return { job: null, pending: null, cap: capState(uid) };
   }
   return {
     job: rec.current ? { id: rec.current.id, kind: rec.current.kind, state: rec.current.state, startedAt: rec.current.startedAt } : null,
@@ -359,8 +361,12 @@ export async function testRun() {
   const adapter = adapterFor(cfg.provider);
   if (!adapter) return { ok: false, error: 'no provider configured' };
   const jobDir = fs.mkdtempSync(path.join(os.tmpdir(), 'coach-test-'));
-  const env = cfgStore.jobEnv(jobDir, cfgStore.credentialFor(job.uid));
   try {
+    // No user asked for this, so there is no profile whose account is being spent. In instance
+    // mode that is the bound profile's credential — the one the round-trip is meant to prove —
+    // and in per-profile mode it is nobody's, which is the honest answer: an admin cannot test
+    // a credential that belongs to a profile.
+    const env = cfgStore.jobEnv(jobDir, cfgStore.credentialFor(cfg.boundUid));
     const ids = unprivilegedIds();
     if (ids) fs.chownSync(jobDir, ids.uid, ids.gid);
     const check = await adapter.check(cfg, env);

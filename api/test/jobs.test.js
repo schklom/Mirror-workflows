@@ -12,8 +12,16 @@ import { tempData, writeState, sampleState } from './helpers.mjs';
 const DIR = tempData();
 const cfg = await import('../coach/config.js');
 const jobs = await import('../coach/jobs.js');
+const { forcePrivilegeVerdict } = await import('../coach/adapters/spawn.js');
 
 cfg.save({ enabled: true, provider: 'fixture' });
+
+/* The privilege drop fails closed on Linux unless the server is root *and* the image has a
+   `coach` user — true in the container, false on a CI runner and false on most development
+   boxes. Left to the host, every test below that enqueues a job would pass or fail depending
+   on where it ran. So the verdict is pinned here, and the one test that cares about the
+   refusal pins the opposite verdict for its own duration. */
+forcePrivilegeVerdict({ ok: true, dropped: false, why: 'pinned by the test suite' });
 
 /** Jobs are async by design; the tests wait the way the client does — by polling status. */
 async function settle(uid, ms = 15000) {
@@ -140,13 +148,25 @@ test('the answer is carried no further than parsed — nothing here can apply it
   assert.equal(s.pending.proposal, undefined, 'no applyable proposal exists yet');
 });
 
+test('the admin test-run completes a round trip without a user to spend', async () => {
+  // Every other path here starts from a profile; this one deliberately has none, which is
+  // exactly how it came to reference a job that does not exist in its scope. Nothing else in
+  // the suite touches the admin card's one button.
+  const r = await jobs.testRun();
+  assert.equal(r.ok, true, r.error || 'the round trip failed');
+  assert.equal(r.version, 'fixture');
+});
+
 test('a job is refused outright when the privilege drop cannot be performed', () => {
-  // Linux-only: on a developer's macOS box there is no container boundary to drop across, so
-  // canDropPrivileges stays permissive and there is nothing to assert.
-  if (process.platform !== 'linux') return;
   const uid = 'u-priv';
   writeState(DIR, uid, sampleState());
-  const { canDropPrivileges } = require('../coach/adapters/spawn.js');
-  if (canDropPrivileges().ok) return;   // running as root in CI with a coach user present
-  assert.throws(() => jobs.enqueue(uid, { kind: 'review' }), /switched off|disabled/i);
+  // The refusal is the assertion, so it is pinned rather than hoped for: this used to skip
+  // itself on any host where the drop happened to work, which is every host where the control
+  // matters least.
+  forcePrivilegeVerdict({ ok: false, dropped: false, why: 'no `coach` user exists in this image' });
+  try {
+    assert.throws(() => jobs.enqueue(uid, { kind: 'review' }), e => e.code === 'unprivileged');
+  } finally {
+    forcePrivilegeVerdict({ ok: true, dropped: false, why: 'pinned by the test suite' });
+  }
 });

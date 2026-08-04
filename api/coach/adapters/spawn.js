@@ -42,8 +42,18 @@ export function unprivilegedIds() {
  * So on Linux it fails closed: no drop, no job. Elsewhere (a developer's macOS laptop, where
  * there is no `coach` user and no container boundary either) it stays permissive, because the
  * alternative is that the test suite and local development simply stop working.
+ *
+ * "Elsewhere" does not include CI, which is Linux, runs as an ordinary user and has no `coach`
+ * user — so the honest answer there is `false`, and every test that needs to reach the code
+ * behind the drop has to say so explicitly. That is what the seam below is for: the suite sets
+ * the verdict it wants to test against, including the refusal itself, instead of inheriting
+ * whatever the host it happens to run on would have said.
  */
+let forced = null;
+/** Test-only. Pass a verdict to pin it, or null to go back to asking the host. */
+export function forcePrivilegeVerdict(v) { forced = v; }
 export function canDropPrivileges() {
+  if (forced) return forced;
   if (process.platform !== 'linux') return { ok: true, dropped: false, why: 'not linux — development host' };
   if (unprivilegedIds()) return { ok: true, dropped: true, why: null };
   if (process.getuid && process.getuid() !== 0) {

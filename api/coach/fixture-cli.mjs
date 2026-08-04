@@ -32,6 +32,13 @@ if (MODE === 'invalid') { process.stdout.write('I am afraid I cannot do that.\n'
 const isRepair = /REPAIR REQUEST/i.test(prompt);
 if (MODE === 'invalid-then-valid' && !isRepair) { process.stdout.write('{"changes": "not an array"}\n'); process.exit(0); }
 
+// The admin card's "Test the Coach": a prompt with no payload attached, asking for one small
+// object back. A real provider answers that from the prompt alone, so the fixture does too —
+// otherwise the single button that proves the runtime works is the one thing the shipped
+// provider cannot do. Every genuine job embeds its payload in a fence (see buildPrompt), so
+// the absence of one is what distinguishes the two.
+if (!/```json/.test(prompt)) out({ coach_contract: 1, ok: true });
+
 // The payload the server built is embedded in the prompt between fences; pull it back out so
 // the answer references ids that actually exist.
 function payload() {

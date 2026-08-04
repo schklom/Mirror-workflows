@@ -1,5 +1,44 @@
 # Changelog
 
+## v1.2.5 — 2026-08-04
+
+Nothing in the app itself changed. This release adds an optional side door: a small server that
+lets an AI assistant you already run — Claude Desktop, Cursor, Cline — answer questions about
+your own training, off the same files your instance already writes. If you don't use one, this
+release is invisible to you.
+
+### Ask an AI about your training, without the data leaving your box (#19)
+
+- 🤖 **An MCP server (`mcp/`)** — opt-in, read-only, and not part of the Docker build. Your LLM
+  client spawns it as a local process, it reads `./data` directly, and it exits when the client
+  disconnects. No new container, no extra auth on the api, no third-party service, nothing over
+  the network. *"What did I bench last week?", "what's my estimated 1RM on deadlift?", "which
+  muscles have I been neglecting?"*
+- **The answers match the Stats screen because they are the same numbers.** The server calls the
+  very functions in `frontend/src/lib/` the app already computes with, rather than reimplementing
+  them. Eight tools: routines, the week plan, workouts, one session in detail, body weight,
+  estimated 1RM and muscle balance.
+- **Read-only on purpose.** Logging a workout from an assistant needs a long-lived token the api
+  does not have yet, plus a lock against the web UI's read-modify-write. Until both exist, the
+  server answers questions and does nothing else. It never reads passkey material, VAPID keys or
+  session state — only the profile it was pointed at.
+- `docker-compose.yml` is untouched and nothing new enters the image, so an instance that ignores
+  this ships exactly what it shipped before. Setup is in [mcp/README.md](mcp/README.md).
+
+### Under the hood
+
+- The pure half of `i18n.js` — the language state, the constants, the readers — moved into
+  `i18n-core.js`, so the helpers under `frontend/src/lib/` can be loaded by a plain Node process
+  and not only by Vite. `i18n.js` keeps the Vite-only parts (the locale-pack loader, the React
+  hook) and re-exports the rest, so nothing that imports it had to change.
+- The shared lib modules that only need `t` now take it from the core directly. A Vite-only
+  import inside a shared module is invisible under vitest, which transforms it, and fatal to the
+  MCP server, which does not — so the shared half stays clear of the bundler half by
+  construction rather than by remembering to.
+
+The MCP server was contributed by [@Pengboi](https://github.com/Pengboi) — the first feature in
+openGym written by someone other than me. Thank you.
+
 ## v1.2.4 — 2026-08-01
 
 The effort ratings you have been recording since v1.2.3 now answer questions, and bodyweight

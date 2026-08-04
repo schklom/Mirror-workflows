@@ -189,6 +189,10 @@ export const listWorkouts = {
       total_count: all.length,
       returned_count: filtered.length,
       workouts: filtered.map(w => ({
+        // The only thing that identifies a session uniquely. Two workouts on one day is
+        // ordinary — a lifting session and an evening run — and without an id here the second
+        // one cannot be asked about at all.
+        id: w.id || null,
         date: w.d,
         routine_id: w.routineId || null,
         routine_name: w.name || null,
@@ -215,14 +219,44 @@ function plannedSets(w) {
 /** get_workout — full entry/set breakdown for one date. */
 export const getWorkout = {
   name: 'get_workout',
-  description: 'Get the full breakdown of one workout: every exercise, its mode (reps/time/cardio), the target, and per-set labels (e.g. "5 @ 60 kg", "1:30 · 20 kg"). Use list_workouts first if you don\'t know the exact date.',
-  schema: { date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).describe('The workout date as YYYY-MM-DD') },
-  handler: ({ date }) => {
+  description: 'Get the full breakdown of one workout: every exercise, its mode (reps/time/cardio), the target, and per-set labels (e.g. "5 @ 60 kg", "1:30 · 20 kg"). Identify it by workout_id (from list_workouts) or by date. Use list_workouts first if you don\'t know either.',
+  schema: {
+    date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional().describe('The workout date as YYYY-MM-DD. If two sessions share that date, the answer lists them instead and asks for a workout_id.'),
+    workout_id: z.string().min(1).optional().describe('The id from list_workouts. Preferred: it names one session even on a day with two.')
+  },
+  handler: ({ date, workout_id }) => {
     const S = getState()
     if (!S) return noState()
-    const w = (S.workouts || []).find(x => x.d === date)
-    if (!w) { const e = new Error(`no workout on ${date}`); e.code = 'ENOENT'; throw e }
+    const workouts = S.workouts || []
+    let w
+    if (workout_id) {
+      w = workouts.find(x => x.id === workout_id)
+      if (!w) { const e = new Error(`no workout with id ${workout_id}`); e.code = 'ENOENT'; throw e }
+    } else if (date) {
+      const sameDay = workouts.filter(x => x.d === date)
+      if (!sameDay.length) { const e = new Error(`no workout on ${date}`); e.code = 'ENOENT'; throw e }
+      // Answering with the first of two is how a question about the evening run gets the
+      // morning's lifting numbers, stated with total confidence. Say there are two instead.
+      if (sameDay.length > 1) {
+        return {
+          ambiguous: true,
+          date,
+          message: `${sameDay.length} workouts were logged on ${date} — call get_workout again with one of these workout_id values.`,
+          workouts: sameDay.map(x => ({
+            id: x.id || null,
+            routine_name: x.name || null,
+            sets_done: setsDone(x),
+            volume: workoutVolume(x),
+            duration: x.end && x.start ? friendlyDuration(x.end - x.start) : null
+          }))
+        }
+      }
+      w = sameDay[0]
+    } else {
+      const e = new Error('get_workout needs either workout_id or date'); e.code = 'EINVAL'; throw e
+    }
     return {
+      id: w.id || null,
       date: w.d,
       routine_id: w.routineId || null,
       routine_name: w.name || null,
@@ -286,11 +320,21 @@ export const estimate1rm = {
       const ex = exOr(exercise_id)
       const best = best1RM(S, exercise_id, f)
       const series = e1rmSeries(S, exercise_id, f)
+      // A null best has two very different causes: never trained, or trained only above the
+      // rep cap. Without saying which, an exercise logged for years at 15 reps reads as "no
+      // records for calf raise" — a confident statement about the opposite of the truth.
+      const trainedAtAll = (S.workouts || []).some(w =>
+        (w.entries || []).some(e => e.id === exercise_id && (e.sets || []).some(s => s.done)))
       // w/r (not weight/reps) matches pr_table and entry-view — every set in the API surface uses the same couple.
       return {
         exercise: { id: exercise_id, name: ex.n, body_part: ex.bp || null },
         formula: f,
+        formula_note: `Estimates use the ${f} formula. Cap at ${REP_CAP} reps applies; r=1 is treated as the measurement, not an estimate.`,
         best: best ? { est: best.est, w: best.w, r: best.r, date: best.d } : null,
+        no_estimate_reason: best ? null
+          : trainedAtAll
+            ? `This exercise has logged sets, but none of them qualify: every set was above the ${REP_CAP}-rep cap, or carried no weight. That is not the same as never having trained it.`
+            : 'No completed sets logged for this exercise.',
         trend: series.map(p => ({ date: p.d, est: p.y, w: p.w, r: p.r }))
       }
     }

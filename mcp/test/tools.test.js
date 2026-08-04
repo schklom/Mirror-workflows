@@ -267,6 +267,32 @@ describe('get_workout', () => {
     expect(() => call('get_workout', { date: '1900-01-01' })).toThrow()
   })
 
+  test('two sessions on one day are both reachable, and the date alone never picks one silently', () => {
+    // Lifting in the morning, a run in the evening: ordinary, and it used to make the second
+    // session unreachable while questions about it were answered with the first one's numbers.
+    const day = '2026-07-26'
+    S.workouts.push(
+      { id: 'w-morning', d: day, name: 'Pull', start: 1000, end: 1000 + 40 * 60000, vol: 0, prs: [], entries: [] },
+      { id: 'w-evening', d: day, name: 'Cardio', start: 2000, end: 2000 + 55 * 60000, vol: 0, prs: [], entries: [] }
+    )
+    _seedStateForTests(S)
+
+    const amb = call('get_workout', { date: day })
+    expect(amb.ambiguous).toBe(true)
+    expect(amb.workouts.map(w => w.id).sort()).toEqual(['w-evening', 'w-morning'])
+
+    // Each is retrievable by the id the ambiguous answer handed back.
+    expect(call('get_workout', { workout_id: 'w-evening' }).routine_name).toBe('Cardio')
+    expect(call('get_workout', { workout_id: 'w-morning' }).routine_name).toBe('Pull')
+    // And list_workouts carries the id, or nothing above could ask for one.
+    expect(call('list_workouts', {}).workouts.every(w => 'id' in w)).toBe(true)
+  })
+
+  test('an unknown workout_id is an error, not the wrong workout', () => {
+    expect(() => call('get_workout', { workout_id: 'nope' })).toThrow()
+    expect(() => call('get_workout', {})).toThrow()
+  })
+
   test('renders reps/time/cardio set labels in the lib format on a synthetic workout', () => {
     // The starter routine has only reps-mode exercises — synthesise a workout that includes a
     // timed plank and a cardio row so the label rendering is actually exercised.
@@ -389,11 +415,39 @@ describe('estimate_1rm', () => {
 
   test('exercises with no reps-mode history get null best + empty trend (not a 0 estimate)', () => {
     S.workouts = []
+    _seedStateForTests(S)
     const r = call('estimate_1rm', { exercise_id: LEG_PRESS_ID })
     expect(r.best).toBeNull()
     expect(r.trend).toEqual([])
     const table = call('estimate_1rm', {}).pr_table
     expect(table).toEqual([])
+  })
+
+  test('a null estimate says which kind of null it is', () => {
+    // "Never trained" and "trained, but always above the rep cap" are opposite facts that both
+    // arrive as best: null. Undistinguished, the second one reads as the first and an assistant
+    // reports "no records" for an exercise in the log every week.
+    S.workouts = [{
+      id: 'w-highrep', d: '2026-07-26', name: 'Accessories', start: 1000, end: 1000 + 20 * 60000,
+      vol: 0, prs: [],
+      entries: [{
+        id: LEG_PRESS_ID, target: { sets: 2, reps: 20, mode: 'reps' },
+        sets: [{ w: 40, r: 20, done: true }, { w: 40, r: 18, done: true }]
+      }]
+    }]
+    _seedStateForTests(S)
+
+    const capped = call('estimate_1rm', { exercise_id: LEG_PRESS_ID })
+    expect(capped.best).toBeNull()
+    expect(capped.no_estimate_reason).toMatch(/above the \d+-rep cap/)
+
+    // An exercise that genuinely has no sets must not borrow that explanation.
+    const never = call('estimate_1rm', { exercise_id: '0684' })
+    expect(never.best).toBeNull()
+    expect(never.no_estimate_reason).toMatch(/No completed sets/)
+
+    // And the cap is stated on this branch at all, which it never used to be.
+    expect(capped.formula_note).toMatch(/Cap at/)
   })
 
   test('all three formulas are accepted', () => {

@@ -184,6 +184,10 @@ lives in pure functions under `frontend/src/lib/` with tests next to them: `npm 
 `frontend/`. Vitest is a dev dependency; the app itself ships no runtime dependencies beyond
 React, the router and Zustand.
 
+The same pure helpers power an optional MCP server (`mcp/`) that lets an LLM client like
+Claude Desktop read your data over stdio — see [mcp/README.md](mcp/README.md). Opt-in, not
+in the Docker build.
+
 ## Community
 
 - **[Q&A](https://github.com/DuarteSantos8/openGym/discussions/categories/q-a)** — self-hosting

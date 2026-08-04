@@ -75,6 +75,12 @@ export function init() {
       _state = undefined
       _loadedMtime = 0
     })
+    // Unref'd, or the watcher alone holds the event loop open and the process outlives the
+    // client that spawned it — "exits when the LLM client disconnects" stops being true the
+    // moment there is a state file to watch. Most clients kill the child anyway, but one that
+    // merely closes the pipe would leak a process per session. Watching is unaffected: the
+    // stdio transport is what keeps the loop alive while a client is actually attached.
+    _watcher.unref()
   } catch { /* fs.watch unsupported on this platform; tools will re-read on mtime change */ }
 }
 

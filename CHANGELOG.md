@@ -35,6 +35,9 @@ release is invisible to you.
   import inside a shared module is invisible under vitest, which transforms it, and fatal to the
   MCP server, which does not — so the shared half stays clear of the bundler half by
   construction rather than by remembering to.
+- `npm run check:node-loadable` in `mcp/` walks the server's import graph under a bare `node`,
+  which is the one thing the test suite cannot do from inside Vite. CI runs it, alongside the
+  MCP tests — neither had ever run there before.
 
 The MCP server was contributed by [@Pengboi](https://github.com/Pengboi) — the first feature in
 openGym written by someone other than me. Thank you.

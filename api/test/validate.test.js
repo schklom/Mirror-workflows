@@ -187,6 +187,47 @@ test('a reorder must be a permutation of what is already there', () => {
   assert.equal(review([change({ type: 'reorder', target: { routineId: 'r1' }, after: ['0007', '0001'] })]).ok, true);
   assert.equal(review([change({ type: 'reorder', target: { routineId: 'r1' }, after: ['0007'] })]).ok, false, 'dropping one is not a reorder');
   assert.equal(review([change({ type: 'reorder', target: { routineId: 'r1' }, after: ['0007', '0009'] })]).ok, false, 'nor is smuggling one in');
+  // The one that satisfies both a length check and a membership check while still deleting an
+  // exercise — and reorder is the change type the review screen shows no diff for.
+  assert.equal(review([change({ type: 'reorder', target: { routineId: 'r1' }, after: ['0001', '0001'] })]).ok, false, 'naming one twice drops the other');
+});
+
+test('a superset needs a partner that is not itself', () => {
+  assert.equal(review([change({ type: 'superset', after: { link: true, with: '0007' } })]).ok, true);
+  assert.equal(review([change({ type: 'superset', after: { link: true, with: '0001' } })]).ok, false, 'the anchor cannot be its own partner');
+  assert.equal(review([change({ type: 'superset', after: { link: false } })]).ok, true, 'unlinking needs no partner');
+});
+
+test('a new routine is refused whole when it names an exercise nobody has', () => {
+  const withEx = ex => review([change({ type: 'add-routine', target: {}, after: { name: 'C', ex } })]);
+  assert.equal(withEx([{ id: '0001', sets: 3, reps: 10 }]).ok, true);
+  // Not trimmed to the exercises that did resolve: that would hand someone a routine they were
+  // never shown, under the summary of the one they were.
+  const r = withEx([{ id: '0001', sets: 3, reps: 10 }, { id: 'not-a-real-exercise', sets: 3, reps: 10 }]);
+  assert.equal(r.ok, false);
+  assert.match(r.errors.join(' '), /not-a-real-exercise/, 'and the repair round is told which one');
+});
+
+test('before is read off the plan, never taken from the answer', () => {
+  // Unchecked in every other respect: the model can say anything here, and whatever it says
+  // reaches the synced Coach log and the staleness check that decides what stays applicable.
+  const huge = { junk: 'x'.repeat(100000) };
+  const r = review([change({ type: 'sets', before: huge, after: 4 })]);
+  assert.equal(r.ok, true);
+  assert.equal(r.proposal.changes[0].before, 3, 'the plan says 3 sets, so before is 3');
+
+  // A merely mistyped before is the same bug wearing a smaller hat: it survives validation and
+  // then silently disables the change, because markStale compares it against a number.
+  const typed = review([change({ type: 'sets', before: '3 sets', after: 4 })]);
+  assert.equal(typed.proposal.changes[0].before, 3);
+
+  // Structural changes have no scalar to compare; null is what the client reads as "skip".
+  const structural = review([change({ type: 'reorder', target: { routineId: 'r1' }, before: 'anything', after: ['0007', '0001'] })]);
+  assert.equal(structural.proposal.changes[0].before, null);
+
+  // And a field the plan does not carry reads as absent rather than as the model's guess.
+  const absent = review([change({ type: 'inc', before: 2.5, after: 5 })]);
+  assert.equal(absent.proposal.changes[0].before, null);
 });
 
 test('a week change may only schedule a routine that exists, rest, or nothing', () => {

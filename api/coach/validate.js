@@ -219,12 +219,12 @@ export function validateReview(data, plan) {
         ...(isInt(target.weekday, 0, 6) ? { weekday: target.weekday } : {})
       },
       why: clampStr(c.why, 600),
-      before: c.before ?? null,
+      before: currentOf(c.type, routine, planned, plan, target),
       after: c.after ?? null
     };
 
-    // Per-type checks on `after`. `before` is informational here — the client verifies it
-    // against the live plan at apply time, which is where staleness actually matters.
+    // Per-type checks on `after`. `before` is not checked because it is not taken: it is read
+    // off the plan above, which is the only copy either side should trust.
     switch (c.type) {
       case 'add-exercise': {
         const a = c.after || {};
@@ -295,8 +295,12 @@ export function validateReview(data, plan) {
         const order = Array.isArray(c.after) ? c.after : null;
         if (!order) { errors.push(`${where}.after must be an array of exercise ids in the new order`); return; }
         const have = (routine.ex || []).map(e => e.id);
-        if (order.length !== have.length || order.some(id => !have.includes(id))) {
-          errors.push(`${where}.after must list exactly the ${have.length} exercise ids already in "${routine.name}", reordered`); return;
+        // Same ids, each exactly once. Length plus membership is not enough: a list that names
+        // one exercise twice and omits another satisfies both, and a reorder is the one change
+        // type with nothing to show in the diff column — so it deletes an exercise on apply
+        // with no way for the person approving it to see that it would.
+        if (order.length !== have.length || new Set(order).size !== order.length || order.some(id => !have.includes(id))) {
+          errors.push(`${where}.after must list exactly the ${have.length} exercise ids already in "${routine.name}", each once, reordered`); return;
         }
         out.after = order;
         break;
@@ -304,6 +308,9 @@ export function validateReview(data, plan) {
       case 'superset': {
         const a = c.after || {};
         if (a.link && !isStr(a.with)) { errors.push(`${where}.after.with is required when linking a superset`); return; }
+        // Supersetting something with itself resolves to a real exercise and passes the
+        // membership check below; the apply path then moves the anchor out from under itself.
+        if (a.link && a.with === target.exId) { errors.push(`${where} supersets an exercise with itself`); return; }
         if (a.link && !(routine.ex || []).some(e => e.id === a.with)) { errors.push(`${where}.after.with "${a.with}" is not in routine "${routine.name}"`); return; }
         out.after = { link: !!a.link, ...(a.link ? { with: a.with } : {}) };
         break;
@@ -311,7 +318,14 @@ export function validateReview(data, plan) {
       case 'add-routine': {
         const a = c.after || {};
         if (!isStr(a.name)) { errors.push(`${where}.after.name is required`); return; }
-        const ex = (Array.isArray(a.ex) ? a.ex : []).filter(e => e && isStr(e.id) && libraryHas(e.id)).slice(0, MAX_EX_PER_ROUTINE);
+        // FR-16 again, and for the same reason it applies to a created plan: an id that
+        // resolves to nothing invalidates the proposal. Filtering it out instead would build
+        // the routine the model asked for minus the exercises it could not have, and hand that
+        // to someone as if it were what they were shown.
+        const listed = Array.isArray(a.ex) ? a.ex : [];
+        const bad = listed.find(e => !e || !isStr(e.id) || !libraryHas(e.id));
+        if (bad) { errors.push(`${where}.after.ex "${bad.id}" is not in the exercise library — use an id from the library provided in the payload`); return; }
+        const ex = listed.slice(0, MAX_EX_PER_ROUTINE);
         if (!ex.length) { errors.push(`${where}.after.ex must list at least one exercise from the library`); return; }
         const odd = ex.find(e => e.side && isInt(e.reps, 1, 100) && e.reps % 2);
         if (odd) { errors.push(ODD_PER_SIDE(`${where}.after.ex "${odd.id}"`)); return; }
@@ -367,6 +381,33 @@ export function validateReview(data, plan) {
       notes: (Array.isArray(data.notes) ? data.notes : []).filter(isStr).slice(0, 6).map(n => clampStr(n, 600))
     }
   };
+}
+
+/**
+ * What the plan says right now for whatever a change is about — the `before` the client checks
+ * for staleness. Read off the plan rather than copied from the answer, because the model's idea
+ * of the current value is the one field on a change that nothing else constrains: an object of
+ * any size passes through into the proposal and then into the synced Coach log, and a merely
+ * mistyped one ("3 sets" where the plan holds 3) makes markStale() disable a change that was
+ * perfectly good. The plan is already in scope here, and it is not a matter of opinion.
+ *
+ * Mirrors `currentValue` in frontend/src/lib/coach.js — structural changes have no single
+ * scalar to compare and get null, which that function reads as "nothing to check".
+ */
+function currentOf(type, routine, planned, plan, target) {
+  switch (type) {
+    case 'sets': return planned?.sets ?? null;
+    case 'reps': return planned?.reps ?? null;
+    case 'repsMin': return planned?.repsMin ?? null;
+    case 'repsMax': return planned?.repsMax ?? null;
+    case 'sec': return planned?.sec ?? null;
+    case 'inc': return planned?.inc ?? null;
+    case 'exercise-prog': return planned?.prog ?? null;
+    case 'routine-prog': return routine?.prog ?? null;
+    case 'rename-routine': return routine?.name ?? null;
+    case 'week': return plan?.week?.[target?.weekday] ?? null;
+    default: return null;
+  }
 }
 
 function fail(errors) { return { ok: false, errors }; }

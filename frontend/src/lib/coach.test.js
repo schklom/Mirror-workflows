@@ -208,6 +208,21 @@ describe('applying changes', () => {
     const out = apply(state(), proposal([change({ type: 'reorder', target: { routineId: 'r1' }, after: ['0009', '0001', '0007'] })]), ['c1'])
     expect(out.routines[0].ex.map(e => e.id)).toEqual(['0009', '0001', '0007'])
     expect(() => apply(state(), proposal([change({ type: 'reorder', target: { routineId: 'r1' }, after: ['0009'] })]), ['c1'])).toThrow()
+    // A repeated id counts right and resolves to the same object twice: the third exercise
+    // disappears and the survivor is aliased into two slots. Both gates have to catch this,
+    // because it is the one change type with nothing in the diff column to give it away.
+    expect(() => apply(state(), proposal([change({
+      type: 'reorder', target: { routineId: 'r1' }, after: ['0009', '0009', '0001']
+    })]), ['c1'])).toThrow()
+  })
+
+  it('refuses to superset an exercise with itself', () => {
+    // Reachable only if the server let it past. By the message, not merely by throwing: the
+    // unfixed path also threw — a TypeError, after it had already moved the exercise — so
+    // asserting "it throws" would pass against the bug this is here to pin.
+    expect(() => apply(state(), proposal([change({
+      type: 'superset', after: { link: true, with: '0001' }
+    })]), ['c1'])).toThrow('superset with itself')
   })
 
   it('supersets by moving the partner adjacent and tagging both', () => {

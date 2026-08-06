@@ -307,7 +307,10 @@ const CHANGE_APPLY = {
     const r = need(findRoutine(s, c.target.routineId))
     const by = new Map(r.ex.map(e => [e.id, e]))
     const next = c.after.map(id => by.get(id)).filter(Boolean)
-    if (next.length !== r.ex.length) throw new Error('incomplete reorder')
+    // Distinct exercises, not just the right count: an order naming one id twice maps to the
+    // same object twice and still counts right, which drops an exercise and leaves the
+    // survivor aliased into two slots that then edit each other.
+    if (next.length !== r.ex.length || new Set(next).size !== r.ex.length) throw new Error('incomplete reorder')
     r.ex = next
     cleanupSg(r.ex)
   },
@@ -316,6 +319,9 @@ const CHANGE_APPLY = {
     const i = r.ex.findIndex(e => e.id === c.target.exId)
     if (i < 0) throw new Error('missing exercise')
     if (!c.after?.link) { delete r.ex[i].sg; cleanupSg(r.ex); return }
+    // Splicing the partner out from under the anchor when they are the same exercise leaves
+    // nothing to tag; refuse rather than reorder the routine on the way to a TypeError.
+    if (c.after.with === c.target.exId) throw new Error('superset with itself')
     const j = r.ex.findIndex(e => e.id === c.after.with)
     if (j < 0) throw new Error('missing partner')
     // Supersets are a property of adjacency in this app; move the partner next to it first.

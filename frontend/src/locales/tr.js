@@ -154,6 +154,8 @@ export default {
   'Last time you hit all reps — try {0}': 'Geçen sefer tüm tekrarları yaptın — {0} dene',
   'Weights bumped to {0}': 'Ağırlıklar {0} değerine çıkarıldı',
   'Remove set': 'Set kaldır',
+  'Warm-up': 'Isınma',
+  'Add warm-up set': 'Isınma seti ekle',
   'Add set': 'Set ekle',
   'Cardio logged': 'Kardiyo kaydedildi',
   'Discard workout?': 'Antrenman iptal edilsin mi?',

@@ -154,6 +154,8 @@ export default {
   'Last time you hit all reps — try {0}': '지난번에 모든 횟수를 채웠어요 — {0}에 도전해 보세요',
   'Weights bumped to {0}': '무게를 {0}(으)로 올렸어요',
   'Remove set': '세트 빼기',
+  'Warm-up': '워밍업',
+  'Add warm-up set': '워밍업 세트 추가',
   'Add set': '세트 추가',
   'Cardio logged': '유산소 기록됨',
   'Discard workout?': '운동을 버릴까요?',

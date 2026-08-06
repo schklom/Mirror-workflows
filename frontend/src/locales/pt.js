@@ -154,6 +154,8 @@ export default {
   'Last time you hit all reps — try {0}': 'Da última vez completaste todas as reps — tenta {0}',
   'Weights bumped to {0}': 'Pesos aumentados para {0}',
   'Remove set': 'Remover série',
+  'Warm-up': 'Aquecimento',
+  'Add warm-up set': 'Adicionar série de aquecimento',
   'Add set': 'Adicionar série',
   'Cardio logged': 'Cardio registado',
   'Discard workout?': 'Descartar treino?',

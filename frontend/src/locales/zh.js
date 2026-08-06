@@ -154,6 +154,8 @@ export default {
   'Last time you hit all reps — try {0}': '上次完成了所有次数——试试 {0}',
   'Weights bumped to {0}': '重量已提升到 {0}',
   'Remove set': '减一组',
+  'Warm-up': '热身',
+  'Add warm-up set': '添加热身组',
   'Add set': '加一组',
   'Cardio logged': '有氧已记录',
   'Discard workout?': '放弃训练？',

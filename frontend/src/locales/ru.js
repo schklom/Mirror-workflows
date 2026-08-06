@@ -154,6 +154,8 @@ export default {
   'Last time you hit all reps — try {0}': 'В прошлый раз все повторения сделаны — попробуй {0}',
   'Weights bumped to {0}': 'Веса подняты до {0}',
   'Remove set': 'Убрать подход',
+  'Warm-up': 'Разминка',
+  'Add warm-up set': 'Добавить разминочный подход',
   'Add set': 'Добавить подход',
   'Cardio logged': 'Кардио записано',
   'Discard workout?': 'Отменить тренировку?',

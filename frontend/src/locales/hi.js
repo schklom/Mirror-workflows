@@ -154,6 +154,8 @@ export default {
   'Last time you hit all reps — try {0}': 'पिछली बार सारे रेप्स पूरे किए — {0} आज़माएँ',
   'Weights bumped to {0}': 'वज़न बढ़ाकर {0} किया',
   'Remove set': 'सेट हटाएँ',
+  'Warm-up': 'वार्म-अप',
+  'Add warm-up set': 'वार्म-अप सेट जोड़ें',
   'Add set': 'सेट जोड़ें',
   'Cardio logged': 'कार्डियो दर्ज हुआ',
   'Discard workout?': 'वर्कआउट छोड़ें?',

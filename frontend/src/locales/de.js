@@ -161,6 +161,8 @@ export default {
   'Last time you hit all reps — try {0}': 'Letztes Mal alle Wdh. geschafft — versuch {0}',
   'Weights bumped to {0}': 'Gewichte auf {0} erhöht',
   'Remove set': 'Satz entfernen',
+  'Warm-up': 'Aufwärmen',
+  'Add warm-up set': 'Aufwärmsatz hinzufügen',
   'Add set': 'Satz hinzufügen',
   'Cardio logged': 'Cardio eingetragen',
   'Discard workout?': 'Training verwerfen?',

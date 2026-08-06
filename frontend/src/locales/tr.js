@@ -366,6 +366,8 @@ export default {
   'Fatigued': 'Yorgun',
   'Fatigue shows how recently each muscle was trained. High means rest.': 'Yorgunluk, her kasın ne kadar süre önce çalıştırıldığını gösterir. Yüksek değer dinlenmek gerektiği anlamına gelir.',
   'Strength shows retained muscle strength. Train again to reset it.': 'Kuvvet, kas gücünün ne kadarının korunduğunu gösterir. Yeniden çalışarak değeri sıfırlayabilirsin.',
+  'full': 'tam',
+  'floor': 'minimum',
   'Weeks since training: {0}': 'Son antrenman: {0} hafta önce',
   'by sets worked': 'çalışılan sete göre',
   'Week': 'Hafta',

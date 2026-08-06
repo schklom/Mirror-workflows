@@ -366,6 +366,8 @@ export default {
   'Fatigued': 'Fatigué',
   'Fatigue shows how recently each muscle was trained. High means rest.': 'La fatigue indique à quand remonte le dernier entraînement de chaque muscle. Un niveau élevé signifie qu’il est temps de se reposer.',
   'Strength shows retained muscle strength. Train again to reset it.': 'La force indique combien de force musculaire est conservée. Entraîne-toi à nouveau pour la réinitialiser.',
+  'full': 'complet',
+  'floor': 'plancher',
   'Weeks since training: {0}': 'Dernier entraînement : il y a {0} sem.',
   'by sets worked': 'par séries effectuées',
   'Week': 'Semaine',

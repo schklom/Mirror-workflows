@@ -366,6 +366,8 @@ export default {
   'Fatigued': '已疲劳',
   'Fatigue shows how recently each muscle was trained. High means rest.': '疲劳度显示每个肌群最近一次训练距今多久。数值越高，越需要休息。',
   'Strength shows retained muscle strength. Train again to reset it.': '力量显示肌肉力量保留了多少。再次训练即可重置。',
+  'full': '完全',
+  'floor': '下限',
   'Weeks since training: {0}': '上次训练：{0}周前',
   'by sets worked': '按训练组数',
   'Week': '本周',

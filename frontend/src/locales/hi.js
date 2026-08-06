@@ -366,6 +366,8 @@ export default {
   'Fatigued': 'थकी हुई',
   'Fatigue shows how recently each muscle was trained. High means rest.': 'थकान बताती है कि हर मांसपेशी की ट्रेनिंग कितनी हाल की है। अधिक थकान होने पर आराम करें।',
   'Strength shows retained muscle strength. Train again to reset it.': 'शक्ति बताती है कि मांसपेशियों की कितनी ताकत बनी हुई है। इसे रीसेट करने के लिए फिर से ट्रेन करें।',
+  'full': 'पूर्ण',
+  'floor': 'न्यूनतम',
   'Weeks since training: {0}': 'पिछला व्यायाम: {0} सप्ताह पहले',
   'by sets worked': 'सेट के अनुसार',
   'Week': 'सप्ताह',

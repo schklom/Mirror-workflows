@@ -38,9 +38,9 @@ function latestMuscleTraining(workouts) {
 }
 
 const FATIGUE_LEVELS = [
-  { at: 0, level: 4 },
+  { at: 0, level: 0 },
   { at: 0.25, level: 2 },
-  { at: 0.5, level: 0, exclusive: true },
+  { at: 0.5, level: 4, exclusive: true },
 ]
 
 const STRENGTH_LEVELS = [
@@ -72,17 +72,17 @@ export function weeksSinceTraining(now, lastTrained) {
 }
 
 function FatigueLegend() {
-  return <div className="hm-legend" aria-label={t('Fatigue')}>
-    <span>{t('Fatigued')}</span><div className="hm-c l0" />
+  return <div className="hm-legend hm-fatigue" aria-label={t('Fatigue')}>
+    <span>{t('Fatigued')}</span><div className="hm-c l4" />
     <span>{t('Recovering')}</span><div className="hm-c l2" />
-    <span>{t('Ready')}</span><div className="hm-c l4" />
+    <span>{t('Ready')}</span><div className="hm-c l0" />
   </div>
 }
 
 function StrengthLegend() {
-  return <div className="hm-legend" aria-label={t('Strength')}>
-    <span>1</span><div className="hm-c l4" /><div className="hm-c l3" /><div className="hm-c l2" />
-    <div className="hm-c l1" /><div className="hm-c l0" /><span>{fmtNum(STRENGTH_FLOOR)}</span>
+  return <div className="hm-legend hm-strength" aria-label={t('Strength')}>
+    <span>1 <span className="dim">{t('full')}</span></span><div className="hm-c l4" /><div className="hm-c l3" /><div className="hm-c l2" />
+    <div className="hm-c l1" /><div className="hm-c l0" /><span>{fmtNum(STRENGTH_FLOOR)} <span className="dim">{t('floor')}</span></span>
   </div>
 }
 
@@ -120,6 +120,8 @@ function MuscleBalance({ S }) {
   const rated = inWin.some(w => w.entries.some(e => e.sets.some(s => s.done && isHardSet(s))))
   const on = hard && rated
   const load = loadOfWorkouts(inWin, on ? isHardSet : null)
+  const volWin = S.workouts.filter(w => historyUnitCompatible(w, S.unit) && (w.start || new Date(w.d).getTime()) > now - 90 * 86400000)
+  const vol90 = loadOfWorkouts(volWin, null)
   const { worked, missed } = rankOf(load)
   const top = worked.slice(0, 4)
   const max = worked.length ? load[worked[0]] : 0
@@ -160,7 +162,7 @@ function MuscleBalance({ S }) {
       </> : <div className="muted small">{t('No workouts in this period yet.')}</div>}
     </> : view === 'fatigue' ? <>
       <h2>{t('Fatigue')}</h2>
-      <BodyMap className="tappable" load={fatigue} thresholds={FATIGUE_LEVELS} body={S.body} selected={sel} onMuscle={toggleSel} />
+      <BodyMap className="tappable hm-fatigue" load={fatigue} thresholds={FATIGUE_LEVELS} body={S.body} selected={sel} onMuscle={toggleSel} />
       <FatigueLegend />
       <div className="muted small" style={{ marginTop: 10 }}>{t('Fatigue shows how recently each muscle was trained. High means rest.')}</div>
       {sel && <div className="mrow" style={{ borderTop: 'var(--hair) solid var(--sep)', marginTop: 4, paddingTop: 10 }}>
@@ -169,13 +171,13 @@ function MuscleBalance({ S }) {
       </div>}
     </> : <>
       <h2>{t('Strength')}</h2>
-      <BodyMap className="tappable" load={strength} thresholds={STRENGTH_LEVELS} body={S.body} selected={sel} onMuscle={toggleSel} />
+      <BodyMap className="tappable hm-strength" load={strength} thresholds={STRENGTH_LEVELS} body={S.body} selected={sel} onMuscle={toggleSel} />
       <StrengthLegend />
       <div className="muted small" style={{ marginTop: 10 }}>{t('Strength shows retained muscle strength. Train again to reset it.')}</div>
       {detrained.map(slug => <div key={slug} className="mrow">
         <span className="nm">{t(MUSCLE_NAME[slug])}</span>
         <span className="bar"><i style={{ width: Math.round(strength[slug] * 100) + '%' }} /></span>
-        <span className="v">{strengthHint(slug)}</span>
+        <span className="v">{t('{0} sets', vol90[slug] || 0)}</span>
       </div>)}
     </>}
   </div>
@@ -254,7 +256,21 @@ export default function Stats() {
   const bwDelta30 = bw30.length > 1 ? bw30[bw30.length - 1].w - bw30[0].w : null
   const monthW = S.workouts.filter(w => w.d.slice(0, 7) === todayISO().slice(0, 7)).length
 
-  const exHist = [...new Set(S.workouts.flatMap(w => w.entries.map(e => e.id)))].filter(id => EXIDX[id]).sort((a, b) => EXIDX[a].n < EXIDX[b].n ? -1 : 1)
+  const currentOf = id => {
+    for (let i = S.workouts.length - 1; i >= 0; i--) {
+      const en = S.workouts[i].entries.find(e => e.id === id)
+      if (!en) continue
+      const mode = modeOf({ ...(en.target || {}), id })
+      const metric = s2 => mode === 'cardio' ? (s2.speed || 0) : mode === 'time' ? (s2.sec || 0) : (s2.w || 0)
+      const mx = Math.max(0, ...en.sets.filter(s2 => s2.done).map(metric), mode === 'time' || mode === 'cardio' ? 0 : (en.topW || 0))
+      if (mx > 0) return { mx, unit: mode === 'cardio' ? 'km/h' : mode === 'time' ? 's' : S.unit }
+    }
+    return { mx: 0, unit: S.unit }
+  }
+  const exHist = [...new Set(S.workouts.flatMap(w => w.entries.map(e => e.id)))].filter(id => EXIDX[id])
+  const exCurrent = Object.fromEntries(exHist.map(id => [id, currentOf(id)]))
+  exHist.sort((a, b) => exCurrent[b].mx - exCurrent[a].mx || (EXIDX[a].n < EXIDX[b].n ? -1 : 1))
+
   const curEx = exId && exHist.includes(exId) ? exId : exHist[0] || null
   // How this exercise was logged most recently decides what the curve means: top weight,
   // longest hold or top speed. Sets logged in another mode lack the field and score 0, so a
@@ -339,7 +355,8 @@ export default function Stats() {
         {exHist.length ? <>
           <div className="sect-b" style={{ marginBottom: 10 }}>
             <SelectRow title={t('Exercise')} sheetTitle={t('Exercise progress')} value={curEx} onChange={setExId}
-              options={exHist.map(id => ({ value: id, label: EXIDX[id].n }))} />
+              options={exHist.map(id => ({ value: id, label: EXIDX[id].n + (exCurrent[id].mx ? ' ' — ' ' + fmtNum(exCurrent[id].mx) + ' ' + exCurrent[id].unit : '') }))} />
+
           </div>
           {exOpts.length > 1 && <Segmented className="seg-range" value={onEff ? 'effort' : onE1 ? 'e1rm' : 'top'} onChange={setExMetric} options={exOpts} />}
           <div className="chart">

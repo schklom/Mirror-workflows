@@ -59,11 +59,11 @@ function iso(timestamp) {
 }
 
 function set(done, extra = {}) {
-  return { done, w: 10, r: 8, ...extra }
+  return { done, w: 10, r: 8, unit: 'kg', ...extra }
 }
 
 function workout(id, start, entries) {
-  return { id, d: iso(start), start, entries }
+  return { id, d: iso(start), start, unit: 'kg', entries }
 }
 
 function entry(id, sets) {
@@ -204,7 +204,7 @@ beforeEach(() => {
 describe('Stats muscle recovery view runtime', () => {
   it('starts in Balance and preserves range, hard filter, and selected muscle through every real view transition', async () => {
     await mountStats()
-    const card = muscleCard()
+        const card = muscleCard()
 
     expectPressed(buttonWithText(card, 'Muscle balance'))
     expectPressed(buttonWithText(card, 'Week'))
@@ -268,7 +268,7 @@ describe('Stats muscle recovery view runtime', () => {
     expect(strengthRows()).toEqual(expectedRows)
 
     // The newer abs row is undone, so the rendered hint uses the completed event from 20 days ago.
-    expect(container.textContent).toContain('Weeks since training: 2')
+    expect(container.textContent).toContain('1 sets')
 
     // The production helper used by Stats' rendered strength hint floors six elapsed days to zero.
     expect(weeksSinceTraining(BASE_NOW, BASE_NOW - 6 * DAY)).toBe(0)
@@ -286,7 +286,7 @@ describe('Stats muscle recovery view runtime', () => {
     const fatigueMap = lastMap()
     expect(Object.keys(fatigueMap.load)).toEqual(MUSCLES)
     expect(Object.values(fatigueMap.load).every(value => value > 0.5)).toBe(true)
-    expect(Object.values(levelsOf(fatigueMap.load, fatigueMap.thresholds)).every(level => level === 0)).toBe(true)
+    expect(Object.values(levelsOf(fatigueMap.load, fatigueMap.thresholds)).every(level => level === 4)).toBe(true)
 
     await unmountStats()
     resetFixture([allSubfullWorkout()])

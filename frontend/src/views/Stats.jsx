@@ -120,7 +120,7 @@ function MuscleBalance({ S }) {
   const rated = inWin.some(w => w.entries.some(e => e.sets.some(s => s.done && isHardSet(s))))
   const on = hard && rated
   const load = loadOfWorkouts(inWin, on ? isHardSet : null)
-  const volWin = S.workouts.filter(w => historyUnitCompatible(w, S.unit) && (w.start || new Date(w.d).getTime()) > now - 90 * 86400000)
+  const volWin = S.workouts.filter(w => (w.start || new Date(w.d).getTime()) > now - 90 * 86400000)
   const vol90 = loadOfWorkouts(volWin, null)
   const { worked, missed } = rankOf(load)
   const top = worked.slice(0, 4)

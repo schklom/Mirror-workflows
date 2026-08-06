@@ -2,8 +2,23 @@ import { EXDB } from './exercises-data.js'
 import { t } from './i18n-core.js'
 
 export { EXDB }
+
+// The generated dataset already supplies secondary muscles for most exercises. Keep the
+// handful of conservative catalogue additions that are useful to the muscle map here so a
+// dataset refresh does not erase them. Values follow the dataset's existing alias vocabulary.
+const SECONDARY_ADDITIONS = {
+  '0027': ['rear deltoids'], // barbell bent over row
+  '0293': ['rear deltoids'], // dumbbell bent over row
+  '0499': ['rear deltoids'], // inverted row
+  '0861': ['rear deltoids'], // cable seated row
+}
+
 export const EXIDX = {}
-EXDB.forEach(e => { EXIDX[e.id] = e })
+EXDB.forEach(e => {
+  const additions = SECONDARY_ADDITIONS[e.id]
+  if (additions) e.sm = [...new Set([...(e.sm || []), ...additions])]
+  EXIDX[e.id] = e
+})
 export const BODYPARTS = [...new Set(EXDB.map(e => e.bp))].sort()
 
 // Equipment options present in a given list of exercises, most common first (issue #6).

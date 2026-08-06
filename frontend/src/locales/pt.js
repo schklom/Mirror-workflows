@@ -360,6 +360,13 @@ export default {
   'Admin dashboard': 'Painel de administração',
   // --- muscle map ---
   'Muscle balance': 'Equilíbrio muscular',
+  'Fatigue': 'Fadiga',
+  'Ready': 'Pronto',
+  'Recovering': 'Em recuperação',
+  'Fatigued': 'Fatigado',
+  'Fatigue shows how recently each muscle was trained. High means rest.': 'A fadiga mostra há quanto tempo cada músculo foi treinado. Um nível elevado significa que é preciso descansar.',
+  'Strength shows retained muscle strength. Train again to reset it.': 'A força mostra quanta força muscular se mantém. Treina novamente para repor o valor.',
+  'Weeks since training: {0}': 'Treino: há {0} sem.',
   'by sets worked': 'por séries trabalhadas',
   'Week': 'Semana',
   'not trained': 'sem treino',

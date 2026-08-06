@@ -360,6 +360,13 @@ export default {
   'Admin dashboard': 'Panel administratora',
   // --- muscle map ---
   'Muscle balance': 'Równowaga mięśniowa',
+  'Fatigue': 'Zmęczenie',
+  'Ready': 'Gotowe',
+  'Recovering': 'W regeneracji',
+  'Fatigued': 'Zmęczony',
+  'Fatigue shows how recently each muscle was trained. High means rest.': 'Zmęczenie pokazuje, jak niedawno trenowano każdą partię mięśni. Wysoki poziom oznacza potrzebę odpoczynku.',
+  'Strength shows retained muscle strength. Train again to reset it.': 'Siła pokazuje, ile siły mięśniowej pozostało. Ponowny trening przywraca jej poziom wyjściowy.',
+  'Weeks since training: {0}': 'Trening: {0} tyg. temu',
   'by sets worked': 'wg serii',
   'Week': 'Tydzień',
   'not trained': 'nietrenowane',

@@ -152,6 +152,21 @@ export function lastEntryFor(S, exId) {
   }
   return null
 }
+
+// A freestyle exercise starts with the last target the user actually trained, rather than the
+// generic config sheet defaults used when there is no history. The set rows themselves are still
+// built by buildSets(), which copies each completed set by position; only the target shape and
+// number of rows need to be seeded here so the config sheet and the rows agree.
+export function freestyleConfig(S, cfg) {
+  const last = lastEntryFor(S, cfg.id)
+  if (!last) return { ...cfg }
+  return {
+    ...cfg,
+    ...(last.target || {}),
+    id: cfg.id,
+    sets: Math.max(1, last.sets.length)
+  }
+}
 export function bestWeightFor(S, exId) {
   let best = 0
   S.workouts.forEach(w => w.entries.forEach(e => {
@@ -173,10 +188,11 @@ export function effectiveRoutine(S, iso) {
   const id = effectiveRoutineId(S, iso)
   return id ? S.routines.find(r => r.id === id) || null : null
 }
-export function buildSets(S, cfg) {
+export function buildSets(S, cfg, options = {}) {
   const last = lastEntryFor(S, cfg.id)
   const n = Math.max(1, cfg.sets || 1)
   const mode = modeOf(cfg)
+  const preferLast = !!options.preferLast
   const sets = []
   // Last time's set at the same position, falling back to its final set when the plan grew.
   const prevAt = i => (last ? (last.sets[i] || last.sets[last.sets.length - 1]) : null)
@@ -202,7 +218,9 @@ export function buildSets(S, cfg) {
   for (let i = 0; i < n; i++) {
     const prev = prevAt(i)
     const usable = prev && prev.r > 0 ? prev : null
-    const w = conf && conf.w > 0 ? conf.w : (usable ? usable.w : cfg.weight)
+    // Planned sessions may use the confirmed working weight, while freestyle should reproduce
+    // the load of each matching set when that option is requested.
+    const w = preferLast && usable ? usable.w : (conf && conf.w > 0 ? conf.w : (usable ? usable.w : cfg.weight))
     sets.push({ w, r: usable ? usable.r : cfg.reps, done: false })
   }
   return sets

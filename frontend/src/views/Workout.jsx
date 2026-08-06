@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/useStore.js'
 import { useUI } from '../store/useUI.js'
 import { exOr } from '../lib/exercises.js'
-import { effectiveRoutine, lastEntryFor, bestWeightFor, buildSets, setsDoneActive, supersetUnits, unitOf, setLabel, modeOf, isBw, isPerSide, sideReps, repStep, EFFORT, effortOf, stepEffort, capEffort } from '../lib/history.js'
+import { effectiveRoutine, lastEntryFor, bestWeightFor, buildSets, freestyleConfig, defaultConfig, setsDoneActive, supersetUnits, unitOf, setLabel, modeOf, isBw, isPerSide, sideReps, repStep, EFFORT, effortOf, stepEffort, capEffort } from '../lib/history.js'
 import { fmtNum, fmtDate, todayISO, exCount, DAYN } from '../lib/format.js'
 import { beep, vibrate } from '../lib/sound.js'
 import { t } from '../lib/i18n.js'
@@ -281,12 +281,20 @@ function ActiveWorkout() {
       <Button trailingIcon="chevronRight" disabled={unitIdx < 0 || unitIdx >= units.length - 1} onClick={() => update(s => { s.active.cur = units[unitIdx + 1][0] })}>{t('Next')}</Button>
     </div>
     <div style={{ height: 10 }} />
-    <Button onClick={() => exercisePicker(ex => exConfigSheet(ex, null, cfg => update(s => {
-      const full = { ...cfg, id: ex.id }
-      const plan = nextPrescription(s, full, s.routines.find(r => r.id === s.active.routineId))
-      s.active.entries.push({ id: ex.id, target: { ...cfg }, plan, sets: applyPrescription(buildSets(s, full), plan) })
-      s.active.cur = s.active.entries.length - 1
-    }), null, S.routines.find(r => r.id === A.routineId)))} icon="plus">{t('Add exercise')}</Button>
+    <Button onClick={() => exercisePicker(ex => {
+      const routine = S.routines.find(r => r.id === A.routineId)
+      const freestyle = !A.routineId
+      // Freestyle has no routine prescription to apply: show the last target in the config
+      // sheet and carry its completed rows forward. A planned session keeps its existing path.
+      const seed = freestyle ? freestyleConfig(S, { id: ex.id, ...defaultConfig(ex.id) }) : null
+      exConfigSheet(ex, null, cfg => update(s => {
+        const full = { ...cfg, id: ex.id }
+        const plan = freestyle ? null : nextPrescription(s, full, s.routines.find(r => r.id === s.active.routineId))
+        const sets = buildSets(s, full, freestyle ? { preferLast: true } : undefined)
+        s.active.entries.push({ id: ex.id, target: { ...cfg }, plan, sets: freestyle ? sets : applyPrescription(sets, plan) })
+        s.active.cur = s.active.entries.length - 1
+      }), null, routine, seed)
+    })} icon="plus">{t('Add exercise')}</Button>
     <div style={{ height: 10 }} />
     {(() => {
       const exDone = A.entries.filter(e => e.sets.length && e.sets.every(s => s.done)).length

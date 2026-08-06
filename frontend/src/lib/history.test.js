@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { modeOf, isTimed, fmtSec, setLabel, defaultConfig, buildSets, exLine, workoutVolume, effortOf, stepEffort, capEffort, isBw, isPerSide, sideReps, repStep } from './history.js'
+import { modeOf, isTimed, fmtSec, setLabel, defaultConfig, buildSets, freestyleConfig, exLine, workoutVolume, effortOf, stepEffort, capEffort, isBw, isPerSide, sideReps, repStep } from './history.js'
 import { EXDB } from './exercises.js'
 
 // Real ids out of the shipped catalogue, so the body-part fallback is exercised for real.
@@ -336,6 +336,80 @@ describe('exLine', () => {
 
 const emptyS = { workouts: [], exWeights: {} }
 
+describe('freestyleConfig', () => {
+  it('inherits the last target and completed set count for a newly added exercise', () => {
+    const S = {
+      exWeights: {},
+      workouts: [{
+        d: '2026-01-01',
+        entries: [{
+          id: LIFT,
+          target: { mode: 'reps', sets: 4, reps: 8, weight: 60, prog: 'linear' },
+          sets: [
+            { w: 60, r: 8, done: true },
+            { w: 62.5, r: 7, done: true },
+            { w: 62.5, r: 6, done: true },
+            { w: 62.5, r: 5, done: true }
+          ]
+        }]
+      }]
+    }
+    const cfg = freestyleConfig(S, { id: LIFT, mode: 'reps', sets: 3, reps: 10, weight: 0 })
+
+    expect(cfg).toEqual({ id: LIFT, mode: 'reps', sets: 4, reps: 8, weight: 60, prog: 'linear' })
+    expect(buildSets(S, cfg)).toEqual([
+      { w: 60, r: 8, done: false },
+      { w: 62.5, r: 7, done: false },
+      { w: 62.5, r: 6, done: false },
+      { w: 62.5, r: 5, done: false }
+    ])
+  })
+
+  it('inherits the target for timed and cardio exercises too', () => {
+    const timed = {
+      exWeights: {},
+      workouts: [{
+        d: '2026-01-02',
+        entries: [{
+          id: LIFT,
+          target: { mode: 'time', sets: 2, sec: 60, weight: 15 },
+          sets: [{ sec: 55, w: 15, done: true }, { sec: 60, w: 17.5, done: true }]
+        }]
+      }]
+    }
+    const cardio = {
+      exWeights: {},
+      workouts: [{
+        d: '2026-01-03',
+        entries: [{
+          id: CARDIO,
+          target: { sets: 2, min: 30, speed: 7 },
+          sets: [{ min: 28, speed: 7, done: true }, { min: 30, speed: 7.5, done: true }]
+        }]
+      }]
+    }
+
+    const timedCfg = freestyleConfig(timed, { id: LIFT, mode: 'time', sets: 3, sec: 45, weight: 0 })
+    expect(timedCfg).toEqual({ id: LIFT, mode: 'time', sets: 2, sec: 60, weight: 15 })
+    expect(buildSets(timed, timedCfg)).toEqual([
+      { sec: 55, w: 15, done: false },
+      { sec: 60, w: 17.5, done: false }
+    ])
+
+    const cardioCfg = freestyleConfig(cardio, { id: CARDIO, sets: 1, min: 20, speed: 8 })
+    expect(cardioCfg).toEqual({ id: CARDIO, sets: 2, min: 30, speed: 7 })
+    expect(buildSets(cardio, cardioCfg)).toEqual([
+      { min: 28, speed: 7, done: false },
+      { min: 30, speed: 7.5, done: false }
+    ])
+  })
+
+  it('keeps the supplied defaults when there is no completed matching workout', () => {
+    const cfg = freestyleConfig(emptyS, { id: LIFT, mode: 'reps', sets: 3, reps: 10, weight: 50 })
+    expect(cfg).toEqual({ id: LIFT, mode: 'reps', sets: 3, reps: 10, weight: 50 })
+  })
+})
+
 describe('buildSets', () => {
   it('builds reps sets from the plan when there is no history', () => {
     expect(buildSets(emptyS, { id: LIFT, sets: 3, reps: 8, weight: 50 }))
@@ -373,6 +447,14 @@ describe('buildSets', () => {
   it('still prefers the confirmed working weight for reps sets', () => {
     const S = { exWeights: { [LIFT]: { w: 75 } }, workouts: [{ d: '2026-01-01', entries: [{ id: LIFT, sets: [{ w: 60, r: 10, done: true }] }] }] }
     expect(buildSets(S, { id: LIFT, sets: 1, reps: 8, weight: 50 })).toEqual([{ w: 75, r: 10, done: false }])
+  })
+
+  it('can preserve each last set weight for freestyle instead of using the working-weight hint', () => {
+    const S = { exWeights: { [LIFT]: { w: 75 } }, workouts: [{ d: '2026-01-01', entries: [{ id: LIFT, sets: [
+      { w: 60, r: 10, done: true }, { w: 62.5, r: 8, done: true }
+    ] }] }] }
+    expect(buildSets(S, { id: LIFT, sets: 2, reps: 8, weight: 50 }, { preferLast: true }))
+      .toEqual([{ w: 60, r: 10, done: false }, { w: 62.5, r: 8, done: false }])
   })
 })
 

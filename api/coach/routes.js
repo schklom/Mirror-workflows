@@ -120,6 +120,18 @@ export function coachRoutes({ json, readBody, readSession, requireAdmin }) {
         runtime: { ok: !!check.ok, version: check.version || null, error: check.error || null },
         authMode: cfg.authMode,
         boundUid: cfg.boundUid || null,
+        /* Whether a credential is filed, and whose — never the credential. `unreadable` is its
+           own state rather than "not connected" because it has a specific cause and a specific
+           fix: ./data was restored without its `secret`, so the blob is intact and undecryptable,
+           and connecting again is the way out. */
+        auth: (() => {
+          if (!cfgStore.providerMeta(cfg).oauthEnv && !cfgStore.providerMeta(cfg).apiKeyEnv) {
+            return { state: 'not-required' };
+          }
+          if (!cfg.auth || !cfg.auth.data) return { state: 'none' };
+          if (!cfgStore.decrypt(cfg.auth.data)) return { state: 'unreadable' };
+          return { state: 'connected', type: cfg.auth.type || null, account: cfg.auth.account || null };
+        })(),
         // Whether the privilege drop can actually be performed. Surfaced because the control
         // now fails closed: if this reads false, no job runs, and the admin needs to know that
         // from the card rather than from a user reporting that nothing happens.

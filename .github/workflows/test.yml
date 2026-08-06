@@ -61,3 +61,45 @@ jobs:
       # that forgets to regenerate it would otherwise only surface as "the Coach can't find
       # that exercise" on somebody's instance.
       - run: node scripts/build-coach-library.mjs --check
+
+  # Builds *and runs* both image targets. Building alone would not have caught the api image
+  # shipping without coach/ — that image built perfectly and exited on boot. So each target has
+  # to answer for itself: the default one starts and serves, and the coach one additionally
+  # resolves the Agent SDK's per-platform runtime (musl on this base), which is the one thing
+  # that cannot be checked from the source tree.
+  api-image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - run: docker build --target default -t opengym-api:default ./api
+      - run: docker build --target coach   -t opengym-api:coach   ./api
+
+      - name: the default image boots and serves, with no AI runtime in it
+        run: |
+          docker run -d --name api-default -e DATA_DIR=/data -p 3000:3000 opengym-api:default
+          for i in $(seq 1 30); do
+            curl -fsS http://localhost:3000/api/config >/dev/null 2>&1 && break
+            sleep 1
+          done
+          curl -fsS http://localhost:3000/api/config | tee /dev/stderr | grep -q '"invite_only"'
+          # Absent by construction, not by accident: --omit=optional is the only thing keeping
+          # the AI dependency out of the image an owner gets when they never asked for it.
+          docker run --rm opengym-api:default node -e \
+            'import("@anthropic-ai/claude-agent-sdk").then(()=>{console.error("AI runtime present in the default image");process.exit(1)},()=>process.exit(0))'
+          docker rm -f api-default
+
+      - name: the coach image carries a runnable Agent SDK
+        run: |
+          docker run --rm opengym-api:coach node --input-type=module -e '
+            const { adapterFor } = await import("./coach/adapters/index.js");
+            const r = await adapterFor("claude").check();
+            if (!r.ok) { console.error(r.error); process.exit(1); }
+            console.log(r.version);
+          '
+
+      - name: the privilege drop can actually be performed in the image
+        run: |
+          # canDropPrivileges() fails closed, so a missing `coach` user disables every job —
+          # including the fixture provider. Cheaper to assert here than to discover on an instance.
+          docker run --rm opengym-api:default id coach

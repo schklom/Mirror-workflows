@@ -7,6 +7,7 @@
  * codebase — routes, jobs, payload, validation, UI — knows which one is configured.
  */
 import { run } from './spawn.js';
+import claude from './claude.js';
 
 /**
  * The in-repo fake provider. Ships with the image on purpose: it is what CI drives, and it
@@ -29,6 +30,9 @@ const fixture = {
   }
 };
 
-const ADAPTERS = { fixture };
+/* claude is registered unconditionally, and that is safe because claude.js imports the SDK
+   lazily: on the default image the module loads, check() reports the runtime as absent, and
+   isConnected() keeps the Coach out of /api/config entirely. Codex arrives with 6/6. */
+const ADAPTERS = { fixture, claude };
 export const adapterFor = provider => ADAPTERS[provider] || null;
 export default ADAPTERS;

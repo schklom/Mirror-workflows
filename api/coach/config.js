@@ -34,7 +34,15 @@ export const COACH_DISABLED = /^(1|true|yes|on)$/i.test(process.env.COACH_DISABL
 // providers arrive with their adapters; this PR ships only the in-repo fixture, so an instance
 // can be exercised end to end without an AI account.
 export const PROVIDERS = {
-  fixture: { label: 'Fixture (testing)', runtime: 'Fixture', apiKeyEnv: null, oauthEnv: null }
+  fixture: { label: 'Fixture (testing)', runtime: 'Fixture', apiKeyEnv: null, oauthEnv: null },
+  // `apiKeyEnv` / `oauthEnv` name the variable jobEnv injects the credential as; the runtime
+  // reads it from its environment and from nothing else, which is what makes the sanitised env
+  // the only channel a credential can travel down. `claude setup-token` mints the long-lived
+  // token that rides in CLAUDE_CODE_OAUTH_TOKEN — hence setupToken rather than a device login.
+  claude: {
+    label: 'Claude (Anthropic)', runtime: 'Claude Agent SDK',
+    apiKeyEnv: 'ANTHROPIC_API_KEY', oauthEnv: 'CLAUDE_CODE_OAUTH_TOKEN', setupToken: true
+  }
 };
 
 const DEFAULTS = {

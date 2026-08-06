@@ -160,11 +160,45 @@ export function coachRoutes({ json, readBody, readSession, requireAdmin }) {
       json(res, 200, r);
     },
 
-    /* The gap here is `authMode` and connect/clear-credential, and it lands with PR 3 rather
-       than in this file today. Both exist to serve a credential, and the only provider this
-       build ships is the fixture, which has none: `credentialFor` returns before it consults
-       the mode. A switch whose two positions do the same thing is worse than no switch — so it
-       arrives with the setup-token path, in the PR that gives it something to switch between. */
+    /* Connect the instance credential. Deferred while the fixture was the only provider — it
+       has none, so there was nothing to connect. The real providers give it something to hold,
+       which is the condition this route was waiting on.
+
+       The token is accepted once and never read back: it is encrypted here and leaves again
+       only as an environment variable on a job's child process. `type` has to match a variable
+       the configured provider actually declares, so a Codex key cannot be filed under Claude
+       and then silently go nowhere at job time. */
+    'POST /api/admin/coach/connect': async (req, res) => {
+      if (!requireAdmin(req, res)) return;
+      const body = await readBody(req);
+      const cfg = cfgStore.load();
+      const meta = cfgStore.providerMeta(cfg);
+      const type = String(body.type || '');
+      const envVar = (type === 'cli-token' || type === 'oauth') ? meta.oauthEnv
+        : type === 'apikey' ? meta.apiKeyEnv : null;
+      if (!envVar) {
+        return json(res, 400, { error: `${cfg.provider} does not take a credential of type "${type}"` });
+      }
+      const token = String(body.token || '').trim();
+      if (!token) return json(res, 400, { error: 'no token supplied' });
+      // boundUid resets with the credential: a new account has not been spent by anyone yet.
+      cfgStore.save({
+        auth: { type, account: String(body.account || '').slice(0, 120), data: cfgStore.encrypt({ token }) },
+        boundUid: null
+      });
+      json(res, 200, { ok: true });
+    },
+
+    'POST /api/admin/coach/disconnect': async (req, res) => {
+      if (!requireAdmin(req, res)) return;
+      cfgStore.save({ auth: null, boundUid: null });
+      json(res, 200, { ok: true });
+    },
+
+    /* Still absent: `authMode`, and with it the per-profile credential routes. Instance mode is
+       the whole of what these two routes serve, and per-profile needs its own connect/clear pair
+       against saveProfileAuth/clearProfileAuth — a switch with nothing on the other side is worse
+       than no switch, so it waits for the PR that builds that side. */
 
     /* Whose account this profile is about to spend. Its own route because both the Coach screen
        and the admin card must state it, and neither should be inferring it from settings. */

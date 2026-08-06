@@ -4,8 +4,8 @@ An optional AI that **designs** a training plan and **revises it from what you a
 running on your own server under your own provider account, off until an admin turns it on.
 
 > This document grows with the feature. What is described here is what has landed: the server
-> plumbing, the consent and payload boundary, the credential model, and the validator and apply
-> path. The provider adapters and the UI arrive in the PRs that follow.
+> plumbing, the consent and payload boundary, the credential model, the validator and apply
+> path, and the Claude provider with its opt-in packaging. The UI arrives in the PRs that follow.
 
 ---
 
@@ -129,6 +129,54 @@ The secrets are locked file by file — `secret`, `db.json`, `coach.json` at `06
 by sealing `./data` with a blanket `0700`. The directory is a host bind mount and the container
 runs as root, so sealing it lands on the host as root-owned and unreadable, and anything else
 the owner runs against their own data directory gets `EACCES`.
+
+## You only carry the AI runtime if you ask for it
+
+`api/Dockerfile` builds two targets from one file:
+
+- **`default`** — what every instance has always had. `npm ci --omit=optional` skips the Agent
+  SDK and its platform runtime entirely, so an owner who never wanted the Coach ships none of it.
+  Around 158 MB.
+- **`coach`** — the same image plus `@anthropic-ai/claude-agent-sdk`. Around 455 MB.
+
+```
+docker build --target coach ./api          # or:
+API_TARGET=coach docker compose up --build api
+```
+
+The SDK sits in `optionalDependencies`, and its runtime ships as a per-platform package — this
+base is Alpine, so the lockfile resolves `linux-x64-musl` / `linux-arm64-musl`. That resolution
+is the sort of thing that only fails on somebody else's machine, so CI builds **and runs** both
+targets: the default one has to boot and serve `/api/config` with the SDK genuinely unimportable,
+and the coach one has to report a runnable SDK through the same `check()` the admin card renders.
+
+An absent runtime is an ordinary state, not a crash: the adapter imports the SDK lazily, `check()`
+says it is missing, `isConnected()` goes false, and `/api/config` carries no `coach` key at all.
+
+Both targets create the unprivileged `coach` user. That is not a Claude-specific detail — the
+privilege drop fails closed, so without that user *every* job is refused, including the fixture
+provider that exists precisely so the loop can be walked before an account is connected.
+
+## What the model is allowed to do
+
+The Claude provider runs through the Agent SDK rather than a hand-rolled CLI call, because the
+SDK exposes the switches that matter and brings its own matching runtime. Four of them are the
+reason it can be trusted next to your `./data`:
+
+| Option | Effect |
+| --- | --- |
+| `tools: []` | Disables **all** built-in tools — no Read, no Bash, no Grep. The model has no filesystem tool at all, however it is prompted. |
+| `settingSources: []` | No user/project/local settings file is loaded, so nothing on the host can widen the line above afterwards. |
+| `skills: []` | Same, for skills. |
+| `strictMcpConfig` | No MCP server can arrive from ambient configuration. |
+
+They are exported as one frozen object and asserted by value in `adapters.test.js`, so
+re-enabling one is a red build rather than a quiet capability grant.
+
+The credential reaches the model process as an environment variable and by no other route. The
+job environment is built from nothing rather than filtered, and the SDK's `env` option *replaces*
+the child environment rather than extending it — so `RP_ID`, `ADMIN_UIDS` and the VAPID keys
+cannot reach it by inheritance even by accident.
 
 ## Off is really off
 

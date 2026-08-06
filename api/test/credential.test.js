@@ -135,11 +135,16 @@ test('jobEnv only ever carries the credential it was handed', () => {
   assert.equal(env.HOME, '/tmp/job');
   assert.equal(env.TMPDIR, '/tmp/job');
   // Built from nothing: no RP_ID, no ADMIN_UIDS, no VAPID material, nothing this server holds.
+  // The one permitted addition is the configured provider's own credential variable — read off
+  // the row rather than hardcoded, so this keeps testing the contract if that name ever changes.
+  // connectInstance() files a `cli-token`, which jobEnv injects under the provider's oauthEnv.
+  const expected = [cfg.providerMeta(cfg.load()).oauthEnv].filter(Boolean);
   assert.deepEqual(
     Object.keys(env).filter(k => !['PATH', 'HOME', 'TMPDIR'].includes(k)).sort(),
-    [],
-    'the fixture provider declares no credential env var, so nothing else may appear'
+    expected,
+    'only the credential the job was handed may appear, under its provider\'s own variable'
   );
+  if (expected.length) assert.equal(env[expected[0]], 'tok-for-env');
 
   const none = cfg.jobEnv('/tmp/job', { ok: false });
   assert.equal(Object.values(none).some(v => String(v).includes('tok-for-env')), false);

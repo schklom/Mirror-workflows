@@ -10,6 +10,35 @@ import { useStore } from './useStore.js'
 const pushRestTimer = sec => { if (useStore.getState().user) api('/api/push/rest-timer', { method: 'POST', body: JSON.stringify({ seconds: sec }) }).catch(() => {}) }
 const cancelPushRestTimer = () => { if (useStore.getState().user) api('/api/push/rest-timer/cancel', { method: 'POST', body: '{}' }).catch(() => {}) }
 
+const notificationsSupported = () => typeof window !== 'undefined' && 'Notification' in window
+let requestRestNotificationPermissionP = null
+
+const requestRestNotificationPermission = async () => {
+  if (!notificationsSupported()) return false
+  if (Notification.permission === 'granted') return true
+  if (Notification.permission === 'denied') return false
+  if (!requestRestNotificationPermissionP) {
+    requestRestNotificationPermissionP = Notification.requestPermission()
+      .then(perm => perm === 'granted')
+      .catch(() => false)
+      .finally(() => {
+        requestRestNotificationPermissionP = null
+      })
+  }
+  return requestRestNotificationPermissionP
+}
+
+const maybeRestNotification = async () => {
+  if (!notificationsSupported()) return
+  if (!document.hidden && document.visibilityState !== 'hidden') return
+  if (Notification.permission !== 'granted' && !(await requestRestNotificationPermission())) return
+  try {
+    new Notification(t('Rest over'), { body: t('Rest over — next set!') })
+  } catch {
+    // Intentionally ignore: notification APIs vary by browser and policy in edge cases.
+  }
+}
+
 let toastTm = null
 let timerInt = null
 let timerTick = null
@@ -42,6 +71,7 @@ export const useUI = create((set, get) => ({
     get().stopRest()
     const endsAt = Date.now() + sec * 1000
     set({ timer: { left: sec, total: sec, endsAt } })
+    requestRestNotificationPermission()
     pushRestTimer(sec)
     timerTick = () => {
       const tm = get().timer
@@ -51,7 +81,7 @@ export const useUI = create((set, get) => ({
       const snd = useStore.getState().S.sound
       if (left <= 0) {
         beep(snd, 880, 0.15); beep(snd, 880, 0.15, 0.25); beep(snd, 1320, 0.4, 0.5)
-        vibrate([200, 100, 200]); get().toast(t('Rest over — next set!')); get().stopRest(); return
+        vibrate([200, 100, 200]); maybeRestNotification(); get().toast(t('Rest over — next set!')); get().stopRest(); return
       }
       if (left <= 3) beep(snd, 660, 0.1)
       set({ timer: { ...tm, left } })

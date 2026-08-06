@@ -355,7 +355,7 @@ export default function Stats() {
         {exHist.length ? <>
           <div className="sect-b" style={{ marginBottom: 10 }}>
             <SelectRow title={t('Exercise')} sheetTitle={t('Exercise progress')} value={curEx} onChange={setExId}
-              options={exHist.map(id => ({ value: id, label: EXIDX[id].n + (exCurrent[id].mx ? ' ' — ' ' + fmtNum(exCurrent[id].mx) + ' ' + exCurrent[id].unit : '') }))} />
+              options={exHist.map(id => ({ value: id, label: EXIDX[id].n + (exCurrent[id].mx ? ' ' + '—' + ' ' + fmtNum(exCurrent[id].mx) + ' ' + exCurrent[id].unit : '') }))} />
 
           </div>
           {exOpts.length > 1 && <Segmented className="seg-range" value={onEff ? 'effort' : onE1 ? 'e1rm' : 'top'} onChange={setExMetric} options={exOpts} />}

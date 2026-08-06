@@ -4,8 +4,8 @@ An optional AI that **designs** a training plan and **revises it from what you a
 running on your own server under your own provider account, off until an admin turns it on.
 
 > This document grows with the feature. What is described here is what has landed: the server
-> plumbing, the consent and payload boundary, and the credential model. The validator and the
-> apply path, the provider adapters, and the UI arrive in the PRs that follow.
+> plumbing, the consent and payload boundary, the credential model, and the validator and apply
+> path. The provider adapters and the UI arrive in the PRs that follow.
 
 ---
 
@@ -76,6 +76,42 @@ that reps and then sets are the progression, and that per-side targets step in t
 The server re-implements three reading rules the frontend owns — `modeOf`, `isBw`, `isPerSide` —
 because the api image has no build step in common with the frontend. `coach-parity.test.js`
 pins them against the originals over a table of configs, so the copies cannot drift silently.
+
+## What comes back, and what it is allowed to do
+
+The prompt asks for a shape and the model usually obliges. `api/coach/validate.js` is where
+"usually" stops mattering, and it — not the prompt — is the security boundary. Nothing reaches
+you that has not:
+
+- **matched the closed list of change types.** Eighteen of them, each with an apply
+  implementation on the client to match. A hostile note in your own free text can talk a model
+  into saying anything at all; it cannot invent a change type, and a change type that is not on
+  the list does nothing. There is no default case anywhere.
+- **resolved against the real exercise library.** An id nobody has invalidates the whole
+  proposal rather than being quietly dropped into a plan that renders blank the first time you
+  train it.
+- **hit something that exists.** Every target names a routine in your plan, and anything about
+  an exercise names one that is actually in that routine.
+- **cited its evidence.** A change with no `why` is refused.
+
+A rejected answer gets **one** repair round, with the errors handed back verbatim. Two failures
+is a provider problem rather than a prompting problem, and a retry loop against a paid account
+is a bad way to find that out.
+
+The Coach may only touch **routines and the week**. Your training log, your weigh-ins and your
+settings are not reachable from any change type that exists.
+
+Applying happens **on the client**, not the server — ordinary local editing, so it works
+offline, syncs like everything else, and stays reversible without the server knowing. Every
+apply takes a snapshot of `{routines, week}` first, so one tap puts the plan back; workouts are
+deliberately untouched by a revert, because the log is what happened. A change-set is
+all-or-nothing: a failure part-way through discards the whole draft rather than leaving a
+half-applied proposal.
+
+Proposals carry a fingerprint of the plan they were computed against. If the plan has moved
+since — you edited it on another device, or changed by hand the exact thing a change is
+about — that change is shown greyed out with the reason, and cannot be applied. Silently
+overwriting an edit you made yourself would be the worse failure.
 
 ## Isolation
 

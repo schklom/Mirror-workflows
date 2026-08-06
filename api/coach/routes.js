@@ -160,8 +160,11 @@ export function coachRoutes({ json, readBody, readSession, requireAdmin }) {
       json(res, 200, r);
     },
 
-
-
+    /* The gap here is `authMode` and connect/clear-credential, and it lands with PR 3 rather
+       than in this file today. Both exist to serve a credential, and the only provider this
+       build ships is the fixture, which has none: `credentialFor` returns before it consults
+       the mode. A switch whose two positions do the same thing is worse than no switch — so it
+       arrives with the setup-token path, in the PR that gives it something to switch between. */
 
     /* Whose account this profile is about to spend. Its own route because both the Coach screen
        and the admin card must state it, and neither should be inferring it from settings. */

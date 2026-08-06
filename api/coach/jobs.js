@@ -20,6 +20,7 @@ import * as cfgStore from './config.js';
 import { adapterFor } from './adapters/index.js';
 import * as payloadLib from './payload.js';
 import { extractJSON, contractOK } from './parse.js';
+import { validatePlan, validateReview } from './validate.js';
 import { canDropPrivileges, unprivilegedIds } from './adapters/spawn.js';
 
 const DATA = process.env.DATA_DIR || '/data';
@@ -188,7 +189,12 @@ function finish(job, result) {
   const rec = readUser(job.uid);
   const history = [...(rec.history || []), {
     id: job.id, kind: job.kind, trigger: job.trigger, outcome: result.outcome,
-    errorClass: result.errorClass || null, at: Date.now()
+    errorClass: result.errorClass || null, at: Date.now(),
+    // "Nothing to change" is an answer with a reason attached, and throwing the reason away
+    // leaves the user with a job that finished and nothing to show for it. It lives here, in
+    // the profile's own file — deliberately not in `detail`, which goes to the instance log
+    // the admin card renders, and which carries counts and outcomes only (FR-12/42).
+    ...(result.reading ? { reading: String(result.reading).slice(0, 1200) } : {})
   }].slice(-HISTORY_MAX);
   writeUser(job.uid, {
     ...rec,
@@ -269,7 +275,7 @@ async function execute(job) {
       return finish(job, { outcome: 'failed', errorClass: attempt.errorClass, detail: attempt.detail });
     }
     if (attempt.nochange) {
-      return finish(job, { outcome: 'nochange', pending: null, detail: null });
+      return finish(job, { outcome: 'nochange', pending: null, detail: null, reading: attempt.reading });
     }
     const pending = {
       id: job.id,
@@ -304,16 +310,24 @@ async function invoke(adapter, cfg, payload, jobDir, env, job, repair) {
     return { ok: false, repairable: !repair, errors: [`coach_contract must be ${payloadLib.CONTRACT}`], raw: r.text, errorClass: 'unusable' };
   }
 
-  // The seam. Everything above is transport: did a process run, did it exit cleanly, is there
-  // a JSON object in what it said, does it claim the contract this build speaks. Nothing above
-  // has judged whether the contents are safe to act on, and nothing here does either — that is
-  // validate.js's job, and the validator (not the prompt) is the security boundary.
+  // The seam PR 1 left open. Everything above is transport: did a process run, did it exit
+  // cleanly, is there a JSON object in what it said, does it claim the contract this build
+  // speaks. None of it has judged whether the contents are safe to act on. That judgement is
+  // validate.js's, and the validator — not the prompt — is the security boundary.
   //
-  // So this PR carries the answer no further than `unvalidated`. Nothing in the client can
-  // apply it, because the apply path does not exist yet. The next PR replaces this line with
-  // the change-type check and hangs the repair round off its errors, exactly as the parse
-  // failures above already do.
-  return { ok: true, result: { unvalidated: parsed.value } };
+  // Its errors join the parse failures above on the same one repair round: a model that named
+  // an exercise that does not exist is told which one, and usually gets it right the second
+  // time. A model that cannot be told is a failed job, not a retry loop.
+  const checked = job.kind === 'review'
+    ? validateReview(parsed.value, payload.plan)
+    : validatePlan(parsed.value, {
+      workingWeights: payload.history?.workingWeights,
+      daysPerWeek: payload.coachProfile?.daysPerWeek
+    });
+
+  if (!checked.ok) return { ok: false, repairable: !repair, errors: checked.errors, raw: r.text, errorClass: 'unusable' };
+  if (checked.nochange) return { ok: true, nochange: true, reading: checked.reading };
+  return { ok: true, result: checked.proposal || { bundle: checked.bundle, summary: checked.bundle.summary } };
 }
 
 /**
@@ -321,11 +335,18 @@ async function invoke(adapter, cfg, payload, jobDir, env, job, repair) {
  * `canonicalPlan`, so both runtimes hash the same normalised shape; the client mirrors this
  * function exactly. A mismatch therefore means the plan genuinely moved — not that two
  * implementations disagree about key order or about what "no weight" looks like.
+ *
+ * The field list must stay in step with `canonicalPlan`. It did not: that function learned
+ * `repsMax`, `bodyweight` and `side` when the payload did, and this one kept hashing the
+ * pre-1.2.4 list, so a plan whose rep ceiling had been raised by hand fingerprinted as
+ * untouched — which is exactly the edit a proposal about bodyweight progression is stalest
+ * against.
  */
 export function hashPlan(plan) {
   const canon = JSON.stringify({
     routines: (plan?.routines || []).map(r => [r.id, r.name, r.prog, (r.ex || []).map(e =>
-      [e.id, e.mode, e.sets, e.reps, e.sec, e.min, e.speed, e.weight, e.prog, e.inc, e.repsMin, e.sg].join(':')
+      [e.id, e.mode, e.sets, e.reps, e.sec, e.min, e.speed, e.weight, e.prog, e.inc,
+        e.repsMin, e.repsMax, e.bodyweight, e.side, e.sg].join(':')
     )]),
     week: Object.keys(plan?.week || {}).sort().map(k => k + '=' + plan.week[k])
   });

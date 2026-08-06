@@ -2,8 +2,9 @@
    itself. Every outcome the user can be shown is reachable here without an AI account, which
    is the whole reason the fixture CLI exists.
 
-   This PR stops at transport: a job runs, exits, and its answer is parsed. The validator and
-   the apply path arrive next, and the tests that assert them travel with them. */
+   PR 1 stopped at transport and held its answer as `unvalidated`. This PR closes that seam, so
+   the assertions below are about what now comes out the other end: a checked bundle, a checked
+   change-set, and the two ways a job can fail the validator rather than the parser. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -12,6 +13,8 @@ import { tempData, writeState, sampleState } from './helpers.mjs';
 const DIR = tempData();
 const cfg = await import('../coach/config.js');
 const jobs = await import('../coach/jobs.js');
+const payload = await import('../coach/payload.js');
+const { CHANGE_TYPES } = await import('../coach/validate.js');
 const { forcePrivilegeVerdict } = await import('../coach/adapters/spawn.js');
 
 cfg.save({ enabled: true, provider: 'fixture' });
@@ -123,8 +126,7 @@ test('a job interrupted by a restart is reported as failed, not left spinning', 
   assert.equal(lastOutcome(uid).errorClass, 'restart');
 });
 
-test('the plan fingerprint moves when the plan does, and only then', async () => {
-  const payload = await import('../coach/payload.js');
+test('the plan fingerprint moves when the plan does, and only then', () => {
   const plan = payload.canonicalPlan({ routines: [{ id: 'r1', name: 'A', ex: [{ id: '0001', sets: 3, reps: 10 }] }], week: { 1: 'r1' } });
   const same = payload.canonicalPlan({ routines: [{ id: 'r1', name: 'A', ex: [{ id: '0001', sets: 3, reps: 10, weight: 0 }] }], week: { 1: 'r1' } });
   const moved = payload.canonicalPlan({ routines: [{ id: 'r1', name: 'A', ex: [{ id: '0001', sets: 4, reps: 10 }] }], week: { 1: 'r1' } });
@@ -132,20 +134,109 @@ test('the plan fingerprint moves when the plan does, and only then', async () =>
   assert.notEqual(jobs.hashPlan(plan), jobs.hashPlan(moved));
 });
 
+test('the fingerprint covers every field canonicalPlan reports, including the v1.2.4 three', () => {
+  // canonicalPlan learned repsMax, bodyweight and side when the payload did; hashPlan kept
+  // hashing the pre-1.2.4 list, so it computed all three and then threw them away. A rep
+  // ceiling raised by hand read as "plan untouched" — on exactly the exercises where that
+  // ceiling is how progression works.
+  const of = ex => payload.canonicalPlan({ routines: [{ id: 'r1', name: 'A', ex: [ex] }], week: { 1: 'r1' } });
+  const base = { id: '0001', sets: 3, reps: 10, repsMin: 8, repsMax: 20, bodyweight: true };
+  const h = ex => jobs.hashPlan(of(ex));
 
-test('the answer is carried no further than parsed — nothing here can apply it', async () => {
-  const uid = 'u-seam';
+  assert.equal(h(base), h({ ...base }), 'the same plan hashes the same');
+  for (const [field, value] of Object.entries({ repsMax: 25, bodyweight: false, side: true })) {
+    assert.notEqual(h(base), h({ ...base, [field]: value }), `${field} must move the fingerprint`);
+  }
+});
+
+
+test('a review job produces a checked change-set, and nothing is left unvalidated', async () => {
+  const uid = 'u-review';
   writeState(DIR, uid, sampleState());
   jobs.enqueue(uid, { kind: 'review' });
   const s = await settle(uid);
 
-  assert.equal(lastOutcome(uid) === undefined || s.pending !== null, true);
-  assert.ok(s.pending, 'a parsed answer is held for the user');
-  // The seam this PR draws: an answer that parsed, and no judgement about it. PR 2 replaces
-  // `unvalidated` with a checked proposal, and this assertion with the real shape.
-  assert.ok(Object.hasOwn(s.pending, 'unvalidated'), 'the answer is explicitly unvalidated');
-  assert.equal(s.pending.bundle, undefined, 'no applyable bundle exists yet');
-  assert.equal(s.pending.proposal, undefined, 'no applyable proposal exists yet');
+  assert.equal(lastOutcome(uid).outcome, 'ready');
+  assert.ok(s.pending, 'a proposal is held for the user');
+  assert.equal(s.pending.unvalidated, undefined, 'the PR 1 seam is closed');
+  assert.ok(Array.isArray(s.pending.changes) && s.pending.changes.length, 'real changes');
+  assert.ok(s.pending.changes.every(c => CHANGE_TYPES.includes(c.type)), 'every change is on the closed list');
+  assert.ok(s.pending.changes.every(c => c.why), 'every change cites its evidence');
+  assert.equal(s.pending.planHash, jobs.hashPlan(payload.canonicalPlan(jobs.readState(uid))));
+});
+
+test('a create job produces a bundle the client can merge unchanged', async () => {
+  const uid = 'u-create';
+  writeState(DIR, uid, sampleState());
+  jobs.enqueue(uid, { kind: 'create' });
+  const s = await settle(uid);
+
+  assert.equal(lastOutcome(uid).outcome, 'ready');
+  assert.equal(s.pending.unvalidated, undefined);
+  assert.equal(s.pending.bundle.opengym_plan, 1);
+  assert.ok(s.pending.bundle.routines.length);
+  // FR-16, end to end: every id in the bundle resolves against the real catalogue.
+  const ids = s.pending.bundle.routines.flatMap(r => r.ex.map(e => e.id));
+  assert.ok(ids.length && ids.every(id => payload.libraryHas(id)), 'no invented exercises reach the plan');
+  assert.equal(s.pending.iteration, 1);
+});
+
+test('a well-formed answer naming an exercise nobody has is refused, twice, and applies nothing', async () => {
+  const uid = 'u-ghostex';
+  writeState(DIR, uid, sampleState());
+  // Not garbage: it parses, and it claims the right contract. Only the validator objects —
+  // which is the whole point of the validator being the boundary rather than the parser.
+  process.env.FIXTURE_MODE = 'unknown-exercise';
+  jobs.enqueue(uid, { kind: 'review' });
+  const s = await settle(uid);
+  delete process.env.FIXTURE_MODE;
+
+  assert.equal(lastOutcome(uid).outcome, 'failed');
+  assert.equal(lastOutcome(uid).errorClass, 'unusable');
+  assert.equal(s.pending, null, 'nothing partial is ever left behind');
+});
+
+test('the one repair round rescues an answer the validator rejected', async () => {
+  const uid = 'u-repair';
+  writeState(DIR, uid, sampleState());
+  process.env.FIXTURE_MODE = 'invalid-then-valid';
+  jobs.enqueue(uid, { kind: 'review' });
+  const s = await settle(uid);
+  delete process.env.FIXTURE_MODE;
+
+  assert.equal(lastOutcome(uid).outcome, 'ready', 'the second attempt is accepted');
+  assert.ok(s.pending.changes.length);
+  assert.equal(jobs.readUser(uid).history.filter(h => h.outcome === 'failed').length, 0, 'the user never sees the first attempt');
+});
+
+test('"nothing to change" keeps the reason it gave, and proposes nothing', async () => {
+  const uid = 'u-nochange';
+  writeState(DIR, uid, sampleState());
+  process.env.FIXTURE_MODE = 'nochange';
+  jobs.enqueue(uid, { kind: 'review' });
+  const s = await settle(uid);
+  delete process.env.FIXTURE_MODE;
+
+  assert.equal(lastOutcome(uid).outcome, 'nochange');
+  assert.equal(s.pending, null, 'an empty proposal screen is not an outcome');
+  assert.match(lastOutcome(uid).reading, /keep logging/i, 'the reading survives the job that produced it');
+});
+
+test('a refine carries the plan it is refining, and counts as the next iteration', async () => {
+  const uid = 'u-refine';
+  writeState(DIR, uid, sampleState());
+  jobs.enqueue(uid, { kind: 'create' });
+  const first = await settle(uid);
+  assert.equal(first.pending.iteration, 1);
+  assert.match(first.pending.bundle.basedOn, /No training history/);
+
+  jobs.enqueue(uid, { kind: 'create', refine: 'More upper body, fewer days.' });
+  const second = await settle(uid);
+  // `previous` reads pending.bundle. Until the validator landed, pending only ever carried
+  // `unvalidated`, so it silently resolved to null on every refine — the model was asked to
+  // refine a plan it was never shown.
+  assert.match(second.pending.bundle.basedOn, /Refined from the plan/);
+  assert.equal(second.pending.iteration, 2);
 });
 
 test('the admin test-run completes a round trip without a user to spend', async () => {

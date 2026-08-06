@@ -49,6 +49,22 @@ function payload() {
 const P = payload();
 const kind = P.task || (/change-set/i.test(prompt) ? 'review' : 'create');
 
+// Well-formed JSON naming an exercise nobody has. This is the failure validate.js exists for,
+// and it is not the same as garbage: every check upstream of the validator is happy with it.
+// The fixture keeps saying it on the repair round too, because the interesting assertion is
+// that a model which cannot be told produces a failed job rather than a retry loop.
+if (MODE === 'unknown-exercise') {
+  out({
+    coach_contract: 1,
+    summary: 'One change.',
+    changes: [{
+      id: 'c1', type: 'add-exercise', target: { routineId: (P.plan?.routines || [])[0]?.id },
+      after: { id: 'not-a-real-exercise', sets: 3, reps: 10 },
+      why: 'An id that resolves to nothing must never reach a plan.'
+    }]
+  });
+}
+
 if (MODE === 'nochange' || (kind === 'review' && !(P.window?.workouts || []).length)) {
   out({ coach_contract: 1, nochange: true, reading: 'Not enough new training to read anything into yet — keep logging and ask again in a week.' });
 }
@@ -61,7 +77,11 @@ if (kind === 'create') {
     opengym_plan: 1,
     name: 'Coach plan',
     summary: 'A three-day full-body plan built around the equipment you listed.',
-    basedOn: 'No training history yet — starting conservatively.',
+    // Echoes whether the previous bundle actually arrived, so a test can tell a refine that
+    // carried its predecessor from one that silently sent `previous: null`.
+    basedOn: P.refine?.previous
+      ? 'Refined from the plan you were shown.'
+      : 'No training history yet — starting conservatively.',
     week: { 1: 'r1', 3: 'r2', 5: 'r1' },
     routines: [
       {

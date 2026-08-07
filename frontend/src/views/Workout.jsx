@@ -134,11 +134,13 @@ function ExerciseBlock({ entryIdx, compact, onToggle, onField, onAddSet, onRemov
       {entry.sets.map((s, i) => {
         const warmBefore = i > 0 && !!entry.sets[i - 1].warmup
         const isFirstWarmup = !!s.warmup && !warmBefore
+        // Numbering restarts per phase: with two warm-ups the first work set reads 1, not 3.
+        const phaseNum = entry.sets.slice(0, i + 1).filter(x => (x.warmup === true) === (s.warmup === true)).length
         return <div key={i}>
           {isFirstWarmup && <div className="setph">{t('Warm-up')}</div>}
           {!s.warmup && warmBefore && <div className="setsep" />}
           <div className={'setrow' + (s.done ? ' done' : '') + (col3 ? ' eff3' : '')}>
-            <div className="n">{i + 1}</div>
+            <div className="n">{phaseNum}</div>
             {cell(s, i, col1, 'w')}
             {col2 && cell(s, i, col2, 'r')}
             {col3 && cell(s, i, col3, 'eff')}

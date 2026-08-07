@@ -101,7 +101,9 @@ function deloadTo(cur, step) {
 export function readSession(entry, fallback) {
   const target = (entry && entry.target) || fallback || {}
   const mode = modeOf({ ...target, id: entry && entry.id })
-  const sets = (entry && entry.sets) || []
+  // Warm-up rows are prep, not the session: one filtered read beats guarding every consumer
+  // below (an undone warm-up otherwise poisons `ok` forever and its reps drag `low`/`count`).
+  const sets = ((entry && entry.sets) || []).filter(s => !s.warmup)
   const planned = target.sets || sets.length
   const enough = sets.length >= planned
 
@@ -110,7 +112,7 @@ export function readSession(entry, fallback) {
     const held = sets.map(s => (s.done ? (s.sec || 0) : 0))
     return {
       mode, goal, held,
-      weight: Math.max(0, ...sets.filter(s => s.done && !s.warmup).map(s => s.w || 0)),
+      weight: Math.max(0, ...sets.filter(s => s.done).map(s => s.w || 0)),
       best: Math.max(0, ...held),
       ok: goal > 0 && enough && held.length > 0 && held.every(h => h >= goal)
     }
@@ -119,7 +121,7 @@ export function readSession(entry, fallback) {
   const reps = sets.map(s => (s.done ? (s.r || 0) : 0))
   return {
     mode, goal, reps,
-    weight: Math.max(0, ...sets.filter(s => s.done && !s.warmup).map(s => s.w || 0)),
+    weight: Math.max(0, ...sets.filter(s => s.done).map(s => s.w || 0)),
     count: reps.length,                                   // the dimension bodyweight work grows (#33)
     low: reps.length ? Math.min(...reps) : 0,
     amrap: reps.length ? reps[reps.length - 1] : 0,       // Greyskull's final set
@@ -250,7 +252,10 @@ export function nextPrescription(S, cfg, routine) {
 export function applyPrescription(sets, p) {
   if (!p || p.kind === 'off' || p.kind === 'first') return sets
   const out = sets.map(s => {
-    if (s.done && !s.warmup) return s
+    // Never rewrite a logged set, and never rewrite a warm-up: the prescription speaks to
+    // the work rows only (a ticked warm-up falling through here would be the data-loss the
+    // cascade fix removed, two files over).
+    if (s.done || s.warmup) return s
     const o = { ...s }
     if (p.weight != null) o.w = p.weight
     if (p.reps != null) o.r = p.reps
@@ -260,9 +265,10 @@ export function applyPrescription(sets, p) {
   // A policy that decided on a set count gets to grow the list — bodyweight progression adds
   // a set where a barbell would have added a plate. Only ever upwards, and only by copying a
   // row that is already there: a session in progress must not lose a set it has logged.
-  if (p.sets > out.length) {
-    const seed = out[out.length - 1]
-    while (out.length < p.sets) out.push({ ...seed, done: false })
+  const workRows = out.filter(s => !s.warmup)
+  if (p.sets > workRows.length) {
+    const seed = workRows[workRows.length - 1] || out[out.length - 1]
+    while (out.filter(s => !s.warmup).length < p.sets) out.push({ ...seed, done: false })
   }
   return out
 }

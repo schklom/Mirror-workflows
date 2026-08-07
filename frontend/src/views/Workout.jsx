@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/useStore.js'
 import { useUI } from '../store/useUI.js'
 import { exOr } from '../lib/exercises.js'
-import { effectiveRoutine, lastEntryFor, bestWeightFor, buildSets, freestyleConfig, defaultConfig, setsDoneActive, supersetUnits, unitOf, setLabel, modeOf, isBw, isPerSide, sideReps, repStep, EFFORT, effortOf, stepEffort, capEffort } from '../lib/history.js'
+import { effectiveRoutine, lastEntryFor, bestWeightFor, buildSets, freestyleConfig, defaultConfig, setsDoneActive, supersetUnits, unitOf, setLabel, modeOf, isBw, isPerSide, sideReps, repStep, EFFORT, effortOf, stepEffort, capEffort, cascadeWeight, insertWarmupRow, removeRowAt } from '../lib/history.js'
 import { fmtNum, fmtDate, todayISO, exCount, DAYN } from '../lib/format.js'
 import { beep, vibrate } from '../lib/sound.js'
 import { t } from '../lib/i18n.js'
@@ -186,14 +186,7 @@ function ActiveWorkout() {
     // Changing a weight cascades to the following sets of the same phase, so a
     // heavier bar carries through the set instead of retyping every row.
     if (field === 'w') {
-      const cfg = e.target || e
-      if (cfg.weightPrescription?.kind === 'percentage') return
-      const warm = !!e.sets[i].warmup
-      for (let j = i + 1; j < e.sets.length; j++) {
-        if (!!e.sets[j].warmup === warm && !e.sets[j].done) {
-          if (v == null) delete e.sets[j][field]; else e.sets[j][field] = v
-        }
-      }
+      e.sets = cascadeWeight(e.sets, i, v)
     }
   })
   const modeAt = idx => modeOf({ ...(A.entries[idx].target || {}), id: A.entries[idx].id })
@@ -206,18 +199,10 @@ function ActiveWorkout() {
   })
   const removeSet = idx => mutEntry(idx, e => { if (e.sets.length > 1) e.sets.pop() })
   const addWarmup = idx => mutEntry(idx, e => {
-    const firstWork = e.sets.findIndex(x => !x.warmup)
-    const at = firstWork === -1 ? e.sets.length : firstWork
-    const l = e.sets[at - 1] || e.sets[e.sets.length - 1]
     const m = modeOf({ ...(e.target || {}), id: e.id })
-    const warm = m === 'cardio'
-      ? { min: l ? l.min : (e.target.min || 20), speed: l ? l.speed : (e.target.speed || 8), done: false, warmup: true }
-      : m === 'time'
-        ? { sec: l ? l.sec : (e.target.sec || 45), w: l ? (l.w || 0) : (e.target.weight || 0), done: false, warmup: true }
-        : { w: l ? l.w : 0, r: l ? l.r : e.target.reps, done: false, warmup: true }
-    e.sets.splice(at, 0, warm)
+    e.sets = insertWarmupRow(e.sets, m, e.target || {})
   })
-  const removeSetAt = (idx, i) => mutEntry(idx, e => { if (e.sets.length > 1) e.sets.splice(i, 1) })
+  const removeSetAt = (idx, i) => mutEntry(idx, e => { e.sets = removeRowAt(e.sets, i) })
 
   // A timed set is held, not typed. The work timer records what was actually held — an early
   // finish logs 0:38 of a 0:45 target rather than crediting the full prescription — and then

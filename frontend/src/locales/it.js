@@ -566,4 +566,5 @@ export default {
   '{0} sets of {1} — time to add weight or move to a harder variation.': '{0} serie da {1} — è ora di aggiungere peso o passare a una variante più difficile.',
   '{0} per side': '{0} per lato',
   'You still log the total: {0} is {1} per side.': 'Registri sempre il totale: {0} sono {1} per lato.',
+  '{0} sets · {1} work': '{0} serie · {1} lavoro',
 }

@@ -566,4 +566,5 @@ export default {
   '{0} sets of {1} — time to add weight or move to a harder variation.': '{1} रेप्स के {0} सेट — अब वज़न बढ़ाने या किसी कठिन वैरिएशन पर जाने का समय।',
   '{0} per side': 'प्रति तरफ़ {0}',
   'You still log the total: {0} is {1} per side.': 'आप कुल ही दर्ज करते हैं: {0} यानी प्रति तरफ़ {1}।',
+  '{0} sets · {1} work': '{0} सेट · {1} काम',
 }

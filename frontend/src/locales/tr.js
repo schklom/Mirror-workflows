@@ -566,4 +566,5 @@ export default {
   '{0} sets of {1} — time to add weight or move to a harder variation.': '{1} tekrarlık {0} set — ağırlık ekleme ya da daha zor bir varyasyona geçme zamanı.',
   '{0} per side': 'Taraf başına {0}',
   'You still log the total: {0} is {1} per side.': 'Toplamı kaydetmeye devam ediyorsun: {0}, taraf başına {1} demek.',
+  '{0} sets · {1} work': '{0} set · {1} çalışma',
 }

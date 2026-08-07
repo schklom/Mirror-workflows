@@ -119,11 +119,31 @@ export const loadOfActive = active =>
   loadOf((active?.entries || []).map(e => ({ id: e.id, sets: (e.sets || []).filter(s => s.done).length })))
 
 /**
- * Shade buckets 0–4 per muscle, relative to the hardest-worked muscle in the same
- * window. Relative rather than absolute on purpose: the map answers "is my training
- * balanced", which only means anything as a comparison within one period.
+ * Shade buckets 0–4 per muscle.
+ *
+ * With no `thresholds`, levels remain relative to the hardest-worked muscle in the same
+ * window. This is the original balance-map behavior. When `thresholds` is supplied, levels
+ * use an absolute scale instead: it is an ordered array of `{ at, level, exclusive? }` rules,
+ * and the last matching rule wins. An exclusive rule matches values strictly greater than
+ * `at`; otherwise the boundary is inclusive. Values below the first matching rule are l0.
+ * Absolute rules let recovery views keep fixed semantic bands instead of renormalizing to the
+ * strongest muscle on screen.
  */
-export function levelsOf(load) {
+export function levelsOf(load, thresholds) {
+  if (thresholds) {
+    const lv = {}
+    MUSCLES.forEach(m => {
+      const value = Number(load[m] || 0)
+      let level = 0
+      for (const rule of thresholds) {
+        const matches = rule.exclusive ? value > rule.at : value >= rule.at
+        if (matches) level = Math.max(0, Math.min(4, rule.level))
+      }
+      lv[m] = level
+    })
+    return lv
+  }
+
   const max = Math.max(0, ...MUSCLES.map(m => load[m] || 0))
   const lv = {}
   MUSCLES.forEach(m => {

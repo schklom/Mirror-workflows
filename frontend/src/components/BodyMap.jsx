@@ -47,11 +47,13 @@ function View({ view, levels, onMuscle, selected }) {
 /**
  * <BodyMap load={{ chest: 12, … }} body="male" />
  * `load` is effective sets per muscle (see lib/muscles.js); shading is relative to
- * the hardest-worked muscle in that same load, so it always reads as a balance.
+ * the hardest-worked muscle in that same load, so it always reads as a balance. Pass ordered
+ * `{ at, level, exclusive? }` `thresholds` for a fixed absolute scale (recovery views use this
+ * to keep their semantic bands stable); omitting it preserves the balance behavior.
  */
-export default function BodyMap({ load = {}, body = 'male', onMuscle, selected, className = '' }) {
+export default function BodyMap({ load = {}, thresholds, body = 'male', onMuscle, selected, className = '' }) {
   const paths = useBodyPaths()
-  const levels = levelsOf(load)
+  const levels = levelsOf(load, thresholds)
   const g = paths && (paths[body] || paths.male)
   return (
     <div className={'bodymap ' + className}>

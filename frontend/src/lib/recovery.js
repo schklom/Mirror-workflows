@@ -2,7 +2,13 @@ import { EXIDX } from './exercises.js'
 import { MUSCLES, musclesOf } from './muscles.js'
 
 /** Completed-workout window used when calculating current fatigue. */
-export const FATIGUE_WINDOW_MS = 259200000
+// A "normal" hard session for one muscle, in primary-set equivalents. The saturation curve
+// 1 - exp(-stimulus / REF) maps any session size onto [0,1) so volume raises the starting
+// fatigue level without ever pinning it, and the value can then fade asymptotically.
+export const FATIGUE_REF_VOLUME = 3
+// Computational bound for the stimulus scan, not a semantic cliff: after 30 days (20
+// half-lives) a session contributes below 1e-6 to the accumulated value.
+export const FATIGUE_SCAN_MS = 30 * 24 * 60 * 60 * 1000
 
 /** Exponential half-life for fatigue stimulus. */
 export const FATIGUE_HALF_LIFE_MS = 129600000
@@ -89,16 +95,19 @@ function fatigueValue(events, now) {
     lastTimestamp = event.timestamp
   }
   value *= halfLifeDecay(now - lastTimestamp, FATIGUE_HALF_LIFE_MS)
-  return clamp(value, 0, 1)
+  // Normalise the accumulated stimulus to a saturating fatigue level: more volume starts
+  // higher but never pins, and the value fades asymptotically - no window-edge cliff.
+  return 1 - Math.exp(-value / FATIGUE_REF_VOLUME)
 }
 
 /**
  * Calculate current per-muscle fatigue from completed sets in the recent window.
  *
  * Stimulus time is `workout.start`, falling back to the workout date `workout.d`. Each completed
- * set contributes the exercise's `musclesOf` weights; sets exactly 72 hours old are excluded.
- * Stimuli are accumulated chronologically with a 36-hour half-life, decayed to `now`, and
- * clamped to [0, 1]. The result always contains every drawable muscle slug.
+ * set contributes the exercise's `musclesOf` weights; the scan is bounded to FATIGUE_SCAN_MS for
+ * performance, not semantics. Stimuli are accumulated chronologically with a 36-hour half-life,
+ * decayed to `now`, and normalised with the saturation curve 1 - exp(-v / FATIGUE_REF_VOLUME).
+ * The result always contains every drawable muscle slug.
  *
  * @param {Array<object>} workouts Workout history with `start`/`d` and entry set arrays.
  * @param {number} now Current time in milliseconds; injected to keep this function deterministic.
@@ -106,7 +115,7 @@ function fatigueValue(events, now) {
  */
 export function fatigueOf(workouts, now) {
   const current = Number(now)
-  const cutoff = current - FATIGUE_WINDOW_MS
+  const cutoff = current - FATIGUE_SCAN_MS
   const stimuli = completedStimuli(workouts, timestamp => timestamp > cutoff)
   const byMuscle = Object.fromEntries(MUSCLES.map(slug => [slug, []]))
   for (const stimulus of stimuli) byMuscle[stimulus.slug].push(stimulus)

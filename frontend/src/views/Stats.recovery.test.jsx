@@ -71,8 +71,9 @@ function entry(id, sets) {
 }
 
 function lifecycleWorkouts(now = BASE_NOW) {
-  // The 36-hour fatigue edge crosses .5 after one 60-second interval tick.
-  const fatigueEdge = now - (36 * HOUR - 30000)
+  // A 6-set chest day on the saturating curve crosses .5 at ~55.05 hours, so the edge
+  // flips fatigued -> recovering after one 60-second interval tick.
+  const fatigueEdge = now - (36 * Math.log2(6 / (3 * Math.LN2)) * HOUR - 30000)
   // This completed set is in the initial 30-day Balance window, then ages out after one tick.
   const balanceEdge = now - (30 * DAY - 30000)
   // The 14-day strength edge becomes sub-full after one tick.
@@ -81,7 +82,7 @@ function lifecycleWorkouts(now = BASE_NOW) {
   const absCompleted = now - 20 * DAY
   const absUndone = now - DAY
   return [
-    workout('fatigue-edge', fatigueEdge, [entry('1254', [set(true, { rir: 0 })])]),
+    workout('fatigue-edge', fatigueEdge, [entry('1254', Array.from({ length: 6 }, () => set(true, { rir: 0 })))]),
     workout('balance-edge', balanceEdge, [entry('1254', [set(true, { rir: 2 })])]),
     workout('strength-edge', strengthEdge, [entry('1001', [set(true, { rir: 2 })])]),
     workout('abs-completed', absCompleted, [entry('1002', [set(true, { rir: 2 })])]),
@@ -90,8 +91,9 @@ function lifecycleWorkouts(now = BASE_NOW) {
 }
 
 function allFatiguedWorkout(now = BASE_NOW) {
-  // Primary muscles have one completed set. The three secondary-only map slugs have two
-  // completed sets so their .4 weights are also above the production .5 fatigue boundary.
+  // Eight completed sets per exercise: on the saturating curve every involved muscle gets
+  // raw >= 3.2 (0.4 x 8), i.e. a fatigue value above the .55 top band regardless of the
+  // catalogue's secondary-muscle metadata.
   const ids = [
     ['1018', 1], // trapezius
     ['1012', 1], // deltoids
@@ -111,7 +113,7 @@ function allFatiguedWorkout(now = BASE_NOW) {
     ['1000', 1], // calves
     ['1396', 2], // calves + tibialis
   ]
-  return workout('all-fatigued', now, ids.map(([id, count]) => entry(id, Array.from({ length: count }, () => set(true)))))
+  return workout('all-fatigued', now, ids.map(([id]) => entry(id, Array.from({ length: 8 }, () => set(true)))))
 }
 
 function allSubfullWorkout(now = BASE_NOW) {
@@ -226,7 +228,7 @@ describe('Stats muscle recovery view runtime', () => {
     expect(buttonWithText(muscleCard(), 'Hard')).toBeTruthy()
     expect(container.querySelector('[data-selected-muscle="chest"]')).toBeTruthy()
     expect(lastMap().selected).toBe('chest')
-    expect(lastMap().load.chest).toBe(2)
+    expect(lastMap().load.chest).toBe(7)
   })
 
   it('refreshes fatigue presentation, Balance 30-day filtering, and the mounted tree on the 60-second tick', async () => {
@@ -253,7 +255,7 @@ describe('Stats muscle recovery view runtime', () => {
     expect(strengthRows()).toContain('Quads')
 
     await click(viewButton('Muscle balance'))
-    expect(lastMap().load.chest).toBe(1)
+    expect(lastMap().load.chest).toBe(6)
     expectPressed(balanceRangeButton('30d'))
   })
 

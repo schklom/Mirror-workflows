@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import {
   FATIGUE_HALF_LIFE_MS,
+  FATIGUE_REF_VOLUME,
+  FATIGUE_SCAN_MS,
   FATIGUE_STATES,
-  FATIGUE_WINDOW_MS,
   STRENGTH_FLOOR,
   STRENGTH_FULL_MS,
   STRENGTH_HALF_LIFE_MS,
@@ -53,7 +54,8 @@ const stableFloat = value => Number(value.toFixed(12))
 
 describe('recovery constants', () => {
   it('exports the pinned windows, half-lives, floor, and state labels', () => {
-    expect(FATIGUE_WINDOW_MS).toBe(72 * HOUR)
+    expect(FATIGUE_REF_VOLUME).toBe(3)
+    expect(FATIGUE_SCAN_MS).toBe(30 * DAY)
     expect(FATIGUE_HALF_LIFE_MS).toBe(36 * HOUR)
     expect(STRENGTH_FULL_MS).toBe(14 * DAY)
     expect(STRENGTH_HALF_LIFE_MS).toBe(28 * DAY)
@@ -86,14 +88,29 @@ describe('fatigueOf and strengthOf', () => {
 
     for (const slug of MUSCLES) {
       const weight = WEIGHTED_WEIGHTS[slug] || 0
-      expect(fatigue[slug]).toBe(weight)
+      expect(fatigue[slug]).toBeCloseTo(1 - Math.exp(-weight / FATIGUE_REF_VOLUME), 10)
       expect(strength[slug]).toBe(weight ? 1 : STRENGTH_FLOOR)
     }
-    expect(fatiguedMuscles(workouts, NOW)).toEqual(
-      Object.entries(WEIGHTED_WEIGHTS)
-        .filter(([, weight]) => weight > 0.5)
-        .map(([slug]) => slug),
-    )
+    // one set never crosses the fatigued threshold on the saturating curve
+    expect(fatiguedMuscles(workouts, NOW)).toEqual([])
+  })
+
+  it('raises starting fatigue with volume, never pins, and fades without a cliff', () => {
+    const at0 = count => fatigueOf([doneWorkoutAt(SINGLE.id, NOW, count)], NOW)[SINGLE_SLUG]
+    expect(at0(1)).toBeCloseTo(1 - Math.exp(-1 / FATIGUE_REF_VOLUME), 10)
+    expect(at0(5)).toBeCloseTo(1 - Math.exp(-5 / FATIGUE_REF_VOLUME), 10)
+    expect(at0(12)).toBeCloseTo(1 - Math.exp(-12 / FATIGUE_REF_VOLUME), 10)
+    expect(at0(12)).toBeGreaterThan(at0(5))
+    expect(at0(5)).toBeGreaterThan(at0(1))
+    expect(at0(12)).toBeLessThan(1)
+    // one half-life later the gradient is still visible at any volume
+    const later = fatigueOf([doneWorkoutAt(SINGLE.id, NOW - FATIGUE_HALF_LIFE_MS, 12)], NOW)[SINGLE_SLUG]
+    expect(later).toBeCloseTo(1 - Math.exp(-6 / FATIGUE_REF_VOLUME), 10)
+    expect(later).toBeLessThan(at0(12))
+    // no cliff: 72h keeps decaying instead of snapping to zero
+    const old = fatigueOf([doneWorkoutAt(SINGLE.id, NOW - 72 * HOUR)], NOW)[SINGLE_SLUG]
+    expect(old).toBeGreaterThan(0)
+    expect(old).toBeLessThan(0.25)
   })
 
   it('decays each weighted stimulus exactly at 36 hours and by sqrt-half at 18 hours', () => {
@@ -101,18 +118,23 @@ describe('fatigueOf and strengthOf', () => {
       const fatigue = fatigueOf([doneWorkoutAt(WEIGHTED.id, NOW - age)], NOW)
       const expectedDecay = 0.5 ** (age / FATIGUE_HALF_LIFE_MS)
       for (const [slug, weight] of Object.entries(WEIGHTED_WEIGHTS)) {
-        expect(fatigue[slug]).toBeCloseTo(weight * expectedDecay, 12)
+        expect(fatigue[slug]).toBeCloseTo(1 - Math.exp(-weight * expectedDecay / FATIGUE_REF_VOLUME), 10)
       }
-      if (age === FATIGUE_HALF_LIFE_MS) expect(fatigue[WEIGHTED_PRIMARY_SLUG]).toBe(0.5)
+      if (age === FATIGUE_HALF_LIFE_MS) {
+        expect(fatigue[WEIGHTED_PRIMARY_SLUG]).toBeCloseTo(1 - Math.exp(-0.5 / FATIGUE_REF_VOLUME), 10)
+      }
       if (age === FATIGUE_HALF_LIFE_MS / 2) {
-        expect(fatigue[WEIGHTED_PRIMARY_SLUG]).toBeCloseTo(0.5 ** 0.5, 12)
+        expect(fatigue[WEIGHTED_PRIMARY_SLUG]).toBeCloseTo(1 - Math.exp(-(0.5 ** 0.5) / FATIGUE_REF_VOLUME), 10)
       }
     }
   })
 
-  it('excludes a completed set exactly at the strict 72-hour window edge', () => {
-    const workouts = [doneWorkoutAt(SINGLE.id, NOW - FATIGUE_WINDOW_MS)]
-    expect(fatigueOf(workouts, NOW)).toEqual(zeroFatigue())
+  it('fades a 72-hour-old set below the ready threshold instead of hard-cutting', () => {
+    const workouts = [doneWorkoutAt(SINGLE.id, NOW - 72 * HOUR)]
+    const value = fatigueOf(workouts, NOW)[SINGLE_SLUG]
+    expect(value).toBeGreaterThan(0)
+    expect(value).toBeLessThan(0.25)
+    expect(fatigueStateOf(value)).toBe(FATIGUE_STATES.READY)
     expect(strengthOf(workouts, NOW)[SINGLE_SLUG]).toBe(1)
   })
 
@@ -126,11 +148,15 @@ describe('fatigueOf and strengthOf', () => {
 })
 
 describe('fatigue state boundaries', () => {
+  // Inverse of the saturation curve: raw stimulus needed to land exactly on a target level.
+  const rawAt = target => -FATIGUE_REF_VOLUME * Math.log(1 - target)
+
   it('classifies exactly .25 as recovering and .2499 as ready', () => {
     const weight = WEIGHTED_WEIGHTS[SECONDARY_SLUG]
+    const sets = 3
     const valueAt = target => {
-      const age = FATIGUE_HALF_LIFE_MS * Math.log2(weight / target)
-      const value = fatigueOf([doneWorkoutAt(WEIGHTED.id, NOW - age)], NOW)[SECONDARY_SLUG]
+      const age = FATIGUE_HALF_LIFE_MS * Math.log2(sets * weight / rawAt(target))
+      const value = fatigueOf([doneWorkoutAt(WEIGHTED.id, NOW - age, sets)], NOW)[SECONDARY_SLUG]
       expect(value).toBeCloseTo(target, 10)
       return stableFloat(value)
     }
@@ -140,15 +166,16 @@ describe('fatigue state boundaries', () => {
   })
 
   it('classifies exactly .5 as recovering, .5001 as fatigued, and hooks only fatigued muscles', () => {
-    const atHalf = [doneWorkoutAt(SINGLE.id, NOW - FATIGUE_HALF_LIFE_MS)]
+    const sets = 3
+    const atHalf = [doneWorkoutAt(SINGLE.id, NOW - FATIGUE_HALF_LIFE_MS * Math.log2(sets / rawAt(0.4999)), sets)]
     const aboveHalf = [
-      doneWorkoutAt(SINGLE.id, NOW - FATIGUE_HALF_LIFE_MS * Math.log2(1 / 0.5001)),
+      doneWorkoutAt(SINGLE.id, NOW - FATIGUE_HALF_LIFE_MS * Math.log2(sets / rawAt(0.5001)), sets),
     ]
     const half = fatigueOf(atHalf, NOW)[SINGLE_SLUG]
     const above = fatigueOf(aboveHalf, NOW)[SINGLE_SLUG]
 
-    expect(half).toBe(0.5)
-    expect(fatigueStateOf(half)).toBe(FATIGUE_STATES.RECOVERING)
+    expect(half).toBeCloseTo(0.4999, 10)
+    expect(fatigueStateOf(stableFloat(half))).toBe(FATIGUE_STATES.RECOVERING)
     expect(fatiguedMuscles(atHalf, NOW)).toEqual([])
     expect(above).toBeCloseTo(0.5001, 10)
     expect(fatigueStateOf(stableFloat(above))).toBe(FATIGUE_STATES.FATIGUED)
@@ -179,22 +206,24 @@ describe('strengthOf', () => {
 })
 
 describe('accumulation and purity', () => {
-  it('matches the sum of independently decayed stimuli in chronological order', () => {
+  it('matches the saturated sum of independently decayed stimuli in chronological order', () => {
     const ages = [64 * HOUR, 40 * HOUR]
     const workouts = ages.map(age => doneWorkoutAt(SINGLE.id, NOW - age))
-    const expected = ages.reduce(
+    const raw = ages.reduce(
       (sum, age) => sum + 0.5 ** (age / FATIGUE_HALF_LIFE_MS),
       0,
     )
+    const expected = 1 - Math.exp(-raw / FATIGUE_REF_VOLUME)
 
-    expect(expected).toBeLessThan(1)
-    expect(fatigueOf(workouts, NOW)[SINGLE_SLUG]).toBeCloseTo(expected, 12)
-    expect(fatigueOf([...workouts].reverse(), NOW)[SINGLE_SLUG]).toBeCloseTo(expected, 12)
+    expect(raw).toBeLessThan(FATIGUE_REF_VOLUME)
+    expect(fatigueOf(workouts, NOW)[SINGLE_SLUG]).toBeCloseTo(expected, 10)
+    expect(fatigueOf([...workouts].reverse(), NOW)[SINGLE_SLUG]).toBeCloseTo(expected, 10)
   })
 
-  it('clamps saturation and returns identical results without mutating inputs or sharing state', () => {
+  it('saturates without pinning and returns identical results without mutating inputs or sharing state', () => {
     const saturated = [doneWorkoutAt(SINGLE.id, NOW, 2)]
-    expect(fatigueOf(saturated, NOW)[SINGLE_SLUG]).toBe(1)
+    expect(fatigueOf(saturated, NOW)[SINGLE_SLUG]).toBeCloseTo(1 - Math.exp(-2 / FATIGUE_REF_VOLUME), 10)
+    expect(fatigueOf(saturated, NOW)[SINGLE_SLUG]).toBeLessThan(1)
 
     const workouts = [
       doneWorkoutAt(SINGLE.id, NOW - 64 * HOUR),

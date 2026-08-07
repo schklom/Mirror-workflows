@@ -3,11 +3,55 @@
 An optional AI that **designs** a training plan and **revises it from what you actually log**,
 running on your own server under your own provider account, off until an admin turns it on.
 
-> This document grows with the feature. What is described here is what has landed: the server
-> plumbing, the consent and payload boundary, the credential model, the validator and apply
-> path, and the Claude provider with its opt-in packaging. The UI arrives in the PRs that follow.
+> This document grows with the feature, which lands across a sequence of PRs. Anything described
+> here that has not reached your instance yet is visibly absent rather than broken — the Coach
+> only appears at all once an admin has enabled it and a runtime can be reached.
 
 ---
+
+## Turning it on
+
+Nothing here is an environment variable or a restart — the whole point of the admin card is that
+enabling the Coach is a decision you make in the app.
+
+**1. Build the image that has an AI runtime in it.** The default image deliberately has none:
+
+```bash
+API_TARGET=coach docker compose up -d --build api
+```
+
+`--build` matters. With a prebuilt `image:` also set, compose would otherwise pull the default.
+
+**2. Get a credential.** On a trusted machine where you already use Claude Code:
+
+```bash
+claude setup-token
+```
+
+Complete its normal browser sign-in and copy the token it prints. openGym never opens or handles
+that flow — it only ever receives the finished token.
+
+**3. Connect it.** In the app: **Settings → Admin → AI Coach**.
+
+- Toggle the card on.
+- Pick the **Claude (Anthropic)** provider chip.
+- **Add CLI token** → paste the token, and optionally label whose account it is (that label is
+  what both the admin card and each user's Coach screen show when they name the account).
+- **Test the Coach** — a real round trip through the provider with no user data anywhere near it.
+  It reports the runtime version on success, and the provider's own error on failure.
+
+The card also states two things worth reading before anyone uses it: whether jobs actually run
+unprivileged, and which account is being spent.
+
+**4. Use it.** Each person opens **Plan → AI Coach**, agrees to the consent screen — which lists
+exactly what leaves the server, generated from the same module that builds payloads — and then
+either has a plan built from a short intake or asks for a review of what they have logged.
+
+> **On a multi-profile instance, read [Whose account pays](#whose-account-pays) first.** In the
+> default instance mode the credential binds to the first profile that spends it and **every
+> other profile is refused**, by design. That is the right behaviour when one person's personal
+> subscription is behind it — but on a shared box it means one user gets the Coach and the rest
+> get a refusal until per-profile sign-in exists.
 
 ## Whose account pays
 

@@ -50,3 +50,21 @@ test('the fixture provider needs no credential and the Claude one names both it 
   assert.equal(cfg.PROVIDERS.claude.apiKeyEnv, 'ANTHROPIC_API_KEY');
   assert.equal(cfg.PROVIDERS.claude.setupToken, true);
 });
+
+test('the Codex credential cache is a sibling of ./data, never inside it', () => {
+  // The documented backup is `tar czf … data/`. A refresh token under ./data would ride along in
+  // every archive an owner is told to make, and keep working wherever that archive is copied.
+  const home = cfg.CREDENTIAL_HOME;
+  assert.ok(home, 'a provider that writes a credential cache needs somewhere to write it');
+  assert.equal(home.startsWith(process.env.DATA_DIR + '/'), false, `${home} is inside ./data`);
+
+  // …and it is actually handed to the runtime, under the variable that provider declares.
+  cfg.reset();
+  cfg.save({ enabled: true, provider: 'codex' });
+  assert.equal(cfg.jobEnv('/tmp/job', { ok: true }).CODEX_HOME, home);
+
+  // A provider with no cache of its own is given no such variable at all.
+  cfg.reset();
+  cfg.save({ enabled: true, provider: 'claude' });
+  assert.equal(cfg.jobEnv('/tmp/job', { ok: true }).CODEX_HOME, undefined);
+});

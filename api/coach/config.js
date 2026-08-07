@@ -27,6 +27,17 @@ import path from 'node:path';
 
 const DATA = process.env.DATA_DIR || '/data';
 const FILE = path.join(DATA, 'coach.json');
+
+/* Where a provider runtime that manages its own credential cache is allowed to keep it.
+ *
+ * A sibling of ./data, never inside it, and that placement is the whole point. docs/SELF_HOSTING
+ * tells people to back up with `tar czf … data/`; anything under ./data therefore ends up in
+ * every backup archive an owner is told to make. A refresh token is not workout history — it is
+ * a live credential that keeps working after the archive is copied to a laptop or a cloud drive.
+ *
+ * So the runtime gets its own mount, and the backup instructions stay true rather than being
+ * quietly wrong about what they capture. */
+export const CREDENTIAL_HOME = process.env.COACH_CREDENTIAL_DIR || '/coach-auth';
 export const COACH_DISABLED = /^(1|true|yes|on)$/i.test(process.env.COACH_DISABLED || '');
 
 // Providers this build can drive. `runtime` is what the adapter runs. Adding one is an adapter
@@ -42,6 +53,13 @@ export const PROVIDERS = {
   claude: {
     label: 'Claude (Anthropic)', runtime: 'Claude Agent SDK',
     apiKeyEnv: 'ANTHROPIC_API_KEY', oauthEnv: 'CLAUDE_CODE_OAUTH_TOKEN', setupToken: true
+  },
+  // Codex keeps a refreshable login cache in $CODEX_HOME rather than taking a token on the
+  // environment, so it is the one provider that needs somewhere durable to write. That
+  // somewhere is CREDENTIAL_HOME — outside ./data, so `tar czf … data/` cannot capture it.
+  codex: {
+    label: 'Codex (OpenAI)', runtime: 'Codex CLI',
+    apiKeyEnv: 'CODEX_API_KEY', oauthEnv: null, credentialHomeEnv: 'CODEX_HOME'
   }
 };
 
@@ -233,6 +251,10 @@ export function jobEnv(jobDir, resolved) {
       : resolved.type === 'apikey' ? meta.apiKeyEnv : null;
     if (name) env[name] = auth.token;
   }
+  // A provider whose runtime keeps its own credential cache needs a home that survives the job,
+  // because HOME is a temp dir that dies with it. It is deliberately NOT under ./data — see
+  // CREDENTIAL_HOME — so the documented backup of ./data cannot pick up a live refresh token.
+  if (meta.credentialHomeEnv) env[meta.credentialHomeEnv] = CREDENTIAL_HOME;
   return env;
 }
 

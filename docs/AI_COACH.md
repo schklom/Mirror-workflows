@@ -178,6 +178,27 @@ job environment is built from nothing rather than filtered, and the SDK's `env` 
 the child environment rather than extending it — so `RP_ID`, `ADMIN_UIDS` and the VAPID keys
 cannot reach it by inheritance even by accident.
 
+## Where a credential lives
+
+Two shapes, because the two providers work differently:
+
+- **Claude** takes its credential on the environment, so nothing is written to disk beyond the
+  encrypted blob in `coach.json` — it reaches the model process as `CLAUDE_CODE_OAUTH_TOKEN` (or
+  `ANTHROPIC_API_KEY`) and by no other route.
+- **Codex** keeps a refreshable sign-in cache of its own, so it needs somewhere durable to write.
+  That is `./coach-auth`, mounted at `/coach-auth`, owned by the `coach` user, mode `0700`.
+
+`./coach-auth` is a **sibling of `./data`, never a folder inside it**, and that placement is the
+whole point. §5 of `docs/SELF_HOSTING.md` tells owners to back up with `tar czf … data/`.
+Anything under `./data` is therefore in every backup archive people are instructed to produce —
+and unlike workout history, a refresh token keeps working after that archive is copied to a
+laptop or a cloud drive. Keeping the cache outside `./data` is what lets the backup instructions
+stay true about what they capture.
+
+Per-profile credentials follow the same rule for the same reason: they live in
+`coach-auth-<uid>.json` at mode `0600`, never in the synced state blob, so they cannot ride along
+in a device sync or in a user's own JSON export.
+
 ## Off is really off
 
 `COACH_DISABLED=1` forces the Coach off everywhere regardless of what is stored — the fleet

@@ -8,6 +8,7 @@
  */
 import { run } from './spawn.js';
 import claude from './claude.js';
+import codex from './codex.js';
 
 /**
  * The in-repo fake provider. Ships with the image on purpose: it is what CI drives, and it
@@ -32,7 +33,8 @@ const fixture = {
 
 /* claude is registered unconditionally, and that is safe because claude.js imports the SDK
    lazily: on the default image the module loads, check() reports the runtime as absent, and
-   isConnected() keeps the Coach out of /api/config entirely. Codex arrives with 6/6. */
-const ADAPTERS = { fixture, claude };
+   isConnected() keeps the Coach out of /api/config entirely. Codex is here too, and unlike
+   the SDK its runtime is a CLI binary, so its absence shows up as a spawn error from check(). */
+const ADAPTERS = { fixture, claude, codex };
 export const adapterFor = provider => ADAPTERS[provider] || null;
 export default ADAPTERS;

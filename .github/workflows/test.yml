@@ -98,6 +98,21 @@ jobs:
             console.log(r.version);
           '
 
+      - name: the coach image carries the Codex runtime and its sandbox
+        run: |
+          docker run --rm opengym-api:coach codex --version
+          docker run --rm opengym-api:coach bwrap --version
+          # Owned by the user jobs drop to, and 0700 — a credential cache readable by anything
+          # else in the container would undo the point of dropping privileges at all.
+          test "$(docker run --rm opengym-api:coach stat -c '%U %a' /coach-auth)" = "coach 700"
+
+      - name: neither Codex nor its sandbox is in the default image
+        run: |
+          # bubblewrap is a Codex requirement, so an owner who never opted in should not be
+          # carrying it. Both commands must fail.
+          ! docker run --rm opengym-api:default codex --version 2>/dev/null
+          ! docker run --rm opengym-api:default bwrap --version 2>/dev/null
+
       - name: the privilege drop can actually be performed in the image
         run: |
           # canDropPrivileges() fails closed, so a missing `coach` user disables every job —

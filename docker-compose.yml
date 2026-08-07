@@ -40,6 +40,10 @@ services:
       - DATA_DIR=/data
     volumes:
       - ./data:/data         # users, passkeys, per-user state, session secret — BACK THIS UP
+      # Provider credential cache (Codex). A sibling of ./data on purpose: the documented backup
+      # is `tar czf … data/`, and a live refresh token must not end up inside it. Nothing here
+      # needs backing up — if you lose it, sign the provider in again.
+      - ./coach-auth:/coach-auth
 
   # Builds the React frontend (multi-stage) and serves it, proxying /api → api
   # and the exercise media from the shared volume. Single origin for passkeys.

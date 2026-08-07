@@ -42,6 +42,20 @@ CMD ["node", "server.js"]
 FROM base AS coach
 RUN npm ci --omit=dev && npm cache clean --force
 
+# Codex ships as a CLI rather than a library, so it is installed rather than resolved, and
+# bubblewrap is its sandbox — a Codex requirement, which is why neither appears in the default
+# target or anywhere in this tree until now.
+RUN apk add --no-cache bubblewrap \
+ && npm install -g @openai/codex \
+ && npm cache clean --force
+
+# Where Codex keeps its refreshable login cache. Deliberately a sibling of /data rather than a
+# path inside it: docs/SELF_HOSTING tells owners to back up with `tar czf … data/`, and a live
+# refresh token has no business riding along in every archive that instruction produces. Owned
+# by `coach` because the job that writes it has already dropped to that user.
+RUN mkdir -p /coach-auth && chown coach:coach /coach-auth && chmod 700 /coach-auth
+VOLUME ["/coach-auth"]
+
 # ---------------------------------------------------------------------------------------------
 # Last, so that a plain `docker build ./api` keeps producing the runtime-free image.
 FROM base AS default

@@ -223,6 +223,7 @@ export default {
   'Sign in with passkey': '用通行密钥登录',
   'Create new profile': '创建新档案',
   "This browser doesn't support passkeys — you can still use openGym locally on this device.": '此浏览器不支持通行密钥——你仍可在本设备上本地使用 openGym。',
+  "This browser doesn't support passkeys, and this instance requires an account. Try a browser or device with passkey support.": '此浏览器不支持通行密钥，且此服务器需要账户。请换用支持通行密钥的浏览器或设备。',
   'Continue without account': '不用账号继续',
   'Passkeys use {0} — no passwords.': '通行密钥使用{0}——没有密码。',
   'Each profile keeps its own plan, workouts & body weight.': '每个档案有自己的计划、训练和体重。',

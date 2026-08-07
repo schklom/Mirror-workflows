@@ -1,21 +1,25 @@
 import { useStore } from '../store/useStore.js'
 import { useUI } from '../store/useUI.js'
-import { webauthnOK, passkeyLogin, passkeyRegister, api, BIO } from '../lib/api.js'
+import { webauthnOK, passkeyLogin, passkeyRegister, BIO } from '../lib/api.js'
 import { hasData } from '../store/useStore.js'
 import { t } from '../lib/i18n.js'
 import { DEMO, REPO } from '../lib/demo.js'
+import { guestAllowed } from '../lib/guest.js'
 import { useState, useRef, useEffect } from 'react'
 import Icon from '../components/Icon.jsx'
 import { Button } from '../components/ui.jsx'
 
 function RegisterSheet({ close }) {
-  const { setUser, pushState, pullState } = useStore()
+  const { setUser, pushState, pullState, loadConfig } = useStore()
+  const config = useStore(s => s.config)
   const [name, setName] = useState('')
   const [code, setCode] = useState('')
-  const [inviteOnly, setInviteOnly] = useState(false)
+  const inviteOnly = !!config?.invite_only
   const ref = useRef(null)
   useEffect(() => { setTimeout(() => ref.current?.focus(), 250) }, [])
-  useEffect(() => { api('/api/config').then(c => setInviteOnly(!!c.invite_only)).catch(() => {}) }, [])
+  // Boot already fetched this; retry here only if that attempt failed, so the invite field still
+  // appears on an instance whose config arrived late rather than never.
+  useEffect(() => { loadConfig() }, [loadConfig])
   const go = async () => {
     const n = name.trim()
     if (!n) { useUI.getState().toast(t('Enter a name')); return }
@@ -44,6 +48,8 @@ function RegisterSheet({ close }) {
 
 export default function Login() {
   const { setUser, pullState, setGuest } = useStore()
+  const config = useStore(s => s.config)
+  const canGuest = guestAllowed(config)
   const signIn = async () => {
     try { const u = await passkeyLogin(); setUser(u); await pullState(); useUI.getState().toast(t('Welcome back, {0}', u.name)) }
     catch (e) { if (e.name !== 'NotAllowedError' && e.name !== 'AbortError') useUI.getState().toast(e.message || t('Sign-in failed')) }
@@ -77,9 +83,13 @@ export default function Login() {
         <Button variant="primary" icon="person" onClick={signIn}>{t('Sign in with passkey')}</Button>
         <div style={{ height: 10 }} />
         <Button icon="sparkles" onClick={() => useUI.getState().openSheet(close => <RegisterSheet close={close} />)}>{t('Create new profile')}</Button>
-        <div style={{ height: 10 }} />
-      </> : <div className="card small muted" style={{ textAlign: 'left' }}>{t("This browser doesn't support passkeys — you can still use openGym locally on this device.")}</div>}
-      <Button variant="ghost" className="dim" onClick={() => setGuest(true)}>{t('Continue without account')}</Button>
+        {canGuest && <div style={{ height: 10 }} />}
+      </> : <div className="card small muted" style={{ textAlign: 'left' }}>{canGuest
+        ? t("This browser doesn't support passkeys — you can still use openGym locally on this device.")
+        // Without passkeys and without the guest entrance there is no way in from this browser,
+        // so say that plainly instead of offering a local profile that cannot be created.
+        : t("This browser doesn't support passkeys, and this instance requires an account. Try a browser or device with passkey support.")}</div>}
+      {canGuest && <Button variant="ghost" className="dim" onClick={() => setGuest(true)}>{t('Continue without account')}</Button>}
       <div className="dim small" style={{ marginTop: 26, lineHeight: 1.5 }}>{t('Passkeys use {0} — no passwords.', BIO)}<br />{t('Each profile keeps its own plan, workouts & body weight.')}</div>
     </div>
   )

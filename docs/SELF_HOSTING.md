@@ -90,11 +90,12 @@ Visit `https://gym.example.com`, create your profile, and add it to your home sc
 Anyone who can reach the URL can create their own profile — each gets isolated data. That's the
 default: open signup, no admin.
 
-If you'd rather control who gets in, two optional settings in `.env` turn that around:
+If you'd rather control who gets in, three optional settings in `.env` turn that around:
 
 ```bash
 ADMIN_UIDS=youruserid      # comma-separated; these users get the admin dashboard
 INVITE_ONLY=1              # new profiles need an invite code
+ALLOW_GUEST=0              # remove "Continue without account"
 ```
 
 Register your own passkey profile first, then find your id in `./data/db.json` under `users[].id`
@@ -103,6 +104,16 @@ right now, each user's workout history and body weight, the ability to disable a
 out and locked out everywhere until you re-enable it), and — with `INVITE_ONLY=1` — generating and
 revoking invite codes. Existing accounts keep working when you switch invite-only on. Admin access
 is gated by your passkey and enforced server-side, so it needs no separate login.
+
+`INVITE_ONLY=1` and `ALLOW_GUEST=0` answer different questions and are usually set together.
+Invite-only controls who may *create a profile*; it says nothing about the **Continue without
+account** button, which never creates one. Guest mode keeps everything in that browser and never
+talks to the server — there is no account, no sync and nothing for the admin dashboard to show —
+so on an instance meant for a known set of people it is a door that leads nowhere useful. With
+`ALLOW_GUEST=0` the button is gone, and anyone already using the app as a guest is returned to the
+login screen on their next visit. Their data is not deleted: it stays in that browser and comes
+back if you ever switch guests on again, or moves into a real profile if they create one on the
+same device.
 
 Prefer to keep the whole thing off the open internet? A VPN or an auth proxy (Authelia, Cloudflare
 Access…) in front still works, and composes with the above.

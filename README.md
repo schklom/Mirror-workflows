@@ -155,6 +155,7 @@ All via `.env` (see `.env.example`):
 | `RP_NAME`     | Name shown in the passkey prompt                     | `openGym`               |
 | `ADMIN_UIDS`  | User ids that get the admin dashboard (comma-separated) | *(none)*             |
 | `INVITE_ONLY` | Require an invite code to create a profile           | *(off)*                 |
+| `ALLOW_GUEST` | Offer "Continue without account" — set `0` to require a profile | *(on)*       |
 
 Push notification keys are generated on first run and saved to `./data/vapid.json` — nothing to set.
 

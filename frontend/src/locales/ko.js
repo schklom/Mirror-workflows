@@ -223,6 +223,7 @@ export default {
   'Sign in with passkey': '패스키로 로그인',
   'Create new profile': '새 프로필 만들기',
   "This browser doesn't support passkeys — you can still use openGym locally on this device.": '이 브라우저는 패스키를 지원하지 않아요 — 그래도 이 기기에서 openGym을 로컬로 사용할 수 있습니다.',
+  "This browser doesn't support passkeys, and this instance requires an account. Try a browser or device with passkey support.": '이 브라우저는 패스키를 지원하지 않고, 이 서버는 계정이 필요합니다. 패스키를 지원하는 브라우저나 기기를 사용해 보세요.',
   'Continue without account': '계정 없이 계속',
   'Passkeys use {0} — no passwords.': '패스키는 {0}을(를) 사용합니다 — 비밀번호 없음.',
   'Each profile keeps its own plan, workouts & body weight.': '프로필마다 자신의 계획, 운동, 체중을 보관합니다.',

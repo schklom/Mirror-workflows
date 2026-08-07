@@ -2,7 +2,27 @@
 
 ## v1.2.6 — 2026-08-07
 
-A freestyle session no longer starts from blanks. Nothing else in the app changed.
+A freestyle session no longer starts from blanks, and a self-hosted instance can finally insist
+that everyone using it has an account.
+
+### An instance can require an account (#42)
+
+- 🔒 **`ALLOW_GUEST=0` removes the "Continue without account" button.** Guest mode keeps everything
+  in the browser and never touches the server — no account, no sync, nothing the admin dashboard
+  can see — so on an instance meant for a known set of people it was a door leading nowhere
+  useful, and until now there was no way to close it.
+- **It also ends guest sessions that already exist.** Guests never authenticate, so there is no
+  request for the server to start refusing; the switch reaches someone already inside on their
+  next visit, when the app checks the config and returns them to the login screen. Their data is
+  not deleted — it stays in that browser, and moves into a real profile if they create one on the
+  same device.
+- **A server it cannot reach is not a server that said no.** The button is only withdrawn on an
+  explicit `allow_guest: false`; a failed config request, or a server too old to send the flag at
+  all, leaves guest mode exactly as it was. An instance that is merely offline for a moment does
+  not lock out everyone who never made an account.
+- **Default is on, so nothing changes for existing instances.** Set it alongside `INVITE_ONLY=1`:
+  invite-only governs who may *create a profile* and says nothing about the guest button, which
+  never creates one.
 
 ### Freestyle sessions start where you left off
 

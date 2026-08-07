@@ -223,6 +223,7 @@ export default {
   'Sign in with passkey': 'Geçiş anahtarıyla giriş yap',
   'Create new profile': 'Yeni profil oluştur',
   "This browser doesn't support passkeys — you can still use openGym locally on this device.": 'Bu tarayıcı geçiş anahtarlarını desteklemiyor — yine de openGym’i bu cihazda yerel olarak kullanabilirsin.',
+  "This browser doesn't support passkeys, and this instance requires an account. Try a browser or device with passkey support.": 'Bu tarayıcı geçiş anahtarlarını desteklemiyor ve bu sunucu bir hesap gerektiriyor. Geçiş anahtarı destekleyen bir tarayıcı veya cihaz dene.',
   'Continue without account': 'Hesapsız devam et',
   'Passkeys use {0} — no passwords.': 'Geçiş anahtarları {0} kullanır — şifre yok.',
   'Each profile keeps its own plan, workouts & body weight.': 'Her profilin kendi planı, antrenmanları ve vücut ağırlığı vardır.',

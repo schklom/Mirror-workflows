@@ -1,5 +1,26 @@
 # Changelog
 
+## v1.2.6 — 2026-08-07
+
+A freestyle session no longer starts from blanks. Nothing else in the app changed.
+
+### Freestyle sessions start where you left off
+
+- 🏋️ **Adding an exercise to an empty workout now prefills it from the last time you trained
+  it** — the same number of sets, with each row's reps and weight carried across by position.
+  Cardio brings its duration and speed, a hold brings its seconds. Until now every row opened on
+  the config-sheet defaults, so the first thing a freestyle session asked of you was to retype
+  what you already did last week.
+- **The config sheet agrees with the rows it is about to create.** It opens on the last target you
+  actually trained rather than the generic default, so the set count you confirm is the set count
+  you get.
+- **Planned sessions are untouched.** A routine-driven workout still runs the progression logic and
+  still applies its prescription; only the freestyle path — which has no prescription to apply —
+  reads from history instead.
+
+Contributed by [@Space-Hermes](https://github.com/Space-Hermes) in
+[#50](https://github.com/DuarteSantos8/openGym/pull/50).
+
 ## v1.2.5 — 2026-08-04
 
 Nothing in the app itself changed. This release adds an optional side door: a small server that

@@ -33,7 +33,14 @@ const maybeRestNotification = async () => {
   if (!document.hidden && document.visibilityState !== 'hidden') return
   if (Notification.permission !== 'granted' && !(await requestRestNotificationPermission())) return
   try {
-    new Notification(t('Rest over'), { body: t('Rest over — next set!') })
+    // Android Chrome forbids the Notification constructor (Illegal constructor) - the
+    // service-worker registration path is the one that actually pops there.
+    const reg = await navigator.serviceWorker?.getRegistration?.()
+    if (reg?.showNotification) {
+      reg.showNotification(t('Rest over — next set!'), { body: t('Rest over — next set!') })
+      return
+    }
+    new Notification(t('Rest over — next set!'), { body: t('Rest over — next set!') })
   } catch {
     // Intentionally ignore: notification APIs vary by browser and policy in edge cases.
   }

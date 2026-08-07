@@ -157,7 +157,7 @@ describe('warm-up sets and 1RM', () => {
   it('does not let a ticked-off warm-up set set or raise the estimated 1RM', () => {
     const working = { id: 'warm-test', sets: [{ w: 80, r: 5, done: true }] }
     expect(bestSetOf(ENTRY)).toEqual(bestSetOf(working))
-    expect(best1RM({ workouts: [{ entries: [ENTRY] }] }, 'warm-test')).toBe(
+    expect(best1RM({ workouts: [{ entries: [ENTRY] }] }, 'warm-test')).toEqual(
       best1RM({ workouts: [{ entries: [working] }] }, 'warm-test'),
     )
   })

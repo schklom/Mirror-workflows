@@ -36,8 +36,8 @@ export default function Plan() {
     </div>
     {showCoach && <div className="list" style={{ marginBottom: 10 }}>
       <Row icon="sparkles" iconTint="var(--acc)" accessory="chevron"
-        title={t('AI Coach')}
-        subtitle={t('Build a plan, or have it reviewed against what you actually logged.')}
+        title={t('Coach')}
+        subtitle={t('Plan design and reviews, from your own training')}
         onClick={() => nav('/coach')} />
     </div>}
 

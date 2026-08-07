@@ -2,8 +2,41 @@
 
 ## v1.2.6 — 2026-08-07
 
-A freestyle session no longer starts from blanks, and a self-hosted instance can finally insist
-that everyone using it has an account.
+The muscle map learned to answer a second question — not just where the volume went, but what is
+still recovering from it. Plus: a freestyle session no longer starts from blanks, the rest timer
+can reach you in another app, and a self-hosted instance can insist that everyone using it has an
+account.
+
+### The muscle map, read as recovery (#44)
+
+- 🔥 **A `Balance | Fatigue | Strength` switch on the Stats muscle card.** Balance is the map you
+  already had and is untouched. Fatigue shades each muscle by how much of the recent training it
+  is still carrying; Strength shades it by how long it has been since you trained it at all, with
+  the weeks-since count spelled out underneath.
+- **Fatigue is volume-sensitive and fades smoothly.** A hard twelve-set chest day starts near the
+  top and takes about six days to read ready again; a single set barely registers and is gone in
+  two. It decays continuously on a 36-hour half-life rather than expiring at a window edge, so the
+  map never flips from "fatigued" to "ready" between one look and the next.
+- **Strength holds for two weeks, then decays toward a floor.** A muscle you have not trained in
+  months reads detrained rather than absent, which is the state that actually tells you something.
+- Both views are pure functions over your existing history — no new stored data, no schema change,
+  nothing sent anywhere.
+
+### The rest timer can reach you in another app (#49)
+
+- ⏰ **A system notification when rest is over**, on top of the beep, for when you have switched to
+  another tab or app mid-session. Permission is asked the first time a rest starts, and everything
+  degrades quietly where notifications are unsupported or refused.
+- It goes through the service worker where the browser requires that — which is most phones — and
+  falls back to the direct API elsewhere. No new dependencies; the existing server push path is
+  untouched.
+
+### Rows now strain the rear delts (#51)
+
+- **Four row variations gained rear-deltoid secondaries** — barbell, dumbbell, inverted and cable
+  seated rows — so the muscle map spreads their load the way the lift actually does. The overrides
+  live in a small table that survives a regeneration of the exercise dataset rather than being
+  edited into the generated data.
 
 ### An instance can require an account (#42)
 

@@ -186,9 +186,11 @@ function ActiveWorkout() {
     // Changing a weight cascades to the following sets of the same phase, so a
     // heavier bar carries through the set instead of retyping every row.
     if (field === 'w') {
+      const cfg = e.target || e
+      if (cfg.weightPrescription?.kind === 'percentage') return
       const warm = !!e.sets[i].warmup
       for (let j = i + 1; j < e.sets.length; j++) {
-        if (!!e.sets[j].warmup === warm) {
+        if (!!e.sets[j].warmup === warm && !e.sets[j].done) {
           if (v == null) delete e.sets[j][field]; else e.sets[j][field] = v
         }
       }

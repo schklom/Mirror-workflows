@@ -162,7 +162,7 @@ export default {
   'The sets you logged in this session will be lost.': '本次记录的组数将丢失。',
   'Superset {0} / {1}': '超级组 {0} / {1}',
   'Exercise {0} / {1}': '动作 {0} / {1}',
-  'Superset · do these back-to-back, rest after both': '超级组 · 连续完成，两个都做完再休息',
+  'Superset · do these back-to-back, rest when done': '超级组 · 连续完成，全部做完再休息',
   'Freestyle workout — add your first exercise.': '自由训练——添加你的第一个动作。',
   'Finish workout early · {0} exercises': '提前结束 · {0} 个动作',
   'Rest over — next set!': '休息结束——下一组！',

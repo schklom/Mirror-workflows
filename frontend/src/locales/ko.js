@@ -162,7 +162,7 @@ export default {
   'The sets you logged in this session will be lost.': '이 세션에서 기록한 세트가 사라집니다.',
   'Superset {0} / {1}': '슈퍼세트 {0} / {1}',
   'Exercise {0} / {1}': '운동 {0} / {1}',
-  'Superset · do these back-to-back, rest after both': '슈퍼세트 · 연달아 수행하고, 둘 다 끝난 뒤 휴식',
+  'Superset · do these back-to-back, rest when done': '슈퍼세트 · 연달아 수행하고, 전부 끝난 뒤 휴식',
   'Freestyle workout — add your first exercise.': '자유 운동 — 첫 운동을 추가하세요.',
   'Finish workout early · {0} exercises': '일찍 마치기 · 운동 {0}개',
   'Rest over — next set!': '휴식 끝 — 다음 세트!',

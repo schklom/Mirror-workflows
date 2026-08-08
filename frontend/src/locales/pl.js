@@ -162,7 +162,7 @@ export default {
   'The sets you logged in this session will be lost.': 'Serie zapisane w tej sesji zostaną utracone.',
   'Superset {0} / {1}': 'Superseria {0} / {1}',
   'Exercise {0} / {1}': 'Ćwiczenie {0} / {1}',
-  'Superset · do these back-to-back, rest after both': 'Superseria · rób jedno po drugim, odpocznij po obu',
+  'Superset · do these back-to-back, rest when done': 'Superseria · rób jedno po drugim, odpocznij na końcu',
   'Freestyle workout — add your first exercise.': 'Trening dowolny — dodaj pierwsze ćwiczenie.',
   'Finish workout early · {0} exercises': 'Zakończ wcześniej · {0} ćwiczeń',
   'Rest over — next set!': 'Koniec przerwy — następna seria!',

@@ -567,4 +567,7 @@ export default {
   '{0} per side': '한쪽당 {0}회',
   'You still log the total: {0} is {1} per side.': '기록은 그대로 합계로 합니다: {0}회는 한쪽당 {1}회입니다.',
   '{0} sets · {1} work': '{0} 세트 · {1} 작업',
+  'Make superset with previous': '이전 운동과 슈퍼셋',
+  'Make superset with next': '다음 운동과 슈퍼셋',
+  'Unpair': '분리'
 }

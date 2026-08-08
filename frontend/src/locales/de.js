@@ -584,4 +584,7 @@ export default {
   '{0} per side': '{0} pro Seite',
   'You still log the total: {0} is {1} per side.': 'Du trägst weiterhin die Gesamtzahl ein: {0} sind {1} pro Seite.',
   '{0} sets · {1} work': '{0} Sätze · {1} Arbeit',
+  'Make superset with previous': 'Mit vorheriger Übung kombinieren',
+  'Make superset with next': 'Mit nächster Übung kombinieren',
+  'Unpair': 'Trennen'
 }

@@ -567,4 +567,7 @@ export default {
   '{0} per side': '每侧 {0} 次',
   'You still log the total: {0} is {1} per side.': '你记录的仍然是总数：{0} 表示每侧 {1} 次。',
   '{0} sets · {1} work': '{0} 组 · {1} 工作',
+  'Make superset with previous': '与上一个组成超级组',
+  'Make superset with next': '与下一个组成超级组',
+  'Unpair': '取消组合'
 }

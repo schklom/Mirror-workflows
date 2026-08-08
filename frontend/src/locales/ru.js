@@ -567,4 +567,7 @@ export default {
   '{0} per side': '{0} на сторону',
   'You still log the total: {0} is {1} per side.': 'Ты по-прежнему записываешь общее число: {0} — это {1} на сторону.',
   '{0} sets · {1} work': '{0} подходов · {1} рабочих',
+  'Make superset with previous': 'Суперсет с предыдущим',
+  'Make superset with next': 'Суперсет со следующим',
+  'Unpair': 'Разъединить'
 }

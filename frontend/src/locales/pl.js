@@ -567,4 +567,7 @@ export default {
   '{0} per side': '{0} na stronę',
   'You still log the total: {0} is {1} per side.': 'Nadal zapisujesz łączną liczbę: {0} to {1} na stronę.',
   '{0} sets · {1} work': '{0} serii · {1} praca',
+  'Make superset with previous': 'Połącz z poprzednim',
+  'Make superset with next': 'Połącz z następnym',
+  'Unpair': 'Rozłącz'
 }

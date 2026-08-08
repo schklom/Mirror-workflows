@@ -567,4 +567,7 @@ export default {
   '{0} per side': 'प्रति तरफ़ {0}',
   'You still log the total: {0} is {1} per side.': 'आप कुल ही दर्ज करते हैं: {0} यानी प्रति तरफ़ {1}।',
   '{0} sets · {1} work': '{0} सेट · {1} काम',
+  'Make superset with previous': 'पिछले के साथ सुपरसेट',
+  'Make superset with next': 'अगले के साथ सुपरसेट',
+  'Unpair': 'अलग करें'
 }

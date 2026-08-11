@@ -1,22 +1,22 @@
 {
   "locate_all": {
-    "title": "定位：全部方式",
+    "title": "全部方式",
     "description": "从所有定位源获取位置"
   },
   "locate_fused": {
-    "title": "定位：融合定位",
+    "title": "融合定位",
     "description": "从网络/GPS 获取位置"
   },
   "locate_gps": {
-    "title": "定位：GPS",
+    "title": "GPS",
     "description": "从 GPS 获取位置"
   },
   "locate_cell": {
-    "title": "定位：基站",
+    "title": "基站",
     "description": "通过 OpenCelliD 和/或 BeaconDB 从周边基站获取位置"
   },
   "locate_last": {
-    "title": "定位：最后已知位置",
+    "title": "最后的已知位置",
     "description": "获取最后已知位置（快速，但可能不是最新）"
   },
   "ring": {
@@ -60,16 +60,16 @@
     "title": "禁用蓝牙"
   },
   "ringer_normal": {
-    "title": "响铃模式：正常",
-    "description": "将响铃模式设为正常"
+    "title": "响铃",
+    "description": "将铃声模式设为响铃"
   },
   "ringer_vibrate": {
-    "title": "响铃模式：振动",
-    "description": "将响铃模式设为振动"
+    "title": "振动",
+    "description": "将铃声模式设为振动"
   },
   "ringer_silent": {
-    "title": "响铃模式：静音",
-    "description": "将响铃模式设为静音"
+    "title": "静音",
+    "description": "将铃声模式设为静音"
   },
   "dnd_on": {
     "title": "启用勿扰模式"
@@ -98,5 +98,35 @@
     "ringermode_silent": "正在将响铃模式设为静音…",
     "nodisturb_on": "正在启用勿扰模式…",
     "nodisturb_off": "正在禁用勿扰模式…"
-  }
+  },
+  "general_group": {
+    "title": "通用",
+    "description": "一些通用的实用指令"
+  },
+  "camera_group": {
+    "description": "拍摄或查看照片",
+    "title": "相机"
+  },
+  "location_service_group": {
+    "title": "定位服务",
+    "description": "启用或禁用定位服务"
+  },
+  "bluetooth_group": {
+    "title": "蓝牙",
+    "description": "启用或禁用蓝牙"
+  },
+  "locate_group": {
+    "title": "定位",
+    "description": "从定位源获取位置信息"
+  },
+  "dnd_group": {
+    "description": "启用或禁用勿扰模式",
+    "title": "勿扰模式"
+  },
+  "ringer_group": {
+    "description": "设置铃声模式",
+    "title": "响铃"
+  },
+  "enable": "启用",
+  "disable": "禁用"
 }

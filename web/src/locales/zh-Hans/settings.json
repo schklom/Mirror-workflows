@@ -9,7 +9,7 @@
   "units": "单位制",
   "units_metric": "公制",
   "units_imperial": "英制",
-  "account": "账户",
+  "account": "账户和数据",
   "export_data": "导出数据",
   "export_data_loading_message": "正在下载数据。这可能需要一些时间，尤其是在您有大量照片时。",
   "delete_account": "删除账户",
@@ -26,5 +26,17 @@
     "sl": "斯洛文尼亚语",
     "zh-Hant": "中文（繁体）"
   },
-  "about_text": "一个用于与 FMD 应用通信、定位和控制您设备的服务器。"
+  "about_text": "一个用于与 FMD 应用通信、定位和控制您设备的服务器。",
+  "delete_locations": {
+    "button": "删除位置",
+    "title": "删除所有位置？",
+    "description": "将永久删除此账户下的所有服务器端位置记录。此操作不可撤销。",
+    "success": "已成功删除位置。"
+  },
+  "delete_pictures": {
+    "button": "删除照片",
+    "title": "删除所有照片？",
+    "description": "将永久删除此账户下的所有服务器端照片。此操作不可撤销。",
+    "success": "照片被成功删除。"
+  }
 }

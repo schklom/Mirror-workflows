@@ -10,5 +10,6 @@
   "logging_in": "登录中…",
   "project_website": "项目网站",
   "source_code": "源代码",
-  "privacy_notice": "隐私声明"
+  "privacy_notice": "隐私声明",
+  "login_slow": "密码哈希计算似乎较慢。这通常是因为浏览器的 JavaScript JIT（即时编译）被禁用。请启用 JIT，或耐心等待最多 5 分钟。"
 }

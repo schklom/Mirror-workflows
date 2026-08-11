@@ -23,8 +23,8 @@
     "of": "的"
   },
   "webcrypto_warning": {
-    "title": "WebCrypto API 不可用",
-    "message": "由于 WebCrypto API 不可用，FMD 服务器将无法工作。",
+    "title": "Web Cryptography API 不可用",
+    "message": "由于 Web Cryptography API 不可用，FMD Server 将无法工作。",
     "detail": "这很可能是因为您正在通过不安全的 HTTP 访问此网站，请改用 HTTPS。如果您是自托管，请阅读",
     "link_text": "安装指南"
   }

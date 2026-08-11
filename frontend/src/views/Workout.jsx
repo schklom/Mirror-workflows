@@ -218,6 +218,43 @@ function ActiveWorkout() {
   const onPairPrev = !isSuperset && cur > 0 ? () => pairAt(cur - 1, cur) : null
   const onPairNext = !isSuperset && cur < A.entries.length - 1 ? () => pairAt(cur, cur + 1) : null
 
+  // Remove a whole exercise from the session. The confirmation always asks first; in a
+  // superset it asks WHICH exercise of the group to remove.
+  const removeExercise = idx => update(s => {
+    if (!s.active || !Array.isArray(s.active.entries)) return
+    if (idx < 0 || idx >= s.active.entries.length) return
+    s.active.entries.splice(idx, 1)
+    if (s.active.cur >= s.active.entries.length) s.active.cur = Math.max(0, s.active.entries.length - 1)
+  }, true)
+  const confirmRemoveExercise = idx => {
+    const e = A.entries[idx]
+    if (!e) return
+    const hasDone = (e.sets || []).some(s => s.done)
+    confirmSheet({
+      title: t('Remove {0}?', exOr(e.id).n),
+      message: hasDone
+        ? t('The sets you logged for this exercise in this session will be lost.')
+        : t('This removes the exercise from your current session.'),
+      confirmText: t('Remove'), danger: true, onConfirm: () => removeExercise(idx)
+    })
+  }
+  const removeExerciseSheet = () => {
+    if (unit.length > 1) {
+      useUI.getState().openSheet(close => (
+        <div>
+          <h3>{t('Remove exercise')}</h3>
+          <div className="muted small" style={{ marginBottom: 12 }}>{t('Which exercise in this superset do you want to remove?')}</div>
+          <div className="list">
+            {unit.map(idx => <div key={idx} className="item" onClick={() => { close(); confirmRemoveExercise(idx) }}>
+              <div className="grow"><div className="tt">{exOr(A.entries[idx]?.id).n}</div></div>
+              <Icon name="chevronRight" />
+            </div>)}
+          </div>
+        </div>
+      ))
+    } else confirmRemoveExercise(cur)
+  }
+
   // A timed set is held, not typed. The work timer records what was actually held — an early
   // finish logs 0:38 of a 0:45 target rather than crediting the full prescription — and then
   // checks the set off through the normal path, so rest, supersets and the finish prompt all
@@ -333,6 +370,10 @@ function ActiveWorkout() {
         s.active.cur = s.active.entries.length - 1
       }), null, routine, seed)
     })} icon="plus">{t('Add exercise')}</Button>
+    <div style={{ height: 6 }} />
+    <div style={{ display: 'flex', justifyContent: 'center' }}>
+      <Button size="sm" icon="minus" style={{ color: 'var(--red)' }} onClick={removeExerciseSheet}>{t('Remove exercise')}</Button>
+    </div>
     <div style={{ height: 10 }} />
     {(() => {
       const exDone = A.entries.filter(e => e.sets.length && e.sets.every(s => s.done)).length

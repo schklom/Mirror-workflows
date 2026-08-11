@@ -178,3 +178,14 @@ downloaded media are untouched.
 | Day reminder fires at the wrong time | Toggle it off and on in Settings so it re-detects your browser's timezone (also happens automatically on every app load — see section 6). |
 | Want to reset a stuck login | Delete the cookie in your browser; sessions are just signed cookies. |
 | `docker compose pull` fails with "denied" / "unauthorized" | The prebuilt images aren't published yet, or need to be, or the GHCR package is still private — build from source instead (`docker compose up -d --build`). |
+| Exercise images/GIFs blank when a routine is open | Fixed in current images (issue #79). On an older build, see the note below. |
+
+### `VITE_IMG_BASE` / `VITE_GIF_BASE` are build-time, not run-time
+
+These two are read by Vite when the frontend is **compiled**, so their values are baked into
+the shipped JavaScript bundle. Setting them in the `.env` next to `docker compose` has no
+effect on an already-built image — the bundle has already made up its mind.
+
+They are only useful if you build the frontend yourself (`docker compose up -d --build`, or a
+`npm run build` with the variables exported). If you need to redirect media on a prebuilt
+image, do it in your reverse proxy instead.

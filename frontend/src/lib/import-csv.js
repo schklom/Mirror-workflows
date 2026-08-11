@@ -173,6 +173,17 @@ const ALIAS_EX = {
   'tricep pushdown': '0241', 'triceps pushdown': '0241', pushdown: '0241',
   skullcrusher: '0060', 'skull crusher': '0060', 'lying triceps extension': '0061',
   lunge: '0054', lunges: '0054', 'cable crossover': '1269', 'cable cross over': '1269',
+  'goblet squat': '1760', 'dumbbell goblet squat': '1760', 'kettlebell goblet squat': '0534',
+  // Reported in issue #74: these come out of Hevy under names no word-overlap can reach, so
+  // they landed as custom exercises. The catalogue's cardio vocabulary is thin (29 of 1,324
+  // entries), so each of these is the *only* candidate rather than the best of several.
+  treadmill: '3666', 'treadmill walk': '3666', 'treadmill run': '3666',
+  cycling: '2331', 'cross trainer': '2331', elliptical: '2141',
+  'stationary bike': '2138', 'exercise bike': '2138', 'stepmill': '2311',
+  // The catalogue has only band Pallof presses, so a cable one resolves to the band entry:
+  // same movement, wrong equipment label, which beats leaving it uncategorised.
+  'pallof press': '0979', 'cable pallof press': '0979', 'vertical pallof press': '1015',
+  'cable core pallof press': '0979', 'core pallof press': '0979',
 }
 
 let ALIAS_IDX = null

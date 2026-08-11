@@ -2,10 +2,10 @@
   "loading": "Betöltés…",
   "no_devices": "Nincs eszköz",
   "last_location": "Utolsó hely",
-  "updated": "Frissített",
+  "updated": "Frissítve",
   "time": "Idő",
   "location": {
-    "recorded_at": "Felvett",
+    "recorded_at": "Rögzítve",
     "older": "Régebbi",
     "newer": "Újabb",
     "no_push_url": "Nincs push URL konfigurálva. Az eszköz nem fog parancsokat fogadni, amíg az Android alkalmazásban a push értesítések beállításra nem kerülnek.",

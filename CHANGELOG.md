@@ -74,6 +74,56 @@ account.
 Contributed by [@Space-Hermes](https://github.com/Space-Hermes) in
 [#50](https://github.com/DuarteSantos8/openGym/pull/50).
 
+### Pair exercises into a superset mid-session (#64)
+
+- 🔗 **"Make superset with previous / next" on each exercise card.** Two exercises paired in the
+  session collapse into a single *Superset* card — do them back-to-back, rest once at the end —
+  with an **Unpair** button in the header. No planning ahead required; pair them when you decide
+  to, in the workout.
+- **Groups are any size.** Pairing the end of one group to the start of another merges them, and
+  the header wording stays correct past two exercises.
+- **Unpairing cleans up after itself.** A group reduced to one exercise is dissolved rather than
+  left as a superset of one, and the pairing helpers never mutate the running session.
+- Session-only by design: pairings drive the workout, and history stores the sets.
+
+Contributed by [@Space-Hermes](https://github.com/Space-Hermes) in
+[#64](https://github.com/DuarteSantos8/openGym/pull/64).
+
+### The muscle map stops rewriting the catalogue (#67)
+
+- **The curated secondary-muscle additions are now an overlay, not a mutation.** The four row
+  exercises that strain the rear delts used to get that written into the shared exercise dataset
+  at import time, which meant export, print and import saw a catalogue that had been edited
+  underneath them. They are derived at the read points instead, so the dataset stays pristine.
+- The detail sheet's tag row reads through the same overlay, so those muscles still show where
+  they always did.
+
+Contributed by [@Space-Hermes](https://github.com/Space-Hermes) in
+[#67](https://github.com/DuarteSantos8/openGym/pull/67).
+
+### Fixes
+
+- 🖼️ **Exercise images and animations were blank on the routine screen** ([#79]). The media paths
+  were relative, and `/plan/r/:id` is the app's only two-segment route — so the browser asked for
+  `/plan/r/img/…` and got a 404 with nothing in the console to say why. Every other screen was
+  fine, which is what made it look like a one-screen mystery. Reported with the root cause already
+  found, by [@lemi1000](https://github.com/lemi1000).
+- 📥 **Imports mapped more of what other apps export** ([#74]). Treadmill, Goblet Squat, Cycling and
+  Cable Core Pallof Press arrived as *custom* exercises rather than catalogue ones — no word
+  overlap could reach the names openGym stores them under. Those and their neighbours are now in
+  the alias table. Already-imported history stays custom; new imports resolve. Reported by
+  [@KiloOscarSix](https://github.com/KiloOscarSix).
+- **A progression edge case that could loop forever** ([#60]). An entry left with nothing but
+  warm-up rows seeded the set-growth loop from a warm-up, which could never satisfy its own exit
+  condition. It leaves the entry alone instead. Contributed by
+  [@Space-Hermes](https://github.com/Space-Hermes).
+- Documented that `VITE_IMG_BASE` / `VITE_GIF_BASE` are build-time values, so setting them next to
+  `docker compose` does nothing on a prebuilt image.
+
+[#79]: https://github.com/DuarteSantos8/openGym/issues/79
+[#74]: https://github.com/DuarteSantos8/openGym/issues/74
+[#60]: https://github.com/DuarteSantos8/openGym/pull/60
+
 ## v1.2.5 — 2026-08-04
 
 Nothing in the app itself changed. This release adds an optional side door: a small server that

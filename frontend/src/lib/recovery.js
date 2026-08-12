@@ -111,9 +111,13 @@ function fatigueValue(events, now) {
  *
  * @param {Array<object>} workouts Workout history with `start`/`d` and entry set arrays.
  * @param {number} now Current time in milliseconds; injected to keep this function deterministic.
+ * @param {{unit?: string}} options Reserved profile-level options; unit is supplied at the UI boundary.
  * @returns {Record<string, number>} Fatigue values keyed by every drawable muscle slug.
  */
-export function fatigueOf(workouts, now) {
+export function fatigueOf(workouts, now, options = {}) {
+  // Keep the profile unit at this boundary for a future separately reviewed tonnage model.
+  // The current mainline set-count model is intentionally unit-independent.
+  void options.unit
   const current = Number(now)
   const cutoff = current - FATIGUE_SCAN_MS
   const stimuli = completedStimuli(workouts, timestamp => timestamp > cutoff)

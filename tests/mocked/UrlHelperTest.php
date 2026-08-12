@@ -408,6 +408,16 @@ final class UrlHelperTest extends TestCase {
 		$this->assertTrue(UrlHelper::has_disallowed_ip('https://[0:0:0:0:0:0:0:1]:443/'));
 	}
 
+	public function testIsDisallowedIpAllowsUniqueLocalIPv6OnStandardPorts(): void {
+		$this->assertFalse(UrlHelper::has_disallowed_ip('http://[fc00::1]/'));
+		$this->assertFalse(UrlHelper::has_disallowed_ip('https://[fd00::1]:443/'));
+	}
+
+	public function testIsDisallowedIpBlocksUniqueLocalIPv6OnNonStandardPorts(): void {
+		$this->assertTrue(UrlHelper::has_disallowed_ip('http://[fc00::1]:8080/'));
+		$this->assertTrue(UrlHelper::has_disallowed_ip('https://[fd00::1]:8443/'));
+	}
+
 	public function testIsDisallowedIpAllowsExternalHosts(): void {
 		$this->assertFalse(UrlHelper::has_disallowed_ip('http://example.com/'));
 		$this->assertFalse(UrlHelper::has_disallowed_ip('https://example.org:8080/'));

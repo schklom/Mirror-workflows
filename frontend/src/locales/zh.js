@@ -569,5 +569,9 @@ export default {
   '{0} sets · {1} work': '{0} 组 · {1} 工作',
   'Make superset with previous': '与上一个组成超级组',
   'Make superset with next': '与下一个组成超级组',
+  "primary": "主要",
+  "secondary": "次要",
+  "No exercises with an estimated 1RM yet.": "暂无估算1RM的动作。",
+  "Tap a muscle to see its exercises.": "点击肌肉查看其动作。",
   'Unpair': '取消组合'
 }

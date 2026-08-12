@@ -11,7 +11,7 @@ import Heatmap from '../components/Heatmap.jsx'
 import Icon from '../components/Icon.jsx'
 import BodyMap, { BodyMapLegend } from '../components/BodyMap.jsx'
 import { loadOfWorkouts, rankOf, MUSCLE_NAME, musclesOf } from '../lib/muscles.js'
-import { fatigueOf, strengthOf, STRENGTH_FLOOR } from '../lib/recovery.js'
+import { fatigueOf, strengthOf, STRENGTH_FLOOR, LB_TO_KG } from '../lib/recovery.js'
 import { fatigueStateOf } from '../lib/recovery-view.js'
 import { e1rmSeries, best1RM } from '../lib/onerm.js'
 import {
@@ -106,7 +106,7 @@ function MuscleBalance({ S }) {
     if (!entries.length) return null
     const last = entries.slice().sort((a, b) => String(a.d).localeCompare(String(b.d))).at(-1)
     if (!last || !(last.w > 0)) return null
-    return S.unit === 'lb' ? last.w * 0.45359237 : last.w
+    return S.unit === 'lb' ? last.w * LB_TO_KG : last.w
   }, [S.bodyweight, S.unit])
   const fatigue = useMemo(() => fatigueOf(workouts, now, { bodyweightKg, unit: S.unit }), [workouts, now, bodyweightKg, S.unit])
   const strength = useMemo(() => strengthOf(workouts, now, { bodyweightKg, unit: S.unit }), [workouts, now, bodyweightKg, S.unit])

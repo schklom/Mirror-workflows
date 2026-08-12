@@ -476,6 +476,18 @@ describe('canonical loads and configured bodyweight', () => {
     }
   })
 
+  it('treats a future-dated workout as its own timestamp, never amplified', () => {
+    // A CSV import with a bad timezone can date a workout 10 days in the future. The final
+    // decay clamps the age to zero instead of exponentiating, so the session counts exactly
+    // like the same workout dated now - no 2^(10d/36h) ~ 102x amplification.
+    const future = doneWorkoutAt(SINGLE.id, NOW + 10 * DAY, 5)
+    const now = doneWorkoutAt(SINGLE.id, NOW, 5)
+    const futureValue = fatigueOf([future], NOW)[SINGLE_SLUG]
+    const nowValue = fatigueOf([now], NOW)[SINGLE_SLUG]
+    expect(futureValue).toBeCloseTo(nowValue, 10)
+    expect(futureValue).toBeLessThan(1)
+  })
+
   it('counts a default custom zero-load ring push-up for fatigue and load-blind strength', () => {
     const id = 'recovery-ring-push-up'
     registerCustom([{ id, n: 'Ring push-up', bp: 'chest', tg: 'chest', eq: 'custom', sm: [] }])

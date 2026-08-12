@@ -66,7 +66,7 @@ function emptyMuscleMap(value) {
 const REP_CAP = 12
 const epley1RM = (load, reps) => load * (1 + Math.min(reps || 1, REP_CAP) / 30)
 
-const LB_TO_KG = 0.45359237
+export const LB_TO_KG = 0.45359237
 
 function numeric(value) {
   if (value === null || value === undefined || value === '' || typeof value === 'boolean') return null
@@ -139,7 +139,7 @@ function bodyweightConfigured(ex, entry, set, workout, opts = {}) {
   const added = kgOf(set?.w, unitOf(set, entry?.target, entry, workout, opts))
   const hasBodyweightContext = numeric(workout?.bw) !== null
     || numeric(workout?.bodyweight) !== null
-    || Object.prototype.hasOwnProperty.call(opts, 'bodyweightKg')
+    || numeric(opts.bodyweightKg) !== null
     || numeric(opts.bodyweight) !== null
     || hasUnitStamp(set, entry?.target, entry, workout)
   return ex?.eq === 'body weight' && (added === 0 || hasBodyweightContext)
@@ -253,7 +253,7 @@ function fatigueValue(events, now) {
     value += event.stimulus
     lastTimestamp = event.timestamp
   }
-  value *= halfLifeDecay(now - lastTimestamp, FATIGUE_HALF_LIFE_MS)
+  value *= halfLifeDecay(Math.max(0, now - lastTimestamp), FATIGUE_HALF_LIFE_MS)
   // Normalise the accumulated stimulus to a saturating fatigue level: more volume starts
   // higher but never pins, and the value fades asymptotically - no window-edge cliff.
   return 1 - Math.exp(-value)

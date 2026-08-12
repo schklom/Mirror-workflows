@@ -1,6 +1,7 @@
 // Pure helpers over the state object S (ported 1:1 from the vanilla app).
 import { todayISO, isoOf, weekKey, fmtNum } from './format.js'
 import { isCardio, isBodyweightEq } from './exercises.js'
+import { isWarmupRow } from './workout-model.js'
 // i18n-core, not i18n: this file is imported by mcp/, which is plain Node with no Vite and no
 // React. i18n.js is the Vite half — import.meta.glob over the locale packs, useSyncExternalStore
 // for the hook — and it re-exports this very `t` from core, so nothing changes here except what
@@ -330,7 +331,7 @@ export function streakWeeks(S) {
  * undone take the new value (null deletes the key). Done sets are never rewritten.
  */
 export function cascadeWeight(rows, from, value) {
-  const warm = !!rows[from]?.warmup
+  const warm = isWarmupRow(rows[from])
   const next = rows.slice()
   for (let j = from + 1; j < next.length; j++) {
     if (!!next[j].warmup === warm && !next[j].done) {
@@ -343,7 +344,7 @@ export function cascadeWeight(rows, from, value) {
 
 /** Insert a warm-up row before the first work row, copying the preceding warm-up's values. */
 export function insertWarmupRow(rows, mode, target) {
-  const firstWork = rows.findIndex(x => !x.warmup)
+  const firstWork = rows.findIndex(x => !isWarmupRow(x))
   const at = firstWork === -1 ? rows.length : firstWork
   const l = rows[at - 1] || rows[rows.length - 1]
   const warm = mode === 'cardio'

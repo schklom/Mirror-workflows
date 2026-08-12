@@ -22,11 +22,11 @@ const entry = (id, sg) => ({
 let root
 let container
 
-function setActive(entries) {
+function setActive(entries, cur = 0) {
   const S = clone(DEF)
   S.active = {
     id: 'remove-test', d: '2026-08-11', start: Date.now(), routineId: null,
-    name: 'Remove test', bw: null, cur: 0, entries
+    name: 'Remove test', bw: null, cur, entries
   }
   useStore.setState({ S, user: null })
 }
@@ -75,7 +75,8 @@ describe('active-session exercise removal', () => {
   })
 
   it('cancels a pending timed callback before indexes shift and cleans a one-member group', () => {
-    setActive([entry('1001', 'sg-1'), entry('1002', 'sg-1'), entry('1003')])
+    setActive([entry('1001', 'sg-1'), entry('1002', 'sg-1'), entry('1003')], 1)
+    expect(useStore.getState().S.active.cur).toBe(1)
     const wrongWrite = vi.fn(elapsed => {
       useStore.getState().update(s => { s.active.entries[0].sets[0].sec = elapsed })
     })
@@ -88,6 +89,7 @@ describe('active-session exercise removal', () => {
     expect(useUI.getState().work).toBeNull()
     expect(wrongWrite).not.toHaveBeenCalled()
     expect(active.entries.map(e => e.id)).toEqual(['1002', '1003'])
+    expect(active.cur).toBe(0)
     expect(active.entries[0].sg).toBeUndefined()
     expect(active.entries[0].sets[0].sec).toBeUndefined()
   })

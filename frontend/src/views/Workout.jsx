@@ -178,6 +178,7 @@ export function removeActiveExercise(idx) {
     if (idx < 0 || idx >= s.active.entries.length) return
     s.active.entries.splice(idx, 1)
     cleanupSg(s.active.entries)
+    if (idx < s.active.cur) s.active.cur--
     if (s.active.cur >= s.active.entries.length) s.active.cur = Math.max(0, s.active.entries.length - 1)
   }, true)
 }

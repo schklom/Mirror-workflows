@@ -505,13 +505,13 @@ func (h createDeviceHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err := uio.CreateNewUser(reg.PrivKey, reg.PubKey, reg.Salt, reg.HashedPassword, reg.RequestedUsername)
+	username, err := uio.CreateNewUser(reg.PrivKey, reg.PubKey, reg.Salt, reg.HashedPassword, reg.RequestedUsername)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("failed to create account: %s", err.Error()), http.StatusBadRequest)
 		return
 	}
 
-	accessToken := user.AccessToken{DeviceId: id, Token: ""}
+	accessToken := user.AccessToken{Username: username, Token: ""}
 	result, _ := json.Marshal(accessToken)
 	w.Header().Set(HEADER_CONTENT_TYPE, CT_APPLICATION_JSON)
 	w.Write(result)

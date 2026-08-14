@@ -10,16 +10,16 @@ import (
 
 type AccessController struct {
 	// map token values to token structs
-	// This is because a given user id can have multiple active sessions
+	// This is because a given username can have multiple active sessions
 	// in parallel, for example, Android and web.
 	accessTokens map[string]AccessToken
 
-	// map user ids to locks
+	// map usernames to locks
 	lockedUsers map[string]LockedUser
 }
 
 type AccessToken struct {
-	DeviceId       string
+	Username       string
 	Token          string
 	CreationTime   int64
 	ExpirationTime int64
@@ -77,20 +77,20 @@ func (a *AccessController) ResetLock(username string) {
 	metrics.FailedLoginAccounts.Set(float64(len(a.lockedUsers)))
 }
 
-func (a *AccessController) IsLocked(id string) bool {
-	lId, exists := a.lockedUsers[id]
+func (a *AccessController) IsLocked(username string) bool {
+	locked, exists := a.lockedUsers[username]
 
 	if !exists {
 		return false
 	}
 
-	if lId.FailedCount <= MAX_ALLOWED_ATTEMPTS {
+	if locked.FailedCount <= MAX_ALLOWED_ATTEMPTS {
 		return false
 	}
 
-	lockExpired := lId.ExpirationTime < time.Now().Unix()
+	lockExpired := locked.ExpirationTime < time.Now().Unix()
 	if lockExpired {
-		delete(a.lockedUsers, id)
+		delete(a.lockedUsers, username)
 		metrics.FailedLoginAccounts.Set(float64(len(a.lockedUsers)))
 		return false
 	}
@@ -112,10 +112,10 @@ func (a *AccessController) CheckAccessToken(tokenToCheck string) (string, error)
 		return "", errors.New("token expired")
 	}
 
-	return tk.DeviceId, nil
+	return tk.Username, nil
 }
 
-func (a *AccessController) CreateNewAccessToken(id string, sessionDurationSeconds uint64) AccessToken {
+func (a *AccessController) CreateNewAccessToken(username string, sessionDurationSeconds uint64) AccessToken {
 	if sessionDurationSeconds == 0 {
 		sessionDurationSeconds = DEFAULT_TOKEN_VALID_SECS
 	} else if sessionDurationSeconds > MAX_TOKEN_VALID_SECS {
@@ -126,7 +126,7 @@ func (a *AccessController) CreateNewAccessToken(id string, sessionDurationSecond
 	now := time.Now().Unix()
 
 	token := AccessToken{
-		DeviceId:       id,
+		Username:       username,
 		Token:          tokenValue,
 		CreationTime:   now,
 		ExpirationTime: now + int64(sessionDurationSeconds),
@@ -172,7 +172,7 @@ func (a *AccessController) cronRemoveExpired() {
 func (a *AccessController) ResetTokensForUser(username string) {
 	// XXX: This is not very efficient
 	for key, value := range a.accessTokens {
-		if value.DeviceId == username {
+		if value.Username == username {
 			delete(a.accessTokens, key)
 		}
 	}

@@ -303,8 +303,8 @@ func (u *UserRepository) GetPushUrl(user *FMDUser) string {
 	return user.PushUrl
 }
 
-func (u *UserRepository) GetSalt(id string) string {
-	user, err := u.UB.GetByName(id)
+func (u *UserRepository) GetSalt(username string) string {
+	user, err := u.UB.GetByName(username)
 	if err != nil {
 		return ""
 	}
@@ -315,13 +315,13 @@ func (u *UserRepository) GetSalt(id string) string {
 var ErrNotFound = errors.New("account not found")
 var ErrAccountLocked = errors.New("too many attempts, account locked")
 
-func (u *UserRepository) RequestAccess(id string, innerPwHash string, sessionDurationSeconds uint64, remoteIp string) (*AccessToken, error) {
-	user, err := u.UB.GetByName(id)
+func (u *UserRepository) RequestAccess(username string, innerPwHash string, sessionDurationSeconds uint64, remoteIp string) (*AccessToken, error) {
+	user, err := u.UB.GetByName(username)
 	if err != nil {
 		return nil, ErrNotFound
 	}
 
-	if u.ACC.IsLocked(id) {
+	if u.ACC.IsLocked(username) {
 		// This log message is used by fail2ban, do NOT change!
 		log.Warn().
 			Str("user", user.Username).
@@ -338,8 +338,8 @@ func (u *UserRepository) RequestAccess(id string, innerPwHash string, sessionDur
 	actual := hashPasswordForLogin(innerPwHash)
 
 	if actual == expected {
-		u.ACC.ResetLock(id)
-		token := u.ACC.CreateNewAccessToken(id, sessionDurationSeconds)
+		u.ACC.ResetLock(username)
+		token := u.ACC.CreateNewAccessToken(username, sessionDurationSeconds)
 
 		// Push user after login to make sure that they fetch the pending command
 		if user.CommandToUser != "" {
@@ -348,7 +348,7 @@ func (u *UserRepository) RequestAccess(id string, innerPwHash string, sessionDur
 
 				// Get the latest user from the DB, since after the login
 				// e.g. the pushUrl may have changed.
-				user, err := u.UB.GetByName(id)
+				user, err := u.UB.GetByName(username)
 				if err == nil {
 					if user.CommandToUser != "" {
 						u.PushUser(user)
@@ -359,7 +359,7 @@ func (u *UserRepository) RequestAccess(id string, innerPwHash string, sessionDur
 
 		return &token, nil
 	} else {
-		u.ACC.IncrementLock(id)
+		u.ACC.IncrementLock(username)
 
 		// This log message is used by fail2ban, do NOT change!
 		log.Warn().

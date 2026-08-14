@@ -94,6 +94,8 @@ func buildServeMux(config *viper.Viper) http.Handler {
 	apiV1Mux.HandleFunc("/version", getVersion)
 	apiV1Mux.HandleFunc("/version/", getVersion)
 
+	apiV2Mux := buildApiV2Mux(config)
+
 	// Uncomment this once the API v1 is no longer hosted at the root "/" (because we cannot have two "/" in muxFinal).
 	// Until then, as a side-effect, the static files are also served under /api/v1/.
 	// staticFilesMux := http.NewServeMux()
@@ -109,6 +111,7 @@ func buildServeMux(config *viper.Viper) http.Handler {
 	// mux.Handle("/", staticFilesMux)
 	mux.Handle("/", apiV1Mux) // deprecated
 	mux.Handle("/api/v1/", http.StripPrefix("/api/v1", apiV1Mux))
+	mux.Handle("/api/v2/", http.StripPrefix("/api/v2", apiV2Mux))
 
 	// Also serve the version in the root path
 	mux.HandleFunc("/version", getVersion)

@@ -132,7 +132,7 @@ func (u *UserRepository) UpdateUserPasswordV2(user *FMDUser, encMasterKey string
 type EncryptedItemDtoV2 struct {
 	ClientItemIdHex  string `json:"clientItemIdHex"`
 	UnixMillis       uint64 `json:"unixMillis"`
-	CiphertextBase64 string `json:"ciphertextBase64"`
+	CiphertextBase64 string `json:"ciphertext64"`
 }
 
 func (u *UserRepository) GetAllDataV2(user *FMDUser, typ string) ([]EncryptedItemDtoV2, error) {

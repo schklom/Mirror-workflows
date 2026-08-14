@@ -15,6 +15,12 @@ COPY frontend/ ./
 RUN npm run build
 
 FROM nginx:alpine
-COPY web/nginx.conf /etc/nginx/conf.d/default.conf
+COPY web/nginx.conf.template /etc/nginx/templates/default.conf.template
 COPY --from=build /app/dist /usr/share/nginx/html
 # exercise media (img/gif) is mounted at runtime from the media volume
+
+# Set Default ENVs for nginx
+ENV NGINX_PORT=80
+ENV BACKEND=api
+ENV PORT=3000
+

@@ -491,6 +491,10 @@ type createDeviceHandler struct {
 	RegistrationToken string
 }
 
+type createDeviceResponse struct {
+	DeviceId string // username, named differently for historic reasons
+}
+
 func (h createDeviceHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	var reg registrationData
 	err := json.NewDecoder(r.Body).Decode(&reg)
@@ -511,8 +515,8 @@ func (h createDeviceHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	accessToken := user.AccessToken{Username: username, Token: ""}
-	result, _ := json.Marshal(accessToken)
+	responseData := createDeviceResponse{DeviceId: username}
+	result, _ := json.Marshal(responseData)
 	w.Header().Set(HEADER_CONTENT_TYPE, CT_APPLICATION_JSON)
 	w.Write(result)
 }

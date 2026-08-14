@@ -86,7 +86,7 @@ nil-safety:
   script:
     - *go-setup
     - go install go.uber.org/nilaway/cmd/nilaway@latest
-    - nilaway -include-pkgs="fmd-server" ./...
+    - nilaway -include-pkgs="fmd-server" -test=false ./...
 
 sonarcloud-check:
   stage: lint

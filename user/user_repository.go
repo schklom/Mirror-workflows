@@ -16,16 +16,14 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-// TODO: Remove the server-side username/userid generation
 type UserRepository struct {
-	userIDLength int
-	maxSavedLoc  int
-	maxSavedPic  int
-	ACC          AccessController
-	UB           *FMDDB
+	maxSavedLoc int
+	maxSavedPic int
+	ACC         AccessController
+	UB          *FMDDB
 }
 
-func NewUserRepository(dbDir string, userIDLength int, maxSavedLoc int, maxSavedPic int) UserRepository {
+func NewUserRepository(dbDir string, maxSavedLoc int, maxSavedPic int) UserRepository {
 	db := NewFMDDB(dbDir)
 
 	// Initialise all metrics. Later, they are kept up-to-date incrementally.
@@ -34,11 +32,10 @@ func NewUserRepository(dbDir string, userIDLength int, maxSavedLoc int, maxSaved
 	InitializePushServerMetrics(db)
 
 	return UserRepository{
-		userIDLength: userIDLength,
-		maxSavedLoc:  maxSavedLoc,
-		maxSavedPic:  maxSavedPic,
-		ACC:          NewAccessController(),
-		UB:           db,
+		maxSavedLoc: maxSavedLoc,
+		maxSavedPic: maxSavedPic,
+		ACC:         NewAccessController(),
+		UB:          db,
 	}
 }
 
@@ -59,7 +56,7 @@ func (u *UserRepository) CheckAccessTokenAndGetUser(providedAccessToken string) 
 	return user, nil
 }
 
-var ErrUsernameInvalid = errors.New("the requested username must be alphanumeric and <= 64 characters")
+var ErrUsernameInvalid = errors.New("the requested username must be alphanumeric and between 1 and 64 characters")
 var ErrUsernameNotAvailable = errors.New("the requested username is not available")
 
 // alphanumeric and - and _
@@ -72,23 +69,18 @@ func (u *UserRepository) CreateNewUser(
 	innerPwHash string,
 	requestedUsername string,
 ) (string, error) {
-	username := ""
-	if requestedUsername != "" {
-		if !IsUsernameValid(requestedUsername) {
-			log.Warn().Str("username", requestedUsername).Msg("requested username is not alphanumeric or too long")
-			return "", ErrUsernameInvalid
-		}
-
-		user, _ := u.UB.GetByName(requestedUsername)
-		if user != nil {
-			log.Warn().Str("username", requestedUsername).Msg("requested username is already taken")
-			return "", ErrUsernameNotAvailable
-		}
-
-		username = requestedUsername
-	} else {
-		username = u.generateNewId()
+	if !IsUsernameValid(requestedUsername) {
+		log.Warn().Str("username", requestedUsername).Msg("requested username is not alphanumeric between 1 and 64 characters")
+		return "", ErrUsernameInvalid
 	}
+
+	user, _ := u.UB.GetByName(requestedUsername)
+	if user != nil {
+		log.Warn().Str("username", requestedUsername).Msg("requested username is already taken")
+		return "", ErrUsernameNotAvailable
+	}
+
+	username := requestedUsername
 	log.Info().Str("username", username).Msg("registering new user")
 
 	newUser := FMDUser{
@@ -311,16 +303,6 @@ func (u *UserRepository) SetPushUrl(user *FMDUser, pushUrl string) {
 
 func (u *UserRepository) GetPushUrl(user *FMDUser) string {
 	return user.PushUrl
-}
-
-func (u *UserRepository) generateNewId() string {
-	for {
-		newId := genRandomString(u.userIDLength)
-		user, _ := u.UB.GetByName(newId)
-		if user == nil {
-			return newId
-		}
-	}
 }
 
 func genRandomString(length int) string {

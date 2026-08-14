@@ -507,7 +507,7 @@ func (h createDeviceHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	id, err := uio.CreateNewUser(reg.PrivKey, reg.PubKey, reg.Salt, reg.HashedPassword, reg.RequestedUsername)
 	if err != nil {
-		http.Error(w, fmt.Sprintf("Failed to create username: %s", err.Error()), http.StatusBadRequest)
+		http.Error(w, fmt.Sprintf("failed to create account: %s", err.Error()), http.StatusBadRequest)
 		return
 	}
 

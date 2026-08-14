@@ -35,7 +35,6 @@ func init() {
 func runDelete(args []string) {
 	uio := user.NewUserRepository(
 		config.GetString(conf.CONF_DATABASE_DIR),
-		config.GetInt(conf.CONF_USER_ID_LENGTH),
 		config.GetInt(conf.CONF_MAX_SAVED_LOC),
 		config.GetInt(conf.CONF_MAX_SAVED_PIC),
 	)

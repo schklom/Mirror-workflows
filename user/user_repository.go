@@ -2,6 +2,7 @@ package user
 
 import (
 	"bytes"
+	"encoding/hex"
 	"errors"
 	"fmd-server/constants"
 	"fmd-server/metrics"
@@ -12,6 +13,7 @@ import (
 	"time"
 
 	"github.com/rs/zerolog/log"
+	"gorm.io/gorm"
 )
 
 type UserRepository struct {
@@ -61,6 +63,8 @@ var ErrUsernameNotAvailable = errors.New("the requested username is not availabl
 var IsUsernameValid = regexp.MustCompile("^[-_a-zA-Z0-9]{1,64}$").MatchString
 
 func (u *UserRepository) CreateNewUser(
+	protoVersion uint16,
+	encMasterKey string,
 	privKey string,
 	pubKey string,
 	innerSalt string,
@@ -82,9 +86,11 @@ func (u *UserRepository) CreateNewUser(
 	log.Info().Str("username", username).Msg("registering new user")
 
 	newUser := FMDUser{
-		Username:   username,
-		PrivateKey: privKey,
-		PublicKey:  pubKey,
+		Username:           username,
+		CryptoProtoVersion: protoVersion,
+		EncMasterKeyV2:     encMasterKey,
+		PrivateKey:         privKey,
+		PublicKey:          pubKey,
 	}
 	newUser.setPasswordData(innerSalt, innerPwHash)
 
@@ -95,15 +101,219 @@ func (u *UserRepository) CreateNewUser(
 }
 
 func (u *UserRepository) UpdateUserPassword(user *FMDUser, privKey string, innerSalt string, innerPwHash string) {
-	log.Info().Str("user", user.Username).Msg("changing password for user")
+	log.Info().Str("user", user.Username).Msg("changing password for user (v1)")
 
 	user.setPasswordData(innerSalt, innerPwHash)
+	// No client should downgrade from protoV2 to ProtoV1. But set it just in case.
+	user.CryptoProtoVersion = constants.CryptoProtoV1
 	user.PrivateKey = privKey
 	u.UB.Save(&user)
 
 	// Security: Revoke all active sessions. This forces them to log in again with the new password.
 	u.ACC.ResetTokensForUser(user.Username)
 }
+
+func (u *UserRepository) UpdateUserPasswordV2(user *FMDUser, encMasterKey string, innerSalt string, innerPwHash string) {
+	log.Info().Str("user", user.Username).Msg("changing password for user (v2)")
+
+	user.setPasswordData(innerSalt, innerPwHash)
+	// This function is also called by clients migrating from protoV1 to ProtoV2
+	user.CryptoProtoVersion = constants.CryptoProtoV2
+	user.EncMasterKeyV2 = encMasterKey
+	u.UB.Save(&user)
+
+	// Security: Revoke all active sessions. This forces them to log in again with the new password.
+	u.ACC.ResetTokensForUser(user.Username)
+}
+
+/* ------- APIv2 Encrypted Data ------- */
+
+// Used by APIv2 for the on-the-wire JSON encoding. Must be defined here to avoid cyclic import.
+type EncryptedItemDtoV2 struct {
+	ClientItemIdHex  string `json:"clientItemIdHex"`
+	UnixMillis       uint64 `json:"unixMillis"`
+	CiphertextBase64 string `json:"ciphertextBase64"`
+}
+
+func (u *UserRepository) GetAllDataV2(user *FMDUser, typ string) ([]EncryptedItemDtoV2, error) {
+	switch typ {
+
+	case constants.DataTypeCommand:
+		u.UB.PreloadCommands(user)
+		out := make([]EncryptedItemDtoV2, len(user.CommandsV2))
+		for idx, ele := range user.CommandsV2 {
+			out[idx] = EncryptedItemDtoV2{
+				ClientItemIdHex:  hex.EncodeToString(ele.ClientItemId),
+				UnixMillis:       ele.UnixMillis,
+				CiphertextBase64: ele.Ciphertext,
+			}
+		}
+		// Note that getting commands in APIv2 does **not** automatically delete them from the database.
+		// Clients should explicitly and individually delete commands once they have executed them.
+		return out, nil
+
+	case constants.DataTypeLocation:
+		u.UB.PreloadLocations(user)
+		out := make([]EncryptedItemDtoV2, len(user.LocationsV2))
+		for idx, ele := range user.LocationsV2 {
+			out[idx] = EncryptedItemDtoV2{
+				ClientItemIdHex:  hex.EncodeToString(ele.ClientItemId),
+				UnixMillis:       ele.UnixMillis,
+				CiphertextBase64: ele.Ciphertext,
+			}
+		}
+		return out, nil
+
+	case constants.DataTypePicture:
+		u.UB.PreloadPictures(user)
+		out := make([]EncryptedItemDtoV2, len(user.PicturesV2))
+		for idx, ele := range user.PicturesV2 {
+			out[idx] = EncryptedItemDtoV2{
+				ClientItemIdHex:  hex.EncodeToString(ele.ClientItemId),
+				UnixMillis:       ele.UnixMillis,
+				CiphertextBase64: ele.Ciphertext,
+			}
+		}
+		return out, nil
+
+	default:
+		return nil, fmt.Errorf("unknown data type: %s", typ)
+	}
+}
+
+type metricInterface interface {
+	Add(float64)
+}
+
+// Generic helper function to add commands/locations/pictures to the database
+func addDataInternalV2[T any](
+	db *gorm.DB,
+	user *FMDUser,
+	items []EncryptedItemDtoV2,
+	constructRow func(uint64, []byte, uint64, string) T,
+	metric metricInterface,
+	prune func(*FMDUser),
+) error {
+	rows := make([]T, 0 /* length */, len(items) /* capacity */)
+
+	for _, it := range items {
+		clientItemId, err := hex.DecodeString(it.ClientItemIdHex)
+		if err != nil {
+			log.Error().Err(err).Str("clientItemIdHex", it.ClientItemIdHex).Msg("failed to hex-decode clientItemId")
+			return err
+		}
+		rows = append(rows, constructRow(user.Id, clientItemId, it.UnixMillis, it.CiphertextBase64))
+	}
+
+	res := db.Create(&rows)
+	if res.Error != nil {
+		return res.Error
+	}
+
+	metric.Add(float64(res.RowsAffected))
+	prune(user)
+
+	return nil
+}
+
+func (u *UserRepository) AddDataV2(user *FMDUser, typ string, items []EncryptedItemDtoV2) error {
+	switch typ {
+
+	case constants.DataTypeCommand:
+		err := addDataInternalV2(u.UB.DB, user, items,
+			func(userId uint64, clientItemId []byte, unixMillis uint64, ciphertext string) CommandV2 {
+				return CommandV2{UserId: userId, ClientItemId: clientItemId, UnixMillis: unixMillis, Ciphertext: ciphertext}
+			},
+			metrics.PendingCommands,
+			func(user *FMDUser) {}, // TODO prune commands
+		)
+		if err == nil {
+			u.PushUser(user)
+		}
+		return err
+
+	case constants.DataTypeLocation:
+		return addDataInternalV2(u.UB.DB, user, items,
+			func(userId uint64, clientItemId []byte, unixMillis uint64, ciphertext string) LocationV2 {
+				return LocationV2{UserId: userId, ClientItemId: clientItemId, UnixMillis: unixMillis, Ciphertext: ciphertext}
+			},
+			metrics.Locations,
+			u.pruneLocations,
+		)
+
+	case constants.DataTypePicture:
+		return addDataInternalV2(u.UB.DB, user, items,
+			func(userId uint64, clientItemId []byte, unixMillis uint64, ciphertext string) PictureV2 {
+				return PictureV2{UserId: userId, ClientItemId: clientItemId, UnixMillis: unixMillis, Ciphertext: ciphertext}
+			},
+			metrics.Pictures,
+			u.prunePictures,
+		)
+
+	default:
+		return fmt.Errorf("unknown data type: %s", typ)
+	}
+}
+
+func (u *UserRepository) DeleteAllDataV2(user *FMDUser, typ string) error {
+	log.Info().Str("user", user.Username).Str("type", typ).Msg("deleting all data")
+
+	switch typ {
+
+	case constants.DataTypeCommand:
+		result := u.UB.DB.Where(CommandV2{UserId: user.Id}).Delete(&CommandV2{})
+		metrics.PendingCommands.Sub(float64(result.RowsAffected))
+		return result.Error
+
+	case constants.DataTypeLocation:
+		result := u.UB.DB.Where(LocationV2{UserId: user.Id}).Delete(&LocationV2{})
+		metrics.Locations.Sub(float64(result.RowsAffected))
+		return result.Error
+
+	case constants.DataTypePicture:
+		result := u.UB.DB.Where(PictureV2{UserId: user.Id}).Delete(&PictureV2{})
+		metrics.Pictures.Sub(float64(result.RowsAffected))
+		return result.Error
+
+	default:
+		return fmt.Errorf("unknown data type: %s", typ)
+	}
+}
+
+func (u *UserRepository) DeleteSingleDatumV2(user *FMDUser, typ string, clientItemIdHex string) error {
+	clientItemId, err := hex.DecodeString(clientItemIdHex)
+	if err != nil {
+		log.Error().Err(err).Str("clientItemIdHex", clientItemIdHex).Msg("failed to hex-decode clientItemId")
+		return err
+	}
+
+	var result *gorm.DB
+
+	switch typ {
+
+	case constants.DataTypeCommand:
+		result = u.UB.DB.Where(CommandV2{UserId: user.Id, ClientItemId: clientItemId}).Delete(&CommandV2{})
+		metrics.PendingCommands.Sub(float64(result.RowsAffected))
+
+	case constants.DataTypeLocation:
+		result = u.UB.DB.Where(LocationV2{UserId: user.Id, ClientItemId: clientItemId}).Delete(&LocationV2{})
+		metrics.Locations.Sub(float64(result.RowsAffected))
+
+	case constants.DataTypePicture:
+		result = u.UB.DB.Where(PictureV2{UserId: user.Id, ClientItemId: clientItemId}).Delete(&PictureV2{})
+		metrics.Pictures.Sub(float64(result.RowsAffected))
+
+	default:
+		return fmt.Errorf("unknown data type: %s", typ)
+	}
+
+	if result.RowsAffected == 0 {
+		return gorm.ErrRecordNotFound
+	}
+	return result.Error
+}
+
+/* ------- APIv1 Setters ------- */
 
 func (u *UserRepository) AddLocation(user *FMDUser, loc string) {
 	u.UB.Create(&Location{Position: loc, UserID: user.Id})
@@ -173,6 +383,8 @@ func (u *UserRepository) DeleteUser(user *FMDUser) error {
 
 	return nil
 }
+
+/* ------- APIv1 Getters ------- */
 
 var ErrIndexOutOfBounds = errors.New("requested index is out of bounds")
 

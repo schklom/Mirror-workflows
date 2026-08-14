@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"fmd-server/constants"
 	"fmd-server/user"
 
 	"github.com/rs/zerolog/log"
@@ -509,7 +510,7 @@ func (h createDeviceHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	username, err := uio.CreateNewUser(reg.PrivKey, reg.PubKey, reg.Salt, reg.HashedPassword, reg.RequestedUsername)
+	username, err := uio.CreateNewUser(constants.CryptoProtoV1, "", reg.PrivKey, reg.PubKey, reg.Salt, reg.HashedPassword, reg.RequestedUsername)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("failed to create account: %s", err.Error()), http.StatusBadRequest)
 		return

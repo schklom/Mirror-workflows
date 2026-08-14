@@ -121,7 +121,7 @@ func deleteAllLocations(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	uio.DeleteAllLocations(user)
+	uio.DeleteAllLocationsV1(user)
 	w.WriteHeader(http.StatusOK)
 }
 
@@ -230,7 +230,7 @@ func deleteAllPictures(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	uio.DeleteAllPictures(user)
+	uio.DeleteAllPicturesV1(user)
 	w.WriteHeader(http.StatusOK)
 }
 

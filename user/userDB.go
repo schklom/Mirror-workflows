@@ -156,16 +156,6 @@ func (db *FMDDB) PreloadPictures(user *FMDUser) {
 	db.DB.Preload("Pictures").Where(&user).Find(&user)
 }
 
-func (db *FMDDB) DeleteLocations(user *FMDUser) int64 {
-	result := db.DB.Where(Location{UserID: user.Id}).Delete(&Location{})
-	return result.RowsAffected
-}
-
-func (db *FMDDB) DeletePictures(user *FMDUser) int64 {
-	result := db.DB.Where(Picture{UserID: user.Id}).Delete(&Picture{})
-	return result.RowsAffected
-}
-
 func (db *FMDDB) Save(value interface{}) {
 	db.DB.Save(value)
 }

@@ -124,10 +124,10 @@ func (u *UserRepository) pruneLocations(user *FMDUser) {
 	}
 }
 
-func (u *UserRepository) DeleteAllLocations(user *FMDUser) {
+func (u *UserRepository) DeleteAllLocationsV1(user *FMDUser) {
 	log.Info().Str("user", user.Username).Msg("deleting all locations")
-	rowsDeleted := u.UB.DeleteLocations(user)
-	metrics.Locations.Sub(float64(rowsDeleted))
+	result := u.UB.DB.Where(Location{UserID: user.Id}).Delete(&Location{})
+	metrics.Locations.Sub(float64(result.RowsAffected))
 }
 
 func (u *UserRepository) AddPicture(user *FMDUser, pic string) {
@@ -149,10 +149,10 @@ func (u *UserRepository) prunePictures(user *FMDUser) {
 	}
 }
 
-func (u *UserRepository) DeleteAllPictures(user *FMDUser) {
+func (u *UserRepository) DeleteAllPicturesV1(user *FMDUser) {
 	log.Info().Str("user", user.Username).Msg("deleting all pictures")
-	rowsDeleted := u.UB.DeletePictures(user)
-	metrics.Pictures.Sub(float64(rowsDeleted))
+	result := u.UB.DB.Where(Picture{UserID: user.Id}).Delete(&Picture{})
+	metrics.Pictures.Sub(float64(result.RowsAffected))
 }
 
 func (u *UserRepository) DeleteUser(user *FMDUser) error {

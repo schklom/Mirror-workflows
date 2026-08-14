@@ -29,6 +29,13 @@ jobs:
         id: repo
         run: echo "owner=$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_OUTPUT"
 
+      - name: Set version metadata
+        id: version_meta
+        run: |
+          echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          echo "VCS_REF=${GITHUB_SHA}" >> $GITHUB_OUTPUT
+          echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_OUTPUT
+
       - uses: docker/setup-qemu-action@v4
       - uses: docker/setup-buildx-action@v4
 
@@ -52,6 +59,10 @@ jobs:
           context: ${{ matrix.context }}
           file: ${{ matrix.file }}
           platforms: linux/amd64,linux/arm64
+          build-args: |
+            VERSION=${{ steps.version_meta.outputs.VERSION }}
+            VCS_REF=${{ steps.version_meta.outputs.VCS_REF }}
+            BUILD_DATE=${{ steps.version_meta.outputs.BUILD_DATE }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

@@ -313,6 +313,7 @@ func (u *UserRepository) GetSalt(username string) string {
 }
 
 var ErrNotFound = errors.New("account not found")
+var ErrWrongPassword = errors.New("wrong password")
 var ErrAccountLocked = errors.New("too many attempts, account locked")
 
 func (u *UserRepository) RequestAccess(username string, innerPwHash string, sessionDurationSeconds uint64, remoteIp string) (*FMDUser, *AccessToken, error) {
@@ -366,7 +367,7 @@ func (u *UserRepository) RequestAccess(username string, innerPwHash string, sess
 			Str("user", user.Username).
 			Str("remoteIp", remoteIp).
 			Msg("failed login attempt")
-		return nil, nil, errors.New("wrong password")
+		return nil, nil, ErrWrongPassword
 	}
 }
 

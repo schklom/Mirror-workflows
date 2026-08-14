@@ -18,6 +18,7 @@ export const SUPPORTED_LANGUAGES_PAIRS = [
   { code: 'nl', label: 'Nederlands' },
   { code: 'pt-BR', label: 'Português do Brasil' },
   { code: 'pt', label: 'Português' },
+  { code: 'ru', label: 'Ру́сский' },
   { code: 'sl', label: 'Slovenščina' },
   { code: 'zh-Hans', label: 'Chinese Simplified' },
   { code: 'zh-Hant', label: '中文（繁體）' }, // Chinese Traditional

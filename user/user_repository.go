@@ -2,12 +2,10 @@ package user
 
 import (
 	"bytes"
-	"crypto/rand"
 	"errors"
 	"fmd-server/metrics"
 	"fmd-server/version"
 	"fmt"
-	"math/big"
 	"net/http"
 	"regexp"
 	"strings"
@@ -303,21 +301,6 @@ func (u *UserRepository) SetPushUrl(user *FMDUser, pushUrl string) {
 
 func (u *UserRepository) GetPushUrl(user *FMDUser) string {
 	return user.PushUrl
-}
-
-func genRandomString(length int) string {
-	// a-z, A-Z, 0-9 excluding 0, O, l, I, and 1 (see #29)
-	var letters = []rune("abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789")
-	s := make([]rune, length)
-	for i := range s {
-		nBig, err := rand.Int(rand.Reader, big.NewInt(int64(len(letters))))
-		if err != nil {
-			panic(err)
-		}
-		s[i] = letters[nBig.Int64()]
-	}
-	newId := string(s)
-	return newId
 }
 
 func (u *UserRepository) GetSalt(id string) string {

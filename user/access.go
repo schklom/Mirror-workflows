@@ -1,6 +1,8 @@
 package user
 
 import (
+	"crypto/rand"
+	"encoding/hex"
 	"errors"
 	"fmd-server/metrics"
 	"time"
@@ -120,8 +122,7 @@ func (a *AccessController) CreateNewAccessToken(id string, sessionDurationSecond
 		sessionDurationSeconds = MAX_TOKEN_VALID_SECS
 	}
 
-	// long enough to be guaranteed to be unique
-	tokenValue := genRandomString(32)
+	tokenValue := generateToken(32) // 256 bits
 	now := time.Now().Unix()
 
 	token := AccessToken{
@@ -134,6 +135,12 @@ func (a *AccessController) CreateNewAccessToken(id string, sessionDurationSecond
 	a.accessTokens[tokenValue] = token
 	metrics.ActiveSessions.Set(float64(len(a.accessTokens)))
 	return token
+}
+
+func generateToken(numBytes int) string {
+	b := make([]byte, numBytes)
+	rand.Read(b) // "it never returns an error"
+	return hex.EncodeToString(b)
 }
 
 // Remove expired tokens and locks from the controller.

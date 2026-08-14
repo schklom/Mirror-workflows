@@ -30,7 +30,7 @@ type LockedUser struct {
 	ExpirationTime int64
 }
 
-const MAX_ALLOWED_ATTEMPTS = 5
+const MAX_ALLOWED_ATTEMPTS = 7
 
 const DURATION_LOCKED_SECS = 10 * 60          // 10 mins
 const DEFAULT_TOKEN_VALID_SECS = 15 * 60      // 15 mins

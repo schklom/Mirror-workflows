@@ -84,7 +84,7 @@ func (a *AccessController) IsLocked(username string) bool {
 		return false
 	}
 
-	if locked.FailedCount <= MAX_ALLOWED_ATTEMPTS {
+	if locked.FailedCount < MAX_ALLOWED_ATTEMPTS {
 		return false
 	}
 

@@ -421,7 +421,7 @@ func requestAccess(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	accessToken, err := uio.RequestAccess(data.IDT, data.PasswordHash, data.SessionDurationSeconds, getRemoteIp(r))
+	_, accessToken, err := uio.RequestAccess(data.IDT, data.PasswordHash, data.SessionDurationSeconds, getRemoteIp(r))
 
 	if err == user.ErrNotFound {
 		http.Error(w, "Account not found", http.StatusNotFound)

@@ -315,10 +315,10 @@ func (u *UserRepository) GetSalt(username string) string {
 var ErrNotFound = errors.New("account not found")
 var ErrAccountLocked = errors.New("too many attempts, account locked")
 
-func (u *UserRepository) RequestAccess(username string, innerPwHash string, sessionDurationSeconds uint64, remoteIp string) (*AccessToken, error) {
+func (u *UserRepository) RequestAccess(username string, innerPwHash string, sessionDurationSeconds uint64, remoteIp string) (*FMDUser, *AccessToken, error) {
 	user, err := u.UB.GetByName(username)
 	if err != nil {
-		return nil, ErrNotFound
+		return nil, nil, ErrNotFound
 	}
 
 	if u.ACC.IsLocked(username) {
@@ -331,7 +331,7 @@ func (u *UserRepository) RequestAccess(username string, innerPwHash string, sess
 		// Cannot sign since the server sets this.
 		// This is the only "command" that is allowed to be unsigned.
 		u.SetCommandToUser(user, "423", 0, "")
-		return nil, ErrAccountLocked
+		return nil, nil, ErrAccountLocked
 	}
 
 	expected := user.HashedPassword
@@ -357,7 +357,7 @@ func (u *UserRepository) RequestAccess(username string, innerPwHash string, sess
 			}()
 		}
 
-		return &token, nil
+		return user, &token, nil
 	} else {
 		u.ACC.IncrementLock(username)
 
@@ -366,7 +366,7 @@ func (u *UserRepository) RequestAccess(username string, innerPwHash string, sess
 			Str("user", user.Username).
 			Str("remoteIp", remoteIp).
 			Msg("failed login attempt")
-		return nil, errors.New("wrong password")
+		return nil, nil, errors.New("wrong password")
 	}
 }
 

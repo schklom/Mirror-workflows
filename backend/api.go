@@ -2,7 +2,7 @@ package backend
 
 import (
 	conf "fmd-server/config"
-	"fmd-server/version"
+	"fmd-server/constants"
 	frontend "fmd-server/web"
 	"fmt"
 	"net/http"
@@ -44,7 +44,7 @@ func securityHeadersMiddleware(next http.Handler, tileServerOrigin string) http.
 }
 
 func getVersion(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, version.VERSION)
+	fmt.Fprint(w, constants.VERSION)
 }
 
 func buildServeMux(config *viper.Viper) http.Handler {

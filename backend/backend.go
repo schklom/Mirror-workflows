@@ -3,9 +3,9 @@ package backend
 import (
 	"context"
 	conf "fmd-server/config"
+	"fmd-server/constants"
 	"fmd-server/metrics"
 	"fmd-server/user"
-	"fmd-server/version"
 	"io/fs"
 	"net"
 	"net/http"
@@ -179,7 +179,7 @@ func fileExists(filename string) bool {
 
 func RunServer(config *viper.Viper) {
 	log.Info().
-		Str("version", version.VERSION).
+		Str("version", constants.VERSION).
 		Str("dbDir", config.GetString(conf.CONF_DATABASE_DIR)).
 		Str("webDir", config.GetString(conf.CONF_WEB_DIR)).
 		Msg("starting FMD Server")

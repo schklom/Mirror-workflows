@@ -1,10 +1,12 @@
 package backend
 
 import (
+	"embed"
 	conf "fmd-server/config"
 	"fmd-server/constants"
 	frontend "fmd-server/web"
 	"fmt"
+	"io/fs"
 	"net/http"
 
 	"github.com/spf13/viper"
@@ -14,6 +16,12 @@ const HEADER_CONTENT_TYPE = "Content-Type"
 const CT_APPLICATION_JSON = "application/json"
 
 const ERR_JSON_INVALID = "Invalid JSON"
+
+//go:embed swagger-ui
+var swaggerUiFs embed.FS
+
+//go:embed openapi-v2.yaml
+var openApiSpec []byte
 
 var remoteIpHeaderName string = ""
 
@@ -39,6 +47,14 @@ func securityHeadersMiddleware(next http.Handler, tileServerOrigin string) http.
 		// https://operations.osmfoundation.org/policies/tiles/
 		w.Header().Set("Referrer-Policy", "strict-origin-when-cross-origin")
 
+		next.ServeHTTP(w, r)
+	})
+}
+
+func withSwaggerCsp(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// The bundled Swagger UI uses inline scripts
+		w.Header().Set("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: ; frame-ancestors 'none'; upgrade-insecure-requests")
 		next.ServeHTTP(w, r)
 	})
 }
@@ -116,6 +132,15 @@ func buildServeMux(config *viper.Viper) http.Handler {
 	// Also serve the version in the root path
 	mux.HandleFunc("/version", getVersion)
 	mux.HandleFunc("/version/", getVersion)
+
+	// Swagger YAML and UI
+	// XXX: Swagger forces this to be at the root (instead of /api/v2/... )
+	mux.HandleFunc("GET /openapi.yaml", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/yaml")
+		w.Write(openApiSpec)
+	})
+	sub, _ := fs.Sub(swaggerUiFs, "swagger-ui")
+	mux.Handle("/swagger-ui/", withSwaggerCsp(http.StripPrefix("/swagger-ui/", http.FileServer(http.FS(sub)))))
 
 	// Apply to all endpoints
 	handler := securityHeadersMiddleware(mux, tileServerOrigin)

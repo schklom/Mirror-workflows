@@ -1,0 +1,504 @@
+openapi: "3.0.0"
+
+# https://swagger.io/docs/specification/v3_0/about/
+
+info:
+  title: FMD Server API v2
+  version: "2.0.0"
+  description: |
+    This is the REST API for FMD Server, allowing you to remotely locate and control your device.
+
+    In order to understand the format of the encrypted data blobs, please see
+    the FMD Server Protocol, which defines the cryptography used.
+    APIv2 only supports the FMD Server Protocol v2.
+
+    Per convention, all values suffixed with "64" are Base64-encoded.
+  contact:
+    url: https://fmd-foss.org
+  license:
+    name: GPL-3.0-or-later
+
+servers:
+  - url: /api/v2
+    description: This server
+
+  # TODO: This needs a CORS setup to work
+  # - url: https://server.fmd-foss.org/api/v2
+  #   description: The production public FMD Server instance
+
+  # - url: https://server-edge.fmd-foss.org/api/v2
+  #   description: The "cutting edge" public FMD Server instance
+
+tags:
+  - name: Account Management
+  - name: Account Settings
+  - name: Encrypted Data
+    description: >
+      Upload/download all types of data: commands, locations, and pictures.
+  - name: Other
+
+paths:
+  /account/{name}/salt:
+    get:
+      tags: [Account Management]
+      summary: Get the password salt for a user
+      description: >
+        Migration behaviour:
+        Updated clients should get the salt via APIv2 first, since they
+        don't know a priori which crypto protocol version the account uses.
+        Then they may fall back to APIv1 for the login if `protoVersion` indicates v1.
+      operationId: getSalt
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Username
+      responses:
+        "200":
+          description: Salt retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SaltResponse"
+        "404":
+          description: Account not found
+          content:
+            text/plain:
+              schema:
+                type: string
+
+  /account/login:
+    post:
+      tags: [Account Management]
+      summary: Log in and obtain an access token
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+        "400":
+          description: Invalid JSON body or invalid username
+          content:
+            text/plain:
+              schema:
+                type: string
+        "403":
+          description: Access denied (bad credentials)
+          content:
+            text/plain:
+              schema:
+                type: string
+        "404":
+          description: Account not found
+          content:
+            text/plain:
+              schema:
+                type: string
+        "423":
+          description: Account is locked
+          content:
+            text/plain:
+              schema:
+                type: string
+
+  /account/register:
+    post:
+      tags: [Account Management]
+      summary: Register a new account
+      operationId: register
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterRequest"
+      responses:
+        "200":
+          description: Registration successful, account auto-logged-in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RegisterResponse"
+        "400":
+          description: Invalid JSON body, username invalid, or username not available
+          content:
+            text/plain:
+              schema:
+                type: string
+        "401":
+          description: Registration token invalid
+          content:
+            text/plain:
+              schema:
+                type: string
+        "500":
+          description: Internal server error, operation failed
+          content:
+            text/plain:
+              schema:
+                type: string
+
+  /account/logout:
+    post:
+      tags: [Account Management]
+      summary: Revoke the current access token
+      operationId: logout
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Logged out successfully
+        "400":
+          description: Missing or malformed Authorization header
+        "401":
+          description: Invalid or expired access token
+
+  /account:
+    delete:
+      tags: [Account Management]
+      summary: Delete the authenticated user's account
+      operationId: deleteAccount
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Account deleted
+        "400":
+          description: Missing or malformed Authorization header
+        "401":
+          description: Invalid or expired access token
+        "500":
+          description: Failed to delete account
+
+  # ------- Account Settings -------
+
+  /account/push_url:
+    get:
+      tags: [Account Settings]
+      summary: Get the account's push URL (for UnifiedPush)
+      operationId: getPushUrl
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Push URL retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PushUrlRequestResponse"
+        "400":
+          description: Missing or malformed Authorization header
+        "401":
+          description: Invalid or expired access token
+    post:
+      tags: [Account Settings]
+      summary: Set the account's push URL (for UnifiedPush)
+      operationId: setPushUrl
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PushUrlRequestResponse"
+      responses:
+        "200":
+          description: Push URL updated
+        "400":
+          description: Invalid JSON body, or missing/malformed Authorization header
+        "401":
+          description: Invalid or expired access token
+
+  /account/password:
+    post:
+      tags: [Account Settings]
+      summary: Change the account password (and associated salt and encrypted master key)
+      operationId: changePassword
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PasswordRequest"
+      responses:
+        "200":
+          description: Password updated. All existing sessions were revoked, a fresh access token is returned.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PasswordResponse"
+        "400":
+          description: Invalid JSON body, or missing/malformed Authorization header
+        "401":
+          description: Invalid or expired access token
+
+  # ------- Encrypted Data -------
+
+  /data/{type}:
+    get:
+      tags: [Encrypted Data]
+      summary: Get all items of a given type
+      operationId: getData
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/DataType"
+      responses:
+        "200":
+          description: Items retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DataRequestResponse"
+        "400":
+          description: Missing or malformed Authorization header
+        "401":
+          description: Invalid or expired access token
+        "500":
+          description: Internal server error, operation failed
+    post:
+      tags: [Encrypted Data]
+      summary: Add items of a given type
+      operationId: postData
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/DataType"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DataRequestResponse"
+      responses:
+        "200":
+          description: Items added
+        "400":
+          description: Invalid JSON body, or missing/malformed Authorization header
+        "401":
+          description: Invalid or expired access token
+        "500":
+          description: Internal server error, operation failed
+
+  /data/{type}/all:
+    delete:
+      tags: [Encrypted Data]
+      summary: Delete all items of a given type
+      operationId: deleteAllData
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/DataType"
+      responses:
+        "200":
+          description: All items of this type deleted
+        "400":
+          description: Missing or malformed Authorization header
+        "401":
+          description: Invalid or expired access token
+        "500":
+          description: Internal server error, operation failed
+
+  /data/{type}/{id}:
+    delete:
+      tags: [Encrypted Data]
+      summary: Delete a single item by its client-assigned id
+      operationId: deleteSingleDatum
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/DataType"
+        - name: id
+          in: path
+          required: true
+          description: >
+            Hex-encoded 128-bit client item id (`clientItemIdHex`) identifying
+            the item to delete.
+          schema:
+            type: string
+            pattern: "^[0-9a-fA-F]{32}$"
+      responses:
+        "200":
+          description: Item deleted
+        "400":
+          description: Missing or malformed Authorization header
+        "401":
+          description: Invalid or expired access token
+        "404":
+          description: Item not found
+        "500":
+          description: Internal server error, operation failed
+
+  # ------- Other -------
+
+  /tileServerUrl:
+    get:
+      tags: [Other]
+      summary: Get the configured map tile server URL
+      operationId: getTileServerUrl
+      responses:
+        "200":
+          description: Tile server URL retrieved
+
+  /version:
+    get:
+      tags: [Other]
+      summary: Get the server version
+      operationId: getVersion
+      responses:
+        "200":
+          description: Server version retrieved
+
+# ------- Components -------
+
+components:
+  parameters:
+    DataType:
+      name: type
+      in: path
+      required: true
+      description: Type of the encrypted data.
+      schema:
+        type: string
+        enum: [command, location, picture]
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: >
+        Access token issued by /account/login or /account/register.
+        Clients need to send this as `Authorization: Bearer <token>`.
+
+  schemas:
+    SaltResponse:
+      type: object
+      properties:
+        salt64:
+          type: string
+        protoVersion:
+          type: integer
+          format: int32
+          description: >
+            FMD Server Protocol version used by this account.
+            Clients should fall back to APIv1 if this indicates protocol v1.
+
+    LoginRequest:
+      type: object
+      required:
+        - username
+        - passwordHash64
+        - sessionDurationSeconds
+      properties:
+        username:
+          type: string
+        passwordHash64:
+          type: string
+        sessionDurationSeconds:
+          type: integer
+          format: int64
+          minimum: 0
+
+    LoginResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+        encMasterKey64:
+          type: string
+          description: May be empty if the account is on protocol v1.
+
+    RegisterRequest:
+      type: object
+      required:
+        - username
+        - salt64
+        - protoVersion
+        - passwordHash64
+        - encMasterKey64
+      properties:
+        username:
+          type: string
+        salt64:
+          type: string
+        passwordHash64:
+          type: string
+        protoVersion:
+          type: integer
+          format: int32
+          minimum: 0
+          description: Currently, always "2" for newly registered accounts.
+        encMasterKey64:
+          type: string
+        registrationToken:
+          type: string
+          description: Required only if the server enforces a registration token.
+
+    RegisterResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+
+    PushUrlRequestResponse:
+      type: object
+      properties:
+        url:
+          type: string
+
+    PasswordRequest:
+      type: object
+      properties:
+        newSalt64:
+          type: string
+        newPasswordHash64:
+          type: string
+        newEncMasterKey64:
+          type: string
+
+    PasswordResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+
+    EncryptedItem:
+      type: object
+      required:
+        - clientItemIdHex
+        - unixMillis
+        - ciphertext64
+      properties:
+        clientItemIdHex:
+          type: string
+          description: Hex-encoded 128-bit id chosen by the client.
+          pattern: "^[0-9a-fA-F]{32}$"
+        unixMillis:
+          type: integer
+          format: int64
+          minimum: 0
+        ciphertext64:
+          type: string
+          description: Base64-encoded ciphertext of the encrypted command/location/picture/etc.
+
+    DataRequestResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/EncryptedItem"

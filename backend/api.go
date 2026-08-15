@@ -105,17 +105,17 @@ func buildServeMux(config *viper.Viper) http.Handler {
 		apiV1Mux.Handle("/", http.FileServer(http.Dir(config.GetString(conf.CONF_WEB_DIR))))
 	}
 
-	apiMux := http.NewServeMux()
-	// muxFinal.Handle("/", staticFilesMux)
-	apiMux.Handle("/", apiV1Mux) // deprecated
-	apiMux.Handle("/api/v1/", http.StripPrefix("/api/v1", apiV1Mux))
+	mux := http.NewServeMux()
+	// mux.Handle("/", staticFilesMux)
+	mux.Handle("/", apiV1Mux) // deprecated
+	mux.Handle("/api/v1/", http.StripPrefix("/api/v1", apiV1Mux))
 
 	// Also serve the version in the root path
-	apiMux.HandleFunc("/version", getVersion)
-	apiMux.HandleFunc("/version/", getVersion)
+	mux.HandleFunc("/version", getVersion)
+	mux.HandleFunc("/version/", getVersion)
 
 	// Apply to all endpoints
-	handler := securityHeadersMiddleware(apiMux, tileServerOrigin)
+	handler := securityHeadersMiddleware(mux, tileServerOrigin)
 	handler = http.MaxBytesHandler(handler, 15<<20) // 15 MB because 2^20 is a MB
 
 	return handler

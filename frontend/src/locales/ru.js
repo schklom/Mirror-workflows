@@ -569,9 +569,9 @@ export default {
   '{0} sets · {1} work': '{0} подходов · {1} рабочих',
   'Make superset with previous': 'Суперсет с предыдущим',
   'Make superset with next': 'Суперсет со следующим',
-  "primary": "основная",
-  "secondary": "вспомогательная",
-  "No exercises with an estimated 1RM yet.": "Пока нет упражнений с расчётным 1ПМ.",
-  "Tap a muscle to see its exercises.": "Нажмите на мышцу, чтобы увидеть её упражнения.",
+  'primary': 'основная',
+  'secondary': 'вспомогательная',
+  'No exercises with an estimated 1RM yet.': 'Пока нет упражнений с расчётным 1ПМ.',
+  'Tap a muscle to see its exercises.': 'Нажмите на мышцу, чтобы увидеть её упражнения.',
   'Unpair': 'Разъединить'
 }

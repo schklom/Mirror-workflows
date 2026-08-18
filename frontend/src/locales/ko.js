@@ -569,9 +569,9 @@ export default {
   '{0} sets · {1} work': '{0} 세트 · {1} 작업',
   'Make superset with previous': '이전 운동과 슈퍼셋',
   'Make superset with next': '다음 운동과 슈퍼셋',
-  "primary": "주동",
-  "secondary": "보조",
-  "No exercises with an estimated 1RM yet.": "추정 1RM이 있는 운동이 아직 없습니다.",
-  "Tap a muscle to see its exercises.": "근육을 눌러 해당 운동을 확인하세요.",
+  'primary': '주동',
+  'secondary': '보조',
+  'No exercises with an estimated 1RM yet.': '추정 1RM이 있는 운동이 아직 없습니다.',
+  'Tap a muscle to see its exercises.': '근육을 눌러 해당 운동을 확인하세요.',
   'Unpair': '분리'
 }

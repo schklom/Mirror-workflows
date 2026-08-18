@@ -569,9 +569,9 @@ export default {
   '{0} sets · {1} work': '{0} set · {1} çalışma',
   'Make superset with previous': 'Öncekiyle superset yap',
   'Make superset with next': 'Sonrakiyle superset yap',
-  "primary": "birincil",
-  "secondary": "ikincil",
-  "No exercises with an estimated 1RM yet.": "Henüz tahmini 1RM olan egzersiz yok.",
-  "Tap a muscle to see its exercises.": "Egzersizlerini görmek için bir kas seçin.",
+  'primary': 'birincil',
+  'secondary': 'ikincil',
+  'No exercises with an estimated 1RM yet.': 'Henüz tahmini 1RM olan egzersiz yok.',
+  'Tap a muscle to see its exercises.': 'Egzersizlerini görmek için bir kas seçin.',
   'Unpair': 'Ayır'
 }

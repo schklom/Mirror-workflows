@@ -569,9 +569,9 @@ export default {
   '{0} sets · {1} work': '{0} सेट · {1} काम',
   'Make superset with previous': 'पिछले के साथ सुपरसेट',
   'Make superset with next': 'अगले के साथ सुपरसेट',
-  "primary": "प्राथमिक",
-  "secondary": "द्वितीयक",
-  "No exercises with an estimated 1RM yet.": "अभी तक अनुमानित 1RM वाला कोई व्यायाम नहीं।",
-  "Tap a muscle to see its exercises.": "व्यायाम देखने के लिए किसी मांसपेशी पर टैप करें।",
+  'primary': 'प्राथमिक',
+  'secondary': 'द्वितीयक',
+  'No exercises with an estimated 1RM yet.': 'अभी तक अनुमानित 1RM वाला कोई व्यायाम नहीं।',
+  'Tap a muscle to see its exercises.': 'व्यायाम देखने के लिए किसी मांसपेशी पर टैप करें।',
   'Unpair': 'अलग करें'
 }

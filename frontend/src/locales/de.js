@@ -586,9 +586,9 @@ export default {
   '{0} sets · {1} work': '{0} Sätze · {1} Arbeit',
   'Make superset with previous': 'Mit vorheriger Übung kombinieren',
   'Make superset with next': 'Mit nächster Übung kombinieren',
-  "primary": "primär",
-  "secondary": "sekundär",
-  "No exercises with an estimated 1RM yet.": "Noch keine Übungen mit geschätztem 1RM.",
-  "Tap a muscle to see its exercises.": "Tippe auf einen Muskel, um seine Übungen zu sehen.",
+  'primary': 'primär',
+  'secondary': 'sekundär',
+  'No exercises with an estimated 1RM yet.': 'Noch keine Übungen mit geschätztem 1RM.',
+  'Tap a muscle to see its exercises.': 'Tippe auf einen Muskel, um seine Übungen zu sehen.',
   'Unpair': 'Trennen'
 }

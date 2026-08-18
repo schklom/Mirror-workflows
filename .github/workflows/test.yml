@@ -106,6 +106,18 @@ jobs:
 
       - run: docker build --target default -t opengym-api:default ./api
       - run: docker build --target coach   -t opengym-api:coach   ./api
+      # No --target, exactly like docker-publish.yml. That workflow names no stage, so what it
+      # ships is whatever Dockerfile stage happens to be last -- and that untargeted artifact,
+      # not opengym-api:default above, is the image every self-hoster pulls as :latest. Build it
+      # the same way here so the assertion below is about the thing we actually publish.
+      - run: docker build -t opengym-api:published ./api
+
+      - name: the image published as :latest has no AI runtime either
+        run: |
+          docker run --rm opengym-api:published node -e \
+            'import("@anthropic-ai/claude-agent-sdk").then(()=>{console.error("AI runtime present in the published image -- the last Dockerfile stage is no longer the runtime-free one");process.exit(1)},()=>process.exit(0))'
+          ! docker run --rm opengym-api:published codex --version
+          ! docker run --rm opengym-api:published bwrap --version
 
       - name: the default image boots and serves, with no AI runtime in it
         run: |

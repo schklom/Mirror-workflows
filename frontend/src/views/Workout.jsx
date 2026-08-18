@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/useStore.js'
 import { useUI } from '../store/useUI.js'
 import { exOr } from '../lib/exercises.js'
-import { effectiveRoutine, lastEntryFor, bestWeightFor, buildSets, freestyleConfig, defaultConfig, setsDoneActive, supersetUnits, unitOf, setLabel, modeOf, isBw, isPerSide, sideReps, repStep, EFFORT, effortOf, stepEffort, capEffort, cascadeWeight, insertWarmupRow, removeRowAt, pairAdjacent, unpairSuperset } from '../lib/history.js'
+import { effectiveRoutine, lastEntryFor, bestWeightFor, buildSets, freestyleConfig, defaultConfig, setsDoneActive, supersetUnits, unitOf, setLabel, modeOf, isBw, isPerSide, sideReps, repStep, EFFORT, effortOf, stepEffort, capEffort, cascadeWeight, insertWarmupRow, removeRowAt, pairAdjacent, unpairSuperset, cleanupSg } from '../lib/history.js'
 import { fmtNum, fmtDate, todayISO, exCount, DAYN } from '../lib/format.js'
 import { beep, vibrate } from '../lib/sound.js'
 import { t } from '../lib/i18n.js'
@@ -171,11 +171,25 @@ function ExerciseBlock({ entryIdx, compact, onToggle, onField, onAddSet, onRemov
 }
 
 /* ---------- active workout ---------- */
+export function removeActiveExercise(idx) {
+  // Clear the work callback before indexes can shift. This also protects a confirmation sheet
+  // that was opened first and confirmed after a timed hold started.
+  useUI.getState().stopWork()
+  useStore.getState().update(s => {
+    if (!s.active || !Array.isArray(s.active.entries)) return
+    if (idx < 0 || idx >= s.active.entries.length) return
+    s.active.entries.splice(idx, 1)
+    cleanupSg(s.active.entries)
+    if (idx < s.active.cur) s.active.cur--
+    if (s.active.cur >= s.active.entries.length) s.active.cur = Math.max(0, s.active.entries.length - 1)
+  }, true)
+}
+
 function ActiveWorkout() {
   const nav = useNavigate()
   const S = useStore(s => s.S)
   const update = useStore(s => s.update)
-  const { startRest, stopRest } = useUI()
+  const { startRest, stopRest, work } = useUI()
   const A = S.active
   const units = supersetUnits(A.entries)
   const cur = Math.min(A.cur, Math.max(0, A.entries.length - 1))
@@ -219,6 +233,38 @@ function ActiveWorkout() {
   })
   const onPairPrev = !isSuperset && cur > 0 ? () => pairAt(cur - 1, cur) : null
   const onPairNext = !isSuperset && cur < A.entries.length - 1 ? () => pairAt(cur, cur + 1) : null
+
+  // Remove a whole exercise from the session. The confirmation always asks first; in a
+  // superset it asks WHICH exercise of the group to remove.
+  const removeExercise = removeActiveExercise
+  const confirmRemoveExercise = idx => {
+    const e = A.entries[idx]
+    if (!e) return
+    const hasDone = (e.sets || []).some(s => s.done)
+    confirmSheet({
+      title: t('Remove {0}?', exOr(e.id).n),
+      message: hasDone
+        ? t('The sets you logged for this exercise in this session will be lost.')
+        : t('This removes the exercise from your current session.'),
+      confirmText: t('Remove'), danger: true, onConfirm: () => removeExercise(idx)
+    })
+  }
+  const removeExerciseSheet = () => {
+    if (unit.length > 1) {
+      useUI.getState().openSheet(close => (
+        <div>
+          <h3>{t('Remove exercise')}</h3>
+          <div className="muted small" style={{ marginBottom: 12 }}>{t('Which exercise in this superset do you want to remove?')}</div>
+          <div className="list">
+            {unit.map(idx => <div key={idx} className="item" onClick={() => { close(); confirmRemoveExercise(idx) }}>
+              <div className="grow"><div className="tt">{exOr(A.entries[idx]?.id).n}</div></div>
+              <Icon name="chevronRight" />
+            </div>)}
+          </div>
+        </div>
+      ))
+    } else confirmRemoveExercise(cur)
+  }
 
   // A timed set is held, not typed. The work timer records what was actually held — an early
   // finish logs 0:38 of a 0:45 target rather than crediting the full prescription — and then
@@ -335,6 +381,12 @@ function ActiveWorkout() {
         s.active.cur = s.active.entries.length - 1
       }), null, routine, seed)
     })} icon="plus">{t('Add exercise')}</Button>
+    {A.entries.length > 0 && <>
+      <div style={{ height: 6 }} />
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <Button size="sm" icon="minus" style={{ color: 'var(--red)' }} disabled={!!work} onClick={removeExerciseSheet}>{t('Remove exercise')}</Button>
+      </div>
+    </>}
     <div style={{ height: 10 }} />
     {(() => {
       const exDone = A.entries.filter(e => e.sets.length && e.sets.every(s => s.done)).length

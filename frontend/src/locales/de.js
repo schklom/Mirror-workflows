@@ -94,6 +94,11 @@ export default {
   'Weight ({0})': 'Gewicht ({0})',
   'Add to routine': 'Zur Routine hinzufügen',
   'Remove exercise': 'Übung entfernen',
+  'Remove {0}?': '{0} entfernen?',
+  'The sets you logged for this exercise in this session will be lost.': 'Die in dieser Einheit für diese Übung protokollierten Sätze gehen verloren.',
+  'This removes the exercise from your current session.': 'Dadurch wird die Übung aus deiner aktuellen Einheit entfernt.',
+  'Remove': 'Entfernen',
+  'Which exercise in this superset do you want to remove?': 'Welche Übung in diesem Supersatz möchtest du entfernen?',
   'Pick an icon': 'Symbol auswählen',
   // --- day planning / calendar ---
   'Back to weekly plan': 'Zurück zum Wochenplan',

@@ -226,8 +226,7 @@ Issues and PRs welcome — see [CONTRIBUTING.md](CONTRIBUTING.md). Good first is
 plans, exercise-data languages, import from other trackers. **A ⭐ helps more people find it.**
 
 openGym is free and stays free: AGPL, no subscription, no paid tier, nothing held back for
-sponsors. If it replaced a paid tracker for you and you want to chip in, the Sponsor button at the
-top of the page is there — a star, a bug report or a PR is worth just as much.
+sponsors. If it replaced a paid tracker for you and you want to chip in, the Sponsor button at the top of the page is there — a star, a bug report or a PR is worth just as much.
 
 ## License
 

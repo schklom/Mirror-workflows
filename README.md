@@ -4,6 +4,14 @@
 
 <br>
 
+<a href="https://buymeacoffee.com/duartesantos" target="_blank">
+  <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png"
+       alt="Buy Me A Coffee"
+       style="height: 60px !important;width: 217px !important;">
+</a>
+
+<br>
+
 **A self-hosted gym & body-weight tracker you actually own.**
 
 Plan your week, run guided workouts, track every set and your body weight over time —

@@ -85,6 +85,7 @@ as a home-screen app, passkey sign-in, offline support, sync across your phone a
 - 📥 **Bring your history with you** — import from **FitNotes** (Android and iOS), **Strong** and **Hevy**, or body weight straight out of an **Apple Health** export. Exercise names are matched against the library and anything unrecognised becomes one of your own exercises, so nothing in the file is dropped
 - 📦 **Yours to keep** — one-tap JSON export/import, guest mode, **no telemetry**
 - 🤖 **Ask an AI about your training** (optional) — an [MCP server](mcp/README.md) lets a client like Claude Desktop or Cursor read your history in your own words: *"what did I bench last week?"*. Read-only, spawned locally by the client, nothing leaves your box. Not in the Docker build — if you don't use an AI assistant, it isn't there
+- 🧠 **An AI coach that writes your plan** (optional, off by default) — answer a handful of questions and it designs a week of routines; later it reads what you actually logged and proposes changes, each one with the evidence behind it. You approve every change and can undo it. It runs on **your** server under **your** provider account, and it needs a separate image to exist at all — the default build carries no AI runtime whatsoever. See [docs/AI_COACH.md](docs/AI_COACH.md)
 - 📱 **Standalone Android app** — the whole tracker as a sideloadable APK: no account, no server, data on the phone, native workout reminders ([download](https://opengym.duarte-santos.ch))
 
 ## Quick start (self-host)
@@ -164,6 +165,8 @@ All via `.env` (see `.env.example`):
 | `INVITE_ONLY` | Require an invite code to create a profile           | *(off)*                 |
 | `ALLOW_GUEST` | Offer "Continue without account" — set `0` to require a profile | *(on)*       |
 | `VAPID_SUBJECT` | Contact URL sent with push notifications           | your `ORIGIN`           |
+| `API_TARGET`  | Which API image to build: `default` (no AI runtime) or `coach` | `default`   |
+| `COACH_DISABLED` | Set to `1` to force the AI Coach off instance-wide, whatever the admin toggled | *(unset)* |
 
 Push notification keys are generated on first run and saved to `./data/vapid.json` — nothing to set.
 `DATA_DIR` is pinned to `/data` by `docker-compose.yml` and mapped to `./data` on the host; change the
@@ -176,6 +179,7 @@ Rough, community-driven — ideas and PRs welcome:
 - [x] Standalone mobile app — Android APK to sideload ([download](https://opengym.duarte-santos.ch)); on iOS as a self-hosted PWA (no store listings planned)
 - [x] Automatic progression programs (linear, Greyskull LP, double progression) with stalls and deloads
 - [x] Estimated 1RM per exercise
+- [x] Optional AI coach — designs a plan and reviews your training, on your own server and your own provider account ([docs](docs/AI_COACH.md))
 - [ ] Percentage / training-max programming (5/3/1-style) on top of the progression engine
 - [ ] More starter plans (upper/lower, full-body, 5×5)
 - [x] Importers from FitNotes / Strong / Hevy (including the RPE they record), and body weight from Apple Health
@@ -195,6 +199,12 @@ The training logic — progression rules, 1RM estimation, how a logged session i
 lives in pure functions under `frontend/src/lib/` with tests next to them: `npm test` in
 `frontend/`. Vitest is a dev dependency; the app itself ships no runtime dependencies beyond
 React, the router and Zustand.
+
+The optional AI Coach (`api/coach/`) is built the same way round: a by-name allowlist decides
+what may leave the server, and a closed-list validator decides what may come back — the model
+can touch routines and the weekly schedule, nothing else, and every change is applied on the
+client only after you approve it. The AI runtime lives in a separate Docker build target, so an
+instance that never asks for it never carries it. See [docs/AI_COACH.md](docs/AI_COACH.md).
 
 The same pure helpers power an optional MCP server (`mcp/`) that lets an LLM client like
 Claude Desktop read your data over stdio — see [mcp/README.md](mcp/README.md). Opt-in, not

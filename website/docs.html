@@ -40,6 +40,7 @@
     <a href="#iphone">iPhone</a>
     <a href="#selfhost">Self-hosting</a>
     <a href="#mcp">Ask an AI</a>
+    <a href="#coach">AI Coach</a>
     <a href="#import">Import your history</a>
     <a href="#backup">Backups</a>
     <a href="#build">Build it yourself</a>
@@ -112,6 +113,26 @@ docker compose up -d</code></pre>
      Nothing is sent anywhere, and it is <b>not part of the Docker build</b> — if you don't use
      an AI assistant, it simply isn't there. Setup is a few lines of client config:
      <a href="https://github.com/DuarteSantos8/openGym/blob/main/mcp/README.md" rel="noopener">mcp/README.md</a>.</p>
+
+  <h2 id="coach">Let an AI coach write your plan</h2>
+  <p>Separate from the read-only bridge above, openGym has an optional <b>AI Coach</b> that can
+     design a training plan and, later, review what you actually logged and propose changes to
+     it. Answer a few questions — goal, days a week, session length, equipment, anything to work
+     around — and it builds a week of routines. Every suggestion carries the evidence behind it,
+     you approve or reject each one, and you can undo the last set of changes.</p>
+  <p>It is <b>off by default and not in the default image</b>. The Coach needs a build that
+     includes an AI runtime, which the normal one deliberately does not carry:</p>
+  <pre><code>API_TARGET=coach docker compose up -d --build api</code></pre>
+  <p>Then an admin turns it on in <b>Settings → Admin → AI Coach</b> and connects a provider
+     account. It runs on <b>your</b> server under <b>your</b> account — there is no openGym
+     service in the middle, and nothing is sent anywhere until you ask it for something. What
+     leaves the server is a by-name allowlist (your plan, your logged sets, body weight if you
+     track it) under a pseudonym; your name, sign-in details and other profiles never do. What
+     comes back can only touch routines and your weekly schedule, and is applied on your device
+     after you approve it.</p>
+  <p>The Coach is not a doctor or a physiotherapist. If something hurts, ask a professional.
+     Full details, including exactly what is sent and how credentials are stored:
+     <a href="https://github.com/DuarteSantos8/openGym/blob/main/docs/AI_COACH.md" rel="noopener">docs/AI_COACH.md</a>.</p>
 
   <h2 id="import">Import your training history</h2>
   <p>Coming from another tracker? <b>Settings → Data → Import from another app</b> reads:</p>

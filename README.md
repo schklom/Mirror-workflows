@@ -4,14 +4,6 @@
 
 <br>
 
-<a href="https://buymeacoffee.com/duartesantos" target="_blank">
-  <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png"
-       alt="Buy Me A Coffee"
-       style="height: 60px !important;width: 217px !important;">
-</a>
-
-<br>
-
 **A self-hosted gym & body-weight tracker you actually own.**
 
 Plan your week, run guided workouts, track every set and your body weight over time —
@@ -227,6 +219,12 @@ plans, exercise-data languages, import from other trackers. **A ⭐ helps more p
 
 openGym is free and stays free: AGPL, no subscription, no paid tier, nothing held back for
 sponsors. If it replaced a paid tracker for you and you want to chip in, the Sponsor button at the top of the page is there — a star, a bug report or a PR is worth just as much.
+
+<a href="https://buymeacoffee.com/duartesantos" target="_blank">
+  <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png"
+       alt="Buy Me A Coffee"
+       style="height: 60px !important;width: 217px !important;">
+</a>
 
 ## License
 

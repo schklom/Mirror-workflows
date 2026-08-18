@@ -201,6 +201,12 @@ function ActiveWorkout() {
   // next exercise in the group, then back up to the first exercise of the next round.
   const exRefs = useRef({})
   const progressHighWater = useRef(A.entries.map(e => e.sets.filter(s => s.done).length))
+  // The marks are index-keyed, and removing an exercise shifts every index above it down
+  // (removeActiveExercise splices). Re-baseline whenever the list length changes, otherwise a
+  // shifted exercise inherits its predecessor's mark and its real progress reads as a re-check.
+  useEffect(() => {
+    progressHighWater.current = A.entries.map(e => e.sets.filter(s => s.done).length)
+  }, [A.entries.length])
   useEffect(() => {
     if (!isSuperset) return
     const el = exRefs.current[cur]

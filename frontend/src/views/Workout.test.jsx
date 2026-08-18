@@ -48,6 +48,12 @@ vi.mock('../sheets.jsx', () => ({
   confirmSheet: vi.fn(),
 }))
 vi.mock('../components/Media.jsx', () => ({ default: () => null }))
+// api.js reads navigator.userAgent at module scope. This file installs its own DOM inside the
+// tests rather than declaring a vitest environment, so it must not depend on an ambient one.
+vi.mock('../lib/api.js', () => ({
+  api: vi.fn(() => Promise.resolve({})),
+  IS_APPLE: false, IS_ANDROID: false, BIO: 'biometrics',
+}))
 
 let dom
 let root
@@ -141,6 +147,39 @@ describe('Workout set completion flow', () => {
 
     expect(mocks.topWeightSheet).toHaveBeenCalledWith(1)
     expect(mocks.S.active.cur).toBe(1)
+    expect(mocks.startRest).toHaveBeenCalledWith(90)
+  })
+})
+
+describe('superset flow survives an exercise being removed mid-session', () => {
+  // removeActiveExercise splices A.entries, shifting every index above the removal down.
+  // The high-water marks are index-keyed, so without re-baselining the shifted exercise
+  // inherits its predecessor's mark and its next completed set reads as an uncheck/re-check
+  // — no advance, and no rest at the end of the round.
+  it('still advances and rests for sets completed after a removal', async () => {
+    // warm(2 sets, both done) ahead of a bench/row superset with nothing done yet.
+    await mount([
+      exercise('warm', [true, true]),
+      exercise('bench', [false, false], { sg: 'g1' }),
+      exercise('row', [false, false], { sg: 'g1' }),
+    ], 1)
+
+    // Drop the first exercise: bench moves 1 -> 0, row moves 2 -> 1.
+    // Stale marks would be [2, 0, 0] against entries that are now [bench, row].
+    await act(async () => {
+      mocks.S.active.entries.splice(0, 1)
+      mocks.S.active.cur = 0
+      root.render(React.createElement(Workout))
+    })
+    mocks.startRest.mockClear()
+
+    // First member of the group: real progress, so the flow advances to the partner.
+    await toggleSet(0)
+    await act(async () => { root.render(React.createElement(Workout)) })
+    expect(mocks.S.active.cur).toBe(1)
+
+    // Partner closes the round (each still has a second set), which is what starts the rest.
+    await toggleSet(2)
     expect(mocks.startRest).toHaveBeenCalledWith(90)
   })
 })

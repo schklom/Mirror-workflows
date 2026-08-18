@@ -7,13 +7,15 @@ on:
     paths:
       - 'frontend/**'
       - 'api/**'
+      - 'mcp/**'
       - 'scripts/build-coach-library.mjs'
       - '.github/workflows/test.yml'
   push:
-    branches: [main]
+    branches: [main, coach]
     paths:
       - 'frontend/**'
       - 'api/**'
+      - 'mcp/**'
       - 'scripts/build-coach-library.mjs'
       - '.github/workflows/test.yml'
   workflow_dispatch:
@@ -45,6 +47,36 @@ jobs:
         working-directory: frontend
       - run: node scripts/check-locales.mjs
         working-directory: frontend
+      # check-locales compares the packs to each other, so a key missing from ALL of them is
+      # invisible to it. This walks src/ instead. Report-only for now: there is a known
+      # backlog of untranslated demo-view strings to clear before it can fail the build.
+      - run: node scripts/check-source-strings.mjs
+        working-directory: frontend
+      # The fatigue model must never read higher after a rest day than before it.
+      # Property probe over ~108k comparisons; too slow for the unit suite, cheap here.
+      - run: npm run test:fatigue-probe
+        working-directory: frontend
+
+
+  mcp:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: mcp/package-lock.json
+      - run: npm ci
+        working-directory: mcp
+      - run: npm test
+        working-directory: mcp
+      # The one check the vitest suite structurally cannot make. The MCP server is a bare node
+      # process, but vitest runs its tests through Vite — import.meta.glob, .jsx imports and
+      # ?raw all resolve happily there. That is how a Vite-only import reached a shared lib
+      # module with 33 green tests standing over a server that died on startup.
+      - run: npm run check:node-loadable
+        working-directory: mcp
 
   api:
     runs-on: ubuntu-latest

@@ -20,6 +20,7 @@
 
 import { EXDB, EXIDX } from './exercises.js'
 import { uid } from './format.js'
+import { isWarmupRow } from './workout-model.js'
 
 /* ----------------------------------------------------------------- CSV ---- */
 
@@ -173,6 +174,17 @@ const ALIAS_EX = {
   'tricep pushdown': '0241', 'triceps pushdown': '0241', pushdown: '0241',
   skullcrusher: '0060', 'skull crusher': '0060', 'lying triceps extension': '0061',
   lunge: '0054', lunges: '0054', 'cable crossover': '1269', 'cable cross over': '1269',
+  'goblet squat': '1760', 'dumbbell goblet squat': '1760', 'kettlebell goblet squat': '0534',
+  // Reported in issue #74: these come out of Hevy under names no word-overlap can reach, so
+  // they landed as custom exercises. The catalogue's cardio vocabulary is thin (29 of 1,324
+  // entries), so each of these is the *only* candidate rather than the best of several.
+  treadmill: '3666', 'treadmill walk': '3666', 'treadmill run': '3666',
+  cycling: '2331', 'cross trainer': '2331', elliptical: '2141',
+  'stationary bike': '2138', 'exercise bike': '2138', 'stepmill': '2311',
+  // The catalogue has only band Pallof presses, so a cable one resolves to the band entry:
+  // same movement, wrong equipment label, which beats leaving it uncategorised.
+  'pallof press': '0979', 'cable pallof press': '0979', 'vertical pallof press': '1015',
+  'cable core pallof press': '0979', 'core pallof press': '0979',
 }
 
 let ALIAS_IDX = null
@@ -334,7 +346,8 @@ export function parseWorkoutCSV(text, { unit = 'kg' } = {}) {
       ? num(cell(r, 'distanceKm'))
       : toKm(cell(r, 'distance'), cell(r, 'distanceUnit'))
     if (!w && !reps && !mins && !km) { skipped++; continue }
-    if (/warm/i.test(cell(r, 'setType'))) warmups++
+    const warmup = /warm/i.test(cell(r, 'setType'))
+    if (warmup) warmups++
 
     const key = keyOf(name)
     let id = resolved.get(key)
@@ -357,8 +370,8 @@ export function parseWorkoutCSV(text, { unit = 'kg' } = {}) {
     // `u` carries the row's own unit into the conversion pass below and is dropped there —
     // it never reaches the stored set.
     const set = isCardio
-      ? { min: mins || 0, speed: mins > 0 ? Math.round(km / (mins / 60) * 10) / 10 : 0, done: true }
-      : { w, r: reps || 0, done: true, u: rowUnit }
+      ? { min: mins || 0, speed: mins > 0 ? Math.round(km / (mins / 60) * 10) / 10 : 0, done: true, ...(warmup ? { phase: 'warmup' } : {}) }
+      : { w, r: reps || 0, done: true, u: rowUnit, ...(warmup ? { phase: 'warmup' } : {}) }
     // Effort rides along only where the app can show it again: a weighted rep set. A treadmill
     // row with an RPE would have nowhere to put it. A set is kept on one scale, so a file
     // carrying both columns is read as RIR — the same precedence setLabel reads them back with.
@@ -405,7 +418,7 @@ export function parseWorkoutCSV(text, { unit = 'kg' } = {}) {
     const day = byDate.get(d)
     const entries = [...day.ex.entries()].map(([id, ss]) => {
       const conv2 = ss.map(({ u, ...s }) => (s.w !== undefined ? { ...s, w: convRow({ ...s, u }) } : s))
-      const mx = Math.max(0, ...conv2.map(s => s.w || 0))
+      const mx = Math.max(0, ...conv2.filter(s => !isWarmupRow(s)).map(s => s.w || 0))
       return { id, sets: conv2, topW: mx || null }
     })
     const base = new Date(d + 'T00:00:00').getTime()

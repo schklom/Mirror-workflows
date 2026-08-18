@@ -453,10 +453,16 @@ describe('the gate has something real to read', () => {
     // Asserted against the source rather than the live store: useStore touches `document` at
     // import time, so it cannot be instantiated in this environment. Crude, but it fails on
     // exactly the two edits that broke it — dropping the field, or dropping the fetch.
+    // Matched loosely on purpose: boot() fetches through loadConfig() rather than inlining the
+    // call, so what matters is that the field exists and that something writes /api/config
+    // into it — not the spelling of the expression that does it.
     const { readFileSync } = await import('node:fs')
     const src = readFileSync(new URL('../store/useStore.js', import.meta.url), 'utf8')
     expect(src).toMatch(/\bconfig:\s*null\b/)
-    expect(src).toMatch(/set\(\s*\{\s*config:\s*await api\(['"]\/api\/config['"]\)/)
+    expect(src).toMatch(/set\(\s*\{\s*config[:\s]/)
+    expect(src).toMatch(/api\(['"]\/api\/config['"]\)/)
+    // and boot() must actually reach it, however it is spelled
+    expect(src).toMatch(/loadConfig\(\)|config:\s*await api\(/)
   })
 
   it('a configured instance with a signed-in user opens the gate', () => {

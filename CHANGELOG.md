@@ -1,5 +1,171 @@
 # Changelog
 
+## v1.2.6 — 2026-08-11
+
+The muscle map learned to answer a second question — not just where the volume went, but what is
+still recovering from it. Plus: a freestyle session no longer starts from blanks, the rest timer
+can reach you in another app, and a self-hosted instance can insist that everyone using it has an
+account.
+
+### The muscle map, read as recovery (#44)
+
+- 🔥 **A `Balance | Fatigue | Strength` switch on the Stats muscle card.** Balance is the map you
+  already had and is untouched. Fatigue shades each muscle by how much of the recent training it
+  is still carrying; Strength shades it by how long it has been since you trained it at all, with
+  the weeks-since count spelled out underneath.
+- **Fatigue is volume-sensitive and fades smoothly.** A hard twelve-set chest day starts near the
+  top and takes about six days to read ready again; a single set barely registers and is gone in
+  two. It decays continuously on a 36-hour half-life rather than expiring at a window edge, so the
+  map never flips from "fatigued" to "ready" between one look and the next.
+- **Strength holds for two weeks, then decays toward a floor.** A muscle you have not trained in
+  months reads detrained rather than absent, which is the state that actually tells you something.
+- Both views are pure functions over your existing history — no new stored data, no schema change,
+  nothing sent anywhere.
+
+### The rest timer can reach you in another app (#49)
+
+- ⏰ **A system notification when rest is over**, on top of the beep, for when you have switched to
+  another tab or app mid-session. Permission is asked the first time a rest starts, and everything
+  degrades quietly where notifications are unsupported or refused.
+- It goes through the service worker where the browser requires that — which is most phones — and
+  falls back to the direct API elsewhere. No new dependencies; the existing server push path is
+  untouched.
+
+### Rows now strain the rear delts (#51)
+
+- **Four row variations gained rear-deltoid secondaries** — barbell, dumbbell, inverted and cable
+  seated rows — so the muscle map spreads their load the way the lift actually does. The overrides
+  live in a small table that survives a regeneration of the exercise dataset rather than being
+  edited into the generated data.
+
+### An instance can require an account (#42)
+
+- 🔒 **`ALLOW_GUEST=0` removes the "Continue without account" button.** Guest mode keeps everything
+  in the browser and never touches the server — no account, no sync, nothing the admin dashboard
+  can see — so on an instance meant for a known set of people it was a door leading nowhere
+  useful, and until now there was no way to close it.
+- **It also ends guest sessions that already exist.** Guests never authenticate, so there is no
+  request for the server to start refusing; the switch reaches someone already inside on their
+  next visit, when the app checks the config and returns them to the login screen. Their data is
+  not deleted — it stays in that browser, and moves into a real profile if they create one on the
+  same device.
+- **A server it cannot reach is not a server that said no.** The button is only withdrawn on an
+  explicit `allow_guest: false`; a failed config request, or a server too old to send the flag at
+  all, leaves guest mode exactly as it was. An instance that is merely offline for a moment does
+  not lock out everyone who never made an account.
+- **Default is on, so nothing changes for existing instances.** Set it alongside `INVITE_ONLY=1`:
+  invite-only governs who may *create a profile* and says nothing about the guest button, which
+  never creates one.
+
+### Freestyle sessions start where you left off
+
+- 🏋️ **Adding an exercise to an empty workout now prefills it from the last time you trained
+  it** — the same number of sets, with each row's reps and weight carried across by position.
+  Cardio brings its duration and speed, a hold brings its seconds. Until now every row opened on
+  the config-sheet defaults, so the first thing a freestyle session asked of you was to retype
+  what you already did last week.
+- **The config sheet agrees with the rows it is about to create.** It opens on the last target you
+  actually trained rather than the generic default, so the set count you confirm is the set count
+  you get.
+- **Planned sessions are untouched.** A routine-driven workout still runs the progression logic and
+  still applies its prescription; only the freestyle path — which has no prescription to apply —
+  reads from history instead.
+
+Contributed by [@Space-Hermes](https://github.com/Space-Hermes) in
+[#50](https://github.com/DuarteSantos8/openGym/pull/50).
+
+### Pair exercises into a superset mid-session (#64)
+
+- 🔗 **"Make superset with previous / next" on each exercise card.** Two exercises paired in the
+  session collapse into a single *Superset* card — do them back-to-back, rest once at the end —
+  with an **Unpair** button in the header. No planning ahead required; pair them when you decide
+  to, in the workout.
+- **Groups are any size.** Pairing the end of one group to the start of another merges them, and
+  the header wording stays correct past two exercises.
+- **Unpairing cleans up after itself.** A group reduced to one exercise is dissolved rather than
+  left as a superset of one, and the pairing helpers never mutate the running session.
+- Session-only by design: pairings drive the workout, and history stores the sets.
+
+Contributed by [@Space-Hermes](https://github.com/Space-Hermes) in
+[#64](https://github.com/DuarteSantos8/openGym/pull/64).
+
+### The muscle map stops rewriting the catalogue (#67)
+
+- **The curated secondary-muscle additions are now an overlay, not a mutation.** The four row
+  exercises that strain the rear delts used to get that written into the shared exercise dataset
+  at import time, which meant export, print and import saw a catalogue that had been edited
+  underneath them. They are derived at the read points instead, so the dataset stays pristine.
+- The detail sheet's tag row reads through the same overlay, so those muscles still show where
+  they always did.
+
+Contributed by [@Space-Hermes](https://github.com/Space-Hermes) in
+[#67](https://github.com/DuarteSantos8/openGym/pull/67).
+
+### Fixes
+
+- 🖼️ **Exercise images and animations were blank on the routine screen** ([#79]). The media paths
+  were relative, and `/plan/r/:id` is the app's only two-segment route — so the browser asked for
+  `/plan/r/img/…` and got a 404 with nothing in the console to say why. Every other screen was
+  fine, which is what made it look like a one-screen mystery. Reported with the root cause already
+  found, by [@lemi1000](https://github.com/lemi1000).
+- 📥 **Imports mapped more of what other apps export** ([#74]). Treadmill, Goblet Squat, Cycling and
+  Cable Core Pallof Press arrived as *custom* exercises rather than catalogue ones — no word
+  overlap could reach the names openGym stores them under. Those and their neighbours are now in
+  the alias table. Already-imported history stays custom; new imports resolve. Reported by
+  [@KiloOscarSix](https://github.com/KiloOscarSix).
+- **A progression edge case that could loop forever** ([#60]). An entry left with nothing but
+  warm-up rows seeded the set-growth loop from a warm-up, which could never satisfy its own exit
+  condition. It leaves the entry alone instead. Contributed by
+  [@Space-Hermes](https://github.com/Space-Hermes).
+- Documented that `VITE_IMG_BASE` / `VITE_GIF_BASE` are build-time values, so setting them next to
+  `docker compose` does nothing on a prebuilt image.
+
+[#79]: https://github.com/DuarteSantos8/openGym/issues/79
+[#74]: https://github.com/DuarteSantos8/openGym/issues/74
+[#60]: https://github.com/DuarteSantos8/openGym/pull/60
+
+## v1.2.5 — 2026-08-04
+
+Nothing in the app itself changed. This release adds an optional side door: a small server that
+lets an AI assistant you already run — Claude Desktop, Cursor, Cline — answer questions about
+your own training, off the same files your instance already writes. If you don't use one, this
+release is invisible to you.
+
+### Ask an AI about your training, without the data leaving your box (#19)
+
+- 🤖 **An MCP server (`mcp/`)** — opt-in, read-only, and not part of the Docker build. Your LLM
+  client spawns it as a local process, it reads `./data` directly, and it exits when the client
+  disconnects. No new container, no extra auth on the api, no third-party service, nothing over
+  the network. *"What did I bench last week?", "what's my estimated 1RM on deadlift?", "which
+  muscles have I been neglecting?"*
+- **The answers match the Stats screen because they are the same numbers.** The server calls the
+  very functions in `frontend/src/lib/` the app already computes with, rather than reimplementing
+  them. Eight tools: routines, the week plan, workouts, one session in detail, body weight,
+  estimated 1RM and muscle balance.
+- **Read-only on purpose.** Logging a workout from an assistant needs a long-lived token the api
+  does not have yet, plus a lock against the web UI's read-modify-write. Until both exist, the
+  server answers questions and does nothing else. It never reads passkey material, VAPID keys or
+  session state — only the profile it was pointed at.
+- `docker-compose.yml` is untouched and nothing new enters the image, so an instance that ignores
+  this ships exactly what it shipped before. Setup is in [mcp/README.md](mcp/README.md).
+
+### Under the hood
+
+- The pure half of `i18n.js` — the language state, the constants, the readers — moved into
+  `i18n-core.js`, so the helpers under `frontend/src/lib/` can be loaded by a plain Node process
+  and not only by Vite. `i18n.js` keeps the Vite-only parts (the locale-pack loader, the React
+  hook) and re-exports the rest, so nothing that imports it had to change.
+- The shared lib modules that only need `t` now take it from the core directly. A Vite-only
+  import inside a shared module is invisible under vitest, which transforms it, and fatal to the
+  MCP server, which does not — so the shared half stays clear of the bundler half by
+  construction rather than by remembering to.
+- `npm run check:node-loadable` in `mcp/` walks the server's import graph under a bare `node`,
+  which is the one thing the test suite cannot do from inside Vite. CI runs it, alongside the
+  MCP tests — neither had ever run there before.
+
+The MCP server was contributed by [@Pengboi](https://github.com/Pengboi) — the first feature in
+openGym written by someone other than me. Thank you.
+
 ## v1.2.4 — 2026-08-01
 
 The effort ratings you have been recording since v1.2.3 now answer questions, and bodyweight

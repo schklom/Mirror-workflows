@@ -1,9 +1,14 @@
 name: Publish Docker images
 
+# Images are published from a *published release*, never from a bare tag push.
+# A tag that is later deleted (the versioning rule consolidates unreleased tags)
+# would otherwise leave its image tags behind in GHCR forever, and dependency
+# bots read those as a newer version. See issue #87.
 on:
   push:
     branches: [main]
-    tags: ['v*']
+  release:
+    types: [published]
   workflow_dispatch:
 
 permissions:
@@ -29,6 +34,19 @@ jobs:
         id: repo
         run: echo "owner=$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_OUTPUT"
 
+      - name: Set version metadata
+        id: version_meta
+        run: |
+          # On a release the ref is refs/tags/vX.Y.Z; on a main push it is a branch ref,
+          # which would otherwise label the image "refs/heads/main".
+          case "$GITHUB_REF" in
+            refs/tags/*) VERSION="${GITHUB_REF#refs/tags/}" ;;
+            *)           VERSION="main-${GITHUB_SHA::7}" ;;
+          esac
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "VCS_REF=${GITHUB_SHA}" >> $GITHUB_OUTPUT
+          echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_OUTPUT
+
       - uses: docker/setup-qemu-action@v4
       - uses: docker/setup-buildx-action@v4
 
@@ -52,6 +70,10 @@ jobs:
           context: ${{ matrix.context }}
           file: ${{ matrix.file }}
           platforms: linux/amd64,linux/arm64
+          build-args: |
+            VERSION=${{ steps.version_meta.outputs.VERSION }}
+            VCS_REF=${{ steps.version_meta.outputs.VCS_REF }}
+            BUILD_DATE=${{ steps.version_meta.outputs.BUILD_DATE }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

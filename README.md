@@ -81,6 +81,7 @@ as a home-screen app, passkey sign-in, offline support, sync across your phone a
 - 🌍 **12 languages** — full UI translation (EN, DE, ES, FR, IT, PT, PL, TR, RU, ZH, KO, HI); exercise instructions localized in 10 of them, loaded on demand so the app stays fast
 - 📥 **Bring your history with you** — import from **FitNotes** (Android and iOS), **Strong** and **Hevy**, or body weight straight out of an **Apple Health** export. Exercise names are matched against the library and anything unrecognised becomes one of your own exercises, so nothing in the file is dropped
 - 📦 **Yours to keep** — one-tap JSON export/import, guest mode, **no telemetry**
+- 🤖 **Ask an AI about your training** (optional) — an [MCP server](mcp/README.md) lets a client like Claude Desktop or Cursor read your history in your own words: *"what did I bench last week?"*. Read-only, spawned locally by the client, nothing leaves your box. Not in the Docker build — if you don't use an AI assistant, it isn't there
 - 📱 **Standalone Android app** — the whole tracker as a sideloadable APK: no account, no server, data on the phone, native workout reminders ([download](https://opengym.duarte-santos.ch))
 
 ## Quick start (self-host)
@@ -151,9 +152,13 @@ All via `.env` (see `.env.example`):
 | `RP_ID`       | Hostname passkeys are bound to                       | `localhost`             |
 | `ORIGIN`      | Full URL the app is served from                      | `http://localhost:8080` |
 | `WEB_PORT`    | Host port for the web UI                             | `8080`                  |
+| `NGINX_PORT`  | Internal Nginx port for the web UI                   | `80`                    |
+| `BACKEND`     | Backend Service service name, so that API calls can be forwarded to | `api`                   |
+| `PORT`        | Port for the api backend Service                     | `3000`                  |
 | `RP_NAME`     | Name shown in the passkey prompt                     | `openGym`               |
 | `ADMIN_UIDS`  | User ids that get the admin dashboard (comma-separated) | *(none)*             |
 | `INVITE_ONLY` | Require an invite code to create a profile           | *(off)*                 |
+| `ALLOW_GUEST` | Offer "Continue without account" — set `0` to require a profile | *(on)*       |
 
 Push notification keys are generated on first run and saved to `./data/vapid.json` — nothing to set.
 
@@ -183,6 +188,10 @@ The training logic — progression rules, 1RM estimation, how a logged session i
 lives in pure functions under `frontend/src/lib/` with tests next to them: `npm test` in
 `frontend/`. Vitest is a dev dependency; the app itself ships no runtime dependencies beyond
 React, the router and Zustand.
+
+The same pure helpers power an optional MCP server (`mcp/`) that lets an LLM client like
+Claude Desktop read your data over stdio — see [mcp/README.md](mcp/README.md). Opt-in, not
+in the Docker build.
 
 ## Community
 

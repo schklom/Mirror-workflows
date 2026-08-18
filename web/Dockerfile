@@ -15,6 +15,36 @@ COPY frontend/ ./
 RUN npm run build
 
 FROM nginx:alpine
-COPY web/nginx.conf /etc/nginx/conf.d/default.conf
+ARG VERSION=dev
+ARG VCS_REF=dev
+ARG BUILD_DATE=unknown
+
+LABEL maintainer="Duarte Santos https://github.com/DuarteSantos8" \
+    org.opencontainers.image.title="opengym-web" \
+    org.opencontainers.image.description="Frontend for Self-hosted gym & body-weight tracker — plan routines, log workouts (supersets & cardio too), track your weight and progress, passkey login. Your data, your server." \
+    org.opencontainers.image.source="https://github.com/DuarteSantos8/openGym" \
+    org.opencontainers.image.url="https://ghcr.io/duartesantos8/opengym-web" \
+    org.opencontainers.image.documentation="https://github.com/DuarteSantos8/openGym#readme" \
+    org.opencontainers.image.licenses="AGPL-3.0-or-later" \
+    org.opencontainers.image.version=$VERSION \
+    org.opencontainers.image.revision=$VCS_REF \
+    org.opencontainers.image.created=$BUILD_DATE
+
+COPY web/nginx.conf.template /etc/nginx/templates/default.conf.template
 COPY --from=build /app/dist /usr/share/nginx/html
 # exercise media (img/gif) is mounted at runtime from the media volume
+
+# Set Default ENVs for nginx
+ENV NGINX_PORT=80
+ENV BACKEND=api
+ENV PORT=3000
+
+# Probe the port nginx was actually told to listen on (NGINX_PORT is configurable, so a
+# hardcoded http://localhost/ breaks on any instance that changed it), and address it as
+# 127.0.0.1: envsubst rewrites the conf after the image's IPv6 script, so nginx ends up
+# listening on IPv4 only while "localhost" resolves to ::1 first.
+HEALTHCHECK --interval=5m \
+            --timeout=5s \
+            --retries=3 \
+            CMD wget --spider -q "http://127.0.0.1:${NGINX_PORT}/" || exit 1
+

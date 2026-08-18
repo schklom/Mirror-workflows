@@ -1,8 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/useStore.js'
 import { EXIDX } from '../lib/exercises.js'
-import { lastBW, streakWeeks, setLabel, modeOf, effortOf } from '../lib/history.js'
+import { lastBW, streakWeeks, setLabel, modeOf, effortOf, metricModeForEntry, metricRowsForEntry, bestWeightForEntry } from '../lib/history.js'
 import { fmtNum, fmtDate, fmtVol, todayISO, weekKey } from '../lib/format.js'
 import { t } from '../lib/i18n.js'
 import { bwSheet, goalSheet, calendarSheet, workoutDetailSheet, WorkoutRow, bwDeltaColor } from '../sheets.jsx'
@@ -10,21 +10,117 @@ import LineChart from '../components/LineChart.jsx'
 import Heatmap from '../components/Heatmap.jsx'
 import Icon from '../components/Icon.jsx'
 import BodyMap, { BodyMapLegend } from '../components/BodyMap.jsx'
-import { loadOfWorkouts, rankOf, MUSCLE_NAME } from '../lib/muscles.js'
+import { loadOfWorkouts, rankOf, MUSCLE_NAME, musclesOf } from '../lib/muscles.js'
+import { fatigueOf, strengthOf, STRENGTH_FLOOR, LB_TO_KG } from '../lib/recovery.js'
+import { strengthExerciseRowsForMuscle } from '../lib/strength-exercises.js'
+import { fatigueStateOf } from '../lib/recovery-view.js'
 import { e1rmSeries, best1RM } from '../lib/onerm.js'
 import {
   hasEffort, displayScale, scaleName, toScale, avgRir, effortSummary, effortWeeks,
   effortHistogram, isHardSet, HARD_RIR
 } from '../lib/effort.js'
 import { Button, Segmented, SelectRow } from '../components/ui.jsx'
+import { isWarmupRow } from '../lib/workout-model.js'
 
 // Which muscles the training in a window actually hit — and, the point of the card,
 // which ones it keeps missing. Shading is relative within the window (lib/muscles.js).
+function latestMuscleTraining(workouts) {
+  const latest = {}
+  for (const workout of workouts || []) {
+    const timestamp = Number(workout?.start || new Date(workout?.d).getTime())
+    if (!Number.isFinite(timestamp)) continue
+    for (const entry of workout.entries || []) {
+      if (!(entry.sets || []).some(set => set?.done === true && !isWarmupRow(set))) continue
+      const exercise = EXIDX[entry.id] || entry.exercise || entry
+      for (const slug of Object.keys(musclesOf(exercise))) {
+        if (latest[slug] == null || timestamp > latest[slug]) latest[slug] = timestamp
+      }
+    }
+  }
+  return latest
+}
+
+export const FATIGUE_LEVELS = [
+  { at: 0, level: 0 },
+  { at: 0.15, level: 1 },
+  { at: 0.25, level: 2 },
+  { at: 0.4, level: 3 },
+  { at: 0.55, level: 4, exclusive: true },
+]
+
+export const STRENGTH_LEVELS = [
+  { at: STRENGTH_FLOOR, level: 0 },
+  { at: 0.625, level: 1 },
+  { at: 0.75, level: 2 },
+  { at: 0.875, level: 3 },
+  { at: 1, level: 4 },
+]
+
+function useNow() {
+  const [, setTick] = useState(0)
+  useEffect(() => {
+    const iv = setInterval(() => setTick(tick => tick + 1), 60000)
+    return () => clearInterval(iv)
+  }, [])
+  return Date.now()
+}
+
+/**
+ * Return the whole weeks since a completed muscle-training timestamp.
+ *
+ * @param {number} now Current render-time timestamp in milliseconds.
+ * @param {number} lastTrained Timestamp of the latest completed training event.
+ * @returns {number} Non-negative whole weeks, including zero for ages under seven days.
+ */
+export function weeksSinceTraining(now, lastTrained) {
+  return Math.max(0, Math.floor((now - lastTrained) / 86400000 / 7))
+}
+
+function FatigueLegend() {
+  return <div className="hm-legend hm-fatigue" aria-label={t('Fatigue')}>
+    <span>{t('Fatigued')}</span><div className="hm-c l4" />
+    <span>{t('Recovering')}</span><div className="hm-c l2" />
+    <span>{t('Ready')}</span><div className="hm-c l0" />
+  </div>
+}
+
+function StrengthLegend() {
+  return <div className="hm-legend hm-strength" aria-label={t('Strength')}>
+    <span>1 <span className="dim">{t('full')}</span></span><div className="hm-c l4" /><div className="hm-c l3" /><div className="hm-c l2" />
+    <div className="hm-c l1" /><div className="hm-c l0" /><span>{fmtNum(STRENGTH_FLOOR)} <span className="dim">{t('floor')}</span></span>
+  </div>
+}
+
+function fatigueLabel(value) {
+  const state = fatigueStateOf(value)
+  return t(state === 'ready' ? 'Ready' : state === 'recovering' ? 'Recovering' : 'Fatigued')
+}
+
 function MuscleBalance({ S }) {
+  const [view, setView] = useState('balance')
   const [win, setWin] = useState(7)
   const [hard, setHard] = useState(false)
   const [sel, setSel] = useState(null)
-  const now = Date.now()
+  const now = useNow()
+  const workouts = S.workouts
+  // The user's own last registered bodyweight drives bodyweight-exercise tonnage.
+  const bodyweightKg = useMemo(() => {
+    const entries = S.bodyweight || []
+    if (!entries.length) return null
+    const last = entries.slice().sort((a, b) => String(a.d).localeCompare(String(b.d))).at(-1)
+    if (!last || !(last.w > 0)) return null
+    return S.unit === 'lb' ? last.w * LB_TO_KG : last.w
+  }, [S.bodyweight, S.unit])
+  const fatigue = useMemo(() => fatigueOf(workouts, now, { bodyweightKg, unit: S.unit }), [workouts, now, bodyweightKg, S.unit])
+  const strength = useMemo(() => strengthOf(workouts, now, { bodyweightKg, unit: S.unit }), [workouts, now, bodyweightKg, S.unit])
+  const muscleExercises = useMemo(() => (sel ? strengthExerciseRowsForMuscle(S, now, sel) : []), [S, now, sel])
+  const lastTrained = useMemo(() => latestMuscleTraining(workouts), [workouts])
+  const strengthHint = slug => {
+    if (lastTrained[slug] == null) return t('not trained')
+    const weeks = weeksSinceTraining(now, lastTrained[slug])
+    return t('Weeks since training: {0}', weeks)
+  }
+  const toggleSel = m => setSel(s => (s === m ? null : m))
   const inWin = S.workouts.filter(w =>
     win === 0 ? true
       : win === 7 ? weekKey(w.d) === weekKey(todayISO())
@@ -36,43 +132,90 @@ function MuscleBalance({ S }) {
   const rated = inWin.some(w => w.entries.some(e => e.sets.some(s => s.done && isHardSet(s))))
   const on = hard && rated
   const load = loadOfWorkouts(inWin, on ? isHardSet : null)
+  const volWin = S.workouts.filter(w => (w.start || new Date(w.d).getTime()) > now - 90 * 86400000)
+  const vol90 = loadOfWorkouts(volWin, null)
   const { worked, missed } = rankOf(load)
+  const { worked: strengthOrder } = rankOf(strength)
+  const detrained = strengthOrder.filter(slug => strength[slug] < 1)
   const top = worked.slice(0, 4)
   const max = worked.length ? load[worked[0]] : 0
   const sets = m => Math.round((load[m] || 0) * 10) / 10
 
   return <div className="card">
-    <div className="row between" style={{ marginBottom: 8 }}>
-      <h2 style={{ margin: 0 }}>{t('Muscle balance')} <span className="dim" style={{ textTransform: 'none', letterSpacing: 0 }}>· {on ? t('by hard sets') : t('by sets worked')}</span></h2>
-      {rated && <Button size="sm" icon="flame" style={on ? { color: 'var(--yellow)' } : undefined}
-        onClick={() => { setHard(h => !h); setSel(null) }}>{on ? t('Hard') : t('All')}</Button>}
-    </div>
-    <Segmented className="seg-range" value={win} onChange={v => { setWin(v); setSel(null) }}
-      options={[{ value: 7, label: t('Week') }, { value: 30, label: '30d' }, { value: 90, label: '90d' }, { value: 0, label: t('All') }]} />
-    {inWin.length ? <>
-      <BodyMap className="tappable" load={load} body={S.body} selected={sel}
-        onMuscle={m => setSel(s => (s === m ? null : m))} />
-      <BodyMapLegend />
+    <Segmented className="seg-range" value={view} onChange={setView}
+      options={[{ value: 'balance', label: t('Muscle balance') }, { value: 'fatigue', label: t('Fatigue') }, { value: 'strength', label: t('Strength') }]} />
+    {view === 'balance' ? <>
+      <div className="row between" style={{ marginBottom: 8 }}>
+        <h2 style={{ margin: 0 }}>{t('Muscle balance')} <span className="dim" style={{ textTransform: 'none', letterSpacing: 0 }}>· {on ? t('by hard sets') : t('by sets worked')}</span></h2>
+        {rated && <Button size="sm" icon="flame" style={on ? { color: 'var(--yellow)' } : undefined}
+          onClick={() => { setHard(h => !h); setSel(null) }}>{on ? t('Hard') : t('All')}</Button>}
+      </div>
+      <Segmented className="seg-range" value={win} onChange={v => { setWin(v); setSel(null) }}
+        options={[{ value: 7, label: t('Week') }, { value: 30, label: '30d' }, { value: 90, label: '90d' }, { value: 0, label: t('All') }]} />
+      {inWin.length ? <>
+        <BodyMap className="tappable" load={load} body={S.body} selected={sel}
+          onMuscle={m => setSel(s => (s === m ? null : m))} />
+        <BodyMapLegend />
+        {sel && <div className="mrow" style={{ borderTop: 'var(--hair) solid var(--sep)', marginTop: 4, paddingTop: 10 }}>
+          <span className="nm"><b>{t(MUSCLE_NAME[sel])}</b></span>
+          <span className="v">{sets(sel) ? t('{0} sets', sets(sel)) : on ? t('no hard sets') : t('not trained')}</span>
+        </div>}
+        {!sel && top.map(m => <div key={m} className="mrow">
+          <span className="nm">{t(MUSCLE_NAME[m])}</span>
+          <span className="bar"><i style={{ width: Math.round(load[m] / max * 100) + '%', background: on ? 'var(--yellow)' : undefined }} /></span>
+          <span className="v">{t('{0} sets', sets(m))}</span>
+        </div>)}
+        {missed.length > 0 && <>
+          <h4 className="sec" style={{ marginTop: 12 }}>{on ? t('No hard sets in this period') : t('Not trained in this period')}</h4>
+          <div className="mchips">{missed.map(m => <span key={m} className="mchip miss">{t(MUSCLE_NAME[m])}</span>)}</div>
+        </>}
+        {!missed.length && worked.length > 0 &&
+          <div className="muted small" style={{ marginTop: 10 }}>{on
+            ? t('Every muscle group got at least one hard set in this period.')
+            : t('Every muscle group got some work in this period.')}</div>}
+      </> : <div className="muted small">{t('No workouts in this period yet.')}</div>}
+    </> : view === 'fatigue' ? <>
+      <h2>{t('Fatigue')}</h2>
+      <BodyMap className="tappable hm-fatigue" load={fatigue} thresholds={FATIGUE_LEVELS} body={S.body} selected={sel} onMuscle={toggleSel} />
+      <FatigueLegend />
+      <div className="muted small" style={{ marginTop: 10 }}>{t('Fatigue shows how recently each muscle was trained. High means rest.')}</div>
       {sel && <div className="mrow" style={{ borderTop: 'var(--hair) solid var(--sep)', marginTop: 4, paddingTop: 10 }}>
         <span className="nm"><b>{t(MUSCLE_NAME[sel])}</b></span>
-        <span className="v">{sets(sel) ? t('{0} sets', sets(sel)) : on ? t('no hard sets') : t('not trained')}</span>
+        <span className="v">{fatigueLabel(fatigue[sel])}</span>
       </div>}
-      {!sel && top.map(m => <div key={m} className="mrow">
-        <span className="nm">{t(MUSCLE_NAME[m])}</span>
-        <span className="bar"><i style={{ width: Math.round(load[m] / max * 100) + '%', background: on ? 'var(--yellow)' : undefined }} /></span>
-        <span className="v">{t('{0} sets', sets(m))}</span>
-      </div>)}
-      {missed.length > 0 && <>
-        <h4 className="sec" style={{ marginTop: 12 }}>{on ? t('No hard sets in this period') : t('Not trained in this period')}</h4>
-        <div className="mchips">{missed.map(m => <span key={m} className="mchip miss">{t(MUSCLE_NAME[m])}</span>)}</div>
+    </> : <>
+      <h2>{t('Strength')}</h2>
+      <BodyMap className="tappable hm-strength" load={strength} thresholds={STRENGTH_LEVELS} body={S.body} selected={sel} onMuscle={toggleSel} />
+      <StrengthLegend />
+      <div className="muted small" style={{ marginTop: 10 }}>{t('Strength shows retained muscle strength. Train again to reset it.')}</div>
+      {sel && <>
+        <h4 className="sec" style={{ marginTop: 14 }}>{t('Exercises')} · {t(MUSCLE_NAME[sel])}</h4>
+        {muscleExercises.length ? muscleExercises.map(row => (
+          <div key={row.id} className="mrow" style={{ minHeight: 48, alignItems: 'stretch' }}>
+            <span className="nm" style={{ whiteSpace: 'normal', lineHeight: 1.35, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+              <span style={{ display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {row.name}
+                {row.primary === sel
+                  ? <span className="dim" style={{ fontSize: 11, marginLeft: 6 }}>{t('primary')}</span>
+                  : <span className="dim" style={{ fontSize: 11, marginLeft: 6 }}>{t('secondary')}</span>}
+              </span>
+              <span className="small dim" style={{ display: 'block', fontWeight: 400 }}>{t('Est. 1RM')}: {fmtNum(row.est)} {S.unit} · {fmtDate(row.estDate, true)}</span>
+            </span>
+            <span className="bar" style={{ alignSelf: 'center' }}><i style={{ width: '100%', background: 'linear-gradient(to right, var(--acc) ' + Math.round(row.decay * 100) + '%, var(--surface-2) ' + Math.round(row.decay * 100) + '%)' }} /></span>
+            <span className="v" style={{ alignSelf: 'center' }}>{fmtNum(row.current)} {S.unit}<span className="dim"> · {Math.round(row.decay * 100)}%</span></span>
+          </div>
+        )) : <div className="muted small">{t('No exercises with an estimated 1RM yet.')}</div>}
       </>}
-      {!missed.length && worked.length > 0 &&
-        <div className="muted small" style={{ marginTop: 10 }}>{on
-          ? t('Every muscle group got at least one hard set in this period.')
-          : t('Every muscle group got some work in this period.')}</div>}
-    </> : <div className="muted small">{t('No workouts in this period yet.')}</div>}
+      {!sel && <div className="muted small" style={{ marginTop: 10 }}>{t('Tap a muscle to see its exercises.')}</div>}
+      {detrained.map(slug => <div key={slug} className="mrow">
+        <span className="nm">{t(MUSCLE_NAME[slug])}</span>
+        <span className="bar"><i style={{ width: Math.round(strength[slug] * 100) + '%' }} /></span>
+        <span className="v">{t('{0} sets', vol90[slug] || 0)}</span>
+      </div>)}
+    </>}
   </div>
 }
+
 
 // How hard the training was — the half of the picture a volume chart cannot show. Everything
 // is computed in RIR (lib/effort.js) and converted to whichever scale this profile reads.
@@ -137,7 +280,6 @@ export default function Stats() {
   const [exId, setExId] = useState(null)
   const [exMetric, setExMetric] = useState('top')
   const now = Date.now()
-  const anyEffort = hasEffort(S)
   const kind = displayScale(S)
   const hd = scaleName(kind)
 
@@ -145,17 +287,34 @@ export default function Stats() {
     .map(b => ({ t: b.t || new Date(b.d).getTime(), y: b.w, d: b.d }))
   const bw30 = S.bodyweight.filter(b => (b.t || new Date(b.d).getTime()) > now - 30 * 86400000)
   const bwDelta30 = bw30.length > 1 ? bw30[bw30.length - 1].w - bw30[0].w : null
-  const monthW = S.workouts.filter(w => w.d.slice(0, 7) === todayISO().slice(0, 7)).length
+  const workouts = S.workouts
+  const monthW = workouts.filter(w => String(w.d || '').slice(0, 7) === todayISO().slice(0, 7)).length
 
-  const exHist = [...new Set(S.workouts.flatMap(w => w.entries.map(e => e.id)))].filter(id => EXIDX[id]).sort((a, b) => EXIDX[a].n < EXIDX[b].n ? -1 : 1)
+  const nameOf = id => EXIDX[id]?.n || workouts.flatMap(w => w.entries).find(e => e.id === id)?.n || id
+  const currentOf = id => {
+    for (let i = workouts.length - 1; i >= 0; i--) {
+      const en = workouts[i].entries.find(e => e.id === id)
+      if (!en) continue
+      const mode = metricModeForEntry(en) || modeOf({ id })
+      const rows = metricRowsForEntry(en, mode)
+      const mx = mode === 'reps' ? bestWeightForEntry(en) : Math.max(0, ...rows.map(s => mode === 'cardio' ? (s.speed || 0) : mode === 'time' ? (s.sec || 0) : (s.w || 0)))
+      if (mx > 0) return { mx, unit: mode === 'cardio' ? 'km/h' : mode === 'time' ? 's' : S.unit }
+    }
+    return { mx: 0, unit: S.unit }
+  }
+  const exHist = [...new Set(workouts.flatMap(w => w.entries.map(e => e.id)))].filter(id => EXIDX[id] || nameOf(id) !== id)
+  const exCurrent = Object.fromEntries(exHist.map(id => [id, currentOf(id)]))
+  exHist.sort((a, b) => exCurrent[b].mx - exCurrent[a].mx || nameOf(a).localeCompare(nameOf(b)))
   const curEx = exId && exHist.includes(exId) ? exId : exHist[0] || null
-  // How this exercise was logged most recently decides what the curve means: top weight,
-  // longest hold or top speed. Sets logged in another mode lack the field and score 0, so a
-  // switched exercise drops its old points instead of mixing seconds into a weight chart.
+  // A completed reps work row is authoritative for strength metrics, even when the parent
+  // target also contains timed/cardio work. Entries without reps rows use their selected mode.
   const curMode = curEx ? (() => {
-    for (let i = S.workouts.length - 1; i >= 0; i--) {
-      const en = S.workouts[i].entries.find(e => e.id === curEx)
-      if (en) return modeOf({ ...(en.target || {}), id: curEx })
+    for (let i = workouts.length - 1; i >= 0; i--) {
+      const en = workouts[i].entries.find(e => e.id === curEx)
+      if (en) {
+        const mode = metricModeForEntry(en)
+        if (mode) return mode
+      }
     }
     return modeOf({ id: curEx })
   })() : 'reps'
@@ -165,16 +324,25 @@ export default function Stats() {
   const exUnit = curCardio ? 'km/h' : curTimed ? 's' : S.unit
   let exPts = [], exList = [], exBest = 0
   if (curEx) {
-    S.workouts.forEach(w => {
+    workouts.forEach(w => {
       const en = w.entries.find(e => e.id === curEx)
-      if (en) { const mx = Math.max(0, ...en.sets.filter(s => s.done).map(metric), curCardio || curTimed ? 0 : (en.topW || 0)); if (mx > 0) { exPts.push({ t: w.start, y: mx, d: w.d, sets: en.sets.filter(s => s.done), target: en.target }); if (mx > exBest) exBest = mx } }
+      if (en) {
+        const loggedMode = metricModeForEntry(en)
+        if (loggedMode !== curMode) return
+        const doneSets = metricRowsForEntry(en, curMode)
+        const mx = curMode === 'reps' ? bestWeightForEntry(en) : Math.max(0, ...doneSets.map(metric))
+        if (mx > 0) {
+          exPts.push({ t: w.start, y: mx, d: w.d, sets: doneSets, target: en.target })
+          if (mx > exBest) exBest = mx
+        }
+      }
     })
     exList = exPts.slice(-5).reverse()
   }
   // Estimated 1RM (issue #18) — only reps-mode training produces one, so cardio and timed
   // work simply have no points and the toggle stays hidden.
-  const e1Pts = curEx ? e1rmSeries(S, curEx) : []
-  const e1Best = curEx ? best1RM(S, curEx) : null
+  const e1Pts = curEx && curMode === 'reps' ? e1rmSeries(S, curEx) : []
+  const e1Best = curEx && curMode === 'reps' ? best1RM(S, curEx) : null
   const showE1 = e1Pts.length > 0
   // Effort on this exercise, per session. It rides on the top-set curve as well as having a
   // curve of its own, because the two only mean something together: the same weight moved
@@ -199,19 +367,20 @@ export default function Stats() {
       <button className="iconbtn" onClick={() => nav('/history')} aria-label={t('History')}><Icon name="history" /></button></div>
 
     <div className="tiles">
-      <div className="tile"><div className="l"><Icon name="dumbbell" />{t('Workouts')}</div><div className="v">{S.workouts.length}</div></div>
+      <div className="tile"><div className="l"><Icon name="dumbbell" />{t('Workouts')}</div><div className="v">{workouts.length}</div></div>
       <div className="tile"><div className="l"><Icon name="calendar" />{t('This month')}</div><div className="v">{monthW}</div></div>
       <div className="tile"><div className="l"><Icon name="flame" />{t('Week streak')}</div><div className="v">{streakWeeks(S)}</div></div>
       <div className="tile"><div className="l"><Icon name="scale" />{t('Weight 30d')}</div><div className="v" style={{ fontSize: 22, color: bwDelta30 === null ? 'inherit' : bwDeltaColor(bwDelta30, (lastBW(S) || {}).w || 0) }}>{bwDelta30 === null ? '—' : (bwDelta30 > 0 ? '+' : '') + fmtNum(bwDelta30) + ' ' + S.unit}</div></div>
+
     </div>
 
     <div className="card">
       <h2>{t('Activity — last 12 months')} <span className="dim" style={{ textTransform: 'none', letterSpacing: 0 }}>· {t('by time trained')}</span></h2>
-      <Heatmap S={S} onDay={iso => { const ws = S.workouts.filter(w => w.d === iso); if (ws.length === 1) workoutDetailSheet(ws[0]); else if (ws.length) calendarSheet(iso) }} />
+      <Heatmap S={S} onDay={iso => { const ws = workouts.filter(w => w.d === iso); if (ws.length === 1) workoutDetailSheet(ws[0]); else if (ws.length) calendarSheet(iso) }} />
     </div>
 
-    {S.workouts.length > 0 && <MuscleBalance S={S} />}
-    {anyEffort && <EffortCard S={S} />}
+    {workouts.length > 0 && <MuscleBalance S={S} />}
+    {hasEffort(S) && <EffortCard S={S} />}
 
     <div className="cols">
       <div className="card">
@@ -232,7 +401,7 @@ export default function Stats() {
         {exHist.length ? <>
           <div className="sect-b" style={{ marginBottom: 10 }}>
             <SelectRow title={t('Exercise')} sheetTitle={t('Exercise progress')} value={curEx} onChange={setExId}
-              options={exHist.map(id => ({ value: id, label: EXIDX[id].n }))} />
+              options={exHist.map(id => ({ value: id, label: nameOf(id) + (exCurrent[id].mx ? ' ' + '—' + ' ' + fmtNum(exCurrent[id].mx) + ' ' + exCurrent[id].unit : '') }))} />
           </div>
           {exOpts.length > 1 && <Segmented className="seg-range" value={onEff ? 'effort' : onE1 ? 'e1rm' : 'top'} onChange={setExMetric} options={exOpts} />}
           <div className="chart">
@@ -256,12 +425,12 @@ export default function Stats() {
       </div>
     </div>
 
-    {S.workouts.length > 0 && <>
+    {workouts.length > 0 && <>
       <div className="row between" style={{ marginBottom: 10 }}>
         <h4 className="sec" style={{ margin: 0 }}>{t('Recent workouts')}</h4>
-        <Button size="sm" variant="ghost" trailingIcon="chevronRight" onClick={() => nav('/history')}>{t('All')} {S.workouts.length}</Button>
+        <Button size="sm" variant="ghost" trailingIcon="chevronRight" onClick={() => nav('/history')}>{t('All')} {workouts.length}</Button>
       </div>
-      <div className="list">{[...S.workouts].reverse().slice(0, 6).map(w => <WorkoutRow key={w.id} w={w} onClick={() => workoutDetailSheet(w)} />)}</div>
+      <div className="list">{[...workouts].reverse().slice(0, 6).map(w => <WorkoutRow key={w.id} w={w} onClick={() => workoutDetailSheet(w)} />)}</div>
     </>}
   </>
 }

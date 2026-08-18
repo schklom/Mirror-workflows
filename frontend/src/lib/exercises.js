@@ -1,7 +1,27 @@
 import { EXDB } from './exercises-data.js'
-import { t } from './i18n.js'
+import { t } from './i18n-core.js'
 
 export { EXDB }
+
+// The generated dataset already supplies secondary muscles for most exercises. Keep the
+// handful of conservative catalogue additions that are useful to the muscle map here so a
+// dataset refresh does not erase them. Values follow the dataset's existing alias vocabulary.
+const SECONDARY_ADDITIONS = {
+  '0027': ['rear deltoids'], // barbell bent over row
+  '0293': ['rear deltoids'], // dumbbell bent over row
+  '0499': ['rear deltoids'], // inverted row
+  '0861': ['rear deltoids'], // cable seated row
+}
+
+// Secondary muscles for an exercise, with the small conservative additions applied as an
+// overlay. The raw dataset is never mutated - consumers that want the pristine catalogue
+// (export, print, import) keep reading EXDB untouched, while the muscle map sees the
+// enriched list. Values follow the dataset's existing alias vocabulary.
+export const smOf = ex => {
+  const base = Array.isArray(ex?.sm) ? ex.sm : (ex?.sm ? [ex.sm] : [])
+  return [...new Set([...base, ...(SECONDARY_ADDITIONS[ex?.id] || [])])]
+}
+
 export const EXIDX = {}
 EXDB.forEach(e => { EXIDX[e.id] = e })
 export const BODYPARTS = [...new Set(EXDB.map(e => e.bp))].sort()
@@ -28,9 +48,16 @@ export const allExercises = st => [...(st.customEx || []), ...EXDB]
 
 // Media normally sits next to the app (img/ and gif/, mounted into the web container).
 // A build can point them somewhere else — the demo build pulls them off a CDN instead of
-// shipping ~140 MB of images into the deployment.
-const IMG_BASE = import.meta.env.VITE_IMG_BASE || 'img/'
-const GIF_BASE = import.meta.env.VITE_GIF_BASE || 'gif/'
+// shipping ~140 MB of images into the deployment. `import.meta.env` is undefined in plain
+// Node; the guard keeps this module loadable without Vite.
+// The defaults are absolute on purpose (issue #79). A bare 'img/' resolves against the
+// current document's directory, so on the one two-segment route in the app, /plan/r/:id,
+// every request went to /plan/r/img/… and 404'd — and nginx's extension block has no
+// try_files, so it 404s rather than falling through to index.html, leaving a blank image
+// and nothing in the console.
+const ENV = import.meta.env || {}
+const IMG_BASE = ENV.VITE_IMG_BASE || '/img/'
+const GIF_BASE = ENV.VITE_GIF_BASE || '/gif/'
 export const imgSrc = ex => IMG_BASE + ex.img
 export const gifSrc = ex => GIF_BASE + ex.gif
 

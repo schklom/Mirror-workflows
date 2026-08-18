@@ -559,6 +559,9 @@ h4.sec{
 .setrow+.setrow::before{
   content:'';position:absolute;left:32px;right:0;top:0;height:var(--hair);background:var(--sep);
 }
+.setph{margin:8px 0 2px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);display:flex;align-items:center;gap:10px}
+.setph::after{content:'';flex:1;height:1px;background:var(--sep)}
+.setsep{height:1px;background:var(--sep);margin:9px 0}
 .setrow .n{
   width:24px;height:24px;border-radius:50%;background:var(--surface-2);color:var(--label-2);
   display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;flex:none;
@@ -777,6 +780,18 @@ h4.sec{
 .bm-m.l2{fill:color-mix(in srgb,var(--acc) 56%,var(--bm-base))}
 .bm-m.l3{fill:color-mix(in srgb,var(--acc) 78%,var(--bm-base))}
 .bm-m.l4{fill:var(--acc)}
+/* Fatigue view: attention ramp - fatigued muscles highlighted (owner tweak 2026-08-06) */
+.hm-fatigue .bm-m.l4{fill:var(--red)}
+.hm-fatigue .bm-m.l3{fill:var(--orange)}
+.hm-fatigue .bm-m.l2{fill:var(--yellow)}
+.hm-fatigue .bm-m.l1{fill:color-mix(in srgb,var(--yellow) 32%,var(--bm-base))}
+.hm-fatigue .hm-c.l4{background:var(--red)}
+.hm-fatigue .hm-c.l3{background:var(--orange)}
+.hm-fatigue .hm-c.l2{background:var(--yellow)}
+/* Strength view: top band pops gold (owner tweak 2026-08-06) */
+.hm-strength .bm-m.l4{fill:var(--yellow);filter:drop-shadow(0 0 1.5px var(--yellow))}
+.hm-strength .hm-c.l4{background:var(--yellow)}
+
 .bm-m.sel{stroke:var(--label);stroke-width:7}
 .bodymap.tappable .bm-m{cursor:pointer}
 /* A hairline in the surface colour separates neighbouring muscles; the artwork has no

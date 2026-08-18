@@ -1,7 +1,21 @@
 // Pure helpers over the state object S (ported 1:1 from the vanilla app).
 import { todayISO, isoOf, weekKey, fmtNum } from './format.js'
 import { isCardio, isBodyweightEq } from './exercises.js'
-import { t } from './i18n.js'
+import { phaseForSet, modeForSet, modeForEntry, isWarmupRow, normalizeMode } from './workout-model.js'
+const objectOf = value => value && typeof value === 'object' && !Array.isArray(value) ? value : {}
+// Completed-state-independent work rows whose authoritative mode matches the requested mode.
+const workRowsForMode = (entry = {}, mode = 'reps') => {
+  const source = objectOf(entry)
+  const target = objectOf(source.target || source)
+  const expectedMode = normalizeMode(mode, 'reps')
+  return (Array.isArray(source.sets) ? source.sets : [])
+    .filter(set => phaseForSet(set) === 'work' && modeForSet(set, target) === expectedMode)
+}
+// i18n-core, not i18n: this file is imported by mcp/, which is plain Node with no Vite and no
+// React. i18n.js is the Vite half — import.meta.glob over the locale packs, useSyncExternalStore
+// for the hook — and it re-exports this very `t` from core, so nothing changes here except what
+// gets dragged along behind it.
+import { t } from './i18n-core.js'
 
 // How an exercise is logged (issue #16). This used to be derived from the body part alone,
 // which meant a plank or a farmer's carry could only be timed by filing it under cardio.
@@ -138,6 +152,60 @@ export function cleanupSg(ex) {
   })
 }
 
+// Return the contiguous run around an entry that shares its superset id. A repeated id in a
+// separated part of the list is deliberately not included: the display semantics are adjacent
+// entries sharing one id, not every entry that happens to carry that id.
+function contiguousSgGroup(items, idx) {
+  const sg = items[idx]?.sg
+  if (!sg) return [idx]
+  let first = idx
+  let last = idx
+  while (first > 0 && items[first - 1]?.sg === sg) first--
+  while (last + 1 < items.length && items[last + 1]?.sg === sg) last++
+  return Array.from({ length: last - first + 1 }, (_, i) => first + i)
+}
+
+function freshSg(items, first, second) {
+  const base = `sg-${Math.min(first, second)}-${Math.max(first, second)}`
+  let sg = base
+  let n = 2
+  while (items.some(e => e.sg === sg)) sg = `${base}-${n++}`
+  return sg
+}
+
+// Purely pair two adjacent entries. Existing contiguous groups on either side are merged, so
+// pairing the end of one group with the start of another produces one display unit. A caller can
+// provide a group id (useful when restoring a known id); otherwise an existing id is preferred,
+// with a deterministic unused id for two previously ungrouped entries.
+export function pairAdjacent(items, first, second, groupId) {
+  if (!Array.isArray(items)) throw new TypeError('Superset entries must be an array')
+  if (!Number.isInteger(first) || !Number.isInteger(second) || !items[first] || !items[second]) {
+    throw new RangeError('Superset entry indexes are invalid')
+  }
+  if (Math.abs(first - second) !== 1) throw new RangeError('Superset entries must be adjacent')
+
+  const next = items.map(e => ({ ...e }))
+  const left = Math.min(first, second)
+  const right = Math.max(first, second)
+  const group = groupId || next[left].sg || next[right].sg || freshSg(next, left, right)
+  const members = new Set([...contiguousSgGroup(next, left), ...contiguousSgGroup(next, right)])
+  members.forEach(i => { next[i].sg = group })
+  return next
+}
+
+// Remove one entry from its superset and clean any ids that no longer have an adjacent partner.
+// This is pure so the active workout can replace its entries atomically through the store.
+export function unpairSuperset(items, idx) {
+  if (!Array.isArray(items)) throw new TypeError('Superset entries must be an array')
+  if (!Number.isInteger(idx) || !items[idx]) throw new RangeError('Superset entry index is invalid')
+  const next = items.map(e => ({ ...e }))
+  delete next[idx].sg
+  next.forEach((e, i) => {
+    if (e.sg && !(next[i - 1]?.sg === e.sg || next[i + 1]?.sg === e.sg)) delete e.sg
+  })
+  return next
+}
+
 export function lastEntryFor(S, exId) {
   for (let i = S.workouts.length - 1; i >= 0; i--) {
     const en = S.workouts[i].entries.find(e => e.id === exId)
@@ -148,13 +216,25 @@ export function lastEntryFor(S, exId) {
   }
   return null
 }
+
+// A freestyle exercise starts with the last target the user actually trained, rather than the
+// generic config sheet defaults used when there is no history. The set rows themselves are still
+// built by buildSets(), which copies each completed set by position; only the target shape and
+// number of rows need to be seeded here so the config sheet and the rows agree.
+export function freestyleConfig(S, cfg) {
+  const last = lastEntryFor(S, cfg.id)
+  if (!last) return { ...cfg }
+  return {
+    ...cfg,
+    ...(last.target || {}),
+    id: cfg.id,
+    sets: Math.max(1, last.sets.length)
+  }
+}
 export function bestWeightFor(S, exId) {
   let best = 0
   S.workouts.forEach(w => w.entries.forEach(e => {
-    if (e.id === exId) {
-      e.sets.forEach(s => { if (s.done && s.w > best) best = s.w })
-      if (e.topW && e.topW > best) best = e.topW
-    }
+    if (e.id === exId) best = Math.max(best, bestWeightForEntry(e))
   }))
   return best
 }
@@ -169,10 +249,11 @@ export function effectiveRoutine(S, iso) {
   const id = effectiveRoutineId(S, iso)
   return id ? S.routines.find(r => r.id === id) || null : null
 }
-export function buildSets(S, cfg) {
+export function buildSets(S, cfg, options = {}) {
   const last = lastEntryFor(S, cfg.id)
   const n = Math.max(1, cfg.sets || 1)
   const mode = modeOf(cfg)
+  const preferLast = !!options.preferLast
   const sets = []
   // Last time's set at the same position, falling back to its final set when the plan grew.
   const prevAt = i => (last ? (last.sets[i] || last.sets[last.sets.length - 1]) : null)
@@ -198,7 +279,9 @@ export function buildSets(S, cfg) {
   for (let i = 0; i < n; i++) {
     const prev = prevAt(i)
     const usable = prev && prev.r > 0 ? prev : null
-    const w = conf && conf.w > 0 ? conf.w : (usable ? usable.w : cfg.weight)
+    // Planned sessions may use the confirmed working weight, while freestyle should reproduce
+    // the load of each matching set when that option is requested.
+    const w = preferLast && usable ? usable.w : (conf && conf.w > 0 ? conf.w : (usable ? usable.w : cfg.weight))
     sets.push({ w, r: usable ? usable.r : cfg.reps, done: false })
   }
   return sets
@@ -247,4 +330,101 @@ export function streakWeeks(S) {
     cur.setDate(cur.getDate() - 7)
   }
   return streak
+}
+
+/**
+ * Cascade a weight change forward: following sets of the same warm-up flag that are still
+ * undone take the new value (null deletes the key). Done sets are never rewritten.
+ */
+export function cascadeWeight(rows, from, value) {
+  const warm = isWarmupRow(rows[from])
+  const next = rows.slice()
+  for (let j = from + 1; j < next.length; j++) {
+    if (isWarmupRow(next[j]) === warm && !next[j].done) {
+      if (value == null) delete next[j].w
+      else next[j].w = value
+    }
+  }
+  return next
+}
+
+/** Insert a warm-up row before the first work row, copying the preceding warm-up's values. */
+export function insertWarmupRow(rows, mode, target) {
+  const firstWork = rows.findIndex(x => !isWarmupRow(x))
+  const at = firstWork === -1 ? rows.length : firstWork
+  const l = rows[at - 1] || rows[rows.length - 1]
+  const warm = mode === 'cardio'
+    ? { min: l ? l.min : (target.min || 20), speed: l ? l.speed : (target.speed || 8), done: false, phase: 'warmup', warmup: true }
+    : mode === 'time'
+      ? { sec: l ? l.sec : (target.sec || 45), w: l ? (l.w || 0) : (target.weight || 0), done: false, phase: 'warmup', warmup: true }
+      : { w: l ? l.w : 0, r: l ? l.r : target.reps, done: false, phase: 'warmup', warmup: true }
+  const next = rows.slice()
+  next.splice(at, 0, warm)
+  return next
+}
+
+/** Remove the row at `i`, never emptying the entry below one row. */
+export function removeRowAt(rows, i) {
+  if (rows.length <= 1) return rows.slice()
+  const next = rows.slice()
+  next.splice(i, 1)
+  return next
+}
+
+/** Completed non-warm-up sets across a workout's entries. */
+export function workSetsDone(w) {
+  return (w?.entries || []).reduce(
+    (n, e) => n + (e.sets || []).filter(s => s.done && !isWarmupRow(s)).length, 0,
+  )
+}
+
+const METRIC_MODES = ['reps', 'time', 'cardio']
+const completedRowsForMode = (entry, mode) => workRowsForMode(entry, mode).filter(s => s.done === true && !isWarmupRow(s))
+
+export function metricRowsForEntry(entry, mode) {
+  const requested = typeof mode === 'string' ? mode.trim().toLowerCase() : ''
+  const resolved = METRIC_MODES.includes(requested) ? requested : metricModeForEntry(entry)
+  return resolved ? completedRowsForMode(entry, resolved) : []
+}
+
+/** The authoritative metric for an entry; reps rows take precedence over timed/cardio rows. */
+
+export function metricModeForEntry(entry, fallback = null) {
+  for (const mode of METRIC_MODES) {
+    if (completedRowsForMode(entry, mode).length) return mode
+  }
+  return modeForEntry(entry, fallback)
+}
+
+/** Best load from completed work rows, with a guarded reps-only legacy topW fallback. */
+
+export function bestWeightForEntry(entry = {}) {
+  const target = entry.target || entry
+  const workRows = Array.isArray(entry.sets)
+    ? entry.sets.filter(s => phaseForSet(s) === 'work')
+    : []
+  const repsRows = metricRowsForEntry(entry, 'reps')
+  if (!repsRows.length) {
+    return workRows.reduce((best, set) => {
+      if (set?.done !== true || isWarmupRow(set)) return best
+      const weight = Number(set.w)
+      return Number.isFinite(weight) && weight > best ? weight : best
+    }, 0)
+  }
+
+  let best = 0
+  repsRows.forEach(set => {
+    const weight = Number(set?.w)
+    if (Number.isFinite(weight) && weight > best) best = weight
+  })
+
+  const parentMode = modeForSet({}, target)
+  const hasNonRepsWorkRow = workRows.some(set => modeForSet(set, target) !== 'reps')
+  const hasWarmupRow = Array.isArray(entry.sets) && entry.sets.some(isWarmupRow)
+  const topWeight = Number(entry.topW)
+  // topW predates phase-tagged warm-ups. It remains a fallback for legacy all-work records,
+  // but cannot override resolved work rows once any warm-up marker exists.
+  if (parentMode === 'reps' && !hasNonRepsWorkRow && !hasWarmupRow
+    && Number.isFinite(topWeight) && topWeight > best) best = topWeight
+  return best
 }

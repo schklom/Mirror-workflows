@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/useStore.js'
 import { useUI } from '../store/useUI.js'
@@ -8,6 +8,7 @@ import { fmtNum, fmtDate, todayISO, exCount, DAYN } from '../lib/format.js'
 import { beep, vibrate } from '../lib/sound.js'
 import { t } from '../lib/i18n.js'
 import { api } from '../lib/api.js'
+import { setProgressHighWater, supersetFlowStep } from '../lib/supersetFlow.js'
 import Media from '../components/Media.jsx'
 import { startFlow, exercisePicker, exConfigSheet, exerciseDetailSheet, topWeightSheet, finishWorkout, workoutCompleteSheet, confirmSheet } from '../sheets.jsx'
 import Icon from '../components/Icon.jsx'
@@ -196,6 +197,15 @@ function ActiveWorkout() {
   const unit = A.entries.length ? unitOf(units, cur) : []
   const unitIdx = units.findIndex(u => u === unit)
   const isSuperset = unit.length > 1
+  // Superset flow: keep the active exercise in view - completing a set scrolls to the
+  // next exercise in the group, then back up to the first exercise of the next round.
+  const exRefs = useRef({})
+  const progressHighWater = useRef(A.entries.map(e => e.sets.filter(s => s.done).length))
+  useEffect(() => {
+    if (!isSuperset) return
+    const el = exRefs.current[cur]
+    if (el && typeof el.scrollIntoView === 'function') el.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+  }, [cur, isSuperset, A.entries.length])
 
   const total = A.entries.reduce((n, e) => n + e.sets.length, 0)
   const done = setsDoneActive(A)
@@ -282,15 +292,13 @@ function ActiveWorkout() {
     const m = modeAt(idx)
     const cardioEntry = m === 'cardio'
     const isLastUnit = unitIdx >= units.length - 1
-    let askTop = false, exJustDone = false, workoutDone = false
+    let askTop = false, exJustDone = false, workoutDone = false, checked = false
     mutEntry(idx, e => {
       e.sets[i].done = !e.sets[i].done
+      checked = e.sets[i].done
       if (e.sets[i].done) {
         beep(S.sound, 1040, 0.12); vibrate(30)
-        const isLastExInUnit = idx === unit[unit.length - 1]
         const unitDone = unit.every(ui => (ui === idx ? e : A.entries[ui]).sets.every(x => x.done))
-        if (isLastExInUnit && !unitDone) startRest(S.restSec)
-        else if (unitDone) stopRest()
         if (unitDone && isLastUnit) workoutDone = true      // last exercise's last set → done
         // Only loaded reps training has a "working weight" worth confirming — a bodyweight
         // plank has nothing to put in that slider, and neither does a set of push-ups
@@ -305,6 +313,43 @@ function ActiveWorkout() {
     else if (workoutDone) workoutCompleteSheet()
     else if (exJustDone && cardioEntry) useUI.getState().toast(t('Cardio logged'))
     else if (exJustDone && m === 'time') useUI.getState().toast(t('Hold logged'))
+
+    // Only progress beyond this exercise's high-water mark may navigate or change rest. This
+    // prevents an uncheck/re-check of finished work from replaying the flow side effects.
+    const fresh = useStore.getState().S.active
+    if (fresh && checked && fresh.entries[idx]) {
+      const progress = setProgressHighWater(fresh.entries[idx], progressHighWater.current[idx] || 0)
+      progressHighWater.current[idx] = progress.highWater
+      if (!progress.isNew) return
+
+      const freshUnits = supersetUnits(fresh.entries)
+      const freshUnit = freshUnits.find(u => u.includes(idx))
+      const freshUnitIdx = freshUnits.indexOf(freshUnit)
+      const freshLastUnit = freshUnitIdx >= freshUnits.length - 1
+      const freshUnitDone = freshUnit?.every(ui => fresh.entries[ui].sets.every(x => x.done))
+
+      // Singleton units are ordinary exercises: preserve their historical between-set rest,
+      // while final sets finish quietly and never enter superset navigation.
+      if (freshUnitDone) stopRest()
+      if (!freshUnit || freshUnit.length <= 1) {
+        if (!freshUnitDone) startRest(S.restSec)
+        return
+      }
+
+      const step = supersetFlowStep(fresh.entries, freshUnit, idx)
+      if (!step) return
+      if (step.unitDone) {
+        if (!freshLastUnit) {
+          const nextUnit = freshUnits[freshUnitIdx + 1]
+          // The top-weight sheet's explicit "Just close" path owns the choice not to advance.
+          if (!askTop && nextUnit?.length) update(s => { if (s.active) s.active.cur = nextUnit[0] })
+          startRest(S.restSec)
+        }
+      } else {
+        if (step.nextIdx != null) update(s => { if (s.active) s.active.cur = step.nextIdx })
+        if (step.roundDone) startRest(S.restSec)
+      }
+    }
   }
 
   // Live-presence heartbeat so the admin dashboard can show who's training now. Signed-in only —
@@ -350,7 +395,7 @@ function ActiveWorkout() {
             <span className="row" style={{ gap: 5 }}><Icon name="link" />{t('Superset · do these back-to-back, rest when done')}</span>
             <Button size="xs" variant="ghost" icon="link" title={t('Unpair')} onClick={() => unpairAt(cur)}>{t('Unpair')}</Button>
           </div>
-          {unit.map((idx, k) => <div key={idx} className="ss-ex">
+          {unit.map((idx, k) => <div key={idx} ref={el => { exRefs.current[idx] = el }} className="ss-ex" data-exidx={idx}>
             {k > 0 && <div className="ss-amp">+</div>}
             <ExerciseBlock entryIdx={idx} compact
               onToggle={i => toggle(idx, i)} onField={(i, f, v) => setField(idx, i, f, v)} onAddSet={() => addSet(idx)} onRemoveSet={() => removeSet(idx)} onAddWarmup={() => addWarmup(idx)} onRemoveSetAt={i => removeSetAt(idx, i)} onStartTimed={i => startTimed(idx, i)} />

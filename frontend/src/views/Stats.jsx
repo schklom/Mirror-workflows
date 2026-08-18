@@ -11,7 +11,7 @@ import Heatmap from '../components/Heatmap.jsx'
 import Icon from '../components/Icon.jsx'
 import BodyMap, { BodyMapLegend } from '../components/BodyMap.jsx'
 import { loadOfWorkouts, rankOf, MUSCLE_NAME, musclesOf } from '../lib/muscles.js'
-import { fatigueOf, strengthOf, STRENGTH_FLOOR } from '../lib/recovery.js'
+import { fatigueOf, strengthOf, STRENGTH_FLOOR, LB_TO_KG } from '../lib/recovery.js'
 import { fatigueStateOf } from '../lib/recovery-view.js'
 import { e1rmSeries, best1RM } from '../lib/onerm.js'
 import {
@@ -37,7 +37,7 @@ function latestMuscleTraining(workouts) {
   return latest
 }
 
-const FATIGUE_LEVELS = [
+export const FATIGUE_LEVELS = [
   { at: 0, level: 0 },
   { at: 0.15, level: 1 },
   { at: 0.25, level: 2 },
@@ -45,7 +45,7 @@ const FATIGUE_LEVELS = [
   { at: 0.55, level: 4, exclusive: true },
 ]
 
-const STRENGTH_LEVELS = [
+export const STRENGTH_LEVELS = [
   { at: STRENGTH_FLOOR, level: 0 },
   { at: 0.625, level: 1 },
   { at: 0.75, level: 2 },
@@ -100,8 +100,16 @@ function MuscleBalance({ S }) {
   const [sel, setSel] = useState(null)
   const now = useNow()
   const workouts = S.workouts
-  const fatigue = useMemo(() => fatigueOf(workouts, now), [workouts, now])
-  const strength = useMemo(() => strengthOf(workouts, now), [workouts, now])
+  // The user's own last registered bodyweight drives bodyweight-exercise tonnage.
+  const bodyweightKg = useMemo(() => {
+    const entries = S.bodyweight || []
+    if (!entries.length) return null
+    const last = entries.slice().sort((a, b) => String(a.d).localeCompare(String(b.d))).at(-1)
+    if (!last || !(last.w > 0)) return null
+    return S.unit === 'lb' ? last.w * LB_TO_KG : last.w
+  }, [S.bodyweight, S.unit])
+  const fatigue = useMemo(() => fatigueOf(workouts, now, { bodyweightKg, unit: S.unit }), [workouts, now, bodyweightKg, S.unit])
+  const strength = useMemo(() => strengthOf(workouts, now, { bodyweightKg, unit: S.unit }), [workouts, now, bodyweightKg, S.unit])
   const lastTrained = useMemo(() => latestMuscleTraining(workouts), [workouts])
   const { worked: strengthOrder } = rankOf(strength)
   const detrained = strengthOrder.filter(slug => strength[slug] < 1)

@@ -28,6 +28,7 @@ export const CHANGE_TYPES = [
 ];
 const POLICIES = ['off', 'linear', 'greyskull', 'double', 'time'];
 const MODES = ['reps', 'time', 'cardio'];
+const MAX_INC = 50;
 const MAX_CHANGES = 25;
 const MAX_ROUTINES = 7;
 const MAX_EX_PER_ROUTINE = 20;
@@ -101,7 +102,7 @@ export function validatePlan(data, ctx = {}) {
         if (!POLICIES.includes(e.prog)) errors.push(`${where}.prog "${e.prog}" is not one of ${POLICIES.join(', ')}`);
         else clean.prog = e.prog;
       }
-      if (isNum(e.inc) && e.inc > 0) clean.inc = e.inc;
+      if (isNum(e.inc) && e.inc > 0 && e.inc <= MAX_INC) clean.inc = e.inc;
       if (isInt(e.repsMin, 1, 100)) clean.repsMin = e.repsMin;
       // The ceiling that makes bodyweight progression terminate (upstream #33): reaching it
       // adds a set and restarts the reps. Without it the Coach can neither see nor prescribe
@@ -117,11 +118,25 @@ export function validatePlan(data, ctx = {}) {
       if (perSide) clean.side = true;
       if (isStr(e.sg)) clean.sg = clampStr(e.sg, 20);
       if (isStr(e.why)) clean.why = clampStr(e.why, 400);
+      // The same exercise twice in one routine has no honest reading: `reorder` can never be
+      // satisfied again (it demands each id once), and every targeted change resolves to
+      // whichever copy comes first.
+      if (ex.some(x => x.id === clean.id)) {
+        errors.push(`${where}.id "${e.id}" appears twice in "${r.name || ri}" — list each exercise once`);
+        return;
+      }
       ex.push(clean);
     });
     if (!ex.length) errors.push(`routines[${ri}] has no valid exercises`);
+    // Two routines answering to one id make the week ambiguous: `known` is a Set, so the day
+    // validates while pointing at either of them.
+    const rid = isStr(r.id) ? clampStr(r.id, 40) : 'r' + ri;
+    if (routines.some(x => x.id === rid)) {
+      errors.push(`routines[${ri}].id "${rid}" is already used by another routine in this plan`);
+      return;
+    }
     routines.push({
-      id: isStr(r.id) ? clampStr(r.id, 40) : 'r' + ri,
+      id: rid,
       name: clampStr(r.name || 'Routine', 40),
       emoji: clampStr(r.emoji || '🏋️', 8),
       ...(POLICIES.includes(r.prog) ? { prog: r.prog } : {}),
@@ -145,11 +160,17 @@ export function validatePlan(data, ctx = {}) {
   routines.forEach(r => r.ex.forEach(e => {
     const cap = caps.get(e.id);
     if (cap != null && e.weight > cap) e.weight = cap;
+    // Nothing lifted, nothing to cap against — so a number here is one the model made up for a
+    // lifter it has never seen. The prompt already says to omit it; drop it if it comes anyway
+    // and let the first session set the baseline, which is what the app does.
+    else if (cap == null && !caps.size && e.weight != null) delete e.weight;
   }));
 
   // FR-17: honour the number of training days the user asked for.
   const want = ctx.daysPerWeek;
-  if (isInt(want, 1, 7) && Object.keys(week).length && Object.keys(week).length !== want) {
+  // An absent week used to slip through: the plan then schedules nothing at all, which is not
+  // the number of days anyone asked for either.
+  if (isInt(want, 1, 7) && Object.keys(week).length !== want) {
     errors.push(`the week schedules ${Object.keys(week).length} days but ${want} were asked for`);
   }
 
@@ -286,7 +307,7 @@ export function validateReview(data, plan) {
         out.after = { ...(isInt(a.min, 1, 180) ? { min: a.min } : {}), ...(isNum(a.speed) && a.speed > 0 ? { speed: a.speed } : {}) };
         break;
       }
-      case 'inc': if (!isNum(c.after) || c.after <= 0) { errors.push(`${where}.after must be a positive increment`); return; } break;
+      case 'inc': if (!isNum(c.after) || c.after <= 0 || c.after > MAX_INC) { errors.push(`${where}.after must be a positive increment no larger than ${MAX_INC}`); return; } break;
       case 'routine-prog':
       case 'exercise-prog':
         if (!POLICIES.includes(c.after)) { errors.push(`${where}.after must be one of ${POLICIES.join(', ')}`); return; }
@@ -338,7 +359,10 @@ export function validateReview(data, plan) {
             mode: MODES.includes(e.mode) ? e.mode : 'reps',
             ...(isInt(e.reps, 1, 100) ? { reps: e.reps } : {}),
             ...(isInt(e.sec, 5, 3600) ? { sec: e.sec } : {}),
+            ...(isInt(e.repsMin, 1, 100) ? { repsMin: e.repsMin } : {}),
             ...(isInt(e.repsMax, 1, 100) ? { repsMax: e.repsMax } : {}),
+            ...(POLICIES.includes(e.prog) ? { prog: e.prog } : {}),
+            ...(isNum(e.inc) && e.inc > 0 && e.inc <= MAX_INC ? { inc: e.inc } : {}),
             ...(e.bodyweight != null ? { bodyweight: !!e.bodyweight } : {}),
             ...(e.side ? { side: true } : {})
           }))

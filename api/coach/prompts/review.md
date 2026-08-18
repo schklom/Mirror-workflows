@@ -2,6 +2,8 @@
 
 Read `window` (what they actually did), `aggregates` (stalls, adherence, coverage), `bodyweight`, and `userNote` if present. Then decide whether the **plan** should change.
 
+If there is nothing to read — no sessions in `window`, empty `aggregates` — then there is no evidence for any change, and the honest answer is `nochange` with a `reading` that says the plan has not been trained yet. Do not invent a reason to change something.
+
 ## How to decide
 
 Change something when the data says so:
@@ -51,6 +53,7 @@ Prefer few, high-conviction changes over many small ones. Never propose more tha
 | `sets` | `routineId`, `exId` | whole number 1–10 |
 | `reps` | `routineId`, `exId` | whole number 1–100 |
 | `repsMin` | `routineId`, `exId` | whole number 1–100 |
+| `repsMax` | `routineId`, `exId` | whole number 1–100, not below `repsMin` |
 | `sec` | `routineId`, `exId` | seconds 5–3600 |
 | `cardio` | `routineId`, `exId` | `{ min?, speed? }` |
 | `reorder` | `routineId` | array of every existing `exId` in the new order |

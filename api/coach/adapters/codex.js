@@ -8,6 +8,24 @@ import { run } from './spawn.js';
 
 const CLI = 'codex';
 
+/**
+ * The exact argv every Codex job runs with.
+ *
+ * Exported so the three hardening flags are asserted by value rather than trusted: each one
+ * removes an input the job would otherwise inherit from the host, and dropping one would
+ * change what a job can see without changing anything a test looks at.
+ */
+export function argvFor(model) {
+  const argv = [
+    'exec', '-',              // non-interactive; '-' reads the prompt from stdin
+    '--skip-git-repo-check',  // the job dir is a bare mkdtemp, not a repo -- without this it refuses to run
+    '--ephemeral',            // do not write session files; the job dir dies with the job anyway
+    '--ignore-user-config'    // $CODEX_HOME/config.toml would be an admin-invisible input to every job
+  ];
+  if (model) argv.push('--model', model);
+  return argv;
+}
+
 export default {
   id: 'codex',
   cli: CLI,
@@ -21,18 +39,11 @@ export default {
   },
 
   async invoke({ prompt, jobDir, env, model, timeoutMs }) {
-    const argv = [
-      'exec', '-',              // non-interactive; '-' reads the prompt from stdin
-      '--skip-git-repo-check',  // the job dir is a bare mkdtemp, not a repo -- without this it refuses to run
-      '--ephemeral',            // do not write session files; the job dir dies with the job anyway
-      '--ignore-user-config'    // $CODEX_HOME/config.toml would be an admin-invisible input to every job
-    ];
+    const argv = argvFor(model);
     // $CODEX_HOME itself is still set (config.jobEnv), because that is where the CLI keeps its
     // refreshable login cache and a job whose HOME is a temp dir would otherwise find no login
     // at all. --ignore-user-config narrows that to credentials only: the cache is read, the
     // config file beside it is not, so an admin cannot be handed job behaviour they never saw.
-    if (model) argv.push('--model', model);
-
     // Sandbox mode is left at the CLI's default (read-only). The job only needs the model
     // to write an answer to stdout, and this process is already an unprivileged user in a
     // container -- widening it here would trade that away for nothing.

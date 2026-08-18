@@ -284,3 +284,76 @@ test('every allowed change type has a validator that accepts a well-formed insta
     assert.equal(r.ok, true, `${type} should validate: ${JSON.stringify(r.errors)}`);
   }
 });
+
+/* ---- ambiguity the closed list did not previously catch ---- */
+
+test('two routines cannot answer to the same id', () => {
+  // `known` is a Set, so a week pointing at "r1" validated while it was ambiguous which of the
+  // two it meant — and the client resolves it by whichever happened to be found first.
+  const r = validatePlan({
+    routines: [
+      { id: 'r1', name: 'A', ex: [{ id: '0001', sets: 3, reps: 10 }] },
+      { id: 'r1', name: 'B', ex: [{ id: '0002', sets: 3, reps: 10 }] }
+    ],
+    week: { 1: 'r1' }
+  });
+  assert.equal(r.ok, false);
+  assert.ok(r.errors.some(e => e.includes('already used')));
+});
+
+test('an auto-assigned routine id cannot collide with an explicit one', () => {
+  const r = validatePlan({
+    routines: [
+      { name: 'A', ex: [{ id: '0001', sets: 3, reps: 10 }] },   // becomes "r0"
+      { id: 'r0', name: 'B', ex: [{ id: '0002', sets: 3, reps: 10 }] }
+    ]
+  });
+  assert.equal(r.ok, false);
+});
+
+test('one exercise cannot appear twice in the same routine', () => {
+  // A duplicate makes every later reorder unsatisfiable — it must list each id exactly once —
+  // and makes a targeted change resolve to whichever copy comes first.
+  const r = validatePlan({
+    routines: [{ name: 'A', ex: [{ id: '0001', sets: 3, reps: 10 }, { id: '0001', sets: 4, reps: 8 }] }]
+  });
+  assert.equal(r.ok, false);
+  assert.ok(r.errors.some(e => e.includes('twice')));
+});
+
+test('a plan with no week at all does not satisfy a requested day count', () => {
+  // The day-count check used to be skipped entirely when the week was empty, so "four days a
+  // week" was answered with a plan that schedules nothing.
+  const r = validatePlan(
+    { routines: [{ id: 'r1', name: 'A', ex: [{ id: '0001', sets: 3, reps: 10 }] }] },
+    { daysPerWeek: 4 }
+  );
+  assert.equal(r.ok, false);
+  assert.ok(r.errors.some(e => e.includes('0 days')));
+});
+
+test('a starting weight is dropped when there is nothing logged to justify it', () => {
+  // With no working weights the FR-20 cap has nothing to clamp against, so an invented number
+  // used to pass straight through to a lifter the model has never seen.
+  const r = validatePlan(
+    { routines: [{ id: 'r1', name: 'A', ex: [{ id: '0001', sets: 3, reps: 10, weight: 100 }] }], week: { 1: 'r1' } },
+    { daysPerWeek: 1 }
+  );
+  assert.equal(r.ok, true);
+  assert.equal(r.bundle.routines[0].ex[0].weight, undefined);
+});
+
+test('a starting weight still survives when there is history to cap it against', () => {
+  const r = validatePlan(
+    { routines: [{ id: 'r1', name: 'A', ex: [{ id: '0001', sets: 3, reps: 10, weight: 100 }] }], week: { 1: 'r1' } },
+    { daysPerWeek: 1, workingWeights: [{ id: '0002', best: 60 }] }
+  );
+  assert.equal(r.ok, true);
+  assert.equal(r.bundle.routines[0].ex[0].weight, 100);
+});
+
+test('a load step has an upper bound', () => {
+  const r = validatePlan({ routines: [{ name: 'A', ex: [{ id: '0001', sets: 3, reps: 10, inc: 500 }] }] });
+  assert.equal(r.ok, true);
+  assert.equal(r.bundle.routines[0].ex[0].inc, undefined);   // absurd step dropped, plan kept
+});

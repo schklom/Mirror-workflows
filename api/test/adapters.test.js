@@ -11,6 +11,7 @@ import { tempData } from './helpers.mjs';
 tempData();
 const { adapterFor, default: ADAPTERS } = await import('../coach/adapters/index.js');
 const { LOCKDOWN } = await import('../coach/adapters/claude.js');
+const { argvFor } = await import('../coach/adapters/codex.js');
 const cfg = await import('../coach/config.js');
 
 test('every provider the config offers has an adapter, and vice versa', () => {
@@ -67,4 +68,19 @@ test('the Codex credential cache is a sibling of ./data, never inside it', () =>
   cfg.reset();
   cfg.save({ enabled: true, provider: 'claude' });
   assert.equal(cfg.jobEnv('/tmp/job', { ok: true }).CODEX_HOME, undefined);
+});
+
+test('the Codex adapter runs with the three flags that keep host state out of a job', () => {
+  // Same reasoning as the Claude lockdown above: these are not stylistic. --ignore-user-config
+  // stops $CODEX_HOME/config.toml being an admin-invisible input to every job, --ephemeral stops
+  // session files being written, and --skip-git-repo-check is what lets the bare mkdtemp job dir
+  // run at all. Dropping any of them was a green build before this test existed.
+  assert.deepEqual(argvFor(null), [
+    'exec', '-', '--skip-git-repo-check', '--ephemeral', '--ignore-user-config'
+  ]);
+});
+
+test('a configured model is appended, and nothing else is', () => {
+  assert.deepEqual(argvFor('o4-mini').slice(-2), ['--model', 'o4-mini']);
+  assert.equal(argvFor('o4-mini').length, argvFor(null).length + 2);
 });

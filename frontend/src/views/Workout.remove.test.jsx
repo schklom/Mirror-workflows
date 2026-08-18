@@ -117,3 +117,30 @@ describe('remove-exercise locale coverage', () => {
     })
   })
 })
+
+describe('remove-exercise edge cases', () => {
+  it('removing the last remaining exercise leaves an empty, coherent session', () => {
+    setActive([entry('a')], 0)
+    act(() => { removeActiveExercise(0) })
+    const A = useStore.getState().S.active
+    expect(A.entries).toHaveLength(0)
+    expect(A.cur).toBe(0)
+  })
+
+  it('removing one half of a two-member superset dissolves the group', () => {
+    setActive([entry('a', 'g1'), entry('b', 'g1'), entry('c')], 0)
+    act(() => { removeActiveExercise(1) })
+    const A = useStore.getState().S.active
+    expect(A.entries.map(e => e.id)).toEqual(['a', 'c'])
+    // A superset of one is not a superset.
+    expect(A.entries[0].sg).toBeUndefined()
+  })
+
+  it('removing an entry below the active one keeps cur on the same exercise', () => {
+    setActive([entry('a'), entry('b'), entry('c')], 2)
+    act(() => { removeActiveExercise(0) })
+    const A = useStore.getState().S.active
+    expect(A.entries.map(e => e.id)).toEqual(['b', 'c'])
+    expect(A.entries[A.cur].id).toBe('c')
+  })
+})

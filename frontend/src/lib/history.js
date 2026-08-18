@@ -334,7 +334,7 @@ export function cascadeWeight(rows, from, value) {
   const warm = isWarmupRow(rows[from])
   const next = rows.slice()
   for (let j = from + 1; j < next.length; j++) {
-    if (!!next[j].warmup === warm && !next[j].done) {
+    if (isWarmupRow(next[j]) === warm && !next[j].done) {
       if (value == null) delete next[j].w
       else next[j].w = value
     }
@@ -368,6 +368,6 @@ export function removeRowAt(rows, i) {
 /** Completed non-warm-up sets across a workout's entries. */
 export function workSetsDone(w) {
   return (w?.entries || []).reduce(
-    (n, e) => n + (e.sets || []).filter(s => s.done && !s.warmup).length, 0,
+    (n, e) => n + (e.sets || []).filter(s => s.done && !isWarmupRow(s)).length, 0,
   )
 }

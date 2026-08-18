@@ -272,7 +272,7 @@ export function applyPrescription(sets, p) {
     // would both invent work and never terminate the loop. Leave the entry untouched.
     if (!workRows.length) return out
     const seed = workRows[workRows.length - 1]
-    while (out.filter(s => !s.warmup).length < p.sets) out.push({ ...seed, done: false })
+    while (out.filter(s => !isWarmupRow(s)).length < p.sets) out.push({ ...seed, done: false })
   }
   return out
 }

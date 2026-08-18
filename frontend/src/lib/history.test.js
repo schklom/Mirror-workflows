@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { modeOf, isTimed, fmtSec, setLabel, defaultConfig, buildSets, freestyleConfig, exLine, workoutVolume, effortOf, stepEffort, capEffort, isBw, isPerSide, sideReps, repStep, cascadeWeight, insertWarmupRow, removeRowAt, pairAdjacent, unpairSuperset, supersetUnits } from './history.js'
+import { modeOf, isTimed, fmtSec, setLabel, defaultConfig, buildSets, freestyleConfig, exLine, workoutVolume, effortOf, stepEffort, capEffort, isBw, isPerSide, sideReps, repStep, cascadeWeight, insertWarmupRow, removeRowAt, pairAdjacent, unpairSuperset, supersetUnits, workSetsDone } from './history.js'
 import { EXDB } from './exercises.js'
 
 // Real ids out of the shipped catalogue, so the body-part fallback is exercised for real.
@@ -567,5 +567,27 @@ describe('session row helpers', () => {
     const next = removeRowAt(rows, 0)
     expect(next.length).toBe(1)
     expect(next[0].w).toBe(70)
+  })
+})
+
+// The importer writes `phase: 'warmup'` and no `warmup` boolean (import-csv.js), so anything
+// reading the raw flag counts an imported warm-up as work. Read through the model instead.
+describe('warm-up rows identified by phase alone', () => {
+  const imported = { w: 40, r: 10, done: true, phase: 'warmup' }
+  const work = { w: 100, r: 5, done: true }
+
+  it('workSetsDone does not count a phase-only warm-up', () => {
+    expect(workSetsDone({ entries: [{ sets: [imported, work] }] })).toBe(1)
+  })
+
+  it('cascadeWeight keeps phase-only warm-ups in their own lane', () => {
+    const rows = [
+      { w: 40, r: 10, phase: 'warmup' },
+      { w: 45, r: 10, phase: 'warmup' },
+      { w: 100, r: 5 },
+    ]
+    const next = cascadeWeight(rows, 0, 50)
+    expect(next[1].w).toBe(50)
+    expect(next[2].w).toBe(100)
   })
 })

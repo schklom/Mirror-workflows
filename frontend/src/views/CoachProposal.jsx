@@ -56,7 +56,9 @@ function CreatedPlan({ p, S, update, toast, nav, refresh }) {
       update(s => { applyCreatedPlan(s, p, { schedule }) })
       resolvePending({ accepted: ['plan'] }).catch(() => {})
       toast(t('Your plan is live'))
-      nav('/plan')
+      // With the schedule on, the week just moved, so the useful next screen is the one that
+      // knows what today is and can start it. /plan has no notion of today and no way in.
+      nav(schedule ? '/home' : '/plan')
     } catch (e) { toast(e.message || t('That proposal can’t be read.')) }
   }
   const discard = () => confirmSheet({
@@ -145,7 +147,13 @@ function ChangeSet({ p, S, update, toast, nav }) {
       update(s => { applyChangeSet(s, marked, ids) })
       resolvePending({ accepted: ids, rejected: marked.changes.filter(c => !ids.includes(c.id)).map(c => c.id) }).catch(() => {})
       toast(t(ids.length === 1 ? '{0} change applied' : '{0} changes applied', ids.length))
-      nav('/plan')
+      // Same rule as an accepted plan: go to the screen that knows about today, but only when
+      // something actually moved the week. Editing sets and reps leaves the schedule alone.
+      const movedWeek = ids.some(id => {
+        const c = usable.find(x => x.id === id)
+        return !!c && (c.type === 'week' || c.type === 'remove-routine')
+      })
+      nav(movedWeek ? '/home' : '/plan')
     } catch (e) { toast(e.message || t('Could not apply those changes')) }
   }
   const discard = () => confirmSheet({

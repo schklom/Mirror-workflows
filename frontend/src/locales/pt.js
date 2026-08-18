@@ -104,6 +104,7 @@ export default {
   'Sick, missed a day or want a different session? Pick what to train instead.': 'Doente, falhaste um dia ou queres outra sessão? Escolhe o que treinar em vez disso.',
   'Rest / skip this day': 'Descansar / saltar este dia',
   'Rest day': 'Dia de descanso',
+  'Next session: {0}, {1}': 'Próxima sessão: {0}, {1}',
   '{0} workout': '{0} treino',
   '{0} workouts': '{0} treinos',
   'No workouts this month': 'Sem treinos este mês',

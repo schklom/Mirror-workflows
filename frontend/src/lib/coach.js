@@ -14,7 +14,7 @@
 
 import { EXIDX } from './exercises.js'
 import { modeOf, isBw, isPerSide, cleanupSg } from './history.js'
-import { uid } from './format.js'
+import { uid, todayISO } from './format.js'
 import { mergePlan } from './plan-share.js'
 import { POLICIES } from './progression.js'
 import { t } from './i18n.js'
@@ -157,6 +157,11 @@ export function validateProposal(p) {
   if (!p || typeof p !== 'object') throw new Error(t('That proposal can’t be read.'))
   if (p.bundle) {
     if (!Array.isArray(p.bundle.routines) || !p.bundle.routines.length) throw new Error(t('That proposal can’t be read.'))
+    // The server rejects a routine with no exercises; so must this, or an empty one is appended,
+    // gets scheduled, and "start today's session" opens a workout with nothing in it.
+    for (const r of p.bundle.routines) {
+      if (!Array.isArray(r.ex) || !r.ex.length) throw new Error(t('That proposal can’t be read.'))
+    }
     return true
   }
   if (!Array.isArray(p.changes)) throw new Error(t('That proposal can’t be read.'))
@@ -169,6 +174,36 @@ export function validateProposal(p) {
 /* ============================ snapshots & revert ============================ */
 
 const clone = o => JSON.parse(JSON.stringify(o))
+
+/**
+ * Remember the `dayPlan` entries an apply step deleted, on the snapshot that will undo it.
+ *
+ * A patch, not a clone: `dayPlan` holds every date the user ever rescheduled, and three copies
+ * of it in the snapshot ring would crowd real snapshots out of the 256 KB namespace budget that
+ * `trim()` enforces. The first value recorded for a date wins — that is the pre-apply one.
+ */
+function recordDayPlanDrops(s, dropped) {
+  if (!Object.keys(dropped).length) return
+  const snaps = coachOf(s).snapshots || []
+  const snap = snaps[snaps.length - 1]
+  if (!snap) return
+  snap.dayPlanRestore = { ...dropped, ...(snap.dayPlanRestore || {}) }
+}
+
+/**
+ * Drop per-date reschedules from `iso` onwards.
+ *
+ * A created plan replaces the whole week, so overrides made against the old one are no longer
+ * about anything: `'rest'` would hide a session the new plan schedules, and a routine id wins
+ * over the new week on that day. Past dates stay — those are history, not intent.
+ */
+function sweepDayPlan(s, fromIso) {
+  const dropped = {}
+  Object.keys(s.dayPlan || {}).forEach(iso => {
+    if (iso >= fromIso) { dropped[iso] = s.dayPlan[iso]; delete s.dayPlan[iso] }
+  })
+  recordDayPlanDrops(s, dropped)
+}
 
 /** Snapshot `{routines, week}` before touching either. The unit of revert (FR-30/31). */
 export function pushSnapshot(s, proposalId, label) {
@@ -193,6 +228,8 @@ export function revertLast(s) {
   if (!snap) return false
   s.routines = clone(snap.routines)
   s.week = clone(snap.week)
+  // Snapshots taken before this field existed have nothing to put back.
+  if (snap.dayPlanRestore) Object.assign(s.dayPlan, snap.dayPlanRestore)
   appendLog(s, { kind: 'revert', at: Date.now(), proposalId: snap.proposalId, summary: t('Reverted the last Coach changes.') })
   return true
 }
@@ -238,6 +275,9 @@ export function applyCreatedPlan(s, proposal, { schedule } = {}) {
     routines: bundle.routines.map(r => ({ ...r, why: undefined, ex: r.ex.map(e => ({ ...e, why: undefined, name: undefined })) }))
   }
   const res = mergePlan(s, stripped, { schedule })
+  // Only when the week actually moved — with the switch off the old schedule still stands, and
+  // so do the reschedules made against it.
+  if (schedule) sweepDayPlan(s, todayISO())
   appendLog(s, {
     kind: 'create', at: Date.now(), proposalId: proposal.id,
     summary: proposal.summary || '', routines: res.routines, iteration: proposal.iteration || 1
@@ -352,6 +392,13 @@ const CHANGE_APPLY = {
     // A week pointing at a routine that no longer exists reads as a rest day anyway; clearing
     // it keeps the plan honest rather than merely harmless.
     Object.keys(s.week || {}).forEach(d => { if (s.week[d] === id) delete s.week[d] })
+    // RoutineEdit does the same on a hand-deleted routine. A pointer left behind here is not
+    // merely inert: the day still counts as overridden, so it wears a "rescheduled" badge for good.
+    const dropped = {}
+    Object.keys(s.dayPlan || {}).forEach(iso => {
+      if (s.dayPlan[iso] === id) { dropped[iso] = id; delete s.dayPlan[iso] }
+    })
+    recordDayPlanDrops(s, dropped)
   },
   'rename-routine': (s, c) => { need(findRoutine(s, c.target.routineId)).name = c.after },
   week: (s, c) => {

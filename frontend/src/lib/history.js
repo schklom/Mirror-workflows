@@ -249,6 +249,25 @@ export function effectiveRoutine(S, iso) {
   const id = effectiveRoutineId(S, iso)
   return id ? S.routines.find(r => r.id === id) || null : null
 }
+
+/**
+ * The next day that actually has something to train, looking forward from `iso` (exclusive).
+ *
+ * Takes a date string rather than reading the clock so callers and tests agree on "today".
+ * A routine with no exercises does not count: starting one lands you in an empty session, so
+ * it is not an answer to "what is next" (the same guard TabBar applies before starting).
+ * Returns null when the whole week is rest.
+ */
+export function nextTrainingDay(S, iso) {
+  for (let i = 1; i <= 7; i++) {
+    const d = new Date(iso + 'T12:00:00')
+    d.setDate(d.getDate() + i)
+    const nextIso = isoOf(d)
+    const routine = effectiveRoutine(S, nextIso)
+    if (routine && (routine.ex || []).length) return { iso: nextIso, weekday: d.getDay(), routine }
+  }
+  return null
+}
 export function buildSets(S, cfg, options = {}) {
   const last = lastEntryFor(S, cfg.id)
   const n = Math.max(1, cfg.sets || 1)

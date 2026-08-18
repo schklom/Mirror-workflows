@@ -367,6 +367,55 @@ describe('the log', () => {
 })
 
 describe('created plans', () => {
+  // Accepting a plan replaces the whole week, so reschedules aimed at the old one are stale:
+  // 'rest' would hide a session the new plan schedules, and an id outranks the new week.
+  describe('per-date reschedules', () => {
+    const past = '2020-01-02'
+    const future = '2099-12-31'
+    const withOverrides = () => JSON.parse(JSON.stringify(state({
+      dayPlan: { [past]: 'r1', [future]: 'rest' }
+    })))
+
+    it('drops today-and-later overrides when the schedule moves, and keeps past ones', () => {
+      const s = withOverrides()
+      applyCreatedPlan(s, { id: 'p1', kind: 'create', bundle }, { schedule: true })
+      expect(s.dayPlan[future]).toBeUndefined()
+      expect(s.dayPlan[past]).toBe('r1')       // history, not intent
+    })
+
+    it('leaves them alone when the schedule was not taken', () => {
+      const s = withOverrides()
+      applyCreatedPlan(s, { id: 'p1', kind: 'create', bundle }, { schedule: false })
+      expect(s.dayPlan[future]).toBe('rest')
+      expect(s.dayPlan[past]).toBe('r1')
+    })
+
+    it('puts the dropped overrides back on revert', () => {
+      const s = withOverrides()
+      applyCreatedPlan(s, { id: 'p1', kind: 'create', bundle }, { schedule: true })
+      expect(revertLast(s)).toBe(true)
+      expect(s.dayPlan[future]).toBe('rest')
+      expect(s.dayPlan[past]).toBe('r1')
+    })
+
+    it('reverts cleanly for a snapshot taken before the patch existed', () => {
+      const s = withOverrides()
+      pushSnapshot(s, 'old', 'legacy')
+      delete s.coach.snapshots[s.coach.snapshots.length - 1].dayPlanRestore
+      expect(() => revertLast(s)).not.toThrow()
+      expect(s.dayPlan[future]).toBe('rest')
+    })
+  })
+
+  it('refuses a bundle carrying a routine with no exercises', () => {
+    // The server rejects this; if the client does not, the empty routine gets scheduled and
+    // starting today's session opens a workout with nothing in it.
+    const empty = { ...bundle, routines: [{ id: 'x1', name: 'A', ex: [] }] }
+    const s = JSON.parse(JSON.stringify(state()))
+    expect(() => applyCreatedPlan(s, { id: 'p1', kind: 'create', bundle: empty }, {})).toThrow()
+    expect(s.routines).toHaveLength(2)
+  })
+
   const bundle = {
     opengym_plan: 1, name: 'Coach plan', summary: 'three days',
     week: { 1: 'x1', 3: 'x2' },
@@ -470,5 +519,26 @@ describe('the gate has something real to read', () => {
     const config = { invite_only: false, coach: { enabled: true, provider: 'claude', authMode: 'instance' } }
     expect(coachAvailable(config, { id: 'u' })).toBe(true)
     expect(coachAvailable(undefined, { id: 'u' })).toBe(false)   // the bug, pinned
+  })
+})
+
+describe('removing a routine takes its per-date reschedules with it', () => {
+  // RoutineEdit does this on a hand-deleted routine. A pointer left behind still counts as an
+  // override, so the day wears a "rescheduled" badge for good with no way to clear it.
+  const c = { id: 'c1', type: 'remove-routine', target: { routineId: 'r2' }, before: null, after: null, why: 'unused' }
+
+  it('clears dayPlan entries pointing at the removed routine', () => {
+    const S = state({ dayPlan: { '2099-01-01': 'r2', '2099-01-02': 'r1' } })
+    const s = apply(S, proposal([c]), ['c1'])
+    expect(s.dayPlan['2099-01-01']).toBeUndefined()
+    expect(s.dayPlan['2099-01-02']).toBe('r1')   // a different routine is none of its business
+    expect(s.week[3]).toBeUndefined()
+  })
+
+  it('restores them on revert', () => {
+    const S = state({ dayPlan: { '2099-01-01': 'r2' } })
+    const s = apply(S, proposal([c]), ['c1'])
+    expect(revertLast(s)).toBe(true)
+    expect(s.dayPlan['2099-01-01']).toBe('r2')
   })
 })

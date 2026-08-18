@@ -8,14 +8,14 @@ This guide takes you from "just cloned it" to "using it from my phone over the i
 Requirements: [Docker](https://docs.docker.com/get-docker/) with the Compose plugin.
 
 ```bash
-git clone https://github.com/DuarteSantos8/gym-app opengym
-cd opengym
+git clone https://github.com/DuarteSantos8/openGym
+cd openGym
 cp .env.example .env
 docker compose pull   # prebuilt images from ghcr.io (amd64 + arm64) — or skip and build from source
 docker compose up -d
 ```
 
-- First start downloads the exercise images/GIFs (~140 MB) once into `app/img` and `app/gif`.
+- First start downloads the exercise images/GIFs (~140 MB) once into `media/img` and `media/gif`.
 - Open **http://localhost:8080** and create a profile with a passkey.
 - Rather build from source than pull prebuilt images? Skip `docker compose pull` and run
   `docker compose up -d --build` instead — no Node needed locally either way.
@@ -118,7 +118,30 @@ same device.
 Prefer to keep the whole thing off the open internet? A VPN or an auth proxy (Authelia, Cloudflare
 Access…) in front still works, and composes with the above.
 
-## 5. Backups
+## 5. Fitting it into an existing stack
+
+The defaults assume openGym is the only thing here: a service called `api` on port 3000, and nginx
+on port 80 inside its container. If you are merging this into a compose file that already has an
+`api`, or you put the web container behind your own reverse proxy on a different port, four
+settings in `.env` move those without editing any config file:
+
+```bash
+WEB_PORT=8080              # host port — what you browse to
+NGINX_PORT=80              # port the web container listens on, inside the container
+BACKEND=api                # name of the API service that /api is proxied to
+PORT=3000                  # port the API listens on; web proxies to the same value
+SESSION_DAYS=90            # how long a sign-in lasts
+```
+
+The web image renders its nginx config from these when the container starts, so they take effect
+on a **prebuilt image** — no rebuild. `BACKEND` and `PORT` together are what `/api` is proxied to,
+so they have to name a service the web container can actually reach on your compose network.
+
+Note the difference from `VITE_IMG_BASE` / `VITE_GIF_BASE` (see Troubleshooting): those are
+build-time values baked into the frontend bundle, and setting them next to `docker compose` does
+nothing to an image you pulled.
+
+## 6. Backups
 
 Everything is in `./data`:
 
@@ -129,7 +152,7 @@ tar czf opengym-backup-$(date +%F).tar.gz data/
 That archive contains all profiles, passkeys and workout history. Restore by unpacking it back
 into the project folder. (Individual users can also export their own data as JSON from Settings.)
 
-## 6. Notifications
+## 7. Notifications
 
 openGym can push two kinds of alert to your phone/desktop, even when the app isn't open:
 rest-timer-over, and a reminder on days you have a workout planned but haven't logged one yet.
@@ -146,7 +169,11 @@ Wake Lock API is only available over HTTPS or on `http://localhost`, so on a pla
 instance the switch shows as unsupported. Nothing to configure server-side either way, and iOS
 refuses the lock while the phone is in Low Power Mode.
 
-## 7. Updating
+Push services like a contact address for whoever runs the server, in case they ever need to reach
+you about your pushes. openGym sends your `ORIGIN` by default; set `VAPID_SUBJECT=mailto:you@example.com`
+in `.env` if you would rather they had an inbox.
+
+## 8. Updating
 
 Running prebuilt images:
 
@@ -175,7 +202,7 @@ downloaded media are untouched.
 | Media didn't download | `docker compose logs media`. Re-run `docker compose up -d`, or run `./scripts/fetch-media.sh`. |
 | Port 8080 already used | Set `WEB_PORT=9090` in `.env` (and update `ORIGIN` for local testing). |
 | No "Notifications" option in Settings | Requires a signed-in profile and HTTPS (or `localhost`) — guest mode and plain HTTP over LAN can't subscribe. |
-| Day reminder fires at the wrong time | Toggle it off and on in Settings so it re-detects your browser's timezone (also happens automatically on every app load — see section 6). |
+| Day reminder fires at the wrong time | Toggle it off and on in Settings so it re-detects your browser's timezone (also happens automatically on every app load — see section 7). |
 | Want to reset a stuck login | Delete the cookie in your browser; sessions are just signed cookies. |
 | `docker compose pull` fails with "denied" / "unauthorized" | The prebuilt images aren't published yet, or need to be, or the GHCR package is still private — build from source instead (`docker compose up -d --build`). |
 | Exercise images/GIFs blank when a routine is open | Fixed in current images (issue #79). On an older build, see the note below. |

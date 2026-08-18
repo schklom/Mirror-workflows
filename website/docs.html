@@ -39,6 +39,7 @@
     <a href="#android">Android</a>
     <a href="#iphone">iPhone</a>
     <a href="#selfhost">Self-hosting</a>
+    <a href="#mcp">Ask an AI</a>
     <a href="#import">Import your history</a>
     <a href="#backup">Backups</a>
     <a href="#build">Build it yourself</a>
@@ -89,6 +90,28 @@ docker compose up -d</code></pre>
     domain — a two-line change in <code>.env</code>. The full guide, including reverse-proxy
     examples and the invite-only/admin options, is in
     <a href="https://github.com/DuarteSantos8/openGym/blob/main/docs/SELF_HOSTING.md" rel="noopener">docs/SELF_HOSTING.md</a>.</div>
+
+  <h3>Settings worth knowing about</h3>
+  <p>All of these live in <code>.env</code>; the defaults are what you get if you touch nothing.</p>
+  <table class="cfg">
+    <tr><td><code>RP_ID</code> / <code>ORIGIN</code></td><td>The domain passkeys are bound to, and the full URL you serve from. The two must agree, or sign-in fails.</td></tr>
+    <tr><td><code>WEB_PORT</code></td><td>Host port for the web UI. Default <code>8080</code>.</td></tr>
+    <tr><td><code>INVITE_ONLY</code></td><td>Set <code>1</code> and new profiles need an invite code you generate.</td></tr>
+    <tr><td><code>ALLOW_GUEST</code></td><td>Set <code>0</code> to remove <b>Continue without account</b>, so everyone using the instance has a profile.</td></tr>
+    <tr><td><code>ADMIN_UIDS</code></td><td>Which user ids get the admin dashboard.</td></tr>
+    <tr><td><code>SESSION_DAYS</code></td><td>How long a sign-in lasts. Default <code>90</code>.</td></tr>
+    <tr><td><code>BACKEND</code> / <code>PORT</code> / <code>NGINX_PORT</code></td><td>For fitting openGym into a stack that already has an <code>api</code> service, or putting it behind your own proxy on another port. The web container renders its nginx config at start-up, so these work on a prebuilt image.</td></tr>
+  </table>
+
+  <h2 id="mcp">Ask an AI about your training</h2>
+  <p>openGym ships an optional <b>MCP server</b>: a small read-only bridge that lets a client
+     like Claude Desktop or Cursor answer questions from your actual log — <i>"what did I bench
+     last week?"</i>, <i>"which muscle have I not trained this month?"</i>, <i>"what's my
+     estimated 1RM on squats?"</i></p>
+  <p>It runs on your machine, is spawned by the client, and reads your exported data directly.
+     Nothing is sent anywhere, and it is <b>not part of the Docker build</b> — if you don't use
+     an AI assistant, it simply isn't there. Setup is a few lines of client config:
+     <a href="https://github.com/DuarteSantos8/openGym/blob/main/mcp/README.md" rel="noopener">mcp/README.md</a>.</p>
 
   <h2 id="import">Import your training history</h2>
   <p>Coming from another tracker? <b>Settings → Data → Import from another app</b> reads:</p>

@@ -1,8 +1,12 @@
 # Changelog
 
-## Unreleased
+## v1.2.7 — 2026-08-18
 
-Merged since v1.2.6 and not yet released.
+The muscle map answers a third question. Balance showed where the volume went and Fatigue what was
+still recovering; Strength now names the exercises behind a muscle and what each one is worth in
+estimated 1RM. Fatigue itself got harder to fool — a set counts for more the closer it is to your
+maximum, and it can no longer creep upward across a rest week. In a session, supersets finally
+behave: pair them as you go, rest once per round, and drop an exercise you have decided against.
 
 ### The muscle map, read as strength
 
@@ -39,6 +43,12 @@ Merged since v1.2.6 and not yet released.
   config at startup from `BACKEND`, `PORT` and `NGINX_PORT`, all defaulted to today's values, so
   existing compose files are unaffected. Reported and fixed by
   [@GAS85](https://github.com/GAS85) in [#100](https://github.com/DuarteSantos8/openGym/pull/100).
+- **…and the shipped `docker-compose.yml` now actually passes those through.** The `web` service
+  had no environment of its own and published a hardcoded `:80`, so setting `BACKEND` or
+  `NGINX_PORT` in `.env` did nothing at all on the stock stack — the setting existed, the wiring
+  did not. Both services now read `PORT` from the same place, so nginx cannot end up proxying to a
+  port the API is not listening on. Defaults are unchanged, so an existing `.env` behaves exactly
+  as before.
 - 🏷️ **Health checks and OCI image labels** on both images — source, licence, version, revision and
   build date, so image tooling can tell what it is holding. Contributed by
   [@GAS85](https://github.com/GAS85) in [#98](https://github.com/DuarteSantos8/openGym/pull/98).

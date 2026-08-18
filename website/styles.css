@@ -167,3 +167,14 @@ footer { border-top: 1px solid var(--line); margin-top: 70px; padding: 30px 0 46
   .nav-in { gap: 12px; }
   header.hero { padding-top: 52px; }
 }
+
+/* config table on the docs page */
+table.cfg { width: 100%; border-collapse: collapse; margin: 1rem 0 1.4rem; font-size: .95rem; }
+table.cfg td { padding: .55rem .7rem; border-top: 1px solid var(--line, #24303f); vertical-align: top; }
+table.cfg tr:first-child td { border-top: 0; }
+table.cfg td:first-child { white-space: nowrap; width: 1%; padding-right: 1.2rem; }
+@media (max-width: 620px) {
+  table.cfg td { display: block; border-top: 0; padding: .15rem .7rem; }
+  table.cfg td:first-child { white-space: normal; width: auto; padding-top: .7rem; border-top: 1px solid var(--line, #24303f); }
+  table.cfg tr:first-child td:first-child { border-top: 0; }
+}

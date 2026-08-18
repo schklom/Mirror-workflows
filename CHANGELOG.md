@@ -1,6 +1,6 @@
 # Changelog
 
-## v1.2.6 — 2026-08-07
+## v1.2.6 — 2026-08-11
 
 The muscle map learned to answer a second question — not just where the volume went, but what is
 still recovering from it. Plus: a freestyle session no longer starts from blanks, the rest timer

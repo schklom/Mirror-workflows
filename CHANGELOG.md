@@ -1,5 +1,61 @@
 # Changelog
 
+## Unreleased
+
+Merged since v1.2.6 and not yet released.
+
+### The muscle map, read as strength
+
+- **A per-muscle exercise breakdown** behind the muscle card — estimated 1RM per exercise, decay
+  bars, and primary/secondary tags, with a best-weight fallback for holds and carries that have no
+  reps to work from. Contributed by [@Space-Hermes](https://github.com/Space-Hermes) in
+  [#92](https://github.com/DuarteSantos8/openGym/pull/92),
+  [#93](https://github.com/DuarteSantos8/openGym/pull/93) and
+  [#94](https://github.com/DuarteSantos8/openGym/pull/94).
+- **Fatigue is now intensity-weighted**, not volume alone: a set counts for more the closer it is
+  to your estimated maximum. It also reads against a stable historical reference, so fatigue can no
+  longer *rise* across a rest week, and bodyweight movements no longer register as zero load. A
+  property probe over 108,000 comparisons runs in CI to keep it that way. Contributed by
+  [@Space-Hermes](https://github.com/Space-Hermes) in
+  [#55](https://github.com/DuarteSantos8/openGym/pull/55).
+
+### In a session
+
+- 🔗 **Supersets advance properly.** Completing a set moves to the next member of the group, the
+  active exercise scrolls into view, and rest starts once the whole round is done rather than after
+  each set. Contributed by [@Space-Hermes](https://github.com/Space-Hermes) in
+  [#80](https://github.com/DuarteSantos8/openGym/pull/80).
+- ➖ **Remove an exercise from a running session**, with a superset-aware picker and a confirmation.
+  Contributed by [@Space-Hermes](https://github.com/Space-Hermes) in
+  [#83](https://github.com/DuarteSantos8/openGym/pull/83).
+- ⬅️ **The Android back button closes the open sheet** instead of leaving the screen or the app
+  ([#63]). Each open sheet gets its own history entry, so stacked sheets unwind one at a time.
+  Contributed by [@Space-Hermes](https://github.com/Space-Hermes) in
+  [#85](https://github.com/DuarteSantos8/openGym/pull/85).
+
+### Self-hosting
+
+- 🐳 **The API service no longer has to be called `api`** ([#99]). The web image builds its nginx
+  config at startup from `BACKEND`, `PORT` and `NGINX_PORT`, all defaulted to today's values, so
+  existing compose files are unaffected. Reported and fixed by
+  [@GAS85](https://github.com/GAS85) in [#100](https://github.com/DuarteSantos8/openGym/pull/100).
+- 🏷️ **Health checks and OCI image labels** on both images — source, licence, version, revision and
+  build date, so image tooling can tell what it is holding. Contributed by
+  [@GAS85](https://github.com/GAS85) in [#98](https://github.com/DuarteSantos8/openGym/pull/98).
+- **Images are published from a release, not from any tag** ([#87]). A tag that gets consolidated
+  away before it becomes a release used to leave its image tags behind in the registry, where
+  dependency bots read them as newer versions.
+
+### Fixes
+
+- **Imported warm-up sets were counted as work.** The importer marks them with `phase`, but several
+  places still read the older boolean, so warm-ups from FitNotes/Strong/Hevy history inflated set
+  counts, progression and the fatigue map.
+
+[#63]: https://github.com/DuarteSantos8/openGym/issues/63
+[#87]: https://github.com/DuarteSantos8/openGym/issues/87
+[#99]: https://github.com/DuarteSantos8/openGym/issues/99
+
 ## v1.2.6 — 2026-08-11
 
 The muscle map learned to answer a second question — not just where the volume went, but what is

@@ -9,49 +9,6 @@ const CARDIO = EXDB.find(e => e.bp === 'cardio').id
 const LIFT = EXDB.find(e => e.bp !== 'cardio' && e.eq !== 'body weight').id
 const BW = EXDB.find(e => e.eq === 'body weight').id
 
-describe('superset editing', () => {
-  it('pairs adjacent entries without mutating the source and keeps the display units contiguous', () => {
-    const entries = [{ id: 'a' }, { id: 'b' }, { id: 'c' }]
-
-    const paired = pairAdjacent(entries, 1, 2, 'sg-new')
-
-    expect(paired).toEqual([{ id: 'a' }, { id: 'b', sg: 'sg-new' }, { id: 'c', sg: 'sg-new' }])
-    expect(entries).toEqual([{ id: 'a' }, { id: 'b' }, { id: 'c' }])
-    expect(supersetUnits(paired)).toEqual([[0], [1, 2]])
-  })
-
-  it('merges both contiguous groups when their boundary entries are paired', () => {
-    const entries = [
-      { id: 'a', sg: 'left' }, { id: 'b', sg: 'left' },
-      { id: 'c', sg: 'right' }, { id: 'd', sg: 'right' }
-    ]
-
-    const merged = pairAdjacent(entries, 1, 2)
-
-    expect(merged.map(e => e.sg)).toEqual(['left', 'left', 'left', 'left'])
-    expect(entries.map(e => e.sg)).toEqual(['left', 'left', 'right', 'right'])
-  })
-
-  it('unpairs one entry and removes sg values left without an adjacent partner', () => {
-    const entries = [
-      { id: 'a', sg: 'group' }, { id: 'b', sg: 'group' }, { id: 'c', sg: 'group' },
-      { id: 'd', sg: 'orphan' }
-    ]
-
-    const unpaired = unpairSuperset(entries, 1)
-
-    expect(unpaired).toEqual([{ id: 'a' }, { id: 'b' }, { id: 'c' }, { id: 'd' }])
-    expect(entries.map(e => e.sg)).toEqual(['group', 'group', 'group', 'orphan'])
-  })
-
-  it('rejects a non-adjacent pairing request', () => {
-    const entries = [{ id: 'a' }, { id: 'b' }, { id: 'c' }]
-
-    expect(() => pairAdjacent(entries, 0, 2, 'sg-invalid')).toThrow(/adjacent/)
-    expect(entries).toEqual([{ id: 'a' }, { id: 'b' }, { id: 'c' }])
-  })
-})
-
 describe('modeOf', () => {
   it('falls back to the body part when a plan has no mode — every existing plan keeps working', () => {
     expect(modeOf({ id: CARDIO })).toBe('cardio')
@@ -519,6 +476,46 @@ describe('workoutVolume', () => {
   it('leaves an unloaded bodyweight set at zero volume rather than inventing a number', () => {
     const w = { entries: [{ id: BW, target: { bodyweight: true }, sets: [{ w: 0, r: 20, done: true }] }] }
     expect(workoutVolume(w)).toBe(0)
+  })
+})
+
+describe('superset editing', () => {
+  it('pairs adjacent entries without mutating the source and keeps the display units contiguous', () => {
+    const entries = [{ id: 'a' }, { id: 'b' }, { id: 'c' }]
+    const paired = pairAdjacent(entries, 1, 2, 'sg-new')
+
+    expect(paired).toEqual([{ id: 'a' }, { id: 'b', sg: 'sg-new' }, { id: 'c', sg: 'sg-new' }])
+    expect(entries).toEqual([{ id: 'a' }, { id: 'b' }, { id: 'c' }])
+    expect(supersetUnits(paired)).toEqual([[0], [1, 2]])
+  })
+
+  it('merges both contiguous groups when their boundary entries are paired', () => {
+    const entries = [
+      { id: 'a', sg: 'left' }, { id: 'b', sg: 'left' },
+      { id: 'c', sg: 'right' }, { id: 'd', sg: 'right' }
+    ]
+    const merged = pairAdjacent(entries, 1, 2)
+
+    expect(merged.map(e => e.sg)).toEqual(['left', 'left', 'left', 'left'])
+    expect(entries.map(e => e.sg)).toEqual(['left', 'left', 'right', 'right'])
+  })
+
+  it('unpairs one entry and removes sg values left without an adjacent partner', () => {
+    const entries = [
+      { id: 'a', sg: 'group' }, { id: 'b', sg: 'group' }, { id: 'c', sg: 'group' },
+      { id: 'd', sg: 'orphan' }
+    ]
+    const unpaired = unpairSuperset(entries, 1)
+
+    expect(unpaired).toEqual([{ id: 'a' }, { id: 'b' }, { id: 'c' }, { id: 'd' }])
+    expect(entries.map(e => e.sg)).toEqual(['group', 'group', 'group', 'orphan'])
+  })
+
+  it('rejects a non-adjacent pairing request', () => {
+    const entries = [{ id: 'a' }, { id: 'b' }, { id: 'c' }]
+
+    expect(() => pairAdjacent(entries, 0, 2, 'sg-invalid')).toThrow(/adjacent/)
+    expect(entries).toEqual([{ id: 'a' }, { id: 'b' }, { id: 'c' }])
   })
 })
 

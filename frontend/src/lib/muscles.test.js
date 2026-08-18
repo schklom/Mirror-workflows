@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { EXIDX, EXDB, smOf } from './exercises.js'
-import { musclesOf } from './muscles.js'
+import { loadOfWorkouts, musclesOf } from './muscles.js'
 
 // The catalogue keeps the source dataset's secondary-muscle spellings; musclesOf maps
 // those aliases to the canonical body-map slugs and applies the 0.4 support weight.
@@ -40,5 +40,23 @@ describe('catalogue secondary additions', () => {
     expect(smOf(raw)).toContain('rear deltoids')
     // the alias collapses onto the deltoids slug in the canonical muscle map
     expect(musclesOf(raw)).toHaveProperty('deltoids')
+  })
+})
+
+
+describe('map load with warm-up phases', () => {
+  it('excludes warm-up sets from the by-sets-worked map', () => {
+    const w = {
+      id: 'w1', d: '2026-08-01', start: Date.UTC(2026, 7, 1, 10), unit: 'kg',
+      entries: [{
+        id: '0025',
+        sets: [
+          { done: true, phase: 'warmup', w: 20, r: 8 },
+          { done: true, phase: 'work', w: 60, r: 8 },
+        ],
+      }],
+    }
+    const load = loadOfWorkouts([w], null)
+    expect(load.chest).toBe(1)
   })
 })

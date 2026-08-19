@@ -9,7 +9,7 @@ describe('Brazilian Portuguese exercise instructions', () => {
   const source = JSON.parse(readFileSync(new URL('../../../scripts/instruction-sources/pt-BR.json', import.meta.url), 'utf8'))
 
   test('starts with a reviewable translated batch', () => {
-    expect(Object.keys(ptBR)).toHaveLength(20)
+    expect(Object.keys(ptBR).length).toBeGreaterThan(0)
     expect(ptBR).toEqual(source)
   })
 

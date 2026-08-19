@@ -1,24 +1,93 @@
 {
-  "0001": [
-    "Deite-se de costas, com os joelhos flexionados e os pés apoiados no chão.",
-    "Coloque as mãos atrás da cabeça, com os cotovelos apontados para os lados.",
-    "Contraia o abdômen e eleve lentamente a parte superior do corpo, curvando o tronco para a frente até atingir um ângulo de 45 graus.",
-    "Faça uma breve pausa no alto e retorne lentamente à posição inicial.",
+  "1002": [
+    "Deite-se de costas com as pernas retas e os pés juntos.",
+    "Coloque a faixa elástica ao redor do arco dos pés e segure as extremidades da faixa com as mãos.",
+    "Contraindo o abdômen, eleve as duas pernas do chão até ficarem perpendiculares ao chão.",
+    "Faça uma pausa no topo do movimento e, em seguida, abaixe lentamente as pernas até a posição inicial.",
     "Repita pelo número desejado de repetições."
   ],
-  "0002": [
-    "Fique em pé, com os pés afastados na largura dos ombros e os braços estendidos ao lado do corpo.",
-    "Mantenha as costas retas e o abdômen contraído enquanto inclina lentamente o tronco para um dos lados, levando a mão em direção ao joelho.",
-    "Faça uma breve pausa na posição mais baixa e retorne lentamente à posição inicial.",
-    "Repita para o outro lado.",
+  "1005": [
+    "Fixe a faixa elástica em um ponto de ancoragem firme na altura da cintura.",
+    "Fique de pé de costas para o ponto de ancoragem, com os pés afastados na largura dos ombros.",
+    "Segure a faixa com as duas mãos e traga-a até o peito, mantendo os cotovelos dobrados e próximos ao corpo.",
+    "Contraia o abdômen e flexione o tronco lentamente para frente, levando o peito em direção aos joelhos.",
+    "Faça uma pausa no topo do movimento e, em seguida, retorne lentamente à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "1007": [
+    "Fique de pé com os pés afastados na largura dos ombros e passe a faixa elástica pela parte superior das costas, cruzando-a na frente do peito.",
+    "Segure as extremidades da faixa com as mãos, mantendo os cotovelos dobrados e próximos ao corpo.",
+    "Contraia o abdômen e gire o tronco para um dos lados, levando o cotovelo em direção ao joelho oposto.",
+    "Faça uma pausa e, em seguida, retorne à posição inicial.",
+    "Repita do outro lado.",
     "Continue alternando os lados pelo número desejado de repetições."
   ],
-  "0003": [
-    "Deite-se de costas e coloque as mãos atrás da cabeça.",
-    "Tire as pernas do chão e flexione os joelhos em um ângulo de 90 graus.",
-    "Leve o cotovelo direito em direção ao joelho esquerdo enquanto estende a perna direita.",
-    "Retorne à posição inicial e repita do outro lado, levando o cotovelo esquerdo em direção ao joelho direito enquanto estende a perna esquerda.",
-    "Continue alternando os lados em um movimento de pedalada pelo número desejado de repetições."
+  "1011": [
+    "Sente-se no chão com as pernas estendidas à frente e as costas retas.",
+    "Enrole a faixa elástica ao redor da cintura e segure as extremidades com as duas mãos.",
+    "Contraia o abdômen e gire lentamente o tronco para um dos lados, mantendo as costas retas e os pés no chão.",
+    "Faça uma pausa no fim do giro e, em seguida, retorne lentamente à posição inicial.",
+    "Repita o giro para o outro lado.",
+    "Continue alternando os lados pelo número desejado de repetições."
+  ],
+  "1014": [
+    "Deite-se de costas com as pernas retas e os braços estendidos acima da cabeça, segurando a faixa elástica.",
+    "Contraindo o abdômen, eleve as pernas e a parte superior do corpo do chão ao mesmo tempo, levando as mãos em direção aos pés.",
+    "Faça uma pausa no topo do movimento e, em seguida, abaixe lentamente as pernas e a parte superior do corpo até a posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "1015": [
+    "Fique de pé com os pés afastados na largura dos ombros e enrole a faixa elástica em um objeto firme na altura do peito.",
+    "Segure a faixa com as duas mãos e afaste-se do ponto de ancoragem, criando tensão na faixa.",
+    "Posicione-se perpendicularmente ao ponto de ancoragem, com o lado do corpo voltado para a faixa.",
+    "Estenda os braços à frente do corpo, mantendo as mãos na altura do peito.",
+    "Contraia o abdômen e empurre a faixa para longe do peito, estendendo os braços por completo.",
+    "Mantenha a posição por alguns segundos e, em seguida, traga a faixa lentamente de volta ao peito.",
+    "Repita pelo número desejado de repetições e, em seguida, troque de lado."
+  ],
+  "1368": [
+    "Sente-se no chão com as pernas estendidas à frente.",
+    "Eleve uma perna e gire o tornozelo em movimentos circulares.",
+    "Faça o número desejado de círculos em uma direção e depois inverta o sentido.",
+    "Repita com a outra perna."
+  ],
+  "1452": [
+    "Sente-se na máquina articulada com as costas apoiadas na almofada e os pés apoiados no chão.",
+    "Segure as alças ou apoie as mãos nas almofadas laterais para apoio.",
+    "Contraia o abdômen e incline-se para trás lentamente, deixando a almofada se mover com você.",
+    "Quando a parte superior do corpo estiver em um ângulo de 45 graus, contraia o abdômen e flexione o tronco para frente, levando o peito em direção aos joelhos.",
+    "Faça uma pausa no topo do movimento e depois solte lentamente, retornando à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "1468": [
+    "Comece sentado no chão com os joelhos flexionados e os pés apoiados no chão.",
+    "Coloque as mãos atrás do corpo, com os dedos apontados em direção aos pés, e eleve o quadril do chão.",
+    "Estenda uma perna à frente do corpo enquanto leva a mão oposta em direção aos dedos do pé.",
+    "Retorne à posição inicial e repita do outro lado.",
+    "Continue alternando os lados pelo número desejado de repetições."
+  ],
+  "1471": [
+    "Comece em pé, com os pés afastados na largura do quadril.",
+    "Incline o tronco para frente a partir da cintura e coloque as mãos no chão à sua frente.",
+    "Caminhe com as mãos para frente até chegar à posição de prancha alta, com o corpo em linha reta da cabeça aos pés.",
+    "Faça uma pausa por um momento e, em seguida, caminhe com as mãos de volta em direção aos pés, mantendo as pernas o mais esticadas possível.",
+    "Quando as mãos alcançarem os pés, volte a ficar em pé na posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "1495": [
+    "Deite-se de costas com os joelhos dobrados e os pés apoiados no chão.",
+    "Coloque as mãos atrás da cabeça ou cruze-as sobre o peito.",
+    "Contraia o abdômen e eleve as escápulas do chão, girando o tronco para um dos lados.",
+    "Faça uma pausa e depois abaixe as escápulas de volta à posição inicial.",
+    "Repita do outro lado.",
+    "Continue alternando os lados pelo número desejado de repetições."
+  ],
+  "1496": [
+    "Fique em pé com os pés afastados na largura dos ombros e segure a marreta com as duas mãos.",
+    "Contraia o abdômen e mantenha as costas retas.",
+    "Balance a marreta para baixo em direção ao chão, usando a força do abdômen e da parte superior do corpo.",
+    "Ao balançar para baixo, gire o quadril e transfira a força para a marreta.",
+    "Repita pelo número desejado de repetições."
   ],
   "1512": [
     "Comece em quatro apoios, com as mãos diretamente abaixo dos ombros e os joelhos abaixo dos quadris.",
@@ -27,87 +96,31 @@
     "Mantenha a posição por 20 a 30 segundos.",
     "Troque de perna e repita o alongamento do outro lado."
   ],
-  "0006": [
-    "Deite-se de costas, com os joelhos flexionados e os pés apoiados no chão.",
-    "Estenda os braços para os lados, paralelos ao chão.",
-    "Contraia o abdômen, eleve os ombros do chão e alcance o calcanhar direito com a mão direita.",
-    "Retorne à posição inicial e repita do lado esquerdo, alcançando o calcanhar esquerdo com a mão esquerda.",
+  "1687": [
+    "Fique em pé com os pés afastados na largura do quadril e os braços ao lado do corpo.",
+    "Dê um passo para trás com o pé direito, apoiando na ponta do pé.",
+    "Dobre o joelho esquerdo e abaixe o corpo em posição de avanço.",
+    "Ao abaixar no avanço, eleve os braços simultaneamente acima da cabeça.",
+    "Faça uma pausa por um instante na parte mais baixa do avanço e depois retorne à posição inicial empurrando pelo calcanhar esquerdo e trazendo o pé direito para frente.",
+    "Repita o movimento do outro lado, dando um passo para trás com o pé esquerdo e dobrando o joelho direito.",
     "Continue alternando os lados pelo número desejado de repetições."
   ],
-  "0007": [
-    "Sente-se no aparelho de puxada, com as costas retas e os pés apoiados no chão.",
-    "Segure as alças com pegada pronada, mantendo as mãos um pouco mais afastadas que a largura dos ombros.",
-    "Incline-se levemente para trás e puxe as alças em direção ao peito, aproximando as escápulas.",
-    "Faça uma breve pausa no ponto de maior contração e retorne lentamente as alças à posição inicial.",
-    "Repita pelo número desejado de repetições."
-  ],
-  "1368": [
-    "Sente-se no chão com as pernas estendidas à frente.",
-    "Eleve uma perna e gire o tornozelo em movimentos circulares.",
-    "Faça o número desejado de círculos em uma direção e depois inverta o sentido.",
-    "Repita com a outra perna."
-  ],
-  "3293": [
-    "Comece pendurado em uma barra fixa com pegada pronada, mantendo as mãos um pouco mais afastadas que a largura dos ombros.",
-    "Contraia o abdômen e leve as escápulas para baixo e para trás.",
-    "Ao elevar o corpo, flexione um dos braços e leve o cotovelo em direção à lateral do tronco, mantendo o outro braço estendido.",
-    "Continue puxando até o queixo ultrapassar a barra e o braço ativo estar completamente flexionado.",
-    "Desça de forma controlada, estenda o braço flexionado e repita o movimento para o outro lado.",
-    "Alterne os lados a cada repetição."
-  ],
-  "3294": [
-    "Comece na posição de flexão de braços, com as mãos um pouco mais afastadas que a largura dos ombros.",
-    "Estenda um dos braços para o lado, paralelo ao chão.",
-    "Flexione o cotovelo do braço de apoio e abaixe o corpo, mantendo as costas retas e o abdômen contraído.",
-    "Empurre o chão para retornar à posição inicial.",
-    "Repita do outro lado, estendendo o braço oposto.",
+  "1688": [
+    "Comece em pé, com os pés na largura dos ombros.",
+    "Dê um passo à frente com o pé direito, abaixando o corpo até a posição de avanço.",
+    "Ao fazer o avanço, gire o tronco para a direita, levando o cotovelo esquerdo em direção ao joelho direito.",
+    "Faça uma pausa e depois retorne à posição inicial.",
+    "Repita do outro lado, dando um passo à frente com o pé esquerdo e girando o tronco para a esquerda.",
     "Continue alternando os lados pelo número desejado de repetições."
   ],
-  "2355": [
-    "Pendure-se em uma barra fixa com os braços completamente estendidos e os joelhos flexionados em um ângulo de 90 graus.",
-    "Contraia o abdômen e eleve os joelhos em direção ao peito, aproximando-os dos cotovelos o máximo possível.",
-    "Abaixe lentamente as pernas até a posição inicial.",
-    "Repita pelo número desejado de repetições."
-  ],
-  "2333": [
-    "Pendure-se em uma barra fixa com os braços completamente estendidos e as pernas retas.",
-    "Contraia o abdômen e eleve as pernas à frente até que fiquem paralelas ao chão.",
-    "Faça uma breve pausa no alto e abaixe lentamente as pernas até a posição inicial.",
-    "Repita pelo número desejado de repetições."
-  ],
-  "3214": [
-    "Fique em pé, com os pés afastados na largura dos ombros e os braços estendidos para os lados.",
-    "Mantenha as pernas retas, incline o tronco para a frente e leve a mão direita em direção aos dedos dos pés.",
-    "Ao se inclinar, eleve simultaneamente a perna esquerda para trás, mantendo-a estendida e preservando o equilíbrio.",
-    "Retorne à posição inicial e repita com a mão esquerda em direção aos dedos dos pés enquanto eleva a perna direita para trás.",
+  "1707": [
+    "Comece deitado de bruços sobre uma bola de estabilidade, com os pés afastados na largura dos ombros e os dedos dos pés tocando o chão.",
+    "Coloque as mãos atrás da cabeça ou cruze-as sobre o peito.",
+    "Contraia o abdômen e eleve lentamente a parte superior do corpo para fora da bola, mantendo as costas retas.",
+    "Gire o tronco para um dos lados, levando o ombro em direção ao quadril. Mantenha o quadril e as pernas estáveis durante todo o movimento.",
+    "Faça uma pausa por um instante e depois retorne à posição inicial.",
+    "Repita a rotação para o outro lado.",
     "Continue alternando os lados pelo número desejado de repetições."
-  ],
-  "3204": [
-    "Deite-se de costas, com os joelhos flexionados e os pés apoiados no chão.",
-    "Estenda os braços acima da cabeça, mantendo-os retos.",
-    "Contraia o abdômen e eleve lentamente a parte superior do corpo, curvando o tronco para a frente até ficar sentado.",
-    "Faça uma breve pausa no alto e retorne lentamente à posição inicial.",
-    "Repita pelo número desejado de repetições."
-  ],
-  "0009": [
-    "Ajuste a máquina à altura adequada e apoie os joelhos no suporte.",
-    "Segure as alças com as palmas voltadas para baixo e os braços completamente estendidos.",
-    "Flexione os cotovelos e abaixe o corpo até que os braços fiquem paralelos ao chão.",
-    "Faça uma breve pausa e empurre o corpo de volta à posição inicial.",
-    "Repita pelo número desejado de repetições."
-  ],
-  "0011": [
-    "Pendure-se em uma barra fixa com os braços completamente estendidos e as palmas voltadas para a frente.",
-    "Contraia o abdômen e eleve os joelhos em direção ao peito, flexionando os quadris e os joelhos.",
-    "Faça uma breve pausa no alto, contraindo o abdômen.",
-    "Abaixe lentamente as pernas até a posição inicial.",
-    "Repita pelo número desejado de repetições."
-  ],
-  "0010": [
-    "Pendure-se em uma barra fixa com os braços completamente estendidos e as palmas voltadas para a frente.",
-    "Contraia o abdômen e eleve os joelhos em direção ao peito, mantendo as pernas juntas.",
-    "Quando os joelhos chegarem à altura do peito, leve as pernas de forma explosiva em direção ao chão até estendê-las por completo.",
-    "Deixe as pernas balançarem para cima novamente e repita pelo número desejado de repetições."
   ],
   "1708": [
     "Deite-se de costas com as pernas estendidas.",
@@ -129,6 +142,448 @@
     "Segure a parte posterior da coxa esquerda com as duas mãos e puxe-a suavemente em direção ao peito.",
     "Mantenha o alongamento por 20 a 30 segundos.",
     "Relaxe e repita do outro lado."
+  ],
+  "1714": [
+    "Deite-se de barriga para baixo, com as pernas estendidas.",
+    "Flexione o joelho direito e leve a mão direita para trás para segurar o pé ou o tornozelo direito.",
+    "Puxe suavemente o pé ou o tornozelo direito em direção aos glúteos até sentir o alongamento na parte da frente da coxa direita.",
+    "Mantenha o alongamento por 20 a 30 segundos.",
+    "Relaxe e repita do outro lado."
+  ],
+  "1758": [
+    "Sente-se na borda de um banco ou peça para alguém segurar seus pés.",
+    "Deite-se de costas, com os joelhos flexionados e os pés apoiados no chão.",
+    "Coloque as mãos atrás da cabeça, com os cotovelos apontados para os lados.",
+    "Contraia o abdômen e eleve lentamente a parte superior do corpo, curvando o tronco para a frente até atingir um ângulo de 45 graus.",
+    "Faça uma breve pausa no alto e retorne lentamente à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "1761": [
+    "Fique pendurado em uma barra fixa com os braços totalmente estendidos e as palmas das mãos voltadas para longe do corpo.",
+    "Contraia o abdômen e eleve os joelhos em direção ao peito, girando o tronco para o lado enquanto faz o movimento.",
+    "Faça uma pausa no topo do movimento e, em seguida, abaixe lentamente as pernas de volta à posição inicial.",
+    "Repita do outro lado, girando o tronco na direção oposta.",
+    "Continue alternando os lados pelo número desejado de repetições."
+  ],
+  "1764": [
+    "Fique pendurado em uma barra fixa com os braços totalmente estendidos e as palmas das mãos voltadas para longe do corpo.",
+    "Contraia o abdômen e eleve as pernas flexionando os quadris e os joelhos até que as coxas fiquem paralelas ao chão.",
+    "Faça uma pausa no topo do movimento e, em seguida, abaixe lentamente as pernas de volta à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "2135": [
+    "Comece deitado de bruços no chão.",
+    "Apoie os antebraços no chão, com os cotovelos diretamente abaixo dos ombros.",
+    "Estenda as pernas retas para trás, apoiando as pontas dos pés no chão.",
+    "Contraia o abdômen e eleve o corpo do chão, equilibrando-se sobre os antebraços e as pontas dos pés.",
+    "Mantenha o corpo alinhado em linha reta, da cabeça até os calcanhares.",
+    "Mantenha essa posição pelo tempo desejado.",
+    "Abaixe o corpo de volta à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "2204": [
+    "Comece na posição de prancha com os antebraços sobre o rolo e o corpo em linha reta.",
+    "Contraia o abdômen e role lentamente o rolo para frente, estendendo o corpo o máximo que conseguir mantendo o controle.",
+    "Faça uma pausa por um instante no ponto mais distante e depois role lentamente o rolo de volta em direção à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "2206": [
+    "Deite-se de costas com os braços estendidos retos acima da cabeça e as pernas estendidas retas à sua frente.",
+    "Coloque o rolo entre os pés e segure-o com os dedos dos pés.",
+    "Contraindo o abdômen, eleve as pernas do chão e curve os joelhos em direção ao peito, rolando o rolo em direção ao corpo.",
+    "Faça uma pausa por um instante no topo e depois abaixe lentamente as pernas de volta à posição inicial, rolando o rolo para longe do corpo.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "2297": [
+    "Sente-se na bola de estabilidade com os pés totalmente apoiados no chão e os joelhos dobrados em um ângulo de 90 graus.",
+    "Coloque as mãos atrás da cabeça com os cotovelos apontando para fora.",
+    "Contraindo o abdômen, flexione lentamente a parte superior do corpo para frente, levando o peito em direção aos joelhos.",
+    "Faça uma pausa breve no topo do movimento e depois abaixe lentamente a parte superior do corpo até a posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "2312": [
+    "Deite-se de costas com os joelhos dobrados e os pés apoiados no chão.",
+    "Coloque as mãos atrás da cabeça com os cotovelos apontando para fora.",
+    "Contraia o abdômen e eleve a parte superior do corpo do chão, levando o cotovelo direito em direção ao joelho esquerdo.",
+    "Ao mesmo tempo, estenda a perna direita e eleve-a do chão.",
+    "Faça uma pausa e depois retorne à posição inicial.",
+    "Repita o movimento, desta vez levando o cotovelo esquerdo em direção ao joelho direito e estendendo a perna esquerda.",
+    "Continue alternando os lados pelo número desejado de repetições."
+  ],
+  "2329": [
+    "Sente-se no chão com as pernas estendidas à sua frente.",
+    "Dobre os joelhos e apoie os pés totalmente no chão, na largura do quadril.",
+    "Coloque as mãos atrás da cabeça com os cotovelos apontando para fora.",
+    "Contraia o abdômen e gire lentamente o tronco para a direita, levando o cotovelo direito em direção ao joelho esquerdo.",
+    "Faça uma pausa breve ao final do giro e depois retorne lentamente à posição inicial.",
+    "Repita o giro para o lado esquerdo, levando o cotovelo esquerdo em direção ao joelho direito.",
+    "Continue alternando os lados pelo número desejado de repetições."
+  ],
+  "2333": [
+    "Pendure-se em uma barra fixa com os braços completamente estendidos e as pernas retas.",
+    "Contraia o abdômen e eleve as pernas à frente até que fiquem paralelas ao chão.",
+    "Faça uma breve pausa no alto e abaixe lentamente as pernas até a posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "2355": [
+    "Pendure-se em uma barra fixa com os braços completamente estendidos e os joelhos flexionados em um ângulo de 90 graus.",
+    "Contraia o abdômen e eleve os joelhos em direção ao peito, aproximando-os dos cotovelos o máximo possível.",
+    "Abaixe lentamente as pernas até a posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "2371": [
+    "Sente-se no chão com os joelhos dobrados e os pés totalmente apoiados no chão.",
+    "Segure o peso com as duas mãos à frente do peito.",
+    "Incline-se levemente para trás para contrair o abdômen.",
+    "Gire o tronco para a direita, levando o peso em direção ao lado direito do corpo.",
+    "Faça uma pausa breve e depois gire o tronco para a esquerda, levando o peso em direção ao lado esquerdo do corpo.",
+    "Continue alternando os lados pelo número desejado de repetições."
+  ],
+  "2399": [
+    "Sente-se em uma máquina de cabo com os pés apoiados no chão e os joelhos levemente flexionados.",
+    "Segure a alça do cabo com as duas mãos e estenda os braços à frente do corpo.",
+    "Mantendo o abdômen contraído, gire lentamente o tronco para um lado, puxando o cabo através do corpo.",
+    "Faça uma pausa no final da amplitude de movimento e, em seguida, gire lentamente de volta à posição inicial.",
+    "Repita do outro lado.",
+    "Continue alternando os lados pelo número desejado de repetições."
+  ],
+  "2429": [
+    "Deite-se de costas com os joelhos dobrados e os pés apoiados no chão.",
+    "Coloque as mãos atrás da cabeça com os cotovelos apontando para fora.",
+    "Contraindo o abdômen, eleve a parte superior do corpo do chão, curvando-se para frente até que o tronco fique em um ângulo de 45 graus.",
+    "Faça uma pausa no topo do movimento e, em seguida, abaixe lentamente a parte superior do corpo de volta à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "2466": [
+    "Comece na posição de prancha alta, com as mãos diretamente abaixo dos ombros e o corpo em linha reta.",
+    "Contraia o abdômen e eleve o pé direito do chão, levando o joelho direito em direção ao cotovelo esquerdo.",
+    "Retorne o pé direito à posição inicial e repita o movimento com o pé esquerdo em direção ao cotovelo direito.",
+    "Continue alternando os lados, movendo-se em ritmo controlado.",
+    "Mantenha o quadril nivelado e evite elevá-lo demais ou deixá-lo cair.",
+    "Mantenha uma respiração constante durante todo o exercício.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "2799": [
+    "Sente-se em um banco com as costas retas e segure a barra sobre as coxas.",
+    "Mantendo as pernas retas, eleve uma perna o mais alto possível, mantendo a outra perna no chão.",
+    "Abaixe a perna elevada e repita com a outra perna.",
+    "Continue alternando as pernas pelo número desejado de repetições."
+  ],
+  "2800": [
+    "Sente-se em um banco com as costas retas e segure a barra sobre as coxas.",
+    "Apoie as mãos nas laterais do banco para se firmar.",
+    "Mantendo as pernas retas, eleve uma perna o mais alto possível, mantendo-a paralela ao chão.",
+    "Abaixe a perna e repita com a outra perna.",
+    "Continue alternando as pernas pelo número desejado de repetições."
+  ],
+  "2801": [
+    "Deite-se de costas com as pernas estendidas e os braços ao lado do corpo.",
+    "Dobre os joelhos e eleve as pernas do chão, levando-as em direção ao peito.",
+    "Ao elevar as pernas, gire o quadril para um dos lados, levando os joelhos em direção ao ombro oposto.",
+    "Faça uma pausa breve no topo do movimento e depois abaixe lentamente as pernas até a posição inicial.",
+    "Repita o movimento, desta vez girando o quadril para o outro lado.",
+    "Continue alternando os lados pelo número desejado de repetições."
+  ],
+  "2802": [
+    "Deite-se de costas com as pernas estendidas e os braços ao lado do corpo.",
+    "Coloque as mãos sob os glúteos para dar apoio.",
+    "Contraia o abdômen e eleve as duas pernas do chão, mantendo-as retas.",
+    "Ao elevar as pernas, gire o quadril para um dos lados, levando as pernas em direção ao ombro oposto.",
+    "Faça uma pausa breve no topo do movimento e depois abaixe lentamente as pernas até a posição inicial.",
+    "Repita o movimento, desta vez girando o quadril para o outro lado.",
+    "Continue alternando os lados pelo número desejado de repetições."
+  ],
+  "2963": [
+    "Sente-se na cadeira romana com as costas apoiadas no encosto e os antebraços apoiados nos suportes.",
+    "Mantenha a parte superior do corpo estável e as costas retas.",
+    "Contraia o abdômen e eleve as pernas à frente do corpo, mantendo-as estendidas.",
+    "Continue elevando até que as pernas fiquem paralelas ao chão ou o mais alto que conseguir com conforto.",
+    "Faça uma pausa no topo do movimento e abaixe lentamente as pernas até a posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "3016": [
+    "Deite-se de costas com os joelhos flexionados e os pés apoiados no chão.",
+    "Coloque as mãos atrás da cabeça com os cotovelos apontados para fora.",
+    "Contraindo o abdômen, eleve lentamente a parte superior do corpo do chão, curvando-se para frente até que o tronco fique em um ângulo de 45 graus.",
+    "Faça uma pausa no topo do movimento e abaixe lentamente a parte superior do corpo até a posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "3119": [
+    "Fique em pé com os pés afastados na largura dos ombros, com os dedos dos pés levemente voltados para fora.",
+    "Abaixe o corpo dobrando os joelhos e empurrando o quadril para trás, como se fosse sentar em uma cadeira.",
+    "Mantenha o peito erguido e as costas retas durante todo o movimento.",
+    "Abaixe-se até que as coxas fiquem paralelas ao chão ou o mais baixo que conseguir com conforto.",
+    "Faça uma pausa por um instante na parte mais baixa e depois empurre pelos calcanhares para retornar à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "3147": [
+    "Deite-se de costas com os joelhos dobrados e os pés apoiados no chão.",
+    "Coloque as mãos ao lado do corpo.",
+    "Contraia o abdômen e incline a pelve para cima, pressionando a região lombar contra o chão.",
+    "Mantenha essa posição por alguns segundos, focando em contrair o abdômen.",
+    "Solte a inclinação e retorne à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "3201": [
+    "Deite-se de costas com os joelhos dobrados e os pés apoiados no chão.",
+    "Coloque as mãos atrás da cabeça com os cotovelos apontando para fora.",
+    "Contraindo o abdômen, eleve lentamente a parte superior do corpo do chão, curvando-se para frente até que o tronco fique em um ângulo de 45 graus.",
+    "Faça uma pausa por um instante no topo e depois abaixe lentamente a parte superior do corpo de volta à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "3202": [
+    "Deite-se de costas com os joelhos dobrados e os pés apoiados no chão.",
+    "Coloque as mãos atrás da cabeça com os cotovelos apontando para fora.",
+    "Contraindo o abdômen, eleve lentamente a parte superior do corpo do chão, curvando-se para frente até que o tronco fique em um ângulo de 45 graus.",
+    "Faça uma pausa no topo do movimento e, em seguida, abaixe lentamente a parte superior do corpo de volta à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "3203": [
+    "Deite-se de costas com os joelhos dobrados e os pés apoiados no chão.",
+    "Coloque as mãos atrás da cabeça com os cotovelos apontando para fora.",
+    "Contraindo o abdômen, eleve lentamente a parte superior do corpo do chão, curvando-se para frente até que o tronco fique em um ângulo de 45 graus.",
+    "Faça uma pausa por um instante no topo e depois abaixe lentamente a parte superior do corpo de volta à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "3204": [
+    "Deite-se de costas, com os joelhos flexionados e os pés apoiados no chão.",
+    "Estenda os braços acima da cabeça, mantendo-os retos.",
+    "Contraia o abdômen e eleve lentamente a parte superior do corpo, curvando o tronco para a frente até ficar sentado.",
+    "Faça uma breve pausa no alto e retorne lentamente à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "3213": [
+    "Fique em pé com os pés afastados na largura dos ombros e os braços estendidos para os lados.",
+    "Incline o tronco para a direita, levando a mão direita em direção ao pé direito, mantendo a mão esquerda estendida para o lado.",
+    "Retorne à posição inicial e depois incline o tronco para a esquerda, levando a mão esquerda em direção ao pé esquerdo, mantendo a mão direita estendida para o lado.",
+    "Repita o movimento de inclinação lateral pelo número desejado de repetições."
+  ],
+  "3214": [
+    "Fique em pé, com os pés afastados na largura dos ombros e os braços estendidos para os lados.",
+    "Mantenha as pernas retas, incline o tronco para a frente e leve a mão direita em direção aos dedos dos pés.",
+    "Ao se inclinar, eleve simultaneamente a perna esquerda para trás, mantendo-a estendida e preservando o equilíbrio.",
+    "Retorne à posição inicial e repita com a mão esquerda em direção aos dedos dos pés enquanto eleva a perna direita para trás.",
+    "Continue alternando os lados pelo número desejado de repetições."
+  ],
+  "3239": [
+    "Comece na posição ajoelhada com as mãos no chão, na largura dos ombros.",
+    "Estenda as pernas para trás, apoiando-se nas pontas dos pés, e eleve o corpo até a posição de prancha.",
+    "Mantendo o abdômen contraído e o quadril estável, eleve uma das mãos do chão e toque o ombro oposto.",
+    "Retorne a mão ao chão e repita com a outra mão.",
+    "Continue alternando os lados pelo número desejado de repetições."
+  ],
+  "3293": [
+    "Comece pendurado em uma barra fixa com pegada pronada, mantendo as mãos um pouco mais afastadas que a largura dos ombros.",
+    "Contraia o abdômen e leve as escápulas para baixo e para trás.",
+    "Ao elevar o corpo, flexione um dos braços e leve o cotovelo em direção à lateral do tronco, mantendo o outro braço estendido.",
+    "Continue puxando até o queixo ultrapassar a barra e o braço ativo estar completamente flexionado.",
+    "Desça de forma controlada, estenda o braço flexionado e repita o movimento para o outro lado.",
+    "Alterne os lados a cada repetição."
+  ],
+  "3294": [
+    "Comece na posição de flexão de braços, com as mãos um pouco mais afastadas que a largura dos ombros.",
+    "Estenda um dos braços para o lado, paralelo ao chão.",
+    "Flexione o cotovelo do braço de apoio e abaixe o corpo, mantendo as costas retas e o abdômen contraído.",
+    "Empurre o chão para retornar à posição inicial.",
+    "Repita do outro lado, estendendo o braço oposto.",
+    "Continue alternando os lados pelo número desejado de repetições."
+  ],
+  "3296": [
+    "Comece pendurado em uma barra fixa com pegada pronada, mãos afastadas na largura dos ombros.",
+    "Contraia o abdômen e puxe as escápulas para baixo e para trás.",
+    "Dobre os joelhos e traga-os em direção ao peito.",
+    "Simultaneamente, eleve as pernas e estenda-as diretamente à sua frente, mantendo o corpo paralelo ao chão.",
+    "Mantenha essa posição pelo maior tempo possível, buscando alcançar a posição completa de front lever.",
+    "Para soltar, abaixe lentamente as pernas e retorne à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "3298": [
+    "Comece na posição de flexão de braços, com as mãos na largura dos ombros e os pés bem afastados.",
+    "Contraia o abdômen e desloque lentamente o peso do corpo para frente, levando os ombros à frente das mãos.",
+    "Dobre os cotovelos e abaixe o corpo em direção ao chão, mantendo os cotovelos próximos ao corpo.",
+    "Faça uma pausa breve na parte mais baixa e depois empurre com as mãos para esticar os braços e elevar o corpo de volta à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "3299": [
+    "Comece na posição de flexão de braços, com as mãos afastadas na largura dos ombros e os dedos apontando para frente.",
+    "Contraia o abdômen e transfira lentamente o peso do corpo para frente, elevando os pés do chão.",
+    "Continue transferindo o peso para frente até que o corpo fique paralelo ao chão, equilibrando-se sobre as mãos.",
+    "Mantenha essa posição pelo maior tempo possível, mantendo o corpo alinhado em linha reta.",
+    "Abaixe lentamente os pés de volta ao chão e retorne à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "3300": [
+    "Comece na posição de flexão de braços com as mãos na largura dos ombros e o corpo reto.",
+    "Contraia o abdômen e transfira lentamente o peso para frente, levando os ombros além das mãos.",
+    "Mantenha os cotovelos levemente dobrados e o corpo reto enquanto se inclina para frente.",
+    "Mantenha essa posição por alguns segundos e depois retorne lentamente à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "3301": [
+    "Comece na posição de flexão de braços, com as mãos afastadas na largura dos ombros e os pés juntos.",
+    "Dobre os cotovelos e abaixe o corpo em direção ao chão, mantendo as costas retas.",
+    "Enquanto abaixa o corpo, eleve os pés do chão e traga os joelhos em direção ao peito.",
+    "Mantenha essa posição por alguns segundos e, em seguida, estenda as pernas novamente e empurre o corpo de volta à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "3303": [
+    "Comece segurando um poste vertical com as duas mãos, palmas voltadas uma para a outra, com os braços totalmente estendidos.",
+    "Contraia o abdômen e eleve as pernas do chão, mantendo-as estendidas.",
+    "Usando a força do abdômen e da parte superior do corpo, eleve as pernas até que fiquem paralelas ao chão.",
+    "Mantenha essa posição pelo maior tempo possível, preservando uma linha reta do corpo.",
+    "Abaixe lentamente as pernas até a posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "3314": [
+    "Comece pendurado em um par de argolas, com os braços totalmente estendidos e o corpo alinhado em linha reta.",
+    "Afaste bem as pernas, formando uma posição aberta.",
+    "Contraia o abdômen e abaixe lentamente o corpo até que os braços fiquem paralelos ao chão.",
+    "Mantenha essa posição por alguns segundos e depois empurre o corpo de volta até a posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "3315": [
+    "Comece em pé, com os pés afastados na largura dos ombros e os braços estendidos para os lados.",
+    "Incline-se lentamente para frente, mantendo os braços esticados, até que a parte superior do corpo fique paralela ao chão.",
+    "Contraia o abdômen e mantenha essa posição por alguns segundos.",
+    "Retorne à posição inicial empurrando o corpo pelos pés e voltando a ficar em pé.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "3419": [
+    "Sente-se no chão com as pernas estendidas à frente.",
+    "Coloque as mãos no chão ao lado do quadril, com os dedos apontando para frente.",
+    "Contraia o abdômen e eleve as pernas do chão, mantendo-as retas.",
+    "Tente deixar as pernas paralelas ao chão, formando um 'L' com o corpo.",
+    "Mantenha essa posição pelo maior tempo possível.",
+    "Abaixe as pernas lentamente de volta à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "3420": [
+    "Sente-se no chão com as pernas estendidas à sua frente.",
+    "Incline-se levemente para trás e eleve as pernas do chão, mantendo-as retas.",
+    "Simultaneamente, eleve a parte superior do corpo do chão e estenda os braços em direção às pernas.",
+    "Mantenha essa posição por alguns segundos e depois abaixe lentamente a parte superior do corpo e as pernas até a posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "3544": [
+    "Comece deitado de lado, com as pernas estendidas e uma sobre a outra.",
+    "Apoie o antebraço no chão, diretamente abaixo do ombro, com o cotovelo dobrado a 90 graus.",
+    "Contraia o abdômen e eleve o quadril do chão, formando uma linha reta da cabeça aos pés.",
+    "Mantenha essa posição pelo tempo desejado.",
+    "Abaixe o quadril de volta ao chão e repita do outro lado."
+  ],
+  "3640": [
+    "Deite-se de costas com os joelhos dobrados e os pés apoiados no chão.",
+    "Coloque as mãos atrás da cabeça com os cotovelos apontando para fora.",
+    "Contraindo o abdômen, eleve as escápulas do chão e leve a mão direita em direção ao joelho esquerdo.",
+    "Retorne à posição inicial e repita, desta vez levando a mão esquerda em direção ao joelho direito.",
+    "Continue alternando os lados pelo número desejado de repetições."
+  ],
+  "3663": [
+    "Sente-se no chão com as pernas estendidas à sua frente e as mãos apoiadas no chão atrás de você, com os dedos apontando para os pés.",
+    "Pressione as mãos contra o chão e eleve o quadril, entrando na posição de prancha reversa.",
+    "Contraia o abdômen e eleve uma perna do chão, estendendo-a reto em direção ao teto.",
+    "Mantenha por um instante e depois abaixe a perna.",
+    "Repita com a outra perna.",
+    "Continue alternando as pernas pelo número desejado de repetições."
+  ],
+  "3665": [
+    "Comece na posição de prancha alta, com as mãos diretamente abaixo dos ombros e o corpo em linha reta da cabeça aos pés.",
+    "Contraia o abdômen e contraia os glúteos para manter uma posição estável.",
+    "Abaixe o corpo apoiando nos antebraços, um braço de cada vez, mantendo uma linha reta da cabeça aos pés.",
+    "Mantenha essa posição pelo tempo desejado, mantendo o abdômen e os glúteos contraídos.",
+    "Para retornar à posição inicial, empurre pelos antebraços e eleve o corpo de volta à posição de prancha alta.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "3670": [
+    "Deite-se em um banco declinado com os pés presos sob os apoios.",
+    "Coloque as mãos atrás da cabeça ou cruzadas sobre o peito.",
+    "Contraia o abdômen e eleve lentamente a parte superior do corpo do banco, curvando-se para frente até que o tronco fique perpendicular ao chão.",
+    "Faça uma pausa breve no topo do movimento e depois abaixe lentamente a parte superior do corpo até a posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "3679": [
+    "Deite-se de costas com os joelhos dobrados e os pés apoiados no chão.",
+    "Cruze os braços sobre o peito.",
+    "Contraindo o abdômen, eleve a parte superior do corpo do chão em direção aos joelhos.",
+    "Faça uma pausa por um instante no topo e depois abaixe lentamente a parte superior do corpo de volta à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "3698": [
+    "Comece em pé, com os pés afastados na largura do quadril.",
+    "Incline o tronco para frente a partir da cintura e coloque as mãos no chão à sua frente.",
+    "Caminhe com as mãos para frente até chegar à posição de prancha alta, com o corpo em linha reta da cabeça aos pés.",
+    "Mantendo as pernas esticadas, caminhe com os pés em direção às mãos, elevando os quadris em direção ao teto.",
+    "Continue caminhando com as mãos para frente, repetindo o movimento pelo número desejado de repetições."
+  ],
+  "3699": [
+    "Comece na posição de prancha alta, com as mãos diretamente abaixo dos ombros e o corpo em linha reta.",
+    "Contraia o abdômen e eleve a mão direita do chão, cruzando o corpo para tocar o ombro esquerdo.",
+    "Coloque a mão direita de volta no chão e repita com a mão esquerda tocando o ombro direito.",
+    "Continue alternando os toques nos ombros, mantendo o quadril e o tronco estáveis.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "3760": [
+    "Sente-se na máquina articulada com as costas apoiadas na almofada e os pés presos sob os apoios.",
+    "Coloque as mãos nas alças ou nas laterais do assento para apoio.",
+    "Contraia o abdômen e flexione o tronco lentamente para frente, levando o peito em direção aos joelhos.",
+    "Faça uma pausa no topo do movimento, contraindo o abdômen com força.",
+    "Retorne lentamente à posição inicial, deixando as costas arredondarem levemente.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0001": [
+    "Deite-se de costas, com os joelhos flexionados e os pés apoiados no chão.",
+    "Coloque as mãos atrás da cabeça, com os cotovelos apontados para os lados.",
+    "Contraia o abdômen e eleve lentamente a parte superior do corpo, curvando o tronco para a frente até atingir um ângulo de 45 graus.",
+    "Faça uma breve pausa no alto e retorne lentamente à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0002": [
+    "Fique em pé, com os pés afastados na largura dos ombros e os braços estendidos ao lado do corpo.",
+    "Mantenha as costas retas e o abdômen contraído enquanto inclina lentamente o tronco para um dos lados, levando a mão em direção ao joelho.",
+    "Faça uma breve pausa na posição mais baixa e retorne lentamente à posição inicial.",
+    "Repita para o outro lado.",
+    "Continue alternando os lados pelo número desejado de repetições."
+  ],
+  "0003": [
+    "Deite-se de costas e coloque as mãos atrás da cabeça.",
+    "Tire as pernas do chão e flexione os joelhos em um ângulo de 90 graus.",
+    "Leve o cotovelo direito em direção ao joelho esquerdo enquanto estende a perna direita.",
+    "Retorne à posição inicial e repita do outro lado, levando o cotovelo esquerdo em direção ao joelho direito enquanto estende a perna esquerda.",
+    "Continue alternando os lados em um movimento de pedalada pelo número desejado de repetições."
+  ],
+  "0006": [
+    "Deite-se de costas, com os joelhos flexionados e os pés apoiados no chão.",
+    "Estenda os braços para os lados, paralelos ao chão.",
+    "Contraia o abdômen, eleve os ombros do chão e alcance o calcanhar direito com a mão direita.",
+    "Retorne à posição inicial e repita do lado esquerdo, alcançando o calcanhar esquerdo com a mão esquerda.",
+    "Continue alternando os lados pelo número desejado de repetições."
+  ],
+  "0007": [
+    "Sente-se no aparelho de puxada, com as costas retas e os pés apoiados no chão.",
+    "Segure as alças com pegada pronada, mantendo as mãos um pouco mais afastadas que a largura dos ombros.",
+    "Incline-se levemente para trás e puxe as alças em direção ao peito, aproximando as escápulas.",
+    "Faça uma breve pausa no ponto de maior contração e retorne lentamente as alças à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0009": [
+    "Ajuste a máquina à altura adequada e apoie os joelhos no suporte.",
+    "Segure as alças com as palmas voltadas para baixo e os braços completamente estendidos.",
+    "Flexione os cotovelos e abaixe o corpo até que os braços fiquem paralelos ao chão.",
+    "Faça uma breve pausa e empurre o corpo de volta à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0011": [
+    "Pendure-se em uma barra fixa com os braços completamente estendidos e as palmas voltadas para a frente.",
+    "Contraia o abdômen e eleve os joelhos em direção ao peito, flexionando os quadris e os joelhos.",
+    "Faça uma breve pausa no alto, contraindo o abdômen.",
+    "Abaixe lentamente as pernas até a posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0010": [
+    "Pendure-se em uma barra fixa com os braços completamente estendidos e as palmas voltadas para a frente.",
+    "Contraia o abdômen e eleve os joelhos em direção ao peito, mantendo as pernas juntas.",
+    "Quando os joelhos chegarem à altura do peito, leve as pernas de forma explosiva em direção ao chão até estendê-las por completo.",
+    "Deixe as pernas balançarem para cima novamente e repita pelo número desejado de repetições."
   ],
   "0012": [
     "Deite-se de costas, com as pernas estendidas e os braços ao lado do corpo.",
@@ -156,21 +611,6 @@
     "Gire lentamente o tronco para a direita, levando a bola medicinal em direção ao lado direito do corpo.",
     "Faça uma breve pausa e gire o tronco para a esquerda, levando a bola medicinal em direção ao lado esquerdo do corpo.",
     "Continue alternando os lados pelo número desejado de repetições."
-  ],
-  "1714": [
-    "Deite-se de barriga para baixo, com as pernas estendidas.",
-    "Flexione o joelho direito e leve a mão direita para trás para segurar o pé ou o tornozelo direito.",
-    "Puxe suavemente o pé ou o tornozelo direito em direção aos glúteos até sentir o alongamento na parte da frente da coxa direita.",
-    "Mantenha o alongamento por 20 a 30 segundos.",
-    "Relaxe e repita do outro lado."
-  ],
-  "1758": [
-    "Sente-se na borda de um banco ou peça para alguém segurar seus pés.",
-    "Deite-se de costas, com os joelhos flexionados e os pés apoiados no chão.",
-    "Coloque as mãos atrás da cabeça, com os cotovelos apontados para os lados.",
-    "Contraia o abdômen e eleve lentamente a parte superior do corpo, curvando o tronco para a frente até atingir um ângulo de 45 graus.",
-    "Faça uma breve pausa no alto e retorne lentamente à posição inicial.",
-    "Repita pelo número desejado de repetições."
   ],
   "0969": [
     "Deite-se de costas, com as pernas estendidas e os braços acima da cabeça, segurando a faixa elástica.",
@@ -217,5 +657,700 @@
     "Faça uma breve pausa e retorne lentamente à posição inicial.",
     "Repita para o outro lado.",
     "Continue alternando os lados pelo número desejado de repetições."
+  ],
+  "0992": [
+    "Fixe a faixa elástica com firmeza em um ponto de ancoragem estável.",
+    "Deite-se de costas com os joelhos dobrados e os pés apoiados no chão.",
+    "Segure a faixa com as duas mãos e estenda os braços para cima, em direção ao teto.",
+    "Contraindo o abdômen, eleve lentamente a parte superior do corpo do chão, curvando-se para frente até o tronco formar um ângulo de 45 graus.",
+    "Faça uma pausa no topo do movimento e, em seguida, abaixe lentamente a parte superior do corpo até a posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0071": [
+    "Deite-se de costas sobre um tapete, com os joelhos dobrados e os pés apoiados no chão.",
+    "Segure a barra com pegada pronada, apoiando-a sobre o peito.",
+    "Contraindo o abdômen, eleve lentamente a parte superior do corpo do chão, curvando-se para frente até o tronco formar um ângulo de 45 graus.",
+    "Faça uma pausa no topo do movimento e, em seguida, abaixe lentamente a parte superior do corpo até a posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0084": [
+    "Ajoelhe-se no chão e segure a barra com as duas mãos, afastadas na largura dos ombros.",
+    "Role a barra para frente, estendendo os braços e mantendo o abdômen contraído.",
+    "Continue rolando para frente até o corpo ficar totalmente estendido e os braços acima da cabeça.",
+    "Faça uma pausa e, em seguida, role a barra lentamente de volta em direção aos joelhos, mantendo o controle.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0083": [
+    "Comece ajoelhado no chão, com a barra apoiada em um banco à sua frente.",
+    "Segure a barra com pegada pronada, um pouco mais aberta que a largura dos ombros.",
+    "Mantendo o abdômen contraído e as costas retas, role a barra lentamente para frente, estendendo os braços à sua frente.",
+    "Continue rolando a barra para frente até o corpo ficar totalmente estendido e os braços acima da cabeça.",
+    "Faça uma pausa na posição totalmente estendida e, em seguida, role a barra lentamente de volta em direção ao corpo, retornando à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0094": [
+    "Sente-se em um banco reto, com os pés apoiados no chão e os joelhos dobrados.",
+    "Segure a barra com as duas mãos à frente do peito, mantendo os cotovelos levemente dobrados.",
+    "Contraia o abdômen e gire lentamente o tronco para um dos lados, mantendo as costas retas.",
+    "Faça uma pausa no fim do giro e, em seguida, gire lentamente de volta à posição inicial.",
+    "Repita o giro para o outro lado.",
+    "Continue alternando os lados pelo número desejado de repetições."
+  ],
+  "0096": [
+    "Fique de pé com os pés afastados na largura dos ombros e segure a barra com as duas mãos, palmas voltadas para baixo.",
+    "Mantenha as costas retas e o abdômen contraído durante todo o exercício.",
+    "Incline lentamente o tronco para o lado direito, abaixando a barra em direção ao joelho direito.",
+    "Faça uma pausa e, em seguida, retorne à posição inicial.",
+    "Repita o movimento do lado esquerdo.",
+    "Continue alternando os lados pelo número desejado de repetições."
+  ],
+  "0103": [
+    "Fique em pé, com os pés afastados na largura dos ombros, e segure a barra com as duas mãos à frente das coxas.",
+    "Contraia o abdômen e role a barra lentamente em direção ao chão, mantendo as costas retas e os braços estendidos.",
+    "Continue rolando a barra para frente até o corpo ficar totalmente estendido e as mãos diretamente acima da cabeça.",
+    "Faça uma pausa e, em seguida, role a barra lentamente de volta em direção às coxas, mantendo o controle e o abdômen contraído.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0112": [
+    "Fique de pé com os pés afastados na largura dos ombros e segure a barra à frente do peito com as duas mãos, palmas voltadas para baixo.",
+    "Contraia o abdômen e mantenha as costas retas durante todo o exercício.",
+    "Gire lentamente o tronco para a direita, pivotando sobre os pés e o quadril, mantendo a parte inferior do corpo estável.",
+    "Faça uma pausa no fim do giro e, em seguida, retorne lentamente à posição inicial.",
+    "Repita o giro para o lado esquerdo.",
+    "Continue alternando os giros pelo número desejado de repetições."
+  ],
+  "0138": [
+    "Deite-se de costas com as pernas estendidas e os braços ao lado do corpo.",
+    "Dobre os joelhos e leve-os em direção ao peito, mantendo os pés afastados do chão.",
+    "Contraindo o abdômen, eleve o quadril do chão, levando os joelhos em direção à cabeça.",
+    "Faça uma pausa no topo do movimento e, em seguida, abaixe lentamente o quadril até a posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0870": [
+    "Deite-se de costas com os joelhos dobrados e os pés apoiados no chão.",
+    "Apoie as mãos ao lado do corpo, com as palmas voltadas para baixo.",
+    "Contraindo o abdômen, eleve as pernas do chão, levando os joelhos em direção ao peito.",
+    "No topo do movimento, contraia o abdômen com força e faça uma pausa.",
+    "Abaixe lentamente as pernas até a posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0174": [
+    "Fique de pé de frente para a máquina de cabo, com os pés afastados na largura dos ombros.",
+    "Segure o puxador do cabo com as duas mãos na altura do peito, palmas voltadas para baixo.",
+    "Contraia o abdômen e gire o tronco para a direita, puxando o cabo pela frente do corpo.",
+    "Ao girar, pivote o pé de trás e deixe o quadril girar naturalmente.",
+    "Estenda os braços completamente e finalize o movimento levando o puxador do cabo por cima do ombro.",
+    "Retorne à posição inicial revertendo o movimento, girando o tronco de volta ao centro.",
+    "Repita o movimento do lado oposto.",
+    "Continue alternando os lados pelo número desejado de repetições."
+  ],
+  "0175": [
+    "Fixe um puxador de corda em uma polia alta e ajoelhe-se de costas para a máquina.",
+    "Segure o puxador de corda com as duas mãos e posicione-o atrás da cabeça, mantendo os cotovelos abertos para os lados.",
+    "Mantendo o quadril parado, flexione a cintura e leve o tronco em direção às coxas.",
+    "Faça uma pausa na parte inferior do movimento e, em seguida, retorne lentamente à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0873": [
+    "Fixe o cabo em uma polia baixa e deite-se de costas sobre um tapete.",
+    "Segure o cabo com as duas mãos e estenda os braços para cima, em direção ao teto.",
+    "Dobre os joelhos e eleve as pernas, levando as coxas em direção ao peito.",
+    "Mantendo a parte superior do corpo estável, curve a pélvis em direção ao peito, elevando o quadril do tapete.",
+    "Faça uma pausa no topo do movimento e, em seguida, abaixe lentamente o quadril até a posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0211": [
+    "Sente-se em uma bola de estabilidade com os pés apoiados no chão e os joelhos dobrados a 90 graus.",
+    "Segure o puxador do cabo com as duas mãos e estenda os braços à frente do corpo.",
+    "Incline-se levemente para trás, mantendo as costas retas e o abdômen contraído.",
+    "Gire o tronco para a direita, levando o puxador do cabo em direção ao quadril direito.",
+    "Faça uma pausa e, em seguida, gire o tronco para a esquerda, levando o puxador do cabo em direção ao quadril esquerdo.",
+    "Continue alternando os giros pelo número desejado de repetições."
+  ],
+  "0212": [
+    "Sente-se na máquina de cabo com os pés apoiados no chão e os joelhos dobrados.",
+    "Segure o puxador do cabo com as duas mãos e posicione-o atrás da cabeça.",
+    "Contraia o abdômen e curve lentamente a parte superior do corpo para frente, levando o peito em direção aos joelhos.",
+    "Faça uma pausa no topo do movimento e, em seguida, retorne lentamente à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0222": [
+    "Fique em pé com os pés afastados na largura dos ombros e segure a alça do cabo com uma mão.",
+    "Mantenha as costas retas e o abdômen contraído.",
+    "Incline lentamente o tronco para o lado, abaixando a alça do cabo em direção ao joelho.",
+    "Faça uma pausa e retorne à posição inicial.",
+    "Repita do outro lado.",
+    "Alterne os lados pelo número desejado de repetições."
+  ],
+  "0221": [
+    "Fique em pé com os pés afastados na largura dos ombros, segurando a alça do cabo com uma mão.",
+    "Coloque a outra mão no quadril.",
+    "Contraia o abdômen e incline lentamente o tronco para o lado da mão que segura o cabo, mantendo as costas retas.",
+    "Faça uma pausa no final do movimento e retorne lentamente à posição inicial.",
+    "Repita pelo número desejado de repetições e, em seguida, troque de lado."
+  ],
+  "0223": [
+    "Prenda uma alça de cabo em uma polia baixa e fique de lado para a máquina.",
+    "Segure a alça com a mão mais distante da máquina e coloque a outra mão no quadril.",
+    "Mantenha os pés afastados na largura dos ombros e os joelhos levemente flexionados.",
+    "Com o abdômen contraído, incline o tronco para o lado, levando o cotovelo em direção ao quadril.",
+    "Faça uma pausa no final do movimento e retorne lentamente à posição inicial.",
+    "Repita pelo número desejado de repetições e, em seguida, troque de lado."
+  ],
+  "0226": [
+    "Prenda uma alça de cabo em uma polia alta e fique de costas para a máquina.",
+    "Segure a alça com as duas mãos e posicione-a atrás da cabeça, mantendo os cotovelos flexionados.",
+    "Fique em pé com os pés afastados na largura dos ombros e os joelhos levemente flexionados.",
+    "Mantendo o abdômen contraído, expire e flexione o tronco em direção aos joelhos, levando os cotovelos em direção às coxas.",
+    "Faça uma pausa no final do movimento e retorne lentamente à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0874": [
+    "Prenda uma corda em uma máquina de cabo na altura do peito.",
+    "Fique de costas para a máquina com os pés afastados na largura dos ombros.",
+    "Segure a corda com as duas mãos e leve-a atrás da cabeça, mantendo os cotovelos flexionados.",
+    "Contraia o abdômen e flexione lentamente o tronco para frente, levando os cotovelos em direção aos joelhos.",
+    "Faça uma pausa no topo do movimento e retorne lentamente à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0230": [
+    "Fique de frente para a máquina de cabo com os pés afastados na largura dos ombros.",
+    "Segure a alça do cabo com as duas mãos e posicione-a na altura da cintura.",
+    "Contraia o abdômen e mantenha as costas retas durante todo o exercício.",
+    "Mantendo os braços estendidos, expire e eleve a alça do cabo em direção ao ombro oposto, girando o tronco.",
+    "Faça uma pausa no topo do movimento, inspire e abaixe lentamente a alça do cabo até a posição inicial.",
+    "Repita pelo número desejado de repetições e, em seguida, troque de lado."
+  ],
+  "0242": [
+    "Prenda um cabo em uma polia baixa e deite-se de costas em um tapete.",
+    "Segure o cabo com as duas mãos e estenda os braços para cima, acima do peito.",
+    "Flexione os joelhos e eleve as pernas, levando os joelhos em direção ao peito.",
+    "Ao mesmo tempo, curve a pelve em direção ao peito, elevando o quadril do chão.",
+    "Faça uma pausa no topo do movimento e abaixe lentamente as pernas e o quadril até a posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0243": [
+    "Fique em pé com os pés afastados na largura dos ombros, de frente para a máquina de cabo.",
+    "Segure a alça do cabo com as duas mãos à frente do peito, mantendo os braços levemente flexionados.",
+    "Contraia o abdômen e gire o tronco para a direita, puxando o cabo através do corpo.",
+    "Faça uma pausa no final do movimento, sentindo a contração no abdômen e nos oblíquos.",
+    "Retorne lentamente à posição inicial, resistindo à tração do cabo.",
+    "Repita o movimento para o lado esquerdo.",
+    "Continue alternando os lados pelo número desejado de repetições."
+  ],
+  "0862": [
+    "Fique em pé com os pés afastados na largura dos ombros, de frente para a máquina de cabo.",
+    "Segure a alça do cabo com as duas mãos à frente do peito, mantendo os braços levemente flexionados.",
+    "Contraia o abdômen e gire lentamente o tronco para um lado, mantendo o quadril e as pernas estáveis.",
+    "Faça uma pausa no final da rotação e retorne lentamente à posição inicial.",
+    "Repita a rotação para o lado oposto.",
+    "Continue alternando os lados pelo número desejado de repetições."
+  ],
+  "0260": [
+    "Deite-se de costas com os joelhos flexionados e os pés apoiados no chão.",
+    "Coloque as mãos atrás da cabeça com os cotovelos apontados para fora.",
+    "Contraindo o abdômen, eleve lentamente a parte superior do corpo do chão, curvando-se para frente até que o tronco fique em um ângulo de 45 graus.",
+    "Faça uma pausa no topo do movimento e abaixe lentamente a parte superior do corpo até a posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0262": [
+    "Deite-se de costas com os joelhos flexionados e os pés apoiados no chão.",
+    "Coloque as mãos atrás da cabeça com os cotovelos apontados para fora.",
+    "Contraindo o abdômen, eleve a parte superior do corpo do chão e gire o tronco para levar o cotovelo direito em direção ao joelho esquerdo.",
+    "Faça uma pausa no topo do movimento e abaixe lentamente a parte superior do corpo até a posição inicial.",
+    "Repita do outro lado, levando o cotovelo esquerdo em direção ao joelho direito.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0267": [
+    "Deite-se de costas com os joelhos flexionados e os pés apoiados no chão.",
+    "Estenda os braços diretamente acima da cabeça.",
+    "Contraindo o abdômen, eleve a parte superior do corpo do chão, curvando-se para frente em direção aos joelhos.",
+    "Faça uma pausa no topo do movimento e abaixe lentamente a parte superior do corpo até a posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0271": [
+    "Sente-se na bola de estabilidade com os pés apoiados no chão e os joelhos flexionados em um ângulo de 90 graus.",
+    "Recline-se sobre a bola até que a lombar fique apoiada e a parte superior do corpo fique paralela ao chão.",
+    "Coloque as mãos atrás da cabeça ou cruzadas sobre o peito.",
+    "Contraia o abdômen e eleve a parte superior do corpo em direção aos joelhos, curvando o tronco para frente.",
+    "Faça uma pausa no topo do movimento e abaixe lentamente a parte superior do corpo até a posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0272": [
+    "Sente-se na bola de estabilidade com os pés apoiados no chão e os joelhos flexionados em um ângulo de 90 graus.",
+    "Recline-se sobre a bola até que a lombar fique apoiada e a parte superior do corpo fique paralela ao chão.",
+    "Coloque as mãos atrás da cabeça ou cruze-as sobre o peito.",
+    "Contraia o abdômen e eleve a parte superior do corpo para fora da bola, curvando os ombros em direção ao quadril.",
+    "Faça uma pausa no topo do movimento e abaixe lentamente a parte superior do corpo até a posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0274": [
+    "Deite-se de costas com os joelhos flexionados e os pés apoiados no chão.",
+    "Coloque as mãos atrás da cabeça com os cotovelos apontados para fora.",
+    "Contraia o abdômen e eleve os ombros do chão, curvando-se para frente em direção aos joelhos.",
+    "Faça uma pausa no topo do movimento e abaixe lentamente os ombros até a posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0276": [
+    "Deite-se de costas com os braços estendidos em direção ao teto.",
+    "Flexione os joelhos e eleve as pernas do chão, formando um ângulo de 90 graus no quadril e nos joelhos.",
+    "Contraia o abdômen e a lombar para pressionar a lombar contra o chão.",
+    "Abaixe lentamente o braço direito e a perna esquerda em direção ao chão, mantendo-os estendidos e pairando logo acima do solo.",
+    "Faça uma pausa e retorne à posição inicial.",
+    "Repita o movimento com o braço esquerdo e a perna direita.",
+    "Continue alternando os lados pelo número desejado de repetições."
+  ],
+  "0277": [
+    "Deite-se em um banco declinado com os pés presos e os joelhos flexionados em um ângulo de 90 graus.",
+    "Coloque as mãos atrás da cabeça ou cruzadas sobre o peito.",
+    "Contraia o abdômen e eleve a parte superior do corpo em direção aos joelhos, curvando o tronco.",
+    "Faça uma pausa no topo do movimento e abaixe lentamente a parte superior do corpo até a posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0282": [
+    "Deite-se em um banco declinado com os pés presos e os joelhos flexionados.",
+    "Coloque as mãos atrás da cabeça ou cruzadas sobre o peito.",
+    "Contraia o abdômen e eleve a parte superior do corpo do banco, curvando-se para frente em direção aos joelhos.",
+    "Faça uma pausa no topo do movimento e abaixe lentamente a parte superior do corpo até a posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0407": [
+    "Fique em pé, com os pés afastados na largura dos ombros, segurando um halter em uma mão, deixando-o pender ao lado do corpo.",
+    "Mantendo as costas retas e o abdômen contraído, incline lentamente o tronco para o lado oposto ao do halter, abaixando o peso o máximo que conseguir com conforto.",
+    "Faça uma pausa e retorne lentamente à posição inicial.",
+    "Repita pelo número desejado de repetições e, em seguida, troque de lado e repita."
+  ],
+  "0443": [
+    "Comece deitado de costas com os joelhos flexionados e os pés apoiados no chão.",
+    "Coloque as mãos atrás da cabeça com os cotovelos apontados para fora.",
+    "Contraia o abdômen e eleve a parte superior do corpo do chão, levando o cotovelo direito em direção ao joelho esquerdo.",
+    "Ao mesmo tempo, leve o joelho esquerdo em direção ao cotovelo direito, criando um movimento de torção.",
+    "Faça uma pausa no topo do movimento e abaixe lentamente a parte superior do corpo, estendendo as pernas de volta à posição inicial.",
+    "Repita o movimento, desta vez levando o cotovelo esquerdo em direção ao joelho direito e o joelho direito em direção ao cotovelo esquerdo.",
+    "Continue alternando os lados pelo número desejado de repetições."
+  ],
+  "0456": [
+    "Deite-se de costas com os joelhos dobrados e os pés apoiados no chão.",
+    "Coloque as mãos atrás da cabeça com os cotovelos apontando para fora.",
+    "Contraindo o abdômen, eleve lentamente a parte superior do corpo do chão, curvando-se para frente até que o tronco fique em um ângulo de 45 graus.",
+    "Ao mesmo tempo, eleve as pernas do chão, dobrando os joelhos e trazendo-os em direção ao peito.",
+    "Faça uma pausa no topo do movimento e, em seguida, abaixe lentamente a parte superior do corpo e as pernas de volta à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0457": [
+    "Deite-se de costas com as pernas estendidas e os braços esticados acima da cabeça.",
+    "Contraindo o abdômen, eleve a parte superior do corpo do chão enquanto eleva simultaneamente as pernas em direção ao peito.",
+    "Estenda as mãos em direção aos pés enquanto eleva a parte superior do corpo e as pernas.",
+    "Faça uma pausa no topo do movimento e, em seguida, abaixe lentamente a parte superior do corpo e as pernas de volta à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0464": [
+    "Comece na posição de prancha alta, com as mãos diretamente abaixo dos ombros e o corpo em linha reta da cabeça aos pés.",
+    "Contraia o abdômen e os glúteos para manter uma posição estável.",
+    "Gire o tronco para a direita, elevando o braço direito e estendendo-o em direção ao teto.",
+    "Mantenha os quadris e as pernas estáveis durante o giro.",
+    "Mantenha por um momento e, em seguida, retorne à posição inicial.",
+    "Repita o giro do lado esquerdo.",
+    "Continue alternando os lados pelo número desejado de repetições."
+  ],
+  "0467": [
+    "Fique em pé com os pés afastados na largura dos ombros e os joelhos levemente dobrados.",
+    "Segure uma barra fixa com pegada pronada, um pouco mais afastada que a largura dos ombros.",
+    "Fique pendurado na barra com os braços totalmente estendidos e as palmas das mãos voltadas para longe do corpo.",
+    "Contraia o abdômen e puxe o corpo para cima em direção à barra, levando o queixo acima da barra.",
+    "Faça uma pausa no topo do movimento e, em seguida, abaixe lentamente o corpo de volta à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0469": [
+    "Deite-se de costas com os joelhos dobrados e os pés apoiados no chão.",
+    "Coloque as mãos atrás da cabeça com os cotovelos apontando para fora.",
+    "Contraindo o abdômen, eleve as pernas do chão, trazendo os joelhos em direção ao peito.",
+    "Faça uma pausa no topo do movimento e, em seguida, abaixe lentamente as pernas de volta à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0472": [
+    "Fique pendurado em uma barra fixa com os braços totalmente estendidos e as palmas das mãos voltadas para longe do corpo.",
+    "Contraia o abdômen e eleve as pernas à sua frente, mantendo-as esticadas.",
+    "Continue elevando até que as pernas fiquem paralelas ao chão ou o mais alto que conseguir com conforto.",
+    "Faça uma pausa no topo do movimento e, em seguida, abaixe lentamente as pernas de volta à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0473": [
+    "Fique pendurado em uma barra fixa com os braços totalmente estendidos e as palmas das mãos voltadas para longe do corpo.",
+    "Contraia o abdômen e eleve as pernas em direção à barra, mantendo-as esticadas.",
+    "Continue elevando até que o corpo forme um 'V', com as pernas paralelas ao chão.",
+    "Mantenha a posição por um momento e, em seguida, abaixe lentamente as pernas de volta à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0474": [
+    "Fique pendurado em uma barra fixa com os braços totalmente estendidos e as palmas das mãos voltadas para longe do corpo.",
+    "Contraia o abdômen e eleve as pernas à sua frente até que fiquem paralelas ao chão.",
+    "Faça uma pausa no topo do movimento e, em seguida, abaixe lentamente as pernas de volta à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0475": [
+    "Fique pendurado em uma barra fixa com os braços totalmente estendidos e as palmas das mãos voltadas para longe do corpo.",
+    "Contraia o abdômen e eleve as pernas à sua frente, mantendo-as esticadas.",
+    "Continue elevando até que as pernas fiquem paralelas ao chão ou o mais alto que conseguir com conforto.",
+    "Faça uma pausa no topo do movimento e, em seguida, abaixe lentamente as pernas de volta à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0476": [
+    "Fique pendurado em uma barra fixa com os braços totalmente estendidos e as pernas esticadas.",
+    "Contraia o abdômen e eleve as pernas em direção ao peito, mantendo-as esticadas.",
+    "Quando as pernas estiverem paralelas ao chão, gire os quadris para um dos lados, levando as pernas nessa direção.",
+    "Faça uma pausa por um momento e, em seguida, retorne à posição inicial.",
+    "Repita o movimento, mas dessa vez gire os quadris para o lado oposto.",
+    "Continue alternando os lados pelo número desejado de repetições."
+  ],
+  "0484": [
+    "Deite-se de costas com os joelhos dobrados e os pés apoiados no chão.",
+    "Coloque as mãos ao lado do corpo, com as palmas voltadas para baixo.",
+    "Contraia o abdômen e os glúteos e, em seguida, eleve os quadris do chão até que o corpo forme uma linha reta dos joelhos aos ombros.",
+    "Faça uma pausa no topo do movimento e, em seguida, abaixe lentamente os quadris de volta à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0491": [
+    "Deite-se em um banco inclinado com as costas apoiadas no banco e as pernas estendidas à sua frente.",
+    "Coloque as mãos nas laterais do banco para se apoiar.",
+    "Contraindo o abdômen, eleve as pernas do banco, levantando-as o mais alto possível enquanto as mantém esticadas.",
+    "Faça uma pausa no topo do movimento e, em seguida, abaixe lentamente as pernas de volta à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0495": [
+    "Ajuste um banco inclinado em um ângulo de 45 graus.",
+    "Deite-se no banco com os pés presos sob os apoios.",
+    "Coloque as mãos atrás da cabeça ou cruzadas sobre o peito.",
+    "Contraia o abdômen e eleve a parte superior do corpo do banco, curvando-se para frente.",
+    "Enquanto se curva para cima, gire o tronco para um dos lados, levando o cotovelo em direção ao joelho oposto.",
+    "Faça uma pausa no topo do movimento e, em seguida, abaixe lentamente a parte superior do corpo de volta à posição inicial.",
+    "Repita o movimento, dessa vez girando o tronco para o outro lado.",
+    "Continue alternando os lados pelo número desejado de repetições."
+  ],
+  "0507": [
+    "Deite-se de costas com as pernas estendidas e os braços acima da cabeça.",
+    "Contraia o abdômen e eleve as pernas e a parte superior do corpo simultaneamente, estendendo as mãos em direção aos pés.",
+    "Faça uma pausa no topo do movimento e, em seguida, abaixe lentamente as pernas e a parte superior do corpo de volta à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0508": [
+    "Deite-se de costas com os joelhos dobrados e os pés apoiados no chão.",
+    "Coloque as mãos atrás da cabeça com os cotovelos apontando para fora.",
+    "Contraindo o abdômen, eleve lentamente a parte superior do corpo do chão, curvando-se para frente até que o tronco fique em um ângulo de 45 graus.",
+    "Faça uma pausa no topo do movimento e, em seguida, abaixe lentamente a parte superior do corpo de volta à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0517": [
+    "Fique em pé com os pés mais afastados que a largura dos ombros, com os dedos dos pés apontando levemente para fora.",
+    "Segure um kettlebell na mão direita, com o braço estendido acima da cabeça e a palma da mão voltada para frente.",
+    "Gire o pé esquerdo levemente para a direita e transfira o peso para a perna esquerda.",
+    "Dobre o joelho esquerdo e flexione o quadril, abaixando o tronco para o lado esquerdo.",
+    "Mantenha o braço direito estendido acima da cabeça e o olhar no kettlebell.",
+    "Ao abaixar o tronco, deixe a perna direita esticar e o pé direito girar levemente.",
+    "Abaixe o tronco até sentir um alongamento no posterior de coxa esquerdo e o braço direito estiver apontando para o chão.",
+    "Faça uma pausa e, em seguida, contraia o abdômen e empurre o calcanhar esquerdo para retornar à posição inicial.",
+    "Repita pelo número desejado de repetições e depois troque de lado."
+  ],
+  "0524": [
+    "Fique em pé com os pés na largura dos ombros, segurando um kettlebell na mão direita.",
+    "Dobre levemente os joelhos e empurre o kettlebell para cima da cabeça com o braço direito, mantendo o cotovelo travado.",
+    "Gire o tronco para a esquerda, transferindo o peso para o pé esquerdo.",
+    "Dobre o joelho esquerdo e abaixe o tronco em direção ao chão, mantendo o braço direito estendido acima da cabeça.",
+    "Ao abaixar, mantenha o olhar no kettlebell e o peito erguido.",
+    "Quando a mão esquerda tocar o chão, empurre o pé esquerdo e estique a perna esquerda, projetando o quadril para frente.",
+    "Ao projetar o quadril para frente, use o abdômen e o braço direito para empurrar o kettlebell de volta à posição inicial.",
+    "Repita pelo número desejado de repetições e depois troque de lado."
+  ],
+  "0530": [
+    "Fique em pé com os pés na largura dos ombros, segurando um kettlebell na mão direita.",
+    "Estenda o braço direito acima da cabeça, mantendo o olhar no kettlebell.",
+    "Gire o pé esquerdo 45 graus para a esquerda e o pé direito 90 graus para a direita.",
+    "Dobre a cintura para a esquerda, mantendo o braço direito estendido acima da cabeça.",
+    "Abaixe o kettlebell em direção ao chão, alcançando o pé esquerdo.",
+    "Faça uma pausa e, em seguida, contraia o abdômen e empurre o pé direito para retornar à posição inicial.",
+    "Repita pelo número desejado de repetições e depois troque de lado."
+  ],
+  "0532": [
+    "Fique em pé com os pés na largura dos ombros, segurando um kettlebell em uma das mãos.",
+    "Dobre levemente os joelhos e flexione o quadril para frente, mantendo as costas retas.",
+    "Passe o kettlebell entre as pernas, trocando de mão quando ele chegar atrás das pernas.",
+    "Quando o kettlebell vier para frente, passe-o para a outra mão entre as pernas.",
+    "Continue passando o kettlebell entre as pernas em um movimento de oito.",
+    "Mantenha um ritmo constante e contraia o abdômen durante todo o exercício.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0554": [
+    "Fique em pé com os pés na largura dos ombros, segurando um kettlebell na mão direita acima da cabeça.",
+    "Gire o pé esquerdo para fora cerca de 45 graus e mantenha o pé direito apontando para frente.",
+    "Dobre o tronco para o lado esquerdo, mantendo o braço direito estendido acima da cabeça e o olhar no kettlebell.",
+    "Abaixe o tronco o máximo que conseguir, mantendo o braço direito reto e o braço esquerdo estendido para o lado.",
+    "Faça uma pausa e, em seguida, retorne à posição inicial empurrando o pé direito e contraindo os oblíquos.",
+    "Repita pelo número desejado de repetições e depois troque de lado."
+  ],
+  "0562": [
+    "Fique em pé com os pés na largura dos ombros e segure a barra com as duas mãos à frente do peito.",
+    "Dobre levemente os joelhos e gire o tronco para a direita, balançando a barra para baixo em direção ao quadril direito.",
+    "Ao chegar ao final do movimento, inverta rapidamente o sentido e gire o tronco para a esquerda, balançando a barra para cima e cruzando o corpo em direção ao ombro esquerdo.",
+    "Continue esse movimento de rotação, alternando os lados, pelo número desejado de repetições."
+  ],
+  "0570": [
+    "Sente-se em um banco reto com as pernas estendidas à frente.",
+    "Coloque as mãos no banco ao lado do quadril para apoio.",
+    "Contraia o abdômen e eleve as pernas do chão, levando os joelhos em direção ao peito.",
+    "Faça uma pausa no topo do movimento e depois abaixe as pernas lentamente de volta à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0583": [
+    "Ajuste a altura do assento e posicione-se na máquina com os joelhos apoiados nas almofadas e a parte superior do corpo voltada para frente.",
+    "Segure as alças ou as laterais da máquina para estabilidade.",
+    "Mantendo o abdômen contraído, gire o tronco para um dos lados o máximo que conseguir confortavelmente.",
+    "Faça uma pausa e depois retorne lentamente à posição inicial.",
+    "Repita o giro para o lado oposto.",
+    "Continue alternando os lados pelo número desejado de repetições."
+  ],
+  "0595": [
+    "Ajuste a altura do assento e a posição da almofada de peito de acordo com o seu conforto.",
+    "Sente-se na máquina com as costas apoiadas na almofada de peito e os pés apoiados no chão.",
+    "Segure as alças ou as barras laterais para estabilidade.",
+    "Contraia o abdômen e incline-se para trás lentamente, deixando a almofada de peito se mover com você.",
+    "Faça uma pausa no momento de contração máxima, sentindo a tensão no abdômen.",
+    "Retorne lentamente à posição inicial, contraindo o abdômen e puxando-se de volta para cima.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0600": [
+    "Sente-se na máquina articulada com as costas apoiadas no encosto e os pés nos apoios.",
+    "Segure as alças ou as barras laterais para estabilidade.",
+    "Contraia o abdômen e eleve lentamente as pernas em direção ao peito, flexionando o tronco para frente ao mesmo tempo.",
+    "Faça uma pausa no topo do movimento e depois abaixe lentamente as pernas e o tronco de volta à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0620": [
+    "Deite-se em um banco reto com as costas apoiadas nele.",
+    "Coloque as mãos sob os glúteos para apoio.",
+    "Mantenha as pernas retas e unidas e eleve-as em direção ao teto.",
+    "Faça uma pausa no topo do movimento e depois abaixe as pernas lentamente de volta à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0865": [
+    "Deite-se de costas com as pernas estendidas e os braços ao lado do corpo.",
+    "Coloque as mãos sob os glúteos para apoio.",
+    "Contraia o abdômen e eleve as pernas do chão, levando-as em direção ao teto.",
+    "Faça uma pausa no topo do movimento e depois abaixe as pernas lentamente de volta à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0634": [
+    "Deite-se de costas com os joelhos dobrados e os pés apoiados no chão.",
+    "Coloque as mãos atrás da cabeça com os cotovelos apontando para fora.",
+    "Contraindo o abdômen, eleve lentamente a parte superior do corpo do chão, flexionando para frente até o tronco ficar em um ângulo de 45 graus.",
+    "Faça uma pausa no topo do movimento e depois abaixe lentamente a parte superior do corpo de volta à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0635": [
+    "Deite-se de costas com os joelhos dobrados e os pés apoiados no chão.",
+    "Coloque as mãos atrás da cabeça ou cruze-as sobre o peito.",
+    "Contraia o abdômen e eleve as escápulas do chão, girando o tronco para um dos lados.",
+    "Faça uma pausa e depois abaixe as escápulas de volta ao chão.",
+    "Repita do outro lado, alternando os lados a cada repetição."
+  ],
+  "0640": [
+    "Fique em pé com os pés na largura dos ombros, segurando a bola medicinal com uma das mãos à frente da cintura.",
+    "Dobre levemente os joelhos e contraia o abdômen.",
+    "Eleve a bola medicinal acima da cabeça, estendendo totalmente o braço.",
+    "Arremesse a bola medicinal com força contra o chão, usando o abdômen e os ombros para gerar potência.",
+    "Pegue a bola medicinal no quique e repita pelo número desejado de repetições."
+  ],
+  "0641": [
+    "Deite-se de costas com os joelhos dobrados e os pés apoiados no chão.",
+    "Coloque as mãos atrás da cabeça com os cotovelos apontando para fora.",
+    "Contraindo o abdômen, eleve lentamente a parte superior do corpo do chão, flexionando para frente até o tronco ficar em um ângulo de 45 graus.",
+    "Faça uma pausa no topo do movimento e depois abaixe lentamente a parte superior do corpo de volta à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0650": [
+    "Comece sentado na bola de estabilidade com os pés apoiados no chão e os joelhos dobrados em um ângulo de 90 graus.",
+    "Coloque as mãos nas laterais da bola de estabilidade para apoio.",
+    "Contraia o abdômen e role lentamente o quadril para frente, trazendo os joelhos em direção ao peito.",
+    "Faça uma pausa por um instante no topo do movimento e depois estenda lentamente as pernas de volta à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0664": [
+    "Comece na posição de flexão de braços, com as mãos afastadas na largura dos ombros e o corpo em linha reta.",
+    "Abaixe o corpo em direção ao chão dobrando os cotovelos, mantendo o abdômen contraído.",
+    "Empurre de volta até a posição inicial.",
+    "Transfira o peso para a mão esquerda e gire o corpo para a direita, elevando o braço direito em direção ao teto.",
+    "Mantenha a posição de prancha lateral por alguns segundos e depois retorne à posição inicial.",
+    "Repita a flexão de braços e a prancha lateral do lado oposto.",
+    "Continue alternando os lados pelo número desejado de repetições."
+  ],
+  "0872": [
+    "Deite-se de costas com os braços estendidos ao lado do corpo.",
+    "Dobre os joelhos e eleve os pés do chão, trazendo as coxas perpendiculares ao chão.",
+    "Contraia o abdômen e curve o quadril para cima, tirando-o do chão, trazendo os joelhos em direção ao peito.",
+    "Faça uma pausa por um instante no topo e depois abaixe lentamente o quadril de volta à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0687": [
+    "Sente-se no chão com os joelhos dobrados e os pés apoiados no chão.",
+    "Incline-se levemente para trás, mantendo as costas retas e o abdômen contraído.",
+    "Junte as mãos à frente do peito ou segure um peso, se desejar.",
+    "Eleve os pés do chão, equilibrando-se sobre os ísquios.",
+    "Gire o tronco para a direita, levando as mãos ou o peso em direção ao lado direito do corpo.",
+    "Faça uma pausa por um instante e depois gire o tronco para a esquerda, levando as mãos ou o peso em direção ao lado esquerdo do corpo.",
+    "Continue alternando os lados pelo número desejado de repetições."
+  ],
+  "0689": [
+    "Sente-se em um banco reto com as costas retas e os pés apoiados no chão.",
+    "Coloque as mãos nas laterais do banco para apoio.",
+    "Mantendo as pernas retas, eleve-as lentamente à sua frente até que fiquem paralelas ao chão.",
+    "Faça uma pausa por um instante no topo e depois abaixe lentamente as pernas de volta à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0691": [
+    "Sente-se no chão com as costas apoiadas na parede e as pernas estendidas à sua frente.",
+    "Dobre os joelhos e apoie os pés no chão, afastados na largura do quadril.",
+    "Coloque as mãos atrás da cabeça com os cotovelos apontando para fora.",
+    "Contraia o abdômen e incline-se para um lado, levando o cotovelo em direção ao quadril.",
+    "Faça uma pausa por um instante e depois retorne à posição inicial.",
+    "Repita do outro lado.",
+    "Continue alternando os lados pelo número desejado de repetições."
+  ],
+  "0705": [
+    "Deite-se de lado com as pernas estendidas e uma sobre a outra.",
+    "Apoie o antebraço no chão diretamente abaixo do ombro, com o cotovelo dobrado em um ângulo de 90 graus.",
+    "Contraia o abdômen e eleve o quadril do chão, criando uma linha reta da cabeça aos pés.",
+    "Mantenha essa posição pelo tempo desejado.",
+    "Abaixe o quadril de volta à posição inicial.",
+    "Repita do outro lado."
+  ],
+  "0709": [
+    "Fique em pé entre duas barras paralelas com os pés afastados na largura dos ombros.",
+    "Coloque as mãos nas barras e eleve o corpo do chão, sustentando o peso nos braços.",
+    "Contraia o abdômen e eleve lentamente as pernas para o lado, mantendo-as retas.",
+    "Faça uma pausa por um instante no topo e depois abaixe lentamente as pernas de volta à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0735": [
+    "Deite-se de costas com os joelhos dobrados e os pés apoiados no chão.",
+    "Coloque as mãos atrás da cabeça com os cotovelos apontando para fora.",
+    "Contraindo o abdômen, eleve lentamente a parte superior do corpo do chão, curvando-se para frente até que o tronco fique em um ângulo de 45 graus.",
+    "Faça uma pausa por um instante no topo e depois abaixe lentamente a parte superior do corpo de volta à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0756": [
+    "Posicione-se na máquina Smith com as costas apoiadas no encosto e os pés afastados na largura dos ombros.",
+    "Coloque as mãos na barra, ligeiramente mais afastadas que a largura dos ombros.",
+    "Contraia o abdômen e os glúteos e depois empurre pelos calcanhares para elevar o quadril do chão.",
+    "Continue elevando até que o corpo forme uma linha reta dos joelhos aos ombros.",
+    "Mantenha por um instante no topo e depois abaixe lentamente o quadril de volta à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0777": [
+    "Fique em pé com os pés afastados na largura dos ombros e segure um halter em uma das mãos.",
+    "Dobre levemente os joelhos e incline o tronco para frente a partir do quadril, mantendo as costas retas.",
+    "Estenda o braço com o halter em direção ao pé oposto, girando o tronco enquanto faz isso.",
+    "Retorne à posição inicial e repita do outro lado.",
+    "Continue alternando os lados pelo número desejado de repetições."
+  ],
+  "0796": [
+    "Comece em pé, com a coluna ereta, os pés na largura dos ombros e a roda de exercício à sua frente.",
+    "Dobre o corpo pela cintura e role a roda lentamente para frente, mantendo as costas retas e o abdômen contraído.",
+    "Continue rolando para frente até sentir um alongamento no abdômen e o corpo estar totalmente estendido.",
+    "Faça uma pausa breve e depois role a roda lentamente de volta em direção ao corpo, retornando à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0805": [
+    "Prenda as fitas de suspensão em um ponto de ancoragem alto e ajuste-as na altura da cintura.",
+    "Fique de pé de costas para o ponto de ancoragem e segure as alças com os braços estendidos à sua frente.",
+    "Incline o corpo para frente pela cintura, mantendo o corpo reto e o abdômen contraído.",
+    "Abaixe o corpo o máximo possível, mantendo o controle e a tensão no abdômen.",
+    "Faça uma pausa breve na parte mais baixa e depois eleve lentamente o corpo de volta à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0807": [
+    "Pendure-se na barra fixa com os braços totalmente estendidos e as palmas das mãos voltadas para longe do corpo.",
+    "Contraia o abdômen e eleve os joelhos em direção ao peito, curvando a pelve em direção às costelas.",
+    "Faça uma pausa breve no topo do movimento e depois abaixe lentamente os joelhos até a posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0871": [
+    "Deite-se de costas com os joelhos dobrados e os pés totalmente apoiados no chão.",
+    "Coloque as mãos atrás da cabeça com os cotovelos apontando para fora.",
+    "Contraindo o abdômen, eleve as escápulas do chão e leve os joelhos em direção ao peito, curvando simultaneamente a parte superior do corpo em direção aos joelhos.",
+    "Faça uma pausa breve no topo do movimento e depois abaixe as escápulas e estenda as pernas de volta à posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0826": [
+    "Pendure-se nas barras paralelas com os braços totalmente estendidos e o corpo reto.",
+    "Contraia o abdômen e eleve as pernas à sua frente, mantendo-as retas.",
+    "Continue elevando até que as pernas fiquem paralelas ao chão ou um pouco acima.",
+    "Faça uma pausa breve no topo do movimento e depois abaixe lentamente as pernas até a posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0832": [
+    "Deite-se de costas com os joelhos dobrados e os pés totalmente apoiados no chão.",
+    "Segure uma anilha ou um halter sobre o peito.",
+    "Contraia o abdômen e eleve a parte superior do corpo do chão, curvando-se para frente até que as escápulas saiam do chão.",
+    "Faça uma pausa breve no topo do movimento e depois abaixe lentamente a parte superior do corpo até a posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0866": [
+    "Pendure-se na barra fixa com os braços totalmente estendidos e as palmas das mãos voltadas para longe do corpo.",
+    "Contraia o abdômen e eleve as pernas à sua frente, mantendo-as retas.",
+    "Continue elevando até que as pernas fiquem paralelas ao chão ou um pouco acima.",
+    "Faça uma pausa breve no topo do movimento e depois abaixe lentamente as pernas até a posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0840": [
+    "Sente-se na bola de estabilidade com os pés totalmente apoiados no chão e os joelhos dobrados em um ângulo de 90 graus.",
+    "Segure uma anilha ou um halter com as duas mãos e estenda os braços acima da cabeça.",
+    "Contraia o abdômen e flexione lentamente o tronco para frente, levando o peito em direção aos joelhos.",
+    "Faça uma pausa breve no topo do movimento e depois abaixe lentamente o tronco até a posição inicial.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0846": [
+    "Sente-se no chão com os joelhos dobrados e os pés totalmente apoiados no chão.",
+    "Segure um peso ou uma bola medicinal com as duas mãos à frente do peito.",
+    "Incline-se levemente para trás, mantendo as costas retas e o abdômen contraído.",
+    "Gire lentamente o tronco para a direita, levando o peso ou a bola medicinal em direção ao chão do lado direito.",
+    "Faça uma pausa breve e depois gire o tronco para a esquerda, levando o peso ou a bola medicinal em direção ao chão do lado esquerdo.",
+    "Continue alternando os lados pelo número desejado de repetições."
+  ],
+  "0845": [
+    "Sente-se no chão com os joelhos dobrados e os pés elevados do chão, mantendo as pernas juntas.",
+    "Segure o peso com as duas mãos à frente do peito, mantendo os cotovelos levemente dobrados.",
+    "Incline-se levemente para trás para contrair o abdômen.",
+    "Gire o tronco para a direita, levando o peso em direção ao chão do lado direito.",
+    "Faça uma pausa breve e depois gire o tronco para a esquerda, levando o peso em direção ao chão do lado esquerdo.",
+    "Continue alternando os lados pelo número desejado de repetições."
+  ],
+  "0849": [
+    "Sente-se na bola de estabilidade com os pés totalmente apoiados no chão e os joelhos dobrados em um ângulo de 90 graus.",
+    "Segure uma anilha ou um halter com as duas mãos próximo ao peito.",
+    "Contraia o abdômen e gire lentamente o tronco para um dos lados, mantendo o quadril estável.",
+    "Faça uma pausa breve ao final do giro e depois retorne lentamente à posição inicial.",
+    "Repita o giro para o outro lado.",
+    "Continue alternando os lados pelo número desejado de repetições."
+  ],
+  "0850": [
+    "Sente-se na bola de estabilidade com os pés na largura dos ombros e totalmente apoiados no chão.",
+    "Segure um peso em uma das mãos e coloque a outra mão no quadril.",
+    "Contraia o abdômen e incline-se lentamente para o lado onde está o peso, mantendo as costas retas.",
+    "Faça uma pausa breve na parte mais baixa e depois retorne lentamente à posição inicial.",
+    "Repita pelo número desejado de repetições e depois troque de lado."
+  ],
+  "0857": [
+    "Ajoelhe-se no chão e posicione a roda de exercício à sua frente.",
+    "Coloque as mãos nas alças da roda de exercício e estenda os braços retos à sua frente.",
+    "Contraia o abdômen e role a roda lentamente para frente, mantendo as costas retas e o abdômen firme.",
+    "Continue rolando para frente até que o corpo esteja totalmente estendido e os braços acima da cabeça.",
+    "Faça uma pausa breve e depois role a roda lentamente de volta em direção aos joelhos, mantendo o controle e o abdômen contraído.",
+    "Repita pelo número desejado de repetições."
+  ],
+  "0858": [
+    "Encontre um espaço aberto ou uma pista para realizar o exercício.",
+    "Comece em pé, com os pés na largura dos ombros.",
+    "Comece a correr o mais rápido que conseguir, bombeando os braços e elevando bem os joelhos.",
+    "Continue correndo em alta velocidade por uma distância ou período de tempo específico.",
+    "Descanse e repita pelo número desejado de repetições."
   ]
 }

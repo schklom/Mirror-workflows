@@ -20,6 +20,9 @@ Preferred terms keep the instruction pack consistent with Brazilian gym usage.
 | repetition / rep | repetição | repetiçãozinha |
 | bodyweight | peso corporal | peso do corpo, when used as a category |
 | starting position | posição inicial | posição de partida |
+| resistance band / band | faixa elástica | banda |
+| stability ball | bola de estabilidade | bola suíça |
+| floor / ground | chão | piso |
 
 Write instructions using Brazilian `você` conventions and neutral imperative
 forms: `mantenha`, `contraia`, `eleve`, `retorne`. Avoid Portuguese (Portugal)

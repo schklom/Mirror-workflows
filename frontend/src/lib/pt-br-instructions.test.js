@@ -17,6 +17,12 @@ describe('Brazilian Portuguese exercise instructions', () => {
     expect(INSTR_LANGS.includes('pt-BR')).toBe(Object.keys(ptBR).length === EXDB.length)
   })
 
+  test('completes Stage 1 waist and core coverage', () => {
+    const stage = EXDB.filter(exercise => exercise.bp === 'waist')
+    expect(stage).toHaveLength(169)
+    stage.forEach(exercise => expect(ptBR, exercise.id).toHaveProperty(exercise.id))
+  })
+
   test('contains only known exercises with complete, non-empty step lists', () => {
     for (const [id, steps] of Object.entries(ptBR)) {
       const exercise = exercises.get(id)
@@ -25,8 +31,8 @@ describe('Brazilian Portuguese exercise instructions', () => {
       steps.forEach((step, index) => {
         expect(step.trim(), `${id} step ${index + 1}`).not.toBe('')
         expect(step, `${id} step ${index + 1}`).not.toBe(exercise.st[index])
-        expect(step, `${id} step ${index + 1}`).not.toMatch(/\b(the|your|with|towards|repeat|desired)\b/i)
-        expect(step, `${id} step ${index + 1}`).not.toMatch(/(?:^|[^\p{L}])(?:ginásio|anca|abdómen|gémeos|ecrã)(?=$|[^\p{L}])/iu)
+        expect(step, `${id} step ${index + 1}`).not.toMatch(/(?:^|[^\p{L}])(?:the|your|with|from|towards?|repeat|desired|starting|slowly|hold|while|then|back|straight|ground|feet|hands|body|legs|arms|knees|shoulders)(?=$|[^\p{L}])/iu)
+        expect(step, `${id} step ${index + 1}`).not.toMatch(/(?:^|[^\p{L}])(?:ginásio|anca|abdómen|gémeos|ecrã|core|banda|piso)(?=$|[^\p{L}])/iu)
       })
     }
   })

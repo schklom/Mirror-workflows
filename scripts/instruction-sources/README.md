@@ -7,11 +7,12 @@ the upstream exercise dataset does not currently ship Portuguese instructions.
 ## Provenance and review status
 
 The translations are produced from the English instructions in
-`frontend/src/lib/exercises-data.js` with OpenAI Codex language-model
-assistance. They are original translations, not copied from another Portuguese
-exercise dataset. Each batch is checked against the English source and reviewed
-for Brazilian terminology, but it must not be described as native-speaker
-reviewed until a named human reviewer has actually completed that review.
+`frontend/src/lib/exercises-data.js` with language-model assistance from OpenAI
+Codex and, for larger structured batches, Anthropic Claude Code. They are
+original translations, not copied from another Portuguese exercise dataset.
+Each batch is checked against the English source and reviewed for Brazilian
+terminology, but it must not be described as native-speaker reviewed until a
+named human reviewer has actually completed that review.
 
 The translation policy is meaning-faithful rather than word-for-word: preserve
 the number and order of steps, retain the intended movement and safety cues,
@@ -35,3 +36,8 @@ and reviewed. Until then, the released app must continue to show the honest
 English-instructions notice instead of silently mixing Portuguese and English.
 
 Use the terminology in `GLOSSARY.md` for every batch.
+
+For a structured batch, use `scripts/translate-pt-br-stage.mjs` with a dataset
+body part and limit. It calls Claude in read-only structured-output mode and
+writes only after every returned ID and step count validates. The normal pack
+builder and frontend tests remain mandatory after generation.

@@ -8,7 +8,7 @@ files.
 | Stage | Dataset body part | Total exercises | Order |
 |---:|---|---:|---|
 | 0 | Foundation sample across categories | 20 translated | Complete |
-| 1 | Waist / abs / core | 169 | In progress |
+| 1 | Waist / abs / core | 169 | Complete |
 | 2 | Chest / pectorals | 163 | Pending |
 | 3 | Back / lats / upper back | 203 | Pending |
 | 4 | Shoulders / delts | 143 | Pending |
@@ -23,3 +23,9 @@ The body-part stages cover all 1,324 dataset IDs exactly once. The foundation
 sample already contributes to several stages, so stage progress must exclude
 IDs already present in the source file. Do not add `pt-BR` to `INSTR_LANGS`
 until Stage 10 confirms 1,324/1,324 coverage.
+
+## Checkpoints
+
+- Stage 1 completed in 2026-08-19: 169/169 waist IDs. Combined corpus progress
+  is 179/1,324 exercises and 996 instruction steps because the foundation
+  sample also contains 10 exercises from later stages.

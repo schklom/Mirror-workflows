@@ -9,7 +9,7 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 const sourcePath = join(root, 'scripts', 'instruction-sources', 'pt-BR.json')
 const glossaryPath = join(root, 'scripts', 'instruction-sources', 'GLOSSARY.md')
 const exercisesPath = join(root, 'frontend', 'src', 'lib', 'exercises-data.js')
-const claude = '/Users/matheus/.local/bin/claude'
+const claude = process.env.CLAUDE_BIN || 'claude'
 
 const option = name => process.argv.find(arg => arg.startsWith(`--${name}=`))?.split('=').slice(1).join('=')
 const bodyPart = option('body-part')

@@ -2,6 +2,7 @@
 export default {
   'Confirm': 'पुष्टि करें',
   'Cancel': 'रद्द करें',
+  'Press back again to exit': 'बाहर निकलने के लिए फिर से बैक दबाएँ',
   'Delete': 'हटाएँ',
   'Save': 'सहेजें',
   'Import': 'आयात करें',

@@ -1,5 +1,17 @@
 # Changelog
 
+## Unreleased
+
+### Fixes
+
+- ⬅️ **The back gesture no longer quits the app** (Android). The packaged app never listened for
+  the system back event at all — Capacitor leaves that to `@capacitor/app`, which was not
+  installed — so a back swipe went straight past the WebView and finished the activity from
+  wherever you were. The per-sheet history entries added in [#63] only ever did anything in a
+  browser tab. Back now dismisses the open sheet, then walks back through the screens you came
+  from, and only leaves the app after a second press at the root ("Press back again to exit").
+  A sheet that is locked mid-task still swallows back, as it does in the browser.
+
 ## v1.2.7 — 2026-08-18
 
 The muscle map answers a third question. Balance showed where the volume went and Fatigue what was

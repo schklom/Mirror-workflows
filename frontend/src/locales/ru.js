@@ -2,6 +2,7 @@
 export default {
   'Confirm': 'Подтвердить',
   'Cancel': 'Отмена',
+  'Press back again to exit': 'Нажмите «Назад» ещё раз, чтобы выйти',
   'Delete': 'Удалить',
   'Save': 'Сохранить',
   'Import': 'Импорт',

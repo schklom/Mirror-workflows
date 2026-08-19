@@ -2,6 +2,7 @@
 export default {
   'Confirm': 'Potwierdź',
   'Cancel': 'Anuluj',
+  'Press back again to exit': 'Naciśnij wstecz ponownie, aby wyjść',
   'Delete': 'Usuń',
   'Save': 'Zapisz',
   'Import': 'Importuj',

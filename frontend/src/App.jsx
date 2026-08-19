@@ -6,6 +6,7 @@ import { bindUI } from './components/ui.jsx'
 import { ACCENTS } from './lib/format.js'
 import { setLang, useLang } from './lib/i18n.js'
 import { setNav } from './lib/nav.js'
+import { initBackButton } from './lib/back.js'
 import { useWakeLock } from './lib/wakelock.js'
 import { startFlow } from './sheets.jsx'
 import Icon from './components/Icon.jsx'
@@ -92,5 +93,11 @@ function Shell() {
 export default function App() {
   const boot = useStore(s => s.boot)
   useEffect(() => { boot() }, [boot])
+  // Android system back — sheet, then page, then press-again-to-exit (see lib/back.js)
+  useEffect(() => {
+    let stop = null, gone = false
+    initBackButton().then(fn => { if (gone) fn(); else stop = fn })
+    return () => { gone = true; stop?.() }
+  }, [])
   return <HashRouter><Shell /></HashRouter>
 }

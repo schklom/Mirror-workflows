@@ -3,6 +3,7 @@ export default {
   // --- generic ---
   'Confirm': 'Bestätigen',
   'Cancel': 'Abbrechen',
+  'Press back again to exit': 'Zum Beenden erneut zurück drücken',
   'Delete': 'Löschen',
   'Save': 'Speichern',
   'Import': 'Importieren',

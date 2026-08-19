@@ -2,6 +2,7 @@
 export default {
   'Confirm': '确认',
   'Cancel': '取消',
+  'Press back again to exit': '再按一次返回退出',
   'Delete': '删除',
   'Save': '保存',
   'Import': '导入',

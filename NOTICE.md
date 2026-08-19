@@ -115,3 +115,9 @@ runtime.
 
 If you want to reuse the media — in openGym or anywhere else, commercially or not — **clear it with
 the rights holder first**, and keep any attribution that accompanies it intact.
+
+Brazilian Portuguese exercise instructions under
+`scripts/instruction-sources/pt-BR.json` are original translations of that
+English source produced with OpenAI Codex language-model assistance. They are
+not copied from a separate Portuguese dataset. Their review status and
+translation policy are documented alongside the source file.

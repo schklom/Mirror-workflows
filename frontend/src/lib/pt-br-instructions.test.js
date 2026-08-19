@@ -8,8 +8,8 @@ describe('Brazilian Portuguese exercise instructions', () => {
   const exercises = new Map(EXDB.map(exercise => [exercise.id, exercise]))
   const source = JSON.parse(readFileSync(new URL('../../../scripts/instruction-sources/pt-BR.json', import.meta.url), 'utf8'))
 
-  test('starts with a reviewable translated batch', () => {
-    expect(Object.keys(ptBR).length).toBeGreaterThan(0)
+  test('matches the curated source and covers the complete exercise corpus', () => {
+    expect(Object.keys(ptBR)).toHaveLength(EXDB.length)
     expect(ptBR).toEqual(source)
   })
 
@@ -32,7 +32,7 @@ describe('Brazilian Portuguese exercise instructions', () => {
         expect(step.trim(), `${id} step ${index + 1}`).not.toBe('')
         expect(step, `${id} step ${index + 1}`).not.toBe(exercise.st[index])
         expect(step, `${id} step ${index + 1}`).not.toMatch(/(?:^|[^\p{L}])(?:the|your|with|from|towards?|repeat|desired|starting|slowly|hold|while|then|back|straight|ground|feet|hands|body|legs|arms|knees|shoulders)(?=$|[^\p{L}])/iu)
-        expect(step, `${id} step ${index + 1}`).not.toMatch(/(?:^|[^\p{L}])(?:ginásio|anca|abdómen|gémeos|ecrã|core|banda|piso)(?=$|[^\p{L}])/iu)
+        expect(step, `${id} step ${index + 1}`).not.toMatch(/(?:^|[^\p{L}])(?:ginásio|anca|abdómen|gémeos|ecrã|core|banda|piso|omoplata|peso de mão|barra de elevações|pegada por cima|pegada invertida|bola suíça)(?=$|[^\p{L}])/iu)
       })
     }
   })

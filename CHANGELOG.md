@@ -117,7 +117,8 @@ animations are © Gym visual, not CC, which matters if you redistribute them.
 ### Features
 
 - 🇧🇷 **Brazilian Portuguese UI** — Portuguese now has separate Portugal and
-  Brazil options, with Brazilian terminology and date formatting.
+  Brazil options, with Brazilian terminology, date formatting and localized
+  instructions for all 1,324 exercises.
 
 ### Fixes
 

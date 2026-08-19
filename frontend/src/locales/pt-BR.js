@@ -1,5 +1,6 @@
 // Brazilian Portuguese overrides. Shared, region-neutral strings inherit from pt-PT.
 // Tests fingerprint every deliberately inherited entry so upstream changes require review.
+// Some byte-identical overrides intentionally pin wording that must not drift with pt-PT.
 import pt from './pt.js'
 
 export const PT_BR_OVERRIDES = {
@@ -130,6 +131,7 @@ export const PT_BR_OVERRIDES = {
   '{0} days already have data here and will be left alone.': '{0} dias já têm dados aqui e não serão alterados.',
   'Not in the library — added as your own exercises': 'Não estão na biblioteca — foram adicionados como exercícios próprios',
   'Could not read that file': 'Não foi possível ler esse arquivo',
+  'That file\'s columns aren\'t recognised — see the docs for supported apps.': 'Colunas não reconhecidas — consulte a documentação dos aplicativos compatíveis.',
   'That file is empty': 'Esse arquivo está vazio',
   'Nothing to import from that file': 'Não há nada para importar desse arquivo',
   'Your data': 'Seus dados',

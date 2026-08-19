@@ -5,6 +5,7 @@ import ptBR, { PT_BR_OVERRIDES } from '../locales/pt-BR.js'
 import { DATE_LOCALES, LANGS } from './i18n-core.js'
 
 const placeholders = value => [...String(value).matchAll(/\{\d+\}/g)].map(match => match[0]).sort()
+const byCodeUnit = ([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)
 
 describe('Brazilian Portuguese locale', () => {
   test('is a separately selectable locale with Brazilian date formatting', () => {
@@ -23,17 +24,19 @@ describe('Brazilian Portuguese locale', () => {
   test('makes every inherited pt-PT value an explicit reviewed snapshot', () => {
     const inherited = Object.entries(pt)
       .filter(([key]) => !(key in PT_BR_OVERRIDES))
-      .sort(([a], [b]) => a.localeCompare(b))
+      .sort(byCodeUnit)
     const fingerprint = createHash('sha256').update(JSON.stringify(inherited)).digest('hex')
 
-    expect(Object.keys(PT_BR_OVERRIDES)).toHaveLength(222)
-    expect(inherited).toHaveLength(432)
-    expect(fingerprint).toBe('ed0546448785eef2e75ef23523c192f6e19e878b9e920a64a77009c662e731a6')
+    expect(Object.keys(PT_BR_OVERRIDES)).toHaveLength(223)
+    expect(inherited).toHaveLength(431)
+    // If this fails, review the changed keys and wording before accepting a new hash. From
+    // frontend/: node scripts/pt-br-inheritance-fingerprint.mjs --list
+    expect(fingerprint, 'pt-PT inheritance changed; review the inherited pt-BR wording').toBe('414a54d8e6e0941556ba90e4ec14c5a88dbd98666618d20f4c902b705fd0c47c')
   })
 
   test('does not leak European Portuguese UI terms', () => {
     const text = Object.values(ptBR).join('\n')
-    const europeanPortuguese = /(?:^|[^\p{L}])(?:ficheiro\p{L}*|telemóvel\p{L}*|ecrã\p{L}*|regist(?:o|am|ado|ada|ados|adas)|eliminad\p{L}*|definições|cronómetro|detetad\p{L}*|gémeos|abdómen|anca|coifa dos rotadores|escadora|completaste|acabaste|aguentas|definires|completares|aguenta|aguentaste|ficaste|viajares)(?=$|[^\p{L}])/iu
+    const europeanPortuguese = /(?:^|[^\p{L}])(?:ficheiro\p{L}*|telemóvel\p{L}*|ecrã\p{L}*|regist(?:o|am|ado|ada|ados|adas)|eliminad\p{L}*|definições|cronómetro|detetad\p{L}*|gémeos|abdómen|anca|coifa dos rotadores|escadora|completaste|acabaste|aguentas|definires|completares|aguenta|aguentaste|ficaste|viajares|vê|vês)(?=$|[^\p{L}])/iu
     expect(text).not.toMatch(europeanPortuguese)
     expect(text).not.toMatch(/[«»]/u)
     expect(ptBR.Save).toBe('Salvar')

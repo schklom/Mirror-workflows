@@ -221,6 +221,12 @@ openGym is free and stays free: AGPL, no subscription, no paid tier, nothing hel
 sponsors. If it replaced a paid tracker for you and you want to chip in, the Sponsor button at the
 top of the page is there — a star, a bug report or a PR is worth just as much.
 
+<a href="https://buymeacoffee.com/duartesantos" target="_blank">
+  <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png"
+       alt="Buy Me A Coffee"
+       style="height: 60px !important;width: 217px !important;">
+</a>
+
 ## License
 
 [GNU AGPL v3.0](LICENSE) — free and open source. You can self-host, use, modify and share it;

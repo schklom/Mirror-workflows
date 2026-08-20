@@ -118,7 +118,9 @@ animations are © Gym visual, not CC, which matters if you redistribute them.
 
 - 🇧🇷 **Brazilian Portuguese UI** — Portuguese now has separate Portugal and
   Brazil options, with Brazilian terminology, date formatting and localized
-  instructions for all 1,324 exercises.
+  instructions for all 1,324 exercises. Built-in exercise titles show the
+  Brazilian Portuguese name followed by the canonical English name, so both
+  vocabularies remain recognizable and searchable.
 
 ### Fixes
 

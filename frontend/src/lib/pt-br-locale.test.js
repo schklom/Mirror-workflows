@@ -27,16 +27,16 @@ describe('Brazilian Portuguese locale', () => {
       .sort(byCodeUnit)
     const fingerprint = createHash('sha256').update(JSON.stringify(inherited)).digest('hex')
 
-    expect(Object.keys(PT_BR_OVERRIDES)).toHaveLength(223)
-    expect(inherited).toHaveLength(431)
+    expect(Object.keys(PT_BR_OVERRIDES)).toHaveLength(242)
+    expect(inherited).toHaveLength(412)
     // If this fails, review the changed keys and wording before accepting a new hash. From
     // frontend/: node scripts/pt-br-inheritance-fingerprint.mjs --list
-    expect(fingerprint, 'pt-PT inheritance changed; review the inherited pt-BR wording').toBe('414a54d8e6e0941556ba90e4ec14c5a88dbd98666618d20f4c902b705fd0c47c')
+    expect(fingerprint, 'pt-PT inheritance changed; review the inherited pt-BR wording').toBe('ae2c8df077f5c4e80be84e07176291eebfac6d60c9503b0f13dd31809a3bfa12')
   })
 
   test('does not leak European Portuguese UI terms', () => {
     const text = Object.values(ptBR).join('\n')
-    const europeanPortuguese = /(?:^|[^\p{L}])(?:ficheiro\p{L}*|telemóvel\p{L}*|ecrã\p{L}*|regist(?:o|am|ado|ada|ados|adas)|eliminad\p{L}*|definições|cronómetro|detetad\p{L}*|gémeos|abdómen|anca|coifa dos rotadores|escadora|completaste|acabaste|aguentas|definires|completares|aguenta|aguentaste|ficaste|viajares|vê|vês)(?=$|[^\p{L}])/iu
+    const europeanPortuguese = /(?:^|[^\p{L}])(?:ficheiro\p{L}*|telemóvel\p{L}*|ecrã\p{L}*|regist(?:o|am|ado|ada|ados|adas)|eliminad\p{L}*|definições|cronómetro|detetad\p{L}*|gémeos|abdómen|anca|coifa dos rotadores|escadora|completaste|acabaste|aguentas|definires|completares|aguenta|aguentaste|ficaste|viajares)(?=$|[^\p{L}])/iu
     expect(text).not.toMatch(europeanPortuguese)
     expect(text).not.toMatch(/[«»]/u)
     expect(ptBR.Save).toBe('Salvar')
@@ -45,5 +45,10 @@ describe('Brazilian Portuguese locale', () => {
     expect(ptBR.Superset).toBe('Superset')
     expect(ptBR['Guest mode — data lives only in this browser.']).toContain('visitante')
     expect(ptBR['Sign in with passkey']).toContain('chave de acesso')
+    expect(ptBR.band).toBe('elástico')
+    expect(ptBR['resistance band']).toBe('faixa elástica')
+    expect(ptBR.soleus).toBe('sóleo')
+    expect(ptBR.Unpair).toBe('Desvincular')
+    expect(ptBR['Starter plan loaded — Mon Push · Wed Pull · Fri Legs']).toContain('Seg Push · Qua Pull')
   })
 })

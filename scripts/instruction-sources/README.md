@@ -19,6 +19,7 @@ the number and order of steps, retain the intended movement and safety cues,
 and clarify the referenced limb only when the English would otherwise be
 ambiguous in Portuguese. Do not silently repair questionable exercise mechanics
 from the source dataset; record those separately for upstream correction.
+Known source inconsistencies are recorded in `SOURCE_DIVERGENCES.md`.
 
 Add translations in small, reviewable batches. Every translated exercise must
 preserve the English instruction-step count. Then regenerate the runtime pack:

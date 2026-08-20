@@ -13,7 +13,8 @@ Preferred terms keep the instruction pack consistent with Brazilian gym usage.
 | barbell | barra | barra de peso |
 | Smith machine | máquina Smith | barra guiada, unless describing the bar |
 | overhand grip | pegada pronada | pegada por cima |
-| underhand grip | pegada supinada | pegada invertida |
+| underhand grip | pegada supinada | pegada invertida / inversa |
+| reverse grip | determine from the stated palm direction | pegada invertida / inversa |
 | pull-up bar | barra fixa | barra de elevações |
 | push-up | flexão de braços | flexão |
 | set | série | conjunto |

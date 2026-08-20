@@ -540,9 +540,9 @@
   ],
   "1298": [
     "Deite-se de costas no chão com os joelhos flexionados e os pés apoiados no chão.",
-    "Segure o halter em uma das mãos, com a palma voltada para os pés e o braço estendido para cima, em direção ao teto.",
-    "Abaixe o halter lentamente em direção ao peito flexionando o cotovelo, mantendo o braço próximo ao corpo.",
-    "Faça uma pausa quando o halter estiver logo acima do peito e, em seguida, empurre-o de volta à posição inicial estendendo o cotovelo.",
+    "Segure o kettlebell em uma das mãos, com a palma voltada para os pés e o braço estendido para cima, em direção ao teto.",
+    "Abaixe o kettlebell lentamente em direção ao peito flexionando o cotovelo, mantendo o braço próximo ao corpo.",
+    "Faça uma pausa quando o kettlebell estiver logo acima do peito e, em seguida, empurre-o de volta à posição inicial estendendo o cotovelo.",
     "Repita pelo número desejado de repetições e, em seguida, troque de braço."
   ],
   "1299": [
@@ -675,7 +675,7 @@
   "1317": [
     "Ajuste um banco inclinado em um ângulo de 45 graus.",
     "Sente-se no banco de frente para o encosto, com o peito apoiado nele.",
-    "Segure a barra com uma pegada inversa, com as palmas voltadas para baixo e as mãos ligeiramente mais afastadas que a largura dos ombros.",
+    "Segure a barra com uma pegada pronada, com as palmas voltadas para baixo e as mãos ligeiramente mais afastadas que a largura dos ombros.",
     "Mantenha as costas retas e contraia o abdômen.",
     "Puxe a barra em direção à parte superior do abdômen, aproximando as escápulas.",
     "Faça uma breve pausa no alto do movimento.",
@@ -1187,7 +1187,7 @@
   ],
   "1384": [
     "Ajuste a máquina de trenó para um peso adequado.",
-    "Fique em pé na máquina de trenó apoiado em um pé, mantendo o outro fora da plataforma.",
+    "Fique em pé na máquina de trenó apoiado em um pé, mantendo o outro fora do chão.",
     "Segure as alças para obter estabilidade.",
     "Eleve o calcanhar o máximo possível, levantando o corpo sobre a parte anterior do pé.",
     "Faça uma breve pausa no alto e depois abaixe lentamente o calcanhar até a posição inicial.",
@@ -1520,7 +1520,7 @@
     "Flexione os joelhos e cruze os tornozelos atrás do corpo.",
     "Abaixe o corpo flexionando os cotovelos, mantendo o peito erguido e os ombros baixos.",
     "Continue abaixando até que os ombros fiquem abaixo dos cotovelos ou até sentir um alongamento no peito.",
-    "Empurre através das palmas das mãos e estenda os cotovelos para elevar o corpo de volta à posição inicial.",
+    "Empurre as barras com as palmas das mãos e estenda os cotovelos para elevar o corpo de volta à posição inicial.",
     "Repita pelo número desejado de repetições."
   ],
   "1431": [
@@ -1603,7 +1603,7 @@
   "1441": [
     "Sente-se em um banco com os pés apoiados no chão e segure um halter com uma das mãos, mantendo a palma voltada para baixo.",
     "Apoie o antebraço no banco, deixando o punho para fora da borda.",
-    "Flexione lentamente o punho para cima, aproximando o halter do antebraço.",
+    "Estenda lentamente o punho para cima, aproximando o halter do antebraço.",
     "Faça uma breve pausa no topo; depois, abaixe lentamente o halter até a posição inicial.",
     "Repita pelo número desejado de repetições e, depois, troque de braço."
   ],
@@ -2024,7 +2024,7 @@
   "1629": [
     "Fique em pé com os pés afastados na largura dos ombros e segure uma barra com uma pegada supinada, com as mãos mais afastadas que a largura dos ombros.",
     "Mantenha as costas retas e os cotovelos próximos ao tronco.",
-    "Expire e flexione a barra em direção aos ombros, mantendo os braços imóveis.",
+    "Expire e flexione os cotovelos para elevar a barra em direção aos ombros, mantendo os braços imóveis.",
     "Faça uma breve pausa no topo, contraindo os bíceps.",
     "Inspire e abaixe lentamente a barra até a posição inicial, estendendo completamente os braços.",
     "Repita pelo número desejado de repetições."
@@ -2997,7 +2997,7 @@
   "1770": [
     "Sente-se em um banco com as pernas afastadas e os pés apoiados no chão.",
     "Segure um halter com uma mão e posicione o cotovelo na parte interna da coxa, logo acima do joelho.",
-    "Com a palma voltada para cima, flexione o halter em direção ao ombro, mantendo o braço imóvel.",
+    "Com a palma voltada para cima, flexione o cotovelo para elevar o halter em direção ao ombro, mantendo o braço imóvel.",
     "Contraia o bíceps no topo do movimento e, em seguida, abaixe lentamente o halter até a posição inicial.",
     "Repita pelo número desejado de repetições e, em seguida, troque de braço."
   ],
@@ -3541,7 +3541,7 @@
   "2407": [
     "Fique em pé, com o corpo ereto e os pés afastados na largura dos ombros, e segure uma barra com uma pegada supinada, com as palmas voltadas para cima.",
     "Posicione os braços contra o apoio para rosca, mantendo os cotovelos próximos ao tronco.",
-    "Mantendo os braços imóveis, expire e flexione os pesos enquanto contrai os bíceps.",
+    "Mantendo os braços imóveis, expire e flexione os cotovelos para elevar a barra enquanto contrai os bíceps.",
     "Continue elevando a barra até que os bíceps estejam totalmente contraídos e a barra esteja na altura dos ombros.",
     "Mantenha a posição contraída por uma breve pausa enquanto contrai os bíceps.",
     "Inspire e comece a abaixar lentamente a barra até a posição inicial.",
@@ -3550,7 +3550,7 @@
   "2414": [
     "Fique em pé com os pés afastados na largura dos ombros e segure uma barra com uma mão, com a palma voltada para cima.",
     "Apoie a mão oposta na coxa para obter suporte.",
-    "Mantendo o braço imóvel, expire e flexione o peso em direção ao ombro.",
+    "Mantendo o braço imóvel, expire e flexione o cotovelo para elevar o peso em direção ao ombro.",
     "Faça uma breve pausa no topo, contraindo o bíceps.",
     "Inspire e abaixe lentamente o peso até a posição inicial.",
     "Repita pelo número desejado de repetições e, em seguida, troque de braço."
@@ -4922,7 +4922,7 @@
     "Continue alternando os lados pelo número desejado de repetições."
   ],
   "0007": [
-    "Sente-se no aparelho de puxada, com as costas retas e os pés apoiados no chão.",
+    "Sente-se na máquina de cabos, com as costas retas e os pés apoiados no chão.",
     "Segure as alças com pegada pronada, mantendo as mãos um pouco mais afastadas que a largura dos ombros.",
     "Incline-se levemente para trás e puxe as alças em direção ao peito, aproximando as escápulas.",
     "Faça uma breve pausa no ponto de maior contração e retorne lentamente as alças à posição inicial.",
@@ -6093,23 +6093,23 @@
   ],
   "0519": [
     "Comece deitado de costas no chão com os joelhos flexionados e os pés apoiados no chão.",
-    "Segure um halter em cada mão, com as palmas voltadas para os pés e os braços estendidos para cima, em direção ao teto.",
-    "Abaixe um dos halteres em direção ao ombro, mantendo o outro estendido para cima.",
-    "Empurre o halter abaixado de volta à posição inicial enquanto abaixa simultaneamente o outro halter em direção ao ombro.",
-    "Continue alternando o movimento de empurrar com cada halter pelo número desejado de repetições."
+    "Segure um kettlebell em cada mão, com as palmas voltadas para os pés e os braços estendidos para cima, em direção ao teto.",
+    "Abaixe um dos kettlebells em direção ao ombro, mantendo o outro estendido para cima.",
+    "Empurre o kettlebell abaixado de volta à posição inicial enquanto abaixa simultaneamente o outro kettlebell em direção ao ombro.",
+    "Continue alternando o movimento de empurrar com cada kettlebell pelo número desejado de repetições."
   ],
   "0531": [
     "Comece deitado de costas no chão com os joelhos flexionados e os pés apoiados no chão.",
-    "Segure um halter em uma das mãos, com a palma voltada para os pés.",
+    "Segure um kettlebell em uma das mãos, com a palma voltada para os pés.",
     "Estenda o braço para cima, em direção ao teto, mantendo o cotovelo travado e o punho reto.",
-    "Abaixe o halter lentamente de volta à posição inicial, mantendo o controle durante todo o movimento.",
+    "Abaixe o kettlebell lentamente de volta à posição inicial, mantendo o controle durante todo o movimento.",
     "Repita pelo número desejado de repetições e, em seguida, troque de braço."
   ],
   "0545": [
-    "Comece em posição de prancha alta com as mãos sobre os halteres, na largura dos ombros.",
+    "Comece em posição de prancha alta com as mãos sobre os kettlebells, na largura dos ombros.",
     "Abaixe o peito em direção ao chão, mantendo os cotovelos próximos ao corpo.",
-    "Empurre com as mãos de forma explosiva, tirando as mãos dos halteres e estendendo os braços completamente.",
-    "Aterrisse suavemente de volta sobre os halteres e abaixe o peito imediatamente para a próxima repetição.",
+    "Empurre com as mãos de forma explosiva, tirando as mãos dos kettlebells e estendendo os braços completamente.",
+    "Aterrisse suavemente de volta sobre os kettlebells e abaixe o peito imediatamente para a próxima repetição.",
     "Repita pelo número desejado de repetições."
   ],
   "0577": [
@@ -7987,7 +7987,7 @@
     "Sente-se em um banco ou cadeira com as pernas afastadas e os pés apoiados no chão.",
     "Segure uma extremidade da faixa elástica com a mão e pise na outra extremidade com o pé do mesmo lado.",
     "Incline-se levemente para a frente e apoie o cotovelo na parte interna da coxa, logo acima do joelho.",
-    "Com a palma voltada para cima, flexione lentamente a mão em direção ao ombro, mantendo o braço imóvel.",
+    "Com a palma voltada para cima, leve lentamente a mão em direção ao ombro, flexionando o cotovelo e mantendo o braço imóvel.",
     "Faça uma breve pausa no topo e, em seguida, abaixe lentamente a mão até a posição inicial.",
     "Repita pelo número desejado de repetições e, em seguida, troque de lado."
   ],
@@ -8007,7 +8007,7 @@
   ],
   "0023": [
     "Fique em pé, com o corpo ereto e os pés afastados na largura dos ombros, e segure uma barra em cada mão, com as palmas voltadas para a frente.",
-    "Mantenha os braços imóveis e expire enquanto flexiona os pesos, contraindo os bíceps.",
+    "Mantenha os braços imóveis e expire enquanto flexiona os cotovelos para elevar os pesos, contraindo os bíceps.",
     "Continue elevando as barras até que os bíceps estejam totalmente contraídos e as barras estejam na altura dos ombros.",
     "Mantenha a posição contraída por uma breve pausa enquanto contrai os bíceps.",
     "Inspire enquanto começa a abaixar lentamente as barras até a posição inicial.",
@@ -8023,7 +8023,7 @@
   ],
   "0031": [
     "Fique em pé, com o corpo ereto e os pés afastados na largura dos ombros, e segure uma barra com uma pegada supinada, com as palmas voltadas para a frente.",
-    "Mantenha os cotovelos próximos ao tronco e expire enquanto flexiona os pesos, contraindo os bíceps.",
+    "Mantenha os cotovelos próximos ao tronco e expire enquanto os flexiona para elevar a barra, contraindo os bíceps.",
     "Continue elevando a barra até que os bíceps estejam totalmente contraídos e a barra esteja na altura dos ombros.",
     "Mantenha a posição contraída por uma breve pausa enquanto contrai os bíceps.",
     "Inspire enquanto começa a abaixar lentamente a barra até a posição inicial.",
@@ -8038,7 +8038,7 @@
   "0038": [
     "Fique em pé com os pés afastados na largura dos ombros e segure uma barra com uma pegada supinada, com as palmas voltadas para cima.",
     "Deixe a barra suspensa à frente das coxas, com os braços estendidos.",
-    "Mantendo os braços imóveis, flexione a barra em direção ao peito, contraindo os bíceps.",
+    "Mantendo os braços imóveis, flexione os cotovelos para levar a barra em direção ao peito, contraindo os bíceps.",
     "Faça uma breve pausa no topo e, em seguida, abaixe lentamente a barra até a posição inicial.",
     "Repita pelo número desejado de repetições."
   ],
@@ -8081,7 +8081,7 @@
   ],
   "0059": [
     "Sente-se em um banco Scott, com o peito apoiado no suporte e os braços estendidos sobre a borda, segurando uma barra com uma pegada supinada.",
-    "Mantendo os braços imóveis, expire e flexione os pesos enquanto contrai os bíceps.",
+    "Mantendo os braços imóveis, expire e flexione os cotovelos para elevar a barra enquanto contrai os bíceps.",
     "Continue elevando a barra até que os bíceps estejam totalmente contraídos e a barra esteja na altura dos ombros.",
     "Mantenha a posição contraída por uma breve pausa enquanto contrai os bíceps.",
     "Inspire e comece a abaixar lentamente a barra até a posição inicial.",
@@ -8111,7 +8111,7 @@
   "0070": [
     "Sente-se em um banco Scott, com os braços apoiados no suporte e o peito encostado no apoio.",
     "Segure a barra com uma pegada supinada, ligeiramente mais afastada que a largura dos ombros.",
-    "Mantendo os braços imóveis, expire e flexione a barra em direção aos ombros.",
+    "Mantendo os braços imóveis, expire e flexione os cotovelos para elevar a barra em direção aos ombros.",
     "Faça uma breve pausa no topo, contraindo os bíceps.",
     "Inspire e abaixe lentamente a barra até a posição inicial.",
     "Repita pelo número desejado de repetições."
@@ -8121,7 +8121,7 @@
     "Deite-se de bruços no banco, com o peito e o abdômen apoiados nele.",
     "Segure uma barra com uma pegada supinada, com as mãos afastadas na largura dos ombros.",
     "Estenda completamente os braços, deixando a barra suspensa em direção ao chão.",
-    "Mantendo os braços imóveis, expire e flexione os pesos enquanto contrai os bíceps.",
+    "Mantendo os braços imóveis, expire e flexione os cotovelos para elevar a barra enquanto contrai os bíceps.",
     "Continue elevando a barra até que os bíceps estejam totalmente contraídos e a barra esteja na altura dos ombros.",
     "Mantenha a posição contraída por uma breve pausa enquanto contrai os bíceps.",
     "Inspire e comece a abaixar lentamente a barra até a posição inicial.",
@@ -8129,7 +8129,7 @@
   ],
   "0080": [
     "Fique em pé, com o corpo ereto e os pés afastados na largura dos ombros, e segure uma barra com uma pegada pronada, com as palmas voltadas para baixo.",
-    "Mantenha os braços imóveis e expire enquanto flexiona a barra para cima, contraindo os bíceps.",
+    "Mantenha os braços imóveis e expire enquanto flexiona os cotovelos para elevar a barra, contraindo os bíceps.",
     "Continue elevando a barra até que os bíceps estejam totalmente contraídos e a barra esteja na altura dos ombros.",
     "Mantenha a posição contraída por uma breve pausa enquanto contrai os bíceps.",
     "Inspire enquanto abaixa lentamente a barra até a posição inicial, mantendo os braços imóveis.",
@@ -8137,7 +8137,7 @@
   ],
   "0081": [
     "Sente-se em um banco Scott, com o peito apoiado no suporte e os braços estendidos para baixo, segurando uma barra com uma pegada pronada.",
-    "Mantendo os braços imóveis, expire e flexione a barra para cima enquanto contrai os bíceps.",
+    "Mantendo os braços imóveis, expire e flexione os cotovelos para elevar a barra enquanto contrai os bíceps.",
     "Continue elevando a barra até que os bíceps estejam totalmente contraídos e a barra esteja na altura dos ombros.",
     "Mantenha a posição contraída por uma breve pausa enquanto contrai os bíceps.",
     "Inspire e abaixe lentamente a barra até a posição inicial.",
@@ -8146,7 +8146,7 @@
   "0089": [
     "Sente-se em um banco com os pés apoiados no chão e segure uma barra com uma pegada supinada, com as mãos afastadas na largura dos ombros.",
     "Apoie os braços na parte interna das coxas, logo acima dos joelhos, e deixe a barra suspensa à frente do corpo.",
-    "Mantendo os braços imóveis, expire e flexione a barra em direção aos ombros, contraindo os bíceps.",
+    "Mantendo os braços imóveis, expire e flexione os cotovelos para elevar a barra em direção aos ombros, contraindo os bíceps.",
     "Mantenha a posição contraída por uma breve pausa e, em seguida, inspire e abaixe lentamente a barra até a posição inicial.",
     "Repita pelo número desejado de repetições."
   ],
@@ -8160,7 +8160,7 @@
   "0106": [
     "Fique em pé, com o corpo ereto e os pés afastados na largura dos ombros, e segure uma barra com uma pegada supinada, mantendo as mãos próximas uma da outra.",
     "Mantenha os cotovelos próximos ao tronco e os braços imóveis durante todo o movimento.",
-    "Expire enquanto flexiona os pesos, contraindo os bíceps. Continue elevando a barra até que os bíceps estejam totalmente contraídos e a barra esteja na altura dos ombros.",
+    "Expire enquanto flexiona os cotovelos para elevar a barra, contraindo os bíceps. Continue até que os bíceps estejam totalmente contraídos e a barra esteja na altura dos ombros.",
     "Mantenha a posição contraída por uma breve pausa enquanto contrai os bíceps.",
     "Inspire enquanto começa a retornar lentamente a barra à posição inicial.",
     "Repita pelo número desejado de repetições."
@@ -8175,7 +8175,7 @@
   "0110": [
     "Fique em pé, com o corpo ereto e os pés afastados na largura dos ombros, e segure uma barra com uma pegada supinada, com as palmas voltadas para cima.",
     "Mantenha os cotovelos próximos ao tronco e os braços imóveis.",
-    "Expire e flexione os pesos enquanto contrai os bíceps, aproximando a barra o máximo possível dos ombros.",
+    "Expire e flexione os cotovelos para elevar a barra enquanto contrai os bíceps, aproximando-a o máximo possível dos ombros.",
     "Mantenha a posição contraída por uma breve pausa enquanto contrai os bíceps.",
     "Inspire e abaixe lentamente a barra até a posição inicial.",
     "Repita pelo número desejado de repetições."
@@ -8183,7 +8183,7 @@
   "0113": [
     "Fique em pé, com o corpo ereto e os pés afastados na largura dos ombros, e segure uma barra com uma pegada pronada, com as mãos mais afastadas que a largura dos ombros.",
     "Deixe a barra suspensa à frente das coxas, com os braços estendidos e as palmas voltadas para longe do corpo.",
-    "Mantendo os braços imóveis, expire e flexione a barra para cima, contraindo os bíceps.",
+    "Mantendo os braços imóveis, expire e flexione os cotovelos para elevar a barra, contraindo os bíceps.",
     "Continue elevando a barra até que os bíceps estejam totalmente contraídos e a barra esteja na altura dos ombros.",
     "Mantenha a posição contraída por uma breve pausa enquanto contrai os bíceps.",
     "Inspire e comece a abaixar lentamente a barra até a posição inicial.",
@@ -8621,7 +8621,7 @@
   "0365": [
     "Sente-se em um banco, com os pés firmes no chão, e segure um halter em cada mão, com as palmas voltadas para cima.",
     "Apoie os antebraços no banco, deixando os punhos para fora da borda.",
-    "Mantendo os braços imóveis, expire e flexione os punhos, elevando os halteres em direção aos ombros.",
+    "Mantendo os braços imóveis, expire e flexione os cotovelos para elevar os halteres em direção aos ombros, sem dobrar os punhos.",
     "Faça uma breve pausa no topo e, em seguida, inspire e abaixe lentamente os halteres de volta à posição inicial.",
     "Repita pelo número desejado de repetições."
   ],
@@ -8725,7 +8725,7 @@
   "0397": [
     "Sente-se em um banco, com os pés firmes no chão, e segure um halter em cada mão, com as palmas voltadas uma para a outra.",
     "Apoie os antebraços sobre as coxas, deixando os halteres penderem para baixo.",
-    "Mantendo os punhos em posição neutra, flexione-os e eleve os halteres em direção aos ombros.",
+    "Mantendo os punhos em posição neutra, flexione os cotovelos para elevar os halteres em direção aos ombros.",
     "Faça uma breve pausa no topo e, em seguida, abaixe lentamente os halteres de volta à posição inicial.",
     "Repita pelo número desejado de repetições."
   ],
@@ -9111,7 +9111,7 @@
     "Sente-se em um banco ou cadeira, com os pés totalmente apoiados no chão.",
     "Segure a faixa elástica com uma pegada pronada, as palmas das mãos voltadas para baixo, e enrole-a nos dedos.",
     "Apoie os antebraços nas coxas, deixando os punhos para fora da borda.",
-    "Flexione lentamente os punhos para cima, contraindo os antebraços.",
+    "Estenda lentamente os punhos para cima, contraindo os antebraços.",
     "Faça uma breve pausa no topo e, em seguida, abaixe lentamente os punhos até a posição inicial.",
     "Repita pelo número desejado de repetições."
   ],
@@ -9119,21 +9119,21 @@
     "Sente-se em um banco com os pés apoiados no chão e os joelhos flexionados.",
     "Segure uma barra com pegada pronada, palmas voltadas para baixo e mãos afastadas na largura dos ombros.",
     "Apoie os antebraços nas coxas, deixando os punhos para fora da borda.",
-    "Mantendo os antebraços imóveis, expire e flexione os punhos para cima o máximo possível.",
+    "Mantendo os antebraços imóveis, expire e estenda os punhos para cima o máximo possível.",
     "Mantenha a posição contraída por uma breve pausa; depois, inspire e abaixe lentamente a barra até a posição inicial.",
     "Repita pelo número desejado de repetições."
   ],
   "0082": [
     "Sente-se em um banco com os pés apoiados no chão e segure uma barra com pegada pronada, com as palmas voltadas para baixo.",
     "Apoie os antebraços nas coxas, deixando os punhos para fora da borda.",
-    "Flexione lentamente os punhos para cima, aproximando a barra do corpo.",
+    "Estenda lentamente os punhos para cima, aproximando a barra do corpo.",
     "Faça uma breve pausa no topo; depois, abaixe lentamente a barra até a posição inicial.",
     "Repita pelo número desejado de repetições."
   ],
   "0104": [
     "Fique em pé, com o corpo ereto e os pés afastados na largura dos ombros, e segure uma barra com pegada pronada.",
     "Apoie a barra no dorso das mãos, com as palmas voltadas para baixo e os dedos apontando em direção ao corpo.",
-    "Mantendo os braços imóveis, expire e flexione os punhos para cima o máximo possível.",
+    "Mantendo os braços imóveis, expire e estenda os punhos para cima o máximo possível.",
     "Mantenha a posição contraída por uma breve pausa; depois, inspire e abaixe lentamente a barra até a posição inicial.",
     "Repita pelo número desejado de repetições."
   ],
@@ -9156,7 +9156,7 @@
     "Prenda um cabo a uma polia baixa e sente-se em um banco de frente para a máquina de cabos.",
     "Segure o puxador do cabo com pegada pronada, com as palmas voltadas para baixo.",
     "Apoie os antebraços nas coxas, deixando os punhos para fora da borda.",
-    "Mantendo os antebraços imóveis, expire e flexione os punhos para cima o máximo possível.",
+    "Mantendo os antebraços imóveis, expire e estenda os punhos para cima o máximo possível.",
     "Faça uma breve pausa no topo; depois, inspire e abaixe lentamente os punhos até a posição inicial.",
     "Repita pelo número desejado de repetições."
   ],
@@ -9164,7 +9164,7 @@
     "Fique em pé de frente para uma máquina de cabos, com os pés afastados na largura dos ombros.",
     "Segure o puxador do cabo com pegada pronada, com as palmas voltadas para baixo.",
     "Mantenha os braços estendidos e os cotovelos próximos ao corpo.",
-    "Flexione lentamente os punhos para cima, aproximando o puxador do cabo do corpo.",
+    "Estenda lentamente os punhos para cima, aproximando o puxador do cabo do corpo.",
     "Faça uma breve pausa no topo; depois, abaixe lentamente o puxador do cabo até a posição inicial.",
     "Repita pelo número desejado de repetições."
   ],
@@ -9196,7 +9196,7 @@
     "Segure um halter com uma das mãos em pegada pronada, com a palma voltada para baixo.",
     "Apoie o antebraço na coxa, deixando o punho para fora da borda.",
     "Abaixe lentamente o halter em direção ao chão, flexionando o punho.",
-    "Faça uma breve pausa embaixo; depois, flexione lentamente o punho para cima, aproximando-o do corpo.",
+    "Faça uma breve pausa embaixo; depois, estenda lentamente o punho para cima, aproximando-o do corpo.",
     "Repita pelo número desejado de repetições e, depois, troque de braço."
   ],
   "0364": [
@@ -9209,14 +9209,14 @@
   "0367": [
     "Sente-se em um banco com os pés apoiados no chão e segure um halter com uma das mãos, mantendo a palma voltada para baixo.",
     "Apoie o antebraço no banco, deixando o punho para fora da borda.",
-    "Flexione lentamente o punho para cima, aproximando o halter do antebraço.",
+    "Estenda lentamente o punho para cima, aproximando o halter do antebraço.",
     "Faça uma breve pausa no topo; depois, abaixe lentamente o halter até a posição inicial.",
     "Repita pelo número desejado de repetições e, depois, troque de braço."
   ],
   "0368": [
     "Sente-se em um banco com os pés apoiados no chão e segure um halter em cada mão, com as palmas voltadas para baixo.",
     "Apoie os antebraços no banco, deixando os punhos para fora da borda.",
-    "Flexione lentamente os punhos para cima, aproximando os halteres do corpo.",
+    "Estenda lentamente os punhos para cima, aproximando os halteres do corpo.",
     "Faça uma breve pausa no topo; depois, abaixe lentamente os halteres até a posição inicial.",
     "Repita pelo número desejado de repetições."
   ],
@@ -9231,7 +9231,7 @@
     "Sente-se em um banco ou cadeira com os pés apoiados no chão.",
     "Segure um halter em cada mão com pegada pronada, mantendo as palmas voltadas para baixo.",
     "Apoie os antebraços nas coxas, deixando os punhos para fora da borda.",
-    "Flexione lentamente os punhos para cima, aproximando os halteres do corpo.",
+    "Estenda lentamente os punhos para cima, aproximando os halteres do corpo.",
     "Faça uma breve pausa no topo; depois, abaixe lentamente os halteres até a posição inicial.",
     "Repita pelo número desejado de repetições."
   ],
@@ -9276,7 +9276,7 @@
     "Fique em pé de frente para a máquina Smith, com os pés afastados na largura dos ombros.",
     "Segure a barra com pegada pronada e as mãos afastadas na largura dos ombros.",
     "Mantenha as costas retas e os cotovelos próximos ao corpo.",
-    "Flexione lentamente os punhos para cima, aproximando a barra do corpo.",
+    "Estenda lentamente os punhos para cima, aproximando a barra do corpo.",
     "Faça uma breve pausa no topo; depois, abaixe lentamente a barra até a posição inicial.",
     "Repita pelo número desejado de repetições."
   ],

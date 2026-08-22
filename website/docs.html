@@ -183,8 +183,15 @@ docker compose up -d</code></pre>
      own hardware, synced across devices, with profiles for the people you train with: self-host.
      You can start with the app and move to a server later — the backup file migrates everything.</p>
   <h3>Where does the exercise database come from?</h3>
-  <p>From <a href="https://github.com/hasaneyldrm/exercises-dataset" rel="noopener">hasaneyldrm/exercises-dataset</a>
-     (CC-licensed): 1,324 exercises with animations and instructions in 10 languages.</p>
+  <p>From <a href="https://github.com/hasaneyldrm/exercises-dataset" rel="noopener">hasaneyldrm/exercises-dataset</a>:
+     1,324 exercises with animations and instructions in 10 languages. That dataset licenses the two
+     halves differently, and so does openGym: the exercise metadata and instruction text are
+     <b>MIT</b>, while the images and animations are
+     <b>© <a href="https://gymvisual.com/" rel="noopener">Gym visual</a></b>, used under the
+     dataset's terms rather than openGym's AGPL.</p>
+  <p>openGym does not redistribute that media — your instance downloads it from the upstream source on
+     first run. If you want to reuse it yourself, commercially or otherwise, get your own licence from
+     Gym visual first (<a href="https://gymvisual.com/content/3-terms-and-conditions-of-use" rel="noopener">terms&nbsp;&amp;&nbsp;conditions</a>).</p>
 </main>
 
 <footer><div class="wrap foot">

@@ -100,7 +100,16 @@ docker compose up -d
 ```
 
 Open **http://localhost:8080**, tap **Create profile**, and you're in. First launch downloads
-the exercise media (~140 MB) once. Prefer building the images yourself instead of pulling from
+the exercise media (~140 MB) once.
+
+> **About that media:** it comes from
+> [hasaneyldrm/exercises-dataset](https://github.com/hasaneyldrm/exercises-dataset), whose
+> metadata and instruction text are MIT — but whose images and animations are
+> **© [Gym visual](https://gymvisual.com/)**, used under that dataset's terms and *not* under
+> openGym's AGPL. openGym ships none of it: your instance downloads it from upstream. Reusing it
+> yourself, commercially or not, needs your own licence from Gym visual — see
+> [NOTICE.md](NOTICE.md).
+ Prefer building the images yourself instead of pulling from
 `gitea.com`? Drop the `pull` step and run `docker compose up -d --build` — you don't need Node or
 a build step locally either way.
 
@@ -187,7 +196,8 @@ Rough, community-driven — ideas and PRs welcome:
 ## Tech
 
 React 19 + Vite (React Router, Zustand) · Node (no framework) · nginx · Docker Compose ·
-WebAuthn · exercise data from [hasaneyldrm/exercises-dataset](https://github.com/hasaneyldrm/exercises-dataset).
+WebAuthn · exercise data from [hasaneyldrm/exercises-dataset](https://github.com/hasaneyldrm/exercises-dataset)
+(MIT metadata and instructions; media © Gym visual — see [License](#license)).
 No database server, no cloud dependencies — the frontend builds inside Docker, so self-hosting
 stays a one-command `docker compose up`.
 
@@ -232,8 +242,18 @@ top of the page is there — a star, a bug report or a PR is worth just as much.
 
 ## License
 
-[GNU AGPL v3.0](LICENSE) — free and open source. You can self-host, use, modify and share it;
-if you run a modified version as a network service, you must offer that version's source under
-the same license. Nobody can turn openGym into a closed, proprietary product.
+**openGym's own code** is [GNU AGPL v3.0](LICENSE) — free and open source. You can self-host,
+use, modify and share it; if you run a modified version as a network service, you must offer that
+version's source under the same license. Nobody can turn openGym into a closed, proprietary
+product.
 
-Exercise images/GIFs are fetched from the upstream dataset and keep their own terms — see [NOTICE.md](NOTICE.md).
+**Third-party content is not, and openGym cannot sublicense it.** The exercise metadata and
+instruction text come from
+[hasaneyldrm/exercises-dataset](https://github.com/hasaneyldrm/exercises-dataset) under the
+**MIT** license. The exercise images and animations are **© [Gym visual](https://gymvisual.com/)**
+and are used under that dataset's terms — openGym does not redistribute them (your instance
+fetches them at first run) and does not relicense them under the AGPL. To reuse that media
+yourself, get your own licence from Gym visual
+([terms](https://gymvisual.com/content/3-terms-and-conditions-of-use)).
+
+Full third-party notices, including the body-diagram geometry: **[NOTICE.md](NOTICE.md)**.

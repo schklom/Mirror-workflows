@@ -46,11 +46,54 @@ SOFTWARE.
 
 ## Exercise data & media
 
-The exercise names, instructions (English in `frontend/src/lib/exercises-data.js`, other
-languages in `frontend/src/instr/`, regenerated via `scripts/build-instructions.mjs`), images
-and animations (fetched into `media/` at build time) come from
-[**hasaneyldrm/exercises-dataset**](https://github.com/hasaneyldrm/exercises-dataset)
-and are **not** covered by openGym's AGPL license — they remain under that dataset's own terms.
-The media files are not distributed in this repository; they are downloaded from the upstream
-source on first run. If you redistribute openGym with the media included, review the upstream
-license first.
+Both come from [**hasaneyldrm/exercises-dataset**](https://github.com/hasaneyldrm/exercises-dataset),
+and that dataset licenses them differently. Neither is covered by openGym's AGPL license.
+
+### Metadata & instruction text — MIT
+
+The exercise names, attributes and instructions (English in `frontend/src/lib/exercises-data.js`,
+other languages in `frontend/src/instr/`, regenerated via `scripts/build-instructions.mjs`) are
+MIT-licensed, reproduced below.
+
+```
+MIT License
+
+Copyright (c) 2026 Hasan Emir Yıldırım
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation and data files (the "Software"),
+to deal in the Software without restriction, including without limitation the
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+sell copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+### Images & animations — © Gym visual, not MIT and not AGPL
+
+> **© Gym visual — https://gymvisual.com/**
+
+The exercise thumbnails (180×180) and animations are **© [Gym visual](https://gymvisual.com/)**.
+They are in the upstream dataset with the rights holder's written permission, granted to that
+dataset; that permission is **not transferable**. Their use is governed by Gym visual's
+[Terms & Conditions](https://gymvisual.com/content/3-terms-and-conditions-of-use) — not by the MIT
+license above, and not by openGym's AGPL.
+
+**openGym does not redistribute this media.** It is not in this repository, not in its history,
+and not in the published Docker images or the Android APK. A self-hosted instance downloads it
+from the upstream source on first `docker compose up`; the mobile and demo builds load it from a
+CDN at runtime.
+
+If you want to reuse the media — in openGym or anywhere else, commercially or not — **obtain your
+own license from Gym visual first**, and keep the `© Gym visual — https://gymvisual.com/`
+attribution intact wherever it appears.

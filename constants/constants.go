@@ -1,6 +1,6 @@
 package constants
 
-const VERSION = "0.16.0"
+const VERSION = "0.17.0"
 
 const (
 	CryptoProtoV1 uint16 = 1

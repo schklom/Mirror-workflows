@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
 
+echo pwd
+pwd
+
+echo "ls -ahl"
+ls -ahl
+
+
 cp Dockerfile Dockerfile.bak
 echo "RUN apk add --no-cache git" >> Dockerfile
 echo "RUN git clone --depth 1 https://github.com/hasaneyldrm/exercises-dataset ds" >> Dockerfile

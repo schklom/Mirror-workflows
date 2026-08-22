@@ -6,6 +6,8 @@ pwd
 echo "ls -ahl"
 ls -ahl
 
+echo "ls -ahl patch"
+ls -ahl patch
 
 cp Dockerfile Dockerfile.bak
 echo "RUN apk add --no-cache git" >> Dockerfile

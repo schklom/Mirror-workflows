@@ -10,4 +10,7 @@ Not in this folder (added at deploy time):
   icons the PWA uses, so the browser tab, home screen and app all match)
 - `openGym.apk` — the signed release build (see `../docs/MOBILE.md`)
 
-`site.js` fetches the star/fork counts from the public GitHub API at view time.
+`site.js` fetches the star/issue counts and the release timeline from the public
+gitea.com API at view time. It pointed at api.github.com until that account was
+suspended; the two URLs go back once it is restored, together with the notice
+block at the top of `index.html` and the demo iframe.

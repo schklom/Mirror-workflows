@@ -178,3 +178,87 @@ table.cfg td:first-child { white-space: nowrap; width: 1%; padding-right: 1.2rem
   table.cfg td:first-child { white-space: normal; width: auto; padding-top: .7rem; border-top: 1px solid var(--line, #24303f); }
   table.cfg tr:first-child td:first-child { border-top: 0; }
 }
+
+/* ---------- suspension notice (GitHub account suspended → gitea.com mirror) ----------
+   Temporary: remove this block together with the .alert markup once the account is back. */
+.alert {
+  background:
+    radial-gradient(1200px 260px at 50% -40px, rgba(255, 159, 10, .18), transparent 70%),
+    linear-gradient(180deg, #241a10, #1a1410);
+  border-bottom: 1px solid rgba(255, 159, 10, .38);
+  border-top: 3px solid #ff9f0a;
+  padding: 40px 0 44px;
+  text-align: center;
+}
+.alert-tag {
+  display: inline-block; margin-bottom: 16px;
+  background: rgba(255, 159, 10, .16); color: #ffb340;
+  border: 1px solid rgba(255, 159, 10, .35); border-radius: 999px;
+  padding: 6px 15px; font-size: 13px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .09em;
+}
+.alert h2 {
+  font-size: clamp(27px, 5.4vw, 46px); line-height: 1.15; letter-spacing: -.03em;
+  color: #ffd8a3; max-width: 900px; margin: 0 auto;
+}
+.alert p { color: #e3d5c4; font-size: clamp(15px, 2vw, 17.5px); max-width: 720px; margin: 16px auto 0; }
+.alert p b { color: #fff; }
+.alert .alert-btn {
+  margin-top: 20px; background: #ff9f0a; color: #1a1206;
+  font-size: clamp(15px, 2.4vw, 19px); font-weight: 700; padding: 15px 26px;
+  word-break: break-word;
+}
+.alert .alert-note { color: #a9977f; font-size: 14px; margin-top: 18px; }
+.alert code { background: rgba(255, 159, 10, .12); color: #ffc978; }
+
+/* offline live demo */
+.offline {
+  background: var(--card); border: 1px dashed var(--line); border-radius: 18px;
+  padding: 34px 26px; text-align: center; margin-top: 22px;
+}
+.offline .big { font-size: 34px; display: block; margin-bottom: 10px; }
+.offline p { color: var(--dim); max-width: 620px; margin: 0 auto 6px; }
+
+/* ---------- Discord call-to-action ----------
+   Blurple rather than the lime accent on purpose: this block has to read as a
+   different kind of thing from the download/demo buttons around it. */
+.dc-wrap { padding: 8px 0 46px; }
+.dc {
+  display: flex; align-items: center; gap: 26px;
+  max-width: 720px; margin: 0 auto; text-align: left;
+  background:
+    radial-gradient(700px 200px at 12% -30px, rgba(88, 101, 242, .22), transparent 70%),
+    linear-gradient(180deg, #1a1c2e, #15161f);
+  border: 1px solid rgba(88, 101, 242, .42);
+  border-radius: 20px; padding: 28px 30px;
+}
+.dc:hover { border-color: rgba(88, 101, 242, .72); }
+.dc-icon {
+  flex: 0 0 76px; width: 76px; height: 76px; border-radius: 20px;
+  background: #5865f2; display: flex; align-items: center; justify-content: center;
+}
+/* The Discord mark is 71:55, not square — forcing it into a square box
+   letterboxes it and it reads as vertically off-centre. */
+.dc-icon svg { width: 44px; height: 34px; fill: #fff; display: block; }
+.dc-body { flex: 1 1 auto; min-width: 0; }
+.dc h3 { font-size: clamp(19px, 3vw, 23px); letter-spacing: -.02em; margin-bottom: 6px; }
+.dc p { color: var(--dim); font-size: 14.5px; }
+.dc .btn {
+  background: #5865f2; color: #fff; white-space: nowrap;
+  flex: 0 0 auto; align-self: center;
+}
+.dc .btn:hover { filter: brightness(1.12); }
+@media (max-width: 620px) {
+  .dc { flex-direction: column; text-align: center; gap: 18px; padding: 26px 22px; }
+  .dc .btn { width: 100%; text-align: center; }
+}
+
+/* Discord button inside the suspended-account banner */
+.alert .alert-actions {
+  display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; align-items: stretch;
+}
+.alert .alert-actions .btn { margin-top: 20px; }
+.alert .dc-btn {
+  background: #5865f2; color: #fff;
+  font-size: clamp(15px, 2.4vw, 19px); font-weight: 700; padding: 15px 26px;
+}

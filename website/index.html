@@ -14,7 +14,7 @@
 <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
 <link rel="icon" type="image/png" sizes="180x180" href="icon-180.png">
 <link rel="apple-touch-icon" href="icon-180.png">
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="styles.css?v=3">
 <!-- Umami web analytics for opengym.duarte-santos.ch (self-hosted, cookieless). -->
 <script defer src="https://stats.duarte-santos.ch/script.js" data-website-id="db36019e-50f4-453c-9c56-d0588aefe233"></script>
 <script type="application/ld+json">
@@ -40,10 +40,30 @@
     <a href="#demo" class="hide-s">Demo</a>
     <a href="docs.html">Docs</a>
     <a href="about.html" class="hide-s">About</a>
-    <a href="https://github.com/DuarteSantos8/openGym" rel="noopener"><span data-gh="stars">GitHub</span></a>
+    <a href="https://gitea.com/DuarteSantos/openGym" rel="noopener"><span data-gh="stars">Gitea</span></a>
+    <a href="https://discord.gg/e62jY6fwVb" rel="noopener">Discord</a>
     <a class="cta" href="#download">Download</a>
   </div>
 </div></nav>
+
+<!-- TEMPORARY: GitHub account suspended -> repo lives on gitea.com. Remove this block and
+     revert the links (+ site.js) to github.com once the account is restored. -->
+<div class="alert" role="alert"><div class="wrap">
+  <div class="alert-tag">⚠️ Important notice</div>
+  <h2>My GitHub account has been suspended — the openGym repo is gone with it</h2>
+  <p><b>github.com/DuarteSantos8/openGym is offline.</b> The repository, the releases and the
+     GitHub-Pages demo are all unreachable — not by choice. openGym itself is unaffected:
+     the app, the APK on this page and every self-hosted install keep working exactly as before.</p>
+  <p>Until I get the account back, the code lives here — and the Discord is where I will announce
+     the moment it is resolved:</p>
+  <div class="alert-actions">
+    <a class="btn alert-btn" href="https://gitea.com/DuarteSantos/openGym" rel="noopener">gitea.com/DuarteSantos/openGym</a>
+    <a class="btn dc-btn" href="https://discord.gg/e62jY6fwVb" rel="noopener">Join the Discord</a>
+  </div>
+  <p class="alert-note">Every repository link on this site now points at that mirror — same code,
+     same AGPL-3.0 license, same history.</p>
+</div></div>
+
 
 <header class="hero"><div class="wrap">
   <div class="logo">
@@ -56,9 +76,21 @@
   <div class="hero-btns">
     <a class="btn" href="#download">Get openGym</a>
     <a class="btn ghost" href="#demo">Try the live demo</a>
-    <a class="btn ghost" href="https://github.com/DuarteSantos8/openGym" rel="noopener">GitHub <span class="ct" data-gh="stars">★</span></a>
+    <a class="btn ghost" href="https://gitea.com/DuarteSantos/openGym" rel="noopener">Gitea <span class="ct" data-gh="stars">★</span></a>
   </div>
 </div></header>
+
+<div class="dc-wrap"><div class="wrap">
+  <div class="dc">
+    <div class="dc-icon"><svg viewBox="0 0 71 55" width="44" height="34" aria-hidden="true"><path d="M60.1045 4.8978C55.5792 2.8214 50.7265 1.2916 45.6527 0.41542C45.5603 0.39851 45.468 0.440769 45.4204 0.525289C44.7963 1.6353 44.105 3.0834 43.6209 4.2216C38.1637 3.4046 32.7345 3.4046 27.3892 4.2216C26.905 3.0581 26.1886 1.6353 25.5617 0.525289C25.5141 0.443589 25.4218 0.40133 25.3294 0.41542C20.2584 1.2888 15.4057 2.8186 10.8776 4.8978C10.8384 4.9147 10.8048 4.9429 10.7825 4.9795C1.57795 18.7309 -0.943561 32.1443 0.293408 45.3914C0.299005 45.4562 0.335386 45.5182 0.385761 45.5576C6.45866 50.0174 12.3413 52.7249 18.1147 54.5195C18.2071 54.5477 18.305 54.5139 18.3638 54.4378C19.7295 52.5728 20.9469 50.6063 21.9907 48.5383C22.0523 48.4172 21.9935 48.2735 21.8676 48.2256C19.9366 47.4931 18.0979 46.6 16.3292 45.5858C16.1893 45.5041 16.1781 45.304 16.3068 45.2082C16.679 44.9293 17.0513 44.6391 17.4067 44.3461C17.4711 44.2926 17.5606 44.2813 17.6362 44.3151C29.2558 49.6217 41.8354 49.6217 53.3179 44.3151C53.3935 44.2785 53.483 44.2898 53.5502 44.3433C53.9057 44.6363 54.2779 44.9293 54.6529 45.2082C54.7816 45.304 54.7732 45.5041 54.6333 45.5858C52.8646 46.6197 51.0259 47.4931 49.0921 48.2228C48.9662 48.2707 48.9102 48.4172 48.9718 48.5383C50.038 50.6034 51.2554 52.5699 52.5959 54.435C52.6519 54.5139 52.7526 54.5477 52.845 54.5195C58.6464 52.7249 64.529 50.0174 70.6019 45.5576C70.6551 45.5182 70.6887 45.459 70.6943 45.3942C72.1747 30.0791 68.2147 16.7757 60.1968 4.9823C60.1772 4.9429 60.1437 4.9147 60.1045 4.8978ZM23.7259 37.3253C20.2276 37.3253 17.3451 34.1136 17.3451 30.1693C17.3451 26.225 20.1717 23.0133 23.7259 23.0133C27.308 23.0133 30.1626 26.2532 30.1066 30.1693C30.1066 34.1136 27.28 37.3253 23.7259 37.3253ZM47.3178 37.3253C43.8196 37.3253 40.9371 34.1136 40.9371 30.1693C40.9371 26.225 43.7636 23.0133 47.3178 23.0133C50.9 23.0133 53.7545 26.2532 53.6986 30.1693C53.6986 34.1136 50.9 37.3253 47.3178 37.3253Z"/></svg></div>
+    <div class="dc-body">
+      <h3>Join the openGym Discord</h3>
+      <p>Release announcements, self-hosting help with Docker, reverse proxies and passkeys,
+         and somewhere to report a bug. It is where you will hear about a new version first.</p>
+    </div>
+    <a class="btn" href="https://discord.gg/e62jY6fwVb" rel="noopener">Join the Discord</a>
+  </div>
+</div></div>
 
 <section id="features"><div class="wrap">
   <p class="kicker">Everything a training log needs</p>
@@ -103,14 +135,18 @@
 
 <section id="demo"><div class="wrap">
   <p class="kicker">Live demo</p>
-  <h2>Try it right here</h2>
-  <p class="lead">This is the real app with seeded example data, running in your browser —
-     poke around, start a workout, change anything.</p>
-  <div class="demo-wrap">
-    <div class="phone"><iframe src="https://duartesantos8.github.io/openGym/" title="openGym live demo" loading="lazy"></iframe></div>
+  <h2>Temporarily offline</h2>
+  <p class="lead">The in-browser demo ran on GitHub Pages, which went down with my suspended
+     GitHub account. It comes straight back once the account is restored.</p>
+  <div class="offline">
+    <span class="big">🚧</span>
+    <p><b>Want to try openGym in the meantime?</b> Install the Android app below — it needs no
+       account and no server — or run the self-hosted version with one <code>docker compose up</code>.</p>
+    <div class="hero-btns" style="margin-top:18px">
+      <a class="btn" href="#download">Get openGym</a>
+      <a class="btn ghost" href="https://gitea.com/DuarteSantos/openGym" rel="noopener">Browse the code on Gitea</a>
+    </div>
   </div>
-  <p class="demo-note">Demo data lives only in this browser tab-family and can be reset in its
-     Settings. Prefer a full window? <a href="https://duartesantos8.github.io/openGym/" rel="noopener">Open the demo full-screen →</a></p>
 </div></section>
 
 <section id="download"><div class="wrap">
@@ -165,18 +201,22 @@
   <h2>AGPL-licensed, forever</h2>
   <p class="lead">The code is public, the license keeps every fork open, and there is no
      commercial version waiting behind a curtain. If openGym is useful to you,
-     a ⭐ on GitHub helps more people find it.</p>
+     a ⭐ on Gitea helps more people find it.</p>
+  <p class="lead">There is a Discord for release announcements, self-hosting help and bug
+     reports. It is the fastest way to hear about a new version — and the fastest way
+     to get unstuck if a reverse proxy or a passkey is fighting you.</p>
   <div class="os">
-    <div class="stat"><b data-gh="stars-n">–</b><span>GitHub stars</span></div>
+    <div class="stat"><b data-gh="stars-n">–</b><span>Gitea stars</span></div>
     <div class="stat"><b data-gh="forks-n">–</b><span>forks</span></div>
     <div class="stat"><b data-gh="issues-n">–</b><span>open issues</span></div>
     <div class="stat"><b>1,324</b><span>exercises</span></div>
     <div class="stat"><b>12</b><span>languages</span></div>
   </div>
   <div class="hero-btns" style="justify-content:flex-start;margin-top:24px">
-    <a class="btn ghost" href="https://github.com/DuarteSantos8/openGym" rel="noopener">openGym on GitHub</a>
-    <a class="btn ghost" href="https://github.com/DuarteSantos8/openGym/blob/main/CONTRIBUTING.md" rel="noopener">Contributing</a>
-    <a class="btn ghost" href="https://github.com/DuarteSantos8/openGym/blob/main/CHANGELOG.md" rel="noopener">Changelog</a>
+    <a class="btn ghost" href="https://gitea.com/DuarteSantos/openGym" rel="noopener">openGym on Gitea</a>
+    <a class="btn ghost" href="https://gitea.com/DuarteSantos/openGym/src/branch/main/CONTRIBUTING.md" rel="noopener">Contributing</a>
+    <a class="btn ghost" href="https://gitea.com/DuarteSantos/openGym/src/branch/main/CHANGELOG.md" rel="noopener">Changelog</a>
+    <a class="btn" href="https://discord.gg/e62jY6fwVb" rel="noopener">Join the Discord</a>
   </div>
 </div></section>
 
@@ -185,8 +225,9 @@
   <div class="links">
     <a href="docs.html">Docs</a>
     <a href="about.html" class="hide-s">About</a>
-    <a href="https://github.com/DuarteSantos8/openGym" rel="noopener">GitHub</a>
-    <a href="https://duartesantos8.github.io/openGym/" rel="noopener">Live demo</a>
+    <a href="https://gitea.com/DuarteSantos/openGym" rel="noopener">Gitea</a>
+    <a href="https://discord.gg/e62jY6fwVb" rel="noopener">Discord</a>
+    <a href="/#download">Download</a>
   </div>
 </div></footer>
 

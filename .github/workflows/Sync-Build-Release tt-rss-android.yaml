@@ -3,7 +3,7 @@ name: Sync+Build+Release tt-rss-android
 on:
   push:
     paths:
-      - '.github/workflows/Sync+Build+Release tt-rss-android.yaml'
+      - '.github/workflows/Sync-Build-Release tt-rss-android.yaml'
     branches:
       - main
   

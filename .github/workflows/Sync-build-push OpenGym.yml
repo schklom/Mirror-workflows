@@ -64,19 +64,21 @@ jobs:
         with:
           ref: "${{ env.LOCAL_BRANCH }}"
 
+      # https://github.com/actions/checkout#fetch-only-a-single-file
       - name: Checkout patch
         uses: actions/checkout@v7
         with:
           ref: 'Patch-OpenGym' # branch
-          path: patch
+          sparse-checkout: |
+            patch.bash
+          sparse-checkout-cone-mode: false
 
       - name: Apply patch
         run: |
           file="patch.bash"
-          cp patch/$file $file
-          chmod +x $file
-          ./$file
-          rm $file
+          chmod +x "$file"
+          . "$file"
+          rm -f "$file"
       
       - name: Commit and push the change
         uses: stefanzweifel/git-auto-commit-action@v7

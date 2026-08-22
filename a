@@ -1,0 +1,4 @@
+#! /bin/bash
+for file in .github/workflows/*.yml; do
+  sed -i "s|Sync+build+release|Sync-build-release|g" "$file"
+done

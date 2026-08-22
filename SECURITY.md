@@ -8,7 +8,7 @@ need — what the app protects you from and what it doesn't.
 
 Only the **latest release**. Releases are semver tags (`v1.0.0` → `v1.2.3`, see
 [CHANGELOG.md](CHANGELOG.md)); there is no LTS or maintenance branch and older tags are never
-patched. A fix ships in the next release and in the `latest` images on ghcr.io.
+patched. A fix ships in the next release and in the `latest` images on gitea.com.
 
 Updating a self-hosted instance:
 
@@ -18,14 +18,13 @@ git pull && docker compose pull && docker compose up -d
 
 ## Reporting a vulnerability
 
-Use GitHub's private vulnerability reporting — repo **Security** tab → **Report a vulnerability**:
+The project moved to gitea.com, which has no private-advisory feature. So: open an issue on
+<https://gitea.com/DuarteSantos/openGym/issues> saying only *"I need a private channel for a
+security report"* — no details, no repro, no version — and you'll get an address to send it to
+within a couple of days.
 
-<https://github.com/DuarteSantos8/openGym/security/advisories/new>
-
-> Private reporting has to be switched on in the repository settings for that link to work
-> (Settings → Advanced Security → Private vulnerability reporting). If it 404s, open a normal
-> issue saying only *"I need a private channel for a security report"* — no details, no repro —
-> and it will be enabled.
+> The GitHub repo and its private vulnerability reporting are gone with the suspended account;
+> `github.com/DuarteSantos8/openGym/security/advisories/new` no longer resolves.
 
 Please don't put a working exploit in a public issue if it can be used against other people's
 instances. Everything else (a crash you can only trigger on your own box, a scanner warning)
@@ -50,7 +49,7 @@ in the thread; there's no objection, and no request to sit on it indefinitely.
   change a signed-in user's data.
 - **Shipped deployment config** — `docker-compose.yml`, `web/nginx.conf`, the two Dockerfiles:
   a default that exposes something a self-hoster wouldn't expect to be exposed.
-- **The published images** `ghcr.io/duartesantos8/opengym-api` and `-web`.
+- **The published images** `gitea.com/duartesantos/opengym-api` and `-web`.
 
 ## Out of scope
 

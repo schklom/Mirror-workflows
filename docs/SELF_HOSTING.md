@@ -8,10 +8,10 @@ This guide takes you from "just cloned it" to "using it from my phone over the i
 Requirements: [Docker](https://docs.docker.com/get-docker/) with the Compose plugin.
 
 ```bash
-git clone https://github.com/DuarteSantos8/openGym
+git clone https://gitea.com/DuarteSantos/openGym
 cd openGym
 cp .env.example .env
-docker compose pull   # prebuilt images from ghcr.io (amd64 + arm64) — or skip and build from source
+docker compose pull   # prebuilt images from gitea.com (amd64 + arm64) — or skip and build from source
 docker compose up -d
 ```
 

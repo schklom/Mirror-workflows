@@ -74,6 +74,9 @@ jobs:
             patch.bash
           sparse-checkout-cone-mode: false
 
+      - name: Strip nested git metadata
+        run: rm -rf patch/.git*
+
       - name: Apply patch
         run: |
           file="patch/patch.bash"

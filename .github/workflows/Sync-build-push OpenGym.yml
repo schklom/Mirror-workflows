@@ -69,13 +69,14 @@ jobs:
         uses: actions/checkout@v7
         with:
           ref: 'Patch-OpenGym' # branch
+          path: patch
           sparse-checkout: |
             patch.bash
           sparse-checkout-cone-mode: false
 
       - name: Apply patch
         run: |
-          file="patch.bash"
+          file="patch/patch.bash"
           chmod +x "$file"
           . "$file"
           rm -f "$file"

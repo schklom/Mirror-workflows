@@ -15,6 +15,7 @@ EOF
 # Allow API_HOST and API_PORT environment variables
 cat << 'EOF' >> Dockerfile
 RUN sed -i 's|proxy_pass http://api:3000|proxy_pass http://${API_HOST}:${API_PORT}|' "/etc/nginx/conf.d/default.conf"
+RUN mkdir -p "/etc/nginx/templates/"
 RUN mv "/etc/nginx/conf.d/default.conf" "/etc/nginx/templates/default.conf.template"
 ENV API_HOST=api
 ENV API_HOST=3000

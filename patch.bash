@@ -9,7 +9,7 @@ RUN git clone --depth 1 https://github.com/hasaneyldrm/exercises-dataset ds
 RUN mkdir -p /usr/share/nginx/html /usr/share/nginx/gif
 RUN mv /ds/images/*.jpg /usr/share/nginx/html/
 RUN mv /ds/videos/*.gif /usr/share/nginx/gif/
-RUN rm -rf /ds" >> Dockerfile
+RUN rm -rf /ds >> Dockerfile
 EOF
 
 # Allow API_HOST and API_PORT environment variables

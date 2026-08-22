@@ -19,7 +19,8 @@ echo "RUN rm -rf /ds" >> Dockerfile
 
 echo "Changes in Dockerfile"
 diff Dockerfile.bak Dockerfile
-rm Dockerfile.bak
+echo "Delete Dockerfile.bak"
+rm -f Dockerfile.bak
 
 echo "FINISHED"
 exit 0

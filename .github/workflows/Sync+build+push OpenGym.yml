@@ -144,17 +144,13 @@ jobs:
       
       - name: Add data to repo (see https://github.com/arvids-unavailable/openGym/blob/main/docker-compose.yml)
         run: |
-          if [ -z "$$(ls -A /out/img 2>/dev/null)" ]; then
-            echo "↓ Downloading exercise media (~140 MB, one time)…"
-            mkdir -p /usr/share/nginx/html/img
-            mkdir -p /usr/share/nginx/html/gif
-            git clone --depth 1 https://github.com/hasaneyldrm/exercises-dataset /tmp/ds
-            cp /tmp/ds/images/*.jpg /usr/share/nginx/html/img/ && cp /tmp/ds/videos/*.gif /usr/share/nginx/html/gif/
-            rm -rf /tmp/*
-            echo "✓ Exercise media ready ($$(ls /out/img | wc -l) images)."
-          else
-            echo "✓ Exercise media already present — skipping download."
-          fi
+          echo "↓ Downloading exercise media (~140 MB, one time)…"
+          mkdir -p /usr/share/nginx/html/img
+          mkdir -p /usr/share/nginx/html/gif
+          git clone --depth 1 https://github.com/hasaneyldrm/exercises-dataset /tmp/ds
+          cp /tmp/ds/images/*.jpg /usr/share/nginx/html/img/ && cp /tmp/ds/videos/*.gif /usr/share/nginx/html/gif/
+          rm -rf /tmp/*
+          echo "✓ Exercise media ready ($$(ls /out/img | wc -l) images)."
       
       # https://github.com/docker/build-push-action#multi-platform-image
       - name: Build and push OpenGym-Web

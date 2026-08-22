@@ -1,6 +1,40 @@
 # Changelog
 
-## Unreleased
+## v1.2.8 — 2026-08-22
+
+A housekeeping release, and two things worth reading even if you skip the rest. openGym has moved
+to **gitea.com** — the GitHub account it lived on was suspended, and everything you click to
+self-host pointed there. And the exercise media's licence is now stated correctly: the images and
+animations are © Gym visual, not CC, which matters if you redistribute them.
+
+### The project moved to gitea.com
+
+- 🏠 **openGym now lives at <https://gitea.com/DuarteSantos/openGym>.** The GitHub account
+  was suspended on 2026-08-19 and took the repository, the GHCR images, the Pages demo and
+  Discussions with it. `docker compose` now pulls `gitea.com/duartesantos/opengym-{api,web}`; the
+  README, `SECURITY.md`, `CONTRIBUTING.md` and the self-hosting docs point at the new home; issue
+  forms, tests and the image publish run as Gitea Actions. **If you self-host, re-pull:** the old
+  `ghcr.io` images are gone and will not update again.
+- Gitea has no Discussions, so questions and ideas are labelled issues — or the Discord, which
+  is where most of it happens now: <https://discord.gg/e62jY6fwVb>.
+- Old issue and PR numbers in the entries below stay as plain text. They point at a dead repo and
+  do not match the numbering here.
+
+### The exercise media is © Gym visual — not CC
+
+- ⚖️ **openGym described the exercise dataset as "CC". That was wrong**, and it is now
+  corrected everywhere it appeared (README, `NOTICE.md`, the website, the in-app credit, the
+  compose file and `scripts/fetch-media.sh`). Upstream
+  [hasaneyldrm/exercises-dataset](https://github.com/hasaneyldrm/exercises-dataset) licenses its two
+  halves differently: the exercise **metadata and instruction text are MIT**, while the **images and
+  animations are © [Gym visual](https://gymvisual.com/)**, used under that dataset's terms with
+  permission that is not transferable.
+- **Nothing changes for using openGym.** It never shipped that media — not in the repository,
+  not in its history, not in the images or the APK; your instance downloads it from upstream on
+  first run, and the media step now prints where it comes from and under what terms.
+- **It does change what you may do with the media.** Reusing the images or animations — in
+  openGym or anywhere else, commercially or not — needs your own licence from Gym visual. See
+  [NOTICE.md](NOTICE.md).
 
 ### Fixes
 
@@ -11,6 +45,15 @@
   browser tab. Back now dismisses the open sheet, then walks back through the screens you came
   from, and only leaves the app after a second press at the root ("Press back again to exit").
   A sheet that is locked mid-task still swallows back, as it does in the browser.
+
+### The website counts visits; the app still counts nothing
+
+- 📊 **<https://opengym.duarte-santos.ch> now runs self-hosted, cookieless
+  [Umami](https://umami.is/)** — page views for the landing, about and docs pages, no cookies,
+  no third-party service.
+- 🔒 **Your instance does not.** The frontend only gets an analytics tag when
+  `VITE_UMAMI_SRC` *and* `VITE_UMAMI_ID` are set at build time, which they are not in any published
+  image or in a plain `npm run build`. A self-hosted openGym remains telemetry-free, as advertised.
 
 ## v1.2.7 — 2026-08-18
 

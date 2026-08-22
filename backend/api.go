@@ -9,6 +9,7 @@ import (
 	"io/fs"
 	"net/http"
 
+	"github.com/rs/zerolog/log"
 	"github.com/spf13/viper"
 )
 
@@ -31,6 +32,17 @@ func getRemoteIp(r *http.Request) string {
 		remoteIp = r.RemoteAddr
 	}
 	return remoteIp
+}
+
+//lint:ignore U1000 enabled for debugging
+func debugMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		log.Debug().
+			Str("method", r.Method).
+			Str("path", r.URL.Path).
+			Msg("got request")
+		next.ServeHTTP(w, r)
+	})
 }
 
 // Adds various security headers.
@@ -144,6 +156,7 @@ func buildServeMux(config *viper.Viper) http.Handler {
 
 	// Apply to all endpoints
 	handler := securityHeadersMiddleware(mux, tileServerOrigin)
+	// handler = debugMiddleware(handler)
 	handler = http.MaxBytesHandler(handler, 15<<20) // 15 MB because 2^20 is a MB
 
 	return handler

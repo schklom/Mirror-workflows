@@ -92,6 +92,7 @@ func userFromContext(r *http.Request) *user.FMDUser {
 func writeAsJson(w http.ResponseWriter, val any) {
 	body, err := json.Marshal(val)
 	if err != nil {
+		log.Error().Err(err).Msg("error marshalling json")
 		http.Error(w, "error marshalling json", http.StatusInternalServerError)
 		return
 	}

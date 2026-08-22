@@ -4,5 +4,12 @@
   "setup_instruction_2": "Telepítse az FMD Android-alkalmazást",
   "setup_instruction_3": "mobilkészülékén. Ezután az alkalmazás segítségével regisztráljon fiókot az FMD szerveren.",
   "project_website": "Projekt weboldala",
-  "username_placeholder": "Felhasználónév"
+  "username_placeholder": "Felhasználónév",
+  "password_placeholder": "Jelszó",
+  "remember_me": "Emlékezz rám",
+  "log_in": "Bejelentkezés",
+  "logging_in": "Bejelentkezés…",
+  "login_slow": "Úgy tűnik a jelszó hash kiszámítása lassan halad. Ez általában akkor történik, amikor a JavaScript JIT ki van kapcsolva a böngésződben. Kapcsold be a JIT-et, vagy várj türelmesen akár 5 percig.",
+  "source_code": "Forráskód",
+  "privacy_notice": "Adatvédelmi nyilatkozat"
 }

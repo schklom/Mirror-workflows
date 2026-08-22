@@ -3,9 +3,29 @@
     "title": "Visszaállítja a készüléket a gyári beállításokra?",
     "message": "Ezzel az eszközről véglegesen törlődnek az összes adatok, és az eszköz gyári beállításaira áll vissza. Ez a művelet visszafordíthatatlan.",
     "confirm": "Gyári beállítások visszaállítása",
-    "password_placeholder": "Írja be a törlési jelszavát"
+    "password_placeholder": "Írja be a törlési jelszavát",
+    "password_hint": "A törlési jelszó az FMD Android alkalmazásban van beállítva. Nem a szerverhez való jelszavad az.",
+    "error_empty_password": "Kérlek add meg a törlési jelszót"
   },
   "lock": {
-    "message_placeholder": "Írja be az üzenetet"
+    "message_placeholder": "Írja be az üzenetet",
+    "title": "Eszköz zárolása?",
+    "message": "Az eszköz zárolása után az eszközön beállított PIN vagy jelszó szükséges a feloldáshoz. A biometrikus azonosítás nem fog működni, amíg az eszköz PIN vagy jelszó használatával fel nem lesz oldva.",
+    "confirm": "Zárolás",
+    "message_hint": "Add meg a zárolt képernyőn megjelenítendő üzenetet. Ha üresen hagyod, akkor az FMD Android alkalmazás beállításaiban megadott üzenet fog megjelenni."
+  },
+  "loading": {
+    "title": "Betöltés"
+  },
+  "pictures": {
+    "title": "Képek",
+    "empty": "Nincsenek fotók",
+    "of": "/"
+  },
+  "webcrypto_warning": {
+    "title": "A Web Cryptography API nem érhető el",
+    "message": "Az FMD szerver nem fog működni, mert a Web Cryptography API nem elérhető.",
+    "detail": "Ez valószínűleg azért van, mert nem biztonságos HTTP-n keresztül böngészed az oldalt. Kérlek használj HTTPS-t. Ha saját szervert futtatsz, akkor kérlek olvasd el a",
+    "link_text": "telepítési útmutatót"
   }
 }

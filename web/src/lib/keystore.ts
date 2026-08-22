@@ -2,9 +2,21 @@ const DB_NAME = 'fmd-keystore';
 const STORE_NAME = 'keys';
 const DB_VERSION = 1;
 
-interface KeyStore {
+interface KeyStoreRecord {
+  v1?: CryptoKeysV1;
+  v2?: CryptoKeysV2;
+}
+
+export interface CryptoKeysV1 {
   rsaEncKey: CryptoKey;
   rsaSigKey: CryptoKey;
+}
+
+export interface CryptoKeysV2 {
+  // Don't store the masterKey, only the derived child keys
+  cmdKek: CryptoKey;
+  locationKek: CryptoKey;
+  pictureKek: CryptoKey;
 }
 
 function openDB(): Promise<IDBDatabase> {
@@ -23,19 +35,19 @@ function openDB(): Promise<IDBDatabase> {
   });
 }
 
-export async function storeKeys(keys: KeyStore): Promise<void> {
+async function putRecord(record: KeyStoreRecord): Promise<void> {
   const db = await openDB();
   return new Promise((resolve, reject) => {
     const transaction = db.transaction(STORE_NAME, 'readwrite');
     const store = transaction.objectStore(STORE_NAME);
-    const request = store.put(keys, 'current');
+    const request = store.put(record, 'current');
 
     request.onerror = () => reject(new Error(request.error?.message || 'Failed to store keys'));
     request.onsuccess = () => resolve();
   });
 }
 
-export async function getKeys(): Promise<KeyStore | null> {
+async function getRecord(): Promise<KeyStoreRecord> {
   const db = await openDB();
   return new Promise((resolve, reject) => {
     const transaction = db.transaction(STORE_NAME, 'readonly');
@@ -43,18 +55,30 @@ export async function getKeys(): Promise<KeyStore | null> {
     const request = store.get('current');
 
     request.onerror = () => reject(new Error(request.error?.message || 'Failed to get keys'));
-    request.onsuccess = () => resolve((request.result as KeyStore | undefined) || null);
+    request.onsuccess = () => resolve((request.result as KeyStoreRecord | undefined) || {});
   });
 }
 
-export async function clearKeys(): Promise<void> {
-  const db = await openDB();
-  return new Promise((resolve, reject) => {
-    const transaction = db.transaction(STORE_NAME, 'readwrite');
-    const store = transaction.objectStore(STORE_NAME);
-    const request = store.delete('current');
+// Separate getters/setters for v1/v2 for easier type conversion from undefined to null
 
-    request.onerror = () => reject(new Error(request.error?.message || 'Failed to clear keys'));
-    request.onsuccess = () => resolve();
-  });
+export async function storeKeysV1(keys: CryptoKeysV1): Promise<void> {
+  await putRecord({ v1: keys });
+}
+
+export async function storeKeysV2(keys: CryptoKeysV2): Promise<void> {
+  await putRecord({ v2: keys });
+}
+
+export async function getKeysV1(): Promise<CryptoKeysV1 | null> {
+  const record = await getRecord();
+  return record.v1 ?? null;
+}
+
+export async function getKeysV2(): Promise<CryptoKeysV2 | null> {
+  const record = await getRecord();
+  return record.v2 ?? null;
+}
+
+export async function clearKeys(): Promise<void> {
+  await putRecord({});
 }

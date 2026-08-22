@@ -1,5 +1,3 @@
-import { logout, useStore } from '@/lib/store';
-import { decryptData, sign, unwrapPrivateKey } from './crypto';
 import {
   BaseApiService,
   HTTP,
@@ -8,6 +6,9 @@ import {
   ONE_WEEK_SECONDS,
   requestObject,
 } from './api';
+import { decryptData, sign, unwrapPrivateKey } from './crypto';
+import { CryptoKeysV1 } from './keystore';
+import { UserData, logout, useStore } from './store';
 
 interface DataPackage {
   IDT: string;
@@ -68,16 +69,18 @@ export class ApiV1Service extends BaseApiService {
     );
 
     const { setUserData } = useStore.getState();
-    await setUserData(
-      {
-        fmdId: userName,
-        rsaEncKey,
-        rsaSigKey,
-        sessionToken,
-        fingerprint,
-      },
-      rememberMe
-    );
+    const keysV1: CryptoKeysV1 = {
+      rsaEncKey,
+      rsaSigKey,
+    };
+    const data: UserData = {
+      fmdId: userName,
+      sessionToken,
+      fingerprint,
+      keysV2: null,
+      keysV1,
+    };
+    await setUserData(data, rememberMe);
   }
 
   async getWrappedPrivateKey(sessionToken: string) {
@@ -141,7 +144,7 @@ export class ApiV1Service extends BaseApiService {
     const { userData } = useStore.getState();
 
     const timestamp = Date.now();
-    const signature = await sign(userData!.rsaSigKey, `${timestamp}:${command}`);
+    const signature = await sign(userData!.keysV1!.rsaSigKey, `${timestamp}:${command}`);
 
     return requestObject(ENDPOINTS.COMMAND, HTTP.POST, {
       IDT: userData!.sessionToken,
@@ -166,7 +169,7 @@ export class ApiV1Service extends BaseApiService {
 
     const decryptedLocations = await Promise.all(
       encryptedLocations.map(async (encryptedLoc) => {
-        const decrypted = await decryptData(userData!.rsaEncKey, encryptedLoc);
+        const decrypted = await decryptData(userData!.keysV1!.rsaEncKey, encryptedLoc);
         return JSON.parse(decrypted) as Location;
       })
     );
@@ -182,7 +185,9 @@ export class ApiV1Service extends BaseApiService {
     });
 
     const decryptedPictures = await Promise.all(
-      encryptedPictures.map((encryptedPic) => decryptData(userData!.rsaEncKey, encryptedPic))
+      encryptedPictures.map((encryptedPic) =>
+        decryptData(userData!.keysV1!.rsaEncKey, encryptedPic)
+      )
     );
 
     return decryptedPictures;

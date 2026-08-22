@@ -2,10 +2,11 @@
 
 cp Dockerfile Dockerfile.bak
 echo "RUN apk add --no-cache git" >> Dockerfile
-echo "RUN git clone --depth 1 https://github.com/hasaneyldrm/exercises-dataset /tmp/ds" >> Dockerfile
-echo "COPY /tmp/ds/images/*.jpg /usr/share/nginx/html/" >> Dockerfile
-echo "COPY /tmp/ds/videos/*.gif /usr/share/nginx/gif/" >> Dockerfile
-echo "RUN rm -rf /tmp/ds" >> Dockerfile
+echo "RUN git clone --depth 1 https://github.com/hasaneyldrm/exercises-dataset ds" >> Dockerfile
+echo "RUN ls -ahlR ds" >> Dockerfile
+echo "COPY ds/images/*.jpg /usr/share/nginx/html/" >> Dockerfile
+echo "COPY ds/videos/*.gif /usr/share/nginx/gif/" >> Dockerfile
+echo "RUN rm -rf ds" >> Dockerfile
 
 echo "Changes in Dockerfile"
 diff Dockerfile.bak Dockerfile

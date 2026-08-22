@@ -6,7 +6,7 @@ import {
   ONE_WEEK_SECONDS,
   requestObject,
 } from './api';
-import { decryptData, sign, unwrapPrivateKey } from './crypto';
+import { CRYPTO_PROTO_V1, decryptData, sign, unwrapPrivateKey } from './crypto';
 import { CryptoKeysV1 } from './keystore';
 import { UserData, logout, useStore } from './store';
 
@@ -38,12 +38,12 @@ export const ENDPOINTS = {
 } as const;
 
 export class ApiV1Service extends BaseApiService {
-  async getSalt(userName: string): Promise<string> {
+  async getSalt(userName: string): Promise<[string, number]> {
     const response = await requestObject<DataPackage>(ENDPOINTS.SALT, HTTP.PUT, {
       IDT: userName,
       Data: 'unused',
     });
-    return response.Data;
+    return [response.Data, CRYPTO_PROTO_V1];
   }
 
   async login(

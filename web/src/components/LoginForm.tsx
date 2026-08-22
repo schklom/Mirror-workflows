@@ -3,7 +3,7 @@ import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
-import { getVersion } from '@/lib/api';
+import { ApiError, getVersion } from '@/lib/api';
 import { apiService } from '@/lib/apiService';
 import { hashPasswordForLogin } from '@/lib/crypto';
 import { Button } from '@/components/ui/button';
@@ -94,7 +94,11 @@ export const LoginForm = () => {
 
       await apiService().login(fmdId, password, passwordHash, rememberMe);
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : t('errors:login_failed'));
+      if (error instanceof ApiError && error.status == 404) {
+        toast.error(t('errors:account_not_found'));
+      } else {
+        toast.error(error instanceof Error ? error.message : t('errors:login_failed'));
+      }
     } finally {
       setLoading(false);
     }

@@ -65,14 +65,12 @@ jobs:
           ref: "${{ env.LOCAL_BRANCH }}"
 
       - name: Checkout patch
-        if: false
         uses: actions/checkout@v7
         with:
-          ref: 'Patch-Protonmail-bridge' # branch
+          ref: 'Patch-OpenGym' # branch
           path: patch
 
       - name: Apply patch
-        if: false
         run: |
           file="patch.bash"
           cp patch/$file $file
@@ -81,7 +79,6 @@ jobs:
           rm $file
       
       - name: Commit and push the change
-        if: false
         uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: Apply patch
@@ -140,16 +137,6 @@ jobs:
           push: true
           tags: |
             schklom/opengym-api:latest
-      
-      - name: Add data to repo (see https://github.com/arvids-unavailable/openGym/blob/main/docker-compose.yml)
-        run: |
-          echo "↓ Downloading exercise media (~140 MB, one time)…"
-          mkdir -p /usr/share/nginx/html/img
-          mkdir -p /usr/share/nginx/html/gif
-          git clone --depth 1 https://github.com/hasaneyldrm/exercises-dataset /tmp/ds
-          cp /tmp/ds/images/*.jpg /usr/share/nginx/html/img/ && cp /tmp/ds/videos/*.gif /usr/share/nginx/html/gif/
-          rm -rf /tmp/*
-          echo "✓ Exercise media ready ($$(ls /out/img | wc -l) images)."
       
       # https://github.com/docker/build-push-action#multi-platform-image
       - name: Build and push OpenGym-Web

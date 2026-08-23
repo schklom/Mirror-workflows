@@ -115,6 +115,12 @@ test:mcp:
 # On any other branch: amd64 only, tagged `edge` and `main-<sha>`. arm64 is emulated
 # through QEMU on the shared runners and costs several times the minutes — a self-hoster
 # on a Pi pulls `latest`, which always comes from a release and is always multi-arch.
+#
+# Third way in: start a pipeline by hand (Build -> Pipelines -> New pipeline) with the
+# variable PUBLISH_LATEST set to anything. That builds exactly like a tag would — multi-arch,
+# `latest` and the version out of frontend/package.json — without cutting a release. It is
+# there for the rebuild-without-a-code-change case: a base image picking up a CVE fix, where
+# the published `latest` needs to move but the app did not change.
 build:images:
   stage: build
   image: docker:28-cli
@@ -146,9 +152,17 @@ build:images:
       set -eu
       BUILD_DATE="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
       REPO="$CI_REGISTRY_IMAGE/$IMAGE"
-      if [ -n "${CI_COMMIT_TAG:-}" ]; then
-        VERSION="$CI_COMMIT_TAG"
-        SEMVER="${CI_COMMIT_TAG#v}"
+      if [ -n "${CI_COMMIT_TAG:-}" ] || [ -n "${PUBLISH_LATEST:-}" ]; then
+        if [ -n "${CI_COMMIT_TAG:-}" ]; then
+          SEMVER="${CI_COMMIT_TAG#v}"
+        else
+          # No tag to read the version off, so take it from the source of truth the APK job
+          # already uses. `apk add nodejs` would be a 40 MB download for one field.
+          SEMVER="$(sed -n 's/.*"version": *"\([^"]*\)".*/\1/p' frontend/package.json | head -1)"
+          [ -n "$SEMVER" ] || { echo "could not read version from frontend/package.json" >&2; exit 1; }
+          echo "PUBLISH_LATEST: building $SEMVER off $CI_COMMIT_REF_NAME, no release involved"
+        fi
+        VERSION="v$SEMVER"
         PLATFORMS="linux/amd64,linux/arm64"
         TAGS="-t $REPO:$SEMVER -t $REPO:${SEMVER%.*} -t $REPO:latest"
         # Only the arm64 leg needs emulation, and only for the api image (web's build
@@ -179,6 +193,7 @@ build:images:
     - if: $CI_PIPELINE_SOURCE == "schedule"
       when: never
     - if: $CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+$/
+    - if: $CI_PIPELINE_SOURCE == "web" && $PUBLISH_LATEST
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       when: manual

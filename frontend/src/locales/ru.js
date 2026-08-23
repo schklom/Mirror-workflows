@@ -579,5 +579,8 @@ export default {
   'secondary': 'вспомогательная',
   'No exercises with an estimated 1RM yet.': 'Пока нет упражнений с расчётным 1ПМ.',
   'Tap a muscle to see its exercises.': 'Нажмите на мышцу, чтобы увидеть её упражнения.',
+  'Primary muscle groups': 'Основные группы мышц',
+  'Additional muscle groups': 'Дополнительные мышечные группы',
+  'No explicit muscle group': 'Без явной мышечной группы',
   'Unpair': 'Разъединить'
 }

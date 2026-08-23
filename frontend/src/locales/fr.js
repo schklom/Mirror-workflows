@@ -579,5 +579,8 @@ export default {
   'secondary': 'secondaire',
   "No exercises with an estimated 1RM yet.": "Aucun exercice avec un 1RM estimé pour l'instant.",
   'Tap a muscle to see its exercises.': 'Touchez un muscle pour voir ses exercices.',
+  'Primary muscle groups': 'Groupes musculaires principaux',
+  'Additional muscle groups': 'Groupes musculaires supplémentaires',
+  'No explicit muscle group': 'Aucun groupe musculaire explicite',
   'Unpair': 'Dissocier'
 }

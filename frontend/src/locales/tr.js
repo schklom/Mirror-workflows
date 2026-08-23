@@ -579,5 +579,8 @@ export default {
   'secondary': 'ikincil',
   'No exercises with an estimated 1RM yet.': 'Henüz tahmini 1RM olan egzersiz yok.',
   'Tap a muscle to see its exercises.': 'Egzersizlerini görmek için bir kas seçin.',
+  'Primary muscle groups': 'Birincil kas grupları',
+  'Additional muscle groups': 'Ek kas grupları',
+  'No explicit muscle group': 'Açık kas grubu yok',
   'Unpair': 'Ayır'
 }

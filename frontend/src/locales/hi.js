@@ -579,5 +579,8 @@ export default {
   'secondary': 'द्वितीयक',
   'No exercises with an estimated 1RM yet.': 'अभी तक अनुमानित 1RM वाला कोई व्यायाम नहीं।',
   'Tap a muscle to see its exercises.': 'व्यायाम देखने के लिए किसी मांसपेशी पर टैप करें।',
+  'Primary muscle groups': 'प्राथमिक मांसपेशी समूह',
+  'Additional muscle groups': 'अतिरिक्त मांसपेशी समूह',
+  'No explicit muscle group': 'कोई स्पष्ट मांसपेशी समूह नहीं',
   'Unpair': 'अलग करें'
 }

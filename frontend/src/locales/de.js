@@ -596,5 +596,8 @@ export default {
   'secondary': 'sekundär',
   'No exercises with an estimated 1RM yet.': 'Noch keine Übungen mit geschätztem 1RM.',
   'Tap a muscle to see its exercises.': 'Tippe auf einen Muskel, um seine Übungen zu sehen.',
+  'Primary muscle groups': 'Primäre Muskelgruppen',
+  'Additional muscle groups': 'Zusätzliche Muskelgruppen',
+  'No explicit muscle group': 'Keine explizite Muskelgruppe',
   'Unpair': 'Trennen'
 }

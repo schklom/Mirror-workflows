@@ -579,5 +579,8 @@ export default {
   'secondary': '次要',
   'No exercises with an estimated 1RM yet.': '暂无估算1RM的动作。',
   'Tap a muscle to see its exercises.': '点击肌肉查看其动作。',
+  'Primary muscle groups': '主要肌群',
+  'Additional muscle groups': '其他肌群',
+  'No explicit muscle group': '无明确肌群',
   'Unpair': '取消组合'
 }

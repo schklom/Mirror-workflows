@@ -579,5 +579,8 @@ export default {
   'secondary': '보조',
   'No exercises with an estimated 1RM yet.': '추정 1RM이 있는 운동이 아직 없습니다.',
   'Tap a muscle to see its exercises.': '근육을 눌러 해당 운동을 확인하세요.',
+  'Primary muscle groups': '주요 근육 그룹',
+  'Additional muscle groups': '추가 근육군',
+  'No explicit muscle group': '명시적 근육군 없음',
   'Unpair': '분리'
 }

@@ -65,6 +65,11 @@ since the GitHub account went.
   embeds.
 - 📄 Security reports have a private channel again: a **confidential issue** on GitLab. See
   `SECURITY.md`.
+- 🔁 **Dependency updates continue.** GitLab has no Dependabot, so Renovate runs from a monthly
+  scheduled pipeline with the same deliberately quiet policy the Dependabot config had:
+  grouped per ecosystem, majors on their own, odd-numbered Node images skipped, and the
+  generated `android/`/`ios/` projects left to follow their `@capacitor/*` packages. Security
+  advisories ignore the schedule and land on their own.
 
 ### Housekeeping
 

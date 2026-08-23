@@ -227,16 +227,23 @@ build:apk:
       cd "$CI_PROJECT_DIR"
       . ./apk.env
       if [ -n "${CI_COMMIT_TAG:-}" ] && [ -f "openGym-$APK_VERSION.apk" ]; then
-        curl --fail --silent --show-error \
-          --header "JOB-TOKEN: $CI_JOB_TOKEN" \
-          --upload-file "openGym-$APK_VERSION.apk" \
-          "$CI_API_V4_URL/projects/$CI_PROJECT_ID/packages/generic/opengym-android/$APK_VERSION/openGym-$APK_VERSION.apk"
-        echo "uploaded openGym-$APK_VERSION.apk to the generic package registry"
+        # Sideloading means nobody's app store checked this file for you, so publish the
+        # digest next to it rather than leaving people to trust the download.
+        sha256sum "openGym-$APK_VERSION.apk" > "openGym-$APK_VERSION.apk.sha256"
+        cat "openGym-$APK_VERSION.apk.sha256"
+        for f in "openGym-$APK_VERSION.apk" "openGym-$APK_VERSION.apk.sha256"; do
+          curl --fail --silent --show-error \
+            --header "JOB-TOKEN: $CI_JOB_TOKEN" \
+            --upload-file "$f" \
+            "$CI_API_V4_URL/projects/$CI_PROJECT_ID/packages/generic/opengym-android/$APK_VERSION/$f"
+          echo "uploaded $f to the generic package registry"
+        done
       fi
   artifacts:
     name: "openGym-apk-$CI_COMMIT_REF_SLUG"
     paths:
       - "openGym-*.apk"
+      - "openGym-*.apk.sha256"
     reports:
       dotenv: apk.env
     expire_in: 30 days
@@ -253,7 +260,9 @@ build:apk:
 
 # ---------------------------------------------------------------------------- pages
 
-# The browser-only demo: https://duartesantos8.gitlab.io/opengym/
+# The browser-only demo: https://opengym-bc111a.gitlab.io/
+# (that opaque host is GitLab's "unique domain" for Pages, on by default; the tidier
+# https://duartesantos8.gitlab.io/opengym/ 308s to it. Settings → Pages turns it off.)
 # Pages serves static files only, so this build has no backend — VITE_DEMO=1 makes the
 # app boot straight into guest mode with a seeded example history (frontend/src/lib/demo.js).
 # Vite's base is './', so the bundle drops into a subdirectory unchanged.
@@ -316,6 +325,9 @@ release:
         - name: "openGym-$APK_VERSION.apk (Android, sideload)"
           url: "$CI_API_V4_URL/projects/$CI_PROJECT_ID/packages/generic/opengym-android/$APK_VERSION/openGym-$APK_VERSION.apk"
           link_type: package
+        - name: "openGym-$APK_VERSION.apk.sha256 (checksum)"
+          url: "$CI_API_V4_URL/projects/$CI_PROJECT_ID/packages/generic/opengym-android/$APK_VERSION/openGym-$APK_VERSION.apk.sha256"
+          link_type: other
         - name: "Container images (api + web)"
           url: "$CI_PROJECT_URL/container_registry"
           link_type: image

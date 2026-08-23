@@ -60,8 +60,9 @@ since the GitHub account went.
   the fatigue probe and the MCP suite all run on GitLab CI. The GitHub Actions workflows stay
   in `.github/` for the day that account comes back.
 - 🌐 The in-browser demo also builds to GitLab Pages
-  (<https://duartesantos8.gitlab.io/opengym/>); <https://opengym.duarte-santos.ch/demo/>
-  remains the copy the landing page embeds.
+  (<https://opengym-bc111a.gitlab.io/>, which <https://duartesantos8.gitlab.io/opengym/>
+  redirects to); <https://opengym.duarte-santos.ch/demo/> remains the copy the landing page
+  embeds.
 - 📄 Security reports have a private channel again: a **confidential issue** on GitLab. See
   `SECURITY.md`.
 

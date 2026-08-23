@@ -179,7 +179,7 @@ table.cfg td:first-child { white-space: nowrap; width: 1%; padding-right: 1.2rem
   table.cfg tr:first-child td:first-child { border-top: 0; }
 }
 
-/* ---------- suspension notice (GitHub account suspended → gitea.com mirror) ----------
+/* ---------- suspension notice (GitHub account suspended → gitlab.com) ----------
    Temporary: remove this block together with the .alert markup once the account is back. */
 .alert {
   background:

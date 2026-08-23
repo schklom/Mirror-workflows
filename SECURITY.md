@@ -8,7 +8,7 @@ need — what the app protects you from and what it doesn't.
 
 Only the **latest release**. Releases are semver tags (`v1.0.0` → `v1.2.3`, see
 [CHANGELOG.md](CHANGELOG.md)); there is no LTS or maintenance branch and older tags are never
-patched. A fix ships in the next release and in the `latest` images on gitea.com.
+patched. A fix ships in the next release and in the `latest` images in GitLab's registry.
 
 Updating a self-hosted instance:
 
@@ -18,16 +18,21 @@ git pull && docker compose pull && docker compose up -d
 
 ## Reporting a vulnerability
 
-The project moved to gitea.com, which has no private-advisory feature. So: open an issue on
-<https://gitea.com/DuarteSantos/openGym/issues> saying only *"I need a private channel for a
-security report"* — no details, no repro, no version — and you'll get an address to send it to
-within a couple of days.
+The project lives on GitLab. It has no security-advisory workflow on the free tier, but it does
+have **confidential issues**, and that is the private channel: open an issue at
+<https://gitlab.com/DuarteSantos8/opengym/-/issues/new> and tick **"This issue is confidential"**
+*before* you submit. A confidential issue is readable only by project members — you'll see it,
+I'll see it, nobody else will, and it stays that way if it is later closed.
+
+If you'd rather not put the details in GitLab at all, open a confidential issue saying only
+*"I need an address for a security report"* — no details, no repro, no version — and you'll get
+one back within a couple of days.
 
 > The GitHub repo and its private vulnerability reporting are gone with the suspended account;
 > `github.com/DuarteSantos8/openGym/security/advisories/new` no longer resolves.
 
-Please don't put a working exploit in a public issue if it can be used against other people's
-instances. Everything else (a crash you can only trigger on your own box, a scanner warning)
+Please don't put a working exploit in a *non-confidential* issue if it can be used against other
+people's instances. Everything else (a crash you can only trigger on your own box, a scanner warning)
 is fine as a normal issue.
 
 Useful in a report: the version or commit, whether you're running the prebuilt images or a
@@ -49,7 +54,7 @@ in the thread; there's no objection, and no request to sit on it indefinitely.
   change a signed-in user's data.
 - **Shipped deployment config** — `docker-compose.yml`, `web/nginx.conf`, the two Dockerfiles:
   a default that exposes something a self-hoster wouldn't expect to be exposed.
-- **The published images** `gitea.com/duartesantos/opengym-api` and `-web`.
+- **The published images** `registry.gitlab.com/duartesantos8/opengym/api` and `/web`.
 
 ## Out of scope
 
@@ -67,7 +72,7 @@ in the thread; there's no objection, and no request to sit on it indefinitely.
   the session cookie isn't marked `Secure`.
 - Scanner output with no working exploit, and `npm audit` findings in build-time
   devDependencies (Vite, Vitest, Capacitor CLI) that never reach a running instance.
-- The GitHub Pages demo build — it has no backend at all, everything stays in that browser.
+- The GitLab Pages demo build — it has no backend at all, everything stays in that browser.
 - Third-party content: the exercise image/GIF dataset and the CDN it's fetched from.
 
 ## Security model

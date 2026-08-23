@@ -19,9 +19,10 @@ No account on someone else's server, no subscription, no ads. Just `docker compo
 ![Docker](https://img.shields.io/badge/Docker-compose-2496ED?style=flat-square&logo=docker&logoColor=white)
 ![No tracking](https://img.shields.io/badge/telemetry-none-f472b6?style=flat-square)
 <br>
-![Last commit](https://img.shields.io/gitea/last-commit/DuarteSantos/openGym?gitea_url=https%3A%2F%2Fgitea.com&style=flat-square)
-[![Stars](https://img.shields.io/gitea/stars/DuarteSantos/openGym?gitea_url=https%3A%2F%2Fgitea.com&style=flat-square)](https://gitea.com/DuarteSantos/openGym/stars)
-[![Issues](https://img.shields.io/gitea/issues/open/DuarteSantos/openGym?gitea_url=https%3A%2F%2Fgitea.com&style=flat-square)](https://gitea.com/DuarteSantos/openGym/issues)
+[![Pipeline](https://gitlab.com/DuarteSantos8/opengym/badges/main/pipeline.svg?style=flat-square)](https://gitlab.com/DuarteSantos8/opengym/-/pipelines)
+![Last commit](https://img.shields.io/gitlab/last-commit/DuarteSantos8%2Fopengym?style=flat-square)
+[![Stars](https://img.shields.io/gitlab/stars/DuarteSantos8%2Fopengym?style=flat-square)](https://gitlab.com/DuarteSantos8/opengym/-/starrers)
+[![Issues](https://img.shields.io/gitlab/issues/open/DuarteSantos8%2Fopengym?style=flat-square)](https://gitlab.com/DuarteSantos8/opengym/-/issues)
 
 </div>
 
@@ -39,7 +40,7 @@ No account on someone else's server, no subscription, no ads. Just `docker compo
 
 <div align="center">
 
-### [🌐 opengym.duarte-santos.ch](https://opengym.duarte-santos.ch) · [📦 Source on gitea.com](https://gitea.com/DuarteSantos/openGym)
+### [🌐 opengym.duarte-santos.ch](https://opengym.duarte-santos.ch) · [📦 Source on GitLab](https://gitlab.com/DuarteSantos8/opengym)
 
 Screenshots, docs and the APK download live on the site.<br>
 <sub>Want to poke at it first? The <a href="https://opengym.duarte-santos.ch/demo/">in-browser
@@ -92,7 +93,7 @@ as a home-screen app, passkey sign-in, offline support, sync across your phone a
 You need [Docker](https://docs.docker.com/get-docker/) with Compose.
 
 ```bash
-git clone https://gitea.com/DuarteSantos/openGym
+git clone https://gitlab.com/DuarteSantos8/opengym
 cd openGym
 cp .env.example .env
 docker compose pull   # grab prebuilt images (amd64 + arm64) — skip to build from source instead
@@ -110,7 +111,7 @@ the exercise media (~140 MB) once.
 > yourself, commercially or not, needs your own licence from Gym visual — see
 > [NOTICE.md](NOTICE.md).
  Prefer building the images yourself instead of pulling from
-`gitea.com`? Drop the `pull` step and run `docker compose up -d --build` — you don't need Node or
+GitLab's registry? Drop the `pull` step and run `docker compose up -d --build` — you don't need Node or
 a build step locally either way.
 
 > Want it reachable from your phone over the internet with passkeys? You'll need an HTTPS
@@ -217,18 +218,20 @@ in the Docker build.
 
 ## Community
 
-- **[Issues](https://gitea.com/DuarteSantos/openGym/issues)** — bugs, questions, self-hosting
-  help and ideas. gitea.com has no Discussions, so it all lives in one tracker: label a question
+- **[Issues](https://gitlab.com/DuarteSantos8/opengym/-/issues)** — bugs, questions, self-hosting
+  help and ideas. There are no Discussions here, so it all lives in one tracker: label a question
   `question` and an idea `idea`, and it gets treated as one rather than as agreed-on work.
 - **Login trouble?** Most of it is an `RP_ID`/`ORIGIN` mismatch — check
   [docs/SELF_HOSTING.md](docs/SELF_HOSTING.md) before opening an issue.
-- **Pull requests** — [open one on gitea.com](https://gitea.com/DuarteSantos/openGym/pulls); see
+- **Merge requests** — [open one on GitLab](https://gitlab.com/DuarteSantos8/opengym/-/merge_requests); see
   [CONTRIBUTING.md](CONTRIBUTING.md).
 
 > **On the GitHub repo:** `github.com/DuarteSantos8/openGym` is offline because the account was
-> suspended. gitea.com is the home of the project until that is resolved — same history, same
-> tags, same releases. Old GitHub issue and PR numbers in [CHANGELOG.md](CHANGELOG.md) are kept
-> as plain references; they don't map onto gitea's numbering.
+> suspended. **GitLab is the home of the project** — same history, same tags, same releases, and
+> the CI that builds the images and the APK runs there. (gitea.com/DuarteSantos/openGym was the
+> first stopgap and is now only a mirror.) Old GitHub issue and PR numbers in
+> [CHANGELOG.md](CHANGELOG.md) are kept as plain references; they don't map onto GitLab's
+> numbering.
 
 ## Contributing
 
@@ -237,7 +240,7 @@ plans, exercise-data languages, import from other trackers. **A ⭐ helps more p
 
 openGym is free and stays free: AGPL, no subscription, no paid tier, nothing held back for
 sponsors. If it replaced a paid tracker for you and you want to chip in, the Sponsor button at the
-top of the page is there — a star, a bug report or a PR is worth just as much.
+top of the page is there — a star, a bug report or a merge request is worth just as much.
 
 <a href="https://buymeacoffee.com/duartesantos" target="_blank">
   <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png"

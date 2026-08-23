@@ -1,17 +1,23 @@
 // Live repo numbers in the nav + open-source strip. Fails silently — the site works
-// fine without them. Points at the gitea.com mirror while the GitHub account is
-// suspended; switch the two API URLs back to api.github.com once it is restored.
-(async () => {
+// fine without them. Points at gitlab.com while the GitHub account is suspended;
+// switch the two API URLs back to api.github.com once it is restored.
+//
+// The cache keys carry a _gl suffix: a visitor with a still-warm sessionStorage entry
+// from the gitea era would otherwise be read with the old field names and show NaN.
+const GL_PROJECT = 'https://gitlab.com/api/v4/projects/DuarteSantos8%2Fopengym'
+
+;(async () => {
   const set = (id, v) => document.querySelectorAll('[data-gh="' + id + '"]').forEach(el => { el.textContent = v })
   try {
     let d = null
-    const cached = sessionStorage.getItem('repo_meta')
+    const cached = sessionStorage.getItem('repo_meta_gl')
     if (cached) d = JSON.parse(cached)
     else {
-      const r = await fetch('https://gitea.com/api/v1/repos/DuarteSantos/openGym')
+      const r = await fetch(GL_PROJECT)
       if (!r.ok) return
-      d = await r.json()
-      sessionStorage.setItem('repo_meta', JSON.stringify({ stars_count: d.stars_count, forks_count: d.forks_count, open_issues_count: d.open_issues_count }))
+      const j = await r.json()
+      d = { stars_count: j.star_count, forks_count: j.forks_count, open_issues_count: j.open_issues_count }
+      sessionStorage.setItem('repo_meta_gl', JSON.stringify(d))
     }
     set('stars', '★ ' + d.stars_count)
     set('stars-n', d.stars_count)
@@ -20,22 +26,26 @@
   } catch (e) { /* offline / rate-limited — leave placeholders */ }
 })()
 
-// About page: build the milestones timeline from the published Gitea releases, so the
+// About page: build the milestones timeline from the published GitLab releases, so the
 // page updates itself with every release. The static entries marked data-fallback stay
 // in place when the API is unreachable; the hand-written first entry is always kept.
+//
+// GitLab's release objects differ from Gitea's: the notes are `description` (not `body`),
+// the date is `released_at` (not `published_at`), the web link sits in `_links.self`, and
+// there is no draft/prerelease pair — a not-yet-released one is `upcoming_release`.
 ;(async () => {
   const tl = document.getElementById('milestones')
   if (!tl) return
   try {
     let rel = null
-    const cached = sessionStorage.getItem('repo_releases')
+    const cached = sessionStorage.getItem('repo_releases_gl')
     if (cached) rel = JSON.parse(cached)
     else {
-      const r = await fetch('https://gitea.com/api/v1/repos/DuarteSantos/openGym/releases?limit=100')
+      const r = await fetch(GL_PROJECT + '/releases?per_page=100')
       if (!r.ok) return
-      rel = (await r.json()).filter(x => !x.draft && !x.prerelease)
-        .map(x => ({ tag: x.tag_name, name: x.name, at: x.published_at, body: x.body || '', url: x.html_url }))
-      sessionStorage.setItem('repo_releases', JSON.stringify(rel))
+      rel = (await r.json()).filter(x => !x.upcoming_release)
+        .map(x => ({ tag: x.tag_name, name: x.name, at: x.released_at, body: x.description || '', url: (x._links && x._links.self) || ('https://gitlab.com/DuarteSantos8/opengym/-/releases/' + x.tag_name) }))
+      sessionStorage.setItem('repo_releases_gl', JSON.stringify(rel))
     }
     if (!rel.length) return
     const fmt = d => new Date(d).toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' })

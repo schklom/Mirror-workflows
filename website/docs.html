@@ -26,13 +26,13 @@
     <a href="/#demo" class="hide-s">Demo</a>
     <a href="docs.html">Docs</a>
     <a href="about.html" class="hide-s">About</a>
-    <a href="https://gitea.com/DuarteSantos/openGym" rel="noopener"><span data-gh="stars">Gitea</span></a>
+    <a href="https://gitlab.com/DuarteSantos8/opengym" rel="noopener"><span data-gh="stars">GitLab</span></a>
     <a href="https://discord.gg/e62jY6fwVb" rel="noopener">Discord</a>
     <a class="cta" href="/#download">Download</a>
   </div>
 </div></nav>
 
-<!-- TEMPORARY: GitHub account suspended -> repo lives on gitea.com. Remove this block and
+<!-- TEMPORARY: GitHub account suspended -> repo lives on gitlab.com. Remove this block and
      revert the links (+ site.js) to github.com once the account is restored. -->
 <div class="alert" role="alert"><div class="wrap">
   <div class="alert-tag">⚠️ Important notice</div>
@@ -40,14 +40,14 @@
   <p><b>github.com/DuarteSantos8/openGym is offline.</b> The repository and the releases are
      unreachable — not by choice. openGym itself is unaffected: the app, the APK on this page,
      the demo (now hosted here) and every self-hosted install keep working exactly as before.</p>
-  <p>Until I get the account back, the code lives here — and the Discord is where I will announce
-     the moment it is resolved:</p>
+  <p>Until I get the account back, the code lives on GitLab — and the Discord is where I will
+     announce the moment it is resolved:</p>
   <div class="alert-actions">
-    <a class="btn alert-btn" href="https://gitea.com/DuarteSantos/openGym" rel="noopener">gitea.com/DuarteSantos/openGym</a>
+    <a class="btn alert-btn" href="https://gitlab.com/DuarteSantos8/opengym" rel="noopener">gitlab.com/DuarteSantos8/opengym</a>
     <a class="btn dc-btn" href="https://discord.gg/e62jY6fwVb" rel="noopener">Join the Discord</a>
   </div>
-  <p class="alert-note">Every repository link on this site now points at that mirror — same code,
-     same AGPL-3.0 license, same history.</p>
+  <p class="alert-note">Every repository link on this site now points at GitLab — same code, same
+     AGPL-3.0 license, same history, and the releases, container images and APK builds are back.</p>
 </div></div>
 
 
@@ -55,7 +55,7 @@
   <h1>Docs</h1>
   <p class="lead">Everything you need to get openGym running — on a phone, or on your own
      server. The deeper, maintainer-level docs live
-     <a href="https://gitea.com/DuarteSantos/openGym/src/branch/main/docs" rel="noopener">in the repository</a>.</p>
+     <a href="https://gitlab.com/DuarteSantos8/opengym/-/blob/main/docs" rel="noopener">in the repository</a>.</p>
 
   <div class="toc">
     <a href="#android">Android</a>
@@ -92,7 +92,7 @@
     <li><b>Build it onto your own iPhone:</b> with a Mac and Xcode, the native app runs on
         your device with a free Apple ID (Apple expires the signature after 7 days; re-run
         from Xcode to renew). See
-        <a href="https://gitea.com/DuarteSantos/openGym/src/branch/main/docs/MOBILE.md" rel="noopener">docs/MOBILE.md</a>.</li>
+        <a href="https://gitlab.com/DuarteSantos8/opengym/-/blob/main/docs/MOBILE.md" rel="noopener">docs/MOBILE.md</a>.</li>
     <li><b>Just looking?</b> Try the <a href="/demo/">in-browser demo</a> — the real app with
         example data, no account and nothing to install. The Android app above needs no account either.</li>
   </ul>
@@ -101,7 +101,7 @@
   <p>The self-hosted flavor adds passkey profiles, sync across devices, and (optionally) an
      admin dashboard. You need <a href="https://docs.docker.com/get-docker/" rel="noopener">Docker</a>
      with Compose:</p>
-  <pre><code>git clone https://gitea.com/DuarteSantos/openGym
+  <pre><code>git clone https://gitlab.com/DuarteSantos8/opengym
 cd openGym
 cp .env.example .env
 docker compose pull    # prebuilt images (amd64 + arm64) — skip to build from source
@@ -111,7 +111,7 @@ docker compose up -d</code></pre>
   <div class="note">Want it reachable from your phone with passkeys? You'll need an HTTPS
     domain — a two-line change in <code>.env</code>. The full guide, including reverse-proxy
     examples and the invite-only/admin options, is in
-    <a href="https://gitea.com/DuarteSantos/openGym/src/branch/main/docs/SELF_HOSTING.md" rel="noopener">docs/SELF_HOSTING.md</a>.</div>
+    <a href="https://gitlab.com/DuarteSantos8/opengym/-/blob/main/docs/SELF_HOSTING.md" rel="noopener">docs/SELF_HOSTING.md</a>.</div>
 
   <h3>Settings worth knowing about</h3>
   <p>All of these live in <code>.env</code>; the defaults are what you get if you touch nothing.</p>
@@ -133,7 +133,7 @@ docker compose up -d</code></pre>
   <p>It runs on your machine, is spawned by the client, and reads your exported data directly.
      Nothing is sent anywhere, and it is <b>not part of the Docker build</b> — if you don't use
      an AI assistant, it simply isn't there. Setup is a few lines of client config:
-     <a href="https://gitea.com/DuarteSantos/openGym/src/branch/main/mcp/README.md" rel="noopener">mcp/README.md</a>.</p>
+     <a href="https://gitlab.com/DuarteSantos8/opengym/-/blob/main/mcp/README.md" rel="noopener">mcp/README.md</a>.</p>
 
   <h2 id="import">Import your training history</h2>
   <p>Coming from another tracker? <b>Settings → Data → Import from another app</b> reads:</p>
@@ -163,7 +163,7 @@ docker compose up -d</code></pre>
         inside the container — no local Node needed.</li>
     <li><b>Android APK / iOS app:</b> the Capacitor projects live in <code>frontend/android</code>
         and <code>frontend/ios</code> — build, signing and distribution notes are in
-        <a href="https://gitea.com/DuarteSantos/openGym/src/branch/main/docs/MOBILE.md" rel="noopener">docs/MOBILE.md</a>.</li>
+        <a href="https://gitlab.com/DuarteSantos8/opengym/-/blob/main/docs/MOBILE.md" rel="noopener">docs/MOBILE.md</a>.</li>
   </ul>
 
   <h2 id="faq">FAQ</h2>
@@ -199,7 +199,7 @@ docker compose up -d</code></pre>
   <div class="links">
     <a href="docs.html">Docs</a>
     <a href="about.html" class="hide-s">About</a>
-    <a href="https://gitea.com/DuarteSantos/openGym" rel="noopener">Gitea</a>
+    <a href="https://gitlab.com/DuarteSantos8/opengym" rel="noopener">GitLab</a>
     <a href="https://discord.gg/e62jY6fwVb" rel="noopener">Discord</a>
     <a href="/#download">Download</a>
   </div>

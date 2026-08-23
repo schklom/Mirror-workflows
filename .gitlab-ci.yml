@@ -122,7 +122,12 @@ build:images:
         CONTEXT: "."
         DOCKERFILE: "./web/Dockerfile"
   before_script:
-    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
+    # buildx's docker-container driver refuses to read the daemon's TLS material straight
+    # out of DOCKER_HOST/DOCKER_CERT_PATH ("could not create a builder instance with TLS
+    # data loaded from environment"). Freezing the same environment into a named context
+    # and building the builder on top of that is the supported way round it.
+    - docker context create tls-environment
   script:
     - |
       set -eu
@@ -141,7 +146,7 @@ build:images:
         PLATFORMS="linux/amd64"
         TAGS="-t $REPO:edge -t $REPO:$VERSION"
       fi
-      docker buildx create --use --name opengym --driver docker-container
+      docker buildx create --use --name opengym --driver docker-container tls-environment
       # shellcheck disable=SC2086
       docker buildx build \
         --platform "$PLATFORMS" \

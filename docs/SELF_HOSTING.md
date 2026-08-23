@@ -105,6 +105,28 @@ out and locked out everywhere until you re-enable it), and — with `INVITE_ONLY
 revoking invite codes. Existing accounts keep working when you switch invite-only on. Admin access
 is gated by your passkey and enforced server-side, so it needs no separate login.
 
+### The activity log
+
+The dashboard also keeps an **activity log**: sign-ins, sign-outs, failed attempts, refused
+signups, and every admin action (disabling an account, creating or revoking an invite code). It
+lives in `./data/audit.log` as one JSON object per line, so `tail -f data/audit.log` and `jq`
+work on it directly, and the dashboard reads the same file.
+
+It is on by default and keeps the last 5,000 events or 90 days, whichever comes first
+(`AUDIT_LOG=0` turns it off entirely; `AUDIT_MAX` and `AUDIT_DAYS` change the caps). **IP
+addresses are not recorded** unless you set `AUDIT_IP=net` (network only, e.g. `203.0.113.0/24`)
+or `AUDIT_IP=full`. Neither the browser's user-agent nor the passkey id of a failed sign-in is
+ever stored: the first is a fingerprint, and the second would let you follow an unknown device
+from one attempt to the next.
+
+Two things worth expecting. **Guests never appear** — guest mode never talks to the server, so
+there is nothing to log, exactly as there is nothing for the rest of the dashboard to show. And
+**a disabled account goes quiet**: a disabled user is refused at the session check, so their only
+entries are the failed sign-ins they keep making.
+
+Clearing the log from the dashboard records the clear itself, and the event ids keep counting, so
+a gap is always visible.
+
 `INVITE_ONLY=1` and `ALLOW_GUEST=0` answer different questions and are usually set together.
 Invite-only controls who may *create a profile*; it says nothing about the **Continue without
 account** button, which never creates one. Guest mode keeps everything in that browser and never
@@ -149,8 +171,10 @@ Everything is in `./data`:
 tar czf opengym-backup-$(date +%F).tar.gz data/
 ```
 
-That archive contains all profiles, passkeys and workout history. Restore by unpacking it back
-into the project folder. (Individual users can also export their own data as JSON from Settings.)
+That archive contains all profiles, passkeys and workout history — and, if the activity log is
+on, `audit.log` with everyone's sign-in times. Worth knowing before you ship the archive to a
+backup service you don't run. Restore by unpacking it back into the project folder. (Individual
+users can also export their own data as JSON from Settings.)
 
 ## 7. Notifications
 

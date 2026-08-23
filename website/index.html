@@ -51,9 +51,9 @@
 <div class="alert" role="alert"><div class="wrap">
   <div class="alert-tag">⚠️ Important notice</div>
   <h2>My GitHub account has been suspended — the openGym repo is gone with it</h2>
-  <p><b>github.com/DuarteSantos8/openGym is offline.</b> The repository, the releases and the
-     GitHub-Pages demo are all unreachable — not by choice. openGym itself is unaffected:
-     the app, the APK on this page and every self-hosted install keep working exactly as before.</p>
+  <p><b>github.com/DuarteSantos8/openGym is offline.</b> The repository and the releases are
+     unreachable — not by choice. openGym itself is unaffected: the app, the APK on this page,
+     the demo (now hosted here) and every self-hosted install keep working exactly as before.</p>
   <p>Until I get the account back, the code lives here — and the Discord is where I will announce
      the moment it is resolved:</p>
   <div class="alert-actions">
@@ -135,18 +135,14 @@
 
 <section id="demo"><div class="wrap">
   <p class="kicker">Live demo</p>
-  <h2>Temporarily offline</h2>
-  <p class="lead">The in-browser demo ran on GitHub Pages, which went down with my suspended
-     GitHub account. It comes straight back once the account is restored.</p>
-  <div class="offline">
-    <span class="big">🚧</span>
-    <p><b>Want to try openGym in the meantime?</b> Install the Android app below — it needs no
-       account and no server — or run the self-hosted version with one <code>docker compose up</code>.</p>
-    <div class="hero-btns" style="margin-top:18px">
-      <a class="btn" href="#download">Get openGym</a>
-      <a class="btn ghost" href="https://gitea.com/DuarteSantos/openGym" rel="noopener">Browse the code on Gitea</a>
-    </div>
+  <h2>Try it right here</h2>
+  <p class="lead">This is the real app with seeded example data, running in your browser —
+     poke around, start a workout, change anything.</p>
+  <div class="demo-wrap">
+    <div class="phone"><iframe src="/demo/" title="openGym live demo" loading="lazy"></iframe></div>
   </div>
+  <p class="demo-note">Demo data lives only in this browser tab-family and can be reset in its
+     Settings. Prefer a full window? <a href="/demo/">Open the demo full-screen →</a></p>
 </div></section>
 
 <section id="download"><div class="wrap">

@@ -1,5 +1,51 @@
 # Changelog
 
+## v1.2.9 — 2026-08-23
+
+If you run openGym for other people, you have had no way to answer "who signed in, and when?" —
+the server kept no record of anything. It does now: an **activity log** in the admin dashboard,
+covering sign-ins, sign-outs, the attempts that failed, and every admin action. The other half of
+this release is that **the live demo is back**, self-hosted this time, after two months offline.
+
+### Activity log
+
+- 🧾 **The admin dashboard has an activity log.** Successful and failed sign-ins, profile
+  creations and refused signups, sign-outs (including "sign out everywhere"), and every admin
+  action: disabling or re-enabling an account, creating or revoking an invite code, and clearing
+  the log itself. Filter it by sign-ins, admin actions or failures, and page back through it.
+- 📄 **It is a plain file.** `./data/audit.log`, one JSON object per line — `tail -f` and `jq`
+  read it directly, which also means it is its own export format. Deliberately *not* part of
+  `db.json`: that file is rewritten in full on every save, and the sign-in handshake is
+  unauthenticated, so a log living in there would have turned one junk request into a full
+  rewrite. Retention is a cap rather than an archive — the last `AUDIT_MAX` events (5,000) or
+  `AUDIT_DAYS` days (90), whichever runs out first.
+- 🔒 **It records less than you might expect, on purpose.** No IP addresses unless you turn them
+  on (`AUDIT_IP=net` keeps only the network, `full` keeps the address); never the browser's
+  user-agent; and never the passkey id behind a failed sign-in, because that id is a stable handle
+  for one device and storing it would let an admin follow an unknown device from one attempt to
+  the next. A rejected invite code is not stored either — a near-miss guess sitting in a log file
+  helps nobody.
+- 🧹 **Clearing it is itself logged**, and the event ids keep counting, so an erased stretch always
+  leaves a visible gap.
+- ⚙️ **On by default when you update, and one variable turns it off.** It records strictly less
+  than your instance already holds — every profile is in `db.json`, every workout is in
+  `state-<uid>.json`, and any admin can already read both — and a log that ships switched off
+  tells you nothing on the day you need it. `AUDIT_LOG=0` disables it completely; no file is
+  written. Nothing leaves your server either way: this is a local file, not telemetry.
+- Guests still never appear anywhere — guest mode does not talk to the server at all.
+
+### The live demo is back
+
+- ▶️ **<https://opengym.duarte-santos.ch/demo/>** — the in-browser demo, running on the project's
+  own site instead of GitHub Pages, which went down in August with the suspended account. Same
+  build as before: no backend, no account, seeded example history, and a reset button in its
+  settings. The embedded demo on the landing page works again too.
+
+### Housekeeping
+
+- The self-hosting docs, `SECURITY.md` and `.env.example` cover the activity log, and the
+  `api/server.js` line references in `SECURITY.md` are accurate again.
+
 ## v1.2.8 — 2026-08-22
 
 A housekeeping release, and two things worth reading even if you skip the rest. openGym has moved

@@ -197,7 +197,9 @@ function readSession(req) {
 function requireAdmin(req, res) {
   const user = readSession(req);
   if (!user) { json(res, 401, { error: 'not signed in' }); return null; }
-  if (!isAdmin(user)) { json(res, 403, { error: 'forbidden' }); return null; }
+  // Only the 403 is recorded: a 401 is any unauthenticated bot poking /api/admin/*, and
+  // logging those would bury the events an operator actually wants to see.
+  if (!isAdmin(user)) { audit(req, 'admin.denied', { ok: false, user }); json(res, 403, { error: 'forbidden' }); return null; }
   return user;
 }
 function sessionCookie(user) {
@@ -256,6 +258,97 @@ function livePresence(uid) {
 }
 setInterval(() => { for (const [k, v] of presence) if (Date.now() - v.updatedAt > PRESENCE_TTL) presence.delete(k); }, 30000).unref();
 
+/* ---------- audit log ---------- */
+// Who signed in, who tried and failed, and what an admin changed. One JSON object per line in
+// ./data/audit.log, appended and never rewritten in place. It deliberately does not live in
+// db.json: that file is rewritten whole on every save, and the login/register handshakes are
+// unauthenticated and unthrottled by design (see SECURITY.md), so an audit trail in there would
+// turn one bogus request into a full db.json rewrite. A line torn by a crash costs one event and
+// is dropped on read.
+//
+// On by default. It records strictly less than the instance already holds — every account is in
+// db.json and every workout is in state-<uid>.json, both readable by any admin — and a security
+// feature that ships switched off protects nobody. IP addresses are the exception: off unless you
+// ask for them, because they are the one field here that says where somebody physically is.
+const AUDIT_ON = !/^(0|false|no|off)$/i.test(process.env.AUDIT_LOG || '');
+const AUDIT_MAX = Math.max(0, +(process.env.AUDIT_MAX || 5000) || 0);     // 0 = no count cap
+const AUDIT_DAYS = Math.max(0, +(process.env.AUDIT_DAYS || 90) || 0);     // 0 = no age cap
+const AUDIT_IP = /^full$/i.test(process.env.AUDIT_IP || '') ? 'full'
+  : /^(1|true|yes|on|net)$/i.test(process.env.AUDIT_IP || '') ? 'net' : 'off';
+const auditFile = path.join(DATA, 'audit.log');
+let auditSeq = 0;      // never reset, not even by a clear — a wiped log leaves a visible id gap
+let auditCount = 0;
+
+// Which header holds the caller depends on what is in front of the API. CF-Connecting-IP comes
+// first because a Cloudflare tunnel does NOT forward the client in X-Forwarded-For — that header
+// then only carries the tunnel's own container, which looks like a valid answer and isn't. After
+// that, the first entry of X-Forwarded-For is the client and everything behind it is our own hops.
+// All three are only as trustworthy as the proxy in front: it has to overwrite them rather than
+// pass a client-supplied one through. In 'net' mode only the network survives — enough to tell
+// one source from another, not enough to point at a person.
+function clientIp(req) {
+  if (AUDIT_IP === 'off') return null;
+  const raw = String(req.headers['cf-connecting-ip'] || '').trim()
+    || String(req.headers['x-forwarded-for'] || '').split(',')[0].trim()
+    || String(req.headers['x-real-ip'] || '').trim();
+  const ip = raw.replace(/^\[|\]$/g, '').slice(0, 45);
+  if (!/^[0-9a-fA-F:.]{3,45}$/.test(ip)) return null;    // never store a header verbatim
+  if (AUDIT_IP === 'full') return ip;
+  if (/^\d{1,3}(\.\d{1,3}){3}$/.test(ip)) return ip.replace(/\.\d{1,3}$/, '.0/24');
+  const g = ip.split(':').filter(Boolean).slice(0, 3).join(':');
+  return g ? g + '::/48' : null;
+}
+
+function auditLines() {
+  let text;
+  try { text = fs.readFileSync(auditFile, 'utf8'); } catch { return []; }
+  const rows = [];
+  for (const line of text.split('\n')) {
+    if (!line) continue;
+    try { const r = JSON.parse(line); if (r && r.id && r.ev) rows.push(r); } catch { /* torn line */ }
+  }
+  return rows;
+}
+// Retention is a cap, not an archive: age first, then the newest AUDIT_MAX of what's left.
+function auditKeep(rows) {
+  let out = rows;
+  if (AUDIT_DAYS) { const cut = Date.now() - AUDIT_DAYS * 86400000; out = out.filter(r => r.ts >= cut); }
+  if (AUDIT_MAX && out.length > AUDIT_MAX) out = out.slice(out.length - AUDIT_MAX);
+  return out;
+}
+function compactAudit() {
+  const rows = auditLines();
+  for (const r of rows) if (+r.id > auditSeq) auditSeq = +r.id;
+  const keep = auditKeep(rows);
+  auditCount = keep.length;
+  if (keep.length === rows.length) return;
+  try { atomicWrite(auditFile, keep.map(r => JSON.stringify(r)).join('\n') + (keep.length ? '\n' : '')); }
+  catch (e) { console.error('audit compact failed', e.message); }
+}
+
+// Never throws: a log that can't be written must not break signing in.
+function audit(req, ev, f = {}) {
+  if (!AUDIT_ON) return;
+  const rec = { id: ++auditSeq, ts: Date.now(), ev, ok: f.ok !== false };
+  if (f.user) { rec.uid = f.user.id; rec.name = String(f.user.name || '').slice(0, 40); }
+  else {
+    if (f.uid) rec.uid = f.uid;
+    if (f.name) rec.name = String(f.name).slice(0, 40);
+  }
+  if (f.target) { rec.tgt = f.target.id; rec.tname = String(f.target.name || '').slice(0, 40); }
+  if (f.msg) rec.msg = String(f.msg).slice(0, 120);
+  const ip = clientIp(req);
+  if (ip) rec.ip = ip;
+  try { fs.appendFileSync(auditFile, JSON.stringify(rec) + '\n'); }
+  catch (e) { return console.error('audit write failed', e.message); }
+  // Amortized: a 5000-event cap rewrites the file once per ~1250 events.
+  if (AUDIT_MAX && ++auditCount > AUDIT_MAX * 1.25) compactAudit();
+}
+if (AUDIT_ON) {
+  compactAudit();                                // prune on boot, seed auditSeq/auditCount
+  setInterval(compactAudit, 3600000).unref();    // honour AUDIT_DAYS on an idle instance too
+}
+
 /* ---------- routes ---------- */
 const routes = {
   'GET /api/health': async (req, res) => json(res, 200, { ok: true, users: db.users.length }),
@@ -274,8 +367,11 @@ const routes = {
     const name = String(body.name || '').trim().slice(0, 40);
     if (!name) return json(res, 400, { error: 'name required' });
     const code = String(body.code || '').trim().toUpperCase();
-    if (INVITE_ONLY && !db.invites.some(i => i.code === code && !i.usedBy && !i.revoked))
+    if (INVITE_ONLY && !db.invites.some(i => i.code === code && !i.usedBy && !i.revoked)) {
+      // The rejected code itself is never recorded — a near-miss guess in the log is a liability.
+      audit(req, 'auth.register.denied', { ok: false, name, msg: 'invite-rejected' });
       return json(res, 403, { error: 'a valid invite code is required' });
+    }
     const uid = crypto.randomBytes(12).toString('base64url');
     const options = await generateRegistrationOptions({
       rpName: RP_NAME, rpID: RP_ID,
@@ -291,7 +387,10 @@ const routes = {
   'POST /api/register/verify': async (req, res) => {
     const body = await readBody(req);
     const c = takeChallenge(body.cid);
-    if (!c || !c.uid) return json(res, 400, { error: 'challenge expired — try again' });
+    if (!c || !c.uid) {
+      audit(req, 'auth.register.fail', { ok: false, msg: 'challenge-expired' });
+      return json(res, 400, { error: 'challenge expired — try again' });
+    }
     let verification;
     try {
       verification = await verifyRegistrationResponse({
@@ -301,15 +400,28 @@ const routes = {
         expectedRPID: RP_ID,
         requireUserVerification: false
       });
-    } catch (e) { return json(res, 400, { error: 'verification failed: ' + e.message }); }
-    if (!verification.verified) return json(res, 400, { error: 'not verified' });
+    } catch (e) {
+      // e.message can echo attacker-supplied response fields, so only the reason code is kept.
+      audit(req, 'auth.register.fail', { ok: false, name: c.name, msg: 'verify-error' });
+      return json(res, 400, { error: 'verification failed: ' + e.message });
+    }
+    if (!verification.verified) {
+      audit(req, 'auth.register.fail', { ok: false, name: c.name, msg: 'not-verified' });
+      return json(res, 400, { error: 'not verified' });
+    }
     const { credential } = verification.registrationInfo;
-    if (db.creds.find(x => x.id === credential.id)) return json(res, 409, { error: 'credential already registered' });
+    if (db.creds.find(x => x.id === credential.id)) {
+      audit(req, 'auth.register.fail', { ok: false, name: c.name, msg: 'credential-exists' });
+      return json(res, 409, { error: 'credential already registered' });
+    }
     // Re-check the invite at the last moment (it may have been used/revoked since options), then burn it.
     let invite = null;
     if (INVITE_ONLY) {
       invite = db.invites.find(i => i.code === c.code && !i.usedBy && !i.revoked);
-      if (!invite) return json(res, 403, { error: 'invite code is no longer valid — ask for a new one' });
+      if (!invite) {
+        audit(req, 'auth.register.fail', { ok: false, name: c.name, msg: 'invite-invalid' });
+        return json(res, 403, { error: 'invite code is no longer valid — ask for a new one' });
+      }
     }
     const user = { id: c.uid, name: c.name, created: new Date().toISOString() };
     if (invite) { user.invitedBy = invite.code; invite.usedBy = user.id; invite.usedAt = user.created; }
@@ -321,6 +433,7 @@ const routes = {
       transports: body.credential?.response?.transports || []
     });
     saveDb();
+    audit(req, 'auth.register.ok', { user, msg: invite ? invite.code : null });
     json(res, 200, { user: { id: user.id, name: user.name, admin: isAdmin(user) } }, { 'Set-Cookie': sessionCookie(user) });
   },
 
@@ -335,9 +448,18 @@ const routes = {
   'POST /api/login/verify': async (req, res) => {
     const body = await readBody(req);
     const c = takeChallenge(body.cid);
-    if (!c) return json(res, 400, { error: 'challenge expired — try again' });
+    if (!c) {
+      audit(req, 'auth.login.fail', { ok: false, msg: 'challenge-expired' });
+      return json(res, 400, { error: 'challenge expired — try again' });
+    }
     const cred = db.creds.find(x => x.id === body.credential?.id);
-    if (!cred) return json(res, 404, { error: 'unknown passkey — create a profile first' });
+    if (!cred) {
+      // No credential id goes in the log: it is a stable handle for one passkey, and recording it
+      // would let an admin correlate an unknown device across attempts. Nothing here identifies
+      // the caller beyond the timestamp (and the network, if AUDIT_IP is on).
+      audit(req, 'auth.login.fail', { ok: false, msg: 'unknown-credential' });
+      return json(res, 404, { error: 'unknown passkey — create a profile first' });
+    }
     let verification;
     try {
       verification = await verifyAuthenticationResponse({
@@ -353,17 +475,36 @@ const routes = {
           transports: cred.transports
         }
       });
-    } catch (e) { return json(res, 400, { error: 'verification failed: ' + e.message }); }
-    if (!verification.verified) return json(res, 400, { error: 'not verified' });
+    } catch (e) {
+      audit(req, 'auth.login.fail', { ok: false, user: db.users.find(u => u.id === cred.userId), uid: cred.userId, msg: 'verify-error' });
+      return json(res, 400, { error: 'verification failed: ' + e.message });
+    }
+    if (!verification.verified) {
+      audit(req, 'auth.login.fail', { ok: false, user: db.users.find(u => u.id === cred.userId), uid: cred.userId, msg: 'not-verified' });
+      return json(res, 400, { error: 'not verified' });
+    }
     cred.counter = verification.authenticationInfo.newCounter;
     saveDb();
     const user = db.users.find(u => u.id === cred.userId);
-    if (!user) return json(res, 500, { error: 'user missing' });
-    if (user.disabled) return json(res, 403, { error: 'this account has been disabled' });
+    if (!user) {
+      audit(req, 'auth.login.fail', { ok: false, uid: cred.userId, msg: 'user-missing' });
+      return json(res, 500, { error: 'user missing' });
+    }
+    if (user.disabled) {
+      audit(req, 'auth.login.fail', { ok: false, user, msg: 'account-disabled' });
+      return json(res, 403, { error: 'this account has been disabled' });
+    }
+    audit(req, 'auth.login.ok', { user });
     json(res, 200, { user: { id: user.id, name: user.name, admin: isAdmin(user) } }, { 'Set-Cookie': sessionCookie(user) });
   },
 
-  'POST /api/logout': async (req, res) => json(res, 200, { ok: true }, { 'Set-Cookie': clearCookie }),
+  // Reads the session purely so the sign-out can be recorded; the cookie is cleared either way.
+  // A logout with no valid cookie is a no-op and isn't worth an entry.
+  'POST /api/logout': async (req, res) => {
+    const user = readSession(req);
+    if (user) audit(req, 'auth.logout', { user });
+    json(res, 200, { ok: true }, { 'Set-Cookie': clearCookie });
+  },
 
   // "Sign out everywhere" — bumps this user's session version, which invalidates every cookie
   // ever issued for the account, on every device, including a copy someone else walked off with.
@@ -374,6 +515,7 @@ const routes = {
     if (!user) return json(res, 401, { error: 'not signed in' });
     user.sv = sessionVersion(user) + 1;
     saveDb();
+    audit(req, 'auth.logout.all', { user });
     json(res, 200, { ok: true }, { 'Set-Cookie': clearCookie });
   },
 
@@ -499,7 +641,7 @@ const routes = {
   },
 
   'POST /api/admin/user/disable': async (req, res) => {
-    if (!requireAdmin(req, res)) return;
+    const admin = requireAdmin(req, res); if (!admin) return;
     const body = await readBody(req);
     const u = db.users.find(x => x.id === body.id);
     if (!u) return json(res, 404, { error: 'no such user' });
@@ -507,6 +649,7 @@ const routes = {
     u.disabled = !!body.disabled;
     if (u.disabled) presence.delete(u.id);   // drop them off "training now" at once
     saveDb();
+    audit(req, u.disabled ? 'admin.user.disable' : 'admin.user.enable', { user: admin, target: u });
     json(res, 200, { ok: true, id: u.id, disabled: u.disabled });
   },
 
@@ -531,17 +674,55 @@ const routes = {
     const invite = { code, note: String(body.note || '').slice(0, 60), createdBy: admin.id, created: new Date().toISOString() };
     db.invites.push(invite);
     saveDb();
+    audit(req, 'admin.invite.create', { user: admin, msg: code });
     json(res, 200, { invite });
   },
 
   'POST /api/admin/invites/revoke': async (req, res) => {
-    if (!requireAdmin(req, res)) return;
+    const admin = requireAdmin(req, res); if (!admin) return;
     const body = await readBody(req);
     const inv = db.invites.find(i => i.code === String(body.code || '').toUpperCase());
     if (!inv) return json(res, 404, { error: 'no such code' });
     if (inv.usedBy) return json(res, 400, { error: 'already used — cannot revoke' });
     db.invites = db.invites.filter(i => i.code !== inv.code);
     saveDb();
+    audit(req, 'admin.invite.revoke', { user: admin, msg: inv.code });
+    json(res, 200, { ok: true });
+  },
+
+  /* ---------- activity log ---------- */
+  // Newest first, paged by id. Not by offset: the log grows at the front of this view, so an
+  // offset cursor would repeat a row whenever an event lands between two pages; and not by
+  // timestamp, because two events can share a millisecond. auditKeep() runs on read as well as
+  // on the hourly compaction, so nothing past its retention is ever served.
+  'GET /api/admin/audit': async (req, res) => {
+    if (!requireAdmin(req, res)) return;
+    const q = new URL(req.url, 'http://x').searchParams;
+    const limit = Math.max(1, Math.min(200, +q.get('limit') || 100));
+    const before = +q.get('before') || Infinity;
+    const cat = q.get('cat') || '';
+    let rows = auditKeep(auditLines()).reverse();
+    if (cat === 'fail') rows = rows.filter(r => !r.ok);
+    else if (cat) rows = rows.filter(r => String(r.ev).startsWith(cat + '.'));
+    const page = rows.filter(r => r.id < before).slice(0, limit);
+    json(res, 200, {
+      events: page,
+      total: rows.length,
+      nextBefore: page.length === limit ? page[page.length - 1].id : null,
+      enabled: AUDIT_ON, ip_mode: AUDIT_IP,
+      retention: { max: AUDIT_MAX, days: AUDIT_DAYS },
+      now: Date.now()
+    });
+  },
+
+  // Deleting the log is itself logged, and auditSeq is not reset — so a clear always leaves a
+  // visible gap in the ids and can't be used to quietly erase a trace. There is no export route:
+  // ./data/audit.log already is the export, in a format jq reads directly.
+  'POST /api/admin/audit/clear': async (req, res) => {
+    const admin = requireAdmin(req, res); if (!admin) return;
+    try { fs.unlinkSync(auditFile); } catch { /* nothing logged yet */ }
+    auditCount = 0;
+    audit(req, 'admin.audit.clear', { user: admin });
     json(res, 200, { ok: true });
   }
 };

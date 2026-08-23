@@ -42,8 +42,8 @@ No account on someone else's server, no subscription, no ads. Just `docker compo
 ### [🌐 opengym.duarte-santos.ch](https://opengym.duarte-santos.ch) · [📦 Source on gitea.com](https://gitea.com/DuarteSantos/openGym)
 
 Screenshots, docs and the APK download live on the site.<br>
-<sub>The browser demo was hosted on GitHub Pages and is offline while that account is
-suspended — self-host it (below) or sideload the Android app to try it for real.</sub>
+<sub>Want to poke at it first? The <a href="https://opengym.duarte-santos.ch/demo/">in-browser
+demo</a> is the real app with example data — no account, nothing to install.</sub>
 
 </div>
 
@@ -79,7 +79,7 @@ as a home-screen app, passkey sign-in, offline support, sync across your phone a
 - 💪 **Muscle map, three ways** — a front-and-back body diagram you can read as **Balance** (where the volume went, over a week, a month or all time — naming the muscles you *haven't* trained), **Fatigue** (what is still recovering, weighted by how close each set was to your maximum, decaying smoothly rather than expiring at a window edge) or **Strength** (how long since you trained each muscle, and behind every one the exercises that built it with their estimated 1RM). It previews what a routine hits while you build it, and shows what you just trained when you finish. Male or female figure, your pick
 - 🔔 **Push notifications** — rest-timer alerts even with the app closed, plus an optional reminder on days you have a workout planned but haven't logged one. Opt in per profile; keys are generated on first run, nothing to configure
 - 🔑 **Passkeys, not passwords** — Face ID / Touch ID / fingerprint login; each profile keeps its own data, synced across devices. Sign-ins last 90 days by default (configurable), and “sign out everywhere” in Settings ends every session on every device at once
-- 🛠️ **Admin dashboard** (optional) — for whoever runs the instance: who's training right now, per-user history, disable accounts, and invite-only signup. Off by default, so a fresh instance stays open with no admin
+- 🛠️ **Admin dashboard** (optional) — for whoever runs the instance: who's training right now, per-user history, disable accounts, invite-only signup, and an **activity log** of sign-ins, failed attempts and admin actions. Off by default, so a fresh instance stays open with no admin
 - 🎨 **Designed, not assembled** — light/dark themes and 8 accent colors saved to your profile, over a hand-drawn icon set instead of emoji, so it looks the same on every phone
 - 🌍 **12 languages** — full UI translation (EN, DE, ES, FR, IT, PT, PL, TR, RU, ZH, KO, HI); exercise instructions localized in 10 of them, loaded on demand so the app stays fast
 - 📥 **Bring your history with you** — import from **FitNotes** (Android and iOS), **Strong** and **Hevy**, or body weight straight out of an **Apple Health** export. Exercise names are matched against the library and anything unrecognised becomes one of your own exercises, so nothing in the file is dropped
@@ -151,7 +151,8 @@ mobile app is the install-and-done flavor.
 ## Your data
 
 Lives in `./data` on your host: `db.json` (profiles + public passkeys), `state-<user>.json`
-(each user's plan, workouts, body weight, settings), and `secret` (the session-cookie key).
+(each user's plan, workouts, body weight, settings), `audit.log` (the admin activity log — sign-ins
+and admin actions, no IP addresses unless you ask for them) and `secret` (the session-cookie key).
 **Back up `./data` and you've backed up everything.** Passkey private keys never touch the
 server — they stay in your phone's secure hardware / your password manager.
 
@@ -172,6 +173,10 @@ All via `.env` (see `.env.example`):
 | `ADMIN_UIDS`  | User ids that get the admin dashboard (comma-separated) | *(none)*             |
 | `INVITE_ONLY` | Require an invite code to create a profile           | *(off)*                 |
 | `ALLOW_GUEST` | Offer "Continue without account" — set `0` to require a profile | *(on)*       |
+| `AUDIT_LOG`   | Record sign-ins and admin actions — set `0` to record nothing | *(on)*        |
+| `AUDIT_MAX`   | Events kept in the activity log; `0` for no limit    | `5000`                  |
+| `AUDIT_DAYS`  | Days kept in the activity log; `0` to keep until `AUDIT_MAX` | `90`            |
+| `AUDIT_IP`    | Record the caller's address: `off`, `net` (network only) or `full` | `off`     |
 | `VAPID_SUBJECT` | Contact URL sent with push notifications           | your `ORIGIN`           |
 
 Push notification keys are generated on first run and saved to `./data/vapid.json` — nothing to set.

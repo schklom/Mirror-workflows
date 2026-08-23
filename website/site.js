@@ -16,13 +16,24 @@ const GL_PROJECT = 'https://gitlab.com/api/v4/projects/DuarteSantos8%2Fopengym'
       const r = await fetch(GL_PROJECT)
       if (!r.ok) return
       const j = await r.json()
-      d = { stars_count: j.star_count, forks_count: j.forks_count, open_issues_count: j.open_issues_count }
+      // An unauthenticated project response carries star_count and forks_count and nothing
+      // else countable — open_issues_count is only there for a logged-in caller, so reading
+      // it here printed "undefined" on the live site. The issues endpoint answers it in the
+      // X-Total header instead, and GitLab lists that header in Access-Control-Expose-Headers,
+      // so the browser is allowed to read it. per_page=1 keeps the body to a single issue.
+      let issues = ''
+      try {
+        const ri = await fetch(GL_PROJECT + '/issues?state=opened&per_page=1')
+        if (ri.ok) issues = ri.headers.get('X-Total') || ''
+      } catch (e) { /* count stays blank rather than wrong */ }
+      d = { stars_count: j.star_count, forks_count: j.forks_count, open_issues_count: issues }
       sessionStorage.setItem('repo_meta_gl', JSON.stringify(d))
     }
     set('stars', '★ ' + d.stars_count)
     set('stars-n', d.stars_count)
     set('forks-n', d.forks_count)
-    set('issues-n', d.open_issues_count)
+    // Leave the placeholder standing rather than writing an empty box.
+    if (d.open_issues_count !== '' && d.open_issues_count != null) set('issues-n', d.open_issues_count)
   } catch (e) { /* offline / rate-limited — leave placeholders */ }
 })()
 

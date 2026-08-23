@@ -232,6 +232,12 @@ build:apk:
           --out "$CI_PROJECT_DIR/openGym-$VER.apk" aligned.apk
         rm -f "$CI_PROJECT_DIR/.ks.jks"
         "$BT/apksigner" verify --print-certs "$CI_PROJECT_DIR/openGym-$VER.apk"
+      elif [ -n "${CI_COMMIT_TAG:-}" ]; then
+        # A release must never quietly ship an APK nobody can install. If the key is missing
+        # on a tag, something is wrong with the protected variables — say so and stop.
+        echo "FATAL: $CI_COMMIT_TAG is a release tag but ANDROID_KEYSTORE_B64 is not set." >&2
+        echo "Set it (protected, file type) under Settings -> CI/CD -> Variables." >&2
+        exit 1
       else
         echo "No signing key on this ref — producing an UNSIGNED apk (cannot be installed)."
         "$BT/zipalign" -f -p 4 "$UNSIGNED" "$CI_PROJECT_DIR/openGym-$VER-unsigned.apk"

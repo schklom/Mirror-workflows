@@ -55,6 +55,7 @@ cd frontend && npm test
 
 | You have | Goes to |
 | --- | --- |
+| A quick question, or you'd rather just chat | [The Discord](https://discord.gg/e62jY6fwVb) |
 | A question, or self-hosting that won't behave | [An issue labelled `question`](https://gitlab.com/DuarteSantos8/opengym/-/issues) |
 | An idea you're not sure about yet | [An issue labelled `idea`](https://gitlab.com/DuarteSantos8/opengym/-/issues) |
 | A reproducible bug | [Issues](https://gitlab.com/DuarteSantos8/opengym/-/issues) |
@@ -63,6 +64,8 @@ cd frontend && npm test
 GitLab has no Discussions, so questions and ideas are issues too — just labelled, so nobody
 mistakes a question for agreed-on work. An answered question is worth more than the same answer
 in a chat log: the next person searching "passkey login fails behind my reverse proxy" finds it.
+That is the one thing the Discord can't do, so if an answer there turns out to be worth keeping,
+it belongs in an issue afterwards.
 
 ## Reporting bugs
 

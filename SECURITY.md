@@ -32,7 +32,7 @@ one back within a couple of days.
 > `github.com/DuarteSantos8/openGym/security/advisories/new` no longer resolves.
 
 Please don't put a working exploit in a *non-confidential* issue if it can be used against other
-people's instances. Everything else (a crash you can only trigger on your own box, a scanner warning)
+people's instances — and not in the Discord either, which is a public room. Everything else (a crash you can only trigger on your own box, a scanner warning)
 is fine as a normal issue.
 
 Useful in a report: the version or commit, whether you're running the prebuilt images or a

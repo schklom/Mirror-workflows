@@ -23,6 +23,7 @@ No account on someone else's server, no subscription, no ads. Just `docker compo
 ![Last commit](https://img.shields.io/gitlab/last-commit/DuarteSantos8%2Fopengym?style=flat-square)
 [![Stars](https://img.shields.io/gitlab/stars/DuarteSantos8%2Fopengym?style=flat-square)](https://gitlab.com/DuarteSantos8/opengym/-/starrers)
 [![Issues](https://img.shields.io/gitlab/issues/open/DuarteSantos8%2Fopengym?style=flat-square)](https://gitlab.com/DuarteSantos8/opengym/-/issues)
+[![Discord](https://img.shields.io/badge/Discord-join-5865F2?style=flat-square&logo=discord&logoColor=white)](https://discord.gg/e62jY6fwVb)
 
 </div>
 
@@ -218,9 +219,12 @@ in the Docker build.
 
 ## Community
 
+- **[Discord](https://discord.gg/e62jY6fwVb)** — release announcements, self-hosting help and
+  the back-and-forth that would be a slow issue thread. Quickest way to get an answer.
 - **[Issues](https://gitlab.com/DuarteSantos8/opengym/-/issues)** — bugs, questions, self-hosting
   help and ideas. There are no Discussions here, so it all lives in one tracker: label a question
-  `question` and an idea `idea`, and it gets treated as one rather than as agreed-on work.
+  `question` and an idea `idea`, and it gets treated as one rather than as agreed-on work. Use
+  an issue over the Discord for anything the next person should be able to find by searching.
 - **Login trouble?** Most of it is an `RP_ID`/`ORIGIN` mismatch — check
   [docs/SELF_HOSTING.md](docs/SELF_HOSTING.md) before opening an issue.
 - **Merge requests** — [open one on GitLab](https://gitlab.com/DuarteSantos8/opengym/-/merge_requests); see

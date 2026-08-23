@@ -105,13 +105,13 @@ docker compose up -d
 Open **http://localhost:8080**, tap **Create profile**, and you're in. First launch downloads
 the exercise media (~140 MB) once.
 
-> **About that media:** it comes from
-> [hasaneyldrm/exercises-dataset](https://github.com/hasaneyldrm/exercises-dataset), whose
-> metadata and instruction text are MIT — but whose images and animations are
-> **© [Gym visual](https://gymvisual.com/)**, used under that dataset's terms and *not* under
-> openGym's AGPL. openGym ships none of it: your instance downloads it from upstream. Reusing it
-> yourself, commercially or not, needs your own licence from Gym visual — see
-> [NOTICE.md](NOTICE.md).
+> **About that media:** it reaches openGym through
+> [hasaneyldrm/exercises-dataset](https://github.com/hasaneyldrm/exercises-dataset), which
+> redistributes [ExerciseDB v1](https://exercisedb.dev/) — its metadata and instruction text are
+> MIT, but the images and animations are third-party content under *neither* that MIT license nor
+> openGym's AGPL, and their ownership is currently disputed between Gym visual and ExerciseDB.
+> openGym ships none of it: your instance downloads it from upstream. Reusing it yourself,
+> commercially or not, means clearing it with the rights holder — see [NOTICE.md](NOTICE.md).
  Prefer building the images yourself instead of pulling from
 GitLab's registry? Drop the `pull` step and run `docker compose up -d --build` — you don't need Node or
 a build step locally either way.
@@ -266,12 +266,14 @@ version's source under the same license. Nobody can turn openGym into a closed, 
 product.
 
 **Third-party content is not, and openGym cannot sublicense it.** The exercise metadata and
-instruction text come from
+instruction text originate from [ExerciseDB v1](https://exercisedb.dev/) and reach openGym through
 [hasaneyldrm/exercises-dataset](https://github.com/hasaneyldrm/exercises-dataset) under the
-**MIT** license. The exercise images and animations are **© [Gym visual](https://gymvisual.com/)**
-and are used under that dataset's terms — openGym does not redistribute them (your instance
-fetches them at first run) and does not relicense them under the AGPL. To reuse that media
-yourself, get your own licence from Gym visual
-([terms](https://gymvisual.com/content/3-terms-and-conditions-of-use)).
+**MIT** license. The exercise images and animations are third-party content covered by neither
+that license nor the AGPL, and their ownership is **currently unresolved** — the upstream dataset
+attributes them to [Gym visual](https://gymvisual.com/) under a non-transferable permission, while
+[ExerciseDB/AscendAPI](https://exercisedb.io/faq) claims to be their creator and owner. A
+clarification has been requested. openGym does not redistribute them (your instance fetches them
+at first run) and does not relicense them. To reuse that media yourself, clear it with the rights
+holder first.
 
 Full third-party notices, including the body-diagram geometry: **[NOTICE.md](NOTICE.md)**.

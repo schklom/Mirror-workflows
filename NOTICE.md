@@ -46,14 +46,24 @@ SOFTWARE.
 
 ## Exercise data & media
 
-Both come from [**hasaneyldrm/exercises-dataset**](https://github.com/hasaneyldrm/exercises-dataset),
-and that dataset licenses them differently. Neither is covered by openGym's AGPL license.
+openGym obtains both through
+[**hasaneyldrm/exercises-dataset**](https://github.com/hasaneyldrm/exercises-dataset), which
+licenses them differently. Neither is covered by openGym's AGPL license.
 
-### Metadata & instruction text — MIT
+That dataset is itself a redistribution: the content originates from
+[**ExerciseDB v1**](https://exercisedb.dev/) by **AscendAPI**. This is verifiable from openGym's
+own data — the stored media filenames embed ExerciseDB's `exerciseId` (openGym's `0001` is
+`0001-2gPfomN.jpg`; `2gPfomN` is ExerciseDB's id for "3/4 sit-up"), every metadata field matches,
+and the instruction sentences are identical apart from stripped `Step:N ` prefixes. See
+[issue #5](https://github.com/hasaneyldrm/exercises-dataset/issues/5) on that dataset.
+
+### Metadata & instruction text
 
 The exercise names, attributes and instructions (English in `frontend/src/lib/exercises-data.js`,
-other languages in `frontend/src/instr/`, regenerated via `scripts/build-instructions.mjs`) are
-MIT-licensed, reproduced below.
+other languages in `frontend/src/instr/`, regenerated via `scripts/build-instructions.mjs`)
+originate from ExerciseDB v1 and reach openGym through the dataset above, which distributes them
+under the MIT license reproduced below. The translations into languages other than English are
+openGym's own derivative work and are covered by openGym's AGPL.
 
 ```
 MIT License
@@ -79,21 +89,29 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
 
-### Images & animations — © Gym visual, not MIT and not AGPL
+### Images & animations — third-party, not MIT and not AGPL
 
-> **© Gym visual — https://gymvisual.com/**
+The exercise thumbnails (180×180) and animations are **not** covered by the MIT license above and
+**not** by openGym's AGPL. Their ownership is currently **unresolved**, and openGym states this
+plainly rather than guessing:
 
-The exercise thumbnails (180×180) and animations are **© [Gym visual](https://gymvisual.com/)**.
-They are in the upstream dataset with the rights holder's written permission, granted to that
-dataset; that permission is **not transferable**. Their use is governed by Gym visual's
-[Terms & Conditions](https://gymvisual.com/content/3-terms-and-conditions-of-use) — not by the MIT
-license above, and not by openGym's AGPL.
+- The upstream dataset attributes them to **© [Gym visual](https://gymvisual.com/)**, redistributed
+  there with that rights holder's written permission — a permission granted to *that dataset* and
+  **not transferable**.
+- **ExerciseDB/AscendAPI** describes itself as "the original creator and owner" of this content and
+  publishes its own [terms](https://exercisedb.io/faq), which permit self-hosting, bundling and
+  commercial display, while prohibiting redistribution of the raw dataset or media as a standalone
+  or competing content package.
 
-**openGym does not redistribute this media.** It is not in this repository, not in its history,
-and not in the published Docker images or the Android APK. A self-hosted instance downloads it
-from the upstream source on first `docker compose up`; the mobile and demo builds load it from a
-CDN at runtime.
+These two claims contradict each other. A clarification has been requested from AscendAPI; this
+notice will be updated once the provenance is settled.
 
-If you want to reuse the media — in openGym or anywhere else, commercially or not — **obtain your
-own license from Gym visual first**, and keep the `© Gym visual — https://gymvisual.com/`
-attribution intact wherever it appears.
+**Until then, treat the media as third-party content licensed to neither openGym nor to you.**
+
+**openGym does not redistribute it.** It is not in this repository, not in its history, and not in
+the published container images or the Android APK. A self-hosted instance downloads it from the
+upstream source on first `docker compose up`; the mobile and demo builds load it from a CDN at
+runtime.
+
+If you want to reuse the media — in openGym or anywhere else, commercially or not — **clear it with
+the rights holder first**, and keep any attribution that accompanies it intact.

@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-cp Dockerfile Dockerfile.bak
+cp web/Dockerfile web/Dockerfile.bak
 
 # Copy data files into the image to avoid forcing the user to do it
-cat << 'EOF' >> Dockerfile
+cat << 'EOF' >> web/Dockerfile
 RUN apk add --no-cache git
 RUN git clone --depth 1 https://github.com/hasaneyldrm/exercises-dataset ds
 RUN mkdir -p /usr/share/nginx/html /usr/share/nginx/gif
@@ -22,8 +22,8 @@ EOF
 # ENV NGINX_ENVSUBST_FILTER="API_HOST API_PORT"
 # EOF
 
-echo "Changes in Dockerfile"
-diff Dockerfile.bak Dockerfile || true
+echo "Changes in web/Dockerfile"
+diff web/Dockerfile.bak web/Dockerfile || true
 
-echo "Delete Dockerfile.bak"
-rm -f Dockerfile.bak
+echo "Delete web/Dockerfile.bak"
+rm -f web/Dockerfile.bak

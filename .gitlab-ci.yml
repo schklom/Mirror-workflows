@@ -116,8 +116,8 @@ test:mcp:
 # through QEMU on the shared runners and costs several times the minutes — a self-hoster
 # on a Pi pulls `latest`, which always comes from a release and is always multi-arch.
 #
-# Third way in: start a pipeline by hand (Build -> Pipelines -> New pipeline) with the
-# variable PUBLISH_LATEST set to anything. That builds exactly like a tag would — multi-arch,
+# Third way in: start a pipeline by hand (Build -> Pipelines -> New pipeline, or the API)
+# with the variable PUBLISH_LATEST set to anything. That builds exactly like a tag would — multi-arch,
 # `latest` and the version out of frontend/package.json — without cutting a release. It is
 # there for the rebuild-without-a-code-change case: a base image picking up a CVE fix, where
 # the published `latest` needs to move but the app did not change.
@@ -193,7 +193,7 @@ build:images:
     - if: $CI_PIPELINE_SOURCE == "schedule"
       when: never
     - if: $CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+$/
-    - if: $CI_PIPELINE_SOURCE == "web" && $PUBLISH_LATEST
+    - if: ($CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "api") && $PUBLISH_LATEST
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       when: manual

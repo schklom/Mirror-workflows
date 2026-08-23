@@ -16,7 +16,10 @@ export const DEF = {
   // that a profile which never chose (loaded state is overlaid on DEF, on every path: local,
   // server pull, backup import) still falls back to the `showRir` boolean this replaced and
   // keeps the column it had. See effortOf.
-  reminder: { on: false, time: '08:00', tz: null }, effort: null
+  reminder: { on: false, time: '08:00', tz: null }, effort: null,
+  // Equipment profiles (issue: filter Library/picker/routines by what you actually own —
+  // e.g. "Home" vs "Gym" — building on the session-only equipment filter from issue #6).
+  equipProfiles: [], activeEquipId: null, equipFilterOn: false,
 }
 const clone = o => JSON.parse(JSON.stringify(o))
 

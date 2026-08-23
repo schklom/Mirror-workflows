@@ -10,7 +10,7 @@ import { wakeLockSupported } from '../lib/wakelock.js'
 import { t, LANGS, INSTR_LANGS } from '../lib/i18n.js'
 import { DEMO, REPO } from '../lib/demo.js'
 import { MOBILE, shareExport, syncReminder } from '../lib/mobile.js'
-import { loadStarterPlan, confirmSheet, importFromApp } from '../sheets.jsx'
+import { loadStarterPlan, confirmSheet, importFromApp, equipmentProfileSheet } from '../sheets.jsx'
 import Icon from '../components/Icon.jsx'
 import { Section, Row, SelectRow, Switch, Segmented, Button, TextField } from '../components/ui.jsx'
 
@@ -141,6 +141,9 @@ export default function Settings() {
     </Section>
 
     {(user || MOBILE) && <NotificationsCard S={S} update={update} toast={toast} />}
+
+    {/* ---------- equipment ---------- */}
+    <EquipmentCard S={S} update={update} />
 
     {/* ---------- appearance ---------- */}
     <Section title={t('Appearance')} footer={DEMO || MOBILE ? undefined : t('synced with your profile')}>
@@ -326,6 +329,37 @@ function PushCard({ S, update, toast }) {
     </Section>
     {on && <div style={{ marginTop: -12, marginBottom: 22 }}><Button size="sm" icon="bell" onClick={test}>{t('Send test notification')}</Button></div>}
   </>
+}
+
+// Equipment profiles ("Home", "Gym", ...) — each an id/name/eq-list; the active one filters
+// the Library, exercise picker, and flags routine entries that need something outside it
+// (see lib/equipment.js). Purely local/synced state — no server changes needed.
+function EquipmentCard({ S, update }) {
+  const profiles = S.equipProfiles || []
+  const remove = p => confirmSheet({
+    title: t('Delete profile?'), message: t('"{0}" and its equipment list will be removed.', p.name),
+    confirmText: t('Delete'), danger: true,
+    onConfirm: () => update(s => {
+      s.equipProfiles = (s.equipProfiles || []).filter(x => x.id !== p.id)
+      if (s.activeEquipId === p.id) s.activeEquipId = (s.equipProfiles[0] && s.equipProfiles[0].id) || null
+    }),
+  })
+  return <Section title={t('Equipment')} footer={t('Filters the exercise library and picker, and flags routine exercises that need something you don\u2019t have in the active profile.')}>
+    {profiles.length > 0 && <Row icon="dumbbell" iconTint="var(--acc)" title={t('Filter by equipment')}>
+      <Switch checked={!!S.equipFilterOn} onChange={v => update(s => { s.equipFilterOn = v })} />
+    </Row>}
+    {profiles.length > 0 && <SelectRow icon="list" iconTint="var(--blue)" title={t('Active profile')}
+      value={S.activeEquipId || ''} onChange={v => update(s => { s.activeEquipId = v })}
+      options={profiles.map(p => ({ value: p.id, label: p.name }))} />}
+    {profiles.map(p => (
+      <Row key={p.id} icon="dumbbell" iconTint="var(--teal)" title={p.name}
+        subtitle={t('{0} equipment types', p.equipment.length)} accessory="chevron"
+        onClick={() => equipmentProfileSheet(p)}>
+        <button className="iconbtn" aria-label={t('Delete')} onClick={ev => { ev.stopPropagation(); remove(p) }}><Icon name="trash" /></button>
+      </Row>
+    ))}
+    <Row icon="plus" iconTint="var(--acc)" title={t('Add equipment profile')} accessory="chevron" onClick={() => equipmentProfileSheet(null)} />
+  </Section>
 }
 
 // The same registration as the sign-in screen's, reached from Settings instead. It asks for

@@ -120,6 +120,12 @@ export default function Settings() {
       <SelectRow icon="timer" iconTint="var(--orange)" title={t('Rest timer')}
         value={S.restSec} onChange={v => update(s => { s.restSec = v })}
         options={[60, 90, 120, 150, 180].map(v => ({ value: v, label: v + 's' }))} />
+      {/* Default for a rest-pause burst added live on a plain set — a planned exercise's own
+          "Rest (s)" (in its Intensifier config) overrides this, same as the main rest timer
+          is the fallback whenever an exercise has no progression rule of its own. */}
+      <SelectRow icon="bolt" iconTint="var(--acc)" title={t('Rest-pause rest')}
+        value={S.restPauseSec} onChange={v => update(s => { s.restPauseSec = v })}
+        options={[10, 15, 20, 30].map(v => ({ value: v, label: v + 's' }))} />
       {(wakeOK || !MOBILE) && (
         <Row icon="sun" iconTint="var(--yellow)" title={t('Keep screen awake')}
           subtitle={wakeOK ? null : t('Not supported in this browser.')}>

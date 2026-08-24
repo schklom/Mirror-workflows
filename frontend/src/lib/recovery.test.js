@@ -403,6 +403,47 @@ describe('warm-up flag in strength and fatigue', () => {
   })
 })
 
+describe('drop-set drops add fatigue tonnage on top of the main set', () => {
+  // Same within-session Epley baseline setTonnage derives from the row's own w/r (8 reps,
+  // under REP_CAP), so a drop is weighted against the same 1RM as the main set.
+  const oneRm = 80 * (1 + 8 / 30)
+
+  it('a drop-set drop adds its own intensity-weighted tonnage', () => {
+    const dropRow = { done: true, type: 'dropset', w: 80, r: 8, drops: [{ w: 60, r: 6 }] }
+    const dropTonnage = 60 * 6 * Math.min(1, 60 / oneRm) ** 1.5
+    const expected = expectedFatigue([{ stimulus: V + dropTonnage }])
+
+    expect(fatigueOf([workoutAt(SINGLE.id, NOW, [dropRow])], NOW)[SINGLE_SLUG]).toBeCloseTo(expected, 8)
+    // strictly more than the plain 80x8 set alone — the drop is real extra work
+    expect(fatigueOf([workoutAt(SINGLE.id, NOW, [dropRow])], NOW)[SINGLE_SLUG])
+      .toBeGreaterThan(fatigueOf([doneWorkoutAt(SINGLE.id, NOW)], NOW)[SINGLE_SLUG])
+  })
+
+  it('leaves fatigue unchanged for a straight set with no drops', () => {
+    const plain = { done: true, w: 80, r: 8 }
+    expect(fatigueOf([workoutAt(SINGLE.id, NOW, [plain])], NOW)[SINGLE_SLUG])
+      .toBeCloseTo(expectedFatigue([{ stimulus: V }]), 8)
+  })
+})
+
+describe('a rest-pause row\'s clusters add no extra fatigue tonnage', () => {
+  // Its own r is already the total across every burst (see applyIntensifierPlan/history.js),
+  // so setTonnage's main w x r term already covers all of it — clusters are a breakdown only.
+  it('matches a plain set of the same w/r exactly, regardless of how the clusters break it down', () => {
+    const burstRow = { done: true, type: 'restpause', w: 80, r: 8, clusters: [{ r: 4, restSec: 15 }] }
+    const plainRow = { done: true, w: 80, r: 8 }
+    expect(fatigueOf([workoutAt(SINGLE.id, NOW, [burstRow])], NOW)[SINGLE_SLUG])
+      .toBeCloseTo(fatigueOf([workoutAt(SINGLE.id, NOW, [plainRow])], NOW)[SINGLE_SLUG], 10)
+  })
+
+  it('holds for a realistic planned total too — a full descending split adds nothing beyond the row\'s own r', () => {
+    const burstRow = { done: true, type: 'restpause', w: 80, r: 20, clusters: [{ r: 10, restSec: 15 }, { r: 5, restSec: 15 }, { r: 3, restSec: 15 }, { r: 1, restSec: 15 }, { r: 1, restSec: 15 }] }
+    const plainRow = { done: true, w: 80, r: 20 }
+    expect(fatigueOf([workoutAt(SINGLE.id, NOW, [burstRow])], NOW)[SINGLE_SLUG])
+      .toBeCloseTo(fatigueOf([workoutAt(SINGLE.id, NOW, [plainRow])], NOW)[SINGLE_SLUG], 10)
+  })
+})
+
 describe('canonical loads and configured bodyweight', () => {
   const loaded = EXDB.find(ex => {
     const weights = musclesOf(ex)

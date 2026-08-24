@@ -274,6 +274,7 @@ export default {
   'Theme': 'Tema',
   'Dark': 'Oscuro',
   'Light': 'Claro',
+  'System': 'Sistema',
   'Accent color': 'Color de acento',
   'General': 'General',
   'During a workout': 'Durante el entrenamiento',

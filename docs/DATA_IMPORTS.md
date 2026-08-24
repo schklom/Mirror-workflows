@@ -2,9 +2,8 @@
 
 ## Plans
 
-Plans can be imported from a plain text json file.  
-The app supports exporting plans in that format. Exports always contain *every* currently present plan.  
-The IDs of the exercises have to match the IDs in the database, so it will be a bit tedious to write your own.  
+Plans/routines can be imported from a plain text json file.  
+The app supports exporting and an export always contain *every* current routine.  
 
 If you don't want to share every plan that you have currently created, you can either:
 - edit the exported json with a text editor  
@@ -14,6 +13,10 @@ If you don't want to share every plan that you have currently created, you can e
     - make changes 
     - export a new json file for sharing
 
+If you are using the standalone app on your mobile, you can use the demo for creating plans on your PC and import them.  
+The demo stores all data in your browser, it is not public or shared in any way.
+
+The IDs of the exercises have to match the IDs in the database, so it will be a bit tedious to write your own.  
 
 ## History
 
@@ -21,7 +24,7 @@ To import your history from other applications, you'll need an export that is in
 The app tries to match the exercise names to link them to the exercises in the database.
 
 > Note: The history is a log of past exercises.  
-> Because plans change and history does not, it is completely disconnected from current plans.
+> Because plans change and history does not, it is completely disconnected from routines.
 
 These apps have been tested to work without adjustments:
 

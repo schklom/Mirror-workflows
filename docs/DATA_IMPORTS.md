@@ -2,11 +2,22 @@
 
 ## Plans
 
+Plans can be imported from a plain text json file.
+The app supports exporting plans in that format. Exports always contain *every* currently present plan.
+The IDs of the exercises have to match the IDs in the database, so it will be a bit tedious to write your own.
+
+If you don't want to share every plan that you have currently created, you can either:
+- edit the exported json with a text editor  
+  or (if you don't feel like editing json files):
+- open the [Demo](https://opengym.duarte-santos.ch/demo/#/home), import your plans, make changes and export a new json file to share.
 
 
 ## History
 
 To import your history from other applications, you'll need an export that is in a `csv` format.
+The app tries to match the exercise names to link them to the exercises in the database.
+
+> Note: The history is a log of past exercises. There is no converting to a new workout plan.
 
 These apps have been tested to work:
 
@@ -17,8 +28,17 @@ These apps have been tested to work:
 | **Strong** | Settings → Export Data | One row per set; includes `Weight` with unit templated into header, `RPE`, `Notes`. Hevy can import Strong's CSV directly. |
 | **Hevy** | Profile → Settings → Export & Import Data (Workouts or Measurements) | Headers: `title, start_time, end_time, description, exercise_title, superset_id, exercise_notes, set_index, set_type, weight_lbs/weight_kg, reps, distance_miles/distance_km, duration_seconds, rpe` |
 
+You can also create your own plain `csv`:
 
-You can also create your own plain `csv` file with the following fields:
+### Minimal Example
+
+```csv
+workout name,exercise,date,weight kg,reps
+Leg Day,Squat,2026-08-21,120,5
+Leg Day,Squat,2026-08-21,125,4
+Leg Day,Leg Press,2026-08-21,200,1
+```
+These field names are supported:
 
 | Canonical Field | Supported CSV Headers (first match wins) |
 |---|---|
@@ -43,11 +63,4 @@ You can also create your own plain `csv` file with the following fields:
 | `setType` | `set type` |
 | `note` | `comment`, `comments`, `notes`, `note` |
 
-Minimal Example:
 
-```csv
-workout name,exercise,date,weight kg,reps
-Leg Day,Squat,2026-08-21,120,5
-Leg Day,Squat,2026-08-21,125,4
-Leg Day,Leg Press,2026-08-21,200,1
-```

@@ -217,6 +217,7 @@ export default {
   'Load starter plan (Push / Pull / Legs)': 'Starterplan laden (Push / Pull / Beine)',
   // --- routine edit ---
   'Superset with exercise above': 'Supersatz mit der Übung darüber',
+  'Note (optional) — loading cues, "bar only then +1 plate/side each set", anything worth remembering here': 'Notiz (optional) — Hinweise zur Belastung, z. B. „nur die Stange, dann pro Satz +1 Scheibe pro Seite“, was immer du dir merken willst',
   'No exercises yet — add your first one.': 'Noch keine Übungen — füge deine erste hinzu.',
   'Tap the link button on an exercise to superset it with the one above — you’ll do them back-to-back.': 'Tippe bei einer Übung auf die Verknüpfen-Taste, um sie mit der darüber zum Supersatz zu verbinden — du machst sie direkt nacheinander.',
   'Delete routine?': 'Routine löschen?',

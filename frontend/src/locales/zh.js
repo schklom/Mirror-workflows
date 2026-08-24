@@ -206,6 +206,7 @@ export default {
   'Create one or load the starter plan.': '创建一个或加载入门计划。',
   'Load starter plan (Push / Pull / Legs)': '加载入门计划（推 / 拉 / 腿）',
   'Superset with exercise above': '与上面的动作组成超级组',
+  'Note (optional) — loading cues, "bar only then +1 plate/side each set", anything worth remembering here': '备注（可选）— 加重提示，例如"空杠开始，之后每组每侧+1片"，任何你想记住的内容',
   'No exercises yet — add your first one.': '还没有动作——添加第一个吧。',
   'Tap the link button on an exercise to superset it with the one above — you’ll do them back-to-back.': '点击动作上的链接按钮，可与上面的动作组成超级组——你将连续完成它们。',
   'Delete routine?': '删除训练日？',

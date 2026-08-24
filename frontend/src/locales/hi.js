@@ -206,6 +206,7 @@ export default {
   'Create one or load the starter plan.': 'एक बनाएँ या स्टार्टर प्लान लोड करें।',
   'Load starter plan (Push / Pull / Legs)': 'स्टार्टर प्लान लोड करें (पुश / पुल / लेग्स)',
   'Superset with exercise above': 'ऊपर वाले व्यायाम के साथ सुपरसेट',
+  'Note (optional) — loading cues, "bar only then +1 plate/side each set", anything worth remembering here': 'नोट (वैकल्पिक) — लोडिंग संकेत, जैसे "सिर्फ़ खाली बार, फिर हर सेट में हर तरफ़ +1 प्लेट", जो भी याद रखना चाहें',
   'No exercises yet — add your first one.': 'अभी कोई व्यायाम नहीं — पहला जोड़ें।',
   'Tap the link button on an exercise to superset it with the one above — you’ll do them back-to-back.': 'किसी व्यायाम पर लिंक बटन दबाएँ ताकि वह ऊपर वाले के साथ सुपरसेट बने — आप उन्हें लगातार करेंगे।',
   'Delete routine?': 'रूटीन हटाएँ?',

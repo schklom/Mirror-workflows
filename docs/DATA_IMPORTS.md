@@ -2,33 +2,37 @@
 
 ## Plans
 
-Plans can be imported from a plain text json file.
-The app supports exporting plans in that format. Exports always contain *every* currently present plan.
-The IDs of the exercises have to match the IDs in the database, so it will be a bit tedious to write your own.
+Plans can be imported from a plain text json file.  
+The app supports exporting plans in that format. Exports always contain *every* currently present plan.  
+The IDs of the exercises have to match the IDs in the database, so it will be a bit tedious to write your own.  
 
 If you don't want to share every plan that you have currently created, you can either:
 - edit the exported json with a text editor  
   or (if you don't feel like editing json files):
-- open the [Demo](https://opengym.duarte-santos.ch/demo/#/home), import your plans, make changes and export a new json file to share.
+- open the [Demo](https://opengym.duarte-santos.ch/demo/#/home)
+    - import your plans
+    - make changes 
+    - export a new json file for sharing
 
 
 ## History
 
-To import your history from other applications, you'll need an export that is in a `csv` format.
+To import your history from other applications, you'll need an export that is in `CSV` format.
 The app tries to match the exercise names to link them to the exercises in the database.
 
-> Note: The history is a log of past exercises. There is no converting to a new workout plan.
+> Note: The history is a log of past exercises. 
+> It is independend from current plans and there is no converting to a new plan.
 
-These apps have been tested to work:
+These apps have been tested to work without adjustments:
 
-| App | How to export | Notes |
-|---|---|---|
-| **FitNotes (Android)** | Settings → Backup/Export → **Spreadsheet Export** | Plain one-row-per-set CSV of workouts (or body tracker). Also has a proprietary `.fitnotes` backup DB (richer metadata). The CSV is export-only within the app itself. |
-| **FitNotes 2 (iOS)** | Export workouts as CSV; also manual/auto iCloud backups | Can also *import* the original FitNotes DB/CSV and other fitness apps' CSVs. Supports RPE + RIR per set. |
-| **Strong** | Settings → Export Data | One row per set; includes `Weight` with unit templated into header, `RPE`, `Notes`. Hevy can import Strong's CSV directly. |
-| **Hevy** | Profile → Settings → Export & Import Data (Workouts or Measurements) | Headers: `title, start_time, end_time, description, exercise_title, superset_id, exercise_notes, set_index, set_type, weight_lbs/weight_kg, reps, distance_miles/distance_km, duration_seconds, rpe` |
+| App | How to export | 
+|---|---|
+| **FitNotes (Android)** | Settings → Backup/Export → **Spreadsheet Export** | 
+| **FitNotes 2 (iOS)** | Export workouts as CSV; also manual/auto iCloud backups |
+| **Strong** | Settings → Export Data | 
+| **Hevy** | Profile → Settings → Export & Import Data (Workouts or Measurements) | 
 
-You can also create your own plain `csv`:
+You can also create your own `CSV` file:
 
 ### Minimal Example
 

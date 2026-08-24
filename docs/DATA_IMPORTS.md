@@ -16,7 +16,7 @@ If you don't want to share every plan that you have currently created, you can e
 If you are using the standalone app on your mobile, you can use the demo for creating plans on your PC and import them.  
 The demo stores all data in your browser, it is not public or shared in any way.
 
-The IDs of the exercises have to match the IDs in the database, so it will be a bit tedious to write your own.  
+Writing a json file yourself will be a bit of a complex task since the IDs of the exercises have to match the IDs in the database.  
 
 ## History
 

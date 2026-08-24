@@ -206,6 +206,7 @@ export default {
   'Create one or load the starter plan.': 'Crea una o carga el plan inicial.',
   'Load starter plan (Push / Pull / Legs)': 'Cargar plan inicial (Push / Pull / Piernas)',
   'Superset with exercise above': 'Superserie con el ejercicio de arriba',
+  'Note (optional) — loading cues, "bar only then +1 plate/side each set", anything worth remembering here': 'Nota (opcional) — indicaciones de carga, ej. «solo barra y +1 disco por lado en cada serie», lo que quieras recordar',
   'No exercises yet — add your first one.': 'Aún no hay ejercicios — añade el primero.',
   'Tap the link button on an exercise to superset it with the one above — you’ll do them back-to-back.': 'Toca el botón de enlace en un ejercicio para hacer superserie con el de arriba — los harás seguidos.',
   'Delete routine?': '¿Eliminar rutina?',

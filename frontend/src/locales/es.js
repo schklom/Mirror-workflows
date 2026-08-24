@@ -286,6 +286,8 @@ export default {
   'Data': 'Datos',
   'Export backup (JSON)': 'Exportar copia (JSON)',
   'Import backup': 'Importar copia',
+  'Auto-backup on changes': 'Copia automática al modificar',
+  'Saves a dated copy to the Documents folder after finishing a workout or editing a routine — point a sync app at it, or copy it out by hand.': 'Guarda una copia fechada en la carpeta Documentos al terminar un entrenamiento o editar una rutina — apunta una app de sincronización a esa carpeta, o copia el archivo a mano.',
   'Reset everything?': '¿Restablecer todo?',
   'Reset everything': 'Restablecer todo',
   'Deletes your plan, workouts and body weight on this device. This cannot be undone.': 'Elimina tu plan, entrenamientos y peso corporal en este dispositivo. No se puede deshacer.',

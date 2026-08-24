@@ -4,7 +4,7 @@ import { localTZ } from '../lib/format.js'
 import { registerCustom } from '../lib/exercises.js'
 import { DEMO, DEMO_SEEDED } from '../lib/demo.js'
 import { guestAllowed } from '../lib/guest.js'
-import { MOBILE, nativeLoad, nativeSave, syncReminder } from '../lib/mobile.js'
+import { MOBILE, nativeLoad, nativeSave, syncReminder, writeAutoBackup } from '../lib/mobile.js'
 
 const KEY = 'gym_state_v1'
 export const DEF = {
@@ -16,7 +16,7 @@ export const DEF = {
   // that a profile which never chose (loaded state is overlaid on DEF, on every path: local,
   // server pull, backup import) still falls back to the `showRir` boolean this replaced and
   // keeps the column it had. See effortOf.
-  reminder: { on: false, time: '08:00', tz: null }, effort: null
+  reminder: { on: false, time: '08:00', tz: null }, effort: null, autoBackup: false,
 }
 const clone = o => JSON.parse(JSON.stringify(o))
 
@@ -92,6 +92,14 @@ export const useStore = create((set, get) => {
       persist(S, push)
     },
     replaceState(S, push = false) { persist(clone(S), push) },
+
+    // Fires after the moments where losing local data would actually hurt — a workout just
+    // logged, a routine just edited — not on every keystroke. No-op off mobile or with the
+    // setting off; the private file mirror (nativePersist, above) already covers every change.
+    autoBackupNow() {
+      const S = get().S
+      if (MOBILE && S.autoBackup) writeAutoBackup(S)
+    },
 
     isGuest: () => localStorage.getItem('gym_guest') === '1',
     setGuest(v) { if (v) localStorage.setItem('gym_guest', '1'); else localStorage.removeItem('gym_guest'); set({}) },

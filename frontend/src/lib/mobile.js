@@ -10,6 +10,7 @@
 // Like the demo build, MOBILE is replaced at build time, so all of this folds away in
 // web bundles; the Capacitor plugins are only ever imported behind it.
 import { t } from './i18n-core.js'
+import { todayISO } from './format.js'
 
 export const MOBILE = import.meta.env.VITE_MOBILE === '1'
 
@@ -65,4 +66,21 @@ export async function shareExport(json, filename) {
   const { Share } = await import('@capacitor/share')
   const w = await Filesystem.writeFile({ path: filename, directory: Directory.Cache, data: json, encoding: Encoding.UTF8 })
   await Share.share({ title: filename, url: w.uri })
+}
+
+// "Auto-backup on changes" (Settings): a dated snapshot dropped into the Documents folder —
+// visible in Files (iOS) / a file manager (Android), unlike the private mirror nativeSave keeps
+// — so whatever the user points at that folder (a sync app, a manual copy) always has something
+// recent. One file per day; later triggers the same day just overwrite it.
+export async function writeAutoBackup(state) {
+  try {
+    const { Filesystem, Directory, Encoding } = await import('@capacitor/filesystem')
+    await Filesystem.writeFile({
+      path: `opengym-backup-${todayISO()}.json`,
+      directory: Directory.Documents,
+      data: JSON.stringify(state),
+      encoding: Encoding.UTF8,
+      recursive: true,
+    })
+  } catch (e) { /* best effort — the private mirror in Directory.Data still has the data */ }
 }

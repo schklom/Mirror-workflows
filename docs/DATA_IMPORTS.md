@@ -20,8 +20,8 @@ If you don't want to share every plan that you have currently created, you can e
 To import your history from other applications, you'll need an export that is in `CSV` format.
 The app tries to match the exercise names to link them to the exercises in the database.
 
-> Note: The history is a log of past exercises. 
-> It is independend from current plans and there is no converting to a new plan.
+> Note: The history is a log of past exercises.  
+> Because plans change and history does not, it is completely disconnected from current plans.
 
 These apps have been tested to work without adjustments:
 

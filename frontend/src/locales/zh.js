@@ -670,6 +670,8 @@ export default {
   'Seat height, pin position, a form cue — shown every session.': '座椅高度、插销位置、动作要点 —— 每次训练都会显示。',
   'From {0}:': '来自 {0}：',
   'Session note': '训练备注',
+  'Add session note': '添加训练备注',
+  'Edit session note': '编辑训练备注',
   'How the session went as a whole.': '这次训练整体感觉如何。',
   'Rest-pause always trains as one warm-up set at this rep count, then one rest-pause work set — "Sets" is not used.': 'Rest-pause 始终按这个次数练一个热身组，再加一个 rest-pause 正式组 —— 不使用“组数”。'
 }

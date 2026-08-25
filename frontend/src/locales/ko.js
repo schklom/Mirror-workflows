@@ -670,6 +670,8 @@ export default {
   'Seat height, pin position, a form cue — shown every session.': '시트 높이, 핀 위치, 자세 팁 — 매 운동마다 표시됩니다.',
   'From {0}:': '{0}에서:',
   'Session note': '운동 메모',
+  'Add session note': '운동 메모 추가',
+  'Edit session note': '운동 메모 편집',
   'How the session went as a whole.': '이번 운동이 전체적으로 어땠는지.',
   'Rest-pause always trains as one warm-up set at this rep count, then one rest-pause work set — "Sets" is not used.': '레스트포즈는 항상 이 횟수의 워밍업 세트 하나와 레스트포즈 작업 세트 하나로 진행됩니다 — ‘세트’는 사용하지 않습니다.'
 }

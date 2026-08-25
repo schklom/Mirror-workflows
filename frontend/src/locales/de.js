@@ -687,6 +687,8 @@ export default {
   'Seat height, pin position, a form cue — shown every session.': 'Sitzhöhe, Pin-Position, ein Hinweis zur Ausführung — bei jedem Training sichtbar.',
   'From {0}:': 'Vom {0}:',
   'Session note': 'Notiz zum Training',
+  'Add session note': 'Notiz zum Training',
+  'Edit session note': 'Notiz bearbeiten',
   'How the session went as a whole.': 'Wie das Training insgesamt lief.',
   'Rest-pause always trains as one warm-up set at this rep count, then one rest-pause work set — "Sets" is not used.': 'Rest-Pause trainiert immer als ein Aufwärmsatz mit dieser Wiederholungszahl und ein Rest-Pause-Arbeitssatz — „Sätze“ wird nicht verwendet.'
 }

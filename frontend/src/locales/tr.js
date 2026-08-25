@@ -670,6 +670,8 @@ export default {
   'Seat height, pin position, a form cue — shown every session.': 'Sehpa yüksekliği, pim konumu, bir teknik ipucu — her antrenmanda görünür.',
   'From {0}:': '{0} tarihinden:',
   'Session note': 'Antrenman notu',
+  'Add session note': 'Antrenman notu ekle',
+  'Edit session note': 'Antrenman notunu düzenle',
   'How the session went as a whole.': 'Antrenmanın genel olarak nasıl geçtiği.',
   'Rest-pause always trains as one warm-up set at this rep count, then one rest-pause work set — "Sets" is not used.': 'Rest-pause her zaman bu tekrar sayısında bir ısınma seti ve bir rest-pause çalışma seti olarak çalışılır — “Setler” kullanılmaz.'
 }

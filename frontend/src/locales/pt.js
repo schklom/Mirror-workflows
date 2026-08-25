@@ -670,6 +670,8 @@ export default {
   'Seat height, pin position, a form cue — shown every session.': 'Altura do banco, posição do pino, uma indicação técnica — visível em todas as sessões.',
   'From {0}:': 'De {0}:',
   'Session note': 'Nota da sessão',
+  'Add session note': 'Adicionar nota da sessão',
+  'Edit session note': 'Editar nota da sessão',
   'How the session went as a whole.': 'Como correu a sessão no seu todo.',
   'Rest-pause always trains as one warm-up set at this rep count, then one rest-pause work set — "Sets" is not used.': 'O rest-pause treina sempre como uma série de aquecimento com estas repetições e uma série de trabalho rest-pause — «Séries» não é usado.'
 }

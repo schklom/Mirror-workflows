@@ -923,6 +923,22 @@ function WorkoutDetail({ w, close }) {
     const text = note.trim().slice(0, NOTE_MAX)
     if (text) rec.note = text; else delete rec.note
   })
+  // onBlur alone loses the note: Escape, the Android back gesture and swipe-to-dismiss all
+  // close the sheet without ever moving focus out of the textarea. Flush on unmount too. The
+  // ref is what makes that work — a cleanup closes over the note from its own render, which
+  // is the empty string this started with.
+  const latest = useRef(note)
+  latest.current = note
+  const initial = useRef(w.note || '')
+  useEffect(() => () => {
+    const text = latest.current.trim().slice(0, NOTE_MAX)
+    if (text === initial.current) return
+    update(s => {
+      const rec = s.workouts.find(x => x.id === w.id)
+      if (!rec) return                       // deleted from this very sheet
+      if (text) rec.note = text; else delete rec.note
+    })
+  }, [])
   return <>
     <h3>{w.name}</h3>
     <div className="muted small" style={{ marginBottom: 12 }}>{[fmtDate(w.d, true), ...durPart(w.end - w.start), fmtVol(w.vol, st.unit), ...(w.bw ? [fmtNum(w.bw) + ' ' + st.unit] : [])].join(' · ')}</div>
@@ -1137,6 +1153,36 @@ function ExerciseNote({ entryIdx, close }) {
   </>
 }
 export const exerciseNoteSheet = entryIdx => ui().openSheet(close => <ExerciseNote entryIdx={entryIdx} close={close} />)
+
+/* The session note: how the whole workout went, as opposed to how one exercise went. It lives
+   on the active session, so buildCompletedWorkout carries it onto the finished workout and it
+   shows up again in history — where it stays editable. Written here rather than only after the
+   fact because "notes you can write during a workout" is the point; a note you can only add
+   once the session is filed is a different, smaller feature. */
+function SessionNote({ close }) {
+  const st = useStore(s => s.S)
+  const update = useStore(s => s.update)
+  const A = st.active
+  const [note, setNote] = useState(A?.note || '')
+  useEffect(() => { if (!A) close() }, [!A])
+  if (!A) return null
+
+  const save = () => {
+    const text = note.trim().slice(0, NOTE_MAX)
+    update(s => { if (!s.active) return; if (text) s.active.note = text; else delete s.active.note })
+    close()
+  }
+
+  return <>
+    <h3>{t('Session note')}</h3>
+    <textarea className="input" rows={4} maxLength={NOTE_MAX} value={note}
+      placeholder={t('How the session went as a whole.')}
+      onChange={e => setNote(e.target.value)} />
+    <div style={{ height: 18 }} />
+    <Button variant="primary" onClick={save}>{t('Save')}</Button>
+  </>
+}
+export const sessionNoteSheet = () => ui().openSheet(close => <SessionNote close={close} />)
 
 /* Drop-set drops and rest-pause bursts are edited inline on the set row itself (Workout.jsx) —
    no sheet, no timer. A planned exercise (see the "Intensifier" config below) arrives with them

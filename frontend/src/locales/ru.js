@@ -670,6 +670,8 @@ export default {
   'Seat height, pin position, a form cue — shown every session.': 'Высота сиденья, положение фиксатора, подсказка по технике — видно на каждой тренировке.',
   'From {0}:': 'От {0}:',
   'Session note': 'Заметка о тренировке',
+  'Add session note': 'Добавить заметку',
+  'Edit session note': 'Изменить заметку',
   'How the session went as a whole.': 'Как прошла тренировка в целом.',
   'Rest-pause always trains as one warm-up set at this rep count, then one rest-pause work set — "Sets" is not used.': 'Rest-pause всегда выполняется как один разминочный подход с этим числом повторений и один рабочий подход rest-pause — «Подходы» не используются.'
 }

@@ -1,5 +1,5 @@
 import { EXDB } from './exercises-data.js'
-import { t } from './i18n-core.js'
+import { t, getVersion } from './i18n-core.js'
 
 export { EXDB }
 
@@ -88,23 +88,36 @@ export const normalizeStr = s => (s || '')
 // Matches when all whitespace-separated words in the query appear anywhere in the exercise's
 // name, equipment, target muscle, body part (both in English and translated to active language),
 // secondary muscles or description.
+//
+// The haystack is built once per exercise and cached: NFD-normalising ~1300 catalogue entries
+// on every keystroke costs ~8ms on a desktop and several times that on a phone. The cache key
+// is the i18n version (bumped by every setLang), so switching language rebuilds the translated
+// terms. Custom exercises are re-cached automatically — the store clones state on update, so an
+// edited exercise arrives as a new object the WeakMap has never seen.
+const corpusCache = new WeakMap()
+
+function corpusOf(e) {
+  const v = getVersion()
+  const hit = corpusCache.get(e)
+  if (hit && hit.v === v) return hit.s
+  const sm = Array.isArray(e?.sm) ? e.sm : []
+  const s = normalizeStr([
+    e?.n || '',
+    e?.tg || '', t(e?.tg || ''),
+    e?.eq || '', t(e?.eq || ''),
+    e?.bp || '', t(e?.bp || ''),
+    ...sm, ...sm.map(m => t(m)),
+    e?.desc || ''
+  ].join(' '))
+  corpusCache.set(e, { v, s })
+  return s
+}
+
 export function matchExercise(e, query) {
   if (!query) return true
   const tokens = normalizeStr(query).split(/\s+/).filter(Boolean)
   if (!tokens.length) return true
-
-  const corpus = normalizeStr([
-    e?.n || '',
-    e?.tg || '',
-    t(e?.tg || ''),
-    e?.eq || '',
-    t(e?.eq || ''),
-    e?.bp || '',
-    t(e?.bp || ''),
-    ...(Array.isArray(e?.sm) ? e.sm : []),
-    ...(Array.isArray(e?.sm) ? e.sm.map(m => t(m)) : []),
-    e?.desc || ''
-  ].join(' '))
-
+  if (!e || typeof e !== 'object') return false
+  const corpus = corpusOf(e)
   return tokens.every(tok => corpus.includes(tok))
 }

@@ -9,7 +9,7 @@
 //     a page break — each exercise, and each routine that fits, stays in one place.
 
 import { EXIDX, isBodyweightEq } from './exercises.js'
-import { modeOf, fmtSec, isBw, isPerSide, sideReps } from './history.js'
+import { modeOf, fmtSec, isBw, isPerSide, sideReps, MAX_PLANNED_WARMUPS } from './history.js'
 import { uid, todayISO, DAYN, fmtNum, exCount } from './format.js'
 import { t, exerciseNameFor } from './i18n-core.js'
 
@@ -46,8 +46,34 @@ function cleanEx(e) {
   if (e.repsMax != null) o.repsMax = e.repsMax
   if (e.sg) o.sg = e.sg
   if (e.note) o.note = e.note
-  if (e.warmupSets) o.warmupSets = e.warmupSets
+  const warm = cleanWarmupSets(e.warmupSets)
+  if (warm) o.warmupSets = warm
+  // Drop-sets and rest-pause are part of how the exercise is prescribed, not a logging detail.
+  // Without this a shared "3x5 with a double drop" arrived at the other end as a plain 3x5,
+  // silently — parsePlan's `dropped` counter only tracks exercises it cannot resolve at all.
+  const intens = cleanIntensifier(e.intensifier)
+  if (intens) o.intensifier = intens
   return o
+}
+
+/** Clamped the same way buildSets clamps it on the way out — the stepper showed a hand-edited
+ *  plan file's "999" verbatim, because the clamp only happened when the rows were built. */
+function cleanWarmupSets(v) {
+  const n = Math.round(Number(v)) || 0
+  return n > 0 ? Math.min(MAX_PLANNED_WARMUPS, n) : 0
+}
+
+/** Keep the floors the config sheet and applyIntensifierPlan already enforce, and nothing else:
+ *  a plan file is someone else's data, so anything unrecognised is dropped rather than trusted. */
+function cleanIntensifier(x) {
+  const type = x && x.type
+  if (type === 'dropset') {
+    return { type, count: Math.max(1, Math.round(Number(x.count)) || 1), pct: Math.max(5, Math.round(Number(x.pct)) || 20) }
+  }
+  if (type === 'restpause') {
+    return { type, totalReps: Math.max(1, Math.round(Number(x.totalReps)) || 1), restSec: Math.max(5, Math.round(Number(x.restSec)) || 15) }
+  }
+  return null
 }
 
 /** Build the shareable bundle: every routine, the week schedule, referenced customs. */
@@ -87,6 +113,13 @@ export function parsePlan(raw) {
       const ok = !!e && (known.has(e.id) || !!EXIDX[e.id])
       if (!ok) dropped++
       return ok
+    }).map(e => {
+      // The exercises pass through as written, so the two fields that carry numbers into the
+      // planner get the same clamps on the way in that they get on the way out.
+      const warm = cleanWarmupSets(e.warmupSets)
+      const intens = cleanIntensifier(e.intensifier)
+      const { warmupSets, intensifier, ...rest } = e
+      return { ...rest, ...(warm ? { warmupSets: warm } : {}), ...(intens ? { intensifier: intens } : {}) }
     })
   }))
   return {

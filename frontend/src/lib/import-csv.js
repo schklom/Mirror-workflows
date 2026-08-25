@@ -58,12 +58,12 @@ const norm = h => h.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim()
 const COLUMNS = [
   ['exercise', ['exercise', 'exercise name', 'exercise title']],
   ['date', ['date', 'workout date']],
-  ['startTime', ['start time']],
+  ['startTime', ['start time', 'start date']],
   ['endTime', ['end time']],
-  ['workoutName', ['workout name', 'title']],
+  ['workoutName', ['workout name', 'title', 'workout']],
   ['category', ['category', 'body part', 'muscle group']],
-  ['weightKg', ['weight kg']],
-  ['weightLb', ['weight lbs', 'weight lb']],
+  ['weightKg', ['weight kg', 'weight (kg)']],
+  ['weightLb', ['weight lbs', 'weight lb', 'weight (lb)']],
   ['weight', ['weight']],
   ['weightUnit', ['weight unit', 'unit']],
   ['reps', ['reps', 'repetitions']],
@@ -71,13 +71,13 @@ const COLUMNS = [
   // when it is there rather than dropping the column on the floor.
   ['rpe', ['rpe', 'rpe rating']],
   ['rir', ['rir', 'reps in reserve']],
-  ['distanceKm', ['distance km']],
+  ['distanceKm', ['distance km', 'distance (km)']],
   ['distance', ['distance']],
   ['distanceUnit', ['distance unit']],
   ['seconds', ['seconds', 'duration seconds']],
-  ['time', ['time', 'duration']],
+  ['time', ['time', 'duration', 'set duration (sec)']],
   ['setType', ['set type']],
-  ['note', ['comment', 'comments', 'notes', 'note']],
+  ['note', ['comment', 'comments', 'notes', 'note', 'workout notes']],
 ]
 
 function mapHeader(header) {

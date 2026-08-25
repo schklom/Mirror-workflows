@@ -1,7 +1,24 @@
 import { describe, expect, it } from 'vitest'
-import { setProgressHighWater, supersetFlowStep } from './supersetFlow.js'
+import { setProgressHighWater, supersetFlowStep, restAfterSet } from './supersetFlow.js'
 
 const entry = done => ({ sets: done.map(value => ({ done: value })) })
+
+describe('restAfterSet', () => {
+  it('rests between the sets of an exercise', () => {
+    expect(restAfterSet({ unitDone: false, lastUnit: false })).toBe(true)
+    expect(restAfterSet({ unitDone: false, lastUnit: true })).toBe(true)
+  })
+
+  // Issue #3: a two-set exercise timed one rest instead of two, because the closing set
+  // "finished quietly". The next exercise still follows it, so the rest belongs there.
+  it('rests after the closing set when another exercise follows', () => {
+    expect(restAfterSet({ unitDone: true, lastUnit: false })).toBe(true)
+  })
+
+  it('stays quiet only on the very last set of the session', () => {
+    expect(restAfterSet({ unitDone: true, lastUnit: true })).toBe(false)
+  })
+})
 
 describe('supersetFlowStep', () => {
   it('does not create navigation or rest flow for a normal singleton exercise', () => {

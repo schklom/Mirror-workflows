@@ -600,5 +600,30 @@ export default {
   'secondary': '보조',
   'No exercises with an estimated 1RM yet.': '추정 1RM이 있는 운동이 아직 없습니다.',
   'Tap a muscle to see its exercises.': '근육을 눌러 해당 운동을 확인하세요.',
-  'Unpair': '분리'
+  'Unpair': '분리',
+
+  // "Connect to my server" (mobile app pairing)
+  'Your server': '내 서버',
+  'Synced with your openGym server.': 'openGym 서버와 동기화됨',
+  'Disconnect': '연결 해제',
+  'Disconnect from your server?': '서버와 연결을 해제할까요?',
+  'Your data is synced to your server first, then this device switches back to local-only.': '데이터가 먼저 서버와 동기화된 후, 이 기기는 로컬 모드로 돌아갑니다.',
+  'Disconnected — back to local-only': '연결 해제됨 — 로컬 모드로 전환',
+  'Connect to my server': '내 서버에 연결',
+  'Sync this device to your own self-hosted openGym instead.': '대신 이 기기를 직접 호스팅하는 openGym 서버와 동기화합니다.',
+  'Pair the mobile app': '모바일 앱 페어링',
+  'Connect the openGym app on your phone to this account.': '휴대폰의 openGym 앱을 이 계정에 연결하세요.',
+  'Could not generate a code': '코드를 생성하지 못했습니다',
+  'On the openGym app, choose “Connect to my server”, then enter this address and the code below. It expires in 5 minutes.': 'openGym 앱에서 "내 서버에 연결"을 선택한 다음, 이 주소와 아래 코드를 입력하세요. 5분 후 만료됩니다.',
+  'Enter your server address and the code': '서버 주소와 코드를 입력하세요',
+  'Connected': '연결됨',
+  'Could not connect': '연결하지 못했습니다',
+  'Open Settings → “Pair the mobile app” on the openGym site you’re already signed into, then enter its address and the code shown there.': '이미 로그인된 openGym 사이트에서 설정 → "모바일 앱 페어링"을 열고, 주소와 거기에 표시된 코드를 입력하세요.',
+  'Server address (e.g. gym.example.com)': '서버 주소 (예: gym.example.com)',
+  'Pairing code': '페어링 코드',
+  'Connecting…': '연결 중…',
+  'Connect': '연결',
+  'How do you want to use openGym?': 'openGym을 어떻게 사용하시겠어요?',
+  'Use on this device': '이 기기에서 사용',
+  'Local keeps everything on this phone. Connecting syncs to your own openGym server instead — you can switch later in Settings.': '로컬 모드는 모든 것을 이 휴대폰에 보관합니다. 연결하면 대신 자신의 openGym 서버와 동기화됩니다 — 나중에 설정에서 변경할 수 있습니다.'
 }

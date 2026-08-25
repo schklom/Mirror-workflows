@@ -600,5 +600,30 @@ export default {
   'secondary': 'вспомогательная',
   'No exercises with an estimated 1RM yet.': 'Пока нет упражнений с расчётным 1ПМ.',
   'Tap a muscle to see its exercises.': 'Нажмите на мышцу, чтобы увидеть её упражнения.',
-  'Unpair': 'Разъединить'
+  'Unpair': 'Разъединить',
+
+  // "Connect to my server" (mobile app pairing)
+  'Your server': 'Ваш сервер',
+  'Synced with your openGym server.': 'Синхронизировано с вашим сервером openGym.',
+  'Disconnect': 'Отключить',
+  'Disconnect from your server?': 'Отключиться от сервера?',
+  'Your data is synced to your server first, then this device switches back to local-only.': 'Сначала данные синхронизируются с сервером, затем это устройство вернётся в локальный режим.',
+  'Disconnected — back to local-only': 'Отключено — снова локальный режим',
+  'Connect to my server': 'Подключиться к моему серверу',
+  'Sync this device to your own self-hosted openGym instead.': 'Синхронизировать это устройство с вашим собственным self-hosted openGym.',
+  'Pair the mobile app': 'Сопряжение мобильного приложения',
+  'Connect the openGym app on your phone to this account.': 'Подключите приложение openGym на телефоне к этому аккаунту.',
+  'Could not generate a code': 'Не удалось создать код',
+  'On the openGym app, choose “Connect to my server”, then enter this address and the code below. It expires in 5 minutes.': 'В приложении openGym выберите «Подключиться к моему серверу», затем введите этот адрес и код ниже. Он действителен 5 минут.',
+  'Enter your server address and the code': 'Введите адрес вашего сервера и код',
+  'Connected': 'Подключено',
+  'Could not connect': 'Не удалось подключиться',
+  'Open Settings → “Pair the mobile app” on the openGym site you’re already signed into, then enter its address and the code shown there.': 'В Настройках → «Сопряжение мобильного приложения» на сайте openGym, где вы уже вошли, введите его адрес и показанный там код.',
+  'Server address (e.g. gym.example.com)': 'Адрес сервера (например, gym.example.com)',
+  'Pairing code': 'Код сопряжения',
+  'Connecting…': 'Подключение…',
+  'Connect': 'Подключить',
+  'How do you want to use openGym?': 'Как вы хотите использовать openGym?',
+  'Use on this device': 'Использовать на этом устройстве',
+  'Local keeps everything on this phone. Connecting syncs to your own openGym server instead — you can switch later in Settings.': 'Локальный режим хранит всё на этом телефоне. Подключение вместо этого синхронизирует данные с вашим сервером openGym — вы сможете изменить это позже в Настройках.'
 }

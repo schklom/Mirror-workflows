@@ -600,5 +600,30 @@ export default {
   'secondary': 'secundário',
   'No exercises with an estimated 1RM yet.': 'Ainda não há exercícios com 1RM estimado.',
   'Tap a muscle to see its exercises.': 'Toque num músculo para ver os seus exercícios.',
-  'Unpair': 'Desfazer'
+  'Unpair': 'Desfazer',
+
+  // "Connect to my server" (mobile app pairing)
+  'Your server': 'O teu servidor',
+  'Synced with your openGym server.': 'Sincronizado com o teu servidor openGym.',
+  'Disconnect': 'Desligar',
+  'Disconnect from your server?': 'Desligar do teu servidor?',
+  'Your data is synced to your server first, then this device switches back to local-only.': 'Os teus dados são primeiro sincronizados com o teu servidor, depois este dispositivo volta ao modo local.',
+  'Disconnected — back to local-only': 'Desligado — de volta ao modo local',
+  'Connect to my server': 'Ligar ao meu servidor',
+  'Sync this device to your own self-hosted openGym instead.': 'Sincroniza este dispositivo com o teu próprio openGym self-hosted.',
+  'Pair the mobile app': 'Emparelhar a app móvel',
+  'Connect the openGym app on your phone to this account.': 'Liga a app openGym no teu telemóvel a esta conta.',
+  'Could not generate a code': 'Não foi possível gerar um código',
+  'On the openGym app, choose “Connect to my server”, then enter this address and the code below. It expires in 5 minutes.': 'Na app openGym, escolhe «Ligar ao meu servidor», depois introduz este endereço e o código abaixo. Expira em 5 minutos.',
+  'Enter your server address and the code': 'Introduz o endereço do teu servidor e o código',
+  'Connected': 'Ligado',
+  'Could not connect': 'Não foi possível ligar',
+  'Open Settings → “Pair the mobile app” on the openGym site you’re already signed into, then enter its address and the code shown there.': 'Em Definições → «Emparelhar a app móvel» no site openGym em que já tens sessão iniciada, introduz depois o endereço e o código apresentado aí.',
+  'Server address (e.g. gym.example.com)': 'Endereço do servidor (ex. gym.example.com)',
+  'Pairing code': 'Código de emparelhamento',
+  'Connecting…': 'A ligar…',
+  'Connect': 'Ligar',
+  'How do you want to use openGym?': 'Como queres usar o openGym?',
+  'Use on this device': 'Usar neste dispositivo',
+  'Local keeps everything on this phone. Connecting syncs to your own openGym server instead — you can switch later in Settings.': 'Local mantém tudo neste telemóvel. Ligar sincroniza antes com o teu próprio servidor openGym — podes mudar mais tarde em Definições.'
 }

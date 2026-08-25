@@ -42,6 +42,21 @@ passkey prompt won't appear. To use openGym from your phone you need a real HTTP
 
 (You can still open it over LAN in **guest mode**, which stores data only in that browser.)
 
+The standalone mobile app (`docs/MOBILE.md`) sidesteps this entirely for its "connect to my
+server" mode: instead of a passkey ceremony (impossible from inside its WebView, which never
+runs at your real hostname), it pairs by redeeming a short one-time code — minted from
+Settings → "Pair the mobile app" in an already signed-in browser tab — for a bearer token
+sent as an `Authorization` header rather than a cookie. Two consequences worth knowing if
+you're poking at the API directly:
+
+- `POST /api/pair/create` (needs a session) and `POST /api/pair/redeem` (doesn't) implement
+  this — see `api/server.js`. The returned token is the exact same signed value a cookie
+  carries, so "sign out everywhere" invalidates it too.
+- The server reflects `Access-Control-Allow-Origin` for any request that sends an `Origin`
+  header, so the app's own WebView origin can call the API cross-origin. It never sends
+  `Access-Control-Allow-Credentials`, so this doesn't let a browser read your cookie session
+  from another origin — only bearer-token requests benefit from it.
+
 ## 3. Expose it over HTTPS on your own domain
 
 Put openGym behind something that terminates TLS for a hostname you control, then point it at

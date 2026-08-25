@@ -31,6 +31,27 @@ export async function nativeSave(state) {
   } catch (e) { /* keep the localStorage copy */ }
 }
 
+// "Connect to my server" mode (lib/remote.js): which of local-only / a paired remote account this
+// device chose, kept in its own file — never inside opengym-state.json, since that file's content
+// is exactly what pushState() PUTs to a server, and a device's own connection secret must never
+// travel as if it were training data.
+const REMOTE_FILE = 'opengym-remote.json'
+
+export async function loadRemoteFile() {
+  try {
+    const { Filesystem, Directory, Encoding } = await import('@capacitor/filesystem')
+    const r = await Filesystem.readFile({ path: REMOTE_FILE, directory: Directory.Data, encoding: Encoding.UTF8 })
+    return JSON.parse(r.data)
+  } catch (e) { return null }   // never decided yet
+}
+
+export async function saveRemoteFile(data) {
+  try {
+    const { Filesystem, Directory, Encoding } = await import('@capacitor/filesystem')
+    await Filesystem.writeFile({ path: REMOTE_FILE, directory: Directory.Data, data: JSON.stringify(data), encoding: Encoding.UTF8 })
+  } catch (e) { /* worst case: onboarding asks again next launch */ }
+}
+
 // (Re)schedule the workout-day reminder: one repeating notification per weekday that has a
 // routine in the weekly plan. Cheap enough to run after any state change — the plan or the
 // reminder time may just have been edited. `interactive` gates the OS permission prompt to

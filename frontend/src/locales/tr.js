@@ -600,5 +600,30 @@ export default {
   'secondary': 'ikincil',
   'No exercises with an estimated 1RM yet.': 'Henüz tahmini 1RM olan egzersiz yok.',
   'Tap a muscle to see its exercises.': 'Egzersizlerini görmek için bir kas seçin.',
-  'Unpair': 'Ayır'
+  'Unpair': 'Ayır',
+
+  // "Connect to my server" (mobile app pairing)
+  'Your server': 'Sunucun',
+  'Synced with your openGym server.': 'openGym sunucunla senkronize edildi.',
+  'Disconnect': 'Bağlantıyı kes',
+  'Disconnect from your server?': 'Sunucuyla bağlantı kesilsin mi?',
+  'Your data is synced to your server first, then this device switches back to local-only.': 'Verilerin önce sunucunla senkronize edilir, ardından bu cihaz yerel moda geri döner.',
+  'Disconnected — back to local-only': 'Bağlantı kesildi — yerel moda dönüldü',
+  'Connect to my server': 'Sunucuma bağlan',
+  'Sync this device to your own self-hosted openGym instead.': "Bu cihazı bunun yerine kendi self-hosted openGym'inle senkronize et.",
+  'Pair the mobile app': 'Mobil uygulamayı eşleştir',
+  'Connect the openGym app on your phone to this account.': 'Telefonundaki openGym uygulamasını bu hesaba bağla.',
+  'Could not generate a code': 'Kod oluşturulamadı',
+  'On the openGym app, choose “Connect to my server”, then enter this address and the code below. It expires in 5 minutes.': 'openGym uygulamasında “Sunucuma bağlan”ı seç, ardından bu adresi ve aşağıdaki kodu gir. 5 dakika içinde sona erer.',
+  'Enter your server address and the code': 'Sunucu adresini ve kodu gir',
+  'Connected': 'Bağlandı',
+  'Could not connect': 'Bağlanılamadı',
+  'Open Settings → “Pair the mobile app” on the openGym site you’re already signed into, then enter its address and the code shown there.': 'Zaten oturum açtığın openGym sitesinde Ayarlar → “Mobil uygulamayı eşleştir”i aç, ardından adresini ve orada gösterilen kodu gir.',
+  'Server address (e.g. gym.example.com)': 'Sunucu adresi (ör. gym.example.com)',
+  'Pairing code': 'Eşleştirme kodu',
+  'Connecting…': 'Bağlanıyor…',
+  'Connect': 'Bağlan',
+  'How do you want to use openGym?': "openGym'i nasıl kullanmak istersin?",
+  'Use on this device': 'Bu cihazda kullan',
+  'Local keeps everything on this phone. Connecting syncs to your own openGym server instead — you can switch later in Settings.': "Yerel, her şeyi bu telefonda tutar. Bağlanmak ise bunun yerine kendi openGym sunucunla senkronize eder — bunu daha sonra Ayarlar'dan değiştirebilirsin."
 }

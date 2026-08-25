@@ -10,11 +10,35 @@ openGym ships in two flavors from the same codebase:
 | Reminders | Web Push from your server | native local notifications, no server involved |
 | Exercise media | served by your server (`img/`, `gif/`) | loaded from the jsDelivr CDN |
 
-The mobile flavor never talks to a backend: no sign-in screen, no sync, no telemetry.
-State is mirrored from `localStorage` into `opengym-state.json` in the app's private data
-directory on every change (iOS is allowed to evict WebView storage under pressure — the
-file mirror is the durable copy and is restored on launch). Backups go out through the
-OS share sheet instead of a browser download.
+The mobile flavor never talks to a backend by default: no sign-in screen, no sync, no
+telemetry. State is mirrored from `localStorage` into `opengym-state.json` in the app's
+private data directory on every change (iOS is allowed to evict WebView storage under
+pressure — the file mirror is the durable copy and is restored on launch). Backups go out
+through the OS share sheet instead of a browser download.
+
+### Connecting the app to your own server
+
+On first launch the app asks how you want to use it. Alongside the fully local mode above,
+you can instead **connect it to a self-hosted openGym server** — your data then lives there,
+synced the same way the browser PWA does, instead of only on the phone. This is a mode of the
+same app, not a different build or download.
+
+Passkeys can't be used for this: the app's WebView runs at its own origin, which never
+matches the real hostname WebAuthn needs. Instead you *pair* the device from a browser
+that's already signed in: Settings → **"Pair the mobile app"** shows a one-time code (valid
+5 minutes); enter your server's address and that code in the app (same first-launch screen,
+or Settings → **"Connect to my server"** later) to finish. Notes:
+
+- Requires network access every time the app is used — there's no offline file mirror once
+  connected, same as the browser PWA.
+- Use an HTTPS address if at all possible: the connection carries a bearer token instead of
+  a cookie, and that token would otherwise cross the network in plain text.
+- "Sign out everywhere" (Settings → Account, in the browser) revokes a paired app's access
+  too — it's the same signed session token either way, just delivered over a header instead
+  of a cookie. See `/api/pair/create` and `/api/pair/redeem` in `api/server.js` for the
+  exchange itself.
+- Settings → "Disconnect" syncs one last time, then drops the device cleanly back to local
+  mode.
 
 ## Prerequisites
 

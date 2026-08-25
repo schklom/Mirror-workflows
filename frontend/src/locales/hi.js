@@ -600,5 +600,30 @@ export default {
   'secondary': 'द्वितीयक',
   'No exercises with an estimated 1RM yet.': 'अभी तक अनुमानित 1RM वाला कोई व्यायाम नहीं।',
   'Tap a muscle to see its exercises.': 'व्यायाम देखने के लिए किसी मांसपेशी पर टैप करें।',
-  'Unpair': 'अलग करें'
+  'Unpair': 'अलग करें',
+
+  // "Connect to my server" (mobile app pairing)
+  'Your server': 'आपका सर्वर',
+  'Synced with your openGym server.': 'आपके openGym सर्वर के साथ सिंक हो गया।',
+  'Disconnect': 'डिस्कनेक्ट करें',
+  'Disconnect from your server?': 'क्या सर्वर से डिस्कनेक्ट करें?',
+  'Your data is synced to your server first, then this device switches back to local-only.': 'आपका डेटा पहले आपके सर्वर से सिंक होगा, फिर यह डिवाइस लोकल मोड में वापस चला जाएगा।',
+  'Disconnected — back to local-only': 'डिस्कनेक्ट हो गया — वापस लोकल मोड में',
+  'Connect to my server': 'मेरे सर्वर से कनेक्ट करें',
+  'Sync this device to your own self-hosted openGym instead.': 'इसके बजाय इस डिवाइस को अपने खुद के सेल्फ़-होस्टेड openGym से सिंक करें।',
+  'Pair the mobile app': 'मोबाइल ऐप पेयर करें',
+  'Connect the openGym app on your phone to this account.': 'अपने फ़ोन पर openGym ऐप को इस अकाउंट से जोड़ें।',
+  'Could not generate a code': 'कोड जनरेट नहीं हो सका',
+  'On the openGym app, choose “Connect to my server”, then enter this address and the code below. It expires in 5 minutes.': 'openGym ऐप में "मेरे सर्वर से कनेक्ट करें" चुनें, फिर यह पता और नीचे दिया कोड डालें। यह 5 मिनट में समाप्त हो जाता है।',
+  'Enter your server address and the code': 'अपने सर्वर का पता और कोड डालें',
+  'Connected': 'कनेक्ट हो गया',
+  'Could not connect': 'कनेक्ट नहीं हो सका',
+  'Open Settings → “Pair the mobile app” on the openGym site you’re already signed into, then enter its address and the code shown there.': 'जिस openGym साइट में आप पहले से साइन इन हैं, वहाँ सेटिंग्स → "मोबाइल ऐप पेयर करें" खोलें, फिर उसका पता और वहाँ दिखा कोड डालें।',
+  'Server address (e.g. gym.example.com)': 'सर्वर का पता (जैसे gym.example.com)',
+  'Pairing code': 'पेयरिंग कोड',
+  'Connecting…': 'कनेक्ट हो रहा है…',
+  'Connect': 'कनेक्ट करें',
+  'How do you want to use openGym?': 'आप openGym का उपयोग कैसे करना चाहते हैं?',
+  'Use on this device': 'इस डिवाइस पर उपयोग करें',
+  'Local keeps everything on this phone. Connecting syncs to your own openGym server instead — you can switch later in Settings.': 'लोकल सब कुछ इसी फ़ोन पर रखता है। कनेक्ट करने पर इसके बजाय आपके अपने openGym सर्वर से सिंक होता है — इसे बाद में सेटिंग्स में बदला जा सकता है।'
 }

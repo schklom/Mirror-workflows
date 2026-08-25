@@ -178,7 +178,10 @@ function readSession(req) {
   const cookies = Object.fromEntries((req.headers.cookie || '').split(';').map(c => {
     const i = c.indexOf('='); return i < 0 ? ['', ''] : [c.slice(0, i).trim(), c.slice(i + 1).trim()];
   }));
-  const tok = cookies.gymsid;
+  // The paired mobile app has no cookie jar shared with the API's origin, so it carries the same
+  // signed token in an Authorization header instead — same payload, same verification below.
+  const auth = req.headers.authorization || '';
+  const tok = cookies.gymsid || (auth.startsWith('Bearer ') ? auth.slice(7).trim() : null);
   if (!tok) return null;
   const payload = verifySig(tok);
   if (!payload) return null;
@@ -221,6 +224,21 @@ function takeChallenge(cid) {
   return c;
 }
 setInterval(() => { for (const [k, v] of challenges) if (v.exp < Date.now()) challenges.delete(k); }, 60000).unref();
+
+// ---------- device pairing (mobile app "connect to my server", no WebAuthn ceremony) ----------
+// A passkey ceremony can't run inside the app's WebView (its origin never matches RP_ID), so the
+// app authenticates by redeeming a short code minted from an already signed-in browser tab —
+// same 5-min-TTL/one-shot shape as the WebAuthn challenge store above.
+const pairings = new Map(); // code -> {uid, exp}
+const PAIR_CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // no 0/O/1/I — read off a screen
+function makePairCode() {
+  let code;
+  do {
+    code = Array.from(crypto.randomBytes(8)).map(b => PAIR_CODE_ALPHABET[b % PAIR_CODE_ALPHABET.length]).join('');
+  } while (pairings.has(code));
+  return code;
+}
+setInterval(() => { for (const [k, v] of pairings) if (v.exp < Date.now()) pairings.delete(k); }, 60000).unref();
 
 /* ---------- helpers ---------- */
 function json(res, code, obj, extraHeaders) {
@@ -519,6 +537,37 @@ const routes = {
     json(res, 200, { ok: true }, { 'Set-Cookie': clearCookie });
   },
 
+  // Mobile app pairing: called from an already signed-in browser tab (Settings → "Pair the
+  // mobile app") to mint a short code the phone can redeem below.
+  'POST /api/pair/create': async (req, res) => {
+    const user = readSession(req);
+    if (!user) return json(res, 401, { error: 'not signed in' });
+    const code = makePairCode();
+    pairings.set(code, { uid: user.id, exp: Date.now() + 5 * 60000 });
+    audit(req, 'auth.pair.create', { user });
+    json(res, 200, { code });
+  },
+
+  // Called from the mobile app itself with the code shown in the browser. No session required —
+  // the code IS the credential, one-shot and 5-minute-lived like a WebAuthn challenge.
+  'POST /api/pair/redeem': async (req, res) => {
+    const body = await readBody(req);
+    const code = String(body.code || '').trim().toUpperCase();
+    const p = pairings.get(code);
+    if (p) pairings.delete(code);
+    if (!p || p.exp < Date.now()) {
+      audit(req, 'auth.pair.fail', { ok: false, msg: 'code-invalid' });
+      return json(res, 400, { error: 'invalid or expired code' });
+    }
+    const user = db.users.find(u => u.id === p.uid);
+    if (!user || user.disabled) {
+      audit(req, 'auth.pair.fail', { ok: false, uid: p.uid, msg: 'user-unavailable' });
+      return json(res, 400, { error: 'invalid or expired code' });
+    }
+    audit(req, 'auth.pair.ok', { user });
+    json(res, 200, { token: makeSession(user), user: { id: user.id, name: user.name, admin: isAdmin(user) } });
+  },
+
   'GET /api/data': async (req, res) => {
     const user = readSession(req);
     if (!user) return json(res, 401, { error: 'not signed in' });
@@ -728,6 +777,20 @@ const routes = {
 };
 
 http.createServer(async (req, res) => {
+  // Same-origin (the deployed nginx-proxied web app) never triggers CORS, so this only matters
+  // for the paired mobile app calling in from its own WebView origin. It carries no cookie
+  // (auth is the Authorization header instead), so Allow-Credentials is deliberately never set —
+  // reflecting the origin here can't expose the cookie session to anyone.
+  const origin = req.headers.origin;
+  if (origin) { res.setHeader('Access-Control-Allow-Origin', origin); res.setHeader('Vary', 'Origin'); }
+  if (req.method === 'OPTIONS') {
+    res.writeHead(204, {
+      'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE,OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      'Access-Control-Max-Age': '86400'
+    });
+    return res.end();
+  }
   const url = new URL(req.url, 'http://x');
   const key = req.method + ' ' + url.pathname;
   const handler = routes[key];

@@ -600,5 +600,30 @@ export default {
   'secondary': '次要',
   'No exercises with an estimated 1RM yet.': '暂无估算1RM的动作。',
   'Tap a muscle to see its exercises.': '点击肌肉查看其动作。',
-  'Unpair': '取消组合'
+  'Unpair': '取消组合',
+
+  // "Connect to my server" (mobile app pairing)
+  'Your server': '你的服务器',
+  'Synced with your openGym server.': '已与你的 openGym 服务器同步。',
+  'Disconnect': '断开连接',
+  'Disconnect from your server?': '要断开与服务器的连接吗？',
+  'Your data is synced to your server first, then this device switches back to local-only.': '你的数据会先同步到服务器，然后此设备将切换回本地模式。',
+  'Disconnected — back to local-only': '已断开连接——已切换回本地模式',
+  'Connect to my server': '连接到我的服务器',
+  'Sync this device to your own self-hosted openGym instead.': '改为将此设备与你自己的自托管 openGym 同步。',
+  'Pair the mobile app': '配对手机应用',
+  'Connect the openGym app on your phone to this account.': '将手机上的 openGym 应用连接到此账户。',
+  'Could not generate a code': '无法生成配对码',
+  'On the openGym app, choose “Connect to my server”, then enter this address and the code below. It expires in 5 minutes.': '在 openGym 应用中选择“连接到我的服务器”，然后输入此地址和下面的配对码。5 分钟后失效。',
+  'Enter your server address and the code': '输入你的服务器地址和配对码',
+  'Connected': '已连接',
+  'Could not connect': '无法连接',
+  'Open Settings → “Pair the mobile app” on the openGym site you’re already signed into, then enter its address and the code shown there.': '在你已登录的 openGym 网站上，打开设置 →“配对手机应用”，然后输入其地址和那里显示的配对码。',
+  'Server address (e.g. gym.example.com)': '服务器地址（例如 gym.example.com）',
+  'Pairing code': '配对码',
+  'Connecting…': '连接中…',
+  'Connect': '连接',
+  'How do you want to use openGym?': '你想如何使用 openGym？',
+  'Use on this device': '在此设备上使用',
+  'Local keeps everything on this phone. Connecting syncs to your own openGym server instead — you can switch later in Settings.': '本地模式会把所有内容保留在这部手机上。连接则会改为与你自己的 openGym 服务器同步——之后可以在设置中更改。'
 }

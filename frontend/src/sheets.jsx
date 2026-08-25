@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useStore } from './store/useStore.js'
 import { useUI } from './store/useUI.js'
 import { EXDB, EXIDX, BODYPARTS, isCardio, isBodyweightEq, allExercises, equipmentOf, smOf, matchExercise } from './lib/exercises.js'
+import { activeProfile, exAvailable, ALL_EQUIPMENT, newProfile } from './lib/equipment.js'
 import { fmtDate, fmtNum, fmtVol, fmtDur, durPart, todayISO, uid, exCount, DAYN, MONTHS_LONG, ACCENTS } from './lib/format.js'
 import { lastEntryFor, bestWeightFor, buildSets, effectiveRoutineId, workoutVolume, setsDone, setsDoneActive, lastBW, supersetUnits, unitOf, setLabel, defaultConfig, cleanupSg, modeOf, effortOf, isBw, isPerSide, sideReps, workSetsDone } from './lib/history.js'
 import { beep, vibrate } from './lib/sound.js'
@@ -11,7 +12,7 @@ import { starterRoutines } from './lib/starter.js'
 import Media, { Thumb } from './components/Media.jsx'
 import Stepper from './components/Stepper.jsx'
 import Icon from './components/Icon.jsx'
-import { Button, Slider, Switch, Segmented, SelectRow, Row } from './components/ui.jsx'
+import { Button, Slider, Switch, Segmented, SelectRow, Row, TextField } from './components/ui.jsx'
 import { glyphOf, GLYPH_GROUPS, DEFAULT_GLYPH } from './lib/glyphs.js'
 import BodyMap from './components/BodyMap.jsx'
 import { exerciseMuscleSnapshot, loadOfWorkouts } from './lib/muscles.js'
@@ -421,21 +422,31 @@ function ExercisePicker({ onPick, close }) {
   const [q, setQ] = useState('')
   const [bp, setBp] = useState('')          // '' = all, '★' = chosen, else a body part
   const [eq, setEq] = useState('')          // '' = any equipment
+  const [showAll, setShowAll] = useState(false)
   const [shown, setShown] = useState(50)
   const all = allExercises(st)
+  const profile = activeProfile(st)
   let base = all.filter(e =>
     (bp === '★' ? usage[e.id] : (!bp || e.bp === bp)) &&
     matchExercise(e, q))
   if (bp === '★') base = [...base].sort((a, b) => (usage[b.id] - usage[a.id]) || (a.n < b.n ? -1 : 1))
-  const eqOpts = equipmentOf(base)
+  const eqFiltered = (profile && !showAll) ? base.filter(e => exAvailable(st, e)) : base
+  const eqOpts = equipmentOf(eqFiltered)
   // Drop the equipment filter if the search narrowed it away, so you never hit a dead end.
   const eqOn = eqOpts.includes(eq) ? eq : ''
-  const f = eqOn ? base.filter(e => e.eq === eqOn) : base
+  const f = eqOn ? eqFiltered.filter(e => e.eq === eqOn) : eqFiltered
   const chosenCount = Object.keys(usage).length
   return <>
     <h3>{t('Add exercise')}</h3>
     <div className="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
       <input className="input" placeholder={t('Search {0} exercises…', all.length)} value={q} onChange={e => { setQ(e.target.value); setShown(50) }} /></div>
+    {profile && <div className="small dim row" style={{ margin: '8px 0 2px', gap: 6, alignItems: 'center' }}>
+      <Icon name="dumbbell" style={{ fontSize: 13 }} />
+      {showAll ? t('Showing all equipment') : t('Showing what you have in "{0}"', profile.name)}
+      <button className="chip nocap" style={{ marginLeft: 'auto', padding: '3px 10px', fontSize: 12 }} onClick={() => setShowAll(v => !v)}>
+        {showAll ? t('Filter by "{0}"', profile.name) : t('Show all equipment')}
+      </button>
+    </div>}
     <div className="chips" style={{ margin: eqOpts.length > 1 ? '10px 0 6px' : '10px 0' }}>
       {chosenCount > 0 && <button className={'chip' + (bp === '★' ? ' on' : '')} onClick={() => { setBp('★'); setEq(''); setShown(50) }}><Icon name="starFill" style={{ fontSize: 12, display: 'inline-block', marginRight: 4, verticalAlign: '-1px' }} />{t('Chosen')} ({chosenCount})</button>}
       <button className={'chip nocap' + (!bp ? ' on' : '')} onClick={() => { setBp(''); setEq(''); setShown(50) }}>{t('All')}</button>
@@ -460,6 +471,50 @@ function ExercisePicker({ onPick, close }) {
   </>
 }
 export const exercisePicker = onPick => ui().openSheet(close => <ExercisePicker onPick={onPick} close={close} />)
+
+/* ============================ equipment profiles ============================ */
+// Create or edit one profile ("Home", "Gym", ...): a name plus a checklist of what you have.
+function EquipmentProfileSheet({ profile, close }) {
+  const update = useStore(s => s.update)
+  const nameRef = useRef(null)
+  const [checked, setChecked] = useState(new Set(profile?.equipment || []))
+  const toggle = k => setChecked(s => { const n = new Set(s); n.has(k) ? n.delete(k) : n.add(k); return n })
+  const save = () => {
+    const name = (nameRef.current.value || '').trim()
+    if (!name) { return }
+    update(s => {
+      s.equipProfiles = s.equipProfiles || []
+      const equipment = [...checked]
+      if (profile) {
+        const p = s.equipProfiles.find(x => x.id === profile.id)
+        if (p) { p.name = name; p.equipment = equipment }
+      } else {
+        const p = newProfile(name); p.equipment = equipment
+        s.equipProfiles.push(p)
+        if (!s.activeEquipId) s.activeEquipId = p.id
+      }
+    })
+    close()
+  }
+  return <>
+    <h3>{profile ? t('Edit profile') : t('New equipment profile')}</h3>
+    <div className="muted small" style={{ marginBottom: 14 }}>
+      {t('Name it after where you train — e.g. "Home" or "Gym" — then check what you have there.')}
+    </div>
+    <TextField ref={nameRef} defaultValue={profile?.name || ''} placeholder={t('Profile name')} maxLength={40} />
+    <div style={{ height: 12 }} />
+    <div className="chips">
+      {ALL_EQUIPMENT.map(k => (
+        <button key={k} className={'chip' + (checked.has(k) ? ' on' : '')} onClick={() => toggle(k)}>{t(k)}</button>
+      ))}
+    </div>
+    <div className="dim small" style={{ marginTop: 10 }}>
+      {t('Body-weight exercises are always available, in every profile.')}
+    </div>
+    <div style={{ height: 14 }} /><Button variant="primary" onClick={save}>{t('Save')}</Button>
+  </>
+}
+export const equipmentProfileSheet = profile => ui().openSheet(close => <EquipmentProfileSheet profile={profile} close={close} />)
 
 /* ============================ exercise config ============================ */
 // Progression settings for one exercise (issue #17). Shown inside the config sheet because

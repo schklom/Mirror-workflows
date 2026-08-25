@@ -668,5 +668,25 @@ export default {
   'Connect': 'Verbinden',
   'How do you want to use openGym?': 'Wie möchtest du openGym nutzen?',
   'Use on this device': 'Auf diesem Gerät nutzen',
-  'Local keeps everything on this phone. Connecting syncs to your own openGym server instead — you can switch later in Settings.': 'Lokal behält alles auf diesem Handy. Verbinden synchronisiert stattdessen mit deinem eigenen openGym-Server — du kannst das später in den Einstellungen ändern.'
+  'Local keeps everything on this phone. Connecting syncs to your own openGym server instead — you can switch later in Settings.': 'Lokal behält alles auf diesem Handy. Verbinden synchronisiert stattdessen mit deinem eigenen openGym-Server — du kannst das später in den Einstellungen ändern.',
+
+  // --- workout notes and planned warm-ups ---
+  '{0} — done': '{0} — erledigt',
+  'Workout done': 'Training erledigt',
+  'reps': 'Wdh.',
+  'Most reps in a set per workout': 'Meiste Wdh. in einem Satz pro Training',
+  'Warm-up sets': 'Aufwärmsätze',
+  'Added before your work sets and left out of volume, records and progression. Each one closes half the gap to the work weight — you can still change any of them mid-session.': 'Kommen vor deine Arbeitssätze und zählen nicht für Volumen, Rekorde und Progression. Jeder halbiert den Abstand zum Arbeitsgewicht — im Training kannst du sie trotzdem jederzeit ändern.',
+  'Ramp-up sets added before the work sets, so you do not have to add them by hand each session.': 'Aufwärmsätze vor den Arbeitssätzen, damit du sie nicht jedes Mal von Hand hinzufügen musst.',
+  'Note': 'Notiz',
+  'This session': 'Dieses Training',
+  'How it went, what to change — kept with today’s workout.': 'Wie es lief, was du ändern willst — bleibt beim heutigen Training.',
+  'Show this next time': 'Nächstes Mal anzeigen',
+  'Brings it up again the next time you train this exercise.': 'Erscheint wieder, wenn du diese Übung das nächste Mal trainierst.',
+  'Always for this exercise': 'Immer bei dieser Übung',
+  'Seat height, pin position, a form cue — shown every session.': 'Sitzhöhe, Pin-Position, ein Hinweis zur Ausführung — bei jedem Training sichtbar.',
+  'From {0}:': 'Vom {0}:',
+  'Session note': 'Notiz zum Training',
+  'How the session went as a whole.': 'Wie das Training insgesamt lief.',
+  'Rest-pause always trains as one warm-up set at this rep count, then one rest-pause work set — "Sets" is not used.': 'Rest-Pause trainiert immer als ein Aufwärmsatz mit dieser Wiederholungszahl und ein Rest-Pause-Arbeitssatz — „Sätze“ wird nicht verwendet.'
 }

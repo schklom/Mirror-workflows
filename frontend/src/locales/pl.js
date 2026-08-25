@@ -651,5 +651,25 @@ export default {
   'Connect': 'Połącz',
   'How do you want to use openGym?': 'Jak chcesz korzystać z openGym?',
   'Use on this device': 'Użyj na tym urządzeniu',
-  'Local keeps everything on this phone. Connecting syncs to your own openGym server instead — you can switch later in Settings.': 'Tryb lokalny zachowuje wszystko na tym telefonie. Połączenie synchronizuje zamiast tego z Twoim własnym serwerem openGym — możesz to później zmienić w Ustawieniach.'
+  'Local keeps everything on this phone. Connecting syncs to your own openGym server instead — you can switch later in Settings.': 'Tryb lokalny zachowuje wszystko na tym telefonie. Połączenie synchronizuje zamiast tego z Twoim własnym serwerem openGym — możesz to później zmienić w Ustawieniach.',
+
+  // --- workout notes and planned warm-ups ---
+  '{0} — done': '{0} — zrobione',
+  'Workout done': 'Trening zrobiony',
+  'reps': 'powt.',
+  'Most reps in a set per workout': 'Najwięcej powt. w serii na trening',
+  'Warm-up sets': 'Serie rozgrzewkowe',
+  'Added before your work sets and left out of volume, records and progression. Each one closes half the gap to the work weight — you can still change any of them mid-session.': 'Dodawane przed seriami roboczymi i pomijane w objętości, rekordach i progresji. Każda zmniejsza o połowę dystans do ciężaru roboczego — w trakcie treningu nadal możesz je zmienić.',
+  'Ramp-up sets added before the work sets, so you do not have to add them by hand each session.': 'Serie wprowadzające przed seriami roboczymi, żeby nie dodawać ich ręcznie za każdym razem.',
+  'Note': 'Notatka',
+  'This session': 'Ta sesja',
+  'How it went, what to change — kept with today’s workout.': 'Jak poszło, co zmienić — zostaje przy dzisiejszym treningu.',
+  'Show this next time': 'Pokaż następnym razem',
+  'Brings it up again the next time you train this exercise.': 'Pojawi się ponownie, gdy następnym razem będziesz robić to ćwiczenie.',
+  'Always for this exercise': 'Zawsze przy tym ćwiczeniu',
+  'Seat height, pin position, a form cue — shown every session.': 'Wysokość siedziska, pozycja bolca, wskazówka techniczna — widoczne w każdej sesji.',
+  'From {0}:': 'Z {0}:',
+  'Session note': 'Notatka do sesji',
+  'How the session went as a whole.': 'Jak przebiegła cała sesja.',
+  'Rest-pause always trains as one warm-up set at this rep count, then one rest-pause work set — "Sets" is not used.': 'Rest-pause zawsze trenuje się jako jedna seria rozgrzewkowa o tej liczbie powtórzeń i jedna seria robocza rest-pause — „Serie” nie są używane.'
 }

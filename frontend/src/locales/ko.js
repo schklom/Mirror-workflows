@@ -651,5 +651,25 @@ export default {
   'Connect': '연결',
   'How do you want to use openGym?': 'openGym을 어떻게 사용하시겠어요?',
   'Use on this device': '이 기기에서 사용',
-  'Local keeps everything on this phone. Connecting syncs to your own openGym server instead — you can switch later in Settings.': '로컬 모드는 모든 것을 이 휴대폰에 보관합니다. 연결하면 대신 자신의 openGym 서버와 동기화됩니다 — 나중에 설정에서 변경할 수 있습니다.'
+  'Local keeps everything on this phone. Connecting syncs to your own openGym server instead — you can switch later in Settings.': '로컬 모드는 모든 것을 이 휴대폰에 보관합니다. 연결하면 대신 자신의 openGym 서버와 동기화됩니다 — 나중에 설정에서 변경할 수 있습니다.',
+
+  // --- workout notes and planned warm-ups ---
+  '{0} — done': '{0} — 완료',
+  'Workout done': '운동 완료',
+  'reps': '회',
+  'Most reps in a set per workout': '운동당 한 세트 최다 횟수',
+  'Warm-up sets': '워밍업 세트',
+  'Added before your work sets and left out of volume, records and progression. Each one closes half the gap to the work weight — you can still change any of them mid-session.': '작업 세트 앞에 추가되며 볼륨, 기록, 진행에는 포함되지 않습니다. 각 세트는 작업 중량까지의 차이를 절반으로 줄이며, 운동 중에 언제든 바꿀 수 있습니다.',
+  'Ramp-up sets added before the work sets, so you do not have to add them by hand each session.': '작업 세트 앞에 넣는 준비 세트로, 매번 직접 추가하지 않아도 됩니다.',
+  'Note': '메모',
+  'This session': '이번 운동',
+  'How it went, what to change — kept with today’s workout.': '어땠는지, 무엇을 바꿀지 — 오늘 운동과 함께 저장됩니다.',
+  'Show this next time': '다음에 다시 보기',
+  'Brings it up again the next time you train this exercise.': '이 운동을 다음에 할 때 다시 표시됩니다.',
+  'Always for this exercise': '이 운동에 항상 표시',
+  'Seat height, pin position, a form cue — shown every session.': '시트 높이, 핀 위치, 자세 팁 — 매 운동마다 표시됩니다.',
+  'From {0}:': '{0}에서:',
+  'Session note': '운동 메모',
+  'How the session went as a whole.': '이번 운동이 전체적으로 어땠는지.',
+  'Rest-pause always trains as one warm-up set at this rep count, then one rest-pause work set — "Sets" is not used.': '레스트포즈는 항상 이 횟수의 워밍업 세트 하나와 레스트포즈 작업 세트 하나로 진행됩니다 — ‘세트’는 사용하지 않습니다.'
 }

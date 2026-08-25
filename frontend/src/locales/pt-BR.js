@@ -292,7 +292,17 @@ export const PT_BR_OVERRIDES = {
   'How do you want to use openGym?': 'Como você quer usar o openGym?',
   'Local keeps everything on this phone. Connecting syncs to your own openGym server instead — you can switch later in Settings.': 'Local mantém tudo neste celular. Conectar sincroniza com o seu próprio servidor openGym — você pode mudar depois em Configurações.',
   'Every set becomes a drop-set: after the main set, {0} drop(s) with no rest, each about {1}% lighter.': 'Cada série vira uma série decrescente: depois da série principal, {0} queda(s) sem descanso, cada uma cerca de {1}% mais leve.',
-  'Every set becomes rest-pause: {0} reps to start, then {1} more split into short bursts, {2}s rest before each, roughly halving each time.': 'Cada série vira rest-pause: {0} repetições para começar, depois mais {1} divididas em rajadas curtas, com {2}s de descanso antes de cada uma, caindo cerca de metade a cada vez.'
+  'Every set becomes rest-pause: {0} reps to start, then {1} more split into short bursts, {2}s rest before each, roughly halving each time.': 'Cada série vira rest-pause: {0} repetições para começar, depois mais {1} divididas em rajadas curtas, com {2}s de descanso antes de cada uma, caindo cerca de metade a cada vez.',
+
+  // --- workout notes and planned warm-ups ---
+  'Most reps in a set per workout': 'Mais reps em uma série por treino',
+  'Added before your work sets and left out of volume, records and progression. Each one closes half the gap to the work weight — you can still change any of them mid-session.': 'São adicionadas antes das suas séries de trabalho e ficam de fora do volume, dos recordes e da progressão. Cada uma reduz pela metade a distância até o peso de trabalho — você ainda pode alterá-las durante o treino.',
+  'Ramp-up sets added before the work sets, so you do not have to add them by hand each session.': 'Séries de aproximação antes das séries de trabalho, para você não precisar adicioná-las na mão a cada treino.',
+  'How it went, what to change — kept with today’s workout.': 'Como foi, o que mudar — fica salvo com o treino de hoje.',
+  'Brings it up again the next time you train this exercise.': 'Aparece de novo na próxima vez que você treinar este exercício.',
+  'Seat height, pin position, a form cue — shown every session.': 'Altura do banco, posição do pino, uma dica de execução — aparece em todos os treinos.',
+  'How the session went as a whole.': 'Como foi o treino como um todo.',
+  'Rest-pause always trains as one warm-up set at this rep count, then one rest-pause work set — "Sets" is not used.': 'O rest-pause sempre treina como uma série de aquecimento com essas repetições e uma série de trabalho rest-pause — “Séries” não é usado.'
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

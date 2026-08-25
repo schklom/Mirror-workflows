@@ -119,11 +119,11 @@ func (_ *GoogleTranslate) Translate(text string, from, to string) (TranslationRe
 
 	doc, err := goquery.NewDocumentFromReader(response.Body)
 
-	translatedText := doc.Find(".result-container").Text()
-
 	if err != nil {
 		return TranslationResult{}, err
 	}
+
+	translatedText := doc.Find(".result-container").Text()
 
 	url_ := "https://translate.google.com/_/TranslateWebserverUi/data/batchexecute?rpcids=MkEWBc&rt=c"
 

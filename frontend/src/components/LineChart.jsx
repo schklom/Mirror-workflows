@@ -18,6 +18,12 @@ export default function LineChart({ points, h = 150, unit = '', color = 'var(--a
   const tipRef = useRef(null)
   const [hover, setHover] = useState(null)   // { x, y, iso, v }
 
+  // A new dataset has different coordinates and meaning, so never carry the previous
+  // point selection into it. Layout timing removes the marker before the new chart paints.
+  useLayoutEffect(() => {
+    setHover(null)
+  }, [points])
+
   // The tooltip is placed after layout, from its measured size, because the chart
   // lives in an overflow-clipped box: a fixed half-width offset (what this used to
   // do) hangs the label off the edge on the first and last point, and the clip then

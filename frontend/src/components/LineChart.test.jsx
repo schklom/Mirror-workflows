@@ -27,6 +27,15 @@ const point = (year, month, day, y) => ({
   y
 })
 
+const firstPoints = [
+  { t: Date.UTC(2026, 0, 1), y: 80, d: '2026-01-01' },
+  { t: Date.UTC(2026, 0, 15), y: 82, d: '2026-01-15' },
+]
+const nextPoints = [
+  { t: Date.UTC(2026, 1, 1), y: 78, d: '2026-02-01' },
+  { t: Date.UTC(2026, 1, 15), y: 79, d: '2026-02-15' },
+]
+
 function renderChart(points) {
   act(() => root.render(<LineChart points={points} axes={false} unit="kg" />))
 }
@@ -70,5 +79,26 @@ describe('LineChart hover date', () => {
 
     const lastIso = isoOf(new Date(last.t))
     expect(hoverAt(340)).toBe(`${fmtDate(lastIso, true, true)} · 71 kg`)
+  })
+})
+
+describe('LineChart hover state', () => {
+  it('clears the tooltip and hover markers when points are replaced, then allows hovering again', () => {
+    renderChart(firstPoints)
+    hoverAt(170)
+
+    expect(container.querySelector('.ctip')).toBeTruthy()
+    expect(container.querySelector('.cvl')).toBeTruthy()
+    expect(container.querySelector('.chl')).toBeTruthy()
+
+    renderChart(nextPoints)
+
+    expect(container.querySelector('.ctip')).toBeNull()
+    expect(container.querySelector('.cvl')).toBeNull()
+    expect(container.querySelector('.chl')).toBeNull()
+
+    hoverAt(170)
+    expect(container.querySelector('.ctip')).toBeTruthy()
+    expect(container.querySelector('.cvl')).toBeTruthy()
   })
 })

@@ -2,6 +2,7 @@ import React, { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { Window } from 'happy-dom'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { EXIDX } from '../lib/exercises.js'
 import { MUSCLES, levelsOf } from '../lib/muscles.js'
 import { FATIGUE_STATES, STRENGTH_FLOOR } from '../lib/recovery.js'
 import { fatigueStateOf } from '../lib/recovery-view.js'
@@ -13,6 +14,7 @@ import { useUI } from '../store/useUI.js'
 const DAY = 86400000
 const HOUR = 3600000
 const BASE_NOW = Date.UTC(2026, 0, 22, 12)
+const LEGACY_SNAPSHOT_ID = 'legacy-snapshot-only'
 
 const mocks = vi.hoisted(() => ({
   maps: [],
@@ -114,6 +116,19 @@ function exercisePickerWorkouts(now = BASE_NOW) {
   return [
     workout('bench', now, [entry('0025', [set(true, { w: 80 })])]),
     workout('squat', now - DAY, [entry('0043', [set(true, { w: 60 })])]),
+    workout('legacy', now - 2 * DAY, [
+      {
+        id: LEGACY_SNAPSHOT_ID,
+        muscleSnapshot: {
+          n: 'Legacy shoulder press',
+          bp: 'shoulders',
+          primaries: ['deltoids'],
+          secondaries: ['triceps'],
+          muscleGroups: ['deltoids', 'triceps'],
+        },
+        sets: [set(true, { w: 50 })],
+      },
+    ]),
   ]
 }
 
@@ -294,6 +309,7 @@ describe('Stats exercise progress picker', () => {
   it('filters with the shared exercise matcher and still selects from the mounted sheet', async () => {
     resetFixture(exercisePickerWorkouts())
     await mountStats()
+    expect(EXIDX[LEGACY_SNAPSHOT_ID]).toBeUndefined()
 
     const card = [...container.querySelectorAll('.card')].find(el => el.querySelector('h2')?.textContent.trim() === 'Exercise progress')
     const selector = [...card.querySelectorAll('button')].find(button => button.querySelector('.lrow-t')?.textContent.trim() === 'Exercise')
@@ -304,13 +320,34 @@ describe('Stats exercise progress picker', () => {
     expect(input).toBeTruthy()
     expect(input.getAttribute('aria-label')).toBe('Search…')
     expect(input.getAttribute('placeholder')).toBe('Search…')
+    const optionButtons = () => [...modal.querySelectorAll('.sect-b button')]
+    const initialOptionCount = optionButtons().length
+    expect(initialOptionCount).toBe(3)
+    expect(modal.textContent).toContain('Legacy shoulder press')
+    expect(input.compareDocumentPosition(optionButtons()[0]) & globalThis.Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
 
     const setter = Object.getOwnPropertyDescriptor(input.constructor.prototype, 'value').set
-    await act(async () => {
-      setter.call(input, 'squat full bárbell')
+    const setSearch = async value => act(async () => {
+      setter.call(input, value)
       input.dispatchEvent(new Event('input', { bubbles: true }))
       input.dispatchEvent(new Event('change', { bubbles: true }))
     })
+
+    await setSearch('no such historical exercise')
+    expect(modal.textContent).toContain('No match')
+    expect(optionButtons()).toHaveLength(0)
+
+    await click(modal.querySelector('button[aria-label="Clear"]'))
+    expect(input.value).toBe('')
+    expect(optionButtons()).toHaveLength(initialOptionCount)
+    expect(modal.textContent).toContain('Legacy shoulder press')
+
+    await setSearch('legacy shoulder press shoulders deltoids triceps')
+    expect(optionButtons()).toHaveLength(1)
+    expect(optionButtons()[0].textContent).toContain('Legacy shoulder press')
+
+    await click(modal.querySelector('button[aria-label="Clear"]'))
+    await setSearch('squat full bárbell')
 
     expect(modal.textContent).toContain('barbell full squat')
     expect(modal.textContent).not.toContain('barbell bench press')

@@ -300,6 +300,12 @@ export default function Stats() {
       const rows = metricRowsForEntry(en, mode)
       const mx = mode === 'reps' ? bestWeightForEntry(en) : Math.max(0, ...rows.map(s => mode === 'cardio' ? (s.speed || 0) : mode === 'time' ? (s.sec || 0) : (s.w || 0)))
       if (mx > 0) return { mx, unit: mode === 'cardio' ? 'km/h' : mode === 'time' ? 's' : S.unit }
+      // Unloaded reps work still has a current figure — its rep count. Without this the whole
+      // picker label went blank and the exercise sorted to the bottom as if it had no history.
+      if (mode === 'reps') {
+        const reps = Math.max(0, ...rows.map(s => Number(s.r) || 0))
+        if (reps > 0) return { mx: reps, unit: t('reps') }
+      }
     }
     return { mx: 0, unit: S.unit }
   }
@@ -321,8 +327,18 @@ export default function Stats() {
   })() : 'reps'
   const curCardio = curMode === 'cardio'
   const curTimed = curMode === 'time'
+  // A pull-up or a push-up carries no weight, so its "best weight" is 0 — and dropping every
+  // zero point left the card reading "No data yet" for exercises with a full history behind
+  // them (issue #5). When nothing in an exercise's history was ever loaded, the progress IS
+  // the rep count, so plot that. Add a weighted set later and it switches back to weight on
+  // its own, which is also the honest reading: that is when load became the thing improving.
+  const repsOnly = curEx && curMode === 'reps' && !workouts.some(w => {
+    const en = w.entries.find(e => e.id === curEx)
+    return en && bestWeightForEntry(en) > 0
+  })
+  const bestRepsOf = en => Math.max(0, ...metricRowsForEntry(en, 'reps').map(s => Number(s.r) || 0))
   const metric = s => curCardio ? (s.speed || 0) : curTimed ? (s.sec || 0) : (s.w || 0)
-  const exUnit = curCardio ? 'km/h' : curTimed ? 's' : S.unit
+  const exUnit = curCardio ? 'km/h' : curTimed ? 's' : repsOnly ? t('reps') : S.unit
   let exPts = [], exList = [], exBest = 0
   if (curEx) {
     workouts.forEach(w => {
@@ -331,7 +347,9 @@ export default function Stats() {
         const loggedMode = metricModeForEntry(en)
         if (loggedMode !== curMode) return
         const doneSets = metricRowsForEntry(en, curMode)
-        const mx = curMode === 'reps' ? bestWeightForEntry(en) : Math.max(0, ...doneSets.map(metric))
+        const mx = curMode === 'reps'
+          ? (repsOnly ? bestRepsOf(en) : bestWeightForEntry(en))
+          : Math.max(0, ...doneSets.map(metric))
         if (mx > 0) {
           exPts.push({ t: w.start, y: mx, d: w.d, sets: doneSets, target: en.target })
           if (mx > exBest) exBest = mx
@@ -413,7 +431,7 @@ export default function Stats() {
           <div style={{ marginTop: 8 }}>{exList.map((p, i) => <div key={i} className="row between small" style={{ padding: '6px 0', borderBottom: 'var(--hair) solid var(--sep)' }}>
             <span className="muted">{fmtDate(p.d, true)}</span><span>{p.sets.map(s => setLabel(curEx, s, p.target)).join('  ')}</span></div>)}</div>
           <div className="small dim" style={{ marginTop: 8 }}>
-            {onEff ? t('Average effort per workout') : onE1 ? t('Estimated 1RM per workout') : curCardio ? t('Top speed per workout') : curTimed ? t('Longest hold per workout') : t('Best set weight per workout')}
+            {onEff ? t('Average effort per workout') : onE1 ? t('Estimated 1RM per workout') : curCardio ? t('Top speed per workout') : curTimed ? t('Longest hold per workout') : repsOnly ? t('Most reps in a set per workout') : t('Best set weight per workout')}
             {onEff ? '' : <> · {t('Best:')}{' '}<b className="accent">{fmtNum(onE1 ? e1Best.est : exBest)} {onE1 ? S.unit : exUnit}</b></>}
           </div>
           {onE1 && <div className="small dim" style={{ marginTop: 4 }}>

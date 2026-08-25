@@ -398,7 +398,10 @@ section { padding: var(--sec) 0 0; }
 .rail {
   display: flex; gap: clamp(12px, 2.4vw, 22px);
   overflow-x: auto; scroll-snap-type: x mandatory;
-  padding: 4px max(var(--pad), calc((100vw - var(--max)) / 2)) 6px;
+  /* Line the first card up with the text above it: the gutter is half the leftover width
+     PLUS the wrap's own padding. Using 100% rather than 100vw keeps the scrollbar out of
+     the sum, which would otherwise push the rail a few pixels off. */
+  padding: 4px max(var(--pad), calc((100% - var(--max)) / 2 + var(--pad))) 6px;
   scrollbar-width: none;
   overscroll-behavior-x: contain;
 }
@@ -720,6 +723,7 @@ table.cfg td:first-child { white-space: nowrap; width: 1%; padding-right: 26px; 
 .more-hint { color: var(--fg-2); font-size: 15px; margin-top: 12px; }
 
 .frail { align-items: stretch; padding-top: 10px; padding-bottom: 10px; }
+.more + .bleed, .bleed:has(.frail) { margin-top: clamp(18px, 2.4vw, 26px); }
 .fcard {
   flex: 0 0 auto; width: clamp(232px, 74vw, 290px); scroll-snap-align: center;
   display: flex; flex-direction: column; text-align: left;
@@ -768,9 +772,28 @@ table.cfg td:first-child { white-space: nowrap; width: 1%; padding-right: 26px; 
 @media (hover: none) { .frail-nav { display: none; } }
 
 .fdlg {
-  width: min(460px, calc(100vw - 2 * var(--pad)));
+  /* margin:auto is what centres a modal dialog, and `* { margin: 0 }` at the top of this
+     file had taken it away — the dialog was rendering at its static position, which put it
+     off the top-left of the viewport on desktop and completely off-screen on a phone. */
+  /* Pinned to the viewport, not the document. Left to the browser it resolved to
+     `position: absolute`, so `inset: 0; margin: auto` centred it inside the initial
+     containing block — near the top of the PAGE — and opening it scrolled the whole page
+     up to meet it. `fixed` also makes this the containing block for the close button. */
+  position: fixed; inset: 0; margin: auto;
+  width: min(460px, calc(100% - 2 * var(--pad)));
+  height: fit-content;
+  max-height: calc(100dvh - 2 * var(--pad));
   padding: 26px; border: 1px solid var(--hair); border-radius: var(--r-m);
-  background: var(--surface); color: var(--fg); position: relative;
+  background: var(--surface); color: var(--fg);
+  overflow: auto; overscroll-behavior: contain;
+}
+/* Fade in with the backdrop rather than snapping into place. */
+.fdlg[open] { animation: dlgIn .26s var(--ease); }
+.fdlg[open]::backdrop { animation: dlgBackdrop .26s var(--ease); }
+@keyframes dlgIn { from { opacity: 0; transform: translateY(8px) scale(.985); } }
+@keyframes dlgBackdrop { from { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .fdlg[open], .fdlg[open]::backdrop { animation: none; }
 }
 .fdlg::backdrop { background: rgba(0, 0, 0, .62); }
 .fdlg-ic {
@@ -794,3 +817,40 @@ table.cfg td:first-child { white-space: nowrap; width: 1%; padding-right: 26px; 
 }
 .fdlg-x:hover { color: var(--fg); background: var(--surface-2); }
 .fdlg-x svg { width: 17px; height: 17px; }
+
+/* ------------------------------------------------------------ first-visit intro
+   The hero settles in on the first load of a visit instead of appearing all at once.
+   Deliberately the same movement as the scroll reveals below the fold (a short rise
+   and a fade) so it reads as one behaviour rather than an effect. Runs once per tab:
+   site.js sets .intro, and clears it after the last child has finished. */
+
+.js.intro .hero .eyebrow,
+.js.intro .hero h1,
+.js.intro .hero .lead,
+.js.intro .hero .actions,
+.js.intro .hero-stage {
+  opacity: 0;
+  animation: introUp .85s var(--ease) forwards;
+}
+.js.intro .hero .eyebrow { animation-delay: .04s; }
+.js.intro .hero h1       { animation-delay: .12s; }
+.js.intro .hero .lead    { animation-delay: .24s; }
+.js.intro .hero .actions { animation-delay: .34s; }
+.js.intro .hero-stage    { animation-delay: .42s; animation-duration: 1.05s; }
+@keyframes introUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: none; }
+}
+/* The phone in the hero lifts a little further, so it arrives last and reads as depth. */
+.js.intro .hero-stage { animation-name: introRise; }
+@keyframes introRise {
+  from { opacity: 0; transform: translateY(34px) scale(.985); }
+  to   { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .js.intro .hero .eyebrow,
+  .js.intro .hero h1,
+  .js.intro .hero .lead,
+  .js.intro .hero .actions,
+  .js.intro .hero-stage { opacity: 1; animation: none; }
+}

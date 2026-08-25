@@ -234,3 +234,15 @@ const GL_PROJECT = 'https://gitlab.com/api/v4/projects/DuarteSantos8%2Fopengym'
     sync()
   }
 })()
+
+/* The hero intro is armed in the inline <head> script, before the first paint — a deferred
+   script would arm it too late and the hero would flash. All this does is take the class off
+   once the last element has landed, so nothing stays mid-animation. */
+;(() => {
+  const root = document.documentElement
+  if (!root.classList.contains('intro')) return
+  const done = () => root.classList.remove('intro')
+  const last = document.querySelector('.hero-stage') || document.querySelector('.hero .actions')
+  if (last) last.addEventListener('animationend', done, { once: true })
+  setTimeout(done, 2400)   // if the animation never fires, do not leave the hero hidden
+})()

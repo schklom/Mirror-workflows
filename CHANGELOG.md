@@ -114,6 +114,11 @@ animations are © Gym visual, not CC, which matters if you redistribute them.
   openGym or anywhere else, commercially or not — needs your own licence from Gym visual. See
   [NOTICE.md](NOTICE.md).
 
+### Features
+
+- 🇧🇷 **Brazilian Portuguese UI** — Portuguese now has separate Portugal and
+  Brazil options, with Brazilian terminology and date formatting.
+
 ### Fixes
 
 - 🔔 **Server-generated notifications follow Brazilian Portuguese** — rest-timer

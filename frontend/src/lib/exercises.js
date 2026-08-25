@@ -1,5 +1,5 @@
 import { EXDB } from './exercises-data.js'
-import { t, getVersion } from './i18n-core.js'
+import { t, getVersion, exerciseNameSearchText } from './i18n-core.js'
 
 export { EXDB }
 
@@ -102,7 +102,7 @@ function corpusOf(e) {
   if (hit && hit.v === v) return hit.s
   const sm = Array.isArray(e?.sm) ? e.sm : []
   const s = normalizeStr([
-    e?.n || '',
+    exerciseNameSearchText(e),
     e?.tg || '', t(e?.tg || ''),
     e?.eq || '', t(e?.eq || ''),
     e?.bp || '', t(e?.bp || ''),

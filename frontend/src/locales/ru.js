@@ -206,6 +206,7 @@ export default {
   'Create one or load the starter plan.': 'Создай программу или загрузи стартовый план.',
   'Load starter plan (Push / Pull / Legs)': 'Загрузить стартовый план (Push / Pull / Ноги)',
   'Superset with exercise above': 'Суперсет с упражнением выше',
+  'Note (optional) — loading cues, "bar only then +1 plate/side each set", anything worth remembering here': 'Заметка (необязательно) — подсказки по нагрузке, напр. «только гриф, затем +1 блин на сторону каждый подход», всё, что стоит запомнить',
   'No exercises yet — add your first one.': 'Упражнений пока нет — добавь первое.',
   'Tap the link button on an exercise to superset it with the one above — you’ll do them back-to-back.': 'Нажми кнопку связи у упражнения, чтобы объединить его в суперсет с тем, что выше — сделаешь их подряд.',
   'Delete routine?': 'Удалить программу?',

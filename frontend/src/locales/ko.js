@@ -206,6 +206,7 @@ export default {
   'Create one or load the starter plan.': '루틴을 만들거나 스타터 계획을 불러오세요.',
   'Load starter plan (Push / Pull / Legs)': '스타터 계획 불러오기 (푸시 / 풀 / 레그)',
   'Superset with exercise above': '위 운동과 슈퍼세트',
+  'Note (optional) — loading cues, "bar only then +1 plate/side each set", anything worth remembering here': '메모(선택 사항) — 중량 안내, 예: "빈 바로 시작 후 세트마다 양쪽 +1플레이트", 기억하고 싶은 모든 것',
   'No exercises yet — add your first one.': '아직 운동이 없어요 — 첫 운동을 추가하세요.',
   'Tap the link button on an exercise to superset it with the one above — you’ll do them back-to-back.': '운동의 연결 버튼을 탭하면 위 운동과 슈퍼세트가 됩니다 — 연달아 수행하게 돼요.',
   'Delete routine?': '루틴을 삭제할까요?',

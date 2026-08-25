@@ -206,6 +206,7 @@ export default {
   'Create one or load the starter plan.': 'Bir tane oluştur ya da başlangıç planını yükle.',
   'Load starter plan (Push / Pull / Legs)': 'Başlangıç planını yükle (Push / Pull / Bacak)',
   'Superset with exercise above': 'Üstteki egzersizle süperset',
+  'Note (optional) — loading cues, "bar only then +1 plate/side each set", anything worth remembering here': 'Not (isteğe bağlı) — yükleme ipuçları, örn. "sadece bar, sonra her sette +1 disk/taraf", aklında tutmak istediğin her şey',
   'No exercises yet — add your first one.': 'Henüz egzersiz yok — ilkini ekle.',
   'Tap the link button on an exercise to superset it with the one above — you’ll do them back-to-back.': 'Bir egzersizde bağlama düğmesine dokunarak üsttekiyle süperset yap — arka arkaya yaparsın.',
   'Delete routine?': 'Rutin silinsin mi?',

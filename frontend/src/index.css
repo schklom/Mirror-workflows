@@ -323,12 +323,9 @@ h4.sec{
 }
 @keyframes ping{0%{transform:scale(1);opacity:.7}100%{transform:scale(1.45);opacity:0}}
 
-/* NOTE on every backdrop-filter pair in this file: the -webkit- line comes FIRST and the
-   standard property SECOND. The CSS minifier dedupes the pair down to whichever is written
-   last, so with the usual order (standard first) the build shipped -webkit-backdrop-filter
-   alone — and Firefox, which only understands the unprefixed property, got no blur at all,
-   just the alpha. That is what made the tab bar read as see-through there. Do not "tidy"
-   the order back.
+/* NOTE on every backdrop-filter pair in this file: the -webkit- line comes first and the
+   standard property last, which is the order a prefixed/standard pair wants — whichever is
+   written last wins in the cascade, and that should be the standard name.
 
    Where backdrop-filter is genuinely unsupported there is no glass either — only the alpha,
    and the page shows through unblurred, which is the worst of both. Older Android WebViews

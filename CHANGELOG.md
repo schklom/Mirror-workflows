@@ -59,12 +59,13 @@ which turned out to be worse than they looked from the outside.
   weight, and every point without one was dropped, so a full history read as "No data yet". When
   nothing in an exercise's history was ever loaded, the reps are the progress — so that is what
   is plotted now. Add a weighted set later and it switches back to weight. (issue #5)
-- 🫥 **The tab bar was see-through in Firefox** — and only there. The CSS minifier collapses a
-  `backdrop-filter` / `-webkit-backdrop-filter` pair down to whichever comes last, so the
-  standard property never reached the build and Firefox got the transparency without the blur.
-  Fixed for all five blurred surfaces. The bar is also more opaque now (94%, up from 72%) and
-  blurs less, which is faster on Android, where a blur behind a fixed element is recomposited on
-  every scroll frame.
+- 🫥 **The tab bar was see-through.** At 72% opacity the page read straight through it and the
+  labels competed with whatever was scrolling behind them — nobody needs to read the content
+  under a navigation bar. It is 94% now in both themes, and blurs less, which is also faster on
+  Android, where a blur behind a fixed element is recomposited on every scroll frame. Where
+  `backdrop-filter` is unavailable at all — old Android WebViews, "reduce transparency" — the
+  blurred surfaces now go fully opaque instead of leaving just the alpha, which was the worst of
+  both. (reported by mflova, seconded by seals187)
 - 📥 **No Smith-machine exercise could ever match on import.** The `machine → lever` rule ran
   before `smith machine → smith`, so the generic one ate the word first. Hevy's vocabulary is
   now mapped as well, and exercises it cannot match take their body part from the name instead of

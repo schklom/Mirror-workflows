@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { setProgressHighWater, supersetFlowStep, restAfterSet } from './supersetFlow.js'
+import { setProgressHighWater, supersetFlowStep, restAfterSet, restOnRecheck } from './supersetFlow.js'
 
 const entry = done => ({ sets: done.map(value => ({ done: value })) })
 
@@ -49,5 +49,26 @@ describe('supersetFlowStep', () => {
       roundDone: true,
       nextIdx: 0
     })
+  })
+})
+
+// Issue #3 has two halves. restAfterSet covers "no break after the LAST set of an exercise";
+// this covers "after the first set, sometimes a break doesn't appear" — the uncheck/re-check
+// that the high-water rule swallows.
+describe('rest on a re-check', () => {
+  it('starts the rest a swallowed re-check would otherwise cost you', () => {
+    expect(restOnRecheck({ timerRunning: false, unitDone: false, lastUnit: false })).toBe(true)
+  })
+
+  it('leaves a rest that is already counting alone', () => {
+    expect(restOnRecheck({ timerRunning: true, unitDone: false, lastUnit: false })).toBe(false)
+  })
+
+  it('still stays quiet on the last set of the last exercise', () => {
+    expect(restOnRecheck({ timerRunning: false, unitDone: true, lastUnit: true })).toBe(false)
+  })
+
+  it('rests after closing an exercise that is not the last one', () => {
+    expect(restOnRecheck({ timerRunning: false, unitDone: true, lastUnit: false })).toBe(true)
   })
 })

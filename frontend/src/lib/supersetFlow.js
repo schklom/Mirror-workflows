@@ -25,6 +25,23 @@ export function restAfterSet({ unitDone, lastUnit }) {
   return !unitDone || !lastUnit
 }
 
+/**
+ * Whether re-checking an already-completed set should start a rest.
+ *
+ * The high-water rule deliberately swallows a re-check so that unchecking and re-checking
+ * finished work does not replay navigation or reopen sheets. But a re-check is still you
+ * telling the app a set is done, and that is the other half of issue #3 — "after the first
+ * set, sometimes a break doesn't appear". That is what it looks like when you uncheck a set
+ * to correct the reps after its rest has already run out: nothing times the rest you are
+ * actually about to take.
+ *
+ * So: fill a gap, never disturb a rest that is already counting down. A timer that is running
+ * belongs to the set you finished most recently, which is a better answer than restarting it.
+ */
+export function restOnRecheck({ timerRunning, unitDone, lastUnit }) {
+  return !timerRunning && restAfterSet({ unitDone, lastUnit })
+}
+
 // Decide where a newly completed superset set goes next. Spent members are skipped, including
 // across the wrap. A round ends when no later member in display order has work left; this makes
 // the last *active* member the boundary rather than blindly using the group's last array index.

@@ -241,6 +241,13 @@ h4.sec{
 .lrow-c{color:var(--label);font-size:15px;flex:none;--icon-stroke:2.4}
 .lrow-k{color:var(--acc);font-size:17px;flex:none;--icon-stroke:2.4}
 .lrow.danger,.lrow.danger .lrow-t{color:var(--red)}
+/* The Stats exercise name gets its own line so long names cannot run into the title. */
+.lrow.lrow-stack-value{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto;
+}
+.lrow.lrow-stack-value .lrow-m{grid-column:1;grid-row:1}
+.lrow.lrow-stack-value .lrow-v{grid-column:1;grid-row:2;text-align:left}
+.lrow.lrow-stack-value .lrow-c{grid-column:2;grid-row:1 / span 2;align-self:center}
 /* an (i) before a row's control: painted small and dim so the control stays the loud thing,
    but with a finger-sized target like everything else — the padding is the hit area and the
    vertical negative margin keeps it from making the row taller. The horizontal ones pull the

@@ -3,6 +3,8 @@ import { readFileSync } from 'node:fs'
 import { bestWeightForEntry, metricModeForEntry, metricRowsForEntry } from '../lib/history.js'
 
 const source = readFileSync(new URL('./Stats.jsx', import.meta.url), 'utf8')
+const uiSource = readFileSync(new URL('../components/ui.jsx', import.meta.url), 'utf8')
+const cssSource = readFileSync(new URL('../index.css', import.meta.url), 'utf8')
 
 describe('Stats mixed-entry metric contract', () => {
   it('selects authoritative reps rows before timed rows without stale topW', () => {
@@ -26,5 +28,14 @@ describe('Stats mixed-entry metric contract', () => {
     expect(source).toContain('bestWeightForEntry')
     expect(source).not.toContain('const loggedMode = entryMode(en)')
     expect(source).not.toContain('(en.topW || 0)')
+  })
+
+  it('stacks the Stats exercise selector value without changing shared SelectRow defaults', () => {
+    expect(source).toContain("onChange={setExId} stackedValue")
+    expect(uiSource).toContain('sheetTitle, stackedValue = false')
+    expect(uiSource).toContain("className={stackedValue ? 'lrow-stack-value' : ''}")
+    expect(cssSource).toContain('.lrow.lrow-stack-value .lrow-m{grid-column:1;grid-row:1}')
+    expect(cssSource).toContain('.lrow.lrow-stack-value .lrow-v{grid-column:1;grid-row:2;text-align:left}')
+    expect(cssSource).toContain('overflow:hidden;text-overflow:ellipsis;white-space:nowrap')
   })
 })

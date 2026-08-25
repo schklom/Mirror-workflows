@@ -176,3 +176,61 @@ const GL_PROJECT = 'https://gitlab.com/api/v4/projects/DuarteSantos8%2Fopengym'
     }
   } catch (e) { /* fallback entries stay */ }
 })()
+
+/* The "and the rest of it" rail: each card opens its own full text in a shared dialog, and
+   the arrows scroll the rail for pointers that cannot swipe. Everything the dialog shows is
+   read out of the card itself, so this only ever re-presents text that is already on the
+   page — with JS off the cards stay unclamped and there is nothing to open. */
+;(() => {
+  const rail = document.querySelector('.frail')
+  const dlg = document.querySelector('.fdlg')
+  if (!rail || !dlg || typeof dlg.showModal !== 'function') return
+
+  const use = dlg.querySelector('.fdlg-ic use')
+  const title = dlg.querySelector('#fdlg-t')
+  const body = dlg.querySelector('.fdlg-b')
+  const go = dlg.querySelector('.fdlg-go')
+
+  rail.querySelectorAll('.fcard').forEach(card => {
+    card.addEventListener('click', () => {
+      const href = card.querySelector('.fcard-link')?.dataset.href
+      use.setAttribute('href', card.querySelector('.fcard-ic use').getAttribute('href'))
+      title.textContent = card.querySelector('.fcard-t').textContent
+      body.textContent = card.querySelector('.fcard-b').textContent
+      if (href) {
+        go.href = href
+        go.textContent = card.querySelector('.fcard-link').textContent + ' →'
+        go.hidden = false
+      } else {
+        go.hidden = true
+      }
+      dlg.showModal()
+    })
+  })
+
+  dlg.querySelector('.fdlg-x').addEventListener('click', () => dlg.close())
+  // Clicking the backdrop closes it: the click lands on the dialog itself, outside its box.
+  dlg.addEventListener('click', e => {
+    const r = dlg.getBoundingClientRect()
+    const inside = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom
+    if (!inside) dlg.close()
+  })
+
+  const nav = document.querySelector('.frail-nav')
+  if (nav) {
+    nav.hidden = false
+    const [prev, next] = nav.querySelectorAll('.rnav')
+    const step = () => (rail.querySelector('.fcard')?.offsetWidth || 260) + 16
+    nav.addEventListener('click', e => {
+      const btn = e.target.closest('.rnav')
+      if (btn) rail.scrollBy({ left: Number(btn.dataset.dir) * step(), behavior: 'smooth' })
+    })
+    const sync = () => {
+      prev.disabled = rail.scrollLeft < 4
+      next.disabled = rail.scrollLeft > rail.scrollWidth - rail.clientWidth - 4
+    }
+    rail.addEventListener('scroll', sync, { passive: true })
+    addEventListener('resize', sync)
+    sync()
+  }
+})()

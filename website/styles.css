@@ -623,7 +623,10 @@ footer {
 
 /* ------------------------------------------------------------ prose pages */
 
-.prose { max-width: 720px; padding: clamp(44px, 7vw, 72px) 0 0; }
+/* Keep .wrap's horizontal padding. The shorthand used to be `… 0 0`, which zeroed the
+   left and right the .wrap class had set, so on a phone the docs and about pages ran
+   edge to edge with nothing between the text and the screen. */
+.prose { max-width: 720px; padding: clamp(44px, 7vw, 72px) var(--pad) 0; }
 .prose h1 { font-size: clamp(36px, 6.5vw, 60px); }
 .prose > .lead { max-width: 42ch; margin-bottom: clamp(34px, 5vw, 48px); }
 .prose h2 {
@@ -706,3 +709,88 @@ table.cfg td:first-child { white-space: nowrap; width: 1%; padding-right: 26px; 
 @media (prefers-reduced-motion: reduce) {
   .js .rv { opacity: 1; transform: none; transition: none; }
 }
+
+
+/* ------------------------------------------------------- the "rest of it" rail
+   The long tail of features. It is a rail rather than a two-column list because
+   this is the "and also" section: worth having, not worth a screenful of reading.
+   Cards carry their full text in the markup, so a reader without JS gets
+   everything; with JS the text is clamped and the card opens a dialog. */
+
+.more-hint { color: var(--fg-2); font-size: 15px; margin-top: 12px; }
+
+.frail { align-items: stretch; padding-top: 10px; padding-bottom: 10px; }
+.fcard {
+  flex: 0 0 auto; width: clamp(232px, 74vw, 290px); scroll-snap-align: center;
+  display: flex; flex-direction: column; text-align: left;
+  padding: 22px; background: var(--surface);
+  border: 1px solid var(--hair-soft); border-radius: var(--r-m);
+  color: var(--fg); font: inherit; cursor: pointer;
+  transition: border-color .3s var(--ease), background-color .3s var(--ease),
+              transform .3s var(--ease);
+}
+.fcard:hover { transform: translateY(-2px); border-color: var(--hair); background: var(--surface-2); }
+.fcard:active { transform: none; }
+.fcard:focus-visible { outline: 2px solid var(--acc); outline-offset: 3px; }
+.fcard-ic {
+  width: 40px; height: 40px; border-radius: 12px; margin-bottom: 15px;
+  display: flex; align-items: center; justify-content: center; flex: none;
+  background: color-mix(in srgb, var(--acc) 15%, transparent); color: var(--acc);
+}
+.fcard-ic svg { width: 21px; height: 21px; }
+.fcard-t { font-size: 16.5px; font-weight: 600; letter-spacing: -.015em; margin-bottom: 6px; }
+.fcard-b { color: var(--fg-2); font-size: 14.5px; line-height: 1.5; }
+/* Only clamped when the dialog exists to show the rest. */
+.js .fcard-b {
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+.fcard-link { display: none; }
+.js .fcard-link {
+  display: block; margin-top: auto; padding-top: 14px;
+  color: var(--acc); font-size: 13.5px; font-weight: 500;
+}
+
+/* `display: flex` here beats the UA's `[hidden] { display: none }`, so the attribute has to
+   be honoured explicitly — otherwise the arrows show up without JS, where they do nothing. */
+.frail-nav { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; }
+.frail-nav[hidden] { display: none; }
+.rnav {
+  width: 38px; height: 38px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--surface); border: 1px solid var(--hair-soft); color: var(--fg-2);
+  cursor: pointer; transition: color .25s var(--ease), border-color .25s var(--ease);
+}
+.rnav:hover { color: var(--fg); border-color: var(--hair); }
+.rnav:disabled { opacity: .3; cursor: default; }
+.rnav svg { width: 19px; height: 19px; }
+/* Touch scrolls; the arrows are for pointers that cannot swipe. */
+@media (hover: none) { .frail-nav { display: none; } }
+
+.fdlg {
+  width: min(460px, calc(100vw - 2 * var(--pad)));
+  padding: 26px; border: 1px solid var(--hair); border-radius: var(--r-m);
+  background: var(--surface); color: var(--fg); position: relative;
+}
+.fdlg::backdrop { background: rgba(0, 0, 0, .62); }
+.fdlg-ic {
+  width: 44px; height: 44px; border-radius: 13px; margin-bottom: 16px;
+  display: flex; align-items: center; justify-content: center;
+  background: color-mix(in srgb, var(--acc) 15%, transparent); color: var(--acc);
+}
+.fdlg-ic svg { width: 23px; height: 23px; }
+.fdlg h3 { font-size: 20px; margin-bottom: 10px; }
+.fdlg-b { color: var(--fg-2); font-size: 15.5px; line-height: 1.6; margin: 0; }
+.fdlg-go {
+  display: inline-block; margin-top: 20px; color: var(--acc);
+  font-size: 14.5px; font-weight: 500;
+}
+/* Same trap as .frail-nav: without this, a card with no link still shows one. */
+.fdlg-go[hidden] { display: none; }
+.fdlg-x {
+  position: absolute; top: 14px; right: 14px; width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  background: none; border: 0; border-radius: 50%; color: var(--fg-3); cursor: pointer;
+}
+.fdlg-x:hover { color: var(--fg); background: var(--surface-2); }
+.fdlg-x svg { width: 17px; height: 17px; }

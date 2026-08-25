@@ -360,7 +360,15 @@ export default function Stats() {
   }
   // Estimated 1RM (issue #18) — only reps-mode training produces one, so cardio and timed
   // work simply have no points and the toggle stays hidden.
-  const e1Pts = curEx && curMode === 'reps' ? e1rmSeries(S, curEx) : []
+  // Both memoised on the same inputs, and it has to start at e1rmSeries: LineChart clears its
+  // hover whenever `points` changes identity, so a chart array rebuilt on every render made the
+  // tooltip vanish under your finger the moment anything else on this screen re-rendered.
+  // Memoising only the .map() would not have helped — its dependency was itself rebuilt each time.
+  const e1Pts = useMemo(
+    () => (curEx && curMode === 'reps' ? e1rmSeries(S, curEx) : []),
+    [S, curEx, curMode],
+  )
+  const e1ChartPts = useMemo(() => e1Pts.map(p => ({ t: p.t, y: p.y, d: p.d })), [e1Pts])
   const e1Best = curEx && curMode === 'reps' ? best1RM(S, curEx) : null
   const showE1 = e1Pts.length > 0
   // Effort on this exercise, per session. It rides on the top-set curve as well as having a
@@ -426,7 +434,7 @@ export default function Stats() {
           <div className="chart">
             {onEff
               ? <LineChart points={effPts} h={150} unit={hd} color="var(--yellow)" invert={kind === 'rir'} />
-              : <LineChart points={onE1 ? e1Pts.map(p => ({ t: p.t, y: p.y, d: p.d })) : topPts} h={150} unit={exUnit} color="var(--blue)" />}
+              : <LineChart points={onE1 ? e1ChartPts : topPts} h={150} unit={exUnit} color="var(--blue)" />}
           </div>
           <div style={{ marginTop: 8 }}>{exList.map((p, i) => <div key={i} className="row between small" style={{ padding: '6px 0', borderBottom: 'var(--hair) solid var(--sep)' }}>
             <span className="muted">{fmtDate(p.d, true)}</span><span>{p.sets.map(s => setLabel(curEx, s, p.target)).join('  ')}</span></div>)}</div>

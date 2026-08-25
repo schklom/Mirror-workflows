@@ -6,6 +6,9 @@ import { MUSCLES, levelsOf } from '../lib/muscles.js'
 import { FATIGUE_STATES, STRENGTH_FLOOR } from '../lib/recovery.js'
 import { fatigueStateOf } from '../lib/recovery-view.js'
 import Stats from './Stats.jsx'
+import Modals from '../components/Modals.jsx'
+import { bindUI } from '../components/ui.jsx'
+import { useUI } from '../store/useUI.js'
 
 const DAY = 86400000
 const HOUR = 3600000
@@ -49,6 +52,8 @@ vi.mock('../components/BodyMap.jsx', () => ({
   },
   BodyMapLegend: () => React.createElement('div', { 'data-balance-legend': true }),
 }))
+
+bindUI(useUI)
 
 let dom
 let root
@@ -105,19 +110,30 @@ function allSubfullWorkout(now = BASE_NOW) {
   return workout('all-subfull', now - 15 * DAY, [entry('1254', [set(true)])])
 }
 
+function exercisePickerWorkouts(now = BASE_NOW) {
+  return [
+    workout('bench', now, [entry('0025', [set(true, { w: 80 })])]),
+    workout('squat', now - DAY, [entry('0043', [set(true, { w: 60 })])]),
+  ]
+}
+
 function resetFixture(workouts = lifecycleWorkouts()) {
   mocks.S.unit = 'kg'
   mocks.S.bodyweight = []
   mocks.S.workouts = workouts
   mocks.maps.length = 0
   mocks.mapMounts = 0
+  useUI.setState({ sheets: [] })
 }
 
 function installDom() {
   dom = new Window({ url: 'http://localhost/' })
+  dom.scrollTo = vi.fn()
   globalThis.window = dom
   globalThis.document = dom.document
   Object.defineProperty(globalThis, 'navigator', { configurable: true, value: dom.navigator })
+  Object.defineProperty(globalThis, 'location', { configurable: true, value: dom.location })
+  Object.defineProperty(globalThis, 'history', { configurable: true, value: dom.history })
   for (const key of ['HTMLElement', 'HTMLIFrameElement', 'Node', 'Element', 'Event', 'MouseEvent']) {
     globalThis[key] = dom[key]
   }
@@ -129,7 +145,7 @@ function installDom() {
 
 async function mountStats() {
   installDom()
-  await act(async () => { root.render(React.createElement(Stats)) })
+  await act(async () => { root.render(React.createElement(React.Fragment, null, React.createElement(Stats), React.createElement(Modals))) })
 }
 
 async function unmountStats() {
@@ -179,6 +195,7 @@ beforeEach(() => {
 
 afterEach(async () => {
   await unmountStats()
+  useUI.setState({ sheets: [] })
   vi.useRealTimers()
   vi.restoreAllMocks()
 })
@@ -270,5 +287,38 @@ describe('Stats muscle recovery view runtime', () => {
     expect(Object.values(strengthMap.load).every(value => value < 1)).toBe(true)
     expect(Math.min(...Object.values(strengthMap.load))).toBe(STRENGTH_FLOOR)
     expect(strengthMap.thresholds.at(-1)).toEqual({ at: 1, level: 4 })
+  })
+})
+
+describe('Stats exercise progress picker', () => {
+  it('filters with the shared exercise matcher and still selects from the mounted sheet', async () => {
+    resetFixture(exercisePickerWorkouts())
+    await mountStats()
+
+    const card = [...container.querySelectorAll('.card')].find(el => el.querySelector('h2')?.textContent.trim() === 'Exercise progress')
+    const selector = [...card.querySelectorAll('button')].find(button => button.querySelector('.lrow-t')?.textContent.trim() === 'Exercise')
+    await click(selector)
+
+    const modal = document.querySelector('#modal-root')
+    const input = modal.querySelector('input')
+    expect(input).toBeTruthy()
+    expect(input.getAttribute('aria-label')).toBe('Search…')
+    expect(input.getAttribute('placeholder')).toBe('Search…')
+
+    const setter = Object.getOwnPropertyDescriptor(input.constructor.prototype, 'value').set
+    await act(async () => {
+      setter.call(input, 'squat full bárbell')
+      input.dispatchEvent(new Event('input', { bubbles: true }))
+      input.dispatchEvent(new Event('change', { bubbles: true }))
+    })
+
+    expect(modal.textContent).toContain('barbell full squat')
+    expect(modal.textContent).not.toContain('barbell bench press')
+
+    const matching = [...modal.querySelectorAll('button')].find(button => button.textContent.includes('barbell full squat'))
+    await click(matching)
+
+    expect(useUI.getState().sheets).toHaveLength(0)
+    expect(card.querySelector('.lrow-v').textContent).toContain('barbell full squat')
   })
 })

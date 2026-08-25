@@ -248,30 +248,45 @@ export function Row({ icon, iconTint, title, subtitle, value, accessory = 'none'
 // theme entirely — on dark mode it flashes a white sheet — and can't show more
 // than a bare label per option. This opens our own sheet with a checkmark on the
 // current value, which is also how iOS itself handles a long option list.
-export function SelectRow({ icon, iconTint, title, value, options, onChange, sheetTitle, stackedValue = false }) {
+export function SelectRow({ icon, iconTint, title, value, options, onChange, sheetTitle, stackedValue = false, search }) {
   const cur = options.find(o => o.value === value)
   const open = () => {
     const { openSheet } = require_ui()
-    const h = openSheet(close => (
-      <>
-        <h3>{sheetTitle || title}</h3>
-        <div className="sect-b">
-          {options.map(o => (
-            <button key={o.value} className="lrow tap" onClick={() => { close(); onChange(o.value) }}>
-              <span className="lrow-m"><span className="lrow-t">{o.label}</span>
-                {o.subtitle && <span className="lrow-s">{o.subtitle}</span>}</span>
-              {o.value === value && <Icon name="check" className="lrow-k" />}
-            </button>
-          ))}
-        </div>
-        <div style={{ height: 8 }} />
-      </>
-    ))
+    const h = openSheet(close => <SelectSheet title={sheetTitle || title} value={value} options={options}
+      onChange={onChange} search={search} close={close} />)
     return h
   }
   return (
     <Row icon={icon} iconTint={iconTint} title={title} value={cur ? cur.label : value} accessory="chevron" onClick={open}
       className={stackedValue ? 'lrow-stack-value' : ''} />
+  )
+}
+
+function SelectSheet({ title, value, options, onChange, search, close }) {
+  const [query, setQuery] = useState('')
+  const matcher = typeof search === 'function' ? search : search?.match
+  const visible = matcher ? options.filter(o => matcher(o, query)) : options
+  return (
+    <>
+      <h3>{title}</h3>
+      {search && <div style={{ marginBottom: 10 }}>
+        <SearchField value={query} onChange={e => setQuery(e.target.value)} onInput={e => setQuery(e.target.value)}
+          onClear={() => setQuery('')} placeholder={search.placeholder} aria-label={search.label || search.placeholder} />
+      </div>}
+      <div className="sect-b">
+        {visible.map(o => (
+          <button key={o.value} className="lrow tap" onClick={() => { close(); onChange(o.value) }}>
+            <span className="lrow-m"><span className="lrow-t">{o.label}</span>
+              {o.subtitle && <span className="lrow-s">{o.subtitle}</span>}</span>
+            {o.value === value && <Icon name="check" className="lrow-k" />}
+          </button>
+        ))}
+        {!visible.length && search && <div className="empty">
+          <div className="ico"><Icon name="magnifier" /></div>{search.emptyLabel}
+        </div>}
+      </div>
+      <div style={{ height: 8 }} />
+    </>
   )
 }
 

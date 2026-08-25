@@ -247,7 +247,27 @@ export const PT_BR_OVERRIDES = {
   'We': 'Q',
   'Th': 'Q',
   'Fr': 'S',
-  'Sa': 'S'
+  'Sa': 'S',
+
+  // --- equipment profiles ---
+  'Showing all equipment': 'Mostrando todos os equipamentos',
+  'Showing what you have in "{0}"': 'Mostrando o que você tem em “{0}”',
+  'Show all equipment': 'Mostrar todos os equipamentos',
+  'Filter by "{0}"': 'Filtrar por “{0}”',
+  'Edit profile': 'Editar perfil',
+  'New equipment profile': 'Novo perfil de equipamentos',
+  'Name it after where you train — e.g. "Home" or "Gym" — then check what you have there.': 'Dê a ele o nome do lugar onde você treina — por exemplo, “Casa” ou “Academia” — e marque o que você tem lá.',
+  'Profile name': 'Nome do perfil',
+  'Body-weight exercises are always available, in every profile.': 'Exercícios com o peso do corpo estão sempre disponíveis, em todos os perfis.',
+  '{0} of {1} exercises need equipment outside "{2}"': '{0} de {1} exercícios precisam de equipamentos fora de “{2}”',
+  'Needs {0} — not in your active profile': 'Precisa de {0} — não está no seu perfil ativo',
+  'Filter by equipment': 'Filtrar por equipamento',
+  'Active profile': 'Perfil ativo',
+  '{0} equipment types': '{0} tipos de equipamento',
+  'Add equipment profile': 'Adicionar perfil de equipamentos',
+  'Delete profile?': 'Excluir perfil?',
+  '"{0}" and its equipment list will be removed.': '“{0}” e sua lista de equipamentos serão removidos.',
+  'Filters the exercise library and picker, and flags routine exercises that need something you don’t have in the active profile.': 'Filtra a biblioteca de exercícios e o seletor, e sinaliza os exercícios das rotinas que precisam de algo que você não tem no perfil ativo.'
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

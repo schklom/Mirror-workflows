@@ -10,6 +10,7 @@ import { wakeLockSupported } from '../lib/wakelock.js'
 import { t, LANGS, INSTR_LANGS } from '../lib/i18n.js'
 import { DEMO, REPO } from '../lib/demo.js'
 import { MOBILE, shareExport, syncReminder } from '../lib/mobile.js'
+import { ConnectSheet } from './MobileOnboarding.jsx'
 import { loadStarterPlan, confirmSheet, importFromApp, equipmentProfileSheet } from '../sheets.jsx'
 import Icon from '../components/Icon.jsx'
 import { Section, Row, SelectRow, Switch, Segmented, Button, TextField } from '../components/ui.jsx'
@@ -18,7 +19,7 @@ export default function Settings() {
   const nav = useNavigate()
   const S = useStore(s => s.S)
   const user = useStore(s => s.user)
-  const { update, replaceState, setUser, pullState, pushState, signOut, signOutAll, resetDemo } = useStore()
+  const { update, replaceState, setUser, pullState, pushState, signOut, signOutAll, resetDemo, disconnectServer } = useStore()
   const toast = useUI(s => s.toast)
   const fileRef = useRef(null)
   const importRef = useRef(null)
@@ -73,12 +74,21 @@ export default function Settings() {
     </div>
 
     {/* ---------- account (demo and mobile builds have nothing to sign in to) ---------- */}
-    <Section title={MOBILE ? t('Your data') : DEMO ? t('Demo') : t('Account')}>
-      {MOBILE ? <>
+    <Section title={MOBILE ? (user ? t('Your server') : t('Your data')) : DEMO ? t('Demo') : t('Account')}>
+      {MOBILE ? (user ? <>
+        <Row icon="personCircle" iconTint="var(--grey)" title={user.name} subtitle={t('Synced with your openGym server.')} />
+        {user.admin && <Row icon="wrench" iconTint="var(--indigo)" title={t('Admin dashboard')} accessory="chevron" onClick={() => nav('/admin')} />}
+        <Row icon="signOut" iconTint="var(--red)" title={t('Disconnect')} danger onClick={() => confirmSheet({
+          title: t('Disconnect from your server?'),
+          message: t('Your data is synced to your server first, then this device switches back to local-only.'),
+          confirmText: t('Disconnect'), danger: true,
+          onConfirm: async () => { await disconnectServer(); nav('/home'); toast(t('Disconnected — back to local-only')) },
+        })} />
+      </> : <>
         <Row icon="lock" iconTint="var(--acc)" title={t('All data stays on this phone')} subtitle={t('No account, no cloud — back it up anytime with Export below.')} />
-        <Row icon="rocket" iconTint="var(--indigo)" title={t('Self-host openGym')} subtitle={t('Passkey sign-in, sync across your devices, your own data.')} accessory="chevron"
-          onClick={() => window.open(REPO, '_blank', 'noopener')} />
-      </> : DEMO ? <>
+        <Row icon="link" iconTint="var(--indigo)" title={t('Connect to my server')} subtitle={t('Sync this device to your own self-hosted openGym instead.')} accessory="chevron"
+          onClick={() => useUI.getState().openSheet(close => <ConnectSheet close={close} />)} />
+      </>) : DEMO ? <>
         <Row icon="sparkles" iconTint="var(--acc)" title={t('You’re in the demo')} subtitle={t('Example data, stored only in this browser — change anything you like.')} />
         <Row icon="reset" iconTint="var(--blue)" title={t('Reset demo data')} accessory="chevron"
           onClick={() => confirmSheet({ title: t('Reset demo data?'), message: t('Puts the example plan, workouts and weigh-ins back the way they started.'), confirmText: t('Reset'), onConfirm: () => { resetDemo(); nav('/home'); toast(t('Demo data reset')) } })} />
@@ -87,6 +97,8 @@ export default function Settings() {
       </> : user ? <>
         <Row icon="personCircle" iconTint="var(--grey)" title={user.name} subtitle={t('Signed in with passkey — data syncs to this profile.')} />
         {user.admin && <Row icon="wrench" iconTint="var(--indigo)" title={t('Admin dashboard')} accessory="chevron" onClick={() => nav('/admin')} />}
+        <Row icon="link" iconTint="var(--blue)" title={t('Pair the mobile app')} subtitle={t('Connect the openGym app on your phone to this account.')} accessory="chevron"
+          onClick={() => useUI.getState().openSheet(close => <PairSheet close={close} />)} />
         <Row icon="signOut" iconTint="var(--red)" title={t('Sign out')} danger onClick={() => confirmSheet({ title: t('Sign out?'), message: t('Your data is synced to your profile first, then cleared from this device.'), confirmText: t('Sign out'), danger: true, onConfirm: () => { signOut(); nav('/home') } })} />
         <Row icon="shield" iconTint="var(--red)" title={t('Sign out everywhere')} subtitle={t('Ends this profile’s sessions on all your devices.')} danger onClick={signOutEverywhere} />
       </> : webauthnOK() ? <>
@@ -120,6 +132,12 @@ export default function Settings() {
       <SelectRow icon="timer" iconTint="var(--orange)" title={t('Rest timer')}
         value={S.restSec} onChange={v => update(s => { s.restSec = v })}
         options={[60, 90, 120, 150, 180].map(v => ({ value: v, label: v + 's' }))} />
+      {/* Default for a rest-pause burst added live on a plain set — a planned exercise's own
+          "Rest (s)" (in its Intensifier config) overrides this, same as the main rest timer
+          is the fallback whenever an exercise has no progression rule of its own. */}
+      <SelectRow icon="bolt" iconTint="var(--acc)" title={t('Rest-pause rest')}
+        value={S.restPauseSec} onChange={v => update(s => { s.restPauseSec = v })}
+        options={[10, 15, 20, 30].map(v => ({ value: v, label: v + 's' }))} />
       {(wakeOK || !MOBILE) && (
         <Row icon="sun" iconTint="var(--yellow)" title={t('Keep screen awake')}
           subtitle={wakeOK ? null : t('Not supported in this browser.')}>
@@ -150,8 +168,12 @@ export default function Settings() {
       <Row icon="moon" iconTint="var(--indigo)" title={t('Theme')}>
         <Segmented
           className="seg-inline"
-          options={[{ value: 'dark', icon: 'moon', label: t('Dark') }, { value: 'light', icon: 'sun', label: t('Light') }]}
-          value={S.theme === 'light' ? 'light' : 'dark'}
+          options={[
+            { value: 'dark', icon: 'moon', label: t('Dark') },
+            { value: 'light', icon: 'sun', label: t('Light') },
+            { value: 'system', icon: 'gear', label: t('System') },
+          ]}
+          value={S.theme || 'dark'}
           onChange={v => update(s => { s.theme = v })}
         />
       </Row>
@@ -183,6 +205,10 @@ export default function Settings() {
         accessory="chevron" onClick={() => importRef.current.click()} />
       <Row icon="upload" iconTint="var(--blue)" title={t('Import backup')} accessory="chevron" onClick={() => fileRef.current.click()} />
       <Row icon="download" iconTint="var(--blue)" title={t('Export backup (JSON)')} accessory="chevron" onClick={doExport} />
+      {MOBILE && <Row icon="history" iconTint="var(--blue)" title={t('Auto-backup on changes')}
+        subtitle={t('Saves a dated copy to the Documents folder after finishing a workout or editing a routine — point a sync app at it, or copy it out by hand.')}>
+        <Switch checked={!!S.autoBackup} onChange={v => update(s => { s.autoBackup = v })} />
+      </Row>}
       <Row icon="trash" iconTint="var(--red)" title={t('Reset everything')} danger onClick={() => confirmSheet({ title: t('Reset everything?'), message: t('Deletes your plan, workouts and body weight on this device. This cannot be undone.'), confirmText: t('Delete everything'), danger: true, onConfirm: () => { replaceState(JSON.parse(JSON.stringify(DEF)), true); nav('/home'); toast(t('All data reset')) } })} />
     </Section>
     <input ref={fileRef} type="file" accept=".json,application/json" style={{ display: 'none' }} onChange={doImport} />
@@ -360,6 +386,28 @@ function EquipmentCard({ S, update }) {
     ))}
     <Row icon="plus" iconTint="var(--acc)" title={t('Add equipment profile')} accessory="chevron" onClick={() => equipmentProfileSheet(null)} />
   </Section>
+}
+
+// Lets the mobile app's "connect to my server" mode (lib/remote.js) authenticate without a
+// WebAuthn ceremony of its own — the code is minted here, from an already signed-in session,
+// and redeemed by the app for a bearer token. See /api/pair/create in api/server.js.
+function PairSheet({ close }) {
+  const [code, setCode] = useState(null)
+  const [err, setErr] = useState(null)
+  useEffect(() => { api('/api/pair/create', { method: 'POST', body: '{}' }).then(r => setCode(r.code)).catch(e => setErr(e.message || t('Could not generate a code'))) }, [])
+  return <>
+    <h3>{t('Pair the mobile app')}</h3>
+    <div className="muted small" style={{ marginBottom: 14 }}>
+      {t('On the openGym app, choose “Connect to my server”, then enter this address and the code below. It expires in 5 minutes.')}
+    </div>
+    {err ? <div className="dim small">{err}</div> : (
+      <div className="card" style={{ textAlign: 'center', fontSize: 30, fontWeight: 700, letterSpacing: '.16em', padding: '18px 0' }}>
+        {code || '········'}
+      </div>
+    )}
+    <div style={{ height: 12 }} />
+    <Button onClick={close}>{t('Done')}</Button>
+  </>
 }
 
 // The same registration as the sign-in screen's, reached from Settings instead. It asks for

@@ -16,6 +16,7 @@ import Modals from './components/Modals.jsx'
 import Toast from './components/Toast.jsx'
 import RestTimer from './components/RestTimer.jsx'
 import Login from './views/Login.jsx'
+import MobileOnboarding from './views/MobileOnboarding.jsx'
 import Home from './views/Home.jsx'
 import Plan from './views/Plan.jsx'
 import RoutineEdit from './views/RoutineEdit.jsx'
@@ -28,9 +29,14 @@ import Admin from './views/Admin.jsx'
 
 bindUI(useUI)   // lets the shared controls open sheets without importing the store at module scope
 
+// theme === 'system' follows the OS/browser preference instead of a fixed choice.
+const resolveTheme = theme => theme === 'light' || theme === 'dark'
+  ? theme
+  : (window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+
 function applyPrefs(theme, accent) {
   const de = document.documentElement
-  de.dataset.theme = theme === 'light' ? 'light' : 'dark'
+  de.dataset.theme = resolveTheme(theme)
   de.dataset.accent = ACCENTS[accent] ? accent : 'lime'
   const meta = document.querySelector('meta[name="theme-color"]')
   if (meta) meta.content = de.dataset.theme === 'light' ? '#f2f2f7' : '#000000'
@@ -41,9 +47,20 @@ function Shell() {
   const loc = useLocation()
   const { S, user, ready } = useStore()
   const isGuest = useStore(s => s.isGuest())
+  const needsMobileOnboarding = useStore(s => s.needsMobileOnboarding)
   const langV = useLang()   // re-renders the whole shell when the language (pack) changes
   useEffect(() => { setNav(navigate) }, [navigate])
   useEffect(() => { applyPrefs(S.theme, S.accent) }, [S.theme, S.accent])
+  // 'system' needs to react live if the OS theme flips while the app is open, not just on
+  // the next mount — a fixed 'dark'/'light' choice never re-fires this since matchMedia
+  // isn't consulted for those.
+  useEffect(() => {
+    if (S.theme !== 'system' || !window.matchMedia) return
+    const mql = window.matchMedia('(prefers-color-scheme: dark)')
+    const onChange = () => applyPrefs(S.theme, S.accent)
+    mql.addEventListener('change', onChange)
+    return () => mql.removeEventListener('change', onChange)
+  }, [S.theme, S.accent])
   useEffect(() => { setLang(S.lang || 'en') }, [S.lang])
   useEffect(() => { document.documentElement.lang = S.lang || 'en' }, [langV, S.lang])
   // every tab/route change starts at the top of the page
@@ -66,7 +83,7 @@ function Shell() {
           re-mounts the boundary, so the tab bar is always a way out */}
       <div id="app" className="vfade" key={loc.pathname}>
         <ErrorBoundary>
-          {!authed ? <Login /> : (
+          {!authed ? <Login /> : needsMobileOnboarding ? <MobileOnboarding /> : (
             <Routes>
               <Route path="/home" element={<Home />} />
               <Route path="/plan" element={<Plan />} />

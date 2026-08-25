@@ -267,7 +267,32 @@ export const PT_BR_OVERRIDES = {
   'Add equipment profile': 'Adicionar perfil de equipamentos',
   'Delete profile?': 'Excluir perfil?',
   '"{0}" and its equipment list will be removed.': '“{0}” e sua lista de equipamentos serão removidos.',
-  'Filters the exercise library and picker, and flags routine exercises that need something you don’t have in the active profile.': 'Filtra a biblioteca de exercícios e o seletor, e sinaliza os exercícios das rotinas que precisam de algo que você não tem no perfil ativo.'
+  'Filters the exercise library and picker, and flags routine exercises that need something you don’t have in the active profile.': 'Filtra a biblioteca de exercícios e o seletor, e sinaliza os exercícios das rotinas que precisam de algo que você não tem no perfil ativo.',
+
+  // --- drop-sets, auto-backup and server pairing ---
+  'Auto-backup on changes': 'Backup automático ao alterar',
+  'Saves a dated copy to the Documents folder after finishing a workout or editing a routine — point a sync app at it, or copy it out by hand.': 'Salva uma cópia datada na pasta Documentos depois de terminar um treino ou editar uma rotina — aponte um aplicativo de sincronização para ela, ou copie o arquivo na mão.',
+  'Your server': 'Seu servidor',
+  'Synced with your openGym server.': 'Sincronizado com o seu servidor openGym.',
+  'Disconnect': 'Desconectar',
+  'Disconnect from your server?': 'Desconectar do seu servidor?',
+  'Your data is synced to your server first, then this device switches back to local-only.': 'Seus dados são sincronizados com o seu servidor primeiro, depois este dispositivo volta ao modo somente local.',
+  'Disconnected — back to local-only': 'Desconectado — de volta ao modo somente local',
+  'Connect to my server': 'Conectar ao meu servidor',
+  'Sync this device to your own self-hosted openGym instead.': 'Sincronize este dispositivo com o seu próprio openGym auto-hospedado.',
+  'Pair the mobile app': 'Parear o aplicativo',
+  'Connect the openGym app on your phone to this account.': 'Conecte o aplicativo openGym do seu celular a esta conta.',
+  'On the openGym app, choose “Connect to my server”, then enter this address and the code below. It expires in 5 minutes.': 'No aplicativo openGym, escolha “Conectar ao meu servidor”, depois digite este endereço e o código abaixo. Ele expira em 5 minutos.',
+  'Enter your server address and the code': 'Digite o endereço do seu servidor e o código',
+  'Connected': 'Conectado',
+  'Could not connect': 'Não foi possível conectar',
+  'Open Settings → “Pair the mobile app” on the openGym site you’re already signed into, then enter its address and the code shown there.': 'No site openGym em que você já está conectado, abra Configurações → “Parear o aplicativo”, depois digite o endereço e o código mostrado lá.',
+  'Connecting…': 'Conectando…',
+  'Connect': 'Conectar',
+  'How do you want to use openGym?': 'Como você quer usar o openGym?',
+  'Local keeps everything on this phone. Connecting syncs to your own openGym server instead — you can switch later in Settings.': 'Local mantém tudo neste celular. Conectar sincroniza com o seu próprio servidor openGym — você pode mudar depois em Configurações.',
+  'Every set becomes a drop-set: after the main set, {0} drop(s) with no rest, each about {1}% lighter.': 'Cada série vira uma série decrescente: depois da série principal, {0} queda(s) sem descanso, cada uma cerca de {1}% mais leve.',
+  'Every set becomes rest-pause: {0} reps to start, then {1} more split into short bursts, {2}s rest before each, roughly halving each time.': 'Cada série vira rest-pause: {0} repetições para começar, depois mais {1} divididas em rajadas curtas, com {2}s de descanso antes de cada uma, caindo cerca de metade a cada vez.'
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

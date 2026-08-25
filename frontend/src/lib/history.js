@@ -1,7 +1,7 @@
 // Pure helpers over the state object S (ported 1:1 from the vanilla app).
 import { todayISO, isoOf, weekKey, fmtNum } from './format.js'
 import { isCardio, isBodyweightEq } from './exercises.js'
-import { phaseForSet, modeForSet, modeForEntry, isWarmupRow, normalizeMode } from './workout-model.js'
+import { phaseForSet, modeForSet, modeForEntry, isWarmupRow, normalizeMode, extraVolumeOf, nextDropWeight, splitBurstReps } from './workout-model.js'
 const objectOf = value => value && typeof value === 'object' && !Array.isArray(value) ? value : {}
 // Completed-state-independent work rows whose authoritative mode matches the requested mode.
 const workRowsForMode = (entry = {}, mode = 'reps') => {
@@ -286,11 +286,51 @@ export function buildSets(S, cfg, options = {}) {
   }
   return sets
 }
+
+/**
+ * Stamp every work row with the exercise's planned intensifier and pre-fill its drops/clusters,
+ * already computed and editable — the plan designs the set, not a button pressed mid-workout.
+ *
+ * Must run AFTER applyPrescription: a drop-set's chain of drops is a percentage of each row's
+ * own `w`, so it has to be computed from the final prescribed weight, not the pre-progression
+ * one buildSets started from — otherwise a bumped working weight would leave stale, cheaper
+ * drops sitting underneath it.
+ */
+export function applyIntensifierPlan(sets, cfg) {
+  const kind = cfg && cfg.intensifier && cfg.intensifier.type
+  if (kind !== 'dropset' && kind !== 'restpause') return sets
+  if (kind === 'dropset') {
+    const count = Math.max(1, Math.round(cfg.intensifier.count) || 1)
+    const pct = cfg.intensifier.pct
+    return sets.map(s => {
+      if (isWarmupRow(s)) return s
+      const drops = []
+      let w = s.w || 0
+      for (let k = 0; k < count; k++) { w = nextDropWeight(w, pct); drops.push({ w, r: s.r }) }
+      return { ...s, type: 'dropset', drops }
+    })
+  }
+  // Rest-pause trains as exactly two sets, not one per configured `sets` count: a warm-up at
+  // the exercise's own configured reps, then a single rest-pause work set. Doing the full
+  // activation+bursts protocol several times over isn't how rest-pause is actually trained, so
+  // planning it replaces whatever buildSets built rather than stamping each of those rows.
+  // The work row's own reps are the total — not "the total minus what the bursts carry" — and
+  // the bursts are the full breakdown of that same total, down to the last one. See
+  // extraVolumeOf/setTonnage: a rest-pause row's `clusters` are read-only display of how `r`
+  // breaks down, not extra volume on top of it, precisely so this doesn't double-count.
+  const restSec = Math.max(5, cfg.intensifier.restSec || 15)
+  const totalReps = Math.max(1, Math.round(cfg.intensifier.totalReps) || 1)
+  const w = (sets.find(s => !isWarmupRow(s)) || sets[0] || {}).w || 0
+  const warmup = { w, r: Math.max(1, Math.round(cfg.reps) || 1), done: false, phase: 'warmup' }
+  const work = { w, r: totalReps, done: false, type: 'restpause', clusters: splitBurstReps(totalReps).map(r => ({ r, restSec })) }
+  return [warmup, work]
+}
 export function workoutVolume(w) {
   let v = 0
   // No special case for unilateral work: a per-side set logs its total, so both sides are
-  // already in the rep count that arrives here.
-  w.entries.forEach(e => e.sets.forEach(s => { if (s.done) v += (s.w || 0) * (s.r || 0) }))
+  // already in the rep count that arrives here. Drop-set drops and rest-pause bursts add their
+  // own weight x reps on top of the row's main/activation set (see extraVolumeOf).
+  w.entries.forEach(e => e.sets.forEach(s => { if (s.done) v += (s.w || 0) * (s.r || 0) + extraVolumeOf(s) }))
   return v
 }
 export function setsDone(w) {

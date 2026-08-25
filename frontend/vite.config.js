@@ -2,6 +2,12 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
 const backend = process.env.API_TARGET || 'http://127.0.0.1:3000'
+// The API refuses a state-changing request that a browser sent from anywhere other than its own
+// ORIGIN (the CSRF guard in api/server.js). The dev server is on a different port, so the page's
+// real Origin is not ORIGIN — modern browsers get through on Sec-Fetch-Site: same-origin, and
+// presenting the expected Origin here covers the ones that don't send it. Match your .env if you
+// changed ORIGIN: API_ORIGIN=https://gym.example.com npm run dev
+const apiOrigin = process.env.API_ORIGIN || 'http://localhost:8080'
 const media = process.env.MEDIA_TARGET || 'http://127.0.0.1:8888'
 
 // Optional web analytics (Umami). Injected only when BOTH vars are set at build time,
@@ -27,7 +33,7 @@ export default defineConfig({
   base: './',
   server: {
     proxy: {
-      '/api': { target: backend, changeOrigin: true },
+      '/api': { target: backend, changeOrigin: true, headers: { Origin: apiOrigin } },
       '/img': { target: media, changeOrigin: true },
       '/gif': { target: media, changeOrigin: true }
     }

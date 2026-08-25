@@ -585,6 +585,18 @@ h4.sec{
 .setrow.eff3 .stp .num{font-size:14px}
 .setrow.done .n{background:var(--acc);color:var(--on-acc)}
 .setrow.done{opacity:.45}
+/* drop-set drops / rest-pause bursts riding on a work row, editable like the row itself
+   (issue: drop-sets & rest-pause) */
+.subrow{display:flex;align-items:center;gap:6px;padding:3px 0 3px 32px}
+.subrow .subn{font-size:11px;color:var(--label-3);flex:none;width:46px}
+.subrow .stp.mini{flex:1;min-width:0}
+.subrow .stp.mini button{width:26px;height:30px}
+.subrow .stp.mini .num{font-size:13px}
+.subrow .iconbtn{width:26px;height:26px;font-size:11px;flex:none}
+.setextra{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 8px 32px}
+.setextra .chip.add{display:inline-flex;align-items:center;gap:4px;color:var(--acc)}
+.setextra .chip.add svg{width:13px;height:13px}
+.setextra .chip.add:disabled{opacity:.35}
 /* why the next target is what it is (issue #17) */
 .progline{
   display:flex;align-items:flex-start;gap:7px;margin:6px 0 2px;

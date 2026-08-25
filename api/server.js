@@ -4,6 +4,8 @@ import http from 'node:http';
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
+import https from 'node:https';
+import dns from 'node:dns';
 import {
   generateRegistrationOptions, verifyRegistrationResponse,
   generateAuthenticationOptions, verifyAuthenticationResponse
@@ -66,25 +68,100 @@ catch { vapid = webpush.generateVAPIDKeys(); fs.writeFileSync(vapidFile, JSON.st
 const VAPID_SUBJECT = process.env.VAPID_SUBJECT || (SECURE ? ORIGIN : 'mailto:admin@localhost');
 webpush.setVapidDetails(VAPID_SUBJECT, vapid.publicKey, vapid.privateKey);
 
+/* A push subscription's `endpoint` is a URL this server connects out to, chosen by whoever is
+   signed in — so without a check /api/push/* is a request-forgery lever, and the api container
+   sits on the same Docker network as the rest of the self-hoster's stack. Three limits below:
+
+   1. PUSH_AGENT rejects any connection to a private/loopback/link-local address at the moment
+      the socket is opened. Validating the URL alone would leave a DNS-rebinding window — the
+      name is resolved a second time inside web-push — so the check has to live in the lookup
+      the request itself uses, not in a prior pass.
+   2. PUSH_TIMEOUT_MS: an endpoint that accepts TCP and then stalls used to hang the request
+      handler that awaited it, indefinitely. web-push sets no timeout of its own.
+   3. PUSH_CONCURRENCY: one small request must not turn into an unbounded burst of outbound
+      connections (with MAX_SUBS_PER_USER below, that is the other half of the same problem). */
+const PUSH_TIMEOUT_MS = 10000;
+const PUSH_CONCURRENCY = 6;
+const MAX_SUBS_PER_USER = 20;
+
+function isPrivateAddr(ip) {
+  const v = String(ip).toLowerCase();
+  const m4 = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/.exec(v);
+  if (m4) {
+    const a = +m4[1], b = +m4[2];
+    if (a === 0 || a === 10 || a === 127) return true;            // this-network, private, loopback
+    if (a === 169 && b === 254) return true;                      // link-local (cloud metadata)
+    if (a === 172 && b >= 16 && b <= 31) return true;             // private
+    if (a === 192 && b === 168) return true;                      // private
+    if (a === 192 && b === 0) return true;                        // 192.0.0.0/24, 192.0.2.0/24
+    if (a === 100 && b >= 64 && b <= 127) return true;            // CGNAT
+    if (a >= 224) return true;                                    // multicast + reserved
+    return false;
+  }
+  const m6 = /^::ffff:(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$/.exec(v);
+  if (m6) return isPrivateAddr(m6[1]);                            // IPv4-mapped IPv6
+  if (v === '::' || v === '::1') return true;                     // unspecified, loopback
+  if (/^fe[89ab]/.test(v)) return true;                           // link-local
+  if (/^f[cd]/.test(v)) return true;                              // unique local
+  return false;
+}
+
+// Same shape as dns.lookup, so https.Agent can use it directly.
+function guardedLookup(hostname, options, cb) {
+  dns.lookup(hostname, options, (err, address, family) => {
+    if (err) return cb(err);
+    const list = Array.isArray(address) ? address : [{ address, family }];
+    if (list.some(a => isPrivateAddr(a.address))) {
+      return cb(Object.assign(new Error('refusing to connect to a private address: ' + hostname), { code: 'EPUSHBLOCKED' }));
+    }
+    cb(null, address, family);
+  });
+}
+const PUSH_AGENT = new https.Agent({ lookup: guardedLookup, keepAlive: false });
+
+// Cheap pre-check so a bad endpoint is refused at subscribe time with a useful message, rather
+// than silently never delivering. PUSH_AGENT is what actually enforces the address rule.
+function pushEndpointError(raw) {
+  let u;
+  try { u = new URL(String(raw || '')); } catch { return 'endpoint is not a valid URL'; }
+  if (u.protocol !== 'https:') return 'endpoint must be an https:// URL';
+  if (u.username || u.password) return 'endpoint must not carry credentials';
+  // A literal address can be judged right here, which turns the common case into a clear error
+  // at subscribe time instead of a delivery that quietly never happens. Hostnames are left to
+  // PUSH_AGENT, which is the check that actually has to hold.
+  const host = u.hostname.replace(/^\[|\]$/g, '');
+  if (/^[0-9.]+$/.test(host) || host.includes(':')) {
+    if (isPrivateAddr(host)) return 'endpoint must not point at a private address';
+  }
+  return null;
+}
+
 async function sendPush(userId, payload) {
   const subs = db.subs.filter(s => s.userId === userId);
   if (!subs.length) return;
   const body = JSON.stringify(payload);
   let dirty = false;
-  await Promise.all(subs.map(async sub => {
-    // urgency 'high' is the one lever we have over delivery speed — iOS/Android throttle
-    // low-urgency background push more aggressively under battery-saving modes. TTL is left
-    // at the library default (long) so a briefly-offline device still gets it once reconnected,
-    // rather than risking it being dropped for the sake of shaving off latency that TTL doesn't
-    // actually control anyway.
-    try { await webpush.sendNotification({ endpoint: sub.endpoint, keys: sub.keys }, body, { urgency: 'high' }); }
-    catch (e) {
-      console.error('push send failed', userId, e.statusCode, e.body || e.message);
-      if (e.statusCode === 404 || e.statusCode === 410) {
-        db.subs = db.subs.filter(s => s.endpoint !== sub.endpoint); dirty = true;
+  let next = 0;
+  const worker = async () => {
+    while (next < subs.length) {
+      const sub = subs[next++];
+      // urgency 'high' is the one lever we have over delivery speed — iOS/Android throttle
+      // low-urgency background push more aggressively under battery-saving modes. TTL is left
+      // at the library default (long) so a briefly-offline device still gets it once reconnected,
+      // rather than risking it being dropped for the sake of shaving off latency that TTL doesn't
+      // actually control anyway.
+      try {
+        await webpush.sendNotification({ endpoint: sub.endpoint, keys: sub.keys }, body,
+          { urgency: 'high', timeout: PUSH_TIMEOUT_MS, agent: PUSH_AGENT });
+      } catch (e) {
+        console.error('push send failed', userId, e.statusCode, e.body || e.message);
+        if (e.statusCode === 404 || e.statusCode === 410) {
+          db.subs = db.subs.filter(s => s.endpoint !== sub.endpoint); dirty = true;
+        }
       }
     }
-  }));
+  };
+  await Promise.all(Array.from({ length: Math.min(PUSH_CONCURRENCY, subs.length) }, worker));
   if (dirty) saveDb();
 }
 
@@ -171,11 +248,44 @@ function makeSession(user) {
   const exp = Date.now() + SESSION_DAYS * 86400000;
   return sign(user.id + ':' + exp + ':' + sessionVersion(user));
 }
+// With the __Host- prefix the *browser* guarantees the cookie is host-only (no Domain attribute
+// is even allowed) — which is what stops a sibling subdomain, e.g. anything-else.example.com
+// against gym.example.com, from planting a second session cookie for the shared parent domain
+// and having it shadow the real one. The prefix also requires Secure, so it only works on an
+// https ORIGIN; over plain http://localhost the old name stays, and localhost has no sibling
+// subdomains to worry about. Both names are accepted on the way in, so upgrading an instance
+// does not sign anybody out — they move onto the prefixed cookie at their next sign-in.
+const COOKIE = SECURE ? '__Host-gymsid' : 'gymsid';
+const LEGACY_COOKIE = 'gymsid';
+// Every value for a given name, in the order the browser sent them. Not an object: reducing
+// duplicates to one entry silently picks a winner, and picking the *last* one handed a shadowing
+// cookie the session outright.
+function cookieValues(req, name) {
+  const out = [];
+  for (const c of (req.headers.cookie || '').split(';')) {
+    const i = c.indexOf('=');
+    if (i < 0) continue;
+    if (c.slice(0, i).trim() === name) out.push(c.slice(i + 1).trim());
+  }
+  return out;
+}
+function cookieToken(req) {
+  for (const name of (COOKIE === LEGACY_COOKIE ? [COOKIE] : [COOKIE, LEGACY_COOKIE])) {
+    const vals = cookieValues(req, name);
+    if (!vals.length) continue;
+    // Two different values under one name is not something a browser does on its own — it means
+    // somebody else got to set one. There is no safe way to guess which is the real session, so
+    // refuse both: a signed-out user signs back in, a shadowing attempt gets nothing.
+    if (vals.some(v => v !== vals[0])) return null;
+    return vals[0];
+  }
+  return null;
+}
 function readSession(req) {
-  const cookies = Object.fromEntries((req.headers.cookie || '').split(';').map(c => {
-    const i = c.indexOf('='); return i < 0 ? ['', ''] : [c.slice(0, i).trim(), c.slice(i + 1).trim()];
-  }));
-  const tok = cookies.gymsid;
+  // The paired mobile app has no cookie jar shared with the API's origin, so it carries the same
+  // signed token in an Authorization header instead — same payload, same verification below.
+  const auth = req.headers.authorization || '';
+  const tok = cookieToken(req) || (auth.startsWith('Bearer ') ? auth.slice(7).trim() : null);
   if (!tok) return null;
   const payload = verifySig(tok);
   if (!payload) return null;
@@ -199,10 +309,56 @@ function requireAdmin(req, res) {
   if (!isAdmin(user)) { audit(req, 'admin.denied', { ok: false, user }); json(res, 403, { error: 'forbidden' }); return null; }
   return user;
 }
+const expireCookie = name => `${name}=; Path=/; Max-Age=0; HttpOnly;${SECURE} SameSite=Lax`;
 function sessionCookie(user) {
-  return `gymsid=${makeSession(user)}; Path=/; Max-Age=${SESSION_DAYS * 86400}; HttpOnly;${SECURE} SameSite=Lax`;
+  const fresh = `${COOKIE}=${makeSession(user)}; Path=/; Max-Age=${SESSION_DAYS * 86400}; HttpOnly;${SECURE} SameSite=Lax`;
+  // Signing in also retires any pre-upgrade cookie, so nobody is left carrying an unprefixed one
+  // (or a shadowing copy of it) alongside the new session.
+  return COOKIE === LEGACY_COOKIE ? [fresh] : [fresh, expireCookie(LEGACY_COOKIE)];
 }
-const clearCookie = `gymsid=; Path=/; Max-Age=0; HttpOnly;${SECURE} SameSite=Lax`;
+const clearCookie = COOKIE === LEGACY_COOKIE
+  ? [expireCookie(LEGACY_COOKIE)]
+  : [expireCookie(COOKIE), expireCookie(LEGACY_COOKIE)];
+
+/* ---------- CSRF ---------- */
+// SameSite=Lax keeps the session cookie off a genuinely cross-*site* request. It does not keep it
+// off a *sibling subdomain*: gym.example.com and anything-else.example.com are the same site, and
+// that is the ordinary self-hosting layout — one domain, one reverse proxy, several apps. Nothing
+// else in a request was being checked either; readBody() JSON.parse's the body whatever the
+// Content-Type claims, so a hostile page could reach the state-changing routes with a form-style
+// POST that needs no CORS preflight at all.
+//
+// So a state-changing request that came from a browser has to come from ORIGIN. The exemptions
+// below are not holes: each of those routes carries its own credential in the body (a WebAuthn
+// challenge id, a one-shot pairing code), none of them acts on the caller's existing session, and
+// they have to keep working from the mobile WebView, whose origin is never ORIGIN.
+const CSRF_EXEMPT = new Set([
+  'POST /api/register/options', 'POST /api/register/verify',
+  'POST /api/login/options', 'POST /api/login/verify',
+  'POST /api/pair/redeem'
+]);
+const originsMatch = (a, b) => a.replace(/\/+$/, '') === b.replace(/\/+$/, '');
+function csrfOk(req, key) {
+  if (req.method === 'GET' || req.method === 'HEAD' || req.method === 'OPTIONS') return true;
+  if (CSRF_EXEMPT.has(key)) return true;
+  // The paired mobile app authenticates with a Bearer token. A browser never attaches one on its
+  // own, so there is no ambient authority for a hostile page to borrow and no origin to check.
+  if ((req.headers.authorization || '').startsWith('Bearer ')) return true;
+  // Sec-Fetch-Site is set by the browser itself and no page can forge it, and it states exactly
+  // the property wanted here — more precisely than comparing origins can. 'same-origin' is the
+  // app talking to its own backend; a hostile page reports 'cross-site'; a sibling subdomain,
+  // the case SameSite=Lax misses entirely, reports 'same-site'. It is also what keeps the Vite
+  // dev server working, where the page is on another port and its Origin is legitimately not
+  // ORIGIN. Absent on older Safari and on proxies that strip it, hence the fallback below.
+  const site = req.headers['sec-fetch-site'];
+  if (site) return site === 'same-origin' || site === 'none';
+  const origin = req.headers.origin;
+  // No Origin header at all means no browser sent this — curl, a script, a monitoring check.
+  // Browsers put an Origin on every state-changing request and a page cannot suppress it, so the
+  // forgery this exists to stop always carries one.
+  if (!origin) return true;
+  return originsMatch(origin, ORIGIN);
+}
 
 /* ---------- challenge store (in-memory, 5 min TTL) ---------- */
 const challenges = new Map(); // cid -> {challenge, name?, uid?, exp}
@@ -218,6 +374,21 @@ function takeChallenge(cid) {
   return c;
 }
 setInterval(() => { for (const [k, v] of challenges) if (v.exp < Date.now()) challenges.delete(k); }, 60000).unref();
+
+// ---------- device pairing (mobile app "connect to my server", no WebAuthn ceremony) ----------
+// A passkey ceremony can't run inside the app's WebView (its origin never matches RP_ID), so the
+// app authenticates by redeeming a short code minted from an already signed-in browser tab —
+// same 5-min-TTL/one-shot shape as the WebAuthn challenge store above.
+const pairings = new Map(); // code -> {uid, exp}
+const PAIR_CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // no 0/O/1/I — read off a screen
+function makePairCode() {
+  let code;
+  do {
+    code = Array.from(crypto.randomBytes(8)).map(b => PAIR_CODE_ALPHABET[b % PAIR_CODE_ALPHABET.length]).join('');
+  } while (pairings.has(code));
+  return code;
+}
+setInterval(() => { for (const [k, v] of pairings) if (v.exp < Date.now()) pairings.delete(k); }, 60000).unref();
 
 /* ---------- helpers ---------- */
 function json(res, code, obj, extraHeaders) {
@@ -287,7 +458,10 @@ function clientIp(req) {
   if (AUDIT_IP === 'off') return null;
   const raw = String(req.headers['cf-connecting-ip'] || '').trim()
     || String(req.headers['x-forwarded-for'] || '').split(',')[0].trim()
-    || String(req.headers['x-real-ip'] || '').trim();
+    || String(req.headers['x-real-ip'] || '').trim()
+    // Nothing in front at all: the socket peer is the client, and it cannot be forged. Behind
+    // the bundled web container a header always wins before this is reached.
+    || String(req.socket?.remoteAddress || '').replace(/^::ffff:/, '').trim();
   const ip = raw.replace(/^\[|\]$/g, '').slice(0, 45);
   if (!/^[0-9a-fA-F:.]{3,45}$/.test(ip)) return null;    // never store a header verbatim
   if (AUDIT_IP === 'full') return ip;
@@ -516,6 +690,37 @@ const routes = {
     json(res, 200, { ok: true }, { 'Set-Cookie': clearCookie });
   },
 
+  // Mobile app pairing: called from an already signed-in browser tab (Settings → "Pair the
+  // mobile app") to mint a short code the phone can redeem below.
+  'POST /api/pair/create': async (req, res) => {
+    const user = readSession(req);
+    if (!user) return json(res, 401, { error: 'not signed in' });
+    const code = makePairCode();
+    pairings.set(code, { uid: user.id, exp: Date.now() + 5 * 60000 });
+    audit(req, 'auth.pair.create', { user });
+    json(res, 200, { code });
+  },
+
+  // Called from the mobile app itself with the code shown in the browser. No session required —
+  // the code IS the credential, one-shot and 5-minute-lived like a WebAuthn challenge.
+  'POST /api/pair/redeem': async (req, res) => {
+    const body = await readBody(req);
+    const code = String(body.code || '').trim().toUpperCase();
+    const p = pairings.get(code);
+    if (p) pairings.delete(code);
+    if (!p || p.exp < Date.now()) {
+      audit(req, 'auth.pair.fail', { ok: false, msg: 'code-invalid' });
+      return json(res, 400, { error: 'invalid or expired code' });
+    }
+    const user = db.users.find(u => u.id === p.uid);
+    if (!user || user.disabled) {
+      audit(req, 'auth.pair.fail', { ok: false, uid: p.uid, msg: 'user-unavailable' });
+      return json(res, 400, { error: 'invalid or expired code' });
+    }
+    audit(req, 'auth.pair.ok', { user });
+    json(res, 200, { token: makeSession(user), user: { id: user.id, name: user.name, admin: isAdmin(user) } });
+  },
+
   'GET /api/data': async (req, res) => {
     const user = readSession(req);
     if (!user) return json(res, 401, { error: 'not signed in' });
@@ -543,8 +748,21 @@ const routes = {
     const body = await readBody(req);
     const sub = body.subscription;
     if (!sub?.endpoint || !sub?.keys?.p256dh || !sub?.keys?.auth) return json(res, 400, { error: 'invalid subscription' });
+    const bad = pushEndpointError(sub.endpoint);
+    if (bad) return json(res, 400, { error: bad });
+    // Only the two keys the push protocol needs are kept: `sub` is caller-supplied and would
+    // otherwise put arbitrary fields into db.json, which every admin route reads back out.
+    const keys = { p256dh: String(sub.keys.p256dh), auth: String(sub.keys.auth) };
     db.subs = db.subs.filter(s => s.endpoint !== sub.endpoint);
-    db.subs.push({ userId: user.id, endpoint: sub.endpoint, keys: sub.keys, created: new Date().toISOString() });
+    // A browser holds one subscription per device, so this cap is far above real use. Without
+    // it a single account could pile up endpoints without limit — every one of them a target
+    // sendPush() would then contact, and a whole rewrite of db.json per addition.
+    const mine = db.subs.filter(s => s.userId === user.id);
+    if (mine.length >= MAX_SUBS_PER_USER) {
+      const drop = new Set(mine.slice(0, mine.length - MAX_SUBS_PER_USER + 1).map(s => s.endpoint));
+      db.subs = db.subs.filter(s => !drop.has(s.endpoint));
+    }
+    db.subs.push({ userId: user.id, endpoint: sub.endpoint, keys, created: new Date().toISOString() });
     saveDb();
     json(res, 200, { ok: true });
   },
@@ -725,10 +943,31 @@ const routes = {
 };
 
 http.createServer(async (req, res) => {
+  // Same-origin (the deployed nginx-proxied web app) never triggers CORS, so this only matters
+  // for the paired mobile app calling in from its own WebView origin. It carries no cookie
+  // (auth is the Authorization header instead), so Allow-Credentials is deliberately never set —
+  // reflecting the origin here can't expose the cookie session to anyone.
+  const origin = req.headers.origin;
+  if (origin) { res.setHeader('Access-Control-Allow-Origin', origin); res.setHeader('Vary', 'Origin'); }
+  if (req.method === 'OPTIONS') {
+    res.writeHead(204, {
+      'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE,OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      'Access-Control-Max-Age': '86400'
+    });
+    return res.end();
+  }
   const url = new URL(req.url, 'http://x');
   const key = req.method + ' ' + url.pathname;
   const handler = routes[key];
   if (!handler) return json(res, 404, { error: 'not found' });
+  if (!csrfOk(req, key)) {
+    // Logged, not audited: this is reachable without a session, and an audit entry per attempt
+    // would let anyone fill the log. An operator who has genuinely mis-set ORIGIN needs to see
+    // the mismatch, and the container log is where they will look.
+    console.warn('refused cross-origin', key, 'origin=' + req.headers.origin, 'expected=' + ORIGIN);
+    return json(res, 403, { error: 'cross-origin request refused' });
+  }
   try { await handler(req, res); }
   catch (e) {
     console.error(key, e);

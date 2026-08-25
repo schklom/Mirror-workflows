@@ -4,7 +4,7 @@ import { useUI } from './store/useUI.js'
 import { EXDB, EXIDX, BODYPARTS, isCardio, isBodyweightEq, allExercises, equipmentOf, smOf, matchExercise } from './lib/exercises.js'
 import { activeProfile, exAvailable, ALL_EQUIPMENT, newProfile } from './lib/equipment.js'
 import { fmtDate, fmtNum, fmtVol, fmtDur, durPart, todayISO, uid, exCount, DAYN, MONTHS_LONG, ACCENTS } from './lib/format.js'
-import { lastEntryFor, bestWeightFor, buildSets, effectiveRoutineId, workoutVolume, setsDone, setsDoneActive, lastBW, supersetUnits, unitOf, setLabel, defaultConfig, cleanupSg, modeOf, effortOf, isBw, isPerSide, sideReps, workSetsDone } from './lib/history.js'
+import { lastEntryFor, bestWeightFor, buildSets, effectiveRoutineId, workoutVolume, setsDone, setsDoneActive, lastBW, supersetUnits, unitOf, setLabel, defaultConfig, cleanupSg, modeOf, effortOf, isBw, isPerSide, sideReps, workSetsDone, applyIntensifierPlan } from './lib/history.js'
 import { beep, vibrate } from './lib/sound.js'
 import { t, instrFor, exerciseNameFor, getLang, INSTR_LANGS } from './lib/i18n.js'
 import { nav } from './lib/nav.js'
@@ -613,6 +613,9 @@ function ExConfig({ ex, existing, onSave, onDelete, close, routine, initial }) {
       if (policyFor({ ...c, id: ex.id }, routine, 'reps') === 'double') out.repsMin = Math.min(reps, Math.max(1, Math.round(c.repsMin) || Math.max(1, reps - 2)))
       // A ceiling below the working reps would tell you to add a set on day one.
       if (bw && !(out.weight > 0) && c.repsMax > 0) out.repsMax = Math.max(reps, Math.round(c.repsMax))
+      // Every set in this exercise becomes a drop-set/rest-pause (buildSets stamps the rows) —
+      // decided here, in the plan, not re-decided live each time you train it.
+      if (c.intensifier && c.intensifier.type) out.intensifier = c.intensifier
       onSave(out)
     }
   }
@@ -638,13 +641,19 @@ function ExConfig({ ex, existing, onSave, onDelete, close, routine, initial }) {
         <Stepper label={t('Seconds')} value={c.sec} step={5} decimal={false} onChange={v => setC(x => ({ ...x, sec: v }))} />
         <Stepper label={t('Weight ({0})', st.unit)} value={c.weight} step={2.5} onChange={v => setC(x => ({ ...x, weight: v }))} />
       </> : <>
-        <Stepper label={t('Sets')} value={c.sets} step={1} decimal={false} onChange={v => setC(x => ({ ...x, sets: v }))} />
+        {/* Rest-pause always trains as exactly two rows — a warm-up at this rep count, then one
+            rest-pause work set — so "Sets" has nothing left to mean and only invites a mismatch. */}
+        {c.intensifier?.type !== 'restpause' &&
+          <Stepper label={t('Sets')} value={c.sets} step={1} decimal={false} onChange={v => setC(x => ({ ...x, sets: v }))} />}
         <Stepper label={t('Reps')} value={c.reps} step={perSide ? 2 : 1} decimal={false} onChange={v => setC(x => ({ ...x, reps: v }))} />
         {/* On bodyweight work the weight stepper is the click #32 is about, so it is not here
             until there is a belt to describe — see the added-weight row below. */}
         {!bw && <Stepper label={t('Weight ({0})', st.unit)} value={c.weight} step={2.5} onChange={v => setC(x => ({ ...x, weight: v }))} />}
       </>}
     </div>
+    {c.intensifier?.type === 'restpause' && <div className="small dim" style={{ marginTop: -10, marginBottom: 18 }}>
+      {t('Rest-pause always trains as one warm-up set at this rep count, then one rest-pause work set — "Sets" is not used.')}
+    </div>}
     {mode === 'time' && !bw && <div className="small dim" style={{ marginBottom: 18 }}>
       {t('A timer runs while you hold the set. Leave the weight at 0 for bodyweight holds.')}
     </div>}
@@ -683,6 +692,43 @@ function ExConfig({ ex, existing, onSave, onDelete, close, routine, initial }) {
         ? t('Reps climb to {0}, then a set is added and the reps start over. At {1} sets it asks you to add weight instead.', c.repsMax, MAX_BW_SETS)
         : t('Reps climb by one whenever every set was clean. Set a ceiling to add sets instead of reps forever.')}
     </div>}
+    {mode === 'reps' && <>
+      <h4 className="sec">{t('Drop-set / rest-pause')}</h4>
+      <div className="sect-b" style={{ marginBottom: 8 }}>
+        <SelectRow title={t('Intensifier')} sheetTitle={t('Intensifier')} value={c.intensifier?.type || ''}
+          onChange={v => setC(x => ({
+            ...x,
+            intensifier: !v ? undefined : v === 'dropset'
+              ? { type: 'dropset', count: x.intensifier?.count || 1, pct: x.intensifier?.pct || 20 }
+              // The activation set's own reps are whatever "Reps" above already says — a
+              // rest-pause plan only adds two new numbers: the total extra reps wanted past
+              // it, and the rest between the bursts that total gets split into.
+              : { type: 'restpause', totalReps: x.intensifier?.totalReps || x.reps || 8, restSec: x.intensifier?.restSec || st.restPauseSec || 15 },
+          }))}
+          options={[
+            { value: '', label: t('None') },
+            { value: 'dropset', label: t('Drop-set') },
+            { value: 'restpause', label: t('Rest-pause') },
+          ]} />
+      </div>
+      {c.intensifier?.type === 'dropset' && <div className="row cfgrow" style={{ marginBottom: 8 }}>
+        <Stepper label={t('Drops')} value={c.intensifier.count} step={1} decimal={false}
+          onChange={v => setC(x => ({ ...x, intensifier: { ...x.intensifier, count: Math.max(1, v) } }))} />
+        <Stepper label={t('Weight drop (%)')} value={c.intensifier.pct} step={5} decimal={false}
+          onChange={v => setC(x => ({ ...x, intensifier: { ...x.intensifier, pct: Math.max(5, v) } }))} />
+      </div>}
+      {c.intensifier?.type === 'restpause' && <div className="row cfgrow" style={{ marginBottom: 8 }}>
+        <Stepper label={t('Rest-pause reps')} value={c.intensifier.totalReps} step={1} decimal={false}
+          onChange={v => setC(x => ({ ...x, intensifier: { ...x.intensifier, totalReps: Math.max(1, v) } }))} />
+        <Stepper label={t('Rest (s)')} value={c.intensifier.restSec} step={5} decimal={false}
+          onChange={v => setC(x => ({ ...x, intensifier: { ...x.intensifier, restSec: Math.max(5, v) } }))} />
+      </div>}
+      {c.intensifier?.type && <div className="small dim" style={{ marginTop: -2, marginBottom: 18 }}>
+        {c.intensifier.type === 'dropset'
+          ? t('Every set becomes a drop-set: after the main set, {0} drop(s) with no rest, each about {1}% lighter.', c.intensifier.count, c.intensifier.pct)
+          : t('Every set becomes rest-pause: {0} reps to start, then {1} more split into short bursts, {2}s rest before each, roughly halving each time.', c.reps || 0, c.intensifier.totalReps, c.intensifier.restSec)}
+      </div>}
+    </>}
     <ProgressionFields ex={ex} mode={mode} c={c} setC={setC} routine={routine} unit={st.unit} />
     <textarea className="input" rows={3} maxLength={500} style={{ marginBottom: 18 }}
       placeholder={t('Note (optional) — loading cues, "bar only then +1 plate/side each set", anything worth remembering here')}
@@ -927,7 +973,8 @@ export function beginWorkout(routineId, bw) {
   // kept on the entry purely so the workout can explain the number it chose.
   const entries = (r ? r.ex : []).map(cfg => {
     const plan = nextPrescription(st, cfg, r)
-    return { id: cfg.id, sg: cfg.sg, target: { ...cfg }, plan, sets: applyPrescription(buildSets(st, cfg), plan) }
+    const sets = applyIntensifierPlan(applyPrescription(buildSets(st, cfg), plan), cfg)
+    return { id: cfg.id, sg: cfg.sg, target: { ...cfg }, plan, sets }
   })
   update(s => {
     s.active = { id: uid(), d: todayISO(), start: Date.now(), routineId, name: r ? r.name : t('Freestyle'), bw: bw || null, cur: 0, entries }
@@ -984,6 +1031,11 @@ function TopWeight({ entryIdx, close }) {
   </>
 }
 export const topWeightSheet = entryIdx => ui().openSheet(close => <TopWeight entryIdx={entryIdx} close={close} />)
+
+/* Drop-set drops and rest-pause bursts are edited inline on the set row itself (Workout.jsx) —
+   no sheet, no timer. A planned exercise (see the "Intensifier" config below) arrives with them
+   already computed via applyIntensifierPlan; an unplanned straight set can still grow one live
+   by tapping "+ Drop"/"+ Burst", which appends with the same suggested-next-value math. */
 
 // Shown when the last exercise's last set is checked — finish, or keep going.
 function WorkoutComplete({ close }) {
@@ -1056,6 +1108,7 @@ function doFinishWorkout() {
     s.workouts.push(w)
     s.active = null
   })
+  useStore.getState().autoBackupNow()
   useUI.getState().stopRest()
   beep(snd(), 880, 0.15); beep(snd(), 1100, 0.15, 0.18); beep(snd(), 1320, 0.3, 0.36)
   ui().openSheet(close => <FinishSummary w={w} prs={prs} e1prs={e1prs} close={close} />, { kind: 'center', locked: true })

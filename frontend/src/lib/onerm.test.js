@@ -148,6 +148,32 @@ describe('is1RMRecord', () => {
 })
 
 
+describe('drop-sets, rest-pause sets and 1RM', () => {
+  it('estimates only from the main/activation weight×reps, ignoring lighter drops', () => {
+    const entry = { id: 'x', sets: [
+      { type: 'dropset', w: 100, r: 5, done: true, drops: [{ w: 80, r: 5 }, { w: 60, r: 5 }] },
+    ] }
+    expect(bestSetOf(entry)).toEqual(bestSetOf({ id: 'x', sets: [{ w: 100, r: 5, done: true }] }))
+  })
+
+  it('estimates only from the row\'s own w/r, ignoring rest-pause bursts', () => {
+    const entry = { id: 'x', sets: [
+      { type: 'restpause', w: 60, r: 8, done: true, clusters: [{ r: 4, restSec: 15 }, { r: 3, restSec: 15 }] },
+    ] }
+    expect(bestSetOf(entry)).toEqual(bestSetOf({ id: 'x', sets: [{ w: 60, r: 8, done: true }] }))
+  })
+
+  it('refuses to estimate a planned rest-pause row once its total reps exceed REP_CAP, same as any other high-rep set', () => {
+    // A planned rest-pause row's own r is the total across every burst (see
+    // applyIntensifierPlan/history.js), so it commonly lands above REP_CAP — the row is real
+    // work, but "estimate a max from 20 broken-up reps" is exactly the fantasy REP_CAP refuses.
+    const entry = { id: 'x', sets: [
+      { type: 'restpause', w: 60, r: 20, done: true, clusters: [{ r: 10, restSec: 15 }, { r: 5, restSec: 15 }, { r: 3, restSec: 15 }, { r: 1, restSec: 15 }, { r: 1, restSec: 15 }] },
+    ] }
+    expect(bestSetOf(entry)).toBeNull()
+  })
+})
+
 describe('warm-up sets and 1RM', () => {
   const ENTRY = { id: 'warm-test', sets: [
     { w: 20, r: 8, done: true, warmup: true },

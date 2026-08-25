@@ -14,3 +14,5 @@ node_modules/
 *.log
 .DS_Store
 node_modules
+.claude/
+.agents/

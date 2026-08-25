@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { modeOf, isTimed, fmtSec, setLabel, defaultConfig, buildSets, freestyleConfig, exLine, workoutVolume, bestWeightFor, bestWeightForEntry, effortOf, stepEffort, capEffort, isBw, isPerSide, sideReps, repStep, cascadeWeight, insertWarmupRow, removeRowAt, workSetsDone, pairAdjacent, unpairSuperset, supersetUnits } from './history.js'
+import { modeOf, isTimed, fmtSec, setLabel, defaultConfig, buildSets, freestyleConfig, exLine, workoutVolume, bestWeightFor, bestWeightForEntry, effortOf, stepEffort, capEffort, isBw, isPerSide, sideReps, repStep, cascadeWeight, insertWarmupRow, removeRowAt, workSetsDone, pairAdjacent, unpairSuperset, supersetUnits, applyIntensifierPlan } from './history.js'
 import { EXDB } from './exercises.js'
 
 // Real ids out of the shipped catalogue, so the body-part fallback is exercised for real.
@@ -456,6 +456,55 @@ describe('buildSets', () => {
     expect(buildSets(S, { id: LIFT, sets: 2, reps: 8, weight: 50 }, { preferLast: true }))
       .toEqual([{ w: 60, r: 10, done: false }, { w: 62.5, r: 8, done: false }])
   })
+
+})
+
+describe('applyIntensifierPlan', () => {
+  it('pre-fills every work row with a chain of drops, each pct% lighter than the one before', () => {
+    const sets = [{ w: 100, r: 8, done: false }, { w: 100, r: 8, done: false }]
+    const out = applyIntensifierPlan(sets, { intensifier: { type: 'dropset', count: 2, pct: 20 } })
+    expect(out).toEqual([
+      { w: 100, r: 8, done: false, type: 'dropset', drops: [{ w: 80, r: 8 }, { w: 64, r: 8 }] },
+      { w: 100, r: 8, done: false, type: 'dropset', drops: [{ w: 80, r: 8 }, { w: 64, r: 8 }] },
+    ])
+  })
+
+  it('collapses rest-pause to exactly two rows regardless of how many sets were configured: a warm-up at the exercise\'s own reps, then one work set whose own reps ARE the total', () => {
+    const sets = [{ w: 60, r: 8, done: false }, { w: 60, r: 8, done: false }, { w: 60, r: 8, done: false }]
+    const out = applyIntensifierPlan(sets, { reps: 8, intensifier: { type: 'restpause', totalReps: 12, restSec: 15 } })
+    expect(out).toEqual([
+      { w: 60, r: 8, done: false, phase: 'warmup' },
+      { w: 60, r: 12, done: false, type: 'restpause', clusters: [{ r: 6, restSec: 15 }, { r: 3, restSec: 15 }, { r: 2, restSec: 15 }, { r: 1, restSec: 15 }] },
+    ])
+    // the full breakdown always sums back to the row's own r — no reps missing, none double-counted
+    expect(out[1].clusters.reduce((sum, c) => sum + c.r, 0)).toBe(out[1].r)
+  })
+
+  it('the warm-up reps come from the exercise\'s own configured reps, not the rest-pause total', () => {
+    const sets = [{ w: 60, r: 8, done: false }]
+    const out = applyIntensifierPlan(sets, { reps: 5, intensifier: { type: 'restpause', totalReps: 20, restSec: 15 } })
+    expect(out[0]).toEqual({ w: 60, r: 5, done: false, phase: 'warmup' })
+  })
+
+  it('carries the prescribed weight from the built sets onto both new rows', () => {
+    const sets = [{ w: 82.5, r: 8, done: false }]
+    const out = applyIntensifierPlan(sets, { reps: 8, intensifier: { type: 'restpause', totalReps: 4, restSec: 15 } })
+    expect(out[0].w).toBe(82.5)
+    expect(out[1].w).toBe(82.5)
+  })
+
+  it('never touches a warm-up row', () => {
+    const sets = [{ w: 20, r: 8, done: false, phase: 'warmup' }, { w: 100, r: 8, done: false }]
+    const out = applyIntensifierPlan(sets, { intensifier: { type: 'dropset', count: 1, pct: 20 } })
+    expect(out[0]).toEqual({ w: 20, r: 8, done: false, phase: 'warmup' })
+    expect(out[1].type).toBe('dropset')
+  })
+
+  it('leaves sets untouched with no intensifier configured', () => {
+    const sets = [{ w: 100, r: 8, done: false }]
+    expect(applyIntensifierPlan(sets, {})).toBe(sets)
+    expect(applyIntensifierPlan(sets, { intensifier: { type: 'nonsense' } })).toBe(sets)
+  })
 })
 
 describe('workoutVolume', () => {
@@ -471,6 +520,21 @@ describe('workoutVolume', () => {
   it('needs no per-side case — the logged reps are already both sides (issue #31)', () => {
     const w = { entries: [{ id: LIFT, target: { side: true }, sets: [{ w: 20, r: 16, done: true }] }] }
     expect(workoutVolume(w)).toBe(320)
+  })
+
+  it('adds drop-set drops on top of the row\'s main set', () => {
+    const dropRow = { type: 'dropset', w: 100, r: 5, done: true, drops: [{ w: 80, r: 5 }, { w: 60, r: 5 }] }
+    expect(workoutVolume({ entries: [{ id: LIFT, sets: [dropRow] }] })).toBe(100 * 5 + 80 * 5 + 60 * 5)
+  })
+
+  it('counts a rest-pause row once — its own r is already the total across every burst', () => {
+    const burstRow = { type: 'restpause', w: 60, r: 20, done: true, clusters: [{ r: 10, restSec: 15 }, { r: 5, restSec: 15 }, { r: 3, restSec: 15 }, { r: 1, restSec: 15 }, { r: 1, restSec: 15 }] }
+    expect(workoutVolume({ entries: [{ id: LIFT, sets: [burstRow] }] })).toBe(60 * 20)
+  })
+
+  it('ignores drops/bursts on a row that was never checked off', () => {
+    const dropRow = { type: 'dropset', w: 100, r: 5, done: false, drops: [{ w: 80, r: 5 }] }
+    expect(workoutVolume({ entries: [{ id: LIFT, sets: [dropRow] }] })).toBe(0)
   })
 
   it('leaves an unloaded bodyweight set at zero volume rather than inventing a number', () => {

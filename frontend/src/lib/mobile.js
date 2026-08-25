@@ -10,6 +10,7 @@
 // Like the demo build, MOBILE is replaced at build time, so all of this folds away in
 // web bundles; the Capacitor plugins are only ever imported behind it.
 import { t } from './i18n-core.js'
+import { todayISO } from './format.js'
 
 export const MOBILE = import.meta.env.VITE_MOBILE === '1'
 
@@ -28,6 +29,27 @@ export async function nativeSave(state) {
     const { Filesystem, Directory, Encoding } = await import('@capacitor/filesystem')
     await Filesystem.writeFile({ path: FILE, directory: Directory.Data, data: JSON.stringify(state), encoding: Encoding.UTF8 })
   } catch (e) { /* keep the localStorage copy */ }
+}
+
+// "Connect to my server" mode (lib/remote.js): which of local-only / a paired remote account this
+// device chose, kept in its own file — never inside opengym-state.json, since that file's content
+// is exactly what pushState() PUTs to a server, and a device's own connection secret must never
+// travel as if it were training data.
+const REMOTE_FILE = 'opengym-remote.json'
+
+export async function loadRemoteFile() {
+  try {
+    const { Filesystem, Directory, Encoding } = await import('@capacitor/filesystem')
+    const r = await Filesystem.readFile({ path: REMOTE_FILE, directory: Directory.Data, encoding: Encoding.UTF8 })
+    return JSON.parse(r.data)
+  } catch (e) { return null }   // never decided yet
+}
+
+export async function saveRemoteFile(data) {
+  try {
+    const { Filesystem, Directory, Encoding } = await import('@capacitor/filesystem')
+    await Filesystem.writeFile({ path: REMOTE_FILE, directory: Directory.Data, data: JSON.stringify(data), encoding: Encoding.UTF8 })
+  } catch (e) { /* worst case: onboarding asks again next launch */ }
 }
 
 // (Re)schedule the workout-day reminder: one repeating notification per weekday that has a
@@ -65,4 +87,21 @@ export async function shareExport(json, filename) {
   const { Share } = await import('@capacitor/share')
   const w = await Filesystem.writeFile({ path: filename, directory: Directory.Cache, data: json, encoding: Encoding.UTF8 })
   await Share.share({ title: filename, url: w.uri })
+}
+
+// "Auto-backup on changes" (Settings): a dated snapshot dropped into the Documents folder —
+// visible in Files (iOS) / a file manager (Android), unlike the private mirror nativeSave keeps
+// — so whatever the user points at that folder (a sync app, a manual copy) always has something
+// recent. One file per day; later triggers the same day just overwrite it.
+export async function writeAutoBackup(state) {
+  try {
+    const { Filesystem, Directory, Encoding } = await import('@capacitor/filesystem')
+    await Filesystem.writeFile({
+      path: `opengym-backup-${todayISO()}.json`,
+      directory: Directory.Documents,
+      data: JSON.stringify(state),
+      encoding: Encoding.UTF8,
+      recursive: true,
+    })
+  } catch (e) { /* best effort — the private mirror in Directory.Data still has the data */ }
 }

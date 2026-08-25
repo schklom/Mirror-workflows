@@ -272,7 +272,12 @@ export function applyPrescription(sets, p) {
     // would both invent work and never terminate the loop. Leave the entry untouched.
     if (!workRows.length) return out
     const seed = workRows[workRows.length - 1]
-    while (out.filter(s => !isWarmupRow(s)).length < p.sets) out.push({ ...seed, done: false })
+    // A freshly appended row hasn't been performed, so it never inherits a seed's already-
+    // logged drops/clusters — that would invent extra work the row never actually did. Its
+    // `type` is kept: that's the exercise's plan (every set is a drop-set/rest-pause), not
+    // something this particular row logged.
+    const { drops, clusters, ...plainSeed } = seed
+    while (out.filter(s => !isWarmupRow(s)).length < p.sets) out.push({ ...plainSeed, done: false })
   }
   return out
 }

@@ -424,7 +424,7 @@ h4.sec{
 
 /* ---------------------------------------------------------------- chips -- */
 .chips{
-  display:flex;gap:7px;overflow-x:auto;padding-bottom:2px;
+  display:flex;gap:7px;overflow-x:auto;padding:4px 4px 6px;
   scrollbar-width:none;-webkit-overflow-scrolling:touch;
 }
 .chips::-webkit-scrollbar{display:none}

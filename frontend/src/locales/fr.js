@@ -580,5 +580,25 @@ export default {
   'secondary': 'secondaire',
   "No exercises with an estimated 1RM yet.": "Aucun exercice avec un 1RM estimé pour l'instant.",
   'Tap a muscle to see its exercises.': 'Touchez un muscle pour voir ses exercices.',
-  'Unpair': 'Dissocier'
+  'Unpair': 'Dissocier',
+
+  // --- equipment profiles ---
+  'Showing all equipment': 'Tout l’équipement est affiché',
+  'Showing what you have in "{0}"': 'Affichage de ce que tu as dans « {0} »',
+  'Show all equipment': 'Afficher tout l’équipement',
+  'Filter by "{0}"': 'Filtrer par « {0} »',
+  'Edit profile': 'Modifier le profil',
+  'New equipment profile': 'Nouveau profil d’équipement',
+  'Name it after where you train — e.g. "Home" or "Gym" — then check what you have there.': 'Nomme-le d’après ton lieu d’entraînement — p. ex. « Maison » ou « Salle » — puis coche ce que tu y as.',
+  'Profile name': 'Nom du profil',
+  'Body-weight exercises are always available, in every profile.': 'Les exercices au poids du corps sont toujours disponibles, dans tous les profils.',
+  '{0} of {1} exercises need equipment outside "{2}"': '{0} exercices sur {1} nécessitent un équipement hors de « {2} »',
+  'Needs {0} — not in your active profile': 'Nécessite {0} — absent de ton profil actif',
+  'Filter by equipment': 'Filtrer par équipement',
+  'Active profile': 'Profil actif',
+  '{0} equipment types': '{0} types d’équipement',
+  'Add equipment profile': 'Ajouter un profil d’équipement',
+  'Delete profile?': 'Supprimer le profil ?',
+  '"{0}" and its equipment list will be removed.': '« {0} » et sa liste d’équipement seront supprimés.',
+  'Filters the exercise library and picker, and flags routine exercises that need something you don’t have in the active profile.': 'Filtre la bibliothèque d’exercices et le sélecteur, et signale les exercices de routine qui nécessitent quelque chose que tu n’as pas dans le profil actif.',
 }

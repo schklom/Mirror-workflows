@@ -580,5 +580,25 @@ export default {
   'secondary': '次要',
   'No exercises with an estimated 1RM yet.': '暂无估算1RM的动作。',
   'Tap a muscle to see its exercises.': '点击肌肉查看其动作。',
-  'Unpair': '取消组合'
+  'Unpair': '取消组合',
+
+  // --- equipment profiles ---
+  'Showing all equipment': '正在显示全部器械',
+  'Showing what you have in "{0}"': '正在显示你在“{0}”拥有的器械',
+  'Show all equipment': '显示全部器械',
+  'Filter by "{0}"': '按“{0}”筛选',
+  'Edit profile': '编辑配置',
+  'New equipment profile': '新建器械配置',
+  'Name it after where you train — e.g. "Home" or "Gym" — then check what you have there.': '用你训练的地点命名 —— 例如“家里”或“健身房”—— 然后勾选你在那里有的器械。',
+  'Profile name': '配置名称',
+  'Body-weight exercises are always available, in every profile.': '自重动作在每个配置中都始终可用。',
+  '{0} of {1} exercises need equipment outside "{2}"': '{1} 个动作中有 {0} 个需要“{2}”之外的器械',
+  'Needs {0} — not in your active profile': '需要{0} —— 不在你的当前配置中',
+  'Filter by equipment': '按器械筛选',
+  'Active profile': '当前配置',
+  '{0} equipment types': '{0} 种器械',
+  'Add equipment profile': '添加器械配置',
+  'Delete profile?': '删除配置？',
+  '"{0}" and its equipment list will be removed.': '“{0}”及其器械清单将被删除。',
+  'Filters the exercise library and picker, and flags routine exercises that need something you don’t have in the active profile.': '筛选动作库和选择器，并标记训练计划中需要当前配置里没有的器械的动作。',
 }

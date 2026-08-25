@@ -580,5 +580,25 @@ export default {
   'secondary': 'вспомогательная',
   'No exercises with an estimated 1RM yet.': 'Пока нет упражнений с расчётным 1ПМ.',
   'Tap a muscle to see its exercises.': 'Нажмите на мышцу, чтобы увидеть её упражнения.',
-  'Unpair': 'Разъединить'
+  'Unpair': 'Разъединить',
+
+  // --- equipment profiles ---
+  'Showing all equipment': 'Показан весь инвентарь',
+  'Showing what you have in "{0}"': 'Показано то, что есть в «{0}»',
+  'Show all equipment': 'Показать весь инвентарь',
+  'Filter by "{0}"': 'Фильтровать по «{0}»',
+  'Edit profile': 'Изменить профиль',
+  'New equipment profile': 'Новый профиль инвентаря',
+  'Name it after where you train — e.g. "Home" or "Gym" — then check what you have there.': 'Назови его по месту тренировок — например, «Дом» или «Зал» — и отметь, что там есть.',
+  'Profile name': 'Название профиля',
+  'Body-weight exercises are always available, in every profile.': 'Упражнения с собственным весом доступны всегда, в любом профиле.',
+  '{0} of {1} exercises need equipment outside "{2}"': '{0} из {1} упражнений требуют инвентаря вне «{2}»',
+  'Needs {0} — not in your active profile': 'Нужен инвентарь: {0} — его нет в активном профиле',
+  'Filter by equipment': 'Фильтровать по инвентарю',
+  'Active profile': 'Активный профиль',
+  '{0} equipment types': 'Типов инвентаря: {0}',
+  'Add equipment profile': 'Добавить профиль инвентаря',
+  'Delete profile?': 'Удалить профиль?',
+  '"{0}" and its equipment list will be removed.': '«{0}» и его список инвентаря будут удалены.',
+  'Filters the exercise library and picker, and flags routine exercises that need something you don’t have in the active profile.': 'Фильтрует библиотеку упражнений и выбор, а также отмечает упражнения в программах, для которых нужно то, чего нет в активном профиле.',
 }

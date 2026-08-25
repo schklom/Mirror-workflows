@@ -580,5 +580,25 @@ export default {
   'secondary': '보조',
   'No exercises with an estimated 1RM yet.': '추정 1RM이 있는 운동이 아직 없습니다.',
   'Tap a muscle to see its exercises.': '근육을 눌러 해당 운동을 확인하세요.',
-  'Unpair': '분리'
+  'Unpair': '분리',
+
+  // --- equipment profiles ---
+  'Showing all equipment': '모든 장비를 표시하는 중',
+  'Showing what you have in "{0}"': '‘{0}’에 있는 장비를 표시하는 중',
+  'Show all equipment': '모든 장비 표시',
+  'Filter by "{0}"': '‘{0}’(으)로 필터',
+  'Edit profile': '프로필 편집',
+  'New equipment profile': '새 장비 프로필',
+  'Name it after where you train — e.g. "Home" or "Gym" — then check what you have there.': '운동하는 장소의 이름을 붙여 — 예: ‘집’ 또는 ‘헬스장’ — 그곳에 있는 장비를 체크하세요.',
+  'Profile name': '프로필 이름',
+  'Body-weight exercises are always available, in every profile.': '맨몸 운동은 모든 프로필에서 항상 사용할 수 있습니다.',
+  '{0} of {1} exercises need equipment outside "{2}"': '{1}개 운동 중 {0}개가 ‘{2}’ 외의 장비를 필요로 합니다',
+  'Needs {0} — not in your active profile': '{0} 필요 — 활성 프로필에 없음',
+  'Filter by equipment': '장비로 필터',
+  'Active profile': '활성 프로필',
+  '{0} equipment types': '장비 종류 {0}가지',
+  'Add equipment profile': '장비 프로필 추가',
+  'Delete profile?': '프로필을 삭제할까요?',
+  '"{0}" and its equipment list will be removed.': '‘{0}’과(와) 해당 장비 목록이 삭제됩니다.',
+  'Filters the exercise library and picker, and flags routine exercises that need something you don’t have in the active profile.': '운동 라이브러리와 선택기를 필터링하고, 활성 프로필에 없는 장비가 필요한 루틴 운동을 표시합니다.',
 }

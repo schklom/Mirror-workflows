@@ -580,5 +580,25 @@ export default {
   'secondary': 'ikincil',
   'No exercises with an estimated 1RM yet.': 'Henüz tahmini 1RM olan egzersiz yok.',
   'Tap a muscle to see its exercises.': 'Egzersizlerini görmek için bir kas seçin.',
-  'Unpair': 'Ayır'
+  'Unpair': 'Ayır',
+
+  // --- equipment profiles ---
+  'Showing all equipment': 'Tüm ekipman gösteriliyor',
+  'Showing what you have in "{0}"': '“{0}” içinde sahip olduklarını gösteriyor',
+  'Show all equipment': 'Tüm ekipmanı göster',
+  'Filter by "{0}"': '“{0}” ile filtrele',
+  'Edit profile': 'Profili düzenle',
+  'New equipment profile': 'Yeni ekipman profili',
+  'Name it after where you train — e.g. "Home" or "Gym" — then check what you have there.': 'Antrenman yaptığın yerin adını ver — örn. “Ev” veya “Spor salonu” — sonra orada nelerin olduğunu işaretle.',
+  'Profile name': 'Profil adı',
+  'Body-weight exercises are always available, in every profile.': 'Vücut ağırlığı hareketleri her profilde her zaman kullanılabilir.',
+  '{0} of {1} exercises need equipment outside "{2}"': '{1} hareketten {0} tanesi “{2}” dışında ekipman gerektiriyor',
+  'Needs {0} — not in your active profile': '{0} gerekiyor — aktif profilinde yok',
+  'Filter by equipment': 'Ekipmana göre filtrele',
+  'Active profile': 'Aktif profil',
+  '{0} equipment types': '{0} ekipman türü',
+  'Add equipment profile': 'Ekipman profili ekle',
+  'Delete profile?': 'Profil silinsin mi?',
+  '"{0}" and its equipment list will be removed.': '“{0}” ve ekipman listesi kaldırılacak.',
+  'Filters the exercise library and picker, and flags routine exercises that need something you don’t have in the active profile.': 'Hareket kitaplığını ve seçiciyi filtreler, ayrıca aktif profilinde olmayan bir şeye ihtiyaç duyan rutin hareketlerini işaretler.',
 }

@@ -580,5 +580,25 @@ export default {
   'secondary': 'द्वितीयक',
   'No exercises with an estimated 1RM yet.': 'अभी तक अनुमानित 1RM वाला कोई व्यायाम नहीं।',
   'Tap a muscle to see its exercises.': 'व्यायाम देखने के लिए किसी मांसपेशी पर टैप करें।',
-  'Unpair': 'अलग करें'
+  'Unpair': 'अलग करें',
+
+  // --- equipment profiles ---
+  'Showing all equipment': 'सभी उपकरण दिखाए जा रहे हैं',
+  'Showing what you have in "{0}"': '“{0}” में आपके पास जो है वह दिखाया जा रहा है',
+  'Show all equipment': 'सभी उपकरण दिखाएँ',
+  'Filter by "{0}"': '“{0}” से फ़िल्टर करें',
+  'Edit profile': 'प्रोफ़ाइल संपादित करें',
+  'New equipment profile': 'नई उपकरण प्रोफ़ाइल',
+  'Name it after where you train — e.g. "Home" or "Gym" — then check what you have there.': 'जहाँ आप कसरत करते हैं उसी के नाम पर रखें — जैसे “घर” या “जिम” — फिर वहाँ जो है उसे चुनें।',
+  'Profile name': 'प्रोफ़ाइल का नाम',
+  'Body-weight exercises are always available, in every profile.': 'शरीर के वज़न वाली कसरतें हर प्रोफ़ाइल में हमेशा उपलब्ध रहती हैं।',
+  '{0} of {1} exercises need equipment outside "{2}"': '{1} में से {0} कसरतों को “{2}” के बाहर के उपकरण चाहिए',
+  'Needs {0} — not in your active profile': '{0} चाहिए — आपकी सक्रिय प्रोफ़ाइल में नहीं है',
+  'Filter by equipment': 'उपकरण से फ़िल्टर करें',
+  'Active profile': 'सक्रिय प्रोफ़ाइल',
+  '{0} equipment types': '{0} प्रकार के उपकरण',
+  'Add equipment profile': 'उपकरण प्रोफ़ाइल जोड़ें',
+  'Delete profile?': 'प्रोफ़ाइल हटाएँ?',
+  '"{0}" and its equipment list will be removed.': '“{0}” और उसकी उपकरण सूची हटा दी जाएगी।',
+  'Filters the exercise library and picker, and flags routine exercises that need something you don’t have in the active profile.': 'कसरत लाइब्रेरी और चयनकर्ता को फ़िल्टर करता है, और उन रूटीन कसरतों को चिह्नित करता है जिनके लिए सक्रिय प्रोफ़ाइल में मौजूद न होने वाला उपकरण चाहिए।',
 }

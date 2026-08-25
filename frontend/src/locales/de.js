@@ -597,5 +597,25 @@ export default {
   'secondary': 'sekundär',
   'No exercises with an estimated 1RM yet.': 'Noch keine Übungen mit geschätztem 1RM.',
   'Tap a muscle to see its exercises.': 'Tippe auf einen Muskel, um seine Übungen zu sehen.',
-  'Unpair': 'Trennen'
+  'Unpair': 'Trennen',
+
+  // --- equipment profiles ---
+  'Showing all equipment': 'Alle Geräte werden angezeigt',
+  'Showing what you have in "{0}"': 'Angezeigt wird, was du in „{0}“ hast',
+  'Show all equipment': 'Alle Geräte zeigen',
+  'Filter by "{0}"': 'Nach „{0}“ filtern',
+  'Edit profile': 'Profil bearbeiten',
+  'New equipment profile': 'Neues Geräteprofil',
+  'Name it after where you train — e.g. "Home" or "Gym" — then check what you have there.': 'Benenne es nach deinem Trainingsort — z. B. „Zuhause“ oder „Gym“ — und hake dann ab, was du dort hast.',
+  'Profile name': 'Profilname',
+  'Body-weight exercises are always available, in every profile.': 'Körpergewichtsübungen sind immer verfügbar, in jedem Profil.',
+  '{0} of {1} exercises need equipment outside "{2}"': '{0} von {1} Übungen brauchen Geräte außerhalb von „{2}“',
+  'Needs {0} — not in your active profile': 'Braucht {0} — nicht in deinem aktiven Profil',
+  'Filter by equipment': 'Nach Geräten filtern',
+  'Active profile': 'Aktives Profil',
+  '{0} equipment types': '{0} Gerätearten',
+  'Add equipment profile': 'Geräteprofil hinzufügen',
+  'Delete profile?': 'Profil löschen?',
+  '"{0}" and its equipment list will be removed.': '„{0}“ und die zugehörige Geräteliste werden entfernt.',
+  'Filters the exercise library and picker, and flags routine exercises that need something you don’t have in the active profile.': 'Filtert die Übungsbibliothek und die Auswahl und markiert Übungen in Routinen, die Geräte brauchen, die du im aktiven Profil nicht hast.',
 }

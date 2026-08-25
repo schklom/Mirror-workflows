@@ -320,6 +320,7 @@ describe('Stats exercise progress picker', () => {
     expect(input).toBeTruthy()
     expect(input.getAttribute('aria-label')).toBe('Search…')
     expect(input.getAttribute('placeholder')).toBe('Search…')
+    expect(modal.querySelector('.picker-search')).toBeTruthy()
     const optionButtons = () => [...modal.querySelectorAll('.sect-b button')]
     const initialOptionCount = optionButtons().length
     expect(initialOptionCount).toBe(3)
@@ -332,6 +333,24 @@ describe('Stats exercise progress picker', () => {
       input.dispatchEvent(new Event('input', { bubbles: true }))
       input.dispatchEvent(new Event('change', { bubbles: true }))
     })
+
+    // A focused search can leave a newly narrowed result below the visual viewport. The
+    // correction must advance the sheet's own scroll position, not the page behind it.
+    const sheet = modal.querySelector('.sheet')
+    const firstOption = optionButtons()[0]
+    Object.defineProperties(sheet, {
+      clientHeight: { configurable: true, value: 400 },
+      scrollHeight: { configurable: true, value: 1000 },
+    })
+    vi.spyOn(sheet, 'getBoundingClientRect').mockReturnValue({ bottom: 600 })
+    vi.spyOn(firstOption, 'getBoundingClientRect').mockReturnValue({ bottom: 500 })
+    Object.defineProperty(window, 'visualViewport', { configurable: true, value: { height: 300 } })
+    input.focus()
+    expect(sheet.style.getPropertyValue('--picker-visual-height')).toBe('300px')
+    expect(sheet.style.getPropertyValue('--picker-keyboard-bottom')).toBe(`${Math.max(0, window.innerHeight - 300)}px`)
+    await setSearch('bench')
+    await tick(100)
+    expect(sheet.scrollTop).toBeGreaterThan(0)
 
     await setSearch('no such historical exercise')
     expect(modal.textContent).toContain('No match')

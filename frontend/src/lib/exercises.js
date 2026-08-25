@@ -77,3 +77,34 @@ export const isBodyweightEq = idOrEx =>
 // down on the first `ex.n`.
 export const exOr = id => EXIDX[id] ||
   { id, n: t('Unknown exercise'), bp: '', tg: '', eq: '', sm: [], st: [], missing: true }
+
+// Normalizes text by lowercasing and stripping diacritics/accents (e.g. "elevação" -> "elevacao")
+export const normalizeStr = s => (s || '')
+  .normalize('NFD')
+  .replace(/[\u0300-\u036f]/g, '')
+  .toLowerCase()
+
+// Multi-token, accent-insensitive and multilingual exercise search.
+// Matches when all whitespace-separated words in the query appear anywhere in the exercise's
+// name, equipment, target muscle, body part (both in English and translated to active language),
+// secondary muscles or description.
+export function matchExercise(e, query) {
+  if (!query) return true
+  const tokens = normalizeStr(query).split(/\s+/).filter(Boolean)
+  if (!tokens.length) return true
+
+  const corpus = normalizeStr([
+    e?.n || '',
+    e?.tg || '',
+    t(e?.tg || ''),
+    e?.eq || '',
+    t(e?.eq || ''),
+    e?.bp || '',
+    t(e?.bp || ''),
+    ...(Array.isArray(e?.sm) ? e.sm : []),
+    ...(Array.isArray(e?.sm) ? e.sm.map(m => t(m)) : []),
+    e?.desc || ''
+  ].join(' '))
+
+  return tokens.every(tok => corpus.includes(tok))
+}

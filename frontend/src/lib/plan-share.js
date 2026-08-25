@@ -46,6 +46,7 @@ function cleanEx(e) {
   if (e.repsMax != null) o.repsMax = e.repsMax
   if (e.sg) o.sg = e.sg
   if (e.note) o.note = e.note
+  if (e.warmupSets) o.warmupSets = e.warmupSets
   return o
 }
 

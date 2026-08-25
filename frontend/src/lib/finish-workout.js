@@ -12,8 +12,18 @@ export function buildCompletedWorkout(active, { end = Date.now(), prs = [], snap
     if (snapshot && typeof snapshot === 'object' && !Array.isArray(snapshot) && Object.keys(snapshot).length) {
       completed.muscleSnapshot = { ...snapshot }
     }
+    // What you typed about this exercise today, and whether you asked to see it again next
+    // time. Written only when there is something to keep, so an untouched entry is byte-for-byte
+    // the shape it always was.
+    const note = (entry.note || '').trim()
+    if (note) {
+      completed.note = note
+      if (entry.notePin) completed.notePin = true
+    }
     return completed
   }).filter(entry => entry.sets.some(set => set.done))
+
+  const sessionNote = (active?.note || '').trim()
 
   return {
     id: active.id,
@@ -25,5 +35,6 @@ export function buildCompletedWorkout(active, { end = Date.now(), prs = [], snap
     bw: active.bw,
     entries,
     prs,
+    ...(sessionNote ? { note: sessionNote } : {}),
   }
 }

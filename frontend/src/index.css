@@ -272,15 +272,21 @@ h4.sec{
 .btn:disabled{opacity:.32;pointer-events:none}
 
 /* ----------------------------------------------------------- tab bar ----- */
+/* Nearly opaque, and deliberately so. At the old 72% the page read straight through the bar
+   and the labels had to compete with whatever was scrolling behind them — nobody needs to read
+   the content under a navigation bar. 94% keeps a hint of movement behind the glass without
+   letting text through. The blur is also down from 24px to 10px: this is a fixed element, so
+   the WebView recomposites the blurred region on every scroll frame, and on Android that is
+   the single most expensive thing on the screen. See @supports below for the no-blur case. */
 #tabbar{
   position:fixed;left:0;right:0;bottom:0;z-index:50;
   display:flex;justify-content:space-around;align-items:flex-end;
   padding:7px 6px calc(6px + var(--sab));
-  background:color-mix(in srgb,var(--bg-el) 72%,transparent);
-  backdrop-filter:saturate(180%) blur(24px);-webkit-backdrop-filter:saturate(180%) blur(24px);
+  background:color-mix(in srgb,var(--bg-el) 94%,transparent);
+  -webkit-backdrop-filter:saturate(180%) blur(10px);backdrop-filter:saturate(180%) blur(10px);
   border-top:var(--hair) solid var(--sep-op);
 }
-:root[data-theme="light"] #tabbar{background:rgba(249,249,251,.78)}
+:root[data-theme="light"] #tabbar{background:rgba(249,249,251,.94)}
 #tabbar button{
   flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
   color:var(--label-3);font-size:10px;font-weight:500;letter-spacing:.005em;padding-top:3px;
@@ -316,6 +322,21 @@ h4.sec{
   border:2px solid var(--orange);animation:ping 1.9s var(--ease) infinite;
 }
 @keyframes ping{0%{transform:scale(1);opacity:.7}100%{transform:scale(1.45);opacity:0}}
+
+/* NOTE on every backdrop-filter pair in this file: the -webkit- line comes first and the
+   standard property last, which is the order a prefixed/standard pair wants — whichever is
+   written last wins in the cascade, and that should be the standard name.
+
+   Where backdrop-filter is genuinely unsupported there is no glass either — only the alpha,
+   and the page shows through unblurred, which is the worst of both. Older Android WebViews
+   never had it, and "reduce transparency" accessibility settings drop it. Those surfaces go
+   fully opaque instead. Keep this in sync with the rules above. */
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  #tabbar{background:var(--bg-el)}
+  :root[data-theme="light"] #tabbar{background:#f9f9fb}
+  #timer{background:var(--surface)}
+  #toast{background:var(--surface-2)}
+}
 
 /* ------------------------------------------------------------ week strip -- */
 .week{display:flex;justify-content:space-between;gap:4px}
@@ -536,7 +557,7 @@ h4.sec{
   position:absolute;bottom:9px;display:inline-flex;align-items:center;gap:4px;
   background:rgba(0,0,0,.45);color:#fff;border-radius:99px;padding:5px 11px;
   font-size:12px;font-weight:500;
-  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
 }
 .exmedia .gifhint{right:9px}
 .exmedia .giftoggle{left:9px}
@@ -626,7 +647,7 @@ h4.sec{
   /* nearly opaque: the set rows underneath were reading through the old 82% and made the
      clock hard to pick out mid-set. The blur stays, so it still sits above the page. */
   background:color-mix(in srgb,var(--surface) 97%,transparent);
-  backdrop-filter:saturate(180%) blur(24px);-webkit-backdrop-filter:saturate(180%) blur(24px);
+  -webkit-backdrop-filter:saturate(180%) blur(10px);backdrop-filter:saturate(180%) blur(10px);
   border-radius:var(--r-lg);padding:12px 14px;
   display:flex;align-items:center;gap:12px;
   box-shadow:0 12px 34px -8px rgba(0,0,0,.55);
@@ -659,7 +680,7 @@ h4.sec{
 #modal-root.open{display:block}
 .mback{
   position:absolute;inset:0;background:rgba(0,0,0,.4);
-  backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);
+  -webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);
   touch-action:none;overscroll-behavior:none;
 }
 .sheet{
@@ -846,7 +867,7 @@ h4.sec{
   position:fixed;left:50%;transform:translateX(-50%) translateY(6px);
   bottom:calc(96px + var(--sab));z-index:200;
   background:color-mix(in srgb,var(--surface-2) 88%,transparent);
-  backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);
+  -webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);
   border-radius:99px;padding:11px 20px;font-size:15px;font-weight:500;
   box-shadow:0 10px 30px -6px rgba(0,0,0,.5);
   opacity:0;pointer-events:none;transition:opacity var(--med),transform var(--med) var(--ease);
@@ -897,6 +918,13 @@ h4.sec{
 .ss-card{
   border-radius:var(--r-lg);padding:14px;
   background:var(--surface);box-shadow:inset 0 0 0 1.5px var(--acc-line);
+}
+/* A superset nests a card inside the page's own gutter, so its inset is paid twice. On a
+   narrow phone that left the weight and reps steppers too tight to show a three-digit
+   number — reported as "the reps textbox becomes too small when superset on mobile". The
+   card only gives up its own padding; the rows inside keep their spacing. */
+@media (max-width:400px){
+  .ss-card{padding:10px 8px}
 }
 .ss-hd{
   font-size:12px;font-weight:600;color:var(--acc);margin-bottom:12px;

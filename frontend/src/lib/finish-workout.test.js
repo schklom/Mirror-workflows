@@ -36,3 +36,36 @@ describe('completed workout boundary', () => {
     })
   })
 })
+
+// Notes written during a session have to survive it, or "write a note during your workout"
+// means "write a note and lose it when you tap Finish".
+describe('session notes', () => {
+  const active = (entry) => ({
+    id: 'w1', d: '2026-08-25', start: 1, routineId: 'r1', name: 'Push', bw: null,
+    entries: [{ id: '0025', sets: [{ w: 100, r: 5, done: true }], ...entry }],
+  })
+
+  it('keeps a per-exercise note and its pin', () => {
+    const w = buildCompletedWorkout(active({ note: '  narrower grip next time  ', notePin: true }))
+    expect(w.entries[0].note).toBe('narrower grip next time')
+    expect(w.entries[0].notePin).toBe(true)
+  })
+
+  it('keeps an unpinned note without inventing a pin', () => {
+    const w = buildCompletedWorkout(active({ note: 'shoulder twinged' }))
+    expect(w.entries[0].note).toBe('shoulder twinged')
+    expect('notePin' in w.entries[0]).toBe(false)
+  })
+
+  it('writes no note fields at all when nothing was typed', () => {
+    const w = buildCompletedWorkout(active({ note: '   ', notePin: true }))
+    expect('note' in w.entries[0]).toBe(false)
+    expect('notePin' in w.entries[0]).toBe(false)
+  })
+
+  it('keeps a whole-session note on the workout', () => {
+    const a = active({})
+    expect(buildCompletedWorkout({ ...a, note: 'slept badly' }).note).toBe('slept badly')
+    expect('note' in buildCompletedWorkout(a)).toBe(false)
+  })
+})

@@ -1,5 +1,104 @@
 # Changelog
 
+## v1.2.10 — 2026-08-25
+
+The first release since the move to GitLab that is mostly **other people's work**. Nine
+contributors, thirteen merge requests: Brazilian Portuguese in full — interface, all 1,324
+exercise names and all 7,710 instruction steps — equipment profiles for people who train in more
+than one gym, drop-sets and rest-pause, a way to pair the mobile app with your own server, and a
+round of security hardening on the API and the reverse proxy.
+
+Alongside that, the bugs you reported in #bugs-and-ideas and on the issue tracker, several of
+which turned out to be worse than they looked from the outside.
+
+### Training
+
+- 🔥 **"Add warm-up set" gave you a warm-up at your full working weight.** It looked for the row
+  to ramp from at the position *before* the first work set — which for the first warm-up is
+  index −1, so it fell through to the last row instead: your heaviest set. Every warm-up you
+  added had to be corrected by hand. Warm-ups now ramp toward the work weight, each one closing
+  half the remaining gap (50% → 75% → 87.5%), rounded down to what you can actually load.
+- 🏋️ **Warm-ups can be planned in the routine.** Set how many an exercise gets and the session
+  starts with them already in place, ramped, instead of you adding them every time. They stay
+  out of volume, records and progression, and they travel with a shared plan.
+- ⏱️ **The rest timer skipped the last set of every exercise.** It was written as "final sets
+  finish quietly", but another exercise follows that set and you rest before it too — so a
+  two-set exercise timed one rest instead of two. It now rests after every completed set except
+  the last one of the session. (issue #3, and zkssyth arrived at the same rule independently)
+- 📝 **Notes you can write during a workout**, in three kinds, because they have three different
+  lifetimes: what happened today, on the exercise; what is always true about the movement (seat
+  height, pin position); and how the session went as a whole. The per-session note carries a
+  **pin** — the app cannot know whether "shoulder twinged" is a diary line or "go narrower" is a
+  message to your next self, but you do, at the moment you write it. Pinned notes come back the
+  next time that exercise comes up.
+- 💥 **Drop-sets and rest-pause / myo-reps**, planned per exercise and extending the set row
+  itself rather than adding new sets.
+
+### Equipment, and training in more than one gym
+
+- 🎒 **Equipment profiles.** Build a "Home" and a "Gym" list of what you actually own, and the
+  library, the exercise picker and your routines filter to it — with a warning on any routine
+  exercise that needs something the active profile does not have. Body-weight exercises are
+  always available.
+
+### Brazilian Portuguese
+
+- 🇧🇷 **pt-BR is complete**: the interface, every built-in exercise name, and every instruction
+  step. It is defined as a layer over pt-PT rather than a copy, so a string added to Portuguese
+  can never silently go missing here — with tests that fingerprint every inherited entry and
+  refuse European vocabulary (*ficheiro*, *telemóvel*, *ecrã*, «guillemets»).
+- 🔔 Server-sent notifications — rest-timer alerts, test pushes, workout-day reminders — follow
+  the profile's language instead of always arriving in English.
+
+### Fixes
+
+- ✅ **Home kept asking you to do the workout you had just done.** The week strip knew the day was
+  finished; the row underneath did not, and went on showing the routine behind a green Start tag.
+  (issue #4)
+- 📈 **"Exercise progress" was empty for bodyweight exercises.** Pull-ups and push-ups carry no
+  weight, and every point without one was dropped, so a full history read as "No data yet". When
+  nothing in an exercise's history was ever loaded, the reps are the progress — so that is what
+  is plotted now. Add a weighted set later and it switches back to weight. (issue #5)
+- 🫥 **The tab bar was see-through.** At 72% opacity the page read straight through it and the
+  labels competed with whatever was scrolling behind them — nobody needs to read the content
+  under a navigation bar. It is 94% now in both themes, and blurs less, which is also faster on
+  Android, where a blur behind a fixed element is recomposited on every scroll frame. Where
+  `backdrop-filter` is unavailable at all — old Android WebViews, "reduce transparency" — the
+  blurred surfaces now go fully opaque instead of leaving just the alpha, which was the worst of
+  both. (reported by mflova, seconded by seals187)
+- 📥 **No Smith-machine exercise could ever match on import.** The `machine → lever` rule ran
+  before `smith machine → smith`, so the generic one ate the word first. Hevy's vocabulary is
+  now mapped as well, and exercises it cannot match take their body part from the name instead of
+  defaulting to "upper legs" — which had been attributing a third of an imported history to the
+  legs. (diagnosed by rubik_97, fixed by koyosan)
+- 🗓️ **Charts show the calendar year** when the data spans more than one, so a point from
+  November 2025 is not confused with February 2026. (mflova)
+- 🔤 **Exercise search matches whole words in any order**, ignores accents, and searches the
+  translated names too — "bench barbell" finds the barbell bench press, "elevacao" finds
+  "elevação". The haystack is now built once per exercise instead of on every keystroke.
+- 🔑 **Passkeys work in Chrome on iOS**, which was excluded by a user-agent test rather than by
+  asking the browser what it supports.
+- 📱 The reps field in a superset is no longer squeezed on narrow phones, and secondary muscles
+  are visible while building a plan, not only in the Exercises tab.
+
+### Self-hosting
+
+- 🔐 **Security hardening on the API and the proxy**: SSRF and an unbounded handler in push
+  delivery, CSRF from a sibling subdomain, session-cookie shadowing, and non-forgeable proxy
+  headers. Details in SECURITY.md.
+- 🧭 **When a passkey fails, the error now says what is misconfigured.** "Unexpected RP ID hash"
+  told you nothing about your own `.env`; it now names the `RP_ID` and `ORIGIN` the server is
+  actually running with. `docs/SELF_HOSTING.md` gained a section that works through the usual
+  causes in order — including that `docker compose restart` does not re-read `.env`, and that on
+  a LAN without certificates there is nothing you can configure to make passkeys work.
+- 📲 **"Connect to my server"** pairs the standalone mobile app to a self-hosted instance with a
+  one-time code, no passkey ceremony needed inside the app's WebView.
+- 💾 **Optional local auto-backup** on the mobile app after finishing a workout or editing a
+  routine, and a **System** theme option that follows the OS.
+
+With thanks to mzspicoli, Josevi, andi242, Space_Hermes, Horus Gonzalez, wagenheimer, koyosan,
+mflova and Aaron Sachs — and to everyone who reported one of the bugs above.
+
 ## v1.2.9 — 2026-08-23
 
 If you run openGym for other people, you have had no way to answer "who signed in, and when?" —

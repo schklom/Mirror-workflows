@@ -651,5 +651,25 @@ export default {
   'Connect': 'Bağlan',
   'How do you want to use openGym?': "openGym'i nasıl kullanmak istersin?",
   'Use on this device': 'Bu cihazda kullan',
-  'Local keeps everything on this phone. Connecting syncs to your own openGym server instead — you can switch later in Settings.': "Yerel, her şeyi bu telefonda tutar. Bağlanmak ise bunun yerine kendi openGym sunucunla senkronize eder — bunu daha sonra Ayarlar'dan değiştirebilirsin."
+  'Local keeps everything on this phone. Connecting syncs to your own openGym server instead — you can switch later in Settings.': "Yerel, her şeyi bu telefonda tutar. Bağlanmak ise bunun yerine kendi openGym sunucunla senkronize eder — bunu daha sonra Ayarlar'dan değiştirebilirsin.",
+
+  // --- workout notes and planned warm-ups ---
+  '{0} — done': '{0} — tamamlandı',
+  'Workout done': 'Antrenman tamamlandı',
+  'reps': 'tekrar',
+  'Most reps in a set per workout': 'Antrenman başına bir sette en çok tekrar',
+  'Warm-up sets': 'Isınma setleri',
+  'Added before your work sets and left out of volume, records and progression. Each one closes half the gap to the work weight — you can still change any of them mid-session.': 'Çalışma setlerinden önce eklenir; hacim, rekor ve ilerlemeye sayılmaz. Her biri çalışma ağırlığına kalan farkı yarıya indirir — antrenman sırasında yine de değiştirebilirsin.',
+  'Ramp-up sets added before the work sets, so you do not have to add them by hand each session.': 'Çalışma setlerinden önce eklenen hazırlık setleri, böylece her antrenmanda elle eklemen gerekmez.',
+  'Note': 'Not',
+  'This session': 'Bu antrenman',
+  'How it went, what to change — kept with today’s workout.': 'Nasıl geçti, neyi değiştirmeli — bugünün antrenmanıyla saklanır.',
+  'Show this next time': 'Bir dahaki sefere göster',
+  'Brings it up again the next time you train this exercise.': 'Bu hareketi bir dahaki çalışmanda yeniden karşına çıkar.',
+  'Always for this exercise': 'Bu harekette her zaman',
+  'Seat height, pin position, a form cue — shown every session.': 'Sehpa yüksekliği, pim konumu, bir teknik ipucu — her antrenmanda görünür.',
+  'From {0}:': '{0} tarihinden:',
+  'Session note': 'Antrenman notu',
+  'How the session went as a whole.': 'Antrenmanın genel olarak nasıl geçtiği.',
+  'Rest-pause always trains as one warm-up set at this rep count, then one rest-pause work set — "Sets" is not used.': 'Rest-pause her zaman bu tekrar sayısında bir ısınma seti ve bir rest-pause çalışma seti olarak çalışılır — “Setler” kullanılmaz.'
 }

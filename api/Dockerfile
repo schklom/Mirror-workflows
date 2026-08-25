@@ -18,7 +18,7 @@ LABEL maintainer="Duarte Santos https://gitlab.com/DuarteSantos8" \
 WORKDIR /app
 COPY package.json package-lock.json* ./
 RUN npm install --omit=dev && npm cache clean --force
-COPY server.js push-messages.js ./
+COPY server.js push-messages.js verify-error.js ./
 
 ENV NODE_ENV=production
 ENV PORT=3000

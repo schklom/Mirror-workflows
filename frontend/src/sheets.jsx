@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { useStore } from './store/useStore.js'
 import { useUI } from './store/useUI.js'
-import { EXDB, EXIDX, BODYPARTS, isCardio, isBodyweightEq, allExercises, equipmentOf, smOf, matchExercise } from './lib/exercises.js'
+import { EXDB, EXIDX, BODYPARTS, isCardio, isBodyweightEq, allExercises, equipmentOf, smOf, matchExercise, exOr } from './lib/exercises.js'
 import { activeProfile, exAvailable, ALL_EQUIPMENT, newProfile } from './lib/equipment.js'
 import { fmtDate, fmtNum, fmtVol, fmtDur, durPart, todayISO, uid, exCount, DAYN, MONTHS_LONG, ACCENTS } from './lib/format.js'
-import { lastEntryFor, bestWeightFor, buildSets, effectiveRoutineId, workoutVolume, setsDone, setsDoneActive, lastBW, supersetUnits, unitOf, setLabel, defaultConfig, cleanupSg, modeOf, effortOf, isBw, isPerSide, sideReps, workSetsDone, applyIntensifierPlan } from './lib/history.js'
+import { lastEntryFor, bestWeightFor, buildSets, effectiveRoutineId, workoutVolume, setsDone, setsDoneActive, lastBW, supersetUnits, unitOf, setLabel, defaultConfig, cleanupSg, modeOf, effortOf, isBw, isPerSide, sideReps, workSetsDone, applyIntensifierPlan, MAX_PLANNED_WARMUPS, NOTE_MAX } from './lib/history.js'
 import { beep, vibrate } from './lib/sound.js'
 import { t, instrFor, exerciseNameFor, getLang, INSTR_LANGS } from './lib/i18n.js'
 import { nav } from './lib/nav.js'
@@ -602,14 +602,18 @@ function ExConfig({ ex, existing, onSave, onDelete, close, routine, initial }) {
     // Mode-independent, so it is spread in below rather than folded into `flags`.
     const note = (c.note || '').trim().slice(0, 500)
     const withNote = note ? { note } : {}
+    // Only written when there are any, so a plan that never asked for warm-ups keeps the exact
+    // shape it had — and reads back as 0 either way (buildSets).
+    const warmupSets = Math.max(0, Math.min(MAX_PLANNED_WARMUPS, Math.round(c.warmupSets) || 0))
+    const withWarmups = warmupSets ? { warmupSets } : {}
     if (cardio) onSave({ sets, min: Math.max(1, Math.round(c.min) || 20), speed: Math.max(0, c.speed || 8), ...withNote })
-    else if (mode === 'time') onSave({ sets, mode: 'time', sec: Math.max(1, Math.round(c.sec) || 45), weight: Math.max(0, c.weight || 0), ...flags, ...prog, ...withNote })
+    else if (mode === 'time') onSave({ sets, mode: 'time', sec: Math.max(1, Math.round(c.sec) || 45), weight: Math.max(0, c.weight || 0), ...flags, ...prog, ...withNote, ...withWarmups })
     else {
       // A unilateral target is stored even: the split has to divide, and a typed 15 would
       // otherwise plan seven reps on one side and eight on the other, every session.
       const typed = Math.max(1, Math.round(c.reps) || 10)
       const reps = perSide ? Math.ceil(typed / 2) * 2 : typed
-      const out = { sets, mode: 'reps', reps, weight: Math.max(0, c.weight || 0), ...flags, ...(perSide ? { side: true } : {}), ...prog, ...withNote }
+      const out = { sets, mode: 'reps', reps, weight: Math.max(0, c.weight || 0), ...flags, ...(perSide ? { side: true } : {}), ...prog, ...withNote, ...withWarmups }
       if (policyFor({ ...c, id: ex.id }, routine, 'reps') === 'double') out.repsMin = Math.min(reps, Math.max(1, Math.round(c.repsMin) || Math.max(1, reps - 2)))
       // A ceiling below the working reps would tell you to add a set on day one.
       if (bw && !(out.weight > 0) && c.repsMax > 0) out.repsMax = Math.max(reps, Math.round(c.repsMax))
@@ -622,9 +626,14 @@ function ExConfig({ ex, existing, onSave, onDelete, close, routine, initial }) {
   return <>
     <h3 className="capitalize">{exerciseNameFor(ex)}</h3>
     <Media ex={ex} />
+    {/* The same tags the exercise detail sheet shows, secondaries included: choosing what goes
+        into a plan is exactly when "what else does this hit" matters, and until now that was
+        only visible from the Exercises tab, after the fact. */}
     <div className="row" style={{ gap: 6, flexWrap: 'wrap', margin: '10px 0 14px' }}>
       {cardio && <span className="tag acc"><Icon name="figureRun" />{t('Cardio')}</span>}
       <span className="tag">{t(ex.tg || ex.bp)}</span><span className="tag">{t(ex.eq)}</span>
+      {!cardio && (ex.secondaries?.length ? ex.secondaries : smOf(ex)).slice(0, 3)
+        .map((s, i) => <span key={i} className="tag dim">{t(s)}</span>)}
     </div>
     {ex.desc && <div className="exnote">{ex.desc}</div>}
     {!cardio && <div style={{ marginBottom: 14 }}>
@@ -654,6 +663,20 @@ function ExConfig({ ex, existing, onSave, onDelete, close, routine, initial }) {
     {c.intensifier?.type === 'restpause' && <div className="small dim" style={{ marginTop: -10, marginBottom: 18 }}>
       {t('Rest-pause always trains as one warm-up set at this rep count, then one rest-pause work set — "Sets" is not used.')}
     </div>}
+    {/* Planned warm-ups: the session used to start at the work weight and you added every
+        warm-up by hand, every time. Rest-pause is excluded because it builds its own warm-up
+        row, and cardio because an interval plan has no load to ramp. */}
+    {!cardio && c.intensifier?.type !== 'restpause' && <>
+      <div className="row cfgrow" style={{ marginBottom: 6 }}>
+        <Stepper label={t('Warm-up sets')} value={c.warmupSets || 0} step={1} decimal={false}
+          onChange={v => setC(x => ({ ...x, warmupSets: Math.max(0, Math.min(MAX_PLANNED_WARMUPS, Math.round(v) || 0)) }))} />
+      </div>
+      <div className="small dim" style={{ marginBottom: 18 }}>
+        {(c.warmupSets || 0) > 0
+          ? t('Added before your work sets and left out of volume, records and progression. Each one closes half the gap to the work weight — you can still change any of them mid-session.')
+          : t('Ramp-up sets added before the work sets, so you do not have to add them by hand each session.')}
+      </div>
+    </>}
     {mode === 'time' && !bw && <div className="small dim" style={{ marginBottom: 18 }}>
       {t('A timer runs while you hold the set. Leave the weight at 0 for bodyweight holds.')}
     </div>}
@@ -890,6 +913,16 @@ export const dayAssignSheet = day => ui().openSheet(close => <DayAssign day={day
 /* ============================ workout detail ============================ */
 function WorkoutDetail({ w, close }) {
   const st = useStore(s => s.S)
+  const update = useStore(s => s.update)
+  // The session note is editable here rather than only at the finish sheet: what you want to
+  // record about a session is often clearer once you have looked at what you actually did.
+  const [note, setNote] = useState(w.note || '')
+  const saveNote = () => update(s => {
+    const rec = s.workouts.find(x => x.id === w.id)
+    if (!rec) return
+    const text = note.trim().slice(0, NOTE_MAX)
+    if (text) rec.note = text; else delete rec.note
+  })
   return <>
     <h3>{w.name}</h3>
     <div className="muted small" style={{ marginBottom: 12 }}>{[fmtDate(w.d, true), ...durPart(w.end - w.start), fmtVol(w.vol, st.unit), ...(w.bw ? [fmtNum(w.bw) + ' ' + st.unit] : [])].join(' · ')}</div>
@@ -898,9 +931,17 @@ function WorkoutDetail({ w, close }) {
       return <div key={i} className="row" style={{ marginBottom: 12, alignItems: 'flex-start' }}>
         {ex && <Thumb ex={ex} />}
         <div className="grow"><div className="tt capitalize" style={{ fontWeight: 600 }}>{ex ? exerciseNameFor(ex) : (e.n || e.id)} {w.prs && w.prs.includes(e.id) && <span className="pr"><Icon name="trophy" />PR</span>}</div>
-          <div className="ss">{e.sets.filter(s => s.done).map(s => setLabel(e.id, s, e.target)).join('  ·  ') || t('no sets')}</div></div>
+          <div className="ss">{e.sets.filter(s => s.done).map(s => setLabel(e.id, s, e.target)).join('  ·  ') || t('no sets')}</div>
+          {e.note && <div className="small dim" style={{ marginTop: 3 }}>
+            {e.notePin && <Icon name="flag" style={{ fontSize: 12, marginRight: 4, verticalAlign: '-1px', color: 'var(--yellow)' }} />}{e.note}
+          </div>}</div>
       </div>
     })}
+    <div className="small muted" style={{ margin: '4px 0 6px' }}>{t('Session note')}</div>
+    <textarea className="input" rows={2} maxLength={NOTE_MAX} value={note}
+      placeholder={t('How the session went as a whole.')}
+      onChange={e => setNote(e.target.value)} onBlur={saveNote} />
+    <div style={{ height: 14 }} />
     <Button variant="danger" onClick={() => confirmSheet({ title: t('Delete workout?'), message: t('This removes it from your history for good.'), confirmText: t('Delete'), danger: true, onConfirm: () => { update(s => { s.workouts = s.workouts.filter(x => x.id !== w.id) }); close(); toast(t('Workout deleted')) } })}>{t('Delete workout')}</Button>
   </>
 }
@@ -973,7 +1014,7 @@ export function beginWorkout(routineId, bw) {
   // kept on the entry purely so the workout can explain the number it chose.
   const entries = (r ? r.ex : []).map(cfg => {
     const plan = nextPrescription(st, cfg, r)
-    const sets = applyIntensifierPlan(applyPrescription(buildSets(st, cfg), plan), cfg)
+    const sets = applyIntensifierPlan(applyPrescription(buildSets(st, cfg, { step: defaultIncrement(cfg.id, st.unit) }), plan), cfg)
     return { id: cfg.id, sg: cfg.sg, target: { ...cfg }, plan, sets }
   })
   update(s => {
@@ -1031,6 +1072,70 @@ function TopWeight({ entryIdx, close }) {
   </>
 }
 export const topWeightSheet = entryIdx => ui().openSheet(close => <TopWeight entryIdx={entryIdx} close={close} />)
+
+/* ============================ exercise notes ============================
+   Two notes, one sheet, because from the user's side it is one question — "what do I want to
+   remember about this exercise?" — with two different lifetimes:
+
+     · today's note belongs to this session and is stored on the workout entry. It is history:
+       what happened, how it felt. The PIN is the user saying "this one is for next time", which
+       only they can know at the moment of writing — see pinnedNoteFor.
+     · the standing note belongs to the exercise itself and lives in S.exNotes. Seat height, pin
+       position, a form cue. True every session, so it is shown every session and never expires.
+
+   A routine's own `note` (a plan's instruction for this exercise) is edited in the config sheet
+   and is deliberately not here: it belongs to the plan, not to the day or to the movement. */
+function ExerciseNote({ entryIdx, close }) {
+  const st = useStore(s => s.S)
+  const update = useStore(s => s.update)
+  const A = st.active
+  const entry = A ? A.entries[entryIdx] : null
+  const ex = entry ? exOr(entry.id) : null
+  const [note, setNote] = useState(entry?.note || '')
+  const [pin, setPin] = useState(!!entry?.notePin)
+  const [standing, setStanding] = useState(entry ? (st.exNotes?.[entry.id] || '') : '')
+  useEffect(() => { if (!entry) close() }, [!entry])
+  if (!entry) return null
+
+  const save = () => {
+    const today = note.trim().slice(0, NOTE_MAX)
+    const always = standing.trim().slice(0, NOTE_MAX)
+    update(s => {
+      const e = s.active?.entries?.[entryIdx]
+      if (e) {
+        if (today) { e.note = today; if (pin) e.notePin = true; else delete e.notePin }
+        else { delete e.note; delete e.notePin }
+      }
+      s.exNotes = s.exNotes || {}
+      if (always) s.exNotes[entry.id] = always
+      else delete s.exNotes[entry.id]
+    })
+    close()
+  }
+
+  return <>
+    <h3 className="capitalize">{exerciseNameFor(ex)}</h3>
+    <div className="small muted" style={{ marginBottom: 6 }}>{t('This session')}</div>
+    <textarea className="input" rows={3} maxLength={NOTE_MAX} value={note}
+      placeholder={t('How it went, what to change — kept with today’s workout.')}
+      onChange={e => setNote(e.target.value)} />
+    <div style={{ height: 10 }} />
+    <div className="sect-b">
+      <Row icon="flag" iconTint="var(--yellow)" title={t('Show this next time')}
+        subtitle={t('Brings it up again the next time you train this exercise.')}>
+        <Switch checked={pin} onChange={setPin} disabled={!note.trim()} />
+      </Row>
+    </div>
+    <div style={{ height: 18 }} />
+    <div className="small muted" style={{ marginBottom: 6 }}>{t('Always for this exercise')}</div>
+    <textarea className="input" rows={2} maxLength={NOTE_MAX} value={standing}
+      placeholder={t('Seat height, pin position, a form cue — shown every session.')}
+      onChange={e => setStanding(e.target.value)} />
+    <div style={{ height: 18 }} />
+    <Button variant="primary" onClick={save}>{t('Save')}</Button>
+  </>
+}
+export const exerciseNoteSheet = entryIdx => ui().openSheet(close => <ExerciseNote entryIdx={entryIdx} close={close} />)
 
 /* Drop-set drops and rest-pause bursts are edited inline on the set row itself (Workout.jsx) —
    no sheet, no timer. A planned exercise (see the "Intensifier" config below) arrives with them

@@ -651,5 +651,25 @@ export default {
   'Connect': 'Подключить',
   'How do you want to use openGym?': 'Как вы хотите использовать openGym?',
   'Use on this device': 'Использовать на этом устройстве',
-  'Local keeps everything on this phone. Connecting syncs to your own openGym server instead — you can switch later in Settings.': 'Локальный режим хранит всё на этом телефоне. Подключение вместо этого синхронизирует данные с вашим сервером openGym — вы сможете изменить это позже в Настройках.'
+  'Local keeps everything on this phone. Connecting syncs to your own openGym server instead — you can switch later in Settings.': 'Локальный режим хранит всё на этом телефоне. Подключение вместо этого синхронизирует данные с вашим сервером openGym — вы сможете изменить это позже в Настройках.',
+
+  // --- workout notes and planned warm-ups ---
+  '{0} — done': '{0} — сделано',
+  'Workout done': 'Тренировка сделана',
+  'reps': 'повт.',
+  'Most reps in a set per workout': 'Больше всего повт. в подходе за тренировку',
+  'Warm-up sets': 'Разминочные подходы',
+  'Added before your work sets and left out of volume, records and progression. Each one closes half the gap to the work weight — you can still change any of them mid-session.': 'Добавляются перед рабочими подходами и не учитываются в объёме, рекордах и прогрессии. Каждый вдвое сокращает разрыв до рабочего веса — во время тренировки их всё равно можно изменить.',
+  'Ramp-up sets added before the work sets, so you do not have to add them by hand each session.': 'Подводящие подходы перед рабочими, чтобы не добавлять их вручную каждый раз.',
+  'Note': 'Заметка',
+  'This session': 'Эта тренировка',
+  'How it went, what to change — kept with today’s workout.': 'Как прошло, что изменить — останется с сегодняшней тренировкой.',
+  'Show this next time': 'Показать в следующий раз',
+  'Brings it up again the next time you train this exercise.': 'Появится снова, когда вы в следующий раз будете делать это упражнение.',
+  'Always for this exercise': 'Всегда для этого упражнения',
+  'Seat height, pin position, a form cue — shown every session.': 'Высота сиденья, положение фиксатора, подсказка по технике — видно на каждой тренировке.',
+  'From {0}:': 'От {0}:',
+  'Session note': 'Заметка о тренировке',
+  'How the session went as a whole.': 'Как прошла тренировка в целом.',
+  'Rest-pause always trains as one warm-up set at this rep count, then one rest-pause work set — "Sets" is not used.': 'Rest-pause всегда выполняется как один разминочный подход с этим числом повторений и один рабочий подход rest-pause — «Подходы» не используются.'
 }

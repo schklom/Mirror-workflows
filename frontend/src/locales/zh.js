@@ -651,5 +651,25 @@ export default {
   'Connect': '连接',
   'How do you want to use openGym?': '你想如何使用 openGym？',
   'Use on this device': '在此设备上使用',
-  'Local keeps everything on this phone. Connecting syncs to your own openGym server instead — you can switch later in Settings.': '本地模式会把所有内容保留在这部手机上。连接则会改为与你自己的 openGym 服务器同步——之后可以在设置中更改。'
+  'Local keeps everything on this phone. Connecting syncs to your own openGym server instead — you can switch later in Settings.': '本地模式会把所有内容保留在这部手机上。连接则会改为与你自己的 openGym 服务器同步——之后可以在设置中更改。',
+
+  // --- workout notes and planned warm-ups ---
+  '{0} — done': '{0} — 已完成',
+  'Workout done': '训练已完成',
+  'reps': '次',
+  'Most reps in a set per workout': '每次训练单组最多次数',
+  'Warm-up sets': '热身组',
+  'Added before your work sets and left out of volume, records and progression. Each one closes half the gap to the work weight — you can still change any of them mid-session.': '加在正式组之前，不计入容量、纪录和进阶。每一组都把与正式重量的差距减半 —— 训练中仍可随时调整。',
+  'Ramp-up sets added before the work sets, so you do not have to add them by hand each session.': '在正式组之前加入的爬升组，这样就不用每次手动添加。',
+  'Note': '备注',
+  'This session': '本次训练',
+  'How it went, what to change — kept with today’s workout.': '感觉如何、下次要改什么 —— 随今天的训练一起保存。',
+  'Show this next time': '下次显示',
+  'Brings it up again the next time you train this exercise.': '下次练这个动作时会再次出现。',
+  'Always for this exercise': '这个动作始终显示',
+  'Seat height, pin position, a form cue — shown every session.': '座椅高度、插销位置、动作要点 —— 每次训练都会显示。',
+  'From {0}:': '来自 {0}：',
+  'Session note': '训练备注',
+  'How the session went as a whole.': '这次训练整体感觉如何。',
+  'Rest-pause always trains as one warm-up set at this rep count, then one rest-pause work set — "Sets" is not used.': 'Rest-pause 始终按这个次数练一个热身组，再加一个 rest-pause 正式组 —— 不使用“组数”。'
 }

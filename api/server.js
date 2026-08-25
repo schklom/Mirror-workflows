@@ -12,6 +12,7 @@ import {
 } from '@simplewebauthn/server';
 import webpush from 'web-push';
 import { dayReminderPush, restTimerPush, testPush } from './push-messages.js';
+import { verifyError } from './verify-error.js';
 
 const PORT = +(process.env.PORT || 3000);
 const DATA = process.env.DATA_DIR || '/data';
@@ -574,7 +575,7 @@ const routes = {
     } catch (e) {
       // e.message can echo attacker-supplied response fields, so only the reason code is kept.
       audit(req, 'auth.register.fail', { ok: false, name: c.name, msg: 'verify-error' });
-      return json(res, 400, { error: 'verification failed: ' + e.message });
+      return json(res, 400, { error: verifyError(e, { rpId: RP_ID, origin: ORIGIN }) });
     }
     if (!verification.verified) {
       audit(req, 'auth.register.fail', { ok: false, name: c.name, msg: 'not-verified' });
@@ -648,7 +649,7 @@ const routes = {
       });
     } catch (e) {
       audit(req, 'auth.login.fail', { ok: false, user: db.users.find(u => u.id === cred.userId), uid: cred.userId, msg: 'verify-error' });
-      return json(res, 400, { error: 'verification failed: ' + e.message });
+      return json(res, 400, { error: verifyError(e, { rpId: RP_ID, origin: ORIGIN }) });
     }
     if (!verification.verified) {
       audit(req, 'auth.login.fail', { ok: false, user: db.users.find(u => u.id === cred.userId), uid: cred.userId, msg: 'not-verified' });

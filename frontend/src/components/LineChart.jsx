@@ -97,7 +97,10 @@ export default function LineChart({ points, h = 150, unit = '', color = 'var(--a
   const poly = pts.map(p => X(p.t).toFixed(1) + ',' + Y(p.y).toFixed(1)).join(' ')
   const last = pts[pts.length - 1]
   const gid = 'g' + Math.round(t0 % 1e7) + '_' + H
-  const hoverPts = (single ? [points[0]] : points).map(p => ({ x: X(p.t), y: Y(p.y), iso: p.d || isoOf(new Date(p.t)), v: p.y, note: p.note }))
+  const hoverSource = single ? [points[0]] : points
+  const hoverDates = hoverSource.map(p => p.d || isoOf(new Date(p.t)))
+  const showYear = new Set(hoverDates.map(iso => new Date(iso + 'T12:00:00').getFullYear())).size > 1
+  const hoverPts = hoverSource.map((p, i) => ({ x: X(p.t), y: Y(p.y), iso: hoverDates[i], v: p.y, note: p.note }))
   const marked = points.some(p => p.m != null)
 
   const onMove = e => {
@@ -138,7 +141,7 @@ export default function LineChart({ points, h = 150, unit = '', color = 'var(--a
         </g>}
       </svg>
       {hover && <div className="ctip" ref={tipRef}>
-        {fmtDate(hover.iso, true)} · {fmtNum(hover.v)}{unit ? ' ' + unit : ''}{hover.note ? ' · ' + hover.note : ''}
+        {fmtDate(hover.iso, true, showYear)} · {fmtNum(hover.v)}{unit ? ' ' + unit : ''}{hover.note ? ' · ' + hover.note : ''}
       </div>}
     </div>
   )

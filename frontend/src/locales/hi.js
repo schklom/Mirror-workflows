@@ -651,5 +651,25 @@ export default {
   'Connect': 'कनेक्ट करें',
   'How do you want to use openGym?': 'आप openGym का उपयोग कैसे करना चाहते हैं?',
   'Use on this device': 'इस डिवाइस पर उपयोग करें',
-  'Local keeps everything on this phone. Connecting syncs to your own openGym server instead — you can switch later in Settings.': 'लोकल सब कुछ इसी फ़ोन पर रखता है। कनेक्ट करने पर इसके बजाय आपके अपने openGym सर्वर से सिंक होता है — इसे बाद में सेटिंग्स में बदला जा सकता है।'
+  'Local keeps everything on this phone. Connecting syncs to your own openGym server instead — you can switch later in Settings.': 'लोकल सब कुछ इसी फ़ोन पर रखता है। कनेक्ट करने पर इसके बजाय आपके अपने openGym सर्वर से सिंक होता है — इसे बाद में सेटिंग्स में बदला जा सकता है।',
+
+  // --- workout notes and planned warm-ups ---
+  '{0} — done': '{0} — पूरा',
+  'Workout done': 'कसरत पूरी',
+  'reps': 'रेप्स',
+  'Most reps in a set per workout': 'प्रति कसरत एक सेट में सबसे ज़्यादा रेप्स',
+  'Warm-up sets': 'वार्म-अप सेट',
+  'Added before your work sets and left out of volume, records and progression. Each one closes half the gap to the work weight — you can still change any of them mid-session.': 'ये आपके वर्क सेट से पहले जुड़ते हैं और वॉल्यूम, रिकॉर्ड तथा प्रोग्रेशन में नहीं गिने जाते। हर सेट वर्क वज़न तक बची दूरी को आधा कर देता है — कसरत के दौरान आप इन्हें बदल सकते हैं।',
+  'Ramp-up sets added before the work sets, so you do not have to add them by hand each session.': 'वर्क सेट से पहले जुड़ने वाले तैयारी सेट, ताकि हर बार खुद जोड़ना न पड़े।',
+  'Note': 'नोट',
+  'This session': 'यह कसरत',
+  'How it went, what to change — kept with today’s workout.': 'कैसा रहा, क्या बदलना है — आज की कसरत के साथ सहेजा जाता है।',
+  'Show this next time': 'अगली बार दिखाएँ',
+  'Brings it up again the next time you train this exercise.': 'अगली बार यह कसरत करते समय फिर दिखेगा।',
+  'Always for this exercise': 'इस कसरत के लिए हमेशा',
+  'Seat height, pin position, a form cue — shown every session.': 'सीट की ऊँचाई, पिन की जगह, तकनीक का सुझाव — हर कसरत में दिखता है।',
+  'From {0}:': '{0} से:',
+  'Session note': 'सत्र का नोट',
+  'How the session went as a whole.': 'पूरा सत्र कैसा रहा।',
+  'Rest-pause always trains as one warm-up set at this rep count, then one rest-pause work set — "Sets" is not used.': 'रेस्ट-पॉज़ हमेशा इसी रेप्स संख्या के एक वार्म-अप सेट और एक रेस्ट-पॉज़ वर्क सेट के रूप में किया जाता है — “सेट” का उपयोग नहीं होता।'
 }

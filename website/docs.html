@@ -2,14 +2,15 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Docs — openGym</title>
 <meta name="description" content="How to install openGym on Android, use it on iPhone, self-host it with Docker, import your training history, and keep backups.">
-<meta name="theme-color" content="#0c0e12">
+<meta name="theme-color" content="#000000">
 <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
 <link rel="icon" type="image/png" sizes="180x180" href="icon-180.png">
 <link rel="apple-touch-icon" href="icon-180.png">
-<link rel="stylesheet" href="styles.css?v=3">
+<link rel="stylesheet" href="styles.css?v=5">
+<script>document.documentElement.className += ' js'</script>
 <!-- Umami web analytics for opengym.duarte-santos.ch (self-hosted, cookieless). -->
 <script defer src="https://stats.duarte-santos.ch/script.js" data-website-id="db36019e-50f4-453c-9c56-d0588aefe233"></script>
 </head>
@@ -17,16 +18,19 @@
 
 <nav><div class="wrap nav-in">
   <a class="brand" href="/">
-    <img src="icon-180.png" alt="" width="26" height="26" style="border-radius:6px">
+    <img src="icon-180.png" alt="" width="24" height="24">
     openGym
   </a>
-  <div class="nav-links">
-    <a href="/#features" class="hide-s">Features</a>
-    <a href="/#screens" class="hide-s">Screenshots</a>
-    <a href="/#demo" class="hide-s">Demo</a>
+  <button class="nav-toggle" aria-expanded="false" aria-controls="menu" aria-label="Menu">
+    <span></span><span></span>
+  </button>
+  <div class="nav-links" id="menu">
+    <a href="/#features">Features</a>
+    <a href="/#screens">Screenshots</a>
+    <a href="/#demo">Demo</a>
     <a href="docs.html">Docs</a>
-    <a href="about.html" class="hide-s">About</a>
-    <a href="https://gitlab.com/DuarteSantos8/opengym" rel="noopener"><span data-gh="stars">GitLab</span></a>
+    <a href="about.html">About</a>
+    <a href="https://gitlab.com/DuarteSantos8/opengym" rel="noopener">GitLab <span data-gh="stars"></span></a>
     <a href="https://discord.gg/e62jY6fwVb" rel="noopener">Discord</a>
     <a class="cta" href="/#download">Download</a>
   </div>
@@ -34,22 +38,20 @@
 
 <!-- TEMPORARY: GitHub account suspended -> repo lives on gitlab.com. Remove this block and
      revert the links (+ site.js) to github.com once the account is restored. -->
-<div class="alert" role="alert"><div class="wrap">
-  <div class="alert-tag">⚠️ Important notice</div>
-  <h2>My GitHub account has been suspended — the openGym repo is gone with it</h2>
-  <p><b>github.com/DuarteSantos8/openGym is offline.</b> The repository and the releases are
-     unreachable — not by choice. openGym itself is unaffected: the app, the APK on this page,
-     the demo (now hosted here) and every self-hosted install keep working exactly as before.</p>
-  <p>Until I get the account back, the code lives on GitLab — and the Discord is where I will
-     announce the moment it is resolved:</p>
-  <div class="alert-actions">
-    <a class="btn alert-btn" href="https://gitlab.com/DuarteSantos8/opengym" rel="noopener">gitlab.com/DuarteSantos8/opengym</a>
-    <a class="btn dc-btn" href="https://discord.gg/e62jY6fwVb" rel="noopener">Join the Discord</a>
-  </div>
-  <p class="alert-note">Every repository link on this site now points at GitLab — same code, same
-     AGPL-3.0 license, same history, and the releases, container images and APK builds are back.</p>
+<div class="notice-wrap"><div class="wrap">
+  <aside class="notice" role="note">
+    <div class="notice-tag">Repository moved</div>
+    <h2>My GitHub account was suspended, and the openGym repo went with it.</h2>
+    <p><b>github.com/DuarteSantos8/openGym is offline</b> — not by choice. The app is
+       untouched: the APK, the demo and every self-hosted install work exactly as before. The
+       code, the releases, the container images and the APK builds now live on GitLab under
+       the same AGPL-3.0 license, and every repository link here points there.</p>
+    <div class="actions">
+      <a class="btn" href="https://gitlab.com/DuarteSantos8/opengym" rel="noopener">Open on GitLab</a>
+      <a class="btn dc-btn" href="https://discord.gg/e62jY6fwVb" rel="noopener">Join the Discord</a>
+    </div>
+  </aside>
 </div></div>
-
 
 <main class="wrap prose">
   <h1>Docs</h1>
@@ -197,16 +199,16 @@ docker compose up -d</code></pre>
 </main>
 
 <footer><div class="wrap foot">
-  <span>openGym · AGPL-3.0 · © 2026 <a href="https://duarte-santos.ch" rel="noopener">Duarte Santos</a></span>
+  <span class="c">openGym · AGPL-3.0 · © 2026 <a href="https://duarte-santos.ch" rel="noopener">Duarte Santos</a></span>
   <div class="links">
     <a href="docs.html">Docs</a>
-    <a href="about.html" class="hide-s">About</a>
+    <a href="about.html">About</a>
     <a href="https://gitlab.com/DuarteSantos8/opengym" rel="noopener">GitLab</a>
     <a href="https://discord.gg/e62jY6fwVb" rel="noopener">Discord</a>
     <a href="/#download">Download</a>
   </div>
 </div></footer>
 
-<script src="site.js" defer></script>
+<script src="site.js?v=5" defer></script>
 </body>
 </html>

@@ -1,11 +1,100 @@
-// Live repo numbers in the nav + open-source strip. Fails silently — the site works
-// fine without them. Points at gitlab.com while the GitHub account is suspended;
-// switch the two API URLs back to api.github.com once it is restored.
-//
-// The cache keys carry a _gl suffix: a visitor with a still-warm sessionStorage entry
-// from the gitea era would otherwise be read with the old field names and show NaN.
+// Behaviour for the openGym site: the phone menu, the scroll reveals, the demo frame,
+// and the two things that come from the GitLab API (repo counts, release timeline).
+// Every one of them fails soft — the page is complete without any of this running.
+
 const GL_PROJECT = 'https://gitlab.com/api/v4/projects/DuarteSantos8%2Fopengym'
 
+/* ------------------------------------------------------------------ phone menu */
+;(() => {
+  const btn = document.querySelector('.nav-toggle')
+  const menu = document.getElementById('menu')
+  if (!btn || !menu) return
+
+  const close = () => {
+    menu.classList.remove('open')
+    btn.setAttribute('aria-expanded', 'false')
+    // menu-open drives the dimming scrim; overflow keeps the page still underneath.
+    document.body.classList.remove('menu-open')
+    document.body.style.overflow = ''
+  }
+  btn.addEventListener('click', () => {
+    const open = menu.classList.toggle('open')
+    btn.setAttribute('aria-expanded', String(open))
+    document.body.classList.toggle('menu-open', open)
+    // The sheet scrolls on its own; letting the page scroll behind it is the classic
+    // mobile-menu bug where the reader loses their place on close.
+    document.body.style.overflow = open ? 'hidden' : ''
+  })
+  // The scrim is body::after, so it has no element of its own to listen on — a tap
+  // that lands outside both the sheet and the button is a tap on the scrim.
+  document.addEventListener('click', e => {
+    if (!document.body.classList.contains('menu-open')) return
+    if (e.target.closest('#menu') || e.target.closest('.nav-toggle')) return
+    close()
+  })
+  // Tapping a link inside the sheet navigates, so the sheet has to get out of the way —
+  // in-page anchors especially, which do not reload anything.
+  menu.addEventListener('click', e => { if (e.target.closest('a')) close() })
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') close() })
+  // Rotating to landscape can widen past the breakpoint while the sheet is open, which
+  // would leave the body scroll-locked with no visible sheet to close.
+  addEventListener('resize', () => { if (innerWidth > 780) close() })
+})()
+
+/* --------------------------------------------------------------- scroll reveal */
+;(() => {
+  const items = document.querySelectorAll('.rv')
+  if (!items.length) return
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
+  if (reduce || !('IntersectionObserver' in window)) {
+    items.forEach(el => el.classList.add('in'))
+    return
+  }
+  const io = new IntersectionObserver((entries, obs) => {
+    for (const e of entries) {
+      if (!e.isIntersecting) continue
+      e.target.classList.add('in')
+      obs.unobserve(e.target)          // one-way: nothing re-hides on the way back up
+    }
+  }, { rootMargin: '0px 0px -12% 0px', threshold: .06 })
+  items.forEach(el => io.observe(el))
+})()
+
+/* ------------------------------------------------------------------ demo frame
+   The demo is the whole frontend bundle. It is only worth loading when the framed
+   phone is actually on screen, and never on a narrow viewport, where the CSS hides
+   the frame in favour of a plain "open it full-screen" card. */
+;(() => {
+  const slot = document.querySelector('[data-demo]')
+  if (!slot) return
+
+  const mount = () => {
+    if (slot.dataset.mounted) return
+    if (!slot.offsetParent) return                 // frame hidden — phone layout
+    slot.dataset.mounted = '1'
+    const f = document.createElement('iframe')
+    f.src = slot.dataset.demo
+    f.title = 'openGym live demo'
+    f.loading = 'lazy'
+    f.style.cssText = 'width:100%;height:100%;border:0;display:block;border-radius:34px;background:#000'
+    slot.appendChild(f)
+  }
+
+  if (!('IntersectionObserver' in window)) { mount(); return }
+  const io = new IntersectionObserver((entries, obs) => {
+    for (const e of entries) if (e.isIntersecting) { mount(); obs.disconnect() }
+  }, { rootMargin: '600px' })                      // load just before it scrolls into view
+  io.observe(slot)
+  // A rotation or a resized window can reveal the frame long after that first check.
+  addEventListener('resize', mount, { passive: true })
+})()
+
+/* ------------------------------------------------------- repo counts (nav + specs)
+   Points at gitlab.com while the GitHub account is suspended; switch the two API URLs
+   back to api.github.com once it is restored.
+
+   The cache keys carry a _gl suffix: a visitor with a still-warm sessionStorage entry
+   from the gitea era would otherwise be read with the old field names and show NaN. */
 ;(async () => {
   const set = (id, v) => document.querySelectorAll('[data-gh="' + id + '"]').forEach(el => { el.textContent = v })
   try {
@@ -37,13 +126,14 @@ const GL_PROJECT = 'https://gitlab.com/api/v4/projects/DuarteSantos8%2Fopengym'
   } catch (e) { /* offline / rate-limited — leave placeholders */ }
 })()
 
-// About page: build the milestones timeline from the published GitLab releases, so the
-// page updates itself with every release. The static entries marked data-fallback stay
-// in place when the API is unreachable; the hand-written first entry is always kept.
-//
-// GitLab's release objects differ from Gitea's: the notes are `description` (not `body`),
-// the date is `released_at` (not `published_at`), the web link sits in `_links.self`, and
-// there is no draft/prerelease pair — a not-yet-released one is `upcoming_release`.
+/* -------------------------------------------------------------- about timeline
+   Built from the published GitLab releases, so the page updates itself with every
+   release. The static entries marked data-fallback stay in place when the API is
+   unreachable; the hand-written first entry is always kept.
+
+   GitLab's release objects differ from Gitea's: the notes are `description` (not `body`),
+   the date is `released_at` (not `published_at`), the web link sits in `_links.self`, and
+   there is no draft/prerelease pair — a not-yet-released one is `upcoming_release`. */
 ;(async () => {
   const tl = document.getElementById('milestones')
   if (!tl) return

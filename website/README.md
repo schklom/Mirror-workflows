@@ -15,7 +15,15 @@ Not in this folder (added at deploy time):
   of exercise media stays out of it. It has to live on this host: the site frames it, and
   `X-Frame-Options: SAMEORIGIN` would block it from anywhere else.
 
-`site.js` fetches the star/issue counts and the release timeline from the public
-gitlab.com API at view time. It pointed at api.github.com until that account was
-suspended; the two URLs go back once it is restored, together with the notice
-block at the top of `index.html` and the demo iframe.
+`site.js` carries four independent pieces, each one failing soft so the page is
+complete without any of them: the phone nav sheet, the scroll reveals, the demo
+iframe (injected only once the frame is on screen, and never below 700 px, where
+the CSS swaps it for an "open it full-screen" card), and the two things that come
+from the public gitlab.com API at view time — the star/issue counts and the About
+page's release timeline. Those two URLs pointed at api.github.com until that
+account was suspended; they go back once it is restored, together with the notice
+block at the top of all three pages.
+
+`styles.css` and `site.js` are cache-busted with `?v=N` — nginx serves the site
+with `no-cache, must-revalidate`, but the query bump is what saves a Cloudflare
+edge from handing out an old stylesheet with new markup. Bump it on every change.

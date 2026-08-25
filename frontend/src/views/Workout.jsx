@@ -520,7 +520,7 @@ function ActiveWorkout() {
         const full = { ...cfg, id: ex.id }
         const plan = freestyle ? null : nextPrescription(s, full, s.routines.find(r => r.id === s.active.routineId))
         const sets = buildSets(s, full, { step: defaultIncrement(ex.id, s.unit), ...(freestyle ? { preferLast: true } : {}) })
-        const progressed = freestyle ? sets : applyPrescription(sets, plan)
+        const progressed = freestyle ? sets : applyPrescription(sets, plan, defaultIncrement(ex.id, s.unit))
         s.active.entries.push({ id: ex.id, target: { ...cfg }, plan, sets: applyIntensifierPlan(progressed, full) })
         s.active.cur = s.active.entries.length - 1
       }), null, routine, seed)

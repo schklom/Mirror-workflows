@@ -1014,7 +1014,8 @@ export function beginWorkout(routineId, bw) {
   // kept on the entry purely so the workout can explain the number it chose.
   const entries = (r ? r.ex : []).map(cfg => {
     const plan = nextPrescription(st, cfg, r)
-    const sets = applyIntensifierPlan(applyPrescription(buildSets(st, cfg, { step: defaultIncrement(cfg.id, st.unit) }), plan), cfg)
+    const step = defaultIncrement(cfg.id, st.unit)
+    const sets = applyIntensifierPlan(applyPrescription(buildSets(st, cfg, { step }), plan, step), cfg)
     return { id: cfg.id, sg: cfg.sg, target: { ...cfg }, plan, sets }
   })
   update(s => {

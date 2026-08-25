@@ -388,7 +388,14 @@ export function workoutVolume(w) {
   // No special case for unilateral work: a per-side set logs its total, so both sides are
   // already in the rep count that arrives here. Drop-set drops and rest-pause bursts add their
   // own weight x reps on top of the row's main/activation set (see extraVolumeOf).
-  w.entries.forEach(e => e.sets.forEach(s => { if (s.done) v += (s.w || 0) * (s.r || 0) + extraVolumeOf(s) }))
+  // Warm-ups are excluded here as everywhere else. The config sheet promises it in so many
+  // words ("left out of volume, records and progression") and every other consumer already
+  // does it; this line was the one that did not, which only stopped being harmless when a
+  // routine started planning warm-ups by default. The number is written into the saved
+  // workout, so an inflated one would stay wrong forever.
+  w.entries.forEach(e => e.sets.forEach(s => {
+    if (s.done && !isWarmupRow(s)) v += (s.w || 0) * (s.r || 0) + extraVolumeOf(s)
+  }))
   return v
 }
 export function setsDone(w) {
@@ -460,6 +467,36 @@ export function cascadeWeight(rows, from, value) {
  * `at` is 0, and reading `rows[-1]` used to fall through to the *last* row — the heaviest
  * work set — so "add warm-up set" handed you a full-weight set to correct by hand.
  */
+/**
+ * Recompute the warm-up block so it ramps toward the weight the work rows ACTUALLY carry.
+ *
+ * buildSets prepends the warm-ups before a prescription is applied, and applyPrescription
+ * deliberately rewrites work rows only — so without this the ramp still aims at last
+ * session's weight. On a deload that put the last warm-up above every work set, which is
+ * the exact opposite of what a warm-up is for.
+ *
+ * A warm-up already logged keeps its weight and becomes what the next one ramps from: it
+ * happened, and rewriting performed work is data loss. Entries with nothing to ramp toward
+ * — cardio, bodyweight, an unloaded hold — are returned untouched.
+ */
+export function rerampWarmups(rows, step = 2.5) {
+  const firstWork = rows.findIndex(x => !isWarmupRow(x))
+  if (firstWork <= 0) return rows
+  const target = rows[firstWork].w || 0
+  if (!(target > 0)) return rows
+  const out = rows.slice()
+  let from = 0
+  for (let i = 0; i < firstWork; i++) {
+    if (out[i].done) { from = out[i].w || 0; continue }
+    const w = target > from
+      ? Math.max(0, Math.min(target, Math.floor((from + (target - from) / 2) / step) * step))
+      : target
+    out[i] = { ...out[i], w }
+    from = w
+  }
+  return out
+}
+
 export function insertWarmupRow(rows, mode, target, step = 2.5) {
   const firstWork = rows.findIndex(x => !isWarmupRow(x))
   const at = firstWork === -1 ? rows.length : firstWork
@@ -467,7 +504,12 @@ export function insertWarmupRow(rows, mode, target, step = 2.5) {
   const work = firstWork === -1 ? null : rows[firstWork]
   const rampTo = to => {
     const from = prev ? (prev.w || 0) : 0
-    if (!(to > 0) || to <= from) return from
+    // Nothing to ramp toward: bodyweight, cardio, a timed hold with no load.
+    if (!(to > 0)) return 0
+    // Already at or past the work weight — which happens when a warm-up was edited by hand
+    // above it. Returning `from` here handed the next warm-up that same too-heavy number and
+    // let it propagate down the block. A warm-up is never heavier than the set it warms up for.
+    if (to <= from) return to
     // Rounded DOWN to the step: a warm-up that lands a notch light costs nothing, one that
     // lands a notch heavy is a set you have to strip plates off before you can use it.
     return Math.max(0, Math.min(to, Math.floor((from + (to - from) / 2) / step) * step))

@@ -1,5 +1,61 @@
 # Changelog
 
+## v1.2.11 — 2026-08-25
+
+A correction release. v1.2.10 landed planned warm-ups and notes, and reviewing that release
+afterwards turned up six defects it had either introduced or made matter — three of them in the
+warm-up work itself. None of them broke a test, which is the point: they were gaps beside the
+tests rather than failures in them.
+
+### Warm-ups
+
+- ⚖️ **Warm-ups were counted in your session volume.** Every other part of the app leaves them
+  out — records, progression, the muscle map — and the routine screen says so in as many words
+  ("left out of volume, records and progression"). Volume was the one place it was not true.
+  Three planned warm-ups on a 3×5 at 100 kg reported 2562.5 instead of 1500, and that number is
+  written into the finished workout, so it would have stayed wrong for good.
+- 📉 **On a deload, the last warm-up came out heavier than the work sets.** The ramp was built
+  before progression had its say and nothing recalculated it, so a plan dropping from 100 kg to
+  50 kg gave you warm-ups of 50 and 75 under work sets of 50. The ramp is now derived after the
+  prescription, so it always aims at the weight you are actually about to lift. A warm-up you
+  have already logged keeps its weight — it happened.
+- 🧱 **One too-heavy warm-up spread to the rest.** Editing a warm-up above the working weight
+  made every warm-up added after it inherit that number. Your own edit stays as you typed it;
+  what stops is the inheritance.
+
+### Notes
+
+- 📝 **The session note now exists.** v1.2.10 described three kinds of note and shipped two: the
+  code that saves a whole-session note was there, and tested, but nothing in the app ever wrote
+  one. There is a note field next to the finish button now — wrapping up is when you know how
+  the session went.
+- 💾 **The session note stopped being thrown away.** In a past workout it only saved when the
+  field lost focus, and Escape, the Android back gesture and swipe-to-dismiss all close a sheet
+  without that ever happening. Type a note, press Escape, gone. It now saves on the way out too.
+
+### Sharing, stats and settings
+
+- 🔗 **Shared plans carry drop-sets and rest-pause.** A routine built as "3×5 with a double
+  drop" arrived at the other end as a plain 3×5, silently. Both the intensifier and the planned
+  warm-up count are now clamped in both directions, so a hand-edited plan file cannot put a
+  nonsense number in front of you either.
+- 🔢 **The version is visible again**, at the bottom of Settings — which is where the support
+  template has been telling people to look for it. On the phone there is no address bar, so
+  there was no way to tell which build you had or whether an update installed. (issue #7)
+- ⏹️ **The rest timer can be turned off.** v1.2.10 made this worse before it made it better: it
+  started resting after every set instead of finishing an exercise quietly, and there was still
+  no way out. "Off" now sits with the other durations.
+- 📊 **The exercise picker in Stats no longer runs long names into the label** (mflova, !24), and
+  **a chart tooltip no longer lingers from the previous exercise** (mflova, !25). The estimated-1RM
+  series is memoised as well, so the tooltip stops vanishing under your finger while you read it.
+
+### Website
+
+- 🌐 **opengym.duarte-santos.ch has been rebuilt** — a bento layout with real device frames, a
+  mobile menu that opens instead of hiding, scroll reveals that respect `prefers-reduced-motion`,
+  and a section collecting where the project actually lives. It had been live for a while without
+  ever being committed, so the repository and the site had drifted apart.
+
 ## v1.2.10 — 2026-08-25
 
 The first release since the move to GitLab that is mostly **other people's work**. Nine

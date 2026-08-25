@@ -111,7 +111,9 @@ export function detectSource(header) {
 const SYN = [
   [/\bbb\b/g, 'barbell'], [/\bdb\b/g, 'dumbbell'], [/\bkb\b/g, 'kettlebell'],
   [/\bohp\b/g, 'overhead press'], [/\bbw\b/g, 'body weight'], [/\bbodyweight\b/g, 'body weight'],
-  [/\bmachine\b/g, 'lever'], [/\bsmith machine\b/g, 'smith'], [/\bez bar\b/g, 'ez barbell'],
+  // 'smith machine' first: the generic machine->lever rule would otherwise eat the word
+  // and leave 'smith lever', which matches no entry in the dataset.
+  [/\bsmith machine\b/g, 'smith'], [/\bmachine\b/g, 'lever'], [/\bez bar\b/g, 'ez barbell'],
   [/\bpull ups?\b/g, 'pull up'], [/\bchin ups?\b/g, 'chin up'], [/\bpush ups?\b/g, 'push up'],
   [/\bsit ups?\b/g, 'sit up'], [/\bdips?\b/g, 'dip'], [/\braises?\b/g, 'raise'],
   [/\bcurls?\b/g, 'curl'], [/\bpresses\b/g, 'press'], [/\bextensions?\b/g, 'extension'],
@@ -185,6 +187,25 @@ const ALIAS_EX = {
   // same movement, wrong equipment label, which beats leaving it uncategorised.
   'pallof press': '0979', 'cable pallof press': '0979', 'vertical pallof press': '1015',
   'cable core pallof press': '0979', 'core pallof press': '0979',
+  // Hevy's own vocabulary, from a real export. Hevy writes the equipment in parentheses
+  // and uses "bicep"/"chest fly"/"reverse fly" where the dataset says "biceps"/"fly"/
+  // "reverse fly", so these are near-misses the word-bag cannot close on its own.
+  'bicep curl (dumbbell)': '0294', 'bicep curl (cable)': '0868', 'bicep curl (barbell)': '0031',
+  'chest fly (dumbbell)': '0308', 'chest fly (machine)': '0596', 'butterfly (pec deck)': '0596',
+  'incline chest fly (dumbbell)': '0319', 'cable fly crossovers': '1269',
+  'rear delt reverse fly (dumbbell)': '0383', 'rear delt reverse fly (machine)': '0602',
+  'chest supported reverse fly (dumbbell)': '0383',
+  'bench press (smith machine)': '0748', 'overhead press (smith machine)': '0766',
+  'hack squat (machine)': '0743', 'iso-lateral row (machine)': '0571',
+  'seated cable row - bar grip': '0218', 'reverse grip lat pulldown (cable)': '0673',
+  'single arm lateral raise (cable)': '0192', 'plate front raise': '0310',
+  'back extension (weighted hyperextension)': '0573',
+  'behind the back bicep wrist curl (barbell)': '0104',
+  // A face pull is a rope rear-delt row; the dataset has no entry under that name.
+  'face pull': '0203',
+  // Cardio again: the only candidates in a 29-entry cardio vocabulary.
+  'jumping jack': '3220', 'jumping jacks': '3220', 'battle ropes': '0128',
+  'stair machine (steps)': '2311', 'stair machine': '2311',
 }
 
 let ALIAS_IDX = null
@@ -229,6 +250,23 @@ export function matchExercise(name) {
   }
   return ties === 1 ? best : null
 }
+
+// Hevy exports no category column, so every invented exercise fell through to the
+// 'upper legs' default and a third of an imported history was attributed to the legs in
+// the muscle map. When there is no category, read the body part off the name instead.
+const NAME_BP = [
+  [/\b(curl|bicep|biceps|tricep|triceps|skullcrusher|pushdown)\b/, 'upper arms'],
+  [/\b(wrist|forearm|forearms|grip)\b/, 'lower arms'],
+  [/\b(bench|chest|pec|fly|flye|crossover|crossovers|dip)\b/, 'chest'],
+  [/\b(row|pulldown|pullup|pull up|chin up|lat|lats|back|deadlift|shrug)\b/, 'back'],
+  [/\b(shoulder|delt|delts|overhead|lateral raise|front raise|face pull|press up)\b/, 'shoulders'],
+  [/\b(calf|calves)\b/, 'lower legs'],
+  [/\b(squat|lunge|leg|glute|hamstring|quad|hip thrust|deadlift)\b/, 'upper legs'],
+  [/\b(ab|abs|core|plank|crunch|sit up|oblique|russian twist)\b/, 'waist'],
+  [/\b(run|running|jog|bike|cycling|rope|ropes|jump|jacks|burpee|sprint|treadmill|stair)\b/, 'cardio'],
+  [/\bneck\b/, 'neck'],
+]
+const bpFromName = name => (NAME_BP.find(([re]) => re.test(name)) || [])[1] || null
 
 // Categories the exporters use -> the dataset's body parts, for exercises we invent.
 const CATEGORY_BP = {
@@ -358,7 +396,8 @@ export function parseWorkoutCSV(text, { unit = 'kg' } = {}) {
       if (!c) {
         c = {
           id: 'im' + uid(), n: name.toLowerCase(), custom: true, eq: 'custom', tg: '', desc: '',
-          bp: CATEGORY_BP[cell(r, 'category').toLowerCase()] || (km || (mins && !reps) ? 'cardio' : 'upper legs'),
+          bp: CATEGORY_BP[cell(r, 'category').toLowerCase()] || (km || (mins && !reps) ? 'cardio' : null)
+            || bpFromName(name.toLowerCase()) || 'upper legs',
         }
         created.set(key, c)
         unmatched.add(name)

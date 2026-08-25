@@ -131,7 +131,7 @@ export default function Settings() {
     <Section title={t('During a workout')} footer={wakeOK ? t('The screen stays on while a workout is running, so you don’t have to unlock your phone between sets.') : null}>
       <SelectRow icon="timer" iconTint="var(--orange)" title={t('Rest timer')}
         value={S.restSec} onChange={v => update(s => { s.restSec = v })}
-        options={[60, 90, 120, 150, 180].map(v => ({ value: v, label: v + 's' }))} />
+        options={[{ value: 0, label: t('Off') }, ...[60, 90, 120, 150, 180].map(v => ({ value: v, label: v + 's' }))]} />
       {/* Default for a rest-pause burst added live on a plain set — a planned exercise's own
           "Rest (s)" (in its Intensifier config) overrides this, same as the main rest timer
           is the fallback whenever an exercise has no progression rule of its own. */}
@@ -223,8 +223,12 @@ export default function Settings() {
         subtitle={t('to install openGym as a full-screen app.') + ' ' + (user ? t('Your data syncs with your profile — sign in anywhere to see it.') : t('Guest data stays on this device — export a backup now and then!'))} />
     </Section>}
 
+    {/* The version, at the bottom of Settings — which is where the support template has been
+        telling people to look for it, and where it was not. On the phone build there is no
+        address bar and no about box, so without this there is no way to tell which build you
+        are running, or whether an update actually installed. */}
     <div className="dim small" style={{ textAlign: 'center', marginTop: 4, lineHeight: 1.6 }}>
-      openGym · {t('free & open source (AGPL v3)')}<br />
+      openGym v{__APP_VERSION__} · {t('free & open source (AGPL v3)')}<br />
       <a href="https://gitlab.com/DuarteSantos8/opengym" target="_blank" rel="noopener">source code</a> · exercise data: hasaneyldrm/exercises-dataset (MIT)<br />
       exercise images and animations © <a href="https://gymvisual.com/" target="_blank" rel="noopener">Gym visual</a>
     </div>

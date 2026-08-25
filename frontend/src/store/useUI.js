@@ -76,6 +76,9 @@ export const useUI = create((set, get) => ({
 
   startRest(sec) {
     get().stopRest()
+    // Rest timer set to Off. Stopping and returning rather than starting a zero-length timer
+    // keeps every caller honest: the four places that start a rest do not each need to know.
+    if (!(sec > 0)) return
     const endsAt = Date.now() + sec * 1000
     set({ timer: { left: sec, total: sec, endsAt } })
     requestRestNotificationPermission()

@@ -601,4 +601,9 @@ export default {
   'Delete profile?': 'Profil silinsin mi?',
   '"{0}" and its equipment list will be removed.': '“{0}” ve ekipman listesi kaldırılacak.',
   'Filters the exercise library and picker, and flags routine exercises that need something you don’t have in the active profile.': 'Hareket kitaplığını ve seçiciyi filtreler, ayrıca aktif profilinde olmayan bir şeye ihtiyaç duyan rutin hareketlerini işaretler.',
+
+  // --- muscle groups ---
+  'Primary muscle groups': 'Birincil kas grupları',
+  'Additional muscle groups': 'Ek kas grupları',
+  'No explicit muscle group': 'Açık kas grubu yok'
 }

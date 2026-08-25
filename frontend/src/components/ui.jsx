@@ -274,6 +274,48 @@ export function SelectRow({ icon, iconTint, title, value, options, onChange, she
   )
 }
 
+/** Multi-select row for additive exercise metadata. The sheet mirrors selection locally so
+ * each tap updates its checkmark immediately while the caller persists the value. */
+export function MultiSelectRow({ icon, iconTint, title, values, options, onToggle, sheetTitle, noneLabel, doneLabel }) {
+  const selected = options.filter(o => values.includes(o.value))
+  const summary = selected.length ? selected.map(o => o.label).join(', ') : (noneLabel || '')
+  const open = () => {
+    const { openSheet } = require_ui()
+    openSheet(close => <MultiSelectSheet values={values} options={options} onToggle={onToggle}
+      title={sheetTitle || title} doneLabel={doneLabel} close={close} />)
+  }
+  return (
+    <Row icon={icon} iconTint={iconTint} title={title} value={summary} accessory="chevron" onClick={open} />
+  )
+}
+
+function MultiSelectSheet({ values, options, onToggle, title, doneLabel, close }) {
+  const [sel, setSel] = useState(values)
+  const toggle = value => {
+    setSel(current => current.includes(value) ? current.filter(x => x !== value) : [...current, value])
+    onToggle(value)
+  }
+  return (
+    <>
+      <h3>{title}</h3>
+      <div className="sect-b">
+        {options.map(o => {
+          const on = sel.includes(o.value)
+          return (
+            <button key={o.value} className={'lrow tap' + (on ? ' on' : '')} onClick={() => toggle(o.value)}>
+              <span className="lrow-m"><span className="lrow-t">{o.label}</span>
+                {o.subtitle && <span className="lrow-s">{o.subtitle}</span>}</span>
+              {on && <Icon name="check" className="lrow-k" />}
+            </button>
+          )
+        })}
+      </div>
+      <div style={{ height: 8 }} />
+      <Button variant="primary" onClick={close}>{doneLabel || 'Done'}</Button>
+    </>
+  )
+}
+
 // Late import keeps this module free of a cycle at load time (useUI pulls in the
 // store, which pulls in helpers that import controls).
 let _ui = null

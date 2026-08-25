@@ -601,4 +601,9 @@ export default {
   'Delete profile?': '프로필을 삭제할까요?',
   '"{0}" and its equipment list will be removed.': '‘{0}’과(와) 해당 장비 목록이 삭제됩니다.',
   'Filters the exercise library and picker, and flags routine exercises that need something you don’t have in the active profile.': '운동 라이브러리와 선택기를 필터링하고, 활성 프로필에 없는 장비가 필요한 루틴 운동을 표시합니다.',
+
+  // --- muscle groups ---
+  'Primary muscle groups': '주요 근육 그룹',
+  'Additional muscle groups': '추가 근육군',
+  'No explicit muscle group': '명시적 근육군 없음'
 }

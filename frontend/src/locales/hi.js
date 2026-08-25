@@ -601,4 +601,9 @@ export default {
   'Delete profile?': 'प्रोफ़ाइल हटाएँ?',
   '"{0}" and its equipment list will be removed.': '“{0}” और उसकी उपकरण सूची हटा दी जाएगी।',
   'Filters the exercise library and picker, and flags routine exercises that need something you don’t have in the active profile.': 'कसरत लाइब्रेरी और चयनकर्ता को फ़िल्टर करता है, और उन रूटीन कसरतों को चिह्नित करता है जिनके लिए सक्रिय प्रोफ़ाइल में मौजूद न होने वाला उपकरण चाहिए।',
+
+  // --- muscle groups ---
+  'Primary muscle groups': 'प्राथमिक मांसपेशी समूह',
+  'Additional muscle groups': 'अतिरिक्त मांसपेशी समूह',
+  'No explicit muscle group': 'कोई स्पष्ट मांसपेशी समूह नहीं'
 }

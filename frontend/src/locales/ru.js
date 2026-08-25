@@ -601,4 +601,9 @@ export default {
   'Delete profile?': 'Удалить профиль?',
   '"{0}" and its equipment list will be removed.': '«{0}» и его список инвентаря будут удалены.',
   'Filters the exercise library and picker, and flags routine exercises that need something you don’t have in the active profile.': 'Фильтрует библиотеку упражнений и выбор, а также отмечает упражнения в программах, для которых нужно то, чего нет в активном профиле.',
+
+  // --- muscle groups ---
+  'Primary muscle groups': 'Основные группы мышц',
+  'Additional muscle groups': 'Дополнительные мышечные группы',
+  'No explicit muscle group': 'Без явной мышечной группы'
 }

@@ -12,10 +12,10 @@ import { starterRoutines } from './lib/starter.js'
 import Media, { Thumb } from './components/Media.jsx'
 import Stepper from './components/Stepper.jsx'
 import Icon from './components/Icon.jsx'
-import { Button, Slider, Switch, Segmented, SelectRow, Row, TextField } from './components/ui.jsx'
+import { Button, Slider, Switch, Segmented, SelectRow, Row, TextField, MultiSelectRow } from './components/ui.jsx'
 import { glyphOf, GLYPH_GROUPS, DEFAULT_GLYPH } from './lib/glyphs.js'
 import BodyMap from './components/BodyMap.jsx'
-import { exerciseMuscleSnapshot, loadOfWorkouts } from './lib/muscles.js'
+import { exerciseMuscleSnapshot, loadOfWorkouts, MUSCLES, MUSCLE_NAME, normalizeMuscleGroups, hasExplicitMuscleMetadata } from './lib/muscles.js'
 import { parseImport, mergeImport } from './lib/import-csv.js'
 import { buildPlanBundle, parsePlan, mergePlan, printPlan } from './lib/plan-share.js'
 import { estimate1RM, best1RM, is1RMRecord, REP_CAP } from './lib/onerm.js'
@@ -292,9 +292,9 @@ function ExerciseDetail({ ex, close }) {
     <Media ex={ex} />
     <div className="row" style={{ gap: 6, flexWrap: 'wrap', margin: '10px 0' }}>
       <span className="tag acc">{t(ex.bp)}</span>
-      {ex.tg && <span className="tag"><Icon name="target" />{t(ex.tg)}</span>}
+      {(ex.primaries?.length ? ex.primaries : (ex.tg ? [ex.tg] : [])).map((s, i) => <span key={i} className="tag"><Icon name="target" />{t(s)}</span>)}
       <span className="tag"><Icon name="dumbbell" />{t(ex.eq)}</span>
-      {smOf(ex).slice(0, 3).map((s, i) => <span key={i} className="tag">{t(s)}</span>)}
+      {(ex.secondaries?.length ? ex.secondaries : smOf(ex)).slice(0, 3).map((s, i) => <span key={i} className="tag">{t(s)}</span>)}
     </div>
     {ex.desc && <div className="exnote">{ex.desc}</div>}
     {best > 0 && <div className="small row" style={{ marginBottom: 6, gap: 5 }}><Icon name="trophy" style={{ fontSize: 14, color: 'var(--yellow)' }} />{t('Best:')} <b className="accent">{fmtNum(best)} {st.unit}</b>{last ? ` · ${t('last')} ${fmtDate(last.d)}: ${last.sets.map(s => setLabel(ex.id, s, last.target)).join(', ')}` : ''}</div>}
@@ -349,6 +349,18 @@ function CustomExForm({ existing, prefill, onDone, close }) {
   const [n, setN] = useState(existing ? existing.n : (prefill || ''))
   const [bp, setBp] = useState(existing ? existing.bp : '')
   const [desc, setDesc] = useState(existing ? (existing.desc || '') : '')
+  const [primaries, setPrimaries] = useState(() => {
+    if (existing && Array.isArray(existing.primaries) && existing.primaries.length) return [...existing.primaries]
+    const norm = hasExplicitMuscleMetadata(existing || {}) ? normalizeMuscleGroups(existing || {}) : []
+    return norm.length ? [norm[0]] : []
+  })
+  const [secondaries, setSecondaries] = useState(() => {
+    if (existing && Array.isArray(existing.primaries) && existing.primaries.length) return [...(existing.secondaries || [])]
+    const norm = hasExplicitMuscleMetadata(existing || {}) ? normalizeMuscleGroups(existing || {}) : []
+    return norm.slice(1)
+  })
+  const togglePrimary = value => setPrimaries(current => current.includes(value) ? current.filter(m => m !== value) : [...current, value])
+  const toggleSecondary = value => setSecondaries(current => current.includes(value) ? current.filter(m => m !== value) : [...current, value])
   const save = () => {
     const name = n.trim()
     if (!name) { toast(t('Give it a name')); return }
@@ -356,11 +368,16 @@ function CustomExForm({ existing, prefill, onDone, close }) {
     const dup = allExercises(S()).find(e => e.n.toLowerCase() === name.toLowerCase() && e.id !== (existing || {}).id)
     if (dup) { toast(t('“{0}” already exists', dup.n)); return }
     const d = desc.trim().slice(0, 1000)
+    const prim = [...primaries]
+    const sm = secondaries.filter(m => !prim.includes(m))
+    const groups = [...prim, ...sm]
     let id = existing && existing.id
-    if (existing) update(s => { const c = (s.customEx || []).find(x => x.id === id); if (c) { c.n = name; c.bp = bp; c.desc = d } })
+    if (existing) update(s => { const c = (s.customEx || []).find(x => x.id === id); if (c) {
+      c.n = name; c.bp = bp; c.desc = d; c.tg = prim[0] || ''; c.sm = sm; c.muscleGroups = groups; c.primaries = prim; c.secondaries = sm
+    } })
     else {
       id = 'c' + uid()
-      update(s => { (s.customEx = s.customEx || []).push({ id, n: name, bp, desc: d, tg: '', eq: 'custom', custom: true }) })
+      update(s => { (s.customEx = s.customEx || []).push({ id, n: name, bp, desc: d, tg: prim[0] || '', sm, muscleGroups: groups, primaries: prim, secondaries: sm, eq: 'custom', custom: true }) })
     }
     close()
     toast(existing ? t('Saved') : t('“{0}” created', name))
@@ -373,6 +390,16 @@ function CustomExForm({ existing, prefill, onDone, close }) {
     <div className="chips" style={{ margin: '12px 0' }}>
       {BODYPARTS.map(b => <button key={b} className={'chip' + (bp === b ? ' on' : '')} onClick={() => setBp(b)}>{t(b)}</button>)}
     </div>
+    {bp && bp !== 'cardio' && <>
+      <MultiSelectRow title={t('Primary muscle groups')} sheetTitle={t('Primary muscle groups')}
+        values={primaries}
+        options={MUSCLES.map(m => ({ value: m, label: t(MUSCLE_NAME[m]) }))}
+        onToggle={togglePrimary} noneLabel={t('No explicit muscle group')} doneLabel={t('Done')} />
+      <MultiSelectRow title={t('Additional muscle groups')} sheetTitle={t('Additional muscle groups')}
+        values={secondaries}
+        options={MUSCLES.filter(m => !primaries.includes(m)).map(m => ({ value: m, label: t(MUSCLE_NAME[m]) }))}
+        onToggle={toggleSecondary} noneLabel={t('No explicit muscle group')} doneLabel={t('Done')} />
+    </>}
     {bp === 'cardio' && <div className="small dim row" style={{ marginBottom: 10, gap: 5 }}><Icon name="figureRun" style={{ fontSize: 13 }} />{t('Cardio exercises log time + speed instead of weight × reps.')}</div>}
     <textarea className="input" rows={4} maxLength={1000} placeholder={t('Description (optional) — setup, cues, anything you want to remember')}
       value={desc} onChange={e => setDesc(e.target.value)} />

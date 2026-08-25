@@ -601,4 +601,9 @@ export default {
   'Delete profile?': '删除配置？',
   '"{0}" and its equipment list will be removed.': '“{0}”及其器械清单将被删除。',
   'Filters the exercise library and picker, and flags routine exercises that need something you don’t have in the active profile.': '筛选动作库和选择器，并标记训练计划中需要当前配置里没有的器械的动作。',
+
+  // --- muscle groups ---
+  'Primary muscle groups': '主要肌群',
+  'Additional muscle groups': '其他肌群',
+  'No explicit muscle group': '无明确肌群'
 }

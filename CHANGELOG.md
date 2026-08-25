@@ -116,6 +116,10 @@ animations are © Gym visual, not CC, which matters if you redistribute them.
 
 ### Fixes
 
+- 🔔 **Server-generated notifications follow Brazilian Portuguese** — rest-timer
+  alerts, test notifications and workout-day reminders now use the profile's
+  `pt-BR` language instead of always arriving in English.
+
 - ⬅️ **The back gesture no longer quits the app** (Android). The packaged app never listened for
   the system back event at all — Capacitor leaves that to `@capacitor/app`, which was not
   installed — so a back swipe went straight past the WebView and finished the activity from

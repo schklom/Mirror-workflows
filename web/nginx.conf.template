@@ -5,14 +5,36 @@ server {
     root /usr/share/nginx/html;
     index index.html;
 
-    # API → backend container
-    location /api/ {
+    # Sent on every response below. NOTE: an `add_header` inside a location replaces the whole
+    # inherited set rather than adding to it, so the two locations further down that set their
+    # own Cache-Control have to repeat these three. Deliberately not a full Content-Security-
+    # Policy: only frame-ancestors, which no part of the app depends on. TLS, HSTS and any
+    # stricter policy stay the reverse proxy's job (see SECURITY.md).
+    add_header X-Frame-Options "DENY" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header Referrer-Policy "same-origin" always;
+    add_header Content-Security-Policy "frame-ancestors 'none'" always;
+
+    # API → backend container.
+    # `^~` so this prefix beats the regex locations below: without it a request for a path such
+    # as /api/anything.json would be matched by the \.(js|css|json|html)$ block instead and be
+    # looked for on disk rather than proxied.
+    location ^~ /api/ {
         proxy_pass http://${BACKEND}:${PORT};
         proxy_http_version 1.1;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        # $remote_addr, NOT $proxy_add_x_forwarded_for: the latter APPENDS to whatever the client
+        # sent, and the API reads the first entry — so a client could put any address it liked in
+        # front of its own and choose what the activity log recorded about it. Overwriting is what
+        # makes the header mean anything.
+        proxy_set_header X-Forwarded-For $remote_addr;
         proxy_set_header X-Forwarded-Proto $scheme;
+        # Same reasoning, and the API trusts this one FIRST. Empty by default, which drops the
+        # header entirely, so a direct client cannot forge it. Cloudflare users set
+        # CF_CONNECTING_IP=$http_cf_connecting_ip to let the real one through — correct only when
+        # Cloudflare is genuinely in front, because that is what overwrites a client-supplied one.
+        proxy_set_header CF-Connecting-IP "${CF_CONNECTING_IP}";
     }
 
     # SPA fallback
@@ -23,12 +45,20 @@ server {
     # App shell: always revalidate so updates show up immediately
     location ~* \.(js|css|json|html)$ {
         add_header Cache-Control "no-cache, must-revalidate";
+        add_header X-Frame-Options "DENY" always;
+        add_header X-Content-Type-Options "nosniff" always;
+        add_header Referrer-Policy "same-origin" always;
+        add_header Content-Security-Policy "frame-ancestors 'none'" always;
     }
 
     # Exercise images/GIFs never change → cache hard
     location ~* \.(png|jpg|jpeg|gif|ico|svg|woff|woff2|webp|avif)$ {
         expires 30d;
         add_header Cache-Control "public, max-age=2592000, immutable";
+        add_header X-Frame-Options "DENY" always;
+        add_header X-Content-Type-Options "nosniff" always;
+        add_header Referrer-Policy "same-origin" always;
+        add_header Content-Security-Policy "frame-ancestors 'none'" always;
     }
 
     gzip on;

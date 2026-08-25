@@ -69,6 +69,9 @@ services:
       - NGINX_PORT=${NGINX_PORT:-80}
       - BACKEND=${BACKEND:-api}
       - PORT=${PORT:-3000}
+      # Empty drops the CF-Connecting-IP header, so a direct client cannot forge the address
+      # the activity log records. Cloudflare users set CF_CONNECTING_IP=$$http_cf_connecting_ip.
+      - CF_CONNECTING_IP=${CF_CONNECTING_IP:-}
     volumes:
       - ./media/img:/usr/share/nginx/html/img:ro
       - ./media/gif:/usr/share/nginx/html/gif:ro

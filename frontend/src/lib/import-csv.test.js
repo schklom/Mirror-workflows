@@ -4,7 +4,9 @@ import { parseWorkoutCSV } from './import-csv.js'
 const CSV = [
   'Date,Exercise,Weight,Reps,Set Type',
   '2026-08-08,Bench Press,100,5,Warm-up',
-  '2026-08-08,Bench Press,80,5,Working',
+  '2026.08.08,Bench Press,80,5,Working',
+  '8 Aug 2026,Bench Press,80,5,Working',
+  '2026/08/08,Bench Press,85,3,Working',
 ].join('\n')
 
 describe('CSV warm-up provenance', () => {
@@ -16,7 +18,9 @@ describe('CSV warm-up provenance', () => {
     expect(entry.sets).toEqual([
       { w: 100, r: 5, done: true, phase: 'warmup' },
       { w: 80, r: 5, done: true },
+      { w: 80, r: 5, done: true },
+      { w: 85, r: 3, done: true },
     ])
-    expect(entry.topW).toBe(80)
+    expect(entry.topW).toBe(85)
   })
 })

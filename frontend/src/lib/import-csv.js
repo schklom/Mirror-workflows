@@ -58,12 +58,12 @@ const norm = h => h.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim()
 const COLUMNS = [
   ['exercise', ['exercise', 'exercise name', 'exercise title']],
   ['date', ['date', 'workout date']],
-  ['startTime', ['start time']],
+  ['startTime', ['start time', 'start date']],
   ['endTime', ['end time']],
-  ['workoutName', ['workout name', 'title']],
+  ['workoutName', ['workout name', 'title', 'workout']],
   ['category', ['category', 'body part', 'muscle group']],
-  ['weightKg', ['weight kg']],
-  ['weightLb', ['weight lbs', 'weight lb']],
+  ['weightKg', ['weight kg', 'weight (kg)']],
+  ['weightLb', ['weight lbs', 'weight lb', 'weight (lb)']],
   ['weight', ['weight']],
   ['weightUnit', ['weight unit', 'unit']],
   ['reps', ['reps', 'repetitions']],
@@ -71,13 +71,13 @@ const COLUMNS = [
   // when it is there rather than dropping the column on the floor.
   ['rpe', ['rpe', 'rpe rating']],
   ['rir', ['rir', 'reps in reserve']],
-  ['distanceKm', ['distance km']],
+  ['distanceKm', ['distance km', 'distance (km)']],
   ['distance', ['distance']],
   ['distanceUnit', ['distance unit']],
   ['seconds', ['seconds', 'duration seconds']],
-  ['time', ['time', 'duration']],
+  ['time', ['time', 'duration', 'set duration (sec)']],
   ['setType', ['set type']],
-  ['note', ['comment', 'comments', 'notes', 'note']],
+  ['note', ['comment', 'comments', 'notes', 'note', 'workout notes']],
 ]
 
 function mapHeader(header) {
@@ -258,10 +258,10 @@ const LB_TO_KG = 0.45359237
 const p2 = n => String(n).padStart(2, '0')
 const MON = { jan: 1, feb: 2, mar: 3, apr: 4, may: 5, jun: 6, jul: 7, aug: 8, sep: 9, oct: 10, nov: 11, dec: 12 }
 
-/** "2020-12-30 18:51:52" · "2024-03-07" · "22 Dec 2025, 08:00" · "07/03/2024" -> { d, t } */
+/** "2020-12-30 18:51:52" · "2024-03-07" · "2024/03/07" · "2024.03.07" · "22 Dec 2025, 08:00" · "07/03/2024" -> { d, t } */
 export function parseWhen(s) {
   const v = String(s || '').trim()
-  let m = v.match(/^(\d{4})-(\d{1,2})-(\d{1,2})(?:[T ](\d{1,2}):(\d{2}))?/)
+  let m = v.match(/^(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})(?:[T ](\d{1,2}):(\d{2}))?/)
   if (m) return { d: `${m[1]}-${p2(m[2])}-${p2(m[3])}`, t: hm(m[4], m[5]) }
   m = v.match(/^(\d{1,2})\s+([A-Za-z]{3})[a-z]*\.?\s+(\d{4})(?:,?\s+(\d{1,2}):(\d{2}))?/)
   if (m && MON[m[2].toLowerCase()]) return { d: `${m[3]}-${p2(MON[m[2].toLowerCase()])}-${p2(m[1])}`, t: hm(m[4], m[5]) }

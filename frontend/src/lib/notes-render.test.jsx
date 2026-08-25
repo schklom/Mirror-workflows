@@ -2,17 +2,18 @@
 // The note sheet is new JSX and nothing else mounts it, so a bad hook order, a missing import or
 // a wrong store path would only surface on a real device. Render it through the real sheet stack
 // and drive a save, so the wiring is checked and not just the shape of the module.
-import { describe, expect, it, beforeEach } from 'vitest'
+import { describe, expect, it, beforeEach, afterEach } from 'vitest'
 import React, { act } from 'react'
 import { createRoot } from 'react-dom/client'
-
-// React only enables act() when it is told it is in a test environment.
-globalThis.IS_REACT_ACT_ENVIRONMENT = true
 import { useStore } from '../store/useStore.js'
 import { useUI } from '../store/useUI.js'
 import { exerciseNoteSheet } from '../sheets.jsx'
 
 const activeWith = entry => ({ id: 'w1', d: '2026-08-25', start: 1, routineId: 'r1', name: 'Push', entries: [entry] })
+
+// Roots have to be torn down between tests: the sheet subscribes to the store, so a root left
+// mounted reacts to the next test's setState — outside act(), which React rightly complains about.
+const mounted = []
 
 function renderSheet() {
   exerciseNoteSheet(0)
@@ -20,6 +21,7 @@ function renderSheet() {
   const host = document.createElement('div')
   document.body.appendChild(host)
   const root = createRoot(host)
+  mounted.push(root)
   act(() => root.render(sheet.render(sheet_close(sheet))))
   return host
 }
@@ -33,11 +35,18 @@ const type = (el, value) => {
 
 describe('exercise note sheet', () => {
   beforeEach(() => {
+    // React only treats act() as real when told it is in a test environment, and vitest shares
+    // a worker across files — so set it per test rather than once at module scope.
+    globalThis.IS_REACT_ACT_ENVIRONMENT = true
     useUI.setState({ sheets: [] })
     useStore.setState(s => ({
       S: { ...s.S, exNotes: {}, active: activeWith({ id: 'bench', sets: [] }) },
     }))
     document.body.innerHTML = ''
+  })
+
+  afterEach(() => {
+    act(() => { mounted.splice(0).forEach(r => r.unmount()) })
   })
 
   it('renders the session note, the pin and the standing note', () => {

@@ -209,10 +209,18 @@ export function unpairSuperset(items, idx) {
 export function lastEntryFor(S, exId) {
   for (let i = S.workouts.length - 1; i >= 0; i--) {
     const en = S.workouts[i].entries.find(e => e.id === exId)
+    if (!en) continue
+    // Work sets only. Every caller asks the same question — "what did you actually lift last
+    // time" — to seed the next session's rows, to size a freestyle config, and to print "Last
+    // time" on the card. A warm-up answers none of them: seeding position 0 from a 50% ramp row
+    // walks the working weight DOWN a little every session, and counting the ramp rows makes a
+    // 3x5 come back as a 5-set exercise. Warm-ups are already excluded from volume, records and
+    // progression; this is the same rule one level up.
+    const done = en.sets.filter(s => s.done && !isWarmupRow(s))
     // `target` is what the session prescribed; finished workouts carry it so labels and the
     // progression engine can read a session back the way it was logged. Older workouts have
     // none — modeOf() falls back to the body part for them, which is what they were.
-    if (en && en.sets.some(s => s.done)) return { d: S.workouts[i].d, sets: en.sets.filter(s => s.done), target: en.target || null }
+    if (done.length) return { d: S.workouts[i].d, sets: done, target: en.target || null }
   }
   return null
 }

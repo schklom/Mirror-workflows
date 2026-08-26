@@ -28,7 +28,7 @@ const Home = () => {
 
     if (showLoading) useStore.setState({ isLocationsLoading: true });
     try {
-      const decryptedLocations = await apiService.getLocations();
+      const decryptedLocations = await apiService().getLocations();
 
       const isFirstLoad = locations.length === 0;
       const hasNewLocations = decryptedLocations.length > locations.length;

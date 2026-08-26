@@ -23,7 +23,7 @@ export const PhotosModal = ({ isOpen, onClose }: PhotosModalProps) => {
       void (async () => {
         useStore.setState({ isPicturesLoading: true });
         try {
-          const pics = await apiService.getPictures();
+          const pics = await apiService().getPictures();
           useStore.setState({ pictures: pics });
           setSelectedIndex(pics.length - 1);
         } catch (err) {

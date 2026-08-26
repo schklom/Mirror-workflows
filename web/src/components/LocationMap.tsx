@@ -63,7 +63,7 @@ export const LocationMap = () => {
   useEffect(() => {
     void (async () => {
       try {
-        const url = await apiService.getTileServerUrl();
+        const url = await apiService().getTileServerUrl();
         setTileServerUrl(url);
       } catch {
         setTileServerUrl('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');

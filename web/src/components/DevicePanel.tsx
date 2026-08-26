@@ -98,7 +98,7 @@ export const DevicePanel = ({ onLocateCommand, onViewPhotos }: DevicePanelProps)
     const fetchPushUrl = async () => {
       useStore.setState({ isPushUrlLoading: true });
       try {
-        const url = await apiService.getPushUrl();
+        const url = await apiService().getPushUrl();
         useStore.setState({ pushUrl: url });
       } catch {
         useStore.setState({ pushUrl: null });
@@ -117,7 +117,7 @@ export const DevicePanel = ({ onLocateCommand, onViewPhotos }: DevicePanelProps)
       if (command.startsWith('locate') && onLocateCommand) {
         onLocateCommand();
       }
-      await apiService.sendCommand(command);
+      await apiService().sendCommand(command);
 
       // baseCommand is for handling commands such as "locate custom message"
       if (!baseCommand) {

@@ -1,5 +1,8 @@
 import { argon2id } from '@noble/hashes/argon2.js';
 
+export const CRYPTO_PROTO_V1 = 1;
+export const CRYPTO_PROTO_V2 = 2;
+
 const ARGON2_T = 1;
 const ARGON2_P = 4;
 const ARGON2_M = 131072;

@@ -62,7 +62,7 @@ export const LoginForm = () => {
     setLoading(true);
 
     try {
-      const salt = await apiService.getSalt(fmdId);
+      const salt = await apiService().getSalt(fmdId);
 
       if (!salt) {
         toast.error(t('errors:account_not_found'));
@@ -92,7 +92,7 @@ export const LoginForm = () => {
 
       clearTimeout(timeOut);
 
-      await apiService.login(fmdId, password, passwordHash, rememberMe);
+      await apiService().login(fmdId, password, passwordHash, rememberMe);
     } catch (error) {
       toast.error(error instanceof Error ? error.message : t('errors:login_failed'));
     } finally {

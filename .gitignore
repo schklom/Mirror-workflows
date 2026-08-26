@@ -16,3 +16,7 @@ node_modules/
 node_modules
 .claude/
 .agents/
+
+# Nix build result symlinks
+result
+result-*

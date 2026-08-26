@@ -10,6 +10,7 @@ import { wakeLockSupported } from '../lib/wakelock.js'
 import { t, LANGS, INSTR_LANGS } from '../lib/i18n.js'
 import { DEMO, REPO } from '../lib/demo.js'
 import { MOBILE, shareExport, syncReminder } from '../lib/mobile.js'
+import { checkForUpdate, downloadAndInstall } from '../lib/update.js'
 import { ConnectSheet } from './MobileOnboarding.jsx'
 import { loadStarterPlan, confirmSheet, importFromApp, importFromHevy, equipmentProfileSheet } from '../sheets.jsx'
 import Icon from '../components/Icon.jsx'
@@ -25,6 +26,89 @@ export default function Settings() {
   const fileRef = useRef(null)
   const importRef = useRef(null)
   const wakeOK = wakeLockSupported()
+
+  // --- update check state ---
+  const [updateInfo, setUpdateInfo] = useState(null) // { hasUpdate, latestVersion, apkUrl } | null while loading
+  const [updateLoading, setUpdateLoading] = useState(true)
+  const [updateError, setUpdateError] = useState(null)
+
+  const runUpdateCheck = async () => {
+    setUpdateLoading(true)
+    setUpdateError(null)
+    try {
+      const info = await checkForUpdate()
+      setUpdateInfo(info)
+    } catch (e) {
+      setUpdateError(e.message || 'Check failed')
+    } finally {
+      setUpdateLoading(false)
+    }
+  }
+
+  useEffect(() => { runUpdateCheck() }, [])
+
+  const onUpdateRowClick = () => {
+    if (updateLoading) return
+    if (updateInfo?.hasUpdate && updateInfo.apkUrl) {
+      // Start download & install
+      const version = updateInfo.latestVersion
+      confirmSheet({
+        title: t('Update to {0}?', version),
+        message: t('The latest version will be downloaded and the installer will open.'),
+        confirmText: t('Download & Install'),
+        onConfirm: async () => {
+          toast(t('Downloading update…'))
+          try {
+            await downloadAndInstall(updateInfo.apkUrl)
+          } catch (e) {
+            toast(t('Update failed: {0}', e.message))
+          }
+        },
+      })
+    } else if (updateInfo?.hasUpdate && !updateInfo.apkUrl) {
+      // Update available but no APK asset — open the releases page
+      window.open('https://gitlab.com/DuarteSantos8/opengym/-/releases', '_blank', 'noopener')
+    } else {
+      // Already up to date or error — re-check and show result in a dialog
+      setUpdateLoading(true)
+      setUpdateError(null)
+      checkForUpdate().then(info => {
+        setUpdateInfo(info)
+        setUpdateLoading(false)
+        useUI.getState().openSheet(close => (
+          <div style={{ textAlign: 'center', padding: '4px 0' }}>
+            <h3>{t('Update check')}</h3>
+            <div className="muted" style={{ marginBottom: 18, lineHeight: 1.5 }}>
+              {info.hasUpdate
+                ? t('{0} is available!', info.latestVersion)
+                : t('openGym {0} — you\u2019re up to date.', __APP_VERSION__)}
+            </div>
+            <Button variant="ghost" className="dim" onClick={close}>{t('OK')}</Button>
+          </div>
+        ), { kind: 'center' })
+      }).catch(e => {
+        setUpdateError(e.message || 'Check failed')
+        setUpdateLoading(false)
+        useUI.getState().openSheet(close => (
+          <div style={{ textAlign: 'center', padding: '4px 0' }}>
+            <h3>{t('Update check')}</h3>
+            <div className="muted" style={{ marginBottom: 18, lineHeight: 1.5 }}>
+              {t('Could not check for updates: {0}', e.message || 'unknown error')}
+            </div>
+            <Button variant="ghost" className="dim" onClick={close}>{t('OK')}</Button>
+          </div>
+        ), { kind: 'center' })
+      })
+    }
+  }
+
+  const updateTitle = updateLoading
+    ? t('Checking for updates…')
+    : updateError
+      ? t('Update check failed')
+      : updateInfo?.hasUpdate
+        ? t('{0} available', updateInfo.latestVersion)
+        : t('openGym {0} (up to date)', __APP_VERSION__)
 
   const doExport = async () => {
     const json = JSON.stringify(S, null, 2)
@@ -226,6 +310,9 @@ export default function Settings() {
 
     {/* ---------- data: fill it, bring things over, back it up, wipe it ---------- */}
     <Section title={t('Data')}>
+      <Row icon="rocket" iconTint="var(--purple)" title={updateTitle}
+        accessory={updateInfo?.hasUpdate ? 'chevron' : 'none'}
+        onClick={onUpdateRowClick} />
       <Row icon="sparkles" iconTint="var(--acc)" title={t('Load starter plan (PPL)')} accessory="chevron" onClick={loadStarterPlan} />
       <Row icon="shuffle" iconTint="var(--teal)" title={t('Import from another app')}
         subtitle={t('FitNotes, Strong, Hevy — or body weight from Apple Health')}

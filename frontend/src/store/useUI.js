@@ -58,6 +58,12 @@ export const useUI = create((set, get) => ({
   toastMsg: '',
   timer: null,         // rest countdown between sets — { left, total, endsAt }
   work: null,          // work countdown DURING a timed set (issue #16) — { left, total, endsAt, label }
+  timerFlashId: 0,     // changing the id remounts the four-pulse visual alert
+
+  flashTimer() {
+    if (!useStore.getState().S.timerFlash) return
+    set(s => ({ timerFlashId: s.timerFlashId + 1 }))
+  },
 
   openSheet(render, { kind = 'sheet', locked = false } = {}) {
     const id = uid()
@@ -91,7 +97,7 @@ export const useUI = create((set, get) => ({
       const snd = useStore.getState().S.sound
       if (left <= 0) {
         beep(snd, 880, 0.15); beep(snd, 880, 0.15, 0.25); beep(snd, 1320, 0.4, 0.5)
-        vibrate([200, 100, 200]); maybeRestNotification(); get().toast(t('Rest over — next set!')); get().stopRest(); return
+        vibrate([200, 100, 200]); get().flashTimer(); maybeRestNotification(); get().toast(t('Rest over — next set!')); get().stopRest(); return
       }
       if (left <= 3) beep(snd, 660, 0.1)
       set({ timer: { ...tm, left } })
@@ -139,7 +145,7 @@ export const useUI = create((set, get) => ({
       const snd = useStore.getState().S.sound
       if (left <= 0) {
         beep(snd, 880, 0.15); beep(snd, 880, 0.15, 0.25); beep(snd, 1320, 0.4, 0.5)
-        vibrate([200, 100, 200])
+        vibrate([200, 100, 200]); get().flashTimer()
         const done = workDone
         get().stopWork()
         if (done) done(wk.total)

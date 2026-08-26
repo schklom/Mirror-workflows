@@ -284,6 +284,7 @@ export default {
   'Weight unit': 'वज़न की इकाई',
   'Rest timer': 'आराम टाइमर',
   'Sounds': 'ध्वनियाँ',
+  'Flash screen when timer ends': 'टाइमर खत्म होने पर स्क्रीन फ्लैश करें',
   'Note: switching units only changes the label — logged numbers are not converted.': 'नोट: इकाई बदलने से केवल लेबल बदलता है — दर्ज संख्याएँ परिवर्तित नहीं होतीं।',
   'Data': 'डेटा',
   'Export backup (JSON)': 'बैकअप निर्यात करें (JSON)',

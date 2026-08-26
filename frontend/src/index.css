@@ -751,6 +751,19 @@ h4.sec{
 .glyph-cell:active{transform:scale(.92)}
 .glyph-cell.on{background:var(--acc);color:var(--on-acc)}
 
+/* --- opt-in timer completion flash ---
+   Four deliberate pulses over 2.4s stay below three flashes per second. Transparent
+   gaps keep the black and white pulses visually distinct. */
+.timer-flash{
+  position:fixed;inset:0;z-index:1000;pointer-events:none;opacity:0;
+  animation:timer-flash-four 2.4s linear both;
+}
+@keyframes timer-flash-four{
+  0%,20%,28%,48%,56%,76%,84%,100%{opacity:0}
+  4%,16%,60%,72%{background:#000;opacity:1}
+  32%,44%,88%,96%{background:#fff;opacity:1}
+}
+
 /* --- big weight readout --- */
 .bwstep{display:flex;align-items:center;justify-content:center;gap:18px;margin:14px 0 6px}
 .bw-pm{

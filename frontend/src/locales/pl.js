@@ -284,6 +284,7 @@ export default {
   'Weight unit': 'Jednostka wagi',
   'Rest timer': 'Minutnik przerwy',
   'Sounds': 'Dźwięki',
+  'Flash screen when timer ends': 'Migaj ekranem po zakończeniu minutnika',
   'Note: switching units only changes the label — logged numbers are not converted.': 'Uwaga: zmiana jednostki zmienia tylko etykietę — zapisane liczby nie są przeliczane.',
   'Data': 'Dane',
   'Export backup (JSON)': 'Eksportuj kopię (JSON)',

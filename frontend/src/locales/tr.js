@@ -284,6 +284,7 @@ export default {
   'Weight unit': 'Ağırlık birimi',
   'Rest timer': 'Dinlenme sayacı',
   'Sounds': 'Sesler',
+  'Flash screen when timer ends': 'Zamanlayıcı bitince ekranı yanıp söndür',
   'Note: switching units only changes the label — logged numbers are not converted.': 'Not: birim değiştirmek sadece etiketi değiştirir — kayıtlı sayılar dönüştürülmez.',
   'Data': 'Veriler',
   'Export backup (JSON)': 'Yedeği dışa aktar (JSON)',

@@ -284,6 +284,7 @@ export default {
   'Weight unit': 'Unidad de peso',
   'Rest timer': 'Temporizador de descanso',
   'Sounds': 'Sonidos',
+  'Flash screen when timer ends': 'Hacer parpadear la pantalla al finalizar el temporizador',
   'Note: switching units only changes the label — logged numbers are not converted.': 'Nota: cambiar la unidad solo cambia la etiqueta — los números registrados no se convierten.',
   'Data': 'Datos',
   'Export backup (JSON)': 'Exportar copia (JSON)',

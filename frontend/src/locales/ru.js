@@ -284,6 +284,7 @@ export default {
   'Weight unit': 'Единица веса',
   'Rest timer': 'Таймер отдыха',
   'Sounds': 'Звуки',
+  'Flash screen when timer ends': 'Мигать экраном по окончании таймера',
   'Note: switching units only changes the label — logged numbers are not converted.': 'Примечание: смена единиц меняет только подпись — записанные числа не пересчитываются.',
   'Data': 'Данные',
   'Export backup (JSON)': 'Экспорт резервной копии (JSON)',

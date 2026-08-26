@@ -90,6 +90,7 @@ export const PT_BR_OVERRIDES = {
   'Create passkey profile': 'Criar perfil com chave de acesso',
   'synced with your profile': 'sincronizado com seu perfil',
   'The screen stays on while a workout is running, so you don’t have to unlock your phone between sets.': 'A tela permanece ligada durante o treino, para você não precisar desbloquear o celular entre as séries.',
+  'Flash screen when timer ends': 'Piscar a tela quando o temporizador terminar',
   'Note: switching units only changes the label — logged numbers are not converted.': 'Observação: trocar a unidade altera somente o rótulo — os valores registrados não são convertidos.',
   'Export backup (JSON)': 'Exportar backup (JSON)',
   'Import backup': 'Importar backup',

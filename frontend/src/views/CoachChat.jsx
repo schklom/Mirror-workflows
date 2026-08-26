@@ -606,7 +606,7 @@ function ProposalDetail({ entry, S }) {
   const r = b?.routines?.[Math.min(tab, (b?.routines?.length || 1) - 1)]
   const weekDays = useMemo(() => new Set(Object.keys(b?.week || {}).map(Number)), [b])
   return <div className="pdetail">
-    <div className="pcard-hd" style={{ paddingLeft: 0, paddingRight: 0 }}>
+    <div className="pcard-hd" style={{ paddingInline: 0 }}>
       <div className="pcard-eyebrow">{kind === 'create' ? t('Plan') : kind === 'debrief' ? t('Workout debrief') : t('Suggestions')} · {fmtDate(new Date(entry.at).toISOString().slice(0, 10))}</div>
       <h2 className="pcard-h">{kind === 'create' ? (b?.name || t('Coach plan')) : kind === 'debrief' ? (entry.workout?.name || t('Workout')) : t(entry.decisions?.length === 1 ? '{0} suggestion' : '{0} suggestions', entry.decisions?.length || 0)}</h2>
       {!!entry.summary && <p className="pcard-sum">{entry.summary}</p>}
@@ -625,7 +625,7 @@ function ProposalDetail({ entry, S }) {
 
     {kind === 'create' && b && <>
       <WeekStrip days={weekDays} />
-      {b.routines.length > 1 && <div className="pcard-tabs" style={{ paddingLeft: 0, paddingRight: 0 }}>
+      {b.routines.length > 1 && <div className="pcard-tabs" style={{ paddingInline: 0 }}>
         {b.routines.map((x, i) => <button key={x.id || i} className={'pcard-tab' + (i === tab ? ' on' : '')} onClick={() => setTab(i)}>{x.emoji} {x.name}</button>)}
       </div>}
       {r && <RoutineBlock r={r} unit={S.unit} />}

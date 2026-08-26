@@ -142,6 +142,7 @@ export default function Icon({ name, size, className = '', style, ...rest }) {
   return (
     <svg
       className={'icn ' + className}
+      data-icon={name}
       viewBox="0 0 24 24"
       aria-hidden="true"
       focusable="false"

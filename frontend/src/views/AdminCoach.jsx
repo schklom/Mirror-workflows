@@ -294,7 +294,7 @@ export default function AdminCoach() {
       <details className="adm-fold">
         <summary>Activity <Icon name="chevronRight" className="chev" /></summary>
         <div className="adm-fold-b">
-          <div className="tiles" style={{ textAlign: 'left', marginBottom: 10 }}>
+          <div className="tiles" style={{ textAlign: 'start', marginBottom: 10 }}>
             <div className="tile"><div className="l">Jobs today</div><div className="v" style={{ fontSize: '1.1rem' }}>{d.jobsToday}</div></div>
             <div className="tile"><div className="l">Last success</div><div className="v" style={{ fontSize: '.85rem' }}>{rel(d.lastSuccess?.at)}</div></div>
           </div>

@@ -70,6 +70,15 @@ describe('list_routines', () => {
     })
   })
 
+  test('reports progression exclusion in routine summaries and details', () => {
+    S.routines[0].excludeFromProgression = true
+    const summary = call('list_routines').routines.find(r => r.id === S.routines[0].id)
+    const detail = call('get_routine', { routine_id: S.routines[0].id })
+
+    expect(summary.exclude_from_progression).toBe(true)
+    expect(detail.exclude_from_progression).toBe(true)
+  })
+
   test('list_routines entries line up with get_routine (no id drift)', () => {
     const list = call('list_routines').routines
     list.forEach(summary => {

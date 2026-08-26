@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { buildPlanBundle, parsePlan } from './plan-share.js'
+import { buildPlanBundle, mergePlan, parsePlan } from './plan-share.js'
 
 // There was no test file for plan sharing at all, which is how a whole prescription field
 // went missing without anyone noticing.
@@ -22,6 +22,17 @@ describe('what survives a shared plan', () => {
 
   it('carries planned warm-ups', () => {
     expect(roundTrip({ warmupSets: 3 }).warmupSets).toBe(3)
+  })
+
+  it('carries progression exclusion on a routine through export and merge', () => {
+    const source = stateWith({})
+    source.routines[0].excludeFromProgression = true
+    const bundle = parsePlan(buildPlanBundle(source, 'Plan'))
+    const target = { routines: [], week: {}, customEx: [] }
+
+    expect(bundle.routines[0].excludeFromProgression).toBe(true)
+    mergePlan(target, bundle)
+    expect(target.routines[0].excludeFromProgression).toBe(true)
   })
 
   it('drops an intensifier it does not recognise rather than passing it on', () => {

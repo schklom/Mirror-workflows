@@ -493,6 +493,14 @@ describe('buildSets', () => {
       .toEqual([{ w: 60, r: 10, done: false }, { w: 62.5, r: 8, done: false }])
   })
 
+  it('can use a deload target without carrying regular-session values into it', () => {
+    const S = { exWeights: { [LIFT]: { w: 75 } }, workouts: [{ d: '2026-01-01', entries: [{ id: LIFT, sets: [
+      { w: 75, r: 10, done: true }, { w: 75, r: 9, done: true }
+    ] }] }] }
+    expect(buildSets(S, { id: LIFT, sets: 2, reps: 12, weight: 40 }, { useTarget: true }))
+      .toEqual([{ w: 40, r: 12, done: false }, { w: 40, r: 12, done: false }])
+  })
+
 })
 
 describe('applyIntensifierPlan', () => {

@@ -374,6 +374,25 @@ describe('sessionsFor', () => {
     expect(sessionsFor(S, LIFT).map(s => s.d)).toEqual(['2026-01-01'])
   })
 
+  it('ignores marked deload workouts when it calculates the next regular target', () => {
+    const target = { sets: 3, reps: 5, weight: 60 }
+    const entry = (weight, reps) => ({
+      id: LIFT,
+      target: { ...target, weight },
+      sets: reps.map(r => ({ w: weight, r, done: true }))
+    })
+    const S = {
+      unit: 'kg',
+      workouts: [
+        { d: '2026-01-01', entries: [entry(60, [5, 5, 5])] },
+        { d: '2026-01-08', excludeFromProgression: true, entries: [entry(30, [8, 8])] }
+      ]
+    }
+
+    expect(sessionsFor(S, LIFT).map(s => s.d)).toEqual(['2026-01-01'])
+    expect(nextPrescription(S, { id: LIFT, ...target, prog: 'linear' }).weight).toBe(62.5)
+  })
+
   it('reads a legacy entry that has no target without crashing', () => {
     const S = { unit: 'kg', workouts: [{ d: '2026-01-01', entries: [{ id: LIFT, sets: [{ w: 60, r: 5, done: true }] }] }] }
     expect(sessionsFor(S, LIFT)).toHaveLength(1)

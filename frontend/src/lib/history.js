@@ -312,9 +312,11 @@ function buildWorkSets(S, cfg, options = {}) {
   const n = Math.max(1, cfg.sets || 1)
   const mode = modeOf(cfg)
   const preferLast = !!options.preferLast
+  const useTarget = !!options.useTarget
   const sets = []
-  // Last time's set at the same position, falling back to its final set when the plan grew.
-  const prevAt = i => (last ? (last.sets[i] || last.sets[last.sets.length - 1]) : null)
+  // A deload routine must use its own prescription instead of carrying regular-session values
+  // into the workout. Other planned sessions keep the existing history-first behaviour.
+  const prevAt = i => (!useTarget && last ? (last.sets[i] || last.sets[last.sets.length - 1]) : null)
 
   if (mode === 'cardio') {
     for (let i = 0; i < n; i++) {
@@ -339,7 +341,9 @@ function buildWorkSets(S, cfg, options = {}) {
     const usable = prev && prev.r > 0 ? prev : null
     // Planned sessions may use the confirmed working weight, while freestyle should reproduce
     // the load of each matching set when that option is requested.
-    const w = preferLast && usable ? usable.w : (conf && conf.w > 0 ? conf.w : (usable ? usable.w : cfg.weight))
+    const w = useTarget
+      ? cfg.weight
+      : preferLast && usable ? usable.w : (conf && conf.w > 0 ? conf.w : (usable ? usable.w : cfg.weight))
     sets.push({ w, r: usable ? usable.r : cfg.reps, done: false })
   }
   return sets

@@ -98,6 +98,58 @@ describe('get_routine', () => {
     })
   })
 
+  test('resolves custom exercises from the current profile state', () => {
+    const custom = { id: 'cx-sled-drag', n: 'Sled drag', bp: 'upper legs' }
+    S.customEx = [custom]
+    S.routines[0].ex.push({ id: custom.id, sets: 3, reps: 20 })
+
+    const r = call('get_routine', { routine_id: S.routines[0].id })
+    expect(r.exercises.at(-1)).toMatchObject({
+      id: custom.id,
+      name: 'Sled drag',
+      body_part: 'upper legs'
+    })
+  })
+
+  test('returns both bounds of a reps range', () => {
+    const cfg = S.routines[0].ex[0]
+    Object.assign(cfg, { mode: 'reps', reps: 8, repsMin: 8, repsMax: 12 })
+
+    const r = call('get_routine', { routine_id: S.routines[0].id })
+    expect(r.exercises[0]).toMatchObject({ reps: 8, reps_min: 8, reps_max: 12 })
+  })
+
+  test('projects routine and exercise progression rules from prog', () => {
+    S.routines[0].prog = 'greyskull'
+    S.routines[0].ex[0].prog = 'double'
+
+    const r = call('get_routine', { routine_id: S.routines[0].id })
+    expect(r).toMatchObject({ policy: 'greyskull', policy_name: 'Greyskull LP' })
+    expect(r.exercises[0].policy_override).toBe('double')
+  })
+
+  test('a routine with no prog reports the policy the app actually runs, not off', () => {
+    delete S.routines[0].prog
+    delete S.routines[0].ex[0].prog
+
+    // policyFor defaults reps to linear (progression.js:73) and RoutineEdit.jsx:59 shows
+    // that same default, so reporting 'off' here would misdescribe every untouched routine.
+    const r = call('get_routine', { routine_id: S.routines[0].id })
+    expect(r.policy).toBe('linear')
+    expect(r.exercises[0].policy).toBe('linear')
+    expect(r.exercises[0].policy_override).toBeNull()
+  })
+
+  test('a policy the mode cannot run is clamped, not echoed back raw', () => {
+    S.routines[0].prog = 'greyskull'                       // reps-only policy
+    S.customEx = [{ id: 'cx-plank', n: 'Plank', bp: 'waist' }]
+    S.routines[0].ex.push({ id: 'cx-plank', mode: 'time', sets: 3, sec: 60 })
+
+    const view = call('get_routine', { routine_id: S.routines[0].id }).exercises.at(-1)
+    expect(view.mode).toBe('time')
+    expect(view.policy).toBe('off')      // POLICIES_FOR.time excludes greyskull
+  })
+
   test('throws ENOENT on a bogus routine id', () => {
     expect(() => call('get_routine', { routine_id: 'bogus' })).toThrow()
   })
@@ -486,6 +538,45 @@ describe('muscle_balance', () => {
     expect(worked.size + neg.size).toBe(all.size)
     expect([...worked].every(s => all.has(s))).toBe(true)
     expect([...neg].every(s => all.has(s))).toBe(true)
+  })
+
+  test('counts custom exercises — they resolve from state, not from the catalogue', () => {
+    const total = r => r.worked.reduce((n, w) => n + w.effective_sets, 0)
+    const before = call('muscle_balance', { period: 'all' })
+
+    // A custom exercise is absent from EXIDX in this process: the app merges S.customEx in
+    // via registerCustom() at store load, the MCP server does not. Its sets used to vanish
+    // from the muscle map entirely.
+    S.customEx = [{ id: 'cx-hollow-hold', n: 'Hollow hold', bp: 'waist', tg: 'abs' }]
+    S.workouts[0].entries.push({
+      id: 'cx-hollow-hold',
+      sets: [{ sec: 45, done: true }, { sec: 45, done: true }]
+    })
+
+    const after = call('muscle_balance', { period: 'all' })
+    expect(total(after)).toBeGreaterThan(total(before))
+    expect(after.worked.find(w => w.slug === 'abs')?.effective_sets)
+      .toBeGreaterThan(before.worked.find(w => w.slug === 'abs')?.effective_sets || 0)
+  })
+
+  test('still counts a DELETED custom, from the snapshot left on the entry', () => {
+    const total = r => r.worked.reduce((n, w) => n + w.effective_sets, 0)
+    const before = total(call('muscle_balance', { period: 'all' }))
+
+    // Exactly what sheets.jsx:421-426 leaves behind when a custom exercise is deleted: the
+    // customEx row is gone, the history entry keeps `n` + `muscleSnapshot`. loadOf reads that
+    // snapshot off the entry — so nothing may be attached over the top of it.
+    S.customEx = []
+    S.workouts[0].entries.push({
+      id: 'cx-deleted-hold',
+      n: 'Hollow hold',
+      muscleSnapshot: { n: 'Hollow hold', bp: 'waist', muscleWeights: { abs: 1 } },
+      sets: [{ sec: 45, done: true }, { sec: 45, done: true }]
+    })
+
+    const after = call('muscle_balance', { period: 'all' })
+    expect(total(after)).toBeGreaterThan(before)
+    expect(after.worked.find(w => w.slug === 'abs')?.effective_sets).toBeGreaterThan(0)
   })
 
   test('period windows are inclusive: week ≤ month ≤ all', () => {

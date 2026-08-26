@@ -8,9 +8,9 @@
 import { EXIDX } from './exercises.js'
 import { uid } from './format.js'
 import { isWarmupRow } from './workout-model.js'
-import { HEVY_ID_MAP } from './hevy-id-map.js'
+import { HEVY_ID_MAP, HEVY_TITLE_MAP } from './hevy-id-map.js'
 
-export { HEVY_ID_MAP }
+export { HEVY_ID_MAP, HEVY_TITLE_MAP }
 export const HEVY_API = 'https://api.hevyapp.com'
 export const HEVY_DEV_SETTINGS = 'https://hevy.com/settings?developer'
 

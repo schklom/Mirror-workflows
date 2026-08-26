@@ -38,6 +38,21 @@ These apps have been tested to work without adjustments to the column names:
 | **Gravl** | Profile → Export Data | 
 | **Hevy** | Profile → Settings → Export & Import Data (Workouts or Measurements) | 
 
+### Hevy API (direct)
+
+If you have **Hevy Pro**, you can skip the CSV and import straight from Hevy:
+
+1. Open [Hevy → Settings → Developer](https://hevy.com/settings?developer) and create an API key
+2. In openGym: **Settings → Import from Hevy**
+3. Paste the key (used only for that import — it is not saved)
+4. Choose whether to bring **workouts**, **weigh-ins**, or both, then confirm
+
+Exercises are matched by Hevy’s `exercise_template_id` through a generated lookup
+table (`frontend/src/lib/hevy-id-map.js`) — not by the localized names on each set.
+To regenerate the table (developers): set `HEVY_API_KEY` in the environment or
+`.env`, then run `node scripts/build-hevy-id-map.mjs`. Unmapped lifts become your
+own exercises. Days that already have data here are left alone.
+
 You can also create your own `CSV` file:
 
 ### Minimal Example

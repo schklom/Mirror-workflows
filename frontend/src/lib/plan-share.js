@@ -12,7 +12,7 @@ import { EXIDX, isBodyweightEq } from './exercises.js'
 import { modeOf, fmtSec, isBw, isPerSide, sideReps, MAX_PLANNED_WARMUPS } from './history.js'
 import { deriveSessionName } from './session-merge.js'
 import { uid, todayISO, DAYN, weekOrder, weekStartOf, fmtNum, exCount } from './format.js'
-import { t, exerciseNameFor, getLang } from './i18n-core.js'
+import { t, exerciseNameFor, getLang, RTL_LANGS } from './i18n-core.js'
 import { convertWeight } from './units.js'
 import { MUSCLES, inMuscleOrder } from './muscles.js'
 
@@ -355,7 +355,7 @@ export function planPrintHTML(S, owner) {
     ? routines.map(r => routineHTML(r, unit)).join('')
     : `<p class="none">${esc(t('No routines yet.'))}</p>`
   const sub = [owner, todayISO()].filter(Boolean).map(esc).join(' · ')
-  return `<!doctype html><html lang="${getLang()}" dir="${getLang() === 'ar' ? 'rtl' : 'ltr'}"><head><meta charset="utf-8">
+  return `<!doctype html><html lang="${getLang()}" dir="${RTL_LANGS.has(getLang()) ? 'rtl' : 'ltr'}"><head><meta charset="utf-8">
 <title>${esc(t('Weekly Training Plan'))}</title>
 <style>
   @page { margin: 16mm 15mm; }

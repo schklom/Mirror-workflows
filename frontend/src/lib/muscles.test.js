@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { EXIDX, EXDB, smOf } from './exercises.js'
+import { LANGS, DERIVED_LOCALES } from './i18n-core.js'
 import {
   MUSCLE_NAME, exerciseMuscleSnapshot, hasExplicitMuscleMetadata, levelsOf, loadOf,
   loadOfWorkouts, matchesMuscleGroups, muscleBalanceWindow, muscleGroupsOf, musclesOf, rankOf
@@ -216,8 +217,11 @@ describe('muscle balance windows and ranking', () => {
 // exercise (QA copy): the packs only ever had the dataset's own lowercase spelling.
 describe('MUSCLE_NAME as i18n keys', () => {
   const packs = import.meta.glob('../locales/*.js', { eager: true })
+  // One pack per non-English language, except a derived locale such as de-CH — counted from
+  // LANGS rather than hardcoded, so adding a language cannot silently shrink this check.
+  const packCount = Object.keys(LANGS).filter(code => code !== 'en' && !DERIVED_LOCALES[code]).length
   it('every display name is a key in every locale pack', () => {
-    expect(Object.keys(packs).length).toBe(14)
+    expect(Object.keys(packs).length).toBe(packCount)
     for (const [file, mod] of Object.entries(packs)) {
       const missing = Object.values(MUSCLE_NAME).filter(name => !(name in mod.default))
       expect(missing, file).toEqual([])

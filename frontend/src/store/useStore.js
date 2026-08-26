@@ -9,6 +9,7 @@ import { MOBILE, initReminderSync, nativeLoad, nativeSave, onAppActive, syncRemi
 import { mergeStates, localExtras } from '../lib/sync-merge.js'
 import { loadRemote, chooseLocal, forgetRemote, connect } from '../lib/remote.js'
 import { loadCoachDevice, saveCoachDevice, coachDeviceSettings } from '../lib/coach-device.js'
+import { RTL_LANGS } from '../lib/i18n-core.js'
 
 import { WC_DEFAULT } from '../lib/workout-controls.js'
 
@@ -85,12 +86,31 @@ export const DEF = {
 }
 const clone = o => JSON.parse(JSON.stringify(o))
 
+// First run on a device whose language renders right-to-left starts in that language
+// rather than English; the boot script in index.html mirrors this check for the
+// pre-paint direction. The choice is persisted like any other setting once the user
+// picks a language.
+const detectedLang = () => {
+  try {
+    const base = (navigator.language || '').toLowerCase().split('-')[0]
+    if (RTL_LANGS.has(base)) return base
+  } catch (e) { /* ignore */ }
+  return 'en'
+}
+
 function loadState() {
   try {
     const raw = localStorage.getItem(KEY)
-    if (raw) return Object.assign(clone(DEF), JSON.parse(raw))
+    if (raw) {
+      const saved = JSON.parse(raw)
+      const s = Object.assign(clone(DEF), saved)
+      if (!saved.lang) s.lang = detectedLang()
+      return s
+    }
   } catch (e) { /* ignore */ }
-  return clone(DEF)
+  const s = clone(DEF)
+  s.lang = detectedLang()
+  return s
 }
 
 const hasData = st => !!((st.workouts || []).length || (st.routines || []).length || (st.bodyweight || []).length)

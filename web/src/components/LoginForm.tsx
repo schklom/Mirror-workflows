@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { ApiError, getVersion } from '@/lib/api';
-import { apiService } from '@/lib/apiService';
+import { apiService, updateApiService } from '@/lib/apiService';
 import { hashPasswordForLogin } from '@/lib/crypto';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,6 +12,7 @@ import { PasswordInput } from '@/components/PasswordInput';
 import { Checkbox } from '@/components/Checkbox';
 import { WebCryptoWarningModal } from './modals/WebCryptoWarningModal';
 import { LanguageNativeSelect } from './LanguageNativeSelect';
+import { ApiV2Service } from '@/lib/apiv2';
 
 const SLOW_LOGIN_THRESHOLD_MS = 10_000;
 const SLOW_LOGIN_TOAST_DURATION_MS = 30_000;
@@ -62,7 +63,8 @@ export const LoginForm = () => {
     setLoading(true);
 
     try {
-      const salt = await apiService().getSalt(fmdId);
+      const [salt, protoVersion] = await new ApiV2Service().getSalt(fmdId);
+      updateApiService(protoVersion);
 
       if (!salt) {
         toast.error(t('errors:account_not_found'));

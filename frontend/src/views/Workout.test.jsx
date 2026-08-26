@@ -140,6 +140,40 @@ describe('Workout set completion flow', () => {
     expect(mocks.startRest).not.toHaveBeenCalled()
   })
 
+  // Issue #10. The workout is where the field earns its keep: whatever the routine wrote has
+  // to be the number the timer actually counts down, and a superset rests once for the group.
+  it('times the exercise’s own rest instead of the global one', async () => {
+    await mount([exercise('heavy-squat', [false, false], {
+      target: { mode: 'reps', reps: 5, weight: 100, restSec: 180 },
+    })])
+    await toggleSet(0)
+
+    expect(mocks.startRest).toHaveBeenCalledWith(180)
+  })
+
+  it('rests a superset for the longest its members asked for', async () => {
+    // A closes the round, but B is the one still recovering — 150 s, not A's 45 s.
+    await mount([
+      exercise('superset-a', [false, false], { sg: 'g1', target: { mode: 'reps', reps: 12, weight: 20, restSec: 45 } }),
+      exercise('superset-b', [false, false], { sg: 'g1', target: { mode: 'reps', reps: 5, weight: 100, restSec: 150 } }),
+    ])
+    await toggleSet(0)
+    await act(async () => { root.render(React.createElement(Workout)) })
+    await toggleSet(2)
+
+    expect(mocks.startRest).toHaveBeenCalledWith(150)
+  })
+
+  it('still starts an explicit rest when the global timer is switched off', async () => {
+    await mount([exercise('heavy-squat', [false, false], {
+      target: { mode: 'reps', reps: 5, weight: 100, restSec: 180 },
+    })])
+    mocks.S.restSec = 0
+    await toggleSet(0)
+
+    expect(mocks.startRest).toHaveBeenCalledWith(180)
+  })
+
   it('leaves a completed superset selected while its top-weight sheet owns the advance choice', async () => {
     const group = 'superset-1'
     await mount([

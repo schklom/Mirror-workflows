@@ -42,6 +42,32 @@ export function restOnRecheck({ timerRunning, unitDone, lastUnit }) {
   return !timerRunning && restAfterSet({ unitDone, lastUnit })
 }
 
+/**
+ * How long the rest after a completed set should run, in seconds.
+ *
+ * An exercise may carry its own `restSec` in its target (issue #10) — a heavy triple and a set
+ * of curls do not want the same break. One that carries none inherits `defaultRestSec`, the
+ * global rest timer, which is what every routine did before the field existed.
+ *
+ * `unit` is the superset group the set belongs to, as entry indices — a plain exercise is a
+ * group of one. A group rests once, after the round, so it takes the LONGEST rest any of its
+ * members asked for: the shortest would send you back to the bar before the member that needs
+ * the most recovery is ready.
+ *
+ * `defaultRestSec` of 0 is the rest timer turned off (v1.2.11). That silences the members that
+ * have no rest of their own, but an exercise that explicitly asks for one still gets it — the
+ * setting is a default, and this field overrides the default.
+ */
+export function restSecFor(entries, unit, defaultRestSec) {
+  const fallback = defaultRestSec > 0 ? defaultRestSec : 0
+  const idxs = Array.isArray(unit) && unit.length ? unit : []
+  if (!idxs.length) return fallback
+  return idxs.reduce((longest, idx) => {
+    const own = entries?.[idx]?.target?.restSec
+    return Math.max(longest, own > 0 ? own : fallback)
+  }, 0)
+}
+
 // Decide where a newly completed superset set goes next. Spent members are skipped, including
 // across the wrap. A round ends when no later member in display order has work left; this makes
 // the last *active* member the boundary rather than blindly using the group's last array index.

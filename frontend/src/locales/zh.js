@@ -170,6 +170,7 @@ export default {
   'Remove drop': '移除递减组',
   'Remove burst': '移除爆发组',
   'Rest (s)': '休息（秒）',
+  'Rest after each set of this exercise. Leave at 0 to use your default rest timer.': '这个动作每组之后的休息时间。留在 0 就使用默认的休息计时。',
   'Drop-set / rest-pause': '递减组 / 歇息暂停组',
   'Intensifier': '强化技巧',
   'None': '无',

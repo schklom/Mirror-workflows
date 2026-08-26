@@ -8,7 +8,7 @@ import { fmtNum, fmtDate, todayISO, exCount, DAYN } from '../lib/format.js'
 import { beep, vibrate } from '../lib/sound.js'
 import { t, exerciseNameFor } from '../lib/i18n.js'
 import { api } from '../lib/api.js'
-import { setProgressHighWater, supersetFlowStep, restAfterSet, restOnRecheck } from '../lib/supersetFlow.js'
+import { setProgressHighWater, supersetFlowStep, restAfterSet, restOnRecheck, restSecFor } from '../lib/supersetFlow.js'
 import Media from '../components/Media.jsx'
 import { startFlow, exercisePicker, exConfigSheet, exerciseDetailSheet, topWeightSheet, finishWorkout, workoutCompleteSheet, confirmSheet, exerciseNoteSheet, sessionNoteSheet } from '../sheets.jsx'
 import Icon from '../components/Icon.jsx'
@@ -417,11 +417,15 @@ function ActiveWorkout() {
       const freshUnitIdx = freshUnits.indexOf(freshUnit)
       const freshLastUnit = freshUnitIdx >= freshUnits.length - 1
       const freshUnitDone = freshUnit?.every(ui => fresh.entries[ui].sets.every(x => x.done))
+      // The rest this set has earned: the exercise's own restSec when it set one, the global
+      // timer when it did not, and the longest of the group's across a superset (issue #10).
+      // Resolved once here so every branch below times the same break.
+      const restSec = restSecFor(fresh.entries, freshUnit || [idx], S.restSec)
 
       // A re-check of finished work must not navigate or reopen a sheet, but it may still owe
       // you a rest — see restOnRecheck, and the other half of issue #3.
       if (!progress.isNew) {
-        if (restOnRecheck({ timerRunning: !!useUI.getState().timer, unitDone: freshUnitDone, lastUnit: freshLastUnit })) startRest(S.restSec)
+        if (restOnRecheck({ timerRunning: !!useUI.getState().timer, unitDone: freshUnitDone, lastUnit: freshLastUnit })) startRest(restSec)
         return
       }
 
@@ -430,7 +434,7 @@ function ActiveWorkout() {
       // after this set replaces the one that was running, rather than stacking on it.
       if (freshUnitDone) stopRest()
       if (!freshUnit || freshUnit.length <= 1) {
-        if (restAfterSet({ unitDone: freshUnitDone, lastUnit: freshLastUnit })) startRest(S.restSec)
+        if (restAfterSet({ unitDone: freshUnitDone, lastUnit: freshLastUnit })) startRest(restSec)
         return
       }
 
@@ -441,11 +445,11 @@ function ActiveWorkout() {
           const nextUnit = freshUnits[freshUnitIdx + 1]
           // The top-weight sheet's explicit "Just close" path owns the choice not to advance.
           if (!askTop && nextUnit?.length) update(s => { if (s.active) s.active.cur = nextUnit[0] })
-          startRest(S.restSec)
+          startRest(restSec)
         }
       } else {
         if (step.nextIdx != null) update(s => { if (s.active) s.active.cur = step.nextIdx })
-        if (step.roundDone) startRest(S.restSec)
+        if (step.roundDone) startRest(restSec)
       }
     }
   }

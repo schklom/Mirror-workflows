@@ -170,6 +170,7 @@ export default {
   'Remove drop': '드롭세트 제거',
   'Remove burst': '버스트 제거',
   'Rest (s)': '휴식(초)',
+  'Rest after each set of this exercise. Leave at 0 to use your default rest timer.': '이 운동의 세트마다 갖는 휴식이에요. 기본 휴식 타이머를 쓰려면 0으로 두세요.',
   'Drop-set / rest-pause': '드롭세트 / 레스트포즈',
   'Intensifier': '강도 기법',
   'None': '없음',

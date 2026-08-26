@@ -606,14 +606,19 @@ function ExConfig({ ex, existing, onSave, onDelete, close, routine, initial }) {
     // shape it had — and reads back as 0 either way (buildSets).
     const warmupSets = Math.max(0, Math.min(MAX_PLANNED_WARMUPS, Math.round(c.warmupSets) || 0))
     const withWarmups = warmupSets ? { warmupSets } : {}
-    if (cardio) onSave({ sets, min: Math.max(1, Math.round(c.min) || 20), speed: Math.max(0, c.speed || 8), ...withNote })
-    else if (mode === 'time') onSave({ sets, mode: 'time', sec: Math.max(1, Math.round(c.sec) || 45), weight: Math.max(0, c.weight || 0), ...flags, ...prog, ...withNote, ...withWarmups })
+    // Per-exercise rest (issue #10): written only when a positive value was set, so 0 keeps
+    // inheriting the global rest timer and a config that never touched it stays the shape it
+    // was. Mode-independent — a heavy triple, a plank and a cardio interval all rest.
+    const restSec = Math.max(0, Math.round(c.restSec) || 0)
+    const withRest = restSec ? { restSec } : {}
+    if (cardio) onSave({ sets, min: Math.max(1, Math.round(c.min) || 20), speed: Math.max(0, c.speed || 8), ...withNote, ...withRest })
+    else if (mode === 'time') onSave({ sets, mode: 'time', sec: Math.max(1, Math.round(c.sec) || 45), weight: Math.max(0, c.weight || 0), ...flags, ...prog, ...withNote, ...withWarmups, ...withRest })
     else {
       // A unilateral target is stored even: the split has to divide, and a typed 15 would
       // otherwise plan seven reps on one side and eight on the other, every session.
       const typed = Math.max(1, Math.round(c.reps) || 10)
       const reps = perSide ? Math.ceil(typed / 2) * 2 : typed
-      const out = { sets, mode: 'reps', reps, weight: Math.max(0, c.weight || 0), ...flags, ...(perSide ? { side: true } : {}), ...prog, ...withNote, ...withWarmups }
+      const out = { sets, mode: 'reps', reps, weight: Math.max(0, c.weight || 0), ...flags, ...(perSide ? { side: true } : {}), ...prog, ...withNote, ...withWarmups, ...withRest }
       if (policyFor({ ...c, id: ex.id }, routine, 'reps') === 'double') out.repsMin = Math.min(reps, Math.max(1, Math.round(c.repsMin) || Math.max(1, reps - 2)))
       // A ceiling below the working reps would tell you to add a set on day one.
       if (bw && !(out.weight > 0) && c.repsMax > 0) out.repsMax = Math.max(reps, Math.round(c.repsMax))
@@ -680,6 +685,16 @@ function ExConfig({ ex, existing, onSave, onDelete, close, routine, initial }) {
     {mode === 'time' && !bw && <div className="small dim" style={{ marginBottom: 18 }}>
       {t('A timer runs while you hold the set. Leave the weight at 0 for bodyweight holds.')}
     </div>}
+    {/* Per-exercise rest (issue #10). Its own full-width row, like the other steppers with an
+        explanation under them, and outside every mode branch because a heavy triple, a plank
+        and a cardio interval all rest — they just do not all want the same break. */}
+    <div className="row cfgrow" style={{ marginBottom: 6 }}>
+      <Stepper label={t('Rest (s)')} value={c.restSec || 0} step={15} decimal={false}
+        onChange={v => setC(x => ({ ...x, restSec: v }))} />
+    </div>
+    <div className="small dim" style={{ marginBottom: 18 }}>
+      {t('Rest after each set of this exercise. Leave at 0 to use your default rest timer.')}
+    </div>
     {/* ---------- bodyweight + per side (issues #31/#32/#33) ---------- */}
     {!cardio && <div className="sect-b" style={{ marginBottom: 8 }}>
       <Row icon="figureStrength" iconTint="var(--acc)" title={t('Bodyweight')}

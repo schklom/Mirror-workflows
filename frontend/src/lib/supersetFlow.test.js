@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { setProgressHighWater, supersetFlowStep, restAfterSet, restOnRecheck } from './supersetFlow.js'
+import { insertionIndexAfterCurrentUnit, nextUnfinishedUnit, setProgressHighWater, supersetFlowStep, restAfterSet, restOnRecheck } from './supersetFlow.js'
 
 const entry = done => ({ sets: done.map(value => ({ done: value })) })
 
@@ -49,6 +49,26 @@ describe('supersetFlowStep', () => {
       roundDone: true,
       nextIdx: 0
     })
+  })
+})
+
+describe('active workout unit ordering', () => {
+  it('inserts after the whole current unit', () => {
+    expect(insertionIndexAfterCurrentUnit([[0, 1], [2]], 0, 3)).toBe(2)
+    expect(insertionIndexAfterCurrentUnit([[0], [1]], 1, 2)).toBe(2)
+    expect(insertionIndexAfterCurrentUnit([], 0, 0)).toBe(0)
+  })
+
+  it('finds the next unfinished unit, skips completed units, and wraps once', () => {
+    const entries = [entry([false]), entry([true]), entry([false]), entry([true])]
+    const units = [[0], [1], [2, 3]]
+    expect(nextUnfinishedUnit(entries, units, 0)).toEqual([2, 3])
+    expect(nextUnfinishedUnit(entries, units, 2)).toEqual([0])
+  })
+
+  it('returns null only when every unit is complete', () => {
+    const entries = [entry([true]), entry([true])]
+    expect(nextUnfinishedUnit(entries, [[0], [1]], 1)).toBeNull()
   })
 })
 

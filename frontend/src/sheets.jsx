@@ -23,6 +23,7 @@ import { nextPrescription, applyPrescription, policyFor, defaultIncrement, POLIC
 import { MOBILE, shareExport } from './lib/mobile.js'
 import { buildCompletedWorkout } from './lib/finish-workout.js'
 import { isWarmupRow } from './lib/workout-model.js'
+import { nextUnfinishedUnit } from './lib/supersetFlow.js'
 
 const S = () => useStore.getState().S
 const update = (...a) => useStore.getState().update(...a)
@@ -1058,8 +1059,8 @@ function TopWeight({ entryIdx, close }) {
   const units = supersetUnits(A ? A.entries : [])
   const unit = entry ? unitOf(units, entryIdx) : []
   const unitDone = !!entry && unit.every(i => A.entries[i].sets.every(s => s.done))
-  const unitIdx = units.findIndex(u => u === unit)
-  const isLastUnit = unitIdx === units.length - 1
+  const nextUnit = unitDone ? nextUnfinishedUnit(A.entries, units, entryIdx) : null
+  const workoutDone = unitDone && !nextUnit
   if (!entry || !ex) return null
 
   const commit = advance => {
@@ -1072,8 +1073,8 @@ function TopWeight({ entryIdx, close }) {
     })
     close()
     if (advance && unitDone) {
-      if (isLastUnit) workoutCompleteSheet()               // whole workout done → finish/continue prompt
-      else update(s => { s.active.cur = units[unitIdx + 1][0] })
+      if (workoutDone) workoutCompleteSheet()               // no unfinished unit → finish/continue prompt
+      else update(s => { s.active.cur = nextUnit[0] })
     } else toast(t('Tracked — next time starts at {0}', fmtNum(S().exWeights[entry.id].w) + ' ' + st.unit))
   }
   return <>
@@ -1083,7 +1084,7 @@ function TopWeight({ entryIdx, close }) {
     <div style={{ height: 10 }} />
     {prevBest > 0 ? <div className="small dim" style={{ textAlign: 'center', marginBottom: 12 }}>{t('Previous best:')} {fmtNum(prevBest)} {st.unit}{maxSet > prevBest && <span style={{ color: 'var(--yellow)' }}> — {t('new record!')}</span>}</div> : <div style={{ height: 4 }} />}
     {unitDone ? <>
-      <Button variant="primary" trailingIcon={isLastUnit ? null : 'chevronRight'} onClick={() => commit(true)}>{isLastUnit ? t('Save') : t('Save & next exercise')}</Button>
+      <Button variant="primary" trailingIcon={workoutDone ? null : 'chevronRight'} onClick={() => commit(true)}>{workoutDone ? t('Save') : t('Save & next exercise')}</Button>
       <div style={{ height: 8 }} /><Button variant="ghost" className="dim" onClick={() => commit(false)}>{t('Just close')}</Button>
     </> : <Button variant="primary" onClick={() => commit(false)}>{t('Save weight')}</Button>}
   </>

@@ -1,4 +1,6 @@
 // @vitest-environment happy-dom
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import React, { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
@@ -8,6 +10,8 @@ import { DEF, useStore } from '../store/useStore.js'
 import { _setLangState } from '../lib/i18n-core.js'
 import de from '../locales/de.js'
 import { buildPlanBundle, parsePlan } from '../lib/plan-share.js'
+
+const cssSource = readFileSync(resolve(process.cwd(), 'src/index.css'), 'utf8')
 
 const mocks = vi.hoisted(() => ({ exConfigSheet: vi.fn() }))
 vi.mock('../lib/api.js', () => ({ api: vi.fn(() => Promise.resolve({})) }))
@@ -52,6 +56,22 @@ function itemFor(name) {
 
 function moveButton(name, direction) {
   return itemFor(name).querySelector(`button[aria-label="${direction}"]`)
+}
+
+function pointerActivateArea(button) {
+  // Model browser hit-testing: pointer-events:none removes the disabled button
+  // from the target chain, exposing the clickable routine row underneath.
+  const disabledRule = cssSource.match(/\.iconbtn:disabled\s*\{[^}]*\}/)?.[0] || ''
+  const target = /pointer-events\s*:\s*none/.test(disabledRule)
+    ? button.closest('.item')
+    : button
+  act(() => {
+    target.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }))
+    target.dispatchEvent(new PointerEvent('pointerup', { bubbles: true }))
+    if (!(target instanceof HTMLButtonElement && target.disabled)) {
+      target.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    }
+  })
 }
 
 beforeEach(() => {
@@ -105,6 +125,23 @@ describe('routine move controls', () => {
     ])
   })
 
+  it('moves a standalone occurrence down with every configuration field intact', () => {
+    const selected = {
+      ...entry('c1', 10),
+      mode: 'reps', prog: 'double', repsMin: 4, repsMax: 12,
+      side: true, warmupSets: 2,
+      intensifier: { type: 'restpause', pauseSec: 20 }
+    }
+    setRoutine([selected, entry('c2', 20), entry('c3', 30)])
+    renderRoutine()
+
+    act(() => moveButton('setup-10', 'Move down').click())
+
+    expect(useStore.getState().S.routines[0].ex).toEqual([
+      entry('c2', 20), selected, entry('c3', 30)
+    ])
+  })
+
   it('disables unit-boundary directions without cleaning or persisting state', () => {
     setRoutine([
       entry('c1', 10, 'orphan'),
@@ -117,6 +154,27 @@ describe('routine move controls', () => {
     expect(moveButton('c2', 'Move down').disabled).toBe(true)
     act(() => moveButton('c1', 'Move up').click())
 
+    expect(useStore.getState().S).toBe(before)
+    expect(useStore.getState().S.routines[0].ex[0].sg).toBe('orphan')
+    expect(localStorage.getItem('gym_state_v1')).toBeNull()
+  })
+
+  it('keeps pointer activation in both disabled boundary areas isolated from the routine row', () => {
+    setRoutine([
+      entry('c1', 10, 'orphan'),
+      entry('c2', 20)
+    ])
+    renderRoutine()
+    const before = useStore.getState().S
+    const firstUp = moveButton('c1', 'Move up')
+    const lastDown = moveButton('c2', 'Move down')
+
+    expect(firstUp.disabled).toBe(true)
+    expect(lastDown.disabled).toBe(true)
+    pointerActivateArea(firstUp)
+    pointerActivateArea(lastDown)
+
+    expect(mocks.exConfigSheet).not.toHaveBeenCalled()
     expect(useStore.getState().S).toBe(before)
     expect(useStore.getState().S.routines[0].ex[0].sg).toBe('orphan')
     expect(localStorage.getItem('gym_state_v1')).toBeNull()

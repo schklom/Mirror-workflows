@@ -107,7 +107,18 @@ function BwSheet({ required, onDone, close }) {
   const recent = [...st.bodyweight].reverse().slice(0, 3)
   const delEntry = d => update(s => { s.bodyweight = s.bodyweight.filter(b => b.d !== d) })
   return <>
-    <h3>{required ? t('Quick check-in') : t('Log body weight')}</h3>
+    {/* This sheet opens `locked` — swipe/backdrop/Escape/Android-back all no-op on it (see
+        Modals.jsx) so an accidental tap on "Start" can't be walked back by reflex the way
+        every other sheet in the app can. The two buttons below already cover leaving it
+        deliberately; this is the same close a normal sheet gets everywhere else, just
+        opted back in explicitly instead of by omission. Plain close() — no onDone, no
+        nav — so it's a true no-op: the screen underneath is exactly where you left it. */}
+    {required
+      ? <div className="row between" style={{ marginBottom: 14 }}>
+          <h3 style={{ marginBottom: 0 }}>{t('Quick check-in')}</h3>
+          <button className="iconbtn" aria-label={t('Cancel')} onClick={() => close()}><Icon name="xmark" /></button>
+        </div>
+      : <h3>{t('Log body weight')}</h3>}
     <div className="muted small">{required ? t('Slide or tap to set your weight — tracked before every workout so your curve stays honest.') : t('Today') + ', ' + fmtDate(todayISO(), true)}</div>
     <WeightInput value={v} setValue={setV} unit={unit} />
     <div style={{ height: 14 }} />

@@ -93,6 +93,11 @@ function useRoutineReorder(routineIdentity, exercises, onDrop) {
   onDropRef.current = onDrop
   const hasRows = exercises.length > 0
 
+  useEffect(() => () => {
+    suppressClickRef.current = false
+    window.clearTimeout(suppressTimerRef.current)
+  }, [])
+
   useEffect(() => {
     const list = listRef.current
     if (!list) return undefined
@@ -259,8 +264,7 @@ function useRoutineReorder(routineIdentity, exercises, onDrop) {
     return () => {
       const gesture = gestureRef.current
       clearTimer(gesture); clearFrame(); gestureRef.current = null
-      releaseCapture(gesture); suppressClickRef.current = false
-      window.clearTimeout(suppressTimerRef.current)
+      releaseCapture(gesture)
       document.removeEventListener('pointerdown', onPointerDown)
       document.removeEventListener('pointermove', onPointerMove)
       document.removeEventListener('pointerup', onPointerUp)

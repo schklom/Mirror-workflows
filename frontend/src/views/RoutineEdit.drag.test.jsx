@@ -154,6 +154,18 @@ describe('routine long-press reorder', () => {
     expect(writes).toHaveBeenCalledTimes(1)
   })
 
+  it('suppresses the compatibility click after a successful changed drop', () => {
+    const layout = mount([configured('a'), configured('b'), configured('c')])
+    const item = rows()[0].querySelector('.item')
+    lift(rows()[0], layout.centers[0])
+    pointer(item, 'pointermove', { y: layout.centers[2] + 1 })
+    pointer(item, 'pointerup', { y: layout.centers[2] + 1 })
+    expect(exercises().map(e => e.id)).toEqual(['b', 'c', 'a'])
+
+    act(() => item.click())
+    expect(sheets.exConfigSheet).not.toHaveBeenCalled()
+  })
+
   it('moves a whole grouped unit, never splits another group, and preserves every occurrence payload', () => {
     const pairA = configured('dup', { sg: 'pair', weight: 11, note: 'first', future: { a: 1 } })
     const pairB = configured('dup', { sg: 'pair', weight: 22, note: 'second', future: { b: 2 } })

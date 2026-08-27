@@ -57,7 +57,7 @@ in
     enable = lib.mkEnableOption "openGym self-hosted gym tracker";
 
     package = lib.mkOption {
-      type = lib.types.package;
+      type = lib.types.attrsOf lib.types.package;
       default = opengymPkgs;
       defaultText = lib.literalExpression "opengym packages built from source";
       description = "openGym package set (typically the flake output).";
@@ -217,7 +217,6 @@ in
         ProtectControlGroups = true;
         RestrictNamespaces = true;
         RestrictSUIDSGID = true;
-        MemoryDenyWriteExecute = true;
         LockPersonality = true;
         SystemCallFilter = [
           "@system-service"

@@ -10,6 +10,7 @@ import {
   modeOf, workoutVolume, setsDone, effectiveRoutine, effectiveRoutineId
 } from '../../frontend/src/lib/history.js'
 import { exOr } from '../../frontend/src/lib/exercises.js'
+import { isWarmupRow } from '../../frontend/src/lib/workout-model.js'
 import {
   estimate1RM, best1RM, e1rmSeries, DEFAULT_FORMULA, REP_CAP
 } from '../../frontend/src/lib/onerm.js'
@@ -53,13 +54,15 @@ function entryView(e, S) {
 }
 
 // Best estimate per exercise, mirroring the UI's PR table: every eligible set across history, biggest wins.
+// Warm-ups are skipped for the same reason bestSetOf() skips them (onerm.js): a heavy ramp row is not a
+// record. Without this the coach's PR and the athlete's PR silently disagree for the same exercise.
 function prTable(S, formula) {
   const byId = new Map()
   for (const w of (S.workouts || [])) {
     for (const e of (w.entries || [])) {
       const ex = exerciseOf(e.id, S)
       for (const s of (e.sets || [])) {
-        if (!s.done) continue
+        if (!s.done || isWarmupRow(s)) continue
         const est = estimate1RM(s.w, s.r, formula)
         if (est == null) continue
         const prev = byId.get(e.id)

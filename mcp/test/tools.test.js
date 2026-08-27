@@ -7,6 +7,7 @@ import { buildDemoState } from '../../frontend/src/lib/demoSeed.js'
 import { EXDB } from '../../frontend/src/lib/exercises.js'
 import { _seedStateForTests } from '../src/state.js'
 import { TOOLS } from '../src/tools.js'
+import { bestSetOf } from '../../frontend/src/lib/onerm.js'
 
 // Re-stated here so the assertions stand alone without reaching into lib internals to learn
 // the demo state's exact values.
@@ -473,6 +474,35 @@ describe('estimate_1rm', () => {
     expect(r.trend).toEqual([])
     const table = call('estimate_1rm', {}).pr_table
     expect(table).toEqual([])
+  })
+
+  test('a heavy warm-up is never a PR — the table matches the app, which excludes warm-ups', () => {
+    // The app scans with bestSetOf(), which skips warm-ups (onerm.js). prTable used to gate on
+    // s.done alone, so a ramp row heavier than the work set became a record the coach reported
+    // and the athlete never saw — for the same exercise, from the same state.
+    S.workouts = [{
+      id: 'w-ramp', d: '2026-07-26', name: 'Legs', start: 1000, end: 1000 + 30 * 60000,
+      vol: 0, prs: [],
+      entries: [{
+        id: LEG_PRESS_ID, target: { sets: 2, reps: 5, mode: 'reps' },
+        sets: [
+          { w: 200, r: 5, done: true, phase: 'warmup' },  // mistyped/greedy ramp row
+          { w: 100, r: 5, done: true }                     // the only real work set
+        ]
+      }]
+    }]
+    _seedStateForTests(S)
+
+    const app = bestSetOf(S.workouts[0].entries[0])
+    expect(app.w).toBe(100)                                // the app ignores the 200 kg warm-up
+
+    const best = call('estimate_1rm', { exercise_id: LEG_PRESS_ID }).best
+    expect(best.w).toBe(100)
+    expect(best.est).toBeCloseTo(app.est, 1)
+
+    const row = call('estimate_1rm', {}).pr_table.find(p => p.exId === LEG_PRESS_ID)
+    expect(row.w).toBe(100)
+    expect(row.est).toBeCloseTo(app.est, 1)
   })
 
   test('a null estimate says which kind of null it is', () => {

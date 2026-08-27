@@ -376,6 +376,16 @@ h4.sec{
   transition:background var(--fast);text-align:left;width:100%;
 }
 .item:active{background:var(--surface-2)}
+.routine-list{position:relative}
+.routine-drag-row{touch-action:pan-y;position:relative;transition:transform var(--fast) var(--ease)}
+.routine-list.is-reordering{user-select:none;-webkit-user-select:none}
+.routine-list.is-reordering .routine-drag-row{transition:none}
+.routine-drag-row.is-dragging{z-index:2;pointer-events:none}
+.routine-drag-row.is-dragging .item{box-shadow:0 10px 28px rgba(0,0,0,.22);background:var(--surface-2)}
+.routine-drop-indicator{
+  position:absolute;left:6px;right:6px;height:3px;border-radius:99px;
+  background:var(--acc);transform:translateY(-50%);pointer-events:none;z-index:3;
+}
 .thumb{width:50px;height:50px;border-radius:9px;object-fit:cover;background:#fff;flex:none}
 .thumb-x{
   display:flex;align-items:center;justify-content:center;font-size:21px;

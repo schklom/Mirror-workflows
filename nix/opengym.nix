@@ -40,17 +40,6 @@ let
   mediaGifRoot =
     if cfg.media.fetchAtBuild then "${packages.opengym-media}/videos" else "${cfg.media.dataDir}/gif";
 
-  nginxListen =
-    if cfg.virtualHost == null then
-      {
-        addr = "0.0.0.0";
-        port = cfg.webPort;
-      }
-    else
-      null;
-
-  nginxServerName = if cfg.virtualHost != null then cfg.virtualHost else "_.${toString cfg.webPort}";
-
 in
 {
   options.services.opengym = {
@@ -147,18 +136,6 @@ in
       description = "VAPID subject for push notifications (defaults to ORIGIN).";
     };
 
-    webPort = lib.mkOption {
-      type = lib.types.port;
-      default = 8080;
-      description = "Port nginx listens on (the port you browse to).";
-    };
-
-    virtualHost = lib.mkOption {
-      type = lib.types.nullOr lib.types.str;
-      default = null;
-      description = "If set, configure as a named virtualHost instead of the default server.";
-    };
-
     media = {
       fetchAtBuild = lib.mkOption {
         type = lib.types.bool;
@@ -170,6 +147,26 @@ in
         type = lib.types.path;
         default = "${cfg.dataDir}/media";
         description = "Directory for runtime-fetched exercise media.";
+      };
+
+      imageRoot = lib.mkOption {
+        type = lib.types.path;
+        readOnly = true;
+        description = "Directory containing exercise images (jpg). For use by a web server.";
+      };
+
+      gifRoot = lib.mkOption {
+        type = lib.types.path;
+        readOnly = true;
+        description = "Directory containing exercise GIFs. For use by a web server.";
+      };
+    };
+
+    web = {
+      root = lib.mkOption {
+        type = lib.types.path;
+        readOnly = true;
+        description = "Built frontend directory (static SPA). For use by a web server.";
       };
     };
 
@@ -241,56 +238,14 @@ in
       };
     };
 
-    services.nginx = {
-      enable = lib.mkDefault true;
+    services.nginx.enable = lib.mkForce false;
 
-      virtualHosts.${nginxServerName} = {
-        default = (cfg.virtualHost == null);
-
-        listen = lib.optionals (cfg.virtualHost == null) [ nginxListen ];
-
-        root = "${packages.opengym-frontend}/share/opengym";
-
-        locations = {
-          "/" = {
-            tryFiles = "$uri $uri/ /index.html";
-          };
-
-          "^~ /api/" = {
-            proxyPass = "http://127.0.0.1:${toString cfg.apiPort}";
-            extraConfig = ''
-              proxy_http_version 1.1;
-              proxy_set_header Host $host;
-              proxy_set_header X-Real-IP $remote_addr;
-              proxy_set_header X-Forwarded-For $remote_addr;
-              proxy_set_header X-Forwarded-Proto $scheme;
-            '';
-          };
-
-          "~* \\.(png|jpg|jpeg|gif|ico|svg|woff|woff2|webp|avif)$" = {
-            alias = "${mediaRoot}/";
-            extraConfig = ''
-              expires 30d;
-              add_header Cache-Control "public, max-age=2592000, immutable" always;
-              add_header X-Frame-Options "DENY" always;
-              add_header X-Content-Type-Options "nosniff" always;
-            '';
-          };
-        };
-
-        extraConfig = ''
-          add_header X-Frame-Options "DENY" always;
-          add_header X-Content-Type-Options "nosniff" always;
-          add_header Referrer-Policy "same-origin" always;
-          add_header Content-Security-Policy "frame-ancestors 'none'" always;
-
-          gzip on;
-          gzip_types text/plain text/css application/json application/javascript image/svg+xml;
-          gzip_vary on;
-          gzip_min_length 1024;
-        '';
-      };
+    services.opengym.media = {
+      imageRoot = mediaRoot;
+      gifRoot = mediaGifRoot;
     };
+
+    services.opengym.web.root = "${packages.opengym-frontend}/share/opengym";
 
     systemd.services.opengym-mcp = lib.mkIf cfg.mcp.enable {
       description = "openGym MCP server";

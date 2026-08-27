@@ -37,8 +37,8 @@
                 enable = true;
                 rpId = "localhost";
                 origin = "http://localhost:8080";
-                webPort = 8080;
                 apiPort = 3000;
+                media.fetchAtBuild = true;
               };
               system.stateVersion = "25.05";
             }
@@ -47,22 +47,26 @@
 
         cfg = testConfig.config.services.opengym;
 
-        nginxVhosts = builtins.attrNames testConfig.config.services.nginx.virtualHosts;
+        nginxEnabled = testConfig.config.services.nginx.enable;
 
         check = pkgs.runCommand "opengym-module-check" { } ''
           set -euo pipefail
           # Verify the module evaluated correctly
           echo "services.opengym.enable = ${if cfg.enable then "true" else "false"}"
           echo "services.opengym.apiPort = ${toString cfg.apiPort}"
-          echo "services.opengym.webPort = ${toString cfg.webPort}"
           echo "services.opengym.rpId = ${cfg.rpId}"
           echo "services.opengym.origin = ${cfg.origin}"
 
           # Verify systemd service exists
           echo "systemd.services.opengym-api exists = ${if testConfig.config.systemd.services ? opengym-api then "true" else "false"}"
 
-          # Verify nginx vhost
-          echo "nginx virtualHosts = ${builtins.concatStringsSep ", " nginxVhosts}"
+          # Verify nginx is disabled (system uses Caddy)
+          echo "services.nginx.enable = ${if nginxEnabled then "true" else "false"}"
+
+          # Verify frontend/media store paths are exposed for a web server
+          echo "services.opengym.web.root = ${cfg.web.root}"
+          echo "services.opengym.media.imageRoot = ${cfg.media.imageRoot}"
+          echo "services.opengym.media.gifRoot = ${cfg.media.gifRoot}"
 
           # Verify user exists
           echo "users.users.opengym exists = ${if testConfig.config.users.users ? opengym then "true" else "false"}"

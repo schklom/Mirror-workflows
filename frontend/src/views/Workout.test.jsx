@@ -7,8 +7,10 @@ import Workout from './Workout.jsx'
 const mocks = vi.hoisted(() => {
   const state = {
     S: null,
+    work: null,
     startRest: vi.fn(),
     stopRest: vi.fn(),
+    stopWork: vi.fn(),
     topWeightSheet: vi.fn(),
   }
   state.storeSnapshot = () => ({
@@ -17,9 +19,10 @@ const mocks = vi.hoisted(() => {
     update: mut => mut(state.S),
   })
   state.uiSnapshot = () => ({
-    work: null,
+    work: state.work,
     startRest: state.startRest,
     stopRest: state.stopRest,
+    stopWork: state.stopWork,
     startWork: vi.fn(),
     toast: vi.fn(),
   })
@@ -114,6 +117,7 @@ async function toggleSet(index) {
 
 beforeEach(() => {
   vi.clearAllMocks()
+  mocks.work = null
 })
 
 afterEach(async () => {
@@ -185,5 +189,63 @@ describe('superset flow survives an exercise being removed mid-session', () => {
     // Partner closes the round (each still has a second set), which is what starts the rest.
     await toggleSet(2)
     expect(mocks.startRest).toHaveBeenCalledWith(90)
+  })
+})
+
+describe('active workout whole-unit move controls', () => {
+  const action = label => container.querySelector(`button[aria-label="${label}"]`)
+
+  it('shows labelled controls and moves the selected standalone exercise one unit', async () => {
+    const selected = exercise('duplicate', [false], {
+      occurrenceId: 'duplicate#2',
+      target: { mode: 'reps', reps: 7, weight: 82.5, notes: 'Keep this target' },
+      sets: [{ w: 77.5, r: 6, done: true, rir: 2 }],
+    })
+    await mount([
+      exercise('duplicate', [false], { occurrenceId: 'duplicate#1' }),
+      exercise('middle', [false]),
+      selected,
+    ], 2)
+
+    expect(action('Move up')?.textContent.trim()).toBe('Move up')
+    expect(action('Move down')?.textContent.trim()).toBe('Move down')
+    await act(async () => { action('Move up').dispatchEvent(new dom.Event('click', { bubbles: true })) })
+
+    expect(mocks.S.active.entries.map(entry => entry.occurrenceId || entry.id)).toEqual(['duplicate#1', 'duplicate#2', 'middle'])
+    expect(mocks.S.active.entries[1]).toBe(selected)
+    expect(mocks.S.active.entries[1].target).toEqual({ mode: 'reps', reps: 7, weight: 82.5, notes: 'Keep this target' })
+    expect(mocks.S.active.entries[1].sets).toEqual([{ w: 77.5, r: 6, done: true, rir: 2 }])
+    expect(mocks.S.active.cur).toBe(1)
+    expect(mocks.stopWork).toHaveBeenCalledOnce()
+    expect(mocks.stopRest).toHaveBeenCalledOnce()
+  })
+
+  it('moves the selected contiguous group as one unit without changing its metadata', async () => {
+    const first = exercise('group-a', [false], { sg: 'pair', occurrenceId: 'group-a#1' })
+    const selected = exercise('group-b', [true], { sg: 'pair', occurrenceId: 'group-b#1' })
+    const groupMeta = { pair: { kind: 'complex', label: 'Carry pair', cues: 'Stay braced.' } }
+    await mount([
+      exercise('before', [false]),
+      first,
+      selected,
+      exercise('after', [false]),
+    ], 2)
+    mocks.S.active.groupMeta = groupMeta
+
+    await act(async () => { action('Move up').dispatchEvent(new dom.Event('click', { bubbles: true })) })
+
+    expect(mocks.S.active.entries.map(entry => entry.id)).toEqual(['group-a', 'group-b', 'before', 'after'])
+    expect(mocks.S.active.entries.slice(0, 2)).toEqual([first, selected])
+    expect(mocks.S.active.entries.slice(0, 2).map(entry => entry.sg)).toEqual(['pair', 'pair'])
+    expect(mocks.S.active.groupMeta).toBe(groupMeta)
+    expect(mocks.S.active.entries[mocks.S.active.cur]).toBe(selected)
+  })
+
+  it('disables both moves while a work timer can still write by index', async () => {
+    mocks.work = { left: 5, total: 5, endsAt: Date.now() + 5000 }
+    await mount([exercise('first', [false]), exercise('second', [false])], 1)
+
+    expect(action('Move up')?.disabled).toBe(true)
+    expect(action('Move down')?.disabled).toBe(true)
   })
 })

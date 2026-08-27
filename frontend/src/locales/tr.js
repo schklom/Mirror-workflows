@@ -35,6 +35,8 @@ export default {
   'rescheduled': 'ertelendi',
   'Prev': 'Önceki',
   'Next': 'Sonraki',
+  'Move up': 'Yukarı taşı',
+  'Move down': 'Aşağı taşı',
   'Sunday': 'Pazar', 'Monday': 'Pazartesi', 'Tuesday': 'Salı', 'Wednesday': 'Çarşamba',
   'Thursday': 'Perşembe', 'Friday': 'Cuma', 'Saturday': 'Cumartesi',
   'Su': 'Pz', 'Mo': 'Pt', 'Tu': 'Sa', 'We': 'Ça', 'Th': 'Pe', 'Fr': 'Cu', 'Sa': 'Ct',

@@ -180,6 +180,8 @@ export const PT_BR_OVERRIDES = {
 
   // Regional wording inherited from pt-PT would otherwise leak into pt-BR.
   'Next': 'Próximo',
+  'Move up': 'Mover para cima',
+  'Move down': 'Mover para baixo',
   '{0} to gain': '{0} para ganhar',
   '{0} to lose': '{0} para perder',
   '{0} set still unchecked. Finish the workout now?': 'Falta {0} série sem marcar. Finalizar o treino agora?',

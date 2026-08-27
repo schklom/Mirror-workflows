@@ -35,6 +35,8 @@ export default {
   'rescheduled': '已改期',
   'Prev': '上一个',
   'Next': '下一个',
+  'Move up': '上移',
+  'Move down': '下移',
   'Sunday': '星期日', 'Monday': '星期一', 'Tuesday': '星期二', 'Wednesday': '星期三',
   'Thursday': '星期四', 'Friday': '星期五', 'Saturday': '星期六',
   'Su': '日', 'Mo': '一', 'Tu': '二', 'We': '三', 'Th': '四', 'Fr': '五', 'Sa': '六',

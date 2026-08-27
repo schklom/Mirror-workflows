@@ -79,15 +79,17 @@ function autoScrollStep(host, clientY) {
   return 0
 }
 
-function useRoutineReorder(exercises, onDrop) {
+function useRoutineReorder(routineIdentity, exercises, onDrop) {
   const listRef = useRef(null)
   const gestureRef = useRef(null)
   const exercisesRef = useRef(exercises)
+  const routineIdentityRef = useRef(routineIdentity)
   const onDropRef = useRef(onDrop)
   const suppressClickRef = useRef(false)
   const suppressTimerRef = useRef(null)
   const [drag, setDrag] = useState(null)
   exercisesRef.current = exercises
+  routineIdentityRef.current = routineIdentity
   onDropRef.current = onDrop
   const hasRows = exercises.length > 0
 
@@ -95,6 +97,7 @@ function useRoutineReorder(exercises, onDrop) {
     const list = listRef.current
     if (!list) return undefined
     let frame = null
+    setDrag(current => current ? null : current)
 
     const clearFrame = () => {
       if (frame != null) window.cancelAnimationFrame(frame)
@@ -104,7 +107,9 @@ function useRoutineReorder(exercises, onDrop) {
       if (gesture?.timer != null) window.clearTimeout(gesture.timer)
       if (gesture) gesture.timer = null
     }
-    const matchesSnapshot = gesture => JSON.stringify(exercisesRef.current) === gesture.snapshot
+    const matchesSnapshot = gesture => routineIdentityRef.current === gesture.routineIdentity
+      && exercisesRef.current === gesture.listIdentity
+      && JSON.stringify(exercisesRef.current) === gesture.snapshot
     const releaseCapture = gesture => {
       const target = gesture?.captureTarget
       if (!target?.releasePointerCapture) return
@@ -167,7 +172,8 @@ function useRoutineReorder(exercises, onDrop) {
       if (gestureRef.current === gesture) frame = window.requestAnimationFrame(runAutoScroll)
     }
     const lift = gesture => {
-      if (gestureRef.current !== gesture || !matchesSnapshot(gesture)) return
+      if (gestureRef.current !== gesture) return
+      if (!matchesSnapshot(gesture)) { finish(gesture, false); return }
       const geometry = unitGeometry(list, exercisesRef.current)
       const source = geometry?.find(unit => unit.unit.includes(gesture.sourceIndex))
       if (!source) { finish(gesture, false); return }
@@ -198,6 +204,8 @@ function useRoutineReorder(exercises, onDrop) {
       const gesture = {
         pointerId: event.pointerId, sourceIndex, downTarget: target,
         startX: event.clientX, startY: event.clientY, lastX: event.clientX, lastY: event.clientY,
+        routineIdentity: routineIdentityRef.current,
+        listIdentity: exercisesRef.current,
         snapshot: JSON.stringify(exercisesRef.current), active: false, timer: null,
       }
       gesture.timer = window.setTimeout(() => lift(gesture), ROUTINE_LONG_PRESS_MS)
@@ -227,7 +235,7 @@ function useRoutineReorder(exercises, onDrop) {
     }
     const onLostCapture = event => {
       const gesture = gestureRef.current
-      if (gesture?.active && event.pointerId === gesture.pointerId) finish(gesture, false)
+      if (gesture && event.pointerId === gesture.pointerId) finish(gesture, false)
     }
     const cancelActive = () => finish(gestureRef.current, false)
     const onKeyDown = event => {
@@ -238,7 +246,7 @@ function useRoutineReorder(exercises, onDrop) {
     const onContextMenu = event => { if (gestureRef.current?.active && event.target.closest?.('[data-routine-row]')) event.preventDefault() }
     const onDragStart = event => { if (event.target.closest?.('[data-routine-row]')) event.preventDefault() }
 
-    list.addEventListener('pointerdown', onPointerDown)
+    document.addEventListener('pointerdown', onPointerDown)
     document.addEventListener('pointermove', onPointerMove, { passive: false })
     document.addEventListener('pointerup', onPointerUp, { passive: false })
     document.addEventListener('pointercancel', onPointerCancel)
@@ -250,10 +258,10 @@ function useRoutineReorder(exercises, onDrop) {
     window.addEventListener('blur', cancelActive)
     return () => {
       const gesture = gestureRef.current
-      clearTimer(gesture); clearFrame(); releaseCapture(gesture)
-      gestureRef.current = null; suppressClickRef.current = false
+      clearTimer(gesture); clearFrame(); gestureRef.current = null
+      releaseCapture(gesture); suppressClickRef.current = false
       window.clearTimeout(suppressTimerRef.current)
-      list.removeEventListener('pointerdown', onPointerDown)
+      document.removeEventListener('pointerdown', onPointerDown)
       document.removeEventListener('pointermove', onPointerMove)
       document.removeEventListener('pointerup', onPointerUp)
       document.removeEventListener('pointercancel', onPointerCancel)
@@ -264,7 +272,7 @@ function useRoutineReorder(exercises, onDrop) {
       list.removeEventListener('dragstart', onDragStart)
       window.removeEventListener('blur', cancelActive)
     }
-  }, [hasRows])
+  }, [hasRows, routineIdentity, exercises])
 
   const onClickCapture = event => {
     if (!suppressClickRef.current) return
@@ -287,7 +295,7 @@ export default function RoutineEdit() {
   // included: this still unmounts after the delete button navigates away.
   useEffect(() => () => useStore.getState().autoBackupNow(), [])
   const edit = fn => update(s => { fn(s.routines.find(x => x.id === id).ex) })
-  const reorder = useRoutineReorder(r?.ex || [], (sourceIndex, targetSlot) => {
+  const reorder = useRoutineReorder(r, r?.ex || [], (sourceIndex, targetSlot) => {
     edit(exercises => { reorderRoutineUnit(exercises, sourceIndex, targetSlot) })
   })
   if (!r) return null

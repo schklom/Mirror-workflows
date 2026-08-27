@@ -52,6 +52,13 @@ function mount(entries) {
   act(() => root.render(<MemoryRouter initialEntries={['/plan/r/r1']}><Routes><Route path="/plan/r/:id" element={<RoutineEdit />} /></Routes></MemoryRouter>))
   return geometry()
 }
+function remountCurrentState() {
+  host = document.createElement('div')
+  document.body.appendChild(host)
+  root = createRoot(host)
+  act(() => root.render(<MemoryRouter initialEntries={['/plan/r/r1']}><Routes><Route path="/plan/r/:id" element={<RoutineEdit />} /></Routes></MemoryRouter>))
+  return geometry()
+}
 function pointer(target, type, { id = 7, kind = 'touch', primary = true, button = 0, x = 120, y = 120 } = {}) {
   const event = new Event(type, { bubbles: true, cancelable: true })
   for (const [key, value] of Object.entries({ pointerId: id, pointerType: kind, isPrimary: primary, button, clientX: x, clientY: y })) {
@@ -268,6 +275,126 @@ describe('routine long-press reorder', () => {
     act(() => vi.advanceTimersByTime(1000))
     expect(release).toHaveBeenCalledWith(7)
     expect(localStorage.getItem('gym_state_v1')).toBe(before)
+  })
+
+  it('covers reverse measured slots and an unchanged original slot', () => {
+    let layout = mount([configured('a'), configured('b'), configured('c'), configured('d')])
+    let item = rows()[3].querySelector('.item')
+    lift(rows()[3], layout.centers[3])
+    pointer(item, 'pointermove', { y: layout.tops[1] + 1 })
+    pointer(item, 'pointerup', { y: layout.tops[1] + 1 })
+    expect(exercises().map(e => e.id)).toEqual(['a', 'd', 'b', 'c'])
+
+    act(() => root.unmount()); host.remove(); root = null; host = null
+    layout = mount([configured('a'), configured('b'), configured('c')])
+    const before = localStorage.getItem('gym_state_v1')
+    item = rows()[1].querySelector('.item')
+    lift(rows()[1], layout.centers[1])
+    pointer(item, 'pointermove', { y: layout.centers[1] + ROUTINE_DRAG_SLOP + 1 })
+    pointer(item, 'pointerup', { y: layout.centers[1] + ROUTINE_DRAG_SLOP + 1 })
+    expect(exercises().map(e => e.id)).toEqual(['a', 'b', 'c'])
+    expect(localStorage.getItem('gym_state_v1')).toBe(before)
+  })
+
+  it('reads the persisted changed order back after a fresh remount', () => {
+    const layout = mount([configured('a'), configured('b'), configured('c')])
+    const item = rows()[0].querySelector('.item')
+    lift(rows()[0], layout.centers[0])
+    pointer(item, 'pointermove', { y: layout.centers[2] + 1 })
+    pointer(item, 'pointerup', { y: layout.centers[2] + 1 })
+    const saved = JSON.parse(localStorage.getItem('gym_state_v1'))
+    act(() => root.unmount()); host.remove(); root = null; host = null
+    useStore.setState({ S: saved, user: null })
+    remountCurrentState()
+    expect(exercises().map(e => e.id)).toEqual(['b', 'c', 'a'])
+  })
+
+  it('cancels active ownership for a second pointer outside the list and pending lost capture', () => {
+    let layout = mount([configured('a'), configured('b'), configured('c')])
+    let item = rows()[0].querySelector('.item')
+    const before = localStorage.getItem('gym_state_v1')
+    lift(rows()[0], layout.centers[0])
+    pointer(item, 'pointermove', { y: layout.centers[2] })
+    pointer(document.body, 'pointerdown', { id: 8, y: 20 })
+    pointer(item, 'pointerup', { y: layout.centers[2] })
+    expect(exercises().map(e => e.id)).toEqual(['a', 'b', 'c'])
+    expect(localStorage.getItem('gym_state_v1')).toBe(before)
+    expect(host.querySelector('.is-dragging')).toBeNull()
+
+    act(() => root.unmount()); host.remove(); root = null; host = null
+    layout = mount([configured('a'), configured('b')])
+    item = rows()[0].querySelector('.item')
+    pointer(item, 'pointerdown', { y: layout.centers[0] })
+    pointer(item, 'lostpointercapture', { y: layout.centers[0] })
+    act(() => vi.advanceTimersByTime(ROUTINE_LONG_PRESS_MS))
+    expect(host.querySelector('.is-dragging')).toBeNull()
+  })
+
+  it('cancels when equal serialized exercises acquire a new current routine/list identity', () => {
+    let layout = mount([configured('a'), configured('b'), configured('c')])
+    let item = rows()[0].querySelector('.item')
+    lift(rows()[0], layout.centers[0])
+    pointer(item, 'pointermove', { y: layout.centers[2] })
+    act(() => useStore.getState().update(s => {
+      const current = s.routines[0]
+      s.routines[0] = { ...current, ex: clone(current.ex) }
+    }))
+    pointer(item, 'pointerup', { y: layout.centers[2] })
+    expect(exercises().map(e => e.id)).toEqual(['a', 'b', 'c'])
+    expect(host.querySelector('.is-dragging')).toBeNull()
+
+    act(() => root.unmount()); host.remove(); root = null; host = null
+    layout = mount([configured('a'), configured('b')])
+    item = rows()[0].querySelector('.item')
+    pointer(item, 'pointerdown', { y: layout.centers[0] })
+    act(() => useStore.getState().update(s => {
+      const current = s.routines[0]
+      s.routines[0] = { ...current, ex: clone(current.ex) }
+    }))
+    act(() => vi.advanceTimersByTime(ROUTINE_LONG_PRESS_MS))
+    expect(host.querySelector('.is-dragging')).toBeNull()
+  })
+
+  it('never owns nested link, Move up, or Move down controls', () => {
+    const layout = mount([configured('a'), configured('b')])
+    const controls = [
+      rows()[1].querySelector('button[title]'),
+      rows()[1].querySelector('button[aria-label="Move up"]'),
+      rows()[1].querySelector('button[aria-label="Move down"]'),
+    ]
+    for (const control of controls) {
+      pointer(control, 'pointerdown', { y: layout.centers[1] })
+      act(() => vi.advanceTimersByTime(ROUTINE_LONG_PRESS_MS))
+      expect(host.querySelector('.is-dragging')).toBeNull()
+      pointer(control, 'pointerup', { y: layout.centers[1] })
+    }
+  })
+
+  it('falls back to page/window autoscroll without a nested scroll host', () => {
+    const layout = mount([configured('a'), configured('b'), configured('c')])
+    const rootElement = document.documentElement
+    Object.defineProperty(document, 'scrollingElement', { configurable: true, value: rootElement })
+    Object.defineProperty(rootElement, 'clientHeight', { configurable: true, value: 300 })
+    Object.defineProperty(rootElement, 'scrollHeight', { configurable: true, value: 900 })
+    Object.defineProperty(window, 'innerHeight', { configurable: true, value: 300 })
+    Object.defineProperty(window, 'scrollY', { configurable: true, writable: true, value: 100 })
+    const scrollBy = vi.spyOn(window, 'scrollBy').mockImplementation((_, delta) => { window.scrollY += delta })
+    const item = rows()[2].querySelector('.item')
+    lift(rows()[2], 295)
+    act(() => vi.advanceTimersByTime(16))
+    expect(scrollBy).toHaveBeenCalled()
+    expect(window.scrollY).toBeGreaterThan(100)
+    pointer(item, 'pointercancel', { y: 295 })
+  })
+
+  it('invalidates ownership before cleanup synchronously emits lost capture', () => {
+    const layout = mount([configured('a'), configured('b')])
+    const item = rows()[0].querySelector('.item')
+    const release = vi.fn(pointerId => pointer(document, 'lostpointercapture', { id: pointerId, y: layout.centers[0] }))
+    item.releasePointerCapture = release
+    lift(rows()[0], layout.centers[0])
+    act(() => root.unmount()); root = null
+    expect(release).toHaveBeenCalledTimes(1)
   })
 })
 

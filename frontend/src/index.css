@@ -930,6 +930,7 @@ h4.sec{
   border-radius:var(--r-lg);padding:14px;
   background:var(--surface);box-shadow:inset 0 0 0 1.5px var(--acc-line);
 }
+.workout-swipe-surface{touch-action:pan-y}
 /* A superset nests a card inside the page's own gutter, so its inset is paid twice. On a
    narrow phone that left the weight and reps steppers too tight to show a three-digit
    number — reported as "the reps textbox becomes too small when superset on mobile". The

@@ -1,8 +1,11 @@
+import { readFileSync } from 'node:fs'
 import React, { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { parseHTML } from 'linkedom'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import Workout from './Workout.jsx'
+
+const cssSource = readFileSync(new URL('../index.css', import.meta.url), 'utf8')
 
 const mocks = vi.hoisted(() => {
   const state = {
@@ -144,6 +147,11 @@ function pointerEvent(type, { x, y, pointerId = 1, pointerType = '' }) {
   return event
 }
 
+function instrumentPointerCapture(surface) {
+  surface.setPointerCapture = vi.fn()
+  surface.releasePointerCapture = vi.fn()
+}
+
 async function swipe(target, from, to, pointerType = '') {
   await act(async () => {
     target.dispatchEvent(pointerEvent('pointerdown', { x: from[0], y: from[1], pointerType }))
@@ -165,11 +173,43 @@ describe('Workout swipe navigation', () => {
   it('moves left from one exercise to the next unit exactly once', async () => {
     await mount([exercise('first', [false]), exercise('second', [false])])
     const surface = container.querySelector('[data-testid="workout-swipe-surface"]')
+    instrumentPointerCapture(surface)
+    const down = pointerEvent('pointerdown', { x: 160, y: 200, pointerId: 7, pointerType: 'touch' })
+    const up = pointerEvent('pointerup', { x: 90, y: 202, pointerId: 7, pointerType: 'touch' })
 
     expect(surface).toBeTruthy()
-    await swipe(surface, [160, 200], [90, 202])
+    await act(async () => {
+      surface.dispatchEvent(down)
+      surface.dispatchEvent(up)
+    })
 
     expect(mocks.S.active.cur).toBe(1)
+    expect(mocks.update).toHaveBeenCalledOnce()
+    expect(surface.setPointerCapture).toHaveBeenCalledOnce()
+    expect(surface.setPointerCapture).toHaveBeenCalledWith(7)
+    expect(surface.releasePointerCapture).toHaveBeenCalledOnce()
+    expect(surface.releasePointerCapture).toHaveBeenCalledWith(7)
+    expect(down.defaultPrevented).toBe(false)
+    expect(up.defaultPrevented).toBe(false)
+  })
+
+  it('keeps vertical page scrolling browser-owned on the local swipe surface', async () => {
+    await mount([exercise('first', [false]), exercise('second', [false])])
+    const surface = container.querySelector('[data-testid="workout-swipe-surface"]')
+    const down = pointerEvent('pointerdown', { x: 160, y: 200, pointerId: 8, pointerType: 'touch' })
+    const up = pointerEvent('pointerup', { x: 150, y: 280, pointerId: 8, pointerType: 'touch' })
+
+    expect(surface.classList.contains('workout-swipe-surface')).toBe(true)
+    expect(cssSource).toMatch(/\.workout-swipe-surface\s*\{[^}]*touch-action\s*:\s*pan-y[^}]*\}/)
+    await act(async () => {
+      surface.dispatchEvent(down)
+      surface.dispatchEvent(up)
+    })
+
+    expect(mocks.S.active.cur).toBe(0)
+    expect(mocks.update).not.toHaveBeenCalled()
+    expect(down.defaultPrevented).toBe(false)
+    expect(up.defaultPrevented).toBe(false)
   })
 
   it('navigates through the production-shaped cloned update boundary', async () => {
@@ -223,29 +263,39 @@ describe('Workout swipe navigation', () => {
   it('cleans up a cancelled pointer without navigating on its later release', async () => {
     await mount([exercise('first', [false]), exercise('second', [false])])
     const surface = container.querySelector('[data-testid="workout-swipe-surface"]')
+    instrumentPointerCapture(surface)
 
     await act(async () => {
-      surface.dispatchEvent(pointerEvent('pointerdown', { x: 160, y: 200 }))
-      surface.dispatchEvent(pointerEvent('pointercancel', { x: 120, y: 200 }))
-      surface.dispatchEvent(pointerEvent('pointerup', { x: 80, y: 200 }))
+      surface.dispatchEvent(pointerEvent('pointerdown', { x: 160, y: 200, pointerId: 11 }))
+      surface.dispatchEvent(pointerEvent('pointerup', { x: 80, y: 200, pointerId: 12 }))
+      surface.dispatchEvent(pointerEvent('pointercancel', { x: 120, y: 200, pointerId: 11 }))
+      surface.dispatchEvent(pointerEvent('pointerup', { x: 80, y: 200, pointerId: 11 }))
     })
 
     expect(mocks.S.active.cur).toBe(0)
     expect(mocks.update).not.toHaveBeenCalled()
+    expect(surface.setPointerCapture).toHaveBeenCalledOnce()
+    expect(surface.setPointerCapture).toHaveBeenCalledWith(11)
+    expect(surface.releasePointerCapture).toHaveBeenCalledOnce()
+    expect(surface.releasePointerCapture).toHaveBeenCalledWith(11)
   })
 
   it('cleans up when the active pointer capture is lost', async () => {
     await mount([exercise('first', [false]), exercise('second', [false])])
     const surface = container.querySelector('[data-testid="workout-swipe-surface"]')
+    instrumentPointerCapture(surface)
 
     await act(async () => {
-      surface.dispatchEvent(pointerEvent('pointerdown', { x: 160, y: 200 }))
-      surface.dispatchEvent(pointerEvent('lostpointercapture', { x: 120, y: 200 }))
-      surface.dispatchEvent(pointerEvent('pointerup', { x: 80, y: 200 }))
+      surface.dispatchEvent(pointerEvent('pointerdown', { x: 160, y: 200, pointerId: 13 }))
+      surface.dispatchEvent(pointerEvent('lostpointercapture', { x: 120, y: 200, pointerId: 13 }))
+      surface.dispatchEvent(pointerEvent('pointerup', { x: 80, y: 200, pointerId: 13 }))
     })
 
     expect(mocks.S.active.cur).toBe(0)
     expect(mocks.update).not.toHaveBeenCalled()
+    expect(surface.setPointerCapture).toHaveBeenCalledOnce()
+    expect(surface.setPointerCapture).toHaveBeenCalledWith(13)
+    expect(surface.releasePointerCapture).not.toHaveBeenCalled()
   })
 
   it('crosses a whole contiguous superset in both directions', async () => {

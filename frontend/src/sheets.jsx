@@ -23,6 +23,7 @@ import { nextPrescription, applyPrescription, policyFor, defaultIncrement, POLIC
 import { MOBILE, shareExport } from './lib/mobile.js'
 import { buildCompletedWorkout } from './lib/finish-workout.js'
 import { isWarmupRow } from './lib/workout-model.js'
+import { swapActiveExercise } from './lib/active-exercise-swap.js'
 
 const S = () => useStore.getState().S
 const update = (...a) => useStore.getState().update(...a)
@@ -498,6 +499,60 @@ function ExercisePicker({ onPick, close }) {
   </>
 }
 export const exercisePicker = onPick => ui().openSheet(close => <ExercisePicker onPick={onPick} close={close} />)
+
+/** Start a safe swap for one exact active-workout occurrence. */
+export function swapActiveWorkoutExercise(index) {
+  const active = S().active
+  if (!active?.entries?.[index]) return
+
+  exercisePicker(ex => exConfigSheet(ex, null, cfg => {
+    const full = { ...cfg, id: ex.id }
+    const replacement = {
+      id: ex.id,
+      target: { ...cfg },
+      plan: null,
+      sets: applyIntensifierPlan(buildSets({ ...S(), workouts: [] }, full, {
+        step: defaultIncrement(ex.id, S().unit)
+      }), full)
+    }
+    const current = S().active?.entries?.[index]
+    if (!current) return
+
+    const apply = options => {
+      // A timed callback closes over entry/set indexes. Invalidate it, and the current rest,
+      // before the selected occurrence can be replaced or a new entry shifts those indexes.
+      ui().stopWork()
+      ui().stopRest()
+      update(state => { swapActiveExercise(state.active, index, replacement, options) }, true)
+    }
+    const logged = (current.sets || []).some(set => set.done === true)
+    if (!logged) { apply(); return }
+
+    if (current.sg) {
+      ui().openSheet(close => <>
+        <h3>{t('Swap exercise?')}</h3>
+        <div className="muted small" style={{ marginBottom: 12 }}>
+          {t('Logged sets stay with the original exercise. Choose where the replacement belongs.')}
+        </div>
+        <Button variant="primary" onClick={() => { close(); apply({ loggedConfirmed: true, groupDisposition: 'keep' }) }}>
+          {t('Keep replacement in this group')}
+        </Button>
+        <div style={{ height: 8 }} />
+        <Button variant="ghost" onClick={() => { close(); apply({ loggedConfirmed: true, groupDisposition: 'detach' }) }}>
+          {t('Insert after this group')}
+        </Button>
+      </>)
+      return
+    }
+
+    confirmSheet({
+      title: t('Swap exercise?'),
+      message: t('Logged sets stay with the original exercise. The replacement will be inserted afterward.'),
+      confirmText: t('Continue'),
+      onConfirm: () => apply({ loggedConfirmed: true })
+    })
+  }))
+}
 
 /* ============================ equipment profiles ============================ */
 // Create or edit one profile ("Home", "Gym", ...): a name plus a checklist of what you have.

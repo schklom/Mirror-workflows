@@ -10,6 +10,7 @@ const mocks = vi.hoisted(() => {
     startRest: vi.fn(),
     stopRest: vi.fn(),
     topWeightSheet: vi.fn(),
+    swapActiveWorkoutExercise: vi.fn(),
   }
   state.storeSnapshot = () => ({
     S: state.S,
@@ -46,6 +47,7 @@ vi.mock('../sheets.jsx', () => ({
   finishWorkout: vi.fn(),
   workoutCompleteSheet: vi.fn(),
   confirmSheet: vi.fn(),
+  swapActiveWorkoutExercise: mocks.swapActiveWorkoutExercise,
   // Both note sheets belong here even though the tests never open one: Workout.jsx reads
   // sessionNoteSheet during render, so a missing export is a render crash, not a no-op.
   exerciseNoteSheet: vi.fn(),
@@ -185,5 +187,18 @@ describe('superset flow survives an exercise being removed mid-session', () => {
     // Partner closes the round (each still has a second set), which is what starts the rest.
     await toggleSet(2)
     expect(mocks.startRest).toHaveBeenCalledWith(90)
+  })
+})
+
+describe('active exercise swap control', () => {
+  it('opens the swap flow for the selected duplicate occurrence', async () => {
+    await mount([exercise('bench', [false]), exercise('bench', [false]), exercise('row', [false])], 1)
+
+    const swap = container.querySelector('button[aria-label="Swap exercise"]')
+    expect(swap).toBeTruthy()
+    await act(async () => { swap.dispatchEvent(new dom.Event('click', { bubbles: true })) })
+
+    expect(mocks.swapActiveWorkoutExercise).toHaveBeenCalledOnce()
+    expect(mocks.swapActiveWorkoutExercise).toHaveBeenCalledWith(1)
   })
 })

@@ -421,6 +421,22 @@ export function supersetUnits(items) {
   })
   return units
 }
+
+// Move the selected occurrence's complete display unit by one neighbouring unit. Returning a
+// new array keeps this helper pure; the caller decides how to persist it. Index identity matters
+// here because the same exercise id may appear more than once with different setup.
+export function moveSupersetUnit(items, index, direction) {
+  if (!Array.isArray(items) || (direction !== -1 && direction !== 1)) return null
+  const units = supersetUnits(items)
+  const source = units.findIndex(unit => unit.includes(index))
+  const target = source + direction
+  if (source < 0 || target < 0 || target >= units.length) return null
+  const reordered = [...units]
+  const selected = reordered[source]
+  reordered[source] = reordered[target]
+  reordered[target] = selected
+  return reordered.flat().map(i => items[i])
+}
 export function unitOf(units, idx) { return units.find(u => u.includes(idx)) || [idx] }
 
 export function streakWeeks(S) {

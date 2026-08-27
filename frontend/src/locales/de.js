@@ -36,6 +36,8 @@ export default {
   'rescheduled': 'verschoben',
   'Prev': 'Zurück',
   'Next': 'Weiter',
+  'Move up': 'Nach oben',
+  'Move down': 'Nach unten',
   // --- days & months ---
   'Sunday': 'Sonntag', 'Monday': 'Montag', 'Tuesday': 'Dienstag', 'Wednesday': 'Mittwoch',
   'Thursday': 'Donnerstag', 'Friday': 'Freitag', 'Saturday': 'Samstag',

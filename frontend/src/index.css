@@ -838,6 +838,7 @@ h4.sec{
 
 .bm-m.sel{stroke:var(--label);stroke-width:7}
 .bodymap.tappable .bm-m{cursor:pointer}
+.bodymap.tappable .bm-m:focus-visible{outline:none;stroke:var(--label);stroke-width:7;filter:drop-shadow(0 0 2px var(--surface))}
 /* A hairline in the surface colour separates neighbouring muscles; the artwork has no
    outline path of its own, so without this the body reads as one flat blob. */
 .bm-v path{stroke:var(--surface);stroke-width:2.5;stroke-linejoin:round}

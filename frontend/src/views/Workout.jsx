@@ -258,9 +258,10 @@ function ExerciseBlock({ entryIdx, compact, onToggle, onField, onAddSet, onRemov
 
 /* ---------- active workout ---------- */
 export function removeActiveExercise(idx) {
-  // Clear the work callback before indexes can shift. This also protects a confirmation sheet
-  // that was opened first and confirmed after a timed hold started.
+  // Clear timer state and callbacks before indexes can shift. This also protects a confirmation
+  // sheet that was opened first and confirmed after a timed hold or rest countdown started.
   useUI.getState().stopWork()
+  useUI.getState().stopRest()
   useStore.getState().update(s => {
     if (!s.active || !Array.isArray(s.active.entries)) return
     if (idx < 0 || idx >= s.active.entries.length) return

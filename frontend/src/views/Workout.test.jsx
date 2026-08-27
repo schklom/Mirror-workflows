@@ -169,6 +169,85 @@ describe('Workout set completion flow', () => {
     expect(mocks.startRest).not.toHaveBeenCalled()
   })
 
+  it.each(['warmup', 'warm-up', 'warm_up'])(
+    'does not start transition rest before an incomplete %s row in the next ordinary exercise',
+    async phase => {
+      await mount([
+        exercise('current', [false], { asked: true }),
+        exercise('next', [false, false], {
+          asked: true,
+          sets: [
+            { w: 30, r: 5, done: false, phase },
+            { w: 60, r: 5, done: false },
+          ],
+        }),
+      ])
+
+      await toggleSet(0)
+
+      expect(mocks.S.active.cur).toBe(1)
+      expect(mocks.startRest).not.toHaveBeenCalled()
+    },
+  )
+
+  it('does not start transition rest when a completed superset advances to an incomplete warm-up', async () => {
+    await mount([
+      exercise('superset-a', [true], { sg: 'group', asked: true }),
+      exercise('superset-b', [false], { sg: 'group', asked: true }),
+      exercise('next', [false, false], {
+        asked: true,
+        sets: [
+          { w: 30, r: 5, done: false, phase: 'warmup' },
+          { w: 60, r: 5, done: false },
+        ],
+      }),
+    ], 1)
+
+    await toggleSet(1)
+
+    expect(mocks.S.active.cur).toBe(2)
+    expect(mocks.startRest).not.toHaveBeenCalled()
+  })
+
+  it('does not start transition rest before a warm-up while top-weight confirmation owns navigation', async () => {
+    await mount([
+      exercise('current-loaded', [false]),
+      exercise('next', [false, false], {
+        asked: true,
+        sets: [
+          { w: 30, r: 5, done: false, phase: 'warmup' },
+          { w: 60, r: 5, done: false },
+        ],
+      }),
+    ])
+
+    await toggleSet(0)
+
+    expect(mocks.topWeightSheet).toHaveBeenCalledWith(0)
+    expect(mocks.S.active.cur).toBe(0)
+    expect(mocks.startRest).not.toHaveBeenCalled()
+  })
+
+  it('does not restart transition rest when re-checking a completed unit before an incomplete warm-up', async () => {
+    await mount([
+      exercise('current', [true], { asked: true }),
+      exercise('next', [false, false], {
+        asked: true,
+        sets: [
+          { w: 30, r: 5, done: false, phase: 'warmup' },
+          { w: 60, r: 5, done: false },
+        ],
+      }),
+    ])
+
+    await toggleSet(0)
+    await rerender()
+    await toggleSet(0)
+
+    expect(mocks.S.active.cur).toBe(0)
+    expect(mocks.startRest).not.toHaveBeenCalled()
+  })
+
   it('leaves a completed superset selected while its top-weight sheet owns the advance choice', async () => {
     const group = 'superset-1'
     await mount([

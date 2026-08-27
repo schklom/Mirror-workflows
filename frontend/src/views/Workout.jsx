@@ -416,21 +416,24 @@ function ActiveWorkout() {
       const freshUnitDone = freshUnit?.every(ui => fresh.entries[ui].sets.every(x => x.done))
       const nextUnit = freshUnitDone ? nextUnfinishedUnit(fresh.entries, freshUnits, idx) : null
       const freshWorkoutDone = freshUnitDone && !nextUnit
+      const restBeforeWarmup = nextUnit?.some(ui =>
+        fresh.entries[ui].sets.some(set => isWarmupRow(set) && !set.done),
+      )
 
       // A re-check of finished work must not navigate or reopen a sheet, but it may still owe
       // you a rest — see restOnRecheck, and the other half of issue #3.
       if (!progress.isNew) {
-        if (restOnRecheck({ timerRunning: !!useUI.getState().timer, unitDone: freshUnitDone, lastUnit: freshWorkoutDone })) startRest(S.restSec)
+        if (!restBeforeWarmup && restOnRecheck({ timerRunning: !!useUI.getState().timer, unitDone: freshUnitDone, lastUnit: freshWorkoutDone })) startRest(S.restSec)
         return
       }
 
       // Singleton units are ordinary exercises: they rest between sets and after the closing
-      // one, and never enter superset navigation. stopRest() first so the rest that belongs
-      // after this set replaces the one that was running, rather than stacking on it.
+      // one unless the next unit has an unfinished warm-up, and never enter superset navigation.
+      // stopRest() first so a rest that belongs after this set replaces the one that was running.
       if (freshUnitDone) stopRest()
       if (!freshUnit || freshUnit.length <= 1) {
         if (freshUnitDone && !askTop && nextUnit?.length) update(s => { if (s.active) s.active.cur = nextUnit[0] })
-        if (restAfterSet({ unitDone: freshUnitDone, lastUnit: freshWorkoutDone })) startRest(S.restSec)
+        if (!restBeforeWarmup && restAfterSet({ unitDone: freshUnitDone, lastUnit: freshWorkoutDone })) startRest(S.restSec)
         return
       }
 
@@ -440,7 +443,7 @@ function ActiveWorkout() {
         if (nextUnit?.length) {
           // The top-weight sheet's explicit "Just close" path owns the choice not to advance.
           if (!askTop) update(s => { if (s.active) s.active.cur = nextUnit[0] })
-          startRest(S.restSec)
+          if (!restBeforeWarmup) startRest(S.restSec)
         }
       } else {
         if (step.nextIdx != null) update(s => { if (s.active) s.active.cur = step.nextIdx })

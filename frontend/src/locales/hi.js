@@ -1080,4 +1080,11 @@ export default {
   'Set to 0 to go back to the default ({0}).': 'डिफ़ॉल्ट ({0}) पर लौटने के लिए 0 सेट करें।',
   'Applies to this exercise everywhere, not just this plan.': 'यह इस एक्सरसाइज़ पर हर जगह लागू होता है, सिर्फ़ इसी प्लान पर नहीं।',
   'You still log the total weight — the bar only feeds the per-side plate math.': 'आप अब भी कुल वज़न ही दर्ज करते हैं — बार सिर्फ़ हर तरफ़ की प्लेट गिनती में काम आता है।',
+  'Update to {0}?': '{0} में अपडेट करें?',
+  'The latest version will be downloaded and the installer will open.': 'नवीनतम संस्करण डाउनलोड होगा और इंस्टॉलर खुलेगा।',
+  'Download & Install': 'डाउनलोड और इंस्टॉल करें',
+  'Update failed: {0}': 'अपडेट विफल: {0}',
+  'openGym v{0} available': 'openGym v{0} उपलब्ध',
+  'Starting download…': 'डाउनलोड शुरू हो रहा है…',
+  'Downloading update…': 'अपडेट डाउनलोड हो रहा है…',
 }

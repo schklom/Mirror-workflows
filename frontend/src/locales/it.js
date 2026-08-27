@@ -1080,4 +1080,11 @@ export default {
   'Set to 0 to go back to the default ({0}).': 'Imposta 0 per tornare al valore predefinito ({0}).',
   'Applies to this exercise everywhere, not just this plan.': 'Vale per questo esercizio ovunque, non solo in questo piano.',
   'You still log the total weight — the bar only feeds the per-side plate math.': 'Registri comunque il peso totale — il bilanciere serve solo al calcolo dei dischi per lato.',
+  'Update to {0}?': 'Aggiornare a {0}?',
+  'The latest version will be downloaded and the installer will open.': 'L’ultima versione verrà scaricata e si aprirà il programma di installazione.',
+  'Download & Install': 'Scarica e installa',
+  'Update failed: {0}': 'Aggiornamento fallito: {0}',
+  'openGym v{0} available': 'openGym v{0} disponibile',
+  'Starting download…': 'Avvio del download…',
+  'Downloading update…': 'Download dell’aggiornamento…',
 }

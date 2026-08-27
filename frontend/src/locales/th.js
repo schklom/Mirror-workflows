@@ -1091,4 +1091,11 @@ export default {
   'What should change?': 'ควรเปลี่ยนอะไร',
   'Coach is thinking…': 'โค้ชกำลังคิด…',
   'Message the Coach…': 'ส่งข้อความถึงโค้ช…',
+  'Update to {0}?': 'อัปเดตเป็น {0} หรือไม่?',
+  'The latest version will be downloaded and the installer will open.': 'เวอร์ชันล่าสุดจะถูกดาวน์โหลดและตัวติดตั้งจะเปิดขึ้น',
+  'Download & Install': 'ดาวน์โหลดและติดตั้ง',
+  'Update failed: {0}': 'อัปเดตล้มเหลว: {0}',
+  'openGym v{0} available': 'openGym v{0} พร้อมใช้งาน',
+  'Starting download…': 'กำลังเริ่มดาวน์โหลด…',
+  'Downloading update…': 'กำลังดาวน์โหลดอัปเดต…',
 }

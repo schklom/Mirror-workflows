@@ -1,8 +1,29 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { checkForUpdate } from './update.js'
+import { checkForUpdate, sha256 } from './update.js'
 
 // __APP_VERSION__ is defined at build time by vite.config.js (reads package.json).
 // In the test environment vitest applies the same define, so it's available here.
+
+describe('sha256', () => {
+  it('computes the correct hash for a known input', async () => {
+    const input = new TextEncoder().encode('hello world')
+    const hash = await sha256(input.buffer)
+    // Well-known SHA-256 of "hello world"
+    expect(hash).toBe('b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9')
+  })
+
+  it('computes a different hash for different input', async () => {
+    const a = await sha256(new TextEncoder().encode('aaa').buffer)
+    const b = await sha256(new TextEncoder().encode('bbb').buffer)
+    expect(a).not.toBe(b)
+  })
+
+  it('returns a 64-character hex string', async () => {
+    const hash = await sha256(new TextEncoder().encode('test').buffer)
+    expect(hash).toHaveLength(64)
+    expect(hash).toMatch(/^[0-9a-f]{64}$/)
+  })
+})
 
 describe('checkForUpdate', () => {
   let originalFetch
@@ -24,6 +45,7 @@ describe('checkForUpdate', () => {
     expect(result.hasUpdate).toBe(false)
     expect(result.latestVersion).toBe(__APP_VERSION__)
     expect(result.apkUrl).toBe(null)
+    expect(result.hashUrl).toBe(null)
   })
 
   it('reports no update when the latest release is older than current', async () => {
@@ -87,11 +109,50 @@ describe('checkForUpdate', () => {
     expect(result.apkUrl).toBe(null)
   })
 
+  it('finds the .sha256 hash URL from release asset links', async () => {
+    const hashUrl = 'https://gitlab.com/project/-/releases/v2.0.0/downloads/opengym.apk.sha256'
+    mockFetch([{
+      tag_name: 'v99.0.0',
+      assets: {
+        links: [
+          { url: 'https://example.com/opengym.apk', direct_asset_url: 'https://example.com/opengym.apk' },
+          { url: hashUrl, direct_asset_url: hashUrl },
+        ]
+      }
+    }])
+    const result = await checkForUpdate()
+    expect(result.hashUrl).toBe(hashUrl)
+  })
+
+  it('finds hash URL by link name containing sha256', async () => {
+    mockFetch([{
+      tag_name: 'v99.0.0',
+      assets: {
+        links: [
+          { name: 'APK', url: 'https://example.com/opengym.apk', direct_asset_url: 'https://example.com/opengym.apk' },
+          { name: 'SHA256 checksum', url: 'https://example.com/checksum.txt', direct_asset_url: 'https://example.com/checksum.txt' },
+        ]
+      }
+    }])
+    const result = await checkForUpdate()
+    expect(result.hashUrl).toBe('https://example.com/checksum.txt')
+  })
+
+  it('returns null hashUrl when no hash link exists', async () => {
+    mockFetch([{
+      tag_name: 'v99.0.0',
+      assets: { links: [{ url: 'https://example.com/opengym.apk', direct_asset_url: 'https://example.com/opengym.apk' }] }
+    }])
+    const result = await checkForUpdate()
+    expect(result.hashUrl).toBe(null)
+  })
+
   it('returns no update when the releases array is empty', async () => {
     mockFetch([])
     const result = await checkForUpdate()
     expect(result.hasUpdate).toBe(false)
     expect(result.latestVersion).toBe(__APP_VERSION__)
+    expect(result.hashUrl).toBe(null)
   })
 
   it('throws when the API responds with an error status', async () => {

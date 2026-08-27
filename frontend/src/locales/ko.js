@@ -1080,4 +1080,11 @@ export default {
   'Set to 0 to go back to the default ({0}).': '0으로 두면 기본값({0})으로 돌아갑니다.',
   'Applies to this exercise everywhere, not just this plan.': '이 플랜만이 아니라 어디서든 이 운동에 적용됩니다.',
   'You still log the total weight — the bar only feeds the per-side plate math.': '기록은 여전히 총 무게입니다 — 바 무게는 한쪽에 끼울 원판 계산에만 쓰입니다.',
+  'Update to {0}?': '{0}(으)로 업데이트하시겠습니까?',
+  'The latest version will be downloaded and the installer will open.': '최신 버전이 다운로드되고 설치 프로그램이 열립니다.',
+  'Download & Install': '다운로드 및 설치',
+  'Update failed: {0}': '업데이트 실패: {0}',
+  'openGym v{0} available': 'openGym v{0} 사용 가능',
+  'Starting download…': '다운로드 시작 중…',
+  'Downloading update…': '업데이트 다운로드 중…',
 }

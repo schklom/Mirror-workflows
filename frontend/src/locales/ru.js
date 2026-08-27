@@ -1080,4 +1080,11 @@ export default {
   'Set to 0 to go back to the default ({0}).': 'Поставь 0, чтобы вернуться к значению по умолчанию ({0}).',
   'Applies to this exercise everywhere, not just this plan.': 'Действует для этого упражнения везде, а не только в этом плане.',
   'You still log the total weight — the bar only feeds the per-side plate math.': 'Записывается по-прежнему общий вес — гриф нужен только для расчёта блинов на сторону.',
+  'Update to {0}?': 'Обновить до {0}?',
+  'The latest version will be downloaded and the installer will open.': 'Последняя версия будет загружена и откроется установщик.',
+  'Download & Install': 'Скачать и установить',
+  'Update failed: {0}': 'Ошибка обновления: {0}',
+  'openGym v{0} available': 'openGym v{0} доступна',
+  'Starting download…': 'Начало загрузки…',
+  'Downloading update…': 'Загрузка обновления…',
 }

@@ -1083,4 +1083,11 @@ export default {
   'What should change?': 'Mi változzon?',
   'Coach is thinking…': 'Az Edző gondolkodik…',
   'Message the Coach…': 'Üzenet az Edzőnek…',
+  'Update to {0}?': 'Frissítés erre: {0}?',
+  'The latest version will be downloaded and the installer will open.': 'A legújabb verzió letöltődik, és megnyílik a telepítő.',
+  'Download & Install': 'Letöltés és telepítés',
+  'Update failed: {0}': 'A frissítés sikertelen: {0}',
+  'openGym v{0} available': 'openGym v{0} elérhető',
+  'Starting download…': 'Letöltés indítása…',
+  'Downloading update…': 'Frissítés letöltése…',
 }

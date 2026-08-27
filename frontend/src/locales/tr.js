@@ -1080,4 +1080,11 @@ export default {
   'Set to 0 to go back to the default ({0}).': 'Varsayılana ({0}) dönmek için 0 yap.',
   'Applies to this exercise everywhere, not just this plan.': 'Yalnızca bu planda değil, bu egzersiz için her yerde geçerli.',
   'You still log the total weight — the bar only feeds the per-side plate math.': 'Yine de toplam ağırlığı kaydedersin — bar yalnızca taraf başına plaka hesabına girer.',
+  'Update to {0}?': '{0} sürümüne güncellensin mi?',
+  'The latest version will be downloaded and the installer will open.': 'En son sürüm indirilecek ve yükleyici açılacak.',
+  'Download & Install': 'İndir ve Kur',
+  'Update failed: {0}': 'Güncelleme başarısız: {0}',
+  'openGym v{0} available': 'openGym v{0} mevcut',
+  'Starting download…': 'İndirme başlatılıyor…',
+  'Downloading update…': 'Güncelleme indiriliyor…',
 }

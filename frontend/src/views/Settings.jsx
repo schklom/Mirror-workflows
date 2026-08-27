@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, forwardRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore, DEF, hasData } from '../store/useStore.js'
 import { useUI } from '../store/useUI.js'
@@ -28,28 +28,16 @@ export default function Settings() {
   const wakeOK = wakeLockSupported()
 
   // --- update check state ---
-  const [updateInfo, setUpdateInfo] = useState(null) // { hasUpdate, latestVersion, apkUrl } | null while loading
-  const [updateLoading, setUpdateLoading] = useState(true)
-  const [updateError, setUpdateError] = useState(null)
+  // --- update check state ---
+  const [updateInfo, setUpdateInfo] = useState(null) // { hasUpdate, latestVersion, apkUrl, hashUrl } | null
 
-  const runUpdateCheck = async () => {
-    setUpdateLoading(true)
-    setUpdateError(null)
-    try {
-      const info = await checkForUpdate()
-      setUpdateInfo(info)
-    } catch (e) {
-      setUpdateError(e.message || 'Check failed')
-    } finally {
-      setUpdateLoading(false)
-    }
-  }
-
-  useEffect(() => { runUpdateCheck() }, [])
+  useEffect(() => {
+    checkForUpdate().then(setUpdateInfo).catch(() => {})
+  }, [])
 
   const onUpdateRowClick = () => {
-    if (updateLoading) return
-    if (updateInfo?.hasUpdate && updateInfo.apkUrl) {
+    if (!updateInfo?.hasUpdate) return
+    if (updateInfo.apkUrl) {
       // Start download & install
       const version = updateInfo.latestVersion
       confirmSheet({
@@ -57,58 +45,37 @@ export default function Settings() {
         message: t('The latest version will be downloaded and the installer will open.'),
         confirmText: t('Download & Install'),
         onConfirm: async () => {
-          toast(t('Downloading update…'))
+          // Open a progress sheet
+          let closeProgress = null
+          let setProgress = null
+          useUI.getState().openSheet(close => {
+            closeProgress = close
+            return <DownloadProgress ref={fn => { setProgress = fn }} />
+          }, { locked: true })
           try {
-            await downloadAndInstall(updateInfo.apkUrl)
+            // Fetch the expected SHA-256 hash if available
+            let expectedHash = null
+            if (updateInfo.hashUrl) {
+              try {
+                const hashRes = await fetch(updateInfo.hashUrl)
+                if (hashRes.ok) expectedHash = (await hashRes.text()).split(/\s/)[0]
+              } catch (e) { /* proceed without hash verification */ }
+            }
+            await downloadAndInstall(updateInfo.apkUrl, expectedHash, (received, total) => {
+              if (setProgress) setProgress(received, total)
+            })
+            if (closeProgress) closeProgress()
           } catch (e) {
+            if (closeProgress) closeProgress()
             toast(t('Update failed: {0}', e.message))
           }
         },
       })
-    } else if (updateInfo?.hasUpdate && !updateInfo.apkUrl) {
+    } else {
       // Update available but no APK asset — open the releases page
       window.open('https://gitlab.com/DuarteSantos8/opengym/-/releases', '_blank', 'noopener')
-    } else {
-      // Already up to date or error — re-check and show result in a dialog
-      setUpdateLoading(true)
-      setUpdateError(null)
-      checkForUpdate().then(info => {
-        setUpdateInfo(info)
-        setUpdateLoading(false)
-        useUI.getState().openSheet(close => (
-          <div style={{ textAlign: 'center', padding: '4px 0' }}>
-            <h3>{t('Update check')}</h3>
-            <div className="muted" style={{ marginBottom: 18, lineHeight: 1.5 }}>
-              {info.hasUpdate
-                ? t('{0} is available!', info.latestVersion)
-                : t('openGym {0} — you\u2019re up to date.', __APP_VERSION__)}
-            </div>
-            <Button variant="ghost" className="dim" onClick={close}>{t('OK')}</Button>
-          </div>
-        ), { kind: 'center' })
-      }).catch(e => {
-        setUpdateError(e.message || 'Check failed')
-        setUpdateLoading(false)
-        useUI.getState().openSheet(close => (
-          <div style={{ textAlign: 'center', padding: '4px 0' }}>
-            <h3>{t('Update check')}</h3>
-            <div className="muted" style={{ marginBottom: 18, lineHeight: 1.5 }}>
-              {t('Could not check for updates: {0}', e.message || 'unknown error')}
-            </div>
-            <Button variant="ghost" className="dim" onClick={close}>{t('OK')}</Button>
-          </div>
-        ), { kind: 'center' })
-      })
     }
   }
-
-  const updateTitle = updateLoading
-    ? t('Checking for updates…')
-    : updateError
-      ? t('Update check failed')
-      : updateInfo?.hasUpdate
-        ? t('{0} available', updateInfo.latestVersion)
-        : t('openGym {0} (up to date)', __APP_VERSION__)
 
   const doExport = async () => {
     const json = JSON.stringify(S, null, 2)
@@ -310,9 +277,9 @@ export default function Settings() {
 
     {/* ---------- data: fill it, bring things over, back it up, wipe it ---------- */}
     <Section title={t('Data')}>
-      <Row icon="rocket" iconTint="var(--purple)" title={updateTitle}
-        accessory={updateInfo?.hasUpdate ? 'chevron' : 'none'}
-        onClick={onUpdateRowClick} />
+      {updateInfo?.hasUpdate && <Row icon="info" iconTint="var(--purple)" title={t('openGym v{0} available', updateInfo.latestVersion)}
+        accessory="chevron"
+        onClick={onUpdateRowClick} />}
       <Row icon="sparkles" iconTint="var(--acc)" title={t('Load starter plan (PPL)')} accessory="chevron" onClick={loadStarterPlan} />
       <Row icon="shuffle" iconTint="var(--teal)" title={t('Import from another app')}
         subtitle={t('FitNotes, Strong, Hevy — or body weight from Apple Health')}
@@ -365,6 +332,32 @@ const EFFORT_ROWS = [
 // RIR 2 / RPE 8: the row a working set usually lands on — the anchor the others are read
 // against. Not where the stepper starts; + walks up from the bottom of the scale.
 const EFFORT_TYPICAL = 2
+
+// Download progress sheet — receives a ref callback that exposes a (received, total) setter.
+// Uses forwardRef so the caller can push byte counts in without re-rendering the whole Settings tree.
+const DownloadProgress = forwardRef(function DownloadProgress(_, ref) {
+  const [pct, setPct] = useState(0)
+  const [text, setText] = useState(t('Starting download…'))
+  // Expose a setter the caller can invoke directly
+  if (ref) ref(function update(received, total) {
+    if (total > 0) {
+      const p = Math.min(100, Math.round((received / total) * 100))
+      setPct(p)
+      setText(t('{0} %', p))
+    } else {
+      setText(t('{0} MB', (received / 1_000_000).toFixed(1)))
+    }
+  })
+  return (
+    <div style={{ textAlign: 'center', padding: '8px 0' }}>
+      <h3>{t('Downloading update…')}</h3>
+      <div style={{ margin: '16px 0', height: 6, borderRadius: 3, background: 'var(--fill-3)', overflow: 'hidden' }}>
+        <div style={{ height: '100%', width: pct + '%', background: 'var(--acc)', borderRadius: 3, transition: 'width .2s' }} />
+      </div>
+      <div className="muted small">{text}</div>
+    </div>
+  )
+})
 
 function effortHelpSheet() {
   useUI.getState().openSheet(close => <>

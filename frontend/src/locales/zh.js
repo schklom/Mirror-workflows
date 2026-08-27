@@ -1080,4 +1080,11 @@ export default {
   'Set to 0 to go back to the default ({0}).': '设为 0 即恢复默认值（{0}）。',
   'Applies to this exercise everywhere, not just this plan.': '对这个动作处处生效，不只在此计划中。',
   'You still log the total weight — the bar only feeds the per-side plate math.': '记录的仍是总重量——杆重只用于每侧杠铃片的计算。',
+  'Update to {0}?': '更新到 {0}？',
+  'The latest version will be downloaded and the installer will open.': '将下载最新版本并打开安装程序。',
+  'Download & Install': '下载并安装',
+  'Update failed: {0}': '更新失败：{0}',
+  'openGym v{0} available': 'openGym v{0} 可用',
+  'Starting download…': '正在开始下载…',
+  'Downloading update…': '正在下载更新…',
 }

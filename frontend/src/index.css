@@ -631,8 +631,8 @@ h4.sec{
 .setextra .chip.add:disabled{opacity:.35}
 /* why the next target is what it is (issue #17) */
 .progline{
-  display:flex;align-items:flex-start;gap:7px;margin:6px 0 2px;
-  font-size:13px;line-height:1.38;color:var(--acc);
+  width:100%;display:flex;align-items:flex-start;gap:7px;margin:6px 0 2px;padding:0;
+  text-align:left;font-size:13px;line-height:1.38;color:var(--acc);
 }
 .progline.warn{color:var(--yellow)}
 .progline svg{flex:none;margin-top:2px}

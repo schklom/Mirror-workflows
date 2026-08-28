@@ -155,6 +155,22 @@ describe('Workout set completion flow', () => {
   })
 })
 
+describe('progression guidance', () => {
+  it('labels the visible outcome with the policy that calculated it', async () => {
+    await mount([exercise('plain-bench', [false, false, false], {
+      plan: {
+        policy: 'linear',
+        kind: 'up',
+        weight: 62.5,
+        why: ['Every rep last time — {0} {1} more.', 2.5, 'kg'],
+      },
+    })])
+
+    expect(container.querySelector('.progline')?.textContent)
+      .toContain('Linear progression · Every rep last time — 2.5 kg more.')
+  })
+})
+
 describe('superset flow survives an exercise being removed mid-session', () => {
   // removeActiveExercise splices A.entries, shifting every index above the removal down.
   // The high-water marks are index-keyed, so without re-baselining the shifted exercise

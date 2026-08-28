@@ -64,6 +64,6 @@ describe('exercise configuration progression step', () => {
     const emptySave = [...empty.host.querySelectorAll('button')]
       .find(b => /^(save|add to routine)$/i.test(b.textContent.trim()))
     act(() => { emptySave.click() })
-    expect(empty.onSave).toHaveBeenCalledWith(expect.not.objectContaining({ inc: expect.anything() }))
+    expect(empty.onSave.mock.calls[0][0]).not.toHaveProperty('inc')
   })
 })

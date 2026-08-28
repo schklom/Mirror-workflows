@@ -28,7 +28,7 @@ The app tries to match the exercise names to link them to the exercises in the d
 > 
 > Exercises depend on name matching, so custom exercises might be named differently, as they might be in other apps.
 
-These apps have been tested to work without adjustments:
+These apps have been tested to work without adjustments to the column names:
 
 | App | How to export | 
 |---|---|

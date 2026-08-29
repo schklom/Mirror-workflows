@@ -9,9 +9,9 @@
 //     a page break — each exercise, and each routine that fits, stays in one place.
 
 import { EXIDX, isBodyweightEq } from './exercises.js'
-import { modeOf, fmtSec, isBw, isPerSide, sideReps } from './history.js'
+import { modeOf, fmtSec, isBw, isPerSide, sideReps, MAX_PLANNED_WARMUPS } from './history.js'
 import { uid, todayISO, DAYN, fmtNum, exCount } from './format.js'
-import { t } from './i18n-core.js'
+import { t, exerciseNameFor } from './i18n-core.js'
 
 const PLAN_FMT = 1
 const WEEK_ORDER = [1, 2, 3, 4, 5, 6, 0]   // Mon-first, matching the Plan screen
@@ -45,7 +45,35 @@ function cleanEx(e) {
   if (e.repsMin != null) o.repsMin = e.repsMin
   if (e.repsMax != null) o.repsMax = e.repsMax
   if (e.sg) o.sg = e.sg
+  if (e.note) o.note = e.note
+  const warm = cleanWarmupSets(e.warmupSets)
+  if (warm) o.warmupSets = warm
+  // Drop-sets and rest-pause are part of how the exercise is prescribed, not a logging detail.
+  // Without this a shared "3x5 with a double drop" arrived at the other end as a plain 3x5,
+  // silently — parsePlan's `dropped` counter only tracks exercises it cannot resolve at all.
+  const intens = cleanIntensifier(e.intensifier)
+  if (intens) o.intensifier = intens
   return o
+}
+
+/** Clamped the same way buildSets clamps it on the way out — the stepper showed a hand-edited
+ *  plan file's "999" verbatim, because the clamp only happened when the rows were built. */
+function cleanWarmupSets(v) {
+  const n = Math.round(Number(v)) || 0
+  return n > 0 ? Math.min(MAX_PLANNED_WARMUPS, n) : 0
+}
+
+/** Keep the floors the config sheet and applyIntensifierPlan already enforce, and nothing else:
+ *  a plan file is someone else's data, so anything unrecognised is dropped rather than trusted. */
+function cleanIntensifier(x) {
+  const type = x && x.type
+  if (type === 'dropset') {
+    return { type, count: Math.max(1, Math.round(Number(x.count)) || 1), pct: Math.max(5, Math.round(Number(x.pct)) || 20) }
+  }
+  if (type === 'restpause') {
+    return { type, totalReps: Math.max(1, Math.round(Number(x.totalReps)) || 1), restSec: Math.max(5, Math.round(Number(x.restSec)) || 15) }
+  }
+  return null
 }
 
 /** Build the shareable bundle: every routine, the week schedule, referenced customs. */
@@ -85,6 +113,13 @@ export function parsePlan(raw) {
       const ok = !!e && (known.has(e.id) || !!EXIDX[e.id])
       if (!ok) dropped++
       return ok
+    }).map(e => {
+      // The exercises pass through as written, so the two fields that carry numbers into the
+      // planner get the same clamps on the way in that they get on the way out.
+      const warm = cleanWarmupSets(e.warmupSets)
+      const intens = cleanIntensifier(e.intensifier)
+      const { warmupSets, intensifier, ...rest } = e
+      return { ...rest, ...(warm ? { warmupSets: warm } : {}), ...(intens ? { intensifier: intens } : {}) }
     })
   }))
   return {
@@ -172,9 +207,10 @@ function routineHTML(r, unit) {
   const rows = units(r.ex).map(u => {
     const items = u.map(e => {
       const ex = EXIDX[e.id]
-      const name = ex ? ex.n : t('Unknown exercise')
+      const name = ex ? exerciseNameFor(ex) : t('Unknown exercise')
       const part = ex && ex.bp && ex.bp !== 'cardio' ? `<span class="part">${esc(ex.bp)}</span>` : ''
-      return `<div class="ex"><div class="ex-n">${esc(name)}${part}</div><div class="ex-s">${esc(scheme(e, unit))}</div></div>`
+      const note = e.note ? `<div class="ex-note">${esc(e.note)}</div>` : ''
+      return `<div class="ex"><div class="ex-row"><div class="ex-n">${esc(name)}${part}</div><div class="ex-s">${esc(scheme(e, unit))}</div></div>${note}</div>`
     }).join('')
     return u.length > 1
       ? `<div class="ss"><div class="ss-tag">${esc(t('Superset'))}</div><div class="ss-items">${items}</div></div>`
@@ -236,11 +272,13 @@ export function planPrintHTML(S, owner) {
   .r-count { font-size: 12px; color: #8a90a0; white-space: nowrap; }
 
   .ex-list { display: flex; flex-direction: column; }
-  .ex { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; padding: 6px 0; break-inside: avoid; page-break-inside: avoid; }
+  .ex { display: flex; flex-direction: column; padding: 6px 0; break-inside: avoid; page-break-inside: avoid; }
   .ex + .ex, .ss + .ex, .ex + .ss { border-top: 1px solid #f2f3f6; }
+  .ex-row { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; }
   .ex-n { text-transform: capitalize; font-weight: 500; }
   .ex-n .part { text-transform: capitalize; color: #9aa0ae; font-weight: 400; font-size: 12px; margin-left: 8px; }
   .ex-s { color: #3d424e; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .ex-note { color: #6a7080; font-size: 12px; margin-top: 2px; }
   .ex.empty, .none { color: #a2a8b6; }
 
   .ss { break-inside: avoid; page-break-inside: avoid; border-left: 3px solid #cfe08a; padding-left: 12px; margin: 4px 0; }

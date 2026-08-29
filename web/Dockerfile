@@ -19,12 +19,12 @@ ARG VERSION=dev
 ARG VCS_REF=dev
 ARG BUILD_DATE=unknown
 
-LABEL maintainer="Duarte Santos https://github.com/DuarteSantos8" \
+LABEL maintainer="Duarte Santos https://gitlab.com/DuarteSantos8" \
     org.opencontainers.image.title="opengym-web" \
     org.opencontainers.image.description="Frontend for Self-hosted gym & body-weight tracker — plan routines, log workouts (supersets & cardio too), track your weight and progress, passkey login. Your data, your server." \
-    org.opencontainers.image.source="https://github.com/DuarteSantos8/openGym" \
-    org.opencontainers.image.url="https://ghcr.io/duartesantos8/opengym-web" \
-    org.opencontainers.image.documentation="https://github.com/DuarteSantos8/openGym#readme" \
+    org.opencontainers.image.source="https://gitlab.com/DuarteSantos8/opengym" \
+    org.opencontainers.image.url="https://gitlab.com/DuarteSantos8/opengym/container_registry" \
+    org.opencontainers.image.documentation="https://gitlab.com/DuarteSantos8/opengym#readme" \
     org.opencontainers.image.licenses="AGPL-3.0-or-later" \
     org.opencontainers.image.version=$VERSION \
     org.opencontainers.image.revision=$VCS_REF \
@@ -38,6 +38,11 @@ COPY --from=build /app/dist /usr/share/nginx/html
 ENV NGINX_PORT=80
 ENV BACKEND=api
 ENV PORT=3000
+# Empty = the CF-Connecting-IP header is dropped before it reaches the API, so it cannot be
+# forged by a direct client. Set to $http_cf_connecting_ip only when Cloudflare is really in
+# front. Defined here too, not just in compose, so the template always renders for anyone
+# running the prebuilt image from their own compose file.
+ENV CF_CONNECTING_IP=""
 
 # Probe the port nginx was actually told to listen on (NGINX_PORT is configurable, so a
 # hardcoded http://localhost/ breaks on any instance that changed it), and address it as

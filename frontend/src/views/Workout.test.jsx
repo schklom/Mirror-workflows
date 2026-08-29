@@ -46,6 +46,10 @@ vi.mock('../sheets.jsx', () => ({
   finishWorkout: vi.fn(),
   workoutCompleteSheet: vi.fn(),
   confirmSheet: vi.fn(),
+  // Both note sheets belong here even though the tests never open one: Workout.jsx reads
+  // sessionNoteSheet during render, so a missing export is a render crash, not a no-op.
+  exerciseNoteSheet: vi.fn(),
+  sessionNoteSheet: vi.fn(),
 }))
 vi.mock('../components/Media.jsx', () => ({ default: () => null }))
 // api.js reads navigator.userAgent at module scope. This file installs its own DOM inside the

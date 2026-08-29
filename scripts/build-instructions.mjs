@@ -6,6 +6,7 @@
 //   node scripts/build-instructions.mjs [path-to-exercises.json]
 //
 // Without an argument the dataset is downloaded from the upstream repo.
+// Brazilian Portuguese is curated separately; see instruction-sources/README.md.
 
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs'
 import { dirname, join } from 'node:path'

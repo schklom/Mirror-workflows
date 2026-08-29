@@ -4,6 +4,8 @@ import http from 'node:http';
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
+import https from 'node:https';
+import dns from 'node:dns';
 import {
   generateRegistrationOptions, verifyRegistrationResponse,
   generateAuthenticationOptions, verifyAuthenticationResponse
@@ -13,6 +15,8 @@ import * as coachConfig from './coach/config.js';
 import * as coachJobs from './coach/jobs.js';
 import { coachRoutes } from './coach/routes.js';
 import { startCadence } from './coach/cadence.js';
+import { dayReminderPush, restTimerPush, testPush } from './push-messages.js';
+import { verifyError } from './verify-error.js';
 
 const PORT = +(process.env.PORT || 3000);
 const DATA = process.env.DATA_DIR || '/data';
@@ -84,37 +88,112 @@ catch { vapid = webpush.generateVAPIDKeys(); fs.writeFileSync(vapidFile, JSON.st
 const VAPID_SUBJECT = process.env.VAPID_SUBJECT || (SECURE ? ORIGIN : 'mailto:admin@localhost');
 webpush.setVapidDetails(VAPID_SUBJECT, vapid.publicKey, vapid.privateKey);
 
+/* A push subscription's `endpoint` is a URL this server connects out to, chosen by whoever is
+   signed in — so without a check /api/push/* is a request-forgery lever, and the api container
+   sits on the same Docker network as the rest of the self-hoster's stack. Three limits below:
+
+   1. PUSH_AGENT rejects any connection to a private/loopback/link-local address at the moment
+      the socket is opened. Validating the URL alone would leave a DNS-rebinding window — the
+      name is resolved a second time inside web-push — so the check has to live in the lookup
+      the request itself uses, not in a prior pass.
+   2. PUSH_TIMEOUT_MS: an endpoint that accepts TCP and then stalls used to hang the request
+      handler that awaited it, indefinitely. web-push sets no timeout of its own.
+   3. PUSH_CONCURRENCY: one small request must not turn into an unbounded burst of outbound
+      connections (with MAX_SUBS_PER_USER below, that is the other half of the same problem). */
+const PUSH_TIMEOUT_MS = 10000;
+const PUSH_CONCURRENCY = 6;
+const MAX_SUBS_PER_USER = 20;
+
+function isPrivateAddr(ip) {
+  const v = String(ip).toLowerCase();
+  const m4 = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/.exec(v);
+  if (m4) {
+    const a = +m4[1], b = +m4[2];
+    if (a === 0 || a === 10 || a === 127) return true;            // this-network, private, loopback
+    if (a === 169 && b === 254) return true;                      // link-local (cloud metadata)
+    if (a === 172 && b >= 16 && b <= 31) return true;             // private
+    if (a === 192 && b === 168) return true;                      // private
+    if (a === 192 && b === 0) return true;                        // 192.0.0.0/24, 192.0.2.0/24
+    if (a === 100 && b >= 64 && b <= 127) return true;            // CGNAT
+    if (a >= 224) return true;                                    // multicast + reserved
+    return false;
+  }
+  const m6 = /^::ffff:(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$/.exec(v);
+  if (m6) return isPrivateAddr(m6[1]);                            // IPv4-mapped IPv6
+  if (v === '::' || v === '::1') return true;                     // unspecified, loopback
+  if (/^fe[89ab]/.test(v)) return true;                           // link-local
+  if (/^f[cd]/.test(v)) return true;                              // unique local
+  return false;
+}
+
+// Same shape as dns.lookup, so https.Agent can use it directly.
+function guardedLookup(hostname, options, cb) {
+  dns.lookup(hostname, options, (err, address, family) => {
+    if (err) return cb(err);
+    const list = Array.isArray(address) ? address : [{ address, family }];
+    if (list.some(a => isPrivateAddr(a.address))) {
+      return cb(Object.assign(new Error('refusing to connect to a private address: ' + hostname), { code: 'EPUSHBLOCKED' }));
+    }
+    cb(null, address, family);
+  });
+}
+const PUSH_AGENT = new https.Agent({ lookup: guardedLookup, keepAlive: false });
+
+// Cheap pre-check so a bad endpoint is refused at subscribe time with a useful message, rather
+// than silently never delivering. PUSH_AGENT is what actually enforces the address rule.
+function pushEndpointError(raw) {
+  let u;
+  try { u = new URL(String(raw || '')); } catch { return 'endpoint is not a valid URL'; }
+  if (u.protocol !== 'https:') return 'endpoint must be an https:// URL';
+  if (u.username || u.password) return 'endpoint must not carry credentials';
+  // A literal address can be judged right here, which turns the common case into a clear error
+  // at subscribe time instead of a delivery that quietly never happens. Hostnames are left to
+  // PUSH_AGENT, which is the check that actually has to hold.
+  const host = u.hostname.replace(/^\[|\]$/g, '');
+  if (/^[0-9.]+$/.test(host) || host.includes(':')) {
+    if (isPrivateAddr(host)) return 'endpoint must not point at a private address';
+  }
+  return null;
+}
+
 async function sendPush(userId, payload) {
   const subs = db.subs.filter(s => s.userId === userId);
   if (!subs.length) return;
   const body = JSON.stringify(payload);
   let dirty = false;
-  await Promise.all(subs.map(async sub => {
-    // urgency 'high' is the one lever we have over delivery speed — iOS/Android throttle
-    // low-urgency background push more aggressively under battery-saving modes. TTL is left
-    // at the library default (long) so a briefly-offline device still gets it once reconnected,
-    // rather than risking it being dropped for the sake of shaving off latency that TTL doesn't
-    // actually control anyway.
-    try { await webpush.sendNotification({ endpoint: sub.endpoint, keys: sub.keys }, body, { urgency: 'high' }); }
-    catch (e) {
-      console.error('push send failed', userId, e.statusCode, e.body || e.message);
-      if (e.statusCode === 404 || e.statusCode === 410) {
-        db.subs = db.subs.filter(s => s.endpoint !== sub.endpoint); dirty = true;
+  let next = 0;
+  const worker = async () => {
+    while (next < subs.length) {
+      const sub = subs[next++];
+      // urgency 'high' is the one lever we have over delivery speed — iOS/Android throttle
+      // low-urgency background push more aggressively under battery-saving modes. TTL is left
+      // at the library default (long) so a briefly-offline device still gets it once reconnected,
+      // rather than risking it being dropped for the sake of shaving off latency that TTL doesn't
+      // actually control anyway.
+      try {
+        await webpush.sendNotification({ endpoint: sub.endpoint, keys: sub.keys }, body,
+          { urgency: 'high', timeout: PUSH_TIMEOUT_MS, agent: PUSH_AGENT });
+      } catch (e) {
+        console.error('push send failed', userId, e.statusCode, e.body || e.message);
+        if (e.statusCode === 404 || e.statusCode === 410) {
+          db.subs = db.subs.filter(s => s.endpoint !== sub.endpoint); dirty = true;
+        }
       }
     }
-  }));
+  };
+  await Promise.all(Array.from({ length: Math.min(PUSH_CONCURRENCY, subs.length) }, worker));
   if (dirty) saveDb();
 }
 
 // Rest-timer alerts: client schedules on start/extend, cancels on skip or on-screen completion —
 // this only fires when the tab was backgrounded/suspended and never got to cancel it itself.
 const restTimers = new Map(); // userId -> Timeout
-function scheduleRestTimer(userId, sec) {
+function scheduleRestTimer(userId, sec, lang) {
   const t = restTimers.get(userId);
   if (t) clearTimeout(t);
   restTimers.set(userId, setTimeout(() => {
     restTimers.delete(userId);
-    sendPush(userId, { title: 'Rest over 💪', body: 'Time for your next set.', tag: 'rest-timer' });
+    sendPush(userId, restTimerPush(lang));
   }, sec * 1000));
 }
 function cancelRestTimer(userId) {
@@ -161,11 +240,7 @@ setInterval(() => {
     console.log('reminder firing', user.id, rid);
     user.lastReminder = now.date;
     saveDb();
-    sendPush(user.id, {
-      title: routine ? `${routine.emoji || '🏋️'} ${routine.name} today` : 'Workout planned today',
-      body: "It's on your plan — let's go 💪",
-      tag: 'day-reminder'
-    });
+    sendPush(user.id, dayReminderPush(S.lang, routine));
   }
 // Checked every 10s (not 60s) — ticks aren't aligned to the top of the minute, so a 60s
 // interval could sit on your target minute for up to 59s before noticing. 10s caps that at ~9s.
@@ -196,11 +271,44 @@ function makeSession(user) {
   const exp = Date.now() + SESSION_DAYS * 86400000;
   return sign(user.id + ':' + exp + ':' + sessionVersion(user));
 }
+// With the __Host- prefix the *browser* guarantees the cookie is host-only (no Domain attribute
+// is even allowed) — which is what stops a sibling subdomain, e.g. anything-else.example.com
+// against gym.example.com, from planting a second session cookie for the shared parent domain
+// and having it shadow the real one. The prefix also requires Secure, so it only works on an
+// https ORIGIN; over plain http://localhost the old name stays, and localhost has no sibling
+// subdomains to worry about. Both names are accepted on the way in, so upgrading an instance
+// does not sign anybody out — they move onto the prefixed cookie at their next sign-in.
+const COOKIE = SECURE ? '__Host-gymsid' : 'gymsid';
+const LEGACY_COOKIE = 'gymsid';
+// Every value for a given name, in the order the browser sent them. Not an object: reducing
+// duplicates to one entry silently picks a winner, and picking the *last* one handed a shadowing
+// cookie the session outright.
+function cookieValues(req, name) {
+  const out = [];
+  for (const c of (req.headers.cookie || '').split(';')) {
+    const i = c.indexOf('=');
+    if (i < 0) continue;
+    if (c.slice(0, i).trim() === name) out.push(c.slice(i + 1).trim());
+  }
+  return out;
+}
+function cookieToken(req) {
+  for (const name of (COOKIE === LEGACY_COOKIE ? [COOKIE] : [COOKIE, LEGACY_COOKIE])) {
+    const vals = cookieValues(req, name);
+    if (!vals.length) continue;
+    // Two different values under one name is not something a browser does on its own — it means
+    // somebody else got to set one. There is no safe way to guess which is the real session, so
+    // refuse both: a signed-out user signs back in, a shadowing attempt gets nothing.
+    if (vals.some(v => v !== vals[0])) return null;
+    return vals[0];
+  }
+  return null;
+}
 function readSession(req) {
-  const cookies = Object.fromEntries((req.headers.cookie || '').split(';').map(c => {
-    const i = c.indexOf('='); return i < 0 ? ['', ''] : [c.slice(0, i).trim(), c.slice(i + 1).trim()];
-  }));
-  const tok = cookies.gymsid;
+  // The paired mobile app has no cookie jar shared with the API's origin, so it carries the same
+  // signed token in an Authorization header instead — same payload, same verification below.
+  const auth = req.headers.authorization || '';
+  const tok = cookieToken(req) || (auth.startsWith('Bearer ') ? auth.slice(7).trim() : null);
   if (!tok) return null;
   const payload = verifySig(tok);
   if (!payload) return null;
@@ -219,13 +327,61 @@ function readSession(req) {
 function requireAdmin(req, res) {
   const user = readSession(req);
   if (!user) { json(res, 401, { error: 'not signed in' }); return null; }
-  if (!isAdmin(user)) { json(res, 403, { error: 'forbidden' }); return null; }
+  // Only the 403 is recorded: a 401 is any unauthenticated bot poking /api/admin/*, and
+  // logging those would bury the events an operator actually wants to see.
+  if (!isAdmin(user)) { audit(req, 'admin.denied', { ok: false, user }); json(res, 403, { error: 'forbidden' }); return null; }
   return user;
 }
+const expireCookie = name => `${name}=; Path=/; Max-Age=0; HttpOnly;${SECURE} SameSite=Lax`;
 function sessionCookie(user) {
-  return `gymsid=${makeSession(user)}; Path=/; Max-Age=${SESSION_DAYS * 86400}; HttpOnly;${SECURE} SameSite=Lax`;
+  const fresh = `${COOKIE}=${makeSession(user)}; Path=/; Max-Age=${SESSION_DAYS * 86400}; HttpOnly;${SECURE} SameSite=Lax`;
+  // Signing in also retires any pre-upgrade cookie, so nobody is left carrying an unprefixed one
+  // (or a shadowing copy of it) alongside the new session.
+  return COOKIE === LEGACY_COOKIE ? [fresh] : [fresh, expireCookie(LEGACY_COOKIE)];
 }
-const clearCookie = `gymsid=; Path=/; Max-Age=0; HttpOnly;${SECURE} SameSite=Lax`;
+const clearCookie = COOKIE === LEGACY_COOKIE
+  ? [expireCookie(LEGACY_COOKIE)]
+  : [expireCookie(COOKIE), expireCookie(LEGACY_COOKIE)];
+
+/* ---------- CSRF ---------- */
+// SameSite=Lax keeps the session cookie off a genuinely cross-*site* request. It does not keep it
+// off a *sibling subdomain*: gym.example.com and anything-else.example.com are the same site, and
+// that is the ordinary self-hosting layout — one domain, one reverse proxy, several apps. Nothing
+// else in a request was being checked either; readBody() JSON.parse's the body whatever the
+// Content-Type claims, so a hostile page could reach the state-changing routes with a form-style
+// POST that needs no CORS preflight at all.
+//
+// So a state-changing request that came from a browser has to come from ORIGIN. The exemptions
+// below are not holes: each of those routes carries its own credential in the body (a WebAuthn
+// challenge id, a one-shot pairing code), none of them acts on the caller's existing session, and
+// they have to keep working from the mobile WebView, whose origin is never ORIGIN.
+const CSRF_EXEMPT = new Set([
+  'POST /api/register/options', 'POST /api/register/verify',
+  'POST /api/login/options', 'POST /api/login/verify',
+  'POST /api/pair/redeem'
+]);
+const originsMatch = (a, b) => a.replace(/\/+$/, '') === b.replace(/\/+$/, '');
+function csrfOk(req, key) {
+  if (req.method === 'GET' || req.method === 'HEAD' || req.method === 'OPTIONS') return true;
+  if (CSRF_EXEMPT.has(key)) return true;
+  // The paired mobile app authenticates with a Bearer token. A browser never attaches one on its
+  // own, so there is no ambient authority for a hostile page to borrow and no origin to check.
+  if ((req.headers.authorization || '').startsWith('Bearer ')) return true;
+  // Sec-Fetch-Site is set by the browser itself and no page can forge it, and it states exactly
+  // the property wanted here — more precisely than comparing origins can. 'same-origin' is the
+  // app talking to its own backend; a hostile page reports 'cross-site'; a sibling subdomain,
+  // the case SameSite=Lax misses entirely, reports 'same-site'. It is also what keeps the Vite
+  // dev server working, where the page is on another port and its Origin is legitimately not
+  // ORIGIN. Absent on older Safari and on proxies that strip it, hence the fallback below.
+  const site = req.headers['sec-fetch-site'];
+  if (site) return site === 'same-origin' || site === 'none';
+  const origin = req.headers.origin;
+  // No Origin header at all means no browser sent this — curl, a script, a monitoring check.
+  // Browsers put an Origin on every state-changing request and a page cannot suppress it, so the
+  // forgery this exists to stop always carries one.
+  if (!origin) return true;
+  return originsMatch(origin, ORIGIN);
+}
 
 /* ---------- challenge store (in-memory, 5 min TTL) ---------- */
 const challenges = new Map(); // cid -> {challenge, name?, uid?, exp}
@@ -241,6 +397,21 @@ function takeChallenge(cid) {
   return c;
 }
 setInterval(() => { for (const [k, v] of challenges) if (v.exp < Date.now()) challenges.delete(k); }, 60000).unref();
+
+// ---------- device pairing (mobile app "connect to my server", no WebAuthn ceremony) ----------
+// A passkey ceremony can't run inside the app's WebView (its origin never matches RP_ID), so the
+// app authenticates by redeeming a short code minted from an already signed-in browser tab —
+// same 5-min-TTL/one-shot shape as the WebAuthn challenge store above.
+const pairings = new Map(); // code -> {uid, exp}
+const PAIR_CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // no 0/O/1/I — read off a screen
+function makePairCode() {
+  let code;
+  do {
+    code = Array.from(crypto.randomBytes(8)).map(b => PAIR_CODE_ALPHABET[b % PAIR_CODE_ALPHABET.length]).join('');
+  } while (pairings.has(code));
+  return code;
+}
+setInterval(() => { for (const [k, v] of pairings) if (v.exp < Date.now()) pairings.delete(k); }, 60000).unref();
 
 /* ---------- helpers ---------- */
 function json(res, code, obj, extraHeaders) {
@@ -278,6 +449,100 @@ function livePresence(uid) {
 }
 setInterval(() => { for (const [k, v] of presence) if (Date.now() - v.updatedAt > PRESENCE_TTL) presence.delete(k); }, 30000).unref();
 
+/* ---------- audit log ---------- */
+// Who signed in, who tried and failed, and what an admin changed. One JSON object per line in
+// ./data/audit.log, appended and never rewritten in place. It deliberately does not live in
+// db.json: that file is rewritten whole on every save, and the login/register handshakes are
+// unauthenticated and unthrottled by design (see SECURITY.md), so an audit trail in there would
+// turn one bogus request into a full db.json rewrite. A line torn by a crash costs one event and
+// is dropped on read.
+//
+// On by default. It records strictly less than the instance already holds — every account is in
+// db.json and every workout is in state-<uid>.json, both readable by any admin — and a security
+// feature that ships switched off protects nobody. IP addresses are the exception: off unless you
+// ask for them, because they are the one field here that says where somebody physically is.
+const AUDIT_ON = !/^(0|false|no|off)$/i.test(process.env.AUDIT_LOG || '');
+const AUDIT_MAX = Math.max(0, +(process.env.AUDIT_MAX || 5000) || 0);     // 0 = no count cap
+const AUDIT_DAYS = Math.max(0, +(process.env.AUDIT_DAYS || 90) || 0);     // 0 = no age cap
+const AUDIT_IP = /^full$/i.test(process.env.AUDIT_IP || '') ? 'full'
+  : /^(1|true|yes|on|net)$/i.test(process.env.AUDIT_IP || '') ? 'net' : 'off';
+const auditFile = path.join(DATA, 'audit.log');
+let auditSeq = 0;      // never reset, not even by a clear — a wiped log leaves a visible id gap
+let auditCount = 0;
+
+// Which header holds the caller depends on what is in front of the API. CF-Connecting-IP comes
+// first because a Cloudflare tunnel does NOT forward the client in X-Forwarded-For — that header
+// then only carries the tunnel's own container, which looks like a valid answer and isn't. After
+// that, the first entry of X-Forwarded-For is the client and everything behind it is our own hops.
+// All three are only as trustworthy as the proxy in front: it has to overwrite them rather than
+// pass a client-supplied one through. In 'net' mode only the network survives — enough to tell
+// one source from another, not enough to point at a person.
+function clientIp(req) {
+  if (AUDIT_IP === 'off') return null;
+  const raw = String(req.headers['cf-connecting-ip'] || '').trim()
+    || String(req.headers['x-forwarded-for'] || '').split(',')[0].trim()
+    || String(req.headers['x-real-ip'] || '').trim()
+    // Nothing in front at all: the socket peer is the client, and it cannot be forged. Behind
+    // the bundled web container a header always wins before this is reached.
+    || String(req.socket?.remoteAddress || '').replace(/^::ffff:/, '').trim();
+  const ip = raw.replace(/^\[|\]$/g, '').slice(0, 45);
+  if (!/^[0-9a-fA-F:.]{3,45}$/.test(ip)) return null;    // never store a header verbatim
+  if (AUDIT_IP === 'full') return ip;
+  if (/^\d{1,3}(\.\d{1,3}){3}$/.test(ip)) return ip.replace(/\.\d{1,3}$/, '.0/24');
+  const g = ip.split(':').filter(Boolean).slice(0, 3).join(':');
+  return g ? g + '::/48' : null;
+}
+
+function auditLines() {
+  let text;
+  try { text = fs.readFileSync(auditFile, 'utf8'); } catch { return []; }
+  const rows = [];
+  for (const line of text.split('\n')) {
+    if (!line) continue;
+    try { const r = JSON.parse(line); if (r && r.id && r.ev) rows.push(r); } catch { /* torn line */ }
+  }
+  return rows;
+}
+// Retention is a cap, not an archive: age first, then the newest AUDIT_MAX of what's left.
+function auditKeep(rows) {
+  let out = rows;
+  if (AUDIT_DAYS) { const cut = Date.now() - AUDIT_DAYS * 86400000; out = out.filter(r => r.ts >= cut); }
+  if (AUDIT_MAX && out.length > AUDIT_MAX) out = out.slice(out.length - AUDIT_MAX);
+  return out;
+}
+function compactAudit() {
+  const rows = auditLines();
+  for (const r of rows) if (+r.id > auditSeq) auditSeq = +r.id;
+  const keep = auditKeep(rows);
+  auditCount = keep.length;
+  if (keep.length === rows.length) return;
+  try { atomicWrite(auditFile, keep.map(r => JSON.stringify(r)).join('\n') + (keep.length ? '\n' : '')); }
+  catch (e) { console.error('audit compact failed', e.message); }
+}
+
+// Never throws: a log that can't be written must not break signing in.
+function audit(req, ev, f = {}) {
+  if (!AUDIT_ON) return;
+  const rec = { id: ++auditSeq, ts: Date.now(), ev, ok: f.ok !== false };
+  if (f.user) { rec.uid = f.user.id; rec.name = String(f.user.name || '').slice(0, 40); }
+  else {
+    if (f.uid) rec.uid = f.uid;
+    if (f.name) rec.name = String(f.name).slice(0, 40);
+  }
+  if (f.target) { rec.tgt = f.target.id; rec.tname = String(f.target.name || '').slice(0, 40); }
+  if (f.msg) rec.msg = String(f.msg).slice(0, 120);
+  const ip = clientIp(req);
+  if (ip) rec.ip = ip;
+  try { fs.appendFileSync(auditFile, JSON.stringify(rec) + '\n'); }
+  catch (e) { return console.error('audit write failed', e.message); }
+  // Amortized: a 5000-event cap rewrites the file once per ~1250 events.
+  if (AUDIT_MAX && ++auditCount > AUDIT_MAX * 1.25) compactAudit();
+}
+if (AUDIT_ON) {
+  compactAudit();                                // prune on boot, seed auditSeq/auditCount
+  setInterval(compactAudit, 3600000).unref();    // honour AUDIT_DAYS on an idle instance too
+}
+
 /* ---------- routes ---------- */
 const routes = {
   'GET /api/health': async (req, res) => json(res, 200, { ok: true, users: db.users.length }),
@@ -302,8 +567,11 @@ const routes = {
     const name = String(body.name || '').trim().slice(0, 40);
     if (!name) return json(res, 400, { error: 'name required' });
     const code = String(body.code || '').trim().toUpperCase();
-    if (INVITE_ONLY && !db.invites.some(i => i.code === code && !i.usedBy && !i.revoked))
+    if (INVITE_ONLY && !db.invites.some(i => i.code === code && !i.usedBy && !i.revoked)) {
+      // The rejected code itself is never recorded — a near-miss guess in the log is a liability.
+      audit(req, 'auth.register.denied', { ok: false, name, msg: 'invite-rejected' });
       return json(res, 403, { error: 'a valid invite code is required' });
+    }
     const uid = crypto.randomBytes(12).toString('base64url');
     const options = await generateRegistrationOptions({
       rpName: RP_NAME, rpID: RP_ID,
@@ -319,7 +587,10 @@ const routes = {
   'POST /api/register/verify': async (req, res) => {
     const body = await readBody(req);
     const c = takeChallenge(body.cid);
-    if (!c || !c.uid) return json(res, 400, { error: 'challenge expired — try again' });
+    if (!c || !c.uid) {
+      audit(req, 'auth.register.fail', { ok: false, msg: 'challenge-expired' });
+      return json(res, 400, { error: 'challenge expired — try again' });
+    }
     let verification;
     try {
       verification = await verifyRegistrationResponse({
@@ -329,15 +600,28 @@ const routes = {
         expectedRPID: RP_ID,
         requireUserVerification: false
       });
-    } catch (e) { return json(res, 400, { error: 'verification failed: ' + e.message }); }
-    if (!verification.verified) return json(res, 400, { error: 'not verified' });
+    } catch (e) {
+      // e.message can echo attacker-supplied response fields, so only the reason code is kept.
+      audit(req, 'auth.register.fail', { ok: false, name: c.name, msg: 'verify-error' });
+      return json(res, 400, { error: verifyError(e, { rpId: RP_ID, origin: ORIGIN }) });
+    }
+    if (!verification.verified) {
+      audit(req, 'auth.register.fail', { ok: false, name: c.name, msg: 'not-verified' });
+      return json(res, 400, { error: 'not verified' });
+    }
     const { credential } = verification.registrationInfo;
-    if (db.creds.find(x => x.id === credential.id)) return json(res, 409, { error: 'credential already registered' });
+    if (db.creds.find(x => x.id === credential.id)) {
+      audit(req, 'auth.register.fail', { ok: false, name: c.name, msg: 'credential-exists' });
+      return json(res, 409, { error: 'credential already registered' });
+    }
     // Re-check the invite at the last moment (it may have been used/revoked since options), then burn it.
     let invite = null;
     if (INVITE_ONLY) {
       invite = db.invites.find(i => i.code === c.code && !i.usedBy && !i.revoked);
-      if (!invite) return json(res, 403, { error: 'invite code is no longer valid — ask for a new one' });
+      if (!invite) {
+        audit(req, 'auth.register.fail', { ok: false, name: c.name, msg: 'invite-invalid' });
+        return json(res, 403, { error: 'invite code is no longer valid — ask for a new one' });
+      }
     }
     const user = { id: c.uid, name: c.name, created: new Date().toISOString() };
     if (invite) { user.invitedBy = invite.code; invite.usedBy = user.id; invite.usedAt = user.created; }
@@ -349,6 +633,7 @@ const routes = {
       transports: body.credential?.response?.transports || []
     });
     saveDb();
+    audit(req, 'auth.register.ok', { user, msg: invite ? invite.code : null });
     json(res, 200, { user: { id: user.id, name: user.name, admin: isAdmin(user) } }, { 'Set-Cookie': sessionCookie(user) });
   },
 
@@ -363,9 +648,18 @@ const routes = {
   'POST /api/login/verify': async (req, res) => {
     const body = await readBody(req);
     const c = takeChallenge(body.cid);
-    if (!c) return json(res, 400, { error: 'challenge expired — try again' });
+    if (!c) {
+      audit(req, 'auth.login.fail', { ok: false, msg: 'challenge-expired' });
+      return json(res, 400, { error: 'challenge expired — try again' });
+    }
     const cred = db.creds.find(x => x.id === body.credential?.id);
-    if (!cred) return json(res, 404, { error: 'unknown passkey — create a profile first' });
+    if (!cred) {
+      // No credential id goes in the log: it is a stable handle for one passkey, and recording it
+      // would let an admin correlate an unknown device across attempts. Nothing here identifies
+      // the caller beyond the timestamp (and the network, if AUDIT_IP is on).
+      audit(req, 'auth.login.fail', { ok: false, msg: 'unknown-credential' });
+      return json(res, 404, { error: 'unknown passkey — create a profile first' });
+    }
     let verification;
     try {
       verification = await verifyAuthenticationResponse({
@@ -381,17 +675,36 @@ const routes = {
           transports: cred.transports
         }
       });
-    } catch (e) { return json(res, 400, { error: 'verification failed: ' + e.message }); }
-    if (!verification.verified) return json(res, 400, { error: 'not verified' });
+    } catch (e) {
+      audit(req, 'auth.login.fail', { ok: false, user: db.users.find(u => u.id === cred.userId), uid: cred.userId, msg: 'verify-error' });
+      return json(res, 400, { error: verifyError(e, { rpId: RP_ID, origin: ORIGIN }) });
+    }
+    if (!verification.verified) {
+      audit(req, 'auth.login.fail', { ok: false, user: db.users.find(u => u.id === cred.userId), uid: cred.userId, msg: 'not-verified' });
+      return json(res, 400, { error: 'not verified' });
+    }
     cred.counter = verification.authenticationInfo.newCounter;
     saveDb();
     const user = db.users.find(u => u.id === cred.userId);
-    if (!user) return json(res, 500, { error: 'user missing' });
-    if (user.disabled) return json(res, 403, { error: 'this account has been disabled' });
+    if (!user) {
+      audit(req, 'auth.login.fail', { ok: false, uid: cred.userId, msg: 'user-missing' });
+      return json(res, 500, { error: 'user missing' });
+    }
+    if (user.disabled) {
+      audit(req, 'auth.login.fail', { ok: false, user, msg: 'account-disabled' });
+      return json(res, 403, { error: 'this account has been disabled' });
+    }
+    audit(req, 'auth.login.ok', { user });
     json(res, 200, { user: { id: user.id, name: user.name, admin: isAdmin(user) } }, { 'Set-Cookie': sessionCookie(user) });
   },
 
-  'POST /api/logout': async (req, res) => json(res, 200, { ok: true }, { 'Set-Cookie': clearCookie }),
+  // Reads the session purely so the sign-out can be recorded; the cookie is cleared either way.
+  // A logout with no valid cookie is a no-op and isn't worth an entry.
+  'POST /api/logout': async (req, res) => {
+    const user = readSession(req);
+    if (user) audit(req, 'auth.logout', { user });
+    json(res, 200, { ok: true }, { 'Set-Cookie': clearCookie });
+  },
 
   // "Sign out everywhere" — bumps this user's session version, which invalidates every cookie
   // ever issued for the account, on every device, including a copy someone else walked off with.
@@ -402,7 +715,39 @@ const routes = {
     if (!user) return json(res, 401, { error: 'not signed in' });
     user.sv = sessionVersion(user) + 1;
     saveDb();
+    audit(req, 'auth.logout.all', { user });
     json(res, 200, { ok: true }, { 'Set-Cookie': clearCookie });
+  },
+
+  // Mobile app pairing: called from an already signed-in browser tab (Settings → "Pair the
+  // mobile app") to mint a short code the phone can redeem below.
+  'POST /api/pair/create': async (req, res) => {
+    const user = readSession(req);
+    if (!user) return json(res, 401, { error: 'not signed in' });
+    const code = makePairCode();
+    pairings.set(code, { uid: user.id, exp: Date.now() + 5 * 60000 });
+    audit(req, 'auth.pair.create', { user });
+    json(res, 200, { code });
+  },
+
+  // Called from the mobile app itself with the code shown in the browser. No session required —
+  // the code IS the credential, one-shot and 5-minute-lived like a WebAuthn challenge.
+  'POST /api/pair/redeem': async (req, res) => {
+    const body = await readBody(req);
+    const code = String(body.code || '').trim().toUpperCase();
+    const p = pairings.get(code);
+    if (p) pairings.delete(code);
+    if (!p || p.exp < Date.now()) {
+      audit(req, 'auth.pair.fail', { ok: false, msg: 'code-invalid' });
+      return json(res, 400, { error: 'invalid or expired code' });
+    }
+    const user = db.users.find(u => u.id === p.uid);
+    if (!user || user.disabled) {
+      audit(req, 'auth.pair.fail', { ok: false, uid: p.uid, msg: 'user-unavailable' });
+      return json(res, 400, { error: 'invalid or expired code' });
+    }
+    audit(req, 'auth.pair.ok', { user });
+    json(res, 200, { token: makeSession(user), user: { id: user.id, name: user.name, admin: isAdmin(user) } });
   },
 
   'GET /api/data': async (req, res) => {
@@ -432,8 +777,21 @@ const routes = {
     const body = await readBody(req);
     const sub = body.subscription;
     if (!sub?.endpoint || !sub?.keys?.p256dh || !sub?.keys?.auth) return json(res, 400, { error: 'invalid subscription' });
+    const bad = pushEndpointError(sub.endpoint);
+    if (bad) return json(res, 400, { error: bad });
+    // Only the two keys the push protocol needs are kept: `sub` is caller-supplied and would
+    // otherwise put arbitrary fields into db.json, which every admin route reads back out.
+    const keys = { p256dh: String(sub.keys.p256dh), auth: String(sub.keys.auth) };
     db.subs = db.subs.filter(s => s.endpoint !== sub.endpoint);
-    db.subs.push({ userId: user.id, endpoint: sub.endpoint, keys: sub.keys, created: new Date().toISOString() });
+    // A browser holds one subscription per device, so this cap is far above real use. Without
+    // it a single account could pile up endpoints without limit — every one of them a target
+    // sendPush() would then contact, and a whole rewrite of db.json per addition.
+    const mine = db.subs.filter(s => s.userId === user.id);
+    if (mine.length >= MAX_SUBS_PER_USER) {
+      const drop = new Set(mine.slice(0, mine.length - MAX_SUBS_PER_USER + 1).map(s => s.endpoint));
+      db.subs = db.subs.filter(s => !drop.has(s.endpoint));
+    }
+    db.subs.push({ userId: user.id, endpoint: sub.endpoint, keys, created: new Date().toISOString() });
     saveDb();
     json(res, 200, { ok: true });
   },
@@ -450,7 +808,7 @@ const routes = {
   'POST /api/push/test': async (req, res) => {
     const user = readSession(req);
     if (!user) return json(res, 401, { error: 'not signed in' });
-    await sendPush(user.id, { title: 'openGym', body: 'Test notification ✅ — this is what alerts look like.', tag: 'test' });
+    await sendPush(user.id, testPush(readState(user.id)?.lang));
     json(res, 200, { ok: true });
   },
 
@@ -460,7 +818,7 @@ const routes = {
     const body = await readBody(req);
     const sec = Math.max(1, Math.min(3600, Math.round(+body.seconds || 0)));
     if (!sec) return json(res, 400, { error: 'seconds required' });
-    scheduleRestTimer(user.id, sec);
+    scheduleRestTimer(user.id, sec, readState(user.id)?.lang);
     json(res, 200, { ok: true });
   },
 
@@ -527,7 +885,7 @@ const routes = {
   },
 
   'POST /api/admin/user/disable': async (req, res) => {
-    if (!requireAdmin(req, res)) return;
+    const admin = requireAdmin(req, res); if (!admin) return;
     const body = await readBody(req);
     const u = db.users.find(x => x.id === body.id);
     if (!u) return json(res, 404, { error: 'no such user' });
@@ -535,6 +893,7 @@ const routes = {
     u.disabled = !!body.disabled;
     if (u.disabled) presence.delete(u.id);   // drop them off "training now" at once
     saveDb();
+    audit(req, u.disabled ? 'admin.user.disable' : 'admin.user.enable', { user: admin, target: u });
     json(res, 200, { ok: true, id: u.id, disabled: u.disabled });
   },
 
@@ -559,17 +918,55 @@ const routes = {
     const invite = { code, note: String(body.note || '').slice(0, 60), createdBy: admin.id, created: new Date().toISOString() };
     db.invites.push(invite);
     saveDb();
+    audit(req, 'admin.invite.create', { user: admin, msg: code });
     json(res, 200, { invite });
   },
 
   'POST /api/admin/invites/revoke': async (req, res) => {
-    if (!requireAdmin(req, res)) return;
+    const admin = requireAdmin(req, res); if (!admin) return;
     const body = await readBody(req);
     const inv = db.invites.find(i => i.code === String(body.code || '').toUpperCase());
     if (!inv) return json(res, 404, { error: 'no such code' });
     if (inv.usedBy) return json(res, 400, { error: 'already used — cannot revoke' });
     db.invites = db.invites.filter(i => i.code !== inv.code);
     saveDb();
+    audit(req, 'admin.invite.revoke', { user: admin, msg: inv.code });
+    json(res, 200, { ok: true });
+  },
+
+  /* ---------- activity log ---------- */
+  // Newest first, paged by id. Not by offset: the log grows at the front of this view, so an
+  // offset cursor would repeat a row whenever an event lands between two pages; and not by
+  // timestamp, because two events can share a millisecond. auditKeep() runs on read as well as
+  // on the hourly compaction, so nothing past its retention is ever served.
+  'GET /api/admin/audit': async (req, res) => {
+    if (!requireAdmin(req, res)) return;
+    const q = new URL(req.url, 'http://x').searchParams;
+    const limit = Math.max(1, Math.min(200, +q.get('limit') || 100));
+    const before = +q.get('before') || Infinity;
+    const cat = q.get('cat') || '';
+    let rows = auditKeep(auditLines()).reverse();
+    if (cat === 'fail') rows = rows.filter(r => !r.ok);
+    else if (cat) rows = rows.filter(r => String(r.ev).startsWith(cat + '.'));
+    const page = rows.filter(r => r.id < before).slice(0, limit);
+    json(res, 200, {
+      events: page,
+      total: rows.length,
+      nextBefore: page.length === limit ? page[page.length - 1].id : null,
+      enabled: AUDIT_ON, ip_mode: AUDIT_IP,
+      retention: { max: AUDIT_MAX, days: AUDIT_DAYS },
+      now: Date.now()
+    });
+  },
+
+  // Deleting the log is itself logged, and auditSeq is not reset — so a clear always leaves a
+  // visible gap in the ids and can't be used to quietly erase a trace. There is no export route:
+  // ./data/audit.log already is the export, in a format jq reads directly.
+  'POST /api/admin/audit/clear': async (req, res) => {
+    const admin = requireAdmin(req, res); if (!admin) return;
+    try { fs.unlinkSync(auditFile); } catch { /* nothing logged yet */ }
+    auditCount = 0;
+    audit(req, 'admin.audit.clear', { user: admin });
     json(res, 200, { ok: true });
   },
 
@@ -598,10 +995,31 @@ coachJobs.setProposalHook((uid, pending) => {
 startCadence({ users: () => db.users, userNow });
 
 http.createServer(async (req, res) => {
+  // Same-origin (the deployed nginx-proxied web app) never triggers CORS, so this only matters
+  // for the paired mobile app calling in from its own WebView origin. It carries no cookie
+  // (auth is the Authorization header instead), so Allow-Credentials is deliberately never set —
+  // reflecting the origin here can't expose the cookie session to anyone.
+  const origin = req.headers.origin;
+  if (origin) { res.setHeader('Access-Control-Allow-Origin', origin); res.setHeader('Vary', 'Origin'); }
+  if (req.method === 'OPTIONS') {
+    res.writeHead(204, {
+      'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE,OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      'Access-Control-Max-Age': '86400'
+    });
+    return res.end();
+  }
   const url = new URL(req.url, 'http://x');
   const key = req.method + ' ' + url.pathname;
   const handler = routes[key];
   if (!handler) return json(res, 404, { error: 'not found' });
+  if (!csrfOk(req, key)) {
+    // Logged, not audited: this is reachable without a session, and an audit entry per attempt
+    // would let anyone fill the log. An operator who has genuinely mis-set ORIGIN needs to see
+    // the mismatch, and the container log is where they will look.
+    console.warn('refused cross-origin', key, 'origin=' + req.headers.origin, 'expected=' + ORIGIN);
+    return json(res, 403, { error: 'cross-origin request refused' });
+  }
   try { await handler(req, res); }
   catch (e) {
     console.error(key, e);

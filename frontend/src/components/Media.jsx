@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { imgSrc, gifSrc } from '../lib/exercises.js'
 import { useStore } from '../store/useStore.js'
-import { t } from '../lib/i18n.js'
+import { t, exerciseNameFor } from '../lib/i18n.js'
 import Icon from './Icon.jsx'
 
 // Big autoplaying animation; tap toggles to the still frame. `compact` shrinks it (superset cards).
@@ -18,7 +18,7 @@ export default function Media({ ex, id, compact, minimizable }) {
   const toggleSize = e => { e.stopPropagation(); update(s => { s.gifSize = mini ? 'full' : 'mini' }) }
   return (
     <div className={'exmedia' + (compact ? ' compact' : '') + (mini ? ' mini' : '')} id={id} onClick={() => setPlaying(p => !p)}>
-      <img decoding="async" src={playing ? gifSrc(ex) : imgSrc(ex)} alt={ex.n} />
+      <img decoding="async" src={playing ? gifSrc(ex) : imgSrc(ex)} alt={exerciseNameFor(ex)} />
       {minimizable && (
         <button className="giftoggle" onClick={toggleSize}>
           <Icon name={mini ? 'expand' : 'minimize'} />{mini ? t('Expand') : t('Minimize')}

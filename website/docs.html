@@ -2,38 +2,62 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Docs — openGym</title>
 <meta name="description" content="How to install openGym on Android, use it on iPhone, self-host it with Docker, import your training history, and keep backups.">
-<meta name="theme-color" content="#0c0e12">
+<meta name="theme-color" content="#000000">
 <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
 <link rel="icon" type="image/png" sizes="180x180" href="icon-180.png">
 <link rel="apple-touch-icon" href="icon-180.png">
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="styles.css?v=9">
+<script>document.documentElement.className += ' js'</script>
+<!-- Umami web analytics for opengym.duarte-santos.ch (self-hosted, cookieless). -->
+<script defer src="https://stats.duarte-santos.ch/script.js" data-website-id="db36019e-50f4-453c-9c56-d0588aefe233"></script>
 </head>
 <body>
 
 <nav><div class="wrap nav-in">
   <a class="brand" href="/">
-    <img src="icon-180.png" alt="" width="26" height="26" style="border-radius:6px">
+    <img src="icon-180.png" alt="" width="24" height="24">
     openGym
   </a>
-  <div class="nav-links">
-    <a href="/#features" class="hide-s">Features</a>
-    <a href="/#screens" class="hide-s">Screenshots</a>
-    <a href="/#demo" class="hide-s">Demo</a>
+  <button class="nav-toggle" aria-expanded="false" aria-controls="menu" aria-label="Menu">
+    <span></span><span></span>
+  </button>
+  <div class="nav-links" id="menu">
+    <a href="/#features">Features</a>
+    <a href="/#screens">Screenshots</a>
+    <a href="/#demo">Demo</a>
     <a href="docs.html">Docs</a>
-    <a href="about.html" class="hide-s">About</a>
-    <a href="https://github.com/DuarteSantos8/openGym" rel="noopener"><span data-gh="stars">GitHub</span></a>
+    <a href="about.html">About</a>
+    <a href="https://gitlab.com/DuarteSantos8/opengym" rel="noopener">GitLab <span data-gh="stars"></span></a>
+    <a href="https://discord.gg/e62jY6fwVb" rel="noopener">Discord</a>
     <a class="cta" href="/#download">Download</a>
   </div>
 </div></nav>
+
+<!-- TEMPORARY: GitHub account suspended -> repo lives on gitlab.com. Remove this block and
+     revert the links (+ site.js) to github.com once the account is restored. -->
+<div class="notice-wrap"><div class="wrap">
+  <aside class="notice" role="note">
+    <div class="notice-tag">Repository moved</div>
+    <h2>My GitHub account was suspended, and the openGym repo went with it.</h2>
+    <p><b>github.com/DuarteSantos8/openGym is offline</b> — not by choice. The app is
+       untouched: the APK, the demo and every self-hosted install work exactly as before. The
+       code, the releases, the container images and the APK builds now live on GitLab under
+       the same AGPL-3.0 license, and every repository link here points there.</p>
+    <div class="actions">
+      <a class="btn" href="https://gitlab.com/DuarteSantos8/opengym" rel="noopener">Open on GitLab</a>
+      <a class="btn dc-btn" href="https://discord.gg/e62jY6fwVb" rel="noopener">Join the Discord</a>
+    </div>
+  </aside>
+</div></div>
 
 <main class="wrap prose">
   <h1>Docs</h1>
   <p class="lead">Everything you need to get openGym running — on a phone, or on your own
      server. The deeper, maintainer-level docs live
-     <a href="https://github.com/DuarteSantos8/openGym/tree/main/docs" rel="noopener">in the repository</a>.</p>
+     <a href="https://gitlab.com/DuarteSantos8/opengym/-/blob/main/docs" rel="noopener">in the repository</a>.</p>
 
   <div class="toc">
     <a href="#android">Android</a>
@@ -71,16 +95,16 @@
     <li><b>Build it onto your own iPhone:</b> with a Mac and Xcode, the native app runs on
         your device with a free Apple ID (Apple expires the signature after 7 days; re-run
         from Xcode to renew). See
-        <a href="https://github.com/DuarteSantos8/openGym/blob/main/docs/MOBILE.md" rel="noopener">docs/MOBILE.md</a>.</li>
-    <li><b>Just looking?</b> The <a href="https://duartesantos8.github.io/openGym/" rel="noopener">live demo</a>
-        runs in any browser with example data.</li>
+        <a href="https://gitlab.com/DuarteSantos8/opengym/-/blob/main/docs/MOBILE.md" rel="noopener">docs/MOBILE.md</a>.</li>
+    <li><b>Just looking?</b> Try the <a href="/demo/">in-browser demo</a> — the real app with
+        example data, no account and nothing to install. The Android app above needs no account either.</li>
   </ul>
 
   <h2 id="selfhost">Self-host with Docker</h2>
   <p>The self-hosted flavor adds passkey profiles, sync across devices, and (optionally) an
      admin dashboard. You need <a href="https://docs.docker.com/get-docker/" rel="noopener">Docker</a>
      with Compose:</p>
-  <pre><code>git clone https://github.com/DuarteSantos8/openGym
+  <pre><code>git clone https://gitlab.com/DuarteSantos8/opengym
 cd openGym
 cp .env.example .env
 docker compose pull    # prebuilt images (amd64 + arm64) — skip to build from source
@@ -90,7 +114,7 @@ docker compose up -d</code></pre>
   <div class="note">Want it reachable from your phone with passkeys? You'll need an HTTPS
     domain — a two-line change in <code>.env</code>. The full guide, including reverse-proxy
     examples and the invite-only/admin options, is in
-    <a href="https://github.com/DuarteSantos8/openGym/blob/main/docs/SELF_HOSTING.md" rel="noopener">docs/SELF_HOSTING.md</a>.</div>
+    <a href="https://gitlab.com/DuarteSantos8/opengym/-/blob/main/docs/SELF_HOSTING.md" rel="noopener">docs/SELF_HOSTING.md</a>.</div>
 
   <h3>Settings worth knowing about</h3>
   <p>All of these live in <code>.env</code>; the defaults are what you get if you touch nothing.</p>
@@ -112,7 +136,7 @@ docker compose up -d</code></pre>
   <p>It runs on your machine, is spawned by the client, and reads your exported data directly.
      Nothing is sent anywhere, and it is <b>not part of the Docker build</b> — if you don't use
      an AI assistant, it simply isn't there. Setup is a few lines of client config:
-     <a href="https://github.com/DuarteSantos8/openGym/blob/main/mcp/README.md" rel="noopener">mcp/README.md</a>.</p>
+     <a href="https://gitlab.com/DuarteSantos8/opengym/-/blob/main/mcp/README.md" rel="noopener">mcp/README.md</a>.</p>
 
   <h2 id="coach">Let an AI coach write your plan</h2>
   <p>Separate from the read-only bridge above, openGym has an optional <b>AI Coach</b> that can
@@ -162,7 +186,7 @@ docker compose up -d</code></pre>
         inside the container — no local Node needed.</li>
     <li><b>Android APK / iOS app:</b> the Capacitor projects live in <code>frontend/android</code>
         and <code>frontend/ios</code> — build, signing and distribution notes are in
-        <a href="https://github.com/DuarteSantos8/openGym/blob/main/docs/MOBILE.md" rel="noopener">docs/MOBILE.md</a>.</li>
+        <a href="https://gitlab.com/DuarteSantos8/opengym/-/blob/main/docs/MOBILE.md" rel="noopener">docs/MOBILE.md</a>.</li>
   </ul>
 
   <h2 id="faq">FAQ</h2>
@@ -182,20 +206,30 @@ docker compose up -d</code></pre>
      own hardware, synced across devices, with profiles for the people you train with: self-host.
      You can start with the app and move to a server later — the backup file migrates everything.</p>
   <h3>Where does the exercise database come from?</h3>
-  <p>From <a href="https://github.com/hasaneyldrm/exercises-dataset" rel="noopener">hasaneyldrm/exercises-dataset</a>
-     (CC-licensed): 1,324 exercises with animations and instructions in 10 languages.</p>
+  <p>From <a href="https://github.com/hasaneyldrm/exercises-dataset" rel="noopener">hasaneyldrm/exercises-dataset</a>:
+     1,324 exercises with animations and instructions in 11 languages, including openGym's
+     separately curated Brazilian Portuguese translation. In pt-BR, built-in exercise names
+     show Portuguese first and the canonical English title in parentheses. That dataset licenses the two
+     halves differently, and so does openGym: the exercise metadata and instruction text are
+     <b>MIT</b>, while the images and animations are
+     <b>© <a href="https://gymvisual.com/" rel="noopener">Gym visual</a></b>, used under the
+     dataset's terms rather than openGym's AGPL.</p>
+  <p>openGym does not redistribute that media — your instance downloads it from the upstream source on
+     first run. If you want to reuse it yourself, commercially or otherwise, get your own licence from
+     Gym visual first (<a href="https://gymvisual.com/content/3-terms-and-conditions-of-use" rel="noopener">terms&nbsp;&amp;&nbsp;conditions</a>).</p>
 </main>
 
 <footer><div class="wrap foot">
-  <span>openGym · AGPL-3.0 · © 2026 <a href="https://duarte-santos.ch" rel="noopener">Duarte Santos</a></span>
+  <span class="c">openGym · AGPL-3.0 · © 2026 <a href="https://duarte-santos.ch" rel="noopener">Duarte Santos</a></span>
   <div class="links">
     <a href="docs.html">Docs</a>
-    <a href="about.html" class="hide-s">About</a>
-    <a href="https://github.com/DuarteSantos8/openGym" rel="noopener">GitHub</a>
-    <a href="https://duartesantos8.github.io/openGym/" rel="noopener">Live demo</a>
+    <a href="about.html">About</a>
+    <a href="https://gitlab.com/DuarteSantos8/opengym" rel="noopener">GitLab</a>
+    <a href="https://discord.gg/e62jY6fwVb" rel="noopener">Discord</a>
+    <a href="/#download">Download</a>
   </div>
 </div></footer>
 
-<script src="site.js" defer></script>
+<script src="site.js?v=9" defer></script>
 </body>
 </html>

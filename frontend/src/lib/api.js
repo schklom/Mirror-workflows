@@ -3,10 +3,33 @@ export const IS_APPLE = /iPhone|iPad|iPod|Macintosh/.test(navigator.userAgent)
 export const IS_ANDROID = /Android/.test(navigator.userAgent)
 export const BIO = IS_APPLE ? 'Face ID / Touch ID' : IS_ANDROID ? 'fingerprint or face unlock' : 'your fingerprint, face or PIN'
 export const VAULT = IS_APPLE ? 'iCloud Keychain' : IS_ANDROID ? 'Google Password Manager' : 'your password manager'
-export const webauthnOK = () => !!(window.PublicKeyCredential && navigator.credentials)
+// PublicKeyCredential is the WebAuthn-specific capability signal. Do not also gate the UI on
+// navigator.credentials: some browsers expose WebAuthn while that generic Credential Management
+// API check produces a false negative (notably Chrome on iOS). The real create/get calls still run
+// only after the user chooses a passkey action and surface any genuine browser error there.
+export const webauthnOK = () => typeof window.PublicKeyCredential !== 'undefined'
+
+// The paired mobile app (lib/remote.js) is the only caller of these — everywhere else stays on
+// same-origin cookies, so remoteBase/remoteToken stay empty and api() behaves exactly as before.
+let remoteBase = ''
+let remoteToken = null
+export function setRemoteAuth(base, token) { remoteBase = base || ''; remoteToken = token || null }
 
 export async function api(path, opts) {
-  const r = await fetch(path, Object.assign({ headers: { 'Content-Type': 'application/json' } }, opts))
+  const headers = Object.assign({ 'Content-Type': 'application/json' }, opts && opts.headers)
+  if (remoteToken) headers.Authorization = 'Bearer ' + remoteToken
+  const r = await fetch(remoteBase + path, Object.assign({}, opts, { headers }))
+  const data = await r.json().catch(() => ({}))
+  if (!r.ok) { const e = new Error(data.error || ('HTTP ' + r.status)); e.status = r.status; throw e }
+  return data
+}
+
+// Bootstraps the connection itself: the base isn't configured yet (that's what this call decides),
+// so it talks straight to the server the user typed in, no Authorization header.
+export async function pairRedeem(serverBase, code) {
+  const r = await fetch(serverBase + '/api/pair/redeem', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code })
+  })
   const data = await r.json().catch(() => ({}))
   if (!r.ok) { const e = new Error(data.error || ('HTTP ' + r.status)); e.status = r.status; throw e }
   return data

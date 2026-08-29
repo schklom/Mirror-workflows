@@ -241,6 +241,17 @@ h4.sec{
 .lrow-c{color:var(--label);font-size:15px;flex:none;--icon-stroke:2.4}
 .lrow-k{color:var(--acc);font-size:17px;flex:none;--icon-stroke:2.4}
 .lrow.danger,.lrow.danger .lrow-t{color:var(--red)}
+/* The Stats exercise name gets its own line so long names cannot run into the title.
+   Two columns only — label/value on the left, chevron on the right — so this is for rows
+   WITHOUT an icon. `.lrow-i` is not placed here; on a row that has one it would auto-place
+   into the grid and push the layout around. Give it a leading column before using this
+   anywhere else. */
+.lrow.lrow-stack-value{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto;
+}
+.lrow.lrow-stack-value .lrow-m{grid-column:1;grid-row:1}
+.lrow.lrow-stack-value .lrow-v{grid-column:1;grid-row:2;text-align:left}
+.lrow.lrow-stack-value .lrow-c{grid-column:2;grid-row:1 / span 2;align-self:center}
 /* an (i) before a row's control: painted small and dim so the control stays the loud thing,
    but with a finger-sized target like everything else — the padding is the hit area and the
    vertical negative margin keeps it from making the row taller. The horizontal ones pull the
@@ -272,15 +283,21 @@ h4.sec{
 .btn:disabled{opacity:.32;pointer-events:none}
 
 /* ----------------------------------------------------------- tab bar ----- */
+/* Nearly opaque, and deliberately so. At the old 72% the page read straight through the bar
+   and the labels had to compete with whatever was scrolling behind them — nobody needs to read
+   the content under a navigation bar. 94% keeps a hint of movement behind the glass without
+   letting text through. The blur is also down from 24px to 10px: this is a fixed element, so
+   the WebView recomposites the blurred region on every scroll frame, and on Android that is
+   the single most expensive thing on the screen. See @supports below for the no-blur case. */
 #tabbar{
   position:fixed;left:0;right:0;bottom:0;z-index:50;
   display:flex;justify-content:space-around;align-items:flex-end;
   padding:7px 6px calc(6px + var(--sab));
-  background:color-mix(in srgb,var(--bg-el) 72%,transparent);
-  backdrop-filter:saturate(180%) blur(24px);-webkit-backdrop-filter:saturate(180%) blur(24px);
+  background:color-mix(in srgb,var(--bg-el) 94%,transparent);
+  -webkit-backdrop-filter:saturate(180%) blur(10px);backdrop-filter:saturate(180%) blur(10px);
   border-top:var(--hair) solid var(--sep-op);
 }
-:root[data-theme="light"] #tabbar{background:rgba(249,249,251,.78)}
+:root[data-theme="light"] #tabbar{background:rgba(249,249,251,.94)}
 #tabbar button{
   flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
   color:var(--label-3);font-size:10px;font-weight:500;letter-spacing:.005em;padding-top:3px;
@@ -316,6 +333,21 @@ h4.sec{
   border:2px solid var(--orange);animation:ping 1.9s var(--ease) infinite;
 }
 @keyframes ping{0%{transform:scale(1);opacity:.7}100%{transform:scale(1.45);opacity:0}}
+
+/* NOTE on every backdrop-filter pair in this file: the -webkit- line comes first and the
+   standard property last, which is the order a prefixed/standard pair wants — whichever is
+   written last wins in the cascade, and that should be the standard name.
+
+   Where backdrop-filter is genuinely unsupported there is no glass either — only the alpha,
+   and the page shows through unblurred, which is the worst of both. Older Android WebViews
+   never had it, and "reduce transparency" accessibility settings drop it. Those surfaces go
+   fully opaque instead. Keep this in sync with the rules above. */
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  #tabbar{background:var(--bg-el)}
+  :root[data-theme="light"] #tabbar{background:#f9f9fb}
+  #timer{background:var(--surface)}
+  #toast{background:var(--surface-2)}
+}
 
 /* ------------------------------------------------------------ week strip -- */
 .week{display:flex;justify-content:space-between;gap:4px}
@@ -536,7 +568,7 @@ h4.sec{
   position:absolute;bottom:9px;display:inline-flex;align-items:center;gap:4px;
   background:rgba(0,0,0,.45);color:#fff;border-radius:99px;padding:5px 11px;
   font-size:12px;font-weight:500;
-  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
 }
 .exmedia .gifhint{right:9px}
 .exmedia .giftoggle{left:9px}
@@ -585,6 +617,18 @@ h4.sec{
 .setrow.eff3 .stp .num{font-size:14px}
 .setrow.done .n{background:var(--acc);color:var(--on-acc)}
 .setrow.done{opacity:.45}
+/* drop-set drops / rest-pause bursts riding on a work row, editable like the row itself
+   (issue: drop-sets & rest-pause) */
+.subrow{display:flex;align-items:center;gap:6px;padding:3px 0 3px 32px}
+.subrow .subn{font-size:11px;color:var(--label-3);flex:none;width:46px}
+.subrow .stp.mini{flex:1;min-width:0}
+.subrow .stp.mini button{width:26px;height:30px}
+.subrow .stp.mini .num{font-size:13px}
+.subrow .iconbtn{width:26px;height:26px;font-size:11px;flex:none}
+.setextra{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 8px 32px}
+.setextra .chip.add{display:inline-flex;align-items:center;gap:4px;color:var(--acc)}
+.setextra .chip.add svg{width:13px;height:13px}
+.setextra .chip.add:disabled{opacity:.35}
 /* why the next target is what it is (issue #17) */
 .progline{
   display:flex;align-items:flex-start;gap:7px;margin:6px 0 2px;
@@ -614,7 +658,7 @@ h4.sec{
   /* nearly opaque: the set rows underneath were reading through the old 82% and made the
      clock hard to pick out mid-set. The blur stays, so it still sits above the page. */
   background:color-mix(in srgb,var(--surface) 97%,transparent);
-  backdrop-filter:saturate(180%) blur(24px);-webkit-backdrop-filter:saturate(180%) blur(24px);
+  -webkit-backdrop-filter:saturate(180%) blur(10px);backdrop-filter:saturate(180%) blur(10px);
   border-radius:var(--r-lg);padding:12px 14px;
   display:flex;align-items:center;gap:12px;
   box-shadow:0 12px 34px -8px rgba(0,0,0,.55);
@@ -647,7 +691,7 @@ h4.sec{
 #modal-root.open{display:block}
 .mback{
   position:absolute;inset:0;background:rgba(0,0,0,.4);
-  backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);
+  -webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);
   touch-action:none;overscroll-behavior:none;
 }
 .sheet{
@@ -834,7 +878,7 @@ h4.sec{
   position:fixed;left:50%;transform:translateX(-50%) translateY(6px);
   bottom:calc(96px + var(--sab));z-index:200;
   background:color-mix(in srgb,var(--surface-2) 88%,transparent);
-  backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);
+  -webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);
   border-radius:99px;padding:11px 20px;font-size:15px;font-weight:500;
   box-shadow:0 10px 30px -6px rgba(0,0,0,.5);
   opacity:0;pointer-events:none;transition:opacity var(--med),transform var(--med) var(--ease);
@@ -886,6 +930,13 @@ h4.sec{
   border-radius:var(--r-lg);padding:14px;
   background:var(--surface);box-shadow:inset 0 0 0 1.5px var(--acc-line);
 }
+/* A superset nests a card inside the page's own gutter, so its inset is paid twice. On a
+   narrow phone that left the weight and reps steppers too tight to show a three-digit
+   number — reported as "the reps textbox becomes too small when superset on mobile". The
+   card only gives up its own padding; the rows inside keep their spacing. */
+@media (max-width:400px){
+  .ss-card{padding:10px 8px}
+}
 .ss-hd{
   font-size:12px;font-weight:600;color:var(--acc);margin-bottom:12px;
   text-align:center;display:flex;align-items:center;justify-content:center;gap:5px;
@@ -897,13 +948,20 @@ h4.sec{
 .today-row{
   display:flex;align-items:center;justify-content:space-between;gap:10px;
   margin-top:12px;padding:12px 14px;border-radius:var(--r);background:var(--surface-2);
-  transition:background var(--fast);width:100%;text-align:left;
+  transition:background var(--fast);width:100%;text-align:left;cursor:pointer;
 }
 .today-row:active{background:var(--surface-3)}
 .today-row .lbl2{font-size:11px;font-weight:500;letter-spacing:.03em;text-transform:uppercase;color:var(--label-3)}
 .today-row .ttl{
   font-weight:500;font-size:17px;line-height:1.25;text-transform:capitalize;
   letter-spacing:-.012em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;
+}
+
+/* Only where a pointer really hovers — on a phone :hover sticks to the row after the tap.
+   Lighter than :active, which goes all the way to --surface-3, so the two stay distinct. */
+@media (hover:hover){
+  .today-row:hover{background:color-mix(in srgb,var(--surface-2),var(--surface-3) 60%)}
+  :root[data-theme="light"] .today-row:hover{background:color-mix(in srgb,var(--surface-2),var(--surface-3) 85%)}
 }
 
 /* --------------------------------------------------- desktop (≥1000px) --- */

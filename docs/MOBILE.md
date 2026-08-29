@@ -10,11 +10,35 @@ openGym ships in two flavors from the same codebase:
 | Reminders | Web Push from your server | native local notifications, no server involved |
 | Exercise media | served by your server (`img/`, `gif/`) | loaded from the jsDelivr CDN |
 
-The mobile flavor never talks to a backend: no sign-in screen, no sync, no telemetry.
-State is mirrored from `localStorage` into `opengym-state.json` in the app's private data
-directory on every change (iOS is allowed to evict WebView storage under pressure — the
-file mirror is the durable copy and is restored on launch). Backups go out through the
-OS share sheet instead of a browser download.
+The mobile flavor never talks to a backend by default: no sign-in screen, no sync, no
+telemetry. State is mirrored from `localStorage` into `opengym-state.json` in the app's
+private data directory on every change (iOS is allowed to evict WebView storage under
+pressure — the file mirror is the durable copy and is restored on launch). Backups go out
+through the OS share sheet instead of a browser download.
+
+### Connecting the app to your own server
+
+On first launch the app asks how you want to use it. Alongside the fully local mode above,
+you can instead **connect it to a self-hosted openGym server** — your data then lives there,
+synced the same way the browser PWA does, instead of only on the phone. This is a mode of the
+same app, not a different build or download.
+
+Passkeys can't be used for this: the app's WebView runs at its own origin, which never
+matches the real hostname WebAuthn needs. Instead you *pair* the device from a browser
+that's already signed in: Settings → **"Pair the mobile app"** shows a one-time code (valid
+5 minutes); enter your server's address and that code in the app (same first-launch screen,
+or Settings → **"Connect to my server"** later) to finish. Notes:
+
+- Requires network access every time the app is used — there's no offline file mirror once
+  connected, same as the browser PWA.
+- Use an HTTPS address if at all possible: the connection carries a bearer token instead of
+  a cookie, and that token would otherwise cross the network in plain text.
+- "Sign out everywhere" (Settings → Account, in the browser) revokes a paired app's access
+  too — it's the same signed session token either way, just delivered over a header instead
+  of a cookie. See `/api/pair/create` and `/api/pair/redeem` in `api/server.js` for the
+  exchange itself.
+- Settings → "Disconnect" syncs one last time, then drops the device cleanly back to local
+  mode.
 
 ## Prerequisites
 
@@ -61,9 +85,25 @@ accounts, no store rules, no yearly fees between you and an open-source app.
 
 ### Android — sideload the APK
 
-The official signed APK is at **[opengym.duarte-santos.ch](https://opengym.duarte-santos.ch)**.
+The official signed APK is in three places, all the same file:
+
+- **[opengym.duarte-santos.ch](https://opengym.duarte-santos.ch)** — the download page.
+- **[GitLab's package registry](https://gitlab.com/DuarteSantos8/opengym/-/packages)** — every
+  build under `opengym-android/<version>/`, with a `.sha256` beside it. Direct link, no login:
+  `https://gitlab.com/api/v4/projects/85678327/packages/generic/opengym-android/<version>/openGym-<version>.apk`
+- **[The GitLab release](https://gitlab.com/DuarteSantos8/opengym/-/releases)** for that version,
+  which links to the two above.
+
 Android asks you to allow installs from the browser the first time — that's standard for any
-app outside the Play Store.
+app outside the Play Store. Check the `.sha256` if you got the file from anywhere else.
+
+Both come out of CI: the `build:apk` job in [`.gitlab-ci.yml`](../.gitlab-ci.yml) runs
+`npm run build:mobile` and `./gradlew assembleRelease`, then `zipalign`s and signs the result
+with the release key. The key lives in *protected* CI variables (`ANDROID_KEYSTORE_B64`,
+`ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`), so it only exists on `main` and on `v*`
+tags — a merge request from a fork can build an APK, but gets an unsigned one and never sees
+the key. On a `v*` tag the signed APK is also pushed to the generic package registry, which is
+what the release links to.
 
 To build and sign your own:
 
@@ -95,7 +135,10 @@ that would simply install. Your free options:
 
 - Bump `versionName`/`versionCode` in `android/app/build.gradle` per release; keep them in
   step with `frontend/package.json`. `versionCode` must strictly increase or updates won't
-  install over an existing APK.
+  install over an existing APK. The APK is *named* from `frontend/package.json` (the CI job
+  reads `version` out of it), so the two drifting apart shows up as a misnamed file.
+- Tagging `vX.Y.Z` is what ships everything: images, APK, release notes. Don't push a version
+  tag you don't mean to release — `v*` tags are protected for that reason.
 - **License:** openGym is AGPL-3.0, which by itself sits badly with app-store terms of
   service. `NOTICE.md` carries an app-store exception (an additional permission under
   AGPL §7) granted by the copyright holder — relevant only if store distribution ever happens.

@@ -8,10 +8,10 @@ This guide takes you from "just cloned it" to "using it from my phone over the i
 Requirements: [Docker](https://docs.docker.com/get-docker/) with the Compose plugin.
 
 ```bash
-git clone https://github.com/DuarteSantos8/openGym
+git clone https://gitlab.com/DuarteSantos8/opengym
 cd openGym
 cp .env.example .env
-docker compose pull   # prebuilt images from ghcr.io (amd64 + arm64) — or skip and build from source
+docker compose pull   # prebuilt images from GitLab (amd64 + arm64) — or skip and build from source
 docker compose up -d
 ```
 
@@ -41,6 +41,21 @@ phone) cannot use `http://<your-LAN-ip>:8080`** — that's neither localhost nor
 passkey prompt won't appear. To use openGym from your phone you need a real HTTPS hostname.
 
 (You can still open it over LAN in **guest mode**, which stores data only in that browser.)
+
+The standalone mobile app (`docs/MOBILE.md`) sidesteps this entirely for its "connect to my
+server" mode: instead of a passkey ceremony (impossible from inside its WebView, which never
+runs at your real hostname), it pairs by redeeming a short one-time code — minted from
+Settings → "Pair the mobile app" in an already signed-in browser tab — for a bearer token
+sent as an `Authorization` header rather than a cookie. Two consequences worth knowing if
+you're poking at the API directly:
+
+- `POST /api/pair/create` (needs a session) and `POST /api/pair/redeem` (doesn't) implement
+  this — see `api/server.js`. The returned token is the exact same signed value a cookie
+  carries, so "sign out everywhere" invalidates it too.
+- The server reflects `Access-Control-Allow-Origin` for any request that sends an `Origin`
+  header, so the app's own WebView origin can call the API cross-origin. It never sends
+  `Access-Control-Allow-Credentials`, so this doesn't let a browser read your cookie session
+  from another origin — only bearer-token requests benefit from it.
 
 ## 3. Expose it over HTTPS on your own domain
 
@@ -105,6 +120,28 @@ out and locked out everywhere until you re-enable it), and — with `INVITE_ONLY
 revoking invite codes. Existing accounts keep working when you switch invite-only on. Admin access
 is gated by your passkey and enforced server-side, so it needs no separate login.
 
+### The activity log
+
+The dashboard also keeps an **activity log**: sign-ins, sign-outs, failed attempts, refused
+signups, and every admin action (disabling an account, creating or revoking an invite code). It
+lives in `./data/audit.log` as one JSON object per line, so `tail -f data/audit.log` and `jq`
+work on it directly, and the dashboard reads the same file.
+
+It is on by default and keeps the last 5,000 events or 90 days, whichever comes first
+(`AUDIT_LOG=0` turns it off entirely; `AUDIT_MAX` and `AUDIT_DAYS` change the caps). **IP
+addresses are not recorded** unless you set `AUDIT_IP=net` (network only, e.g. `203.0.113.0/24`)
+or `AUDIT_IP=full`. Neither the browser's user-agent nor the passkey id of a failed sign-in is
+ever stored: the first is a fingerprint, and the second would let you follow an unknown device
+from one attempt to the next.
+
+Two things worth expecting. **Guests never appear** — guest mode never talks to the server, so
+there is nothing to log, exactly as there is nothing for the rest of the dashboard to show. And
+**a disabled account goes quiet**: a disabled user is refused at the session check, so their only
+entries are the failed sign-ins they keep making.
+
+Clearing the log from the dashboard records the clear itself, and the event ids keep counting, so
+a gap is always visible.
+
 `INVITE_ONLY=1` and `ALLOW_GUEST=0` answer different questions and are usually set together.
 Invite-only controls who may *create a profile*; it says nothing about the **Continue without
 account** button, which never creates one. Guest mode keeps everything in that browser and never
@@ -149,8 +186,10 @@ Everything is in `./data`:
 tar czf opengym-backup-$(date +%F).tar.gz data/
 ```
 
-That archive contains all profiles, passkeys and workout history. Restore by unpacking it back
-into the project folder. (Individual users can also export their own data as JSON from Settings.)
+That archive contains all profiles, passkeys and workout history — and, if the activity log is
+on, `audit.log` with everyone's sign-in times. Worth knowing before you ship the archive to a
+backup service you don't run. Restore by unpacking it back into the project folder. (Individual
+users can also export their own data as JSON from Settings.)
 
 If you enabled the AI Coach with the Codex provider, note what this archive deliberately does
 **not** contain: `./coach-auth`, where that provider keeps its refreshable sign-in. It is a
@@ -200,12 +239,59 @@ docker compose up -d --build
 The app shell is versioned (`?v=N`) so clients pick up changes on next load. Your `./data` and the
 downloaded media are untouched.
 
+## Passkeys fail even though `RP_ID` looks right
+
+The most common support question, and the values are usually *nearly* correct. Work through
+these in order — the first two account for most of it.
+
+**1. Ask the server what it actually loaded.** It prints both values on startup:
+
+```
+docker compose logs api | grep 'gym-api on'
+# gym-api on :3000 (rpID=gym.example.com, origin=https://gym.example.com)
+```
+
+If that disagrees with your `.env`, the container is still running the old environment.
+`docker compose restart` does **not** re-read `.env` — use `docker compose up -d`.
+
+**2. Check the exact shape of each value.** They are not the same kind of string:
+
+| | Correct | Wrong |
+|---|---|---|
+| `RP_ID` | `gym.example.com` | `https://gym.example.com`, `gym.example.com:8080`, `gym.example.com/` |
+| `ORIGIN` | `https://gym.example.com` | `gym.example.com`, `https://gym.example.com/` |
+
+`RP_ID` is a bare hostname: no scheme, no port, no trailing slash. `ORIGIN` is the full origin
+*with* the scheme and *without* a trailing slash. Both must match your address bar exactly.
+
+**3. Behind a tunnel or reverse proxy, use the public hostname.** With Cloudflare Tunnel,
+Traefik, nginx or Caddy in front, the browser only ever sees the public name — so that is what
+both values must be. Not the container name, not the LAN IP, not the internal port:
+
+```env
+RP_ID=gym.example.com
+ORIGIN=https://gym.example.com
+```
+
+The tunnel's own route may point wherever it likes (`http://localhost:8080` is fine). It is the
+browser-facing name that has to appear here.
+
+**4. `www.` is a different host.** A passkey registered on `gym.example.com` will not work on
+`www.gym.example.com`. Pick one and redirect the other.
+
+**5. Changing the hostname invalidates existing passkeys.** They were bound to the old one, so
+everybody registers again — which is why it pays to settle the domain before others join.
+
+> On a LAN without certificates there is nothing to configure that makes passkeys work over
+> plain `http://192.168.x.x`: browsers only allow WebAuthn on HTTPS (or `localhost`). Use guest
+> mode, the standalone mobile app (`docs/MOBILE.md`), or put a certificate in front of it.
+
 ## Troubleshooting
 
 | Symptom | Fix |
 |---|---|
 | No passkey prompt on my phone | You're on `http://` or an IP, not HTTPS. Set up a domain (section 3). |
-| "verification failed" on login | `RP_ID`/`ORIGIN` don't match the URL in the address bar. Make them exact, restart. |
+| "verification failed" on login | `RP_ID`/`ORIGIN` don't match the URL in the address bar. See the section above — start with what the server logged on startup. |
 | Media didn't download | `docker compose logs media`. Re-run `docker compose up -d`, or run `./scripts/fetch-media.sh`. |
 | Port 8080 already used | Set `WEB_PORT=9090` in `.env` (and update `ORIGIN` for local testing). |
 | No "Notifications" option in Settings | Requires a signed-in profile and HTTPS (or `localhost`) — guest mode and plain HTTP over LAN can't subscribe. |

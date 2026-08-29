@@ -248,7 +248,7 @@ export function Row({ icon, iconTint, title, subtitle, value, accessory = 'none'
 // theme entirely — on dark mode it flashes a white sheet — and can't show more
 // than a bare label per option. This opens our own sheet with a checkmark on the
 // current value, which is also how iOS itself handles a long option list.
-export function SelectRow({ icon, iconTint, title, value, options, onChange, sheetTitle }) {
+export function SelectRow({ icon, iconTint, title, value, options, onChange, sheetTitle, stackedValue = false }) {
   const cur = options.find(o => o.value === value)
   const open = () => {
     const { openSheet } = require_ui()
@@ -270,7 +270,50 @@ export function SelectRow({ icon, iconTint, title, value, options, onChange, she
     return h
   }
   return (
-    <Row icon={icon} iconTint={iconTint} title={title} value={cur ? cur.label : value} accessory="chevron" onClick={open} />
+    <Row icon={icon} iconTint={iconTint} title={title} value={cur ? cur.label : value} accessory="chevron" onClick={open}
+      className={stackedValue ? 'lrow-stack-value' : ''} />
+  )
+}
+
+/** Multi-select row for additive exercise metadata. The sheet mirrors selection locally so
+ * each tap updates its checkmark immediately while the caller persists the value. */
+export function MultiSelectRow({ icon, iconTint, title, values, options, onToggle, sheetTitle, noneLabel, doneLabel }) {
+  const selected = options.filter(o => values.includes(o.value))
+  const summary = selected.length ? selected.map(o => o.label).join(', ') : (noneLabel || '')
+  const open = () => {
+    const { openSheet } = require_ui()
+    openSheet(close => <MultiSelectSheet values={values} options={options} onToggle={onToggle}
+      title={sheetTitle || title} doneLabel={doneLabel} close={close} />)
+  }
+  return (
+    <Row icon={icon} iconTint={iconTint} title={title} value={summary} accessory="chevron" onClick={open} />
+  )
+}
+
+function MultiSelectSheet({ values, options, onToggle, title, doneLabel, close }) {
+  const [sel, setSel] = useState(values)
+  const toggle = value => {
+    setSel(current => current.includes(value) ? current.filter(x => x !== value) : [...current, value])
+    onToggle(value)
+  }
+  return (
+    <>
+      <h3>{title}</h3>
+      <div className="sect-b">
+        {options.map(o => {
+          const on = sel.includes(o.value)
+          return (
+            <button key={o.value} className={'lrow tap' + (on ? ' on' : '')} onClick={() => toggle(o.value)}>
+              <span className="lrow-m"><span className="lrow-t">{o.label}</span>
+                {o.subtitle && <span className="lrow-s">{o.subtitle}</span>}</span>
+              {on && <Icon name="check" className="lrow-k" />}
+            </button>
+          )
+        })}
+      </div>
+      <div style={{ height: 8 }} />
+      <Button variant="primary" onClick={close}>{doneLabel || 'Done'}</Button>
+    </>
   )
 }
 

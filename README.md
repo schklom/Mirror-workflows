@@ -19,9 +19,12 @@ No account on someone else's server, no subscription, no ads. Just `docker compo
 ![Docker](https://img.shields.io/badge/Docker-compose-2496ED?style=flat-square&logo=docker&logoColor=white)
 ![No tracking](https://img.shields.io/badge/telemetry-none-f472b6?style=flat-square)
 <br>
-![GitHub last commit](https://img.shields.io/github/last-commit/DuarteSantos8/openGym?style=flat-square)
-[![GitHub stars](https://img.shields.io/github/stars/DuarteSantos8/openGym?style=flat-square)](https://github.com/DuarteSantos8/openGym/stargazers)
-[![GitHub issues](https://img.shields.io/github/issues/DuarteSantos8/openGym?style=flat-square)](https://github.com/DuarteSantos8/openGym/issues)
+[![Pipeline](https://gitlab.com/DuarteSantos8/opengym/badges/main/pipeline.svg?style=flat-square)](https://gitlab.com/DuarteSantos8/opengym/-/pipelines)
+![Last commit](https://img.shields.io/gitlab/last-commit/DuarteSantos8%2Fopengym?style=flat-square)
+[![Stars](https://img.shields.io/gitlab/stars/DuarteSantos8%2Fopengym?style=flat-square)](https://gitlab.com/DuarteSantos8/opengym/-/starrers)
+[![Issues](https://img.shields.io/gitlab/issues/open/DuarteSantos8%2Fopengym?style=flat-square)](https://gitlab.com/DuarteSantos8/opengym/-/issues)
+[![Discord](https://img.shields.io/badge/Discord-join-5865F2?style=flat-square&logo=discord&logoColor=white)](https://discord.gg/e62jY6fwVb)
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20me%20a%20coffee-support-FFDD00?style=flat-square&logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/duartesantos)
 
 </div>
 
@@ -39,11 +42,11 @@ No account on someone else's server, no subscription, no ads. Just `docker compo
 
 <div align="center">
 
-### [🌐 opengym.duarte-santos.ch](https://opengym.duarte-santos.ch) · [▶ Try the live demo](https://duartesantos8.github.io/openGym/)
+### [🌐 opengym.duarte-santos.ch](https://opengym.duarte-santos.ch) · [📦 Source on GitLab](https://gitlab.com/DuarteSantos8/opengym)
 
-No signup, nothing to install — it runs entirely in your browser on example data.<br>
-<sub>There's no server behind the demo, so passkey sign-in, sync across devices and the
-admin dashboard only exist in a self-hosted instance.</sub>
+Screenshots, docs and the APK download live on the site.<br>
+<sub>Want to poke at it first? The <a href="https://opengym.duarte-santos.ch/demo/">in-browser
+demo</a> is the real app with example data — no account, nothing to install.</sub>
 
 </div>
 
@@ -79,9 +82,9 @@ as a home-screen app, passkey sign-in, offline support, sync across your phone a
 - 💪 **Muscle map, three ways** — a front-and-back body diagram you can read as **Balance** (where the volume went, over a week, a month or all time — naming the muscles you *haven't* trained), **Fatigue** (what is still recovering, weighted by how close each set was to your maximum, decaying smoothly rather than expiring at a window edge) or **Strength** (how long since you trained each muscle, and behind every one the exercises that built it with their estimated 1RM). It previews what a routine hits while you build it, and shows what you just trained when you finish. Male or female figure, your pick
 - 🔔 **Push notifications** — rest-timer alerts even with the app closed, plus an optional reminder on days you have a workout planned but haven't logged one. Opt in per profile; keys are generated on first run, nothing to configure
 - 🔑 **Passkeys, not passwords** — Face ID / Touch ID / fingerprint login; each profile keeps its own data, synced across devices. Sign-ins last 90 days by default (configurable), and “sign out everywhere” in Settings ends every session on every device at once
-- 🛠️ **Admin dashboard** (optional) — for whoever runs the instance: who's training right now, per-user history, disable accounts, and invite-only signup. Off by default, so a fresh instance stays open with no admin
+- 🛠️ **Admin dashboard** (optional) — for whoever runs the instance: who's training right now, per-user history, disable accounts, invite-only signup, and an **activity log** of sign-ins, failed attempts and admin actions. Off by default, so a fresh instance stays open with no admin
 - 🎨 **Designed, not assembled** — light/dark themes and 8 accent colors saved to your profile, over a hand-drawn icon set instead of emoji, so it looks the same on every phone
-- 🌍 **12 languages** — full UI translation (EN, DE, ES, FR, IT, PT, PL, TR, RU, ZH, KO, HI); exercise instructions localized in 10 of them, loaded on demand so the app stays fast
+- 🌍 **13 languages** — full UI translation (EN, DE, ES, FR, IT, PT (Portugal), PT (Brazil), PL, TR, RU, ZH, KO, HI); exercise instructions localized in 11 of them and built-in exercise names shown bilingually in PT-BR, all loaded on demand so the app stays fast
 - 📥 **Bring your history with you** — import from **FitNotes** (Android and iOS), **Strong** and **Hevy**, or body weight straight out of an **Apple Health** export. Exercise names are matched against the library and anything unrecognised becomes one of your own exercises, so nothing in the file is dropped
 - 📦 **Yours to keep** — one-tap JSON export/import, guest mode, **no telemetry**
 - 🤖 **Ask an AI about your training** (optional) — an [MCP server](mcp/README.md) lets a client like Claude Desktop or Cursor read your history in your own words: *"what did I bench last week?"*. Read-only, spawned locally by the client, nothing leaves your box. Not in the Docker build — if you don't use an AI assistant, it isn't there
@@ -93,7 +96,7 @@ as a home-screen app, passkey sign-in, offline support, sync across your phone a
 You need [Docker](https://docs.docker.com/get-docker/) with Compose.
 
 ```bash
-git clone https://github.com/DuarteSantos8/openGym
+git clone https://gitlab.com/DuarteSantos8/opengym
 cd openGym
 cp .env.example .env
 docker compose pull   # grab prebuilt images (amd64 + arm64) — skip to build from source instead
@@ -101,8 +104,17 @@ docker compose up -d
 ```
 
 Open **http://localhost:8080**, tap **Create profile**, and you're in. First launch downloads
-the exercise media (~140 MB) once. Prefer building the images yourself instead of pulling from
-`ghcr.io`? Drop the `pull` step and run `docker compose up -d --build` — you don't need Node or
+the exercise media (~140 MB) once.
+
+> **About that media:** it reaches openGym through
+> [hasaneyldrm/exercises-dataset](https://github.com/hasaneyldrm/exercises-dataset), which
+> redistributes [ExerciseDB v1](https://exercisedb.dev/) — its metadata and instruction text are
+> MIT, but the images and animations are third-party content under *neither* that MIT license nor
+> openGym's AGPL, and their ownership is currently disputed between Gym visual and ExerciseDB.
+> openGym ships none of it: your instance downloads it from upstream. Reusing it yourself,
+> commercially or not, means clearing it with the rights holder — see [NOTICE.md](NOTICE.md).
+ Prefer building the images yourself instead of pulling from
+GitLab's registry? Drop the `pull` step and run `docker compose up -d --build` — you don't need Node or
 a build step locally either way.
 
 > Want it reachable from your phone over the internet with passkeys? You'll need an HTTPS
@@ -115,8 +127,10 @@ no backend — everything stays on the phone, with native workout-day reminders 
 backups. Self-hosting gets you multi-device sync and profiles for friends & family; the
 mobile app is the install-and-done flavor.
 
-- **Android:** [**download the APK**](https://opengym.duarte-santos.ch) and sideload it —
-  openGym is deliberately not on the Play Store. Or build it yourself: **[docs/MOBILE.md](docs/MOBILE.md)**.
+- **Android:** [**download the APK**](https://opengym.duarte-santos.ch) — or straight from
+  [GitLab's package registry](https://gitlab.com/DuarteSantos8/opengym/-/packages), where every
+  build sits next to its `.sha256` — and sideload it; openGym is deliberately not on the Play
+  Store. Or build it yourself: **[docs/MOBILE.md](docs/MOBILE.md)**.
 - **iPhone:** Apple doesn't allow installing apps outside the App Store, so there is no iOS
   download. Self-host and add it to your home screen from Safari (it's a full PWA), or build
   the native app onto your own device from Xcode — see **[docs/MOBILE.md](docs/MOBILE.md)**.
@@ -143,7 +157,8 @@ mobile app is the install-and-done flavor.
 ## Your data
 
 Lives in `./data` on your host: `db.json` (profiles + public passkeys), `state-<user>.json`
-(each user's plan, workouts, body weight, settings), and `secret` (the session-cookie key).
+(each user's plan, workouts, body weight, settings), `audit.log` (the admin activity log — sign-ins
+and admin actions, no IP addresses unless you ask for them) and `secret` (the session-cookie key).
 **Back up `./data` and you've backed up everything.** Passkey private keys never touch the
 server — they stay in your phone's secure hardware / your password manager.
 
@@ -164,6 +179,10 @@ All via `.env` (see `.env.example`):
 | `ADMIN_UIDS`  | User ids that get the admin dashboard (comma-separated) | *(none)*             |
 | `INVITE_ONLY` | Require an invite code to create a profile           | *(off)*                 |
 | `ALLOW_GUEST` | Offer "Continue without account" — set `0` to require a profile | *(on)*       |
+| `AUDIT_LOG`   | Record sign-ins and admin actions — set `0` to record nothing | *(on)*        |
+| `AUDIT_MAX`   | Events kept in the activity log; `0` for no limit    | `5000`                  |
+| `AUDIT_DAYS`  | Days kept in the activity log; `0` to keep until `AUDIT_MAX` | `90`            |
+| `AUDIT_IP`    | Record the caller's address: `off`, `net` (network only) or `full` | `off`     |
 | `VAPID_SUBJECT` | Contact URL sent with push notifications           | your `ORIGIN`           |
 | `API_TARGET`  | Which API image to build: `default` (no AI runtime) or `coach` | `default`   |
 | `COACH_DISABLED` | Set to `1` to force the AI Coach off instance-wide, whatever the admin toggled | *(unset)* |
@@ -186,12 +205,13 @@ Rough, community-driven — ideas and PRs welcome:
 - [x] Effort per set — RIR or RPE, whichever scale you think in
 - [ ] Body measurements (waist, arms…) alongside weight
 - [ ] Per-exercise notes & plate calculator
-- [ ] Exercise instructions in German & Portuguese (UI is translated; upstream dataset doesn't ship these yet)
+- [ ] Exercise instructions in German & Portuguese (Portugal); the separately curated Brazilian Portuguese pack is complete
 
 ## Tech
 
 React 19 + Vite (React Router, Zustand) · Node (no framework) · nginx · Docker Compose ·
-WebAuthn · exercise data from [hasaneyldrm/exercises-dataset](https://github.com/hasaneyldrm/exercises-dataset).
+WebAuthn · exercise data from [hasaneyldrm/exercises-dataset](https://github.com/hasaneyldrm/exercises-dataset)
+(MIT metadata and instructions; media © Gym visual — see [License](#license)).
 No database server, no cloud dependencies — the frontend builds inside Docker, so self-hosting
 stays a one-command `docker compose up`.
 
@@ -212,15 +232,23 @@ in the Docker build.
 
 ## Community
 
-- **[Q&A](https://github.com/DuarteSantos8/openGym/discussions/categories/q-a)** — self-hosting
-  help, passkey/login trouble, "how do I…". Most login problems turn out to be an `RP_ID`/`ORIGIN`
-  mismatch.
-- **[Ideas](https://github.com/DuarteSantos8/openGym/discussions/categories/ideas)** — features
-  worth talking through before anyone writes code.
-- **[Show and tell](https://github.com/DuarteSantos8/openGym/discussions/categories/show-and-tell)**
-  — your setup, your plan templates, whatever you built on top.
-- **[Issues](https://github.com/DuarteSantos8/openGym/issues)** — bugs, and work that's already
-  been agreed on.
+- **[Discord](https://discord.gg/e62jY6fwVb)** — release announcements, self-hosting help and
+  the back-and-forth that would be a slow issue thread. Quickest way to get an answer.
+- **[Issues](https://gitlab.com/DuarteSantos8/opengym/-/issues)** — bugs, questions, self-hosting
+  help and ideas. There are no Discussions here, so it all lives in one tracker: label a question
+  `question` and an idea `idea`, and it gets treated as one rather than as agreed-on work. Use
+  an issue over the Discord for anything the next person should be able to find by searching.
+- **Login trouble?** Most of it is an `RP_ID`/`ORIGIN` mismatch — check
+  [docs/SELF_HOSTING.md](docs/SELF_HOSTING.md) before opening an issue.
+- **Merge requests** — [open one on GitLab](https://gitlab.com/DuarteSantos8/opengym/-/merge_requests); see
+  [CONTRIBUTING.md](CONTRIBUTING.md).
+
+> **On the GitHub repo:** `github.com/DuarteSantos8/openGym` is offline because the account was
+> suspended. **GitLab is the home of the project** — same history, same tags, same releases, and
+> the CI that builds the images and the APK runs there. (gitea.com/DuarteSantos/openGym was the
+> first stopgap and is now only a mirror.) Old GitHub issue and PR numbers in
+> [CHANGELOG.md](CHANGELOG.md) are kept as plain references; they don't map onto GitLab's
+> numbering.
 
 ## Contributing
 
@@ -228,13 +256,34 @@ Issues and PRs welcome — see [CONTRIBUTING.md](CONTRIBUTING.md). Good first is
 plans, exercise-data languages, import from other trackers. **A ⭐ helps more people find it.**
 
 openGym is free and stays free: AGPL, no subscription, no paid tier, nothing held back for
-sponsors. If it replaced a paid tracker for you and you want to chip in, the Sponsor button at the
-top of the page is there — a star, a bug report or a PR is worth just as much.
+sponsors. If it replaced a paid tracker for you and you want to chip in, there's a coffee button
+below (and a badge at the top) — a star, a bug report or a merge request is worth just as much.
+
+<!-- GitLab has no Sponsor button the way GitHub's FUNDING.yml gave one, so the link has to
+     stand on its own here. .github/FUNDING.yml stays put for the day that account returns. -->
+
+<a href="https://buymeacoffee.com/duartesantos" target="_blank">
+  <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png"
+       alt="Buy Me A Coffee"
+       style="height: 60px !important;width: 217px !important;">
+</a>
 
 ## License
 
-[GNU AGPL v3.0](LICENSE) — free and open source. You can self-host, use, modify and share it;
-if you run a modified version as a network service, you must offer that version's source under
-the same license. Nobody can turn openGym into a closed, proprietary product.
+**openGym's own code** is [GNU AGPL v3.0](LICENSE) — free and open source. You can self-host,
+use, modify and share it; if you run a modified version as a network service, you must offer that
+version's source under the same license. Nobody can turn openGym into a closed, proprietary
+product.
 
-Exercise images/GIFs are fetched from the upstream dataset and keep their own terms — see [NOTICE.md](NOTICE.md).
+**Third-party content is not, and openGym cannot sublicense it.** The exercise metadata and
+instruction text originate from [ExerciseDB v1](https://exercisedb.dev/) and reach openGym through
+[hasaneyldrm/exercises-dataset](https://github.com/hasaneyldrm/exercises-dataset) under the
+**MIT** license. The exercise images and animations are third-party content covered by neither
+that license nor the AGPL, and their ownership is **currently unresolved** — the upstream dataset
+attributes them to [Gym visual](https://gymvisual.com/) under a non-transferable permission, while
+[ExerciseDB/AscendAPI](https://exercisedb.io/faq) claims to be their creator and owner. A
+clarification has been requested. openGym does not redistribute them (your instance fetches them
+at first run) and does not relicense them. To reuse that media yourself, clear it with the rights
+holder first.
+
+Full third-party notices, including the body-diagram geometry: **[NOTICE.md](NOTICE.md)**.

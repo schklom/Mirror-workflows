@@ -1,5 +1,305 @@
 # Changelog
 
+## v1.2.11 — 2026-08-25
+
+A correction release. v1.2.10 landed planned warm-ups and notes, and reviewing that release
+afterwards turned up six defects it had either introduced or made matter — three of them in the
+warm-up work itself. None of them broke a test, which is the point: they were gaps beside the
+tests rather than failures in them.
+
+### Warm-ups
+
+- ⚖️ **Warm-ups were counted in your session volume.** Every other part of the app leaves them
+  out — records, progression, the muscle map — and the routine screen says so in as many words
+  ("left out of volume, records and progression"). Volume was the one place it was not true.
+  Three planned warm-ups on a 3×5 at 100 kg reported 2562.5 instead of 1500, and that number is
+  written into the finished workout, so it would have stayed wrong for good.
+- 📉 **On a deload, the last warm-up came out heavier than the work sets.** The ramp was built
+  before progression had its say and nothing recalculated it, so a plan dropping from 100 kg to
+  50 kg gave you warm-ups of 50 and 75 under work sets of 50. The ramp is now derived after the
+  prescription, so it always aims at the weight you are actually about to lift. A warm-up you
+  have already logged keeps its weight — it happened.
+- 🧱 **One too-heavy warm-up spread to the rest.** Editing a warm-up above the working weight
+  made every warm-up added after it inherit that number. Your own edit stays as you typed it;
+  what stops is the inheritance.
+
+### Notes
+
+- 📝 **The session note now exists.** v1.2.10 described three kinds of note and shipped two: the
+  code that saves a whole-session note was there, and tested, but nothing in the app ever wrote
+  one. There is a note field next to the finish button now — wrapping up is when you know how
+  the session went.
+- 💾 **The session note stopped being thrown away.** In a past workout it only saved when the
+  field lost focus, and Escape, the Android back gesture and swipe-to-dismiss all close a sheet
+  without that ever happening. Type a note, press Escape, gone. It now saves on the way out too.
+
+### Sharing, stats and settings
+
+- 🔗 **Shared plans carry drop-sets and rest-pause.** A routine built as "3×5 with a double
+  drop" arrived at the other end as a plain 3×5, silently. Both the intensifier and the planned
+  warm-up count are now clamped in both directions, so a hand-edited plan file cannot put a
+  nonsense number in front of you either.
+- 🔢 **The version is visible again**, at the bottom of Settings — which is where the support
+  template has been telling people to look for it. On the phone there is no address bar, so
+  there was no way to tell which build you had or whether an update installed. (issue #7)
+- ⏹️ **The rest timer can be turned off.** v1.2.10 made this worse before it made it better: it
+  started resting after every set instead of finishing an exercise quietly, and there was still
+  no way out. "Off" now sits with the other durations.
+- 📊 **The exercise picker in Stats no longer runs long names into the label** (mflova, !24), and
+  **a chart tooltip no longer lingers from the previous exercise** (mflova, !25). The estimated-1RM
+  series is memoised as well, so the tooltip stops vanishing under your finger while you read it.
+
+### Website
+
+- 🌐 **opengym.duarte-santos.ch has been rebuilt** — a bento layout with real device frames, a
+  mobile menu that opens instead of hiding, scroll reveals that respect `prefers-reduced-motion`,
+  and a section collecting where the project actually lives. It had been live for a while without
+  ever being committed, so the repository and the site had drifted apart.
+
+## v1.2.10 — 2026-08-25
+
+The first release since the move to GitLab that is mostly **other people's work**. Nine
+contributors, thirteen merge requests: Brazilian Portuguese in full — interface, all 1,324
+exercise names and all 7,710 instruction steps — equipment profiles for people who train in more
+than one gym, drop-sets and rest-pause, a way to pair the mobile app with your own server, and a
+round of security hardening on the API and the reverse proxy.
+
+Alongside that, the bugs you reported in #bugs-and-ideas and on the issue tracker, several of
+which turned out to be worse than they looked from the outside.
+
+### Training
+
+- 🔥 **"Add warm-up set" gave you a warm-up at your full working weight.** It looked for the row
+  to ramp from at the position *before* the first work set — which for the first warm-up is
+  index −1, so it fell through to the last row instead: your heaviest set. Every warm-up you
+  added had to be corrected by hand. Warm-ups now ramp toward the work weight, each one closing
+  half the remaining gap (50% → 75% → 87.5%), rounded down to what you can actually load.
+- 🏋️ **Warm-ups can be planned in the routine.** Set how many an exercise gets and the session
+  starts with them already in place, ramped, instead of you adding them every time. They stay
+  out of volume, records and progression, and they travel with a shared plan.
+- ⏱️ **The rest timer skipped the last set of every exercise.** It was written as "final sets
+  finish quietly", but another exercise follows that set and you rest before it too — so a
+  two-set exercise timed one rest instead of two. It now rests after every completed set except
+  the last one of the session. (issue #3, and zkssyth arrived at the same rule independently)
+- 📝 **Notes you can write during a workout**, in three kinds, because they have three different
+  lifetimes: what happened today, on the exercise; what is always true about the movement (seat
+  height, pin position); and how the session went as a whole. The per-session note carries a
+  **pin** — the app cannot know whether "shoulder twinged" is a diary line or "go narrower" is a
+  message to your next self, but you do, at the moment you write it. Pinned notes come back the
+  next time that exercise comes up.
+- 💥 **Drop-sets and rest-pause / myo-reps**, planned per exercise and extending the set row
+  itself rather than adding new sets.
+
+### Equipment, and training in more than one gym
+
+- 🎒 **Equipment profiles.** Build a "Home" and a "Gym" list of what you actually own, and the
+  library, the exercise picker and your routines filter to it — with a warning on any routine
+  exercise that needs something the active profile does not have. Body-weight exercises are
+  always available.
+
+### Brazilian Portuguese
+
+- 🇧🇷 **pt-BR is complete**: the interface, every built-in exercise name, and every instruction
+  step. It is defined as a layer over pt-PT rather than a copy, so a string added to Portuguese
+  can never silently go missing here — with tests that fingerprint every inherited entry and
+  refuse European vocabulary (*ficheiro*, *telemóvel*, *ecrã*, «guillemets»).
+- 🔔 Server-sent notifications — rest-timer alerts, test pushes, workout-day reminders — follow
+  the profile's language instead of always arriving in English.
+
+### Fixes
+
+- ✅ **Home kept asking you to do the workout you had just done.** The week strip knew the day was
+  finished; the row underneath did not, and went on showing the routine behind a green Start tag.
+  (issue #4)
+- 📈 **"Exercise progress" was empty for bodyweight exercises.** Pull-ups and push-ups carry no
+  weight, and every point without one was dropped, so a full history read as "No data yet". When
+  nothing in an exercise's history was ever loaded, the reps are the progress — so that is what
+  is plotted now. Add a weighted set later and it switches back to weight. (issue #5)
+- 🫥 **The tab bar was see-through.** At 72% opacity the page read straight through it and the
+  labels competed with whatever was scrolling behind them — nobody needs to read the content
+  under a navigation bar. It is 94% now in both themes, and blurs less, which is also faster on
+  Android, where a blur behind a fixed element is recomposited on every scroll frame. Where
+  `backdrop-filter` is unavailable at all — old Android WebViews, "reduce transparency" — the
+  blurred surfaces now go fully opaque instead of leaving just the alpha, which was the worst of
+  both. (reported by mflova, seconded by seals187)
+- 📥 **No Smith-machine exercise could ever match on import.** The `machine → lever` rule ran
+  before `smith machine → smith`, so the generic one ate the word first. Hevy's vocabulary is
+  now mapped as well, and exercises it cannot match take their body part from the name instead of
+  defaulting to "upper legs" — which had been attributing a third of an imported history to the
+  legs. (diagnosed by rubik_97, fixed by koyosan)
+- 🗓️ **Charts show the calendar year** when the data spans more than one, so a point from
+  November 2025 is not confused with February 2026. (mflova)
+- 🔤 **Exercise search matches whole words in any order**, ignores accents, and searches the
+  translated names too — "bench barbell" finds the barbell bench press, "elevacao" finds
+  "elevação". The haystack is now built once per exercise instead of on every keystroke.
+- 🔑 **Passkeys work in Chrome on iOS**, which was excluded by a user-agent test rather than by
+  asking the browser what it supports.
+- 📱 The reps field in a superset is no longer squeezed on narrow phones, and secondary muscles
+  are visible while building a plan, not only in the Exercises tab.
+
+### Self-hosting
+
+- 🔐 **Security hardening on the API and the proxy**: SSRF and an unbounded handler in push
+  delivery, CSRF from a sibling subdomain, session-cookie shadowing, and non-forgeable proxy
+  headers. Details in SECURITY.md.
+- 🧭 **When a passkey fails, the error now says what is misconfigured.** "Unexpected RP ID hash"
+  told you nothing about your own `.env`; it now names the `RP_ID` and `ORIGIN` the server is
+  actually running with. `docs/SELF_HOSTING.md` gained a section that works through the usual
+  causes in order — including that `docker compose restart` does not re-read `.env`, and that on
+  a LAN without certificates there is nothing you can configure to make passkeys work.
+- 📲 **"Connect to my server"** pairs the standalone mobile app to a self-hosted instance with a
+  one-time code, no passkey ceremony needed inside the app's WebView.
+- 💾 **Optional local auto-backup** on the mobile app after finishing a workout or editing a
+  routine, and a **System** theme option that follows the OS.
+
+With thanks to mzspicoli, Josevi, andi242, Space_Hermes, Horus Gonzalez, wagenheimer, koyosan,
+mflova and Aaron Sachs — and to everyone who reported one of the bugs above.
+
+## v1.2.9 — 2026-08-23
+
+If you run openGym for other people, you have had no way to answer "who signed in, and when?" —
+the server kept no record of anything. It does now: an **activity log** in the admin dashboard,
+covering sign-ins, sign-outs, the attempts that failed, and every admin action. The other half of
+this release is that **the live demo is back**, self-hosted this time, after two months offline.
+And the project has a working home again: openGym now lives on **GitLab**, where CI builds the
+container images and the signed Android APK for every release — the thing that has been missing
+since the GitHub account went.
+
+### Activity log
+
+- 🧾 **The admin dashboard has an activity log.** Successful and failed sign-ins, profile
+  creations and refused signups, sign-outs (including "sign out everywhere"), and every admin
+  action: disabling or re-enabling an account, creating or revoking an invite code, and clearing
+  the log itself. Filter it by sign-ins, admin actions or failures, and page back through it.
+- 📄 **It is a plain file.** `./data/audit.log`, one JSON object per line — `tail -f` and `jq`
+  read it directly, which also means it is its own export format. Deliberately *not* part of
+  `db.json`: that file is rewritten in full on every save, and the sign-in handshake is
+  unauthenticated, so a log living in there would have turned one junk request into a full
+  rewrite. Retention is a cap rather than an archive — the last `AUDIT_MAX` events (5,000) or
+  `AUDIT_DAYS` days (90), whichever runs out first.
+- 🔒 **It records less than you might expect, on purpose.** No IP addresses unless you turn them
+  on (`AUDIT_IP=net` keeps only the network, `full` keeps the address); never the browser's
+  user-agent; and never the passkey id behind a failed sign-in, because that id is a stable handle
+  for one device and storing it would let an admin follow an unknown device from one attempt to
+  the next. A rejected invite code is not stored either — a near-miss guess sitting in a log file
+  helps nobody.
+- 🧹 **Clearing it is itself logged**, and the event ids keep counting, so an erased stretch always
+  leaves a visible gap.
+- ⚙️ **On by default when you update, and one variable turns it off.** It records strictly less
+  than your instance already holds — every profile is in `db.json`, every workout is in
+  `state-<uid>.json`, and any admin can already read both — and a log that ships switched off
+  tells you nothing on the day you need it. `AUDIT_LOG=0` disables it completely; no file is
+  written. Nothing leaves your server either way: this is a local file, not telemetry.
+- Guests still never appear anywhere — guest mode does not talk to the server at all.
+
+### The live demo is back
+
+- ▶️ **<https://opengym.duarte-santos.ch/demo/>** — the in-browser demo, running on the project's
+  own site instead of GitHub Pages, which went down in August with the suspended account. Same
+  build as before: no backend, no account, seeded example history, and a reset button in its
+  settings. The embedded demo on the landing page works again too.
+
+### openGym moved to GitLab
+
+- 🏠 **<https://gitlab.com/DuarteSantos8/opengym>** is the home of the project. Same history,
+  same tags, same AGPL. gitea.com was the stopgap after the GitHub suspension and stays as a
+  mirror; it never had a CI runner, which is why releases there had no images.
+- 🐳 **Prebuilt images are back.** `docker compose pull` now fetches
+  `registry.gitlab.com/duartesantos8/opengym/api` and `/web`, built for **amd64 and arm64** on
+  every release. Pulling is anonymous — the project is public, no login, no token.
+- 🤖 **The APK is built by CI now, not by hand.** Every `vX.Y.Z` tag produces a `zipalign`ed,
+  signed APK, attached to the GitLab release and mirrored onto the download page. The signing
+  key sits in protected CI variables, so it exists only on `main` and on version tags — a
+  merge request from a fork builds an unsigned APK and never touches the key.
+- ✅ **Every merge request is tested again.** The frontend suite (346 tests), the locale checks,
+  the fatigue probe and the MCP suite all run on GitLab CI. The GitHub Actions workflows stay
+  in `.github/` for the day that account comes back.
+- 🌐 The in-browser demo also builds to GitLab Pages
+  (<https://opengym-bc111a.gitlab.io/>, which <https://duartesantos8.gitlab.io/opengym/>
+  redirects to); <https://opengym.duarte-santos.ch/demo/> remains the copy the landing page
+  embeds.
+- 📄 Security reports have a private channel again: a **confidential issue** on GitLab. See
+  `SECURITY.md`.
+- 🔁 **Dependency updates continue.** GitLab has no Dependabot, so Renovate runs from a monthly
+  scheduled pipeline with the same deliberately quiet policy the Dependabot config had:
+  grouped per ecosystem, majors on their own, odd-numbered Node images skipped, and the
+  generated `android/`/`ios/` projects left to follow their `@capacitor/*` packages. Security
+  advisories ignore the schedule and land on their own.
+
+### Housekeeping
+
+- The self-hosting docs, `SECURITY.md` and `.env.example` cover the activity log, and the
+  `api/server.js` line references in `SECURITY.md` are accurate again.
+- Every repository link in the README, the docs, the app and the website points at GitLab, and
+  the website's live star/release numbers come from GitLab's API.
+
+## v1.2.8 — 2026-08-22
+
+A housekeeping release, and two things worth reading even if you skip the rest. openGym has moved
+to **gitea.com** — the GitHub account it lived on was suspended, and everything you click to
+self-host pointed there. And the exercise media's licence is now stated correctly: the images and
+animations are © Gym visual, not CC, which matters if you redistribute them.
+
+### The project moved to gitea.com
+
+- 🏠 **openGym now lives at <https://gitea.com/DuarteSantos/openGym>.** The GitHub account
+  was suspended on 2026-08-19 and took the repository, the GHCR images, the Pages demo and
+  Discussions with it. `docker compose` now pulls `gitea.com/duartesantos/opengym-{api,web}`; the
+  README, `SECURITY.md`, `CONTRIBUTING.md` and the self-hosting docs point at the new home; issue
+  forms, tests and the image publish run as Gitea Actions. **If you self-host, re-pull:** the old
+  `ghcr.io` images are gone and will not update again.
+- Gitea has no Discussions, so questions and ideas are labelled issues — or the Discord, which
+  is where most of it happens now: <https://discord.gg/e62jY6fwVb>.
+- Old issue and PR numbers in the entries below stay as plain text. They point at a dead repo and
+  do not match the numbering here.
+
+### The exercise media is © Gym visual — not CC
+
+- ⚖️ **openGym described the exercise dataset as "CC". That was wrong**, and it is now
+  corrected everywhere it appeared (README, `NOTICE.md`, the website, the in-app credit, the
+  compose file and `scripts/fetch-media.sh`). Upstream
+  [hasaneyldrm/exercises-dataset](https://github.com/hasaneyldrm/exercises-dataset) licenses its two
+  halves differently: the exercise **metadata and instruction text are MIT**, while the **images and
+  animations are © [Gym visual](https://gymvisual.com/)**, used under that dataset's terms with
+  permission that is not transferable.
+- **Nothing changes for using openGym.** It never shipped that media — not in the repository,
+  not in its history, not in the images or the APK; your instance downloads it from upstream on
+  first run, and the media step now prints where it comes from and under what terms.
+- **It does change what you may do with the media.** Reusing the images or animations — in
+  openGym or anywhere else, commercially or not — needs your own licence from Gym visual. See
+  [NOTICE.md](NOTICE.md).
+
+### Features
+
+- 🇧🇷 **Brazilian Portuguese UI** — Portuguese now has separate Portugal and
+  Brazil options, with Brazilian terminology, date formatting and localized
+  instructions for all 1,324 exercises. Built-in exercise titles show the
+  Brazilian Portuguese name followed by the canonical English name, so both
+  vocabularies remain recognizable and searchable.
+
+### Fixes
+
+- 🔔 **Server-generated notifications follow Brazilian Portuguese** — rest-timer
+  alerts, test notifications and workout-day reminders now use the profile's
+  `pt-BR` language instead of always arriving in English.
+
+- ⬅️ **The back gesture no longer quits the app** (Android). The packaged app never listened for
+  the system back event at all — Capacitor leaves that to `@capacitor/app`, which was not
+  installed — so a back swipe went straight past the WebView and finished the activity from
+  wherever you were. The per-sheet history entries added in [#63] only ever did anything in a
+  browser tab. Back now dismisses the open sheet, then walks back through the screens you came
+  from, and only leaves the app after a second press at the root ("Press back again to exit").
+  A sheet that is locked mid-task still swallows back, as it does in the browser.
+
+### The website counts visits; the app still counts nothing
+
+- 📊 **<https://opengym.duarte-santos.ch> now runs self-hosted, cookieless
+  [Umami](https://umami.is/)** — page views for the landing, about and docs pages, no cookies,
+  no third-party service.
+- 🔒 **Your instance does not.** The frontend only gets an analytics tag when
+  `VITE_UMAMI_SRC` *and* `VITE_UMAMI_ID` are set at build time, which they are not in any published
+  image or in a plain `npm run build`. A self-hosted openGym remains telemetry-free, as advertised.
+
 ## v1.2.7 — 2026-08-18
 
 The muscle map answers a third question. Balance showed where the volume went and Fatigue what was

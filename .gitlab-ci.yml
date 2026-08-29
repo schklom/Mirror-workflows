@@ -1,0 +1,411 @@
+# openGym — GitLab CI/CD
+#
+# This is the pipeline that actually gates and ships the project. It replaces the
+# GitHub Actions workflows (.github/, dormant since the account suspension) and the
+# gitea.com ones (.gitea/, kept only so the mirror stays buildable).
+#
+# What it does, in order:
+#   test     — frontend + MCP suites, on every branch, MR and tag
+#   build    — the two container images → registry.gitlab.com/duartesantos8/opengym/{api,web}
+#   package  — the signed Android APK → job artifact + generic package registry
+#   deploy   — the browser-only demo → GitLab Pages
+#   release  — a GitLab Release with the changelog section and links to APK + images
+#
+# One deliberate difference from the GitHub copy: GitHub could distinguish a bare tag
+# push from a *published* release, and only shipped images from the latter (issue #87 —
+# a tag that is later consolidated away must not leave orphan image tags behind).
+# GitLab has no such split: the tag pipeline is what creates the Release. So here the
+# rule is enforced by hand — **only push a tag when you actually mean to release it.**
+# Everything version-tagged (latest images, signed APK, Release) hangs off `v*` tags,
+# which are protected, so nobody else can trigger a release either.
+
+stages:
+  - test
+  - build
+  - package
+  - deploy
+  - release
+  - maintenance
+
+variables:
+  # node:22-alpine in web/Dockerfile and api/Dockerfile — CI must match production.
+  NODE_IMAGE: "node:22-alpine"
+  # The demo build has no backend and no local media: the exercise images/GIFs (~140 MB)
+  # are never committed, so it points at the upstream dataset on jsDelivr, pinned to a
+  # commit so the CDN can cache it forever.
+  DATASET: "https://cdn.jsdelivr.net/gh/hasaneyldrm/exercises-dataset@7455efae41b330c265e7cd4b78dfa848e7ce5ebd"
+  GIT_DEPTH: "50"
+
+# Branch pipeline *or* MR pipeline, never both for the same commit.
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS
+      when: never
+    - if: $CI_COMMIT_TAG
+    - if: $CI_COMMIT_BRANCH
+
+# ---------------------------------------------------------------------------- test
+
+.node:
+  image: $NODE_IMAGE
+  interruptible: true
+
+test:frontend:
+  extends: .node
+  stage: test
+  cache:
+    key:
+      files:
+        - frontend/package-lock.json
+    paths:
+      - frontend/.npm
+  script:
+    - cd frontend
+    - npm ci --cache .npm --prefer-offline
+    - npm test
+    # A broken import or bad JSX fails the build long before any test covers it.
+    - npm run build
+    - node scripts/check-locales.mjs
+    # check-locales compares the packs to each other, so a key missing from ALL of them is
+    # invisible to it. This walks src/ instead. Report-only for now: there is a known
+    # backlog of untranslated demo-view strings to clear before it can fail the build.
+    - node scripts/check-source-strings.mjs
+    # The fatigue model must never read higher after a rest day than before it.
+    # Property probe over ~108k comparisons; too slow for the unit suite, cheap here.
+    - npm run test:fatigue-probe
+  rules:
+    # A scheduled pipeline exists only to run `renovate` (bottom of this file) — it must not
+    # re-run the suite or republish the edge images once a month for nothing.
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
+    - when: on_success
+
+test:mcp:
+  extends: .node
+  stage: test
+  cache:
+    key:
+      files:
+        - mcp/package-lock.json
+    paths:
+      - mcp/.npm
+  script:
+    - cd mcp
+    - npm ci --cache .npm --prefer-offline
+    - npm test
+    # The one check the vitest suite structurally cannot make. The MCP server is a bare node
+    # process, but vitest runs its tests through Vite — import.meta.glob, .jsx imports and
+    # ?raw all resolve happily there. That is how a Vite-only import reached a shared lib
+    # module with 33 green tests standing over a server that died on startup.
+    - npm run check:node-loadable
+  rules:
+    # A scheduled pipeline exists only to run `renovate` (bottom of this file) — it must not
+    # re-run the suite or republish the edge images once a month for nothing.
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
+    - when: on_success
+
+# --------------------------------------------------------------------------- images
+
+# Images land at registry.gitlab.com/duartesantos8/opengym/{api,web} and are what
+# `docker compose pull` fetches.
+#
+# On a v* tag: linux/amd64 + linux/arm64, tagged X.Y.Z, X.Y and latest.
+# On any other branch: amd64 only, tagged `edge` and `main-<sha>`. arm64 is emulated
+# through QEMU on the shared runners and costs several times the minutes — a self-hoster
+# on a Pi pulls `latest`, which always comes from a release and is always multi-arch.
+#
+# Third way in: start a pipeline by hand (Build -> Pipelines -> New pipeline, or the API)
+# with the variable PUBLISH_LATEST set to anything. That builds exactly like a tag would — multi-arch,
+# `latest` and the version out of frontend/package.json — without cutting a release. It is
+# there for the rebuild-without-a-code-change case: a base image picking up a CVE fix, where
+# the published `latest` needs to move but the app did not change.
+build:images:
+  stage: build
+  image: docker:28-cli
+  services:
+    - docker:28-dind
+  variables:
+    DOCKER_HOST: tcp://docker:2376
+    DOCKER_TLS_CERTDIR: "/certs"
+    DOCKER_TLS_VERIFY: "1"
+    DOCKER_CERT_PATH: "/certs/client"
+  needs: ["test:frontend", "test:mcp"]
+  parallel:
+    matrix:
+      - IMAGE: api
+        CONTEXT: "./api"
+        DOCKERFILE: "./api/Dockerfile"
+      - IMAGE: web
+        CONTEXT: "."
+        DOCKERFILE: "./web/Dockerfile"
+  before_script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
+    # buildx's docker-container driver refuses to read the daemon's TLS material straight
+    # out of DOCKER_HOST/DOCKER_CERT_PATH ("could not create a builder instance with TLS
+    # data loaded from environment"). Freezing the same environment into a named context
+    # and building the builder on top of that is the supported way round it.
+    - docker context create tls-environment
+  script:
+    - |
+      set -eu
+      BUILD_DATE="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+      REPO="$CI_REGISTRY_IMAGE/$IMAGE"
+      if [ -n "${CI_COMMIT_TAG:-}" ] || [ -n "${PUBLISH_LATEST:-}" ]; then
+        if [ -n "${CI_COMMIT_TAG:-}" ]; then
+          SEMVER="${CI_COMMIT_TAG#v}"
+        else
+          # No tag to read the version off, so take it from the source of truth the APK job
+          # already uses. `apk add nodejs` would be a 40 MB download for one field.
+          SEMVER="$(sed -n 's/.*"version": *"\([^"]*\)".*/\1/p' frontend/package.json | head -1)"
+          [ -n "$SEMVER" ] || { echo "could not read version from frontend/package.json" >&2; exit 1; }
+          echo "PUBLISH_LATEST: building $SEMVER off $CI_COMMIT_REF_NAME, no release involved"
+        fi
+        VERSION="v$SEMVER"
+        PLATFORMS="linux/amd64,linux/arm64"
+        TAGS="-t $REPO:$SEMVER -t $REPO:${SEMVER%.*} -t $REPO:latest"
+        # Only the arm64 leg needs emulation, and only for the api image (web's build
+        # stage is pinned to $BUILDPLATFORM on purpose — see web/Dockerfile).
+        docker run --privileged --rm tonistiigi/binfmt --install arm64
+      else
+        VERSION="main-$CI_COMMIT_SHORT_SHA"
+        PLATFORMS="linux/amd64"
+        TAGS="-t $REPO:edge -t $REPO:$VERSION"
+      fi
+      docker buildx create --use --name opengym --driver docker-container tls-environment
+      # shellcheck disable=SC2086
+      docker buildx build \
+        --platform "$PLATFORMS" \
+        --file "$DOCKERFILE" \
+        --build-arg "VERSION=$VERSION" \
+        --build-arg "VCS_REF=$CI_COMMIT_SHA" \
+        --build-arg "BUILD_DATE=$BUILD_DATE" \
+        --cache-from "type=registry,ref=$CI_REGISTRY_IMAGE/buildcache:$IMAGE" \
+        --cache-to   "type=registry,ref=$CI_REGISTRY_IMAGE/buildcache:$IMAGE,mode=max" \
+        --provenance=false \
+        $TAGS \
+        --push \
+        "$CONTEXT"
+  rules:
+    # A scheduled pipeline exists only to run `renovate` (bottom of this file) — it must not
+    # re-run the suite or republish the edge images once a month for nothing.
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
+    - if: $CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+$/
+    - if: ($CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "api") && $PUBLISH_LATEST
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: manual
+      allow_failure: true
+
+# ------------------------------------------------------------------------------ apk
+
+# The official signed APK. Signing keys live in protected CI variables, so they only
+# exist on protected refs (main and v* tags) — a fork's MR builds an unsigned APK and
+# cannot get at the key. Sideload-only by design: openGym is on no app store.
+#
+# Needs three CI/CD variables (Settings → CI/CD → Variables), all *protected*:
+#   ANDROID_KEYSTORE_B64       file    base64 of opengym-release.keystore
+#   ANDROID_KEYSTORE_PASSWORD  masked  the keystore password
+#   ANDROID_KEY_ALIAS          plain   opengym
+# KEEP THAT KEYSTORE: updates must be signed with the same key or Android refuses to
+# install them over an existing copy.
+build:apk:
+  stage: package
+  image: cimg/android:2026.08-node
+  needs: ["test:frontend"]
+  variables:
+    GRADLE_USER_HOME: "$CI_PROJECT_DIR/.gradle"
+    GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+  cache:
+    key: "gradle-$CI_COMMIT_REF_SLUG"
+    paths:
+      - .gradle/wrapper
+      - .gradle/caches
+  script:
+    - |
+      set -eu
+      cd frontend
+      npm ci
+      # VITE_MOBILE build + `cap sync` into android/. The mobile flavor talks to no
+      # backend at all: no sign-in, no sync, media straight from the CDN.
+      npm run build:mobile
+      VER="$(node -p "require('./package.json').version")"
+      cd android
+      ./gradlew --no-daemon assembleRelease
+      UNSIGNED=app/build/outputs/apk/release/app-release-unsigned.apk
+      BT="$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)"
+      if [ -n "${ANDROID_KEYSTORE_B64:-}" ]; then
+        base64 -d "$ANDROID_KEYSTORE_B64" > "$CI_PROJECT_DIR/.ks.jks"
+        "$BT/zipalign" -f -p 4 "$UNSIGNED" aligned.apk
+        "$BT/apksigner" sign \
+          --ks "$CI_PROJECT_DIR/.ks.jks" \
+          --ks-pass "env:ANDROID_KEYSTORE_PASSWORD" \
+          --ks-key-alias "$ANDROID_KEY_ALIAS" \
+          --key-pass "env:ANDROID_KEYSTORE_PASSWORD" \
+          --out "$CI_PROJECT_DIR/openGym-$VER.apk" aligned.apk
+        rm -f "$CI_PROJECT_DIR/.ks.jks"
+        "$BT/apksigner" verify --print-certs "$CI_PROJECT_DIR/openGym-$VER.apk"
+      elif [ -n "${CI_COMMIT_TAG:-}" ]; then
+        # A release must never quietly ship an APK nobody can install. If the key is missing
+        # on a tag, something is wrong with the protected variables — say so and stop.
+        echo "FATAL: $CI_COMMIT_TAG is a release tag but ANDROID_KEYSTORE_B64 is not set." >&2
+        echo "Set it (protected, file type) under Settings -> CI/CD -> Variables." >&2
+        exit 1
+      else
+        echo "No signing key on this ref — producing an UNSIGNED apk (cannot be installed)."
+        "$BT/zipalign" -f -p 4 "$UNSIGNED" "$CI_PROJECT_DIR/openGym-$VER-unsigned.apk"
+      fi
+      echo "APK_VERSION=$VER" >> "$CI_PROJECT_DIR/apk.env"
+    # On a release tag the APK also goes into the generic package registry, which is
+    # what the Release links to (job artifacts expire; packages do not).
+    - |
+      set -eu
+      cd "$CI_PROJECT_DIR"
+      . ./apk.env
+      if [ -n "${CI_COMMIT_TAG:-}" ] && [ -f "openGym-$APK_VERSION.apk" ]; then
+        # Sideloading means nobody's app store checked this file for you, so publish the
+        # digest next to it rather than leaving people to trust the download.
+        sha256sum "openGym-$APK_VERSION.apk" > "openGym-$APK_VERSION.apk.sha256"
+        cat "openGym-$APK_VERSION.apk.sha256"
+        for f in "openGym-$APK_VERSION.apk" "openGym-$APK_VERSION.apk.sha256"; do
+          curl --fail --silent --show-error \
+            --header "JOB-TOKEN: $CI_JOB_TOKEN" \
+            --upload-file "$f" \
+            "$CI_API_V4_URL/projects/$CI_PROJECT_ID/packages/generic/opengym-android/$APK_VERSION/$f"
+          echo "uploaded $f to the generic package registry"
+        done
+      fi
+  artifacts:
+    name: "openGym-apk-$CI_COMMIT_REF_SLUG"
+    paths:
+      - "openGym-*.apk"
+      - "openGym-*.apk.sha256"
+    reports:
+      dotenv: apk.env
+    expire_in: 30 days
+  rules:
+    # A scheduled pipeline exists only to run `renovate` (bottom of this file) — it must not
+    # re-run the suite or republish the edge images once a month for nothing.
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
+    - if: $CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+$/
+    # An APK build is ~8 minutes of shared-runner time; on main and MRs it is one click
+    # away rather than automatic. Flip `when: manual` off to have every push build one.
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: manual
+      allow_failure: true
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: manual
+      allow_failure: true
+
+# ---------------------------------------------------------------------------- pages
+
+# The browser-only demo: https://opengym-bc111a.gitlab.io/
+# (that opaque host is GitLab's "unique domain" for Pages, on by default; the tidier
+# https://duartesantos8.gitlab.io/opengym/ 308s to it. Settings → Pages turns it off.)
+# Pages serves static files only, so this build has no backend — VITE_DEMO=1 makes the
+# app boot straight into guest mode with a seeded example history (frontend/src/lib/demo.js).
+# Vite's base is './', so the bundle drops into a subdirectory unchanged.
+pages:
+  extends: .node
+  stage: deploy
+  needs: ["test:frontend"]
+  variables:
+    VITE_DEMO: "1"
+  script:
+    - cd frontend
+    - npm ci
+    - VITE_IMG_BASE="$DATASET/images/" VITE_GIF_BASE="$DATASET/videos/" npm run build
+    - cd ..
+    - rm -rf public && mv frontend/dist public
+  artifacts:
+    paths:
+      - public
+  rules:
+    # A scheduled pipeline exists only to run `renovate` (bottom of this file) — it must not
+    # re-run the suite or republish the edge images once a month for nothing.
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      changes:
+        paths:
+          - "frontend/**/*"
+          - ".gitlab-ci.yml"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: manual
+      allow_failure: true
+
+# -------------------------------------------------------------------------- release
+
+release:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  needs:
+    - job: build:images
+    - job: build:apk
+      artifacts: true
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+$/
+  script:
+    # The release notes are the matching section of CHANGELOG.md, verbatim — headings
+    # there are "## v1.2.9 — 2026-08-23", so take everything up to the next "## ".
+    - |
+      set -eu
+      awk -v tag="$CI_COMMIT_TAG" '
+        $0 ~ "^## " tag "([^0-9.]|$)" { inside = 1; next }
+        inside && /^## / { exit }
+        inside { print }
+      ' CHANGELOG.md > release-notes.md
+      if [ ! -s release-notes.md ]; then
+        echo "openGym $CI_COMMIT_TAG" > release-notes.md
+      fi
+      head -40 release-notes.md
+  release:
+    tag_name: $CI_COMMIT_TAG
+    name: "openGym $CI_COMMIT_TAG"
+    description: release-notes.md
+    assets:
+      links:
+        - name: "openGym-$APK_VERSION.apk (Android, sideload)"
+          url: "$CI_API_V4_URL/projects/$CI_PROJECT_ID/packages/generic/opengym-android/$APK_VERSION/openGym-$APK_VERSION.apk"
+          link_type: package
+        - name: "openGym-$APK_VERSION.apk.sha256 (checksum)"
+          url: "$CI_API_V4_URL/projects/$CI_PROJECT_ID/packages/generic/opengym-android/$APK_VERSION/openGym-$APK_VERSION.apk.sha256"
+          link_type: other
+        - name: "Container images (api + web)"
+          url: "$CI_PROJECT_URL/container_registry"
+          link_type: image
+
+# ---------------------------------------------------------------------- dependencies
+
+# Dependency updates. GitLab has no Dependabot, so Renovate runs as a job — but only on a
+# *scheduled* pipeline (Build → Pipeline schedules), so it never fires on a push and never
+# competes with a real pipeline for runner minutes. Its policy lives in `renovate.json`
+# next to this file, and it is the same policy the GitHub Dependabot config had: monthly,
+# grouped per ecosystem, majors on their own, and the native mobile projects left alone.
+#
+# Needs one CI/CD variable: RENOVATE_TOKEN — a GitLab token with `api` scope, which is what
+# lets it read the project and open merge requests.
+renovate:
+  stage: maintenance
+  image:
+    name: renovate/renovate:41
+    entrypoint: [""]
+  variables:
+    RENOVATE_PLATFORM: gitlab
+    RENOVATE_ENDPOINT: "$CI_API_V4_URL"
+    RENOVATE_AUTODISCOVER: "false"
+    RENOVATE_REPOSITORIES: "$CI_PROJECT_PATH"
+    RENOVATE_ONBOARDING: "false"
+    RENOVATE_REQUIRE_CONFIG: "required"
+    LOG_LEVEL: info
+  script:
+    - renovate
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule" && $RENOVATE_TOKEN
+    # Also runnable by hand from the pipeline page when you want to see what it would do.
+    - if: $CI_PIPELINE_SOURCE == "web" && $RENOVATE_TOKEN
+      when: manual
+      allow_failure: true

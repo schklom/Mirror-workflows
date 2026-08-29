@@ -1,7 +1,7 @@
 // Pure helpers over the state object S (ported 1:1 from the vanilla app).
 import { todayISO, isoOf, weekKey, fmtNum } from './format.js'
 import { isCardio, isBodyweightEq } from './exercises.js'
-import { phaseForSet, modeForSet, modeForEntry, isWarmupRow, normalizeMode } from './workout-model.js'
+import { phaseForSet, modeForSet, modeForEntry, isWarmupRow, normalizeMode, extraVolumeOf, nextDropWeight, splitBurstReps } from './workout-model.js'
 const objectOf = value => value && typeof value === 'object' && !Array.isArray(value) ? value : {}
 // Completed-state-independent work rows whose authoritative mode matches the requested mode.
 const workRowsForMode = (entry = {}, mode = 'reps') => {
@@ -209,13 +209,48 @@ export function unpairSuperset(items, idx) {
 export function lastEntryFor(S, exId) {
   for (let i = S.workouts.length - 1; i >= 0; i--) {
     const en = S.workouts[i].entries.find(e => e.id === exId)
+    if (!en) continue
+    // Work sets only. Every caller asks the same question — "what did you actually lift last
+    // time" — to seed the next session's rows, to size a freestyle config, and to print "Last
+    // time" on the card. A warm-up answers none of them: seeding position 0 from a 50% ramp row
+    // walks the working weight DOWN a little every session, and counting the ramp rows makes a
+    // 3x5 come back as a 5-set exercise. Warm-ups are already excluded from volume, records and
+    // progression; this is the same rule one level up.
+    const done = en.sets.filter(s => s.done && !isWarmupRow(s))
     // `target` is what the session prescribed; finished workouts carry it so labels and the
     // progression engine can read a session back the way it was logged. Older workouts have
     // none — modeOf() falls back to the body part for them, which is what they were.
-    if (en && en.sets.some(s => s.done)) return { d: S.workouts[i].d, sets: en.sets.filter(s => s.done), target: en.target || null }
+    if (done.length) return { d: S.workouts[i].d, sets: done, target: en.target || null }
   }
   return null
 }
+
+/** How long any single note may get. Long enough for a paragraph, short enough to stay a note. */
+export const NOTE_MAX = 500
+
+/**
+ * The most recent session note the user pinned for this exercise, or null.
+ *
+ * A note written mid-session is about that session — "shoulder twinged today". Some of them are
+ * about the NEXT one instead: "go a notch narrower". The pin is how the user says which, at the
+ * moment of writing, when they are the only one who knows. Pinned notes surface again the next
+ * time the exercise comes up; unpinned ones stay in that day's history.
+ *
+ * Only the newest pinned note is returned: a pin is a message to your next self, and a stack of
+ * them from six sessions ago is noise, not context.
+ */
+export function pinnedNoteFor(S, exId) {
+  const workouts = S?.workouts || []
+  for (let i = workouts.length - 1; i >= 0; i--) {
+    const en = (workouts[i].entries || []).find(e => e.id === exId)
+    const note = (en?.note || '').trim()
+    if (note && en.notePin) return { note, d: workouts[i].d }
+  }
+  return null
+}
+
+/** The standing note for an exercise — the one that is true every session. */
+export const exNoteFor = (S, exId) => ((S?.exNotes || {})[exId] || '').trim() || null
 
 // A freestyle exercise starts with the last target the user actually trained, rather than the
 // generic config sheet defaults used when there is no history. The set rows themselves are still
@@ -268,7 +303,30 @@ export function nextTrainingDay(S, iso) {
   }
   return null
 }
+/**
+ * Build the rows a planned exercise starts a session with: its work sets, preceded by however
+ * many warm-up sets the routine asks for (`cfg.warmupSets`, 0 by default so an existing plan
+ * behaves exactly as before).
+ *
+ * The warm-ups are stacked with insertWarmupRow, one call each, so the ramp is the same one
+ * the in-session "Add warm-up set" button produces: each row halves the gap left to the work
+ * weight, giving 50% / 75% / 87.5% for three. `options.step` is the exercise's loading step,
+ * passed in by the caller (see insertWarmupRow for why this module cannot read it itself).
+ */
 export function buildSets(S, cfg, options = {}) {
+  const rows = buildWorkSets(S, cfg, options)
+  const warm = Math.max(0, Math.min(MAX_PLANNED_WARMUPS, Math.round(cfg.warmupSets) || 0))
+  if (!warm) return rows
+  const mode = modeOf(cfg)
+  let out = rows
+  for (let i = 0; i < warm; i++) out = insertWarmupRow(out, mode, cfg, options.step)
+  return out
+}
+
+/** Beyond this a "warm-up" is its own workout; the config stepper stops here too. */
+export const MAX_PLANNED_WARMUPS = 5
+
+function buildWorkSets(S, cfg, options = {}) {
   const last = lastEntryFor(S, cfg.id)
   const n = Math.max(1, cfg.sets || 1)
   const mode = modeOf(cfg)
@@ -305,11 +363,58 @@ export function buildSets(S, cfg, options = {}) {
   }
   return sets
 }
+
+/**
+ * Stamp every work row with the exercise's planned intensifier and pre-fill its drops/clusters,
+ * already computed and editable — the plan designs the set, not a button pressed mid-workout.
+ *
+ * Must run AFTER applyPrescription: a drop-set's chain of drops is a percentage of each row's
+ * own `w`, so it has to be computed from the final prescribed weight, not the pre-progression
+ * one buildSets started from — otherwise a bumped working weight would leave stale, cheaper
+ * drops sitting underneath it.
+ */
+export function applyIntensifierPlan(sets, cfg) {
+  const kind = cfg && cfg.intensifier && cfg.intensifier.type
+  if (kind !== 'dropset' && kind !== 'restpause') return sets
+  if (kind === 'dropset') {
+    const count = Math.max(1, Math.round(cfg.intensifier.count) || 1)
+    const pct = cfg.intensifier.pct
+    return sets.map(s => {
+      if (isWarmupRow(s)) return s
+      const drops = []
+      let w = s.w || 0
+      for (let k = 0; k < count; k++) { w = nextDropWeight(w, pct); drops.push({ w, r: s.r }) }
+      return { ...s, type: 'dropset', drops }
+    })
+  }
+  // Rest-pause trains as exactly two sets, not one per configured `sets` count: a warm-up at
+  // the exercise's own configured reps, then a single rest-pause work set. Doing the full
+  // activation+bursts protocol several times over isn't how rest-pause is actually trained, so
+  // planning it replaces whatever buildSets built rather than stamping each of those rows.
+  // The work row's own reps are the total — not "the total minus what the bursts carry" — and
+  // the bursts are the full breakdown of that same total, down to the last one. See
+  // extraVolumeOf/setTonnage: a rest-pause row's `clusters` are read-only display of how `r`
+  // breaks down, not extra volume on top of it, precisely so this doesn't double-count.
+  const restSec = Math.max(5, cfg.intensifier.restSec || 15)
+  const totalReps = Math.max(1, Math.round(cfg.intensifier.totalReps) || 1)
+  const w = (sets.find(s => !isWarmupRow(s)) || sets[0] || {}).w || 0
+  const warmup = { w, r: Math.max(1, Math.round(cfg.reps) || 1), done: false, phase: 'warmup' }
+  const work = { w, r: totalReps, done: false, type: 'restpause', clusters: splitBurstReps(totalReps).map(r => ({ r, restSec })) }
+  return [warmup, work]
+}
 export function workoutVolume(w) {
   let v = 0
   // No special case for unilateral work: a per-side set logs its total, so both sides are
-  // already in the rep count that arrives here.
-  w.entries.forEach(e => e.sets.forEach(s => { if (s.done) v += (s.w || 0) * (s.r || 0) }))
+  // already in the rep count that arrives here. Drop-set drops and rest-pause bursts add their
+  // own weight x reps on top of the row's main/activation set (see extraVolumeOf).
+  // Warm-ups are excluded here as everywhere else. The config sheet promises it in so many
+  // words ("left out of volume, records and progression") and every other consumer already
+  // does it; this line was the one that did not, which only stopped being harmless when a
+  // routine started planning warm-ups by default. The number is written into the saved
+  // workout, so an inflated one would stay wrong forever.
+  w.entries.forEach(e => e.sets.forEach(s => {
+    if (s.done && !isWarmupRow(s)) v += (s.w || 0) * (s.r || 0) + extraVolumeOf(s)
+  }))
   return v
 }
 export function setsDone(w) {
@@ -367,16 +472,84 @@ export function cascadeWeight(rows, from, value) {
   return next
 }
 
-/** Insert a warm-up row before the first work row, copying the preceding warm-up's values. */
-export function insertWarmupRow(rows, mode, target) {
+/**
+ * Insert a warm-up row at the end of the warm-up block, ramping toward the working weight.
+ *
+ * Each added row halves what is left between the last warm-up and the first work set, so the
+ * first one lands at half the working weight, a second at three quarters, and so on — and a
+ * row you edited by hand is what the next one ramps from. `step` is the exercise's own loading
+ * step (progression.js's defaultIncrement, passed in by the caller so this module keeps no
+ * dependency on progression — that one already imports from here): a warm-up you cannot
+ * actually load onto the bar is noise.
+ *
+ * The reference is the first WORK row, never `rows[at - 1]` alone: for the first warm-up
+ * `at` is 0, and reading `rows[-1]` used to fall through to the *last* row — the heaviest
+ * work set — so "add warm-up set" handed you a full-weight set to correct by hand.
+ */
+/**
+ * Recompute the warm-up block so it ramps toward the weight the work rows ACTUALLY carry.
+ *
+ * buildSets prepends the warm-ups before a prescription is applied, and applyPrescription
+ * deliberately rewrites work rows only — so without this the ramp still aims at last
+ * session's weight. On a deload that put the last warm-up above every work set, which is
+ * the exact opposite of what a warm-up is for.
+ *
+ * A warm-up already logged keeps its weight and becomes what the next one ramps from: it
+ * happened, and rewriting performed work is data loss. Entries with nothing to ramp toward
+ * — cardio, bodyweight, an unloaded hold — are returned untouched.
+ */
+export function rerampWarmups(rows, step = 2.5) {
+  const firstWork = rows.findIndex(x => !isWarmupRow(x))
+  if (firstWork <= 0) return rows
+  const target = rows[firstWork].w || 0
+  if (!(target > 0)) return rows
+  const out = rows.slice()
+  let from = 0
+  for (let i = 0; i < firstWork; i++) {
+    if (out[i].done) { from = out[i].w || 0; continue }
+    const w = target > from
+      ? Math.max(0, Math.min(target, Math.floor((from + (target - from) / 2) / step) * step))
+      : target
+    out[i] = { ...out[i], w }
+    from = w
+  }
+  return out
+}
+
+export function insertWarmupRow(rows, mode, target, step = 2.5) {
   const firstWork = rows.findIndex(x => !isWarmupRow(x))
   const at = firstWork === -1 ? rows.length : firstWork
-  const l = rows[at - 1] || rows[rows.length - 1]
+  const prev = at > 0 ? rows[at - 1] : null            // the warm-up this one ramps from
+  const work = firstWork === -1 ? null : rows[firstWork]
+  const rampTo = to => {
+    const from = prev ? (prev.w || 0) : 0
+    // Nothing to ramp toward: bodyweight, cardio, a timed hold with no load.
+    if (!(to > 0)) return 0
+    // Already at or past the work weight — which happens when a warm-up was edited by hand
+    // above it. Returning `from` here handed the next warm-up that same too-heavy number and
+    // let it propagate down the block. A warm-up is never heavier than the set it warms up for.
+    if (to <= from) return to
+    // Rounded DOWN to the step: a warm-up that lands a notch light costs nothing, one that
+    // lands a notch heavy is a set you have to strip plates off before you can use it.
+    return Math.max(0, Math.min(to, Math.floor((from + (to - from) / 2) / step) * step))
+  }
   const warm = mode === 'cardio'
-    ? { min: l ? l.min : (target.min || 20), speed: l ? l.speed : (target.speed || 8), done: false, phase: 'warmup', warmup: true }
+    ? {
+      min: prev ? prev.min : (work ? work.min : (target.min || 20)),
+      speed: prev ? prev.speed : (work ? work.speed : (target.speed || 8)),
+      done: false, phase: 'warmup', warmup: true,
+    }
     : mode === 'time'
-      ? { sec: l ? l.sec : (target.sec || 45), w: l ? (l.w || 0) : (target.weight || 0), done: false, phase: 'warmup', warmup: true }
-      : { w: l ? l.w : 0, r: l ? l.r : target.reps, done: false, phase: 'warmup', warmup: true }
+      ? {
+        sec: prev ? prev.sec : (work ? work.sec : (target.sec || 45)),
+        w: rampTo(work ? (work.w || 0) : (target.weight || 0)),
+        done: false, phase: 'warmup', warmup: true,
+      }
+      : {
+        w: rampTo(work ? (work.w || 0) : (target.weight || 0)),
+        r: work ? work.r : (prev ? prev.r : target.reps),
+        done: false, phase: 'warmup', warmup: true,
+      }
   const next = rows.slice()
   next.splice(at, 0, warm)
   return next

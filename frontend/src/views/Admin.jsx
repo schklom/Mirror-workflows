@@ -4,6 +4,7 @@ import { useStore } from '../store/useStore.js'
 import { useUI } from '../store/useUI.js'
 import { api } from '../lib/api.js'
 import { fmtDate, fmtNum, fmtVol, fmtDur } from '../lib/format.js'
+import { auditCat, auditLine, fmtWhen } from '../lib/audit.js'
 import { workoutVolume, setsDone } from '../lib/history.js'
 import { confirmSheet } from '../sheets.jsx'
 import Icon from '../components/Icon.jsx'
@@ -89,6 +90,64 @@ function InvitesCard({ invites, reload }) {
   </div>
 }
 
+// Who signed in, who tried and failed, what an admin changed. A card rather than its own route:
+// the dashboard is deliberately one page of cards, and the 95 % use of this is a glance at the
+// last twenty events. Paging follows Library.jsx's house style — "Show more", not page numbers.
+function AuditCard({ tick }) {
+  const toast = useUI(s => s.toast)
+  const [meta, setMeta] = useState(null)      // last response minus the rows: total, retention, …
+  const [rows, setRows] = useState([])
+  const [cat, setCat] = useState('')
+
+  const load = (c, before) => api('/api/admin/audit?limit=50&cat=' + c + (before ? '&before=' + before : ''))
+    .then(r => { setMeta(r); setRows(x => (before ? x.concat(r.events) : r.events)) })
+    .catch(e => toast(e.message))
+  const pick = c => { setCat(c); setRows([]); setMeta(null); load(c) }
+  // Reloads on mount and whenever the header's ↻ bumps the tick. Deliberately not on the 15s
+  // poll that drives "training now": this is history, not presence.
+  useEffect(() => { load(cat) }, [tick])
+
+  const clear = () => confirmSheet({
+    title: 'Clear the activity log?',
+    message: 'Every recorded event is deleted. The clear itself is logged, so the gap stays visible.',
+    confirmText: 'Clear', danger: true,
+    onConfirm: () => api('/api/admin/audit/clear', { method: 'POST', body: '{}' })
+      .then(() => { toast('Activity log cleared'); pick(cat) }).catch(e => toast(e.message))
+  })
+
+  if (meta && !meta.enabled) return null      // AUDIT_LOG=0 — the card isn't there at all
+
+  return <div className="card">
+    <div className="row between"><h2 style={{ margin: 0 }}>Activity log</h2>
+      <button className="iconbtn" style={{ width: 32, height: 30, borderRadius: 8, fontSize: 15, color: 'var(--red)' }}
+        onClick={clear} aria-label="clear log"><Icon name="trash" /></button></div>
+    <div className="small muted" style={{ margin: '6px 0 10px' }}>
+      {meta ? fmtNum(meta.total) + ' events'
+        + (meta.retention.days ? ' · last ' + meta.retention.days + ' days' : '')
+        + (meta.ip_mode === 'off' ? ' · no IP addresses' : '') : 'Loading…'}</div>
+    <div className="chips" style={{ marginBottom: 10 }}>
+      {[['', 'All'], ['auth', 'Sign-ins'], ['admin', 'Admin'], ['fail', 'Failed']].map(([v, l]) =>
+        <button key={v} className={'chip' + (cat === v ? ' on' : '')} onClick={() => pick(v)}>{l}</button>)}
+    </div>
+    {rows.map(e => {
+      const line = auditLine(e)
+      return <div key={e.id} className="row between" style={{ padding: '8px 2px', borderBottom: '1px solid var(--sep)' }}>
+        <div className="grow">
+          <div className="small" style={{ fontWeight: 600 }}>{line.title}
+            {/* a red pill, not a red row: twenty fumbled Face IDs in a row shouldn't read as an incident */}
+            {!e.ok && <span className="tag" style={{ marginLeft: 6, color: 'var(--red)' }}>failed</span>}
+            {auditCat(e.ev) === 'admin' && <span className="tag acc" style={{ marginLeft: 6 }}>admin</span>}</div>
+          {line.sub && <div className="dim" style={{ fontSize: '.72rem' }}>{line.sub}</div>}
+        </div>
+        <span className="small muted" style={{ flex: 'none', marginLeft: 8 }}>{fmtWhen(e.ts, meta?.now)}</span>
+      </div>
+    })}
+    {meta && !rows.length && <div className="dim small">Nothing logged yet.</div>}
+    {meta?.nextBefore && <div style={{ marginTop: 10 }}>
+      <Button size="sm" onClick={() => load(cat, meta.nextBefore)}>Show more</Button></div>}
+  </div>
+}
+
 export default function Admin() {
   const nav = useNavigate()
   const user = useStore(s => s.user)
@@ -97,6 +156,7 @@ export default function Admin() {
   const [users, setUsers] = useState(null)
   const [invites, setInvites] = useState(null)
   const [inviteOnly, setInviteOnly] = useState(false)
+  const [tick, setTick] = useState(0)          // the ↻ button; the activity log listens to it
 
   const loadUsers = () => api('/api/admin/users').then(d => { setUsers(d.users); setInviteOnly(d.invite_only) }).catch(e => toast(e.message || 'Failed to load'))
   const loadInvites = () => api('/api/admin/invites').then(d => setInvites(d.invites)).catch(() => {})
@@ -114,7 +174,7 @@ export default function Admin() {
       <button className="iconbtn" onClick={() => nav('/settings')} aria-label="Back"><Icon name="chevronLeft" /></button>
       <div style={{ flex: 1, marginLeft: 8 }}><h1 style={{ margin: 0 }}>Admin</h1>
         <div className="sub">{users ? users.length + ' users · ' + activeCount + ' active this week' : 'Loading…'}</div></div>
-      <button className="iconbtn" onClick={() => { loadUsers(); loadInvites() }} aria-label="refresh">↻</button>
+      <button className="iconbtn" onClick={() => { loadUsers(); loadInvites(); setTick(n => n + 1) }} aria-label="refresh">↻</button>
     </div>
 
     <div className="tiles" style={{ marginBottom: 12 }}>
@@ -148,5 +208,7 @@ export default function Admin() {
       </div>)}
       {users && !users.length && <div className="empty">No users yet.</div>}
     </div>
+
+    <div style={{ marginTop: 14 }}><AuditCard tick={tick} /></div>
   </div>
 }

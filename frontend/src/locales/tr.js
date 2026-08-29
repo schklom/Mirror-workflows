@@ -903,5 +903,6 @@ export default {
   'has a suggestion for you': 'senin için bir önerisi var',
   'here when you need it': 'ihtiyacın olduğunda burada',
   'thinking…': 'düşünüyor…',
-  '{0} min per session': 'Seans başına {0} dk'
+  '{0} min per session': 'Seans başına {0} dk',
+  '1 day a week': 'Haftada 1 gün'
 }

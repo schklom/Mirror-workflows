@@ -158,9 +158,18 @@ export default function CoachIntake() {
         <div className="ob-eyebrow">{t('Session length')}</div>
         <h1 className="ob-h">{t('How long is a session?')}</h1>
         <p className="ob-p">{t('The Coach fits the volume to the time you actually have, including rest between sets.')}</p>
-        <div className="ob-time">
-          <input type="time" value={toHHMM(p.sessionMin || 60)} step={300} min="00:10" max="04:00"
-            onChange={e => { const m = fromHHMM(e.target.value); if (m != null) set({ sessionMin: m }) }} />
+        {/* A duration, not a clock time — so two wheels (hours, minutes in fives), never the
+            native time input, which insists on AM/PM. */}
+        <div className="ob-time" role="group" aria-label={t('How long is a session?')}>
+          <select className="ob-wheel" value={Math.floor((p.sessionMin || 60) / 60)}
+            onChange={e => set({ sessionMin: (+e.target.value) * 60 + ((p.sessionMin || 60) % 60) || 5 })}>
+            {[0, 1, 2, 3].map(h => <option key={h} value={h}>{String(h).padStart(2, '0')}</option>)}
+          </select>
+          <span className="ob-time-sep">:</span>
+          <select className="ob-wheel" value={(p.sessionMin || 60) % 60}
+            onChange={e => set({ sessionMin: Math.floor((p.sessionMin || 60) / 60) * 60 + (+e.target.value) || 5 })}>
+            {[0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55].map(m => <option key={m} value={m}>{String(m).padStart(2, '0')}</option>)}
+          </select>
           <span className="ob-time-l">{t('h:mm')}</span>
         </div>
         <div className="ob-quick">

@@ -903,5 +903,6 @@ export default {
   'has a suggestion for you': '有一个建议给你',
   'here when you need it': '随时待命',
   'thinking…': '思考中…',
-  '{0} min per session': '每次 {0} 分钟'
+  '{0} min per session': '每次 {0} 分钟',
+  '1 day a week': '每周 1 天'
 }

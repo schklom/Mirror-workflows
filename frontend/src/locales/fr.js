@@ -903,5 +903,6 @@ export default {
   'has a suggestion for you': 'a une suggestion pour toi',
   'here when you need it': 'là quand tu en as besoin',
   'thinking…': 'réfléchit…',
-  '{0} min per session': '{0} min par séance'
+  '{0} min per session': '{0} min par séance',
+  '1 day a week': '1 jour par semaine'
 }

@@ -903,5 +903,6 @@ export default {
   'has a suggestion for you': 'आपके लिए एक सुझाव है',
   'here when you need it': 'जब ज़रूरत हो, यहाँ है',
   'thinking…': 'सोच रहा है…',
-  '{0} min per session': 'प्रति सत्र {0} मिनट'
+  '{0} min per session': 'प्रति सत्र {0} मिनट',
+  '1 day a week': 'सप्ताह में 1 दिन'
 }

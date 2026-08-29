@@ -903,5 +903,6 @@ export default {
   'has a suggestion for you': 'есть предложение для вас',
   'here when you need it': 'здесь, когда нужен',
   'thinking…': 'думает…',
-  '{0} min per session': '{0} мин за тренировку'
+  '{0} min per session': '{0} мин за тренировку',
+  '1 day a week': '1 день в неделю'
 }

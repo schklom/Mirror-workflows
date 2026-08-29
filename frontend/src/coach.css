@@ -9,7 +9,7 @@
 .ob-dot.on{background:var(--acc);width:18px}
 .ob-dot.done{background:var(--acc);opacity:.55}
 .ob-skip{background:none;color:var(--label-2);font-size:15px;padding:6px 2px}
-.ob-body{flex:1}
+.ob-body{flex:1;padding-bottom:150px}
 .ob-eyebrow{color:var(--acc);font-size:13px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;margin-bottom:8px}
 .ob-h{font-size:30px;line-height:1.12;font-weight:700;letter-spacing:-.026em;margin:0 0 8px}
 .ob-p{color:var(--label-2);font-size:16px;line-height:1.45;margin:0 0 24px;letter-spacing:-.006em}
@@ -53,6 +53,8 @@
 }
 :root[data-theme="light"] .ob-time input[type=time]{color-scheme:light}
 .ob-time input[type=time]::-webkit-calendar-picker-indicator{display:none}
+.ob-time .ob-wheel{appearance:none;-webkit-appearance:none;background:transparent;border:0;color:var(--label);font-size:56px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.02em;padding:0 4px;text-align:center;min-width:1.6em}
+.ob-time .ob-time-sep{font-size:56px;font-weight:700;color:var(--label);margin:0 -2px;transform:translateY(-4px)}
 .ob-time .ob-time-l{font-size:15px;color:var(--label-2)}
 .ob-quick{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;margin-top:12px}
 .ob-chips{display:flex;flex-wrap:wrap;gap:8px}

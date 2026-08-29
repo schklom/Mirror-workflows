@@ -903,5 +903,6 @@ export default {
   'has a suggestion for you': '제안이 있습니다',
   'here when you need it': '필요할 때 여기 있어요',
   'thinking…': '생각 중…',
-  '{0} min per session': '세션당 {0}분'
+  '{0} min per session': '세션당 {0}분',
+  '1 day a week': '주 1일'
 }

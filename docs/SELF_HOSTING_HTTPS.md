@@ -71,7 +71,7 @@ So how does it all come together?
 
 1. DNS provider translates name to our local IP
 1. the proxy listens to the local IP and provides HTTPS
-1. Let's encrypt provides certificates
+1. Let's encrypt provides certificates with certbot
 
 ### Tools
 
@@ -82,9 +82,9 @@ So how does it all come together?
 This is the tools I picked and that I know to work, your choice may be different and the setup is different as well.  
 But the main tasks are the same, so you can adapt to your choice.
 
-1. register with desec.io and choose a name
+1. register with desec.io and choose a name (we take `myhomelab` as example)
     1. create a new A record that points to your service, e.g.: `*.myhomelab.dedyn.io` (Wildcard!) - 192.168.0.100 (the ip of your homelab)
-    2. A wildcard certificate handles all certificates for that given host. e.g.: `opengym.myhomelab.dedyn.io` and `immich.myhomelab.dedyn.io` can share the same certificates.
+    2. A wildcard certificate handles all certificates for that given host. e.g.: `opengym.myhomelab.dedyn.io` and `nextcloud.myhomelab.dedyn.io` can share the same certificates.
     2. create an API token for updating the domain settings (`Can create domains` and `Can delete domains` activated), be sure to note the token, it is only displayed once.
 2. install certbot on your host
     1. most linux distributions provide the packages for this, e.g. debian: `apt install certbot python3-certbot-dns-desec` check the [docs](https://desec.readthedocs.io/en/latest/integrations/lets-encrypt.html) 
@@ -130,10 +130,9 @@ But the main tasks are the same, so you can adapt to your choice.
         reverse_proxy http://192.168.0.100:8081
     }
     ```
-    be sure to check the docs for details.
 
-And that's about it. Now you should be able to access your opengym instance from your local network via https with working passkeys. Be sure to update the opengym config accordingly.
-
+And that's about it. Now you should be able to access your opengym instance from your local network via https with working passkeys.  
+Be sure to update the opengym config accordingly.
 
 
 ### Alternatives
@@ -143,7 +142,12 @@ And that's about it. Now you should be able to access your opengym instance from
 
 ## Conclusion
 
-We created a local-network-only access to our services with HTTPS using Let's encrypt, certbot and caddy.
+We created a local-network-only access to our services with HTTPS using Let's encrypt, certbot and caddy.  
+If something does not work, please check the corresponding documentation:
+- [desec](https://desec.readthedocs.io/en/latest/index.html) 
+- [caddy](https://caddyserver.com/docs/) 
+- [Let's encrypt](https://letsencrypt.org/docs/) 
+- [certbot](https://certbot.eff.org/) 
 
 Next time we'll handle a VPN connection with wireguard, desec and automatic IP updater, so we can access our services from the internet.
 

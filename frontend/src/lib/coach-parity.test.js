@@ -13,7 +13,7 @@
  */
 import { describe, it, expect } from 'vitest'
 import { modeOf as uiModeOf, isBw as uiIsBw, isPerSide as uiIsPerSide } from './history.js'
-import { modeOf as srvModeOf, isBw as srvIsBw, isPerSide as srvIsPerSide } from '../../../api/coach/payload.js'
+import { modeOf as srvModeOf, isBw as srvIsBw, isPerSide as srvIsPerSide } from '../../../api/coach/core/payload.js'
 import { exOr } from './exercises.js'
 
 // Real ids from the catalogue, so `eq`/`bp` are whatever the dataset actually says rather than

@@ -8,7 +8,9 @@ on:
       - 'frontend/**'
       - 'api/**'
       - 'mcp/**'
+      - 'scripts/build-coach-assets.mjs'
       - 'scripts/build-coach-library.mjs'
+      - 'api/coach/prompts/**'
       - '.github/workflows/test.yml'
   push:
     branches: [main, coach]
@@ -16,7 +18,9 @@ on:
       - 'frontend/**'
       - 'api/**'
       - 'mcp/**'
+      - 'scripts/build-coach-assets.mjs'
       - 'scripts/build-coach-library.mjs'
+      - 'api/coach/prompts/**'
       - '.github/workflows/test.yml'
   workflow_dispatch:
 
@@ -92,7 +96,8 @@ jobs:
       # The api's copy of the exercise catalogue is generated and committed. A dataset change
       # that forgets to regenerate it would otherwise only surface as "the Coach can't find
       # that exercise" on somebody's instance.
-      - run: node scripts/build-coach-library.mjs --check
+      - run: node scripts/build-coach-assets.mjs --check
+      - run: node api/scripts/check-core-loadable.mjs
 
   # Builds *and runs* both image targets. Building alone would not have caught the api image
   # shipping without coach/ — that image built perfectly and exited on boot. So each target has

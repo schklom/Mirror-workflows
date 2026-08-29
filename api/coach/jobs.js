@@ -15,17 +15,23 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import crypto from 'node:crypto';
-import { fileURLToPath } from 'node:url';
 import * as cfgStore from './config.js';
 import { adapterFor } from './adapters/index.js';
-import * as payloadLib from './payload.js';
-import { extractJSON, contractOK } from './parse.js';
-import { validatePlan, validateReview } from './validate.js';
+import * as payloadLib from './core/payload.js';
+import { runPipeline } from './core/pipeline.js';
+import { extractJSON } from './core/parse.js';
+import { hashPlan } from './core/plan-hash.js';
+import { buildPrompt } from './core/prompt.js';
+import { handleFor } from './handle.js';
 import { canDropPrivileges, unprivilegedIds } from './adapters/spawn.js';
+
+// The prompt assembly, the plan fingerprint and the invoke→parse→validate→repair loop all
+// live in ./core now, where the phone can import them too. Re-exported so nothing that
+// reached them through this module has to move.
+export { hashPlan, buildPrompt };
 
 const DATA = process.env.DATA_DIR || '/data';
 const COACH_DIR = path.join(DATA, 'coach');
-const PROMPTS = path.join(path.dirname(fileURLToPath(import.meta.url)), 'prompts');
 
 export const TIMEOUT_MS = 5 * 60000;
 const MAX_CONCURRENT = 2;          // these are minutes-scale jobs on often-single-core boxes
@@ -217,25 +223,6 @@ function finish(job, result) {
 let onProposal = null;
 export function setProposalHook(fn) { onProposal = fn; }
 
-/* ---------- prompt assembly ---------- */
-
-const promptCache = new Map();
-function promptPart(name) {
-  if (!promptCache.has(name)) promptCache.set(name, fs.readFileSync(path.join(PROMPTS, name), 'utf8'));
-  return promptCache.get(name);
-}
-export function buildPrompt(kind, payload, repair) {
-  const task = kind === 'review' ? 'review.md' : payload.refine ? 'refine.md' : 'create.md';
-  let out = promptPart('common.md') + '\n\n---\n\n' + promptPart(task) +
-    '\n\n---\n\n## Payload\n\n```json\n' + JSON.stringify(payload, null, 1) + '\n```\n';
-  if (repair) {
-    out += '\n\n---\n\n' + promptPart('repair.md')
-      .replace('{{PREVIOUS}}', String(repair.previous || '').slice(0, 4000))
-      .replace('{{ERRORS}}', repair.errors.map(e => '- ' + e).join('\n'));
-  }
-  return out;
-}
-
 /* ---------- execution ---------- */
 
 async function execute(job) {
@@ -249,7 +236,8 @@ async function execute(job) {
   if (!adapter) return finish(job, { outcome: 'failed', errorClass: 'off' });
 
   const pendingCreate = job.refine ? readUser(job.uid).pending : null;
-  const payload = payloadLib.build(S, job.uid, {
+  const payload = payloadLib.build(S, {
+    handle: handleFor(job.uid),
     kind: job.kind,
     intake: job.intake,
     note: job.note,
@@ -263,14 +251,10 @@ async function execute(job) {
     const ids = unprivilegedIds();
     if (ids) fs.chownSync(jobDir, ids.uid, ids.gid);
 
-    let attempt = await invoke(adapter, cfg, payload, jobDir, env, job, null);
-    if (!attempt.ok && attempt.repairable) {
-      // One repair round, then done (FR-48). Two failures is a provider problem, not a
-      // prompting problem, and a retry loop against a paid API is a bad way to find out.
-      attempt = await invoke(adapter, cfg, payload, jobDir, env, job, {
-        previous: attempt.raw, errors: attempt.errors
-      });
-    }
+    const attempt = await runPipeline({
+      adapter, cfg, kind: job.kind, payload, model: cfg.model || null, timeoutMs: TIMEOUT_MS,
+      invokeOpts: { jobDir, env }
+    });
     if (!attempt.ok) {
       return finish(job, { outcome: 'failed', errorClass: attempt.errorClass, detail: attempt.detail });
     }
@@ -290,77 +274,6 @@ async function execute(job) {
   } finally {
     fs.rmSync(jobDir, { recursive: true, force: true });
   }
-}
-
-async function invoke(adapter, cfg, payload, jobDir, env, job, repair) {
-  const prompt = buildPrompt(job.kind, payload, repair);
-  const r = await adapter.invoke({ cfg, prompt, jobDir, env, model: cfg.model || null, timeoutMs: TIMEOUT_MS });
-
-  if (r.timedOut) return { ok: false, errorClass: 'timeout' };
-  if (r.spawnError) return { ok: false, errorClass: 'missing', detail: r.stderr?.slice(0, 300) };
-  if (r.code !== 0) {
-    const err = (r.stderr || r.text || '').toLowerCase();
-    const authish = /auth|unauthor|api key|credential|token|401|403|login/.test(err);
-    return { ok: false, errorClass: authish ? 'auth' : 'provider', detail: (r.stderr || r.text || '').slice(0, 300) };
-  }
-
-  const parsed = extractJSON(r.text);
-  if (parsed.error) return { ok: false, repairable: !repair, errors: [parsed.error], raw: r.text, errorClass: 'unusable' };
-  if (!contractOK(parsed.value)) {
-    return { ok: false, repairable: !repair, errors: [`coach_contract must be ${payloadLib.CONTRACT}`], raw: r.text, errorClass: 'unusable' };
-  }
-
-  // The seam PR 1 left open. Everything above is transport: did a process run, did it exit
-  // cleanly, is there a JSON object in what it said, does it claim the contract this build
-  // speaks. None of it has judged whether the contents are safe to act on. That judgement is
-  // validate.js's, and the validator — not the prompt — is the security boundary.
-  //
-  // Its errors join the parse failures above on the same one repair round: a model that named
-  // an exercise that does not exist is told which one, and usually gets it right the second
-  // time. A model that cannot be told is a failed job, not a retry loop.
-  // The user's own exercises are in the library slice the model was given (flagged `custom`),
-  // so they are a legitimate thing for it to name back — the validator has to agree.
-  const customIds = (payload.library || []).filter(e => e && e.custom).map(e => e.id);
-  const checked = job.kind === 'review'
-    ? validateReview(parsed.value, payload.plan, { customIds })
-    : validatePlan(parsed.value, {
-      customIds,
-      workingWeights: payload.history?.workingWeights,
-      daysPerWeek: payload.coachProfile?.daysPerWeek
-    });
-
-  if (!checked.ok) return { ok: false, repairable: !repair, errors: checked.errors, raw: r.text, errorClass: 'unusable' };
-  if (checked.nochange) return { ok: true, nochange: true, reading: checked.reading };
-  return { ok: true, result: checked.proposal || { bundle: checked.bundle, summary: checked.bundle.summary } };
-}
-
-/**
- * Fingerprint of the plan a proposal was computed against (FR-32). Takes the output of
- * `canonicalPlan`, so both runtimes hash the same normalised shape; the client mirrors this
- * function exactly. A mismatch therefore means the plan genuinely moved — not that two
- * implementations disagree about key order or about what "no weight" looks like.
- *
- * The field list must stay in step with `canonicalPlan`. It did not: that function learned
- * `repsMax`, `bodyweight` and `side` when the payload did, and this one kept hashing the
- * pre-1.2.4 list, so a plan whose rep ceiling had been raised by hand fingerprinted as
- * untouched — which is exactly the edit a proposal about bodyweight progression is stalest
- * against.
- */
-export function hashPlan(plan) {
-  const canon = JSON.stringify({
-    routines: (plan?.routines || []).map(r => [r.id, r.name, r.prog, (r.ex || []).map(e =>
-      [e.id, e.mode, e.sets, e.reps, e.sec, e.min, e.speed, e.weight, e.prog, e.inc,
-        e.repsMin, e.repsMax, e.bodyweight, e.side, e.sg].join(':')
-    )]),
-    week: Object.keys(plan?.week || {}).sort().map(k => k + '=' + plan.week[k])
-  });
-  let h1 = 0x811c9dc5, h2 = 0x01000193;
-  for (let i = 0; i < canon.length; i++) {
-    const c = canon.charCodeAt(i);
-    h1 = Math.imul(h1 ^ c, 0x01000193) >>> 0;
-    h2 = Math.imul(h2 ^ ((c << 3) | i & 7), 0x85ebca6b) >>> 0;
-  }
-  return h1.toString(16).padStart(8, '0') + h2.toString(16).padStart(8, '0');
 }
 
 /* ---------- decisions ---------- */

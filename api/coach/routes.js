@@ -8,7 +8,7 @@ import * as cfgStore from './config.js';
 import * as jobs from './jobs.js';
 import { adapterFor } from './adapters/index.js';
 import { canDropPrivileges } from './adapters/spawn.js';
-import { DATA_CATEGORIES } from './payload.js';
+import { DATA_CATEGORIES } from './core/payload.js';
 
 // Job failures the user sees, in the app's own voice. The raw provider detail never reaches
 // them — it goes to the admin card, which is where someone can act on it (FR-47).

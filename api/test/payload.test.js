@@ -3,7 +3,19 @@ import assert from 'node:assert/strict';
 import { tempData, sampleState } from './helpers.mjs';
 
 tempData();
-const payload = await import('../coach/payload.js');
+const payload = await import('../coach/core/payload.js');
+const { handleFor, HANDLE_LENGTH } = await import('../coach/handle.js');
+
+test('the server handle is stable per uid, distinct across uids, and never the uid', () => {
+  assert.equal(handleFor('uid-a'), handleFor('uid-a'));
+  assert.notEqual(handleFor('uid-a'), handleFor('uid-b'));
+  assert.equal(handleFor('uid-a').length, HANDLE_LENGTH);
+  assert.ok(!handleFor('uid-a').includes('uid-a'));
+});
+
+test('build refuses to run without a handle — a payload must never fall back to the uid', () => {
+  assert.throws(() => payload.build(sampleState(), { kind: 'review' }), /handle/);
+});
 
 /* The promise the consent screen makes is only as good as this test. It asserts on the
    *absence* of things, which is the awkward direction to test and the only one that matters:
@@ -16,7 +28,7 @@ test('payload never carries identity, credentials or device data', () => {
     reminder: { on: true, time: '08:00', tz: 'Europe/Lisbon' },
     _ts: Date.now()
   });
-  const p = payload.build(S, 'user-abc-123', { kind: 'review' });
+  const p = payload.build(S, { handle: handleFor('user-abc-123'), kind: 'review' });
   const json = JSON.stringify(p);
 
   assert.ok(!json.includes('user-abc-123'), 'the uid must never appear');
@@ -28,15 +40,15 @@ test('payload never carries identity, credentials or device data', () => {
 
 test('the same profile always gets the same handle, and two profiles never share one', () => {
   const S = sampleState();
-  const a1 = payload.build(S, 'uid-a', { kind: 'review' }).meta.profile;
-  const a2 = payload.build(S, 'uid-a', { kind: 'review' }).meta.profile;
-  const b = payload.build(S, 'uid-b', { kind: 'review' }).meta.profile;
+  const a1 = payload.build(S, { handle: handleFor('uid-a'), kind: 'review' }).meta.profile;
+  const a2 = payload.build(S, { handle: handleFor('uid-a'), kind: 'review' }).meta.profile;
+  const b = payload.build(S, { handle: handleFor('uid-b'), kind: 'review' }).meta.profile;
   assert.equal(a1, a2);
   assert.notEqual(a1, b);
 });
 
 test('review payload carries the plan, the window, effort and aggregates', () => {
-  const p = payload.build(sampleState(), 'u1', { kind: 'review', note: 'shoulder pinches' });
+  const p = payload.build(sampleState(), { handle: handleFor('u1'), kind: 'review', note: 'shoulder pinches' });
   assert.equal(p.task, 'review');
   assert.equal(p.plan.routines.length, 1);
   assert.equal(p.plan.routines[0].ex[0].name, '3/4 sit-up', 'exercise names are resolved for the model');
@@ -57,7 +69,7 @@ test('a stalling exercise shows up in the aggregates the way the engine counts i
       sets: [{ w: 20, r: 9, done: true }, { w: 20, r: 8, done: true }, { w: 20, r: 7, done: true }]
     }]
   }));
-  const p = payload.build(S, 'u1', { kind: 'review' });
+  const p = payload.build(S, { handle: handleFor('u1'), kind: 'review' });
   const ex = p.aggregates.exercises.find(e => e.id === '0001');
   assert.equal(ex.stalls, 3, 'three misses in a row is a stall of three');
   assert.equal(ex.lastOk, false);
@@ -71,7 +83,7 @@ test('a set that was never ticked off is a miss, not a gap', () => {
       sets: [{ w: 20, r: 10, done: true }, { w: 20, r: 10, done: true }, { w: 20, r: 10, done: false }]
     }]
   }];
-  const p = payload.build(S, 'u1', { kind: 'review' });
+  const p = payload.build(S, { handle: handleFor('u1'), kind: 'review' });
   assert.equal(p.aggregates.exercises.find(e => e.id === '0001').stalls, 1);
 });
 
@@ -81,7 +93,7 @@ test('the review window is bounded even for someone with years of history', () =
     const d = new Date(); d.setDate(d.getDate() - i);
     return { id: 'w' + i, d: d.toISOString().slice(0, 10), name: 'A', start: 0, end: 60000, entries: [] };
   }).reverse();
-  const p = payload.build(S, 'u1', { kind: 'review' });
+  const p = payload.build(S, { handle: handleFor('u1'), kind: 'review' });
   assert.ok(p.window.workouts.length <= payload.MAX_SESSIONS, 'session cap holds');
   const oldest = new Date(p.window.workouts[0].d);
   const limit = new Date(); limit.setDate(limit.getDate() - payload.MAX_WEEKS * 7 - 1);
@@ -89,7 +101,7 @@ test('the review window is bounded even for someone with years of history', () =
 });
 
 test('creation payload carries working weights so baselines start from evidence', () => {
-  const p = payload.build(sampleState(), 'u1', { kind: 'create' });
+  const p = payload.build(sampleState(), { handle: handleFor('u1'), kind: 'create' });
   assert.equal(p.task, 'create');
   assert.ok(!p.window, 'creation does not ship the training window');
   assert.equal(p.history.workingWeights.find(w => w.id === '0001').best, 20);
@@ -112,7 +124,7 @@ test('equipment nobody in the library has still yields a usable library', () => 
 test('declined changes are carried forward so the Coach does not nag', () => {
   const S = sampleState();
   S.coach.log = [{ decisions: [{ status: 'rejected', type: 'sets', why: 'bench accessory volume -1 set' }] }];
-  const p = payload.build(S, 'u1', { kind: 'review' });
+  const p = payload.build(S, { handle: handleFor('u1'), kind: 'review' });
   assert.equal(p.previouslyDeclined.length, 1);
   assert.equal(p.previouslyDeclined[0].type, 'sets');
 });

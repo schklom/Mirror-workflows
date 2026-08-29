@@ -10,7 +10,7 @@ import assert from 'node:assert/strict';
 import { tempData } from './helpers.mjs';
 
 tempData();
-const { extractJSON, contractOK } = await import('../coach/parse.js');
+const { extractJSON, contractOK } = await import('../coach/core/parse.js');
 
 test('JSON is recovered from whatever the model wrapped it in', () => {
   assert.deepEqual(extractJSON('{"a":1}').value, { a: 1 });

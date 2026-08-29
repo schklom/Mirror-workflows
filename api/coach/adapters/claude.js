@@ -28,6 +28,7 @@ import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { unprivilegedIds } from './spawn.js';
+import { SYSTEM_PROMPT } from '../core/system-prompt.js';
 
 const PKG = '@anthropic-ai/claude-agent-sdk';
 const require_ = createRequire(import.meta.url);
@@ -37,11 +38,6 @@ const CLIENT_APP = `opengym-coach/${(() => {
   try { return require_('../../package.json').version; } catch { return '0' }
 })()}`;
 const OUTPUT_CAP = 4 * 1024 * 1024;
-const SYSTEM_PROMPT = [
-  'You are the openGym Coach.',
-  'Answer only the supplied task and return exactly the requested JSON.',
-  'You have no tools, filesystem access, external services, or persistent memory.'
-].join(' ');
 
 /** The options that make this adapter safe. Exported so a test can assert them by value. */
 export const LOCKDOWN = Object.freeze({

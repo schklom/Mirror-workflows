@@ -10,15 +10,7 @@
  * handle stands in), passkey and credential material, push subscriptions, invite data, theme
  * and appearance settings, and every other profile's everything.
  */
-import crypto from 'node:crypto';
-import fs from 'node:fs';
-import path from 'node:path';
-import { createRequire } from 'node:module';
-
-const DATA = process.env.DATA_DIR || '/data';
-const require_ = createRequire(import.meta.url);
-const LIBRARY = require_('./library.json').exercises;
-const LIB_BY_ID = new Map(LIBRARY.map(e => [e.id, e]));
+import { LIBRARY, LIB_BY_ID, libraryHas, libraryName, librarySlice } from './library.js';
 
 export const CONTRACT = 1;
 // Bounds from FR-22. A review reads a training block, not a training career: more history
@@ -36,12 +28,6 @@ export const DATA_CATEGORIES = [
   'profile',     // the intake answers you gave the Coach, including any limitations
   'prefs'        // unit, language, effort scale
 ];
-
-/** Stable per-profile pseudonym. Never the uid, never reversible, same across jobs. */
-function handle(uid) {
-  const secret = fs.readFileSync(path.join(DATA, 'secret'), 'utf8').trim();
-  return crypto.createHmac('sha256', secret).update('coach-handle:' + uid).digest('base64url').slice(0, 16);
-}
 
 /* ---------- reading a session the way the engine reads it ----------
    Duplicated from frontend/src/lib/history.js rather than shared: the two runtimes have no
@@ -159,19 +145,8 @@ export function cleanPlan(S) {
   return { routines, week };
 }
 
-/* ---------- the library slice the model gets to choose from ---------- */
-export function librarySlice(S, equipment) {
-  const wanted = (equipment || []).map(x => String(x).toLowerCase());
-  const customs = (S.customEx || []).map(c => ({ id: c.id, n: c.n, bp: c.bp, tg: null, eq: 'custom', custom: true }));
-  // No equipment stated (or "everything") ⇒ the whole catalogue. Filtering to nothing would
-  // leave the Coach unable to propose anything at all, which is a worse failure than a
-  // slightly larger payload.
-  const base = wanted.length ? LIBRARY.filter(e => wanted.includes((e.eq || '').toLowerCase())) : LIBRARY;
-  return [...customs, ...(base.length ? base : LIBRARY)];
-}
-export const libraryHas = id => LIB_BY_ID.has(id);
-export const libraryName = id => LIB_BY_ID.get(id)?.n || null;
-export { LIBRARY };
+// The catalogue lives in library.js; re-exported so older imports keep resolving.
+export { LIBRARY, libraryHas, libraryName, librarySlice };
 
 /* ---------- effort scale (mirrors history.js effortOf) ---------- */
 const effortOf = S => {
@@ -263,18 +238,23 @@ function cleanWorkout(w) {
 /**
  * Build a job payload.
  *
- * @param {object} S      the profile's synced state, as read from disk
- * @param {string} uid    used only to derive the opaque handle
- * @param {object} opts   { kind, intake?, note?, refine?, previous? }
+ * @param {object} S      the profile's synced state
+ * @param {object} opts   { handle, kind, intake?, note?, refine?, previous? }
+ *
+ * `handle` is the opaque per-profile pseudonym the payload carries instead of a uid. It is
+ * supplied rather than derived because the two runtimes mint it differently: the server keys
+ * an HMAC on its instance secret (api/coach/handle.js), the phone draws a random one once and
+ * keeps it. Either way it is 16 characters and never the uid.
  */
-export function build(S, uid, opts = {}) {
+export function build(S, opts = {}) {
+  if (typeof opts.handle !== 'string' || !opts.handle) throw new Error('payload.build: opts.handle is required');
   const coach = S.coach || {};
   const profile = opts.intake || coach.profile || null;
   const p = {
     coach_contract: CONTRACT,
     task: opts.kind === 'review' ? 'review' : 'create',
     meta: {
-      profile: handle(uid),
+      profile: opts.handle,
       lang: S.lang || 'en',
       unit: S.unit || 'kg',
       effortScale: effortOf(S),

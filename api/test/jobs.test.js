@@ -13,8 +13,8 @@ import { tempData, writeState, sampleState } from './helpers.mjs';
 const DIR = tempData();
 const cfg = await import('../coach/config.js');
 const jobs = await import('../coach/jobs.js');
-const payload = await import('../coach/payload.js');
-const { CHANGE_TYPES } = await import('../coach/validate.js');
+const payload = await import('../coach/core/payload.js');
+const { CHANGE_TYPES } = await import('../coach/core/validate.js');
 const { forcePrivilegeVerdict } = await import('../coach/adapters/spawn.js');
 
 cfg.save({ enabled: true, provider: 'fixture' });

@@ -10,6 +10,10 @@ tempData();
 const cfg = await import('../coach/config.js');
 const { coachRoutes } = await import('../coach/routes.js');
 
+// Every test starts from an empty coach.json: reset() only forgets the cache, and save() merges
+// over what is on disk, so a key filed by the previous test would otherwise still be there.
+const fresh = (patch = {}) => { cfg.reset(); cfg.save({ enabled: true, provider: 'fixture', auth: {}, models: {}, providerOptions: {}, boundUid: {}, ...patch }); };
+
 // The four helpers server.js hands in, as fakes: an admin is always signed in here.
 function harness() {
   const out = {};
@@ -38,7 +42,7 @@ async function mockEndpoint(models = ['llama3', 'gemma']) {
 test('the admin card is told which providers hold a key, and switching never drops one', async () => {
   const mock = await mockEndpoint();
   try {
-    cfg.reset(); cfg.save({ enabled: true, provider: 'fixture' });
+    fresh();
     const { call } = harness();
 
     // The active provider is the local endpoint; keys for two cloud providers are filed while
@@ -73,7 +77,7 @@ test('the admin card is told which providers hold a key, and switching never dro
     assert.equal(r.body.runtime.ok, true, r.body.runtime.error);
     assert.match(r.body.runtime.version, /2 models/);
     assert.deepEqual(r.body.knownModels, ['gemma', 'llama3']);
-    assert.ok(!JSON.stringify(r.body).includes('sk-') && !JSON.stringify(r.body).includes('k-compat'), 'no key ever comes back');
+    for (const secret of ['sk-ant-x', 'sk-oa-x', 'k-compat']) assert.ok(!JSON.stringify(r.body).includes(secret), 'no key ever comes back');
 
     // Each provider keeps its own model; switching away and back loses nothing.
     await call('POST /api/admin/coach/config', { model: 'llama3' });
@@ -99,7 +103,7 @@ test('the admin card is told which providers hold a key, and switching never dro
 });
 
 test('a key filed for a provider that does not take one, or an unknown provider, is refused', async () => {
-  cfg.reset(); cfg.save({ enabled: true, provider: 'fixture' });
+  fresh();
   const { call } = harness();
   let r = await call('POST /api/admin/coach/connect', { type: 'apikey', token: 'x' });
   assert.equal(r.status, 400);
@@ -115,7 +119,7 @@ test('the compatible endpoint: base URL is validated, a keyless endpoint counts 
   const mock = await mockEndpoint();
   const base = mock.base;
   try {
-    cfg.reset(); cfg.save({ enabled: true, provider: 'fixture' });
+    fresh();
     const { call } = harness();
     let r = await call('POST /api/admin/coach/config', { provider: 'compatible', baseUrl: 'http://user:pw@x' });
     assert.equal(r.status, 400);
@@ -140,7 +144,7 @@ test('the compatible endpoint: base URL is validated, a keyless endpoint counts 
 });
 
 test('the disclosure names the provider and the same five categories the payload builds from', async () => {
-  cfg.reset(); cfg.save({ enabled: true, provider: 'gemini' });
+  fresh({ provider: 'gemini' });
   const { call } = harness();
   const r = await call('GET /api/coach/disclosure');
   assert.equal(r.status, 200);

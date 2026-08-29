@@ -9,10 +9,67 @@ running on your own server under your own provider account, off until an admin t
 
 ---
 
+## Two kinds of provider
+
+The Coach can be driven by two kinds of thing, and which kind you pick decides how much of the
+rest of this document applies to you.
+
+| Provider | What runs | Credential | Image |
+| --- | --- | --- | --- |
+| **Anthropic API** | plain HTTPS to `api.anthropic.com` | an API key | default |
+| **OpenAI API** | plain HTTPS to `api.openai.com` | an API key | default |
+| **Google Gemini** | plain HTTPS to `generativelanguage.googleapis.com` | an API key | default |
+| **OpenAI-compatible endpoint** | plain HTTPS to a URL you give it — Ollama, LM Studio, vLLM, OpenRouter, a gateway of your own | an API key, optional | default |
+| **Claude (Anthropic)** | the Claude Agent SDK, inside the container | a `claude setup-token` | `coach` |
+| **Codex (OpenAI)** | the Codex CLI, inside the container | Codex's own device sign-in | `coach` |
+
+The first four spawn nothing. A job is one HTTPS request from the api process, so there is no
+child process to drop privileges on, no runtime to carry in the image, and nothing to install:
+**they work on the image every instance already has.** The `coach` image, the unprivileged
+`coach` user and the `./coach-auth` mount described further down exist for the last two only.
+
+A model on your own LAN is the compatible endpoint with no key: point it at
+`http://ollama.lan:11434` and pick a model from the list it serves. That is the whole
+configuration.
+
 ## Turning it on
 
 Nothing here is an environment variable or a restart — the whole point of the admin card is that
 enabling the Coach is a decision you make in the app.
+
+### With an API key (Anthropic, OpenAI, Gemini, compatible)
+
+**1. Get a key** from the provider's own console. For a compatible endpoint, get the URL it
+answers on instead, and a key only if it wants one.
+
+**2. Connect it.** In the app: **Settings → Admin → AI Coach**.
+
+- Toggle the card on.
+- Pick the provider chip.
+- For a compatible endpoint, enter the **Endpoint** — `http://` or `https://`, no username or
+  password in it, no query string. The host is written into the job log so you can see where
+  jobs went.
+- **Use an API key** → paste it. It is encrypted into `./data/coach.json` and is never shown
+  again.
+- **List models** asks the endpoint what it serves and turns the model field into a picker.
+  Each provider has a starting default (it is in `api/coach/core/providers.js`, and it is a
+  starting point, not a pin — names go stale, the list does not); the compatible endpoint has
+  none, because it serves whatever you put behind it.
+- **Test the Coach** — a real round trip with no user data anywhere near it.
+
+The card says two things worth reading: which account is being spent, and — for these
+providers — that jobs run no child process at all, so the privilege-drop line reads as not
+applicable rather than as a problem.
+
+**3. Use it.** Each person opens **Plan → AI Coach**, agrees to the consent screen — which lists
+exactly what leaves the server, generated from the same module that builds payloads — and then
+either has a plan built from a short intake or asks for a review of what they have logged.
+
+A key, a model and the account binding described below belong to the provider they were
+entered for. Switching chips does not clear them: the Anthropic key is still there when you
+come back from trying Gemini, and each chip shows a mark when it holds one.
+
+### With a runtime in the container (Claude Agent SDK, Codex CLI)
 
 **1. Build the image that has an AI runtime in it.** The default image deliberately has none:
 
@@ -29,7 +86,8 @@ claude setup-token
 ```
 
 Complete its normal browser sign-in and copy the token it prints. openGym never opens or handles
-that flow — it only ever receives the finished token.
+that flow — it only ever receives the finished token. (Claude also accepts an Anthropic API key
+here, under the same chip; the setup token is the route for a Claude subscription.)
 
 **3. Connect it.** In the app: **Settings → Admin → AI Coach**.
 
@@ -43,9 +101,7 @@ that flow — it only ever receives the finished token.
 The card also states two things worth reading before anyone uses it: whether jobs actually run
 unprivileged, and which account is being spent.
 
-**4. Use it.** Each person opens **Plan → AI Coach**, agrees to the consent screen — which lists
-exactly what leaves the server, generated from the same module that builds payloads — and then
-either has a plan built from a short intake or asks for a review of what they have logged.
+**4. Use it** — as above.
 
 > **On a multi-profile instance, read [Whose account pays](#whose-account-pays) first.** In the
 > default instance mode the credential binds to the first profile that spends it and **every
@@ -159,7 +215,14 @@ overwriting an edit you made yourself would be the worse failure.
 
 ## Isolation
 
-Jobs run as an unprivileged `coach` user that cannot read the files holding secrets, with an
+This section is about the two providers that run a runtime inside the container. The HTTPS
+providers run nothing: a job is one `fetch` from the api process, the adapter says so
+(`spawns: false`), and the gate below asks the adapter rather than assuming — so an instance on
+a host with no `coach` user still gets the Coach through an API key, and is only refused the
+runtime-backed providers. The admin card reports "this provider runs no child process" in the
+place it would otherwise report the drop.
+
+For Claude Agent SDK and Codex jobs run as an unprivileged `coach` user that cannot read the files holding secrets, with an
 environment built from nothing rather than filtered from the parent — no `RP_ID`, no
 `ADMIN_UIDS`, no VAPID material.
 
@@ -175,6 +238,10 @@ runs as root, so sealing it lands on the host as root-owned and unreadable, and 
 the owner runs against their own data directory gets `EACCES`.
 
 ## You only carry the AI runtime if you ask for it
+
+The HTTPS providers need none, and run on the `default` image below — so as of this release
+the `coach` target is only for an owner who specifically wants the Claude Agent SDK or the
+Codex CLI. Everything else in this section is about those two.
 
 `api/Dockerfile` builds two targets from one file:
 
@@ -224,7 +291,20 @@ cannot reach it by inheritance even by accident.
 
 ## Where a credential lives
 
-Two shapes, because the two providers work differently:
+Everything a provider owns — its credential, its model, and in instance mode the profile its
+credential bound to — is stored **per provider** in `coach.json`, so switching providers never
+throws a key away. An instance upgraded from an earlier build, where the file held one flat
+credential and one model for whichever provider was selected, has them lifted onto that
+provider the first time the new server reads the file. This is one-way: a downgrade will not
+read the maps back, and costs one paste of the key.
+
+Three shapes, because the providers work differently:
+
+- **The HTTPS providers** hold an API key, encrypted with the instance secret into
+  `coach.json`, and hand it to the request as a header — `x-api-key`, `Authorization: Bearer`
+  or `x-goog-api-key`, never a query parameter, so it stays out of proxy logs and error
+  messages. It is inside `./data`, so it *is* in the documented backup; without `./data/secret`
+  the blob is undecryptable, which is the same protection every other credential there has.
 
 - **Claude** takes its credential on the environment, so nothing is written to disk beyond the
   encrypted blob in `coach.json` — it reaches the model process as `CLAUDE_CODE_OAUTH_TOKEN` (or
@@ -242,6 +322,23 @@ stay true about what they capture.
 Per-profile credentials follow the same rule for the same reason: they live in
 `coach-auth-<uid>.json` at mode `0600`, never in the synced state blob, so they cannot ride along
 in a device sync or in a user's own JSON export.
+
+## On the phone
+
+The App-Store build has no server of its own, so the Coach there is a choice made in
+**Settings → AI Coach**, and until it is made nothing AI-related is loaded at all:
+
+- **Use my self-hosted openGym.** Pair the phone with your instance (the same pairing flow as
+  syncing — **Settings → Pair the mobile app** on the site, then the address and code on the
+  phone). A paired phone is an ordinary profile: the Coach runs on your server with whatever
+  provider the admin configured, under the rules above, and nothing on the phone changes.
+- **Bring my own API key.** The phone calls Anthropic, OpenAI, Gemini or a compatible endpoint
+  directly, with a key you paste. It runs the same payload allowlist, the same validator and
+  the same single repair round as the server, in the app. The key is kept in the platform's
+  secure storage — Keychain on iOS, the Keystore-backed store on Android — and never in the
+  app's state, so it cannot ride along in a backup, an export or a sync. You pay: the screen
+  says which host each request goes to and what leaves the device before you choose, and a
+  local daily cap stands in for the one an admin would have set.
 
 ## Off is really off
 

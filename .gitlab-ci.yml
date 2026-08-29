@@ -5,8 +5,9 @@
 # gitea.com ones (.gitea/, kept only so the mirror stays buildable).
 #
 # What it does, in order:
-#   test     — frontend + MCP suites, on every branch, MR and tag
-#   build    — the two container images → registry.gitlab.com/duartesantos8/opengym/{api,web}
+#   test     — frontend, MCP and api (Coach) suites, on every branch, MR and tag
+#   build    — the two container images → registry.gitlab.com/duartesantos8/opengym/{api,web},
+#              and a run of both api targets that proves what each one does and does not carry
 #   package  — the signed Android APK → job artifact + generic package registry
 #   deploy   — the browser-only demo → GitLab Pages
 #   release  — a GitLab Release with the changelog section and links to APK + images
@@ -106,6 +107,34 @@ test:mcp:
       when: never
     - when: on_success
 
+test:api:
+  extends: .node
+  stage: test
+  cache:
+    key:
+      files:
+        - api/package-lock.json
+    paths:
+      - api/.npm
+  script:
+    - cd api
+    - npm ci --cache .npm --prefer-offline --omit=optional
+    # The Coach tests run on node:test and drive the in-repo fixture provider plus a local mock
+    # of the Chat Completions shape, so the whole job works without an AI account or the network.
+    - npm test
+    - cd ..
+    # The api's copy of the exercise catalogue and the prompt module are generated and committed.
+    # A dataset or prompt change that forgets to regenerate them would otherwise only surface as
+    # "the Coach can't find that exercise" — or a prompt edit that never reached the model.
+    - node scripts/build-coach-assets.mjs --check
+    # api/coach/core is imported by the server under bare node AND by the phone under Vite.
+    # vitest forgives what node does not (?raw, import.meta.glob); this runs outside vitest.
+    - node api/scripts/check-core-loadable.mjs
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
+    - when: on_success
+
 # --------------------------------------------------------------------------- images
 
 # Images land at registry.gitlab.com/duartesantos8/opengym/{api,web} and are what
@@ -131,7 +160,7 @@ build:images:
     DOCKER_TLS_CERTDIR: "/certs"
     DOCKER_TLS_VERIFY: "1"
     DOCKER_CERT_PATH: "/certs/client"
-  needs: ["test:frontend", "test:mcp"]
+  needs: ["test:frontend", "test:mcp", "test:api"]
   parallel:
     matrix:
       - IMAGE: api
@@ -195,6 +224,96 @@ build:images:
     - if: $CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+$/
     - if: ($CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "api") && $PUBLISH_LATEST
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: manual
+      allow_failure: true
+
+# Builds *and runs* both api targets. Building alone would not have caught the api image
+# shipping without coach/ — that image built perfectly and exited on boot. So each target has to
+# answer for itself: the untargeted build (which is what build:images publishes, since it names
+# no --target) boots, serves, carries no AI runtime and still constructs the HTTPS providers;
+# the coach one additionally resolves the Agent SDK's per-platform runtime (musl on this base),
+# which is the one thing that cannot be checked from the source tree. amd64 only, never pushed.
+build:api-check:
+  stage: build
+  image: docker:28-cli
+  services:
+    - docker:28-dind
+  variables:
+    DOCKER_HOST: tcp://docker:2376
+    DOCKER_TLS_CERTDIR: "/certs"
+    DOCKER_TLS_VERIFY: "1"
+    DOCKER_CERT_PATH: "/certs/client"
+  needs: ["test:api"]
+  script:
+    - docker build --target default -t opengym-api:default ./api
+    - docker build --target coach   -t opengym-api:coach   ./api
+    # No --target, exactly like build:images. What it ships is whatever Dockerfile stage happens
+    # to be last, and that untargeted artifact is the image every self-hoster pulls as :latest.
+    - docker build -t opengym-api:published ./api
+    # --- the published image has no AI runtime, and does not need one for the HTTPS providers
+    - |
+      set -eu
+      docker run --rm opengym-api:published node -e \
+        'import("@anthropic-ai/claude-agent-sdk").then(()=>{console.error("AI runtime present in the published image -- the last Dockerfile stage is no longer the runtime-free one");process.exit(1)},()=>process.exit(0))'
+      ! docker run --rm opengym-api:published codex --version 2>/dev/null
+      ! docker run --rm opengym-api:published bwrap --version 2>/dev/null
+      docker run --rm opengym-api:published node --input-type=module -e '
+        const { adapterFor } = await import("./coach/adapters/index.js");
+        for (const id of ["anthropic", "openai", "gemini", "compatible"]) {
+          const a = adapterFor(id);
+          if (!a || a.spawns !== false || typeof a.invoke !== "function") { console.error(id + " is not a usable HTTPS adapter in the published image"); process.exit(1); }
+        }
+        const r = await adapterFor("anthropic").check({}, {});
+        if (!r.ok || !r.needsKey) { console.error("anthropic.check() without a key should report a ready runtime that needs a key: " + JSON.stringify(r)); process.exit(1); }
+        console.log("HTTPS providers constructible on the published image");
+      '
+    # --- the default image boots and serves
+    - |
+      set -eu
+      docker network create api-net
+      docker run -d --name api-default --network api-net -e DATA_DIR=/data opengym-api:default
+      for i in $(seq 1 30); do
+        docker run --rm --network api-net curlimages/curl:8.12.1 -fsS http://api-default:3000/api/config >/dev/null 2>&1 && break
+        sleep 1
+      done
+      docker run --rm --network api-net curlimages/curl:8.12.1 -fsS http://api-default:3000/api/config | tee /dev/stderr | grep -q '"invite_only"'
+      docker run --rm opengym-api:default node -e \
+        'import("@anthropic-ai/claude-agent-sdk").then(()=>{console.error("AI runtime present in the default image");process.exit(1)},()=>process.exit(0))'
+      docker rm -f api-default
+      docker network rm api-net
+    # --- the coach image carries a runnable Agent SDK, Codex and its sandbox
+    - |
+      set -eu
+      docker run --rm opengym-api:coach node --input-type=module -e '
+        const { adapterFor } = await import("./coach/adapters/index.js");
+        const r = await adapterFor("claude").check();
+        if (!r.ok) { console.error(r.error); process.exit(1); }
+        console.log(r.version);
+      '
+      docker run --rm opengym-api:coach codex --version
+      docker run --rm opengym-api:coach bwrap --version
+      # Owned by the user jobs drop to, and 0700 — a credential cache readable by anything else
+      # in the container would undo the point of dropping privileges at all.
+      test "$(docker run --rm opengym-api:coach stat -c '%U %a' /coach-auth)" = "coach 700"
+    # --- neither Codex nor its sandbox is in the default image; the privilege drop can be performed
+    - |
+      set -eu
+      ! docker run --rm opengym-api:default codex --version 2>/dev/null
+      ! docker run --rm opengym-api:default bwrap --version 2>/dev/null
+      # canDropPrivileges() fails closed for the runtime-backed providers, so a missing `coach`
+      # user disables every one of their jobs — including the fixture. Cheaper to assert here.
+      docker run --rm opengym-api:default id coach
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
+    - if: $CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+$/
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      changes:
+        paths:
+          - "api/**/*"
+          - ".gitlab-ci.yml"
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       when: manual
       allow_failure: true

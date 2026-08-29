@@ -148,7 +148,7 @@ export default function CoachChat() {
 
       {(coach.chat || []).map(m => <Message key={m.id} m={m} profile={coach.profile} />)}
 
-      {job && <Typing S={S} kind={job.kind} coachLocal={coachLocal} />}
+      {job && <Typing S={S} kind={job.kind} coachLocal={coachLocal} config={config} />}
 
       {pending && !job && (pending.kind === 'create'
         ? <PlanCard p={pending} S={S} update={update} toast={toast} nav={nav} refresh={refresh} />
@@ -200,15 +200,19 @@ const stamp = at => {
   return d.toDateString() === today.toDateString() ? time : fmtDate(d.toISOString().slice(0, 10)) + ' · ' + time
 }
 
-function Typing({ S, kind, coachLocal }) {
+function Typing({ S, kind, coachLocal, config }) {
   const ms = estimateMs(S)
-  const local = coachLocal?.mode === 'byok' && coachLocal?.provider === 'compatible'
+  // "Local" on either side: the phone's own OpenAI-compatible endpoint, or the server's —
+  // /api/config names the provider, and a model on the owner's box is nothing like a cloud API.
+  const local = (coachLocal?.mode === 'byok' && coachLocal?.provider === 'compatible') || config?.coach?.provider === 'compatible'
   let eta
   if (ms) {
     const min = Math.round(ms / 60000)
     eta = min < 1 ? t('Usually under a minute.') : t('Usually about {0} min.', min)
   } else {
-    eta = t('This usually takes a minute or two.')
+    // Until a job has been measured, "a minute or two" is a cloud number — say nothing for a
+    // local model rather than something wrong; the next line already warns it takes longer.
+    eta = local ? '' : t('This usually takes a minute or two.')
   }
   return <div className="msg coach">
     <div className="bub typing"><i /><i /><i /></div>

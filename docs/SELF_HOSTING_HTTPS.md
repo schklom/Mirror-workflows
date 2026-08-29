@@ -15,10 +15,12 @@ Given we have the following setup:
 - a client (your PC, mobile, tablet, etc.)
 - your router (the thing that provides internet access, wifi, etc.)
 
-flowchart TD
+```mermaid
+graph TD
     A[Router]
     A -->B[Laptop]
     A -->C[homelab]
+```
 
 simple, right?
 

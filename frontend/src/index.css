@@ -948,8 +948,7 @@ h4.sec{
 .today-row{
   display:flex;align-items:center;justify-content:space-between;gap:10px;
   margin-top:12px;padding:12px 14px;border-radius:var(--r);background:var(--surface-2);
-  transition:background var(--fast);width:100%;text-align:left;
-  cursor: pointer
+  transition:background var(--fast);width:100%;text-align:left;cursor:pointer;
 }
 .today-row:active{background:var(--surface-3)}
 .today-row .lbl2{font-size:11px;font-weight:500;letter-spacing:.03em;text-transform:uppercase;color:var(--label-3)}
@@ -958,9 +957,11 @@ h4.sec{
   letter-spacing:-.012em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;
 }
 
-@media (hover: hover) {
-  .today-row:hover{background: color-mix(in srgb, var(--surface-2), var(--surface-3) 60%) }
-  :root[data-theme="light"] .today-row:hover{background: color-mix(in srgb, var(--surface-2), var(--surface-3) 85%) }
+/* Only where a pointer really hovers — on a phone :hover sticks to the row after the tap.
+   Lighter than :active, which goes all the way to --surface-3, so the two stay distinct. */
+@media (hover:hover){
+  .today-row:hover{background:color-mix(in srgb,var(--surface-2),var(--surface-3) 60%)}
+  :root[data-theme="light"] .today-row:hover{background:color-mix(in srgb,var(--surface-2),var(--surface-3) 85%)}
 }
 
 /* --------------------------------------------------- desktop (≥1000px) --- */

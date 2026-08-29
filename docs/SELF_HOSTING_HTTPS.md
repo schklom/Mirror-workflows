@@ -17,9 +17,10 @@ Given we have the following setup:
 
 ```mermaid
 graph TD
-    A[Router]
-    A -->B[Laptop]
-    A -->C[homelab]
+    A@{ shape: cloud, label: "Internet"}
+    A <--> B[Router]
+    B <-->C[Laptop]
+    B <-->D[homelab]
 ```
 
 simple, right?

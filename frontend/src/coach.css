@@ -70,7 +70,7 @@
 .ob-consent-row b{display:block;font-size:15px;font-weight:600;margin-bottom:2px;letter-spacing:-.008em}
 .ob-consent-row span{font-size:13px;color:var(--label-2);line-height:1.4}
 .ob-fine{font-size:13px;color:var(--label-2);line-height:1.5;display:grid;gap:8px;margin-bottom:20px}
-.ob-foot{position:sticky;bottom:calc(84px + var(--sab));padding:12px 0 4px;background:linear-gradient(to top,var(--bg) 70%,transparent);display:flex;gap:10px;margin-top:18px}
+.ob-foot{position:sticky;bottom:calc(58px + var(--sab));padding:30px 0 14px;background:linear-gradient(to top,var(--bg) 58%,transparent);display:flex;gap:10px;margin-top:18px}
 .ob-foot .btn{font-size:17px;padding:15px 18px;border-radius:var(--r-lg)}
 .ob-hint{text-align:center;font-size:13px;color:var(--label-3);margin-top:8px}
 

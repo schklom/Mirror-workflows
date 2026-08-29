@@ -84,9 +84,9 @@ But the main tasks are the same, so you can adapt to your choice.
 
 Additional info:
 - homelab host: 192.168.0.100  
-  running services:
-      - opengym on port 8080
-      - nextcloud on port 8081
+  running services:  
+    - opengym on port 8080
+    - nextcloud on port 8081
 
 1. register with desec.io and choose a name (we take `myhomelab` as example)
     1. create a new A record that points to your service, e.g.: `*.myhomelab.dedyn.io` (Wildcard!) - 192.168.0.100 (the ip of your homelab)

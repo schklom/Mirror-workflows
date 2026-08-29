@@ -518,6 +518,7 @@ export default {
   'Step ({0})': '증가폭 ({0})',
   'Step (seconds)': '증가폭 (초)',
   'Reps from': '최소 횟수',
+  'Reps up to': '최대 횟수',
   'No automatic progression': '자동 증가 없음',
   'Linear progression': '선형 증가',
   'Greyskull LP': 'Greyskull LP',

@@ -518,6 +518,7 @@ export default {
   'Step ({0})': 'स्टेप ({0})',
   'Step (seconds)': 'स्टेप (सेकंड)',
   'Reps from': 'रेप्स से',
+  'Reps up to': 'रेप्स तक',
   'No automatic progression': 'कोई स्वचालित प्रोग्रेशन नहीं',
   'Linear progression': 'रैखिक प्रोग्रेशन',
   'Greyskull LP': 'Greyskull LP',

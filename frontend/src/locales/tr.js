@@ -518,6 +518,7 @@ export default {
   'Step ({0})': 'Artış ({0})',
   'Step (seconds)': 'Artış (saniye)',
   'Reps from': 'Tekrar en az',
+  'Reps up to': 'Tekrar en çok',
   'No automatic progression': 'Otomatik ilerleme yok',
   'Linear progression': 'Doğrusal ilerleme',
   'Greyskull LP': 'Greyskull LP',

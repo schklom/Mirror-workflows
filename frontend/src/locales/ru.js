@@ -518,6 +518,7 @@ export default {
   'Step ({0})': 'Шаг ({0})',
   'Step (seconds)': 'Шаг (секунды)',
   'Reps from': 'Повт. от',
+  'Reps up to': 'Повт. до',
   'No automatic progression': 'Без автопрогрессии',
   'Linear progression': 'Линейная прогрессия',
   'Greyskull LP': 'Greyskull LP',

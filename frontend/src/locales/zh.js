@@ -518,6 +518,7 @@ export default {
   'Step ({0})': '加量（{0}）',
   'Step (seconds)': '加量（秒）',
   'Reps from': '次数下限',
+  'Reps up to': '次数上限',
   'No automatic progression': '不自动进阶',
   'Linear progression': '线性进阶',
   'Greyskull LP': 'Greyskull LP',

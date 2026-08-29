@@ -518,6 +518,7 @@ export default {
   'Step ({0})': 'Palier ({0})',
   'Step (seconds)': 'Palier (secondes)',
   'Reps from': 'Reps à partir de',
+  'Reps up to': 'Reps jusqu’à',
   'No automatic progression': 'Pas de progression automatique',
   'Linear progression': 'Progression linéaire',
   'Greyskull LP': 'Greyskull LP',

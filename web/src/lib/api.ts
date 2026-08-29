@@ -1,3 +1,4 @@
+import { PasswordHashResult } from './crypto';
 import { useStore } from './store';
 
 export const HTTP = {
@@ -34,7 +35,7 @@ export abstract class BaseApiService {
   abstract login(
     userName: string,
     password: string,
-    passwordAuthHash: string,
+    passwordHash: PasswordHashResult,
     rememberMe: boolean
   ): Promise<void>;
   abstract logout(): Promise<void>;

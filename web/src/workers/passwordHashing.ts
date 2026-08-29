@@ -1,10 +1,12 @@
 import { hashPasswordForLogin } from '@/lib/crypto';
 
-onmessage = (ev) => {
-  const password = ev.data[0] as string;
-  const salt = ev.data[1] as string;
+onmessage = async (ev) => {
+  const protoVersion = ev.data[0] as number;
+  const username = ev.data[1] as string;
+  const password = ev.data[2] as string;
+  const salt64 = ev.data[3] as string;
 
-  const passwordHash = hashPasswordForLogin(password, salt);
+  const passwordHash = await hashPasswordForLogin(protoVersion, username, password, salt64);
 
   postMessage(passwordHash);
 };

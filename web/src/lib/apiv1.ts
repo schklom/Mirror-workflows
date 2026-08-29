@@ -49,14 +49,14 @@ export class ApiV1Service extends BaseApiService {
   async login(
     userName: string,
     password: string,
-    passwordAuthHash: string,
+    passwordHash: string,
     rememberMe: boolean
   ): Promise<void> {
     const sessionDurationSeconds = rememberMe ? ONE_WEEK_SECONDS : 0;
 
     const response = await requestObject<DataPackage>(ENDPOINTS.REQUEST_ACCESS, HTTP.PUT, {
       IDT: userName,
-      Data: passwordAuthHash,
+      Data: passwordHash,
       SessionDurationSeconds: sessionDurationSeconds,
     });
     const sessionToken = response.Data;

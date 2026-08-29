@@ -1,4 +1,5 @@
 import { argon2id } from '@noble/hashes/argon2.js';
+import { CTX_PASSWORD, hash } from './cryptov2';
 
 export const CRYPTO_PROTO_V1 = 1;
 export const CRYPTO_PROTO_V2 = 2;
@@ -36,8 +37,49 @@ export const base64Encode = (bytesToEncode: Uint8Array) => {
 
 // Section: Password and hashing
 
-export const hashPasswordForLogin = (password: string, salt: string) => {
-  const saltBytes = base64Decode(salt);
+// v1 returns the Argon-encoded string
+// v2 returns the password key bytes, that are then further used by the crypto code
+export type PasswordHashResult = string | Uint8Array<ArrayBuffer>;
+
+export async function hashPasswordForLogin(
+  protoVersion: number,
+  username: string,
+  password: string,
+  salt64: string
+): Promise<PasswordHashResult> {
+  switch (protoVersion) {
+    case CRYPTO_PROTO_V1:
+      return hashPasswordForLoginV1(password, salt64);
+    case CRYPTO_PROTO_V2:
+      return await hashPasswordForLoginV2(username, password, salt64);
+    default:
+      throw new Error(`unknown protoVersion: ${protoVersion}`);
+  }
+}
+
+async function hashPasswordForLoginV2(
+  username: string,
+  password: string,
+  salt64: string
+): Promise<Uint8Array<ArrayBuffer>> {
+  const usernameHash = await hash(enc.encode(username));
+  const passwordBytes = enc.encode(password);
+  const saltBytes = base64Decode(salt64);
+
+  const argonInput = new Uint8Array([...CTX_PASSWORD, ...usernameHash, ...passwordBytes]);
+
+  const result = argon2id(argonInput, saltBytes, {
+    t: ARGON2_T,
+    p: ARGON2_P,
+    m: ARGON2_M,
+    dkLen: ARGON2_HASH_LENGTH,
+  });
+
+  return result;
+}
+
+function hashPasswordForLoginV1(password: string, salt64: string): string {
+  const saltBytes = base64Decode(salt64);
   const contextPassword = CONTEXT_STRING_LOGIN + password;
   const passwordBytes = new TextEncoder().encode(contextPassword);
 
@@ -54,8 +96,8 @@ export const hashPasswordForLogin = (password: string, salt: string) => {
     hashBase64 = hashBase64.slice(0, -1);
   }
 
-  return `$argon2id$v=19$m=${ARGON2_M},t=${ARGON2_T},p=${ARGON2_P}$${salt}$${hashBase64}`;
-};
+  return `$argon2id$v=19$m=${ARGON2_M},t=${ARGON2_T},p=${ARGON2_P}$${salt64}$${hashBase64}`;
+}
 
 const hashPasswordForKeyWrap = (password: string, salt: Uint8Array) => {
   const contextPassword = CONTEXT_STRING_ASYM_KEY_WRAP + password;

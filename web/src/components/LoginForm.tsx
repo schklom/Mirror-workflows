@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 
 import { ApiError, getVersion } from '@/lib/api';
 import { apiService, updateApiService } from '@/lib/apiService';
-import { hashPasswordForLogin } from '@/lib/crypto';
+import { hashPasswordForLogin, PasswordHashResult } from '@/lib/crypto';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { PasswordInput } from '@/components/PasswordInput';
@@ -38,7 +38,12 @@ export const LoginForm = () => {
   }, []);
 
   // Hash the password on a Web Worker background thread
-  const hashPasswordInWorker = (password: string, salt: string): Promise<string> =>
+  const hashPasswordInWorker = (
+    protoVersion: number,
+    username: string,
+    password: string,
+    salt64: string
+  ): Promise<string> =>
     new Promise((resolve, reject) => {
       const worker = new Worker(new URL('../workers/passwordHashing.ts', import.meta.url), {
         type: 'module',
@@ -54,7 +59,7 @@ export const LoginForm = () => {
         worker.terminate();
       };
 
-      worker.postMessage([password, salt]);
+      worker.postMessage([protoVersion, username, password, salt64]);
     });
 
   // Send the login request
@@ -63,10 +68,10 @@ export const LoginForm = () => {
     setLoading(true);
 
     try {
-      const [salt, protoVersion] = await new ApiV2Service().getSalt(fmdId);
+      const [salt64, protoVersion] = await new ApiV2Service().getSalt(fmdId);
       updateApiService(protoVersion);
 
-      if (!salt) {
+      if (!salt64) {
         toast.error(t('errors:account_not_found'));
         setLoading(false);
         return;
@@ -79,17 +84,17 @@ export const LoginForm = () => {
         toast.warning(msg, { duration: SLOW_LOGIN_TOAST_DURATION_MS });
       }, SLOW_LOGIN_THRESHOLD_MS);
 
-      let passwordHash;
+      let passwordHash: PasswordHashResult;
       if (window.Worker) {
         // We need to launch the hashing in a background thread.
         // Otherwise, the timeout won't run, since the UI thread is blocked by the hashing.
-        passwordHash = await hashPasswordInWorker(password, salt);
+        passwordHash = await hashPasswordInWorker(protoVersion, fmdId, password, salt64);
       } else {
         // Browser does not support Web Workers
         toast.warning(
           'Web Workers are not supported by this browser. Hashing password on main thread.'
         );
-        passwordHash = hashPasswordForLogin(password, salt);
+        passwordHash = await hashPasswordForLogin(protoVersion, fmdId, password, salt64);
       }
 
       clearTimeout(timeOut);

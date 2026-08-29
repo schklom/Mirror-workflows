@@ -26,4 +26,13 @@ describe('normalizeRepRange', () => {
   it('supplies a usable default lower bound for a small upper bound', () => {
     expect(normalizeRepRange(1, undefined)).toEqual({ reps: 2, repsMin: 1 })
   })
+
+  it('aligns both bounds to an even stride', () => {
+    expect(normalizeRepRange(13, 7, 2)).toEqual({ reps: 14, repsMin: 8 })
+  })
+
+  it('keeps a valid gap when per-side bounds are invalid', () => {
+    expect(normalizeRepRange(8, 9, 2)).toEqual({ reps: 12, repsMin: 10 })
+    expect(normalizeRepRange(0, -2, 2)).toEqual({ reps: 10, repsMin: 8 })
+  })
 })

@@ -559,17 +559,18 @@ export const equipmentProfileSheet = profile => ui().openSheet(close => <Equipme
 // Progression settings for one exercise (issue #17). Shown inside the config sheet because
 // "how does this lift go up" belongs next to sets and reps, not in a separate screen. Left
 // on "follow the routine" it inherits, so most people never touch it.
-function ProgressionFields({ ex, mode, c, setC, routine, unit }) {
+function ProgressionFields({ ex, mode, c, setC, routine, unit, perSide }) {
   const options = POLICIES_FOR[mode] || ['off']
   if (options.length < 2) return null
   const inherited = policyFor({ id: ex.id }, routine, mode)
   const active = policyFor({ ...c, id: ex.id }, routine, mode)
   const inc = c.inc > 0 ? c.inc : (mode === 'time' ? 5 : defaultIncrement(ex.id, unit))
-  const range = active === 'double' ? normalizeRepRange(c.reps, c.repsMin) : null
+  const stride = mode === 'reps' && perSide ? 2 : 1
+  const range = active === 'double' ? normalizeRepRange(c.reps, c.repsMin, stride) : null
   const setRule = v => setC(x => {
     const next = { ...x, prog: v || undefined }
     return policyFor({ ...next, id: ex.id }, routine, mode) === 'double'
-      ? { ...next, ...normalizeRepRange(next.reps, next.repsMin) }
+      ? { ...next, ...normalizeRepRange(next.reps, next.repsMin, stride) }
       : next
   })
   return <>
@@ -584,10 +585,10 @@ function ProgressionFields({ ex, mode, c, setC, routine, unit }) {
       <Stepper label={mode === 'time' ? t('Step (seconds)') : t('Step ({0})', unit)} value={inc}
         step={mode === 'time' ? 5 : 1.25} decimal={mode !== 'time'} onChange={v => setC(x => ({ ...x, inc: v }))} />
       {active === 'double' && <>
-        <Stepper label={t('Reps from')} value={range.repsMin} step={1} decimal={false}
-          onChange={v => setC(x => ({ ...x, ...normalizeRepRange(x.reps, v) }))} />
-        <Stepper label={t('Reps up to')} value={range.reps} step={1} decimal={false}
-          onChange={v => setC(x => ({ ...x, ...normalizeRepRange(v, x.repsMin) }))} />
+        <Stepper label={t('Reps from')} value={range.repsMin} step={stride} decimal={false}
+          onChange={v => setC(x => ({ ...x, ...normalizeRepRange(x.reps, v, stride) }))} />
+        <Stepper label={t('Reps up to')} value={range.reps} step={stride} decimal={false}
+          onChange={v => setC(x => ({ ...x, ...normalizeRepRange(v, x.repsMin, stride) }))} />
       </>}
     </div>}
   </>
@@ -600,7 +601,7 @@ function ExConfig({ ex, existing, onSave, onDelete, close, routine, initial }) {
   const [c, setC] = useState(() => {
     const cfg = { ...seed }
     return policyFor({ ...cfg, id: ex.id }, routine, modeOf({ ...cfg, id: ex.id })) === 'double'
-      ? { ...cfg, ...normalizeRepRange(cfg.reps, cfg.repsMin) }
+      ? { ...cfg, ...normalizeRepRange(cfg.reps, cfg.repsMin, isPerSide(cfg) ? 2 : 1) }
       : cfg
   })
   // Cardio keeps its own duration+speed form; the reps/time choice (issue #16) is offered for
@@ -615,7 +616,7 @@ function ExConfig({ ex, existing, onSave, onDelete, close, routine, initial }) {
   const setMode = m => setC(x => {
     const next = { ...defaultConfig(ex.id, m), ...x, mode: m }
     return m === 'reps' && policyFor({ ...next, id: ex.id }, routine, 'reps') === 'double'
-      ? { ...next, ...normalizeRepRange(next.reps, next.repsMin) }
+      ? { ...next, ...normalizeRepRange(next.reps, next.repsMin, isPerSide(next) ? 2 : 1) }
       : next
   })
   const save = () => {
@@ -648,11 +649,11 @@ function ExConfig({ ex, existing, onSave, onDelete, close, routine, initial }) {
       // A unilateral target is stored even: the split has to divide, and a typed 15 would
       // otherwise plan seven reps on one side and eight on the other, every session.
       const typed = Math.max(1, Math.round(c.reps) || 10)
-      let reps = perSide ? Math.ceil(typed / 2) * 2 : typed
+      const stride = perSide ? 2 : 1
+      let reps = perSide ? Math.ceil(typed / stride) * stride : typed
       let range = null
       if (double) {
-        range = normalizeRepRange(reps, c.repsMin)
-        if (perSide) range = normalizeRepRange(Math.ceil(range.reps / 2) * 2, range.repsMin)
+        range = normalizeRepRange(reps, c.repsMin, stride)
         reps = range.reps
       }
       const out = { sets, mode: 'reps', reps, weight: Math.max(0, c.weight || 0), ...flags, ...(perSide ? { side: true } : {}), ...prog, ...withNote, ...withWarmups }
@@ -732,7 +733,12 @@ function ExConfig({ ex, existing, onSave, onDelete, close, routine, initial }) {
         subtitle={perSide ? t('You still log the total: {0} is {1} per side.', c.reps || 0, fmtNum(sideReps(c.reps))) : t('For lunges, single-arm rows and the like.')}>
         {/* Turning it on rounds the target up to an even number, since half of an odd
             total is a rep one side does not get. */}
-        <Switch checked={perSide} onChange={v => setC(x => ({ ...x, side: v || undefined, reps: v ? Math.ceil((x.reps || 0) / 2) * 2 : x.reps }))} />
+        <Switch checked={perSide} onChange={v => setC(x => {
+          const next = { ...x, side: v || undefined, reps: v ? Math.ceil((x.reps || 0) / 2) * 2 : x.reps }
+          return policyFor({ ...next, id: ex.id }, routine, 'reps') === 'double'
+            ? { ...next, ...normalizeRepRange(next.reps, next.repsMin, v ? 2 : 1) }
+            : next
+        })} />
       </Row>}
     </div>}
     {/* A stepper is too wide to sit in a list row next to a label — it squeezes the text to
@@ -794,7 +800,7 @@ function ExConfig({ ex, existing, onSave, onDelete, close, routine, initial }) {
           : t('Every set becomes rest-pause: {0} reps to start, then {1} more split into short bursts, {2}s rest before each, roughly halving each time.', c.reps || 0, c.intensifier.totalReps, c.intensifier.restSec)}
       </div>}
     </>}
-    <ProgressionFields ex={ex} mode={mode} c={c} setC={setC} routine={routine} unit={st.unit} />
+    <ProgressionFields ex={ex} mode={mode} c={c} setC={setC} routine={routine} unit={st.unit} perSide={perSide} />
     <textarea className="input" rows={3} maxLength={500} style={{ marginBottom: 18 }}
       placeholder={t('Note (optional) — loading cues, "bar only then +1 plate/side each set", anything worth remembering here')}
       value={c.note || ''} onChange={e => setC(x => ({ ...x, note: e.target.value }))} />

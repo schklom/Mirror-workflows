@@ -4,7 +4,7 @@ import { localTZ } from '../lib/format.js'
 import { registerCustom } from '../lib/exercises.js'
 import { DEMO, DEMO_SEEDED } from '../lib/demo.js'
 import { guestAllowed } from '../lib/guest.js'
-import { MOBILE, nativeLoad, nativeSave, syncReminder, writeAutoBackup } from '../lib/mobile.js'
+import { MOBILE, initReminderSync, nativeLoad, nativeSave, syncReminder, writeAutoBackup } from '../lib/mobile.js'
 import { loadRemote, chooseLocal, forgetRemote, connect } from '../lib/remote.js'
 
 const KEY = 'gym_state_v1'
@@ -21,6 +21,10 @@ export const DEF = {
   // Equipment profiles (issue: filter Library/picker/routines by what you actually own —
   // e.g. "Home" vs "Gym" — building on the session-only equipment filter from issue #6).
   equipProfiles: [], activeEquipId: null, equipFilterOn: false,
+  // Standing per-exercise notes, keyed by exercise id: the gym-specific facts that are true
+  // every time you do the movement ("seat 4, pin 7"). Distinct from a routine's `note`, which
+  // belongs to one exercise in one plan, and from a session note, which belongs to one day.
+  exNotes: {},
 }
 const clone = o => JSON.parse(JSON.stringify(o))
 
@@ -37,6 +41,8 @@ const hasData = st => !!((st.workouts || []).length || (st.routines || []).lengt
 export const useStore = create((set, get) => {
   let pushTm = null
   let saveTm = null
+
+  initReminderSync(() => get().S)
 
   // Mobile build: mirror the state into a file in the app's data directory (survives WebView
   // storage eviction) and keep the native reminder schedule in step with the weekly plan.
@@ -67,6 +73,7 @@ export const useStore = create((set, get) => {
       clearTimeout(saveTm)
       saveTm = null
       nativeSave(get().S)
+      syncReminder(get().S)
     }
     if (pushTm) {
       clearTimeout(pushTm)

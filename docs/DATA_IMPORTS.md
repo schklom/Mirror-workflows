@@ -24,15 +24,18 @@ To import your history from other applications, you'll need an export that is in
 The app tries to match the exercise names to link them to the exercises in the database.
 
 > Note: The history is a log of past exercises.  
-> Because plans change and history does not, it is completely disconnected from routines.
+> Because plans change and history does not, it is completely disconnected from routines.  
+> 
+> Exercises depend on name matching, so custom exercises might be named differently, as they might be in other apps.
 
-These apps have been tested to work without adjustments:
+These apps have been tested to work without adjustments to the column names:
 
 | App | How to export | 
 |---|---|
 | **FitNotes (Android)** | Settings → Backup/Export → **Spreadsheet Export** | 
 | **FitNotes 2 (iOS)** | Export workouts as CSV; also manual/auto iCloud backups |
 | **Strong** | Settings → Export Data | 
+| **Gravl** | Profile → Export Data | 
 | **Hevy** | Profile → Settings → Export & Import Data (Workouts or Measurements) | 
 
 You can also create your own `CSV` file:
@@ -51,9 +54,9 @@ These field names are supported:
 |---|---|
 | `exercise` | `exercise`, `exercise name`, `exercise title` |
 | `date` | `date`, `workout date` |
-| `startTime` | `start time` |
+| `startTime` | `start time`, `start date` |
 | `endTime` | `end time` |
-| `workoutName` | `workout name`, `title` |
+| `workoutName` | `workout name`, `title`, `workout` |
 | `category` | `category`, `body part`, `muscle group` |
 | `weightKg` | `weight kg` |
 | `weightLb` | `weight lbs`, `weight lb` |
@@ -65,9 +68,9 @@ These field names are supported:
 | `distanceKm` | `distance km` |
 | `distance` | `distance` |
 | `distanceUnit` | `distance unit` |
-| `seconds` | `seconds`, `duration seconds` |
+| `seconds` | `seconds`, `duration seconds`, `set duration sec` |
 | `time` | `time`, `duration` |
 | `setType` | `set type` |
-| `note` | `comment`, `comments`, `notes`, `note` |
+| `note` | `comment`, `comments`, `notes`, `note`, `workout notes` |
 
 

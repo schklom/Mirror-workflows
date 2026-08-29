@@ -82,6 +82,12 @@ So how does it all come together?
 This is the tools I picked and that I know to work, your choice may be different and the setup is different as well.  
 But the main tasks are the same, so you can adapt to your choice.
 
+Additional info:
+- homelab host: 192.168.0.100  
+  running services:
+      - opengym on port 8080
+      - nextcloud on port 8081
+
 1. register with desec.io and choose a name (we take `myhomelab` as example)
     1. create a new A record that points to your service, e.g.: `*.myhomelab.dedyn.io` (Wildcard!) - 192.168.0.100 (the ip of your homelab)
     2. A wildcard certificate handles all certificates for that given host. e.g.: `opengym.myhomelab.dedyn.io` and `nextcloud.myhomelab.dedyn.io` can share the same certificates.
@@ -133,6 +139,12 @@ But the main tasks are the same, so you can adapt to your choice.
 
 And that's about it. Now you should be able to access your opengym instance from your local network via https with working passkeys.  
 Be sure to update the opengym config accordingly.
+
+usable URLs in this example:
+- https://opengym.myhomelab.dedyn.io -> http://192.168.0.100:8080
+- https://nextcloud.myhomelab.dedyn.io -> http://192.168.0.100:8081
+
+Note that the SSL/HTTPS termination is only at the proxy, the service does not have any certificates whatsoever.
 
 
 ### Alternatives

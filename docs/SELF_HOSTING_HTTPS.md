@@ -1,7 +1,7 @@
 # Selfhosting with HTTPS
 
 Since we handling a rather complex topic with this, it is separate from the [SELF_HOSTING.md](./SELF_HOSTING.md) which is focusing on how to run openGym.
-This document is takes a more general approach on how to achieve "https at home", it is not necessarily focused on openGym and applies to self hosting in general.
+This document takes a more general approach on how to achieve "https at home", it is not necessarily focused on openGym and applies to self hosting in general.
 
 When self hosting it is often thought of that one needs to expose their services to the internet, this is not necessarily the case.  
 We can have https certificates without having to expose our precious hosts to the world. You can still do that if you want to access your applications from the internet without any VPN, but it's not necessary to take the risk.
@@ -71,9 +71,61 @@ So how does it all come together?
 
 ### Tools
 
-- DNS provider:
-- let's encrypt client:
-- reverse proxy:
+- DNS provider: https://desec.io/ free and supports IPv6 and a certbot plugin
+- let's encrypt client: certbot, officially supported by LE
+- reverse proxy: caddy, lightweight and hackable.
 
 This is the tools I picked and that I know to work, your choice may be different and the setup is different as well.  
 But the main tasks are the same, so you can adapt to your choice.
+
+1. register with desec.io and choose a name
+    1. create a new A record that points to your service, e.g.: opengym.myhomelab.dedyn.io (desired name) - 192.168.0.100 (the ip of your homelab)
+    2. create an API token for updating the domain settings (`Can create domains` and `Can delete domains` activated), be sure to note the token, it is only displayed once.
+2. install certbot on your host
+    1. most linux distributions provide the packages for this, e.g. debian: `apt install certbot python3-certbot-dns-desec` check the [docs](https://desec.readthedocs.io/en/latest/integrations/lets-encrypt.html) 
+    3. create a config file in `/etc/letsencrypt`: `desec.ini` `dns_desec_token = YOUR_TOKEN`
+    3. run certbot to register
+        ```bash
+        certbot certonly \
+            --authenticator dns-desec \
+            --dns-desec-credentials /etc/letsencrypt/desec.ini \
+            -m YOUR_EMAIL@HOST.TLD \
+            --agree-tos \
+            --no-eff-email \
+             -d "opengym.myhomelab.dedyn.io"
+        ```
+    2. the certbot will also create a systemd service that checks and renews the certificates automatically.
+3. install caddy
+    1. most linux distributions provide the packages for this, e.g. debian: `apt install caddy` check the [docs](https://caddyserver.com/docs/install) 
+    2. create the caddy config, this is an example that should work:
+    ```jsonc
+    :443 {
+        header Content-Type text/html
+        respond <<HTML
+                <html>
+                        <head><title>caddy</title></head>
+                        <body><h2>caddy works.</h2></body>
+                </html>
+                HTML 200
+    }
+    # define desec configuration
+    (desec) {
+        tls /etc/letsencrypt/live/opengym.myhomelab.dedyn.io/fullchain.pem /etc/letsencrypt/live/opengym.myhomelab.dedyn.io/privkey.pem {
+                protocols tls1.3
+        }
+    }
+    # reverse proxy config
+    opengym.myhomelab.dedyn.io {
+        import desec
+        reverse_proxy http://192.168.0.100:8080
+    }
+    ```
+    be sure to check the docs for details.
+
+And that's about it. Now you should be able to access your opengym instance via https with working passkeys. Be sure to update the opengym config accordingly.
+
+### Alternatives
+
+- DNS providers: [certbot provider list](https://certbot.eff.org/hosting_providers) so many options...
+- Let's encrypt clients: see [here](https://letsencrypt.org/docs/client-options/) 
+- reverse proxy: nginx proxymanager, easier with web GUI

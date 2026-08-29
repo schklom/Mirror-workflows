@@ -22,7 +22,10 @@ export async function nativeFetch(url, init = {}) {
 
   const request = cap.CapacitorHttp.request({
     url, method: init.method || 'GET', headers, data,
-    responseType: 'text', connectTimeout: 30000, readTimeout: 6 * 60000
+    // The read timeout is not the job timeout: that is the AbortSignal's job (see abortOf),
+    // and coach-local.js derives it from the provider. This only has to be longer than any
+    // job may legitimately run, so a local model on a laptop is never cut off by the transport.
+    responseType: 'text', connectTimeout: 30000, readTimeout: 40 * 60000
   })
   const res = init.signal ? await Promise.race([request, abortOf(init.signal)]) : await request
   const text = typeof res.data === 'string' ? res.data : res.data == null ? '' : JSON.stringify(res.data)

@@ -31,7 +31,11 @@ import { t } from './i18n.js'
 
 export const ADAPTERS = { anthropic, openai, gemini, compatible }
 export const LOCAL_DAILY_CAP = 10
+// Five minutes is right for a cloud API and wrong for a model on somebody's laptop; the
+// OpenAI-compatible endpoint is the one that may be local, so it gets the long budget.
 export const TIMEOUT_MS = 5 * 60000
+export const LOCAL_ENDPOINT_TIMEOUT_MS = 25 * 60000
+export const timeoutFor = provider => (provider === 'compatible' ? LOCAL_ENDPOINT_TIMEOUT_MS : TIMEOUT_MS)
 const PENDING_DAYS = 14
 const HANDLE_LENGTH = 16
 
@@ -141,7 +145,7 @@ async function run(S, kind, opts, d, adapter) {
   })
   const attempt = await runPipeline({
     adapter, cfg: cfgOf(d), kind, payload,
-    model: d.model || HTTP_PROVIDERS[d.provider].defaultModel, timeoutMs: TIMEOUT_MS,
+    model: d.model || HTTP_PROVIDERS[d.provider].defaultModel, timeoutMs: timeoutFor(d.provider),
     invokeOpts: { env: envOf(d, key), fetch: nativeFetch }
   })
   if (!attempt.ok) {

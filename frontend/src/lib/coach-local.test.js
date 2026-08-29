@@ -179,3 +179,18 @@ describe('the Coach on a phone with its own key', () => {
     expect(d.categories).toEqual(['plan', 'training', 'bodyweight', 'profile', 'prefs'])
   })
 })
+
+describe('timeouts on the phone', () => {
+  it('gives a local endpoint the long budget and cloud providers the short one', async () => {
+    const { timeoutFor, TIMEOUT_MS, LOCAL_ENDPOINT_TIMEOUT_MS } = await import('./coach-local.js')
+    expect(timeoutFor('compatible')).toBe(LOCAL_ENDPOINT_TIMEOUT_MS)
+    expect(LOCAL_ENDPOINT_TIMEOUT_MS).toBeGreaterThanOrEqual(20 * 60000)
+    for (const p of ['anthropic', 'openai', 'gemini']) expect(timeoutFor(p)).toBe(TIMEOUT_MS)
+  })
+  it('the native transport read timeout outlasts the longest job', async () => {
+    const src = (await import('node:fs')).readFileSync(new URL('./capacitor-fetch.js', import.meta.url), 'utf8')
+    const m = src.match(/readTimeout:\s*(\d+)\s*\*\s*60000/)
+    expect(m).toBeTruthy()
+    expect(+m[1] * 60000).toBeGreaterThan(25 * 60000)
+  })
+})

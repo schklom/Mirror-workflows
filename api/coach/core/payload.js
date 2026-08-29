@@ -10,7 +10,7 @@
  * handle stands in), passkey and credential material, push subscriptions, invite data, theme
  * and appearance settings, and every other profile's everything.
  */
-import { LIBRARY, LIB_BY_ID, libraryHas, libraryName, librarySlice } from './library.js';
+import { LIBRARY, LIB_BY_ID, libraryHas, libraryName, librarySlice, MAX_LIBRARY } from './library.js';
 
 export const CONTRACT = 1;
 // Bounds from FR-22. A review reads a training block, not a training career: more history
@@ -140,7 +140,7 @@ export function cleanPlan(S) {
 }
 
 // The catalogue lives in library.js; re-exported so older imports keep resolving.
-export { LIBRARY, libraryHas, libraryName, librarySlice };
+export { LIBRARY, MAX_LIBRARY, libraryHas, libraryName, librarySlice };
 
 /* ---------- effort scale (mirrors history.js effortOf) ---------- */
 const effortOf = S => {
@@ -199,6 +199,15 @@ function aggregates(S, workouts) {
       ? { median: durations.slice().sort((a, b) => a - b)[Math.floor(durations.length / 2)], min: Math.min(...durations), max: Math.max(...durations) }
       : null
   };
+}
+
+/** Every exercise id the plan names or the given workouts logged — the ones a proposal has to
+ *  be able to refer to, so they ride in the library slice whatever the cap or the filter. */
+function trainedIds(S, workouts) {
+  const ids = new Set();
+  (S.routines || []).forEach(r => (r.ex || []).forEach(e => ids.add(e.id)));
+  (workouts || []).forEach(w => (w.entries || []).forEach(en => ids.add(en.id)));
+  return [...ids];
 }
 
 /** One workout, reduced to what a coach reads. */
@@ -289,9 +298,9 @@ export function build(S, opts = {}) {
       series: (S.bodyweight || []).filter(b => !p.window.from || b.d >= p.window.from).map(b => ({ d: b.d, w: b.w }))
     };
     if (opts.note) p.userNote = String(opts.note).slice(0, 1000);
-    p.library = librarySlice(S, profile?.equipment);
+    p.library = librarySlice(S, profile?.equipment, { keep: trainedIds(S, workouts) });
   } else {
-    p.library = librarySlice(S, profile?.equipment);
+    p.library = librarySlice(S, profile?.equipment, { keep: trainedIds(S, S.workouts || []) });
     // Creation for a returning user: what they have actually handled, so proposed baselines
     // start from evidence rather than optimism (B2/FR-20).
     const best = {};

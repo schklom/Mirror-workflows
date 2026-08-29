@@ -108,12 +108,42 @@ test('creation payload carries working weights so baselines start from evidence'
 });
 
 test('the library is filtered to the equipment someone actually has', () => {
-  const all = payload.librarySlice({}, []).length;
-  const dumbbell = payload.librarySlice({}, ['dumbbell']).length;
-  assert.ok(dumbbell < all && dumbbell > 0);
+  const dumbbell = payload.librarySlice({}, ['dumbbell']);
+  assert.ok(dumbbell.length > 0);
+  assert.ok(dumbbell.every(e => e.eq === 'dumbbell'), 'nothing outside the filter');
+  assert.ok(payload.librarySlice({}, ['dumbbell', 'barbell']).some(e => e.eq === 'barbell'));
   // Custom exercises always travel: they exist nowhere else and the model cannot guess them.
   const withCustom = payload.librarySlice({ customEx: [{ id: 'cx1', n: 'Sandbag carry', bp: 'back' }] }, ['dumbbell']);
   assert.equal(withCustom[0].id, 'cx1');
+});
+
+test('the library slice is capped, balanced across body parts, deterministic, and keeps what the user trains', () => {
+  const { MAX_LIBRARY, LIBRARY } = payload;
+  const all = payload.librarySlice({}, []);
+  assert.ok(LIBRARY.length > MAX_LIBRARY, 'the catalogue is bigger than the cap, or this test proves nothing');
+  assert.equal(all.length, MAX_LIBRARY);
+  const byBp = {};
+  all.forEach(e => { byBp[e.bp] = (byBp[e.bp] || 0) + 1; });
+  const parts = Object.keys(byBp).length;
+  assert.ok(parts >= 8, `only ${parts} body parts represented`);
+  // Small groups (neck has two rows) run out early and their share flows to the rest, so the
+  // bound is "nobody dominates", not "everyone equal".
+  assert.ok(Math.max(...Object.values(byBp)) <= MAX_LIBRARY / 4, `one body part dominates: ${JSON.stringify(byBp)}`);
+  assert.equal(byBp.neck, LIBRARY.filter(e => e.bp === 'neck').length, 'a tiny group is present in full');
+  assert.deepEqual(all.map(e => e.id), payload.librarySlice({}, []).map(e => e.id), 'same slice every time');
+
+  // An exercise the user already trains rides along even when the filter would exclude it.
+  const barbell = LIBRARY.find(e => e.eq === 'barbell');
+  const kept = payload.librarySlice({}, ['dumbbell'], { keep: [barbell.id] });
+  assert.equal(kept[0].id, barbell.id);
+  assert.ok(kept.length <= MAX_LIBRARY + 1);
+
+  // …and through build(): the plan's own exercises are in the slice for a review.
+  const S = sampleState();
+  const planIds = S.routines.flatMap(r => r.ex.map(e => e.id));
+  const p = payload.build(S, { handle: 'h'.repeat(16), kind: 'review' });
+  assert.ok(planIds.every(id => p.library.some(e => e.id === id)), 'every plan exercise is in the slice');
+  assert.ok(p.library.length <= MAX_LIBRARY + planIds.length);
 });
 
 test('equipment nobody in the library has still yields a usable library', () => {

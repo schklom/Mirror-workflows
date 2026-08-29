@@ -33,7 +33,9 @@ export { hashPlan, buildPrompt };
 const DATA = process.env.DATA_DIR || '/data';
 const COACH_DIR = path.join(DATA, 'coach');
 
-export const TIMEOUT_MS = 5 * 60000;
+// Five minutes by default. A local model on a small CPU box can legitimately need more; a
+// cloud API that needs more has a problem. COACH_JOB_TIMEOUT_MS overrides, never below one minute.
+export const TIMEOUT_MS = Math.max(60000, +process.env.COACH_JOB_TIMEOUT_MS || 5 * 60000);
 const MAX_CONCURRENT = 2;          // these are minutes-scale jobs on often-single-core boxes
 const PENDING_DAYS = 14;           // FR-33
 const HISTORY_MAX = 20;
@@ -104,8 +106,15 @@ export function status(uid) {
   return {
     job: rec.current ? { id: rec.current.id, kind: rec.current.kind, state: rec.current.state, startedAt: rec.current.startedAt } : null,
     pending: rec.pending || null,
-    cap: capState(uid)
+    cap: capState(uid),
+    // How the most recent job ended, so the chat can say "nothing to change" or "that failed"
+    // in the Coach's own bubble rather than leaving a job that silently stopped appearing.
+    last: lastOutcome(rec)
   };
+}
+function lastOutcome(rec) {
+  const h = (rec.history || []).at(-1);
+  return h ? { id: h.id, kind: h.kind, outcome: h.outcome, errorClass: h.errorClass || null, at: h.at, ...(h.reading ? { reading: h.reading } : {}) } : null;
 }
 function archive(uid, rec, outcome) {
   const history = [...(rec.history || []), {

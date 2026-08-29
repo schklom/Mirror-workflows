@@ -343,13 +343,53 @@ test('a starting weight is dropped when there is nothing logged to justify it', 
   assert.equal(r.bundle.routines[0].ex[0].weight, undefined);
 });
 
-test('a starting weight still survives when there is history to cap it against', () => {
+test('a starting weight survives only where that exercise has actually been lifted', () => {
+  // The cap is per exercise. Having trained *something* says nothing about a movement they
+  // have never done, so a number there is still invented and still goes.
   const r = validatePlan(
-    { routines: [{ id: 'r1', name: 'A', ex: [{ id: '0001', sets: 3, reps: 10, weight: 100 }] }], week: { 1: 'r1' } },
-    { daysPerWeek: 1, workingWeights: [{ id: '0002', best: 60 }] }
+    {
+      routines: [{
+        id: 'r1', name: 'A', ex: [
+          { id: '0001', sets: 3, reps: 10, weight: 50 },    // trained: capped, kept
+          { id: '0002', sets: 3, reps: 10, weight: 100 }    // never trained: dropped
+        ]
+      }],
+      week: { 1: 'r1' }
+    },
+    { daysPerWeek: 1, workingWeights: [{ id: '0001', best: 60 }] }
   );
   assert.equal(r.ok, true);
-  assert.equal(r.bundle.routines[0].ex[0].weight, 100);
+  assert.equal(r.bundle.routines[0].ex[0].weight, 50);
+  assert.equal(r.bundle.routines[0].ex[1].weight, undefined);
+});
+
+test('a starting weight above what they have handled is pulled back down to it', () => {
+  const r = validatePlan(
+    { routines: [{ id: 'r1', name: 'A', ex: [{ id: '0001', sets: 3, reps: 10, weight: 200 }] }], week: { 1: 'r1' } },
+    { daysPerWeek: 1, workingWeights: [{ id: '0001', best: 60 }] }
+  );
+  assert.equal(r.bundle.routines[0].ex[0].weight, 60);
+});
+
+test('a custom exercise may not claim a library id', () => {
+  // The approval card resolves the id against the catalogue and shows that exercise; mergePlan
+  // remaps it to the model's invention. What was approved would not be what got applied.
+  const r = validatePlan({
+    routines: [{ name: 'A', ex: [{ id: '0001', sets: 3, reps: 10 }] }],
+    customEx: [{ id: '0001', n: 'Bench Press', bp: 'chest' }]
+  });
+  assert.equal(r.ok, false);
+  assert.ok(r.errors.some(e => e.includes('already a library exercise id')));
+});
+
+test('ids that are prototype keys are refused', () => {
+  // plan-share.js uses bare object literals for its id maps: writing __proto__ is ignored and
+  // reading it back yields Object.prototype, which persists into synced state as {}.
+  const r = validatePlan({
+    routines: [{ id: '__proto__', name: 'A', ex: [{ id: '0001', sets: 3, reps: 10 }] }],
+    week: { 1: '__proto__' }
+  });
+  assert.equal(r.ok, false);
 });
 
 test('a load step has an upper bound', () => {

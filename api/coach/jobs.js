@@ -318,9 +318,13 @@ async function invoke(adapter, cfg, payload, jobDir, env, job, repair) {
   // Its errors join the parse failures above on the same one repair round: a model that named
   // an exercise that does not exist is told which one, and usually gets it right the second
   // time. A model that cannot be told is a failed job, not a retry loop.
+  // The user's own exercises are in the library slice the model was given (flagged `custom`),
+  // so they are a legitimate thing for it to name back — the validator has to agree.
+  const customIds = (payload.library || []).filter(e => e && e.custom).map(e => e.id);
   const checked = job.kind === 'review'
-    ? validateReview(parsed.value, payload.plan)
+    ? validateReview(parsed.value, payload.plan, { customIds })
     : validatePlan(parsed.value, {
+      customIds,
       workingWeights: payload.history?.workingWeights,
       daysPerWeek: payload.coachProfile?.daysPerWeek
     });

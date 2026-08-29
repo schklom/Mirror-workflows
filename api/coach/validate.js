@@ -29,6 +29,15 @@ export const CHANGE_TYPES = [
 const POLICIES = ['off', 'linear', 'greyskull', 'double', 'time'];
 const MODES = ['reps', 'time', 'cardio'];
 const MAX_INC = 50;
+// A prescription, not a world record. Anything past this is a model slip or a hostile answer,
+// and either way it reaches the plan, the progression engine and a printed line reading "∞ kg".
+const MAX_WEIGHT = 1000;
+const MAX_SPEED = 60;
+// Ids that are object keys downstream (exIdMap/ridMap in plan-share.js). Assigning to them is
+// silently ignored and reading them back yields Object.prototype, which persists into state as
+// {} — a scheduled day that is forever rest, or an exercise that is forever "Unknown".
+const RESERVED_IDS = ['__proto__', 'constructor', 'prototype'];
+const safeId = v => isStr(v) && !RESERVED_IDS.includes(v);
 const MAX_CHANGES = 25;
 const MAX_ROUTINES = 7;
 const MAX_EX_PER_ROUTINE = 20;
@@ -61,11 +70,18 @@ export function validatePlan(data, ctx = {}) {
   if (data.nochange) return fail(['a plan was requested but the answer said "no change"']);
   if (!Array.isArray(data.routines) || !data.routines.length) errors.push('routines must be a non-empty array');
 
+  // A custom id that shadows a library id is the one case where the screen and the plan
+  // disagree: the approval card resolves the id against the catalogue and shows that exercise,
+  // while mergePlan remaps it to the model's invention. Whatever was approved is not applied.
+  (Array.isArray(data.customEx) ? data.customEx : []).forEach((c, i) => {
+    if (c && isStr(c.id) && libraryHas(c.id)) errors.push(`customEx[${i}].id "${c.id}" is already a library exercise id — give your own exercises their own ids`);
+  });
   const customEx = (Array.isArray(data.customEx) ? data.customEx : [])
-    .filter(c => c && isStr(c.id) && isStr(c.n))
+    .filter(c => c && safeId(c.id) && !libraryHas(c.id) && isStr(c.n))
     .slice(0, 20)
     .map(c => ({ id: clampStr(c.id, 40), n: clampStr(c.n, 60), bp: clampStr(c.bp || 'waist', 30), ...(c.desc ? { desc: clampStr(c.desc, 400) } : {}) }));
-  const proposedIds = new Set(customEx.map(c => c.id));
+  // Ids the plan may name: invented in this same answer, or already the user's own.
+  const proposedIds = new Set([...customEx.map(c => c.id), ...(ctx.customIds || [])]);
 
   const routines = [];
   (Array.isArray(data.routines) ? data.routines : []).slice(0, MAX_ROUTINES).forEach((r, ri) => {
@@ -87,16 +103,16 @@ export function validatePlan(data, ctx = {}) {
       const perSide = !!e.side;
       if (mode === 'cardio') {
         clean.min = isInt(e.min, 1, 180) ? e.min : 20;
-        clean.speed = isNum(e.speed) && e.speed > 0 ? e.speed : 8;
+        clean.speed = isNum(e.speed) && e.speed > 0 && e.speed <= MAX_SPEED ? e.speed : 8;
       } else if (mode === 'time') {
         clean.mode = 'time';
         clean.sec = isInt(e.sec, 5, 3600) ? e.sec : 45;
-        if (isNum(e.weight) && e.weight > 0) clean.weight = e.weight;
+        if (isNum(e.weight) && e.weight > 0 && e.weight <= MAX_WEIGHT) clean.weight = e.weight;
       } else {
         clean.mode = 'reps';
         clean.reps = isInt(e.reps, 1, 100) ? e.reps : 10;
         if (perSide && clean.reps % 2) { errors.push(ODD_PER_SIDE(`${where}.reps`)); return; }
-        if (isNum(e.weight) && e.weight > 0) clean.weight = e.weight;
+        if (isNum(e.weight) && e.weight > 0 && e.weight <= MAX_WEIGHT) clean.weight = e.weight;
       }
       if (e.prog != null) {
         if (!POLICIES.includes(e.prog)) errors.push(`${where}.prog "${e.prog}" is not one of ${POLICIES.join(', ')}`);
@@ -130,7 +146,7 @@ export function validatePlan(data, ctx = {}) {
     if (!ex.length) errors.push(`routines[${ri}] has no valid exercises`);
     // Two routines answering to one id make the week ambiguous: `known` is a Set, so the day
     // validates while pointing at either of them.
-    const rid = isStr(r.id) ? clampStr(r.id, 40) : 'r' + ri;
+    const rid = safeId(r.id) ? clampStr(r.id, 40) : 'r' + ri;
     if (routines.some(x => x.id === rid)) {
       errors.push(`routines[${ri}].id "${rid}" is already used by another routine in this plan`);
       return;
@@ -158,12 +174,13 @@ export function validatePlan(data, ctx = {}) {
   // FR-20: never start someone above what they have actually lifted.
   const caps = new Map((ctx.workingWeights || []).map(w => [w.id, w.best]));
   routines.forEach(r => r.ex.forEach(e => {
+    if (e.weight == null) return;
     const cap = caps.get(e.id);
-    if (cap != null && e.weight > cap) e.weight = cap;
-    // Nothing lifted, nothing to cap against — so a number here is one the model made up for a
-    // lifter it has never seen. The prompt already says to omit it; drop it if it comes anyway
-    // and let the first session set the baseline, which is what the app does.
-    else if (cap == null && !caps.size && e.weight != null) delete e.weight;
+    // No cap for THIS exercise means they have never lifted it, whether or not they have
+    // lifted anything else. Either way the number is invented, and create.md already tells the
+    // model to omit it: drop it and let the first session set the baseline, like the app does.
+    if (cap == null) delete e.weight;
+    else if (e.weight > cap) e.weight = cap;
   }));
 
   // FR-17: honour the number of training days the user asked for.
@@ -194,14 +211,19 @@ export function validatePlan(data, ctx = {}) {
  * `plan` is the payload's cleaned plan — every target must resolve against it, so a change
  * aimed at a routine that no longer exists never reaches the review screen.
  */
-export function validateReview(data, plan) {
+export function validateReview(data, plan, ctx = {}) {
   if (!data || typeof data !== 'object') return fail(['the answer was not an object']);
   if (data.nochange) {
     return { ok: true, nochange: true, reading: clampStr(data.reading || data.summary || '', 1200) };
   }
   const errors = [];
   const routines = new Map((plan?.routines || []).map(r => [r.id, r]));
+  // payload.librarySlice offers the model the user's own exercises alongside the catalogue, so
+  // rejecting them here made every proposal naming one fail — and burn the single repair round.
+  const known = new Set(ctx.customIds || []);
+  const knownEx = id => libraryHas(id) || known.has(id);
   const changes = [];
+  const seenIds = new Set();
   const list = Array.isArray(data.changes) ? data.changes : null;
   if (!list) return fail(['changes must be an array (or set "nochange": true with a "reading")']);
 
@@ -231,15 +253,26 @@ export function validateReview(data, plan) {
       }
     }
 
+    // Two changes under one id share a checkbox on the review screen: ticking one applies
+    // both, and React renders the list on duplicate keys.
+    let cid = isStr(c.id) ? clampStr(c.id, 40) : 'c' + i;
+    if (seenIds.has(cid)) cid = `${cid}-${i}`;
+    seenIds.add(cid);
+
     const out = {
-      id: isStr(c.id) ? clampStr(c.id, 40) : 'c' + i,
+      id: cid,
       type: c.type,
       target: {
-        ...(target.routineId ? { routineId: target.routineId } : {}),
-        ...(target.exId ? { exId: target.exId } : {}),
+        // Same reason as `evidence` below: this is copied into the synced log. For add-routine
+        // and week nothing above ever looks at routineId, so it is otherwise unbounded.
+        ...(isStr(target.routineId) ? { routineId: clampStr(target.routineId, 40) } : {}),
+        ...(isStr(target.exId) ? { exId: clampStr(target.exId, 40) } : {}),
         ...(isInt(target.weekday, 0, 6) ? { weekday: target.weekday } : {})
       },
       why: clampStr(c.why, 600),
+      // The screen had no way to say WHICH routine: "Remove a routine" was the entire card, and
+      // approving one is irreversible from that screen. The name is right here; send it.
+      ...(routine ? { routineName: clampStr(routine.name || '', 40) } : {}),
       before: currentOf(c.type, routine, planned, plan, target),
       after: c.after ?? null
     };
@@ -248,8 +281,14 @@ export function validateReview(data, plan) {
     // off the plan above, which is the only copy either side should trust.
     switch (c.type) {
       case 'add-exercise': {
+        // The bundle path forbids the same exercise twice in one routine; so must this. A
+        // duplicate makes every later reorder unsatisfiable, makes each targeted change resolve
+        // to whichever copy comes first, and makes one "drop it" delete both.
+        if ((routine.ex || []).some(e => e.id === (c.after || {}).id)) {
+          errors.push(`${where}.after.id "${(c.after || {}).id}" is already in routine "${routine.name}"`); return;
+        }
         const a = c.after || {};
-        if (!isStr(a.id) || !libraryHas(a.id)) { errors.push(`${where}.after.id must be an exercise id from the library`); return; }
+        if (!isStr(a.id) || !knownEx(a.id)) { errors.push(`${where}.after.id must be an exercise id from the library`); return; }
         const perSide = !!a.side;
         if (perSide && isInt(a.reps, 1, 100) && a.reps % 2) { errors.push(ODD_PER_SIDE(`${where}.after.reps`)); return; }
         if (isInt(a.repsMax, 1, 100) && isInt(a.repsMin, 1, 100) && a.repsMax < a.repsMin) { errors.push(INVERTED_RANGE(`${where}.after`)); return; }
@@ -259,7 +298,7 @@ export function validateReview(data, plan) {
           ...(MODES.includes(a.mode) ? { mode: a.mode } : { mode: 'reps' }),
           ...(isInt(a.reps, 1, 100) ? { reps: a.reps } : {}),
           ...(isInt(a.sec, 5, 3600) ? { sec: a.sec } : {}),
-          ...(isNum(a.weight) && a.weight > 0 ? { weight: a.weight } : {}),
+          ...(isNum(a.weight) && a.weight > 0 && a.weight <= MAX_WEIGHT ? { weight: a.weight } : {}),
           ...(POLICIES.includes(a.prog) ? { prog: a.prog } : {}),
           ...(isInt(a.repsMin, 1, 100) ? { repsMin: a.repsMin } : {}),
           ...(isInt(a.repsMax, 1, 100) ? { repsMax: a.repsMax } : {}),
@@ -270,14 +309,19 @@ export function validateReview(data, plan) {
         break;
       }
       case 'swap-exercise': {
+        // Same rule, minus the exercise being swapped out — replacing A with B when B is
+        // already there is a duplicate, not a swap.
+        if ((routine.ex || []).some(e => e.id === (c.after || {}).id && e.id !== target.exId)) {
+          errors.push(`${where}.after.id "${(c.after || {}).id}" is already in routine "${routine.name}"`); return;
+        }
         const a = c.after || {};
-        if (!isStr(a.id) || !libraryHas(a.id)) { errors.push(`${where}.after.id must be an exercise id from the library`); return; }
+        if (!isStr(a.id) || !knownEx(a.id)) { errors.push(`${where}.after.id must be an exercise id from the library`); return; }
         if (a.id === target.exId) { errors.push(`${where} swaps an exercise for itself`); return; }
         out.after = {
           id: a.id, name: libraryName(a.id),
           ...(isInt(a.sets, 1, 10) ? { sets: a.sets } : {}),
           ...(isInt(a.reps, 1, 100) ? { reps: a.reps } : {}),
-          ...(isNum(a.weight) && a.weight > 0 ? { weight: a.weight } : {})
+          ...(isNum(a.weight) && a.weight > 0 && a.weight <= MAX_WEIGHT ? { weight: a.weight } : {})
         };
         break;
       }
@@ -304,7 +348,7 @@ export function validateReview(data, plan) {
       case 'cardio': {
         const a = c.after || {};
         if (!isInt(a.min, 1, 180) && !isNum(a.speed)) { errors.push(`${where}.after must carry min and/or speed`); return; }
-        out.after = { ...(isInt(a.min, 1, 180) ? { min: a.min } : {}), ...(isNum(a.speed) && a.speed > 0 ? { speed: a.speed } : {}) };
+        out.after = { ...(isInt(a.min, 1, 180) ? { min: a.min } : {}), ...(isNum(a.speed) && a.speed > 0 && a.speed <= MAX_SPEED ? { speed: a.speed } : {}) };
         break;
       }
       case 'inc': if (!isNum(c.after) || c.after <= 0 || c.after > MAX_INC) { errors.push(`${where}.after must be a positive increment no larger than ${MAX_INC}`); return; } break;
@@ -344,7 +388,7 @@ export function validateReview(data, plan) {
         // the routine the model asked for minus the exercises it could not have, and hand that
         // to someone as if it were what they were shown.
         const listed = Array.isArray(a.ex) ? a.ex : [];
-        const bad = listed.find(e => !e || !isStr(e.id) || !libraryHas(e.id));
+        const bad = listed.find(e => !e || !isStr(e.id) || !knownEx(e.id));
         if (bad) { errors.push(`${where}.after.ex "${bad.id}" is not in the exercise library — use an id from the library provided in the payload`); return; }
         const ex = listed.slice(0, MAX_EX_PER_ROUTINE);
         if (!ex.length) { errors.push(`${where}.after.ex must list at least one exercise from the library`); return; }
@@ -387,7 +431,63 @@ export function validateReview(data, plan) {
   });
 
   if (errors.length) return fail(errors);
-  if (!changes.length) {
+  // Everything above validates one change against the ORIGINAL plan. These are the things that
+  // are only wrong in company — each one validates alone, and together they are incoherent or
+  // destructive. The user approves a screen, not a change, so the screen has to be coherent.
+  const SCALAR = ['sets', 'reps', 'repsMin', 'repsMax', 'sec', 'inc', 'routine-prog', 'exercise-prog', 'rename-routine', 'week'];
+  const sameValue = (a, b) => JSON.stringify(a ?? null) === JSON.stringify(b ?? null);
+  const byRoutine = new Map();
+  const weekdays = new Set();
+  const removedRoutines = new Set();
+  const addsPerRoutine = new Map();
+  let addedRoutines = 0;
+
+  // A change whose `after` already equals the plan is dropped rather than refused: one
+  // redundant entry should not cost the whole review, and as padding around something
+  // destructive it is exactly what should not reach the screen. If they all go, the answer was
+  // "no change" and is reported as such below.
+  const kept = changes.filter(ch => !(SCALAR.includes(ch.type) && sameValue(ch.before, ch.after)));
+
+  kept.forEach(ch => {
+    const rid = ch.target.routineId;
+    if (rid) {
+      if (!byRoutine.has(rid)) byRoutine.set(rid, []);
+      byRoutine.get(rid).push(ch.type);
+    }
+    if (ch.type === 'remove-routine') removedRoutines.add(rid);
+    if (ch.type === 'add-routine') addedRoutines++;
+    if (ch.type === 'add-exercise') addsPerRoutine.set(rid, (addsPerRoutine.get(rid) || 0) + 1);
+    if (ch.type === 'week') {
+      const d = ch.target.weekday;
+      if (weekdays.has(d)) errors.push(`two changes both reschedule weekday ${d} — only one can win`);
+      weekdays.add(d);
+    }
+  });
+
+  byRoutine.forEach((types, rid) => {
+    // A reorder is a permutation of the list as it stands. Applied after something that added,
+    // removed or replaced an exercise it no longer describes that list, and the client throws
+    // mid-apply — which discards the whole approved set and blames the app.
+    if (types.includes('reorder') && types.some(t => ['add-exercise', 'remove-exercise', 'swap-exercise'].includes(t))) {
+      errors.push(`routine "${routines.get(rid)?.name || rid}" is both reordered and restructured in one review — propose the reorder next time, against the list it will actually have`);
+    }
+    if (removedRoutines.has(rid) && types.some(t => t !== 'remove-routine')) {
+      errors.push(`routine "${routines.get(rid)?.name || rid}" is removed and also changed in the same review`);
+    }
+  });
+
+  // The bundle path bounds these; the change path did not, so 25 changes could walk past both.
+  addsPerRoutine.forEach((n, rid) => {
+    const have = (routines.get(rid)?.ex || []).length;
+    if (have + n > MAX_EX_PER_ROUTINE) errors.push(`routine "${routines.get(rid)?.name || rid}" would end up with ${have + n} exercises, more than the ${MAX_EX_PER_ROUTINE} allowed`);
+  });
+  if (routines.size + addedRoutines - removedRoutines.size > MAX_ROUTINES) {
+    errors.push(`the plan would end up with more than the ${MAX_ROUTINES} routines allowed`);
+  }
+
+  if (errors.length) return fail(errors);
+
+  if (!kept.length) {
     // An empty change list and "no changes" are the same outcome; treat it as the latter
     // rather than showing someone an empty proposal screen (FR-25).
     return { ok: true, nochange: true, reading: clampStr(data.summary || data.reading || '', 1200) };
@@ -397,11 +497,14 @@ export function validateReview(data, plan) {
     proposal: {
       summary: clampStr(data.summary || '', 1200),
       evidence: {
-        from: data.evidence?.from || null,
-        to: data.evidence?.to || null,
+        // Clamped because this is stored verbatim in the synced coach log, and trim() cannot
+        // shrink a single oversized entry — one answer could push a profile permanently over
+        // the state-sync limit.
+        from: isStr(data.evidence?.from) ? clampStr(data.evidence.from, 40) : null,
+        to: isStr(data.evidence?.to) ? clampStr(data.evidence.to, 40) : null,
         sessions: isInt(data.evidence?.sessions, 0, 10000) ? data.evidence.sessions : null
       },
-      changes,
+      changes: kept,
       notes: (Array.isArray(data.notes) ? data.notes : []).filter(isStr).slice(0, 6).map(n => clampStr(n, 600))
     }
   };

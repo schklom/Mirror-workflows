@@ -235,8 +235,12 @@ h4.sec{
 .lrow-s{font-size:13px;color:var(--label-2);line-height:1.3}
 /* flex:none would let a long value ("Follow the routine (Linear progression)") run straight
    through the title next to it, since the title's column is already free to shrink to nothing.
-   Letting the value shrink and ellipsise instead keeps the two out of each other's way. */
-.lrow-v{color:var(--label-2);font-size:17px;letter-spacing:-.012em;flex:0 1 45%;min-width:0;
+   Letting the value shrink and ellipsise instead keeps the two out of each other's way.
+   The cap is max-width, not flex-basis: .lrow-m is flex:1, so its basis is 0 and it absorbs
+   none of the shrink — a long value would otherwise take the whole row and squeeze the title
+   to 21px. A basis of 45% fixes that but reserves the space even for "3", costing the title
+   141px on the rows that need it most. A cap does neither. */
+.lrow-v{color:var(--label-2);font-size:17px;letter-spacing:-.012em;flex:0 1 auto;max-width:45%;min-width:0;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:right}
 .lrow-c{color:var(--label);font-size:15px;flex:none;--icon-stroke:2.4}
 .lrow-k{color:var(--acc);font-size:17px;flex:none;--icon-stroke:2.4}

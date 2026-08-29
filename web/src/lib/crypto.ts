@@ -12,11 +12,15 @@ const ARGON2_SALT_LENGTH = 16;
 const CONTEXT_STRING_ASYM_KEY_WRAP = 'context:asymmetricKeyWrap';
 const CONTEXT_STRING_LOGIN = 'context:loginAuthentication';
 
-const AES_GCM_IV_SIZE_BYTES = 12;
+export const AES_KEY_SIZE_BYTES = 32; // 256 bit
+export const AES_IV_SIZE_BYTES = 12; // 96 bit
+export const AES_TAG_SIZE_BYTES = 16; // 128 bit
 
 const RSA_KEY_SIZE_BYTES = 3072 / 8; // 384 bytes
 
-const base64Decode = (encodedString: string) => {
+const enc = new TextEncoder();
+
+export const base64Decode = (encodedString: string) => {
   try {
     const cleaned = encodedString.trim().replace(/\s/g, '');
     return Uint8Array.from(atob(cleaned), (c) => c.charCodeAt(0));
@@ -25,7 +29,7 @@ const base64Decode = (encodedString: string) => {
   }
 };
 
-const base64Encode = (bytesToEncode: Uint8Array) => {
+export const base64Encode = (bytesToEncode: Uint8Array) => {
   const binString = Array.from(bytesToEncode, (byte) => String.fromCodePoint(byte)).join('');
   return btoa(binString);
 };
@@ -70,8 +74,8 @@ const hashPasswordForKeyWrap = (password: string, salt: Uint8Array) => {
 export const unwrapPrivateKey = async (password: string, keyData: string) => {
   const concatBytes = base64Decode(keyData);
   const saltBytes = concatBytes.slice(0, ARGON2_SALT_LENGTH);
-  const ivBytes = concatBytes.slice(ARGON2_SALT_LENGTH, ARGON2_SALT_LENGTH + AES_GCM_IV_SIZE_BYTES);
-  const wrappedKeyBytes = concatBytes.slice(ARGON2_SALT_LENGTH + AES_GCM_IV_SIZE_BYTES);
+  const ivBytes = concatBytes.slice(ARGON2_SALT_LENGTH, ARGON2_SALT_LENGTH + AES_IV_SIZE_BYTES);
+  const wrappedKeyBytes = concatBytes.slice(ARGON2_SALT_LENGTH + AES_IV_SIZE_BYTES);
 
   const rawAesKey = hashPasswordForKeyWrap(password, saltBytes);
 
@@ -162,8 +166,8 @@ export const decryptData = async (rsaCryptoKey: CryptoKey, encryptedBase64: stri
     const allBytes = base64Decode(encryptedBase64);
 
     const encryptedAesKeyBytes = allBytes.slice(0, RSA_KEY_SIZE_BYTES);
-    const ivBytes = allBytes.slice(RSA_KEY_SIZE_BYTES, RSA_KEY_SIZE_BYTES + AES_GCM_IV_SIZE_BYTES);
-    const encryptedDataBytes = allBytes.slice(RSA_KEY_SIZE_BYTES + AES_GCM_IV_SIZE_BYTES);
+    const ivBytes = allBytes.slice(RSA_KEY_SIZE_BYTES, RSA_KEY_SIZE_BYTES + AES_IV_SIZE_BYTES);
+    const encryptedDataBytes = allBytes.slice(RSA_KEY_SIZE_BYTES + AES_IV_SIZE_BYTES);
 
     const aesKeyBytes = await crypto.subtle.decrypt(
       { name: 'RSA-OAEP' },

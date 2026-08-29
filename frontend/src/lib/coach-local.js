@@ -37,6 +37,7 @@ const HANDLE_LENGTH = 16
 
 let job = null
 let lastError = null
+let last = null   // how the most recent job ended — the same shape the server's status() reports
 // Reported to the screens through the same status shape the server answers with; a toast is
 // also raised because on the server a failed job lands in the admin card, and here there is
 // no admin card — the user is the operator.
@@ -80,7 +81,7 @@ async function bumpDaily() {
 export async function localStatus() {
   const d = await loadCoachDevice()
   if (d.pending && d.pending.expiresAt && d.pending.expiresAt < Date.now()) await saveCoachDevice({ pending: null })
-  return { job, pending: (await loadCoachDevice()).pending || null, cap: await capState(), lastError }
+  return { job, pending: (await loadCoachDevice()).pending || null, cap: await capState(), lastError, last }
 }
 
 export const localReview = (S, note) => start(S, 'review', { note: note ? String(note).slice(0, 1000) : null })
@@ -145,10 +146,12 @@ async function run(S, kind, opts, d, adapter) {
   })
   if (!attempt.ok) {
     lastError = { errorClass: attempt.errorClass, detail: attempt.detail || null }
+    last = { id: job.id, kind, outcome: 'failed', errorClass: attempt.errorClass, at: Date.now() }
     if (notify) notify({ kind: 'failed', errorClass: attempt.errorClass, detail: attempt.detail || null })
     return
   }
   if (attempt.nochange) {
+    last = { id: job.id, kind, outcome: 'nochange', errorClass: null, at: Date.now(), reading: attempt.reading }
     if (notify) notify({ kind: 'nochange', reading: attempt.reading })
     return
   }
@@ -158,8 +161,9 @@ async function run(S, kind, opts, d, adapter) {
     ...attempt.result
   }
   await saveCoachDevice({ pending })
+  last = { id: job.id, kind, outcome: 'ready', errorClass: null, at: Date.now() }
   if (notify) notify({ kind: 'ready', pending })
 }
 
 // Test seam.
-export function _resetLocal() { job = null; lastError = null }
+export function _resetLocal() { job = null; lastError = null; last = null }

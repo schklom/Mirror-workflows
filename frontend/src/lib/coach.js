@@ -27,10 +27,18 @@ export const CONSENT_VERSION = 1
 // ~75 KB; the namespace guard is the backstop for the case nobody predicted.
 export const SNAPSHOT_MAX = 3
 export const LOG_MAX = 50
+export const CHAT_MAX = 40
+export const TIMINGS_MAX = 5
 const NAMESPACE_MAX = 256 * 1024
 
 export const emptyCoach = () => ({
-  consent: null, profile: null, cadence: 'off', lastReview: null, log: [], snapshots: []
+  consent: null, profile: null, cadence: 'off', lastReview: null, log: [], snapshots: [],
+  // The conversation as the user saw it (views/CoachChat.jsx): their messages, and what the
+  // Coach did with them. Short, synced, and trimmed with the log — the proposal itself lives
+  // server-side (or in the phone's device file) until it is applied or dismissed.
+  chat: [],
+  // How long the last few jobs took, so the typing bubble can say "usually about 2 minutes".
+  timings: []
 })
 const coachOf = s => (s.coach = s.coach || emptyCoach())
 
@@ -267,10 +275,55 @@ function trim(s) {
   const c = coachOf(s)
   let guard = 0
   while (JSON.stringify(c).length > NAMESPACE_MAX && guard++ < 60) {
-    if ((c.snapshots || []).length > 1) c.snapshots.shift()
+    if ((c.chat || []).length > 8) c.chat.shift()
+    else if ((c.snapshots || []).length > 1) c.snapshots.shift()
     else if ((c.log || []).length > 1) c.log.shift()
     else break
   }
+}
+
+/* ============================ the conversation ============================ */
+
+/**
+ * One line of the chat: `{ id, role: 'user'|'coach', kind, text?, at, ref? }`.
+ * kinds — user: 'intake' (the questionnaire, rendered from the live profile), 'text';
+ *         coach: 'text', 'applied', 'dismissed', 'reverted', 'error', 'nochange'.
+ */
+export function appendChat(s, entry) {
+  const c = coachOf(s)
+  c.chat = [...(c.chat || []), { id: entry.id || uid(), at: entry.at || Date.now(), ...entry }].slice(-CHAT_MAX)
+  trim(s)
+}
+
+/** A job just finished: remember how long it took, for the next typing bubble. */
+export function recordTiming(s, ms) {
+  if (!(ms > 0)) return
+  const c = coachOf(s)
+  c.timings = [...(c.timings || []), Math.round(ms)].slice(-TIMINGS_MAX)
+}
+/** Median of the observed job durations, or null before any. */
+export function estimateMs(S) {
+  const arr = [...(S?.coach?.timings || [])].filter(n => n > 0).sort((a, b) => a - b)
+  if (!arr.length) return null
+  return arr[Math.floor(arr.length / 2)]
+}
+
+/** The questionnaire, as the lines the chat shows back to the user. */
+export function profileLines(p) {
+  if (!p) return []
+  const goal = { strength: 'Get stronger', muscle: 'Build muscle', general: 'General fitness', fatloss: 'Lose fat', endurance: 'Endurance' }[p.goal]
+  const exp = { new: 'New to lifting', returning: 'Coming back after a break', regular: 'Training regularly' }[p.experience]
+  const lines = []
+  if (goal) lines.push(t(goal))
+  if (exp) lines.push(t(exp))
+  if (p.daysPerWeek) lines.push(t('{0} days a week', p.daysPerWeek))
+  if (p.sessionMin) lines.push(t('{0} min per session', p.sessionMin))
+  if (p.equipment?.length) lines.push(p.equipment.join(', '))
+  if (p.limitations) lines.push(t('Limits: {0}', p.limitations))
+  if (p.likes) lines.push(t('Likes: {0}', p.likes))
+  if (p.dislikes) lines.push(t('Avoid: {0}', p.dislikes))
+  if (p.notes) lines.push(p.notes)
+  return lines
 }
 
 /* ============================ applying a created plan ============================ */

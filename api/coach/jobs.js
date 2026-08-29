@@ -150,8 +150,11 @@ export function enqueue(uid, opts) {
 
   // The privilege drop is what keeps a provider runtime out of ./data. If it cannot be
   // performed, there is no job — see canDropPrivileges for why this is not a warning either.
-  const priv = canDropPrivileges();
-  if (!priv.ok) throw new CoachError('unprivileged', `Coach jobs are disabled: ${priv.why}`);
+  // A provider that spawns nothing has no process to drop, and is not refused for it.
+  if (adapterFor(cfgStore.load().provider)?.spawns !== false) {
+    const priv = canDropPrivileges();
+    if (!priv.ok) throw new CoachError('unprivileged', `Coach jobs are disabled: ${priv.why}`);
+  }
 
   const caps = cfgStore.load().caps || {};
   const { used, limit } = capState(uid);
@@ -245,14 +248,15 @@ async function execute(job) {
     previous: pendingCreate?.bundle || null
   });
 
-  const jobDir = fs.mkdtempSync(path.join(os.tmpdir(), 'coach-'));
-  const env = cfgStore.jobEnv(jobDir, cfgStore.credentialFor(job.uid));
+  // An HTTPS provider has no child process, so no directory for one to live in either.
+  const jobDir = adapter.spawns === false ? null : fs.mkdtempSync(path.join(os.tmpdir(), 'coach-'));
+  const env = cfgStore.jobEnv(jobDir || os.tmpdir(), cfgStore.credentialFor(job.uid));
   try {
-    const ids = unprivilegedIds();
+    const ids = jobDir && unprivilegedIds();
     if (ids) fs.chownSync(jobDir, ids.uid, ids.gid);
 
     const attempt = await runPipeline({
-      adapter, cfg, kind: job.kind, payload, model: cfg.model || null, timeoutMs: TIMEOUT_MS,
+      adapter, cfg, kind: job.kind, payload, model: cfgStore.modelFor(cfg), timeoutMs: TIMEOUT_MS,
       invokeOpts: { jobDir, env }
     });
     if (!attempt.ok) {
@@ -272,7 +276,7 @@ async function execute(job) {
     };
     return finish(job, { outcome: 'ready', pending });
   } finally {
-    fs.rmSync(jobDir, { recursive: true, force: true });
+    if (jobDir) fs.rmSync(jobDir, { recursive: true, force: true });
   }
 }
 
@@ -298,19 +302,19 @@ export async function testRun() {
   const cfg = cfgStore.load();
   const adapter = adapterFor(cfg.provider);
   if (!adapter) return { ok: false, error: 'no provider configured' };
-  const jobDir = fs.mkdtempSync(path.join(os.tmpdir(), 'coach-test-'));
+  const jobDir = adapter.spawns === false ? null : fs.mkdtempSync(path.join(os.tmpdir(), 'coach-test-'));
   try {
     // No user asked for this, so there is no profile whose account is being spent. In instance
     // mode that is the bound profile's credential — the one the round-trip is meant to prove —
     // and in per-profile mode it is nobody's, which is the honest answer: an admin cannot test
     // a credential that belongs to a profile.
-    const env = cfgStore.jobEnv(jobDir, cfgStore.credentialFor(cfg.boundUid));
-    const ids = unprivilegedIds();
+    const env = cfgStore.jobEnv(jobDir || os.tmpdir(), cfgStore.credentialFor(cfgStore.boundUidFor(cfg)));
+    const ids = jobDir && unprivilegedIds();
     if (ids) fs.chownSync(jobDir, ids.uid, ids.gid);
     const check = await adapter.check(cfg, env);
     if (!check.ok) return { ok: false, error: check.error || 'the provider runtime could not be run' };
     const r = await adapter.invoke({
-      cfg, jobDir, env, model: cfg.model || null, timeoutMs: 90000,
+      cfg, jobDir, env, model: cfgStore.modelFor(cfg), timeoutMs: 90000,
       prompt: 'Reply with exactly this JSON object and nothing else: {"coach_contract":1,"ok":true}'
     });
     if (r.timedOut) return { ok: false, version: check.version, error: 'the provider did not answer in time' };
@@ -324,7 +328,7 @@ export async function testRun() {
     }
     return { ok: true, version: check.version };
   } finally {
-    fs.rmSync(jobDir, { recursive: true, force: true });
+    if (jobDir) fs.rmSync(jobDir, { recursive: true, force: true });
   }
 }
 

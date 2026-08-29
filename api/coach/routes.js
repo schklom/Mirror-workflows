@@ -9,6 +9,7 @@ import * as jobs from './jobs.js';
 import { adapterFor } from './adapters/index.js';
 import { canDropPrivileges } from './adapters/spawn.js';
 import { DATA_CATEGORIES } from './core/payload.js';
+import { validateBaseUrl, baseUrlFor } from './core/providers.js';
 
 // Job failures the user sees, in the app's own voice. The raw provider detail never reaches
 // them — it goes to the admin card, which is where someone can act on it (FR-47).
@@ -107,35 +108,51 @@ export function coachRoutes({ json, readBody, readSession, requireAdmin }) {
       if (!requireAdmin(req, res)) return;
       const cfg = cfgStore.load();
       const adapter = adapterFor(cfg.provider);
-      const check = adapter ? await adapter.check(cfg, cfgStore.jobEnv(process.env.TMPDIR || '/tmp')) : { ok: false, error: 'unknown provider' };
+      // For the runtime-backed providers this asks "is the runtime there"; for an HTTPS one it
+      // lists the models with the stored key, which is the round trip the card wants anyway.
+      const cred = adapter?.spawns === false ? cfgStore.credentialFor(cfgStore.boundUidFor(cfg)) : undefined;
+      const check = adapter ? await adapter.check(cfg, cfgStore.jobEnv(process.env.TMPDIR || '/tmp', cred?.ok ? cred : undefined)) : { ok: false, error: 'unknown provider' };
       const log = cfg.log || [];
       const today = new Date().toISOString().slice(0, 10);
       json(res, 200, {
         disabledByEnv: cfgStore.COACH_DISABLED,
         enabled: !!cfg.enabled,
         provider: cfg.provider,
-        providers: Object.entries(cfgStore.PROVIDERS).map(([id, p]) => ({ id, label: p.label, runtime: p.runtime, setupToken: !!p.setupToken, deviceLogin: !!p.deviceLogin, apiKey: !!p.apiKeyEnv })),
-        model: cfg.model,
+        providers: Object.entries(cfgStore.PROVIDERS).map(([id, p]) => ({
+          id, label: p.label, runtime: p.runtime,
+          setupToken: !!p.setupToken, deviceLogin: !!p.deviceLogin, apiKey: !!p.apiKeyEnv,
+          http: !!p.http, baseUrl: !!p.baseUrl, keyOptional: !!p.keyOptional, keyPlaceholder: p.keyPlaceholder || null,
+          defaultModel: p.defaultModel || null,
+          // Which providers already hold a key — so switching chips is visibly not a reset.
+          connected: !!(cfgStore.authFor(cfg, id) && cfgStore.authFor(cfg, id).data)
+        })),
+        model: cfgStore.modelFor(cfg),
+        models: cfg.models,
+        baseUrl: cfgStore.providerMeta(cfg).http ? baseUrlFor(cfg.provider, cfg) : null,
+        knownModels: check.models || null,
         caps: cfg.caps,
-        runtime: { ok: !!check.ok, version: check.version || null, error: check.error || null },
+        runtime: { ok: !!check.ok, version: check.version || null, error: check.error || null, needsKey: !!check.needsKey },
         authMode: cfg.authMode,
-        boundUid: cfg.boundUid || null,
+        boundUid: cfgStore.boundUidFor(cfg),
         /* Whether a credential is filed, and whose — never the credential. `unreadable` is its
            own state rather than "not connected" because it has a specific cause and a specific
            fix: ./data was restored without its `secret`, so the blob is intact and undecryptable,
            and connecting again is the way out. */
         auth: (() => {
-          if (!cfgStore.providerMeta(cfg).oauthEnv && !cfgStore.providerMeta(cfg).apiKeyEnv) {
-            return { state: 'not-required' };
-          }
-          if (!cfg.auth || !cfg.auth.data) return { state: 'none' };
-          if (!cfgStore.decrypt(cfg.auth.data)) return { state: 'unreadable' };
-          return { state: 'connected', type: cfg.auth.type || null, account: cfg.auth.account || null };
+          const meta = cfgStore.providerMeta(cfg);
+          const rec = cfgStore.authFor(cfg);
+          if (!meta.oauthEnv && !meta.apiKeyEnv) return { state: 'not-required' };
+          if (!rec || !rec.data) return { state: meta.keyOptional ? 'optional' : 'none' };
+          if (!cfgStore.decrypt(rec.data)) return { state: 'unreadable' };
+          return { state: 'connected', type: rec.type || null, account: rec.account || null, connectedAt: rec.connectedAt || null };
         })(),
         // Whether the privilege drop can actually be performed. Surfaced because the control
         // now fails closed: if this reads false, no job runs, and the admin needs to know that
-        // from the card rather than from a user reporting that nothing happens.
-        unprivileged: canDropPrivileges(),
+        // from the card rather than from a user reporting that nothing happens. An HTTPS
+        // provider has no process to drop, and the card must not show a red banner for it.
+        unprivileged: adapter?.spawns === false
+          ? { ok: true, dropped: false, why: 'this provider runs no child process' }
+          : canDropPrivileges(),
         // Counts and outcomes only — never intake answers, payloads or proposals (FR-12/A4).
         jobsToday: log.filter(e => (e.at || '').slice(0, 10) === today).length,
         lastSuccess: cfgStore.lastSuccess(),
@@ -149,13 +166,23 @@ export function coachRoutes({ json, readBody, readSession, requireAdmin }) {
       const body = await readBody(req);
       const patch = {};
       if (body.enabled !== undefined) patch.enabled = !!body.enabled;
+      const current = cfgStore.load();
       if (body.provider !== undefined) {
         if (!cfgStore.PROVIDERS[body.provider]) return json(res, 400, { error: 'unknown provider' });
-        // Credentials belong to the provider that issued them.
-        if (body.provider !== cfgStore.load().provider) patch.auth = null;
+        // Credentials, model and endpoint are all keyed by provider — switching never drops them.
         patch.provider = body.provider;
       }
-      if (body.model !== undefined) patch.model = body.model ? String(body.model).slice(0, 80) : null;
+      const target = patch.provider || current.provider;
+      if (body.model !== undefined) {
+        patch.models = { ...current.models };
+        if (body.model) patch.models[target] = String(body.model).slice(0, 80); else delete patch.models[target];
+      }
+      if (body.baseUrl !== undefined) {
+        if (!cfgStore.PROVIDERS[target].baseUrl) return json(res, 400, { error: `${target} has a fixed endpoint` });
+        const v = validateBaseUrl(body.baseUrl);
+        if (!v.ok) return json(res, 400, { error: v.error });
+        patch.providerOptions = { ...current.providerOptions, [target]: { ...(current.providerOptions[target] || {}), baseUrl: v.value } };
+      }
       if (body.caps) {
         patch.caps = {
           perProfileDaily: Math.max(0, Math.min(200, +body.caps.perProfileDaily || 0)),
@@ -172,6 +199,18 @@ export function coachRoutes({ json, readBody, readSession, requireAdmin }) {
       json(res, 200, r);
     },
 
+    /* The models the configured endpoint serves, so the card can offer a list rather than a
+       text field that goes stale with every model release. HTTPS providers only. */
+    'POST /api/admin/coach/models': async (req, res) => {
+      if (!requireAdmin(req, res)) return;
+      const cfg = cfgStore.load();
+      const adapter = adapterFor(cfg.provider);
+      if (!adapter || typeof adapter.models !== 'function') return json(res, 200, { ok: false, error: 'this provider does not list models', models: [] });
+      const cred = cfgStore.credentialFor(cfgStore.boundUidFor(cfg));
+      const env = cfgStore.jobEnv(process.env.TMPDIR || '/tmp', cred.ok ? cred : undefined);
+      json(res, 200, await adapter.models(cfg, env));
+    },
+
     /* Connect the instance credential. Deferred while the fixture was the only provider — it
        has none, so there was nothing to connect. The real providers give it something to hold,
        which is the condition this route was waiting on.
@@ -184,26 +223,31 @@ export function coachRoutes({ json, readBody, readSession, requireAdmin }) {
       if (!requireAdmin(req, res)) return;
       const body = await readBody(req);
       const cfg = cfgStore.load();
-      const meta = cfgStore.providerMeta(cfg);
+      // A key may be filed for a provider that is not the active one, so the chips can be
+      // prepared ahead of switching; by default it is the active provider's.
+      const provider = body.provider !== undefined ? String(body.provider) : cfg.provider;
+      if (!cfgStore.PROVIDERS[provider]) return json(res, 400, { error: 'unknown provider' });
+      const meta = cfgStore.PROVIDERS[provider];
       const type = String(body.type || '');
       const envVar = (type === 'cli-token' || type === 'oauth') ? meta.oauthEnv
         : type === 'apikey' ? meta.apiKeyEnv : null;
       if (!envVar) {
-        return json(res, 400, { error: `${cfg.provider} does not take a credential of type "${type}"` });
+        return json(res, 400, { error: `${provider} does not take a credential of type "${type}"` });
       }
       const token = String(body.token || '').trim();
       if (!token) return json(res, 400, { error: 'no token supplied' });
-      // boundUid resets with the credential: a new account has not been spent by anyone yet.
-      cfgStore.save({
-        auth: { type, account: String(body.account || '').slice(0, 120), data: cfgStore.encrypt({ token }) },
-        boundUid: null
+      cfgStore.saveAuth(provider, {
+        type, account: String(body.account || '').slice(0, 120), data: cfgStore.encrypt({ token }), connectedAt: new Date().toISOString()
       });
       json(res, 200, { ok: true });
     },
 
     'POST /api/admin/coach/disconnect': async (req, res) => {
       if (!requireAdmin(req, res)) return;
-      cfgStore.save({ auth: null, boundUid: null });
+      const body = await readBody(req);
+      const provider = body.provider !== undefined ? String(body.provider) : cfgStore.load().provider;
+      if (!cfgStore.PROVIDERS[provider]) return json(res, 400, { error: 'unknown provider' });
+      cfgStore.saveAuth(provider, null);
       json(res, 200, { ok: true });
     },
 

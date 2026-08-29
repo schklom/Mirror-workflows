@@ -16,8 +16,8 @@ const cfg = await import('../coach/config.js');
 function connectInstance(token = 'tok-instance') {
   cfg.reset();
   cfg.save({
-    enabled: true, provider: 'claude', authMode: 'instance', boundUid: null,
-    auth: { type: 'cli-token', account: 'owner@example.test', data: cfg.encrypt({ token }) }
+    enabled: true, provider: 'claude', authMode: 'instance', boundUid: {},
+    auth: { claude: { type: 'cli-token', account: 'owner@example.test', data: cfg.encrypt({ token }) } }
   });
 }
 
@@ -26,10 +26,10 @@ test('instance mode: the first profile to spend the credential binds it', () => 
   const first = cfg.credentialFor('alice');
   assert.equal(first.ok, true);
   assert.equal(first.auth.token, 'tok-instance');
-  assert.equal(cfg.load().boundUid, null, 'resolving alone must not bind — only spending does');
+  assert.equal(cfg.boundUidFor(), null, 'resolving alone must not bind — only spending does');
 
   cfg.bindInstanceCredential('alice');
-  assert.equal(cfg.load().boundUid, 'alice');
+  assert.equal(cfg.boundUidFor(), 'alice');
 });
 
 test('instance mode: a second profile is refused, not warned', () => {

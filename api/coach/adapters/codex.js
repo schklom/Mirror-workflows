@@ -28,6 +28,7 @@ export function argvFor(model) {
 
 export default {
   id: 'codex',
+  spawns: true,
   cli: CLI,
 
   async check(cfg, env) {

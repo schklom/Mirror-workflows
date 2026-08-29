@@ -24,6 +24,7 @@
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
+import { HTTP_PROVIDERS, baseUrlFor } from './core/providers.js';
 
 const DATA = process.env.DATA_DIR || '/data';
 const FILE = path.join(DATA, 'coach.json');
@@ -60,19 +61,28 @@ export const PROVIDERS = {
   codex: {
     label: 'Codex (OpenAI)', runtime: 'Codex CLI',
     apiKeyEnv: 'CODEX_API_KEY', oauthEnv: null, credentialHomeEnv: 'CODEX_HOME'
-  }
+  },
+  // The plain-HTTPS providers — Anthropic, OpenAI, Gemini and any OpenAI-compatible endpoint.
+  // Described once in core/providers.js so the phone's picker and this table cannot disagree.
+  // They spawn nothing and need no runtime in the image: the default api image runs them.
+  ...HTTP_PROVIDERS
 };
 
 const DEFAULTS = {
   enabled: false,
   provider: 'fixture',
-  model: null,
   authMode: 'instance',                              // 'instance' | 'profile'
-  auth: null,                                        // instance mode: { type, account, data:<encrypted> }
-  boundUid: null,                                    // instance mode: the profile the credential bound to
+  // Everything a provider owns is keyed by provider, so switching between them never throws
+  // a key away — the one that was pasted for Anthropic is still there when you come back.
+  auth: {},                                          // instance mode: { [provider]: { type, account, data:<encrypted>, connectedAt } }
+  models: {},                                        // { [provider]: model id }
+  providerOptions: {},                               // { [provider]: { baseUrl } }
+  boundUid: {},                                      // instance mode: { [provider]: the profile its credential bound to }
   caps: { perProfileDaily: 10, instanceDaily: 0 },   // 0 = unlimited
   log: []
 };
+const PER_PROVIDER = ['auth', 'models', 'providerOptions', 'boundUid'];
+const isPlainObj = v => !!v && typeof v === 'object' && !Array.isArray(v);
 const LOG_MAX = 100;
 
 /* ---------- at-rest encryption ---------- */
@@ -113,13 +123,28 @@ export function load() {
   let stored = {};
   try { stored = JSON.parse(fs.readFileSync(FILE, 'utf8')); } catch { /* absent = feature off */ }
   cache = { ...DEFAULTS, ...stored, caps: { ...DEFAULTS.caps, ...(stored.caps || {}) } };
-  // A retired provider must not leave the admin page with no chip selected, or keep using its
-  // old credential. The next normal save also drops its legacy fields.
-  if (!PROVIDERS[cache.provider]) {
-    cache.provider = DEFAULTS.provider;
-    cache.auth = null;
-    cache.boundUid = null;
+
+  // Until v1.2.11 this file held ONE credential, ONE model and ONE binding — for whichever
+  // provider was selected at the time. Lift each onto that provider. One-way on purpose: a
+  // downgrade will not read the maps back, which costs the owner one paste of the key.
+  const legacy = PROVIDERS[stored.provider] ? stored.provider : null;
+  if (stored.auth && stored.auth.data) cache.auth = legacy ? { [legacy]: stored.auth } : {};
+  if (typeof stored.model === 'string' && stored.model) {
+    cache.models = { ...(legacy ? { [legacy]: stored.model } : {}), ...(isPlainObj(stored.models) ? stored.models : {}) };
   }
+  if (typeof stored.boundUid === 'string') cache.boundUid = legacy ? { [legacy]: stored.boundUid } : {};
+  delete cache.model;
+  // Every per-provider map holds only providers this build knows. That drops a retired
+  // provider's leftovers and, because the keys are checked against the table, anything a
+  // hand-edited file might smuggle in as a key.
+  for (const k of PER_PROVIDER) {
+    const src = isPlainObj(cache[k]) ? cache[k] : {};
+    const clean = {};
+    for (const p of Object.keys(src)) if (Object.prototype.hasOwnProperty.call(PROVIDERS, p)) clean[p] = src[p];
+    cache[k] = clean;
+  }
+  // A retired provider must not leave the admin page with no chip selected.
+  if (!PROVIDERS[cache.provider]) cache.provider = DEFAULTS.provider;
   if (cache.authMode !== 'profile') cache.authMode = 'instance';
   return cache;
 }
@@ -131,6 +156,31 @@ export function save(patch) {
 }
 // Test seam: forget the in-memory copy so the next load() re-reads from disk.
 export function reset() { cache = null; keyCache = null; }
+
+/* ---------- what one provider owns ----------
+   The only way the rest of the code reads the per-provider maps, so the shape stays here. */
+export const authFor = (cfg = load(), p = cfg.provider) => (cfg.auth && cfg.auth[p]) || null;
+export const modelFor = (cfg = load(), p = cfg.provider) => (cfg.models && cfg.models[p]) || (PROVIDERS[p] && PROVIDERS[p].defaultModel) || null;
+export const optionsFor = (cfg = load(), p = cfg.provider) => (cfg.providerOptions && cfg.providerOptions[p]) || {};
+export const boundUidFor = (cfg = load(), p = cfg.provider) => (cfg.boundUid && cfg.boundUid[p]) || null;
+export function saveAuth(provider, auth) {
+  const cfg = load();
+  const next = { ...cfg.auth };
+  if (auth) next[provider] = auth; else delete next[provider];
+  // boundUid resets with the credential: a new account has not been spent by anyone yet.
+  const bound = { ...cfg.boundUid }; delete bound[provider];
+  return save({ auth: next, boundUid: bound });
+}
+export function saveModel(provider, model) {
+  const next = { ...load().models };
+  if (model) next[provider] = model; else delete next[provider];
+  return save({ models: next });
+}
+export function saveOptions(provider, patch) {
+  const all = { ...load().providerOptions };
+  all[provider] = { ...(all[provider] || {}), ...patch };
+  return save({ providerOptions: all });
+}
 
 /* ---------- per-profile credentials ---------- */
 
@@ -178,18 +228,27 @@ export function credentialFor(uid) {
   }
 
   // instance mode
-  if (cfg.boundUid && cfg.boundUid !== uid) {
+  const bound = boundUidFor(cfg);
+  if (bound && bound !== uid) {
     return { ok: false, reason: 'shared-account', message: SHARED_ACCOUNT_REFUSAL, mode: 'instance' };
   }
-  const auth = cfg.auth && cfg.auth.data ? decrypt(cfg.auth.data) : null;
-  if (!auth || !auth.token) return { ok: false, reason: 'no-credential', mode: 'instance' };
-  return { ok: true, auth, type: cfg.auth.type, account: cfg.auth.account || null, mode: 'instance' };
+  const rec = authFor(cfg);
+  const auth = rec && rec.data ? decrypt(rec.data) : null;
+  if (!auth || !auth.token) {
+    // An endpoint that takes no key (a model on the LAN) is connected without one. Only when
+    // nothing was ever filed — a filed key that fails to decrypt is still a failure.
+    if (providerMeta(cfg).keyOptional && !rec) return { ok: true, auth: null, type: null, account: null, mode: 'instance' };
+    return { ok: false, reason: 'no-credential', mode: 'instance' };
+  }
+  return { ok: true, auth, type: rec.type, account: rec.account || null, mode: 'instance' };
 }
 
 /** First profile to actually spend the instance credential binds it. */
 export function bindInstanceCredential(uid) {
   const cfg = load();
-  if (cfg.authMode === 'instance' && !cfg.boundUid && cfg.provider !== 'fixture') save({ boundUid: uid });
+  if (cfg.authMode === 'instance' && !boundUidFor(cfg) && cfg.provider !== 'fixture' && authFor(cfg)) {
+    save({ boundUid: { ...cfg.boundUid, [cfg.provider]: uid } });
+  }
 }
 
 /** Whose account a profile is about to spend — rendered in the UI, never a secret. */
@@ -225,7 +284,9 @@ export function isConnected() {
   if (!isEnabled()) return false;
   if (cfg.provider === 'fixture') return true;
   if (cfg.authMode === 'profile') return true;
-  return !!(cfg.auth && decrypt(cfg.auth.data));
+  const rec = authFor(cfg);
+  if (!rec) return !!providerMeta(cfg).keyOptional && !!baseUrlFor(cfg.provider, cfg);
+  return !!decrypt(rec.data);
 }
 
 /** What /api/config tells every client. Absent ⇒ no Coach UI exists anywhere (FR-55/56). */

@@ -25,8 +25,19 @@ export default function AdminCoach() {
   const openSheet = useUI(s => s.openSheet)
   const [d, setD] = useState(null)
   const [busy, setBusy] = useState(false)
+  // The models the endpoint serves, fetched on demand. Seeded from the status call when the
+  // stored key already let it list them.
+  const [models, setModels] = useState(null)
 
-  const load = () => api('/api/admin/coach').then(setD).catch(e => toast(e.message || 'Failed to load'))
+  const load = () => api('/api/admin/coach').then(r => { setD(r); setModels(r.knownModels || null) }).catch(e => toast(e.message || 'Failed to load'))
+  const loadModels = async () => {
+    setBusy(true)
+    try {
+      const r = await api('/api/admin/coach/models', { method: 'POST', body: '{}' })
+      if (r.ok) { setModels(r.models); toast(r.models.length + ' models') } else toast(r.error || 'Could not list models')
+    } catch (e) { toast(e.message) }
+    setBusy(false)
+  }
   useEffect(() => { load() }, [])
 
   const patch = async body => {
@@ -59,7 +70,7 @@ export default function AdminCoach() {
   </div>
 
   const meta = d.providers.find(p => p.id === d.provider) || {}
-  const authed = d.auth?.state === 'connected' || d.auth?.state === 'not-required'
+  const authed = d.auth?.state === 'connected' || d.auth?.state === 'not-required' || d.auth?.state === 'optional'
   const live = d.enabled && d.runtime.ok && authed
 
   return <div className="card" style={{ borderColor: live ? 'var(--acc)' : undefined }}>
@@ -109,9 +120,20 @@ export default function AdminCoach() {
       {/* provider */}
       <h4 className="sec" style={{ marginTop: 4 }}>Provider</h4>
       <div className="row" style={{ flexWrap: 'wrap', gap: 7, marginBottom: 10 }}>
-        {d.providers.map(p => <button key={p.id} className={'chip' + (p.id === d.provider ? ' on' : '')}
-          disabled={busy} onClick={() => patch({ provider: p.id })}>{p.label}</button>)}
+        {d.providers.map(p => <button key={p.id} className={'chip' + (p.id === d.provider ? ' on' : '')} title={p.connected ? 'a key is stored for this provider' : undefined}
+          disabled={busy} onClick={() => patch({ provider: p.id })}>{p.label}{p.connected ? ' ·' : ''}</button>)}
       </div>
+      {meta.http && <div className="dim small" style={{ marginTop: -4, marginBottom: 10 }}>
+        Plain HTTPS to the provider — no AI runtime needed in the image, so this works on the default <code>api</code> image. Keys stay per provider when you switch.
+      </div>}
+
+      {/* endpoint — only for the provider whose endpoint is the whole configuration */}
+      {meta.baseUrl && <>
+        <h4 className="sec">Endpoint</h4>
+        <TextField defaultValue={d.baseUrl || ''} placeholder="http://ollama.lan:11434 or https://openrouter.ai/api"
+          onBlur={e => e.target.value !== (d.baseUrl || '') && patch({ baseUrl: e.target.value })} />
+        <div className="dim small" style={{ marginBottom: 10 }}>Anything that serves OpenAI's Chat Completions shape: Ollama, LM Studio, vLLM, OpenRouter, a gateway of your own. The host is written to the job log.</div>
+      </>}
 
       {/* credential */}
       {(meta.setupToken || meta.apiKey) && <>
@@ -135,8 +157,10 @@ export default function AdminCoach() {
           <div className="row" style={{ gap: 8, flexWrap: 'wrap' }}>
             {meta.setupToken && <Button size="sm" variant="primary" icon="key" disabled={busy}
               onClick={() => openSheet(close => <SetupTokenSheet close={close} onDone={load} label={meta.label} />)}>Add CLI token</Button>}
-            {meta.apiKey && !meta.setupToken && <Button size="sm" icon="lock" disabled={busy}
-              onClick={() => openSheet(close => <ApiKeySheet close={close} onDone={load} label={meta.label} />)}>Use an API key</Button>}
+            {meta.apiKey && <Button size="sm" variant={meta.setupToken ? undefined : 'primary'} icon="lock" disabled={busy}
+              onClick={() => openSheet(close => <ApiKeySheet close={close} onDone={load} label={meta.label} placeholder={meta.keyPlaceholder} optional={meta.keyOptional} />)}>
+              {meta.keyOptional ? 'Add an API key (optional)' : 'Use an API key'}</Button>}
+            {meta.keyOptional && <Button size="sm" icon="check" disabled={busy} onClick={test}>Test the Coach</Button>}
           </div>
         </>}
       </>}
@@ -154,8 +178,19 @@ export default function AdminCoach() {
       <div className="dim small" style={{ marginBottom: 10 }}>0 = no limit. Every job is one session on your provider account.</div>
 
       <h4 className="sec">Model</h4>
-      <TextField defaultValue={d.model || ''} placeholder="(the provider default)"
-        onBlur={e => e.target.value !== (d.model || '') && patch({ model: e.target.value })} />
+      {models && models.length ? <>
+        <select className="sel" value={models.includes(d.model) ? d.model : ''} disabled={busy} style={{ width: '100%' }}
+          onChange={e => patch({ model: e.target.value })}>
+          <option value="">{meta.defaultModel ? `(default: ${meta.defaultModel})` : '(pick a model)'}</option>
+          {!models.includes(d.model) && d.model && <option value={d.model}>{d.model} (not in the list)</option>}
+          {models.map(m => <option key={m} value={m}>{m}</option>)}
+        </select>
+      </> : <TextField key={d.provider} defaultValue={d.models?.[d.provider] || ''} placeholder={meta.defaultModel ? `(default: ${meta.defaultModel})` : meta.baseUrl ? 'pick one from the endpoint' : '(the provider default)'}
+        onBlur={e => e.target.value !== (d.models?.[d.provider] || '') && patch({ model: e.target.value })} />}
+      {meta.http && <div className="row" style={{ gap: 8, marginTop: 6, marginBottom: 6 }}>
+        <Button size="sm" disabled={busy} onClick={loadModels}>{models ? 'Refresh models' : 'List models'}</Button>
+        {models && models.length ? <span className="dim small">{models.length} served by the endpoint</span> : null}
+      </div>}
 
       {d.lastError && <>
         <h4 className="sec">Last failure</h4>
@@ -178,7 +213,7 @@ export default function AdminCoach() {
 }
 
 const authLabel = a => ({
-  connected: 'connected', 'not-required': 'n/a', disconnected: 'needed', expired: 'expired', unreadable: 'unreadable', 'replace-required': 'replace'
+  connected: 'connected', 'not-required': 'n/a', none: 'needed', optional: 'none (optional)', disconnected: 'needed', expired: 'expired', unreadable: 'unreadable', 'replace-required': 'replace'
 }[a?.state] || '—')
 
 const credentialLabel = type => ({
@@ -219,7 +254,7 @@ function SetupTokenSheet({ close, onDone, label }) {
   </>
 }
 
-function ApiKeySheet({ close, onDone, label }) {
+function ApiKeySheet({ close, onDone, label, placeholder, optional }) {
   const toast = useUI(s => s.toast)
   const [key, setKey] = useState('')
   const [busy, setBusy] = useState(false)
@@ -234,9 +269,9 @@ function ApiKeySheet({ close, onDone, label }) {
   return <>
     <h3>{label} API key</h3>
     <div className="muted small" style={{ lineHeight: 1.5, marginBottom: 12 }}>
-      Stored encrypted on this server and passed to the provider runtime only while a job runs. It is never shown again and never leaves the server.
+      Stored encrypted on this server and sent to the provider only while a job runs. It is never shown again and never leaves the server{optional ? ' — and for an endpoint that takes no key, leave this empty.' : '.'}
     </div>
-    <TextField value={key} autoFocus type="password" placeholder="sk-…" onChange={e => setKey(e.target.value)} />
+    <TextField value={key} autoFocus type="password" placeholder={placeholder || 'sk-…'} onChange={e => setKey(e.target.value)} />
     <div style={{ height: 12 }} />
     <Button variant="primary" disabled={busy || !key.trim()} onClick={save}>Save key</Button>
     <div style={{ height: 8 }} />

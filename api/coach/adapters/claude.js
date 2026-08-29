@@ -78,6 +78,7 @@ function spawnAsCoach({ command, args, cwd, env, signal }) {
 
 export default {
   id: 'claude',
+  spawns: true,
   runtime: 'Claude Agent SDK',
 
   /* Importing the package is the check: it is exactly what a job will do, and it is the one

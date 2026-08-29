@@ -261,3 +261,49 @@ test('a job is refused outright when the privilege drop cannot be performed', ()
     forcePrivilegeVerdict({ ok: true, dropped: false, why: 'pinned by the test suite' });
   }
 });
+
+test('an HTTPS provider is not refused for lacking a privilege drop, and runs end to end through the queue', async () => {
+  // A local server speaking OpenAI's Chat Completions shape, answering a valid "no change"
+  // review. This is the whole reason the HTTP adapters exist: no runtime, no child process,
+  // nothing to drop privileges on — so the gate that refuses everything on a host without a
+  // `coach` user must let this one through, and the job must still run the real pipeline.
+  const http = await import('node:http');
+  const seen = [];
+  const server = http.createServer((req, res) => {
+    let body = '';
+    req.on('data', c => { body += c; });
+    req.on('end', () => {
+      seen.push({ url: req.url, auth: req.headers.authorization, body: JSON.parse(body || '{}') });
+      res.setHeader('content-type', 'application/json');
+      res.end(JSON.stringify({ choices: [{ finish_reason: 'stop', message: { content: '{"coach_contract":1,"nochange":true,"reading":"Steady as she goes."}' } }] }));
+    });
+  });
+  await new Promise(r => server.listen(0, '127.0.0.1', r));
+  const base = `http://127.0.0.1:${server.address().port}`;
+
+  const uid = 'u-https';
+  writeState(DIR, uid, sampleState());
+  cfg.save({ enabled: true, provider: 'compatible', providerOptions: { compatible: { baseUrl: base } }, models: { compatible: 'local-model' } });
+  forcePrivilegeVerdict({ ok: false, dropped: false, why: 'no `coach` user exists in this image' });
+  try {
+    jobs.enqueue(uid, { kind: 'review' });
+    const s = await settle(uid);
+    assert.equal(s.job, null);
+    assert.equal(lastOutcome(uid).outcome, 'nochange');
+    assert.equal(lastOutcome(uid).reading, 'Steady as she goes.');
+    assert.equal(seen.length, 1);
+    assert.equal(seen[0].url, '/v1/chat/completions');
+    assert.equal(seen[0].auth, undefined, 'no key configured, so no Authorization header');
+    assert.equal(seen[0].body.model, 'local-model');
+    assert.ok(seen[0].body.messages[1].content.includes('"coach_contract": 1'), 'the payload rode in the user turn');
+
+    // And the same host refuses a runtime-backed provider, so the gate itself is intact.
+    cfg.save({ provider: 'fixture' });
+    writeState(DIR, 'u-https-2', sampleState());
+    assert.throws(() => jobs.enqueue('u-https-2', { kind: 'review' }), e => e.code === 'unprivileged');
+  } finally {
+    forcePrivilegeVerdict({ ok: true, dropped: false, why: 'pinned by the test suite' });
+    cfg.save({ provider: 'fixture' });
+    server.close();
+  }
+});

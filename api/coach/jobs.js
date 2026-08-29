@@ -23,6 +23,7 @@ import { extractJSON } from './core/parse.js';
 import { hashPlan } from './core/plan-hash.js';
 import { buildPrompt } from './core/prompt.js';
 import { handleFor } from './handle.js';
+import { fetchFor } from './node-fetch.js';
 import { canDropPrivileges, unprivilegedIds } from './adapters/spawn.js';
 
 // The prompt assembly, the plan fingerprint and the invoke→parse→validate→repair loop all
@@ -266,7 +267,8 @@ async function execute(job) {
 
     const attempt = await runPipeline({
       adapter, cfg, kind: job.kind, payload, model: cfgStore.modelFor(cfg), timeoutMs: TIMEOUT_MS,
-      invokeOpts: { jobDir, env }
+      // The HTTP adapters take the fetch they are given; the runtime adapters ignore it.
+      invokeOpts: { jobDir, env, fetch: fetchFor(TIMEOUT_MS) }
     });
     if (!attempt.ok) {
       return finish(job, { outcome: 'failed', errorClass: attempt.errorClass, detail: attempt.detail });
@@ -323,7 +325,7 @@ export async function testRun() {
     const check = await adapter.check(cfg, env);
     if (!check.ok) return { ok: false, error: check.error || 'the provider runtime could not be run' };
     const r = await adapter.invoke({
-      cfg, jobDir, env, model: cfgStore.modelFor(cfg), timeoutMs: 90000,
+      cfg, jobDir, env, model: cfgStore.modelFor(cfg), timeoutMs: 90000, fetch: fetchFor(90000),
       prompt: 'Reply with exactly this JSON object and nothing else: {"coach_contract":1,"ok":true}'
     });
     if (r.timedOut) return { ok: false, version: check.version, error: 'the provider did not answer in time' };

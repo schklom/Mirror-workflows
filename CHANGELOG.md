@@ -1,5 +1,40 @@
 # Changelog
 
+## Unreleased
+
+### AI Coach
+
+- 🔑 **Four providers that only need an API key.** Anthropic, OpenAI, Google Gemini, and any
+  OpenAI-compatible endpoint — Ollama, LM Studio, vLLM, OpenRouter, a gateway of your own — can
+  now drive the Coach. They speak plain HTTPS from the api process, so they need no AI runtime
+  in the image and no unprivileged user: **they work on the default `api` image.** The `coach`
+  image is now only for the Claude Agent SDK and the Codex CLI. Setup is a chip and a pasted key
+  in Settings → Admin → AI Coach; **List models** fills the model picker from what the endpoint
+  actually serves. A model on your LAN is the compatible endpoint with no key.
+- 🗝️ **Keys, models and account bindings are kept per provider.** Switching chips used to clear
+  the stored credential; now each provider keeps its own, and the chip shows when one is held.
+  `./data/coach.json` changed shape for this: an existing file's one flat credential, model and
+  binding are lifted onto the provider they belonged to on first load. **One-way** — downgrading
+  to an earlier build will not read them back, which costs one paste of the key.
+- 🔓 **The Anthropic API-key path was unreachable.** The admin card hid "Use an API key" for
+  any provider that also took a setup token, which was exactly the Claude one. Both buttons
+  render now.
+- 📱 **The Coach on the App-Store build**, chosen in Settings → AI Coach: pair the phone with
+  your self-hosted instance and the Coach runs there, or bring your own API key and the phone
+  calls the provider directly with the same allowlist, validator and repair round as the server.
+  Nothing AI-related is loaded until one of the two is chosen; a BYOK key lives in the
+  platform's secure storage, never in the app's state; a local daily cap bounds what you spend.
+- 🧱 The Coach's core — payload builder, validator, parser, prompts, plan fingerprint and the
+  invoke → parse → validate → repair loop — moved to `api/coach/core/`, runtime-neutral, so the
+  phone imports the same code the server runs. The exercise catalogue and the prompts are
+  generated ES modules (`scripts/build-coach-assets.mjs --check` in CI), and
+  `api/scripts/check-core-loadable.mjs` proves the core still loads under bare node.
+- 🛡️ Validator hardening: the lifter's own custom exercises are now accepted when the model
+  names them (they were offered to it and then refused, burning the one repair round); ids that
+  are object keys downstream (`__proto__`, `constructor`) are refused; weight and speed have
+  ceilings; an exercise cannot be added twice to a routine; two changes cannot share an id; a
+  weight for an exercise never lifted is dropped rather than guessed.
+
 ## v1.2.11 — 2026-08-25
 
 A correction release. v1.2.10 landed planned warm-ups and notes, and reviewing that release

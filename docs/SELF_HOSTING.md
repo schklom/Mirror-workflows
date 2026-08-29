@@ -198,6 +198,10 @@ end up in every backup you are told to make — an archive like this gets copied
 cloud drives, and a refresh token keeps working wherever it lands. Nothing in `./coach-auth`
 needs backing up: if you lose it, sign the provider in again.
 
+API keys for the HTTPS providers (Anthropic, OpenAI, Gemini, a compatible endpoint) are the
+other way round: they are in `./data/coach.json`, encrypted with `./data/secret`, so they *are*
+in this archive — and unreadable without the secret next to them, like everything else in it.
+
 ## 7. Notifications
 
 openGym can push two kinds of alert to your phone/desktop, even when the app isn't open:

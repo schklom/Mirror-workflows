@@ -144,11 +144,16 @@ docker compose up -d</code></pre>
      it. Answer a few questions — goal, days a week, session length, equipment, anything to work
      around — and it builds a week of routines. Every suggestion carries the evidence behind it,
      you approve or reject each one, and you can undo the last set of changes.</p>
-  <p>It is <b>off by default and not in the default image</b>. The Coach needs a build that
-     includes an AI runtime, which the normal one deliberately does not carry:</p>
+  <p>It is <b>off by default</b>. An admin turns it on in <b>Settings → Admin → AI Coach</b>,
+     picks a provider and pastes a key: <b>Anthropic</b>, <b>OpenAI</b>, <b>Google Gemini</b>, or
+     any <b>OpenAI-compatible endpoint</b> — Ollama or LM Studio on your own LAN, vLLM,
+     OpenRouter. These speak plain HTTPS and need nothing beyond the default image. Only the
+     Claude Agent SDK and the Codex CLI need the bigger build:</p>
   <pre><code>API_TARGET=coach docker compose up -d --build api</code></pre>
-  <p>Then an admin turns it on in <b>Settings → Admin → AI Coach</b> and connects a provider
-     account. It runs on <b>your</b> server under <b>your</b> account — there is no openGym
+  <p>On the phone app, <b>Settings → AI Coach</b> offers two ways in: pair the phone with your
+     self-hosted instance and the Coach runs there, or bring your own API key and the phone calls
+     the provider directly, key in the platform's secure storage.</p>
+  <p>It runs on <b>your</b> server under <b>your</b> account — there is no openGym
      service in the middle, and nothing is sent anywhere until you ask it for something. What
      leaves the server is a by-name allowlist (your plan, your logged sets, body weight if you
      track it) under a pseudonym; your name, sign-in details and other profiles never do. What
@@ -156,7 +161,7 @@ docker compose up -d</code></pre>
      after you approve it.</p>
   <p>The Coach is not a doctor or a physiotherapist. If something hurts, ask a professional.
      Full details, including exactly what is sent and how credentials are stored:
-     <a href="https://github.com/DuarteSantos8/openGym/blob/main/docs/AI_COACH.md" rel="noopener">docs/AI_COACH.md</a>.</p>
+     <a href="https://gitlab.com/DuarteSantos8/opengym/-/blob/main/docs/AI_COACH.md" rel="noopener">docs/AI_COACH.md</a>.</p>
 
   <h2 id="import">Import your training history</h2>
   <p>Coming from another tracker? <b>Settings → Data → Import from another app</b> reads:</p>

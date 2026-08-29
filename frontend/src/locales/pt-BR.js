@@ -377,7 +377,36 @@ export const PT_BR_OVERRIDES = {
   'Undid the last changes': 'Desfez as últimas alterações',
   '{0}: hold time': '{0}: tempo de isometria',
   'Add routine “{0}”': 'Adicionar rotina “{0}”',
-  'Rename routine to “{0}”': 'Renomear rotina para “{0}”'
+  'Rename routine to “{0}”': 'Renomear rotina para “{0}”',
+  // --- AI Coach on the phone ---
+  'AI Coach': 'Treinador IA',
+  'Bring my own API key': 'Usar minha própria chave de API',
+  'An AI coach that can design your plan and adjust it from what you actually log. It runs with your own API key, it never changes anything without your say-so, and it is off until you turn it on.': 'Um treinador com IA que cria seu plano e o ajusta com base no que você registra. Roda com a sua própria chave de API, nunca muda nada sem a sua autorização e fica desligado até você ligá-lo.',
+  'Could not reach the provider: {0}': 'Não foi possível contatar o provedor: {0}',
+  'Each request goes straight to {0} with your key — nobody else sees it, and you pay for it.': 'Cada pedido vai direto para {0} com a sua chave — ninguém mais o vê, e é você quem paga.',
+  'Enter your API key': 'Digite sua chave de API',
+  'How should the Coach run?': 'Como o Treinador deve rodar?',
+  'Off — choose how the Coach should run.': 'Desligado — escolha como o Treinador deve rodar.',
+  'Pick a model': 'Escolha um modelo',
+  'Provider': 'Provedor',
+  'Runs on this phone with your own API key': 'Roda neste celular com a sua própria chave de API',
+  'Runs on your openGym server': 'Roda no seu servidor openGym',
+  'Save and use the Coach': 'Salvar e usar o Treinador',
+  'The Coach is already thinking about your training.': 'O Treinador já está pensando no seu treino.',
+  'The Coach is resting — you have used today’s {0} runs on this phone.': 'O Treinador está descansando — você já usou os {0} usos de hoje neste celular.',
+  'The Coach isn’t set up on this phone.': 'O Treinador não está configurado neste celular.',
+  'The Coach needs your go-ahead first.': 'O Treinador precisa primeiro da sua autorização.',
+  'The key is stored in this phone’s secure storage and never leaves it except to call the provider.': 'A chave fica no armazenamento seguro deste celular e só sai dele para chamar o provedor.',
+  'This phone calls the provider directly with your key. Every request is charged to your account.': 'Este celular chama o provedor diretamente com a sua chave. Cada pedido é cobrado na sua conta.',
+  'Turn the Coach off on this phone': 'Desligar o Treinador neste celular',
+  'Use my self-hosted openGym': 'Usar meu openGym self-hosted',
+  'What leaves this phone': 'O que sai deste celular',
+  'When you ask for a plan or a review, this phone sends the following straight to {0}, using your own API key. You pay for every request.': 'Quando você pede um plano ou uma revisão, este celular envia o seguinte direto para {0}, com a sua própria chave de API. Você paga cada pedido.',
+  'Your server has no Coach enabled — ask its admin, or bring your own key below.': 'Seu servidor não tem o Treinador ativado — pergunte ao administrador, ou use sua própria chave abaixo.',
+  'Your server runs the Coach with whatever provider its admin set up. Nothing new leaves this phone beyond what already syncs.': 'Seu servidor roda o Treinador com o provedor que o administrador configurou. Nada de novo sai deste celular além do que já é sincronizado.',
+  'Loading the exercise catalogue…': 'Carregando o catálogo de exercícios…',
+  'Checking the endpoint…': 'Verificando o endpoint…',
+  '(saved)': '(salva)'
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

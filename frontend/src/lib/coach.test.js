@@ -40,9 +40,19 @@ describe('gating', () => {
     expect(coachAvailable({ coach: { enabled: true } }, null)).toBe(false)
   })
 
-  it('is off in the mobile build, which has no server to run anything', () => {
-    expect(coachAvailable({ coach: { enabled: true } }, { id: 'u' }, { mobile: true })).toBe(false)
+  it('is off in the mobile build until a mode is chosen in Settings', () => {
     expect(coachAvailable(null, null, { mobile: true })).toBe(false)
+    expect(coachAvailable(null, null, { mobile: true, coachMode: 'off' })).toBe(false)
+    // Only its own key makes a local-only phone eligible; "server" without a pairing is nothing.
+    expect(coachAvailable(null, null, { mobile: true, coachMode: 'server' })).toBe(false)
+    expect(coachAvailable(null, null, { mobile: true, coachMode: 'byok' })).toBe(true)
+  })
+
+  it('a phone paired to a server takes the web rule — the server must offer the Coach', () => {
+    expect(coachAvailable({ coach: { enabled: true } }, { id: 'u' }, { mobile: true })).toBe(true)
+    expect(coachAvailable({ coach: { enabled: true } }, { id: 'u' }, { mobile: true, coachMode: 'server' })).toBe(true)
+    expect(coachAvailable({}, { id: 'u' }, { mobile: true, coachMode: 'server' })).toBe(false)
+    expect(coachAvailable({ coach: { enabled: true } }, null, { mobile: true, coachMode: 'server' })).toBe(false)
   })
 
   it('is on in the demo build, which fakes the provider locally', () => {

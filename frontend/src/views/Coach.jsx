@@ -7,7 +7,7 @@ import { fmtDate } from '../lib/format.js'
 import { DEMO } from '../lib/demo.js'
 import { MOBILE } from '../lib/mobile.js'
 import {
-  coachAvailable, hasConsent, CONSENT_VERSION, emptyCoach,
+  coachAvailable, hasConsent, CONSENT_VERSION, emptyCoach, CATEGORY_TEXT,
   canRevert, revertLast, changeTitle, recordDismissal
 } from '../lib/coach.js'
 import {
@@ -23,21 +23,13 @@ import { Section, Row, Button, TextArea, Switch, SelectRow } from '../components
 
 const GOALS = ['strength', 'muscle', 'general fitness', 'fat loss', 'endurance']
 
-// Rendered from the same list the server builds payloads from (GET /api/coach/disclosure),
-// so the promise on screen cannot drift from what actually leaves the box.
-const CATEGORY_TEXT = {
-  plan: ['Your plan', 'Routines, exercises, sets and reps, your weekly schedule and progression settings.'],
-  training: ['Your logged training', 'Sets you logged in the review window — weights, reps, times, effort ratings and how long sessions took.'],
-  bodyweight: ['Body weight', 'Weigh-ins from the same window, and your goal weight if you set one.'],
-  profile: ['What you tell the Coach', 'Your intake answers, including any limitations or injuries you describe.'],
-  prefs: ['A few preferences', 'Your unit, your language and which effort scale you log.']
-}
 
 export default function Coach() {
   const nav = useNavigate()
   const S = useStore(s => s.S)
   const user = useStore(s => s.user)
   const config = useStore(s => s.config)
+  const coachMode = useStore(s => s.coachLocal?.mode)
   const update = useStore(s => s.update)
   const toast = useUI(s => s.toast)
   const [note, setNote] = useState('')
@@ -46,8 +38,8 @@ export default function Coach() {
 
   // Gating lives in one predicate; if the instance isn't offering the Coach this route simply
   // isn't a place you can be.
-  useEffect(() => { if (!coachAvailable(config, user, { demo: DEMO, mobile: MOBILE })) nav('/home', { replace: true }) }, [config, user])
-  if (!coachAvailable(config, user, { demo: DEMO, mobile: MOBILE })) return null
+  useEffect(() => { if (!coachAvailable(config, user, { demo: DEMO, mobile: MOBILE, coachMode })) nav('/home', { replace: true }) }, [config, user, coachMode])
+  if (!coachAvailable(config, user, { demo: DEMO, mobile: MOBILE, coachMode })) return null
 
   const consented = hasConsent(S)
   const coach = S.coach || emptyCoach()
@@ -162,8 +154,10 @@ function ConsentCard({ onDone }) {
   const open = () => openSheet(close => <>
     <h3>{t('Before the Coach starts')}</h3>
     <div className="muted small" style={{ lineHeight: 1.5, marginBottom: 12 }}>
-      {t('When you ask for a plan or a review, this instance sends the following to {0}, running on this server under the instance owner’s account.',
-        info?.providerLabel || config?.coach?.providerLabel || t('the configured AI provider'))}
+      {info?.payer === 'you'
+        ? t('When you ask for a plan or a review, this phone sends the following straight to {0}, using your own API key. You pay for every request.', info.host || info.providerLabel)
+        : t('When you ask for a plan or a review, this instance sends the following to {0}, running on this server under the instance owner’s account.',
+          info?.providerLabel || config?.coach?.providerLabel || t('the configured AI provider'))}
     </div>
     <div className="sect-b">
       {(info?.categories || Object.keys(CATEGORY_TEXT)).map(k => {
@@ -192,7 +186,9 @@ function ConsentCard({ onDone }) {
       <div className="big" style={{ fontSize: 20 }}>{t('Meet the Coach')}</div>
     </div>
     <div className="muted small" style={{ marginBottom: 12, lineHeight: 1.5 }}>
-      {t('An AI coach that can design your plan and adjust it from what you actually log. It runs on this server, it never changes anything without your say-so, and it is off until you turn it on.')}
+      {info?.payer === 'you'
+        ? t('An AI coach that can design your plan and adjust it from what you actually log. It runs with your own API key, it never changes anything without your say-so, and it is off until you turn it on.')
+        : t('An AI coach that can design your plan and adjust it from what you actually log. It runs on this server, it never changes anything without your say-so, and it is off until you turn it on.')}
     </div>
     <Button variant="primary" icon="sparkles" onClick={open}>{t('See what it would use')}</Button>
   </div>

@@ -21,13 +21,7 @@ export const MAX_SESSIONS = 60;
 /* ---------- the data categories the consent screen names (FR-09/10) ----------
    Kept here, next to the code that acts on it, and rendered by the consent UI from the same
    list — a screen that drifts from the payload is worse than no screen. */
-export const DATA_CATEGORIES = [
-  'plan',        // routines, exercises, sets/reps, schedule, progression settings
-  'training',    // logged sets, targets, effort ratings, durations, PRs in the review window
-  'bodyweight',  // weigh-ins in the window and your goal weight
-  'profile',     // the intake answers you gave the Coach, including any limitations
-  'prefs'        // unit, language, effort scale
-];
+export { DATA_CATEGORIES } from './categories.js';
 
 /* ---------- reading a session the way the engine reads it ----------
    Duplicated from frontend/src/lib/history.js rather than shared: the two runtimes have no

@@ -8,7 +8,10 @@
 import { useEffect, useState, useCallback, useRef } from 'react'
 import { api } from './api.js'
 import { DEMO } from './demo.js'
+import { MOBILE } from './mobile.js'
+import { t } from './i18n.js'
 import { useStore } from '../store/useStore.js'
+import { useUI } from '../store/useUI.js'
 
 const POLL_MS = 3000        // a job is running: often enough to feel live
 const IDLE_MS = 60000       // a Coach screen is open but nothing is running
@@ -21,13 +24,32 @@ let demoMod = null
 const demo = async () => (demoMod = demoMod || await import('./coach-demo.js'))
 const S = () => useStore.getState().S
 
-export const coachStatus = async () => DEMO ? (await demo()).demoStatus() : api('/api/coach/status')
-export const requestReview = async note => DEMO ? (await demo()).demoReview(S()) : api('/api/coach/review', { method: 'POST', body: JSON.stringify({ note: note || '' }) })
-export const requestPlan = async intake => DEMO ? (await demo()).demoPlan(S(), intake) : api('/api/coach/plan', { method: 'POST', body: JSON.stringify({ intake }) })
-export const refinePlan = async text => DEMO ? (await demo()).demoRefine(S()) : api('/api/coach/plan', { method: 'POST', body: JSON.stringify({ refine: text }) })
-export const resolvePending = async body => DEMO ? (await demo()).demoResolve() : api('/api/coach/pending/resolve', { method: 'POST', body: JSON.stringify(body) })
-export const forgetCoach = async () => DEMO ? (await demo()).demoResolve() : api('/api/coach/forget', { method: 'POST', body: '{}' })
-export const disclosure = async () => DEMO ? (await demo()).demoDisclosure() : api('/api/coach/disclosure')
+// The mobile build's third answer: a phone that brought its own API key runs the Coach itself
+// (lib/coach-local.js — the same core the server runs, imported lazily so the catalogue and the
+// validator only ever load on a phone that chose this). A paired phone takes the api() branch
+// like the web app does; nothing on the web or demo builds reaches this.
+let localMod = null
+const LOCAL = () => MOBILE && useStore.getState().coachLocal?.mode === 'byok'
+const local = async () => {
+  if (!localMod) {
+    localMod = await import('./coach-local.js')
+    // There is no admin card on a phone: the user is the operator, so failures go to them.
+    localMod.setNotifier(ev => {
+      const toast = useUI.getState().toast
+      if (ev.kind === 'failed') toast(JOB_ERRORS[ev.errorClass] || JOB_ERRORS.internal)
+      else if (ev.kind === 'nochange') toast(t('Nothing to change right now: {0}', String(ev.reading || '').slice(0, 140)))
+    })
+  }
+  return localMod
+}
+
+export const coachStatus = async () => DEMO ? (await demo()).demoStatus() : LOCAL() ? (await local()).localStatus() : api('/api/coach/status')
+export const requestReview = async note => DEMO ? (await demo()).demoReview(S()) : LOCAL() ? (await local()).localReview(S(), note) : api('/api/coach/review', { method: 'POST', body: JSON.stringify({ note: note || '' }) })
+export const requestPlan = async intake => DEMO ? (await demo()).demoPlan(S(), intake) : LOCAL() ? (await local()).localPlan(S(), intake) : api('/api/coach/plan', { method: 'POST', body: JSON.stringify({ intake }) })
+export const refinePlan = async text => DEMO ? (await demo()).demoRefine(S()) : LOCAL() ? (await local()).localRefine(S(), text) : api('/api/coach/plan', { method: 'POST', body: JSON.stringify({ refine: text }) })
+export const resolvePending = async body => DEMO ? (await demo()).demoResolve() : LOCAL() ? (await local()).localResolve(body) : api('/api/coach/pending/resolve', { method: 'POST', body: JSON.stringify(body) })
+export const forgetCoach = async () => DEMO ? (await demo()).demoResolve() : LOCAL() ? (await local()).localForget() : api('/api/coach/forget', { method: 'POST', body: '{}' })
+export const disclosure = async () => DEMO ? (await demo()).demoDisclosure() : LOCAL() ? (await local()).localDisclosure() : api('/api/coach/disclosure')
 
 /* Whose provider account this profile is about to spend. Its own call because the constraint is
    that the Coach screen states it too, not just the admin card — and because in instance mode a
@@ -35,7 +57,8 @@ export const disclosure = async () => DEMO ? (await demo()).demoDisclosure() : a
    they ask for anything rather than after a job is turned down. */
 export const coachAccount = async () =>
   DEMO ? { mode: 'instance', provider: 'demo', providerLabel: 'Demo', account: null, connected: true, reason: null, message: null }
-    : api('/api/coach/account')
+    : LOCAL() ? { mode: 'device', provider: useStore.getState().coachLocal.provider, providerLabel: null, account: null, connected: true, reason: null, message: null }
+      : api('/api/coach/account')
 
 /* Admin-only. The token is write-only from the client's side: it goes up once and is never
    read back, so there is deliberately no "show me the current credential" call to pair with it. */

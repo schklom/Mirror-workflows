@@ -30,11 +30,12 @@ export default function CoachProposal() {
   const S = useStore(s => s.S)
   const user = useStore(s => s.user)
   const config = useStore(s => s.config)
+  const coachMode = useStore(s => s.coachLocal?.mode)
   const update = useStore(s => s.update)
   const toast = useUI(s => s.toast)
   const { pending, loading, refresh } = useCoachStatus(true)
 
-  useEffect(() => { if (!coachAvailable(config, user, { demo: DEMO, mobile: MOBILE })) nav('/home', { replace: true }) }, [config, user])
+  useEffect(() => { if (!coachAvailable(config, user, { demo: DEMO, mobile: MOBILE, coachMode })) nav('/home', { replace: true }) }, [config, user])
   useEffect(() => { if (!loading && !pending) nav('/coach', { replace: true }) }, [loading, pending])
   if (!pending) return null
 

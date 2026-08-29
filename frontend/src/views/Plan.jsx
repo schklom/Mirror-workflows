@@ -15,13 +15,14 @@ export default function Plan() {
   const S = useStore(s => s.S)
   const update = useStore(s => s.update)
   const config = useStore(s => s.config)
+  const coachMode = useStore(s => s.coachLocal?.mode)
   const user = useStore(s => s.user)
 
   /* The Coach's only entry point in the app. Its screens have existed since the UI landed and
      nothing linked to them, so the feature was reachable only by typing the URL — enabled,
      configured, and invisible. The same predicate every other Coach surface uses gates it, so
      an instance without the feature sees exactly the Plan screen it saw before. */
-  const showCoach = coachAvailable(config, user, { demo: DEMO, mobile: MOBILE })
+  const showCoach = coachAvailable(config, user, { demo: DEMO, mobile: MOBILE, coachMode })
 
   const addRoutine = () => {
     const r = { id: uid(), name: t('New routine'), emoji: DEFAULT_GLYPH, ex: [] }

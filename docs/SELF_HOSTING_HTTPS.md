@@ -69,7 +69,7 @@ Now we have a nice URL and can forget about the ports. The proxy reads the URL r
 
 So how does it all come together?
 
-1. DNS provider translates name to our local IP
+1. DNS provider translates name to the local IP of homelab (e.g.: `https://opengym.myhomelab.dedyn.io -> http://192.168.0.100:8080`)
 1. the proxy listens to the local IP and provides HTTPS
 1. Let's encrypt provides certificates with certbot
 
@@ -89,7 +89,7 @@ Additional info:
     - nextcloud on port 8081
 
 1. register with desec.io and choose a name (we take `myhomelab` as example)
-    1. create a new A record that points to your service, e.g.: `*.myhomelab.dedyn.io` (Wildcard!) - 192.168.0.100 (the ip of your homelab)
+    1. create a new A record that points to your service, e.g.: `*.myhomelab.dedyn.io` (Wildcard!) - 192.168.0.100 (the ip of your homelab/mini PC/Raspberry Pi running the proxy)
     2. A wildcard certificate handles all certificates for that given host. e.g.: `opengym.myhomelab.dedyn.io` and `nextcloud.myhomelab.dedyn.io` can share the same certificates.
     2. create an API token for updating the domain settings (`Can create domains` and `Can delete domains` activated), be sure to note the token, it is only displayed once.
 2. install certbot on your host
@@ -141,8 +141,8 @@ And that's about it. Now you should be able to access your opengym instance from
 Be sure to update the opengym config accordingly.
 
 usable URLs in this example:
-- https://opengym.myhomelab.dedyn.io -> http://192.168.0.100:8080
-- https://nextcloud.myhomelab.dedyn.io -> http://192.168.0.100:8081
+- `https://opengym.myhomelab.dedyn.io -> http://192.168.0.100:8080`
+- `https://nextcloud.myhomelab.dedyn.io -> http://192.168.0.100:8081`
 
 Note that the SSL/HTTPS termination is only at the proxy, the service does not have any certificates whatsoever.
 

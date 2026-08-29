@@ -6,6 +6,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import Workout, { removeActiveExercise } from './Workout.jsx'
 import { DEF, useStore } from '../store/useStore.js'
 import { useUI } from '../store/useUI.js'
+import { LANGS } from '../lib/i18n-core.js'
 
 vi.mock('../lib/sound.js', () => ({ beep: vi.fn(), vibrate: vi.fn() }))
 vi.mock('../lib/api.js', () => ({ api: vi.fn(() => Promise.resolve({})) }))
@@ -109,9 +110,13 @@ describe('remove-exercise locale coverage', () => {
     'Which exercise in this superset do you want to remove?'
   ]
   const packs = import.meta.glob('../locales/*.js', { eager: true, import: 'default' })
+  // Every non-English language has its own pack (English is the source, so it has none) —
+  // derived from LANGS rather than hardcoded so adding a language doesn't silently
+  // understate this test's own coverage.
+  const nonEnglishLangCount = Object.keys(LANGS).length - 1
 
-  it('defines every new prompt in all twelve locale packs', () => {
-    expect(Object.keys(packs)).toHaveLength(12)
+  it('defines every new prompt in every non-English locale pack', () => {
+    expect(Object.keys(packs)).toHaveLength(nonEnglishLangCount)
     Object.entries(packs).forEach(([path, pack]) => {
       required.forEach(key => expect(pack, `${path} is missing ${key}`).toHaveProperty(key))
     })

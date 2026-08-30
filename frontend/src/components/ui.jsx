@@ -115,13 +115,13 @@ export function Segmented({ options, value, onChange, className = '' }) {
 
 /* ============================ stepper ============================ */
 
-export function Stepper({ value, step = 1, onChange, decimal = true, className = '', label, unit }) {
+export function Stepper({ value, step = 1, onChange, decimal = true, className = '', label, unit, invalid = false }) {
   const set = v => onChange(Math.max(0, Math.round((v || 0) * 100) / 100))
   const inner = (
     <div className={'stp ' + className}>
       <button onClick={() => set((+value || 0) - step)} aria-label="Decrease"><Icon name="minus" /></button>
       <span className="val">
-        <NumberField value={value} decimal={decimal} onChange={onChange} />
+        <NumberField value={value} decimal={decimal} onChange={onChange} aria-invalid={invalid ? 'true' : undefined} />
         {unit && <i>{unit}</i>}
       </span>
       <button onClick={() => set((+value || 0) + step)} aria-label="Increase"><Icon name="plus" /></button>

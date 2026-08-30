@@ -51,19 +51,31 @@ describe('exercise configuration progression step', () => {
     expect(step.value).toBe('0.5')
   })
 
-  it('persists a positive decimal but omits a cleared progression increment', () => {
-    const positive = renderConfig()
-    act(() => { type(positive.step, '0,5') })
-    const positiveSave = [...positive.host.querySelectorAll('button')]
+  it('blocks saving without a positive progression step but accepts a positive decimal', () => {
+    const config = renderConfig()
+    const save = [...config.host.querySelectorAll('button')]
       .find(b => /^(save|add to routine)$/i.test(b.textContent.trim()))
-    act(() => { positiveSave.click() })
-    expect(positive.onSave).toHaveBeenCalledWith(expect.objectContaining({ inc: 0.5 }))
 
-    const empty = renderConfig()
-    act(() => { type(empty.step, '') })
-    const emptySave = [...empty.host.querySelectorAll('button')]
-      .find(b => /^(save|add to routine)$/i.test(b.textContent.trim()))
-    act(() => { emptySave.click() })
-    expect(empty.onSave.mock.calls[0][0]).not.toHaveProperty('inc')
+    act(() => { type(config.step, '') })
+    expect(config.step.value).toBe('')
+    expect(config.step.getAttribute('aria-invalid')).toBe('true')
+    expect(save.disabled).toBe(true)
+    expect(config.host.textContent).toContain('Enter a positive step to use this progression rule.')
+
+    act(() => { save.click() })
+    expect(config.onSave).not.toHaveBeenCalled()
+    expect(useUI.getState().sheets).toHaveLength(1)
+
+    act(() => { type(config.step, '0') })
+    expect(save.disabled).toBe(true)
+
+    act(() => { type(config.step, '0,5') })
+    expect(config.step.value).toBe('0.5')
+    expect(config.step.getAttribute('aria-invalid')).not.toBe('true')
+    expect(save.disabled).toBe(false)
+
+    act(() => { save.click() })
+    expect(config.onSave).toHaveBeenCalledWith(expect.objectContaining({ inc: 0.5 }))
+    expect(useUI.getState().sheets).toHaveLength(0)
   })
 })

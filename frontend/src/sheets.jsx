@@ -559,12 +559,18 @@ export const equipmentProfileSheet = profile => ui().openSheet(close => <Equipme
 // Progression settings for one exercise (issue #17). Shown inside the config sheet because
 // "how does this lift go up" belongs next to sets and reps, not in a separate screen. Left
 // on "follow the routine" it inherits, so most people never touch it.
+const progressionStepOf = (c, mode, ex, unit) =>
+  c.inc >= 0 ? c.inc : (mode === 'time' ? 5 : defaultIncrement(ex.id, unit))
+const progressionStepIsValid = (step, policy) =>
+  policy === 'off' || (Number.isFinite(step) && step > 0)
+
 function ProgressionFields({ ex, mode, c, setC, routine, unit }) {
   const options = POLICIES_FOR[mode] || ['off']
   if (options.length < 2) return null
   const inherited = policyFor({ id: ex.id }, routine, mode)
   const active = policyFor({ ...c, id: ex.id }, routine, mode)
-  const inc = c.inc >= 0 ? c.inc : (mode === 'time' ? 5 : defaultIncrement(ex.id, unit))
+  const inc = progressionStepOf(c, mode, ex, unit)
+  const invalid = !progressionStepIsValid(inc, active)
   return <>
     <h4 className="sec">{t('Progression')}</h4>
     <div className="sect-b" style={{ marginBottom: 8 }}>
@@ -575,9 +581,13 @@ function ProgressionFields({ ex, mode, c, setC, routine, unit }) {
     <div className="small dim" style={{ marginBottom: active === 'off' ? 18 : 10 }}>{t(POLICY_DESC[active])}</div>
     {active !== 'off' && <div className="row cfgrow" style={{ marginBottom: 18 }}>
       <Stepper label={mode === 'time' ? t('Step (seconds)') : t('Step ({0})', unit)} value={inc}
-        step={mode === 'time' ? 5 : 1.25} decimal={mode !== 'time'} onChange={v => setC(x => ({ ...x, inc: v }))} />
+        step={mode === 'time' ? 5 : 1.25} decimal={mode !== 'time'} invalid={invalid} className={invalid ? 'invalid' : ''}
+        onChange={v => setC(x => ({ ...x, inc: v }))} />
       {active === 'double' && <Stepper label={t('Reps from')} value={c.repsMin || Math.max(1, (c.reps || 10) - 2)}
         step={1} decimal={false} onChange={v => setC(x => ({ ...x, repsMin: v }))} />}
+    </div>}
+    {invalid && <div className="small" role="alert" style={{ color: 'var(--red)', marginTop: -10, marginBottom: 18 }}>
+      {t('Enter a positive step to use this progression rule.')}
     </div>}
   </>
 }
@@ -592,9 +602,12 @@ function ExConfig({ ex, existing, onSave, onDelete, close, routine, initial }) {
   // Both default from the dataset and are then whatever the config says — see isBw.
   const bw = !cardio && isBw({ ...c, id: ex.id })
   const perSide = isPerSide(c)
+  const progressionPolicy = policyFor({ ...c, id: ex.id }, routine, mode)
+  const progressionStepInvalid = !progressionStepIsValid(progressionStepOf(c, mode, ex, st.unit), progressionPolicy)
   // Keep whatever the other mode already had (sets, weight) and fill only what is missing.
   const setMode = m => setC(x => ({ ...defaultConfig(ex.id, m), ...x, mode: m }))
   const save = () => {
+    if (progressionStepInvalid) return
     close()
     const sets = Math.max(1, Math.round(c.sets) || (cardio ? 1 : 3))
     // Only carry progression settings that differ from the inherited default, so a plan file
@@ -768,7 +781,7 @@ function ExConfig({ ex, existing, onSave, onDelete, close, routine, initial }) {
     <textarea className="input" rows={3} maxLength={500} style={{ marginBottom: 18 }}
       placeholder={t('Note (optional) — loading cues, "bar only then +1 plate/side each set", anything worth remembering here')}
       value={c.note || ''} onChange={e => setC(x => ({ ...x, note: e.target.value }))} />
-    <Button variant="primary" onClick={save}>{existing ? t('Save') : t('Add to routine')}</Button>
+    <Button variant="primary" disabled={progressionStepInvalid} onClick={save}>{existing ? t('Save') : t('Add to routine')}</Button>
     {ex.custom && <><div style={{ height: 8 }} /><Button icon="pencil" onClick={() => { close(); customExSheet(ex) }}>{t('Edit or delete this exercise')}</Button></>}
     {onDelete && <><div style={{ height: 8 }} /><Button variant="danger" onClick={() => { close(); onDelete() }}>{t('Remove from routine')}</Button></>}
   </>

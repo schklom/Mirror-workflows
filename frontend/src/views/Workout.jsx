@@ -16,6 +16,7 @@ import { Button, Check, NumberField } from '../components/ui.jsx'
 import { nextPrescription, applyPrescription, defaultIncrement } from '../lib/progression.js'
 import { glyphOf } from '../lib/glyphs.js'
 import { isWarmupRow, isDropSet, isRestPauseSet, dropsOf, clustersOf, addDrop, addCluster, removeDropAt, removeClusterAt, setDropAt, setClusterAt, nextDropWeight, nextBurstReps } from '../lib/workout-model.js'
+import { canMoveActiveWorkoutUnit, moveActiveWorkoutUnit } from '../lib/active-workout-order.js'
 
 const SWIPE_MIN_DISTANCE = 48
 const SWIPE_AXIS_RATIO = 1.25
@@ -379,6 +380,24 @@ function ActiveWorkout() {
   })
   const onPairPrev = !isSuperset && cur > 0 ? () => pairAt(cur - 1, cur) : null
   const onPairNext = !isSuperset && cur < A.entries.length - 1 ? () => pairAt(cur, cur + 1) : null
+  const moveCurrentUnit = direction => {
+    const ui = useUI.getState()
+    const active = useStore.getState().S.active
+    if (ui.work || !canMoveActiveWorkoutUnit(active, active?.cur, direction)) return
+    // Invalidate an old timed callback before indexes shift. A running rest is not cancelled:
+    // it belongs to an exercise (timer.forIdx), and that exercise only changes position.
+    ui.stopWork()
+    update(s => {
+      const moved = moveActiveWorkoutUnit(s.active, s.active?.cur, direction)
+      if (!moved) return
+      progressHighWater.current = moved.indices.map(index => progressHighWater.current[index])
+      const rest = useUI.getState().timer
+      if (rest && rest.forIdx != null) {
+        const forIdx = moved.indices.indexOf(rest.forIdx)
+        if (forIdx >= 0) useUI.setState({ timer: { ...rest, forIdx } })
+      }
+    }, true)
+  }
 
   const navigateUnit = direction => {
     const targetFor = active => {
@@ -618,6 +637,13 @@ function ActiveWorkout() {
       }), null, routine, seed)
     })} icon="plus">{t('Add exercise')}</Button>
     {A.entries.length > 0 && <>
+      <div style={{ height: 6 }} />
+      <div className="row">
+        <Button size="sm" icon="chevronUp" aria-label={t('Move up')}
+          disabled={!!work || !canMoveActiveWorkoutUnit(A, cur, -1)} onClick={() => moveCurrentUnit(-1)}>{t('Move up')}</Button>
+        <Button size="sm" trailingIcon="chevronDown" aria-label={t('Move down')}
+          disabled={!!work || !canMoveActiveWorkoutUnit(A, cur, 1)} onClick={() => moveCurrentUnit(1)}>{t('Move down')}</Button>
+      </div>
       <div style={{ height: 6 }} />
       <div style={{ display: 'flex', justifyContent: 'center' }}>
         <Button size="sm" icon="minus" style={{ color: 'var(--red)' }} disabled={!!work} onClick={removeExerciseSheet}>{t('Remove exercise')}</Button>

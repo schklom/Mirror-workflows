@@ -17,6 +17,10 @@ import { nextPrescription, applyPrescription, defaultIncrement } from '../lib/pr
 import { glyphOf } from '../lib/glyphs.js'
 import { isWarmupRow, isDropSet, isRestPauseSet, dropsOf, clustersOf, addDrop, addCluster, removeDropAt, removeClusterAt, setDropAt, setClusterAt, nextDropWeight, nextBurstReps } from '../lib/workout-model.js'
 
+const SWIPE_MIN_DISTANCE = 48
+const SWIPE_AXIS_RATIO = 1.25
+const SWIPE_IGNORED_TARGETS = 'button,input,textarea,select,a,[role="button"],[role="checkbox"],[role="switch"],[role="slider"],[contenteditable="true"],.exmedia,[data-swipe-ignore]'
+
 /* ---------- start chooser (no active workout) ---------- */
 function StartChooser() {
   const nav = useNavigate()
@@ -285,7 +289,9 @@ function ActiveWorkout() {
   const { startRest, stopRest, stopWork, work } = useUI()
   const A = S.active
   const units = supersetUnits(A.entries)
-  const cur = Math.min(A.cur, Math.max(0, A.entries.length - 1))
+  const cur = Number.isInteger(A.cur)
+    ? Math.min(Math.max(A.cur, 0), Math.max(0, A.entries.length - 1))
+    : 0
   const unit = A.entries.length ? unitOf(units, cur) : []
   const unitIdx = units.findIndex(u => u === unit)
   const isSuperset = unit.length > 1
@@ -311,6 +317,7 @@ function ActiveWorkout() {
       if (!refs.size) setRefs.current.delete(entry)
     }
   }
+  const swipe = useRef(null)
   const progressHighWater = useRef(A.entries.map(e => e.sets.filter(s => s.done).length))
   // The marks are index-keyed, and removing an exercise shifts every index above it down
   // (removeActiveExercise splices). Re-baseline whenever the list length changes, otherwise a
@@ -372,6 +379,38 @@ function ActiveWorkout() {
   })
   const onPairPrev = !isSuperset && cur > 0 ? () => pairAt(cur - 1, cur) : null
   const onPairNext = !isSuperset && cur < A.entries.length - 1 ? () => pairAt(cur, cur + 1) : null
+
+  const navigateUnit = direction => {
+    const targetFor = active => {
+      if (!active || !Array.isArray(active.entries) || !Number.isInteger(active.cur)) return null
+      if (active.cur < 0 || active.cur >= active.entries.length) return null
+      const freshUnits = supersetUnits(active.entries)
+      const freshUnitIdx = freshUnits.findIndex(candidate => candidate.includes(active.cur))
+      return freshUnitIdx < 0 ? null : freshUnits[freshUnitIdx + direction]?.[0] ?? null
+    }
+    if (targetFor(useStore.getState().S.active) == null) return
+    update(s => {
+      const target = targetFor(s.active)
+      if (target != null) s.active.cur = target
+    })
+  }
+  const onSwipePointerDown = event => {
+    if (swipe.current || (event.pointerType && event.pointerType !== 'touch' && event.pointerType !== 'pen')) return
+    if (event.target.closest?.(SWIPE_IGNORED_TARGETS)) return
+    swipe.current = { id: event.pointerId, x: event.clientX, y: event.clientY }
+    event.currentTarget.setPointerCapture?.(event.pointerId)
+  }
+  const finishSwipe = (event, navigate) => {
+    const start = swipe.current
+    if (!start || start.id !== event.pointerId) return
+    swipe.current = null
+    event.currentTarget.releasePointerCapture?.(event.pointerId)
+    if (!navigate) return
+    const dx = event.clientX - start.x
+    const dy = event.clientY - start.y
+    if (Math.abs(dx) < SWIPE_MIN_DISTANCE || Math.abs(dx) < Math.abs(dy) * SWIPE_AXIS_RATIO) return
+    navigateUnit(dx < 0 ? 1 : -1)
+  }
 
   // Remove a whole exercise from the session. The confirmation always asks first; in a
   // superset it asks WHICH exercise of the group to remove.
@@ -527,6 +566,13 @@ function ActiveWorkout() {
 
     {A.entries.length ? <>
       <div className="muted small" style={{ marginBottom: 6 }}>{isSuperset ? t('Superset {0} / {1}', unitIdx + 1, units.length) : t('Exercise {0} / {1}', unitIdx + 1, units.length)}</div>
+      <div className="workout-swipe-surface" data-testid="workout-swipe-surface"
+        onPointerDown={onSwipePointerDown}
+        onPointerUp={event => finishSwipe(event, true)}
+        onPointerCancel={event => finishSwipe(event, false)}
+        onLostPointerCapture={event => {
+          if (swipe.current?.id === event.pointerId) swipe.current = null
+        }}>
       {isSuperset ? (
         <div className="ss-card">
           <div className="ss-hd" style={{ justifyContent: 'space-between' }}>
@@ -545,12 +591,13 @@ function ActiveWorkout() {
       ) : (
         <ExerciseBlock entryIdx={cur} onToggle={i => toggle(cur, i)} onField={(i, f, v) => setField(cur, i, f, v)} onAddSet={() => addSet(cur)} onRemoveSet={() => removeSet(cur)} onAddWarmup={() => addWarmup(cur)} onRemoveSetAt={i => removeSetAt(cur, i)} onStartTimed={i => startTimed(cur, i)} onPairPrev={onPairPrev} onPairNext={onPairNext} />
       )}
+      </div>
     </> : <div className="empty"><div className="ico"><Icon name="shuffle" /></div>{t('Freestyle workout — add your first exercise.')}</div>}
 
     <div style={{ height: 12 }} />
     <div className="row">
-      <Button icon="chevronLeft" disabled={unitIdx <= 0} onClick={() => update(s => { s.active.cur = units[unitIdx - 1][0] })}>{t('Prev')}</Button>
-      <Button trailingIcon="chevronRight" disabled={unitIdx < 0 || unitIdx >= units.length - 1} onClick={() => update(s => { s.active.cur = units[unitIdx + 1][0] })}>{t('Next')}</Button>
+      <Button icon="chevronLeft" disabled={unitIdx <= 0} onClick={() => navigateUnit(-1)}>{t('Prev')}</Button>
+      <Button trailingIcon="chevronRight" disabled={unitIdx < 0 || unitIdx >= units.length - 1} onClick={() => navigateUnit(1)}>{t('Next')}</Button>
     </div>
     <div style={{ height: 10 }} />
     <Button onClick={() => exercisePicker(ex => {

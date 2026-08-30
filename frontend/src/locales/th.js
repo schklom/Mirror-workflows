@@ -688,5 +688,7 @@ export default {
   'Add session note': 'เพิ่มบันทึกประจำรอบ',
   'Edit session note': 'แก้ไขบันทึกประจำรอบ',
   'How the session went as a whole.': 'ภาพรวมของการออกกำลังกายรอบนี้เป็นอย่างไร',
-  'Rest-pause always trains as one warm-up set at this rep count, then one rest-pause work set — "Sets" is not used.': 'เรสต์-พอสจะฝึกเป็นเซ็ตวอร์มอัพหนึ่งเซ็ตที่จำนวนครั้งนี้ ตามด้วยเซ็ตหลักแบบเรสต์-พอสหนึ่งเซ็ตเสมอ — ไม่ใช้ค่า "เซ็ต"'
+  'Rest-pause always trains as one warm-up set at this rep count, then one rest-pause work set — "Sets" is not used.': 'เรสต์-พอสจะฝึกเป็นเซ็ตวอร์มอัพหนึ่งเซ็ตที่จำนวนครั้งนี้ ตามด้วยเซ็ตหลักแบบเรสต์-พอสหนึ่งเซ็ตเสมอ — ไม่ใช้ค่า "เซ็ต"',
+  'Move up': 'เลื่อนขึ้น',
+  'Move down': 'เลื่อนลง',
 }

@@ -681,4 +681,6 @@ export default {
   'Show all equipment': 'Minden eszköz megjelenítése',
   'Showing what you have in "{0}"': 'Az jelenik meg, ami megvan a(z) „{0}” profilban',
   'Showing all equipment': 'Minden eszköz megjelenítve',
+  'Move up': 'Feljebb',
+  'Move down': 'Lejjebb',
 }

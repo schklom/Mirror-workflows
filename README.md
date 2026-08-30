@@ -102,7 +102,7 @@ docker compose pull   # grab prebuilt images (amd64 + arm64) — skip to build f
 docker compose up -d
 ```
 
-Open **http://localhost:8080**, tap **Create profile**, and you're in. First launch downloads
+Open **<http://localhost:8080>**, tap **Create profile**, and you're in. First launch downloads
 the exercise media (~140 MB) once.
 
 > **About that media:** it reaches openGym through

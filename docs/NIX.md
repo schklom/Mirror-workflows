@@ -179,16 +179,11 @@ manage one:
 
 That renders a `services.nginx.virtualHosts."gym.example.com"` with the SPA root + fallback, the
 `/api` proxy, `/img` and `/gif` aliases, gzip/optimisation settings, and — when `enableACME` — TLS.
+It's ordinary `services.nginx` config afterwards, so you can still extend the vhost or add your own
+virtualHosts alongside it.
 
-Otherwise, write the virtualHost yourself (e.g. to mix with your existing sites). Remember the
-module's Caddy-native default is `services.nginx.enable = false`; you must switch that back on
-*before* adding your own vhost — the module will do it for you if you set `nginx.enable = true`:
-
-```nix
-{ services.nginx.enable = lib.mkTrue; }   # or set services.opengym.nginx.enable = true
-```
-
-Then a minimal handwritten config:
+Note: on the Caddy-native default the module force-disables `services.nginx`, so the way to turn
+nginx on (and the only supported one, since the force-off is `mkForce`) is `nginx.enable = true`.
 
 ### Passkey constraint (read before choosing a hostname)
 

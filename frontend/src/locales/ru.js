@@ -555,6 +555,7 @@ export default {
   'Step ({0})': 'Шаг ({0})',
   'Step (seconds)': 'Шаг (секунды)',
   'Reps from': 'Повт. от',
+  'Reps up to': 'Повт. до',
   'No automatic progression': 'Без автопрогрессии',
   'Exclude from automatic progression': 'Исключить из автоматической прогрессии',
   'Use for planned deloads. Workouts stay in history and statistics.': 'Используйте для плановых разгрузок. Тренировки остаются в истории и статистике.',

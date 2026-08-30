@@ -555,6 +555,7 @@ export default {
   'Step ({0})': 'Skok ({0})',
   'Step (seconds)': 'Skok (sekundy)',
   'Reps from': 'Powt. od',
+  'Reps up to': 'Powt. do',
   'No automatic progression': 'Bez automatycznej progresji',
   'Exclude from automatic progression': 'Wyklucz z automatycznej progresji',
   'Use for planned deloads. Workouts stay in history and statistics.': 'Użyj dla planowanych deloadów. Treningi pozostają w historii i statystykach.',

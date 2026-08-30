@@ -573,6 +573,7 @@ export default {
   'Step ({0})': 'Schritt ({0})',
   'Step (seconds)': 'Schritt (Sekunden)',
   'Reps from': 'Wdh. ab',
+  'Reps up to': 'Wdh. bis',
   'No automatic progression': 'Keine automatische Progression',
   'Exclude from automatic progression': 'Von der automatischen Progression ausschließen',
   'Use for planned deloads. Workouts stay in history and statistics.': 'Für geplante Deloads. Workouts bleiben im Verlauf und in den Statistiken.',

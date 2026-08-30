@@ -5,6 +5,7 @@ import pt from './pt.js'
 
 export const PT_BR_OVERRIDES = {
   'Press back again to exit': 'Pressione voltar novamente para sair',
+  'Reps up to': 'Reps até',
   'Delete': 'Excluir',
   'Save': 'Salvar',
   'Log': 'Registrar',

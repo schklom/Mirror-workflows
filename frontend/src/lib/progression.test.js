@@ -311,6 +311,13 @@ describe('double progression', () => {
     expect(p.reps).toBe(8)
     expect(p.weight).toBe(35)           // 40 × 0.9 = 36 → nearest loadable 2.5 step
   })
+
+  it('normalizes persisted per-side bounds before prescribing', () => {
+    const perSide = { ...cfg, reps: 13, repsMin: 7, side: true }
+    const p = nextPrescription(hist(LIFT, [[40, 12, 12, 12]], { sets: 3, reps: 13 }), perSide)
+    expect(p.kind).toBe('hold')
+    expect(p.reps).toBe(14)
+  })
 })
 
 describe('timed progression', () => {

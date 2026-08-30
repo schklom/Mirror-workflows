@@ -555,6 +555,7 @@ export default {
   'Step ({0})': '加量（{0}）',
   'Step (seconds)': '加量（秒）',
   'Reps from': '次数下限',
+  'Reps up to': '次数上限',
   'No automatic progression': '不自动进阶',
   'Exclude from automatic progression': '不计入自动进阶',
   'Use for planned deloads. Workouts stay in history and statistics.': '用于计划性减载。训练仍保留在历史记录和统计中。',

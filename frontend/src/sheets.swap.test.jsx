@@ -1,4 +1,5 @@
 // @vitest-environment happy-dom
+import { LANGS } from './lib/i18n-core.js'
 import { act } from 'react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { swapActiveWorkoutExercise } from './sheets.jsx'
@@ -77,7 +78,7 @@ describe('active exercise swap locale coverage', () => {
   const packs = import.meta.glob('./locales/*.js', { eager: true, import: 'default' })
 
   it('defines every new prompt in all twelve locale packs', () => {
-    expect(Object.keys(packs)).toHaveLength(12)
+    expect(Object.keys(packs)).toHaveLength(Object.keys(LANGS).length - 1)
     Object.entries(packs).forEach(([path, pack]) => {
       required.forEach(key => expect(pack, `${path} is missing ${key}`).toHaveProperty(key))
     })

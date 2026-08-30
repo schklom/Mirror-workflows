@@ -555,6 +555,7 @@ export default {
   'Step ({0})': '증가폭 ({0})',
   'Step (seconds)': '증가폭 (초)',
   'Reps from': '최소 횟수',
+  'Reps up to': '최대 횟수',
   'No automatic progression': '자동 증가 없음',
   'Exclude from automatic progression': '자동 증가에서 제외',
   'Use for planned deloads. Workouts stay in history and statistics.': '계획된 디로딩에 사용합니다. 운동은 기록과 통계에 남습니다.',

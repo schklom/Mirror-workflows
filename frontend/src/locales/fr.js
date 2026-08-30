@@ -555,6 +555,7 @@ export default {
   'Step ({0})': 'Palier ({0})',
   'Step (seconds)': 'Palier (secondes)',
   'Reps from': 'Reps à partir de',
+  'Reps up to': 'Reps jusqu’à',
   'No automatic progression': 'Pas de progression automatique',
   'Exclude from automatic progression': 'Exclure de la progression automatique',
   'Use for planned deloads. Workouts stay in history and statistics.': 'À utiliser pour les semaines de décharge planifiées. Les séances restent dans l’historique et les statistiques.',

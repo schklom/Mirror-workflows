@@ -21,6 +21,7 @@ import { importHevyData, HevyApiError, HEVY_DEV_SETTINGS, mergeHevyRoutines } fr
 import { buildPlanBundle, parsePlan, mergePlan, printPlan } from './lib/plan-share.js'
 import { estimate1RM, best1RM, is1RMRecord, REP_CAP } from './lib/onerm.js'
 import { nextPrescription, applyPrescription, policyFor, defaultIncrement, POLICIES_FOR, POLICY_NAME, POLICY_DESC, MAX_BW_SETS } from './lib/progression.js'
+import { normalizeRepRange } from './lib/rep-range.js'
 import { MOBILE, shareExport } from './lib/mobile.js'
 import { buildCompletedWorkout } from './lib/finish-workout.js'
 import { isWarmupRow } from './lib/workout-model.js'
@@ -817,17 +818,25 @@ const progressionStepOf = (c, mode, ex, unit) =>
 const progressionStepIsValid = (step, policy) =>
   policy === 'off' || (Number.isFinite(step) && step > 0)
 
-function ProgressionFields({ ex, mode, c, setC, routine, unit }) {
+function ProgressionFields({ ex, mode, c, setC, routine, unit, perSide }) {
   const options = POLICIES_FOR[mode] || ['off']
   if (options.length < 2) return null
   const inherited = policyFor({ id: ex.id }, routine, mode)
   const active = policyFor({ ...c, id: ex.id }, routine, mode)
   const inc = progressionStepOf(c, mode, ex, unit)
   const invalid = !progressionStepIsValid(inc, active)
+  const stride = mode === 'reps' && perSide ? 2 : 1
+  const range = active === 'double' ? normalizeRepRange(c.reps, c.repsMin, stride) : null
+  const setRule = v => setC(x => {
+    const next = { ...x, prog: v || undefined }
+    return policyFor({ ...next, id: ex.id }, routine, mode) === 'double'
+      ? { ...next, ...normalizeRepRange(next.reps, next.repsMin, stride) }
+      : next
+  })
   return <>
     <h4 className="sec">{t('Progression')}</h4>
     <div className="sect-b" style={{ marginBottom: 8 }}>
-      <SelectRow title={t('Rule')} sheetTitle={t('Progression')} value={c.prog || ''} onChange={v => setC(x => ({ ...x, prog: v || undefined }))}
+      <SelectRow title={t('Rule')} sheetTitle={t('Progression')} value={c.prog || ''} onChange={setRule}
         options={[{ value: '', label: t('Follow the routine ({0})', t(POLICY_NAME[inherited])) },
           ...options.map(p => ({ value: p, label: t(POLICY_NAME[p]) }))]} />
     </div>
@@ -836,8 +845,12 @@ function ProgressionFields({ ex, mode, c, setC, routine, unit }) {
       <Stepper label={mode === 'time' ? t('Step (seconds)') : t('Step ({0})', unit)} value={inc}
         step={mode === 'time' ? 5 : 1.25} decimal={mode !== 'time'} invalid={invalid} className={invalid ? 'invalid' : ''}
         onChange={v => setC(x => ({ ...x, inc: v }))} />
-      {active === 'double' && <Stepper label={t('Reps from')} value={c.repsMin || Math.max(1, (c.reps || 10) - 2)}
-        step={1} decimal={false} onChange={v => setC(x => ({ ...x, repsMin: v }))} />}
+      {active === 'double' && <>
+        <Stepper label={t('Reps from')} value={range.repsMin} step={stride} decimal={false}
+          onChange={v => setC(x => ({ ...x, ...normalizeRepRange(x.reps, v, stride) }))} />
+        <Stepper label={t('Reps up to')} value={range.reps} step={stride} decimal={false}
+          onChange={v => setC(x => ({ ...x, ...normalizeRepRange(v, x.repsMin, stride) }))} />
+      </>}
     </div>}
     {invalid && <div className="small" role="alert" style={{ color: 'var(--red)', marginTop: -10, marginBottom: 18 }}>
       {t('Enter a positive step to use this progression rule.')}
@@ -848,7 +861,13 @@ function ProgressionFields({ ex, mode, c, setC, routine, unit }) {
 function ExConfig({ ex, existing, onSave, onDelete, close, routine, initial }) {
   const st = useStore(s => s.S)
   const cardio = isCardio(ex.id)
-  const [c, setC] = useState(existing || initial || defaultConfig(ex.id))
+  const seed = existing || initial || defaultConfig(ex.id)
+  const [c, setC] = useState(() => {
+    const cfg = { ...seed }
+    return policyFor({ ...cfg, id: ex.id }, routine, modeOf({ ...cfg, id: ex.id })) === 'double'
+      ? { ...cfg, ...normalizeRepRange(cfg.reps, cfg.repsMin, isPerSide(cfg) ? 2 : 1) }
+      : cfg
+  })
   // Cardio keeps its own duration+speed form; the reps/time choice (issue #16) is offered for
   // everything else, which is where the gap was — planks, hangs, wall sits, loaded carries.
   const mode = cardio ? 'cardio' : modeOf({ ...c, id: ex.id })
@@ -857,8 +876,15 @@ function ExConfig({ ex, existing, onSave, onDelete, close, routine, initial }) {
   const perSide = isPerSide(c)
   const progressionPolicy = policyFor({ ...c, id: ex.id }, routine, mode)
   const progressionStepInvalid = !progressionStepIsValid(progressionStepOf(c, mode, ex, st.unit), progressionPolicy)
+  const activePolicy = policyFor({ ...c, id: ex.id }, routine, mode)
+  const double = mode === 'reps' && activePolicy === 'double'
   // Keep whatever the other mode already had (sets, weight) and fill only what is missing.
-  const setMode = m => setC(x => ({ ...defaultConfig(ex.id, m), ...x, mode: m }))
+  const setMode = m => setC(x => {
+    const next = { ...defaultConfig(ex.id, m), ...x, mode: m }
+    return m === 'reps' && policyFor({ ...next, id: ex.id }, routine, 'reps') === 'double'
+      ? { ...next, ...normalizeRepRange(next.reps, next.repsMin, isPerSide(next) ? 2 : 1) }
+      : next
+  })
   const save = () => {
     if (progressionStepInvalid) return
     close()
@@ -895,9 +921,15 @@ function ExConfig({ ex, existing, onSave, onDelete, close, routine, initial }) {
       // A unilateral target is stored even: the split has to divide, and a typed 15 would
       // otherwise plan seven reps on one side and eight on the other, every session.
       const typed = Math.max(1, Math.round(c.reps) || 10)
-      const reps = perSide ? Math.ceil(typed / 2) * 2 : typed
+      const stride = perSide ? 2 : 1
+      let reps = perSide ? Math.ceil(typed / stride) * stride : typed
+      let range = null
+      if (double) {
+        range = normalizeRepRange(reps, c.repsMin, stride)
+        reps = range.reps
+      }
       const out = { sets, mode: 'reps', reps, weight: Math.max(0, c.weight || 0), ...flags, ...(perSide ? { side: true } : {}), ...prog, ...withNote, ...withWarmups, ...withRest }
-      if (policyFor({ ...c, id: ex.id }, routine, 'reps') === 'double') out.repsMin = Math.min(reps, Math.max(1, Math.round(c.repsMin) || Math.max(1, reps - 2)))
+      if (double) out.repsMin = range.repsMin
       // A ceiling below the working reps would tell you to add a set on day one.
       if (bw && !(out.weight > 0) && c.repsMax > 0) out.repsMax = Math.max(reps, Math.round(c.repsMax))
       // Every set in this exercise becomes a drop-set/rest-pause (buildSets stamps the rows) —
@@ -937,7 +969,7 @@ function ExConfig({ ex, existing, onSave, onDelete, close, routine, initial }) {
             rest-pause work set — so "Sets" has nothing left to mean and only invites a mismatch. */}
         {c.intensifier?.type !== 'restpause' &&
           <Stepper label={t('Sets')} value={c.sets} step={1} decimal={false} onChange={v => setC(x => ({ ...x, sets: v }))} />}
-        <Stepper label={t('Reps')} value={c.reps} step={perSide ? 2 : 1} decimal={false} onChange={v => setC(x => ({ ...x, reps: v }))} />
+        {!double && <Stepper label={t('Reps')} value={c.reps} step={perSide ? 2 : 1} decimal={false} onChange={v => setC(x => ({ ...x, reps: v }))} />}
         {/* On bodyweight work the weight stepper is the click #32 is about, so it is not here
             until there is a belt to describe — see the added-weight row below. */}
         {!bw && <Stepper label={t('Weight ({0})', st.unit)} value={c.weight} step={2.5} onChange={v => setC(x => ({ ...x, weight: v }))} />}
@@ -983,7 +1015,12 @@ function ExConfig({ ex, existing, onSave, onDelete, close, routine, initial }) {
         subtitle={perSide ? t('You still log the total: {0} is {1} per side.', c.reps || 0, fmtNum(sideReps(c.reps))) : t('For lunges, single-arm rows and the like.')}>
         {/* Turning it on rounds the target up to an even number, since half of an odd
             total is a rep one side does not get. */}
-        <Switch checked={perSide} onChange={v => setC(x => ({ ...x, side: v || undefined, reps: v ? Math.ceil((x.reps || 0) / 2) * 2 : x.reps }))} />
+        <Switch checked={perSide} onChange={v => setC(x => {
+          const next = { ...x, side: v || undefined, reps: v ? Math.ceil((x.reps || 0) / 2) * 2 : x.reps }
+          return policyFor({ ...next, id: ex.id }, routine, 'reps') === 'double'
+            ? { ...next, ...normalizeRepRange(next.reps, next.repsMin, v ? 2 : 1) }
+            : next
+        })} />
       </Row>}
     </div>}
     {/* A stepper is too wide to sit in a list row next to a label — it squeezes the text to
@@ -1045,7 +1082,7 @@ function ExConfig({ ex, existing, onSave, onDelete, close, routine, initial }) {
           : t('Every set becomes rest-pause: {0} reps to start, then {1} more split into short bursts, {2}s rest before each, roughly halving each time.', c.reps || 0, c.intensifier.totalReps, c.intensifier.restSec)}
       </div>}
     </>}
-    <ProgressionFields ex={ex} mode={mode} c={c} setC={setC} routine={routine} unit={st.unit} />
+    <ProgressionFields ex={ex} mode={mode} c={c} setC={setC} routine={routine} unit={st.unit} perSide={perSide} />
     <textarea className="input" rows={3} maxLength={500} style={{ marginBottom: 18 }}
       placeholder={t('Note (optional) — loading cues, "bar only then +1 plate/side each set", anything worth remembering here')}
       value={c.note || ''} onChange={e => setC(x => ({ ...x, note: e.target.value }))} />

@@ -555,6 +555,7 @@ export default {
   'Step ({0})': 'स्टेप ({0})',
   'Step (seconds)': 'स्टेप (सेकंड)',
   'Reps from': 'रेप्स से',
+  'Reps up to': 'रेप्स तक',
   'No automatic progression': 'कोई स्वचालित प्रोग्रेशन नहीं',
   'Exclude from automatic progression': 'स्वचालित प्रोग्रेशन से बाहर रखें',
   'Use for planned deloads. Workouts stay in history and statistics.': 'योजनाबद्ध डीलोड के लिए उपयोग करें। वर्कआउट इतिहास और आँकड़ों में रहते हैं।',

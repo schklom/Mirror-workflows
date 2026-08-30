@@ -555,6 +555,7 @@ export default {
   'Step ({0})': 'Artış ({0})',
   'Step (seconds)': 'Artış (saniye)',
   'Reps from': 'Tekrar en az',
+  'Reps up to': 'Tekrar en çok',
   'No automatic progression': 'Otomatik ilerleme yok',
   'Exclude from automatic progression': 'Otomatik ilerlemeden hariç tut',
   'Use for planned deloads. Workouts stay in history and statistics.': 'Planlı deloadlar için kullanın. Antrenmanlar geçmişte ve istatistiklerde kalır.',

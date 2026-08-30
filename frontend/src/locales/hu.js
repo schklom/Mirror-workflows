@@ -683,4 +683,10 @@ export default {
   'Showing all equipment': 'Minden eszköz megjelenítve',
   'Move up': 'Feljebb',
   'Move down': 'Lejjebb',
+  'Swap exercise': 'Gyakorlat cseréje',
+  'Swap exercise?': 'Cseréled a gyakorlatot?',
+  'Logged sets stay with the original exercise. Choose where the replacement belongs.': 'A naplózott sorozatok az eredeti gyakorlatnál maradnak. Válaszd ki, hová kerüljön a csere.',
+  'Keep replacement in this group': 'A csere maradjon ebben a csoportban',
+  'Insert after this group': 'Beszúrás a csoport után',
+  'Logged sets stay with the original exercise. The replacement will be inserted afterward.': 'A naplózott sorozatok az eredeti gyakorlatnál maradnak. A csere utána kerül beszúrásra.',
 }

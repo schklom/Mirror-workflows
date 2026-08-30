@@ -2,6 +2,27 @@
 // the stores makes the uneven-round and re-check rules explicit and directly testable.
 const hasWork = (entries, idx) => !!entries[idx]?.sets?.some(set => !set.done)
 
+// Return the first unfinished navigation unit after the current one, wrapping once so a user
+// who completed units out of order is never offered workout completion while earlier work remains.
+export function nextUnfinishedUnit(entries, units, fromIdx) {
+  if (!Array.isArray(entries) || !Array.isArray(units) || units.length === 0) return null
+  const current = units.findIndex(unit => unit.includes(fromIdx))
+  const ordered = current < 0
+    ? units
+    : [...units.slice(current + 1), ...units.slice(0, current)]
+  return ordered.find(unit => unit.some(idx => hasWork(entries, idx))) || null
+}
+
+// The current exercise may be one member of a contiguous superset. Insert after that complete
+// navigation unit; invalid/empty state safely falls back to the end of the entry list.
+export function insertionIndexAfterCurrentUnit(units, currentIndex, entryCount) {
+  const length = Math.max(0, Number(entryCount) || 0)
+  if (!Array.isArray(units) || units.length === 0) return length
+  const unit = units.find(candidate => candidate.includes(currentIndex))
+  if (!unit?.length) return length
+  return Math.min(length, Math.max(...unit) + 1)
+}
+
 // A completion is new progress only when it takes this exercise beyond the largest number of
 // simultaneously completed sets seen in this mounted session. Uncheck/re-check therefore does
 // not repeat navigation or rest side effects, while completing an added set still can.

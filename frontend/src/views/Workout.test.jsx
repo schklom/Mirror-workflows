@@ -14,13 +14,21 @@ const mocks = vi.hoisted(() => {
     stopWork: null,
     confirmSheet: vi.fn(),
     topWeightSheet: vi.fn(),
+    workoutCompleteSheet: vi.fn(),
+    exercisePicker: vi.fn(),
+    exConfigSheet: vi.fn(),
+    toast: vi.fn(),
   }
   state.stopRest = vi.fn(() => { state.timer = null })
   state.stopWork = vi.fn(() => { state.work = null })
   state.storeSnapshot = () => ({
     S: state.S,
     user: null,
-    update: mut => mut(state.S),
+    update: mut => {
+      const next = structuredClone(state.S)
+      mut(next)
+      state.S = next
+    },
   })
   state.uiSnapshot = () => ({
     timer: state.timer,
@@ -29,7 +37,7 @@ const mocks = vi.hoisted(() => {
     stopRest: state.stopRest,
     stopWork: state.stopWork,
     startWork: vi.fn(),
-    toast: vi.fn(),
+    toast: state.toast,
   })
   return state
 })
@@ -47,12 +55,12 @@ vi.mock('../store/useUI.js', () => {
 vi.mock('react-router-dom', () => ({ useNavigate: () => () => {} }))
 vi.mock('../sheets.jsx', () => ({
   startFlow: vi.fn(),
-  exercisePicker: vi.fn(),
-  exConfigSheet: vi.fn(),
+  exercisePicker: mocks.exercisePicker,
+  exConfigSheet: mocks.exConfigSheet,
   exerciseDetailSheet: vi.fn(),
   topWeightSheet: mocks.topWeightSheet,
   finishWorkout: vi.fn(),
-  workoutCompleteSheet: vi.fn(),
+  workoutCompleteSheet: mocks.workoutCompleteSheet,
   confirmSheet: mocks.confirmSheet,
   // Both note sheets belong here even though the tests never open one: Workout.jsx reads
   // sessionNoteSheet during render, so a missing export is a render crash, not a no-op.
@@ -80,11 +88,13 @@ function exercise(id, sets, extra = {}) {
   }
 }
 
-function workout(entries, cur = 0) {
+function workout(entries, cur = 0, overrides = {}) {
+  const { active: activeOverrides = {}, ...stateOverrides } = overrides
   return {
     unit: 'kg', restSec: 90, sound: false, effort: 'none', gifSize: 'full',
     workouts: [], exWeights: {}, routines: [],
-    active: { id: 'active', name: 'Test workout', start: Date.now(), cur, entries },
+    active: { id: 'active', name: 'Test workout', start: Date.now(), cur, entries, ...activeOverrides },
+    ...stateOverrides,
   }
 }
 
@@ -100,8 +110,8 @@ function installDom() {
   root = createRoot(container)
 }
 
-async function mount(entries, cur = 0) {
-  mocks.S = workout(entries, cur)
+async function mount(entries, cur = 0, overrides = {}) {
+  mocks.S = workout(entries, cur, overrides)
   installDom()
   await act(async () => { root.render(React.createElement(Workout)) })
 }
@@ -124,6 +134,25 @@ async function requestDiscard() {
   const button = container.querySelector('button[aria-label="Discard"]')
   expect(button).toBeTruthy()
   await act(async () => { button.dispatchEvent(new dom.Event('click', { bubbles: true })) })
+}
+
+async function rerender() {
+  await act(async () => { root.render(React.createElement(Workout)) })
+}
+
+async function addExerciseThroughSheets(ex = { id: 'added-exercise' }, cfg = { mode: 'reps', sets: 1, reps: 5, weight: 0 }) {
+  const addButton = [...container.querySelectorAll('button')]
+    .find(button => button.textContent.trim() === 'Add exercise')
+  expect(addButton).toBeTruthy()
+  await act(async () => { addButton.dispatchEvent(new dom.Event('click', { bubbles: true })) })
+
+  const pickerCall = mocks.exercisePicker.mock.calls.at(-1)
+  expect(pickerCall?.[0]).toEqual(expect.any(Function))
+  await act(async () => { pickerCall[0](ex) })
+
+  const configCall = mocks.exConfigSheet.mock.calls.at(-1)
+  expect(configCall?.[2]).toEqual(expect.any(Function))
+  await act(async () => { configCall[2](cfg) })
 }
 
 beforeEach(() => {
@@ -156,6 +185,85 @@ describe('Workout set completion flow', () => {
     expect(mocks.startRest).not.toHaveBeenCalled()
   })
 
+  it.each(['warmup', 'warm-up', 'warm_up'])(
+    'does not start transition rest before an incomplete %s row in the next ordinary exercise',
+    async phase => {
+      await mount([
+        exercise('current', [false], { asked: true }),
+        exercise('next', [false, false], {
+          asked: true,
+          sets: [
+            { w: 30, r: 5, done: false, phase },
+            { w: 60, r: 5, done: false },
+          ],
+        }),
+      ])
+
+      await toggleSet(0)
+
+      expect(mocks.S.active.cur).toBe(1)
+      expect(mocks.startRest).not.toHaveBeenCalled()
+    },
+  )
+
+  it('does not start transition rest when a completed superset advances to an incomplete warm-up', async () => {
+    await mount([
+      exercise('superset-a', [true], { sg: 'group', asked: true }),
+      exercise('superset-b', [false], { sg: 'group', asked: true }),
+      exercise('next', [false, false], {
+        asked: true,
+        sets: [
+          { w: 30, r: 5, done: false, phase: 'warmup' },
+          { w: 60, r: 5, done: false },
+        ],
+      }),
+    ], 1)
+
+    await toggleSet(1)
+
+    expect(mocks.S.active.cur).toBe(2)
+    expect(mocks.startRest).not.toHaveBeenCalled()
+  })
+
+  it('does not start transition rest before a warm-up while top-weight confirmation owns navigation', async () => {
+    await mount([
+      exercise('current-loaded', [false]),
+      exercise('next', [false, false], {
+        asked: true,
+        sets: [
+          { w: 30, r: 5, done: false, phase: 'warmup' },
+          { w: 60, r: 5, done: false },
+        ],
+      }),
+    ])
+
+    await toggleSet(0)
+
+    expect(mocks.topWeightSheet).toHaveBeenCalledWith(0)
+    expect(mocks.S.active.cur).toBe(0)
+    expect(mocks.startRest).not.toHaveBeenCalled()
+  })
+
+  it('does not restart transition rest when re-checking a completed unit before an incomplete warm-up', async () => {
+    await mount([
+      exercise('current', [true], { asked: true }),
+      exercise('next', [false, false], {
+        asked: true,
+        sets: [
+          { w: 30, r: 5, done: false, phase: 'warmup' },
+          { w: 60, r: 5, done: false },
+        ],
+      }),
+    ])
+
+    await toggleSet(0)
+    await rerender()
+    await toggleSet(0)
+
+    expect(mocks.S.active.cur).toBe(0)
+    expect(mocks.startRest).not.toHaveBeenCalled()
+  })
+
   it('leaves a completed superset selected while its top-weight sheet owns the advance choice', async () => {
     const group = 'superset-1'
     await mount([
@@ -168,6 +276,108 @@ describe('Workout set completion flow', () => {
     expect(mocks.topWeightSheet).toHaveBeenCalledWith(1)
     expect(mocks.S.active.cur).toBe(1)
     expect(mocks.startRest).toHaveBeenCalledWith(90)
+  })
+
+  it('skips completed intervening units and selects the next unfinished superset as one unit', async () => {
+    await mount([
+      exercise('current-hold', [false], { asked: true, target: { mode: 'time', sec: 30, weight: 0 } }),
+      exercise('already-done', [true], { asked: true }),
+      exercise('pending-a', [false], { sg: 'pending-group' }),
+      exercise('pending-b', [false], { sg: 'pending-group' }),
+    ])
+
+    await toggleSet(0)
+
+    expect(mocks.S.active.cur).toBe(2)
+    expect(mocks.workoutCompleteSheet).not.toHaveBeenCalled()
+    expect(mocks.toast).toHaveBeenCalledWith('Hold logged')
+    expect(mocks.startRest).toHaveBeenCalledWith(90)
+  })
+
+  it('wraps to earlier unfinished work instead of showing a false completion prompt', async () => {
+    await mount([
+      exercise('pending-earlier', [false], { asked: true }),
+      exercise('current-hold', [false], { asked: true, target: { mode: 'time', sec: 30, weight: 0 } }),
+    ], 1)
+
+    await toggleSet(0)
+
+    expect(mocks.S.active.cur).toBe(0)
+    expect(mocks.workoutCompleteSheet).not.toHaveBeenCalled()
+    expect(mocks.startRest).toHaveBeenCalledWith(90)
+  })
+
+  it('keeps top-weight confirmation in control without declaring completion while work remains', async () => {
+    await mount([
+      exercise('current-loaded', [false]),
+      exercise('pending', [false], { asked: true }),
+    ])
+
+    await toggleSet(0)
+
+    expect(mocks.topWeightSheet).toHaveBeenCalledWith(0)
+    expect(mocks.workoutCompleteSheet).not.toHaveBeenCalled()
+    expect(mocks.S.active.cur).toBe(0)
+  })
+
+  it('shows workout completion only when no unfinished unit remains', async () => {
+    await mount([
+      exercise('already-done', [true], { asked: true }),
+      exercise('final-hold', [false], { asked: true, target: { mode: 'time', sec: 30, weight: 0 } }),
+    ], 1)
+
+    await toggleSet(0)
+
+    expect(mocks.workoutCompleteSheet).toHaveBeenCalledOnce()
+    expect(mocks.startRest).not.toHaveBeenCalled()
+  })
+})
+
+describe('Workout add exercise flow', () => {
+  it.each([
+    ['freestyle', {}],
+    ['planned', {
+      active: { routineId: 'routine-1' },
+      routines: [{ id: 'routine-1', ex: [] }],
+    }],
+  ])('inserts after the current unit and continues to pending work in a %s session', async (_label, overrides) => {
+    await mount([
+      exercise('current', [true], { asked: true }),
+      exercise('pending', [false], { asked: true }),
+    ], 0, overrides)
+
+    await addExerciseThroughSheets(
+      { id: 'inserted' },
+      { mode: 'time', sets: 1, sec: 30, weight: 0 },
+    )
+
+    expect(mocks.S.active.entries.map(entry => entry.id)).toEqual(['current', 'inserted', 'pending'])
+    expect(mocks.S.active.cur).toBe(1)
+
+    await rerender()
+    await toggleSet(0)
+
+    expect(mocks.S.active.entries[1].sets[0].done).toBe(true)
+    expect(mocks.S.active.cur).toBe(2)
+    expect(mocks.workoutCompleteSheet).not.toHaveBeenCalled()
+  })
+
+  it('inserts after the complete current superset without splitting the group', async () => {
+    await mount([
+      exercise('current-a', [true], { sg: 'current-group', asked: true }),
+      exercise('current-b', [true], { sg: 'current-group', asked: true }),
+      exercise('pending', [false], { asked: true }),
+    ])
+
+    await addExerciseThroughSheets({ id: 'inserted' })
+
+    expect(mocks.S.active.entries.map(entry => entry.id)).toEqual([
+      'current-a', 'current-b', 'inserted', 'pending',
+    ])
+    expect(mocks.S.active.entries.slice(0, 2).map(entry => entry.sg)).toEqual([
+      'current-group', 'current-group',
+    ])
+    expect(mocks.S.active.cur).toBe(2)
   })
 })
 

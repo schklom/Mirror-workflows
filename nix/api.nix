@@ -3,11 +3,12 @@
   buildNpmPackage,
   nodejs_22,
   makeWrapper,
+  version,
 }:
 
 buildNpmPackage rec {
   pname = "opengym-api";
-  version = "1.2.11";
+  inherit version;
 
   src = ./../api;
 

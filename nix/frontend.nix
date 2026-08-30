@@ -2,11 +2,12 @@
   lib,
   buildNpmPackage,
   nodejs_22,
+  version,
 }:
 
 buildNpmPackage rec {
   pname = "opengym-frontend";
-  version = "1.2.11";
+  inherit version;
 
   src = ./../frontend;
 

@@ -662,12 +662,17 @@ function ActiveWorkout() {
       const routine = S.routines.find(r => r.id === A.routineId)
       const freestyle = !A.routineId
       // Freestyle has no routine prescription to apply: show the last target in the config
-      // sheet and carry its completed rows forward. A planned session keeps its existing path.
+      // sheet and carry its completed rows forward. A planned session uses its configured
+      // target when progression is off, while progression-enabled sessions keep their path.
       const seed = freestyle ? freestyleConfig(S, { id: ex.id, ...defaultConfig(ex.id) }) : null
       exConfigSheet(ex, null, cfg => update(s => {
         const full = { ...cfg, id: ex.id }
         const plan = freestyle ? null : nextPrescription(s, full, s.routines.find(r => r.id === s.active.routineId))
-        const sets = buildSets(s, full, { step: defaultIncrement(ex.id, s.unit), ...(freestyle ? { preferLast: true } : {}) })
+        const sets = buildSets(s, full, {
+          step: defaultIncrement(ex.id, s.unit),
+          ...(freestyle ? { preferLast: true } : {}),
+          ...(plan?.kind === 'off' ? { useTarget: true } : {})
+        })
         const progressed = freestyle ? sets : applyPrescription(sets, plan, defaultIncrement(ex.id, s.unit))
         const insertAt = insertionIndexAfterCurrentUnit(supersetUnits(s.active.entries), s.active.cur, s.active.entries.length)
         s.active.entries.splice(insertAt, 0, { id: ex.id, target: { ...cfg }, plan, sets: applyIntensifierPlan(progressed, full) })

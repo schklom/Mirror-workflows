@@ -8,7 +8,7 @@ import { fmtNum, fmtDate, todayISO, exCount, DAYN } from '../lib/format.js'
 import { beep, vibrate } from '../lib/sound.js'
 import { t, exerciseNameFor } from '../lib/i18n.js'
 import { api } from '../lib/api.js'
-import { insertionIndexAfterCurrentUnit, nextUnfinishedUnit, setProgressHighWater, supersetFlowStep, restAfterSet, restOnRecheck } from '../lib/supersetFlow.js'
+import { insertionIndexAfterCurrentUnit, nextUnfinishedUnit, setProgressHighWater, supersetFlowStep, restAfterSet, restOnRecheck, restSecFor } from '../lib/supersetFlow.js'
 import Media from '../components/Media.jsx'
 import { startFlow, exercisePicker, exConfigSheet, exerciseDetailSheet, topWeightSheet, finishWorkout, workoutCompleteSheet, confirmSheet, exerciseNoteSheet, sessionNoteSheet, swapActiveWorkoutExercise } from '../sheets.jsx'
 import Icon from '../components/Icon.jsx'
@@ -535,11 +535,15 @@ function ActiveWorkout() {
       const restBeforeWarmup = nextUnit?.some(ui =>
         fresh.entries[ui].sets.some(set => isWarmupRow(set) && !set.done),
       )
+      // The rest this set has earned: the exercise's own restSec when it set one, the global
+      // timer when it did not, and the longest of the group's across a superset (issue #10).
+      // Resolved once here so every branch below times the same break.
+      const restSec = restSecFor(fresh.entries, freshUnit || [idx], S.restSec)
 
       // A re-check of finished work must not navigate or reopen a sheet, but it may still owe
       // you a rest — see restOnRecheck, and the other half of issue #3.
       if (!progress.isNew) {
-        if (!restBeforeWarmup && restOnRecheck({ timerRunning: !!useUI.getState().timer, unitDone: freshUnitDone, lastUnit: freshWorkoutDone })) startRest(S.restSec, idx)
+        if (!restBeforeWarmup && restOnRecheck({ timerRunning: !!useUI.getState().timer, unitDone: freshUnitDone, lastUnit: freshWorkoutDone })) startRest(restSec, idx)
         return
       }
 
@@ -549,7 +553,7 @@ function ActiveWorkout() {
       if (freshUnitDone) stopRest()
       if (!freshUnit || freshUnit.length <= 1) {
         if (freshUnitDone && !askTop && nextUnit?.length) update(s => { if (s.active) s.active.cur = nextUnit[0] })
-        if (!restBeforeWarmup && restAfterSet({ unitDone: freshUnitDone, lastUnit: freshWorkoutDone })) startRest(S.restSec, idx)
+        if (!restBeforeWarmup && restAfterSet({ unitDone: freshUnitDone, lastUnit: freshWorkoutDone })) startRest(restSec, idx)
         return
       }
 
@@ -559,11 +563,11 @@ function ActiveWorkout() {
         if (nextUnit?.length) {
           // The top-weight sheet's explicit "Just close" path owns the choice not to advance.
           if (!askTop) update(s => { if (s.active) s.active.cur = nextUnit[0] })
-          if (!restBeforeWarmup) startRest(S.restSec, idx)
+          if (!restBeforeWarmup) startRest(restSec, idx)
         }
       } else {
         if (step.nextIdx != null) update(s => { if (s.active) s.active.cur = step.nextIdx })
-        if (step.roundDone) startRest(S.restSec, idx)
+        if (step.roundDone) startRest(restSec, idx)
       }
     }
   }

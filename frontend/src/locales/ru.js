@@ -178,6 +178,7 @@ export default {
   'Remove drop': 'Убрать дроп-сет',
   'Remove burst': 'Убрать серию',
   'Rest (s)': 'Отдых (с)',
+  'Rest after each set of this exercise. Leave at 0 to use your default rest timer.': 'Отдых после каждого подхода этого упражнения. Оставь 0, чтобы работал таймер отдыха по умолчанию.',
   'Drop-set / rest-pause': 'Дроп-сет / рест-пауза',
   'Intensifier': 'Интенсификатор',
   'None': 'Нет',

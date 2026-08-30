@@ -341,7 +341,10 @@ export const PT_BR_OVERRIDES = {
   'Brings it up again the next time you train this exercise.': 'Aparece de novo na próxima vez que você treinar este exercício.',
   'Seat height, pin position, a form cue — shown every session.': 'Altura do banco, posição do pino, uma dica de execução — aparece em todos os treinos.',
   'How the session went as a whole.': 'Como foi o treino como um todo.',
-  'Rest-pause always trains as one warm-up set at this rep count, then one rest-pause work set — "Sets" is not used.': 'O rest-pause sempre treina como uma série de aquecimento com essas repetições e uma série de trabalho rest-pause — “Séries” não é usado.'
+  'Rest-pause always trains as one warm-up set at this rep count, then one rest-pause work set — "Sets" is not used.': 'O rest-pause sempre treina como uma série de aquecimento com essas repetições e uma série de trabalho rest-pause — “Séries” não é usado.',
+
+  // --- per-exercise rest ---
+  'Rest after each set of this exercise. Leave at 0 to use your default rest timer.': 'Descanso depois de cada série deste exercício. Deixe em 0 para usar o temporizador de descanso padrão.'
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

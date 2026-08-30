@@ -7,19 +7,27 @@ import Workout from './Workout.jsx'
 const mocks = vi.hoisted(() => {
   const state = {
     S: null,
+    timer: null,
+    work: null,
     startRest: vi.fn(),
-    stopRest: vi.fn(),
+    stopRest: null,
+    stopWork: null,
+    confirmSheet: vi.fn(),
     topWeightSheet: vi.fn(),
   }
+  state.stopRest = vi.fn(() => { state.timer = null })
+  state.stopWork = vi.fn(() => { state.work = null })
   state.storeSnapshot = () => ({
     S: state.S,
     user: null,
     update: mut => mut(state.S),
   })
   state.uiSnapshot = () => ({
-    work: null,
+    timer: state.timer,
+    work: state.work,
     startRest: state.startRest,
     stopRest: state.stopRest,
+    stopWork: state.stopWork,
     startWork: vi.fn(),
     toast: vi.fn(),
   })
@@ -45,7 +53,7 @@ vi.mock('../sheets.jsx', () => ({
   topWeightSheet: mocks.topWeightSheet,
   finishWorkout: vi.fn(),
   workoutCompleteSheet: vi.fn(),
-  confirmSheet: vi.fn(),
+  confirmSheet: mocks.confirmSheet,
   // Both note sheets belong here even though the tests never open one: Workout.jsx reads
   // sessionNoteSheet during render, so a missing export is a render crash, not a no-op.
   exerciseNoteSheet: vi.fn(),
@@ -112,8 +120,16 @@ async function toggleSet(index) {
   await act(async () => { checkbox.dispatchEvent(new dom.Event('click', { bubbles: true })) })
 }
 
+async function requestDiscard() {
+  const button = container.querySelector('button[aria-label="Discard"]')
+  expect(button).toBeTruthy()
+  await act(async () => { button.dispatchEvent(new dom.Event('click', { bubbles: true })) })
+}
+
 beforeEach(() => {
   vi.clearAllMocks()
+  mocks.timer = null
+  mocks.work = null
 })
 
 afterEach(async () => {
@@ -152,6 +168,40 @@ describe('Workout set completion flow', () => {
     expect(mocks.topWeightSheet).toHaveBeenCalledWith(1)
     expect(mocks.S.active.cur).toBe(1)
     expect(mocks.startRest).toHaveBeenCalledWith(90)
+  })
+})
+
+describe('Workout discard timer lifecycle', () => {
+  it('preserves active timers while discard is awaiting confirmation', async () => {
+    const timer = { left: 30, total: 90, endsAt: Date.now() + 30_000 }
+    const work = { left: 20, total: 45, endsAt: Date.now() + 20_000, label: 'Plank' }
+    mocks.timer = timer
+    mocks.work = work
+    await mount([exercise('timed-plank', [false])])
+
+    await requestDiscard()
+
+    expect(mocks.confirmSheet).toHaveBeenCalledOnce()
+    expect(mocks.timer).toBe(timer)
+    expect(mocks.work).toBe(work)
+    expect(mocks.stopRest).not.toHaveBeenCalled()
+    expect(mocks.stopWork).not.toHaveBeenCalled()
+    expect(mocks.S.active).not.toBeNull()
+  })
+
+  it('clears rest and work timers only after discard is confirmed', async () => {
+    mocks.timer = { left: 30, total: 90, endsAt: Date.now() + 30_000 }
+    mocks.work = { left: 20, total: 45, endsAt: Date.now() + 20_000, label: 'Plank' }
+    await mount([exercise('timed-plank', [false])])
+    await requestDiscard()
+
+    await act(async () => { mocks.confirmSheet.mock.calls[0][0].onConfirm() })
+
+    expect(mocks.S.active).toBeNull()
+    expect(mocks.timer).toBeNull()
+    expect(mocks.work).toBeNull()
+    expect(mocks.stopRest).toHaveBeenCalledOnce()
+    expect(mocks.stopWork).toHaveBeenCalledOnce()
   })
 })
 

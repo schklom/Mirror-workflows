@@ -286,6 +286,7 @@ export default {
   'Weight unit': '무게 단위',
   'Rest timer': '휴식 타이머',
   'Sounds': '소리',
+  'Flash screen when timer ends': '타이머 종료 시 화면 깜박임',
   'Note: switching units only changes the label — logged numbers are not converted.': '참고: 단위 변경은 표기만 바꿉니다 — 기록된 숫자는 환산되지 않아요.',
   'Data': '데이터',
   'Export backup (JSON)': '백업 내보내기 (JSON)',

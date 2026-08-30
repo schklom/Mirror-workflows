@@ -286,6 +286,7 @@ export default {
   'Weight unit': '重量单位',
   'Rest timer': '休息计时',
   'Sounds': '声音',
+  'Flash screen when timer ends': '计时结束时闪烁屏幕',
   'Note: switching units only changes the label — logged numbers are not converted.': '注意：切换单位只改变标签——已记录的数字不会换算。',
   'Data': '数据',
   'Export backup (JSON)': '导出备份（JSON）',

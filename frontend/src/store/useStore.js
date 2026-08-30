@@ -9,7 +9,7 @@ import { loadRemote, chooseLocal, forgetRemote, connect } from '../lib/remote.js
 
 const KEY = 'gym_state_v1'
 export const DEF = {
-  unit: 'kg', restSec: 90, restPauseSec: 15, sound: true, keepAwake: true, lang: 'en',
+  unit: 'kg', restSec: 90, restPauseSec: 15, sound: true, timerFlash: false, keepAwake: true, lang: 'en',
   theme: 'dark', accent: 'lime', body: 'male', targetW: null,
   bodyweight: [], routines: [], week: {}, dayPlan: {},
   exWeights: {}, workouts: [], active: null, customEx: [], gifSize: 'full',

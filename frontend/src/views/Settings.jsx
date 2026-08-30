@@ -148,6 +148,9 @@ export default function Settings() {
       <Row icon="bell" iconTint="var(--pink)" title={t('Sounds')}>
         <Switch checked={!!S.sound} onChange={v => update(s => { s.sound = v })} />
       </Row>
+      <Row icon="sun" iconTint="var(--yellow)" title={t('Flash screen when timer ends')}>
+        <Switch checked={!!S.timerFlash} onChange={v => update(s => { s.timerFlash = v })} />
+      </Row>
       {/* Two names for the same judgement, so the column asks in the scale you already think in.
           The (i) sits before the control — you read it on the way to the choice, not after it. */}
       <Row icon="target" iconTint="var(--purple)" title={t('Effort per set')}>

@@ -18,13 +18,7 @@
       let
         pkgs = nixpkgs.legacyPackages.${system};
 
-        opengymPackages = {
-          opengym-frontend = pkgs.callPackage ./nix/frontend.nix { };
-          opengym-api = pkgs.callPackage ./nix/api.nix { };
-          opengym-mcp = pkgs.callPackage ./nix/mcp.nix { };
-          opengym-media = pkgs.callPackage ./nix/media.nix { };
-          opengym-fetch-media = pkgs.callPackage ./nix/media-script.nix { };
-        };
+        opengymPackages = import ./nix/default.nix { inherit pkgs; };
 
         opengymNixOSModule = self.nixosModules.opengym;
 

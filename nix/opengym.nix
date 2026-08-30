@@ -12,13 +12,7 @@
 let
   cfg = config.services.opengym;
 
-  hostOpengymPkgs = {
-    opengym-frontend = pkgs.callPackage ./frontend.nix { };
-    opengym-api = pkgs.callPackage ./api.nix { };
-    opengym-mcp = pkgs.callPackage ./mcp.nix { };
-    opengym-media = pkgs.callPackage ./media.nix { };
-    opengym-fetch-media = pkgs.callPackage ./media-script.nix { };
-  };
+  hostOpengymPkgs = import ./default.nix { inherit pkgs; };
 
   defaultOpengymPkgs = if opengymPkgs != null then opengymPkgs else hostOpengymPkgs;
 

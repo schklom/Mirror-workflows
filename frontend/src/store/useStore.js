@@ -4,7 +4,7 @@ import { localTZ } from '../lib/format.js'
 import { registerCustom } from '../lib/exercises.js'
 import { DEMO, DEMO_SEEDED } from '../lib/demo.js'
 import { guestAllowed } from '../lib/guest.js'
-import { MOBILE, nativeLoad, nativeSave, syncReminder, writeAutoBackup } from '../lib/mobile.js'
+import { MOBILE, initReminderSync, nativeLoad, nativeSave, syncReminder, writeAutoBackup } from '../lib/mobile.js'
 import { loadRemote, chooseLocal, forgetRemote, connect } from '../lib/remote.js'
 
 const KEY = 'gym_state_v1'
@@ -52,6 +52,8 @@ export const useStore = create((set, get) => {
   let pushTm = null
   let saveTm = null
 
+  initReminderSync(() => get().S)
+
   // Mobile build: mirror the state into a file in the app's data directory (survives WebView
   // storage eviction) and keep the native reminder schedule in step with the weekly plan.
   const nativePersist = () => {
@@ -81,6 +83,7 @@ export const useStore = create((set, get) => {
       clearTimeout(saveTm)
       saveTm = null
       nativeSave(get().S)
+      syncReminder(get().S)
     }
     if (pushTm) {
       clearTimeout(pushTm)

@@ -717,4 +717,16 @@ export default {
   'Rest-pause always trains as one warm-up set at this rep count, then one rest-pause work set — "Sets" is not used.': 'Rest-pause всегда выполняется как один разминочный подход с этим числом повторений и один рабочий подход rest-pause — «Подходы» не используются.',
   'Open progression settings': 'Открыть настройки прогрессии',
   'Hevy is rate-limiting requests — wait a minute and try again': 'Hevy ограничивает запросы — подождите минуту и попробуйте снова',
+  // --- log a past workout ---
+  'Log a past workout': 'Записать прошлую тренировку',
+  'Logged on the usual workout screen, without timers.': 'Записывается на обычном экране тренировки, только без таймеров.',
+  'Date': 'Дата',
+  'Start time': 'Время начала',
+  'Continue': 'Продолжить',
+  'Pick a day up to today': 'Выбери день не позже сегодняшнего',
+  'There is already a workout on that day.': 'В этот день уже есть тренировка.',
+  'Replace': 'Заменить',
+  'Add as second workout': 'Добавить как вторую тренировку',
+  'Finish the current workout first.': 'Сначала заверши текущую тренировку.',
+  'Logging a past workout — no rest timers.': 'Запись прошлой тренировки — без таймеров отдыха.',
 }

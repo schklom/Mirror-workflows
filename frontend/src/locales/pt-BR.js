@@ -348,6 +348,11 @@ export const PT_BR_OVERRIDES = {
   'Rest after each set of this exercise. Leave at 0 to use your default rest timer.': 'Descanso depois de cada série deste exercício. Deixe em 0 para usar o temporizador de descanso padrão.',
   'Open progression settings': 'Abrir configurações de progressão',
   'Hevy is rate-limiting requests — wait a minute and try again': 'O Hevy está limitando as solicitações — espere um minuto e tente novamente',
+  'Log a past workout': 'Registrar um treino passado',
+  'Logged on the usual workout screen, without timers.': 'Registrado na tela de treino habitual, só sem temporizadores.',
+  'Pick a day up to today': 'Escolha um dia até hoje',
+  'Finish the current workout first.': 'Termine primeiro o treino atual.',
+  'Logging a past workout — no rest timers.': 'Registrando um treino passado — sem temporizadores de descanso.',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

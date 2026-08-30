@@ -717,4 +717,16 @@ export default {
   'Rest-pause always trains as one warm-up set at this rep count, then one rest-pause work set — "Sets" is not used.': 'Rest-pause her zaman bu tekrar sayısında bir ısınma seti ve bir rest-pause çalışma seti olarak çalışılır — “Setler” kullanılmaz.',
   'Open progression settings': 'İlerleme ayarlarını aç',
   'Hevy is rate-limiting requests — wait a minute and try again': 'Hevy istekleri sınırlıyor — bir dakika bekleyip tekrar deneyin',
+  // --- log a past workout ---
+  'Log a past workout': 'Geçmiş bir antrenman kaydet',
+  'Logged on the usual workout screen, without timers.': 'Her zamanki antrenman ekranında kaydedilir, sadece zamanlayıcı olmadan.',
+  'Date': 'Tarih',
+  'Start time': 'Başlangıç saati',
+  'Continue': 'Devam',
+  'Pick a day up to today': 'Bugüne kadar bir gün seç',
+  'There is already a workout on that day.': 'O gün zaten bir antrenman var.',
+  'Replace': 'Değiştir',
+  'Add as second workout': 'İkinci antrenman olarak ekle',
+  'Finish the current workout first.': 'Önce mevcut antrenmanı bitir.',
+  'Logging a past workout — no rest timers.': 'Geçmiş antrenman kaydediliyor — dinlenme zamanlayıcısı yok.',
 }

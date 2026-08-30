@@ -717,4 +717,16 @@ export default {
   'Rest-pause always trains as one warm-up set at this rep count, then one rest-pause work set — "Sets" is not used.': 'Rest-pause 始终按这个次数练一个热身组，再加一个 rest-pause 正式组 —— 不使用“组数”。',
   'Open progression settings': '打开进阶设置',
   'Hevy is rate-limiting requests — wait a minute and try again': 'Hevy 正在限制请求——请稍等一分钟后重试',
+  // --- log a past workout ---
+  'Log a past workout': '补记过去的训练',
+  'Logged on the usual workout screen, without timers.': '在平时的训练界面记录，只是没有计时器。',
+  'Date': '日期',
+  'Start time': '开始时间',
+  'Continue': '继续',
+  'Pick a day up to today': '请选择今天或之前的日期',
+  'There is already a workout on that day.': '那天已经有一次训练了。',
+  'Replace': '替换',
+  'Add as second workout': '添加为第二次训练',
+  'Finish the current workout first.': '请先完成当前训练。',
+  'Logging a past workout — no rest timers.': '正在补记过去的训练 — 没有休息计时器。',
 }

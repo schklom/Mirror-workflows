@@ -722,4 +722,16 @@ export default {
   'The next regular target continues from the last included workout.': 'A következő normál cél az utolsó beszámított edzéstől folytatódik.',
   'Open progression settings': 'Progresszió beállításainak megnyitása',
   'Hevy is rate-limiting requests — wait a minute and try again': 'A Hevy korlátozza a kéréseket — várj egy percet, és próbáld újra',
+  // --- log a past workout ---
+  'Log a past workout': 'Korábbi edzés rögzítése',
+  'Logged on the usual workout screen, without timers.': 'A szokásos edzésképernyőn rögzíted, csak időzítők nélkül.',
+  'Date': 'Dátum',
+  'Start time': 'Kezdés ideje',
+  'Continue': 'Tovább',
+  'Pick a day up to today': 'Válassz egy napot a mai napig',
+  'There is already a workout on that day.': 'Azon a napon már van egy edzés.',
+  'Replace': 'Csere',
+  'Add as second workout': 'Hozzáadás második edzésként',
+  'Finish the current workout first.': 'Előbb fejezd be a folyó edzést.',
+  'Logging a past workout — no rest timers.': 'Korábbi edzés rögzítése — nincs pihenőidőzítő.',
 }

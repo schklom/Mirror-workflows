@@ -717,4 +717,16 @@ export default {
   'Rest-pause always trains as one warm-up set at this rep count, then one rest-pause work set — "Sets" is not used.': '레스트포즈는 항상 이 횟수의 워밍업 세트 하나와 레스트포즈 작업 세트 하나로 진행됩니다 — ‘세트’는 사용하지 않습니다.',
   'Open progression settings': '진행 설정 열기',
   'Hevy is rate-limiting requests — wait a minute and try again': 'Hevy가 요청을 제한하고 있습니다 — 잠시 기다렸다가 다시 시도하세요',
+  // --- log a past workout ---
+  'Log a past workout': '지난 운동 기록',
+  'Logged on the usual workout screen, without timers.': '평소 운동 화면에서 기록하며 타이머만 없습니다.',
+  'Date': '날짜',
+  'Start time': '시작 시간',
+  'Continue': '계속',
+  'Pick a day up to today': '오늘까지의 날짜를 선택하세요',
+  'There is already a workout on that day.': '그날에 이미 운동이 있습니다.',
+  'Replace': '바꾸기',
+  'Add as second workout': '두 번째 운동으로 추가',
+  'Finish the current workout first.': '먼저 진행 중인 운동을 마치세요.',
+  'Logging a past workout — no rest timers.': '지난 운동 기록 중 — 휴식 타이머 없음.',
 }

@@ -717,4 +717,16 @@ export default {
   'Rest-pause always trains as one warm-up set at this rep count, then one rest-pause work set — "Sets" is not used.': 'Rest-pause zawsze trenuje się jako jedna seria rozgrzewkowa o tej liczbie powtórzeń i jedna seria robocza rest-pause — „Serie” nie są używane.',
   'Open progression settings': 'Otwórz ustawienia progresji',
   'Hevy is rate-limiting requests — wait a minute and try again': 'Hevy ogranicza liczbę zapytań — odczekaj minutę i spróbuj ponownie',
+  // --- log a past workout ---
+  'Log a past workout': 'Zapisz miniony trening',
+  'Logged on the usual workout screen, without timers.': 'Zapisujesz na zwykłym ekranie treningu, tylko bez minutników.',
+  'Date': 'Data',
+  'Start time': 'Godzina rozpoczęcia',
+  'Continue': 'Dalej',
+  'Pick a day up to today': 'Wybierz dzień do dzisiaj',
+  'There is already a workout on that day.': 'Tego dnia jest już trening.',
+  'Replace': 'Zastąp',
+  'Add as second workout': 'Dodaj jako drugi trening',
+  'Finish the current workout first.': 'Najpierw zakończ bieżący trening.',
+  'Logging a past workout — no rest timers.': 'Zapisywanie minionego treningu — bez minutników przerw.',
 }

@@ -730,4 +730,16 @@ export default {
   'The next regular target continues from the last included workout.': 'เป้าหมายปกติครั้งถัดไปจะต่อจากการฝึกล่าสุดที่นับรวม',
   'Open progression settings': 'เปิดการตั้งค่าการเพิ่มน้ำหนัก',
   'Hevy is rate-limiting requests — wait a minute and try again': 'Hevy จำกัดจำนวนคำขอ — รอสักครู่แล้วลองอีกครั้ง',
+  // --- log a past workout ---
+  'Log a past workout': 'บันทึกการฝึกย้อนหลัง',
+  'Logged on the usual workout screen, without timers.': 'บันทึกบนหน้าจอฝึกตามปกติ เพียงแต่ไม่มีตัวจับเวลา',
+  'Date': 'วันที่',
+  'Start time': 'เวลาเริ่ม',
+  'Continue': 'ดำเนินการต่อ',
+  'Pick a day up to today': 'เลือกวันได้ไม่เกินวันนี้',
+  'There is already a workout on that day.': 'วันนั้นมีการฝึกอยู่แล้ว',
+  'Replace': 'แทนที่',
+  'Add as second workout': 'เพิ่มเป็นการฝึกครั้งที่สอง',
+  'Finish the current workout first.': 'จบการฝึกปัจจุบันก่อน',
+  'Logging a past workout — no rest timers.': 'กำลังบันทึกการฝึกย้อนหลัง — ไม่มีตัวจับเวลาพัก',
 }

@@ -717,4 +717,16 @@ export default {
   'Rest-pause always trains as one warm-up set at this rep count, then one rest-pause work set — "Sets" is not used.': 'रेस्ट-पॉज़ हमेशा इसी रेप्स संख्या के एक वार्म-अप सेट और एक रेस्ट-पॉज़ वर्क सेट के रूप में किया जाता है — “सेट” का उपयोग नहीं होता।',
   'Open progression settings': 'प्रगति सेटिंग्स खोलें',
   'Hevy is rate-limiting requests — wait a minute and try again': 'Hevy अनुरोधों को सीमित कर रहा है — एक मिनट रुकें और फिर से कोशिश करें',
+  // --- log a past workout ---
+  'Log a past workout': 'पिछला वर्कआउट दर्ज करें',
+  'Logged on the usual workout screen, without timers.': 'सामान्य वर्कआउट स्क्रीन पर दर्ज होता है, बस टाइमर के बिना।',
+  'Date': 'तारीख',
+  'Start time': 'शुरू होने का समय',
+  'Continue': 'जारी रखें',
+  'Pick a day up to today': 'आज तक का कोई दिन चुनें',
+  'There is already a workout on that day.': 'उस दिन पहले से एक वर्कआउट है।',
+  'Replace': 'बदलें',
+  'Add as second workout': 'दूसरे वर्कआउट के रूप में जोड़ें',
+  'Finish the current workout first.': 'पहले मौजूदा वर्कआउट पूरा करें।',
+  'Logging a past workout — no rest timers.': 'पिछला वर्कआउट दर्ज हो रहा है — कोई रेस्ट टाइमर नहीं।',
 }

@@ -336,7 +336,7 @@ variables, so entries there can still override).
 | tmpfiles rules | always | `dataDir` (`0750`), `media.dataDir` (`0755`) |
 | `systemd.services.opengym-api` | always | `Restart=on-failure`, runs as `opengym`, hardened |
 | `systemd.services.opengym-media` | only when `media.fetchAtBuild = false` | one-shot (`Type=oneshot`, `RemainAfterExit`) media downloader |
-| `systemd.services.opengym-mcp` | only when `mcp.enable = true` | stdio bridge, runs as `opengym` |
+| `systemd.services.opengym-mcp` | only when `mcp.enable = true` | stdio bridge, runs as `opengym`, same sandbox as the API |
 | `services.nginx` vhost | only when `nginx.enable = true` | managed virtualHost (SPA + `/api` + `/img` + `/gif`) |
 | `services.nginx.enable = false` | only when `nginx.enable = false` | force-disabled — bring your own web server |
 
@@ -345,7 +345,9 @@ The API unit is restricted: `ProtectSystem=strict`, `ProtectHome`, `PrivateTmp`,
 `PrivateDevices`, `ProtectKernelTunables/Modules/ControlGroups`, `RestrictNamespaces`,
 `RestrictSUIDSGID`, `NoNewPrivileges`, `LockPersonality`, a system-call allowlist
 (`@system-service`, `~@privileged`), and `ReadWritePaths` limited to `dataDir` — the API can only
-write to your data directory.
+write to your data directory. The MCP unit is a **stdio bridge that only reads** the same files, so
+it runs under the exact same sandbox (plus `StandardInput=null` / `StandardOutput=journal`, since a
+systemd-spawned MCP server has no client on stdin).
 
 ## 6. Module options reference
 

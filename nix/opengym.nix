@@ -40,6 +40,26 @@ let
   mediaGifRoot =
     if cfg.media.fetchAtBuild then "${packages.opengym-media}/videos" else "${cfg.media.dataDir}/gif";
 
+  # Hardening shared by the API and MCP units. The MCP server reads the same data files,
+  # so it gets the same sandbox.
+  serviceHardening = {
+    NoNewPrivileges = true;
+    ProtectSystem = "strict";
+    ProtectHome = true;
+    PrivateTmp = true;
+    PrivateDevices = true;
+    ProtectKernelTunables = true;
+    ProtectKernelModules = true;
+    ProtectControlGroups = true;
+    RestrictNamespaces = true;
+    RestrictSUIDSGID = true;
+    LockPersonality = true;
+    SystemCallFilter = [
+      "@system-service"
+      "~@privileged"
+    ];
+  };
+
 in
 {
   options.services.opengym = {
@@ -267,24 +287,9 @@ in
                 Restart = "on-failure";
                 RestartSec = 5;
                 EnvironmentFile = lib.mkIf (cfg.environmentFile != "") cfg.environmentFile;
-
-                NoNewPrivileges = true;
-                ProtectSystem = "strict";
-                ProtectHome = true;
-                PrivateTmp = true;
-                PrivateDevices = true;
-                ProtectKernelTunables = true;
-                ProtectKernelModules = true;
-                ProtectControlGroups = true;
-                RestrictNamespaces = true;
-                RestrictSUIDSGID = true;
-                LockPersonality = true;
-                SystemCallFilter = [
-                  "@system-service"
-                  "~@privileged"
-                ];
                 ReadWritePaths = [ cfg.dataDir ];
               }
+              serviceHardening
               # systemd's StateDirectory= only lives under /var/lib, so use it for the default
               # dataDir; a custom dataDir is created by the tmpfiles rule instead.
               (lib.mkIf (builtins.toString cfg.dataDir == "/var/lib/opengym") {
@@ -327,14 +332,17 @@ in
             environment = {
               DATA_DIR = cfg.dataDir;
             };
-            serviceConfig = {
-              ExecStart = "${packages.opengym-mcp}/bin/opengym-mcp";
-              StandardInput = "null";
-              StandardOutput = "journal";
-              User = "opengym";
-              Group = "opengym";
-              Restart = "on-failure";
-            };
+            serviceConfig = lib.mkMerge [
+              {
+                ExecStart = "${packages.opengym-mcp}/bin/opengym-mcp";
+                StandardInput = "null";
+                StandardOutput = "journal";
+                User = "opengym";
+                Group = "opengym";
+                Restart = "on-failure";
+              }
+              serviceHardening
+            ];
           };
         }
         # Optional: let the module configure an nginx virtualHost for openGym itself.

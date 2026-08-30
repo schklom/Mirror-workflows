@@ -251,7 +251,14 @@ function useRoutineReorder(routineIdentity, exercises, onDrop) {
     const onContextMenu = event => { if (gestureRef.current?.active && event.target.closest?.('[data-routine-row]')) event.preventDefault() }
     const onDragStart = event => { if (event.target.closest?.('[data-routine-row]')) event.preventDefault() }
 
+    // Touch: the rows keep `touch-action: pan-y` so the list still scrolls with a finger, but once
+    // a long-press has lifted a row the browser must not claim the vertical drag as a pan — it
+    // would fire pointercancel and scroll instead. preventDefault on a pointer event cannot stop
+    // that; only a non-passive touchmove listener can, and only while a drag is actually active.
+    const onTouchMove = event => { if (gestureRef.current?.active) event.preventDefault() }
+
     document.addEventListener('pointerdown', onPointerDown)
+    document.addEventListener('touchmove', onTouchMove, { passive: false })
     document.addEventListener('pointermove', onPointerMove, { passive: false })
     document.addEventListener('pointerup', onPointerUp, { passive: false })
     document.addEventListener('pointercancel', onPointerCancel)
@@ -266,6 +273,7 @@ function useRoutineReorder(routineIdentity, exercises, onDrop) {
       clearTimer(gesture); clearFrame(); gestureRef.current = null
       releaseCapture(gesture)
       document.removeEventListener('pointerdown', onPointerDown)
+      document.removeEventListener('touchmove', onTouchMove)
       document.removeEventListener('pointermove', onPointerMove)
       document.removeEventListener('pointerup', onPointerUp)
       document.removeEventListener('pointercancel', onPointerCancel)

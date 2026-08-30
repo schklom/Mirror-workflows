@@ -382,7 +382,7 @@ h4.sec{
 }
 .item:active{background:var(--surface-2)}
 .routine-list{position:relative}
-.routine-drag-row{touch-action:pan-y;position:relative;transition:transform var(--fast) var(--ease)}
+.routine-drag-row{touch-action:pan-y;-webkit-touch-callout:none;position:relative;transition:transform var(--fast) var(--ease)}
 .routine-list.is-reordering{user-select:none;-webkit-user-select:none}
 .routine-list.is-reordering .routine-drag-row{transition:none}
 .routine-drag-row.is-dragging{z-index:2;pointer-events:none}

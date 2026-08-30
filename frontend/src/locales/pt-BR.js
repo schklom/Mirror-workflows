@@ -345,7 +345,9 @@ export const PT_BR_OVERRIDES = {
   'Rest-pause always trains as one warm-up set at this rep count, then one rest-pause work set — "Sets" is not used.': 'O rest-pause sempre treina como uma série de aquecimento com essas repetições e uma série de trabalho rest-pause — “Séries” não é usado.',
 
   // --- per-exercise rest ---
-  'Rest after each set of this exercise. Leave at 0 to use your default rest timer.': 'Descanso depois de cada série deste exercício. Deixe em 0 para usar o temporizador de descanso padrão.'
+  'Rest after each set of this exercise. Leave at 0 to use your default rest timer.': 'Descanso depois de cada série deste exercício. Deixe em 0 para usar o temporizador de descanso padrão.',
+  'Open progression settings': 'Abrir configurações de progressão',
+  'Hevy is rate-limiting requests — wait a minute and try again': 'O Hevy está limitando as solicitações — espere um minuto e tente novamente',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

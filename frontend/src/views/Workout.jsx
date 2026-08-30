@@ -444,10 +444,21 @@ function ActiveWorkout() {
       if (!activeEntry) return
       const full = { ...cfg, id: activeEntry.id }
       const activeRoutine = s.routines.find(r => r.id === s.active.routineId)
+      const step = defaultIncrement(activeEntry.id, s.unit)
+      // A config without a set count keeps the rows the session already has.
+      if (!(full.sets > 0)) full.sets = activeEntry.sets.filter(x => !isWarmupRow(x)).length || 1
       const plan = nextPrescription(s, full, activeRoutine)
+      // The sheet edits sets, reps, weight and warm-ups as well as the rule — so the rows are
+      // rebuilt from the new config the way the session was, and only what you already logged
+      // is kept in place (done warm-ups first, then done work sets, then the fresh remainder).
+      const fresh = applyIntensifierPlan(applyPrescription(buildSets(s, full, { step }), plan, step), full)
+      const doneWarm = activeEntry.sets.filter(x => x.done && isWarmupRow(x))
+      const doneWork = activeEntry.sets.filter(x => x.done && !isWarmupRow(x))
+      const freshWarm = fresh.filter(isWarmupRow)
+      const freshWork = fresh.filter(x => !isWarmupRow(x))
       activeEntry.target = { ...cfg }
       activeEntry.plan = plan
-      activeEntry.sets = applyPrescription(activeEntry.sets, plan, defaultIncrement(activeEntry.id, s.unit))
+      activeEntry.sets = [...doneWarm, ...freshWarm.slice(doneWarm.length), ...doneWork, ...freshWork.slice(doneWork.length)]
     }), null, routine)
   }
 

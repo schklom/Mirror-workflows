@@ -269,14 +269,25 @@ describe('parseHevyRoutines', () => {
     expect(pull.sg).toBe(row.sg)
   })
 
-  it('mergeHevyRoutines always adds new routines', () => {
+  it('mergeHevyRoutines replaces a routine it imported before instead of duplicating it', () => {
     const parsed = parseHevyRoutines([ROUTINE], TEMPLATES, { unit: 'kg' })
     const S = { routines: [], customEx: [] }
-    expect(mergeHevyRoutines(S, parsed).added).toBe(1)
+    expect(mergeHevyRoutines(S, parsed)).toEqual({ added: 1, updated: 0 })
     expect(S.routines).toHaveLength(1)
-    expect(mergeHevyRoutines(S, parsed).added).toBe(1)
+    expect(S.routines[0].hevyId).toBe(ROUTINE.id)
+    const firstId = S.routines[0].id
+    S.routines[0].name = 'renamed locally'
+    expect(mergeHevyRoutines(S, parsed)).toEqual({ added: 0, updated: 1 })
+    expect(S.routines).toHaveLength(1)
+    expect(S.routines[0].id).toBe(firstId)
+    expect(S.routines[0].name).toBe(ROUTINE.title)
+  })
+
+  it('mergeHevyRoutines still adds a routine that carries no Hevy id', () => {
+    const parsed = parseHevyRoutines([{ ...ROUTINE, id: undefined }], TEMPLATES, { unit: 'kg' })
+    const S = { routines: [], customEx: [] }
+    mergeHevyRoutines(S, parsed); mergeHevyRoutines(S, parsed)
     expect(S.routines).toHaveLength(2)
-    expect(S.routines[0].id).not.toBe(S.routines[1].id)
   })
 })
 

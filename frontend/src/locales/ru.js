@@ -714,5 +714,7 @@ export default {
   'Add session note': 'Добавить заметку',
   'Edit session note': 'Изменить заметку',
   'How the session went as a whole.': 'Как прошла тренировка в целом.',
-  'Rest-pause always trains as one warm-up set at this rep count, then one rest-pause work set — "Sets" is not used.': 'Rest-pause всегда выполняется как один разминочный подход с этим числом повторений и один рабочий подход rest-pause — «Подходы» не используются.'
+  'Rest-pause always trains as one warm-up set at this rep count, then one rest-pause work set — "Sets" is not used.': 'Rest-pause всегда выполняется как один разминочный подход с этим числом повторений и один рабочий подход rest-pause — «Подходы» не используются.',
+  'Open progression settings': 'Открыть настройки прогрессии',
+  'Hevy is rate-limiting requests — wait a minute and try again': 'Hevy ограничивает запросы — подождите минуту и попробуйте снова',
 }

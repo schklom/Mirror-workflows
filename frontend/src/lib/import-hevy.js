@@ -31,12 +31,22 @@ async function hevyGet(path, apiKey, params = {}) {
   for (const [k, v] of Object.entries(params)) {
     if (v != null && v !== '') url.searchParams.set(k, String(v))
   }
-  const res = await fetch(url, { headers: { 'api-key': apiKey } })
-  if (res.status === 401 || res.status === 403) {
-    throw new HevyApiError(res.status, 'auth')
+  // Hevy publishes no rate limit, but a large account is 100+ sequential page requests; a 429
+  // gets a short back-off and one more try before it surfaces as its own error kind.
+  for (let attempt = 0; ; attempt++) {
+    const res = await fetch(url, { headers: { 'api-key': apiKey } })
+    if (res.status === 401 || res.status === 403) {
+      throw new HevyApiError(res.status, 'auth')
+    }
+    if (res.status === 429 && attempt < 2) {
+      const after = Number(res.headers?.get?.('retry-after'))
+      await new Promise(r => setTimeout(r, (after > 0 && after <= 30 ? after : 2 * (attempt + 1)) * 1000))
+      continue
+    }
+    if (res.status === 429) throw new HevyApiError(res.status, 'rate-limit')
+    if (!res.ok) throw new HevyApiError(res.status, `http ${res.status}`)
+    return res.json()
   }
-  if (!res.ok) throw new HevyApiError(res.status, `http ${res.status}`)
-  return res.json()
 }
 
 /** Page through a Hevy list endpoint. `pageSize` caps differ per resource. */
@@ -371,17 +381,28 @@ export function mergeHevyRoutines(S, parsed) {
     // Keep the pre-assigned id from parse so routine configs already point at it.
     if (!S.customEx.some(x => x.id === c.id)) S.customEx.push(c)
   })
-  let added = 0
+  // A second import must not double every plan: a routine that already carries the same Hevy
+  // id is replaced in place (its exercises re-read from Hevy), everything else is appended.
+  let added = 0, updated = 0
   for (const r of parsed.routines || []) {
+    const ex = (r.ex || []).map(e => ({ ...e, id: exIdMap[e.id] || e.id }))
+    const existing = r.hevyId ? S.routines.find(x => x.hevyId === r.hevyId) : null
+    if (existing) {
+      existing.name = r.name
+      existing.ex = ex
+      updated++
+      continue
+    }
     S.routines.push({
       id: uid(),
       name: r.name,
       emoji: r.emoji || 'figureStrength',
-      ex: (r.ex || []).map(e => ({ ...e, id: exIdMap[e.id] || e.id })),
+      ...(r.hevyId ? { hevyId: r.hevyId } : {}),
+      ex,
     })
     added++
   }
-  return { added }
+  return { added, updated }
 }
 
 /** Body measurements from the Hevy API → `mergeImport` bodyweight shape. */

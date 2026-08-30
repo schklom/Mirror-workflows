@@ -59,6 +59,8 @@ you're poking at the API directly:
 
 ## 3. Expose it over HTTPS on your own domain
 
+> Want HTTPS **without** exposing anything to the internet — a valid certificate on a LAN-only address? See [SELF_HOSTING_HTTPS.md](./SELF_HOSTING_HTTPS.md) (wildcard cert via a DNS challenge, Caddy in front).
+
 Put openGym behind something that terminates TLS for a hostname you control, then point it at
 the `web` container. Pick whichever you already run:
 

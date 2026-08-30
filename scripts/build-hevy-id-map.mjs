@@ -39,6 +39,10 @@ function hevyApiKey() {
  * Only entries we have verified against EXIDX. Gaps (hip thrust, rower, …)
  * are intentionally omitted so they import as custom exercises.
  */
+// Titles whose closest catalogue entry is a different movement — better a custom exercise than
+// a wrong one. Keep in sync with the note at the top of the generated map.
+const NEVER_BY_TITLE = new Set(['crunch', 'side plank', 'squat (machine)', 'triceps extension (cable)', 'rear delt reverse fly (cable)'])
+
 const BY_TITLE = {
   // Reported from a real import as customs — same lifts, Hevy vocabulary.
   'bulgarian split squat (dumbbell)': '0410',
@@ -46,7 +50,6 @@ const BY_TITLE = {
   'chest supported incline row (dumbbell)': '0327',
   'knee raise parallel bars': '0826',
   'lat pulldown - close grip (cable)': '2616',
-  'rear delt reverse fly (cable)': '0602',
   'rear delt reverse fly (dumbbell)': '0383',
   'rear delt reverse fly (machine)': '0602',
   'reverse lunge (dumbbell)': '0381',
@@ -217,7 +220,7 @@ async function main() {
     if (id) {
       map[t.id] = id
       const titleKey = String(t.title || '').trim().toLowerCase()
-      if (titleKey && !titleMap[titleKey]) titleMap[titleKey] = id
+      if (titleKey && !NEVER_BY_TITLE.has(titleKey) && !titleMap[titleKey]) titleMap[titleKey] = id
     } else unmatched.push(t)
   }
 

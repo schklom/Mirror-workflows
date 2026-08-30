@@ -297,6 +297,7 @@ function HevyImportSheet({ close }) {
       setPayload(data)
     } catch (e) {
       if (e instanceof HevyApiError && e.message === 'auth') toast(t('That Hevy API key was refused'))
+      else if (e instanceof HevyApiError && e.message === 'rate-limit') toast(t('Hevy is rate-limiting requests — wait a minute and try again'))
       else if (e instanceof HevyApiError && e.message === 'empty') toast(t('Paste your Hevy API key first'))
       else toast(t('Could not reach Hevy — check the key and try again'))
     } finally {
@@ -716,15 +717,23 @@ export function swapActiveWorkoutExercise(index) {
   const active = S().active
   if (!active?.entries?.[index]) return
 
-  exercisePicker(ex => exConfigSheet(ex, null, cfg => {
+  const picker = exercisePicker(ex => exConfigSheet(ex, null, cfg => {
+    // The picker is a chooser here, not a stack you keep adding from: one swap, then back to
+    // the workout. (The add flow deliberately leaves it open.)
+    picker.close()
     const full = { ...cfg, id: ex.id }
+    const st = S()
+    // Same rows the add flow builds: last time's loads and, in a planned session, the
+    // prescription — swapping barbell for dumbbell bench must not start you at an empty bar.
+    const freestyle = !st.active?.routineId
+    const step = defaultIncrement(ex.id, st.unit)
+    const plan = freestyle ? null : nextPrescription(st, full, st.routines.find(r => r.id === st.active.routineId))
+    const built = buildSets(st, full, { step, ...(freestyle ? { preferLast: true } : {}) })
     const replacement = {
       id: ex.id,
       target: { ...cfg },
-      plan: null,
-      sets: applyIntensifierPlan(buildSets({ ...S(), workouts: [] }, full, {
-        step: defaultIncrement(ex.id, S().unit)
-      }), full)
+      plan,
+      sets: applyIntensifierPlan(freestyle ? built : applyPrescription(built, plan, step), full)
     }
     const current = S().active?.entries?.[index]
     if (!current) return
@@ -846,10 +855,12 @@ function ProgressionFields({ ex, mode, c, setC, routine, unit, perSide }) {
         step={mode === 'time' ? 5 : 1.25} decimal={mode !== 'time'} invalid={invalid} className={invalid ? 'invalid' : ''}
         onChange={v => setC(x => ({ ...x, inc: v }))} />
       {active === 'double' && <>
-        <Stepper label={t('Reps from')} value={range.repsMin} step={stride} decimal={false}
-          onChange={v => setC(x => ({ ...x, ...normalizeRepRange(x.reps, v, stride) }))} />
-        <Stepper label={t('Reps up to')} value={range.reps} step={stride} decimal={false}
-          onChange={v => setC(x => ({ ...x, ...normalizeRepRange(v, x.repsMin, stride) }))} />
+        {/* The draft stays as typed: normalising on every keystroke turned "12" into 92 (the
+            "1" was pulled above the lower bound first). Save and the engine normalise anyway. */}
+        <Stepper label={t('Reps from')} value={c.repsMin ?? range.repsMin} step={stride} decimal={false}
+          onChange={v => setC(x => ({ ...x, repsMin: v }))} />
+        <Stepper label={t('Reps up to')} value={c.reps ?? range.reps} step={stride} decimal={false}
+          onChange={v => setC(x => ({ ...x, reps: v }))} />
       </>}
     </div>}
     {invalid && <div className="small" role="alert" style={{ color: 'var(--red)', marginTop: -10, marginBottom: 18 }}>

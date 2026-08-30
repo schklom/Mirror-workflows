@@ -308,11 +308,17 @@ export function buildSets(S, cfg, options = {}) {
 export const MAX_PLANNED_WARMUPS = 5
 
 function buildWorkSets(S, cfg, options = {}) {
-  const last = lastEntryFor(S, cfg.id)
-  const n = Math.max(1, cfg.sets || 1)
-  const mode = modeOf(cfg)
   const preferLast = !!options.preferLast
   const useTarget = !!options.useTarget
+  // A workout flagged excludeFromProgression (a planned deload) is not "last time" for the
+  // next regular session either: its reps and durations must not seed the rows any more than
+  // its weight seeds the prescription. The deload session itself reads the routine's own target.
+  const regular = (S.workouts || []).some(w => w.excludeFromProgression === true)
+    ? { ...S, workouts: S.workouts.filter(w => w.excludeFromProgression !== true) }
+    : S
+  const last = lastEntryFor(regular, cfg.id)
+  const n = Math.max(1, cfg.sets || 1)
+  const mode = modeOf(cfg)
   const sets = []
   // A deload routine must use its own prescription instead of carrying regular-session values
   // into the workout. Other planned sessions keep the existing history-first behaviour.
@@ -341,8 +347,11 @@ function buildWorkSets(S, cfg, options = {}) {
     const usable = prev && prev.r > 0 ? prev : null
     // Planned sessions may use the confirmed working weight, while freestyle should reproduce
     // the load of each matching set when that option is requested.
+    // A deload uses the routine's target weight; a routine that never set one (weight 0) falls
+    // back to the last regular load rather than prescribing an empty bar.
+    const lastRegular = last ? (last.sets[i] || last.sets[last.sets.length - 1]) : null
     const w = useTarget
-      ? cfg.weight
+      ? (cfg.weight > 0 ? cfg.weight : (lastRegular && lastRegular.r > 0 ? lastRegular.w : cfg.weight))
       : preferLast && usable ? usable.w : (conf && conf.w > 0 ? conf.w : (usable ? usable.w : cfg.weight))
     sets.push({ w, r: usable ? usable.r : cfg.reps, done: false })
   }

@@ -714,5 +714,7 @@ export default {
   'Add session note': '운동 메모 추가',
   'Edit session note': '운동 메모 편집',
   'How the session went as a whole.': '이번 운동이 전체적으로 어땠는지.',
-  'Rest-pause always trains as one warm-up set at this rep count, then one rest-pause work set — "Sets" is not used.': '레스트포즈는 항상 이 횟수의 워밍업 세트 하나와 레스트포즈 작업 세트 하나로 진행됩니다 — ‘세트’는 사용하지 않습니다.'
+  'Rest-pause always trains as one warm-up set at this rep count, then one rest-pause work set — "Sets" is not used.': '레스트포즈는 항상 이 횟수의 워밍업 세트 하나와 레스트포즈 작업 세트 하나로 진행됩니다 — ‘세트’는 사용하지 않습니다.',
+  'Open progression settings': '진행 설정 열기',
+  'Hevy is rate-limiting requests — wait a minute and try again': 'Hevy가 요청을 제한하고 있습니다 — 잠시 기다렸다가 다시 시도하세요',
 }

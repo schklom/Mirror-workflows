@@ -714,5 +714,7 @@ export default {
   'Add session note': 'Aggiungi nota della sessione',
   'Edit session note': 'Modifica nota della sessione',
   'How the session went as a whole.': 'Com’è andata la sessione nel complesso.',
-  'Rest-pause always trains as one warm-up set at this rep count, then one rest-pause work set — "Sets" is not used.': 'Il rest-pause si allena sempre come una serie di riscaldamento a queste ripetizioni e una serie di lavoro rest-pause — “Serie” non viene usato.'
+  'Rest-pause always trains as one warm-up set at this rep count, then one rest-pause work set — "Sets" is not used.': 'Il rest-pause si allena sempre come una serie di riscaldamento a queste ripetizioni e una serie di lavoro rest-pause — “Serie” non viene usato.',
+  'Open progression settings': 'Apri le impostazioni di progressione',
+  'Hevy is rate-limiting requests — wait a minute and try again': 'Hevy sta limitando le richieste: attendi un minuto e riprova',
 }

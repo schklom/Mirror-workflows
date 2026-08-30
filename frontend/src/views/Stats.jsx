@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/useStore.js'
-import { EXIDX } from '../lib/exercises.js'
+import { EXIDX, matchExercise } from '../lib/exercises.js'
 import { lastBW, streakWeeks, setLabel, modeOf, effortOf, metricModeForEntry, metricRowsForEntry, bestWeightForEntry } from '../lib/history.js'
 import { fmtNum, fmtDate, fmtVol, todayISO } from '../lib/format.js'
 import { t, exerciseNameFor, getLang } from '../lib/i18n.js'
@@ -288,7 +288,38 @@ export default function Stats() {
   const workouts = S.workouts
   const monthW = workouts.filter(w => String(w.d || '').slice(0, 7) === todayISO().slice(0, 7)).length
 
-  const nameOf = id => EXIDX[id] ? exerciseNameFor(EXIDX[id]) : (workouts.flatMap(w => w.entries).find(e => e.id === id)?.n || id)
+  const entryOf = id => workouts.flatMap(w => w.entries).find(e => e.id === id)
+  const listOf = value => Array.isArray(value) ? value : value == null || value === '' ? [] : [value]
+  const firstAvailable = (...values) => {
+    for (const value of values) {
+      const list = listOf(value)
+      if (list.length) return list
+    }
+    return []
+  }
+  const nameOf = id => {
+    if (EXIDX[id]) return exerciseNameFor(EXIDX[id])
+    const entry = entryOf(id)
+    return entry?.muscleSnapshot?.n || entry?.n || id
+  }
+  const matcherOf = id => {
+    if (EXIDX[id]) return EXIDX[id]
+    const entry = entryOf(id)
+    const snapshot = entry?.muscleSnapshot || {}
+    const primaries = firstAvailable(snapshot.primaries, entry?.primaries)
+    const secondaries = firstAvailable(
+      snapshot.sm, snapshot.secondaries, snapshot.muscleGroups,
+      entry?.sm, entry?.secondaries, entry?.muscleGroups,
+    )
+    return {
+      n: snapshot.n || entry?.n || id,
+      bp: snapshot.bp || entry?.bp || '',
+      tg: primaries[0] || snapshot.tg || entry?.tg || '',
+      sm: secondaries,
+      eq: snapshot.eq || entry?.eq || '',
+      desc: snapshot.desc || entry?.desc || '',
+    }
+  }
   const currentOf = id => {
     for (let i = workouts.length - 1; i >= 0; i--) {
       const en = workouts[i].entries.find(e => e.id === id)
@@ -425,7 +456,13 @@ export default function Stats() {
         {exHist.length ? <>
           <div className="sect-b" style={{ marginBottom: 10 }}>
             <SelectRow title={t('Exercise')} sheetTitle={t('Exercise progress')} value={curEx} onChange={setExId} stackedValue
-              options={exHist.map(id => ({ value: id, label: nameOf(id) + (exCurrent[id].mx ? ' ' + '—' + ' ' + fmtNum(exCurrent[id].mx) + ' ' + exCurrent[id].unit : '') }))} />
+              options={exHist.map(id => ({ value: id, label: nameOf(id) + (exCurrent[id].mx ? ' ' + '—' + ' ' + fmtNum(exCurrent[id].mx) + ' ' + exCurrent[id].unit : '') }))}
+              search={{
+                placeholder: t('Search…'),
+                label: t('Search…'),
+                emptyLabel: t('No match'),
+                match: (option, query) => matchExercise(matcherOf(option.value), query),
+              }} />
           </div>
           {exOpts.length > 1 && <Segmented className="seg-range" value={onEff ? 'effort' : onE1 ? 'e1rm' : 'top'} onChange={setExMetric} options={exOpts} />}
           <div className="chart">

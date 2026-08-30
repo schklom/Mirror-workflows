@@ -704,14 +704,24 @@ h4.sec{
   position:absolute;left:0;right:0;bottom:0;background:var(--bg-el);
   border-radius:var(--r-xl) var(--r-xl) 0 0;
   padding:8px 18px calc(20px + var(--sab));
-  max-height:90vh;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  max-height:90vh;max-height:min(90vh,calc(100dvh - 8px));
+  overflow-y:auto;-webkit-overflow-scrolling:touch;scroll-padding-bottom:calc(20px + var(--sab));
   animation:sheetup .34s var(--ease);
   overscroll-behavior:contain;touch-action:pan-y;will-change:transform;
+}
+.sheet:has(.picker-search){
+  bottom:var(--picker-keyboard-bottom,0px);
+  max-height:min(90vh,calc(100dvh - 8px),calc(var(--picker-visual-height,100vh) - 8px));
 }
 :root[data-theme="light"] .sheet{background:var(--bg)}
 @keyframes sheetup{from{transform:translateY(100%)}to{transform:none}}
 .sheet .grab{width:36px;height:5px;border-radius:99px;background:var(--label-4);margin:6px auto 14px}
 .sheet h3{font-size:20px;font-weight:600;letter-spacing:-.021em;margin-bottom:14px}
+.picker-search{
+  position:sticky;top:0;z-index:2;margin-bottom:0;padding-bottom:10px;
+  background:var(--bg-el);
+}
+:root[data-theme="light"] .picker-search{background:var(--bg)}
 .center{
   position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
   width:min(84vw,300px);background:var(--bg-el);border-radius:var(--r-lg);padding:20px;

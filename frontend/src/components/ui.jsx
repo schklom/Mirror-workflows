@@ -60,11 +60,11 @@ export function TextArea({ className = '', ...rest }) {
   return <textarea className={'field area ' + className} {...rest} />
 }
 
-export function SearchField({ value, onChange, onClear, ...rest }) {
+export const SearchField = forwardRef(function SearchField({ value, onChange, onClear, ...rest }, ref) {
   return (
     <div className="searchf">
       <Icon name="magnifier" className="lead" />
-      <input className="field" value={value} onChange={onChange} {...rest} />
+      <input ref={ref} className="field" value={value} onChange={onChange} {...rest} />
       {!!value && (
         <button className="clear" onClick={onClear} aria-label="Clear">
           <Icon name="xmark" />
@@ -72,7 +72,7 @@ export function SearchField({ value, onChange, onClear, ...rest }) {
       )}
     </div>
   )
-}
+})
 
 /* ============================ switch ============================ */
 
@@ -248,30 +248,105 @@ export function Row({ icon, iconTint, title, subtitle, value, accessory = 'none'
 // theme entirely — on dark mode it flashes a white sheet — and can't show more
 // than a bare label per option. This opens our own sheet with a checkmark on the
 // current value, which is also how iOS itself handles a long option list.
-export function SelectRow({ icon, iconTint, title, value, options, onChange, sheetTitle, stackedValue = false }) {
+export function SelectRow({ icon, iconTint, title, value, options, onChange, sheetTitle, stackedValue = false, search }) {
   const cur = options.find(o => o.value === value)
   const open = () => {
     const { openSheet } = require_ui()
-    const h = openSheet(close => (
-      <>
-        <h3>{sheetTitle || title}</h3>
-        <div className="sect-b">
-          {options.map(o => (
-            <button key={o.value} className="lrow tap" onClick={() => { close(); onChange(o.value) }}>
-              <span className="lrow-m"><span className="lrow-t">{o.label}</span>
-                {o.subtitle && <span className="lrow-s">{o.subtitle}</span>}</span>
-              {o.value === value && <Icon name="check" className="lrow-k" />}
-            </button>
-          ))}
-        </div>
-        <div style={{ height: 8 }} />
-      </>
-    ))
+    const h = openSheet(close => <SelectSheet title={sheetTitle || title} value={value} options={options}
+      onChange={onChange} search={search} close={close} />)
     return h
   }
   return (
     <Row icon={icon} iconTint={iconTint} title={title} value={cur ? cur.label : value} accessory="chevron" onClick={open}
       className={stackedValue ? 'lrow-stack-value' : ''} />
+  )
+}
+
+function SelectSheet({ title, value, options, onChange, search, close }) {
+  const [query, setQuery] = useState('')
+  const inputRef = useRef(null)
+  const firstVisibleRef = useRef(null)
+  const syncPickerViewport = useCallback(() => {
+    const input = inputRef.current
+    const sheet = input?.closest('.sheet')
+    const viewport = window.visualViewport
+    if (!sheet || !viewport) return
+    const visualHeight = Math.max(0, viewport.height || window.innerHeight)
+    const visualBottom = (viewport.offsetTop || 0) + visualHeight
+    const bottomInset = Math.max(0, window.innerHeight - visualBottom)
+    sheet.style.setProperty('--picker-keyboard-bottom', `${bottomInset}px`)
+    sheet.style.setProperty('--picker-visual-height', `${visualHeight}px`)
+  }, [])
+  const matcher = typeof search === 'function' ? search : search?.match
+  const visible = matcher ? options.filter(o => matcher(o, query)) : options
+
+  useEffect(() => {
+    if (!search) return
+    const viewport = window.visualViewport
+    if (!viewport) return
+    const sync = () => syncPickerViewport()
+    sync()
+    viewport.addEventListener('resize', sync)
+    viewport.addEventListener('scroll', sync)
+    return () => {
+      viewport.removeEventListener('resize', sync)
+      viewport.removeEventListener('scroll', sync)
+      const sheet = inputRef.current?.closest('.sheet')
+      sheet?.style.removeProperty('--picker-keyboard-bottom')
+      sheet?.style.removeProperty('--picker-visual-height')
+    }
+  }, [search, syncPickerViewport])
+
+  // Filtering can leave the first result underneath the mobile keyboard. Keep the
+  // correction local to the sheet instead of letting focus/scrollIntoView move the page.
+  useEffect(() => {
+    if (!query.trim() || !visible.length) return
+    const input = inputRef.current
+    if (!input || document.activeElement !== input) return
+    const schedule = callback => window.requestAnimationFrame
+      ? window.requestAnimationFrame(callback)
+      : window.setTimeout(callback, 0)
+    const cancel = frame => window.cancelAnimationFrame
+      ? window.cancelAnimationFrame(frame)
+      : window.clearTimeout(frame)
+    const frame = schedule(() => {
+      if (document.activeElement !== input) return
+      const option = firstVisibleRef.current
+      const sheet = option?.closest('.sheet')
+      if (!option || !sheet) return
+      const viewport = window.visualViewport
+      const visualBottom = viewport ? (viewport.offsetTop || 0) + viewport.height : window.innerHeight
+      const sheetBottom = sheet.getBoundingClientRect().bottom || visualBottom
+      const hiddenBy = option.getBoundingClientRect().bottom - Math.min(visualBottom, sheetBottom) + 8
+      if (hiddenBy <= 0) return
+      const maxScroll = Math.max(0, sheet.scrollHeight - sheet.clientHeight)
+      const nextScroll = Math.min(maxScroll, Math.max(0, sheet.scrollTop + hiddenBy))
+      if (nextScroll !== sheet.scrollTop) sheet.scrollTop = nextScroll
+    })
+    return () => cancel(frame)
+  }, [query, visible.length])
+
+  return (
+    <>
+      <h3>{title}</h3>
+      {search && <div className="picker-search">
+        <SearchField value={query} onChange={e => setQuery(e.target.value)} onInput={e => setQuery(e.target.value)}
+          onClear={() => setQuery('')} onFocus={syncPickerViewport} ref={inputRef} placeholder={search.placeholder} aria-label={search.label || search.placeholder} />
+      </div>}
+      <div className="sect-b">
+        {visible.map((o, index) => (
+          <button key={o.value} ref={index === 0 ? firstVisibleRef : undefined} className="lrow tap" onClick={() => { close(); onChange(o.value) }}>
+            <span className="lrow-m"><span className="lrow-t">{o.label}</span>
+              {o.subtitle && <span className="lrow-s">{o.subtitle}</span>}</span>
+            {o.value === value && <Icon name="check" className="lrow-k" />}
+          </button>
+        ))}
+        {!visible.length && search && <div className="empty">
+          <div className="ico"><Icon name="magnifier" /></div>{search.emptyLabel}
+        </div>}
+      </div>
+      <div style={{ height: 8 }} />
+    </>
   )
 }
 

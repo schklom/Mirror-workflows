@@ -44,6 +44,21 @@
 
         nginxEnabled = testConfig.config.services.nginx.enable;
 
+        # Variant with the optional managed nginx vhost switched on.
+        nginxTestConfig = nixpkgs.lib.nixosSystem {
+          inherit system;
+          modules = [
+            opengymNixOSModule
+            {
+              services.opengym = {
+                enable = true;
+                nginx.enable = true;
+              };
+              system.stateVersion = "25.05";
+            }
+          ];
+        };
+
         check = pkgs.runCommand "opengym-module-check" { } ''
           set -euo pipefail
           # Verify the module evaluated correctly
@@ -58,8 +73,14 @@
           # Verify extra environment is applied to the API unit
           echo "opengym-api env MY_FLAG = ${if testConfig.config.systemd.services.opengym-api.environment ? MY_FLAG then testConfig.config.systemd.services.opengym-api.environment.MY_FLAG else "missing"}"
 
-          # Verify nginx is disabled (system uses Caddy)
-          echo "services.nginx.enable = ${if nginxEnabled then "true" else "false"}"
+          # Verify nginx is disabled by default (system uses Caddy)
+          echo "services.nginx.enable (default) = ${if nginxEnabled then "true" else "false"}"
+
+          # Verify the optional managed nginx vhost gets configured
+          echo "services.nginx.enable (nginx.enable) = ${if nginxTestConfig.config.services.nginx.enable then "true" else "false"}"
+          echo "nginx vhost for 'localhost' = ${if nginxTestConfig.config.services.nginx.virtualHosts ? localhost then "true" else "false"}"
+          echo "nginx /api proxyPass = ${nginxTestConfig.config.services.nginx.virtualHosts."localhost".locations."/api/".proxyPass or "missing"}"
+          echo "nginx /img alias = ${nginxTestConfig.config.services.nginx.virtualHosts."localhost".locations."/img/".alias or "missing"}"
 
           # Verify frontend/media store paths are exposed for a web server
           echo "services.opengym.web.root = ${cfg.web.root}"

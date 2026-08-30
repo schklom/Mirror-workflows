@@ -158,6 +158,25 @@ in
       '';
     };
 
+    nginx = {
+      enable = lib.mkEnableOption "an nginx virtualHost for openGym, managed via services.nginx";
+
+      hostName = lib.mkOption {
+        type = lib.types.str;
+        default = cfg.rpId;
+        description = "Server name the nginx virtualHost listens on (defaults to rpId).";
+      };
+
+      enableACME = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = ''
+          Serve openGym over TLS with a Let's Encrypt certificate (services.nginx enableACME +
+          forceSSL). Also requires security.acme.acceptTerms = true in your configuration.
+        '';
+      };
+    };
+
     media = {
       fetchAtBuild = lib.mkOption {
         type = lib.types.bool;
@@ -209,97 +228,147 @@ in
           assertion = cfg.environment == { } || cfg.environmentFile == "";
           message = "services.opengym.environment and services.opengym.environmentFile are mutually exclusive; use only one.";
         }
+        {
+          assertion = !cfg.nginx.enable || cfg.nginx.hostName != "";
+          message = "services.opengym.nginx.hostName must be set when services.opengym.nginx.enable is true.";
+        }
+        {
+          assertion = !cfg.nginx.enableACME || cfg.nginx.enable;
+          message = "services.opengym.nginx.enable must be true to use services.opengym.nginx.enableACME.";
+        }
       ];
     }
-    (lib.mkIf cfg.enable {
+    (lib.mkIf cfg.enable (
+      lib.mkMerge [
+        {
+          users.users.opengym = {
+            isSystemUser = true;
+            group = "opengym";
+            description = "openGym service user";
+          };
 
-    users.users.opengym = {
-      isSystemUser = true;
-      group = "opengym";
-      description = "openGym service user";
-    };
+          users.groups.opengym = { };
 
-    users.groups.opengym = { };
+          systemd.tmpfiles.rules = [
+            "d ${cfg.dataDir} 0750 opengym opengym - -"
+            "d ${cfg.media.dataDir} 0755 opengym opengym - -"
+          ];
 
-    systemd.tmpfiles.rules = [
-      "d ${cfg.dataDir} 0750 opengym opengym - -"
-      "d ${cfg.media.dataDir} 0755 opengym opengym - -"
-    ];
+          systemd.services.opengym-api = {
+            description = "openGym API server";
+            after = [ "network.target" ];
+            wantedBy = [ "multi-user.target" ];
+            environment = cfg.environment // apiEnv;
+            serviceConfig = {
+              ExecStart = "${packages.opengym-api}/bin/opengym-api";
+              User = "opengym";
+              Group = "opengym";
+              StateDirectory = "opengym";
+              StateDirectoryMode = "0750";
+              Restart = "on-failure";
+              RestartSec = 5;
+              EnvironmentFile = lib.mkIf (cfg.environmentFile != "") cfg.environmentFile;
 
-    systemd.services.opengym-api = {
-      description = "openGym API server";
-      after = [ "network.target" ];
-      wantedBy = [ "multi-user.target" ];
-      environment = cfg.environment // apiEnv;
-      serviceConfig = {
-        ExecStart = "${packages.opengym-api}/bin/opengym-api";
-        User = "opengym";
-        Group = "opengym";
-        StateDirectory = "opengym";
-        StateDirectoryMode = "0750";
-        Restart = "on-failure";
-        RestartSec = 5;
-        EnvironmentFile = lib.mkIf (cfg.environmentFile != "") cfg.environmentFile;
+              NoNewPrivileges = true;
+              ProtectSystem = "strict";
+              ProtectHome = true;
+              PrivateTmp = true;
+              PrivateDevices = true;
+              ProtectKernelTunables = true;
+              ProtectKernelModules = true;
+              ProtectControlGroups = true;
+              RestrictNamespaces = true;
+              RestrictSUIDSGID = true;
+              LockPersonality = true;
+              SystemCallFilter = [
+                "@system-service"
+                "~@privileged"
+              ];
+              ReadWritePaths = [ cfg.dataDir ];
+            };
+          };
 
-        NoNewPrivileges = true;
-        ProtectSystem = "strict";
-        ProtectHome = true;
-        PrivateTmp = true;
-        PrivateDevices = true;
-        ProtectKernelTunables = true;
-        ProtectKernelModules = true;
-        ProtectControlGroups = true;
-        RestrictNamespaces = true;
-        RestrictSUIDSGID = true;
-        LockPersonality = true;
-        SystemCallFilter = [
-          "@system-service"
-          "~@privileged"
-        ];
-        ReadWritePaths = [ cfg.dataDir ];
-      };
-    };
+          systemd.services.opengym-media = lib.mkIf (!cfg.media.fetchAtBuild) {
+            description = "Download exercise media for openGym";
+            after = [ "network-online.target" ];
+            wants = [ "network-online.target" ];
+            wantedBy = [ "multi-user.target" ];
+            serviceConfig = {
+              ExecStart = "${packages.opengym-fetch-media}/bin/opengym-fetch-media ${cfg.media.dataDir}";
+              Type = "oneshot";
+              RemainAfterExit = true;
+              User = "opengym";
+              Group = "opengym";
+              StateDirectory = "opengym";
+            };
+          };
 
-    systemd.services.opengym-media = lib.mkIf (!cfg.media.fetchAtBuild) {
-      description = "Download exercise media for openGym";
-      after = [ "network-online.target" ];
-      wants = [ "network-online.target" ];
-      wantedBy = [ "multi-user.target" ];
-      serviceConfig = {
-        ExecStart = "${packages.opengym-fetch-media}/bin/opengym-fetch-media ${cfg.media.dataDir}";
-        Type = "oneshot";
-        RemainAfterExit = true;
-        User = "opengym";
-        Group = "opengym";
-        StateDirectory = "opengym";
-      };
-    };
+          services.opengym.media = {
+            imageRoot = mediaRoot;
+            gifRoot = mediaGifRoot;
+          };
 
-    services.nginx.enable = lib.mkForce false;
+          services.opengym.web.root = "${packages.opengym-frontend}/share/opengym";
 
-    services.opengym.media = {
-      imageRoot = mediaRoot;
-      gifRoot = mediaGifRoot;
-    };
-
-    services.opengym.web.root = "${packages.opengym-frontend}/share/opengym";
-
-    systemd.services.opengym-mcp = lib.mkIf cfg.mcp.enable {
-      description = "openGym MCP server";
-      after = [ "network.target" ];
-      wantedBy = [ "multi-user.target" ];
-      environment = {
-        DATA_DIR = cfg.dataDir;
-      };
-      serviceConfig = {
-        ExecStart = "${packages.opengym-mcp}/bin/opengym-mcp";
-        StandardInput = "null";
-        StandardOutput = "journal";
-        User = "opengym";
-        Group = "opengym";
-        Restart = "on-failure";
-      };
-    };
-  })
+          systemd.services.opengym-mcp = lib.mkIf cfg.mcp.enable {
+            description = "openGym MCP server";
+            after = [ "network.target" ];
+            wantedBy = [ "multi-user.target" ];
+            environment = {
+              DATA_DIR = cfg.dataDir;
+            };
+            serviceConfig = {
+              ExecStart = "${packages.opengym-mcp}/bin/opengym-mcp";
+              StandardInput = "null";
+              StandardOutput = "journal";
+              User = "opengym";
+              Group = "opengym";
+              Restart = "on-failure";
+            };
+          };
+        }
+        # Optional: let the module configure an nginx virtualHost for openGym itself.
+        (lib.mkIf cfg.nginx.enable {
+          services.nginx = {
+            enable = true;
+            recommendedOptimisation = true;
+            recommendedGzipSettings = true;
+            virtualHosts.${cfg.nginx.hostName} =
+              {
+                root = cfg.web.root;
+                locations = {
+                  "/" = {
+                    tryFiles = "$uri $uri/ /index.html";
+                  };
+                  "/api/" = {
+                    proxyPass = "http://127.0.0.1:${toString cfg.apiPort};";
+                    extraConfig = ''
+                      proxy_http_version 1.1;
+                      proxy_set_header Host $host;
+                      proxy_set_header X-Real-IP $remote_addr;
+                      proxy_set_header X-Forwarded-For $remote_addr;
+                      proxy_set_header X-Forwarded-Proto $scheme;
+                    '';
+                  };
+                  "/img/" = {
+                    alias = "${cfg.media.imageRoot}/";
+                  };
+                  "/gif/" = {
+                    alias = "${cfg.media.gifRoot}/";
+                  };
+                };
+              }
+              // lib.optionalAttrs cfg.nginx.enableACME {
+                enableACME = true;
+                forceSSL = true;
+              };
+          };
+        })
+        # Caddy-native default: this module owns no web server of its own.
+        (lib.mkIf (!cfg.nginx.enable) {
+          services.nginx.enable = lib.mkForce false;
+        })
+      ]
+    ))
 ];
 }

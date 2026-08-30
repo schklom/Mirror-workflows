@@ -33,15 +33,17 @@ managed by your NixOS configuration. This document covers both.
 - `systemd.services.opengym-media` — a one-shot media downloader (only in runtime-media mode),
 - `systemd.services.opengym-mcp` — the MCP server, **only if `mcp.enable` is set**,
 - read-only options exposing the built frontend and media directories so *your* web server can
-  serve them,
+  serve them (or `nginx.enable = true` for the module to manage one — see §4),
 - `environment` / `environmentFile` — escape hatches to pass extra environment variables to the
   API (for variables openGym doesn't know about yet). See [Module options reference](#6-module-options-reference).
 
-The module deliberately **does not own a web server**: it forces `services.nginx.enable = false`
-and hands you the `web.root`, `media.imageRoot` and `media.gifRoot` store paths to wire into your
-own reverse proxy (Caddy, nginx, Traefik, …). openGym needs everything on **one origin** (passkeys
-require it), and NixOS deployments already run a proxy — so the module integrates openGym into
-*yours* instead of re-implementing nginx itself. See §4.
+The module **does not own a web server by default**: it hands you the `web.root`, `media.imageRoot`
+and `media.gifRoot` store paths to wire into your own reverse proxy (Caddy, nginx, Traefik, …).
+openGym needs everything on **one origin** (passkeys require it), and NixOS deployments already run
+a proxy — so the module integrates openGym into *yours* instead of re-implementing a web server
+itself. See §4. If you'd rather have openGym's web server managed for you, set
+`services.opengym.nginx.enable = true` and the module configures an nginx virtualHost for openGym
+(only then is `services.nginx` enabled; on the Caddy-native default it is force-disabled).
 
 ### Configuration flow
 
@@ -156,36 +158,37 @@ catch-all `handle` that serves the SPA.
 
 ### nginx
 
-```nginx
-server {
-    listen 443 ssl;
-    server_name gym.example.com;
-    root /nix/store/…-opengym-frontend/share/opengym;   # ← config.services.opengym.web.root
+Two ways to use nginx. If you don't already run an nginx config you care about, let the module
+manage one:
 
-    location / {
-        try_files $uri $uri/ /index.html;
-    }
-
-    location /api/ {
-        proxy_pass http://127.0.0.1:3000;               # ← the apiPort you configured
-        proxy_http_version 1.1;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $remote_addr;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-
-    location /img/ { alias /nix/store/…-opengym-media/images/; }   # or /var/lib/opengym/media/img/
-    location /gif/ { alias /nix/store/…-opengym-media/videos/; }   # or /var/lib/opengym/media/gif/
+```nix
+{
+  services.opengym = {
+    enable = true;
+    rpId   = "gym.example.com";
+    origin = "https://gym.example.com";
+    nginx = {
+      enable = true;              # module writes the virtualHost below for you
+      # hostName   = "gym.example.com";   # defaults to rpId
+      # enableACME = true;                # Let's Encrypt + force TLS (requires security.acme.acceptTerms = true)
+    };
+  };
+  security.acme.acceptTerms = true;       # only needed with enableACME = true
 }
 ```
 
-Remember: because the module forces `services.nginx.enable = false`, if you want *NixOS's* nginx
-to serve openGym you must re-enable it after importing the module:
+That renders a `services.nginx.virtualHosts."gym.example.com"` with the SPA root + fallback, the
+`/api` proxy, `/img` and `/gif` aliases, gzip/optimisation settings, and — when `enableACME` — TLS.
+
+Otherwise, write the virtualHost yourself (e.g. to mix with your existing sites). Remember the
+module's Caddy-native default is `services.nginx.enable = false`; you must switch that back on
+*before* adding your own vhost — the module will do it for you if you set `nginx.enable = true`:
 
 ```nix
-{ services.nginx.enable = lib.mkForce true; }
+{ services.nginx.enable = lib.mkTrue; }   # or set services.opengym.nginx.enable = true
 ```
+
+Then a minimal handwritten config:
 
 ### Passkey constraint (read before choosing a hostname)
 
@@ -331,7 +334,8 @@ variables, so entries there can still override).
 | `systemd.services.opengym-api` | always | `Restart=on-failure`, runs as `opengym`, hardened |
 | `systemd.services.opengym-media` | only when `media.fetchAtBuild = false` | one-shot (`Type=oneshot`, `RemainAfterExit`) media downloader |
 | `systemd.services.opengym-mcp` | only when `mcp.enable = true` | stdio bridge, runs as `opengym` |
-| `services.nginx.enable = false` | always | force-disabled — bring your own web server |
+| `services.nginx` vhost | only when `nginx.enable = true` | managed virtualHost (SPA + `/api` + `/img` + `/gif`) |
+| `services.nginx.enable = false` | only when `nginx.enable = false` | force-disabled — bring your own web server |
 
 <span id="systemd-hardening"></span>
 The API unit is restricted: `ProtectSystem=strict`, `ProtectHome`, `PrivateTmp`,
@@ -367,6 +371,14 @@ for other modules to consume — setting them yourself is an error.
 | `vapidSubject` | `str` | `""` | Contact URL sent with web-push requests (e.g. `mailto:you@example.com`). Empty = the `origin` is sent. |
 | `environment` | `attrsOf str` | `{ }` | Extra environment variables set on the `opengym-api` unit — the escape hatch for variables the module doesn't manage yet (newly added to the project). On a conflict with a variable the module derives from its own options, the module's value wins. Mutually exclusive with `environmentFile`. |
 | `environmentFile` | `str` | `""` | Path to an env file (`KEY=VALUE` per line) read by the `opengym-api` unit via systemd `EnvironmentFile=`. systemd applies it *after* the declarative environment, so entries in the file may override module-managed variables. Mutually exclusive with `environment`. |
+
+### `nginx.*` suboptions
+
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `nginx.enable` | `bool` | `false` | Have the module configure an nginx virtualHost for openGym via `services.nginx` (SPA root + fallback, `/api` proxy, `/img` + `/gif` aliases, gzip/optimisation). When `false` (Caddy-native default) the module force-disables `services.nginx`. |
+| `nginx.hostName` | `str` | `"${rpId}"` | Server name the virtualHost listens on. |
+| `nginx.enableACME` | `bool` | `false` | Serve over TLS: `enableACME` + `forceSSL` on the vhost. Requires `security.acme.acceptTerms = true`. |
 
 ### `media.*` suboptions
 
@@ -436,7 +448,7 @@ routine update — see the passkey caveat in §4.
 | No passkey prompt / "verification failed" | `rpId`/`origin` don't match the address bar. Ask the server what it loaded: `journalctl -u opengym-api -b \| grep 'gym-api on'`.  See §4 and `docs/SELF_HOSTING.md`. |
 | App loads but exercises show no image/animation | The `/img` and `/gif` routes aren't mapped to `imageRoot`/`gifRoot` in your web server, or runtime media hasn't downloaded yet — check `systemctl status opengym-media` / `journalctl -u opengym-media`. |
 | `/api` returns 502/404 | Your proxy's `apiPort` (`services.opengym.apiPort`) differs from what `reverse_proxy`/`proxy_pass` targets. |
-| `nginx` is silently gone after enabling the module | Expected — the module sets `services.nginx.enable = false`. Re-enable with `lib.mkForce true` if you manage openGym via nginx. |
+| `nginx` is silently gone after enabling the module | Expected on the Caddy-native default (`nginx.enable = false`): the module sets `services.nginx.enable = false`. Set `services.opengym.nginx.enable = true` to have the module configure nginx for openGym (or `lib.mkForce true` to manage it yourself). |
 | Service won't start | `journalctl -u opengym-api -xe`. Common: custom `dataDir` not created/owned correctly (the tmpfiles rule should handle it; check `systemd-tmpfiles --create`). |
 | Eval fails: `environment and environmentFile are mutually exclusive` | Pick one. Set extra vars either as a Nix attrset (`environment`) or in a file (`environmentFile`), never both. |
 | You expected a binary cache | The flake builds from source; override `services.opengym.package` (or `packages.*` via a cache/overlay) to substitute binaries. |

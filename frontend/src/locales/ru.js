@@ -1015,4 +1015,7 @@ export default {
   'Training regularly': 'Тренируюсь регулярно',
   'Back muscles': 'Спина',
   '{0}: what’s planned': '{0}: по плану',
+  'What should change?': 'Что изменить?',
+  'Coach is thinking…': 'Тренер думает…',
+  'Message the Coach…': 'Написать тренеру…',
 }

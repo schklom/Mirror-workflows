@@ -1015,4 +1015,7 @@ export default {
   'Training regularly': 'Trenuję regularnie',
   'Back muscles': 'Plecy',
   '{0}: what’s planned': '{0}: w planie',
+  'What should change?': 'Co powinno się zmienić?',
+  'Coach is thinking…': 'Trener myśli…',
+  'Message the Coach…': 'Napisz do trenera…',
 }

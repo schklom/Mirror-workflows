@@ -75,7 +75,7 @@
 .ob-hint{text-align:center;font-size:13px;color:var(--label-3);margin-top:8px}
 
 /* ---------- chat ---------- */
-.chat{padding-bottom:96px}
+.chat{padding-bottom:40px}
 .chat-hdr{display:flex;align-items:center;gap:10px;margin:2px 0 14px}
 .chat-hdr .chat-av{
   width:38px;height:38px;border-radius:99px;background:var(--acc);color:var(--on-acc);
@@ -158,8 +158,8 @@
 
 /* composer */
 .composer{
-  position:fixed;left:0;right:0;bottom:calc(78px + var(--sab));z-index:40;
-  padding:8px var(--pad) 10px;
+  position:fixed;left:0;right:0;bottom:0;z-index:40;
+  padding:8px var(--pad) calc(10px + var(--sab));
   background:color-mix(in srgb,var(--bg) 88%,transparent);
   -webkit-backdrop-filter:saturate(180%) blur(12px);backdrop-filter:saturate(180%) blur(12px)
 }

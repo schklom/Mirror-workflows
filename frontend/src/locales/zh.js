@@ -1015,4 +1015,7 @@ export default {
   'Training regularly': '规律训练中',
   'Back muscles': '背部',
   '{0}: what’s planned': '{0}：计划',
+  'What should change?': '需要改什么？',
+  'Coach is thinking…': '教练思考中…',
+  'Message the Coach…': '给教练留言…',
 }

@@ -1015,4 +1015,7 @@ export default {
   'Training regularly': 'Treino regularmente',
   'Back muscles': 'Costas',
   '{0}: what’s planned': '{0}: previsto',
+  'What should change?': 'O que deve mudar?',
+  'Coach is thinking…': 'O Coach está a pensar…',
+  'Message the Coach…': 'Escreve ao Coach…',
 }

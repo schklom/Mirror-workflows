@@ -1015,4 +1015,7 @@ export default {
   'Training regularly': 'Düzenli antrenman yapıyorum',
   'Back muscles': 'Sırt',
   '{0}: what’s planned': '{0}: planlanan',
+  'What should change?': 'Ne değişmeli?',
+  'Coach is thinking…': 'Koç düşünüyor…',
+  'Message the Coach…': 'Koça yaz…',
 }

@@ -4,6 +4,10 @@
 import pt from './pt.js'
 
 export const PT_BR_OVERRIDES = {
+  'What should change?': 'O que deve mudar?',
+  'Coach is thinking…': 'O Coach está pensando…',
+  'Message the Coach…': 'Escreva ao Coach…',
+
   'Press back again to exit': 'Pressione voltar novamente para sair',
   'Delete': 'Excluir',
   'Save': 'Salvar',

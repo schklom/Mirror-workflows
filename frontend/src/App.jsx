@@ -109,7 +109,8 @@ function Shell() {
           )}
         </ErrorBoundary>
       </div>
-      <TabBar onStart={startFlow} />
+      {/* The chat owns the bottom of the screen: its composer sits where the tabs would be. */}
+      {loc.pathname !== '/coach' && <TabBar onStart={startFlow} />}
       <RestTimer />
       <Modals />
       <Toast />

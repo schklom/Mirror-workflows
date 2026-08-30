@@ -1015,4 +1015,7 @@ export default {
   'Training regularly': '꾸준히 훈련 중',
   'Back muscles': '등',
   '{0}: what’s planned': '{0}: 계획',
+  'What should change?': '무엇을 바꿀까요?',
+  'Coach is thinking…': '코치가 생각 중…',
+  'Message the Coach…': '코치에게 메시지…',
 }

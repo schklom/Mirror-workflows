@@ -1015,4 +1015,7 @@ export default {
   'Training regularly': 'नियमित प्रशिक्षण',
   'Back muscles': 'पीठ',
   '{0}: what’s planned': '{0}: योजना',
+  'What should change?': 'क्या बदलना चाहिए?',
+  'Coach is thinking…': 'कोच सोच रहा है…',
+  'Message the Coach…': 'कोच को संदेश…',
 }

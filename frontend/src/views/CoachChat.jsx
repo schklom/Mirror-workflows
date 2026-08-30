@@ -164,8 +164,8 @@ export default function CoachChat() {
 
   const status = job ? t('thinking…') : pending ? t('has a suggestion for you') : t('here when you need it')
   const placeholder = pending?.kind === 'create'
-    ? t('Tell the Coach what to change…')
-    : job ? t('Wait for the Coach to finish…') : t('Ask for a review, or tell the Coach something…')
+    ? t('What should change?')
+    : job ? t('Coach is thinking…') : t('Message the Coach…')
 
   return <div className="narrow chat">
     <div className="chat-hdr">

@@ -70,7 +70,7 @@ describe('the Coach on a phone with its own key', () => {
     expect(wire.calls[0].url).toBe('https://api.openai.com/v1/chat/completions')
     expect(wire.calls[0].init.headers.authorization).toBe('Bearer sk-test-1')
     expect(wire.calls[0].body.model).toBe('gpt-t')
-    expect(wire.calls[0].body.messages[1].content).toContain('"userNote": "shoulder"')
+    expect(wire.calls[0].body.messages[1].content).toContain('"userNote":"shoulder"')
     // …and the proposal applies with the ordinary engine.
     const marked = markStale(s.pending, S)
     expect(marked.changes[0].status).not.toBe('stale')
@@ -120,7 +120,7 @@ describe('the Coach on a phone with its own key', () => {
     const first = (await loadCoachDevice()).handle
     expect(first).toHaveLength(16)
     const payload = wire.calls[0].body.messages[1].content
-    expect(payload).toContain(`"profile": "${first}"`)
+    expect(payload).toContain(`"profile":"${first}"`)
     expect(payload).not.toContain('Duarte')
     local._resetLocal(); await saveCoachDevice({ pending: null })
     await local.localReview(state()); await settle()
@@ -163,7 +163,7 @@ describe('the Coach on a phone with its own key', () => {
     const s = await settle()
     expect(s.pending.kind).toBe('create')
     expect(s.pending.bundle.routines).toHaveLength(2)
-    expect(wire.calls[0].body.messages[1].content).toContain('"daysPerWeek": 3')
+    expect(wire.calls[0].body.messages[1].content).toContain('"daysPerWeek":3')
 
     await local.localRefine(S, 'no lunges')
     const r = await settle()

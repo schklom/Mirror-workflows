@@ -210,6 +210,45 @@ function trainedIds(S, workouts) {
   return [...ids];
 }
 
+// Only the most recent sessions carry full set-by-set detail; everything older in the window
+// arrives as one line per exercise. The old payload sent every set of up to 60 sessions —
+// 10k+ tokens a small local model cannot hold and a metered API should not be billed for —
+// while stalls and trends already live in `aggregates`, computed over the full window.
+export const FULL_DETAIL_SESSIONS = 5;
+
+const fmtSet = s => {
+  const eff = s.rir != null ? '@RIR' + s.rir : s.rpe != null ? '@RPE' + s.rpe : '';
+  if (s.sec != null) return s.sec + 's' + eff;
+  if (s.min != null) return s.min + 'min' + (s.speed != null ? '/' + s.speed : '') + eff;
+  return (s.w != null ? s.w + 'x' : '') + (s.r != null ? s.r : '?') + eff;
+};
+
+/** One older workout as a summary: what was done, the top set, whether targets were hit. */
+function compactWorkout(w) {
+  return {
+    d: w.d,
+    name: w.name || null,
+    minutes: w.end && w.start ? Math.round((w.end - w.start) / 60000) : null,
+    prs: (w.prs || []).length,
+    compact: true,
+    entries: (w.entries || []).map(en => {
+      const sets = en.sets || [];
+      const done = sets.filter(s => s.done);
+      let top = null;
+      done.forEach(s => {
+        if (!top || (s.w || 0) * (s.r || 0) + (s.sec || 0) > (top.w || 0) * (top.r || 0) + (top.sec || 0)) top = s;
+      });
+      return {
+        id: en.id,
+        name: libraryName(en.id),
+        done: done.length + '/' + sets.length,
+        ...(en.target ? { target: fmtSet({ w: en.target.weight, r: en.target.reps, sec: en.target.sec }) } : {}),
+        ...(top ? { top: fmtSet(top) } : {})
+      };
+    })
+  };
+}
+
 /** One workout, reduced to what a coach reads. */
 function cleanWorkout(w) {
   return {
@@ -340,10 +379,11 @@ export function build(S, opts = {}) {
     if (opts.cohort) p.cohort = opts.cohort;
   } else if (opts.kind === 'review') {
     const workouts = reviewWindow(S, coach.lastReview?.at ? String(coach.lastReview.at).slice(0, 10) : null);
+    const detailFrom = Math.max(0, workouts.length - FULL_DETAIL_SESSIONS);
     p.window = {
       from: workouts[0]?.d || null,
       to: workouts[workouts.length - 1]?.d || null,
-      workouts: workouts.map(cleanWorkout)
+      workouts: workouts.map((w, i) => (i >= detailFrom ? cleanWorkout(w) : compactWorkout(w)))
     };
     p.aggregates = aggregates(S, workouts);
     p.bodyweight = {
@@ -352,7 +392,8 @@ export function build(S, opts = {}) {
     };
     if (opts.note) p.userNote = String(opts.note).slice(0, 1000);
     if (opts.cohort) p.cohort = opts.cohort;
-    p.library = librarySlice(S, profile?.equipment, { keep: trainedIds(S, workouts) });
+    // A review names mostly what is already trained; 100 candidates is plenty for a swap.
+    p.library = librarySlice(S, profile?.equipment, { keep: trainedIds(S, workouts), max: 100 });
   } else {
     p.library = librarySlice(S, profile?.equipment, { keep: trainedIds(S, S.workouts || []) });
     // Creation for a returning user: what they have actually handled, so proposed baselines

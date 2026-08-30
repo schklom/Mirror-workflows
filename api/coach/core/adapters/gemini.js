@@ -8,8 +8,10 @@ export const geminiSpec = {
   path: model => `/v1beta/models/${encodeURIComponent(model)}:generateContent`,
   modelsPath: '/v1beta/models?pageSize=200',
   headers: key => ({ 'x-goog-api-key': key }),
-  body: ({ prompt, maxTokens }) => ({
-    systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+  // No responseSchema on purpose: Gemini's OpenAPI subset rejects the type unions our schemas
+  // use for before/after, and json mime plus the validator already holds the line.
+  body: ({ prompt, system, maxTokens }) => ({
+    systemInstruction: { parts: [{ text: system ? SYSTEM_PROMPT + '\n\n' + system : SYSTEM_PROMPT }] },
     contents: [{ role: 'user', parts: [{ text: prompt }] }],
     generationConfig: { responseMimeType: 'application/json', maxOutputTokens: maxTokens }
   }),

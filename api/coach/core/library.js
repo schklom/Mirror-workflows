@@ -22,6 +22,10 @@ export const libraryName = id => LIB_BY_ID.get(id)?.n || null;
    a review has to be able to name what it is talking about. */
 export const MAX_LIBRARY = 160;
 
+// What one library entry tells the model: enough to pick it, nothing more. The taxonomy
+// fields beyond body part never appear in a rationale and cost ~30 tokens an entry.
+const slim = e => ({ id: e.id, n: e.n, bp: e.bp, ...(e.custom ? { custom: true } : {}) });
+
 export function librarySlice(S, equipment, { keep = [], max = MAX_LIBRARY } = {}) {
   const wanted = (equipment || []).map(x => String(x).toLowerCase());
   const customs = (S.customEx || []).map(c => ({ id: c.id, n: c.n, bp: c.bp, tg: null, eq: 'custom', custom: true }));
@@ -55,5 +59,5 @@ export function librarySlice(S, equipment, { keep = [], max = MAX_LIBRARY } = {}
       }
     }
   }
-  return [...customs, ...out];
+  return [...customs, ...out].map(slim);
 }

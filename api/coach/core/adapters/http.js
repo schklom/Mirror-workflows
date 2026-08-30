@@ -102,7 +102,7 @@ export function httpAdapter(spec) {
      * and nothing else is read from it; `fetch` is injectable so the phone can route through
      * native HTTP and a test can hand in a fake.
      */
-    async invoke({ cfg, prompt, env, model, timeoutMs = DEFAULT_TIMEOUT_MS, fetch: fetchImpl = globalThis.fetch, signal } = {}) {
+    async invoke({ cfg, prompt, system, schema, env, model, timeoutMs = DEFAULT_TIMEOUT_MS, fetch: fetchImpl = globalThis.fetch, signal } = {}) {
       const base = adapter.baseUrl(cfg);
       if (!base) return { code: -1, text: '', stderr: `no endpoint configured for ${id}`, spawnError: true };
       const key = keyOf(env);
@@ -110,7 +110,7 @@ export function httpAdapter(spec) {
       const chosen = model || meta.defaultModel;
       if (!chosen) return { code: 1, text: '', stderr: `no model chosen for ${id} — pick one from the list the endpoint serves` };
 
-      let body = spec.body({ model: chosen, prompt, maxTokens: MAX_OUTPUT_TOKENS });
+      let body = spec.body({ model: chosen, prompt, system: system || null, schema: schema || null, maxTokens: MAX_OUTPUT_TOKENS });
       let retriedWithoutJsonMode = false;
       for (;;) {
         let res;
@@ -128,7 +128,7 @@ export function httpAdapter(spec) {
         if (!res.ok) {
           const msg = spec.errorMessage(data) || trim(text, 200);
           // Some OpenAI-compatible servers reject the JSON-mode flag outright. Once, without it.
-          if (res.status === 400 && spec.withoutJsonMode && !retriedWithoutJsonMode && /response_format|json_object|json mode/i.test(msg)) {
+          if (res.status === 400 && spec.withoutJsonMode && !retriedWithoutJsonMode && /response_format|json_schema|json_object|json mode|structured/i.test(msg)) {
             body = spec.withoutJsonMode(body);
             retriedWithoutJsonMode = true;
             continue;

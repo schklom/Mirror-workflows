@@ -4,6 +4,20 @@
 
 ### AI Coach
 
+- ⚡ **A local model answers in a fraction of the time.** The prompt is split so the rules —
+  identical for every job of a task — ride as the system message and only the payload changes:
+  a llama.cpp/Ollama endpoint reuses its KV prefix cache instead of re-reading ~2.7k tokens of
+  rules per job, and Anthropic caches the same block server-side at a tenth of the input price.
+  The payload itself shrank by more than half: compact JSON, full set-by-set detail only for
+  the five most recent sessions (older ones become one line per exercise — `aggregates`
+  already counts stalls over the whole window), and a library slice of `{id, name, bodypart}`.
+  ~14,600 tokens processed per review before; ~5,900 now, plus a cached prefix.
+- 🎯 **The answer cannot leave its shape.** Providers that support schema-constrained decoding
+  (Ollama, LM Studio, vLLM, OpenAI) get a JSON schema with the request; the repair round is
+  for content now, not syntax. Endpoints that reject it fall back to JSON mode, then to plain
+  text, exactly as before — and the validator stays the only judge either way. The
+  OpenAI-compatible endpoint also runs at temperature 0: a plan diff wants determinism.
+
 - 🏁 **A debrief of one workout.** "Review my last workout" hands the Coach a single session —
   with the last three of the same routine, the stall picture and four weeks of weigh-ins — and
   gets back a score out of ten, what went well, what to watch and what to do next time, each

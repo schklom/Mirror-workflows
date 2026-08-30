@@ -5,5 +5,7 @@
 import { httpAdapter } from './http.js';
 import { chatCompletionsSpec } from './openai.js';
 
-export const compatibleSpec = chatCompletionsSpec('compatible', { maxTokensField: 'max_tokens' });
+// temperature 0: a plan diff wants determinism, and greedy decoding is also what grammar-
+// constrained sampling on a local server handles fastest.
+export const compatibleSpec = chatCompletionsSpec('compatible', { maxTokensField: 'max_tokens', temperature: 0 });
 export default httpAdapter(compatibleSpec);

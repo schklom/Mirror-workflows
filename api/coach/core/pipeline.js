@@ -11,7 +11,8 @@
  * a `fetch`), and gets back a plain object.
  */
 import { CONTRACT } from './payload.js';
-import { buildPrompt } from './prompt.js';
+import { buildPrompt, buildPromptParts } from './prompt.js';
+import { SCHEMAS } from './schemas.js';
 import { extractJSON, contractOK } from './parse.js';
 import { validatePlan, validateReview, validateDebrief } from './validate.js';
 
@@ -22,8 +23,16 @@ import { validatePlan, validateReview, validateDebrief } from './validate.js';
  *        | { ok:false, errorClass:string, detail?:string, repairable?:boolean, errors?:string[], raw?:string }}
  */
 export async function attemptOnce({ adapter, cfg, kind, payload, model, timeoutMs, invokeOpts = {} }, repair) {
-  const prompt = buildPrompt(kind, payload, repair);
-  const r = await adapter.invoke({ cfg, prompt, model: model || null, timeoutMs, ...invokeOpts });
+  // HTTP providers get the rules/payload split (prefix caching, schema-constrained decoding);
+  // the runtime-backed CLIs still get one flat prompt — they have no message roles to split over.
+  const parts = buildPromptParts(kind, payload, repair);
+  const split = adapter.spawns === false;
+  const r = await adapter.invoke({
+    cfg,
+    prompt: split ? parts.user : parts.system + '\n\n---\n\n' + parts.user,
+    ...(split ? { system: parts.system, schema: SCHEMAS[parts.task] || null } : {}),
+    model: model || null, timeoutMs, ...invokeOpts
+  });
 
   if (r.timedOut) return { ok: false, errorClass: 'timeout' };
   if (r.spawnError) return { ok: false, errorClass: 'missing', detail: r.stderr?.slice(0, 300) };

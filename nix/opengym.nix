@@ -136,6 +136,25 @@ in
       description = "VAPID subject for push notifications (defaults to ORIGIN).";
     };
 
+    environment = lib.mkOption {
+      type = lib.types.attrsOf lib.types.str;
+      default = { };
+      description = ''
+        Extra environment variables set on the opengym-api systemd unit. Useful for variables the
+        module does not manage yet. Variables this module already derives from its own options take
+        precedence. Mutually exclusive with environmentFile.
+      '';
+    };
+
+    environmentFile = lib.mkOption {
+      type = lib.types.str;
+      default = "";
+      description = ''
+        Path to an env file (KEY=VALUE per line) read by the opengym-api systemd unit. Mutually
+        exclusive with environment.
+      '';
+    };
+
     media = {
       fetchAtBuild = lib.mkOption {
         type = lib.types.bool;
@@ -175,7 +194,16 @@ in
     };
   };
 
-  config = lib.mkIf cfg.enable {
+  config = lib.mkMerge [
+    {
+      assertions = [
+        {
+          assertion = cfg.environment == { } || cfg.environmentFile == "";
+          message = "services.opengym.environment and services.opengym.environmentFile are mutually exclusive; use only one.";
+        }
+      ];
+    }
+    (lib.mkIf cfg.enable {
 
     users.users.opengym = {
       isSystemUser = true;
@@ -194,7 +222,7 @@ in
       description = "openGym API server";
       after = [ "network.target" ];
       wantedBy = [ "multi-user.target" ];
-      environment = apiEnv;
+      environment = cfg.environment // apiEnv;
       serviceConfig = {
         ExecStart = "${packages.opengym-api}/bin/opengym-api";
         User = "opengym";
@@ -203,6 +231,7 @@ in
         StateDirectoryMode = "0750";
         Restart = "on-failure";
         RestartSec = 5;
+        EnvironmentFile = lib.mkIf (cfg.environmentFile != "") cfg.environmentFile;
 
         NoNewPrivileges = true;
         ProtectSystem = "strict";
@@ -263,5 +292,6 @@ in
         Restart = "on-failure";
       };
     };
-  };
+  })
+];
 }

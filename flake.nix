@@ -38,6 +38,7 @@
                 rpId = "localhost";
                 origin = "http://localhost:8080";
                 apiPort = 3000;
+                environment = { MY_FLAG = "1"; };
                 media.fetchAtBuild = true;
               };
               system.stateVersion = "25.05";
@@ -59,6 +60,9 @@
 
           # Verify systemd service exists
           echo "systemd.services.opengym-api exists = ${if testConfig.config.systemd.services ? opengym-api then "true" else "false"}"
+
+          # Verify extra environment is applied to the API unit
+          echo "opengym-api env MY_FLAG = ${if testConfig.config.systemd.services.opengym-api.environment ? MY_FLAG then testConfig.config.systemd.services.opengym-api.environment.MY_FLAG else "missing"}"
 
           # Verify nginx is disabled (system uses Caddy)
           echo "services.nginx.enable = ${if nginxEnabled then "true" else "false"}"

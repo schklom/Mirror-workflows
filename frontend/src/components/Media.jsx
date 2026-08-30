@@ -18,7 +18,7 @@ export default function Media({ ex, id, compact, minimizable }) {
   const toggleSize = e => { e.stopPropagation(); update(s => { s.gifSize = mini ? 'full' : 'mini' }) }
   return (
     <div className={'exmedia' + (compact ? ' compact' : '') + (mini ? ' mini' : '')} id={id} onClick={() => setPlaying(p => !p)}>
-      <img decoding="async" src={playing ? gifSrc(ex) : imgSrc(ex)} alt={exerciseNameFor(ex)} />
+      <img decoding="async" draggable={false} src={playing ? gifSrc(ex) : imgSrc(ex)} alt={exerciseNameFor(ex)} />
       {minimizable && (
         <button className="giftoggle" onClick={toggleSize}>
           <Icon name={mini ? 'expand' : 'minimize'} />{mini ? t('Expand') : t('Minimize')}
@@ -35,5 +35,5 @@ export default function Media({ ex, id, compact, minimizable }) {
 
 export function Thumb({ ex }) {
   if (!ex.img) return <div className="thumb thumb-x"><Icon name="dumbbell" /></div>
-  return <img className="thumb" loading="lazy" decoding="async" src={imgSrc(ex)} alt="" />
+  return <img className="thumb" loading="lazy" decoding="async" draggable={false} src={imgSrc(ex)} alt="" />
 }

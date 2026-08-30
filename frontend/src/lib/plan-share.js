@@ -44,6 +44,10 @@ function cleanEx(e) {
   if (e.inc > 0) o.inc = e.inc
   if (e.repsMin != null) o.repsMin = e.repsMin
   if (e.repsMax != null) o.repsMax = e.repsMax
+  // The exercise's own rest (issue #10) is part of how it is prescribed, so it travels too —
+  // only when set, so a plan that never asked for one leaves the recipient's own default
+  // timer in charge. parsePlan and mergePlan carry it through by spread.
+  if (e.restSec > 0) o.restSec = e.restSec
   if (e.sg) o.sg = e.sg
   if (e.note) o.note = e.note
   const warm = cleanWarmupSets(e.warmupSets)
@@ -63,6 +67,13 @@ function cleanWarmupSets(v) {
   return n > 0 ? Math.min(MAX_PLANNED_WARMUPS, n) : 0
 }
 
+/** A positive whole number of seconds or nothing — the same gate cleanEx applies on the way
+ *  out, so a hand-edited plan file can't hand the rest timer a string or a negative. */
+function cleanRestSec(v) {
+  const n = Math.round(Number(v)) || 0
+  return n > 0 ? n : 0
+}
+
 /** Keep the floors the config sheet and applyIntensifierPlan already enforce, and nothing else:
  *  a plan file is someone else's data, so anything unrecognised is dropped rather than trusted. */
 function cleanIntensifier(x) {
@@ -79,7 +90,10 @@ function cleanIntensifier(x) {
 /** Build the shareable bundle: every routine, the week schedule, referenced customs. */
 export function buildPlanBundle(S, name) {
   const routines = (S.routines || []).map(r => ({
-    id: r.id, name: r.name, emoji: r.emoji, ...(r.prog ? { prog: r.prog } : {}), ex: (r.ex || []).map(cleanEx)
+    id: r.id, name: r.name, emoji: r.emoji,
+    ...(r.prog ? { prog: r.prog } : {}),
+    ...(r.excludeFromProgression === true ? { excludeFromProgression: true } : {}),
+    ex: (r.ex || []).map(cleanEx)
   }))
   const usedIds = new Set(routines.flatMap(r => r.ex.map(e => e.id)))
   const customEx = (S.customEx || [])
@@ -114,12 +128,13 @@ export function parsePlan(raw) {
       if (!ok) dropped++
       return ok
     }).map(e => {
-      // The exercises pass through as written, so the two fields that carry numbers into the
+      // The exercises pass through as written, so the fields that carry numbers into the
       // planner get the same clamps on the way in that they get on the way out.
       const warm = cleanWarmupSets(e.warmupSets)
       const intens = cleanIntensifier(e.intensifier)
-      const { warmupSets, intensifier, ...rest } = e
-      return { ...rest, ...(warm ? { warmupSets: warm } : {}), ...(intens ? { intensifier: intens } : {}) }
+      const rest = cleanRestSec(e.restSec)
+      const { warmupSets, intensifier, restSec, ...passthrough } = e
+      return { ...passthrough, ...(warm ? { warmupSets: warm } : {}), ...(intens ? { intensifier: intens } : {}), ...(rest ? { restSec: rest } : {}) }
     })
   }))
   return {
@@ -160,6 +175,7 @@ export function mergePlan(s, bundle, { schedule } = {}) {
       name: r.name || t('Shared routine'),
       emoji: r.emoji,
       ...(r.prog ? { prog: r.prog } : {}),
+      ...(r.excludeFromProgression === true ? { excludeFromProgression: true } : {}),
       ex: (r.ex || []).map(e => ({ ...e, id: exIdMap[e.id] || e.id }))
     })
   })

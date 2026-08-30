@@ -11,7 +11,7 @@ import { t, LANGS, INSTR_LANGS } from '../lib/i18n.js'
 import { DEMO, REPO } from '../lib/demo.js'
 import { MOBILE, shareExport, syncReminder } from '../lib/mobile.js'
 import { ConnectSheet } from './MobileOnboarding.jsx'
-import { loadStarterPlan, confirmSheet, importFromApp, equipmentProfileSheet } from '../sheets.jsx'
+import { loadStarterPlan, confirmSheet, importFromApp, importFromHevy, equipmentProfileSheet } from '../sheets.jsx'
 import Icon from '../components/Icon.jsx'
 import { Section, Row, SelectRow, Switch, Segmented, Button, TextField } from '../components/ui.jsx'
 
@@ -148,6 +148,9 @@ export default function Settings() {
       <Row icon="bell" iconTint="var(--pink)" title={t('Sounds')}>
         <Switch checked={!!S.sound} onChange={v => update(s => { s.sound = v })} />
       </Row>
+      <Row icon="sun" iconTint="var(--yellow)" title={t('Flash screen when timer ends')}>
+        <Switch checked={!!S.timerFlash} onChange={v => update(s => { s.timerFlash = v })} />
+      </Row>
       {/* Two names for the same judgement, so the column asks in the scale you already think in.
           The (i) sits before the control — you read it on the way to the choice, not after it. */}
       <Row icon="target" iconTint="var(--purple)" title={t('Effort per set')}>
@@ -203,6 +206,9 @@ export default function Settings() {
       <Row icon="shuffle" iconTint="var(--teal)" title={t('Import from another app')}
         subtitle={t('FitNotes, Strong, Hevy — or body weight from Apple Health')}
         accessory="chevron" onClick={() => importRef.current.click()} />
+      <Row icon="key" iconTint="var(--teal)" title={t('Import from Hevy')}
+        subtitle={t('Pull your history with a Hevy Pro API key')}
+        accessory="chevron" onClick={importFromHevy} />
       <Row icon="upload" iconTint="var(--blue)" title={t('Import backup')} accessory="chevron" onClick={() => fileRef.current.click()} />
       <Row icon="download" iconTint="var(--blue)" title={t('Export backup (JSON)')} accessory="chevron" onClick={doExport} />
       {MOBILE && <Row icon="history" iconTint="var(--blue)" title={t('Auto-backup on changes')}

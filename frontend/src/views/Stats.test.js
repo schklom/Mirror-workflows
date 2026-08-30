@@ -19,7 +19,7 @@ describe('Stats mixed-entry metric contract', () => {
 
   it('renders one clickable muscle exercise list rather than a duplicate non-clickable copy', () => {
     expect((source.match(/muscleExercises\.length \? muscleExercises\.map\(row =>/g) || []).length).toBe(1)
-    expect(source).toContain('onClick={() => onExercise && onExercise(row.id)}')
+    expect(source).toContain('{...tappable(() => onExercise && onExercise(row.id))}')
   })
 
   it('uses the shared metric mode and row helpers rather than entryMode as a chart gate', () => {

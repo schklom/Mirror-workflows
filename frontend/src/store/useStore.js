@@ -4,12 +4,12 @@ import { localTZ } from '../lib/format.js'
 import { registerCustom } from '../lib/exercises.js'
 import { DEMO, DEMO_SEEDED } from '../lib/demo.js'
 import { guestAllowed } from '../lib/guest.js'
-import { MOBILE, nativeLoad, nativeSave, syncReminder, writeAutoBackup } from '../lib/mobile.js'
+import { MOBILE, initReminderSync, nativeLoad, nativeSave, syncReminder, writeAutoBackup } from '../lib/mobile.js'
 import { loadRemote, chooseLocal, forgetRemote, connect } from '../lib/remote.js'
 
 const KEY = 'gym_state_v1'
 export const DEF = {
-  unit: 'kg', restSec: 90, restPauseSec: 15, sound: true, keepAwake: true, lang: 'en',
+  unit: 'kg', restSec: 90, restPauseSec: 15, sound: true, timerFlash: false, keepAwake: true, lang: 'en',
   theme: 'dark', accent: 'lime', body: 'male', targetW: null,
   bodyweight: [], routines: [], week: {}, dayPlan: {},
   exWeights: {}, workouts: [], active: null, customEx: [], gifSize: 'full',
@@ -21,10 +21,6 @@ export const DEF = {
   // Equipment profiles (issue: filter Library/picker/routines by what you actually own —
   // e.g. "Home" vs "Gym" — building on the session-only equipment filter from issue #6).
   equipProfiles: [], activeEquipId: null, equipFilterOn: false,
-  // Standing per-exercise notes, keyed by exercise id: the gym-specific facts that are true
-  // every time you do the movement ("seat 4, pin 7"). Distinct from a routine's `note`, which
-  // belongs to one exercise in one plan, and from a session note, which belongs to one day.
-  exNotes: {},
 }
 const clone = o => JSON.parse(JSON.stringify(o))
 
@@ -38,9 +34,21 @@ function loadState() {
 
 const hasData = st => !!((st.workouts || []).length || (st.routines || []).length || (st.bodyweight || []).length)
 
+// Decide whether a pulled account state may replace the local saved state. A local active workout
+// is deliberately carried forward: the server stores completed/saved state, while the in-progress
+// session belongs to the device that is currently running it.
+export function restoredStateFor(local, remote, dirty = false) {
+  if (!remote || (hasData(local) && (dirty || (remote._ts || 0) < (local._ts || 0)))) return null
+  const next = Object.assign(clone(DEF), remote)
+  if (local.active) next.active = local.active
+  return next
+}
+
 export const useStore = create((set, get) => {
   let pushTm = null
   let saveTm = null
+
+  initReminderSync(() => get().S)
 
   // Mobile build: mirror the state into a file in the app's data directory (survives WebView
   // storage eviction) and keep the native reminder schedule in step with the weekly plan.
@@ -71,6 +79,7 @@ export const useStore = create((set, get) => {
       clearTimeout(saveTm)
       saveTm = null
       nativeSave(get().S)
+      syncReminder(get().S)
     }
     if (pushTm) {
       clearTimeout(pushTm)
@@ -140,11 +149,9 @@ export const useStore = create((set, get) => {
         const { state } = await api('/api/data')
         const S = get().S
         const dirty = localStorage.getItem('gym_dirty') === '1'
-        if (state && (!hasData(S) || ((state._ts || 0) >= (S._ts || 0) && !dirty))) {
-          const active = S.active
-          const next = Object.assign(clone(DEF), state)
-          if (active) next.active = active
-          persist(next, false)
+        const restored = restoredStateFor(S, state, dirty)
+        if (restored) {
+          persist(restored, false)
         } else if (hasData(S)) { await get().pushState() }
       } catch (e) { /* offline — keep local */ }
     },

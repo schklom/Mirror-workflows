@@ -38,6 +38,16 @@ function loadState() {
 
 const hasData = st => !!((st.workouts || []).length || (st.routines || []).length || (st.bodyweight || []).length)
 
+// Decide whether a pulled account state may replace the local saved state. A local active workout
+// is deliberately carried forward: the server stores completed/saved state, while the in-progress
+// session belongs to the device that is currently running it.
+export function restoredStateFor(local, remote, dirty = false) {
+  if (!remote || (hasData(local) && (dirty || (remote._ts || 0) < (local._ts || 0)))) return null
+  const next = Object.assign(clone(DEF), remote)
+  if (local.active) next.active = local.active
+  return next
+}
+
 export const useStore = create((set, get) => {
   let pushTm = null
   let saveTm = null
@@ -140,11 +150,9 @@ export const useStore = create((set, get) => {
         const { state } = await api('/api/data')
         const S = get().S
         const dirty = localStorage.getItem('gym_dirty') === '1'
-        if (state && (!hasData(S) || ((state._ts || 0) >= (S._ts || 0) && !dirty))) {
-          const active = S.active
-          const next = Object.assign(clone(DEF), state)
-          if (active) next.active = active
-          persist(next, false)
+        const restored = restoredStateFor(S, state, dirty)
+        if (restored) {
+          persist(restored, false)
         } else if (hasData(S)) { await get().pushState() }
       } catch (e) { /* offline — keep local */ }
     },

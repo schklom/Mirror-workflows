@@ -35,6 +35,8 @@ export default {
   'rescheduled': 'बदला गया',
   'Prev': 'पिछला',
   'Next': 'अगला',
+  'Move up': 'ऊपर ले जाएँ',
+  'Move down': 'नीचे ले जाएँ',
   'Sunday': 'रविवार', 'Monday': 'सोमवार', 'Tuesday': 'मंगलवार', 'Wednesday': 'बुधवार',
   'Thursday': 'गुरुवार', 'Friday': 'शुक्रवार', 'Saturday': 'शनिवार',
   'Su': 'र', 'Mo': 'सो', 'Tu': 'मं', 'We': 'बु', 'Th': 'गु', 'Fr': 'शु', 'Sa': 'श',

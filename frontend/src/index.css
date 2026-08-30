@@ -184,6 +184,7 @@ body.resting #app{padding-bottom:calc(250px + var(--sab))}
 }
 .iconbtn:active{background:var(--surface-2);transform:scale(.92)}
 .iconbtn.on-ss{background:var(--acc-soft);color:var(--acc)}
+.iconbtn:disabled{opacity:.32}
 
 h4.sec{
   font-size:13px;font-weight:400;letter-spacing:-.004em;color:var(--label-2);

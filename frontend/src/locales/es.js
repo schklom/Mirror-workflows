@@ -35,6 +35,8 @@ export default {
   'rescheduled': 'reprogramado',
   'Prev': 'Anterior',
   'Next': 'Siguiente',
+  'Move up': 'Subir',
+  'Move down': 'Bajar',
   'Sunday': 'Domingo', 'Monday': 'Lunes', 'Tuesday': 'Martes', 'Wednesday': 'Miércoles',
   'Thursday': 'Jueves', 'Friday': 'Viernes', 'Saturday': 'Sábado',
   'Su': 'Do', 'Mo': 'Lu', 'Tu': 'Ma', 'We': 'Mi', 'Th': 'Ju', 'Fr': 'Vi', 'Sa': 'Sá',

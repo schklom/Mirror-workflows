@@ -35,6 +35,8 @@ export default {
   'rescheduled': 'перенесено',
   'Prev': 'Назад',
   'Next': 'Далее',
+  'Move up': 'Переместить вверх',
+  'Move down': 'Переместить вниз',
   'Sunday': 'Воскресенье', 'Monday': 'Понедельник', 'Tuesday': 'Вторник', 'Wednesday': 'Среда',
   'Thursday': 'Четверг', 'Friday': 'Пятница', 'Saturday': 'Суббота',
   'Su': 'Вс', 'Mo': 'Пн', 'Tu': 'Вт', 'We': 'Ср', 'Th': 'Чт', 'Fr': 'Пт', 'Sa': 'Сб',

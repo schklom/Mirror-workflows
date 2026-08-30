@@ -13,6 +13,7 @@ const mocks = vi.hoisted(() => {
   state.storeSnapshot = () => ({
     S: state.S,
     user: { id: 'u1' },
+    ready: true,
     config: { coach: { enabled: true, ...(state.community ? { community: true } : {}) } },
     coachLocal: null,
     update: mut => mut(state.S),

@@ -14,7 +14,7 @@
 
 import { EXIDX } from './exercises.js'
 import { modeOf, isBw, isPerSide, cleanupSg } from './history.js'
-import { uid, todayISO } from './format.js'
+import { uid, todayISO, DAYN } from './format.js'
 import { mergePlan } from './plan-share.js'
 import { POLICIES } from './progression.js'
 import { t } from './i18n.js'
@@ -568,14 +568,18 @@ export function recordDebrief(s, proposal) {
 /* ============================ display helpers ============================ */
 
 export const exName = id => EXIDX[id]?.n || t('Unknown exercise')
+// Catalogue names are lower-case; a title reads better with each word capitalised, and doing it
+// here rather than with CSS keeps a German sentence around the name from being Title Cased too.
+const cap = s => String(s || '').replace(/(^|\s)(\p{L})/gu, (m, sp, ch) => sp + ch.toUpperCase())
+export const exTitle = id => cap(exName(id))
 
 /** Human label for a change, used on the review screen and in the log. */
-export function changeTitle(c) {
-  const ex = c.target?.exId ? exName(c.target.exId) : null
+export function changeTitle(c, S) {
+  const ex = c.target?.exId ? exTitle(c.target.exId) : null
   switch (c.type) {
-    case 'add-exercise': return t('Add {0}', exName(c.after?.id))
+    case 'add-exercise': return t('Add {0}', exTitle(c.after?.id))
     case 'remove-exercise': return t('Drop {0}', ex)
-    case 'swap-exercise': return t('Swap {0} for {1}', ex, exName(c.after?.id))
+    case 'swap-exercise': return t('Swap {0} for {1}', ex, exTitle(c.after?.id))
     case 'sets': return t('{0}: sets', ex)
     case 'reps': return t('{0}: reps', ex)
     case 'repsMin': return t('{0}: rep-range floor', ex)
@@ -586,21 +590,23 @@ export function changeTitle(c) {
     case 'exercise-prog': return t('{0}: progression', ex)
     case 'routine-prog': return t('Routine progression')
     case 'reorder': return t('Reorder exercises')
-    case 'superset': return c.after?.link ? t('Superset {0} with {1}', ex, exName(c.after.with)) : t('Unlink superset on {0}', ex)
+    case 'superset': return c.after?.link ? t('Superset {0} with {1}', ex, exTitle(c.after.with)) : t('Unlink superset on {0}', ex)
     case 'add-routine': return t('Add routine “{0}”', c.after?.name)
     case 'remove-routine': return t('Remove a routine')
     case 'rename-routine': return t('Rename routine to “{0}”', c.after)
-    case 'week': return t('Change what’s planned on one day')
+    case 'week': return Number.isInteger(c.target?.weekday) ? t('{0}: what’s planned', t(DAYN[c.target.weekday])) : t('Change what’s planned on one day')
     default: return c.type
   }
 }
 
 /** Short before/after strings for the diff column. */
-export function changeValues(c) {
+export function changeValues(c, S) {
+  const routineName = id => (S?.routines || []).find(r => r.id === id)?.name || id
   const fmt = v => {
-    if (v == null) return '—'
-    if (typeof v === 'object') return v.id ? exName(v.id) : v.name || JSON.stringify(v)
+    if (v == null) return c.type === 'week' ? t('Rest') : '—'
+    if (typeof v === 'object') return v.id ? exTitle(v.id) : v.name || JSON.stringify(v)
     if (Array.isArray(v)) return v.length + ''
+    if (c.type === 'week') return v === 'rest' ? t('Rest') : routineName(v)
     return String(v)
   }
   if (['add-exercise', 'add-routine', 'reorder'].includes(c.type)) return null

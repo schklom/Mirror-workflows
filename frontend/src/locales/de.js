@@ -1023,5 +1023,15 @@ export default {
   'Repeat the same loads and get every set.': 'Dieselben Gewichte wiederholen und jeden Satz schaffen.',
   'Keep the session under an hour and a quarter.': 'Die Einheit unter eineinviertel Stunden halten.',
   'A clean session: everything on the sheet got done and the loads held. This is exactly what progress looks like from the inside — unremarkable, repeated.': 'Eine saubere Einheit: alles auf dem Zettel wurde erledigt und die Gewichte haben gehalten. Genau so sieht Fortschritt von innen aus – unspektakulär, wiederholt.',
-  'Most of the work got done. One or two sets fell short, which is fine once — it becomes a signal if the same sets miss next time.': 'Der Großteil der Arbeit ist erledigt. Ein oder zwei Sätze blieben kurz – einmal ist das in Ordnung; ein Signal wird es, wenn dieselben Sätze beim nächsten Mal wieder fehlen.'
+  'Most of the work got done. One or two sets fell short, which is fine once — it becomes a signal if the same sets miss next time.': 'Der Großteil der Arbeit ist erledigt. Ein oder zwei Sätze blieben kurz – einmal ist das in Ordnung; ein Signal wird es, wenn dieselben Sätze beim nächsten Mal wieder fehlen.',
+  'Get stronger': 'Stärker werden',
+  'Build muscle': 'Muskeln aufbauen',
+  'General fitness': 'Allgemeine Fitness',
+  'Lose fat': 'Fett verlieren',
+  'Endurance': 'Ausdauer',
+  'New to lifting': 'Neu im Krafttraining',
+  'Coming back after a break': 'Zurück nach einer Pause',
+  'Training regularly': 'Trainiere regelmäßig',
+  'Back muscles': 'Rücken',
+  '{0}: what’s planned': '{0}: geplant',
 }

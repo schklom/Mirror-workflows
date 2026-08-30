@@ -80,11 +80,16 @@ export const disconnectCredential = () => api('/api/admin/coach/disconnect', { m
 export function useCoachStatus(active = true) {
   const [state, setState] = useState({ job: null, pending: null, cap: null, loading: true })
   const timer = useRef(null)
+  const loop = useRef(null)   // the running poll loop's `tick`, so a manual refresh can re-pace it
 
   const refresh = useCallback(async () => {
     try {
       const s = await coachStatus()
       setState({ ...s, loading: false })
+      // A refresh that finds a job in flight — the one the caller just started — must not leave
+      // the loop asleep on its idle cadence: without this the card shows up to a minute after
+      // the job ended, sitting on "thinking…" the whole time.
+      if (s?.job && loop.current) { clearTimeout(timer.current); timer.current = setTimeout(loop.current, POLL_MS) }
       return s
     } catch {
       setState(s => ({ ...s, loading: false }))
@@ -98,10 +103,12 @@ export function useCoachStatus(active = true) {
     const tick = async () => {
       const s = await refresh()
       if (stopped) return
+      clearTimeout(timer.current)
       timer.current = setTimeout(tick, s?.job ? POLL_MS : IDLE_MS)
     }
+    loop.current = tick
     tick()
-    return () => { stopped = true; clearTimeout(timer.current) }
+    return () => { stopped = true; loop.current = null; clearTimeout(timer.current) }
   }, [active, refresh])
 
   return { ...state, refresh }

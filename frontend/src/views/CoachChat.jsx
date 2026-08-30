@@ -41,6 +41,7 @@ export default function CoachChat() {
   const config = useStore(s => s.config)
   const coachLocal = useStore(s => s.coachLocal)
   const update = useStore(s => s.update)
+  const storeReady = useStore(s => s.ready)
   const toast = useUI(s => s.toast)
   const openSheet = useUI(s => s.openSheet)
   const { job, pending, cap, loading, lastError, last, refresh } = useCoachStatus(true)
@@ -52,10 +53,13 @@ export default function CoachChat() {
 
   const ok = coachAvailable(config, user, { demo: DEMO, mobile: MOBILE, coachMode })
   const ready = ok && hasConsent(S) && !!S.coach?.profile
+  // Not before the store has loaded: a cold start straight on #/coach would otherwise read an
+  // empty state, decide there is no consent, and bounce a consenting user into the intake.
   useEffect(() => {
+    if (!storeReady) return
     if (!ok) nav('/home', { replace: true })
     else if (!ready) nav('/coach/intake', { replace: true })
-  }, [ok, ready])
+  }, [storeReady, ok, ready])
 
   // A job that ends is either a proposal, "nothing to change", or a failure. The server tells
   // the client none of that directly — the job simply stops appearing — so the transition is
@@ -399,7 +403,7 @@ function ReviewCard({ p, S, update, toast, refresh }) {
 
       {marked.changes.map(c => {
         const stale = c.status === 'stale'
-        return <ChangeRow key={c.id} c={c} stale={stale}>
+        return <ChangeRow key={c.id} c={c} S={S} stale={stale}>
           {!stale && <Check checked={accepted.has(c.id)} onChange={() => toggle(c.id)} />}
         </ChangeRow>
       })}
@@ -417,11 +421,11 @@ function ReviewCard({ p, S, update, toast, refresh }) {
   </div>
 }
 
-function ChangeRow({ c, stale, badge, children }) {
-  const vals = changeValues(c)
+function ChangeRow({ c, S, stale, badge, children }) {
+  const vals = changeValues(c, S)
   return <div className={'pcard-chg' + (stale ? ' stale' : '') + (c.status === 'rejected' ? ' declined' : '')}>
     <div className="grow">
-      <div className="pcard-chg-t">{changeTitle(c)}{c.routineName ? <span className="dim" style={{ fontWeight: 400 }}> · {c.routineName}</span> : null}</div>
+      <div className="pcard-chg-t">{changeTitle(c, S)}{c.routineName ? <span className="dim" style={{ fontWeight: 400 }}> · {c.routineName}</span> : null}</div>
       {vals && <div className="pcard-chg-v"><span className="tag">{vals.before}</span><Icon name="chevronRight" style={{ fontSize: 12, color: 'var(--label-3)' }} /><span className="tag acc">{vals.after}</span></div>}
       <div className="pcard-chg-w">{c.why}</div>
       {stale && <div className="pcard-chg-stale">{t('Doesn’t match your plan any more — can’t be applied.')}</div>}
@@ -437,7 +441,7 @@ const Notes = ({ notes }) => !!notes?.length && <div className="pcard-notes">
 
 /* ---------------------------------- insights ---------------------------------- */
 
-const BP_LABEL = { back: 'Back', cardio: 'Cardio', chest: 'Chest', 'lower arms': 'Forearms', 'lower legs': 'Calves', neck: 'Neck', shoulders: 'Shoulders', 'upper arms': 'Arms', 'upper legs': 'Legs', waist: 'Core', other: 'Other' }
+const BP_LABEL = { back: 'Back muscles', cardio: 'Cardio', chest: 'Chest', 'lower arms': 'Forearms', 'lower legs': 'Calves', neck: 'Neck', shoulders: 'Shoulders', 'upper arms': 'Arms', 'upper legs': 'Legs', waist: 'Core', other: 'Other' }
 const bpLabel = bp => t(BP_LABEL[bp] || bp)
 
 /**
@@ -455,7 +459,7 @@ function Insights({ S, window: win, compact }) {
       <Tile v={ins.sessions} l={t('Sessions')} />
       <Tile v={ins.minutes != null ? ins.minutes : '—'} l={t('Min / session')} />
       <Tile v={ins.volume ? kfmt(ins.volume) : '—'} l={t('Volume ({0})', S.unit)} />
-      <Tile v={ins.sets} l={t('Work sets')} />
+      <Tile v={ins.sets} l={t('Sets')} />
     </div>
 
     {bw.points.length > 1 && <div className="ins-block">
@@ -503,7 +507,7 @@ function DebriefBody({ p, S }) {
     </div>}
     {live && <div className="ins">
       <div className="ins-tiles">
-        <Tile v={live.now.sets} l={t('Work sets')} />
+        <Tile v={live.now.sets} l={t('Sets')} />
         <Tile v={live.now.minutes != null ? live.now.minutes : '—'} l={t('Minutes')} />
         <Tile v={live.now.volume ? kfmt(live.now.volume) : '—'} l={t('Volume ({0})', S.unit)} />
         <Tile v={live.now.prs || '—'} l={t('PRs')} />
@@ -582,7 +586,7 @@ function Recap({ entry, S, openSheet }) {
     <div className="recap-t">{title}</div>
     {!!entry.summary && <div className="recap-s">{entry.summary}</div>}
     {kind === 'review' && !!decisions.length && <div className="recap-chips">
-      {decisions.slice(0, 4).map(d => <span key={d.id} className={'recap-chip ' + (d.status === 'accepted' ? 'yes' : 'no')}><Icon name={d.status === 'accepted' ? 'check' : 'xmark'} />{changeTitle(d)}</span>)}
+      {decisions.slice(0, 4).map(d => <span key={d.id} className={'recap-chip ' + (d.status === 'accepted' ? 'yes' : 'no')}><Icon name={d.status === 'accepted' ? 'check' : 'xmark'} />{changeTitle(d, S)}</span>)}
       {decisions.length > 4 && <span className="recap-chip">+{decisions.length - 4}</span>}
     </div>}
     <div className="recap-more">{t('Show everything')}<Icon name="chevronRight" /></div>
@@ -609,7 +613,7 @@ function ProposalDetail({ entry, S }) {
 
     {kind === 'review' && <>
       <Insights S={S} window={entry.evidence} />
-      {(entry.decisions || []).map(d => <ChangeRow key={d.id} c={d} stale={d.status === 'stale'}
+      {(entry.decisions || []).map(d => <ChangeRow key={d.id} c={d} S={S} stale={d.status === 'stale'}
         badge={<span className={'recap-state ' + (d.status === 'accepted' ? 'yes' : 'no')}>{d.status === 'accepted' ? t('Accepted') : d.status === 'stale' ? t('Expired') : t('Declined')}</span>} />)}
       <Notes notes={entry.notes} />
     </>}

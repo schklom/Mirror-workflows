@@ -1,5 +1,14 @@
 # Changelog
 
+## v1.2.13 — 2026-08-30
+
+One follow-up that arrived on !60 minutes after v1.2.12 was tagged, and belongs with it.
+
+- 🔢 **An empty or zero progression step can no longer be saved.** With a progression rule on,
+  leaving the step field empty or at `0` marks it red, explains why, and holds the save — a step
+  that cannot progress anything is no longer stored by accident. Nothing else changed; a
+  self-hosted instance only needs the new web bundle. (mflova, !60)
+
 ## v1.2.12 — 2026-08-30
 
 Six small fixes from the community, each read and tried on staging before it went in. All of
@@ -26,9 +35,8 @@ self-hosted instance only needs the new web bundle.
 ### Exercise settings
 
 - 🔢 **Progression steps below one can be typed.** Entering `0.5` used to snap back to the
-  default halfway through, because the field rejected the intermediate `0`. Leaving the field
-  empty or at `0` with a progression rule on now marks it red and holds the save, so a step that
-  cannot progress anything can no longer be stored by accident. (mflova, !60)
+  default halfway through, because the field rejected the intermediate `0`. A cleared field
+  still means "use the default". (mflova, !60)
 - 📐 **Long values in routine rows no longer squash the title.** The value column is capped
   instead of reserving space, so a "3 × 12 @ 102.5 kg" row keeps its exercise name readable on a
   narrow phone. (MokshManral, !37)

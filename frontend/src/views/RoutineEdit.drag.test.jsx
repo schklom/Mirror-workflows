@@ -166,6 +166,36 @@ describe('routine long-press reorder', () => {
     expect(sheets.exConfigSheet).not.toHaveBeenCalled()
   })
 
+  it('lets a real tap shortly after a drop open the row again', () => {
+    const layout = mount([configured('a'), configured('b'), configured('c')])
+    const item = rows()[0].querySelector('.item')
+    lift(rows()[0], layout.centers[0])
+    pointer(item, 'pointermove', { y: layout.centers[2] + 1 })
+    pointer(item, 'pointerup', { y: layout.centers[2] + 1 })
+    expect(exercises().map(e => e.id)).toEqual(['b', 'c', 'a'])
+
+    act(() => vi.advanceTimersByTime(200))
+    const target = rows()[1].querySelector('.item')
+    pointer(target, 'pointerdown', { y: layout.centers[1] })
+    pointer(target, 'pointerup', { y: layout.centers[1] })
+    act(() => target.click())
+    expect(sheets.exConfigSheet).toHaveBeenCalledTimes(1)
+  })
+
+  it('never eats a tap that starts with its own pointerdown, even right after a drop', () => {
+    const layout = mount([configured('a'), configured('b'), configured('c')])
+    const item = rows()[0].querySelector('.item')
+    lift(rows()[0], layout.centers[0])
+    pointer(item, 'pointermove', { y: layout.centers[2] + 1 })
+    pointer(item, 'pointerup', { y: layout.centers[2] + 1 })
+
+    const target = rows()[1].querySelector('.item')
+    pointer(target, 'pointerdown', { y: layout.centers[1] })
+    pointer(target, 'pointerup', { y: layout.centers[1] })
+    act(() => target.click())
+    expect(sheets.exConfigSheet).toHaveBeenCalledTimes(1)
+  })
+
   it('moves a whole grouped unit, never splits another group, and preserves every occurrence payload', () => {
     const pairA = configured('dup', { sg: 'pair', weight: 11, note: 'first', future: { a: 1 } })
     const pairB = configured('dup', { sg: 'pair', weight: 22, note: 'second', future: { b: 2 } })

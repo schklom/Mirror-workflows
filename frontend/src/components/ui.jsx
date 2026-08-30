@@ -117,14 +117,50 @@ export function Segmented({ options, value, onChange, className = '' }) {
 
 export function Stepper({ value, step = 1, onChange, decimal = true, className = '', label, unit, invalid = false }) {
   const set = v => onChange(Math.max(0, Math.round((v || 0) * 100) / 100))
+  // Holding a button repeats the step; the latest value/step live in a ref so
+  // the interval doesn't keep stepping from the value it was started with.
+  const live = useRef({ value, step, set })
+  live.current = { value, step, set }
+  const hold = useRef({ delay: null, tick: null, count: 0, repeated: false })
+  const bump = dir => { const { value, step, set } = live.current; set((+value || 0) + dir * step) }
+  const stopHold = () => {
+    const h = hold.current
+    window.clearTimeout(h.delay); window.clearInterval(h.tick)
+    h.delay = h.tick = null
+  }
+  const startHold = dir => {
+    stopHold()
+    const h = hold.current
+    h.repeated = false; h.count = 0
+    h.delay = window.setTimeout(() => {
+      const run = () => {
+        h.repeated = true; h.count++
+        bump(dir)
+        // modest acceleration after a bit of holding so a long hold covers ground
+        if (h.count === 15) { window.clearInterval(h.tick); h.tick = window.setInterval(run, 40) }
+      }
+      h.tick = window.setInterval(run, 80)
+    }, 400)
+  }
+  // The click that follows pointerup must not add a step once the hold repeated.
+  const click = dir => {
+    if (hold.current.repeated) { hold.current.repeated = false; return }
+    bump(dir)
+  }
+  useEffect(() => stopHold, [])
+  const holdProps = dir => ({
+    onPointerDown: e => { if (e.button === 0 || e.button == null) startHold(dir) },
+    onPointerUp: stopHold, onPointerCancel: stopHold, onPointerLeave: stopHold, onBlur: stopHold,
+    onClick: () => click(dir),
+  })
   const inner = (
     <div className={'stp ' + className}>
-      <button onClick={() => set((+value || 0) - step)} aria-label="Decrease"><Icon name="minus" /></button>
+      <button {...holdProps(-1)} aria-label="Decrease"><Icon name="minus" /></button>
       <span className="val">
         <NumberField value={value} decimal={decimal} onChange={onChange} aria-invalid={invalid ? 'true' : undefined} />
         {unit && <i>{unit}</i>}
       </span>
-      <button onClick={() => set((+value || 0) + step)} aria-label="Increase"><Icon name="plus" /></button>
+      <button {...holdProps(1)} aria-label="Increase"><Icon name="plus" /></button>
     </div>
   )
   if (!label) return inner
@@ -136,9 +172,13 @@ export function Stepper({ value, step = 1, onChange, decimal = true, className =
 // Pointer-driven so the fill, track and thumb are all ours — no ::-webkit-*
 // pseudo-elements, which is the only way the control looks identical on every
 // platform and can pick up the accent colour.
+export const SLIDER_GRAB_PX = 22
 export function Slider({ value, min = 0, max = 100, step = 1, onChange, className = '' }) {
   const ref = useRef(null)
   const [drag, setDrag] = useState(false)
+  // Grabbing the knob drags it relative to where the finger landed; a finger
+  // is ~22px wide, so a touch that far off still means "the knob", not "jump".
+  const offset = useRef(0)
   const pct = Math.min(100, Math.max(0, ((value - min) / (max - min)) * 100))
 
   const posToValue = useCallback(clientX => {
@@ -156,7 +196,7 @@ export function Slider({ value, min = 0, max = 100, step = 1, onChange, classNam
     if (!drag) return
     const move = e => {
       e.preventDefault()
-      onChange(posToValue(e.touches ? e.touches[0].clientX : e.clientX))
+      onChange(posToValue((e.touches ? e.touches[0].clientX : e.clientX) - offset.current))
     }
     const up = () => setDrag(false)
     window.addEventListener('pointermove', move)
@@ -186,7 +226,15 @@ export function Slider({ value, min = 0, max = 100, step = 1, onChange, classNam
       aria-valuenow={value} aria-valuemin={min} aria-valuemax={max}
       data-nodrag                                  /* keeps the sheet from swipe-dismissing */
       onKeyDown={key}
-      onPointerDown={e => { e.currentTarget.setPointerCapture?.(e.pointerId); setDrag(true); onChange(posToValue(e.clientX)) }}
+      onPointerDown={e => {
+        e.currentTarget.setPointerCapture?.(e.pointerId)
+        const r = e.currentTarget.getBoundingClientRect()
+        const knobX = r.left + (pct / 100) * r.width
+        const d = e.clientX - knobX
+        offset.current = Math.abs(d) <= SLIDER_GRAB_PX ? d : 0
+        setDrag(true)
+        if (!offset.current) onChange(posToValue(e.clientX))
+      }}
     >
       <span className="sld-track"><span className="sld-fill" style={{ width: pct + '%' }} /></span>
       <span className="sld-knob" style={{ left: pct + '%' }} />

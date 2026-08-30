@@ -129,7 +129,9 @@ function useRoutineReorder(routineIdentity, exercises, onDrop) {
       releaseCapture(gesture)
       suppressClickRef.current = true
       window.clearTimeout(suppressTimerRef.current)
-      suppressTimerRef.current = window.setTimeout(() => { suppressClickRef.current = false }, 500)
+      // The compatibility click lands synchronously after pointerup; anything
+      // later is a real tap, so the guard only needs to outlive that one event.
+      suppressTimerRef.current = window.setTimeout(() => { suppressClickRef.current = false }, 150)
       setDrag(null)
       const rect = list.getBoundingClientRect()
       const inside = x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom
@@ -194,6 +196,9 @@ function useRoutineReorder(routineIdentity, exercises, onDrop) {
       updateDrag(gesture, gesture.lastX, gesture.lastY)
     }
     const onPointerDown = event => {
+      // a new touch is intentional — never let the post-drop guard eat its click
+      suppressClickRef.current = false
+      window.clearTimeout(suppressTimerRef.current)
       const current = gestureRef.current
       if (current) {
         if (event.pointerId !== current.pointerId) finish(current, false)

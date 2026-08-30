@@ -27,6 +27,7 @@ import { buildCompletedWorkout } from './lib/finish-workout.js'
 import { isWarmupRow } from './lib/workout-model.js'
 import { nextUnfinishedUnit } from './lib/supersetFlow.js'
 import { swapActiveExercise } from './lib/active-exercise-swap.js'
+import { useSheetKeyboard, useRevealActiveChip, tappable } from './lib/use-sheet-keyboard.js'
 import { buildSessionEntries } from './lib/session-start.js'
 import { workoutsOn, backfillStart, backfillEnd, completeBackfill } from './lib/backfill.js'
 
@@ -545,12 +546,12 @@ function AddToRoutine({ ex, close }) {
     <h3 className="capitalize">{t('Add “{0}”', exerciseNameFor(ex))}</h3>
     <div className="muted small" style={{ marginBottom: 12 }}>{t('Pick a routine — sets, reps & weight come next.')}</div>
     <div className="list">
-      {st.routines.map(r => <div key={r.id} className="item" onClick={() => pick(r.id)}>
+      {st.routines.map(r => <div key={r.id} className="item" {...tappable(() => pick(r.id))}>
         <span className="lrow-i"><Icon name={glyphOf(r.emoji)} /></span>
         <div className="grow"><div className="tt">{r.name}</div><div className="ss">{exCount(r.ex.length)}</div></div>
         {r.ex.some(e => e.id === ex.id) && <span className="tag">{t('already in')}</span>}<Icon name="plus" className="chev" />
       </div>)}
-      <div className="item" onClick={() => pick('_new')}><span className="lrow-i" style={{ background: 'var(--surface-3)' }}><Icon name="sparkles" /></span>
+      <div className="item" {...tappable(() => pick('_new'))}><span className="lrow-i" style={{ background: 'var(--surface-3)' }}><Icon name="sparkles" /></span>
         <div className="grow"><div className="tt">{t('New routine')}</div><div className="ss">{t('Create one and start with this exercise')}</div></div><Icon name="plus" className="chev" /></div>
     </div>
   </>
@@ -561,6 +562,8 @@ export const addToRoutineSheet = ex => ui().openSheet(close => <AddToRoutine ex=
 // Name + body part is all it takes — the exercise then behaves like any built-in one
 // (planning, logging, PRs, stats), just without an animation.
 function CustomExForm({ existing, prefill, onDone, close }) {
+  const nameRef = useRef(null)
+  const onNameFocus = useSheetKeyboard(nameRef)
   const [n, setN] = useState(existing ? existing.n : (prefill || ''))
   const [bp, setBp] = useState(existing ? existing.bp : '')
   const [desc, setDesc] = useState(existing ? (existing.desc || '') : '')
@@ -601,7 +604,7 @@ function CustomExForm({ existing, prefill, onDone, close }) {
   return <>
     <h3>{existing ? t('Edit custom exercise') : t('Create your own exercise')}</h3>
     <div className="muted small" style={{ marginBottom: 12 }}>{t('Name it and pick a body part — it behaves like any other exercise, just without an animation.')}</div>
-    <input className="input" placeholder={t('Exercise name')} value={n} onChange={e => setN(e.target.value)} />
+    <input ref={nameRef} className="input" placeholder={t('Exercise name')} value={n} onFocus={onNameFocus} onChange={e => setN(e.target.value)} />
     <div className="chips" style={{ margin: '12px 0' }}>
       {BODYPARTS.map(b => <button key={b} className={'chip' + (bp === b ? ' on' : '')} onClick={() => setBp(b)}>{t(b)}</button>)}
     </div>
@@ -666,6 +669,9 @@ function ExercisePicker({ onPick, close }) {
   const [eq, setEq] = useState('')          // '' = any equipment
   const [showAll, setShowAll] = useState(false)
   const [shown, setShown] = useState(50)
+  const searchRef = useRef(null)
+  const bpStrip = useRef(null), eqStrip = useRef(null)
+  const onSearchFocus = useSheetKeyboard(searchRef)
   const all = allExercises(st)
   const profile = activeProfile(st)
   let base = all.filter(e =>
@@ -678,10 +684,14 @@ function ExercisePicker({ onPick, close }) {
   const eqOn = eqOpts.includes(eq) ? eq : ''
   const f = eqOn ? eqFiltered.filter(e => e.eq === eqOn) : eqFiltered
   const chosenCount = Object.keys(usage).length
+  useRevealActiveChip(bpStrip, bp)
+  useRevealActiveChip(eqStrip, eqOn)
   return <>
     <h3>{t('Add exercise')}</h3>
-    <div className="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
-      <input className="input" placeholder={t('Search {0} exercises…', all.length)} value={q} onChange={e => { setQ(e.target.value); setShown(50) }} /></div>
+    {/* .picker-search is what index.css keys the keyboard-aware sheet layout on: the sheet
+        lifts above the keys and the search stays put while the list scrolls under it. */}
+    <div className="picker-search"><div className="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
+      <input ref={searchRef} className="input" placeholder={t('Search {0} exercises…', all.length)} value={q} onFocus={onSearchFocus} onChange={e => { setQ(e.target.value); setShown(50) }} /></div></div>
     {profile && <div className="small dim row" style={{ margin: '8px 0 2px', gap: 6, alignItems: 'center' }}>
       <Icon name="dumbbell" style={{ fontSize: 13 }} />
       {showAll ? t('Showing all equipment') : t('Showing what you have in "{0}"', profile.name)}
@@ -689,21 +699,21 @@ function ExercisePicker({ onPick, close }) {
         {showAll ? t('Filter by "{0}"', profile.name) : t('Show all equipment')}
       </button>
     </div>}
-    <div className="chips" style={{ margin: eqOpts.length > 1 ? '10px 0 6px' : '10px 0' }}>
+    <div className="chips" ref={bpStrip} style={{ margin: eqOpts.length > 1 ? '10px 0 6px' : '10px 0' }}>
       {chosenCount > 0 && <button className={'chip' + (bp === '★' ? ' on' : '')} onClick={() => { setBp('★'); setEq(''); setShown(50) }}><Icon name="starFill" style={{ fontSize: 12, display: 'inline-block', marginRight: 4, verticalAlign: '-1px' }} />{t('Chosen')} ({chosenCount})</button>}
       <button className={'chip nocap' + (!bp ? ' on' : '')} onClick={() => { setBp(''); setEq(''); setShown(50) }}>{t('All')}</button>
       {BODYPARTS.map(b => <button key={b} className={'chip' + (bp === b ? ' on' : '')} onClick={() => { setBp(b); setEq(''); setShown(50) }}>{t(b)}</button>)}
     </div>
-    {eqOpts.length > 1 && <div className="chips" style={{ marginBottom: 10 }}>
+    {eqOpts.length > 1 && <div className="chips" ref={eqStrip} style={{ marginBottom: 10 }}>
       <button className={'chip nocap' + (!eqOn ? ' on' : '')} onClick={() => { setEq(''); setShown(50) }}>{t('Any equipment')}</button>
       {eqOpts.map(x => <button key={x} className={'chip' + (eqOn === x ? ' on' : '')} onClick={() => { setEq(x); setShown(50) }}>{t(x)}</button>)}
     </div>}
     <div className="list">
-      {bp !== '★' && <div className="item" onClick={() => customExSheet(null, ex => onPick(ex), q.trim())}>
+      {bp !== '★' && <div className="item" {...tappable(() => customExSheet(null, ex => onPick(ex), q.trim()))}>
         <div className="thumb thumb-x"><Icon name="sparkles" /></div>
         <div className="grow"><div className="tt">{t('Create your own exercise')}</div><div className="ss">{t('name + body part, no animation')}</div></div><Icon name="plus" className="chev" />
       </div>}
-      {f.slice(0, shown).map(e => <div key={e.id} className="item" onClick={() => onPick(e)}>
+      {f.slice(0, shown).map(e => <div key={e.id} className="item" {...tappable(() => onPick(e))}>
         <Thumb ex={e} /><div className="grow"><div className="tt capitalize">{exerciseNameFor(e)}</div><div className="ss capitalize">{t(e.tg || e.bp)} · {t(e.eq)}</div></div>
         {usage[e.id] && <span className="tag acc"><Icon name="starFill" /></span>}<Icon name="plus" className="chev" />
       </div>)}
@@ -1226,12 +1236,12 @@ function DayOverride({ iso, close }) {
     <h3>{fmtDate(iso, true)}</h3>
     <div className="muted small" style={{ marginBottom: 12 }}>{t('Weekly plan:')} {weeklyR ? weeklyR.name : t('Rest')}{hasOvr && <span style={{ color: 'var(--orange)' }}> · {t('changed for this day')}</span>}<br />{t('Sick, missed a day or want a different session? Pick what to train instead.')}</div>
     <div className="list">
-      {st.routines.map(r => <div key={r.id} className="item" onClick={() => set(r.id)}>
+      {st.routines.map(r => <div key={r.id} className="item" {...tappable(() => set(r.id))}>
         <span className="lrow-i"><Icon name={glyphOf(r.emoji)} /></span>
         <div className="grow"><div className="tt">{r.name}</div><div className="ss">{exCount(r.ex.length)}</div></div>
         {effId === r.id && <Icon name="check" className="accent" />}</div>)}
-      <div className="item" onClick={() => set('rest')}><span className="lrow-i" style={{ background: 'var(--surface-3)' }}><Icon name="moon" /></span><div className="grow"><div className="tt">{t('Rest / skip this day')}</div></div>{effId === null && <Icon name="check" className="accent" />}</div>
-      {hasOvr && <div className="item" onClick={() => set('')}><span className="lrow-i" style={{ background: 'var(--surface-3)' }}><Icon name="reset" /></span><div className="grow"><div className="tt">{t('Back to weekly plan')}</div></div></div>}
+      <div className="item" {...tappable(() => set('rest'))}><span className="lrow-i" style={{ background: 'var(--surface-3)' }}><Icon name="moon" /></span><div className="grow"><div className="tt">{t('Rest / skip this day')}</div></div>{effId === null && <Icon name="check" className="accent" />}</div>
+      {hasOvr && <div className="item" {...tappable(() => set(''))}><span className="lrow-i" style={{ background: 'var(--surface-3)' }}><Icon name="reset" /></span><div className="grow"><div className="tt">{t('Back to weekly plan')}</div></div></div>}
     </div>
   </>
 }
@@ -1243,8 +1253,8 @@ function DayAssign({ day, close }) {
   return <>
     <h3>{t(DAYN[day])}</h3>
     <div className="list">
-      <div className="item" onClick={() => set('')}><span className="lrow-i" style={{ background: 'var(--surface-3)' }}><Icon name="moon" /></span><div className="grow"><div className="tt">{t('Rest day')}</div></div>{!st.week[day] && <Icon name="check" className="accent" />}</div>
-      {st.routines.map(r => <div key={r.id} className="item" onClick={() => set(r.id)}>
+      <div className="item" {...tappable(() => set(''))}><span className="lrow-i" style={{ background: 'var(--surface-3)' }}><Icon name="moon" /></span><div className="grow"><div className="tt">{t('Rest day')}</div></div>{!st.week[day] && <Icon name="check" className="accent" />}</div>
+      {st.routines.map(r => <div key={r.id} className="item" {...tappable(() => set(r.id))}>
         <span className="lrow-i"><Icon name={glyphOf(r.emoji)} /></span>
         <div className="grow"><div className="tt">{r.name}</div><div className="ss">{exCount(r.ex.length)}</div></div>
         {st.week[day] === r.id && <Icon name="check" className="accent" />}</div>)}
@@ -1255,6 +1265,8 @@ export const dayAssignSheet = day => ui().openSheet(close => <DayAssign day={day
 
 /* ============================ workout detail ============================ */
 function WorkoutDetail({ w, close }) {
+  const noteRef = useRef(null)
+  const onNoteFocus = useSheetKeyboard(noteRef)
   const st = useStore(s => s.S)
   const update = useStore(s => s.update)
   // The session note is editable here rather than only at the finish sheet: what you want to
@@ -1297,9 +1309,9 @@ function WorkoutDetail({ w, close }) {
       </div>
     })}
     <div className="small muted" style={{ margin: '4px 0 6px' }}>{t('Session note')}</div>
-    <textarea className="input" rows={2} maxLength={NOTE_MAX} value={note}
+    <textarea ref={noteRef} className="input" rows={2} maxLength={NOTE_MAX} value={note}
       placeholder={t('How the session went as a whole.')}
-      onChange={e => setNote(e.target.value)} onBlur={saveNote} />
+      onFocus={onNoteFocus} onChange={e => setNote(e.target.value)} onBlur={saveNote} />
     <div style={{ height: 14 }} />
     <Button variant="danger" onClick={() => confirmSheet({ title: t('Delete workout?'), message: t('This removes it from your history for good.'), confirmText: t('Delete'), danger: true, onConfirm: () => { update(s => { s.workouts = s.workouts.filter(x => x.id !== w.id) }); close(); toast(t('Workout deleted')) } })}>{t('Delete workout')}</Button>
   </>
@@ -1352,7 +1364,7 @@ export const calendarSheet = start => ui().openSheet(close => <Calendar start={s
 export function WorkoutRow({ w, onClick }) {
   const st = useStore(s => s.S)
   const glyph = glyphOf((st.routines.find(r => r.id === w.routineId) || {}).emoji)
-  return <div className="item" onClick={onClick}>
+  return <div className="item" {...tappable(onClick)}>
     <span className="lrow-i" style={{ width: 34, height: 34, borderRadius: 8, fontSize: 19 }}><Icon name={glyph} /></span>
     <div className="grow"><div className="tt">{w.name}</div>
       <div className="ss">{[fmtDate(w.d, true), ...durPart(w.end - w.start), t('{0} sets', setsDone(w)), fmtVol(w.vol, st.unit)].join(' · ')}</div></div>
@@ -1516,6 +1528,8 @@ export const topWeightSheet = entryIdx => ui().openSheet(close => <TopWeight ent
    A routine's own `note` (a plan's instruction for this exercise) is edited in the config sheet
    and is deliberately not here: it belongs to the plan, not to the day or to the movement. */
 function ExerciseNote({ entryIdx, close }) {
+  const noteRef = useRef(null)
+  const onNoteFocus = useSheetKeyboard(noteRef)
   const st = useStore(s => s.S)
   const update = useStore(s => s.update)
   const A = st.active
@@ -1546,9 +1560,9 @@ function ExerciseNote({ entryIdx, close }) {
   return <>
     <h3 className="capitalize">{exerciseNameFor(ex)}</h3>
     <div className="small muted" style={{ marginBottom: 6 }}>{t('This session')}</div>
-    <textarea className="input" rows={3} maxLength={NOTE_MAX} value={note}
+    <textarea ref={noteRef} className="input" rows={3} maxLength={NOTE_MAX} value={note}
       placeholder={t('How it went, what to change — kept with today’s workout.')}
-      onChange={e => setNote(e.target.value)} />
+      onFocus={onNoteFocus} onChange={e => setNote(e.target.value)} />
     <div style={{ height: 10 }} />
     <div className="sect-b">
       <Row icon="flag" iconTint="var(--yellow)" title={t('Show this next time')}
@@ -1573,6 +1587,8 @@ export const exerciseNoteSheet = entryIdx => ui().openSheet(close => <ExerciseNo
    fact because "notes you can write during a workout" is the point; a note you can only add
    once the session is filed is a different, smaller feature. */
 function SessionNote({ close }) {
+  const noteRef = useRef(null)
+  const onNoteFocus = useSheetKeyboard(noteRef)
   const st = useStore(s => s.S)
   const update = useStore(s => s.update)
   const A = st.active
@@ -1588,9 +1604,9 @@ function SessionNote({ close }) {
 
   return <>
     <h3>{t('Session note')}</h3>
-    <textarea className="input" rows={4} maxLength={NOTE_MAX} value={note}
+    <textarea ref={noteRef} className="input" rows={4} maxLength={NOTE_MAX} value={note}
       placeholder={t('How the session went as a whole.')}
-      onChange={e => setNote(e.target.value)} />
+      onFocus={onNoteFocus} onChange={e => setNote(e.target.value)} />
     <div style={{ height: 18 }} />
     <Button variant="primary" onClick={save}>{t('Save')}</Button>
   </>

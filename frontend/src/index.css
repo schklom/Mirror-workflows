@@ -183,6 +183,13 @@ body.resting #app{padding-bottom:calc(250px + var(--sab))}
   transition:background var(--fast),transform var(--fast);
 }
 .iconbtn:active{background:var(--surface-2);transform:scale(.92)}
+/* invisible hit-area extension: these look right at their size but fall short of a
+   finger-sized target, so the pseudo element widens what the tap lands on without
+   changing the painted box. Segmented buttons sit flush against each other, so they
+   only grow vertically or the neighbour would steal the edge of the tap. */
+.iconbtn,.chip,.seg button,.helpbtn{position:relative}
+.iconbtn::before,.chip::before,.seg button::before,.helpbtn::before{content:'';position:absolute;inset:-6px}
+.seg button::before{inset:-6px 0}
 .iconbtn.on-ss{background:var(--acc-soft);color:var(--acc)}
 .iconbtn:disabled{opacity:.32}
 
@@ -392,6 +399,9 @@ h4.sec{
   background:var(--acc);transform:translateY(-50%);pointer-events:none;z-index:3;
 }
 .thumb{width:50px;height:50px;border-radius:9px;object-fit:cover;background:#fff;flex:none}
+/* exercise pictures are decoration inside tappable rows/cards: no save-image callout on
+   a long press and no drag ghost when a scroll starts on the picture */
+.thumb,.exmedia img{-webkit-touch-callout:none;-webkit-user-drag:none;user-select:none;-webkit-user-select:none}
 .thumb-x{
   display:flex;align-items:center;justify-content:center;font-size:21px;
   background:var(--surface-2);color:var(--label-2);
@@ -413,6 +423,14 @@ h4.sec{
   scrollbar-width:none;-webkit-overflow-scrolling:touch;
 }
 .chips::-webkit-scrollbar{display:none}
+/* horizontal strips: keep a sideways overscroll from chaining to the page and leave a
+   margin when a chip is scrolled into view. The chip row also claims the horizontal axis
+   (touch-action:pan-x): on a phone a slightly diagonal swipe along the chips used to hand
+   the gesture to the page, which scrolled down instead. The row is 32px tall, so losing a
+   vertical scroll that happens to start on it costs nothing; the ~130px heatmap wrap keeps
+   both axes, there the trade-off goes the other way. */
+.chips,.hm-wrap{overscroll-behavior-x:contain;scroll-padding-inline:16px}
+.chips{touch-action:pan-x}
 .chip{
   flex:none;padding:6px 13px;border-radius:99px;background:var(--surface);
   font-size:14px;font-weight:400;color:var(--label);text-transform:capitalize;
@@ -533,12 +551,16 @@ h4.sec{
 .stp button:active{background:var(--surface-3)}
 .stp .val{
   flex:1;min-width:0;display:flex;align-items:baseline;justify-content:center;gap:3px;padding:0 2px;
+  align-self:stretch;
 }
 .stp .val i{font-style:normal;font-size:12px;color:var(--label-2);flex:none}
 .stp .num{
   width:100%;min-width:0;text-align:center;background:none;border:none;outline:none;
   font-size:17px;font-weight:500;letter-spacing:-.012em;padding:0;
   -moz-appearance:textfield;appearance:textfield;
+  /* the field is the whole height of the stepper, not just its 18px text line, so a tap
+     anywhere between the two buttons focuses it */
+  height:100%;min-height:40px;cursor:text;
 }
 .stp .num::-webkit-inner-spin-button{display:none}
 .stp.invalid{box-shadow:inset 0 0 0 1px var(--red)}
@@ -560,12 +582,15 @@ h4.sec{
 
 /* --- checkbox --- */
 .chk,.ck{
-  width:30px;height:30px;border-radius:50%;flex:none;
+  width:30px;height:30px;border-radius:50%;flex:none;position:relative;
   display:flex;align-items:center;justify-content:center;
   background:none;box-shadow:inset 0 0 0 1.8px var(--label-4);color:transparent;
   transition:background var(--fast),box-shadow var(--fast),color var(--fast),transform var(--fast);
 }
 .chk .icn{font-size:16px;--icon-stroke:2.6}
+/* 30px is the right look next to a stepper but a poor target: extend the tap area to 44px
+   without painting it; the left side stays shorter so the stepper's + button keeps its edge */
+.chk::before,.ck::before{content:'';position:absolute;inset:-7px -7px -7px -4px}
 .chk.on{background:var(--acc);box-shadow:none;color:var(--on-acc)}
 .chk:active,.ck:active{transform:scale(.9)}
 .ck svg{
@@ -621,16 +646,16 @@ h4.sec{
 .setrow .stp button{width:32px;height:40px}
 /* a 3rd stepper (RIR) needs narrower buttons and a tighter row gap to fit next to weight+reps
    on narrow phones, same technique as the exercise-config sheet's three-steppers-in-a-row
-   (.cfgrow below) — RIR's own value is short ("1.5") so its buttons shrink the most, weight/reps
-   just enough to make room since their values ("82.5", "12") need more of what's left.
+   (.cfgrow below). The buttons stay 28px wide — anything narrower is a miss-prone target —
+   so the room comes from the smaller glyphs and from the value fields giving up their padding.
    The header shares the numbers so its labels stay centred over the steppers they name. */
 .setrow.eff3,.sethead.eff3{gap:6px}
 .setrow.eff3 .stp.w,.sethead.eff3 .w-sp{flex:1.2}
 .setrow.eff3 .stp.r,.sethead.eff3 .r-sp{flex:1}
 .setrow.eff3 .stp.eff,.sethead.eff3 .eff-sp{flex:.85}
-.setrow.eff3 .stp button{width:23px}
-.setrow.eff3 .stp.eff button{width:20px}
+.setrow.eff3 .stp button{width:28px;font-size:14px}
 .setrow.eff3 .stp .num{font-size:14px}
+.setrow.eff3 .stp .val{padding:0}
 .setrow.done .n{background:var(--acc);color:var(--on-acc)}
 .setrow.done{opacity:.45}
 /* drop-set drops / rest-pause bursts riding on a work row, editable like the row itself
@@ -639,7 +664,7 @@ h4.sec{
 .subrow .subn{font-size:11px;color:var(--label-3);flex:none;width:46px}
 .subrow .stp.mini{flex:1;min-width:0}
 .subrow .stp.mini button{width:26px;height:30px}
-.subrow .stp.mini .num{font-size:13px}
+.subrow .stp.mini .num{font-size:13px;min-height:30px}
 .subrow .iconbtn{width:26px;height:26px;font-size:11px;flex:none}
 .setextra{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 8px 32px}
 .setextra .chip.add{display:inline-flex;align-items:center;gap:4px;color:var(--acc)}

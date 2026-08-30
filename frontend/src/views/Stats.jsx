@@ -20,6 +20,7 @@ import {
   effortHistogram, isHardSet, HARD_RIR
 } from '../lib/effort.js'
 import { Button, Segmented, SelectRow } from '../components/ui.jsx'
+import { tappable } from '../lib/use-sheet-keyboard.js'
 import { isWarmupRow } from '../lib/workout-model.js'
 
 // Which muscles the training in a window actually hit — and, the point of the card,
@@ -189,7 +190,7 @@ function MuscleBalance({ S }) {
       {sel && <>
         <h4 className="sec" style={{ marginTop: 14 }}>{t('Exercises')} · {t(MUSCLE_NAME[sel])}</h4>
         {muscleExercises.length ? muscleExercises.map(row => (
-          <div key={row.id} className="mrow" style={{ minHeight: 48, alignItems: 'stretch', cursor: 'pointer' }} onClick={() => onExercise && onExercise(row.id)}>
+          <div key={row.id} className="mrow" style={{ minHeight: 48, alignItems: 'stretch', cursor: 'pointer' }} {...tappable(() => onExercise && onExercise(row.id))}>
             <span className="nm" style={{ whiteSpace: 'normal', lineHeight: 1.35, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
               <span style={{ display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 {row.name}

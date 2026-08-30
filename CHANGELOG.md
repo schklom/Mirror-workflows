@@ -1,5 +1,83 @@
 # Changelog
 
+## v1.2.14 — 2026-08-30
+
+The largest community release so far: twenty merge requests from ten contributors, read and
+tried one by one on a staging instance, plus two features of our own and a pass over how the
+app feels under a thumb. Nothing changes on the server — a self-hosted instance only needs the
+new web bundle; the APK carries the new reminder scheduling.
+
+### New
+
+- 📝 **Log a past workout.** History → "Log a past workout": pick date, start time, duration
+  and a routine (or freestyle), then log it on the normal workout screen — weights, reps,
+  RIR/RPE, timed sets, everything. A day that already has a workout asks: replace it, add a
+  second one, or cancel. Backfilled sessions are filed in chronological order, claim no PRs
+  against later history, and don't touch the weights your next session starts from.
+- 📥 **Import straight from Hevy.** Settings → Import from Hevy with a Hevy Pro API key pulls
+  workouts, routines and weigh-ins directly — no CSV export needed. The key is used for the
+  one import and never stored; importing again updates the routines it created instead of
+  duplicating them. (JuliusHaring, !30)
+- ⏲️ **Rest per exercise.** Any exercise can carry its own rest time; a superset rests once,
+  with the longest of the group. The global timer stays the default, and "Off" is overridden
+  only by an explicit per-exercise rest. Shared plans carry it. (trapy, !34 — issue #10)
+- 🧘 **Planned deloads.** A routine can be excluded from automatic progression: its sessions
+  open on the routine's own targets, stay in history and statistics, and are skipped when the
+  next regular session computes its prescription — reps and durations included.
+  (tokyo_underworld, !28)
+- 📳 **Timer flash.** Opt-in screen flash when a rest or work timer ends — for loud gyms and
+  headphones. (mzspicoli, !29)
+- 🌍 **Thai and Hungarian.** Full UI translation in both; Hungarian also localizes all 1,326
+  exercise names and instructions. That makes 14 languages. (tomzt, !64 · kecskemethy, !68)
+
+### Active workout
+
+- ➕ Adding an exercise mid-session now also **moves and swaps** cleanly: move the current
+  exercise or superset up/down (the rest countdown follows it), or swap it for another —
+  logged sets stay with the original, the replacement arrives with your usual weights, and a
+  grouped exercise asks whether the replacement stays in the group. (Space-Hermes, !41, !43)
+- 👉 **Swipe between exercises** on the workout card — left/right moves through the session,
+  buttons and inputs stay untouched. (Space-Hermes, !48)
+- 🎯 **Supersets keep the next set centered** on screen, not just in view. (Space-Hermes, !52)
+- 📖 **The progression line is now a button**: tap "Linear · +2.5 kg…" mid-workout to open the
+  exercise's settings; changed rules rebuild the open rows and keep everything you already
+  logged. (Space-Hermes, !54)
+
+### Routines and progression
+
+- ✋ **Reorder by long-press.** Hold a routine row and drag it; superset groups move as one
+  block. The arrow buttons stay, now group-aware and disabled at the ends.
+  (Space-Hermes, !45, !47)
+- 🔢 **The double-progression rep range is visible**: "Reps from" and "Reps up to" side by
+  side, per-side exercises stepping in twos — and a progression step of zero can no longer be
+  saved by accident. (mflova, !69 and !60 follow-up)
+
+### Stats and the rest
+
+- 🔍 **The Stats exercise picker is searchable**, and the results stay above the mobile
+  keyboard. (mflova, !27)
+- 🗺️ **The muscle map works from the keyboard** and ranks ties in body order. (Space-Hermes, !46)
+- 🔕 **Android reminders follow the calendar**: scheduled per date instead of per weekday, so
+  a rescheduled day reminds you and a day you already trained stays quiet. (mflova, !66)
+- 🤖 **The MCP coach reads what the app shows**: custom exercises resolve in every tool,
+  warm-ups no longer count as PRs, and progression policies report the value the UI uses.
+  (TheophileDiot, !38)
+- 📚 **A self-hosting HTTPS guide** for valid certificates on a LAN-only address — wildcard
+  cert via DNS challenge, Caddy in front, no ports opened. (andi242, !67)
+
+### Feel
+
+A pass over touch, scroll and tap across the whole app: chip rows keep a slightly diagonal
+swipe instead of handing it to the page; sheets decide an axis before following the finger,
+snap back cleanly and close on a quick flick; the body-weight slider drags relative to the
+knob instead of jumping to it; steppers repeat while held; going back restores your scroll
+position; a just-dropped routine row is tappable immediately; the exercise picker's search
+stays above the keyboard; set-row inputs, checkboxes and small icon buttons all got bigger
+touch targets; and rows everywhere can be driven from a keyboard.
+
+With thanks to Space-Hermes, mflova, JuliusHaring, trapy, tokyo_underworld, mzspicoli,
+TheophileDiot, tomzt, kecskemethy and andi242 — ten contributors in one release.
+
 ## v1.2.13 — 2026-08-30
 
 One follow-up that arrived on !60 minutes after v1.2.12 was tagged, and belongs with it.

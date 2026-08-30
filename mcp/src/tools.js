@@ -95,7 +95,8 @@ export const listRoutines = {
         emoji: r.emoji || null,
         exercise_count: (r.ex || []).length,
         superset_groups: [...new Set((r.ex || []).map(e => e.sg).filter(Boolean))].length || 0,
-        policy: policyFor(null, r, 'reps')
+        policy: policyFor(null, r, 'reps'),
+        exclude_from_progression: r.excludeFromProgression === true
       }))
     }
   }
@@ -117,6 +118,7 @@ export const getRoutine = {
       emoji: r.emoji || null,
       policy: policyFor(null, r, 'reps'),
       policy_name: policyName(policyFor(null, r, 'reps')),
+      exclude_from_progression: r.excludeFromProgression === true,
       unit: S.unit || 'kg',
       exercises: (r.ex || []).map((cfg, i) => {
         const ex = exerciseOf(cfg.id, S)

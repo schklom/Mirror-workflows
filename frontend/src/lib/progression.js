@@ -134,6 +134,10 @@ export function readSession(entry, fallback) {
 export function sessionsFor(S, exId, fallback) {
   const out = []
   ;(S.workouts || []).forEach(w => {
+    // A planned deload remains a real workout for history and statistics, but it cannot become
+    // the baseline for the next regular prescription. The routine flag is copied onto the
+    // active session, then onto this completed workout, so later routine edits do not rewrite it.
+    if (w.excludeFromProgression === true) return
     const entry = w.entries.find(e => e.id === exId)
     if (entry && entry.sets.some(s => s.done && !isWarmupRow(s))) out.push({ d: w.d, ...readSession(entry, fallback) })
   })

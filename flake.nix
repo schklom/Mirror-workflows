@@ -101,8 +101,62 @@
 
         apps.opengym = {
           type = "app";
+          # Runs the full local stack: API + frontend + build-time media behind a throwaway
+          # Caddy. Defaults to http://localhost:8080; env vars override ports/data/rp.
           program = "${pkgs.writeShellScript "opengym" ''
-            exec ${opengymPackages.opengym-api}/bin/opengym-api
+            set -euo pipefail
+
+            DATA_DIR=''${OPENGYM_DATA_DIR:-/tmp/opengym-data}
+            API_PORT=''${OPENGYM_API_PORT:-3000}
+            WEB_PORT=''${OPENGYM_WEB_PORT:-8080}
+            mkdir -p "$DATA_DIR"
+
+            export PORT="$API_PORT"
+            export DATA_DIR
+            export RP_ID=''${OPENGYM_RP_ID:-localhost}
+            export ORIGIN=''${OPENGYM_ORIGIN:-http://localhost:$WEB_PORT}
+            export ALLOW_GUEST=''${ALLOW_GUEST:-1}
+
+            ${opengymPackages.opengym-api}/bin/opengym-api &
+            API_PID=$!
+
+            CFGDIR=$(mktemp -d)
+            CGFILE="$CFGDIR/Caddyfile"
+            cleanup() {
+              rm -rf "$CFGDIR"
+              kill "$API_PID" 2>/dev/null || true
+            }
+            trap cleanup EXIT
+
+            cat > "$CGFILE" <<EOF
+            {
+              admin off
+            }
+
+            :$WEB_PORT {
+              encode zstd gzip
+
+              handle /api/* {
+                reverse_proxy 127.0.0.1:$API_PORT
+              }
+              handle_path /img/* {
+                root * ${opengymPackages.opengym-media}/images
+                file_server
+              }
+              handle_path /gif/* {
+                root * ${opengymPackages.opengym-media}/videos
+                file_server
+              }
+              handle {
+                root * ${opengymPackages.opengym-frontend}/share/opengym
+                try_files {path} /index.html
+                file_server
+              }
+            }
+            EOF
+
+            echo "openGym running at http://localhost:$WEB_PORT (API on :$API_PORT, data in $DATA_DIR) — Ctrl-C to stop"
+            ${pkgs.caddy}/bin/caddy run --config "$CGFILE"
           ''}";
         };
 

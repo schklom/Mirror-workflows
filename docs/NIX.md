@@ -19,7 +19,8 @@ managed by your NixOS configuration. This document covers both.
 | `packages.opengym-media` | The exercise image/GIF dataset, pinned via `fetchFromGitHub`. Only fetched when `media.fetchAtBuild = true`. |
 | `packages.opengym-fetch-media` | A shell script that clones the dataset at **runtime** (used by default). |
 | `packages.default` | Alias for `opengym-frontend`. |
-| `apps.opengym` | Runs `opengym-api` alone (`nix run .#opengym`). |
+| `apps.opengym` | Runs the **full local stack** — API + frontend + pinned media behind a throwaway Caddy (`nix run .#opengym`, default `http://localhost:8080`). |
+| `apps.default` | Alias for `opengym`. |
 | `devShells.default` | Development shell: Node.js 22, coreutils, git. |
 | `checks.nixos-module-eval` | Evaluates the module against a smoke-test config and asserts the resulting services/users/nginx state and extra environment. |
 | `checks.opengym-nixos-test` *(Linux)* | Boots a NixOS VM and exercises the HTTP contract end to end (API health, nginx vhost proxy, SPA fallback). |
@@ -82,14 +83,17 @@ Requirements: Nix with flakes enabled (`nix.conf`: `experimental-features = nix-
 nix build .#opengym-frontend         # static site → result/share/opengym
 nix build .#opengym-api              # API → result/bin/opengym-api
 nix build .#opengym-mcp
-nix run .#opengym                    # run the API alone (listening on :3000)
+nix run .#opengym                    # full local stack on http://localhost:8080 (see below)
 nix develop                          # dev shell: nodejs_22, git, coreutils
 nix flake check                      # eval check + (on Linux) the VM integration test
 nix build .#nixosTests.opengym       # run just the VM integration test
 ```
 
-`nix run .#opengym` starts only the API server. To poke at the full stack locally you need a web
-server in front of it serving the built frontend and the media — see [Serving the app](#4-serving-the-app).
+`nix run .#opengym` starts the API, the built frontend and the pinned media behind a throwaway
+Caddy — open `http://localhost:8080` and use it (passkeys work on `localhost`). Overrides via env
+vars: `OPENGYM_DATA_DIR` (default `/tmp/opengym-data`), `OPENGYM_API_PORT` (3000),
+`OPENGYM_WEB_PORT` (8080), `OPENGYM_RP_ID`/`OPENGYM_ORIGIN` (local defaults). Bear in mind the API
+and frontend ports are just defaults — like any local dev server, don't point it at the internet.
 
 For development, `nix develop` drops you into a shell with everything except `node_modules`;
 inside it, the standard flow applies:
@@ -133,7 +137,7 @@ module (where `config` is in scope) so the store paths resolve from the module's
       extraConfig = ''
         encode zstd gzip
 
-        handle_path /api/* {
+        handle /api/* {
           reverse_proxy 127.0.0.1:${toString config.services.opengym.apiPort}
         }
         handle_path /img/* {
@@ -156,8 +160,9 @@ module (where `config` is in scope) so the store paths resolve from the module's
 ```
 
 `handle_path` strips the matched prefix, so `/gif/bench.gif` resolves to
-`${gifRoot}/bench.gif`. Order matters: `/api`, `/img` and `/gif` must be handled before the
-catch-all `handle` that serves the SPA.
+`${gifRoot}/bench.gif`. The API must **keep** its `/api` prefix (openGym routes on it), so `/api`
+uses a plain `handle` that passes the full URI through. Order matters: `/api`, `/img` and `/gif`
+must be handled before the catch-all `handle` that serves the SPA.
 
 ### nginx
 
@@ -451,7 +456,7 @@ routine update — see the passkey caveat in §4.
 | Eval fails: `environment and environmentFile are mutually exclusive` | Pick one. Set extra vars either as a Nix attrset (`environment`) or in a file (`environmentFile`), never both. |
 | You expected a binary cache | The flake builds from source; override `services.opengym.package` (or `packages.*` via a cache/overlay) to substitute binaries. |
 | Exercise media licensing | openGym ships none of it; it's fetched from [hasaneyldrm/exercises-dataset](https://github.com/hasaneyldrm/exercises-dataset) (third-party, ownership disputed). See [`NOTICE.md`](../NOTICE.md) |
-| `nix run .#opengym` "works" but the site is blank | That app runs *only* the API. You still need a web server serving the frontend + media (§4). |
+| `nix run .#opengym` serves a blank site | The app now serves frontend + API + media behind a local Caddy. If something's off, check the log line it prints (ports/`DATA_DIR`) and that nothing else already binds `:3000`/`:8080` — pass `OPENGYM_API_PORT`/`OPENGYM_WEB_PORT` to move them. |
 
 ### Media modes in detail
 

@@ -1,4 +1,8 @@
-{ lib, buildNpmPackage, nodejs_22 }:
+{
+  lib,
+  buildNpmPackage,
+  nodejs_22,
+}:
 
 buildNpmPackage rec {
   pname = "opengym-frontend";

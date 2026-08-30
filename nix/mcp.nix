@@ -1,4 +1,9 @@
-{ lib, buildNpmPackage, nodejs_22, makeWrapper }:
+{
+  lib,
+  buildNpmPackage,
+  nodejs_22,
+  makeWrapper,
+}:
 
 buildNpmPackage rec {
   pname = "opengym-mcp";

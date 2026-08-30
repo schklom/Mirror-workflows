@@ -1,4 +1,7 @@
-{ lib, writeShellScriptBin, git }:
+{
+  writeShellScriptBin,
+  git,
+}:
 
 writeShellScriptBin "opengym-fetch-media" ''
   set -euo pipefail

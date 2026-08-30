@@ -8,9 +8,7 @@ final class SanitizerUnitTest extends TestCase {
 
 	protected function setUp(): void {
 		// Initialize session variables that Sanitizer may check
-		if (!isset($_SESSION)) {
-			$_SESSION = [];
-		}
+		$_SESSION ??= [];
 	}
 
 	protected function tearDown(): void {
@@ -814,4 +812,3 @@ final class SanitizerUnitTest extends TestCase {
 		$this->assertStringNotContainsString('127.0.0.1', $result);
 	}
 }
-

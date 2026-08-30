@@ -18,6 +18,7 @@ const mocks = vi.hoisted(() => {
     exercisePicker: vi.fn(),
     exConfigSheet: vi.fn(),
     toast: vi.fn(),
+    scrollCalls: [],
   }
   state.stopRest = vi.fn(() => { state.timer = null })
   state.stopWork = vi.fn(() => { state.work = null })
@@ -106,6 +107,9 @@ function installDom() {
   globalThis.document = dom.document
   Object.defineProperty(globalThis, 'navigator', { configurable: true, value: dom.navigator })
   for (const key of ['HTMLElement', 'Node', 'Element', 'Event', 'Blob']) globalThis[key] = dom[key]
+  dom.Element.prototype.scrollIntoView = vi.fn(function (options) {
+    mocks.scrollCalls.push({ node: this, options })
+  })
   globalThis.IS_REACT_ACT_ENVIRONMENT = true
   container = document.getElementById('root')
   root = createRoot(container)
@@ -156,10 +160,16 @@ async function addExerciseThroughSheets(ex = { id: 'added-exercise' }, cfg = { m
   await act(async () => { configCall[2](cfg) })
 }
 
+async function rerenderAt(cur) {
+  mocks.S.active.cur = cur
+  await act(async () => { root.render(React.createElement(Workout)) })
+}
+
 beforeEach(() => {
   vi.clearAllMocks()
   mocks.timer = null
   mocks.work = null
+  mocks.scrollCalls.length = 0
 })
 
 afterEach(async () => {
@@ -446,5 +456,64 @@ describe('superset flow survives an exercise being removed mid-session', () => {
     // Partner closes the round (each still has a second set), which is what starts the rest.
     await toggleSet(2)
     expect(mocks.startRest).toHaveBeenCalledWith(90, expect.any(Number))
+  })
+})
+
+describe('superset actionable-set centring', () => {
+  it('centres the newly active exercise first incomplete set row', async () => {
+    await mount([
+      exercise('bench', [true, false], { sg: 'g1' }),
+      exercise('row', [true, false, false], { sg: 'g1' }),
+    ])
+    mocks.scrollCalls.length = 0
+
+    await rerenderAt(1)
+
+    const rows = container.querySelector('[data-exidx="1"]').querySelectorAll('.setrow')
+    expect(mocks.scrollCalls).toEqual([
+      { node: rows[1], options: { behavior: 'smooth', block: 'center' } },
+    ])
+  })
+
+  it('centres the last set row when the newly active exercise is complete', async () => {
+    await mount([
+      exercise('bench', [true, false], { sg: 'g1' }),
+      exercise('row', [true, true], { sg: 'g1' }),
+    ])
+    mocks.scrollCalls.length = 0
+
+    await rerenderAt(1)
+
+    const rows = container.querySelector('[data-exidx="1"]').querySelectorAll('.setrow')
+    expect(mocks.scrollCalls).toEqual([
+      { node: rows[1], options: { behavior: 'smooth', block: 'center' } },
+    ])
+  })
+
+  it('centres the exercise wrapper when the newly active exercise has no set row', async () => {
+    await mount([
+      exercise('bench', [true, false], { sg: 'g1' }),
+      exercise('row', [], { sg: 'g1' }),
+    ])
+    mocks.scrollCalls.length = 0
+
+    await rerenderAt(1)
+
+    const wrapper = container.querySelector('[data-exidx="1"]')
+    expect(mocks.scrollCalls).toEqual([
+      { node: wrapper, options: { behavior: 'smooth', block: 'center' } },
+    ])
+  })
+
+  it('does not auto-scroll set rows for ordinary exercise navigation', async () => {
+    await mount([
+      exercise('bench', [true, false]),
+      exercise('row', [false, false]),
+    ])
+    mocks.scrollCalls.length = 0
+
+    await rerenderAt(1)
+
+    expect(mocks.scrollCalls).toEqual([])
   })
 })

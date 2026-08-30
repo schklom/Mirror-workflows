@@ -22,6 +22,8 @@ managed by your NixOS configuration. This document covers both.
 | `apps.opengym` | Runs `opengym-api` alone (`nix run .#opengym`). |
 | `devShells.default` | Development shell: Node.js 22, coreutils, git. |
 | `checks.nixos-module-eval` | Evaluates the module against a smoke-test config and asserts the resulting services/users/nginx state and extra environment. |
+| `checks.opengym-nixos-test` *(Linux)* | Boots a NixOS VM and exercises the HTTP contract end to end (API health, nginx vhost proxy, SPA fallback). |
+| `nixosTests.opengym` | The same VM test under the conventional `nixosTests` output. |
 | `nixosModules.opengym` | The NixOS module (`nixosModules.default` aliases it). |
 
 ### What the NixOS module does
@@ -82,7 +84,8 @@ nix build .#opengym-api              # API → result/bin/opengym-api
 nix build .#opengym-mcp
 nix run .#opengym                    # run the API alone (listening on :3000)
 nix develop                          # dev shell: nodejs_22, git, coreutils
-nix flake check                      # builds + runs the module eval check
+nix flake check                      # eval check + (on Linux) the VM integration test
+nix build .#nixosTests.opengym       # run just the VM integration test
 ```
 
 `nix run .#opengym` starts only the API server. To poke at the full stack locally you need a web

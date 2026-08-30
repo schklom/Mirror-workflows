@@ -108,7 +108,15 @@
 
         apps.default = self.apps.${system}.opengym;
 
-        checks.nixos-module-eval = check;
+        checks = {
+          nixos-module-eval = check;
+        } // (pkgs.lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
+          # Boots a NixOS VM and exercises the full HTTP contract (API + nginx vhost + SPA).
+          opengym-nixos-test = import ./nix/tests.nix {
+            inherit pkgs;
+            modules = [ opengymNixOSModule ];
+          };
+        });
 
         devShells.default = pkgs.mkShell {
           buildInputs = with pkgs; [
@@ -135,5 +143,11 @@
           _module.args.opengymPkgs = self.packages.${pkgs.system} or null;
         };
       nixosModules.default = self.nixosModules.opengym;
+
+      # Conventional NixOS test output (boots a VM; also wired into checks on Linux).
+      nixosTests.opengym = import ./nix/tests.nix {
+        pkgs = nixpkgs.legacyPackages.x86_64-linux;
+        modules = [ self.nixosModules.opengym ];
+      };
     };
 }

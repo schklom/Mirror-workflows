@@ -464,9 +464,10 @@ routine update — see the passkey caveat in §4.
   the same commit the Docker build uses) and stored in the Nix store. `imageRoot`/`gifRoot` point
   into `/nix/store`. No `opengym-media` service is created. Ideal for air-gapped/immutable systems;
   you pay the ~140 MB fetch on every switch that rebuilds the media derivation.
-- **`media.fetchAtBuild = false`** (default) — the `opengym-media` one-shot clones the upstream
-  repo on first boot into `media.dataDir`, then skips while files are present (unpinned — it follows
-  upstream's default branch). `imageRoot`/`gifRoot` point under `dataDir`, so backups cover media too.
+- **`media.fetchAtBuild = false`** (default) — the `opengym-media` one-shot downloads the pinned
+  dataset tarball (a GitHub `/archive/<rev>.tar.gz` of the **same commit** `media.nix` pins) on first
+  boot into `media.dataDir`, then skips while files are present. `imageRoot`/`gifRoot` point under
+  `dataDir`, so backups cover media too.
 
 ## See also
 

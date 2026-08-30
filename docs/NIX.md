@@ -265,10 +265,10 @@ from *your system's* nixpkgs, which may differ slightly. If you ever need a spec
 ```
 
 This gives you the `opengym` system user, `/var/lib/opengym` (created via `StateDirectory` +
-tmpfiles), the `opengym-api` service listening on `:3000`, and — since `media.fetchAtBuild`
-defaults to `false` — the `opengym-media` one-shot that downloads the exercise dataset (~140 MB,
-once) into `/var/lib/opengym/media`. Pair it with the Caddy or nginx config from §4 pointing at
-the exposed roots.
+tmpfiles — the default `dataDir`), the `opengym-api` service listening on `:3000`, and — since
+`media.fetchAtBuild` defaults to `false` — the `opengym-media` one-shot that downloads the exercise
+dataset (~140 MB, once) into `/var/lib/opengym/media`. Pair it with the Caddy or nginx config from
+§4 pointing at the exposed roots.
 
 ### A realistic production example
 
@@ -358,7 +358,7 @@ for other modules to consume — setting them yourself is an error.
 | --- | --- | --- | --- |
 | `enable` | `bool` | `false` | Enable openGym (user, services, directories). |
 | `package` | `attrsOf package` | packages built from source | The package set: `{ opengym-frontend, opengym-api, opengym-mcp, opengym-media, opengym-fetch-media }`. Override to serve pre-built binaries (e.g. from a cache). |
-| `dataDir` | `path` | `/var/lib/opengym` | Persistent data directory — `db.json`, per-user `state-<uid>.json`, `secret`, `vapid.json`, `audit.log`. Created by the module; `ReadWritePaths` targets it. |
+| `dataDir` | `path` | `/var/lib/opengym` | Persistent data directory — `db.json`, per-user `state-<uid>.json`, `secret`, `vapid.json`, `audit.log`. With the default `/var/lib/opengym`, systemd's `StateDirectory` creates (and cleans up) it; a custom path is created by a tmpfiles rule and `ReadWritePaths` points at it instead. |
 | `apiPort` | `port` | `3000` | Port the API listens on (internal — reachable via your reverse proxy, front it yourself if you open the firewall). |
 | `rpId` | `str` | `localhost` | WebAuthn Relying Party ID. Bare hostname, must match the address bar exactly. |
 | `origin` | `str` | `http://localhost:8080` | Full origin for CSRF validation. Must match the address bar exactly (scheme + host, no trailing slash). |

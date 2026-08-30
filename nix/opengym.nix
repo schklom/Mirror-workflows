@@ -259,33 +259,39 @@ in
             after = [ "network.target" ];
             wantedBy = [ "multi-user.target" ];
             environment = cfg.environment // apiEnv;
-            serviceConfig = {
-              ExecStart = "${packages.opengym-api}/bin/opengym-api";
-              User = "opengym";
-              Group = "opengym";
-              StateDirectory = "opengym";
-              StateDirectoryMode = "0750";
-              Restart = "on-failure";
-              RestartSec = 5;
-              EnvironmentFile = lib.mkIf (cfg.environmentFile != "") cfg.environmentFile;
+            serviceConfig = lib.mkMerge [
+              {
+                ExecStart = "${packages.opengym-api}/bin/opengym-api";
+                User = "opengym";
+                Group = "opengym";
+                Restart = "on-failure";
+                RestartSec = 5;
+                EnvironmentFile = lib.mkIf (cfg.environmentFile != "") cfg.environmentFile;
 
-              NoNewPrivileges = true;
-              ProtectSystem = "strict";
-              ProtectHome = true;
-              PrivateTmp = true;
-              PrivateDevices = true;
-              ProtectKernelTunables = true;
-              ProtectKernelModules = true;
-              ProtectControlGroups = true;
-              RestrictNamespaces = true;
-              RestrictSUIDSGID = true;
-              LockPersonality = true;
-              SystemCallFilter = [
-                "@system-service"
-                "~@privileged"
-              ];
-              ReadWritePaths = [ cfg.dataDir ];
-            };
+                NoNewPrivileges = true;
+                ProtectSystem = "strict";
+                ProtectHome = true;
+                PrivateTmp = true;
+                PrivateDevices = true;
+                ProtectKernelTunables = true;
+                ProtectKernelModules = true;
+                ProtectControlGroups = true;
+                RestrictNamespaces = true;
+                RestrictSUIDSGID = true;
+                LockPersonality = true;
+                SystemCallFilter = [
+                  "@system-service"
+                  "~@privileged"
+                ];
+                ReadWritePaths = [ cfg.dataDir ];
+              }
+              # systemd's StateDirectory= only lives under /var/lib, so use it for the default
+              # dataDir; a custom dataDir is created by the tmpfiles rule instead.
+              (lib.mkIf (builtins.toString cfg.dataDir == "/var/lib/opengym") {
+                StateDirectory = "opengym";
+                StateDirectoryMode = "0750";
+              })
+            ];
           };
 
           systemd.services.opengym-media = lib.mkIf (!cfg.media.fetchAtBuild) {
@@ -293,14 +299,18 @@ in
             after = [ "network-online.target" ];
             wants = [ "network-online.target" ];
             wantedBy = [ "multi-user.target" ];
-            serviceConfig = {
-              ExecStart = "${packages.opengym-fetch-media}/bin/opengym-fetch-media ${cfg.media.dataDir}";
-              Type = "oneshot";
-              RemainAfterExit = true;
-              User = "opengym";
-              Group = "opengym";
-              StateDirectory = "opengym";
-            };
+            serviceConfig = lib.mkMerge [
+              {
+                ExecStart = "${packages.opengym-fetch-media}/bin/opengym-fetch-media ${cfg.media.dataDir}";
+                Type = "oneshot";
+                RemainAfterExit = true;
+                User = "opengym";
+                Group = "opengym";
+              }
+              (lib.mkIf (builtins.toString cfg.dataDir == "/var/lib/opengym") {
+                StateDirectory = "opengym";
+              })
+            ];
           };
 
           services.opengym.media = {

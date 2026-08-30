@@ -14,6 +14,7 @@ import { startFlow, exercisePicker, exConfigSheet, exerciseDetailSheet, topWeigh
 import Icon from '../components/Icon.jsx'
 import { Button, Check, NumberField } from '../components/ui.jsx'
 import { nextPrescription, applyPrescription, defaultIncrement } from '../lib/progression.js'
+import { progressionGuidance } from '../lib/progression-copy.js'
 import { glyphOf } from '../lib/glyphs.js'
 import { isWarmupRow, isDropSet, isRestPauseSet, dropsOf, clustersOf, addDrop, addCluster, removeDropAt, removeClusterAt, setDropAt, setClusterAt, nextDropWeight, nextBurstReps } from '../lib/workout-model.js'
 import { canMoveActiveWorkoutUnit, moveActiveWorkoutUnit } from '../lib/active-workout-order.js'
@@ -61,7 +62,7 @@ function Elapsed({ start }) {
 }
 
 /* ---------- one exercise block (reps: weight×reps · time: a held duration · cardio: duration+speed) ---------- */
-function ExerciseBlock({ entryIdx, compact, onToggle, onField, onAddSet, onRemoveSet, onAddWarmup, onRemoveSetAt, onStartTimed, onPairPrev, onPairNext, onSetRowRef }) {
+function ExerciseBlock({ entryIdx, compact, onToggle, onField, onAddSet, onRemoveSet, onAddWarmup, onRemoveSetAt, onStartTimed, onPairPrev, onPairNext, onSetRowRef, onProgressionSettings }) {
   const S = useStore(s => s.S)
   const update = useStore(s => s.update)
   const working = useUI(s => s.work)
@@ -111,6 +112,7 @@ function ExerciseBlock({ entryIdx, compact, onToggle, onField, onAddSet, onRemov
   // What the progression policy decided for this session, and why (issue #17). Computed when
   // the session was built so the reason matches the numbers already in the rows.
   const plan = entry.plan
+  const guidance = progressionGuidance(plan)
   // A bodyweight set has no weight to type, so the column is not there (issue #32) — one
   // stepper instead of two, which is the whole point of the flag. Adding a belt weight in the
   // config brings it back, now labelled as the addition it is.
@@ -195,10 +197,11 @@ function ExerciseBlock({ entryIdx, compact, onToggle, onField, onAddSet, onRemov
     </div>}
     {entry.note && <div className="exnote">{entry.note}</div>}
     {last && <div className="small dim" style={{ marginBottom: 4 }}>{t('Last time')} ({fmtDate(last.d)}): {last.sets.map(s => setLabel(entry.id, s, last.target)).join(', ')}</div>}
-    {plan && plan.why && plan.kind !== 'off' && <div className={'progline' + (plan.kind === 'deload' ? ' warn' : '')}>
+    {guidance && <button type="button" className={'progline' + (plan.kind === 'deload' ? ' warn' : '')}
+      aria-label={t('Open progression settings')} onClick={onProgressionSettings}>
       <Icon name={plan.kind === 'up' ? 'arrowUp' : plan.kind === 'deload' ? 'arrowDown' : 'lightbulb'} />
-      <span>{t(...plan.why)}</span>
-    </div>}
+      <span><strong>{t(guidance.policyLabel)}</strong> · {t(...guidance.why)}</span>
+    </button>}
     <div className="card" style={{ marginTop: 10, marginBottom: 0 }}>
       {/* the header carries the same eff3 sizing as the rows, or the labels drift off their columns */}
       <div className={'sethead' + (col3 ? ' eff3' : '')}><span className="n-sp" /><span className="w-sp">{col1.hd}</span>{col2 && <span className="r-sp">{col2.hd}</span>}{col3 && <span className="eff-sp">{col3.hd}</span>}{timed && <span className="ck-sp" />}<span className="ck-sp" /></div>
@@ -431,6 +434,23 @@ function ActiveWorkout() {
     navigateUnit(dx < 0 ? 1 : -1)
   }
 
+  const openProgressionSettings = idx => {
+    const state = useStore.getState().S
+    const entry = state.active?.entries?.[idx]
+    if (!entry) return
+    const routine = state.routines.find(r => r.id === state.active.routineId)
+    exConfigSheet(exOr(entry.id), entry.target, cfg => update(s => {
+      const activeEntry = s.active?.entries?.[idx]
+      if (!activeEntry) return
+      const full = { ...cfg, id: activeEntry.id }
+      const activeRoutine = s.routines.find(r => r.id === s.active.routineId)
+      const plan = nextPrescription(s, full, activeRoutine)
+      activeEntry.target = { ...cfg }
+      activeEntry.plan = plan
+      activeEntry.sets = applyPrescription(activeEntry.sets, plan, defaultIncrement(activeEntry.id, s.unit))
+    }), null, routine)
+  }
+
   // Remove a whole exercise from the session. The confirmation always asks first; in a
   // superset it asks WHICH exercise of the group to remove.
   const removeExercise = removeActiveExercise
@@ -603,12 +623,12 @@ function ActiveWorkout() {
             return <div key={idx} ref={el => bindExRef(entry, el)} className="ss-ex" data-exidx={idx}>
               {k > 0 && <div className="ss-amp">+</div>}
               <ExerciseBlock entryIdx={idx} compact onSetRowRef={(setIdx, el) => bindSetRef(entry, setIdx, el)}
-                onToggle={i => toggle(idx, i)} onField={(i, f, v) => setField(idx, i, f, v)} onAddSet={() => addSet(idx)} onRemoveSet={() => removeSet(idx)} onAddWarmup={() => addWarmup(idx)} onRemoveSetAt={i => removeSetAt(idx, i)} onStartTimed={i => startTimed(idx, i)} />
+                onToggle={i => toggle(idx, i)} onField={(i, f, v) => setField(idx, i, f, v)} onAddSet={() => addSet(idx)} onRemoveSet={() => removeSet(idx)} onAddWarmup={() => addWarmup(idx)} onRemoveSetAt={i => removeSetAt(idx, i)} onStartTimed={i => startTimed(idx, i)} onProgressionSettings={() => openProgressionSettings(idx)} />
             </div>
           })}
         </div>
       ) : (
-        <ExerciseBlock entryIdx={cur} onToggle={i => toggle(cur, i)} onField={(i, f, v) => setField(cur, i, f, v)} onAddSet={() => addSet(cur)} onRemoveSet={() => removeSet(cur)} onAddWarmup={() => addWarmup(cur)} onRemoveSetAt={i => removeSetAt(cur, i)} onStartTimed={i => startTimed(cur, i)} onPairPrev={onPairPrev} onPairNext={onPairNext} />
+        <ExerciseBlock entryIdx={cur} onToggle={i => toggle(cur, i)} onField={(i, f, v) => setField(cur, i, f, v)} onAddSet={() => addSet(cur)} onRemoveSet={() => removeSet(cur)} onAddWarmup={() => addWarmup(cur)} onRemoveSetAt={i => removeSetAt(cur, i)} onStartTimed={i => startTimed(cur, i)} onPairPrev={onPairPrev} onPairNext={onPairNext} onProgressionSettings={() => openProgressionSettings(cur)} />
       )}
       </div>
     </> : <div className="empty"><div className="ico"><Icon name="shuffle" /></div>{t('Freestyle workout — add your first exercise.')}</div>}

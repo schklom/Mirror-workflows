@@ -137,6 +137,13 @@ async function toggleSet(index) {
   await act(async () => { checkbox.dispatchEvent(new dom.Event('click', { bubbles: true })) })
 }
 
+async function pressProgression(index = 0) {
+  const button = container.querySelectorAll('.progline')[index]
+  expect(button).toBeTruthy()
+  await act(async () => { button.dispatchEvent(new dom.Event('click', { bubbles: true })) })
+  return button
+}
+
 async function requestDiscard() {
   const button = container.querySelector('button[aria-label="Discard"]')
   expect(button).toBeTruthy()
@@ -425,6 +432,106 @@ describe('Workout discard timer lifecycle', () => {
     expect(mocks.work).toBeNull()
     expect(mocks.stopRest).toHaveBeenCalledOnce()
     expect(mocks.stopWork).toHaveBeenCalledOnce()
+  })
+})
+
+describe('progression guidance', () => {
+  it('labels the visible outcome with the policy that calculated it', async () => {
+    await mount([exercise('plain-bench', [false, false, false], {
+      plan: {
+        policy: 'linear',
+        kind: 'up',
+        weight: 62.5,
+        why: ['Every rep last time — {0} {1} more.', 2.5, 'kg'],
+      },
+    })])
+
+    expect(container.querySelector('.progline')?.textContent)
+      .toContain('Linear progression · Every rep last time — 2.5 kg more.')
+  })
+
+  it('is a keyboard-accessible button that opens settings for the pressed grouped entry', async () => {
+    const plan = {
+      policy: 'linear', kind: 'up', weight: 62.5,
+      why: ['Every rep last time — {0} {1} more.', 2.5, 'kg'],
+    }
+    const first = exercise('plain-bench', [false], { sg: 'group', plan })
+    const second = exercise('plain-bench', [false], {
+      sg: 'group', plan, target: { mode: 'reps', reps: 8, weight: 80, bodyweight: false },
+    })
+    await mount([first, second])
+    const firstBefore = JSON.stringify(mocks.S.active.entries[0])
+
+    const button = await pressProgression(1)
+
+    expect(button.tagName).toBe('BUTTON')
+    expect(button.getAttribute('type')).toBe('button')
+    expect(button.getAttribute('aria-label')).toBe('Open progression settings')
+    expect(mocks.exConfigSheet).toHaveBeenCalledOnce()
+    expect(mocks.exConfigSheet.mock.calls[0][1]).toBe(second.target)
+    expect(mocks.exConfigSheet.mock.calls[0][4]).toBe(mocks.S.routines[0])
+
+    mocks.exConfigSheet.mock.calls[0][2]({ ...second.target, prog: 'double', repsMin: 6 })
+    expect(JSON.stringify(mocks.S.active.entries[0])).toBe(firstBefore)
+    expect(mocks.S.active.entries[1].target.prog).toBe('double')
+    expect(mocks.S.active.cur).toBe(0)
+  })
+
+  it('leaves the active entry unchanged when progression settings are cancelled', async () => {
+    const entry = exercise('plain-bench', [true, false], {
+      plan: {
+        policy: 'linear', kind: 'up', weight: 62.5,
+        why: ['Every rep last time — {0} {1} more.', 2.5, 'kg'],
+      },
+    })
+    await mount([entry])
+    const before = JSON.stringify(mocks.S.active.entries[0])
+
+    await pressProgression()
+
+    expect(JSON.stringify(mocks.S.active.entries[0])).toBe(before)
+  })
+
+  it('saves the active policy, preserves completed rows, and refreshes guidance immediately', async () => {
+    const entry = exercise('plain-bench', [true, false], {
+      plan: {
+        policy: 'linear', kind: 'up', weight: 62.5,
+        why: ['Every rep last time — {0} {1} more.', 2.5, 'kg'],
+      },
+    })
+    await mount([entry])
+    mocks.S.workouts = [{
+      d: '2026-08-27',
+      entries: [{
+        id: entry.id,
+        target: { sets: 2, reps: 5, weight: 60 },
+        sets: [{ w: 60, r: 5, done: true }, { w: 60, r: 5, done: true }],
+      }],
+    }]
+    const completed = mocks.S.active.entries[0].sets[0]
+    await pressProgression()
+    const save = mocks.exConfigSheet.mock.calls[0][2]
+
+    await act(async () => {
+      save({ ...entry.target, prog: 'double', repsMin: 3 })
+      root.render(React.createElement(Workout))
+    })
+
+    const saved = mocks.S.active.entries[0]
+    expect(saved.target.prog).toBe('double')
+    expect(saved.sets[0]).toEqual(completed)
+    expect(saved.sets[0]).toEqual({ w: 60, r: 5, done: true })
+    expect(saved.sets[1]).toEqual({ w: 62.5, r: 3, done: false })
+    expect(container.querySelector('.progline')?.textContent)
+      .toContain('Double progression · Top of the rep range in every set — 2.5 kg more, back to 3 reps.')
+
+    const persisted = JSON.parse(JSON.stringify(mocks.S))
+    await unmount()
+    mocks.S = persisted
+    installDom()
+    await act(async () => { root.render(React.createElement(Workout)) })
+    expect(container.querySelector('.progline')?.textContent)
+      .toContain('Double progression · Top of the rep range in every set — 2.5 kg more, back to 3 reps.')
   })
 })
 

@@ -441,28 +441,39 @@ function ActiveWorkout() {
     const state = useStore.getState().S
     const entry = state.active?.entries?.[idx]
     if (!entry) return
+    const activeId = state.active.id
+    const entryId = entry.id
     const routine = state.routines.find(r => r.id === state.active.routineId)
-    exConfigSheet(exOr(entry.id), entry.target, cfg => update(s => {
-      const activeEntry = s.active?.entries?.[idx]
-      if (!activeEntry) return
-      const full = { ...cfg, id: activeEntry.id }
-      const activeRoutine = s.routines.find(r => r.id === s.active.routineId)
-      const step = defaultIncrement(activeEntry.id, s.unit)
-      // A config without a set count keeps the rows the session already has.
-      if (!(full.sets > 0)) full.sets = activeEntry.sets.filter(x => !isWarmupRow(x)).length || 1
-      const plan = nextPrescription(s, full, activeRoutine)
-      // The sheet edits sets, reps, weight and warm-ups as well as the rule — so the rows are
-      // rebuilt from the new config the way the session was, and only what you already logged
-      // is kept in place (done warm-ups first, then done work sets, then the fresh remainder).
-      const fresh = applyIntensifierPlan(applyPrescription(buildSets(s, full, { step }), plan, step), full)
-      const doneWarm = activeEntry.sets.filter(x => x.done && isWarmupRow(x))
-      const doneWork = activeEntry.sets.filter(x => x.done && !isWarmupRow(x))
-      const freshWarm = fresh.filter(isWarmupRow)
-      const freshWork = fresh.filter(x => !isWarmupRow(x))
-      activeEntry.target = { ...cfg }
-      activeEntry.plan = plan
-      activeEntry.sets = [...doneWarm, ...freshWarm.slice(doneWarm.length), ...doneWork, ...freshWork.slice(doneWork.length)]
-    }), null, routine)
+    exConfigSheet(exOr(entryId), entry.target, cfg => {
+      // Store updates clone the state tree. If this exact object is no longer at the captured
+      // index, the list changed while the sheet was open; an id check alone cannot distinguish
+      // duplicate occurrences of the same exercise, so fail closed before cloning again.
+      const current = useStore.getState().S
+      if (current.active?.id !== activeId || current.active.entries?.[idx] !== entry) return
+      update(s => {
+        const activeEntry = s.active?.id === activeId ? s.active.entries?.[idx] : null
+        // The sheet may outlive its workout or entry. Never apply its result to whatever later
+        // happens to occupy the same index.
+        if (!activeEntry || activeEntry.id !== entryId) return
+        const full = { ...cfg, id: activeEntry.id }
+        const activeRoutine = s.routines.find(r => r.id === s.active.routineId)
+        const step = defaultIncrement(activeEntry.id, s.unit)
+        // A config without a set count keeps the rows the session already has.
+        if (!(full.sets > 0)) full.sets = activeEntry.sets.filter(x => !isWarmupRow(x)).length || 1
+        const plan = nextPrescription(s, full, activeRoutine)
+        // The sheet edits sets, reps, weight and warm-ups as well as the rule — so the rows are
+        // rebuilt from the new config the way the session was, and only what you already logged
+        // is kept in place (done warm-ups first, then done work sets, then the fresh remainder).
+        const fresh = applyIntensifierPlan(applyPrescription(buildSets(s, full, { step }), plan, step), full)
+        const doneWarm = activeEntry.sets.filter(x => x.done && isWarmupRow(x))
+        const doneWork = activeEntry.sets.filter(x => x.done && !isWarmupRow(x))
+        const freshWarm = fresh.filter(isWarmupRow)
+        const freshWork = fresh.filter(x => !isWarmupRow(x))
+        activeEntry.target = { ...cfg }
+        activeEntry.plan = plan
+        activeEntry.sets = [...doneWarm, ...freshWarm.slice(doneWarm.length), ...doneWork, ...freshWork.slice(doneWork.length)]
+      })
+    }, null, routine)
   }
 
   // Remove a whole exercise from the session. The confirmation always asks first; in a

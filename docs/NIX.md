@@ -71,7 +71,7 @@ nix/
   mcp.nix              buildNpmPackage → bin/opengym-mcp
   media.nix            fetchFromGitHub pin of the exercise dataset (build-time)
   media-script.nix     runtime media-fetch shell script
-  version.nix          version = "1.2.11" + pinned dataset commit (single source of truth)
+  version.nix          version = "1.2.14" + pinned dataset commit (single source of truth)
   default.nix          package-set aggregator (used by both the flake and the module)
 ```
 

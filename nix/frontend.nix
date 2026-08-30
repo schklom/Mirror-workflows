@@ -13,7 +13,7 @@ buildNpmPackage rec {
 
   nodejs = nodejs_22;
 
-  npmDepsHash = "sha256-+r74Jpxq3Yw7EZIZa9VHs+Vue2WukzC31Psyh2QVqHY=";
+  npmDepsHash = "sha256-bmhFw2K1+6VusIUc0346abExPxyaDnY+X8AnWbbkWvE=";
 
   npmBuildScript = "build";
 

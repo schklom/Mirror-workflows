@@ -110,7 +110,15 @@
       }
     )
     // {
-      nixosModules.opengym = import ./nix/opengym.nix;
+      # Wraps the module so NixOS configurations using it get openGym packages built from this
+      # flake's LOCKED nixpkgs input. Importing nix/opengym.nix directly falls back to the
+      # importing system's nixpkgs.
+      nixosModules.opengym =
+        { pkgs, ... }:
+        {
+          imports = [ ./nix/opengym.nix ];
+          _module.args.opengymPkgs = self.packages.${pkgs.system} or null;
+        };
       nixosModules.default = self.nixosModules.opengym;
     };
 }

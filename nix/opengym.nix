@@ -2,19 +2,25 @@
   config,
   lib,
   pkgs,
+  # Injected by the flake (see nixosModules.opengym in flake.nix) so module users get the
+  # packages built from the flake's *locked* nixpkgs input. Falls back to this system's pkgs
+  # (via _module.args below) when the module is imported directly (imports = [ …/opengym.nix ]).
+  opengymPkgs,
   ...
 }:
 
 let
   cfg = config.services.opengym;
 
-  opengymPkgs = {
+  hostOpengymPkgs = {
     opengym-frontend = pkgs.callPackage ./frontend.nix { };
     opengym-api = pkgs.callPackage ./api.nix { };
     opengym-mcp = pkgs.callPackage ./mcp.nix { };
     opengym-media = pkgs.callPackage ./media.nix { };
     opengym-fetch-media = pkgs.callPackage ./media-script.nix { };
   };
+
+  defaultOpengymPkgs = if opengymPkgs != null then opengymPkgs else hostOpengymPkgs;
 
   packages = cfg.package;
 
@@ -47,8 +53,11 @@ in
 
     package = lib.mkOption {
       type = lib.types.attrsOf lib.types.package;
-      default = opengymPkgs;
-      defaultText = lib.literalExpression "opengym packages built from source";
+      default = defaultOpengymPkgs;
+      defaultText = lib.literalExpression ''
+        the flake's packages (built from its locked nixpkgs) when the module comes from the
+        flake; otherwise built from this system's nixpkgs
+      '';
       description = "openGym package set (typically the flake output).";
     };
 
@@ -196,6 +205,11 @@ in
 
   config = lib.mkMerge [
     {
+      # Fallback for `opengymPkgs` when the module is imported directly (no flake wrapper):
+      # build the packages from this system's pkgs. The flake's wrapper supplies the same
+      # argument at higher priority with packages from its locked nixpkgs.
+      _module.args.opengymPkgs = lib.mkDefault hostOpengymPkgs;
+
       assertions = [
         {
           assertion = cfg.environment == { } || cfg.environmentFile == "";

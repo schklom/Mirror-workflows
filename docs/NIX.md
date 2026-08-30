@@ -238,6 +238,14 @@ checkout of the repo:
 { imports = [ "/path/to/opengym/nix/opengym.nix" ]; }
 ```
 
+#### Package provenance
+
+When you load the module *through the flake* (`opengym.nixosModules.default`), the default
+`services.opengym.package` set is the one built by this flake — from the flake's **locked**
+`nixpkgs` input. Importing `nix/opengym.nix` directly instead falls back to building the packages
+from *your system's* nixpkgs, which may differ slightly. If you ever need a specific set, override
+`services.opengym.package` explicitly (e.g. `opengym.packages.x86_64-linux` from your flake inputs).
+
 ### Minimal enable (works on `localhost`)
 
 ```nix

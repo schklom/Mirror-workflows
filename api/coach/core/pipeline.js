@@ -13,7 +13,7 @@
 import { CONTRACT } from './payload.js';
 import { buildPrompt } from './prompt.js';
 import { extractJSON, contractOK } from './parse.js';
-import { validatePlan, validateReview } from './validate.js';
+import { validatePlan, validateReview, validateDebrief } from './validate.js';
 
 /**
  * One attempt: prompt → provider → parse → validate.
@@ -52,7 +52,9 @@ export async function attemptOnce({ adapter, cfg, kind, payload, model, timeoutM
   const customIds = (payload.library || []).filter(e => e && e.custom).map(e => e.id);
   const checked = kind === 'review'
     ? validateReview(parsed.value, payload.plan, { customIds })
-    : validatePlan(parsed.value, {
+    : kind === 'debrief'
+      ? validateDebrief(parsed.value)
+      : validatePlan(parsed.value, {
       customIds,
       workingWeights: payload.history?.workingWeights,
       daysPerWeek: payload.coachProfile?.daysPerWeek

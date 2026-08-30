@@ -6,6 +6,7 @@
  */
 import * as cfgStore from './config.js';
 import * as jobs from './jobs.js';
+import { computeCohort } from './cohort.js';
 import { adapterFor } from './adapters/index.js';
 import { canDropPrivileges } from './adapters/spawn.js';
 import { DATA_CATEGORIES } from './core/payload.js';
@@ -83,6 +84,29 @@ export function coachRoutes({ json, readBody, readSession, requireAdmin }) {
       } catch (e) { failEnqueue(res, e); }
     },
 
+    // One workout, read closely. Nothing to apply — the card is kept in the user's log.
+    'POST /api/coach/debrief': async (req, res) => {
+      const user = guard(req, res); if (!user) return;
+      const body = await readBody(req);
+      try {
+        const job = jobs.enqueue(user.id, { kind: 'debrief', workoutId: body.workoutId ? String(body.workoutId).slice(0, 40) : null });
+        json(res, 202, { job });
+      } catch (e) { failEnqueue(res, e); }
+    },
+
+    /* How this profile sits against everyone else on the instance who opted in: medians only,
+       at least three people, and nothing for a profile that does not share itself. */
+    'GET /api/coach/cohort': async (req, res) => {
+      const user = guard(req, res); if (!user) return;
+      if (!cfgStore.load().community) return json(res, 200, { ok: false, enabled: false });
+      json(res, 200, computeCohort(user.id));
+    },
+    'POST /api/coach/cohort/share': async (req, res) => {
+      const user = guard(req, res); if (!user) return;
+      const body = await readBody(req);
+      json(res, 200, { ok: true, sharing: jobs.setShare(user.id, !!body.share) });
+    },
+
     'POST /api/coach/pending/resolve': async (req, res) => {
       const user = guard(req, res); if (!user) return;
       const body = await readBody(req);
@@ -131,6 +155,7 @@ export function coachRoutes({ json, readBody, readSession, requireAdmin }) {
         baseUrl: cfgStore.providerMeta(cfg).http ? baseUrlFor(cfg.provider, cfg) : null,
         knownModels: check.models || null,
         caps: cfg.caps,
+        community: !!cfg.community,
         runtime: { ok: !!check.ok, version: check.version || null, error: check.error || null, needsKey: !!check.needsKey },
         authMode: cfg.authMode,
         boundUid: cfgStore.boundUidFor(cfg),
@@ -183,6 +208,7 @@ export function coachRoutes({ json, readBody, readSession, requireAdmin }) {
         if (!v.ok) return json(res, 400, { error: v.error });
         patch.providerOptions = { ...current.providerOptions, [target]: { ...(current.providerOptions[target] || {}), baseUrl: v.value } };
       }
+      if (body.community !== undefined) patch.community = !!body.community;
       if (body.caps) {
         patch.caps = {
           perProfileDaily: Math.max(0, Math.min(200, +body.caps.perProfileDaily || 0)),

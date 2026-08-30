@@ -3,6 +3,7 @@ import {
   canonicalPlan, planHash, hashPlan, markStale, applicable, currentValue,
   pushSnapshot, revertLast, canRevert, appendLog, applyChangeSet, applyCreatedPlan,
   recordDismissal, validateProposal, coachAvailable, hasConsent,
+  recordDebrief, logEntry, lightBundle,
   CHANGE_TYPES, SNAPSHOT_MAX, LOG_MAX, CONSENT_VERSION
 } from './coach.js'
 import { registerCustom } from './exercises.js'
@@ -298,7 +299,7 @@ describe('accepting a subset', () => {
       change({ id: 'c2', type: 'reps', before: 10, after: 12 })
     ])
     const res = applyChangeSet(s, p, ['c1'])
-    expect(res).toEqual({ applied: 1, rejected: 1 })
+    expect(res).toMatchObject({ applied: 1, rejected: 1 })
     expect(s.routines[0].ex[0].sets).toBe(4)
     expect(s.routines[0].ex[0].reps).toBe(10)
     const decisions = s.coach.log.at(-1).decisions
@@ -550,5 +551,60 @@ describe('removing a routine takes its per-date reschedules with it', () => {
     const s = apply(S, proposal([c]), ['c1'])
     expect(revertLast(s)).toBe(true)
     expect(s.dayPlan['2099-01-01']).toBe('r2')
+  })
+})
+
+describe('what the log keeps, so a decision never makes a proposal vanish', () => {
+  const plan = {
+    opengym_plan: 1, name: 'Coach plan', summary: 'p', week: { 1: 'x1' },
+    routines: [{ id: 'x1', name: 'A', emoji: '💪', why: 'w', ex: [{ id: '0001', sets: 3, reps: 10, mode: 'reps', why: 'y'.repeat(300), secret: 1 }] }],
+    customEx: []
+  }
+
+  it('applyChangeSet returns the log id and keeps the declined change whole', () => {
+    const s = JSON.parse(JSON.stringify(state()))
+    const p = proposal([change(), change({ id: 'c2', type: 'reps', before: 10, after: 8, why: 'too many' })])
+    const res = applyChangeSet(s, p, ['c1'])
+    expect(res.logId).toBe(s.coach.log.at(-1).id)
+    const rej = s.coach.log.at(-1).decisions.find(d => d.id === 'c2')
+    expect(rej).toMatchObject({ status: 'rejected', type: 'reps', before: 10, after: 8, target: { routineId: 'r1', exId: '0001' } })
+    expect(logEntry(s, res.logId).kind).toBe('review')
+  })
+
+  it('applyCreatedPlan keeps a light copy of the bundle and whether the week was taken', () => {
+    const s = JSON.parse(JSON.stringify(state()))
+    const res = applyCreatedPlan(s, { id: 'p1', kind: 'create', bundle: plan, iteration: 2 }, { schedule: false })
+    const e = logEntry(s, res.logId)
+    expect(e.kind).toBe('create')
+    expect(e.scheduled).toBe(false)
+    expect(e.iteration).toBe(2)
+    expect(e.bundle.routines[0].ex[0]).toEqual({ id: '0001', sets: 3, mode: 'reps', reps: 10, why: 'y'.repeat(200) })
+    expect(e.bundle.routines[0].why).toBe('w')
+  })
+
+  it('recordDismissal returns the id and keeps a discarded plan too', () => {
+    const s = JSON.parse(JSON.stringify(state()))
+    const id = recordDismissal(s, { id: 'p1', kind: 'create', summary: 'nope', bundle: plan })
+    const e = logEntry(s, id)
+    expect(e.dismissed).toBe(true)
+    expect(e.bundle.name).toBe('Coach plan')
+    expect(s.coach.lastReview).toBeUndefined()
+    const rid = recordDismissal(s, proposal([change()], { evidence: { sessions: 4 }, notes: ['n'] }))
+    expect(logEntry(s, rid)).toMatchObject({ evidence: { sessions: 4 }, notes: ['n'] })
+    expect(logEntry(s, rid).decisions[0]).toMatchObject({ status: 'rejected', before: 3, after: 4 })
+  })
+
+  it('recordDebrief files the whole reading', () => {
+    const s = JSON.parse(JSON.stringify(state()))
+    const id = recordDebrief(s, { id: 'd1', kind: 'debrief', workout: { id: 'w1', name: 'Push' }, summary: 'ok', score: 8, highlights: ['a'], watch: [], nextTime: ['b'] })
+    expect(logEntry(s, id)).toMatchObject({ kind: 'debrief', score: 8, highlights: ['a'], nextTime: ['b'], workout: { id: 'w1' } })
+  })
+
+  it('lightBundle drops what the card does not show', () => {
+    const b = lightBundle({ ...plan, customEx: [{ id: 'z' }], basedOn: 'x' })
+    expect(b.customEx).toBeUndefined()
+    expect(b.basedOn).toBeUndefined()
+    expect(Object.keys(b.routines[0].ex[0])).not.toContain('secret')
+    expect(lightBundle(null)).toBeNull()
   })
 })

@@ -238,11 +238,42 @@ function cleanWorkout(w) {
   };
 }
 
+/* ---------- one workout, for a debrief ---------- */
+// Mirror of frontend/src/lib/workout-model.js isWarmupRow: an explicit phase wins, else the
+// legacy boolean.
+const isWarmupSet = s => {
+  const ph = typeof s?.phase === 'string' ? s.phase.trim().toLowerCase() : '';
+  if (ph) return ph === 'warmup' || ph === 'warm-up' || ph === 'warm_up';
+  return s?.warmup === true;
+};
+export function findWorkout(S, workoutId) {
+  const all = (S.workouts || []).filter(w => w && w.d);
+  return (workoutId && all.find(w => w.id === workoutId)) || all[all.length - 1] || null;
+}
+/** The little a debrief's card needs to name the session: id, date, name and four numbers. */
+export function workoutMeta(S, workoutId) {
+  const w = findWorkout(S, workoutId);
+  if (!w) return null;
+  let vol = 0;
+  let sets = 0;
+  (w.entries || []).forEach(en => (en.sets || []).forEach(s => {
+    if (!s.done || isWarmupSet(s)) return;
+    sets++;
+    vol += (s.w || 0) * (s.r || 0);
+  }));
+  return {
+    id: w.id || null, d: w.d, name: w.name || null,
+    minutes: w.end && w.start ? Math.round((w.end - w.start) / 60000) : null,
+    vol: Number.isFinite(w.vol) ? Math.round(w.vol) : Math.round(vol),
+    sets, prs: (w.prs || []).length
+  };
+}
+
 /**
  * Build a job payload.
  *
  * @param {object} S      the profile's synced state
- * @param {object} opts   { handle, kind, intake?, note?, refine?, previous? }
+ * @param {object} opts   { handle, kind, intake?, note?, refine?, previous?, workoutId?, cohort? }
  *
  * `handle` is the opaque per-profile pseudonym the payload carries instead of a uid. It is
  * supplied rather than derived because the two runtimes mint it differently: the server keys
@@ -255,7 +286,7 @@ export function build(S, opts = {}) {
   const profile = opts.intake || coach.profile || null;
   const p = {
     coach_contract: CONTRACT,
-    task: opts.kind === 'review' ? 'review' : 'create',
+    task: opts.kind === 'review' ? 'review' : opts.kind === 'debrief' ? 'debrief' : 'create',
     meta: {
       profile: opts.handle,
       lang: S.lang || 'en',
@@ -285,7 +316,29 @@ export function build(S, opts = {}) {
     .slice(-15);
   if (declined.length) p.previouslyDeclined = declined;
 
-  if (opts.kind === 'review') {
+  if (opts.kind === 'debrief') {
+    // One session, read closely: the workout itself, the last few times the same routine was
+    // trained, and the stall picture for the exercises in it. No library — a debrief changes
+    // nothing and names nothing new.
+    const w = findWorkout(S, opts.workoutId);
+    if (w) {
+      const all = (S.workouts || []).filter(x => x && x.d);
+      const idx = all.indexOf(w);
+      const previous = all.slice(0, idx).filter(x => x.name && x.name === w.name).slice(-3);
+      p.session = { id: w.id || null, ...cleanWorkout(w) };
+      p.previous = previous.map(cleanWorkout);
+      const inSession = new Set((w.entries || []).map(en => en.id));
+      const agg = aggregates(S, [w]);
+      p.aggregates = { ...agg, exercises: agg.exercises.filter(e => inSession.has(e.id)) };
+      const since = new Date(w.d + 'T12:00:00'); since.setDate(since.getDate() - 28);
+      const from = iso(since);
+      p.bodyweight = { goal: S.targetW ?? null, series: (S.bodyweight || []).filter(b => b.d >= from && b.d <= w.d).map(b => ({ d: b.d, w: b.w })) };
+    } else {
+      p.session = null;
+      p.previous = [];
+    }
+    if (opts.cohort) p.cohort = opts.cohort;
+  } else if (opts.kind === 'review') {
     const workouts = reviewWindow(S, coach.lastReview?.at ? String(coach.lastReview.at).slice(0, 10) : null);
     p.window = {
       from: workouts[0]?.d || null,
@@ -298,6 +351,7 @@ export function build(S, opts = {}) {
       series: (S.bodyweight || []).filter(b => !p.window.from || b.d >= p.window.from).map(b => ({ d: b.d, w: b.w }))
     };
     if (opts.note) p.userNote = String(opts.note).slice(0, 1000);
+    if (opts.cohort) p.cohort = opts.cohort;
     p.library = librarySlice(S, profile?.equipment, { keep: trainedIds(S, workouts) });
   } else {
     p.library = librarySlice(S, profile?.equipment, { keep: trainedIds(S, S.workouts || []) });

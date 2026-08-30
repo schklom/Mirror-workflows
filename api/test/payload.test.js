@@ -158,3 +158,51 @@ test('declined changes are carried forward so the Coach does not nag', () => {
   assert.equal(p.previouslyDeclined.length, 1);
   assert.equal(p.previouslyDeclined[0].type, 'sets');
 });
+
+/* ---------- debriefs and the cohort ---------- */
+const debriefState = () => sampleState({
+  workouts: [
+    { id: 'w0', d: '2026-07-06', name: 'Full body A', start: 1000, end: 1000 + 40 * 60000, vol: 500, prs: [], entries: [{ id: '0001', sets: [{ w: 18, r: 10, done: true }] }] },
+    { id: 'wx', d: '2026-07-10', name: 'Other', start: 1000, end: 1000 + 30 * 60000, vol: 100, prs: [], entries: [{ id: '0007', sets: [{ sec: 45, done: true }] }] },
+    { id: 'w1', d: '2026-07-13', name: 'Full body A', start: 1000, end: 1000 + 42 * 60000, vol: 560, prs: [], entries: [{ id: '0001', sets: [{ w: 20, r: 9, done: true }] }] },
+    { id: 'w2', d: '2026-07-20', name: 'Full body A', start: 1000, end: 1000 + 45 * 60000, vol: 600, prs: ['0001'], entries: [{ id: '0001', target: { sets: 3, reps: 10, weight: 20 }, sets: [{ w: 20, r: 10, done: true, warmup: true }, { w: 20, r: 10, done: true }, { w: 20, r: 9, done: true }, { w: 20, r: 8, done: false }] }] }
+  ]
+});
+
+test('a debrief payload carries one session, its predecessors of the same routine, and no library', () => {
+  const p = payload.build(debriefState(), { handle: handleFor('u'), kind: 'debrief', workoutId: 'w2' });
+  assert.equal(p.task, 'debrief');
+  assert.equal(p.session.id, 'w2');
+  assert.equal(p.session.entries[0].sets.length, 4);
+  assert.deepEqual(p.previous.map(w => w.d), ['2026-07-06', '2026-07-13']);
+  assert.equal('library' in p, false);
+  assert.equal('window' in p, false);
+  assert.ok(p.aggregates && Array.isArray(p.aggregates.exercises));
+  assert.ok(p.bodyweight.series.every(b => b.d <= '2026-07-20'));
+});
+
+test('an unknown workout id falls back to the latest session', () => {
+  const p = payload.build(debriefState(), { handle: handleFor('u'), kind: 'debrief', workoutId: 'nope' });
+  assert.equal(p.session.id, 'w2');
+  const latest = payload.build(debriefState(), { handle: handleFor('u'), kind: 'debrief' });
+  assert.equal(latest.session.id, 'w2');
+});
+
+test('workoutMeta counts done work sets, keeps the stored volume and the PR count', () => {
+  const m = payload.workoutMeta(debriefState(), 'w2');
+  assert.deepEqual(m, { id: 'w2', d: '2026-07-20', name: 'Full body A', minutes: 45, vol: 600, sets: 2, prs: 1 });
+  assert.equal(payload.workoutMeta(sampleState({ workouts: [] }), 'w2'), null);
+  // No stored volume: computed from the work sets.
+  const S = sampleState({ workouts: [{ id: 'q', d: '2026-07-01', start: 1, end: 60001, entries: [{ id: '0001', sets: [{ w: 10, r: 10, done: true }, { w: 10, r: 10, done: true, phase: 'warmup' }] }] }] });
+  assert.equal(payload.workoutMeta(S, 'q').vol, 100);
+});
+
+test('the cohort rides along on a review and a debrief only when handed in', () => {
+  const cohort = { unit: 'kg', people: 4, sessionsPerWeek: { median: 2.5, you: 3 }, exercises: [{ id: '0001', name: 'x', median: 50, you: 55 }] };
+  const review = payload.build(sampleState(), { handle: handleFor('u'), kind: 'review', cohort });
+  assert.deepEqual(review.cohort, cohort);
+  const debrief = payload.build(debriefState(), { handle: handleFor('u'), kind: 'debrief', cohort });
+  assert.deepEqual(debrief.cohort, cohort);
+  assert.equal('cohort' in payload.build(sampleState(), { handle: handleFor('u'), kind: 'review' }), false);
+  assert.equal('cohort' in payload.build(sampleState(), { handle: handleFor('u'), kind: 'create', cohort }), false);
+});

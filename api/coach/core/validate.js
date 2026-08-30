@@ -538,3 +538,34 @@ function currentOf(type, routine, planned, plan, target) {
 }
 
 function fail(errors) { return { ok: false, errors }; }
+
+/* =============================== workout debriefs =============================== */
+
+const DEBRIEF_LISTS = ['highlights', 'watch', 'nextTime'];
+const MAX_DEBRIEF_ITEMS = 5;
+
+/**
+ * Validate a debrief — a reading of one session with nothing to apply. Strings and short lists
+ * only: the closed list of change types does not apply because a debrief cannot carry a change
+ * at all, and one that tries is refused rather than trimmed.
+ * Returns { ok, proposal:{ summary, score, highlights, watch, nextTime } } | { ok:false, errors }.
+ */
+export function validateDebrief(data) {
+  if (!data || typeof data !== 'object') return fail(['the answer was not an object']);
+  const errors = [];
+  if (data.nochange) errors.push('a debrief was requested — "nochange" is not an answer here; read the session and say what you saw');
+  if (Array.isArray(data.changes) && data.changes.length) errors.push('a debrief carries no plan changes — drop "changes" and put advice into "nextTime"');
+  if (!isStr(data.summary)) errors.push('summary is required — two or three sentences on how the session went');
+  let score = null;
+  if (typeof data.score === 'number' && Number.isFinite(data.score)) score = Math.max(1, Math.min(10, Math.round(data.score)));
+  else errors.push('score must be a whole number from 1 to 10');
+  const lists = {};
+  DEBRIEF_LISTS.forEach(k => {
+    const v = data[k];
+    if (v != null && !Array.isArray(v)) { errors.push(`${k} must be an array of short strings`); lists[k] = []; return; }
+    lists[k] = (v || []).filter(isStr).map(x => clampStr(x.trim(), 300)).slice(0, MAX_DEBRIEF_ITEMS);
+  });
+  if (!DEBRIEF_LISTS.some(k => lists[k].length)) errors.push('at least one of highlights, watch or nextTime must have an item');
+  if (errors.length) return fail(errors);
+  return { ok: true, proposal: { summary: clampStr(data.summary.trim(), 600), score, ...lists } };
+}

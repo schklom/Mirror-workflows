@@ -115,6 +115,31 @@ unprivileged, and which account is being spent.
 > subscription is behind it — but on a shared box it means one user gets the Coach and the rest
 > get a refusal until per-profile sign-in exists.
 
+### A debrief of one workout
+
+**Review my last workout** (in the chat menu, or the chip above the composer) sends the Coach
+one session — as logged, with the last three times the same routine was trained, the stall
+picture for its exercises and four weeks of weigh-ins — and gets back a reading, not a plan: a
+score out of ten, what went well, what to watch, and what to do next time, each item citing the
+session's own numbers. A debrief cannot carry a change; an answer that tries is refused by the
+validator rather than trimmed. The card is kept in the Coach's history like everything else.
+
+### Comparing with others on the instance
+
+Off unless the admin turns it on (**Settings → Admin → AI Coach → Advanced → Let people compare
+with each other**), and then still off for each person until they opt in themselves (**Compare
+with others here → Include me** in the Coach chat). The trade is symmetric: a profile that does
+not share sees nothing.
+
+What is shown is coarse on purpose — a median across everyone sharing for sessions per week and
+for the best estimated 1RM per exercise, next to the person's own number, plus where they rank.
+An exercise appears only when three or more people train it, and nothing appears at all until
+three people share. Never a name, a body weight, a date or a single session. The same compact
+medians (always in kilograms) ride along in the payload of a review or a debrief when both
+switches are on, with the prompt told to use them for perspective only. The opt-in lives in the
+server's own per-profile record, not in synced state, so a stale device cannot flip it back on;
+switching it off removes the person from the next computation immediately.
+
 ## Whose account pays
 
 This is the first thing to settle, because it decides what the rest of the feature is allowed
@@ -157,6 +182,7 @@ renders from, so the screen cannot drift from the payload — are:
 | `training` | logged sets, targets, effort ratings, durations, PRs in the review window |
 | `bodyweight` | weigh-ins in the window and your goal weight |
 | `profile` | the intake answers you gave the Coach, including any limitations |
+| `cohort` (optional) | only with comparison on and your own opt-in: anonymous medians from the other people sharing — never their data, and never yours to them beyond the same medians |
 | `prefs` | unit, language, effort scale |
 
 A review reads a training block, not a training career: the window is capped at **12 weeks or 60

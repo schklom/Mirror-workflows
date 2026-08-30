@@ -397,3 +397,42 @@ test('a load step has an upper bound', () => {
   assert.equal(r.ok, true);
   assert.equal(r.bundle.routines[0].ex[0].inc, undefined);   // absurd step dropped, plan kept
 });
+
+/* ---------- debriefs ---------- */
+const { validateDebrief } = await import('../coach/core/validate.js');
+
+test('a debrief keeps summary, a clamped whole-number score and the three short lists', () => {
+  const r = validateDebrief({
+    coach_contract: 1, summary: '  Solid session. ', score: 7.6,
+    highlights: ['All 9 sets done', '', 'x'.repeat(400)], watch: null, nextTime: ['Add a rep']
+  });
+  assert.equal(r.ok, true);
+  assert.equal(r.proposal.summary, 'Solid session.');
+  assert.equal(r.proposal.score, 8);
+  assert.deepEqual(r.proposal.highlights.map(x => x.length), [15, 300]);
+  assert.deepEqual(r.proposal.watch, []);
+  assert.deepEqual(r.proposal.nextTime, ['Add a rep']);
+  assert.equal('changes' in r.proposal, false);
+});
+
+test('a debrief without a score, or with every list empty, is refused', () => {
+  assert.equal(validateDebrief({ summary: 'ok', highlights: ['a'] }).ok, false);
+  const r = validateDebrief({ summary: 'ok', score: 5, highlights: [], watch: [], nextTime: [] });
+  assert.equal(r.ok, false);
+  assert.ok(r.errors.some(e => /at least one/.test(e)));
+});
+
+test('a debrief carrying changes, or answering "nochange", is refused rather than trimmed', () => {
+  const withChanges = validateDebrief({ summary: 'ok', score: 5, highlights: ['a'], changes: [{ type: 'sets' }] });
+  assert.equal(withChanges.ok, false);
+  assert.ok(withChanges.errors.some(e => /no plan changes/.test(e)));
+  const noChange = validateDebrief({ nochange: true, reading: 'fine' });
+  assert.equal(noChange.ok, false);
+  // An empty changes array is harmless and ignored.
+  assert.equal(validateDebrief({ summary: 'ok', score: 5, highlights: ['a'], changes: [] }).ok, true);
+});
+
+test('a debrief score outside 1-10 is clamped, not refused', () => {
+  assert.equal(validateDebrief({ summary: 'ok', score: 14, nextTime: ['x'] }).proposal.score, 10);
+  assert.equal(validateDebrief({ summary: 'ok', score: -2, nextTime: ['x'] }).proposal.score, 1);
+});

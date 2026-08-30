@@ -236,6 +236,14 @@ export default function AdminCoach() {
             <span className="v"><input className="num" type="number" min="0" max="5000" defaultValue={d.caps.instanceDaily} disabled={busy}
               onBlur={e => +e.target.value !== d.caps.instanceDaily && patch({ caps: { ...d.caps, instanceDaily: +e.target.value } })} /></span></div>
 
+          <div className="adm-group-t" style={{ marginTop: 14 }}>Compare with others</div>
+          <div className="row between" style={{ gap: 12, alignItems: 'flex-start' }}>
+            <div className="adm-hint" style={{ margin: 0 }}>
+              <b>Let people compare with each other.</b> Anonymous medians (estimated 1RM, sessions per week) across profiles that opt in; at least three must share before anyone sees a number. Each person switches themselves on in the Coach chat, and sees nothing unless they do.
+            </div>
+            <Switch checked={!!d.community} disabled={busy} onChange={v => patch({ community: v })} />
+          </div>
+
           <div className="adm-group-t" style={{ marginTop: 14 }}>Whose account pays</div>
           <div className="adm-hint">{d.authMode === 'profile'
             ? 'Each profile signs in with their own account.'

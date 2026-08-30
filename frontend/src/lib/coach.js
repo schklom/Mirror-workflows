@@ -262,9 +262,35 @@ export const canRevert = S => !!(S?.coach?.snapshots || []).length
 
 export function appendLog(s, entry) {
   const c = coachOf(s)
-  c.log = [...(c.log || []), { id: entry.id || uid(), ...entry }].slice(-LOG_MAX)
+  const e = { id: entry.id || uid(), ...entry }
+  c.log = [...(c.log || []), e].slice(-LOG_MAX)
   trim(s)
+  return e.id
 }
+export const logEntry = (S, id) => (S?.coach?.log || []).find(e => e.id === id) || null
+
+/**
+ * What a created plan looked like, small enough to keep: names, days and prescriptions, no
+ * rationale text. The full bundle was merged into the plan already; this is what the chat
+ * shows back when someone opens an old proposal months later.
+ */
+export function lightBundle(b) {
+  if (!b) return null
+  return {
+    name: b.name || '', summary: b.summary || '', week: { ...(b.week || {}) },
+    routines: (b.routines || []).map(r => ({
+      id: r.id, name: r.name, emoji: r.emoji || '', why: r.why || '',
+      ex: (r.ex || []).map(e => ({
+        id: e.id, sets: e.sets, mode: e.mode || 'reps',
+        ...(e.reps != null ? { reps: e.reps } : {}), ...(e.sec != null ? { sec: e.sec } : {}),
+        ...(e.min != null ? { min: e.min } : {}), ...(e.weight ? { weight: e.weight } : {}),
+        ...(e.why ? { why: String(e.why).slice(0, 200) } : {})
+      }))
+    }))
+  }
+}
+const decisionOf = (c, status) => ({ id: c.id, type: c.type, target: c.target || null, before: c.before ?? null, after: c.after ?? null, why: c.why, routineName: c.routineName || null, status })
+
 
 /**
  * Last line of defence for the 5 MB sync body: if the Coach namespace ever outgrows its
@@ -346,9 +372,10 @@ export function applyCreatedPlan(s, proposal, { schedule } = {}) {
   // Only when the week actually moved — with the switch off the old schedule still stands, and
   // so do the reschedules made against it.
   if (schedule) sweepDayPlan(s, todayISO())
-  appendLog(s, {
+  res.logId = appendLog(s, {
     kind: 'create', at: Date.now(), proposalId: proposal.id,
-    summary: proposal.summary || '', routines: res.routines, iteration: proposal.iteration || 1
+    summary: proposal.summary || '', routines: res.routines, iteration: proposal.iteration || 1,
+    bundle: lightBundle(bundle), scheduled: !!schedule
   })
   return res
 }
@@ -498,29 +525,44 @@ export function applyChangeSet(s, proposal, acceptedIds) {
   const applied = []
   for (const c of changes) {
     CHANGE_APPLY[c.type](s, c)
-    applied.push({ id: c.id, type: c.type, target: c.target, before: c.before, after: c.after, why: c.why, status: 'accepted' })
+    applied.push(decisionOf(c, 'accepted'))
   }
+  // Turned-down changes keep their before/after too: the chat shows the whole proposal back
+  // later, and "you declined something about sets" is not a memory anyone can use.
   const rejected = (proposal.changes || [])
     .filter(c => !accepted.has(c.id))
-    .map(c => ({ id: c.id, type: c.type, why: c.why, status: 'rejected' }))
+    .map(c => decisionOf(c, c.status === 'stale' ? 'stale' : 'rejected'))
 
-  appendLog(s, {
+  const logId = appendLog(s, {
     kind: 'review', at: Date.now(), proposalId: proposal.id,
     summary: proposal.summary || '', evidence: proposal.evidence || null,
     notes: proposal.notes || [], decisions: [...applied, ...rejected]
   })
   coachOf(s).lastReview = { at: Date.now() }
-  return { applied: applied.length, rejected: rejected.length }
+  return { applied: applied.length, rejected: rejected.length, logId }
 }
 
 /** Turned down whole, or expired: recorded so a later review knows not to re-propose it. */
 export function recordDismissal(s, proposal) {
-  appendLog(s, {
+  const logId = appendLog(s, {
     kind: proposal.kind === 'create' ? 'create' : 'review', at: Date.now(), proposalId: proposal.id,
     summary: proposal.summary || '', dismissed: true,
-    decisions: (proposal.changes || []).map(c => ({ id: c.id, type: c.type, why: c.why, status: 'rejected' }))
+    evidence: proposal.evidence || null, notes: proposal.notes || [],
+    ...(proposal.bundle ? { bundle: lightBundle(proposal.bundle), iteration: proposal.iteration || 1 } : {}),
+    decisions: (proposal.changes || []).map(c => decisionOf(c, 'rejected'))
   })
   if (proposal.kind !== 'create') coachOf(s).lastReview = { at: Date.now() }
+  return logId
+}
+
+/** A debrief has no decision to make: it is read, kept, and shown again on request. */
+export function recordDebrief(s, proposal) {
+  return appendLog(s, {
+    kind: 'debrief', at: Date.now(), proposalId: proposal.id,
+    workout: proposal.workout || null,
+    summary: proposal.summary || '', score: proposal.score ?? null,
+    highlights: proposal.highlights || [], watch: proposal.watch || [], nextTime: proposal.nextTime || []
+  })
 }
 
 /* ============================ display helpers ============================ */

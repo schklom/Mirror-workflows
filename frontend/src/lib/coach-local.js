@@ -95,6 +95,7 @@ export const localRefine = async (S, text) => {
   const pendingCreate = d.pending && d.pending.kind === 'create' ? d.pending : null
   return start(S, 'create', { refine: String(text || '').slice(0, 1000), previous: pendingCreate?.bundle || null, iteration: (pendingCreate?.iteration || 1) + 1 })
 }
+export const localDebrief = (S, workoutId) => start(S, 'debrief', { workoutId: workoutId || null })
 export async function localResolve() { await saveCoachDevice({ pending: null }); return { ok: true } }
 export async function localForget() { job = null; lastError = null; await saveCoachDevice({ pending: null, daily: null }); return { ok: true } }
 
@@ -141,7 +142,7 @@ async function start(S, kind, opts) {
 async function run(S, kind, opts, d, adapter) {
   const key = await getApiKey()
   const payload = payloadLib.build(S, {
-    handle: await handle(), kind, intake: opts.intake, note: opts.note, refine: opts.refine, previous: opts.previous
+    handle: await handle(), kind, intake: opts.intake, note: opts.note, refine: opts.refine, previous: opts.previous, workoutId: opts.workoutId
   })
   const attempt = await runPipeline({
     adapter, cfg: cfgOf(d), kind, payload,
@@ -162,11 +163,21 @@ async function run(S, kind, opts, d, adapter) {
   const pending = {
     id: job.id, kind, createdAt: Date.now(), expiresAt: Date.now() + PENDING_DAYS * 86400000,
     planHash: planHash(S), iteration: opts.iteration || 1,
+    ...(kind === 'debrief' ? { workout: workoutMetaOf(S, opts.workoutId) } : {}),
     ...attempt.result
   }
   await saveCoachDevice({ pending })
   last = { id: job.id, kind, outcome: 'ready', errorClass: null, at: Date.now() }
   if (notify) notify({ kind: 'ready', pending })
+}
+
+// The session a debrief is about, in the shape the card reads. The core builds it for the
+// server; the fallback covers a core that predates it.
+function workoutMetaOf(S, workoutId) {
+  if (typeof payloadLib.workoutMeta === 'function') return payloadLib.workoutMeta(S, workoutId)
+  const all = (S.workouts || []).filter(w => w && w.d)
+  const w = all.find(x => x.id === workoutId) || all[all.length - 1]
+  return w ? { id: w.id, d: w.d, name: w.name || null } : null
 }
 
 // Test seam.

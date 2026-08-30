@@ -105,6 +105,20 @@ if (kind === 'create') {
   });
 }
 
+// debrief: one session read back, with its own numbers echoed so a test can check they arrived
+if (kind === 'debrief') {
+  const s = P.session || {};
+  const done = (s.entries || []).reduce((n, en) => n + (en.sets || []).filter(x => x.done).length, 0);
+  out({
+    coach_contract: 1,
+    summary: `${s.name || 'The session'} on ${s.d || '?'}: ${done} sets done in ${s.minutes ?? '?'} minutes.`,
+    score: done ? 8 : 3,
+    highlights: done ? [`${done} working sets completed.`] : [],
+    watch: (P.previous || []).length ? [] : ['First time this routine was logged — nothing to compare against yet.'],
+    nextTime: ['Keep the same loads and add one rep where the last set had reps in reserve.']
+  });
+}
+
 // review
 const routine = (P.plan?.routines || [])[0];
 const first = routine?.ex?.[0];

@@ -4,7 +4,7 @@
 import { PROMPTS } from './prompts.js';
 
 export function buildPrompt(kind, payload, repair) {
-  const task = kind === 'review' ? 'review' : payload.refine ? 'refine' : 'create';
+  const task = kind === 'review' ? 'review' : kind === 'debrief' ? 'debrief' : payload.refine ? 'refine' : 'create';
   let out = PROMPTS.common + '\n\n---\n\n' + PROMPTS[task] +
     '\n\n---\n\n## Payload\n\n```json\n' + JSON.stringify(payload, null, 1) + '\n```\n';
   if (repair) {

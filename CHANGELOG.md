@@ -4,6 +4,18 @@
 
 ### AI Coach
 
+- 🏁 **A debrief of one workout.** "Review my last workout" hands the Coach a single session —
+  with the last three of the same routine, the stall picture and four weeks of weigh-ins — and
+  gets back a score out of ten, what went well, what to watch and what to do next time, each
+  item citing the session's own numbers. It cannot carry a plan change: the validator refuses
+  one rather than trimming it. Kept in the Coach history like everything else.
+- 👥 **Compare with others on your instance — if the admin allows it.** A new switch under
+  Advanced turns on anonymous medians across profiles that opt in (each person flips *Include
+  me* in the chat; a profile that does not share sees nothing). Sessions per week and the best
+  estimated 1RM per exercise, you against the median, plus a rank — only where three or more
+  people train it, and nothing at all until three people share. The same medians (in kg) go to
+  the model on a review or a debrief, for perspective only. The opt-in lives server-side, not in
+  synced state, so a stale device cannot flip it back on.
 - 💬 **The Coach is a conversation now.** The first visit is an intake in the style of a phone
   setup — one question per screen, 1–7 days a week, session length as hours:minutes, the consent
   text with room to read it. After that it is a chat: your answers are the first message, a

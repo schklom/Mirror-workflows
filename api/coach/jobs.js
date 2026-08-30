@@ -25,6 +25,7 @@ import { buildPrompt } from './core/prompt.js';
 import { handleFor } from './handle.js';
 import { fetchFor } from './node-fetch.js';
 import { canDropPrivileges, unprivilegedIds } from './adapters/spawn.js';
+import { cohortForPayload, invalidate as invalidateCohort } from './cohort.js';
 
 // The prompt assembly, the plan fingerprint and the invoke→parse→validate→repair loop all
 // live in ./core now, where the phone can import them too. Re-exported so nothing that
@@ -65,6 +66,24 @@ function patchUser(uid, patch) {
 /** Consent revoked, profile deleted, "reset everything" — no server-side residue (FR-51). */
 export function clearUser(uid) {
   try { fs.unlinkSync(userFile(uid)); } catch { /* nothing to clear */ }
+}
+
+/** Every profile with a state file — the population a cohort is drawn from. */
+export function listUserIds() {
+  try {
+    return fs.readdirSync(DATA).filter(f => /^state-[a-zA-Z0-9_-]+\.json$/.test(f)).map(f => f.slice(6, -5));
+  } catch { return []; }
+}
+
+/* ---------- "compare with others" opt-in ----------
+   Held here, in the server's own per-profile record, rather than in the synced state: the
+   flag decides whether this person's numbers reach other people, and a stale device syncing
+   an older copy of S must not be able to flip it back on. */
+export const isSharing = uid => !!readUser(uid).share;
+export function setShare(uid, share) {
+  patchUser(uid, { share: !!share });
+  invalidateCohort();
+  return !!share;
 }
 
 export function readState(uid) {
@@ -179,8 +198,9 @@ export function enqueue(uid, opts) {
   const job = {
     id: crypto.randomBytes(8).toString('hex'),
     uid,
-    kind: opts.kind,                                  // 'create' | 'review'
+    kind: opts.kind,                                  // 'create' | 'review' | 'debrief'
     trigger: opts.trigger || 'manual',                // 'manual' | 'scheduled'
+    workoutId: opts.workoutId ? String(opts.workoutId).slice(0, 40) : null,
     intake: opts.intake || null,
     note: opts.note || null,
     refine: opts.refine || null,
@@ -248,6 +268,10 @@ async function execute(job) {
   const adapter = adapterFor(cfg.provider);
   if (!adapter) return finish(job, { outcome: 'failed', errorClass: 'off' });
 
+  if (job.kind === 'debrief' && !payloadLib.findWorkout(S, job.workoutId)) {
+    return finish(job, { outcome: 'failed', errorClass: 'noworkout' });
+  }
+
   const pendingCreate = job.refine ? readUser(job.uid).pending : null;
   const payload = payloadLib.build(S, {
     handle: handleFor(job.uid),
@@ -255,7 +279,11 @@ async function execute(job) {
     intake: job.intake,
     note: job.note,
     refine: job.refine,
-    previous: pendingCreate?.bundle || null
+    previous: pendingCreate?.bundle || null,
+    workoutId: job.workoutId,
+    // The room's medians ride along on a review or a debrief when the admin allows it and
+    // this person opted in; null otherwise, and the payload then carries no `cohort` at all.
+    cohort: (job.kind === 'review' || job.kind === 'debrief') ? cohortForPayload(job.uid) : null
   });
 
   // An HTTPS provider has no child process, so no directory for one to live in either.
@@ -283,6 +311,8 @@ async function execute(job) {
       expiresAt: Date.now() + PENDING_DAYS * 86400000,
       planHash: hashPlan(payloadLib.canonicalPlan(S)),
       iteration: job.refine ? (pendingCreate?.iteration || 1) + 1 : 1,
+      // A debrief names the session it read, so the card can show it after the fact.
+      ...(job.kind === 'debrief' ? { workout: payloadLib.workoutMeta(S, job.workoutId) } : {}),
       ...attempt.result
     };
     return finish(job, { outcome: 'ready', pending });

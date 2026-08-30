@@ -9,11 +9,11 @@ import { todayISO } from '../lib/format.js'
 // The chat is where a plan is imported. These pin that the Import button applies the pending
 // plan through the store, writes the decision into the thread, and leaves today startable.
 const mocks = vi.hoisted(() => {
-  const state = { S: null, pending: null, job: null, nav: vi.fn(), toast: vi.fn(), openSheet: vi.fn(), refresh: vi.fn() }
+  const state = { S: null, pending: null, job: null, community: false, nav: vi.fn(), toast: vi.fn(), openSheet: vi.fn(), refresh: vi.fn() }
   state.storeSnapshot = () => ({
     S: state.S,
     user: { id: 'u1' },
-    config: { coach: { enabled: true } },
+    config: { coach: { enabled: true, ...(state.community ? { community: true } : {}) } },
     coachLocal: null,
     update: mut => mut(state.S),
   })
@@ -37,6 +37,9 @@ vi.mock('../lib/coach-api.js', () => ({
   resolvePending: vi.fn(() => Promise.resolve({})),
   refinePlan: vi.fn(() => Promise.resolve({})),
   requestReview: vi.fn(() => Promise.resolve({})),
+  requestDebrief: vi.fn(() => Promise.resolve({})),
+  cohortStats: vi.fn(() => Promise.resolve({ ok: false, enabled: true, sharing: false })),
+  setCohortShare: vi.fn(() => Promise.resolve({ ok: true, sharing: true })),
   JOB_ERRORS: { internal: 'x' },
 }))
 vi.mock('../sheets.jsx', () => ({ startFlow: vi.fn(), confirmSheet: vi.fn() }))
@@ -82,10 +85,11 @@ function installDom() {
   root = createRoot(container)
 }
 
-async function mount(pending, job = null) {
-  mocks.S = state()
+async function mount(pending, job = null, { community = false, S = state() } = {}) {
+  mocks.S = S
   mocks.pending = pending
   mocks.job = job
+  mocks.community = community
   installDom()
   await act(async () => { root.render(React.createElement(CoachChat)) })
 }
@@ -155,5 +159,53 @@ describe('the Coach chat', () => {
     expect(mocks.S.routines.map(r => r.name)).toEqual(['Legs'])
     expect(mocks.S.coach.chat.at(-1).kind).toBe('applied')
     expect(mocks.S.coach.log.at(-1).decisions.map(d => d.status)).toEqual(['accepted', 'rejected'])
+  })
+
+  it('keeps an applied review in the thread as a card that opens the whole proposal', async () => {
+    await mount({ id: 'r1', kind: 'review', summary: 'a reading', changes: [
+      { id: 'a', type: 'week', target: { weekday: 1 }, before: null, after: null, why: 'rest' },
+      { id: 'b', type: 'add-routine', target: {}, before: null, after: { name: 'Legs', ex: [{ id: '0001', sets: 3, reps: 10 }] }, why: 'legs' }
+    ] })
+    await click([...container.querySelectorAll('[role="checkbox"]')][0])
+    await click(byText(/Apply 1 change/))
+    // The decision is in the store; re-render with the proposal gone, as the poll would.
+    mocks.pending = null
+    await act(async () => { root.render(React.createElement(CoachChat)) })
+    const recap = container.querySelector('.recap')
+    expect(recap).toBeTruthy()
+    expect(recap.textContent).toContain('1 accepted · 1 declined')
+    expect(recap.querySelectorAll('.recap-chip.yes').length).toBe(1)
+    expect(recap.querySelectorAll('.recap-chip.no').length).toBe(1)
+    expect(mocks.S.coach.chat.at(-1).ref).toBe(mocks.S.coach.log.at(-1).id)
+    await click(recap)
+    expect(mocks.openSheet).toHaveBeenCalled()
+  })
+
+  it('shows a debrief with its score ring and files it on "Got it"', async () => {
+    await mount({ id: 'd1', kind: 'debrief', workout: { id: 'w1', name: 'Push', d: '2026-08-29' }, summary: 'ok', score: 8, highlights: ['a'], watch: [], nextTime: ['b'] })
+    expect(container.querySelector('.deb-ring')).toBeTruthy()
+    expect(container.textContent).toContain('Good session')
+    expect(container.textContent).toContain('What went well')
+    expect(container.textContent).not.toContain('Worth watching')
+    await click(byText(/Got it/))
+    expect(mocks.S.coach.log.at(-1).kind).toBe('debrief')
+    expect(mocks.S.coach.log.at(-1).score).toBe(8)
+    expect(mocks.S.coach.chat.at(-1).kind).toBe('debrief')
+    expect(mocks.S.coach.chat.at(-1).ref).toBe(mocks.S.coach.log.at(-1).id)
+  })
+
+  it('offers the quick actions only when nothing is running', async () => {
+    await mount(null)
+    expect(byText(/Review my training/)).toBeTruthy()
+    expect(byText(/Last workout/)).toBeFalsy()          // no workout logged yet
+    await mount(null, { id: 'j1', kind: 'review', state: 'running', startedAt: Date.now() })
+    expect(byText(/Review my training/)).toBeFalsy()
+  })
+
+  it('offers the comparison only when the instance allows it', async () => {
+    await mount(null)
+    expect(byText(/^Compare$/)).toBeFalsy()
+    await mount(null, null, { community: true })
+    expect(byText(/^Compare$/)).toBeTruthy()
   })
 })

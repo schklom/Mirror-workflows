@@ -79,6 +79,9 @@ const DEFAULTS = {
   providerOptions: {},                               // { [provider]: { baseUrl } }
   boundUid: {},                                      // instance mode: { [provider]: the profile its credential bound to }
   caps: { perProfileDaily: 10, instanceDaily: 0 },   // 0 = unlimited
+  // Anonymous medians across profiles that opt in ("compare with others"). Off by default: it
+  // is the one feature where one person's numbers feed into what another person sees.
+  community: false,
   log: []
 };
 const PER_PROVIDER = ['auth', 'models', 'providerOptions', 'boundUid'];
@@ -293,7 +296,7 @@ export function isConnected() {
 export function publicConfig() {
   if (!isEnabled() || !isConnected()) return null;
   const cfg = load();
-  return { enabled: true, provider: cfg.provider, providerLabel: providerMeta(cfg).label, authMode: cfg.authMode };
+  return { enabled: true, provider: cfg.provider, providerLabel: providerMeta(cfg).label, authMode: cfg.authMode, community: !!cfg.community };
 }
 
 /**

@@ -151,3 +151,53 @@ test('the disclosure names the provider and the same five categories the payload
   assert.equal(r.body.providerLabel, 'Google Gemini');
   assert.deepEqual(r.body.categories, ['plan', 'training', 'bodyweight', 'profile', 'prefs']);
 });
+
+/* ---------- debrief + cohort routes ---------- */
+test('a debrief is enqueued as its own kind, and the cohort routes gate on the admin switch and the opt-in', async () => {
+  fresh({ community: false });
+  const jobs = await import('../coach/jobs.js');
+  const { writeState, sampleState } = await import('./helpers.mjs');
+  const { forcePrivilegeVerdict } = await import('../coach/adapters/spawn.js');
+  forcePrivilegeVerdict({ ok: true, dropped: false, why: 'pinned by the test suite' });
+  writeState(process.env.DATA_DIR, 'admin-1', sampleState());
+  const { call } = harness();
+
+  const off = await call('GET /api/coach/cohort');
+  assert.deepEqual(off.body, { ok: false, enabled: false });
+
+  const cfgOn = await call('POST /api/admin/coach/config', { community: true });
+  assert.equal(cfgOn.status, 200);
+  assert.equal(cfg.load().community, true);
+  assert.equal((await call('GET /api/admin/coach')).body.community, true);
+  assert.equal(cfg.publicConfig().community, true);
+
+  const notSharing = await call('GET /api/coach/cohort');
+  assert.deepEqual(notSharing.body, { ok: false, enabled: true, sharing: false });
+  const share = await call('POST /api/coach/cohort/share', { share: true });
+  assert.deepEqual(share.body, { ok: true, sharing: true });
+  assert.equal(jobs.isSharing('admin-1'), true);
+  const alone = await call('GET /api/coach/cohort');
+  assert.equal(alone.body.ok, false);
+  assert.equal(alone.body.sharing, true);
+  assert.equal(alone.body.people, 1);
+
+  const r = await call('POST /api/coach/debrief', { workoutId: 'w1' });
+  assert.equal(r.status, 202);
+  assert.equal(jobs.status('admin-1').job.kind, 'debrief');
+  const until = Date.now() + 15000;
+  while (jobs.status('admin-1').job && Date.now() < until) await new Promise(res => setTimeout(res, 25));
+  const s = jobs.status('admin-1');
+  assert.equal(s.pending.kind, 'debrief');
+  assert.deepEqual(s.pending.workout, { id: 'w1', d: '2026-07-20', name: 'Full body A', minutes: 45, vol: 600, sets: 3, prs: 0 });
+  assert.equal(s.pending.score, 8);
+  assert.ok(s.pending.summary.includes('3 sets'));
+  assert.ok(Array.isArray(s.pending.nextTime) && s.pending.nextTime.length);
+  assert.equal('changes' in s.pending, false);
+
+  // A profile with nothing logged cannot be debriefed.
+  jobs.resolvePending('admin-1', { accepted: ['debrief'] });
+  writeState(process.env.DATA_DIR, 'admin-1', sampleState({ workouts: [] }));
+  await call('POST /api/coach/debrief', {});
+  while (jobs.status('admin-1').job && Date.now() < until) await new Promise(res => setTimeout(res, 25));
+  assert.equal(jobs.status('admin-1').last.errorClass, 'noworkout');
+});

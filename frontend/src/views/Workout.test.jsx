@@ -36,6 +36,7 @@ const mocks = vi.hoisted(() => {
     startRest: state.startRest,
     stopRest: state.stopRest,
     stopWork: state.stopWork,
+    shiftRestOwner: vi.fn(),
     startWork: vi.fn(),
     toast: state.toast,
   })
@@ -171,7 +172,7 @@ describe('Workout set completion flow', () => {
     await toggleSet(0)
 
     expect(mocks.startRest).toHaveBeenCalledOnce()
-    expect(mocks.startRest).toHaveBeenCalledWith(90)
+    expect(mocks.startRest).toHaveBeenCalledWith(90, expect.any(Number))
     expect(mocks.stopRest).not.toHaveBeenCalled()
 
     await unmount()
@@ -275,7 +276,7 @@ describe('Workout set completion flow', () => {
 
     expect(mocks.topWeightSheet).toHaveBeenCalledWith(1)
     expect(mocks.S.active.cur).toBe(1)
-    expect(mocks.startRest).toHaveBeenCalledWith(90)
+    expect(mocks.startRest).toHaveBeenCalledWith(90, expect.any(Number))
   })
 
   it('skips completed intervening units and selects the next unfinished superset as one unit', async () => {
@@ -291,7 +292,7 @@ describe('Workout set completion flow', () => {
     expect(mocks.S.active.cur).toBe(2)
     expect(mocks.workoutCompleteSheet).not.toHaveBeenCalled()
     expect(mocks.toast).toHaveBeenCalledWith('Hold logged')
-    expect(mocks.startRest).toHaveBeenCalledWith(90)
+    expect(mocks.startRest).toHaveBeenCalledWith(90, expect.any(Number))
   })
 
   it('wraps to earlier unfinished work instead of showing a false completion prompt', async () => {
@@ -304,7 +305,7 @@ describe('Workout set completion flow', () => {
 
     expect(mocks.S.active.cur).toBe(0)
     expect(mocks.workoutCompleteSheet).not.toHaveBeenCalled()
-    expect(mocks.startRest).toHaveBeenCalledWith(90)
+    expect(mocks.startRest).toHaveBeenCalledWith(90, expect.any(Number))
   })
 
   it('keeps top-weight confirmation in control without declaring completion while work remains', async () => {
@@ -444,6 +445,6 @@ describe('superset flow survives an exercise being removed mid-session', () => {
 
     // Partner closes the round (each still has a second set), which is what starts the rest.
     await toggleSet(2)
-    expect(mocks.startRest).toHaveBeenCalledWith(90)
+    expect(mocks.startRest).toHaveBeenCalledWith(90, expect.any(Number))
   })
 })

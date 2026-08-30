@@ -258,10 +258,16 @@ function ExerciseBlock({ entryIdx, compact, onToggle, onField, onAddSet, onRemov
 
 /* ---------- active workout ---------- */
 export function removeActiveExercise(idx) {
-  // Clear timer state and callbacks before indexes can shift. This also protects a confirmation
-  // sheet that was opened first and confirmed after a timed hold or rest countdown started.
+  // Clear the work callback before indexes can shift. This also protects a confirmation sheet
+  // that was opened first and confirmed after a timed hold started.
   useUI.getState().stopWork()
-  useUI.getState().stopRest()
+  // A rest countdown belongs to the exercise whose set started it (timer.forIdx). Removing that
+  // exercise ends the rest — there is nothing left to rest for. Removing any other exercise
+  // keeps the countdown and only re-points it, so a pause you are in the middle of survives
+  // tidying up the list.
+  const rest = useUI.getState().timer
+  if (rest && rest.forIdx === idx) useUI.getState().stopRest()
+  else useUI.getState().shiftRestOwner(idx + 1, -1)
   useStore.getState().update(s => {
     if (!s.active || !Array.isArray(s.active.entries)) return
     if (idx < 0 || idx >= s.active.entries.length) return
@@ -424,7 +430,7 @@ function ActiveWorkout() {
       // A re-check of finished work must not navigate or reopen a sheet, but it may still owe
       // you a rest — see restOnRecheck, and the other half of issue #3.
       if (!progress.isNew) {
-        if (!restBeforeWarmup && restOnRecheck({ timerRunning: !!useUI.getState().timer, unitDone: freshUnitDone, lastUnit: freshWorkoutDone })) startRest(S.restSec)
+        if (!restBeforeWarmup && restOnRecheck({ timerRunning: !!useUI.getState().timer, unitDone: freshUnitDone, lastUnit: freshWorkoutDone })) startRest(S.restSec, idx)
         return
       }
 
@@ -434,7 +440,7 @@ function ActiveWorkout() {
       if (freshUnitDone) stopRest()
       if (!freshUnit || freshUnit.length <= 1) {
         if (freshUnitDone && !askTop && nextUnit?.length) update(s => { if (s.active) s.active.cur = nextUnit[0] })
-        if (!restBeforeWarmup && restAfterSet({ unitDone: freshUnitDone, lastUnit: freshWorkoutDone })) startRest(S.restSec)
+        if (!restBeforeWarmup && restAfterSet({ unitDone: freshUnitDone, lastUnit: freshWorkoutDone })) startRest(S.restSec, idx)
         return
       }
 
@@ -444,11 +450,11 @@ function ActiveWorkout() {
         if (nextUnit?.length) {
           // The top-weight sheet's explicit "Just close" path owns the choice not to advance.
           if (!askTop) update(s => { if (s.active) s.active.cur = nextUnit[0] })
-          if (!restBeforeWarmup) startRest(S.restSec)
+          if (!restBeforeWarmup) startRest(S.restSec, idx)
         }
       } else {
         if (step.nextIdx != null) update(s => { if (s.active) s.active.cur = step.nextIdx })
-        if (step.roundDone) startRest(S.restSec)
+        if (step.roundDone) startRest(S.restSec, idx)
       }
     }
   }
@@ -527,6 +533,7 @@ function ActiveWorkout() {
         const insertAt = insertionIndexAfterCurrentUnit(supersetUnits(s.active.entries), s.active.cur, s.active.entries.length)
         s.active.entries.splice(insertAt, 0, { id: ex.id, target: { ...cfg }, plan, sets: applyIntensifierPlan(progressed, full) })
         s.active.cur = insertAt
+        useUI.getState().shiftRestOwner(insertAt, 1)
       }), null, routine, seed)
     })} icon="plus">{t('Add exercise')}</Button>
     {A.entries.length > 0 && <>

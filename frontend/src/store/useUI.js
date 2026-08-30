@@ -56,7 +56,8 @@ let workDone = null
 export const useUI = create((set, get) => ({
   sheets: [],          // { id, render:(close)=>JSX, kind:'sheet'|'center', locked }
   toastMsg: '',
-  timer: null,         // rest countdown between sets — { left, total, endsAt }
+  timer: null,         // rest countdown between sets — { left, total, endsAt, forIdx }
+                       // forIdx: index of the active entry whose set started the rest (undefined when unknown)
   work: null,          // work countdown DURING a timed set (issue #16) — { left, total, endsAt, label }
 
   openSheet(render, { kind = 'sheet', locked = false } = {}) {
@@ -74,13 +75,13 @@ export const useUI = create((set, get) => ({
     toastTm = setTimeout(() => set({ toastMsg: '' }), 2200)
   },
 
-  startRest(sec) {
+  startRest(sec, forIdx) {
     get().stopRest()
     // Rest timer set to Off. Stopping and returning rather than starting a zero-length timer
     // keeps every caller honest: the four places that start a rest do not each need to know.
     if (!(sec > 0)) return
     const endsAt = Date.now() + sec * 1000
-    set({ timer: { left: sec, total: sec, endsAt } })
+    set({ timer: { left: sec, total: sec, endsAt, forIdx } })
     requestRestNotificationPermission()
     pushRestTimer(sec)
     timerTick = () => {
@@ -108,6 +109,13 @@ export const useUI = create((set, get) => ({
     if (left <= 0) { get().stopRest(); return }
     set({ timer: { ...tm, left, total: tm.total + sec, endsAt: tm.endsAt + sec * 1000 } })
     pushRestTimer(left)
+  },
+  // The active list changed shape (an exercise removed or inserted at `at`): keep the rest
+  // pointing at the same exercise. Returns nothing; the caller decides whether to stop instead.
+  shiftRestOwner(at, delta) {
+    const tm = get().timer
+    if (!tm || !(tm.forIdx >= at)) return
+    set({ timer: { ...tm, forIdx: tm.forIdx + delta } })
   },
   stopRest() {
     if (timerInt) clearInterval(timerInt); timerInt = null

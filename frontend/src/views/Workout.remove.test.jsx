@@ -112,15 +112,39 @@ describe('active-session exercise removal', () => {
     expect(active.entries[0].sets[0].sec).toBeUndefined()
   })
 
-  it('cancels a running rest countdown before removing the selected occurrence', () => {
+  it('cancels a running rest countdown when the exercise it belongs to is removed', () => {
     setActive([entry('1001'), entry('1002')], 0)
-    useUI.getState().startRest(90)
+    useUI.getState().startRest(90, 0)
     expect(useUI.getState().timer).not.toBeNull()
 
     act(() => { removeActiveExercise(0) })
 
     expect(useUI.getState().timer).toBeNull()
     expect(useStore.getState().S.active.entries.map(e => e.id)).toEqual(['1002'])
+  })
+
+  it('keeps a rest countdown that belongs to another exercise, re-pointed at it', () => {
+    setActive([entry('1001'), entry('1002'), entry('1003')], 1)
+    useUI.getState().startRest(90, 1)
+
+    act(() => { removeActiveExercise(0) })
+    expect(useUI.getState().timer?.forIdx).toBe(0)
+    expect(useStore.getState().S.active.entries.map(e => e.id)).toEqual(['1002', '1003'])
+
+    act(() => { removeActiveExercise(1) })
+    expect(useUI.getState().timer?.forIdx).toBe(0)
+    expect(useStore.getState().S.active.entries.map(e => e.id)).toEqual(['1002'])
+
+    act(() => { removeActiveExercise(0) })
+    expect(useUI.getState().timer).toBeNull()
+  })
+
+  it('leaves a rest countdown without a known owner running', () => {
+    setActive([entry('1001'), entry('1002')], 0)
+    useUI.getState().startRest(90)
+
+    act(() => { removeActiveExercise(0) })
+    expect(useUI.getState().timer).not.toBeNull()
   })
 
   it('does not mutate before confirmation, leaves state unchanged on Cancel, and removes on Confirm', () => {

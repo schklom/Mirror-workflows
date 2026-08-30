@@ -1,5 +1,39 @@
 # Changelog
 
+## v1.2.12 — 2026-08-30
+
+Six small fixes from the community, each read and tried on staging before it went in. All of
+them are in the active workout or the exercise settings; nothing changes on the server, so a
+self-hosted instance only needs the new web bundle.
+
+### Active workout
+
+- ➕ **Adding an exercise mid-session puts it right after the one you are on**, not at the end
+  of the list, and the flow carries on from there: "next" takes you to the next *unfinished*
+  exercise and the finish prompt only appears once nothing is left open. Before, a set added
+  late could leave you looking at a completion prompt with work still pending.
+  (Space-Hermes, !42)
+- ⏱️ **Removing an exercise no longer leaves a timer behind.** A rest countdown that belonged to
+  the removed exercise stops with it — but a rest you are in the middle of for a *different*
+  exercise keeps running and simply follows that exercise. (Space-Hermes, !51, narrowed here)
+- ⏹️ **Discarding a workout stops a running timed set.** The countdown used to keep going, and
+  beep, on a session that no longer existed. Cancelling the confirmation leaves it running.
+  (Space-Hermes, !59)
+- 🗺️ **A custom exercise you delete still counts in recovery.** The muscle map and the recovery
+  view read the snapshot saved with each finished workout, so deleting the exercise afterwards
+  no longer blanks the muscles it trained. (Space-Hermes, !58)
+
+### Exercise settings
+
+- 🔢 **Progression steps below one can be typed.** Entering `0.5` used to snap back to the
+  default halfway through, because the field rejected the intermediate `0`. A cleared field
+  still means "use the default". (mflova, !60)
+- 📐 **Long values in routine rows no longer squash the title.** The value column is capped
+  instead of reserving space, so a "3 × 12 @ 102.5 kg" row keeps its exercise name readable on a
+  narrow phone. (MokshManral, !37)
+
+With thanks to Space-Hermes, mflova and MokshManral.
+
 ## v1.2.11 — 2026-08-25
 
 A correction release. v1.2.10 landed planned warm-ups and notes, and reviewing that release

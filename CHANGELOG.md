@@ -4,6 +4,28 @@
 
 ### AI Coach
 
+- 💬 **The Coach is a conversation now.** The first visit is an intake in the style of a phone
+  setup — one question per screen, 1–7 days a week, session length as hours:minutes, the consent
+  text with room to read it. After that it is a chat: your answers are the first message, a
+  typing bubble counts the seconds while the job runs, the plan lands as a card with a tab per
+  routine and the reason under every change, free text asks for a refinement, one button
+  applies it. Coming back, asking for a review, changing an answer — same chat. The per-user
+  off switch is gone; only the admin turns the Coach off.
+- 🧭 **Admin card in numbered steps** — provider → endpoint → access → model → test — with a
+  status pill and plain-language state; limits, account and isolation under *Advanced*, the job
+  log under *Activity*.
+- ⏱️ **A local model gets the time it needs.** `COACH_JOB_TIMEOUT_MS` raises the five-minute job
+  budget for a CPU-bound Ollama or LM Studio; the api's HTTP client now waits as long as the job
+  does instead of hanging up after undici's 300 s while the model was still typing; the phone's
+  own-key mode gives a local endpoint 25 minutes and never lets the native transport cut first;
+  and the chat stops promising "a minute or two" when the endpoint is local.
+- 📚 **The exercise catalogue in the payload is capped at 160** — round-robin across body
+  parts, deterministic, with everything in your plan and your history always included so a
+  review can name what it is talking about. All 1,324 used to go along: 10k+ tokens a job
+  against a metered API, and more than a small local model's context holds.
+- 🧪 **A single session is not a trend.** The review prompt now refuses structural changes on
+  fewer than three sessions or less than a week of data — a small model used to remove a leg
+  exercise because "the one session had no leg work".
 - 🔑 **Four providers that only need an API key.** Anthropic, OpenAI, Google Gemini, and any
   OpenAI-compatible endpoint — Ollama, LM Studio, vLLM, OpenRouter, a gateway of your own — can
   now drive the Coach. They speak plain HTTPS from the api process, so they need no AI runtime

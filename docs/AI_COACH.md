@@ -62,8 +62,14 @@ providers — that jobs run no child process at all, so the privilege-drop line 
 applicable rather than as a problem.
 
 **3. Use it.** Each person opens **Plan → AI Coach**, agrees to the consent screen — which lists
-exactly what leaves the server, generated from the same module that builds payloads — and then
-either has a plan built from a short intake or asks for a review of what they have logged.
+exactly what leaves the server, generated from the same module that builds payloads — and
+answers a short intake, one question per screen: goal, experience, days per week, session
+length, equipment, limitations. From then on the Coach is a chat. The answers are its first
+message; while a job runs a typing bubble shows the elapsed time; the proposal arrives as a
+card with a tab per routine and a reason under every change; free text below it asks for a
+refinement, a button applies it. Coming back later, asking for a review of what was logged
+since, or changing an answer all happen in the same conversation. Users cannot switch the
+Coach off themselves — only the admin can, from the card above.
 
 A key, a model and the account binding described below belong to the provider they were
 entered for. Switching chips does not clear them: the Anthropic key is still there when you
@@ -197,6 +203,13 @@ you that has not:
 A rejected answer gets **one** repair round, with the errors handed back verbatim. Two failures
 is a provider problem rather than a prompting problem, and a retry loop against a paid account
 is a bad way to find that out.
+
+A job is given five minutes by default, which is generous for any hosted API. A model running
+on a CPU behind the compatible endpoint can need more — a 3B model with an 8k prompt takes ten
+minutes on a small VM — so `COACH_JOB_TIMEOUT_MS` in `.env` raises it (never below one
+minute); the api's own HTTP client waits as long as the job, and the chat says "this can take a
+while" rather than promising minutes when the endpoint is a local one. The phone's BYOK mode
+does the same on its own: a local endpoint gets 25 minutes there.
 
 The Coach may only touch **routines and the week**. Your training log, your weigh-ins and your
 settings are not reachable from any change type that exists.

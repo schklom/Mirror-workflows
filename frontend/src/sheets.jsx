@@ -3,7 +3,7 @@ import { useStore } from './store/useStore.js'
 import { useUI } from './store/useUI.js'
 import { EXDB, EXIDX, BODYPARTS, isCardio, isBodyweightEq, allExercises, equipmentOf, smOf, matchExercise, exOr } from './lib/exercises.js'
 import { activeProfile, exAvailable, ALL_EQUIPMENT, newProfile } from './lib/equipment.js'
-import { fmtDate, fmtNum, fmtVol, fmtDur, durPart, todayISO, uid, exCount, DAYN, MONTHS_LONG, ACCENTS } from './lib/format.js'
+import { fmtDate, fmtNum, fmtVol, fmtDur, durPart, todayISO, isoOf, uid, exCount, DAYN, MONTHS_LONG, ACCENTS } from './lib/format.js'
 import { lastEntryFor, bestWeightFor, buildSets, effectiveRoutineId, workoutVolume, setsDone, setsDoneActive, lastBW, supersetUnits, unitOf, setLabel, defaultConfig, cleanupSg, modeOf, effortOf, isBw, isPerSide, sideReps, workSetsDone, applyIntensifierPlan, MAX_PLANNED_WARMUPS, NOTE_MAX } from './lib/history.js'
 import { beep, vibrate } from './lib/sound.js'
 import { t, instrFor, exerciseNameFor, getLang, INSTR_LANGS } from './lib/i18n.js'
@@ -27,6 +27,8 @@ import { buildCompletedWorkout } from './lib/finish-workout.js'
 import { isWarmupRow } from './lib/workout-model.js'
 import { nextUnfinishedUnit } from './lib/supersetFlow.js'
 import { swapActiveExercise } from './lib/active-exercise-swap.js'
+import { buildSessionEntries } from './lib/session-start.js'
+import { workoutsOn, backfillStart, backfillEnd, completeBackfill } from './lib/backfill.js'
 
 const S = () => useStore.getState().S
 const update = (...a) => useStore.getState().update(...a)
@@ -1366,20 +1368,85 @@ export function startFlow(routineId) {
 export function beginWorkout(routineId, bw) {
   const st = S()
   const r = routineId ? st.routines.find(x => x.id === routineId) : null
-  // The prescription is applied as the session is built, so you walk up to the bar with the
-  // right weight already on the screen instead of being told about it afterwards. `plan` is
-  // kept on the entry purely so the workout can explain the number it chose.
-  const excluded = r?.excludeFromProgression === true
-  const entries = (r ? r.ex : []).map(cfg => {
-    const plan = excluded ? { policy: 'off', kind: 'off' } : nextPrescription(st, cfg, r)
-    const step = defaultIncrement(cfg.id, st.unit)
-    const sets = applyIntensifierPlan(applyPrescription(buildSets(st, cfg, { step, useTarget: excluded }), plan, step), cfg)
-    return { id: cfg.id, sg: cfg.sg, target: { ...cfg }, plan, sets }
-  })
+  const { entries, excluded } = buildSessionEntries(st, r)
   update(s => {
     s.active = {
       id: uid(), d: todayISO(), start: Date.now(), routineId,
       name: r ? r.name : t('Freestyle'), bw: bw || null, cur: 0, entries,
+      ...(excluded ? { excludeFromProgression: true } : {})
+    }
+  })
+  useUI.getState().stopRest()
+  nav('/workout')
+}
+
+/* ============================ log a past workout ============================ */
+// The same screen as a live session, pointed at another day. `backfill` on the active
+// session is what tells the workout screen to drop the clock and the rest timers, and tells
+// the finish path to file the workout where its date belongs instead of at the end.
+function LogPastWorkout({ close }) {
+  const st = useStore(s => s.S)
+  const yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1)
+  const [date, setDate] = useState(isoOf(yesterday))
+  const [time, setTime] = useState('18:00')
+  const [dur, setDur] = useState(60)
+  const [routineId, setRoutineId] = useState('')
+  const today = todayISO()
+  const options = [{ value: '', label: t('Freestyle') }, ...st.routines.map(r => ({ value: r.id, label: r.name }))]
+
+  const go = replaceId => {
+    close()
+    beginBackfill({ iso: date, time, durationMin: dur, routineId: routineId || null, replaceId })
+  }
+  const submit = () => {
+    if (!date || date > today) { toast(t('Pick a day up to today')); return }
+    const existing = workoutsOn(st, date)
+    if (!existing.length) { go(null); return }
+    ui().openSheet(c => <SameDayChoice iso={date} existing={existing} close={c}
+      onReplace={id => { c(); go(id) }} onAdd={() => { c(); go(null) }} />, { kind: 'center' })
+  }
+
+  return <>
+    <h3>{t('Log a past workout')}</h3>
+    <div className="muted small" style={{ marginBottom: 12 }}>{t('Logged on the usual workout screen, without timers.')}</div>
+    <Row icon="calendar" title={t('Date')}>
+      <input type="date" className="timef" value={date} max={today} onChange={e => setDate(e.target.value)} /></Row>
+    <Row icon="clock" title={t('Start time')}>
+      <input type="time" className="timef" value={time} onChange={e => setTime(e.target.value)} /></Row>
+    <Stepper label={t('Duration')} unit="min" value={dur} step={5} decimal={false} onChange={v => setDur(Math.max(1, Math.round(v)))} />
+    <div style={{ height: 8 }} />
+    <SelectRow icon="dumbbell" title={t('Routine')} value={routineId} options={options} onChange={setRoutineId} />
+    <div style={{ height: 18 }} />
+    <Button variant="primary" onClick={submit}>{t('Continue')}</Button>
+  </>
+}
+// Three ways out when the day already has a workout. Replacing with several on that day means
+// picking which one; the rest of the day is left alone.
+function SameDayChoice({ iso, existing, onReplace, onAdd, close }) {
+  return <div style={{ textAlign: 'center', padding: '4px 0' }}>
+    <h3 style={{ marginBottom: 8 }}>{fmtDate(iso, true)}</h3>
+    <div className="muted" style={{ marginBottom: 18, lineHeight: 1.5 }}>{t('There is already a workout on that day.')}</div>
+    {existing.map(w => <div key={w.id} style={{ marginBottom: 8 }}>
+      <button className="btn danger" onClick={() => onReplace(w.id)}>{existing.length > 1 ? t('Replace') + ' · ' + w.name : t('Replace')}</button>
+    </div>)}
+    <button className="btn primary" onClick={onAdd}>{t('Add as second workout')}</button>
+    <div style={{ height: 8 }} />
+    <Button variant="ghost" className="dim" onClick={close}>{t('Cancel')}</Button>
+  </div>
+}
+export function logPastWorkoutSheet() {
+  if (S().active) { toast(t('Finish the current workout first.')); return }
+  ui().openSheet(close => <LogPastWorkout close={close} />)
+}
+function beginBackfill({ iso, time, durationMin, routineId, replaceId }) {
+  const st = S()
+  const r = routineId ? st.routines.find(x => x.id === routineId) : null
+  const { entries, excluded } = buildSessionEntries(st, r)
+  update(s => {
+    s.active = {
+      id: uid(), d: iso, start: backfillStart(iso, time), routineId,
+      name: r ? r.name : t('Freestyle'), bw: null, cur: 0, entries,
+      backfill: { durationMin, replaceId: replaceId || null },
       ...(excluded ? { excludeFromProgression: true } : {})
     }
   })
@@ -1582,9 +1649,12 @@ function doFinishWorkout() {
   const st = S()
   const A = st.active
   if (!A) return
+  const past = !!A.backfill
   const prs = []
   const e1prs = []
-  A.entries.forEach(e => {
+  // A workout logged into the past cannot claim records against the history that came after
+  // it, so a backfilled session reports none and leaves the confirmed weights alone.
+  if (!past) A.entries.forEach(e => {
     const mx = Math.max(0, ...e.sets.filter(s => s.done && !isWarmupRow(s)).map(s => s.w))
     if (mx > 0 && mx > bestWeightFor(st, e.id)) prs.push(e.id)
     // A heavier estimate without a heavier top set is its own kind of progress —
@@ -1593,17 +1663,21 @@ function doFinishWorkout() {
     if (rec && !prs.includes(e.id)) e1prs.push({ id: e.id, ...rec })
   })
   const w = buildCompletedWorkout(A, {
-    end: Date.now(),
+    end: past ? backfillEnd(A) : Date.now(),
     prs,
     snapshotFor: e => EXIDX[e.id]?.custom ? exerciseMuscleSnapshot(EXIDX[e.id]) : null,
   })
   w.vol = workoutVolume(w)
   update(s => {
-    w.entries.forEach(e => {
-      const mx = Math.max(0, ...e.sets.filter(x => x.done && !isWarmupRow(x)).map(x => x.w || 0), e.topW || 0)
-      if (mx > 0) { const cur = s.exWeights[e.id]; if (!cur || mx > cur.w) s.exWeights[e.id] = { w: mx, d: w.d } }
-    })
-    s.workouts.push(w)
+    if (past) {
+      s.workouts = completeBackfill(s.workouts, A, w)
+    } else {
+      w.entries.forEach(e => {
+        const mx = Math.max(0, ...e.sets.filter(x => x.done && !isWarmupRow(x)).map(x => x.w || 0), e.topW || 0)
+        if (mx > 0) { const cur = s.exWeights[e.id]; if (!cur || mx > cur.w) s.exWeights[e.id] = { w: mx, d: w.d } }
+      })
+      s.workouts.push(w)
+    }
     s.active = null
   })
   useStore.getState().autoBackupNow()

@@ -17,7 +17,7 @@ managed by your NixOS configuration. This document covers both.
 | `packages.opengym-api` | The Node.js API (`node server.js`, wrapped as `bin/opengym-api`). |
 | `packages.opengym-mcp` | The read-only MCP server for LLM clients (`bin/opengym-mcp`). |
 | `packages.opengym-media` | The exercise image/GIF dataset, pinned via `fetchFromGitHub`. Only fetched when `media.fetchAtBuild = true`. |
-| `packages.opengym-fetch-media` | A shell script that clones the dataset at **runtime** (used by default). |
+| `packages.opengym-fetch-media` | A shell script that downloads the pinned dataset at **runtime** (used by default). |
 | `packages.default` | Alias for `opengym-frontend`. |
 | `apps.opengym` | Runs the **full local stack** — API + frontend + pinned media behind a throwaway Caddy (`nix run .#opengym`, default `http://localhost:8080`). |
 | `apps.default` | Alias for `opengym`. |

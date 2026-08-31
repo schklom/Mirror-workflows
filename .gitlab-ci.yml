@@ -131,45 +131,25 @@ test:nix:
   image: $NIX_IMAGE
   interruptible: true
   variables:
-    # The GitLab shared runners create /builds/<group>/<project> world-writable. Since Nix 2.30,
-    # the build-dir (where intermediate build outputs go) defaults to a path under the store/state,
-    # and Nix refuses to run if *any* component of that path is world-writable:
-    # "Path /builds/gerrydoro/opengym-nix-flake is world-writable or a symlink. That's not allowed
-    # for security." (NixOS/nix#13701). This is NOT gated by the sandbox, so the fix is to make the
-    # project path non-world-writable (chmod, below) and point build-dir at it explicitly.
-    # Each key must be on its own line (this is nix.conf content); sandbox = false is kept because
-    # a container has no real kernel sandbox anyway.
+    # Keep the *default* store (/nix/store) so the flake's locked nixpkgs derivations resolve
+    # straight from cache.nixos.org. The earlier attempt to relocate the store under the project
+    # dir for GitLab caching backfired: cache.nixos.org only serves /nix/store paths, so a
+    # relocated store built the entire bootstrap toolchain from source (slow gnu.org tarball
+    # downloads, 502s). With the default store the shared runners just substitute from the binary
+    # cache.
+    #
+    # NIX_CONFIG is nix.conf content, one key per line:
+    #   * experimental-features — enable `nix flake`.
+    #   * sandbox = false — a container has no usable kernel sandbox, and disabling it also
+    #     avoids the Nix 2.30+ build-dir check tripping on the world-writable /builds dir
+    #     (NixOS/nix#13701) that the default-store build-dir path is unaffected by, but being
+    #     explicit here is simplest and matches what Nix-on-GitLab CI does everywhere.
     NIX_CONFIG: |
       experimental-features = nix-command flakes
       sandbox = false
-      build-dir = $CI_PROJECT_DIR/.nix/build
-    # Point every Nix dir at the cacheable project dir instead of /nix (which GitLab cache
-    # cannot reach). `nix flake check` + the VM test + three package builds share this store,
-    # so a warm cache makes the job near-instant.
-    NIX_STORE_DIR: "$CI_PROJECT_DIR/.nix/store"
-    NIX_STATE_DIR: "$CI_PROJECT_DIR/.nix/state"
-    NIX_DATA_DIR: "$CI_PROJECT_DIR/.nix/data"
-    NIX_LOG_DIR: "$CI_PROJECT_DIR/.nix/log"
-    # NB: NIX_CONF_DIR deliberately left alone — the nixos/nix image ships a sane /etc/nix/nix.conf
-    # and we don't want to shadow it. NIX_CONFIG above only adds options on top.
-  cache:
-    key:
-      files:
-        - flake.lock
-    paths:
-      - .nix
   script:
     - |
       set -euo pipefail
-      # The runner creates the whole /builds/<group>/<project> chain world-writable. Strip the
-      # world-write bit from every ancestor of $CI_PROJECT_DIR so Nix's build-dir security check
-      # (see the NIX_CONFIG comment) is satisfied. Safe here: we're root in an ephemeral container,
-      # and 0755 still lets the owner (root) write, so GitLab's cleanup works.
-      p="$CI_PROJECT_DIR"
-      while [ "$p" != "/" ]; do
-        chmod 0755 "$p" 2>/dev/null || true
-        p="$(dirname "$p")"
-      done
       # Locked inputs first: `nix develop`/`nix run`/CI must all agree with the committed lock.
       nix flake lock --no-update-lock-file
       echo "== flake check (module eval + NixOS VM integration test) =="

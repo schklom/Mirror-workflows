@@ -214,7 +214,7 @@ function trainedIds(S, workouts) {
 // arrives as one line per exercise. The old payload sent every set of up to 60 sessions —
 // 10k+ tokens a small local model cannot hold and a metered API should not be billed for —
 // while stalls and trends already live in `aggregates`, computed over the full window.
-export const FULL_DETAIL_SESSIONS = 5;
+export const FULL_DETAIL_SESSIONS = 3;
 
 const fmtSet = s => {
   const eff = s.rir != null ? '@RIR' + s.rir : s.rpe != null ? '@RPE' + s.rpe : '';
@@ -392,8 +392,8 @@ export function build(S, opts = {}) {
     };
     if (opts.note) p.userNote = String(opts.note).slice(0, 1000);
     if (opts.cohort) p.cohort = opts.cohort;
-    // A review names mostly what is already trained; 100 candidates is plenty for a swap.
-    p.library = librarySlice(S, profile?.equipment, { keep: trainedIds(S, workouts), max: 100 });
+    // A review names mostly what is already trained; 60 candidates is plenty for a swap.
+    p.library = librarySlice(S, profile?.equipment, { keep: trainedIds(S, workouts), max: 60 });
   } else {
     p.library = librarySlice(S, profile?.equipment, { keep: trainedIds(S, S.workouts || []) });
     // Creation for a returning user: what they have actually handled, so proposed baselines

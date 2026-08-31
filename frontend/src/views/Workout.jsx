@@ -13,7 +13,7 @@ import Media from '../components/Media.jsx'
 import { startFlow, exercisePicker, exConfigSheet, exerciseDetailSheet, topWeightSheet, finishWorkout, workoutCompleteSheet, confirmSheet, exerciseNoteSheet, sessionNoteSheet, swapActiveWorkoutExercise } from '../sheets.jsx'
 import Icon from '../components/Icon.jsx'
 import { Button, Check, NumberField } from '../components/ui.jsx'
-import { nextPrescription, applyPrescription, defaultIncrement, weightIncrement } from '../lib/progression.js'
+import { nextPrescription, applyPrescription, defaultIncrement, weightIncrement, stepWeight } from '../lib/progression.js'
 import { progressionGuidance } from '../lib/progression-copy.js'
 import { glyphOf } from '../lib/glyphs.js'
 import { isWarmupRow, isDropSet, isRestPauseSet, dropsOf, clustersOf, addDrop, addCluster, removeDropAt, removeClusterAt, setDropAt, setClusterAt, nextDropWeight, nextBurstReps } from '../lib/workout-model.js'
@@ -140,6 +140,7 @@ function ExerciseBlock({ entryIdx, compact, onToggle, onField, onAddSet, onRemov
   // with no ceiling, as they always did.
   const bump = (s, i, col, dir) => {
     if (col.eff) return onField(i, col.f, stepEffort(col.eff, s[col.f], dir))
+    if (mode === 'reps' && col.f === 'w') return onField(i, col.f, stepWeight(s[col.f], col.step, dir))
     onField(i, col.f, Math.max(0, Math.round(((s[col.f] || 0) + dir * col.step) * 100) / 100))
   }
   // Uses the shared stepper markup so a set row picks up the same control styling
@@ -155,11 +156,11 @@ function ExerciseBlock({ entryIdx, compact, onToggle, onField, onAddSet, onRemov
   )
   // A smaller stepper for a drop's weight/reps or a burst's reps — editing what the plan (or a
   // live "+ Drop"/"+ Burst" tap) already put on the row, not typing into a fresh field.
-  const miniStepper = (value, step, dec, onChange) => (
+  const miniStepper = (value, step, dec, onChange, snapWeightStep = false) => (
     <div className="stp mini">
-      <button aria-label="Decrease" onClick={() => onChange(Math.max(0, Math.round(((value || 0) - step) * 100) / 100))}><Icon name="minus" /></button>
+      <button aria-label="Decrease" onClick={() => onChange(snapWeightStep ? stepWeight(value, step, -1) : Math.max(0, Math.round(((value || 0) - step) * 100) / 100))}><Icon name="minus" /></button>
       <span className="val"><NumberField decimal={dec} value={value ?? ''} onChange={onChange} /></span>
-      <button aria-label="Increase" onClick={() => onChange(Math.max(0, Math.round(((value || 0) + step) * 100) / 100))}><Icon name="plus" /></button>
+      <button aria-label="Increase" onClick={() => onChange(snapWeightStep ? stepWeight(value, step, 1) : Math.max(0, Math.round(((value || 0) + step) * 100) / 100))}><Icon name="plus" /></button>
     </div>
   )
   return <>
@@ -235,7 +236,7 @@ function ExerciseBlock({ entryIdx, compact, onToggle, onField, onAddSet, onRemov
             {dropsOf(s).map((d, di) => (
               <div className="subrow" key={'d' + di}>
                 <span className="subn">{t('Drop {0}', di + 1)}</span>
-                {miniStepper(d.w, 2.5, true, v => setDropField(i, di, 'w', v))}
+                {miniStepper(d.w, loadStep, true, v => setDropField(i, di, 'w', v), true)}
                 {miniStepper(d.r, 1, false, v => setDropField(i, di, 'r', v))}
                 <button className="iconbtn" aria-label={t('Remove drop')} onClick={() => removeDrop(i, di)}><Icon name="xmark" /></button>
               </div>

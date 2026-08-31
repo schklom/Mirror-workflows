@@ -1,5 +1,6 @@
-// Behaviour for the openGym site: the phone menu, the scroll reveals, the demo frame,
-// and the two things that come from the GitLab API (repo counts, release timeline).
+// Behaviour for the openGym site: the topic-rail menu and its scrollspy, the scroll
+// reveals, the demo frame, and the two things that come from the GitLab API (repo
+// counts, release timeline).
 // Every one of them fails soft — the page is complete without any of this running.
 
 const GL_PROJECT = 'https://gitlab.com/api/v4/projects/DuarteSantos8%2Fopengym'
@@ -36,9 +37,38 @@ const GL_PROJECT = 'https://gitlab.com/api/v4/projects/DuarteSantos8%2Fopengym'
   // in-page anchors especially, which do not reload anything.
   menu.addEventListener('click', e => { if (e.target.closest('a')) close() })
   document.addEventListener('keydown', e => { if (e.key === 'Escape') close() })
-  // Rotating to landscape can widen past the breakpoint while the sheet is open, which
-  // would leave the body scroll-locked with no visible sheet to close.
-  addEventListener('resize', () => { if (innerWidth > 780) close() })
+  // Growing past the breakpoint turns the sheet into the fixed rail while it is open,
+  // which would leave the body scroll-locked with no visible sheet to close.
+  addEventListener('resize', () => { if (innerWidth >= 1300) close() })
+})()
+
+/* ------------------------------------------------------------------- scrollspy
+   The topic rail marks the section under the reader. Position math on scroll, not
+   an IntersectionObserver: the sections differ wildly in height, and "the last
+   heading that scrolled past a third of the screen" is the answer people expect. */
+;(() => {
+  const links = [...document.querySelectorAll('.side-link[href^="#"]')]
+  if (!links.length) return
+  const pairs = links
+    .map(a => [document.getElementById(a.getAttribute('href').slice(1)), a])
+    .filter(([t]) => t)
+  if (!pairs.length) return
+  let lit = null
+  let raf = 0
+  const spy = () => {
+    raf = 0
+    const y = scrollY + innerHeight * .33
+    let cur = null
+    for (const [t, a] of pairs) {
+      if (t.getBoundingClientRect().top + scrollY <= y) cur = a
+    }
+    if (cur === lit) return
+    lit?.classList.remove('on')
+    ;(lit = cur)?.classList.add('on')
+  }
+  addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(spy) }, { passive: true })
+  addEventListener('resize', spy)
+  spy()
 })()
 
 /* --------------------------------------------------------------- scroll reveal */

@@ -17,8 +17,6 @@
   --acc: #32d74b;
   --acc-ink: #04150a;
   --acc-soft: rgba(50, 215, 75, .13);
-  --blurple: #5865f2;
-  --amber: #ff9f0a;
 
   --r-s: 12px;
   --r-m: 20px;
@@ -147,19 +145,22 @@ nav {
 .brand:hover { text-decoration: none; }
 .brand img { width: 24px; height: 24px; border-radius: 6px; }
 
-.nav-links { display: flex; align-items: center; gap: 26px; }
-.nav-links a {
+/* The bar keeps only the three things worth reaching from anywhere: the repo, the
+   Discord, and the download. Everything else lives in the topic rail. */
+.nav-quick { display: flex; align-items: center; gap: 24px; }
+.nav-quick .ql {
   color: var(--fg-2); font-size: 14px; font-weight: 400; letter-spacing: 0;
   transition: color .2s var(--ease);
 }
-.nav-links a:hover { color: var(--fg); text-decoration: none; }
-.nav-links a [data-gh] { font-variant-numeric: tabular-nums; color: var(--fg-3); }
-.nav-links a:hover [data-gh] { color: var(--fg-2); }
-.nav-links a.cta {
-  color: var(--acc-ink); background: var(--acc); font-weight: 600;
+.nav-quick .ql:hover { color: var(--fg); text-decoration: none; }
+.nav-quick .ql [data-gh] { font-variant-numeric: tabular-nums; color: var(--fg-3); }
+.nav-quick .ql:hover [data-gh] { color: var(--fg-2); }
+.nav-quick .cta {
+  color: var(--acc-ink); background: var(--acc); font-weight: 600; font-size: 14px;
   padding: 7px 15px; border-radius: 999px;
 }
-.nav-links a.cta:hover { background: #4ade63; }
+.nav-quick .cta:hover { background: #4ade63; text-decoration: none; }
+@media (max-width: 620px) { .nav-quick .ql { display: none; } }
 
 .nav-toggle {
   display: none;
@@ -177,12 +178,51 @@ nav {
 .nav-toggle[aria-expanded="true"] span:first-child { transform: rotate(45deg); }
 .nav-toggle[aria-expanded="true"] span:last-child { transform: rotate(-45deg); }
 
-@media (max-width: 780px) {
+/* ---------------------------------------------------------------- topic rail
+   One list of everything on the site — a title with a one-line subtitle per topic.
+   On a wide screen it is a fixed column beside the page; below that, the exact
+   same markup is the sheet behind the hamburger. */
+
+.side-label {
+  font-size: 11.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--fg-3);
+  margin: 28px 0 8px;
+}
+.side-label:first-child { margin-top: 0; }
+.side-link {
+  display: block; padding: 9px 12px; margin: 0 -12px; border-radius: 10px;
+  color: var(--fg);
+  transition: background-color .2s var(--ease);
+}
+.side-link:hover { text-decoration: none; background: rgba(255, 255, 255, .05); }
+.side-link b { display: block; font-size: 14.5px; font-weight: 600; letter-spacing: -.015em; }
+.side-link span {
+  display: block; color: var(--fg-3); font-size: 12.5px; line-height: 1.4; margin-top: 2px;
+}
+/* Scrollspy: the section under the reader, and on the other pages the page itself. */
+.side-link.on, .side-link[aria-current="page"] { background: rgba(255, 255, 255, .045); }
+.side-link.on b, .side-link[aria-current="page"] b { color: var(--acc); }
+
+@media (min-width: 1300px) {
+  .nav-toggle { display: none !important; }
+  /* The rail owns the left edge; the page centres in what is left. */
+  body { padding-left: calc(264px + env(safe-area-inset-left)); }
+  .side {
+    position: fixed; left: 0; top: 0; bottom: 0; z-index: 70;
+    width: calc(264px + env(safe-area-inset-left));
+    padding: 30px 24px 34px calc(26px + env(safe-area-inset-left));
+    overflow-y: auto; overscroll-behavior: contain;
+    background: #060707;
+    border-right: 1px solid var(--hair-soft);
+    scrollbar-width: thin;
+  }
+}
+
+@media (max-width: 1299.98px) {
   .nav-toggle { display: flex; }
-  .nav-links {
-    position: fixed; left: 0; right: 0; top: 54px;
-    flex-direction: column; align-items: stretch; gap: 0;
-    padding: 6px var(--pad) calc(22px + env(safe-area-inset-bottom));
+  .side {
+    position: fixed; left: 0; right: 0; top: 54px; z-index: 55;
+    padding: 20px var(--pad) calc(28px + env(safe-area-inset-bottom));
     background: #000;
     border-bottom: 1px solid var(--hair-soft);
     box-shadow: 0 30px 60px rgba(0, 0, 0, .8);
@@ -190,29 +230,7 @@ nav {
     transform: translateY(-8px); opacity: 0; pointer-events: none;
     transition: opacity .28s var(--ease), transform .28s var(--ease);
   }
-  .nav-links.open { transform: none; opacity: 1; pointer-events: auto; }
-  .nav-links a {
-    font-size: 19px; letter-spacing: -.02em; color: var(--fg);
-    padding: 15px 2px; border-bottom: 1px solid var(--hair-soft);
-    /* Each row drops in just behind the one above it, so the sheet unfolds instead
-       of appearing. Closing runs with no delay at all, so it leaves in one piece —
-       a staggered exit reads as sluggish. */
-    opacity: 0; transform: translateY(-10px);
-    transition: opacity .3s var(--ease), transform .3s var(--ease);
-  }
-  .nav-links.open a { opacity: 1; transform: none; }
-  .nav-links.open a:nth-child(1) { transition-delay: .03s; }
-  .nav-links.open a:nth-child(2) { transition-delay: .06s; }
-  .nav-links.open a:nth-child(3) { transition-delay: .09s; }
-  .nav-links.open a:nth-child(4) { transition-delay: .12s; }
-  .nav-links.open a:nth-child(5) { transition-delay: .15s; }
-  .nav-links.open a:nth-child(6) { transition-delay: .18s; }
-  .nav-links.open a:nth-child(7) { transition-delay: .21s; }
-  .nav-links.open a:nth-child(8) { transition-delay: .24s; }
-  .nav-links a.cta {
-    margin-top: 18px; border-bottom: 0; text-align: center;
-    padding: 14px 20px; font-size: 17px;
-  }
+  .side.open { transform: none; opacity: 1; pointer-events: auto; }
 
   /* Whatever the sheet does not cover is dimmed, so the page behind it stops
      competing for attention and a tap out there reads as "close". */
@@ -225,53 +243,15 @@ nav {
   }
   body.menu-open::after { opacity: 1; pointer-events: auto; }
 }
+/* A tablet-wide sheet with one narrow column looks abandoned; two columns fill it. */
+@media (min-width: 640px) and (max-width: 1299.98px) {
+  .side { display: grid; grid-template-columns: 1fr 1fr; column-gap: 36px; align-items: start; }
+  .side-label { grid-column: 1 / -1; }
+  .side-label + .side-link { margin-top: 0; }
+}
 
 @media (prefers-reduced-motion: reduce) {
-  .nav-links, .nav-links a, body::after { transition-duration: .01ms !important; }
-  .nav-links.open a { transition-delay: 0s !important; }
-}
-
-/* ------------------------------------------------------------------- notice
-   The GitHub account suspension. Deliberately a contained card, not a full-bleed
-   banner: it has to be impossible to miss and still not be the first thing the
-   page shouts. Remove the whole block once the account is restored. */
-
-.notice-wrap { padding: 22px 0 0; }
-.notice {
-  position: relative;
-  background: linear-gradient(180deg, rgba(255, 159, 10, .07), rgba(255, 159, 10, .02));
-  border: 1px solid rgba(255, 159, 10, .26);
-  border-radius: var(--r-m);
-  padding: clamp(20px, 3.4vw, 28px);
-}
-.notice-tag {
-  display: inline-flex; align-items: center; gap: 8px;
-  color: #ffb340; font-size: 13px; font-weight: 600;
-  text-transform: uppercase; letter-spacing: .07em;
-  margin-bottom: 12px;
-}
-.notice-tag::before {
-  content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--amber);
-  box-shadow: 0 0 0 4px rgba(255, 159, 10, .16);
-}
-.notice h2 {
-  font-size: clamp(20px, 3vw, 26px); letter-spacing: -.025em; color: #ffdcae;
-  margin-bottom: 12px;
-}
-.notice p { color: #cbbba6; font-size: 15.5px; max-width: 68ch; margin-bottom: 10px; }
-.notice p b { color: #fff8ee; font-weight: 600; }
-.notice .actions { margin-top: 18px; }
-.notice .btn { background: var(--amber); color: #1a1206; }
-.notice .btn:hover { background: #ffb340; }
-/* Named dc-btn, not dc: the `.dc` Discord card below owns that class, and a button
-   carrying both picked up the card's 30px padding and 44px top margin. */
-.notice .btn.dc-btn { background: var(--blurple); color: #fff; }
-.notice .btn.dc-btn:hover { background: #6b76f5; }
-/* Two half-width buttons stacked with a ragged right edge look accidental; on a phone
-   they read as one decision with two answers. */
-@media (max-width: 560px) {
-  .notice .actions { display: grid; gap: 10px; }
-  .notice .btn { width: 100%; }
+  .side, body::after { transition-duration: .01ms !important; }
 }
 
 /* --------------------------------------------------------------------- hero */
@@ -669,6 +649,8 @@ p code, li code, td code {
   transition: border-color .25s var(--ease), color .25s var(--ease);
 }
 .toc a:hover { color: var(--fg); border-color: var(--hair); text-decoration: none; }
+/* The topic rail lists the same sections on a wide screen; twice is clutter. */
+@media (min-width: 1300px) { .toc { display: none; } }
 
 /* config table on the docs page */
 table.cfg { width: 100%; border-collapse: collapse; margin: 18px 0 24px; font-size: 15.5px; }

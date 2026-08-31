@@ -15,14 +15,18 @@ Not in this folder (added at deploy time):
   of exercise media stays out of it. It has to live on this host: the site frames it, and
   `X-Frame-Options: SAMEORIGIN` would block it from anywhere else.
 
-`site.js` carries four independent pieces, each one failing soft so the page is
-complete without any of them: the phone nav sheet, the scroll reveals, the demo
-iframe (injected only once the frame is on screen, and never below 700 px, where
-the CSS swaps it for an "open it full-screen" card), and the two things that come
-from the public gitlab.com API at view time — the star/issue counts and the About
-page's release timeline. Those two URLs pointed at api.github.com until that
-account was suspended; they go back once it is restored, together with the notice
-block at the top of all three pages.
+Navigation is a topic rail (`.side`): one title/subtitle list of everything on the
+site, a fixed column beside the page from 1300 px up and the hamburger sheet below
+that, with a scrollspy lighting the section under the reader. The top bar keeps
+only the brand, GitLab, Discord and the download button.
+
+`site.js` carries five independent pieces, each one failing soft so the page is
+complete without any of them: the topic-rail sheet, its scrollspy, the scroll
+reveals, the demo iframe (injected only once the frame is on screen, and never
+below 700 px, where the CSS swaps it for an "open it full-screen" card), and the
+two things that come from the public gitlab.com API at view time — the star/issue
+counts and the About page's release timeline. Those two URLs pointed at
+api.github.com until that account was suspended; they go back once it is restored.
 
 `styles.css` and `site.js` are cache-busted with `?v=N` — nginx serves the site
 with `no-cache, must-revalidate`, but the query bump is what saves a Cloudflare

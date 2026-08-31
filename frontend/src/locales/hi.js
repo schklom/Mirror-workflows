@@ -1018,4 +1018,12 @@ export default {
   'What should change?': 'क्या बदलना चाहिए?',
   'Coach is thinking…': 'कोच सोच रहा है…',
   'Message the Coach…': 'कोच को संदेश…',
+  // --- bar weight (plate math) ---
+  'Bar weight': 'बार का वज़न',
+  'Bar ({0})': 'बार ({0})',
+  'Bar {0}': 'बार {0}',
+  'Default for this bar type.': 'इस तरह की बार का डिफ़ॉल्ट मान।',
+  'Set to 0 to go back to the default ({0}).': 'डिफ़ॉल्ट ({0}) पर लौटने के लिए 0 सेट करें।',
+  'Applies to this exercise everywhere, not just this plan.': 'यह इस एक्सरसाइज़ पर हर जगह लागू होता है, सिर्फ़ इसी प्लान पर नहीं।',
+  'You still log the total weight — the bar only feeds the per-side plate math.': 'आप अब भी कुल वज़न ही दर्ज करते हैं — बार सिर्फ़ हर तरफ़ की प्लेट गिनती में काम आता है।',
 }

@@ -1018,4 +1018,12 @@ export default {
   'What should change?': '무엇을 바꿀까요?',
   'Coach is thinking…': '코치가 생각 중…',
   'Message the Coach…': '코치에게 메시지…',
+  // --- bar weight (plate math) ---
+  'Bar weight': '바 무게',
+  'Bar ({0})': '바 ({0})',
+  'Bar {0}': '바 {0}',
+  'Default for this bar type.': '이 바 종류의 기본값입니다.',
+  'Set to 0 to go back to the default ({0}).': '0으로 두면 기본값({0})으로 돌아갑니다.',
+  'Applies to this exercise everywhere, not just this plan.': '이 플랜만이 아니라 어디서든 이 운동에 적용됩니다.',
+  'You still log the total weight — the bar only feeds the per-side plate math.': '기록은 여전히 총 무게입니다 — 바 무게는 한쪽에 끼울 원판 계산에만 쓰입니다.',
 }

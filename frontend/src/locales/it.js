@@ -1018,4 +1018,12 @@ export default {
   'What should change?': 'Cosa dovrebbe cambiare?',
   'Coach is thinking…': 'Il Coach sta pensando…',
   'Message the Coach…': 'Scrivi al Coach…',
+  // --- bar weight (plate math) ---
+  'Bar weight': 'Peso del bilanciere',
+  'Bar ({0})': 'Bilanciere ({0})',
+  'Bar {0}': 'Bilanciere {0}',
+  'Default for this bar type.': 'Valore predefinito per questo tipo di bilanciere.',
+  'Set to 0 to go back to the default ({0}).': 'Imposta 0 per tornare al valore predefinito ({0}).',
+  'Applies to this exercise everywhere, not just this plan.': 'Vale per questo esercizio ovunque, non solo in questo piano.',
+  'You still log the total weight — the bar only feeds the per-side plate math.': 'Registri comunque il peso totale — il bilanciere serve solo al calcolo dei dischi per lato.',
 }

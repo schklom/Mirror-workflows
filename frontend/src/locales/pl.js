@@ -1018,4 +1018,12 @@ export default {
   'What should change?': 'Co powinno się zmienić?',
   'Coach is thinking…': 'Trener myśli…',
   'Message the Coach…': 'Napisz do trenera…',
+  // --- bar weight (plate math) ---
+  'Bar weight': 'Ciężar gryfu',
+  'Bar ({0})': 'Gryf ({0})',
+  'Bar {0}': 'Gryf {0}',
+  'Default for this bar type.': 'Wartość domyślna dla tego typu gryfu.',
+  'Set to 0 to go back to the default ({0}).': 'Ustaw 0, aby wrócić do wartości domyślnej ({0}).',
+  'Applies to this exercise everywhere, not just this plan.': 'Dotyczy tego ćwiczenia wszędzie, nie tylko w tym planie.',
+  'You still log the total weight — the bar only feeds the per-side plate math.': 'Nadal zapisujesz ciężar całkowity — gryf służy tylko do wyliczenia talerzy na stronę.',
 }

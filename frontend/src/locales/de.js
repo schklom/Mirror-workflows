@@ -1037,4 +1037,12 @@ export default {
   'What should change?': 'Was soll anders sein?',
   'Coach is thinking…': 'Coach denkt nach…',
   'Message the Coach…': 'Nachricht an den Coach…',
+  // --- bar weight (plate math) ---
+  'Bar weight': 'Stangengewicht',
+  'Bar ({0})': 'Stange ({0})',
+  'Bar {0}': 'Stange {0}',
+  'Default for this bar type.': 'Standard für diesen Stangentyp.',
+  'Set to 0 to go back to the default ({0}).': 'Auf 0 stellen, um zum Standard ({0}) zurückzukehren.',
+  'Applies to this exercise everywhere, not just this plan.': 'Gilt überall für diese Übung, nicht nur in diesem Plan.',
+  'You still log the total weight — the bar only feeds the per-side plate math.': 'Eingetragen wird weiterhin das Gesamtgewicht — die Stange zählt nur für die Scheiben-Rechnung pro Seite.',
 }

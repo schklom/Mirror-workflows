@@ -1018,4 +1018,12 @@ export default {
   'What should change?': '需要改什么？',
   'Coach is thinking…': '教练思考中…',
   'Message the Coach…': '给教练留言…',
+  // --- bar weight (plate math) ---
+  'Bar weight': '杠铃杆重量',
+  'Bar ({0})': '杆 ({0})',
+  'Bar {0}': '杆 {0}',
+  'Default for this bar type.': '此类杠铃杆的默认值。',
+  'Set to 0 to go back to the default ({0}).': '设为 0 即恢复默认值（{0}）。',
+  'Applies to this exercise everywhere, not just this plan.': '对这个动作处处生效，不只在此计划中。',
+  'You still log the total weight — the bar only feeds the per-side plate math.': '记录的仍是总重量——杆重只用于每侧杠铃片的计算。',
 }

@@ -1018,4 +1018,12 @@ export default {
   'What should change?': '¿Qué debería cambiar?',
   'Coach is thinking…': 'El Coach está pensando…',
   'Message the Coach…': 'Escribe al Coach…',
+  // --- bar weight (plate math) ---
+  'Bar weight': 'Peso de la barra',
+  'Bar ({0})': 'Barra ({0})',
+  'Bar {0}': 'Barra {0}',
+  'Default for this bar type.': 'Valor por defecto para este tipo de barra.',
+  'Set to 0 to go back to the default ({0}).': 'Pon 0 para volver al valor por defecto ({0}).',
+  'Applies to this exercise everywhere, not just this plan.': 'Se aplica a este ejercicio en todas partes, no solo en este plan.',
+  'You still log the total weight — the bar only feeds the per-side plate math.': 'Sigues registrando el peso total — la barra solo se usa para calcular los discos por lado.',
 }

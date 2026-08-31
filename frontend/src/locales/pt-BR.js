@@ -553,7 +553,13 @@ export const PT_BR_OVERRIDES = {
   'Coming back after a break': 'Voltando depois de uma pausa',
   'Training regularly': 'Treino regularmente',
   'Back muscles': 'Costas',
-  '{0}: what’s planned': '{0}: previsto'
+  '{0}: what’s planned': '{0}: previsto',
+
+  // --- bar weight (plate math) --- ('Peso da barra', 'Barra ({0})', 'Barra {0}' inherit)
+  'Default for this bar type.': 'Padrão para este tipo de barra.',
+  'Set to 0 to go back to the default ({0}).': 'Defina 0 para voltar ao padrão ({0}).',
+  'Applies to this exercise everywhere, not just this plan.': 'Vale para este exercício em todos os lugares, não só neste plano.',
+  'You still log the total weight — the bar only feeds the per-side plate math.': 'Você continua registrando o peso total — a barra só entra no cálculo das anilhas por lado.'
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

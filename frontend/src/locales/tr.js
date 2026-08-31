@@ -1018,4 +1018,12 @@ export default {
   'What should change?': 'Ne değişmeli?',
   'Coach is thinking…': 'Koç düşünüyor…',
   'Message the Coach…': 'Koça yaz…',
+  // --- bar weight (plate math) ---
+  'Bar weight': 'Bar ağırlığı',
+  'Bar ({0})': 'Bar ({0})',
+  'Bar {0}': 'Bar {0}',
+  'Default for this bar type.': 'Bu bar türü için varsayılan.',
+  'Set to 0 to go back to the default ({0}).': 'Varsayılana ({0}) dönmek için 0 yap.',
+  'Applies to this exercise everywhere, not just this plan.': 'Yalnızca bu planda değil, bu egzersiz için her yerde geçerli.',
+  'You still log the total weight — the bar only feeds the per-side plate math.': 'Yine de toplam ağırlığı kaydedersin — bar yalnızca taraf başına plaka hesabına girer.',
 }

@@ -262,7 +262,7 @@ h4.sec{
   display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto;
 }
 .lrow.lrow-stack-value .lrow-m{grid-column:1;grid-row:1}
-.lrow.lrow-stack-value .lrow-v{grid-column:1;grid-row:2;text-align:left}
+.lrow.lrow-stack-value .lrow-v{grid-column:1;grid-row:2;width:100%;max-width:none;text-align:left}
 .lrow.lrow-stack-value .lrow-c{grid-column:2;grid-row:1 / span 2;align-self:center}
 /* an (i) before a row's control: painted small and dim so the control stays the loud thing,
    but with a finger-sized target like everything else — the padding is the hit area and the

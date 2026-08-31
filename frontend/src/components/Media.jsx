@@ -8,12 +8,15 @@ import Icon from './Icon.jsx'
 // Custom exercises have no media — the animation stays blank by design (issue #11).
 // `minimizable` (workout view) adds a persistent minimize/expand control so the animation stops
 // eating the screen; the chosen size is saved to settings and carries across exercises and
-// future workouts (issue #12).
+// future workouts (issue #12). Settings can also turn workout media off entirely
+// (gifSize 'off') — then nothing renders here and the exercise card closes up, exactly like
+// a custom exercise without media. Any other/legacy value behaves as 'full'.
 export default function Media({ ex, id, compact, minimizable }) {
   const [playing, setPlaying] = useState(true)
   const gifSize = useStore(s => s.S.gifSize)
   const update = useStore(s => s.update)
   if (!ex.gif) return null
+  if (minimizable && gifSize === 'off') return null
   const mini = minimizable && gifSize === 'mini'
   const toggleSize = e => { e.stopPropagation(); update(s => { s.gifSize = mini ? 'full' : 'mini' }) }
   return (

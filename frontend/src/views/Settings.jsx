@@ -145,6 +145,15 @@ export default function Settings() {
             onChange={v => update(s => { s.keepAwake = v })} />
         </Row>
       )}
+      {/* 'full'/'mini' is also what the tap-toggle on the workout animation writes; 'off' hides
+          workout media entirely (library, detail sheet and picker thumbs are unaffected).
+          Legacy/unknown values read as 'full'. */}
+      <Row icon="figureRun" iconTint="var(--green)" title={t('Exercise animations')}>
+        <Segmented className="seg-inline"
+          options={[{ value: 'full', label: t('Full') }, { value: 'mini', label: t('Small') }, { value: 'off', label: t('Hidden') }]}
+          value={S.gifSize === 'mini' || S.gifSize === 'off' ? S.gifSize : 'full'}
+          onChange={v => update(s => { s.gifSize = v })} />
+      </Row>
       <Row icon="bell" iconTint="var(--pink)" title={t('Sounds')}>
         <Switch checked={!!S.sound} onChange={v => update(s => { s.sound = v })} />
       </Row>

@@ -6,52 +6,85 @@
 <title>About — openGym</title>
 <meta name="description" content="The story behind openGym: a gym tracker that started as a tiny personal app on a homelab server and grew into an open-source project.">
 <meta name="theme-color" content="#000000">
+<meta property="og:title" content="About openGym">
+<meta property="og:description" content="How openGym came to be: a tracker built for one user, open-sourced under the AGPL, with every release documented.">
+<meta property="og:image" content="https://opengym.duarte-santos.ch/img/banner.png">
+<meta property="og:url" content="https://opengym.duarte-santos.ch/about.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="openGym">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="About openGym">
+<meta name="twitter:image" content="https://opengym.duarte-santos.ch/img/banner.png">
+<link rel="canonical" href="https://opengym.duarte-santos.ch/about.html">
 <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
 <link rel="icon" type="image/png" sizes="180x180" href="icon-180.png">
 <link rel="apple-touch-icon" href="icon-180.png">
-<link rel="stylesheet" href="styles.css?v=9">
+<link rel="stylesheet" href="styles.css?v=12">
 <script>document.documentElement.className += ' js'</script>
 <!-- Umami web analytics for opengym.duarte-santos.ch (self-hosted, cookieless). -->
 <script defer src="https://stats.duarte-santos.ch/script.js" data-website-id="db36019e-50f4-453c-9c56-d0588aefe233"></script>
 </head>
-<body>
+<body class="topnav">
 
 <nav><div class="wrap nav-in">
   <a class="brand" href="/">
     <img src="icon-180.png" alt="" width="24" height="24">
     openGym
   </a>
-  <button class="nav-toggle" aria-expanded="false" aria-controls="menu" aria-label="Menu">
-    <span></span><span></span>
-  </button>
-  <div class="nav-links" id="menu">
-    <a href="/#features">Features</a>
-    <a href="/#screens">Screenshots</a>
-    <a href="/#demo">Demo</a>
-    <a href="docs.html">Docs</a>
-    <a href="about.html">About</a>
-    <a href="https://gitlab.com/DuarteSantos8/opengym" rel="noopener">GitLab <span data-gh="stars"></span></a>
-    <a href="https://discord.gg/e62jY6fwVb" rel="noopener">Discord</a>
+  <div class="nav-quick">
+    <a class="ql site" href="/#features">Features</a>
+    <a class="ql site" href="/#screens">Screenshots</a>
+    <a class="ql site" href="/#demo">Demo</a>
+    <a class="ql site" href="/docs.html">Docs</a>
+    <a class="ql site" href="/api.html">API</a>
+    <a class="ql site" href="/about.html">About</a>
+    <a class="ql" href="https://gitlab.com/DuarteSantos8/opengym" rel="noopener">GitLab <span data-gh="stars"></span></a>
+    <a class="ql" href="https://discord.gg/e62jY6fwVb" rel="noopener">Discord</a>
     <a class="cta" href="/#download">Download</a>
   </div>
+  <button class="nav-toggle" id="navtoggle" aria-expanded="false" aria-controls="sitemenu" aria-label="Menu">
+    <span></span><span></span>
+  </button>
 </div></nav>
 
-<!-- TEMPORARY: GitHub account suspended -> repo lives on gitlab.com. Remove this block and
-     revert the links (+ site.js) to github.com once the account is restored. -->
-<div class="notice-wrap"><div class="wrap">
-  <aside class="notice" role="note">
-    <div class="notice-tag">Repository moved</div>
-    <h2>My GitHub account was suspended, and the openGym repo went with it.</h2>
-    <p><b>github.com/DuarteSantos8/openGym is offline</b> — not by choice. The app is
-       untouched: the APK, the demo and every self-hosted install work exactly as before. The
-       code, the releases, the container images and the APK builds now live on GitLab under
-       the same AGPL-3.0 license, and every repository link here points there.</p>
-    <div class="actions">
-      <a class="btn" href="https://gitlab.com/DuarteSantos8/opengym" rel="noopener">Open on GitLab</a>
-      <a class="btn dc-btn" href="https://discord.gg/e62jY6fwVb" rel="noopener">Join the Discord</a>
-    </div>
-  </aside>
-</div></div>
+<!-- The navigation sheet: the header's links again, for the widths where the bar has
+     room only for the brand and the download. Byte-identical on every page, like the
+     bar above it — nothing is ever dropped because of which page you are on. -->
+<div class="navsheet" id="sitemenu" role="navigation" aria-label="Site" aria-hidden="true">
+  <div class="nl-rows">
+    <a class="nl" href="/#features">Features</a>
+    <a class="nl" href="/#screens">Screenshots</a>
+    <a class="nl" href="/#demo">Demo</a>
+    <a class="nl" href="/docs.html">Docs</a>
+    <a class="nl" href="/api.html">API</a>
+    <a class="nl" href="/about.html">About</a>
+    <a class="nl" href="https://gitlab.com/DuarteSantos8/opengym" rel="noopener">GitLab <span data-gh="stars"></span></a>
+    <a class="nl" href="https://discord.gg/e62jY6fwVb" rel="noopener">Discord</a>
+  </div>
+</div>
+
+<!-- The one control that opens the contents, at every width. The drawer it opens is
+     closed in CSS, so it is shut on first paint whether or not the script runs. -->
+<button class="toc-btn" id="tocbtn" aria-expanded="false" aria-controls="menu">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="M4 6.5h16M4 12h16M4 17.5h10"/></svg>
+  Contents
+</button>
+
+<!-- The contents drawer: one list, one way in, one way out. Closed by default at
+     every width, and no preference is remembered — see .side in styles.css. -->
+<aside class="side" id="menu" aria-label="Contents" aria-hidden="true">
+  <div class="side-top">
+    <p class="side-title">Contents</p>
+    <button class="rail-close" aria-label="Close contents"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg></button>
+  </div>
+  <p class="side-label">On this page</p>
+  <a class="side-link" href="#milestones-h"><b>Milestones</b><span>Every release, straight from GitLab</span></a>
+  <a class="side-link" href="#principles"><b>Principles</b><span>The rules that don't move</span></a>
+  <p class="side-label">More</p>
+  <a class="side-link" href="/"><b>Home</b><span>The tour, the demo, the download</span></a>
+  <a class="side-link" href="docs.html"><b>Docs</b><span>Install, self-host, import</span></a>
+  <a class="side-link" href="api.html"><b>API</b><span>Every route, as an OpenAPI spec</span></a>
+</aside>
 
 <main class="wrap prose">
   <h1>About openGym</h1>
@@ -101,7 +134,7 @@
       <p>See the full list on <a href="https://gitlab.com/DuarteSantos8/opengym/-/releases" rel="noopener">GitLab → Releases</a>.</p></li>
   </ul>
 
-  <h2>Principles</h2>
+  <h2 id="principles">Principles</h2>
   <ul>
     <li><b>Your data is yours.</b> Local-first, one-file backups, no lock-in. Leaving openGym
         must always be one export away.</li>
@@ -130,6 +163,6 @@
   </div>
 </div></footer>
 
-<script src="site.js?v=9" defer></script>
+<script src="site.js?v=12" defer></script>
 </body>
 </html>

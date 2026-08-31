@@ -114,18 +114,23 @@ test:mcp:
 
 # The Nix flake (flake.nix → nix/) is a first-class packaging path for self-hosters on NixOS,
 # so it gets its own gate. This job:
-#   * `nix flake check` — runs the module-eval check (checks.nixos-module-eval) AND, on Linux,
-#     the NixOS VM integration test (checks.opengym-nixos-test, defined in nix/tests.nix) that
-#     boots the full stack and exercises the HTTP contract (API health, nginx vhost, SPA).
-#   * builds every app package (#opengym-frontend, #opengym-api, #opengym-mcp) — the flake
-#     `check` fixtures only evaluate the module; actually building the derivation per component
-#     catches a broken buildPhase/installPhase that eval alone would miss.
+#   * runs the module-eval check (checks.nixos-module-eval), validating the NixOS module wiring
+#     (services/users/systemd/nginx state) against a smoke-test config, and
+#   * builds every app package (#opengym-frontend, #opengym-api, #opengym-mcp) — actually
+#     building each derivation catches a broken buildPhase/installPhase that eval alone would
+#     miss.
 #
-# Nix is provisioned from the official nixos/nix image. The shared runners will happily build a
-# NixOS VM and a full node toolchain every time, but that burns minutes — so the whole Nix store
-# (and its registry/db, needed to reuse it offline) is relocated under $CI_PROJECT_DIR/.nix and
-# GitLab-cached, keyed on the flake.lock. A repeat run then reuses every store path that
-# flake.lock unchanged (substituters still top up anything new from cache.nixos.org).
+# The full `nix flake check` also runs the NixOS VM integration test (nixosTests.opengym,
+# nix/tests.nix), but that derivation requires the `kvm` system feature, which GitLab shared
+# runners do not provide (their features are: benchmark, big-parallel, nixos-test, uid-range —
+# no kvm). So the VM test is deliberately left out of CI; run `nix flake check` on a
+# KVM-capable self-hosted runner to exercise it.
+#
+# Nix comes from the official nixos/nix image. The store stays at its default /nix/store so the
+# locked nixpkgs derivations resolve straight from the cache.nixos.org binary cache (relocating
+# it under the project dir made Nix rebuild the bootstrap from source — slow gnu.org tarball
+# downloads — which is why it's not cached). sandbox is disabled because a container has no
+# usable kernel sandbox.
 test:nix:
   stage: test
   image: $NIX_IMAGE
@@ -150,12 +155,20 @@ test:nix:
   script:
     - |
       set -euo pipefail
+      SYSTEM="$(nix eval --impure --raw --expr 'builtins.currentSystem')"
+      echo "system: $SYSTEM"
       # Locked inputs first: `nix develop`/`nix run`/CI must all agree with the committed lock.
       nix flake lock --no-update-lock-file
-      echo "== flake check (module eval + NixOS VM integration test) =="
-      nix flake check
+      # The module-eval check validates the NixOS module wiring (services/users/systemd/nginx
+      # state) against a smoke-test config. The full `nix flake check` also runs the NixOS VM
+      # integration test (nixosTests.opengym), which needs the `kvm` system feature — not present
+      # on GitLab shared runners (Available: benchmark, big-parallel, nixos-test, uid-range), so
+      # it would fail here. Run it instead on a KVM-capable self-hosted runner; CI covers
+      # evaluation + every app package here.
+      echo "== module-eval check =="
+      nix build ".#checks.$SYSTEM.nixos-module-eval" --no-link
       echo "== building packages =="
-      nix build .#opengym-frontend .#opengym-api .#opengym-mcp --no-link
+      nix build ".#opengym-frontend" ".#opengym-api" ".#opengym-mcp" --no-link
   rules:
     # A scheduled pipeline exists only to run `renovate` (bottom of this file) — it must not
     # re-run the suite once a month for nothing.

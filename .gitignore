@@ -20,3 +20,6 @@ node_modules
 # Nix build result symlinks
 result
 result-*
+
+# Nix store/state relocated by CI's test:nix job (GitLab cache lives here)
+.nix/

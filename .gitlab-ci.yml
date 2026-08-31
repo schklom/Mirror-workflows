@@ -30,6 +30,10 @@ stages:
 variables:
   # node:22-alpine in web/Dockerfile and api/Dockerfile — CI must match production.
   NODE_IMAGE: "node:22-alpine"
+  # Nix for the flake tests. Pinned, not `latest`: the VM integration test (tests.nix) and the
+  # package builds must be reproducible against a stable toolchain. 2.34.8 matches what the
+  # maintainer builds against locally.
+  NIX_IMAGE: "nixos/nix:2.34.8"
   # The demo build has no backend and no local media: the exercise images/GIFs (~140 MB)
   # are never committed, so it points at the upstream dataset on jsDelivr, pinned to a
   # commit so the CDN can cache it forever.
@@ -102,6 +106,59 @@ test:mcp:
   rules:
     # A scheduled pipeline exists only to run `renovate` (bottom of this file) — it must not
     # re-run the suite or republish the edge images once a month for nothing.
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
+    - when: on_success
+
+# ------------------------------------------------------------------------------ nix
+
+# The Nix flake (flake.nix → nix/) is a first-class packaging path for self-hosters on NixOS,
+# so it gets its own gate. This job:
+#   * `nix flake check` — runs the module-eval check (checks.nixos-module-eval) AND, on Linux,
+#     the NixOS VM integration test (checks.opengym-nixos-test, defined in nix/tests.nix) that
+#     boots the full stack and exercises the HTTP contract (API health, nginx vhost, SPA).
+#   * builds every app package (#opengym-frontend, #opengym-api, #opengym-mcp) — the flake
+#     `check` fixtures only evaluate the module; actually building the derivation per component
+#     catches a broken buildPhase/installPhase that eval alone would miss.
+#
+# Nix is provisioned from the official nixos/nix image. The shared runners will happily build a
+# NixOS VM and a full node toolchain every time, but that burns minutes — so the whole Nix store
+# (and its registry/db, needed to reuse it offline) is relocated under $CI_PROJECT_DIR/.nix and
+# GitLab-cached, keyed on the flake.lock. A repeat run then reuses every store path that
+# flake.lock unchanged (substituters still top up anything new from cache.nixos.org).
+test:nix:
+  stage: test
+  image: $NIX_IMAGE
+  interruptible: true
+  variables:
+    NIX_CONFIG: "experimental-features = nix-command flakes"
+    # Point every Nix dir at the cacheable project dir instead of /nix (which GitLab cache
+    # cannot reach). `nix flake check` + the VM test + three package builds share this store,
+    # so a warm cache makes the job near-instant.
+    NIX_STORE_DIR: "$CI_PROJECT_DIR/.nix/store"
+    NIX_STATE_DIR: "$CI_PROJECT_DIR/.nix/state"
+    NIX_DATA_DIR: "$CI_PROJECT_DIR/.nix/data"
+    NIX_LOG_DIR: "$CI_PROJECT_DIR/.nix/log"
+    # NB: NIX_CONF_DIR deliberately left alone — the nixos/nix image ships a sane /etc/nix/nix.conf
+    # and we don't want to shadow it. NIX_CONFIG above only adds the flakes features on top.
+  cache:
+    key:
+      files:
+        - flake.lock
+    paths:
+      - .nix
+  script:
+    - |
+      set -euo pipefail
+      # Locked inputs first: `nix develop`/`nix run`/CI must all agree with the committed lock.
+      nix flake lock --no-update-lock-file
+      echo "== flake check (module eval + NixOS VM integration test) =="
+      nix flake check
+      echo "== building packages =="
+      nix build .#opengym-frontend .#opengym-api .#opengym-mcp --no-link
+  rules:
+    # A scheduled pipeline exists only to run `renovate` (bottom of this file) — it must not
+    # re-run the suite once a month for nothing.
     - if: $CI_PIPELINE_SOURCE == "schedule"
       when: never
     - when: on_success

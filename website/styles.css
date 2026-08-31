@@ -159,8 +159,8 @@ nav {
   transition: color .2s var(--ease);
 }
 .nav-quick .ql:hover { color: var(--fg); text-decoration: none; }
-.nav-quick .ql [data-gh] { font-variant-numeric: tabular-nums; color: var(--fg-3); }
-.nav-quick .ql:hover [data-gh] { color: var(--fg-2); }
+.nav-quick .ql [data-gh], .nav-quick .ql [data-dc] { font-variant-numeric: tabular-nums; color: var(--fg-3); }
+.nav-quick .ql:hover [data-gh], .nav-quick .ql:hover [data-dc] { color: var(--fg-2); }
 .nav-quick .cta {
   color: var(--acc-ink); background: var(--acc); font-weight: 600; font-size: 14px;
   padding: 7px 15px; border-radius: 999px;
@@ -228,7 +228,7 @@ body.menu-open .navsheet {
 .navsheet .nl:last-of-type { border-bottom: 0; }
 .navsheet .nl:hover { text-decoration: none; background: rgba(255, 255, 255, .05); }
 .navsheet .nl[aria-current="page"] { color: var(--acc); }
-.navsheet .nl [data-gh] { color: var(--fg-3); font-size: 14px; font-variant-numeric: tabular-nums; }
+.navsheet .nl [data-gh], .navsheet .nl [data-dc] { color: var(--fg-3); font-size: 14px; font-variant-numeric: tabular-nums; }
 /* No second Download button in here: the bar keeps its own at every width, a
    finger-width above, and two identical green calls to action is one too many. */
 
@@ -586,7 +586,7 @@ section { padding: var(--sec) 0 0; }
 /* The 1px gap is the divider: the panel background shows through between cells, so
    the rules land correctly however many columns the grid resolves to. */
 .spec-cells {
-  display: grid; grid-template-columns: repeat(5, 1fr);
+  display: grid; grid-template-columns: repeat(6, 1fr);
   gap: 1px; background: var(--hair-soft);
 }
 .spec-cells > div {
@@ -598,11 +598,9 @@ section { padding: var(--sec) 0 0; }
   letter-spacing: -.035em; font-variant-numeric: tabular-nums; line-height: 1.1;
 }
 .spec-cells span { color: var(--fg-3); font-size: 13.5px; }
-@media (max-width: 760px) {
-  .spec-cells { grid-template-columns: repeat(2, 1fr); }
-  /* Five cells over two columns leaves a hole; the last one takes the whole row. */
-  .spec-cells > div:last-child { grid-column: 1 / -1; }
-}
+/* Six across is too thin to read before the layout is wide; three, then two. */
+@media (max-width: 1000px) { .spec-cells { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 620px) { .spec-cells { grid-template-columns: repeat(2, 1fr); } }
 
 /* ------------------------------------------------------------- the link quad
    Four places openGym lives, as one block of four. Each pad is the whole link, so

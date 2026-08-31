@@ -26,6 +26,10 @@ export const DEF = {
   // every time you do the movement ("seat 4, pin 7"). Distinct from a routine's `note`, which
   // belongs to one exercise in one plan, and from a session note, which belongs to one day.
   exNotes: {},
+  // Per-exercise bar weight overrides, keyed by exercise id, in the profile unit (see
+  // lib/bar.js). Personal equipment, so it syncs with the account but never travels in a
+  // shared plan. Logged weights stay the total — this only feeds the plate math.
+  barWeights: {},
 }
 const clone = o => JSON.parse(JSON.stringify(o))
 

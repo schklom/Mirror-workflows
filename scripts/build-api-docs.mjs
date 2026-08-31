@@ -420,89 +420,14 @@ main.api-main .lead { color: var(--fg-2); max-width: 58ch; margin: 14px 0 0; fon
 .sch > summary { grid-template-columns: minmax(0, 1fr) auto; }
 .sch .ep-sum { grid-column: 1 / -1; }
 
-/* --------------------------------------------------- contents drawer (rail)
-   The chapter rail is closed by default. Below 980px it is the hamburger sheet
-   the whole site uses; from 980px up a quiet "Contents" pill opens it as a
-   drawer over the left edge, with a close button inside. The .toc-btn /
-   .rail-close / body.contents-open classes are the reusable pattern. */
-.toc-btn { display: none; }
-@media (min-width: 980px) {
-  .toc-btn {
-    position: fixed; left: 18px; bottom: max(20px, env(safe-area-inset-bottom)); z-index: 62;
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 10px 17px 10px 15px; border-radius: 999px; cursor: pointer;
-    background: rgba(23, 24, 27, .85);
-    backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px);
-    border: 1px solid var(--hair); color: var(--fg-2);
-    font-size: 13.5px; font-weight: 500; letter-spacing: -.01em;
-    transition: color .2s var(--ease), border-color .2s var(--ease), background-color .2s var(--ease);
-  }
-  .toc-btn:hover { color: var(--fg); border-color: rgba(255, 255, 255, .25); background: rgba(32, 33, 37, .92); }
-  .toc-btn svg { width: 15px; height: 15px; }
-
-  body.topnav .side {
-    display: block; position: fixed; left: 0; right: auto; top: 0; bottom: 0; z-index: 80;
-    width: min(320px, 86vw); max-height: none;
-    padding: 58px 24px calc(34px + env(safe-area-inset-bottom)) calc(26px + env(safe-area-inset-left));
-    background: #0a0b0c; border-right: 1px solid var(--hair-soft); border-bottom: 0;
-    overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin;
-    box-shadow: 40px 0 80px rgba(0, 0, 0, .5);
-    transform: translateX(-102%); visibility: hidden; opacity: 1; pointer-events: auto;
-    transition: transform .32s var(--ease), visibility .32s;
-  }
-  body.topnav.contents-open .side { transform: none; visibility: visible; }
-  body.contents-open::after {
-    content: ""; position: fixed; inset: 0; z-index: 75;
-    background: rgba(0, 0, 0, .55);
-    backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
-    opacity: 1; pointer-events: auto;
-  }
-  .rail-close {
-    position: absolute; top: 14px; right: 12px; width: 34px; height: 34px;
-    display: flex; align-items: center; justify-content: center;
-    border-radius: 9px; color: var(--fg-3); cursor: pointer;
-    transition: color .2s var(--ease), background-color .2s var(--ease);
-  }
-  .rail-close:hover { color: var(--fg); background: rgba(255, 255, 255, .06); }
-  .rail-close svg { width: 15px; height: 15px; }
-}
-@media (max-width: 979.98px) { .rail-close { display: none; } }
-/* Self-sufficiency: with the rail closed the page never reserves rail space. */
-@media (min-width: 1300px) { body.topnav { padding-left: 0; } }
-@media (prefers-reduced-motion: reduce) { body.topnav .side { transition-duration: .01ms; } }
+/* The header, the navigation sheet and the contents drawer belong to the site, not
+   to this page: .navsheet, .toc-btn, .side and .rail-close live in styles.css and
+   site.js and behave identically here, on the docs page and on the home page. This
+   file deliberately adds nothing of its own to them — one implementation is the
+   only way the two rail pages can feel like the same rail. */
 `
 
 const js = `
-/* Contents drawer (>=980px; below that the hamburger sheet in site.js owns the rail). */
-;(() => {
-  const body = document.body
-  const btn = document.querySelector('.toc-btn')
-  const menu = document.getElementById('menu')
-  if (!btn || !menu) return
-  const set = open => {
-    body.classList.toggle('contents-open', open)
-    btn.setAttribute('aria-expanded', String(open))
-    body.style.overflow = open ? 'hidden' : ''
-  }
-  btn.addEventListener('click', e => { e.stopPropagation(); set(!body.classList.contains('contents-open')) })
-  menu.querySelector('.rail-close')?.addEventListener('click', () => set(false))
-  document.addEventListener('click', e => {
-    if (!body.classList.contains('contents-open')) return
-    if (e.target.closest('#menu') || e.target.closest('.toc-btn')) return
-    set(false)
-  })
-  menu.addEventListener('click', e => { if (e.target.closest('a')) set(false) })
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') set(false) })
-  addEventListener('resize', () => {
-    if (innerWidth < 980) set(false)
-    else {
-      // crossing up: make sure a hamburger-opened sheet doesn't linger
-      body.classList.remove('menu-open'); menu.classList.remove('open')
-      if (!body.classList.contains('contents-open')) body.style.overflow = ''
-    }
-  })
-})()
-
 /* Jumping to an anchor inside a collapsed card opens the card — and re-aligns, since
    the browser scrolled to where the target was while it was still collapsed. */
 ;(() => {
@@ -555,7 +480,7 @@ const html = `<!DOCTYPE html>
 <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
 <link rel="icon" type="image/png" sizes="180x180" href="icon-180.png">
 <link rel="apple-touch-icon" href="icon-180.png">
-<link rel="stylesheet" href="styles.css?v=11">
+<link rel="stylesheet" href="styles.css?v=12">
 <script>document.documentElement.className += ' js'</script>
 <!-- Umami web analytics for opengym.duarte-santos.ch (self-hosted, cookieless). -->
 <script defer src="https://stats.duarte-santos.ch/script.js" data-website-id="db36019e-50f4-453c-9c56-d0588aefe233"></script>
@@ -572,36 +497,57 @@ const html = `<!DOCTYPE html>
     <a class="ql site" href="/#features">Features</a>
     <a class="ql site" href="/#screens">Screenshots</a>
     <a class="ql site" href="/#demo">Demo</a>
-    <a class="ql site" href="docs.html">Docs</a>
-    <a class="ql site" href="api.html">API</a>
-    <a class="ql site" href="about.html">About</a>
+    <a class="ql site" href="/docs.html">Docs</a>
+    <a class="ql site" href="/api.html">API</a>
+    <a class="ql site" href="/about.html">About</a>
     <a class="ql" href="https://gitlab.com/DuarteSantos8/opengym" rel="noopener">GitLab <span data-gh="stars"></span></a>
     <a class="ql" href="https://discord.gg/e62jY6fwVb" rel="noopener">Discord</a>
     <a class="cta" href="/#download">Download</a>
   </div>
-  <button class="nav-toggle" aria-expanded="false" aria-controls="menu" aria-label="Menu">
+  <button class="nav-toggle" id="navtoggle" aria-expanded="false" aria-controls="sitemenu" aria-label="Menu">
     <span></span><span></span>
   </button>
 </div></nav>
 
-<!-- The chapter rail. Closed by default: the Contents pill opens it as a drawer
-     from 980px up; below that it is the hamburger sheet like everywhere else. -->
-<aside class="side" id="menu" aria-label="API chapters">
-  <button class="rail-close" aria-label="Close contents"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg></button>
+<!-- The navigation sheet: the header's links again, for the widths where the bar has
+     room only for the brand and the download. Byte-identical on every page, like the
+     bar above it — nothing is ever dropped because of which page you are on. -->
+<div class="navsheet" id="sitemenu" role="navigation" aria-label="Site" aria-hidden="true">
+  <div class="nl-rows">
+    <a class="nl" href="/#features">Features</a>
+    <a class="nl" href="/#screens">Screenshots</a>
+    <a class="nl" href="/#demo">Demo</a>
+    <a class="nl" href="/docs.html">Docs</a>
+    <a class="nl" href="/api.html">API</a>
+    <a class="nl" href="/about.html">About</a>
+    <a class="nl" href="https://gitlab.com/DuarteSantos8/opengym" rel="noopener">GitLab <span data-gh="stars"></span></a>
+    <a class="nl" href="https://discord.gg/e62jY6fwVb" rel="noopener">Discord</a>
+  </div>
+</div>
+
+<!-- The one control that opens the contents, at every width. The drawer it opens is
+     closed in CSS, so it is shut on first paint whether or not the script runs. -->
+<button class="toc-btn" id="tocbtn" aria-expanded="false" aria-controls="menu">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="M4 6.5h16M4 12h16M4 17.5h10"/></svg>
+  Contents
+</button>
+
+<!-- The contents drawer: one list, one way in, one way out. Closed by default at
+     every width, and no preference is remembered — see .side in styles.css. -->
+<aside class="side" id="menu" aria-label="Contents" aria-hidden="true">
+  <div class="side-top">
+    <p class="side-title">Contents</p>
+    <button class="rail-close" aria-label="Close contents"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg></button>
+  </div>
   <p class="side-label">On this page</p>
   <a class="side-link" href="#overview"><b>Overview</b><span>Auth model, sessions, conventions</span></a>
 ${railTags}
   <a class="side-link" href="#schemas"><b>Schemas</b><span>The state blob, the error shape &amp; co.</span></a>
   <p class="side-label">More</p>
   <a class="side-link" href="/"><b>Home</b><span>The tour, the demo, the download</span></a>
-  <a class="side-link" href="docs.html"><b>Docs</b><span>Install, self-host, import</span></a>
-  <a class="side-link" href="about.html"><b>About</b><span>The story and the milestones</span></a>
+  <a class="side-link" href="/docs.html"><b>Docs</b><span>Install, self-host, import</span></a>
+  <a class="side-link" href="/about.html"><b>About</b><span>The story and the milestones</span></a>
 </aside>
-
-<button class="toc-btn" aria-controls="menu" aria-expanded="false">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
-  Contents
-</button>
 
 <main class="api-main">
   <h1>API</h1>
@@ -660,7 +606,7 @@ ${schemaCards}
   </div>
 </div></footer>
 
-<script src="site.js?v=11" defer></script>
+<script src="site.js?v=12" defer></script>
 <script>${js}</script>
 </body>
 </html>

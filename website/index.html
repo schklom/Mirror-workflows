@@ -6,15 +6,20 @@
 <title>openGym — free, open-source gym &amp; body-weight tracker</title>
 <meta name="description" content="openGym is a free, open-source gym & body-weight tracker. Download the Android app or self-host it with Docker — no account, no cloud, no telemetry.">
 <meta name="theme-color" content="#000000">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="openGym — your workouts, your weights, your data">
+<meta name="twitter:description" content="Free, open-source gym & body-weight tracker. Android APK or self-hosted with Docker. No account, no cloud, no telemetry.">
+<meta name="twitter:image" content="https://opengym.duarte-santos.ch/img/banner.png">
 <meta property="og:title" content="openGym — your workouts, your weights, your data">
 <meta property="og:description" content="Free, open-source gym & body-weight tracker. Android APK or self-hosted with Docker. No account, no cloud, no telemetry.">
 <meta property="og:image" content="https://opengym.duarte-santos.ch/img/banner.png">
 <meta property="og:url" content="https://opengym.duarte-santos.ch/">
+<link rel="canonical" href="https://opengym.duarte-santos.ch/">
 <meta property="og:type" content="website">
 <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
 <link rel="icon" type="image/png" sizes="180x180" href="icon-180.png">
 <link rel="apple-touch-icon" href="icon-180.png">
-<link rel="stylesheet" href="styles.css?v=10">
+<link rel="stylesheet" href="styles.css?v=12">
 <!-- Marks that JS is alive before first paint, so the scroll-reveal styles never
      hide content from a browser that will not run them. -->
 <script>
@@ -38,10 +43,11 @@ try {
  "license":"https://www.gnu.org/licenses/agpl-3.0.html",
  "url":"https://opengym.duarte-santos.ch/",
  "downloadUrl":"https://opengym.duarte-santos.ch/openGym.apk",
- "author":{"@type":"Person","name":"Duarte Santos","url":"https://duarte-santos.ch"}}
+ "author":{"@type":"Person","name":"Duarte Santos","url":"https://duarte-santos.ch"},
+ "sameAs":["https://gitlab.com/DuarteSantos8/opengym","https://discord.gg/e62jY6fwVb"]}
 </script>
 </head>
-<body>
+<body class="topnav">
 
 <!-- Icon set: one sprite, referenced with <use>. Line icons at 24×24, stroke 1.7. -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
@@ -77,19 +83,51 @@ try {
     openGym
   </a>
   <div class="nav-quick">
-    <a class="ql site" href="api.html">API</a>
+    <a class="ql site" href="/#features">Features</a>
+    <a class="ql site" href="/#screens">Screenshots</a>
+    <a class="ql site" href="/#demo">Demo</a>
+    <a class="ql site" href="/docs.html">Docs</a>
+    <a class="ql site" href="/api.html">API</a>
+    <a class="ql site" href="/about.html">About</a>
     <a class="ql" href="https://gitlab.com/DuarteSantos8/opengym" rel="noopener">GitLab <span data-gh="stars"></span></a>
     <a class="ql" href="https://discord.gg/e62jY6fwVb" rel="noopener">Discord</a>
-    <a class="cta" href="#download">Download</a>
+    <a class="cta" href="/#download">Download</a>
   </div>
-  <button class="nav-toggle" aria-expanded="false" aria-controls="menu" aria-label="Menu">
+  <button class="nav-toggle" id="navtoggle" aria-expanded="false" aria-controls="sitemenu" aria-label="Menu">
     <span></span><span></span>
   </button>
 </div></nav>
 
-<!-- The topic rail: a fixed column beside the page on a wide screen, the hamburger
-     sheet everywhere else. One markup, two layouts — see .side in styles.css. -->
-<aside class="side" id="menu" aria-label="Topics">
+<!-- The navigation sheet: the header's links again, for the widths where the bar has
+     room only for the brand and the download. Byte-identical on every page, like the
+     bar above it — nothing is ever dropped because of which page you are on. -->
+<div class="navsheet" id="sitemenu" role="navigation" aria-label="Site" aria-hidden="true">
+  <div class="nl-rows">
+    <a class="nl" href="/#features">Features</a>
+    <a class="nl" href="/#screens">Screenshots</a>
+    <a class="nl" href="/#demo">Demo</a>
+    <a class="nl" href="/docs.html">Docs</a>
+    <a class="nl" href="/api.html">API</a>
+    <a class="nl" href="/about.html">About</a>
+    <a class="nl" href="https://gitlab.com/DuarteSantos8/opengym" rel="noopener">GitLab <span data-gh="stars"></span></a>
+    <a class="nl" href="https://discord.gg/e62jY6fwVb" rel="noopener">Discord</a>
+  </div>
+</div>
+
+<!-- The one control that opens the contents, at every width. The drawer it opens is
+     closed in CSS, so it is shut on first paint whether or not the script runs. -->
+<button class="toc-btn" id="tocbtn" aria-expanded="false" aria-controls="menu">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="M4 6.5h16M4 12h16M4 17.5h10"/></svg>
+  Contents
+</button>
+
+<!-- The contents drawer: one list, one way in, one way out. Closed by default at
+     every width, and no preference is remembered — see .side in styles.css. -->
+<aside class="side" id="menu" aria-label="Contents" aria-hidden="true">
+  <div class="side-top">
+    <p class="side-title">Contents</p>
+    <button class="rail-close" aria-label="Close contents"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg></button>
+  </div>
   <p class="side-label">On this page</p>
   <a class="side-link" href="#features"><b>Features</b><span>Built on the gym floor</span></a>
   <a class="side-link" href="#screens"><b>Screenshots</b><span>Five screens, that's the app</span></a>
@@ -429,15 +467,6 @@ try {
         <span class="pad-go">Open the repo</span>
       </a>
 
-      <a class="pad github dead" href="https://github.com/DuarteSantos8/openGym" rel="noopener">
-        <span class="pad-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-github"/></svg></span>
-        <span class="pad-body">
-          <b>GitHub <span class="tag">404</span></b>
-          <span>Where openGym was open-sourced — and where a lot of links still point.</span>
-          <span class="rest">The account is suspended, so this one goes nowhere.</span>
-        </span>
-        <span class="pad-go">Dead link, kept honest</span>
-      </a>
 
       <a class="pad bmc" href="https://buymeacoffee.com/duartesantos" rel="noopener">
         <span class="pad-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-bmc"/></svg></span>
@@ -475,6 +504,6 @@ try {
   </div>
 </div></footer>
 
-<script src="site.js?v=10" defer></script>
+<script src="site.js?v=12" defer></script>
 </body>
 </html>

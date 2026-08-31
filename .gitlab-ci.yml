@@ -136,8 +136,12 @@ test:nix:
     # ("Path /builds/... is world-writable or a symlink. That's not allowed for security.").
     # There is no way to have the runner hand us a non-world-writable checkout, so disable the
     # (local) sandbox — this is the standard fix for Nix-on-GitLab shared runners, and is fine
-    # here: the build runs as root in an ephemeral, trusted container.
-    NIX_CONFIG: "experimental-features = nix-command flakes sandbox = false"
+    # here: the build runs as root in an ephemeral, trusted container. Each key must be on its
+    # own line (this is nix.conf content): cramming `sandbox = false` onto the same line as
+    # experimental-features would make Nix read `false`/`=`, etc. as more feature flags.
+    NIX_CONFIG: |
+      experimental-features = nix-command flakes
+      sandbox = false
     # Point every Nix dir at the cacheable project dir instead of /nix (which GitLab cache
     # cannot reach). `nix flake check` + the VM test + three package builds share this store,
     # so a warm cache makes the job near-instant.

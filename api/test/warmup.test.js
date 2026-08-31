@@ -27,7 +27,8 @@ test('warmup pings the compatible endpoint once per chat kind, with the real rul
   assert.equal(r.ok, true);
   assert.equal(seen.length, 2);
   const reviewPrefix = buildPromptParts('review', {}).system;
-  assert.ok(seen[0].messages[0].content.endsWith(reviewPrefix), 'system message carries the byte-identical review rules');
+  assert.ok(seen[1].messages[0].content.endsWith(reviewPrefix), 'review is warmed LAST, so the single live slot ends up holding it');
+  assert.ok(seen[0].messages[0].content.endsWith(buildPromptParts('debrief', {}).system));
   assert.equal(seen[0].model, 'm1');
 
   cfgStore.save({ provider: 'anthropic' });

@@ -17,8 +17,12 @@ import { fetchFor } from './node-fetch.js';
 
 const INTERVAL_MS = 30 * 60000;
 const TIMEOUT_MS = 10 * 60000;
-// The two kinds a chat actually runs day to day; `create` happens once per user and may pay cold.
-const KINDS = ['review', 'debrief'];
+// The two kinds a chat runs day to day; `create` happens once per user and may pay cold.
+// Review is deliberately LAST: with OLLAMA_NUM_PARALLEL=1 there is one live slot, it belongs
+// to whatever ran most recently, and the fallback restore from the prompt cache is not
+// reliable for large prompts — so the slot must end up holding the kind people actually use.
+// (Measured: a review right after a debrief ping took 402 s; right after a review ping, 26 s.)
+const KINDS = ['debrief', 'review'];
 
 let running = false;
 

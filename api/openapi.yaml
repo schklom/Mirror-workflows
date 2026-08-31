@@ -64,8 +64,8 @@ info:
 servers:
   - url: /
     description: Same origin as the openGym web app (the normal deployment)
-  - url: https://gym.duarte-santos.ch
-    description: Example public instance
+  - url: https://opengym.example.com
+    description: Your self-hosted instance
 
 tags:
   - name: meta

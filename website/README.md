@@ -28,6 +28,12 @@ two things that come from the public gitlab.com API at view time — the star/is
 counts and the About page's release timeline. Those two URLs pointed at
 api.github.com until that account was suspended; they go back once it is restored.
 
+`api.html` is the one **generated** file in here: `node scripts/build-api-docs.mjs`
+rewrites it from `../api/openapi.yaml`. Edit the spec, re-run the script, commit both —
+never hand-edit `api.html`, the next run overwrites it. The page is static HTML in this
+site's own design (no Swagger UI, nothing rendered at view time); the only script of its
+own it carries is the contents drawer and the card expand/collapse.
+
 `styles.css` and `site.js` are cache-busted with `?v=N` — nginx serves the site
 with `no-cache, must-revalidate`, but the query bump is what saves a Cloudflare
 edge from handing out an old stylesheet with new markup. Bump it on every change.

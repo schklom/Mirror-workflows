@@ -18,4 +18,8 @@ func initializeUserMetrics(db *FMDDB) {
 	var pendingCommandCount int64
 	db.DB.Model(&FMDUser{}).Where("command_to_user IS NOT NULL AND command_to_user <> ''").Count(&pendingCommandCount)
 	metrics.PendingCommands.Set(float64(pendingCommandCount))
+
+	var pendingMessageCount int64
+	db.DB.Model(&Message{}).Count(&pendingMessageCount)
+	metrics.PendingMessages.Set(float64(pendingMessageCount))
 }

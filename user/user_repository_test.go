@@ -230,3 +230,37 @@ func TestCannotAddDuplicateClientItemId(t *testing.T) {
 		t.Errorf("unexpected error: %s", err)
 	}
 }
+
+/* ------- Server Messages ------- */
+
+func TestAddGetDeleteMessages(t *testing.T) {
+	repo := NewUserRepository(t.TempDir(), 5, 5)
+	repo.CreateNewUser(constants.CryptoProtoV2, "encKey", "", "", "", pwHash, alice)
+	u, _, _ := repo.RequestAccess(alice, pwHash, 3600, "10.0.0.10")
+
+	messages, err := repo.GetMessages(u)
+	if len(messages) != 0 || err != nil {
+		t.Errorf("messages is not empty: %d OR err: %s", len(messages), err)
+	}
+
+	repo.AddMessage(u, CODE_ACCOUNT_LOCKED, "")
+	repo.AddMessage(u, CODE_OTHER, "hello world")
+
+	messages, _ = repo.GetMessages(u)
+	if len(messages) != 2 {
+		t.Errorf("wrong len(messages) %d != %d", len(messages), 2)
+	}
+
+	repo.DeleteSingleMessage(u, messages[0].Uuid)
+	repo.DeleteSingleMessage(u, messages[1].Uuid)
+
+	err = repo.DeleteSingleMessage(u, messages[0].Uuid)
+	if err != gorm.ErrRecordNotFound {
+		t.Errorf("unexpected error: %s", err)
+	}
+
+	messages, err = repo.GetMessages(u)
+	if len(messages) != 0 || err != nil {
+		t.Errorf("messages is not empty: %d OR err: %s", len(messages), err)
+	}
+}

@@ -35,6 +35,8 @@ type FMDUser struct {
 	LocationsV2    []LocationV2 `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE;"`
 	PicturesV2     []PictureV2  `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE;"`
 
+	Messages []Message `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE;"`
+
 	// Deprecated crypto protocol v1
 	PrivateKey    string
 	PublicKey     string
@@ -67,6 +69,15 @@ type PictureV2 struct {
 	ClientItemId []byte
 	UnixMillis   uint64
 	Ciphertext   string
+}
+
+type Message struct {
+	Id         uint64 `gorm:"primaryKey"`
+	UserId     uint64 `gorm:"index"`
+	Uuid       string
+	UnixMillis uint64
+	Code       uint64
+	Text       string
 }
 
 // Teach GORM the correct table names (GORM fails to pluralize it with the _v2 suffix).

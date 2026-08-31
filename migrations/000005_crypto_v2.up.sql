@@ -38,3 +38,17 @@ CREATE TABLE IF NOT EXISTS `pictures_v2` (
   CONSTRAINT `fk_fmd_users_pictures_v2` FOREIGN KEY (`user_id`) REFERENCES `fmd_users` (`id`) ON DELETE CASCADE
 );
 CREATE UNIQUE INDEX IF NOT EXISTS `idx_pictures_v2_user_id_client_item_id` ON `pictures_v2` (`user_id`, `client_item_id`);
+
+-- messages
+CREATE TABLE IF NOT EXISTS `messages` (
+  `id` integer PRIMARY KEY AUTOINCREMENT,
+  `user_id` integer NOT NULL,
+  `uuid` text NOT NULL,
+  `unix_millis` integer NOT NULL,
+  `code` integer NOT NULL,
+  `text` text NOT NULL,
+  CONSTRAINT `fk_fmd_users_messages` FOREIGN KEY (`user_id`) REFERENCES `fmd_users` (`id`) ON DELETE CASCADE
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS `idx_messages_user_id_uuid` ON `messages` (`user_id`, `uuid`);
+

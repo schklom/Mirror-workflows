@@ -50,6 +50,10 @@ func buildApiV2Mux(config *viper.Viper) *http.ServeMux {
 	auth("DELETE /data/{type}/all", deleteAllData2)
 	auth("DELETE /data/{type}/{id}", deleteSingleDatum2)
 
+	// Server messages
+	auth("GET /messages", getMessages2)
+	auth("DELETE /messages/{id}", deleteMessage2)
+
 	// Other
 	mux.HandleFunc("GET /tileServerUrl", func(w http.ResponseWriter, r *http.Request) { fmt.Fprint(w, tileServerUrl) })
 	mux.HandleFunc("GET /version", getVersion)
@@ -427,6 +431,43 @@ func deleteSingleDatum2(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Error().Str("user", user.Username).Str("type", typ).Err(err).Msg("failed to delete single datum")
 		http.Error(w, "failed to delete single datum", http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+}
+
+/* ------- Server messages ------- */
+
+type messageResponse struct {
+	Messages []user.MessageDto `json:"messages"`
+}
+
+func getMessages2(w http.ResponseWriter, r *http.Request) {
+	user := userFromContext(r)
+	messages, err := uio.GetMessages(user)
+
+	if err != nil {
+		log.Error().Str("user", user.Username).Err(err).Msg("failed to get messages")
+		http.Error(w, "failed to get failed to get messages", http.StatusInternalServerError)
+		return
+	}
+	writeAsJson(w, messageResponse{messages})
+}
+
+func deleteMessage2(w http.ResponseWriter, r *http.Request) {
+	id := r.PathValue("id")
+
+	user := userFromContext(r)
+	err := uio.DeleteSingleMessage(user, id)
+
+	if err == gorm.ErrRecordNotFound {
+		http.Error(w, "message not found", http.StatusNotFound)
+		return
+	}
+
+	if err != nil {
+		log.Error().Str("user", user.Username).Err(err).Msg("failed to delete single message")
+		http.Error(w, "failed to delete single message", http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)

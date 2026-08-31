@@ -541,9 +541,6 @@ func (u *UserRepository) RequestAccess(username string, innerPwHash string, sess
 			Str("remoteIp", remoteIp).
 			Msg("blocked login attempt")
 
-		// Cannot sign since the server sets this.
-		// This is the only "command" that is allowed to be unsigned.
-		u.SetCommandToUser(user, "423", 0, "")
 		return nil, nil, ErrAccountLocked
 	}
 
@@ -579,6 +576,19 @@ func (u *UserRepository) RequestAccess(username string, innerPwHash string, sess
 			Str("user", user.Username).
 			Str("remoteIp", remoteIp).
 			Msg("failed login attempt")
+
+		// Push once for the first login that triggered the lock.
+		if u.ACC.IsLocked(username) {
+			log.Warn().Str("user", user.Username).Msg("pushing lock notification")
+			if user.CryptoProtoVersion == constants.CryptoProtoV1 {
+				// Cannot sign since the server sets this.
+				// This is the only "command" that is allowed to be unsigned.
+				u.SetCommandToUser(user, "423", 0, "")
+			} else {
+				u.AddMessage(user, CODE_ACCOUNT_LOCKED, "")
+			}
+		}
+
 		return nil, nil, ErrWrongPassword
 	}
 }

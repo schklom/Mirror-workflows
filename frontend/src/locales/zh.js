@@ -239,6 +239,8 @@ export default {
   'Delete routine?': '删除训练日？',
   '“{0}” and its exercises will be removed.': '“{0}”及其动作将被移除。',
   'Delete routine': '删除训练日',
+  'Copy routine': '复制训练日',
+  'Copy': '副本',
   '{0} exercises with animations': '{0} 个带动画的动作',
   'Search…': '搜索…',
   'No workouts yet.': '还没有训练。',

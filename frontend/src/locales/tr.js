@@ -239,6 +239,8 @@ export default {
   'Delete routine?': 'Rutin silinsin mi?',
   '“{0}” and its exercises will be removed.': '“{0}” ve egzersizleri kaldırılacak.',
   'Delete routine': 'Rutini sil',
+  'Copy routine': 'Rutini kopyala',
+  'Copy': 'Kopya',
   '{0} exercises with animations': 'animasyonlu {0} egzersiz',
   'Search…': 'Ara…',
   'No workouts yet.': 'Henüz antrenman yok.',

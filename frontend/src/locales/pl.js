@@ -239,6 +239,8 @@ export default {
   'Delete routine?': 'Usunąć plan?',
   '“{0}” and its exercises will be removed.': '„{0}” i jego ćwiczenia zostaną usunięte.',
   'Delete routine': 'Usuń plan',
+  'Copy routine': 'Kopiuj plan',
+  'Copy': 'Kopia',
   '{0} exercises with animations': '{0} ćwiczeń z animacjami',
   'Search…': 'Szukaj…',
   'No workouts yet.': 'Brak treningów.',

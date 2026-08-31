@@ -239,6 +239,8 @@ export default {
   'Delete routine?': 'ลบรูทีนนี้?',
   '“{0}” and its exercises will be removed.': '“{0}” และท่าทั้งหมดในนั้นจะถูกลบ',
   'Delete routine': 'ลบรูทีน',
+  'Copy routine': 'คัดลอกรูทีน',
+  'Copy': 'สำเนา',
   // --- library / history ---
   '{0} exercises with animations': '{0} ท่าพร้อมภาพเคลื่อนไหว',
   'Search…': 'ค้นหา…',

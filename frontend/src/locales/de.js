@@ -250,6 +250,8 @@ export default {
   'Delete routine?': 'Routine löschen?',
   '“{0}” and its exercises will be removed.': '„{0}“ und ihre Übungen werden entfernt.',
   'Delete routine': 'Routine löschen',
+  'Copy routine': 'Routine kopieren',
+  'Copy': 'Kopie',
   // --- library / history ---
   '{0} exercises with animations': '{0} Übungen mit Animationen',
   'Search…': 'Suchen…',

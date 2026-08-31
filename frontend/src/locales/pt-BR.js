@@ -72,6 +72,8 @@ export const PT_BR_OVERRIDES = {
   'Tap the link button on an exercise to superset it with the one above — you’ll do them back-to-back.': 'Toque no botão de vínculo de um exercício para combiná-lo em um superset com o exercício acima — eles serão feitos em sequência.',
   'Delete routine?': 'Excluir rotina?',
   'Delete routine': 'Excluir rotina',
+  'Copy routine': 'Copiar rotina',
+  'Copy': 'Cópia',
   'Search…': 'Buscar…',
   'Starter plan loaded — Mon Push · Wed Pull · Fri Legs': 'Plano inicial carregado — Seg Push · Qua Pull · Sex Pernas',
   '{0} planned for {1}': '{0} planejado para {1}',

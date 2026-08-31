@@ -239,6 +239,8 @@ export default {
   'Delete routine?': 'Törlöd a rutint?',
   '“{0}” and its exercises will be removed.': '„{0}” és a gyakorlatai el lesznek távolítva.',
   'Delete routine': 'Rutin törlése',
+  'Copy routine': 'Rutin másolása',
+  'Copy': 'Másolat',
   // --- library / history ---
   '{0} exercises with animations': '{0} gyakorlat animációval',
   'Search…': 'Keresés…',

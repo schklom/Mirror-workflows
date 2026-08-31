@@ -259,7 +259,9 @@ is a bad way to find that out.
 
 A job is given five minutes by default, which is generous for any hosted API. A model running
 on a CPU behind the compatible endpoint can need more — with a warm cache a 3B model answers
-in about a minute, but the first job after the model loads pays the full prompt once — so
+in one to a few minutes depending on the CPU (an old 4-core box manages ~12 prompt tokens/s;
+a modern one several times that), but the first job after the model loads pays the full
+prompt once — so
 `COACH_JOB_TIMEOUT_MS` in `.env` raises the budget (never below one minute); the api's own
 HTTP client waits as long as the job, and the chat says "this can take a while" rather than
 promising minutes when the endpoint is a local one. The phone's BYOK mode does the same on

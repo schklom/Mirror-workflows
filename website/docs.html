@@ -199,7 +199,8 @@ docker compose up -d</code></pre>
      Honest sizing, from measuring exactly this on a small box:</p>
   <ul>
     <li>A <b>~3B model at Q4</b> (like <code>qwen2.5:3b</code>) fits a 4–6&nbsp;GB container and
-        answers a review in <b>about a minute</b> on a 4-core CPU once its cache is warm.</li>
+        answers a review in <b>one to a few minutes</b> once its cache is warm — a modern 4-core
+        CPU sits at the fast end, an old low-power box at the slow one.</li>
     <li>A <b>4B model needs ~6&nbsp;GB+</b> for its container. Squeezed into less, it doesn't
         fail — it thrashes, generating at ~1 token/second. Smaller and comfortable beats bigger
         and swapping.</li>

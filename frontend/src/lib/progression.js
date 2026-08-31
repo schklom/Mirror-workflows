@@ -61,6 +61,11 @@ export function defaultIncrement(exId, unit) {
   if (unit === 'lb') return heavy ? 10 : 5
   return heavy ? 5 : 2.5
 }
+// Resolve the load step for reps-mode weight controls and progression. Timed exercises use
+// `inc` for seconds, so their optional weight column must not call this helper.
+export function weightIncrement(cfg, unit) {
+  return cfg && cfg.inc > 0 ? cfg.inc : defaultIncrement(cfg?.id, unit)
+}
 export const DEFAULT_SEC_INCREMENT = 5
 // Where adding another set of push-ups stops being progress and starts being a way to spend
 // an evening. Past this the honest advice is load or a harder variation (issue #33).
@@ -167,7 +172,9 @@ export function nextPrescription(S, cfg, routine) {
   const mode = modeOf(cfg)
   const policy = policyFor(cfg, routine, mode)
   const unit = S.unit || 'kg'
-  const inc = cfg.inc > 0 ? cfg.inc : (mode === 'time' ? DEFAULT_SEC_INCREMENT : defaultIncrement(cfg.id, unit))
+  const inc = mode === 'time'
+    ? (cfg.inc > 0 ? cfg.inc : DEFAULT_SEC_INCREMENT)
+    : weightIncrement(cfg, unit)
   if (policy === 'off') return { policy, kind: 'off' }
 
   const sessions = sessionsFor(S, cfg.id, cfg).filter(s => s.mode === mode)

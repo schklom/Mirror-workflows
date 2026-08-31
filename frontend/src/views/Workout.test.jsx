@@ -401,6 +401,44 @@ describe('Workout add exercise flow', () => {
   })
 })
 
+describe('active workout weight controls', () => {
+  const press = async (label, selector) => {
+    const control = container.querySelector(selector)
+    const button = control?.querySelector(`button[aria-label="${label}"]`)
+    expect(button).toBeTruthy()
+    await act(async () => { button.dispatchEvent(new dom.Event('click', { bubbles: true })) })
+    await rerender()
+  }
+
+  it('uses the configured reps weight step for manual increases and decreases, with the default fallback', async () => {
+    await mount([exercise('plain-bench', [false], {
+      target: { mode: 'reps', reps: 5, weight: 60, bodyweight: false, inc: 1 },
+    })])
+
+    await press('Increase', '.setrow .stp.w')
+    expect(mocks.S.active.entries[0].sets[0].w).toBe(61)
+    await press('Decrease', '.setrow .stp.w')
+    expect(mocks.S.active.entries[0].sets[0].w).toBe(60)
+
+    await unmount()
+    await mount([exercise('plain-bench', [false])])
+    await press('Increase', '.setrow .stp.w')
+    expect(mocks.S.active.entries[0].sets[0].w).toBe(62.5)
+  })
+
+  it('keeps timed seconds and optional timed weight on their existing steps', async () => {
+    await mount([exercise('timed-plank', [false], {
+      target: { mode: 'time', sec: 30, weight: 60, bodyweight: false, inc: 1 },
+      sets: [{ sec: 30, w: 60, done: false }],
+    })])
+
+    await press('Increase', '.setrow .stp.w')
+    expect(mocks.S.active.entries[0].sets[0].sec).toBe(35)
+    await press('Increase', '.setrow .stp.r')
+    expect(mocks.S.active.entries[0].sets[0].w).toBe(62.5)
+  })
+})
+
 describe('Workout discard timer lifecycle', () => {
   it('preserves active timers while discard is awaiting confirmation', async () => {
     const timer = { left: 30, total: 90, endsAt: Date.now() + 30_000 }

@@ -233,6 +233,17 @@ in
 
     mcp = {
       enable = lib.mkEnableOption "openGym MCP server (stdio bridge for LLM clients)";
+
+      uid = lib.mkOption {
+        type = lib.types.nullOr lib.types.str;
+        default = null;
+        description = ''
+          The openGym user ID (from db.json "users"[].id) the MCP server serves.
+          When null, the server auto-picks when exactly one user exists; with multiple
+          users this option must be set. Use the `environment` escape hatch for the
+          same effect.
+        '';
+      };
     };
   };
 
@@ -330,7 +341,10 @@ in
             after = [ "network.target" ];
             wantedBy = [ "multi-user.target" ];
             environment = {
-              DATA_DIR = cfg.dataDir;
+              # The MCP server reads OPENGYM_DATA (not DATA_DIR) to locate the data files.
+              OPENGYM_DATA = cfg.dataDir;
+            } // lib.optionalAttrs (cfg.mcp.uid != null) {
+              OPENGYM_UID = cfg.mcp.uid;
             };
             serviceConfig = lib.mkMerge [
               {

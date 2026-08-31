@@ -406,6 +406,7 @@ for other modules to consume — setting them yourself is an error.
 | Option | Type | Default | Description |
 | --- | --- | --- | --- |
 | `mcp.enable` | `bool` | `false` | Run the read-only MCP server as a systemd service (reads the same `dataDir`). Off unless you point an LLM client at it. |
+| `mcp.uid` | `string \| null` | `null` | The openGym user ID (from `db.json` `"users"[].id`) the MCP server serves. Leave unset to auto-pick when exactly one user exists; with multiple users it must be set (the server otherwise exits listing them). |
 
 ### Option → environment mapping
 

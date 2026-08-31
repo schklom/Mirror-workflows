@@ -12,6 +12,9 @@ buildNpmPackage rec {
 
   src = ./../mcp;
 
+  # The MCP server reads shared domain helpers from the sibling frontend/src/lib; include them.
+  frontendSrc = ./../frontend;
+
   nodejs = nodejs_22;
 
   npmDepsHash = "sha256-15xl0gNcmAdcPp/cwlJNIAmNqoRWM1dsMwwAloNZeu0=";
@@ -25,6 +28,12 @@ buildNpmPackage rec {
     mkdir -p $out/lib/opengym-mcp
     cp -r node_modules $out/lib/opengym-mcp/
     cp -r src $out/lib/opengym-mcp/
+
+    # The MCP server imports shared training/domain helpers from ../../frontend/src/lib
+    # (history, exercises, muscles, onerm, progression, workout-model, format, …). They are
+    # resolved relative to $out/lib/opengym-mcp/src, so they must sit at $out/lib/frontend/src/lib.
+    mkdir -p $out/lib/frontend/src
+    cp -r $frontendSrc/src/lib $out/lib/frontend/src/lib
 
     mkdir -p $out/bin
     makeWrapper ${nodejs_22}/bin/node $out/bin/opengym-mcp \

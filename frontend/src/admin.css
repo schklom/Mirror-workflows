@@ -110,3 +110,34 @@
 }
 .adm-iconbtn{width:44px;height:44px;border-radius:12px;font-size:17px}
 .adm-empty{color:var(--label-3);font-size:13.5px;padding:10px 2px}
+
+/* ---------- the Coach before setup: a pitch, not a form ---------- */
+.adm-hero{display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:6px 2px 2px}
+.adm-hero-av{
+  width:52px;height:52px;border-radius:16px;display:grid;place-items:center;font-size:26px;
+  background:linear-gradient(135deg,var(--acc),color-mix(in srgb,var(--acc) 55%,var(--teal)));
+  color:var(--on-acc);margin-bottom:8px;box-shadow:0 8px 24px -8px color-mix(in srgb,var(--acc) 55%,transparent)
+}
+.adm-hero h2{margin:0 0 4px;font-size:22px;letter-spacing:-.022em}
+.adm-hero p{margin:0 0 14px;font-size:14px;line-height:1.5;color:var(--label-2)}
+.adm-hero-feats{display:grid;gap:10px;margin-bottom:18px}
+.adm-hero-feats>div{display:flex;gap:11px;align-items:flex-start}
+.adm-hero-feats .icn{color:var(--acc);font-size:18px;flex:none;margin-top:2px}
+.adm-hero-feats span{font-size:13.5px;line-height:1.45;color:var(--label-2)}
+.adm-hero-feats b{color:var(--label);font-weight:600}
+.adm-hero .btn{width:100%}
+
+/* ---------- setup progress ---------- */
+.adm-progress{height:5px;border-radius:99px;background:var(--surface-2);overflow:hidden;margin:0 0 10px}
+.adm-progress i{display:block;height:100%;border-radius:99px;background:var(--acc);transition:width var(--med) var(--ease)}
+
+/* ---------- provider chips: clearly idle vs. clearly chosen ---------- */
+.adm-chips .chip{
+  background:var(--surface-2);border:1.5px solid transparent;color:var(--label);
+  font-weight:500;text-transform:none
+}
+.adm-chips .chip.on{background:var(--acc-soft);border-color:var(--acc);color:var(--acc);font-weight:600}
+.adm-chips .chip:active{transform:scale(.97)}
+
+/* a finished step's summary reads as a receipt, not a control */
+.adm-step.done>summary .adm-step-t span{color:var(--acc)}

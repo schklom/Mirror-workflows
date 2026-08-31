@@ -35,12 +35,14 @@ export default function Plan() {
       <div><h1>{t('Plan')}</h1><div className="sub">{t('Your weekly routine')}</div></div>
       <button className="iconbtn" onClick={planToolsSheet} aria-label={t('Share your plan')} title={t('Share your plan')}><Icon name="upload" /></button>
     </div>
-    {showCoach && <div className="list" style={{ marginBottom: 10 }}>
-      <Row icon="sparkles" iconTint="var(--acc)" accessory="chevron"
-        title={t('Coach')}
-        subtitle={t('Plan design and reviews, from your own training')}
-        onClick={() => nav('/coach')} />
-    </div>}
+    {showCoach && <button className="coach-cta" onClick={() => nav('/coach')}>
+      <span className="coach-cta-av"><Icon name="sparkles" /></span>
+      <span className="coach-cta-t">
+        <b>{t('Coach')}</b>
+        <span>{t('Plan design and reviews, from your own training')}</span>
+      </span>
+      <Icon name="chevronRight" className="coach-cta-chev" />
+    </button>}
 
     <div className="cols"><div>
       <h4 className="sec">{t('Week schedule')}</h4>

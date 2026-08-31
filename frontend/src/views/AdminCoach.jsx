@@ -110,9 +110,30 @@ export default function AdminCoach() {
   const step3Done = authed
   const step4Done = !!d.model
   const step5Done = !!testResult?.ok || !!d.lastSuccess
-  // Step numbers only count the steps this provider actually shows.
+  // Step numbers only count the steps this provider actually shows — and like any wizard,
+  // only the first unfinished step stands open; everything done folds to its summary line.
+  const flags = [step1Done, ...(needsEndpoint ? [step2Done] : []), ...(hasCredentialStep ? [step3Done] : []), step4Done, step5Done]
+  const doneCount = flags.filter(Boolean).length
+  const firstTodo = flags.indexOf(false)
   let n = 1
+  let idx = 0
   const num = () => n++
+  const stepAt = () => { const i = idx++; return { open: i === (firstTodo === -1 ? -1 : firstTodo), key: i + ':' + (i === firstTodo) } }
+
+  // Off = a quiet, optional feature: one clean pitch and one button, no half-dimmed controls.
+  if (!d.enabled) return <div className="card">
+    <div className="adm-hero">
+      <div className="adm-hero-av"><Icon name="sparkles" /></div>
+      <h2>AI Coach</h2>
+      <p>An optional coach that designs training plans and reviews what people actually log. Off right now — nobody sees it anywhere in the app.</p>
+      <div className="adm-hero-feats">
+        <div><Icon name="clipboard" /><span><b>Bring any AI.</b> An API key from Anthropic, OpenAI or Gemini — or a free local model via Ollama.</span></div>
+        <div><Icon name="shield" /><span><b>Private by design.</b> A strict allowlist decides what leaves; every change needs the user's yes and can be undone.</span></div>
+        <div><Icon name="person" /><span><b>Each user decides.</b> Turning it on only makes the Coach available; every person consents for themselves.</span></div>
+      </div>
+      <Button variant="primary" icon="sparkles" disabled={busy} onClick={() => patch({ enabled: true })}>Set up the Coach</Button>
+    </div>
+  </div>
 
   return <div className="card" style={{ borderColor: live ? 'var(--acc)' : undefined }}>
     <div className="row between" style={{ marginBottom: 2 }}>
@@ -120,16 +141,18 @@ export default function AdminCoach() {
       <Switch checked={!!d.enabled} disabled={busy} onChange={v => patch({ enabled: v })} />
     </div>
     <div className="adm-status">
-      <span className={'adm-pill ' + (!d.enabled ? '' : live ? 'ok' : 'warn')}>{!d.enabled ? 'off' : live ? 'ready' : 'not ready'}</span>
+      <span className={'adm-pill ' + (live ? 'ok' : 'warn')}>{live ? 'ready' : 'not ready'}</span>
       <span>{status}</span>
     </div>
+    {!live && <div className="adm-progress" aria-hidden="true"><i style={{ width: Math.round(doneCount / flags.length * 100) + '%' }} /></div>}
     <div className="adm-lead">
-      The Coach designs a training plan and adjusts it from what people log. This switch is the only place it can be turned off for everyone — users decide for themselves whether to use it, but cannot disable it.
+      {live ? 'Users find the Coach under Plan → Coach. This switch is the only place it can be turned off for everyone.'
+        : `${doneCount} of ${flags.length} steps done — finish the open step and the next one unfolds.`}
     </div>
 
     {d.enabled && <>
       {/* ---------- provider ---------- */}
-      <Step n={num()} title="Provider" hint={meta.label || 'Which AI answers the Coach'} done={step1Done} open={!step1Done}>
+      <Step n={num()} title="Provider" hint={meta.label || 'Which AI answers the Coach'} done={step1Done} {...stepAt()}>
         <div className="adm-hint">Pick who answers. A key or token you save stays with its provider, so you can switch back and forth without pasting it again.</div>
         {groups.map(g => !!g.items.length && <div key={g.title} className="adm-group">
           <div className="adm-group-t">{g.title}</div>
@@ -144,7 +167,7 @@ export default function AdminCoach() {
       </Step>
 
       {/* ---------- endpoint (compatible only) ---------- */}
-      {needsEndpoint && <Step n={num()} title="Endpoint" hint={d.baseUrl || 'Where the model runs'} done={step2Done} open={!step2Done}>
+      {needsEndpoint && <Step n={num()} title="Endpoint" hint={d.baseUrl || 'Where the model runs'} done={step2Done} {...stepAt()}>
         <div className="adm-hint">The address of any server that speaks OpenAI's chat API: <b>Ollama</b>, <b>LM Studio</b>, <b>vLLM</b>, <b>OpenRouter</b>, or a gateway of your own. Just the base — no <code>/v1</code>, no key in the URL.</div>
         <div className="adm-field">
           <label>Base URL</label>
@@ -155,14 +178,14 @@ export default function AdminCoach() {
       </Step>}
 
       {/* ---------- credential ---------- */}
-      {hasCredentialStep && <Step n={num()} title="Credential" hint={credentialHint(d.auth, meta)} done={step3Done} open={!step3Done}>
+      {hasCredentialStep && <Step n={num()} title="Credential" hint={credentialHint(d.auth, meta)} done={step3Done} {...stepAt()}>
         <div className="row" style={{ gap: 8, flexWrap: 'wrap', marginBottom: 8 }}>
           <CredentialPill auth={d.auth} />
         </div>
         {authState === 'connected' ? <>
           <div className="adm-hint">Connected{d.auth.account ? ' as ' + d.auth.account : ''} via {credentialLabel(d.auth.type)}{d.auth.connectedAt ? ' · added ' + rel(d.auth.connectedAt) : ''}. The key is stored encrypted and is never shown again.</div>
           <div className="adm-actions">
-            {meta.apiKey && <Button size="sm" icon="lock" disabled={busy}
+            {meta.apiKey && <Button size="sm" variant="tinted" icon="lock" disabled={busy}
               onClick={() => openSheet(close => <ApiKeySheet close={close} onDone={load} label={meta.label} placeholder={meta.keyPlaceholder} optional={meta.keyOptional} />)}>Replace key</Button>}
             <Button size="sm" danger disabled={busy} onClick={disconnect}>Remove</Button>
           </div>
@@ -185,7 +208,7 @@ export default function AdminCoach() {
       </Step>}
 
       {/* ---------- model ---------- */}
-      <Step n={num()} title="Model" hint={d.model || (meta.defaultModel ? 'default: ' + meta.defaultModel : 'not chosen yet')} done={step4Done} open={!step4Done}>
+      <Step n={num()} title="Model" hint={d.model || (meta.defaultModel ? 'default: ' + meta.defaultModel : 'not chosen yet')} done={step4Done} {...stepAt()}>
         <div className="adm-hint">{meta.http
           ? 'Which model the provider should use. "List models" asks the provider for its current list, so nothing here goes stale.'
           : 'Optional. Leave it empty to use the runtime\'s own default.'}</div>
@@ -201,17 +224,20 @@ export default function AdminCoach() {
               onBlur={e => e.target.value !== (d.models?.[d.provider] || '') && patch({ model: e.target.value })} />}
         </div>
         {meta.http && <div className="adm-actions">
-          <Button size="sm" disabled={busy} onClick={loadModels}>{models ? 'Refresh list' : 'List models'}</Button>
+          <Button size="sm" variant="tinted" icon="reset" disabled={busy} onClick={loadModels}>{models ? 'Refresh list' : 'List models'}</Button>
           {models && models.length ? <span className="dim small" style={{ alignSelf: 'center' }}>{models.length} served by the provider</span> : null}
         </div>}
       </Step>
 
       {/* ---------- test ---------- */}
-      <Step n={num()} title="Test" hint={step5Done ? 'passed' : 'one real round trip, no user data'} done={step5Done} open={!step5Done || !!testResult}>
+      <Step n={num()} title="Test" hint={step5Done ? 'passed' : 'one real round trip, no user data'} done={step5Done} {...stepAt()} forceOpen={!!testResult}>
         <div className="adm-hint">Sends one tiny question to the provider and checks the answer. No training data is involved. Do this after every change above.</div>
         <div className="adm-actions">
           <Button size="sm" variant="primary" icon="check" disabled={busy || !authed || !hasEndpoint} onClick={test}>Test the Coach</Button>
         </div>
+        {(!authed || !hasEndpoint) && <div className="adm-hint" style={{ margin: '6px 0 0' }}>
+          {!hasEndpoint ? 'Finish the Endpoint step first.' : 'Finish the Credential step first.'}
+        </div>}
         {testResult && <div className={'adm-result ' + (testResult.pending ? '' : testResult.ok ? 'ok' : 'bad')}>
           {testResult.pending ? 'Asking the provider…'
             : testResult.ok ? <><b>Passed</b>{testResult.version ? 'Provider: ' + testResult.version : 'The provider answered as expected.'}</>
@@ -294,8 +320,9 @@ export default function AdminCoach() {
 
 /* ---------------------------------- pieces ---------------------------------- */
 
-function Step({ n, title, hint, done, open, children }) {
-  return <details className={'adm-step ' + (done ? 'done' : 'todo')} open={open}>
+function Step({ n, title, hint, done, open, forceOpen, children }) {
+  // `key` remounts the <details> when the wizard advances, so the next step unfolds itself.
+  return <details className={'adm-step ' + (done ? 'done' : 'todo')} open={open || forceOpen}>
     <summary>
       <span className="adm-num">{done ? <Icon name="check" /> : n}</span>
       <span className="adm-step-t"><b>{title}</b><span>{hint}</span></span>
@@ -329,7 +356,7 @@ const credentialLabel = type => ({
 
 // The failure classes jobs.js emits, in words an operator can act on.
 const failureTitle = cls => ({
-  timeout: 'The provider took too long (over 5 minutes)',
+  timeout: 'The provider took longer than the job budget (COACH_JOB_TIMEOUT_MS, default 5 minutes)',
   missing: 'The provider runtime or key is missing',
   auth: 'The provider rejected the credential',
   provider: 'The provider returned an error',

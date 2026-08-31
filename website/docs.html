@@ -139,28 +139,92 @@ docker compose up -d</code></pre>
      <a href="https://gitlab.com/DuarteSantos8/opengym/-/blob/main/mcp/README.md" rel="noopener">mcp/README.md</a>.</p>
 
   <h2 id="coach">Let an AI coach write your plan</h2>
-  <p>Separate from the read-only bridge above, openGym has an optional <b>AI Coach</b> that can
-     design a training plan and, later, review what you actually logged and propose changes to
-     it. Answer a few questions — goal, days a week, session length, equipment, anything to work
-     around — and it builds a week of routines. Every suggestion carries the evidence behind it,
-     you approve or reject each one, and you can undo the last set of changes.</p>
-  <p>It is <b>off by default</b>. An admin turns it on in <b>Settings → Admin → AI Coach</b>,
-     picks a provider and pastes a key: <b>Anthropic</b>, <b>OpenAI</b>, <b>Google Gemini</b>, or
-     any <b>OpenAI-compatible endpoint</b> — Ollama or LM Studio on your own LAN, vLLM,
-     OpenRouter. These speak plain HTTPS and need nothing beyond the default image. Only the
-     Claude Agent SDK and the Codex CLI need the bigger build:</p>
-  <pre><code>API_TARGET=coach docker compose up -d --build api</code></pre>
-  <p>On the phone app, <b>Settings → AI Coach</b> offers two ways in: pair the phone with your
-     self-hosted instance and the Coach runs there, or bring your own API key and the phone calls
-     the provider directly, key in the platform's secure storage.</p>
-  <p>It runs on <b>your</b> server under <b>your</b> account — there is no openGym
-     service in the middle, and nothing is sent anywhere until you ask it for something. What
-     leaves the server is a by-name allowlist (your plan, your logged sets, body weight if you
-     track it) under a pseudonym; your name, sign-in details and other profiles never do. What
-     comes back can only touch routines and your weekly schedule, and is applied on your device
-     after you approve it.</p>
-  <p>The Coach is not a doctor or a physiotherapist. If something hurts, ask a professional.
-     Full details, including exactly what is sent and how credentials are stored:
+  <p>Separate from the read-only bridge above, openGym has an optional <b>AI Coach</b>. Answer a
+     few questions — goal, days a week, session length, equipment, anything to work around — and
+     it designs a week of routines. Later it reviews what you actually logged and proposes
+     changes; you can also ask it to look at <b>one workout</b> (a debrief: a score, what went
+     well, what to watch, what to do next time) or to <b>improve a single routine</b> and leave
+     the rest alone. If the admin allows it and at least three people opt in, it can show
+     anonymous medians so you can see how you sit against the others on your instance.</p>
+
+  <h3>How it works</h3>
+  <p>The Coach is a chat. The first visit is a short intake, one question per screen; after
+     that, every request works the same way:</p>
+  <ol>
+    <li>The server builds a JSON payload from a <b>by-name allowlist</b>: your plan, the sets
+        you logged in the review window, weigh-ins, your intake answers, and a few preferences —
+        under a pseudonym. Your name, e-mail, passkeys and everyone else's data are not in it,
+        by construction: fields are copied in one by one, nothing is passed through.</li>
+    <li>That payload goes to the provider <b>you</b> configured — there is no openGym service in
+        the middle.</li>
+    <li>The answer is parsed and <b>validated against a closed list of change types</b> (add,
+        remove or swap an exercise, sets, reps, schedule, progression policy…). An answer that
+        names an exercise that doesn't exist, invents a change type, or breaks a rule is
+        refused — it gets exactly one repair round, then the job fails rather than guessing.</li>
+    <li>What survives is shown to you as a card, <b>one checkbox per change</b>, each with the
+        evidence behind it. Nothing touches your plan until you accept it, every proposal stays
+        in the chat history whether you said yes or no, and the last accepted change-set can be
+        undone in one tap.</li>
+  </ol>
+
+  <h3>Providers</h3>
+  <p>It is <b>off by default</b>. An admin turns it on in <b>Settings → Admin → AI Coach</b> and
+     picks who answers:</p>
+  <table class="cfg">
+    <tr><td><b>Anthropic, OpenAI, Google&nbsp;Gemini</b></td><td>Paste an API key from the provider's console. Plain HTTPS from the api process — runs on the default image.</td></tr>
+    <tr><td><b>OpenAI-compatible endpoint</b></td><td>Any server that speaks the Chat Completions API: <b>Ollama</b>, <b>LM Studio</b>, <b>vLLM</b>, <b>OpenRouter</b>, a gateway of your own. A key only if the endpoint wants one. Also the default image.</td></tr>
+    <tr><td><b>Claude Agent SDK / Codex CLI</b></td><td>Run a real AI runtime inside the container — the one case that needs the bigger build: <code>API_TARGET=coach docker compose up -d --build api</code></td></tr>
+  </table>
+
+  <h3 id="coach-local">Run it fully local — no cloud, no cost</h3>
+  <p>A model on your own hardware is just the compatible endpoint with no key. The usual way is
+     an Ollama container next to openGym:</p>
+  <pre><code># docker-compose.yml — add next to the openGym services (same file = same network)
+  ollama:
+    image: ollama/ollama
+    restart: unless-stopped
+    volumes:
+      - ./data/ollama:/root/.ollama
+    environment:
+      - OLLAMA_KEEP_ALIVE=-1     # keep the model (and its prompt cache) loaded
+      - OLLAMA_NUM_PARALLEL=1
+    mem_limit: 4g</code></pre>
+  <pre><code>docker exec -it &lt;ollama container&gt; ollama pull qwen2.5:3b</code></pre>
+  <p>Then in <b>Settings → Admin → AI Coach</b>: provider <b>OpenAI-compatible endpoint</b> →
+     Base URL <code>http://ollama:11434</code> → <b>List models</b> → pick the model →
+     <b>Test the Coach</b>. That's the whole setup.</p>
+  <p><b>Any model you can pull, you can use.</b> <code>ollama pull</code> whatever you like and
+     it appears under <i>List models</i> — the admin is free to run anything the box can hold,
+     and each provider remembers its own model choice, so switching around never loses one.
+     Honest sizing, from measuring exactly this on a small box:</p>
+  <ul>
+    <li>A <b>~3B model at Q4</b> (like <code>qwen2.5:3b</code>) fits a 4–6&nbsp;GB container and
+        answers a review in <b>about a minute</b> on a 4-core CPU once its cache is warm.</li>
+    <li>A <b>4B model needs ~6&nbsp;GB+</b> for its container. Squeezed into less, it doesn't
+        fail — it thrashes, generating at ~1 token/second. Smaller and comfortable beats bigger
+        and swapping.</li>
+    <li>The <b>first request after a restart is slow once</b>: the model loads and reads the
+        Coach's rules. The api pre-warms that cache at boot and every half hour, so in practice
+        people hit the warm path.</li>
+    <li>On a genuinely slow box, raise the job budget with <code>COACH_JOB_TIMEOUT_MS</code>
+        in <code>.env</code>.</li>
+  </ul>
+  <p>A GPU machine elsewhere on your LAN works the same way: run Ollama or LM Studio there and
+     point the Base URL at it, e.g. <code>http://192.168.1.50:11434</code>.</p>
+
+  <h3>On the phone</h3>
+  <p><b>Settings → AI Coach</b> offers two ways in: pair the phone with your self-hosted
+     instance and the Coach runs there under the rules above, or bring your own API key and the
+     phone calls the provider directly — same allowlist, same validator, key in the platform's
+     secure storage, ten runs a day.</p>
+
+  <h3>Privacy and limits</h3>
+  <p>Before anyone uses it, a consent screen lists exactly which categories of data leave the
+     server — generated from the same module that builds the payloads, so it cannot drift from
+     what actually happens. The admin can cap runs per person and per instance per day, and
+     <code>COACH_DISABLED=1</code> in the environment switches the feature off harder than any
+     toggle. The Coach is not a doctor or a physiotherapist — if something hurts, ask a
+     professional. Full details, including exactly what is sent and how credentials are stored:
      <a href="https://gitlab.com/DuarteSantos8/opengym/-/blob/main/docs/AI_COACH.md" rel="noopener">docs/AI_COACH.md</a>.</p>
 
   <h2 id="import">Import your training history</h2>

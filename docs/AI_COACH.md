@@ -75,6 +75,33 @@ A key, a model and the account binding described below belong to the provider th
 entered for. Switching chips does not clear them: the Anthropic key is still there when you
 come back from trying Gemini, and each chip shows a mark when it holds one.
 
+#### Picking and changing models
+
+The model field is never a guess: **List models** asks the endpoint what it actually serves.
+For an Ollama box that means the admin decides what exists — `ollama pull` anything the
+hardware can hold and it appears in the picker on the next refresh; nothing in openGym pins
+you to a blessed list. The choice is remembered **per provider**, so trying a cloud model for
+a week and coming back to the local one restores exactly what was set before.
+
+#### Performance on a small box
+
+The Coach's rules ride as a byte-identical system prompt, so a llama.cpp/Ollama endpoint can
+keep them in its prefix cache and only ever re-process the payload — and the api warms that
+cache itself at boot and every half hour, so the expensive first read happens off everyone's
+clock. Measured on a 4-core, no-GPU VM with `qwen2.5:3b`: a review costs about **a minute**
+warm, versus ~8 minutes before the cache and slimmer payload existed. Three things keep it
+that way:
+
+- `OLLAMA_KEEP_ALIVE=-1` and `OLLAMA_NUM_PARALLEL=1` on the Ollama side — an unloaded model
+  takes its cache with it, and parallel slots split it.
+- Give the container room. A ~3B model at Q4 lives happily in 4 GB; a 4B model squeezed into
+  the same limit does not fail, it *thrashes* — weights fall out of the page cache and
+  generation drops to ~1 token/s. On a 4–6 GB box, smaller and comfortable wins.
+- The endpoint is sent a **JSON schema** with each request (structured outputs), so the shape
+  of the answer is enforced while it is generated and the repair round is rarely needed.
+  Servers that reject schemas get plain JSON mode automatically, then no JSON mode — the
+  validator is the gate either way.
+
 ### With a runtime in the container (Claude Agent SDK, Codex CLI)
 
 **1. Build the image that has an AI runtime in it.** The default image deliberately has none:
@@ -231,11 +258,12 @@ is a provider problem rather than a prompting problem, and a retry loop against 
 is a bad way to find that out.
 
 A job is given five minutes by default, which is generous for any hosted API. A model running
-on a CPU behind the compatible endpoint can need more — a 3B model with an 8k prompt takes ten
-minutes on a small VM — so `COACH_JOB_TIMEOUT_MS` in `.env` raises it (never below one
-minute); the api's own HTTP client waits as long as the job, and the chat says "this can take a
-while" rather than promising minutes when the endpoint is a local one. The phone's BYOK mode
-does the same on its own: a local endpoint gets 25 minutes there.
+on a CPU behind the compatible endpoint can need more — with a warm cache a 3B model answers
+in about a minute, but the first job after the model loads pays the full prompt once — so
+`COACH_JOB_TIMEOUT_MS` in `.env` raises the budget (never below one minute); the api's own
+HTTP client waits as long as the job, and the chat says "this can take a while" rather than
+promising minutes when the endpoint is a local one. The phone's BYOK mode does the same on
+its own: a local endpoint gets 25 minutes there.
 
 The Coach may only touch **routines and the week**. Your training log, your weigh-ins and your
 settings are not reachable from any change type that exists.

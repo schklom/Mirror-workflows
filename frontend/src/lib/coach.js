@@ -327,11 +327,18 @@ export function recordTiming(s, ms) {
   const c = coachOf(s)
   c.timings = [...(c.timings || []), Math.round(ms)].slice(-TIMINGS_MAX)
 }
-/** Median of the observed job durations, or null before any. */
+/**
+ * What to promise in the typing bubble. Median of the observed runs, but never slower than
+ * the most recent one: after a speed-up (a faster model, a warmed cache) the median drags
+ * three old 8-minute runs along, and telling someone "about 8 min" for a one-minute job is
+ * worse than being briefly optimistic. A slow outlier still cannot scare anyone — the median
+ * wins in that direction.
+ */
 export function estimateMs(S) {
-  const arr = [...(S?.coach?.timings || [])].filter(n => n > 0).sort((a, b) => a - b)
-  if (!arr.length) return null
-  return arr[Math.floor(arr.length / 2)]
+  const raw = (S?.coach?.timings || []).filter(n => n > 0)
+  if (!raw.length) return null
+  const sorted = [...raw].sort((a, b) => a - b)
+  return Math.min(sorted[Math.floor(sorted.length / 2)], raw[raw.length - 1])
 }
 
 /** The questionnaire, as the lines the chat shows back to the user. */

@@ -15,6 +15,7 @@ import * as coachConfig from './coach/config.js';
 import * as coachJobs from './coach/jobs.js';
 import { coachRoutes } from './coach/routes.js';
 import { startCadence } from './coach/cadence.js';
+import { startWarmup } from './coach/warmup.js';
 import { dayReminderPush, restTimerPush, testPush } from './push-messages.js';
 import { verifyError } from './verify-error.js';
 
@@ -993,6 +994,7 @@ coachJobs.setProposalHook((uid, pending) => {
   });
 });
 startCadence({ users: () => db.users, userNow });
+startWarmup();
 
 http.createServer(async (req, res) => {
   // Same-origin (the deployed nginx-proxied web app) never triggers CORS, so this only matters

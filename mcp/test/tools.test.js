@@ -129,6 +129,17 @@ describe('get_routine', () => {
     expect(r.exercises[0]).toMatchObject({ reps: 8, reps_min: 8, reps_max: 12 })
   })
 
+  test('reports an exercise\'s own rest, and leaves it out when it inherits the timer', () => {
+    S.routines[0].ex[0].restSec = 180
+    delete S.routines[0].ex[1]?.restSec
+
+    const r = call('get_routine', { routine_id: S.routines[0].id })
+    expect(r.exercises[0].rest_sec).toBe(180)
+    // An exercise with no rest of its own inherits the global timer. Absent says that;
+    // a zero would read as "no rest at all", which is a different prescription.
+    expect(JSON.parse(JSON.stringify(r)).exercises[1]).not.toHaveProperty('rest_sec')
+  })
+
   test('projects routine and exercise progression rules from prog', () => {
     S.routines[0].prog = 'greyskull'
     S.routines[0].ex[0].prog = 'double'

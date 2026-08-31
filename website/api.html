@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>API — openGym</title>
+<meta name="description" content="The complete openGym HTTP API, documented as an OpenAPI spec: passkey auth, state sync, push notifications, pairing and admin routes.">
+<meta name="theme-color" content="#000000">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+<link rel="icon" type="image/png" sizes="180x180" href="icon-180.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="stylesheet" href="styles.css?v=10">
+<!-- Swagger UI, pinned. The spec it renders is ./openapi.yaml — the same file that
+     lives in the repository at api/openapi.yaml, next to the server it documents. -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.32.14/swagger-ui.css">
+<script>document.documentElement.className += ' js'</script>
+<!-- Umami web analytics for opengym.duarte-santos.ch (self-hosted, cookieless). -->
+<script defer src="https://stats.duarte-santos.ch/script.js" data-website-id="db36019e-50f4-453c-9c56-d0588aefe233"></script>
+<style>
+/* Re-skin Swagger UI (light by default) onto the site's black/green scheme.
+   Only colors and chrome — layout stays Swagger's own. */
+#swagger { margin-top: 8px; }
+.swagger-ui, .swagger-ui .info .title, .swagger-ui .info h1, .swagger-ui .info h2,
+.swagger-ui .info h3, .swagger-ui .info h4, .swagger-ui .info h5,
+.swagger-ui .opblock-tag, .swagger-ui .opblock .opblock-summary-path,
+.swagger-ui .opblock .opblock-summary-operation-id,
+.swagger-ui table thead tr th, .swagger-ui table thead tr td,
+.swagger-ui .parameter__name, .swagger-ui .response-col_status,
+.swagger-ui .tab li, .swagger-ui .opblock .opblock-section-header h4,
+.swagger-ui section.models h4, .swagger-ui section.models h5,
+.swagger-ui .model-title, .swagger-ui .model, .swagger-ui label,
+.swagger-ui .dialog-ux .modal-ux-content h4, .swagger-ui .dialog-ux .modal-ux-header h3,
+.swagger-ui .scheme-container .schemes-title,
+.swagger-ui .responses-inner h4, .swagger-ui .responses-inner h5 { color: var(--fg); }
+.swagger-ui .info li, .swagger-ui .info p, .swagger-ui .info table,
+.swagger-ui .opblock-description-wrapper p, .swagger-ui .opblock-external-docs-wrapper p,
+.swagger-ui .opblock-title_normal p, .swagger-ui .opblock .opblock-summary-description,
+.swagger-ui .parameter__type, .swagger-ui .parameter__deprecated, .swagger-ui .parameter__in,
+.swagger-ui .response-col_links, .swagger-ui .response-col_description,
+.swagger-ui table.model td, .swagger-ui .prop-format,
+.swagger-ui .renderedMarkdown p, .swagger-ui .renderedMarkdown li,
+.swagger-ui .servers-title, .swagger-ui .servers > label { color: var(--fg-2); }
+.swagger-ui .info a, .swagger-ui .renderedMarkdown a { color: var(--acc); }
+.swagger-ui .info .base-url, .swagger-ui .info .title small pre { color: var(--fg-3); }
+.swagger-ui .info .title small { background: var(--surface-2); }
+.swagger-ui .scheme-container {
+  background: transparent; box-shadow: none; border-bottom: 1px solid var(--hair-soft);
+  padding: 12px 0 20px; margin: 0;
+}
+.swagger-ui .opblock-tag { border-bottom: 1px solid var(--hair-soft); }
+.swagger-ui .opblock-tag small { color: var(--fg-3); }
+.swagger-ui .opblock {
+  background: var(--surface); border-color: var(--hair-soft);
+  box-shadow: none; border-radius: var(--r-s);
+}
+.swagger-ui .opblock .opblock-section-header {
+  background: var(--surface-2); box-shadow: none;
+}
+.swagger-ui .opblock .opblock-section-header > label { color: var(--fg-2); }
+.swagger-ui .opblock.opblock-get { border-color: rgba(97,175,254,.35); background: rgba(97,175,254,.06); }
+.swagger-ui .opblock.opblock-post { border-color: rgba(73,204,144,.35); background: rgba(73,204,144,.06); }
+.swagger-ui .opblock.opblock-put { border-color: rgba(252,161,48,.35); background: rgba(252,161,48,.06); }
+.swagger-ui .opblock.opblock-delete { border-color: rgba(249,62,62,.35); background: rgba(249,62,62,.06); }
+.swagger-ui .opblock .opblock-summary { border-color: transparent; }
+.swagger-ui section.models { border: 1px solid var(--hair-soft); border-radius: var(--r-s); }
+.swagger-ui section.models.is-open h4 { border-bottom: 1px solid var(--hair-soft); }
+.swagger-ui section.models .model-container,
+.swagger-ui section.models .model-box { background: var(--surface); border-radius: var(--r-s); }
+.swagger-ui .model-toggle::after { filter: invert(1); }
+.swagger-ui .opblock-summary-control:focus, .swagger-ui .models-control:focus { outline: none; }
+.swagger-ui svg.arrow, .swagger-ui .expand-operation svg, .swagger-ui .authorization__btn svg { fill: var(--fg-2); }
+.swagger-ui .btn { color: var(--fg); border-color: var(--hair); box-shadow: none; }
+.swagger-ui .btn.authorize { color: var(--acc); border-color: var(--acc); }
+.swagger-ui .btn.authorize svg { fill: var(--acc); }
+.swagger-ui .btn.execute { background: var(--acc); border-color: var(--acc); color: var(--acc-ink); }
+.swagger-ui select, .swagger-ui input[type=text], .swagger-ui input[type=password],
+.swagger-ui input[type=search], .swagger-ui input[type=email], .swagger-ui textarea {
+  background: var(--surface-2); color: var(--fg); border: 1px solid var(--hair);
+  box-shadow: none;
+}
+.swagger-ui .servers > label select { background: var(--surface-2); color: var(--fg); border-color: var(--hair); }
+.swagger-ui .dialog-ux .modal-ux { background: var(--surface); border: 1px solid var(--hair); }
+.swagger-ui .dialog-ux .modal-ux-header { border-bottom: 1px solid var(--hair-soft); }
+.swagger-ui .dialog-ux .backdrop-ux { background: rgba(0,0,0,.72); }
+.swagger-ui .auth-container, .swagger-ui .auth-btn-wrapper { border-color: var(--hair-soft); }
+.swagger-ui .auth-container .wrapper, .swagger-ui .auth-container p,
+.swagger-ui .auth-container label, .swagger-ui .auth-container h4,
+.swagger-ui .auth-container h6, .swagger-ui .auth-container .renderedMarkdown p { color: var(--fg-2); }
+.swagger-ui .copy-to-clipboard { background: var(--surface-2); }
+.swagger-ui .opblock .opblock-summary-method { border-radius: 8px; }
+.swagger-ui .response-col_status .response-undocumented { color: var(--fg-3); }
+.swagger-ui .responses-table .response { border-color: var(--hair-soft); }
+.swagger-ui table tbody tr td { border-color: var(--hair-soft); }
+.swagger-ui .parameters-col_description input { max-width: 100%; }
+.swagger-ui .markdown code, .swagger-ui .renderedMarkdown code {
+  color: var(--acc); background: var(--acc-soft);
+}
+.swagger-ui .loading-container .loading::before { border-color: var(--hair); border-top-color: var(--acc); }
+.swagger-ui .loading-container .loading::after { color: var(--fg-2); }
+.swagger-ui .errors-wrapper { background: rgba(249,62,62,.08); border-color: rgba(249,62,62,.4); }
+.swagger-ui .errors-wrapper .errors h4, .swagger-ui .errors-wrapper hgroup h4 { color: var(--fg); }
+/* The API page wants the full width the docs get, not the 720px prose column. */
+main.api-main { max-width: var(--max); margin: 0 auto; padding: clamp(44px, 7vw, 72px) var(--pad) 0; }
+main.api-main h1 { font-size: clamp(36px, 6.5vw, 60px); letter-spacing: -.03em; }
+main.api-main .lead { color: var(--fg-2); max-width: 60ch; margin: 14px 0 8px; font-size: 19px; }
+main.api-main .lead a { color: var(--acc); }
+</style>
+</head>
+<body class="topnav">
+
+<nav><div class="wrap nav-in">
+  <a class="brand" href="/">
+    <img src="icon-180.png" alt="" width="24" height="24">
+    openGym
+  </a>
+  <div class="nav-quick">
+    <a class="ql site" href="/#features">Features</a>
+    <a class="ql site" href="/#screens">Screenshots</a>
+    <a class="ql site" href="/#demo">Demo</a>
+    <a class="ql site" href="docs.html">Docs</a>
+    <a class="ql site" href="api.html">API</a>
+    <a class="ql site" href="about.html">About</a>
+    <a class="ql" href="https://gitlab.com/DuarteSantos8/opengym" rel="noopener">GitLab <span data-gh="stars"></span></a>
+    <a class="ql" href="https://discord.gg/e62jY6fwVb" rel="noopener">Discord</a>
+    <a class="cta" href="/#download">Download</a>
+  </div>
+  <button class="nav-toggle" aria-expanded="false" aria-controls="menu" aria-label="Menu">
+    <span></span><span></span>
+  </button>
+</div></nav>
+
+<!-- The topic rail: a fixed column beside the page on a wide screen, the hamburger
+     sheet everywhere else. The in-page anchors are the ids Swagger UI gives each
+     tag section once it has rendered. -->
+<aside class="side" id="menu" aria-label="Topics">
+  <p class="side-label">On this page</p>
+  <a class="side-link" href="#operations-tag-meta"><b>Meta</b><span>Health &amp; public config</span></a>
+  <a class="side-link" href="#operations-tag-auth"><b>Auth</b><span>Passkeys &amp; sessions</span></a>
+  <a class="side-link" href="#operations-tag-pairing"><b>Pairing</b><span>Connect the mobile app</span></a>
+  <a class="side-link" href="#operations-tag-data"><b>Data</b><span>State sync</span></a>
+  <a class="side-link" href="#operations-tag-push"><b>Push</b><span>Notifications &amp; rest timer</span></a>
+  <a class="side-link" href="#operations-tag-activity"><b>Activity</b><span>Live presence</span></a>
+  <a class="side-link" href="#operations-tag-admin"><b>Admin</b><span>Users, invites, audit log</span></a>
+  <p class="side-label">More</p>
+  <a class="side-link" href="/"><b>Home</b><span>The tour, the demo, the download</span></a>
+  <a class="side-link" href="docs.html"><b>Docs</b><span>Install, self-host, import</span></a>
+  <a class="side-link" href="about.html"><b>About</b><span>The story and the milestones</span></a>
+</aside>
+
+<main class="api-main">
+  <h1>API</h1>
+  <p class="lead">Every route the openGym backend serves — passkey auth, state sync,
+     push, pairing, admin — as one hand-written
+     <a href="openapi.yaml">OpenAPI&nbsp;spec</a>. The same file lives
+     <a href="https://gitlab.com/DuarteSantos8/opengym/-/blob/main/api/openapi.yaml" rel="noopener">in the repository</a>
+     at <code>api/openapi.yaml</code>, next to the one server file it documents.</p>
+
+  <div id="swagger" aria-label="API reference"></div>
+</main>
+
+<footer><div class="wrap foot">
+  <span class="c">openGym · AGPL-3.0 · © 2026 <a href="https://duarte-santos.ch" rel="noopener">Duarte Santos</a></span>
+  <div class="links">
+    <a href="docs.html">Docs</a>
+    <a href="about.html">About</a>
+    <a href="https://gitlab.com/DuarteSantos8/opengym" rel="noopener">GitLab</a>
+    <a href="https://discord.gg/e62jY6fwVb" rel="noopener">Discord</a>
+    <a href="/#download">Download</a>
+  </div>
+</div></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.32.14/swagger-ui-bundle.js" defer></script>
+<script src="site.js?v=10" defer></script>
+<script>
+addEventListener('DOMContentLoaded', () => {
+  if (!window.SwaggerUIBundle) return
+  SwaggerUIBundle({
+    url: 'openapi.yaml',
+    dom_id: '#swagger',
+    deepLinking: true,
+    docExpansion: 'list',
+    defaultModelsExpandDepth: 0,
+    validatorUrl: null,
+    presets: [SwaggerUIBundle.presets.apis],
+    layout: 'BaseLayout'
+  })
+})
+</script>
+</body>
+</html>

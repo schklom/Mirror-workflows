@@ -733,4 +733,12 @@ export default {
   'Add as second workout': 'Добавить как вторую тренировку',
   'Finish the current workout first.': 'Сначала заверши текущую тренировку.',
   'Logging a past workout — no rest timers.': 'Запись прошлой тренировки — без таймеров отдыха.',
+  // --- bar weight (plate math) ---
+  'Bar weight': 'Вес грифа',
+  'Bar ({0})': 'Гриф ({0})',
+  'Bar {0}': 'Гриф {0}',
+  'Default for this bar type.': 'Значение по умолчанию для этого типа грифа.',
+  'Set to 0 to go back to the default ({0}).': 'Поставь 0, чтобы вернуться к значению по умолчанию ({0}).',
+  'Applies to this exercise everywhere, not just this plan.': 'Действует для этого упражнения везде, а не только в этом плане.',
+  'You still log the total weight — the bar only feeds the per-side plate math.': 'Записывается по-прежнему общий вес — гриф нужен только для расчёта блинов на сторону.',
 }

@@ -738,4 +738,12 @@ export default {
   'Add as second workout': 'Hozzáadás második edzésként',
   'Finish the current workout first.': 'Előbb fejezd be a folyó edzést.',
   'Logging a past workout — no rest timers.': 'Korábbi edzés rögzítése — nincs pihenőidőzítő.',
+  // --- bar weight (plate math) ---
+  'Bar weight': 'Rúd súlya',
+  'Bar ({0})': 'Rúd ({0})',
+  'Bar {0}': 'Rúd {0}',
+  'Default for this bar type.': 'Alapérték ehhez a rúdtípushoz.',
+  'Set to 0 to go back to the default ({0}).': 'Állítsd 0-ra az alapérték ({0}) visszaállításához.',
+  'Applies to this exercise everywhere, not just this plan.': 'Mindenhol érvényes erre a gyakorlatra, nem csak ebben a tervben.',
+  'You still log the total weight — the bar only feeds the per-side plate math.': 'Továbbra is a teljes súlyt rögzíted — a rúd csak az oldalankénti tárcsaszámításhoz kell.',
 }

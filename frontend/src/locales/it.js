@@ -733,4 +733,12 @@ export default {
   'Add as second workout': 'Aggiungi come secondo allenamento',
   'Finish the current workout first.': 'Termina prima l’allenamento in corso.',
   'Logging a past workout — no rest timers.': 'Allenamento passato — nessun timer di recupero.',
+  // --- bar weight (plate math) ---
+  'Bar weight': 'Peso del bilanciere',
+  'Bar ({0})': 'Bilanciere ({0})',
+  'Bar {0}': 'Bilanciere {0}',
+  'Default for this bar type.': 'Valore predefinito per questo tipo di bilanciere.',
+  'Set to 0 to go back to the default ({0}).': 'Imposta 0 per tornare al valore predefinito ({0}).',
+  'Applies to this exercise everywhere, not just this plan.': 'Vale per questo esercizio ovunque, non solo in questo piano.',
+  'You still log the total weight — the bar only feeds the per-side plate math.': 'Registri comunque il peso totale — il bilanciere serve solo al calcolo dei dischi per lato.',
 }

@@ -733,4 +733,12 @@ export default {
   'Add as second workout': 'Ajouter comme deuxième séance',
   'Finish the current workout first.': 'Termine d’abord la séance en cours.',
   'Logging a past workout — no rest timers.': 'Séance passée — pas de minuteurs de repos.',
+  // --- bar weight (plate math) ---
+  'Bar weight': 'Poids de la barre',
+  'Bar ({0})': 'Barre ({0})',
+  'Bar {0}': 'Barre {0}',
+  'Default for this bar type.': 'Valeur par défaut pour ce type de barre.',
+  'Set to 0 to go back to the default ({0}).': 'Mets 0 pour revenir à la valeur par défaut ({0}).',
+  'Applies to this exercise everywhere, not just this plan.': 'S’applique à cet exercice partout, pas seulement dans ce plan.',
+  'You still log the total weight — the bar only feeds the per-side plate math.': 'Tu enregistres toujours le poids total — la barre ne sert qu’au calcul des disques par côté.',
 }

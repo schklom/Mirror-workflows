@@ -733,4 +733,12 @@ export default {
   'Add as second workout': 'İkinci antrenman olarak ekle',
   'Finish the current workout first.': 'Önce mevcut antrenmanı bitir.',
   'Logging a past workout — no rest timers.': 'Geçmiş antrenman kaydediliyor — dinlenme zamanlayıcısı yok.',
+  // --- bar weight (plate math) ---
+  'Bar weight': 'Bar ağırlığı',
+  'Bar ({0})': 'Bar ({0})',
+  'Bar {0}': 'Bar {0}',
+  'Default for this bar type.': 'Bu bar türü için varsayılan.',
+  'Set to 0 to go back to the default ({0}).': 'Varsayılana ({0}) dönmek için 0 yap.',
+  'Applies to this exercise everywhere, not just this plan.': 'Yalnızca bu planda değil, bu egzersiz için her yerde geçerli.',
+  'You still log the total weight — the bar only feeds the per-side plate math.': 'Yine de toplam ağırlığı kaydedersin — bar yalnızca taraf başına plaka hesabına girer.',
 }

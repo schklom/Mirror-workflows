@@ -21,6 +21,10 @@ export const DEF = {
   // Equipment profiles (issue: filter Library/picker/routines by what you actually own —
   // e.g. "Home" vs "Gym" — building on the session-only equipment filter from issue #6).
   equipProfiles: [], activeEquipId: null, equipFilterOn: false,
+  // Per-exercise bar weight overrides, keyed by exercise id, in the profile unit (see
+  // lib/bar.js). Personal equipment, so it syncs with the account but never travels in a
+  // shared plan. Logged weights stay the total — this only feeds the plate math.
+  barWeights: {},
 }
 const clone = o => JSON.parse(JSON.stringify(o))
 

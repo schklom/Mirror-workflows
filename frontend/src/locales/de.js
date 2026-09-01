@@ -750,4 +750,12 @@ export default {
   'Add as second workout': 'Als zweites Training hinzufügen',
   'Finish the current workout first.': 'Beende zuerst das laufende Training.',
   'Logging a past workout — no rest timers.': 'Vergangenes Training — keine Pausen-Timer.',
+  // --- bar weight (plate math) ---
+  'Bar weight': 'Stangengewicht',
+  'Bar ({0})': 'Stange ({0})',
+  'Bar {0}': 'Stange {0}',
+  'Default for this bar type.': 'Standard für diesen Stangentyp.',
+  'Set to 0 to go back to the default ({0}).': 'Auf 0 stellen, um zum Standard ({0}) zurückzukehren.',
+  'Applies to this exercise everywhere, not just this plan.': 'Gilt überall für diese Übung, nicht nur in diesem Plan.',
+  'You still log the total weight — the bar only feeds the per-side plate math.': 'Eingetragen wird weiterhin das Gesamtgewicht — die Stange zählt nur für die Scheiben-Rechnung pro Seite.',
 }

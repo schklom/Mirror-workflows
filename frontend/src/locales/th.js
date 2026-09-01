@@ -746,4 +746,12 @@ export default {
   'Add as second workout': 'เพิ่มเป็นการฝึกครั้งที่สอง',
   'Finish the current workout first.': 'จบการฝึกปัจจุบันก่อน',
   'Logging a past workout — no rest timers.': 'กำลังบันทึกการฝึกย้อนหลัง — ไม่มีตัวจับเวลาพัก',
+  // --- bar weight (plate math) ---
+  'Bar weight': 'น้ำหนักบาร์',
+  'Bar ({0})': 'บาร์ ({0})',
+  'Bar {0}': 'บาร์ {0}',
+  'Default for this bar type.': 'ค่าเริ่มต้นสำหรับบาร์ชนิดนี้',
+  'Set to 0 to go back to the default ({0}).': 'ตั้งเป็น 0 เพื่อกลับไปใช้ค่าเริ่มต้น ({0})',
+  'Applies to this exercise everywhere, not just this plan.': 'มีผลกับท่านี้ทุกที่ ไม่ใช่เฉพาะในแผนนี้',
+  'You still log the total weight — the bar only feeds the per-side plate math.': 'คุณยังบันทึกน้ำหนักรวมเหมือนเดิม — บาร์ใช้สำหรับคำนวณแผ่นน้ำหนักต่อข้างเท่านั้น',
 }

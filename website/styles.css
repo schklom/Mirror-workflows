@@ -168,6 +168,23 @@ nav {
 .nav-quick .cta:hover { background: #4ade63; text-decoration: none; }
 .nav-quick .ql[aria-current="page"] { color: var(--fg); }
 
+/* The one link up here that asks for something instead of offering it. A pill, so
+   it reads as a button next to the plain links — but hollow, in Buy Me a Coffee's
+   own yellow, because the solid button in this bar is and stays the download. */
+.nav-quick .coffee {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 6px 13px; border-radius: 999px;
+  color: #f0c84a; background: rgba(255, 221, 0, .08);
+  border: 1px solid rgba(255, 221, 0, .26);
+  transition: color .2s var(--ease), background .2s var(--ease), border-color .2s var(--ease);
+}
+.nav-quick .coffee svg { width: 15px; height: 15px; fill: currentColor; flex: none; }
+.nav-quick .coffee:hover {
+  color: #ffdd00; background: rgba(255, 221, 0, .16);
+  border-color: rgba(255, 221, 0, .48); text-decoration: none;
+}
+.navsheet .coffee { color: #f0c84a; }
+
 .nav-toggle {
   display: none;
   position: relative;

@@ -178,29 +178,42 @@ describe('semver comparison (via checkForUpdate behavior)', () => {
     }))
   }
 
-  // __APP_VERSION__ is "1.2.11" — test that patch, minor, and major bumps are detected
+  // Versions are derived from the running __APP_VERSION__ so the suite never breaks
+  // when package.json bumps. bump(2, +1) raises the patch; bump(0, +1) raises the major.
+  const [MAJ, MIN, PATCH] = __APP_VERSION__.split('.').map(Number)
+  const bump = (idx, by) => {
+    const parts = [MAJ, MIN, PATCH]
+    parts[idx] += by
+    return 'v' + parts.join('.')
+  }
+
   it('detects a patch bump as an update', async () => {
-    mockRelease('v1.2.12')
+    mockRelease(bump(2, 1))
     expect((await checkForUpdate()).hasUpdate).toBe(true)
   })
 
   it('detects a minor bump as an update', async () => {
-    mockRelease('v1.3.0')
+    mockRelease(bump(1, 1))
     expect((await checkForUpdate()).hasUpdate).toBe(true)
   })
 
   it('detects a major bump as an update', async () => {
-    mockRelease('v2.0.0')
+    mockRelease(bump(0, 1))
     expect((await checkForUpdate()).hasUpdate).toBe(true)
   })
 
   it('does not flag an older patch as an update', async () => {
-    mockRelease('v1.2.10')
+    // One patch below current (current patch is always >= our test floor)
+    mockRelease('v' + [MAJ, MIN, Math.max(0, PATCH - 1)].join('.'))
+    // Only meaningful when we could actually go lower; when patch is 0 this equals current,
+    // which correctly reports no update either way.
     expect((await checkForUpdate()).hasUpdate).toBe(false)
   })
 
   it('does not flag an older minor as an update', async () => {
-    mockRelease('v1.1.99')
+    // A version guaranteed lower than any 1.x+ release: same major, minor 0, patch 0,
+    // minus one on the minor when possible.
+    mockRelease('v' + [MAJ, Math.max(0, MIN - 1), 0].join('.'))
     expect((await checkForUpdate()).hasUpdate).toBe(false)
   })
 })

@@ -168,22 +168,11 @@ nav {
 .nav-quick .cta:hover { background: #4ade63; text-decoration: none; }
 .nav-quick .ql[aria-current="page"] { color: var(--fg); }
 
-/* The one link up here that asks for something instead of offering it. A pill, so
-   it reads as a button next to the plain links — but hollow, in Buy Me a Coffee's
-   own yellow, because the solid button in this bar is and stays the download. */
-.nav-quick .coffee {
-  display: inline-flex; align-items: center; gap: 7px;
-  padding: 6px 13px; border-radius: 999px;
-  color: #f0c84a; background: rgba(255, 221, 0, .08);
-  border: 1px solid rgba(255, 221, 0, .26);
-  transition: color .2s var(--ease), background .2s var(--ease), border-color .2s var(--ease);
-}
+/* The one link up here that asks for something instead of offering it — but it
+   looks like every other link in the bar: same grey, no pill, just the cup in
+   front of the words. The only button up here is and stays the download. */
+.nav-quick .coffee { display: inline-flex; align-items: center; gap: 7px; }
 .nav-quick .coffee svg { width: 15px; height: 15px; fill: currentColor; flex: none; }
-.nav-quick .coffee:hover {
-  color: #ffdd00; background: rgba(255, 221, 0, .16);
-  border-color: rgba(255, 221, 0, .48); text-decoration: none;
-}
-.navsheet .coffee { color: #f0c84a; }
 
 .nav-toggle {
   display: none;
@@ -199,6 +188,14 @@ nav {
 @media (max-width: 999.98px) {
   .nav-quick .ql { display: none; }
   .nav-toggle { display: flex; }
+
+  /* …except the coffee, which stays in the bar as its cup alone, on the right
+     beside the download. Without the words the logo has to carry the meaning,
+     so here — and only here — it wears Buy Me a Coffee's own yellow. */
+  .nav-quick .coffee { display: inline-flex; color: #ffdd00; padding: 9px; margin: -9px -5px; }
+  .nav-quick .coffee:hover { color: #ffdd00; }
+  .nav-quick .coffee span { display: none; }
+  .nav-quick .coffee svg { width: 21px; height: 21px; }
 }
 .nav-toggle span {
   position: absolute; width: 18px; height: 1.5px; border-radius: 2px; background: var(--fg);

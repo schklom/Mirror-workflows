@@ -16,6 +16,7 @@ import Icon from './components/Icon.jsx'
 import { Button, Slider, Switch, Segmented, SelectRow, Row, TextField, MultiSelectRow } from './components/ui.jsx'
 import { glyphOf, GLYPH_GROUPS, DEFAULT_GLYPH } from './lib/glyphs.js'
 import BodyMap from './components/BodyMap.jsx'
+import MuscleExplorer from './components/MuscleExplorer.jsx'
 import { exerciseMuscleSnapshot, loadOfWorkouts, MUSCLES, MUSCLE_NAME, normalizeMuscleGroups, hasExplicitMuscleMetadata } from './lib/muscles.js'
 import { parseImport, mergeImport } from './lib/import-csv.js'
 import { importHevyData, HevyApiError, HEVY_DEV_SETTINGS, mergeHevyRoutines } from './lib/import-hevy.js'
@@ -712,6 +713,7 @@ function ExercisePicker({ onPick, close }) {
   const [eq, setEq] = useState('')          // '' = any equipment
   const [showAll, setShowAll] = useState(false)
   const [shown, setShown] = useState(50)
+  const [byMuscle, setByMuscle] = useState(false)
   const searchRef = useRef(null)
   const bpStrip = useRef(null), eqStrip = useRef(null)
   const onSearchFocus = useSheetKeyboard(searchRef)
@@ -729,8 +731,17 @@ function ExercisePicker({ onPick, close }) {
   const chosenCount = Object.keys(usage).length
   useRevealActiveChip(bpStrip, bp)
   useRevealActiveChip(eqStrip, eqOn)
+  if (byMuscle) return <>
+    <div className="row between" style={{ marginBottom: 10 }}><h3>{t('Add exercise')}</h3>
+      <Button size="sm" variant="ghost" onClick={() => setByMuscle(false)}>{t('All')}</Button>
+    </div>
+    <MuscleExplorer onPick={onPick} />
+  </>
+
   return <>
-    <h3>{t('Add exercise')}</h3>
+    <div className="row between" style={{ marginBottom: 10 }}><h3>{t('Add exercise')}</h3>
+      <Button size="sm" variant="tinted" icon="target" onClick={() => setByMuscle(true)}>{t('By muscle')}</Button>
+    </div>
     {/* .picker-search is what index.css keys the keyboard-aware sheet layout on: the sheet
         lifts above the keys and the search stays put while the list scrolls under it. */}
     <div className="picker-search"><div className="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>

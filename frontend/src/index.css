@@ -438,6 +438,7 @@ h4.sec{
 }
 .chip:active{background:var(--surface-2)}
 .chip.on{background:var(--acc);color:var(--on-acc);font-weight:500}
+.chip.on .dim{color:color-mix(in srgb,var(--on-acc) 62%,transparent)}
 
 /* =========================== CONTROLS ==================================== */
 

@@ -627,6 +627,15 @@ export const PT_BR_OVERRIDES = {
   'Point the camera at the QR code': 'Aponte a câmera para o código QR',
   'Camera is not available here — import a photo or type the code instead.': 'A câmera não está disponível aqui — importe uma foto ou digite o código.',
   'Camera access was denied — allow it in your browser and try again.': 'O acesso à câmera foi negado — permita-o no navegador e tente de novo.',
+
+// --- muscle explorer ---
+  'By muscle': 'Por músculo',
+  'Explore muscles': 'Explorar músculos',
+  'Choose a muscle to see exercises that train it.': 'Escolha um músculo para ver os exercícios que o treinam.',
+  'Exercises for {0}': 'Exercícios para {0}',
+  'Clear selection': 'Limpar seleção',
+  'Primary target': 'Músculo principal',
+  'Also trains': 'Também trabalha',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

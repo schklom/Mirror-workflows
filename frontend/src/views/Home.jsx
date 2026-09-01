@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/useStore.js'
-import { effectiveRoutine, effectiveRoutineId, streakWeeks, lastBW, setsDoneActive } from '../lib/history.js'
-import { fmtNum, fmtDate, todayISO, isoOf, weekKey, DAYS } from '../lib/format.js'
+import { effectiveRoutine, effectiveRoutineId, nextTrainingDay, streakWeeks, lastBW, setsDoneActive } from '../lib/history.js'
+import { fmtNum, fmtDate, todayISO, isoOf, weekKey, DAYS, DAYN } from '../lib/format.js'
 import { t, dateLocale } from '../lib/i18n.js'
 import { bwSheet, goalSheet, dayOverrideSheet, calendarSheet, startFlow, loadStarterPlan, bwDeltaColor } from '../sheets.jsx'
 import LineChart from '../components/LineChart.jsx'
@@ -21,6 +21,8 @@ export default function Home() {
   const today = new Date()
   const routine = effectiveRoutine(S, todayISO())
   const todayOvr = S.dayPlan[todayISO()] !== undefined
+  // On a rest day, saying when you train next beats leaving the row as a full stop.
+  const next = !S.active && !routine ? nextTrainingDay(S, todayISO()) : null
   const bw = lastBW(S)
   const prevBW = S.bodyweight.length > 1 ? S.bodyweight[S.bodyweight.length - 2] : null
   const delta = bw && prevBW ? bw.w - prevBW.w : null
@@ -78,6 +80,7 @@ export default function Home() {
             <div className="ttl">{S.active ? t('{0} — in progress', S.active.name)
               : doneToday ? (doneToday.name ? t('{0} — done', doneToday.name) : t('Workout done'))
               : routine ? routine.name : t('Rest day')}{todayOvr && routine && !doneToday ? ' · ' + t('rescheduled') : ''}</div>
+            {next && !doneToday && <div className="ss">{t('Next session: {0}, {1}', t(DAYN[next.weekday]), next.routine.name)}</div>}
           </div>
         </div>
         {S.active ? <span className="tag" style={{ color: 'var(--orange)', background: 'color-mix(in srgb,var(--orange) 16%,transparent)' }}>{t('Resume')}</span>

@@ -113,6 +113,7 @@ export default {
   'Sick, missed a day or want a different session? Pick what to train instead.': 'Hasta mısın, gün mü kaçırdın ya da farklı bir seans mı istiyorsun? Yerine ne çalışacağını seç.',
   'Rest / skip this day': 'Dinlen / bu günü atla',
   'Rest day': 'Dinlenme günü',
+  'Next session: {0}, {1}': 'Sonraki antrenman: {0}, {1}',
   '{0} workout': '{0} antrenman',
   '{0} workouts': '{0} antrenman',
   'No workouts this month': 'Bu ay antrenman yok',

@@ -113,6 +113,7 @@ export default {
   'Sick, missed a day or want a different session? Pick what to train instead.': '生病、错过一天或想换个训练？选择改练什么。',
   'Rest / skip this day': '休息 / 跳过这天',
   'Rest day': '休息日',
+  'Next session: {0}, {1}': '下次训练：{0}，{1}',
   '{0} workout': '{0} 次训练',
   '{0} workouts': '{0} 次训练',
   'No workouts this month': '本月没有训练',

@@ -110,6 +110,7 @@ export default {
   'Sick, missed a day or want a different session? Pick what to train instead.': 'Beteg vagy, kihagytál egy napot, vagy másra van kedved? Válaszd ki, mit edzel helyette.',
   'Rest / skip this day': 'Pihenő / nap kihagyása',
   'Rest day': 'Pihenőnap',
+  'Next session: {0}, {1}': 'Következő edzés: {0}, {1}',
   '{0} workout': '{0} edzés',
   '{0} workouts': '{0} edzés',
   'No workouts this month': 'Nincs edzés ebben a hónapban',

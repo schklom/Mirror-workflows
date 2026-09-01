@@ -190,10 +190,9 @@ nav {
   .nav-toggle { display: flex; }
 
   /* …except the coffee, which stays in the bar as its cup alone, on the right
-     beside the download. Without the words the logo has to carry the meaning,
-     so here — and only here — it wears Buy Me a Coffee's own yellow. */
-  .nav-quick .coffee { display: inline-flex; color: #ffdd00; padding: 9px; margin: -9px -5px; }
-  .nav-quick .coffee:hover { color: #ffdd00; }
+     beside the download — same grey as everything else up here. It is in the
+     sheet as well, spelled out; two ways to the same page is fine for this one. */
+  .nav-quick .coffee { display: inline-flex; padding: 9px; margin: -9px -5px; }
   .nav-quick .coffee span { display: none; }
   .nav-quick .coffee svg { width: 21px; height: 21px; }
 }
@@ -243,6 +242,9 @@ body.menu-open .navsheet {
 .navsheet .nl:hover { text-decoration: none; background: rgba(255, 255, 255, .05); }
 .navsheet .nl[aria-current="page"] { color: var(--acc); }
 .navsheet .nl [data-gh], .navsheet .nl [data-dc] { color: var(--fg-3); font-size: 14px; font-variant-numeric: tabular-nums; }
+/* The cup sits where the star count and the member count sit: hard right, in the
+   same quiet grey — the row reads "Buy me a coffee ……… ☕". */
+.navsheet .coffee svg { width: 19px; height: 19px; fill: var(--fg-3); flex: none; }
 /* No second Download button in here: the bar keeps its own at every width, a
    finger-width above, and two identical green calls to action is one too many. */
 

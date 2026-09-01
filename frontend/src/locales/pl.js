@@ -292,6 +292,7 @@ export default {
   'Keep screen awake': 'Nie wygaszaj ekranu',
   'The screen stays on while a workout is running, so you don’t have to unlock your phone between sets.': 'Ekran pozostaje włączony w trakcie treningu, więc nie musisz odblokowywać telefonu między seriami.',
   'Weight unit': 'Jednostka wagi',
+  'Week starts on': 'Tydzień zaczyna się w',
   'Rest timer': 'Minutnik przerwy',
   'Sounds': 'Dźwięki',
   'Flash screen when timer ends': 'Migaj ekranem po zakończeniu minutnika',

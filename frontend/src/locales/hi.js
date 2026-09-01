@@ -292,6 +292,7 @@ export default {
   'Keep screen awake': 'स्क्रीन चालू रखें',
   'The screen stays on while a workout is running, so you don’t have to unlock your phone between sets.': 'वर्कआउट चलने के दौरान स्क्रीन चालू रहती है, ताकि सेट के बीच फ़ोन अनलॉक न करना पड़े।',
   'Weight unit': 'वज़न की इकाई',
+  'Week starts on': 'सप्ताह शुरू होता है',
   'Rest timer': 'आराम टाइमर',
   'Sounds': 'ध्वनियाँ',
   'Flash screen when timer ends': 'टाइमर खत्म होने पर स्क्रीन फ्लैश करें',

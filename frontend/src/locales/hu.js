@@ -295,6 +295,7 @@ export default {
   'Keep screen awake': 'Képernyő ébren tartása',
   'The screen stays on while a workout is running, so you don’t have to unlock your phone between sets.': 'A képernyő edzés közben bekapcsolva marad, így sorozatok között nem kell feloldanod a telefonod.',
   'Weight unit': 'Súlymértékegység',
+  'Week starts on': 'A hét kezdőnapja',
   'Rest timer': 'Pihenő időzítő',
   'Sounds': 'Hangok',
   'Note: switching units only changes the label — logged numbers are not converted.': 'Megjegyzés: a mértékegység váltása csak a feliratot módosítja — a rögzített számok nem lesznek átváltva.',

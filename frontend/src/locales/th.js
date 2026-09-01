@@ -295,6 +295,7 @@ export default {
   'Keep screen awake': 'ไม่ให้จอปิด',
   'The screen stays on while a workout is running, so you don’t have to unlock your phone between sets.': 'จอจะไม่ปิดขณะออกกำลังกาย จะได้ไม่ต้องปลดล็อกโทรศัพท์ระหว่างเซ็ต',
   'Weight unit': 'หน่วยน้ำหนัก',
+  'Week starts on': 'สัปดาห์เริ่มวัน',
   'Rest timer': 'ตัวจับเวลาพัก',
   'Sounds': 'เสียง',
   'Note: switching units only changes the label — logged numbers are not converted.': 'หมายเหตุ: การเปลี่ยนหน่วยจะเปลี่ยนแค่ป้ายกำกับ — ตัวเลขที่บันทึกไว้จะไม่ถูกแปลง',

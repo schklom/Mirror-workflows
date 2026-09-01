@@ -1,5 +1,5 @@
 // Pure helpers over the state object S (ported 1:1 from the vanilla app).
-import { todayISO, isoOf, weekKey, fmtNum } from './format.js'
+import { todayISO, isoOf, weekKey, weekStartOf, fmtNum } from './format.js'
 import { isCardio, isBodyweightEq } from './exercises.js'
 import { phaseForSet, modeForSet, modeForEntry, isWarmupRow, normalizeMode, extraVolumeOf, nextDropWeight, splitBurstReps } from './workout-model.js'
 const objectOf = value => value && typeof value === 'object' && !Array.isArray(value) ? value : {}
@@ -473,11 +473,12 @@ export function unitOf(units, idx) { return units.find(u => u.includes(idx)) || 
 
 export function streakWeeks(S) {
   if (!S.workouts.length) return 0
-  const weeks = new Set(S.workouts.map(w => weekKey(w.d)))
+  const ws = weekStartOf(S)
+  const weeks = new Set(S.workouts.map(w => weekKey(w.d, ws)))
   let streak = 0
   const cur = new Date()
   for (let i = 0; i < 520; i++) {
-    const wk = weekKey(isoOf(cur))
+    const wk = weekKey(isoOf(cur), ws)
     if (weeks.has(wk)) streak++
     else if (i > 0) break
     cur.setDate(cur.getDate() - 7)

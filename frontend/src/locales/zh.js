@@ -292,6 +292,7 @@ export default {
   'Keep screen awake': '保持屏幕常亮',
   'The screen stays on while a workout is running, so you don’t have to unlock your phone between sets.': '训练进行时屏幕保持常亮，组间无需再解锁手机。',
   'Weight unit': '重量单位',
+  'Week starts on': '一周开始于',
   'Rest timer': '休息计时',
   'Sounds': '声音',
   'Flash screen when timer ends': '计时结束时闪烁屏幕',

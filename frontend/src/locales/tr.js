@@ -292,6 +292,7 @@ export default {
   'Keep screen awake': 'Ekranı açık tut',
   'The screen stays on while a workout is running, so you don’t have to unlock your phone between sets.': 'Antrenman sürerken ekran açık kalır, böylece setler arasında telefonunu açmak zorunda kalmazsın.',
   'Weight unit': 'Ağırlık birimi',
+  'Week starts on': 'Hafta başlangıcı',
   'Rest timer': 'Dinlenme sayacı',
   'Sounds': 'Sesler',
   'Flash screen when timer ends': 'Zamanlayıcı bitince ekranı yanıp söndür',

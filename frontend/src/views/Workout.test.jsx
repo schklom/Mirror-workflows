@@ -205,6 +205,40 @@ describe('Workout set completion flow', () => {
     expect(mocks.startRest).not.toHaveBeenCalled()
   })
 
+  it('auto-captures a completed weighted exercise without prompting and keeps navigation/rest', async () => {
+    await mount([exercise('plain-bench', [false]), exercise('next', [false])])
+
+    await toggleSet(0)
+
+    expect(mocks.S.active.entries[0].topW).toBe(60)
+    expect(mocks.S.exWeights['plain-bench'].w).toBe(60)
+    expect(mocks.topWeightSheet).not.toHaveBeenCalled()
+    expect(mocks.S.active.cur).toBe(1)
+    expect(mocks.startRest).toHaveBeenCalledWith(90, expect.any(Number))
+  })
+
+  it('auto-captures a completed superset exercise without prompting and preserves superset flow', async () => {
+    const group = 'superset-1'
+    await mount([
+      exercise('superset-a', [false], { sg: group }),
+      exercise('superset-b', [false], { sg: group }),
+      exercise('next', [false]),
+    ])
+
+    await toggleSet(0)
+
+    expect(mocks.topWeightSheet).not.toHaveBeenCalled()
+    expect(mocks.S.active.cur).toBe(1)
+    expect(mocks.startRest).not.toHaveBeenCalled()
+
+    await rerender()
+    await toggleSet(1)
+
+    expect(mocks.topWeightSheet).not.toHaveBeenCalled()
+    expect(mocks.S.active.cur).toBe(2)
+    expect(mocks.startRest).toHaveBeenCalledWith(90, expect.any(Number))
+  })
+
   it.each(['warmup', 'warm-up', 'warm_up'])(
     'does not start transition rest before an incomplete %s row in the next ordinary exercise',
     async phase => {
@@ -245,7 +279,7 @@ describe('Workout set completion flow', () => {
     expect(mocks.startRest).not.toHaveBeenCalled()
   })
 
-  it('does not start transition rest before a warm-up while top-weight confirmation owns navigation', async () => {
+  it('advances without transition rest before an incomplete warm-up', async () => {
     await mount([
       exercise('current-loaded', [false]),
       exercise('next', [false, false], {
@@ -259,8 +293,8 @@ describe('Workout set completion flow', () => {
 
     await toggleSet(0)
 
-    expect(mocks.topWeightSheet).toHaveBeenCalledWith(0)
-    expect(mocks.S.active.cur).toBe(0)
+    expect(mocks.topWeightSheet).not.toHaveBeenCalled()
+    expect(mocks.S.active.cur).toBe(1)
     expect(mocks.startRest).not.toHaveBeenCalled()
   })
 
@@ -284,7 +318,7 @@ describe('Workout set completion flow', () => {
     expect(mocks.startRest).not.toHaveBeenCalled()
   })
 
-  it('leaves a completed superset selected while its top-weight sheet owns the advance choice', async () => {
+  it('advances after a completed superset without opening a top-weight sheet', async () => {
     const group = 'superset-1'
     await mount([
       exercise('superset-a', [true, true, true], { sg: group, asked: true }),
@@ -293,8 +327,8 @@ describe('Workout set completion flow', () => {
     ], 1)
     await toggleSet(5)
 
-    expect(mocks.topWeightSheet).toHaveBeenCalledWith(1)
-    expect(mocks.S.active.cur).toBe(1)
+    expect(mocks.topWeightSheet).not.toHaveBeenCalled()
+    expect(mocks.S.active.cur).toBe(2)
     expect(mocks.startRest).toHaveBeenCalledWith(90, expect.any(Number))
   })
 
@@ -327,7 +361,7 @@ describe('Workout set completion flow', () => {
     expect(mocks.startRest).toHaveBeenCalledWith(90, expect.any(Number))
   })
 
-  it('keeps top-weight confirmation in control without declaring completion while work remains', async () => {
+  it('advances a completed ordinary exercise without declaring completion while work remains', async () => {
     await mount([
       exercise('current-loaded', [false]),
       exercise('pending', [false], { asked: true }),
@@ -335,9 +369,10 @@ describe('Workout set completion flow', () => {
 
     await toggleSet(0)
 
-    expect(mocks.topWeightSheet).toHaveBeenCalledWith(0)
+    expect(mocks.topWeightSheet).not.toHaveBeenCalled()
     expect(mocks.workoutCompleteSheet).not.toHaveBeenCalled()
-    expect(mocks.S.active.cur).toBe(0)
+    expect(mocks.S.active.cur).toBe(1)
+    expect(mocks.startRest).toHaveBeenCalledWith(90, expect.any(Number))
   })
 
   it('shows workout completion only when no unfinished unit remains', async () => {

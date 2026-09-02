@@ -4,7 +4,7 @@ import { useUI } from './store/useUI.js'
 import { EXDB, EXIDX, BODYPARTS, isCardio, isBodyweightEq, allExercises, equipmentOf, smOf, matchExercise, exOr } from './lib/exercises.js'
 import { activeProfile, exAvailable, ALL_EQUIPMENT, newProfile } from './lib/equipment.js'
 import { fmtDate, fmtNum, fmtVol, fmtDur, durPart, todayISO, isoOf, uid, exCount, DAYN, DAYS, weekOrder, weekStartOf, weekDayOffset, MONTHS_LONG, ACCENTS } from './lib/format.js'
-import { lastEntryFor, bestWeightFor, buildSets, effectiveRoutineId, workoutVolume, setsDone, setsDoneActive, lastBW, supersetUnits, unitOf, setLabel, defaultConfig, cleanupSg, modeOf, effortOf, isBw, isPerSide, sideReps, workSetsDone, applyIntensifierPlan, MAX_PLANNED_WARMUPS, NOTE_MAX } from './lib/history.js'
+import { lastEntryFor, bestWeightFor, bestWeightForEntry, buildSets, effectiveRoutineId, workoutVolume, setsDone, setsDoneActive, lastBW, supersetUnits, unitOf, setLabel, defaultConfig, cleanupSg, modeOf, effortOf, isBw, isPerSide, sideReps, workSetsDone, applyIntensifierPlan, MAX_PLANNED_WARMUPS, NOTE_MAX } from './lib/history.js'
 import { usesBar, barWeightFor, defaultBarWeight, hasBarOverride } from './lib/bar.js'
 import { beep, vibrate } from './lib/sound.js'
 import { t, instrFor, exerciseNameFor, getLang, INSTR_LANGS } from './lib/i18n.js'
@@ -1740,7 +1740,7 @@ function doFinishWorkout() {
       s.workouts = completeBackfill(s.workouts, A, w)
     } else {
       w.entries.forEach(e => {
-        const mx = Math.max(0, ...e.sets.filter(x => x.done && !isWarmupRow(x)).map(x => x.w || 0), e.topW || 0)
+        const mx = bestWeightForEntry(e)
         if (mx > 0) { const cur = s.exWeights[e.id]; if (!cur || mx > cur.w) s.exWeights[e.id] = { w: mx, d: w.d } }
       })
       s.workouts.push(w)

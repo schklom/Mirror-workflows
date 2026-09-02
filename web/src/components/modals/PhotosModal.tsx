@@ -101,6 +101,12 @@ export const PhotosModal = ({ isOpen, onClose }: PhotosModalProps) => {
                     const service = apiService() as ApiV2Service;
                     try {
                       const toDelete = pictures[selectedIndex].clientItemIdHex;
+                      useStore.setState({
+                        pictures: [
+                          ...pictures.slice(0, selectedIndex),
+                          ...pictures.slice(selectedIndex + 1),
+                        ],
+                      });
                       pictures.splice(selectedIndex, 1);
                       setSelectedIndex(Math.max(0, selectedIndex - 1));
                       service.deleteSinglePicture(toDelete);

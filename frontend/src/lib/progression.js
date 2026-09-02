@@ -145,11 +145,15 @@ export function sessionsFor(S, exId, fallback) {
   return out
 }
 
-// How many sessions in a row ended in a miss, counting back from the most recent.
+// How many sessions in a row ended in a miss, counting back from the most recent. A change of
+// weight starts a new streak, so there won't be a perpetual stall.  
+// Rationale: deload should reflect the failures in sessions with weight that earned it.
+// Not the lighter weight that follows.
 export function stallCount(sessions) {
   let n = 0
   for (let i = sessions.length - 1; i >= 0; i--) {
     if (sessions[i].ok) break
+    if (i < sessions.length -1 && sessions[i].weight !== sessions[i+1].weight) break
     n++
   }
   return n

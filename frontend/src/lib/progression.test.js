@@ -142,6 +142,19 @@ describe('linear progression', () => {
     expect(p.kind).toBe('hold')
   })
 
+  it('a deload starts a new streak, so one miss at the new weight does not deload again', () => {
+    // Three misses at 60 kg earn a deload.
+    const stalled = [[60, 4, 4, 4], [60, 4, 4, 4], [60, 4, 4, 4]]
+    const deload = nextPrescription(hist(LIFT, stalled), cfg)
+    expect(deload.kind).toBe('deload')
+
+    // A bad day at the lighter weight is the first miss of a new run, not the fourth of the old
+    // one. A deload is owed a fresh set of attempts, not an immediate second cut.
+    const next = nextPrescription(hist(LIFT, [...stalled, [deload.weight, 4, 4, 4]]), cfg)
+    expect(next.kind).toBe('hold')
+    expect(next.weight).toBe(deload.weight)
+  })
+
   it('never deloads below one increment, however light the lift already is', () => {
     const p = nextPrescription(hist(LIFT, [[2.5, 1, 1, 1], [2.5, 1, 1, 1], [2.5, 1, 1, 1]]), cfg)
     expect(p.kind).toBe('deload')
@@ -290,6 +303,22 @@ describe('double progression', () => {
     expect(p.kind).toBe('up')
     expect(p.weight).toBe(42.5)
     expect(p.reps).toBe(8)
+  })
+
+  it('does not deload again when the deload was performed exactly as prescribed', () => {
+    const target = { sets: 3, reps: 12 }
+    // Three sessions stuck mid-range where every set misses the top, so a deload falls due (see DELOAD_POLICY)
+    const stalled = [[40, 9, 9, 9], [40, 9, 9, 9], [40, 9, 9, 9]]
+    const deload = nextPrescription(hist(LIFT, stalled, target), cfg)
+    expect(deload.kind).toBe('deload')
+
+    // Training exactly what it asked for: its weight, its reps, every set checked off.
+    const asPrescribed = [deload.weight, ...Array(target.sets).fill(deload.reps)]
+    const next = nextPrescription(hist(LIFT, [...stalled, asPrescribed], target), cfg)
+
+    // Complying with the app's own prescription must not be scored as another failure.
+    expect(next.kind).not.toBe('deload')
+    expect(next.weight).toBeGreaterThanOrEqual(deload.weight)
   })
 
   it('keeps the weight and asks for one more rep while inside the range', () => {

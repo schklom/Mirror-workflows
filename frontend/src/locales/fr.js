@@ -113,6 +113,7 @@ export default {
   'Sick, missed a day or want a different session? Pick what to train instead.': 'Malade, jour manqué ou envie d’autre chose ? Choisis quoi entraîner à la place.',
   'Rest / skip this day': 'Repos / sauter ce jour',
   'Rest day': 'Jour de repos',
+  'Next session: {0}, {1}': 'Prochaine séance : {0}, {1}',
   '{0} workout': '{0} séance',
   '{0} workouts': '{0} séances',
   'No workouts this month': 'Aucune séance ce mois-ci',
@@ -293,6 +294,7 @@ export default {
   'Keep screen awake': 'Garder l’écran allumé',
   'The screen stays on while a workout is running, so you don’t have to unlock your phone between sets.': 'L’écran reste allumé tant qu’une séance est en cours, pas besoin de déverrouiller ton téléphone entre les séries.',
   'Weight unit': 'Unité de poids',
+  'Week starts on': 'La semaine commence le',
   'Rest timer': 'Minuteur de repos',
   'Sounds': 'Sons',
   'Flash screen when timer ends': 'Faire clignoter l’écran à la fin du minuteur',
@@ -735,4 +737,12 @@ export default {
   'Add as second workout': 'Ajouter comme deuxième séance',
   'Finish the current workout first.': 'Termine d’abord la séance en cours.',
   'Logging a past workout — no rest timers.': 'Séance passée — pas de minuteurs de repos.',
+  // --- bar weight (plate math) ---
+  'Bar weight': 'Poids de la barre',
+  'Bar ({0})': 'Barre ({0})',
+  'Bar {0}': 'Barre {0}',
+  'Default for this bar type.': 'Valeur par défaut pour ce type de barre.',
+  'Set to 0 to go back to the default ({0}).': 'Mets 0 pour revenir à la valeur par défaut ({0}).',
+  'Applies to this exercise everywhere, not just this plan.': 'S’applique à cet exercice partout, pas seulement dans ce plan.',
+  'You still log the total weight — the bar only feeds the per-side plate math.': 'Tu enregistres toujours le poids total — la barre ne sert qu’au calcul des disques par côté.',
 }

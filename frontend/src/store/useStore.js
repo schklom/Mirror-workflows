@@ -21,6 +21,14 @@ export const DEF = {
   // Equipment profiles (issue: filter Library/picker/routines by what you actually own —
   // e.g. "Home" vs "Gym" — building on the session-only equipment filter from issue #6).
   equipProfiles: [], activeEquipId: null, equipFilterOn: false,
+  // First day of the week as a getDay() index — 1 Monday, 0 Sunday. Monday is the default so
+  // every profile written before this setting existed keeps the week it has been looking at.
+  // See lib/format.js: nothing reads this field directly, everything goes through the helpers.
+  weekStart: 1,
+  // Per-exercise bar weight overrides, keyed by exercise id, in the profile unit (see
+  // lib/bar.js). Personal equipment, so it syncs with the account but never travels in a
+  // shared plan. Logged weights stay the total — this only feeds the plate math.
+  barWeights: {},
 }
 const clone = o => JSON.parse(JSON.stringify(o))
 

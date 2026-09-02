@@ -110,6 +110,7 @@ export default {
   'Sick, missed a day or want a different session? Pick what to train instead.': 'Beteg vagy, kihagytál egy napot, vagy másra van kedved? Válaszd ki, mit edzel helyette.',
   'Rest / skip this day': 'Pihenő / nap kihagyása',
   'Rest day': 'Pihenőnap',
+  'Next session: {0}, {1}': 'Következő edzés: {0}, {1}',
   '{0} workout': '{0} edzés',
   '{0} workouts': '{0} edzés',
   'No workouts this month': 'Nincs edzés ebben a hónapban',
@@ -296,6 +297,7 @@ export default {
   'Keep screen awake': 'Képernyő ébren tartása',
   'The screen stays on while a workout is running, so you don’t have to unlock your phone between sets.': 'A képernyő edzés közben bekapcsolva marad, így sorozatok között nem kell feloldanod a telefonod.',
   'Weight unit': 'Súlymértékegység',
+  'Week starts on': 'A hét kezdőnapja',
   'Rest timer': 'Pihenő időzítő',
   'Sounds': 'Hangok',
   'Note: switching units only changes the label — logged numbers are not converted.': 'Megjegyzés: a mértékegység váltása csak a feliratot módosítja — a rögzített számok nem lesznek átváltva.',
@@ -740,4 +742,12 @@ export default {
   'Add as second workout': 'Hozzáadás második edzésként',
   'Finish the current workout first.': 'Előbb fejezd be a folyó edzést.',
   'Logging a past workout — no rest timers.': 'Korábbi edzés rögzítése — nincs pihenőidőzítő.',
+  // --- bar weight (plate math) ---
+  'Bar weight': 'Rúd súlya',
+  'Bar ({0})': 'Rúd ({0})',
+  'Bar {0}': 'Rúd {0}',
+  'Default for this bar type.': 'Alapérték ehhez a rúdtípushoz.',
+  'Set to 0 to go back to the default ({0}).': 'Állítsd 0-ra az alapérték ({0}) visszaállításához.',
+  'Applies to this exercise everywhere, not just this plan.': 'Mindenhol érvényes erre a gyakorlatra, nem csak ebben a tervben.',
+  'You still log the total weight — the bar only feeds the per-side plate math.': 'Továbbra is a teljes súlyt rögzíted — a rúd csak az oldalankénti tárcsaszámításhoz kell.',
 }

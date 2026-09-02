@@ -110,6 +110,7 @@ export default {
   'Sick, missed a day or want a different session? Pick what to train instead.': 'ป่วย, ขาดวัน หรืออยากเปลี่ยนโปรแกรม? เลือกสิ่งที่จะฝึกแทนได้เลย',
   'Rest / skip this day': 'พัก / ข้ามวันนี้',
   'Rest day': 'วันพัก',
+  'Next session: {0}, {1}': 'เซสชันถัดไป: {0}, {1}',
   '{0} workout': '{0} ครั้ง',
   '{0} workouts': '{0} ครั้ง',
   'No workouts this month': 'ไม่มีการออกกำลังกายในเดือนนี้',
@@ -296,6 +297,7 @@ export default {
   'Keep screen awake': 'ไม่ให้จอปิด',
   'The screen stays on while a workout is running, so you don’t have to unlock your phone between sets.': 'จอจะไม่ปิดขณะออกกำลังกาย จะได้ไม่ต้องปลดล็อกโทรศัพท์ระหว่างเซ็ต',
   'Weight unit': 'หน่วยน้ำหนัก',
+  'Week starts on': 'สัปดาห์เริ่มวัน',
   'Rest timer': 'ตัวจับเวลาพัก',
   'Sounds': 'เสียง',
   'Note: switching units only changes the label — logged numbers are not converted.': 'หมายเหตุ: การเปลี่ยนหน่วยจะเปลี่ยนแค่ป้ายกำกับ — ตัวเลขที่บันทึกไว้จะไม่ถูกแปลง',
@@ -748,4 +750,12 @@ export default {
   'Add as second workout': 'เพิ่มเป็นการฝึกครั้งที่สอง',
   'Finish the current workout first.': 'จบการฝึกปัจจุบันก่อน',
   'Logging a past workout — no rest timers.': 'กำลังบันทึกการฝึกย้อนหลัง — ไม่มีตัวจับเวลาพัก',
+  // --- bar weight (plate math) ---
+  'Bar weight': 'น้ำหนักบาร์',
+  'Bar ({0})': 'บาร์ ({0})',
+  'Bar {0}': 'บาร์ {0}',
+  'Default for this bar type.': 'ค่าเริ่มต้นสำหรับบาร์ชนิดนี้',
+  'Set to 0 to go back to the default ({0}).': 'ตั้งเป็น 0 เพื่อกลับไปใช้ค่าเริ่มต้น ({0})',
+  'Applies to this exercise everywhere, not just this plan.': 'มีผลกับท่านี้ทุกที่ ไม่ใช่เฉพาะในแผนนี้',
+  'You still log the total weight — the bar only feeds the per-side plate math.': 'คุณยังบันทึกน้ำหนักรวมเหมือนเดิม — บาร์ใช้สำหรับคำนวณแผ่นน้ำหนักต่อข้างเท่านั้น',
 }

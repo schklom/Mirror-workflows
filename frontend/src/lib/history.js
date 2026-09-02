@@ -1,5 +1,5 @@
 // Pure helpers over the state object S (ported 1:1 from the vanilla app).
-import { todayISO, isoOf, weekKey, fmtNum } from './format.js'
+import { todayISO, isoOf, weekKey, weekStartOf, fmtNum } from './format.js'
 import { isCardio, isBodyweightEq } from './exercises.js'
 import { phaseForSet, modeForSet, modeForEntry, isWarmupRow, normalizeMode, extraVolumeOf, nextDropWeight, splitBurstReps } from './workout-model.js'
 const objectOf = value => value && typeof value === 'object' && !Array.isArray(value) ? value : {}
@@ -284,6 +284,25 @@ export function effectiveRoutine(S, iso) {
   const id = effectiveRoutineId(S, iso)
   return id ? S.routines.find(r => r.id === id) || null : null
 }
+
+/**
+ * The next day that actually has something to train, looking forward from `iso` (exclusive).
+ *
+ * Takes a date string rather than reading the clock so callers and tests agree on "today".
+ * A routine with no exercises does not count: starting one lands you in an empty session, so
+ * it is not an answer to "what is next" (the same guard TabBar applies before starting).
+ * Returns null when the whole week is rest.
+ */
+export function nextTrainingDay(S, iso) {
+  for (let i = 1; i <= 7; i++) {
+    const d = new Date(iso + 'T12:00:00')
+    d.setDate(d.getDate() + i)
+    const nextIso = isoOf(d)
+    const routine = effectiveRoutine(S, nextIso)
+    if (routine && (routine.ex || []).length) return { iso: nextIso, weekday: d.getDay(), routine }
+  }
+  return null
+}
 /**
  * Build the rows a planned exercise starts a session with: its work sets, preceded by however
  * many warm-up sets the routine asks for (`cfg.warmupSets`, 0 by default so an existing plan
@@ -454,11 +473,12 @@ export function unitOf(units, idx) { return units.find(u => u.includes(idx)) || 
 
 export function streakWeeks(S) {
   if (!S.workouts.length) return 0
-  const weeks = new Set(S.workouts.map(w => weekKey(w.d)))
+  const ws = weekStartOf(S)
+  const weeks = new Set(S.workouts.map(w => weekKey(w.d, ws)))
   let streak = 0
   const cur = new Date()
   for (let i = 0; i < 520; i++) {
-    const wk = weekKey(isoOf(cur))
+    const wk = weekKey(isoOf(cur), ws)
     if (weeks.has(wk)) streak++
     else if (i > 0) break
     cur.setDate(cur.getDate() - 7)

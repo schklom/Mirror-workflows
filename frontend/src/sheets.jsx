@@ -3,8 +3,9 @@ import { useStore } from './store/useStore.js'
 import { useUI } from './store/useUI.js'
 import { EXDB, EXIDX, BODYPARTS, isCardio, isBodyweightEq, allExercises, equipmentOf, smOf, matchExercise, exOr } from './lib/exercises.js'
 import { activeProfile, exAvailable, ALL_EQUIPMENT, newProfile } from './lib/equipment.js'
-import { fmtDate, fmtNum, fmtVol, fmtDur, durPart, todayISO, isoOf, uid, exCount, DAYN, MONTHS_LONG, ACCENTS } from './lib/format.js'
+import { fmtDate, fmtNum, fmtVol, fmtDur, durPart, todayISO, isoOf, uid, exCount, DAYN, DAYS, weekOrder, weekStartOf, weekDayOffset, MONTHS_LONG, ACCENTS } from './lib/format.js'
 import { lastEntryFor, bestWeightFor, buildSets, effectiveRoutineId, workoutVolume, setsDone, setsDoneActive, lastBW, supersetUnits, unitOf, setLabel, defaultConfig, cleanupSg, modeOf, effortOf, isBw, isPerSide, sideReps, workSetsDone, applyIntensifierPlan, MAX_PLANNED_WARMUPS, NOTE_MAX } from './lib/history.js'
+import { usesBar, barWeightFor, defaultBarWeight, hasBarOverride } from './lib/bar.js'
 import { beep, vibrate } from './lib/sound.js'
 import { t, instrFor, exerciseNameFor, getLang, INSTR_LANGS } from './lib/i18n.js'
 import { nav } from './lib/nav.js'
@@ -470,6 +471,44 @@ function GoalSheet({ close }) {
 }
 export const goalSheet = () => ui().openSheet(close => <GoalSheet close={close} />)
 
+/* ============================ bar weight ============================ */
+// One editor for every place the bar weight shows up (exercise detail, exercise config,
+// mid-workout sheet): a stepper over the effective value. What it saves is per exercise
+// and lives in S.barWeights, in the profile unit (see lib/bar.js) — stepping or typing
+// down to 0 clears the override and the field falls back to the default for the bar
+// type, the same "0 drops the key" shape a nullable set field has.
+function BarWeightEditor({ ex, extra }) {
+  const st = useStore(s => s.S)
+  const explicit = hasBarOverride(st, ex.id)
+  const def = defaultBarWeight(ex.eq, st.unit)
+  const setBar = v => update(s => {
+    s.barWeights = s.barWeights || {}
+    const n = Math.max(0, Math.round((v || 0) * 100) / 100)
+    if (n > 0) s.barWeights[ex.id] = n; else delete s.barWeights[ex.id]
+  })
+  return <>
+    <div className="row cfgrow" style={{ marginBottom: 6 }}>
+      <Stepper label={t('Bar ({0})', st.unit)} value={barWeightFor(st, ex) || 0} step={2.5} onChange={setBar} />
+    </div>
+    <div className="small dim" style={{ marginBottom: 18 }}>
+      {explicit ? t('Set to 0 to go back to the default ({0}).', fmtNum(def) + ' ' + st.unit) : t('Default for this bar type.')}
+      {extra ? ' ' + extra : ''}
+    </div>
+  </>
+}
+
+// Tiny mid-workout sheet behind the "Bar … · … per side" chip — same value, same editor.
+function BarWeightSheet({ exId, close }) {
+  const ex = exOr(exId)
+  return <>
+    <h3>{t('Bar weight')}</h3>
+    <div className="muted small capitalize" style={{ marginBottom: 12 }}>{exerciseNameFor(ex)}</div>
+    <BarWeightEditor ex={ex} extra={t('Applies to this exercise everywhere, not just this plan.')} />
+    <Button variant="primary" onClick={close}>{t('Done')}</Button>
+  </>
+}
+export const barWeightSheet = exId => ui().openSheet(close => <BarWeightSheet exId={exId} close={close} />)
+
 /* ============================ exercise detail ============================ */
 // Estimated 1RM for one exercise (issue #18): what the log already implies, plus a calculator
 // for a set you have not done — so the number is reachable before there is any history.
@@ -519,6 +558,10 @@ function ExerciseDetail({ ex, close }) {
       <Button icon="pencil" style={{ flex: 1 }} onClick={() => { close(); customExSheet(ex) }}>{t('Edit')}</Button>
       <Button variant="danger" icon="trash" style={{ flex: 1 }} onClick={() => deleteCustomEx(ex, close)}>{t('Delete')}</Button>
     </div>}
+    {usesBar(ex) && <>
+      <h4 className="sec">{t('Bar weight')}</h4>
+      <BarWeightEditor ex={ex} extra={t('You still log the total weight — the bar only feeds the per-side plate math.')} />
+    </>}
     {!isCardio(ex) && <OneRM ex={ex} />}
     {instrFor(ex).length > 0 &&<><h4 className="sec">{t('How to')}{!INSTR_LANGS.includes(getLang()) && <span className="dim" style={{ textTransform: 'none', letterSpacing: 0 }}> · {t('instructions in English')}</span>}</h4><ol className="steps-list">{instrFor(ex).map((s, i) => <li key={i}>{s}</li>)}</ol></>}
   </>
@@ -1105,6 +1148,12 @@ function ExConfig({ ex, existing, onSave, onDelete, close, routine, initial }) {
           : t('Every set becomes rest-pause: {0} reps to start, then {1} more split into short bursts, {2}s rest before each, roughly halving each time.', c.reps || 0, c.intensifier.totalReps, c.intensifier.restSec)}
       </div>}
     </>}
+    {/* The bar's own weight, for the plate math — per exercise, not per plan, so it sits
+        apart from the config fields above and writes straight to S.barWeights. */}
+    {usesBar(ex) && <>
+      <h4 className="sec">{t('Bar weight')}</h4>
+      <BarWeightEditor ex={ex} extra={t('Applies to this exercise everywhere, not just this plan.')} />
+    </>}
     <ProgressionFields ex={ex} mode={mode} c={c} setC={setC} routine={routine} unit={st.unit} perSide={perSide} />
     <textarea className="input" rows={3} maxLength={500} style={{ marginBottom: 18 }}
       placeholder={t('Note (optional) — loading cues, "bar only then +1 plate/side each set", anything worth remembering here')}
@@ -1325,7 +1374,9 @@ function Calendar({ start, close }) {
   const y = cur.getFullYear(), mo = cur.getMonth()
   const byDay = {}
   st.workouts.forEach(w => (byDay[w.d] = byDay[w.d] || []).push(w))
-  const startOffset = (new Date(y, mo, 1).getDay() + 6) % 7
+  // Which column the 1st sits in, and therefore how many blanks come before it.
+  const ws = weekStartOf(st)
+  const startOffset = weekDayOffset(new Date(y, mo, 1).getDay(), ws)
   const daysIn = new Date(y, mo + 1, 0).getDate()
   const monthWs = st.workouts.filter(w => w.d.startsWith(y + '-' + String(mo + 1).padStart(2, '0')))
   const monthVol = monthWs.reduce((a, w) => a + (w.vol || 0), 0)
@@ -1349,7 +1400,7 @@ function Calendar({ start, close }) {
       <button className="iconbtn" onClick={() => setCur(new Date(y, mo + 1, 1))} aria-label="Next month"><Icon name="chevronRight" /></button>
     </div>
     <div className="small muted" style={{ textAlign: 'center' }}>{monthWs.length ? `${t(monthWs.length === 1 ? '{0} workout' : '{0} workouts', monthWs.length)} · ${fmtDur(monthMs)} · ${fmtVol(monthVol, st.unit)}` : t('No workouts this month')}</div>
-    <div className="cal-grid">{['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'].map(l => <div key={l} className="cal-h">{t(l)}</div>)}{cells}</div>
+    <div className="cal-grid">{weekOrder(ws).map(d => <div key={d} className="cal-h">{t(DAYS[d])}</div>)}{cells}</div>
     <div className="cal-legend">
       <span><i style={{ background: 'var(--acc)' }} />{t('Trained')}</span>
       <span><i style={{ background: 'var(--label-3)' }} />{t('Planned')}</span>

@@ -113,6 +113,7 @@ export default {
   'Sick, missed a day or want a different session? Pick what to train instead.': 'Hasta mısın, gün mü kaçırdın ya da farklı bir seans mı istiyorsun? Yerine ne çalışacağını seç.',
   'Rest / skip this day': 'Dinlen / bu günü atla',
   'Rest day': 'Dinlenme günü',
+  'Next session: {0}, {1}': 'Sonraki antrenman: {0}, {1}',
   '{0} workout': '{0} antrenman',
   '{0} workouts': '{0} antrenman',
   'No workouts this month': 'Bu ay antrenman yok',
@@ -293,6 +294,7 @@ export default {
   'Keep screen awake': 'Ekranı açık tut',
   'The screen stays on while a workout is running, so you don’t have to unlock your phone between sets.': 'Antrenman sürerken ekran açık kalır, böylece setler arasında telefonunu açmak zorunda kalmazsın.',
   'Weight unit': 'Ağırlık birimi',
+  'Week starts on': 'Hafta başlangıcı',
   'Rest timer': 'Dinlenme sayacı',
   'Sounds': 'Sesler',
   'Flash screen when timer ends': 'Zamanlayıcı bitince ekranı yanıp söndür',
@@ -735,4 +737,12 @@ export default {
   'Add as second workout': 'İkinci antrenman olarak ekle',
   'Finish the current workout first.': 'Önce mevcut antrenmanı bitir.',
   'Logging a past workout — no rest timers.': 'Geçmiş antrenman kaydediliyor — dinlenme zamanlayıcısı yok.',
+  // --- bar weight (plate math) ---
+  'Bar weight': 'Bar ağırlığı',
+  'Bar ({0})': 'Bar ({0})',
+  'Bar {0}': 'Bar {0}',
+  'Default for this bar type.': 'Bu bar türü için varsayılan.',
+  'Set to 0 to go back to the default ({0}).': 'Varsayılana ({0}) dönmek için 0 yap.',
+  'Applies to this exercise everywhere, not just this plan.': 'Yalnızca bu planda değil, bu egzersiz için her yerde geçerli.',
+  'You still log the total weight — the bar only feeds the per-side plate math.': 'Yine de toplam ağırlığı kaydedersin — bar yalnızca taraf başına plaka hesabına girer.',
 }

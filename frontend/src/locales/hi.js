@@ -113,6 +113,7 @@ export default {
   'Sick, missed a day or want a different session? Pick what to train instead.': 'बीमार हैं, दिन छूट गया या कुछ और करना है? चुनें कि इसके बदले क्या ट्रेन करें।',
   'Rest / skip this day': 'आराम / यह दिन छोड़ें',
   'Rest day': 'आराम का दिन',
+  'Next session: {0}, {1}': 'अगला सत्र: {0}, {1}',
   '{0} workout': '{0} वर्कआउट',
   '{0} workouts': '{0} वर्कआउट',
   'No workouts this month': 'इस महीने कोई वर्कआउट नहीं',
@@ -293,6 +294,7 @@ export default {
   'Keep screen awake': 'स्क्रीन चालू रखें',
   'The screen stays on while a workout is running, so you don’t have to unlock your phone between sets.': 'वर्कआउट चलने के दौरान स्क्रीन चालू रहती है, ताकि सेट के बीच फ़ोन अनलॉक न करना पड़े।',
   'Weight unit': 'वज़न की इकाई',
+  'Week starts on': 'सप्ताह शुरू होता है',
   'Rest timer': 'आराम टाइमर',
   'Sounds': 'ध्वनियाँ',
   'Flash screen when timer ends': 'टाइमर खत्म होने पर स्क्रीन फ्लैश करें',
@@ -735,4 +737,12 @@ export default {
   'Add as second workout': 'दूसरे वर्कआउट के रूप में जोड़ें',
   'Finish the current workout first.': 'पहले मौजूदा वर्कआउट पूरा करें।',
   'Logging a past workout — no rest timers.': 'पिछला वर्कआउट दर्ज हो रहा है — कोई रेस्ट टाइमर नहीं।',
+  // --- bar weight (plate math) ---
+  'Bar weight': 'बार का वज़न',
+  'Bar ({0})': 'बार ({0})',
+  'Bar {0}': 'बार {0}',
+  'Default for this bar type.': 'इस तरह की बार का डिफ़ॉल्ट मान।',
+  'Set to 0 to go back to the default ({0}).': 'डिफ़ॉल्ट ({0}) पर लौटने के लिए 0 सेट करें।',
+  'Applies to this exercise everywhere, not just this plan.': 'यह इस एक्सरसाइज़ पर हर जगह लागू होता है, सिर्फ़ इसी प्लान पर नहीं।',
+  'You still log the total weight — the bar only feeds the per-side plate math.': 'आप अब भी कुल वज़न ही दर्ज करते हैं — बार सिर्फ़ हर तरफ़ की प्लेट गिनती में काम आता है।',
 }

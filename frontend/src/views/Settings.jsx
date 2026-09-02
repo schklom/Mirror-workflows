@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore, DEF, hasData } from '../store/useStore.js'
 import { useUI } from '../store/useUI.js'
-import { ACCENTS, todayISO, localTZ } from '../lib/format.js'
+import { ACCENTS, todayISO, localTZ, weekStartOf, MONDAY, SUNDAY } from '../lib/format.js'
 import { effortOf } from '../lib/history.js'
 import { api, webauthnOK, passkeyLogin, passkeyRegister, IS_ANDROID } from '../lib/api.js'
 import { pushSupported, enablePush, disablePush, sendTestPush } from '../lib/push.js'
@@ -124,6 +124,13 @@ export default function Settings() {
         <Segmented className="seg-inline"
           options={[{ value: 'kg', label: 'kg' }, { value: 'lb', label: 'lb' }]}
           value={S.unit} onChange={v => update(s => { s.unit = v })} />
+      </Row>
+      {/* Monday or Sunday — the Plan list, the Home strip, the calendar grid and every
+          "this week" total follow it. Stored as a getDay() index (see lib/format.js). */}
+      <Row icon="calendar" iconTint="var(--orange)" title={t('Week starts on')}>
+        <Segmented className="seg-inline"
+          options={[{ value: MONDAY, label: t('Monday') }, { value: SUNDAY, label: t('Sunday') }]}
+          value={weekStartOf(S)} onChange={v => update(s => { s.weekStart = v })} />
       </Row>
     </Section>
 

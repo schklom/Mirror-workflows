@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/useStore.js'
-import { DAYN, uid, exCount } from '../lib/format.js'
+import { DAYN, weekOrder, weekStartOf, uid, exCount } from '../lib/format.js'
 import { t } from '../lib/i18n.js'
 import { dayAssignSheet, loadStarterPlan, planToolsSheet } from '../sheets.jsx'
 import Icon from '../components/Icon.jsx'
@@ -27,7 +27,7 @@ export default function Plan() {
     <div className="cols"><div>
       <h4 className="sec">{t('Week schedule')}</h4>
       <div className="list" style={{ display: 'flex', flexDirection: 'column' }}>
-        {[1, 2, 3, 4, 5, 6, 0].map(d => {
+        {weekOrder(weekStartOf(S)).map(d => {
           const r = S.routines.find(x => x.id === S.week[d])
           return <div key={d} className="item" {...tappable(() => dayAssignSheet(d))}>
             <div className="grow"><div className="tt">{t(DAYN[d])}</div></div>

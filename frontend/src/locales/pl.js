@@ -113,6 +113,7 @@ export default {
   'Sick, missed a day or want a different session? Pick what to train instead.': 'Choroba, opuszczony dzień albo ochota na coś innego? Wybierz, co trenować zamiast tego.',
   'Rest / skip this day': 'Odpoczynek / pomiń ten dzień',
   'Rest day': 'Dzień odpoczynku',
+  'Next session: {0}, {1}': 'Następny trening: {0}, {1}',
   '{0} workout': '{0} trening',
   '{0} workouts': '{0} treningów',
   'No workouts this month': 'Brak treningów w tym miesiącu',
@@ -293,6 +294,7 @@ export default {
   'Keep screen awake': 'Nie wygaszaj ekranu',
   'The screen stays on while a workout is running, so you don’t have to unlock your phone between sets.': 'Ekran pozostaje włączony w trakcie treningu, więc nie musisz odblokowywać telefonu między seriami.',
   'Weight unit': 'Jednostka wagi',
+  'Week starts on': 'Tydzień zaczyna się w',
   'Rest timer': 'Minutnik przerwy',
   'Sounds': 'Dźwięki',
   'Flash screen when timer ends': 'Migaj ekranem po zakończeniu minutnika',
@@ -735,4 +737,12 @@ export default {
   'Add as second workout': 'Dodaj jako drugi trening',
   'Finish the current workout first.': 'Najpierw zakończ bieżący trening.',
   'Logging a past workout — no rest timers.': 'Zapisywanie minionego treningu — bez minutników przerw.',
+  // --- bar weight (plate math) ---
+  'Bar weight': 'Ciężar gryfu',
+  'Bar ({0})': 'Gryf ({0})',
+  'Bar {0}': 'Gryf {0}',
+  'Default for this bar type.': 'Wartość domyślna dla tego typu gryfu.',
+  'Set to 0 to go back to the default ({0}).': 'Ustaw 0, aby wrócić do wartości domyślnej ({0}).',
+  'Applies to this exercise everywhere, not just this plan.': 'Dotyczy tego ćwiczenia wszędzie, nie tylko w tym planie.',
+  'You still log the total weight — the bar only feeds the per-side plate math.': 'Nadal zapisujesz ciężar całkowity — gryf służy tylko do wyliczenia talerzy na stronę.',
 }

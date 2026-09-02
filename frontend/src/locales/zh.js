@@ -113,6 +113,7 @@ export default {
   'Sick, missed a day or want a different session? Pick what to train instead.': '生病、错过一天或想换个训练？选择改练什么。',
   'Rest / skip this day': '休息 / 跳过这天',
   'Rest day': '休息日',
+  'Next session: {0}, {1}': '下次训练：{0}，{1}',
   '{0} workout': '{0} 次训练',
   '{0} workouts': '{0} 次训练',
   'No workouts this month': '本月没有训练',
@@ -293,6 +294,7 @@ export default {
   'Keep screen awake': '保持屏幕常亮',
   'The screen stays on while a workout is running, so you don’t have to unlock your phone between sets.': '训练进行时屏幕保持常亮，组间无需再解锁手机。',
   'Weight unit': '重量单位',
+  'Week starts on': '一周开始于',
   'Rest timer': '休息计时',
   'Sounds': '声音',
   'Flash screen when timer ends': '计时结束时闪烁屏幕',
@@ -735,4 +737,12 @@ export default {
   'Add as second workout': '添加为第二次训练',
   'Finish the current workout first.': '请先完成当前训练。',
   'Logging a past workout — no rest timers.': '正在补记过去的训练 — 没有休息计时器。',
+  // --- bar weight (plate math) ---
+  'Bar weight': '杠铃杆重量',
+  'Bar ({0})': '杆 ({0})',
+  'Bar {0}': '杆 {0}',
+  'Default for this bar type.': '此类杠铃杆的默认值。',
+  'Set to 0 to go back to the default ({0}).': '设为 0 即恢复默认值（{0}）。',
+  'Applies to this exercise everywhere, not just this plan.': '对这个动作处处生效，不只在此计划中。',
+  'You still log the total weight — the bar only feeds the per-side plate math.': '记录的仍是总重量——杆重只用于每侧杠铃片的计算。',
 }

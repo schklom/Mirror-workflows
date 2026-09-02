@@ -91,6 +91,24 @@ export const PhotosModal = ({ isOpen, onClose }: PhotosModalProps) => {
                   className="max-h-full max-w-full rounded object-contain"
                 />
               </div>
+
+              <Button
+                variant="destructive"
+                size="sm"
+                className="font-semibold"
+                onClick={() => {
+                  const service = apiService()
+                  if (service instanceof ApiV2Service) {
+                    const toDelete = pictures[selectedIndex].clientItemIdHex;
+                    pictures.splice(selectedIndex, 1);
+                    setSelectedIndex(Math.max(0, selectedIndex - 1))
+                    service.deleteSinglePicture(toDelete);
+                  }
+                }
+                }>
+                <Trash2 className="h-4 w-4" />
+                {t('pictures.delete')}
+              </Button>
             </div>
           )}
         </div>

@@ -375,15 +375,19 @@ export const DevicePanel = ({ onLocateCommand, onViewPhotos }: DevicePanelProps)
                 onClick={async () => {
                   const service = apiService();
                   if (service instanceof ApiV2Service) {
-                    const toDelete = locations[currentLocationIndex].clientItemIdHex;
-                    await service.deleteSingleLocation(toDelete);
-                    useStore.setState({
-                      locations: [
-                        ...locations.slice(0, currentLocationIndex),
-                        ...locations.slice(currentLocationIndex + 1),
-                      ],
-                      currentLocationIndex: Math.max(0, currentLocationIndex - 1),
-                    });
+                    try {
+                      const toDelete = locations[currentLocationIndex].clientItemIdHex;
+                      await service.deleteSingleLocation(toDelete);
+                      useStore.setState({
+                        locations: [
+                          ...locations.slice(0, currentLocationIndex),
+                          ...locations.slice(currentLocationIndex + 1),
+                        ],
+                        currentLocationIndex: Math.max(0, currentLocationIndex - 1),
+                      });
+                    } catch (error) {
+                      toast.error(error instanceof Error ? error.message : 'Delete failed');
+                    }
                   }
                 }}
               >

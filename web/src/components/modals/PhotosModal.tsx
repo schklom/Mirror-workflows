@@ -99,10 +99,14 @@ export const PhotosModal = ({ isOpen, onClose }: PhotosModalProps) => {
                 onClick={() => {
                   const service = apiService();
                   if (service instanceof ApiV2Service) {
-                    const toDelete = pictures[selectedIndex].clientItemIdHex;
-                    pictures.splice(selectedIndex, 1);
-                    setSelectedIndex(Math.max(0, selectedIndex - 1));
-                    service.deleteSinglePicture(toDelete);
+                    try {
+                      const toDelete = pictures[selectedIndex].clientItemIdHex;
+                      pictures.splice(selectedIndex, 1);
+                      setSelectedIndex(Math.max(0, selectedIndex - 1));
+                      service.deleteSinglePicture(toDelete);
+                    } catch (error) {
+                      toast.error(error instanceof Error ? error.message : 'Delete failed');
+                    }
                   }
                 }}
               >

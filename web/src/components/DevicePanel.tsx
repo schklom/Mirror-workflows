@@ -368,13 +368,13 @@ export const DevicePanel = ({ onLocateCommand, onViewPhotos }: DevicePanelProps)
                 </div>
               </div>
 
-              <Button
-                variant="destructive"
-                size="sm"
-                className="font-semibold"
-                onClick={async () => {
-                  const service = apiService();
-                  if (service instanceof ApiV2Service) {
+              {apiService() instanceof ApiV2Service && (
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  className="font-semibold"
+                  onClick={async () => {
+                    const service = apiService() as ApiV2Service;
                     try {
                       const toDelete = locations[currentLocationIndex].clientItemIdHex;
                       await service.deleteSingleLocation(toDelete);
@@ -388,11 +388,11 @@ export const DevicePanel = ({ onLocateCommand, onViewPhotos }: DevicePanelProps)
                     } catch (error) {
                       toast.error(error instanceof Error ? error.message : 'Delete failed');
                     }
-                  }
-                }}
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
+                  }}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              )}
             </div>
 
             {locations.length > 1 && (

@@ -92,13 +92,13 @@ export const PhotosModal = ({ isOpen, onClose }: PhotosModalProps) => {
                 />
               </div>
 
-              <Button
-                variant="destructive"
-                size="sm"
-                className="font-semibold"
-                onClick={() => {
-                  const service = apiService();
-                  if (service instanceof ApiV2Service) {
+              {apiService() instanceof ApiV2Service && (
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  className="font-semibold"
+                  onClick={() => {
+                    const service = apiService() as ApiV2Service;
                     try {
                       const toDelete = pictures[selectedIndex].clientItemIdHex;
                       pictures.splice(selectedIndex, 1);
@@ -107,12 +107,12 @@ export const PhotosModal = ({ isOpen, onClose }: PhotosModalProps) => {
                     } catch (error) {
                       toast.error(error instanceof Error ? error.message : 'Delete failed');
                     }
-                  }
-                }}
-              >
-                <Trash2 className="h-4 w-4" />
-                {t('pictures.delete')}
-              </Button>
+                  }}
+                >
+                  <Trash2 className="h-4 w-4" />
+                  {t('pictures.delete')}
+                </Button>
+              )}
             </div>
           )}
         </div>

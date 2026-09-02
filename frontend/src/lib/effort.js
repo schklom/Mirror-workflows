@@ -7,7 +7,7 @@
 // RIR is the internal unit because it has a real zero — a set taken to failure — where RPE's
 // floor of 6 is only a convention about which sets are worth rating. RPE 8 == RIR 2.
 import { EFFORT, effortOf } from './history.js'
-import { weekKey } from './format.js'
+import { weekKey, weekStartOf, startOfWeek } from './format.js'
 import { isWarmupRow } from './workout-model.js'
 
 // At or below this a set is close enough to failure to be the kind that drives adaptation.
@@ -95,25 +95,19 @@ export function hasEffort(S) {
  * drawn — one tap should not become a peak in the curve.
  */
 export function effortWeeks(S, days) {
+  const ws = weekStartOf(S)
   const wk = new Map()
   eachDoneSet(S, (s, w) => {
     if (!inWindow(w, days)) return
-    const k = weekKey(w.d)
+    const k = weekKey(w.d, ws)
     let e = wk.get(k)
-    if (!e) wk.set(k, e = { k, t: mondayOf(w.d), sum: 0, n: 0, sets: 0 })
+    if (!e) wk.set(k, e = { k, t: startOfWeek(w.d, ws).getTime(), sum: 0, n: 0, sets: 0 })
     e.sets++
     const r = rirOf(s)
     if (r != null) { e.sum += r; e.n++ }
   })
   return [...wk.values()].filter(e => e.n >= 2).sort((a, b) => a.t - b.t)
     .map(e => ({ t: e.t, rir: e.sum / e.n, n: e.n, sets: e.sets }))
-}
-// The Monday of an ISO date, as ms — the x position a week's point sits at.
-function mondayOf(iso) {
-  const d = new Date(iso + 'T12:00:00')
-  d.setDate(d.getDate() - ((d.getDay() + 6) % 7))
-  d.setHours(12, 0, 0, 0)
-  return +d
 }
 
 /**

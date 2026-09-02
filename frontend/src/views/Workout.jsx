@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/useStore.js'
 import { useUI } from '../store/useUI.js'
 import { exOr } from '../lib/exercises.js'
+import { usesBar, barWeightFor, plateSplit } from '../lib/bar.js'
 import { effectiveRoutine, lastEntryFor, bestWeightFor, buildSets, freestyleConfig, defaultConfig, setsDoneActive, supersetUnits, unitOf, setLabel, modeOf, isBw, isPerSide, sideReps, repStep, EFFORT, effortOf, stepEffort, capEffort, cascadeWeight, insertWarmupRow, removeRowAt, pairAdjacent, unpairSuperset, cleanupSg, applyIntensifierPlan, pinnedNoteFor, exNoteFor } from '../lib/history.js'
 import { fmtNum, fmtDate, todayISO, exCount, DAYN } from '../lib/format.js'
 import { beep, vibrate } from '../lib/sound.js'
@@ -10,7 +11,7 @@ import { t, exerciseNameFor } from '../lib/i18n.js'
 import { api } from '../lib/api.js'
 import { insertionIndexAfterCurrentUnit, nextUnfinishedUnit, setProgressHighWater, supersetFlowStep, restAfterSet, restOnRecheck, restSecFor } from '../lib/supersetFlow.js'
 import Media from '../components/Media.jsx'
-import { startFlow, exercisePicker, exConfigSheet, exerciseDetailSheet, topWeightSheet, finishWorkout, workoutCompleteSheet, confirmSheet, exerciseNoteSheet, sessionNoteSheet, swapActiveWorkoutExercise } from '../sheets.jsx'
+import { startFlow, exercisePicker, exConfigSheet, exerciseDetailSheet, topWeightSheet, finishWorkout, workoutCompleteSheet, confirmSheet, exerciseNoteSheet, sessionNoteSheet, swapActiveWorkoutExercise, barWeightSheet } from '../sheets.jsx'
 import Icon from '../components/Icon.jsx'
 import { Button, Check, NumberField } from '../components/ui.jsx'
 import { nextPrescription, applyPrescription, defaultIncrement } from '../lib/progression.js'
@@ -197,6 +198,23 @@ function ExerciseBlock({ entryIdx, compact, onToggle, onField, onAddSet, onRemov
     </div>}
     {entry.note && <div className="exnote">{entry.note}</div>}
     {last && <div className="small dim" style={{ marginBottom: 4 }}>{t('Last time')} ({fmtDate(last.d)}): {last.sets.map(s => setLabel(entry.id, s, last.target)).join(', ')}</div>}
+    {/* Bar + plates for barbell work: what to load per side for the set in front of you
+        (first undone set; the heaviest row once everything is checked). The logged number
+        stays the total — this chip is the split, and tapping it edits the bar's own weight
+        (S.barWeights, per exercise) mid-workout. Weight ≤ bar leaves just the bar. */}
+    {!cardio && !(bw && !added) && usesBar(ex) && (() => {
+      const bar = barWeightFor(S, entry.id)
+      if (!(bar > 0)) return null
+      const nextW = entry.sets.find(s => !s.done)?.w
+      const refW = nextW > 0 ? nextW : Math.max(0, ...entry.sets.map(s => s.w || 0))
+      const split = plateSplit(refW, bar)
+      return <div style={{ marginBottom: 6 }}>
+        <button className="chip nocap" style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }} onClick={() => barWeightSheet(entry.id)}>
+          <Icon name="dumbbell" style={{ fontSize: 12 }} />
+          {t('Bar {0}', fmtNum(bar) + ' ' + S.unit)}{split != null ? ' · ' + t('{0} per side', fmtNum(split) + ' ' + S.unit) : ''}
+        </button>
+      </div>
+    })()}
     {guidance && <button type="button" className={'progline' + (plan.kind === 'deload' ? ' warn' : '')}
       aria-label={t('Open progression settings')} onClick={onProgressionSettings}>
       <Icon name={plan.kind === 'up' ? 'arrowUp' : plan.kind === 'deload' ? 'arrowDown' : 'lightbulb'} />

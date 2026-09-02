@@ -10,11 +10,12 @@
 
 import { EXIDX, isBodyweightEq } from './exercises.js'
 import { modeOf, fmtSec, isBw, isPerSide, sideReps, MAX_PLANNED_WARMUPS } from './history.js'
-import { uid, todayISO, DAYN, fmtNum, exCount } from './format.js'
+import { uid, todayISO, DAYN, weekOrder, weekStartOf, fmtNum, exCount } from './format.js'
 import { t, exerciseNameFor } from './i18n-core.js'
 
 const PLAN_FMT = 1
-const WEEK_ORDER = [1, 2, 3, 4, 5, 6, 0]   // Mon-first, matching the Plan screen
+const WEEK_DAYS = [1, 2, 3, 4, 5, 6, 0]   // every getDay() index; only the reader's own
+                                          // screen puts them in an order (see weekOrder)
 
 // Keep only the meaningful config fields, so the file stays small and readable.
 function cleanEx(e) {
@@ -100,7 +101,7 @@ export function buildPlanBundle(S, name) {
     .filter(c => usedIds.has(c.id))
     .map(c => ({ id: c.id, n: c.n, bp: c.bp, ...(c.desc ? { desc: c.desc } : {}) }))
   const week = {}
-  WEEK_ORDER.forEach(d => { if (S.week?.[d]) week[d] = S.week[d] })
+  WEEK_DAYS.forEach(d => { if (S.week?.[d]) week[d] = S.week[d] })
   return { opengym_plan: PLAN_FMT, exported: todayISO(), name: name || '', week, routines, customEx }
 }
 
@@ -145,7 +146,7 @@ export function parsePlan(raw) {
     dropped,
     routineCount: routines.length,
     exerciseCount: routines.reduce((n, r) => n + r.ex.length, 0),
-    scheduledDays: WEEK_ORDER.filter(d => data.week?.[d]).length
+    scheduledDays: WEEK_DAYS.filter(d => data.week?.[d]).length
   }
 }
 
@@ -180,7 +181,7 @@ export function mergePlan(s, bundle, { schedule } = {}) {
     })
   })
   if (schedule) {
-    WEEK_ORDER.forEach(d => { delete s.week[d] })
+    WEEK_DAYS.forEach(d => { delete s.week[d] })
     Object.entries(bundle.week || {}).forEach(([d, oldId]) => {
       if (ridMap[oldId]) s.week[d] = ridMap[oldId]
     })
@@ -240,7 +241,8 @@ function routineHTML(r, unit) {
 }
 
 function weekHTML(S) {
-  const rows = WEEK_ORDER.map(d => {
+  // The printout is read by whoever exported it, so the week runs in their order.
+  const rows = weekOrder(weekStartOf(S)).map(d => {
     const r = S.routines.find(x => x.id === S.week?.[d])
     const val = r ? esc(r.name) : `<span class="rest">${esc(t('Rest'))}</span>`
     return `<div class="w-row"><div class="w-day">${esc(t(DAYN[d]))}</div><div class="w-r">${val}</div></div>`

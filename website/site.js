@@ -5,6 +5,12 @@
 
 const GL_PROJECT = 'https://gitlab.com/api/v4/projects/DuarteSantos8%2Fopengym'
 
+// Discord publishes an invite's guild counts to anyone who asks for the invite with
+// ?with_counts=1 — no bot token, no widget to enable, and the API reflects the caller's
+// Origin, so the browser is allowed to read it. The code is the permanent invite in the
+// nav; if that invite is ever revoked this returns 404 and the count simply stays blank.
+const DC_INVITE = 'https://discord.com/api/v10/invites/e62jY6fwVb?with_counts=1'
+
 /* ------------------------------------------------------- one panel controller
    The navigation sheet and the contents drawer are the same object with different
    contents: one opener, one close button, Escape, a tap outside, focus held inside
@@ -254,6 +260,31 @@ function panel({ opener, panelEl, flag, closeBtn }) {
     // Leave the placeholder standing rather than writing an empty box.
     if (d.open_issues_count !== '' && d.open_issues_count != null) set('issues-n', d.open_issues_count)
   } catch (e) { /* offline / rate-limited — leave placeholders */ }
+})()
+
+/* --------------------------------------------------- Discord members (nav + specs)
+   Same shape as the repo counts above, and just as optional: the placeholder next to
+   the Discord link is empty, so a blocked or rate-limited request leaves the link
+   reading exactly as it did before anyone counted anything. */
+;(async () => {
+  const set = (id, v) => document.querySelectorAll('[data-dc="' + id + '"]').forEach(el => { el.textContent = v })
+  try {
+    let n = null
+    const cached = sessionStorage.getItem('discord_members')
+    if (cached) n = JSON.parse(cached)
+    else {
+      const r = await fetch(DC_INVITE)
+      if (!r.ok) return
+      const j = await r.json()
+      n = j.approximate_member_count
+      if (typeof n !== 'number') return
+      sessionStorage.setItem('discord_members', JSON.stringify(n))
+    }
+    // Grouped like the other four-figure numbers on the page (1,324 exercises).
+    const fmt = n.toLocaleString('en-US')
+    set('members', fmt)
+    set('members-n', fmt)
+  } catch (e) { /* offline / blocked — the link keeps its plain label */ }
 })()
 
 /* -------------------------------------------------------------- about timeline

@@ -357,7 +357,9 @@ export const PT_BR_OVERRIDES = {
   'Default for this bar type.': 'Padrão para este tipo de barra.',
   'Set to 0 to go back to the default ({0}).': 'Defina 0 para voltar ao padrão ({0}).',
   'Applies to this exercise everywhere, not just this plan.': 'Vale para este exercício em todos os lugares, não só neste plano.',
-  'You still log the total weight — the bar only feeds the per-side plate math.': 'Você continua registrando o peso total — a barra só entra no cálculo das anilhas por lado.'
+  'You still log the total weight — the bar only feeds the per-side plate math.': 'Você continua registrando o peso total — a barra só entra no cálculo das anilhas por lado.',
+  // effort quick picker — pt-PT uses "toca"/"escreve"; Brazilian uses "toque"/"digite"
+  'Tap how many reps you had left, or type an exact {0}.': 'Toque em quantas repetições você ainda tinha, ou digite um {0} exato.'
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

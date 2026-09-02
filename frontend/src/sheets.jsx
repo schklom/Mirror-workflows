@@ -4,8 +4,9 @@ import { useUI } from './store/useUI.js'
 import { EXDB, EXIDX, BODYPARTS, isCardio, isBodyweightEq, allExercises, equipmentOf, smOf, matchExercise, exOr } from './lib/exercises.js'
 import { activeProfile, exAvailable, ALL_EQUIPMENT, newProfile } from './lib/equipment.js'
 import { fmtDate, fmtNum, fmtVol, fmtDur, durPart, todayISO, isoOf, uid, exCount, DAYN, DAYS, weekOrder, weekStartOf, weekDayOffset, MONTHS_LONG, ACCENTS } from './lib/format.js'
-import { lastEntryFor, bestWeightFor, buildSets, effectiveRoutineId, workoutVolume, setsDone, setsDoneActive, lastBW, supersetUnits, unitOf, setLabel, defaultConfig, cleanupSg, modeOf, effortOf, isBw, isPerSide, sideReps, workSetsDone, applyIntensifierPlan, MAX_PLANNED_WARMUPS, NOTE_MAX } from './lib/history.js'
+import { lastEntryFor, bestWeightFor, buildSets, effectiveRoutineId, workoutVolume, setsDone, setsDoneActive, lastBW, supersetUnits, unitOf, setLabel, defaultConfig, cleanupSg, modeOf, effortOf, EFFORT, capEffort, isBw, isPerSide, sideReps, workSetsDone, applyIntensifierPlan, MAX_PLANNED_WARMUPS, NOTE_MAX } from './lib/history.js'
 import { usesBar, barWeightFor, defaultBarWeight, hasBarOverride } from './lib/bar.js'
+import { toScale, rirOf, EFFORT_PRESETS, effortColor } from './lib/effort.js'
 import { beep, vibrate } from './lib/sound.js'
 import { t, instrFor, exerciseNameFor, getLang, INSTR_LANGS } from './lib/i18n.js'
 import { nav } from './lib/nav.js'
@@ -13,7 +14,7 @@ import { starterRoutines } from './lib/starter.js'
 import Media, { Thumb } from './components/Media.jsx'
 import Stepper from './components/Stepper.jsx'
 import Icon from './components/Icon.jsx'
-import { Button, Slider, Switch, Segmented, SelectRow, Row, TextField, MultiSelectRow } from './components/ui.jsx'
+import { Button, Slider, Switch, Segmented, SelectRow, Row, TextField, NumberField, MultiSelectRow } from './components/ui.jsx'
 import { glyphOf, GLYPH_GROUPS, DEFAULT_GLYPH } from './lib/glyphs.js'
 import BodyMap from './components/BodyMap.jsx'
 import { exerciseMuscleSnapshot, loadOfWorkouts, MUSCLES, MUSCLE_NAME, normalizeMuscleGroups, hasExplicitMuscleMetadata } from './lib/muscles.js'
@@ -1188,6 +1189,58 @@ export const glyphPicker = (current, onPick) => {
     <div style={{ height: 4 }} />
   </>)
 }
+
+/* ============================ effort quick picker (RIR / RPE) ============================ */
+// Rating a set used to mean walking a +/- stepper up the scale — eleven taps to log "5 reps
+// left". This is the one-tap replacement: a colour-coded button per preset, plus a free field
+// for the value between two presets. Presets are stored in RIR internally; a profile that logs
+// RPE sees the same buttons labelled on its own scale (toScale), coloured identically — the
+// colour is the effort, not the number, so 0 RIR and 10 RPE are both the "went to failure" end.
+function EffortPicker({ kind, value, onPick, close }) {
+  // Local mirror so the highlighted preset and the free field track typing live; the store is
+  // written on every change through onPick, the same as the stepper did.
+  const [v, setV] = useState(value ?? null)
+  const set = nv => { setV(nv); onPick(nv) }
+  // `v` is in the profile's own scale (whatever sits on the set: s.rir or s.rpe). Compare in
+  // RIR so the highlighted preset is right on either scale, and so a typed RPE colours the
+  // same as the RIR it equals.
+  const curRir = rirOf(kind === 'rpe' ? { rpe: v } : { rir: v })
+  const commit = nv => { close(); onPick(nv) }
+  const pick = rir => commit(toScale(kind, rir))
+  return <>
+    <h3>{t('How hard was that set?')}</h3>
+    <div className="muted small" style={{ marginBottom: 14, lineHeight: 1.45 }}>
+      {t('Tap how many reps you had left, or type an exact {0}.', EFFORT[kind].hd)}
+    </div>
+    <div className="effpick">
+      {EFFORT_PRESETS.map(p => {
+        const label = fmtNum(toScale(kind, p.rir)) + (p.tail ? '+' : '')
+        const on = curRir != null && curRir === p.rir
+        return <button key={p.rir} className={'effpick-b' + (on ? ' on' : '')}
+          style={{ '--bc': p.color }} onClick={() => pick(p.rir)}>
+          <span className="effpick-n">{label}</span>
+          <span className="effpick-f">{t(p.feel)}</span>
+        </button>
+      })}
+    </div>
+    {/* The free field keeps the flexibility the stepper had: a value between two presets, in
+        the profile's own scale, capped to the top of it (there is no RPE 12). Sized like a
+        preset so it reads as the seventh option — "or type your own" — not an afterthought. */}
+    <label className="effpick-free">
+      <span className="effpick-free-l">{t('Exact {0}', EFFORT[kind].hd)}</span>
+      <NumberField className="effpick-free-in" decimal nullable value={v ?? ''}
+        placeholder={EFFORT[kind].hd} onChange={nv => set(capEffort(kind, nv))} />
+    </label>
+    <div style={{ height: 10 }} />
+    {v != null && <Button variant="ghost" className="dim" icon="xmark" onClick={() => commit(null)}>{t('Clear rating')}</Button>}
+    <div style={{ height: 4 }} />
+  </>
+}
+// kind is 'rir' | 'rpe'; value is the set's current rating on that scale (or null); onPick
+// receives the new value on that same scale (null to clear). The caller stores it exactly as
+// weight/reps are stored — a null drops the key rather than writing a zero.
+export const effortPickerSheet = (kind, value, onPick) =>
+  ui().openSheet(close => <EffortPicker kind={kind} value={value} onPick={onPick} close={close} />)
 
 /* ============================ share / print / import a plan ============================ */
 export const planToolsSheet = () => ui().openSheet(close => <PlanTools close={close} />)

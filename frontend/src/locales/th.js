@@ -579,6 +579,11 @@ export default {
   'Two more reps': 'ยังเหลืออีกสองครั้ง',
   'Three more reps': 'ยังเหลืออีกสามครั้ง',
   'Easy — warm-up territory': 'ง่าย — ระดับวอร์มอัป',
+  'Maybe half a rep left': 'อาจเหลืออีกครึ่งครั้ง',
+  'How hard was that set?': 'เซ็ตนั้นหนักแค่ไหน?',
+  'Tap how many reps you had left, or type an exact {0}.': 'แตะเลือกว่าเหลืออีกกี่ครั้ง หรือพิมพ์ค่า {0} ที่แน่นอน',
+  'Exact {0}': '{0} ที่แน่นอน',
+  'Clear rating': 'ล้างการประเมิน',
   'RIR counts the reps you left; RPE reads the same effort off a 10-point scale — so RPE ≈ 10 − RIR. Pick the one you already think in.': 'RIR นับจำนวนครั้งที่เหลือ ส่วน RPE วัดความหนักเดียวกันบนสเกล 10 ระดับ — ดังนั้น RPE ≈ 10 − RIR เลือกแบบที่คุณคุ้นเคยได้เลย',
   'The highlighted row is where most working sets land. Sets you have already logged keep their own scale, and nothing else reads the value — progression and estimated 1RM are unaffected.': 'แถวที่ไฮไลต์คือช่วงที่เซ็ตส่วนใหญ่มักอยู่ เซ็ตที่บันทึกไปแล้วจะคงมาตรวัดเดิมไว้ และไม่มีส่วนอื่นนำค่านี้ไปใช้ — การเพิ่มระดับและ 1RM โดยประมาณจะไม่ได้รับผลกระทบ',
   // --- effort in the stats ---

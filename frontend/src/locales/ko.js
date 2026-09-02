@@ -604,6 +604,11 @@ export default {
   'Two more reps': '두 개 더 남았음',
   'Three more reps': '세 개 더 남았음',
   'Easy — warm-up territory': '가벼움 — 웜업 구간',
+  'Maybe half a rep left': '반 개 정도 더 남았을지도',
+  'How hard was that set?': '이 세트는 얼마나 힘들었나요?',
+  'Tap how many reps you had left, or type an exact {0}.': '몇 개 더 할 수 있었는지 탭하거나 정확한 {0} 값을 입력하세요.',
+  'Exact {0}': '정확한 {0}',
+  'Clear rating': '평가 지우기',
   'RIR counts the reps you left; RPE reads the same effort off a 10-point scale — so RPE ≈ 10 − RIR. Pick the one you already think in.': 'RIR은 남긴 횟수를 세고, RPE는 같은 노력을 10점 척도로 읽습니다 — 즉 RPE ≈ 10 − RIR. 평소에 쓰던 쪽을 고르세요.',
   'The highlighted row is where most working sets land. Sets you have already logged keep their own scale, and nothing else reads the value — progression and estimated 1RM are unaffected.': '강조된 줄은 대부분의 본세트가 들어가는 구간입니다. 이미 기록한 세트는 원래 척도를 그대로 유지하며, 이 값을 읽는 곳은 없습니다 — 프로그레션과 예상 1RM은 영향을 받지 않습니다.',
   // --- effort in the stats ---

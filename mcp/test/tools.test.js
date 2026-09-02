@@ -663,3 +663,126 @@ describe('shared: no-state fallback', () => {
   // failure rather than inherits null silently.
   afterAll(() => { _seedStateForTests(S = freshState()) })
 })
+
+/* ---------- preview_session ---------- */
+
+// The gap this tool exists to close: a routine stores sets/reps/weight, but those are the
+// LAST fallback the session builder consults. These tests pin the precedence — progression
+// beats the confirmed working weight, which beats the routine's own number — because getting
+// it backwards is how a coach ends up telling someone to squat a weight the app never shows.
+describe('preview_session', () => {
+  const WD = new Date(FAKE_TODAY_ISO + 'T12:00:00Z').getDay()
+
+  // One routine, one exercise, scheduled for the pinned "today". Nothing from the demo seed,
+  // so the arithmetic below is checkable by hand.
+  function only(cfg, { prog = 'off', workouts = [], exWeights = {} } = {}) {
+    S.routines = [{ id: 'r-preview', name: 'Preview', emoji: 'barbell', prog, ex: [cfg] }]
+    S.week = { [WD]: 'r-preview' }
+    S.dayPlan = {}
+    S.workouts = workouts
+    S.exWeights = exWeights
+    _seedStateForTests(S)
+  }
+
+  test('defaults to the routine scheduled for today', () => {
+    only({ id: '0025', sets: 3, reps: 8, weight: 50 })
+    const r = call('preview_session')
+    expect(r.date).toBe(FAKE_TODAY_ISO)
+    expect(r.routine_name).toBe('Preview')
+    expect(r.exercises).toHaveLength(1)
+    expect(r.exercises[0].name).toBe('barbell bench press')
+  })
+
+  test('with no history and no confirmed weight, the routine\'s own number is what opens', () => {
+    only({ id: '0025', sets: 3, reps: 8, weight: 50 })
+    const e = call('preview_session').exercises[0]
+    expect(e.weight_source).toBe('routine_plan')
+    expect(e.opening_sets.map(s => s.w)).toEqual([50, 50, 50])
+    expect(e.opening_sets.map(s => s.r)).toEqual([8, 8, 8])
+    expect(e.differs_from_plan).toBe(false)
+    expect(call('preview_session').overridden_count).toBe(0)
+  })
+
+  test('a confirmed working weight beats the routine\'s number', () => {
+    only({ id: '0025', sets: 2, reps: 8, weight: 50 }, { exWeights: { '0025': { w: 72.5, d: '2026-07-20' } } })
+    const e = call('preview_session').exercises[0]
+    expect(e.weight_source).toBe('confirmed_weight')
+    expect(e.opening_sets.every(s => s.w === 72.5)).toBe(true)
+    expect(e.changed).toEqual(['weight'])
+  })
+
+  test('the progression policy beats both, and its reason is reported', () => {
+    // Every rep hit at 60 last time under linear progression → +2.5, regardless of the 100
+    // the routine stores.
+    only({ id: '0025', sets: 3, reps: 5, weight: 100 }, {
+      prog: 'linear',
+      exWeights: { '0025': { w: 100, d: '2026-07-20' } },
+      workouts: [{
+        id: 'w1', d: '2026-07-20', routineId: 'r-preview', name: 'Preview',
+        entries: [{
+          id: '0025',
+          target: { id: '0025', sets: 3, reps: 5, weight: 60 },
+          sets: [{ w: 60, r: 5, done: true }, { w: 60, r: 5, done: true }, { w: 60, r: 5, done: true }]
+        }]
+      }]
+    })
+    const out = call('preview_session')
+    const e = out.exercises[0]
+    expect(e.prescription.kind).toBe('up')
+    expect(e.weight_source).toBe('progression')
+    expect(e.opening_sets.every(s => s.w === 62.5)).toBe(true)
+    expect(e.prescription.why).toMatch(/Every rep last time/)
+    expect(e.changed).toEqual(['weight'])
+
+    expect(out.overridden_count).toBe(1)
+    expect(out.overridden[0]).toMatchObject({
+      name: 'barbell bench press', planned_weight: 100, opening_weight: 62.5
+    })
+    expect(out.overridden[0].reason).toMatch(/Every rep last time/)
+  })
+
+  test('reps carry from the last session even when the routine asks for something else', () => {
+    only({ id: '0025', sets: 2, reps: 12, weight: 60 }, {
+      workouts: [{
+        id: 'w1', d: '2026-07-20', routineId: 'r-preview', name: 'Preview',
+        entries: [{
+          id: '0025',
+          target: { id: '0025', sets: 2, reps: 5, weight: 60 },
+          sets: [{ w: 60, r: 5, done: true }, { w: 60, r: 5, done: true }]
+        }]
+      }]
+    })
+    const e = call('preview_session').exercises[0]
+    expect(e.opening_sets.map(s => s.r)).toEqual([5, 5])   // not the 12 the routine stores
+    expect(e.reps_source).toBe('last_session')
+    expect(e.changed).toContain('reps')
+  })
+
+  test('planned drop sets show up on the opening rows', () => {
+    only({ id: '0025', sets: 2, reps: 10, weight: 50, intensifier: { type: 'dropset', count: 1, pct: 20 } })
+    const e = call('preview_session').exercises[0]
+    expect(e.opening_sets.every(s => s.type === 'dropset')).toBe(true)
+  })
+
+  test('an explicit routine_id overrides the schedule', () => {
+    only({ id: '0025', sets: 3, reps: 8, weight: 50 })
+    const other = { id: 'r-other', name: 'Other', prog: 'off', ex: [{ id: '0043', sets: 5, reps: 5, weight: 80 }] }
+    S.routines.push(other)
+    _seedStateForTests(S)
+    expect(call('preview_session', { routine_id: 'r-other' }).routine_name).toBe('Other')
+  })
+
+  test('a rest day returns no exercises rather than an error', () => {
+    only({ id: '0025', sets: 3, reps: 8, weight: 50 })
+    S.week = {}
+    _seedStateForTests(S)
+    const r = call('preview_session')
+    expect(r.rest_day).toBe(true)
+    expect(r.exercises).toEqual([])
+  })
+
+  test('an unknown routine_id is an error, not an empty session', () => {
+    only({ id: '0025', sets: 3, reps: 8, weight: 50 })
+    expect(() => call('preview_session', { routine_id: 'nope' })).toThrow(/no routine with id/)
+  })
+})

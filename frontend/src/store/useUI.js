@@ -13,6 +13,16 @@ const cancelPushRestTimer = () => { if (useStore.getState().user) api('/api/push
 const notificationsSupported = () => typeof window !== 'undefined' && 'Notification' in window
 let requestRestNotificationPermissionP = null
 
+// Set the moment the tab goes hidden, never cleared here — timerTick/workTick read and
+// clear it themselves once they're running visible again. Lets a completion tick tell
+// "the countdown hit zero while the app was actually open" from "it hit zero while
+// backgrounded/closed and we're only just catching up now that it's open again" — the
+// latter must skip beep/vibrate/flash/toast and rely solely on the push notification.
+let pageHiddenAt = null
+if (typeof document !== 'undefined') {
+  document.addEventListener('visibilitychange', () => { if (document.hidden) pageHiddenAt = Date.now() })
+}
+
 const requestRestNotificationPermission = async () => {
   if (!notificationsSupported()) return false
   if (Notification.permission === 'granted') return true
@@ -59,7 +69,7 @@ export const useUI = create((set, get) => ({
   timer: null,         // rest countdown between sets — { left, total, endsAt, forIdx }
                        // forIdx: index of the active entry whose set started the rest (undefined when unknown)
   work: null,          // work countdown DURING a timed set (issue #16) — { left, total, endsAt, label }
-  timerFlashId: 0,     // changing the id remounts the four-pulse visual alert
+  timerFlashId: 0,     // changing the id retriggers the theme-blink visual alert
 
   flashTimer() {
     if (!useStore.getState().S.timerFlash) return
@@ -94,11 +104,16 @@ export const useUI = create((set, get) => ({
       const tm = get().timer
       if (!tm) return
       const left = Math.max(0, Math.round((tm.endsAt - Date.now()) / 1000))
+      const seenLive = !document.hidden && pageHiddenAt === null
+      if (!document.hidden) pageHiddenAt = null
       if (left === tm.left) return
       const snd = useStore.getState().S.sound
       if (left <= 0) {
-        beep(snd, 880, 0.15); beep(snd, 880, 0.15, 0.25); beep(snd, 1320, 0.4, 0.5)
-        vibrate([200, 100, 200]); get().flashTimer(); maybeRestNotification(); get().toast(t('Rest over — next set!')); get().stopRest(); return
+        if (seenLive) {
+          beep(snd, 880, 0.15); beep(snd, 880, 0.15, 0.25); beep(snd, 1320, 0.4, 0.5)
+          vibrate([200, 100, 200]); get().flashTimer(); get().toast(t('Rest over — next set!'))
+        }
+        maybeRestNotification(); get().stopRest(); return
       }
       if (left <= 3) beep(snd, 660, 0.1)
       set({ timer: { ...tm, left } })
@@ -149,11 +164,15 @@ export const useUI = create((set, get) => ({
       const wk = get().work
       if (!wk) return
       const left = Math.max(0, Math.round((wk.endsAt - Date.now()) / 1000))
+      const seenLive = !document.hidden && pageHiddenAt === null
+      if (!document.hidden) pageHiddenAt = null
       if (left === wk.left) return
       const snd = useStore.getState().S.sound
       if (left <= 0) {
-        beep(snd, 880, 0.15); beep(snd, 880, 0.15, 0.25); beep(snd, 1320, 0.4, 0.5)
-        vibrate([200, 100, 200]); get().flashTimer()
+        if (seenLive) {
+          beep(snd, 880, 0.15); beep(snd, 880, 0.15, 0.25); beep(snd, 1320, 0.4, 0.5)
+          vibrate([200, 100, 200]); get().flashTimer()
+        }
         const done = workDone
         get().stopWork()
         if (done) done(wk.total)

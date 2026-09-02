@@ -181,7 +181,7 @@ export const LocationMap = () => {
 
     locationCacheRef.current.add(currentLocationIndex);
 
-    const cachedIndices = Array.from(locationCacheRef.current).sort((a, b) => a - b);
+    const cachedIndices = Array.from(locationCacheRef.current).sort((a, b) => a - b).filter(n => n < locations.length);
     const cachedLocations = cachedIndices.map((idx) => locations[idx].item);
 
     markersLayerRef.current.clearLayers();

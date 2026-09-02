@@ -1,4 +1,5 @@
 import { apiService } from '@/lib/apiService';
+import { ApiV2Service } from '@/lib/apiv2';
 import { useStore } from '@/lib/store';
 import { toast } from 'sonner';
 import { useState, useEffect } from 'react';
@@ -366,6 +367,26 @@ export const DevicePanel = ({ onLocateCommand, onViewPhotos }: DevicePanelProps)
                   {new Date(currentLocation.date).toLocaleString()}
                 </div>
               </div>
+
+              <Button
+                variant="destructive"
+                size="sm"
+                className="font-semibold"
+                onClick={async () => {
+                  const service = apiService()
+                  if (service instanceof ApiV2Service) {
+                    const toDelete = locations[currentLocationIndex].clientItemIdHex;
+                    await service.deleteSingleLocation(toDelete);
+                    useStore.setState({
+                      locations: [...locations.slice(0, currentLocationIndex),
+                        ...locations.slice(currentLocationIndex+1)],
+                      currentLocationIndex: Math.max(0, currentLocationIndex - 1),
+                    });
+                  }
+                }
+                }>
+                <Trash2 className="h-4 w-4" />
+              </Button>
             </div>
 
             {locations.length > 1 && (

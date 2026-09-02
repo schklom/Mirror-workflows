@@ -339,7 +339,7 @@ export const DevicePanel = ({ onLocateCommand, onViewPhotos }: DevicePanelProps)
     groupDnd,
   ];
 
-  const currentLocation = locations[currentLocationIndex];
+  const currentLocation = locations[currentLocationIndex]?.item;
 
   return (
     <div className="flex h-full flex-col gap-4">

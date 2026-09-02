@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { apiService } from '@/lib/apiService';
+import { ApiV2Service } from '@/lib/apiv2';
 import { useStore } from '@/lib/store';
 import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
 import { useTranslation } from 'react-i18next';
@@ -85,7 +86,7 @@ export const PhotosModal = ({ isOpen, onClose }: PhotosModalProps) => {
 
               <div className="relative flex h-[70vh] w-full items-center justify-center">
                 <img
-                  src={`data:image/jpeg;base64,${pictures[selectedIndex]}`}
+                  src={`data:image/jpeg;base64,${pictures[selectedIndex].item}`}
                   alt={`Device capture ${selectedIndex + 1}`}
                   className="max-h-full max-w-full rounded object-contain"
                 />

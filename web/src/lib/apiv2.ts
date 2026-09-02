@@ -1,4 +1,4 @@
-import { BaseApiService, HTTP, Location, ONE_WEEK_SECONDS, Picture, requestV2 } from './api';
+import { BaseApiService, HTTP, Location, Item, ONE_WEEK_SECONDS, Picture, requestV2 } from './api';
 import { base64Encode } from './crypto';
 import {
   decryptDataV2,
@@ -140,7 +140,7 @@ export class ApiV2Service extends BaseApiService {
     await requestV2(HTTP.POST, `${API_BASE}/data/command`, bodyObj);
   }
 
-  async getLocations(): Promise<Location[]> {
+  async getLocations(): Promise<Item<Location>[]> {
     const { userData } = useStore.getState();
 
     // Get the locations
@@ -150,7 +150,7 @@ export class ApiV2Service extends BaseApiService {
     );
 
     // Decrypt them
-    const decryptedLocations: Location[] = [];
+    const decryptedLocations: Item<Location>[] = [];
     const decoder = new TextDecoder();
 
     for (var it of encryptedLocations.items) {
@@ -169,13 +169,18 @@ export class ApiV2Service extends BaseApiService {
         continue;
       }
       const loc = JSON.parse(decoder.decode(decrypted)) as Location;
-      decryptedLocations.push(loc);
+      const item: Item<Location> = {
+        clientItemIdHex: it.clientItemIdHex,
+        unixMillis: it.unixMillis,
+        item: loc,
+      };
+      decryptedLocations.push(item);
     }
 
     return decryptedLocations;
   }
 
-  async getPictures(): Promise<string[]> {
+  async getPictures(): Promise<Item<string>[]> {
     const { userData } = useStore.getState();
 
     // Get the pictures
@@ -185,7 +190,7 @@ export class ApiV2Service extends BaseApiService {
     );
 
     // Decrypt them
-    const decryptedPictures: string[] = [];
+    const decryptedPictures: Item<string>[] = [];
     const decoder = new TextDecoder();
 
     for (var it of encryptedPictures.items) {
@@ -204,7 +209,12 @@ export class ApiV2Service extends BaseApiService {
         continue;
       }
       const obj = JSON.parse(decoder.decode(decrypted)) as Picture;
-      decryptedPictures.push(obj.raw64);
+      const item: Item<string> = {
+        clientItemIdHex: it.clientItemIdHex,
+        unixMillis: it.unixMillis,
+        item: obj.raw64,
+      };
+      decryptedPictures.push(item);
     }
 
     return decryptedPictures;

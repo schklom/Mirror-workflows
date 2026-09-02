@@ -103,7 +103,7 @@ export const LocationMap = () => {
       }
 
       if (!mapInstanceRef.current && mapRef.current) {
-        const firstLocation = locations[0];
+        const firstLocation = locations[0]?.item;
         const initialView: [number, number] = firstLocation
           ? [firstLocation.lat, firstLocation.lon]
           : [20, 0];
@@ -174,7 +174,7 @@ export const LocationMap = () => {
       return;
     }
 
-    const location = locations[currentLocationIndex];
+    const location = locations[currentLocationIndex].item;
     if (!location) return;
 
     const { lat, lon } = location;
@@ -182,7 +182,7 @@ export const LocationMap = () => {
     locationCacheRef.current.add(currentLocationIndex);
 
     const cachedIndices = Array.from(locationCacheRef.current).sort((a, b) => a - b);
-    const cachedLocations = cachedIndices.map((idx) => locations[idx]);
+    const cachedLocations = cachedIndices.map((idx) => locations[idx].item);
 
     markersLayerRef.current.clearLayers();
     accuracyCirclesLayerRef.current.clearLayers();

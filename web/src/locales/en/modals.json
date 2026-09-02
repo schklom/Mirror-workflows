@@ -20,7 +20,8 @@
   "pictures": {
     "title": "Photos",
     "empty": "No photos available",
-    "of": "of"
+    "of": "of",
+    "delete": "Delete picture"
   },
   "webcrypto_warning": {
     "title": "Web Cryptography API not available",

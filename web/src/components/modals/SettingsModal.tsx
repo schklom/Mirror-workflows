@@ -47,7 +47,8 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
       let locationsCSV =
         'Date,Provider,Battery,Latitude,Longitude,Accuracy,Altitude,Speed,Bearing\n';
 
-      for (const loc of locations) {
+      for (const locItem of locations) {
+        const loc = locItem.item;
         const date = new Date(loc.time).toISOString();
         const accuracy = loc.accuracy || '';
         const altitude = loc.altitude || '';
@@ -69,7 +70,7 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
       const picturesFolder = zip.folder('pictures');
       if (picturesFolder) {
         for (let i = 0; i < pictures.length; i++) {
-          picturesFolder.file(`${i}.png`, pictures[i], { base64: true });
+          picturesFolder.file(`${i}.png`, pictures[i].item, { base64: true });
         }
       }
 

@@ -10,7 +10,7 @@
 
 set -eux
 
-VERSION=$(grep VERSION version/version.go | awk '{gsub(/"/, ""); print $4}')
+VERSION=$(grep VERSION constants/constants.go | awk '{gsub(/"/, ""); print $4}')
 
 echo "Rebuilding images for ${VERSION}"
 echo ""

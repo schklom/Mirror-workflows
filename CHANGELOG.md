@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+- 🗺️ **The Strength map's list makes sense again.** Below the map, every detrained muscle
+  showed its set count of the last 90 days — which, for a muscle that is on that list precisely
+  because it has not been trained lately, was a column of "0 sets", and where it was not zero it
+  printed as `1.2000000000000002`. Each row now says how many weeks ago the muscle was last
+  trained (or "not trained"), with the rounded 90-day sets on top only when there are any.
+
 ## v1.2.16 — 2026-09-03
 
 - 🐳 **The web image builds again.** v1.2.15's tag pipeline published the API image and the APK

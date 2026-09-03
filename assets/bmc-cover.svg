@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="500" viewBox="0 0 1500 500" role="img"
+     aria-label="openGym — self-hosted gym and body-weight tracker. Your coffee keeps it free, open and ad-free.">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#151922"/>
+      <stop offset="0.55" stop-color="#0f1218"/>
+      <stop offset="1" stop-color="#0a0c10"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.76" cy="0.30" r="0.55">
+      <stop offset="0" stop-color="#a3e635" stop-opacity="0.11"/>
+      <stop offset="1" stop-color="#a3e635" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="barFade" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#a3e635" stop-opacity="0.14"/>
+      <stop offset="1" stop-color="#a3e635" stop-opacity="0.38"/>
+    </linearGradient>
+    <linearGradient id="barHot" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#a3e635" stop-opacity="0.6"/>
+      <stop offset="1" stop-color="#a3e635" stop-opacity="1"/>
+    </linearGradient>
+    <pattern id="grid" width="30" height="30" patternUnits="userSpaceOnUse">
+      <path d="M30 0H0V30" fill="none" stroke="#ffffff" stroke-opacity="0.028" stroke-width="1"/>
+    </pattern>
+    <style>
+      .f { font-family: "Liberation Sans", -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    </style>
+  </defs>
+
+  <rect width="1500" height="500" fill="url(#bg)"/>
+  <rect width="1500" height="500" fill="url(#grid)"/>
+  <rect width="1500" height="500" fill="url(#glow)"/>
+  <rect x="0" y="0" width="1500" height="4" fill="#a3e635"/>
+
+  <!-- content sits high: BMC overlays supporters + reward list over the lower band -->
+  <g transform="translate(0,-62)">
+
+  <!-- ── icon tile ─────────────────────────────────────────────── -->
+  <g>
+    <rect x="150" y="172" width="108" height="108" rx="26" fill="#0c0e12" stroke="#2b3140" stroke-width="2"/>
+    <g transform="translate(150,172) scale(0.2109)" fill="#a3e635">
+      <rect x="80"  y="242" width="352" height="28"/>
+      <rect x="80"  y="199" width="36"  height="114"/>
+      <rect x="131" y="169" width="47"  height="174"/>
+      <rect x="334" y="169" width="47"  height="174"/>
+      <rect x="396" y="199" width="36"  height="114"/>
+    </g>
+  </g>
+
+  <!-- ── wordmark + copy ───────────────────────────────────────── -->
+  <text class="f" x="294" y="217" font-size="92" font-weight="700" letter-spacing="-3.5">
+    <tspan fill="#eef1f6">open</tspan><tspan fill="#a3e635">Gym</tspan>
+  </text>
+  <text class="f" x="298" y="264" font-size="29" font-weight="600" fill="#98a1b3" letter-spacing="-0.3">
+    Self-hosted gym &amp; body-weight tracker
+  </text>
+
+  <g class="f" font-size="20" font-weight="600" fill="#8b94a7">
+    <rect x="298" y="290" width="176" height="36" rx="18" fill="#161a22" stroke="#2b3140"/>
+    <text x="386" y="314" text-anchor="middle">Open source</text>
+    <rect x="484" y="290" width="126" height="36" rx="18" fill="#161a22" stroke="#2b3140"/>
+    <text x="547" y="314" text-anchor="middle">No ads</text>
+    <rect x="620" y="290" width="162" height="36" rx="18" fill="#161a22" stroke="#2b3140"/>
+    <text x="701" y="314" text-anchor="middle">No tracking</text>
+    <rect x="792" y="290" width="190" height="36" rx="18" fill="#161a22" stroke="#2b3140"/>
+    <text x="887" y="314" text-anchor="middle">Your data, yours</text>
+  </g>
+
+  <text class="f" x="298" y="374" font-size="25" font-weight="700" fill="#a3e635" letter-spacing="-0.2">
+    Your coffee keeps it free, open and ad-free.
+  </text>
+
+  <!-- ── progress bars → coffee ────────────────────────────────── -->
+  <g transform="translate(985,0)">
+    <line x1="-16" y1="352" x2="452" y2="352" stroke="#2b3140" stroke-width="2"/>
+    <rect x="0"   y="286" width="40" height="66"  rx="8" fill="url(#barFade)"/>
+    <rect x="60"  y="258" width="40" height="94"  rx="8" fill="url(#barFade)"/>
+    <rect x="120" y="272" width="40" height="80"  rx="8" fill="url(#barFade)"/>
+    <rect x="180" y="222" width="40" height="130" rx="8" fill="url(#barFade)"/>
+    <rect x="240" y="180" width="40" height="172" rx="8" fill="url(#barHot)"/>
+
+    <!-- coffee, standing on the same baseline -->
+    <g transform="translate(322,0)">
+      <g fill="none" stroke="#a3e635" stroke-opacity="0.42" stroke-width="5" stroke-linecap="round">
+        <path d="M28 232c-13-11-13-22 0-33s13-22 0-33"/>
+        <path d="M58 226c-13-11-13-22 0-33s13-22 0-33"/>
+        <path d="M88 232c-13-11-13-22 0-33s13-22 0-33"/>
+      </g>
+      <path d="M8 254h96v42a38 38 0 0 1-38 38H46a38 38 0 0 1-38-38Z" fill="#a3e635"/>
+      <path d="M106 266h12a24 24 0 0 1 0 48h-12" fill="none" stroke="#a3e635" stroke-width="10"/>
+      <rect x="8" y="254" width="96" height="11" fill="#0f1218" opacity="0.35"/>
+      <rect x="-14" y="338" width="140" height="12" rx="6" fill="#a3e635" opacity="0.85"/>
+    </g>
+  </g>
+  </g>
+</svg>

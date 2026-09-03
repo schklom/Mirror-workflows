@@ -123,3 +123,49 @@ English source produced with OpenAI Codex and Anthropic Claude Code
 language-model assistance. They are not copied from a separate Portuguese
 dataset. Their review status and translation policy are documented alongside
 the source files.
+
+## Gym check-in QR codes
+
+The mobile-only gym check-in feature (a saved membership code shown as a QR/barcode on the phone,
+added by typing, importing a photo, or scanning with the camera) uses two third-party packages.
+Both are permissively licensed and compatible with openGym's AGPL, and both are bundled only in
+the mobile build — the web and demo builds never ship them.
+
+### QR/barcode rendering — `lean-qr`
+
+openGym renders each saved code on the phone with [**lean-qr**](https://github.com/davidje13/lean-qr)
+by David Evans, used under the **MIT License** and reproduced below. Only the code's stored value
+is kept; the picture is generated fresh from that value each time it is shown, never stored.
+
+```
+MIT License
+
+Copyright (c) 2021-2025 David Evans
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+### Camera scan & photo decode — `@capacitor-mlkit/barcode-scanning`
+
+Reading a code — from the camera or from an imported photo — uses the
+[**@capacitor-mlkit/barcode-scanning**](https://github.com/capawesome-team/capacitor-mlkit) plugin
+by the Capawesome Team (Robin Genz), a Capacitor wrapper around Google's ML Kit, used under the
+**Apache License 2.0**. openGym pins the `7.x` line to stay on Capacitor 7. The full license text is
+available at <https://www.apache.org/licenses/LICENSE-2.0> and in the package's own `LICENSE` file.
+The decoded string is what openGym keeps; the photo itself is never stored.

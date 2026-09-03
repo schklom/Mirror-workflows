@@ -10,6 +10,7 @@ import Icon from '../components/Icon.jsx'
 import { Button } from '../components/ui.jsx'
 import { tappable } from '../lib/use-sheet-keyboard.js'
 import { glyphOf } from '../lib/glyphs.js'
+import { MOBILE } from '../lib/mobile.js'
 
 // Home = what to do now + a quick glance. Deep charts & history live in Stats.
 export default function Home() {
@@ -93,6 +94,23 @@ export default function Home() {
           : <Icon name="plus" className="chev" />}
       </div>
     </div>
+
+    {/* Mobile-only: jump to the gym check-in cards (QR membership codes). Shown here as a quick
+        tap on arrival at the gym; the whole feature folds away in web/demo builds via MOBILE. */}
+    {MOBILE && (
+      <div className="card tappable" style={{ cursor: 'pointer' }} {...tappable(() => nav('/checkin'))}>
+        <div className="row between">
+          <div className="row" style={{ gap: 9 }}>
+            <span className="lrow-i" style={{ background: 'var(--blue)' }}><Icon name="qr" /></span>
+            <div>
+              <div className="lbl2">{t('At the gym')}</div>
+              <div className="ttl">{t('Check in')}</div>
+            </div>
+          </div>
+          <Icon name="chevronRight" className="chev" />
+        </div>
+      </div>
+    )}
 
     {!S.routines.length && !S.active && (
       <div className="card">

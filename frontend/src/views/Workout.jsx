@@ -4,7 +4,7 @@ import { useStore } from '../store/useStore.js'
 import { useUI } from '../store/useUI.js'
 import { exOr } from '../lib/exercises.js'
 import { usesBar, barWeightFor, plateSplit } from '../lib/bar.js'
-import { effectiveRoutine, lastEntryFor, bestWeightFor, buildSets, freestyleConfig, defaultConfig, setsDoneActive, supersetUnits, unitOf, setLabel, modeOf, isBw, isPerSide, sideReps, repStep, EFFORT, effortOf, cascadeWeight, insertWarmupRow, removeRowAt, pairAdjacent, unpairSuperset, cleanupSg, applyIntensifierPlan, pinnedNoteFor, exNoteFor } from '../lib/history.js'
+import { effectiveRoutine, lastEntryFor, bestWeightFor, buildSets, freestyleConfig, defaultConfig, setsDoneActive, supersetUnits, unitOf, setLabel, modeOf, isBw, isPerSide, sideReps, repStep, EFFORT, effortOf, stepEffort, cascadeWeight, insertWarmupRow, removeRowAt, pairAdjacent, unpairSuperset, cleanupSg, applyIntensifierPlan, pinnedNoteFor, exNoteFor } from '../lib/history.js'
 import { fmtNum, fmtDate, todayISO, exCount, DAYN } from '../lib/format.js'
 import { beep, vibrate } from '../lib/sound.js'
 import { t, exerciseNameFor } from '../lib/i18n.js'
@@ -160,12 +160,24 @@ function ExerciseBlock({ entryIdx, compact, onToggle, onField, onAddSet, onRemov
     const v = s[col.f] ?? null
     const rir = col.eff === 'rpe' ? (v == null ? null : 10 - v) : v
     const color = effortColor(rir)
-    return <button className={'effcell' + (v == null ? ' is-empty' : '')}
-      style={color ? { color, borderColor: color } : undefined}
-      aria-label={col.hd}
-      onClick={() => effortPickerSheet(col.eff, v, nv => onField(i, col.f, nv))}>
-      {v == null ? col.hd : fmtNum(v)}
-    </button>
+    const open = () => effortPickerSheet(col.eff, v, nv => onField(i, col.f, nv))
+    // Empty: a plain neutral button that opens the picker — one tap to log a rating.
+    if (v == null) return (
+      <button className="effcell is-empty" aria-label={col.hd} onClick={open}>{col.hd}</button>
+    )
+    // Logged: a −/value/+ stepper tinted by the band colour, with the band tinting the whole
+    // cell at low opacity (colour-mix). +/− step 0.5 on the profile's scale; the value button
+    // still opens the picker. stepEffort walks the profile's own scale (RIR or RPE) and clears
+    // the cell when stepped off the floor.
+    const step = dir => onField(i, col.f, stepEffort(col.eff, v, dir))
+    return (
+      <div className="stp effcell-stp"
+        style={color ? { color, borderColor: color, background: `color-mix(in srgb, ${color} 20%, var(--surface-2))` } : undefined}>
+        <button aria-label="Decrease" onClick={() => step(-1)}><Icon name="minus" /></button>
+        <button className="val" aria-label={col.hd} onClick={open}>{fmtNum(v)}</button>
+        <button aria-label="Increase" onClick={() => step(1)}><Icon name="plus" /></button>
+      </div>
+    )
   }
   // A smaller stepper for a drop's weight/reps or a burst's reps — editing what the plan (or a
   // live "+ Drop"/"+ Burst" tap) already put on the row, not typing into a fresh field.

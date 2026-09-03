@@ -4,7 +4,7 @@ import { useUI } from './store/useUI.js'
 import { EXDB, EXIDX, BODYPARTS, isCardio, isBodyweightEq, allExercises, equipmentOf, smOf, matchExercise, exOr } from './lib/exercises.js'
 import { activeProfile, exAvailable, ALL_EQUIPMENT, newProfile } from './lib/equipment.js'
 import { fmtDate, fmtNum, fmtVol, fmtDur, durPart, todayISO, isoOf, uid, exCount, DAYN, DAYS, weekOrder, weekStartOf, weekDayOffset, MONTHS_LONG, ACCENTS } from './lib/format.js'
-import { lastEntryFor, bestWeightFor, buildSets, effectiveRoutineId, workoutVolume, setsDone, setsDoneActive, lastBW, supersetUnits, unitOf, setLabel, defaultConfig, cleanupSg, modeOf, effortOf, EFFORT, capEffort, isBw, isPerSide, sideReps, workSetsDone, applyIntensifierPlan, MAX_PLANNED_WARMUPS, NOTE_MAX } from './lib/history.js'
+import { lastEntryFor, bestWeightFor, buildSets, effectiveRoutineId, workoutVolume, setsDone, setsDoneActive, lastBW, supersetUnits, unitOf, setLabel, defaultConfig, cleanupSg, modeOf, effortOf, EFFORT, capEffort, stepEffort, isBw, isPerSide, sideReps, workSetsDone, applyIntensifierPlan, MAX_PLANNED_WARMUPS, NOTE_MAX } from './lib/history.js'
 import { usesBar, barWeightFor, defaultBarWeight, hasBarOverride } from './lib/bar.js'
 import { toScale, rirOf, EFFORT_PRESETS, effortColor } from './lib/effort.js'
 import { beep, vibrate } from './lib/sound.js'
@@ -1205,6 +1205,9 @@ function EffortPicker({ kind, value, onPick, close }) {
   // RIR so the highlighted preset is right on either scale, and so a typed RPE colours the
   // same as the RIR it equals.
   const curRir = rirOf(kind === 'rpe' ? { rpe: v } : { rir: v })
+  // The band colour for the value currently on the field, so the exact-value row is tinted the
+  // same way the presets and the workout row cell are — null (nothing typed) stays neutral.
+  const curColor = effortColor(curRir)
   const commit = nv => { close(); onPick(nv) }
   const pick = rir => commit(toScale(kind, rir))
   return <>
@@ -1225,12 +1228,20 @@ function EffortPicker({ kind, value, onPick, close }) {
     </div>
     {/* The free field keeps the flexibility the stepper had: a value between two presets, in
         the profile's own scale, capped to the top of it (there is no RPE 12). Sized like a
-        preset so it reads as the seventh option — "or type your own" — not an afterthought. */}
-    <label className="effpick-free">
+        preset so it reads as the seventh option — "or type your own" — not an afterthought.
+        A −/+ pair flanks the number for 0.5-step nudging without leaving the sheet, coloured
+        by the band the current value falls in (the same colour the presets and the row cell
+        use); tapping the number itself still types an exact value. */}
+    <div className="effpick-free" style={curColor ? { borderColor: curColor } : undefined}>
       <span className="effpick-free-l">{t('Exact {0}', EFFORT[kind].hd)}</span>
-      <NumberField className="effpick-free-in" decimal nullable value={v ?? ''}
-        placeholder={EFFORT[kind].hd} onChange={nv => set(capEffort(kind, nv))} />
-    </label>
+      <div className="effpick-step" style={curColor ? { color: curColor } : undefined}>
+        <button aria-label="Decrease" onClick={() => set(stepEffort(kind, v, -1))}><Icon name="minus" /></button>
+        <NumberField className="effpick-free-in" decimal nullable value={v ?? ''}
+          placeholder={EFFORT[kind].hd} onChange={nv => set(capEffort(kind, nv))} />
+        <button aria-label="Increase" onClick={() => set(stepEffort(kind, v, 1))}><Icon name="plus" /></button>
+      </div>
+      <span className="effpick-free-unit">{EFFORT[kind].hd}</span>
+    </div>
     <div style={{ height: 10 }} />
     {v != null && <Button variant="ghost" className="dim" icon="xmark" onClick={() => commit(null)}>{t('Clear rating')}</Button>}
     <div style={{ height: 4 }} />

@@ -28,10 +28,10 @@ describe('Brazilian Portuguese locale', () => {
     const fingerprint = createHash('sha256').update(JSON.stringify(inherited)).digest('hex')
 
     expect(Object.keys(PT_BR_OVERRIDES)).toHaveLength(342)
-    expect(inherited).toHaveLength(463)
+    expect(inherited).toHaveLength(475)
     // If this fails, review the changed keys and wording before accepting a new hash. From
     // frontend/: node scripts/pt-br-inheritance-fingerprint.mjs --list
-    expect(fingerprint, 'pt-PT inheritance changed; review the inherited pt-BR wording').toBe('cafd0b6fde9f8261563b5040aa6e1278f5b469dc2d6b9c81d7d5554bb6825a05')
+    expect(fingerprint, 'pt-PT inheritance changed; review the inherited pt-BR wording').toBe('acbe966bfad7caa773b98d7581ec96fec02b5ba0dcae6ac0ab272551462ad39a')
   })
 
   test('does not leak European Portuguese UI terms', () => {
@@ -49,6 +49,6 @@ describe('Brazilian Portuguese locale', () => {
     expect(ptBR['resistance band']).toBe('faixa elástica')
     expect(ptBR.soleus).toBe('sóleo')
     expect(ptBR.Unpair).toBe('Desvincular')
-    expect(ptBR['Starter plan loaded — Mon Push · Wed Pull · Fri Legs']).toContain('Seg Push · Qua Pull')
+    expect(ptBR['Choose starter plan']).toBe('Escolha um plano inicial')
   })
 })

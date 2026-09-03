@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/useStore.js'
 import { DAYN, weekOrder, weekStartOf, uid, exCount } from '../lib/format.js'
 import { t } from '../lib/i18n.js'
-import { dayAssignSheet, loadStarterPlan, planToolsSheet } from '../sheets.jsx'
+import { dayAssignSheet, starterPlanSheet, planToolsSheet } from '../sheets.jsx'
 import Icon from '../components/Icon.jsx'
 import { Button } from '../components/ui.jsx'
 import { tappable } from '../lib/use-sheet-keyboard.js'
@@ -45,7 +45,7 @@ export default function Plan() {
         <div className="grow"><div className="tt">{r.name}</div><div className="ss">{exCount(r.ex.length)}</div></div>
         <Icon name="chevronRight" className="chev" /></div>)}</div> : <>
         <div className="empty"><div className="ico"><Icon name="clipboard" /></div>{t('No routines yet.')}<br />{t('Create one or load the starter plan.')}</div>
-        <Button icon="sparkles" onClick={loadStarterPlan}>{t('Load starter plan (Push / Pull / Legs)')}</Button>
+        <Button icon="sparkles" onClick={starterPlanSheet}>{t('Load starter plan')}</Button>
       </>}
     </div></div>
   </>

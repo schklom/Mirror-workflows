@@ -4,6 +4,26 @@
 
 ### AI Coach
 
+- 🔑 **One API key serves the whole instance.** A pasted Anthropic, OpenAI, Gemini or
+  OpenAI-compatible key is shared by every profile, bounded by the daily limits in the admin
+  card — it is metered and issued for exactly this use. Only a *personal* credential (a Claude
+  Code setup token) still binds to the first profile that spends it, and that binding now
+  actually happens when a job runs rather than only existing in the tests.
+- 🔁 **A rate limit or an overloaded provider is not a failed job.** 429, 529 and 5xx get two
+  more tries a few seconds apart before the status becomes the job's failure; a 4xx that means
+  the request is wrong is never retried.
+- 🔥 **Warm-up sets no longer read as work.** They were counted into stalls (a light ramp set
+  below the rep target looked like a miss), into done/planned sets and into the top set of a
+  session. They are now filtered the way the app's own progression engine filters them, and
+  the few that still travel in full sessions are flagged `warmup: true` so the model reads
+  them as prep.
+- ✍️ **Admin card fields are visible again.** The base-URL and model fields shared the card's
+  background and the two daily-limit numbers were the browser's white default box; both are
+  real fields now, sized so a phone does not zoom into them.
+- 🧪 **An API key is proven end to end in CI**: a local stand-in for each provider's API
+  receives the pasted key on the right header, the cached rules block, the schema, and answers
+  a review that lands as a proposal — the test that says "paste a key and it works".
+
 - ⚡ **A local model answers in a fraction of the time.** The prompt is split so the rules —
   identical for every job of a task — ride as the system message and only the payload changes:
   a llama.cpp/Ollama endpoint reuses its KV prefix cache instead of re-reading ~2.7k tokens of

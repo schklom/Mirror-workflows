@@ -18,9 +18,11 @@
 
    openGym does not interpret any provider's terms on a self-hoster's behalf. It just makes
    the shape that doesn't need the interpretation available, and refuses the shape that does:
-   in instance mode the credential binds to the first profile that uses it, and any other
-   profile is refused rather than warned. A warning moves the decision onto whoever clicks
-   past it — the same posture payload.js takes with its allowlist. */
+   in instance mode a *personal* credential (a Claude Code setup token, an OAuth login) binds
+   to the first profile that uses it, and any other profile is refused rather than warned. A
+   warning moves the decision onto whoever clicks past it — the same posture payload.js takes
+   with its allowlist. An API key is the other shape: metered, issued for exactly this kind of
+   use, and shared by every profile on the instance under the daily caps. */
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -246,10 +248,21 @@ export function credentialFor(uid) {
   return { ok: true, auth, type: rec.type, account: rec.account || null, mode: 'instance' };
 }
 
-/** First profile to actually spend the instance credential binds it. */
+/* Which credential types are one person's *subscription* — a Claude Code setup token or an
+   OAuth login — as opposed to an API key, which is metered, pay-per-use, and issued precisely
+   so that software can call the provider on behalf of many people. The binding below exists
+   for the first kind: spending someone's personal subscription from another profile is what
+   the provider terms forbid. An API key is what an admin pastes so their household can use the
+   Coach; binding it to whoever happened to click first would just look broken, and the daily
+   caps are what bound its spend. */
+export const isPersonalCredential = type => type === 'cli-token' || type === 'oauth';
+
+/** First profile to actually spend the instance credential binds it — a personal credential
+ *  only; an API key is shared by every profile on the instance. */
 export function bindInstanceCredential(uid) {
   const cfg = load();
-  if (cfg.authMode === 'instance' && !boundUidFor(cfg) && cfg.provider !== 'fixture' && authFor(cfg)) {
+  const rec = authFor(cfg);
+  if (cfg.authMode === 'instance' && !boundUidFor(cfg) && cfg.provider !== 'fixture' && rec && isPersonalCredential(rec.type)) {
     save({ boundUid: { ...cfg.boundUid, [cfg.provider]: uid } });
   }
 }

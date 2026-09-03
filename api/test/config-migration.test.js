@@ -54,7 +54,9 @@ test('the new shape loads as-is, and unknown or hostile keys in the maps are dro
 
 test('switching provider keeps every key; each provider has its own model and binding', () => {
   onDisk({ enabled: true, provider: 'anthropic' });
-  cfg.saveAuth('anthropic', { type: 'apikey', data: cfg.encrypt({ token: 'a' }) });
+  // A personal credential, so that there is a binding to keep per provider at all — an API
+  // key never binds (credential.test.js).
+  cfg.saveAuth('anthropic', { type: 'cli-token', data: cfg.encrypt({ token: 'a' }) });
   cfg.saveModel('anthropic', 'claude-a');
   cfg.bindInstanceCredential('alice');
   assert.equal(cfg.boundUidFor(), 'alice');

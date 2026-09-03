@@ -176,6 +176,9 @@ export function enqueue(uid, opts) {
     if (cred.reason === 'shared-account') throw new CoachError('shared', cred.message);
     throw new CoachError('off', 'this profile has no provider account connected');
   }
+  // Spending is what binds: a personal credential (setup token, OAuth) belongs to the first
+  // profile that runs a job on it from here on; an API key binds to nobody and is shared.
+  cfgStore.bindInstanceCredential(uid);
 
   // The privilege drop is what keeps a provider runtime out of ./data. If it cannot be
   // performed, there is no job — see canDropPrivileges for why this is not a warning either.

@@ -273,9 +273,11 @@ export default function AdminCoach() {
           <div className="adm-group-t" style={{ marginTop: 14 }}>Whose account pays</div>
           <div className="adm-hint">{d.authMode === 'profile'
             ? 'Each profile signs in with their own account.'
-            : d.boundUid
-              ? 'One shared account, already in use by one profile. Every other profile is refused, so nobody spends somebody else\'s subscription.'
-              : 'One shared account. The first profile to use it becomes the only one allowed to — every other profile is then refused.'}</div>
+            : d.auth?.type === 'apikey' || meta.http
+              ? 'One API key for the whole instance: every profile may use the Coach with it, and the daily limits above are what bound the spend.'
+              : d.boundUid
+                ? 'One personal account, already in use by one profile. Every other profile is refused, so nobody spends somebody else\'s subscription.'
+                : 'One personal account. The first profile to use it becomes the only one allowed to — every other profile is then refused. Paste an API key instead if the whole instance should have the Coach.'}</div>
 
           <div className="adm-group-t" style={{ marginTop: 14 }}>Isolation</div>
           <div className="adm-hint">{d.unprivileged && !d.unprivileged.ok

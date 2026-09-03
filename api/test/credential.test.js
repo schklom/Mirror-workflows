@@ -32,6 +32,20 @@ test('instance mode: the first profile to spend the credential binds it', () => 
   assert.equal(cfg.boundUidFor(), 'alice');
 });
 
+test('instance mode: an API key binds to nobody — every profile shares it', () => {
+  cfg.reset();
+  cfg.save({
+    enabled: true, provider: 'anthropic', authMode: 'instance', boundUid: {},
+    auth: { anthropic: { type: 'apikey', account: '', data: cfg.encrypt({ token: 'sk-ant-shared' }) } }
+  });
+  cfg.bindInstanceCredential('alice');
+  assert.equal(cfg.boundUidFor(), null, 'a metered key is issued for exactly this use; binding it would just look broken');
+  assert.equal(cfg.credentialFor('bob').ok, true);
+  assert.equal(cfg.credentialFor('bob').auth.token, 'sk-ant-shared');
+  assert.equal(cfg.isPersonalCredential('apikey'), false);
+  assert.equal(cfg.isPersonalCredential('cli-token'), true);
+});
+
 test('instance mode: a second profile is refused, not warned', () => {
   connectInstance();
   cfg.bindInstanceCredential('alice');

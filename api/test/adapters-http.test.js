@@ -139,12 +139,33 @@ test('401 and 403 reach the pipeline as "auth"; other statuses as "provider"', a
   const payload = { plan: { routines: [], week: {} } };
   for (const [status, expect] of [[401, 'auth'], [403, 'auth'], [429, 'provider'], [500, 'provider']]) {
     const f = fakeFetch([{ status, body: { error: { message: 'nope' } } }]);
-    const r = await openai.invoke({ cfg: {}, prompt: 'P', env, fetch: f });
+    const r = await openai.invoke({ cfg: {}, prompt: 'P', env, fetch: f, retryDelayMs: 0 });
     assert.equal(r.code, 1);
     assert.ok(r.stderr.startsWith(String(status)), `stderr starts with the status: ${r.stderr}`);
-    const cls = await attemptOnce({ adapter: openai, cfg: {}, kind: 'review', payload, invokeOpts: { env, fetch: f } }, null);
+    const cls = await attemptOnce({ adapter: openai, cfg: {}, kind: 'review', payload, invokeOpts: { env, fetch: f, retryDelayMs: 0 } }, null);
     assert.equal(cls.errorClass, expect, `${status} → ${expect}`);
   }
+});
+
+test('a transient status (429, 5xx, 529) is retried twice with the same request, then given up on', async () => {
+  const ok200 = ok({ choices: [{ message: { content: ANSWER }, finish_reason: 'stop' }] });
+  // Overloaded once, then fine: the job succeeds and the caller never hears about it.
+  let f = fakeFetch([{ status: 529, body: { error: { message: 'overloaded' } } }, ok200]);
+  let r = await openai.invoke({ cfg: {}, prompt: 'P', env, fetch: f, retryDelayMs: 0 });
+  assert.equal(r.code, 0);
+  assert.equal(f.calls.length, 2);
+  assert.deepEqual(f.calls[0].body, f.calls[1].body, 'the retry is the identical request');
+  // Overloaded three times: two retries, then the status is the failure.
+  f = fakeFetch([{ status: 503, body: { error: { message: 'busy' } } }]);
+  r = await openai.invoke({ cfg: {}, prompt: 'P', env, fetch: f, retryDelayMs: 0 });
+  assert.equal(r.code, 1);
+  assert.ok(r.stderr.startsWith('503'));
+  assert.equal(f.calls.length, 3);
+  // A 400 means the request is wrong; asking again would be asking the same wrong thing.
+  f = fakeFetch([{ status: 400, body: { error: { message: 'bad model' } } }]);
+  r = await anthropic.invoke({ cfg: {}, prompt: 'P', env, fetch: f, retryDelayMs: 0 });
+  assert.equal(r.code, 1);
+  assert.equal(f.calls.length, 1);
 });
 
 test('a body that is not JSON on an error still yields a readable stderr', async () => {

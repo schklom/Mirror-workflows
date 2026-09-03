@@ -23,6 +23,16 @@ import { HTTP_PROVIDERS, baseUrlFor } from '../providers.js';
 
 export const MAX_OUTPUT_TOKENS = 16000;
 const DEFAULT_TIMEOUT_MS = 5 * 60000;
+// A hosted API answers 429 (rate limit) and 529/503 (overloaded) routinely and briefly. One
+// job is minutes of a person's patience; failing it on a status the provider itself calls
+// transient would be wrong, so those statuses get two more tries with a short pause, and
+// only then become the job's failure. Never on a 4xx that means "the request is wrong".
+export const RETRY_STATUSES = new Set([429, 500, 502, 503, 504, 529]);
+const RETRY_DELAYS_MS = [2000, 5000];
+const sleep = (ms, signal) => new Promise(resolve => {
+  const t = setTimeout(resolve, ms);
+  if (signal) signal.addEventListener('abort', () => { clearTimeout(t); resolve(); }, { once: true });
+});
 
 const hostOf = url => { try { return new URL(url).host; } catch { return url; } };
 const trim = (s, n = 300) => String(s == null ? '' : s).slice(0, n);
@@ -102,7 +112,8 @@ export function httpAdapter(spec) {
      * and nothing else is read from it; `fetch` is injectable so the phone can route through
      * native HTTP and a test can hand in a fake.
      */
-    async invoke({ cfg, prompt, system, schema, env, model, timeoutMs = DEFAULT_TIMEOUT_MS, fetch: fetchImpl = globalThis.fetch, signal } = {}) {
+    async invoke(opts = {}) {
+      const { cfg, prompt, system, schema, env, model, timeoutMs = DEFAULT_TIMEOUT_MS, fetch: fetchImpl = globalThis.fetch, signal } = opts;
       const base = adapter.baseUrl(cfg);
       if (!base) return { code: -1, text: '', stderr: `no endpoint configured for ${id}`, spawnError: true };
       const key = keyOf(env);
@@ -112,6 +123,7 @@ export function httpAdapter(spec) {
 
       let body = spec.body({ model: chosen, prompt, system: system || null, schema: schema || null, maxTokens: MAX_OUTPUT_TOKENS });
       let retriedWithoutJsonMode = false;
+      let transientRetries = 0;
       for (;;) {
         let res;
         try {
@@ -127,6 +139,11 @@ export function httpAdapter(spec) {
         const { data, text } = await readJson(res);
         if (!res.ok) {
           const msg = spec.errorMessage(data) || trim(text, 200);
+          if (RETRY_STATUSES.has(res.status) && transientRetries < RETRY_DELAYS_MS.length && !(signal && signal.aborted)) {
+            await sleep(opts.retryDelayMs != null ? opts.retryDelayMs : RETRY_DELAYS_MS[transientRetries], signal);
+            transientRetries++;
+            continue;
+          }
           // Some OpenAI-compatible servers reject the JSON-mode flag outright. Once, without it.
           if (res.status === 400 && spec.withoutJsonMode && !retriedWithoutJsonMode && /response_format|json_schema|json_object|json mode|structured/i.test(msg)) {
             body = spec.withoutJsonMode(body);

@@ -64,7 +64,10 @@
 /* label + control pairs inside a step */
 .adm-field{display:flex;flex-direction:column;gap:6px;margin:0 0 10px}
 .adm-field>label{font-size:13px;font-weight:600;color:var(--label-2)}
-.adm-field .field{width:100%}
+/* Inside a card the app's default field colour is the card's own colour, so the box was
+   invisible and the placeholder floated in space. One shade up, and a size that is readable
+   without iOS zooming into it. */
+.adm-field .field{width:100%;background:var(--surface-2);font-size:16px;min-height:44px}
 .adm-select{
   width:100%;min-height:44px;padding:10px 38px 10px 12px;border-radius:var(--r);border:0;
   background:var(--surface-2);color:var(--label);font-size:15px;appearance:none;-webkit-appearance:none;
@@ -98,7 +101,14 @@
 .adm-kv:last-child{border-bottom:0}
 .adm-kv .k{color:var(--label-2);flex:none}
 .adm-kv .v{text-align:right;min-width:0;overflow-wrap:anywhere}
-.adm-kv .v input{width:72px;text-align:right}
+/* the two daily-limit numbers: a real field, not the browser's white default box */
+.adm-kv .v input{
+  width:84px;min-height:40px;padding:6px 10px;text-align:right;font-size:16px;font-weight:600;
+  border:0;border-radius:10px;background:var(--surface-2);color:var(--label);outline:none;
+  -moz-appearance:textfield;appearance:textfield
+}
+.adm-kv .v input::-webkit-outer-spin-button,.adm-kv .v input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.adm-kv .v input:focus{box-shadow:inset 0 0 0 2px var(--acc)}
 
 .adm-log{display:flex;flex-direction:column}
 .adm-log-row{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:var(--hair) solid var(--sep);font-size:13.5px}

@@ -45,12 +45,22 @@ export const modeOf = (cfg, ex) => {
 export const isBw = (cfg, ex) =>
   (cfg && cfg.bodyweight != null ? !!cfg.bodyweight : (ex && ex.eq) === 'body weight');
 export const isPerSide = cfg => !!(cfg && cfg.side);
+// Mirror of frontend/src/lib/workout-model.js isWarmupRow: an explicit phase wins, else the
+// legacy boolean. A warm-up row is prep, not the session: it is filtered out of the stall
+// count exactly as progression.js filters it, it never counts as a done set or a top set,
+// and where it does travel (the last few sessions in full) it is flagged so the model reads
+// "0x12 warm-up" as what it is rather than as a failed set.
+export const isWarmupSet = s => {
+  const ph = typeof s?.phase === 'string' ? s.phase.trim().toLowerCase() : '';
+  if (ph) return ph === 'warmup' || ph === 'warm-up' || ph === 'warm_up';
+  return s?.warmup === true;
+};
 function readSession(entry, fallback) {
   const target = (entry && entry.target) || fallback || {};
   const ex = LIB_BY_ID.get(entry?.id);
   const mode = modeOf(target, ex);
   const bw = isBw(target, ex);
-  const sets = (entry && entry.sets) || [];
+  const sets = ((entry && entry.sets) || []).filter(s => !isWarmupSet(s));
   const planned = target.sets || sets.length;
   const enough = sets.length >= planned;
   if (mode === 'time') {
@@ -185,9 +195,10 @@ function aggregates(S, workouts) {
   // Muscle coverage in the window, by body part — the "not trained" gap the Stats screen shows.
   const hit = {};
   workouts.forEach(w => (w.entries || []).forEach(en => {
-    if (!en.sets?.some(s => s.done)) return;
+    const work = (en.sets || []).filter(s => s.done && !isWarmupSet(s));
+    if (!work.length) return;
     const bp = LIB_BY_ID.get(en.id)?.bp;
-    if (bp) hit[bp] = (hit[bp] || 0) + en.sets.filter(s => s.done).length;
+    if (bp) hit[bp] = (hit[bp] || 0) + work.length;
   }));
 
   const durations = workouts.map(w => (w.end && w.start ? Math.round((w.end - w.start) / 60000) : null)).filter(Boolean);
@@ -232,7 +243,7 @@ function compactWorkout(w) {
     prs: (w.prs || []).length,
     compact: true,
     entries: (w.entries || []).map(en => {
-      const sets = en.sets || [];
+      const sets = (en.sets || []).filter(s => !isWarmupSet(s));
       const done = sets.filter(s => s.done);
       let top = null;
       done.forEach(s => {
@@ -264,6 +275,7 @@ function cleanWorkout(w) {
       target: en.target ? { sets: en.target.sets, reps: en.target.reps, sec: en.target.sec, weight: en.target.weight } : null,
       sets: (en.sets || []).map(s => {
         const o = { done: !!s.done };
+        if (isWarmupSet(s)) o.warmup = true;
         if (s.w != null) o.w = s.w;
         if (s.r != null) o.r = s.r;
         if (s.sec != null) o.sec = s.sec;
@@ -278,13 +290,6 @@ function cleanWorkout(w) {
 }
 
 /* ---------- one workout, for a debrief ---------- */
-// Mirror of frontend/src/lib/workout-model.js isWarmupRow: an explicit phase wins, else the
-// legacy boolean.
-const isWarmupSet = s => {
-  const ph = typeof s?.phase === 'string' ? s.phase.trim().toLowerCase() : '';
-  if (ph) return ph === 'warmup' || ph === 'warm-up' || ph === 'warm_up';
-  return s?.warmup === true;
-};
 export function findWorkout(S, workoutId) {
   const all = (S.workouts || []).filter(w => w && w.d);
   return (workoutId && all.find(w => w.id === workoutId)) || all[all.length - 1] || null;
@@ -400,7 +405,7 @@ export function build(S, opts = {}) {
     // start from evidence rather than optimism (B2/FR-20).
     const best = {};
     (S.workouts || []).forEach(w => (w.entries || []).forEach(en => en.sets?.forEach(s => {
-      if (s.done && s.w > 0) best[en.id] = Math.max(best[en.id] || 0, s.w);
+      if (s.done && s.w > 0 && !isWarmupSet(s)) best[en.id] = Math.max(best[en.id] || 0, s.w);
     })));
     if (Object.keys(best).length) {
       p.history = {

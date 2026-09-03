@@ -136,11 +136,10 @@ unprivileged, and which account is being spent.
 
 **4. Use it** — as above.
 
-> **On a multi-profile instance, read [Whose account pays](#whose-account-pays) first.** In the
-> default instance mode the credential binds to the first profile that spends it and **every
-> other profile is refused**, by design. That is the right behaviour when one person's personal
-> subscription is behind it — but on a shared box it means one user gets the Coach and the rest
-> get a refusal until per-profile sign-in exists.
+> **On a multi-profile instance, read [Whose account pays](#whose-account-pays) first.** An API
+> key is shared by every profile under the daily limits. A *personal* credential — a Claude Code
+> setup token — binds to the first profile that spends it and **every other profile is refused**,
+> by design: that is the right behaviour when one person's personal subscription is behind it.
 
 ### A debrief of one workout
 
@@ -177,8 +176,14 @@ to be. The Coach spends a real provider account, and there are two shapes:
 | **instance** | one account, stored encrypted in `coach.json` | the single-profile instance most people run |
 | **profile** | one account per profile, in its own `coach-auth-<uid>.json` | anything with more than one profile |
 
-In instance mode the credential **binds to the first profile that spends it**. Any other profile
-is refused:
+In instance mode it depends on what kind of credential was pasted:
+
+- **An API key** (Anthropic, OpenAI, Gemini, an OpenAI-compatible endpoint) is shared by every
+  profile on the instance. It is metered, issued for exactly this kind of use, and the daily
+  limits in the admin card are what bound what it can spend. This is the shape a household or a
+  small gym wants.
+- **A personal credential** — a Claude Code setup token or an OAuth login — **binds to the first
+  profile that spends it**. Any other profile is refused:
 
 > This instance is configured with a single shared account — ask your admin to enable
 > per-profile sign-in.

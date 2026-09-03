@@ -15,6 +15,18 @@ describe('completed workout boundary', () => {
     })
   })
 
+  it('persists progression exclusion only for a marked session', () => {
+    const active = {
+      id: 'active-1', d: '2026-08-08', start: 1000, routineId: 'routine-1', name: 'Deload', bw: 80,
+      excludeFromProgression: true,
+      entries: [{ id: '0025', sets: [{ done: true, w: 30, r: 8 }], target: { sets: 1, reps: 8 } }],
+    }
+    expect(buildCompletedWorkout(active, { end: 2000 }).excludeFromProgression).toBe(true)
+
+    const { excludeFromProgression, ...regular } = active
+    expect(buildCompletedWorkout(regular, { end: 2000 })).not.toHaveProperty('excludeFromProgression')
+  })
+
   it('persists a muscle snapshot only when the caller supplies one', () => {
     const active = {
       id: 'active-1', d: '2026-08-08', start: 1000,

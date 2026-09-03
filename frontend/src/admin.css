@@ -1,5 +1,7 @@
 /* Admin dashboard — operator-facing, English-only. Sits on top of the app's tokens; nothing
-   here is used outside views/Admin.jsx and views/AdminCoach.jsx. */
+   here is used outside views/Admin.jsx and views/AdminCoach.jsx. The page is looked at maybe
+   twice a year, so every card says what it is for in a sentence and every state is a word, not
+   a colour to decode. */
 
 .adm-intro{color:var(--label-2);font-size:14px;line-height:1.45;margin:-6px 0 16px}
 

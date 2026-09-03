@@ -1,16 +1,16 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/useStore.js'
-import { EXIDX } from '../lib/exercises.js'
+import { EXIDX, matchExercise } from '../lib/exercises.js'
 import { lastBW, streakWeeks, setLabel, modeOf, effortOf, metricModeForEntry, metricRowsForEntry, bestWeightForEntry } from '../lib/history.js'
-import { fmtNum, fmtDate, fmtVol, todayISO, weekKey } from '../lib/format.js'
+import { fmtNum, fmtDate, fmtVol, todayISO, weekStartOf } from '../lib/format.js'
 import { t, exerciseNameFor, getLang } from '../lib/i18n.js'
 import { bwSheet, goalSheet, calendarSheet, workoutDetailSheet, WorkoutRow, bwDeltaColor } from '../sheets.jsx'
 import LineChart from '../components/LineChart.jsx'
 import Heatmap from '../components/Heatmap.jsx'
 import Icon from '../components/Icon.jsx'
 import BodyMap, { BodyMapLegend } from '../components/BodyMap.jsx'
-import { loadOfWorkouts, rankOf, MUSCLE_NAME, musclesOf } from '../lib/muscles.js'
+import { loadOfWorkouts, muscleBalanceWindow, rankOf, MUSCLE_NAME, musclesOf } from '../lib/muscles.js'
 import { fatigueOf, strengthOf, STRENGTH_FLOOR, LB_TO_KG } from '../lib/recovery.js'
 import { strengthExerciseRowsForMuscle } from '../lib/strength-exercises.js'
 import { fatigueStateOf } from '../lib/recovery-view.js'
@@ -20,6 +20,7 @@ import {
   effortHistogram, isHardSet, HARD_RIR
 } from '../lib/effort.js'
 import { Button, Segmented, SelectRow } from '../components/ui.jsx'
+import { tappable } from '../lib/use-sheet-keyboard.js'
 import { isWarmupRow } from '../lib/workout-model.js'
 
 // Which muscles the training in a window actually hit — and, the point of the card,
@@ -122,10 +123,7 @@ function MuscleBalance({ S }) {
     return t('Weeks since training: {0}', weeks)
   }
   const toggleSel = m => setSel(s => (s === m ? null : m))
-  const inWin = S.workouts.filter(w =>
-    win === 0 ? true
-      : win === 7 ? weekKey(w.d) === weekKey(todayISO())
-        : (w.start || new Date(w.d).getTime()) > now - win * 86400000)
+  const inWin = muscleBalanceWindow(S.workouts, win, now, todayISO(), weekStartOf(S))
   // Counting only the sets taken near failure turns the map from "where did the volume go"
   // into "where did the stimulus go" — a muscle can lead on sets and still never be trained
   // hard. Offered only when the window holds ratings at all, since with none the hard map
@@ -192,7 +190,7 @@ function MuscleBalance({ S }) {
       {sel && <>
         <h4 className="sec" style={{ marginTop: 14 }}>{t('Exercises')} · {t(MUSCLE_NAME[sel])}</h4>
         {muscleExercises.length ? muscleExercises.map(row => (
-          <div key={row.id} className="mrow" style={{ minHeight: 48, alignItems: 'stretch', cursor: 'pointer' }} onClick={() => onExercise && onExercise(row.id)}>
+          <div key={row.id} className="mrow" style={{ minHeight: 48, alignItems: 'stretch', cursor: 'pointer' }} {...tappable(() => onExercise && onExercise(row.id))}>
             <span className="nm" style={{ whiteSpace: 'normal', lineHeight: 1.35, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
               <span style={{ display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 {row.name}
@@ -291,7 +289,38 @@ export default function Stats() {
   const workouts = S.workouts
   const monthW = workouts.filter(w => String(w.d || '').slice(0, 7) === todayISO().slice(0, 7)).length
 
-  const nameOf = id => EXIDX[id] ? exerciseNameFor(EXIDX[id]) : (workouts.flatMap(w => w.entries).find(e => e.id === id)?.n || id)
+  const entryOf = id => workouts.flatMap(w => w.entries).find(e => e.id === id)
+  const listOf = value => Array.isArray(value) ? value : value == null || value === '' ? [] : [value]
+  const firstAvailable = (...values) => {
+    for (const value of values) {
+      const list = listOf(value)
+      if (list.length) return list
+    }
+    return []
+  }
+  const nameOf = id => {
+    if (EXIDX[id]) return exerciseNameFor(EXIDX[id])
+    const entry = entryOf(id)
+    return entry?.muscleSnapshot?.n || entry?.n || id
+  }
+  const matcherOf = id => {
+    if (EXIDX[id]) return EXIDX[id]
+    const entry = entryOf(id)
+    const snapshot = entry?.muscleSnapshot || {}
+    const primaries = firstAvailable(snapshot.primaries, entry?.primaries)
+    const secondaries = firstAvailable(
+      snapshot.sm, snapshot.secondaries, snapshot.muscleGroups,
+      entry?.sm, entry?.secondaries, entry?.muscleGroups,
+    )
+    return {
+      n: snapshot.n || entry?.n || id,
+      bp: snapshot.bp || entry?.bp || '',
+      tg: primaries[0] || snapshot.tg || entry?.tg || '',
+      sm: secondaries,
+      eq: snapshot.eq || entry?.eq || '',
+      desc: snapshot.desc || entry?.desc || '',
+    }
+  }
   const currentOf = id => {
     for (let i = workouts.length - 1; i >= 0; i--) {
       const en = workouts[i].entries.find(e => e.id === id)
@@ -428,7 +457,13 @@ export default function Stats() {
         {exHist.length ? <>
           <div className="sect-b" style={{ marginBottom: 10 }}>
             <SelectRow title={t('Exercise')} sheetTitle={t('Exercise progress')} value={curEx} onChange={setExId} stackedValue
-              options={exHist.map(id => ({ value: id, label: nameOf(id) + (exCurrent[id].mx ? ' ' + '—' + ' ' + fmtNum(exCurrent[id].mx) + ' ' + exCurrent[id].unit : '') }))} />
+              options={exHist.map(id => ({ value: id, label: nameOf(id) + (exCurrent[id].mx ? ' ' + '—' + ' ' + fmtNum(exCurrent[id].mx) + ' ' + exCurrent[id].unit : '') }))}
+              search={{
+                placeholder: t('Search…'),
+                label: t('Search…'),
+                emptyLabel: t('No match'),
+                match: (option, query) => matchExercise(matcherOf(option.value), query),
+              }} />
           </div>
           {exOpts.length > 1 && <Segmented className="seg-range" value={onEff ? 'effort' : onE1 ? 'e1rm' : 'top'} onChange={setExMetric} options={exOpts} />}
           <div className="chart">

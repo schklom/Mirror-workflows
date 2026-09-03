@@ -311,6 +311,13 @@ describe('double progression', () => {
     expect(p.reps).toBe(8)
     expect(p.weight).toBe(35)           // 40 × 0.9 = 36 → nearest loadable 2.5 step
   })
+
+  it('normalizes persisted per-side bounds before prescribing', () => {
+    const perSide = { ...cfg, reps: 13, repsMin: 7, side: true }
+    const p = nextPrescription(hist(LIFT, [[40, 12, 12, 12]], { sets: 3, reps: 13 }), perSide)
+    expect(p.kind).toBe('hold')
+    expect(p.reps).toBe(14)
+  })
 })
 
 describe('timed progression', () => {
@@ -372,6 +379,25 @@ describe('sessionsFor', () => {
       ]
     }
     expect(sessionsFor(S, LIFT).map(s => s.d)).toEqual(['2026-01-01'])
+  })
+
+  it('ignores marked deload workouts when it calculates the next regular target', () => {
+    const target = { sets: 3, reps: 5, weight: 60 }
+    const entry = (weight, reps) => ({
+      id: LIFT,
+      target: { ...target, weight },
+      sets: reps.map(r => ({ w: weight, r, done: true }))
+    })
+    const S = {
+      unit: 'kg',
+      workouts: [
+        { d: '2026-01-01', entries: [entry(60, [5, 5, 5])] },
+        { d: '2026-01-08', excludeFromProgression: true, entries: [entry(30, [8, 8])] }
+      ]
+    }
+
+    expect(sessionsFor(S, LIFT).map(s => s.d)).toEqual(['2026-01-01'])
+    expect(nextPrescription(S, { id: LIFT, ...target, prog: 'linear' }).weight).toBe(62.5)
   })
 
   it('reads a legacy entry that has no target without crashing', () => {

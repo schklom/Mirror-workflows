@@ -493,6 +493,14 @@ describe('buildSets', () => {
       .toEqual([{ w: 60, r: 10, done: false }, { w: 62.5, r: 8, done: false }])
   })
 
+  it('can use a deload target without carrying regular-session values into it', () => {
+    const S = { exWeights: { [LIFT]: { w: 75 } }, workouts: [{ d: '2026-01-01', entries: [{ id: LIFT, sets: [
+      { w: 75, r: 10, done: true }, { w: 75, r: 9, done: true }
+    ] }] }] }
+    expect(buildSets(S, { id: LIFT, sets: 2, reps: 12, weight: 40 }, { useTarget: true }))
+      .toEqual([{ w: 40, r: 12, done: false }, { w: 40, r: 12, done: false }])
+  })
+
 })
 
 describe('applyIntensifierPlan', () => {
@@ -893,5 +901,55 @@ describe('exNoteFor', () => {
     expect(exNoteFor({ exNotes: { '0025': ' seat 4, pin 7 ' } }, '0025')).toBe('seat 4, pin 7')
     expect(exNoteFor({ exNotes: { '0025': '   ' } }, '0025')).toBeNull()
     expect(exNoteFor({}, '0025')).toBeNull()
+  })
+})
+
+describe('nextTrainingDay', () => {
+  // 2026-08-18 is a Tuesday; the week map is keyed by getDay(), so 0 is Sunday.
+  const TUE = '2026-08-18'
+  const base = (over = {}) => ({
+    dayPlan: {},
+    routines: [{ id: 'r1', name: 'A', ex: [{ id: '0001' }] }, { id: 'r2', name: 'B', ex: [{ id: '0002' }] }],
+    week: {},
+    ...over
+  })
+
+  it('finds the next scheduled day and names its routine', () => {
+    const S = base({ week: { 4: 'r2' } })                 // Thursday
+    expect(nextTrainingDay(S, TUE)).toMatchObject({ iso: '2026-08-20', weekday: 4 })
+    expect(nextTrainingDay(S, TUE).routine.name).toBe('B')
+  })
+
+  it('looks forward only — today itself is never the answer', () => {
+    // Only Tuesday is scheduled and today is Tuesday, so the next one is a week out. (The UI
+    // cannot reach this: a day with a session takes the other branch and never asks.)
+    const S = base({ week: { 2: 'r1' } })
+    expect(nextTrainingDay(S, TUE)).toMatchObject({ iso: '2026-08-25', weekday: 2 })
+  })
+
+  it('wraps around the end of the week', () => {
+    const S = base({ week: { 1: 'r1' } })                 // Monday, six days on
+    expect(nextTrainingDay(S, TUE)).toMatchObject({ iso: '2026-08-24', weekday: 1 })
+  })
+
+  it('is null when every day is rest', () => {
+    expect(nextTrainingDay(base(), TUE)).toBeNull()
+  })
+
+  it('skips a day whose routine no longer exists', () => {
+    const S = base({ week: { 3: 'gone', 5: 'r1' } })
+    expect(nextTrainingDay(S, TUE)).toMatchObject({ iso: '2026-08-21', weekday: 5 })
+  })
+
+  it('skips a routine with no exercises — starting it would open an empty session', () => {
+    const S = base({ routines: [{ id: 'r1', name: 'A', ex: [] }, { id: 'r2', name: 'B', ex: [{ id: '1' }] }], week: { 3: 'r1', 5: 'r2' } })
+    expect(nextTrainingDay(S, TUE)).toMatchObject({ weekday: 5 })
+  })
+
+  it('respects a per-date override in both directions', () => {
+    const moved = base({ week: {}, dayPlan: { '2026-08-19': 'r1' } })
+    expect(nextTrainingDay(moved, TUE)).toMatchObject({ iso: '2026-08-19' })
+    const off = base({ week: { 3: 'r1', 5: 'r2' }, dayPlan: { '2026-08-19': 'rest' } })
+    expect(nextTrainingDay(off, TUE)).toMatchObject({ weekday: 5 })
   })
 })

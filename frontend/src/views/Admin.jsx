@@ -203,7 +203,7 @@ export default function Admin() {
       <button className="iconbtn" onClick={() => { loadUsers(); loadInvites(); setTick(n => n + 1) }} aria-label="refresh">↻</button>
     </div>
     <div className="adm-intro">
-      Everything about running this instance: who uses it, how they get in, and the AI Coach. Nothing here shows anyone's training data beyond counts.
+      Everything about running this instance: who uses it, how they get in, the AI Coach, and what has happened on it. Nothing here shows anyone's training data beyond counts.
     </div>
 
     <div className="tiles" style={{ marginBottom: 12 }}>

@@ -9,14 +9,20 @@ import { fmtNum, fmtDate, todayISO, exCount, DAYN } from '../lib/format.js'
 import { beep, vibrate } from '../lib/sound.js'
 import { t, exerciseNameFor } from '../lib/i18n.js'
 import { api } from '../lib/api.js'
-import { setProgressHighWater, supersetFlowStep, restAfterSet, restOnRecheck } from '../lib/supersetFlow.js'
+import { insertionIndexAfterCurrentUnit, nextUnfinishedUnit, setProgressHighWater, supersetFlowStep, restAfterSet, restOnRecheck, restSecFor } from '../lib/supersetFlow.js'
 import Media from '../components/Media.jsx'
-import { startFlow, exercisePicker, exConfigSheet, exerciseDetailSheet, topWeightSheet, finishWorkout, workoutCompleteSheet, confirmSheet, exerciseNoteSheet, sessionNoteSheet, barWeightSheet } from '../sheets.jsx'
+import { startFlow, exercisePicker, exConfigSheet, exerciseDetailSheet, topWeightSheet, finishWorkout, workoutCompleteSheet, confirmSheet, exerciseNoteSheet, sessionNoteSheet, swapActiveWorkoutExercise, barWeightSheet } from '../sheets.jsx'
 import Icon from '../components/Icon.jsx'
 import { Button, Check, NumberField } from '../components/ui.jsx'
 import { nextPrescription, applyPrescription, defaultIncrement } from '../lib/progression.js'
+import { progressionGuidance } from '../lib/progression-copy.js'
 import { glyphOf } from '../lib/glyphs.js'
 import { isWarmupRow, isDropSet, isRestPauseSet, dropsOf, clustersOf, addDrop, addCluster, removeDropAt, removeClusterAt, setDropAt, setClusterAt, nextDropWeight, nextBurstReps } from '../lib/workout-model.js'
+import { canMoveActiveWorkoutUnit, moveActiveWorkoutUnit } from '../lib/active-workout-order.js'
+
+const SWIPE_MIN_DISTANCE = 48
+const SWIPE_AXIS_RATIO = 1.25
+const SWIPE_IGNORED_TARGETS = 'button,input,textarea,select,a,[role="button"],[role="checkbox"],[role="switch"],[role="slider"],[contenteditable="true"],.exmedia,[data-swipe-ignore]'
 
 /* ---------- start chooser (no active workout) ---------- */
 function StartChooser() {
@@ -57,7 +63,7 @@ function Elapsed({ start }) {
 }
 
 /* ---------- one exercise block (reps: weight×reps · time: a held duration · cardio: duration+speed) ---------- */
-function ExerciseBlock({ entryIdx, compact, onToggle, onField, onAddSet, onRemoveSet, onAddWarmup, onRemoveSetAt, onStartTimed, onPairPrev, onPairNext }) {
+function ExerciseBlock({ entryIdx, compact, onToggle, onField, onAddSet, onRemoveSet, onAddWarmup, onRemoveSetAt, onStartTimed, onPairPrev, onPairNext, onSetRowRef, onProgressionSettings }) {
   const S = useStore(s => s.S)
   const update = useStore(s => s.update)
   const working = useUI(s => s.work)
@@ -107,6 +113,7 @@ function ExerciseBlock({ entryIdx, compact, onToggle, onField, onAddSet, onRemov
   // What the progression policy decided for this session, and why (issue #17). Computed when
   // the session was built so the reason matches the numbers already in the rows.
   const plan = entry.plan
+  const guidance = progressionGuidance(plan)
   // A bodyweight set has no weight to type, so the column is not there (issue #32) — one
   // stepper instead of two, which is the whole point of the flag. Adding a belt weight in the
   // config brings it back, now labelled as the addition it is.
@@ -208,10 +215,11 @@ function ExerciseBlock({ entryIdx, compact, onToggle, onField, onAddSet, onRemov
         </button>
       </div>
     })()}
-    {plan && plan.why && plan.kind !== 'off' && <div className={'progline' + (plan.kind === 'deload' ? ' warn' : '')}>
+    {guidance && <button type="button" className={'progline' + (plan.kind === 'deload' ? ' warn' : '')}
+      aria-label={t('Open progression settings')} onClick={onProgressionSettings}>
       <Icon name={plan.kind === 'up' ? 'arrowUp' : plan.kind === 'deload' ? 'arrowDown' : 'lightbulb'} />
-      <span>{t(...plan.why)}</span>
-    </div>}
+      <span><strong>{t(guidance.policyLabel)}</strong> · {t(...guidance.why)}</span>
+    </button>}
     <div className="card" style={{ marginTop: 10, marginBottom: 0 }}>
       {/* the header carries the same eff3 sizing as the rows, or the labels drift off their columns */}
       <div className={'sethead' + (col3 ? ' eff3' : '')}><span className="n-sp" /><span className="w-sp">{col1.hd}</span>{col2 && <span className="r-sp">{col2.hd}</span>}{col3 && <span className="eff-sp">{col3.hd}</span>}{timed && <span className="ck-sp" />}<span className="ck-sp" /></div>
@@ -224,7 +232,7 @@ function ExerciseBlock({ entryIdx, compact, onToggle, onField, onAddSet, onRemov
         return <div key={i}>
           {isFirstWarmup && <div className="setph">{t('Warm-up')}</div>}
           {!warm && warmBefore && <div className="setsep" />}
-          <div className={'setrow' + (s.done ? ' done' : '') + (col3 ? ' eff3' : '')}>
+          <div ref={el => onSetRowRef?.(i, el)} className={'setrow' + (s.done ? ' done' : '') + (col3 ? ' eff3' : '')}>
             <div className="n">{phaseNum}</div>
             {cell(s, i, col1, 'w')}
             {col2 && cell(s, i, col2, 'r')}
@@ -279,6 +287,13 @@ export function removeActiveExercise(idx) {
   // Clear the work callback before indexes can shift. This also protects a confirmation sheet
   // that was opened first and confirmed after a timed hold started.
   useUI.getState().stopWork()
+  // A rest countdown belongs to the exercise whose set started it (timer.forIdx). Removing that
+  // exercise ends the rest — there is nothing left to rest for. Removing any other exercise
+  // keeps the countdown and only re-points it, so a pause you are in the middle of survives
+  // tidying up the list.
+  const rest = useUI.getState().timer
+  if (rest && rest.forIdx === idx) useUI.getState().stopRest()
+  else useUI.getState().shiftRestOwner(idx + 1, -1)
   useStore.getState().update(s => {
     if (!s.active || !Array.isArray(s.active.entries)) return
     if (idx < 0 || idx >= s.active.entries.length) return
@@ -293,16 +308,41 @@ function ActiveWorkout() {
   const nav = useNavigate()
   const S = useStore(s => s.S)
   const update = useStore(s => s.update)
-  const { startRest, stopRest, work } = useUI()
+  const { startRest: liveRest, stopRest, stopWork, work } = useUI()
   const A = S.active
+  // A past workout has no rest to time — the sets were done days ago. The work timer for
+  // timed sets stays, since counting a hold is how its duration gets entered.
+  const startRest = A.backfill ? () => {} : liveRest
   const units = supersetUnits(A.entries)
-  const cur = Math.min(A.cur, Math.max(0, A.entries.length - 1))
+  const cur = Number.isInteger(A.cur)
+    ? Math.min(Math.max(A.cur, 0), Math.max(0, A.entries.length - 1))
+    : 0
   const unit = A.entries.length ? unitOf(units, cur) : []
   const unitIdx = units.findIndex(u => u === unit)
   const isSuperset = unit.length > 1
-  // Superset flow: keep the active exercise in view - completing a set scrolls to the
-  // next exercise in the group, then back up to the first exercise of the next round.
-  const exRefs = useRef({})
+  // Superset flow: center the actionable row when completing a set moves to the partner or
+  // back to the first exercise of the next round. Entry-bound maps keep repeated exercise IDs
+  // distinct, while each rendered set index identifies the existing row within that entry.
+  const exRefs = useRef(new Map())
+  const setRefs = useRef(new Map())
+  const bindExRef = (entry, el) => {
+    if (el) exRefs.current.set(entry, el)
+    else {
+      exRefs.current.delete(entry)
+      setRefs.current.delete(entry)
+    }
+  }
+  const bindSetRef = (entry, setIdx, el) => {
+    let refs = setRefs.current.get(entry)
+    if (el) {
+      if (!refs) { refs = new Map(); setRefs.current.set(entry, refs) }
+      refs.set(setIdx, el)
+    } else if (refs) {
+      refs.delete(setIdx)
+      if (!refs.size) setRefs.current.delete(entry)
+    }
+  }
+  const swipe = useRef(null)
   const progressHighWater = useRef(A.entries.map(e => e.sets.filter(s => s.done).length))
   // The marks are index-keyed, and removing an exercise shifts every index above it down
   // (removeActiveExercise splices). Re-baseline whenever the list length changes, otherwise a
@@ -311,9 +351,21 @@ function ActiveWorkout() {
     progressHighWater.current = A.entries.map(e => e.sets.filter(s => s.done).length)
   }, [A.entries.length])
   useEffect(() => {
+    const liveEntries = new Set(A.entries)
+    for (const entry of exRefs.current.keys()) {
+      if (!liveEntries.has(entry)) exRefs.current.delete(entry)
+    }
+    for (const entry of setRefs.current.keys()) {
+      if (!liveEntries.has(entry)) setRefs.current.delete(entry)
+    }
+  })
+  useEffect(() => {
     if (!isSuperset) return
-    const el = exRefs.current[cur]
-    if (el && typeof el.scrollIntoView === 'function') el.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+    const entry = A.entries[cur]
+    const firstIncomplete = entry?.sets.findIndex(s => !s.done) ?? -1
+    const setIdx = firstIncomplete >= 0 ? firstIncomplete : (entry?.sets.length ?? 0) - 1
+    const el = (setIdx >= 0 && setRefs.current.get(entry)?.get(setIdx)) || exRefs.current.get(entry)
+    if (el && typeof el.scrollIntoView === 'function') el.scrollIntoView({ behavior: 'smooth', block: 'center' })
   }, [cur, isSuperset, A.entries.length])
 
   const total = A.entries.reduce((n, e) => n + e.sets.length, 0)
@@ -352,6 +404,84 @@ function ActiveWorkout() {
   })
   const onPairPrev = !isSuperset && cur > 0 ? () => pairAt(cur - 1, cur) : null
   const onPairNext = !isSuperset && cur < A.entries.length - 1 ? () => pairAt(cur, cur + 1) : null
+  const moveCurrentUnit = direction => {
+    const ui = useUI.getState()
+    const active = useStore.getState().S.active
+    if (ui.work || !canMoveActiveWorkoutUnit(active, active?.cur, direction)) return
+    // Invalidate an old timed callback before indexes shift. A running rest is not cancelled:
+    // it belongs to an exercise (timer.forIdx), and that exercise only changes position.
+    ui.stopWork()
+    update(s => {
+      const moved = moveActiveWorkoutUnit(s.active, s.active?.cur, direction)
+      if (!moved) return
+      progressHighWater.current = moved.indices.map(index => progressHighWater.current[index])
+      const rest = useUI.getState().timer
+      if (rest && rest.forIdx != null) {
+        const forIdx = moved.indices.indexOf(rest.forIdx)
+        if (forIdx >= 0) useUI.setState({ timer: { ...rest, forIdx } })
+      }
+    }, true)
+  }
+
+  const navigateUnit = direction => {
+    const targetFor = active => {
+      if (!active || !Array.isArray(active.entries) || !Number.isInteger(active.cur)) return null
+      if (active.cur < 0 || active.cur >= active.entries.length) return null
+      const freshUnits = supersetUnits(active.entries)
+      const freshUnitIdx = freshUnits.findIndex(candidate => candidate.includes(active.cur))
+      return freshUnitIdx < 0 ? null : freshUnits[freshUnitIdx + direction]?.[0] ?? null
+    }
+    if (targetFor(useStore.getState().S.active) == null) return
+    update(s => {
+      const target = targetFor(s.active)
+      if (target != null) s.active.cur = target
+    })
+  }
+  const onSwipePointerDown = event => {
+    if (swipe.current || (event.pointerType && event.pointerType !== 'touch' && event.pointerType !== 'pen')) return
+    if (event.target.closest?.(SWIPE_IGNORED_TARGETS)) return
+    swipe.current = { id: event.pointerId, x: event.clientX, y: event.clientY }
+    event.currentTarget.setPointerCapture?.(event.pointerId)
+  }
+  const finishSwipe = (event, navigate) => {
+    const start = swipe.current
+    if (!start || start.id !== event.pointerId) return
+    swipe.current = null
+    event.currentTarget.releasePointerCapture?.(event.pointerId)
+    if (!navigate) return
+    const dx = event.clientX - start.x
+    const dy = event.clientY - start.y
+    if (Math.abs(dx) < SWIPE_MIN_DISTANCE || Math.abs(dx) < Math.abs(dy) * SWIPE_AXIS_RATIO) return
+    navigateUnit(dx < 0 ? 1 : -1)
+  }
+
+  const openProgressionSettings = idx => {
+    const state = useStore.getState().S
+    const entry = state.active?.entries?.[idx]
+    if (!entry) return
+    const routine = state.routines.find(r => r.id === state.active.routineId)
+    exConfigSheet(exOr(entry.id), entry.target, cfg => update(s => {
+      const activeEntry = s.active?.entries?.[idx]
+      if (!activeEntry) return
+      const full = { ...cfg, id: activeEntry.id }
+      const activeRoutine = s.routines.find(r => r.id === s.active.routineId)
+      const step = defaultIncrement(activeEntry.id, s.unit)
+      // A config without a set count keeps the rows the session already has.
+      if (!(full.sets > 0)) full.sets = activeEntry.sets.filter(x => !isWarmupRow(x)).length || 1
+      const plan = nextPrescription(s, full, activeRoutine)
+      // The sheet edits sets, reps, weight and warm-ups as well as the rule — so the rows are
+      // rebuilt from the new config the way the session was, and only what you already logged
+      // is kept in place (done warm-ups first, then done work sets, then the fresh remainder).
+      const fresh = applyIntensifierPlan(applyPrescription(buildSets(s, full, { step }), plan, step), full)
+      const doneWarm = activeEntry.sets.filter(x => x.done && isWarmupRow(x))
+      const doneWork = activeEntry.sets.filter(x => x.done && !isWarmupRow(x))
+      const freshWarm = fresh.filter(isWarmupRow)
+      const freshWork = fresh.filter(x => !isWarmupRow(x))
+      activeEntry.target = { ...cfg }
+      activeEntry.plan = plan
+      activeEntry.sets = [...doneWarm, ...freshWarm.slice(doneWarm.length), ...doneWork, ...freshWork.slice(doneWork.length)]
+    }), null, routine)
+  }
 
   // Remove a whole exercise from the session. The confirmation always asks first; in a
   // superset it asks WHICH exercise of the group to remove.
@@ -400,7 +530,6 @@ function ActiveWorkout() {
   const toggle = (idx, i) => {
     const m = modeAt(idx)
     const cardioEntry = m === 'cardio'
-    const isLastUnit = unitIdx >= units.length - 1
     let askTop = false, exJustDone = false, workoutDone = false, checked = false
     mutEntry(idx, e => {
       e.sets[i].done = !e.sets[i].done
@@ -408,7 +537,7 @@ function ActiveWorkout() {
       if (e.sets[i].done) {
         beep(S.sound, 1040, 0.12); vibrate(30)
         const unitDone = unit.every(ui => (ui === idx ? e : A.entries[ui]).sets.every(x => x.done))
-        if (unitDone && isLastUnit) workoutDone = true      // last exercise's last set → done
+        if (unitDone) workoutDone = !nextUnfinishedUnit(A.entries, supersetUnits(A.entries), idx)
         // Only loaded reps training has a "working weight" worth confirming — a bodyweight
         // plank has nothing to put in that slider, and neither does a set of push-ups
         // (issue #32: the fewest taps that still record what happened).
@@ -432,38 +561,45 @@ function ActiveWorkout() {
 
       const freshUnits = supersetUnits(fresh.entries)
       const freshUnit = freshUnits.find(u => u.includes(idx))
-      const freshUnitIdx = freshUnits.indexOf(freshUnit)
-      const freshLastUnit = freshUnitIdx >= freshUnits.length - 1
       const freshUnitDone = freshUnit?.every(ui => fresh.entries[ui].sets.every(x => x.done))
+      const nextUnit = freshUnitDone ? nextUnfinishedUnit(fresh.entries, freshUnits, idx) : null
+      const freshWorkoutDone = freshUnitDone && !nextUnit
+      const restBeforeWarmup = nextUnit?.some(ui =>
+        fresh.entries[ui].sets.some(set => isWarmupRow(set) && !set.done),
+      )
+      // The rest this set has earned: the exercise's own restSec when it set one, the global
+      // timer when it did not, and the longest of the group's across a superset (issue #10).
+      // Resolved once here so every branch below times the same break.
+      const restSec = restSecFor(fresh.entries, freshUnit || [idx], S.restSec)
 
       // A re-check of finished work must not navigate or reopen a sheet, but it may still owe
       // you a rest — see restOnRecheck, and the other half of issue #3.
       if (!progress.isNew) {
-        if (restOnRecheck({ timerRunning: !!useUI.getState().timer, unitDone: freshUnitDone, lastUnit: freshLastUnit })) startRest(S.restSec)
+        if (!restBeforeWarmup && restOnRecheck({ timerRunning: !!useUI.getState().timer, unitDone: freshUnitDone, lastUnit: freshWorkoutDone })) startRest(restSec, idx)
         return
       }
 
       // Singleton units are ordinary exercises: they rest between sets and after the closing
-      // one, and never enter superset navigation. stopRest() first so the rest that belongs
-      // after this set replaces the one that was running, rather than stacking on it.
+      // one unless the next unit has an unfinished warm-up, and never enter superset navigation.
+      // stopRest() first so a rest that belongs after this set replaces the one that was running.
       if (freshUnitDone) stopRest()
       if (!freshUnit || freshUnit.length <= 1) {
-        if (restAfterSet({ unitDone: freshUnitDone, lastUnit: freshLastUnit })) startRest(S.restSec)
+        if (freshUnitDone && !askTop && nextUnit?.length) update(s => { if (s.active) s.active.cur = nextUnit[0] })
+        if (!restBeforeWarmup && restAfterSet({ unitDone: freshUnitDone, lastUnit: freshWorkoutDone })) startRest(restSec, idx)
         return
       }
 
       const step = supersetFlowStep(fresh.entries, freshUnit, idx)
       if (!step) return
       if (step.unitDone) {
-        if (!freshLastUnit) {
-          const nextUnit = freshUnits[freshUnitIdx + 1]
+        if (nextUnit?.length) {
           // The top-weight sheet's explicit "Just close" path owns the choice not to advance.
-          if (!askTop && nextUnit?.length) update(s => { if (s.active) s.active.cur = nextUnit[0] })
-          startRest(S.restSec)
+          if (!askTop) update(s => { if (s.active) s.active.cur = nextUnit[0] })
+          if (!restBeforeWarmup) startRest(restSec, idx)
         }
       } else {
         if (step.nextIdx != null) update(s => { if (s.active) s.active.cur = step.nextIdx })
-        if (step.roundDone) startRest(S.restSec)
+        if (step.roundDone) startRest(restSec, idx)
       }
     }
   }
@@ -497,35 +633,47 @@ function ActiveWorkout() {
 
   return <div className="narrow">
     <div className="hdr">
-      <button className="iconbtn" aria-label={t('Discard')} onClick={() => confirmSheet({ title: t('Discard workout?'), message: t('The sets you logged in this session will be lost.'), confirmText: t('Discard'), danger: true, onConfirm: () => { update(s => { s.active = null }); stopRest(); nav('/home') } })}><Icon name="xmark" /></button>
-      <div style={{ textAlign: 'center' }}><div style={{ fontWeight: 600 }}>{A.name}</div><div className="sub"><Elapsed start={A.start} /> · {t('{0} sets', done + '/' + total)}</div></div>
+      <button className="iconbtn" aria-label={t('Discard')} onClick={() => confirmSheet({ title: t('Discard workout?'), message: t('The sets you logged in this session will be lost.'), confirmText: t('Discard'), danger: true, onConfirm: () => { update(s => { s.active = null }); stopRest(); stopWork(); nav('/home') } })}><Icon name="xmark" /></button>
+      <div style={{ textAlign: 'center' }}><div style={{ fontWeight: 600 }}>{A.name}</div><div className="sub">{A.backfill ? fmtDate(A.d, true) : <Elapsed start={A.start} />} · {t('{0} sets', done + '/' + total)}</div></div>
       <button className="iconbtn" style={{ color: 'var(--acc)' }} aria-label={t('Finish')} onClick={finishWorkout}><Icon name="check" /></button>
     </div>
     <div className="wprog"><i style={{ width: (total ? done / total * 100 : 0) + '%' }} /></div>
+    {A.backfill && <div className="muted small" style={{ marginBottom: 8 }}>{t('Logging a past workout — no rest timers.')}</div>}
 
     {A.entries.length ? <>
       <div className="muted small" style={{ marginBottom: 6 }}>{isSuperset ? t('Superset {0} / {1}', unitIdx + 1, units.length) : t('Exercise {0} / {1}', unitIdx + 1, units.length)}</div>
+      <div className="workout-swipe-surface" data-testid="workout-swipe-surface"
+        onPointerDown={onSwipePointerDown}
+        onPointerUp={event => finishSwipe(event, true)}
+        onPointerCancel={event => finishSwipe(event, false)}
+        onLostPointerCapture={event => {
+          if (swipe.current?.id === event.pointerId) swipe.current = null
+        }}>
       {isSuperset ? (
         <div className="ss-card">
           <div className="ss-hd" style={{ justifyContent: 'space-between' }}>
             <span className="row" style={{ gap: 5 }}><Icon name="link" />{t('Superset · do these back-to-back, rest when done')}</span>
             <Button size="xs" variant="ghost" icon="link" title={t('Unpair')} onClick={() => unpairAt(cur)}>{t('Unpair')}</Button>
           </div>
-          {unit.map((idx, k) => <div key={idx} ref={el => { exRefs.current[idx] = el }} className="ss-ex" data-exidx={idx}>
-            {k > 0 && <div className="ss-amp">+</div>}
-            <ExerciseBlock entryIdx={idx} compact
-              onToggle={i => toggle(idx, i)} onField={(i, f, v) => setField(idx, i, f, v)} onAddSet={() => addSet(idx)} onRemoveSet={() => removeSet(idx)} onAddWarmup={() => addWarmup(idx)} onRemoveSetAt={i => removeSetAt(idx, i)} onStartTimed={i => startTimed(idx, i)} />
-          </div>)}
+          {unit.map((idx, k) => {
+            const entry = A.entries[idx]
+            return <div key={idx} ref={el => bindExRef(entry, el)} className="ss-ex" data-exidx={idx}>
+              {k > 0 && <div className="ss-amp">+</div>}
+              <ExerciseBlock entryIdx={idx} compact onSetRowRef={(setIdx, el) => bindSetRef(entry, setIdx, el)}
+                onToggle={i => toggle(idx, i)} onField={(i, f, v) => setField(idx, i, f, v)} onAddSet={() => addSet(idx)} onRemoveSet={() => removeSet(idx)} onAddWarmup={() => addWarmup(idx)} onRemoveSetAt={i => removeSetAt(idx, i)} onStartTimed={i => startTimed(idx, i)} onProgressionSettings={() => openProgressionSettings(idx)} />
+            </div>
+          })}
         </div>
       ) : (
-        <ExerciseBlock entryIdx={cur} onToggle={i => toggle(cur, i)} onField={(i, f, v) => setField(cur, i, f, v)} onAddSet={() => addSet(cur)} onRemoveSet={() => removeSet(cur)} onAddWarmup={() => addWarmup(cur)} onRemoveSetAt={i => removeSetAt(cur, i)} onStartTimed={i => startTimed(cur, i)} onPairPrev={onPairPrev} onPairNext={onPairNext} />
+        <ExerciseBlock entryIdx={cur} onToggle={i => toggle(cur, i)} onField={(i, f, v) => setField(cur, i, f, v)} onAddSet={() => addSet(cur)} onRemoveSet={() => removeSet(cur)} onAddWarmup={() => addWarmup(cur)} onRemoveSetAt={i => removeSetAt(cur, i)} onStartTimed={i => startTimed(cur, i)} onPairPrev={onPairPrev} onPairNext={onPairNext} onProgressionSettings={() => openProgressionSettings(cur)} />
       )}
+      </div>
     </> : <div className="empty"><div className="ico"><Icon name="shuffle" /></div>{t('Freestyle workout — add your first exercise.')}</div>}
 
     <div style={{ height: 12 }} />
     <div className="row">
-      <Button icon="chevronLeft" disabled={unitIdx <= 0} onClick={() => update(s => { s.active.cur = units[unitIdx - 1][0] })}>{t('Prev')}</Button>
-      <Button trailingIcon="chevronRight" disabled={unitIdx < 0 || unitIdx >= units.length - 1} onClick={() => update(s => { s.active.cur = units[unitIdx + 1][0] })}>{t('Next')}</Button>
+      <Button icon="chevronLeft" disabled={unitIdx <= 0} onClick={() => navigateUnit(-1)}>{t('Prev')}</Button>
+      <Button trailingIcon="chevronRight" disabled={unitIdx < 0 || unitIdx >= units.length - 1} onClick={() => navigateUnit(1)}>{t('Next')}</Button>
     </div>
     <div style={{ height: 10 }} />
     <Button onClick={() => exercisePicker(ex => {
@@ -539,11 +687,25 @@ function ActiveWorkout() {
         const plan = freestyle ? null : nextPrescription(s, full, s.routines.find(r => r.id === s.active.routineId))
         const sets = buildSets(s, full, { step: defaultIncrement(ex.id, s.unit), ...(freestyle ? { preferLast: true } : {}) })
         const progressed = freestyle ? sets : applyPrescription(sets, plan, defaultIncrement(ex.id, s.unit))
-        s.active.entries.push({ id: ex.id, target: { ...cfg }, plan, sets: applyIntensifierPlan(progressed, full) })
-        s.active.cur = s.active.entries.length - 1
+        const insertAt = insertionIndexAfterCurrentUnit(supersetUnits(s.active.entries), s.active.cur, s.active.entries.length)
+        s.active.entries.splice(insertAt, 0, { id: ex.id, target: { ...cfg }, plan, sets: applyIntensifierPlan(progressed, full) })
+        s.active.cur = insertAt
+        useUI.getState().shiftRestOwner(insertAt, 1)
       }), null, routine, seed)
     })} icon="plus">{t('Add exercise')}</Button>
     {A.entries.length > 0 && <>
+      <div style={{ height: 6 }} />
+      <div className="row">
+        <Button size="sm" icon="chevronUp" aria-label={t('Move up')}
+          disabled={!!work || !canMoveActiveWorkoutUnit(A, cur, -1)} onClick={() => moveCurrentUnit(-1)}>{t('Move up')}</Button>
+        <Button size="sm" trailingIcon="chevronDown" aria-label={t('Move down')}
+          disabled={!!work || !canMoveActiveWorkoutUnit(A, cur, 1)} onClick={() => moveCurrentUnit(1)}>{t('Move down')}</Button>
+      </div>
+      <div style={{ height: 6 }} />
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <Button size="sm" icon="shuffle" aria-label={t('Swap exercise')} disabled={!!work}
+          onClick={() => swapActiveWorkoutExercise(cur)}>{t('Swap exercise')}</Button>
+      </div>
       <div style={{ height: 6 }} />
       <div style={{ display: 'flex', justifyContent: 'center' }}>
         <Button size="sm" icon="minus" style={{ color: 'var(--red)' }} disabled={!!work} onClick={removeExerciseSheet}>{t('Remove exercise')}</Button>

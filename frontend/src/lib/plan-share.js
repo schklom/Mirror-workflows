@@ -10,11 +10,12 @@
 
 import { EXIDX, isBodyweightEq } from './exercises.js'
 import { modeOf, fmtSec, isBw, isPerSide, sideReps, MAX_PLANNED_WARMUPS } from './history.js'
-import { uid, todayISO, DAYN, fmtNum, exCount } from './format.js'
+import { uid, todayISO, DAYN, weekOrder, weekStartOf, fmtNum, exCount } from './format.js'
 import { t, exerciseNameFor } from './i18n-core.js'
 
 const PLAN_FMT = 1
-const WEEK_ORDER = [1, 2, 3, 4, 5, 6, 0]   // Mon-first, matching the Plan screen
+const WEEK_DAYS = [1, 2, 3, 4, 5, 6, 0]   // every getDay() index; only the reader's own
+                                          // screen puts them in an order (see weekOrder)
 
 // Keep only the meaningful config fields, so the file stays small and readable.
 function cleanEx(e) {
@@ -44,6 +45,10 @@ function cleanEx(e) {
   if (e.inc > 0) o.inc = e.inc
   if (e.repsMin != null) o.repsMin = e.repsMin
   if (e.repsMax != null) o.repsMax = e.repsMax
+  // The exercise's own rest (issue #10) is part of how it is prescribed, so it travels too —
+  // only when set, so a plan that never asked for one leaves the recipient's own default
+  // timer in charge. parsePlan and mergePlan carry it through by spread.
+  if (e.restSec > 0) o.restSec = e.restSec
   if (e.sg) o.sg = e.sg
   if (e.note) o.note = e.note
   const warm = cleanWarmupSets(e.warmupSets)
@@ -63,6 +68,13 @@ function cleanWarmupSets(v) {
   return n > 0 ? Math.min(MAX_PLANNED_WARMUPS, n) : 0
 }
 
+/** A positive whole number of seconds or nothing — the same gate cleanEx applies on the way
+ *  out, so a hand-edited plan file can't hand the rest timer a string or a negative. */
+function cleanRestSec(v) {
+  const n = Math.round(Number(v)) || 0
+  return n > 0 ? n : 0
+}
+
 /** Keep the floors the config sheet and applyIntensifierPlan already enforce, and nothing else:
  *  a plan file is someone else's data, so anything unrecognised is dropped rather than trusted. */
 function cleanIntensifier(x) {
@@ -79,14 +91,17 @@ function cleanIntensifier(x) {
 /** Build the shareable bundle: every routine, the week schedule, referenced customs. */
 export function buildPlanBundle(S, name) {
   const routines = (S.routines || []).map(r => ({
-    id: r.id, name: r.name, emoji: r.emoji, ...(r.prog ? { prog: r.prog } : {}), ex: (r.ex || []).map(cleanEx)
+    id: r.id, name: r.name, emoji: r.emoji,
+    ...(r.prog ? { prog: r.prog } : {}),
+    ...(r.excludeFromProgression === true ? { excludeFromProgression: true } : {}),
+    ex: (r.ex || []).map(cleanEx)
   }))
   const usedIds = new Set(routines.flatMap(r => r.ex.map(e => e.id)))
   const customEx = (S.customEx || [])
     .filter(c => usedIds.has(c.id))
     .map(c => ({ id: c.id, n: c.n, bp: c.bp, ...(c.desc ? { desc: c.desc } : {}) }))
   const week = {}
-  WEEK_ORDER.forEach(d => { if (S.week?.[d]) week[d] = S.week[d] })
+  WEEK_DAYS.forEach(d => { if (S.week?.[d]) week[d] = S.week[d] })
   return { opengym_plan: PLAN_FMT, exported: todayISO(), name: name || '', week, routines, customEx }
 }
 
@@ -114,12 +129,13 @@ export function parsePlan(raw) {
       if (!ok) dropped++
       return ok
     }).map(e => {
-      // The exercises pass through as written, so the two fields that carry numbers into the
+      // The exercises pass through as written, so the fields that carry numbers into the
       // planner get the same clamps on the way in that they get on the way out.
       const warm = cleanWarmupSets(e.warmupSets)
       const intens = cleanIntensifier(e.intensifier)
-      const { warmupSets, intensifier, ...rest } = e
-      return { ...rest, ...(warm ? { warmupSets: warm } : {}), ...(intens ? { intensifier: intens } : {}) }
+      const rest = cleanRestSec(e.restSec)
+      const { warmupSets, intensifier, restSec, ...passthrough } = e
+      return { ...passthrough, ...(warm ? { warmupSets: warm } : {}), ...(intens ? { intensifier: intens } : {}), ...(rest ? { restSec: rest } : {}) }
     })
   }))
   return {
@@ -130,7 +146,7 @@ export function parsePlan(raw) {
     dropped,
     routineCount: routines.length,
     exerciseCount: routines.reduce((n, r) => n + r.ex.length, 0),
-    scheduledDays: WEEK_ORDER.filter(d => data.week?.[d]).length
+    scheduledDays: WEEK_DAYS.filter(d => data.week?.[d]).length
   }
 }
 
@@ -160,11 +176,12 @@ export function mergePlan(s, bundle, { schedule } = {}) {
       name: r.name || t('Shared routine'),
       emoji: r.emoji,
       ...(r.prog ? { prog: r.prog } : {}),
+      ...(r.excludeFromProgression === true ? { excludeFromProgression: true } : {}),
       ex: (r.ex || []).map(e => ({ ...e, id: exIdMap[e.id] || e.id }))
     })
   })
   if (schedule) {
-    WEEK_ORDER.forEach(d => { delete s.week[d] })
+    WEEK_DAYS.forEach(d => { delete s.week[d] })
     Object.entries(bundle.week || {}).forEach(([d, oldId]) => {
       if (ridMap[oldId]) s.week[d] = ridMap[oldId]
     })
@@ -224,7 +241,8 @@ function routineHTML(r, unit) {
 }
 
 function weekHTML(S) {
-  const rows = WEEK_ORDER.map(d => {
+  // The printout is read by whoever exported it, so the week runs in their order.
+  const rows = weekOrder(weekStartOf(S)).map(d => {
     const r = S.routines.find(x => x.id === S.week?.[d])
     const val = r ? esc(r.name) : `<span class="rest">${esc(t('Rest'))}</span>`
     return `<div class="w-row"><div class="w-day">${esc(t(DAYN[d]))}</div><div class="w-r">${val}</div></div>`

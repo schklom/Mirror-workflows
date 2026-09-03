@@ -19,6 +19,7 @@
 import { modeOf, repStep, rerampWarmups } from './history.js'
 import { EXIDX } from './exercises.js'
 import { isWarmupRow } from './workout-model.js'
+import { normalizeRepRange } from './rep-range.js'
 
 export const POLICIES = ['off', 'linear', 'greyskull', 'double', 'time']
 
@@ -134,6 +135,10 @@ export function readSession(entry, fallback) {
 export function sessionsFor(S, exId, fallback) {
   const out = []
   ;(S.workouts || []).forEach(w => {
+    // A planned deload remains a real workout for history and statistics, but it cannot become
+    // the baseline for the next regular prescription. The routine flag is copied onto the
+    // active session, then onto this completed workout, so later routine edits do not rewrite it.
+    if (w.excludeFromProgression === true) return
     const entry = w.entries.find(e => e.id === exId)
     if (entry && entry.sets.some(s => s.done && !isWarmupRow(s))) out.push({ d: w.d, ...readSession(entry, fallback) })
   })
@@ -210,8 +215,9 @@ export function nextPrescription(S, cfg, routine) {
     return { policy, kind: 'up', weight: 0, reps: next, why: ['Bodyweight — every rep last time, so go for {0} this time.', next] }
   }
   if (policy === 'double') {
-    const top = cfg.reps || last.goal || 10
-    const bottom = Math.min(cfg.repsMin || Math.max(1, top - 2), top)
+    const range = normalizeRepRange(cfg.reps || last.goal || 10, cfg.repsMin, repStep(cfg))
+    const top = range.reps
+    const bottom = range.repsMin
     if (last.ok) return { policy, kind: 'up', weight: snap(w + inc, inc), reps: bottom, why: ['Top of the rep range in every set — {0} {1} more, back to {2} reps.', inc, unit, bottom] }
     if (stalls >= deloadAt) {
       const dw = deloadTo(w, inc)

@@ -1,5 +1,5 @@
 // Pure helpers over the state object S (ported 1:1 from the vanilla app).
-import { todayISO, isoOf, weekKey, fmtNum } from './format.js'
+import { todayISO, isoOf, weekKey, weekStartOf, fmtNum } from './format.js'
 import { isCardio, isBodyweightEq } from './exercises.js'
 import { phaseForSet, modeForSet, modeForEntry, isWarmupRow, normalizeMode, extraVolumeOf, nextDropWeight, splitBurstReps } from './workout-model.js'
 const objectOf = value => value && typeof value === 'object' && !Array.isArray(value) ? value : {}
@@ -327,13 +327,21 @@ export function buildSets(S, cfg, options = {}) {
 export const MAX_PLANNED_WARMUPS = 5
 
 function buildWorkSets(S, cfg, options = {}) {
-  const last = lastEntryFor(S, cfg.id)
+  const preferLast = !!options.preferLast
+  const useTarget = !!options.useTarget
+  // A workout flagged excludeFromProgression (a planned deload) is not "last time" for the
+  // next regular session either: its reps and durations must not seed the rows any more than
+  // its weight seeds the prescription. The deload session itself reads the routine's own target.
+  const regular = (S.workouts || []).some(w => w.excludeFromProgression === true)
+    ? { ...S, workouts: S.workouts.filter(w => w.excludeFromProgression !== true) }
+    : S
+  const last = lastEntryFor(regular, cfg.id)
   const n = Math.max(1, cfg.sets || 1)
   const mode = modeOf(cfg)
-  const preferLast = !!options.preferLast
   const sets = []
-  // Last time's set at the same position, falling back to its final set when the plan grew.
-  const prevAt = i => (last ? (last.sets[i] || last.sets[last.sets.length - 1]) : null)
+  // A deload routine must use its own prescription instead of carrying regular-session values
+  // into the workout. Other planned sessions keep the existing history-first behaviour.
+  const prevAt = i => (!useTarget && last ? (last.sets[i] || last.sets[last.sets.length - 1]) : null)
 
   if (mode === 'cardio') {
     for (let i = 0; i < n; i++) {
@@ -358,7 +366,12 @@ function buildWorkSets(S, cfg, options = {}) {
     const usable = prev && prev.r > 0 ? prev : null
     // Planned sessions may use the confirmed working weight, while freestyle should reproduce
     // the load of each matching set when that option is requested.
-    const w = preferLast && usable ? usable.w : (conf && conf.w > 0 ? conf.w : (usable ? usable.w : cfg.weight))
+    // A deload uses the routine's target weight; a routine that never set one (weight 0) falls
+    // back to the last regular load rather than prescribing an empty bar.
+    const lastRegular = last ? (last.sets[i] || last.sets[last.sets.length - 1]) : null
+    const w = useTarget
+      ? (cfg.weight > 0 ? cfg.weight : (lastRegular && lastRegular.r > 0 ? lastRegular.w : cfg.weight))
+      : preferLast && usable ? usable.w : (conf && conf.w > 0 ? conf.w : (usable ? usable.w : cfg.weight))
     sets.push({ w, r: usable ? usable.r : cfg.reps, done: false })
   }
   return sets
@@ -440,15 +453,32 @@ export function supersetUnits(items) {
   })
   return units
 }
+
+// Move the selected occurrence's complete display unit by one neighbouring unit. Returning a
+// new array keeps this helper pure; the caller decides how to persist it. Index identity matters
+// here because the same exercise id may appear more than once with different setup.
+export function moveSupersetUnit(items, index, direction) {
+  if (!Array.isArray(items) || (direction !== -1 && direction !== 1)) return null
+  const units = supersetUnits(items)
+  const source = units.findIndex(unit => unit.includes(index))
+  const target = source + direction
+  if (source < 0 || target < 0 || target >= units.length) return null
+  const reordered = [...units]
+  const selected = reordered[source]
+  reordered[source] = reordered[target]
+  reordered[target] = selected
+  return reordered.flat().map(i => items[i])
+}
 export function unitOf(units, idx) { return units.find(u => u.includes(idx)) || [idx] }
 
 export function streakWeeks(S) {
   if (!S.workouts.length) return 0
-  const weeks = new Set(S.workouts.map(w => weekKey(w.d)))
+  const ws = weekStartOf(S)
+  const weeks = new Set(S.workouts.map(w => weekKey(w.d, ws)))
   let streak = 0
   const cur = new Date()
   for (let i = 0; i < 520; i++) {
-    const wk = weekKey(isoOf(cur))
+    const wk = weekKey(isoOf(cur), ws)
     if (weeks.has(wk)) streak++
     else if (i > 0) break
     cur.setDate(cur.getDate() - 7)

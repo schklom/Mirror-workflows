@@ -9,16 +9,27 @@ import {
 import {
   modeOf, workoutVolume, setsDone, effectiveRoutine, effectiveRoutineId
 } from '../../frontend/src/lib/history.js'
-import { EXIDX, exOr } from '../../frontend/src/lib/exercises.js'
+import { exOr } from '../../frontend/src/lib/exercises.js'
+import { isWarmupRow } from '../../frontend/src/lib/workout-model.js'
 import {
   estimate1RM, best1RM, e1rmSeries, DEFAULT_FORMULA, REP_CAP
 } from '../../frontend/src/lib/onerm.js'
 import { loadOfWorkouts, rankOf, levelsOf } from '../../frontend/src/lib/muscles.js'
+import { policyFor } from '../../frontend/src/lib/progression.js'
 
 /* ---------- helpers ---------- */
 
+// A custom exercise lives in S.customEx and is merged into EXIDX by registerCustom() at
+// store load (useStore.js:54). The MCP server deliberately never calls it: http.js serves
+// several profiles from one process behind withRemoteState, so mutating the module-global
+// index would leak one profile's customs into another's reads.
+const customOf = (id, S) => (S.customEx || []).find(ex => ex.id === id)
+// exOr's miss is a placeholder object, not null — callers that only need a name are fine
+// with it, callers feeding muscle resolution are NOT. Use customOf directly there.
+const exerciseOf = (id, S) => customOf(id, S) || exOr(id)
+
 function entryView(e, S) {
-  const ex = exOr(e.id)
+  const ex = exerciseOf(e.id, S)
   // Spread id into the cfg the way every call site in the app does (Workout.jsx, Stats.jsx,
   // progression.js) — the sheet saves a cardio target as {sets, min, speed} with no id and no
   // mode, so modeOf needs the id to fall through to isCardio(id).
@@ -43,15 +54,17 @@ function entryView(e, S) {
 }
 
 // Best estimate per exercise, mirroring the UI's PR table: every eligible set across history, biggest wins.
+// Warm-ups are skipped for the same reason bestSetOf() skips them (onerm.js): a heavy ramp row is not a
+// record. Without this the coach's PR and the athlete's PR silently disagree for the same exercise.
 function prTable(S, formula) {
   const byId = new Map()
   for (const w of (S.workouts || [])) {
     for (const e of (w.entries || [])) {
+      const ex = exerciseOf(e.id, S)
       for (const s of (e.sets || [])) {
-        if (!s.done) continue
+        if (!s.done || isWarmupRow(s)) continue
         const est = estimate1RM(s.w, s.r, formula)
         if (est == null) continue
-        const ex = exOr(e.id)
         const prev = byId.get(e.id)
         if (!prev || est > prev.est) {
           // exId as well as exName: the consumer needs an id, not a name — exOr() treats any
@@ -82,7 +95,8 @@ export const listRoutines = {
         emoji: r.emoji || null,
         exercise_count: (r.ex || []).length,
         superset_groups: [...new Set((r.ex || []).map(e => e.sg).filter(Boolean))].length || 0,
-        policy: r.policy || 'off'
+        policy: policyFor(null, r, 'reps'),
+        exclude_from_progression: r.excludeFromProgression === true
       }))
     }
   }
@@ -102,11 +116,12 @@ export const getRoutine = {
       id: r.id,
       name: r.name,
       emoji: r.emoji || null,
-      policy: r.policy || 'off',
-      policy_name: policyName(r.policy || 'off'),
+      policy: policyFor(null, r, 'reps'),
+      policy_name: policyName(policyFor(null, r, 'reps')),
+      exclude_from_progression: r.excludeFromProgression === true,
       unit: S.unit || 'kg',
       exercises: (r.ex || []).map((cfg, i) => {
-        const ex = exOr(cfg.id)
+        const ex = exerciseOf(cfg.id, S)
         const mode = modeOf(cfg)
         return {
           position: i + 1,
@@ -117,12 +132,14 @@ export const getRoutine = {
           sets: cfg.sets || 1,
           reps: mode === 'reps' ? (cfg.reps || 0) : undefined,
           reps_min: mode === 'reps' && cfg.repsMin != null ? cfg.repsMin : undefined,
+          reps_max: mode === 'reps' && cfg.repsMax != null ? cfg.repsMax : undefined,
           sec: mode === 'time' ? (cfg.sec || 0) : undefined,
           min: mode === 'cardio' ? (cfg.min || 0) : undefined,
           speed: mode === 'cardio' ? (cfg.speed || 0) : undefined,
           weight: cfg.weight != null ? cfg.weight : undefined,
           increment: cfg.inc != null ? cfg.inc : undefined,
-          policy_override: cfg.policy || null,
+          policy: policyFor(cfg, r, mode),
+          policy_override: cfg.prog || null,
           superset_group: cfg.sg || null,
           summary: exLine(cfg, S.unit || 'kg')
         }
@@ -266,7 +283,10 @@ export const getWorkout = {
       sets_done: setsDone(w),
       sets_planned: plannedSets(w),
       duration: w.end && w.start ? friendlyDuration(w.end - w.start) : null,
-      prs: (w.prs || []).map(id => EXIDX[id]?.n || id),
+      prs: (w.prs || []).map(id => {
+        const ex = exerciseOf(id, S)
+        return ex.missing ? id : ex.n
+      }),
       entries: (w.entries || []).map(e => entryView(e, S))
     }
   }
@@ -317,7 +337,7 @@ export const estimate1rm = {
     if (!S) return noState()
     const f = formula || DEFAULT_FORMULA
     if (exercise_id) {
-      const ex = exOr(exercise_id)
+      const ex = exerciseOf(exercise_id, S)
       const best = best1RM(S, exercise_id, f)
       const series = e1rmSeries(S, exercise_id, f)
       // A null best has two very different causes: never trained, or trained only above the
@@ -361,7 +381,19 @@ export const muscleBalance = {
       : period === 'month' ? now - 30 * 86400000
         : Number.NEGATIVE_INFINITY
     const workouts = (S.workouts || []).filter(w => (w.start || new Date(w.d + 'T12:00:00').getTime()) >= cutoff)
-    const load = loadOfWorkouts(workouts)
+    // loadOf() resolves each entry through EXIDX, which holds the catalogue only, so a
+    // custom exercise's sets score zero here. Attaching the custom itself lets loadOf's own
+    // `historical` branch resolve it. Only a *found* custom: exOr's miss placeholder carries
+    // no muscle metadata and no muscleSnapshot, so attaching that would displace the entry
+    // and silently zero a *deleted* custom, whose snapshot loadOf reads off the entry
+    // (muscles.js:245 → metadataOf, snapshot written at sheets.jsx:421-426).
+    const load = loadOfWorkouts(workouts.map(w => ({
+      ...w,
+      entries: (w.entries || []).map(e => {
+        const c = e.exercise ? null : customOf(e.id, S)
+        return c ? { ...e, exercise: c } : e
+      })
+    })))
     const { worked, missed } = rankOf(load)
     const levels = levelsOf(load)
     return {

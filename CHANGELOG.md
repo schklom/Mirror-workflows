@@ -1,6 +1,12 @@
 # Changelog
 
-## Unreleased
+## v1.3.0 — 2026-09-03
+
+The AI Coach gets the version number it deserves. v1.2.16, earlier today, was the release that
+got it out of the door; v1.3.0 is the same app with one more fix, and the number that says
+"something new is in here" to everyone who reads a changelog. If you are on v1.2.16, this is
+a small update. If you are on anything older, read the v1.2.15/v1.2.16 notes below — the Coach,
+bar weights, the rest-day line and the rewritten admin dashboard are all new to you.
 
 - 🗺️ **The Strength map's list makes sense again.** Below the map, every detrained muscle
   showed its set count of the last 90 days — which, for a muscle that is on that list precisely

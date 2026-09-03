@@ -1,6 +1,15 @@
 # Changelog
 
-## Unreleased
+## v1.2.15 — 2026-09-03
+
+The AI Coach. An optional coach that designs a training plan from a few answers and reviews
+what you actually log — off by default, switched on by the admin, consented to by each user,
+and driven by whatever AI you bring: an Anthropic, OpenAI or Gemini API key, any
+OpenAI-compatible endpoint (Ollama, LM Studio, vLLM, OpenRouter), or a Claude Code / Codex
+runtime inside the container. Nothing it proposes is applied on its own; every change carries
+its reason and can be undone. Details in [docs/AI_COACH.md](docs/AI_COACH.md). Also in this
+release: per-exercise bar weight, a rest-day line on the home screen, and the admin dashboard
+rewritten in plain language — those three shipped to main earlier and are here for everyone.
 
 ### AI Coach
 
@@ -102,6 +111,7 @@
   are object keys downstream (`__proto__`, `constructor`) are refused; weight and speed have
   ceilings; an exercise cannot be added twice to a routine; two changes cannot share an id; a
   weight for an exercise never lifted is dropped rather than guessed.
+
 ## v1.2.14 — 2026-08-30
 
 The largest community release so far: twenty merge requests from ten contributors, read and

@@ -318,6 +318,47 @@ build:api-check:
       when: manual
       allow_failure: true
 
+# The web image is built from the repository root, and the frontend imports the Coach core from
+# api/coach/core — a path the Dockerfile has to copy by hand. Nothing in test:frontend or the
+# Pages build goes through that Dockerfile, so an MR could pass everything and still ship an
+# image that does not build (v1.2.15 did). Built here, never pushed.
+build:web-check:
+  stage: build
+  image: docker:28-cli
+  services:
+    - docker:28-dind
+  variables:
+    DOCKER_HOST: tcp://docker:2376
+    DOCKER_TLS_CERTDIR: "/certs"
+    DOCKER_TLS_VERIFY: "1"
+    DOCKER_CERT_PATH: "/certs/client"
+  needs: ["test:frontend"]
+  script:
+    - docker build -f web/Dockerfile -t opengym-web:check .
+    # It serves the app shell, and the shell is this build (the Coach setup is in the bundle).
+    - |
+      set -eu
+      docker run -d --name web-check -e BACKEND=127.0.0.1 -e PORT=3000 opengym-web:check
+      sleep 2
+      docker exec web-check wget -qO- http://127.0.0.1/ | grep -q '<div id="root">'
+      docker exec web-check sh -c 'grep -l "coach" /usr/share/nginx/html/assets/index-*.js >/dev/null'
+      docker rm -f web-check
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
+    - if: $CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+$/
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      changes:
+        paths:
+          - "frontend/**/*"
+          - "web/**/*"
+          - "api/coach/core/**/*"
+          - ".gitlab-ci.yml"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: manual
+      allow_failure: true
+
 # ------------------------------------------------------------------------------ apk
 
 # The official signed APK. Signing keys live in protected CI variables, so they only

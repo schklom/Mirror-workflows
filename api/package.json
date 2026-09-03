@@ -1,6 +1,6 @@
 {
   "name": "gym-api",
-  "version": "1.2.15",
+  "version": "1.2.16",
   "private": true,
   "type": "module",
   "main": "server.js",

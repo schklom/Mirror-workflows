@@ -1,5 +1,15 @@
 # Changelog
 
+## v1.2.16 — 2026-09-03
+
+- 🐳 **The web image builds again.** v1.2.15's tag pipeline published the API image and the APK
+  but the web image failed to build: the frontend imports the Coach's core from `api/coach/core`,
+  and `web/Dockerfile` copied only `frontend/`. The image now carries that directory at the same
+  relative position it has in the repository, and a new `build:web-check` job builds the web
+  image on every merge request that touches the frontend, the Dockerfile or the core — the API
+  image had that check, the web image did not. Nothing else changed; v1.2.15's notes below are
+  this release's notes.
+
 ## v1.2.15 — 2026-09-03
 
 The AI Coach. An optional coach that designs a training plan from a few answers and reviews

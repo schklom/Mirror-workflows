@@ -9,7 +9,7 @@ import { pushSupported, enablePush, disablePush, sendTestPush } from '../lib/pus
 import { wakeLockSupported } from '../lib/wakelock.js'
 import { t, LANGS, INSTR_LANGS } from '../lib/i18n.js'
 import { DEMO, REPO } from '../lib/demo.js'
-import { MOBILE, shareExport, syncReminder } from '../lib/mobile.js'
+import { MOBILE, isAndroid, shareExport, syncReminder } from '../lib/mobile.js'
 import { checkForUpdate, downloadAndInstall } from '../lib/update.js'
 import { ConnectSheet } from './MobileOnboarding.jsx'
 import { loadStarterPlan, confirmSheet, importFromApp, importFromHevy, equipmentProfileSheet } from '../sheets.jsx'
@@ -32,7 +32,9 @@ export default function Settings() {
   const [updateInfo, setUpdateInfo] = useState(null) // { hasUpdate, latestVersion, apkUrl, hashUrl } | null
 
   useEffect(() => {
-    checkForUpdate().then(setUpdateInfo).catch(() => {})
+    // The in-app updater installs an .apk, so it only applies to the native Android build.
+    // On iOS and the web this check is skipped and the update row never appears.
+    isAndroid().then(ok => { if (ok) checkForUpdate().then(setUpdateInfo).catch(() => {}) })
   }, [])
 
   const onUpdateRowClick = () => {

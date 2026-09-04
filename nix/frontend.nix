@@ -26,6 +26,7 @@ buildNpmPackage rec {
 
   buildPhase = ''
     runHook preBuild
+    cd frontend
     export NODE_ENV=production
     export PATH="$PWD/node_modules/.bin:$PATH"
     npm run build

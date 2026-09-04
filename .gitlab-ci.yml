@@ -395,6 +395,10 @@ build:api-check:
         'import("@anthropic-ai/claude-agent-sdk").then(()=>{console.error("AI runtime present in the published image -- the last Dockerfile stage is no longer the runtime-free one");process.exit(1)},()=>process.exit(0))'
       ! docker run --rm opengym-api:published codex --version 2>/dev/null
       ! docker run --rm opengym-api:published bwrap --version 2>/dev/null
+      # npm is stripped from the published image (see api/Dockerfile) — its bundled tree was
+      # the only source of scanner findings, and nothing at runtime needs it.
+      ! docker run --rm opengym-api:published npm --version 2>/dev/null
+      ! docker run --rm opengym-api:published test -d /usr/local/lib/node_modules/npm
       docker run --rm opengym-api:published node --input-type=module -e '
         const { adapterFor } = await import("./coach/adapters/index.js");
         for (const id of ["anthropic", "openai", "gemini", "compatible"]) {
@@ -556,11 +560,11 @@ build:apk:
       set -eu
       cd "$CI_PROJECT_DIR"
       . ./apk.env
+      # Sideloading means nobody's app store checked this file for you, so publish the
+      # digest next to it rather than leaving people to trust the download. Written for
+      # every build (branch artifacts too), uploaded only from a release tag.
+      for apk in openGym-*.apk; do sha256sum "$apk" > "$apk.sha256"; cat "$apk.sha256"; done
       if [ -n "${CI_COMMIT_TAG:-}" ] && [ -f "openGym-$APK_VERSION.apk" ]; then
-        # Sideloading means nobody's app store checked this file for you, so publish the
-        # digest next to it rather than leaving people to trust the download.
-        sha256sum "openGym-$APK_VERSION.apk" > "openGym-$APK_VERSION.apk.sha256"
-        cat "openGym-$APK_VERSION.apk.sha256"
         echo "APK_SHA256=$(cut -d' ' -f1 "openGym-$APK_VERSION.apk.sha256")" >> apk.env
         for f in "openGym-$APK_VERSION.apk" "openGym-$APK_VERSION.apk.sha256"; do
           curl --fail --silent --show-error \

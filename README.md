@@ -20,6 +20,8 @@ No account on someone else's server, no subscription, no ads. Just `docker compo
 ![No tracking](https://img.shields.io/badge/telemetry-none-f472b6?style=flat-square)
 <br>
 [![Pipeline](https://gitlab.com/DuarteSantos8/opengym/badges/main/pipeline.svg?style=flat-square)](https://gitlab.com/DuarteSantos8/opengym/-/pipelines)
+[![Coverage](https://gitlab.com/DuarteSantos8/opengym/badges/main/coverage.svg?job=test:frontend&style=flat-square)](https://gitlab.com/DuarteSantos8/opengym/-/pipelines?ref=main)
+[![Release](https://gitlab.com/DuarteSantos8/opengym/-/badges/release.svg?style=flat-square)](https://gitlab.com/DuarteSantos8/opengym/-/releases)
 ![Last commit](https://img.shields.io/gitlab/last-commit/DuarteSantos8%2Fopengym?style=flat-square)
 [![Stars](https://img.shields.io/gitlab/stars/DuarteSantos8%2Fopengym?style=flat-square)](https://gitlab.com/DuarteSantos8/opengym/-/starrers)
 [![Issues](https://img.shields.io/gitlab/issues/open/DuarteSantos8%2Fopengym?style=flat-square)](https://gitlab.com/DuarteSantos8/opengym/-/issues)

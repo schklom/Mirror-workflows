@@ -14,7 +14,10 @@ FROM --platform=$BUILDPLATFORM node:22-alpine AS build
 # is exactly what made the v1.2.15 web image fail to build.
 WORKDIR /app/frontend
 COPY frontend/package.json frontend/package-lock.json* ./
-RUN npm ci 2>/dev/null || npm install
+# --ignore-scripts: the web image only needs `vite build`; the one heavy postinstall in this tree
+# (@capacitor/assets -> sharp, a libvips download from GitHub) is for drawing app icons and has
+# timed out on the shared runners — a lockfile-ignoring `npm install` fallback is no answer to that.
+RUN npm ci --ignore-scripts
 COPY api/coach/core/ /app/api/coach/core/
 COPY frontend/ ./
 RUN npm run build

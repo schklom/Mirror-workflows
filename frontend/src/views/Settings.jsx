@@ -149,6 +149,14 @@ export default function Settings() {
 
     {/* ---------- during a workout ---------- */}
     <Section title={t('During a workout')} footer={wakeOK ? t('The screen stays on while a workout is running, so you don’t have to unlock your phone between sets.') : null}>
+      {/* One exercise at a time (cards with Prev/Next) or the whole session stacked as a
+          scrollable list. Legacy/unknown values read as cards. */}
+      <Row icon="list" iconTint="var(--blue)" title={t('Workout view')}>
+        <Segmented className="seg-inline"
+          options={[{ value: 'cards', label: t('Cards') }, { value: 'list', label: t('List') }]}
+          value={S.workoutView === 'list' ? 'list' : 'cards'}
+          onChange={v => update(s => { s.workoutView = v })} />
+      </Row>
       <SelectRow icon="timer" iconTint="var(--orange)" title={t('Rest timer')}
         value={S.restSec} onChange={v => update(s => { s.restSec = v })}
         options={[{ value: 0, label: t('Off') }, ...[60, 90, 120, 150, 180].map(v => ({ value: v, label: v + 's' }))]} />

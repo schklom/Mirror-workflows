@@ -997,6 +997,18 @@ h4.sec{
 .ss-ex{position:relative}
 .ss-amp{text-align:center;font-size:15px;font-weight:600;color:var(--acc);margin:14px 0 8px}
 
+/* --- workout list view: every unit stacked, the current one outlined --- */
+.workout-list{display:grid;gap:14px}
+.wl-unit{
+  border-radius:var(--r-lg);padding:14px 14px 4px;
+  background:var(--surface-2);
+}
+.wl-unit.cur{box-shadow:inset 0 0 0 1.5px var(--acc-line)}
+.wl-hd{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+@media (max-width:400px){
+  .wl-unit{padding:10px 8px 2px}
+}
+
 /* --- home: today's session row --- */
 .today-row{
   display:flex;align-items:center;justify-content:space-between;gap:10px;

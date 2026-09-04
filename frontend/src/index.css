@@ -1093,3 +1093,20 @@ h4.sec{
 .ci-dots{display:flex;justify-content:center;gap:7px;margin-top:4px}
 .ci-dot{width:7px;height:7px;border-radius:50%;background:var(--surface-3);transition:background var(--fast),transform var(--fast)}
 .ci-dot.on{background:var(--acc);transform:scale(1.15)}
+/* ------------------------------------------------- the Coach entry on Plan -- */
+.coach-cta{
+  display:flex;align-items:center;gap:13px;width:100%;text-align:left;
+  margin-bottom:12px;padding:14px 16px;border-radius:var(--r-card);
+  background:linear-gradient(135deg,var(--acc-soft),color-mix(in srgb,var(--acc) 6%,var(--surface)));
+  border:1px solid color-mix(in srgb,var(--acc) 35%,transparent);
+  transition:transform var(--fast),filter var(--fast)
+}
+.coach-cta:active{transform:scale(.985);filter:brightness(1.06)}
+.coach-cta-av{
+  width:42px;height:42px;border-radius:13px;flex:none;display:grid;place-items:center;font-size:21px;
+  background:var(--acc);color:var(--on-acc);box-shadow:0 6px 18px -6px color-mix(in srgb,var(--acc) 60%,transparent)
+}
+.coach-cta-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.coach-cta-t b{font-size:17px;font-weight:600;letter-spacing:-.015em;color:var(--label)}
+.coach-cta-t span{font-size:13px;color:var(--label-2);line-height:1.35}
+.coach-cta-chev{color:var(--acc);font-size:15px;flex:none}

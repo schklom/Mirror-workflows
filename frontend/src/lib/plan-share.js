@@ -160,7 +160,7 @@ export function parsePlan(raw) {
 export function mergePlan(s, bundle, { schedule } = {}) {
   s.customEx = s.customEx || []
   const exIdMap = {}
-  bundle.customEx.forEach(c => {
+  ;(bundle.customEx || []).forEach(c => {
     const same = s.customEx.find(x => (x.n || '').toLowerCase() === (c.n || '').toLowerCase() && x.bp === c.bp)
     if (same) { exIdMap[c.id] = same.id; return }
     const nid = uid()

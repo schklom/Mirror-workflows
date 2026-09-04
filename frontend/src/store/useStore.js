@@ -6,6 +6,7 @@ import { DEMO, DEMO_SEEDED } from '../lib/demo.js'
 import { guestAllowed } from '../lib/guest.js'
 import { MOBILE, initReminderSync, nativeLoad, nativeSave, syncReminder, writeAutoBackup } from '../lib/mobile.js'
 import { loadRemote, chooseLocal, forgetRemote, connect } from '../lib/remote.js'
+import { loadCoachDevice, saveCoachDevice, coachDeviceSettings } from '../lib/coach-device.js'
 
 const KEY = 'gym_state_v1'
 export const DEF = {
@@ -21,6 +22,10 @@ export const DEF = {
   // Equipment profiles (issue: filter Library/picker/routines by what you actually own —
   // e.g. "Home" vs "Gym" — building on the session-only equipment filter from issue #6).
   equipProfiles: [], activeEquipId: null, equipFilterOn: false,
+  // Standing per-exercise notes, keyed by exercise id: the gym-specific facts that are true
+  // every time you do the movement ("seat 4, pin 7"). Distinct from a routine's `note`, which
+  // belongs to one exercise in one plan, and from a session note, which belongs to one day.
+  exNotes: {},
   // First day of the week as a getDay() index — 1 Monday, 0 Sunday. Monday is the default so
   // every profile written before this setting existed keeps the week it has been looking at.
   // See lib/format.js: nothing reads this field directly, everything goes through the helpers.
@@ -117,7 +122,18 @@ export const useStore = create((set, get) => {
     S: (() => { const s = loadState(); registerCustom(s.customEx); return s })(),
     user: (() => { try { return JSON.parse(localStorage.getItem('gym_user')) || null } catch { return null } })(),
     ready: false,
+    /* Instance capabilities from GET /api/config. `config.coach` is present only when the owner
+       has both enabled the Coach and connected a provider — every Coach entry point in the app
+       hangs off it via coachAvailable(), so an unconfigured instance renders exactly what it
+       always did, and a configured one is the only place any of it appears. */
+    config: null,
     needsMobileOnboarding: false,   // mobile build only — set true by boot() on a genuine first launch
+    // Mobile build only: how the Coach runs on this phone — { mode: 'off'|'server'|'byok',
+    // provider, model, baseUrl } from lib/coach-device.js. Never the key, never a proposal.
+    coachLocal: null,
+    async setCoachLocal(patch) {
+      set({ coachLocal: coachDeviceSettings(await saveCoachDevice(patch)) })
+    },
 
     // Mutate a draft of S via producer fn, then persist + schedule sync.
     update(mut, push = true) {
@@ -144,6 +160,11 @@ export const useStore = create((set, get) => {
     config: null,
     async loadConfig() {
       if (get().config) return get().config
+      return get().refreshConfig()
+    },
+    // Always asks. The cached copy is right for one boot, but an admin can switch the Coach on
+    // while a paired phone sits on the setup screen — that screen wants today's answer.
+    async refreshConfig() {
       try { const c = await api('/api/config'); set({ config: c }); return c }
       catch { return null }
     },
@@ -189,6 +210,7 @@ export const useStore = create((set, get) => {
     async connectToServer(url, code) {
       const user = await connect(url, code)   // throws on a bad URL/expired code — caller shows it
       get().setUser(user)
+      await get().refreshConfig()   // what this server offers (the Coach, guest mode) — see boot()
       await get().pullState()
       syncReminder(get().S)
       set({ needsMobileOnboarding: false })
@@ -229,11 +251,16 @@ export const useStore = create((set, get) => {
       // case it behaves exactly like the signed-in web flow below, straight from here.
       if (MOBILE) {
         const remote = await loadRemote()
+        set({ coachLocal: coachDeviceSettings(await loadCoachDevice()) })
         if (remote?.mode === 'remote') {
           setRemoteAuth(remote.base, remote.token)
           try {
             const me = await api('/api/me')   // also catches a token revoked elsewhere (sign out everywhere)
             get().setUser(me.user)
+            // The paired server's /api/config, the same one the web boot reads: without it the
+            // phone never learned whether the server offers the Coach and told everyone "your
+            // server has no Coach enabled" — with the admin looking at a green test.
+            await get().loadConfig()
             await get().pullState()
           } catch (e) {
             if (e.status === 401) { await forgetRemote(); get().setGuest(true) }

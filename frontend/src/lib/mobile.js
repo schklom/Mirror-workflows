@@ -38,6 +38,22 @@ export async function nativeSave(state) {
 // travel as if it were training data.
 const REMOTE_FILE = 'opengym-remote.json'
 
+// Small JSON files in the app's private data directory, for device facts that must not ride
+// in S (which syncs and exports): the pairing, and how the Coach runs on this phone.
+export async function readJsonFile(name) {
+  try {
+    const { Filesystem, Directory, Encoding } = await import('@capacitor/filesystem')
+    const r = await Filesystem.readFile({ path: name, directory: Directory.Data, encoding: Encoding.UTF8 })
+    return JSON.parse(r.data)
+  } catch (e) { return null }
+}
+export async function writeJsonFile(name, data) {
+  try {
+    const { Filesystem, Directory, Encoding } = await import('@capacitor/filesystem')
+    await Filesystem.writeFile({ path: name, directory: Directory.Data, data: JSON.stringify(data), encoding: Encoding.UTF8 })
+  } catch (e) { /* not a Capacitor build, or the write failed — the caller's in-memory copy stands */ }
+}
+
 export async function loadRemoteFile() {
   try {
     const { Filesystem, Directory, Encoding } = await import('@capacitor/filesystem')

@@ -7,11 +7,23 @@ import Icon from '../components/Icon.jsx'
 import { Button } from '../components/ui.jsx'
 import { tappable } from '../lib/use-sheet-keyboard.js'
 import { glyphOf, DEFAULT_GLYPH } from '../lib/glyphs.js'
+import { DEMO } from '../lib/demo.js'
+import { MOBILE } from '../lib/mobile.js'
+import { coachAvailable } from '../lib/coach.js'
 
 export default function Plan() {
   const nav = useNavigate()
   const S = useStore(s => s.S)
   const update = useStore(s => s.update)
+  const config = useStore(s => s.config)
+  const coachMode = useStore(s => s.coachLocal?.mode)
+  const user = useStore(s => s.user)
+
+  /* The Coach's only entry point in the app. Its screens have existed since the UI landed and
+     nothing linked to them, so the feature was reachable only by typing the URL — enabled,
+     configured, and invisible. The same predicate every other Coach surface uses gates it, so
+     an instance without the feature sees exactly the Plan screen it saw before. */
+  const showCoach = coachAvailable(config, user, { demo: DEMO, mobile: MOBILE, coachMode })
 
   const addRoutine = () => {
     const r = { id: uid(), name: t('New routine'), emoji: DEFAULT_GLYPH, ex: [] }
@@ -24,6 +36,15 @@ export default function Plan() {
       <div><h1>{t('Plan')}</h1><div className="sub">{t('Your weekly routine')}</div></div>
       <button className="iconbtn" onClick={planToolsSheet} aria-label={t('Share your plan')} title={t('Share your plan')}><Icon name="upload" /></button>
     </div>
+    {showCoach && <button className="coach-cta" onClick={() => nav('/coach')}>
+      <span className="coach-cta-av"><Icon name="sparkles" /></span>
+      <span className="coach-cta-t">
+        <b>{t('Coach')}</b>
+        <span>{t('Plan design and reviews, from your own training')}</span>
+      </span>
+      <Icon name="chevronRight" className="coach-cta-chev" />
+    </button>}
+
     <div className="cols"><div>
       <h4 className="sec">{t('Week schedule')}</h4>
       <div className="list" style={{ display: 'flex', flexDirection: 'column' }}>

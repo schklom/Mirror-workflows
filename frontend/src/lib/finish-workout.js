@@ -1,11 +1,13 @@
 // The persisted boundary for a finished session. Keep this pure so compatibility tests can
 // exercise the exact shape the UI writes without mounting React or mutating store state.
+import { bestWeightForEntry } from './history.js'
+
 export function buildCompletedWorkout(active, { end = Date.now(), prs = [], snapshotFor } = {}) {
   const entries = (active?.entries || []).map(entry => {
     const completed = {
       id: entry.id,
       sets: entry.sets,
-      topW: entry.topW || null,
+      topW: bestWeightForEntry(entry) || null,
       target: entry.target || null,
     }
     const snapshot = typeof snapshotFor === 'function' ? snapshotFor(entry) : null

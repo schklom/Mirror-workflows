@@ -626,19 +626,23 @@ export function bestWeightForEntry(entry = {}) {
     ? entry.sets.filter(s => phaseForSet(s) === 'work')
     : []
   const repsRows = metricRowsForEntry(entry, 'reps')
-  if (!repsRows.length) {
-    return workRows.reduce((best, set) => {
-      if (set?.done !== true || isWarmupRow(set)) return best
-      const weight = Number(set.w)
-      return Number.isFinite(weight) && weight > best ? weight : best
-    }, 0)
-  }
-
+  // Reps rows are the authoritative load metric for a mixed entry. Otherwise use every
+  // completed work row (timed holds can carry an added load too).
+  const completedRows = repsRows.length
+    ? repsRows
+    : workRows.filter(set => set?.done === true && !isWarmupRow(set))
   let best = 0
-  repsRows.forEach(set => {
+  let hasUsableWeight = false
+  completedRows.forEach(set => {
     const weight = Number(set?.w)
-    if (Number.isFinite(weight) && weight > best) best = weight
+    if (!Number.isFinite(weight)) return
+    hasUsableWeight = true
+    if (weight > best) best = weight
   })
+
+  // A real completed row, including an explicit zero for an unloaded bodyweight set, always
+  // wins. A manual topW is only useful for old records whose rows did not carry a usable load.
+  if (hasUsableWeight) return best
 
   const parentMode = modeForSet({}, target)
   const hasNonRepsWorkRow = workRows.some(set => modeForSet(set, target) !== 'reps')

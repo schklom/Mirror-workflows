@@ -138,6 +138,13 @@ async function toggleSet(index) {
   await act(async () => { checkbox.dispatchEvent(new dom.Event('click', { bubbles: true })) })
 }
 
+async function pressNext() {
+  const button = [...container.querySelectorAll('button')]
+    .find(button => button.textContent.trim() === 'Next')
+  expect(button).toBeTruthy()
+  await act(async () => { button.dispatchEvent(new dom.Event('click', { bubbles: true })) })
+}
+
 async function pressProgression(index = 0) {
   const button = container.querySelectorAll('.progline')[index]
   expect(button).toBeTruthy()
@@ -206,8 +213,50 @@ describe('Workout set completion flow', () => {
     expect(mocks.startRest).not.toHaveBeenCalled()
   })
 
+  it('auto-captures a completed weighted exercise without prompting, leaving navigation to Next', async () => {
+    await mount([exercise('plain-bench', [false]), exercise('next', [false])])
+
+    await toggleSet(0)
+
+    expect(mocks.S.active.entries[0].topW).toBe(60)
+    expect(mocks.S.exWeights['plain-bench'].w).toBe(60)
+    expect(mocks.topWeightSheet).not.toHaveBeenCalled()
+    expect(mocks.S.active.cur).toBe(0)
+    expect(mocks.startRest).toHaveBeenCalledWith(90, expect.any(Number))
+
+    await pressNext()
+
+    expect(mocks.S.active.cur).toBe(1)
+  })
+
+  it('auto-captures superset members without prompting, then leaves the completed unit for Next', async () => {
+    const group = 'superset-1'
+    await mount([
+      exercise('superset-a', [false], { sg: group }),
+      exercise('superset-b', [false], { sg: group }),
+      exercise('next', [false]),
+    ])
+
+    await toggleSet(0)
+
+    expect(mocks.topWeightSheet).not.toHaveBeenCalled()
+    expect(mocks.S.active.cur).toBe(1)
+    expect(mocks.startRest).not.toHaveBeenCalled()
+
+    await rerender()
+    await toggleSet(1)
+
+    expect(mocks.topWeightSheet).not.toHaveBeenCalled()
+    expect(mocks.S.active.cur).toBe(1)
+    expect(mocks.startRest).toHaveBeenCalledWith(90, expect.any(Number))
+
+    await pressNext()
+
+    expect(mocks.S.active.cur).toBe(2)
+  })
+
   it.each(['warmup', 'warm-up', 'warm_up'])(
-    'does not start transition rest before an incomplete %s row in the next ordinary exercise',
+    'does not navigate or start transition rest before an incomplete %s row in the next ordinary exercise',
     async phase => {
       await mount([
         exercise('current', [false], { asked: true }),
@@ -222,12 +271,12 @@ describe('Workout set completion flow', () => {
 
       await toggleSet(0)
 
-      expect(mocks.S.active.cur).toBe(1)
+      expect(mocks.S.active.cur).toBe(0)
       expect(mocks.startRest).not.toHaveBeenCalled()
     },
   )
 
-  it('does not start transition rest when a completed superset advances to an incomplete warm-up', async () => {
+  it('does not navigate or start transition rest when a completed superset meets an incomplete warm-up', async () => {
     await mount([
       exercise('superset-a', [true], { sg: 'group', asked: true }),
       exercise('superset-b', [false], { sg: 'group', asked: true }),
@@ -242,11 +291,11 @@ describe('Workout set completion flow', () => {
 
     await toggleSet(1)
 
-    expect(mocks.S.active.cur).toBe(2)
+    expect(mocks.S.active.cur).toBe(1)
     expect(mocks.startRest).not.toHaveBeenCalled()
   })
 
-  it('does not start transition rest before a warm-up while top-weight confirmation owns navigation', async () => {
+  it('leaves the completed ordinary exercise selected without transition rest before an incomplete warm-up', async () => {
     await mount([
       exercise('current-loaded', [false]),
       exercise('next', [false, false], {
@@ -260,7 +309,7 @@ describe('Workout set completion flow', () => {
 
     await toggleSet(0)
 
-    expect(mocks.topWeightSheet).toHaveBeenCalledWith(0)
+    expect(mocks.topWeightSheet).not.toHaveBeenCalled()
     expect(mocks.S.active.cur).toBe(0)
     expect(mocks.startRest).not.toHaveBeenCalled()
   })
@@ -285,7 +334,7 @@ describe('Workout set completion flow', () => {
     expect(mocks.startRest).not.toHaveBeenCalled()
   })
 
-  it('leaves a completed superset selected while its top-weight sheet owns the advance choice', async () => {
+  it('leaves a completed superset selected without opening a top-weight sheet', async () => {
     const group = 'superset-1'
     await mount([
       exercise('superset-a', [true, true, true], { sg: group, asked: true }),
@@ -294,12 +343,12 @@ describe('Workout set completion flow', () => {
     ], 1)
     await toggleSet(5)
 
-    expect(mocks.topWeightSheet).toHaveBeenCalledWith(1)
+    expect(mocks.topWeightSheet).not.toHaveBeenCalled()
     expect(mocks.S.active.cur).toBe(1)
     expect(mocks.startRest).toHaveBeenCalledWith(90, expect.any(Number))
   })
 
-  it('skips completed intervening units and selects the next unfinished superset as one unit', async () => {
+  it('does not auto-select an unfinished superset after completing an ordinary exercise', async () => {
     await mount([
       exercise('current-hold', [false], { asked: true, target: { mode: 'time', sec: 30, weight: 0 } }),
       exercise('already-done', [true], { asked: true }),
@@ -309,13 +358,13 @@ describe('Workout set completion flow', () => {
 
     await toggleSet(0)
 
-    expect(mocks.S.active.cur).toBe(2)
+    expect(mocks.S.active.cur).toBe(0)
     expect(mocks.workoutCompleteSheet).not.toHaveBeenCalled()
     expect(mocks.toast).toHaveBeenCalledWith('Hold logged')
     expect(mocks.startRest).toHaveBeenCalledWith(90, expect.any(Number))
   })
 
-  it('wraps to earlier unfinished work instead of showing a false completion prompt', async () => {
+  it('does not auto-select earlier unfinished work after completing an ordinary exercise', async () => {
     await mount([
       exercise('pending-earlier', [false], { asked: true }),
       exercise('current-hold', [false], { asked: true, target: { mode: 'time', sec: 30, weight: 0 } }),
@@ -323,12 +372,12 @@ describe('Workout set completion flow', () => {
 
     await toggleSet(0)
 
-    expect(mocks.S.active.cur).toBe(0)
+    expect(mocks.S.active.cur).toBe(1)
     expect(mocks.workoutCompleteSheet).not.toHaveBeenCalled()
     expect(mocks.startRest).toHaveBeenCalledWith(90, expect.any(Number))
   })
 
-  it('keeps top-weight confirmation in control without declaring completion while work remains', async () => {
+  it('leaves a completed ordinary exercise selected without declaring completion while work remains', async () => {
     await mount([
       exercise('current-loaded', [false]),
       exercise('pending', [false], { asked: true }),
@@ -336,9 +385,10 @@ describe('Workout set completion flow', () => {
 
     await toggleSet(0)
 
-    expect(mocks.topWeightSheet).toHaveBeenCalledWith(0)
+    expect(mocks.topWeightSheet).not.toHaveBeenCalled()
     expect(mocks.workoutCompleteSheet).not.toHaveBeenCalled()
     expect(mocks.S.active.cur).toBe(0)
+    expect(mocks.startRest).toHaveBeenCalledWith(90, expect.any(Number))
   })
 
   it('shows workout completion only when no unfinished unit remains', async () => {
@@ -350,6 +400,7 @@ describe('Workout set completion flow', () => {
     await toggleSet(0)
 
     expect(mocks.workoutCompleteSheet).toHaveBeenCalledOnce()
+    expect(mocks.S.active.cur).toBe(1)
     expect(mocks.startRest).not.toHaveBeenCalled()
   })
 })
@@ -361,7 +412,7 @@ describe('Workout add exercise flow', () => {
       active: { routineId: 'routine-1' },
       routines: [{ id: 'routine-1', ex: [] }],
     }],
-  ])('inserts after the current unit and continues to pending work in a %s session', async (_label, overrides) => {
+  ])('inserts after the current unit and leaves the inserted exercise selected after completion in a %s session', async (_label, overrides) => {
     await mount([
       exercise('current', [true], { asked: true }),
       exercise('pending', [false], { asked: true }),
@@ -379,7 +430,7 @@ describe('Workout add exercise flow', () => {
     await toggleSet(0)
 
     expect(mocks.S.active.entries[1].sets[0].done).toBe(true)
-    expect(mocks.S.active.cur).toBe(2)
+    expect(mocks.S.active.cur).toBe(1)
     expect(mocks.workoutCompleteSheet).not.toHaveBeenCalled()
   })
 

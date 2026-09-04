@@ -94,6 +94,23 @@ export default function Home() {
       </div>
     </div>
 
+    {/* Jump to the gym check-in cards (QR membership codes). Shown here as a quick tap on
+        arrival at the gym; folds away per user via the "Gym check-in" switch in Settings. */}
+    {S.checkIn !== false && (
+      <div className="card tappable" style={{ cursor: 'pointer' }} {...tappable(() => nav('/checkin'))}>
+        <div className="row between">
+          <div className="row" style={{ gap: 9 }}>
+            <span className="lrow-i" style={{ background: 'var(--blue)' }}><Icon name="qr" /></span>
+            <div>
+              <div className="lbl2">{t('At the gym')}</div>
+              <div className="ttl">{t('Check in')}</div>
+            </div>
+          </div>
+          <Icon name="chevronRight" className="chev" />
+        </div>
+      </div>
+    )}
+
     {!S.routines.length && !S.active && (
       <div className="card">
         <div className="row" style={{ gap: 10, marginBottom: 6 }}>

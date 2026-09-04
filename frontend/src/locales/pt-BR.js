@@ -608,7 +608,25 @@ export const PT_BR_OVERRIDES = {
   'Default for this bar type.': 'Padrão para este tipo de barra.',
   'Set to 0 to go back to the default ({0}).': 'Defina 0 para voltar ao padrão ({0}).',
   'Applies to this exercise everywhere, not just this plan.': 'Vale para este exercício em todos os lugares, não só neste plano.',
-  'You still log the total weight — the bar only feeds the per-side plate math.': 'Você continua registrando o peso total — a barra só entra no cálculo das anilhas por lado.'
+  'You still log the total weight — the bar only feeds the per-side plate math.': 'Você continua registrando o peso total — a barra só entra no cálculo das anilhas por lado.',
+  // Gym check-in (mobile-only) — only where pt-BR differs from pt (inherited via ...pt)
+  'At the gym': 'Na academia',
+  'Show this at the gym': 'Mostre isto na academia',
+  'Add your gym card': 'Adicione seu cartão da academia',
+  'Type the number on your membership card, import a photo of it, or scan it with the camera. No extra app needed at the gym — just open this screen.': 'Digite o número do seu cartão de sócio, importe uma foto ou escaneie com a câmera. Não é preciso outro app na academia — é só abrir esta tela.',
+  'Scan it, import a photo, or type the code by hand.': 'Escaneie, importe uma foto ou digite o código à mão.',
+  'Scan': 'Escanear',
+  'e.g. FitZone downtown': 'ex. FitZone centro',
+  'Gym card': 'Cartão da academia',
+  'Could not read that image': 'Não foi possível ler essa imagem',
+  'Camera permission is needed to scan. Enable it in Settings.': 'É necessária a permissão da câmera para escanear. Ative-a nos Ajustes.',
+  'Scanning is not available on this device.': 'O escaneamento não está disponível neste dispositivo.',
+  'Could not start the scanner': 'Não foi possível iniciar o scanner',
+  'Gym check-in': 'Check-in na academia',
+  'Show a card on Home with your membership QR codes.': 'Mostra no Início um cartão com seus códigos QR de sócio.',
+  'Point the camera at the QR code': 'Aponte a câmera para o código QR',
+  'Camera is not available here — import a photo or type the code instead.': 'A câmera não está disponível aqui — importe uma foto ou digite o código.',
+  'Camera access was denied — allow it in your browser and try again.': 'O acesso à câmera foi negado — permita-o no navegador e tente de novo.',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

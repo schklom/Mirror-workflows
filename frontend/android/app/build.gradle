@@ -21,6 +21,12 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        debug {
+            // Test build installs side-by-side with the real app: its own applicationId, so both
+            // can live on one device. The name/icon label is overridden by the debug resource
+            // overlay in src/debug/res. The release build (the "real" app) is untouched.
+            applicationIdSuffix ".test"
+        }
     }
 }
 

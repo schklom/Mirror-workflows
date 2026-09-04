@@ -23,6 +23,8 @@ COPY frontend/ ./
 RUN npm run build
 
 FROM nginx:alpine
+# Same reason as in api/Dockerfile: alpine fixes land faster than the nginx image is rebuilt.
+RUN apk upgrade --no-cache
 ARG VERSION=dev
 ARG VCS_REF=dev
 ARG BUILD_DATE=unknown

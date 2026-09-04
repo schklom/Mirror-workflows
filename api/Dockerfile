@@ -31,6 +31,11 @@ LABEL maintainer="Duarte Santos https://gitlab.com/DuarteSantos8" \
 
 WORKDIR /app
 
+# The base image is rebuilt on node's schedule, not alpine's: between two node releases the
+# alpine packages it ships (openssl above all) fall behind their fixes. Taking the upgrades at
+# build time keeps the published image at alpine's current state without waiting for node.
+RUN apk upgrade --no-cache
+
 # The unprivileged user Coach jobs drop to. Its uid cannot read /data, which is the control that
 # keeps a provider runtime away from users, passkeys and the session secret.
 #
@@ -82,3 +87,8 @@ VOLUME ["/coach-auth"]
 # ---------------------------------------------------------------------------------------------
 # Last, so that a plain `docker build ./api` keeps producing the runtime-free image.
 FROM base AS default
+# npm itself is only a build-time tool here: the server is started with `node server.js` and
+# nothing in it spawns npm. Its bundled dependency tree (tar, brace-expansion, ...) is where
+# every vulnerability the image scan ever reported lived — none of them was in a package the
+# app uses. Gone from the published image; the coach target keeps npm for the Codex CLI.
+RUN rm -rf /usr/local/lib/node_modules/npm /usr/local/bin/npm /usr/local/bin/npx

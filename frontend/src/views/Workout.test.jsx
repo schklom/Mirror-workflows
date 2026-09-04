@@ -888,7 +888,9 @@ describe('workout list view', () => {
     expect(focusButton(units()[0])).toBeTruthy()
   })
 
-  it('completing a set in list mode advances the current exercise like cards do', async () => {
+  // Since !92 finishing an exercise no longer moves the current marker on its own (cards use
+  // Next, the list uses "Set current"); completion still starts the rest like cards do.
+  it('completing a set in list mode starts the rest and leaves the current marker in place, like cards do', async () => {
     await mount([
       exercise('plain-bench', [false], { asked: true }),
       exercise('plain-row', [false], { asked: true }),
@@ -897,7 +899,7 @@ describe('workout list view', () => {
     await toggleSet(0)
 
     expect(mocks.S.active.entries[0].sets[0].done).toBe(true)
-    expect(mocks.S.active.cur).toBe(1)
+    expect(mocks.S.active.cur).toBe(0)
     expect(mocks.startRest).toHaveBeenCalledWith(90, expect.any(Number))
   })
 

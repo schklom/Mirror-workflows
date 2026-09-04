@@ -152,6 +152,11 @@ export const useStore = create((set, get) => {
     config: null,
     async loadConfig() {
       if (get().config) return get().config
+      return get().refreshConfig()
+    },
+    // Always asks. The cached copy is right for one boot, but an admin can switch the Coach on
+    // while a paired phone sits on the setup screen — that screen wants today's answer.
+    async refreshConfig() {
       try { const c = await api('/api/config'); set({ config: c }); return c }
       catch { return null }
     },
@@ -197,6 +202,7 @@ export const useStore = create((set, get) => {
     async connectToServer(url, code) {
       const user = await connect(url, code)   // throws on a bad URL/expired code — caller shows it
       get().setUser(user)
+      await get().refreshConfig()   // what this server offers (the Coach, guest mode) — see boot()
       await get().pullState()
       syncReminder(get().S)
       set({ needsMobileOnboarding: false })
@@ -243,6 +249,10 @@ export const useStore = create((set, get) => {
           try {
             const me = await api('/api/me')   // also catches a token revoked elsewhere (sign out everywhere)
             get().setUser(me.user)
+            // The paired server's /api/config, the same one the web boot reads: without it the
+            // phone never learned whether the server offers the Coach and told everyone "your
+            // server has no Coach enabled" — with the admin looking at a green test.
+            await get().loadConfig()
             await get().pullState()
           } catch (e) {
             if (e.status === 401) { await forgetRemote(); get().setGuest(true) }

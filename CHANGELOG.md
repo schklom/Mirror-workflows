@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+- 📱 **"Use my self-hosted openGym" works on a paired phone.** The phone app never fetched the
+  server's `/api/config` after boot or after pairing, so the Coach setup screen told everyone
+  "your server has no Coach enabled" — while the admin was looking at a passed test. The screen
+  now asks the server afresh every time it opens, and the boot and pairing paths load the config
+  like the web app always did. Reported on Discord.
+
 ## v1.3.0 — 2026-09-03
 
 The AI Coach gets the version number it deserves. v1.2.16, earlier today, was the release that

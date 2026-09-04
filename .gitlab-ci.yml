@@ -350,7 +350,10 @@ build:images:
         $TAGS \
         --push \
         "$CONTEXT"
-      DIGEST="$(docker buildx imagetools inspect "$REPO:$IMAGE_TAG" --format '{{.Manifest.Digest}}')"
+      # Older buildx builds ignore --format and print the whole Name/MediaType/Digest block, so
+      # pick the digest out of whatever comes back — a multi-line value breaks the dotenv upload.
+      DIGEST="$(docker buildx imagetools inspect "$REPO:$IMAGE_TAG" --format '{{.Manifest.Digest}}' | grep -oE 'sha256:[0-9a-f]{64}' | head -1)"
+      [ -n "$DIGEST" ] || { echo "could not read the digest of $REPO:$IMAGE_TAG" >&2; exit 1; }
       echo "pushed $REPO:$IMAGE_TAG @ $DIGEST"
       UPPER="$(echo "$IMAGE" | tr a-z A-Z)"
       {

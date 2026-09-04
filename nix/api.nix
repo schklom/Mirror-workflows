@@ -26,6 +26,7 @@ buildNpmPackage rec {
     runHook preInstall
     mkdir -p $out/lib/opengym-api
     cp -r node_modules $out/lib/opengym-api/
+    cp -r coach $out/lib/opengym-api/
     cp server.js push-messages.js verify-error.js $out/lib/opengym-api/
 
     mkdir -p $out/bin

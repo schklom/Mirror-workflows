@@ -4,10 +4,11 @@
 import { z } from 'zod'
 import { getState, getUser } from './state.js'
 import {
-  setLabel, exLine, muscleName, policyName, friendlyDuration, ratio, muscleOrder
+  fmt, setLabel, exLine, muscleName, policyName, friendlyDuration, ratio, muscleOrder
 } from './labels.js'
 import {
-  modeOf, workoutVolume, setsDone, effectiveRoutine, effectiveRoutineId
+  modeOf, workoutVolume, setsDone, effectiveRoutine, effectiveRoutineId,
+  buildSets, applyIntensifierPlan, lastEntryFor
 } from '../../frontend/src/lib/history.js'
 import { exOr } from '../../frontend/src/lib/exercises.js'
 import { isWarmupRow } from '../../frontend/src/lib/workout-model.js'
@@ -15,7 +16,7 @@ import {
   estimate1RM, best1RM, e1rmSeries, DEFAULT_FORMULA, REP_CAP
 } from '../../frontend/src/lib/onerm.js'
 import { loadOfWorkouts, rankOf, levelsOf } from '../../frontend/src/lib/muscles.js'
-import { policyFor } from '../../frontend/src/lib/progression.js'
+import { policyFor, nextPrescription, applyPrescription } from '../../frontend/src/lib/progression.js'
 
 /* ---------- helpers ---------- */
 
@@ -410,10 +411,146 @@ export const muscleBalance = {
   }
 }
 
+/* ---------- preview_session ---------- */
+
+// Where a number on the session screen actually came from. A routine's own sets/reps/weight
+// are the LAST fallback, not the first: buildSets() prefers the confirmed working weight and
+// the previous session's reps, and applyPrescription() then overwrites the weight with
+// whatever the progression policy decided. Reporting the winner is the whole point of this
+// tool — "the plan says 60" is not an answer to "what will the app show me".
+function sourceOf(S, cfg, plan, field) {
+  const decided = plan && plan.kind !== 'off' && plan.kind !== 'first' && plan[field] != null
+  if (decided) return 'progression'
+  if (field === 'weight') {
+    const conf = (S.exWeights || {})[cfg.id]
+    if (conf && conf.w > 0) return 'confirmed_weight'
+  }
+  return lastEntryFor(S, cfg.id) ? 'last_session' : 'routine_plan'
+}
+
+const SOURCE_TEXT = {
+  progression: 'the progression policy overrode the routine',
+  confirmed_weight: 'your confirmed working weight for this exercise',
+  last_session: 'carried over from the last time you did this exercise',
+  routine_plan: "the routine's own target"
+}
+
+/** preview_session — what starting this routine will actually put on screen. */
+export const previewSession = {
+  name: 'preview_session',
+  description:
+    'Preview the session a routine will actually open with — the numbers the user will see after the progression policy and their training history have overridden the routine\'s own targets. This is NOT the same as get_routine: a routine storing "squat 3x8 @ 60kg" can open at 75kg because the policy deloaded from the last logged session, and reps carry from history rather than from the plan. Always call this (not get_routine) before telling someone what weight they are about to lift, or before judging whether an edit to a routine had any effect. Returns, per exercise, the planned target, the policy\'s decision and its stated reason, the opening set rows, and where each number came from. Defaults to today\'s scheduled routine.',
+  schema: {
+    routine_id: z.string().min(1).optional().describe('Routine to preview. Defaults to the routine scheduled for `date`.'),
+    date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional().describe('Date the session would be started on, YYYY-MM-DD. Affects which routine is scheduled and any one-off day override. Defaults to today.')
+  },
+  handler: ({ routine_id, date }) => {
+    const S = getState()
+    if (!S) return noState()
+    const now = new Date()
+    const iso = date || (now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0'))
+
+    let r
+    if (routine_id) {
+      r = (S.routines || []).find(x => x.id === routine_id)
+      if (!r) { const e = new Error(`no routine with id ${JSON.stringify(routine_id)}`); e.code = 'ENOENT'; throw e }
+    } else {
+      r = effectiveRoutine(S, iso)
+      if (!r) return { date: iso, routine_id: null, routine_name: null, rest_day: true, note: 'no routine is scheduled for this date (rest day)', exercises: [] }
+    }
+
+    const unit = S.unit || 'kg'
+    const exercises = (r.ex || []).map((cfg, i) => {
+      const ex = exerciseOf(cfg.id, S)
+      const mode = modeOf({ ...cfg, id: cfg.id })
+      const plan = nextPrescription(S, cfg, r)
+      // Mirrors beginWorkout() exactly (sheets.jsx): build, apply the prescription, then stamp
+      // the intensifier. Anything less and the preview stops matching the real session.
+      const rows = applyIntensifierPlan(applyPrescription(buildSets(S, cfg), plan), cfg)
+      const work = rows.filter(s => !isWarmupRow(s))
+      const openW = work.length ? (work[0].w || 0) : 0
+      const openR = work.length ? (work[0].r || 0) : 0
+      const wSrc = sourceOf(S, cfg, plan, 'weight')
+      const rSrc = sourceOf(S, cfg, plan, 'reps')
+      return {
+        position: i + 1,
+        id: cfg.id,
+        name: ex.n,
+        mode,
+        policy: plan.policy,
+        policy_name: policyName(plan.policy),
+        planned: {
+          sets: cfg.sets || 1,
+          reps: mode === 'reps' ? (cfg.reps || 0) : undefined,
+          sec: mode === 'time' ? (cfg.sec || 0) : undefined,
+          min: mode === 'cardio' ? (cfg.min || 0) : undefined,
+          weight: cfg.weight != null ? cfg.weight : undefined,
+          summary: exLine(cfg, unit)
+        },
+        prescription: {
+          kind: plan.kind,
+          weight: plan.weight != null ? plan.weight : undefined,
+          reps: plan.reps != null ? plan.reps : undefined,
+          sets: plan.sets != null ? plan.sets : undefined,
+          sec: plan.sec != null ? plan.sec : undefined,
+          why: plan.why ? fmt(plan.why[0], plan.why.slice(1)) : null
+        },
+        opening_sets: rows.map(s => ({
+          phase: isWarmupRow(s) ? 'warmup' : 'work',
+          type: s.type || 'straight',
+          label: setLabel(cfg.id, { ...s, done: undefined }, { ...cfg, id: cfg.id }),
+          w: Number(s.w) || 0,
+          r: Number(s.r) || 0,
+          sec: Number(s.sec) || 0,
+          min: Number(s.min) || 0,
+          speed: Number(s.speed) || 0
+        })),
+        weight_source: wSrc,
+        weight_source_text: SOURCE_TEXT[wSrc],
+        reps_source: mode === 'reps' ? rSrc : undefined,
+        reps_source_text: mode === 'reps' ? SOURCE_TEXT[rSrc] : undefined,
+        // The headline: did editing the routine change anything the user will see? Tracked per
+        // dimension — a bodyweight exercise whose weight is 0 either way still counts when the
+        // rep target moved, and saying which one moved saves the caller diffing it themselves.
+        changed: [
+          ...(mode === 'reps' && cfg.weight != null && openW !== cfg.weight ? ['weight'] : []),
+          ...(mode === 'reps' && (cfg.reps || 0) > 0 && openR !== cfg.reps ? ['reps'] : [])
+        ],
+        differs_from_plan:
+          (mode === 'reps' && cfg.weight != null && openW !== cfg.weight) ||
+          (mode === 'reps' && (cfg.reps || 0) > 0 && openR !== cfg.reps)
+      }
+    })
+
+    const differing = exercises.filter(e => e.differs_from_plan)
+    return {
+      date: iso,
+      routine_id: r.id,
+      routine_name: r.name,
+      unit,
+      policy: policyFor(null, r, 'reps'),
+      policy_name: policyName(policyFor(null, r, 'reps')),
+      exercises,
+      // Surfaced separately so a coach reading this cannot miss it: these are the exercises
+      // where what the routine stores and what the athlete will see are two different numbers.
+      overridden_count: differing.length,
+      overridden: differing.map(e => ({
+        name: e.name,
+        planned_weight: e.planned.weight,
+        opening_weight: e.opening_sets.filter(s => s.phase === 'work')[0]?.w ?? null,
+        planned_reps: e.planned.reps,
+        opening_reps: e.opening_sets.filter(s => s.phase === 'work')[0]?.r ?? null,
+        changed: e.changed,
+        reason: e.prescription.why || e.weight_source_text
+      }))
+    }
+  }
+}
+
 /* ---------- registration list ---------- */
 
 export const TOOLS = [
-  listRoutines, getRoutine, getWeekPlan, listWorkouts, getWorkout, getBodyweight, estimate1rm, muscleBalance
+  listRoutines, getRoutine, previewSession, getWeekPlan, listWorkouts, getWorkout, getBodyweight, estimate1rm, muscleBalance
 ]
 
 function noState() {

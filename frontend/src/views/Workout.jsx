@@ -490,13 +490,17 @@ function ActiveWorkout() {
     if (!entry) return
     const activeId = state.active.id
     const entryId = entry.id
+    const entryCount = state.active.entries.length
     const routine = state.routines.find(r => r.id === state.active.routineId)
     exConfigSheet(exOr(entryId), entry.target, cfg => {
       // Store updates clone the state tree. If this exact object is no longer at the captured
       // index, the list changed while the sheet was open; an id check alone cannot distinguish
       // duplicate occurrences of the same exercise, so fail closed before cloning again.
+      // Every store write clones the tree (the bar-weight stepper inside this very sheet does
+      // one), so object identity is useless here. Same workout, same list length and the same
+      // exercise at the captured index is what "nothing shifted" means.
       const current = useStore.getState().S
-      if (current.active?.id !== activeId || current.active.entries?.[idx] !== entry) return
+      if (current.active?.id !== activeId || current.active.entries?.length !== entryCount || current.active.entries?.[idx]?.id !== entryId) return
       update(s => {
         const activeEntry = s.active?.id === activeId ? s.active.entries?.[idx] : null
         // The sheet may outlive its workout or entry. Never apply its result to whatever later
@@ -511,7 +515,7 @@ function ActiveWorkout() {
         // The sheet edits sets, reps, weight and warm-ups as well as the rule — so the rows are
         // rebuilt from the new config the way the session was, and only what you already logged
         // is kept in place (done warm-ups first, then done work sets, then the fresh remainder).
-        const fresh = applyIntensifierPlan(applyPrescription(buildSets(s, full, { step }), plan, step), full)
+        const fresh = applyIntensifierPlan(applyPrescription(buildSets(s, full, { step, useTarget: plan.kind === 'off' }), plan, step), full)
         const doneWarm = activeEntry.sets.filter(x => x.done && isWarmupRow(x))
         const doneWork = activeEntry.sets.filter(x => x.done && !isWarmupRow(x))
         const freshWarm = fresh.filter(isWarmupRow)
@@ -577,13 +581,17 @@ function ActiveWorkout() {
       checked = e.sets[i].done
       if (e.sets[i].done) {
         beep(S.sound, 1040, 0.12); vibrate(30)
-        const unitDone = unit.every(ui => (ui === idx ? e : A.entries[ui]).sets.every(x => x.done))
+        // The unit that owns the ticked set — not the marked one. Since !92 the marker no longer
+        // follows a finished exercise, and in list mode any exercise can be worked on, so judging
+        // the marker's unit here declared the workout complete after one set elsewhere.
+        const ownUnit = unitOf(units, idx)
+        const unitDone = ownUnit.every(ui => (ui === idx ? e : A.entries[ui]).sets.every(x => x.done))
         if (unitDone) workoutDone = !nextUnfinishedUnit(A.entries, supersetUnits(A.entries), idx)
         if (e.sets.every(x => x.done)) {
           exJustDone = true
-          const mx = bestWeightForEntry(e)
-          e.topW = mx || null
-          if (!s.active.backfill && mx > 0) { const cur = s.exWeights[e.id]; if (!cur || mx > cur.w) s.exWeights[e.id] = { w: mx, d: todayISO() } }
+          // topW is captured now; exWeights only at the finish (doFinishWorkout), so a typo you
+          // correct before finishing, or a discarded workout, never becomes the remembered best.
+          e.topW = bestWeightForEntry(e) || null
         }
       }
     }, true)

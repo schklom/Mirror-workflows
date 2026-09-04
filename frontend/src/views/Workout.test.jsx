@@ -219,7 +219,7 @@ describe('Workout set completion flow', () => {
     await toggleSet(0)
 
     expect(mocks.S.active.entries[0].topW).toBe(60)
-    expect(mocks.S.exWeights['plain-bench'].w).toBe(60)
+    expect(mocks.S.exWeights['plain-bench']).toBeUndefined()   // written at the finish, not while ticking
     expect(mocks.topWeightSheet).not.toHaveBeenCalled()
     expect(mocks.S.active.cur).toBe(0)
     expect(mocks.startRest).toHaveBeenCalledWith(90, expect.any(Number))
@@ -900,6 +900,21 @@ describe('workout list view', () => {
 
     expect(mocks.S.active.entries[0].sets[0].done).toBe(true)
     expect(mocks.S.active.cur).toBe(0)
+    expect(mocks.startRest).toHaveBeenCalledWith(90, expect.any(Number))
+  })
+
+  it('does not declare the workout complete after a set of a non-current exercise while sets remain', async () => {
+    // The marker stays on the finished bench (!92); ticking the first of three row sets must
+    // not open the completion sheet — the row's own unit still has two sets to go.
+    await mount([
+      exercise('plain-bench', [true], { asked: true }),
+      exercise('plain-row', [false, false, false], { asked: true }),
+    ], 0, { workoutView: 'list' })
+
+    await toggleSet(1)
+
+    expect(mocks.S.active.entries[1].sets[0].done).toBe(true)
+    expect(mocks.workoutCompleteSheet).not.toHaveBeenCalled()
     expect(mocks.startRest).toHaveBeenCalledWith(90, expect.any(Number))
   })
 

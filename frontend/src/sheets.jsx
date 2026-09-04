@@ -851,7 +851,7 @@ export function swapActiveWorkoutExercise(index) {
     const freestyle = !st.active?.routineId
     const step = defaultIncrement(ex.id, st.unit)
     const plan = freestyle ? null : nextPrescription(st, full, st.routines.find(r => r.id === st.active.routineId))
-    const built = buildSets(st, full, { step, ...(freestyle ? { preferLast: true } : {}) })
+    const built = buildSets(st, full, { step, ...(freestyle ? { preferLast: true } : {}), ...(plan?.kind === 'off' ? { useTarget: true } : {}) })
     const replacement = {
       id: ex.id,
       target: { ...cfg },

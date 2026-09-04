@@ -87,8 +87,14 @@ export function snapWeight(v, step) {
   if (!(step > 0)) return round1(v)
   return round1(Math.round(v / step) * step)
 }
+// A tap moves by one step. Snapping to the grid keeps the number identical to what progression
+// would prescribe (61.3 → 62.5 with a 1.25 step, not 62.55) — but only when the current value
+// already sits on that grid; from 62.5 with a 5 kg step a tap gives 67.5, not 70.
 export function stepWeight(value, step, direction) {
-  return Math.max(0, snapWeight((Number(value) || 0) + direction * step, step))
+  const v = Number(value) || 0
+  const onGrid = step > 0 && Math.abs(v - Math.round(v / step) * step) <= 0.1
+  const next = v + direction * step
+  return Math.max(0, onGrid ? snapWeight(next, step) : round1(next))
 }
 // Back off by DELOAD_FACTOR, landing on something you can actually load. Rounding to the
 // nearest step keeps the cut close to the intended 10 %, but on small weights the nearest

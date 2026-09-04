@@ -96,8 +96,9 @@ export default function Home() {
     </div>
 
     {/* Mobile-only: jump to the gym check-in cards (QR membership codes). Shown here as a quick
-        tap on arrival at the gym; the whole feature folds away in web/demo builds via MOBILE. */}
-    {MOBILE && (
+        tap on arrival at the gym; the whole feature folds away in web/demo builds via MOBILE,
+        and per user via the "Gym check-in" switch in Settings. */}
+    {MOBILE && S.checkIn !== false && (
       <div className="card tappable" style={{ cursor: 'pointer' }} {...tappable(() => nav('/checkin'))}>
         <div className="row between">
           <div className="row" style={{ gap: 9 }}>

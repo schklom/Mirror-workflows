@@ -1116,4 +1116,6 @@ export default {
   'What should change?': 'ควรเปลี่ยนอะไร',
   'Coach is thinking…': 'โค้ชกำลังคิด…',
   'Message the Coach…': 'ส่งข้อความถึงโค้ช…',
+  'Gym check-in': 'เช็คอินที่ยิม',
+  'Show a card on Home with your membership QR codes.': 'แสดงการ์ดพร้อม QR โค้ดสมาชิกของคุณบนหน้าหลัก',
 }

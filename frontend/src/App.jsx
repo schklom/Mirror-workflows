@@ -116,9 +116,9 @@ function Shell() {
             <Routes>
               <Route path="/home" element={<Home />} />
               {/* Gym check-in is mobile-only — it needs the native scanner and showing a QR to
-                  a turnstile makes no sense in a browser tab. Off mobile the route falls through
-                  to the catch-all redirect below. */}
-              {MOBILE && <Route path="/checkin" element={<CheckIn />} />}
+                  a turnstile makes no sense in a browser tab. Off mobile (or switched off in
+                  Settings) the route falls through to the catch-all redirect below. */}
+              {MOBILE && S.checkIn !== false && <Route path="/checkin" element={<CheckIn />} />}
               <Route path="/plan" element={<Plan />} />
               <Route path="/plan/r/:id" element={<RoutineEdit />} />
               <Route path="/workout" element={<Workout />} />

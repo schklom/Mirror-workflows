@@ -1105,4 +1105,6 @@ export default {
   'Camera permission is needed to scan. Enable it in Settings.': '스캔하려면 카메라 권한이 필요합니다. 설정에서 켜세요.',
   'Scanning is not available on this device.': '이 기기에서는 스캔을 사용할 수 없습니다.',
   'Could not start the scanner': '스캐너를 시작할 수 없습니다',
+  'Gym check-in': '헬스장 체크인',
+  'Show a card on Home with your membership QR codes.': '홈 화면에 회원 QR 코드 카드를 표시합니다.',
 }

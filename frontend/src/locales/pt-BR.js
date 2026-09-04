@@ -621,7 +621,9 @@ export const PT_BR_OVERRIDES = {
   'Could not read that image': 'Não foi possível ler essa imagem',
   'Camera permission is needed to scan. Enable it in Settings.': 'É necessária a permissão da câmera para escanear. Ative-a nos Ajustes.',
   'Scanning is not available on this device.': 'O escaneamento não está disponível neste dispositivo.',
-  'Could not start the scanner': 'Não foi possível iniciar o scanner'
+  'Could not start the scanner': 'Não foi possível iniciar o scanner',
+  'Gym check-in': 'Check-in na academia',
+  'Show a card on Home with your membership QR codes.': 'Mostra no Início um cartão com seus códigos QR de sócio.',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

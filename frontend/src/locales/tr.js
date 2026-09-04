@@ -1105,4 +1105,6 @@ export default {
   'Camera permission is needed to scan. Enable it in Settings.': 'Taramak için kamera izni gerekir. Ayarlar’dan etkinleştir.',
   'Scanning is not available on this device.': 'Tarama bu cihazda kullanılamıyor.',
   'Could not start the scanner': 'Tarayıcı başlatılamadı',
+  'Gym check-in': 'Salon girişi',
+  'Show a card on Home with your membership QR codes.': 'Ana sayfada üyelik QR kodlarınızı içeren bir kart gösterir.',
 }

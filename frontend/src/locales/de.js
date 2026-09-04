@@ -1124,4 +1124,6 @@ export default {
   'Camera permission is needed to scan. Enable it in Settings.': 'Zum Scannen wird die Kamera-Berechtigung benötigt. Aktiviere sie in den Einstellungen.',
   'Scanning is not available on this device.': 'Scannen ist auf diesem Gerät nicht verfügbar.',
   'Could not start the scanner': 'Scanner konnte nicht gestartet werden',
+  'Gym check-in': 'Gym-Check-in',
+  'Show a card on Home with your membership QR codes.': 'Zeigt auf Start eine Karte mit deinen Mitglieds-QR-Codes.',
 }

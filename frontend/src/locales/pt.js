@@ -1105,4 +1105,6 @@ export default {
   'Camera permission is needed to scan. Enable it in Settings.': 'É necessária a permissão da câmara para digitalizar. Ativa-a nas Definições.',
   'Scanning is not available on this device.': 'A digitalização não está disponível neste dispositivo.',
   'Could not start the scanner': 'Não foi possível iniciar o scanner',
+  'Gym check-in': 'Check-in no ginásio',
+  'Show a card on Home with your membership QR codes.': 'Mostra no Início um cartão com os teus códigos QR de sócio.',
 }

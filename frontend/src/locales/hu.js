@@ -1108,4 +1108,6 @@ export default {
   'What should change?': 'Mi változzon?',
   'Coach is thinking…': 'Az Edző gondolkodik…',
   'Message the Coach…': 'Üzenet az Edzőnek…',
+  'Gym check-in': 'Bejelentkezés a teremben',
+  'Show a card on Home with your membership QR codes.': 'A Kezdőlapon egy kártyát mutat a tagsági QR-kódjaiddal.',
 }

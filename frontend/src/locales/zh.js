@@ -1105,4 +1105,6 @@ export default {
   'Camera permission is needed to scan. Enable it in Settings.': '扫描需要相机权限。请在设置中开启。',
   'Scanning is not available on this device.': '此设备不支持扫描。',
   'Could not start the scanner': '无法启动扫描器',
+  'Gym check-in': '健身房签到',
+  'Show a card on Home with your membership QR codes.': '在首页显示一张包含会员二维码的卡片。',
 }

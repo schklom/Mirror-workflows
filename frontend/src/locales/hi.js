@@ -1105,4 +1105,6 @@ export default {
   'Camera permission is needed to scan. Enable it in Settings.': 'स्कैन करने के लिए कैमरा अनुमति चाहिए। इसे सेटिंग्स में चालू करें।',
   'Scanning is not available on this device.': 'इस डिवाइस पर स्कैनिंग उपलब्ध नहीं है।',
   'Could not start the scanner': 'स्कैनर शुरू नहीं हो सका',
+  'Gym check-in': 'जिम चेक-इन',
+  'Show a card on Home with your membership QR codes.': 'होम पर आपके सदस्यता QR कोड वाला कार्ड दिखाता है।',
 }

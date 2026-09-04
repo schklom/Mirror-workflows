@@ -139,8 +139,15 @@ function ExerciseBlock({ entryIdx, compact, onToggle, onField, onAddSet, onRemov
   // The effort column walks its own scale — see stepEffort. Weight and reps step up from 0
   // with no ceiling, as they always did.
   const bump = (s, i, col, dir) => {
-    if (col.eff) return onField(i, col.f, stepEffort(col.eff, s[col.f], dir))
-    onField(i, col.f, Math.max(0, Math.round(((s[col.f] || 0) + dir * col.step) * 100) / 100))
+    // Read the current value directly from the store rather than from the render-time snapshot.
+    // In a superset both ExerciseBlock instances share the same store subscription, so when one
+    // member's field changes the partner re-renders too, replacing the closure's `s` reference
+    // with a fresh clone before the next tap fires. Reading from the store avoids that stale-
+    // closure problem entirely and keeps every tap operating on the real current value.
+    const fresh = useStore.getState().S.active?.entries[entryIdx]?.sets[i]
+    const cur = fresh ? fresh[col.f] : s[col.f]
+    if (col.eff) return onField(i, col.f, stepEffort(col.eff, cur, dir))
+    onField(i, col.f, Math.max(0, Math.round(((cur || 0) + dir * col.step) * 100) / 100))
   }
   // Uses the shared stepper markup so a set row picks up the same control styling
   // as every other +/- field in the app.

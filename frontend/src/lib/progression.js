@@ -61,6 +61,11 @@ export function defaultIncrement(exId, unit) {
   if (unit === 'lb') return heavy ? 10 : 5
   return heavy ? 5 : 2.5
 }
+// Resolve the load step for reps-mode weight controls and progression. Timed exercises use
+// `inc` for seconds, so their optional weight column must not call this helper.
+export function weightIncrement(cfg, unit) {
+  return cfg && cfg.inc > 0 ? cfg.inc : defaultIncrement(cfg?.id, unit)
+}
 export const DEFAULT_SEC_INCREMENT = 5
 // Where adding another set of push-ups stops being progress and starts being a way to spend
 // an evening. Past this the honest advice is load or a harder variation (issue #33).
@@ -76,18 +81,22 @@ export function policyFor(cfg, routine, mode) {
 }
 
 const round1 = v => Math.round(v * 10) / 10
-// Snap to a loadable multiple of the step.
-function snap(v, step) {
+// Snap to a loadable multiple of the step. Manual weight controls use this same normalization
+// so fractional increments produce the same number as automatic progression.
+export function snapWeight(v, step) {
   if (!(step > 0)) return round1(v)
   return round1(Math.round(v / step) * step)
+}
+export function stepWeight(value, step, direction) {
+  return Math.max(0, snapWeight((Number(value) || 0) + direction * step, step))
 }
 // Back off by DELOAD_FACTOR, landing on something you can actually load. Rounding to the
 // nearest step keeps the cut close to the intended 10 %, but on small weights the nearest
 // step can be the weight you started from — so a deload that did not actually reduce
 // anything takes one step down instead. Never goes below a single step.
 function deloadTo(cur, step) {
-  let next = snap(cur * DELOAD_FACTOR, step)
-  if (next >= cur) next = snap(cur - step, step)
+  let next = snapWeight(cur * DELOAD_FACTOR, step)
+  if (next >= cur) next = snapWeight(cur - step, step)
   return Math.max(step, next)
 }
 
@@ -167,7 +176,9 @@ export function nextPrescription(S, cfg, routine) {
   const mode = modeOf(cfg)
   const policy = policyFor(cfg, routine, mode)
   const unit = S.unit || 'kg'
-  const inc = cfg.inc > 0 ? cfg.inc : (mode === 'time' ? DEFAULT_SEC_INCREMENT : defaultIncrement(cfg.id, unit))
+  const inc = mode === 'time'
+    ? (cfg.inc > 0 ? cfg.inc : DEFAULT_SEC_INCREMENT)
+    : weightIncrement(cfg, unit)
   if (policy === 'off') return { policy, kind: 'off' }
 
   const sessions = sessionsFor(S, cfg.id, cfg).filter(s => s.mode === mode)
@@ -218,7 +229,7 @@ export function nextPrescription(S, cfg, routine) {
     const range = normalizeRepRange(cfg.reps || last.goal || 10, cfg.repsMin, repStep(cfg))
     const top = range.reps
     const bottom = range.repsMin
-    if (last.ok) return { policy, kind: 'up', weight: snap(w + inc, inc), reps: bottom, why: ['Top of the rep range in every set — {0} {1} more, back to {2} reps.', inc, unit, bottom] }
+    if (last.ok) return { policy, kind: 'up', weight: snapWeight(w + inc, inc), reps: bottom, why: ['Top of the rep range in every set — {0} {1} more, back to {2} reps.', inc, unit, bottom] }
     if (stalls >= deloadAt) {
       const dw = deloadTo(w, inc)
       return { policy, kind: 'deload', weight: dw, reps: bottom, why: ['Stalled {0} sessions — deload to {1} {2}.', stalls, dw, unit] }
@@ -234,7 +245,7 @@ export function nextPrescription(S, cfg, routine) {
     const dbl = policy === 'greyskull' && last.goal > 0 && last.amrap >= last.goal * 2
     const step = dbl ? inc * 2 : inc
     return {
-      policy, kind: 'up', weight: snap(w + step, inc),
+      policy, kind: 'up', weight: snapWeight(w + step, inc),
       why: dbl
         ? ['Last set hit {0} reps — twice the target, so take a double jump of {1} {2}.', last.amrap, step, unit]
         : ['Every rep last time — {0} {1} more.', step, unit]

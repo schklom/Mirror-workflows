@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { parseHTML } from 'linkedom'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import Workout from './Workout.jsx'
+import { nextPrescription } from '../lib/progression.js'
 
 const mocks = vi.hoisted(() => {
   const state = {
@@ -398,6 +399,69 @@ describe('Workout add exercise flow', () => {
       'current-group', 'current-group',
     ])
     expect(mocks.S.active.cur).toBe(2)
+  })
+})
+
+describe('active workout weight controls', () => {
+  const press = async (label, selector) => {
+    const control = container.querySelector(selector)
+    const button = control?.querySelector(`button[aria-label="${label}"]`)
+    expect(button).toBeTruthy()
+    await act(async () => { button.dispatchEvent(new dom.Event('click', { bubbles: true })) })
+    await rerender()
+  }
+
+  it('uses the configured reps weight step for manual increases and decreases, with the default fallback', async () => {
+    await mount([exercise('plain-bench', [false], {
+      target: { mode: 'reps', reps: 5, weight: 60, bodyweight: false, inc: 1 },
+    })])
+
+    await press('Increase', '.setrow .stp.w')
+    expect(mocks.S.active.entries[0].sets[0].w).toBe(61)
+    await press('Decrease', '.setrow .stp.w')
+    expect(mocks.S.active.entries[0].sets[0].w).toBe(60)
+
+    await unmount()
+    await mount([exercise('plain-bench', [false])])
+    await press('Increase', '.setrow .stp.w')
+    expect(mocks.S.active.entries[0].sets[0].w).toBe(62.5)
+  })
+
+  it('matches automatic progression rounding for a fractional configured step', async () => {
+    const target = { mode: 'reps', sets: 1, reps: 5, weight: 60, bodyweight: false, inc: 1.25 }
+    const automatic = nextPrescription({
+      unit: 'kg',
+      workouts: [{ d: '2026-08-30', entries: [{ id: 'plain-bench', target, sets: [{ w: 60, r: 5, done: true }] }] }],
+    }, { id: 'plain-bench', ...target })
+
+    await mount([exercise('plain-bench', [false], { target, sets: [{ w: 60, r: 5, done: false }] })])
+    await press('Increase', '.setrow .stp.w')
+
+    expect(automatic.weight).toBe(61.3)
+    expect(mocks.S.active.entries[0].sets[0].w).toBe(automatic.weight)
+  })
+
+  it('uses the configured reps weight step for drop-set weight controls', async () => {
+    await mount([exercise('plain-bench', [false], {
+      target: { mode: 'reps', reps: 5, weight: 60, bodyweight: false, inc: 1 },
+      sets: [{ w: 60, r: 5, done: false, type: 'dropset', drops: [{ w: 50, r: 5 }] }],
+    })])
+
+    await press('Increase', '.subrow .stp')
+
+    expect(mocks.S.active.entries[0].sets[0].drops[0].w).toBe(51)
+  })
+
+  it('keeps timed seconds and optional timed weight on their existing steps', async () => {
+    await mount([exercise('timed-plank', [false], {
+      target: { mode: 'time', sec: 30, weight: 60, bodyweight: false, inc: 1 },
+      sets: [{ sec: 30, w: 60, done: false }],
+    })])
+
+    await press('Increase', '.setrow .stp.w')
+    expect(mocks.S.active.entries[0].sets[0].sec).toBe(35)
+    await press('Increase', '.setrow .stp.r')
+    expect(mocks.S.active.entries[0].sets[0].w).toBe(62.5)
   })
 })
 

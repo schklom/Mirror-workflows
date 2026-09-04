@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import {
   readSession, sessionsFor, stallCount, nextPrescription, applyPrescription,
-  policyFor, defaultIncrement, POLICIES_FOR, DELOAD_AFTER, MAX_BW_SETS
+  policyFor, defaultIncrement, weightIncrement, POLICIES_FOR, DELOAD_AFTER, MAX_BW_SETS
 } from './progression.js'
 import { EXDB } from './exercises.js'
 
@@ -100,6 +100,14 @@ describe('defaultIncrement', () => {
   })
   it('falls back for an unknown exercise', () => {
     expect(defaultIncrement('nope', 'kg')).toBe(2.5)
+  })
+})
+
+describe('weightIncrement', () => {
+  it('uses a positive exercise override and otherwise the exercise/unit default', () => {
+    expect(weightIncrement({ id: LIFT, inc: 1 }, 'kg')).toBe(1)
+    expect(weightIncrement({ id: LIFT }, 'kg')).toBe(2.5)
+    expect(weightIncrement({ id: HEAVY, inc: 0 }, 'kg')).toBe(5)
   })
 })
 

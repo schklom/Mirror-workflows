@@ -686,8 +686,10 @@ describe('preview_session', () => {
 
   // One routine, one exercise, scheduled for the pinned "today". Nothing from the demo seed,
   // so the arithmetic below is checkable by hand.
-  function only(cfg, { prog = 'off', workouts = [], exWeights = {} } = {}) {
-    S.routines = [{ id: 'r-preview', name: 'Preview', emoji: 'barbell', prog, ex: [cfg] }]
+  // Linear by default: with progression off the app opens the routine's own numbers (see the
+  // two tests at the end), so history-vs-plan precedence is only observable under a policy.
+  function only(cfg, { prog = 'linear', workouts = [], exWeights = {}, routine = {} } = {}) {
+    S.routines = [{ id: 'r-preview', name: 'Preview', emoji: 'barbell', prog, ex: [cfg], ...routine }]
     S.week = { [WD]: 'r-preview' }
     S.dayPlan = {}
     S.workouts = workouts
@@ -790,6 +792,55 @@ describe('preview_session', () => {
     const r = call('preview_session')
     expect(r.rest_day).toBe(true)
     expect(r.exercises).toEqual([])
+  })
+
+  test('with progression off the routine\'s own numbers open, whatever history says (matches session-start.js)', () => {
+    only({ id: '0025', sets: 3, reps: 8, weight: 50 }, {
+      prog: 'off',
+      exWeights: { '0025': { w: 72.5, d: '2026-07-20' } },
+      workouts: [{
+        id: 'w1', d: '2026-07-20', routineId: 'r-preview', name: 'Preview',
+        entries: [{ id: '0025', target: { id: '0025', sets: 3, reps: 5, weight: 60 }, sets: [{ w: 60, r: 5, done: true }] }]
+      }]
+    })
+    const out = call('preview_session')
+    const e = out.exercises[0]
+    expect(e.prescription.kind).toBe('off')
+    expect(e.opening_sets.map(s => [s.w, s.r])).toEqual([[50, 8], [50, 8], [50, 8]])
+    expect(e.weight_source).toBe('routine_plan')
+    expect(e.reps_source).toBe('routine_plan')
+    expect(e.differs_from_plan).toBe(false)
+    expect(out.overridden_count).toBe(0)
+  })
+
+  test('a deload routine (excludeFromProgression) opens its own numbers even under a policy', () => {
+    only({ id: '0025', sets: 3, reps: 5, weight: 50 }, {
+      prog: 'linear', routine: { excludeFromProgression: true },
+      workouts: [{
+        id: 'w1', d: '2026-07-20', routineId: 'r-preview', name: 'Preview',
+        entries: [{ id: '0025', target: { id: '0025', sets: 3, reps: 5, weight: 60 }, sets: [{ w: 60, r: 5, done: true }, { w: 60, r: 5, done: true }, { w: 60, r: 5, done: true }] }]
+      }]
+    })
+    const e = call('preview_session').exercises[0]
+    expect(e.prescription.kind).toBe('off')
+    expect(e.opening_sets.every(s => s.w === 50 && s.r === 5)).toBe(true)
+    expect(e.weight_source).toBe('routine_plan')
+  })
+
+  test('a timed exercise that progressed is listed as overridden too', () => {
+    only({ id: '0025', mode: 'time', sets: 3, sec: 30, inc: 10 }, {
+      prog: 'time',
+      workouts: [{
+        id: 'w1', d: '2026-07-20', routineId: 'r-preview', name: 'Preview',
+        entries: [{ id: '0025', target: { id: '0025', mode: 'time', sets: 3, sec: 30 }, sets: [{ sec: 45, done: true }, { sec: 45, done: true }, { sec: 45, done: true }] }]
+      }]
+    })
+    const out = call('preview_session')
+    const e = out.exercises[0]
+    expect(e.prescription.kind).toBe('up')
+    expect(e.changed).toEqual(['sec'])
+    expect(e.differs_from_plan).toBe(true)
+    expect(out.overridden[0].opening_sec).toBeGreaterThan(30)
   })
 
   test('an unknown routine_id is an error, not an empty session', () => {

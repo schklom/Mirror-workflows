@@ -111,8 +111,12 @@ export const useUI = create((set, get) => ({
       if (left <= 0) {
         if (seenLive) {
           beep(snd, 880, 0.15); beep(snd, 880, 0.15, 0.25); beep(snd, 1320, 0.4, 0.5)
-          vibrate([200, 100, 200]); get().flashTimer(); get().toast(t('Rest over — next set!'))
+          vibrate([200, 100, 200]); get().flashTimer()
         }
+        // The toast stays even when the rest ran out while the app was hidden: a guest, or anyone
+        // without push permission, gets no notification, and a countdown that silently vanishes
+        // on reopen reads like a bug. Only the loud parts (beep, vibration, flash) are gated.
+        get().toast(t('Rest over — next set!'))
         maybeRestNotification(); get().stopRest(); return
       }
       if (left <= 3) beep(snd, 660, 0.1)

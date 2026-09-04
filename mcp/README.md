@@ -120,7 +120,7 @@ dependencies landed in `frontend/`, no public exports changed.
 cd mcp && npm test
 ```
 
-54 cases seeding state from `frontend/src/lib/demoSeed.js` (the same deterministic fixture
+58 cases seeding state from `frontend/src/lib/demoSeed.js` (the same deterministic fixture
 the public demo runs on). Pins JSON shape and the user-facing edge cases: rest-day override,
 missing routine, zero-workout history, no synced state, superset links, three 1RM formulas.
 "Today" is pinned via `vi.useFakeTimers({ now: ..., toFake: ['Date'] })` so date-dependent

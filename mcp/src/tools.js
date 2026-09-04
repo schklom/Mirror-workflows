@@ -7,8 +7,7 @@ import {
   fmt, setLabel, exLine, muscleName, policyName, friendlyDuration, ratio, muscleOrder
 } from './labels.js'
 import {
-  modeOf, workoutVolume, setsDone, effectiveRoutine, effectiveRoutineId,
-  buildSets, applyIntensifierPlan, lastEntryFor
+  modeOf, workoutVolume, setsDone, effectiveRoutine, effectiveRoutineId, lastEntryFor
 } from '../../frontend/src/lib/history.js'
 import { exOr } from '../../frontend/src/lib/exercises.js'
 import { isWarmupRow } from '../../frontend/src/lib/workout-model.js'
@@ -16,7 +15,8 @@ import {
   estimate1RM, best1RM, e1rmSeries, DEFAULT_FORMULA, REP_CAP
 } from '../../frontend/src/lib/onerm.js'
 import { loadOfWorkouts, rankOf, levelsOf } from '../../frontend/src/lib/muscles.js'
-import { policyFor, nextPrescription, applyPrescription } from '../../frontend/src/lib/progression.js'
+import { policyFor } from '../../frontend/src/lib/progression.js'
+import { buildSessionEntries } from '../../frontend/src/lib/session-start.js'
 
 /* ---------- helpers ---------- */
 
@@ -419,7 +419,10 @@ export const muscleBalance = {
 // whatever the progression policy decided. Reporting the winner is the whole point of this
 // tool — "the plan says 60" is not an answer to "what will the app show me".
 function sourceOf(S, cfg, plan, field) {
-  const decided = plan && plan.kind !== 'off' && plan.kind !== 'first' && plan[field] != null
+  // Progression off (or a deload routine): the session is built from the routine's own target,
+  // exactly as session-start.js does with useTarget — history and the confirmed weight are ignored.
+  if (!plan || plan.kind === 'off') return 'routine_plan'
+  const decided = plan.kind !== 'first' && plan[field] != null
   if (decided) return 'progression'
   if (field === 'weight') {
     const conf = (S.exWeights || {})[cfg.id]
@@ -460,16 +463,20 @@ export const previewSession = {
     }
 
     const unit = S.unit || 'kg'
+    // The same builder the app starts a session with (sheets.jsx beginWorkout → session-start.js):
+    // prescription, step, progression-off targets, deload routines and warm-up ramps all come from
+    // there, so the preview cannot drift from what the screen shows.
+    const built = buildSessionEntries(S, r).entries
     const exercises = (r.ex || []).map((cfg, i) => {
       const ex = exerciseOf(cfg.id, S)
       const mode = modeOf({ ...cfg, id: cfg.id })
-      const plan = nextPrescription(S, cfg, r)
-      // Mirrors beginWorkout() exactly (sheets.jsx): build, apply the prescription, then stamp
-      // the intensifier. Anything less and the preview stops matching the real session.
-      const rows = applyIntensifierPlan(applyPrescription(buildSets(S, cfg), plan), cfg)
+      const plan = built[i].plan
+      const rows = built[i].sets
       const work = rows.filter(s => !isWarmupRow(s))
       const openW = work.length ? (work[0].w || 0) : 0
       const openR = work.length ? (work[0].r || 0) : 0
+      const openSec = work.length ? (work[0].sec || 0) : 0
+      const openMin = work.length ? (work[0].min || 0) : 0
       const wSrc = sourceOf(S, cfg, plan, 'weight')
       const rSrc = sourceOf(S, cfg, plan, 'reps')
       return {
@@ -514,11 +521,15 @@ export const previewSession = {
         // rep target moved, and saying which one moved saves the caller diffing it themselves.
         changed: [
           ...(mode === 'reps' && cfg.weight != null && openW !== cfg.weight ? ['weight'] : []),
-          ...(mode === 'reps' && (cfg.reps || 0) > 0 && openR !== cfg.reps ? ['reps'] : [])
+          ...(mode === 'reps' && (cfg.reps || 0) > 0 && openR !== cfg.reps ? ['reps'] : []),
+          ...(mode === 'time' && (cfg.sec || 0) > 0 && openSec !== cfg.sec ? ['sec'] : []),
+          ...(mode === 'cardio' && (cfg.min || 0) > 0 && openMin !== cfg.min ? ['min'] : [])
         ],
         differs_from_plan:
           (mode === 'reps' && cfg.weight != null && openW !== cfg.weight) ||
-          (mode === 'reps' && (cfg.reps || 0) > 0 && openR !== cfg.reps)
+          (mode === 'reps' && (cfg.reps || 0) > 0 && openR !== cfg.reps) ||
+          (mode === 'time' && (cfg.sec || 0) > 0 && openSec !== cfg.sec) ||
+          (mode === 'cardio' && (cfg.min || 0) > 0 && openMin !== cfg.min)
       }
     })
 
@@ -540,6 +551,10 @@ export const previewSession = {
         opening_weight: e.opening_sets.filter(s => s.phase === 'work')[0]?.w ?? null,
         planned_reps: e.planned.reps,
         opening_reps: e.opening_sets.filter(s => s.phase === 'work')[0]?.r ?? null,
+        planned_sec: e.planned.sec,
+        opening_sec: e.opening_sets.filter(s => s.phase === 'work')[0]?.sec ?? null,
+        planned_min: e.planned.min,
+        opening_min: e.opening_sets.filter(s => s.phase === 'work')[0]?.min ?? null,
         changed: e.changed,
         reason: e.prescription.why || e.weight_source_text
       }))

@@ -1093,6 +1093,11 @@ h4.sec{
 .ci-dots{display:flex;justify-content:center;gap:7px;margin-top:4px}
 .ci-dot{width:7px;height:7px;border-radius:50%;background:var(--surface-3);transition:background var(--fast),transform var(--fast)}
 .ci-dot.on{background:var(--acc);transform:scale(1.15)}
+/* browser camera sheet (components/CameraScan.jsx): the video fills a portrait plate, a dashed
+   square in the middle says "put the code here" — decoding reads the whole frame regardless. */
+.cam-wrap{position:relative;width:100%;aspect-ratio:3/4;max-height:58vh;border-radius:var(--r-lg);overflow:hidden;background:#000}
+.cam-wrap video{width:100%;height:100%;object-fit:cover;display:block}
+.cam-frame{position:absolute;inset:0;margin:auto;width:62%;aspect-ratio:1;border:2px dashed rgba(255,255,255,.75);border-radius:14px;pointer-events:none}
 /* ------------------------------------------------- the Coach entry on Plan -- */
 .coach-cta{
   display:flex;align-items:center;gap:13px;width:100%;text-align:left;

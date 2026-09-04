@@ -5,7 +5,6 @@ import { useUI } from './store/useUI.js'
 import { bindUI } from './components/ui.jsx'
 import { ACCENTS } from './lib/format.js'
 import { setLang, useLang } from './lib/i18n.js'
-import { MOBILE } from './lib/mobile.js'
 import { setNav } from './lib/nav.js'
 import { initBackButton } from './lib/back.js'
 import { useWakeLock } from './lib/wakelock.js'
@@ -115,10 +114,9 @@ function Shell() {
           {!authed ? <Login /> : needsMobileOnboarding ? <MobileOnboarding /> : (
             <Routes>
               <Route path="/home" element={<Home />} />
-              {/* Gym check-in is mobile-only — it needs the native scanner and showing a QR to
-                  a turnstile makes no sense in a browser tab. Off mobile (or switched off in
-                  Settings) the route falls through to the catch-all redirect below. */}
-              {MOBILE && S.checkIn !== false && <Route path="/checkin" element={<CheckIn />} />}
+              {/* Gym check-in — switched off in Settings, the route falls through to the
+                  catch-all redirect below. */}
+              {S.checkIn !== false && <Route path="/checkin" element={<CheckIn />} />}
               <Route path="/plan" element={<Plan />} />
               <Route path="/plan/r/:id" element={<RoutineEdit />} />
               <Route path="/workout" element={<Workout />} />

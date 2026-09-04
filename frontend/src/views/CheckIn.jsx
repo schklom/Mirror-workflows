@@ -6,13 +6,15 @@ import { uid } from '../lib/format.js'
 import { t } from '../lib/i18n.js'
 import { canRenderFmt } from '../lib/qr.js'
 import { scanCode, importCodeFromImage } from '../lib/scan.js'
+import { MOBILE } from '../lib/mobile.js'
 import Icon from '../components/Icon.jsx'
 import QrCanvas from '../components/QrCanvas.jsx'
+import CameraScan from '../components/CameraScan.jsx'
 import { Button, TextField } from '../components/ui.jsx'
 import { confirmSheet } from '../sheets.jsx'
 import { tappable } from '../lib/use-sheet-keyboard.js'
 
-// Gym check-in (mobile-only, reached from the Home "Check in" card). Shows each saved membership
+// Gym check-in (reached from the Home "Check in" card; app and PWA alike). Shows each saved membership
 // code as a QR the turnstile can read, swiped through horizontally, with a trailing "+" to add
 // another. We only ever store the code's value + symbology; the QR is regenerated from it here
 // every time (see lib/qr.js), so nothing sensitive is kept as an image.
@@ -83,9 +85,8 @@ function CardFace({ card }) {
 
 /* ------------------------------------------------------------- add-card sheet -- */
 
-// Opens the add-card sheet. Co-located with the view (not sheets.jsx) because the whole feature
-// is mobile-only and pulls in the native scanner — keeping it here keeps that out of the shared,
-// web-bundled sheets module.
+// Opens the add-card sheet. Co-located with the view (not sheets.jsx) because it pulls in the
+// scanner paths — keeping it here keeps them out of the shared sheets module.
 export function openAddCard() {
   useUI.getState().openSheet(close => <AddCard close={close} />)
 }
@@ -115,9 +116,20 @@ function AddCard({ close }) {
 
   const commitTyped = () => { if (saveCard({ label, value, fmt: 'qrcode' })) close() }
 
-  // Camera scan: hands off to the native scanner, comes back with a value we drop straight into
-  // the form so the user can still name it before saving.
+  // Camera scan: in the app, hands off to the native scanner; in a browser, opens our own camera
+  // sheet on top of this one. Either way the value drops straight into the form so the user can
+  // still name it before saving.
   const doScan = async () => {
+    if (!MOBILE) {
+      useUI.getState().openSheet(close => <CameraScan
+        onCancel={close}
+        onFound={code => {
+          close()
+          if (!canRenderFmt(code.fmt)) { toast(t("That's not a QR code — only QR cards can be shown here")); return }
+          setValue(code.value)
+        }} />)
+      return
+    }
     setBusy(true)
     try {
       const code = await scanCode()

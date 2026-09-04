@@ -1,12 +1,11 @@
-// QR rendering for the gym check-in cards (mobile-only feature — see views/CheckIn.jsx).
+// QR rendering for the gym check-in cards (see views/CheckIn.jsx).
 //
 // We never store a photo of a membership card, only its decoded value (+ its symbology in
 // `fmt`). The picture a turnstile scanner reads is regenerated from that value every time the
 // card is shown, here.
 //
-// lean-qr (MIT, see NOTICE.md) is loaded with a dynamic import so its ~4kB never lands in the
-// web bundle — the whole feature is gated behind MOBILE, but the library itself is plain JS a
-// static import would otherwise pull into every build.
+// lean-qr (MIT, see NOTICE.md) is loaded with a dynamic import so its ~4kB only loads when a
+// card is actually shown, on every platform — the PWA renders the same code as the app.
 //
 // Scope: lean-qr generates QR codes only. A gym card is virtually always a QR code, and the
 // capture flow (lib/scan.js) refuses any symbology we cannot faithfully reproduce, so a stored

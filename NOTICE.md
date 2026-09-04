@@ -126,16 +126,18 @@ the source files.
 
 ## Gym check-in QR codes
 
-The mobile-only gym check-in feature (a saved membership code shown as a QR/barcode on the phone,
-added by typing, importing a photo, or scanning with the camera) uses two third-party packages.
-Both are permissively licensed and compatible with openGym's AGPL, and both are bundled only in
-the mobile build — the web and demo builds never ship them.
+The gym check-in feature (a saved membership code shown as a QR code on the phone, added by
+typing, importing a photo, or scanning with the camera) uses three third-party packages. All are
+permissively licensed and compatible with openGym's AGPL, and all load on demand: the QR renderer
+and the browser decoder only when a card is shown or scanned, the ML Kit plugin only in the
+Android/iOS app.
 
 ### QR/barcode rendering — `lean-qr`
 
 openGym renders each saved code on the phone with [**lean-qr**](https://github.com/davidje13/lean-qr)
 by David Evans, used under the **MIT License** and reproduced below. Only the code's stored value
 is kept; the picture is generated fresh from that value each time it is shown, never stored.
+It runs the same way in the app and in the browser/PWA.
 
 ```
 MIT License
@@ -161,9 +163,17 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
 
-### Camera scan & photo decode — `@capacitor-mlkit/barcode-scanning`
+### Camera scan & photo decode in the browser — `jsQR`
 
-Reading a code — from the camera or from an imported photo — uses the
+In a browser (including the installed PWA), reading a code from the camera or from an imported
+photo uses [**jsQR**](https://github.com/cozmo/jsQR) by Cosmo Wolfe, under the **Apache License
+2.0** (text at <https://www.apache.org/licenses/LICENSE-2.0> and in the package's own `LICENSE`).
+Where the browser has a native `BarcodeDetector`, that is tried first and jsQR is the fallback.
+Video frames are decoded in memory and never uploaded or stored.
+
+### Camera scan & photo decode in the app — `@capacitor-mlkit/barcode-scanning`
+
+In the Android/iOS app, reading a code — from the camera or from an imported photo — uses the
 [**@capacitor-mlkit/barcode-scanning**](https://github.com/capawesome-team/capacitor-mlkit) plugin
 by the Capawesome Team (Robin Genz), a Capacitor wrapper around Google's ML Kit, used under the
 **Apache License 2.0**. openGym pins the `7.x` line to stay on Capacitor 7. The full license text is

@@ -1,11 +1,14 @@
-// Capturing a gym check-in code (mobile-only — see views/CheckIn.jsx). Three ways in:
+// Capturing a gym check-in code (see views/CheckIn.jsx). Three ways in:
 //   1. type it            — no plugin, handled entirely in the view
 //   2. import a photo      — importCodeFromImage(file): decode a picture the user already has
-//   3. scan with camera    — scanCode(): live camera via ML Kit's own scanner UI
+//   3. scan with camera    — scanCode(): live camera via ML Kit's own scanner UI (app build);
+//                            in a browser the view opens components/CameraScan.jsx instead
 //
-// Both plugin paths dynamic-import @capacitor-mlkit/barcode-scanning (Apache-2.0, see NOTICE.md)
-// so it never lands in the web bundle — the whole feature is behind MOBILE, and every entry point
-// here throws a plain Error off mobile rather than importing a native module that isn't there.
+// The app build (MOBILE) decodes with @capacitor-mlkit/barcode-scanning (Apache-2.0, see
+// NOTICE.md), dynamic-imported so it never lands in the web bundle. In a browser — the PWA on a
+// phone is the common case — photo import goes through lib/scan-web.js (BarcodeDetector where the
+// browser has one, jsQR otherwise). scanCode() itself is app-only: ML Kit brings its own camera
+// UI, the browser path is a React sheet and lives with the view.
 //
 // What comes back is a normalized { value, fmt } (or null when the user cancels / nothing was
 // found). `value` is the code's machine-readable content; `fmt` is a lower-cased symbology token
@@ -47,8 +50,8 @@ export async function scanCode() {
 // through the app's cache dir (reusing @capacitor/filesystem, already a dependency) to get a real
 // path, decode, then delete the temp file. Returns the first barcode, or null if none was found.
 export async function importCodeFromImage(file) {
-  if (!MOBILE) throw new Error('Importing is only available in the app')
   if (!file) return null
+  if (!MOBILE) return (await import('./scan-web.js')).importCodeFromImageWeb(file)
   const { BarcodeScanner } = await import('@capacitor-mlkit/barcode-scanning')
   const { Filesystem, Directory } = await import('@capacitor/filesystem')
 

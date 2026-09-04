@@ -140,6 +140,11 @@ export default function Settings() {
           options={[{ value: MONDAY, label: t('Monday') }, { value: SUNDAY, label: t('Sunday') }]}
           value={weekStartOf(S)} onChange={v => update(s => { s.weekStart = v })} />
       </Row>
+      {/* Membership QR codes on Home (views/CheckIn.jsx); off = no Home card, no route. */}
+      <Row icon="qr" iconTint="var(--blue)" title={t('Gym check-in')}
+        subtitle={t('Show a card on Home with your membership QR codes.')}>
+        <Switch checked={S.checkIn !== false} onChange={v => update(s => { s.checkIn = v })} />
+      </Row>
     </Section>
 
     {/* ---------- during a workout ---------- */}

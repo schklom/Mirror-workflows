@@ -34,6 +34,18 @@ export const DEF = {
   // lib/bar.js). Personal equipment, so it syncs with the account but never travels in a
   // shared plan. Logged weights stay the total — this only feeds the plate math.
   barWeights: {},
+  // Gym check-in cards (see views/CheckIn.jsx). Each is a membership
+  // code shown as a QR/barcode at the gym's turnstile — added by typing it, importing a photo
+  // of the card, or scanning it. We only ever keep the code's VALUE, never a photo: the image
+  // is regenerated from `value` every time it's shown (lib/qr.js). `fmt` is the barcode symbology
+  // ('qrcode' | 'ean13' | 'code128' | … — lower-cased BarcodeFormat) so it renders as the same
+  // kind of code the gym issued. Just data, so it syncs and backs up like everything else.
+  //   [{ id, label, value, fmt }]
+  gymCards: [],
+  // Whether the check-in feature is on at all (Settings toggle). Off hides the Home
+  // card and the /checkin route; the saved gymCards stay so turning it back on restores them.
+  // Defaults on; an older profile without the key reads as on (`!== false`).
+  checkIn: true,
 }
 const clone = o => JSON.parse(JSON.stringify(o))
 

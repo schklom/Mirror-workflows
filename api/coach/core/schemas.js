@@ -59,6 +59,11 @@ const EX_SCHEMA = {
   required: ['id', 'sets']
 };
 
+// `week` and `routines[].id` are required, not optional: the week is the only thing that says
+// which day trains which routine, and it points at a routine by id. A schema that leaves either
+// out lets a small local model answer with routines that have no id and a week naming "r1" —
+// grammar-valid, and something validate.js can only ever reject ("the week schedules 0 days but
+// 3 were asked for"), through the repair round and out as a failed job.
 export const CREATE_SCHEMA = {
   type: 'object',
   properties: {
@@ -75,7 +80,7 @@ export const CREATE_SCHEMA = {
           id: STR, name: STR, emoji: STR, prog: STR, why: STR,
           ex: { type: 'array', items: EX_SCHEMA }
         },
-        required: ['name', 'ex']
+        required: ['id', 'name', 'ex']
       }
     },
     customEx: {
@@ -83,7 +88,7 @@ export const CREATE_SCHEMA = {
       items: { type: 'object', properties: { id: STR, n: STR, bp: STR, desc: STR }, required: ['id', 'n'] }
     }
   },
-  required: ['coach_contract', 'routines']
+  required: ['coach_contract', 'week', 'routines']
 };
 
 export const DEBRIEF_SCHEMA = {

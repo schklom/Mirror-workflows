@@ -2,6 +2,7 @@
   lib,
   buildNpmPackage,
   nodejs_22,
+  importNpmLock,
   version,
 }:
 
@@ -13,7 +14,8 @@ buildNpmPackage rec {
 
   nodejs = nodejs_22;
 
-  npmDepsHash = "sha256-bmhFw2K1+6VusIUc0346abExPxyaDnY+X8AnWbbkWvE=";
+  npmDeps = importNpmLock { npmRoot = src; };
+  npmConfigHook = importNpmLock.npmConfigHook;
 
   npmBuildScript = "build";
 

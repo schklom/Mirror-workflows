@@ -3,6 +3,7 @@
   buildNpmPackage,
   nodejs_22,
   makeWrapper,
+  importNpmLock,
   version,
 }:
 
@@ -17,7 +18,8 @@ buildNpmPackage rec {
 
   nodejs = nodejs_22;
 
-  npmDepsHash = "sha256-15xl0gNcmAdcPp/cwlJNIAmNqoRWM1dsMwwAloNZeu0=";
+  npmDeps = importNpmLock { npmRoot = src; };
+  npmConfigHook = importNpmLock.npmConfigHook;
 
   dontNpmBuild = true;
 

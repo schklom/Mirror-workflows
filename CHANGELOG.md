@@ -1,5 +1,149 @@
 # Changelog
 
+## v1.3.1 — 2026-09-04
+
+- 📱 **"Use my self-hosted openGym" works on a paired phone.** The phone app never fetched the
+  server's `/api/config` after boot or after pairing, so the Coach setup screen told everyone
+  "your server has no Coach enabled" — while the admin was looking at a passed test. The screen
+  now asks the server afresh every time it opens, and the boot and pairing paths load the config
+  like the web app always did. Reported on Discord.
+
+## v1.3.0 — 2026-09-03
+
+The AI Coach gets the version number it deserves. v1.2.16, earlier today, was the release that
+got it out of the door; v1.3.0 is the same app with one more fix, and the number that says
+"something new is in here" to everyone who reads a changelog. If you are on v1.2.16, this is
+a small update. If you are on anything older, read the v1.2.15/v1.2.16 notes below — the Coach,
+bar weights, the rest-day line and the rewritten admin dashboard are all new to you.
+
+- 🗺️ **The Strength map's list makes sense again.** Below the map, every detrained muscle
+  showed its set count of the last 90 days — which, for a muscle that is on that list precisely
+  because it has not been trained lately, was a column of "0 sets", and where it was not zero it
+  printed as `1.2000000000000002`. Each row now says how many weeks ago the muscle was last
+  trained (or "not trained"), with the rounded 90-day sets on top only when there are any.
+
+## v1.2.16 — 2026-09-03
+
+- 🐳 **The web image builds again.** v1.2.15's tag pipeline published the API image and the APK
+  but the web image failed to build: the frontend imports the Coach's core from `api/coach/core`,
+  and `web/Dockerfile` copied only `frontend/`. The image now carries that directory at the same
+  relative position it has in the repository, and a new `build:web-check` job builds the web
+  image on every merge request that touches the frontend, the Dockerfile or the core — the API
+  image had that check, the web image did not. Nothing else changed; v1.2.15's notes below are
+  this release's notes.
+
+## v1.2.15 — 2026-09-03
+
+The AI Coach. An optional coach that designs a training plan from a few answers and reviews
+what you actually log — off by default, switched on by the admin, consented to by each user,
+and driven by whatever AI you bring: an Anthropic, OpenAI or Gemini API key, any
+OpenAI-compatible endpoint (Ollama, LM Studio, vLLM, OpenRouter), or a Claude Code / Codex
+runtime inside the container. Nothing it proposes is applied on its own; every change carries
+its reason and can be undone. Details in [docs/AI_COACH.md](docs/AI_COACH.md). Also in this
+release: per-exercise bar weight, a rest-day line on the home screen, and the admin dashboard
+rewritten in plain language — those three shipped to main earlier and are here for everyone.
+
+### AI Coach
+
+- 🔑 **One API key serves the whole instance.** A pasted Anthropic, OpenAI, Gemini or
+  OpenAI-compatible key is shared by every profile, bounded by the daily limits in the admin
+  card — it is metered and issued for exactly this use. Only a *personal* credential (a Claude
+  Code setup token) still binds to the first profile that spends it, and that binding now
+  actually happens when a job runs rather than only existing in the tests.
+- 🔁 **A rate limit or an overloaded provider is not a failed job.** 429, 529 and 5xx get two
+  more tries a few seconds apart before the status becomes the job's failure; a 4xx that means
+  the request is wrong is never retried.
+- 🔥 **Warm-up sets no longer read as work.** They were counted into stalls (a light ramp set
+  below the rep target looked like a miss), into done/planned sets and into the top set of a
+  session. They are now filtered the way the app's own progression engine filters them, and
+  the few that still travel in full sessions are flagged `warmup: true` so the model reads
+  them as prep.
+- ✍️ **Admin card fields are visible again.** The base-URL and model fields shared the card's
+  background and the two daily-limit numbers were the browser's white default box; both are
+  real fields now, sized so a phone does not zoom into them.
+- 🧪 **An API key is proven end to end in CI**: a local stand-in for each provider's API
+  receives the pasted key on the right header, the cached rules block, the schema, and answers
+  a review that lands as a proposal — the test that says "paste a key and it works".
+
+- ⚡ **A local model answers in a fraction of the time.** The prompt is split so the rules —
+  identical for every job of a task — ride as the system message and only the payload changes:
+  a llama.cpp/Ollama endpoint reuses its KV prefix cache instead of re-reading ~2.7k tokens of
+  rules per job, and Anthropic caches the same block server-side at a tenth of the input price.
+  The payload itself shrank by more than half: compact JSON, full set-by-set detail only for
+  the five most recent sessions (older ones become one line per exercise — `aggregates`
+  already counts stalls over the whole window), and a library slice of `{id, name, bodypart}`.
+  ~14,600 tokens processed per review before; ~5,900 now, plus a cached prefix.
+- 🎯 **The answer cannot leave its shape.** Providers that support schema-constrained decoding
+  (Ollama, LM Studio, vLLM, OpenAI) get a JSON schema with the request; the repair round is
+  for content now, not syntax. Endpoints that reject it fall back to JSON mode, then to plain
+  text, exactly as before — and the validator stays the only judge either way. The
+  OpenAI-compatible endpoint also runs at temperature 0: a plan diff wants determinism.
+
+- 🏁 **A debrief of one workout.** "Review my last workout" hands the Coach a single session —
+  with the last three of the same routine, the stall picture and four weeks of weigh-ins — and
+  gets back a score out of ten, what went well, what to watch and what to do next time, each
+  item citing the session's own numbers. It cannot carry a plan change: the validator refuses
+  one rather than trimming it. Kept in the Coach history like everything else.
+- 👥 **Compare with others on your instance — if the admin allows it.** A new switch under
+  Advanced turns on anonymous medians across profiles that opt in (each person flips *Include
+  me* in the chat; a profile that does not share sees nothing). Sessions per week and the best
+  estimated 1RM per exercise, you against the median, plus a rank — only where three or more
+  people train it, and nothing at all until three people share. The same medians (in kg) go to
+  the model on a review or a debrief, for perspective only. The opt-in lives server-side, not in
+  synced state, so a stale device cannot flip it back on.
+- 💬 **The Coach is a conversation now.** The first visit is an intake in the style of a phone
+  setup — one question per screen, 1–7 days a week, session length as hours:minutes, the consent
+  text with room to read it. After that it is a chat: your answers are the first message, a
+  typing bubble counts the seconds while the job runs, the plan lands as a card with a tab per
+  routine and the reason under every change, free text asks for a refinement, one button
+  applies it. Coming back, asking for a review, changing an answer — same chat. The per-user
+  off switch is gone; only the admin turns the Coach off.
+- 🧭 **Admin card in numbered steps** — provider → endpoint → access → model → test — with a
+  status pill and plain-language state; limits, account and isolation under *Advanced*, the job
+  log under *Activity*.
+- ⏱️ **A local model gets the time it needs.** `COACH_JOB_TIMEOUT_MS` raises the five-minute job
+  budget for a CPU-bound Ollama or LM Studio; the api's HTTP client now waits as long as the job
+  does instead of hanging up after undici's 300 s while the model was still typing; the phone's
+  own-key mode gives a local endpoint 25 minutes and never lets the native transport cut first;
+  and the chat stops promising "a minute or two" when the endpoint is local.
+- 📚 **The exercise catalogue in the payload is capped at 160** — round-robin across body
+  parts, deterministic, with everything in your plan and your history always included so a
+  review can name what it is talking about. All 1,324 used to go along: 10k+ tokens a job
+  against a metered API, and more than a small local model's context holds.
+- 🧪 **A single session is not a trend.** The review prompt now refuses structural changes on
+  fewer than three sessions or less than a week of data — a small model used to remove a leg
+  exercise because "the one session had no leg work".
+- 🔑 **Four providers that only need an API key.** Anthropic, OpenAI, Google Gemini, and any
+  OpenAI-compatible endpoint — Ollama, LM Studio, vLLM, OpenRouter, a gateway of your own — can
+  now drive the Coach. They speak plain HTTPS from the api process, so they need no AI runtime
+  in the image and no unprivileged user: **they work on the default `api` image.** The `coach`
+  image is now only for the Claude Agent SDK and the Codex CLI. Setup is a chip and a pasted key
+  in Settings → Admin → AI Coach; **List models** fills the model picker from what the endpoint
+  actually serves. A model on your LAN is the compatible endpoint with no key.
+- 🗝️ **Keys, models and account bindings are kept per provider.** Switching chips used to clear
+  the stored credential; now each provider keeps its own, and the chip shows when one is held.
+  `./data/coach.json` changed shape for this: an existing file's one flat credential, model and
+  binding are lifted onto the provider they belonged to on first load. **One-way** — downgrading
+  to an earlier build will not read them back, which costs one paste of the key.
+- 🔓 **The Anthropic API-key path was unreachable.** The admin card hid "Use an API key" for
+  any provider that also took a setup token, which was exactly the Claude one. Both buttons
+  render now.
+- 📱 **The Coach on the App-Store build**, chosen in Settings → AI Coach: pair the phone with
+  your self-hosted instance and the Coach runs there, or bring your own API key and the phone
+  calls the provider directly with the same allowlist, validator and repair round as the server.
+  Nothing AI-related is loaded until one of the two is chosen; a BYOK key lives in the
+  platform's secure storage, never in the app's state; a local daily cap bounds what you spend.
+- 🧱 The Coach's core — payload builder, validator, parser, prompts, plan fingerprint and the
+  invoke → parse → validate → repair loop — moved to `api/coach/core/`, runtime-neutral, so the
+  phone imports the same code the server runs. The exercise catalogue and the prompts are
+  generated ES modules (`scripts/build-coach-assets.mjs --check` in CI), and
+  `api/scripts/check-core-loadable.mjs` proves the core still loads under bare node.
+- 🛡️ Validator hardening: the lifter's own custom exercises are now accepted when the model
+  names them (they were offered to it and then refused, burning the one repair round); ids that
+  are object keys downstream (`__proto__`, `constructor`) are refused; weight and speed have
+  ceilings; an exercise cannot be added twice to a routine; two changes cannot share an id; a
+  weight for an exercise never lifted is dropped rather than guessed.
+
 ## v1.2.14 — 2026-08-30
 
 The largest community release so far: twenty merge requests from ten contributors, read and

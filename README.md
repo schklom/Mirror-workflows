@@ -20,6 +20,8 @@ No account on someone else's server, no subscription, no ads. Just `docker compo
 ![No tracking](https://img.shields.io/badge/telemetry-none-f472b6?style=flat-square)
 <br>
 [![Pipeline](https://gitlab.com/DuarteSantos8/opengym/badges/main/pipeline.svg?style=flat-square)](https://gitlab.com/DuarteSantos8/opengym/-/pipelines)
+[![Coverage](https://gitlab.com/DuarteSantos8/opengym/badges/main/coverage.svg?job=test:frontend&style=flat-square)](https://gitlab.com/DuarteSantos8/opengym/-/pipelines?ref=main)
+[![Release](https://gitlab.com/DuarteSantos8/opengym/-/badges/release.svg?style=flat-square)](https://gitlab.com/DuarteSantos8/opengym/-/releases)
 ![Last commit](https://img.shields.io/gitlab/last-commit/DuarteSantos8%2Fopengym?style=flat-square)
 [![Stars](https://img.shields.io/gitlab/stars/DuarteSantos8%2Fopengym?style=flat-square)](https://gitlab.com/DuarteSantos8/opengym/-/starrers)
 [![Issues](https://img.shields.io/gitlab/issues/open/DuarteSantos8%2Fopengym?style=flat-square)](https://gitlab.com/DuarteSantos8/opengym/-/issues)
@@ -95,6 +97,7 @@ as a home-screen app, passkey sign-in, offline support, sync across your phone a
 - 📥 **Bring your history with you** — import from **FitNotes** (Android and iOS), **Strong** and **Hevy** (CSV or directly with a [Hevy Pro API key](https://hevy.com/settings?developer)), or body weight straight out of an **Apple Health** export. Exercise names are matched against the library and anything unrecognised becomes one of your own exercises, so nothing in the file is dropped
 - 📦 **Yours to keep** — one-tap JSON export/import, guest mode, **no telemetry**
 - 🤖 **Ask an AI about your training** (optional) — an [MCP server](mcp/README.md) lets a client like Claude Desktop or Cursor read your history in your own words: *"what did I bench last week?"*. Read-only, spawned locally by the client, nothing leaves your box. Not in the Docker build — if you don't use an AI assistant, it isn't there
+- 🧠 **An AI coach that writes your plan** (optional, off by default) — answer a handful of questions and it designs a week of routines; later it reads what you actually logged and proposes changes, each one with the evidence behind it. You approve every change and can undo it. It runs on **your** server under **your** provider account — Anthropic, OpenAI, Gemini or any OpenAI-compatible endpoint (Ollama on your LAN counts) with a pasted API key on the default image, or the Claude Agent SDK / Codex CLI on a separate build. The phone app can use your instance or its own key. See [docs/AI_COACH.md](docs/AI_COACH.md)
 - 📱 **Standalone Android app** — the whole tracker as a sideloadable APK: no account, no server, data on the phone, native workout reminders ([download](https://opengym.duarte-santos.ch))
 
 ## Quick start (self-host)
@@ -192,6 +195,8 @@ All via `.env` (see `.env.example`):
 | `AUDIT_DAYS`  | Days kept in the activity log; `0` to keep until `AUDIT_MAX` | `90`            |
 | `AUDIT_IP`    | Record the caller's address: `off`, `net` (network only) or `full` | `off`     |
 | `VAPID_SUBJECT` | Contact URL sent with push notifications           | your `ORIGIN`           |
+| `API_TARGET`  | Which API image to build: `default` (no AI runtime — API-key providers still work) or `coach` (adds the Claude Agent SDK + Codex CLI) | `default`   |
+| `COACH_DISABLED` | Set to `1` to force the AI Coach off instance-wide, whatever the admin toggled | *(unset)* |
 
 Push notification keys are generated on first run and saved to `./data/vapid.json` — nothing to set.
 `DATA_DIR` is pinned to `/data` by `docker-compose.yml` and mapped to `./data` on the host; change the
@@ -204,6 +209,7 @@ Rough, community-driven — ideas and PRs welcome:
 - [x] Standalone mobile app — Android APK to sideload ([download](https://opengym.duarte-santos.ch)); on iOS as a self-hosted PWA (no store listings planned)
 - [x] Automatic progression programs (linear, Greyskull LP, double progression) with stalls and deloads
 - [x] Estimated 1RM per exercise
+- [x] Optional AI coach — designs a plan and reviews your training, on your own server and your own provider account ([docs](docs/AI_COACH.md))
 - [ ] Percentage / training-max programming (5/3/1-style) on top of the progression engine
 - [ ] More starter plans (upper/lower, full-body, 5×5)
 - [x] Importers from FitNotes / Strong / Hevy (CSV, or Hevy Pro API key — workouts and/or weigh-ins), including the RPE they record, and body weight from Apple Health
@@ -224,6 +230,13 @@ The training logic — progression rules, 1RM estimation, how a logged session i
 lives in pure functions under `frontend/src/lib/` with tests next to them: `npm test` in
 `frontend/`. Vitest is a dev dependency; the app itself ships no runtime dependencies beyond
 React, the router and Zustand.
+
+The optional AI Coach (`api/coach/`) is built the same way round: a by-name allowlist decides
+what may leave the server, and a closed-list validator decides what may come back — the model
+can touch routines and the weekly schedule, nothing else, and every change is applied on the
+client only after you approve it. The core of it — `api/coach/core/` — has no Node dependency,
+so the phone app runs the same validator the server does. The in-container AI runtimes live in a
+separate Docker build target; the API-key providers need none. See [docs/AI_COACH.md](docs/AI_COACH.md).
 
 The same pure helpers power an optional MCP server (`mcp/`) that lets an LLM client like
 Claude Desktop read your data over stdio — see [mcp/README.md](mcp/README.md). Opt-in, not

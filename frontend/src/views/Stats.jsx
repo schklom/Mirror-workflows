@@ -138,7 +138,7 @@ function MuscleBalance({ S }) {
   const detrained = strengthOrder.filter(slug => strength[slug] < 1)
   const top = worked.slice(0, 4)
   const max = worked.length ? load[worked[0]] : 0
-  const sets = m => Math.round((load[m] || 0) * 10) / 10
+  const sets = m => fmtNum(Math.round((load[m] || 0) * 10) / 10)
 
   return <div className="card">
     <Segmented className="seg-range" value={view} onChange={setView}
@@ -206,11 +206,21 @@ function MuscleBalance({ S }) {
         )) : <div className="muted small">{t('No exercises with an estimated 1RM yet.')}</div>}
       </>}
       {!sel && <div className="muted small" style={{ marginTop: 10 }}>{t('Tap a muscle to see its exercises.')}</div>}
-      {detrained.map(slug => <div key={slug} className="mrow">
-        <span className="nm">{t(MUSCLE_NAME[slug])}</span>
-        <span className="bar"><i style={{ width: Math.round(strength[slug] * 100) + '%' }} /></span>
-        <span className="v">{t('{0} sets', vol90[slug] || 0)}</span>
-      </div>)}
+      {/* Detrained muscles: the bar is retained strength, the value says how long ago the
+          muscle was last trained. Sets in the last 90 days ride along only when there are
+          any — a muscle is on this list precisely because it has not been trained lately, so
+          that number alone read as "0 sets" all the way down and told nobody anything. */}
+      {detrained.map(slug => {
+        const sets90 = Math.round((vol90[slug] || 0) * 10) / 10
+        return <div key={slug} className="mrow">
+          <span className="nm">{t(MUSCLE_NAME[slug])}</span>
+          <span className="bar"><i style={{ width: Math.round(strength[slug] * 100) + '%' }} /></span>
+          <span className="v" style={{ textAlign: 'right' }}>
+            {sets90 ? t('{0} sets', fmtNum(sets90)) : strengthHint(slug)}
+            {sets90 ? <span className="dim small" style={{ display: 'block', fontWeight: 400 }}>{strengthHint(slug)}</span> : null}
+          </span>
+        </div>
+      })}
     </>}
   </div>
 }

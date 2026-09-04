@@ -7,9 +7,9 @@ import { fmtDate, fmtNum, fmtVol, fmtDur, durPart, todayISO, isoOf, uid, exCount
 import { lastEntryFor, bestWeightFor, bestWeightForEntry, buildSets, effectiveRoutineId, workoutVolume, setsDone, setsDoneActive, lastBW, supersetUnits, unitOf, setLabel, defaultConfig, cleanupSg, modeOf, effortOf, isBw, isPerSide, sideReps, workSetsDone, applyIntensifierPlan, MAX_PLANNED_WARMUPS, NOTE_MAX } from './lib/history.js'
 import { usesBar, barWeightFor, defaultBarWeight, hasBarOverride } from './lib/bar.js'
 import { beep, vibrate } from './lib/sound.js'
-import { t, instrFor, exerciseNameFor, getLang, INSTR_LANGS } from './lib/i18n.js'
+import { t, dateLocale, instrFor, exerciseNameFor, getLang, INSTR_LANGS } from './lib/i18n.js'
 import { nav } from './lib/nav.js'
-import { starterRoutines } from './lib/starter.js'
+import { buildStarterPlan, starterPlanDays, starterPlanOptions } from './lib/starter.js'
 import Media, { Thumb } from './components/Media.jsx'
 import Stepper from './components/Stepper.jsx'
 import Icon from './components/Icon.jsx'
@@ -55,14 +55,64 @@ export function confirmSheet(opts) {
 }
 
 /* ============================ starter plan ============================ */
-export function loadStarterPlan() {
-  const [push, pull, legs] = starterRoutines()
-  update(st => {
-    st.routines.push(push, pull, legs)
-    st.week[1] = push.id; st.week[3] = pull.id; st.week[5] = legs.id
-  })
-  toast(t('Starter plan loaded — Mon Push · Wed Pull · Fri Legs'))
+// Plan names and blurbs live here, not in lib/starter.js: check-source-strings.mjs only finds
+// string literals written inside a t() call, so copy parked in the catalog and passed in as a
+// variable is invisible to it — it would quietly stay English in every language.
+const PLAN_COPY = {
+  ppl: () => ({ name: t('Push / Pull / Legs'), about: t('Push, pull and legs each get their own day.') }),
+  'upper-lower': () => ({ name: t('Upper / Lower'), about: t('Upper body twice, lower body twice.') }),
+  'full-body': () => ({ name: t('Full Body'), about: t('Three sessions, the whole body each time.') }),
+  '5x5': () => ({ name: t('5×5'), about: t('Five sets of five on the main barbell lifts.') })
 }
+
+// Adds the plan's routines and puts them on its weekdays. Existing routines are never touched
+// and only the weekdays the plan asks for are reassigned; an id with no plan behind it changes
+// nothing at all. planId is deliberately required — a default invites `onClick={loadStarterPlan}`,
+// which hands the click event in as the plan and silently loads nothing.
+export function loadStarterPlan(planId) {
+  const plan = buildStarterPlan(planId)
+  if (!plan) return false
+  update(st => {
+    st.routines.push(...plan.routines)
+    plan.schedule.forEach(({ day, routineId }) => { st.week[day] = routineId })
+  })
+  toast(t('{0} loaded', PLAN_COPY[planId]().name))
+  return true
+}
+
+// Intl joins the days the way each language does it — "and" vs "und", "、" in Chinese.
+const dayList = days => new Intl.ListFormat(dateLocale()).format(days.map(d => t(DAYN[d])))
+
+function StarterPlanChooser({ close }) {
+  const week = useStore(s => s.S.week)
+  const choose = (id, name) => {
+    const days = starterPlanDays(id)
+    close()
+    // A confirmation is only worth showing when one of those days is actually occupied.
+    if (!days.some(day => week[day])) { loadStarterPlan(id); return }
+    confirmSheet({
+      title: t('Load {0}?', name),
+      message: t('The new plan will be scheduled on {0}. Existing routines are kept — only those days of the weekly plan change.', dayList(days)),
+      confirmText: t('Load plan'),
+      onConfirm: () => loadStarterPlan(id)
+    })
+  }
+  return <>
+    <h3>{t('Choose starter plan')}</h3>
+    <div className="list">
+      {starterPlanOptions().map(({ id, days }) => {
+        const { name, about } = PLAN_COPY[id]()
+        return <div key={id} className="item" {...tappable(() => choose(id, name))}>
+          <span className="lrow-i" style={{ background: 'var(--surface-3)' }}><Icon name="sparkles" /></span>
+          <div className="grow"><div className="tt">{name}</div><div className="ss">{t('{0} days per week', days)} · {about}</div></div>
+          <Icon name="chevronRight" className="chev" />
+        </div>
+      })}
+    </div>
+  </>
+}
+
+export const starterPlanSheet = () => ui().openSheet(close => <StarterPlanChooser close={close} />)
 
 /* ============================ weight picker (shared: body weight + goal) ============================ */
 // Fixed range, not a moving window — a window that resizes itself mid-drag (the previous

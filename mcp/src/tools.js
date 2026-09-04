@@ -105,7 +105,7 @@ export const listRoutines = {
 /** get_routine — the full exercise list for one routine, including set/rep targets. */
 export const getRoutine = {
   name: 'get_routine',
-  description: 'Get the full exercise list for a single routine (the same view the routine editor shows). Returns mode (reps/time/cardio), set/rep/weight targets, superset links, and any per-exercise custom increment you can override. Use routine_id from list_routines.',
+  description: 'Get the full exercise list for a single routine (the same view the routine editor shows). Returns mode (reps/time/cardio), set/rep/weight targets, superset links, any per-exercise custom increment you can override, and each exercise\'s own rest in seconds (absent means it inherits the global rest timer). Use routine_id from list_routines.',
   schema: { routine_id: z.string().min(1) },
   handler: ({ routine_id }) => {
     const S = getState()
@@ -138,6 +138,9 @@ export const getRoutine = {
           speed: mode === 'cardio' ? (cfg.speed || 0) : undefined,
           weight: cfg.weight != null ? cfg.weight : undefined,
           increment: cfg.inc != null ? cfg.inc : undefined,
+          // The exercise's own rest (issue #10). Absent means it inherits the global rest
+          // timer; a superset rests once, taking the longest its members ask for.
+          rest_sec: cfg.restSec > 0 ? cfg.restSec : undefined,
           policy: policyFor(cfg, r, mode),
           policy_override: cfg.prog || null,
           superset_group: cfg.sg || null,

@@ -72,7 +72,7 @@ Eight read-only tools in v1:
 | Tool | What it answers |
 |---|---|
 | `list_routines` | What routines are saved in my profile? (names + exercise counts) |
-| `get_routine` | What does the Push Day routine prescribe? (sets/reps/weight per exercise) |
+| `get_routine` | What does the Push Day routine prescribe? (sets/reps/weight and rest per exercise) |
 | `get_week_plan` | What's on my plan this week, including today with any date-specific override? |
 | `list_workouts` | Recent sessions — newest first, with dates, sets done/planned, volume, duration, PRs. |
 | `get_workout` | Full set-by-set breakdown of one session, by `workout_id` or by date. On a day with two sessions the date alone returns both ids to pick from rather than guessing at one. |

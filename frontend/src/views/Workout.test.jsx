@@ -697,3 +697,75 @@ describe('active exercise swap control', () => {
     expect(mocks.swapActiveWorkoutExercise).toHaveBeenCalledWith(1)
   })
 })
+
+describe('workout list view', () => {
+  const units = () => [...container.querySelectorAll('.wl-unit')]
+  const focusButton = unit => [...unit.querySelectorAll('button')].find(b => b.textContent.trim() === 'Set current')
+
+  it('stacks every exercise, labels each unit, and hides card navigation', async () => {
+    await mount([exercise('plain-bench', [false, false]), exercise('plain-row', [false])], 0, { workoutView: 'list' })
+
+    expect(container.querySelector('[data-testid="workout-list"]')).toBeTruthy()
+    expect(container.querySelector('[data-testid="workout-swipe-surface"]')).toBeNull()
+    expect(units().length).toBe(2)
+    // Every set in the session is visible at once: 2 + 1 checkboxes, not just the current one.
+    expect(container.querySelectorAll('[role="checkbox"]').length).toBe(3)
+    expect(units().map(u => u.querySelector('.wl-hd .muted')?.textContent)).toEqual([
+      'Exercise 1 / 2', 'Exercise 2 / 2',
+    ])
+    expect(units()[0].textContent).toContain('Current')
+    expect(focusButton(units()[1])).toBeTruthy()
+    const navButtons = [...container.querySelectorAll('button')]
+      .filter(b => b.textContent.trim() === 'Prev' || b.textContent.trim() === 'Next')
+    expect(navButtons.length).toBe(0)
+  })
+
+  it('marks the current unit and moves the mark with Set current', async () => {
+    await mount([exercise('plain-bench', [false]), exercise('plain-row', [false])], 0, { workoutView: 'list' })
+
+    await act(async () => { focusButton(units()[1]).dispatchEvent(new dom.Event('click', { bubbles: true })) })
+    expect(mocks.S.active.cur).toBe(1)
+
+    await rerender()
+    expect(units()[0].textContent).not.toContain('Current')
+    expect(units()[1].textContent).toContain('Current')
+    expect(focusButton(units()[0])).toBeTruthy()
+  })
+
+  it('completing a set in list mode advances the current exercise like cards do', async () => {
+    await mount([
+      exercise('plain-bench', [false], { asked: true }),
+      exercise('plain-row', [false], { asked: true }),
+    ], 0, { workoutView: 'list' })
+
+    await toggleSet(0)
+
+    expect(mocks.S.active.entries[0].sets[0].done).toBe(true)
+    expect(mocks.S.active.cur).toBe(1)
+    expect(mocks.startRest).toHaveBeenCalledWith(90, expect.any(Number))
+  })
+
+  it('renders a superset as one grouped unit with its own unpair control', async () => {
+    await mount([
+      exercise('bench', [false], { sg: 'g1', asked: true }),
+      exercise('row', [false], { sg: 'g1', asked: true }),
+      exercise('squat', [false], { asked: true }),
+    ], 0, { workoutView: 'list' })
+
+    expect(units().length).toBe(2)
+    expect(units()[0].querySelector('.ss-card')).toBeTruthy()
+    expect(units()[1].querySelector('.ss-card')).toBeNull()
+    expect(units().map(u => u.querySelector('.wl-hd .muted')?.textContent)).toEqual([
+      'Superset 1 / 2', 'Exercise 2 / 2',
+    ])
+  })
+
+  it('defaults to cards when the setting is absent (pre-existing profiles)', async () => {
+    await mount([exercise('plain-bench', [false]), exercise('plain-row', [false])])
+
+    expect(container.querySelector('[data-testid="workout-list"]')).toBeNull()
+    expect(container.querySelector('[data-testid="workout-swipe-surface"]')).toBeTruthy()
+    // Only the current exercise's sets are on screen.
+    expect(container.querySelectorAll('[role="checkbox"]').length).toBe(1)
+  })
+})

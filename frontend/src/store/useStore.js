@@ -14,6 +14,10 @@ export const DEF = {
   theme: 'dark', accent: 'lime', body: 'male', targetW: null,
   bodyweight: [], routines: [], week: {}, dayPlan: {},
   exWeights: {}, workouts: [], active: null, customEx: [], gifSize: 'full',
+  // How the active workout is laid out — 'cards' (one exercise at a time with Prev/Next)
+  // or 'list' (every exercise stacked and scrollable). Purely presentational: profiles
+  // written before this setting existed overlay onto DEF and keep the 'cards' behaviour.
+  workoutView: 'cards',
   // effort: which per-set effort scale is logged — 'none' | 'rir' | 'rpe'. null, not 'none', so
   // that a profile which never chose (loaded state is overlaid on DEF, on every path: local,
   // server pull, backup import) still falls back to the `showRir` boolean this replaced and

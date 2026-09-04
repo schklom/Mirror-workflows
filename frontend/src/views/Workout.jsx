@@ -320,6 +320,12 @@ function ActiveWorkout() {
   const unit = A.entries.length ? unitOf(units, cur) : []
   const unitIdx = units.findIndex(u => u === unit)
   const isSuperset = unit.length > 1
+  // Cards show one unit at a time with Prev/Next + swipe; list stacks every unit so the
+  // whole session is visible and scrollable (Settings → During a workout → Workout view).
+  // Every set handler below is already entry-index parameterised, so list mode only changes
+  // what is rendered — completion, rest, top-weight and auto-advance share one path.
+  // Unknown/absent values read as cards, keeping every pre-existing profile as it was.
+  const listMode = S.workoutView === 'list'
   // Superset flow: center the actionable row when completing a set moves to the partner or
   // back to the first exercise of the next round. Entry-bound maps keep repeated exercise IDs
   // distinct, while each rendered set index identifies the existing row within that entry.
@@ -360,13 +366,13 @@ function ActiveWorkout() {
     }
   })
   useEffect(() => {
-    if (!isSuperset) return
+    if (!isSuperset || listMode) return
     const entry = A.entries[cur]
     const firstIncomplete = entry?.sets.findIndex(s => !s.done) ?? -1
     const setIdx = firstIncomplete >= 0 ? firstIncomplete : (entry?.sets.length ?? 0) - 1
     const el = (setIdx >= 0 && setRefs.current.get(entry)?.get(setIdx)) || exRefs.current.get(entry)
     if (el && typeof el.scrollIntoView === 'function') el.scrollIntoView({ behavior: 'smooth', block: 'center' })
-  }, [cur, isSuperset, A.entries.length])
+  }, [cur, isSuperset, listMode, A.entries.length])
 
   const total = A.entries.reduce((n, e) => n + e.sets.length, 0)
   const done = setsDoneActive(A)
@@ -423,6 +429,17 @@ function ActiveWorkout() {
     }, true)
   }
 
+  // One prop object per entry so the card and list layouts share the exact same wiring.
+  const blockProps = idx => ({
+    onToggle: i => toggle(idx, i),
+    onField: (i, f, v) => setField(idx, i, f, v),
+    onAddSet: () => addSet(idx),
+    onRemoveSet: () => removeSet(idx),
+    onAddWarmup: () => addWarmup(idx),
+    onRemoveSetAt: i => removeSetAt(idx, i),
+    onStartTimed: i => startTimed(idx, i),
+    onProgressionSettings: () => openProgressionSettings(idx),
+  })
   const navigateUnit = direction => {
     const targetFor = active => {
       if (!active || !Array.isArray(active.entries) || !Number.isInteger(active.cur)) return null
@@ -437,6 +454,10 @@ function ActiveWorkout() {
       if (target != null) s.active.cur = target
     })
   }
+  // List mode shows every unit at once, so the "current" exercise is chosen by tapping
+  // "Set current" on its header instead of Prev/Next. The bottom Move/Swap/Remove actions
+  // keep operating on it, and completing sets still advances it on its own.
+  const focusUnit = firstIdx => update(s => { if (s.active) s.active.cur = firstIdx })
   const onSwipePointerDown = event => {
     if (swipe.current || (event.pointerType && event.pointerType !== 'touch' && event.pointerType !== 'pen')) return
     if (event.target.closest?.(SWIPE_IGNORED_TARGETS)) return
@@ -640,7 +661,43 @@ function ActiveWorkout() {
     <div className="wprog"><i style={{ width: (total ? done / total * 100 : 0) + '%' }} /></div>
     {A.backfill && <div className="muted small" style={{ marginBottom: 8 }}>{t('Logging a past workout — no rest timers.')}</div>}
 
-    {A.entries.length ? <>
+    {A.entries.length ? (listMode ? (
+      <div className="workout-list" data-testid="workout-list">
+        {units.map((u, ui) => {
+          const multi = u.length > 1
+          const isCur = u.includes(cur)
+          return <section key={u.join('-')} className={'wl-unit' + (isCur ? ' cur' : '')} data-exidx={u[0]}>
+            <div className="wl-hd">
+              <span className="muted small">{multi ? t('Superset {0} / {1}', ui + 1, units.length) : t('Exercise {0} / {1}', ui + 1, units.length)}</span>
+              {isCur
+                ? <span className="tag acc">{t('Current')}</span>
+                : <button className="chip" onClick={() => focusUnit(u[0])}>{t('Set current')}</button>}
+            </div>
+            {multi ? (
+              <div className="ss-card">
+                <div className="ss-hd" style={{ justifyContent: 'space-between' }}>
+                  <span className="row" style={{ gap: 5 }}><Icon name="link" />{t('Superset · do these back-to-back, rest when done')}</span>
+                  <Button size="xs" variant="ghost" icon="link" title={t('Unpair')} onClick={() => unpairAt(u[0])}>{t('Unpair')}</Button>
+                </div>
+                {u.map((idx, k) => {
+                  const entry = A.entries[idx]
+                  return <div key={idx} ref={el => bindExRef(entry, el)} className="ss-ex" data-exidx={idx}>
+                    {k > 0 && <div className="ss-amp">+</div>}
+                    <ExerciseBlock entryIdx={idx} compact onSetRowRef={(setIdx, el) => bindSetRef(entry, setIdx, el)}
+                      {...blockProps(idx)} />
+                  </div>
+                })}
+              </div>
+            ) : (
+              <ExerciseBlock entryIdx={u[0]}
+                onPairPrev={u[0] > 0 ? () => pairAt(u[0] - 1, u[0]) : null}
+                onPairNext={u[0] < A.entries.length - 1 ? () => pairAt(u[0], u[0] + 1) : null}
+                {...blockProps(u[0])} />
+            )}
+          </section>
+        })}
+      </div>
+    ) : <>
       <div className="muted small" style={{ marginBottom: 6 }}>{isSuperset ? t('Superset {0} / {1}', unitIdx + 1, units.length) : t('Exercise {0} / {1}', unitIdx + 1, units.length)}</div>
       <div className="workout-swipe-surface" data-testid="workout-swipe-surface"
         onPointerDown={onSwipePointerDown}
@@ -660,22 +717,23 @@ function ActiveWorkout() {
             return <div key={idx} ref={el => bindExRef(entry, el)} className="ss-ex" data-exidx={idx}>
               {k > 0 && <div className="ss-amp">+</div>}
               <ExerciseBlock entryIdx={idx} compact onSetRowRef={(setIdx, el) => bindSetRef(entry, setIdx, el)}
-                onToggle={i => toggle(idx, i)} onField={(i, f, v) => setField(idx, i, f, v)} onAddSet={() => addSet(idx)} onRemoveSet={() => removeSet(idx)} onAddWarmup={() => addWarmup(idx)} onRemoveSetAt={i => removeSetAt(idx, i)} onStartTimed={i => startTimed(idx, i)} onProgressionSettings={() => openProgressionSettings(idx)} />
+                {...blockProps(idx)} />
             </div>
           })}
         </div>
       ) : (
-        <ExerciseBlock entryIdx={cur} onToggle={i => toggle(cur, i)} onField={(i, f, v) => setField(cur, i, f, v)} onAddSet={() => addSet(cur)} onRemoveSet={() => removeSet(cur)} onAddWarmup={() => addWarmup(cur)} onRemoveSetAt={i => removeSetAt(cur, i)} onStartTimed={i => startTimed(cur, i)} onPairPrev={onPairPrev} onPairNext={onPairNext} onProgressionSettings={() => openProgressionSettings(cur)} />
+        <ExerciseBlock entryIdx={cur} onPairPrev={onPairPrev} onPairNext={onPairNext} {...blockProps(cur)} />
       )}
       </div>
-    </> : <div className="empty"><div className="ico"><Icon name="shuffle" /></div>{t('Freestyle workout — add your first exercise.')}</div>}
+    </>) : <div className="empty"><div className="ico"><Icon name="shuffle" /></div>{t('Freestyle workout — add your first exercise.')}</div>}
 
     <div style={{ height: 12 }} />
-    <div className="row">
+    {!listMode && <div className="row">
       <Button icon="chevronLeft" disabled={unitIdx <= 0} onClick={() => navigateUnit(-1)}>{t('Prev')}</Button>
       <Button trailingIcon="chevronRight" disabled={unitIdx < 0 || unitIdx >= units.length - 1} onClick={() => navigateUnit(1)}>{t('Next')}</Button>
-    </div>
-    <div style={{ height: 10 }} />
+    </div>}
+    {!listMode && <div style={{ height: 10 }} />}
+    {listMode && A.entries.length > 0 && <div className="muted small" style={{ marginBottom: 6 }}>{t('Move, swap and remove below act on the exercise marked {0}.', t('Current'))}</div>}
     <Button onClick={() => exercisePicker(ex => {
       const routine = S.routines.find(r => r.id === A.routineId)
       const freestyle = !A.routineId

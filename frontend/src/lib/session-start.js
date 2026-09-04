@@ -14,7 +14,7 @@ export function buildSessionEntries(st, r) {
   const entries = (r ? r.ex : []).map(cfg => {
     const plan = excluded ? { policy: 'off', kind: 'off' } : nextPrescription(st, cfg, r)
     const step = defaultIncrement(cfg.id, st.unit)
-    const sets = applyIntensifierPlan(applyPrescription(buildSets(st, cfg, { step, useTarget: excluded }), plan, step), cfg)
+    const sets = applyIntensifierPlan(applyPrescription(buildSets(st, cfg, { step, useTarget: plan.kind === 'off' }), plan, step), cfg)
     return { id: cfg.id, sg: cfg.sg, target: { ...cfg }, plan, sets }
   })
   return { entries, excluded }

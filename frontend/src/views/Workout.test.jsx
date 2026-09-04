@@ -541,6 +541,47 @@ describe('progression guidance', () => {
     expect(mocks.S.active.cur).toBe(0)
   })
 
+  it('does not save into a different duplicate occurrence after the entry list shifts', async () => {
+    const plan = {
+      policy: 'linear', kind: 'up', weight: 62.5,
+      why: ['Every rep last time — {0} {1} more.', 2.5, 'kg'],
+    }
+    const first = exercise('plain-bench', [false], { plan, target: { mode: 'reps', reps: 5, weight: 60, marker: 'first' } })
+    const second = exercise('plain-bench', [false], { plan, target: { mode: 'reps', reps: 8, weight: 80, marker: 'second' } })
+    const third = exercise('plain-bench', [false], { plan, target: { mode: 'reps', reps: 10, weight: 100, marker: 'third' } })
+    await mount([first, second, third], 1)
+    await pressProgression()
+    const save = mocks.exConfigSheet.mock.calls[0][2]
+
+    mocks.S.active.entries.splice(0, 1)
+    await act(async () => { save({ ...second.target, prog: 'double', repsMin: 6 }) })
+
+    expect(mocks.S.active.entries.map(entry => entry.target.marker)).toEqual(['second', 'third'])
+    expect(mocks.S.active.entries[0].target.prog).toBeUndefined()
+    expect(mocks.S.active.entries[1].target.prog).toBeUndefined()
+  })
+
+  it('does not save through a sheet left open from a replaced workout', async () => {
+    const plan = {
+      policy: 'linear', kind: 'up', weight: 62.5,
+      why: ['Every rep last time — {0} {1} more.', 2.5, 'kg'],
+    }
+    const original = exercise('plain-bench', [false], { plan })
+    await mount([original])
+    await pressProgression()
+    const save = mocks.exConfigSheet.mock.calls[0][2]
+    const replacement = exercise('plain-bench', [false], {
+      plan,
+      target: { mode: 'reps', reps: 10, weight: 100, marker: 'replacement' },
+    })
+    mocks.S.active = { ...mocks.S.active, id: 'replacement-workout', entries: [replacement] }
+
+    await act(async () => { save({ ...original.target, prog: 'double', repsMin: 6 }) })
+
+    expect(mocks.S.active.entries[0].target).toEqual(replacement.target)
+    expect(mocks.S.active.entries[0].target.prog).toBeUndefined()
+  })
+
   it('leaves the active entry unchanged when progression settings are cancelled', async () => {
     const entry = exercise('plain-bench', [true, false], {
       plan: {

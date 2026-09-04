@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { BODYPARTS, allExercises, equipmentOf, matchExercise } from '../lib/exercises.js'
+import { activeProfile, exAvailable } from '../lib/equipment.js'
 import { bestWeightFor } from '../lib/history.js'
 import { fmtNum } from '../lib/format.js'
 import { MUSCLES, MUSCLE_NAME, musclesOf } from '../lib/muscles.js'
@@ -20,7 +21,14 @@ export default function MuscleExplorer({ onPick, onDetail, onPlan }) {
   const [bp, setBp] = useState('')
   const [eq, setEq] = useState('')
   const [shown, setShown] = useState(40)
-  const catalog = useMemo(() => allExercises(S), [S.customEx])
+  const [showAll, setShowAll] = useState(false)   // ignore the active equipment profile for this session
+  // Same rule as the Library and the picker: the active equipment profile narrows the catalogue
+  // (and the per-muscle counts) unless the user asks for everything.
+  const profile = activeProfile(S)
+  const catalog = useMemo(() => {
+    const all = allExercises(S)
+    return (profile && !showAll) ? all.filter(e => exAvailable(S, e)) : all
+  }, [S.customEx, S.equipFilterOn, S.activeEquipId, S.equipProfiles, showAll])
   const counts = useMemo(() => Object.fromEntries(MUSCLES.map(m => [m,
     catalog.filter(e => musclesOf(e)[m]).length
   ])), [catalog])
@@ -33,6 +41,13 @@ export default function MuscleExplorer({ onPick, onDetail, onPlan }) {
   const choose = ex => onPick ? onPick(ex) : onDetail(ex)
 
   return <>
+    {profile && <div className="small dim row" style={{ margin: '-4px 2px 10px', gap: 6, alignItems: 'center' }}>
+      <Icon name="dumbbell" style={{ fontSize: 13 }} />
+      {showAll ? t('Showing all equipment') : t('Showing what you have in "{0}"', profile.name)}
+      <button className="chip nocap" style={{ marginLeft: 'auto', padding: '3px 10px', fontSize: 12 }} onClick={() => { setShowAll(v => !v); setEq(''); setShown(40) }}>
+        {showAll ? t('Filter by "{0}"', profile.name) : t('Show all equipment')}
+      </button>
+    </div>}
     <div className="card">
       <BodyMap className="tappable" body={S.body} selected={selected} onMuscle={pick} />
       <div className="chips" style={{ marginTop: 10 }}>
@@ -43,7 +58,7 @@ export default function MuscleExplorer({ onPick, onDetail, onPlan }) {
       </div>
     </div>
 
-    {!selected && <div className="empty"><div className="ico"><Icon name="target" /></div>{t('Choose a muscle to see exercises that train it.')}</div>}
+    {!selected && onPick && <div className="empty"><div className="ico"><Icon name="target" /></div>{t('Choose a muscle to see exercises that train it.')}</div>}
 
     {selected && <>
       <div className="row between" style={{ margin: '2px 0 10px' }}>

@@ -72,13 +72,20 @@ export const CREATE_SCHEMA = {
     summary: STR,
     basedOn: STR,
     week: { type: 'object' },
+    // The caps are the validator's own (MAX_ROUTINES, MAX_EX_PER_ROUTINE), stated here as well
+    // because "1-7 routines, each 3-12 exercises" in create.md is only a request. A small model
+    // that starts repeating itself does not stop at a request: qwen2.5:3b walks the library id by
+    // id, three sets of eight apiece, until it hits the output limit — twelve minutes for an
+    // answer that arrives cut in half and cannot be parsed. maxItems ends that run at seven
+    // routines instead.
     routines: {
       type: 'array',
+      maxItems: 7,
       items: {
         type: 'object',
         properties: {
           id: STR, name: STR, emoji: STR, prog: STR, why: STR,
-          ex: { type: 'array', items: EX_SCHEMA }
+          ex: { type: 'array', maxItems: 20, items: EX_SCHEMA }
         },
         required: ['id', 'name', 'ex']
       }

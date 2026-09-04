@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v1.3.1 — 2026-09-04
 
 - 📱 **"Use my self-hosted openGym" works on a paired phone.** The phone app never fetched the
   server's `/api/config` after boot or after pairing, so the Coach setup screen told everyone

@@ -32,6 +32,7 @@ export const PT_BR_OVERRIDES = {
   'Create one and start with this exercise': 'Crie uma e comece com este exercício',
   'Search {0} exercises…': 'Buscar entre {0} exercícios…',
   'Nothing chosen yet — add exercises and they’ll show up here.': 'Nenhum exercício escolhido — adicione exercícios e eles aparecerão aqui.',
+  'No favourites here — tap the star on an exercise to add it.': 'Sem favoritos aqui — toque na estrela de um exercício para adicioná-lo.',
   'The sets you logged for this exercise in this session will be lost.': 'As séries registradas para este exercício nesta sessão serão perdidas.',
   'Swap exercise': 'Trocar exercício',
   'Swap exercise?': 'Trocar exercício?',

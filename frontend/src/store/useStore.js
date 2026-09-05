@@ -36,6 +36,9 @@ export const DEF = {
   // every time you do the movement ("seat 4, pin 7"). Distinct from a routine's `note`, which
   // belongs to one exercise in one plan, and from a session note, which belongs to one day.
   exNotes: {},
+  // Favourite exercise ids (issue #6) — sorted to the top of the picker/Library. Personal, so
+  // it syncs with the profile but is never part of a shared plan bundle (lib/favourites.js).
+  favEx: [],
   // First day of the week as a getDay() index — 1 Monday, 0 Sunday. Monday is the default so
   // every profile written before this setting existed keeps the week it has been looking at.
   // See lib/format.js: nothing reads this field directly, everything goes through the helpers.

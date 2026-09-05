@@ -11,6 +11,7 @@ import { exerciseDetailSheet, addToRoutineSheet, customExSheet } from '../sheets
 import Icon from '../components/Icon.jsx'
 import { Button } from '../components/ui.jsx'
 import { tappable, useRevealActiveChip } from '../lib/use-sheet-keyboard.js'
+import { isFav, sortFavouritesFirst } from '../lib/favourites.js'
 
 export default function Library() {
   const nav = useNavigate()
@@ -27,7 +28,8 @@ export default function Library() {
   const eqOpts = equipmentOf(eqFiltered)
   // Drop the equipment filter if the search narrowed it away, so you never hit a dead end.
   const eqOn = eqOpts.includes(eq) ? eq : ''
-  const f = eqOn ? eqFiltered.filter(e => e.eq === eqOn) : eqFiltered
+  // Favourites float to the top of whatever the filters left (issue #6), the rest keeps its order.
+  const f = sortFavouritesFirst(eqOn ? eqFiltered.filter(e => e.eq === eqOn) : eqFiltered, S)
   useRevealActiveChip(bpStrip, bp)
   useRevealActiveChip(eqStrip, eqOn)
 
@@ -61,7 +63,7 @@ export default function Library() {
         const best = bestWeightFor(S, e.id)
         return <div key={e.id} className="item" {...tappable(() => exerciseDetailSheet(e))}>
           <Thumb ex={e} />
-          <div className="grow"><div className="tt capitalize">{exerciseNameFor(e)}</div><div className="ss capitalize">{t(e.tg || e.bp)} · {t(e.eq)}</div></div>
+          <div className="grow"><div className="tt capitalize">{isFav(S, e.id) && <Icon name="starFill" className="fav-star" />}{exerciseNameFor(e)}</div><div className="ss capitalize">{t(e.tg || e.bp)} · {t(e.eq)}</div></div>
           {best > 0 && <span className="tag acc">{fmtNum(best)}</span>}
           <Button size="sm" variant="tinted" icon="plus" onClick={ev => { ev.stopPropagation(); addToRoutineSheet(e) }}>{t('Plan')}</Button>
         </div>

@@ -501,6 +501,72 @@ describe('buildSets', () => {
       .toEqual([{ w: 40, r: 12, done: false }, { w: 40, r: 12, done: false }])
   })
 
+  it('uses the current routine target instead of another routine\'s bodyweight history', () => {
+    const S = {
+      exWeights: {},
+      workouts: [{
+        d: '2026-01-01',
+        routineId: 'routine-a',
+        entries: [{
+          id: BW,
+          target: { sets: 2, reps: 15, weight: 0, bodyweight: true },
+          sets: [{ w: 0, r: 15, done: true }, { w: 0, r: 15, done: true }]
+        }]
+      }]
+    }
+    const cfg = { id: BW, sets: 4, reps: 8, weight: 0, bodyweight: true, prog: 'off' }
+
+    expect(buildSets(S, cfg, { useTarget: true })).toEqual([
+      { w: 0, r: 8, done: false },
+      { w: 0, r: 8, done: false },
+      { w: 0, r: 8, done: false },
+      { w: 0, r: 8, done: false }
+    ])
+
+    const reverseS = {
+      exWeights: {},
+      workouts: [{
+        d: '2026-01-02',
+        routineId: 'routine-b',
+        entries: [{
+          id: BW,
+          target: { sets: 4, reps: 8, weight: 0, bodyweight: true },
+          sets: [
+            { w: 0, r: 8, done: true }, { w: 0, r: 8, done: true },
+            { w: 0, r: 8, done: true }, { w: 0, r: 8, done: true }
+          ]
+        }]
+      }]
+    }
+    expect(buildSets(reverseS, { ...cfg, sets: 2, reps: 15 }, { useTarget: true })).toEqual([
+      { w: 0, r: 15, done: false },
+      { w: 0, r: 15, done: false }
+    ])
+  })
+
+  it('preserves configured load, reps, duration and cardio targets when history is present', () => {
+    const repsS = {
+      exWeights: { [LIFT]: { w: 75 } },
+      workouts: [{ d: '2026-01-01', entries: [{ id: LIFT, sets: [{ w: 75, r: 15, done: true }] }] }]
+    }
+    expect(buildSets(repsS, { id: LIFT, sets: 2, reps: 8, weight: 40 }, { useTarget: true }))
+      .toEqual([{ w: 40, r: 8, done: false }, { w: 40, r: 8, done: false }])
+
+    const timedS = {
+      exWeights: {},
+      workouts: [{ d: '2026-01-02', entries: [{ id: LIFT, target: { mode: 'time' }, sets: [{ sec: 90, w: 20, done: true }] }] }]
+    }
+    expect(buildSets(timedS, { id: LIFT, mode: 'time', sets: 2, sec: 30, weight: 5 }, { useTarget: true }))
+      .toEqual([{ sec: 30, w: 5, done: false }, { sec: 30, w: 5, done: false }])
+
+    const cardioS = {
+      exWeights: {},
+      workouts: [{ d: '2026-01-03', entries: [{ id: CARDIO, sets: [{ min: 45, speed: 10, done: true }] }] }]
+    }
+    expect(buildSets(cardioS, { id: CARDIO, sets: 2, min: 20, speed: 8 }, { useTarget: true }))
+      .toEqual([{ min: 20, speed: 8, done: false }, { min: 20, speed: 8, done: false }])
+  })
+
 })
 
 describe('applyIntensifierPlan', () => {

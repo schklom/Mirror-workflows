@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import {
   readSession, sessionsFor, stallCount, nextPrescription, applyPrescription,
-  policyFor, defaultIncrement, POLICIES_FOR, DELOAD_AFTER, MAX_BW_SETS
+  policyFor, defaultIncrement, weightIncrement, POLICIES_FOR, DELOAD_AFTER, MAX_BW_SETS
 } from './progression.js'
 import { EXDB } from './exercises.js'
 
@@ -103,6 +103,14 @@ describe('defaultIncrement', () => {
   })
 })
 
+describe('weightIncrement', () => {
+  it('uses a positive exercise override and otherwise the exercise/unit default', () => {
+    expect(weightIncrement({ id: LIFT, inc: 1 }, 'kg')).toBe(1)
+    expect(weightIncrement({ id: LIFT }, 'kg')).toBe(2.5)
+    expect(weightIncrement({ id: HEAVY, inc: 0 }, 'kg')).toBe(5)
+  })
+})
+
 describe('linear progression', () => {
   const cfg = { id: LIFT, sets: 3, reps: 5, weight: 60, prog: 'linear' }
 
@@ -140,6 +148,19 @@ describe('linear progression', () => {
   it('a good session in between clears the stall', () => {
     const p = nextPrescription(hist(LIFT, [[60, 5, 5, 3], [60, 5, 5, 5], [60, 5, 5, 3]]), cfg)
     expect(p.kind).toBe('hold')
+  })
+
+  it('a deload starts a new streak, so one miss at the new weight does not deload again', () => {
+    // Three misses at 60 kg earn a deload.
+    const stalled = [[60, 4, 4, 4], [60, 4, 4, 4], [60, 4, 4, 4]]
+    const deload = nextPrescription(hist(LIFT, stalled), cfg)
+    expect(deload.kind).toBe('deload')
+
+    // A bad day at the lighter weight is the first miss of a new run, not the fourth of the old
+    // one. A deload is owed a fresh set of attempts, not an immediate second cut.
+    const next = nextPrescription(hist(LIFT, [...stalled, [deload.weight, 4, 4, 4]]), cfg)
+    expect(next.kind).toBe('hold')
+    expect(next.weight).toBe(deload.weight)
   })
 
   it('never deloads below one increment, however light the lift already is', () => {
@@ -290,6 +311,22 @@ describe('double progression', () => {
     expect(p.kind).toBe('up')
     expect(p.weight).toBe(42.5)
     expect(p.reps).toBe(8)
+  })
+
+  it('does not deload again when the deload was performed exactly as prescribed', () => {
+    const target = { sets: 3, reps: 12 }
+    // Three sessions stuck mid-range where every set misses the top, so a deload falls due (see DELOAD_POLICY)
+    const stalled = [[40, 9, 9, 9], [40, 9, 9, 9], [40, 9, 9, 9]]
+    const deload = nextPrescription(hist(LIFT, stalled, target), cfg)
+    expect(deload.kind).toBe('deload')
+
+    // Training exactly what it asked for: its weight, its reps, every set checked off.
+    const asPrescribed = [deload.weight, ...Array(target.sets).fill(deload.reps)]
+    const next = nextPrescription(hist(LIFT, [...stalled, asPrescribed], target), cfg)
+
+    // Complying with the app's own prescription must not be scored as another failure.
+    expect(next.kind).not.toBe('deload')
+    expect(next.weight).toBeGreaterThanOrEqual(deload.weight)
   })
 
   it('keeps the weight and asks for one more rep while inside the range', () => {

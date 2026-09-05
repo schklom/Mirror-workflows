@@ -41,7 +41,7 @@ vi.mock('../lib/wakelock.js', () => ({ wakeLockSupported: () => false }))
 vi.mock('../lib/mobile.js', () => ({ MOBILE: false, shareExport: vi.fn(), syncReminder: vi.fn() }))
 vi.mock('./MobileOnboarding.jsx', () => ({ ConnectSheet: () => null }))
 vi.mock('../sheets.jsx', () => ({
-  starterPlanSheet: vi.fn(), confirmSheet: vi.fn(), importFromApp: vi.fn(),
+  loadStarterPlan: vi.fn(), starterPlanSheet: vi.fn(), confirmSheet: vi.fn(), importFromApp: vi.fn(),
   importFromHevy: vi.fn(), equipmentProfileSheet: vi.fn(),
 }))
 
@@ -66,25 +66,24 @@ afterEach(() => {
 const mount = () => act(() => root.render(<Settings />))
 const segButton = label => [...host.querySelectorAll('.seg button')].find(b => b.textContent === label)
 
-describe('Settings — exercise animations', () => {
-  it('offers Full / Small / Hidden and writes gifSize to the store', () => {
+describe('Settings — workout view', () => {
+  it('offers Cards / List and writes workoutView to the store', () => {
     mount()
-    expect(segButton('Full')).toBeTruthy()
-    expect(segButton('Small')).toBeTruthy()
-    expect(segButton('Hidden')).toBeTruthy()
-    expect(segButton('Full').getAttribute('aria-pressed')).toBe('true')
-    act(() => { segButton('Hidden').click() })
-    expect(mocks.S.gifSize).toBe('off')
+    expect(segButton('Cards')).toBeTruthy()
+    expect(segButton('List')).toBeTruthy()
+    expect(segButton('Cards').getAttribute('aria-pressed')).toBe('true')
+    act(() => { segButton('List').click() })
+    expect(mocks.S.workoutView).toBe('list')
     mount()
-    expect(segButton('Hidden').getAttribute('aria-pressed')).toBe('true')
-    act(() => { segButton('Small').click() })
-    expect(mocks.S.gifSize).toBe('mini')
+    expect(segButton('List').getAttribute('aria-pressed')).toBe('true')
+    act(() => { segButton('Cards').click() })
+    expect(mocks.S.workoutView).toBe('cards')
   })
 
-  it('shows a legacy/absent value as Full', () => {
-    delete mocks.S.gifSize
+  it('shows a legacy/absent value as Cards', () => {
+    delete mocks.S.workoutView
     mount()
-    expect(segButton('Full').getAttribute('aria-pressed')).toBe('true')
-    expect(segButton('Hidden').getAttribute('aria-pressed')).toBe('false')
+    expect(segButton('Cards').getAttribute('aria-pressed')).toBe('true')
+    expect(segButton('List').getAttribute('aria-pressed')).toBe('false')
   })
 })

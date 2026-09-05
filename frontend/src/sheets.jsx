@@ -4,18 +4,19 @@ import { useUI } from './store/useUI.js'
 import { EXDB, EXIDX, BODYPARTS, isCardio, isBodyweightEq, allExercises, equipmentOf, smOf, matchExercise, exOr } from './lib/exercises.js'
 import { activeProfile, exAvailable, ALL_EQUIPMENT, newProfile } from './lib/equipment.js'
 import { fmtDate, fmtNum, fmtVol, fmtDur, durPart, todayISO, isoOf, uid, exCount, DAYN, DAYS, weekOrder, weekStartOf, weekDayOffset, MONTHS_LONG, ACCENTS } from './lib/format.js'
-import { lastEntryFor, bestWeightFor, buildSets, effectiveRoutineId, workoutVolume, setsDone, setsDoneActive, lastBW, supersetUnits, unitOf, setLabel, defaultConfig, cleanupSg, modeOf, effortOf, isBw, isPerSide, sideReps, workSetsDone, applyIntensifierPlan, MAX_PLANNED_WARMUPS, NOTE_MAX } from './lib/history.js'
+import { lastEntryFor, bestWeightFor, bestWeightForEntry, buildSets, effectiveRoutineId, workoutVolume, setsDone, setsDoneActive, lastBW, supersetUnits, unitOf, setLabel, defaultConfig, cleanupSg, modeOf, effortOf, isBw, isPerSide, sideReps, workSetsDone, applyIntensifierPlan, MAX_PLANNED_WARMUPS, NOTE_MAX } from './lib/history.js'
 import { usesBar, barWeightFor, defaultBarWeight, hasBarOverride } from './lib/bar.js'
 import { beep, vibrate } from './lib/sound.js'
-import { t, instrFor, exerciseNameFor, getLang, INSTR_LANGS } from './lib/i18n.js'
+import { t, dateLocale, instrFor, exerciseNameFor, getLang, INSTR_LANGS } from './lib/i18n.js'
 import { nav } from './lib/nav.js'
-import { starterRoutines } from './lib/starter.js'
+import { buildStarterPlan, starterPlanDays, starterPlanOptions } from './lib/starter.js'
 import Media, { Thumb } from './components/Media.jsx'
 import Stepper from './components/Stepper.jsx'
 import Icon from './components/Icon.jsx'
 import { Button, Slider, Switch, Segmented, SelectRow, Row, TextField, MultiSelectRow } from './components/ui.jsx'
 import { glyphOf, GLYPH_GROUPS, DEFAULT_GLYPH } from './lib/glyphs.js'
 import BodyMap from './components/BodyMap.jsx'
+import MuscleExplorer from './components/MuscleExplorer.jsx'
 import { exerciseMuscleSnapshot, loadOfWorkouts, MUSCLES, MUSCLE_NAME, normalizeMuscleGroups, hasExplicitMuscleMetadata } from './lib/muscles.js'
 import { parseImport, mergeImport } from './lib/import-csv.js'
 import { importHevyData, HevyApiError, HEVY_DEV_SETTINGS, mergeHevyRoutines } from './lib/import-hevy.js'
@@ -54,14 +55,64 @@ export function confirmSheet(opts) {
 }
 
 /* ============================ starter plan ============================ */
-export function loadStarterPlan() {
-  const [push, pull, legs] = starterRoutines()
-  update(st => {
-    st.routines.push(push, pull, legs)
-    st.week[1] = push.id; st.week[3] = pull.id; st.week[5] = legs.id
-  })
-  toast(t('Starter plan loaded — Mon Push · Wed Pull · Fri Legs'))
+// Plan names and blurbs live here, not in lib/starter.js: check-source-strings.mjs only finds
+// string literals written inside a t() call, so copy parked in the catalog and passed in as a
+// variable is invisible to it — it would quietly stay English in every language.
+const PLAN_COPY = {
+  ppl: () => ({ name: t('Push / Pull / Legs'), about: t('Push, pull and legs each get their own day.') }),
+  'upper-lower': () => ({ name: t('Upper / Lower'), about: t('Upper body twice, lower body twice.') }),
+  'full-body': () => ({ name: t('Full Body'), about: t('Three sessions, the whole body each time.') }),
+  '5x5': () => ({ name: t('5×5'), about: t('Five sets of five on the main barbell lifts.') })
 }
+
+// Adds the plan's routines and puts them on its weekdays. Existing routines are never touched
+// and only the weekdays the plan asks for are reassigned; an id with no plan behind it changes
+// nothing at all. planId is deliberately required — a default invites `onClick={loadStarterPlan}`,
+// which hands the click event in as the plan and silently loads nothing.
+export function loadStarterPlan(planId) {
+  const plan = buildStarterPlan(planId)
+  if (!plan) return false
+  update(st => {
+    st.routines.push(...plan.routines)
+    plan.schedule.forEach(({ day, routineId }) => { st.week[day] = routineId })
+  })
+  toast(t('{0} loaded', PLAN_COPY[planId]().name))
+  return true
+}
+
+// Intl joins the days the way each language does it — "and" vs "und", "、" in Chinese.
+const dayList = days => new Intl.ListFormat(dateLocale()).format(days.map(d => t(DAYN[d])))
+
+function StarterPlanChooser({ close }) {
+  const week = useStore(s => s.S.week)
+  const choose = (id, name) => {
+    const days = starterPlanDays(id)
+    close()
+    // A confirmation is only worth showing when one of those days is actually occupied.
+    if (!days.some(day => week[day])) { loadStarterPlan(id); return }
+    confirmSheet({
+      title: t('Load {0}?', name),
+      message: t('The new plan will be scheduled on {0}. Existing routines are kept — only those days of the weekly plan change.', dayList(days)),
+      confirmText: t('Load plan'),
+      onConfirm: () => loadStarterPlan(id)
+    })
+  }
+  return <>
+    <h3>{t('Choose starter plan')}</h3>
+    <div className="list">
+      {starterPlanOptions().map(({ id, days }) => {
+        const { name, about } = PLAN_COPY[id]()
+        return <div key={id} className="item" {...tappable(() => choose(id, name))}>
+          <span className="lrow-i" style={{ background: 'var(--surface-3)' }}><Icon name="sparkles" /></span>
+          <div className="grow"><div className="tt">{name}</div><div className="ss">{t('{0} days per week', days)} · {about}</div></div>
+          <Icon name="chevronRight" className="chev" />
+        </div>
+      })}
+    </div>
+  </>
+}
+
+export const starterPlanSheet = () => ui().openSheet(close => <StarterPlanChooser close={close} />)
 
 /* ============================ weight picker (shared: body weight + goal) ============================ */
 // Fixed range, not a moving window — a window that resizes itself mid-drag (the previous
@@ -712,6 +763,7 @@ function ExercisePicker({ onPick, close }) {
   const [eq, setEq] = useState('')          // '' = any equipment
   const [showAll, setShowAll] = useState(false)
   const [shown, setShown] = useState(50)
+  const [byMuscle, setByMuscle] = useState(false)
   const searchRef = useRef(null)
   const bpStrip = useRef(null), eqStrip = useRef(null)
   const onSearchFocus = useSheetKeyboard(searchRef)
@@ -729,8 +781,17 @@ function ExercisePicker({ onPick, close }) {
   const chosenCount = Object.keys(usage).length
   useRevealActiveChip(bpStrip, bp)
   useRevealActiveChip(eqStrip, eqOn)
+  if (byMuscle) return <>
+    <div className="row between" style={{ marginBottom: 10 }}><h3>{t('Add exercise')}</h3>
+      <Button size="sm" variant="ghost" onClick={() => setByMuscle(false)}>{t('All')}</Button>
+    </div>
+    <MuscleExplorer onPick={onPick} />
+  </>
+
   return <>
-    <h3>{t('Add exercise')}</h3>
+    <div className="row between" style={{ marginBottom: 10 }}><h3>{t('Add exercise')}</h3>
+      <Button size="sm" variant="tinted" icon="target" onClick={() => setByMuscle(true)}>{t('By muscle')}</Button>
+    </div>
     {/* .picker-search is what index.css keys the keyboard-aware sheet layout on: the sheet
         lifts above the keys and the search stays put while the list scrolls under it. */}
     <div className="picker-search"><div className="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
@@ -758,7 +819,14 @@ function ExercisePicker({ onPick, close }) {
       </div>}
       {f.slice(0, shown).map(e => <div key={e.id} className="item" {...tappable(() => onPick(e))}>
         <Thumb ex={e} /><div className="grow"><div className="tt capitalize">{exerciseNameFor(e)}</div><div className="ss capitalize">{t(e.tg || e.bp)} · {t(e.eq)}</div></div>
-        {usage[e.id] && <span className="tag acc"><Icon name="starFill" /></span>}<Icon name="plus" className="chev" />
+        {usage[e.id] && <span className="tag acc"><Icon name="starFill" /></span>}
+        {/* A "+" glyph reads as "add this now" — it used to just open the same detail sheet as
+            tapping the row, so it added nothing until you'd scrolled past the sets/reps config
+            and found the real button. Now it does what it looks like: adds with the default
+            config right away. Tapping the row itself still opens the detail/config sheet, for
+            when you want to set sets/reps before adding. */}
+        <button className="iconbtn chev" aria-label={t('Add “{0}”', exerciseNameFor(e))} style={{ padding: 8, margin: -8 }}
+          onClick={ev => { ev.stopPropagation(); onPick(e, true) }}><Icon name="plus" /></button>
       </div>)}
       {f.length === 0 && bp === '★' && <div className="empty">{t('Nothing chosen yet — add exercises and they’ll show up here.')}</div>}
     </div>
@@ -783,7 +851,7 @@ export function swapActiveWorkoutExercise(index) {
     const freestyle = !st.active?.routineId
     const step = defaultIncrement(ex.id, st.unit)
     const plan = freestyle ? null : nextPrescription(st, full, st.routines.find(r => r.id === st.active.routineId))
-    const built = buildSets(st, full, { step, ...(freestyle ? { preferLast: true } : {}) })
+    const built = buildSets(st, full, { step, ...(freestyle ? { preferLast: true } : {}), ...(plan?.kind === 'off' ? { useTarget: true } : {}) })
     const replacement = {
       id: ex.id,
       target: { ...cfg },
@@ -1740,7 +1808,7 @@ function doFinishWorkout() {
       s.workouts = completeBackfill(s.workouts, A, w)
     } else {
       w.entries.forEach(e => {
-        const mx = Math.max(0, ...e.sets.filter(x => x.done && !isWarmupRow(x)).map(x => x.w || 0), e.topW || 0)
+        const mx = bestWeightForEntry(e)
         if (mx > 0) { const cur = s.exWeights[e.id]; if (!cur || mx > cur.w) s.exWeights[e.id] = { w: mx, d: w.d } }
       })
       s.workouts.push(w)

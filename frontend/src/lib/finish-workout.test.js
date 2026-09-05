@@ -15,6 +15,36 @@ describe('completed workout boundary', () => {
     })
   })
 
+  it('derives topW from the highest completed non-warm-up work set, not stale entry data', () => {
+    const active = {
+      id: 'active-1', d: '2026-08-08', start: 1000,
+      entries: [{
+        id: '0025', topW: 80, target: { mode: 'reps', sets: 2, reps: 8 },
+        sets: [
+          { phase: 'warmup', done: true, w: 120, r: 8 },
+          { done: true, w: 75, r: 8 },
+          { done: true, w: 85, r: 7 },
+          { done: false, w: 100, r: 8 },
+        ],
+      }],
+    }
+
+    expect(buildCompletedWorkout(active).entries[0].topW).toBe(85)
+    expect(buildCompletedWorkout({
+      ...active,
+      entries: [{ ...active.entries[0], topW: 120 }],
+    }).entries[0].topW).toBe(85)
+  })
+
+  it('keeps a legacy topW when old completed rows have no usable weight', () => {
+    const active = {
+      id: 'active-1', d: '2026-08-08', start: 1000,
+      entries: [{ id: '0025', topW: 60, sets: [{ done: true, r: 8 }] }],
+    }
+
+    expect(buildCompletedWorkout(active).entries[0].topW).toBe(60)
+  })
+
   it('persists progression exclusion only for a marked session', () => {
     const active = {
       id: 'active-1', d: '2026-08-08', start: 1000, routineId: 'routine-1', name: 'Deload', bw: 80,

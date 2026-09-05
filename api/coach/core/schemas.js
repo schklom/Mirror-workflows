@@ -59,6 +59,11 @@ const EX_SCHEMA = {
   required: ['id', 'sets']
 };
 
+// `week` and `routines[].id` are required, not optional: the week is the only thing that says
+// which day trains which routine, and it points at a routine by id. A schema that leaves either
+// out lets a small local model answer with routines that have no id and a week naming "r1" —
+// grammar-valid, and something validate.js can only ever reject ("the week schedules 0 days but
+// 3 were asked for"), through the repair round and out as a failed job.
 export const CREATE_SCHEMA = {
   type: 'object',
   properties: {
@@ -67,15 +72,22 @@ export const CREATE_SCHEMA = {
     summary: STR,
     basedOn: STR,
     week: { type: 'object' },
+    // The caps are the validator's own (MAX_ROUTINES, MAX_EX_PER_ROUTINE), stated here as well
+    // because "1-7 routines, each 3-12 exercises" in create.md is only a request. A small model
+    // that starts repeating itself does not stop at a request: qwen2.5:3b walks the library id by
+    // id, three sets of eight apiece, until it hits the output limit — twelve minutes for an
+    // answer that arrives cut in half and cannot be parsed. maxItems ends that run at seven
+    // routines instead.
     routines: {
       type: 'array',
+      maxItems: 7,
       items: {
         type: 'object',
         properties: {
           id: STR, name: STR, emoji: STR, prog: STR, why: STR,
-          ex: { type: 'array', items: EX_SCHEMA }
+          ex: { type: 'array', maxItems: 20, items: EX_SCHEMA }
         },
-        required: ['name', 'ex']
+        required: ['id', 'name', 'ex']
       }
     },
     customEx: {
@@ -83,7 +95,7 @@ export const CREATE_SCHEMA = {
       items: { type: 'object', properties: { id: STR, n: STR, bp: STR, desc: STR }, required: ['id', 'n'] }
     }
   },
-  required: ['coach_contract', 'routines']
+  required: ['coach_contract', 'week', 'routines']
 };
 
 export const DEBRIEF_SCHEMA = {

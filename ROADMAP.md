@@ -57,7 +57,7 @@ Left over from this block:
 - A real pause for the workout timers (#29 asked for it)
 - Discord announcement (owner)
 
-## v1.3.3 — Programmes & progression  (October 2026)
+## v1.3.4 — Programmes & progression  (October 2026)
 
 **Theme: training structure beyond one weekly template.** Most of this is the Space-Hermes series.
 It changes the training model (per-set roles, explicit phases, normalisation on every persist), so
@@ -81,7 +81,7 @@ it goes in one MR at a time, each rebased and tested on gym-test before the next
 - Catalogue cleanup: exercises that should not carry weight, incline and interval fields for
   cardio (#46); timers for planks and outdoor cardio are already there, document them (#45)
 
-## v1.3.4 — Accounts & sync  (November 2026)
+## v1.3.5 — Accounts & sync  (November 2026)
 
 **Theme: who may sign in, and what else may read or write your data.**
 
@@ -99,7 +99,7 @@ it goes in one MR at a time, each rebased and tested on gym-test before the next
   logged sessions lost after editing a routine (#25)
 - Admin: per-user export, invite management, audit log filters
 
-## v1.3.5 — Mobile  (December 2026)
+## v1.3.6 — Mobile  (December 2026)
 
 **Theme: the Android app catches up with the web app.**
 

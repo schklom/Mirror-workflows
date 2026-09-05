@@ -210,9 +210,9 @@ host side of that volume, not the variable.
 ## Roadmap
 
 The plan lives in [ROADMAP.md](ROADMAP.md) and on the
-[GitLab milestones](https://gitlab.com/DuarteSantos8/opengym/-/milestones): v1.3.3 programmes and
+[GitLab milestones](https://gitlab.com/DuarteSantos8/opengym/-/milestones): v1.3.4 programmes and
 progression (explicit warm-up/work phases, AMRAP driver selection, multi-week programmes, adaptive
-1RM), v1.3.4 accounts and sync (password and OIDC login, personal-trainer role, remote MCP), v1.3.5
+1RM), v1.3.5 accounts and sync (password and OIDC login, personal-trainer role, remote MCP), v1.3.6
 mobile (timer in the notification bar, widgets, Withings). Ideas and merge requests welcome — the
 [board](https://gitlab.com/DuarteSantos8/opengym/-/boards) shows what is planned, in progress and
 waiting for a test on the staging instance.

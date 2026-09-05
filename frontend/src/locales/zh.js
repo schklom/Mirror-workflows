@@ -1160,4 +1160,13 @@ export default {
   'Convert the numbers': '换算数值',
   'Keep the numbers, change the label': '保留数值，只改标签',
   'Switching the unit offers to convert every stored weight.': '切换单位时会提示换算所有已保存的重量。',
+  'Update to {0}?': '更新到 {0}？',
+  'The latest version will be downloaded and the installer will open.': '将下载最新版本并打开安装程序。',
+  'Download & Install': '下载并安装',
+  'Update failed: {0}': '更新失败：{0}',
+  'openGym v{0} available': 'openGym v{0} 可用',
+  'Starting download…': '正在开始下载…',
+  'Downloading update…': '正在下载更新…',
+  '{0} %': '{0}%',
+  '{0} MB': '{0} MB',
 }

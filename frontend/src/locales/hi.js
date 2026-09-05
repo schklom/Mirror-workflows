@@ -1160,4 +1160,13 @@ export default {
   'Convert the numbers': 'संख्याएँ बदलें',
   'Keep the numbers, change the label': 'संख्याएँ रखें, लेबल बदलें',
   'Switching the unit offers to convert every stored weight.': 'इकाई बदलने पर सभी सहेजे गए वज़न बदलने का विकल्प मिलता है।',
+  'Update to {0}?': '{0} में अपडेट करें?',
+  'The latest version will be downloaded and the installer will open.': 'नवीनतम संस्करण डाउनलोड होगा और इंस्टॉलर खुलेगा।',
+  'Download & Install': 'डाउनलोड और इंस्टॉल करें',
+  'Update failed: {0}': 'अपडेट विफल: {0}',
+  'openGym v{0} available': 'openGym v{0} उपलब्ध',
+  'Starting download…': 'डाउनलोड शुरू हो रहा है…',
+  'Downloading update…': 'अपडेट डाउनलोड हो रहा है…',
+  '{0} %': '{0}%',
+  '{0} MB': '{0} MB',
 }

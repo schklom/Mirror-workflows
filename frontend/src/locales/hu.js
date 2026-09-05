@@ -1163,4 +1163,13 @@ export default {
   'Convert the numbers': 'Számok átváltása',
   'Keep the numbers, change the label': 'Számok maradnak, csak a címke változik',
   'Switching the unit offers to convert every stored weight.': 'Mértékegység-váltáskor felajánlja minden tárolt súly átváltását.',
+  'Update to {0}?': 'Frissítés erre: {0}?',
+  'The latest version will be downloaded and the installer will open.': 'A legújabb verzió letöltődik, és megnyílik a telepítő.',
+  'Download & Install': 'Letöltés és telepítés',
+  'Update failed: {0}': 'A frissítés sikertelen: {0}',
+  'openGym v{0} available': 'openGym v{0} elérhető',
+  'Starting download…': 'Letöltés indítása…',
+  'Downloading update…': 'Frissítés letöltése…',
+  '{0} %': '{0} %',
+  '{0} MB': '{0} MB',
 }

@@ -1160,4 +1160,13 @@ export default {
   'Convert the numbers': 'Sayıları çevir',
   'Keep the numbers, change the label': 'Sayıları koru, etiketi değiştir',
   'Switching the unit offers to convert every stored weight.': 'Birim değiştirilince tüm kayıtlı ağırlıkları çevirme seçeneği sunulur.',
+  'Update to {0}?': '{0} sürümüne güncellensin mi?',
+  'The latest version will be downloaded and the installer will open.': 'En son sürüm indirilecek ve yükleyici açılacak.',
+  'Download & Install': 'İndir ve Kur',
+  'Update failed: {0}': 'Güncelleme başarısız: {0}',
+  'openGym v{0} available': 'openGym v{0} mevcut',
+  'Starting download…': 'İndirme başlatılıyor…',
+  'Downloading update…': 'Güncelleme indiriliyor…',
+  '{0} %': '%{0}',
+  '{0} MB': '{0} MB',
 }

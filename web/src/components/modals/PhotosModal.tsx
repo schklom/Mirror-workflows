@@ -97,19 +97,18 @@ export const PhotosModal = ({ isOpen, onClose }: PhotosModalProps) => {
                   variant="destructive"
                   size="sm"
                   className="font-semibold"
-                  onClick={() => {
+                  onClick={async () => {
                     const service = apiService() as ApiV2Service;
                     try {
                       const toDelete = pictures[selectedIndex].clientItemIdHex;
+                      await service.deleteSinglePicture(toDelete);
                       useStore.setState({
                         pictures: [
                           ...pictures.slice(0, selectedIndex),
                           ...pictures.slice(selectedIndex + 1),
                         ],
                       });
-                      pictures.splice(selectedIndex, 1);
                       setSelectedIndex(Math.max(0, selectedIndex - 1));
-                      service.deleteSinglePicture(toDelete);
                     } catch (error) {
                       toast.error(error instanceof Error ? error.message : 'Delete failed');
                     }

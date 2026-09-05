@@ -602,6 +602,21 @@ h4.sec{
 .ck.on svg{stroke:var(--on-acc)}
 
 /* ------------------------------------------------------------- workout --- */
+/* Workout header. In list mode it is pinned: pulled up over #app's top padding so it sits flush
+   with the screen edge from the first pixel, and given the page's own ground plus a light blur so
+   the rows scrolling underneath read as underneath. */
+.whdr.stick{
+  position:sticky;top:0;z-index:20;
+  margin:calc(-1 * (var(--sat) + 8px)) calc(-1 * var(--pad)) 6px;
+  padding:calc(var(--sat) + 8px) var(--pad) 0;
+  background:color-mix(in srgb,var(--bg) 94%,transparent);
+  -webkit-backdrop-filter:saturate(180%) blur(10px);backdrop-filter:saturate(180%) blur(10px);
+}
+.whdr.stick .hdr{margin-bottom:12px}
+.whdr.stick .wprog{margin-bottom:10px}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .whdr.stick{background:var(--bg)}
+}
 .wprog{height:4px;background:var(--surface-2);border-radius:99px;overflow:hidden;margin-bottom:16px}
 .wprog i{display:block;height:100%;background:var(--acc);border-radius:99px;transition:width var(--med) var(--ease)}
 .exmedia{position:relative;border-radius:var(--r-lg);overflow:hidden;background:#fff;margin-bottom:12px}

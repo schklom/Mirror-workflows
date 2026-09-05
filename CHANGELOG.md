@@ -1,5 +1,64 @@
 # Changelog
 
+## v1.3.3 — 2026-09-05
+
+The workout screen gets out of the way, and the bug round from the board. Same day as v1.3.2 on
+purpose: that one is the contributors' batch, this one is the redesign and the fixes on top of it.
+Self-hosters need the new web bundle and images; the API is unchanged. This is the release to
+install on Android — it is the first APK that can update itself.
+
+### The workout screen
+
+- ⋯ **One menu per exercise.** Note, details, progression settings, bar weight, add a warm-up set,
+  make a superset with the previous or next exercise, swap, move up, move down, remove — all behind
+  one button next to the exercise name, acting on exactly that exercise, also inside a superset. The
+  rows of buttons that used to sit in the header, under the sets and under the card are gone; a
+  pencil still appears once an exercise has a note. (issue #20)
+- 🔢 **The set number is the set's menu**: drop set, rest-pause burst, remove this set. No more
+  "+ Drop / + Burst" chips on every row and no per-row X on warm-ups.
+- 📌 **List view keeps the header pinned** — name, clock, set counter, discard and finish stay at the
+  top while the session scrolls.
+- 🎛️ **Settings → During a workout → Workout controls.** Four switches bring any of the old groups
+  back: weight and reps +/− buttons (off: tap the number and type it), drop/burst shortcuts on every
+  set, superset buttons in the header, move/swap/remove buttons below the exercise. Existing profiles
+  read as the lean default.
+- 🌈 **Colour-coded RIR / RPE.** An unrated set shows one "RIR" (or "RPE") button; tapping it opens
+  a picker with six levels, each with a sentence — "Nothing left, went to failure" through "Easy,
+  warm-up territory" — and a field for an exact value. A logged rating tints its cell by how close
+  to failure it was, the same colour whether you think in RIR or RPE; the +/− on it follow the
+  Workout-controls switch. (ErrorUsernameAlreadyTaken, !91 — issue #32)
+- 📖 **History without leaving the workout.** ⋯ → History: a line of your best set (or estimated
+  1RM, longest hold, minutes) over time and the last ten sessions with every set, the volume and a
+  PR marker. Also reachable from an exercise's details in the library. (issue #43)
+- ▶️ On the workout screen the centre tab button reads "Workout" and stays lit instead of an idle
+  "Resume"; Resume from anywhere else returns to the exercise you marked, which no longer moves on
+  its own. (issues #29, #21)
+
+### Planning and library
+
+- ⭐ **Favourite exercises.** Star an exercise in its details; favourites sort first in the picker,
+  the library and the muscle explorer, and the picker gets a Favourites chip. (issue #6)
+- ⚖️ **Switching kg ↔ lb converts your numbers** — or keeps them and only changes the label, your
+  choice in a sheet: logged sets and drops, working weights, routine targets and increments, warm-up
+  configs, body weight, goal and bar weights; lb rounded to 0.5, kg to 0.25. (issue #22)
+- 🪢 **Resistance bands count as bodyweight equipment**: one reps stepper and the reps-then-sets
+  progression, unless you switch Bodyweight off for that exercise. (issue #39)
+- 🔥 Warm-up ramps snap to the exercise's own increment (1.25 kg plates) instead of the unit default.
+- 📄 Copying a copy of a routine gives "Name (Copy 2)"; the swap picker's "+" quick-adds like every
+  other picker; a weekday whose routine no longer exists no longer triggers the starter-plan prompt.
+
+### Android
+
+- 🔄 **In-app update.** Settings → Data shows "openGym vX available" when a newer release exists; one
+  tap downloads the signed APK, verifies its SHA-256 against the published checksum and opens the
+  installer. No checksum, no install. Needs the "install unknown apps" permission the first time.
+  (ErrorUsernameAlreadyTaken, !40 — issues #38, #9)
+- 🧠 **Saving the Coach with your own API key** no longer hangs on a greyed-out button: the mode is
+  written before the key, the secure store gets a timeout, and every failure says what went wrong
+  in a toast. (issue #42)
+- 🔢 The APK carries version code 17 (v1.3.2: 16). Two releases had reused 15; the update check
+  compares the version name, so nothing changes for you, but Android's own "newer" check is honest again.
+
 ## v1.3.2 — 2026-09-05
 
 Seventeen community merge requests from twelve contributors, each read, rebased onto a staging

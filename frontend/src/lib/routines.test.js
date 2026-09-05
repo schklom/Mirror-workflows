@@ -77,3 +77,14 @@ describe('copyRoutine', () => {
     expect(copy.id).not.toBe('r2')
   })
 })
+
+describe('copyRoutine of a copy', () => {
+  it('numbers the copies instead of stacking suffixes', () => {
+    const first = copyRoutine({ id: 'r', name: 'Push', ex: [] })
+    expect(first.name).toBe('Push (Copy)')
+    const second = copyRoutine(first)
+    expect(second.name).toBe('Push (Copy 2)')
+    expect(copyRoutine(second).name).toBe('Push (Copy 3)')
+    expect(copyRoutine({ id: 'r', name: 'Push (Kopie)', ex: [] }, 'Kopie').name).toBe('Push (Kopie 2)')
+  })
+})

@@ -8,6 +8,8 @@ import { MOBILE, initReminderSync, nativeLoad, nativeSave, syncReminder, writeAu
 import { loadRemote, chooseLocal, forgetRemote, connect } from '../lib/remote.js'
 import { loadCoachDevice, saveCoachDevice, coachDeviceSettings } from '../lib/coach-device.js'
 
+import { WC_DEFAULT } from '../lib/workout-controls.js'
+
 const KEY = 'gym_state_v1'
 export const DEF = {
   unit: 'kg', restSec: 90, restPauseSec: 15, sound: true, timerFlash: false, keepAwake: true, lang: 'en',
@@ -18,6 +20,10 @@ export const DEF = {
   // or 'list' (every exercise stacked and scrollable). Purely presentational: profiles
   // written before this setting existed overlay onto DEF and keep the 'cards' behaviour.
   workoutView: 'cards',
+  // Which controls the workout screen shows besides the sets themselves. The default is the
+  // lean layout: one "more" button per exercise and a menu on each set number. Every switch
+  // brings one of the old always-visible button groups back (Settings → During a workout).
+  wc: { ...WC_DEFAULT },
   // effort: which per-set effort scale is logged — 'none' | 'rir' | 'rpe'. null, not 'none', so
   // that a profile which never chose (loaded state is overlaid on DEF, on every path: local,
   // server pull, backup import) still falls back to the `showRir` boolean this replaced and
@@ -30,6 +36,9 @@ export const DEF = {
   // every time you do the movement ("seat 4, pin 7"). Distinct from a routine's `note`, which
   // belongs to one exercise in one plan, and from a session note, which belongs to one day.
   exNotes: {},
+  // Favourite exercise ids (issue #6) — sorted to the top of the picker/Library. Personal, so
+  // it syncs with the profile but is never part of a shared plan bundle (lib/favourites.js).
+  favEx: [],
   // First day of the week as a getDay() index — 1 Monday, 0 Sunday. Monday is the default so
   // every profile written before this setting existed keeps the week it has been looking at.
   // See lib/format.js: nothing reads this field directly, everything goes through the helpers.

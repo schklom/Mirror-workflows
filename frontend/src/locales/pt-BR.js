@@ -4,6 +4,7 @@
 import pt from './pt.js'
 
 export const PT_BR_OVERRIDES = {
+  'No sessions logged yet': 'Ainda não há sessões registradas',
   'What should change?': 'O que deve mudar?',
   'Coach is thinking…': 'O Coach está pensando…',
   'Message the Coach…': 'Escreva ao Coach…',
@@ -32,6 +33,7 @@ export const PT_BR_OVERRIDES = {
   'Create one and start with this exercise': 'Crie uma e comece com este exercício',
   'Search {0} exercises…': 'Buscar entre {0} exercícios…',
   'Nothing chosen yet — add exercises and they’ll show up here.': 'Nenhum exercício escolhido — adicione exercícios e eles aparecerão aqui.',
+  'No favourites here — tap the star on an exercise to add it.': 'Sem favoritos aqui — toque na estrela de um exercício para adicioná-lo.',
   'The sets you logged for this exercise in this session will be lost.': 'As séries registradas para este exercício nesta sessão serão perdidas.',
   'Swap exercise': 'Trocar exercício',
   'Swap exercise?': 'Trocar exercício?',
@@ -107,7 +109,6 @@ export const PT_BR_OVERRIDES = {
   'synced with your profile': 'sincronizado com seu perfil',
   'The screen stays on while a workout is running, so you don’t have to unlock your phone between sets.': 'A tela permanece ligada durante o treino, para você não precisar desbloquear o celular entre as séries.',
   'Flash screen when timer ends': 'Piscar a tela quando o temporizador terminar',
-  'Note: switching units only changes the label — logged numbers are not converted.': 'Observação: trocar a unidade altera somente o rótulo — os valores registrados não são convertidos.',
   'Export backup (JSON)': 'Exportar backup (JSON)',
   'Import backup': 'Importar backup',
   'Reset everything?': 'Redefinir tudo?',
@@ -638,6 +639,20 @@ export const PT_BR_OVERRIDES = {
   'Clear selection': 'Limpar seleção',
   'Primary target': 'Músculo principal',
   'Also trains': 'Também trabalha',
+  'Progression settings': 'Configurações de progressão',
+  'Workout controls': 'Controles durante o treino',
+  'Off: tap the number and type it': 'Desligado: toque no número e digite',
+  'Move, swap and remove buttons below the exercise': 'Botões mover, trocar e remover abaixo do exercício',
+  'Everything hidden here stays one tap away: the ⋯ button of an exercise and the number of a set.': 'Tudo o que você esconde aqui fica a um toque: o botão ⋯ de um exercício e o número de uma série.',
+  // effort quick picker — pt-PT uses "toca"/"escreve"; Brazilian uses "toque"/"digite"
+  'Tap how many reps you had left, or type an exact {0}.': 'Toque em quantas repetições você ainda tinha, ou digite um {0} exato.',
+  'Every stored weight — logged sets, working weights, routine targets, body weight, bar weights — is in {0}. Convert the numbers, or keep them and only change the label?': 'Todos os pesos salvos — séries registradas, pesos de trabalho, alvos das rotinas, peso corporal, pesos das barras — estão em {0}. Converter os números, ou mantê-los e mudar só o rótulo?',
+  'Keep the numbers, change the label': 'Manter os números, mudar o rótulo',
+  'Switching the unit offers to convert every stored weight.': 'Ao mudar de unidade é oferecido converter todos os pesos salvos.',
+  'The latest version will be downloaded and the installer will open.': 'A versão mais recente será baixada e o instalador será aberto.',
+  'Download & Install': 'Baixar e instalar',
+  'Starting download…': 'Iniciando download…',
+  'Downloading update…': 'Baixando atualização…',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

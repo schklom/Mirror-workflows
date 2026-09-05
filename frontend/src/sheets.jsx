@@ -1,19 +1,21 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useStore } from './store/useStore.js'
 import { useUI } from './store/useUI.js'
 import { EXDB, EXIDX, BODYPARTS, isCardio, isBodyweightEq, allExercises, equipmentOf, smOf, matchExercise, exOr } from './lib/exercises.js'
 import { activeProfile, exAvailable, ALL_EQUIPMENT, newProfile } from './lib/equipment.js'
 import { fmtDate, fmtNum, fmtVol, fmtDur, durPart, todayISO, isoOf, uid, exCount, DAYN, DAYS, weekOrder, weekStartOf, weekDayOffset, MONTHS_LONG, ACCENTS } from './lib/format.js'
-import { lastEntryFor, bestWeightFor, bestWeightForEntry, buildSets, effectiveRoutineId, workoutVolume, setsDone, setsDoneActive, lastBW, supersetUnits, unitOf, setLabel, defaultConfig, cleanupSg, modeOf, effortOf, isBw, isPerSide, sideReps, workSetsDone, applyIntensifierPlan, MAX_PLANNED_WARMUPS, NOTE_MAX } from './lib/history.js'
+import { lastEntryFor, bestWeightFor, bestWeightForEntry, buildSets, effectiveRoutineId, workoutVolume, setsDone, setsDoneActive, lastBW, supersetUnits, unitOf, setLabel, defaultConfig, cleanupSg, modeOf, effortOf, EFFORT, capEffort, stepEffort, isBw, isPerSide, sideReps, workSetsDone, applyIntensifierPlan, MAX_PLANNED_WARMUPS, NOTE_MAX } from './lib/history.js'
 import { usesBar, barWeightFor, defaultBarWeight, hasBarOverride } from './lib/bar.js'
+import { toScale, rirOf, EFFORT_PRESETS, effortColor } from './lib/effort.js'
 import { beep, vibrate } from './lib/sound.js'
 import { t, dateLocale, instrFor, exerciseNameFor, getLang, INSTR_LANGS } from './lib/i18n.js'
 import { nav } from './lib/nav.js'
 import { buildStarterPlan, starterPlanDays, starterPlanOptions } from './lib/starter.js'
 import Media, { Thumb } from './components/Media.jsx'
+import LineChart from './components/LineChart.jsx'
 import Stepper from './components/Stepper.jsx'
 import Icon from './components/Icon.jsx'
-import { Button, Slider, Switch, Segmented, SelectRow, Row, TextField, MultiSelectRow } from './components/ui.jsx'
+import { Button, Slider, Switch, Segmented, SelectRow, Row, TextField, NumberField, MultiSelectRow } from './components/ui.jsx'
 import { glyphOf, GLYPH_GROUPS, DEFAULT_GLYPH } from './lib/glyphs.js'
 import BodyMap from './components/BodyMap.jsx'
 import MuscleExplorer from './components/MuscleExplorer.jsx'
@@ -22,7 +24,8 @@ import { parseImport, mergeImport } from './lib/import-csv.js'
 import { importHevyData, HevyApiError, HEVY_DEV_SETTINGS, mergeHevyRoutines } from './lib/import-hevy.js'
 import { buildPlanBundle, parsePlan, mergePlan, printPlan } from './lib/plan-share.js'
 import { estimate1RM, best1RM, is1RMRecord, REP_CAP } from './lib/onerm.js'
-import { nextPrescription, applyPrescription, policyFor, defaultIncrement, POLICIES_FOR, POLICY_NAME, POLICY_DESC, MAX_BW_SETS } from './lib/progression.js'
+import { exerciseHistory } from './lib/exercise-history.js'
+import { nextPrescription, applyPrescription, policyFor, defaultIncrement, POLICIES_FOR, POLICY_NAME, POLICY_DESC, MAX_BW_SETS, weightIncrement } from './lib/progression.js'
 import { normalizeRepRange } from './lib/rep-range.js'
 import { MOBILE, shareExport } from './lib/mobile.js'
 import { buildCompletedWorkout } from './lib/finish-workout.js'
@@ -30,6 +33,7 @@ import { isWarmupRow } from './lib/workout-model.js'
 import { nextUnfinishedUnit } from './lib/supersetFlow.js'
 import { swapActiveExercise } from './lib/active-exercise-swap.js'
 import { useSheetKeyboard, useRevealActiveChip, tappable } from './lib/use-sheet-keyboard.js'
+import { isFav, toggleFav, sortFavouritesFirst } from './lib/favourites.js'
 import { buildSessionEntries } from './lib/session-start.js'
 import { workoutsOn, backfillStart, backfillEnd, completeBackfill } from './lib/backfill.js'
 
@@ -49,6 +53,31 @@ function ConfirmDialog({ title, message, confirmText, cancelText, danger, onConf
     <Button variant="ghost" className="dim" onClick={close}>{cancelText || t('Cancel')}</Button>
   </div>
 }
+/* ============================ menu sheet ============================ */
+// A list of actions, one per row, closing on tap. This is where the workout screen parks
+// everything that is not a set you are about to log: the point of a single "more" button is
+// that the ten things you do once a session stop competing with the two you do every set.
+// items: [{ icon, label, sub, onClick, danger, disabled, on }] — `on` draws a check for toggles.
+function MenuSheet({ title, subtitle, items, close }) {
+  return <>
+    {title && <h3 style={{ marginBottom: subtitle ? 2 : 10 }}>{title}</h3>}
+    {subtitle && <div className="muted small" style={{ marginBottom: 10 }}>{subtitle}</div>}
+    <div className="list menu-list">
+      {items.filter(Boolean).map((it, i) => <div key={i}
+        className={'item menu-item' + (it.danger ? ' danger' : '') + (it.disabled ? ' disabled' : '')}
+        aria-disabled={it.disabled || undefined}
+        {...tappable(it.disabled ? null : () => { close(); it.onClick && it.onClick() })}>
+        {it.icon && <span className="lrow-i"><Icon name={it.icon} /></span>}
+        <div className="grow"><div className="tt">{it.label}</div>{it.sub && <div className="ss">{it.sub}</div>}</div>
+        {it.on != null && <span className={'menu-on' + (it.on ? ' is-on' : '')}><Icon name="check" /></span>}
+      </div>)}
+    </div>
+  </>
+}
+export function menuSheet(opts) {
+  ui().openSheet(close => <MenuSheet {...opts} close={close} />)
+}
+
 // Themed replacement for window.confirm — callback-based (no blocking).
 export function confirmSheet(opts) {
   ui().openSheet(close => <ConfirmDialog {...opts} close={close} />, { kind: 'center' })
@@ -85,11 +114,14 @@ const dayList = days => new Intl.ListFormat(dateLocale()).format(days.map(d => t
 
 function StarterPlanChooser({ close }) {
   const week = useStore(s => s.S.week)
+  const routines = useStore(s => s.S.routines)
   const choose = (id, name) => {
     const days = starterPlanDays(id)
     close()
-    // A confirmation is only worth showing when one of those days is actually occupied.
-    if (!days.some(day => week[day])) { loadStarterPlan(id); return }
+    // A confirmation is only worth showing when one of those days is actually occupied — by a
+    // routine that still exists, not by a stale id the Plan already shows as "Rest".
+    const taken = day => week[day] && routines.some(r => r.id === week[day])
+    if (!days.some(taken)) { loadStarterPlan(id); return }
     confirmSheet({
       title: t('Load {0}?', name),
       message: t('The new plan will be scheduled on {0}. Existing routines are kept — only those days of the weekly plan change.', dayList(days)),
@@ -593,8 +625,20 @@ function ExerciseDetail({ ex, close }) {
   const st = useStore(s => s.S)
   const last = lastEntryFor(st, ex.id)
   const best = bestWeightFor(st, ex.id)
+  const fav = isFav(st, ex.id)
+  const flipFav = () => {
+    let on = false
+    update(s => { on = toggleFav(s, ex.id) })
+    toast(on ? t('Added to favourites') : t('Removed from favourites'))
+  }
   return <>
-    <h3 className="capitalize">{exerciseNameFor(ex)}</h3>
+    <div className="row between" style={{ gap: 8, alignItems: 'flex-start' }}>
+      <h3 className="capitalize">{exerciseNameFor(ex)}</h3>
+      <button className={'iconbtn fav-btn' + (fav ? ' on' : '')} aria-pressed={fav}
+        aria-label={fav ? t('Remove from favourites') : t('Add to favourites')} onClick={flipFav}>
+        <Icon name={fav ? 'starFill' : 'star'} />
+      </button>
+    </div>
     <Media ex={ex} />
     <div className="row" style={{ gap: 6, flexWrap: 'wrap', margin: '10px 0' }}>
       <span className="tag acc">{t(ex.bp)}</span>
@@ -605,6 +649,7 @@ function ExerciseDetail({ ex, close }) {
     {ex.desc && <div className="exnote">{ex.desc}</div>}
     {best > 0 && <div className="small row" style={{ marginBottom: 6, gap: 5 }}><Icon name="trophy" style={{ fontSize: 14, color: 'var(--yellow)' }} />{t('Best:')} <b className="accent">{fmtNum(best)} {st.unit}</b>{last ? ` · ${t('last')} ${fmtDate(last.d)}: ${last.sets.map(s => setLabel(ex.id, s, last.target)).join(', ')}` : ''}</div>}
     <Button variant="primary" icon="plus" style={{ margin: '10px 0 4px' }} onClick={() => addToRoutineSheet(ex)}>{t('Add to my plan')}</Button>
+    {last && <Button icon="history" style={{ marginTop: 4 }} onClick={() => exerciseHistorySheet(ex.id)}>{t('History')}</Button>}
     {ex.custom && <div className="row" style={{ gap: 8, marginTop: 8 }}>
       <Button icon="pencil" style={{ flex: 1 }} onClick={() => { close(); customExSheet(ex) }}>{t('Edit')}</Button>
       <Button variant="danger" icon="trash" style={{ flex: 1 }} onClick={() => deleteCustomEx(ex, close)}>{t('Delete')}</Button>
@@ -618,6 +663,56 @@ function ExerciseDetail({ ex, close }) {
   </>
 }
 export const exerciseDetailSheet = ex => ui().openSheet(close => <ExerciseDetail ex={ex} close={close} />)
+
+/* ============================ exercise history ============================ */
+// What you did on this exercise before, reachable mid-workout (issue #43): the curve first,
+// then the last sessions set by set, so the question "what did I do last month" is answered
+// without leaving the workout for Stats. Derived once per log change — the sheet re-renders on
+// every store tick while a session runs, and LineChart drops its hover whenever `points`
+// changes identity, so a series rebuilt per render would lose the tooltip under your finger.
+function ExerciseHistory({ exId }) {
+  const st = useStore(s => s.S)
+  const ex = exOr(exId)
+  const h = useMemo(() => exerciseHistory(st, exId), [st.workouts, exId])
+  const [curve, setCurve] = useState('top')
+  const onE1 = curve === 'e1rm' && h.e1rmPoints.length > 0
+  const unit = h.metric === 'weight' ? st.unit : h.metric === 'reps' ? t('reps') : h.metric === 'sec' ? 's' : t('min')
+  const e1Best = useMemo(() => Math.max(0, ...h.e1rmPoints.map(p => p.y)), [h])
+  if (!h.total) return <>
+    <h3 className="capitalize">{exerciseNameFor(ex)}</h3>
+    <div className="empty"><div className="ico"><Icon name="history" /></div>{t('No sessions logged yet')}</div>
+  </>
+  const tail = s => [
+    s.volume > 0 && t('Volume') + ' ' + fmtVol(s.volume, st.unit),
+    s.e1rm != null && t('Est. 1RM') + ' ' + fmtNum(s.e1rm) + ' ' + st.unit,
+  ].filter(Boolean).join(' · ')
+  return <>
+    <h3 className="capitalize" style={{ marginBottom: 2 }}>{exerciseNameFor(ex)}</h3>
+    <div className="muted small" style={{ marginBottom: 10 }}>{t('Exercise history')} · {t(h.total === 1 ? '{0} session' : '{0} sessions', h.total)}</div>
+    {/* Only reps work with a load produces an estimate, so the toggle is absent for the rest. */}
+    {h.e1rmPoints.length > 0 && h.metric === 'weight' && <Segmented className="seg-range" value={curve} onChange={setCurve}
+      options={[{ value: 'top', label: t('Top set') }, { value: 'e1rm', label: t('Est. 1RM') }]} />}
+    <div className="chart" style={{ marginTop: 8 }}>
+      <LineChart points={onE1 ? h.e1rmPoints : h.points} h={140} unit={onE1 ? st.unit : unit} color="var(--blue)" />
+    </div>
+    <div className="small row" style={{ margin: '6px 0 4px', gap: 5 }}>
+      <Icon name="trophy" style={{ fontSize: 14, color: 'var(--yellow)' }} />
+      {t('Best:')} <b className="accent">{fmtNum(onE1 ? e1Best : h.best)} {onE1 ? st.unit : unit}</b>
+    </div>
+    <h4 className="sec">{h.sessions.length < h.total ? t('Last {0} sessions', h.sessions.length) : t('Sessions')}</h4>
+    <div className="list">
+      {h.sessions.map(s => <div key={s.id} className="item" style={{ alignItems: 'flex-start' }}>
+        <div className="grow">
+          <div className="tt">{fmtDate(s.d, true)} {s.pr && <span className="pr"><Icon name="trophy" />PR</span>}</div>
+          <div className="ss">{s.sets.map(x => setLabel(exId, x, s.target)).join('  ·  ')}</div>
+          {tail(s) && <div className="small dim" style={{ marginTop: 3 }}>{tail(s)}</div>}
+        </div>
+        {s.value != null && s.value > 0 && <b className="accent nocap" style={{ whiteSpace: 'nowrap' }}>{fmtNum(s.value)} {unit}</b>}
+      </div>)}
+    </div>
+  </>
+}
+export const exerciseHistorySheet = exId => ui().openSheet(close => <ExerciseHistory exId={exId} close={close} />)
 
 /* ============================ add to routine ============================ */
 function AddToRoutine({ ex, close }) {
@@ -740,6 +835,7 @@ export function deleteCustomEx(ex, afterDelete) {
         s.customEx = (s.customEx || []).filter(x => x.id !== ex.id)
         s.routines.forEach(r => { r.ex = r.ex.filter(e => e.id !== ex.id); cleanupSg(r.ex) })
         delete s.exWeights[ex.id]
+        s.favEx = (s.favEx || []).filter(id => id !== ex.id)
       })
       toast(t('Exercise deleted'))
       afterDelete && afterDelete()
@@ -759,7 +855,7 @@ function ExercisePicker({ onPick, close }) {
   const st = useStore(s => s.S)
   const usage = usageMap(st)
   const [q, setQ] = useState('')
-  const [bp, setBp] = useState('')          // '' = all, '★' = chosen, else a body part
+  const [bp, setBp] = useState('')          // '' = all, '★' = chosen, '☆' = favourites, else a body part
   const [eq, setEq] = useState('')          // '' = any equipment
   const [showAll, setShowAll] = useState(false)
   const [shown, setShown] = useState(50)
@@ -769,16 +865,18 @@ function ExercisePicker({ onPick, close }) {
   const onSearchFocus = useSheetKeyboard(searchRef)
   const all = allExercises(st)
   const profile = activeProfile(st)
-  let base = all.filter(e =>
-    (bp === '★' ? usage[e.id] : (!bp || e.bp === bp)) &&
-    matchExercise(e, q))
+  const inScope = e => bp === '★' ? usage[e.id] : bp === '☆' ? isFav(st, e.id) : (!bp || e.bp === bp)
+  let base = all.filter(e => inScope(e) && matchExercise(e, q))
   if (bp === '★') base = [...base].sort((a, b) => (usage[b.id] - usage[a.id]) || exerciseNameFor(a).localeCompare(exerciseNameFor(b)))
   const eqFiltered = (profile && !showAll) ? base.filter(e => exAvailable(st, e)) : base
   const eqOpts = equipmentOf(eqFiltered)
   // Drop the equipment filter if the search narrowed it away, so you never hit a dead end.
   const eqOn = eqOpts.includes(eq) ? eq : ''
-  const f = eqOn ? eqFiltered.filter(e => e.eq === eqOn) : eqFiltered
+  // Favourites float to the top of whatever the filters left (issue #6), the rest keeps its order.
+  const f = sortFavouritesFirst(eqOn ? eqFiltered.filter(e => e.eq === eqOn) : eqFiltered, st)
   const chosenCount = Object.keys(usage).length
+  const favCount = (st.favEx || []).length
+  const special = bp === '★' || bp === '☆'
   useRevealActiveChip(bpStrip, bp)
   useRevealActiveChip(eqStrip, eqOn)
   if (byMuscle) return <>
@@ -804,6 +902,7 @@ function ExercisePicker({ onPick, close }) {
       </button>
     </div>}
     <div className="chips" ref={bpStrip} style={{ margin: eqOpts.length > 1 ? '10px 0 6px' : '10px 0' }}>
+      {favCount > 0 && <button className={'chip' + (bp === '☆' ? ' on' : '')} onClick={() => { setBp('☆'); setEq(''); setShown(50) }}><Icon name="starFill" className="fav-star" />{t('Favourites')} ({favCount})</button>}
       {chosenCount > 0 && <button className={'chip' + (bp === '★' ? ' on' : '')} onClick={() => { setBp('★'); setEq(''); setShown(50) }}><Icon name="starFill" style={{ fontSize: 12, display: 'inline-block', marginRight: 4, verticalAlign: '-1px' }} />{t('Chosen')} ({chosenCount})</button>}
       <button className={'chip nocap' + (!bp ? ' on' : '')} onClick={() => { setBp(''); setEq(''); setShown(50) }}>{t('All')}</button>
       {BODYPARTS.map(b => <button key={b} className={'chip' + (bp === b ? ' on' : '')} onClick={() => { setBp(b); setEq(''); setShown(50) }}>{t(b)}</button>)}
@@ -813,12 +912,13 @@ function ExercisePicker({ onPick, close }) {
       {eqOpts.map(x => <button key={x} className={'chip' + (eqOn === x ? ' on' : '')} onClick={() => { setEq(x); setShown(50) }}>{t(x)}</button>)}
     </div>}
     <div className="list">
-      {bp !== '★' && <div className="item" {...tappable(() => customExSheet(null, ex => onPick(ex), q.trim()))}>
+      {!special && <div className="item" {...tappable(() => customExSheet(null, ex => onPick(ex), q.trim()))}>
         <div className="thumb thumb-x"><Icon name="sparkles" /></div>
         <div className="grow"><div className="tt">{t('Create your own exercise')}</div><div className="ss">{t('name + body part, no animation')}</div></div><Icon name="plus" className="chev" />
       </div>}
       {f.slice(0, shown).map(e => <div key={e.id} className="item" {...tappable(() => onPick(e))}>
-        <Thumb ex={e} /><div className="grow"><div className="tt capitalize">{exerciseNameFor(e)}</div><div className="ss capitalize">{t(e.tg || e.bp)} · {t(e.eq)}</div></div>
+        <Thumb ex={e} /><div className="grow"><div className="tt capitalize">{isFav(st, e.id) && <Icon name="starFill" className="fav-star" />}{exerciseNameFor(e)}</div><div className="ss capitalize">{t(e.tg || e.bp)} · {t(e.eq)}</div></div>
+        {/* Accent tag = already in a routine/log ("Chosen"); the yellow star by the name = favourite. */}
         {usage[e.id] && <span className="tag acc"><Icon name="starFill" /></span>}
         {/* A "+" glyph reads as "add this now" — it used to just open the same detail sheet as
             tapping the row, so it added nothing until you'd scrolled past the sets/reps config
@@ -829,6 +929,7 @@ function ExercisePicker({ onPick, close }) {
           onClick={ev => { ev.stopPropagation(); onPick(e, true) }}><Icon name="plus" /></button>
       </div>)}
       {f.length === 0 && bp === '★' && <div className="empty">{t('Nothing chosen yet — add exercises and they’ll show up here.')}</div>}
+      {f.length === 0 && bp === '☆' && <div className="empty">{t('No favourites here — tap the star on an exercise to add it.')}</div>}
     </div>
     {f.length > shown && <><div style={{ height: 8 }} /><Button onClick={() => setShown(s => s + 50)}>{t('Show more')}</Button></>}
   </>
@@ -840,7 +941,10 @@ export function swapActiveWorkoutExercise(index) {
   const active = S().active
   if (!active?.entries?.[index]) return
 
-  const picker = exercisePicker(ex => exConfigSheet(ex, null, cfg => {
+  // The "+" on a picker row commits with the default config, exactly as it does in the add
+  // flows; tapping the row still opens the config sheet first.
+  const picker = exercisePicker((ex, quick) => quick ? swapTo(ex, defaultConfig(ex.id)) : exConfigSheet(ex, null, cfg => swapTo(ex, cfg), null, null))
+  function swapTo(ex, cfg) {
     // The picker is a chooser here, not a stack you keep adding from: one swap, then back to
     // the workout. (The add flow deliberately leaves it open.)
     picker.close()
@@ -849,7 +953,7 @@ export function swapActiveWorkoutExercise(index) {
     // Same rows the add flow builds: last time's loads and, in a planned session, the
     // prescription — swapping barbell for dumbbell bench must not start you at an empty bar.
     const freestyle = !st.active?.routineId
-    const step = defaultIncrement(ex.id, st.unit)
+    const step = modeOf(full) === 'reps' ? weightIncrement(full, st.unit) : defaultIncrement(ex.id, st.unit)
     const plan = freestyle ? null : nextPrescription(st, full, st.routines.find(r => r.id === st.active.routineId))
     const built = buildSets(st, full, { step, ...(freestyle ? { preferLast: true } : {}), ...(plan?.kind === 'off' ? { useTarget: true } : {}) })
     const replacement = {
@@ -894,7 +998,7 @@ export function swapActiveWorkoutExercise(index) {
       confirmText: t('Continue'),
       onConfirm: () => apply({ loggedConfirmed: true })
     })
-  }))
+  }
 }
 
 /* ============================ equipment profiles ============================ */
@@ -1256,6 +1360,69 @@ export const glyphPicker = (current, onPick) => {
     <div style={{ height: 4 }} />
   </>)
 }
+
+/* ============================ effort quick picker (RIR / RPE) ============================ */
+// Rating a set used to mean walking a +/- stepper up the scale — eleven taps to log "5 reps
+// left". This is the one-tap replacement: a colour-coded button per preset, plus a free field
+// for the value between two presets. Presets are stored in RIR internally; a profile that logs
+// RPE sees the same buttons labelled on its own scale (toScale), coloured identically — the
+// colour is the effort, not the number, so 0 RIR and 10 RPE are both the "went to failure" end.
+function EffortPicker({ kind, value, onPick, close }) {
+  // Local mirror so the highlighted preset and the free field track typing live; the store is
+  // written on every change through onPick, the same as the stepper did.
+  const [v, setV] = useState(value ?? null)
+  const set = nv => { setV(nv); onPick(nv) }
+  // `v` is in the profile's own scale (whatever sits on the set: s.rir or s.rpe). Compare in
+  // RIR so the highlighted preset is right on either scale, and so a typed RPE colours the
+  // same as the RIR it equals.
+  const curRir = rirOf(kind === 'rpe' ? { rpe: v } : { rir: v })
+  // The band colour for the value currently on the field, so the exact-value row is tinted the
+  // same way the presets and the workout row cell are — null (nothing typed) stays neutral.
+  const curColor = effortColor(curRir)
+  const commit = nv => { close(); onPick(nv) }
+  const pick = rir => commit(toScale(kind, rir))
+  return <>
+    <h3>{t('How hard was that set?')}</h3>
+    <div className="muted small" style={{ marginBottom: 14, lineHeight: 1.45 }}>
+      {t('Tap how many reps you had left, or type an exact {0}.', EFFORT[kind].hd)}
+    </div>
+    <div className="effpick">
+      {EFFORT_PRESETS.map(p => {
+        const label = fmtNum(toScale(kind, p.rir)) + (p.tail ? '+' : '')
+        const on = curRir != null && curRir === p.rir
+        return <button key={p.rir} className={'effpick-b' + (on ? ' on' : '')}
+          style={{ '--bc': p.color }} onClick={() => pick(p.rir)}>
+          <span className="effpick-n">{label}</span>
+          <span className="effpick-f">{t(p.feel)}</span>
+        </button>
+      })}
+    </div>
+    {/* The free field keeps the flexibility the stepper had: a value between two presets, in
+        the profile's own scale, capped to the top of it (there is no RPE 12). Sized like a
+        preset so it reads as the seventh option — "or type your own" — not an afterthought.
+        A −/+ pair flanks the number for 0.5-step nudging without leaving the sheet, coloured
+        by the band the current value falls in (the same colour the presets and the row cell
+        use); tapping the number itself still types an exact value. */}
+    <div className="effpick-free" style={curColor ? { borderColor: curColor } : undefined}>
+      <span className="effpick-free-l">{t('Exact {0}', EFFORT[kind].hd)}</span>
+      <div className="effpick-step" style={curColor ? { color: curColor } : undefined}>
+        <button aria-label="Decrease" onClick={() => set(stepEffort(kind, v, -1))}><Icon name="minus" /></button>
+        <NumberField className="effpick-free-in" decimal nullable value={v ?? ''}
+          placeholder={EFFORT[kind].hd} onChange={nv => set(capEffort(kind, nv))} />
+        <button aria-label="Increase" onClick={() => set(stepEffort(kind, v, 1))}><Icon name="plus" /></button>
+      </div>
+      <span className="effpick-free-unit">{EFFORT[kind].hd}</span>
+    </div>
+    <div style={{ height: 10 }} />
+    {v != null && <Button variant="ghost" className="dim" icon="xmark" onClick={() => commit(null)}>{t('Clear rating')}</Button>}
+    <div style={{ height: 4 }} />
+  </>
+}
+// kind is 'rir' | 'rpe'; value is the set's current rating on that scale (or null); onPick
+// receives the new value on that same scale (null to clear). The caller stores it exactly as
+// weight/reps are stored — a null drops the key rather than writing a zero.
+export const effortPickerSheet = (kind, value, onPick) =>
+  ui().openSheet(close => <EffortPicker kind={kind} value={value} onPick={onPick} close={close} />)
 
 /* ============================ share / print / import a plan ============================ */
 export const planToolsSheet = () => ui().openSheet(close => <PlanTools close={close} />)

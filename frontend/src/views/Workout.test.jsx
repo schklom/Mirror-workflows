@@ -21,6 +21,9 @@ const mocks = vi.hoisted(() => {
     toast: vi.fn(),
     scrollCalls: [],
     swapActiveWorkoutExercise: vi.fn(),
+    menuSheet: vi.fn(),
+    effortPickerSheet: vi.fn(),
+    exerciseHistorySheet: vi.fn(),
   }
   state.stopRest = vi.fn(() => { state.timer = null })
   state.stopWork = vi.fn(() => { state.work = null })
@@ -67,10 +70,14 @@ vi.mock('../sheets.jsx', () => ({
   workoutCompleteSheet: mocks.workoutCompleteSheet,
   confirmSheet: mocks.confirmSheet,
   swapActiveWorkoutExercise: mocks.swapActiveWorkoutExercise,
+  menuSheet: mocks.menuSheet,
+  barWeightSheet: vi.fn(),
   // Both note sheets belong here even though the tests never open one: Workout.jsx reads
   // sessionNoteSheet during render, so a missing export is a render crash, not a no-op.
   exerciseNoteSheet: vi.fn(),
   sessionNoteSheet: vi.fn(),
+  effortPickerSheet: mocks.effortPickerSheet,
+  exerciseHistorySheet: mocks.exerciseHistorySheet,
 }))
 vi.mock('../components/Media.jsx', () => ({ default: () => null }))
 // api.js reads navigator.userAgent at module scope. This file installs its own DOM inside the
@@ -691,6 +698,130 @@ describe('progression guidance', () => {
   })
 })
 
+describe('effort cell (colour-coded RIR/RPE quick picker)', () => {
+  // A rep exercise whose sets can carry an effort rating. `rir` per set is optional — an
+  // unrated set simply omits the key, which is what the empty cell has to represent.
+  const effExercise = (rirs) => ({
+    id: 'plain-bench',
+    target: { mode: 'reps', reps: 5, weight: 60, bodyweight: false },
+    sets: rirs.map(rir => ({ w: 60, r: 5, done: false, ...(rir == null ? {} : { rir }) })),
+  })
+  // A cell is one of two shapes: an empty `.effcell` button (label, opens picker) or, once a
+  // rating is logged, a `.effcell-stp` −/value/+ group. `.effcell-list` returns the outer
+  // element of each (carrying the colour on the logged one); `effCells` normalises them to the
+  // value-bearing, picker-opening element so the existing assertions read the same either way:
+  // for the empty button that is the button itself, for the stepper it is the `.val` button.
+  const effCellList = () => [...container.querySelectorAll('.effcell,.effcell-stp')]
+  const effCells = () => effCellList().map(el =>
+    el.classList.contains('effcell-stp') ? el.querySelector('.val') : el)
+
+  async function mountEffort(rirs, scale = 'rir') {
+    mocks.S = workout([effExercise(rirs)])
+    mocks.S.effort = scale
+    installDom()
+    await act(async () => { root.render(React.createElement(Workout)) })
+  }
+
+  it('shows the effort column only when the profile logs a scale', async () => {
+    await mount([exercise('plain-bench', [false])])   // effort: 'none' from workout()
+    expect(effCells()).toHaveLength(0)
+    await unmount()
+    await mountEffort([null])
+    expect(effCells()).toHaveLength(1)
+  })
+
+  it('labels an unrated cell with the scale name, not a value or a colour', async () => {
+    await mountEffort([null], 'rir')
+    const cell = effCells()[0]
+    expect(cell.textContent).toBe('RIR')
+    expect(cell.className).toContain('is-empty')
+    // no rating means no inline colour on the button
+    expect(cell.getAttribute('style') || '').not.toMatch(/color/)
+  })
+
+  it('uses the profile scale for the empty label — RPE profile reads "RPE"', async () => {
+    await mountEffort([null], 'rpe')
+    expect(effCells()[0].textContent).toBe('RPE')
+  })
+
+  it('shows a logged rating as its number, tinted by the band it falls in', async () => {
+    await mountEffort([0, 2, null])
+    const cells = effCells()
+    const outer = effCellList()
+    expect(cells[0].textContent).toBe('0')
+    expect(outer[0].className).toContain('effcell-stp')   // logged: the stepper, not the label
+    // 0 RIR = to failure = purple; 2 RIR = yellow (the colours effortColor assigns) — the
+    // colour rides the outer stepper (border + tinted background), not the inner value button
+    expect(outer[0].getAttribute('style')).toContain('--purple')
+    expect(cells[1].textContent).toBe('2')
+    expect(outer[1].getAttribute('style')).toContain('--yellow')
+    expect(cells[2].textContent).toBe('RIR')      // the unrated one stays a label
+    expect(outer[2].className).toContain('is-empty')
+  })
+
+  it('displays a logged value on the profile scale — RIR 2 reads as RPE 8', async () => {
+    // the set is stored on whatever scale the profile logs; an RPE profile stores s.rpe
+    mocks.S = workout([{
+      id: 'plain-bench',
+      target: { mode: 'reps', reps: 5, weight: 60, bodyweight: false },
+      sets: [{ w: 60, r: 5, done: false, rpe: 8 }],
+    }])
+    mocks.S.effort = 'rpe'
+    installDom()
+    await act(async () => { root.render(React.createElement(Workout)) })
+    expect(effCells()[0].textContent).toBe('8')
+    // RPE 8 == RIR 2 == yellow: the colour is the effort, independent of the scale shown
+    expect(effCellList()[0].getAttribute('style')).toContain('--yellow')
+  })
+
+  it('opens the picker for the set on tap, passing scale, current value and a writer', async () => {
+    await mountEffort([2])
+    await act(async () => {
+      effCells()[0].dispatchEvent(new dom.Event('click', { bubbles: true }))
+    })
+    expect(mocks.effortPickerSheet).toHaveBeenCalledOnce()
+    const [scale, value, onPick] = mocks.effortPickerSheet.mock.calls[0]
+    expect(scale).toBe('rir')
+    expect(value).toBe(2)
+    // the writer stores the chosen value back on the set, and null clears the key
+    onPick(1)
+    expect(mocks.S.active.entries[0].sets[0].rir).toBe(1)
+    onPick(null)
+    expect('rir' in mocks.S.active.entries[0].sets[0]).toBe(false)
+  })
+
+  // The mock store is a plain snapshot with no subscription, so a click updates mocks.S but
+  // does not re-render on its own; each step is checked from its own mount rather than chained.
+  const clickStep = async label => {
+    await act(async () => {
+      effCellList()[0].querySelector(`button[aria-label="${label}"]`)
+        .dispatchEvent(new dom.Event('click', { bubbles: true }))
+    })
+  }
+
+  it('steps a logged rating up 0.5 on the scale with the + button, not through the picker', async () => {
+    await mountEffort([2])
+    expect(effCellList()[0].querySelectorAll('button[aria-label="Increase"],button[aria-label="Decrease"]')).toHaveLength(2)
+    await clickStep('Increase')
+    expect(mocks.S.active.entries[0].sets[0].rir).toBe(2.5)
+    expect(mocks.effortPickerSheet).not.toHaveBeenCalled()
+  })
+
+  it('steps a logged rating down 0.5 with the − button', async () => {
+    await mountEffort([2])
+    await clickStep('Decrease')
+    expect(mocks.S.active.entries[0].sets[0].rir).toBe(1.5)
+  })
+
+  it('clears the rating when stepped down off the floor', async () => {
+    // RIR 0 is the bottom of the scale — one more − is a mistap-undo, dropping the key rather
+    // than sticking at 0 (which reads as "went to failure")
+    await mountEffort([0])
+    await clickStep('Decrease')
+    expect('rir' in mocks.S.active.entries[0].sets[0]).toBe(false)
+  })
+})
+
 describe('superset flow survives an exercise being removed mid-session', () => {
   // removeActiveExercise splices A.entries, shifting every index above the removal down.
   // The high-water marks are index-keyed, so without re-baselining the shifted exercise
@@ -784,6 +915,8 @@ describe('superset actionable-set centring', () => {
 })
 
 describe('active workout whole-unit move controls', () => {
+  // These exercise-level buttons are opt-in now (Settings → Workout controls); the menu path is covered below.
+  const mountLegacy = (entries, cur) => mount(entries, cur, { wc: { exerciseButtons: true } })
   const action = label => container.querySelector(`button[aria-label="${label}"]`)
 
   it('shows labelled controls and moves the selected standalone exercise one unit', async () => {
@@ -792,7 +925,7 @@ describe('active workout whole-unit move controls', () => {
       target: { mode: 'reps', reps: 7, weight: 82.5, notes: 'Keep this target' },
       sets: [{ w: 77.5, r: 6, done: true, rir: 2 }],
     })
-    await mount([
+    await mountLegacy([
       exercise('duplicate', [false], { occurrenceId: 'duplicate#1' }),
       exercise('middle', [false]),
       selected,
@@ -815,7 +948,7 @@ describe('active workout whole-unit move controls', () => {
     const first = exercise('group-a', [false], { sg: 'pair', occurrenceId: 'group-a#1' })
     const selected = exercise('group-b', [true], { sg: 'pair', occurrenceId: 'group-b#1' })
     const groupMeta = { pair: { kind: 'complex', label: 'Carry pair', cues: 'Stay braced.' } }
-    await mount([
+    await mountLegacy([
       exercise('before', [false]),
       first,
       selected,
@@ -834,7 +967,7 @@ describe('active workout whole-unit move controls', () => {
 
   it('disables both moves while a work timer can still write by index', async () => {
     mocks.work = { left: 5, total: 5, endsAt: Date.now() + 5000 }
-    await mount([exercise('first', [false]), exercise('second', [false])], 1)
+    await mountLegacy([exercise('first', [false]), exercise('second', [false])], 1)
 
     expect(action('Move up')?.disabled).toBe(true)
     expect(action('Move down')?.disabled).toBe(true)
@@ -842,8 +975,9 @@ describe('active workout whole-unit move controls', () => {
 })
 
 describe('active exercise swap control', () => {
+  const mountLegacy = (entries, cur) => mount(entries, cur, { wc: { exerciseButtons: true } })
   it('opens the swap flow for the selected duplicate occurrence', async () => {
-    await mount([exercise('bench', [false]), exercise('bench', [false]), exercise('row', [false])], 1)
+    await mountLegacy([exercise('bench', [false]), exercise('bench', [false]), exercise('row', [false])], 1)
 
     const swap = container.querySelector('button[aria-label="Swap exercise"]')
     expect(swap).toBeTruthy()
@@ -940,5 +1074,77 @@ describe('workout list view', () => {
     expect(container.querySelector('[data-testid="workout-swipe-surface"]')).toBeTruthy()
     // Only the current exercise's sets are on screen.
     expect(container.querySelectorAll('[role="checkbox"]').length).toBe(1)
+  })
+})
+
+describe('workout controls: the more menu and the set menu', () => {
+  const lastMenu = () => mocks.menuSheet.mock.calls.at(-1)[0]
+  const item = label => lastMenu().items.filter(Boolean).find(it => it.label === label)
+
+  it('shows one More button per exercise and no legacy button rows by default', async () => {
+    await mount([exercise('plain-bench', [false]), exercise('plain-row', [false])])
+    expect(container.querySelector('button[aria-label="More"]')).toBeTruthy()
+    for (const label of ['Move up', 'Swap exercise']) expect(container.querySelector(`button[aria-label="${label}"]`)).toBeNull()
+    expect([...container.querySelectorAll('button')].some(b => b.textContent.trim() === 'Remove exercise')).toBe(false)
+    expect([...container.querySelectorAll('button')].some(b => b.textContent.trim() === '+ Drop')).toBe(false)
+    expect([...container.querySelectorAll('button')].some(b => b.textContent.trim() === 'Add set')).toBe(true)
+  })
+
+  it('routes swap, move, remove, warm-up and details through the More menu of that exercise', async () => {
+    await mount([exercise('plain-bench', [false]), exercise('plain-row', [false])], 0)
+    await act(async () => { container.querySelector('button[aria-label="More"]').dispatchEvent(new dom.Event('click', { bubbles: true })) })
+    expect(mocks.menuSheet).toHaveBeenCalledOnce()
+    expect(lastMenu().items.filter(Boolean).map(it => it.label)).toEqual(expect.arrayContaining([
+      'Add note', 'Details', 'Add warm-up set', 'Make superset with next', 'Swap exercise', 'Move up', 'Move down', 'Remove exercise',
+    ]))
+    expect(item('Move up').disabled).toBe(true)
+    expect(item('Move down').disabled).toBe(false)
+    expect(item('Remove exercise').danger).toBe(true)
+
+    item('Swap exercise').onClick()
+    expect(mocks.swapActiveWorkoutExercise).toHaveBeenCalledWith(0)
+
+    await act(async () => { item('Add warm-up set').onClick() })
+    expect(mocks.S.active.entries[0].sets.some(s => s.phase === 'warmup' || s.warmup)).toBe(true)
+
+    await act(async () => { item('Remove exercise').onClick() })
+    expect(mocks.confirmSheet).toHaveBeenCalled()
+  })
+
+  it('opens the exercise history sheet from the More menu, for the tapped exercise', async () => {
+    // the screen shows one exercise at a time, so "the tapped exercise" is the current one
+    await mount([exercise('plain-bench', [false]), exercise('plain-row', [false])], 1)
+    await act(async () => { container.querySelector('button[aria-label="More"]').dispatchEvent(new dom.Event('click', { bubbles: true })) })
+    const history = item('History')
+    expect(history.icon).toBe('history')
+    history.onClick()
+    expect(mocks.exerciseHistorySheet).toHaveBeenCalledWith('plain-row')
+  })
+
+  it('opens a per-set menu from the set number with drop, burst and remove', async () => {
+    await mount([exercise('plain-bench', [false, false])])
+    await act(async () => { container.querySelector('button[aria-label="Set 2"]').dispatchEvent(new dom.Event('click', { bubbles: true })) })
+    expect(lastMenu().items.filter(Boolean).map(it => it.label)).toEqual(['Drop set', 'Rest-pause burst', 'Remove this set'])
+
+    await act(async () => { item('Drop set').onClick() })
+    expect(mocks.S.active.entries[0].sets[1].drops?.length).toBe(1)
+
+    await act(async () => { container.querySelector('button[aria-label="Set 2"]').dispatchEvent(new dom.Event('click', { bubbles: true })) })
+    await act(async () => { item('Remove this set').onClick() })
+    expect(mocks.S.active.entries[0].sets.length).toBe(1)
+  })
+
+  it('brings the legacy button rows back per switch', async () => {
+    await mount([exercise('plain-bench', [false]), exercise('plain-row', [false])], 0, {
+      wc: { setShortcuts: true, pairButtons: true, exerciseButtons: true },
+    })
+    const labels = [...container.querySelectorAll('button')].map(b => b.textContent.trim())
+    expect(labels).toEqual(expect.arrayContaining(['+ Drop', 'Add warm-up set', 'Remove set', 'Make superset with next', 'Move up', 'Swap exercise', 'Remove exercise']))
+  })
+
+  it('drops the +/- buttons when steppers are off and keeps the number field', async () => {
+    await mount([exercise('plain-bench', [false])], 0, { wc: { steppers: false } })
+    expect(container.querySelector('.setrow .stp button[aria-label="Increase"]')).toBeNull()
+    expect(container.querySelector('.setrow .stp.plain .num')).toBeTruthy()
   })
 })

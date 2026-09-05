@@ -13,21 +13,35 @@ import Icon from './Icon.jsx'
 // a custom exercise without media. Any other/legacy value behaves as 'full'.
 export default function Media({ ex, id, compact, minimizable }) {
   const [playing, setPlaying] = useState(true)
+  // 'gif' → the animation failed, the still is showing; 'all' → the still failed too. Media is
+  // fetched from wherever the build points (a mount, a CDN): a dropped connection, an expired
+  // session on a gated instance or a CDN hiccup used to leave the browser's broken-image glyph
+  // on a white block. Now the still stands in for the animation, a neutral tile stands in for
+  // both, and a tap tries again — no text, so nothing new to translate.
+  const [failed, setFailed] = useState(null)
   const gifSize = useStore(s => s.S.gifSize)
   const update = useStore(s => s.update)
   if (!ex.gif) return null
   if (minimizable && gifSize === 'off') return null
   const mini = minimizable && gifSize === 'mini'
   const toggleSize = e => { e.stopPropagation(); update(s => { s.gifSize = mini ? 'full' : 'mini' }) }
+  const showGif = playing && failed == null
+  const onError = () => setFailed(showGif ? 'gif' : 'all')
+  const onTap = () => {
+    if (failed) { setFailed(null); setPlaying(true); return }
+    setPlaying(p => !p)
+  }
   return (
-    <div className={'exmedia' + (compact ? ' compact' : '') + (mini ? ' mini' : '')} id={id} onClick={() => setPlaying(p => !p)}>
-      <img decoding="async" draggable={false} src={playing ? gifSrc(ex) : imgSrc(ex)} alt={exerciseNameFor(ex)} />
+    <div className={'exmedia' + (compact ? ' compact' : '') + (mini ? ' mini' : '') + (failed === 'all' ? ' broken' : '')} id={id} onClick={onTap}>
+      {failed === 'all'
+        ? <div className="exmedia-x"><Icon name="dumbbell" /></div>
+        : <img decoding="async" draggable={false} src={showGif ? gifSrc(ex) : imgSrc(ex)} alt={exerciseNameFor(ex)} onError={onError} />}
       {minimizable && (
         <button className="giftoggle" onClick={toggleSize}>
           <Icon name={mini ? 'expand' : 'minimize'} />{mini ? t('Expand') : t('Minimize')}
         </button>
       )}
-      {!mini && (
+      {!mini && !failed && (
         <span className="gifhint">
           <Icon name={playing ? 'pause' : 'play'} />{playing ? t('tap to pause') : t('tap to play')}
         </span>

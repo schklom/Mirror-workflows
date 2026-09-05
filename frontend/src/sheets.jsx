@@ -1368,53 +1368,50 @@ export const glyphPicker = (current, onPick) => {
 // RPE sees the same buttons labelled on its own scale (toScale), coloured identically — the
 // colour is the effort, not the number, so 0 RIR and 10 RPE are both the "went to failure" end.
 function EffortPicker({ kind, value, onPick, close }) {
-  // Local mirror so the highlighted preset and the free field track typing live; the store is
+  // Local mirror so the ticked preset and the exact field track typing live; the store is
   // written on every change through onPick, the same as the stepper did.
   const [v, setV] = useState(value ?? null)
   const set = nv => { setV(nv); onPick(nv) }
   // `v` is in the profile's own scale (whatever sits on the set: s.rir or s.rpe). Compare in
-  // RIR so the highlighted preset is right on either scale, and so a typed RPE colours the
+  // RIR so the tick lands on the right preset on either scale, and so a typed RPE colours the
   // same as the RIR it equals.
   const curRir = rirOf(kind === 'rpe' ? { rpe: v } : { rir: v })
-  // The band colour for the value currently on the field, so the exact-value row is tinted the
-  // same way the presets and the workout row cell are — null (nothing typed) stays neutral.
   const curColor = effortColor(curRir)
   const commit = nv => { close(); onPick(nv) }
   const pick = rir => commit(toScale(kind, rir))
+  const hd = EFFORT[kind].hd
+  // Same list the ⋯ menus use: a tinted square with the value where the icon goes, the sentence
+  // as the row title, a tick on the current one. The exact field is the app's own stepper,
+  // tinted like the logged cell in the set row, so the sheet and the row read as one thing.
   return <>
-    <h3>{t('How hard was that set?')}</h3>
-    <div className="muted small" style={{ marginBottom: 14, lineHeight: 1.45 }}>
-      {t('Tap how many reps you had left, or type an exact {0}.', EFFORT[kind].hd)}
-    </div>
-    <div className="effpick">
+    <h3 style={{ marginBottom: 2 }}>{t('How hard was that set?')}</h3>
+    <div className="muted small" style={{ marginBottom: 10 }}>{t('Tap how many reps you had left, or type an exact {0}.', hd)}</div>
+    <div className="list menu-list effpick">
       {EFFORT_PRESETS.map(p => {
         const label = fmtNum(toScale(kind, p.rir)) + (p.tail ? '+' : '')
         const on = curRir != null && curRir === p.rir
-        return <button key={p.rir} className={'effpick-b' + (on ? ' on' : '')}
-          style={{ '--bc': p.color }} onClick={() => pick(p.rir)}>
-          <span className="effpick-n">{label}</span>
-          <span className="effpick-f">{t(p.feel)}</span>
-        </button>
+        return <div key={p.rir} className={'item menu-item' + (on ? ' on' : '')} style={{ '--bc': p.color }}
+          {...tappable(() => pick(p.rir))}>
+          <span className="lrow-i effpick-n">{label}</span>
+          <div className="grow"><div className="tt">{t(p.feel)}</div></div>
+          <span className={'menu-on' + (on ? ' is-on' : '')}><Icon name="check" /></span>
+        </div>
       })}
-    </div>
-    {/* The free field keeps the flexibility the stepper had: a value between two presets, in
-        the profile's own scale, capped to the top of it (there is no RPE 12). Sized like a
-        preset so it reads as the seventh option — "or type your own" — not an afterthought.
-        A −/+ pair flanks the number for 0.5-step nudging without leaving the sheet, coloured
-        by the band the current value falls in (the same colour the presets and the row cell
-        use); tapping the number itself still types an exact value. */}
-    <div className="effpick-free" style={curColor ? { borderColor: curColor } : undefined}>
-      <span className="effpick-free-l">{t('Exact {0}', EFFORT[kind].hd)}</span>
-      <div className="effpick-step" style={curColor ? { color: curColor } : undefined}>
-        <button aria-label="Decrease" onClick={() => set(stepEffort(kind, v, -1))}><Icon name="minus" /></button>
-        <NumberField className="effpick-free-in" decimal nullable value={v ?? ''}
-          placeholder={EFFORT[kind].hd} onChange={nv => set(capEffort(kind, nv))} />
-        <button aria-label="Increase" onClick={() => set(stepEffort(kind, v, 1))}><Icon name="plus" /></button>
+      <div className="item menu-item effpick-free">
+        <div className="grow"><div className="tt">{t('Exact {0}', hd)}</div></div>
+        <div className="stp effcell-stp"
+          style={curColor ? { color: curColor, background: `color-mix(in srgb, ${curColor} 20%, var(--surface-2))` } : undefined}>
+          <button aria-label="Decrease" onClick={() => set(stepEffort(kind, v, -1))}><Icon name="minus" /></button>
+          <span className="val"><NumberField decimal nullable value={v ?? ''} placeholder="–"
+            onChange={nv => set(capEffort(kind, nv))} /></span>
+          <button aria-label="Increase" onClick={() => set(stepEffort(kind, v, 1))}><Icon name="plus" /></button>
+        </div>
       </div>
-      <span className="effpick-free-unit">{EFFORT[kind].hd}</span>
     </div>
-    <div style={{ height: 10 }} />
-    {v != null && <Button variant="ghost" className="dim" icon="xmark" onClick={() => commit(null)}>{t('Clear rating')}</Button>}
+    {v != null && <>
+      <div style={{ height: 10 }} />
+      <Button variant="ghost" className="dim" icon="xmark" onClick={() => commit(null)}>{t('Clear rating')}</Button>
+    </>}
     <div style={{ height: 4 }} />
   </>
 }

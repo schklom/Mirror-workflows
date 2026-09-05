@@ -1,5 +1,20 @@
 # Changelog
 
+## v1.3.4 — 2026-09-05
+
+Two things noticed on the phone right after v1.3.3. Web bundle and APK; the API only carries the
+version number.
+
+- 🎨 **The effort picker looks like the rest of the app.** The v1.3.3 sheet was a grid of colour-edged
+  tiles that matched nothing else on screen. It is now the same list the ⋯ menus use: a tinted
+  square with the value where the icon sits, the sentence as the row, a tick on the current one, and
+  an "Exact RIR" row carrying the app's own stepper, tinted like the logged cell. Same six levels, same
+  colours, same free value.
+- 🖼️ **Animations that fail to load fall back instead of breaking.** If the animation cannot be
+  fetched (dropped connection, CDN hiccup, an instance that gates media behind a session) the still
+  picture takes its place; if that fails too, a neutral tile does, and a tap tries again. No more
+  broken-image glyph on a white block.
+
 ## v1.3.3 — 2026-09-05
 
 The workout screen gets out of the way, and the bug round from the board. Same day as v1.3.2 on

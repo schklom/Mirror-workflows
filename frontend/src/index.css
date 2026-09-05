@@ -639,6 +639,12 @@ h4.sec{
    at 180px you had to scroll a full screen between two exercises done back-to-back */
 .exmedia.compact img{height:120px}
 .exmedia.mini img{height:84px}
+/* both the animation and the still failed to load: a neutral tile instead of the browser's
+   broken-image glyph; same heights as the picture so the card does not jump. tap retries. */
+.exmedia.broken{background:var(--surface-2)}
+.exmedia-x{width:100%;height:320px;display:flex;align-items:center;justify-content:center;color:var(--label-3);font-size:34px}
+.exmedia.compact .exmedia-x{height:120px}
+.exmedia.mini .exmedia-x{height:84px}
 
 .sethead{
   display:flex;align-items:center;gap:8px;padding:0 0 6px;
@@ -715,50 +721,18 @@ h4.sec{
 .setrow.eff3 .effcell-stp>button[aria-label="Increase"]{width:22px}
 .setrow.eff3 .effcell-stp .val{font-size:14px}
 /* effort quick picker sheet: colour-coded preset buttons, hardest (purple) first */
-.effpick{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-bottom:16px}
-.effpick-b{
-  display:flex;flex-direction:column;align-items:flex-start;gap:3px;
-  padding:12px 14px;border-radius:13px;text-align:left;
-  background:var(--surface);border:1.5px solid var(--sep-op);
-  border-left:4px solid var(--bc);
-  transition:background var(--fast),transform var(--fast),border-color var(--fast);
+/* effort picker: the ⋯-menu list with the value in the icon square, tinted per band; the
+   exact-value row carries the same stepper as the logged cell in the set row. */
+.effpick.menu-list .menu-item .effpick-n{
+  background:var(--bc);color:#fff;font-size:13px;font-weight:700;letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums;
 }
-.effpick-b:active{transform:scale(.97)}
-.effpick-b.on{background:color-mix(in srgb,var(--bc) 16%,var(--surface));border-color:var(--bc)}
-.effpick-n{font-size:20px;font-weight:700;color:var(--bc);line-height:1;font-variant-numeric:tabular-nums}
-.effpick-f{font-size:12px;color:var(--label-2);line-height:1.25}
-/* the free field sits as a full-width row the same size as a preset button: its "Exact RIR"
-   label on the left, a −/value/+ group in the middle, and the scale name on the right, same
-   padding and radius as .effpick-b. the whole row borders in the current band colour. */
-.effpick-free{
-  display:flex;align-items:center;justify-content:space-between;gap:10px;
-  padding:10px 14px;border-radius:13px;margin-top:2px;
-  background:var(--surface);border:1.5px solid var(--sep-op);
-  transition:border-color var(--fast);
-}
-.effpick-free-l{font-size:14px;color:var(--label-2);flex:none}
-.effpick-free-unit{font-size:13px;font-weight:600;color:var(--label-3);flex:none}
-/* the −/value/+ group: a rounded surface holding a big tappable number between two step
-   buttons. tinted (color:inherit) to the band colour when a value is set. */
-.effpick-step{
-  display:flex;align-items:center;gap:2px;flex:none;
-  background:var(--surface-2);border-radius:10px;overflow:hidden;
-}
-.effpick-step button{
-  width:38px;height:40px;flex:none;color:currentColor;font-size:16px;--icon-stroke:2.2;
-  display:flex;align-items:center;justify-content:center;transition:background var(--fast);
-}
-.effpick-step button:active{background:var(--surface-3)}
-/* the `.num` base styling (transparent bg, no border) is scoped to `.stp .num`; this input is
-   not in a `.stp`, so it must set its own or the browser paints a native white field. */
-.effpick-free-in.num{
-  flex:none;width:64px;text-align:center;padding:0;height:40px;
-  background:none;border:none;outline:none;color:currentColor;
-  font-size:20px;font-weight:700;font-variant-numeric:tabular-nums;
-  -moz-appearance:textfield;appearance:textfield;
-}
-.effpick-free-in.num::-webkit-inner-spin-button{display:none}
-.effpick-free-in.num::placeholder{color:var(--label-3);font-weight:600}
+.effpick .menu-item.on{background:color-mix(in srgb,var(--bc) 14%,var(--surface))}
+.effpick .menu-on.is-on{color:var(--bc)}
+.effpick .effpick-free{padding-right:8px}
+.effpick .effpick-free .stp{flex:none;width:148px}
+.effpick .effpick-free .stp .num{font-size:17px;font-weight:600}
+.effpick .effpick-free .stp .num::placeholder{color:var(--label-3);font-weight:500}
 .setrow.done .n{background:var(--acc);color:var(--on-acc)}
 .setrow.done{opacity:.45}
 /* drop-set drops / rest-pause bursts riding on a work row, editable like the row itself

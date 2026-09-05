@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/useStore.js'
+import { workoutControls } from '../lib/workout-controls.js'
 import { useUI } from '../store/useUI.js'
 import { exOr } from '../lib/exercises.js'
 import { usesBar, barWeightFor, plateSplit } from '../lib/bar.js'
@@ -11,7 +12,7 @@ import { t, exerciseNameFor } from '../lib/i18n.js'
 import { api } from '../lib/api.js'
 import { insertionIndexAfterCurrentUnit, nextUnfinishedUnit, setProgressHighWater, supersetFlowStep, restAfterSet, restOnRecheck, restSecFor } from '../lib/supersetFlow.js'
 import Media from '../components/Media.jsx'
-import { startFlow, exercisePicker, exConfigSheet, exerciseDetailSheet, finishWorkout, workoutCompleteSheet, confirmSheet, exerciseNoteSheet, sessionNoteSheet, swapActiveWorkoutExercise, barWeightSheet } from '../sheets.jsx'
+import { startFlow, exercisePicker, exConfigSheet, exerciseDetailSheet, finishWorkout, workoutCompleteSheet, confirmSheet, exerciseNoteSheet, sessionNoteSheet, swapActiveWorkoutExercise, barWeightSheet, menuSheet } from '../sheets.jsx'
 import Icon from '../components/Icon.jsx'
 import { Button, Check, NumberField } from '../components/ui.jsx'
 import { nextPrescription, applyPrescription, defaultIncrement, weightIncrement, stepWeight } from '../lib/progression.js'
@@ -63,7 +64,7 @@ function Elapsed({ start }) {
 }
 
 /* ---------- one exercise block (reps: weight×reps · time: a held duration · cardio: duration+speed) ---------- */
-function ExerciseBlock({ entryIdx, compact, onToggle, onField, onAddSet, onRemoveSet, onAddWarmup, onRemoveSetAt, onStartTimed, onPairPrev, onPairNext, onSetRowRef, onProgressionSettings }) {
+function ExerciseBlock({ entryIdx, compact, onToggle, onField, onAddSet, onRemoveSet, onAddWarmup, onRemoveSetAt, onStartTimed, onPairPrev, onPairNext, onSetRowRef, onProgressionSettings, onSwap, onMoveUp, onMoveDown, canMoveUp, canMoveDown, onRemoveExercise, busy }) {
   const S = useStore(s => s.S)
   const update = useStore(s => s.update)
   const working = useUI(s => s.work)
@@ -152,15 +153,60 @@ function ExerciseBlock({ entryIdx, compact, onToggle, onField, onAddSet, onRemov
   }
   // Uses the shared stepper markup so a set row picks up the same control styling
   // as every other +/- field in the app.
+  // Which of the optional control groups this profile wants on screen (Settings → During a
+  // workout → Workout controls). The lean default keeps the sets and one "more" button; each
+  // switch brings one of the old always-visible button rows back.
+  const wc = workoutControls(S)
   const cell = (s, i, col, cls) => (
-    <div className={'stp ' + cls}>
-      <button aria-label="Decrease" onClick={() => bump(s, i, col, -1)}><Icon name="minus" /></button>
+    <div className={'stp ' + cls + (wc.steppers ? '' : ' plain')}>
+      {wc.steppers && <button aria-label="Decrease" onClick={() => bump(s, i, col, -1)}><Icon name="minus" /></button>}
       {/* a typed effort is capped — there is no RPE 12, and 12 reps in reserve is a warm-up */}
       <span className="val"><NumberField decimal={col.dec} nullable={col.opt} value={s[col.f] ?? ''}
         onChange={v => onField(i, col.f, col.eff ? capEffort(col.eff, v) : v)} /></span>
-      <button aria-label="Increase" onClick={() => bump(s, i, col, 1)}><Icon name="plus" /></button>
+      {wc.steppers && <button aria-label="Increase" onClick={() => bump(s, i, col, 1)}><Icon name="plus" /></button>}
     </div>
   )
+  // Everything about this exercise that is not a set you are logging right now lives behind one
+  // button. What used to be a row of buttons in the header, a chip under the bar, a strip of
+  // three under the sets and four more below the card is a single list you open once a session.
+  const barInfo = (!cardio && !(bw && !added) && usesBar(ex)) ? (() => {
+    const bar = barWeightFor(S, entry.id)
+    if (!(bar > 0)) return null
+    const nextW = entry.sets.find(s => !s.done)?.w
+    const refW = nextW > 0 ? nextW : Math.max(0, ...entry.sets.map(s => s.w || 0))
+    const split = plateSplit(refW, bar)
+    return { bar, text: t('Bar {0}', fmtNum(bar) + ' ' + S.unit) + (split != null ? ' · ' + t('{0} per side', fmtNum(split) + ' ' + S.unit) : '') }
+  })() : null
+  const openMore = () => menuSheet({
+    title: exerciseNameFor(ex),
+    items: [
+      { icon: 'pencil', label: entry.note ? t('Edit note') : t('Add note'), sub: entry.note || undefined, onClick: () => exerciseNoteSheet(entryIdx) },
+      { icon: 'info', label: t('Details'), onClick: () => exerciseDetailSheet(ex) },
+      onProgressionSettings && { icon: 'chartLine', label: t('Progression settings'), sub: guidance ? t(guidance.policyLabel) : undefined, onClick: onProgressionSettings },
+      barInfo && { icon: 'barbell', label: t('Bar weight'), sub: barInfo.text, onClick: () => barWeightSheet(entry.id) },
+      { icon: 'flame', label: t('Add warm-up set'), onClick: onAddWarmup },
+      onPairPrev && { icon: 'link', label: t('Make superset with previous'), onClick: onPairPrev },
+      onPairNext && { icon: 'link', label: t('Make superset with next'), onClick: onPairNext },
+      onSwap && { icon: 'shuffle', label: t('Swap exercise'), onClick: onSwap, disabled: busy },
+      onMoveUp && { icon: 'chevronUp', label: t('Move up'), onClick: onMoveUp, disabled: busy || !canMoveUp },
+      onMoveDown && { icon: 'chevronDown', label: t('Move down'), onClick: onMoveDown, disabled: busy || !canMoveDown },
+      onRemoveExercise && { icon: 'trash', label: t('Remove exercise'), onClick: onRemoveExercise, danger: true, disabled: busy },
+    ],
+  })
+  // The set number is the set's own menu: drop / burst / remove — three things that used to
+  // sit as chips and an X on every single row.
+  const openSetMenu = (s, i) => {
+    const warm = isWarmupRow(s)
+    menuSheet({
+      title: (warm ? t('Warm-up') : t('Set {0}', entry.sets.slice(0, i + 1).filter(x => isWarmupRow(x) === warm).length)),
+      subtitle: setLabel(entry.id, s, entry.target),
+      items: [
+        !warm && mode === 'reps' && !isRestPauseSet(s) && { icon: 'arrowDown', label: t('Drop set'), sub: t('+ Drop'), onClick: () => addDropRow(i) },
+        !warm && mode === 'reps' && !isDropSet(s) && { icon: 'bolt', label: t('Rest-pause burst'), sub: t('+ Burst'), onClick: () => addBurstRow(i) },
+        { icon: 'trash', label: t('Remove this set'), danger: true, disabled: entry.sets.length <= 1, onClick: () => onRemoveSetAt(i) },
+      ],
+    })
+  }
   // A smaller stepper for a drop's weight/reps or a burst's reps — editing what the plan (or a
   // live "+ Drop"/"+ Burst" tap) already put on the row, not typing into a fresh field.
   const miniStepper = (value, step, dec, onChange, snapWeightStep = false) => (
@@ -175,13 +221,12 @@ function ExerciseBlock({ entryIdx, compact, onToggle, onField, onAddSet, onRemov
     <div className="row between" style={{ marginBottom: 6 }}>
       <div style={{ fontSize: compact ? 17 : 20, fontWeight: 600, letterSpacing: '-.02em', textTransform: 'capitalize', lineHeight: 1.2 }}>{exerciseNameFor(ex)}</div>
       <div className="row" style={{ gap: 2, flex: 'none' }}>
-        <button className="iconbtn" aria-label={t('Note')} title={t('Note')}
-          style={entry.note ? { color: 'var(--acc)' } : undefined}
-          onClick={() => exerciseNoteSheet(entryIdx)}><Icon name="pencil" /></button>
-        <button className="iconbtn" aria-label={t('Details')} onClick={() => exerciseDetailSheet(ex)}><Icon name="info" /></button>
+        {entry.note && <button className="iconbtn" aria-label={t('Note')} title={t('Note')} style={{ color: 'var(--acc)' }}
+          onClick={() => exerciseNoteSheet(entryIdx)}><Icon name="pencil" /></button>}
+        <button className="iconbtn" aria-label={t('More')} title={t('More')} onClick={openMore}><Icon name="more" /></button>
       </div>
     </div>
-    {!compact && (onPairPrev || onPairNext) && <div className="row" style={{ gap: 6, flexWrap: 'wrap', marginBottom: 8 }}>
+    {wc.pairButtons && !compact && (onPairPrev || onPairNext) && <div className="row" style={{ gap: 6, flexWrap: 'wrap', marginBottom: 8 }}>
       {onPairPrev && <Button size="xs" variant="tinted" icon="link" title={t('Make superset with previous')} onClick={onPairPrev}>{t('Make superset with previous')}</Button>}
       {onPairNext && <Button size="xs" variant="tinted" icon="link" title={t('Make superset with next')} onClick={onPairNext}>{t('Make superset with next')}</Button>}
     </div>}
@@ -210,19 +255,9 @@ function ExerciseBlock({ entryIdx, compact, onToggle, onField, onAddSet, onRemov
         (first undone set; the heaviest row once everything is checked). The logged number
         stays the total — this chip is the split, and tapping it edits the bar's own weight
         (S.barWeights, per exercise) mid-workout. Weight ≤ bar leaves just the bar. */}
-    {!cardio && !(bw && !added) && usesBar(ex) && (() => {
-      const bar = barWeightFor(S, entry.id)
-      if (!(bar > 0)) return null
-      const nextW = entry.sets.find(s => !s.done)?.w
-      const refW = nextW > 0 ? nextW : Math.max(0, ...entry.sets.map(s => s.w || 0))
-      const split = plateSplit(refW, bar)
-      return <div style={{ marginBottom: 6 }}>
-        <button className="chip nocap" style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }} onClick={() => barWeightSheet(entry.id)}>
-          <Icon name="dumbbell" style={{ fontSize: 12 }} />
-          {t('Bar {0}', fmtNum(bar) + ' ' + S.unit)}{split != null ? ' · ' + t('{0} per side', fmtNum(split) + ' ' + S.unit) : ''}
-        </button>
-      </div>
-    })()}
+    {barInfo && <div className="small dim" style={{ marginBottom: 6, display: 'flex', alignItems: 'center', gap: 5 }}>
+      <Icon name="dumbbell" style={{ fontSize: 12 }} />{barInfo.text}
+    </div>}
     {guidance && <button type="button" className={'progline' + (plan.kind === 'deload' ? ' warn' : '')}
       aria-label={t('Open progression settings')} onClick={onProgressionSettings}>
       <Icon name={plan.kind === 'up' ? 'arrowUp' : plan.kind === 'deload' ? 'arrowDown' : 'lightbulb'} />
@@ -241,7 +276,7 @@ function ExerciseBlock({ entryIdx, compact, onToggle, onField, onAddSet, onRemov
           {isFirstWarmup && <div className="setph">{t('Warm-up')}</div>}
           {!warm && warmBefore && <div className="setsep" />}
           <div ref={el => onSetRowRef?.(i, el)} className={'setrow' + (s.done ? ' done' : '') + (col3 ? ' eff3' : '')}>
-            <div className="n">{phaseNum}</div>
+            <button type="button" className="n" aria-label={t('Set {0}', phaseNum)} title={t('More')} onClick={() => openSetMenu(s, i)}>{phaseNum}</button>
             {cell(s, i, col1, 'w')}
             {col2 && cell(s, i, col2, 'r')}
             {col3 && cell(s, i, col3, 'eff')}
@@ -249,8 +284,6 @@ function ExerciseBlock({ entryIdx, compact, onToggle, onField, onAddSet, onRemov
                 set off itself. The checkbox stays for anyone who timed it on their own watch. */}
             {timed && <button className="setgo" aria-label={t('Start set')} disabled={s.done || !!working}
               onClick={() => onStartTimed(i)}><Icon name="play" /></button>}
-            {warm && <button className="iconbtn" style={{ fontSize: 13 }} aria-label={t('Remove set')}
-              disabled={entry.sets.length <= 1} onClick={() => onRemoveSetAt(i)}><Icon name="xmark" /></button>}
             <Check checked={s.done} onChange={() => onToggle(i)} />
           </div>
           {/* Drop-sets and rest-pause bursts extend this same row — no long rest, no new set.
@@ -273,19 +306,19 @@ function ExerciseBlock({ entryIdx, compact, onToggle, onField, onAddSet, onRemov
                 <button className="iconbtn" aria-label={t('Remove burst')} onClick={() => removeCluster(i, ci)}><Icon name="xmark" /></button>
               </div>
             ))}
-            <div className="setextra">
+            {wc.setShortcuts && <div className="setextra">
               {!isRestPauseSet(s) && <button className="chip add" onClick={() => addDropRow(i)}><Icon name="arrowDown" />{t('+ Drop')}</button>}
               {!isDropSet(s) && <button className="chip add" onClick={() => addBurstRow(i)}><Icon name="bolt" />{t('+ Burst')}</button>}
-            </div>
+            </div>}
           </>}
         </div>
       })}
       <div style={{ height: 8 }} />
-      <div className="row" style={{ flexWrap: 'wrap' }}>
+      {wc.setShortcuts ? <div className="row" style={{ flexWrap: 'wrap' }}>
         <Button size="sm" icon="flame" onClick={onAddWarmup}>{t('Add warm-up set')}</Button>
         <Button size="sm" icon="minus" disabled={entry.sets.length <= 1} onClick={onRemoveSet}>{t('Remove set')}</Button>
         <Button size="sm" icon="plus" onClick={onAddSet}>{t('Add set')}</Button>
-      </div>
+      </div> : <Button size="sm" icon="plus" onClick={onAddSet}>{t('Add set')}</Button>}
     </div>
   </>
 }
@@ -334,6 +367,7 @@ function ActiveWorkout() {
   // what is rendered — completion, rest, top-weight and auto-advance share one path.
   // Unknown/absent values read as cards, keeping every pre-existing profile as it was.
   const listMode = S.workoutView === 'list'
+  const wc = workoutControls(S)
   // Superset flow: center the actionable row when completing a set moves to the partner or
   // back to the first exercise of the next round. Entry-bound maps keep repeated exercise IDs
   // distinct, while each rendered set index identifies the existing row within that entry.
@@ -418,15 +452,15 @@ function ActiveWorkout() {
   })
   const onPairPrev = !isSuperset && cur > 0 ? () => pairAt(cur - 1, cur) : null
   const onPairNext = !isSuperset && cur < A.entries.length - 1 ? () => pairAt(cur, cur + 1) : null
-  const moveCurrentUnit = direction => {
+  const moveUnitAt = (at, direction) => {
     const ui = useUI.getState()
     const active = useStore.getState().S.active
-    if (ui.work || !canMoveActiveWorkoutUnit(active, active?.cur, direction)) return
+    if (ui.work || !canMoveActiveWorkoutUnit(active, at, direction)) return
     // Invalidate an old timed callback before indexes shift. A running rest is not cancelled:
     // it belongs to an exercise (timer.forIdx), and that exercise only changes position.
     ui.stopWork()
     update(s => {
-      const moved = moveActiveWorkoutUnit(s.active, s.active?.cur, direction)
+      const moved = moveActiveWorkoutUnit(s.active, at, direction)
       if (!moved) return
       progressHighWater.current = moved.indices.map(index => progressHighWater.current[index])
       const rest = useUI.getState().timer
@@ -437,8 +471,19 @@ function ActiveWorkout() {
     }, true)
   }
 
-  // One prop object per entry so the card and list layouts share the exact same wiring.
+  const moveCurrentUnit = direction => moveUnitAt(cur, direction)
+
+  // One prop object per entry so the card and list layouts share the exact same wiring. The
+  // exercise-level actions (swap, move, remove) address the entry itself, so the "more" menu of
+  // a superset member acts on that member, not on whatever the marker happens to point at.
   const blockProps = idx => ({
+    onSwap: () => swapActiveWorkoutExercise(idx),
+    onMoveUp: () => moveUnitAt(idx, -1),
+    onMoveDown: () => moveUnitAt(idx, 1),
+    canMoveUp: canMoveActiveWorkoutUnit(A, idx, -1),
+    canMoveDown: canMoveActiveWorkoutUnit(A, idx, 1),
+    onRemoveExercise: () => confirmRemoveExercise(idx),
+    busy: !!work,
     onToggle: i => toggle(idx, i),
     onField: (i, f, v) => setField(idx, i, f, v),
     onAddSet: () => addSet(idx),
@@ -754,7 +799,7 @@ function ActiveWorkout() {
       <Button trailingIcon="chevronRight" disabled={unitIdx < 0 || unitIdx >= units.length - 1} onClick={() => navigateUnit(1)}>{t('Next')}</Button>
     </div>}
     {!listMode && <div style={{ height: 10 }} />}
-    {listMode && A.entries.length > 0 && <div className="muted small" style={{ marginBottom: 6 }}>{t('Move, swap and remove below act on the exercise marked {0}.', t('Current'))}</div>}
+    {wc.exerciseButtons && listMode && A.entries.length > 0 && <div className="muted small" style={{ marginBottom: 6 }}>{t('Move, swap and remove below act on the exercise marked {0}.', t('Current'))}</div>}
     <Button onClick={() => exercisePicker((ex, quick) => {
       const routine = S.routines.find(r => r.id === A.routineId)
       const freestyle = !A.routineId
@@ -784,7 +829,7 @@ function ActiveWorkout() {
       if (quick) { commit(seed || defaultConfig(ex.id)); useUI.getState().toast(t('“{0}” added to {1}', exerciseNameFor(ex), routine ? routine.name : t('Freestyle'))) }
       else exConfigSheet(ex, null, commit, null, routine, seed)
     })} icon="plus">{t('Add exercise')}</Button>
-    {A.entries.length > 0 && <>
+    {wc.exerciseButtons && A.entries.length > 0 && <>
       <div style={{ height: 6 }} />
       <div className="row">
         <Button size="sm" icon="chevronUp" aria-label={t('Move up')}

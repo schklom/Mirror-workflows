@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore, DEF, hasData } from '../store/useStore.js'
+import { workoutControls } from '../lib/workout-controls.js'
 import { useUI } from '../store/useUI.js'
 import { ACCENTS, todayISO, localTZ, weekStartOf, MONDAY, SUNDAY } from '../lib/format.js'
 import { effortOf } from '../lib/history.js'
@@ -157,6 +158,11 @@ export default function Settings() {
           value={S.workoutView === 'list' ? 'list' : 'cards'}
           onChange={v => update(s => { s.workoutView = v })} />
       </Row>
+      {/* The lean workout screen keeps the sets and one "more" button per exercise; each switch
+          brings one of the old always-visible button groups back for people who liked them. */}
+      <Row icon="wrench" iconTint="var(--purple)" title={t('Workout controls')} accessory="chevron"
+        subtitle={t('Everything hidden here stays one tap away: the ⋯ button of an exercise and the number of a set.')}
+        onClick={() => workoutControlsSheet()} />
       <SelectRow icon="timer" iconTint="var(--orange)" title={t('Rest timer')}
         value={S.restSec} onChange={v => update(s => { s.restSec = v })}
         options={[{ value: 0, label: t('Off') }, ...[60, 90, 120, 150, 180].map(v => ({ value: v, label: v + 's' }))]} />
@@ -291,6 +297,36 @@ const EFFORT_ROWS = [
 // RIR 2 / RPE 8: the row a working set usually lands on — the anchor the others are read
 // against. Not where the stepper starts; + walks up from the bottom of the scale.
 const EFFORT_TYPICAL = 2
+
+// Settings → During a workout → Workout controls. S.wc overlays DEF.wc, so a profile from
+// before this setting existed reads as the lean default.
+function WorkoutControlsSheet() {
+  const S = useStore(s => s.S)
+  const update = useStore(s => s.update)
+  const wc = workoutControls(S)
+  const set = (k, v) => update(s => { s.wc = { ...workoutControls(s), [k]: v } })
+  return <>
+    <h3>{t('Workout controls')}</h3>
+    <div className="muted small" style={{ marginBottom: 12 }}>{t('Everything hidden here stays one tap away: the ⋯ button of an exercise and the number of a set.')}</div>
+    <Section>
+      <Row icon="plus" iconTint="var(--acc)" title={t('Weight and reps buttons')} subtitle={t('Off: tap the number and type it')}>
+        <Switch checked={wc.steppers} onChange={v => set('steppers', v)} />
+      </Row>
+      <Row icon="bolt" iconTint="var(--orange)" title={t('Drop and burst shortcuts on every set')}>
+        <Switch checked={wc.setShortcuts} onChange={v => set('setShortcuts', v)} />
+      </Row>
+      <Row icon="link" iconTint="var(--blue)" title={t('Superset buttons in the exercise header')}>
+        <Switch checked={wc.pairButtons} onChange={v => set('pairButtons', v)} />
+      </Row>
+      <Row icon="shuffle" iconTint="var(--teal)" title={t('Move, swap and remove buttons below the exercise')}>
+        <Switch checked={wc.exerciseButtons} onChange={v => set('exerciseButtons', v)} />
+      </Row>
+    </Section>
+  </>
+}
+function workoutControlsSheet() {
+  useUI.getState().openSheet(() => <WorkoutControlsSheet />)
+}
 
 function effortHelpSheet() {
   useUI.getState().openSheet(close => <>

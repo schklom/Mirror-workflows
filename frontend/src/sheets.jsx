@@ -49,6 +49,31 @@ function ConfirmDialog({ title, message, confirmText, cancelText, danger, onConf
     <Button variant="ghost" className="dim" onClick={close}>{cancelText || t('Cancel')}</Button>
   </div>
 }
+/* ============================ menu sheet ============================ */
+// A list of actions, one per row, closing on tap. This is where the workout screen parks
+// everything that is not a set you are about to log: the point of a single "more" button is
+// that the ten things you do once a session stop competing with the two you do every set.
+// items: [{ icon, label, sub, onClick, danger, disabled, on }] — `on` draws a check for toggles.
+function MenuSheet({ title, subtitle, items, close }) {
+  return <>
+    {title && <h3 style={{ marginBottom: subtitle ? 2 : 10 }}>{title}</h3>}
+    {subtitle && <div className="muted small" style={{ marginBottom: 10 }}>{subtitle}</div>}
+    <div className="list menu-list">
+      {items.filter(Boolean).map((it, i) => <div key={i}
+        className={'item menu-item' + (it.danger ? ' danger' : '') + (it.disabled ? ' disabled' : '')}
+        aria-disabled={it.disabled || undefined}
+        {...tappable(it.disabled ? null : () => { close(); it.onClick && it.onClick() })}>
+        {it.icon && <span className="lrow-i"><Icon name={it.icon} /></span>}
+        <div className="grow"><div className="tt">{it.label}</div>{it.sub && <div className="ss">{it.sub}</div>}</div>
+        {it.on != null && <span className={'menu-on' + (it.on ? ' is-on' : '')}><Icon name="check" /></span>}
+      </div>)}
+    </div>
+  </>
+}
+export function menuSheet(opts) {
+  ui().openSheet(close => <MenuSheet {...opts} close={close} />)
+}
+
 // Themed replacement for window.confirm — callback-based (no blocking).
 export function confirmSheet(opts) {
   ui().openSheet(close => <ConfirmDialog {...opts} close={close} />, { kind: 'center' })

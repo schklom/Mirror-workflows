@@ -21,6 +21,7 @@ const mocks = vi.hoisted(() => {
     toast: vi.fn(),
     scrollCalls: [],
     swapActiveWorkoutExercise: vi.fn(),
+    menuSheet: vi.fn(),
   }
   state.stopRest = vi.fn(() => { state.timer = null })
   state.stopWork = vi.fn(() => { state.work = null })
@@ -67,6 +68,7 @@ vi.mock('../sheets.jsx', () => ({
   workoutCompleteSheet: mocks.workoutCompleteSheet,
   confirmSheet: mocks.confirmSheet,
   swapActiveWorkoutExercise: mocks.swapActiveWorkoutExercise,
+  menuSheet: mocks.menuSheet,
   // Both note sheets belong here even though the tests never open one: Workout.jsx reads
   // sessionNoteSheet during render, so a missing export is a render crash, not a no-op.
   exerciseNoteSheet: vi.fn(),
@@ -784,6 +786,8 @@ describe('superset actionable-set centring', () => {
 })
 
 describe('active workout whole-unit move controls', () => {
+  // These exercise-level buttons are opt-in now (Settings → Workout controls); the menu path is covered below.
+  const mountLegacy = (entries, cur) => mount(entries, cur, { wc: { exerciseButtons: true } })
   const action = label => container.querySelector(`button[aria-label="${label}"]`)
 
   it('shows labelled controls and moves the selected standalone exercise one unit', async () => {
@@ -792,7 +796,7 @@ describe('active workout whole-unit move controls', () => {
       target: { mode: 'reps', reps: 7, weight: 82.5, notes: 'Keep this target' },
       sets: [{ w: 77.5, r: 6, done: true, rir: 2 }],
     })
-    await mount([
+    await mountLegacy([
       exercise('duplicate', [false], { occurrenceId: 'duplicate#1' }),
       exercise('middle', [false]),
       selected,
@@ -815,7 +819,7 @@ describe('active workout whole-unit move controls', () => {
     const first = exercise('group-a', [false], { sg: 'pair', occurrenceId: 'group-a#1' })
     const selected = exercise('group-b', [true], { sg: 'pair', occurrenceId: 'group-b#1' })
     const groupMeta = { pair: { kind: 'complex', label: 'Carry pair', cues: 'Stay braced.' } }
-    await mount([
+    await mountLegacy([
       exercise('before', [false]),
       first,
       selected,
@@ -834,7 +838,7 @@ describe('active workout whole-unit move controls', () => {
 
   it('disables both moves while a work timer can still write by index', async () => {
     mocks.work = { left: 5, total: 5, endsAt: Date.now() + 5000 }
-    await mount([exercise('first', [false]), exercise('second', [false])], 1)
+    await mountLegacy([exercise('first', [false]), exercise('second', [false])], 1)
 
     expect(action('Move up')?.disabled).toBe(true)
     expect(action('Move down')?.disabled).toBe(true)
@@ -842,8 +846,9 @@ describe('active workout whole-unit move controls', () => {
 })
 
 describe('active exercise swap control', () => {
+  const mountLegacy = (entries, cur) => mount(entries, cur, { wc: { exerciseButtons: true } })
   it('opens the swap flow for the selected duplicate occurrence', async () => {
-    await mount([exercise('bench', [false]), exercise('bench', [false]), exercise('row', [false])], 1)
+    await mountLegacy([exercise('bench', [false]), exercise('bench', [false]), exercise('row', [false])], 1)
 
     const swap = container.querySelector('button[aria-label="Swap exercise"]')
     expect(swap).toBeTruthy()
@@ -940,5 +945,67 @@ describe('workout list view', () => {
     expect(container.querySelector('[data-testid="workout-swipe-surface"]')).toBeTruthy()
     // Only the current exercise's sets are on screen.
     expect(container.querySelectorAll('[role="checkbox"]').length).toBe(1)
+  })
+})
+
+describe('workout controls: the more menu and the set menu', () => {
+  const lastMenu = () => mocks.menuSheet.mock.calls.at(-1)[0]
+  const item = label => lastMenu().items.filter(Boolean).find(it => it.label === label)
+
+  it('shows one More button per exercise and no legacy button rows by default', async () => {
+    await mount([exercise('plain-bench', [false]), exercise('plain-row', [false])])
+    expect(container.querySelector('button[aria-label="More"]')).toBeTruthy()
+    for (const label of ['Move up', 'Swap exercise']) expect(container.querySelector(`button[aria-label="${label}"]`)).toBeNull()
+    expect([...container.querySelectorAll('button')].some(b => b.textContent.trim() === 'Remove exercise')).toBe(false)
+    expect([...container.querySelectorAll('button')].some(b => b.textContent.trim() === '+ Drop')).toBe(false)
+    expect([...container.querySelectorAll('button')].some(b => b.textContent.trim() === 'Add set')).toBe(true)
+  })
+
+  it('routes swap, move, remove, warm-up and details through the More menu of that exercise', async () => {
+    await mount([exercise('plain-bench', [false]), exercise('plain-row', [false])], 0)
+    await act(async () => { container.querySelector('button[aria-label="More"]').dispatchEvent(new dom.Event('click', { bubbles: true })) })
+    expect(mocks.menuSheet).toHaveBeenCalledOnce()
+    expect(lastMenu().items.filter(Boolean).map(it => it.label)).toEqual(expect.arrayContaining([
+      'Add note', 'Details', 'Add warm-up set', 'Make superset with next', 'Swap exercise', 'Move up', 'Move down', 'Remove exercise',
+    ]))
+    expect(item('Move up').disabled).toBe(true)
+    expect(item('Move down').disabled).toBe(false)
+    expect(item('Remove exercise').danger).toBe(true)
+
+    item('Swap exercise').onClick()
+    expect(mocks.swapActiveWorkoutExercise).toHaveBeenCalledWith(0)
+
+    await act(async () => { item('Add warm-up set').onClick() })
+    expect(mocks.S.active.entries[0].sets.some(s => s.phase === 'warmup' || s.warmup)).toBe(true)
+
+    await act(async () => { item('Remove exercise').onClick() })
+    expect(mocks.confirmSheet).toHaveBeenCalled()
+  })
+
+  it('opens a per-set menu from the set number with drop, burst and remove', async () => {
+    await mount([exercise('plain-bench', [false, false])])
+    await act(async () => { container.querySelector('button[aria-label="Set 2"]').dispatchEvent(new dom.Event('click', { bubbles: true })) })
+    expect(lastMenu().items.filter(Boolean).map(it => it.label)).toEqual(['Drop set', 'Rest-pause burst', 'Remove this set'])
+
+    await act(async () => { item('Drop set').onClick() })
+    expect(mocks.S.active.entries[0].sets[1].drops?.length).toBe(1)
+
+    await act(async () => { container.querySelector('button[aria-label="Set 2"]').dispatchEvent(new dom.Event('click', { bubbles: true })) })
+    await act(async () => { item('Remove this set').onClick() })
+    expect(mocks.S.active.entries[0].sets.length).toBe(1)
+  })
+
+  it('brings the legacy button rows back per switch', async () => {
+    await mount([exercise('plain-bench', [false]), exercise('plain-row', [false])], 0, {
+      wc: { setShortcuts: true, pairButtons: true, exerciseButtons: true },
+    })
+    const labels = [...container.querySelectorAll('button')].map(b => b.textContent.trim())
+    expect(labels).toEqual(expect.arrayContaining(['+ Drop', 'Add warm-up set', 'Remove set', 'Make superset with next', 'Move up', 'Swap exercise', 'Remove exercise']))
+  })
+
+  it('drops the +/- buttons when steppers are off and keeps the number field', async () => {
+    await mount([exercise('plain-bench', [false])], 0, { wc: { steppers: false } })
+    expect(container.querySelector('.setrow .stp button[aria-label="Increase"]')).toBeNull()
+    expect(container.querySelector('.setrow .stp.plain .num')).toBeTruthy()
   })
 })

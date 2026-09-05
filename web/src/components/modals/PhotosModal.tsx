@@ -15,7 +15,7 @@ interface PhotosModalProps {
 }
 
 export const PhotosModal = ({ isOpen, onClose }: PhotosModalProps) => {
-  const { t } = useTranslation(['modals', 'dashboard']);
+  const { t } = useTranslation(['modals', 'dashboard', 'errors']);
   const { userData, pictures, isPicturesLoading } = useStore();
   const [selectedIndex, setSelectedIndex] = useState(0);
 
@@ -110,7 +110,9 @@ export const PhotosModal = ({ isOpen, onClose }: PhotosModalProps) => {
                       });
                       setSelectedIndex(Math.max(0, selectedIndex - 1));
                     } catch (error) {
-                      toast.error(error instanceof Error ? error.message : 'Delete failed');
+                      toast.error(
+                        error instanceof Error ? error.message : t('errors:delete_failed')
+                      );
                     }
                   }}
                 >

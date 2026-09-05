@@ -90,6 +90,7 @@ export const DevicePanel = ({ onLocateCommand, onViewPhotos }: DevicePanelProps)
 
   const { t: tCommands } = useTranslation('commands');
   const { t: tDashboard } = useTranslation('dashboard');
+  const { t: tError } = useTranslation('errors');
   const [loading, setLoading] = useState(false);
   const [showFactoryResetConfirm, setShowFactoryResetConfirm] = useState(false);
   const [showLockMessageConfirm, setShowLockMessageConfirm] = useState(false);
@@ -386,7 +387,9 @@ export const DevicePanel = ({ onLocateCommand, onViewPhotos }: DevicePanelProps)
                         currentLocationIndex: Math.max(0, currentLocationIndex - 1),
                       });
                     } catch (error) {
-                      toast.error(error instanceof Error ? error.message : 'Delete failed');
+                      toast.error(
+                        error instanceof Error ? error.message : tError('errors:delete_failed')
+                      );
                     }
                   }}
                 >

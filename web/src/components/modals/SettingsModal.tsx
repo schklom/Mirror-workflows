@@ -21,7 +21,7 @@ interface SettingsModalProps {
 
 export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
   const { userData, units } = useStore();
-  const { t } = useTranslation(['settings', 'login', 'common']);
+  const { t } = useTranslation(['settings', 'login', 'common', 'errors']);
 
   const [showDeleteLocationsConfirm, setShowDeleteLocationsConfirm] = useState(false);
   const [showDeletePicturesConfirm, setShowDeletePicturesConfirm] = useState(false);
@@ -237,7 +237,7 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
               setShowDeleteLocationsConfirm(false);
               toast.info(t('delete_locations.success'));
             } catch (error) {
-              toast.error(error instanceof Error ? error.message : 'Delete failed');
+              toast.error(error instanceof Error ? error.message : t('errors:delete_failed'));
             }
           })();
         }}
@@ -260,7 +260,7 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
               setShowDeletePicturesConfirm(false);
               toast.info(t('delete_pictures.success'));
             } catch (error) {
-              toast.error(error instanceof Error ? error.message : 'Delete failed');
+              toast.error(error instanceof Error ? error.message : t('errors:delete_failed'));
             }
           })();
         }}
@@ -282,7 +282,7 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
               setShowDeleteAccountConfirm(false);
               onClose();
             } catch (error) {
-              toast.error(error instanceof Error ? error.message : 'Delete failed');
+              toast.error(error instanceof Error ? error.message : t('errors:delete_failed'));
             }
           })();
         }}

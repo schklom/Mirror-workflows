@@ -648,6 +648,10 @@ export const PT_BR_OVERRIDES = {
   'Every stored weight — logged sets, working weights, routine targets, body weight, bar weights — is in {0}. Convert the numbers, or keep them and only change the label?': 'Todos os pesos salvos — séries registradas, pesos de trabalho, alvos das rotinas, peso corporal, pesos das barras — estão em {0}. Converter os números, ou mantê-los e mudar só o rótulo?',
   'Keep the numbers, change the label': 'Manter os números, mudar o rótulo',
   'Switching the unit offers to convert every stored weight.': 'Ao mudar de unidade é oferecido converter todos os pesos salvos.',
+  'The latest version will be downloaded and the installer will open.': 'A versão mais recente será baixada e o instalador será aberto.',
+  'Download & Install': 'Baixar e instalar',
+  'Starting download…': 'Iniciando download…',
+  'Downloading update…': 'Baixando atualização…',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

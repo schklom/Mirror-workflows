@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, forwardRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore, DEF, hasData } from '../store/useStore.js'
 import { workoutControls } from '../lib/workout-controls.js'
@@ -11,7 +11,8 @@ import { pushSupported, enablePush, disablePush, sendTestPush } from '../lib/pus
 import { wakeLockSupported } from '../lib/wakelock.js'
 import { t, LANGS, INSTR_LANGS } from '../lib/i18n.js'
 import { DEMO, REPO } from '../lib/demo.js'
-import { MOBILE, shareExport, syncReminder } from '../lib/mobile.js'
+import { MOBILE, isAndroid, shareExport, syncReminder } from '../lib/mobile.js'
+import { checkForUpdate, downloadAndInstall } from '../lib/update.js'
 import { ConnectSheet } from './MobileOnboarding.jsx'
 import { starterPlanSheet, confirmSheet, importFromApp, importFromHevy, equipmentProfileSheet, menuSheet } from '../sheets.jsx'
 import Icon from '../components/Icon.jsx'
@@ -41,6 +42,60 @@ export default function Settings() {
         { icon: 'pencil', label: t('Keep the numbers, change the label'), onClick: () => update(s => { s.unit = v }) },
       ],
     })
+  }
+
+  // --- update check state ---
+  const [updateInfo, setUpdateInfo] = useState(null) // { hasUpdate, latestVersion, apkUrl, hashUrl } | null
+
+  useEffect(() => {
+    // The in-app updater installs an .apk, so it only applies to the native Android build.
+    // On iOS and the web this check is skipped and the update row never appears. isAndroid()
+    // already answers false off the mobile build; the MOBILE check on top keeps the web bundle
+    // from even asking (and from calling gitlab.com on every Settings visit).
+    if (!MOBILE) return
+    isAndroid().then(ok => { if (ok) checkForUpdate().then(setUpdateInfo).catch(() => {}) })
+  }, [])
+
+  const onUpdateRowClick = () => {
+    if (!updateInfo?.hasUpdate) return
+    if (updateInfo.apkUrl) {
+      // Start download & install
+      const version = updateInfo.latestVersion
+      confirmSheet({
+        title: t('Update to {0}?', version),
+        message: t('The latest version will be downloaded and the installer will open.'),
+        confirmText: t('Download & Install'),
+        onConfirm: async () => {
+          // Open a progress sheet
+          let closeProgress = null
+          let setProgress = null
+          useUI.getState().openSheet(close => {
+            closeProgress = close
+            return <DownloadProgress ref={fn => { setProgress = fn }} />
+          }, { locked: true })
+          try {
+            // Fetch the expected SHA-256 hash if available
+            let expectedHash = null
+            if (updateInfo.hashUrl) {
+              try {
+                const hashRes = await fetch(updateInfo.hashUrl)
+                if (hashRes.ok) expectedHash = (await hashRes.text()).split(/\s/)[0]
+              } catch (e) { /* proceed without hash verification */ }
+            }
+            await downloadAndInstall(updateInfo.apkUrl, expectedHash, (received, total) => {
+              if (setProgress) setProgress(received, total)
+            })
+            if (closeProgress) closeProgress()
+          } catch (e) {
+            if (closeProgress) closeProgress()
+            toast(t('Update failed: {0}', e.message))
+          }
+        },
+      })
+    } else {
+      // Update available but no APK asset — open the releases page
+      window.open('https://gitlab.com/DuarteSantos8/opengym/-/releases', '_blank', 'noopener')
+    }
   }
 
   const doExport = async () => {
@@ -261,6 +316,9 @@ export default function Settings() {
 
     {/* ---------- data: fill it, bring things over, back it up, wipe it ---------- */}
     <Section title={t('Data')}>
+      {MOBILE && updateInfo?.hasUpdate && <Row icon="info" iconTint="var(--purple)" title={t('openGym v{0} available', updateInfo.latestVersion)}
+        accessory="chevron"
+        onClick={onUpdateRowClick} />}
       <Row icon="sparkles" iconTint="var(--acc)" title={t('Load starter plan')} accessory="chevron" onClick={starterPlanSheet} />
       <Row icon="shuffle" iconTint="var(--teal)" title={t('Import from another app')}
         subtitle={t('FitNotes, Strong, Hevy — or body weight from Apple Health')}
@@ -343,6 +401,32 @@ function WorkoutControlsSheet() {
 function workoutControlsSheet() {
   useUI.getState().openSheet(() => <WorkoutControlsSheet />)
 }
+
+// Download progress sheet — receives a ref callback that exposes a (received, total) setter.
+// Uses forwardRef so the caller can push byte counts in without re-rendering the whole Settings tree.
+const DownloadProgress = forwardRef(function DownloadProgress(_, ref) {
+  const [pct, setPct] = useState(0)
+  const [text, setText] = useState(t('Starting download…'))
+  // Expose a setter the caller can invoke directly
+  if (ref) ref(function update(received, total) {
+    if (total > 0) {
+      const p = Math.min(100, Math.round((received / total) * 100))
+      setPct(p)
+      setText(t('{0} %', p))
+    } else {
+      setText(t('{0} MB', (received / 1_000_000).toFixed(1)))
+    }
+  })
+  return (
+    <div style={{ textAlign: 'center', padding: '8px 0' }}>
+      <h3>{t('Downloading update…')}</h3>
+      <div style={{ margin: '16px 0', height: 6, borderRadius: 3, background: 'var(--fill-3)', overflow: 'hidden' }}>
+        <div style={{ height: '100%', width: pct + '%', background: 'var(--acc)', borderRadius: 3, transition: 'width .2s' }} />
+      </div>
+      <div className="muted small">{text}</div>
+    </div>
+  )
+})
 
 function effortHelpSheet() {
   useUI.getState().openSheet(close => <>

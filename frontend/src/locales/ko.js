@@ -1165,4 +1165,13 @@ export default {
   'Convert the numbers': '숫자 변환',
   'Keep the numbers, change the label': '숫자 유지, 표시만 변경',
   'Switching the unit offers to convert every stored weight.': '단위를 바꾸면 저장된 모든 무게를 변환할지 물어봅니다.',
+  'Update to {0}?': '{0}(으)로 업데이트하시겠습니까?',
+  'The latest version will be downloaded and the installer will open.': '최신 버전이 다운로드되고 설치 프로그램이 열립니다.',
+  'Download & Install': '다운로드 및 설치',
+  'Update failed: {0}': '업데이트 실패: {0}',
+  'openGym v{0} available': 'openGym v{0} 사용 가능',
+  'Starting download…': '다운로드 시작 중…',
+  'Downloading update…': '업데이트 다운로드 중…',
+  '{0} %': '{0}%',
+  '{0} MB': '{0} MB',
 }

@@ -1165,4 +1165,13 @@ export default {
   'Convert the numbers': 'Пересчитать числа',
   'Keep the numbers, change the label': 'Оставить числа, сменить подпись',
   'Switching the unit offers to convert every stored weight.': 'При смене единицы предлагается пересчитать все сохранённые веса.',
+  'Update to {0}?': 'Обновить до {0}?',
+  'The latest version will be downloaded and the installer will open.': 'Последняя версия будет загружена и откроется установщик.',
+  'Download & Install': 'Скачать и установить',
+  'Update failed: {0}': 'Ошибка обновления: {0}',
+  'openGym v{0} available': 'openGym v{0} доступна',
+  'Starting download…': 'Начало загрузки…',
+  'Downloading update…': 'Загрузка обновления…',
+  '{0} %': '{0} %',
+  '{0} MB': '{0} МБ',
 }

@@ -1165,4 +1165,13 @@ export default {
   'Convert the numbers': 'Converter os números',
   'Keep the numbers, change the label': 'Manter os números, mudar a etiqueta',
   'Switching the unit offers to convert every stored weight.': 'Ao mudar de unidade é proposto converter todos os pesos guardados.',
+  'Update to {0}?': 'Atualizar para {0}?',
+  'The latest version will be downloaded and the installer will open.': 'A versão mais recente será transferida e o instalador será aberto.',
+  'Download & Install': 'Transferir e instalar',
+  'Update failed: {0}': 'Falha na atualização: {0}',
+  'openGym v{0} available': 'openGym v{0} disponível',
+  'Starting download…': 'A iniciar transferência…',
+  'Downloading update…': 'A transferir atualização…',
+  '{0} %': '{0} %',
+  '{0} MB': '{0} MB',
 }

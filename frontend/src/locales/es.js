@@ -1180,4 +1180,5 @@ export default {
   'Downloading update…': 'Descargando actualización…',
   '{0} %': '{0} %',
   '{0} MB': '{0} MB',
+  'Checksum not available — not installing': 'Suma de verificación no disponible — no se instala',
 }

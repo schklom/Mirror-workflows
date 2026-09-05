@@ -74,14 +74,16 @@ export default function Settings() {
             return <DownloadProgress ref={fn => { setProgress = fn }} />
           }, { locked: true })
           try {
-            // Fetch the expected SHA-256 hash if available
+            // The release always publishes the checksum next to the APK. Without it the file is
+            // not installed — a sideloaded binary is exactly the thing that should be verified.
             let expectedHash = null
             if (updateInfo.hashUrl) {
               try {
                 const hashRes = await fetch(updateInfo.hashUrl)
                 if (hashRes.ok) expectedHash = (await hashRes.text()).split(/\s/)[0]
-              } catch (e) { /* proceed without hash verification */ }
+              } catch (e) { /* reported below */ }
             }
+            if (!/^[0-9a-f]{64}$/i.test(expectedHash || '')) throw new Error(t('Checksum not available — not installing'))
             await downloadAndInstall(updateInfo.apkUrl, expectedHash, (received, total) => {
               if (setProgress) setProgress(received, total)
             })
@@ -316,7 +318,7 @@ export default function Settings() {
 
     {/* ---------- data: fill it, bring things over, back it up, wipe it ---------- */}
     <Section title={t('Data')}>
-      {MOBILE && updateInfo?.hasUpdate && <Row icon="info" iconTint="var(--purple)" title={t('openGym v{0} available', updateInfo.latestVersion)}
+      {MOBILE && updateInfo?.hasUpdate && updateInfo.apkUrl && <Row icon="info" iconTint="var(--purple)" title={t('openGym v{0} available', updateInfo.latestVersion)}
         accessory="chevron"
         onClick={onUpdateRowClick} />}
       <Row icon="sparkles" iconTint="var(--acc)" title={t('Load starter plan')} accessory="chevron" onClick={starterPlanSheet} />

@@ -1180,4 +1180,5 @@ export default {
   'Downloading update…': 'Güncelleme indiriliyor…',
   '{0} %': '%{0}',
   '{0} MB': '{0} MB',
+  'Checksum not available — not installing': 'Sağlama toplamı yok — yüklenmedi',
 }

@@ -1180,4 +1180,5 @@ export default {
   'Downloading update…': 'अपडेट डाउनलोड हो रहा है…',
   '{0} %': '{0}%',
   '{0} MB': '{0} MB',
+  'Checksum not available — not installing': 'चेकसम उपलब्ध नहीं — इंस्टॉल नहीं किया गया',
 }

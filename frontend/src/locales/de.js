@@ -1199,4 +1199,5 @@ export default {
   'Downloading update…': 'Update wird heruntergeladen…',
   '{0} %': '{0} %',
   '{0} MB': '{0} MB',
+  'Checksum not available — not installing': 'Prüfsumme nicht verfügbar — Installation abgebrochen',
 }

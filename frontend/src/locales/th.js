@@ -1191,4 +1191,5 @@ export default {
   'Downloading update…': 'กำลังดาวน์โหลดอัปเดต…',
   '{0} %': '{0}%',
   '{0} MB': '{0} MB',
+  'Checksum not available — not installing': 'ไม่มีค่าตรวจสอบ — ยกเลิกการติดตั้ง',
 }

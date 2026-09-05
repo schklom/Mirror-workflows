@@ -1180,4 +1180,5 @@ export default {
   'Downloading update…': '업데이트 다운로드 중…',
   '{0} %': '{0}%',
   '{0} MB': '{0} MB',
+  'Checksum not available — not installing': '체크섬을 확인할 수 없어 설치하지 않습니다',
 }

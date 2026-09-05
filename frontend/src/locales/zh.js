@@ -1180,4 +1180,5 @@ export default {
   'Downloading update…': '正在下载更新…',
   '{0} %': '{0}%',
   '{0} MB': '{0} MB',
+  'Checksum not available — not installing': '校验和不可用，已取消安装',
 }

@@ -1183,4 +1183,5 @@ export default {
   'Downloading update…': 'Frissítés letöltése…',
   '{0} %': '{0} %',
   '{0} MB': '{0} MB',
+  'Checksum not available — not installing': 'Ellenőrző összeg nem érhető el — nincs telepítés',
 }

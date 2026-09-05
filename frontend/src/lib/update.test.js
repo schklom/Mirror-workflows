@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { checkForUpdate, sha256 } from './update.js'
+import { checkForUpdate, sha256, resetUpdateCheck } from './update.js'
 
 // __APP_VERSION__ is defined at build time by vite.config.js (reads package.json).
 // In the test environment vitest applies the same define, so it's available here.
@@ -28,7 +28,7 @@ describe('sha256', () => {
 describe('checkForUpdate', () => {
   let originalFetch
 
-  beforeEach(() => { originalFetch = globalThis.fetch })
+  beforeEach(() => { originalFetch = globalThis.fetch; resetUpdateCheck() })
   afterEach(() => { globalThis.fetch = originalFetch })
 
   function mockFetch(body, status = 200) {
@@ -231,7 +231,7 @@ describe('checkForUpdate', () => {
 
 describe('semver comparison (via checkForUpdate behavior)', () => {
   let originalFetch
-  beforeEach(() => { originalFetch = globalThis.fetch })
+  beforeEach(() => { originalFetch = globalThis.fetch; resetUpdateCheck() })
   afterEach(() => { globalThis.fetch = originalFetch })
 
   function mockRelease(tag) {

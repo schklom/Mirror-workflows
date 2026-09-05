@@ -33,7 +33,15 @@ function compareSemver(a, b) {
  *   - apkUrl: direct download URL of the first .apk asset, or null
  *   - hashUrl: direct download URL of the .apk.sha256 hash file, or null
  */
+// One request per app session: Settings is opened often, gitlab.com does not need to hear
+// about it every time. The promise is cached, a failure is not.
+let cached = null
+export function resetUpdateCheck() { cached = null }
 export async function checkForUpdate() {
+  if (!cached) cached = fetchLatest().catch(e => { cached = null; throw e })
+  return cached
+}
+async function fetchLatest() {
   const res = await fetch(RELEASES_URL + '?per_page=1')
   if (!res.ok) throw new Error(`GitLab API ${res.status}`)
   const releases = await res.json()

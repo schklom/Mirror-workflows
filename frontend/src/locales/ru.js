@@ -1180,4 +1180,5 @@ export default {
   'Downloading update…': 'Загрузка обновления…',
   '{0} %': '{0} %',
   '{0} MB': '{0} МБ',
+  'Checksum not available — not installing': 'Контрольная сумма недоступна — установка отменена',
 }

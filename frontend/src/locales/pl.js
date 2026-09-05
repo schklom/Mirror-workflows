@@ -1180,4 +1180,5 @@ export default {
   'Downloading update…': 'Pobieranie aktualizacji…',
   '{0} %': '{0}%',
   '{0} MB': '{0} MB',
+  'Checksum not available — not installing': 'Suma kontrolna niedostępna — instalacja przerwana',
 }

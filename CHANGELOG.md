@@ -1,5 +1,76 @@
 # Changelog
 
+## v1.3.2 — 2026-09-05
+
+Seventeen community merge requests from twelve contributors, each read, rebased onto a staging
+instance and put through a tester round before landing, plus the fixes that round turned up. The
+web bundle and the images change; the API only gains the Coach schema tightening. The Android APK
+ships with a real version code again (16 — the last two releases had reused 15).
+
+### Active workout
+
+- 📋 **List view.** Settings → During a workout → Workout view: Cards (as before) or List, the
+  whole session stacked and scrollable, the current exercise outlined, "Set current" to move the
+  marker, supersets grouped with their own Unpair. (dpatrongomez, !96 — issues #28, #44, #50)
+- ⚖️ **The working weight is captured, not asked.** Finishing an exercise no longer opens the
+  "confirm your working weight" sheet: the heaviest completed work set becomes the working weight,
+  for both members of a superset, and the current marker stays where you are until you press Next.
+  Working weights are stored when the workout is finished, so a typo corrected before that, or a
+  discarded session, never becomes your "Best". (mflova, !92 — issue #18)
+- 🔢 **One tap, one step — in supersets too.** The +/− on weight, reps and RIR moved two steps
+  per tap on the second member of a superset. (ErrorUsernameAlreadyTaken, !97 — issue #41)
+- ➕ **The weight stepper uses the exercise's own increment** (1.25 kg plates, 5 lb, whatever you
+  set), with progression's rounding, on set rows and drop-set rows; timed sets keep their seconds.
+  A value off the increment grid steps by exactly one increment rather than snapping. (mflova, !84)
+- 🎯 **Routines with progression off keep their targets.** The same exercise as 2×15 in one routine
+  and 4×8 in another no longer opens the second with the first's reps — also when adding or swapping
+  an exercise mid-session and when saving the progression sheet. (mflova, !71)
+- 📉 **No deload spiral.** A weight change starts a new stall streak, so one bad day at the lighter
+  weight after a deload cannot trigger the next one. (arhx91, !93)
+- 🛡️ **The progression sheet cannot save into the wrong exercise** after the list shifted under it
+  or the workout was replaced. (Space-Hermes, !77)
+- ⏱️ **Timer flash blinks the theme** instead of a black/white overlay and settles back on your
+  theme. A timer that ended while the app was in the background no longer replays the beep and
+  flash when you come back; a quiet toast still says the rest is over. (mzspicoli, !89)
+
+### Planning and library
+
+- ✨ **Four starter plans.** Home, Plan and Settings → Load starter plan open a chooser: Push/Pull/Legs,
+  Upper/Lower, Full Body, 5×5. Free weekdays load at once, occupied ones ask first; existing
+  routines are never touched. (lordlukem, !94)
+- 💪 **Muscle explorer.** Library → "By muscle" (and "By muscle" inside Add exercise): tap a muscle
+  on the body map or its chip, filter by search, body part and equipment, open details or plan it.
+  Follows your equipment profile like the library does. (prasad_gade05, !87)
+- 📄 **Copy routine** at the bottom of the routine editor. (ErrorUsernameAlreadyTaken, !85)
+- ➕ **The "+" in the exercise picker adds immediately** with the default config (freestyle: last
+  session's) and says so in a toast; tapping the row still opens the config sheet. (surohsusej, !72)
+- 📐 Stats → Exercise progress: long exercise names use the full width. (mflova, !80)
+
+### MCP and Coach
+
+- 🔍 **`preview_session`** — a ninth MCP tool: what a routine will actually open with after the
+  progression policy, the confirmed weight and history have had their say, with the source of every
+  number and a list of exercises where plan and screen disagree. Built on the app's own session
+  builder, so progression-off and deload routines preview exactly what the screen shows.
+  (koyosan, !90)
+- ⏲️ `get_routine` reports each exercise's own rest as `rest_sec`. (TheophileDiot, !81 — issue #36)
+- 🧠 The Coach's create schema requires a routine id and a week and caps the arrays, so a small
+  local model cannot answer with a plan the validator can only reject. (subdee, !99)
+- 🧪 BodyMap tests import the geometry before the first render — no more one-off failures on a
+  slow runner. (TheophileDiot, !82 — issue #35)
+
+### Self-hosting and infrastructure
+
+- 🔁 **nginx re-resolves the api container per request.** Recreating only `api` (new IP) no longer
+  leaves `web` answering 502 until it is restarted too. (issue #16)
+- 🔒 The published `api` image drops npm and both images take alpine's package fixes at build time;
+  the image scan reports nothing.
+- 🏗️ CI: JUnit and coverage in every merge request, a bundle-size diff against main, a compose smoke
+  test of the pushed images, a Trivy scan with SBOMs attached to the release, a tag preflight
+  (versions and changelog checked before anything builds), and pipelines for contributors' fork MRs
+  started automatically for returning contributors.
+- 🤖 Renovate runs again: its configuration had two unknown keys and had stopped opening MRs. (issue #37)
+
 ## v1.3.1 — 2026-09-04
 
 - 📱 **"Use my self-hosted openGym" works on a paired phone.** The phone app never fetched the

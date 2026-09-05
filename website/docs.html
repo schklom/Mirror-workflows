@@ -224,8 +224,11 @@
     <li>The <a href="https://gitlab.com/DuarteSantos8/opengym/-/releases" rel="noopener">GitLab release</a> for that version, which links to both.</li>
   </ul>
   <p>Got the file from anywhere else? Verify it against the registry's <code>.sha256</code>
-     before installing. Updates: download the new APK and install it over the old one — same
-     signing key, data stays. Everything is stored on the phone itself; the only network
+     before installing. <b>Updates come to you:</b> when a newer release exists, Settings &rarr; Data
+     shows "openGym vX available" &mdash; one tap downloads the signed APK, checks its SHA-256
+     against the published checksum and opens the installer (no checksum, no install; the first
+     time Android asks for the "install unknown apps" permission). Installing over the old
+     version by hand works too &mdash; same signing key, data stays. Everything is stored on the phone itself; the only network
      traffic is fetching exercise images and animations from a CDN, on demand.</p>
   <p>The app requests notification permission only when you switch the workout-day reminder
      on, and declares <code>SCHEDULE_EXACT_ALARM</code> so reminders fire to the minute.
@@ -302,6 +305,12 @@
         plan is never overwritten.</li>
     <li><b>Muscle preview:</b> while you build a routine, the body diagram shows what it
         hits.</li>
+    <li><b>Favourites:</b> star an exercise in its details and it sorts first in the picker, the
+        library and the muscle explorer; the picker gets a Favourites chip.</li>
+    <li><b>kg &harr; lb, your numbers included:</b> switching the unit asks whether to convert
+        everything you've logged and planned &mdash; sets, working weights, targets and
+        increments, warm-up configs, body weight, goal, bar weights &mdash; or keep the values
+        and only change the label.</li>
   </ul>
 
   <h3 id="f-prog">Progression — weights that follow a rule</h3>
@@ -331,6 +340,18 @@
   <ul>
     <li><b>Guided sessions:</b> today's routine opens with weights pre-filled from last time,
         animated demos, a rest timer, and PR detection as you log.</li>
+    <li><b>A screen that gets out of the way.</b> Each exercise has one &#8943; menu next to its
+        name &mdash; note, details, progression, bar weight, warm-up set, superset with the
+        previous or next exercise, swap, move, remove &mdash; and the set number is the set's own
+        menu (drop set, rest-pause burst, remove). Nothing else sits between you and the numbers.
+        Miss a button? Settings &rarr; During a workout &rarr; <b>Workout controls</b> brings any
+        group back: +/&minus; steppers, drop/burst shortcuts on every row, superset buttons in
+        the header, move/swap/remove below the card.</li>
+    <li><b>List view keeps the header pinned</b> &mdash; name, clock, set counter, discard and
+        finish stay at the top while the session scrolls.</li>
+    <li><b>History without leaving the workout:</b> &#8943; &rarr; History shows your best set
+        (or estimated 1RM, longest hold, minutes) over time and the last ten sessions with every
+        set, the volume and a PR marker. Also in an exercise's details in the library.</li>
     <li><b>It asks your body weight first</b> — one habit, one chart.</li>
     <li><b>Plate math for barbell work.</b> Barbell, olympic, EZ, trap bar and Smith machine
         exercises carry a bar weight &mdash; 20&nbsp;kg / 45&nbsp;lb and the rest of the usual
@@ -357,8 +378,11 @@
         workouts that came later.</li>
     <li><b>Effort per set, in your scale:</b> an optional third column rating how hard a set
         was, as <b>RIR</b> (reps left in the tank) or <b>RPE</b> (the same judgement on a
-        10-point scale). Off by default; each set keeps the scale it was logged with, and
-        nothing else reads the value — progression and 1RM are unaffected.</li>
+        10-point scale). Tap the button to pick one of six levels, each with a sentence &mdash;
+        "Nothing left, went to failure" through "Easy, warm-up territory" &mdash; or type an
+        exact value; a logged rating tints its cell by how close to failure it was. Off by
+        default; each set keeps the scale it was logged with, and nothing else reads the value
+        — progression and 1RM are unaffected.</li>
     <li><b>See the timer end, not just hear it:</b> an opt-in screen flash when a rest or
         work timer finishes — for loud gyms and headphones.</li>
     <li><b>Rest-timer push notifications</b> even with the app closed (self-hosted; the

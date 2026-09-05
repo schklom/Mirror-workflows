@@ -352,7 +352,10 @@ build:images:
         "$CONTEXT"
       # Older buildx builds ignore --format and print the whole Name/MediaType/Digest block, so
       # pick the digest out of whatever comes back — a multi-line value breaks the dotenv upload.
-      DIGEST="$(docker buildx imagetools inspect "$REPO:$IMAGE_TAG" --format '{{.Manifest.Digest}}' | grep -oE 'sha256:[0-9a-f]{64}' | head -1)"
+      # sed, not head: the runner's shell has pipefail on, and `head -1` closing the pipe early
+      # kills the producer with SIGPIPE (exit 141) as soon as the output is more than one write —
+      # which a multi-arch manifest list is. That failed both image jobs of the v1.3.2 tag.
+      DIGEST="$(docker buildx imagetools inspect "$REPO:$IMAGE_TAG" --format '{{.Manifest.Digest}}' | grep -oE 'sha256:[0-9a-f]{64}' | sed -n 1p)"
       [ -n "$DIGEST" ] || { echo "could not read the digest of $REPO:$IMAGE_TAG" >&2; exit 1; }
       echo "pushed $REPO:$IMAGE_TAG @ $DIGEST"
       UPPER="$(echo "$IMAGE" | tr a-z A-Z)"

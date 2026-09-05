@@ -543,6 +543,11 @@ export default {
   // --- v1.2.2: timed sets, progression, estimated 1RM (#16 #17 #18) ---
   'Top set': 'เซ็ตที่หนักที่สุด',
   'Est. 1RM': '1RM โดยประมาณ',
+  'No sessions logged yet': 'ยังไม่มีการบันทึกเซสชัน',
+  '{0} session': '{0} เซสชัน',
+  '{0} sessions': '{0} เซสชัน',
+  'Exercise history': 'ประวัติท่าออกกำลังกาย',
+  'Last {0} sessions': '{0} เซสชันล่าสุด',
   'Estimated 1RM': '1RM โดยประมาณ',
   'Estimated 1RM per workout': '1RM โดยประมาณต่อครั้ง',
   'Best estimate from {0} on {1} — an estimate, not a tested max.': 'ประมาณการดีที่สุดจาก {0} เมื่อ {1} — เป็นค่าประมาณ ไม่ใช่ค่าที่ทดสอบจริง',

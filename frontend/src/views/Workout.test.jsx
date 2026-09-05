@@ -23,6 +23,7 @@ const mocks = vi.hoisted(() => {
     swapActiveWorkoutExercise: vi.fn(),
     menuSheet: vi.fn(),
     effortPickerSheet: vi.fn(),
+    exerciseHistorySheet: vi.fn(),
   }
   state.stopRest = vi.fn(() => { state.timer = null })
   state.stopWork = vi.fn(() => { state.work = null })
@@ -76,6 +77,7 @@ vi.mock('../sheets.jsx', () => ({
   exerciseNoteSheet: vi.fn(),
   sessionNoteSheet: vi.fn(),
   effortPickerSheet: mocks.effortPickerSheet,
+  exerciseHistorySheet: mocks.exerciseHistorySheet,
 }))
 vi.mock('../components/Media.jsx', () => ({ default: () => null }))
 // api.js reads navigator.userAgent at module scope. This file installs its own DOM inside the
@@ -1107,6 +1109,16 @@ describe('workout controls: the more menu and the set menu', () => {
 
     await act(async () => { item('Remove exercise').onClick() })
     expect(mocks.confirmSheet).toHaveBeenCalled()
+  })
+
+  it('opens the exercise history sheet from the More menu, for the tapped exercise', async () => {
+    // the screen shows one exercise at a time, so "the tapped exercise" is the current one
+    await mount([exercise('plain-bench', [false]), exercise('plain-row', [false])], 1)
+    await act(async () => { container.querySelector('button[aria-label="More"]').dispatchEvent(new dom.Event('click', { bubbles: true })) })
+    const history = item('History')
+    expect(history.icon).toBe('history')
+    history.onClick()
+    expect(mocks.exerciseHistorySheet).toHaveBeenCalledWith('plain-row')
   })
 
   it('opens a per-set menu from the set number with drop, burst and remove', async () => {

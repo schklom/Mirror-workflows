@@ -4,6 +4,7 @@
 import pt from './pt.js'
 
 export const PT_BR_OVERRIDES = {
+  'No sessions logged yet': 'Ainda não há sessões registradas',
   'What should change?': 'O que deve mudar?',
   'Coach is thinking…': 'O Coach está pensando…',
   'Message the Coach…': 'Escreva ao Coach…',

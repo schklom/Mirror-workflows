@@ -559,6 +559,11 @@ export default {
   // --- v1.2.2: timed sets, progression, estimated 1RM (#16 #17 #18) ---
   'Top set': 'सर्वश्रेष्ठ सेट',
   'Est. 1RM': 'अनु. 1RM',
+  'No sessions logged yet': 'अभी तक कोई सत्र दर्ज नहीं',
+  '{0} session': '{0} सत्र',
+  '{0} sessions': '{0} सत्र',
+  'Exercise history': 'व्यायाम इतिहास',
+  'Last {0} sessions': 'पिछले {0} सत्र',
   'Estimated 1RM': 'अनुमानित 1RM',
   'Estimated 1RM per workout': 'प्रति वर्कआउट अनुमानित 1RM',
   'Best estimate from {0} on {1} — an estimate, not a tested max.': '{1} को {0} से सर्वश्रेष्ठ अनुमान — यह अनुमान है, परखा गया अधिकतम नहीं।',

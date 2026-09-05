@@ -4,7 +4,9 @@ Where openGym is going, in the order it is likely to land. Each block is a GitLa
 issues and merge requests attached to it are the plan, this file is the readable summary. The
 dates are the order, not a promise: a one-maintainer self-hosted project ships a version when the
 branch has been used in a real gym for a while. Blocks are deliberately over-full — whatever is not
-done when a version ships rolls into the next one.
+done when a version ships rolls into the next one. Version numbers follow the release rule, not the
+size of the change: the next release is the last published one plus one patch (1.3.1 → 1.3.2), and a
+minor bump is reserved for something that breaks compatibility.
 
 - Board: https://gitlab.com/DuarteSantos8/opengym/-/boards — planned → in progress → in review → closed
 - Milestones: https://gitlab.com/DuarteSantos8/opengym/-/milestones
@@ -12,7 +14,7 @@ done when a version ships rolls into the next one.
 
 ---
 
-## v1.4 — Cleaner workout  (mid September 2026)
+## v1.3.2 — Cleaner workout  (mid September 2026)
 
 **Theme: the workout screen gets out of the way.** Fewer things to tap, the things you tap every set
 stay where they are, everything else moves one tap away. Compared with Hevy or Strong the screen was
@@ -54,7 +56,7 @@ Still to do in this version:
 - Warm-up ramp uses the per-exercise increment, not the default one
 - Release notes per contributor, CHANGELOG, APK on the website, Discord announcement
 
-## v1.5 — Programmes & progression  (October 2026)
+## v1.3.3 — Programmes & progression  (October 2026)
 
 **Theme: training structure beyond one weekly template.** Most of this is the Space-Hermes series.
 It changes the training model (per-set roles, explicit phases, normalisation on every persist), so
@@ -78,7 +80,7 @@ it goes in one MR at a time, each rebased and tested on gym-test before the next
 - Catalogue cleanup: exercises that should not carry weight, incline and interval fields for
   cardio (#46); timers for planks and outdoor cardio are already there, document them (#45)
 
-## v1.6 — Accounts & sync  (November 2026)
+## v1.3.4 — Accounts & sync  (November 2026)
 
 **Theme: who may sign in, and what else may read or write your data.**
 
@@ -96,7 +98,7 @@ it goes in one MR at a time, each rebased and tested on gym-test before the next
   logged sessions lost after editing a routine (#25)
 - Admin: per-user export, invite management, audit log filters
 
-## v1.7 — Mobile  (December 2026)
+## v1.3.5 — Mobile  (December 2026)
 
 **Theme: the Android app catches up with the web app.**
 

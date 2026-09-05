@@ -626,6 +626,11 @@ export default {
   'Two more reps': 'दो रेप और बाकी',
   'Three more reps': 'तीन रेप और बाकी',
   'Easy — warm-up territory': 'आसान — वॉर्म-अप का दायरा',
+  'Maybe half a rep left': 'शायद आधा रेप और बाकी',
+  'How hard was that set?': 'वह सेट कितना मुश्किल था?',
+  'Tap how many reps you had left, or type an exact {0}.': 'टैप करें कि कितने रेप्स बाकी थे, या सटीक {0} दर्ज करें।',
+  'Exact {0}': 'सटीक {0}',
+  'Clear rating': 'रेटिंग साफ़ करें',
   'RIR counts the reps you left; RPE reads the same effort off a 10-point scale — so RPE ≈ 10 − RIR. Pick the one you already think in.': 'RIR बचे हुए रेप्स गिनता है; RPE उसी मेहनत को 10 के पैमाने पर पढ़ता है — यानी RPE ≈ 10 − RIR. वही चुनें जिसमें आप पहले से सोचते हैं।',
   'The highlighted row is where most working sets land. Sets you have already logged keep their own scale, and nothing else reads the value — progression and estimated 1RM are unaffected.': 'हाइलाइट की गई पंक्ति वह है जहाँ ज़्यादातर वर्किंग सेट आते हैं। पहले दर्ज किए सेट अपना पैमाना बनाए रखते हैं, और इस मान को और कुछ नहीं पढ़ता — प्रोग्रेशन और अनुमानित 1RM अछूते रहते हैं।',
   // --- effort in the stats ---

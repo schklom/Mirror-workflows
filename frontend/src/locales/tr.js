@@ -626,6 +626,11 @@ export default {
   'Two more reps': 'İki tekrar daha vardı',
   'Three more reps': 'Üç tekrar daha vardı',
   'Easy — warm-up territory': 'Kolay — ısınma bölgesi',
+  'Maybe half a rep left': 'Belki yarım tekrar kalmıştı',
+  'How hard was that set?': 'O set ne kadar zordu?',
+  'Tap how many reps you had left, or type an exact {0}.': 'Kaç tekrar kaldığına dokun ya da tam bir {0} değeri gir.',
+  'Exact {0}': 'Tam {0}',
+  'Clear rating': 'Değerlendirmeyi temizle',
   'RIR counts the reps you left; RPE reads the same effort off a 10-point scale — so RPE ≈ 10 − RIR. Pick the one you already think in.': 'RIR yedekte bıraktığın tekrarları sayar; RPE aynı eforu 10’luk ölçekte okur — yani RPE ≈ 10 − RIR. Zaten hangisiyle düşünüyorsan onu seç.',
   'The highlighted row is where most working sets land. Sets you have already logged keep their own scale, and nothing else reads the value — progression and estimated 1RM are unaffected.': 'Vurgulanan satır, çalışma setlerinin çoğunun denk geldiği yerdir. Daha önce kaydettiğin setler kendi ölçeğini korur ve bu değeri başka hiçbir şey okumaz — ilerleme ve tahmini 1RM etkilenmez.',
   // --- effort in the stats ---

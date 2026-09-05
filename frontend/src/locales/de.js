@@ -644,6 +644,11 @@ export default {
   'Two more reps': 'Zwei Wiederholungen übrig',
   'Three more reps': 'Drei Wiederholungen übrig',
   'Easy — warm-up territory': 'Locker — Aufwärmbereich',
+  'Maybe half a rep left': 'Vielleicht noch eine halbe Wiederholung',
+  'How hard was that set?': 'Wie schwer war der Satz?',
+  'Tap how many reps you had left, or type an exact {0}.': 'Tippe, wie viele Wiederholungen du übrig hattest, oder gib einen genauen {0}-Wert ein.',
+  'Exact {0}': 'Genauer {0}-Wert',
+  'Clear rating': 'Bewertung löschen',
   'RIR counts the reps you left; RPE reads the same effort off a 10-point scale — so RPE ≈ 10 − RIR. Pick the one you already think in.': 'RIR zählt die Wiederholungen, die du übrig lässt; RPE liest dieselbe Anstrengung auf einer 10er-Skala ab — also RPE ≈ 10 − RIR. Nimm die Skala, in der du ohnehin denkst.',
   'The highlighted row is where most working sets land. Sets you have already logged keep their own scale, and nothing else reads the value — progression and estimated 1RM are unaffected.': 'Die hervorgehobene Zeile ist der Bereich, in dem die meisten Arbeitssätze landen. Bereits protokollierte Sätze behalten ihre eigene Skala, und sonst liest den Wert nichts — Progression und geschätztes 1RM bleiben unberührt.',
   // --- effort in the stats ---

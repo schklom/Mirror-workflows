@@ -643,6 +643,8 @@ export const PT_BR_OVERRIDES = {
   'Off: tap the number and type it': 'Desligado: toque no número e digite',
   'Move, swap and remove buttons below the exercise': 'Botões mover, trocar e remover abaixo do exercício',
   'Everything hidden here stays one tap away: the ⋯ button of an exercise and the number of a set.': 'Tudo o que você esconde aqui fica a um toque: o botão ⋯ de um exercício e o número de uma série.',
+  // effort quick picker — pt-PT uses "toca"/"escreve"; Brazilian uses "toque"/"digite"
+  'Tap how many reps you had left, or type an exact {0}.': 'Toque em quantas repetições você ainda tinha, ou digite um {0} exato.'
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

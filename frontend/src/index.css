@@ -659,20 +659,101 @@ h4.sec{
 }
 .setrow .stp.w{flex:1.4;min-width:0}
 .setrow .stp.r{flex:1;min-width:0}
-.setrow .stp.eff{flex:1.1;min-width:0}
 .setrow .stp button{width:32px;height:40px}
-/* a 3rd stepper (RIR) needs narrower buttons and a tighter row gap to fit next to weight+reps
-   on narrow phones, same technique as the exercise-config sheet's three-steppers-in-a-row
-   (.cfgrow below). The buttons stay 28px wide — anything narrower is a miss-prone target —
-   so the room comes from the smaller glyphs and from the value fields giving up their padding.
-   The header shares the numbers so its labels stay centred over the steppers they name. */
+/* The effort column is a single tap-to-pick button, not a stepper. It is a direct flex child
+   of the row (like the .stp cells), carrying its own column width via flex. `align-self` and
+   a fixed height stop the row from stretching it taller than the weight/reps cells; it is NOT
+   inside `.stp`, so the stepper's 32px fixed button width (which wrapped "RIR") never applies. */
+/* flex-basis:0 so the button's width comes from its flex share, not its text, and the column
+   never jumps between an empty "RIR" and a logged "2". The unrated state uses `.is-empty`, not
+   the generic `.empty` (which is a full-page empty-state with 44px padding — sharing that name
+   inflated the cell to ~90px). */
+.setrow .effcell,.sethead .eff-sp{flex:.8 1 0;min-width:0}
+.effcell{
+  box-sizing:border-box;height:44px;border-radius:10px;
+  background:var(--surface-2);border:1.5px solid transparent;
+  color:var(--label);font-size:15px;font-weight:600;letter-spacing:-.01em;
+  font-variant-numeric:tabular-nums;white-space:nowrap;line-height:1;
+  display:flex;align-items:center;justify-content:center;
+  transition:background var(--fast),transform var(--fast),border-color var(--fast);
+}
+.effcell:active{transform:scale(.94)}
+.effcell.is-empty{color:var(--label-2);font-weight:500;font-size:12px;letter-spacing:.02em}
+/* a logged rating becomes a −/value/+ stepper, tinted by its effort band: the band colour
+   fills the cell at low opacity (set inline via color-mix), borders it, and colours the value.
+   the +/− buttons step 0.5 on the profile's scale; the value opens the picker. it carries the
+   same column flex as the plain .effcell so the row does not jump when a rating is added. */
+.setrow .effcell-stp,.setrow.eff3 .effcell-stp{
+  height:44px;border-radius:10px;border:1.5px solid transparent;
+  transition:background var(--fast),border-color var(--fast);
+}
+.effcell-stp button{color:inherit}
+.effcell-stp>button[aria-label="Decrease"],
+.effcell-stp>button[aria-label="Increase"]{width:26px;height:44px;font-size:15px;opacity:.85}
+.effcell-stp .val{
+  flex:1;min-width:0;display:flex;align-items:center;justify-content:center;
+  font-size:15px;font-weight:600;letter-spacing:-.01em;
+  font-variant-numeric:tabular-nums;line-height:1;align-self:stretch;color:inherit;
+}
+.effcell-stp .val:active{background:var(--surface-3)}
+/* the effort cell needs less room now (one short value, no +/- buttons), so weight/reps keep
+   more of the row on narrow phones than they did when three steppers had to share it */
+.setrow .effcell-stp,.setrow.eff3 .effcell-stp{flex:.8 1 0;min-width:0}
+.setrow.eff3 .effcell-stp{flex:.7 1 0}
 .setrow.eff3,.sethead.eff3{gap:6px}
-.setrow.eff3 .stp.w,.sethead.eff3 .w-sp{flex:1.2}
-.setrow.eff3 .stp.r,.sethead.eff3 .r-sp{flex:1}
-.setrow.eff3 .stp.eff,.sethead.eff3 .eff-sp{flex:.85}
-.setrow.eff3 .stp button{width:28px;font-size:14px}
+.setrow.eff3 .stp.w,.sethead.eff3 .w-sp{flex:1.4}
+.setrow.eff3 .stp.r,.sethead.eff3 .r-sp{flex:1.1}
+.setrow.eff3 .effcell,.sethead.eff3 .eff-sp{flex:.7 1 0}
+.setrow.eff3 .stp.w button,.setrow.eff3 .stp.r button{width:26px}
 .setrow.eff3 .stp .num{font-size:14px}
-.setrow.eff3 .stp .val{padding:0}
+.setrow.eff3 .effcell-stp>button[aria-label="Decrease"],
+.setrow.eff3 .effcell-stp>button[aria-label="Increase"]{width:22px}
+.setrow.eff3 .effcell-stp .val{font-size:14px}
+/* effort quick picker sheet: colour-coded preset buttons, hardest (purple) first */
+.effpick{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-bottom:16px}
+.effpick-b{
+  display:flex;flex-direction:column;align-items:flex-start;gap:3px;
+  padding:12px 14px;border-radius:13px;text-align:left;
+  background:var(--surface);border:1.5px solid var(--sep-op);
+  border-left:4px solid var(--bc);
+  transition:background var(--fast),transform var(--fast),border-color var(--fast);
+}
+.effpick-b:active{transform:scale(.97)}
+.effpick-b.on{background:color-mix(in srgb,var(--bc) 16%,var(--surface));border-color:var(--bc)}
+.effpick-n{font-size:20px;font-weight:700;color:var(--bc);line-height:1;font-variant-numeric:tabular-nums}
+.effpick-f{font-size:12px;color:var(--label-2);line-height:1.25}
+/* the free field sits as a full-width row the same size as a preset button: its "Exact RIR"
+   label on the left, a −/value/+ group in the middle, and the scale name on the right, same
+   padding and radius as .effpick-b. the whole row borders in the current band colour. */
+.effpick-free{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:10px 14px;border-radius:13px;margin-top:2px;
+  background:var(--surface);border:1.5px solid var(--sep-op);
+  transition:border-color var(--fast);
+}
+.effpick-free-l{font-size:14px;color:var(--label-2);flex:none}
+.effpick-free-unit{font-size:13px;font-weight:600;color:var(--label-3);flex:none}
+/* the −/value/+ group: a rounded surface holding a big tappable number between two step
+   buttons. tinted (color:inherit) to the band colour when a value is set. */
+.effpick-step{
+  display:flex;align-items:center;gap:2px;flex:none;
+  background:var(--surface-2);border-radius:10px;overflow:hidden;
+}
+.effpick-step button{
+  width:38px;height:40px;flex:none;color:currentColor;font-size:16px;--icon-stroke:2.2;
+  display:flex;align-items:center;justify-content:center;transition:background var(--fast);
+}
+.effpick-step button:active{background:var(--surface-3)}
+/* the `.num` base styling (transparent bg, no border) is scoped to `.stp .num`; this input is
+   not in a `.stp`, so it must set its own or the browser paints a native white field. */
+.effpick-free-in.num{
+  flex:none;width:64px;text-align:center;padding:0;height:40px;
+  background:none;border:none;outline:none;color:currentColor;
+  font-size:20px;font-weight:700;font-variant-numeric:tabular-nums;
+  -moz-appearance:textfield;appearance:textfield;
+}
+.effpick-free-in.num::-webkit-inner-spin-button{display:none}
+.effpick-free-in.num::placeholder{color:var(--label-3);font-weight:600}
 .setrow.done .n{background:var(--acc);color:var(--on-acc)}
 .setrow.done{opacity:.45}
 /* drop-set drops / rest-pause bursts riding on a work row, editable like the row itself

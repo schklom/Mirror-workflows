@@ -22,6 +22,7 @@ const mocks = vi.hoisted(() => {
     scrollCalls: [],
     swapActiveWorkoutExercise: vi.fn(),
     menuSheet: vi.fn(),
+    effortPickerSheet: vi.fn(),
   }
   state.stopRest = vi.fn(() => { state.timer = null })
   state.stopWork = vi.fn(() => { state.work = null })
@@ -69,10 +70,12 @@ vi.mock('../sheets.jsx', () => ({
   confirmSheet: mocks.confirmSheet,
   swapActiveWorkoutExercise: mocks.swapActiveWorkoutExercise,
   menuSheet: mocks.menuSheet,
+  barWeightSheet: vi.fn(),
   // Both note sheets belong here even though the tests never open one: Workout.jsx reads
   // sessionNoteSheet during render, so a missing export is a render crash, not a no-op.
   exerciseNoteSheet: vi.fn(),
   sessionNoteSheet: vi.fn(),
+  effortPickerSheet: mocks.effortPickerSheet,
 }))
 vi.mock('../components/Media.jsx', () => ({ default: () => null }))
 // api.js reads navigator.userAgent at module scope. This file installs its own DOM inside the
@@ -690,6 +693,130 @@ describe('progression guidance', () => {
     await act(async () => { root.render(React.createElement(Workout)) })
     expect(container.querySelector('.progline')?.textContent)
       .toContain('Double progression · Top of the rep range in every set — 2.5 kg more, back to 3 reps.')
+  })
+})
+
+describe('effort cell (colour-coded RIR/RPE quick picker)', () => {
+  // A rep exercise whose sets can carry an effort rating. `rir` per set is optional — an
+  // unrated set simply omits the key, which is what the empty cell has to represent.
+  const effExercise = (rirs) => ({
+    id: 'plain-bench',
+    target: { mode: 'reps', reps: 5, weight: 60, bodyweight: false },
+    sets: rirs.map(rir => ({ w: 60, r: 5, done: false, ...(rir == null ? {} : { rir }) })),
+  })
+  // A cell is one of two shapes: an empty `.effcell` button (label, opens picker) or, once a
+  // rating is logged, a `.effcell-stp` −/value/+ group. `.effcell-list` returns the outer
+  // element of each (carrying the colour on the logged one); `effCells` normalises them to the
+  // value-bearing, picker-opening element so the existing assertions read the same either way:
+  // for the empty button that is the button itself, for the stepper it is the `.val` button.
+  const effCellList = () => [...container.querySelectorAll('.effcell,.effcell-stp')]
+  const effCells = () => effCellList().map(el =>
+    el.classList.contains('effcell-stp') ? el.querySelector('.val') : el)
+
+  async function mountEffort(rirs, scale = 'rir') {
+    mocks.S = workout([effExercise(rirs)])
+    mocks.S.effort = scale
+    installDom()
+    await act(async () => { root.render(React.createElement(Workout)) })
+  }
+
+  it('shows the effort column only when the profile logs a scale', async () => {
+    await mount([exercise('plain-bench', [false])])   // effort: 'none' from workout()
+    expect(effCells()).toHaveLength(0)
+    await unmount()
+    await mountEffort([null])
+    expect(effCells()).toHaveLength(1)
+  })
+
+  it('labels an unrated cell with the scale name, not a value or a colour', async () => {
+    await mountEffort([null], 'rir')
+    const cell = effCells()[0]
+    expect(cell.textContent).toBe('RIR')
+    expect(cell.className).toContain('is-empty')
+    // no rating means no inline colour on the button
+    expect(cell.getAttribute('style') || '').not.toMatch(/color/)
+  })
+
+  it('uses the profile scale for the empty label — RPE profile reads "RPE"', async () => {
+    await mountEffort([null], 'rpe')
+    expect(effCells()[0].textContent).toBe('RPE')
+  })
+
+  it('shows a logged rating as its number, tinted by the band it falls in', async () => {
+    await mountEffort([0, 2, null])
+    const cells = effCells()
+    const outer = effCellList()
+    expect(cells[0].textContent).toBe('0')
+    expect(outer[0].className).toContain('effcell-stp')   // logged: the stepper, not the label
+    // 0 RIR = to failure = purple; 2 RIR = yellow (the colours effortColor assigns) — the
+    // colour rides the outer stepper (border + tinted background), not the inner value button
+    expect(outer[0].getAttribute('style')).toContain('--purple')
+    expect(cells[1].textContent).toBe('2')
+    expect(outer[1].getAttribute('style')).toContain('--yellow')
+    expect(cells[2].textContent).toBe('RIR')      // the unrated one stays a label
+    expect(outer[2].className).toContain('is-empty')
+  })
+
+  it('displays a logged value on the profile scale — RIR 2 reads as RPE 8', async () => {
+    // the set is stored on whatever scale the profile logs; an RPE profile stores s.rpe
+    mocks.S = workout([{
+      id: 'plain-bench',
+      target: { mode: 'reps', reps: 5, weight: 60, bodyweight: false },
+      sets: [{ w: 60, r: 5, done: false, rpe: 8 }],
+    }])
+    mocks.S.effort = 'rpe'
+    installDom()
+    await act(async () => { root.render(React.createElement(Workout)) })
+    expect(effCells()[0].textContent).toBe('8')
+    // RPE 8 == RIR 2 == yellow: the colour is the effort, independent of the scale shown
+    expect(effCellList()[0].getAttribute('style')).toContain('--yellow')
+  })
+
+  it('opens the picker for the set on tap, passing scale, current value and a writer', async () => {
+    await mountEffort([2])
+    await act(async () => {
+      effCells()[0].dispatchEvent(new dom.Event('click', { bubbles: true }))
+    })
+    expect(mocks.effortPickerSheet).toHaveBeenCalledOnce()
+    const [scale, value, onPick] = mocks.effortPickerSheet.mock.calls[0]
+    expect(scale).toBe('rir')
+    expect(value).toBe(2)
+    // the writer stores the chosen value back on the set, and null clears the key
+    onPick(1)
+    expect(mocks.S.active.entries[0].sets[0].rir).toBe(1)
+    onPick(null)
+    expect('rir' in mocks.S.active.entries[0].sets[0]).toBe(false)
+  })
+
+  // The mock store is a plain snapshot with no subscription, so a click updates mocks.S but
+  // does not re-render on its own; each step is checked from its own mount rather than chained.
+  const clickStep = async label => {
+    await act(async () => {
+      effCellList()[0].querySelector(`button[aria-label="${label}"]`)
+        .dispatchEvent(new dom.Event('click', { bubbles: true }))
+    })
+  }
+
+  it('steps a logged rating up 0.5 on the scale with the + button, not through the picker', async () => {
+    await mountEffort([2])
+    expect(effCellList()[0].querySelectorAll('button[aria-label="Increase"],button[aria-label="Decrease"]')).toHaveLength(2)
+    await clickStep('Increase')
+    expect(mocks.S.active.entries[0].sets[0].rir).toBe(2.5)
+    expect(mocks.effortPickerSheet).not.toHaveBeenCalled()
+  })
+
+  it('steps a logged rating down 0.5 with the − button', async () => {
+    await mountEffort([2])
+    await clickStep('Decrease')
+    expect(mocks.S.active.entries[0].sets[0].rir).toBe(1.5)
+  })
+
+  it('clears the rating when stepped down off the floor', async () => {
+    // RIR 0 is the bottom of the scale — one more − is a mistap-undo, dropping the key rather
+    // than sticking at 0 (which reads as "went to failure")
+    await mountEffort([0])
+    await clickStep('Decrease')
+    expect('rir' in mocks.S.active.entries[0].sets[0]).toBe(false)
   })
 })
 

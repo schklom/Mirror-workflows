@@ -626,6 +626,11 @@ export default {
   'Two more reps': '还能再做两次',
   'Three more reps': '还能再做三次',
   'Easy — warm-up territory': '轻松——热身区间',
+  'Maybe half a rep left': '也许还能再做半次',
+  'How hard was that set?': '这组有多吃力？',
+  'Tap how many reps you had left, or type an exact {0}.': '点选你还能再做几次，或直接输入准确的 {0}。',
+  'Exact {0}': '准确的 {0}',
+  'Clear rating': '清除评分',
   'RIR counts the reps you left; RPE reads the same effort off a 10-point scale — so RPE ≈ 10 − RIR. Pick the one you already think in.': 'RIR 数的是你还留了几次；RPE 把同样的吃力程度换成 10 分制来读——所以 RPE ≈ 10 − RIR。选你习惯的那一种。',
   'The highlighted row is where most working sets land. Sets you have already logged keep their own scale, and nothing else reads the value — progression and estimated 1RM are unaffected.': '高亮那一行是大多数正式组落在的位置。已经记录的组保留原来的标度，而且这个值不会被别处读取——进阶计划和预估 1RM 都不受影响。',
   // --- effort in the stats ---

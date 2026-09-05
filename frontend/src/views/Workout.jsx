@@ -12,7 +12,8 @@ import { t, exerciseNameFor } from '../lib/i18n.js'
 import { api } from '../lib/api.js'
 import { insertionIndexAfterCurrentUnit, nextUnfinishedUnit, setProgressHighWater, supersetFlowStep, restAfterSet, restOnRecheck, restSecFor } from '../lib/supersetFlow.js'
 import Media from '../components/Media.jsx'
-import { startFlow, exercisePicker, exConfigSheet, exerciseDetailSheet, finishWorkout, workoutCompleteSheet, confirmSheet, exerciseNoteSheet, sessionNoteSheet, swapActiveWorkoutExercise, barWeightSheet, menuSheet } from '../sheets.jsx'
+import { startFlow, exercisePicker, exConfigSheet, exerciseDetailSheet, finishWorkout, workoutCompleteSheet, confirmSheet, exerciseNoteSheet, sessionNoteSheet, swapActiveWorkoutExercise, barWeightSheet, menuSheet, effortPickerSheet } from '../sheets.jsx'
+import { effortColor } from '../lib/effort.js'
 import Icon from '../components/Icon.jsx'
 import { Button, Check, NumberField } from '../components/ui.jsx'
 import { nextPrescription, applyPrescription, defaultIncrement, weightIncrement, stepWeight } from '../lib/progression.js'
@@ -136,7 +137,9 @@ function ExerciseBlock({ entryIdx, compact, onToggle, onField, onAddSet, onRemov
   // because an unlogged effort is not the same as 0 — RIR 0 says the set went to failure.
   const kind = effortOf(S)
   const eff = EFFORT[kind]
-  const col3 = mode === 'reps' && eff ? { ...eff, eff: kind, dec: true, opt: true, hd: t(eff.hd) } : null
+  // The effort column carries the scale key (`eff`) and its field name; unlike weight/reps it
+  // is not a stepper — it opens a colour-coded picker (see effortCell). `f` is s.rir or s.rpe.
+  const col3 = mode === 'reps' && eff ? { f: eff.f, eff: kind, hd: t(eff.hd) } : null
   // The effort column walks its own scale — see stepEffort. Weight and reps step up from 0
   // with no ceiling, as they always did.
   const bump = (s, i, col, dir) => {
@@ -147,7 +150,6 @@ function ExerciseBlock({ entryIdx, compact, onToggle, onField, onAddSet, onRemov
     // closure problem entirely and keeps every tap operating on the real current value.
     const fresh = useStore.getState().S.active?.entries[entryIdx]?.sets[i]
     const cur = fresh ? fresh[col.f] : s[col.f]
-    if (col.eff) return onField(i, col.f, stepEffort(col.eff, cur, dir))
     if (mode === 'reps' && col.f === 'w') return onField(i, col.f, stepWeight(cur, col.step, dir))
     onField(i, col.f, Math.max(0, Math.round(((cur || 0) + dir * col.step) * 100) / 100))
   }
@@ -160,9 +162,8 @@ function ExerciseBlock({ entryIdx, compact, onToggle, onField, onAddSet, onRemov
   const cell = (s, i, col, cls) => (
     <div className={'stp ' + cls + (wc.steppers ? '' : ' plain')}>
       {wc.steppers && <button aria-label="Decrease" onClick={() => bump(s, i, col, -1)}><Icon name="minus" /></button>}
-      {/* a typed effort is capped — there is no RPE 12, and 12 reps in reserve is a warm-up */}
       <span className="val"><NumberField decimal={col.dec} nullable={col.opt} value={s[col.f] ?? ''}
-        onChange={v => onField(i, col.f, col.eff ? capEffort(col.eff, v) : v)} /></span>
+        onChange={v => onField(i, col.f, v)} /></span>
       {wc.steppers && <button aria-label="Increase" onClick={() => bump(s, i, col, 1)}><Icon name="plus" /></button>}
     </div>
   )
@@ -206,6 +207,29 @@ function ExerciseBlock({ entryIdx, compact, onToggle, onField, onAddSet, onRemov
         { icon: 'trash', label: t('Remove this set'), danger: true, disabled: entry.sets.length <= 1, onClick: () => onRemoveSetAt(i) },
       ],
     })
+  }
+  // The effort cell is a single button, not a stepper: it shows the rating in the profile's
+  // scale, tinted by how close to failure it was, and opens the picker on tap — to set a
+  // rating or change one. rirOf-via-effortColor keeps the colour identical whether the value
+  // is logged as RIR or RPE. With the +/- buttons switched off (Workout controls) a logged
+  // rating is just the tinted value, which still opens the picker.
+  const effortCell = (s, i, col) => {
+    const v = s[col.f] ?? null
+    const rir = col.eff === 'rpe' ? (v == null ? null : 10 - v) : v
+    const color = effortColor(rir)
+    const open = () => effortPickerSheet(col.eff, v, nv => onField(i, col.f, nv))
+    if (v == null) return (
+      <button className="effcell is-empty" aria-label={col.hd} onClick={open}>{col.hd}</button>
+    )
+    const step = dir => onField(i, col.f, stepEffort(col.eff, v, dir))
+    return (
+      <div className={'stp effcell-stp' + (wc.steppers ? '' : ' plain')}
+        style={color ? { color, borderColor: color, background: `color-mix(in srgb, ${color} 20%, var(--surface-2))` } : undefined}>
+        {wc.steppers && <button aria-label="Decrease" onClick={() => step(-1)}><Icon name="minus" /></button>}
+        <button className="val" aria-label={col.hd} onClick={open}>{fmtNum(v)}</button>
+        {wc.steppers && <button aria-label="Increase" onClick={() => step(1)}><Icon name="plus" /></button>}
+      </div>
+    )
   }
   // A smaller stepper for a drop's weight/reps or a burst's reps — editing what the plan (or a
   // live "+ Drop"/"+ Burst" tap) already put on the row, not typing into a fresh field.
@@ -279,7 +303,7 @@ function ExerciseBlock({ entryIdx, compact, onToggle, onField, onAddSet, onRemov
             <button type="button" className="n" aria-label={t('Set {0}', phaseNum)} title={t('More')} onClick={() => openSetMenu(s, i)}>{phaseNum}</button>
             {cell(s, i, col1, 'w')}
             {col2 && cell(s, i, col2, 'r')}
-            {col3 && cell(s, i, col3, 'eff')}
+            {col3 && effortCell(s, i, col3)}
             {/* A timed set is started, not typed: the timer counts the hold down and checks the
                 set off itself. The checkbox stays for anyone who timed it on their own watch. */}
             {timed && <button className="setgo" aria-label={t('Start set')} disabled={s.done || !!working}

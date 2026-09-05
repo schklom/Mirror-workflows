@@ -626,6 +626,11 @@ export default {
   'Two more reps': 'Jeszcze dwa powtórzenia',
   'Three more reps': 'Jeszcze trzy powtórzenia',
   'Easy — warm-up territory': 'Lekko — poziom rozgrzewki',
+  'Maybe half a rep left': 'Może pół powtórzenia w zapasie',
+  'How hard was that set?': 'Jak ciężka była ta seria?',
+  'Tap how many reps you had left, or type an exact {0}.': 'Dotknij, ile powtórzeń zostało w zapasie, lub wpisz dokładną wartość {0}.',
+  'Exact {0}': 'Dokładne {0}',
+  'Clear rating': 'Wyczyść ocenę',
   'RIR counts the reps you left; RPE reads the same effort off a 10-point scale — so RPE ≈ 10 − RIR. Pick the one you already think in.': 'RIR liczy powtórzenia, które zostały w zapasie; RPE odczytuje ten sam wysiłek w skali 10 — czyli RPE ≈ 10 − RIR. Wybierz tę, w której już myślisz.',
   'The highlighted row is where most working sets land. Sets you have already logged keep their own scale, and nothing else reads the value — progression and estimated 1RM are unaffected.': 'Wyróżniony wiersz to miejsce, w które trafia większość serii roboczych. Zapisane wcześniej serie zachowują swoją skalę, a wartości nic więcej nie czyta — progresja i szacowany 1RM pozostają bez zmian.',
   // --- effort in the stats ---

@@ -14,14 +14,14 @@ minor bump is reserved for something that breaks compatibility.
 
 ---
 
-## v1.3.2 — Cleaner workout  (mid September 2026)
+## v1.3.2 and v1.3.3 — Cleaner workout  (released 2026-09-05)
 
 **Theme: the workout screen gets out of the way.** Fewer things to tap, the things you tap every set
 stay where they are, everything else moves one tap away. Compared with Hevy or Strong the screen was
 busy: ~10 buttons under a card and ~8 per set. The new default is one "⋯" per exercise, the set
 number as the set's own menu, and an optional list view.
 
-Staged on gym-test (branches `mrbatch-0904` and `workout-clean`):
+Shipped: v1.3.2 is the contributors' batch, v1.3.3 the redesign and the bug round on top of it.
 
 - Workout view: cards or a scrollable list, with the header pinned in list mode (!96, #28, #44, #50)
 - One menu per exercise (note, details, progression, bar weight, warm-up, superset, swap, move,
@@ -45,16 +45,17 @@ Staged on gym-test (branches `mrbatch-0904` and `workout-clean`):
 - Infrastructure: nginx re-resolves the api container (#16); Renovate config repaired (#37); CI with
   JUnit/coverage, stack smoke test, Trivy scan, SBOMs, release preflight, fork-MR pipelines
 
-Still to do in this version:
+Also in v1.3.3: exercise history and a progress line from the ⋯ menu (#43), favourite exercises
+(#6), the in-app update check for the Android build (!40, #38, #9), the Coach save fix on Android
+(#42), bands as bodyweight equipment (#39), kg ↔ lb conversion (#22), the centre tab button on the
+workout screen (#29, #21), warm-up ramps on the exercise increment, and the small fixes from the
+tester round.
 
-- Resume returns to the exercise you were on (#21) and the centre tab button means something
-  during a workout — "Resume" only when you are elsewhere, otherwise nothing or "pause" (#29)
-- AI Coach on Android with a bring-your-own API key: reproduce and fix (#42)
-- Favourite exercises, sorted first in the picker (#6)
-- Copy of a copy should not become "Name (Copy) (Copy)"; the "+" in the swap picker should quick-add
-  like everywhere else; "By muscle" inside the Add-exercise sheet keeps the keyboard-aware search
-- Warm-up ramp uses the per-exercise increment, not the default one
-- Release notes per contributor, CHANGELOG, APK on the website, Discord announcement
+Left over from this block:
+
+- "By muscle" inside the Add-exercise sheet keeps the keyboard-aware search
+- A real pause for the workout timers (#29 asked for it)
+- Discord announcement (owner)
 
 ## v1.3.3 — Programmes & progression  (October 2026)
 

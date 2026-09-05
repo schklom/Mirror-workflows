@@ -559,6 +559,11 @@ export default {
   // --- v1.2.2: timed sets, progression, estimated 1RM (#16 #17 #18) ---
   'Top set': 'Лучший подход',
   'Est. 1RM': 'Расч. 1ПМ',
+  'No sessions logged yet': 'Записанных сессий пока нет',
+  '{0} session': '{0} сессия',
+  '{0} sessions': '{0} сессий',
+  'Exercise history': 'История упражнения',
+  'Last {0} sessions': 'Последние {0} сессий',
   'Estimated 1RM': 'Расчётный 1ПМ',
   'Estimated 1RM per workout': 'Расчётный 1ПМ за тренировку',
   'Best estimate from {0} on {1} — an estimate, not a tested max.': 'Лучшая оценка по {0} от {1} — это расчёт, а не проверенный максимум.',

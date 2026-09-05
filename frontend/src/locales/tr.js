@@ -559,6 +559,11 @@ export default {
   // --- v1.2.2: timed sets, progression, estimated 1RM (#16 #17 #18) ---
   'Top set': 'En iyi set',
   'Est. 1RM': 'Tah. 1RM',
+  'No sessions logged yet': 'Henüz kayıtlı seans yok',
+  '{0} session': '{0} seans',
+  '{0} sessions': '{0} seans',
+  'Exercise history': 'Egzersiz geçmişi',
+  'Last {0} sessions': 'Son {0} seans',
   'Estimated 1RM': 'Tahmini 1RM',
   'Estimated 1RM per workout': 'Antrenman başına tahmini 1RM',
   'Best estimate from {0} on {1} — an estimate, not a tested max.': '{1} tarihli {0} setinden en iyi tahmin — test edilmiş bir maksimum değil, tahmin.',

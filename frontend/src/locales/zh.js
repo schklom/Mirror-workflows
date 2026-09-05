@@ -559,6 +559,11 @@ export default {
   // --- v1.2.2: timed sets, progression, estimated 1RM (#16 #17 #18) ---
   'Top set': '最佳组',
   'Est. 1RM': '预估 1RM',
+  'No sessions logged yet': '尚未记录任何训练',
+  '{0} session': '{0} 次训练',
+  '{0} sessions': '{0} 次训练',
+  'Exercise history': '动作历史',
+  'Last {0} sessions': '最近 {0} 次训练',
   'Estimated 1RM': '预估 1RM',
   'Estimated 1RM per workout': '每次训练的预估 1RM',
   'Best estimate from {0} on {1} — an estimate, not a tested max.': '基于 {1} 的 {0} 得出的最佳预估——这是推算值，不是实测极限。',

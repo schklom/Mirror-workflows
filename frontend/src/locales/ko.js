@@ -559,6 +559,11 @@ export default {
   // --- v1.2.2: timed sets, progression, estimated 1RM (#16 #17 #18) ---
   'Top set': '최고 세트',
   'Est. 1RM': '추정 1RM',
+  'No sessions logged yet': '기록된 세션이 아직 없습니다',
+  '{0} session': '세션 {0}회',
+  '{0} sessions': '세션 {0}회',
+  'Exercise history': '운동 기록',
+  'Last {0} sessions': '최근 {0}회 세션',
   'Estimated 1RM': '추정 1RM',
   'Estimated 1RM per workout': '운동별 추정 1RM',
   'Best estimate from {0} on {1} — an estimate, not a tested max.': '{1}의 {0} 기준 최고 추정치 — 실제로 측정한 최대치가 아닌 추정값입니다.',

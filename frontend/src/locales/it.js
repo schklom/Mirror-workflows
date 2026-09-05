@@ -559,6 +559,11 @@ export default {
   // --- v1.2.2: timed sets, progression, estimated 1RM (#16 #17 #18) ---
   'Top set': 'Serie migliore',
   'Est. 1RM': '1RM stim.',
+  'No sessions logged yet': 'Nessuna sessione registrata',
+  '{0} session': '{0} sessione',
+  '{0} sessions': '{0} sessioni',
+  'Exercise history': 'Storico dell’esercizio',
+  'Last {0} sessions': 'Ultime {0} sessioni',
   'Estimated 1RM': '1RM stimato',
   'Estimated 1RM per workout': '1RM stimato per allenamento',
   'Best estimate from {0} on {1} — an estimate, not a tested max.': 'Stima migliore da {0} il {1} — una stima, non un massimale testato.',

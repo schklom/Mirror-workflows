@@ -416,6 +416,11 @@ h4.sec{
   font-weight:500;text-transform:capitalize;
 }
 .tag.acc{background:var(--acc-soft);color:var(--acc)}
+/* favourite marker (issue #6): a small yellow star glued to the exercise name — distinct from
+   the accent "chosen" tag at the row's end, which means "already in a routine or the log" */
+.fav-star{color:var(--yellow);font-size:12px;display:inline-block;margin-right:5px;vertical-align:-1px}
+.fav-btn{margin-top:-4px}
+.fav-btn.on{color:var(--yellow)}
 
 /* ---------------------------------------------------------------- chips -- */
 .chips{

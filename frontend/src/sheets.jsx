@@ -33,6 +33,7 @@ import { isWarmupRow } from './lib/workout-model.js'
 import { nextUnfinishedUnit } from './lib/supersetFlow.js'
 import { swapActiveExercise } from './lib/active-exercise-swap.js'
 import { useSheetKeyboard, useRevealActiveChip, tappable } from './lib/use-sheet-keyboard.js'
+import { isFav, toggleFav, sortFavouritesFirst } from './lib/favourites.js'
 import { buildSessionEntries } from './lib/session-start.js'
 import { workoutsOn, backfillStart, backfillEnd, completeBackfill } from './lib/backfill.js'
 
@@ -624,8 +625,20 @@ function ExerciseDetail({ ex, close }) {
   const st = useStore(s => s.S)
   const last = lastEntryFor(st, ex.id)
   const best = bestWeightFor(st, ex.id)
+  const fav = isFav(st, ex.id)
+  const flipFav = () => {
+    let on = false
+    update(s => { on = toggleFav(s, ex.id) })
+    toast(on ? t('Added to favourites') : t('Removed from favourites'))
+  }
   return <>
-    <h3 className="capitalize">{exerciseNameFor(ex)}</h3>
+    <div className="row between" style={{ gap: 8, alignItems: 'flex-start' }}>
+      <h3 className="capitalize">{exerciseNameFor(ex)}</h3>
+      <button className={'iconbtn fav-btn' + (fav ? ' on' : '')} aria-pressed={fav}
+        aria-label={fav ? t('Remove from favourites') : t('Add to favourites')} onClick={flipFav}>
+        <Icon name={fav ? 'starFill' : 'star'} />
+      </button>
+    </div>
     <Media ex={ex} />
     <div className="row" style={{ gap: 6, flexWrap: 'wrap', margin: '10px 0' }}>
       <span className="tag acc">{t(ex.bp)}</span>
@@ -822,6 +835,7 @@ export function deleteCustomEx(ex, afterDelete) {
         s.customEx = (s.customEx || []).filter(x => x.id !== ex.id)
         s.routines.forEach(r => { r.ex = r.ex.filter(e => e.id !== ex.id); cleanupSg(r.ex) })
         delete s.exWeights[ex.id]
+        s.favEx = (s.favEx || []).filter(id => id !== ex.id)
       })
       toast(t('Exercise deleted'))
       afterDelete && afterDelete()
@@ -841,7 +855,7 @@ function ExercisePicker({ onPick, close }) {
   const st = useStore(s => s.S)
   const usage = usageMap(st)
   const [q, setQ] = useState('')
-  const [bp, setBp] = useState('')          // '' = all, '★' = chosen, else a body part
+  const [bp, setBp] = useState('')          // '' = all, '★' = chosen, '☆' = favourites, else a body part
   const [eq, setEq] = useState('')          // '' = any equipment
   const [showAll, setShowAll] = useState(false)
   const [shown, setShown] = useState(50)
@@ -851,16 +865,18 @@ function ExercisePicker({ onPick, close }) {
   const onSearchFocus = useSheetKeyboard(searchRef)
   const all = allExercises(st)
   const profile = activeProfile(st)
-  let base = all.filter(e =>
-    (bp === '★' ? usage[e.id] : (!bp || e.bp === bp)) &&
-    matchExercise(e, q))
+  const inScope = e => bp === '★' ? usage[e.id] : bp === '☆' ? isFav(st, e.id) : (!bp || e.bp === bp)
+  let base = all.filter(e => inScope(e) && matchExercise(e, q))
   if (bp === '★') base = [...base].sort((a, b) => (usage[b.id] - usage[a.id]) || exerciseNameFor(a).localeCompare(exerciseNameFor(b)))
   const eqFiltered = (profile && !showAll) ? base.filter(e => exAvailable(st, e)) : base
   const eqOpts = equipmentOf(eqFiltered)
   // Drop the equipment filter if the search narrowed it away, so you never hit a dead end.
   const eqOn = eqOpts.includes(eq) ? eq : ''
-  const f = eqOn ? eqFiltered.filter(e => e.eq === eqOn) : eqFiltered
+  // Favourites float to the top of whatever the filters left (issue #6), the rest keeps its order.
+  const f = sortFavouritesFirst(eqOn ? eqFiltered.filter(e => e.eq === eqOn) : eqFiltered, st)
   const chosenCount = Object.keys(usage).length
+  const favCount = (st.favEx || []).length
+  const special = bp === '★' || bp === '☆'
   useRevealActiveChip(bpStrip, bp)
   useRevealActiveChip(eqStrip, eqOn)
   if (byMuscle) return <>
@@ -886,6 +902,7 @@ function ExercisePicker({ onPick, close }) {
       </button>
     </div>}
     <div className="chips" ref={bpStrip} style={{ margin: eqOpts.length > 1 ? '10px 0 6px' : '10px 0' }}>
+      {favCount > 0 && <button className={'chip' + (bp === '☆' ? ' on' : '')} onClick={() => { setBp('☆'); setEq(''); setShown(50) }}><Icon name="starFill" className="fav-star" />{t('Favourites')} ({favCount})</button>}
       {chosenCount > 0 && <button className={'chip' + (bp === '★' ? ' on' : '')} onClick={() => { setBp('★'); setEq(''); setShown(50) }}><Icon name="starFill" style={{ fontSize: 12, display: 'inline-block', marginRight: 4, verticalAlign: '-1px' }} />{t('Chosen')} ({chosenCount})</button>}
       <button className={'chip nocap' + (!bp ? ' on' : '')} onClick={() => { setBp(''); setEq(''); setShown(50) }}>{t('All')}</button>
       {BODYPARTS.map(b => <button key={b} className={'chip' + (bp === b ? ' on' : '')} onClick={() => { setBp(b); setEq(''); setShown(50) }}>{t(b)}</button>)}
@@ -895,12 +912,13 @@ function ExercisePicker({ onPick, close }) {
       {eqOpts.map(x => <button key={x} className={'chip' + (eqOn === x ? ' on' : '')} onClick={() => { setEq(x); setShown(50) }}>{t(x)}</button>)}
     </div>}
     <div className="list">
-      {bp !== '★' && <div className="item" {...tappable(() => customExSheet(null, ex => onPick(ex), q.trim()))}>
+      {!special && <div className="item" {...tappable(() => customExSheet(null, ex => onPick(ex), q.trim()))}>
         <div className="thumb thumb-x"><Icon name="sparkles" /></div>
         <div className="grow"><div className="tt">{t('Create your own exercise')}</div><div className="ss">{t('name + body part, no animation')}</div></div><Icon name="plus" className="chev" />
       </div>}
       {f.slice(0, shown).map(e => <div key={e.id} className="item" {...tappable(() => onPick(e))}>
-        <Thumb ex={e} /><div className="grow"><div className="tt capitalize">{exerciseNameFor(e)}</div><div className="ss capitalize">{t(e.tg || e.bp)} · {t(e.eq)}</div></div>
+        <Thumb ex={e} /><div className="grow"><div className="tt capitalize">{isFav(st, e.id) && <Icon name="starFill" className="fav-star" />}{exerciseNameFor(e)}</div><div className="ss capitalize">{t(e.tg || e.bp)} · {t(e.eq)}</div></div>
+        {/* Accent tag = already in a routine/log ("Chosen"); the yellow star by the name = favourite. */}
         {usage[e.id] && <span className="tag acc"><Icon name="starFill" /></span>}
         {/* A "+" glyph reads as "add this now" — it used to just open the same detail sheet as
             tapping the row, so it added nothing until you'd scrolled past the sets/reps config
@@ -911,6 +929,7 @@ function ExercisePicker({ onPick, close }) {
           onClick={ev => { ev.stopPropagation(); onPick(e, true) }}><Icon name="plus" /></button>
       </div>)}
       {f.length === 0 && bp === '★' && <div className="empty">{t('Nothing chosen yet — add exercises and they’ll show up here.')}</div>}
+      {f.length === 0 && bp === '☆' && <div className="empty">{t('No favourites here — tap the star on an exercise to add it.')}</div>}
     </div>
     {f.length > shown && <><div style={{ height: 8 }} /><Button onClick={() => setShown(s => s + 50)}>{t('Show more')}</Button></>}
   </>

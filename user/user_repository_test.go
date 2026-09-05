@@ -166,38 +166,40 @@ func TestAddGetDeleteData(t *testing.T) {
 	itemB := EncryptedItemDtoV2{"beef", 10, "bm90IGEgcmVhbCBjaXBoZXJ0ZXh0"}
 	items := []EncryptedItemDtoV2{itemA, itemB}
 
-	err := repo.AddDataV2(u, constants.DataTypeLocation, items)
+	typ := "location"
+
+	err := repo.AddDataV2(u, typ, items)
 	if err != nil {
 		t.Errorf("unexpected error: %s", err)
 	}
 
-	returnItems, _ := repo.GetAllDataV2(u, constants.DataTypeLocation)
+	returnItems, _ := repo.GetAllDataV2(u, typ)
 	if !reflect.DeepEqual(returnItems, items) {
 		t.Errorf("arrays are not equal:\n   %+v\n!= %+v", returnItems, items)
 	}
 
-	err = repo.DeleteSingleDatumV2(u, constants.DataTypeLocation, itemA.ClientItemIdHex)
+	err = repo.DeleteSingleDatumV2(u, typ, itemA.ClientItemIdHex)
 	if err != nil {
 		t.Errorf("unexpected error: %s", err)
 	}
 
-	err = repo.DeleteSingleDatumV2(u, constants.DataTypeLocation, itemA.ClientItemIdHex)
+	err = repo.DeleteSingleDatumV2(u, typ, itemA.ClientItemIdHex)
 	if err != gorm.ErrRecordNotFound {
 		t.Errorf("unexpected error: %s", err)
 	}
 
 	itemsAfterDeletion := []EncryptedItemDtoV2{itemB}
-	returnItems, _ = repo.GetAllDataV2(u, constants.DataTypeLocation)
+	returnItems, _ = repo.GetAllDataV2(u, typ)
 	if !reflect.DeepEqual(returnItems, itemsAfterDeletion) {
 		t.Errorf("arrays are not equal:\n   %+v\n!= %+v", returnItems, itemsAfterDeletion)
 	}
 
-	err = repo.DeleteAllDataV2(u, constants.DataTypeLocation)
+	err = repo.DeleteAllDataV2(u, typ)
 	if err != nil {
 		t.Errorf("unexpected error: %s", err)
 	}
 
-	returnItems, _ = repo.GetAllDataV2(u, constants.DataTypeLocation)
+	returnItems, _ = repo.GetAllDataV2(u, typ)
 	if len(returnItems) != 0 {
 		t.Errorf("returned items are not empty, len=%d", len(returnItems))
 	}
@@ -211,7 +213,7 @@ func TestClientItemIdMustBeHex(t *testing.T) {
 	itemA := EncryptedItemDtoV2{"nothex", 10, "bm90IGEgcmVhbCBjaXBoZXJ0ZXh0"}
 	items := []EncryptedItemDtoV2{itemA}
 
-	err := repo.AddDataV2(u, constants.DataTypeLocation, items)
+	err := repo.AddDataV2(u, "location", items)
 	if !strings.Contains(fmt.Sprint(err), "encoding/hex: invalid byte") {
 		t.Errorf("unexpected error: %s", err)
 	}
@@ -225,7 +227,7 @@ func TestCannotAddDuplicateClientItemId(t *testing.T) {
 	itemA := EncryptedItemDtoV2{"deadbeef", 10, "bm90IGEgcmVhbCBjaXBoZXJ0ZXh0"}
 	items := []EncryptedItemDtoV2{itemA, itemA}
 
-	err := repo.AddDataV2(u, constants.DataTypeLocation, items)
+	err := repo.AddDataV2(u, "location", items)
 	if !strings.Contains(fmt.Sprint(err), "UNIQUE constraint failed") {
 		t.Errorf("unexpected error: %s", err)
 	}

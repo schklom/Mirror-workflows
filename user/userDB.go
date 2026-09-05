@@ -31,9 +31,7 @@ type FMDUser struct {
 
 	// Crypto protocol v2
 	EncMasterKeyV2 string
-	CommandsV2     []CommandV2  `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE;"`
-	LocationsV2    []LocationV2 `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE;"`
-	PicturesV2     []PictureV2  `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE;"`
+	DataV2         []DataV2 `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE;"`
 
 	Messages []Message `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE;"`
 
@@ -47,25 +45,10 @@ type FMDUser struct {
 	Pictures      []Picture  `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE;"`
 }
 
-type CommandV2 struct {
+type DataV2 struct {
 	Id           uint64 `gorm:"primaryKey"`
 	UserId       uint64 `gorm:"index"`
-	ClientItemId []byte
-	UnixMillis   uint64
-	Ciphertext   string
-}
-
-type LocationV2 struct {
-	Id           uint64 `gorm:"primaryKey"`
-	UserId       uint64 `gorm:"index"`
-	ClientItemId []byte
-	UnixMillis   uint64
-	Ciphertext   string
-}
-
-type PictureV2 struct {
-	Id           uint64 `gorm:"primaryKey"`
-	UserId       uint64 `gorm:"index"`
+	Type         DataType
 	ClientItemId []byte
 	UnixMillis   uint64
 	Ciphertext   string
@@ -78,17 +61,6 @@ type Message struct {
 	UnixMillis uint64
 	Code       uint64
 	Text       string
-}
-
-// Teach GORM the correct table names (GORM fails to pluralize it with the _v2 suffix).
-func (c CommandV2) TableName() string {
-	return "commands_v2"
-}
-func (c LocationV2) TableName() string {
-	return "locations_v2"
-}
-func (c PictureV2) TableName() string {
-	return "pictures_v2"
 }
 
 // Location Table of the Users
@@ -202,20 +174,9 @@ func (db *FMDDB) GetByName(username string) (*FMDUser, error) {
 	return &user, nil
 }
 
-// Helper to force Gorm to use the primary key (id) order.
-// Otherwise, Gorm returns items in undefined (often reverse) order.
-func orderById(tx *gorm.DB) *gorm.DB {
-	return tx.Order("id ASC")
-}
-
-func (db *FMDDB) PreloadCommands(user *FMDUser) {
-	db.DB.Preload("CommandsV2", orderById).Where(&user).Find(&user)
-}
-
 func (db *FMDDB) PreloadLocations(user *FMDUser) {
 	db.DB.
 		Preload("Locations").
-		Preload("LocationsV2", orderById).
 		Where(&user).
 		Find(&user)
 }
@@ -223,7 +184,6 @@ func (db *FMDDB) PreloadLocations(user *FMDUser) {
 func (db *FMDDB) PreloadPictures(user *FMDUser) {
 	db.DB.
 		Preload("Pictures").
-		Preload("PicturesV2", orderById).
 		Where(&user).
 		Find(&user)
 }

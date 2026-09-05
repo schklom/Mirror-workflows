@@ -313,7 +313,6 @@ export default {
   'Rest timer': '휴식 타이머',
   'Sounds': '소리',
   'Flash screen when timer ends': '타이머 종료 시 화면 깜박임',
-  'Note: switching units only changes the label — logged numbers are not converted.': '참고: 단위 변경은 표기만 바꿉니다 — 기록된 숫자는 환산되지 않아요.',
   'Data': '데이터',
   'Export backup (JSON)': '백업 내보내기 (JSON)',
   'Import backup': '백업 가져오기',
@@ -1156,4 +1155,9 @@ export default {
   'Superset buttons in the exercise header': '운동 제목의 슈퍼세트 버튼',
   'Move, swap and remove buttons below the exercise': '운동 아래의 이동·교체·삭제 버튼',
   'Everything hidden here stays one tap away: the ⋯ button of an exercise and the number of a set.': '여기서 숨긴 것은 모두 한 번의 탭으로 열 수 있습니다: 운동의 ⋯ 버튼과 세트 번호.',
+  'Convert to {0}?': '{0}(으)로 변환할까요?',
+  'Every stored weight — logged sets, working weights, routine targets, body weight, bar weights — is in {0}. Convert the numbers, or keep them and only change the label?': '저장된 모든 무게(기록된 세트, 작업 무게, 루틴 목표, 체중, 바 무게)는 {0} 단위입니다. 숫자를 변환할까요, 아니면 숫자는 그대로 두고 표시만 바꿀까요?',
+  'Convert the numbers': '숫자 변환',
+  'Keep the numbers, change the label': '숫자 유지, 표시만 변경',
+  'Switching the unit offers to convert every stored weight.': '단위를 바꾸면 저장된 모든 무게를 변환할지 물어봅니다.',
 }

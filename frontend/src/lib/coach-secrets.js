@@ -20,10 +20,19 @@ function plugin() {
   return pluginPromise
 }
 
+// A native call that never answers must not hang the setup screen behind a greyed-out button
+// (issue #42: "Save and use the Coach" stayed disabled forever on one Android 16 phone). After
+// this long the platform store is treated as unavailable and the process-local map takes over.
+const NATIVE_TIMEOUT_MS = 4000
+export const withTimeout = (promise, ms = NATIVE_TIMEOUT_MS) => new Promise((resolve, reject) => {
+  const tm = setTimeout(() => reject(new Error('secure storage timed out')), ms)
+  promise.then(v => { clearTimeout(tm); resolve(v) }, e => { clearTimeout(tm); reject(e) })
+})
+
 export async function getApiKey() {
   const p = await plugin()
   if (p) {
-    try { const v = await p.get(KEY); return typeof v === 'string' && v ? v : null } catch { /* fall through */ }
+    try { const v = await withTimeout(p.get(KEY)); return typeof v === 'string' && v ? v : null } catch { /* fall through */ }
   }
   return memory.get(KEY) || null
 }
@@ -32,12 +41,12 @@ export async function setApiKey(value) {
   if (!v) return clearApiKey()
   const p = await plugin()
   if (p) {
-    try { await p.set(KEY, v); memory.delete(KEY); return } catch { /* fall through */ }
+    try { await withTimeout(p.set(KEY, v)); memory.delete(KEY); return } catch { /* fall through */ }
   }
   memory.set(KEY, v)
 }
 export async function clearApiKey() {
   const p = await plugin()
-  if (p) { try { await p.remove(KEY) } catch { /* nothing to clear */ } }
+  if (p) { try { await withTimeout(p.remove(KEY)) } catch { /* nothing to clear */ } }
   memory.delete(KEY)
 }

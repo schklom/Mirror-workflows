@@ -111,11 +111,14 @@ const dayList = days => new Intl.ListFormat(dateLocale()).format(days.map(d => t
 
 function StarterPlanChooser({ close }) {
   const week = useStore(s => s.S.week)
+  const routines = useStore(s => s.S.routines)
   const choose = (id, name) => {
     const days = starterPlanDays(id)
     close()
-    // A confirmation is only worth showing when one of those days is actually occupied.
-    if (!days.some(day => week[day])) { loadStarterPlan(id); return }
+    // A confirmation is only worth showing when one of those days is actually occupied — by a
+    // routine that still exists, not by a stale id the Plan already shows as "Rest".
+    const taken = day => week[day] && routines.some(r => r.id === week[day])
+    if (!days.some(taken)) { loadStarterPlan(id); return }
     confirmSheet({
       title: t('Load {0}?', name),
       message: t('The new plan will be scheduled on {0}. Existing routines are kept — only those days of the weekly plan change.', dayList(days)),
@@ -866,7 +869,10 @@ export function swapActiveWorkoutExercise(index) {
   const active = S().active
   if (!active?.entries?.[index]) return
 
-  const picker = exercisePicker(ex => exConfigSheet(ex, null, cfg => {
+  // The "+" on a picker row commits with the default config, exactly as it does in the add
+  // flows; tapping the row still opens the config sheet first.
+  const picker = exercisePicker((ex, quick) => quick ? swapTo(ex, defaultConfig(ex.id)) : exConfigSheet(ex, null, cfg => swapTo(ex, cfg), null, null))
+  function swapTo(ex, cfg) {
     // The picker is a chooser here, not a stack you keep adding from: one swap, then back to
     // the workout. (The add flow deliberately leaves it open.)
     picker.close()
@@ -920,7 +926,7 @@ export function swapActiveWorkoutExercise(index) {
       confirmText: t('Continue'),
       onConfirm: () => apply({ loggedConfirmed: true })
     })
-  }))
+  }
 }
 
 /* ============================ equipment profiles ============================ */

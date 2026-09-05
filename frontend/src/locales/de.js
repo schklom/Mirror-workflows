@@ -327,7 +327,6 @@ export default {
   'Rest timer': 'Pausen-Timer',
   'Sounds': 'Töne',
   'Flash screen when timer ends': 'Bildschirm bei Timer-Ende blinken lassen',
-  'Note: switching units only changes the label — logged numbers are not converted.': 'Hinweis: Der Einheitenwechsel ändert nur die Beschriftung — eingetragene Zahlen werden nicht umgerechnet.',
   'Data': 'Daten',
   'Export backup (JSON)': 'Backup exportieren (JSON)',
   'Import backup': 'Backup importieren',
@@ -1175,4 +1174,9 @@ export default {
   'Superset buttons in the exercise header': 'Superset-Tasten im Übungskopf',
   'Move, swap and remove buttons below the exercise': 'Verschieben/Tauschen/Entfernen-Tasten unter der Übung',
   'Everything hidden here stays one tap away: the ⋯ button of an exercise and the number of a set.': 'Alles, was hier ausgeblendet ist, bleibt einen Tipp entfernt: die ⋯-Taste einer Übung und die Nummer eines Satzes.',
+  'Convert to {0}?': 'In {0} umrechnen?',
+  'Every stored weight — logged sets, working weights, routine targets, body weight, bar weights — is in {0}. Convert the numbers, or keep them and only change the label?': 'Jedes gespeicherte Gewicht — eingetragene Sätze, Arbeitsgewichte, Routinenziele, Körpergewicht, Stangengewichte — steht in {0}. Zahlen umrechnen, oder behalten und nur die Beschriftung ändern?',
+  'Convert the numbers': 'Zahlen umrechnen',
+  'Keep the numbers, change the label': 'Zahlen behalten, nur Beschriftung ändern',
+  'Switching the unit offers to convert every stored weight.': 'Beim Einheitenwechsel wird angeboten, alle gespeicherten Gewichte umzurechnen.',
 }

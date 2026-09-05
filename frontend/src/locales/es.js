@@ -313,7 +313,6 @@ export default {
   'Rest timer': 'Temporizador de descanso',
   'Sounds': 'Sonidos',
   'Flash screen when timer ends': 'Hacer parpadear la pantalla al finalizar el temporizador',
-  'Note: switching units only changes the label — logged numbers are not converted.': 'Nota: cambiar la unidad solo cambia la etiqueta — los números registrados no se convierten.',
   'Data': 'Datos',
   'Export backup (JSON)': 'Exportar copia (JSON)',
   'Import backup': 'Importar copia',
@@ -1156,4 +1155,9 @@ export default {
   'Superset buttons in the exercise header': 'Botones de superserie en la cabecera del ejercicio',
   'Move, swap and remove buttons below the exercise': 'Botones mover, cambiar y quitar debajo del ejercicio',
   'Everything hidden here stays one tap away: the ⋯ button of an exercise and the number of a set.': 'Todo lo que ocultes aquí sigue a un toque: el botón ⋯ de un ejercicio y el número de una serie.',
+  'Convert to {0}?': '¿Convertir a {0}?',
+  'Every stored weight — logged sets, working weights, routine targets, body weight, bar weights — is in {0}. Convert the numbers, or keep them and only change the label?': 'Todos los pesos guardados — series registradas, pesos de trabajo, objetivos de rutina, peso corporal, pesos de barra — están en {0}. ¿Convertir los números o mantenerlos y cambiar solo la etiqueta?',
+  'Convert the numbers': 'Convertir los números',
+  'Keep the numbers, change the label': 'Mantener los números, cambiar la etiqueta',
+  'Switching the unit offers to convert every stored weight.': 'Al cambiar la unidad se ofrece convertir todos los pesos guardados.',
 }

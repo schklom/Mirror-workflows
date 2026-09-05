@@ -319,7 +319,6 @@ export default {
   'Week starts on': 'A hét kezdőnapja',
   'Rest timer': 'Pihenő időzítő',
   'Sounds': 'Hangok',
-  'Note: switching units only changes the label — logged numbers are not converted.': 'Megjegyzés: a mértékegység váltása csak a feliratot módosítja — a rögzített számok nem lesznek átváltva.',
   'Data': 'Adatok',
   'Export backup (JSON)': 'Biztonsági mentés exportálása (JSON)',
   'Import backup': 'Biztonsági mentés importálása',
@@ -1159,4 +1158,9 @@ export default {
   'Superset buttons in the exercise header': 'Szuperszett gombok a gyakorlat fejlécében',
   'Move, swap and remove buttons below the exercise': 'Mozgatás, csere és eltávolítás gombok a gyakorlat alatt',
   'Everything hidden here stays one tap away: the ⋯ button of an exercise and the number of a set.': 'Minden, amit itt elrejtesz, egy koppintásra marad: a gyakorlat ⋯ gombja és a sorozat száma.',
+  'Convert to {0}?': 'Átváltás {0}-ra?',
+  'Every stored weight — logged sets, working weights, routine targets, body weight, bar weights — is in {0}. Convert the numbers, or keep them and only change the label?': 'Minden tárolt súly — naplózott sorozatok, munkasúlyok, rutincélok, testsúly, rúdsúlyok — {0}-ban van. Átváltsuk a számokat, vagy maradjanak és csak a címke változzon?',
+  'Convert the numbers': 'Számok átváltása',
+  'Keep the numbers, change the label': 'Számok maradnak, csak a címke változik',
+  'Switching the unit offers to convert every stored weight.': 'Mértékegység-váltáskor felajánlja minden tárolt súly átváltását.',
 }

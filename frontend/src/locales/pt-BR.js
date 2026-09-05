@@ -107,7 +107,6 @@ export const PT_BR_OVERRIDES = {
   'synced with your profile': 'sincronizado com seu perfil',
   'The screen stays on while a workout is running, so you don’t have to unlock your phone between sets.': 'A tela permanece ligada durante o treino, para você não precisar desbloquear o celular entre as séries.',
   'Flash screen when timer ends': 'Piscar a tela quando o temporizador terminar',
-  'Note: switching units only changes the label — logged numbers are not converted.': 'Observação: trocar a unidade altera somente o rótulo — os valores registrados não são convertidos.',
   'Export backup (JSON)': 'Exportar backup (JSON)',
   'Import backup': 'Importar backup',
   'Reset everything?': 'Redefinir tudo?',
@@ -644,7 +643,10 @@ export const PT_BR_OVERRIDES = {
   'Move, swap and remove buttons below the exercise': 'Botões mover, trocar e remover abaixo do exercício',
   'Everything hidden here stays one tap away: the ⋯ button of an exercise and the number of a set.': 'Tudo o que você esconde aqui fica a um toque: o botão ⋯ de um exercício e o número de uma série.',
   // effort quick picker — pt-PT uses "toca"/"escreve"; Brazilian uses "toque"/"digite"
-  'Tap how many reps you had left, or type an exact {0}.': 'Toque em quantas repetições você ainda tinha, ou digite um {0} exato.'
+  'Tap how many reps you had left, or type an exact {0}.': 'Toque em quantas repetições você ainda tinha, ou digite um {0} exato.',
+  'Every stored weight — logged sets, working weights, routine targets, body weight, bar weights — is in {0}. Convert the numbers, or keep them and only change the label?': 'Todos os pesos salvos — séries registradas, pesos de trabalho, alvos das rotinas, peso corporal, pesos das barras — estão em {0}. Converter os números, ou mantê-los e mudar só o rótulo?',
+  'Keep the numbers, change the label': 'Manter os números, mudar o rótulo',
+  'Switching the unit offers to convert every stored weight.': 'Ao mudar de unidade é oferecido converter todos os pesos salvos.',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

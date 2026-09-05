@@ -319,7 +319,6 @@ export default {
   'Week starts on': 'สัปดาห์เริ่มวัน',
   'Rest timer': 'ตัวจับเวลาพัก',
   'Sounds': 'เสียง',
-  'Note: switching units only changes the label — logged numbers are not converted.': 'หมายเหตุ: การเปลี่ยนหน่วยจะเปลี่ยนแค่ป้ายกำกับ — ตัวเลขที่บันทึกไว้จะไม่ถูกแปลง',
   'Data': 'ข้อมูล',
   'Export backup (JSON)': 'ส่งออกข้อมูลสำรอง (JSON)',
   'Import backup': 'นำเข้าข้อมูลสำรอง',
@@ -1167,4 +1166,9 @@ export default {
   'Superset buttons in the exercise header': 'ปุ่มซูเปอร์เซ็ตในหัวข้อท่า',
   'Move, swap and remove buttons below the exercise': 'ปุ่มย้าย สลับ และลบใต้ท่าออกกำลังกาย',
   'Everything hidden here stays one tap away: the ⋯ button of an exercise and the number of a set.': 'ทุกอย่างที่ซ่อนไว้ยังอยู่ห่างแค่แตะเดียว: ปุ่ม ⋯ ของท่าและหมายเลขเซ็ต',
+  'Convert to {0}?': 'แปลงเป็น {0} ไหม?',
+  'Every stored weight — logged sets, working weights, routine targets, body weight, bar weights — is in {0}. Convert the numbers, or keep them and only change the label?': 'น้ำหนักที่บันทึกไว้ทั้งหมด — เซ็ตที่บันทึก น้ำหนักทำงาน เป้าหมายของรูทีน น้ำหนักตัว น้ำหนักบาร์ — เป็นหน่วย {0} จะแปลงตัวเลข หรือคงตัวเลขไว้และเปลี่ยนแค่ป้ายหน่วย?',
+  'Convert the numbers': 'แปลงตัวเลข',
+  'Keep the numbers, change the label': 'คงตัวเลขไว้ เปลี่ยนแค่ป้าย',
+  'Switching the unit offers to convert every stored weight.': 'เมื่อเปลี่ยนหน่วยจะมีตัวเลือกให้แปลงน้ำหนักที่บันทึกไว้ทั้งหมด',
 }

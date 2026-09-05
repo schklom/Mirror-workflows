@@ -313,7 +313,6 @@ export default {
   'Rest timer': 'Таймер отдыха',
   'Sounds': 'Звуки',
   'Flash screen when timer ends': 'Мигать экраном по окончании таймера',
-  'Note: switching units only changes the label — logged numbers are not converted.': 'Примечание: смена единиц меняет только подпись — записанные числа не пересчитываются.',
   'Data': 'Данные',
   'Export backup (JSON)': 'Экспорт резервной копии (JSON)',
   'Import backup': 'Импорт резервной копии',
@@ -1156,4 +1155,9 @@ export default {
   'Superset buttons in the exercise header': 'Кнопки суперсета в заголовке упражнения',
   'Move, swap and remove buttons below the exercise': 'Кнопки переместить, заменить и удалить под упражнением',
   'Everything hidden here stays one tap away: the ⋯ button of an exercise and the number of a set.': 'Всё скрытое здесь остаётся в одном нажатии: кнопка ⋯ упражнения и номер подхода.',
+  'Convert to {0}?': 'Перевести в {0}?',
+  'Every stored weight — logged sets, working weights, routine targets, body weight, bar weights — is in {0}. Convert the numbers, or keep them and only change the label?': 'Все сохранённые веса — подходы, рабочие веса, цели программ, вес тела, вес грифов — записаны в {0}. Пересчитать числа или оставить их и сменить только подпись?',
+  'Convert the numbers': 'Пересчитать числа',
+  'Keep the numbers, change the label': 'Оставить числа, сменить подпись',
+  'Switching the unit offers to convert every stored weight.': 'При смене единицы предлагается пересчитать все сохранённые веса.',
 }

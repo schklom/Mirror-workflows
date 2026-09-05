@@ -313,7 +313,6 @@ export default {
   'Rest timer': '休息计时',
   'Sounds': '声音',
   'Flash screen when timer ends': '计时结束时闪烁屏幕',
-  'Note: switching units only changes the label — logged numbers are not converted.': '注意：切换单位只改变标签——已记录的数字不会换算。',
   'Data': '数据',
   'Export backup (JSON)': '导出备份（JSON）',
   'Import backup': '导入备份',
@@ -1156,4 +1155,9 @@ export default {
   'Superset buttons in the exercise header': '动作标题中的超级组按钮',
   'Move, swap and remove buttons below the exercise': '动作下方的移动、替换和删除按钮',
   'Everything hidden here stays one tap away: the ⋯ button of an exercise and the number of a set.': '这里隐藏的一切都只需一次点按：动作的 ⋯ 按钮和组号。',
+  'Convert to {0}?': '换算为 {0}？',
+  'Every stored weight — logged sets, working weights, routine targets, body weight, bar weights — is in {0}. Convert the numbers, or keep them and only change the label?': '所有已保存的重量（记录的组、工作重量、计划目标、体重、杠铃杆重量）目前以 {0} 计。是换算数值，还是保留数值只更改单位标签？',
+  'Convert the numbers': '换算数值',
+  'Keep the numbers, change the label': '保留数值，只改标签',
+  'Switching the unit offers to convert every stored weight.': '切换单位时会提示换算所有已保存的重量。',
 }

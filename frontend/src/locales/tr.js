@@ -313,7 +313,6 @@ export default {
   'Rest timer': 'Dinlenme sayacı',
   'Sounds': 'Sesler',
   'Flash screen when timer ends': 'Zamanlayıcı bitince ekranı yanıp söndür',
-  'Note: switching units only changes the label — logged numbers are not converted.': 'Not: birim değiştirmek sadece etiketi değiştirir — kayıtlı sayılar dönüştürülmez.',
   'Data': 'Veriler',
   'Export backup (JSON)': 'Yedeği dışa aktar (JSON)',
   'Import backup': 'Yedeği içe aktar',
@@ -1156,4 +1155,9 @@ export default {
   'Superset buttons in the exercise header': 'Egzersiz başlığında süperset düğmeleri',
   'Move, swap and remove buttons below the exercise': 'Egzersizin altında taşı, değiştir ve kaldır düğmeleri',
   'Everything hidden here stays one tap away: the ⋯ button of an exercise and the number of a set.': 'Burada gizlenen her şey bir dokunuş uzakta kalır: egzersizin ⋯ düğmesi ve setin numarası.',
+  'Convert to {0}?': '{0} birimine çevrilsin mi?',
+  'Every stored weight — logged sets, working weights, routine targets, body weight, bar weights — is in {0}. Convert the numbers, or keep them and only change the label?': 'Kayıtlı tüm ağırlıklar — setler, çalışma ağırlıkları, rutin hedefleri, vücut ağırlığı, bar ağırlıkları — {0} cinsinden. Sayılar çevrilsin mi, yoksa sayılar kalıp yalnızca etiket mi değişsin?',
+  'Convert the numbers': 'Sayıları çevir',
+  'Keep the numbers, change the label': 'Sayıları koru, etiketi değiştir',
+  'Switching the unit offers to convert every stored weight.': 'Birim değiştirilince tüm kayıtlı ağırlıkları çevirme seçeneği sunulur.',
 }

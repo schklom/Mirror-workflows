@@ -313,7 +313,6 @@ export default {
   'Rest timer': 'आराम टाइमर',
   'Sounds': 'ध्वनियाँ',
   'Flash screen when timer ends': 'टाइमर खत्म होने पर स्क्रीन फ्लैश करें',
-  'Note: switching units only changes the label — logged numbers are not converted.': 'नोट: इकाई बदलने से केवल लेबल बदलता है — दर्ज संख्याएँ परिवर्तित नहीं होतीं।',
   'Data': 'डेटा',
   'Export backup (JSON)': 'बैकअप निर्यात करें (JSON)',
   'Import backup': 'बैकअप आयात करें',
@@ -1156,4 +1155,9 @@ export default {
   'Superset buttons in the exercise header': 'व्यायाम शीर्षक में सुपरसेट बटन',
   'Move, swap and remove buttons below the exercise': 'व्यायाम के नीचे स्थानांतरित, बदलें और हटाएँ बटन',
   'Everything hidden here stays one tap away: the ⋯ button of an exercise and the number of a set.': 'यहाँ छिपाया गया सब कुछ एक टैप दूर रहता है: व्यायाम का ⋯ बटन और सेट की संख्या।',
+  'Convert to {0}?': '{0} में बदलें?',
+  'Every stored weight — logged sets, working weights, routine targets, body weight, bar weights — is in {0}. Convert the numbers, or keep them and only change the label?': 'हर सहेजा गया वज़न — दर्ज सेट, कार्य वज़न, रूटीन लक्ष्य, शरीर का वज़न, बार वज़न — {0} में है। संख्याएँ बदलें, या उन्हें रखें और केवल लेबल बदलें?',
+  'Convert the numbers': 'संख्याएँ बदलें',
+  'Keep the numbers, change the label': 'संख्याएँ रखें, लेबल बदलें',
+  'Switching the unit offers to convert every stored weight.': 'इकाई बदलने पर सभी सहेजे गए वज़न बदलने का विकल्प मिलता है।',
 }

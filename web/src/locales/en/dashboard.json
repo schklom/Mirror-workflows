@@ -8,7 +8,8 @@
     "no_data": "No location data yet. Send a locate command with the buttons below!",
     "older": "Older",
     "newer": "Newer",
-    "no_push_url": "No push URL configured. The device will not receive commands until you set up push notifications in the Android app."
+    "no_push_url": "No push URL configured. The device will not receive commands until you set up push notifications in the Android app.",
+    "delete_success": "Location deleted"
   },
   "command_failed": "Command failed!",
   "time": "Time",

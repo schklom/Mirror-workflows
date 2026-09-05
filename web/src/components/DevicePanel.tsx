@@ -386,6 +386,7 @@ export const DevicePanel = ({ onLocateCommand, onViewPhotos }: DevicePanelProps)
                         ],
                         currentLocationIndex: Math.max(0, currentLocationIndex - 1),
                       });
+                      toast.info(tDashboard('location.delete_success'));
                     } catch (error) {
                       toast.error(
                         error instanceof Error ? error.message : tError('errors:delete_failed')

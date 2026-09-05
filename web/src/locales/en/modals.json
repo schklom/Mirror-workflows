@@ -21,7 +21,8 @@
     "title": "Photos",
     "empty": "No photos available",
     "of": "of",
-    "delete": "Delete picture"
+    "delete": "Delete picture",
+    "delete_success": "Picture deleted"
   },
   "webcrypto_warning": {
     "title": "Web Cryptography API not available",

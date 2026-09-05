@@ -109,6 +109,7 @@ export const PhotosModal = ({ isOpen, onClose }: PhotosModalProps) => {
                         ],
                       });
                       setSelectedIndex(Math.max(0, selectedIndex - 1));
+                      toast.info(t('pictures.delete_success'));
                     } catch (error) {
                       toast.error(
                         error instanceof Error ? error.message : t('errors:delete_failed')

@@ -170,6 +170,11 @@ export default function Modals() {
     return () => {
       b.position = b.top = b.left = b.right = b.width = ''
       window.scrollTo(0, y)
+      // If the sheet closed with the keyboard still up (tap "+" in the picker, then finish),
+      // iOS scrolls the page again while the keyboard dismisses — after the line above ran.
+      // Ask once more when that animation is over. The window-level guard in
+      // lib/viewport-guard.js covers the keyboard closing while a sheet stays open.
+      window.setTimeout(() => { if (document.body.style.position !== 'fixed') window.scrollTo(0, y) }, 350)
     }
   }, [sheets.length > 0])
 

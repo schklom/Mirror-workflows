@@ -78,6 +78,7 @@ vi.mock('../sheets.jsx', () => ({
   sessionNoteSheet: vi.fn(),
   effortPickerSheet: mocks.effortPickerSheet,
   exerciseHistorySheet: mocks.exerciseHistorySheet,
+  addRoutineToSessionSheet: vi.fn(),
 }))
 vi.mock('../components/Media.jsx', () => ({ default: () => null }))
 // api.js reads navigator.userAgent at module scope. This file installs its own DOM inside the
@@ -1157,21 +1158,30 @@ describe('workout view header menu', () => {
   }
   const item = (menu, label) => menu.items.filter(Boolean).find(it => it.label === label)
 
-  it('offers the three layouts and marks the running session current', async () => {
-    await mount([exercise('plain-bench', [false])], 0, { active: { workoutView: 'list' } })
+  // The header ⋮ now leads with "Add routine"; the layouts moved to a nested "Layout" sheet.
+  const openLayout = async menu => {
+    await act(async () => { item(menu, 'Layout').onClick() })
+    return mocks.menuSheet.mock.calls.at(-1)[0]
+  }
+
+  it('leads with Add routine, then a Layout sheet with the three layouts marked current', async () => {
+    await mount([exercise('plain-bench', [false])], 0, { active: { workoutView: 'list', routineIds: [] } })
 
     const menu = await openMenu()
-    expect(menu.items.filter(Boolean).map(it => it.label)).toEqual(['Cards', 'List', 'Compact'])
-    expect(item(menu, 'List').on).toBe(true)
-    expect(item(menu, 'Cards').on).toBe(false)
-    expect(item(menu, 'Compact').on).toBe(false)
+    expect(menu.items.filter(Boolean).map(it => it.label)).toEqual(['Add routine', 'Layout'])
+    expect(item(menu, 'Layout').sub).toBe('List')
+
+    const layout = await openLayout(menu)
+    expect(layout.items.filter(Boolean).map(it => it.label)).toEqual(['Cards', 'List', 'Compact'])
+    expect(item(layout, 'List').on).toBe(true)
+    expect(item(layout, 'Cards').on).toBe(false)
   })
 
-  it('writes the pick onto s.active without touching the global default', async () => {
-    await mount([exercise('plain-bench', [false])], 0, { workoutView: 'cards', active: { workoutView: 'cards' } })
+  it('writes the layout pick onto s.active without touching the global default', async () => {
+    await mount([exercise('plain-bench', [false])], 0, { workoutView: 'cards', active: { workoutView: 'cards', routineIds: [] } })
 
-    const menu = await openMenu()
-    await act(async () => { item(menu, 'Compact').onClick() })
+    const layout = await openLayout(await openMenu())
+    await act(async () => { item(layout, 'Compact').onClick() })
 
     expect(mocks.S.active.workoutView).toBe('compact')
     expect(mocks.S.workoutView).toBe('cards')

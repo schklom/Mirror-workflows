@@ -46,7 +46,7 @@ vi.mock('./MobileOnboarding.jsx', () => ({ ConnectSheet: () => null }))
 vi.mock('../sheets.jsx', () => ({
   starterPlanSheet: vi.fn(), confirmSheet: vi.fn(), importFromApp: vi.fn(),
   importFromHevy: vi.fn(), equipmentProfileSheet: vi.fn(),
-  dayAssignSheet: vi.fn(), planToolsSheet: vi.fn(),
+  dayAssignSheet: vi.fn(), dayAddRoutineSheet: vi.fn(), planToolsSheet: vi.fn(),
 }))
 
 globalThis.__APP_VERSION__ ??= 'test'
@@ -116,5 +116,45 @@ describe('Plan — the week schedule follows the setting', () => {
     expect(rows[0].querySelector('.tt').textContent).toBe('Sunday')
     expect(rows[0].textContent).toContain('Push')
     expect(rows[1].textContent).not.toContain('Push')
+  })
+})
+
+describe('Plan — inline per-day routine management (combine routines)', () => {
+  const mount = () => act(() => root.render(<Plan />))
+  const dayContainer = name => [...host.querySelectorAll('.item')].find(el => el.querySelector('.tt')?.textContent === name)
+
+  beforeEach(() => {
+    mocks.S.routines = [
+      { id: 'r1', name: 'Push', emoji: null, ex: [{ id: 'a' }, { id: 'b' }] },
+      { id: 'r2', name: 'Core', emoji: null, ex: [{ id: 'c' }] },
+    ]
+  })
+
+  it('renders a sub-row per routine on a populated day, with the count hint', () => {
+    mocks.S.week = { 1: ['r1', 'r2'] }
+    mount()
+    const mon = dayContainer('Monday')
+    expect(mon.textContent).toContain('Push')
+    expect(mon.textContent).toContain('Core')
+    expect(mon.textContent).toContain('2 routines')
+  })
+
+  it('✕ removes a routine, and drops the day key on the last removal', () => {
+    mocks.S.week = { 1: ['r1', 'r2'] }
+    mount()
+    const removeButtons = () => [...dayContainer('Monday').querySelectorAll('button[aria-label="Remove"]')]
+    act(() => { removeButtons()[1].dispatchEvent(new Event('click', { bubbles: true })) })
+    expect(mocks.S.week[1]).toEqual(['r1'])
+    mount()
+    act(() => { removeButtons()[0].dispatchEvent(new Event('click', { bubbles: true })) })
+    expect(mocks.S.week).not.toHaveProperty('1')
+  })
+
+  it('an empty day stays one tappable row', () => {
+    mocks.S.week = {}
+    mount()
+    const tue = dayContainer('Tuesday')
+    expect(tue.textContent).toContain('Rest')
+    expect(tue.querySelectorAll('button[aria-label="Remove"]').length).toBe(0)
   })
 })

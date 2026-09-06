@@ -1539,8 +1539,9 @@ export const dayOverrideSheet = iso => ui().openSheet(close => <DayOverride iso=
 
 function DayAssign({ day, close }) {
   const st = useStore(s => s.S)
-  // A weekday holds a routine-id list; this single-pick sheet sets the day to exactly one
-  // routine (or rest). The inline per-day management on the Plan screen is what appends.
+  // A weekday holds a routine-id list; this single-pick sheet sets an empty day to exactly one
+  // routine (or rest). The inline ＋ Add routine on the Plan screen is what appends to a
+  // populated day.
   const cur = [].concat(st.week[day] || [])
   const set = v => { update(s => { if (v) s.week[day] = [v]; else delete s.week[day] }); close() }
   return <>
@@ -1555,6 +1556,29 @@ function DayAssign({ day, close }) {
   </>
 }
 export const dayAssignSheet = day => ui().openSheet(close => <DayAssign day={day} close={close} />)
+
+// ＋ Add routine on a populated weekday: single-pick, appends to the day's list. A routine
+// already on that day is disabled; picking one closes the sheet.
+function DayAddRoutine({ day, close }) {
+  const st = useStore(s => s.S)
+  const on = new Set([].concat(st.week[day] || []))
+  const add = id => { update(s => { s.week[day] = [...[].concat(s.week[day] || []), id] }); close() }
+  return <>
+    <h3>{t('Add routine')}</h3>
+    <div className="list">
+      {st.routines.map(r => {
+        const already = on.has(r.id)
+        return <div key={r.id} className={'item' + (already ? ' disabled' : '')} aria-disabled={already || undefined}
+          {...tappable(already ? null : () => add(r.id))}>
+          <span className="lrow-i"><Icon name={glyphOf(r.emoji)} /></span>
+          <div className="grow"><div className="tt">{r.name}</div><div className="ss">{exCount(r.ex.length)}</div></div>
+          {already ? <span className="tag">{t('already added')}</span> : <Icon name="chevronRight" className="chev" />}
+        </div>
+      })}
+    </div>
+  </>
+}
+export const dayAddRoutineSheet = day => ui().openSheet(close => <DayAddRoutine day={day} close={close} />)
 
 /* ============================ workout detail ============================ */
 function WorkoutDetail({ w, close }) {
@@ -1587,20 +1611,44 @@ function WorkoutDetail({ w, close }) {
       if (text) rec.note = text; else delete rec.note
     })
   }, [])
+  // A combined session's entries carry a `rid`; group them into per-routine sections in merge
+  // order. A legacy single-routine workout (one routineIds, or no rid anywhere) renders flat.
+  const entryRow = (e, i) => {
+    const ex = EXIDX[e.id]
+    return <div key={i} className="row" style={{ marginBottom: 12, alignItems: 'flex-start' }}>
+      {ex && <Thumb ex={ex} />}
+      <div className="grow"><div className="tt capitalize" style={{ fontWeight: 600 }}>{ex ? exerciseNameFor(ex) : (e.n || e.id)} {w.prs && w.prs.includes(e.id) && <span className="pr"><Icon name="trophy" />PR</span>}</div>
+        <div className="ss">{e.sets.filter(s => s.done).map(s => setLabel(e.id, s, e.target)).join('  ·  ') || t('no sets')}</div>
+        {e.note && <div className="small dim" style={{ marginTop: 3 }}>
+          {e.notePin && <Icon name="flag" style={{ fontSize: 12, marginRight: 4, verticalAlign: '-1px', color: 'var(--yellow)' }} />}{e.note}
+        </div>}</div>
+    </div>
+  }
+  const groups = []
+  w.entries.forEach((e, i) => {
+    const key = e.rid || '__none'
+    let g = groups.find(x => x.key === key)
+    if (!g) { g = { key, rid: e.rid || null, items: [] }; groups.push(g) }
+    g.items.push([e, i])
+  })
+  const grouped = groups.length > 1 || (groups[0] && groups[0].rid && (w.routineIds || []).length > 1)
   return <>
     <h3>{w.name}</h3>
     <div className="muted small" style={{ marginBottom: 12 }}>{[fmtDate(w.d, true), ...durPart(w.end - w.start), fmtVol(w.vol, st.unit), ...(w.bw ? [fmtNum(w.bw) + ' ' + st.unit] : [])].join(' · ')}</div>
-    {w.entries.map((e, i) => {
-      const ex = EXIDX[e.id]
-      return <div key={i} className="row" style={{ marginBottom: 12, alignItems: 'flex-start' }}>
-        {ex && <Thumb ex={ex} />}
-        <div className="grow"><div className="tt capitalize" style={{ fontWeight: 600 }}>{ex ? exerciseNameFor(ex) : (e.n || e.id)} {w.prs && w.prs.includes(e.id) && <span className="pr"><Icon name="trophy" />PR</span>}</div>
-          <div className="ss">{e.sets.filter(s => s.done).map(s => setLabel(e.id, s, e.target)).join('  ·  ') || t('no sets')}</div>
-          {e.note && <div className="small dim" style={{ marginTop: 3 }}>
-            {e.notePin && <Icon name="flag" style={{ fontSize: 12, marginRight: 4, verticalAlign: '-1px', color: 'var(--yellow)' }} />}{e.note}
-          </div>}</div>
+    {grouped ? groups.map(g => {
+      const r = g.rid ? st.routines.find(x => x.id === g.rid) : null
+      const setN = g.items.reduce((n, [e]) => n + e.sets.filter(s => s.done && !isWarmupRow(s)).length, 0)
+      const vol = workoutVolume({ entries: g.items.map(([e]) => e) })
+      return <div key={g.key}>
+        <div className="row between" style={{ margin: '2px 0 8px', paddingBottom: 6, borderBottom: '1px solid var(--sep)' }}>
+          <div className="row" style={{ gap: 7, fontWeight: 600 }}>
+            {r && <Icon name={glyphOf(r.emoji)} />}{r ? r.name : t('Freestyle')}
+          </div>
+          <div className="small dim">{t('{0} sets', setN)} · {fmtVol(vol, st.unit)}</div>
+        </div>
+        {g.items.map(([e, i]) => entryRow(e, i))}
       </div>
-    })}
+    }) : w.entries.map((e, i) => entryRow(e, i))}
     <div className="small muted" style={{ margin: '4px 0 6px' }}>{t('Session note')}</div>
     <textarea ref={noteRef} className="input" rows={2} maxLength={NOTE_MAX} value={note}
       placeholder={t('How the session went as a whole.')}
@@ -1771,6 +1819,50 @@ function beginBackfill({ iso, time, durationMin, routineId, replaceId }) {
   useUI.getState().stopRest()
   nav('/workout')
 }
+
+/* ============================ add a routine mid-session ============================ */
+// The workout header ⋮ → Add routine. Single-pick: a routine already in the session, or one
+// with no exercises, is shown disabled and tagged. Picking one appends its entries (each
+// stamped with its `rid`), extends `s.active.routineIds`, and re-derives the session name.
+// `s.active.cur` is left where it is — the appended block is reached by scrolling / Next.
+function AddRoutineToSession({ close }) {
+  const st = useStore(s => s.S)
+  const active = st.active
+  if (!active) return null
+  const inSession = new Set([].concat(active.routineIds || []))
+  const add = r => {
+    const entries = buildSessionEntries(st, r).map(e => ({ ...e, rid: r.id }))
+    update(s => {
+      if (!s.active) return
+      s.active.entries.push(...entries)
+      s.active.routineIds = [...[].concat(s.active.routineIds || []), r.id]
+      s.active.name = deriveSessionName(s.active.routineIds.map(id => s.routines.find(x => x.id === id)?.name).filter(Boolean))
+    })
+    close()
+    toast(t('{0} added — {1}', r.name, exCount(r.ex.length)))
+  }
+  return <>
+    <h3>{t('Add routine')}</h3>
+    <div className="list">
+      {st.routines.map(r => {
+        const already = inSession.has(r.id)
+        const empty = !(r.ex || []).length
+        const disabled = already || empty
+        return <div key={r.id} className={'item' + (disabled ? ' disabled' : '')} aria-disabled={disabled || undefined}
+          {...tappable(disabled ? null : () => add(r))}>
+          <span className="lrow-i"><Icon name={glyphOf(r.emoji)} /></span>
+          <div className="grow"><div className="tt">{r.name}</div><div className="ss">{exCount(r.ex.length)}</div></div>
+          {already ? <span className="tag">{t('already added')}</span> : empty ? <span className="tag">{t('no exercises')}</span> : <Icon name="chevronRight" className="chev" />}
+        </div>
+      })}
+    </div>
+  </>
+}
+export function addRoutineToSessionSheet() {
+  if (!S().active) return
+  ui().openSheet(close => <AddRoutineToSession close={close} />)
+}
+
 function TopWeight({ entryIdx, close }) {
   const st = useStore(s => s.S)
   const A = st.active

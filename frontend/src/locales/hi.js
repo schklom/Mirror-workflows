@@ -423,6 +423,7 @@ export default {
   'Workout view': 'वर्कआउट दृश्य',
   'Cards': 'कार्ड',
   'List': 'सूची',
+  'Compact': 'संक्षिप्त',
   'Current': 'वर्तमान',
   'Set current': 'वर्तमान के रूप में चिह्नित करें',
   'Move, swap and remove below act on the exercise marked {0}.': 'नीचे दिए गए मूव, स्वैप और रिमूव {0} के रूप में चिह्नित व्यायाम पर लागू होते हैं।',

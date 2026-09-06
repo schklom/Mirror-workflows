@@ -1668,6 +1668,9 @@ export function beginWorkout(routineId, bw) {
     s.active = {
       id: uid(), d: todayISO(), start: Date.now(), routineId,
       name: r ? r.name : t('Freestyle'), bw: bw || null, cur: 0, entries,
+      // Snapshot the layout at start so the header ⋮ can change it for this session only —
+      // changing the saved default (Settings → Workout view) mid-session leaves it alone.
+      workoutView: st.workoutView || 'cards',
       ...(excluded ? { excludeFromProgression: true } : {})
     }
   })
@@ -1742,6 +1745,8 @@ function beginBackfill({ iso, time, durationMin, routineId, replaceId }) {
       id: uid(), d: iso, start: backfillStart(iso, time), routineId,
       name: r ? r.name : t('Freestyle'), bw: null, cur: 0, entries,
       backfill: { durationMin, replaceId: replaceId || null },
+      // Same layout snapshot as a live session (see beginWorkout).
+      workoutView: st.workoutView || 'cards',
       ...(excluded ? { excludeFromProgression: true } : {})
     }
   })

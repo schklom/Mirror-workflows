@@ -423,6 +423,7 @@ export default {
   'Workout view': 'Вид тренировки',
   'Cards': 'Карточки',
   'List': 'Список',
+  'Compact': 'Компактный',
   'Current': 'Текущее',
   'Set current': 'Сделать текущим',
   'Move, swap and remove below act on the exercise marked {0}.': 'Кнопки перемещения, замены и удаления ниже действуют на упражнение с пометкой {0}.',

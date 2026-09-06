@@ -423,6 +423,7 @@ export default {
   'Workout view': '训练视图',
   'Cards': '卡片',
   'List': '列表',
+  'Compact': '紧凑',
   'Current': '当前',
   'Set current': '设为当前',
   'Move, swap and remove below act on the exercise marked {0}.': '下方的移动、替换和删除将作用于标记为{0}的动作。',

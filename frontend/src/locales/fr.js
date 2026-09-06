@@ -423,6 +423,7 @@ export default {
   'Workout view': 'Vue de l’entraînement',
   'Cards': 'Cartes',
   'List': 'Liste',
+  'Compact': 'Compacte',
   'Current': 'En cours',
   'Set current': 'Marquer comme en cours',
   'Move, swap and remove below act on the exercise marked {0}.': 'Déplacer, échanger et supprimer ci-dessous s’appliquent à l’exercice marqué {0}.',

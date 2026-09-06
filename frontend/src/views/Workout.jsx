@@ -65,7 +65,11 @@ function Elapsed({ start }) {
 }
 
 /* ---------- one exercise block (reps: weight×reps · time: a held duration · cardio: duration+speed) ---------- */
-function ExerciseBlock({ entryIdx, compact, onToggle, onField, onAddSet, onRemoveSet, onAddWarmup, onRemoveSetAt, onStartTimed, onPairPrev, onPairNext, onSetRowRef, onProgressionSettings, onSwap, onMoveUp, onMoveDown, canMoveUp, canMoveDown, onRemoveExercise, busy }) {
+// `compact` shrinks the block for a superset member; `dense` (compact view) goes further and
+// drops everything that is not a set you are logging — media, tag chips, the note lines, the
+// "last time" recap and the progression line — leaving the name, the ⋯ menu and the sets.
+// Nothing dropped is lost: it is all still on the ⋯ menu, or one ⋮ switch back to list/cards.
+function ExerciseBlock({ entryIdx, compact, dense, onToggle, onField, onAddSet, onRemoveSet, onAddWarmup, onRemoveSetAt, onStartTimed, onPairPrev, onPairNext, onSetRowRef, onProgressionSettings, onSwap, onMoveUp, onMoveDown, canMoveUp, canMoveDown, onRemoveExercise, busy }) {
   const S = useStore(s => s.S)
   const update = useStore(s => s.update)
   const working = useUI(s => s.work)
@@ -242,19 +246,22 @@ function ExerciseBlock({ entryIdx, compact, onToggle, onField, onAddSet, onRemov
     </div>
   )
   return <>
-    <Media ex={ex} key={entry.id} compact={compact} minimizable />
+    {!dense && <Media ex={ex} key={entry.id} compact={compact} minimizable />}
     <div className="row between" style={{ marginBottom: 6 }}>
-      <div style={{ fontSize: compact ? 17 : 20, fontWeight: 600, letterSpacing: '-.02em', textTransform: 'capitalize', lineHeight: 1.2 }}>{exerciseNameFor(ex)}</div>
+      <div style={{ fontSize: (compact || dense) ? 17 : 20, fontWeight: 600, letterSpacing: '-.02em', textTransform: 'capitalize', lineHeight: 1.2 }}>{exerciseNameFor(ex)}</div>
       <div className="row" style={{ gap: 2, flex: 'none' }}>
         {entry.note && <button className="iconbtn" aria-label={t('Note')} title={t('Note')} style={{ color: 'var(--acc)' }}
           onClick={() => exerciseNoteSheet(entryIdx)}><Icon name="pencil" /></button>}
         <button className="iconbtn" aria-label={t('More')} title={t('More')} onClick={openMore}><Icon name="more" /></button>
       </div>
     </div>
-    {wc.pairButtons && !compact && (onPairPrev || onPairNext) && <div className="row" style={{ gap: 6, flexWrap: 'wrap', marginBottom: 8 }}>
+    {wc.pairButtons && !compact && !dense && (onPairPrev || onPairNext) && <div className="row" style={{ gap: 6, flexWrap: 'wrap', marginBottom: 8 }}>
       {onPairPrev && <Button size="xs" variant="tinted" icon="link" title={t('Make superset with previous')} onClick={onPairPrev}>{t('Make superset with previous')}</Button>}
       {onPairNext && <Button size="xs" variant="tinted" icon="link" title={t('Make superset with next')} onClick={onPairNext}>{t('Make superset with next')}</Button>}
     </div>}
+    {/* compact view drops everything from here to the sets card — it is all still on the ⋯ menu
+        (note, details, history, bar weight, progression) or is display-only (tags, "last time"). */}
+    {!dense && <>
     <div className="row" style={{ gap: 6, flexWrap: 'wrap', marginBottom: 8 }}>
       {cardio && <span className="tag acc"><Icon name="figureRun" />{t('Cardio')}</span>}
       {/* You log the total; this is the split, so the set in front of you is unambiguous
@@ -288,6 +295,7 @@ function ExerciseBlock({ entryIdx, compact, onToggle, onField, onAddSet, onRemov
       <Icon name={plan.kind === 'up' ? 'arrowUp' : plan.kind === 'deload' ? 'arrowDown' : 'lightbulb'} />
       <span><strong>{t(guidance.policyLabel)}</strong> · {t(...guidance.why)}</span>
     </button>}
+    </>}
     <div className="card" style={{ marginTop: 10, marginBottom: 0 }}>
       {/* the header carries the same eff3 sizing as the rows, or the labels drift off their columns */}
       <div className={'sethead' + (col3 ? ' eff3' : '')}><span className="n-sp" /><span className="w-sp">{col1.hd}</span>{col2 && <span className="r-sp">{col2.hd}</span>}{col3 && <span className="eff-sp">{col3.hd}</span>}{timed && <span className="ck-sp" />}<span className="ck-sp" /></div>
@@ -386,12 +394,17 @@ function ActiveWorkout() {
   const unit = A.entries.length ? unitOf(units, cur) : []
   const unitIdx = units.findIndex(u => u === unit)
   const isSuperset = unit.length > 1
-  // Cards show one unit at a time with Prev/Next + swipe; list stacks every unit so the
-  // whole session is visible and scrollable (Settings → During a workout → Workout view).
-  // Every set handler below is already entry-index parameterised, so list mode only changes
-  // what is rendered — completion, rest, top-weight and auto-advance share one path.
-  // Unknown/absent values read as cards, keeping every pre-existing profile as it was.
-  const listMode = S.workoutView === 'list'
+  // Cards show one unit at a time with Prev/Next + swipe; list and compact stack every unit so
+  // the whole session is visible and scrollable (Settings → During a workout → Workout view,
+  // seeded onto s.active and overridable for this session from the header ⋮). compact is list
+  // with the per-exercise media, tag chips, note lines, "last time" and progression line
+  // stripped — just names and set rows. Every set handler below is already entry-index
+  // parameterised, so these only change what is rendered — completion, rest, top-weight and
+  // auto-advance share one path. Unknown/absent values read as cards, keeping every
+  // pre-existing profile (and a session started before this field) as it was.
+  const workoutView = A.workoutView || S.workoutView
+  const listMode = workoutView === 'list' || workoutView === 'compact'
+  const dense = workoutView === 'compact'
   const wc = workoutControls(S)
   // Superset flow: center the actionable row when completing a set moves to the partner or
   // back to the first exercise of the next round. Entry-bound maps keep repeated exercise IDs
@@ -536,6 +549,18 @@ function ActiveWorkout() {
   // "Set current" on its header instead of Prev/Next. The bottom Move/Swap/Remove actions
   // keep operating on it, and completing sets still advances it on its own.
   const focusUnit = firstIdx => update(s => { if (s.active) s.active.cur = firstIdx })
+  // The header ⋮ re-lays-out the running session without touching the saved default
+  // (Settings → During a workout → Workout view). It writes s.active.workoutView, which the
+  // render above prefers over S.workoutView.
+  const setWorkoutView = v => update(s => { if (s.active) s.active.workoutView = v })
+  const openViewMenu = () => menuSheet({
+    title: t('Workout view'),
+    items: [
+      { icon: 'clipboard', label: t('Cards'), on: workoutView === 'cards', onClick: () => setWorkoutView('cards') },
+      { icon: 'list', label: t('List'), on: workoutView === 'list', onClick: () => setWorkoutView('list') },
+      { icon: 'minimize', label: t('Compact'), on: workoutView === 'compact', onClick: () => setWorkoutView('compact') },
+    ],
+  })
   const onSwipePointerDown = event => {
     if (swipe.current || (event.pointerType && event.pointerType !== 'touch' && event.pointerType !== 'pen')) return
     if (event.target.closest?.(SWIPE_IGNORED_TARGETS)) return
@@ -751,7 +776,10 @@ function ActiveWorkout() {
     <div className="hdr">
       <button className="iconbtn" aria-label={t('Discard')} onClick={() => confirmSheet({ title: t('Discard workout?'), message: t('The sets you logged in this session will be lost.'), confirmText: t('Discard'), danger: true, onConfirm: () => { update(s => { s.active = null }); stopRest(); stopWork(); nav('/home') } })}><Icon name="xmark" /></button>
       <div style={{ textAlign: 'center' }}><div style={{ fontWeight: 600 }}>{A.name}</div><div className="sub">{A.backfill ? fmtDate(A.d, true) : <Elapsed start={A.start} />} · {t('{0} sets', done + '/' + total)}</div></div>
-      <button className="iconbtn" style={{ color: 'var(--acc)' }} aria-label={t('Finish')} onClick={finishWorkout}><Icon name="check" /></button>
+      <div className="row" style={{ gap: 4, flex: 'none' }}>
+        <button className="iconbtn" aria-label={t('Workout view')} title={t('Workout view')} onClick={openViewMenu}><Icon name="more" /></button>
+        <button className="iconbtn" style={{ color: 'var(--acc)' }} aria-label={t('Finish')} onClick={finishWorkout}><Icon name="check" /></button>
+      </div>
     </div>
     <div className="wprog"><i style={{ width: (total ? done / total * 100 : 0) + '%' }} /></div>
     </div>
@@ -779,13 +807,13 @@ function ActiveWorkout() {
                   const entry = A.entries[idx]
                   return <div key={idx} ref={el => bindExRef(entry, el)} className="ss-ex" data-exidx={idx}>
                     {k > 0 && <div className="ss-amp">+</div>}
-                    <ExerciseBlock entryIdx={idx} compact onSetRowRef={(setIdx, el) => bindSetRef(entry, setIdx, el)}
+                    <ExerciseBlock entryIdx={idx} compact dense={dense} onSetRowRef={(setIdx, el) => bindSetRef(entry, setIdx, el)}
                       {...blockProps(idx)} />
                   </div>
                 })}
               </div>
             ) : (
-              <ExerciseBlock entryIdx={u[0]}
+              <ExerciseBlock entryIdx={u[0]} dense={dense}
                 onPairPrev={u[0] > 0 ? () => pairAt(u[0] - 1, u[0]) : null}
                 onPairNext={u[0] < A.entries.length - 1 ? () => pairAt(u[0], u[0] + 1) : null}
                 {...blockProps(u[0])} />

@@ -47,6 +47,13 @@ go build
 ./fmd-server serve
 ```
 
+The [Makefile](./Makefile) has targets that automate these steps:
+
+```sh
+make server
+make run
+```
+
 To easily build from source with Docker Compose, replace `image:` with `build:` as shown below.
 Then run `docker compose build && docker compose up`.
 

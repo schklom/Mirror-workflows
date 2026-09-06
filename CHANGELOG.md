@@ -1,5 +1,22 @@
 # Changelog
 
+## v1.3.5 — 2026-09-06
+
+One bug, and the one everybody with the Android app and their own API key ran into. Web bundle and
+APK; the API only carries the version number.
+
+- 🔑 **"Bring my own API key" works on the phone.** Since v1.3.0 every key-store call on Android
+  hung before it started: the secure-storage plugin was handed to the app as the value of a promise,
+  and a Capacitor plugin object answers *any* property name with a native method — `then`
+  included — so the promise took it for a thenable, called a native `SecureStorage.then()` that does
+  not exist, and never settled. That one stuck `await` was all three reports at once: "Save and use
+  the Coach" greyed out forever, the key "not saved" when you came back, and a Coach that sat on
+  "thinking…" without end because the job read the key first. The plugin now travels inside a plain
+  object, a test drives the store through a Capacitor-style proxy so it cannot come back, and the
+  whole flow — save, intake, plan, restart with the key still there — was run on an emulator before
+  tagging. The web app and the "use my self-hosted openGym" mode were never affected.
+  (issues #42, #58; reported by many on Discord)
+
 ## v1.3.4 — 2026-09-05
 
 Two things noticed on the phone right after v1.3.3. Web bundle and APK; the API only carries the

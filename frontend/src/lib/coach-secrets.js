@@ -10,12 +10,19 @@
 const KEY = 'coach.apiKey'
 const memory = new Map()
 
+// The loaded plugin travels inside a plain object, never as a promise's own value (no `await`
+// or `.then` may ever hand the proxy back bare — the wrapper below is the whole point). Capacitor's
+// registerPlugin() hands out a Proxy that answers EVERY property name with a native-method
+// wrapper — `then` included — so a promise that resolves to the proxy itself takes it for a
+// thenable, calls SecureStorage.then() on the native side ("not implemented on android"), and
+// never settles. That one await hung the whole feature on the phone: "Save and use the Coach"
+// greyed out forever, the key "not saved", the Coach "thinking" without end (issues #42, #58).
 let pluginPromise = null
 function plugin() {
   if (!pluginPromise) {
     pluginPromise = import('@aparajita/capacitor-secure-storage')
-      .then(m => (m && m.SecureStorage && typeof m.SecureStorage.get === 'function' ? m.SecureStorage : null))
-      .catch(() => null)
+      .then(m => ({ store: m && m.SecureStorage && typeof m.SecureStorage.get === 'function' ? m.SecureStorage : null }))
+      .catch(() => ({ store: null }))
   }
   return pluginPromise
 }
@@ -30,7 +37,7 @@ export const withTimeout = (promise, ms = NATIVE_TIMEOUT_MS) => new Promise((res
 })
 
 export async function getApiKey() {
-  const p = await plugin()
+  const { store: p } = await plugin()
   if (p) {
     try { const v = await withTimeout(p.get(KEY)); return typeof v === 'string' && v ? v : null } catch { /* fall through */ }
   }
@@ -39,14 +46,14 @@ export async function getApiKey() {
 export async function setApiKey(value) {
   const v = String(value || '').trim()
   if (!v) return clearApiKey()
-  const p = await plugin()
+  const { store: p } = await plugin()
   if (p) {
     try { await withTimeout(p.set(KEY, v)); memory.delete(KEY); return } catch { /* fall through */ }
   }
   memory.set(KEY, v)
 }
 export async function clearApiKey() {
-  const p = await plugin()
+  const { store: p } = await plugin()
   if (p) { try { await withTimeout(p.remove(KEY)) } catch { /* nothing to clear */ } }
   memory.delete(KEY)
 }

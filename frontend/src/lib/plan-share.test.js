@@ -24,6 +24,11 @@ describe('what survives a shared plan', () => {
     expect(roundTrip({ warmupSets: 3 }).warmupSets).toBe(3)
   })
 
+  it('carries a non-default Epley deload factor and omits the default', () => {
+    expect(roundTrip({ deloadFactor: 0.8 }).deloadFactor).toBe(0.8)
+    expect('deloadFactor' in roundTrip({ deloadFactor: 0.9 })).toBe(false)
+  })
+
   it('carries progression exclusion on a routine through export and merge', () => {
     const source = stateWith({})
     source.routines[0].excludeFromProgression = true

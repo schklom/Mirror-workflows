@@ -16,7 +16,7 @@
 //   · fewer sets than prescribed                       → miss
 // So a session that fell apart can never advance the load as though it had succeeded.
 
-import { modeOf, repStep, rerampWarmups } from './history.js'
+import { modeOf, repStep, rerampWarmups, isBw, isPerSide } from './history.js'
 import { EXIDX } from './exercises.js'
 import { isWarmupRow } from './workout-model.js'
 import { normalizeRepRange } from './rep-range.js'
@@ -45,10 +45,35 @@ export const POLICY_DESC = {
   time: 'Hold every set for the full duration and the target goes up.'
 }
 
-// Sessions of repeated misses before a deload. Greyskull resets on the first failure by
-// design; the general linear policy gives you two more cracks at it first.
+// The Epley target is a soft objective mapped onto the exercise's real load grid. Keep the
+// default out of saved configs so plans written before this policy stays byte-for-byte compatible.
+export const DELOAD_FACTOR = 0.9
 export const DELOAD_AFTER = { linear: 3, greyskull: 1, double: 3, time: 3 }
-const DELOAD_FACTOR = 0.9
+export const DELOAD_FACTOR_MIN = 0.5
+export const DELOAD_FACTOR_MAX = 0.95
+
+export function isValidDeloadFactor(value) {
+  const factor = Number(value)
+  return Number.isFinite(factor) && factor >= DELOAD_FACTOR_MIN && factor <= DELOAD_FACTOR_MAX
+}
+export function deloadFactorOf(cfg) {
+  return isValidDeloadFactor(cfg?.deloadFactor) ? Number(cfg.deloadFactor) : DELOAD_FACTOR
+}
+
+// Epley uses the reps performed by one side for unilateral work. Callers pass the stored total
+// reps and this helper makes the split explicit rather than allowing a total to inflate the 1RM.
+export function epley1RM(weight, reps) {
+  const w = Number(weight)
+  const r = Number(reps)
+  if (!Number.isFinite(w) || !Number.isFinite(r) || w <= 0 || r < 1) return null
+  const result = w * (1 + r / 30)
+  return Number.isFinite(result) && result > 0 ? round1(result) : null
+}
+export function deloadTarget1RM(weight, reps, factor = DELOAD_FACTOR, perSide = false) {
+  const base = epley1RM(weight, perSide ? Number(reps) / 2 : reps)
+  const f = isValidDeloadFactor(factor) ? Number(factor) : DELOAD_FACTOR
+  return base == null ? null : round1(base * f)
+}
 
 // Body parts where a 5 kg jump is normal rather than brutal.
 const HEAVY_BP = ['upper legs', 'lower legs', 'back', 'hips', 'glutes']
@@ -96,14 +121,80 @@ export function stepWeight(value, step, direction) {
   const next = v + direction * step
   return Math.max(0, onGrid ? snapWeight(next, step) : round1(next))
 }
-// Back off by DELOAD_FACTOR, landing on something you can actually load. Rounding to the
-// nearest step keeps the cut close to the intended 10 %, but on small weights the nearest
-// step can be the weight you started from — so a deload that did not actually reduce
-// anything takes one step down instead. Never goes below a single step.
-function deloadTo(cur, step) {
-  let next = snapWeight(cur * DELOAD_FACTOR, step)
+// Back off by a factor, landing on something you can actually load. This remains the old policy
+// used by Greyskull and timed progression; linear/double loaded reps use the Epley selector below.
+export function deloadTo(cur, step, factor = DELOAD_FACTOR) {
+  let next = snapWeight(cur * factor, step)
   if (next >= cur) next = snapWeight(cur - step, step)
   return Math.max(step, next)
+}
+
+const positiveGridAround = (ideal, step, maxWeight, strictLower) => {
+  if (!(ideal > 0) || !(step > 0) || !(maxWeight > 0)) return []
+  const low = Math.floor(ideal / step) * step
+  const high = Math.ceil(ideal / step) * step
+  const values = [...new Set([low, high].map(v => snapWeight(v, step)))]
+  return values
+    .filter(v => v > 0 && v <= maxWeight + 1e-9 && (!strictLower || v < maxWeight - 1e-9))
+    .sort((a, b) => a - b)
+}
+
+/**
+ * Pick a bounded load/reps pair for an Epley target. The search is deliberately lexicographic:
+ * hard constraints first, then closest estimated 1RM, fewer rep changes, and greater load. That
+ * makes a grid tie predictable without hiding a product decision in arbitrary score weights.
+ */
+export function selectDeloadCandidate({ currentWeight, targetWeight, targetReps, step, factor = DELOAD_FACTOR, reps, repsMin, perSide = false }) {
+  const current = Number(currentWeight)
+  const baseWeight = Number(targetWeight)
+  const baseReps = Number(targetReps)
+  const stride = perSide ? 2 : 1
+  const upper = Math.max(stride, Math.ceil(baseReps / stride) * stride)
+  const range = repsMin == null ? null : normalizeRepRange(reps, repsMin, stride)
+  const top = range ? Math.min(range.reps, Math.max(range.repsMin, upper)) : upper
+  const bottom = range ? range.repsMin : top
+  const repValues = []
+  for (let r = top; r >= bottom; r -= stride) repValues.push(r)
+  const target1RM = deloadTarget1RM(baseWeight, upper, factor, perSide)
+  if (!(current > 0) || target1RM == null || !repValues.length || !(step > 0)) return null
+
+  const candidates = []
+  repValues.forEach(candidateReps => {
+    const ideal = target1RM / (1 + (perSide ? candidateReps / 2 : candidateReps) / 30)
+    const allowCurrent = repsMin != null && candidateReps < upper
+    const grid = positiveGridAround(ideal, step, current, !allowCurrent)
+    if (allowCurrent && !grid.includes(current)) grid.push(current)
+    grid.forEach(candidateWeight => {
+      const epley = epley1RM(candidateWeight, perSide ? candidateReps / 2 : candidateReps)
+      candidates.push({
+        weight: candidateWeight,
+        reps: candidateReps,
+        epley,
+        error: Math.abs(epley - target1RM),
+        repChange: Math.abs(candidateReps - upper),
+        fallback: false
+      })
+    })
+  })
+
+  // A tiny or below-step lift may have no positive lower grid point. Holding the actual attempted
+  // load is safer than rounding it up to one step; it is an explicit, deterministic fallback.
+  if (!candidates.length) {
+    repValues.forEach(candidateReps => {
+      const epley = epley1RM(current, perSide ? candidateReps / 2 : candidateReps)
+      candidates.push({
+        weight: current,
+        reps: candidateReps,
+        epley,
+        error: Math.abs(epley - target1RM),
+        repChange: Math.abs(candidateReps - upper),
+        fallback: true
+      })
+    })
+  }
+  if (!candidates.length) return null
+  candidates.sort((a, b) => a.error - b.error || a.repChange - b.repChange || b.weight - a.weight || b.reps - a.reps)
+  return { ...candidates[0], target1RM, factor: deloadFactorOf({ deloadFactor: factor }), upper, bottom }
 }
 
 /**
@@ -128,7 +219,7 @@ export function readSession(entry, fallback) {
     const goal = target.sec || 0
     const held = sets.map(s => (s.done ? (s.sec || 0) : 0))
     return {
-      mode, goal, held,
+      mode, target, goal, held,
       weight: Math.max(0, ...sets.filter(s => s.done).map(s => s.w || 0)),
       best: Math.max(0, ...held),
       ok: goal > 0 && enough && held.length > 0 && held.every(h => h >= goal)
@@ -137,7 +228,7 @@ export function readSession(entry, fallback) {
   const goal = target.reps || 0
   const reps = sets.map(s => (s.done ? (s.r || 0) : 0))
   return {
-    mode, goal, reps,
+    mode, target, goal, reps,
     weight: Math.max(0, ...sets.filter(s => s.done).map(s => s.w || 0)),
     count: reps.length,                                   // the dimension bodyweight work grows (#33)
     low: reps.length ? Math.min(...reps) : 0,
@@ -235,12 +326,62 @@ export function nextPrescription(S, cfg, routine) {
     const next = goal + repStep(cfg)
     return { policy, kind: 'up', weight: 0, reps: next, why: ['Bodyweight — every rep last time, so go for {0} this time.', next] }
   }
+
+  // Epley deloads apply only to externally loaded rep work. Keep the prescribed target from the
+  // session that stalled (falling back field-by-field to the current config), while the logged
+  // weight remains the hard upper bound for the selected candidate.
+  const epleyDeload = () => {
+    if (mode !== 'reps' || (policy !== 'linear' && policy !== 'double')) return null
+    const previous = last.target || {}
+    const target = {
+      ...cfg,
+      ...previous,
+      weight: previous.weight ?? cfg.weight,
+      reps: previous.reps ?? cfg.reps,
+      repsMin: previous.repsMin ?? cfg.repsMin,
+      sets: previous.sets ?? cfg.sets,
+      bodyweight: previous.bodyweight ?? cfg.bodyweight,
+      side: previous.side ?? cfg.side,
+      intensifier: previous.intensifier ?? cfg.intensifier
+    }
+    // Rest-pause rows have burst reps rather than an independent rep prescription. Warm-up rows
+    // are already removed by readSession; bodyweight (including added-weight bodyweight) stays
+    // on the ordinary non-load progression path.
+    if (isBw(target) || target.intensifier?.type === 'restpause') return null
+    const candidate = selectDeloadCandidate({
+      currentWeight: w,
+      targetWeight: target.weight,
+      targetReps: target.reps,
+      step: inc,
+      factor: deloadFactorOf(cfg),
+      reps: target.reps,
+      repsMin: policy === 'double' ? target.repsMin : undefined,
+      perSide: isPerSide(target)
+    })
+    if (!candidate) return null
+    const held = candidate.weight >= w
+    return {
+      policy,
+      kind: 'deload',
+      weight: candidate.weight,
+      reps: candidate.reps,
+      sets: target.sets,
+      target1RM: candidate.target1RM,
+      deloadFactor: candidate.factor,
+      why: held
+        ? ['Stalled {0} sessions — hold {1} {2} and use {3} reps.', stalls, candidate.weight, unit, candidate.reps]
+        : ['Stalled {0} sessions — Epley deload to {1} {2} for {3} reps.', stalls, candidate.weight, unit, candidate.reps]
+    }
+  }
+
   if (policy === 'double') {
     const range = normalizeRepRange(cfg.reps || last.goal || 10, cfg.repsMin, repStep(cfg))
     const top = range.reps
     const bottom = range.repsMin
     if (last.ok) return { policy, kind: 'up', weight: snapWeight(w + inc, inc), reps: bottom, why: ['Top of the rep range in every set — {0} {1} more, back to {2} reps.', inc, unit, bottom] }
     if (stalls >= deloadAt) {
+      const selected = epleyDeload()
+      if (selected) return selected
       const dw = deloadTo(w, inc)
       return { policy, kind: 'deload', weight: dw, reps: bottom, why: ['Stalled {0} sessions — deload to {1} {2}.', stalls, dw, unit] }
     }
@@ -262,6 +403,8 @@ export function nextPrescription(S, cfg, routine) {
     }
   }
   if (stalls >= deloadAt) {
+    const selected = epleyDeload()
+    if (selected) return selected
     const dw = deloadTo(w, inc)
     return {
       policy, kind: 'deload', weight: dw,

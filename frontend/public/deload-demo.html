@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>openGym Epley deload demo</title>
+  <style>
+    :root { color-scheme: dark; font-family: system-ui, sans-serif; background: #10151b; color: #edf2f7; }
+    body { max-width: 860px; margin: 0 auto; padding: 28px 18px 48px; }
+    h1 { margin: 0 0 8px; font-size: 1.55rem; }
+    .muted { color: #9aa8b5; line-height: 1.5; }
+    .panel { background: #18212b; border: 1px solid #2c3b49; border-radius: 14px; padding: 18px; margin-top: 16px; }
+    label { display: block; color: #b8c6d3; font-size: .86rem; margin-bottom: 6px; }
+    select, button { font: inherit; border-radius: 9px; border: 1px solid #405464; padding: 10px 12px; background: #111a22; color: inherit; }
+    button { cursor: pointer; background: #2c8c70; border-color: #42b992; font-weight: 650; }
+    button:hover { background: #35a17f; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; margin-top: 16px; }
+    .card { background: #111a22; border-radius: 10px; padding: 13px; }
+    .k { color: #90a3b4; font-size: .78rem; text-transform: uppercase; letter-spacing: .04em; }
+    .v { font-size: 1.15rem; font-weight: 700; margin-top: 4px; }
+    .ok { color: #63dbad; }
+    .warn { color: #ffd27a; }
+    code { color: #a9d8ff; }
+  </style>
+</head>
+<body>
+  <h1>Epley-based automatic deload</h1>
+  <p class="muted">Synthetic review fixture. Select a predefined case, then trigger the deload. The
+    target 1RM uses the prescribed weight and reps; a partial failure does not substitute the lower
+    actual reps. Output load is always bounded by the attempted current load.</p>
+  <div class="panel">
+    <label for="preset">Preset scenario</label>
+    <select id="preset">
+      <option value="linear">Linear · 60 kg × 8</option>
+      <option value="double">Double · 40 kg × 12 · range 8–12</option>
+      <option value="side">Per-side · 60 kg × 8 total</option>
+      <option value="small">Below-step · 1 kg × 5 · step 2.5</option>
+      <option value="partial">Partial failure · target 60 × 8, actual 60 × 6</option>
+    </select>
+    <button id="trigger" type="button">Trigger deload</button>
+    <div id="result" class="grid" aria-live="polite"></div>
+  </div>
+  <div class="panel muted">
+    <strong>What to check</strong>
+    <ul>
+      <li>Linear keeps the prescribed reps and moves to the nearest valid load grid.</li>
+      <li>Double progression can keep the current load with fewer reps when that is the closest valid Epley solution.</li>
+      <li>Per-side estimates use reps per side and return an even total.</li>
+      <li>The below-step case holds 1 kg rather than incorrectly increasing it to 2.5 kg.</li>
+    </ul>
+    <div>Formula: <code>1RM = weight × (1 + reps / 30)</code>; deload target = estimated 1RM × <code>0.9</code>.</div>
+  </div>
+  <script>
+    const PRESETS = {
+      linear: { label: 'Linear', weight: 60, reps: 8, step: 2.5 },
+      double: { label: 'Double 8–12', weight: 40, reps: 12, repsMin: 8, step: 2.5 },
+      side: { label: 'Per-side', weight: 60, reps: 8, step: 2.5, side: true },
+      small: { label: 'Below-step', weight: 1, reps: 5, step: 2.5 },
+      partial: { label: 'Partial failure', weight: 60, reps: 8, actual: 6, step: 2.5 }
+    }
+    const round = n => Math.round(n * 10) / 10
+    const snap = (n, step) => Math.round(n / step) * step
+    const epley = (weight, reps, side) => weight * (1 + (side ? reps / 2 : reps) / 30)
+    function choose(p) {
+      const target = round(epley(p.weight, p.reps, p.side) * .9)
+      const min = p.repsMin || p.reps
+      const stride = p.side ? 2 : 1
+      const reps = []
+      for (let r = p.reps; r >= min; r -= stride) reps.push(r)
+      const candidates = []
+      for (const r of reps) {
+        const ideal = target / (1 + (p.side ? r / 2 : r) / 30)
+        for (const w of new Set([snap(ideal, p.step), Math.floor(ideal / p.step) * p.step])) {
+          if (w > 0 && w <= p.weight) candidates.push({ w, r })
+        }
+        if (r < p.reps) candidates.push({ w: p.weight, r })
+      }
+      if (!candidates.length) candidates.push({ w: p.weight, r: p.reps })
+      candidates.sort((a, b) => Math.abs(epley(a.w, a.r, p.side) - target) - Math.abs(epley(b.w, b.r, p.side) - target) || Math.abs(a.r - p.reps) - Math.abs(b.r - p.reps))
+      const best = candidates[0]
+      return { target, weight: best.w, reps: best.r, actual: p.actual || p.reps }
+    }
+    function oldDeload(p) { return Math.max(p.step, snap(p.weight * .9, p.step)) }
+    function card(k, v, cls = '') { return `<div class="card"><div class="k">${k}</div><div class="v ${cls}">${v}</div></div>` }
+    function render(triggered = false) {
+      const p = PRESETS[document.querySelector('#preset').value]
+      const r = triggered ? choose(p) : null
+      const target = round(epley(p.weight, p.reps, p.side) * .9)
+      const shown = r || { weight: '—', reps: '—', actual: p.actual || p.reps }
+      const safe = !r || r.weight <= p.weight
+      document.querySelector('#result').innerHTML = [
+        card('Scenario', p.label), card('Current target', `${p.weight} kg × ${p.reps}`),
+        card('Actual logged reps', `${p.actual || p.reps} (target reps remain ${p.reps})`),
+        card('Old deload', `${oldDeload(p)} kg × ${p.reps}`), card('Epley deload 1RM', `${target} kg`),
+        card('New selected target', triggered ? `${shown.weight} kg × ${shown.reps}` : 'Press Trigger deload'),
+        card('Safety bound', safe ? 'weight ≤ current ✓' : 'INVALID: increased load', safe ? 'ok' : 'warn')
+      ].join('')
+    }
+    document.querySelector('#trigger').addEventListener('click', () => render(true))
+    document.querySelector('#preset').addEventListener('change', () => render(false))
+    render(false)
+  </script>
+</body>
+</html>

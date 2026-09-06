@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { buildSessionEntries } from './session-start.js'
+import { readSession } from './progression.js'
 import { isWarmupRow } from './workout-model.js'
 
 // The session builder used by the live start and by "log a past workout".
@@ -19,5 +20,29 @@ describe('buildSessionEntries', () => {
     const r = { id: 'r', prog: 'off', ex: [{ id: '0025', mode: 'time', sets: 2, sec: 30, inc: 10, weight: 0 }] }
     const { entries } = buildSessionEntries(st, r)
     expect(entries[0].sets.every(s => s.sec === 30)).toBe(true)
+  })
+
+  it('persists the effective deload target so completing the opened rows reads as a hit', () => {
+    const cfg = { id: '0025', sets: 3, reps: 8, weight: 60, prog: 'linear' }
+    const st = {
+      unit: 'kg', exWeights: {}, routines: [],
+      workouts: [1, 2, 3].map((n) => ({
+        d: `2026-01-0${n}`,
+        entries: [{
+          id: cfg.id,
+          target: { sets: 3, reps: 8, weight: 60 },
+          sets: [6, 6, 6].map(r => ({ w: 60, r, done: true }))
+        }]
+      }))
+    }
+    const r = { id: 'r', prog: 'linear', ex: [cfg] }
+    const { entries } = buildSessionEntries(st, r)
+    const entry = entries[0]
+    const work = entry.sets.filter(s => !isWarmupRow(s))
+
+    expect(entry.plan.kind).toBe('deload')
+    expect(entry.target).toMatchObject({ reps: entry.plan.reps, weight: entry.plan.weight })
+    expect(readSession({ ...entry, sets: entry.sets.map(s => ({ ...s, done: true })) }, cfg).ok).toBe(true)
+    expect(work.every(s => s.r === entry.target.reps && s.w === entry.target.weight)).toBe(true)
   })
 })

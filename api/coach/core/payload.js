@@ -136,7 +136,10 @@ export function canonicalPlan(S) {
         };
       })
     })),
-    week: Object.fromEntries([1, 2, 3, 4, 5, 6, 0].filter(d => S.week?.[d]).map(d => [d, S.week[d]]))
+    // A weekday holds a routine-id list. `[].concat` folds a legacy bare string and a
+    // one-element list to the same shape (so their fingerprint is identical); `?.length` keeps
+    // a stray `[]` out; insertion order is preserved and never sorted (it is the merge order).
+    week: Object.fromEntries([1, 2, 3, 4, 5, 6, 0].filter(d => S.week?.[d]?.length).map(d => [d, [].concat(S.week[d])]))
   };
 }
 
@@ -145,7 +148,7 @@ export function cleanPlan(S) {
     id: r.id, name: r.name, emoji: r.emoji, ...(r.prog ? { prog: r.prog } : {}), ex: (r.ex || []).map(cleanEx)
   }));
   const week = {};
-  [1, 2, 3, 4, 5, 6, 0].forEach(d => { if (S.week?.[d]) week[d] = S.week[d]; });
+  [1, 2, 3, 4, 5, 6, 0].forEach(d => { if (S.week?.[d]?.length) week[d] = [].concat(S.week[d]); });
   return { routines, week };
 }
 
@@ -189,7 +192,8 @@ function aggregates(S, workouts) {
 
   // Adherence: what the week asked for against what actually happened.
   const trained = new Set(workouts.map(w => w.d));
-  const plannedDays = Object.keys(S.week || {}).filter(k => S.week[k]).length;
+  // A combined day already counts as 1 — this counts days scheduled, not routines.
+  const plannedDays = Object.keys(S.week || {}).filter(k => S.week[k]?.length).length;
   const reschedules = Object.entries(S.dayPlan || {}).filter(([d]) => workouts.some(w => w.d === d) || d >= (workouts[0]?.d || '')).length;
 
   // Muscle coverage in the window, by body part — the "not trained" gap the Stats screen shows.

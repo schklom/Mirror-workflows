@@ -3,7 +3,7 @@ import {
   canonicalPlan, planHash, hashPlan, markStale, applicable, currentValue,
   pushSnapshot, revertLast, canRevert, appendLog, applyChangeSet, applyCreatedPlan,
   recordDismissal, validateProposal, coachAvailable, hasConsent,
-  recordDebrief, logEntry, lightBundle,
+  recordDebrief, logEntry, lightBundle, changeValues,
   CHANGE_TYPES, SNAPSHOT_MAX, LOG_MAX, CONSENT_VERSION
 } from './coach.js'
 import { registerCustom } from './exercises.js'
@@ -100,11 +100,30 @@ describe('plan fingerprint', () => {
     const withFlags = state()
     withFlags.routines[0].ex[0] = { ...withFlags.routines[0].ex[0], repsMin: 8, repsMax: 20, bodyweight: true }
     withFlags.routines[1].ex[0] = { ...withFlags.routines[1].ex[0], side: true, reps: 16 }
-    for (const S of [state(), state({ week: {} }), state({ routines: [] }), withFlags]) {
+    const combined = state({ week: { 1: ['r1', 'r2'], 3: 'r2', 5: [] } })
+    for (const S of [state(), state({ week: {} }), state({ routines: [] }), withFlags, combined]) {
       expect(canonicalPlan(S)).toEqual(serverPayload.canonicalPlan(S))
       expect(planHash(S)).toBe(serverHashPlan(serverPayload.canonicalPlan(S)))
       expect(hashPlan(canonicalPlan(S))).toBe(serverHashPlan(serverPayload.canonicalPlan(S)))
     }
+  })
+
+  it('a combined day changes the fingerprint, and routine order within a day matters', () => {
+    const S = state()
+    expect(planHash(state({ week: { ...S.week, 3: ['r2', 'r1'] } }))).not.toBe(planHash(S))
+    expect(planHash(state({ week: { 3: ['r1', 'r2'] } }))).not.toBe(planHash(state({ week: { 3: ['r2', 'r1'] } })))
+  })
+
+  it('a legacy bare-string day and its one-element list are the same fingerprint (upgrade stability)', () => {
+    expect(planHash(state({ week: { 1: 'r1' } }))).toBe(planHash(state({ week: { 1: ['r1'] } })))
+    // and a stray [] is dropped, exactly like an absent key
+    expect(planHash(state({ week: { 1: ['r1'], 4: [] } }))).toBe(planHash(state({ week: { 1: ['r1'] } })))
+  })
+
+  it('canonicalPlan omits a [] day and preserves routine order', () => {
+    expect(canonicalPlan(state({ week: { 2: [] } })).week).toEqual({})
+    expect(canonicalPlan(state({ week: { 3: ['r2', 'r3'] } })).week[3]).toEqual(['r2', 'r3'])
+    expect(canonicalPlan(state({ week: { 3: ['r3', 'r2'] } })).week[3]).toEqual(['r3', 'r2'])
   })
 })
 
@@ -135,6 +154,17 @@ describe('staleness', () => {
     expect(c.status).toBe('proposed')
   })
 
+  it('compares a combined-day week change by its canonical routine-list join', () => {
+    const wk = (weekday, before) => proposal([change({ type: 'week', target: { weekday }, before, after: 'r1' })])
+    const S = state({ week: { 1: ['r1', 'r2'] } })
+    // live matches the list the Coach saw → not stale
+    expect(markStale(wk(1, ['r1', 'r2']), S).changes[0].status).toBe('proposed')
+    // a legacy scalar `before` still compares equal to a one-element live list
+    expect(markStale(wk(1, 'r1'), state({ week: { 1: ['r1'] } })).changes[0].status).toBe('proposed')
+    // the day gained a routine since → stale
+    expect(markStale(wk(1, ['r1', 'r2']), state({ week: { 1: ['r1', 'r2', 'r3'] } })).changes[0].status).toBe('stale')
+  })
+
   it('reads the current value for every scalar change type', () => {
     const S = state()
     S.routines[0].ex[0].repsMax = 20
@@ -143,7 +173,7 @@ describe('staleness', () => {
     expect(currentValue(S, change({ type: 'repsMax' }))).toBe(20)
     expect(currentValue(S, change({ type: 'exercise-prog' }))).toBe('linear')
     expect(currentValue(S, change({ type: 'routine-prog' }))).toBe('linear')
-    expect(currentValue(S, change({ type: 'week', target: { weekday: 1 } }))).toBe('r1')
+    expect(currentValue(S, change({ type: 'week', target: { weekday: 1 } }))).toEqual(['r1'])   // a routine-id list; [] = rest
   })
 })
 
@@ -269,11 +299,26 @@ describe('applying changes', () => {
     expect(removed.week[3]).toBeUndefined()      // Wednesday pointed at r2
   })
 
-  it('moves a day, and clears one', () => {
+  it('moves a day, and clears one — the slot stays a routine-id list', () => {
     const moved = apply(state(), proposal([change({ type: 'week', target: { weekday: 6 }, before: null, after: 'r1' })]), ['c1'])
-    expect(moved.week[6]).toBe('r1')
+    expect(moved.week[6]).toEqual(['r1'])
     const cleared = apply(state(), proposal([change({ type: 'week', target: { weekday: 1 }, before: 'r1', after: 'rest' })]), ['c1'])
     expect(cleared.week[1]).toBeUndefined()
+  })
+
+  it('collapses a combined day to the single routine the Coach named', () => {
+    const S = state()
+    S.week = { ...S.week, 3: ['r2', 'r1'] }
+    const out = apply(S, proposal([change({ type: 'week', target: { weekday: 3 }, before: ['r2', 'r1'], after: 'r1' })]), ['c1'])
+    expect(out.week[3]).toEqual(['r1'])
+  })
+
+  it('changeValues renders a combined-day before/after as joined routine names, not a count', () => {
+    const S = state()
+    const c = { type: 'week', target: { weekday: 3 }, before: ['r1', 'r2'], after: 'r1' }
+    expect(changeValues(c, S)).toEqual({ before: 'Full body A + Full body B', after: 'Full body A' })
+    expect(changeValues({ type: 'week', target: { weekday: 3 }, before: ['r1', 'r2'], after: 'rest' }, S).after).toBe('Rest')
+    expect(changeValues({ type: 'week', target: { weekday: 3 }, before: null, after: 'r2' }, S).before).toBe('Rest')
   })
 
   it('never touches history, weigh-ins or settings', () => {

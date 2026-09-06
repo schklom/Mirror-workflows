@@ -4,7 +4,7 @@ import { useUI } from './store/useUI.js'
 import { EXDB, EXIDX, BODYPARTS, isCardio, isBodyweightEq, allExercises, equipmentOf, smOf, matchExercise, exOr } from './lib/exercises.js'
 import { activeProfile, exAvailable, ALL_EQUIPMENT, newProfile } from './lib/equipment.js'
 import { fmtDate, fmtNum, fmtVol, fmtDur, durPart, todayISO, isoOf, uid, exCount, DAYN, DAYS, weekOrder, weekStartOf, weekDayOffset, MONTHS_LONG, ACCENTS } from './lib/format.js'
-import { lastEntryFor, bestWeightFor, bestWeightForEntry, buildSets, effectiveRoutineId, workoutVolume, setsDone, setsDoneActive, lastBW, supersetUnits, unitOf, setLabel, defaultConfig, cleanupSg, modeOf, effortOf, EFFORT, capEffort, stepEffort, isBw, isPerSide, sideReps, workSetsDone, applyIntensifierPlan, MAX_PLANNED_WARMUPS, NOTE_MAX } from './lib/history.js'
+import { lastEntryFor, bestWeightFor, bestWeightForEntry, buildSets, effectiveRoutineIds, workoutVolume, setsDone, setsDoneActive, lastBW, supersetUnits, unitOf, setLabel, defaultConfig, cleanupSg, modeOf, effortOf, EFFORT, capEffort, stepEffort, isBw, isPerSide, sideReps, workSetsDone, applyIntensifierPlan, MAX_PLANNED_WARMUPS, NOTE_MAX } from './lib/history.js'
 import { usesBar, barWeightFor, defaultBarWeight, hasBarOverride } from './lib/bar.js'
 import { toScale, rirOf, EFFORT_PRESETS, effortColor } from './lib/effort.js'
 import { beep, vibrate } from './lib/sound.js'
@@ -35,6 +35,7 @@ import { swapActiveExercise } from './lib/active-exercise-swap.js'
 import { useSheetKeyboard, useRevealActiveChip, tappable } from './lib/use-sheet-keyboard.js'
 import { isFav, toggleFav, sortFavouritesFirst } from './lib/favourites.js'
 import { buildSessionEntries } from './lib/session-start.js'
+import { buildCombinedEntries, deriveSessionName } from './lib/session-merge.js'
 import { workoutsOn, backfillStart, backfillEnd, completeBackfill } from './lib/backfill.js'
 
 const S = () => useStore.getState().S
@@ -950,20 +951,25 @@ export function swapActiveWorkoutExercise(index) {
     picker.close()
     const full = { ...cfg, id: ex.id }
     const st = S()
+    const current = st.active?.entries?.[index]
+    if (!current) return
+    // A swap is an in-place substitution — routine identity is unchanged, so the replacement
+    // keeps the slot's own `rid` and reads its prescription from that routine (not a
+    // session-wide one). A slot with no `rid` is freestyle.
+    const slotRoutine = current.rid ? st.routines.find(r => r.id === current.rid) : null
+    const freestyle = !slotRoutine
     // Same rows the add flow builds: last time's loads and, in a planned session, the
     // prescription — swapping barbell for dumbbell bench must not start you at an empty bar.
-    const freestyle = !st.active?.routineId
     const step = modeOf(full) === 'reps' ? weightIncrement(full, st.unit) : defaultIncrement(ex.id, st.unit)
-    const plan = freestyle ? null : nextPrescription(st, full, st.routines.find(r => r.id === st.active.routineId))
+    const plan = freestyle ? null : nextPrescription(st, full, slotRoutine)
     const built = buildSets(st, full, { step, ...(freestyle ? { preferLast: true } : {}), ...(plan?.kind === 'off' ? { useTarget: true } : {}) })
     const replacement = {
       id: ex.id,
       target: { ...cfg },
       plan,
-      sets: applyIntensifierPlan(freestyle ? built : applyPrescription(built, plan, step), full)
+      sets: applyIntensifierPlan(freestyle ? built : applyPrescription(built, plan, step), full),
+      ...(current.rid ? { rid: current.rid } : {}),
     }
-    const current = S().active?.entries?.[index]
-    if (!current) return
 
     const apply = options => {
       // A timed callback closes over entry/set indexes. Invalidate it, and the current rest,
@@ -1505,9 +1511,12 @@ function PlanImport({ bundle, close }) {
 function DayOverride({ iso, close }) {
   const st = useStore(s => s.S)
   const wd = new Date(iso + 'T12:00:00').getDay()
-  const weeklyR = st.routines.find(r => r.id === st.week[wd])
+  const weeklyNames = [].concat(st.week[wd] || []).map(id => st.routines.find(r => r.id === id)?.name).filter(Boolean)
   const hasOvr = st.dayPlan[iso] !== undefined
-  const effId = effectiveRoutineId(st, iso)
+  // A weekday can hold several routines; the per-date override stays single-pick, so picking
+  // one here collapses a combined day to it (docs/COMBINE_ROUTINES.md §8). The check marks
+  // show everything currently planned for the day.
+  const effIds = effectiveRoutineIds(st, iso)
   const set = v => {
     update(s => { if (!v) delete s.dayPlan[iso]; else s.dayPlan[iso] = v })
     close()
@@ -1515,13 +1524,13 @@ function DayOverride({ iso, close }) {
   }
   return <>
     <h3>{fmtDate(iso, true)}</h3>
-    <div className="muted small" style={{ marginBottom: 12 }}>{t('Weekly plan:')} {weeklyR ? weeklyR.name : t('Rest')}{hasOvr && <span style={{ color: 'var(--orange)' }}> · {t('changed for this day')}</span>}<br />{t('Sick, missed a day or want a different session? Pick what to train instead.')}</div>
+    <div className="muted small" style={{ marginBottom: 12 }}>{t('Weekly plan:')} {weeklyNames.length ? deriveSessionName(weeklyNames) : t('Rest')}{hasOvr && <span style={{ color: 'var(--orange)' }}> · {t('changed for this day')}</span>}<br />{t('Sick, missed a day or want a different session? Pick what to train instead.')}</div>
     <div className="list">
       {st.routines.map(r => <div key={r.id} className="item" {...tappable(() => set(r.id))}>
         <span className="lrow-i"><Icon name={glyphOf(r.emoji)} /></span>
         <div className="grow"><div className="tt">{r.name}</div><div className="ss">{exCount(r.ex.length)}</div></div>
-        {effId === r.id && <Icon name="check" className="accent" />}</div>)}
-      <div className="item" {...tappable(() => set('rest'))}><span className="lrow-i" style={{ background: 'var(--surface-3)' }}><Icon name="moon" /></span><div className="grow"><div className="tt">{t('Rest / skip this day')}</div></div>{effId === null && <Icon name="check" className="accent" />}</div>
+        {effIds.includes(r.id) && <Icon name="check" className="accent" />}</div>)}
+      <div className="item" {...tappable(() => set('rest'))}><span className="lrow-i" style={{ background: 'var(--surface-3)' }}><Icon name="moon" /></span><div className="grow"><div className="tt">{t('Rest / skip this day')}</div></div>{effIds.length === 0 && <Icon name="check" className="accent" />}</div>
       {hasOvr && <div className="item" {...tappable(() => set(''))}><span className="lrow-i" style={{ background: 'var(--surface-3)' }}><Icon name="reset" /></span><div className="grow"><div className="tt">{t('Back to weekly plan')}</div></div></div>}
     </div>
   </>
@@ -1530,15 +1539,18 @@ export const dayOverrideSheet = iso => ui().openSheet(close => <DayOverride iso=
 
 function DayAssign({ day, close }) {
   const st = useStore(s => s.S)
-  const set = v => { update(s => { if (v) s.week[day] = v; else delete s.week[day] }); close() }
+  // A weekday holds a routine-id list; this single-pick sheet sets the day to exactly one
+  // routine (or rest). The inline per-day management on the Plan screen is what appends.
+  const cur = [].concat(st.week[day] || [])
+  const set = v => { update(s => { if (v) s.week[day] = [v]; else delete s.week[day] }); close() }
   return <>
     <h3>{t(DAYN[day])}</h3>
     <div className="list">
-      <div className="item" {...tappable(() => set(''))}><span className="lrow-i" style={{ background: 'var(--surface-3)' }}><Icon name="moon" /></span><div className="grow"><div className="tt">{t('Rest day')}</div></div>{!st.week[day] && <Icon name="check" className="accent" />}</div>
+      <div className="item" {...tappable(() => set(''))}><span className="lrow-i" style={{ background: 'var(--surface-3)' }}><Icon name="moon" /></span><div className="grow"><div className="tt">{t('Rest day')}</div></div>{!cur.length && <Icon name="check" className="accent" />}</div>
       {st.routines.map(r => <div key={r.id} className="item" {...tappable(() => set(r.id))}>
         <span className="lrow-i"><Icon name={glyphOf(r.emoji)} /></span>
         <div className="grow"><div className="tt">{r.name}</div><div className="ss">{exCount(r.ex.length)}</div></div>
-        {st.week[day] === r.id && <Icon name="check" className="accent" />}</div>)}
+        {cur.includes(r.id) && <Icon name="check" className="accent" />}</div>)}
     </div>
   </>
 }
@@ -1617,8 +1629,8 @@ function Calendar({ start, close }) {
   for (let i = 0; i < startOffset; i++) cells.push(<div key={'e' + i} />)
   for (let d = 1; d <= daysIn; d++) {
     const iso = y + '-' + String(mo + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0')
-    const ws = byDay[iso], effId = effectiveRoutineId(st, iso), ovr = st.dayPlan[iso] !== undefined
-    const dotCls = ws ? 'done' : ovr && effId ? 'ovr' : effId ? 'plan' : ''
+    const ws = byDay[iso], planned = effectiveRoutineIds(st, iso).length > 0, ovr = st.dayPlan[iso] !== undefined
+    const dotCls = ws ? 'done' : ovr && planned ? 'ovr' : planned ? 'plan' : ''
     cells.push(<button key={d} className={'cal-d' + (ws ? ' has' : '') + (iso === todayISO() ? ' today' : '')} onClick={() => {
       if (!ws) { close(); dayOverrideSheet(iso); return }
       if (ws.length === 1) { close(); workoutDetailSheet(ws[0]); return }
@@ -1657,21 +1669,25 @@ export function WorkoutRow({ w, onClick }) {
 }
 
 /* ============================ workout lifecycle ============================ */
-export function startFlow(routineId) {
-  bwSheet({ required: true, onDone: bw => beginWorkout(routineId, bw) })
+// `routineIds` accepts `string | string[] | null` — `[r.id]` for one routine,
+// `effectiveRoutineIds(...)` for today's planned session, `[]` / null for explicit freestyle.
+export function startFlow(routineIds) {
+  bwSheet({ required: true, onDone: bw => beginWorkout(routineIds, bw) })
 }
-export function beginWorkout(routineId, bw) {
+export function beginWorkout(routineIds, bw) {
   const st = S()
-  const r = routineId ? st.routines.find(x => x.id === routineId) : null
-  const { entries, excluded } = buildSessionEntries(st, r)
+  const { entries, routineIds: rids, routines } = buildCombinedEntries(st, routineIds)
   update(s => {
     s.active = {
-      id: uid(), d: todayISO(), start: Date.now(), routineId,
-      name: r ? r.name : t('Freestyle'), bw: bw || null, cur: 0, entries,
+      id: uid(), d: todayISO(), start: Date.now(),
+      // A session tracks its routines as a list; per-entry `rid` carries which one each
+      // exercise came from. No top-level `excludeFromProgression` — per-entry `noProg` does it.
+      routineIds: rids,
+      name: routines.length ? deriveSessionName(routines.map(r => r.name)) : t('Freestyle'),
+      bw: bw || null, cur: 0, entries,
       // Snapshot the layout at start so the header ⋮ can change it for this session only —
       // changing the saved default (Settings → Workout view) mid-session leaves it alone.
       workoutView: st.workoutView || 'cards',
-      ...(excluded ? { excludeFromProgression: true } : {})
     }
   })
   useUI.getState().stopRest()
@@ -1736,18 +1752,20 @@ export function logPastWorkoutSheet() {
   if (S().active) { toast(t('Finish the current workout first.')); return }
   ui().openSheet(close => <LogPastWorkout close={close} />)
 }
+// Backfill stays single-routine (the LogPastWorkout UI is one picker), but it emits the new
+// shape: a one-element (or empty) routine list, per-entry rid, no top-level routineId.
 function beginBackfill({ iso, time, durationMin, routineId, replaceId }) {
   const st = S()
-  const r = routineId ? st.routines.find(x => x.id === routineId) : null
-  const { entries, excluded } = buildSessionEntries(st, r)
+  const { entries, routineIds: rids, routines } = buildCombinedEntries(st, routineId ? [routineId] : [])
   update(s => {
     s.active = {
-      id: uid(), d: iso, start: backfillStart(iso, time), routineId,
-      name: r ? r.name : t('Freestyle'), bw: null, cur: 0, entries,
+      id: uid(), d: iso, start: backfillStart(iso, time),
+      routineIds: rids,
+      name: routines.length ? deriveSessionName(routines.map(r => r.name)) : t('Freestyle'),
+      bw: null, cur: 0, entries,
       backfill: { durationMin, replaceId: replaceId || null },
       // Same layout snapshot as a live session (see beginWorkout).
       workoutView: st.workoutView || 'cards',
-      ...(excluded ? { excludeFromProgression: true } : {})
     }
   })
   useUI.getState().stopRest()

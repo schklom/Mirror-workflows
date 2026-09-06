@@ -446,7 +446,12 @@ export default function RoutineEdit() {
       onConfirm: () => {
         update(s => {
           s.routines = s.routines.filter(x => x.id !== id)
-          Object.keys(s.week).forEach(k => { if (s.week[k] === id) delete s.week[k] })
+          // A weekday holds a routine-id list: pull the deleted id from each day, drop the
+          // key when it empties (never store []). dayPlan stays scalar.
+          Object.keys(s.week).forEach(k => {
+            const next = [].concat(s.week[k]).filter(rid => rid !== id)
+            if (next.length) s.week[k] = next; else delete s.week[k]
+          })
           Object.keys(s.dayPlan).forEach(k => { if (s.dayPlan[k] === id) delete s.dayPlan[k] })
         })
         nav('/plan')

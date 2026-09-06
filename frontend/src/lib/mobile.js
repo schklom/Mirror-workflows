@@ -11,7 +11,7 @@
 // web bundles; the Capacitor plugins are only ever imported behind it.
 import { t } from './i18n-core.js'
 import { isoOf, todayISO } from './format.js'
-import { effectiveRoutineId } from './history.js'
+import { effectiveRoutineIds } from './history.js'
 
 export const MOBILE = import.meta.env.VITE_MOBILE === '1'
 
@@ -108,16 +108,17 @@ export function buildReminderNotifications(S, now = new Date()) {
     day.setDate(date.getDate() + offset)
     const iso = isoOf(day)
     if (completed.has(iso)) continue
-    const rid = effectiveRoutineId(state, iso)
-    const routine = routines.find(x => x.id === rid)
-    if (!routine) continue
+    // A weekday can hold several routines; name them all, or fall back to a count.
+    const dayRoutines = effectiveRoutineIds(state, iso).map(id => routines.find(x => x.id === id)).filter(Boolean)
+    if (!dayRoutines.length) continue
+    const label = dayRoutines.length <= 2 ? dayRoutines.map(r => r.name).join(' + ') : t('{0} routines', dayRoutines.length)
     const at = new Date(day)
     at.setHours(hour, minute, 0, 0)
     if (at <= now) continue
     notifications.push({
       id: REMINDER_ID_BASE + offset,
       title: t('Workout day'),
-      body: t('{0} is on the plan today — let’s go!', routine.name),
+      body: t('{0} is on the plan today — let’s go!', label),
       schedule: { at, allowWhileIdle: true },
     })
   }

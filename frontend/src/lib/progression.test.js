@@ -409,6 +409,16 @@ describe('double progression', () => {
     expect(p.target1RM).toBe(deloadTarget1RM(40, 12))
   })
 
+  it('keeps a 5 kg load and lowers reps when that is closer than a 50% weight cut', () => {
+    const small = { id: LIFT, sets: 3, reps: 8, repsMin: 4, weight: 5, inc: 2.5, prog: 'double' }
+    const target = { sets: 3, reps: 8, weight: 5 }
+    const p = nextPrescription(hist(LIFT, [[5, 6, 6, 6], [5, 6, 6, 6], [5, 6, 6, 6]], target), small)
+    expect(p.kind).toBe('deload')
+    expect(p.weight).toBe(5)
+    expect(p.reps).toBe(4)
+    expect(p.target1RM).toBe(deloadTarget1RM(5, 8))
+  })
+
   it('uses half the reps for per-side Epley and returns an even total', () => {
     const perSide = { ...cfg, reps: 8, side: true }
     const target = { sets: 3, reps: 8, weight: 60, side: true }

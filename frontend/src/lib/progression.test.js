@@ -3,6 +3,7 @@ import {
   readSession, sessionsFor, stallCount, nextPrescription, applyPrescription,
   policyFor, defaultIncrement, weightIncrement, POLICIES_FOR, DELOAD_AFTER, MAX_BW_SETS
 } from './progression.js'
+import { entryExcluded } from './history.js'
 import { EXDB } from './exercises.js'
 
 const LIFT = EXDB.find(e => e.bp !== 'cardio' && !['upper legs', 'lower legs', 'back', 'hips', 'glutes'].includes(e.bp)).id
@@ -440,6 +441,97 @@ describe('sessionsFor', () => {
   it('reads a legacy entry that has no target without crashing', () => {
     const S = { unit: 'kg', workouts: [{ d: '2026-01-01', entries: [{ id: LIFT, sets: [{ w: 60, r: 5, done: true }] }] }] }
     expect(sessionsFor(S, LIFT)).toHaveLength(1)
+  })
+})
+
+// "Excluded from progression" is per-entry now (ENG-11): a rehab routine combined with real
+// work must exclude only its own exercises, not the whole session.
+describe('per-entry noProg (combine routines)', () => {
+  const PRESS = EXDB.find(e => e.bp !== 'cardio' && e.id !== LIFT && !['upper legs', 'lower legs', 'back', 'hips', 'glutes'].includes(e.bp)).id
+  const tgt = w => ({ sets: 3, reps: 5, weight: w })
+  const entry = (id, w, reps, extra) => ({ id, target: tgt(w), sets: reps.map(r => ({ w, r, done: true })), ...extra })
+
+  it('skips a noProg entry for that exercise only, in a mixed combined session', () => {
+    const S = {
+      unit: 'kg',
+      workouts: [{
+        d: '2026-02-01',
+        routineIds: ['strength', 'rehab'],
+        entries: [entry(LIFT, 60, [5, 5, 5]), entry(PRESS, 40, [5, 5, 5], { noProg: true })],
+      }],
+    }
+    expect(sessionsFor(S, LIFT)).toHaveLength(1)
+    expect(sessionsFor(S, PRESS)).toHaveLength(0)
+  })
+
+  it('still advances the non-excluded exercise of a mixed combined session', () => {
+    const S = {
+      unit: 'kg',
+      workouts: [{
+        d: '2026-02-01',
+        entries: [entry(LIFT, 60, [5, 5, 5]), entry(PRESS, 40, [5, 5, 5], { noProg: true })],
+      }],
+    }
+    expect(nextPrescription(S, { id: LIFT, ...tgt(60), prog: 'linear' }).weight).toBe(62.5)
+  })
+
+  it('a noProg gap never becomes the deload / stall baseline', () => {
+    const S = {
+      unit: 'kg',
+      workouts: [
+        { d: '2026-02-01', entries: [entry(LIFT, 60, [5, 5, 5])] },
+        { d: '2026-02-03', entries: [entry(LIFT, 60, [5, 5, 5])] },
+        { d: '2026-02-05', entries: [entry(LIFT, 30, [8, 8, 8], { noProg: true })] },
+      ],
+    }
+    expect(sessionsFor(S, LIFT).map(s => s.d)).toEqual(['2026-02-01', '2026-02-03'])
+    expect(nextPrescription(S, { id: LIFT, ...tgt(60), prog: 'linear' }).weight).toBe(62.5)
+  })
+
+  it('honours a legacy whole-workout excludeFromProgression flag (all entries skipped)', () => {
+    const S = {
+      unit: 'kg',
+      workouts: [
+        { d: '2026-02-01', entries: [entry(LIFT, 60, [5, 5, 5])] },
+        { d: '2026-02-08', excludeFromProgression: true, entries: [entry(LIFT, 30, [8, 8])] },
+      ],
+    }
+    expect(sessionsFor(S, LIFT).map(s => s.d)).toEqual(['2026-02-01'])
+  })
+
+  it('an exercise only ever logged noProg → sessionsFor [] → nextPrescription kind "first"', () => {
+    const S = {
+      unit: 'kg',
+      workouts: [{ d: '2026-02-01', entries: [entry(LIFT, 30, [8, 8, 8], { noProg: true })] }],
+    }
+    expect(sessionsFor(S, LIFT)).toHaveLength(0)
+    expect(nextPrescription(S, { id: LIFT, ...tgt(50), prog: 'linear' }).kind).toBe('first')
+  })
+
+  it('entryExcluded truth table', () => {
+    expect(entryExcluded({}, {})).toBe(false)
+    expect(entryExcluded({ excludeFromProgression: true }, {})).toBe(true)
+    expect(entryExcluded({}, { noProg: true })).toBe(true)
+    expect(entryExcluded({ excludeFromProgression: true }, { noProg: true })).toBe(true)
+  })
+
+  it('stallCount is not reset by a noProg gap at the same weight', () => {
+    // three real misses at 60, with a noProg 60 session interleaved — still streaks to a deload
+    const miss = d => ({ d, entries: [entry(LIFT, 60, [4, 4, 4])] })
+    const S = {
+      unit: 'kg',
+      workouts: [
+        { d: '2026-02-01', entries: [entry(LIFT, 60, [5, 5, 5])] },
+        miss('2026-02-03'),
+        { d: '2026-02-04', entries: [entry(LIFT, 60, [3, 3, 3], { noProg: true })] },
+        miss('2026-02-05'),
+        miss('2026-02-07'),
+      ],
+    }
+    const sessions = sessionsFor(S, LIFT)
+    expect(sessions.map(s => s.d)).toEqual(['2026-02-01', '2026-02-03', '2026-02-05', '2026-02-07'])
+    expect(stallCount(sessions)).toBe(3)
+    expect(nextPrescription(S, { id: LIFT, ...tgt(60), prog: 'linear' }).kind).toBe('deload')
   })
 })
 

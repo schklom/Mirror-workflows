@@ -206,10 +206,28 @@ export function unpairSuperset(items, idx) {
   return next
 }
 
+/**
+ * Is this completed entry excluded from progression / session read-back?
+ *
+ * "Excluded" moved from a whole-workout flag to a per-entry one (ENG-11): a rehab routine
+ * combined with real work excludes only its own exercises. A legacy workout carries the
+ * whole-workout flag and no per-entry field, so every one of its entries reads as excluded.
+ * `noProg` is frozen onto the entry from its source routine's `excludeFromProgression` at
+ * build time — editing the routine flag later never rewrites a saved session.
+ */
+export function entryExcluded(w, entry) {
+  return w?.excludeFromProgression === true || entry?.noProg === true
+}
+
 export function lastEntryFor(S, exId) {
   for (let i = S.workouts.length - 1; i >= 0; i--) {
-    const en = S.workouts[i].entries.find(e => e.id === exId)
+    const w = S.workouts[i]
+    const en = w.entries.find(e => e.id === exId)
     if (!en) continue
+    // A session that does not count — a planned deload, or a rehab block merged into a real
+    // session — is not "last time" for the next regular prescription: its reps and durations
+    // must not seed the rows any more than its weight seeds the progression.
+    if (entryExcluded(w, en)) continue
     // Work sets only. Every caller asks the same question — "what did you actually lift last
     // time" — to seed the next session's rows, to size a freestyle config, and to print "Last
     // time" on the card. A warm-up answers none of them: seeding position 0 from a 50% ramp row
@@ -220,7 +238,7 @@ export function lastEntryFor(S, exId) {
     // `target` is what the session prescribed; finished workouts carry it so labels and the
     // progression engine can read a session back the way it was logged. Older workouts have
     // none — modeOf() falls back to the body part for them, which is what they were.
-    if (done.length) return { d: S.workouts[i].d, sets: done, target: en.target || null }
+    if (done.length) return { d: w.d, sets: done, target: en.target || null }
   }
   return null
 }
@@ -273,33 +291,49 @@ export function bestWeightFor(S, exId) {
   }))
   return best
 }
-export function effectiveRoutineId(S, iso) {
+/**
+ * The routines planned for a date, in merge order. Plural is the primary form now that a
+ * weekday can hold several routines (`S.week[wd]` is `string[]`); the singular helpers below
+ * are thin wrappers. `[]` — a stray empty array, or a key that is absent — all mean rest, so
+ * "is this a rest day?" is `effectiveRoutineIds(S, iso).length === 0`.
+ *
+ * `S.dayPlan[iso]` stays scalar (a routine id, the `'rest'` sentinel, or undefined): the
+ * per-date override and Start-time are single-pick. All array-tolerance is on `S.week`.
+ */
+export function effectiveRoutineIds(S, iso) {
   const ov = S.dayPlan[iso]
-  if (ov === 'rest') return null
-  if (ov && S.routines.some(r => r.id === ov)) return ov
+  if (ov === 'rest') return []
+  if (ov && S.routines.some(r => r.id === ov)) return [ov]
   const wd = new Date(iso + 'T12:00:00').getDay()
-  return S.week[wd] || null
+  return [].concat(S.week[wd] || []).filter(id => S.routines.some(r => r.id === id))
 }
-export function effectiveRoutine(S, iso) {
-  const id = effectiveRoutineId(S, iso)
-  return id ? S.routines.find(r => r.id === id) || null : null
+export function effectiveRoutines(S, iso) {
+  return effectiveRoutineIds(S, iso).map(id => S.routines.find(r => r.id === id)).filter(Boolean)
 }
+export const effectiveRoutineId = (S, iso) => effectiveRoutineIds(S, iso)[0] ?? null
+export const effectiveRoutine = (S, iso) => effectiveRoutines(S, iso)[0] ?? null
 
 /**
  * The next day that actually has something to train, looking forward from `iso` (exclusive).
  *
  * Takes a date string rather than reading the clock so callers and tests agree on "today".
  * A routine with no exercises does not count: starting one lands you in an empty session, so
- * it is not an answer to "what is next" (the same guard TabBar applies before starting).
+ * it is not an answer to "what is next" (the same guard TabBar applies before starting). On a
+ * combined day, any one routine with exercises makes the day trainable.
  * Returns null when the whole week is rest.
+ *
+ * Return shape carries `routines` (the whole day) plus `routine` = `routines[0]` for the
+ * "what's next" label.
  */
 export function nextTrainingDay(S, iso) {
   for (let i = 1; i <= 7; i++) {
     const d = new Date(iso + 'T12:00:00')
     d.setDate(d.getDate() + i)
     const nextIso = isoOf(d)
-    const routine = effectiveRoutine(S, nextIso)
-    if (routine && (routine.ex || []).length) return { iso: nextIso, weekday: d.getDay(), routine }
+    const routines = effectiveRoutines(S, nextIso)
+    if (routines.some(r => (r.ex || []).length)) {
+      return { iso: nextIso, weekday: d.getDay(), routines, routine: routines[0] }
+    }
   }
   return null
 }
@@ -329,13 +363,10 @@ export const MAX_PLANNED_WARMUPS = 5
 function buildWorkSets(S, cfg, options = {}) {
   const preferLast = !!options.preferLast
   const useTarget = !!options.useTarget
-  // A workout flagged excludeFromProgression (a planned deload) is not "last time" for the
-  // next regular session either: its reps and durations must not seed the rows any more than
-  // its weight seeds the prescription. The deload session itself reads the routine's own target.
-  const regular = (S.workouts || []).some(w => w.excludeFromProgression === true)
-    ? { ...S, workouts: S.workouts.filter(w => w.excludeFromProgression !== true) }
-    : S
-  const last = lastEntryFor(regular, cfg.id)
+  // `lastEntryFor` now skips any entry that does not count — a planned deload, or a rehab
+  // block merged into a real session (entryExcluded) — so the rows seed from the last
+  // *counting* session without this function pre-filtering the history itself.
+  const last = lastEntryFor(S, cfg.id)
   const n = Math.max(1, cfg.sets || 1)
   const mode = modeOf(cfg)
   const sets = []

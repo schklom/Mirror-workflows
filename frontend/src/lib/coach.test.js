@@ -449,8 +449,8 @@ describe('created plans', () => {
   it('replaces the week only when asked, and remaps to the new ids', () => {
     const s = JSON.parse(JSON.stringify(state()))
     applyCreatedPlan(s, { id: 'p1', kind: 'create', bundle }, { schedule: true })
-    expect(s.week[1]).toBe(s.routines[2].id)
-    expect(s.week[3]).toBe(s.routines[3].id)
+    expect(s.week[1]).toEqual([s.routines[2].id])           // a weekday holds a routine-id list
+    expect(s.week[3]).toEqual([s.routines[3].id])
     expect(s.week[5]).toBeUndefined()                       // a day the new plan leaves empty is rest
   })
 

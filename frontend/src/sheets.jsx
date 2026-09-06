@@ -103,7 +103,7 @@ export function loadStarterPlan(planId) {
   if (!plan) return false
   update(st => {
     st.routines.push(...plan.routines)
-    plan.schedule.forEach(({ day, routineId }) => { st.week[day] = routineId })
+    plan.schedule.forEach(({ day, routineId }) => { st.week[day] = [routineId] })
   })
   toast(t('{0} loaded', PLAN_COPY[planId]().name))
   return true
@@ -120,7 +120,7 @@ function StarterPlanChooser({ close }) {
     close()
     // A confirmation is only worth showing when one of those days is actually occupied — by a
     // routine that still exists, not by a stale id the Plan already shows as "Rest".
-    const taken = day => week[day] && routines.some(r => r.id === week[day])
+    const taken = day => [].concat(week[day] || []).some(id => routines.some(r => r.id === id))
     if (!days.some(taken)) { loadStarterPlan(id); return }
     confirmSheet({
       title: t('Load {0}?', name),

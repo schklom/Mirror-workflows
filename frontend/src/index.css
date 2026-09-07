@@ -1180,9 +1180,19 @@ h4.sec{
   scroll-snap-align:center;flex:0 0 100%;box-sizing:border-box;
   background:var(--surface);border-radius:var(--r-xl);padding:22px 18px;
   display:flex;flex-direction:column;align-items:center;gap:14px;
+  transition:transform var(--fast),box-shadow var(--fast),opacity var(--fast);
 }
-.ci-card .ci-label{font-size:19px;font-weight:600;letter-spacing:-.014em;text-align:center}
+/* header row: edit — title — trash. The two icon buttons are equal fixed widths so the title,
+   flexed between them, stays optically centered on the card no matter how long it is. */
+.ci-card-hd{display:flex;align-items:center;gap:8px;width:100%}
+.ci-card-btn{width:30px;height:30px;font-size:14px;flex:none}
+.ci-card .ci-label{flex:1;min-width:0;font-size:19px;font-weight:600;letter-spacing:-.014em;text-align:center;overflow-wrap:anywhere}
 .ci-card .ci-value{font-size:14px;color:var(--label-2);word-break:break-all;text-align:center;font-variant-numeric:tabular-nums}
+/* reorder row under a card (only shown with >1 card): ◀ position ▶ to nudge the card one slot
+   along the rail. A plain, reliable control — no drag gesture to fight the horizontal scroll. */
+.ci-reorder{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:2px}
+.ci-reorder .ci-pos{font-size:13px;color:var(--label-2);font-variant-numeric:tabular-nums;min-width:44px;text-align:center}
+.ci-reorder .iconbtn:disabled{opacity:.3;pointer-events:none}
 /* The QR itself: lean-qr paints 1 module per pixel, so scale it up with the browser's
    nearest-neighbour so every module stays a crisp square instead of a blurred blob. White
    quiet-zone padding is baked in by the renderer; the plate underneath just frames it. */

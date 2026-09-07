@@ -5,6 +5,7 @@ import {
   addDrop, addCluster, removeDropAt, removeClusterAt, setDropAt, setClusterAt,
   nextDropWeight, nextBurstReps, splitBurstReps,
   isSideSet, makeSideSet, syncSideAggregate, setSideField, toggleSide,
+  addSideDrop, removeSideDropAt, setSideDropAt, addSideCluster, removeSideClusterAt, setSideClusterAt,
 } from './workout-model.js'
 
 describe('phaseForSet / isWarmupRow', () => {
@@ -69,6 +70,14 @@ describe('extraVolumeOf', () => {
   it('is zero for a straight or warm-up set', () => {
     expect(extraVolumeOf({ w: 100, r: 5 })).toBe(0)
     expect(extraVolumeOf({ phase: 'warmup', w: 20, r: 8 })).toBe(0)
+  })
+
+  it('sums both sides drops for a per-side drop-set (issue #60)', () => {
+    let s = addSideDrop(makeSideSet({ w: 20, r: 16 }), 20)   // each side: one 16×8 drop
+    expect(extraVolumeOf(s)).toBe(16 * 8 * 2)                // L + R
+    // an asymmetric edit is reflected
+    s = setSideDropAt(s, 'R', 0, { w: 10, r: 6 })
+    expect(extraVolumeOf(s)).toBe(16 * 8 + 10 * 6)
   })
 })
 
@@ -275,5 +284,64 @@ describe('toggleSide', () => {
     expect(s.done).toBe(true)    // both sides done → row done
     s = toggleSide(s, 'L')
     expect(s.done).toBe(false)   // un-tick one side → row no longer done
+  })
+})
+
+// Per-side intensifiers: a unilateral set's drop-sets and rest-pause bursts are logged per limb
+// too (issue #60). The structure stays symmetric (both sides carry the same count) while each
+// side's numbers are edited independently; drops/clusters live on the sides, and the aggregate's
+// extra volume sums both.
+describe('addSideDrop / removeSideDropAt / setSideDropAt', () => {
+  it('adds a drop to both sides, each seeded from its own side weight and reps', () => {
+    let s = makeSideSet({ w: 20, r: 16 })              // sides: 20×8 each
+    s = setSideField(s, 'R', 'w', 18)                  // make the sides asymmetric first
+    s = addSideDrop(s, 20)                             // 20% lighter
+    expect(s.sides.L.drops).toEqual([{ w: 16, r: 8 }]) // 20 → 16
+    expect(s.sides.R.drops).toEqual([{ w: 14.5, r: 8 }]) // 18 → 14.4 → rounds to 14.5
+    expect(s.type).toBe('dropset')                     // aggregate mirrors the intensifier type
+    expect(s.drops).toBeUndefined()                    // drops live on the sides, not the row
+  })
+
+  it('edits one side drop independently, leaving the other side untouched', () => {
+    let s = addSideDrop(makeSideSet({ w: 20, r: 16 }), 20)
+    s = setSideDropAt(s, 'L', 0, { w: 12 })
+    expect(s.sides.L.drops[0].w).toBe(12)
+    expect(s.sides.R.drops[0].w).toBe(16)
+  })
+
+  it('removes a drop from both sides, reverting to straight when the last goes', () => {
+    let s = addSideDrop(makeSideSet({ w: 20, r: 16 }), 20)
+    s = removeSideDropAt(s, 0)
+    expect(s.sides.L.drops).toEqual([])
+    expect(s.sides.R.drops).toEqual([])
+    expect(s.type).toBeUndefined()                     // no side is a drop-set anymore
+  })
+})
+
+describe('addSideCluster / removeSideClusterAt / setSideClusterAt', () => {
+  it('adds a burst to both sides and grows each side reps by its own added burst', () => {
+    let s = makeSideSet({ w: 20, r: 16 })              // 8 per side
+    s = addSideCluster(s, 15)                          // nextBurstReps(8) = 4
+    expect(s.sides.L.clusters).toEqual([{ r: 4, restSec: 15 }])
+    expect(s.sides.L.r).toBe(12)                       // 8 + 4
+    expect(s.sides.R.r).toBe(12)
+    expect(s.r).toBe(24)                               // aggregate total across both sides
+    expect(s.type).toBe('restpause')
+  })
+
+  it('editing one side burst keeps that side reps in step and leaves the other alone', () => {
+    let s = addSideCluster(makeSideSet({ w: 20, r: 16 }), 15) // L/R: r 12, burst 4
+    s = setSideClusterAt(s, 'L', 0, 6)                 // +2 on L
+    expect(s.sides.L.clusters[0].r).toBe(6)
+    expect(s.sides.L.r).toBe(14)                       // 12 + 2
+    expect(s.sides.R.r).toBe(12)                       // untouched
+  })
+
+  it('removing a burst subtracts its reps from that side', () => {
+    let s = addSideCluster(makeSideSet({ w: 20, r: 16 }), 15) // r 12 each
+    s = removeSideClusterAt(s, 0)
+    expect(s.sides.L.clusters).toEqual([])
+    expect(s.sides.L.r).toBe(8)                        // back to the base
+    expect(s.type).toBeUndefined()
   })
 })

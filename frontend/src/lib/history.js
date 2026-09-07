@@ -412,12 +412,19 @@ export function applyIntensifierPlan(sets, cfg) {
   if (kind === 'dropset') {
     const count = Math.max(1, Math.round(cfg.intensifier.count) || 1)
     const pct = cfg.intensifier.pct
+    // Stamp a descending chain of drops onto a row (or one side of a per-side row): each drop is
+    // pct% lighter than the last, at that row/side's own rep count.
+    const withDrops = row => {
+      const drops = []
+      let w = row.w || 0
+      for (let k = 0; k < count; k++) { w = nextDropWeight(w, pct); drops.push({ w, r: row.r }) }
+      return { ...row, type: 'dropset', drops }
+    }
     return sets.map(s => {
       if (isWarmupRow(s)) return s
-      const drops = []
-      let w = s.w || 0
-      for (let k = 0; k < count; k++) { w = nextDropWeight(w, pct); drops.push({ w, r: s.r }) }
-      return { ...s, type: 'dropset', drops }
+      // A unilateral set drops per side (issue #60): stamp each side, then resync the aggregate.
+      if (isSideSet(s)) return syncSideAggregate({ ...s, sides: { L: withDrops(s.sides.L), R: withDrops(s.sides.R) } })
+      return withDrops(s)
     })
   }
   // Rest-pause trains as exactly two sets, not one per configured `sets` count: a warm-up at

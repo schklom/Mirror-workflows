@@ -19,7 +19,7 @@ import { Button, Check, NumberField } from '../components/ui.jsx'
 import { nextPrescription, applyPrescription, defaultIncrement, weightIncrement, stepWeight } from '../lib/progression.js'
 import { progressionGuidance } from '../lib/progression-copy.js'
 import { glyphOf } from '../lib/glyphs.js'
-import { isWarmupRow, isDropSet, isRestPauseSet, dropsOf, clustersOf, addDrop, addCluster, removeDropAt, removeClusterAt, setDropAt, setClusterAt, nextDropWeight, nextBurstReps, isSideSet, makeSideSet, setSideField, toggleSide } from '../lib/workout-model.js'
+import { isWarmupRow, isDropSet, isRestPauseSet, dropsOf, clustersOf, addDrop, addCluster, removeDropAt, removeClusterAt, setDropAt, setClusterAt, nextDropWeight, nextBurstReps, isSideSet, makeSideSet, setSideField, toggleSide, addSideDrop, removeSideDropAt, setSideDropAt, addSideCluster, removeSideClusterAt, setSideClusterAt } from '../lib/workout-model.js'
 import { canMoveActiveWorkoutUnit, moveActiveWorkoutUnit } from '../lib/active-workout-order.js'
 
 const SWIPE_MIN_DISTANCE = 48
@@ -75,6 +75,11 @@ function ExerciseBlock({ entryIdx, compact, onToggle, onToggleSide, onField, onA
   // filled in by applyIntensifierPlan; these only add/edit/remove entries live from here on.
   const mutSet = (i, fn) => update(s => { const row = s.active.entries[entryIdx].sets[i]; s.active.entries[entryIdx].sets[i] = fn(row) }, true)
   const addDropRow = i => mutSet(i, row => {
+    // A unilateral set drops per side (issue #60): addSideDrop seeds each side from its own weight.
+    if (isSideSet(row)) {
+      const pct = entry.target?.intensifier?.type === 'dropset' ? entry.target.intensifier.pct : undefined
+      return addSideDrop(row, pct)
+    }
     const drops = dropsOf(row)
     const base = drops.length ? drops[drops.length - 1].w : (row.w || 0)
     const pct = entry.target?.intensifier?.type === 'dropset' ? entry.target.intensifier.pct : undefined
@@ -84,9 +89,10 @@ function ExerciseBlock({ entryIdx, compact, onToggle, onToggleSide, onField, onA
   // applyIntensifierPlan/history.js) — clusters are the breakdown of that total, not extra on
   // top of it — so adding, removing or editing one keeps `r` in step by the same delta.
   const addBurstRow = i => mutSet(i, row => {
+    const restSec = entry.target?.intensifier?.type === 'restpause' ? entry.target.intensifier.restSec : (S.restPauseSec || 15)
+    if (isSideSet(row)) return addSideCluster(row, restSec)   // per side, each keeps its own r in step
     const clusters = clustersOf(row)
     const base = clusters.length ? clusters[clusters.length - 1].r : (row.r || 0)
-    const restSec = entry.target?.intensifier?.type === 'restpause' ? entry.target.intensifier.restSec : (S.restPauseSec || 15)
     const added = nextBurstReps(base)
     return { ...addCluster(row, { r: added, restSec }), r: (row.r || 0) + added }
   })
@@ -95,13 +101,18 @@ function ExerciseBlock({ entryIdx, compact, onToggle, onToggleSide, onField, onA
   // stays right. The done tick goes through onToggleSide → toggle() instead, so ticking a side
   // still fires the rest timer / auto-advance / workout-complete flow.
   const setSide = (i, side, field, v) => mutSet(i, row => setSideField(row, side, field, v))
-  const removeDrop = (i, di) => mutSet(i, row => removeDropAt(row, di))
+  // Drop/burst edits accept an optional `side` ('L'|'R'): present for a per-side row (edits that
+  // one limb's drop/burst), absent for a straight row (edits the row's own).
+  const removeDrop = (i, di) => mutSet(i, row => isSideSet(row) ? removeSideDropAt(row, di) : removeDropAt(row, di))
   const removeCluster = (i, ci) => mutSet(i, row => {
+    if (isSideSet(row)) return removeSideClusterAt(row, ci)
     const removed = clustersOf(row)[ci]?.r || 0
     return { ...removeClusterAt(row, ci), r: Math.max(0, (row.r || 0) - removed) }
   })
-  const setDropField = (i, di, field, v) => mutSet(i, row => setDropAt(row, di, { [field]: v }))
-  const setClusterField = (i, ci, v) => mutSet(i, row => {
+  const setDropField = (i, di, field, v, side) => mutSet(i, row =>
+    isSideSet(row) ? setSideDropAt(row, side, di, { [field]: v }) : setDropAt(row, di, { [field]: v }))
+  const setClusterField = (i, ci, v, side) => mutSet(i, row => {
+    if (isSideSet(row)) return setSideClusterAt(row, side, ci, v)
     const delta = (Number(v) || 0) - (clustersOf(row)[ci]?.r || 0)
     return { ...setClusterAt(row, ci, { r: v }), r: Math.max(0, (row.r || 0) + delta) }
   })
@@ -211,8 +222,8 @@ function ExerciseBlock({ entryIdx, compact, onToggle, onToggleSide, onField, onA
       title: (warm ? t('Warm-up') : t('Set {0}', entry.sets.slice(0, i + 1).filter(x => isWarmupRow(x) === warm).length)),
       subtitle: setLabel(entry.id, s, entry.target),
       items: [
-        !warm && mode === 'reps' && !perSide && !isRestPauseSet(s) && { icon: 'arrowDown', label: t('Drop set'), sub: t('+ Drop'), onClick: () => addDropRow(i) },
-        !warm && mode === 'reps' && !perSide && !isDropSet(s) && { icon: 'bolt', label: t('Rest-pause burst'), sub: t('+ Burst'), onClick: () => addBurstRow(i) },
+        !warm && mode === 'reps' && !isRestPauseSet(s) && { icon: 'arrowDown', label: t('Drop set'), sub: t('+ Drop'), onClick: () => addDropRow(i) },
+        !warm && mode === 'reps' && !isDropSet(s) && { icon: 'bolt', label: t('Rest-pause burst'), sub: t('+ Burst'), onClick: () => addBurstRow(i) },
         { icon: 'trash', label: t('Remove this set'), danger: true, disabled: entry.sets.length <= 1, onClick: () => onRemoveSetAt(i) },
       ],
     })
@@ -288,6 +299,30 @@ function ExerciseBlock({ entryIdx, compact, onToggle, onToggleSide, onField, onA
       {col3 && sideEffortCell(sd, i, side, col3)}
       <Check checked={sd.done} onChange={() => onToggleSide(i, side)} />
     </div>
+  }
+  // A side's own drop-set/rest-pause sub-rows (issue #60): the intensifier is logged per limb, so
+  // the drops and bursts hang under that side's row, each editable, exactly like a straight set's
+  // do under its row. Reads the side object, not the aggregate.
+  const sideExtras = (s, i, side) => {
+    const sd = (s.sides && s.sides[side]) || {}
+    return <>
+      {dropsOf(sd).map((d, di) => (
+        <div className="subrow" key={'d' + di}>
+          <span className="subn">{t('Drop {0}', di + 1)}</span>
+          {miniStepper(d.w, loadStep, true, v => setDropField(i, di, 'w', v, side), true)}
+          {miniStepper(d.r, 1, false, v => setDropField(i, di, 'r', v, side))}
+          <button className="iconbtn" aria-label={t('Remove drop')} onClick={() => removeDrop(i, di)}><Icon name="xmark" /></button>
+        </div>
+      ))}
+      {clustersOf(sd).map((c, ci) => (
+        <div className="subrow" key={'c' + ci}>
+          <span className="subn">{t('Burst {0}', ci + 1)}</span>
+          {miniStepper(c.r, 1, false, v => setClusterField(i, ci, v, side))}
+          <span className="dim small">{c.restSec}s</span>
+          <button className="iconbtn" aria-label={t('Remove burst')} onClick={() => removeCluster(i, ci)}><Icon name="xmark" /></button>
+        </div>
+      ))}
+    </>
   }
   // A smaller stepper for a drop's weight/reps or a burst's reps — editing what the plan (or a
   // live "+ Drop"/"+ Burst" tap) already put on the row, not typing into a fresh field.
@@ -365,7 +400,9 @@ function ExerciseBlock({ entryIdx, compact, onToggle, onToggleSide, onField, onA
               <button type="button" className="n" aria-label={t('Set {0}', phaseNum)} title={t('More')} onClick={() => openSetMenu(s, i)}>{phaseNum}</button>
               <div className="side-rows">
                 {sideRow(s, i, 'L', col1, col2, col3)}
+                {sideExtras(s, i, 'L')}
                 {sideRow(s, i, 'R', col1, col2, col3)}
+                {sideExtras(s, i, 'R')}
               </div>
             </div>
           ) : (
@@ -384,7 +421,7 @@ function ExerciseBlock({ entryIdx, compact, onToggle, onToggleSide, onField, onA
           {/* Drop-sets and rest-pause bursts extend this same row — no long rest, no new set.
               A planned exercise arrives with these already filled in (applyIntensifierPlan);
               every value here is just as editable as the main row's own weight/reps. */}
-          {!warm && mode === 'reps' && !perSide && <>
+          {!warm && mode === 'reps' && <>
             {dropsOf(s).map((d, di) => (
               <div className="subrow" key={'d' + di}>
                 <span className="subn">{t('Drop {0}', di + 1)}</span>

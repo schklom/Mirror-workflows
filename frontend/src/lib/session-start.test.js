@@ -44,6 +44,7 @@ describe('buildSessionEntries', () => {
     expect(entry.target).toMatchObject({ reps: entry.plan.reps, weight: entry.plan.weight })
     expect(readSession({ ...entry, sets: entry.sets.map(s => ({ ...s, done: true })) }, cfg).ok).toBe(true)
     expect(work.every(s => s.r === entry.target.reps && s.w === entry.target.weight)).toBe(true)
+  })
 
   it('returns a bare array — no { entries, excluded } wrapper', () => {
     const r = { id: 'r', prog: 'off', ex: [{ id: '0025', sets: 3, reps: 5, weight: 60 }] }

@@ -447,6 +447,7 @@ describe('double progression', () => {
     const p = nextPrescription(hist(LIFT, [[40, 12, 12, 12]], { sets: 3, reps: 13 }), perSide)
     expect(p.kind).toBe('hold')
     expect(p.reps).toBe(14)
+  })
 
   it('selects a lower in-range rep target and never increases the attempted load', () => {
     const target = { sets: 3, reps: 12, weight: 40 }

@@ -1079,6 +1079,8 @@ describe('per-side set counters', () => {
     expect(setUnitsTotal(A.entries)).toBe(5)
     expect(setsDoneActive(A)).toBe(2)
     expect(setsDone({ entries: A.entries })).toBe(2)
+  })
+})
 
 // ---- combine routines: plural planner resolver + per-entry noProg (ENG-9) ----
 describe('effectiveRoutineIds / effectiveRoutines', () => {

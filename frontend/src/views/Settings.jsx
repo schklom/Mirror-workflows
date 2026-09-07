@@ -46,6 +46,8 @@ export default function Settings() {
 
   // --- update check state ---
   const [updateInfo, setUpdateInfo] = useState(null) // { hasUpdate, latestVersion, apkUrl, hashUrl } | null
+  const [android, setAndroid] = useState(false)
+  const [checking, setChecking] = useState(false)
 
   useEffect(() => {
     // The in-app updater installs an .apk, so it only applies to the native Android build.
@@ -53,8 +55,23 @@ export default function Settings() {
     // already answers false off the mobile build; the MOBILE check on top keeps the web bundle
     // from even asking (and from calling gitlab.com on every Settings visit).
     if (!MOBILE) return
-    isAndroid().then(ok => { if (ok) checkForUpdate().then(setUpdateInfo).catch(() => {}) })
+    isAndroid().then(ok => { setAndroid(ok); if (ok) checkForUpdate().then(setUpdateInfo).catch(() => {}) })
   }, [])
+
+  // The same check, on demand: the automatic one is silent when it finds nothing or cannot
+  // reach gitlab.com, and a person who taps "Check for updates" deserves an answer either way.
+  const checkNow = async () => {
+    if (checking) return
+    setChecking(true)
+    try {
+      const info = await checkForUpdate()
+      setUpdateInfo(info)
+      if (!info.hasUpdate) toast(t('You have the latest version.'))
+    } catch {
+      toast(t('Could not check for updates — are you online?'))
+    }
+    setChecking(false)
+  }
 
   const onUpdateRowClick = () => {
     if (!updateInfo?.hasUpdate) return
@@ -320,9 +337,6 @@ export default function Settings() {
 
     {/* ---------- data: fill it, bring things over, back it up, wipe it ---------- */}
     <Section title={t('Data')}>
-      {MOBILE && updateInfo?.hasUpdate && updateInfo.apkUrl && <Row icon="info" iconTint="var(--purple)" title={t('openGym v{0} available', updateInfo.latestVersion)}
-        accessory="chevron"
-        onClick={onUpdateRowClick} />}
       <Row icon="sparkles" iconTint="var(--acc)" title={t('Load starter plan')} accessory="chevron" onClick={starterPlanSheet} />
       <Row icon="shuffle" iconTint="var(--teal)" title={t('Import from another app')}
         subtitle={t('FitNotes, Strong, Hevy — or body weight from Apple Health')}
@@ -348,6 +362,23 @@ export default function Settings() {
       <Row icon="lightbulb" iconTint="var(--yellow)"
         title={IS_ANDROID ? t('In Chrome: ⋮ menu → Add to Home screen') : t('In Safari: Share → Add to Home Screen')}
         subtitle={t('to install openGym as a full-screen app.') + ' ' + (user ? t('Your data syncs with your profile — sign in anywhere to see it.') : t('Guest data stays on this device — export a backup now and then!'))} />
+    </Section>}
+
+    {/* ---------- updates: the last thing on the page, so keeping openGym current is one tap ----------
+        On Android the row is always there — it checks on demand and installs when a release is
+        newer (checksum verified, see onUpdateRowClick). On the web the app updates with its
+        server, so the row points at the APK for the phone instead. iOS has no APK: nothing. */}
+    {(!MOBILE || android) && <Section title={t('Updates')}
+      footer={MOBILE ? t('Releases are checked on gitlab.com. The download is verified against its checksum before the installer opens.') : t('The web app updates together with your server. The Android app installs its own updates from here.')}>
+      {MOBILE
+        ? <Row icon="download" iconTint="var(--acc)"
+            title={updateInfo?.hasUpdate ? t('Update to openGym v{0}', updateInfo.latestVersion) : t('Check for updates')}
+            subtitle={checking ? t('Checking…') : t('You have v{0}', __APP_VERSION__)}
+            accessory="chevron"
+            onClick={() => (updateInfo?.hasUpdate ? onUpdateRowClick() : checkNow())} />
+        : <Row icon="download" iconTint="var(--acc)" title={t('Get the Android app')}
+            subtitle={t('Download the APK from opengym.duarte-santos.ch')} accessory="chevron"
+            onClick={() => window.open('https://opengym.duarte-santos.ch/#download', '_blank', 'noopener')} />}
     </Section>}
 
     {/* The version, at the bottom of Settings — which is where the support template has been

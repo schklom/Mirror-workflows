@@ -86,20 +86,26 @@ const mount = async () => {
   await act(async () => { root.render(<Settings />) })
   await act(async () => { await Promise.resolve(); await Promise.resolve() })
 }
-const updateRow = () => [...host.querySelectorAll('.lrow')].find(r => r.textContent.includes('openGym v9.9.9 available'))
+const updateRow = () => [...host.querySelectorAll('.lrow')].find(r => r.textContent.includes('Update to openGym v9.9.9'))
+const checkRow = () => [...host.querySelectorAll('.lrow')].find(r => r.textContent.includes('Check for updates'))
+const webRow = () => [...host.querySelectorAll('.lrow')].find(r => r.textContent.includes('Get the Android app'))
 
 describe('Settings — in-app update check', () => {
-  it('web build: never asks for releases and shows no update row', async () => {
+  it('web build: never asks for releases; the Updates section points at the APK instead', async () => {
     await mount()
     expect(mocks.checkForUpdate).not.toHaveBeenCalled()
     expect(updateRow()).toBeUndefined()
+    expect(checkRow()).toBeUndefined()
+    expect(webRow()).toBeTruthy()
   })
 
-  it('mobile build on iOS: no check, no row', async () => {
+  it('mobile build on iOS: no check, no row, no section', async () => {
     mocks.MOBILE = true
     await mount()
     expect(mocks.checkForUpdate).not.toHaveBeenCalled()
     expect(updateRow()).toBeUndefined()
+    expect(checkRow()).toBeUndefined()
+    expect(webRow()).toBeUndefined()
   })
 
   it('mobile build on Android: checks once and shows the row, tapping it asks before downloading', async () => {
@@ -113,20 +119,26 @@ describe('Settings — in-app update check', () => {
     expect(mocks.confirmSheet.mock.calls[0][0].title).toBe('Update to 9.9.9?')
   })
 
-  it('Android without a newer release: no row', async () => {
+  it('Android without a newer release: a "Check for updates" row stays, and tapping it checks again', async () => {
     mocks.MOBILE = true
     mocks.android = true
     mocks.checkForUpdate.mockResolvedValueOnce({ hasUpdate: false, latestVersion: 'test', apkUrl: null, hashUrl: null })
     await mount()
     expect(mocks.checkForUpdate).toHaveBeenCalledTimes(1)
     expect(updateRow()).toBeUndefined()
+    expect(checkRow()).toBeTruthy()
+    await act(async () => { checkRow().click(); await Promise.resolve() })
+    expect(mocks.checkForUpdate).toHaveBeenCalledTimes(2)
+    await act(async () => { await Promise.resolve() })
+    expect(updateRow()).toBeTruthy()   // the second (default) answer had 9.9.9 — the row now offers it
   })
 
-  it('Android when gitlab.com is unreachable: stays quiet', async () => {
+  it('Android when gitlab.com is unreachable: stays quiet, keeps the row', async () => {
     mocks.MOBILE = true
     mocks.android = true
     mocks.checkForUpdate.mockRejectedValueOnce(new Error('offline'))
     await mount()
     expect(updateRow()).toBeUndefined()
+    expect(checkRow()).toBeTruthy()
   })
 })

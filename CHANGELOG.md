@@ -20,6 +20,29 @@ see why. Web bundle and APK; the API image only for the payload change.
   thing as before" had nothing to point at: every message was a fresh request. The last six lines
   — what you wrote and what the Coach concluded, never proposals or errors — now travel with the
   request as context (`conversation`, documented in the prompt as data, not instruction).
+- ⬇️ **Updates are the last thing in Settings.** On Android a permanent row checks gitlab.com on
+  demand and installs a newer release with one tap (the download is verified against its checksum
+  first); on the web the same spot links to the APK. The row no longer hides inside "Data" and no
+  longer disappears when there is nothing new.
+- 🧩 **Combine routines** (HenryByte, !102, #59): a weekday can hold several routines, and a running
+  session can pull another routine in from the header ⋮ — a rehab routine on top of push day. The
+  layout switch moved into that menu. Older data with one routine per day reads unchanged.
+- 📐 **Compact layout** (HenryByte, !100, #57): a third workout view with only the sets you are
+  logging, and a per-session ⋮ switcher between cards, list and compact.
+- 🦵 **One-sided exercises log each side** (ErrorUsernameAlreadyTaken, !107, #60): weight, reps,
+  effort and the done tick per side, drop-sets and rest-pause per side too; history reads
+  "L 15×8 · R 15×7". Totals, volume, PRs and progression keep reading the combined row.
+- ✅ **Rating a set completes it** (ErrorUsernameAlreadyTaken, !106, #64): picking RIR/RPE ticks the
+  set and starts the rest timer.
+- 🎫 **Check-in cards** (ErrorUsernameAlreadyTaken, !105): edit a card's photo and label, the last
+  card used opens first, manual code entry removed.
+- 📉 **Deloads aim at an estimated 1RM** (mflova, !103): linear and double progression deload to
+  90 % of the Epley estimate of the target, on the exercise's weight grid, never above the load
+  that stalled — a 5 kg lift keeps 5 kg and drops reps instead of falling to 2.5 kg. The factor is
+  per exercise.
+- 📈 **A climb through the rep range is progress, not a stall** (arhx91, !101): under double
+  progression a session that beat its best at the current weight no longer counts toward a deload.
+- 👈 **Swipe to remove** (surohsusej, !73): swipe a routine exercise or warm-up set left to remove it.
 - 🧹 **The OpenAI model list only shows models this request shape can use.** The account's full
   list — speech, embeddings, image models, realtime and Responses-only variants — made it easy to
   pick one Chat Completions refuses with a 400 or a 404. Compatible endpoints (Ollama, LM Studio,

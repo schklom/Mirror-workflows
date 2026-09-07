@@ -18,7 +18,12 @@ export function buildSessionEntries(st, r) {
     // default for its optional load.
     const step = modeOf(cfg) === 'reps' ? weightIncrement(cfg, st.unit) : defaultIncrement(cfg.id, st.unit)
     const sets = applyIntensifierPlan(applyPrescription(buildSets(st, cfg, { step, useTarget: plan.kind === 'off' }), plan, step), cfg)
-    return { id: cfg.id, sg: cfg.sg, target: { ...cfg }, plan, sets }
+    const target = { ...cfg }
+    if (plan.weight != null) target.weight = plan.weight
+    if (plan.reps != null) target.reps = plan.reps
+    if (plan.sec != null) target.sec = plan.sec
+    if (plan.sets != null) target.sets = plan.sets
+    return { id: cfg.id, sg: cfg.sg, target, plan, sets }
   })
   return { entries, excluded }
 }

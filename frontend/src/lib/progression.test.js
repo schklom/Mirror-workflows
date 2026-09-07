@@ -1,11 +1,12 @@
 import { describe, it, expect } from 'vitest'
 import {
   readSession, sessionsFor, stallCount, nextPrescription, applyPrescription,
-  policyFor, defaultIncrement, weightIncrement, POLICIES_FOR, DELOAD_AFTER, MAX_BW_SETS
+  policyFor, defaultIncrement, weightIncrement, epley1RM, deloadTarget1RM,
+  deloadFactorOf, DELOAD_FACTOR, POLICIES_FOR, DELOAD_AFTER, MAX_BW_SETS
 } from './progression.js'
 import { EXDB } from './exercises.js'
 
-const LIFT = EXDB.find(e => e.bp !== 'cardio' && !['upper legs', 'lower legs', 'back', 'hips', 'glutes'].includes(e.bp)).id
+const LIFT = EXDB.find(e => e.bp !== 'cardio' && !['upper legs', 'lower legs', 'back', 'hips', 'glutes'].includes(e.bp) && !['body weight', 'band', 'resistance band'].includes(e.eq)).id
 const HEAVY = EXDB.find(e => e.bp === 'upper legs').id
 const CARDIO = EXDB.find(e => e.bp === 'cardio').id
 
@@ -129,6 +130,21 @@ describe('weightIncrement', () => {
   })
 })
 
+describe('Epley deload helpers', () => {
+  it('maps a prescribed target pair to the requested Epley 1RM factor', () => {
+    expect(epley1RM(60, 8)).toBe(76)
+    expect(deloadTarget1RM(60, 8)).toBe(68.4)
+    expect(deloadTarget1RM(60, 8, 0.8)).toBe(60.8)
+  })
+
+  it('uses the configured factor and keeps the ratio backward-compatible', () => {
+    expect(DELOAD_FACTOR).toBe(0.9)
+    expect(deloadFactorOf({})).toBe(0.9)
+    expect(deloadFactorOf({ deloadFactor: 0.8 })).toBe(0.8)
+    expect(deloadFactorOf({ deloadFactor: 0.1 })).toBe(0.9)
+  })
+})
+
 describe('linear progression', () => {
   const cfg = { id: LIFT, sets: 3, reps: 5, weight: 60, prog: 'linear' }
 
@@ -161,6 +177,30 @@ describe('linear progression', () => {
     expect(p.kind).toBe('deload')
     expect(p.weight).toBe(55)             // 60 × 0.9 = 54 → nearest loadable 2.5 step
     expect(DELOAD_AFTER.linear).toBe(3)
+  })
+
+  it('deloads from the prescribed target reps, not partial actual reps', () => {
+    const target = { sets: 3, reps: 8, weight: 60 }
+    const p = nextPrescription(hist(LIFT, [[60, 6, 6, 6], [60, 6, 6, 6], [60, 6, 6, 6]], target), { ...cfg, reps: 8 })
+    expect(p.kind).toBe('deload')
+    expect(p.target1RM).toBe(deloadTarget1RM(60, 8))
+    expect(p.target1RM).not.toBe(deloadTarget1RM(60, 6))
+    expect(p.reps).toBe(8)
+  })
+
+  it('uses a configured Epley factor when selecting the deload load', () => {
+    const p = nextPrescription(hist(LIFT, [[60, 4, 4, 4], [60, 4, 4, 4], [60, 4, 4, 4]], { sets: 3, reps: 5, weight: 60 }), { ...cfg, deloadFactor: 0.8 })
+    expect(p.kind).toBe('deload')
+    expect(p.deloadFactor).toBe(0.8)
+    expect(p.target1RM).toBe(56)
+    expect(p.weight).toBe(47.5)
+  })
+
+  it('holds a below-step load instead of deloading upward', () => {
+    const p = nextPrescription(hist(LIFT, [[1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 1, 1]]), { ...cfg, weight: 1, inc: 2.5 })
+    expect(p.kind).toBe('deload')
+    expect(p.weight).toBe(1)
+    expect(p.why[0]).toMatch(/hold/i)
   })
 
   it('a good session in between clears the stall', () => {
@@ -340,7 +380,17 @@ describe('double progression', () => {
 
     // Training exactly what it asked for: its weight, its reps, every set checked off.
     const asPrescribed = [deload.weight, ...Array(target.sets).fill(deload.reps)]
-    const next = nextPrescription(hist(LIFT, [...stalled, asPrescribed], target), cfg)
+    const effectiveTarget = { ...target, weight: deload.weight, reps: deload.reps }
+    const completed = hist(LIFT, stalled, target)
+    completed.workouts.push({
+      d: '2026-01-04',
+      entries: [{
+        id: LIFT,
+        target: effectiveTarget,
+        sets: asPrescribed.slice(1).map(r => ({ w: asPrescribed[0], r, done: true }))
+      }]
+    })
+    const next = nextPrescription(completed, cfg)
 
     // Complying with the app's own prescription must not be scored as another failure.
     expect(next.kind).not.toBe('deload')
@@ -364,7 +414,7 @@ describe('double progression', () => {
     const p = nextPrescription(hist(LIFT, rows, { sets: 3, reps: 12 }), cfg)
     expect(p.kind).toBe('deload')
     expect(p.reps).toBe(8)
-    expect(p.weight).toBe(35)           // 40 × 0.9 = 36 → nearest loadable 2.5 step
+    expect(p.weight).toBe(40)           // 40 × 8 is the closest valid Epley candidate
   })
 
   it('climbs a range wider than the deload budget instead of cutting on the way up', () => {
@@ -396,7 +446,36 @@ describe('double progression', () => {
     const p = nextPrescription(hist(LIFT, [[40, 12, 12, 12]], { sets: 3, reps: 13 }), perSide)
     expect(p.kind).toBe('hold')
     expect(p.reps).toBe(14)
+
+  it('selects a lower in-range rep target and never increases the attempted load', () => {
+    const target = { sets: 3, reps: 12, weight: 40 }
+    const p = nextPrescription(hist(LIFT, [[40, 9, 9, 9], [40, 9, 9, 9], [40, 9, 9, 9]], target), cfg)
+    expect(p.kind).toBe('deload')
+    expect(p.reps).toBeGreaterThanOrEqual(8)
+    expect(p.reps).toBeLessThanOrEqual(12)
+    expect(p.weight).toBeLessThanOrEqual(40)
+    expect(p.target1RM).toBe(deloadTarget1RM(40, 12))
   })
+
+  it('keeps a 5 kg load and lowers reps when that is closer than a 50% weight cut', () => {
+    const small = { id: LIFT, sets: 3, reps: 8, repsMin: 4, weight: 5, inc: 2.5, prog: 'double' }
+    const target = { sets: 3, reps: 8, weight: 5 }
+    const p = nextPrescription(hist(LIFT, [[5, 6, 6, 6], [5, 6, 6, 6], [5, 6, 6, 6]], target), small)
+    expect(p.kind).toBe('deload')
+    expect(p.weight).toBe(5)
+    expect(p.reps).toBe(4)
+    expect(p.target1RM).toBe(deloadTarget1RM(5, 8))
+  })
+
+  it('uses half the reps for per-side Epley and returns an even total', () => {
+    const perSide = { ...cfg, reps: 8, side: true }
+    const target = { sets: 3, reps: 8, weight: 60, side: true }
+    const p = nextPrescription(hist(LIFT, [[60, 6, 6, 6], [60, 6, 6, 6], [60, 6, 6, 6]], target), perSide)
+    expect(p.kind).toBe('deload')
+    expect(p.reps % 2).toBe(0)
+    expect(p.target1RM).toBe(deloadTarget1RM(60, 8, 0.9, true))
+  })
+
 })
 
 describe('timed progression', () => {

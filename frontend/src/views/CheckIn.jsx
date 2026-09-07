@@ -16,8 +16,22 @@ import { confirmSheet } from '../sheets.jsx'
 // Long-press before a card lifts for reordering, and the finger travel that instead counts as a
 // horizontal swipe of the rail. Mirrors the routine-editor drag (views/RoutineEdit.jsx) so the
 // gesture feels the same across the app.
-const CI_LONG_PRESS_MS = 380
-const CI_DRAG_SLOP = 8
+export const CI_LONG_PRESS_MS = 380
+export const CI_DRAG_SLOP = 8
+
+// Move the card at `from` to sit at index `to`, returning a new array (the input is left alone).
+// This is the whole of the reorder once the drop target is known — kept as a pure function, apart
+// from the pointer maths that computes `to`, so the ordering contract can be tested without a DOM.
+// Out-of-range or no-op moves return an unchanged copy rather than throwing.
+export function moveGymCard(cards, from, to) {
+  const next = [...cards]
+  if (from < 0 || from >= next.length) return next
+  const target = Math.max(0, Math.min(to, next.length - 1))
+  if (target === from) return next
+  const [moved] = next.splice(from, 1)
+  next.splice(target, 0, moved)
+  return next
+}
 
 // Gym check-in (reached from the Home "Check in" card; app and PWA alike). Shows each saved
 // membership code as a QR the turnstile can read, swiped through horizontally, with a trailing
@@ -158,15 +172,8 @@ function useRailReorder(railRef, cards) {
       if (from >= 0) {
         const cardEls = [...rail.querySelectorAll('[data-ci-card]')]
         const centres = cardEls.map(el => { const r = el.getBoundingClientRect(); return r.left + r.width / 2 })
-        let to = centres.reduce((n, cx, i) => n + (i !== from && g.lastX > cx ? 1 : 0), 0)
-        to = Math.min(to, list.length - 1)
-        if (to !== from) {
-          useStore.getState().update(s => {
-            const arr = s.gymCards
-            const [moved] = arr.splice(from, 1)
-            arr.splice(to, 0, moved)
-          })
-        }
+        const to = centres.reduce((n, cx, i) => n + (i !== from && g.lastX > cx ? 1 : 0), 0)
+        if (to !== from) useStore.getState().update(s => { s.gymCards = moveGymCard(s.gymCards, from, to) })
       }
       setState({ dragging: false, dragId: null })
     }

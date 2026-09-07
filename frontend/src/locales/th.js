@@ -815,6 +815,8 @@ export default {
   'Membership number or code': 'หมายเลขสมาชิกหรือรหัส',
   'Save card': 'บันทึกบัตร',
   'Gym card': 'บัตรยิม',
+  'Move left': 'ย้ายไปทางซ้าย',
+  'Move right': 'ย้ายไปทางขวา',
   'Edit card': 'แก้ไขบัตร',
   'Re-scan': 'สแกนใหม่',
   'Scan it with the camera or import a photo.': 'สแกนด้วยกล้องหรือนำเข้ารูปถ่าย',

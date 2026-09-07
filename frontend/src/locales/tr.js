@@ -1139,6 +1139,8 @@ export default {
   'Membership number or code': 'Üyelik numarası veya kodu',
   'Save card': 'Kartı kaydet',
   'Gym card': 'Salon kartı',
+  'Move left': 'Sola taşı',
+  'Move right': 'Sağa taşı',
   'Edit card': 'Kartı düzenle',
   'Re-scan': 'Yeniden tara',
   'Scan it with the camera or import a photo.': 'Kamerayla tara ya da bir fotoğraf içe aktar.',

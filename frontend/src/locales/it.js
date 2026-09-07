@@ -1139,6 +1139,8 @@ export default {
   'Membership number or code': 'Numero tessera o codice',
   'Save card': 'Salva tessera',
   'Gym card': 'Tessera palestra',
+  'Move left': 'Sposta a sinistra',
+  'Move right': 'Sposta a destra',
   'Edit card': 'Modifica tessera',
   'Re-scan': 'Scansiona di nuovo',
   'Scan it with the camera or import a photo.': 'Scansionala con la fotocamera o importa una foto.',

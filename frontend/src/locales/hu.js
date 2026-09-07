@@ -807,6 +807,8 @@ export default {
   'Membership number or code': 'Tagsági szám vagy kód',
   'Save card': 'Kártya mentése',
   'Gym card': 'Terembérlet',
+  'Move left': 'Balra',
+  'Move right': 'Jobbra',
   'Edit card': 'Kártya szerkesztése',
   'Re-scan': 'Újraolvasás',
   'Scan it with the camera or import a photo.': 'Olvasd be a kamerával, vagy importálj egy fotót.',

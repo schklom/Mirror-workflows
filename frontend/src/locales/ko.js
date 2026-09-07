@@ -1139,6 +1139,8 @@ export default {
   'Membership number or code': '회원 번호 또는 코드',
   'Save card': '카드 저장',
   'Gym card': '헬스장 카드',
+  'Move left': '왼쪽으로 이동',
+  'Move right': '오른쪽으로 이동',
   'Edit card': '카드 편집',
   'Re-scan': '다시 스캔',
   'Scan it with the camera or import a photo.': '카메라로 스캔하거나 사진을 가져오세요.',

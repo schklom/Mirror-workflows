@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useLayoutEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/useStore.js'
 import { useUI } from '../store/useUI.js'
@@ -13,16 +13,9 @@ import CameraScan from '../components/CameraScan.jsx'
 import { Button, TextField } from '../components/ui.jsx'
 import { confirmSheet } from '../sheets.jsx'
 
-// Long-press before a card lifts for reordering, and the finger travel that instead counts as a
-// horizontal swipe of the rail. Mirrors the routine-editor drag (views/RoutineEdit.jsx) so the
-// gesture feels the same across the app.
-export const CI_LONG_PRESS_MS = 380
-export const CI_DRAG_SLOP = 8
-
 // Move the card at `from` to sit at index `to`, returning a new array (the input is left alone).
-// This is the whole of the reorder once the drop target is known — kept as a pure function, apart
-// from the pointer maths that computes `to`, so the ordering contract can be tested without a DOM.
-// Out-of-range or no-op moves return an unchanged copy rather than throwing.
+// Backs the on-card ◀ ▶ reorder buttons. Out-of-range or no-op moves return an unchanged copy
+// rather than throwing, so a button at either end is simply inert.
 export function moveGymCard(cards, from, to) {
   const next = [...cards]
   if (from < 0 || from >= next.length) return next
@@ -41,8 +34,8 @@ export function moveGymCard(cards, from, to) {
 // The rail reopens on the card you used last (lastGymCardId) and remembers the one you settle on,
 // so a member with two gyms lands on the right code without swiping. Cards are added by scanning
 // or importing a photo only — never by typing a code, which is too easy to fat-finger into a
-// code that silently fails at the turnstile. An existing card can be edited (rename, re-scan) and
-// the whole rail can be reordered with a long-press drag.
+// code that silently fails at the turnstile. An existing card can be edited (rename, re-scan), and
+// with more than one card each carries ◀ ▶ buttons to nudge its position along the rail.
 export default function CheckIn() {
   const nav = useNavigate()
   const cards = useStore(s => s.S.gymCards) || []
@@ -50,7 +43,6 @@ export default function CheckIn() {
   const update = useStore(s => s.update)
   const railRef = useRef(null)
   const [active, setActive] = useState(0)
-  const reorder = useRailReorder(railRef, cards)
 
   // Open on the last-used card. Done once on mount (and whenever the saved id changes from
   // elsewhere) with layout effect so the jump happens before paint — no visible scroll from 0.
@@ -85,13 +77,14 @@ export default function CheckIn() {
       </div>
     </div>
 
-    <div className={'ci-rail' + (reorder.dragging ? ' is-reordering' : '')} ref={railRef} onScroll={onScroll}>
-      {cards.map(card => <CardFace
+    <div className="ci-rail" ref={railRef} onScroll={onScroll}>
+      {cards.map((card, i) => <CardFace
         key={card.id}
         card={card}
-        dragging={reorder.dragId === card.id}
+        index={i}
+        count={cards.length}
       />)}
-      <button className="ci-add" onClick={openAddCard} data-nodrag>
+      <button className="ci-add" onClick={openAddCard}>
         <Icon name="plus" />
         <span className="ci-add-t">{t('Add a card')}</span>
       </button>
@@ -103,10 +96,6 @@ export default function CheckIn() {
       <span className={'ci-dot' + (active >= cards.length ? ' on' : '')} />
     </div>}
 
-    {cards.length > 1 && <div className="muted small" style={{ textAlign: 'center', marginTop: 10 }}>
-      {t('Long-press a card to reorder')}
-    </div>}
-
     {!cards.length && <div className="muted small" style={{ textAlign: 'center', marginTop: 18, lineHeight: 1.5 }}>
       {t('Import a photo of your membership card or scan it with the camera. No extra app needed at the gym — just open this screen.')}
     </div>}
@@ -115,8 +104,10 @@ export default function CheckIn() {
 
 // One saved card: its label centered above the QR, and the raw value underneath (handy when a
 // reader is fussy and a staff member types it in). The edit button opens the same sheet used to
-// add a card, pre-filled; the trash button removes it after a confirm.
-function CardFace({ card, dragging }) {
+// add a card, pre-filled; the trash button removes it after a confirm. With more than one card, a
+// row of ◀ ▶ buttons nudges this card one slot along the rail — a plain, reliable reorder that
+// doesn't fight the rail's horizontal scroll the way a drag gesture did.
+function CardFace({ card, index, count }) {
   const update = useStore(s => s.update)
   const remove = () => confirmSheet({
     title: t('Remove this card?'),
@@ -128,109 +119,21 @@ function CardFace({ card, dragging }) {
       if (s.lastGymCardId === card.id) s.lastGymCardId = (s.gymCards[0]?.id) || null
     }),
   })
-  return <div className={'ci-card' + (dragging ? ' is-dragging' : '')} data-ci-card data-ci-id={card.id}>
+  const move = to => update(s => { s.gymCards = moveGymCard(s.gymCards, index, to) })
+  return <div className="ci-card">
     <div className="ci-card-hd">
-      <button className="iconbtn ci-card-btn" onClick={() => openEditCard(card)} aria-label={t('Edit')} data-nodrag><Icon name="pencil" /></button>
+      <button className="iconbtn ci-card-btn" onClick={() => openEditCard(card)} aria-label={t('Edit')}><Icon name="pencil" /></button>
       <div className="ci-label">{card.label}</div>
-      <button className="iconbtn ci-card-btn" style={{ color: 'var(--red)' }} onClick={remove} aria-label={t('Remove')} data-nodrag><Icon name="trash" /></button>
+      <button className="iconbtn ci-card-btn" style={{ color: 'var(--red)' }} onClick={remove} aria-label={t('Remove')}><Icon name="trash" /></button>
     </div>
     <div className="ci-qr-plate"><QrCanvas value={card.value} size={230} /></div>
     <div className="ci-value">{card.value}</div>
+    {count > 1 && <div className="ci-reorder">
+      <button className="iconbtn ci-card-btn" onClick={() => move(index - 1)} disabled={index === 0} aria-label={t('Move left')}><Icon name="chevronLeft" /></button>
+      <span className="ci-pos">{index + 1} / {count}</span>
+      <button className="iconbtn ci-card-btn" onClick={() => move(index + 1)} disabled={index === count - 1} aria-label={t('Move right')}><Icon name="chevronRight" /></button>
+    </div>}
   </div>
-}
-
-/* ------------------------------------------------------- long-press reorder -- */
-
-// Horizontal drag-to-reorder for the rail. A long-press lifts the card under the finger; moving
-// then drops it before whichever card its centre passes. Kept self-contained (not the routine
-// editor's vertical hook) because the rail is a scroll-snap track, not a stacked list — the
-// gesture maths is horizontal and the scroll container is the element itself.
-//
-// Returns { dragging, dragId } for styling; the reorder itself is committed to the store on drop.
-function useRailReorder(railRef, cards) {
-  const [state, setState] = useState({ dragging: false, dragId: null })
-  const cardsRef = useRef(cards)
-  cardsRef.current = cards
-
-  useEffect(() => {
-    const rail = railRef.current
-    if (!rail) return undefined
-    let gesture = null
-
-    const clearTimer = () => { if (gesture?.timer) { clearTimeout(gesture.timer); gesture.timer = null } }
-
-    const lift = g => {
-      g.active = true
-      setState({ dragging: true, dragId: g.id })
-    }
-
-    // Drop before the card whose horizontal centre the pointer has passed, then persist the new
-    // order. A no-op move (dropped in place) still clears state but writes nothing.
-    const drop = g => {
-      const list = cardsRef.current
-      const from = list.findIndex(c => c.id === g.id)
-      if (from >= 0) {
-        const cardEls = [...rail.querySelectorAll('[data-ci-card]')]
-        const centres = cardEls.map(el => { const r = el.getBoundingClientRect(); return r.left + r.width / 2 })
-        const to = centres.reduce((n, cx, i) => n + (i !== from && g.lastX > cx ? 1 : 0), 0)
-        if (to !== from) useStore.getState().update(s => { s.gymCards = moveGymCard(s.gymCards, from, to) })
-      }
-      setState({ dragging: false, dragId: null })
-    }
-
-    const onPointerDown = event => {
-      if (event.isPrimary === false || (event.pointerType === 'mouse' && event.button !== 0)) return
-      const target = event.target
-      if (!target?.closest || target.closest('button,a,input,textarea,select,[data-nodrag]')) return
-      const cardEl = target.closest('[data-ci-card]')
-      if (!cardEl || !rail.contains(cardEl)) return
-      gesture = { id: cardEl.dataset.ciId, pointerId: event.pointerId, startX: event.clientX, lastX: event.clientX, active: false, timer: null }
-      gesture.timer = window.setTimeout(() => lift(gesture), CI_LONG_PRESS_MS)
-    }
-
-    const onPointerMove = event => {
-      if (!gesture || event.pointerId !== gesture.pointerId) return
-      gesture.lastX = event.clientX
-      if (!gesture.active) {
-        // Moved before the long-press fired — it's a swipe of the rail, not a reorder. Bail so the
-        // native scroll-snap takes over.
-        if (Math.abs(event.clientX - gesture.startX) > CI_DRAG_SLOP) { clearTimer(); gesture = null }
-        return
-      }
-      event.preventDefault()
-    }
-
-    const onPointerUp = event => {
-      if (!gesture || event.pointerId !== gesture.pointerId) return
-      clearTimer()
-      if (gesture.active) drop(gesture)
-      gesture = null
-    }
-
-    const cancel = () => { if (gesture) { clearTimer(); if (gesture.active) setState({ dragging: false, dragId: null }); gesture = null } }
-
-    // Once a drag is active the rail must not also pan-scroll; a non-passive touchmove is the only
-    // thing that can stop the browser claiming the gesture as a horizontal pan.
-    const onTouchMove = event => { if (gesture?.active) event.preventDefault() }
-
-    document.addEventListener('pointerdown', onPointerDown)
-    document.addEventListener('pointermove', onPointerMove, { passive: false })
-    document.addEventListener('pointerup', onPointerUp)
-    document.addEventListener('pointercancel', cancel)
-    rail.addEventListener('touchmove', onTouchMove, { passive: false })
-    window.addEventListener('blur', cancel)
-    return () => {
-      cancel()
-      document.removeEventListener('pointerdown', onPointerDown)
-      document.removeEventListener('pointermove', onPointerMove)
-      document.removeEventListener('pointerup', onPointerUp)
-      document.removeEventListener('pointercancel', cancel)
-      rail.removeEventListener('touchmove', onTouchMove)
-      window.removeEventListener('blur', cancel)
-    }
-  }, [railRef])
-
-  return state
 }
 
 /* ------------------------------------------------------------- add/edit sheet -- */

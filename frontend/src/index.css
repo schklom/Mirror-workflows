@@ -1168,10 +1168,11 @@ h4.sec{
 .ci-card-btn{width:30px;height:30px;font-size:14px;flex:none}
 .ci-card .ci-label{flex:1;min-width:0;font-size:19px;font-weight:600;letter-spacing:-.014em;text-align:center;overflow-wrap:anywhere}
 .ci-card .ci-value{font-size:14px;color:var(--label-2);word-break:break-all;text-align:center;font-variant-numeric:tabular-nums}
-/* long-press reorder: the lifted card floats above the rest, which dim slightly to recede. */
-.ci-rail.is-reordering{scroll-snap-type:none}
-.ci-rail.is-reordering .ci-card:not(.is-dragging){opacity:.6}
-.ci-card.is-dragging{transform:scale(1.03);box-shadow:0 12px 30px -8px rgba(0,0,0,.4);z-index:2}
+/* reorder row under a card (only shown with >1 card): ◀ position ▶ to nudge the card one slot
+   along the rail. A plain, reliable control — no drag gesture to fight the horizontal scroll. */
+.ci-reorder{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:2px}
+.ci-reorder .ci-pos{font-size:13px;color:var(--label-2);font-variant-numeric:tabular-nums;min-width:44px;text-align:center}
+.ci-reorder .iconbtn:disabled{opacity:.3;pointer-events:none}
 /* The QR itself: lean-qr paints 1 module per pixel, so scale it up with the browser's
    nearest-neighbour so every module stays a crisp square instead of a blurred blob. White
    quiet-zone padding is baked in by the renderer; the plate underneath just frames it. */

@@ -1139,6 +1139,8 @@ export default {
   'Membership number or code': 'Número de sócio ou código',
   'Save card': 'Guardar cartão',
   'Gym card': 'Cartão do ginásio',
+  'Move left': 'Mover para a esquerda',
+  'Move right': 'Mover para a direita',
   'Edit card': 'Editar cartão',
   'Re-scan': 'Digitalizar de novo',
   'Scan it with the camera or import a photo.': 'Digitaliza-o com a câmara ou importa uma foto.',

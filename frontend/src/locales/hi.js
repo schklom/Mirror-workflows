@@ -1139,6 +1139,8 @@ export default {
   'Membership number or code': 'मेंबरशिप नंबर या कोड',
   'Save card': 'कार्ड सहेजें',
   'Gym card': 'जिम कार्ड',
+  'Move left': 'बाएँ ले जाएँ',
+  'Move right': 'दाएँ ले जाएँ',
   'Edit card': 'कार्ड संपादित करें',
   'Re-scan': 'फिर से स्कैन करें',
   'Scan it with the camera or import a photo.': 'इसे कैमरे से स्कैन करें या फ़ोटो इम्पोर्ट करें।',

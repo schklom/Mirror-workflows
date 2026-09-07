@@ -1139,6 +1139,8 @@ export default {
   'Membership number or code': '会员号或代码',
   'Save card': '保存卡片',
   'Gym card': '健身房卡片',
+  'Move left': '向左移动',
+  'Move right': '向右移动',
   'Edit card': '编辑卡片',
   'Re-scan': '重新扫描',
   'Scan it with the camera or import a photo.': '用相机扫描或导入照片。',

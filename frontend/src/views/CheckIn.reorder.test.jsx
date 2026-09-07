@@ -1,10 +1,10 @@
 // @vitest-environment happy-dom
 // @vitest-environment happy-dom
 
-// The rail's reorder maths. The drop handler in CheckIn.jsx turns a pointer position into a target
-// index; moveGymCard is the pure part that then rearranges the array. These tests cover that
-// contract — a move is a splice, the input is never mutated, and degenerate moves (in place, out of
-// range) are safe no-ops — the same shape reorderRoutineUnit is tested to.
+// moveGymCard backs the on-card ◀ ▶ reorder buttons: it moves the card at `from` to index `to`,
+// returning a new array. These tests cover that contract — a move is a splice, the input is never
+// mutated, and degenerate moves (in place, out of range, past the ends) are safe no-ops, so a
+// button at either end of the rail is simply inert.
 //
 // moveGymCard itself is pure, but importing CheckIn.jsx loads the store (which registers a
 // visibilitychange listener at module load) and the scanner/sheet modules, so the file runs under

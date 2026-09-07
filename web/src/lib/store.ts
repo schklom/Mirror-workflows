@@ -11,11 +11,13 @@ import {
 } from '@/lib/keystore';
 import type { Location } from '@/lib/api';
 import type { Language } from '@/lib/i18n';
+import { CRYPTO_PROTO_V2 } from './crypto';
 
 export type Theme = 'light' | 'dark' | 'system';
 export type UnitSystem = 'metric' | 'imperial';
 export type { Language } from '@/lib/i18n';
 
+// Store for sensitive information
 export interface UserData {
   fmdId: string;
   sessionToken: string;
@@ -24,10 +26,13 @@ export interface UserData {
   fingerprint: string;
 }
 
+// Main data store
 interface AppState {
   isLoggedIn: boolean;
+  protoVersion: number;
   userData: UserData | null;
   wasAuthRestoreTried: boolean;
+
   theme: Theme;
   units: UnitSystem;
   language: Language;
@@ -55,6 +60,7 @@ export const useStore = create<AppState>()(
   persist(
     (set) => ({
       isLoggedIn: false,
+      protoVersion: CRYPTO_PROTO_V2,
       userData: null,
       wasAuthRestoreTried: false,
       theme: 'system',
@@ -154,11 +160,12 @@ export const useStore = create<AppState>()(
     }),
 
     // Persist some of the state
-    // https://github.com/pmndrs/zustand/blob/main/docs/integrations/persisting-store-data.md
+    // https://github.com/pmndrs/zustand/blob/main/docs/reference/integrations/persisting-store-data.md
     {
       name: KEY_SETTINGS,
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
+        protoVersion: state.protoVersion,
         theme: state.theme,
         units: state.units,
         language: state.language,

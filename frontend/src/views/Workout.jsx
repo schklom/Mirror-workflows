@@ -5,7 +5,7 @@ import { workoutControls } from '../lib/workout-controls.js'
 import { useUI } from '../store/useUI.js'
 import { exOr } from '../lib/exercises.js'
 import { usesBar, barWeightFor, plateSplit } from '../lib/bar.js'
-import { effectiveRoutine, lastEntryFor, bestWeightFor, bestWeightForEntry, buildSets, freestyleConfig, defaultConfig, setsDoneActive, supersetUnits, unitOf, setLabel, modeOf, isBw, isPerSide, sideReps, repStep, EFFORT, effortOf, stepEffort, capEffort, cascadeWeight, insertWarmupRow, removeRowAt, pairAdjacent, unpairSuperset, cleanupSg, applyIntensifierPlan, pinnedNoteFor, exNoteFor } from '../lib/history.js'
+import { effectiveRoutine, lastEntryFor, bestWeightFor, bestWeightForEntry, buildSets, freestyleConfig, defaultConfig, setsDoneActive, setUnitsTotal, supersetUnits, unitOf, setLabel, modeOf, isBw, isPerSide, repStep, EFFORT, effortOf, stepEffort, capEffort, cascadeWeight, insertWarmupRow, removeRowAt, pairAdjacent, unpairSuperset, cleanupSg, applyIntensifierPlan, pinnedNoteFor, exNoteFor } from '../lib/history.js'
 import { fmtNum, fmtDate, todayISO, exCount, DAYN } from '../lib/format.js'
 import { beep, vibrate } from '../lib/sound.js'
 import { t, exerciseNameFor } from '../lib/i18n.js'
@@ -19,7 +19,7 @@ import { Button, Check, NumberField } from '../components/ui.jsx'
 import { nextPrescription, applyPrescription, defaultIncrement, weightIncrement, stepWeight } from '../lib/progression.js'
 import { progressionGuidance } from '../lib/progression-copy.js'
 import { glyphOf } from '../lib/glyphs.js'
-import { isWarmupRow, isDropSet, isRestPauseSet, dropsOf, clustersOf, addDrop, addCluster, removeDropAt, removeClusterAt, setDropAt, setClusterAt, nextDropWeight, nextBurstReps } from '../lib/workout-model.js'
+import { isWarmupRow, isDropSet, isRestPauseSet, dropsOf, clustersOf, addDrop, addCluster, removeDropAt, removeClusterAt, setDropAt, setClusterAt, nextDropWeight, nextBurstReps, isSideSet, makeSideSet, setSideField, toggleSide, addSideDrop, removeSideDropAt, setSideDropAt, addSideCluster, removeSideClusterAt, setSideClusterAt } from '../lib/workout-model.js'
 import { canMoveActiveWorkoutUnit, moveActiveWorkoutUnit } from '../lib/active-workout-order.js'
 
 const SWIPE_MIN_DISTANCE = 48
@@ -65,7 +65,7 @@ function Elapsed({ start }) {
 }
 
 /* ---------- one exercise block (reps: weight×reps · time: a held duration · cardio: duration+speed) ---------- */
-function ExerciseBlock({ entryIdx, compact, onToggle, onField, onAddSet, onRemoveSet, onAddWarmup, onRemoveSetAt, onStartTimed, onPairPrev, onPairNext, onSetRowRef, onProgressionSettings, onSwap, onMoveUp, onMoveDown, canMoveUp, canMoveDown, onRemoveExercise, busy }) {
+function ExerciseBlock({ entryIdx, compact, onToggle, onToggleSide, onField, onAddSet, onRemoveSet, onAddWarmup, onRemoveSetAt, onStartTimed, onPairPrev, onPairNext, onSetRowRef, onProgressionSettings, onSwap, onMoveUp, onMoveDown, canMoveUp, canMoveDown, onRemoveExercise, busy }) {
   const S = useStore(s => s.S)
   const update = useStore(s => s.update)
   const working = useUI(s => s.work)
@@ -75,6 +75,11 @@ function ExerciseBlock({ entryIdx, compact, onToggle, onField, onAddSet, onRemov
   // filled in by applyIntensifierPlan; these only add/edit/remove entries live from here on.
   const mutSet = (i, fn) => update(s => { const row = s.active.entries[entryIdx].sets[i]; s.active.entries[entryIdx].sets[i] = fn(row) }, true)
   const addDropRow = i => mutSet(i, row => {
+    // A unilateral set drops per side (issue #60): addSideDrop seeds each side from its own weight.
+    if (isSideSet(row)) {
+      const pct = entry.target?.intensifier?.type === 'dropset' ? entry.target.intensifier.pct : undefined
+      return addSideDrop(row, pct)
+    }
     const drops = dropsOf(row)
     const base = drops.length ? drops[drops.length - 1].w : (row.w || 0)
     const pct = entry.target?.intensifier?.type === 'dropset' ? entry.target.intensifier.pct : undefined
@@ -84,19 +89,30 @@ function ExerciseBlock({ entryIdx, compact, onToggle, onField, onAddSet, onRemov
   // applyIntensifierPlan/history.js) — clusters are the breakdown of that total, not extra on
   // top of it — so adding, removing or editing one keeps `r` in step by the same delta.
   const addBurstRow = i => mutSet(i, row => {
+    const restSec = entry.target?.intensifier?.type === 'restpause' ? entry.target.intensifier.restSec : (S.restPauseSec || 15)
+    if (isSideSet(row)) return addSideCluster(row, restSec)   // per side, each keeps its own r in step
     const clusters = clustersOf(row)
     const base = clusters.length ? clusters[clusters.length - 1].r : (row.r || 0)
-    const restSec = entry.target?.intensifier?.type === 'restpause' ? entry.target.intensifier.restSec : (S.restPauseSec || 15)
     const added = nextBurstReps(base)
     return { ...addCluster(row, { r: added, restSec }), r: (row.r || 0) + added }
   })
-  const removeDrop = (i, di) => mutSet(i, row => removeDropAt(row, di))
+  // Per-side weight/reps/effort edits (issue #60): patch one side of a unilateral row, keeping
+  // the row's aggregate (r/w/done/effort) in step via the model helper so every other reader
+  // stays right. The done tick goes through onToggleSide → toggle() instead, so ticking a side
+  // still fires the rest timer / auto-advance / workout-complete flow.
+  const setSide = (i, side, field, v) => mutSet(i, row => setSideField(row, side, field, v))
+  // Drop/burst edits accept an optional `side` ('L'|'R'): present for a per-side row (edits that
+  // one limb's drop/burst), absent for a straight row (edits the row's own).
+  const removeDrop = (i, di) => mutSet(i, row => isSideSet(row) ? removeSideDropAt(row, di) : removeDropAt(row, di))
   const removeCluster = (i, ci) => mutSet(i, row => {
+    if (isSideSet(row)) return removeSideClusterAt(row, ci)
     const removed = clustersOf(row)[ci]?.r || 0
     return { ...removeClusterAt(row, ci), r: Math.max(0, (row.r || 0) - removed) }
   })
-  const setDropField = (i, di, field, v) => mutSet(i, row => setDropAt(row, di, { [field]: v }))
-  const setClusterField = (i, ci, v) => mutSet(i, row => {
+  const setDropField = (i, di, field, v, side) => mutSet(i, row =>
+    isSideSet(row) ? setSideDropAt(row, side, di, { [field]: v }) : setDropAt(row, di, { [field]: v }))
+  const setClusterField = (i, ci, v, side) => mutSet(i, row => {
+    if (isSideSet(row)) return setSideClusterAt(row, side, ci, v)
     const delta = (Number(v) || 0) - (clustersOf(row)[ci]?.r || 0)
     return { ...setClusterAt(row, ci, { r: v }), r: Math.max(0, (row.r || 0) + delta) }
   })
@@ -120,6 +136,9 @@ function ExerciseBlock({ entryIdx, compact, onToggle, onField, onAddSet, onRemov
   // config brings it back, now labelled as the addition it is.
   const cfg = { ...(entry.target || {}), id: entry.id }
   const bw = !cardio && isBw(cfg)
+  // A unilateral exercise logs each side on its own (issue #60): work rows render as an L and an
+  // R sub-row, each with its own weight/reps/effort and done tick. Warm-ups stay single.
+  const perSide = mode === 'reps' && isPerSide(cfg)
   const added = bw && entry.sets.some(s => s.w > 0)
   const loadStep = mode === 'reps' ? weightIncrement(cfg, S.unit) : 2.5
   const loadCol = { f: 'w', step: loadStep, dec: true, hd: bw ? t('Added ({0})', S.unit) : t('Weight ({0})', S.unit) }
@@ -243,6 +262,79 @@ function ExerciseBlock({ entryIdx, compact, onToggle, onField, onAddSet, onRemov
       </div>
     )
   }
+  // Per-side versions of the weight/reps stepper and the effort picker. Same markup and stepping
+  // rules as the row-level `cell`/`effortCell`, but bound to one side of a unilateral row and
+  // routed through setSide so the aggregate stays correct. Reads the live side value from the
+  // store for the same stale-closure reason `bump` does.
+  const sideBump = (i, side, col, dir) => {
+    const fresh = useStore.getState().S.active?.entries[entryIdx]?.sets[i]?.sides?.[side]
+    const cur = fresh ? fresh[col.f] : 0
+    if (col.f === 'w') return setSide(i, side, col.f, stepWeight(cur, col.step, dir))
+    // Reps step by one per side: repCol's step of two keeps the *combined* total evenly
+    // splittable, but here each side is logged directly, so one tap is one rep.
+    const step = col.f === 'r' ? 1 : col.step
+    setSide(i, side, col.f, Math.max(0, Math.round(((cur || 0) + dir * step) * 100) / 100))
+  }
+  const sideCell = (sd, i, side, col, cls) => (
+    <div className={'stp ' + cls + (wc.steppers ? '' : ' plain')}>
+      {wc.steppers && <button aria-label="Decrease" onClick={() => sideBump(i, side, col, -1)}><Icon name="minus" /></button>}
+      <span className="val"><NumberField decimal={col.dec} value={sd[col.f] ?? ''}
+        onChange={v => setSide(i, side, col.f, v)} /></span>
+      {wc.steppers && <button aria-label="Increase" onClick={() => sideBump(i, side, col, 1)}><Icon name="plus" /></button>}
+    </div>
+  )
+  const sideEffortCell = (sd, i, side, col) => {
+    const v = sd[col.f] ?? null
+    const rir = col.eff === 'rpe' ? (v == null ? null : 10 - v) : v
+    const color = effortColor(rir)
+    const open = () => effortPickerSheet(col.eff, v, nv => setSide(i, side, col.f, nv))
+    if (v == null) return <button className="effcell is-empty" aria-label={col.hd} onClick={open}>{col.hd}</button>
+    const step = dir => setSide(i, side, col.f, stepEffort(col.eff, v, dir))
+    return (
+      <div className={'stp effcell-stp' + (wc.steppers ? '' : ' plain')}
+        style={color ? { color, borderColor: color, background: `color-mix(in srgb, ${color} 20%, var(--surface-2))` } : undefined}>
+        {wc.steppers && <button aria-label="Decrease" onClick={() => step(-1)}><Icon name="minus" /></button>}
+        <button className="val" aria-label={col.hd} onClick={open}>{fmtNum(v)}</button>
+        {wc.steppers && <button aria-label="Increase" onClick={() => step(1)}><Icon name="plus" /></button>}
+      </div>
+    )
+  }
+  // One side's row: the L or R badge, then the same weight/reps/effort controls as a straight
+  // row but bound to that side, and the side's own done tick.
+  const sideRow = (s, i, side, col1, col2, col3) => {
+    const sd = (s.sides && s.sides[side]) || { w: 0, r: 0, done: false }
+    return <div className={'setrow side' + (sd.done ? ' done' : '') + (col3 ? ' eff3' : '')}>
+      <span className="sidetag" aria-hidden="true">{side === 'L' ? t('L') : t('R')}</span>
+      {sideCell(sd, i, side, col1, 'w')}
+      {col2 && sideCell(sd, i, side, col2, 'r')}
+      {col3 && sideEffortCell(sd, i, side, col3)}
+      <Check checked={sd.done} onChange={() => onToggleSide(i, side)} />
+    </div>
+  }
+  // A side's own drop-set/rest-pause sub-rows (issue #60): the intensifier is logged per limb, so
+  // the drops and bursts hang under that side's row, each editable, exactly like a straight set's
+  // do under its row. Reads the side object, not the aggregate.
+  const sideExtras = (s, i, side) => {
+    const sd = (s.sides && s.sides[side]) || {}
+    return <>
+      {dropsOf(sd).map((d, di) => (
+        <div className="subrow" key={'d' + di}>
+          <span className="subn">{t('Drop {0}', di + 1)}</span>
+          {miniStepper(d.w, loadStep, true, v => setDropField(i, di, 'w', v, side), true)}
+          {miniStepper(d.r, 1, false, v => setDropField(i, di, 'r', v, side))}
+          <button className="iconbtn" aria-label={t('Remove drop')} onClick={() => removeDrop(i, di)}><Icon name="xmark" /></button>
+        </div>
+      ))}
+      {clustersOf(sd).map((c, ci) => (
+        <div className="subrow" key={'c' + ci}>
+          <span className="subn">{t('Burst {0}', ci + 1)}</span>
+          {miniStepper(c.r, 1, false, v => setClusterField(i, ci, v, side))}
+          <span className="dim small">{c.restSec}s</span>
+          <button className="iconbtn" aria-label={t('Remove burst')} onClick={() => removeCluster(i, ci)}><Icon name="xmark" /></button>
+        </div>
+      ))}
+    </>
+  }
   // A smaller stepper for a drop's weight/reps or a burst's reps — editing what the plan (or a
   // live "+ Drop"/"+ Burst" tap) already put on the row, not typing into a fresh field.
   const miniStepper = (value, step, dec, onChange, snapWeightStep = false) => (
@@ -268,9 +360,10 @@ function ExerciseBlock({ entryIdx, compact, onToggle, onField, onAddSet, onRemov
     </div>}
     <div className="row" style={{ gap: 6, flexWrap: 'wrap', marginBottom: 8 }}>
       {cardio && <span className="tag acc"><Icon name="figureRun" />{t('Cardio')}</span>}
-      {/* You log the total; this is the split, so the set in front of you is unambiguous
-          without the rep count having to mean two different things (issue #31). */}
-      {!cardio && !timed && isPerSide(cfg) && <span className="tag acc nocap"><Icon name="shuffle" />{t('{0} per side', fmtNum(sideReps(entry.sets.find(s => !s.done)?.r ?? entry.sets[0]?.r)))}</span>}
+      {/* A unilateral exercise is logged per side directly (the L/R rows below), so the old
+          "{n} per side" chip — which halved the combined total for display — is gone: the split
+          is no longer derived, it is what you enter. The tag only flags that this is per-side. */}
+      {!cardio && !timed && isPerSide(cfg) && <span className="tag acc nocap"><Icon name="shuffle" />{t('Per side')}</span>}
       {(ex.tg || ex.bp) && <span className="tag">{t(ex.tg || ex.bp)}</span>}
       {ex.eq && <span className="tag">{t(ex.eq)}</span>}
       {best > 0 && <span className="tag nocap">{t('Best:')} {fmtNum(best)} {S.unit}</span>}
@@ -311,6 +404,19 @@ function ExerciseBlock({ entryIdx, compact, onToggle, onField, onAddSet, onRemov
         return <div key={i}>
           {isFirstWarmup && <div className="setph">{t('Warm-up')}</div>}
           {!warm && warmBefore && <div className="setsep" />}
+          {perSide && !warm && isSideSet(s) ? (
+            // Unilateral work set: the number sits beside a two-row L/R stack, each side logged
+            // and ticked on its own (issue #60).
+            <div ref={el => onSetRowRef?.(i, el)} className={'setrow-side' + (s.done ? ' done' : '')}>
+              <button type="button" className="n" aria-label={t('Set {0}', phaseNum)} title={t('More')} onClick={() => openSetMenu(s, i)}>{phaseNum}</button>
+              <div className="side-rows">
+                {sideRow(s, i, 'L', col1, col2, col3)}
+                {sideExtras(s, i, 'L')}
+                {sideRow(s, i, 'R', col1, col2, col3)}
+                {sideExtras(s, i, 'R')}
+              </div>
+            </div>
+          ) : (
           <div ref={el => onSetRowRef?.(i, el)} className={'setrow' + (s.done ? ' done' : '') + (col3 ? ' eff3' : '')}>
             <button type="button" className="n" aria-label={t('Set {0}', phaseNum)} title={t('More')} onClick={() => openSetMenu(s, i)}>{phaseNum}</button>
             {cell(s, i, col1, 'w')}
@@ -322,6 +428,7 @@ function ExerciseBlock({ entryIdx, compact, onToggle, onField, onAddSet, onRemov
               onClick={() => onStartTimed(i)}><Icon name="play" /></button>}
             <Check checked={s.done} onChange={() => onToggle(i)} />
           </div>
+          )}
           {/* Drop-sets and rest-pause bursts extend this same row — no long rest, no new set.
               A planned exercise arrives with these already filled in (applyIntensifierPlan);
               every value here is just as editable as the main row's own weight/reps. */}
@@ -452,7 +559,7 @@ function ActiveWorkout() {
     if (el && typeof el.scrollIntoView === 'function') el.scrollIntoView({ behavior: 'smooth', block: 'center' })
   }, [cur, isSuperset, listMode, A.entries.length])
 
-  const total = A.entries.reduce((n, e) => n + e.sets.length, 0)
+  const total = setUnitsTotal(A.entries)
   const done = setsDoneActive(A)
 
   const mutEntry = (idx, fn) => update(s => { fn(s.active.entries[idx]) }, true)
@@ -472,7 +579,16 @@ function ActiveWorkout() {
     const m = modeOf({ ...(e.target || {}), id: e.id })
     if (m === 'cardio') e.sets.push({ min: l ? l.min : (e.target.min || 20), speed: l ? l.speed : (e.target.speed || 8), done: false })
     else if (m === 'time') e.sets.push({ sec: l ? l.sec : (e.target.sec || 45), w: l ? (l.w || 0) : (e.target.weight || 0), done: false })
-    else e.sets.push({ w: l ? l.w : 0, r: l ? l.r : e.target.reps, done: false })
+    else {
+      const row = { w: l ? l.w : 0, r: l ? l.r : e.target.reps, done: false }
+      // A unilateral exercise keeps adding per-side rows (issue #60): seed each side from the
+      // previous set's own side when it had one, else split the row's total evenly.
+      e.sets.push(isPerSide({ ...(e.target || {}), id: e.id })
+        ? (l && isSideSet(l)
+          ? makeSideSet({ w: l.sides.L.w, r: (l.sides.L.r || 0) * 2 })
+          : makeSideSet(row))
+        : row)
+    }
   })
   const removeSet = idx => mutEntry(idx, e => { if (e.sets.length > 1) e.sets.pop() })
   const addWarmup = idx => mutEntry(idx, e => {
@@ -521,6 +637,7 @@ function ActiveWorkout() {
     onRemoveExercise: () => confirmRemoveExercise(idx),
     busy: !!work,
     onToggle: i => toggle(idx, i),
+    onToggleSide: (i, side) => toggle(idx, i, side),
     onField: (i, f, v) => setField(idx, i, f, v),
     onAddSet: () => addSet(idx),
     onRemoveSet: () => removeSet(idx),
@@ -652,13 +769,16 @@ function ActiveWorkout() {
     })
   }
 
-  const toggle = (idx, i) => {
+  const toggle = (idx, i, side) => {
     const m = modeAt(idx)
     const cardioEntry = m === 'cardio'
     let exJustDone = false, workoutDone = false, checked = false
     update(s => {
       const e = s.active.entries[idx]
-      e.sets[i].done = !e.sets[i].done
+      // A per-side tick flips just that side; the row's own `done` (both sides) is then
+      // recomputed by toggleSide, so every completion check below still reads a single boolean.
+      if (side) e.sets[i] = toggleSide(e.sets[i], side)
+      else e.sets[i].done = !e.sets[i].done
       checked = e.sets[i].done
       if (e.sets[i].done) {
         beep(S.sound, 1040, 0.12); vibrate(30)
@@ -738,7 +858,7 @@ function ActiveWorkout() {
       const u = supersetUnits(A2.entries)
       const c = Math.min(A2.cur, Math.max(0, A2.entries.length - 1))
       const ui = u.findIndex(x => x.includes(c))
-      const tot = A2.entries.reduce((n, e) => n + e.sets.length, 0)
+      const tot = setUnitsTotal(A2.entries)
       api('/api/activity', { method: 'POST', body: JSON.stringify({
         active, name: A2.name, exIdx: ui + 1, exTotal: u.length,
         setsDone: setsDoneActive(A2), setsTotal: tot, startedAt: A2.start

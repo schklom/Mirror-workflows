@@ -1,7 +1,7 @@
 // Pure helpers over the state object S (ported 1:1 from the vanilla app).
 import { todayISO, isoOf, weekKey, weekStartOf, fmtNum } from './format.js'
 import { isCardio, isBodyweightEq } from './exercises.js'
-import { phaseForSet, modeForSet, modeForEntry, isWarmupRow, normalizeMode, extraVolumeOf, nextDropWeight, splitBurstReps } from './workout-model.js'
+import { phaseForSet, modeForSet, modeForEntry, isWarmupRow, normalizeMode, extraVolumeOf, nextDropWeight, splitBurstReps, makeSideSet, isSideSet, syncSideAggregate } from './workout-model.js'
 const objectOf = value => value && typeof value === 'object' && !Array.isArray(value) ? value : {}
 // Completed-state-independent work rows whose authoritative mode matches the requested mode.
 const workRowsForMode = (entry = {}, mode = 'reps') => {
@@ -110,16 +110,21 @@ export function setLabel(id, s, cfg) {
   const mode = modeOf(c)
   if (mode === 'cardio') return `${s.min || 0} min @ ${fmtNum(s.speed || 0)} km/h`
   if (mode === 'time') return fmtSec(s.sec) + (s.w > 0 ? ` · ${fmtNum(s.w)}` : '')
+  const bw = isBw({ ...c, id: c.id ?? id })
+  // One side's "weight×reps" (or bodyweight "reps" / "+belt × reps"), the same shape a whole
+  // straight set reads as — reused for each side of a unilateral set below.
+  const oneSide = side => {
+    const reps = side.r || 0
+    return bw ? (side.w > 0 ? `+${fmtNum(side.w)} × ` : '') + reps : `${fmtNum(side.w || 0)}×${reps}`
+  }
+  // A unilateral set logged per side (issue #60) reads "L 15×8 · R 15×7" — the asymmetry is the
+  // whole point, so both sides are shown rather than a single combined total.
+  if (isSideSet(s)) {
+    return `${t('L')} ${oneSide(s.sides.L)}${effortTail(s.sides.L)} · ${t('R')} ${oneSide(s.sides.R)}${effortTail(s.sides.R)}`
+  }
   // Bodyweight reads as what you did — "12", or "+10 × 12" once there is a belt involved —
   // rather than "0×12", which says a set was performed with no weight and means nothing.
-  // A per-side set needs no mark here: the number logged is the total, the same as every
-  // other set in the app.
-  const reps = s.r || 0
-  if (isBw({ ...c, id: c.id ?? id })) {
-    const load = s.w > 0 ? `+${fmtNum(s.w)} × ` : ''
-    return `${load}${reps}` + effortTail(s)
-  }
-  return `${fmtNum(s.w || 0)}×${reps}` + effortTail(s)
+  return oneSide(s) + effortTail(s)
 }
 // Default config for a freshly added exercise.
 export function defaultConfig(id, mode) {
@@ -372,9 +377,24 @@ function buildWorkSets(S, cfg, options = {}) {
     const w = useTarget
       ? (cfg.weight > 0 ? cfg.weight : (lastRegular && lastRegular.r > 0 ? lastRegular.w : cfg.weight))
       : preferLast && usable ? usable.w : (conf && conf.w > 0 ? conf.w : (usable ? usable.w : cfg.weight))
-    sets.push({ w, r: usable ? usable.r : cfg.reps, done: false })
+    const row = { w, r: usable ? usable.r : cfg.reps, done: false }
+    // A unilateral exercise logs each side on its own (issue #60): the row splits into L/R,
+    // each seeded with half the total reps at the same weight. When "last time" was itself a
+    // per-side set, carry its two sides over verbatim so an asymmetry you logged persists.
+    if (isPerSide(cfg)) sets.push(usable && isSideSet(usable) ? seedSideFromLast(row, usable) : makeSideSet(row))
+    else sets.push(row)
   }
   return sets
+}
+
+// Seed a fresh per-side row from a previous per-side set: same reps/weight each side, nothing
+// done, no effort carried (that is logged afresh each session). Falls back to an even split if
+// the previous row was not actually per-side.
+function seedSideFromLast(row, prev) {
+  const base = makeSideSet(row)
+  if (!isSideSet(prev)) return base
+  const carry = s => ({ w: Number(s?.w) || 0, r: Number(s?.r) || 0, done: false })
+  return syncSideAggregate({ ...base, sides: { L: carry(prev.sides.L), R: carry(prev.sides.R) } })
 }
 
 /**
@@ -392,12 +412,19 @@ export function applyIntensifierPlan(sets, cfg) {
   if (kind === 'dropset') {
     const count = Math.max(1, Math.round(cfg.intensifier.count) || 1)
     const pct = cfg.intensifier.pct
+    // Stamp a descending chain of drops onto a row (or one side of a per-side row): each drop is
+    // pct% lighter than the last, at that row/side's own rep count.
+    const withDrops = row => {
+      const drops = []
+      let w = row.w || 0
+      for (let k = 0; k < count; k++) { w = nextDropWeight(w, pct); drops.push({ w, r: row.r }) }
+      return { ...row, type: 'dropset', drops }
+    }
     return sets.map(s => {
       if (isWarmupRow(s)) return s
-      const drops = []
-      let w = s.w || 0
-      for (let k = 0; k < count; k++) { w = nextDropWeight(w, pct); drops.push({ w, r: s.r }) }
-      return { ...s, type: 'dropset', drops }
+      // A unilateral set drops per side (issue #60): stamp each side, then resync the aggregate.
+      if (isSideSet(s)) return syncSideAggregate({ ...s, sides: { L: withDrops(s.sides.L), R: withDrops(s.sides.R) } })
+      return withDrops(s)
     })
   }
   // Rest-pause trains as exactly two sets, not one per configured `sets` count: a warm-up at
@@ -430,14 +457,22 @@ export function workoutVolume(w) {
   }))
   return v
 }
+// A unilateral row counts as two toward the "x / y sets" progress — one per side — since each
+// side is logged and ticked on its own (issue #60). Every other row counts as one.
+export const setUnits = s => (isSideSet(s) ? 2 : 1)
+// How many of a row's units are done: both sides independently for a per-side row, else 0/1.
+export const doneUnits = s => (isSideSet(s) ? (s.sides.L.done ? 1 : 0) + (s.sides.R.done ? 1 : 0) : (s.done ? 1 : 0))
+// Total completion-units across a session's rows (both sides of every unilateral set counted).
+export const setUnitsTotal = entries => (entries || []).reduce((n, e) => n + (e.sets || []).reduce((m, s) => m + setUnits(s), 0), 0)
+
 export function setsDone(w) {
   let n = 0
-  w.entries.forEach(e => e.sets.forEach(s => { if (s.done) n++ }))
+  w.entries.forEach(e => e.sets.forEach(s => { n += doneUnits(s) }))
   return n
 }
 export function setsDoneActive(A) {
   let n = 0
-  if (A) A.entries.forEach(e => e.sets.forEach(s => { if (s.done) n++ }))
+  if (A) A.entries.forEach(e => e.sets.forEach(s => { n += doneUnits(s) }))
   return n
 }
 export const lastBW = S => (S.bodyweight.length ? S.bodyweight[S.bodyweight.length - 1] : null)

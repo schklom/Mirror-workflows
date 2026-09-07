@@ -41,6 +41,8 @@ export default {
   'rescheduled': 'बदला गया',
   'Prev': 'पिछला',
   'Next': 'अगला',
+  'L': 'बा',
+  'R': 'दा',
   'Move up': 'ऊपर ले जाएँ',
   'Move down': 'नीचे ले जाएँ',
   'Sunday': 'रविवार', 'Monday': 'सोमवार', 'Tuesday': 'मंगलवार', 'Wednesday': 'बुधवार',
@@ -677,6 +679,7 @@ export default {
   '{0} reps in every set — add a set and go back to {1}.': 'हर सेट में {0} रेप्स — एक सेट जोड़ें और वापस {1} पर।',
   '{0} sets of {1} — time to add weight or move to a harder variation.': '{1} रेप्स के {0} सेट — अब वज़न बढ़ाने या किसी कठिन वैरिएशन पर जाने का समय।',
   '{0} per side': 'प्रति तरफ़ {0}',
+  'Per side': 'प्रति तरफ़',
   'You still log the total: {0} is {1} per side.': 'आप कुल ही दर्ज करते हैं: {0} यानी प्रति तरफ़ {1}।',
 
   // --- AI Coach ---

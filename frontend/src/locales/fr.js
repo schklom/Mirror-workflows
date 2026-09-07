@@ -41,6 +41,8 @@ export default {
   'rescheduled': 'reprogrammé',
   'Prev': 'Préc.',
   'Next': 'Suiv.',
+  'L': 'G',
+  'R': 'D',
   'Move up': 'Monter',
   'Move down': 'Descendre',
   'Sunday': 'Dimanche', 'Monday': 'Lundi', 'Tuesday': 'Mardi', 'Wednesday': 'Mercredi',
@@ -677,6 +679,7 @@ export default {
   '{0} reps in every set — add a set and go back to {1}.': '{0} répétitions sur toutes les séries — une série en plus, retour à {1}.',
   '{0} sets of {1} — time to add weight or move to a harder variation.': '{0} séries de {1} — il est temps d’ajouter du poids ou de passer à une variante plus dure.',
   '{0} per side': '{0} par côté',
+  'Per side': 'Par côté',
   'You still log the total: {0} is {1} per side.': 'Tu notes toujours le total : {0}, c’est {1} par côté.',
 
   // --- AI Coach ---

@@ -41,6 +41,8 @@ export default {
   'rescheduled': 'ertelendi',
   'Prev': 'Önceki',
   'Next': 'Sonraki',
+  'L': 'L',
+  'R': 'R',
   'Move up': 'Yukarı taşı',
   'Move down': 'Aşağı taşı',
   'Sunday': 'Pazar', 'Monday': 'Pazartesi', 'Tuesday': 'Salı', 'Wednesday': 'Çarşamba',
@@ -677,6 +679,7 @@ export default {
   '{0} reps in every set — add a set and go back to {1}.': 'Her sette {0} tekrar — bir set ekle ve {1} tekrara dön.',
   '{0} sets of {1} — time to add weight or move to a harder variation.': '{1} tekrarlık {0} set — ağırlık ekleme ya da daha zor bir varyasyona geçme zamanı.',
   '{0} per side': 'Taraf başına {0}',
+  'Per side': 'Taraf başına',
   'You still log the total: {0} is {1} per side.': 'Toplamı kaydetmeye devam ediyorsun: {0}, taraf başına {1} demek.',
 
   // --- AI Coach ---

@@ -41,6 +41,8 @@ export default {
   'rescheduled': 'перенесено',
   'Prev': 'Назад',
   'Next': 'Далее',
+  'L': 'Л',
+  'R': 'П',
   'Move up': 'Переместить вверх',
   'Move down': 'Переместить вниз',
   'Sunday': 'Воскресенье', 'Monday': 'Понедельник', 'Tuesday': 'Вторник', 'Wednesday': 'Среда',
@@ -677,6 +679,7 @@ export default {
   '{0} reps in every set — add a set and go back to {1}.': 'Во всех подходах {0} повт. — добавь подход и вернись к {1}.',
   '{0} sets of {1} — time to add weight or move to a harder variation.': '{0} × {1} — пора добавить вес или перейти к более сложному варианту.',
   '{0} per side': '{0} на сторону',
+  'Per side': 'На сторону',
   'You still log the total: {0} is {1} per side.': 'Ты по-прежнему записываешь общее число: {0} — это {1} на сторону.',
 
   // --- AI Coach ---

@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
-import { nextTrainingDay, modeOf, isTimed, fmtSec, setLabel, defaultConfig, buildSets, freestyleConfig, exLine, workoutVolume, bestWeightFor, bestWeightForEntry, effortOf, stepEffort, capEffort, isBw, isPerSide, sideReps, repStep, cascadeWeight, insertWarmupRow, removeRowAt, workSetsDone, pairAdjacent, unpairSuperset, supersetUnits, applyIntensifierPlan, pinnedNoteFor, exNoteFor } from './history.js'
+import { nextTrainingDay, modeOf, isTimed, fmtSec, setLabel, defaultConfig, buildSets, freestyleConfig, exLine, workoutVolume, bestWeightFor, bestWeightForEntry, effortOf, stepEffort, capEffort, isBw, isPerSide, sideReps, repStep, cascadeWeight, insertWarmupRow, removeRowAt, workSetsDone, setsDone, setsDoneActive, setUnits, doneUnits, setUnitsTotal, pairAdjacent, unpairSuperset, supersetUnits, applyIntensifierPlan, pinnedNoteFor, exNoteFor } from './history.js'
+import { makeSideSet, setSideField, toggleSide } from './workout-model.js'
 import { EXDB } from './exercises.js'
 
 // Real ids out of the shipped catalogue, so the body-part fallback is exercised for real.
@@ -1017,5 +1018,66 @@ describe('nextTrainingDay', () => {
     expect(nextTrainingDay(moved, TUE)).toMatchObject({ iso: '2026-08-19' })
     const off = base({ week: { 3: 'r1', 5: 'r2' }, dayPlan: { '2026-08-19': 'rest' } })
     expect(nextTrainingDay(off, TUE)).toMatchObject({ weekday: 5 })
+  })
+})
+
+/* ---------- one-sided (unilateral) sets, logged per side (issue #60) ---------- */
+
+// A per-side row carries its two sides and a scalar aggregate. These pin that the display shows
+// both sides, and — crucially — that every aggregate-reading consumer (volume, best weight, the
+// x/y-sets counters) treats the row correctly without knowing sides exist.
+describe('setLabel — per side', () => {
+  it('shows both sides so an asymmetry is visible, not a single combined total', () => {
+    const s = setSideField(setSideField(makeSideSet({ w: 15, r: 16 }), 'R', 'r', 7), 'L', 'r', 8)
+    expect(setLabel(LIFT, s, { id: LIFT, side: true })).toBe('L 15×8 · R 15×7')
+  })
+
+  it('keeps each side effort tail and reads bodyweight sides as reps alone', () => {
+    let s = makeSideSet({ w: 0, r: 16 })
+    s = setSideField(s, 'L', 'rir', 1)
+    expect(setLabel(BW, s, { id: BW, side: true })).toBe('L 8 (RIR 1) · R 8')
+  })
+})
+
+describe('per-side aggregate stays readable by existing consumers', () => {
+  it('workoutVolume counts both sides via the row total, unchanged from a straight set', () => {
+    // 15×8 per side = 15×16 total = 240, exactly what a straight {w:15,r:16} would score.
+    const side = { ...makeSideSet({ w: 15, r: 16 }), done: true }
+    const synced = toggleSide(toggleSide(makeSideSet({ w: 15, r: 16 }), 'L'), 'R') // both done
+    const w = { entries: [{ id: LIFT, sets: [synced] }] }
+    expect(synced.done).toBe(true)
+    expect(workoutVolume(w)).toBe(240)
+    // and a straight equivalent scores the same
+    expect(workoutVolume({ entries: [{ id: LIFT, sets: [{ w: 15, r: 16, done: true }] }] })).toBe(240)
+  })
+
+  it('bestWeightForEntry reads the aggregate weight of a completed per-side set', () => {
+    const s = toggleSide(toggleSide(setSideField(makeSideSet({ w: 15, r: 16 }), 'R', 'w', 17.5), 'L'), 'R')
+    expect(bestWeightForEntry({ id: LIFT, target: { id: LIFT, side: true }, sets: [s] })).toBe(17.5)
+  })
+})
+
+describe('per-side set counters', () => {
+  it('setUnits counts a per-side row as two, a straight row as one', () => {
+    expect(setUnits(makeSideSet({ w: 15, r: 16 }))).toBe(2)
+    expect(setUnits({ w: 15, r: 16 })).toBe(1)
+  })
+
+  it('doneUnits counts each finished side independently', () => {
+    const none = makeSideSet({ w: 15, r: 16 })
+    expect(doneUnits(none)).toBe(0)
+    expect(doneUnits(toggleSide(none, 'L'))).toBe(1)
+    expect(doneUnits(toggleSide(toggleSide(none, 'L'), 'R'))).toBe(2)
+    expect(doneUnits({ w: 15, r: 16, done: true })).toBe(1)
+  })
+
+  it('setUnitsTotal / setsDoneActive account for both sides across the session', () => {
+    const A = { entries: [
+      { id: LIFT, sets: [toggleSide(makeSideSet({ w: 15, r: 16 }), 'L'), makeSideSet({ w: 15, r: 16 })] }, // 2 rows × 2 sides = 4 units, 1 side done
+      { id: LIFT, sets: [{ w: 60, r: 8, done: true }] },                                                    // 1 straight, done
+    ] }
+    expect(setUnitsTotal(A.entries)).toBe(5)
+    expect(setsDoneActive(A)).toBe(2)
+    expect(setsDone({ entries: A.entries })).toBe(2)
   })
 })

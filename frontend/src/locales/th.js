@@ -43,6 +43,8 @@ export default {
   'rescheduled': 'เลื่อนแล้ว',
   'Prev': 'ก่อนหน้า',
   'Next': 'ถัดไป',
+  'L': 'ซ',
+  'R': 'ข',
   // --- days & months ---
   'Sunday': 'วันอาทิตย์', 'Monday': 'วันจันทร์', 'Tuesday': 'วันอังคาร', 'Wednesday': 'วันพุธ',
   'Thursday': 'วันพฤหัสบดี', 'Friday': 'วันศุกร์', 'Saturday': 'วันเสาร์',
@@ -656,6 +658,7 @@ export default {
   '{0} reps in every set — add a set and go back to {1}.': 'ทำได้ {0} ครั้งในทุกเซ็ต — เพิ่มเซ็ตและกลับไปที่ {1}',
   '{0} sets of {1} — time to add weight or move to a harder variation.': '{0} เซ็ตของ {1} — ถึงเวลาเพิ่มน้ำหนักหรือเปลี่ยนไปท่าที่ยากขึ้น',
   '{0} per side': '{0} ต่อข้าง',
+  'Per side': 'ต่อข้าง',
   'You still log the total: {0} is {1} per side.': 'บันทึกจำนวนรวมตามปกติ: {0} คือ {1} ต่อข้าง',
   '{0} sets · {1} work': '{0} เซ็ต · เซ็ตหลัก {1}',
   'Make superset with previous': 'รวมเป็นซูเปอร์เซ็ตกับท่าก่อนหน้า',

@@ -1148,3 +1148,52 @@ describe('workout controls: the more menu and the set menu', () => {
     expect(container.querySelector('.setrow .stp.plain .num')).toBeTruthy()
   })
 })
+
+// Rating a set's effort concludes it (issue #64): picking an RIR/RPE value ticks the set and
+// starts the rest timer, so you don't confirm a finished set twice.
+describe('effort rating auto-ends the set', () => {
+  // Open the effort picker for set `index` and return the onPick callback the cell handed it.
+  async function openEffortPicker(index = 0) {
+    const cell = container.querySelectorAll('.setrow .effcell.is-empty, .setrow .effcell-stp .val')[index]
+    expect(cell).toBeTruthy()
+    await act(async () => { cell.dispatchEvent(new dom.Event('click', { bubbles: true })) })
+    const call = mocks.effortPickerSheet.mock.calls.at(-1)
+    expect(call?.[2]).toEqual(expect.any(Function))
+    return call[2]
+  }
+
+  it('ticks the set and starts the rest timer when a rating is picked', async () => {
+    await mount([exercise('plain-bench', [false, false])], 0, { effort: 'rir' })
+    const onPick = await openEffortPicker(0)
+
+    await act(async () => { onPick(2) })
+
+    expect(mocks.S.active.entries[0].sets[0].rir).toBe(2)
+    expect(mocks.S.active.entries[0].sets[0].done).toBe(true)
+    expect(mocks.startRest).toHaveBeenCalledWith(90, expect.any(Number))
+  })
+
+  it('does not re-toggle a set that is already done — a rating change leaves it done', async () => {
+    await mount([exercise('plain-bench', [true, false])], 0, { effort: 'rir' })
+    const onPick = await openEffortPicker(0)
+
+    await act(async () => { onPick(1) })
+
+    expect(mocks.S.active.entries[0].sets[0].rir).toBe(1)
+    expect(mocks.S.active.entries[0].sets[0].done).toBe(true)   // stays done, not toggled off
+    // No rest timer for a re-rate of already-finished work (would have been the "recheck" path).
+    expect(mocks.startRest).not.toHaveBeenCalled()
+  })
+
+  it('clearing a rating never un-ticks the set — ending a set stays a manual undo', async () => {
+    await mount([exercise('plain-bench', [false]), exercise('next', [false])], 0, { effort: 'rir' })
+    const onPick = await openEffortPicker(0)
+
+    await act(async () => { onPick(3) })          // rate → done
+    expect(mocks.S.active.entries[0].sets[0].done).toBe(true)
+
+    await act(async () => { onPick(null) })        // clear the number
+    expect(mocks.S.active.entries[0].sets[0].rir).toBeUndefined()
+    expect(mocks.S.active.entries[0].sets[0].done).toBe(true)   // still done
+  })
+})

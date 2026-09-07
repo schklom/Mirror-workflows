@@ -218,7 +218,18 @@ function ExerciseBlock({ entryIdx, compact, onToggle, onField, onAddSet, onRemov
     const v = s[col.f] ?? null
     const rir = col.eff === 'rpe' ? (v == null ? null : 10 - v) : v
     const color = effortColor(rir)
-    const open = () => effortPickerSheet(col.eff, v, nv => onField(i, col.f, nv))
+    // Logging an effort concludes the set (issue #64): once you rate how a set felt, it is done —
+    // so picking a value also ticks the set and starts the rest timer, sparing the redundant
+    // second confirmation. Clearing a rating (null) never un-ticks: ending a set stays a manual
+    // undo via the checkmark. Reads `done` live from the store, since a superset re-render can
+    // stale the closure's `s`, and only ticks a set that is not already done.
+    const pickEffort = nv => {
+      onField(i, col.f, nv)
+      if (nv == null) return
+      const fresh = useStore.getState().S.active?.entries[entryIdx]?.sets[i]
+      if (fresh && !fresh.done) onToggle(i)
+    }
+    const open = () => effortPickerSheet(col.eff, v, pickEffort)
     if (v == null) return (
       <button className="effcell is-empty" aria-label={col.hd} onClick={open}>{col.hd}</button>
     )

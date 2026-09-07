@@ -41,6 +41,8 @@ export default {
   'rescheduled': 'reagendado',
   'Prev': 'Anterior',
   'Next': 'Seguinte',
+  'L': 'E',
+  'R': 'D',
   'Move up': 'Mover para cima',
   'Move down': 'Mover para baixo',
   'Sunday': 'Domingo', 'Monday': 'Segunda-feira', 'Tuesday': 'Terça-feira', 'Wednesday': 'Quarta-feira',

@@ -735,6 +735,26 @@ h4.sec{
 .effpick .effpick-free .stp .num::placeholder{color:var(--label-3);font-weight:500}
 .setrow.done .n{background:var(--acc);color:var(--on-acc)}
 .setrow.done{opacity:.45}
+
+/* one-sided (unilateral) sets (issue #60): the set number sits beside a two-row L/R stack, each
+   side its own weight/reps/effort + done tick. The two inner rows reuse .setrow so their columns
+   line up with the header exactly like a straight set — only the leading .n circle is replaced by
+   a small L/R badge of the same width. */
+.setrow-side{display:flex;align-items:center;gap:8px;padding:4px 0;position:relative}
+.setrow-side+.setrow-side::before{content:'';position:absolute;left:32px;right:0;top:0;height:var(--hair);background:var(--sep)}
+.setrow-side>.n{align-self:center}
+.setrow-side .side-rows{flex:1;min-width:0;display:flex;flex-direction:column}
+/* inner side rows: no leading number circle (the badge takes its place), no top hairline between
+   the two sides of the same set — they read as one unit. */
+.setrow-side .setrow.side{padding:4px 0}
+.setrow-side .setrow.side+.setrow.side::before{display:none}
+.sidetag{
+  width:24px;height:24px;border-radius:8px;background:var(--surface-2);color:var(--label-3);
+  display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex:none;
+}
+.setrow.side.done .sidetag{background:var(--acc);color:var(--on-acc)}
+.setrow.side.done{opacity:.45}
+
 /* drop-set drops / rest-pause bursts riding on a work row, editable like the row itself
    (issue: drop-sets & rest-pause) */
 .subrow{display:flex;align-items:center;gap:6px;padding:3px 0 3px 32px}

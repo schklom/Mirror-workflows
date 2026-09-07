@@ -41,6 +41,8 @@ export default {
   'rescheduled': 'बदला गया',
   'Prev': 'पिछला',
   'Next': 'अगला',
+  'L': 'बा',
+  'R': 'दा',
   'Move up': 'ऊपर ले जाएँ',
   'Move down': 'नीचे ले जाएँ',
   'Sunday': 'रविवार', 'Monday': 'सोमवार', 'Tuesday': 'मंगलवार', 'Wednesday': 'बुधवार',

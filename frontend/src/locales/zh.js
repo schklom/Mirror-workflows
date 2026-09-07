@@ -41,6 +41,8 @@ export default {
   'rescheduled': '已改期',
   'Prev': '上一个',
   'Next': '下一个',
+  'L': '左',
+  'R': '右',
   'Move up': '上移',
   'Move down': '下移',
   'Sunday': '星期日', 'Monday': '星期一', 'Tuesday': '星期二', 'Wednesday': '星期三',

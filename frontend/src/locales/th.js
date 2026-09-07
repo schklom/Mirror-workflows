@@ -43,6 +43,8 @@ export default {
   'rescheduled': 'เลื่อนแล้ว',
   'Prev': 'ก่อนหน้า',
   'Next': 'ถัดไป',
+  'L': 'ซ',
+  'R': 'ข',
   // --- days & months ---
   'Sunday': 'วันอาทิตย์', 'Monday': 'วันจันทร์', 'Tuesday': 'วันอังคาร', 'Wednesday': 'วันพุธ',
   'Thursday': 'วันพฤหัสบดี', 'Friday': 'วันศุกร์', 'Saturday': 'วันเสาร์',

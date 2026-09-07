@@ -128,6 +128,85 @@ export function splitBurstReps(total) {
   return bursts
 }
 
+// --- one-sided (unilateral) sets (issue #60) -------------------------------------------------
+//
+// A unilateral exercise (cfg.side, see history.js isPerSide) is trained one limb at a time, and
+// asymmetries are the whole point of tracking it — a stronger right that carries a weaker left is
+// exactly what a single combined row hides. So a per-side row logs each side on its own: weight,
+// reps, effort and its own done tick, held in `sides: { L, R }`.
+//
+// Like `drops`/`clusters`, this rides on the row while the row's own `w`/`r`/`done`/effort stay a
+// correct aggregate of the two sides — so volume, 1RM, PRs, progression, recovery, history and the
+// coach keep reading a row's scalar fields and need not know sides exist:
+//   r     = L.r + R.r   (the both-sides total, exactly what those readers expect of a per-side set)
+//   w     = max(L.w, R.w)  (the heavier side; the two are usually equal)
+//   done  = L.done && R.done  (a set counts done only once both sides are)
+//   effort= the harder side's rating (lower RIR / higher RPE), for the history tail only
+// `syncSideAggregate` recomputes those scalars from `sides` after any per-side edit.
+export function isSideSet(set) {
+  const s = objectOf(set)
+  return !!(s.sides && typeof s.sides === 'object' && s.sides.L && s.sides.R)
+}
+
+const sideOf = value => {
+  const v = objectOf(value)
+  const out = { w: Number(v.w) || 0, r: Number(v.r) || 0, done: v.done === true }
+  if (v.rir != null) out.rir = v.rir
+  if (v.rpe != null) out.rpe = v.rpe
+  return out
+}
+
+// Build a per-side row from a plain row: each side starts as half the row's total reps (a unilateral
+// target is always even, so the split is whole) at the same weight, carrying nothing done yet.
+export function makeSideSet(row = {}) {
+  const base = objectOf(row)
+  const half = Math.round((Number(base.r) || 0) / 2)
+  const w = Number(base.w) || 0
+  const side = () => ({ w, r: half, done: false })
+  const next = { ...base, sides: { L: side(), R: side() } }
+  // effort/done/reps on the parent become derived — drop any straight-set leftovers so the row
+  // carries one source of truth, then recompute the aggregate.
+  delete next.rir; delete next.rpe
+  return syncSideAggregate(next)
+}
+
+// Recompute the row's scalar mirror from its two sides. No-op (returns a shallow copy) for a row
+// that is not per-side, so callers can pipe every edit through it unconditionally.
+export function syncSideAggregate(row) {
+  const base = objectOf(row)
+  if (!isSideSet(base)) return { ...base }
+  const L = sideOf(base.sides.L)
+  const R = sideOf(base.sides.R)
+  const out = { ...base, sides: { L, R }, r: L.r + R.r, w: Math.max(L.w, R.w), done: L.done && R.done }
+  // The row's effort tail shows the harder side: fewer reps in reserve (lower RIR) or a higher RPE.
+  // Only one scale is ever in play, matching how a straight row carries rir XOR rpe.
+  delete out.rir; delete out.rpe
+  const rirs = [L.rir, R.rir].filter(v => v != null)
+  const rpes = [L.rpe, R.rpe].filter(v => v != null)
+  if (rirs.length) out.rir = Math.min(...rirs)
+  else if (rpes.length) out.rpe = Math.max(...rpes)
+  return out
+}
+
+// Patch one field on one side ('L'|'R'), returning a new row with the aggregate resynced. A null
+// value clears an optional field (effort), mirroring how a straight row drops the key.
+export function setSideField(row, side, field, value) {
+  const base = objectOf(row)
+  if (!isSideSet(base) || (side !== 'L' && side !== 'R')) return { ...base }
+  const cur = { ...sideOf(base.sides[side]) }
+  if (value == null && (field === 'rir' || field === 'rpe')) delete cur[field]
+  else cur[field] = value
+  return syncSideAggregate({ ...base, sides: { ...base.sides, [side]: cur } })
+}
+
+// Flip one side's done tick, resyncing the row's own done (true only when both sides are).
+export function toggleSide(row, side) {
+  const base = objectOf(row)
+  if (!isSideSet(base) || (side !== 'L' && side !== 'R')) return { ...base }
+  const cur = { ...sideOf(base.sides[side]), done: !sideOf(base.sides[side]).done }
+  return syncSideAggregate({ ...base, sides: { ...base.sides, [side]: cur } })
+}
+
 export function normalizeMode(value, fallback = 'reps') {
   const token = typeof value === 'string' ? value.trim().toLowerCase() : ''
   if (MODES.includes(token)) return token

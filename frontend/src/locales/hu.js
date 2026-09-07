@@ -43,6 +43,8 @@ export default {
   'rescheduled': 'áthelyezve',
   'Prev': 'Előző',
   'Next': 'Következő',
+  'L': 'B',
+  'R': 'J',
   // --- days & months ---
   'Sunday': 'Vasárnap', 'Monday': 'Hétfő', 'Tuesday': 'Kedd', 'Wednesday': 'Szerda',
   'Thursday': 'Csütörtök', 'Friday': 'Péntek', 'Saturday': 'Szombat',

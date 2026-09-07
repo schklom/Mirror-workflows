@@ -4,6 +4,7 @@ import {
   setType, isDropSet, isRestPauseSet, dropsOf, clustersOf, extraVolumeOf,
   addDrop, addCluster, removeDropAt, removeClusterAt, setDropAt, setClusterAt,
   nextDropWeight, nextBurstReps, splitBurstReps,
+  isSideSet, makeSideSet, syncSideAggregate, setSideField, toggleSide,
 } from './workout-model.js'
 
 describe('phaseForSet / isWarmupRow', () => {
@@ -177,5 +178,102 @@ describe('modeForSet / modeForEntry stay reps-mode for drop-sets and rest-pause 
   it('an entry mixing straight and drop-set rows still reads as one reps-mode entry', () => {
     const entry = { sets: [{ w: 100, r: 5 }, { type: 'dropset', w: 100, r: 5, drops: [{ w: 80, r: 5 }] }] }
     expect(modeForEntry(entry)).toBe('reps')
+  })
+})
+
+// One-sided (unilateral) sets: each side logged on its own, with the row's scalar w/r/done/effort
+// kept as a correct aggregate so every other consumer (volume, 1RM, PRs, progression, counters)
+// reads a per-side row exactly as it always read a straight one (issue #60).
+describe('isSideSet', () => {
+  it('is true only for a row carrying both L and R sides', () => {
+    expect(isSideSet({ sides: { L: { w: 10, r: 8 }, R: { w: 10, r: 8 } } })).toBe(true)
+    expect(isSideSet({ w: 10, r: 8 })).toBe(false)
+    expect(isSideSet({ sides: { L: { w: 10, r: 8 } } })).toBe(false)
+    expect(isSideSet(null)).toBe(false)
+  })
+})
+
+describe('makeSideSet', () => {
+  it('splits the row total evenly across two sides at the same weight, nothing done', () => {
+    const s = makeSideSet({ w: 15, r: 16, done: false })
+    expect(isSideSet(s)).toBe(true)
+    expect(s.sides.L).toEqual({ w: 15, r: 8, done: false })
+    expect(s.sides.R).toEqual({ w: 15, r: 8, done: false })
+    // aggregate mirror: r = both sides, w = the (equal) weight, not done yet
+    expect(s.r).toBe(16)
+    expect(s.w).toBe(15)
+    expect(s.done).toBe(false)
+  })
+
+  it('drops any straight-set effort so the row carries a single source of truth', () => {
+    const s = makeSideSet({ w: 20, r: 10, rir: 2 })
+    expect(s.rir).toBeUndefined()
+    expect(s.rpe).toBeUndefined()
+  })
+})
+
+describe('syncSideAggregate', () => {
+  it('recomputes r as the sum, w as the heavier side, done only when both sides are', () => {
+    const row = { sides: { L: { w: 15, r: 8, done: true }, R: { w: 17.5, r: 6, done: false } } }
+    const s = syncSideAggregate(row)
+    expect(s.r).toBe(14)
+    expect(s.w).toBe(17.5)
+    expect(s.done).toBe(false)
+    const bothDone = syncSideAggregate({ sides: { L: { w: 15, r: 8, done: true }, R: { w: 15, r: 8, done: true } } })
+    expect(bothDone.done).toBe(true)
+  })
+
+  it('takes the harder side for the row effort — lower RIR, higher RPE', () => {
+    const rir = syncSideAggregate({ sides: { L: { w: 15, r: 8, rir: 3 }, R: { w: 15, r: 8, rir: 1 } } })
+    expect(rir.rir).toBe(1)
+    expect(rir.rpe).toBeUndefined()
+    const rpe = syncSideAggregate({ sides: { L: { w: 15, r: 8, rpe: 7 }, R: { w: 15, r: 8, rpe: 9 } } })
+    expect(rpe.rpe).toBe(9)
+    expect(rpe.rir).toBeUndefined()
+  })
+
+  it('leaves a non-per-side row alone (returns a copy)', () => {
+    const s = syncSideAggregate({ w: 20, r: 10, done: true })
+    expect(s).toEqual({ w: 20, r: 10, done: true })
+    expect(isSideSet(s)).toBe(false)
+  })
+})
+
+describe('setSideField', () => {
+  it('patches one side and resyncs the aggregate', () => {
+    const base = makeSideSet({ w: 15, r: 16 })
+    const s = setSideField(base, 'R', 'w', 17.5)
+    expect(s.sides.R.w).toBe(17.5)
+    expect(s.sides.L.w).toBe(15)
+    expect(s.w).toBe(17.5)       // aggregate = heavier side
+  })
+
+  it('clears an effort field on null, mirroring how a straight row drops the key', () => {
+    let s = setSideField(makeSideSet({ w: 15, r: 16 }), 'L', 'rir', 2)
+    expect(s.sides.L.rir).toBe(2)
+    expect(s.rir).toBe(2)
+    s = setSideField(s, 'L', 'rir', null)
+    expect(s.sides.L.rir).toBeUndefined()
+    expect(s.rir).toBeUndefined()
+  })
+
+  it('ignores an unknown side without throwing', () => {
+    const base = makeSideSet({ w: 15, r: 16 })
+    expect(isSideSet(setSideField(base, 'X', 'w', 20))).toBe(true)
+  })
+})
+
+describe('toggleSide', () => {
+  it('flips one side and marks the row done only once both sides are', () => {
+    let s = makeSideSet({ w: 15, r: 16 })
+    expect(s.done).toBe(false)
+    s = toggleSide(s, 'L')
+    expect(s.sides.L.done).toBe(true)
+    expect(s.done).toBe(false)   // R still open
+    s = toggleSide(s, 'R')
+    expect(s.sides.R.done).toBe(true)
+    expect(s.done).toBe(true)    // both sides done → row done
+    s = toggleSide(s, 'L')
+    expect(s.done).toBe(false)   // un-tick one side → row no longer done
   })
 })

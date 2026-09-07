@@ -41,6 +41,8 @@ export default {
   'rescheduled': '변경됨',
   'Prev': '이전',
   'Next': '다음',
+  'L': '좌',
+  'R': '우',
   'Move up': '위로 이동',
   'Move down': '아래로 이동',
   'Sunday': '일요일', 'Monday': '월요일', 'Tuesday': '화요일', 'Wednesday': '수요일',

@@ -42,6 +42,9 @@ export default {
   'rescheduled': 'verschoben',
   'Prev': 'Zurück',
   'Next': 'Weiter',
+  // Side badges on a unilateral set's L/R rows (issue #60).
+  'L': 'L',
+  'R': 'R',
   'Move up': 'Nach oben',
   'Move down': 'Nach unten',
   // --- days & months ---

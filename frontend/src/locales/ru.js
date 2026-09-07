@@ -41,6 +41,8 @@ export default {
   'rescheduled': 'перенесено',
   'Prev': 'Назад',
   'Next': 'Далее',
+  'L': 'Л',
+  'R': 'П',
   'Move up': 'Переместить вверх',
   'Move down': 'Переместить вниз',
   'Sunday': 'Воскресенье', 'Monday': 'Понедельник', 'Tuesday': 'Вторник', 'Wednesday': 'Среда',

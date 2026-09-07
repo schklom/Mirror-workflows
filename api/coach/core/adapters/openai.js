@@ -43,9 +43,20 @@ export function chatCompletionsSpec(id, { maxTokensField = 'max_completion_token
       const text = typeof content === 'string' ? content : Array.isArray(content) ? content.map(p => p.text || '').join('') : '';
       return { text, truncated: choice.finish_reason === 'length' };
     },
-    readModels: data => (data.data || data.models || []).map(m => (typeof m === 'string' ? m : m.id || m.name)).filter(Boolean)
+    readModels: data => {
+      const ids = (data.data || data.models || []).map(m => (typeof m === 'string' ? m : m.id || m.name)).filter(Boolean);
+      // OpenAI's own list is everything the account can call — speech, embeddings, image
+      // models, realtime and Responses-only variants — and a person picking "the first one that
+      // looks right" out of eighty names lands on one Chat Completions refuses with a 400 or
+      // 404 the app can only show as "couldn't run". Keep what this request shape can use.
+      // A compatible endpoint (Ollama, LM Studio, OpenRouter) serves what it serves, unfiltered.
+      return id === 'openai' ? ids.filter(isChatModel) : ids;
+    }
   };
 }
+
+const NOT_CHAT = /realtime|audio|tts|transcri|whisper|embedding|image|dall-e|moderation|search|instruct|codex|computer-use|deep-research|-pro(?:-|$)|davinci|babbage|curie|ada/i;
+export const isChatModel = id => /^(gpt-|o\d|chatgpt-)/.test(id) && !NOT_CHAT.test(id);
 
 export const openaiSpec = chatCompletionsSpec('openai');
 export default httpAdapter(openaiSpec);

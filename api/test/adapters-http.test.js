@@ -262,3 +262,17 @@ test('validateBaseUrl: http(s) only, no credentials, no query, trailing slash dr
   assert.equal(validateBaseUrl('http://x/?key=1').ok, false);
   assert.equal(validateBaseUrl('not a url').ok, false);
 });
+
+test('models(): OpenAI’s list is cut to what Chat Completions can use; a compatible endpoint is not filtered', async () => {
+  const { isChatModel } = await import('../coach/core/adapters/openai.js');
+  const all = ['gpt-5.6', 'gpt-5.6-mini', 'gpt-4o', 'o3', 'o4-mini', 'chatgpt-4o-latest',
+    'gpt-4o-realtime-preview', 'gpt-4o-audio-preview', 'gpt-4o-mini-tts', 'gpt-4o-transcribe', 'whisper-1',
+    'text-embedding-3-small', 'gpt-image-1', 'dall-e-3', 'omni-moderation-latest', 'gpt-4o-search-preview',
+    'gpt-3.5-turbo-instruct', 'codex-mini-latest', 'computer-use-preview', 'o3-deep-research', 'o1-pro', 'gpt-5.6-pro', 'davinci-002'];
+  assert.deepEqual(all.filter(isChatModel), ['gpt-5.6', 'gpt-5.6-mini', 'gpt-4o', 'o3', 'o4-mini', 'chatgpt-4o-latest']);
+  const oa = fakeFetch([ok({ data: all.map(id => ({ id })) })]);
+  assert.deepEqual((await openai.models({}, env, { fetch: oa })).models, ['chatgpt-4o-latest', 'gpt-4o', 'gpt-5.6', 'gpt-5.6-mini', 'o3', 'o4-mini']);
+  const { default: compatible } = await import('../coach/core/adapters/compatible.js');
+  const co = fakeFetch([ok({ data: [{ id: 'qwen2.5:3b' }, { id: 'llama3.2' }] })]);
+  assert.deepEqual((await compatible.models({ providerOptions: { compatible: { baseUrl: 'http://ollama:11434' } } }, {}, { fetch: co })).models, ['llama3.2', 'qwen2.5:3b']);
+});

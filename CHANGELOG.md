@@ -1,5 +1,30 @@
 # Changelog
 
+## Unreleased
+
+What the Discord and GitLab reports after v1.3.5 had in common: the Coach failed and nobody could
+see why. Web bundle and APK; the API image only for the payload change.
+
+- 🔍 **A failed Coach run on the phone says what the provider said.** With your own API key there
+  is no admin card and no instance owner, so "the instance owner needs to check its setup" was the
+  wrong sentence and hid the one thing that mattered — OpenAI's "you exceeded your current quota",
+  Gemini's "model not found", the validator's "unknown exercise id". The chat line and the toast
+  now carry that reason, and the phone wording no longer points at an owner who does not exist.
+  (issue #58; Discord reports of "the OpenAI API is bugging")
+- 🔁 **You can no longer get stuck after a plan fails.** A message typed with no plan on the board
+  used to become a review, which answered "there is no workout to look at" forever. It now asks
+  for a fresh plan with your message as the brief, and the Coach menu has **Start a new plan**
+  — a new plan from your intake answers; workouts, history and body weight stay.
+  (Discord "Coach reset" thread; install-help reports)
+- 💬 **The Coach remembers the last few lines of the chat.** "Shorter, like you said" and "the same
+  thing as before" had nothing to point at: every message was a fresh request. The last six lines
+  — what you wrote and what the Coach concluded, never proposals or errors — now travel with the
+  request as context (`conversation`, documented in the prompt as data, not instruction).
+- 🧹 **The OpenAI model list only shows models this request shape can use.** The account's full
+  list — speech, embeddings, image models, realtime and Responses-only variants — made it easy to
+  pick one Chat Completions refuses with a 400 or a 404. Compatible endpoints (Ollama, LM Studio,
+  OpenRouter) stay unfiltered. The Gemini key field also names the new `AQ.` key prefix.
+
 ## v1.3.5 — 2026-09-06
 
 One bug, and the one everybody with the Android app and their own API key ran into. Web bundle and

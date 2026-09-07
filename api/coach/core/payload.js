@@ -414,9 +414,35 @@ export function build(S, opts = {}) {
         workingWeights: Object.entries(best).map(([id, w]) => ({ id, name: libraryName(id), best: w }))
       };
     }
-    if (opts.refine) {
-      p.refine = { text: String(opts.refine).slice(0, 1000), previous: opts.previous || null };
+    if (opts.refine && opts.previous) {
+      p.refine = { text: String(opts.refine).slice(0, 1000), previous: opts.previous };
+    } else if (opts.refine) {
+      // "Refine" with nothing to refine: the first plan failed, or was dismissed, and the
+      // person typed what they want instead. That is a fresh plan with a note, not a
+      // revision of a plan that does not exist — refine.md would be reading `previous: null`.
+      p.userNote = String(opts.refine).slice(0, 1000);
     }
   }
+  if (opts.kind !== 'debrief') {
+    const said = conversation(coach, [opts.note, opts.refine]);
+    if (said.length) p.conversation = said;
+  }
   return p;
+}
+
+// The last few lines of the chat, so "shorter, like last time" has something to point at.
+// The user's own lines (data, never instruction — common.md rule 3) and the Coach's earlier
+// verdicts; never proposals, errors or the intake card, which travel in their own fields or
+// are noise. Six lines, cut short: enough to resolve a reference, not a transcript to argue
+// with. The message being sent right now rides in userNote/refine, so it is left out here.
+export const CONVERSATION_LINES = 6;
+export const CONVERSATION_CHARS = 240;
+function conversation(coach, current) {
+  const now = new Set((current || []).filter(Boolean).map(x => String(x).trim()));
+  return (coach.chat || [])
+    .filter(m => m && typeof m.text === 'string' && m.text.trim()
+      && ((m.role === 'user' && m.kind === 'text') || (m.role === 'coach' && (m.kind === 'nochange' || m.kind === 'text'))))
+    .filter(m => !(m.role === 'user' && now.has(m.text.trim())))
+    .slice(-CONVERSATION_LINES)
+    .map(m => ({ who: m.role === 'user' ? 'user' : 'coach', text: m.text.trim().slice(0, CONVERSATION_CHARS) }));
 }

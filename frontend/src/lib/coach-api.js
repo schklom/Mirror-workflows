@@ -36,7 +36,7 @@ const local = async () => {
     // There is no admin card on a phone: the user is the operator, so failures go to them.
     localMod.setNotifier(ev => {
       const toast = useUI.getState().toast
-      if (ev.kind === 'failed') toast(JOB_ERRORS[ev.errorClass] || JOB_ERRORS.internal)
+      if (ev.kind === 'failed') toast(jobErrorText(ev.errorClass, ev.detail))
       else if (ev.kind === 'nochange') toast(t('Nothing to change right now: {0}', String(ev.reading || '').slice(0, 140)))
     })
   }
@@ -130,4 +130,23 @@ export const JOB_ERRORS = {
   nostate: 'The Coach couldn’t read your training data.',
   noworkout: 'There is no workout to look at yet — log one first.',
   internal: 'Something went wrong on the server.'
+}
+
+// The same failures on a phone that brought its own key: there is no instance owner to
+// check anything, the person reading this is the operator, and the provider's own words
+// are the only thing that lets them fix it (a spent quota, a wrong model, a rejected key).
+export const BYOK_ERRORS = {
+  auth: 'Your AI provider rejected the key on this phone — check it under Settings → AI Coach.',
+  missing: 'The Coach isn’t set up on this phone — check Settings → AI Coach.',
+  provider: 'Your AI provider couldn’t answer.',
+  unusable: 'The Coach answered with something the app couldn’t use.',
+  internal: 'Something went wrong on this phone.'
+}
+
+/** The line the person sees for a failed job — with the reason attached where they can act on it. */
+export function jobErrorText(cls, detail) {
+  const own = LOCAL()
+  const base = (own && BYOK_ERRORS[cls]) || JOB_ERRORS[cls] || (own ? BYOK_ERRORS.internal : JOB_ERRORS.internal)
+  const why = own && detail ? String(detail).trim().slice(0, 300) : ''
+  return why ? `${base}\n${why}` : base
 }

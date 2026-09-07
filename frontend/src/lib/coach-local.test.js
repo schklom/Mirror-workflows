@@ -95,6 +95,20 @@ describe('the Coach on a phone with its own key', () => {
     expect(wire.calls).toHaveLength(2)
     expect(f.pending).toBeNull()
     expect(f.lastError.errorClass).toBe('unusable')
+    expect(f.lastError.detail).toMatch(/JSON|object/i)   // the validator's reason reaches the phone — there is no admin card
+  })
+
+  it('a provider refusal carries the provider’s own words, so the person holding the key can act on it', async () => {
+    // A 4xx the adapter does not retry (429 would wait out two retries first); the wording is OpenAI's.
+    wire.answer = { status: 404, body: { error: { message: 'The model `gpt-4o-mini-tts` does not exist or you do not have access to it.' } } }
+    const seen = []
+    local.setNotifier(ev => seen.push(ev))
+    await local.localReview(state())
+    const s = await settle()
+    expect(s.lastError.errorClass).toBe('provider')
+    expect(s.lastError.detail).toMatch(/^404 The model `gpt-4o-mini-tts` does not exist/)
+    expect(seen.at(-1)).toMatchObject({ kind: 'failed', errorClass: 'provider', detail: expect.stringMatching(/does not exist/) })
+    local.setNotifier(null)
   })
 
   it('a 401 is an auth failure, and never a proposal', async () => {

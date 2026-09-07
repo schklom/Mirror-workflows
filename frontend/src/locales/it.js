@@ -425,6 +425,7 @@ export default {
   'Workout view': 'Vista allenamento',
   'Cards': 'Schede',
   'List': 'Elenco',
+  'Compact': 'Compatta',
   'Current': 'Corrente',
   'Set current': 'Imposta come corrente',
   'Move, swap and remove below act on the exercise marked {0}.': 'Spostamento, scambio e rimozione qui sotto agiscono sull’esercizio contrassegnato come {0}.',

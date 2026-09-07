@@ -67,15 +67,20 @@ const mount = () => act(() => root.render(<Settings />))
 const segButton = label => [...host.querySelectorAll('.seg button')].find(b => b.textContent === label)
 
 describe('Settings — workout view', () => {
-  it('offers Cards / List and writes workoutView to the store', () => {
+  it('offers Cards / List / Compact and writes workoutView to the store', () => {
     mount()
     expect(segButton('Cards')).toBeTruthy()
     expect(segButton('List')).toBeTruthy()
+    expect(segButton('Compact')).toBeTruthy()
     expect(segButton('Cards').getAttribute('aria-pressed')).toBe('true')
     act(() => { segButton('List').click() })
     expect(mocks.S.workoutView).toBe('list')
     mount()
     expect(segButton('List').getAttribute('aria-pressed')).toBe('true')
+    act(() => { segButton('Compact').click() })
+    expect(mocks.S.workoutView).toBe('compact')
+    mount()
+    expect(segButton('Compact').getAttribute('aria-pressed')).toBe('true')
     act(() => { segButton('Cards').click() })
     expect(mocks.S.workoutView).toBe('cards')
   })
@@ -85,5 +90,6 @@ describe('Settings — workout view', () => {
     mount()
     expect(segButton('Cards').getAttribute('aria-pressed')).toBe('true')
     expect(segButton('List').getAttribute('aria-pressed')).toBe('false')
+    expect(segButton('Compact').getAttribute('aria-pressed')).toBe('false')
   })
 })

@@ -425,6 +425,7 @@ export default {
   'Workout view': 'Antrenman görünümü',
   'Cards': 'Kartlar',
   'List': 'Liste',
+  'Compact': 'Kompakt',
   'Current': 'Aktif',
   'Set current': 'Aktif olarak işaretle',
   'Move, swap and remove below act on the exercise marked {0}.': 'Aşağıdaki taşıma, değiştirme ve kaldırma işlemleri {0} olarak işaretli egzersiz için geçerlidir.',

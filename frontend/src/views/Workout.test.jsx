@@ -1075,6 +1075,107 @@ describe('workout list view', () => {
     // Only the current exercise's sets are on screen.
     expect(container.querySelectorAll('[role="checkbox"]').length).toBe(1)
   })
+
+  it('reads the layout from s.active first, then the global default', async () => {
+    // Global says list, the session was started as cards — the session wins.
+    await mount([exercise('plain-bench', [false])], 0, {
+      workoutView: 'list', active: { workoutView: 'cards' },
+    })
+    expect(container.querySelector('[data-testid="workout-swipe-surface"]')).toBeTruthy()
+    expect(container.querySelector('[data-testid="workout-list"]')).toBeNull()
+  })
+})
+
+describe('workout compact view', () => {
+  const units = () => [...container.querySelectorAll('.wl-unit')]
+  const withExtras = done => exercise('plain-bench', done, {
+    plan: {
+      policy: 'linear', kind: 'up', weight: 62.5,
+      why: ['Every rep last time — {0} {1} more.', 2.5, 'kg'],
+    },
+  })
+
+  it('stacks every exercise like list mode does', async () => {
+    await mount([withExtras([false, false]), exercise('plain-row', [false])], 0, { workoutView: 'compact' })
+
+    expect(container.querySelector('[data-testid="workout-list"]')).toBeTruthy()
+    expect(container.querySelector('[data-testid="workout-swipe-surface"]')).toBeNull()
+    expect(units().length).toBe(2)
+    expect(container.querySelectorAll('[role="checkbox"]').length).toBe(3)
+    // The unit header and its "Set current" chip are part of list mode, kept in compact.
+    expect(units()[0].textContent).toContain('Current')
+  })
+
+  it('strips the progression line, tags and last-time recap that list mode shows', async () => {
+    const state = {
+      workoutView: 'compact',
+      exWeights: { 'plain-bench': { w: 80 } },
+      workouts: [{ d: '2026-08-27', entries: [{ id: 'plain-bench', target: { reps: 5, weight: 60 }, sets: [{ w: 60, r: 5, done: true }] }] }],
+    }
+    await mount([withExtras([false])], 0, state)
+
+    expect(container.querySelector('.progline')).toBeNull()
+    expect(container.textContent).not.toContain('Best:')
+    expect(container.textContent).not.toContain('Last time')
+    // The sets card and the ⋯ menu button survive — nothing is truly unreachable.
+    expect(container.querySelector('.setrow')).toBeTruthy()
+    expect(container.querySelector('button[aria-label="More"]')).toBeTruthy()
+  })
+
+  it('keeps those same elements in list mode (the strip is compact-only)', async () => {
+    const state = {
+      workoutView: 'list',
+      exWeights: { 'plain-bench': { w: 80 } },
+      workouts: [{ d: '2026-08-27', entries: [{ id: 'plain-bench', target: { reps: 5, weight: 60 }, sets: [{ w: 60, r: 5, done: true }] }] }],
+    }
+    await mount([withExtras([false])], 0, state)
+
+    expect(container.querySelector('.progline')).toBeTruthy()
+    expect(container.textContent).toContain('Best:')
+    expect(container.textContent).toContain('Last time')
+  })
+
+  it('completing a set still starts the rest, like list and cards', async () => {
+    await mount([
+      exercise('plain-bench', [false], { asked: true }),
+      exercise('plain-row', [false], { asked: true }),
+    ], 0, { workoutView: 'compact' })
+
+    await toggleSet(0)
+
+    expect(mocks.S.active.entries[0].sets[0].done).toBe(true)
+    expect(mocks.startRest).toHaveBeenCalledWith(90, expect.any(Number))
+  })
+})
+
+describe('workout view header menu', () => {
+  const openMenu = async () => {
+    const btn = container.querySelector('button[aria-label="Workout view"]')
+    expect(btn).toBeTruthy()
+    await act(async () => { btn.dispatchEvent(new dom.Event('click', { bubbles: true })) })
+    return mocks.menuSheet.mock.calls.at(-1)[0]
+  }
+  const item = (menu, label) => menu.items.filter(Boolean).find(it => it.label === label)
+
+  it('offers the three layouts and marks the running session current', async () => {
+    await mount([exercise('plain-bench', [false])], 0, { active: { workoutView: 'list' } })
+
+    const menu = await openMenu()
+    expect(menu.items.filter(Boolean).map(it => it.label)).toEqual(['Cards', 'List', 'Compact'])
+    expect(item(menu, 'List').on).toBe(true)
+    expect(item(menu, 'Cards').on).toBe(false)
+    expect(item(menu, 'Compact').on).toBe(false)
+  })
+
+  it('writes the pick onto s.active without touching the global default', async () => {
+    await mount([exercise('plain-bench', [false])], 0, { workoutView: 'cards', active: { workoutView: 'cards' } })
+
+    const menu = await openMenu()
+    await act(async () => { item(menu, 'Compact').onClick() })
+
+    expect(mocks.S.active.workoutView).toBe('compact')
+    expect(mocks.S.workoutView).toBe('cards')
+  })
 })
 
 describe('workout controls: the more menu and the set menu', () => {

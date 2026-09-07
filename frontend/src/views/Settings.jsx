@@ -223,12 +223,14 @@ export default function Settings() {
 
     {/* ---------- during a workout ---------- */}
     <Section title={t('During a workout')} footer={wakeOK ? t('The screen stays on while a workout is running, so you don’t have to unlock your phone between sets.') : null}>
-      {/* One exercise at a time (cards with Prev/Next) or the whole session stacked as a
-          scrollable list. Legacy/unknown values read as cards. */}
+      {/* One exercise at a time (cards with Prev/Next), the whole session stacked as a
+          scrollable list, or that list stripped to just names and set rows (compact).
+          Legacy/unknown values read as cards. The running session can override this from
+          the workout header's ⋮ menu without changing this default. */}
       <Row icon="list" iconTint="var(--blue)" title={t('Workout view')}>
         <Segmented className="seg-inline"
-          options={[{ value: 'cards', label: t('Cards') }, { value: 'list', label: t('List') }]}
-          value={S.workoutView === 'list' ? 'list' : 'cards'}
+          options={[{ value: 'cards', label: t('Cards') }, { value: 'list', label: t('List') }, { value: 'compact', label: t('Compact') }]}
+          value={['list', 'compact'].includes(S.workoutView) ? S.workoutView : 'cards'}
           onChange={v => update(s => { s.workoutView = v })} />
       </Row>
       {/* The lean workout screen keeps the sets and one "more" button per exercise; each switch

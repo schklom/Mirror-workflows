@@ -435,6 +435,7 @@ export default {
   'Workout view': 'มุมมองการฝึก',
   'Cards': 'การ์ด',
   'List': 'รายการ',
+  'Compact': 'แบบย่อ',
   'Current': 'ปัจจุบัน',
   'Set current': 'ตั้งเป็นปัจจุบัน',
   'Move, swap and remove below act on the exercise marked {0}.': 'การย้าย สลับ และลบด้านล่างจะมีผลกับท่าที่ทำเครื่องหมาย {0} ไว้',

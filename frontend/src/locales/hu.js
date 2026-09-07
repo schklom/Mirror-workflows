@@ -435,6 +435,7 @@ export default {
   'Workout view': 'Edzésnézet',
   'Cards': 'Kártyák',
   'List': 'Lista',
+  'Compact': 'Tömör',
   'Current': 'Aktuális',
   'Set current': 'Megjelölés aktuálisként',
   'Move, swap and remove below act on the exercise marked {0}.': 'Az alábbi áthelyezés, csere és törlés a {0} jelölésű gyakorlatra vonatkozik.',

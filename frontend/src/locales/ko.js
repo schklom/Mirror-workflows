@@ -425,6 +425,7 @@ export default {
   'Workout view': '운동 보기',
   'Cards': '카드',
   'List': '목록',
+  'Compact': '간략',
   'Current': '현재',
   'Set current': '현재 운동으로 설정',
   'Move, swap and remove below act on the exercise marked {0}.': '아래의 이동, 교체, 삭제는 {0} 표시된 운동에 적용됩니다.',

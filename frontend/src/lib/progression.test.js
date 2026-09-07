@@ -68,6 +68,24 @@ describe('stallCount', () => {
     expect(stallCount([{ ok: false }, { ok: true }, { ok: false }])).toBe(1)
     expect(stallCount([])).toBe(0)
   })
+
+  // 2 additional guardrails to ensure correct behavior with possible patterns
+  const miss = (weight, low) => ({ ok: false, weight, low })
+
+  it('measures progress against the best of the run, not merely the session before', () => {
+    // Lows 8,9,8,9,8 at one weight: every other session beats the one immediately before it,
+    // so comparing only to the previous session would let this yo-yo forever without ever
+    // deloading. So we test: 9 never beats the earlier 9 and the stall streak stands.
+    const oscillating = [miss(40, 8), miss(40, 9), miss(40, 8), miss(40, 9), miss(40, 8)]
+    expect(stallCount(oscillating, 'double')).toBe(3)
+  })
+
+  it('ends the streak at a session that made progress rather than skipping past it', () => {
+    // Lows 9,9,9,10: the most recent session is a personal best for this run. Checks whether the stall streak ends
+    // there and counts nothing. Otherwise stallCount would return 3 and deload after porgress had just occurred.
+    const improvedLast = [miss(40, 9), miss(40, 9), miss(40, 9), miss(40, 10)]
+    expect(stallCount(improvedLast, 'double')).toBe(0)
+  })
 })
 
 describe('policyFor', () => {
@@ -333,7 +351,7 @@ describe('double progression', () => {
     const p = nextPrescription(hist(LIFT, [[40, 10, 9, 9]], { sets: 3, reps: 12 }), cfg)
     expect(p.kind).toBe('hold')
     expect(p.weight).toBe(40)
-    expect(p.reps).toBe(10)             // worst set was 9 → aim for 10
+    expect(p.reps).toBe(10)             // worst set was 9 -> aim for 10
   })
 
   it('never asks for more than the top of the range', () => {
@@ -347,6 +365,30 @@ describe('double progression', () => {
     expect(p.kind).toBe('deload')
     expect(p.reps).toBe(8)
     expect(p.weight).toBe(35)           // 40 × 0.9 = 36 → nearest loadable 2.5 step
+  })
+
+  it('climbs a range wider than the deload budget instead of cutting on the way up', () => {
+    // We consider a 8-12 rep range, so 4 rep steps one per session.
+    // This is graded against DELOAD_AFTER.double which allows for 2 stalls towards progress. 
+    // And only a hit at the top clears a stall. 
+    // With our rep range reaching the top thus cannot be achieved within the current budget of 3. 
+    // Therefore we wish to count the climb as progress as well. 
+    expect(cfg.reps - cfg.repsMin).toBeGreaterThan(DELOAD_AFTER.double - 1)
+
+    const target = { sets: 3, reps: cfg.reps }
+    const rows = []
+    let p = { weight: cfg.weight, reps: cfg.repsMin }
+    for (let session = 1; session <= 5; session++) {
+      // Train exactly what was prescribed, every set, every session.
+      rows.push([p.weight, ...Array(target.sets).fill(p.reps)])
+      p = nextPrescription(hist(LIFT, rows, target), cfg)
+      expect(p.kind).not.toBe('deload')
+    }
+
+    // Five compliant sessions later the top of the range is reached and the weight goes up.
+    expect(p.kind).toBe('up')
+    expect(p.weight).toBeGreaterThan(cfg.weight)
+    expect(p.reps).toBe(cfg.repsMin)
   })
 
   it('normalizes persisted per-side bounds before prescribing', () => {

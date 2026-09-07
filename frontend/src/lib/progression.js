@@ -160,16 +160,30 @@ export function sessionsFor(S, exId, fallback) {
   return out
 }
 
-// How many sessions in a row ended in a miss, counting back from the most recent. A change of
-// weight starts a new streak, so there won't be a perpetual stall.  
-// Rationale: deload should reflect the failures in sessions with weight that earned it.
-// Not the lighter weight that follows.
-export function stallCount(sessions) {
+// Checks how many sessions in a row ended in a miss, counting back from the most recent. 
+// Now two things end a stall streak (besides a hit of course):
+//   - A change of weight ends the streak (per pr !93). 
+//     Rationale: deload should reflect the failures in sessions with weight that earned it. Not the lighter weight that follows;
+//   - Under double progression, a session that beat its best at the current weight.
+export function stallCount(sessions, policy) {
   let n = 0
   for (let i = sessions.length - 1; i >= 0; i--) {
     if (sessions[i].ok) break
-    if (i < sessions.length -1 && sessions[i].weight !== sessions[i+1].weight) break
-    n++
+      if (i < sessions.length -1 && sessions[i].weight !== sessions[i+1].weight) break
+    // Next part limits policy to double. Why? Double is the only policy that deliberately asks for less than it grades against
+    // (Since it is geared towards climbing through a rep range). 
+    // Specifically, `aim` (see `const aim`) climbs from the bottom of the range while `ok` needs the top. 
+    // The following mechanism ensures that a beat of the best at this weight now counts as progress instead of a stall
+    // Without this a wider range than two reps would lead to a deload, despite progress (since it could never reach the top within the DELOAD_AFTER))
+    // Linear and greyskull remain unaffected, as they should. 
+    if (policy === 'double') {
+      // Following checks within scope of the current session's weight. Deliberately not every session ever done at this weight.
+      // Rationale: Rebuilding after a deload must not be measured against the reps managed before the deload.
+      const run = []
+      for (let j = i - 1; j >= 0 && sessions[j].weight === sessions[i].weight; j--) run.push(sessions[j].low) // Checks the lowest rep count of each session in the run
+      if (run.length && sessions[i].low > Math.max(...run)) break // Beating the best of the current run is progress
+    }
+    n++ // increment stall count when no escape conditions were met
   }
   return n
 }
@@ -195,7 +209,7 @@ export function nextPrescription(S, cfg, routine) {
   const last = sessions[sessions.length - 1]
   if (!last) return { policy, kind: 'first', why: ['Nothing logged yet — this session sets the baseline.'] }
 
-  const stalls = stallCount(sessions)
+  const stalls = stallCount(sessions, policy)
   const deloadAt = DELOAD_AFTER[policy] || 3
 
   if (mode === 'time') {

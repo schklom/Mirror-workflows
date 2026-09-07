@@ -11,7 +11,8 @@ import { loadStarterPlan, starterPlanSheet } from './sheets.jsx'
 const mounted = []
 
 const S = () => useStore.getState().S
-const nameOn = day => S().routines.find(r => r.id === S().week[day])?.name
+// S.week[day] is a routine-id list now; the starter plan writes a one-element list per day.
+const nameOn = day => S().routines.find(r => r.id === [].concat(S().week[day] ?? [])[0])?.name
 
 // Renders whatever sheet is on top and returns its host element.
 function renderTop() {
@@ -57,7 +58,7 @@ describe('starter plan chooser', () => {
   })
 
   it('loads straight away when the plan’s weekdays are free, without asking', () => {
-    useStore.setState(s => ({ S: { ...s.S, week: { 0: 'mine', 6: 'mine' } } }))
+    useStore.setState(s => ({ S: { ...s.S, week: { 0: ['mine'], 6: ['mine'] } } }))
     choose('Upper / Lower')
 
     expect(useUI.getState().sheets).toHaveLength(0)   // no confirmation was raised
@@ -65,20 +66,20 @@ describe('starter plan chooser', () => {
     expect(nameOn(2)).toBe('Lower A')
     expect(nameOn(4)).toBe('Upper B')
     expect(nameOn(5)).toBe('Lower B')
-    expect(S().week[0]).toBe('mine')                  // untouched weekdays stay put
-    expect(S().week[6]).toBe('mine')
+    expect(S().week[0]).toEqual(['mine'])             // untouched weekdays stay put
+    expect(S().week[6]).toEqual(['mine'])
     expect(S().routines[0].name).toBe('My routine')   // and nothing is deleted
     expect(useUI.getState().toastMsg).toBe('Upper / Lower loaded')
   })
 
   it('asks first when a weekday the plan wants is already taken', () => {
-    useStore.setState(s => ({ S: { ...s.S, week: { 3: 'mine' } } }))
+    useStore.setState(s => ({ S: { ...s.S, week: { 3: ['mine'] } } }))
     choose('Full Body')
 
     const confirm = renderTop()
     expect(confirm.querySelector('h3').textContent).toBe('Load Full Body?')
     expect(confirm.textContent).toContain('Monday, Wednesday and Friday')
-    expect(S().week[3]).toBe('mine')                  // nothing applied yet
+    expect(S().week[3]).toEqual(['mine'])                  // nothing applied yet
     expect(S().routines).toHaveLength(1)
 
     act(() => { buttonFor(confirm, 'Load plan').click() })
@@ -88,7 +89,7 @@ describe('starter plan chooser', () => {
   })
 
   it('leaves everything alone when the confirmation is cancelled', () => {
-    useStore.setState(s => ({ S: { ...s.S, week: { 1: 'mine' } } }))
+    useStore.setState(s => ({ S: { ...s.S, week: { 1: ['mine'] } } }))
     const before = structuredClone(S())
     choose('5×5')
 
@@ -99,7 +100,7 @@ describe('starter plan chooser', () => {
   })
 
   it('does not ask when only weekdays outside the plan are occupied', () => {
-    useStore.setState(s => ({ S: { ...s.S, week: { 2: 'mine', 4: 'mine' } } }))   // Tue + Thu
+    useStore.setState(s => ({ S: { ...s.S, week: { 2: ['mine'], 4: ['mine'] } } }))   // Tue + Thu
     choose('5×5')                                                                // wants Mon/Wed/Fri
     expect(useUI.getState().sheets).toHaveLength(0)
     expect(nameOn(1)).toBe('5×5 A')

@@ -467,7 +467,7 @@ export const previewSession = {
     // The same builder the app starts a session with (sheets.jsx beginWorkout → session-start.js):
     // prescription, step, progression-off targets, deload routines and warm-up ramps all come from
     // there, so the preview cannot drift from what the screen shows.
-    const built = buildSessionEntries(S, r).entries
+    const built = buildSessionEntries(S, r)
     const exercises = (r.ex || []).map((cfg, i) => {
       const ex = exerciseOf(cfg.id, S)
       const mode = modeOf({ ...cfg, id: cfg.id })

@@ -16,7 +16,7 @@
 //   · fewer sets than prescribed                       → miss
 // So a session that fell apart can never advance the load as though it had succeeded.
 
-import { modeOf, repStep, rerampWarmups, isBw, isPerSide } from './history.js'
+import { modeOf, repStep, rerampWarmups, isBw, isPerSide, entryExcluded } from './history.js'
 import { EXIDX } from './exercises.js'
 import { isWarmupRow } from './workout-model.js'
 import { normalizeRepRange } from './rep-range.js'
@@ -241,12 +241,15 @@ export function readSession(entry, fallback) {
 export function sessionsFor(S, exId, fallback) {
   const out = []
   ;(S.workouts || []).forEach(w => {
-    // A planned deload remains a real workout for history and statistics, but it cannot become
-    // the baseline for the next regular prescription. The routine flag is copied onto the
-    // active session, then onto this completed workout, so later routine edits do not rewrite it.
-    if (w.excludeFromProgression === true) return
     const entry = w.entries.find(e => e.id === exId)
-    if (entry && entry.sets.some(s => s.done && !isWarmupRow(s))) out.push({ d: w.d, ...readSession(entry, fallback) })
+    if (!entry) return
+    // A session that does not count for this exercise cannot become the baseline for its next
+    // prescription. Exclusion is per-entry now (ENG-11): a legacy whole-workout
+    // `excludeFromProgression` flag still excludes every entry; a merged rehab block excludes
+    // only its own. `noProg` is frozen onto the entry at build time, so later routine edits
+    // never rewrite it. This is the only progression-exclusion path in the file.
+    if (entryExcluded(w, entry)) return
+    if (entry.sets.some(s => s.done && !isWarmupRow(s))) out.push({ d: w.d, ...readSession(entry, fallback) })
   })
   return out
 }

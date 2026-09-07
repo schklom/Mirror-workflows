@@ -98,18 +98,25 @@ export function canonicalPlan(S) {
         }
       })
     })),
-    week: Object.fromEntries([1, 2, 3, 4, 5, 6, 0].filter(d => S.week?.[d]).map(d => [d, S.week[d]]))
+    // A weekday holds a routine-id list now. `[].concat` folds a legacy bare string and a
+    // one-element list to the same shape, so their fingerprint is identical — no false-stale
+    // storm on the first load after the upgrade. `?.length` keeps a stray `[]` out. Insertion
+    // order is preserved and never sorted (it is the merge order).
+    week: Object.fromEntries([1, 2, 3, 4, 5, 6, 0].filter(d => S.week?.[d]?.length).map(d => [d, [].concat(S.week[d])]))
   }
 }
 
-/** FNV-1a-ish 64-bit fingerprint. Mirror of hashPlan in api/coach/jobs.js. */
+/** FNV-1a-ish 64-bit fingerprint. Mirror of hashPlan in api/coach/core/plan-hash.js. */
 export function hashPlan(plan) {
   const canon = JSON.stringify({
     routines: (plan?.routines || []).map(r => [r.id, r.name, r.prog, (r.ex || []).map(e =>
       [e.id, e.mode, e.sets, e.reps, e.sec, e.min, e.speed, e.weight, e.prog, e.inc,
         e.repsMin, e.repsMax, e.bodyweight, e.side, e.sg].join(':')
     )]),
-    week: Object.keys(plan?.week || {}).sort().map(k => k + '=' + plan.week[k])
+    // `plan` is a canonicalPlan output, so each day is already an array. `{1:['r1']}` → "1=r1",
+    // byte-identical to the pre-upgrade fingerprint; `{3:['r2','r3']}` → "3=r2+r3". Weekday
+    // keys still sorted; the routine list within a day never is.
+    week: Object.keys(plan?.week || {}).sort().map(k => k + '=' + [].concat(plan.week[k]).join('+'))
   })
   let h1 = 0x811c9dc5, h2 = 0x01000193
   for (let i = 0; i < canon.length; i++) {
@@ -140,7 +147,7 @@ export function currentValue(S, change) {
     case 'exercise-prog': return e?.prog ?? null
     case 'routine-prog': return r?.prog ?? null
     case 'rename-routine': return r?.name ?? null
-    case 'week': return S.week?.[change.target?.weekday] ?? null
+    case 'week': return [].concat(S.week?.[change.target?.weekday] ?? [])   // routine-id list; [] = rest
     default: return undefined            // structural changes have no single scalar to compare
   }
 }
@@ -161,6 +168,12 @@ export function markStale(proposal, S) {
     let stale = false
     if (c.type !== 'add-routine' && c.type !== 'week' && !r) stale = true
     else if (c.target?.exId && !findEx(r, c.target.exId)) stale = true
+    else if (c.type === 'week') {
+      // The day's value is a routine-id list; `before` may be a list (a combined day) or a
+      // legacy bare string. Compare by canonical join so order matters but shape does not.
+      const join = v => [].concat(v ?? []).join('+')
+      if (c.before != null && join(currentValue(S, c)) !== join(c.before)) stale = true
+    }
     else {
       const cur = currentValue(S, c)
       // `before` is what the Coach saw. If the live plan disagrees, someone has already
@@ -504,9 +517,12 @@ const CHANGE_APPLY = {
   },
   'rename-routine': (s, c) => { need(findRoutine(s, c.target.routineId)).name = c.after },
   week: (s, c) => {
+    // A single-routine op: the slot is a list, but the Coach only ever names one routine (or
+    // rest), and it replaces the day. This collapses a combined day to one routine — the same
+    // stated limitation as a DayOverride (see docs/COMBINE_ROUTINES.md §8).
     const d = c.target.weekday
     if (c.after == null || c.after === 'rest') delete s.week[d]
-    else s.week[d] = c.after
+    else s.week[d] = [c.after]
   }
 }
 export const CHANGE_TYPES = Object.keys(CHANGE_APPLY)
@@ -610,10 +626,16 @@ export function changeTitle(c, S) {
 export function changeValues(c, S) {
   const routineName = id => (S?.routines || []).find(r => r.id === id)?.name || id
   const fmt = v => {
-    if (v == null) return c.type === 'week' ? t('Rest') : '—'
+    // `week` first — its value is a routine-id list (an array is also an object, so it has to
+    // win before the generic branches). Render as " + "-joined routine names; null / empty /
+    // "rest" all read as Rest.
+    if (c.type === 'week') {
+      const ids = [].concat(v ?? []).filter(x => x && x !== 'rest')
+      return ids.length ? ids.map(routineName).join(' + ') : t('Rest')
+    }
+    if (v == null) return '—'
     if (typeof v === 'object') return v.id ? exTitle(v.id) : v.name || JSON.stringify(v)
     if (Array.isArray(v)) return v.length + ''
-    if (c.type === 'week') return v === 'rest' ? t('Rest') : routineName(v)
     return String(v)
   }
   if (['add-exercise', 'add-routine', 'reorder'].includes(c.type)) return null

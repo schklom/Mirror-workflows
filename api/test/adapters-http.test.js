@@ -272,6 +272,8 @@ test('models(): OpenAI’s list is cut to what Chat Completions can use; a compa
   assert.deepEqual(all.filter(isChatModel), ['gpt-5.6', 'gpt-5.6-mini', 'gpt-4o', 'o3', 'o4-mini', 'chatgpt-4o-latest']);
   const oa = fakeFetch([ok({ data: all.map(id => ({ id })) })]);
   assert.deepEqual((await openai.models({}, env, { fetch: oa })).models, ['chatgpt-4o-latest', 'gpt-4o', 'gpt-5.6', 'gpt-5.6-mini', 'o3', 'o4-mini']);
+  const stub = fakeFetch([ok({ data: [{ id: 'model-b' }, { id: 'model-a' }] })]);
+  assert.deepEqual((await openai.models({}, env, { fetch: stub })).models, ['model-a', 'model-b'], 'a list with no recognisable chat model is served whole');
   const { default: compatible } = await import('../coach/core/adapters/compatible.js');
   const co = fakeFetch([ok({ data: [{ id: 'qwen2.5:3b' }, { id: 'llama3.2' }] })]);
   assert.deepEqual((await compatible.models({ providerOptions: { compatible: { baseUrl: 'http://ollama:11434' } } }, {}, { fetch: co })).models, ['llama3.2', 'qwen2.5:3b']);

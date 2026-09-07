@@ -50,7 +50,11 @@ export function chatCompletionsSpec(id, { maxTokensField = 'max_completion_token
       // looks right" out of eighty names lands on one Chat Completions refuses with a 400 or
       // 404 the app can only show as "couldn't run". Keep what this request shape can use.
       // A compatible endpoint (Ollama, LM Studio, OpenRouter) serves what it serves, unfiltered.
-      return id === 'openai' ? ids.filter(isChatModel) : ids;
+      if (id !== 'openai') return ids;
+      // A proxy or stand-in that answers under OpenAI's own base URL may serve names the
+      // filter does not know; an empty picker would be worse than a long one.
+      const chat = ids.filter(isChatModel);
+      return chat.length ? chat : ids;
     }
   };
 }

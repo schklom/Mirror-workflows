@@ -679,6 +679,7 @@ export default {
   '{0} reps in every set — add a set and go back to {1}.': '{0} reps en todas las series: añade una serie y vuelve a {1}.',
   '{0} sets of {1} — time to add weight or move to a harder variation.': '{0} series de {1}: toca añadir peso o pasar a una variante más difícil.',
   '{0} per side': '{0} por lado',
+  'Per side': 'Por lado',
   'You still log the total: {0} is {1} per side.': 'Sigues registrando el total: {0} son {1} por lado.',
 
   // --- AI Coach ---

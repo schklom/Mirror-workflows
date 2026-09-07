@@ -679,6 +679,7 @@ export default {
   '{0} reps in every set — add a set and go back to {1}.': '모든 세트 {0}회 달성 — 세트를 추가하고 {1}회로 돌아갑니다.',
   '{0} sets of {1} — time to add weight or move to a harder variation.': '{1}회 {0}세트 — 이제 무게를 올리거나 더 어려운 동작으로 넘어가세요.',
   '{0} per side': '한쪽당 {0}회',
+  'Per side': '한쪽당',
   'You still log the total: {0} is {1} per side.': '기록은 그대로 합계로 합니다: {0}회는 한쪽당 {1}회입니다.',
 
   // --- AI Coach ---

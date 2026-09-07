@@ -5,7 +5,7 @@ import { workoutControls } from '../lib/workout-controls.js'
 import { useUI } from '../store/useUI.js'
 import { exOr } from '../lib/exercises.js'
 import { usesBar, barWeightFor, plateSplit } from '../lib/bar.js'
-import { effectiveRoutine, lastEntryFor, bestWeightFor, bestWeightForEntry, buildSets, freestyleConfig, defaultConfig, setsDoneActive, setUnitsTotal, supersetUnits, unitOf, setLabel, modeOf, isBw, isPerSide, sideReps, repStep, EFFORT, effortOf, stepEffort, capEffort, cascadeWeight, insertWarmupRow, removeRowAt, pairAdjacent, unpairSuperset, cleanupSg, applyIntensifierPlan, pinnedNoteFor, exNoteFor } from '../lib/history.js'
+import { effectiveRoutine, lastEntryFor, bestWeightFor, bestWeightForEntry, buildSets, freestyleConfig, defaultConfig, setsDoneActive, setUnitsTotal, supersetUnits, unitOf, setLabel, modeOf, isBw, isPerSide, repStep, EFFORT, effortOf, stepEffort, capEffort, cascadeWeight, insertWarmupRow, removeRowAt, pairAdjacent, unpairSuperset, cleanupSg, applyIntensifierPlan, pinnedNoteFor, exNoteFor } from '../lib/history.js'
 import { fmtNum, fmtDate, todayISO, exCount, DAYN } from '../lib/format.js'
 import { beep, vibrate } from '../lib/sound.js'
 import { t, exerciseNameFor } from '../lib/i18n.js'
@@ -248,7 +248,10 @@ function ExerciseBlock({ entryIdx, compact, onToggle, onToggleSide, onField, onA
     const fresh = useStore.getState().S.active?.entries[entryIdx]?.sets[i]?.sides?.[side]
     const cur = fresh ? fresh[col.f] : 0
     if (col.f === 'w') return setSide(i, side, col.f, stepWeight(cur, col.step, dir))
-    setSide(i, side, col.f, Math.max(0, Math.round(((cur || 0) + dir * col.step) * 100) / 100))
+    // Reps step by one per side: repCol's step of two keeps the *combined* total evenly
+    // splittable, but here each side is logged directly, so one tap is one rep.
+    const step = col.f === 'r' ? 1 : col.step
+    setSide(i, side, col.f, Math.max(0, Math.round(((cur || 0) + dir * step) * 100) / 100))
   }
   const sideCell = (sd, i, side, col, cls) => (
     <div className={'stp ' + cls + (wc.steppers ? '' : ' plain')}>
@@ -311,9 +314,10 @@ function ExerciseBlock({ entryIdx, compact, onToggle, onToggleSide, onField, onA
     </div>}
     <div className="row" style={{ gap: 6, flexWrap: 'wrap', marginBottom: 8 }}>
       {cardio && <span className="tag acc"><Icon name="figureRun" />{t('Cardio')}</span>}
-      {/* You log the total; this is the split, so the set in front of you is unambiguous
-          without the rep count having to mean two different things (issue #31). */}
-      {!cardio && !timed && isPerSide(cfg) && <span className="tag acc nocap"><Icon name="shuffle" />{t('{0} per side', fmtNum(sideReps(entry.sets.find(s => !s.done)?.r ?? entry.sets[0]?.r)))}</span>}
+      {/* A unilateral exercise is logged per side directly (the L/R rows below), so the old
+          "{n} per side" chip — which halved the combined total for display — is gone: the split
+          is no longer derived, it is what you enter. The tag only flags that this is per-side. */}
+      {!cardio && !timed && isPerSide(cfg) && <span className="tag acc nocap"><Icon name="shuffle" />{t('Per side')}</span>}
       {(ex.tg || ex.bp) && <span className="tag">{t(ex.tg || ex.bp)}</span>}
       {ex.eq && <span className="tag">{t(ex.eq)}</span>}
       {best > 0 && <span className="tag nocap">{t('Best:')} {fmtNum(best)} {S.unit}</span>}

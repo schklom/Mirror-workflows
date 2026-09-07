@@ -697,6 +697,7 @@ export default {
   '{0} reps in every set — add a set and go back to {1}.': '{0} Wiederholungen in jedem Satz — ein Satz kommt dazu, zurück auf {1}.',
   '{0} sets of {1} — time to add weight or move to a harder variation.': '{0} Sätze mit {1} — Zeit für Zusatzgewicht oder eine schwerere Variante.',
   '{0} per side': '{0} pro Seite',
+  'Per side': 'Pro Seite',
   'You still log the total: {0} is {1} per side.': 'Du trägst weiterhin die Gesamtzahl ein: {0} sind {1} pro Seite.',
 
   // --- AI Coach ---

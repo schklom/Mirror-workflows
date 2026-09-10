@@ -12,6 +12,7 @@
  * up, cannot run forever, and cannot lie about what happened when the container restarts.
  */
 import fs from 'node:fs';
+import { spawnSync } from 'node:child_process';
 import os from 'node:os';
 import path from 'node:path';
 import crypto from 'node:crypto';
@@ -320,7 +321,7 @@ async function execute(job) {
     };
     return finish(job, { outcome: 'ready', pending });
   } finally {
-    if (jobDir) fs.rmSync(jobDir, { recursive: true, force: true });
+    if (jobDir) removeJobDir(jobDir, unprivilegedIds());
   }
 }
 
@@ -361,6 +362,29 @@ function shareJobDir(jobDir, ids) {
   fs.chownSync(jobDir, process.getuid ? process.getuid() : 0, ids.gid);
 }
 
+/* Remove a job directory whose contents belong to somebody else.
+ *
+ * The child writes as `coach` and its own directories come out 0700/0755 coach-owned — this
+ * process cannot unlink inside them without CAP_DAC_OVERRIDE, which is the same capability the
+ * handover above is written to avoid needing. Left to `fs.rmSync` it throws EACCES from a
+ * `finally`, turning a completed run into a failed one.
+ *
+ * So the child's user clears its own files, and this process removes the directory it still
+ * owns. Best effort throughout: a leaked temp directory is a worse outcome than a failed job
+ * only in the sense that it is not one.
+ */
+function removeJobDir(jobDir, ids) {
+  if (ids) {
+    try {
+      const mine = fs.readdirSync(jobDir).map(n => path.join(jobDir, n));
+      // argv array, no shell — the same rule the provider spawn follows, and these paths are
+      // this module's own mkdtemp output rather than anything a user chose.
+      if (mine.length) spawnSync('/bin/rm', ['-rf', ...mine], { uid: ids.uid, gid: ids.gid, stdio: 'ignore' });
+    } catch { /* fall through: the removal below is still worth attempting */ }
+  }
+  try { fs.rmSync(jobDir, { recursive: true, force: true }); } catch { /* leaked, not fatal */ }
+}
+
 export async function testRun() {
   const cfg = cfgStore.load();
   const adapter = adapterFor(cfg.provider);
@@ -391,7 +415,7 @@ export async function testRun() {
     }
     return { ok: true, version: check.version };
   } finally {
-    if (jobDir) fs.rmSync(jobDir, { recursive: true, force: true });
+    if (jobDir) removeJobDir(jobDir, unprivilegedIds());
   }
 }
 

@@ -294,7 +294,7 @@ async function execute(job) {
   const env = cfgStore.jobEnv(jobDir || os.tmpdir(), cfgStore.credentialFor(job.uid));
   try {
     const ids = jobDir && unprivilegedIds();
-    if (ids) fs.chownSync(jobDir, ids.uid, ids.gid);
+    if (ids) shareJobDir(jobDir, ids);
 
     const attempt = await runPipeline({
       adapter, cfg, kind: job.kind, payload, model: cfgStore.modelFor(cfg), timeoutMs: TIMEOUT_MS,
@@ -342,6 +342,25 @@ export function resolvePending(uid, { accepted = [], rejected = [], dismissed = 
 /* ---------- admin test + boot recovery ---------- */
 
 /** A2's "Test the Coach": the real adapter, a trivial round-trip, no user data anywhere near it. */
+/* Give the unprivileged `coach` user its job directory without locking this process out of it.
+ *
+ * The obvious move is chown(jobDir, coach) — and it breaks the spawn outright. libuv chdir()s
+ * into cwd BEFORE it drops to the child's uid, so the parent still has to be able to enter the
+ * directory it just gave away; mkdtemp creates 0700, and a container started with `drop: [ALL]`
+ * has no CAP_DAC_OVERRIDE for root to ignore that with. The child never starts and node reports
+ * EACCES, which the Agent SDK renders as "the native binary failed to launch … does not match
+ * this system's libc" — a guess, and a misleading one.
+ *
+ * So the directory stays owned by this process and `coach` reaches it through the group: 0770
+ * with the coach gid. The child can write, the parent can still chdir and still clean up
+ * afterwards, and nobody else on the container can read it. chmod before chown, while this
+ * process is still the owner — CAP_FOWNER is not in the capability set either.
+ */
+function shareJobDir(jobDir, ids) {
+  fs.chmodSync(jobDir, 0o770);
+  fs.chownSync(jobDir, process.getuid ? process.getuid() : 0, ids.gid);
+}
+
 export async function testRun() {
   const cfg = cfgStore.load();
   const adapter = adapterFor(cfg.provider);
@@ -354,7 +373,7 @@ export async function testRun() {
     // a credential that belongs to a profile.
     const env = cfgStore.jobEnv(jobDir || os.tmpdir(), cfgStore.credentialFor(cfgStore.boundUidFor(cfg)));
     const ids = jobDir && unprivilegedIds();
-    if (ids) fs.chownSync(jobDir, ids.uid, ids.gid);
+    if (ids) shareJobDir(jobDir, ids);
     const check = await adapter.check(cfg, env);
     if (!check.ok) return { ok: false, error: check.error || 'the provider runtime could not be run' };
     const r = await adapter.invoke({

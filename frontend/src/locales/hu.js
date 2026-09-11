@@ -1382,7 +1382,7 @@ export default {
   '{0} %': '{0} %',
   '{0} MB': '{0} MB',
   'Checksum not available — not installing': 'Ellenőrző összeg nem érhető el — nincs telepítés',
-  // --- coach week (Home progress row, components/QueueRow.jsx) ---
+  // --- coach week (Home progress row, components/QueueRow.jsx; day sheet, sheets.jsx) ---
   'Next: {0}, today': 'Következő: {0}, ma',
   'Next: {0}': 'Következő: {0}',
   'Next week starts {0}': 'A következő hét kezdete: {0}',
@@ -1673,4 +1673,5 @@ export default {
   'Teal': 'Türkiz',
   'Yellow': 'Sárga',
   'Enter how long it took — at least 1 minute.': 'Add meg, meddig tartott — legalább 1 perc.',
+  'Coach week': 'Edzői hét',
 }

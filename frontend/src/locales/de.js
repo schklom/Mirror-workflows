@@ -1399,7 +1399,7 @@ export default {
   '{0} %': '{0} %',
   '{0} MB': '{0} MB',
   'Checksum not available — not installing': 'Prüfsumme nicht verfügbar — Installation abgebrochen',
-  // --- coach week (Home progress row, components/QueueRow.jsx) ---
+  // --- coach week (Home progress row, components/QueueRow.jsx; day sheet, sheets.jsx) ---
   'Next: {0}, today': 'Als Nächstes: {0}, heute',
   'Next: {0}': 'Als Nächstes: {0}',
   'Next week starts {0}': 'Nächste Woche beginnt am {0}',
@@ -1690,4 +1690,5 @@ export default {
   'Teal': 'Türkis',
   'Yellow': 'Gelb',
   'Enter how long it took — at least 1 minute.': 'Gib ein, wie lange es gedauert hat — mindestens 1 Minute.',
+  'Coach week': 'Coach-Woche',
 }

@@ -52,6 +52,10 @@ see why. Web bundle and APK; the API image only for the payload change.
   list — speech, embeddings, image models, realtime and Responses-only variants — made it easy to
   pick one Chat Completions refuses with a 400 or a 404. Compatible endpoints (Ollama, LM Studio,
   OpenRouter) stay unfiltered. The Gemini key field also names the new `AQ.` key prefix.
+- 🏠 **openGym is back on GitHub.** The account suspension that took `github.com/DuarteSantos8/openGym`
+  offline on 2026-08-19 is lifted. Everything that happened on GitLab in the meantime is there
+  again: history, tags, the releases v1.2.9 to v1.3.5 with their APKs, the GHCR images and the
+  GitHub Pages demo. GitLab stays as it is — both are read, both get every release.
 
 ## v1.3.5 — 2026-09-06
 

@@ -45,7 +45,9 @@ cd frontend && npm test
 
 ## What CI does with your merge request
 
-Every MR runs the three test suites (frontend, MCP, api), with the results and the coverage
+A pull request on GitHub runs the three test suites (frontend, MCP, api) through GitHub Actions;
+the image builds and the APK come from GitLab CI, so a change that needs those is easiest to
+test as a merge request there. Every MR runs the three test suites (frontend, MCP, api), with the results and the coverage
 of your diff shown in the MR itself, plus a build of the web image and the api image when you
 touched their inputs. The frontend job also prints how much your change adds to the gzipped
 bundle compared with main. The APK and the published images are manual jobs there (on
@@ -71,12 +73,13 @@ here before, otherwise a maintainer presses "Run pipeline" after a first look at
 | You have | Goes to |
 | --- | --- |
 | A quick question, or you'd rather just chat | [The Discord](https://discord.gg/e62jY6fwVb) |
-| A question, or self-hosting that won't behave | [An issue labelled `question`](https://gitlab.com/DuarteSantos8/opengym/-/issues) |
-| An idea you're not sure about yet | [An issue labelled `idea`](https://gitlab.com/DuarteSantos8/opengym/-/issues) |
-| A reproducible bug | [Issues](https://gitlab.com/DuarteSantos8/opengym/-/issues) |
-| A change you've already built | A merge request |
+| A question, or self-hosting that won't behave | An issue labelled `question` — [GitHub](https://github.com/DuarteSantos8/openGym/issues) or [GitLab](https://gitlab.com/DuarteSantos8/opengym/-/issues) |
+| An idea you're not sure about yet | An issue labelled `idea` — [GitHub](https://github.com/DuarteSantos8/openGym/issues) or [GitLab](https://gitlab.com/DuarteSantos8/opengym/-/issues) |
+| A reproducible bug | Issues — [GitHub](https://github.com/DuarteSantos8/openGym/issues) or [GitLab](https://gitlab.com/DuarteSantos8/opengym/-/issues) |
+| A change you've already built | A pull request on GitHub or a merge request on GitLab — both are read |
 
-GitLab has no Discussions, so questions and ideas are issues too — just labelled, so nobody
+Questions and ideas are issues too (GitLab has no Discussions, and one tracker per platform is
+enough) — just labelled, so nobody
 mistakes a question for agreed-on work. An answered question is worth more than the same answer
 in a chat log: the next person searching "passkey login fails behind my reverse proxy" finds it.
 That is the one thing the Discord can't do, so if an answer there turns out to be worth keeping,

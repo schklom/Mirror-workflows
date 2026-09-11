@@ -24,6 +24,8 @@ No account on someone else's server, no subscription, no ads. Just `docker compo
 [![Release](https://gitlab.com/DuarteSantos8/opengym/-/badges/release.svg?style=flat-square)](https://gitlab.com/DuarteSantos8/opengym/-/releases)
 ![Last commit](https://img.shields.io/gitlab/last-commit/DuarteSantos8%2Fopengym?style=flat-square)
 [![Stars](https://img.shields.io/gitlab/stars/DuarteSantos8%2Fopengym?style=flat-square)](https://gitlab.com/DuarteSantos8/opengym/-/starrers)
+[![GitHub stars](https://img.shields.io/github/stars/DuarteSantos8/openGym?style=flat-square&logo=github&logoColor=white)](https://github.com/DuarteSantos8/openGym/stargazers)
+[![Tests](https://github.com/DuarteSantos8/openGym/actions/workflows/test.yml/badge.svg)](https://github.com/DuarteSantos8/openGym/actions/workflows/test.yml)
 [![Issues](https://img.shields.io/gitlab/issues/open/DuarteSantos8%2Fopengym?style=flat-square)](https://gitlab.com/DuarteSantos8/opengym/-/issues)
 [![Discord](https://img.shields.io/badge/Discord-join-5865F2?style=flat-square&logo=discord&logoColor=white)](https://discord.gg/e62jY6fwVb)
 [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20me%20a%20coffee-support-FFDD00?style=flat-square&logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/duartesantos)
@@ -44,7 +46,7 @@ No account on someone else's server, no subscription, no ads. Just `docker compo
 
 <div align="center">
 
-### [🌐 opengym.duarte-santos.ch](https://opengym.duarte-santos.ch) · [📦 Source on GitLab](https://gitlab.com/DuarteSantos8/opengym)
+### [🌐 opengym.duarte-santos.ch](https://opengym.duarte-santos.ch) · [📦 Source on GitHub](https://github.com/DuarteSantos8/openGym) · [🦊 GitLab](https://gitlab.com/DuarteSantos8/opengym)
 
 Screenshots, docs and the APK download live on the site.<br>
 <sub>Want to poke at it first? The <a href="https://opengym.duarte-santos.ch/demo/">in-browser
@@ -110,7 +112,7 @@ as a home-screen app, passkey sign-in, offline support, sync across your phone a
 You need [Docker](https://docs.docker.com/get-docker/) with Compose.
 
 ```bash
-git clone https://gitlab.com/DuarteSantos8/opengym
+git clone https://github.com/DuarteSantos8/openGym   # or https://gitlab.com/DuarteSantos8/opengym — same repo
 cd openGym
 cp .env.example .env
 docker compose pull   # grab prebuilt images (amd64 + arm64) — skip to build from source instead
@@ -127,8 +129,10 @@ the exercise media (~140 MB) once.
 > openGym's AGPL, and their ownership is currently disputed between Gym visual and ExerciseDB.
 > openGym ships none of it: your instance downloads it from upstream. Reusing it yourself,
 > commercially or not, means clearing it with the rights holder — see [NOTICE.md](NOTICE.md).
- Prefer building the images yourself instead of pulling from
-GitLab's registry? Drop the `pull` step and run `docker compose up -d --build` — you don't need Node or
+The prebuilt images are published twice, from the same tag: `registry.gitlab.com/duartesantos8/opengym/{api,web}`
+(what `docker-compose.yml` pulls) and `ghcr.io/duartesantos8/opengym-{api,web}` on GitHub — swap the
+`image:` lines if you prefer GHCR. Prefer building the images yourself instead of pulling from a
+registry? Drop the `pull` step and run `docker compose up -d --build` — you don't need Node or
 a build step locally either way.
 
 > Want it reachable from your phone over the internet with passkeys? You'll need an HTTPS
@@ -142,7 +146,8 @@ backups. Self-hosting gets you multi-device sync and profiles for friends & fami
 mobile app is the install-and-done flavor.
 
 - **Android:** [**download the APK**](https://opengym.duarte-santos.ch) — or straight from
-  [GitLab's package registry](https://gitlab.com/DuarteSantos8/opengym/-/packages), where every
+  [GitLab's package registry](https://gitlab.com/DuarteSantos8/opengym/-/packages) or the
+  [GitHub release](https://github.com/DuarteSantos8/openGym/releases/latest), where every
   build sits next to its `.sha256` — and sideload it; openGym is deliberately not on the Play
   Store. Or build it yourself: **[docs/MOBILE.md](docs/MOBILE.md)**.
 - **iPhone:** Apple doesn't allow installing apps outside the App Store, so there is no iOS
@@ -245,21 +250,25 @@ in the Docker build.
 
 - **[Discord](https://discord.gg/e62jY6fwVb)** — release announcements, self-hosting help and
   the back-and-forth that would be a slow issue thread. Quickest way to get an answer.
-- **[Issues](https://gitlab.com/DuarteSantos8/opengym/-/issues)** — bugs, questions, self-hosting
-  help and ideas. There are no Discussions here, so it all lives in one tracker: label a question
+- **Issues** — on [GitHub](https://github.com/DuarteSantos8/openGym/issues) or
+  [GitLab](https://gitlab.com/DuarteSantos8/opengym/-/issues), whichever you have an account on; both
+  are read. Bugs, questions, self-hosting help and ideas all go there: label a question
   `question` and an idea `idea`, and it gets treated as one rather than as agreed-on work. Use
   an issue over the Discord for anything the next person should be able to find by searching.
 - **Login trouble?** Most of it is an `RP_ID`/`ORIGIN` mismatch — check
   [docs/SELF_HOSTING.md](docs/SELF_HOSTING.md) before opening an issue.
-- **Merge requests** — [open one on GitLab](https://gitlab.com/DuarteSantos8/opengym/-/merge_requests); see
+- **Pull / merge requests** — [on GitHub](https://github.com/DuarteSantos8/openGym/pulls) or
+  [on GitLab](https://gitlab.com/DuarteSantos8/opengym/-/merge_requests); see
   [CONTRIBUTING.md](CONTRIBUTING.md).
 
-> **On the GitHub repo:** `github.com/DuarteSantos8/openGym` is offline because the account was
-> suspended. **GitLab is the home of the project** — same history, same tags, same releases, and
-> the CI that builds the images and the APK runs there. (gitea.com/DuarteSantos/openGym was the
-> first stopgap and is now only a mirror.) Old GitHub issue and PR numbers in
-> [CHANGELOG.md](CHANGELOG.md) are kept as plain references; they don't map onto GitLab's
-> numbering.
+> **Two homes, one project.** `github.com/DuarteSantos8/openGym` was offline from 2026-08-19 to
+> 2026-09-10 while the account was suspended, and the project moved to GitLab in the meantime. The
+> account is back, and both repositories carry the same history, tags and releases: the container
+> images are published to GitLab's registry and to GHCR, the signed APK is attached to the release
+> on both sides. GitLab CI builds the release artefacts (images, APK, SBOMs); GitHub Actions runs the
+> tests, builds the GHCR images and publishes the in-browser demo to GitHub Pages.
+> (gitea.com/DuarteSantos/openGym is only a mirror.) In [CHANGELOG.md](CHANGELOG.md), `!NN` is
+> always a GitLab merge request; `#NN` refers to whichever tracker the report came through.
 
 ## Contributing
 
@@ -270,8 +279,8 @@ openGym is free and stays free: AGPL, no subscription, no paid tier, nothing hel
 sponsors. If it replaced a paid tracker for you and you want to chip in, there's a coffee button
 below (and a badge at the top) — a star, a bug report or a merge request is worth just as much.
 
-<!-- GitLab has no Sponsor button the way GitHub's FUNDING.yml gave one, so the link has to
-     stand on its own here. .github/FUNDING.yml stays put for the day that account returns. -->
+<!-- GitLab has no Sponsor button the way GitHub's FUNDING.yml gives one, so the link stands
+     on its own here as well. -->
 
 <a href="https://buymeacoffee.com/duartesantos" target="_blank">
   <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png"

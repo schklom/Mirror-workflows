@@ -669,15 +669,10 @@ section { padding: var(--sec) 0 0; }
 }
 .pad:hover .pad-go::after { transform: rotate(-45deg) translate(2px, 2px); }
 
+.pad.github  { --brand: var(--fg); }
 .pad.gitlab  { --brand: #fc6d26; }
 .pad.bmc     { --brand: #ffdd00; }
 .pad.discord { --brand: #5865f2; }
-
-/* The suspended repo. It stays linked because half the internet still points at it,
-   but nothing about this pad should promise that the link works. */
-.pad.dead { --brand: #8e8e93; }
-.pad.dead .pad-body b, .pad.dead .pad-ic svg { opacity: .8; }
-.pad.dead .pad-go { color: var(--fg-3); }
 .pad.dead .pad-go::after { display: none; }
 .pad-body .tag {
   display: inline-block; padding: 2px 7px; border-radius: 6px;

@@ -1730,6 +1730,9 @@ export function WorkoutRow({ w, onClick }) {
 // `routineIds` accepts `string | string[] | null` — `[r.id]` for one routine,
 // `effectiveRoutineIds(...)` for today's planned session, `[]` / null for explicit freestyle.
 export function startFlow(routineIds) {
+  // The weigh-in is a setting (Settings → During a workout, issue #137): off goes straight
+  // into the session with no body weight on it, same as "Start without weighing in".
+  if (S().weighIn === false) { beginWorkout(routineIds, null); return }
   bwSheet({ required: true, onDone: bw => beginWorkout(routineIds, bw) })
 }
 export function beginWorkout(routineIds, bw) {

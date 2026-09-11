@@ -74,6 +74,10 @@ export const DEF = {
   // card and the /checkin route; the saved gymCards stay so turning it back on restores them.
   // Defaults on; an older profile without the key reads as on (`!== false`).
   checkIn: true,
+  // Whether Start opens the quick weigh-in first (sheets.jsx startFlow, issue #137). Off starts
+  // the session straight away; weight can still be logged from Home/Stats. Defaults on; an
+  // older profile without the key reads as on (`!== false`).
+  weighIn: true,
 }
 const clone = o => JSON.parse(JSON.stringify(o))
 

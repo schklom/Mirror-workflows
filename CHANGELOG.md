@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+- 🔊 **Timer sounds on iOS** (kurktchiev, #183, #152): every tone resumes the audio context first
+  (a lock or app switch leaves it suspended and silent), the context is unlocked from the taps that
+  lead to a timer, and Settings → Sounds gains **Play sounds when the phone is on silent** (off by
+  default, iOS 17+), which switches the page's audio session to playback so the ring/silent switch
+  no longer mutes the beep — at the cost of pausing whatever else the phone was playing.
+
 ## v1.3.6 — 2026-09-12
 
 Sync you can trust and a phone that behaves: signed in, the server's profile is always the truth, two devices merge instead of overwriting each other, the app polls for changes and works offline with a banner; reminders and push subscriptions heal themselves; chip rows, sheets under the notch and the tab bar are fixed on iOS; the twelve Astra findings, eleven community merges and a headless QA sweep of every screen. Web bundle, APK and API image.

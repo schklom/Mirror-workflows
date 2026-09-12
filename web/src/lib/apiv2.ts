@@ -150,9 +150,13 @@ export class ApiV2Service extends BaseApiService {
     );
 
     // Decrypt them
-    const decryptedLocations = await Promise.all(
-      encryptedLocations.items.map(async (it) => {
-        const decrypted = await decryptDataV2(
+    const decryptedLocations: Location[] = [];
+    const decoder = new TextDecoder();
+
+    for (var it of encryptedLocations.items) {
+      let decrypted;
+      try {
+        decrypted = await decryptDataV2(
           userData!.fmdId,
           userData!.keysV2!.locationKek,
           'location',
@@ -160,9 +164,13 @@ export class ApiV2Service extends BaseApiService {
           it.unixMillis,
           it.ciphertext64
         );
-        return JSON.parse(new TextDecoder().decode(decrypted)) as Location;
-      })
-    );
+      } catch {
+        console.log(`Failed to decrypt location ${it.clientItemIdHex}`);
+        continue;
+      }
+      const loc = JSON.parse(decoder.decode(decrypted)) as Location;
+      decryptedLocations.push(loc);
+    }
 
     return decryptedLocations;
   }
@@ -177,9 +185,13 @@ export class ApiV2Service extends BaseApiService {
     );
 
     // Decrypt them
-    const decryptedPictures = await Promise.all(
-      encryptedPictures.items.map(async (it) => {
-        const decrypted = await decryptDataV2(
+    const decryptedPictures: string[] = [];
+    const decoder = new TextDecoder();
+
+    for (var it of encryptedPictures.items) {
+      let decrypted;
+      try {
+        decrypted = await decryptDataV2(
           userData!.fmdId,
           userData!.keysV2!.pictureKek,
           'picture',
@@ -187,10 +199,13 @@ export class ApiV2Service extends BaseApiService {
           it.unixMillis,
           it.ciphertext64
         );
-        const obj = JSON.parse(new TextDecoder().decode(decrypted)) as Picture;
-        return obj.raw64;
-      })
-    );
+      } catch {
+        console.log(`Failed to decrypt picture ${it.clientItemIdHex}`);
+        continue;
+      }
+      const obj = JSON.parse(decoder.decode(decrypted)) as Picture;
+      decryptedPictures.push(obj.raw64);
+    }
 
     return decryptedPictures;
   }

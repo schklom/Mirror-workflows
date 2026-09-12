@@ -433,7 +433,7 @@ h4.sec{
 
 /* ---------------------------------------------------------------- chips -- */
 .chips{
-  display:flex;gap:7px;overflow-x:auto;padding-bottom:2px;
+  display:flex;gap:7px;overflow-x:auto;padding:4px 4px 6px;   /* room for a chip's focus outline inside a sheet (#162) */
   scrollbar-width:none;
 }
 .chips::-webkit-scrollbar{display:none}

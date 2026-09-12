@@ -202,6 +202,25 @@ afterEach(async () => {
 })
 
 describe('Workout set completion flow', () => {
+  it('rests the exercise\'s warm-up rest between ramp sets, and its working rest after the last ramp set', async () => {
+    await mount([exercise('ramped-squat', [false, false, false, false], {
+      target: { mode: 'reps', reps: 6, weight: 125, bodyweight: false, restSec: 150, warmupRestSec: 45 },
+      sets: [
+        { w: 60, r: 8, done: false, phase: 'warmup' },
+        { w: 95, r: 5, done: false, phase: 'warmup' },
+        { w: 125, r: 6, done: false, phase: 'work' },
+        { w: 125, r: 6, done: false, phase: 'work' },
+      ],
+    })])
+    await toggleSet(0)
+    expect(mocks.startRest).toHaveBeenLastCalledWith(45, expect.any(Number))
+    await toggleSet(1)
+    expect(mocks.startRest).toHaveBeenLastCalledWith(150, expect.any(Number))
+    await toggleSet(2)
+    expect(mocks.startRest).toHaveBeenLastCalledWith(150, expect.any(Number))
+    expect(mocks.startRest).toHaveBeenCalledTimes(3)
+  })
+
   it('starts rest after a non-final ordinary set, but stops rest without restarting it on the final set', async () => {
     await mount([exercise('plain-bench', [false, false, false])])
     await toggleSet(0)

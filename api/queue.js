@@ -2,7 +2,8 @@
 // imported) from frontend/src/lib/queue.js / lib/history.js: the same rules on both sides, kept
 // as a tiny standalone module here (rather than inline in server.js) so it can be unit-tested
 // without booting the whole server. `S.queue` is written by a planner — any API client that PUTs
-// state with a queue (a coaching agent, a script) — never by the app itself. Three rules live here:
+// state with a queue (a coaching agent, a script) — or by the frontend's own rotation feature
+// (marked by `rotationId`; see frontend/src/lib/rotation.js). Three rules live here:
 //
 // DONE RULE (shared with the frontend, and the rule a planner has to mirror): a queue session
 // counts as done once a finished workout on its routine exists, started at/after the queue was
@@ -53,7 +54,9 @@ function queueOf(S) {
   const q = S.queue;
   if (!q || typeof q !== 'object' || !Array.isArray(q.ids)) return null;
   const startsOn = typeof q.startsOn === 'string' ? q.startsOn : dayIn(q.since || 0, S.reminder?.tz);
-  const ids = q.ids.filter(id => (S.routines || []).some(r => r?.id === id));
+  // First valid occurrence of each id — the same normalization as the frontend's queueOf.
+  const ids = q.ids.filter((id, i) => q.ids.indexOf(id) === i && (S.routines || []).some(r => r?.id === id));
+  if (!ids.length) return null;
   return { ids, startsOn };
 }
 // The reminder tick only ever asks "what's next right now" — there is no separate "today" to

@@ -1492,3 +1492,26 @@ describe('per-side volume and legacy timed sets (QA round 2026-09-12)', () => {
     expect(setLabel('0025', { w: 60, r: 10, done: true })).toBe('60×10')
   })
 })
+
+describe('a rotation day and a fixed weekday day are one combined day', () => {
+  const routines = [{ id: 'a', name: 'A', ex: [] }, { id: 'core', name: 'Core', ex: [] }]
+  const TODAY = '2026-09-14'   // a Monday
+  const S = over => ({
+    routines, workouts: [], dayPlan: {}, week: { 1: ['core'] },
+    queue: { ids: ['a'], since: Date.parse('2026-09-13T08:00:00'), startsOn: '2026-09-13', label: 'My split', rotationId: 'r1' },
+    rotation: { id: 'r1', sequence: ['a'], label: 'My split' }, ...over,
+  })
+
+  it('the queue session comes first, the weekday routine rides along', () => {
+    expect(effectiveRoutineIds(S(), TODAY, TODAY)).toEqual(['a', 'core'])
+  })
+
+  it('a malformed queue falls back to the plain weekday plan', () => {
+    expect(effectiveRoutineIds(S({ queue: { ids: ['gone'], since: 1 } }), TODAY, TODAY)).toEqual(['core'])
+  })
+
+  it('a repeated queue id does not repeat the day', () => {
+    const dup = S({ queue: { ids: ['a', 'a'], since: Date.parse('2026-09-13T08:00:00'), startsOn: '2026-09-13', label: 'My split' } })
+    expect(effectiveRoutineIds(dup, TODAY, TODAY)).toEqual(['a', 'core'])
+  })
+})

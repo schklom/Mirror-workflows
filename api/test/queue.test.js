@@ -225,3 +225,18 @@ test('a queue without startsOn starts on the day of the apply where the USER is 
   // An explicit startsOn is never second-guessed.
   assert.equal(effectiveRoutineId({ ...base, queue: { ...q, startsOn: '2026-09-10' }, reminder: { tz: 'America/New_York' } }, '2026-09-09'), null);
 });
+
+test('queue: a malformed queue falls back to the weekday plan for the reminder', () => {
+  const S = { ...base, week: { 1: 'r1' }, queue: { ids: ['gone'], since: 1000 } };
+  assert.equal(effectiveRoutineId(S, '2026-09-14'), 'r1'); // Monday
+});
+
+test('queue: a rotation pass hides only the weekdays it covers', () => {
+  const S = {
+    ...base,
+    week: { 1: ['r1', 'r3'] },
+    queue: { ids: ['r1', 'r2'], since: 1000, startsOn: '2026-09-07', label: 'My split', rotationId: 'x' },
+  };
+  // r1 is the queue's own session, so the weekday's r1 adds nothing; r3 is the athlete's own day.
+  assert.equal(effectiveRoutineId(S, '2026-09-14'), 'r1');
+});

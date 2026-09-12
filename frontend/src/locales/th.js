@@ -756,6 +756,8 @@ export default {
   'Weigh in before workouts': 'ชั่งน้ำหนักก่อนออกกำลังกาย',
   'Asks for your body weight when a workout starts. Off starts the session straight away.': 'ถามน้ำหนักตัวเมื่อเริ่มออกกำลังกาย ถ้าปิด เซสชันจะเริ่มทันที',
   'No entries yet — log your weight to start the curve.': 'ยังไม่มีข้อมูล — บันทึกน้ำหนักเพื่อเริ่มกราฟ',
+  'Play sounds when the phone is on silent': 'เล่นเสียงแม้โทรศัพท์อยู่ในโหมดเงียบ',
+  'Music playing on this phone stops during a workout and does not resume by itself.': 'เพลงที่เล่นอยู่บนโทรศัพท์นี้จะหยุดระหว่างการออกกำลังกาย และจะไม่เล่นต่อเอง',
   'Import from Hevy': 'นำเข้าจาก Hevy',
   'Pull your history with a Hevy Pro API key': 'ดึงประวัติด้วยคีย์ API ของ Hevy Pro',
   'Pull your history with a Hevy Pro API key. The key is only used for this import and is not saved.': 'ดึงประวัติด้วยคีย์ API ของ Hevy Pro คีย์ใช้สำหรับการนำเข้าครั้งนี้เท่านั้นและจะไม่ถูกบันทึก',

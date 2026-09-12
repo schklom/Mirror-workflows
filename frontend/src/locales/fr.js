@@ -324,6 +324,8 @@ export default {
   'Weigh in before workouts': 'Se peser avant la séance',
   'Asks for your body weight when a workout starts. Off starts the session straight away.': 'Demande ton poids au début d’une séance. Désactivé, la séance démarre directement.',
   'No entries yet — log your weight to start the curve.': 'Aucune entrée — note ton poids pour démarrer la courbe.',
+  'Play sounds when the phone is on silent': 'Jouer les sons même si le téléphone est en mode silencieux',
+  'Music playing on this phone stops during a workout and does not resume by itself.': 'La musique en cours de lecture sur ce téléphone s’arrête pendant une séance et ne reprend pas toute seule.',
   'Data': 'Données',
   'Export backup (JSON)': 'Exporter une sauvegarde (JSON)',
   'Import backup': 'Importer une sauvegarde',

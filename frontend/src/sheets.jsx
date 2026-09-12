@@ -35,6 +35,7 @@ import { normalizeRepRange } from './lib/rep-range.js'
 import { MOBILE, shareExport, printHtml } from './lib/mobile.js'
 import { speedUnitOf, toSpeed, fromSpeed } from './lib/speed.js'
 import { buildCompletedWorkout } from './lib/finish-workout.js'
+import { refillAfter } from './lib/rotation.js'
 import { isWarmupRow, hasCompletedWork } from './lib/workout-model.js'
 import { saveSessionAsRoutine } from './lib/session-routines.js'
 import { nextUnfinishedUnit } from './lib/supersetFlow.js'
@@ -2702,6 +2703,9 @@ function doFinishWorkout() {
       s.workouts.push(w)
     }
     s.active = null
+    // A rotation pass this app manages starts its next pass the moment the last session lands
+    // (lib/rotation.js). A planner's queue is left alone: it completes and waits for its writer.
+    refillAfter(s, w)
   })
   useStore.getState().autoBackupNow()
   useUI.getState().stopRest()

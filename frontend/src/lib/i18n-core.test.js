@@ -70,7 +70,8 @@ describe('de-CH as a selectable language', () => {
     expect(LANGS['de-CH']).toBeTruthy()
     expect(DATE_LOCALES['de-CH']).toBe('de-CH')
     // The reason de-CH is worth having at all: German formatting gets the weights wrong here.
-    expect(new Intl.NumberFormat(DATE_LOCALES['de-CH']).format(1234.5)).toBe("1'234.5")
+    // ICU writes the Swiss group separator as ' or ’ depending on its version; both are Swiss.
+    expect(new Intl.NumberFormat(DATE_LOCALES['de-CH']).format(1234.5)).toMatch(/^1['’]234\.5$/)
     expect(new Intl.NumberFormat(DATE_LOCALES.de).format(1234.5)).toBe('1.234,5')
   })
 

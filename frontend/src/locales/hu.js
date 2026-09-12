@@ -1232,4 +1232,9 @@ export default {
   'Offline — showing the last copy synced with the server.': 'Offline — a szerverrel utoljára szinkronizált másolat látható.',
   'Not synced yet — tap to retry.': 'Még nincs szinkronizálva — koppints az újrapróbáláshoz.',
   'Back online — synced with the server.': 'Újra online — szinkronizálva a szerverrel.',
+  // --- combine-routines sheet + custom-exercise equipment (v1.3.6) ---
+  '{0} added — {1}': '{0} hozzáadva — {1}',
+  'already added': 'már hozzáadva',
+  'no exercises': 'nincs gyakorlat',
+  'Pick equipment': 'Eszköz kiválasztása',
 }

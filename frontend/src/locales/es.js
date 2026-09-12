@@ -1229,4 +1229,9 @@ export default {
   'Offline — showing the last copy synced with the server.': 'Sin conexión: se muestra la última copia sincronizada con el servidor.',
   'Not synced yet — tap to retry.': 'Aún no sincronizado: toca para reintentar.',
   'Back online — synced with the server.': 'De nuevo en línea: sincronizado con el servidor.',
+  // --- combine-routines sheet + custom-exercise equipment (v1.3.6) ---
+  '{0} added — {1}': '{0} añadido — {1}',
+  'already added': 'ya añadido',
+  'no exercises': 'sin ejercicios',
+  'Pick equipment': 'Elegir equipamiento',
 }

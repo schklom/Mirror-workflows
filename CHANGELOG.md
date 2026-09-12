@@ -81,6 +81,26 @@ tab bar mid-screen during a workout. Web bundle, APK and API image.
   viewport stayed displaced — tab bar and rest timer mid-screen. Ticking a set and opening a sheet
   now blur the field, and the correction also works while a sheet has the page pinned. The mobile
   workout screen keeps less blank space under the last set (mflova, !121).
+- ⚖️ **Weigh in before workouts is a switch** (kurktchiev, #174, #137): off, Start goes straight into
+  the session; body weight can still be logged from Home and Stats.
+- 🇨🇭 **Swiss German** (mkoester, #171): `de-CH` derived from the German pack (ss for ß, Swiss
+  number formatting), no second pack to maintain.
+- 🍎 **iOS shell builds with Xcode 26 / iOS 26** (shailantani, #117; thedandano, !125): UIScene
+  lifecycle, deployment target 15.5.
+- 🔥 **Rest between warm-up ramp sets** (kurktchiev, #164): a per-exercise `warmupRestSec` for
+  plan files; the break into the first work set stays the working rest.
+- 🧰 **Custom exercises** (LuckaPow, #162): equipment is chosen (and required), muscle names read
+  like the built-in ones, cardio gets its target, a chip's focus outline is no longer clipped in
+  a sheet.
+- 🐳 **nginx resolver is configurable** (T13o, !110, #148): `RESOLVER` env (default Docker's
+  127.0.0.11) so /api resolves under Podman and Kubernetes.
+- 🖨️ **Plan as PDF on the phone** (HenryByte, !118, #149): "Print as PDF" opens the OS print
+  dialog, which saves to Files / Drive.
+- 🎛️ **The equipment filter survives a body-part change** in the exercise picker
+  (ErrorUsernameAlreadyTaken, !120, #150), and per-side (L/R) data is preserved through progression
+  and session flows (!133).
+- 🔐 **Coach job directory** (T13o, !135): permissions set with chmod instead of chown, so the
+  built-in Coach runs on a container without CAP_DAC_OVERRIDE.
 - 🛡️ **The twelve Astra findings** (kurktchiev, #166, #160): a request target that does not parse
   answers 400 instead of an unhandled rejection; a stored state the reminder tick cannot read is
   skipped instead of taking the API down, and `PUT /api/data` refuses non-array `workouts` /

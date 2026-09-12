@@ -1229,4 +1229,9 @@ export default {
   'Offline — showing the last copy synced with the server.': '离线 — 正在显示最后一次与服务器同步的副本。',
   'Not synced yet — tap to retry.': '尚未同步 — 点按重试。',
   'Back online — synced with the server.': '已恢复联网 — 已与服务器同步。',
+  // --- combine-routines sheet + custom-exercise equipment (v1.3.6) ---
+  '{0} added — {1}': '已添加 {0} — {1}',
+  'already added': '已添加',
+  'no exercises': '没有动作',
+  'Pick equipment': '选择器械',
 }

@@ -1229,4 +1229,9 @@ export default {
   'Offline — showing the last copy synced with the server.': 'Çevrimdışı — sunucuyla en son eşitlenen kopya gösteriliyor.',
   'Not synced yet — tap to retry.': 'Henüz eşitlenmedi — yeniden denemek için dokun.',
   'Back online — synced with the server.': 'Yeniden çevrimiçi — sunucuyla eşitlendi.',
+  // --- combine-routines sheet + custom-exercise equipment (v1.3.6) ---
+  '{0} added — {1}': '{0} eklendi — {1}',
+  'already added': 'zaten ekli',
+  'no exercises': 'egzersiz yok',
+  'Pick equipment': 'Ekipman seç',
 }

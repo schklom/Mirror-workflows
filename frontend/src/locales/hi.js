@@ -1229,4 +1229,9 @@ export default {
   'Offline — showing the last copy synced with the server.': 'ऑफ़लाइन — सर्वर से सिंक की गई आख़िरी प्रति दिखाई जा रही है।',
   'Not synced yet — tap to retry.': 'अभी सिंक नहीं हुआ — फिर से कोशिश के लिए टैप करें।',
   'Back online — synced with the server.': 'फिर से ऑनलाइन — सर्वर से सिंक हो गया।',
+  // --- combine-routines sheet + custom-exercise equipment (v1.3.6) ---
+  '{0} added — {1}': '{0} जोड़ा गया — {1}',
+  'already added': 'पहले से जोड़ा हुआ',
+  'no exercises': 'कोई व्यायाम नहीं',
+  'Pick equipment': 'उपकरण चुनें',
 }

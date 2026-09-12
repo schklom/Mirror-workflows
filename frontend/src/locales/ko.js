@@ -1229,4 +1229,9 @@ export default {
   'Offline — showing the last copy synced with the server.': '오프라인 — 서버와 마지막으로 동기화된 사본을 표시합니다.',
   'Not synced yet — tap to retry.': '아직 동기화되지 않음 — 다시 시도하려면 탭하세요.',
   'Back online — synced with the server.': '다시 온라인 — 서버와 동기화되었습니다.',
+  // --- combine-routines sheet + custom-exercise equipment (v1.3.6) ---
+  '{0} added — {1}': '{0} 추가됨 — {1}',
+  'already added': '이미 추가됨',
+  'no exercises': '운동 없음',
+  'Pick equipment': '기구 선택',
 }

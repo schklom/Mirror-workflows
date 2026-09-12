@@ -1240,4 +1240,9 @@ export default {
   'Offline — showing the last copy synced with the server.': 'ออฟไลน์ — แสดงสำเนาล่าสุดที่ซิงค์กับเซิร์ฟเวอร์',
   'Not synced yet — tap to retry.': 'ยังไม่ได้ซิงค์ — แตะเพื่อลองใหม่',
   'Back online — synced with the server.': 'กลับมาออนไลน์แล้ว — ซิงค์กับเซิร์ฟเวอร์แล้ว',
+  // --- combine-routines sheet + custom-exercise equipment (v1.3.6) ---
+  '{0} added — {1}': 'เพิ่ม {0} แล้ว — {1}',
+  'already added': 'เพิ่มแล้ว',
+  'no exercises': 'ไม่มีท่าออกกำลังกาย',
+  'Pick equipment': 'เลือกอุปกรณ์',
 }

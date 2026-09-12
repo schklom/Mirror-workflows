@@ -1327,3 +1327,38 @@ describe('effort rating auto-ends the set', () => {
     expect(mocks.S.active.entries[0].sets[0].done).toBe(true)   // still done
   })
 })
+
+describe('per-side effort completion', () => {
+  it.each(['rir', 'rpe'])('completes only the rated side for %s and keeps undo explicit', async scale => {
+    const side = () => ({ w: 20, r: 8, done: false })
+    await mount([exercise('plain-bench', [false], {
+      target: { mode: 'reps', side: true, reps: 16, weight: 20, bodyweight: false },
+      sets: [
+        { w: 20, r: 16, done: false, sides: { L: side(), R: side() } },
+        { w: 20, r: 16, done: false, sides: { L: side(), R: side() } },
+      ],
+    })], 0, { effort: scale })
+    const cells = container.querySelectorAll('.side-rows .effcell.is-empty')
+    await act(async () => { cells[0].dispatchEvent(new dom.Event('click', { bubbles: true })) })
+    const leftPick = mocks.effortPickerSheet.mock.calls.at(-1)[2]
+    await act(async () => { leftPick(scale === 'rir' ? 2 : 8) })
+    let set = mocks.S.active.entries[0].sets[0]
+    expect(set.sides.L.done).toBe(true)
+    expect(set.sides.R.done).toBe(false)
+    expect(set.done).toBe(false)
+    expect(mocks.startRest).not.toHaveBeenCalled()
+    await act(async () => { leftPick(3); leftPick(null) })
+    expect(mocks.S.active.entries[0].sets[0].sides.L.done).toBe(true)
+    expect(mocks.S.active.entries[0].sets[0].sides.L[scale]).toBeUndefined()
+    await act(async () => { cells[1].dispatchEvent(new dom.Event('click', { bubbles: true })) })
+    const rightPick = mocks.effortPickerSheet.mock.calls.at(-1)[2]
+    await act(async () => { rightPick(scale === 'rir' ? 0 : 10) })
+    set = mocks.S.active.entries[0].sets[0]
+    expect(set.done).toBe(true)
+    expect(mocks.startRest).toHaveBeenCalledWith(90, expect.any(Number))
+    const calls = mocks.startRest.mock.calls.length
+    await act(async () => { rightPick(1) })
+    expect(set.sides.R.done).toBe(true)
+    expect(mocks.startRest).toHaveBeenCalledTimes(calls)
+  })
+})

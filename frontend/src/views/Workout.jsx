@@ -294,7 +294,11 @@ function ExerciseBlock({ entryIdx, compact, dense, onToggle, onToggleSide, onFie
     const v = sd[col.f] ?? null
     const rir = col.eff === 'rpe' ? (v == null ? null : 10 - v) : v
     const color = effortColor(rir)
-    const open = () => effortPickerSheet(col.eff, v, nv => setSide(i, side, col.f, nv))
+    const open = () => effortPickerSheet(col.eff, v, nv => {
+      setSide(i, side, col.f, nv)
+      const fresh = useStore.getState().S.active?.entries[entryIdx]?.sets[i]?.sides?.[side]
+      if (nv != null && fresh && !fresh.done) onToggleSide(i, side)
+    })
     if (v == null) return <button className="effcell is-empty" aria-label={col.hd} onClick={open}>{col.hd}</button>
     const step = dir => setSide(i, side, col.f, stepEffort(col.eff, v, dir))
     return (

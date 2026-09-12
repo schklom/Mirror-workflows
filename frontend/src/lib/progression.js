@@ -18,7 +18,7 @@
 
 import { modeOf, repStep, rerampWarmups, isBw, isPerSide, entryExcluded } from './history.js'
 import { EXIDX } from './exercises.js'
-import { isWarmupRow } from './workout-model.js'
+import { isWarmupRow, isSideSet, syncSideAggregate, makeSideSet } from './workout-model.js'
 import { normalizeRepRange } from './rep-range.js'
 
 export const POLICIES = ['off', 'linear', 'greyskull', 'double', 'time']
@@ -452,6 +452,16 @@ export function applyPrescription(sets, p, step = 2.5) {
     // the work rows only (a ticked warm-up falling through here would be the data-loss the
     // cascade fix removed, two files over).
     if (s.done || isWarmupRow(s)) return s
+    if (isSideSet(s)) {
+      const sides = Object.fromEntries(['L', 'R'].map(side => {
+        const row = s.sides[side]
+        return [side, row.done ? row : { ...row,
+          ...(p.weight != null ? { w: p.weight } : {}),
+          ...(p.reps != null ? { r: p.reps / 2 } : {}),
+        }]
+      }))
+      return syncSideAggregate({ ...s, sides })
+    }
     const o = { ...s }
     if (p.weight != null) o.w = p.weight
     if (p.reps != null) o.r = p.reps
@@ -472,7 +482,11 @@ export function applyPrescription(sets, p, step = 2.5) {
     // `type` is kept: that's the exercise's plan (every set is a drop-set/rest-pause), not
     // something this particular row logged.
     const { drops, clusters, ...plainSeed } = seed
-    while (out.filter(s => !isWarmupRow(s)).length < p.sets) out.push({ ...plainSeed, done: false })
+    while (out.filter(s => !isWarmupRow(s)).length < p.sets) {
+      out.push(isSideSet(seed) ? makeSideSet({
+        w: p.weight ?? seed.w, r: p.reps ?? seed.r,
+      }) : { ...plainSeed, done: false })
+    }
   }
   // Last, because the work rows now carry their final weight: the warm-up block ramps toward
   // what you are actually about to lift, not toward what you lifted last time.

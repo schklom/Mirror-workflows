@@ -16,6 +16,8 @@
 		504EC3121FED79650016851F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 504EC3101FED79650016851F /* LaunchScreen.storyboard */; };
 		50B271D11FEDC1A000F3C39B /* public in Resources */ = {isa = PBXBuildFile; fileRef = 50B271D01FEDC1A000F3C39B /* public */; };
 		A084ECDBA7D38E1E42DFC39D /* Pods_App.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF277DCFFFF123FFC6DF26C7 /* Pods_App.framework */; };
+		AA0100000000000000000002 /* PrintPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0100000000000000000001 /* PrintPlugin.swift */; };
+		AA0100000000000000000004 /* PrintPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = AA0100000000000000000003 /* PrintPlugin.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +26,8 @@
 		504EC3041FED79650016851F /* App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = App.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		504EC3071FED79650016851F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AA0000000000000000000001 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		AA0100000000000000000001 /* PrintPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrintPlugin.swift; sourceTree = "<group>"; };
+		AA0100000000000000000003 /* PrintPlugin.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PrintPlugin.m; sourceTree = "<group>"; };
 		504EC30C1FED79650016851F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		504EC30E1FED79650016851F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		504EC3111FED79650016851F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -78,6 +82,8 @@
 				50379B222058CBB4000EE86E /* capacitor.config.json */,
 				504EC3071FED79650016851F /* AppDelegate.swift */,
 				AA0000000000000000000001 /* SceneDelegate.swift */,
+				AA0100000000000000000001 /* PrintPlugin.swift */,
+				AA0100000000000000000003 /* PrintPlugin.m */,
 				504EC30B1FED79650016851F /* Main.storyboard */,
 				504EC30E1FED79650016851F /* Assets.xcassets */,
 				504EC3101FED79650016851F /* LaunchScreen.storyboard */,
@@ -214,6 +220,8 @@
 			files = (
 				504EC3081FED79650016851F /* AppDelegate.swift in Sources */,
 				AA0000000000000000000002 /* SceneDelegate.swift in Sources */,
+				AA0100000000000000000002 /* PrintPlugin.swift in Sources */,
+				AA0100000000000000000004 /* PrintPlugin.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

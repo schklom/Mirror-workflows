@@ -113,6 +113,9 @@ jobs:
           ref: '${{ needs.get_version.outputs.REMOTE }}' # branch
           token: ${{ secrets.PAT_GITHUB_ACTION }}
 
+      - name: Work on another workflow build-2.yml
+        run: cp .github/workflows/build.yml .github/workflows/build-2.yml
+
       # Inspired by https://www.reddit.com/r/Infinity_For_Reddit/comments/14c2v5x/build_your_own_apk_with_your_personal_api_key_in/
       # which links specifically to https://colab.research.google.com/drive/13AE8RvjnCfuBJGaACEqxeBIMo33_l-Sc
       # New on https://github.com/KobeW50/ReVanced-Documentation/blob/main/Reddit-Client-ID-Guide.md
@@ -162,7 +165,7 @@ jobs:
           
           # Sign the APKs
           # Need to escape the dollar double bracket
-          file=".github/workflows/build.yml"
+          file=".github/workflows/build-2.yml"
           what_to_add="
               - name: Sign APK
                 id: sign_apk
@@ -176,9 +179,6 @@ jobs:
           "
           where_to_add="arguments: build -x lint"
           sed -i "\|$where_to_add|r"<(echo "$what_to_add") $file
-
-      - name: Work on another workflow build-2.yml
-        run: cp .github/workflows/build.yml .github/workflows/build-2.yml
 
       - name: Changes to release the APKs
         run: |

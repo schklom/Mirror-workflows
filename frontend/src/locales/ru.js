@@ -321,6 +321,8 @@ export default {
   'Rest timer': 'Таймер отдыха',
   'Sounds': 'Звуки',
   'Flash screen when timer ends': 'Мигать экраном по окончании таймера',
+  'Play sounds when the phone is on silent': 'Воспроизводить звуки при беззвучном режиме',
+  'Music playing on this phone stops during a workout and does not resume by itself.': 'Музыка, играющая на этом телефоне, останавливается во время тренировки и сама не возобновляется.',
   'Data': 'Данные',
   'Export backup (JSON)': 'Экспорт резервной копии (JSON)',
   'Import backup': 'Импорт резервной копии',

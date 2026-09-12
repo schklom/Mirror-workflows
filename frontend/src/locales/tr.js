@@ -321,6 +321,8 @@ export default {
   'Rest timer': 'Dinlenme sayacı',
   'Sounds': 'Sesler',
   'Flash screen when timer ends': 'Zamanlayıcı bitince ekranı yanıp söndür',
+  'Play sounds when the phone is on silent': 'Telefon sessizdeyken de sesleri çal',
+  'Music playing on this phone stops during a workout and does not resume by itself.': 'Bu telefonda çalan müzik antrenman sırasında durur ve kendiliğinden devam etmez.',
   'Data': 'Veriler',
   'Export backup (JSON)': 'Yedeği dışa aktar (JSON)',
   'Import backup': 'Yedeği içe aktar',

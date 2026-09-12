@@ -321,6 +321,8 @@ export default {
   'Rest timer': '휴식 타이머',
   'Sounds': '소리',
   'Flash screen when timer ends': '타이머 종료 시 화면 깜박임',
+  'Play sounds when the phone is on silent': '무음 모드에서도 소리 재생',
+  'Music playing on this phone stops during a workout and does not resume by itself.': '운동 중에는 이 휴대폰에서 재생 중인 음악이 멈추며, 자동으로 다시 재생되지 않습니다.',
   'Data': '데이터',
   'Export backup (JSON)': '백업 내보내기 (JSON)',
   'Import backup': '백업 가져오기',

@@ -336,6 +336,8 @@ export default {
   'Rest timer': 'Pausen-Timer',
   'Sounds': 'Töne',
   'Flash screen when timer ends': 'Bildschirm bei Timer-Ende blinken lassen',
+  'Play sounds when the phone is on silent': 'Töne auch bei stummgeschaltetem Telefon abspielen',
+  'Music playing on this phone stops during a workout and does not resume by itself.': 'Musik, die auf diesem Telefon läuft, stoppt während eines Trainings und setzt nicht von selbst wieder ein.',
   'Data': 'Daten',
   'Export backup (JSON)': 'Backup exportieren (JSON)',
   'Import backup': 'Backup importieren',

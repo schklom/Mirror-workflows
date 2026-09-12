@@ -321,6 +321,8 @@ export default {
   'Rest timer': 'आराम टाइमर',
   'Sounds': 'ध्वनियाँ',
   'Flash screen when timer ends': 'टाइमर खत्म होने पर स्क्रीन फ्लैश करें',
+  'Play sounds when the phone is on silent': 'फ़ोन साइलेंट पर हो तब भी आवाज़ें बजाएँ',
+  'Music playing on this phone stops during a workout and does not resume by itself.': 'इस फ़ोन पर चल रहा संगीत वर्कआउट के दौरान रुक जाता है और अपने आप फिर से शुरू नहीं होता।',
   'Data': 'डेटा',
   'Export backup (JSON)': 'बैकअप निर्यात करें (JSON)',
   'Import backup': 'बैकअप आयात करें',

@@ -6,6 +6,7 @@ import { convertStateUnit } from '../lib/units.js'
 import { useUI } from '../store/useUI.js'
 import { ACCENTS, todayISO, localTZ, weekStartOf, MONDAY, SUNDAY } from '../lib/format.js'
 import { effortOf } from '../lib/history.js'
+import { unlock, playOnSilentSupported } from '../lib/sound.js'
 import { api, webauthnOK, passkeyLogin, passkeyRegister, IS_ANDROID } from '../lib/api.js'
 import { pushSupported, enablePush, disablePush, sendTestPush, syncPushSubscription } from '../lib/push.js'
 import { wakeLockSupported } from '../lib/wakelock.js'
@@ -301,8 +302,19 @@ export default function Settings() {
           onChange={v => update(s => { s.gifSize = v })} />
       </Row>
       <Row icon="bell" iconTint="var(--pink)" title={t('Sounds')}>
-        <Switch checked={!!S.sound} onChange={v => update(s => { s.sound = v })} />
+        {/* Turning Sounds on is a tap: unlock the audio context now so a timer that ends before
+            the next set check can already sound (iOS, #152). */}
+        <Switch checked={!!S.sound} onChange={v => { if (v) unlock(true); update(s => { s.sound = v }) }} />
       </Row>
+      {/* iOS only (WebKit's audio-session API, iOS 17+): with it off the ring/silent switch mutes
+          the timer. On, the phone treats the timer like a music player — exclusive, and the
+          music app is not told it may resume — so it is a choice, off by default (lib/sound.js). */}
+      {S.sound && playOnSilentSupported() && (
+        <Row icon="bell" iconTint="var(--orange)" title={t('Play sounds when the phone is on silent')}
+          subtitle={t('Music playing on this phone stops during a workout and does not resume by itself.')}>
+          <Switch checked={!!S.soundOnSilent} onChange={v => update(s => { s.soundOnSilent = v })} />
+        </Row>
+      )}
       <Row icon="sun" iconTint="var(--yellow)" title={t('Flash screen when timer ends')}>
         <Switch checked={!!S.timerFlash} onChange={v => update(s => { s.timerFlash = v })} />
       </Row>

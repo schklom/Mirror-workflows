@@ -753,6 +753,8 @@ export default {
   'Logged sets stay with the original exercise. The replacement will be inserted afterward.': 'เซ็ตที่บันทึกแล้วจะอยู่กับท่าเดิม ท่าใหม่จะถูกแทรกไว้ถัดไป',
   'Rest after each set of this exercise. Leave at 0 to use your default rest timer.': 'พักหลังแต่ละเซ็ตของท่านี้ ปล่อยไว้ที่ 0 เพื่อใช้ตัวจับเวลาพักค่าเริ่มต้น',
   'Flash screen when timer ends': 'กะพริบหน้าจอเมื่อหมดเวลา',
+  'Play sounds when the phone is on silent': 'เล่นเสียงแม้โทรศัพท์อยู่ในโหมดเงียบ',
+  'Music playing on this phone stops during a workout and does not resume by itself.': 'เพลงที่เล่นอยู่บนโทรศัพท์นี้จะหยุดระหว่างการออกกำลังกาย และจะไม่เล่นต่อเอง',
   'Import from Hevy': 'นำเข้าจาก Hevy',
   'Pull your history with a Hevy Pro API key': 'ดึงประวัติด้วยคีย์ API ของ Hevy Pro',
   'Pull your history with a Hevy Pro API key. The key is only used for this import and is not saved.': 'ดึงประวัติด้วยคีย์ API ของ Hevy Pro คีย์ใช้สำหรับการนำเข้าครั้งนี้เท่านั้นและจะไม่ถูกบันทึก',

@@ -321,6 +321,8 @@ export default {
   'Rest timer': '休息计时',
   'Sounds': '声音',
   'Flash screen when timer ends': '计时结束时闪烁屏幕',
+  'Play sounds when the phone is on silent': '手机静音时也播放提示音',
+  'Music playing on this phone stops during a workout and does not resume by itself.': '锻炼期间，这部手机正在播放的音乐会停止，且不会自动恢复。',
   'Data': '数据',
   'Export backup (JSON)': '导出备份（JSON）',
   'Import backup': '导入备份',

@@ -745,6 +745,8 @@ export default {
   'Logged sets stay with the original exercise. The replacement will be inserted afterward.': 'A naplózott sorozatok az eredeti gyakorlatnál maradnak. A csere utána kerül beszúrásra.',
   'Rest after each set of this exercise. Leave at 0 to use your default rest timer.': 'Pihenő a gyakorlat minden sorozata után. Hagyd 0-n az alapértelmezett pihenőidőzítőhöz.',
   'Flash screen when timer ends': 'Képernyő villogása, ha lejár az időzítő',
+  'Play sounds when the phone is on silent': 'Hangok lejátszása akkor is, ha a telefon némítva van',
+  'Music playing on this phone stops during a workout and does not resume by itself.': 'A telefonon szóló zene edzés közben leáll, és nem indul újra magától.',
   'Import from Hevy': 'Importálás a Hevyből',
   'Pull your history with a Hevy Pro API key': 'Előzmények letöltése Hevy Pro API-kulccsal',
   'Pull your history with a Hevy Pro API key. The key is only used for this import and is not saved.': 'Előzmények letöltése Hevy Pro API-kulccsal. A kulcs csak ehhez az importhoz kell, nem mentjük el.',

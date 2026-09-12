@@ -321,6 +321,8 @@ export default {
   'Rest timer': 'Minutnik przerwy',
   'Sounds': 'Dźwięki',
   'Flash screen when timer ends': 'Migaj ekranem po zakończeniu minutnika',
+  'Play sounds when the phone is on silent': 'Odtwarzaj dźwięki także przy wyciszonym telefonie',
+  'Music playing on this phone stops during a workout and does not resume by itself.': 'Muzyka odtwarzana na tym telefonie zatrzymuje się podczas treningu i nie wznawia się sama.',
   'Data': 'Dane',
   'Export backup (JSON)': 'Eksportuj kopię (JSON)',
   'Import backup': 'Importuj kopię',

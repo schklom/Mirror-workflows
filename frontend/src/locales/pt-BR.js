@@ -115,6 +115,8 @@ export const PT_BR_OVERRIDES = {
   'synced with your profile': 'sincronizado com seu perfil',
   'The screen stays on while a workout is running, so you don’t have to unlock your phone between sets.': 'A tela permanece ligada durante o treino, para você não precisar desbloquear o celular entre as séries.',
   'Flash screen when timer ends': 'Piscar a tela quando o temporizador terminar',
+  'Play sounds when the phone is on silent': 'Tocar sons com o celular no silencioso',
+  'Music playing on this phone stops during a workout and does not resume by itself.': 'A música que estiver tocando neste celular para durante o treino e não volta sozinha.',
   'Export backup (JSON)': 'Exportar backup (JSON)',
   'Import backup': 'Importar backup',
   'Reset everything?': 'Redefinir tudo?',

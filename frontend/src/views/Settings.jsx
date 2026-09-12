@@ -9,6 +9,8 @@ import { ACCENTS, ACCENT_NAMES, todayISO, localTZ, weekStartOf, MONDAY, SUNDAY, 
 import { inventoryFor, ownsPlates } from '../lib/plates.js'
 import { effortOf } from '../lib/history.js'
 import { unlock, playOnSilentSupported, vibrateSupported } from '../lib/sound.js'
+import { scheduleModeOf, queueRecovery, rotationIds, startPass } from '../lib/rotation.js'
+import { queueOf } from '../lib/queue.js'
 import { api, webauthnOK, passkeyRegister, IS_ANDROID } from '../lib/api.js'
 import { pushSupported, enablePush, disablePush, sendTestPush, syncPushSubscription } from '../lib/push.js'
 import { wakeLockSupported } from '../lib/wakelock.js'
@@ -53,6 +55,11 @@ export default function Settings() {
   const importRef = useRef(null)
   const wakeOK = wakeLockSupported()
 
+  // A planner's own queue (no rotationId, or one that doesn't match the saved rotation here) is
+  // not this app's to switch off or overwrite — the Scheduling row goes read-only for it.
+  const liveQ = queueOf(S)
+  const externalQ = !!liveQ && (!S.rotation || liveQ.rotationId !== S.rotation.id)
+
   // Two honest choices on a unit switch (issue #22): convert the numbers, or keep them and only
   // change the label — the old behaviour, still right for someone who logged in lb all along
   // under a kg label. Closing the sheet leaves the unit as it was.
@@ -66,6 +73,31 @@ export default function Settings() {
         { icon: 'pencil', label: t('Keep the numbers, change the label'), onClick: () => setUnit(v, { convert: false }) },
       ],
     })
+  }
+
+  // Fixed Week or Rotation. A live queue always wins (scheduleModeOf, lib/rotation.js) — a queue
+  // written by a planner switches the app to Rotation on its own — but choosing Rotation with
+  // nothing built yet has no queue to derive from, so S.scheduleMode is what keeps it selected
+  // (and the weekday grid hidden, on both Home and Plan) until the first routine is added.
+  // Fixed Week stops the pass but keeps the sequence for a later fresh pass.
+  const setScheduleMode = v => {
+    if (v === scheduleModeOf(S)) return
+    if (v === 'week') {
+      // A planner's own queue is never this app's to drop — this control is text-only while one
+      // is live (below), but the guard stays here too rather than trust the render alone.
+      confirmSheet({
+        title: t('Switch to Fixed Week?'),
+        message: t('The rotation stops and its current pass is dropped. Your weekday plan comes back exactly as it is, and the sequence is kept so you can start a new pass later.'),
+        confirmText: t('Use Fixed Week'),
+        onConfirm: () => update(s => { if (!externalQ) s.queue = null; s.scheduleMode = 'week' }),
+      })
+      return
+    }
+    update(s => { s.scheduleMode = 'rotation' })
+    // A malformed queue is not a live pass: Plan's recovery is the honest answer, not a new pass
+    // written over data another client may still fix.
+    if (!queueRecovery(S) && rotationIds(S).length) update(s => { startPass(s) })
+    else nav('/plan')
   }
 
   // --- update check state ---
@@ -335,6 +367,15 @@ export default function Settings() {
 
     {/* ---------- general ---------- */}
     <Section title={t('General')} footer={t('Switching the unit offers to convert every stored weight.')}>
+      {/* Fixed Week (S.week) or Rotation (the live queue, lib/queue.js + lib/rotation.js).
+          Derived from the queue, never stored. */}
+      <Row icon="shuffle" iconTint="var(--green)" title={t('Scheduling')}>
+        {externalQ
+          ? <span className="small dim">{t('Rotation')} · {t('Externally managed')}</span>
+          : <Segmented className="seg-inline"
+              options={[{ value: 'week', label: t('Fixed Week') }, { value: 'rotation', label: t('Rotation') }]}
+              value={scheduleModeOf(S)} onChange={setScheduleMode} />}
+      </Row>
       <SelectRow
         icon="globe" iconTint="var(--blue)" title={t('Language')}
         value={lang} onChange={v => update(s => { s.lang = v; s.langAuto = false })}

@@ -48,7 +48,7 @@ afterEach(() => {
 })
 
 const setS = (over = {}) => useStore.setState(s => ({
-  S: { ...s.S, routines, week: {}, dayPlan: {}, workouts: [], active: null, queue: queue(), ...over }, user: null,
+  S: { ...s.S, routines, week: {}, dayPlan: {}, workouts: [], active: null, queue: queue(), rotation: null, scheduleMode: null, ...over }, user: null,
 }))
 const mount = () => act(() => root.render(<Home />))
 const chips = () => [...host.querySelectorAll('.queue .chip')]
@@ -108,6 +108,26 @@ describe('Home — coach week progress row', () => {
     expect(host.querySelector('.today-row .ss').textContent).toMatch(/^Next session: \w+, US W1 D1$/)
   })
 
+  it('a rotation-managed queue never names a weekday on its empty gap — the row above already says what is next', () => {
+    const startsOn = daysFromToday(2)
+    setS({ queue: queue({ startsOn, rotationId: 'r1' }) })
+    mount()
+    expect(status()).toBe('Next week starts ' + fmtDate(startsOn, true))
+    expect(todayTitle()).toBe('Rest day')
+    expect(host.querySelector('.today-row .ss')).toBeNull()
+  })
+
+  it('Rotation chosen with nothing built yet hides the weekday strip and offers an empty state instead', () => {
+    setS({ queue: null, rotation: null, scheduleMode: 'rotation', week: {} })
+    mount()
+    expect(host.querySelector('.week')).toBeNull()
+    expect(host.querySelectorAll('.wday').length).toBe(0)
+    expect(host.querySelector('.queue')).toBeNull()
+    expect(host.textContent).toContain('No rotation yet')
+    expect(todayTitle()).toBe('Rest day')
+    expect(host.querySelector('.today-row .ss')).toBeNull()
+  })
+
   it('a complete week says so, every chip is inert, and the day goes back to the weekday plan', () => {
     setS({ workouts: [logged('d1'), logged('d2'), logged('d3')], week: { [new Date().getDay()]: ['own'] } })
     mount()
@@ -115,6 +135,26 @@ describe('Home — coach week progress row', () => {
     expect(chips().every(c => c.disabled)).toBe(true)
     expect(host.querySelectorAll('.queue .row .small')[1].textContent).toBe('3 / 3')
     expect(todayTitle()).toBe('Core')
+  })
+
+  it('a pass this app manages gets its own copy, not the coach-week wording', () => {
+    setS({
+      queue: queue({ rotationId: 'r1' }),
+      rotation: { id: 'r1', sequence: ['d1', 'd2', 'd3'], label: 'US W1' },
+      workouts: [logged('d1'), logged('d2'), logged('d3')],
+    })
+    mount()
+    expect(status()).toBe('Pass complete')
+  })
+
+  it('a managed pass waiting on its startsOn says so without naming a coach week', () => {
+    const startsOn = daysFromToday(2)
+    setS({
+      queue: queue({ startsOn, rotationId: 'r1' }),
+      rotation: { id: 'r1', sequence: ['d1', 'd2', 'd3'], label: 'US W1' },
+    })
+    mount()
+    expect(status()).toBe('Next pass starts ' + fmtDate(startsOn, true))
   })
 
   it('own routines on the weekday ride along beside the queue session', () => {

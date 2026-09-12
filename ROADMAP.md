@@ -57,7 +57,19 @@ Left over from this block:
 - A real pause for the workout timers (#29 asked for it)
 - Discord announcement (owner)
 
-## v1.3.5 — Programmes & progression  (October 2026)
+## v1.3.6 — Sync, push and the phone  (released 2026-09-12)
+
+Signed in, the server's profile is the truth: sign-in adopts it, two devices merge on a server
+revision instead of overwriting each other, the app polls for changes and works offline with a
+banner. Reminders fire up to 15 minutes late rather than never, push subscriptions re-register
+themselves, rest-timer alerts are per device. iOS: chip rows scroll sideways only, sheets clear the
+Dynamic Island, the tab bar stays put after the keyboard, the home-screen app reloads offline. The
+twelve Astra findings, eleven community merges (weigh-in switch, Swiss German, iOS 26 build, PDF on
+the phone, nginx resolver, custom-exercise equipment, per-side data, warm-up rest) and a headless
+QA sweep of every screen. Left over: routine reordering (#142), the Smith-bar "no bar" option
+(#138), two decimals (#139), delete user in the admin (#107).
+
+## v1.3.7 — Programmes & progression  (October 2026)
 
 **Theme: training structure beyond one weekly template.** Most of this is the Space-Hermes series.
 It changes the training model (per-set roles, explicit phases, normalisation on every persist), so
@@ -81,7 +93,7 @@ it goes in one MR at a time, each rebased and tested on gym-test before the next
 - Catalogue cleanup: exercises that should not carry weight, incline and interval fields for
   cardio (#46); timers for planks and outdoor cardio are already there, document them (#45)
 
-## v1.3.6 — Accounts & sync  (November 2026)
+## v1.3.8 — Accounts & sync  (November 2026)
 
 **Theme: who may sign in, and what else may read or write your data.**
 
@@ -99,7 +111,7 @@ it goes in one MR at a time, each rebased and tested on gym-test before the next
   logged sessions lost after editing a routine (#25)
 - Admin: per-user export, invite management, audit log filters
 
-## v1.3.7 — Mobile  (December 2026)
+## v1.3.9 — Mobile  (December 2026)
 
 **Theme: the Android app catches up with the web app.**
 

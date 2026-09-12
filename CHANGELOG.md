@@ -1,9 +1,10 @@
 # Changelog
 
-## Unreleased
+## v1.3.6 — 2026-09-12
 
-What the Discord and GitLab reports after v1.3.5 had in common: the Coach failed and nobody could
-see why. Web bundle and APK; the API image only for the payload change.
+Sync you can trust and a phone that behaves: signed in, the server's profile is always the truth, two devices merge instead of overwriting each other, the app polls for changes and works offline with a banner; reminders and push subscriptions heal themselves; chip rows, sheets under the notch and the tab bar are fixed on iOS; the twelve Astra findings, eleven community merges and a headless QA sweep of every screen. Web bundle, APK and API image.
+
+**The Coach reports after v1.3.5 had one thing in common: it failed and nobody could see why.**
 
 **Bug round (2026-09-12) — the reports from the owner's own phone:** push late or missing, desktop and
 phone out of step, the Exercises chip rows scrolling the page, sheets under the Dynamic Island, the

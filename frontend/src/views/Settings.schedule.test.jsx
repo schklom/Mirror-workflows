@@ -98,11 +98,14 @@ describe('Settings — Scheduling', () => {
     expect(host.textContent).toContain('Externally managed')
   })
 
-  it('Fixed Week asks first, then drops the pass and keeps the sequence', () => {
+  it('Fixed Week asks first, then drops the pass, sweeps its future pins, and keeps the sequence', () => {
     mount({
       queue: { ids: ['a', 'b'], since: Date.now(), startsOn: todayISO(), label: 'Rotation', rotationId: 'r1' },
       rotation: { id: 'r1', sequence: ['a', 'b'], label: 'Rotation' },
       week: { 1: ['a'] },
+      // a pin dated today names a session the dropped pass no longer has to give — left as a
+      // plain override, history.js would otherwise read it as a routine choice nobody made
+      dayPlan: { [todayISO()]: 'a', '2020-01-01': 'b' },
     })
     pick('Fixed Week')
     expect(mocks.S.queue).not.toBe(null)          // nothing happens before the confirmation
@@ -111,6 +114,7 @@ describe('Settings — Scheduling', () => {
     expect(mocks.S.scheduleMode).toBe('week')
     expect(mocks.S.rotation.sequence).toEqual(['a', 'b'])
     expect(mocks.S.week).toEqual({ 1: ['a'] })
+    expect(mocks.S.dayPlan).toEqual({ '2020-01-01': 'b' })   // today's pin swept; the past one is not this pass's business
   })
 
   it('Rotation starts a fresh pass from the saved sequence', () => {

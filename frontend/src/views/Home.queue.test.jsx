@@ -198,6 +198,19 @@ describe('Home — coach week progress row', () => {
     expect(host.querySelectorAll('.queue .row .small')[1].textContent).toBe('1 / 3')
   })
 
+  it('a managed pass counts your own day beside it exactly as an external one does — ownership plays no part in the tally', () => {
+    const now = Date.now()
+    const core = { id: 'w-own', d: todayISO(), start: now - 3600000, end: now, routineIds: ['own'], routineId: 'own', name: 'Core', entries: [] }
+    setS({
+      queue: queue({ rotationId: 'r1' }),
+      rotation: { id: 'r1', sequence: ['d1', 'd2', 'd3'], label: 'US W1' },
+      week: { [new Date().getDay()]: ['own'] }, workouts: [logged('d1'), core],
+    })
+    mount()
+    expect(card()).toMatch(/^2 \/ 4 this week · 2 workouts total$/)
+    expect(host.querySelectorAll('.queue .row .small')[1].textContent).toBe('1 / 3')
+  })
+
   it('without a queue the weekday dots are back', () => {
     setS({ queue: null })
     mount()

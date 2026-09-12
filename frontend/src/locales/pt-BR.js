@@ -1040,6 +1040,7 @@ export const PT_BR_OVERRIDES = {
   'Set up in Plan': 'Configurar no Plano',
   'Pass complete': 'Passagem concluída',
   'Next pass starts {0}': 'A próxima passagem começa em {0}',
+  'Add routine': 'Adicionar rotina',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

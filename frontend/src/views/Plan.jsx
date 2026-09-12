@@ -13,7 +13,7 @@ import { DEMO } from '../lib/demo.js'
 import { MOBILE } from '../lib/mobile.js'
 import { coachAvailable } from '../lib/coach.js'
 import { queueOf } from '../lib/queue.js'
-import { scheduleModeOf, queueRecovery, rotationIds, saveRotation, startNewPass, startPass } from '../lib/rotation.js'
+import { scheduleModeOf, queueRecovery, rotationIds, saveRotation, startNewPass, startPass, stopPass } from '../lib/rotation.js'
 
 export default function Plan() {
   const nav = useNavigate()
@@ -71,15 +71,18 @@ export default function Plan() {
   const external = !!liveQ && !managed
   // The editor shows for any live queue — so "Use this rotation" stays reachable for a planner's
   // week — or once Rotation is chosen with nothing built yet (S.scheduleMode). The weekday grid
-  // is hidden only for a pass this app actually manages: an external queue keeps both on screen,
-  // since the weekday routines still ride alongside it (effectiveRoutineIds, history.js).
+  // stays up for ANY live queue, managed or not: the weekday routines ride along beside it either
+  // way (effectiveRoutineIds, history.js) and feed the same tally (weekTally, queue.js), so hiding
+  // the grid would hide the very thing that explains a combined count. It is hidden only while
+  // Rotation is chosen with nothing built yet — there is no queue at that point for it to sit
+  // beside, so a plain weekday grid would just be noise.
   const rotating = scheduleModeOf(S) === 'rotation' || queueRecovery(S)
-  const hideGrid = managed || S.scheduleMode === 'rotation'
+  const hideGrid = !liveQ && S.scheduleMode === 'rotation'
   const setSeq = ids => update(s => {
     // Emptying the sequence is how you leave the rotation from here: no pass, no definition, and
     // the weekday plan — untouched all along — is the schedule again.
     if (ids.length) saveRotation(s, ids, seqLabel)
-    else { s.queue = null; s.rotation = null; s.scheduleMode = 'week' }
+    else { stopPass(s); s.rotation = null; s.scheduleMode = 'week' }
   })
   const moveInSeq = (i, d) => { const n = [...seq]; const [x] = n.splice(i, 1); n.splice(i + d, 0, x); setSeq(n) }
   const addToSeq = () => menuSheet({
@@ -90,11 +93,13 @@ export default function Plan() {
   })
   // The only path from a coach-written queue into a managed one: behind a confirmation, since it
   // hands refilling over to this app from here on — the coach's app should not still be writing it.
+  // The rotation takes a name of its own here rather than the planner's (e.g. "US W1") — that
+  // name is this one pass's, and refillAfter would otherwise repeat it on every pass after it.
   const adopt = () => confirmSheet({
     title: t('Use this rotation?'),
     message: t('openGym will take over refilling this queue from here on — the coach’s app should no longer write to it.'),
     confirmText: t('Use this rotation'),
-    onConfirm: () => setSeq(seq),
+    onConfirm: () => update(s => saveRotation(s, seq, t('Rotation'))),
   })
 
   return <>
@@ -113,15 +118,18 @@ export default function Plan() {
 
     <div className="cols"><div>
       {/* Rotation (lib/rotation.js) shows for any live queue, so a coach's week can still be
-          adopted from here — but only a pass this app manages hides the weekday grid below it;
-          an external queue keeps both, editor above grid, since the weekday routines still ride
-          alongside it (effectiveRoutineIds, history.js). */}
+          adopted from here. The weekday grid stays up beside it either way — managed or
+          external — since the weekday routines ride along regardless (effectiveRoutineIds,
+          history.js) and the grid is what explains their share of the combined tally. */}
       {rotating && <div className="rotation">
         <h4 className="sec">{t('Rotation')}{external && <span className="tag" style={{ marginLeft: 8 }}>{t('Externally managed')}</span>}</h4>
         {queueRecovery(S) ? <div className="empty">
           {t('This rotation could not be read — it may have been written by another device.')}
           <div style={{ marginTop: 10 }}>
-            <Button size="sm" variant="tinted" aria-label={t('Discard it')} onClick={() => update(s => { s.queue = null })}>{t('Discard it')}</Button>
+            {/* Also gives up S.scheduleMode='rotation' — otherwise the editor stays up with a
+                saved sequence and no queue, and hideGrid keeps the weekday grid (and its own
+                "Start pass" way out of that state) hidden along with it: a dead end. */}
+            <Button size="sm" variant="tinted" aria-label={t('Discard it')} onClick={() => update(s => { s.queue = null; s.scheduleMode = 'week' })}>{t('Discard it')}</Button>
           </div>
         </div> : <>
           {seq.length ? <div className="list" style={{ display: 'flex', flexDirection: 'column' }}>
@@ -191,7 +199,7 @@ export default function Plan() {
         {!liveQ && seq.length > 0
           ? <Button size="sm" variant="tinted" icon="shuffle" style={{ marginTop: 8 }}
               aria-label={t('Start pass')} onClick={() => update(s => startPass(s))}>{t('Start pass')}</Button>
-          : !S.rotation && <Button size="sm" variant="tinted" icon="shuffle" style={{ marginTop: 8 }}
+          : !liveQ && !S.rotation && <Button size="sm" variant="tinted" icon="shuffle" style={{ marginTop: 8 }}
               aria-label={t('Build a rotation instead')} onClick={() => update(s => { s.scheduleMode = 'rotation' })}>{t('Build a rotation instead')}</Button>}
       </>}
     </div><div>

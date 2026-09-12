@@ -54,10 +54,22 @@ const click = el => act(() => el.dispatchEvent(new MouseEvent('click', { bubbles
 const byLabel = label => [...host.querySelectorAll('button')].find(b => b.getAttribute('aria-label') === label || b.textContent.trim() === label)
 
 describe('Plan — the rotation editor', () => {
-  it('lists the live pass in order, and hides the weekday grid for a managed pass', () => {
+  it('lists the live pass in order, and keeps the weekday grid up for a managed pass too', () => {
+    // A managed pass no longer hides the grid: the weekday routines still ride alongside it
+    // (effectiveRoutineIds, history.js) and feed the same tally (weekTally, queue.js), so hiding
+    // the grid would hide the very thing a combined count depends on.
     mount({ queue: live({ rotationId: 'r1' }), rotation: { id: 'r1', sequence: ['a', 'b'], label: 'My split' } })
     expect(names()).toEqual(['A', 'B'])
-    expect(host.textContent).not.toContain('Week schedule')
+    expect(host.textContent).toContain('Week schedule')
+    expect(host.textContent).toContain('C')   // week[1] = ['c'] (baseS) rides along beside the pass
+  })
+
+  it('a coach queue with S.scheduleMode stuck on "rotation" still shows Week schedule, never Build a rotation instead', () => {
+    // scheduleMode is stale/irrelevant once a queue is live — it only matters with no queue at
+    // all (the from-scratch setup gap hideGrid exists for).
+    mount({ queue: live(), scheduleMode: 'rotation' })   // external queue; no S.rotation
+    expect(host.textContent).toContain('Week schedule')
+    expect(byLabel('Build a rotation instead')).toBeUndefined()
   })
 
   it('nothing saved shows the weekday grid, with a button into the rotation editor', () => {
@@ -118,10 +130,14 @@ describe('Plan — the rotation editor', () => {
     act(() => confirmSheet.mock.calls.at(-1)[0].onConfirm())
     expect(mocks.S.rotation.sequence).toEqual(['a', 'b'])
     expect(mocks.S.queue.rotationId).toBe(mocks.S.rotation.id)
+    // Adopting takes a name of its own rather than the planner's ("My split") — refillAfter would
+    // otherwise repeat that name on every pass this app generates on its own from here on.
+    expect(mocks.S.rotation.label).toBe('Rotation')
+    expect(mocks.S.queue.label).toBe('Rotation')
     // (the mocked store is not reactive, so re-mount to see the adopted pass render)
     mount({ queue: live({ rotationId: mocks.S.rotation.id }), rotation: mocks.S.rotation })
     expect(host.textContent).not.toContain('Externally managed')
-    expect(host.textContent).not.toContain('Week schedule')
+    expect(host.textContent).toContain('Week schedule')
   })
 
   it('an external queue keeps its rows read-only — no button but the adoption one writes rotationId', () => {
@@ -153,6 +169,22 @@ describe('Plan — the rotation editor', () => {
     expect(host.textContent).toContain('This rotation could not be read')
     click(byLabel('Discard it'))
     expect(mocks.S.queue).toBe(null)
+  })
+
+  it('Discard it leaves a clear way back in, not a hidden grid with a saved sequence stuck behind it', () => {
+    // A saved sequence survives the corrupt queue — without also giving up scheduleMode, that
+    // combination (no queue, scheduleMode still 'rotation') keeps hideGrid true and the grid's
+    // own "Start pass" — the way out — hidden right along with it.
+    mount({ queue: { ids: ['gone'], since: Date.now() }, rotation: { id: 'r1', sequence: ['a', 'b'], label: 'My split' } })
+    click(byLabel('Discard it'))
+    expect(mocks.S.queue).toBe(null)
+    expect(mocks.S.scheduleMode).toBe('week')
+    // (the mocked store is not reactive, so re-mount to see the discarded state render)
+    mount({ scheduleMode: mocks.S.scheduleMode, rotation: { id: 'r1', sequence: ['a', 'b'], label: 'My split' } })
+    expect(host.textContent).toContain('Week schedule')
+    expect(byLabel('Start pass')).toBeDefined()
+    click(byLabel('Start pass'))
+    expect(mocks.S.queue.ids).toEqual(['a', 'b'])
   })
 
   it('a saved sequence with no live pass offers Start pass, not Build a rotation instead', () => {

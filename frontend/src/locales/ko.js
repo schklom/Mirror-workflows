@@ -1696,4 +1696,5 @@ export default {
   'Pass complete': '패스 완료',
   'Next pass starts {0}': '다음 패스는 {0}에 시작해요',
 
+
 }

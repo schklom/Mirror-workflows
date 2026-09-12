@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { scheduleModeOf, queueRecovery, rotationIds, startPass, saveRotation, startNewPass, refillAfter } from './rotation.js'
+import { scheduleModeOf, queueRecovery, rotationIds, startPass, saveRotation, startNewPass, stopPass, refillAfter } from './rotation.js'
 import { queueRemaining, queueView } from './queue.js'
 
 const routines = [{ id: 'a', name: 'A' }, { id: 'b', name: 'B' }, { id: 'c', name: 'C' }, { id: 'own', name: 'Core' }]
@@ -111,6 +111,37 @@ describe('editing the sequence', () => {
     expect(fresh.queue.startsOn).toBe('2026-09-13')
     expect(fresh.queue.since).toBe(NOW)
   })
+
+  it('Start new pass sweeps the old pass\'s future pins — a stale one would otherwise resurface as open on the new pass', () => {
+    const s = S({
+      rotation: { id: 'r1', sequence: ['a', 'b'], label: 'My split' },
+      queue: pass(['a', 'b'], { rotationId: 'r1' }),
+      dayPlan: { '2026-09-13': 'b', '2026-09-11': 'a' },
+    })
+    startNewPass(s, TODAY, NOW)
+    expect(s.dayPlan).toEqual({ '2026-09-11': 'a' })   // dated before today: left alone, already stale on its own
+  })
+})
+
+describe('stopPass', () => {
+  it('clears the queue and sweeps its future pins, leaving the saved sequence untouched', () => {
+    const s = S({
+      rotation: { id: 'r1', sequence: ['a', 'b'], label: 'My split' },
+      queue: pass(['a', 'b'], { rotationId: 'r1' }),
+      dayPlan: { '2026-09-13': 'a', '2026-09-10': 'b' },
+    })
+    stopPass(s, TODAY)
+    expect(s.queue).toBe(null)
+    expect(s.rotation).toEqual({ id: 'r1', sequence: ['a', 'b'], label: 'My split' })
+    expect(s.dayPlan).toEqual({ '2026-09-10': 'b' })   // dated before today: not this pass's business
+  })
+
+  it('does nothing to dayPlan when there is no queue to stop', () => {
+    const s = S({ dayPlan: { '2026-09-13': 'a' } })
+    stopPass(s, TODAY)
+    expect(s.queue).toBe(null)
+    expect(s.dayPlan).toEqual({ '2026-09-13': 'a' })
+  })
 })
 
 describe('refilling a completed managed pass', () => {
@@ -193,6 +224,25 @@ describe('refilling a completed managed pass', () => {
     expect(s.queue.startsOn).toBe('2026-09-12')
   })
 
+  it("sweeps every future pin the closing pass left behind, so a fulfilled one does not reopen on the next pass", () => {
+    const last = w('c', TODAY)
+    const s = managed(['a', 'b', 'c'], [w('a', '2026-09-10'), w('b', '2026-09-11'), last])
+    s.dayPlan = { '2026-09-13': 'a', '2026-09-14': 'c', '2026-09-09': 'b' }
+    expect(refillAfter(s, last, TODAY, NOW)).toBe(true)
+    expect(s.dayPlan).toEqual({ '2026-09-09': 'b' })   // dated before today: already stale on its own
+  })
+
+  it("uses the rotation's own label, never the closing pass's — an adopted pass's planner name must not repeat on every pass after it", () => {
+    const last = w('c', TODAY)
+    const s = S({
+      rotation: { id: 'r1', sequence: ['a', 'b', 'c'], label: 'Rotation' },
+      queue: pass(['a', 'b', 'c'], { rotationId: 'r1', label: 'US W1' }),   // this pass still carries the planner's name
+      workouts: [w('a', '2026-09-10'), w('b', '2026-09-11'), last],
+    })
+    expect(refillAfter(s, last, TODAY, NOW)).toBe(true)
+    expect(s.queue.label).toBe('Rotation')
+  })
+
   it('a workout logged with a clock ahead of now does not re-credit the new pass', () => {
     // The bug: `since = Date.now()` at refill time sits before a workout whose own clock (a
     // backfilled entry, or a device a few minutes fast) already reads later — that workout then
@@ -218,6 +268,8 @@ describe('the finished-workout boundary', () => {
       rotation: { id: 'r1', sequence: ['a', 'b'], label: 'My split' },
       queue: pass(['a', 'b'], { rotationId: 'r1' }),
       workouts: [w('a', '2026-09-11')],
+      // a pin on an adopted coach queue, dated after today — must not bleed into the next pass
+      dayPlan: { '2026-09-13': 'a' },
     })
     s.workouts.push(done)                       // what doFinishWorkout does, in order
     expect(refillAfter(s, done, TODAY, NOW)).toBe(true)
@@ -228,5 +280,6 @@ describe('the finished-workout boundary', () => {
     // the pass has not started yet.
     expect(queueRemaining(s)).toEqual(['a', 'b'])
     expect(queueView(s, TODAY).waiting).toBe(true)
+    expect(s.dayPlan).toEqual({})
   })
 })

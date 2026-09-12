@@ -9,7 +9,7 @@ import { ACCENTS, ACCENT_NAMES, todayISO, localTZ, weekStartOf, MONDAY, SUNDAY, 
 import { inventoryFor, ownsPlates } from '../lib/plates.js'
 import { effortOf } from '../lib/history.js'
 import { unlock, playOnSilentSupported, vibrateSupported } from '../lib/sound.js'
-import { scheduleModeOf, queueRecovery, rotationIds, startPass } from '../lib/rotation.js'
+import { scheduleModeOf, queueRecovery, rotationIds, startPass, stopPass } from '../lib/rotation.js'
 import { queueOf } from '../lib/queue.js'
 import { api, webauthnOK, passkeyRegister, IS_ANDROID } from '../lib/api.js'
 import { pushSupported, enablePush, disablePush, sendTestPush, syncPushSubscription } from '../lib/push.js'
@@ -89,7 +89,7 @@ export default function Settings() {
         title: t('Switch to Fixed Week?'),
         message: t('The rotation stops and its current pass is dropped. Your weekday plan comes back exactly as it is, and the sequence is kept so you can start a new pass later.'),
         confirmText: t('Use Fixed Week'),
-        onConfirm: () => update(s => { if (!externalQ) s.queue = null; s.scheduleMode = 'week' }),
+        onConfirm: () => update(s => { if (!externalQ) stopPass(s); s.scheduleMode = 'week' }),
       })
       return
     }

@@ -1696,4 +1696,5 @@ export default {
   'Pass complete': 'Passage terminé',
   'Next pass starts {0}': 'Le prochain passage commence {0}',
 
+
 }

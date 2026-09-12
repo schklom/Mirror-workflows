@@ -54,6 +54,19 @@ const creditWindow = (s, q) => (s.workouts || [])
  */
 const sinceAfter = (s, q, now) => Math.max(now, ...creditWindow(s, q).map(w => (w.start ?? 0) + 1))
 
+/**
+ * Clears dayPlan pins dated `today` or later that name one of `ids` — a pass no longer owns
+ * them (dropped, replaced by a refill, or ended outright), so a leftover pin never resurfaces as
+ * an "open" pin on a session that isn't this pass's any more (pinState, queue.js) or, once no
+ * queue is left at all, as a plain routine override history.js was never meant to read it as.
+ */
+const sweepPins = (s, ids, today) => {
+  if (!ids.length) return
+  Object.keys(s.dayPlan || {}).forEach(iso => {
+    if (iso >= today && ids.includes(s.dayPlan[iso])) delete s.dayPlan[iso]
+  })
+}
+
 /** Settings → Rotation with a saved rotation and no queue. False when nothing valid is left to start. */
 export function startPass(s, today = todayISO(), now = Date.now()) {
   const ids = rotationIds(s)
@@ -81,24 +94,28 @@ export function saveRotation(s, ids, label, today = todayISO(), now = Date.now()
   }
   // A session dropped from the rotation leaves its future pin behind otherwise — dayPlan then
   // still resolves that date to a session the queue no longer has (pinState/queue.js).
-  const removed = (prev?.ids || []).filter(id => !ids.includes(id))
-  if (removed.length) {
-    Object.keys(s.dayPlan || {}).forEach(iso => {
-      if (iso >= today && removed.includes(s.dayPlan[iso])) delete s.dayPlan[iso]
-    })
-  }
+  sweepPins(s, (prev?.ids || []).filter(id => !ids.includes(id)), today)
   // An edit (e.g. removing the last session still to do) can leave the pass complete on the
   // spot — without this it would sit idle until a workout happened to reach refillAfter.
   if (queueView(s, today)?.complete) startNewPass(s, today, now)
+}
+
+/**
+ * Ends the current pass without touching the saved sequence — "Use Fixed Week", or the editor
+ * emptied down to nothing. Sweeps the same future pins saveRotation does, so a dropped pass never
+ * resurfaces as a plain routine override (history.js) once the weekday plan is back in charge.
+ */
+export function stopPass(s, today = todayISO()) {
+  const q = queueOf(s)
+  if (q) sweepPins(s, q.ids, today)
+  s.queue = null
 }
 
 /** The latest day a workout could have credited the current pass, or null. */
 const lastCreditDay = s => {
   const q = queueOf(s)
   if (!q) return null
-  const days = (s.workouts || [])
-    .filter(w => routineIdsOf(w).some(id => q.ids.includes(id)) && String(w.d || '') >= q.startsOn)
-    .map(w => w.d)
+  const days = creditWindow(s, q).map(w => w.d)
   return days.length ? days.sort().at(-1) : null
 }
 
@@ -114,6 +131,7 @@ export function startNewPass(s, today = todayISO(), now = Date.now()) {
   const q = queueOf(s)
   const last = lastCreditDay(s)
   const startsOn = last && last >= today ? dayAfter(last) : today
+  if (q) sweepPins(s, q.ids, today)
   s.queue = newPass(ids, s.rotation.label || '', s.rotation.id, startsOn, q ? sinceAfter(s, q, now) : now)
 }
 
@@ -148,6 +166,10 @@ export function refillAfter(s, w, today = todayISO(), now = Date.now()) {
   const credited = routineIdsOf(w)
   const last = q.ids.filter(id => credited.includes(id)).at(-1) ?? null
   const bound = [w.d, lastCreditDay(s)].filter(Boolean).sort().at(-1)
-  s.queue = newPass(rotate(seq, last), s.rotation.label || q.label || '', s.rotation.id, dayAfter(bound), sinceAfter(s, q, now))
+  sweepPins(s, q.ids, today)
+  // The rotation's own label only — never the closing pass's (q.label): once adopted from a
+  // planner, that would otherwise repeat its original week name ("US W1") on every pass this app
+  // generates on its own from then on.
+  s.queue = newPass(rotate(seq, last), s.rotation.label || '', s.rotation.id, dayAfter(bound), sinceAfter(s, q, now))
   return true
 }

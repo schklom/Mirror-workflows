@@ -87,7 +87,7 @@ export default function Settings() {
       // is live (below), but the guard stays here too rather than trust the render alone.
       confirmSheet({
         title: t('Switch to Fixed Week?'),
-        message: t('The rotation stops and its current pass is dropped. Your weekday plan comes back exactly as it is, and the sequence is kept so you can start a new pass later.'),
+        message: t('The rotation stops and its current pass is dropped. Your weekday plan is untouched, and the sequence is kept so you can start a new pass later.'),
         confirmText: t('Use Fixed Week'),
         onConfirm: () => update(s => { if (!externalQ) stopPass(s); s.scheduleMode = 'week' }),
       })

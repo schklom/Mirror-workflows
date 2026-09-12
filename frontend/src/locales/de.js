@@ -1709,12 +1709,10 @@ export default {
   'This rotation could not be read — it may have been written by another device.': 'Diese Rotation konnte nicht gelesen werden — sie wurde möglicherweise von einem anderen Gerät geschrieben.',
   'Discard it': 'Verwerfen',
   'Switch to Fixed Week?': 'Zu Feste Woche wechseln?',
-  'The rotation stops and its current pass is dropped. Your weekday plan comes back exactly as it is, and the sequence is kept so you can start a new pass later.': 'Die Rotation stoppt und ihr aktueller Durchgang wird verworfen. Dein Wochenplan kommt genau so zurück, wie er war, und die Reihenfolge bleibt gespeichert, damit du später einen neuen Durchgang starten kannst.',
+  'The rotation stops and its current pass is dropped. Your weekday plan is untouched, and the sequence is kept so you can start a new pass later.': 'Die Rotation stoppt und ihr aktueller Durchgang wird verworfen. Dein Wochenplan bleibt unangetastet, und die Reihenfolge bleibt gespeichert, damit du später einen neuen Durchgang starten kannst.',
   'Use Fixed Week': 'Feste Woche verwenden',
   'No rotation yet — add routines to it in Plan.': 'Noch keine Rotation — füge im Plan Routinen hinzu.',
   'Set up in Plan': 'Im Plan einrichten',
   'Pass complete': 'Durchgang abgeschlossen',
   'Next pass starts {0}': 'Nächster Durchgang beginnt {0}',
-
-
 }

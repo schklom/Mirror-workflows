@@ -1689,12 +1689,10 @@ export default {
   'This rotation could not be read — it may have been written by another device.': 'Questa rotazione non può essere letta — potrebbe essere stata scritta da un altro dispositivo.',
   'Discard it': 'Scartala',
   'Switch to Fixed Week?': 'Passare a Settimana fissa?',
-  'The rotation stops and its current pass is dropped. Your weekday plan comes back exactly as it is, and the sequence is kept so you can start a new pass later.': 'La rotazione si ferma e il giro attuale viene scartato. Il tuo piano settimanale torna esattamente come era, e la sequenza viene mantenuta così puoi avviare un nuovo giro più avanti.',
+  'The rotation stops and its current pass is dropped. Your weekday plan is untouched, and the sequence is kept so you can start a new pass later.': 'La rotazione si ferma e il giro attuale viene scartato. Il tuo piano settimanale resta intatto, e la sequenza viene mantenuta così puoi avviare un nuovo giro più avanti.',
   'Use Fixed Week': 'Usa Settimana fissa',
   'No rotation yet — add routines to it in Plan.': 'Ancora nessuna rotazione — aggiungi routine nel Piano.',
   'Set up in Plan': 'Configura nel Piano',
   'Pass complete': 'Giro completato',
   'Next pass starts {0}': 'Il prossimo giro inizia {0}',
-
-
 }

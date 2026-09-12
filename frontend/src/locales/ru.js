@@ -1689,12 +1689,10 @@ export default {
   'This rotation could not be read — it may have been written by another device.': 'Не удалось прочитать эту ротацию — возможно, она была записана с другого устройства.',
   'Discard it': 'Отменить её',
   'Switch to Fixed Week?': 'Переключиться на фиксированную неделю?',
-  'The rotation stops and its current pass is dropped. Your weekday plan comes back exactly as it is, and the sequence is kept so you can start a new pass later.': 'Ротация останавливается, и текущий проход отменяется. Твой недельный план возвращается точно таким, каким был, а последовательность сохраняется, чтобы позже начать новый проход.',
+  'The rotation stops and its current pass is dropped. Your weekday plan is untouched, and the sequence is kept so you can start a new pass later.': 'Ротация останавливается, и текущий проход отменяется. Твой недельный план остаётся нетронутым, а последовательность сохраняется, чтобы позже начать новый проход.',
   'Use Fixed Week': 'Использовать фиксированную неделю',
   'No rotation yet — add routines to it in Plan.': 'Ротации пока нет — добавь программы в разделе «План».',
   'Set up in Plan': 'Настроить в Плане',
   'Pass complete': 'Проход завершён',
   'Next pass starts {0}': 'Следующий проход начнётся {0}',
-
-
 }

@@ -1692,12 +1692,10 @@ export default {
   'This rotation could not be read — it may have been written by another device.': 'Ezt a rotációt nem sikerült beolvasni — lehet, hogy egy másik eszköz írta.',
   'Discard it': 'Elvetése',
   'Switch to Fixed Week?': 'Átváltasz Fix hétre?',
-  'The rotation stops and its current pass is dropped. Your weekday plan comes back exactly as it is, and the sequence is kept so you can start a new pass later.': 'A rotáció leáll, és a jelenlegi menete elvész. A heti terved pontosan úgy tér vissza, ahogy volt, a sorrend pedig megmarad, hogy később új menetet indíthass.',
+  'The rotation stops and its current pass is dropped. Your weekday plan is untouched, and the sequence is kept so you can start a new pass later.': 'A rotáció leáll, és a jelenlegi menete elvész. A heti terved érintetlen marad, és a sorrend megmarad, hogy később új menetet indíthass.',
   'Use Fixed Week': 'Fix hét használata',
   'No rotation yet — add routines to it in Plan.': 'Még nincs rotáció — adj hozzá rutinokat a Tervben.',
   'Set up in Plan': 'Beállítás a Tervben',
   'Pass complete': 'Menet kész',
   'Next pass starts {0}': 'A következő menet {0}-kor kezdődik',
-
-
 }

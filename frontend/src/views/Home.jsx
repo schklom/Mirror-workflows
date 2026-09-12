@@ -60,9 +60,10 @@ export default function Home() {
   // A coach week (S.queue) read through the same tolerant reader QueueRow uses, so a malformed
   // queue from another client shows the weekday dots, never an empty card.
   const queue = queueView(S, todayISO())
-  // Rotation and the weekday strip are mutually exclusive here too, matching Settings/Plan: a
-  // live queue, or Rotation chosen with nothing built yet (S.scheduleMode) — in which case there
-  // is no queue for QueueRow to render, so an empty-state card takes its place instead.
+  // This card shows one thing or the other — QueueRow for a live queue, or Rotation chosen with
+  // nothing built yet (S.scheduleMode), in which case there is no queue for QueueRow to render and
+  // an empty-state card takes its place — but that is Home's own layout, not a claim that Plan's
+  // weekday grid goes away too: it stays up alongside a live queue there (Plan.jsx, hideGrid).
   const rotating = scheduleModeOf(S) === 'rotation'
   // A planner-written queue (no rotationId) still names its weekday when it hasn't started yet —
   // that copy predates rotation and stays as it is. Our own rotation has no weekday of its own

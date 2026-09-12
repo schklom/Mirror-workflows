@@ -75,9 +75,12 @@ export default function Plan() {
   // way (effectiveRoutineIds, history.js) and feed the same tally (weekTally, queue.js), so hiding
   // the grid would hide the very thing that explains a combined count. It is hidden only while
   // Rotation is chosen with nothing built yet — there is no queue at that point for it to sit
-  // beside, so a plain weekday grid would just be noise.
+  // beside, so a plain weekday grid would just be noise — and never during recovery: a malformed
+  // queue (deleting every routine in the sequence leaves exactly this — S.queue and S.scheduleMode
+  // both still 'rotation' with nothing left for queueOf to resolve) is a fix-up, not a from-scratch
+  // setup, and the grid is the fallback schedule while it's sorted out.
   const rotating = scheduleModeOf(S) === 'rotation' || queueRecovery(S)
-  const hideGrid = !liveQ && S.scheduleMode === 'rotation'
+  const hideGrid = !liveQ && !queueRecovery(S) && S.scheduleMode === 'rotation'
   const setSeq = ids => update(s => {
     // Emptying the sequence is how you leave the rotation from here: no pass, no definition, and
     // the weekday plan — untouched all along — is the schedule again.
@@ -192,14 +195,16 @@ export default function Plan() {
             </div>
           })}
         </div>
-        {/* Two dead ends land here with a saved sequence but no active pass — "Discard it" on a
-            malformed queue, and Settings' "Use Fixed Week" (which keeps the sequence on purpose).
-            "Build a rotation instead" only ever meant "start one from scratch", so it stays
-            hidden once there is already a sequence to resume instead. */}
+        {/* Three dead ends land here with no active pass — "Discard it" on a malformed queue,
+            Settings' "Use Fixed Week" (which keeps the sequence on purpose), and every routine
+            the saved sequence names getting deleted out from under it. "Build a rotation instead"
+            used to stay hidden on `!S.rotation` alone, which a saved-but-now-empty sequence still
+            satisfies (S.rotation itself is untouched) — gated on the ids actually surviving
+            instead, it offers a fresh start exactly when there is nothing left to resume. */}
         {!liveQ && seq.length > 0
           ? <Button size="sm" variant="tinted" icon="shuffle" style={{ marginTop: 8 }}
               aria-label={t('Start pass')} onClick={() => update(s => startPass(s))}>{t('Start pass')}</Button>
-          : !liveQ && !S.rotation && <Button size="sm" variant="tinted" icon="shuffle" style={{ marginTop: 8 }}
+          : !liveQ && !seq.length && <Button size="sm" variant="tinted" icon="shuffle" style={{ marginTop: 8 }}
               aria-label={t('Build a rotation instead')} onClick={() => update(s => { s.scheduleMode = 'rotation' })}>{t('Build a rotation instead')}</Button>}
       </>}
     </div><div>

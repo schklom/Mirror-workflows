@@ -1689,12 +1689,10 @@ export default {
   'This rotation could not be read — it may have been written by another device.': '이 로테이션을 읽을 수 없어요 — 다른 기기에서 작성했을 수 있어요.',
   'Discard it': '삭제하기',
   'Switch to Fixed Week?': '고정 주간으로 전환할까요?',
-  'The rotation stops and its current pass is dropped. Your weekday plan comes back exactly as it is, and the sequence is kept so you can start a new pass later.': '로테이션이 멈추고 현재 패스는 삭제돼요. 주간 계획은 그대로 돌아오고, 순서는 저장되어 나중에 새 패스를 시작할 수 있어요.',
+  'The rotation stops and its current pass is dropped. Your weekday plan is untouched, and the sequence is kept so you can start a new pass later.': '로테이션이 멈추고 현재 패스는 삭제돼요. 주간 계획은 그대로 유지되고, 순서는 저장되어 나중에 새 패스를 시작할 수 있어요.',
   'Use Fixed Week': '고정 주간 사용',
   'No rotation yet — add routines to it in Plan.': '아직 로테이션이 없어요 — 계획에서 루틴을 추가하세요.',
   'Set up in Plan': '계획에서 설정',
   'Pass complete': '패스 완료',
   'Next pass starts {0}': '다음 패스는 {0}에 시작해요',
-
-
 }

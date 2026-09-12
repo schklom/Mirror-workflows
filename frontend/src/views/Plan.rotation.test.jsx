@@ -1,7 +1,8 @@
 // @vitest-environment happy-dom
 // Plan's rotation editor: one row per sequence position, add/remove/move writing straight through
 // lib/rotation.js, adoption of an externally written queue, recovery for a malformed one, and the
-// rotation editor and the weekday grid as two mutually exclusive views of the schedule.
+// weekday grid staying up alongside the editor for any live queue — hidden only with Rotation
+// chosen and nothing built yet, or a saved sequence whose routines are all gone.
 import React, { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
@@ -195,5 +196,30 @@ describe('Plan — the rotation editor', () => {
     click(byLabel('Start pass'))
     expect(mocks.S.queue.ids).toEqual(['a', 'b'])
     expect(mocks.S.queue.rotationId).toBe('r1')
+  })
+
+  it('every routine in the rotation getting deleted still leaves a way back in, not a locked editor', () => {
+    // Deleting every routine from the Routines list (elsewhere in the app) leaves S.queue and
+    // S.rotation referencing ids that exist nowhere in S.routines any more — queueOf reads that
+    // as no queue at all (queueRecovery), while S.scheduleMode is still 'rotation' from before.
+    mount({
+      routines: [],   // every routine gone
+      queue: { ids: ['a', 'b'], since: Date.now() },
+      rotation: { id: 'r1', sequence: ['a', 'b'], label: 'My split' },
+      scheduleMode: 'rotation',
+    })
+    // Recovery no longer hides the grid — this is a fix-up, not the from-scratch setup gap.
+    expect(host.textContent).toContain('This rotation could not be read')
+    expect(host.textContent).toContain('Week schedule')
+    click(byLabel('Discard it'))
+    expect(mocks.S.queue).toBe(null)
+    expect(mocks.S.scheduleMode).toBe('week')
+    // (the mocked store is not reactive, so re-mount to see the discarded state render)
+    mount({ routines: [], scheduleMode: mocks.S.scheduleMode, rotation: { id: 'r1', sequence: ['a', 'b'], label: 'My split' } })
+    expect(host.textContent).toContain('Week schedule')
+    // No routine in the saved sequence survives — "Start pass" would start nothing, so the offer
+    // is a fresh build instead, not gated on `!S.rotation` alone (that object is still there).
+    expect(byLabel('Start pass')).toBeUndefined()
+    expect(byLabel('Build a rotation instead')).toBeDefined()
   })
 })

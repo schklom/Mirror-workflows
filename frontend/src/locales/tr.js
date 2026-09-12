@@ -1689,12 +1689,10 @@ export default {
   'This rotation could not be read — it may have been written by another device.': 'Bu rotasyon okunamadı — başka bir cihaz tarafından yazılmış olabilir.',
   'Discard it': 'Sil',
   'Switch to Fixed Week?': 'Sabit Haftaya geçilsin mi?',
-  'The rotation stops and its current pass is dropped. Your weekday plan comes back exactly as it is, and the sequence is kept so you can start a new pass later.': 'Rotasyon durur ve mevcut turu silinir. Haftalık planın tam olarak eskisi gibi geri döner ve sıralama daha sonra yeni bir tur başlatabilmen için saklanır.',
+  'The rotation stops and its current pass is dropped. Your weekday plan is untouched, and the sequence is kept so you can start a new pass later.': 'Rotasyon durur ve mevcut turu silinir. Haftalık planın hiç etkilenmez ve sıralama daha sonra yeni bir tur başlatabilmen için saklanır.',
   'Use Fixed Week': 'Sabit Haftayı kullan',
   'No rotation yet — add routines to it in Plan.': "Henüz rotasyon yok — Plan'da rutin ekle.",
   'Set up in Plan': "Plan'da ayarla",
   'Pass complete': 'Tur tamamlandı',
   'Next pass starts {0}': 'Sıradaki tur {0} tarihinde başlıyor',
-
-
 }

@@ -1,7 +1,10 @@
 # Changelog
 
-## Unreleased
+## v1.3.7 — 2026-09-12
 
+The v1.3.6 tag's Android build failed on a double dash inside an XML comment, so the APK for everything in v1.3.6 is this one — plus the iPhone timer-sound fix that landed an hour later. Web bundle, APK and API image; v1.3.6 and v1.3.7 are the same code apart from the two items below.
+
+- 📦 **The Android build builds again**: a comment in `styles.xml` (from the safe-area work in v1.3.6) contained `--`, which XML forbids inside comments.
 - 🔊 **Timer sounds on iOS** (kurktchiev, #183, #152): every tone resumes the audio context first
   (a lock or app switch leaves it suspended and silent), the context is unlocked from the taps that
   lead to a timer, and Settings → Sounds gains **Play sounds when the phone is on silent** (off by

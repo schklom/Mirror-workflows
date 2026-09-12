@@ -57,7 +57,7 @@ Left over from this block:
 - A real pause for the workout timers (#29 asked for it)
 - Discord announcement (owner)
 
-## v1.3.6 — Sync, push and the phone  (released 2026-09-12)
+## v1.3.6 and v1.3.7 — Sync, push and the phone  (released 2026-09-12)
 
 Signed in, the server's profile is the truth: sign-in adopts it, two devices merge on a server
 revision instead of overwriting each other, the app polls for changes and works offline with a
@@ -69,7 +69,7 @@ the phone, nginx resolver, custom-exercise equipment, per-side data, warm-up res
 QA sweep of every screen. Left over: routine reordering (#142), the Smith-bar "no bar" option
 (#138), two decimals (#139), delete user in the admin (#107).
 
-## v1.3.7 — Programmes & progression  (October 2026)
+## v1.3.8 — Programmes & progression  (October 2026)
 
 **Theme: training structure beyond one weekly template.** Most of this is the Space-Hermes series.
 It changes the training model (per-set roles, explicit phases, normalisation on every persist), so
@@ -93,7 +93,7 @@ it goes in one MR at a time, each rebased and tested on gym-test before the next
 - Catalogue cleanup: exercises that should not carry weight, incline and interval fields for
   cardio (#46); timers for planks and outdoor cardio are already there, document them (#45)
 
-## v1.3.8 — Accounts & sync  (November 2026)
+## v1.3.9 — Accounts & sync  (November 2026)
 
 **Theme: who may sign in, and what else may read or write your data.**
 
@@ -111,7 +111,7 @@ it goes in one MR at a time, each rebased and tested on gym-test before the next
   logged sessions lost after editing a routine (#25)
 - Admin: per-user export, invite management, audit log filters
 
-## v1.3.9 — Mobile  (December 2026)
+## v1.3.10 — Mobile  (December 2026)
 
 **Theme: the Android app catches up with the web app.**
 

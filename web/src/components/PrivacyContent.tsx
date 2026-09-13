@@ -108,30 +108,38 @@ const PrivacyContent = () => {
               </h3>
 
               <div className="space-y-4">
+                <p className="leading-relaxed text-gray-700 dark:text-gray-300">
+                  FMD Server uses end-to-end encryption to prevent the server operator from seeing
+                  your data and executing commands on your device. Nevertheless, for basic
+                  functionality some data needs to be stored in plaintext.
+                </p>
+
                 <div>
                   <p className="mb-2 font-medium text-gray-900 dark:text-white">In plaintext:</p>
                   <ul className="ml-4 list-inside list-disc space-y-1 text-gray-700 dark:text-gray-300">
                     <li>Username</li>
                     <li>Password Hash</li>
-                    <li>Public key</li>
+                    <li>Public key (v1 only)</li>
                     <li>Push URL</li>
                     <li>Unix timestamp when the client last connected</li>
+                    <li>Server-sent event messages to be delivered to the device (v2 only)</li>
                   </ul>
                 </div>
 
                 <div>
                   <p className="mb-2 font-medium text-gray-900 dark:text-white">Signed:</p>
                   <ul className="ml-4 list-inside list-disc space-y-1 text-gray-700 dark:text-gray-300">
-                    <li>Command to be delivered to the phone</li>
+                    <li>Command to be delivered to the device (v1)</li>
                   </ul>
                 </div>
 
                 <div>
                   <p className="mb-2 font-medium text-gray-900 dark:text-white">Encrypted:</p>
                   <ul className="ml-4 list-inside list-disc space-y-1 text-gray-700 dark:text-gray-300">
-                    <li>Private key</li>
-                    <li>If uploaded: pictures</li>
+                    <li>Private key (v1) / Account master key (v2)</li>
+                    <li>Commands to be delivered to the device (v2)</li>
                     <li>If uploaded: locations (lat, lon, battery level, timestamp, etc.)</li>
+                    <li>If uploaded: pictures</li>
                   </ul>
                 </div>
 

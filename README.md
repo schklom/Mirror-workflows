@@ -214,14 +214,13 @@ host side of that volume, not the variable.
 
 ## Roadmap
 
-The plan lives in [ROADMAP.md](ROADMAP.md) (the
-[GitHub milestones](https://github.com/DuarteSantos8/openGym/milestones) hold the issues): v1.3.8 the
-promised small items and editing finished workouts, v1.3.9 programmes and progression (session queue,
-multi-week programmes, phases, the progression engine), **v1.4.0 the foundation — storage moves to a
-database and search is rebuilt, the one compatibility break**, v1.4.1 accounts (password and OIDC login,
-trainer role, MCP write), v1.4.2 the iOS app and the mobile items (HealthKit, Health Connect, timer in the
-notification bar, widgets), v1.4.3 what those unlock (pictures for custom exercises, catalogue work, skins,
-social). Ideas and pull requests welcome.
+The plan lives in [ROADMAP.md](ROADMAP.md), and the
+[GitHub milestones](https://github.com/DuarteSantos8/openGym/milestones) hold the issues. **A release every
+two weeks**, each one small and themed: the promised items, editing finished workouts, the session queue,
+programmes and phases, the progression engine, cardio — then **v1.4.0, the foundation: storage moves to a
+database and search is rebuilt, the one compatibility break** — then accounts (password and OIDC login,
+trainer role, MCP write), the iOS app, the Android and health items, and what all of that unlocks
+(pictures for custom exercises, catalogue work, skins, social). Ideas and pull requests welcome.
 
 ## Tech
 

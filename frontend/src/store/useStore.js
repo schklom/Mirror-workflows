@@ -11,6 +11,7 @@ import { countChanges, syncFingerprint } from '../lib/sync-changes.js'
 import { appBase } from '../lib/app-base.js'
 import { loadRemote, chooseLocal, forgetRemote, connect, normalizeServerUrl, renewToken } from '../lib/remote.js'
 import { loadCoachDevice, saveCoachDevice, coachDeviceSettings } from '../lib/coach-device.js'
+import { DEFAULT_TEMPLATE_ID } from '../lib/structuralBalanceTemplates.js'
 
 import { WC_DEFAULT } from '../lib/workout-controls.js'
 
@@ -101,6 +102,11 @@ export const DEF = {
   // weight; 'last' carries the reps over from the last session, the way it always worked before.
   // Absent reads as 'plan' too, which is what the MCP bridge sees on a raw state file.
   startFrom: 'plan',
+  // Structural Balance (views/StructuralBalance.jsx): which built-in ratio template is active,
+  // and per-role exercise overrides keyed by `${templateId}:${roleId}` — see
+  // lib/structuralBalance.js's overrideKey(). An override replaces that role's curated
+  // exercise-id whitelist with a single user-chosen exercise id.
+  balanceTemplate: DEFAULT_TEMPLATE_ID, balanceOverrides: {},
 }
 const clone = o => JSON.parse(JSON.stringify(o))
 

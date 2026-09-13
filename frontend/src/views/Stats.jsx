@@ -451,6 +451,11 @@ export default function Stats() {
     </div>
 
     {workouts.length > 0 && <MuscleBalance S={S} />}
+    {workouts.length > 0 && <div className="card row between" style={{ alignItems: 'center' }}>
+      <div><h2 style={{ margin: 0 }}>{t('Structural Balance')}</h2>
+        <div className="sub">{t('See which lift is holding back the rest.')}</div></div>
+      <Button size="sm" variant="tinted" icon="scale" onClick={() => nav('/structural-balance')}>{t('Open')}</Button>
+    </div>}
     {hasEffort(S) && <EffortCard S={S} />}
 
     <div className="cols">

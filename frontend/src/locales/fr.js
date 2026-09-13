@@ -1683,7 +1683,7 @@ export default {
   'No rotation yet. Add routines in the order you want to train them — the first one you have not logged stays next.': 'Aucune rotation pour l’instant. Ajoute des routines dans l’ordre où tu veux les faire — la première que tu n’as pas encore loggée reste la suivante.',
   'Use this rotation': 'Utiliser cette rotation',
   'Use this rotation?': 'Utiliser cette rotation ?',
-  'openGym will take over refilling this queue from here on — the coach’s app should no longer write to it.': 'openGym prendra en charge le remplissage de cette file à partir de maintenant — l’appli de ton coach ne devrait plus y écrire.',
+  'Your coach gives up control of this week: openGym owns the queue from here on and repeats these sessions by itself once they are all done. A new week from the coach’s app would replace this rotation.': 'Ton coach abandonne le contrôle de cette semaine : la file appartient désormais à openGym, qui répète ces séances automatiquement une fois qu’elles sont toutes terminées. Une nouvelle semaine venue de l’appli de ton coach remplacerait cette rotation.',
   'Start new pass': 'Démarrer un nouveau passage',
   'Start pass': 'Démarrer un passage',
   'This rotation could not be read — it may have been written by another device.': 'Cette rotation n’a pas pu être lue — elle a peut-être été écrite par un autre appareil.',

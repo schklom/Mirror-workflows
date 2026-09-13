@@ -1683,7 +1683,7 @@ export default {
   'No rotation yet. Add routines in the order you want to train them — the first one you have not logged stays next.': 'अभी कोई रोटेशन नहीं। रूटीन को उसी क्रम में जोड़ें जिसमें आप उन्हें ट्रेन करना चाहते हैं — जिसे आपने अभी तक लॉग नहीं किया है वह अगला बना रहता है।',
   'Use this rotation': 'इस रोटेशन का उपयोग करें',
   'Use this rotation?': 'इस रोटेशन का उपयोग करें?',
-  'openGym will take over refilling this queue from here on — the coach’s app should no longer write to it.': 'अब से openGym इस कतार को भरने का काम संभाल लेगा — आपके कोच के ऐप को अब इसमें कुछ नहीं लिखना चाहिए।',
+  'Your coach gives up control of this week: openGym owns the queue from here on and repeats these sessions by itself once they are all done. A new week from the coach’s app would replace this rotation.': 'आपका कोच इस सप्ताह का नियंत्रण छोड़ देता है: अब से यह कतार openGym की है और वह सभी सत्र पूरे होते ही उन्हें अपने आप दोहराता है। कोच के ऐप से आया कोई नया सप्ताह इस रोटेशन की जगह ले लेगा।',
   'Start new pass': 'नया पास शुरू करें',
   'Start pass': 'पास शुरू करें',
   'This rotation could not be read — it may have been written by another device.': 'यह रोटेशन पढ़ा नहीं जा सका — हो सकता है इसे किसी अन्य डिवाइस ने लिखा हो।',

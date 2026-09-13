@@ -94,13 +94,14 @@ export default function Plan() {
       icon: glyphOf(r.emoji), label: r.name, onClick: () => setSeq([...seq, r.id]),
     })),
   })
-  // The only path from a coach-written queue into a managed one: behind a confirmation, since it
-  // hands refilling over to this app from here on — the coach's app should not still be writing it.
+  // The only path from a coach-written queue into a managed one: behind a confirmation that says
+  // what happens — the coach gives up control: this app owns the queue and refills it itself, and a
+  // later week written by the coach's app simply replaces it (the whole queue object, token and all).
   // The rotation takes a name of its own here rather than the planner's (e.g. "US W1") — that
   // name is this one pass's, and refillAfter would otherwise repeat it on every pass after it.
   const adopt = () => confirmSheet({
     title: t('Use this rotation?'),
-    message: t('openGym will take over refilling this queue from here on — the coach’s app should no longer write to it.'),
+    message: t('Your coach gives up control of this week: openGym owns the queue from here on and repeats these sessions by itself once they are all done. A new week from the coach’s app would replace this rotation.'),
     confirmText: t('Use this rotation'),
     onConfirm: () => update(s => saveRotation(s, seq, t('Rotation'))),
   })

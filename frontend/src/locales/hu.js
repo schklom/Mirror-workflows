@@ -1686,7 +1686,7 @@ export default {
   'No rotation yet. Add routines in the order you want to train them — the first one you have not logged stays next.': 'Még nincs rotáció. Add hozzá a rutinokat abban a sorrendben, ahogy edzeni szeretnéd őket — amit még nem naplóztál, az marad a következő.',
   'Use this rotation': 'Ezen rotáció használata',
   'Use this rotation?': 'Ezt a rotációt használod?',
-  'openGym will take over refilling this queue from here on — the coach’s app should no longer write to it.': 'Mostantól az openGym veszi át ennek a várólistának a feltöltését — az edződ alkalmazásának többé nem kellene írnia bele.',
+  'Your coach gives up control of this week: openGym owns the queue from here on and repeats these sessions by itself once they are all done. A new week from the coach’s app would replace this rotation.': 'Az edződ lemond ennek a hétnek az irányításáról: mostantól az openGymé a várólista, és magától megismétli ezeket az edzéseket, amint mindegyik kész van. Az edződ alkalmazásából érkező új hét felülírná ezt a rotációt.',
   'Start new pass': 'Új menet indítása',
   'Start pass': 'Menet indítása',
   'This rotation could not be read — it may have been written by another device.': 'Ezt a rotációt nem sikerült beolvasni — lehet, hogy egy másik eszköz írta.',

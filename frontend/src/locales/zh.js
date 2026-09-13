@@ -1683,7 +1683,7 @@ export default {
   'No rotation yet. Add routines in the order you want to train them — the first one you have not logged stays next.': '还没有轮换。按你想训练的顺序添加训练日——尚未记录的第一个训练日将始终是下一个。',
   'Use this rotation': '使用此轮换',
   'Use this rotation?': '使用此轮换？',
-  'openGym will take over refilling this queue from here on — the coach’s app should no longer write to it.': '从现在起，openGym 将接管这个队列的填充——教练的应用不应再写入它。',
+  'Your coach gives up control of this week: openGym owns the queue from here on and repeats these sessions by itself once they are all done. A new week from the coach’s app would replace this rotation.': '你的教练放弃对本周的控制权：从现在起队列归 openGym 所有，它会在这些训练全部完成后自动重复它们。教练的应用推送的新一周会替换这个轮换。',
   'Start new pass': '开始新一轮',
   'Start pass': '开始一轮',
   'This rotation could not be read — it may have been written by another device.': '无法读取此轮换——可能是由另一台设备写入的。',

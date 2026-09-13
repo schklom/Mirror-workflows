@@ -1694,7 +1694,7 @@ export default {
   'No rotation yet. Add routines in the order you want to train them — the first one you have not logged stays next.': 'ยังไม่มีการหมุนเวียน เพิ่มรูทีนตามลำดับที่ต้องการฝึก — รูทีนแรกที่ยังไม่ได้บันทึกจะเป็นรายการถัดไปเสมอ',
   'Use this rotation': 'ใช้การหมุนเวียนนี้',
   'Use this rotation?': 'ใช้การหมุนเวียนนี้?',
-  'openGym will take over refilling this queue from here on — the coach’s app should no longer write to it.': 'ต่อจากนี้ openGym จะเติมคิวนี้ให้เอง — แอปของโค้ชไม่ควรเขียนลงคิวนี้อีกต่อไป',
+  'Your coach gives up control of this week: openGym owns the queue from here on and repeats these sessions by itself once they are all done. A new week from the coach’s app would replace this rotation.': 'โค้ชของคุณสละการควบคุมสัปดาห์นี้ — คิวนี้จะเป็นของ openGym ต่อจากนี้ไป และจะทำเซสชันเหล่านี้ซ้ำเองเมื่อทำครบทุกรายการแล้ว สัปดาห์ใหม่จากแอปของโค้ชจะมาแทนที่การหมุนเวียนนี้',
   'Start new pass': 'เริ่มรอบใหม่',
   'Start pass': 'เริ่มรอบ',
   'This rotation could not be read — it may have been written by another device.': 'อ่านการหมุนเวียนนี้ไม่ได้ — อาจถูกเขียนจากอุปกรณ์อื่น',

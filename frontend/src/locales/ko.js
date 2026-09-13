@@ -1683,7 +1683,7 @@ export default {
   'No rotation yet. Add routines in the order you want to train them — the first one you have not logged stays next.': '아직 로테이션이 없어요. 훈련하고 싶은 순서대로 루틴을 추가하세요 — 아직 기록하지 않은 첫 번째 루틴이 계속 다음이 돼요.',
   'Use this rotation': '이 로테이션 사용하기',
   'Use this rotation?': '이 로테이션을 사용할까요?',
-  'openGym will take over refilling this queue from here on — the coach’s app should no longer write to it.': '이제부터 openGym이 이 대기열을 채우는 일을 맡아요 — 코치의 앱은 더 이상 여기에 쓰지 않아야 해요.',
+  'Your coach gives up control of this week: openGym owns the queue from here on and repeats these sessions by itself once they are all done. A new week from the coach’s app would replace this rotation.': '코치가 이번 주의 통제권을 내려놓아요: 이제부터 대기열은 openGym의 것이 되고, 모든 세션이 끝나면 openGym이 알아서 반복해요. 코치의 앱에서 온 새로운 주간은 이 로테이션을 대체하게 될 거예요.',
   'Start new pass': '새 패스 시작',
   'Start pass': '패스 시작',
   'This rotation could not be read — it may have been written by another device.': '이 로테이션을 읽을 수 없어요 — 다른 기기에서 작성했을 수 있어요.',

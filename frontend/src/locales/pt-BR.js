@@ -1028,7 +1028,7 @@ export const PT_BR_OVERRIDES = {
   'No rotation yet. Add routines in the order you want to train them — the first one you have not logged stays next.': 'Ainda sem rotação. Adicione as rotinas na ordem em que quer treiná-las — a primeira que ainda não registrou continua sendo a próxima.',
   'Use this rotation': 'Usar esta rotação',
   'Use this rotation?': 'Usar esta rotação?',
-  'openGym will take over refilling this queue from here on — the coach’s app should no longer write to it.': 'A partir de agora, o openGym passa a preencher esta fila — o aplicativo do seu treinador não deve mais escrever nela.',
+  'Your coach gives up control of this week: openGym owns the queue from here on and repeats these sessions by itself once they are all done. A new week from the coach’s app would replace this rotation.': 'Seu treinador abre mão do controle desta semana: o openGym passa a ser dono da fila a partir de agora e repete essas sessões sozinho assim que todas estiverem concluídas. Uma nova semana vinda do aplicativo do seu treinador substituiria esta rotação.',
   'Start new pass': 'Iniciar nova passagem',
   'Start pass': 'Iniciar passagem',
   'This rotation could not be read — it may have been written by another device.': 'Não foi possível ler esta rotação — ela pode ter sido escrita por outro dispositivo.',

@@ -1683,7 +1683,7 @@ export default {
   'No rotation yet. Add routines in the order you want to train them — the first one you have not logged stays next.': 'Henüz rotasyon yok. Rutinleri antrenman yapmak istediğin sırayla ekle — henüz kaydetmediğin ilk rutin her zaman sıradaki olur.',
   'Use this rotation': 'Bu rotasyonu kullan',
   'Use this rotation?': 'Bu rotasyon kullanılsın mı?',
-  'openGym will take over refilling this queue from here on — the coach’s app should no longer write to it.': 'Bundan sonra bu kuyruğu doldurma işini openGym üstlenecek — koçunun uygulaması artık buraya yazmamalı.',
+  'Your coach gives up control of this week: openGym owns the queue from here on and repeats these sessions by itself once they are all done. A new week from the coach’s app would replace this rotation.': 'Koçun bu hafta üzerindeki kontrolü bırakıyor: kuyruk artık openGym’e ait ve hepsi tamamlandığında bu seansları kendiliğinden tekrarlar. Koçunun uygulamasından gelecek yeni bir hafta bu rotasyonun yerini alır.',
   'Start new pass': 'Yeni tur başlat',
   'Start pass': 'Tur başlat',
   'This rotation could not be read — it may have been written by another device.': 'Bu rotasyon okunamadı — başka bir cihaz tarafından yazılmış olabilir.',

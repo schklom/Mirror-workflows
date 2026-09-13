@@ -3,6 +3,7 @@
   "short_name": "FMD",
   "description": "Locate and control your devices.",
   "start_url": ".",
+  "scope": ".",
   "display": "standalone",
   "theme_color": "#4cb050",
   "background_color": "#232323",

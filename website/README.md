@@ -6,7 +6,7 @@ served by nginx.
 Not in this folder (added at deploy time):
 
 - `img/` — built by `build-images.sh <dist>/img`: the five screenshots from
-  `../assets/screenshots/` as PNG plus WebP at 600/1170 px (served through `<picture>`),
+  `../assets/screenshots/` as PNG plus WebP at 480/600/1170 px (served through `<picture>`),
   `banner.png`, and `social.jpg` (1200×630, the og:image on every page)
 - `icon-180.png` / `icon-512.png` — copied from `../frontend/public/` (the same
   icons the PWA uses, so the browser tab, home screen and app all match)

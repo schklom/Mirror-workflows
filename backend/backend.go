@@ -201,9 +201,12 @@ func StopServer() {
 		server.Shutdown(ctx)
 	}
 
-	db, err := uio.UB.DB.DB()
-	if err != nil {
-		db.Close()
+	if err := uio.UB.Checkpoint(); err != nil {
+		log.Error().Err(err).Msg("database checkpoint failed")
+	}
+
+	if err := uio.UB.Close(); err != nil {
+		log.Error().Err(err).Msg("failed to close database")
 	}
 
 	log.Info().Msg("Stopped fmd-server")

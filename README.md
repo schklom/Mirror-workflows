@@ -215,10 +215,13 @@ host side of that volume, not the variable.
 ## Roadmap
 
 The plan lives in [ROADMAP.md](ROADMAP.md) (the
-[GitLab milestones](https://gitlab.com/DuarteSantos8/opengym/-/milestones) track the same items): v1.3.8 programmes and
-progression (explicit warm-up/work phases, AMRAP driver selection, multi-week programmes, adaptive
-1RM), v1.3.9 accounts and sync (password and OIDC login, personal-trainer role, remote MCP), v1.3.10
-mobile (timer in the notification bar, widgets, Withings). Ideas and pull requests welcome.
+[GitHub milestones](https://github.com/DuarteSantos8/openGym/milestones) hold the issues): v1.3.8 the
+promised small items and editing finished workouts, v1.3.9 programmes and progression (session queue,
+multi-week programmes, phases, the progression engine), **v1.4.0 the foundation — storage moves to a
+database and search is rebuilt, the one compatibility break**, v1.4.1 accounts (password and OIDC login,
+trainer role, MCP write), v1.4.2 the iOS app and the mobile items (HealthKit, Health Connect, timer in the
+notification bar, widgets), v1.4.3 what those unlock (pictures for custom exercises, catalogue work, skins,
+social). Ideas and pull requests welcome.
 
 ## Tech
 

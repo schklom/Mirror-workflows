@@ -783,6 +783,19 @@ body.chips-dragging *{cursor:inherit}
   width:24px;height:24px;border-radius:8px;background:var(--surface-2);color:var(--label-3);
   display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex:none;
 }
+/* A one-sided row with an effort column is the tightest line in the app: set number, L/R badge,
+   two steppers, effort, tick. On a narrow phone the reps stepper's two buttons took all of its
+   width and the number between them was gone (issue #235, 368 px). The number outranks the
+   buttons here: slimmer buttons, tighter gaps, and reps gets the same share as the weight. */
+.setrow-side .setrow.side.eff3{gap:4px}
+.setrow-side .setrow.side.eff3 .stp.r{flex:1.4}
+.setrow-side .setrow.side.eff3 .effcell{flex:.6 1 0}
+.setrow-side .setrow.side.eff3 .stp.w button,.setrow-side .setrow.side.eff3 .stp.r button{width:20px}
+@media (max-width:400px){
+  .setrow-side{gap:5px}
+  .setrow-side .setrow.side.eff3 .sidetag{width:20px}
+  .setrow-side .setrow.side.eff3 .stp.w button,.setrow-side .setrow.side.eff3 .stp.r button{width:18px}
+}
 .setrow.side.done .sidetag{background:var(--acc);color:var(--on-acc)}
 .setrow.side.done{opacity:.45}
 

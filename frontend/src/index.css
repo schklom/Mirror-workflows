@@ -792,6 +792,9 @@ body.chips-dragging *{cursor:inherit}
 .setrow-side .setrow.side.eff3 .effcell{flex:.6 1 0}
 .setrow-side .setrow.side.eff3 .stp.w button,.setrow-side .setrow.side.eff3 .stp.r button{width:20px}
 @media (max-width:400px){
+  /* the same squeeze on a plain row, where the list view's own inset costs the last pixels */
+  .setrow.eff3 .stp.w button,.setrow.eff3 .stp.r button{width:21px}
+  .setrow.eff3 .stp.r,.sethead.eff3 .r-sp{flex:1.25}
   .setrow-side{gap:5px}
   .setrow-side .setrow.side.eff3 .sidetag{width:20px}
   .setrow-side .setrow.side.eff3 .stp.w button,.setrow-side .setrow.side.eff3 .stp.r button{width:18px}

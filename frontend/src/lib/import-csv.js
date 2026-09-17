@@ -265,19 +265,28 @@ export function matchHevyTitle(name) {
 // Hevy exports no category column, so every invented exercise fell through to the
 // 'upper legs' default and a third of an imported history was attributed to the legs in
 // the muscle map. When there is no category, read the body part off the name instead.
+// Order is the rule: the first match wins, so the specific word has to come before the broad one.
+// A grip is a modifier on a row or a pulldown, never the movement ("Chest Supported T Row Neutral
+// Grip" is a back exercise); a wrist or reverse curl is a forearm exercise that happens to say
+// "curl"; a leg curl is not an arm curl; and a Romanian or stiff-leg deadlift trains the legs where
+// the conventional pull is filed under the back. "grip" alone still reads as forearms — last.
 const NAME_BP = [
-  [/\b(curl|bicep|biceps|tricep|triceps|skullcrusher|pushdown)\b/, 'upper arms'],
-  [/\b(wrist|forearm|forearms|grip)\b/, 'lower arms'],
+  [/\b(wrist|forearm|forearms|reverse curl)\b/, 'lower arms'],
+  [/\b(leg curl|leg curls|hamstring curl|nordic)\b/, 'upper legs'],
+  [/\b(romanian|rdl|stiff leg|stiff legged|straight leg)\b.*\bdeadlifts?\b|\brdl\b/, 'upper legs'],
+  [/\b(curl|curls|bicep|biceps|tricep|triceps|skullcrusher|pushdown)\b/, 'upper arms'],
+  [/\bchest supported\b/, 'back'],   // where the chest rests, not what it trains
   [/\b(bench|chest|pec|fly|flye|crossover|crossovers|dip)\b/, 'chest'],
-  [/\b(row|pulldown|pullup|pull up|chin up|lat|lats|back|deadlift|shrug)\b/, 'back'],
+  [/\b(row|rows|pulldown|pullup|pull up|chin up|lat|lats|back|deadlift|deadlifts|shrug)\b/, 'back'],
   [/\b(shoulder|delt|delts|overhead|lateral raise|front raise|face pull|press up)\b/, 'shoulders'],
   [/\b(calf|calves)\b/, 'lower legs'],
-  [/\b(squat|lunge|leg|glute|hamstring|quad|hip thrust|deadlift)\b/, 'upper legs'],
+  [/\b(squat|lunge|leg|glute|hamstring|quad|hip thrust)\b/, 'upper legs'],
   [/\b(ab|abs|core|plank|crunch|sit up|oblique|russian twist)\b/, 'waist'],
   [/\b(run|running|jog|bike|cycling|rope|ropes|jump|jacks|burpee|sprint|treadmill|stair)\b/, 'cardio'],
   [/\bneck\b/, 'neck'],
+  [/\bgrip\b/, 'lower arms'],
 ]
-const bpFromName = name => (NAME_BP.find(([re]) => re.test(name)) || [])[1] || null
+export const bpFromName = name => (NAME_BP.find(([re]) => re.test(name)) || [])[1] || null
 
 // Categories the exporters use -> the dataset's body parts, for exercises we invent.
 const CATEGORY_BP = {

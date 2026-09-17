@@ -156,6 +156,20 @@ func initSQLite(path string) *FMDDB {
 	return &FMDDB{DB: db}
 }
 
+// Checkpoints the database so that changes are written from the WAL to the main DB file.
+// See https://sqlite.org/c3ref/wal_checkpoint_v2.html.
+func (db *FMDDB) Checkpoint() error {
+	return db.DB.Exec("PRAGMA wal_checkpoint(TRUNCATE);").Error
+}
+
+func (db *FMDDB) Close() error {
+	sqlDb, err := db.DB.DB()
+	if err != nil {
+		return err
+	}
+	return sqlDb.Close()
+}
+
 func (db *FMDDB) GetLastID() int {
 	var user FMDUser
 	db.DB.Last(&user)

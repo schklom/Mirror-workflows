@@ -44,7 +44,7 @@ func buildApiV2Mux(config *viper.Viper) *http.ServeMux {
 	auth("POST /account/password", postPassword2)
 
 	// Encrypted data
-	// {type} is one of the types defined in constants.go
+	// {type} is one of the types defined in ParseDataType in data_type.go
 	auth("GET /data/{type}", getData2)
 	auth("POST /data/{type}", postData2)
 	auth("DELETE /data/{type}/all", deleteAllData2)
@@ -66,7 +66,7 @@ type contextKey int
 const userKey contextKey = iota
 
 // Validate the access token in the Authorization header field.
-// If valid, add the User ID of the request to the context.
+// If valid, add the User struct of the request to the context.
 func authMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		authHeader := r.Header.Get("Authorization")
@@ -150,7 +150,7 @@ func postLogin2(w http.ResponseWriter, r *http.Request) {
 
 	// Sanity check
 	if !user.IsUsernameValid(data.Username) {
-		http.Error(w, "Invalid user id", http.StatusBadRequest)
+		http.Error(w, "Invalid username", http.StatusBadRequest)
 		return
 	}
 
@@ -448,7 +448,7 @@ func getMessages2(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Error().Str("user", user.Username).Err(err).Msg("failed to get messages")
-		http.Error(w, "failed to get failed to get messages", http.StatusInternalServerError)
+		http.Error(w, "failed to get messages", http.StatusInternalServerError)
 		return
 	}
 	writeAsJson(w, messageResponse{messages})

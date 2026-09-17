@@ -9,7 +9,7 @@ info:
     This is the REST API for FMD Server, allowing you to remotely locate and control your device.
 
     In order to understand the format of the encrypted data blobs, please see
-    the FMD Server Protocol, which defines the cryptography used.
+    the [FMD Server Protocol](https://gitlab.com/fmd-foss/server-protocol), which defines the cryptography used.
     APIv2 only supports the FMD Server Protocol v2.
 
     Per convention, all values suffixed with "64" are Base64-encoded.
@@ -228,6 +228,10 @@ paths:
     post:
       tags: [Account Settings]
       summary: Change the account password (and associated salt and encrypted master key)
+      description: >
+        Caution: The encrypted master key must be the **same** master key as before,
+        simply encrypted under a new pre-master key derived from the new password.
+        If you would change the master key, all data stored on the server would become unreadable!
       operationId: changePassword
       security:
         - bearerAuth: []
@@ -483,6 +487,7 @@ components:
         - protoVersion
         - passwordHash64
         - encMasterKey64
+        - registrationToken
       properties:
         username:
           type: string
@@ -499,7 +504,7 @@ components:
           type: string
         registrationToken:
           type: string
-          description: Required only if the server enforces a registration token.
+          description: Required, but may be empty if the server doesn't enforce a registration token.
 
     RegisterResponse:
       type: object
@@ -509,12 +514,18 @@ components:
 
     PushUrlRequestResponse:
       type: object
+      required:
+        - url
       properties:
         url:
           type: string
 
     PasswordRequest:
       type: object
+      required:
+        - newSalt64
+        - newPasswordHash64
+        - newEncMasterKey64
       properties:
         newSalt64:
           type: string
@@ -585,7 +596,7 @@ components:
             Optional server-provided text for this message.
             Usually, this is empty (to save space), and clients should use the
             code to select the string to show to the user.
-            This should only contain text if the code is "OTHER (1)".
+            The "text" field should only have content if the code is "OTHER (1)".
 
     MessagesResponse:
       type: object

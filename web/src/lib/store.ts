@@ -1,25 +1,38 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import { storeKeys, clearKeys, getKeys } from '@/lib/keystore';
+import {
+  clearKeys,
+  CryptoKeysV2,
+  CryptoKeysV1,
+  storeKeysV2,
+  storeKeysV1,
+  getKeysV1,
+  getKeysV2,
+} from '@/lib/keystore';
 import type { Location } from '@/lib/api';
 import type { Language } from '@/lib/i18n';
+import { CRYPTO_PROTO_V2 } from './crypto';
 
 export type Theme = 'light' | 'dark' | 'system';
 export type UnitSystem = 'metric' | 'imperial';
 export type { Language } from '@/lib/i18n';
 
-interface UserData {
+// Store for sensitive information
+export interface UserData {
   fmdId: string;
   sessionToken: string;
-  rsaEncKey: CryptoKey;
-  rsaSigKey: CryptoKey;
+  keysV1: CryptoKeysV1 | null;
+  keysV2: CryptoKeysV2 | null;
   fingerprint: string;
 }
 
+// Main data store
 interface AppState {
   isLoggedIn: boolean;
+  protoVersion: number;
   userData: UserData | null;
   wasAuthRestoreTried: boolean;
+
   theme: Theme;
   units: UnitSystem;
   language: Language;
@@ -47,6 +60,7 @@ export const useStore = create<AppState>()(
   persist(
     (set) => ({
       isLoggedIn: false,
+      protoVersion: CRYPTO_PROTO_V2,
       userData: null,
       wasAuthRestoreTried: false,
       theme: 'system',
@@ -62,10 +76,12 @@ export const useStore = create<AppState>()(
 
       setUserData: async (data: UserData, persistent: boolean) => {
         if (persistent) {
-          await storeKeys({
-            rsaEncKey: data.rsaEncKey,
-            rsaSigKey: data.rsaSigKey,
-          });
+          if (data.keysV1) {
+            await storeKeysV1(data.keysV1);
+          }
+          if (data.keysV2) {
+            await storeKeysV2(data.keysV2);
+          }
 
           localStorage.setItem(
             KEY_AUTH,
@@ -105,15 +121,15 @@ export const useStore = create<AppState>()(
             sessionToken: string;
             fingerprint: string;
           };
-          const keys = await getKeys();
+          const [keysV1, keysV2] = await Promise.all([getKeysV1(), getKeysV2()]);
 
-          if (keys) {
+          if (keysV1 || keysV2) {
             set({
               userData: {
                 fmdId: parsed.fmdId,
                 sessionToken: parsed.sessionToken,
-                rsaEncKey: keys.rsaEncKey,
-                rsaSigKey: keys.rsaSigKey,
+                keysV1: keysV1,
+                keysV2: keysV2,
                 fingerprint: parsed.fingerprint,
               },
               isLoggedIn: true,
@@ -144,11 +160,12 @@ export const useStore = create<AppState>()(
     }),
 
     // Persist some of the state
-    // https://github.com/pmndrs/zustand/blob/main/docs/integrations/persisting-store-data.md
+    // https://github.com/pmndrs/zustand/blob/main/docs/reference/integrations/persisting-store-data.md
     {
       name: KEY_SETTINGS,
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
+        protoVersion: state.protoVersion,
         theme: state.theme,
         units: state.units,
         language: state.language,

@@ -7,6 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { apiService } from '@/lib/apiService';
 import { useStore } from '@/lib/store';
 import { Link } from 'react-router-dom';
 
@@ -52,7 +53,12 @@ export const Header = ({ onSettingsClick, onAccountInfoClick }: HeaderProps) => 
                 {t('account_info')}
               </DropdownMenuItem>
 
-              <DropdownMenuItem onClick={() => void logout()}>
+              <DropdownMenuItem
+                onClick={() => {
+                  void apiService().logout();
+                  void logout();
+                }}
+              >
                 <LogOut className="mr-2 h-4 w-4" />
                 {t('logout')}
               </DropdownMenuItem>

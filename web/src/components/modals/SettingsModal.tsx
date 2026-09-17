@@ -39,9 +39,9 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
 
     try {
       const [locations, pictures, pushUrl] = await Promise.all([
-        apiService.getLocations(),
-        apiService.getPictures(),
-        apiService.getPushUrl(),
+        apiService().getLocations(),
+        apiService().getPictures(),
+        apiService().getPushUrl(),
       ]);
 
       let locationsCSV =
@@ -230,7 +230,7 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
             if (!userData) return;
 
             try {
-              await apiService.deleteAllLocations();
+              await apiService().deleteAllLocations();
               useStore.setState({ locations: [], currentLocationIndex: 0 });
 
               setShowDeleteLocationsConfirm(false);
@@ -253,7 +253,7 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
             if (!userData) return;
 
             try {
-              await apiService.deleteAllPictures();
+              await apiService().deleteAllPictures();
               useStore.setState({ pictures: [] });
 
               setShowDeletePicturesConfirm(false);
@@ -276,7 +276,7 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
             if (!userData) return;
 
             try {
-              await apiService.deleteAccount();
+              await apiService().deleteAccount();
               await logout();
               setShowDeleteAccountConfirm(false);
               onClose();

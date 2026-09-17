@@ -143,6 +143,11 @@ func generateToken(numBytes int) string {
 	return hex.EncodeToString(b)
 }
 
+func (a *AccessController) RevokeAccessToken(token string) {
+	delete(a.accessTokens, token)
+	metrics.ActiveSessions.Dec()
+}
+
 // Remove expired tokens and locks from the controller.
 func (a *AccessController) cronRemoveExpired() {
 	for range time.Tick(15 * time.Minute) {

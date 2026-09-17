@@ -13,7 +13,7 @@ e.g. to make your device ring.
 You can try FMD Server on your laptop with Docker.
 
 ```bash
-docker run --rm -p 8080:8080 registry.gitlab.com/fmd-foss/fmd-server:0.16.0
+docker run --rm -p 8080:8080 registry.gitlab.com/fmd-foss/fmd-server:0.17.0
 ```
 
 You can now visit FMD Server's web interface in your browser at <http://localhost:8080>.
@@ -47,13 +47,20 @@ go build
 ./fmd-server serve
 ```
 
+The [Makefile](./Makefile) has targets that automate these steps:
+
+```sh
+make server
+make run
+```
+
 To easily build from source with Docker Compose, replace `image:` with `build:` as shown below.
 Then run `docker compose build && docker compose up`.
 
 ```yaml
 services:
   fmd:
-#    image: registry.gitlab.com/fmd-foss/fmd-server:v0.16.0
+#    image: registry.gitlab.com/fmd-foss/fmd-server:v0.17.0
     build: https://gitlab.com/fmd-foss/fmd-server.git#master
 ```
 

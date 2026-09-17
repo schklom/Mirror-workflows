@@ -1,12 +1,15 @@
 package backend
 
 import (
+	"embed"
 	conf "fmd-server/config"
 	"fmd-server/constants"
 	frontend "fmd-server/web"
 	"fmt"
+	"io/fs"
 	"net/http"
 
+	"github.com/rs/zerolog/log"
 	"github.com/spf13/viper"
 )
 
@@ -14,6 +17,12 @@ const HEADER_CONTENT_TYPE = "Content-Type"
 const CT_APPLICATION_JSON = "application/json"
 
 const ERR_JSON_INVALID = "Invalid JSON"
+
+//go:embed swagger-ui
+var swaggerUiFs embed.FS
+
+//go:embed openapi-v2.yaml
+var openApiSpec []byte
 
 var remoteIpHeaderName string = ""
 
@@ -23,6 +32,17 @@ func getRemoteIp(r *http.Request) string {
 		remoteIp = r.RemoteAddr
 	}
 	return remoteIp
+}
+
+//lint:ignore U1000 enabled for debugging
+func debugMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		log.Debug().
+			Str("method", r.Method).
+			Str("path", r.URL.Path).
+			Msg("got request")
+		next.ServeHTTP(w, r)
+	})
 }
 
 // Adds various security headers.
@@ -39,6 +59,14 @@ func securityHeadersMiddleware(next http.Handler, tileServerOrigin string) http.
 		// https://operations.osmfoundation.org/policies/tiles/
 		w.Header().Set("Referrer-Policy", "strict-origin-when-cross-origin")
 
+		next.ServeHTTP(w, r)
+	})
+}
+
+func withSwaggerCsp(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// The bundled Swagger UI uses inline scripts
+		w.Header().Set("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: ; frame-ancestors 'none'; upgrade-insecure-requests")
 		next.ServeHTTP(w, r)
 	})
 }
@@ -94,6 +122,8 @@ func buildServeMux(config *viper.Viper) http.Handler {
 	apiV1Mux.HandleFunc("/version", getVersion)
 	apiV1Mux.HandleFunc("/version/", getVersion)
 
+	apiV2Mux := buildApiV2Mux(config)
+
 	// Uncomment this once the API v1 is no longer hosted at the root "/" (because we cannot have two "/" in muxFinal).
 	// Until then, as a side-effect, the static files are also served under /api/v1/.
 	// staticFilesMux := http.NewServeMux()
@@ -109,13 +139,24 @@ func buildServeMux(config *viper.Viper) http.Handler {
 	// mux.Handle("/", staticFilesMux)
 	mux.Handle("/", apiV1Mux) // deprecated
 	mux.Handle("/api/v1/", http.StripPrefix("/api/v1", apiV1Mux))
+	mux.Handle("/api/v2/", http.StripPrefix("/api/v2", apiV2Mux))
 
 	// Also serve the version in the root path
 	mux.HandleFunc("/version", getVersion)
 	mux.HandleFunc("/version/", getVersion)
 
+	// Swagger YAML and UI
+	// XXX: Swagger forces this to be at the root (instead of /api/v2/... )
+	mux.HandleFunc("GET /openapi.yaml", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/yaml")
+		w.Write(openApiSpec)
+	})
+	sub, _ := fs.Sub(swaggerUiFs, "swagger-ui")
+	mux.Handle("/swagger-ui/", withSwaggerCsp(http.StripPrefix("/swagger-ui/", http.FileServer(http.FS(sub)))))
+
 	// Apply to all endpoints
 	handler := securityHeadersMiddleware(mux, tileServerOrigin)
+	// handler = debugMiddleware(handler)
 	handler = http.MaxBytesHandler(handler, 15<<20) // 15 MB because 2^20 is a MB
 
 	return handler

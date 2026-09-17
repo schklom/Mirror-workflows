@@ -10,12 +10,22 @@ func initializeUserMetrics(db *FMDDB) {
 	var locationCount int64
 	db.DB.Model(&Location{}).Count(&locationCount)
 	metrics.Locations.Set(float64(locationCount))
+	db.DB.Model(&DataV2{}).Where("type = ?", DataTypeLocation).Count(&locationCount)
+	metrics.Locations.Add(float64(locationCount))
 
 	var pictureCount int64
 	db.DB.Model(&Picture{}).Count(&pictureCount)
 	metrics.Pictures.Set(float64(pictureCount))
+	db.DB.Model(&DataV2{}).Where("type = ?", DataTypePicture).Count(&pictureCount)
+	metrics.Pictures.Add(float64(pictureCount))
 
 	var pendingCommandCount int64
 	db.DB.Model(&FMDUser{}).Where("command_to_user IS NOT NULL AND command_to_user <> ''").Count(&pendingCommandCount)
 	metrics.PendingCommands.Set(float64(pendingCommandCount))
+	db.DB.Model(&DataV2{}).Where("type = ?", DataTypeCommand).Count(&pendingCommandCount)
+	metrics.PendingCommands.Add(float64(pendingCommandCount))
+
+	var pendingMessageCount int64
+	db.DB.Model(&Message{}).Count(&pendingMessageCount)
+	metrics.PendingMessages.Set(float64(pendingMessageCount))
 }

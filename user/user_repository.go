@@ -2,6 +2,7 @@ package user
 
 import (
 	"bytes"
+	"encoding/hex"
 	"errors"
 	"fmd-server/constants"
 	"fmd-server/metrics"
@@ -12,6 +13,7 @@ import (
 	"time"
 
 	"github.com/rs/zerolog/log"
+	"gorm.io/gorm"
 )
 
 type UserRepository struct {
@@ -61,6 +63,8 @@ var ErrUsernameNotAvailable = errors.New("the requested username is not availabl
 var IsUsernameValid = regexp.MustCompile("^[-_a-zA-Z0-9]{1,64}$").MatchString
 
 func (u *UserRepository) CreateNewUser(
+	protoVersion uint16,
+	encMasterKey string,
 	privKey string,
 	pubKey string,
 	innerSalt string,
@@ -82,9 +86,11 @@ func (u *UserRepository) CreateNewUser(
 	log.Info().Str("username", username).Msg("registering new user")
 
 	newUser := FMDUser{
-		Username:   username,
-		PrivateKey: privKey,
-		PublicKey:  pubKey,
+		Username:           username,
+		CryptoProtoVersion: protoVersion,
+		EncMasterKeyV2:     encMasterKey,
+		PrivateKey:         privKey,
+		PublicKey:          pubKey,
 	}
 	newUser.setPasswordData(innerSalt, innerPwHash)
 
@@ -95,15 +101,153 @@ func (u *UserRepository) CreateNewUser(
 }
 
 func (u *UserRepository) UpdateUserPassword(user *FMDUser, privKey string, innerSalt string, innerPwHash string) {
-	log.Info().Str("user", user.Username).Msg("changing password for user")
+	log.Info().Str("user", user.Username).Msg("changing password for user (v1)")
 
 	user.setPasswordData(innerSalt, innerPwHash)
+	// No client should downgrade from protoV2 to ProtoV1. But set it just in case.
+	user.CryptoProtoVersion = constants.CryptoProtoV1
 	user.PrivateKey = privKey
 	u.UB.Save(&user)
 
 	// Security: Revoke all active sessions. This forces them to log in again with the new password.
 	u.ACC.ResetTokensForUser(user.Username)
 }
+
+func (u *UserRepository) UpdateUserPasswordV2(user *FMDUser, encMasterKey string, innerSalt string, innerPwHash string) {
+	log.Info().Str("user", user.Username).Msg("changing password for user (v2)")
+
+	user.setPasswordData(innerSalt, innerPwHash)
+	// This function is also called by clients migrating from protoV1 to ProtoV2
+	user.CryptoProtoVersion = constants.CryptoProtoV2
+	user.EncMasterKeyV2 = encMasterKey
+	u.UB.Save(&user)
+
+	// Security: Revoke all active sessions. This forces them to log in again with the new password.
+	u.ACC.ResetTokensForUser(user.Username)
+}
+
+/* ------- APIv2 Encrypted Data ------- */
+
+// Used by APIv2 for the on-the-wire JSON encoding. Must be defined here to avoid cyclic import.
+type EncryptedItemDtoV2 struct {
+	ClientItemIdHex  string `json:"clientItemIdHex"`
+	UnixMillis       uint64 `json:"unixMillis"`
+	CiphertextBase64 string `json:"ciphertext64"`
+}
+
+func (u *UserRepository) GetAllDataV2(user *FMDUser, typeStr string) ([]EncryptedItemDtoV2, error) {
+	typ, err := ParseDataType(typeStr)
+	if err != nil {
+		return nil, err
+	}
+
+	store := u.UB.GetTypedStore(user.Id, typ)
+	data, err := store.All()
+	if err != nil {
+		return nil, err
+	}
+
+	// Convert database structs to API structs
+	out := make([]EncryptedItemDtoV2, len(data))
+	for idx, ele := range data {
+		out[idx] = EncryptedItemDtoV2{
+			ClientItemIdHex:  hex.EncodeToString(ele.ClientItemId),
+			UnixMillis:       ele.UnixMillis,
+			CiphertextBase64: ele.Ciphertext,
+		}
+	}
+
+	// Note that getting commands in APIv2 does **not** automatically delete them from the database.
+	// Clients should explicitly and individually delete commands once they have executed them.
+	return out, nil
+}
+
+func (u *UserRepository) AddDataV2(user *FMDUser, typeStr string, items []EncryptedItemDtoV2) error {
+	typ, err := ParseDataType(typeStr)
+	if err != nil {
+		return err
+	}
+
+	rows := make([]DataV2, len(items))
+
+	// Convert API structs to database structs
+	for idx, it := range items {
+		clientItemId, err := hex.DecodeString(it.ClientItemIdHex)
+		if err != nil {
+			log.Error().Err(err).Str("clientItemIdHex", it.ClientItemIdHex).Msg("failed to hex-decode clientItemId")
+			return err
+		}
+		rows[idx] = DataV2{
+			UserId:       user.Id,
+			Type:         typ,
+			ClientItemId: clientItemId,
+			UnixMillis:   it.UnixMillis,
+			Ciphertext:   it.CiphertextBase64,
+		}
+	}
+
+	store := u.UB.GetTypedStore(user.Id, typ)
+	metric := getDataMetric(typ)
+
+	rowsAffected, err := store.Create(&rows)
+	metric.Add(float64(rowsAffected))
+	if err != nil {
+		return err
+	}
+
+	numToKeep := u.getNumToKeep(typ)
+	rowsAffected, err = store.Prune(numToKeep)
+	metric.Sub(float64(rowsAffected))
+
+	if typ == DataTypeCommand {
+		u.PushUser(user)
+	}
+
+	return err
+}
+
+func (u *UserRepository) DeleteAllDataV2(user *FMDUser, typeStr string) error {
+	log.Info().Str("user", user.Username).Str("type", typeStr).Msg("deleting all data")
+
+	typ, err := ParseDataType(typeStr)
+	if err != nil {
+		return err
+	}
+
+	store := u.UB.GetTypedStore(user.Id, typ)
+	rowsAffected, err := store.DeleteAll()
+
+	metric := getDataMetric(typ)
+	metric.Sub(float64(rowsAffected))
+
+	return err
+}
+
+func (u *UserRepository) DeleteSingleDatumV2(user *FMDUser, typeStr string, clientItemIdHex string) error {
+	clientItemId, err := hex.DecodeString(clientItemIdHex)
+	if err != nil {
+		log.Error().Err(err).Str("clientItemIdHex", clientItemIdHex).Msg("failed to hex-decode clientItemId")
+		return err
+	}
+
+	typ, err := ParseDataType(typeStr)
+	if err != nil {
+		return err
+	}
+
+	store := u.UB.GetTypedStore(user.Id, typ)
+	rowsAffected, err := store.DeleteByClientItemId(clientItemId)
+
+	metric := getDataMetric(typ)
+	metric.Sub(float64(rowsAffected))
+
+	if rowsAffected == 0 {
+		return gorm.ErrRecordNotFound
+	}
+	return err
+}
+
+/* ------- APIv1 Setters ------- */
 
 func (u *UserRepository) AddLocation(user *FMDUser, loc string) {
 	u.UB.Create(&Location{Position: loc, UserID: user.Id})
@@ -173,6 +317,8 @@ func (u *UserRepository) DeleteUser(user *FMDUser) error {
 
 	return nil
 }
+
+/* ------- APIv1 Getters ------- */
 
 var ErrIndexOutOfBounds = errors.New("requested index is out of bounds")
 
@@ -329,9 +475,6 @@ func (u *UserRepository) RequestAccess(username string, innerPwHash string, sess
 			Str("remoteIp", remoteIp).
 			Msg("blocked login attempt")
 
-		// Cannot sign since the server sets this.
-		// This is the only "command" that is allowed to be unsigned.
-		u.SetCommandToUser(user, "423", 0, "")
 		return nil, nil, ErrAccountLocked
 	}
 
@@ -367,6 +510,19 @@ func (u *UserRepository) RequestAccess(username string, innerPwHash string, sess
 			Str("user", user.Username).
 			Str("remoteIp", remoteIp).
 			Msg("failed login attempt")
+
+		// Push once for the first login that triggered the lock.
+		if u.ACC.IsLocked(username) {
+			log.Warn().Str("user", user.Username).Msg("pushing lock notification")
+			if user.CryptoProtoVersion == constants.CryptoProtoV1 {
+				// Cannot sign since the server sets this.
+				// This is the only "command" that is allowed to be unsigned.
+				u.SetCommandToUser(user, "423", 0, "")
+			} else {
+				u.AddMessage(user, CODE_ACCOUNT_LOCKED, "")
+			}
+		}
+
 		return nil, nil, ErrWrongPassword
 	}
 }

@@ -41,6 +41,10 @@ var (
 		Name: "fmd_pending_commands",
 		Help: "Number of pending commands",
 	})
+	PendingMessages = promauto.NewGauge(prometheus.GaugeOpts{
+		Name: "fmd_pending_messages",
+		Help: "Number of pending server messages",
+	})
 
 	PushServers = promauto.NewGaugeVec(prometheus.GaugeOpts{
 		Name: "fmd_push_server",

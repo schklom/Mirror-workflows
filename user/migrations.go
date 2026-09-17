@@ -11,7 +11,7 @@ import (
 	"gorm.io/gorm"
 )
 
-const CurrentSqlVersion = 4
+const CurrentSqlVersion = 5
 
 const KeyVersion = "fmd_db_version"
 
@@ -68,6 +68,13 @@ func migrateDatabase(db *gorm.DB) {
 		err := runMigration("000004_rename_user_id_name", db)
 		if err != nil {
 			log.Fatal().Err(err).Msg("failed migration=000004_rename_user_id_name")
+		}
+	}
+
+	if actualVersion < 5 {
+		err := runMigration("000005_crypto_v2", db)
+		if err != nil {
+			log.Fatal().Err(err).Msg("failed migration=000005_crypto_v2")
 			return
 		}
 	}

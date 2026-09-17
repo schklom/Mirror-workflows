@@ -27,7 +27,15 @@ type FMDUser struct {
 	PushUrl        string
 	LastSeenTime   int64
 
-	// Deprecated crypto protocol
+	CryptoProtoVersion uint16
+
+	// Crypto protocol v2
+	EncMasterKeyV2 string
+	DataV2         []DataV2 `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE;"`
+
+	Messages []Message `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE;"`
+
+	// Deprecated crypto protocol v1
 	PrivateKey    string
 	PublicKey     string
 	CommandToUser string
@@ -35,6 +43,24 @@ type FMDUser struct {
 	CommandSig    string
 	Locations     []Location `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE;"`
 	Pictures      []Picture  `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE;"`
+}
+
+type DataV2 struct {
+	Id           uint64 `gorm:"primaryKey"`
+	UserId       uint64 `gorm:"index"`
+	Type         DataType
+	ClientItemId []byte
+	UnixMillis   uint64
+	Ciphertext   string
+}
+
+type Message struct {
+	Id         uint64 `gorm:"primaryKey"`
+	UserId     uint64 `gorm:"index"`
+	Uuid       string
+	UnixMillis uint64
+	Code       uint64
+	Text       string
 }
 
 // Location Table of the Users
@@ -149,11 +175,17 @@ func (db *FMDDB) GetByName(username string) (*FMDUser, error) {
 }
 
 func (db *FMDDB) PreloadLocations(user *FMDUser) {
-	db.DB.Preload("Locations").Where(&user).Find(&user)
+	db.DB.
+		Preload("Locations").
+		Where(&user).
+		Find(&user)
 }
 
 func (db *FMDDB) PreloadPictures(user *FMDUser) {
-	db.DB.Preload("Pictures").Where(&user).Find(&user)
+	db.DB.
+		Preload("Pictures").
+		Where(&user).
+		Find(&user)
 }
 
 func (db *FMDDB) Save(value interface{}) {

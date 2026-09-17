@@ -21,6 +21,13 @@ export const MUSCLES = [
   'calves', 'tibialis',
 ]
 
+// A picked list in the map's own order rather than the order the chips were tapped in — two
+// people building the same exercise get the same exercise. Unknown names keep their place at the end.
+export const inMuscleOrder = list => {
+  const at = m => { const i = MUSCLES.indexOf(m); return i < 0 ? MUSCLES.length : i }
+  return [...(list || [])].sort((a, b) => at(a) - at(b))
+}
+
 // Drawn as the silhouette, never shaded: they carry no training load.
 export const INERT = ['head', 'hair', 'neck', 'hands', 'feet', 'knees', 'ankles']
 

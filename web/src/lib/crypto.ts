@@ -19,8 +19,6 @@ export const AES_TAG_SIZE_BYTES = 16; // 128 bit
 
 const RSA_KEY_SIZE_BYTES = 3072 / 8; // 384 bytes
 
-const enc = new TextEncoder();
-
 export const base64Decode = (encodedString: string) => {
   try {
     const cleaned = encodedString.trim().replace(/\s/g, '');
@@ -38,7 +36,7 @@ export const base64Encode = (bytesToEncode: Uint8Array) => {
 // Section: Password and hashing
 
 // v1 returns the Argon-encoded string
-// v2 returns the password key bytes, that are then further used by the crypto code
+// v2 returns the bytes of the "password key" K_pwk, that are then processed further by the cryptov2 code
 export type PasswordHashResult = string | Uint8Array<ArrayBuffer>;
 
 export async function hashPasswordForLogin(
@@ -62,6 +60,7 @@ async function hashPasswordForLoginV2(
   password: string,
   salt64: string
 ): Promise<Uint8Array<ArrayBuffer>> {
+  const enc = new TextEncoder();
   const usernameHash = await hash(enc.encode(username));
   const passwordBytes = enc.encode(password);
   const saltBytes = base64Decode(salt64);

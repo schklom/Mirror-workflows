@@ -80,7 +80,7 @@ export const requestV2 = async <T>(
 
   const response = await fetch(endpoint, {
     method,
-    headers: headers,
+    headers,
     body: body ? JSON.stringify(body) : null,
   });
 

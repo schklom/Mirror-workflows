@@ -1149,6 +1149,8 @@ body.chips-dragging *{cursor:inherit}
   border-radius:var(--r-lg);padding:14px 14px 4px;
   background:var(--surface-2);
 }
+/* scrolled to when the list opens (#224): clear the sticky header above it */
+.wl-unit{scroll-margin-top:calc(var(--sat) + 96px)}
 .wl-unit.cur{box-shadow:inset 0 0 0 1.5px var(--acc-line)}
 .wl-hd{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
 @media (max-width:400px){

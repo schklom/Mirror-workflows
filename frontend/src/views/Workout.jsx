@@ -578,6 +578,16 @@ function ActiveWorkout() {
     const el = (setIdx >= 0 && setRefs.current.get(entry)?.get(setIdx)) || exRefs.current.get(entry)
     if (el && typeof el.scrollIntoView === 'function') el.scrollIntoView({ behavior: 'smooth', block: 'center' })
   }, [cur, isSuperset, listMode, A.entries.length])
+  // The list opens at the exercise you are on, not at the top of the session (issue #224): you
+  // switch to it mid-workout to look at what comes before and after. Only on the way in — once
+  // the list is open, "current" moves because you tick rows in it, and a list that scrolls
+  // itself under your thumb is worse than one that stays put.
+  const listRef = useRef(null)
+  useEffect(() => {
+    if (!listMode) return
+    const el = listRef.current?.querySelector('.wl-unit.cur')
+    if (el && typeof el.scrollIntoView === 'function') el.scrollIntoView({ block: 'start' })
+  }, [listMode])
 
   const total = setUnitsTotal(A.entries)
   const done = setsDoneActive(A)
@@ -946,7 +956,7 @@ function ActiveWorkout() {
     {A.backfill && <div className="muted small" style={{ marginBottom: 8 }}>{t('Logging a past workout — no rest timers.')}</div>}
 
     {A.entries.length ? (listMode ? (
-      <div className="workout-list" data-testid="workout-list">
+      <div className="workout-list" data-testid="workout-list" ref={listRef}>
         {units.map((u, ui) => {
           const multi = u.length > 1
           const isCur = u.includes(cur)

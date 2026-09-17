@@ -1012,6 +1012,13 @@ describe('workout list view', () => {
   const units = () => [...container.querySelectorAll('.wl-unit')]
   const focusButton = unit => [...unit.querySelectorAll('button')].find(b => b.textContent.trim() === 'Set current')
 
+  it('opens at the current exercise instead of the top of the session (#224)', async () => {
+    await mount([exercise('plain-bench', [true]), exercise('plain-row', [true]), exercise('plain-curl', [false])], 2, { workoutView: 'list' })
+    expect(mocks.scrollCalls.length).toBe(1)
+    expect(mocks.scrollCalls[0].node).toBe(units()[2])
+    expect(mocks.scrollCalls[0].node.classList.contains('cur')).toBe(true)
+  })
+
   it('stacks every exercise, labels each unit, and hides card navigation', async () => {
     await mount([exercise('plain-bench', [false, false]), exercise('plain-row', [false])], 0, { workoutView: 'list' })
 

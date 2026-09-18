@@ -9,7 +9,7 @@ import {
   getKeysV1,
   getKeysV2,
 } from '@/lib/keystore';
-import type { Location } from '@/lib/api';
+import type { Location, Item } from '@/lib/api';
 import { getInitialLanguage, type Language } from '@/lib/i18n';
 import { CRYPTO_PROTO_V2 } from './crypto';
 
@@ -39,11 +39,11 @@ interface AppState {
   pushUrl: string | null;
   isPushUrlLoading: boolean;
 
-  locations: Location[];
+  locations: Item<Location>[];
   currentLocationIndex: number;
   isLocationsLoading: boolean;
 
-  pictures: string[];
+  pictures: Item<string>[];
   isPicturesLoading: boolean;
 
   setUserData: (data: UserData, persistent: boolean) => Promise<void>;

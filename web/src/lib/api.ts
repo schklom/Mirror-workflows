@@ -26,6 +26,12 @@ export interface Picture {
   mimeType: string;
 }
 
+export interface Item<T> {
+  clientItemIdHex: string;
+  unixMillis: number;
+  item: T;
+}
+
 export const JSON_HEADER = { 'Content-Type': 'application/json' } as const;
 
 export const ONE_WEEK_SECONDS = 7 * 24 * 60 * 60;
@@ -47,8 +53,8 @@ export abstract class BaseApiService {
 
   abstract sendCommand(command: string): Promise<void>;
 
-  abstract getLocations(): Promise<Location[]>;
-  abstract getPictures(): Promise<string[]>;
+  abstract getLocations(): Promise<Item<Location>[]>;
+  abstract getPictures(): Promise<Item<string>[]>;
 
   abstract getTileServerUrl(): Promise<string>;
 }

@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { apiService } from '@/lib/apiService';
+import { ApiV2Service } from '@/lib/apiv2';
 import { useStore } from '@/lib/store';
 import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
 import { useTranslation } from 'react-i18next';
@@ -14,7 +15,7 @@ interface PhotosModalProps {
 }
 
 export const PhotosModal = ({ isOpen, onClose }: PhotosModalProps) => {
-  const { t } = useTranslation(['modals', 'dashboard']);
+  const { t } = useTranslation(['modals', 'dashboard', 'errors']);
   const { userData, pictures, isPicturesLoading } = useStore();
   const [selectedIndex, setSelectedIndex] = useState(0);
 
@@ -85,11 +86,41 @@ export const PhotosModal = ({ isOpen, onClose }: PhotosModalProps) => {
 
               <div className="relative flex h-[70vh] w-full items-center justify-center">
                 <img
-                  src={`data:image/jpeg;base64,${pictures[selectedIndex]}`}
+                  src={`data:image/jpeg;base64,${pictures[selectedIndex].item}`}
                   alt={`Device capture ${selectedIndex + 1}`}
                   className="max-h-full max-w-full rounded object-contain"
                 />
               </div>
+
+              {apiService() instanceof ApiV2Service && (
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  className="font-semibold"
+                  onClick={async () => {
+                    const service = apiService() as ApiV2Service;
+                    try {
+                      const toDelete = pictures[selectedIndex].clientItemIdHex;
+                      await service.deleteSinglePicture(toDelete);
+                      useStore.setState({
+                        pictures: [
+                          ...pictures.slice(0, selectedIndex),
+                          ...pictures.slice(selectedIndex + 1),
+                        ],
+                      });
+                      setSelectedIndex(Math.max(0, selectedIndex - 1));
+                      toast.info(t('pictures.delete_success'));
+                    } catch (error) {
+                      toast.error(
+                        error instanceof Error ? error.message : t('errors:delete_failed')
+                      );
+                    }
+                  }}
+                >
+                  <Trash2 className="h-4 w-4" />
+                  {t('pictures.delete')}
+                </Button>
+              )}
             </div>
           )}
         </div>

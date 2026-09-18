@@ -3,6 +3,7 @@ import {
   HTTP,
   JSON_HEADER,
   Location,
+  Item,
   ONE_WEEK_SECONDS,
   requestObject,
 } from './api';
@@ -154,7 +155,7 @@ export class ApiV1Service extends BaseApiService {
     });
   }
 
-  async getLocations(): Promise<Location[]> {
+  async getLocations(): Promise<Item<Location>[]> {
     const { userData } = useStore.getState();
 
     const response = await requestObject<string[]>(ENDPOINTS.LOCATIONS, HTTP.POST, {
@@ -170,14 +171,20 @@ export class ApiV1Service extends BaseApiService {
     const decryptedLocations = await Promise.all(
       encryptedLocations.map(async (encryptedLoc) => {
         const decrypted = await decryptData(userData!.keysV1!.rsaEncKey, encryptedLoc);
-        return JSON.parse(decrypted) as Location;
+        const location = JSON.parse(decrypted) as Location;
+        const item: Item<Location> = {
+          clientItemIdHex: '',
+          unixMillis: 0,
+          item: location,
+        };
+        return item;
       })
     );
 
     return decryptedLocations;
   }
 
-  async getPictures(): Promise<string[]> {
+  async getPictures(): Promise<Item<string>[]> {
     const { userData } = useStore.getState();
 
     const encryptedPictures = await requestObject<string[]>(ENDPOINTS.PICTURES, HTTP.POST, {
@@ -185,9 +192,15 @@ export class ApiV1Service extends BaseApiService {
     });
 
     const decryptedPictures = await Promise.all(
-      encryptedPictures.map((encryptedPic) =>
-        decryptData(userData!.keysV1!.rsaEncKey, encryptedPic)
-      )
+      encryptedPictures.map(async (encryptedPic) => {
+        const picture = await decryptData(userData!.keysV1!.rsaEncKey, encryptedPic);
+        const item: Item<string> = {
+          clientItemIdHex: '',
+          unixMillis: 0,
+          item: picture,
+        };
+        return item;
+      })
     );
 
     return decryptedPictures;

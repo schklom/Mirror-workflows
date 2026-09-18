@@ -21,7 +21,7 @@ interface SettingsModalProps {
 
 export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
   const { userData, units } = useStore();
-  const { t } = useTranslation(['settings', 'login', 'common']);
+  const { t } = useTranslation(['settings', 'login', 'common', 'errors']);
 
   const [showDeleteLocationsConfirm, setShowDeleteLocationsConfirm] = useState(false);
   const [showDeletePicturesConfirm, setShowDeletePicturesConfirm] = useState(false);
@@ -47,7 +47,8 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
       let locationsCSV =
         'Date,Provider,Battery,Latitude,Longitude,Accuracy,Altitude,Speed,Bearing\n';
 
-      for (const loc of locations) {
+      for (const locItem of locations) {
+        const loc = locItem.item;
         const date = new Date(loc.time).toISOString();
         const accuracy = loc.accuracy || '';
         const altitude = loc.altitude || '';
@@ -69,7 +70,7 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
       const picturesFolder = zip.folder('pictures');
       if (picturesFolder) {
         for (let i = 0; i < pictures.length; i++) {
-          picturesFolder.file(`${i}.png`, pictures[i], { base64: true });
+          picturesFolder.file(`${i}.png`, pictures[i].item, { base64: true });
         }
       }
 
@@ -236,7 +237,7 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
               setShowDeleteLocationsConfirm(false);
               toast.info(t('delete_locations.success'));
             } catch (error) {
-              toast.error(error instanceof Error ? error.message : 'Delete failed');
+              toast.error(error instanceof Error ? error.message : t('errors:delete_failed'));
             }
           })();
         }}
@@ -259,7 +260,7 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
               setShowDeletePicturesConfirm(false);
               toast.info(t('delete_pictures.success'));
             } catch (error) {
-              toast.error(error instanceof Error ? error.message : 'Delete failed');
+              toast.error(error instanceof Error ? error.message : t('errors:delete_failed'));
             }
           })();
         }}
@@ -281,7 +282,7 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
               setShowDeleteAccountConfirm(false);
               onClose();
             } catch (error) {
-              toast.error(error instanceof Error ? error.message : 'Delete failed');
+              toast.error(error instanceof Error ? error.message : t('errors:delete_failed'));
             }
           })();
         }}

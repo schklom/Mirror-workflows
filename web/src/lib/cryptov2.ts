@@ -57,8 +57,8 @@ async function hkdfDeriveBits(ikm: CryptoKey, info: Uint8Array<ArrayBuffer>): Pr
   const algorithm: HkdfParams = {
     name: 'HKDF',
     hash: 'SHA-256',
-    info: info,
-    salt: new Uint8Array(),
+    info,
+    salt: new Uint8Array(), // empty
   };
   const lengthBits = 256;
   return await crypto.subtle.deriveBits(algorithm, ikm, lengthBits);
@@ -85,7 +85,7 @@ async function importBytesHkdfKey(
 // ------- Functions -------
 
 /**
- * HKDF-derives the auth key and the pre master key from the password key.
+ * Derives the auth key and the pre master key from the password key using HKDF.
  *
  * @returns [auth key bytes, pre master key]
  */
@@ -143,17 +143,15 @@ export async function deriveKeks(
 ): Promise<[CryptoKey, CryptoKey, CryptoKey]> {
   const usernameHash = await hash(enc.encode(username));
 
-  let info = new Uint8Array([...CTX_KEK_CMD, ...usernameHash]);
-  const cmdKeyBytes = await hkdfDeriveBits(masterKey, info);
-  const cmdKey = await importBytesAesKey(cmdKeyBytes);
+  const derive = async (ctx: Uint8Array<ArrayBuffer>): Promise<CryptoKey> => {
+    let info = new Uint8Array([...ctx, ...usernameHash]);
+    const keyBytes = await hkdfDeriveBits(masterKey, info);
+    return await importBytesAesKey(keyBytes);
+  };
 
-  info = new Uint8Array([...CTX_KEK_LOC, ...usernameHash]);
-  const locKeyBytes = await hkdfDeriveBits(masterKey, info);
-  const locKey = await importBytesAesKey(locKeyBytes);
-
-  info = new Uint8Array([...CTX_KEK_PIC, ...usernameHash]);
-  const picKeyBytes = await hkdfDeriveBits(masterKey, info);
-  const picKey = await importBytesAesKey(picKeyBytes);
+  const cmdKey = await derive(CTX_KEK_CMD);
+  const locKey = await derive(CTX_KEK_LOC);
+  const picKey = await derive(CTX_KEK_PIC);
 
   return [cmdKey, locKey, picKey];
 }
@@ -167,7 +165,7 @@ export async function encryptDataV2(
   const usernameHash = await hash(enc.encode(username));
 
   const uniqueId = new Uint8Array(CLIENT_ITEM_ID_SIZE_BYTES);
-  window.crypto.getRandomValues(uniqueId);
+  crypto.getRandomValues(uniqueId);
   const unixMillis = Date.now();
 
   const adSuffix = new Uint8Array([
@@ -177,7 +175,7 @@ export async function encryptDataV2(
     ...numberToBytes(unixMillis),
   ]);
 
-  // Generate + encrypt the DEK
+  // Generate a DEK and encrypt the DEK using the KEK
   const dekBytes = new Uint8Array(AES_KEY_SIZE_BYTES);
   crypto.getRandomValues(dekBytes);
 
@@ -190,7 +188,7 @@ export async function encryptDataV2(
   const encryptedDek = await crypto.subtle.encrypt(algoDek, kek, dekBytes);
   const dekKey = await importBytesAesKey(dekBytes);
 
-  // Encrypt the data
+  // Encrypt the data using the DEK
   const ivData = new Uint8Array(AES_IV_SIZE_BYTES);
   crypto.getRandomValues(ivData);
 
@@ -251,14 +249,14 @@ export async function decryptDataV2(
   start = end;
   const encryptedData = ciphertextBytes.subarray(start);
 
-  // Decrypt the DEK
+  // Decrypt the DEK using the KEK
   const adDek = new Uint8Array([...CTX_DEK, ...adSuffix]);
   const algoDek: AesGcmParams = { name: 'AES-GCM', iv: ivDek, additionalData: adDek };
 
   const dekBytes = await crypto.subtle.decrypt(algoDek, kek, encryptedDek);
   const dekKey = await importBytesAesKey(dekBytes);
 
-  // Decrypt the data
+  // Decrypt the data using the DEK
   const adData = new Uint8Array([...CTX_DATA, ...adSuffix]);
   const algoData: AesGcmParams = { name: 'AES-GCM', iv: ivData, additionalData: adData };
 

@@ -67,9 +67,9 @@ export class ApiV2Service extends BaseApiService {
 
     // Get access token and encrypted master key
     const requestBody: LoginRequest = {
-      username: username,
+      username,
       passwordHash64: base64Encode(authKey),
-      sessionDurationSeconds: sessionDurationSeconds,
+      sessionDurationSeconds,
     };
     const response = await requestV2<LoginResponse>(
       HTTP.POST,

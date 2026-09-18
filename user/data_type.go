@@ -122,7 +122,8 @@ func (s TypedStore) Prune(numToKeep int) (int64, error) {
 }
 
 // Create new entries in the DB.
-// Note: callers should ensure that userId and typ is correctly set.
+//
+// Note: callers must ensure that userId and typ are correctly set on all items!
 func (s TypedStore) Create(items *[]DataV2) (int64, error) {
 	res := s.db.Create(items) // no need to scope creates
 	return res.RowsAffected, res.Error

@@ -10,7 +10,7 @@ import {
   getKeysV2,
 } from '@/lib/keystore';
 import type { Location } from '@/lib/api';
-import type { Language } from '@/lib/i18n';
+import { getInitialLanguage, type Language } from '@/lib/i18n';
 import { CRYPTO_PROTO_V2 } from './crypto';
 
 export type Theme = 'light' | 'dark' | 'system';
@@ -65,7 +65,7 @@ export const useStore = create<AppState>()(
       wasAuthRestoreTried: false,
       theme: 'system',
       units: 'metric',
-      language: 'en',
+      language: getInitialLanguage(),
       pushUrl: null,
       locations: [],
       currentLocationIndex: 0,

@@ -52,6 +52,29 @@ for (const path in translationModules) {
   }
 }
 
+function findSupportedLanguage(langBcp47: string): Language | null {
+  // Exact match, e.g. 'pt-BR'
+  let lang = langBcp47.toLowerCase();
+  const exact = SUPPORTED_LANGUAGES.find((code) => code.toLowerCase() === lang);
+  if (exact) return exact;
+
+  // Base match, e.g. 'de-CH' matches 'de'
+  lang = lang.split('-')[0];
+  const base = SUPPORTED_LANGUAGES.find((code) => code.toLowerCase() === lang);
+  if (base) return base;
+
+  return null;
+}
+
+export function getInitialLanguage(): Language {
+  if (typeof navigator === 'undefined') return 'en';
+  for (const lang of navigator.languages) {
+    const match = findSupportedLanguage(lang);
+    if (match) return match;
+  }
+  return 'en';
+}
+
 void i18next
   .use(LanguageDetector)
   .use(initReactI18next)

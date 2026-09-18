@@ -1,4 +1,4 @@
-.PHONY: clean server web run update-swagger-ui
+.PHONY: clean server server-ctl web run update-swagger-ui
 
 .DEFAULT_GOAL := server
 

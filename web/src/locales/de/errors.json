@@ -1,4 +1,5 @@
 {
   "account_not_found": "Konto nicht gefunden. Bitte registriere ein Konto mit der FMD-Android-App.",
-  "login_failed": "Anmeldung fehlgeschlagen"
+  "login_failed": "Anmeldung fehlgeschlagen",
+  "delete_failed": "Löschen fehlgeschlagen"
 }

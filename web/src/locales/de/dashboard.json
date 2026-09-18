@@ -8,7 +8,8 @@
     "no_data": "Noch keine Standortdaten. Schicke einen Ortungsbefehl mit den Knöpfen weiter unten!",
     "older": "Älter",
     "newer": "Neuer",
-    "no_push_url": "Keine Push-URL konfiguriert. Das Gerät empfängt keine Befehle, bis du Push-Benachrichtigungen in der Android-App einrichtest."
+    "no_push_url": "Keine Push-URL konfiguriert. Das Gerät empfängt keine Befehle, bis du Push-Benachrichtigungen in der Android-App einrichtest.",
+    "delete_success": "Standort gelöscht"
   },
   "command_failed": "Befehl fehlgeschlagen!",
   "time": "Uhrzeit",

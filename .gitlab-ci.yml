@@ -12,6 +12,10 @@ variables:
   GIT_DEPTH: "0" # Tells git to fetch all the branches of the project, required by the analysis task
   RUNNER_TAG: "saas-linux-medium-amd64" # gitlab.com shared runner (fallback for forks)
 
+  # https://gitlab.com/fmd-foss/fmd-server/-/work_items/175
+  # https://support.gitlab.com/hc/en-us/articles/29426166749596-Push-to-Container-Registry-Fails-Error-error-from-registry-blob-unknown-to-registry
+  BUILDX_NO_DEFAULT_ATTESTATIONS: "1"
+
 workflow:
   rules:
     - if: '$CI_PROJECT_ROOT_NAMESPACE == "fmd-foss"'

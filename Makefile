@@ -1,21 +1,30 @@
-.PHONY: clean server web run update-swagger-ui
+.PHONY: server server-ctl web clean run update-swagger-ui
 
 .DEFAULT_GOAL := server
 
-SWAGGER_UI_VERSION = 5.32.15
 BINARY = fmd-server
+CTL_BINARY = fmd-server-ctl
+SWAGGER_UI_VERSION = 5.32.15
+
+# ----- Binaries -----
 
 server: web
 	go build -o $(BINARY)
+
+server-ctl:
+	go -C ctl build -o $(CTL_BINARY)
+	mv ctl/$(CTL_BINARY) .
+
+web:
+	cd web && pnpm run build
+
+# ----- Maintenance -----
 
 clean:
 	rm -f $(BINARY)
 	go clean -cache
 	rm -rf web/dist/
 	cd web && pnpm clean
-
-web:
-	cd web && pnpm run build
 
 run: server
 	./$(BINARY) serve

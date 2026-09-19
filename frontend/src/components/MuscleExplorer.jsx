@@ -84,7 +84,7 @@ export default function MuscleExplorer({ onPick, onDetail, onPlan }) {
           const primary = musclesOf(e)[selected] === 1
           return <div key={e.id} className="item" {...tappable(() => choose(e))}>
             <Thumb ex={e} />
-            <div className="grow"><div className="tt capitalize">{isFav(S, e.id) && <Icon name="starFill" className="fav-star" />}{exerciseNameFor(e)}</div><div className="ss">{t(primary ? 'Primary target' : 'Also trains')} · <span className="capitalize">{t(e.tg || e.bp)} · {t(e.eq)}</span></div></div>
+            <div className="grow"><div className="tt capitalize">{isFav(S, e.id) && <Icon name="starFill" className="fav-star" />}{exerciseNameFor(e)}</div><div className="ss">{t(primary ? 'Primary target' : 'Also trains')} · <span className="capitalize">{t(MUSCLE_NAME[e.tg] || e.tg || e.bp)} · {t(e.eq)}</span></div></div>
             {onPick ? <Icon name="plus" className="chev" /> : <>
               {best > 0 && <span className="tag acc">{fmtNum(best)}</span>}
               <Button size="sm" variant="tinted" icon="plus" onClick={ev => { ev.stopPropagation(); onPlan(e) }}>{t('Plan')}</Button>

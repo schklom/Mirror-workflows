@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { parseWorkoutCSV } from './import-csv.js'
+import { parseWorkoutCSV, mergeImport } from './import-csv.js'
 import { workoutVolume } from './history.js'
 
 const CSV = [
@@ -69,5 +69,39 @@ describe('imported volume', () => {
     const [w] = parseWorkoutCSV(HEVY_WARMUPS, { unit: 'kg' }).workouts
     expect(w.vol).toBe(1100)
     expect(w.vol).toBe(workoutVolume(w))
+  })
+})
+
+// Two exports of the same account, the second one a week later. Each parse invents fresh ids for
+// the names it cannot match, so the merge has to find the custom exercise the first import created
+// — otherwise the Library lists "Zorb Roller" twice with half the history each (QA C12).
+const hevyDay = (title, day, name, w, r) =>
+  `"${title}","${day} Mar 2025, 18:00","${day} Mar 2025, 19:00","","${name}",,"",0,normal,${w},${r},,,`
+const HEVY_HEAD = HEVY_WARMUPS.split('\n')[0]
+const EXPORT_A = [HEVY_HEAD, hevyDay('Day A', '02', 'Zorb Roller', 49, 8), hevyDay('Day A', '02', 'Bench Press (Barbell)', 80, 5)].join('\n')
+const EXPORT_B = [HEVY_HEAD, hevyDay('Day A', '02', 'Zorb Roller', 49, 8), hevyDay('Day B', '09', 'Zorb Roller', 30, 15)].join('\n')
+
+describe('mergeImport and custom exercises', () => {
+  const fresh = () => ({ workouts: [], customEx: [], exWeights: {}, bodyweight: [] })
+
+  it('reuses the custom exercise an earlier import created for the same name', () => {
+    const S = fresh()
+    mergeImport(S, parseWorkoutCSV(EXPORT_A, { unit: 'kg' }))
+    const [zorb] = S.customEx
+    expect(zorb.n).toBe('zorb roller')
+
+    expect(mergeImport(S, parseWorkoutCSV(EXPORT_B, { unit: 'kg' }))).toEqual({ added: 1, skipped: 1 })
+    expect(S.customEx).toHaveLength(1)
+    // The new day points at the existing exercise, so its history is one line, not two.
+    expect(S.workouts.map(w => w.entries[0].id)).toEqual([zorb.id, zorb.id])
+    expect(S.exWeights[zorb.id]).toEqual({ w: 30, d: '2025-03-09' })
+  })
+
+  it('matches the name regardless of case and spacing, including one the user made by hand', () => {
+    const S = fresh()
+    S.customEx.push({ id: 'mine', n: 'Zorb  Roller ', bp: 'waist', custom: true })
+    mergeImport(S, parseWorkoutCSV(EXPORT_A, { unit: 'kg' }))
+    expect(S.customEx).toHaveLength(1)
+    expect(S.workouts[0].entries.map(e => e.id)).toEqual(['mine', '0025'])
   })
 })

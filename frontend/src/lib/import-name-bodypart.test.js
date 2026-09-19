@@ -27,6 +27,19 @@ describe('body part from an exercise name', () => {
     expect(bp('Deadlift')).toBe('back')
   })
 
+  // The rules are written with spaces, but people hyphenate these names as often as not (QA C28).
+  // The matcher already treats "chest-supported row" and "chest supported row" as one exercise;
+  // the body-part fallback has to agree with it, or the two spellings land on different maps.
+  it('reads the hyphenated, underscored and slashed spellings like the spaced ones', () => {
+    expect(bp('Stiff-Legged Deadlift')).toBe('upper legs')
+    expect(bp('Straight-Leg Deadlift')).toBe('upper legs')
+    expect(bp('Stiff_Leg Deadlift')).toBe('upper legs')
+    expect(bp('Chest-Supported Row')).toBe('back')
+    expect(bp('Chest-Supported T-Bar Row')).toBe('back')
+    expect(bp('Chest/Supported Row')).toBe('back')
+    expect(bp('Sit-Up')).toBe('waist')
+  })
+
   it('still reads a bare grip exercise as forearms, and the rest as before', () => {
     expect(bp('Grip Trainer')).toBe('lower arms')
     expect(bp('Back Squat')).toBe('back')   // unchanged: "back" is matched before "squat"

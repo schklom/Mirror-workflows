@@ -286,7 +286,13 @@ const NAME_BP = [
   [/\bneck\b/, 'neck'],
   [/\bgrip\b/, 'lower arms'],
 ]
-export const bpFromName = name => (NAME_BP.find(([re]) => re.test(name)) || [])[1] || null
+// Hyphens, underscores and slashes read as spaces first: "Stiff-Legged Deadlift" and
+// "Chest-Supported Row" are the same names the rules above spell with a space, and the
+// matcher (wordsOf) already treats the two spellings as one exercise — the body part has to agree.
+export const bpFromName = name => {
+  const n = String(name || '').toLowerCase().replace(/[-_/]+/g, ' ').replace(/\s+/g, ' ').trim()
+  return (NAME_BP.find(([re]) => re.test(n)) || [])[1] || null
+}
 
 // Categories the exporters use -> the dataset's body parts, for exercises we invent.
 const CATEGORY_BP = {

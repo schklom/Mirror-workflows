@@ -513,21 +513,53 @@ function json(res, code, obj, extraHeaders) {
   res.writeHead(code, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store', ...(extraHeaders || {}) });
   res.end(body);
 }
+// A request the caller got wrong. The catch-all at the bottom answers it with this status and
+// message and does not log it: three of the routes below are reachable without a session, and a
+// stack trace per malformed body would let anyone fill the container log with noise that looks
+// like a crash. Anything else that escapes a handler is still a real 500 and still logged.
+class HttpError extends Error {
+  constructor(status, message) { super(message); this.status = status; }
+}
 function readBody(req) {
   return new Promise((resolve, reject) => {
-    let size = 0; const chunks = [];
+    let size = 0, over = false; const chunks = [];
     req.on('data', d => {
       size += d.length;
-      if (size > MAX_BODY) { reject(new Error('body too large')); req.destroy(); return; }
+      if (over) {
+        // The 413 is already on its way. The rest of the upload is read and thrown away rather
+        // than the socket destroyed under it: closing with unread bytes on the wire makes the
+        // kernel send a reset, and a client (node's own http client included) that hits the
+        // reset before it has parsed the answer reports a dropped connection instead of the
+        // 413. A client that keeps streaming past twice the cap is not a mistaken one, and is
+        // cut off.
+        if (size > 2 * MAX_BODY) req.destroy();
+        return;
+      }
+      if (size > MAX_BODY) {
+        over = true; chunks.length = 0;
+        reject(new HttpError(413, 'body too large'));
+        return;
+      }
       chunks.push(d);
     });
     req.on('end', () => {
-      try { resolve(chunks.length ? JSON.parse(Buffer.concat(chunks).toString('utf8')) : {}); }
-      catch { reject(new Error('bad json')); }
+      if (over) return;
+      if (!chunks.length) return resolve({});
+      let body;
+      try { body = JSON.parse(Buffer.concat(chunks).toString('utf8')); }
+      catch { return reject(new HttpError(400, 'invalid json')); }
+      // Every handler reads fields off the result, so a JSON `null`, string, number or array is
+      // as much a client mistake as unparseable text — refused once here rather than dereferenced
+      // (and turned into a TypeError) in each route.
+      if (!body || typeof body !== 'object' || Array.isArray(body)) return reject(new HttpError(400, 'invalid json'));
+      resolve(body);
     });
     req.on('error', reject);
   });
 }
+// A caller-supplied field that is meant to be text. String() alone is not safe on a parsed body:
+// `{"code":{"toString":1}}` is valid JSON and String() throws on it.
+const text = v => (typeof v === 'string' ? v : typeof v === 'number' ? String(v) : '');
 const b64uToBuf = s => Buffer.from(s, 'base64url');
 
 /* ---------- live presence (in-memory) ---------- */
@@ -658,9 +690,9 @@ const routes = {
 
   'POST /api/register/options': async (req, res) => {
     const body = await readBody(req);
-    const name = String(body.name || '').trim().slice(0, 40);
+    const name = text(body.name).trim().slice(0, 40);
     if (!name) return json(res, 400, { error: 'name required' });
-    const code = String(body.code || '').trim().toUpperCase();
+    const code = text(body.code).trim().toUpperCase();
     if (INVITE_ONLY && !db.invites.some(i => i.code === code && !i.usedBy && !i.revoked)) {
       // The rejected code itself is never recorded — a near-miss guess in the log is a liability.
       audit(req, 'auth.register.denied', { ok: false, name, msg: 'invite-rejected' });
@@ -830,7 +862,7 @@ const routes = {
   // the code IS the credential, one-shot and 5-minute-lived like a WebAuthn challenge.
   'POST /api/pair/redeem': async (req, res) => {
     const body = await readBody(req);
-    const code = String(body.code || '').trim().toUpperCase();
+    const code = text(body.code).trim().toUpperCase();
     const p = pairings.get(code);
     if (p) pairings.delete(code);
     if (!p || p.exp < Date.now()) {
@@ -871,9 +903,17 @@ const routes = {
     if (!body.state || typeof body.state !== 'object') return json(res, 400, { error: 'state required' });
     // The reminder tick and the admin routes iterate these two on the server's side, so a truthy
     // non-array would throw there on every pass for as long as it sat on disk. Absent or null is
-    // fine — every client fills its own defaults.
+    // fine — every client fills its own defaults. An array is `typeof 'object'` but no document:
+    // `_rev` set on it is dropped by JSON.stringify, so the file would read back as rev 0 while
+    // the response claimed the next revision.
     const list = v => v == null || Array.isArray(v);
-    if (!list(body.state.workouts) || !list(body.state.routines)) return json(res, 400, { error: 'invalid state' });
+    if (Array.isArray(body.state) || !list(body.state.workouts) || !list(body.state.routines)) return json(res, 400, { error: 'invalid state' });
+    // The same readers dereference every entry (`w.d`, `w.name`), so a null or non-object entry
+    // would throw there — and blank the admin's drill-down of this profile. Dropped, not refused:
+    // such an entry carries nothing worth keeping, whereas a 400 would strand a client whose own
+    // copy is already malformed — it keeps re-sending the same document and never syncs again.
+    const record = x => x && typeof x === 'object' && !Array.isArray(x);
+    for (const k of ['workouts', 'routines']) if (Array.isArray(body.state[k])) body.state[k] = body.state[k].filter(record);
     // Conditional write: a `baseRev` that is not the current revision means this client last
     // read an older document — another device has written since — and the copy it is about to
     // push would silently drop that write. The current document travels back with the 409, so
@@ -954,8 +994,13 @@ const routes = {
     const user = readSession(req);
     if (!user) return json(res, 401, { error: 'not signed in' });
     const body = await readBody(req);
-    const sec = Math.max(1, Math.min(3600, Math.round(+body.seconds || 0)));
-    if (!sec) return json(res, 400, { error: 'seconds required' });
+    // Validated before it is clamped: the clamp used to run first, which turned a missing or
+    // unusable value into a 1-second push and made the 400 below unreachable. `Number()` only
+    // on a number or a string — on an object it can throw.
+    const raw = body.seconds;
+    const n = typeof raw === 'number' || typeof raw === 'string' ? Number(raw) : NaN;
+    if (!(n >= 1)) return json(res, 400, { error: 'seconds required' });
+    const sec = Math.min(3600, Math.round(n));
     scheduleRestTimer(user.id, deviceIdOf(body.deviceId), sec, readState(user.id)?.lang);
     json(res, 200, { ok: true });
   },
@@ -975,7 +1020,7 @@ const routes = {
     const body = await readBody(req);
     if (body.active) {
       presence.set(user.id, {
-        name: String(body.name || '').slice(0, 60),
+        name: text(body.name).slice(0, 60),
         exIdx: +body.exIdx || 0, exTotal: +body.exTotal || 0,
         setsDone: +body.setsDone || 0, setsTotal: +body.setsTotal || 0,
         startedAt: +body.startedAt || Date.now(),
@@ -1054,7 +1099,7 @@ const routes = {
     // good, so the code itself has to be the thing that isn't worth guessing. Codes already in
     // db.json keep working — validation is an exact string compare, never a length or format check.
     do { code = crypto.randomBytes(8).toString('hex').toUpperCase(); } while (db.invites.some(i => i.code === code));
-    const invite = { code, note: String(body.note || '').slice(0, 60), createdBy: admin.id, created: new Date().toISOString() };
+    const invite = { code, note: text(body.note).slice(0, 60), createdBy: admin.id, created: new Date().toISOString() };
     db.invites.push(invite);
     saveDb();
     audit(req, 'admin.invite.create', { user: admin, msg: code });
@@ -1064,7 +1109,7 @@ const routes = {
   'POST /api/admin/invites/revoke': async (req, res) => {
     const admin = requireAdmin(req, res); if (!admin) return;
     const body = await readBody(req);
-    const inv = db.invites.find(i => i.code === String(body.code || '').toUpperCase());
+    const inv = db.invites.find(i => i.code === text(body.code).toUpperCase());
     if (!inv) return json(res, 404, { error: 'no such code' });
     if (inv.usedBy) return json(res, 400, { error: 'already used — cannot revoke' });
     db.invites = db.invites.filter(i => i.code !== inv.code);
@@ -1166,6 +1211,10 @@ http.createServer(async (req, res) => {
   }
   try { await handler(req, res); }
   catch (e) {
+    if (e instanceof HttpError) {
+      if (!res.headersSent) json(res, e.status, { error: e.message });
+      return;
+    }
     console.error(key, e);
     if (!res.headersSent) json(res, 500, { error: 'server error' });
   }

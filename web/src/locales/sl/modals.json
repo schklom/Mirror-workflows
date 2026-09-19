@@ -17,7 +17,9 @@
   "pictures": {
     "title": "Fotografije",
     "empty": "Ni fotografij",
-    "of": "od"
+    "of": "od",
+    "delete": "Izbriši sliko",
+    "delete_success": "Sika izbrisana"
   },
   "webcrypto_warning": {
     "title": "Web Cryptography API ni na voljo",

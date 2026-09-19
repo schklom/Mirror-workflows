@@ -795,13 +795,17 @@ function CustomExForm({ existing, prefill, onDone, close }) {
     const prim = bp === 'cardio' ? ['cardiovascular system'] : inMuscleOrder(primaries)
     const sm = inMuscleOrder(secondaries.filter(m => !prim.includes(m)))
     const groups = [...prim, ...sm]
+    // The one-word target (the library row, the picker, the Muscles view) is not the sorted list's
+    // head — a hip thrust with Traps as an extra primary is not a Traps exercise. It is the primary
+    // tapped first, and an edit keeps the exercise's target as long as that muscle is still a primary.
+    const tg = (existing && prim.includes(existing.tg)) ? existing.tg : (primaries.find(m => prim.includes(m)) || prim[0] || '')
     let id = existing && existing.id
     if (existing) update(s => { const c = (s.customEx || []).find(x => x.id === id); if (c) {
-      c.n = name; c.bp = bp; c.desc = d; c.tg = prim[0] || ''; c.sm = sm; c.muscleGroups = groups; c.primaries = prim; c.secondaries = sm; c.eq = eq
+      c.n = name; c.bp = bp; c.desc = d; c.tg = tg; c.sm = sm; c.muscleGroups = groups; c.primaries = prim; c.secondaries = sm; c.eq = eq
     } })
     else {
       id = 'c' + uid()
-      update(s => { (s.customEx = s.customEx || []).push({ id, n: name, bp, desc: d, tg: prim[0] || '', sm, muscleGroups: groups, primaries: prim, secondaries: sm, eq, custom: true }) })
+      update(s => { (s.customEx = s.customEx || []).push({ id, n: name, bp, desc: d, tg, sm, muscleGroups: groups, primaries: prim, secondaries: sm, eq, custom: true }) })
     }
     close()
     toast(existing ? t('Saved') : t('“{0}” created', name))

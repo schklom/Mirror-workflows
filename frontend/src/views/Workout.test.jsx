@@ -1383,4 +1383,18 @@ describe('Workout exercise tags', () => {
       expect(tags).not.toContain('gluteal')
     } finally { registerCustom([]) }
   })
+
+  // The cardio target "cardiovascular system" is a translated key of its own; mapping it through
+  // MUSCLE_NAME must not turn "Herz-Kreislauf" back into English for every built-in cardio exercise.
+  it('keeps the cardio target translated (burpee, de)', async () => {
+    const { _setLangState } = await import('../lib/i18n-core.js')
+    const { default: de } = await import('../locales/de.js')
+    _setLangState('de', de, null, null)
+    try {
+      await mount([exercise('1160', [false])])
+      const tags = [...container.querySelectorAll('.tag')].map(tag => tag.textContent.trim())
+      expect(tags).toContain('Herz-Kreislauf')
+      expect(tags).not.toContain('Cardiovascular system')
+    } finally { _setLangState('en', null, null, null) }
+  })
 })

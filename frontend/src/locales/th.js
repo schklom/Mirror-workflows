@@ -490,6 +490,7 @@ export default {
   'Hip flexors': 'กล้ามเนื้องอสะโพก',
   'Calves': 'น่อง',
   'Shins': 'หน้าแข้ง',
+  'Cardiovascular system': 'ระบบหัวใจและหลอดเลือด',
   // --- import from another app ---
   'Import from another app': 'นำเข้าจากแอปอื่น',
   'FitNotes, Strong, Hevy — or body weight from Apple Health': 'FitNotes, Strong, Hevy — หรือน้ำหนักตัวจาก Apple Health',

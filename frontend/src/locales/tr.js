@@ -485,6 +485,7 @@ export default {
   'Hip flexors': 'Kalça fleksörleri',
   'Calves': 'Baldırlar',
   'Shins': 'İncik',
+  'Cardiovascular system': 'kalp-damar sistemi',
   // --- import from another app ---
   'Import from another app': 'Başka uygulamadan içe aktar',
   'FitNotes, Strong, Hevy — or body weight from Apple Health': 'FitNotes, Strong, Hevy — veya Apple Health\'ten vücut ağırlığı',

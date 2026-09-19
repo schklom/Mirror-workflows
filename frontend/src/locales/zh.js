@@ -485,6 +485,7 @@ export default {
   'Hip flexors': '髋屈肌',
   'Calves': '小腿',
   'Shins': '胫前肌',
+  'Cardiovascular system': '心血管系统',
   // --- import from another app ---
   'Import from another app': '从其他应用导入',
   'FitNotes, Strong, Hevy — or body weight from Apple Health': 'FitNotes、Strong、Hevy — 或来自 Apple 健康的体重',

@@ -485,6 +485,7 @@ export default {
   'Hip flexors': 'हिप फ्लेक्सर',
   'Calves': 'पिंडली',
   'Shins': 'पिंडली की हड्डी',
+  'Cardiovascular system': 'हृदय प्रणाली',
   // --- import from another app ---
   'Import from another app': 'दूसरे ऐप से आयात करें',
   'FitNotes, Strong, Hevy — or body weight from Apple Health': 'FitNotes, Strong, Hevy — या Apple Health से वज़न',

@@ -490,6 +490,7 @@ export default {
   'Hip flexors': 'Csípőhajlító',
   'Calves': 'Vádli',
   'Shins': 'Sípcsont',
+  'Cardiovascular system': 'szív-érrendszer',
   // --- import from another app ---
   'Import from another app': 'Importálás másik appból',
   'FitNotes, Strong, Hevy — or body weight from Apple Health': 'FitNotes, Strong, Hevy — vagy testsúly az Apple Healthből',

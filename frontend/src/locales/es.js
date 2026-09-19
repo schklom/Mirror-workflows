@@ -485,6 +485,7 @@ export default {
   'Hip flexors': 'Flexores de cadera',
   'Calves': 'Gemelos',
   'Shins': 'Tibiales',
+  'Cardiovascular system': 'sistema cardiovascular',
   // --- import from another app ---
   'Import from another app': 'Importar de otra app',
   'FitNotes, Strong, Hevy — or body weight from Apple Health': 'FitNotes, Strong, Hevy — o peso corporal de Apple Health',

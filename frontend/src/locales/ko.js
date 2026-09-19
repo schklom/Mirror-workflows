@@ -485,6 +485,7 @@ export default {
   'Hip flexors': '고관절 굴곡근',
   'Calves': '종아리',
   'Shins': '정강이',
+  'Cardiovascular system': '심혈관계',
   // --- import from another app ---
   'Import from another app': '다른 앱에서 가져오기',
   'FitNotes, Strong, Hevy — or body weight from Apple Health': 'FitNotes, Strong, Hevy — 또는 Apple 건강의 체중',

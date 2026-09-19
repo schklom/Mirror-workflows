@@ -96,6 +96,20 @@ describe('muscle names in the rows and tags (QA C9)', () => {
     expect(rowFor(host, 'QA Custom Thrust').querySelector('.ss').textContent).toBe('Gesäß · Langhantel')
   })
 
+  // The dataset's cardio target "cardiovascular system" is both a map id and a translated key
+  // of its own. Routing it through MUSCLE_NAME must not cost it its translation: the 29
+  // built-in cardio exercises read "Herz-Kreislauf" in German, never "Cardiovascular system".
+  it('keeps the cardio target translated (burpee, de)', () => {
+    _setLangState('de', de, null, null)
+    exercisePicker(vi.fn())
+    const host = renderTop()
+    act(() => type(host.querySelector('input.input'), 'burpee'))
+    expect(rowFor(host, 'burpee').querySelector('.ss').textContent).toBe('Herz-Kreislauf · Körpergewicht')
+    exConfigSheet(EXIDX['1160'], null, vi.fn())
+    const tags = [...renderTop().querySelectorAll('.tag')].map(e => e.textContent.trim())
+    expect(tags).toEqual(['Cardio', 'Herz-Kreislauf', 'Körpergewicht'])
+  })
+
   it('Muscles explorer row names the target the same way', () => {
     seed(custom())
     const host = render(<MuscleExplorer onDetail={vi.fn()} onPlan={vi.fn()} />)

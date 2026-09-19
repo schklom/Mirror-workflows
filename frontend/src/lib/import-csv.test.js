@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { parseWorkoutCSV } from './import-csv.js'
+import { workoutVolume } from './history.js'
 
 const CSV = [
   'Date,Exercise,Weight,Reps,Set Type',
@@ -48,5 +49,25 @@ describe('gravl export', () => {
 
     // "Set Duration (sec)" is seconds, not minutes: read as `time` it would land as 22 minutes.
     expect(cardio.entries[0].sets).toEqual([{ min: 0.4, speed: 0, done: true }])
+  })
+})
+
+// A finished workout stores `vol = workoutVolume(w)`, which leaves warm-ups out; an imported one
+// wrote the sum of every set, so the History row, the heatmap and the month totals read a number
+// the app's own arithmetic never produces — and it stays wrong forever (QA C14).
+const HEVY_WARMUPS = [
+  'title,start_time,end_time,description,exercise_title,superset_id,exercise_notes,set_index,set_type,weight_kg,reps,distance_km,duration_seconds,rpe',
+  '"QA","03 Mar 2025, 18:00","03 Mar 2025, 19:00","","Bench Press (Barbell)",,"",0,warmup,20,10,,,',
+  '"QA","03 Mar 2025, 18:00","03 Mar 2025, 19:00","","Bench Press (Barbell)",,"",1,normal,60,5,,,',
+  '"QA","03 Mar 2025, 18:00","03 Mar 2025, 19:00","","Bench Press (Barbell)",,"",2,normal,60,5,,,',
+  '"QA","03 Mar 2025, 18:00","03 Mar 2025, 19:00","","Squat (Barbell)",,"",0,warmup,40,5,,,',
+  '"QA","03 Mar 2025, 18:00","03 Mar 2025, 19:00","","Squat (Barbell)",,"",1,normal,100,5,,,',
+].join('\n')
+
+describe('imported volume', () => {
+  it('stores the work-set volume, the same number workoutVolume computes', () => {
+    const [w] = parseWorkoutCSV(HEVY_WARMUPS, { unit: 'kg' }).workouts
+    expect(w.vol).toBe(1100)
+    expect(w.vol).toBe(workoutVolume(w))
   })
 })

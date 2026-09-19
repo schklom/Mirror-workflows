@@ -185,6 +185,11 @@ async function addExerciseThroughSheets(ex = { id: 'added-exercise' }, cfg = { m
   await act(async () => { configCall[2](cfg) })
 }
 
+// The list's scroll-to-current waits for the next frame (linkedom has no rAF, so a 0 ms timer).
+async function flushFrame() {
+  await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)) })
+}
+
 async function rerenderAt(cur) {
   mocks.S.active.cur = cur
   await act(async () => { root.render(React.createElement(Workout)) })
@@ -1014,9 +1019,29 @@ describe('workout list view', () => {
 
   it('opens at the current exercise instead of the top of the session (#224)', async () => {
     await mount([exercise('plain-bench', [true]), exercise('plain-row', [true]), exercise('plain-curl', [false])], 2, { workoutView: 'list' })
+    // Not in the mount's own effect pass: App restores the route's scroll position in a frame
+    // of its own, so the list scrolls in the frame after it, or the restore would win.
+    expect(mocks.scrollCalls.length).toBe(0)
+    await flushFrame()
     expect(mocks.scrollCalls.length).toBe(1)
     expect(mocks.scrollCalls[0].node).toBe(units()[2])
     expect(mocks.scrollCalls[0].node.classList.contains('cur')).toBe(true)
+  })
+
+  it('re-anchors on the current exercise when the layout changes between list and compact (QA C1)', async () => {
+    await mount([exercise('plain-bench', [true]), exercise('plain-row', [true]), exercise('plain-curl', [false])], 2, { workoutView: 'list' })
+    await flushFrame()
+    mocks.scrollCalls.length = 0
+    mocks.S.active.workoutView = 'compact'
+    await rerender()
+    await flushFrame()
+    expect(mocks.scrollCalls.length).toBe(1)
+    expect(mocks.scrollCalls[0].node.classList.contains('cur')).toBe(true)
+    // ...but not when "current" merely moves inside the open list (that was #224's rule).
+    mocks.scrollCalls.length = 0
+    await rerenderAt(1)
+    await flushFrame()
+    expect(mocks.scrollCalls.length).toBe(0)
   })
 
   it('stacks every exercise, labels each unit, and hides card navigation', async () => {

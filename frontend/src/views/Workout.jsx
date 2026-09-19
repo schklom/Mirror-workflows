@@ -581,13 +581,31 @@ function ActiveWorkout() {
   // The list opens at the exercise you are on, not at the top of the session (issue #224): you
   // switch to it mid-workout to look at what comes before and after. Only on the way in — once
   // the list is open, "current" moves because you tick rows in it, and a list that scrolls
-  // itself under your thumb is worse than one that stays put.
+  // itself under your thumb is worse than one that stays put. List ↔ Compact counts as a way
+  // in: the rows change height, so the same scroll offset lands somewhere else.
+  //
+  // The scroll waits for the next frame rather than running in the effect itself. App.jsx
+  // restores the route's remembered position in a frame it asked for during the same commit
+  // (a reload, a back navigation), and a sheet closing (⋯ → Layout → List) puts the page back
+  // where it was before the sheet opened, in an effect cleanup that runs before this one —
+  // both would win over a scroll made right here. A frame asked for now runs after theirs.
   const listRef = useRef(null)
   useEffect(() => {
     if (!listMode) return
-    const el = listRef.current?.querySelector('.wl-unit.cur')
-    if (el && typeof el.scrollIntoView === 'function') el.scrollIntoView({ block: 'start' })
-  }, [listMode])
+    const schedule = callback => window.requestAnimationFrame
+      ? window.requestAnimationFrame(callback)
+      : window.setTimeout(callback, 0)
+    const cancel = frame => window.cancelAnimationFrame
+      ? window.cancelAnimationFrame(frame)
+      : window.clearTimeout(frame)
+    const frame = schedule(() => {
+      const list = listRef.current
+      const el = list?.querySelector('.wl-unit.cur')
+      if (!el || typeof el.scrollIntoView !== 'function') return
+      el.scrollIntoView({ block: 'start' })
+    })
+    return () => cancel(frame)
+  }, [workoutView])
 
   const total = setUnitsTotal(A.entries)
   const done = setsDoneActive(A)

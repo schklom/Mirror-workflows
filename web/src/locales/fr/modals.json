@@ -20,7 +20,9 @@
   "pictures": {
     "title": "Photos",
     "empty": "Aucune photo disponible",
-    "of": "de"
+    "of": "de",
+    "delete": "Supprimer l'image",
+    "delete_success": "Image supprimée"
   },
   "webcrypto_warning": {
     "title": "API de cryptographie Web non disponible",

@@ -1,4 +1,5 @@
 {
   "account_not_found": "Kasutajakontot ei leidu. Palun registreeri konto FMD Androidi rakendusest.",
-  "login_failed": "Sisselogimine ei õnnestunud"
+  "login_failed": "Sisselogimine ei õnnestunud",
+  "delete_failed": "Kustutamine ei õnnestunud"
 }

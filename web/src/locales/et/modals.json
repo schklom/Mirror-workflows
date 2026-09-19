@@ -20,7 +20,9 @@
   "pictures": {
     "title": "Fotod",
     "empty": "Fotosid pole saadaval",
-    "of": "/"
+    "of": "/",
+    "delete": "Kustuta pilt",
+    "delete_success": "Pilt on kustutatud"
   },
   "webcrypto_warning": {
     "title": "Web Cryptography API pole saadaval",

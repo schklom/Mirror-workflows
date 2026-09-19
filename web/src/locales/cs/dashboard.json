@@ -8,7 +8,8 @@
     "no_data": "Zatím nebyla nahrána žádná data o poloze. Odešlete příkaz „locate“ pomocí tlačítek níže!",
     "older": "Starší",
     "newer": "Novější",
-    "no_push_url": "Není nastavena adresa push. Zařízení nebude získávat příkazy, dokud nenastavíte oznámení push v aplikaci pro Android."
+    "no_push_url": "Není nastavena adresa push. Zařízení nebude získávat příkazy, dokud nenastavíte oznámení push v aplikaci pro Android.",
+    "delete_success": "Poloha smazána"
   },
   "command_failed": "Příkaz selhal!",
   "time": "Čas",

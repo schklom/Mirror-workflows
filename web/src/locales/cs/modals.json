@@ -20,7 +20,9 @@
   "pictures": {
     "title": "Fotky",
     "empty": "Nejsou dostupné žádné fotky",
-    "of": "z"
+    "of": "z",
+    "delete": "Smazat obrázek",
+    "delete_success": "Obrázek smazán"
   },
   "webcrypto_warning": {
     "title": "Web Cryptography API není dostupné",

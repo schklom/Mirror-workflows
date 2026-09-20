@@ -485,7 +485,6 @@ export default {
   'Hip flexors': 'Сгибатели бедра',
   'Calves': 'Икры',
   'Shins': 'Голени',
-  'Cardiovascular system': 'сердечно-сосудистая система',
   // --- import from another app ---
   'Import from another app': 'Импорт из другого приложения',
   'FitNotes, Strong, Hevy — or body weight from Apple Health': 'FitNotes, Strong, Hevy — или вес из Apple Health',
@@ -562,6 +561,7 @@ export default {
   '{0} exercises in the file aren’t in your library and were left out.': '{0} упражнений из файла отсутствуют в вашей библиотеке и были пропущены.',
   'Use this weekly schedule': 'Использовать это расписание недели',
   'Replaces your current Mon–Sun assignments.': 'Заменяет твоё текущее распределение пн–вс.',
+  'Added {0} routine to your plan': 'В твой план добавлена {0} программа',
   'Added {0} routines to your plan': 'В твой план добавлено программ: {0}',
   'this isn’t an openGym plan file': 'это не файл плана openGym',
   'Shared routine': 'Общая программа',

@@ -1165,8 +1165,10 @@ body.chips-dragging *{cursor:inherit}
   border-radius:var(--r-lg);padding:14px 14px 4px;
   background:var(--surface-2);
 }
-/* scrolled to when the list opens (#224): clear the sticky header above it */
-.wl-unit{scroll-margin-top:calc(var(--sat) + 96px)}
+/* scrolled to when the list opens (#224): clear the sticky header above it. Workout.jsx
+   measures the header (--whdr-h on .workout-list, safe area included) because it grows when
+   the session name wraps; the fallback is the height of a one-line header. */
+.wl-unit{scroll-margin-top:calc(var(--whdr-h, var(--sat) + 80px) + 16px)}
 .wl-unit.cur{box-shadow:inset 0 0 0 1.5px var(--acc-line)}
 .wl-hd{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
 @media (max-width:400px){

@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useStore } from '../store/useStore.js'
-import { BODYPARTS, allExercises, equipmentOf, matchExercise } from '../lib/exercises.js'
+import { BODYPARTS, allExercises, equipmentOf, searchExercises } from '../lib/exercises.js'
 import { activeProfile, exAvailable } from '../lib/equipment.js'
 import { bestWeightFor } from '../lib/history.js'
 import { fmtNum } from '../lib/format.js'
@@ -35,7 +35,7 @@ export default function MuscleExplorer({ onPick, onDetail, onPlan }) {
   ])), [catalog])
   const pick = muscle => { setSelected(muscle === selected ? null : muscle); setEq(''); setShown(40) }
   const targeted = selected ? catalog.filter(e => musclesOf(e)[selected]) : []
-  const base = targeted.filter(e => (!bp || e.bp === bp) && matchExercise(e, q))
+  const base = searchExercises(targeted.filter(e => !bp || e.bp === bp), q)
   const eqOpts = equipmentOf(base)
   const eqOn = eqOpts.includes(eq) ? eq : ''
   // Favourites float to the top of whatever the filters left (issue #6), the rest keeps its order.

@@ -485,7 +485,6 @@ export default {
   'Hip flexors': '髋屈肌',
   'Calves': '小腿',
   'Shins': '胫前肌',
-  'Cardiovascular system': '心血管系统',
   // --- import from another app ---
   'Import from another app': '从其他应用导入',
   'FitNotes, Strong, Hevy — or body weight from Apple Health': 'FitNotes、Strong、Hevy — 或来自 Apple 健康的体重',
@@ -562,6 +561,7 @@ export default {
   '{0} exercises in the file aren’t in your library and were left out.': '文件中有 {0} 个动作不在你的动作库中，已略过。',
   'Use this weekly schedule': '使用此每周日程',
   'Replaces your current Mon–Sun assignments.': '替换你当前的周一至周日安排。',
+  'Added {0} routine to your plan': '已向你的计划添加 {0} 个训练日',
   'Added {0} routines to your plan': '已向你的计划添加 {0} 个训练日',
   'this isn’t an openGym plan file': '这不是 openGym 计划文件',
   'Shared routine': '共享的训练日',

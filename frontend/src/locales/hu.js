@@ -490,7 +490,6 @@ export default {
   'Hip flexors': 'Csípőhajlító',
   'Calves': 'Vádli',
   'Shins': 'Sípcsont',
-  'Cardiovascular system': 'szív-érrendszer',
   // --- import from another app ---
   'Import from another app': 'Importálás másik appból',
   'FitNotes, Strong, Hevy — or body weight from Apple Health': 'FitNotes, Strong, Hevy — vagy testsúly az Apple Healthből',
@@ -541,6 +540,7 @@ export default {
   '{0} exercises in the file aren’t in your library and were left out.': '{0} gyakorlat a fájlban nincs a könyvtáradban, ezért kimaradt.',
   'Use this weekly schedule': 'Heti beosztás alkalmazása',
   'Replaces your current Mon–Sun assignments.': 'Lecseréli a jelenlegi H–V beosztásod.',
+  'Added {0} routine to your plan': '{0} rutin hozzáadva a tervedhez',
   'Added {0} routines to your plan': '{0} rutin hozzáadva a tervedhez',
   'this isn’t an openGym plan file': 'ez nem egy openGym tervfájl',
   'Shared routine': 'Megosztott rutin',

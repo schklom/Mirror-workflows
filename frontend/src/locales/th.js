@@ -490,7 +490,6 @@ export default {
   'Hip flexors': 'กล้ามเนื้องอสะโพก',
   'Calves': 'น่อง',
   'Shins': 'หน้าแข้ง',
-  'Cardiovascular system': 'ระบบหัวใจและหลอดเลือด',
   // --- import from another app ---
   'Import from another app': 'นำเข้าจากแอปอื่น',
   'FitNotes, Strong, Hevy — or body weight from Apple Health': 'FitNotes, Strong, Hevy — หรือน้ำหนักตัวจาก Apple Health',
@@ -541,6 +540,7 @@ export default {
   '{0} exercises in the file aren’t in your library and were left out.': 'มี {0} ท่าในไฟล์ที่ไม่มีในคลังของคุณ จึงถูกข้ามไป',
   'Use this weekly schedule': 'ใช้ตารางรายสัปดาห์นี้',
   'Replaces your current Mon–Sun assignments.': 'จะแทนที่ตารางจันทร์–อาทิตย์ปัจจุบันของคุณ',
+  'Added {0} routine to your plan': 'เพิ่ม {0} รูทีนเข้าแผนของคุณแล้ว',
   'Added {0} routines to your plan': 'เพิ่ม {0} รูทีนเข้าแผนของคุณแล้ว',
   'this isn’t an openGym plan file': 'นี่ไม่ใช่ไฟล์แผนของ openGym',
   'Shared routine': 'รูทีนที่แชร์มา',

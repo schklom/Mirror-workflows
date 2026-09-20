@@ -485,7 +485,6 @@ export default {
   'Hip flexors': 'हिप फ्लेक्सर',
   'Calves': 'पिंडली',
   'Shins': 'पिंडली की हड्डी',
-  'Cardiovascular system': 'हृदय प्रणाली',
   // --- import from another app ---
   'Import from another app': 'दूसरे ऐप से आयात करें',
   'FitNotes, Strong, Hevy — or body weight from Apple Health': 'FitNotes, Strong, Hevy — या Apple Health से वज़न',
@@ -562,6 +561,7 @@ export default {
   '{0} exercises in the file aren’t in your library and were left out.': 'फ़ाइल के {0} व्यायाम आपकी लाइब्रेरी में नहीं हैं और छोड़ दिए गए।',
   'Use this weekly schedule': 'यह साप्ताहिक कार्यक्रम इस्तेमाल करें',
   'Replaces your current Mon–Sun assignments.': 'आपके मौजूदा सोम–रवि निर्धारण को बदल देता है।',
+  'Added {0} routine to your plan': 'आपके प्लान में {0} रूटीन जोड़ा गया',
   'Added {0} routines to your plan': 'आपके प्लान में {0} रूटीन जोड़े गए',
   'this isn’t an openGym plan file': 'यह openGym प्लान फ़ाइल नहीं है',
   'Shared routine': 'साझा किया गया रूटीन',

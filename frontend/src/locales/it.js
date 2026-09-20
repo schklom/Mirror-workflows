@@ -485,7 +485,6 @@ export default {
   'Hip flexors': 'Flessori dell\'anca',
   'Calves': 'Polpacci',
   'Shins': 'Tibiali',
-  'Cardiovascular system': 'sistema cardiovascolare',
   // --- import from another app ---
   'Import from another app': 'Importa da un\'altra app',
   'FitNotes, Strong, Hevy — or body weight from Apple Health': 'FitNotes, Strong, Hevy — o il peso da Apple Salute',
@@ -562,6 +561,7 @@ export default {
   '{0} exercises in the file aren’t in your library and were left out.': '{0} esercizi del file non sono nella tua libreria e sono stati esclusi.',
   'Use this weekly schedule': 'Usa questo programma settimanale',
   'Replaces your current Mon–Sun assignments.': 'Sostituisce la tua assegnazione lun–dom attuale.',
+  'Added {0} routine to your plan': 'Aggiunta {0} routine al tuo piano',
   'Added {0} routines to your plan': 'Aggiunte {0} routine al tuo piano',
   'this isn’t an openGym plan file': 'questo non è un file di piano openGym',
   'Shared routine': 'Routine condivisa',

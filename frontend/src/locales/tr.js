@@ -485,7 +485,6 @@ export default {
   'Hip flexors': 'Kalça fleksörleri',
   'Calves': 'Baldırlar',
   'Shins': 'İncik',
-  'Cardiovascular system': 'kalp-damar sistemi',
   // --- import from another app ---
   'Import from another app': 'Başka uygulamadan içe aktar',
   'FitNotes, Strong, Hevy — or body weight from Apple Health': 'FitNotes, Strong, Hevy — veya Apple Health\'ten vücut ağırlığı',
@@ -562,6 +561,7 @@ export default {
   '{0} exercises in the file aren’t in your library and were left out.': 'Dosyadaki {0} egzersiz kitaplığında yok ve atlandı.',
   'Use this weekly schedule': 'Bu hafta programını kullan',
   'Replaces your current Mon–Sun assignments.': 'Mevcut Pzt–Paz atamanı değiştirir.',
+  'Added {0} routine to your plan': 'Planına {0} rutin eklendi',
   'Added {0} routines to your plan': 'Planına {0} rutin eklendi',
   'this isn’t an openGym plan file': 'bu bir openGym plan dosyası değil',
   'Shared routine': 'Paylaşılan rutin',

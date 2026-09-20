@@ -485,7 +485,6 @@ export default {
   'Hip flexors': '고관절 굴곡근',
   'Calves': '종아리',
   'Shins': '정강이',
-  'Cardiovascular system': '심혈관계',
   // --- import from another app ---
   'Import from another app': '다른 앱에서 가져오기',
   'FitNotes, Strong, Hevy — or body weight from Apple Health': 'FitNotes, Strong, Hevy — 또는 Apple 건강의 체중',
@@ -562,6 +561,7 @@ export default {
   '{0} exercises in the file aren’t in your library and were left out.': '파일의 운동 {0}개가 라이브러리에 없어 제외했습니다.',
   'Use this weekly schedule': '이 주간 일정 사용',
   'Replaces your current Mon–Sun assignments.': '현재 월–일 배정을 대체합니다.',
+  'Added {0} routine to your plan': '계획에 루틴 {0}개를 추가했습니다',
   'Added {0} routines to your plan': '계획에 루틴 {0}개를 추가했습니다',
   'this isn’t an openGym plan file': 'openGym 계획 파일이 아닙니다',
   'Shared routine': '공유된 루틴',

@@ -20,6 +20,7 @@ const mocks = vi.hoisted(() => {
     exConfigSheet: vi.fn(),
     toast: vi.fn(),
     scrollCalls: [],
+    headerHeight: 0,
     swapActiveWorkoutExercise: vi.fn(),
     menuSheet: vi.fn(),
     effortPickerSheet: vi.fn(),
@@ -121,6 +122,10 @@ function installDom() {
   dom.Element.prototype.scrollIntoView = vi.fn(function (options) {
     mocks.scrollCalls.push({ node: this, options })
   })
+  // linkedom has no layout; the sticky workout header reports the height a test gives it.
+  Object.defineProperty(dom.HTMLElement.prototype, 'offsetHeight', {
+    configurable: true, get() { return this.classList.contains('whdr') ? mocks.headerHeight : 0 },
+  })
   globalThis.IS_REACT_ACT_ENVIRONMENT = true
   container = document.getElementById('root')
   root = createRoot(container)
@@ -185,6 +190,11 @@ async function addExerciseThroughSheets(ex = { id: 'added-exercise' }, cfg = { m
   await act(async () => { configCall[2](cfg) })
 }
 
+// The list's scroll-to-current waits for the next frame (linkedom has no rAF, so a 0 ms timer).
+async function flushFrame() {
+  await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)) })
+}
+
 async function rerenderAt(cur) {
   mocks.S.active.cur = cur
   await act(async () => { root.render(React.createElement(Workout)) })
@@ -195,6 +205,7 @@ beforeEach(() => {
   mocks.timer = null
   mocks.work = null
   mocks.scrollCalls.length = 0
+  mocks.headerHeight = 0
 })
 
 afterEach(async () => {
@@ -1014,9 +1025,37 @@ describe('workout list view', () => {
 
   it('opens at the current exercise instead of the top of the session (#224)', async () => {
     await mount([exercise('plain-bench', [true]), exercise('plain-row', [true]), exercise('plain-curl', [false])], 2, { workoutView: 'list' })
+    // Not in the mount's own effect pass: App restores the route's scroll position in a frame
+    // of its own, so the list scrolls in the frame after it, or the restore would win.
+    expect(mocks.scrollCalls.length).toBe(0)
+    await flushFrame()
     expect(mocks.scrollCalls.length).toBe(1)
     expect(mocks.scrollCalls[0].node).toBe(units()[2])
     expect(mocks.scrollCalls[0].node.classList.contains('cur')).toBe(true)
+  })
+
+  it('clears the sticky header at its measured height, not a one-line guess (QA C27)', async () => {
+    mocks.headerHeight = 143   // a routine name that wraps to three lines at 368 px
+    await mount([exercise('plain-bench', [true]), exercise('plain-row', [true]), exercise('plain-curl', [false])], 2, { workoutView: 'list' })
+    await flushFrame()
+    expect(mocks.scrollCalls.length).toBe(1)
+    expect(container.querySelector('.workout-list').style.getPropertyValue('--whdr-h')).toBe('143px')
+  })
+
+  it('re-anchors on the current exercise when the layout changes between list and compact (QA C1)', async () => {
+    await mount([exercise('plain-bench', [true]), exercise('plain-row', [true]), exercise('plain-curl', [false])], 2, { workoutView: 'list' })
+    await flushFrame()
+    mocks.scrollCalls.length = 0
+    mocks.S.active.workoutView = 'compact'
+    await rerender()
+    await flushFrame()
+    expect(mocks.scrollCalls.length).toBe(1)
+    expect(mocks.scrollCalls[0].node.classList.contains('cur')).toBe(true)
+    // ...but not when "current" merely moves inside the open list (that was #224's rule).
+    mocks.scrollCalls.length = 0
+    await rerenderAt(1)
+    await flushFrame()
+    expect(mocks.scrollCalls.length).toBe(0)
   })
 
   it('stacks every exercise, labels each unit, and hides card navigation', async () => {

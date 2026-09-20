@@ -14,6 +14,7 @@ import { deriveSessionName } from './session-merge.js'
 import { uid, todayISO, DAYN, weekOrder, weekStartOf, fmtNum, exCount } from './format.js'
 import { t, exerciseNameFor } from './i18n-core.js'
 import { convertWeight } from './units.js'
+import { MUSCLES, inMuscleOrder } from './muscles.js'
 
 const PLAN_FMT = 1
 const WEEK_DAYS = [1, 2, 3, 4, 5, 6, 0]   // every getDay() index; only the reader's own
@@ -133,6 +134,32 @@ function cleanIntensifier(x) {
   return null
 }
 
+// The muscles the map can draw, plus the one label the form gives a cardio exercise.
+const CUSTOM_MUSCLES = new Set([...MUSCLES, 'cardiovascular system'])
+const muscleList = v => inMuscleOrder([...new Set((Array.isArray(v) ? v : []).filter(m => CUSTOM_MUSCLES.has(m)))])
+
+/** A custom exercise with its own metadata — equipment, muscles, description — in the shape
+ *  CustomExForm writes, minus the recipient-side `custom`/`sm` fields mergePlan adds. The bundle
+ *  used to carry only {id, n, bp}, so the exercise arrived with an empty equipment tag, no muscle
+ *  credit, and (stored without `custom: true`) no way to edit or delete it (QA C7). The same gate
+ *  runs on the way in as on the way out, since a plan file is someone else's data: only muscles the
+ *  map can draw, a secondary never repeating a primary, the way the form itself enforces. Fields
+ *  that are empty stay absent, so a file written before this change reads the same as one after. */
+function cleanCustom(c) {
+  const o = { id: c.id, n: c.n, bp: c.bp }
+  if (c.desc) o.desc = c.desc
+  if (typeof c.eq === 'string' && c.eq) o.eq = c.eq
+  const prim = muscleList(c.primaries)
+  const sm = muscleList(c.secondaries).filter(m => !prim.includes(m))
+  // `tg` is the legacy single primary; the form keeps it equal to the first primary.
+  const tg = prim[0] || (CUSTOM_MUSCLES.has(c.tg) ? c.tg : '')
+  if (tg) o.tg = tg
+  if (prim.length) o.primaries = prim
+  if (sm.length) o.secondaries = sm
+  if (prim.length || sm.length) o.muscleGroups = [...prim, ...sm]
+  return o
+}
+
 /** Build the shareable bundle: every routine, the week schedule, referenced customs. */
 export function buildPlanBundle(S, name) {
   const unit = planUnit(S.unit == null ? 'kg' : S.unit)
@@ -146,7 +173,7 @@ export function buildPlanBundle(S, name) {
   const usedIds = new Set(routines.flatMap(r => r.ex.map(e => e.id)))
   const customEx = (S.customEx || [])
     .filter(c => usedIds.has(c.id))
-    .map(c => ({ id: c.id, n: c.n, bp: c.bp, ...(c.desc ? { desc: c.desc } : {}) }))
+    .map(cleanCustom)
   // A weekday can hold several routines (merge order preserved). `[].concat` normalises a
   // legacy scalar id to a one-element list, so a bundle written before this change and one
   // written after are read the same way at the other end.
@@ -226,7 +253,10 @@ export function mergePlan(s, bundle, { schedule } = {}) {
     if (same) { exIdMap[c.id] = same.id; return }
     const nid = uid()
     exIdMap[c.id] = nid
-    s.customEx.push({ id: nid, n: c.n, bp: c.bp, ...(c.desc ? { desc: c.desc } : {}) })
+    // Stored exactly as the form would have created it — `custom: true` is what lets the recipient
+    // edit or delete it, and `sm` mirrors the secondaries the way the form writes them.
+    const clean = cleanCustom(c)
+    s.customEx.push({ ...clean, id: nid, ...(clean.secondaries ? { sm: clean.secondaries } : {}), custom: true })
   })
   const ridMap = {}
   source.routines.forEach(r => {

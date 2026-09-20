@@ -851,7 +851,8 @@ paths:
       summary: 'Admin: list all users'
       description: >-
         One row per user with workout counts, last sync, push status and live
-        presence. Admin only.
+        presence. `workouts` counts only the entries the drill-down can show.
+        Admin only.
       responses:
         '200':
           description: All users.
@@ -877,7 +878,10 @@ paths:
       summary: 'Admin: one user in detail'
       description: >-
         Drill-down — full workout history (newest first) and body-weight log for one
-        user. Admin only.
+        user. Admin only. Anything in `routines`, `bodyweight` or `workouts` that is not
+        an object is left out, and a list that is not an array reads as empty: PUT
+        /api/data drops those entries now, but a state file written before it did still
+        has them and this route has to answer for it.
       parameters:
         - name: id
           in: query

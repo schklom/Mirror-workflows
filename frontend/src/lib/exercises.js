@@ -172,28 +172,38 @@ export const normalizeStr = s => (s || '')
 // is the i18n version (bumped by every setLang), so switching language rebuilds the translated
 // terms. Custom exercises are re-cached automatically — the store clones state on update, so an
 // edited exercise arrives as a new object the WeakMap has never seen.
+//
+// Each entry keeps the full corpus for substring matching and, separately, the words of the
+// name (English and localized) that the typo tolerance below is allowed to compare against.
 const corpusCache = new WeakMap()
 
 function corpusOf(e) {
   const v = getVersion()
   const hit = corpusCache.get(e)
-  if (hit && hit.v === v) return hit.s
+  if (hit && hit.v === v) return hit
   const sm = Array.isArray(e?.sm) ? e.sm : []
+  const name = normalizeStr(exerciseNameSearchText(e))
   const s = normalizeStr([
-    exerciseNameSearchText(e),
+    name,
     e?.tg || '', t(e?.tg || ''),
     e?.eq || '', t(e?.eq || ''),
     e?.bp || '', t(e?.bp || ''),
     ...sm, ...sm.map(m => t(m)),
     e?.desc || ''
   ].join(' '))
-  corpusCache.set(e, { v, s })
-  return s
+  const entry = { v, s, nameWords: name.split(/\s+/).filter(Boolean) }
+  corpusCache.set(e, entry)
+  return entry
 }
 
 // Allow one missing, extra or substituted character, or an adjacent transposition, in long
 // query tokens. Short tokens stay exact/substring-only: words such as "row" and "curl" are too
 // common for fuzzy matching to be useful.
+//
+// Only the exercise's own name words are ever compared this way. Body part, target and
+// equipment words are shared by a whole slice of the catalogue, so one accidental neighbour
+// ("wrist" ~ "waist", "power" ~ "lower arms", "drucken" ~ "rucken") would list hundreds of
+// unrelated exercises ahead of the real hits (QA C26).
 function nearWord(a, b) {
   if (a.length < 5 || Math.abs(a.length - b.length) > 1) return false
   let i = 0
@@ -206,12 +216,33 @@ function nearWord(a, b) {
   return a.length > b.length ? a.slice(i + 1) === b.slice(i) : a.slice(i) === b.slice(i + 1)
 }
 
+const queryTokens = query => normalizeStr(query || '').split(/\s+/).filter(Boolean)
+
+// Every token has to appear in the corpus; a token listed in `fuzzy` may instead be one edit
+// away from a name word.
+const matchTokens = (e, tokens, fuzzy) => {
+  const { s, nameWords } = corpusOf(e)
+  return tokens.every(tok => s.includes(tok) || (fuzzy.has(tok) && nameWords.some(word => nearWord(tok, word))))
+}
+
+// Single-exercise check, used where the list is filtered one option at a time (the exercise
+// progress picker). Every token may fall back to the typo tolerance; lists go through
+// searchExercises below, which knows whether a token needs it at all.
 export function matchExercise(e, query) {
-  if (!query) return true
-  const tokens = normalizeStr(query).split(/\s+/).filter(Boolean)
+  const tokens = queryTokens(query)
   if (!tokens.length) return true
   if (!e || typeof e !== 'object') return false
-  const corpus = corpusOf(e)
-  const words = corpus.split(/\s+/)
-  return tokens.every(tok => corpus.includes(tok) || words.some(word => nearWord(tok, word)))
+  return matchTokens(e, tokens, new Set(tokens))
+}
+
+// Search a list, exact hits first: a token that appears literally in at least one exercise is
+// taken at its word for the whole list, and only a token with no exact hit anywhere ("bnech",
+// "dumbell", "wirst") is allowed the typo tolerance. Otherwise a correctly spelled query such
+// as "squat" or "clean" would also drag in "squad" and "lean", and since the callers keep
+// catalogue order those strays would land ahead of the real matches (QA C26).
+export function searchExercises(list, query) {
+  const tokens = queryTokens(query)
+  if (!tokens.length) return list
+  const fuzzy = new Set(tokens.filter(tok => !list.some(e => corpusOf(e).s.includes(tok))))
+  return list.filter(e => matchTokens(e, tokens, fuzzy))
 }

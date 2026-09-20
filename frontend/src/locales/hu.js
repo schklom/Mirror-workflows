@@ -140,6 +140,8 @@ export default {
   'This removes it from your history for good.': 'Ez véglegesen eltávolítja az előzményeidből.',
   'Workout deleted': 'Edzés törölve',
   'Delete workout': 'Edzés törlése',
+  'Rename workout': 'Edzés átnevezése',
+  'Workout title': 'Edzés címe',
   '{0} done': '{0} kész',
   'Confirm the weight you worked with — your highest becomes the default next time.': 'Erősítsd meg a súlyt, amivel dolgoztál — a legmagasabb lesz az alapértelmezett legközelebb.',
   'Then finish the superset partner.': 'Aztán fejezd be a szuperszett párját.',

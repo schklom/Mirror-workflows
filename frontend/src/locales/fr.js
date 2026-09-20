@@ -141,6 +141,8 @@ export default {
   'This removes it from your history for good.': 'Elle sera retirée de ton historique pour de bon.',
   'Workout deleted': 'Séance supprimée',
   'Delete workout': 'Supprimer la séance',
+  'Rename workout': 'Renommer la séance',
+  'Workout title': 'Titre de la séance',
   '{0} done': '{0} terminé',
   'Confirm the weight you worked with — your highest becomes the default next time.': 'Confirme le poids utilisé — le plus élevé devient la valeur par défaut la prochaine fois.',
   'Then finish the superset partner.': 'Puis termine le partenaire du superset.',

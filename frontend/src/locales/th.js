@@ -140,6 +140,8 @@ export default {
   'This removes it from your history for good.': 'จะลบออกจากประวัติอย่างถาวร',
   'Workout deleted': 'ลบการออกกำลังกายแล้ว',
   'Delete workout': 'ลบการออกกำลังกาย',
+  'Rename workout': 'เปลี่ยนชื่อการออกกำลังกาย',
+  'Workout title': 'ชื่อการออกกำลังกาย',
   '{0} done': 'เสร็จแล้ว {0}',
   'Confirm the weight you worked with — your highest becomes the default next time.': 'ยืนยันน้ำหนักที่ใช้ — น้ำหนักสูงสุดจะถูกตั้งเป็นค่าเริ่มต้นในครั้งถัดไป',
   'Then finish the superset partner.': 'จากนั้นทำท่าคู่ซูเปอร์เซ็ตให้เสร็จ',

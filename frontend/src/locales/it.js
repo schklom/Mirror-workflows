@@ -141,6 +141,8 @@ export default {
   'This removes it from your history for good.': 'Verrà rimosso per sempre dalla cronologia.',
   'Workout deleted': 'Allenamento eliminato',
   'Delete workout': 'Elimina allenamento',
+  'Rename workout': 'Rinomina allenamento',
+  'Workout title': 'Titolo dell’allenamento',
   '{0} done': '{0} fatto',
   'Confirm the weight you worked with — your highest becomes the default next time.': 'Conferma il peso usato — il più alto diventa il predefinito la prossima volta.',
   'Then finish the superset partner.': "Poi completa l'altro esercizio del superset.",

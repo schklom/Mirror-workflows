@@ -141,6 +141,8 @@ export default {
   'This removes it from your history for good.': 'Она будет навсегда удалена из истории.',
   'Workout deleted': 'Тренировка удалена',
   'Delete workout': 'Удалить тренировку',
+  'Rename workout': 'Переименовать тренировку',
+  'Workout title': 'Название тренировки',
   '{0} done': '{0} — готово',
   'Confirm the weight you worked with — your highest becomes the default next time.': 'Подтверди рабочий вес — наибольший станет значением по умолчанию в следующий раз.',
   'Then finish the superset partner.': 'Затем доделай второе упражнение суперсета.',

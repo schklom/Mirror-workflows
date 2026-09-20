@@ -141,6 +141,8 @@ export default {
   'This removes it from your history for good.': 'यह आपके इतिहास से हमेशा के लिए हट जाएगा।',
   'Workout deleted': 'वर्कआउट हटाया गया',
   'Delete workout': 'वर्कआउट हटाएँ',
+  'Rename workout': 'वर्कआउट का नाम बदलें',
+  'Workout title': 'वर्कआउट का शीर्षक',
   '{0} done': '{0} पूरा',
   'Confirm the weight you worked with — your highest becomes the default next time.': 'जिस वज़न से काम किया उसकी पुष्टि करें — सबसे ज़्यादा वज़न अगली बार डिफ़ॉल्ट बन जाएगा।',
   'Then finish the superset partner.': 'फिर सुपरसेट का दूसरा व्यायाम पूरा करें।',

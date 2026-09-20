@@ -141,6 +141,8 @@ export default {
   'This removes it from your history for good.': '它将从历史中永久删除。',
   'Workout deleted': '训练已删除',
   'Delete workout': '删除训练',
+  'Rename workout': '重命名训练',
+  'Workout title': '训练标题',
   '{0} done': '{0} 完成',
   'Confirm the weight you worked with — your highest becomes the default next time.': '确认你使用的重量——最高值将成为下次的默认值。',
   'Then finish the superset partner.': '然后完成超级组的另一个动作。',

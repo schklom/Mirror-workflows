@@ -141,6 +141,8 @@ export default {
   'This removes it from your history for good.': 'Geçmişinden kalıcı olarak kaldırılır.',
   'Workout deleted': 'Antrenman silindi',
   'Delete workout': 'Antrenmanı sil',
+  'Rename workout': 'Antrenmanı yeniden adlandır',
+  'Workout title': 'Antrenman başlığı',
   '{0} done': '{0} tamamlandı',
   'Confirm the weight you worked with — your highest becomes the default next time.': 'Çalıştığın ağırlığı onayla — en yükseği bir dahaki sefer varsayılan olur.',
   'Then finish the superset partner.': 'Sonra süpersetin diğer egzersizini bitir.',

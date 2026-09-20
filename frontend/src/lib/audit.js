@@ -28,6 +28,7 @@ const LABELS = {
   'auth.pair.fail': 'Pairing failed',
   'admin.user.disable': 'Disabled an account',
   'admin.user.enable': 'Re-enabled an account',
+  'admin.user.delete': 'Deleted an account',
   'admin.invite.create': 'Created an invite code',
   'admin.invite.revoke': 'Revoked an invite code',
   'admin.audit.clear': 'Cleared the activity log',

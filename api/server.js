@@ -1091,6 +1091,33 @@ const routes = {
     json(res, 200, { ok: true, id: u.id, disabled: u.disabled });
   },
 
+  // Disable locks an account out; this removes it. The one destructive action in the app, so the
+  // client asks twice and this end refuses the two cases that cannot be undone from the UI
+  // afterwards: an admin deleting themselves, and the last admin standing (issue #107).
+  // The invite code that let them in stays burned — it was used, and freeing it would quietly
+  // widen an invite-only instance. `GET /api/admin/user` is the export: the dashboard offers it
+  // before the confirm, so the training history can be kept if anyone wants it.
+  'POST /api/admin/user/delete': async (req, res) => {
+    const admin = requireAdmin(req, res); if (!admin) return;
+    const body = await readBody(req);
+    const u = db.users.find(x => x.id === body.id);
+    if (!u) return json(res, 404, { error: 'no such user' });
+    if (u.id === admin.id) return json(res, 400, { error: 'you cannot delete your own account' });
+    if (isAdmin(u) && db.users.filter(isAdmin).length <= 1) return json(res, 400, { error: 'cannot delete the last admin' });
+    const name = u.name;
+    db.users = db.users.filter(x => x.id !== u.id);
+    db.creds = (db.creds || []).filter(c => c.userId !== u.id);
+    db.subs = (db.subs || []).filter(x => x.userId !== u.id);
+    presence.delete(u.id);
+    // The training history and any Coach credential of theirs, both outside db.json.
+    try { fs.unlinkSync(stateFile(u.id)); } catch { /* already gone */ }
+    try { coachConfig.clearProfileAuth(u.id); } catch { /* nothing stored */ }
+    saveDb();
+    // Logged with the name, because the id is about to mean nothing to anyone reading this back.
+    audit(req, 'admin.user.delete', { user: admin, msg: name });
+    json(res, 200, { ok: true, id: u.id });
+  },
+
   'GET /api/admin/invites': async (req, res) => {
     if (!requireAdmin(req, res)) return;
     // resolve usedBy uid → name for display

@@ -42,6 +42,20 @@ function UserDetail({ id, onChanged, close }) {
   // left exactly this account un-disableable. setsDone/workoutVolume walk entries and sets, so
   // an entry that lacks either has nothing to show and is skipped rather than drawn.
   const workouts = (d.workouts || []).filter(w => w && Array.isArray(w.entries) && w.entries.every(e => e && Array.isArray(e.sets)))
+  // Their whole record as the admin API already returns it — the export the delete sheet offers.
+  const exportUser = () => {
+    const blob = new Blob([JSON.stringify(d, null, 2)], { type: 'application/json' })
+    const a = document.createElement('a')
+    a.href = URL.createObjectURL(blob)
+    a.download = `opengym-${u.name.replace(/[^a-zA-Z0-9_-]+/g, '-').toLowerCase()}-${u.id}.json`
+    document.body.appendChild(a); a.click(); a.remove()
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000)
+  }
+  const doDelete = () => {
+    api('/api/admin/user/delete', { method: 'POST', body: JSON.stringify({ id: u.id }) })
+      .then(() => { toast('Account deleted'); onChanged(); close() })
+      .catch(e => toast(e.message))
+  }
   const setDisabled = disabled => {
     api('/api/admin/user/disable', { method: 'POST', body: JSON.stringify({ id: u.id, disabled }) })
       .then(() => { toast(disabled ? 'User disabled' : 'User enabled'); onChanged(); close() })
@@ -67,6 +81,25 @@ function UserDetail({ id, onChanged, close }) {
           : confirmSheet({ title: 'Disable ' + u.name + '?', message: 'They are signed out everywhere and can no longer sync or log in until re-enabled. Their data stays.', confirmText: 'Disable', danger: true, onConfirm: () => setDisabled(true) })}>
         {u.disabled ? 'Enable account' : 'Disable account'}</button>
       <div className="adm-hint">{u.disabled ? 'Enabling lets them sign in and sync again.' : 'Disabling signs them out everywhere and blocks sign-in. Nothing is deleted.'}</div>
+      {/* The one destructive action in the app (issue #107), so it asks twice and offers the
+          export first — that history is theirs. The second step names the account again, because
+          the first sheet can be dismissed by anyone who was not reading. */}
+      <button className="btn danger" style={{ margin: '14px 0 4px' }}
+        onClick={() => confirmSheet({
+          title: 'Delete ' + u.name + '?',
+          message: 'Everything goes: their workouts, weigh-ins, routines, passkeys and notifications. This cannot be undone, and the invite code they joined with stays used. Download their data first if they might want it.',
+          confirmText: 'Continue',
+          danger: true,
+          onConfirm: () => confirmSheet({
+            title: 'Delete ' + u.name + ' for good?',
+            message: 'Last chance — there is no undo and no backup of this on the server.',
+            confirmText: 'Delete account',
+            danger: true,
+            onConfirm: doDelete,
+          }),
+        })}>Delete account</button>
+      <button className="btn" style={{ marginBottom: 4 }} onClick={exportUser}>Download their data</button>
+      <div className="adm-hint">Deleting removes the account and every trace of its training history from this server.</div>
     </>}
     <h4 className="sec">Workout history</h4>
     {workouts.length ? <div className="list" style={{ gap: 0 }}>

@@ -871,6 +871,23 @@ body.chips-dragging *{cursor:inherit}
   .sethead.per-side{gap:4px}
   .sethead.per-side .n-sp{width:49px}
 }
+/* The effort column steps down twice on the way to a narrow screen, not once. Its −/+ are gone
+   below 360 px (see the 359 px query), and from 366 px an L/R row carries them at full size in a
+   sets card two insets deep — in a list unit, or in a superset card. In between it could do
+   neither: the 64 px the pill needs for a 28 px value and two 16 px button floors left the row
+   6, 5, 4, 3, 2 and 1 px wider than its card's content box at 360–365 px, so its done tick sat
+   in the card's side padding. The −/+ give way there too, to a 12 px floor — they are what the
+   cell sheds first, a pixel further down they go altogether — and the row keeps everything that
+   carries meaning: the rating stays a 28 px tap target, the weight and reps columns keep their
+   numbers, their buttons and their floors, and the header keeps its single line ("WEIGHT (KG)"
+   has 1.5 px to spare in a 77 px column and would wrap if the weight column paid instead).
+   An L/R row in a superset in the list view has no −/+ to shrink below 430 px; the rule for it
+   below is more specific and keeps the cell at 34 px. */
+@media (min-width:360px) and (max-width:365px){
+  .setrow.side .effcell,.setrow.side .effcell-stp,.sethead.per-side .eff-sp{min-width:56px}
+  .setrow.side .effcell-stp>button[aria-label="Decrease"],
+  .setrow.side .effcell-stp>button[aria-label="Increase"]{min-width:12px}
+}
 /* An L/R row with an effort column inside a superset in the list view sits behind three insets
    (unit, superset card, sets card): at 412 px the row is 260 px wide, and with the logged
    effort's −/+ its cells want 277 (badge, tick and gaps, weight 77, reps 66, effort 64). The
@@ -1281,8 +1298,14 @@ body.chips-dragging *{cursor:inherit}
 /* A superset nests a card inside the page's own gutter, so its inset is paid twice. On a
    narrow phone that left the weight and reps steppers too tight to show a three-digit
    number — reported as "the reps textbox becomes too small when superset on mobile". The
-   card only gives up its own padding; the rows inside keep their spacing. */
-@media (max-width:400px){
+   card only gives up its own padding; the rows inside keep their spacing.
+   The give-back runs to 404 px rather than 400, because it may not end before the full insets
+   fit: at 401 px they snapped back to 16 + 14 + 14 per side and took 48 px off the row while the
+   screen had gained one, so a plain row with an effort column in a superset in the list view —
+   285 px of cells in a 281 px card — was 4, 3, 2 and 1 px wider than its card's content box at
+   401–404 px and its done tick sat in the card's side padding. 405 px is the width where those
+   285 px and the three full insets first add up to the screen, so that is where it ends. */
+@media (max-width:404px){
   .ss-card{padding:10px 8px}
   /* The sets card nested in a superset card or a list unit pays a second inset, and in a superset
      in the list view a third; with an L/R row's set number, badge, two steppers, effort and tick
@@ -1317,7 +1340,8 @@ body.chips-dragging *{cursor:inherit}
 .wl-unit{scroll-margin-top:calc(var(--whdr-h, var(--sat) + 80px) + 16px)}
 .wl-unit.cur{box-shadow:inset 0 0 0 1.5px var(--acc-line)}
 .wl-hd{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
-@media (max-width:400px){
+/* part of the give-back above — one edge for all three insets of a row in the list view */
+@media (max-width:404px){
   .wl-unit{padding:10px 8px 2px}
 }
 

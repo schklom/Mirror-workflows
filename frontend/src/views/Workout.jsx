@@ -581,13 +581,36 @@ function ActiveWorkout() {
   // The list opens at the exercise you are on, not at the top of the session (issue #224): you
   // switch to it mid-workout to look at what comes before and after. Only on the way in — once
   // the list is open, "current" moves because you tick rows in it, and a list that scrolls
-  // itself under your thumb is worse than one that stays put.
+  // itself under your thumb is worse than one that stays put. List ↔ Compact counts as a way
+  // in: the rows change height, so the same scroll offset lands somewhere else.
+  //
+  // The scroll waits for the next frame rather than running in the effect itself. App.jsx
+  // restores the route's remembered position in a frame it asked for during the same commit
+  // (a reload, a back navigation), and a sheet closing (⋯ → Layout → List) puts the page back
+  // where it was before the sheet opened, in an effect cleanup that runs before this one —
+  // both would win over a scroll made right here. A frame asked for now runs after theirs.
   const listRef = useRef(null)
+  const hdrRef = useRef(null)
   useEffect(() => {
     if (!listMode) return
-    const el = listRef.current?.querySelector('.wl-unit.cur')
-    if (el && typeof el.scrollIntoView === 'function') el.scrollIntoView({ block: 'start' })
-  }, [listMode])
+    const schedule = callback => window.requestAnimationFrame
+      ? window.requestAnimationFrame(callback)
+      : window.setTimeout(callback, 0)
+    const cancel = frame => window.cancelAnimationFrame
+      ? window.cancelAnimationFrame(frame)
+      : window.clearTimeout(frame)
+    const frame = schedule(() => {
+      const list = listRef.current
+      const el = list?.querySelector('.wl-unit.cur')
+      if (!el || typeof el.scrollIntoView !== 'function') return
+      // The sticky header grows when the workout name wraps; the unit's scroll margin (index.css)
+      // clears whatever height it has right now, with a one-line height as the fallback.
+      const hdrH = hdrRef.current?.offsetHeight
+      if (hdrH) list.style.setProperty('--whdr-h', hdrH + 'px')
+      el.scrollIntoView({ block: 'start' })
+    })
+    return () => cancel(frame)
+  }, [workoutView])
 
   const total = setUnitsTotal(A.entries)
   const done = setsDoneActive(A)
@@ -942,7 +965,7 @@ function ActiveWorkout() {
     {/* In list mode the whole session scrolls under the header, so the header (name, clock,
         set counter, discard/finish, progress) stays pinned — the one thing you want in view
         while you are somewhere in the middle of a long stack. Cards mode never scrolls far. */}
-    <div className={'whdr' + (listMode ? ' stick' : '')}>
+    <div className={'whdr' + (listMode ? ' stick' : '')} ref={hdrRef}>
     <div className="hdr">
       <button className="iconbtn" aria-label={t('Discard')} onClick={() => confirmSheet({ title: t('Discard workout?'), message: t('The sets you logged in this session will be lost.'), confirmText: t('Discard'), danger: true, onConfirm: () => { update(s => { s.active = null }); stopRest(); stopWork(); nav('/home') } })}><Icon name="xmark" /></button>
       <div style={{ textAlign: 'center' }}><div style={{ fontWeight: 600 }}>{A.name}</div><div className="sub">{A.backfill ? fmtDate(A.d, true) : <Elapsed start={A.start} />} · {t('{0} sets', done + '/' + total)}</div></div>

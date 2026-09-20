@@ -1408,3 +1408,48 @@ describe('per-side effort completion', () => {
     expect(mocks.startRest).toHaveBeenCalledTimes(calls)
   })
 })
+
+describe('set-row column header', () => {
+  // The L/R rows carry a badge in front of the weight cell that a straight row does not have, so
+  // the shared header needs to know it is sitting over per-side rows to offset its columns (QA C5).
+  it('marks the header of a per-side exercise so the CSS can offset it by the L/R badge', async () => {
+    const side = () => ({ w: 20, r: 8, done: false })
+    await mount([
+      exercise('plain-bench', [false]),
+      exercise('side-curl', [false], {
+        target: { mode: 'reps', side: true, reps: 16, weight: 20, bodyweight: false },
+        sets: [{ w: 20, r: 16, done: false, sides: { L: side(), R: side() } }],
+      }),
+    ], 0, { active: { workoutView: 'list' } })
+    const heads = container.querySelectorAll('.sethead')
+    expect(heads.length).toBe(2)
+    expect(heads[0].classList.contains('per-side')).toBe(false)
+    expect(heads[1].classList.contains('per-side')).toBe(true)
+    expect(container.querySelector('.setrow-side .sidetag')).toBeTruthy()
+  })
+
+  // A weighted hold's row has the play button in front of the tick, so its cells get less room than
+  // a straight row's and the CSS sizes them (and the header over them) by the `timed` marker.
+  it('marks a timed hold\'s rows and header, and neither on a rep set', async () => {
+    await mount([
+      exercise('timed-plank', [false], {
+        target: { mode: 'time', sec: 30, weight: 60, bodyweight: false },
+        sets: [{ sec: 30, w: 60, done: false }],
+      }),
+      exercise('plain-bench', [false]),
+    ], 0, { active: { workoutView: 'list' } })
+    const heads = container.querySelectorAll('.sethead')
+    expect(heads[0].classList.contains('timed')).toBe(true)
+    expect(container.querySelector('.setrow.timed .setgo')).toBeTruthy()
+    expect(heads[1].classList.contains('timed')).toBe(false)
+    expect(container.querySelectorAll('.setrow.timed').length).toBe(1)
+  })
+
+  // With the +/- buttons switched off the cells' floors are the bare numbers; the header must
+  // freeze its columns the same way or the labels drift, so it carries the cells' `plain`.
+  it('carries `plain` on the header when the steppers are off', async () => {
+    await mount([exercise('plain-bench', [false])], 0, { wc: { steppers: false } })
+    expect(container.querySelector('.sethead').classList.contains('plain')).toBe(true)
+    expect(container.querySelector('.setrow .stp.w').classList.contains('plain')).toBe(true)
+  })
+})

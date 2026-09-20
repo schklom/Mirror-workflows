@@ -701,7 +701,32 @@ body.chips-dragging *{cursor:inherit}
 }
 .setrow .stp.w{flex:1.4;min-width:0}
 .setrow .stp.r{flex:1;min-width:0}
+/* The number outranks the buttons in every set row, not only the ones with an effort column
+   that #235 covered: a 320 px phone left 0–6 px for the reps number and showed 102.5 as "102",
+   and the cardio row's 10.5 km/h read "10" at 368 px (QA C2, C21, C24). The field reserves the
+   widest value it shows at its font — "227.5" kg, "100" reps or "10.5" km/h (`--num`, incl.
+   the field's 4 px padding and 2 px against font rounding) — and the two buttons give up width
+   first, down to an 18 px floor, before anything is clipped. The cell itself is never narrower
+   than number + two floors, so the row's flex hands a starving cell width from the others
+   instead of clipping its buttons. */
 .setrow .stp button{width:32px;height:40px}
+/* Only the weight/reps buttons: `.effcell-stp` is a `.stp` too, and its value is a `<button>`,
+   so a rule on `.setrow .stp button` would outrank `.effcell-stp .val` and stop the value from
+   filling the cell (it bunched left with dead space next to it at desktop widths). */
+.setrow .stp.w button,.setrow .stp.r button{flex:0 1 auto;min-width:var(--btn-floor)}
+.setrow .stp.w,.sethead .w-sp{--num:48px}
+.setrow .stp.r,.sethead .r-sp{--num:39px}
+.setrow .stp.w,.setrow .stp.r,.sethead .w-sp,.sethead .r-sp{--btn-floor:18px;min-width:calc(var(--num) + 2*var(--btn-floor))}
+/* no buttons (Workout controls → steppers off): the number alone is the floor. The header
+   carries the same `plain` so its columns freeze where the cells do. */
+.setrow .stp.plain,.sethead.plain .w-sp,.sethead.plain .r-sp{--btn-floor:0px}
+.setrow .stp.w .val,.setrow .stp.r .val{min-width:var(--num)}
+/* A timed hold logs the seconds in the first column and the load in the second, so the two
+   columns swap roles: the load carries "227.5" and needs the wider reserve and the bigger share,
+   the seconds column "120". Without the swap the load input was 35 px for a 41.7 px "102.5" at
+   368 and 412 px — "102.5 kg" read "102.!" — while the seconds column sat on 67 px for "120". */
+.setrow.timed .stp.w,.sethead.timed .w-sp{flex:1;--num:39px}
+.setrow.timed .stp.r,.sethead.timed .r-sp{flex:1.4;--num:48px}
 /* The effort column is a single tap-to-pick button, not a stepper. It is a direct flex child
    of the row (like the .stp cells), carrying its own column width via flex. `align-self` and
    a fixed height stop the row from stretching it taller than the weight/reps cells; it is NOT
@@ -711,6 +736,11 @@ body.chips-dragging *{cursor:inherit}
    the generic `.empty` (which is a full-page empty-state with 44px padding — sharing that name
    inflated the cell to ~90px). */
 .setrow .effcell,.sethead .eff-sp{flex:.8 1 0;min-width:0}
+/* The whole effort column — empty cell, logged cell and header label alike, so the row does not
+   jump when a rating is added and the label does not drift — never goes below what the logged
+   stepper needs at its floor: 28 px value + two 16 px buttons + the 1.5 px borders. The row's
+   flex hands the difference back to weight and reps, whose own buttons shrink for it. */
+.setrow .effcell,.setrow .effcell-stp,.setrow.eff3 .effcell-stp,.sethead .eff-sp{min-width:64px}
 .effcell{
   box-sizing:border-box;height:44px;border-radius:10px;
   background:var(--surface-2);border:1.5px solid transparent;
@@ -731,16 +761,19 @@ body.chips-dragging *{cursor:inherit}
 }
 .effcell-stp button{color:inherit}
 .effcell-stp>button[aria-label="Decrease"],
-.effcell-stp>button[aria-label="Increase"]{width:26px;height:44px;font-size:15px;opacity:.85}
+.effcell-stp>button[aria-label="Increase"]{width:26px;height:44px;font-size:15px;opacity:.85;flex:0 1 auto;min-width:16px}
+/* the value is the tap target for the picker, so it keeps a 28 px finger's width for "8.5" and
+   the −/+ shrink first — on a 368 px phone it had collapsed to 4 px under its own digits, and a
+   tap on the number stepped the rating instead of opening the picker (QA C22) */
 .effcell-stp .val{
-  flex:1;min-width:0;display:flex;align-items:center;justify-content:center;
+  flex:1;min-width:28px;display:flex;align-items:center;justify-content:center;
   font-size:15px;font-weight:600;letter-spacing:-.01em;
   font-variant-numeric:tabular-nums;line-height:1;align-self:stretch;color:inherit;
 }
 .effcell-stp .val:active{background:var(--surface-3)}
 /* the effort cell needs less room now (one short value, no +/- buttons), so weight/reps keep
    more of the row on narrow phones than they did when three steppers had to share it */
-.setrow .effcell-stp,.setrow.eff3 .effcell-stp{flex:.8 1 0;min-width:0}
+.setrow .effcell-stp,.setrow.eff3 .effcell-stp{flex:.8 1 0}
 .setrow.eff3 .effcell-stp{flex:.7 1 0}
 .setrow.eff3,.sethead.eff3{gap:6px}
 .setrow.eff3 .stp.w,.sethead.eff3 .w-sp{flex:1.4}
@@ -748,6 +781,9 @@ body.chips-dragging *{cursor:inherit}
 .setrow.eff3 .effcell,.sethead.eff3 .eff-sp{flex:.7 1 0}
 .setrow.eff3 .stp.w button,.setrow.eff3 .stp.r button{width:26px}
 .setrow.eff3 .stp .num{font-size:14px}
+/* the same reserved widths as a plain row's, at the smaller font */
+.setrow.eff3 .stp.w,.sethead.eff3 .w-sp{--num:41px}
+.setrow.eff3 .stp.r,.sethead.eff3 .r-sp{--num:30px}
 .setrow.eff3 .effcell-stp>button[aria-label="Decrease"],
 .setrow.eff3 .effcell-stp>button[aria-label="Increase"]{width:22px}
 .setrow.eff3 .effcell-stp .val{font-size:14px}
@@ -789,15 +825,72 @@ body.chips-dragging *{cursor:inherit}
    buttons here: slimmer buttons, tighter gaps, and reps gets the same share as the weight. */
 .setrow-side .setrow.side.eff3{gap:4px}
 .setrow-side .setrow.side.eff3 .stp.r{flex:1.4}
-.setrow-side .setrow.side.eff3 .effcell{flex:.6 1 0}
+.setrow-side .setrow.side.eff3 .effcell,.setrow-side .setrow.side.eff3 .effcell-stp{flex:.6 1 0}
 .setrow-side .setrow.side.eff3 .stp.w button,.setrow-side .setrow.side.eff3 .stp.r button{width:20px}
+/* The header is laid out like a straight row, but in front of an L/R row's weight cell sit the
+   set number, its gap AND the side badge, so over per-side rows the labels stood 17–23 px left
+   of their cells (QA C5). `.per-side` (set by Workout.jsx) widens the number slot by the badge
+   and takes the badge's gap as its own, so header and rows share one column track; with an
+   effort column it also mirrors the side rows' own shares (reps 1.4, effort .6). */
+.sethead.per-side .n-sp{width:56px}
+.sethead.per-side.eff3{gap:4px}
+.sethead.per-side.eff3 .r-sp{flex:1.4}
+.sethead.per-side.eff3 .eff-sp{flex:.6 1 0}
 @media (max-width:400px){
   /* the same squeeze on a plain row, where the list view's own inset costs the last pixels */
   .setrow.eff3 .stp.w button,.setrow.eff3 .stp.r button{width:21px}
   .setrow.eff3 .stp.r,.sethead.eff3 .r-sp{flex:1.25}
   .setrow-side{gap:5px}
-  .setrow-side .setrow.side.eff3 .sidetag{width:20px}
-  .setrow-side .setrow.side.eff3 .stp.w button,.setrow-side .setrow.side.eff3 .stp.r button{width:18px}
+  /* and on every L/R row, with or without an effort column — the default profile (no effort,
+     buttons on) lost the per-side reps number the same way at 320 and 368 px (QA C2, C3) */
+  .setrow-side .setrow.side{gap:4px}
+  .setrow-side .setrow.side .sidetag{width:20px}
+  .setrow-side .setrow.side .stp .num{font-size:14px}
+  .setrow-side .setrow.side .stp.w,.sethead.per-side .w-sp{--num:41px}
+  .setrow-side .setrow.side .stp.r,.sethead.per-side .r-sp{--num:30px}
+  .setrow-side .side-rows .setrow.side .stp.w button,.setrow-side .side-rows .setrow.side .stp.r button{width:18px}
+  /* number 24 + gap 5 + badge 20; the row's 4 px gap is the header's too */
+  .sethead.per-side{gap:4px}
+  .sethead.per-side .n-sp{width:49px}
+}
+/* An L/R row with an effort column inside a superset in the list view sits behind three insets
+   (unit, superset card, sets card): at 412 px the row is 260 px wide, and with the logged
+   effort's −/+ its cells want 277 (badge, tick and gaps, weight 77, reps 66, effort 64). The
+   −/+ give way; the value stays, still opens the picker on tap, and the picker's exact row steps
+   in halves as before. The header's effort slot follows the cell's floor.
+   Only while the row is that narrow — the insets are fixed, so it is 1 px short at 428 px and
+   fits from 430 px up, where it keeps the −/+ like the plain row above it. The 34 px floor
+   belongs to the same query: on its own it clips the cell by 27 px. */
+@media (max-width:429px){
+  .wl-unit .ss-card .setrow.side .effcell-stp>button[aria-label="Decrease"],
+  .wl-unit .ss-card .setrow.side .effcell-stp>button[aria-label="Increase"]{display:none}
+  .wl-unit .ss-card .setrow.side .effcell,.wl-unit .ss-card .setrow.side .effcell-stp,.wl-unit .ss-card .sethead.per-side .eff-sp{min-width:34px}
+}
+/* Below 360 px a row with an effort column cannot hold three numbers and six buttons: with the
+   set number, tick and gaps gone a card leaves ~178 px, and 102.5 / 12 / 8.5 at their floors need
+   ~197. The effort −/+ give way there on every row — the value stays (26 px for "8.5" plus the
+   border), still opens the picker on tap, and the picker's exact row steps in halves as before;
+   weight and reps keep their buttons. */
+@media (max-width:359px){
+  .setrow .effcell-stp>button[aria-label="Decrease"],.setrow .effcell-stp>button[aria-label="Increase"]{display:none}
+  .setrow .effcell,.setrow .effcell-stp,.setrow.eff3 .effcell-stp,.sethead .eff-sp,
+  .wl-unit .ss-card .setrow.side .effcell,.wl-unit .ss-card .setrow.side .effcell-stp,.wl-unit .ss-card .sethead.per-side .eff-sp{min-width:29px}
+  .setrow .effcell-stp .val{min-width:26px}
+  /* an L/R row with an effort column is still over by 14 px in a card at 320 px (badge 20, 77 + 66 +
+     29 for the three cells, tick 30, four gaps): one notch further there — 16 px button floors
+     and a 13 px number — and it fits with two pixels to spare. Not with the buttons off (`plain`),
+     where the number alone is the floor. */
+  .setrow-side .setrow.side.eff3 .stp.w:not(.plain),.setrow-side .setrow.side.eff3 .stp.r:not(.plain),.sethead.per-side.eff3:not(.plain) .w-sp,.sethead.per-side.eff3:not(.plain) .r-sp{--btn-floor:16px}
+  .setrow-side .setrow.side.eff3 .stp .num{font-size:13px}
+  .setrow-side .setrow.side.eff3 .stp.w,.sethead.per-side.eff3 .w-sp{--num:38px}
+  .setrow-side .setrow.side.eff3 .stp.r,.sethead.per-side.eff3 .r-sp{--num:28px}
+  /* A weighted timed hold has one control more than a straight row (the play button before the
+     tick) and was 15 px over at 320 px with the full-size floors: seconds ("120") and the load
+     ("102.5") at the 14 px size and 16 px button floors, as an effort row does. */
+  .setrow.timed .stp .num{font-size:14px}
+  .setrow.timed .stp.w,.sethead.timed .w-sp{--num:30px}
+  .setrow.timed .stp.r,.sethead.timed .r-sp{--num:41px}
+  .setrow.timed .stp.w:not(.plain),.setrow.timed .stp.r:not(.plain),.sethead.timed:not(.plain) .w-sp,.sethead.timed:not(.plain) .r-sp{--btn-floor:16px}
 }
 .setrow.side.done .sidetag{background:var(--acc);color:var(--on-acc)}
 .setrow.side.done{opacity:.45}
@@ -805,11 +898,24 @@ body.chips-dragging *{cursor:inherit}
 /* drop-set drops / rest-pause bursts riding on a work row, editable like the row itself
    (issue: drop-sets & rest-pause) */
 .subrow{display:flex;align-items:center;gap:6px;padding:3px 0 3px 32px}
+/* Under an L/R row the set number already sits outside the .side-rows box, so the indent that
+   tucks a straight row's drops under its number would be paid twice — at 320 px both number
+   fields of a per-side drop collapsed to 0 px (QA C3). The label starts under the badge instead. */
+.setrow-side .side-rows .subrow{padding-left:0}
 .subrow .subn{font-size:11px;color:var(--label-3);flex:none;width:46px}
-.subrow .stp.mini{flex:1;min-width:0}
-.subrow .stp.mini button{width:26px;height:30px}
+/* the number outranks the buttons here as in the row above: room for "227.5" (a drop's weight)
+   or "100" (the second mini is always reps) at 13 px, and the buttons shrink to 16 px first */
+.subrow .stp.mini{flex:1;--num:38px;min-width:calc(var(--num) + 32px)}
+.subrow .stp.mini+.stp.mini{--num:28px}
+.subrow .stp.mini button{width:26px;height:30px;flex:0 1 auto;min-width:16px}
+.subrow .stp.mini .val{min-width:var(--num)}
 .subrow .stp.mini .num{font-size:13px;min-height:30px}
 .subrow .iconbtn{width:26px;height:26px;font-size:11px;flex:none}
+/* label 46, two minis at their floors 70 + 60, the ✕ and three gaps: 252 px with the indent — the
+   whole row at 320 px. The label starts under the number circle's inner edge there instead. */
+@media (max-width:359px){
+  .subrow{padding-left:24px}
+}
 /* The number is the set's menu (drop / burst / remove); a 24px circle needs a finger-sized hit area. */
 .setrow .n::before{content:'';position:absolute;inset:-10px}
 /* No +/- buttons: the number field takes the whole cell and is the tap target. */
@@ -1151,6 +1257,16 @@ body.chips-dragging *{cursor:inherit}
    card only gives up its own padding; the rows inside keep their spacing. */
 @media (max-width:400px){
   .ss-card{padding:10px 8px}
+  /* The sets card nested in a superset card or a list unit pays a second inset, and in a superset
+     in the list view a third; with an L/R row's set number, badge, two steppers, effort and tick
+     it is the line that decides whether the numbers fit. 8 px each, and the superset card inside
+     a unit keeps 4 (none below 360), so every set row has the same 256 px at 320 as in a plain
+     card, and 296–304 at 368. */
+  .wl-unit .card,.ss-card .card{padding-left:8px;padding-right:8px}
+  .wl-unit .ss-card{padding-left:4px;padding-right:4px}
+}
+@media (max-width:359px){
+  .wl-unit .ss-card{padding-left:0;padding-right:0}
 }
 .ss-hd{
   font-size:12px;font-weight:600;color:var(--acc);margin-bottom:12px;
@@ -1160,7 +1276,10 @@ body.chips-dragging *{cursor:inherit}
 .ss-amp{text-align:center;font-size:15px;font-weight:600;color:var(--acc);margin:14px 0 8px}
 
 /* --- workout list view: every unit stacked, the current one outlined --- */
-.workout-list{display:grid;gap:14px}
+/* minmax(0, …): a grid's default `auto` track is at least as wide as its widest content, so a set
+   row whose cells have floors (see .setrow .stp) would widen the whole unit past the screen and
+   push the ticks off it. Capped, a row that does not fit overflows its own card instead. */
+.workout-list{display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
 .wl-unit{
   border-radius:var(--r-lg);padding:14px 14px 4px;
   background:var(--surface-2);

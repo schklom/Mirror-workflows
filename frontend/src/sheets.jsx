@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useStore } from './store/useStore.js'
 import { useUI } from './store/useUI.js'
-import { EXDB, EXIDX, BODYPARTS, isCardio, isBodyweightEq, allExercises, equipmentOf, smOf, searchExercises, exOr } from './lib/exercises.js'
+import { EXDB, EXIDX, BODYPARTS, isCardio, isBodyweightEq, allExercises, equipmentOf, smOf, searchExercises, exOr, isAssisted, betterWeight, beatsWeight } from './lib/exercises.js'
 import { activeProfile, exAvailable, ALL_EQUIPMENT, newProfile } from './lib/equipment.js'
 import { fmtDate, fmtNum, capWords, fmtVol, fmtDur, durPart, todayISO, isoOf, uid, exCount, routineCount, DAYN, DAYS, weekOrder, weekStartOf, weekDayOffset, MONTHS_LONG, ACCENTS } from './lib/format.js'
 import { lastEntryFor, bestWeightFor, bestWeightForEntry, buildSets, effectiveRoutineIds, workoutVolume, setsDone, setsDoneActive, setUnitsTotal, lastBW, supersetUnits, unitOf, setLabel, defaultConfig, cleanupSg, modeOf, effortOf, EFFORT, capEffort, stepEffort, isBw, isPerSide, sideReps, workSetsDone, applyIntensifierPlan, MAX_PLANNED_WARMUPS, NOTE_MAX } from './lib/history.js'
@@ -1942,9 +1942,13 @@ function TopWeight({ entryIdx, close }) {
   // to sit after every one of them.
   const entry = A ? A.entries[entryIdx] : null
   const ex = entry && EXIDX[entry.id]
-  const maxSet = entry ? Math.max(0, ...entry.sets.filter(s => s.done && !isWarmupRow(s)).map(s => s.w || 0)) : 0
-  const prevBest = entry ? Math.max((st.exWeights[entry.id] || {}).w || 0, bestWeightFor(st, entry.id)) : 0
-  const [v, setV] = useState(entry ? (Math.max(maxSet, prevBest) || entry.target.weight || 0) : 0)
+  // "Best" runs the other way on an assistance machine: the lightest setting is the record, and
+  // a 0 means nothing logged rather than a new low (issue #232).
+  const fold = (a, b) => (a > 0 && b > 0 ? betterWeight(entry.id, a, b) : Math.max(a, b))
+  const doneW = entry ? entry.sets.filter(s => s.done && !isWarmupRow(s)).map(s => s.w || 0).filter(w => w > 0) : []
+  const maxSet = entry && doneW.length ? doneW.reduce((a, b) => betterWeight(entry.id, a, b)) : 0
+  const prevBest = entry ? fold((st.exWeights[entry.id] || {}).w || 0, bestWeightFor(st, entry.id)) : 0
+  const [v, setV] = useState(entry ? (fold(maxSet, prevBest) || entry.target.weight || 0) : 0)
   useEffect(() => { if (!entry) close() }, [!entry])
 
   const units = supersetUnits(A ? A.entries : [])
@@ -1960,7 +1964,7 @@ function TopWeight({ entryIdx, close }) {
     update(s => {
       s.active.entries[entryIdx].topW = n
       const cur = s.exWeights[entry.id]
-      s.exWeights[entry.id] = { w: Math.max(n, cur ? cur.w : 0), d: todayISO() }
+      s.exWeights[entry.id] = { w: cur && cur.w > 0 && n > 0 ? betterWeight(entry.id, n, cur.w) : Math.max(n, cur ? cur.w : 0), d: todayISO() }
     })
     close()
     if (advance && unitDone) {
@@ -2173,8 +2177,9 @@ function doFinishWorkout() {
   // A workout logged into the past cannot claim records against the history that came after
   // it, so a backfilled session reports none and leaves the confirmed weights alone.
   if (!past) A.entries.forEach(e => {
-    const mx = Math.max(0, ...e.sets.filter(s => s.done && !isWarmupRow(s)).map(s => s.w))
-    if (mx > 0 && mx > bestWeightFor(st, e.id)) prs.push(e.id)
+    const loads = e.sets.filter(s => s.done && !isWarmupRow(s)).map(s => s.w).filter(w => w > 0)
+    const mx = loads.length ? loads.reduce((a, b) => betterWeight(e.id, a, b)) : 0
+    if (beatsWeight(e.id, mx, bestWeightFor(st, e.id))) prs.push(e.id)
     // A heavier estimate without a heavier top set is its own kind of progress —
     // same weight for more reps. Reported separately so it can't be read as a load PR.
     const rec = is1RMRecord(st, e.id, e)
@@ -2192,7 +2197,7 @@ function doFinishWorkout() {
     } else {
       w.entries.forEach(e => {
         const mx = bestWeightForEntry(e)
-        if (mx > 0) { const cur = s.exWeights[e.id]; if (!cur || mx > cur.w) s.exWeights[e.id] = { w: mx, d: w.d } }
+        if (mx > 0 && beatsWeight(e.id, mx, (s.exWeights[e.id] || {}).w || 0)) s.exWeights[e.id] = { w: mx, d: w.d }
       })
       s.workouts.push(w)
     }

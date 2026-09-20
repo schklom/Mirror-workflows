@@ -149,6 +149,44 @@ const BODYWEIGHT_EQ = new Set(['body weight', 'band', 'resistance band'])
 export const isBodyweightEq = idOrEx =>
   BODYWEIGHT_EQ.has((typeof idOrEx === 'string' ? EXIDX[idOrEx] : idOrEx)?.eq)
 
+/* Assistance machines run the other way round: the stack carries part of your body weight, so
+ * a smaller number is the harder set and the record (issue #232). Getting the set wrong is
+ * worse than not having the feature — inverting a normal lift would hide real progress — so the
+ * rule is deliberately narrow: the machine that takes load off you is the leverage machine whose
+ * name says "assisted". That is eight exercises in the catalogue (assisted pull-up, chin-up,
+ * chest dip, triceps dip and their variants) and nothing else.
+ *
+ * The name alone is not enough. Twenty-nine catalogue entries say "assisted": partner-assisted
+ * stretches, a medicine-ball twist, band and bodyweight leg curls. On those the weight is
+ * ordinary load — heavier is harder — and inverting them would be the same bug pointed the
+ * other way. Equipment is what separates the two.
+ *
+ * `assisted: true` (or `false`) on a custom exercise or on a routine's config overrides the
+ * rule in either direction, which is how anything the catalogue does not know gets marked.
+ */
+const ASSISTED_EQ = 'leverage machine'
+const assistedName = n => /\bassist(ed)?\b/i.test(String(n || ''))
+
+// The catalogue entry itself carries an `id`, so this never recurses through it — one lookup,
+// then the shape is read directly.
+const assistedShape = ex => (typeof ex?.assisted === 'boolean' ? ex.assisted : ex?.eq === ASSISTED_EQ && assistedName(ex?.n))
+
+export function isAssisted(idOrEx) {
+  if (!idOrEx) return false
+  if (typeof idOrEx === 'string') return !!assistedShape(EXIDX[idOrEx])
+  if (typeof idOrEx.assisted === 'boolean') return idOrEx.assisted
+  if (typeof idOrEx.target?.assisted === 'boolean') return idOrEx.target.assisted
+  const known = idOrEx.id ? EXIDX[idOrEx.id] : null
+  return !!assistedShape(known || idOrEx)
+}
+
+/** The better of two loads for this exercise: less assistance, or more weight. */
+export const betterWeight = (idOrEx, a, b) => (isAssisted(idOrEx) ? Math.min(a, b) : Math.max(a, b))
+
+/** Is `w` a better load than `prev`? `prev` of 0 means nothing logged yet. */
+export const beatsWeight = (idOrEx, w, prev) =>
+  w > 0 && (prev <= 0 || (isAssisted(idOrEx) ? w < prev : w > prev))
+
 // An id that resolves to nothing — a plan file built against a different exercise dataset,
 // a custom exercise deleted on another device before the sync arrived — still has to
 // render. A placeholder keeps it visible (and removable) instead of taking the whole view

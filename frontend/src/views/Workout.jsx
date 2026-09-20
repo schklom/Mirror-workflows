@@ -204,11 +204,15 @@ function ExerciseBlock({ entryIdx, compact, dense, onToggle, onToggleSide, onFie
   // three under the sets and four more below the card is a single list you open once a session.
   const barInfo = (!cardio && !(bw && !added) && usesBar(ex)) ? (() => {
     const bar = barWeightFor(S, entry.id)
-    if (!(bar > 0)) return null
+    if (bar == null || bar < 0) return null
     const nextW = entry.sets.find(s => !s.done)?.w
     const refW = nextW > 0 ? nextW : Math.max(0, ...entry.sets.map(s => s.w || 0))
     const split = plateSplit(refW, bar)
-    return { bar, text: t('Bar {0}', fmtNum(bar) + ' ' + S.unit) + (split != null ? ' · ' + t('{0} per side', fmtNum(split) + ' ' + S.unit) : '') }
+    const perSide = split != null ? t('{0} per side', fmtNum(split) + ' ' + S.unit) : null
+    // With no bar there is no bar weight worth naming — the chip is then just the plate math,
+    // and it still opens the same sheet to turn it back on (issue #138).
+    if (bar === 0) return perSide ? { bar, text: perSide } : null
+    return { bar, text: t('Bar {0}', fmtNum(bar) + ' ' + S.unit) + (perSide ? ' · ' + perSide : '') }
   })() : null
   const openMore = () => menuSheet({
     title: exerciseNameFor(ex),

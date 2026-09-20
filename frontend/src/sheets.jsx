@@ -5,7 +5,7 @@ import { EXDB, EXIDX, BODYPARTS, isCardio, isBodyweightEq, allExercises, equipme
 import { activeProfile, exAvailable, ALL_EQUIPMENT, newProfile } from './lib/equipment.js'
 import { fmtDate, fmtNum, capWords, fmtVol, fmtDur, durPart, todayISO, isoOf, uid, exCount, routineCount, DAYN, DAYS, weekOrder, weekStartOf, weekDayOffset, MONTHS_LONG, ACCENTS } from './lib/format.js'
 import { lastEntryFor, bestWeightFor, bestWeightForEntry, buildSets, effectiveRoutineIds, workoutVolume, setsDone, setsDoneActive, setUnitsTotal, lastBW, supersetUnits, unitOf, setLabel, defaultConfig, cleanupSg, modeOf, effortOf, EFFORT, capEffort, stepEffort, isBw, isPerSide, sideReps, workSetsDone, applyIntensifierPlan, MAX_PLANNED_WARMUPS, NOTE_MAX } from './lib/history.js'
-import { usesBar, barWeightFor, defaultBarWeight, hasBarOverride } from './lib/bar.js'
+import { usesBar, barWeightFor, defaultBarWeight, hasBarOverride, isNoBar } from './lib/bar.js'
 import { toScale, rirOf, EFFORT_PRESETS, effortColor } from './lib/effort.js'
 import { beep, vibrate } from './lib/sound.js'
 import { t, dateLocale, instrFor, exerciseNameFor, getLang, INSTR_LANGS } from './lib/i18n.js'
@@ -583,17 +583,32 @@ function BarWeightEditor({ ex, extra }) {
   const st = useStore(s => s.S)
   const explicit = hasBarOverride(st, ex.id)
   const def = defaultBarWeight(ex.eq, st.unit)
+  const noBar = isNoBar(st, ex.id)
   const setBar = v => update(s => {
     s.barWeights = s.barWeights || {}
     const n = Math.max(0, Math.round((v || 0) * 100) / 100)
     if (n > 0) s.barWeights[ex.id] = n; else delete s.barWeights[ex.id]
   })
+  // "No bar" is a stored 0, which is a different thing from no entry at all: a counterbalanced
+  // Smith carriage weighs nothing in your hands, so the plate math and the drop-set steps must
+  // start from what you logged (issue #138). Clearing it goes back to the bar type's default.
+  const setNoBar = on => update(s => {
+    s.barWeights = s.barWeights || {}
+    if (on) s.barWeights[ex.id] = 0; else delete s.barWeights[ex.id]
+  })
   return <>
-    <div className="row cfgrow" style={{ marginBottom: 6 }}>
+    {!noBar && <div className="row cfgrow" style={{ marginBottom: 6 }}>
       <Stepper label={t('Bar ({0})', st.unit)} value={barWeightFor(st, ex) || 0} step={2.5} onChange={setBar} />
+    </div>}
+    <div className="list menu-list" style={{ marginBottom: 6 }}>
+      <Row icon="barbell" title={t('No bar')} subtitle={t('The weight you log is all plates.')}>
+        <Switch checked={noBar} onChange={setNoBar} />
+      </Row>
     </div>
     <div className="small dim" style={{ marginBottom: 18 }}>
-      {explicit ? t('Set to 0 to go back to the default ({0}).', fmtNum(def) + ' ' + st.unit) : t('Default for this bar type.')}
+      {noBar ? t('Plates are counted from 0 — turn this off for the default ({0}).', fmtNum(def) + ' ' + st.unit)
+        : explicit ? t('Set to 0 to go back to the default ({0}).', fmtNum(def) + ' ' + st.unit)
+          : t('Default for this bar type.')}
       {extra ? ' ' + extra : ''}
     </div>
   </>

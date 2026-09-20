@@ -1896,7 +1896,9 @@ function AddRoutineToSession({ close }) {
       if (!s.active) return
       s.active.entries.push(...entries)
       s.active.routineIds = [...[].concat(s.active.routineIds || []), r.id]
-      s.active.name = deriveSessionName(s.active.routineIds.map(id => s.routines.find(x => x.id === id)?.name).filter(Boolean))
+      if (!s.active.customName) {
+        s.active.name = deriveSessionName(s.active.routineIds.map(id => s.routines.find(x => x.id === id)?.name).filter(Boolean))
+      }
     })
     close()
     toast(t('{0} added — {1}', r.name, exCount(r.ex.length)))
@@ -2070,6 +2072,41 @@ function SessionNote({ close }) {
   </>
 }
 export const sessionNoteSheet = () => ui().openSheet(close => <SessionNote close={close} />)
+
+function RenameWorkout({ close }) {
+  const inputRef = useRef(null)
+  const onFocus = useSheetKeyboard(inputRef)
+  const st = useStore(s => s.S)
+  const update = useStore(s => s.update)
+  const A = st.active
+  const [name, setName] = useState(A?.name || '')
+  useEffect(() => { if (!A) close() }, [!A])
+  if (!A) return null
+
+  const trimmed = name.trim().slice(0, 60)
+  const canSave = trimmed.length > 0
+
+  const save = () => {
+    if (!canSave) return
+    update(s => {
+      if (!s.active) return
+      s.active.name = trimmed
+      s.active.customName = true
+    })
+    close()
+  }
+
+  return <>
+    <h3>{t('Rename workout')}</h3>
+    <input ref={inputRef} className="input" type="text" autoFocus maxLength={60} value={name}
+      placeholder={t('Workout title')}
+      onFocus={onFocus} onChange={e => setName(e.target.value)}
+      onKeyDown={e => { if (e.key === 'Enter' && canSave) save() }} />
+    <div style={{ height: 18 }} />
+    <Button variant="primary" disabled={!canSave} onClick={save}>{t('Save')}</Button>
+  </>
+}
+export const renameWorkoutSheet = () => ui().openSheet(close => <RenameWorkout close={close} />)
 
 /* Drop-set drops and rest-pause bursts are edited inline on the set row itself (Workout.jsx) —
    no sheet, no timer. A planned exercise (see the "Intensifier" config below) arrives with them

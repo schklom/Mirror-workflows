@@ -1408,3 +1408,32 @@ describe('per-side effort completion', () => {
     expect(mocks.startRest).toHaveBeenCalledTimes(calls)
   })
 })
+
+// QA C9: custom exercises store their target as a muscle-map id ("gluteal"); the tag under the
+// exercise name has to show the same label the detail sheet does (Glutes), not the raw id.
+describe('Workout exercise tags', () => {
+  it('names a custom exercise\'s target muscle by its display name', async () => {
+    const { registerCustom } = await import('../lib/exercises.js')
+    registerCustom([{ id: 'cqa1', n: 'QA Custom Thrust', bp: 'upper legs', eq: 'barbell', custom: true, tg: 'gluteal', sm: [], primaries: ['gluteal'], secondaries: [], muscleGroups: ['gluteal'] }])
+    try {
+      await mount([exercise('cqa1', [false])])
+      const tags = [...container.querySelectorAll('.tag')].map(tag => tag.textContent.trim())
+      expect(tags).toContain('Glutes')
+      expect(tags).not.toContain('gluteal')
+    } finally { registerCustom([]) }
+  })
+
+  // The cardio target "cardiovascular system" is a translated key of its own; mapping it through
+  // MUSCLE_NAME must not turn "Herz-Kreislauf" back into English for every built-in cardio exercise.
+  it('keeps the cardio target translated (burpee, de)', async () => {
+    const { _setLangState } = await import('../lib/i18n-core.js')
+    const { default: de } = await import('../locales/de.js')
+    _setLangState('de', de, null, null)
+    try {
+      await mount([exercise('1160', [false])])
+      const tags = [...container.querySelectorAll('.tag')].map(tag => tag.textContent.trim())
+      expect(tags).toContain('Herz-Kreislauf')
+      expect(tags).not.toContain('Cardiovascular system')
+    } finally { _setLangState('en', null, null, null) }
+  })
+})

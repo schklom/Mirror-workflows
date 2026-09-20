@@ -286,7 +286,13 @@ const NAME_BP = [
   [/\bneck\b/, 'neck'],
   [/\bgrip\b/, 'lower arms'],
 ]
-export const bpFromName = name => (NAME_BP.find(([re]) => re.test(name)) || [])[1] || null
+// Hyphens, underscores and slashes read as spaces first: "Stiff-Legged Deadlift" and
+// "Chest-Supported Row" are the same names the rules above spell with a space, and the
+// matcher (wordsOf) already treats the two spellings as one exercise — the body part has to agree.
+export const bpFromName = name => {
+  const n = String(name || '').toLowerCase().replace(/[-_/]+/g, ' ').replace(/\s+/g, ' ').trim()
+  return (NAME_BP.find(([re]) => re.test(n)) || [])[1] || null
+}
 
 // Categories the exporters use -> the dataset's body parts, for exercises we invent.
 const CATEGORY_BP = {
@@ -492,7 +498,9 @@ export function parseWorkoutCSV(text, { unit = 'kg' } = {}) {
       id: 'iw' + uid(), d, start, end: end > start ? end : start,
       routineId: null, name: day.name || 'Imported', entries, prs: [],
     }
-    w.vol = entries.reduce((a, e) => a + e.sets.reduce((b, s) => b + (s.w || 0) * (s.r || 0), 0), 0)
+    // Work sets only, like `workoutVolume` for a workout finished in the app: warm-ups are
+    // promised to stay out of the volume, and this number is stored with the workout for good.
+    w.vol = entries.reduce((a, e) => a + e.sets.reduce((b, s) => b + (isWarmupRow(s) ? 0 : (s.w || 0) * (s.r || 0)), 0), 0)
     return w
   })
 
@@ -589,10 +597,23 @@ export function mergeImport(S, parsed) {
     return { added: fresh.length, skipped: parsed.bodyweight.length - fresh.length }
   }
   const have = new Set(S.workouts.map(w => w.d))
+  // Every parse invents fresh ids for the names it cannot match, and a later export of the same
+  // account names those exercises again. So a custom exercise is looked up by name among the ones
+  // already here — from an earlier import or made by hand — and the new days are pointed at it,
+  // the way mergeHevyRoutines and mergePlan do; otherwise the Library lists "Grip Trainer" twice,
+  // each with half the history. Only a name with no match becomes a new exercise.
+  S.customEx = S.customEx || []
+  const nameKey = n => String(n || '').toLowerCase().replace(/\s+/g, ' ').trim()
+  const exIdMap = {}
+  parsed.customEx.forEach(c => {
+    const same = S.customEx.find(x => x.id !== c.id && nameKey(x.n) === nameKey(c.n))
+    if (same) exIdMap[c.id] = same.id
+  })
   const fresh = parsed.workouts.filter(w => !have.has(w.d))
+    .map(w => ({ ...w, entries: w.entries.map(e => (exIdMap[e.id] ? { ...e, id: exIdMap[e.id] } : e)) }))
   const used = new Set(fresh.flatMap(w => w.entries.map(e => e.id)))
   const customs = parsed.customEx.filter(c => used.has(c.id) && !EXIDX[c.id])
-  S.customEx = [...(S.customEx || []), ...customs]
+  S.customEx = [...S.customEx, ...customs]
   S.workouts = [...S.workouts, ...fresh].sort((a, b) => (a.d < b.d ? -1 : 1))
   // seed the weight suggestions from the newest imported set of each lift
   fresh.forEach(w => w.entries.forEach(e => {

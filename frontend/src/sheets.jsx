@@ -162,7 +162,8 @@ export const starterPlanSheet = () => ui().openSheet(close => <StarterPlanChoose
 // Fixed range, not a moving window — a window that resizes itself mid-drag (the previous
 // attempt) makes the thumb's position unpredictable: every time it grows, everything already
 // placed on it shifts toward one side. A static range never has that problem, at the cost of
-// coarser precision per pixel — the +/- buttons cover exact values.
+// coarser precision per pixel — the +/- buttons, and typing straight into the read-out, cover
+// exact values.
 // The ceiling follows the profile's unit: 300 covers a body weight or a working weight in
 // kg, but as pounds it cut off at 136 kg — below plenty of people's body weight, and well
 // below an everyday squat.
@@ -173,10 +174,16 @@ function WeightInput({ value, setValue, unit }) {
   const clamp = x => Math.max(W_LO, Math.min(W_HI, Math.round((x || 0) * 10) / 10))
   const sv = Math.max(W_LO, Math.min(W_HI, value))
   const onSlide = v => setValue(clamp(v))
+  const onType = v => setValue(v)
+
   return <>
     <div className="bwstep">
       <button className="bw-pm" onClick={() => onSlide(value - 0.1)} aria-label="minus 0.1"><Icon name="minus" /></button>
-      <div className="bw-read">{fmtNum(value)}<span className="u"> {unit}</span></div>
+      <label className="bw-read">
+        <NumberField fit value={value} onChange={onType} aria-label={t('Weight ({0})', unit)} enterKeyHint="done"
+          onKeyDown={e => { if (e.key === 'Enter') e.currentTarget.blur() }} />
+        <span className="u"> {unit}</span>
+      </label>
       <button className="bw-pm" onClick={() => onSlide(value + 0.1)} aria-label="plus 0.1"><Icon name="plus" /></button>
     </div>
     <div className="chips" style={{ justifyContent: 'center', margin: '8px 0' }}>

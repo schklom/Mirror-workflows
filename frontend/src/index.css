@@ -1144,6 +1144,12 @@ body.chips-dragging *{cursor:inherit}
   font-variant-numeric:tabular-nums;line-height:1;
 }
 .bw-read .u{font-size:19px;color:var(--label-2);font-weight:400;letter-spacing:-.01em}
+.bw-read .num{
+  display:inline-block;vertical-align:baseline;background:none;border:none;outline:none;
+  padding:0;margin:0;color:inherit;font:inherit;letter-spacing:inherit;
+  font-variant-numeric:tabular-nums;text-align:center;cursor:text;
+  -moz-appearance:textfield;appearance:textfield;
+}
 .bwin{display:flex;align-items:baseline;justify-content:center;gap:7px;margin:16px 0}
 .bwin input{
   width:150px;background:none;border:none;outline:none;text-align:right;

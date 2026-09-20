@@ -219,9 +219,16 @@ export function readSession(entry, fallback) {
   const mode = modeOf({ ...target, id: entry && entry.id })
   // Warm-up rows are prep, not the session: one filtered read beats guarding every consumer
   // below (an undone warm-up otherwise poisons `ok` forever and its reps drag `low`/`count`).
-  const sets = ((entry && entry.sets) || []).filter(s => !isWarmupRow(s))
-  const planned = target.sets || sets.length
-  const enough = sets.length >= planned
+  const logged = ((entry && entry.sets) || []).filter(s => !isWarmupRow(s))
+  const planned = target.sets || logged.length
+  const enough = logged.length >= planned
+  // Only the sets the plan asked for decide what happens next (issue #233). A set added on top
+  // is extra work, and it used to be read as part of the prescription: one heavier bonus set
+  // raised the weight for next time, and a hard one taken short of the target reps reported the
+  // whole session as missed. Extra sets still count everywhere else — volume, PRs, history —
+  // they just do not move the plan. The plan's own sets are the ones it laid out first, so the
+  // read stops at that many; a session with fewer than planned is short either way (`enough`).
+  const sets = logged.slice(0, Math.max(1, planned))
 
   if (mode === 'time') {
     const goal = target.sec || 0

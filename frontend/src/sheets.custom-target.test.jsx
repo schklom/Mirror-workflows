@@ -110,4 +110,33 @@ describe('custom exercise target (QA C10)', () => {
     expect(c.primaries).toEqual(['gluteal'])
     expect(c.tg).toBe('gluteal')
   })
+
+  // Dropping the target used to hand it to the head of the map-sorted list, which is where C10
+  // started: an upper-legs exercise read "Traps · barbell" again the moment its target went away.
+  it('hands a dropped target to the primary tapped in this sheet, not to the topmost muscle', () => {
+    const ex = custom({ tg: 'hamstring', primaries: ['trapezius', 'gluteal', 'hamstring'], secondaries: ['forearm'], sm: ['forearm'],
+      muscleGroups: ['trapezius', 'gluteal', 'hamstring', 'forearm'] })
+    seed(ex)
+    customExSheet(EXIDX[ex.id])
+    const form = renderTop()
+    pickMuscles(form, 'Primary muscle groups', ['Hamstrings', 'Quads'])   // untick the target, tap another
+    click(form, 'button', 'Save')
+    const c = S().customEx[0]
+    expect(c.primaries).toEqual(['trapezius', 'gluteal', 'quadriceps'])
+    expect(c.tg).toBe('quadriceps')
+  })
+
+  // Tapping the same chip twice leaves the selection as it was, so it says nothing about what the
+  // user wants the target to be — the muscle actually added does.
+  it('ignores a primary that was tapped on and off again', () => {
+    const ex = custom({ tg: 'hamstring', primaries: ['trapezius', 'hamstring'], secondaries: [], sm: [], muscleGroups: ['trapezius', 'hamstring'] })
+    seed(ex)
+    customExSheet(EXIDX[ex.id])
+    const form = renderTop()
+    pickMuscles(form, 'Primary muscle groups', ['Hamstrings', 'Chest', 'Chest', 'Glutes'])
+    click(form, 'button', 'Save')
+    const c = S().customEx[0]
+    expect(c.primaries).toEqual(['trapezius', 'gluteal'])
+    expect(c.tg).toBe('gluteal')
+  })
 })

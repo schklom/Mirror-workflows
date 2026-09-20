@@ -19,6 +19,10 @@ export const PhotosModal = ({ isOpen, onClose }: PhotosModalProps) => {
   const { userData, pictures, isPicturesLoading } = useStore();
   const [selectedIndex, setSelectedIndex] = useState(0);
 
+  const moveBack = () => setSelectedIndex((i) => Math.max(0, i - 1));
+  const moveForward = () => setSelectedIndex((i) => Math.min(pictures.length - 1, i + 1));
+
+  // Load initial data
   useEffect(() => {
     if (isOpen && userData) {
       void (async () => {
@@ -35,6 +39,22 @@ export const PhotosModal = ({ isOpen, onClose }: PhotosModalProps) => {
       })();
     }
   }, [isOpen, userData]);
+
+  // Left/right navigation with arrow keys
+  useEffect(() => {
+    if (!isOpen && pictures.length === 0) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key == 'ArrowLeft') {
+        moveBack();
+      } else if (e.key == 'ArrowRight') {
+        moveForward();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, pictures.length]);
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -98,7 +118,7 @@ export const PhotosModal = ({ isOpen, onClose }: PhotosModalProps) => {
                   variant="outline"
                   size="sm"
                   className="font-semibold"
-                  onClick={() => setSelectedIndex(Math.max(0, selectedIndex - 1))}
+                  onClick={() => moveBack()}
                   disabled={selectedIndex === 0}
                 >
                   <ChevronLeft className="h-4 w-4" />
@@ -113,7 +133,7 @@ export const PhotosModal = ({ isOpen, onClose }: PhotosModalProps) => {
                   variant="outline"
                   size="sm"
                   className="font-semibold"
-                  onClick={() => setSelectedIndex(Math.min(pictures.length - 1, selectedIndex + 1))}
+                  onClick={() => moveForward()}
                   disabled={selectedIndex === pictures.length - 1}
                 >
                   {t('dashboard:location.newer')}

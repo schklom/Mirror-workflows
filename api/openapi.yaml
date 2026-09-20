@@ -50,7 +50,11 @@ info:
     - Errors are always `{"error": "<human-readable message>"}`.
     - Unknown method+path pairs return `404 {"error":"not found"}`; an unhandled
       exception returns `500 {"error":"server error"}`.
-    - Request bodies are parsed as JSON regardless of Content-Type; max 5 MiB.
+    - Request bodies are parsed as JSON regardless of Content-Type. A body that does
+      not parse, or parses to anything but an object (`null`, a string, an array), is
+      `400 {"error":"invalid json"}` on every route that reads one; an empty body counts
+      as `{}`. A body over 5 MiB is `413 {"error":"body too large"}`; the rest of the
+      upload is discarded so the answer reaches the client.
     - CORS: the request's `Origin` is reflected in `Access-Control-Allow-Origin`
       **without** `Allow-Credentials` — cross-origin callers can only ever
       authenticate with a Bearer token, never with the cookie.
@@ -556,8 +560,10 @@ paths:
                       - type: 'null'
         '400':
           description: >-
-            `state` missing or not an object, or `workouts`/`routines` set to anything
-            other than an array or null.
+            `state` missing or not an object, `state` an array, or `workouts`/`routines`
+            set to anything other than an array or null. Entries inside those two arrays
+            that are not objects (`null`, numbers, nested arrays) are dropped before the
+            write rather than refused, so a client with a damaged copy still syncs.
           content:
             application/json:
               schema: { $ref: '#/components/schemas/Error' }
@@ -725,7 +731,8 @@ paths:
       operationId: pushRestTimer
       summary: Schedule a server-side rest-timer push
       description: |
-        Schedules one push after `seconds` (clamped to 1–3600). One pending timer per
+        Schedules one push after `seconds` (a number or numeric string ≥ 1, clamped to
+        3600). One pending timer per
         device — `deviceId`, the same token the subscription was registered with; a
         new call from the same device replaces it, and the push goes only to that
         device's subscriptions. Without a `deviceId` there is one timer per account
@@ -733,9 +740,6 @@ paths:
         on rest start/extend and cancels on skip or on-screen completion — the push
         only actually fires when the tab was backgrounded/suspended and never got to
         cancel it. Timers live in memory: an API restart drops them.
-
-        Note: the documented `400 seconds required` exists in the code but is
-        unreachable — the clamp turns any missing/invalid value into 1.
       requestBody:
         required: true
         content:
@@ -759,6 +763,12 @@ paths:
           content:
             application/json:
               schema: { $ref: '#/components/schemas/Ok' }
+        '400':
+          description: '`seconds` missing, not numeric, or below 1. Nothing is scheduled.'
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              example: { error: "seconds required" }
         '401': { $ref: '#/components/responses/Unauthorized' }
 
   /api/push/rest-timer/cancel:

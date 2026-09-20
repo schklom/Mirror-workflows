@@ -561,6 +561,7 @@ export default {
   '{0} exercises in the file aren’t in your library and were left out.': '{0} exercícios do ficheiro não estão na tua biblioteca e foram ignorados.',
   'Use this weekly schedule': 'Usar este horário semanal',
   'Replaces your current Mon–Sun assignments.': 'Substitui a tua atribuição atual de seg–dom.',
+  'Added {0} routine to your plan': 'Adicionada {0} rotina ao teu plano',
   'Added {0} routines to your plan': 'Adicionadas {0} rotinas ao teu plano',
   'this isn’t an openGym plan file': 'isto não é um ficheiro de plano openGym',
   'Shared routine': 'Rotina partilhada',

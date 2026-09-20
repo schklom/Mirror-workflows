@@ -580,6 +580,7 @@ export default {
   '{0} exercises in the file aren’t in your library and were left out.': '{0} Übungen aus der Datei sind nicht in deiner Bibliothek und wurden weggelassen.',
   'Use this weekly schedule': 'Diesen Wochenplan verwenden',
   'Replaces your current Mon–Sun assignments.': 'Ersetzt deine aktuelle Mo–So-Belegung.',
+  'Added {0} routine to your plan': '{0} Routine zu deinem Plan hinzugefügt',
   'Added {0} routines to your plan': '{0} Routinen zu deinem Plan hinzugefügt',
   'this isn’t an openGym plan file': 'das ist keine openGym-Plandatei',
   'Shared routine': 'Geteilte Routine',

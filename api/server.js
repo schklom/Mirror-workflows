@@ -81,6 +81,16 @@ const stateFile = uid => path.join(DATA, 'state-' + uid.replace(/[^a-zA-Z0-9_-]/
 function readState(uid) {
   try { return JSON.parse(fs.readFileSync(stateFile(uid), 'utf8')); } catch { return null; }
 }
+// An entry is an object a reader can dereference, and `records` is every entry of a stored
+// list. PUT /api/data drops the rest on the way in — a null workout, a routine that is a
+// number — and refuses a list that is not an array at all, but a file written before it did
+// answers to nobody, and the readers below walk those lists (`r.id`, `w.d`, `.slice()`). One
+// throw inside an admin route is a 500 for that whole profile: the drill-down never leaves
+// "Loading…", the Disable button lives inside it, and the account an operator opened the
+// dashboard to stop is exactly the one they then cannot. Answering with the entries that are
+// there is the honest reading of such a file — what was dropped carried nothing to show.
+const record = x => !!x && typeof x === 'object' && !Array.isArray(x);
+const records = v => (Array.isArray(v) ? v.filter(record) : []);
 
 /* ---------- push notifications (Web Push / VAPID) ---------- */
 const vapidFile = path.join(DATA, 'vapid.json');
@@ -259,13 +269,14 @@ const deviceIdOf = v => (typeof v === 'string' && /^[A-Za-z0-9_-]{8,64}$/.test(v
 
 // "Workout planned today" reminder — one per user per day, at their chosen time.
 // Duplicated (not imported) from frontend/src/lib/history.js effectiveRoutineId — tiny pure helper, not worth sharing across the two runtimes.
+// The `?.` on each entry is this copy's own: it reads whatever is on disk, including a file written before PUT /api/data dropped null entries.
 // A weekday can hold a routine-id list (combine routines); the reminder only needs the first.
 function effectiveRoutineId(S, iso) {
   const ov = S.dayPlan?.[iso];
   if (ov === 'rest') return null;
-  if (ov && S.routines?.some(r => r.id === ov)) return ov;
+  if (ov && S.routines?.some(r => r?.id === ov)) return ov;
   const wd = new Date(iso + 'T12:00:00').getDay();
-  return [].concat(S.week?.[wd] || []).find(id => S.routines?.some(r => r.id === id)) || null;
+  return [].concat(S.week?.[wd] || []).find(id => S.routines?.some(r => r?.id === id)) || null;
 }
 // Computes "now" in an arbitrary IANA zone (e.g. "Europe/Lisbon") instead of the server's own —
 // each user's reminder fires by their own clock, wherever they and their phone actually are.
@@ -324,10 +335,10 @@ setInterval(() => {
       const late = minutesLate(S.reminder.time, now);
       if (!(late >= 0 && late <= REMINDER_WINDOW_MIN)) continue;
       if (user.lastReminder === now.date) continue;
-      if ((S.workouts || []).some(w => w.d === now.date)) continue;
+      if ((S.workouts || []).some(w => w?.d === now.date)) continue;
       const rid = effectiveRoutineId(S, now.date);
       if (!rid) continue; // rest day — nothing planned
-      const routine = (S.routines || []).find(r => r.id === rid);
+      const routine = (S.routines || []).find(r => r?.id === rid);
       console.log('reminder firing', user.id, rid);
       user.lastReminder = now.date;
       saveDb();
@@ -908,12 +919,11 @@ const routes = {
     // the response claimed the next revision.
     const list = v => v == null || Array.isArray(v);
     if (Array.isArray(body.state) || !list(body.state.workouts) || !list(body.state.routines)) return json(res, 400, { error: 'invalid state' });
-    // The same readers dereference every entry (`w.d`, `w.name`), so a null or non-object entry
-    // would throw there — and blank the admin's drill-down of this profile. Dropped, not refused:
+    // The same readers walk every entry (`w.d`, `w.name`). They skip what is not an entry now
+    // (`records` above), but nothing should be storing one. Dropped, not refused:
     // such an entry carries nothing worth keeping, whereas a 400 would strand a client whose own
     // copy is already malformed — it keeps re-sending the same document and never syncs again.
-    const record = x => x && typeof x === 'object' && !Array.isArray(x);
-    for (const k of ['workouts', 'routines']) if (Array.isArray(body.state[k])) body.state[k] = body.state[k].filter(record);
+    for (const k of ['workouts', 'routines']) if (Array.isArray(body.state[k])) body.state[k] = records(body.state[k]);
     // Conditional write: a `baseRev` that is not the current revision means this client last
     // read an older document — another device has written since — and the copy it is about to
     // push would silently drop that write. The current document travels back with the 409, so
@@ -1036,7 +1046,7 @@ const routes = {
     if (!requireAdmin(req, res)) return;
     const users = db.users.map(u => {
       const S = readState(u.id) || {};
-      const workouts = S.workouts || [];
+      const workouts = records(S.workouts);
       const last = workouts[workouts.length - 1];
       return {
         id: u.id, name: u.name, created: u.created || null,
@@ -1062,9 +1072,9 @@ const routes = {
       user: { id: u.id, name: u.name, created: u.created || null, disabled: !!u.disabled, admin: isAdmin(u), invitedBy: u.invitedBy || null },
       unit: S.unit || 'kg',
       lastSync: S._ts || null,
-      routines: (S.routines || []).map(r => ({ id: r.id, name: r.name, emoji: r.emoji, count: (r.ex || []).length })),
-      bodyweight: S.bodyweight || [],
-      workouts: (S.workouts || []).slice().reverse()   // newest first for display
+      routines: records(S.routines).map(r => ({ id: r.id, name: r.name, emoji: r.emoji, count: records(r.ex).length })),
+      bodyweight: records(S.bodyweight),
+      workouts: records(S.workouts).reverse()   // records() already copied, so this reverse is ours: newest first for display
     });
   },
 

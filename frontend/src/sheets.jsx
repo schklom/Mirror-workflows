@@ -1109,7 +1109,9 @@ function ProgressionFields({ ex, mode, c, setC, routine, unit, perSide }) {
           ...options.map(p => ({ value: p, label: t(POLICY_NAME[p]) }))]} />
     </div>
     <div className="small dim" style={{ marginBottom: active === 'off' ? 18 : 10 }}>{t(POLICY_DESC[active])}</div>
-    {active !== 'off' && <div className="row cfgrow" style={{ marginBottom: 18 }}>
+    {/* Double progression on a weighted exercise fills this row with four steppers; `cfgrow-4`
+        lets it wrap into two pairs on phones, where four abreast left the inputs a few px wide. */}
+    {active !== 'off' && <div className={'row cfgrow' + (active === 'double' && epleyEligible ? ' cfgrow-4' : '')} style={{ marginBottom: 18 }}>
       <Stepper label={mode === 'time' ? t('Step (seconds)') : t('Step ({0})', unit)} value={inc}
         step={mode === 'time' ? 5 : 1.25} decimal={mode !== 'time'} invalid={invalid} className={invalid ? 'invalid' : ''}
         onChange={v => setC(x => ({ ...x, inc: v }))} />

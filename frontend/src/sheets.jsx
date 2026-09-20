@@ -677,7 +677,10 @@ function ExerciseDetail({ ex, close }) {
       <h4 className="sec">{t('Bar weight')}</h4>
       <BarWeightEditor ex={ex} extra={t('You still log the total weight — the bar only feeds the per-side plate math.')} />
     </>}
-    {!isCardio(ex) && <OneRM ex={ex} />}
+    {/* No one-rep max on an assistance machine: the load is the help you were given, so the
+        calculator would answer "your 1RM is 23 kg" about a number that gets smaller as you get
+        stronger (issue #232). Cardio has none for the same kind of reason. */}
+    {!isCardio(ex) && !isAssisted(ex) && <OneRM ex={ex} />}
     {instrFor(ex).length > 0 &&<><h4 className="sec">{t('How to')}{!INSTR_LANGS.includes(getLang()) && <span className="dim" style={{ textTransform: 'none', letterSpacing: 0 }}> · {t('instructions in English')}</span>}</h4><ol className="steps-list">{instrFor(ex).map((s, i) => <li key={i}>{s}</li>)}</ol></>}
   </>
 }

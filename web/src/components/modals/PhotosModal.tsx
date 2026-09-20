@@ -55,7 +55,45 @@ export const PhotosModal = ({ isOpen, onClose }: PhotosModalProps) => {
           )}
 
           {!isPicturesLoading && pictures.length > 0 && (
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-8">
+              {apiService() instanceof ApiV2Service && (
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  className="self-start font-semibold"
+                  onClick={async () => {
+                    const service = apiService() as ApiV2Service;
+                    try {
+                      const toDelete = pictures[selectedIndex].clientItemIdHex;
+                      await service.deleteSinglePicture(toDelete);
+                      useStore.setState({
+                        pictures: [
+                          ...pictures.slice(0, selectedIndex),
+                          ...pictures.slice(selectedIndex + 1),
+                        ],
+                      });
+                      setSelectedIndex(Math.max(0, selectedIndex - 1));
+                      toast.info(t('pictures.delete_success'));
+                    } catch (error) {
+                      toast.error(
+                        error instanceof Error ? error.message : t('errors:delete_failed')
+                      );
+                    }
+                  }}
+                >
+                  <Trash2 className="h-4 w-4" />
+                  {t('pictures.delete')}
+                </Button>
+              )}
+
+              <div className="relative flex w-full items-center justify-center">
+                <img
+                  src={`data:image/jpeg;base64,${pictures[selectedIndex].item}`}
+                  alt={`Device capture ${selectedIndex + 1}`}
+                  className="max-h-[70vh] max-w-full rounded object-contain"
+                />
+              </div>
+
               <div className="flex items-center justify-center gap-3">
                 <Button
                   variant="outline"
@@ -83,44 +121,6 @@ export const PhotosModal = ({ isOpen, onClose }: PhotosModalProps) => {
                   <ChevronRight className="h-4 w-4" />
                 </Button>
               </div>
-
-              <div className="relative flex h-[70vh] w-full items-center justify-center">
-                <img
-                  src={`data:image/jpeg;base64,${pictures[selectedIndex].item}`}
-                  alt={`Device capture ${selectedIndex + 1}`}
-                  className="max-h-full max-w-full rounded object-contain"
-                />
-              </div>
-
-              {apiService() instanceof ApiV2Service && (
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  className="font-semibold"
-                  onClick={async () => {
-                    const service = apiService() as ApiV2Service;
-                    try {
-                      const toDelete = pictures[selectedIndex].clientItemIdHex;
-                      await service.deleteSinglePicture(toDelete);
-                      useStore.setState({
-                        pictures: [
-                          ...pictures.slice(0, selectedIndex),
-                          ...pictures.slice(selectedIndex + 1),
-                        ],
-                      });
-                      setSelectedIndex(Math.max(0, selectedIndex - 1));
-                      toast.info(t('pictures.delete_success'));
-                    } catch (error) {
-                      toast.error(
-                        error instanceof Error ? error.message : t('errors:delete_failed')
-                      );
-                    }
-                  }}
-                >
-                  <Trash2 className="h-4 w-4" />
-                  {t('pictures.delete')}
-                </Button>
-              )}
             </div>
           )}
         </div>

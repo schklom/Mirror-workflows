@@ -780,7 +780,15 @@ function CustomExForm({ existing, prefill, onDone, close }) {
     const norm = hasExplicitMuscleMetadata(existing || {}) ? normalizeMuscleGroups(existing || {}) : []
     return norm.slice(1)
   })
-  const togglePrimary = value => setPrimaries(current => current.includes(value) ? current.filter(m => m !== value) : [...current, value])
+  // Every primary chip this sheet saw a tap on, in that order. `primaries` alone cannot say what the
+  // user reached for first: an existing exercise seeds it in the map's order, because that is how the
+  // muscles are stored. The taps are the only record of the user's own order, and they decide the
+  // target when the one the exercise had is un-ticked.
+  const [primaryTaps, setPrimaryTaps] = useState([])
+  const togglePrimary = value => {
+    setPrimaryTaps(current => [...current, value])
+    setPrimaries(current => current.includes(value) ? current.filter(m => m !== value) : [...current, value])
+  }
   const toggleSecondary = value => setSecondaries(current => current.includes(value) ? current.filter(m => m !== value) : [...current, value])
   const save = () => {
     const name = n.trim()
@@ -798,7 +806,10 @@ function CustomExForm({ existing, prefill, onDone, close }) {
     // The one-word target (the library row, the picker, the Muscles view) is not the sorted list's
     // head — a hip thrust with Traps as an extra primary is not a Traps exercise. It is the primary
     // tapped first, and an edit keeps the exercise's target as long as that muscle is still a primary.
-    const tg = (existing && prim.includes(existing.tg)) ? existing.tg : (primaries.find(m => prim.includes(m)) || prim[0] || '')
+    // Once that muscle is gone the next answer is the first one tapped here that survived — a tap that
+    // only turned a chip off says nothing and is skipped with it. The sorted list is the last resort,
+    // for the user who drops the target and adds nothing in its place.
+    const tg = (existing && prim.includes(existing.tg)) ? existing.tg : (primaryTaps.find(m => prim.includes(m)) || prim[0] || '')
     let id = existing && existing.id
     if (existing) update(s => { const c = (s.customEx || []).find(x => x.id === id); if (c) {
       c.n = name; c.bp = bp; c.desc = d; c.tg = tg; c.sm = sm; c.muscleGroups = groups; c.primaries = prim; c.secondaries = sm; c.eq = eq

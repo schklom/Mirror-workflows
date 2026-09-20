@@ -114,6 +114,8 @@ function workout(entries, cur = 0, overrides = {}) {
   }
 }
 
+const frames = []
+
 function installDom() {
   const parsed = parseHTML('<!doctype html><html><body><div id="root"></div></body></html>')
   dom = parsed.window
@@ -124,6 +126,9 @@ function installDom() {
   dom.Element.prototype.scrollIntoView = vi.fn(function (options) {
     mocks.scrollCalls.push({ node: this, options })
   })
+  frames.length = 0
+  dom.requestAnimationFrame = cb => frames.push(cb)
+  dom.cancelAnimationFrame = id => { const i = frames.indexOf(id); if (i >= 0) frames.splice(i, 1) }
   // linkedom has no layout; the sticky workout header reports the height a test gives it.
   Object.defineProperty(dom.HTMLElement.prototype, 'offsetHeight', {
     configurable: true, get() { return this.classList.contains('whdr') ? mocks.headerHeight : 0 },
@@ -192,9 +197,12 @@ async function addExerciseThroughSheets(ex = { id: 'added-exercise' }, cfg = { m
   await act(async () => { configCall[2](cfg) })
 }
 
-// The list's scroll-to-current waits for the next frame (linkedom has no rAF, so a 0 ms timer).
+// The list's scroll-to-current waits for the next frame. linkedom has no requestAnimationFrame,
+// and leaning on the component's 0 ms fallback made this race under a loaded full-suite run — so
+// the DOM gets a frame queue the test drains itself, which is also the path a browser takes.
 async function flushFrame() {
-  await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)) })
+  const due = frames.splice(0)
+  await act(async () => { due.forEach(cb => cb(0)) })
 }
 
 async function rerenderAt(cur) {

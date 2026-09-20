@@ -91,3 +91,16 @@ describe('no one-rep max for an assistance machine', () => {
     expect(bestSetOf({ id: PLAIN, sets: [set(100, 5)] })).not.toBe(null)
   })
 })
+
+describe('a sync does not hand the help back', () => {
+  it('keeps the smaller assistance and the larger ordinary load', async () => {
+    const { mergeStates } = await import('./sync-merge.js')
+    const phone = { _ts: 2000, exWeights: { [ASSISTED]: { w: 20, d: '2026-09-08' }, [PLAIN]: { w: 100, d: '2026-09-08' } } }
+    const server = { _ts: 1000, exWeights: { [ASSISTED]: { w: 30, d: '2026-09-01' }, [PLAIN]: { w: 90, d: '2026-09-01' } } }
+    expect(mergeStates(phone, server).exWeights[ASSISTED].w).toBe(20)
+    expect(mergeStates(phone, server).exWeights[PLAIN].w).toBe(100)
+    // and the other way round, so it does not depend on which copy is newer
+    expect(mergeStates(server, phone).exWeights[ASSISTED].w).toBe(20)
+    expect(mergeStates(server, phone).exWeights[PLAIN].w).toBe(100)
+  })
+})

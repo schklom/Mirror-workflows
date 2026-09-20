@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/useStore.js'
-import { EXIDX, matchExercise } from '../lib/exercises.js'
+import { EXIDX, matchExercise, betterWeight } from '../lib/exercises.js'
 import { lastBW, streakWeeks, setLabel, modeOf, effortOf, metricModeForEntry, metricRowsForEntry, bestWeightForEntry } from '../lib/history.js'
 import { fmtNum, fmtDate, fmtVol, todayISO, weekStartOf } from '../lib/format.js'
 import { t, exerciseNameFor, getLang } from '../lib/i18n.js'
@@ -393,7 +393,10 @@ export default function Stats() {
           : Math.max(0, ...doneSets.map(metric))
         if (mx > 0) {
           exPts.push({ t: w.start, y: mx, d: w.d, sets: doneSets, target: en.target })
-          if (mx > exBest) exBest = mx
+          // Weighted work on an assistance machine reads the other way: the smallest load is the
+          // best (issue #232). Reps, duration and speed are always "more is better".
+          const better = curMode === 'reps' && !repsOnly ? betterWeight(curEx, exBest || mx, mx) : Math.max(exBest, mx)
+          exBest = exBest > 0 ? better : mx
         }
       }
     })

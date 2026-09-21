@@ -293,6 +293,10 @@ test:api:
 # it under the project dir made Nix rebuild the bootstrap from source — slow gnu.org tarball
 # downloads — which is why it's not cached). sandbox is disabled because a container has no
 # usable kernel sandbox.
+#
+# The job only runs when the flake packaging actually changed — anything under nix/, the two
+# flake files, or this pipeline itself (a branch push or MR that touches none of those skips
+# it; release tags always run it). MR pipelines with no nix change keep a manual fallback.
 test:nix:
   stage: test
   image: $NIX_IMAGE
@@ -336,7 +340,23 @@ test:nix:
     # re-run the suite once a month for nothing.
     - if: $CI_PIPELINE_SOURCE == "schedule"
       when: never
-    - when: on_success
+    # Release tags always get the full nix gate regardless of what changed — the tag is what
+    # self-hosters pull, so it must never ship with a broken flake.
+    - if: $CI_COMMIT_TAG
+    # Everything else (branch pushes and MRs): only when the push/MR actually touches the
+    # flake packaging or the pipeline itself.
+    - if: $CI_COMMIT_BRANCH || $CI_PIPELINE_SOURCE == "merge_request_event"
+      changes:
+        paths:
+          - "nix/**/*"
+          - "flake.nix"
+          - "flake.lock"
+          - ".gitlab-ci.yml"
+    # MR pipelines with no nix-related change: one click away, so a contributor can still run
+    # the flake checks when the change affects them indirectly.
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: manual
+      allow_failure: true
 
 # --------------------------------------------------------------------------- images
 

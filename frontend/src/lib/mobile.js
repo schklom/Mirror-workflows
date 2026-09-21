@@ -11,9 +11,25 @@
 // web bundles; the Capacitor plugins are only ever imported behind it.
 import { t } from './i18n-core.js'
 import { isoOf, todayISO } from './format.js'
-import { effectiveRoutineId } from './history.js'
+import { effectiveRoutineIds } from './history.js'
 
 export const MOBILE = import.meta.env.VITE_MOBILE === '1'
+
+// Some features only make sense on Android. The in-app updater downloads an .apk and hands it
+// to the system package installer — there is no equivalent on iOS (App Store only) or on the
+// web build. On anything but a native Android shell this must stay off.
+//
+// @capacitor/core is imported dynamically (like every other Capacitor dependency here) so it
+// never lands in the web bundle. Capacitor.getPlatform() returns 'android' | 'ios' | 'web'.
+export async function isAndroid() {
+  if (!MOBILE) return false
+  try {
+    const { Capacitor } = await import('@capacitor/core')
+    return Capacitor.getPlatform() === 'android'
+  } catch (e) {
+    return false
+  }
+}
 
 const FILE = 'opengym-state.json'
 
@@ -92,16 +108,17 @@ export function buildReminderNotifications(S, now = new Date()) {
     day.setDate(date.getDate() + offset)
     const iso = isoOf(day)
     if (completed.has(iso)) continue
-    const rid = effectiveRoutineId(state, iso)
-    const routine = routines.find(x => x.id === rid)
-    if (!routine) continue
+    // A weekday can hold several routines; name them all, or fall back to a count.
+    const dayRoutines = effectiveRoutineIds(state, iso).map(id => routines.find(x => x.id === id)).filter(Boolean)
+    if (!dayRoutines.length) continue
+    const label = dayRoutines.length <= 2 ? dayRoutines.map(r => r.name).join(' + ') : t('{0} routines', dayRoutines.length)
     const at = new Date(day)
     at.setHours(hour, minute, 0, 0)
     if (at <= now) continue
     notifications.push({
       id: REMINDER_ID_BASE + offset,
       title: t('Workout day'),
-      body: t('{0} is on the plan today — let’s go!', routine.name),
+      body: t('{0} is on the plan today — let’s go!', label),
       schedule: { at, allowWhileIdle: true },
     })
   }
@@ -146,6 +163,16 @@ export function initReminderSync(getState) {
   }).catch(() => {})
 }
 
+// Runs cb whenever the native shell returns to the foreground — the store pulls the account's
+// state then, so a phone that sat in a pocket all afternoon shows what the desktop did. No-op
+// off mobile; the store's own visibility/focus listeners cover the browser.
+export function onAppActive(cb) {
+  if (!MOBILE) return
+  import('@capacitor/app').then(({ App }) => {
+    App.addListener('appStateChange', ({ isActive }) => { if (isActive) cb() })
+  }).catch(() => {})
+}
+
 // WKWebView can't do blob-URL downloads, so the backup goes out through the OS share sheet
 // (Files, AirDrop, mail, …) from a temp file instead.
 export async function shareExport(json, filename) {
@@ -153,6 +180,18 @@ export async function shareExport(json, filename) {
   const { Share } = await import('@capacitor/share')
   const w = await Filesystem.writeFile({ path: filename, directory: Directory.Cache, data: json, encoding: Encoding.UTF8 })
   await Share.share({ title: filename, url: w.uri })
+}
+
+// Hand a self-contained HTML document (lib/plan-share.js planPrintHTML) to the OS print flow.
+// Android routes it through the system PrintManager — "Save as PDF", "Save to Drive", a real
+// printer; iOS through the print sheet — "Save to Files" (as PDF), share, print. Either way the
+// platform renders the PDF, so no PDF library rides in the bundle. The local `Print` plugin is
+// registered natively (android MainActivity, ios PrintPlugin.m); on the web build this file's
+// callers gate on MOBILE and never reach here.
+export async function printHtml(html, name) {
+  const { registerPlugin } = await import('@capacitor/core')
+  const Print = registerPlugin('Print')
+  await Print.printHtml({ html, name })
 }
 
 // "Auto-backup on changes" (Settings): a dated snapshot dropped into the Documents folder —

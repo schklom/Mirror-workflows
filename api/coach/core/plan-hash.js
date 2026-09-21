@@ -16,7 +16,10 @@ export function hashPlan(plan) {
       [e.id, e.mode, e.sets, e.reps, e.sec, e.min, e.speed, e.weight, e.prog, e.inc,
         e.repsMin, e.repsMax, e.bodyweight, e.side, e.sg].join(':')
     )]),
-    week: Object.keys(plan?.week || {}).sort().map(k => k + '=' + plan.week[k])
+    // `plan` is a canonicalPlan output, so each day is already a routine-id list. `{1:['r1']}`
+    // → "1=r1", byte-identical to the pre-upgrade fingerprint; `{3:['r2','r3']}` → "3=r2+r3".
+    // Weekday keys still sorted; the routine list within a day never is (it is the merge order).
+    week: Object.keys(plan?.week || {}).sort().map(k => k + '=' + [].concat(plan.week[k]).join('+'))
   });
   let h1 = 0x811c9dc5, h2 = 0x01000193;
   for (let i = 0; i < canon.length; i++) {

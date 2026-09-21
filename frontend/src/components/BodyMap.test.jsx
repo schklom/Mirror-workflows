@@ -1,13 +1,21 @@
 // @vitest-environment happy-dom
 import React, { act } from 'react'
 import { createRoot } from 'react-dom/client'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import BodyMap, { BodyMapLegend } from './BodyMap.jsx'
 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true
 
 let container
 let root
+
+// BodyMap fetches its ~90 KB of geometry with a dynamic import on first render, and the
+// waitFor below allows one second for it. That is ample once the module is in the ESM
+// registry and not always ample when it is not: on a loaded CI runner the first map render
+// in this file paid the cold import and timed out, while every later test passed on the
+// component's warm CACHE. Import it here so the wait covers rendering, not module loading,
+// and the file stops depending on how fast the machine is.
+beforeAll(() => import('../lib/body-paths.js'))
 
 beforeEach(() => {
   container = document.createElement('div')

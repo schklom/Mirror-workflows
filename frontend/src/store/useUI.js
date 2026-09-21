@@ -3,44 +3,50 @@ import { uid } from '../lib/format.js'
 import { beep, vibrate } from '../lib/sound.js'
 import { api } from '../lib/api.js'
 import { t } from '../lib/i18n.js'
+import { deviceId } from '../lib/push.js'
 import { useStore } from './useStore.js'
 
 // Fire-and-forget: lets the server push a "rest over" alert if this tab gets suspended
-// before the local timer completes. No-ops for guests / offline.
-const pushRestTimer = sec => { if (useStore.getState().user) api('/api/push/rest-timer', { method: 'POST', body: JSON.stringify({ seconds: sec }) }).catch(() => {}) }
-const cancelPushRestTimer = () => { if (useStore.getState().user) api('/api/push/rest-timer/cancel', { method: 'POST', body: '{}' }).catch(() => {}) }
+// before the local timer completes. No-ops for guests / offline. The device id keeps the
+// timer this browser's own: a desktop tab finishing its rest on screen used to cancel the
+// alert the phone in the gym was waiting for, because the server held one timer per account.
+const pushRestTimer = sec => { if (useStore.getState().user) api('/api/push/rest-timer', { method: 'POST', body: JSON.stringify({ seconds: sec, deviceId: deviceId() }) }).catch(() => {}) }
+const cancelPushRestTimer = () => { if (useStore.getState().user) api('/api/push/rest-timer/cancel', { method: 'POST', body: JSON.stringify({ deviceId: deviceId() }) }).catch(() => {}) }
 
 const notificationsSupported = () => typeof window !== 'undefined' && 'Notification' in window
-let requestRestNotificationPermissionP = null
 
-const requestRestNotificationPermission = async () => {
-  if (!notificationsSupported()) return false
-  if (Notification.permission === 'granted') return true
-  if (Notification.permission === 'denied') return false
-  if (!requestRestNotificationPermissionP) {
-    requestRestNotificationPermissionP = Notification.requestPermission()
-      .then(perm => perm === 'granted')
-      .catch(() => false)
-      .finally(() => {
-        requestRestNotificationPermissionP = null
-      })
-  }
-  return requestRestNotificationPermissionP
+// Set the moment the tab goes hidden, never cleared here — timerTick/workTick read and
+// clear it themselves once they're running visible again. Lets a completion tick tell
+// "the countdown hit zero while the app was actually open" from "it hit zero while
+// backgrounded/closed and we're only just catching up now that it's open again" — the
+// latter must skip beep/vibrate/flash/toast and rely solely on the push notification.
+let pageHiddenAt = null
+if (typeof document !== 'undefined') {
+  document.addEventListener('visibilitychange', () => { if (document.hidden) pageHiddenAt = Date.now() })
+}
+
+// The Push switch in Settings is the one place notifications are turned on, and "on" means this
+// browser holds a push subscription. This local alert used to ignore it: every rest asked for the
+// permission by itself, and once granted — a page cannot hand a permission back — it fired with the
+// switch off (issue #239). Off is off now; the permission is only ever asked for by the switch.
+const restAlertsOn = async reg => {
+  if (Notification.permission !== 'granted') return false
+  try { return !!(await reg?.pushManager?.getSubscription?.()) } catch { return false }
 }
 
 const maybeRestNotification = async () => {
   if (!notificationsSupported()) return
   if (!document.hidden && document.visibilityState !== 'hidden') return
-  if (Notification.permission !== 'granted' && !(await requestRestNotificationPermission())) return
   try {
+    const reg = await navigator.serviceWorker?.getRegistration?.()
+    if (!(await restAlertsOn(reg))) return
+    // Same tag as the server's push (api/push-messages.js): whichever lands second replaces the
+    // first instead of stacking a second banner. No body — it only repeated the title.
     // Android Chrome forbids the Notification constructor (Illegal constructor) - the
     // service-worker registration path is the one that actually pops there.
-    const reg = await navigator.serviceWorker?.getRegistration?.()
-    if (reg?.showNotification) {
-      reg.showNotification(t('Rest over — next set!'), { body: t('Rest over — next set!') })
-      return
-    }
-    new Notification(t('Rest over — next set!'), { body: t('Rest over — next set!') })
+    const opts = { tag: 'rest-timer', icon: 'icon-512.png' }
+    if (reg?.showNotification) { reg.showNotification(t('Rest over — next set!'), opts); return }
+    new Notification(t('Rest over — next set!'), opts)
   } catch {
     // Intentionally ignore: notification APIs vary by browser and policy in edge cases.
   }
@@ -59,7 +65,7 @@ export const useUI = create((set, get) => ({
   timer: null,         // rest countdown between sets — { left, total, endsAt, forIdx }
                        // forIdx: index of the active entry whose set started the rest (undefined when unknown)
   work: null,          // work countdown DURING a timed set (issue #16) — { left, total, endsAt, label }
-  timerFlashId: 0,     // changing the id remounts the four-pulse visual alert
+  timerFlashId: 0,     // changing the id retriggers the theme-blink visual alert
 
   flashTimer() {
     if (!useStore.getState().S.timerFlash) return
@@ -88,17 +94,25 @@ export const useUI = create((set, get) => ({
     if (!(sec > 0)) return
     const endsAt = Date.now() + sec * 1000
     set({ timer: { left: sec, total: sec, endsAt, forIdx } })
-    requestRestNotificationPermission()
     pushRestTimer(sec)
     timerTick = () => {
       const tm = get().timer
       if (!tm) return
       const left = Math.max(0, Math.round((tm.endsAt - Date.now()) / 1000))
+      const seenLive = !document.hidden && pageHiddenAt === null
+      if (!document.hidden) pageHiddenAt = null
       if (left === tm.left) return
       const snd = useStore.getState().S.sound
       if (left <= 0) {
-        beep(snd, 880, 0.15); beep(snd, 880, 0.15, 0.25); beep(snd, 1320, 0.4, 0.5)
-        vibrate([200, 100, 200]); get().flashTimer(); maybeRestNotification(); get().toast(t('Rest over — next set!')); get().stopRest(); return
+        if (seenLive) {
+          beep(snd, 880, 0.15); beep(snd, 880, 0.15, 0.25); beep(snd, 1320, 0.4, 0.5)
+          vibrate([200, 100, 200]); get().flashTimer()
+        }
+        // The toast stays even when the rest ran out while the app was hidden: a guest, or anyone
+        // without push permission, gets no notification, and a countdown that silently vanishes
+        // on reopen reads like a bug. Only the loud parts (beep, vibration, flash) are gated.
+        get().toast(t('Rest over — next set!'))
+        maybeRestNotification(); get().stopRest(); return
       }
       if (left <= 3) beep(snd, 660, 0.1)
       set({ timer: { ...tm, left } })
@@ -149,11 +163,15 @@ export const useUI = create((set, get) => ({
       const wk = get().work
       if (!wk) return
       const left = Math.max(0, Math.round((wk.endsAt - Date.now()) / 1000))
+      const seenLive = !document.hidden && pageHiddenAt === null
+      if (!document.hidden) pageHiddenAt = null
       if (left === wk.left) return
       const snd = useStore.getState().S.sound
       if (left <= 0) {
-        beep(snd, 880, 0.15); beep(snd, 880, 0.15, 0.25); beep(snd, 1320, 0.4, 0.5)
-        vibrate([200, 100, 200]); get().flashTimer()
+        if (seenLive) {
+          beep(snd, 880, 0.15); beep(snd, 880, 0.15, 0.25); beep(snd, 1320, 0.4, 0.5)
+          vibrate([200, 100, 200]); get().flashTimer()
+        }
         const done = workDone
         get().stopWork()
         if (done) done(wk.total)

@@ -150,9 +150,14 @@ async function run(S, kind, opts, d, adapter) {
     invokeOpts: { env: envOf(d, key), fetch: nativeFetch }
   })
   if (!attempt.ok) {
-    lastError = { errorClass: attempt.errorClass, detail: attempt.detail || null }
+    // There is no admin card on a phone, so the reason has to reach the person holding it:
+    // the provider's own words for a refusal, the validator's for an answer that did not fit.
+    const detail = attempt.detail || (Array.isArray(attempt.errors) && attempt.errors.length
+      ? attempt.errors.slice(0, 3).map(String).join(' · ').slice(0, 300)
+      : null)
+    lastError = { errorClass: attempt.errorClass, detail }
     last = { id: job.id, kind, outcome: 'failed', errorClass: attempt.errorClass, at: Date.now() }
-    if (notify) notify({ kind: 'failed', errorClass: attempt.errorClass, detail: attempt.detail || null })
+    if (notify) notify({ kind: 'failed', errorClass: attempt.errorClass, detail })
     return
   }
   if (attempt.nochange) {

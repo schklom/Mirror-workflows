@@ -27,7 +27,7 @@ import {
   changeTitle, changeValues, exName, canRevert, revertLast
 } from '../lib/coach.js'
 import { insightsFor, sessionInsights } from '../lib/coach-insights.js'
-import { useCoachStatus, requestReview, requestDebrief, refinePlan, resolvePending, cohortStats, setCohortShare, JOB_ERRORS } from '../lib/coach-api.js'
+import { useCoachStatus, requestReview, requestDebrief, requestPlan, refinePlan, resolvePending, cohortStats, setCohortShare, jobErrorText } from '../lib/coach-api.js'
 import { confirmSheet } from '../sheets.jsx'
 import Icon from '../components/Icon.jsx'
 import LineChart from '../components/LineChart.jsx'
@@ -75,7 +75,7 @@ export default function CoachChat() {
       if (!pending) {
         const cls = lastError?.errorClass || (last?.outcome === 'failed' ? (last.errorClass || 'internal') : null)
         appendChat(s, cls
-          ? { role: 'coach', kind: 'error', text: JOB_ERRORS[cls] || JOB_ERRORS.internal }
+          ? { role: 'coach', kind: 'error', text: jobErrorText(cls, lastError?.detail) }
           : { role: 'coach', kind: 'nochange', text: last?.reading
             ? last.reading
             : t('I looked through everything and there is nothing I would change right now. Keep going — ask me again after a few more sessions.') })
@@ -94,7 +94,10 @@ export default function CoachChat() {
     if (!msg || busy) return
     setBusy(true)
     try {
-      if (pending?.kind === 'create') await refinePlan(msg)
+      // A message about a proposed plan refines it. With no plan at all — the first attempt
+      // failed, or nothing was ever built — the message asks for one; a review would only
+      // answer that there is no workout to look at, which is how people got stuck.
+      if (pending?.kind === 'create' || !(S.routines || []).length) await refinePlan(msg)
       else await requestReview(msg)
       update(s => appendChat(s, { role: 'user', kind: 'text', text: msg }))
       setText('')
@@ -119,6 +122,7 @@ export default function CoachChat() {
   const askDebrief = () => ask(() => requestDebrief(lastWorkout?.id || null), lastWorkout?.name
     ? t('How did my {0} session go?', lastWorkout.name)
     : t('How did my last workout go?'))
+  const askNewPlan = () => ask(() => requestPlan(coach.profile), t('Build me a fresh plan from my answers.'))
   const askImprove = r => ask(
     () => requestReview(t('Focus only on my routine “{0}”. Improve it: exercise choice, order, sets and reps, rep ranges, progression. Leave the other routines alone.', r.name)),
     t('Improve my routine “{0}”.', r.name))
@@ -144,6 +148,7 @@ export default function CoachChat() {
       {idle && !!(S.routines || []).length && <Row icon="wrench" iconTint="var(--orange)" title={t('Improve a routine')} subtitle={t('Pick one; the Coach works on just that')} accessory="chevron" onClick={() => { close(); pickRoutine() }} />}
       {community && <Row icon="person" iconTint="var(--teal)" title={t('Compare with others here')} subtitle={t('Anonymous medians from this instance')} accessory="chevron" onClick={() => { close(); showCohort() }} />}
       <Row icon="history" iconTint="var(--blue)" title={t('Everything the Coach proposed')} subtitle={t('Plans, suggestions and debriefs, kept')} accessory="chevron" onClick={() => { close(); showHistory() }} />
+      {idle && <Row icon="sparkles" iconTint="var(--indigo)" title={t('Start a new plan')} subtitle={t('A fresh plan from your answers; your workouts stay')} accessory="chevron" onClick={() => { close(); askNewPlan() }} />}
       <Row icon="clipboard" iconTint="var(--indigo)" title={t('Edit my answers')} subtitle={t('Goal, days, equipment, limits')} accessory="chevron" onClick={() => { close(); nav('/coach/intake?edit=1') }} />
       <Row icon="clock" iconTint="var(--purple)" title={t('Automatic reviews')} subtitle={cadenceLabel(coach)} accessory="chevron" onClick={() => { close(); cadenceSheet(openSheet, update) }} />
       {canRevert(S) && <Row icon="reset" iconTint="var(--blue)" title={t('Undo the last Coach changes')} accessory="chevron" onClick={() => { close(); doRevert() }} />}

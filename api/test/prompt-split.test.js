@@ -4,6 +4,7 @@ import { buildPrompt, buildPromptParts, taskOf } from '../coach/core/prompt.js';
 import { SCHEMAS } from '../coach/core/schemas.js';
 import { build, FULL_DETAIL_SESSIONS } from '../coach/core/payload.js';
 import { chatCompletionsSpec } from '../coach/core/adapters/openai.js';
+import { validatePlan } from '../coach/core/validate.js';
 
 const S = (workouts = []) => ({
   lang: 'en', unit: 'kg', routines: [{ id: 'r1', name: 'A', ex: [{ id: '0001', sets: 3, reps: 8 }] }],
@@ -46,6 +47,32 @@ test('every task has a flat schema — no $ref, no anyOf/oneOf (llama.cpp gramma
   }
   assert.equal(taskOf('review', {}), 'review');
   assert.equal(taskOf('create', { refine: 'x' }), 'refine');
+});
+
+test('the create schema requires what the week resolves through: a routine id, and a week', () => {
+  // A schema handed to a grammar-constrained decoder is the only thing standing between a small
+  // local model and an answer the validator can only reject. These two fields are where that
+  // showed: llama3.2:3b and qwen2.5:3b both answer with routines that carry no `id` and a week
+  // naming what they put in `name`, which costs a job and a repair round to find out.
+  assert.ok(SCHEMAS.create.properties.routines.items.required.includes('id'));
+  assert.ok(SCHEMAS.create.required.includes('week'));
+  assert.equal(SCHEMAS.refine, SCHEMAS.create);          // refine reuses it, same guarantee
+
+  const noId = {
+    coach_contract: 1,
+    routines: [{ name: 'r1', ex: [{ id: '0001', sets: 3, reps: 8 }] }],
+    week: { 1: 'r1' }
+  };
+  const checked = validatePlan(noId, { daysPerWeek: 1 });
+  assert.ok(!checked.ok);
+  assert.ok(checked.errors.some(e => e.includes('week[1] points at "r1"')));
+});
+
+test('the create schema caps the two arrays the validator caps, so a repeating model stops', () => {
+  // validate.js slices at MAX_ROUTINES / MAX_EX_PER_ROUTINE; a model that never stops emitting
+  // otherwise runs to the output limit first and the answer arrives truncated and unparseable.
+  assert.equal(SCHEMAS.create.properties.routines.maxItems, 7);
+  assert.equal(SCHEMAS.create.properties.routines.items.properties.ex.maxItems, 20);
 });
 
 test('older sessions in a review window are compacted, the recent ones keep full sets', () => {

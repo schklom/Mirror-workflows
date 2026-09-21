@@ -10,12 +10,54 @@
 
 import { EXIDX, isBodyweightEq } from './exercises.js'
 import { modeOf, fmtSec, isBw, isPerSide, sideReps, MAX_PLANNED_WARMUPS } from './history.js'
+import { deriveSessionName } from './session-merge.js'
 import { uid, todayISO, DAYN, weekOrder, weekStartOf, fmtNum, exCount } from './format.js'
 import { t, exerciseNameFor } from './i18n-core.js'
+import { convertWeight } from './units.js'
+import { MUSCLES, inMuscleOrder } from './muscles.js'
 
 const PLAN_FMT = 1
 const WEEK_DAYS = [1, 2, 3, 4, 5, 6, 0]   // every getDay() index; only the reader's own
                                           // screen puts them in an order (see weekOrder)
+const PLAN_UNITS = new Set(['kg', 'lb'])
+
+// A plan's numbers are in the unit that wrote it. Missing unit is deliberately legacy-compatible:
+// old files were read as already being in the recipient's unit, so keep their values unchanged.
+const planUnit = value => value === 'lbs' ? 'lb' : PLAN_UNITS.has(value) ? value : null
+const unitError = () => { throw new Error(t('this isn’t an openGym plan file')) }
+
+function declaredPlanUnit(data) {
+  let declared = null
+  for (const key of ['unit', 'weightUnit']) {
+    if (data[key] == null) continue
+    const unit = planUnit(data[key])
+    if (!unit || (declared && declared !== unit)) unitError()
+    declared = unit
+  }
+  return declared
+}
+
+function convertedExercise(e, sourceUnit, destinationUnit) {
+  if (!sourceUnit || sourceUnit === destinationUnit) return e
+  const out = { ...e }
+  if (out.weight != null) out.weight = convertWeight(out.weight, sourceUnit, destinationUnit)
+  // A timed increment is seconds, not a load. Rep-mode increments are load overrides.
+  if (modeOf(out) === 'reps' && out.inc > 0) out.inc = convertWeight(out.inc, sourceUnit, destinationUnit)
+  return out
+}
+
+function convertedBundle(bundle, destinationUnit) {
+  const sourceUnit = declaredPlanUnit(bundle)
+  if (!sourceUnit || sourceUnit === destinationUnit) return bundle
+  return {
+    ...bundle,
+    unit: destinationUnit,
+    routines: (bundle.routines || []).map(r => ({
+      ...r,
+      ex: (r.ex || []).map(e => convertedExercise(e, sourceUnit, destinationUnit))
+    }))
+  }
+}
 
 // Keep only the meaningful config fields, so the file stays small and readable.
 function cleanEx(e) {
@@ -43,12 +85,16 @@ function cleanEx(e) {
   // without its rule is just a list of weights.
   if (e.prog) o.prog = e.prog
   if (e.inc > 0) o.inc = e.inc
+  // Epley deload factor is a per-occurrence progression setting. Omit the default so older
+  // exports remain compact and importing them preserves the default 90% behaviour.
+  if (e.deloadFactor != null && Number(e.deloadFactor) !== 0.9) o.deloadFactor = e.deloadFactor
   if (e.repsMin != null) o.repsMin = e.repsMin
   if (e.repsMax != null) o.repsMax = e.repsMax
   // The exercise's own rest (issue #10) is part of how it is prescribed, so it travels too —
   // only when set, so a plan that never asked for one leaves the recipient's own default
   // timer in charge. parsePlan and mergePlan carry it through by spread.
   if (e.restSec > 0) o.restSec = e.restSec
+  if (e.warmupRestSec > 0) o.warmupRestSec = e.warmupRestSec   // the ramp's own rest travels with the work rest
   if (e.sg) o.sg = e.sg
   if (e.note) o.note = e.note
   const warm = cleanWarmupSets(e.warmupSets)
@@ -88,8 +134,36 @@ function cleanIntensifier(x) {
   return null
 }
 
+// The muscles the map can draw, plus the one label the form gives a cardio exercise.
+const CUSTOM_MUSCLES = new Set([...MUSCLES, 'cardiovascular system'])
+const muscleList = v => inMuscleOrder([...new Set((Array.isArray(v) ? v : []).filter(m => CUSTOM_MUSCLES.has(m)))])
+
+/** A custom exercise with its own metadata — equipment, muscles, description — in the shape
+ *  CustomExForm writes, minus the recipient-side `custom`/`sm` fields mergePlan adds. The bundle
+ *  used to carry only {id, n, bp}, so the exercise arrived with an empty equipment tag, no muscle
+ *  credit, and (stored without `custom: true`) no way to edit or delete it (QA C7). The same gate
+ *  runs on the way in as on the way out, since a plan file is someone else's data: only muscles the
+ *  map can draw, a secondary never repeating a primary, the way the form itself enforces. Fields
+ *  that are empty stay absent, so a file written before this change reads the same as one after. */
+function cleanCustom(c) {
+  const o = { id: c.id, n: c.n, bp: c.bp }
+  if (c.desc) o.desc = c.desc
+  if (typeof c.eq === 'string' && c.eq) o.eq = c.eq
+  const prim = muscleList(c.primaries)
+  const sm = muscleList(c.secondaries).filter(m => !prim.includes(m))
+  // `tg` is the legacy single primary; the form keeps it equal to the first primary.
+  const tg = prim[0] || (CUSTOM_MUSCLES.has(c.tg) ? c.tg : '')
+  if (tg) o.tg = tg
+  if (prim.length) o.primaries = prim
+  if (sm.length) o.secondaries = sm
+  if (prim.length || sm.length) o.muscleGroups = [...prim, ...sm]
+  return o
+}
+
 /** Build the shareable bundle: every routine, the week schedule, referenced customs. */
 export function buildPlanBundle(S, name) {
+  const unit = planUnit(S.unit == null ? 'kg' : S.unit)
+  if (!unit) unitError()
   const routines = (S.routines || []).map(r => ({
     id: r.id, name: r.name, emoji: r.emoji,
     ...(r.prog ? { prog: r.prog } : {}),
@@ -99,10 +173,13 @@ export function buildPlanBundle(S, name) {
   const usedIds = new Set(routines.flatMap(r => r.ex.map(e => e.id)))
   const customEx = (S.customEx || [])
     .filter(c => usedIds.has(c.id))
-    .map(c => ({ id: c.id, n: c.n, bp: c.bp, ...(c.desc ? { desc: c.desc } : {}) }))
+    .map(cleanCustom)
+  // A weekday can hold several routines (merge order preserved). `[].concat` normalises a
+  // legacy scalar id to a one-element list, so a bundle written before this change and one
+  // written after are read the same way at the other end.
   const week = {}
-  WEEK_DAYS.forEach(d => { if (S.week?.[d]) week[d] = S.week[d] })
-  return { opengym_plan: PLAN_FMT, exported: todayISO(), name: name || '', week, routines, customEx }
+  WEEK_DAYS.forEach(d => { if (S.week?.[d]?.length) week[d] = [].concat(S.week[d]) })
+  return { opengym_plan: PLAN_FMT, exported: todayISO(), name: name || '', unit, week, routines, customEx }
 }
 
 /**
@@ -114,11 +191,13 @@ export function buildPlanBundle(S, name) {
  * would sit invisibly in the routine and only surface as a blank screen when the routine
  * is trained.
  */
-export function parsePlan(raw) {
+export function parsePlan(raw, destinationUnit = 'kg') {
   const data = typeof raw === 'string' ? JSON.parse(raw) : raw
-  if (!data || !data.opengym_plan || !Array.isArray(data.routines)) {
+  const destination = planUnit(destinationUnit)
+  if (!data || typeof data !== 'object' || Array.isArray(data) || !data.opengym_plan || !Array.isArray(data.routines) || !destination) {
     throw new Error(t('this isn’t an openGym plan file'))
   }
+  const sourceUnit = declaredPlanUnit(data)
   const customEx = (Array.isArray(data.customEx) ? data.customEx : []).filter(c => c && c.id)
   const known = new Set(customEx.map(c => c.id))
   let dropped = 0
@@ -134,8 +213,9 @@ export function parsePlan(raw) {
       const warm = cleanWarmupSets(e.warmupSets)
       const intens = cleanIntensifier(e.intensifier)
       const rest = cleanRestSec(e.restSec)
-      const { warmupSets, intensifier, restSec, ...passthrough } = e
-      return { ...passthrough, ...(warm ? { warmupSets: warm } : {}), ...(intens ? { intensifier: intens } : {}), ...(rest ? { restSec: rest } : {}) }
+      const warmRest = cleanRestSec(e.warmupRestSec)
+      const { warmupSets, intensifier, restSec, warmupRestSec, ...passthrough } = e
+      return convertedExercise({ ...passthrough, ...(warm ? { warmupSets: warm } : {}), ...(intens ? { intensifier: intens } : {}), ...(rest ? { restSec: rest } : {}), ...(warmRest ? { warmupRestSec: warmRest } : {}) }, sourceUnit || destination, destination)
     })
   }))
   return {
@@ -146,7 +226,12 @@ export function parsePlan(raw) {
     dropped,
     routineCount: routines.length,
     exerciseCount: routines.reduce((n, r) => n + r.ex.length, 0),
-    scheduledDays: WEEK_DAYS.filter(d => data.week?.[d]).length
+    scheduledDays: WEEK_DAYS.filter(d => data.week?.[d]?.length).length,
+    // `unit` is the unit of the returned prescriptions. `sourceUnit` is null for a legacy file;
+    // that absence means its numbers were intentionally treated as already in `destination`.
+    unit: destination,
+    sourceUnit: sourceUnit || null,
+    destinationUnit: destination
   }
 }
 
@@ -158,17 +243,23 @@ export function parsePlan(raw) {
  *    leaves empty become rest days — a half-overwritten week would silently mix two plans)
  */
 export function mergePlan(s, bundle, { schedule } = {}) {
+  const destination = planUnit(s.unit == null ? 'kg' : s.unit)
+  if (!destination) unitError()
+  const source = convertedBundle(bundle, destination)
   s.customEx = s.customEx || []
   const exIdMap = {}
-  ;(bundle.customEx || []).forEach(c => {
+  ;(source.customEx || []).forEach(c => {
     const same = s.customEx.find(x => (x.n || '').toLowerCase() === (c.n || '').toLowerCase() && x.bp === c.bp)
     if (same) { exIdMap[c.id] = same.id; return }
     const nid = uid()
     exIdMap[c.id] = nid
-    s.customEx.push({ id: nid, n: c.n, bp: c.bp, ...(c.desc ? { desc: c.desc } : {}) })
+    // Stored exactly as the form would have created it — `custom: true` is what lets the recipient
+    // edit or delete it, and `sm` mirrors the secondaries the way the form writes them.
+    const clean = cleanCustom(c)
+    s.customEx.push({ ...clean, id: nid, ...(clean.secondaries ? { sm: clean.secondaries } : {}), custom: true })
   })
   const ridMap = {}
-  bundle.routines.forEach(r => {
+  source.routines.forEach(r => {
     const nid = uid()
     ridMap[r.id] = nid
     s.routines.push({
@@ -182,11 +273,15 @@ export function mergePlan(s, bundle, { schedule } = {}) {
   })
   if (schedule) {
     WEEK_DAYS.forEach(d => { delete s.week[d] })
-    Object.entries(bundle.week || {}).forEach(([d, oldId]) => {
-      if (ridMap[oldId]) s.week[d] = ridMap[oldId]
+    Object.entries(source.week || {}).forEach(([d, val]) => {
+      // `[].concat` tolerates a pre-upgrade scalar bundle value. An element whose routine id
+      // didn't survive parsing is dropped, not written as undefined; a day that ends up empty
+      // is left absent rather than stored as `[]`.
+      const ids = [].concat(val).map(oldId => ridMap[oldId]).filter(Boolean)
+      if (ids.length) s.week[d] = ids
     })
   }
-  return { routines: bundle.routines.length }
+  return { routines: source.routines.length }
 }
 
 /* ------------------------------- printable PDF ------------------------------- */
@@ -243,8 +338,10 @@ function routineHTML(r, unit) {
 function weekHTML(S) {
   // The printout is read by whoever exported it, so the week runs in their order.
   const rows = weekOrder(weekStartOf(S)).map(d => {
-    const r = S.routines.find(x => x.id === S.week?.[d])
-    const val = r ? esc(r.name) : `<span class="rest">${esc(t('Rest'))}</span>`
+    const names = [].concat(S.week?.[d] || [])
+      .map(id => S.routines.find(x => x.id === id)?.name)
+      .filter(Boolean)
+    const val = names.length ? esc(deriveSessionName(names)) : `<span class="rest">${esc(t('Rest'))}</span>`
     return `<div class="w-row"><div class="w-day">${esc(t(DAYN[d]))}</div><div class="w-r">${val}</div></div>`
   }).join('')
   return `<div class="week">${rows}</div>`

@@ -21,10 +21,12 @@ No account on someone else's server, no subscription, no ads. Just `docker compo
 <br>
 [![Pipeline](https://gitlab.com/DuarteSantos8/opengym/badges/main/pipeline.svg?style=flat-square)](https://gitlab.com/DuarteSantos8/opengym/-/pipelines)
 [![Coverage](https://gitlab.com/DuarteSantos8/opengym/badges/main/coverage.svg?job=test:frontend&style=flat-square)](https://gitlab.com/DuarteSantos8/opengym/-/pipelines?ref=main)
-[![Release](https://gitlab.com/DuarteSantos8/opengym/-/badges/release.svg?style=flat-square)](https://gitlab.com/DuarteSantos8/opengym/-/releases)
-![Last commit](https://img.shields.io/gitlab/last-commit/DuarteSantos8%2Fopengym?style=flat-square)
-[![Stars](https://img.shields.io/gitlab/stars/DuarteSantos8%2Fopengym?style=flat-square)](https://gitlab.com/DuarteSantos8/opengym/-/starrers)
-[![Issues](https://img.shields.io/gitlab/issues/open/DuarteSantos8%2Fopengym?style=flat-square)](https://gitlab.com/DuarteSantos8/opengym/-/issues)
+[![Release](https://img.shields.io/github/v/release/DuarteSantos8/openGym?style=flat-square)](https://github.com/DuarteSantos8/openGym/releases)
+![Last commit](https://img.shields.io/github/last-commit/DuarteSantos8/openGym?style=flat-square)
+[![GitHub stars](https://img.shields.io/github/stars/DuarteSantos8/openGym?style=flat-square&logo=github&logoColor=white)](https://github.com/DuarteSantos8/openGym/stargazers)
+[![Issues](https://img.shields.io/github/issues/DuarteSantos8/openGym?style=flat-square)](https://github.com/DuarteSantos8/openGym/issues)
+[![Tests](https://github.com/DuarteSantos8/openGym/actions/workflows/test.yml/badge.svg)](https://github.com/DuarteSantos8/openGym/actions/workflows/test.yml)
+[![Mirror](https://github.com/DuarteSantos8/openGym/actions/workflows/mirror.yml/badge.svg)](https://github.com/DuarteSantos8/openGym/actions/workflows/mirror.yml)
 [![Discord](https://img.shields.io/badge/Discord-join-5865F2?style=flat-square&logo=discord&logoColor=white)](https://discord.gg/e62jY6fwVb)
 [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20me%20a%20coffee-support-FFDD00?style=flat-square&logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/duartesantos)
 
@@ -44,7 +46,7 @@ No account on someone else's server, no subscription, no ads. Just `docker compo
 
 <div align="center">
 
-### [🌐 opengym.duarte-santos.ch](https://opengym.duarte-santos.ch) · [📦 Source on GitLab](https://gitlab.com/DuarteSantos8/opengym)
+### [🌐 opengym.duarte-santos.ch](https://opengym.duarte-santos.ch) · [📦 Source on GitHub](https://github.com/DuarteSantos8/openGym) · [🦊 GitLab mirror](https://gitlab.com/DuarteSantos8/opengym)
 
 Screenshots, docs and the APK download live on the site.<br>
 <sub>Want to poke at it first? The <a href="https://opengym.duarte-santos.ch/demo/">in-browser
@@ -62,9 +64,14 @@ as a home-screen app, passkey sign-in, offline support, sync across your phone a
 ## Features
 
 - ⚖️ **Body-weight tracking** — interactive chart with a goal line you set, gains/losses colored by whether they move toward it
-- 🏋️ **Weekly plan** — a routine per weekday, over a library of **1,324 exercises** (searchable, with animated demos)
+- 🏋️ **Weekly plan** — a routine per weekday, over a library of **1,324 exercises** (searchable, with animated demos), browsable **by muscle** on a body map
+- ✨ **Four starter plans** — Push/Pull/Legs, Upper/Lower, Full Body, 5×5; loaded as ordinary routines you can edit, and a routine can be copied in one tap
 - 🗓️ **Reschedule any day** — sick, missed a session, or fewer gym days this week? Move a workout to another day without touching your weekly plan
 - 📅 **Your week starts where you say** — Monday or Sunday, in Settings. The weekly plan, the day strip on Home, the calendar and every "this week" total follow it, so the app reads the way the calendar on your wall does
+- 🧭 **A workout screen that gets out of the way** — one ⋯ menu per exercise (note, details, progression, bar weight, warm-up, superset, swap, move, remove), the set number as the set's own menu (drop set, rest-pause burst, remove), and a scrollable **list view** of the whole session with the header pinned. Four switches under Settings → Workout controls bring any of the old button rows back
+- 🌈 **Colour-coded RIR / RPE** — one tap logs how hard a set was, with a sentence per level ("one more rep in the tank"); the same colour whether you think in RIR or RPE, a free field for in-between values
+- 📖 **History without leaving the workout** — the exercise's last sessions and a progress line, from the ⋯ menu or the exercise details
+- ⭐ **Favourite exercises** — star what you use, it sorts first in the picker and the library
 - ▶️ **Guided workouts** — it knows what day it is and starts today's session; asks your body weight first, pre-fills your weights from last time, rest timer, PR detection, per-exercise weight tracking. On a rest day it doesn't just say "rest day" — it names when your next session is and what it is
 - 🙈 **Animations are your call** — the exercise demos can be full size, small, or hidden entirely during a workout. Hidden collapses the media rather than leaving a gap, for anyone who finds a looping GIF between sets more distracting than useful
 - ☀️ **The screen stays awake while you train** — no unlocking the phone and finding your place again between every set. On for as long as a workout is running, released the moment you finish it, and switchable off in Settings
@@ -95,17 +102,17 @@ as a home-screen app, passkey sign-in, offline support, sync across your phone a
 - 🎨 **Designed, not assembled** — light/dark themes and 8 accent colors saved to your profile, over a hand-drawn icon set instead of emoji, so it looks the same on every phone
 - 🌍 **14 languages** — full UI translation (EN, DE, ES, FR, IT, PT (Portugal), PT (Brazil), PL, TR, RU, ZH, KO, HI, TH, HU); exercise instructions localized in 12 of them and built-in exercise names shown bilingually in PT-BR and HU, all loaded on demand so the app stays fast
 - 📥 **Bring your history with you** — import from **FitNotes** (Android and iOS), **Strong** and **Hevy** (CSV or directly with a [Hevy Pro API key](https://hevy.com/settings?developer)), or body weight straight out of an **Apple Health** export. Exercise names are matched against the library and anything unrecognised becomes one of your own exercises, so nothing in the file is dropped
-- 📦 **Yours to keep** — one-tap JSON export/import, guest mode, **no telemetry**
+- 📦 **Yours to keep** — one-tap JSON export/import, guest mode, **no telemetry**; switching kg ↔ lb offers to convert every stored number
 - 🤖 **Ask an AI about your training** (optional) — an [MCP server](mcp/README.md) lets a client like Claude Desktop or Cursor read your history in your own words: *"what did I bench last week?"*. Read-only, spawned locally by the client, nothing leaves your box. Not in the Docker build — if you don't use an AI assistant, it isn't there
 - 🧠 **An AI coach that writes your plan** (optional, off by default) — answer a handful of questions and it designs a week of routines; later it reads what you actually logged and proposes changes, each one with the evidence behind it. You approve every change and can undo it. It runs on **your** server under **your** provider account — Anthropic, OpenAI, Gemini or any OpenAI-compatible endpoint (Ollama on your LAN counts) with a pasted API key on the default image, or the Claude Agent SDK / Codex CLI on a separate build. The phone app can use your instance or its own key. See [docs/AI_COACH.md](docs/AI_COACH.md)
-- 📱 **Standalone Android app** — the whole tracker as a sideloadable APK: no account, no server, data on the phone, native workout reminders ([download](https://opengym.duarte-santos.ch))
+- 📱 **Standalone Android app** — the whole tracker as a sideloadable APK: no account, no server, data on the phone, native workout reminders, and an **in-app update check** that downloads the next signed APK and verifies its checksum ([download](https://opengym.duarte-santos.ch))
 
 ## Quick start (self-host)
 
 You need [Docker](https://docs.docker.com/get-docker/) with Compose.
 
 ```bash
-git clone https://gitlab.com/DuarteSantos8/opengym
+git clone https://github.com/DuarteSantos8/openGym
 cd openGym
 cp .env.example .env
 docker compose pull   # grab prebuilt images (amd64 + arm64) — skip to build from source instead
@@ -122,8 +129,10 @@ the exercise media (~140 MB) once.
 > openGym's AGPL, and their ownership is currently disputed between Gym visual and ExerciseDB.
 > openGym ships none of it: your instance downloads it from upstream. Reusing it yourself,
 > commercially or not, means clearing it with the rights holder — see [NOTICE.md](NOTICE.md).
- Prefer building the images yourself instead of pulling from
-GitLab's registry? Drop the `pull` step and run `docker compose up -d --build` — you don't need Node or
+The prebuilt images are published twice, from the same tag: `registry.gitlab.com/duartesantos8/opengym/{api,web}`
+(what `docker-compose.yml` pulls) and `ghcr.io/duartesantos8/opengym-{api,web}` on GitHub — swap the
+`image:` lines if you prefer GHCR. Prefer building the images yourself instead of pulling from a
+registry? Drop the `pull` step and run `docker compose up -d --build` — you don't need Node or
 a build step locally either way.
 
 > Want it reachable from your phone over the internet with passkeys? You'll need an HTTPS
@@ -137,7 +146,8 @@ backups. Self-hosting gets you multi-device sync and profiles for friends & fami
 mobile app is the install-and-done flavor.
 
 - **Android:** [**download the APK**](https://opengym.duarte-santos.ch) — or straight from
-  [GitLab's package registry](https://gitlab.com/DuarteSantos8/opengym/-/packages), where every
+  [GitLab's package registry](https://gitlab.com/DuarteSantos8/opengym/-/packages) or the
+  [GitHub release](https://github.com/DuarteSantos8/openGym/releases/latest), where every
   build sits next to its `.sha256` — and sideload it; openGym is deliberately not on the Play
   Store. Or build it yourself: **[docs/MOBILE.md](docs/MOBILE.md)**.
 - **iPhone:** Apple doesn't allow installing apps outside the App Store, so there is no iOS
@@ -204,19 +214,13 @@ host side of that volume, not the variable.
 
 ## Roadmap
 
-Rough, community-driven — ideas and PRs welcome:
-
-- [x] Standalone mobile app — Android APK to sideload ([download](https://opengym.duarte-santos.ch)); on iOS as a self-hosted PWA (no store listings planned)
-- [x] Automatic progression programs (linear, Greyskull LP, double progression) with stalls and deloads
-- [x] Estimated 1RM per exercise
-- [x] Optional AI coach — designs a plan and reviews your training, on your own server and your own provider account ([docs](docs/AI_COACH.md))
-- [ ] Percentage / training-max programming (5/3/1-style) on top of the progression engine
-- [ ] More starter plans (upper/lower, full-body, 5×5)
-- [x] Importers from FitNotes / Strong / Hevy (CSV, or Hevy Pro API key — workouts and/or weigh-ins), including the RPE they record, and body weight from Apple Health
-- [x] Effort per set — RIR or RPE, whichever scale you think in
-- [ ] Body measurements (waist, arms…) alongside weight
-- [ ] Per-exercise notes & plate calculator
-- [ ] Exercise instructions in German & Portuguese (Portugal); the separately curated Brazilian Portuguese pack is complete
+The plan lives in [ROADMAP.md](ROADMAP.md), and the
+[GitHub milestones](https://github.com/DuarteSantos8/openGym/milestones) hold the issues. **A release every
+two weeks**, each one small and themed: the promised items, editing finished workouts, the session queue,
+programmes and phases, the progression engine, cardio — then **v1.4.0, the foundation: storage moves to a
+database and search is rebuilt, the one compatibility break** — then accounts (password and OIDC login,
+trainer role, MCP write), the iOS app, the Android and health items, and what all of that unlocks
+(pictures for custom exercises, catalogue work, skins, social). Ideas and pull requests welcome.
 
 ## Tech
 
@@ -246,21 +250,24 @@ in the Docker build.
 
 - **[Discord](https://discord.gg/e62jY6fwVb)** — release announcements, self-hosting help and
   the back-and-forth that would be a slow issue thread. Quickest way to get an answer.
-- **[Issues](https://gitlab.com/DuarteSantos8/opengym/-/issues)** — bugs, questions, self-hosting
-  help and ideas. There are no Discussions here, so it all lives in one tracker: label a question
+- **[Issues](https://github.com/DuarteSantos8/openGym/issues)** — bugs, questions, self-hosting
+  help and ideas. (Issues still open on the GitLab mirror are read too.) Label a question
   `question` and an idea `idea`, and it gets treated as one rather than as agreed-on work. Use
   an issue over the Discord for anything the next person should be able to find by searching.
 - **Login trouble?** Most of it is an `RP_ID`/`ORIGIN` mismatch — check
   [docs/SELF_HOSTING.md](docs/SELF_HOSTING.md) before opening an issue.
-- **Merge requests** — [open one on GitLab](https://gitlab.com/DuarteSantos8/opengym/-/merge_requests); see
-  [CONTRIBUTING.md](CONTRIBUTING.md).
+- **[Pull requests](https://github.com/DuarteSantos8/openGym/pulls)** — see
+  [CONTRIBUTING.md](CONTRIBUTING.md). Merge requests already open on the GitLab mirror are still
+  reviewed and land on `main` here; new work, please, as a pull request.
 
-> **On the GitHub repo:** `github.com/DuarteSantos8/openGym` is offline because the account was
-> suspended. **GitLab is the home of the project** — same history, same tags, same releases, and
-> the CI that builds the images and the APK runs there. (gitea.com/DuarteSantos/openGym was the
-> first stopgap and is now only a mirror.) Old GitHub issue and PR numbers in
-> [CHANGELOG.md](CHANGELOG.md) are kept as plain references; they don't map onto GitLab's
-> numbering.
+> **GitHub is home; GitLab is a mirror.** `github.com/DuarteSantos8/openGym` was offline from
+> 2026-08-19 to 2026-09-10 while the account was suspended, and the project lived on GitLab in the
+> meantime. It is back, and [gitlab.com/DuarteSantos8/opengym](https://gitlab.com/DuarteSantos8/opengym)
+> is now kept in sync by a GitHub Actions workflow on every push to `main` and every `v*` tag —
+> nothing is pushed or merged there by hand. The mirror stays because its CI builds the release
+> artefacts: the signed APK, the multi-arch images (GitLab registry, mirrored to GHCR) and the SBOMs.
+> (gitea.com/DuarteSantos/openGym is a plain mirror.) In [CHANGELOG.md](CHANGELOG.md), `!NN` is a
+> GitLab merge request from those weeks; `#NN` refers to whichever tracker the report came through.
 
 ## Contributing
 
@@ -270,9 +277,6 @@ plans, exercise-data languages, import from other trackers. **A ⭐ helps more p
 openGym is free and stays free: AGPL, no subscription, no paid tier, nothing held back for
 sponsors. If it replaced a paid tracker for you and you want to chip in, there's a coffee button
 below (and a badge at the top) — a star, a bug report or a merge request is worth just as much.
-
-<!-- GitLab has no Sponsor button the way GitHub's FUNDING.yml gave one, so the link has to
-     stand on its own here. .github/FUNDING.yml stays put for the day that account returns. -->
 
 <a href="https://buymeacoffee.com/duartesantos" target="_blank">
   <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png"

@@ -209,3 +209,38 @@ test('the cohort rides along on a review and a debrief only when handed in', () 
   assert.equal('cohort' in payload.build(sampleState(), { handle: handleFor('u'), kind: 'review' }), false);
   assert.equal('cohort' in payload.build(sampleState(), { handle: handleFor('u'), kind: 'create', cohort }), false);
 });
+
+test('a refine with no plan to refine is a fresh plan with a note, never refine.previous = null', () => {
+  const S = sampleState();
+  const p = payload.build(S, { handle: handleFor('u1'), kind: 'create', refine: 'three days, no barbell', previous: null });
+  assert.equal(p.task, 'create');
+  assert.equal(p.refine, undefined);
+  assert.equal(p.userNote, 'three days, no barbell');
+  const q = payload.build(S, { handle: handleFor('u1'), kind: 'create', refine: 'shorter', previous: { routines: [] } });
+  assert.deepEqual(q.refine, { text: 'shorter', previous: { routines: [] } });
+  assert.equal(q.userNote, undefined);
+});
+
+test('the last few chat lines travel as conversation — user text and Coach verdicts only, never the message being sent', () => {
+  const S = sampleState();
+  S.coach = { ...(S.coach || {}), chat: [
+    { role: 'coach', kind: 'text', text: 'Hi — I’m your Coach.' },
+    { role: 'user', kind: 'intake' },
+    { role: 'user', kind: 'text', text: 'my knee hurts on lunges' },
+    { role: 'coach', kind: 'error', text: 'The Coach couldn’t run.' },
+    { role: 'coach', kind: 'nochange', text: 'Nothing to change yet; watch the knee.' },
+    { role: 'coach', kind: 'applied', text: 'Applied 2 changes' },
+    { role: 'user', kind: 'text', text: 'x'.repeat(500) },
+    { role: 'user', kind: 'text', text: 'and what about that?' }
+  ] };
+  const p = payload.build(S, { handle: handleFor('u1'), kind: 'review', note: 'and what about that?' });
+  assert.deepEqual(p.conversation.map(l => l.who), ['coach', 'user', 'coach', 'user']);
+  assert.equal(p.conversation[1].text, 'my knee hurts on lunges');
+  assert.equal(p.conversation[3].text.length, payload.CONVERSATION_CHARS, 'long lines are cut');
+  assert.ok(!JSON.stringify(p.conversation).includes('couldn’t run'), 'error lines are noise');
+  assert.ok(!p.conversation.some(l => l.text === 'and what about that?'), 'the current message rides in userNote');
+  const d = payload.build(S, { handle: handleFor('u1'), kind: 'debrief' });
+  assert.equal(d.conversation, undefined, 'a debrief reads one session and nothing else');
+  const none = payload.build(sampleState(), { handle: handleFor('u1'), kind: 'review' });
+  assert.equal(none.conversation, undefined);
+});

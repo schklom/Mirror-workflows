@@ -3,6 +3,7 @@
 // the apply engine accepts. Also the three things this mode has to get right on its own: the
 // daily cap, the key never touching S, and a proposal surviving in the device file.
 import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { todayISO } from './format.js'
 
 // The device file and the secret store are in-memory here; nativeFetch is the script.
 const device = { data: null }
@@ -95,6 +96,20 @@ describe('the Coach on a phone with its own key', () => {
     expect(wire.calls).toHaveLength(2)
     expect(f.pending).toBeNull()
     expect(f.lastError.errorClass).toBe('unusable')
+    expect(f.lastError.detail).toMatch(/JSON|object/i)   // the validator's reason reaches the phone — there is no admin card
+  })
+
+  it('a provider refusal carries the provider’s own words, so the person holding the key can act on it', async () => {
+    // A 4xx the adapter does not retry (429 would wait out two retries first); the wording is OpenAI's.
+    wire.answer = { status: 404, body: { error: { message: 'The model `gpt-4o-mini-tts` does not exist or you do not have access to it.' } } }
+    const seen = []
+    local.setNotifier(ev => seen.push(ev))
+    await local.localReview(state())
+    const s = await settle()
+    expect(s.lastError.errorClass).toBe('provider')
+    expect(s.lastError.detail).toMatch(/^404 The model `gpt-4o-mini-tts` does not exist/)
+    expect(seen.at(-1)).toMatchObject({ kind: 'failed', errorClass: 'provider', detail: expect.stringMatching(/does not exist/) })
+    local.setNotifier(null)
   })
 
   it('a 401 is an auth failure, and never a proposal', async () => {
@@ -135,7 +150,7 @@ describe('the Coach on a phone with its own key', () => {
     await expect(local.localReview(state())).rejects.toMatchObject({ code: 'busy' })
     await settle()
 
-    await saveCoachDevice({ daily: { d: new Date().toISOString().slice(0, 10), n: local.LOCAL_DAILY_CAP } })
+    await saveCoachDevice({ daily: { d: todayISO(), n: local.LOCAL_DAILY_CAP } })
     await expect(local.localReview(state())).rejects.toMatchObject({ code: 'cap' })
     expect((await local.localStatus()).cap).toEqual({ used: local.LOCAL_DAILY_CAP, limit: local.LOCAL_DAILY_CAP })
   })

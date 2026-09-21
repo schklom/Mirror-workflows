@@ -1,16 +1,19 @@
 import { useNavigate, useParams } from 'react-router-dom'
 import { useEffect, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
+import { useUI } from '../store/useUI.js'
 import { exOr } from '../lib/exercises.js'
 import { activeProfile, exAvailable } from '../lib/equipment.js'
 import { uid } from '../lib/format.js'
 import { t, exerciseNameFor } from '../lib/i18n.js'
-import { supersetUnits, moveSupersetUnit, cleanupSg, exLine } from '../lib/history.js'
+import { supersetUnits, moveSupersetUnit, cleanupSg, exLine, defaultConfig } from '../lib/history.js'
 import { Thumb } from '../components/Media.jsx'
 import { glyphPicker, exercisePicker, exConfigSheet, confirmSheet } from '../sheets.jsx'
 import Icon from '../components/Icon.jsx'
 import { glyphOf } from '../lib/glyphs.js'
 import { Button, Row, SelectRow, Switch } from '../components/ui.jsx'
+import SwipeToDelete from '../components/SwipeToDelete.jsx'
+import { copyRoutine } from '../lib/routines.js'
 import { POLICIES_FOR, POLICY_NAME, POLICY_DESC } from '../lib/progression.js'
 import BodyMap from '../components/BodyMap.jsx'
 import { loadOfRoutine, rankOf, MUSCLE_NAME } from '../lib/muscles.js'
@@ -305,6 +308,7 @@ export default function RoutineEdit() {
   const { id } = useParams()
   const S = useStore(s => s.S)
   const update = useStore(s => s.update)
+  const toast = useUI(s => s.toast)
   const r = S.routines.find(x => x.id === id)
   useEffect(() => { if (!r) nav('/plan') }, [!!r])
   // Editing here has no explicit "save" — every field change persists immediately. A single
@@ -389,9 +393,12 @@ export default function RoutineEdit() {
         className={'routine-drag-row' + (isDragging ? ' is-dragging' : '')}
         style={isDragging ? { transform: `translate3d(0, ${reorder.drag.deltaY}px, 0)` } : undefined}>
         {unitFirst.has(i) && <div className="ss-label"><Icon name="link" />{t('Superset')}</div>}
-        <div className={'item' + (inSS.has(i) ? ' in-ss' : '')} onClick={() => {
-          exConfigSheet(ex, e, cfg => edit(x => { x[i] = { id: x[i].id, sg: x[i].sg, ...cfg } }), () => edit(x => { x.splice(i, 1); cleanupSg(x) }), r)
-        }}>
+        <SwipeToDelete className={'item' + (inSS.has(i) ? ' in-ss' : '')}
+          deleteLabel={t('Remove from routine')}
+          onDelete={() => edit(x => { x.splice(i, 1); cleanupSg(x) })}
+          onClick={() => {
+            exConfigSheet(ex, e, cfg => edit(x => { x[i] = { id: x[i].id, sg: x[i].sg, ...cfg } }), () => edit(x => { x.splice(i, 1); cleanupSg(x) }), r)
+          }}>
           <Thumb ex={ex} />
           <div className="grow"><div className="tt capitalize">{exerciseNameFor(ex)}</div><div className="ss">{exLine(e, S.unit)}</div>
             {e.note && <div className="small dim" style={{ marginTop: 2 }}>{e.note}</div>}</div>
@@ -403,7 +410,7 @@ export default function RoutineEdit() {
               <button className="iconbtn" aria-label={t('Move down')} title={t('Move down')} disabled={unitIndex.get(i) === units.length - 1} style={{ width: 28, height: 24, borderRadius: 7, fontSize: 12 }} onClick={ev => { ev.stopPropagation(); move(i, 1) }}><Icon name="chevronDown" /></button>
             </div>
           </div>
-        </div>
+        </SwipeToDelete>
       </div>
     })}{reorder.drag && <div className="routine-drop-indicator" data-testid="routine-drop-indicator"
       aria-hidden="true" style={{ top: `${reorder.drag.indicatorTop}px` }} />}</div> : <div className="empty"><div className="ico"><Icon name="dumbbell" /></div>{t('No exercises yet — add your first one.')}</div>}
@@ -423,14 +430,32 @@ export default function RoutineEdit() {
     })()}
 
     <div className="small dim row" style={{ margin: '10px 2px', gap: 5 }}><Icon name="link" style={{ fontSize: 13 }} />{t('Tap the link button on an exercise to superset it with the one above — you’ll do them back-to-back.')}</div>
-    <Button variant="primary" onClick={() => exercisePicker(ex => exConfigSheet(ex, null, cfg => edit(x => { x.push({ id: ex.id, ...cfg }) }), null, r))} icon="plus">{t('Add exercise')}</Button>
+    <Button variant="primary" onClick={() => exercisePicker((ex, quick) => {
+      if (quick) {
+        edit(x => x.push({ id: ex.id, ...defaultConfig(ex.id) }))
+        toast(t('“{0}” added to {1}', exerciseNameFor(ex), r.name))
+      } else {
+        exConfigSheet(ex, null, cfg => edit(x => { x.push({ id: ex.id, ...cfg }) }), null, r)
+      }
+    })} icon="plus">{t('Add exercise')}</Button>
+    <div style={{ height: 10 }} />
+    <Button onClick={() => {
+      const copy = copyRoutine(r, t('Copy'))
+      update(s => { s.routines.push(copy) })
+      nav('/plan/r/' + copy.id)
+    }}>{t('Copy routine')}</Button>
     <div style={{ height: 10 }} />
     <Button variant="danger" onClick={() => confirmSheet({
       title: t('Delete routine?'), message: t('“{0}” and its exercises will be removed.', r.name), confirmText: t('Delete'), danger: true,
       onConfirm: () => {
         update(s => {
           s.routines = s.routines.filter(x => x.id !== id)
-          Object.keys(s.week).forEach(k => { if (s.week[k] === id) delete s.week[k] })
+          // A weekday holds a routine-id list: pull the deleted id from each day, drop the
+          // key when it empties (never store []). dayPlan stays scalar.
+          Object.keys(s.week).forEach(k => {
+            const next = [].concat(s.week[k]).filter(rid => rid !== id)
+            if (next.length) s.week[k] = next; else delete s.week[k]
+          })
           Object.keys(s.dayPlan).forEach(k => { if (s.dayPlan[k] === id) delete s.dayPlan[k] })
         })
         nav('/plan')

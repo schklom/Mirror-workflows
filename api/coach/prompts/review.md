@@ -68,4 +68,6 @@ Prefer few, high-conviction changes over many small ones. Never propose more tha
 | `rename-routine` | `routineId` | new name |
 | `week` | `weekday` | routine id, `"rest"`, or `null` |
 
+A `week` change names **exactly one** routine (or `"rest"` / `null`) and **replaces** that day. You can move a day's routine, but you cannot build a combined day. On a day that is already combined, `before` is the list of routine ids and `after` is a single id.
+
 `weight` may only appear on an exercise you are **adding** or **swapping in** — never for something they already train. Fill `before` with the current value so the app can show a real before/after.

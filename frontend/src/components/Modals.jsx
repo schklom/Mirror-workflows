@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { useUI } from '../store/useUI.js'
+import { keyboardOpen } from '../lib/viewport-guard.js'
 
 // One bottom sheet (or centered dialog) with swipe-to-dismiss.
 function Sheet({ sheet }) {
@@ -164,12 +165,29 @@ export default function Modals() {
   }, [sheets.length])
   useEffect(() => {
     if (!sheets.length) return
+    // A text field on the page behind (a set's weight, the Library search) keeps focus when a
+    // button opens a sheet — WebKit does not blur on button taps — and its keyboard then
+    // stays up under the sheet, or leaves the viewport displaced when it finally goes. The
+    // sheet owns the screen now; a field inside the sheet (the picker search) is left alone.
+    const a = document.activeElement
+    if (a && (a.tagName === 'INPUT' || a.tagName === 'TEXTAREA' || a.isContentEditable) && !a.closest?.('#modal-root')) a.blur?.()
     const y = window.scrollY || 0
     const b = document.body.style
     b.position = 'fixed'; b.top = -y + 'px'; b.left = '0'; b.right = '0'; b.width = '100%'
     return () => {
       b.position = b.top = b.left = b.right = b.width = ''
       window.scrollTo(0, y)
+      // If the sheet closed with the keyboard still up (tap "+" in the picker, then finish),
+      // iOS scrolls the page again while the keyboard dismisses — after the line above ran.
+      // Ask once more when that animation is over. The window-level guard in
+      // lib/viewport-guard.js covers the keyboard closing while a sheet stays open.
+      // Only with the keyboard up, though: without one there is nothing to undo, and a late
+      // restore would overwrite a scroll the page behind made on purpose because the sheet
+      // closed — the workout list going to the current exercise after ⋯ → Layout → List
+      // (issue #224). At this point the sheet's field is already out of the DOM but the
+      // keyboard has not started to go, so the visual viewport still tells the truth.
+      if (!keyboardOpen()) return
+      window.setTimeout(() => { if (document.body.style.position !== 'fixed') window.scrollTo(0, y) }, 350)
     }
   }, [sheets.length > 0])
 

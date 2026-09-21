@@ -18,10 +18,12 @@ const { attemptOnce } = await import('../coach/core/pipeline.js');
 const { HTTP_PROVIDERS, validateBaseUrl } = await import('../coach/core/providers.js');
 const { SYSTEM_PROMPT } = await import('../coach/core/system-prompt.js');
 
-/** A fetch that records what it was asked and answers from a script. */
+/** A fetch that records what it was asked and answers from a script. Like the real one, it
+ *  refuses an already-aborted signal without putting anything on the wire. */
 function fakeFetch(answers) {
   const calls = [];
   const f = async (url, init) => {
+    if (init.signal?.aborted) throw Object.assign(new Error('aborted'), { name: 'AbortError' });
     calls.push({ url, method: init.method, headers: init.headers || {}, body: init.body ? JSON.parse(init.body) : null });
     const a = typeof answers === 'function' ? answers(calls.length, url, init) : answers[Math.min(calls.length, answers.length) - 1];
     if (a instanceof Error) throw a;
@@ -168,6 +170,19 @@ test('a transient status (429, 5xx, 529) is retried twice with the same request,
   assert.equal(f.calls.length, 1);
 });
 
+test('an abort that lands during a retry pause sends nothing more and ends as a timeout', async () => {
+  // A forget mid-backoff: the payload must not go out a second time, and the job must drain
+  // now rather than wait for the next attempt to time out.
+  const ac = new AbortController();
+  const f = fakeFetch([{ status: 429, body: { error: { message: 'slow down' } } }]);
+  const p = openai.invoke({ cfg: {}, prompt: 'P', env, fetch: f, signal: ac.signal, retryDelayMs: 10000 });
+  await new Promise(r => setTimeout(r, 20));      // the first 429 is back and the pause has begun
+  ac.abort();
+  const r = await p;
+  assert.equal(f.calls.length, 1, 'the payload is not sent again');
+  assert.equal(r.timedOut, true);
+});
+
 test('a body that is not JSON on an error still yields a readable stderr', async () => {
   const f = fakeFetch([{ status: 502, body: '<html>bad gateway</html>' }]);
   const r = await gemini.invoke({ cfg: {}, prompt: 'P', env, fetch: f });
@@ -261,4 +276,20 @@ test('validateBaseUrl: http(s) only, no credentials, no query, trailing slash dr
   assert.equal(validateBaseUrl('http://user:pw@x').ok, false);
   assert.equal(validateBaseUrl('http://x/?key=1').ok, false);
   assert.equal(validateBaseUrl('not a url').ok, false);
+});
+
+test('models(): OpenAI’s list is cut to what Chat Completions can use; a compatible endpoint is not filtered', async () => {
+  const { isChatModel } = await import('../coach/core/adapters/openai.js');
+  const all = ['gpt-5.6', 'gpt-5.6-mini', 'gpt-4o', 'o3', 'o4-mini', 'chatgpt-4o-latest',
+    'gpt-4o-realtime-preview', 'gpt-4o-audio-preview', 'gpt-4o-mini-tts', 'gpt-4o-transcribe', 'whisper-1',
+    'text-embedding-3-small', 'gpt-image-1', 'dall-e-3', 'omni-moderation-latest', 'gpt-4o-search-preview',
+    'gpt-3.5-turbo-instruct', 'codex-mini-latest', 'computer-use-preview', 'o3-deep-research', 'o1-pro', 'gpt-5.6-pro', 'davinci-002'];
+  assert.deepEqual(all.filter(isChatModel), ['gpt-5.6', 'gpt-5.6-mini', 'gpt-4o', 'o3', 'o4-mini', 'chatgpt-4o-latest']);
+  const oa = fakeFetch([ok({ data: all.map(id => ({ id })) })]);
+  assert.deepEqual((await openai.models({}, env, { fetch: oa })).models, ['chatgpt-4o-latest', 'gpt-4o', 'gpt-5.6', 'gpt-5.6-mini', 'o3', 'o4-mini']);
+  const stub = fakeFetch([ok({ data: [{ id: 'model-b' }, { id: 'model-a' }] })]);
+  assert.deepEqual((await openai.models({}, env, { fetch: stub })).models, ['model-a', 'model-b'], 'a list with no recognisable chat model is served whole');
+  const { default: compatible } = await import('../coach/core/adapters/compatible.js');
+  const co = fakeFetch([ok({ data: [{ id: 'qwen2.5:3b' }, { id: 'llama3.2' }] })]);
+  assert.deepEqual((await compatible.models({ providerOptions: { compatible: { baseUrl: 'http://ollama:11434' } } }, {}, { fetch: co })).models, ['llama3.2', 'qwen2.5:3b']);
 });

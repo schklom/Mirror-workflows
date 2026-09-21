@@ -29,7 +29,7 @@ export const HTTP_PROVIDERS = Object.freeze({
     apiKeyEnv: 'GEMINI_API_KEY', oauthEnv: null,
     defaultBase: 'https://generativelanguage.googleapis.com',
     defaultModel: 'gemini-2.5-pro',
-    keyPlaceholder: 'AIza…'
+    keyPlaceholder: 'AIza… or AQ.…'
   }),
   // Ollama, LM Studio, vLLM, OpenRouter, a corporate gateway: anything that serves the
   // Chat Completions shape. The base URL is the whole configuration; a key is optional

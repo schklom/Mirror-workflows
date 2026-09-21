@@ -59,4 +59,19 @@ describe('buildReminderNotifications', () => {
     expect(notifications.some(n => iso(n.schedule.at) === iso(now))).toBe(false)
     expect(notifications.some(n => iso(n.schedule.at) === iso(new Date(2026, 5, 8)))).toBe(true)
   })
+
+  it('names both routines of a combined day, and reads a legacy scalar day the same', () => {
+    const now = new Date(2026, 5, 1, 7, 0) // Monday
+    const combined = buildReminderNotifications(state({ week: { 1: ['push', 'pull'] } }), now)[0]
+    expect(combined.body).toContain('Push + Pull')
+
+    const legacy = buildReminderNotifications(state({ week: { 1: 'push' } }), now)[0]
+    expect(legacy.body).toContain('Push')
+  })
+
+  it('falls back to a count for three or more routines on one day', () => {
+    const now = new Date(2026, 5, 1, 7, 0)
+    const n = buildReminderNotifications(state({ week: { 1: ['push', 'pull', 'legs'] } }), now)[0]
+    expect(n.body).toContain('3 routines')
+  })
 })

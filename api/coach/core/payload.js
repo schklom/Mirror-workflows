@@ -136,7 +136,10 @@ export function canonicalPlan(S) {
         };
       })
     })),
-    week: Object.fromEntries([1, 2, 3, 4, 5, 6, 0].filter(d => S.week?.[d]).map(d => [d, S.week[d]]))
+    // A weekday holds a routine-id list. `[].concat` folds a legacy bare string and a
+    // one-element list to the same shape (so their fingerprint is identical); `?.length` keeps
+    // a stray `[]` out; insertion order is preserved and never sorted (it is the merge order).
+    week: Object.fromEntries([1, 2, 3, 4, 5, 6, 0].filter(d => S.week?.[d]?.length).map(d => [d, [].concat(S.week[d])]))
   };
 }
 
@@ -145,7 +148,7 @@ export function cleanPlan(S) {
     id: r.id, name: r.name, emoji: r.emoji, ...(r.prog ? { prog: r.prog } : {}), ex: (r.ex || []).map(cleanEx)
   }));
   const week = {};
-  [1, 2, 3, 4, 5, 6, 0].forEach(d => { if (S.week?.[d]) week[d] = S.week[d]; });
+  [1, 2, 3, 4, 5, 6, 0].forEach(d => { if (S.week?.[d]?.length) week[d] = [].concat(S.week[d]); });
   return { routines, week };
 }
 
@@ -189,7 +192,8 @@ function aggregates(S, workouts) {
 
   // Adherence: what the week asked for against what actually happened.
   const trained = new Set(workouts.map(w => w.d));
-  const plannedDays = Object.keys(S.week || {}).filter(k => S.week[k]).length;
+  // A combined day already counts as 1 — this counts days scheduled, not routines.
+  const plannedDays = Object.keys(S.week || {}).filter(k => S.week[k]?.length).length;
   const reschedules = Object.entries(S.dayPlan || {}).filter(([d]) => workouts.some(w => w.d === d) || d >= (workouts[0]?.d || '')).length;
 
   // Muscle coverage in the window, by body part — the "not trained" gap the Stats screen shows.
@@ -414,9 +418,35 @@ export function build(S, opts = {}) {
         workingWeights: Object.entries(best).map(([id, w]) => ({ id, name: libraryName(id), best: w }))
       };
     }
-    if (opts.refine) {
-      p.refine = { text: String(opts.refine).slice(0, 1000), previous: opts.previous || null };
+    if (opts.refine && opts.previous) {
+      p.refine = { text: String(opts.refine).slice(0, 1000), previous: opts.previous };
+    } else if (opts.refine) {
+      // "Refine" with nothing to refine: the first plan failed, or was dismissed, and the
+      // person typed what they want instead. That is a fresh plan with a note, not a
+      // revision of a plan that does not exist — refine.md would be reading `previous: null`.
+      p.userNote = String(opts.refine).slice(0, 1000);
     }
   }
+  if (opts.kind !== 'debrief') {
+    const said = conversation(coach, [opts.note, opts.refine]);
+    if (said.length) p.conversation = said;
+  }
   return p;
+}
+
+// The last few lines of the chat, so "shorter, like last time" has something to point at.
+// The user's own lines (data, never instruction — common.md rule 3) and the Coach's earlier
+// verdicts; never proposals, errors or the intake card, which travel in their own fields or
+// are noise. Six lines, cut short: enough to resolve a reference, not a transcript to argue
+// with. The message being sent right now rides in userNote/refine, so it is left out here.
+export const CONVERSATION_LINES = 6;
+export const CONVERSATION_CHARS = 240;
+function conversation(coach, current) {
+  const now = new Set((current || []).filter(Boolean).map(x => String(x).trim()));
+  return (coach.chat || [])
+    .filter(m => m && typeof m.text === 'string' && m.text.trim()
+      && ((m.role === 'user' && m.kind === 'text') || (m.role === 'coach' && (m.kind === 'nochange' || m.kind === 'text'))))
+    .filter(m => !(m.role === 'user' && now.has(m.text.trim())))
+    .slice(-CONVERSATION_LINES)
+    .map(m => ({ who: m.role === 'user' ? 'user' : 'coach', text: m.text.trim().slice(0, CONVERSATION_CHARS) }));
 }

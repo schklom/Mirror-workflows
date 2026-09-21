@@ -87,10 +87,15 @@ export default function CoachSetup() {
     if (!chosen) return toast(t('Pick a model'))
     setBusy(true)
     try {
-      if (key.trim()) { await setApiKey(key.trim()); setHasKey(true); setKey('') }
+      // The mode first, the key second: the settings file is the cheap, reliable write, the
+      // key goes through the platform's secure store, which is the step that can misbehave.
+      // Either way the user hears what happened instead of watching a greyed-out button (#42).
       await setCoachLocal({ mode: 'byok', provider, model: chosen, baseUrl: meta.baseUrl ? (validateBaseUrl(baseUrl).value || null) : null })
+      if (key.trim()) { await setApiKey(key.trim()); setHasKey(true); setKey('') }
       toast(t('The Coach is on'))
       nav('/coach')
+    } catch (e) {
+      toast(e?.message || t('Could not connect'))
     } finally { setBusy(false) }
   }
 

@@ -28,9 +28,12 @@ export const startTimeOf = w => {
 }
 
 // Which workout an edit is about. Ids are the identity everywhere else, but a legacy record
-// has none and `x.id === undefined` would happily match the wrong one.
-export const sameWorkout = (a, b) =>
-  a?.id != null || b?.id != null ? a?.id === b?.id : legacySyncKey(a) === legacySyncKey(b)
+// has none and `x.id === undefined` would happily match the wrong one, so it is compared by the
+// key the sync gives it (`workoutKey` in sync-merge.js). That is also what a move or an edit
+// freezes as its id — so a sheet still holding the copy from before that (the detail sheet, when
+// a sync brings the frozen record in while it is open) still finds its workout.
+const syncKeyOf = w => (w?.id != null ? w.id : legacySyncKey(w))
+export const sameWorkout = (a, b) => syncKeyOf(a) === syncKeyOf(b)
 
 // The workout as it is after the move: same session, new position in time. The duration is
 // carried rather than recomputed, so a session that ran 47 minutes still ran 47 minutes.

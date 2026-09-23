@@ -32,6 +32,12 @@ describe('sameWorkout / legacySyncKey', () => {
     expect(sameWorkout({ d: '2026-01-01', start: 5 }, { d: '2026-01-02', start: 5 })).toBe(false)
     expect(legacySyncKey({ d: '2026-01-01', start: 5 })).toBe('2026-01-01|5')
   })
+  it('recognises a record from before ids once a move or an edit froze its old key as its id', () => {
+    const before = { d: '2026-01-01', start: 5 }
+    expect(sameWorkout(before, { id: '2026-01-01|5', d: '2026-01-03', start: 9 })).toBe(true)
+    expect(sameWorkout({ id: '2026-01-01|5', d: '2026-01-03', start: 9 }, before)).toBe(true)
+    expect(sameWorkout({ d: '2026-01-03', start: 9 }, { id: '2026-01-01|5', d: '2026-01-03', start: 9 })).toBe(false)
+  })
 })
 
 describe('retimeWorkout', () => {

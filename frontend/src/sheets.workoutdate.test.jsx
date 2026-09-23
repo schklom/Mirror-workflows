@@ -143,6 +143,30 @@ describe('changing the date of a saved workout', () => {
     expect(history()[0].d).toBe('2026-08-18')
   })
 
+  // The sheet keeps the copy it opened with. A sync that brings in the same record with its old
+  // key frozen as its id (moved or edited on the other device) must not make its note and date
+  // rows quietly write nowhere.
+  it('keeps writing to a record from before ids after a sync froze its key as its id', () => {
+    const legacy = { d: '2026-08-25', start: 1767636000000, end: 1767639600000, name: 'Old', vol: 0, entries: [], prs: [] }
+    setHistory([legacy])
+    const host = render(() => workoutDetailSheet(legacy))
+    setHistory([{ ...legacy, id: '2026-08-25|1767636000000', d: '2026-08-24', _ts: 5 }])
+    act(() => { type(host.querySelector('textarea'), 'felt strong') })
+    act(() => { host.querySelector('textarea').dispatchEvent(new FocusEvent('focusout', { bubbles: true })) })
+    expect(history()).toHaveLength(1)
+    expect(history()[0].note).toBe('felt strong')
+  })
+
+  it('deletes only the workout it shows, also among records written before ids', () => {
+    const a = { d: '2026-08-20', start: 1767200000000, end: 1767203600000, name: 'A', vol: 0, entries: [], prs: [] }
+    const b = { d: '2026-08-25', start: 1767636000000, end: 1767639600000, name: 'B', vol: 0, entries: [], prs: [] }
+    setHistory([a, b, history()[1]])
+    const host = render(() => workoutDetailSheet(b))
+    const confirm = render(() => button(host, 'Delete workout').click())
+    act(() => { button(confirm, 'Delete').click() })
+    expect(history().map(w => w.name)).toEqual(['A', 'late'])
+  })
+
   it('does nothing when the workout was deleted from another sheet meanwhile', () => {
     const host = render(() => workoutDateSheet(history()[1]))
     setHistory([history()[0]])

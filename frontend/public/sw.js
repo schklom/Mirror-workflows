@@ -101,10 +101,17 @@ self.addEventListener('pushsubscriptionchange', e => {
   })())
 })
 
+// The API sits next to the app, wherever the app is served: /api/ at the site root, /myGym/api/
+// under a subpath (#238). Matching '/api/' alone let a subpath deployment's data answers into
+// the network-first branch below, which cached them and handed an old document back as a 200
+// once the network was gone — the page then took it for the server's word. The Cache API ignores
+// the API's own `Cache-Control: no-store`, so the worker has to know to stay out of the way.
+const API = (() => { try { return new URL('api/', location.href).pathname } catch { return '/api/' } })()
+
 self.addEventListener('fetch', e => {
   const url = new URL(e.request.url)
   if (e.request.method !== 'GET' || url.origin !== location.origin) return
-  if (url.pathname.startsWith('/api/')) return    // never cache auth/data
+  if (url.pathname.startsWith('/api/') || url.pathname.startsWith(API)) return    // never cache auth/data
 
   const isMedia = url.pathname.includes('/img/') || url.pathname.includes('/gif/')
   if (isMedia) {

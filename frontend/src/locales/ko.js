@@ -617,8 +617,6 @@ export default {
   'Reps from': '최소 횟수',
   'Reps up to': '최대 횟수',
   'No automatic progression': '자동 증가 없음',
-  'Exclude from automatic progression': '자동 증가에서 제외',
-  'Use for planned deloads. Workouts stay in history and statistics.': '계획된 디로딩에 사용합니다. 운동은 기록과 통계에 남습니다.',
   'The next regular target continues from the last included workout.': '다음 일반 목표는 마지막으로 포함된 운동에서 이어집니다.',
   'Deload routine': '디로딩 루틴',
   'Its workouts do not count toward progression. They still show in history and statistics.': '이 루틴의 운동은 점진적 증가에 반영되지 않습니다. 기록과 통계에는 계속 표시됩니다.',

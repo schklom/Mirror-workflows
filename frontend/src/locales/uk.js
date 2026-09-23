@@ -555,8 +555,6 @@ export default {
   'Reps from': 'Повт. від',
   'Reps up to': 'Повт. до',
   'No automatic progression': 'Без автопрогресії',
-  'Exclude from automatic progression': 'Виключити з автоматичної прогресії',
-  'Use for planned deloads. Workouts stay in history and statistics.': 'Використовуй для планових розвантажень. Тренування лишаються в історії й статистиці.',
   'The next regular target continues from the last included workout.': 'Наступна звичайна ціль продовжує прогресію від останнього врахованого тренування.',
   'Linear progression': 'Лінійна прогресія',
   'Greyskull LP': 'Greyskull LP',

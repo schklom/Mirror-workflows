@@ -617,8 +617,6 @@ export default {
   'Reps from': 'Reps desde',
   'Reps up to': 'Reps hasta',
   'No automatic progression': 'Sin progresión automática',
-  'Exclude from automatic progression': 'Excluir de la progresión automática',
-  'Use for planned deloads. Workouts stay in history and statistics.': 'Úsalo para descargas planificadas. Los entrenamientos permanecen en el historial y las estadísticas.',
   'The next regular target continues from the last included workout.': 'El siguiente objetivo normal continúa desde el último entrenamiento incluido.',
   'Deload routine': 'Rutina de descarga',
   'Its workouts do not count toward progression. They still show in history and statistics.': 'Sus entrenamientos no cuentan para la progresión. Siguen apareciendo en el historial y las estadísticas.',

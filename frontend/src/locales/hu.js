@@ -789,8 +789,6 @@ export default {
   'Hevy stores weights in kg — they will be converted to {0}.': 'A Hevy kg-ban tárolja a súlyokat — átváltjuk erre: {0}.',
   'Back': 'Vissza',
   'Reps up to': 'Ism. legfeljebb',
-  'Exclude from automatic progression': 'Kihagyás az automatikus progresszióból',
-  'Use for planned deloads. Workouts stay in history and statistics.': 'Tervezett deloadhoz. Az edzések megmaradnak az előzményekben és a statisztikában.',
   'The next regular target continues from the last included workout.': 'A következő normál cél az utolsó beszámított edzéstől folytatódik.',
   'Deload routine': 'Deload rutin',
   'Its workouts do not count toward progression. They still show in history and statistics.': 'Az edzései nem számítanak bele a progresszióba. Az előzményekben és a statisztikában továbbra is megjelennek.',

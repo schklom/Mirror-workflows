@@ -617,8 +617,6 @@ export default {
   'Reps from': '次数下限',
   'Reps up to': '次数上限',
   'No automatic progression': '不自动进阶',
-  'Exclude from automatic progression': '不计入自动进阶',
-  'Use for planned deloads. Workouts stay in history and statistics.': '用于计划性减载。训练仍保留在历史记录和统计中。',
   'The next regular target continues from the last included workout.': '下一个常规目标从上一次计入的训练继续。',
   'Deload routine': '减载训练日',
   'Its workouts do not count toward progression. They still show in history and statistics.': '它的训练不计入进阶，但仍会显示在历史记录和统计中。',

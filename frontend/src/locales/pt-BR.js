@@ -83,8 +83,6 @@ export const PT_BR_OVERRIDES = {
   'Your weekly routine': 'Sua rotina semanal',
   'Create one or load the starter plan.': 'Crie uma ou carregue o plano inicial.',
   'No exercises yet — add your first one.': 'Ainda não há exercícios — adicione o primeiro.',
-  'Exclude from automatic progression': 'Excluir da progressão automática',
-  'Use for planned deloads. Workouts stay in history and statistics.': 'Use para deloads planejados. Os treinos permanecem no histórico e nas estatísticas.',
   'The next regular target continues from the last included workout.': 'A próxima meta normal continua a partir do último treino incluído.',
   'Its workouts do not count toward progression. They still show in history and statistics.': 'Os treinos dela não contam para a progressão. Continuam aparecendo no histórico e nas estatísticas.',
   'Tap the link button on an exercise to superset it with the one above — you’ll do them back-to-back.': 'Toque no botão de vínculo de um exercício para combiná-lo em um superset com o exercício acima — eles serão feitos em sequência.',

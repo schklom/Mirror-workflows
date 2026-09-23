@@ -617,8 +617,6 @@ export default {
   'Reps from': 'Повт. от',
   'Reps up to': 'Повт. до',
   'No automatic progression': 'Без автопрогрессии',
-  'Exclude from automatic progression': 'Исключить из автоматической прогрессии',
-  'Use for planned deloads. Workouts stay in history and statistics.': 'Используйте для плановых разгрузок. Тренировки остаются в истории и статистике.',
   'The next regular target continues from the last included workout.': 'Следующая обычная цель продолжает прогрессию от последней учтённой тренировки.',
   'Deload routine': 'Разгрузочная программа',
   'Its workouts do not count toward progression. They still show in history and statistics.': 'Её тренировки не учитываются в прогрессии. Они по-прежнему видны в истории и статистике.',

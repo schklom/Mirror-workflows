@@ -617,8 +617,6 @@ export default {
   'Reps from': 'Rip. da',
   'Reps up to': 'Rip. fino a',
   'No automatic progression': 'Nessuna progressione automatica',
-  'Exclude from automatic progression': 'Escludi dalla progressione automatica',
-  'Use for planned deloads. Workouts stay in history and statistics.': 'Usa per gli scarichi programmati. Gli allenamenti restano nella cronologia e nelle statistiche.',
   'The next regular target continues from the last included workout.': 'Il prossimo obiettivo normale continua dall’ultimo allenamento incluso.',
   'Deload routine': 'Routine di scarico',
   'Its workouts do not count toward progression. They still show in history and statistics.': 'I suoi allenamenti non contano per la progressione. Restano nella cronologia e nelle statistiche.',

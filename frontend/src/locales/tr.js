@@ -617,8 +617,6 @@ export default {
   'Reps from': 'Tekrar en az',
   'Reps up to': 'Tekrar en çok',
   'No automatic progression': 'Otomatik ilerleme yok',
-  'Exclude from automatic progression': 'Otomatik ilerlemeden hariç tut',
-  'Use for planned deloads. Workouts stay in history and statistics.': 'Planlı deloadlar için kullanın. Antrenmanlar geçmişte ve istatistiklerde kalır.',
   'The next regular target continues from the last included workout.': 'Sonraki normal hedef, dahil edilen son antrenmandan devam eder.',
   'Deload routine': 'Deload rutini',
   'Its workouts do not count toward progression. They still show in history and statistics.': 'Antrenmanları ilerlemeye sayılmaz. Geçmişte ve istatistiklerde görünmeye devam eder.',

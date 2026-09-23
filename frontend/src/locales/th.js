@@ -797,8 +797,6 @@ export default {
   'Hevy stores weights in kg — they will be converted to {0}.': 'Hevy เก็บน้ำหนักเป็นกก. — จะถูกแปลงเป็น {0}',
   'Back': 'กลับ',
   'Reps up to': 'ครั้งสูงสุด',
-  'Exclude from automatic progression': 'ไม่รวมในการเพิ่มน้ำหนักอัตโนมัติ',
-  'Use for planned deloads. Workouts stay in history and statistics.': 'ใช้สำหรับดีโหลดที่วางแผนไว้ การฝึกยังอยู่ในประวัติและสถิติ',
   'The next regular target continues from the last included workout.': 'เป้าหมายปกติครั้งถัดไปจะต่อจากการฝึกล่าสุดที่นับรวม',
   'Deload routine': 'รูทีนดีโหลด',
   'Its workouts do not count toward progression. They still show in history and statistics.': 'การฝึกของรูทีนนี้ไม่นับรวมในการเพิ่มระดับ แต่ยังแสดงในประวัติและสถิติ',

@@ -765,8 +765,6 @@ export default {
   'Hevy stores weights in kg — they will be converted to {0}.': 'يخزن Hevy الأوزان بالكيلوجرام — ستُحوَّل إلى {0}.',
   'Back': 'رجوع',
   'Reps up to': 'تكرارات حتى',
-  'Exclude from automatic progression': 'استبعاد من التقدم التلقائي',
-  'Use for planned deloads. Workouts stay in history and statistics.': 'استخدمه لتفريغ الأحمال المخطط لها. تبقى التدريبات في السجل والإحصائيات.',
   'The next regular target continues from the last included workout.': 'يستمر الهدف المنتظم التالي من آخر تمرين مدرج.',
   'Open progression settings': 'فتح إعدادات التقدم',
   'Hevy is rate-limiting requests — wait a minute and try again': 'Hevy يحد من معدل الطلبات — انتظر دقيقة وحاول مجددًا',

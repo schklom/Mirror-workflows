@@ -636,8 +636,6 @@ export default {
   'Reps from': 'Wdh. ab',
   'Reps up to': 'Wdh. bis',
   'No automatic progression': 'Keine automatische Progression',
-  'Exclude from automatic progression': 'Von der automatischen Progression ausschließen',
-  'Use for planned deloads. Workouts stay in history and statistics.': 'Für geplante Deloads. Workouts bleiben im Verlauf und in den Statistiken.',
   'The next regular target continues from the last included workout.': 'Das nächste reguläre Ziel setzt beim letzten einbezogenen Workout fort.',
   'Deload routine': 'Deload-Routine',
   'Its workouts do not count toward progression. They still show in history and statistics.': 'Ihre Workouts zählen nicht für die Progression. Sie bleiben im Verlauf und in den Statistiken.',

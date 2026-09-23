@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { convertWeight, convertStateUnit } from './units.js'
 import { workoutVolume } from './history.js'
+import { inventoryFor, withPlatePairs } from './plates.js'
 
 describe('convertWeight', () => {
   it('rounds lb to a half and kg to a quarter', () => {
@@ -113,3 +114,29 @@ describe('convertStateUnit: bar weights', () => {
   })
 })
 
+describe('convertStateUnit: plate inventories', () => {
+  // Plates are kept per unit (lib/plates.js): the switch hands the rows the new unit's list and
+  // leaves the old one for the way back, rather than turning 45 lb plates into 20.5 kg ones.
+  const home = { 45: 1, 35: 1, 25: 1, 10: 2, _ts: 50 }
+  const S = { unit: 'lb', plates: { lb: home }, loadKind: { '0025': { kind: 'none', _ts: 40 } }, barWeights: { 1383: 100 } }
+
+  it('each unit keeps its own list; the kg side starts from the standard kg set', () => {
+    const kg = convertStateUnit(S, 'kg')
+    expect(kg.plates).toEqual({ lb: home })
+    expect(kg.loadKind).toEqual(S.loadKind)
+    expect(inventoryFor(kg)).toEqual(inventoryFor({ unit: 'kg' }))
+    expect(kg.barWeights).toEqual({ 1383: 45.25 })   // a sled's own weight is a weight and converts
+    const back = convertStateUnit(kg, 'lb')
+    expect(back.plates).toEqual({ lb: home })
+    expect(inventoryFor(back)).toEqual([{ w: 45, n: 1 }, { w: 35, n: 1 }, { w: 25, n: 1 }, { w: 10, n: 2 }])
+  })
+
+  it('a kg list counted after the switch is the one the kg rows use, and the lb list survives it', () => {
+    const kg = convertStateUnit(S, 'kg')
+    kg.plates = withPlatePairs(kg, 20, 1, 60)
+    expect(inventoryFor(kg).find(p => p.w === 20).n).toBe(1)
+    const back = convertStateUnit(kg, 'lb')
+    expect(back.plates.lb).toEqual(home)
+    expect(back.plates.kg).toMatchObject({ 20: 1, _ts: 60 })
+  })
+})

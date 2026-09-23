@@ -71,6 +71,22 @@ describe('StructuralBalance view', () => {
     expect(deadlift.textContent).toContain('No data')
   })
 
+  // `.mrow .nm` is one line with an ellipsis that never reaches the label's block lines, so a
+  // long label (German, Russian, Hungarian at 360 px) lost its reps and "each hand" to the clip.
+  it('lets every role\'s label and exercise wrap rather than cutting them off', () => {
+    const host = render()
+    for (const tpl of TEMPLATE_LIST) {
+      const button = [...host.querySelectorAll('.seg button')].find(b => b.textContent === tpl.label)
+      act(() => button.click())
+      for (const row of host.querySelectorAll('[data-role-id]')) {
+        const name = row.querySelector('.nm')
+        expect(name.style.whiteSpace, row.dataset.roleId).toBe('normal')
+        expect(name.style.overflowWrap, row.dataset.roleId).toBe('anywhere')
+        for (const line of name.children) expect(line.style.whiteSpace).not.toBe('nowrap')
+      }
+    }
+  })
+
   it('the back chevron navigates to /stats', () => {
     const host = render()
     act(() => host.querySelector('.iconbtn').click())

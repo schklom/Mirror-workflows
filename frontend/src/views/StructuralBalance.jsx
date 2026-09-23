@@ -60,7 +60,10 @@ export default function StructuralBalance() {
           <div key={r.roleId} className="mrow" data-role-id={r.roleId} data-status={r.status}
             style={{ flexDirection: 'column', alignItems: 'stretch', gap: 6, paddingBlock: 10 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12 }}>
-              <span className="nm" style={{ minWidth: 0 }}>
+              {/* `.mrow .nm` keeps to one line, and its ellipsis never reaches these block lines:
+                  a label is cut off mid-word instead, and what goes is its reps and "each hand" —
+                  what the standard asks for. So here the name wraps. */}
+              <span className="nm" style={{ minWidth: 0, whiteSpace: 'normal', overflowWrap: 'anywhere' }}>
                 <span style={{ display: 'block' }}>{t(role.label)}</span>
                 <span className="small dim" style={{ display: 'block' }}>
                   {name}{r.isOverridden ? ` · ${t('Custom')}` : ''}

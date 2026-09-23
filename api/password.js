@@ -34,19 +34,19 @@ const waiting = [];
 
 export class BusyError extends Error {}
 
-const rawScrypt = (secret, salt, params) => new Promise((resolve, reject) => crypto.scrypt(secret, salt, KEYLEN,
+const rawScrypt = (secret, salt, params, keylen = KEYLEN) => new Promise((resolve, reject) => crypto.scrypt(secret, salt, keylen,
   { N: 2 ** params.ln, r: params.r, p: params.p, maxmem: maxmem(params) },
   (err, key) => (err ? reject(err) : resolve(key))));
 
 // Node's scrypt runs on the libuv pool (four threads by default), which also serves fs and dns
 // work for everything else; two slots leave the rest of the server room to breathe.
-async function scrypt(secret, salt, params) {
+async function scrypt(secret, salt, params, keylen) {
   if (running >= SLOTS) {
     if (waiting.length >= QUEUE) throw new BusyError('password check queue full');
     await new Promise(resolve => waiting.push(resolve));
   } else running++;
   try {
-    return await rawScrypt(secret, salt, params);
+    return await rawScrypt(secret, salt, params, keylen);
   } finally {
     const next = waiting.shift();
     if (next) next(); else running--;
@@ -71,11 +71,12 @@ function parse(stored) {
   if (!m) return null;
   const params = { ln: +m[1], r: +m[2], p: +m[3] };
   // Bounds on what a stored string may ask for, so a hand-edited db.json cannot make one
-  // sign-in allocate gigabytes.
-  if (params.ln < 10 || params.ln > 20 || params.r < 1 || params.r > 16 || params.p < 1 || params.p > 16) return null;
+  // sign-in allocate more than 256 MiB or spin for minutes.
+  if (params.ln < 10 || params.ln > 17 || params.r < 1 || params.r > 16 || params.p < 1 || params.p > 16) return null;
+  if (128 * 2 ** params.ln * params.r > 256 * 1024 * 1024) return null;
   const salt = Buffer.from(m[4], 'base64');
   const key = Buffer.from(m[5], 'base64');
-  if (salt.length < 8 || key.length < 16) return null;
+  if (salt.length < 8 || key.length < 16 || key.length > 128) return null;
   return { params, salt, key };
 }
 
@@ -98,10 +99,13 @@ function dummyHash() {
 export async function verifyPassword(pw, stored) {
   const real = parse(stored);
   const h = real || parse(await dummyHash());
-  const key = await scrypt(normalize(pw), h.salt, h.params);
-  const same = key.length === h.key.length && crypto.timingSafeEqual(key, h.key);
-  return !!real && same;
+  // Derived at the length the stored key has, so a hash made with another key length still verifies.
+  const key = await scrypt(normalize(pw), h.salt, h.params, h.key.length);
+  return !!real && crypto.timingSafeEqual(key, h.key);
 }
+/** Makes the dummy hash now, so the first sign-in with an unknown name is not the one that pays
+ *  for it — and takes measurably longer than every later one. */
+export const warmUp = () => dummyHash().then(() => {}, () => {});
 
 export const needsRehash = stored => {
   const h = parse(stored);

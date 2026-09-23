@@ -1,6 +1,7 @@
 /* Hashing, policy and reset codes for password sign-in (#118), in-process. */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import crypto from 'node:crypto';
 import {
   hashPassword, verifyPassword, needsRehash, passwordProblem, nameKey,
   makeResetCode, hashResetCode, resetCodeMatches
@@ -15,6 +16,17 @@ test('a hash is a versioned scrypt string with its own salt, and only the passwo
   assert.equal(await verifyPassword('correct horse batterY', a), false);
   assert.equal(needsRehash(a), false);
   assert.equal(needsRehash(a.replace('ln=15', 'ln=14')), true);
+});
+
+test('a hash with other parameters or another key length still verifies, and asks to be redone', async () => {
+  const salt = crypto.randomBytes(16);
+  const key = crypto.scryptSync('correct horse battery', salt, 64, { N: 2 ** 14, r: 8, p: 1 });
+  const stored = `$scrypt$v=1$ln=14,r=8,p=1$${salt.toString('base64')}$${key.toString('base64')}`;
+  assert.equal(await verifyPassword('correct horse battery', stored), true);
+  assert.equal(await verifyPassword('correct horse batter', stored), false);
+  assert.equal(needsRehash(stored), true);
+  // …but not one that would take a gigabyte to check.
+  assert.equal(await verifyPassword('correct horse battery', stored.replace('ln=14', 'ln=20')), false);
 });
 
 test('the same passphrase typed with a composed or a combining accent is the same', async () => {

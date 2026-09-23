@@ -21,7 +21,7 @@ import { dayReminderPush, restTimerPush, testPush } from './push-messages.js';
 import { verifyError } from './verify-error.js';
 import {
   hashPassword, verifyPassword, needsRehash, passwordProblem, passwordLength, nameKey, BusyError,
-  MIN_LENGTH, MAX_LENGTH, makeResetCode, hashResetCode, resetCodeMatches, RESET_TTL_MS
+  MIN_LENGTH, MAX_LENGTH, makeResetCode, hashResetCode, resetCodeMatches, RESET_TTL_MS, warmUp
 } from './password.js';
 import { createBackoff, createWindow } from './rate-limit.js';
 
@@ -614,8 +614,8 @@ setInterval(() => { for (const [k, v] of presence) if (Date.now() - v.updatedAt 
 // ./data/audit.log, appended and never rewritten in place. It deliberately does not live in
 // db.json: that file is rewritten whole on every save, and the login/register handshakes are
 // unauthenticated and only loosely throttled (see the sign-in throttle below and SECURITY.md), so
-// an audit trail in there would turn one bogus request into a full db.json rewrite. A line torn by a crash costs one event and
-// is dropped on read.
+// an audit trail in there would turn one bogus request into a full db.json rewrite. A line torn
+// by a crash costs one event and is dropped on read.
 //
 // On by default. It records strictly less than the instance already holds — every account is in
 // db.json and every workout is in state-<uid>.json, both readable by any admin — and a security
@@ -833,6 +833,8 @@ function passwordFailed(req, k, user, msg) {
   if (lock) audit(req, 'auth.password.locked', user ? { ok: false, user } : { ok: false, msg: 'unknown-name' });
 }
 
+if (PASSWORD_LOGIN) warmUp();
+
 const passwordRoutes = {
   'POST /api/login/password': async (req, res) => {
     const body = await readBody(req);
@@ -952,6 +954,8 @@ const passwordRoutes = {
     if (nameTaken(user.name, user.id)) return taken();
     const first = !hasPassword(user);
     setPassword(user, h);
+    // Whatever pause wrong guesses put on this name was about a password that no longer exists.
+    ACCOUNT_FAILS.clear('login|' + k);
     saveDb();
     audit(req, first ? 'auth.password.set' : 'auth.password.change', { user, msg: proof });
     // This session carries on under the new version: a new cookie, or a new token for a phone.

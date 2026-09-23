@@ -21,8 +21,11 @@ const CONTROL = 'button,a[href],summary,[role="button"],[role="checkbox"],[role=
  * pressed (Chrome, Firefox), and a USB button that sends Space must not press "Next" again just
  * because the mouse was the last thing to use it — so without Tab, Space and Enter tick.
  * Modifier combinations are left alone: they are the browser's and the system's shortcuts.
+ *
+ * `rtl` mirrors the arrows: in a right-to-left language the exercises run from right to left like
+ * the text, and the next card comes in from the left (components/SwipeCards.jsx), so ← is next.
  */
-export function workoutKeyAction(event, { tabbed = false } = {}) {
+export function workoutKeyAction(event, { tabbed = false, rtl = false } = {}) {
   if (!event || event.defaultPrevented || event.repeat || event.isComposing) return null
   if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return null
   const target = event.target
@@ -33,8 +36,8 @@ export function workoutKeyAction(event, { tabbed = false } = {}) {
     case 'Spacebar':
     case 'Enter':
       return tabbed && within(CONTROL) ? null : 'tick'
-    case 'ArrowLeft': return 'prev'
-    case 'ArrowRight': return 'next'
+    case 'ArrowLeft': return rtl ? 'next' : 'prev'
+    case 'ArrowRight': return rtl ? 'prev' : 'next'
     default: return null
   }
 }

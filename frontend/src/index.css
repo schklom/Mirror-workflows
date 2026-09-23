@@ -589,9 +589,9 @@ body.chips-dragging *{cursor:inherit}
 /* The live result count (Library and the exercise picker, from GitLab !31): a pill at the end
    of the field while a search or filter narrows the list. The field makes room for it only while
    it is there, so a long placeholder is not cut short for nothing. */
-.search.has-count .input{padding-right:62px}
+.search.has-count .input{padding-inline-end:62px}
 .search .search-count{
-  position:absolute;right:9px;top:50%;transform:translateY(-50%);
+  position:absolute;inset-inline-end:9px;top:50%;transform:translateY(-50%);
   font-size:12px;font-weight:600;line-height:1.4;color:var(--label-2);
   background:var(--surface-3);padding:2px 8px;border-radius:99px;
   font-variant-numeric:tabular-nums;pointer-events:none;user-select:none;
@@ -1056,12 +1056,12 @@ body.chips-dragging *{cursor:inherit}
 .progline svg{flex:none;margin-top:2px}
 /* "Last time" / "Best set" under the plan line (#173): a button that switches between the two,
    looking like the plain line it replaced, with a small icon to say it can be tapped. */
-.refline{width:100%;display:flex;align-items:flex-start;gap:6px;margin-bottom:4px;padding:0;text-align:left}
+.refline{width:100%;display:flex;align-items:flex-start;gap:6px;margin-bottom:4px;padding:0;text-align:start}
 .refline svg{flex:none;margin-top:2px;font-size:12px}
 /* an exercise kept out of progression for this session, with its undo */
 .noprog{display:flex;align-items:center;gap:7px;margin:0 0 6px;font-size:13px;line-height:1.38;color:var(--orange)}
 .noprog svg{flex:none}
-.noprog .chip{margin-left:auto;padding:3px 11px;font-size:13px;color:var(--orange);background:color-mix(in srgb,var(--orange) 14%,transparent)}
+.noprog .chip{margin-inline-start:auto;padding:3px 11px;font-size:13px;color:var(--orange);background:color-mix(in srgb,var(--orange) 14%,transparent)}
 
 /* start a timed set (issue #16) — sits where you'd otherwise reach for the checkbox */
 .setrow .setgo{
@@ -1390,7 +1390,7 @@ body.chips-dragging *{cursor:inherit}
 .wd-ex{margin-bottom:12px;cursor:pointer;border-radius:10px}
 .wd-ex>.grow{flex:1;min-width:0}
 .wd-ex:active{background:var(--surface-2)}
-.wd-ss{box-shadow:inset 3px 0 0 var(--acc);padding-left:11px;margin-bottom:12px}
+.wd-ss{box-shadow:inset 3px 0 0 var(--acc);padding-inline-start:11px;margin-bottom:12px}
 .wd-ss .ss-label{margin:0 0 8px}
 .wd-ss .wd-ex:last-child{margin-bottom:0}
 .ss-card{
@@ -1582,7 +1582,7 @@ body.chips-dragging *{cursor:inherit}
 /* Numbers and dates inside Arabic text still read left-to-right. */
 [dir="rtl"] .num,[dir="rtl"] input[type="number"]{direction:ltr}
 /* Superset edge stripe points at the inline start (the right, in RTL). */
-[dir="rtl"] .item.in-ss{box-shadow:inset -3px 0 0 var(--acc)}
+[dir="rtl"] .item.in-ss,[dir="rtl"] .wd-ss{box-shadow:inset -3px 0 0 var(--acc)}
 /* Slider: the thumb is offset from inline-start, which is the right edge in RTL, so the
    half-width centering shift points the other way. */
 [dir="rtl"] .sld-knob{transform:translateX(50%)}

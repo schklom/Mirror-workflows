@@ -1110,7 +1110,7 @@ function ActiveWorkout() {
   onKey.current = event => {
     // A sheet on top owns the keyboard (Escape closes it, Enter confirms in it).
     if (useUI.getState().sheets.length) return false
-    const action = workoutKeyAction(event, { tabbed: tabbed.current })
+    const action = workoutKeyAction(event, { tabbed: tabbed.current, rtl: document.documentElement.dir === 'rtl' })
     if (!action) return false
     event.preventDefault()
     if (action !== 'tick') { navigateUnit(action === 'next' ? 1 : -1); showCurrent(); return true }

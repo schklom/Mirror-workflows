@@ -18,6 +18,9 @@ describe('workoutKeyAction (issue #133)', () => {
     expect(workoutKeyAction(key('Enter'))).toBe('tick')
     expect(workoutKeyAction(key('ArrowLeft'))).toBe('prev')
     expect(workoutKeyAction(key('ArrowRight'))).toBe('next')
+    // Right to left (Arabic), the next exercise lies to the left, as a swipe brings it in.
+    expect(workoutKeyAction(key('ArrowLeft'), { rtl: true })).toBe('next')
+    expect(workoutKeyAction(key('ArrowRight'), { rtl: true })).toBe('prev')
   })
 
   it('leaves every other key alone, the vertical arrows included (they scroll a list)', () => {

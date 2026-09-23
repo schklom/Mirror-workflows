@@ -64,11 +64,11 @@ class FMD(HttpUser):
 
     @task
     def post_location(self):
-        self.post_data(URL_LOCATION, "location")
+        self.post_data(URL_LOCATION, "dummy_location")
 
     @task
     def post_picture(self):
-        self.post_data(URL_PICTURE, "picture")
+        self.post_data(URL_PICTURE, "dummy_picture")
 
     @task
     def get_locations(self):

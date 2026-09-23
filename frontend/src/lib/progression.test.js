@@ -28,6 +28,10 @@ const hist = (id, rows, target) => ({
   }))
 })
 
+// The same history with the plan each session was built from stamped on its entries, the way
+// a session started since #275 saves them.
+const stamped = (st, planned) => ({ ...st, workouts: st.workouts.map(w => ({ ...w, entries: w.entries.map(e => ({ ...e, planned })) })) })
+
 describe('readSession', () => {
   const T = { sets: 3, reps: 5 }
   it('counts a session where every set made its reps as a hit', () => {
@@ -347,10 +351,11 @@ describe('bodyweight exercises', () => {
 // A quick-added exercise starts at 0 kg, and a bench press ticked off without typing a weight
 // is logged at 0. That is a missing number, not a push-up: it must not climb reps.
 describe('a loaded lift logged at 0 kg', () => {
-  const zero = hist(LIFT, [[0, 10, 10, 10]], { sets: 3, reps: 10 })
+  const BENCH = '0025'   // barbell bench press
+  const zero = hist(BENCH, [[0, 10, 10, 10]], { sets: 3, reps: 10 })
 
   it('holds and asks for the weight instead of climbing reps', () => {
-    const p = nextPrescription(zero, { id: LIFT, sets: 3, reps: 10, weight: 0, prog: 'linear' })
+    const p = nextPrescription(zero, { id: BENCH, sets: 3, reps: 10, weight: 0, prog: 'linear' })
     expect(p.kind).toBe('hold')
     expect(p.reps).toBeUndefined()
     expect(p.weight).toBeUndefined()
@@ -358,8 +363,20 @@ describe('a loaded lift logged at 0 kg', () => {
   })
 
   it('falls back to the plan\'s weight when the routine has one', () => {
-    expect(nextPrescription(zero, { id: LIFT, sets: 3, reps: 10, weight: 60, prog: 'double' })).toMatchObject({ kind: 'hold', weight: 60 })
+    expect(nextPrescription(zero, { id: BENCH, sets: 3, reps: 10, weight: 60, prog: 'double' })).toMatchObject({ kind: 'hold', weight: 60 })
   })
+
+  // Only a bar, a bell, a stack or a sled has a load nobody typed in. An ab wheel, a stability
+  // ball, a bosu or the straps of an assisted knee raise are logged at 0 because there is no
+  // load to enter, and they climb reps the way a push-up does — they always have.
+  const noLoad = { '0857': 'wheel rollerout', '0271': 'crunch on a stability ball', '0653': 'push-up on a bosu ball', '0011': 'assisted hanging knee raise' }
+  for (const [id, name] of Object.entries(noLoad)) {
+    it(`climbs reps on a ${name}, which has nothing to load`, () => {
+      const cfg = { id, sets: 3, reps: 10, weight: 0 }
+      const twice = stamped(hist(id, [[0, 10, 10, 10], [0, 10, 10, 10]], { sets: 3, reps: 10 }), plannedOf(cfg))
+      expect(nextPrescription(twice, cfg)).toMatchObject({ kind: 'up', weight: 0, reps: 11 })
+    })
+  }
 })
 
 describe('Greyskull LP', () => {
@@ -734,8 +751,9 @@ describe('an edited plan restarts progression (#275)', () => {
   })
 
   it('opens a loaded lift logged at 0 kg at the plan\'s weight when the plan changed', () => {
-    const S = { unit: 'kg', workouts: [logged(LIFT, { sets: 2, reps: 15, weight: 0 }, { sets: 2, reps: 15, weight: 0 }, 0, [15, 15])] }
-    expect(nextPrescription(S, { id: LIFT, sets: 2, reps: 10, weight: 50, prog: 'linear' }, R)).toMatchObject({ kind: 'hold', weight: 50, reps: 10 })
+    const BENCH = '0025'   // barbell bench press: a load nobody typed in, not a bodyweight set
+    const S = { unit: 'kg', workouts: [logged(BENCH, { sets: 2, reps: 15, weight: 0 }, { sets: 2, reps: 15, weight: 0 }, 0, [15, 15])] }
+    expect(nextPrescription(S, { id: BENCH, sets: 2, reps: 10, weight: 50, prog: 'linear' }, R)).toMatchObject({ kind: 'hold', weight: 50, reps: 10 })
   })
 
   it('continues another routine\'s progression when its plan is the same one (a copied routine)', () => {

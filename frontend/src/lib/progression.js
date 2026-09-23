@@ -17,7 +17,7 @@
 // So a session that fell apart can never advance the load as though it had succeeded.
 
 import { modeOf, repStep, rerampWarmups, isBw, isPerSide, entryExcluded, entryRoutineId } from './history.js'
-import { EXIDX, isAssisted } from './exercises.js'
+import { EXIDX, isAssisted, isLoadedEq } from './exercises.js'
 import { isWarmupRow, isSideSet, syncSideAggregate, makeSideSet } from './workout-model.js'
 import { normalizeRepRange } from './rep-range.js'
 
@@ -222,6 +222,11 @@ export function plannedOf(cfg) {
   if (c.weight != null) out.weight = c.weight
   return out
 }
+// Work with no load to enter climbs in reps, then sets, when it is logged at 0: a bodyweight
+// exercise, or one whose equipment is not a load of its own — an ab wheel, a stability ball, a
+// bosu (isLoadedEq). Only a loaded implement logged at 0 is a weight nobody typed in.
+const climbsReps = cfg => isBw(cfg) || !isLoadedEq(cfg.id)
+
 const PLAN_KEYS = ['sets', 'reps', 'repsMin', 'sec']
 const samePlan = (a, b) => PLAN_KEYS.every(k => (a[k] ?? null) === (b[k] ?? null))
 /** Did the routine's sets or reps change since the session that stamped `planned`? */
@@ -397,7 +402,7 @@ export function nextPrescription(S, cfg, routine) {
   if (last.planned ? planChanged(last.planned, cfg) : borrowed) {
     const why = borrowed ? ['First time in this routine — starting from its own target.'] : ['Plan changed — starting from your new target.']
     if (mode === 'time') return { policy, kind: 'hold', sec: cfg.sec || last.goal || undefined, why }
-    if (last.weight <= 0 && isBw(cfg)) return { policy, kind: 'hold', weight: 0, reps: cfg.reps || undefined, why }
+    if (last.weight <= 0 && climbsReps(cfg)) return { policy, kind: 'hold', weight: 0, reps: cfg.reps || undefined, why }
     // A loaded lift logged at 0 had no weight typed in (see below): the plan's, if it has one.
     const held = last.weight > 0 ? { weight: last.weight } : cfg.weight > 0 ? { weight: cfg.weight } : {}
     if (policy === 'double') {
@@ -426,10 +431,10 @@ export function nextPrescription(S, cfg, routine) {
   const w = last.weight
   // Bodyweight work carries no external load, so there is nothing to add or take away —
   // "deload your push-ups to 2.5 kg" is not advice. Progress in reps instead. This runs ahead
-  // of the individual policies because it is true for all of them. The trigger is a bodyweight
-  // exercise logged without added weight: a dip done with a belt has a load to progress and
-  // belongs on the normal policies.
-  if (w <= 0 && isBw(cfg)) {
+  // of the individual policies because it is true for all of them. The trigger is work with no
+  // load to enter logged without one (climbsReps): a dip done with a belt has a load to progress
+  // and belongs on the normal policies.
+  if (w <= 0 && climbsReps(cfg)) {
     const goal = last.goal || cfg.reps || 0
     // The set count this has reached: the plan's, or more once the ceiling below added sets.
     // Read off the last session's target, or the added set lasted one session and the next
@@ -457,6 +462,7 @@ export function nextPrescription(S, cfg, routine) {
   // A loaded lift logged at 0 had its weight never typed in — a quick-added exercise starts at
   // 0 kg. Climbing its reps as though it were a push-up turned a 2 × 10 bench into 2 × 11, 12…
   // There is nothing to progress from, so it asks for the weight: the plan's, when it has one.
+  // Only a bar, a bell, a stack or a sled gets here; an ab wheel at 0 climbed reps above.
   if (w <= 0) return { policy, kind: 'hold', ...(cfg.weight > 0 ? { weight: cfg.weight } : {}), why: ['No weight logged last time — enter what you lift and progression takes it from there.'] }
 
   // Epley deloads apply only to externally loaded rep work. Keep the prescribed target from the

@@ -217,6 +217,16 @@ describe('bodyweight progression and a lift logged without a weight', () => {
     expect(shape).toEqual(['2x10', '2x11', '3x10', '3x11', '4x10'])
   })
 
+  it('climbs reps on an ab wheel logged at 0 kg — it has no load to enter', () => {
+    const WHEEL = '0857'   // wheel rollerout — wheel roller equipment
+    const st = state([{ id: 'A', name: 'A', ex: [{ id: WHEEL, sets: 3, reps: 10, weight: 0 }] }])
+    train(st, ['A'])
+    train(st, ['A'])
+    const [e] = start(st, ['A'])
+    expect(e.plan.kind).toBe('up')
+    expect(reps(e)).toEqual([12, 12, 12])
+  })
+
   it('does not climb reps on a loaded lift whose rows were logged at 0 kg', () => {
     const st = state([{ id: 'A', name: 'A', ex: [{ id: BENCH, sets: 2, reps: 10, weight: 0 }] }])
     train(st, ['A'])

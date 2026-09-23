@@ -717,6 +717,14 @@ export const useStore = create((set, get) => {
       return { owed: count !== 0, count }
     },
 
+    // The changes a forced sign-out or disconnect kept on this device, waiting for their server
+    // and account: [{ server, uid, name, at }] — server null for a phone whose pairing was lost
+    // with its address. The copies themselves stay inside the store.
+    async keptChanges() {
+      const all = await readStashes()
+      return Object.values(all).map(({ server, uid, name, at }) => ({ server: server || null, uid, name, at }))
+    },
+
     // Sign-in (and pairing a phone) takes the server's profile as this device's copy — the
     // profile is the truth for a signed-in user, whatever the timestamps say. The only thing
     // the device may add are the entries it logged while signed out: `ask(extras)` (a dialog,

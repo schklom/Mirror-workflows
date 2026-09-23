@@ -1,7 +1,7 @@
 // @vitest-environment happy-dom
 
 /* What the store tells the screens about the server (`sync`, `syncNow`, `unsyncedChanges`), and
-   the owner's rule that signing out never loses a change silently: it refuses while anything is
+   the rule that signing out never loses a change silently: it refuses while anything is
    owed, keeps the owed copy aside when told to go ahead anyway, and brings it back on the next
    sign-in to the same server and account. Signing in again to the account this copy already
    belongs to merges instead of asking. */
@@ -25,8 +25,6 @@ const paths = () => api.mock.calls.map(([p, o]) => (o?.method || 'GET') + ' ' + 
 const USER = { id: 'user-1', name: 'One' }
 const fresh = { offline: false, pending: false, auth: false, lastError: null, lastSynced: 0, server: null }
 const signedIn = (S, extra = {}) => useStore.setState({ S, user: USER, ready: true, sync: { ...fresh }, ...extra })
-// The server, in step with this device at rev 1.
-const serverAt = (S, rev = 1) => ({ state: { ...clone(S), _rev: rev }, rev })
 
 beforeEach(() => {
   localStorage.clear()
@@ -199,6 +197,7 @@ describe('signing out never loses a change silently', () => {
     expect(useStore.getState().S.workouts).toEqual([])
     const stash = JSON.parse(localStorage.getItem('gym_stash'))
     expect(Object.values(stash).map(e => [e.uid, ids(e.state.workouts)])).toEqual([[USER.id, ['w1', 'w2']]])
+    expect(await useStore.getState().keptChanges()).toEqual([{ server: location.origin, uid: USER.id, name: 'One', at: expect.any(Number) }])
 
     // Another account signs in here first: the stash is not theirs.
     api.mockReset()
@@ -219,6 +218,7 @@ describe('signing out never loses a change silently', () => {
     expect(puts().at(-1).baseRev).toBe(2)
     expect(ids(puts().at(-1).state.workouts)).toEqual(['w1', 'w2', 'w-phone'])
     expect(localStorage.getItem('gym_stash')).toBeNull()
+    expect(await useStore.getState().keptChanges()).toEqual([])
   })
 
   it('"sign out everywhere" follows the same rule, before it asks the server for anything', async () => {

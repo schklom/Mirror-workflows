@@ -300,9 +300,12 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
     })
     return out
   })()
+  // Only a bar is named as one: a plate-loaded machine set to per side with its own weight is
+  // not a "Bar 50 lb".
   const loadSummary = loadKind === 'none' ? t('Off')
     : loadKind === 'single' ? t('Single stack')
-      : base > 0 ? t('Bar {0}', fmtNum(base) + ' ' + S.unit) : usesBar(ex) ? t('No bar') : t('Per side')
+      : !usesBar(ex) ? t('Per side')
+        : base > 0 ? t('Bar {0}', fmtNum(base) + ' ' + S.unit) : t('No bar')
   // The line under a set row (or a drop sub-row): shown on the first loaded row and whenever the
   // stack changes from the loaded row before it, so a run of equal weights shows its plates once.
   // What to strip and what to add rides along, except in the compact view.

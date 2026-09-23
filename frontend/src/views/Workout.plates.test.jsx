@@ -176,6 +176,24 @@ describe('plate line under set rows', () => {
     act(() => sr.unmount()); sc.remove()
   })
 
+  it('the ⋯ menu names a bar only for a bar: a machine loaded per side with its own weight reads Per side', () => {
+    const MACHINE = Object.values(EXIDX).find(e => e.eq === 'leverage machine').id
+    mount([entry(MACHINE, [work(145)], { w: 145 })], {
+      loadKind: { [MACHINE]: { kind: 'pairs', _ts: 1 } }, barWeights: { [MACHINE]: 50 },
+    })
+    expect(lines()).toEqual([{ text: '45 + 2.5 per side', moves: null }])
+    const more = [...container.querySelectorAll('button')].find(b => (b.getAttribute('aria-label') || b.title || '') === 'More' && !b.classList.contains('n'))
+    act(() => more.click())
+    const sc = document.createElement('div')
+    document.body.appendChild(sc)
+    const sr = createRoot(sc)
+    act(() => sr.render(useUI.getState().sheets.at(-1).render(() => {})))
+    const item = [...sc.querySelectorAll('.menu-item')].find(b => b.textContent.includes('Plate loading'))
+    expect(item.textContent).toContain('Per side')
+    expect(item.textContent).not.toContain('Bar')
+    act(() => sr.unmount()); sc.remove()
+  })
+
   it('a saved workout being corrected (#203) has no plate line and no Plate loading in its menu', () => {
     mount([entry(SQUAT, [warm(95), work(145)], { w: 145 })])
     expect(lines().length).toBe(2)

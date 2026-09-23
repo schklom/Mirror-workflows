@@ -167,9 +167,10 @@ export function passwordProblem(pw, name) {
 
 /* ----------------------------------------------------------------- reset codes -------------
    What an admin hands someone who can no longer get in. 12 characters from the pairing-code
-   alphabet (no 0/O/1/I) is 60 bits: it is read off a screen and typed once, and the account
-   lockout sits in front of it like it does in front of a password. Stored only as a SHA-256 —
-   the code is random, so a slow hash would add nothing but a second way to exhaust the server. */
+   alphabet (no 0/O/1/I) is 60 bits: it is read off a screen and typed once, and it lives a day,
+   so the per-address throttle is all that needs to stand in front of it — a per-name pause would
+   only let a stranger keep the real code refused. Stored only as a SHA-256 — the code is random,
+   so a slow hash would add nothing but a second way to exhaust the server. */
 const ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 export const RESET_TTL_MS = 24 * 3600000;
 

@@ -26,12 +26,14 @@ info:
     cookie. With the flag off (the default) every one of them answers 404.
 
     ### Throttling
-    The routes that work without a session are counted per client address: at most 60
-    requests a minute across them, and wrong answers (a password, an invite code, a
-    pairing code) pause the address after 20 for 30 s, doubling up to 15 min. Wrong
-    passwords also pause the *name* they were tried against after 5, for 1 min doubling
-    up to 1 h, whether or not a profile has that name. A paused caller gets
-    `429 {"error": …, "code": "locked", "retryAfter": <s>}` with a `Retry-After` header.
+    The `password` routes are counted per client address: at most 60 requests a minute
+    across them, and wrong answers (a password, a reset code, an invite code on password
+    signup) pause the address after 20 for 30 s, doubling up to 15 min. Wrong passwords
+    also pause the *name* they were tried against after 5, for 1 min doubling up to 1 h,
+    whether or not a profile has that name. A password check counts from the moment it
+    starts, so checks sent at once get no more tries than checks sent one by one. A
+    paused caller gets `429 {"error": …, "code": "locked", "retryAfter": <s>}` with a
+    `Retry-After` header. The passkey and pairing routes are not throttled.
     The address is the socket's, or with `TRUST_PROXY=1` the one a trusted proxy put in
     `CF-Connecting-IP` / the last `X-Forwarded-For` entry / `X-Real-IP`; IPv6 clients are
     counted by /64. Counters live in memory and reset on restart.
@@ -626,8 +628,9 @@ paths:
         Redeems the code from `POST /api/admin/user/password-reset` (valid 24 h, single
         use, stored only as a hash; dashes, spaces and case do not matter) and signs in.
         A new password that breaks the policy is refused without using up the code. Every
-        other session of the account ends. Wrong codes are paused per name like wrong
-        passwords, in a separate count. **Not** CSRF-exempt.
+        other session of the account ends. Wrong codes count against the caller's address
+        only (see *Throttling*), never against the name, so they cannot keep a real code
+        from working. **Not** CSRF-exempt.
       security: []
       requestBody:
         required: true

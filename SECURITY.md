@@ -65,11 +65,12 @@ in the thread; there's no objection, and no request to sit on it indefinitely.
   operator is trusted by design — see the security model below.
 - Admins reading their users' workout history. That is the documented purpose of the admin
   dashboard, not a leak.
-- **Missing rate limiting** on anything but sign-in, or "I sent 100k requests and it got slow".
-  The API throttles the routes that work without a session — sign-in, registration, pairing,
-  password reset — and nothing else; volume against the rest belongs in the reverse proxy you put
-  in front of it. A way past that throttle *is* in scope, and so is genuine amplification (one
-  small request causing unbounded work).
+- **Missing rate limiting** on anything but password sign-in, or "I sent 100k requests and it got
+  slow". With `PASSWORD_LOGIN=1` the API throttles its password routes — sign-in, password signup,
+  reset codes, changing a password — and nothing else; volume against the rest, passkey sign-in
+  and pairing included, belongs in the reverse proxy you put in front of it. A way past that
+  throttle *is* in scope, and so is genuine amplification (one small request causing unbounded
+  work).
 - **Missing security headers.** `web/nginx.conf.template` sets `X-Frame-Options: DENY`,
   `Content-Security-Policy: frame-ancestors 'none'`, `X-Content-Type-Options: nosniff` and
   `Referrer-Policy: same-origin`. It deliberately does **not** set HSTS or a full CSP: TLS is the
@@ -105,13 +106,15 @@ Read this before hosting openGym for anyone other than yourself.
   An admin can issue a one-time reset code — 60 random bits, stored as a SHA-256, 24 hours, single
   use — which also removes the old password and ends every session; admin accounts cannot be
   reset that way (`api/password.js`, the password block in `api/server.js`).
-- **Sign-in is throttled.** Every route that works without a session spends a budget of 60
-  requests a minute per address; wrong passwords, invite codes and pairing codes pause the
+- **Password sign-in is throttled.** Every password route spends a budget of 60 requests a minute
+  per address; wrong passwords, reset codes and (on password signup) invite codes pause the
   address after 20 (30 s, doubling to 15 min); wrong passwords pause the *name* after 5 (1 min,
-  doubling to 1 h), existing or not. Passkey failures only spend the budget, so nobody can pause
-  everyone's passkey sign-in. The address is the socket peer unless `TRUST_PROXY=1` (set by the
-  bundled compose file, where only the web container reaches the API), and IPv6 is counted per
-  /64 (`api/rate-limit.js`).
+  doubling to 1 h), existing or not. A password check is counted the moment it starts, so guesses
+  sent all at once get no more checks than guesses sent one by one. Passkey sign-in, passkey
+  signup and pairing are not throttled at all, so nobody can pause them — not even behind a proxy
+  that shows the API one address for every visitor. The address is the socket peer unless
+  `TRUST_PROXY=1` (set by the bundled compose file, where only the web container reaches the
+  API), and IPv6 is counted per /64 (`api/rate-limit.js`).
 - **Sessions are a signed cookie.** It carries `<uid>:<expiry>:<version>` plus an
   HMAC-SHA256 tag over it, compared in constant time (`api/server.js:230-243`). The key is 32
   random bytes generated on first run and written to `./data/secret` with mode `0600`
@@ -192,13 +195,16 @@ Read this before hosting openGym for anyone other than yourself.
   it. Without that, only direct surgery on `./data` gets it back.
 - **A password is weaker than a passkey, and the throttle is per process.** It can be phished,
   reused elsewhere or guessed; a stolen `db.json` allows offline guessing against the scrypt
-  hashes. The throttle's counters live in memory: a restart clears them, several API replicas
-  would each keep their own, and behind a second proxy that hides the visitor's address every
-  visitor shares one per-address count (the per-name pause still holds). Anyone who knows a name
-  can keep its *password* sign-in paused — passkeys are never paused — and the activity log shows
-  it as `auth.password.locked`. The only password policy is 10–256 characters and a short
-  built-in list of the passwords guessing scripts try first; no breached-password database is
-  bundled.
+  hashes. The throttle's counters live in memory: a restart clears them, and several API replicas
+  would each keep their own. Behind a second proxy that hides the visitor's address every
+  visitor shares one per-address count, so one client can pause *password* sign-in for everybody
+  for up to 15 minutes at a time (the per-name pause still holds, and passkeys are never
+  paused). Anyone who knows a name can keep its password sign-in paused, which the activity log
+  shows as `auth.password.locked`. Only two password checks run at once, with 32 queued behind
+  them: someone sending from enough addresses can keep that queue full, and every password
+  sign-in then answers `503` until they stop — passkeys are unaffected. The only password
+  policy is 10–256 characters and a short built-in list of the passwords guessing scripts try
+  first; no breached-password database is bundled.
 - **Disabling someone isn't a ban.** They can still register a fresh profile with a new passkey
   unless `INVITE_ONLY=1` is set. It also makes them near-invisible in the activity log: a disabled
   account is refused at the session check, so nothing it does produces an entry except the failed
@@ -207,13 +213,13 @@ Read this before hosting openGym for anyone other than yourself.
   nginx listens on `:80` (`web/nginx.conf`); TLS is your reverse proxy's job. Without it,
   browsers won't do passkeys at all (except on `http://localhost`) and the session cookie is sent
   in the clear.
-- **Rate limiting covers sign-in only.** The throttle above applies to sign-in, registration,
-  pairing and password reset; writes and everything else behind a session are not limited. `POST
-  /api/register/options` still answers whether an invite code is valid, now at most 20 wrong
-  guesses before that address pauses. New invite codes are 16 hex characters — 64 bits — which
-  makes guessing one impractical even unthrottled; codes generated by earlier versions are 8
-  characters / 32 bits and still work, so revoke and reissue any that are still unused. The other
-  hard limit in the app is a 5 MB request body.
+- **Rate limiting covers password sign-in only.** The throttle above applies to the password
+  routes; passkey sign-in and signup, pairing, writes and everything else behind a session are
+  not limited, so an instance on the open internet should have a rate limit in front of it. `POST
+  /api/register/options` still answers whether an invite code is valid, unthrottled. New invite
+  codes are 16 hex characters — 64 bits — which makes guessing one impractical even unthrottled;
+  codes generated by earlier versions are 8 characters / 32 bits and still work, so revoke and
+  reissue any that are still unused. The other hard limit in the app is a 5 MB request body.
 - **The activity log is not an audit archive, and it records less than you might assume.** No IP
   address unless you set `AUDIT_IP` (`net` truncates to a /24 or /48; the default is `off`). When it is on, the
   address comes from `CF-Connecting-IP`, `X-Forwarded-For`, `X-Real-IP` or, failing all three,
@@ -231,8 +237,8 @@ Read this before hosting openGym for anyone other than yourself.
   admin can clear the whole log from the dashboard. And four of the paths that write to it —
   the invite check on `POST /api/register/options`, and the expired-challenge and unknown-passkey
   branches of the register/login handshakes (and, with passwords on, the failed password and
-  reset-code attempts) — are reachable **without a session**, so within the sign-in throttle
-  anyone can still fill the log with noise. It is an append of ~110 bytes per
+  reset-code attempts, within their throttle) — are reachable **without a session**, so anyone
+  can fill the log with noise. It is an append of ~110 bytes per
   event to a capped file, never a rewrite of `db.json`, so the cost is a log full of noise rather
   than a full disk or a slow server.
 - **A few endpoints answer without a session:** `/api/health` (which includes the total user

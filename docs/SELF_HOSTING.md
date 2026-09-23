@@ -229,10 +229,13 @@ a LAN-only address, see [SELF_HOSTING_HTTPS.md](./SELF_HOSTING_HTTPS.md).
   name for a minute, doubling up to an hour, whoever sends them — names that do not exist pause
   the same way, so a pause reveals nothing. Twenty wrong answers from one address pause that
   address for 30 seconds, doubling up to 15 minutes, and every address gets 60 requests a minute
-  to the sign-in routes. Passkeys are never paused. The counters live in memory, so a restart
-  clears them.
+  to the password routes. Guesses sent all at once count the same as guesses sent one by one.
+  Passkey sign-in, passkey signup and phone pairing are not throttled at all, so they are never
+  paused. The counters live in memory, so a restart clears them.
 - The flip side: anyone who knows a name can keep that name's *password* sign-in paused. The
-  activity log shows it (`auth.password.locked`), and passkeys still work.
+  activity log shows it (`auth.password.locked`), and passkeys still work. A reset code is not
+  paused per name — it is 60 random bits and lives a day — so nobody can keep a real code from
+  working by sending wrong ones.
 - Passwords need 10 to 256 characters and may not be one of a short built-in list of the
   passwords guessing scripts try first (`Password123!`, `qwerty…`, the profile's own name with
   digits). A long passphrase is the point.
@@ -241,10 +244,12 @@ a LAN-only address, see [SELF_HOSTING_HTTPS.md](./SELF_HOSTING_HTTPS.md).
 bundled `docker-compose.yml` it reads the one the web container passes on: the compose file sets
 `TRUST_PROXY=1` for the api, because the API is reachable only through that container, which
 overwrites `X-Forwarded-For`. If you put another reverse proxy in front of the web container, every
-visitor may arrive as that proxy — then the per-address limits apply to everyone together, and the
-per-name pause is what protects the passwords. Behind Cloudflare, `CF_CONNECTING_IP` (see the
-activity log above) passes the real visitor on. Running the API without the web container, leave
-`TRUST_PROXY` off unless whatever is in front overwrites (not appends to) `X-Forwarded-For`.
+visitor may arrive as that proxy — then the per-address limits apply to everyone together: one
+client sending wrong passwords can pause password sign-in for everybody for up to 15 minutes at a
+time (passkeys keep working), and the per-name pause is what protects the passwords. Behind
+Cloudflare, `CF_CONNECTING_IP` (see the activity log above) passes the real visitor on. Running
+the API without the web container, leave `TRUST_PROXY` off unless whatever is in front overwrites
+(not appends to) `X-Forwarded-For`.
 
 **Switching it off again** hides all of it and makes every password route answer 404. The stored
 hashes stay in `db.json` and work again if you switch it back on — but while it is off, a profile

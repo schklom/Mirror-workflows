@@ -613,9 +613,9 @@ setInterval(() => { for (const [k, v] of presence) if (Date.now() - v.updatedAt 
 // Who signed in, who tried and failed, and what an admin changed. One JSON object per line in
 // ./data/audit.log, appended and never rewritten in place. It deliberately does not live in
 // db.json: that file is rewritten whole on every save, and the login/register handshakes are
-// unauthenticated and only loosely throttled (see the sign-in throttle below and SECURITY.md), so
-// an audit trail in there would turn one bogus request into a full db.json rewrite. A line torn
-// by a crash costs one event and is dropped on read.
+// unauthenticated and unthrottled by design (see SECURITY.md; only the optional password routes
+// are throttled, below), so an audit trail in there would turn one bogus request into a full
+// db.json rewrite. A line torn by a crash costs one event and is dropped on read.
 //
 // On by default. It records strictly less than the instance already holds — every account is in
 // db.json and every workout is in state-<uid>.json, both readable by any admin — and a security
@@ -704,34 +704,46 @@ if (AUDIT_ON) {
 }
 
 /* ---------- sign-in throttle ---------- */
-// The routes anyone can reach without a session are counted (rate-limit.js), three ways:
+// The password routes are counted (rate-limit.js), and only those — so only on an instance with
+// PASSWORD_LOGIN on, since none of them exists otherwise. Passkey sign-in, passkey registration
+// and phone pairing stay out of it, as they always were: nothing there is worth guessing (an
+// assertion is a signature, an invite code 64 random bits, a pairing code lives five minutes),
+// and behind a proxy that hands the API one address for every visitor a per-address count on
+// them would let one stranger pause everybody's way in. Three counts:
 //
-//   AUTH_BURST   every request to a throttled route, 60 a minute per address. Enough for a
-//                household behind one proxy; not enough to have the server mint challenges or
-//                run scrypt as fast as one client can ask.
-//   ADDR_FAILS   wrong answers per address and per kind (a password, an invite code, a pairing
-//                code): 20 free, then a pause of 30 s that doubles up to 15 min.
+//   AUTH_BURST   every request to a password route, 60 a minute per address. Enough for a
+//                household behind one proxy; not enough to run scrypt as fast as one client
+//                can ask.
+//   ADDR_FAILS   wrong answers per address and per kind (a password or reset code, an invite
+//                code on password signup): 20 free, then a pause of 30 s that doubles up to
+//                15 min.
 //   ACCOUNT_FAILS  wrong passwords per *name*, whoever sends them: 5 free, then 1 min doubling
 //                up to 1 h, forgotten after a day without one or on the next success. This is
 //                the one that protects a password — an address is cheap to change, a name is
 //                not. It is keyed by the name as typed, existing or not, so a lockout never
-//                says whether an account is there. Passkeys are never paused by it.
+//                says whether an account is there; the count of a name that has a password is
+//                never evicted to make room for others. Passkeys are never paused by it.
+//
+// A password check is counted against the name and the address the moment it starts, not when
+// its answer comes back (passwordAttempt below): scrypt takes a tenth of a second, and counting
+// afterwards let a burst sent at once be checked in full under a single allowance.
 //
 // Behind a proxy every request can come from the same address (the bundled web container passes
 // the real one on; a second proxy in front of it may not). Then the per-address counts act for
-// the whole instance, which is why passkey failures only ever count against the burst budget: a
-// stranger's junk must not be able to pause everybody's passkey sign-in.
+// the whole instance: one client can pause *password* sign-in for everybody for a while, and the
+// per-name pause is what still protects each password.
 const AUTH_BURST = createWindow({ max: 60, windowMs: 60000 });
 const ADDR_FAILS = createBackoff({ free: 20, baseMs: 30000, maxMs: 15 * 60000, forgetMs: 3600000 });
-const ACCOUNT_FAILS = createBackoff({ free: 5, baseMs: 60000, maxMs: 3600000, forgetMs: 24 * 3600000 });
+const ACCOUNT_FAILS = createBackoff({
+  free: 5, baseMs: 60000, maxMs: 3600000, forgetMs: 24 * 3600000,
+  // At most one per profile with a password, so this cannot grow without bound.
+  keep: k => !!passwordHolder(k)
+});
 setInterval(() => { AUTH_BURST.sweep(); ADDR_FAILS.sweep(); ACCOUNT_FAILS.sweep(); }, 60000).unref();
 
 // Route -> the kind of failure it can count. Every route listed here also spends the burst
 // budget; `null` spends only that.
 const THROTTLED = {
-  'POST /api/register/options': 'signup', 'POST /api/register/verify': 'signup',
-  'POST /api/login/options': null, 'POST /api/login/verify': null,
-  'POST /api/pair/redeem': 'pair',
   'POST /api/login/password': 'password', 'POST /api/login/password-reset': 'password',
   'POST /api/register/password': 'signup',
   'POST /api/account/password': 'password', 'DELETE /api/account/password': null
@@ -761,6 +773,14 @@ function limitAddress(req) {
 }
 function tooMany(res, secs) {
   json(res, 429, { error: 'too many attempts — try again later', code: 'locked', retryAfter: secs }, { 'Retry-After': String(secs) });
+}
+// Whether the caller's address is paused for `kind`, answering 429 when it is. A route asks this
+// again right before the check it guards, with no await in between: the dispatcher asked before
+// the body was read, and requests sent at once all pass that one together.
+function addressPaused(req, res, kind) {
+  const wait = ADDR_FAILS.retryAfter(kind + '|' + limitAddress(req));
+  if (wait) tooMany(res, wait);
+  return wait > 0;
 }
 // One wrong answer against the caller's address. The pause it starts, if any, is recorded once
 // — not every refused request after it, which anyone could use to fill the log.
@@ -823,14 +843,36 @@ async function passkeyStepUp(user, body) {
   } catch { return false; }
 }
 
-// One wrong password against a name: counted for the name and for the address. The audit line
-// names the account only when there is one — what someone typed into the name field is
-// sometimes their password.
-function passwordFailed(req, k, user, msg) {
-  const lock = ACCOUNT_FAILS.fail('login|' + k);
-  strikeAddress(req, 'password');
-  audit(req, 'auth.password.fail', user ? { ok: false, user, msg } : { ok: false, msg: 'unknown-name' });
-  if (lock) audit(req, 'auth.password.locked', user ? { ok: false, user } : { ok: false, msg: 'unknown-name' });
+// One password check against the name `k`, counted as a failure for the name and for the caller's
+// address before it runs, so that checks sent side by side cannot all start under the same
+// allowance (see the throttle above). Answers 429 itself and returns null when either is paused.
+// The caller settles it once: failed() for a wrong password, ok() for a right one, void() when the
+// answer says nothing against the password — the queue was full, or the account is disabled.
+function passwordAttempt(req, res, k) {
+  const addr = 'password|' + limitAddress(req);
+  const wait = ACCOUNT_FAILS.retryAfter(k) || ADDR_FAILS.retryAfter(addr);
+  if (wait) { tooMany(res, wait); return null; }
+  const byName = ACCOUNT_FAILS.attempt(k);
+  const byAddr = ADDR_FAILS.attempt(addr);
+  const settle = () => { byName.undo(); byAddr.undo(); };
+  return {
+    // Every slot and the queue behind them taken (BusyError) is not a wrong password.
+    async verify(pw, stored) {
+      // Longer than any password that can be set: wrong, without hashing a megabyte to find out.
+      try { return passwordLength(pw) <= MAX_LENGTH && await verifyPassword(pw, stored); }
+      catch (e) { settle(); throw e; }
+    },
+    // The audit line names the account only when there is one — what someone typed into the
+    // name field is sometimes their password.
+    failed(user, msg) {
+      audit(req, 'auth.password.fail', user ? { ok: false, user, msg } : { ok: false, msg: 'unknown-name' });
+      if (byName.lock) audit(req, 'auth.password.locked', user ? { ok: false, user } : { ok: false, msg: 'unknown-name' });
+      if (byAddr.lock) audit(req, 'auth.throttled', { ok: false, msg: 'password' });
+    },
+    // A right password starts the name over; the address keeps whatever else it has run up.
+    ok() { ACCOUNT_FAILS.clear(k); byAddr.undo(); },
+    void: settle
+  };
 }
 
 if (PASSWORD_LOGIN) warmUp();
@@ -841,20 +883,19 @@ const passwordRoutes = {
     const k = nameKey(text(body.name).slice(0, 200));
     const pw = typeof body.password === 'string' ? body.password : '';
     if (!k || !pw) return json(res, 400, { error: 'name and password required', code: 'missing' });
-    const wait = ACCOUNT_FAILS.retryAfter('login|' + k);
-    if (wait) return tooMany(res, wait);
+    const check = passwordAttempt(req, res, k);
+    if (!check) return;
     const user = passwordHolder(k);
-    // Longer than any password that can be set: wrong, without hashing a megabyte to find out.
-    const ok = passwordLength(pw) <= MAX_LENGTH && await verifyPassword(pw, user?.pw?.h);
-    if (!ok) {
-      passwordFailed(req, k, user, 'bad-password');
+    if (!(await check.verify(pw, user?.pw?.h))) {
+      check.failed(user, 'bad-password');
       return json(res, 401, WRONG);
     }
     if (user.disabled) {
+      check.void();
       audit(req, 'auth.password.fail', { ok: false, user, msg: 'account-disabled' });
       return json(res, 403, { error: 'this account has been disabled', code: 'disabled' });
     }
-    ACCOUNT_FAILS.clear('login|' + k);
+    check.ok();
     // A hash made with older parameters is replaced now, while the password is at hand — unless
     // the password itself changed while the new hash was being made.
     const old = user.pw.h;
@@ -876,6 +917,7 @@ const passwordRoutes = {
     if (!name) return json(res, 400, { error: 'name required', code: 'missing' });
     const code = text(body.code).trim().toUpperCase();
     const invite = () => db.invites.find(i => i.code === code && !i.usedBy && !i.revoked);
+    if (INVITE_ONLY && addressPaused(req, res, 'signup')) return;
     if (INVITE_ONLY && !invite()) {
       audit(req, 'auth.register.denied', { ok: false, name, msg: 'invite-rejected' });
       strikeAddress(req, 'signup');
@@ -935,14 +977,15 @@ const passwordRoutes = {
       proof = 'passkey';
     } else if (hasPassword(user)) {
       const current = typeof body.current === 'string' ? body.current : '';
+      const wrongCurrent = () => json(res, 403, { error: 'your current password is not right', code: 'current-wrong' });
       if (!current) return json(res, 403, { error: 'enter your current password', code: 'current-required' });
-      const wait = ACCOUNT_FAILS.retryAfter('login|' + k);
-      if (wait) return tooMany(res, wait);
-      if (!(passwordLength(current) <= MAX_LENGTH && await verifyPassword(current, user.pw.h))) {
-        passwordFailed(req, k, user, 'bad-current');
-        return json(res, 403, { error: 'your current password is not right', code: 'current-wrong' });
+      const check = passwordAttempt(req, res, k);
+      if (!check) return;
+      if (!(await check.verify(current, user.pw.h))) {
+        check.failed(user, 'bad-current');
+        return wrongCurrent();
       }
-      ACCOUNT_FAILS.clear('login|' + k);
+      check.ok();
       proof = 'password';
     } else {
       return json(res, 403, { error: 'confirm with your passkey first', code: 'passkey-required' });
@@ -955,7 +998,7 @@ const passwordRoutes = {
     const first = !hasPassword(user);
     setPassword(user, h);
     // Whatever pause wrong guesses put on this name was about a password that no longer exists.
-    ACCOUNT_FAILS.clear('login|' + k);
+    ACCOUNT_FAILS.clear(k);
     saveDb();
     audit(req, first ? 'auth.password.set' : 'auth.password.change', { user, msg: proof });
     // This session carries on under the new version: a new cookie, or a new token for a phone.
@@ -1005,16 +1048,16 @@ const passwordRoutes = {
     const k = nameKey(text(body.name).slice(0, 200));
     const code = text(body.code).slice(0, 64);
     if (!k || !code) return json(res, 400, { error: 'name and code required', code: 'missing' });
-    const wait = ACCOUNT_FAILS.retryAfter('reset|' + k);
-    if (wait) return tooMany(res, wait);
+    // Wrong codes count against the address only. A per-name pause would add nothing against a
+    // 60-bit code that lives a day, and would let anyone who knows the name keep the real code
+    // refused for that whole day — after the reset has already removed the old password.
+    if (addressPaused(req, res, 'password')) return;
     const find = () => db.users.find(u => u.pwReset && nameKey(u.name) === k && resetCodeMatches(code, u.pwReset)) || null;
     const user = find();
     const invalid = () => json(res, 400, { error: 'that reset code is wrong or has expired', code: 'reset-invalid' });
     if (!user) {
-      const lock = ACCOUNT_FAILS.fail('reset|' + k);
       strikeAddress(req, 'password');
       audit(req, 'auth.password.reset', { ok: false, msg: 'reset-invalid' });
-      if (lock) audit(req, 'auth.password.locked', { ok: false, msg: 'reset' });
       return invalid();
     }
     if (user.disabled) {
@@ -1029,8 +1072,7 @@ const passwordRoutes = {
     // Single use: a second request that raced this one through the hash finds the code gone.
     if (find() !== user) return invalid();
     setPassword(user, h);
-    ACCOUNT_FAILS.clear('reset|' + k);
-    ACCOUNT_FAILS.clear('login|' + k);
+    ACCOUNT_FAILS.clear(k);
     saveDb();
     audit(req, 'auth.password.reset', { user });
     json(res, 200, { user: publicUser(user) }, { 'Set-Cookie': sessionCookie(user) });
@@ -1073,7 +1115,6 @@ const routes = {
     if (INVITE_ONLY && !db.invites.some(i => i.code === code && !i.usedBy && !i.revoked)) {
       // The rejected code itself is never recorded — a near-miss guess in the log is a liability.
       audit(req, 'auth.register.denied', { ok: false, name, msg: 'invite-rejected' });
-      strikeAddress(req, 'signup');
       return json(res, 403, { error: 'a valid invite code is required' });
     }
     const uid = crypto.randomBytes(12).toString('base64url');
@@ -1245,7 +1286,6 @@ const routes = {
     if (p) pairings.delete(code);
     if (!p || p.exp < Date.now()) {
       audit(req, 'auth.pair.fail', { ok: false, msg: 'code-invalid' });
-      strikeAddress(req, 'pair');
       return json(res, 400, { error: 'invalid or expired code' });
     }
     const user = db.users.find(u => u.id === p.uid);
@@ -1508,10 +1548,10 @@ const routes = {
     const admin = requireAdmin(req, res); if (!admin) return;
     const body = await readBody(req);
     let code;
-    // 16 hex chars = 64 bits, up from 8 chars / 32 bits. The sign-in throttle only slows guessing
-    // down, and /api/register/options tells a caller whether a code is good, so the code itself
-    // has to be the thing that isn't worth guessing. Codes already in
-    // db.json keep working — validation is an exact string compare, never a length or format check.
+    // 16 hex chars = 64 bits, up from 8 chars / 32 bits. Passkey signup has no rate limiting by
+    // design (that's the reverse proxy's job) and /api/register/options tells a caller whether a
+    // code is good, so the code itself has to be the thing that isn't worth guessing. Codes already
+    // in db.json keep working — validation is an exact string compare, never a length or format check.
     do { code = crypto.randomBytes(8).toString('hex').toUpperCase(); } while (db.invites.some(i => i.code === code));
     const invite = { code, note: text(body.note).slice(0, 60), createdBy: admin.id, created: new Date().toISOString() };
     db.invites.push(invite);
@@ -1623,7 +1663,8 @@ http.createServer(async (req, res) => {
     console.warn('refused cross-origin', key, 'origin=' + req.headers.origin, 'expected=' + ORIGIN);
     return json(res, 403, { error: 'cross-origin request refused' });
   }
-  // After the origin check, so a forged request spends nobody's budget.
+  // After the origin check, so a forged request spends nobody's budget. The password routes only
+  // (see the sign-in throttle above).
   if (key in THROTTLED) {
     const addr = limitAddress(req);
     const kind = THROTTLED[key];

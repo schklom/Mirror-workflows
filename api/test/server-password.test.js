@@ -6,6 +6,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import crypto from 'node:crypto';
 import net from 'node:net';
+import http from 'node:http';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -186,20 +187,84 @@ test('twenty failures from one address pause that address for every name; others
   assert.ok(h.audit().some(e => e.ev === 'auth.throttled' && e.msg === 'password'));
 });
 
-test('the burst budget answers 429 with Retry-After on the passkey and pairing routes too', async t => {
+// scrypt takes a tenth of a second, so guesses sent at once are all in flight before the first
+// is answered. Each is counted the moment it starts: the allowance is what gets checked, the rest
+// wait — however many arrive together.
+test('guesses sent all at once are checked only up to the pause, per name and per address', async t => {
+  const h = await startServer(t, { users: [withPassword('u1', 'Ana')] });
+  const byName = await Promise.all(Array.from({ length: 20 }, (_, i) => login(h, 'Ana', 'wrong password ' + i, `198.51.100.${160 + i}`)));
+  const statuses = byName.map(r => r.status);
+  assert.equal(statuses.filter(s => s === 401).length, 6, `five free and the one that starts the pause: ${statuses}`);
+  assert.equal(statuses.filter(s => s === 429).length, 14);
+  assert.equal((await login(h, 'Ana', GOOD, '198.51.100.199')).status, 429, 'the name is paused');
+
+  const ip = '203.0.113.90';
+  const byAddr = await Promise.all(Array.from({ length: 30 }, (_, i) => login(h, 'someone' + i, 'wrong password', ip)));
+  const a = byAddr.map(r => r.status);
+  assert.equal(a.filter(s => s === 401).length, 21, `twenty free and the one that starts the pause: ${a}`);
+  assert.equal(a.filter(s => s === 429).length, 9);
+  assert.equal(h.audit().filter(e => e.ev === 'auth.password.locked').length, 1, 'the pause is logged once');
+});
+
+test('the owner signing in while guesses are in flight is not counted against the name', async t => {
+  const h = await startServer(t, { users: [withPassword('u1', 'Ana')] });
+  // Five wrong and the right one, side by side: whichever of them is sixth starts the pause but is
+  // still checked, and the right one clears the name when it lands.
+  const all = await Promise.all([
+    ...Array.from({ length: 5 }, (_, i) => login(h, 'Ana', 'wrong password ' + i, `198.51.100.${210 + i}`)),
+    login(h, 'Ana', GOOD, '198.51.100.215')
+  ]);
+  assert.deepEqual(all.map(r => r.status), [401, 401, 401, 401, 401, 200]);
+  // Five wrong from here on are free again, and only the sixth pauses.
+  for (let i = 0; i < 6; i++) assert.equal((await login(h, 'Ana', 'wrong again ' + i, `198.51.100.${220 + i}`)).status, 401);
+  assert.equal((await login(h, 'Ana', GOOD, '198.51.100.230')).status, 429);
+});
+
+test('the burst budget answers 429 with Retry-After on the password routes', async t => {
   const h = await startServer(t);
   let last;
-  for (let i = 0; i < 61; i++) last = await h.req('POST', '/api/login/options', { body: {}, ip: '203.0.113.60' });
+  for (let i = 0; i < 61; i++) last = await h.req('POST', '/api/login/password', { body: {}, ip: '203.0.113.60' });
   assert.equal(last.status, 429);
   assert.ok(+last.headers.get('retry-after') > 0);
-  assert.equal((await h.req('POST', '/api/pair/redeem', { body: { code: 'NOPE' }, ip: '203.0.113.60' })).status, 429);
-  assert.equal((await h.req('POST', '/api/login/options', { body: {}, ip: '203.0.113.61' })).status, 200);
+  assert.equal((await h.req('POST', '/api/login/password-reset', { body: {}, ip: '203.0.113.60' })).status, 429);
+  assert.equal((await h.req('POST', '/api/login/password', { body: {}, ip: '203.0.113.61' })).status, 400);
 });
 
 test('without TRUST_PROXY a forwarded address is ignored: the socket is who is counted', async t => {
   const h = await startServer(t, { env: { TRUST_PROXY: '' } });
-  for (let i = 0; i < 61; i++) await h.req('POST', '/api/login/options', { body: {}, ip: `203.0.113.${i + 100}` });
-  assert.equal((await h.req('POST', '/api/login/options', { body: {}, ip: '192.0.2.1' })).status, 429);
+  for (let i = 0; i < 61; i++) await h.req('POST', '/api/login/password', { body: {}, ip: `203.0.113.${i + 100}` });
+  assert.equal((await h.req('POST', '/api/login/password', { body: {}, ip: '192.0.2.1' })).status, 429);
+});
+
+// Behind a proxy that hides the visitor, every request comes from one address. Whatever one client
+// sends from there must not pause anybody's passkey sign-in, passkey signup or phone pairing —
+// which were never throttled, and are not now.
+test('a flood from a shared address leaves passkey sign-in, registration and pairing working', async t => {
+  const key = softPasskey();
+  const h = await startServer(t, {
+    env: { TRUST_PROXY: '', INVITE_ONLY: '1' },
+    users: [withPassword('u1', 'Ana')], creds: [key.row('u1')],
+    invites: [{ code: 'GOODCODE', created: new Date().toISOString() }]
+  });
+  for (let i = 0; i < 100; i++) await h.req('POST', '/api/login/options', { body: {} });
+  for (let i = 0; i < 30; i++) assert.equal((await h.req('POST', '/api/register/options', { body: { name: 'X', code: 'JUNK' + i } })).status, 403);
+  for (let i = 0; i < 30; i++) assert.equal((await h.req('POST', '/api/pair/redeem', { body: { code: 'JUNK' + i } })).status, 400);
+  await Promise.all(Array.from({ length: 25 }, (_, i) => login(h, 'name' + i, 'wrong password')));
+  // Password sign-in is what the shared address pauses — for everybody behind it, as documented.
+  assert.equal((await login(h, 'Ana', GOOD)).status, 429);
+
+  const { cid, options } = (await h.req('POST', '/api/login/options', { body: {} })).body;
+  const signedIn = await h.req('POST', '/api/login/verify', { body: { cid, credential: key.assertion(options.challenge) } });
+  assert.equal(signedIn.status, 200, 'passkey sign-in');
+  assert.ok(signedIn.cookie);
+  assert.equal((await h.req('POST', '/api/register/options', { body: { name: 'Cleo', code: 'goodcode' } })).status, 200, 'passkey signup');
+  const { code } = (await h.req('POST', '/api/pair/create', { cookie: signedIn.cookie })).body;
+  assert.equal((await h.req('POST', '/api/pair/redeem', { body: { code } })).status, 200, 'pairing');
+  assert.equal(h.audit().some(e => e.ev === 'auth.throttled' && e.msg !== 'password'), false);
+
+  // With PASSWORD_LOGIN off nothing at all is counted.
+  const off = await startServer(t, { env: { TRUST_PROXY: '', PASSWORD_LOGIN: '' } });
+  for (let i = 0; i < 100; i++) assert.equal((await off.req('POST', '/api/login/options', { body: {} })).status, 200);
 });
 
 test('the password routes keep the origin check: no login CSRF', async t => {
@@ -362,6 +427,43 @@ test('an admin reset: a one-time code that ends the old password, works once, an
   assert.ok(evs.includes('admin.password.reset'));
   assert.ok(h.audit().some(e => e.ev === 'auth.password.reset' && e.ok && e.uid === 'u1'));
   assert.ok(h.audit().some(e => e.ev === 'auth.password.reset' && !e.ok));
+});
+
+// A 60-bit code that lives a day needs no per-name pause, and one would let anyone who knows the
+// name keep the real code refused for that whole day. Wrong codes count against the address only.
+test('wrong reset codes for a name do not lock out its real code, and do not touch the password count', async t => {
+  const h = await startServer(t, {
+    // No activity log: ten thousand lines of it below would only slow the test down.
+    env: { ADMIN_UIDS: 'adm', AUDIT_LOG: '0' },
+    users: [user('adm', 'Root'), withPassword('u1', 'Ana'), withPassword('u2', 'Bea')]
+  });
+  const { code } = (await h.req('POST', '/api/admin/user/password-reset', { body: { id: 'u2' }, cookie: `gymsid=${mintSession('adm')}`, ip: '198.51.100.245' })).body;
+  for (let i = 0; i < 12; i++) {
+    const r = await h.req('POST', '/api/login/password-reset', { body: { name: 'Bea', code: 'ZZZZ-ZZZZ-ZZZ' + i, next: 'whatever passphrase' }, ip: `198.51.100.${100 + i}` });
+    assert.equal(r.body.code, 'reset-invalid');
+  }
+  assert.equal((await h.req('POST', '/api/login/password-reset', { body: { name: 'Bea', code, next: 'a brand new passphrase' }, ip: '198.51.100.246' })).status, 200);
+
+  // The cheap flood of the probe: five wrong passwords for Ana, then ten thousand junk codes for
+  // names nobody has, twenty per IPv6 /64 so no address is paused. Ana's count is still there.
+  for (let i = 0; i < 5; i++) assert.equal((await login(h, 'Ana', 'wrong password ' + i, `198.51.100.${150 + i}`)).status, 401);
+  // Kept-alive connections: a fresh one per request would make this the slowest test in the file.
+  const agent = new http.Agent({ keepAlive: true, maxSockets: 50 });
+  t.after(() => agent.destroy());
+  const junk = i => new Promise((resolve, reject) => {
+    const r = http.request(`${h.api}/api/login/password-reset`, {
+      method: 'POST', agent,
+      headers: { 'Content-Type': 'application/json', 'Sec-Fetch-Site': 'same-origin', 'X-Forwarded-For': `2001:db8:${(i / 20 | 0).toString(16)}::1` }
+    }, res => { res.resume(); res.on('end', () => resolve(res.statusCode)); });
+    r.on('error', reject);
+    r.end(JSON.stringify({ name: 'junk' + i, code: 'ZZZZ-ZZZZ-ZZZZ', next: 'whatever passphrase' }));
+  });
+  for (let i = 0; i < 10000; i += 200) {
+    const batch = await Promise.all(Array.from({ length: 200 }, (_, j) => junk(i + j)));
+    assert.ok(batch.every(status => status === 400), 'no junk request was paused');
+  }
+  assert.equal((await login(h, 'Ana', 'wrong password 5', '198.51.100.160')).status, 401);
+  assert.equal((await login(h, 'Ana', GOOD, '198.51.100.161')).status, 429, 'the sixth wrong password paused the name');
 });
 
 test('a disabled account is refused even with the right password', async t => {

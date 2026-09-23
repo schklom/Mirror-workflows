@@ -87,6 +87,17 @@ describe('StructuralBalance view', () => {
     }
   })
 
+  it('falls back to the default template for a stored id that is not one, prototype names included', () => {
+    for (const id of ['constructor', 'toString', '__proto__', 'hasOwnProperty', 'gone', 7, null]) {
+      useStore.setState({ S: { ...useStore.getState().S, balanceTemplate: id } })
+      const host = render()
+      expect(host.querySelectorAll('[data-role-id]').length, String(id)).toBe(9)
+      expect(host.querySelector('.seg button[aria-pressed="true"]').textContent).toBe('Poliquin')
+      act(() => { mounted.splice(0).forEach(root => root.unmount()) })
+      document.body.innerHTML = ''
+    }
+  })
+
   it('the back chevron navigates to /stats', () => {
     const host = render()
     act(() => host.querySelector('.iconbtn').click())

@@ -25,7 +25,9 @@ export default function StructuralBalance() {
   const nav = useNavigate()
   const S = useStore(s => s.S)
   const update = useStore(s => s.update)
-  const templateId = TEMPLATES[S.balanceTemplate] ? S.balanceTemplate : DEFAULT_TEMPLATE_ID
+  // Own keys only: a synced or imported id such as "constructor" would otherwise find an
+  // Object.prototype member and take the screen down.
+  const templateId = Object.prototype.hasOwnProperty.call(TEMPLATES, S.balanceTemplate) ? S.balanceTemplate : DEFAULT_TEMPLATE_ID
   const template = TEMPLATES[templateId]
   const results = useMemo(() => computeBalance(S, template), [S, template])
 

@@ -289,3 +289,41 @@ describe('the chime at the end of a rest or a hold', () => {
   })
 })
 
+// Discord (asierlama): vibration on or off on its own, the way sound is.
+describe('vibrate switch', () => {
+  let calls
+  beforeEach(() => {
+    calls = []
+    Object.defineProperty(navigator, 'vibrate', { value: p => { calls.push(p); return true }, configurable: true, writable: true })
+  })
+  afterEach(() => { delete navigator.vibrate })
+
+  it('buzzes by default', () => {
+    sound.vibrate([200, 100, 200])
+    expect(calls).toEqual([[200, 100, 200]])
+  })
+
+  it('stays still once switched off, and buzzes again once switched back on', () => {
+    sound.setVibrate(false)
+    sound.vibrate(30)
+    expect(calls).toEqual([])
+    sound.setVibrate(true)
+    sound.vibrate(30)
+    expect(calls).toEqual([30])
+  })
+
+  it('reads a profile that never chose as on', () => {
+    sound.setVibrate(false)
+    sound.setVibrate(undefined)
+    sound.vibrate(30)
+    expect(calls).toEqual([30])
+  })
+
+  it('is offered only where the browser can vibrate', () => {
+    expect(sound.vibrateSupported()).toBe(true)
+    delete navigator.vibrate
+    Object.defineProperty(navigator, 'vibrate', { value: undefined, configurable: true, writable: true })
+    expect(sound.vibrateSupported()).toBe(false)
+    expect(() => sound.vibrate(30)).not.toThrow()
+  })
+})

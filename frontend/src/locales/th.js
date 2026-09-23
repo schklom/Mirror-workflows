@@ -759,6 +759,7 @@ export default {
   'Logged sets stay with the original exercise. The replacement will be inserted afterward.': 'เซ็ตที่บันทึกแล้วจะอยู่กับท่าเดิม ท่าใหม่จะถูกแทรกไว้ถัดไป',
   'Rest after each set of this exercise. Leave at 0 to use your default rest timer.': 'พักหลังแต่ละเซ็ตของท่านี้ ปล่อยไว้ที่ 0 เพื่อใช้ตัวจับเวลาพักค่าเริ่มต้น',
   'Flash screen when timer ends': 'กะพริบหน้าจอเมื่อหมดเวลา',
+  'Vibrate': 'การสั่น',
   'Weigh in before workouts': 'ชั่งน้ำหนักก่อนออกกำลังกาย',
   'Asks for your body weight when a workout starts. Off starts the session straight away.': 'ถามน้ำหนักตัวเมื่อเริ่มออกกำลังกาย ถ้าปิด เซสชันจะเริ่มทันที',
   'No entries yet — log your weight to start the curve.': 'ยังไม่มีข้อมูล — บันทึกน้ำหนักเพื่อเริ่มกราฟ',

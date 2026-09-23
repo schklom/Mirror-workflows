@@ -324,6 +324,7 @@ export default {
   'Rest timer': 'Dinlenme sayacı',
   'Sounds': 'Sesler',
   'Flash screen when timer ends': 'Zamanlayıcı bitince ekranı yanıp söndür',
+  'Vibrate': 'Titreşim',
   'Weigh in before workouts': 'Antrenman öncesi tartılma',
   'Asks for your body weight when a workout starts. Off starts the session straight away.': 'Antrenman başlarken kilonu sorar. Kapalıyken seans hemen başlar.',
   'No entries yet — log your weight to start the curve.': 'Henüz kayıt yok — eğriyi başlatmak için kilonu gir.',

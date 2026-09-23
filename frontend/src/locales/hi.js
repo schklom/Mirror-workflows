@@ -324,6 +324,7 @@ export default {
   'Rest timer': 'आराम टाइमर',
   'Sounds': 'ध्वनियाँ',
   'Flash screen when timer ends': 'टाइमर खत्म होने पर स्क्रीन फ्लैश करें',
+  'Vibrate': 'कंपन',
   'Weigh in before workouts': 'वर्कआउट से पहले वज़न दर्ज करना',
   'Asks for your body weight when a workout starts. Off starts the session straight away.': 'वर्कआउट शुरू होते समय आपका वज़न पूछता है। बंद होने पर सेशन सीधे शुरू होता है।',
   'No entries yet — log your weight to start the curve.': 'अभी कोई एंट्री नहीं — ग्राफ़ शुरू करने के लिए वज़न दर्ज करें।',

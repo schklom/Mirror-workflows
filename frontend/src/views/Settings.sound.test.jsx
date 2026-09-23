@@ -130,3 +130,44 @@ describe('Settings — Sounds switch unlocks audio from the tap', () => {
     expect(unlock).not.toHaveBeenCalled()
   })
 })
+
+// Discord (asierlama): the buzz on or off on its own, the way the sound is.
+describe('Settings — vibrate', () => {
+  const setVibrateApi = value => Object.defineProperty(navigator, 'vibrate', { value, configurable: true, writable: true })
+  afterEach(() => { delete navigator.vibrate })
+
+  it('is offered where the browser can vibrate, on by default, below the sound rows', () => {
+    setVibrateApi(() => true)
+    mount()
+    const row = rowTitled('Vibrate')
+    expect(row).toBeTruthy()
+    expect(switchIn(row).getAttribute('aria-checked')).toBe('true')
+    const rows = [...host.querySelectorAll('.lrow')]
+    expect(rows.indexOf(row)).toBeGreaterThan(rows.indexOf(rowTitled('Sounds')))
+    expect(rows.indexOf(row)).toBeLessThan(rows.indexOf(rowTitled('Flash screen when timer ends')))
+  })
+
+  it('stays on offer with Sounds off: the buzz does not depend on the sound', () => {
+    setVibrateApi(() => true)
+    mocks.S.sound = false
+    mount()
+    expect(rowTitled('Vibrate')).toBeTruthy()
+  })
+
+  it('writes vibrate to the store, off and back on', () => {
+    setVibrateApi(() => true)
+    mount()
+    act(() => { switchIn(rowTitled('Vibrate')).click() })
+    expect(mocks.S.vibrate).toBe(false)
+    mount()
+    expect(switchIn(rowTitled('Vibrate')).getAttribute('aria-checked')).toBe('false')
+    act(() => { switchIn(rowTitled('Vibrate')).click() })
+    expect(mocks.S.vibrate).toBe(true)
+  })
+
+  it('is not offered where there is nothing to buzz (iOS has no navigator.vibrate)', () => {
+    setVibrateApi(undefined)
+    mount()
+    expect(rowTitled('Vibrate')).toBeUndefined()
+  })
+})

@@ -126,5 +126,15 @@ export function setPlayOnSilent(on) {
   try { navigator.audioSession.type = on ? 'playback' : 'auto' } catch (e) { /* */ }
 }
 
-
-export function vibrate(p) { try { navigator.vibrate && navigator.vibrate(p) } catch (e) { /* */ } }
+// Settings → "Vibrate" (Discord, asierlama): the buzz at the end of a rest or a hold and on a set
+// tick, switched on its own the way Sounds is. A page-level switch like setPlayOnSilent, applied
+// by App.jsx, so the places that buzz do not each have to read the profile. On by default.
+let buzz = true
+export function setVibrate(on) { buzz = on !== false }
+// Offered where the browser can buzz at all: iOS has no navigator.vibrate. The Android app needs
+// android.permission.VIBRATE in its manifest, without which the WebView drops every call.
+export const vibrateSupported = () => typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function'
+export function vibrate(p) {
+  if (!buzz) return
+  try { navigator.vibrate && navigator.vibrate(p) } catch (e) { /* */ }
+}

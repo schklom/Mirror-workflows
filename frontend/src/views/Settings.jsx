@@ -6,7 +6,7 @@ import { convertStateUnit } from '../lib/units.js'
 import { useUI } from '../store/useUI.js'
 import { ACCENTS, todayISO, localTZ, weekStartOf, MONDAY, SUNDAY } from '../lib/format.js'
 import { effortOf } from '../lib/history.js'
-import { unlock, playOnSilentSupported } from '../lib/sound.js'
+import { unlock, playOnSilentSupported, vibrateSupported } from '../lib/sound.js'
 import { api, webauthnOK, passkeyRegister, IS_ANDROID } from '../lib/api.js'
 import { pushSupported, enablePush, disablePush, sendTestPush, syncPushSubscription } from '../lib/push.js'
 import { wakeLockSupported } from '../lib/wakelock.js'
@@ -353,6 +353,14 @@ export default function Settings() {
         <Row icon="bell" iconTint="var(--orange)" title={t('Play sounds when the phone is on silent')}
           subtitle={t('Music playing on this phone stops during a workout and does not resume by itself.')}>
           <Switch checked={!!S.soundOnSilent} onChange={v => update(s => { s.soundOnSilent = v })} />
+        </Row>
+      )}
+      {/* The buzz at the end of a rest or a hold and on a set tick, on its own switch like the
+          sound (Discord, asierlama). Not offered where there is nothing to buzz: iOS has no
+          navigator.vibrate. */}
+      {vibrateSupported() && (
+        <Row icon="bell" iconTint="var(--indigo)" title={t('Vibrate')}>
+          <Switch checked={S.vibrate !== false} onChange={v => update(s => { s.vibrate = v })} />
         </Row>
       )}
       <Row icon="sun" iconTint="var(--yellow)" title={t('Flash screen when timer ends')}>

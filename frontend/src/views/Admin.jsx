@@ -30,9 +30,24 @@ const rel = ts => {
 }
 const dur = ms => { const m = Math.max(0, Math.floor(ms / 60000)); return m < 60 ? m + ' min' : Math.floor(m / 60) + ' h ' + (m % 60) + ' min' }
 
+// The one time the reset code is visible. Locked, so a tap beside the sheet cannot lose it
+// before it has been copied or written down.
+function ResetCodeSheet({ name, code, expires, close }) {
+  const toast = useUI(s => s.toast)
+  const copy = () => { navigator.clipboard?.writeText(code).catch(() => {}); toast('Copied') }
+  return <>
+    <h3>Reset code for {name}</h3>
+    <div className="adm-lead">Give them this code. They choose “Sign in with password” → “Have a reset code from your admin?”, enter their name <b>{name}</b>, the code and a new password. It works once, until {new Date(expires).toLocaleString()}, and will not be shown again.</div>
+    <button className="adm-code" style={{ fontSize: 22, width: '100%', padding: '14px 0' }} onClick={copy} aria-label="copy code">{code}</button>
+    <div style={{ height: 12 }} />
+    <Button variant="primary" onClick={close}>Done</Button>
+  </>
+}
+
 function UserDetail({ id, onChanged, close }) {
   const [d, setD] = useState(null)
   const toast = useUI(s => s.toast)
+  const openSheet = useUI(s => s.openSheet)
   useEffect(() => { api('/api/admin/user?id=' + encodeURIComponent(id)).then(setD).catch(e => toast(e.message)) }, [id])
   if (!d) return <div className="muted small">Loading…</div>
   const u = d.user
@@ -61,12 +76,26 @@ function UserDetail({ id, onChanged, close }) {
       .then(() => { toast(disabled ? 'User disabled' : 'User enabled'); onChanged(); close() })
       .catch(e => toast(e.message))
   }
+  // Password sign-in (#118): the server only sends `password` when the instance offers it. The
+  // code comes back once, is shown once, and is never stored anywhere but as a hash.
+  const pwInstance = typeof u.password === 'boolean'
+  const resetPassword = () => confirmSheet({
+    title: 'Reset ' + u.name + '’s password?',
+    message: 'You get a one-time code to hand them. Their current password stops working now and they are signed out everywhere; their passkeys keep working. They set a new password with the code under “Sign in with password”. It is shown once and is valid for 24 hours.',
+    confirmText: 'Create reset code',
+    danger: true,
+    onConfirm: () => api('/api/admin/user/password-reset', { method: 'POST', body: JSON.stringify({ id: u.id }) })
+      .then(r => { onChanged(); close(); openSheet(done => <ResetCodeSheet name={r.name} code={r.code} expires={r.expires} close={done} />, { locked: true }) })
+      .catch(e => toast(e.message)),
+  })
   return <>
     <h3 className="capitalize">{u.name}</h3>
     <div className="row" style={{ gap: 6, flexWrap: 'wrap', margin: '8px 0 12px' }}>
       {u.admin && <span className="adm-pill acc">admin</span>}
       {u.disabled && <span className="adm-pill bad">disabled</span>}
       {u.invitedBy && <span className="adm-pill">invite {u.invitedBy}</span>}
+      {u.password && <span className="adm-pill">password</span>}
+      {u.resetUntil && <span className="adm-pill acc">reset code until {new Date(u.resetUntil).toLocaleString()}</span>}
       <span className="adm-pill">joined {u.created ? fmtDate(u.created.slice(0, 10)) : '—'}</span>
     </div>
     <div className="tiles" style={{ textAlign: 'start' }}>
@@ -100,6 +129,12 @@ function UserDetail({ id, onChanged, close }) {
         })}>Delete account</button>
       <button className="btn" style={{ marginBottom: 4 }} onClick={exportUser}>Download their data</button>
       <div className="adm-hint">Deleting removes the account and every trace of its training history from this server.</div>
+      {pwInstance && <>
+        <button className="btn" style={{ margin: '14px 0 4px' }} onClick={resetPassword}>Reset password</button>
+        <div className="adm-hint">{u.password
+          ? 'For a forgotten password: a one-time code lets them choose a new one. Their current password stops working at once.'
+          : 'No password yet. A one-time code lets them set one — the way back in after losing their only passkey.'}</div>
+      </>}
     </>}
     <h4 className="sec">Workout history</h4>
     {workouts.length ? <div className="list" style={{ gap: 0 }}>

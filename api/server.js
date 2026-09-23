@@ -19,6 +19,11 @@ import { startCadence } from './coach/cadence.js';
 import { startWarmup } from './coach/warmup.js';
 import { dayReminderPush, restTimerPush, testPush } from './push-messages.js';
 import { verifyError } from './verify-error.js';
+import {
+  hashPassword, verifyPassword, needsRehash, passwordProblem, passwordLength, nameKey, BusyError,
+  MIN_LENGTH, MAX_LENGTH, makeResetCode, hashResetCode, resetCodeMatches, RESET_TTL_MS, warmUp
+} from './password.js';
+import { createBackoff, createWindow } from './rate-limit.js';
 
 const PORT = +(process.env.PORT || 3000);
 const DATA = process.env.DATA_DIR || '/data';
@@ -34,6 +39,14 @@ const INVITE_ONLY = /^(1|true|yes|on)$/i.test(process.env.INVITE_ONLY || '');
 // out of is still the wrong front door (#42). Default ON, so existing instances are unchanged;
 // the polarity is inverted from INVITE_ONLY because the safe default here is the permissive one.
 const ALLOW_GUEST = !/^(0|false|no|off)$/i.test(process.env.ALLOW_GUEST || '');
+// Name-and-password sign-in next to passkeys (#118). Off by default: it adds a second way into
+// every account that opts in, so an instance has to ask for it. While it is off every password
+// route answers 404 and the app shows none of it; hashes already stored stay where they are.
+const PASSWORD_LOGIN = /^(1|true|yes|on)$/i.test(process.env.PASSWORD_LOGIN || '');
+// Whether the address a request came from may be read from the headers a proxy sets. Only the
+// sign-in throttle asks (limitAddress below); the bundled compose file sets it, because the API
+// is reachable there only through the web container, which overwrites those headers.
+const TRUST_PROXY = /^(1|true|yes|on)$/i.test(process.env.TRUST_PROXY || '');
 // 90 days keeps someone who trains a few times a week permanently signed in without a stolen
 // cookie staying good for a year. Overridable because a family instance and one on the open
 // internet don't want the same number. Only affects cookies minted from now on — the expiry is
@@ -491,6 +504,10 @@ const clearCookie = COOKIE === LEGACY_COOKIE
 // below are not holes: each of those routes carries its own credential in the body (a WebAuthn
 // challenge id, a one-shot pairing code), none of them acts on the caller's existing session, and
 // they have to keep working from the mobile WebView, whose origin is never ORIGIN.
+//
+// The password routes are deliberately NOT here. A name and a password are a credential too,
+// but one a hostile page can know — its own — so an exempt POST /api/login/password would let
+// any site sign a visitor into the attacker's account and collect what they log (login CSRF).
 const CSRF_EXEMPT = new Set([
   'POST /api/register/options', 'POST /api/register/verify',
   'POST /api/login/options', 'POST /api/login/verify',
@@ -624,9 +641,9 @@ setInterval(() => { for (const [k, v] of presence) if (Date.now() - v.updatedAt 
 // Who signed in, who tried and failed, and what an admin changed. One JSON object per line in
 // ./data/audit.log, appended and never rewritten in place. It deliberately does not live in
 // db.json: that file is rewritten whole on every save, and the login/register handshakes are
-// unauthenticated and unthrottled by design (see SECURITY.md), so an audit trail in there would
-// turn one bogus request into a full db.json rewrite. A line torn by a crash costs one event and
-// is dropped on read.
+// unauthenticated and unthrottled by design (see SECURITY.md; only the optional password routes
+// are throttled, below), so an audit trail in there would turn one bogus request into a full
+// db.json rewrite. A line torn by a crash costs one event and is dropped on read.
 //
 // On by default. It records strictly less than the instance already holds — every account is in
 // db.json and every workout is in state-<uid>.json, both readable by any admin — and a security
@@ -714,6 +731,410 @@ if (AUDIT_ON) {
   setInterval(compactAudit, 3600000).unref();    // honour AUDIT_DAYS on an idle instance too
 }
 
+/* ---------- sign-in throttle ---------- */
+// The password routes are counted (rate-limit.js), and only those — so only on an instance with
+// PASSWORD_LOGIN on, since none of them exists otherwise. Passkey sign-in, passkey registration
+// and phone pairing stay out of it, as they always were: nothing there is worth guessing (an
+// assertion is a signature, an invite code 64 random bits, a pairing code lives five minutes),
+// and behind a proxy that hands the API one address for every visitor a per-address count on
+// them would let one stranger pause everybody's way in. Three counts:
+//
+//   AUTH_BURST   every request to a password route, 60 a minute per address. Enough for a
+//                household behind one proxy; not enough to run scrypt as fast as one client
+//                can ask.
+//   ADDR_FAILS   wrong answers per address and per kind (a password or reset code, an invite
+//                code on password signup): 20 free, then a pause of 30 s that doubles up to
+//                15 min.
+//   ACCOUNT_FAILS  wrong passwords per *name*, whoever sends them: 5 free, then 1 min doubling
+//                up to 1 h, forgotten after a day without one or on the next success. This is
+//                the one that protects a password — an address is cheap to change, a name is
+//                not. It is keyed by the name as typed, existing or not, so a lockout never
+//                says whether an account is there; the count of a name that has a password is
+//                never evicted to make room for others. Passkeys are never paused by it.
+//
+// A password check is counted against the name and the address the moment it starts, not when
+// its answer comes back (passwordAttempt below): scrypt takes a tenth of a second, and counting
+// afterwards let a burst sent at once be checked in full under a single allowance.
+//
+// Behind a proxy every request can come from the same address (the bundled web container passes
+// the real one on; a second proxy in front of it may not). Then the per-address counts act for
+// the whole instance: one client can pause *password* sign-in for everybody for a while, and the
+// per-name pause is what still protects each password.
+const AUTH_BURST = createWindow({ max: 60, windowMs: 60000 });
+const ADDR_FAILS = createBackoff({ free: 20, baseMs: 30000, maxMs: 15 * 60000, forgetMs: 3600000 });
+const ACCOUNT_FAILS = createBackoff({
+  free: 5, baseMs: 60000, maxMs: 3600000, forgetMs: 24 * 3600000,
+  // At most one per profile with a password, so this cannot grow without bound.
+  keep: k => !!passwordHolder(k)
+});
+setInterval(() => { AUTH_BURST.sweep(); ADDR_FAILS.sweep(); ACCOUNT_FAILS.sweep(); }, 60000).unref();
+
+// Route -> the kind of failure it can count. Every route listed here also spends the burst
+// budget; `null` spends only that.
+const THROTTLED = {
+  'POST /api/login/password': 'password', 'POST /api/login/password-reset': 'password',
+  'POST /api/register/password': 'signup',
+  'POST /api/account/password': 'password', 'DELETE /api/account/password': null
+};
+
+// Which address the throttle counts against. Unlike clientIp() above, which only labels a log
+// line, this decides who is refused, so a header is believed only when TRUST_PROXY says the API
+// sits behind a proxy that sets it. X-Forwarded-For is read from the right: the last entry is
+// the one the trusted proxy added, anything before it is whatever the client claimed. An IPv6
+// client is counted by its /64, which is what one household or one VPS is handed — counting the
+// full address would give an attacker 2^64 fresh starts.
+function limitAddress(req) {
+  const sock = String(req.socket?.remoteAddress || '');
+  let raw = sock;
+  if (TRUST_PROXY) {
+    const xff = String(req.headers['x-forwarded-for'] || '').split(',').map(v => v.trim()).filter(Boolean);
+    raw = String(req.headers['cf-connecting-ip'] || '').trim() || xff[xff.length - 1]
+      || String(req.headers['x-real-ip'] || '').trim() || sock;
+  }
+  raw = raw.replace(/^\[|\]$/g, '');
+  const g = ipv6Groups(raw.toLowerCase());
+  if (g) {
+    if (g.slice(0, 5).every(x => x === 0) && g[5] === 0xffff) return `${g[6] >> 8}.${g[6] & 255}.${g[7] >> 8}.${g[7] & 255}`;
+    return g.slice(0, 4).map(x => x.toString(16)).join(':') + '::/64';
+  }
+  return /^\d{1,3}(\.\d{1,3}){3}$/.test(raw) ? raw : 'unknown';
+}
+function tooMany(res, secs) {
+  json(res, 429, { error: 'too many attempts — try again later', code: 'locked', retryAfter: secs }, { 'Retry-After': String(secs) });
+}
+// Whether the caller's address is paused for `kind`, answering 429 when it is. A route asks this
+// again right before the check it guards, with no await in between: the dispatcher asked before
+// the body was read, and requests sent at once all pass that one together.
+function addressPaused(req, res, kind) {
+  const wait = ADDR_FAILS.retryAfter(kind + '|' + limitAddress(req));
+  if (wait) tooMany(res, wait);
+  return wait > 0;
+}
+// One wrong answer against the caller's address. The pause it starts, if any, is recorded once
+// — not every refused request after it, which anyone could use to fill the log.
+function strikeAddress(req, kind) {
+  const lock = ADDR_FAILS.fail(kind + '|' + limitAddress(req));
+  if (lock) audit(req, 'auth.throttled', { ok: false, msg: kind });
+}
+
+/* ---------- password sign-in (#118) ---------- */
+// Optional, per instance (PASSWORD_LOGIN) and per profile: nobody has a password until they set
+// one. Passkeys stay the default and the recommended way in. What a password needs that a
+// passkey does not — hashing, a policy, the throttle above, a reset an admin can hand out — lives
+// in password.js and rate-limit.js; the routes are here because they share the session, invite
+// and audit machinery of the passkey routes.
+//
+// The name someone signs in with is their profile name, compared the way nameKey() folds it.
+// Profile names were never unique, so the rule is narrower than that: no two profiles *with a
+// password* may share a name. Setting one is refused while the name is taken that way, which is
+// also re-checked after every await, where another request could have taken it meanwhile.
+//
+// An unused reset code holds its profile's name too. The reset has already removed the old
+// password, and a name another profile took in the meantime would make the code impossible to
+// redeem — there is no rename — and leave that profile locked out. Sign-in itself only ever
+// looks at profiles that have a password (passwordHolder).
+const hasPassword = u => !!(u && u.pw && typeof u.pw.h === 'string');
+const passwordHolder = k => db.users.find(u => hasPassword(u) && nameKey(u.name) === k) || null;
+const holdsName = u => hasPassword(u) || !!(u.pwReset && u.pwReset.exp > Date.now());
+const nameTaken = (name, exceptId) => {
+  const k = nameKey(name);
+  return db.users.some(u => u.id !== exceptId && holdsName(u) && nameKey(u.name) === k);
+};
+const passkeyCount = u => db.creds.filter(c => c.userId === u.id).length;
+const publicUser = u => ({ id: u.id, name: u.name, admin: isAdmin(u) });
+const POLICY_ERRORS = {
+  'too-short': `the password needs at least ${MIN_LENGTH} characters`,
+  'too-long': `the password can have at most ${MAX_LENGTH} characters`,
+  'too-common': 'this password is too easy to guess'
+};
+const policyError = (res, problem) => json(res, 400, { error: POLICY_ERRORS[problem], code: problem });
+const WRONG = { error: 'wrong name or password', code: 'bad-credentials' };
+
+// A new password ends every other session of the account, the way "sign out everywhere" does,
+// pending pairing codes included; the caller's own is re-issued by the route. Always a new
+// record, never an edit of the old one: a check still running against the old one tells the two
+// apart by that (see POST /api/login/password).
+function setPassword(user, h) {
+  user.pw = { h, set: new Date().toISOString() };
+  delete user.pwReset;
+  user.sv = sessionVersion(user) + 1;
+  for (const [k, v] of pairings) if (v.uid === user.id) pairings.delete(k);
+}
+
+// A passkey assertion made just now by the signed-in account itself — how someone who has no
+// password yet proves it is them before setting one. A session alone is not enough for that:
+// it may be a cookie someone walked off with, and a password would turn it into a way in that
+// outlives "sign out everywhere". Same ceremony as /api/login/verify, and the credential has
+// to belong to this account.
+async function passkeyStepUp(user, body) {
+  const c = takeChallenge(body.cid);
+  const cred = c && db.creds.find(x => x.id === body.credential?.id && x.userId === user.id);
+  if (!cred) return false;
+  try {
+    const v = await verifyAuthenticationResponse({
+      response: body.credential, expectedChallenge: c.challenge, expectedOrigin: ORIGIN, expectedRPID: RP_ID,
+      requireUserVerification: false,
+      credential: { id: cred.id, publicKey: b64uToBuf(cred.publicKey), counter: cred.counter, transports: cred.transports }
+    });
+    if (!v.verified) return false;
+    cred.counter = v.authenticationInfo.newCounter;
+    return true;
+  } catch { return false; }
+}
+
+// One password check against the name `k`, counted as a failure for the name and for the caller's
+// address before it runs, so that checks sent side by side cannot all start under the same
+// allowance (see the throttle above). Answers 429 itself and returns null when either is paused.
+// The caller settles it once: failed() for a wrong password, ok() for a right one, void() when the
+// answer says nothing against the password — the queue was full, the account is disabled, or the
+// password changed while it was being checked.
+function passwordAttempt(req, res, k) {
+  const addr = 'password|' + limitAddress(req);
+  const wait = ACCOUNT_FAILS.retryAfter(k) || ADDR_FAILS.retryAfter(addr);
+  if (wait) { tooMany(res, wait); return null; }
+  const byName = ACCOUNT_FAILS.attempt(k);
+  const byAddr = ADDR_FAILS.attempt(addr);
+  const settle = () => { byName.undo(); byAddr.undo(); };
+  return {
+    // Every slot and the queue behind them taken (BusyError) is not a wrong password.
+    async verify(pw, stored) {
+      // Longer than any password that can be set: wrong, without hashing a megabyte to find out.
+      try { return passwordLength(pw) <= MAX_LENGTH && await verifyPassword(pw, stored); }
+      catch (e) { settle(); throw e; }
+    },
+    // The audit line names the account only when there is one — what someone typed into the
+    // name field is sometimes their password.
+    failed(user, msg) {
+      audit(req, 'auth.password.fail', user ? { ok: false, user, msg } : { ok: false, msg: 'unknown-name' });
+      if (byName.lock) audit(req, 'auth.password.locked', user ? { ok: false, user } : { ok: false, msg: 'unknown-name' });
+      if (byAddr.lock) audit(req, 'auth.throttled', { ok: false, msg: 'password' });
+    },
+    // A right password starts the name over; the address keeps whatever else it has run up.
+    ok() { ACCOUNT_FAILS.clear(k); byAddr.undo(); },
+    void: settle
+  };
+}
+
+if (PASSWORD_LOGIN) warmUp();
+
+const passwordRoutes = {
+  'POST /api/login/password': async (req, res) => {
+    const body = await readBody(req);
+    const k = nameKey(text(body.name).slice(0, 200));
+    const pw = typeof body.password === 'string' ? body.password : '';
+    if (!k || !pw) return json(res, 400, { error: 'name and password required', code: 'missing' });
+    const check = passwordAttempt(req, res, k);
+    if (!check) return;
+    const user = passwordHolder(k);
+    const rec = user?.pw;
+    if (!(await check.verify(pw, rec?.h))) {
+      check.failed(user, 'bad-password');
+      return json(res, 401, WRONG);
+    }
+    // Right for the password read before the await — which a change, an admin reset or a removal
+    // may have replaced since (each puts a new record in user.pw or none; only a rehash edits it
+    // in place). A session signed now would carry the account's *new* session version and outlive
+    // the "signed out everywhere" that came with it, so the old password gets nothing; it is not
+    // counted as a wrong one either.
+    const still = () => hasPassword(user) && user.pw === rec && passwordHolder(k) === user;
+    if (!still()) {
+      check.void();
+      return json(res, 401, WRONG);
+    }
+    if (user.disabled) {
+      check.void();
+      audit(req, 'auth.password.fail', { ok: false, user, msg: 'account-disabled' });
+      return json(res, 403, { error: 'this account has been disabled', code: 'disabled' });
+    }
+    check.ok();
+    // A hash made with older parameters is replaced now, while the password is at hand.
+    if (needsRehash(rec.h)) {
+      try {
+        const h = await hashPassword(pw);
+        if (still()) { rec.h = h; saveDb(); }
+      } catch (e) { if (!(e instanceof BusyError)) throw e; }
+      // The same question again: the password may have changed while the new hash was made.
+      if (!still()) return json(res, 401, WRONG);
+    }
+    audit(req, 'auth.password.ok', { user });
+    json(res, 200, { user: publicUser(user) }, { 'Set-Cookie': sessionCookie(user) });
+  },
+
+  // For browsers that cannot make a passkey at all: plain http on a LAN address, some Firefox
+  // setups. Same invite rules as /api/register/*, checked again and burned after the hash.
+  'POST /api/register/password': async (req, res) => {
+    const body = await readBody(req);
+    const name = text(body.name).trim().slice(0, 40);
+    if (!name) return json(res, 400, { error: 'name required', code: 'missing' });
+    const code = text(body.code).trim().toUpperCase();
+    const invite = () => db.invites.find(i => i.code === code && !i.usedBy && !i.revoked);
+    if (INVITE_ONLY && addressPaused(req, res, 'signup')) return;
+    if (INVITE_ONLY && !invite()) {
+      audit(req, 'auth.register.denied', { ok: false, name, msg: 'invite-rejected' });
+      strikeAddress(req, 'signup');
+      return json(res, 403, { error: 'a valid invite code is required', code: 'invite' });
+    }
+    const problem = passwordProblem(body.password, name);
+    if (problem) return policyError(res, problem);
+    const taken = () => json(res, 409, { error: 'another profile already signs in with this name', code: 'name-taken' });
+    if (nameTaken(name)) return taken();
+    const h = await hashPassword(body.password);
+    let inv = null;
+    if (INVITE_ONLY) {
+      inv = invite();
+      if (!inv) {
+        audit(req, 'auth.register.fail', { ok: false, name, msg: 'invite-invalid' });
+        return json(res, 403, { error: 'invite code is no longer valid — ask for a new one', code: 'invite' });
+      }
+    }
+    if (nameTaken(name)) return taken();
+    const created = new Date().toISOString();
+    const user = { id: crypto.randomBytes(12).toString('base64url'), name, created, pw: { h, set: created } };
+    if (inv) { user.invitedBy = inv.code; inv.usedBy = user.id; inv.usedAt = created; }
+    db.users.push(user);
+    saveDb();
+    audit(req, 'auth.register.ok', { user, msg: inv ? inv.code + ' · password' : 'password' });
+    json(res, 200, { user: publicUser(user) }, { 'Set-Cookie': sessionCookie(user) });
+  },
+
+  // What Settings shows: whether a password is set, and whether it could be removed.
+  'GET /api/account/password': async (req, res) => {
+    const user = readSession(req);
+    if (!user) return json(res, 401, { error: 'not signed in' });
+    json(res, 200, {
+      set: hasPassword(user), setAt: user.pw?.set || null, passkeys: passkeyCount(user),
+      name: user.name, nameTaken: nameTaken(user.name, user.id)
+    });
+  },
+
+  // Set or change. Proof first: the current password when there is one, or a passkey assertion
+  // made for this request (which is also how a forgotten password is replaced by its owner).
+  'POST /api/account/password': async (req, res) => {
+    const s = sessionOf(req);
+    if (!s) return json(res, 401, { error: 'not signed in' });
+    const { user } = s;
+    const body = await readBody(req);
+    const problem = passwordProblem(body.next, user.name);
+    if (problem) return policyError(res, problem);
+    const taken = () => json(res, 409, { error: 'another profile already signs in with this name', code: 'name-taken' });
+    if (nameTaken(user.name, user.id)) return taken();
+    const k = nameKey(user.name);
+    let proof;
+    if (body.credential) {
+      if (!(await passkeyStepUp(user, body))) {
+        audit(req, 'auth.password.fail', { ok: false, user, msg: 'step-up-failed' });
+        return json(res, 403, { error: 'the passkey could not be verified', code: 'passkey' });
+      }
+      proof = 'passkey';
+    } else if (hasPassword(user)) {
+      const current = typeof body.current === 'string' ? body.current : '';
+      const wrongCurrent = () => json(res, 403, { error: 'your current password is not right', code: 'current-wrong' });
+      if (!current) return json(res, 403, { error: 'enter your current password', code: 'current-required' });
+      const check = passwordAttempt(req, res, k);
+      if (!check) return;
+      const rec = user.pw;
+      if (!(await check.verify(current, rec.h))) {
+        check.failed(user, 'bad-current');
+        return wrongCurrent();
+      }
+      // Changed or removed while it was being checked: it is no longer the current password.
+      if (user.pw !== rec) { check.void(); return wrongCurrent(); }
+      check.ok();
+      proof = 'password';
+    } else {
+      return json(res, 403, { error: 'confirm with your passkey first', code: 'passkey-required' });
+    }
+    const h = await hashPassword(body.next);
+    // Everything above awaited: an admin reset, a disable or "sign out everywhere" may have ended
+    // this session in the meantime, and a password set now would outlive that.
+    if (sessionOf(req)?.user !== user) return json(res, 401, { error: 'not signed in' });
+    if (nameTaken(user.name, user.id)) return taken();
+    const first = !hasPassword(user);
+    setPassword(user, h);
+    // Whatever pause wrong guesses put on this name was about a password that no longer exists.
+    ACCOUNT_FAILS.clear(k);
+    saveDb();
+    audit(req, first ? 'auth.password.set' : 'auth.password.change', { user, msg: proof });
+    // This session carries on under the new version: a new cookie, or a new token for a phone.
+    if (s.bearer) return json(res, 200, { ok: true, token: makeSession(user) });
+    json(res, 200, { ok: true }, { 'Set-Cookie': sessionCookie(user) });
+  },
+
+  // Never the last way in: a profile with no passkey keeps its password, because nothing else
+  // could sign it in again. Existing sessions are left alone; "sign out everywhere" ends them.
+  'DELETE /api/account/password': async (req, res) => {
+    const user = readSession(req);
+    if (!user) return json(res, 401, { error: 'not signed in' });
+    if (!hasPassword(user)) return json(res, 200, { ok: true });
+    if (!passkeyCount(user)) return json(res, 409, { error: 'the password is the only way into this profile', code: 'last-way-in' });
+    delete user.pw;
+    saveDb();
+    audit(req, 'auth.password.remove', { user });
+    json(res, 200, { ok: true });
+  },
+
+  // An admin hands out a one-time code; the person redeems it below with a password of their
+  // choosing. Issuing it ends the old password and every session of the account at once: a
+  // reset is asked for when access is lost or in doubt, and a password someone else may know
+  // should not keep working for the day the code is valid. Passkeys are left alone. The code is
+  // shown once and stored only as a hash. Admin accounts are refused, as they are by disable —
+  // one admin must not be able to take over another's login.
+  'POST /api/admin/user/password-reset': async (req, res) => {
+    const admin = requireAdmin(req, res); if (!admin) return;
+    const body = await readBody(req);
+    const u = db.users.find(x => x.id === body.id);
+    if (!u) return json(res, 404, { error: 'no such user' });
+    if (isAdmin(u)) return json(res, 400, { error: 'an admin sets their own password in Settings' });
+    if (nameTaken(u.name, u.id)) return json(res, 409, { error: 'another profile already signs in with this name', code: 'name-taken' });
+    const code = makeResetCode();
+    delete u.pw;
+    u.pwReset = { h: hashResetCode(code), exp: Date.now() + RESET_TTL_MS, by: admin.id };
+    u.sv = sessionVersion(u) + 1;
+    for (const [k, v] of pairings) if (v.uid === u.id) pairings.delete(k);
+    presence.delete(u.id);
+    saveDb();
+    audit(req, 'admin.password.reset', { user: admin, target: u });
+    json(res, 200, { ok: true, name: u.name, code, expires: u.pwReset.exp });
+  },
+
+  'POST /api/login/password-reset': async (req, res) => {
+    const body = await readBody(req);
+    const k = nameKey(text(body.name).slice(0, 200));
+    const code = text(body.code).slice(0, 64);
+    if (!k || !code) return json(res, 400, { error: 'name and code required', code: 'missing' });
+    // Wrong codes count against the address only. A per-name pause would add nothing against a
+    // 60-bit code that lives a day, and would let anyone who knows the name keep the real code
+    // refused for that whole day — after the reset has already removed the old password.
+    if (addressPaused(req, res, 'password')) return;
+    const find = () => db.users.find(u => u.pwReset && nameKey(u.name) === k && resetCodeMatches(code, u.pwReset)) || null;
+    const user = find();
+    const invalid = () => json(res, 400, { error: 'that reset code is wrong or has expired', code: 'reset-invalid' });
+    const taken = () => json(res, 409, { error: 'another profile already signs in with this name', code: 'name-taken' });
+    if (!user) {
+      strikeAddress(req, 'password');
+      audit(req, 'auth.password.reset', { ok: false, msg: 'reset-invalid' });
+      return invalid();
+    }
+    if (user.disabled) {
+      audit(req, 'auth.password.reset', { ok: false, user, msg: 'account-disabled' });
+      return json(res, 403, { error: 'this account has been disabled', code: 'disabled' });
+    }
+    // The code is good and stays good until a password is actually set with it.
+    const problem = passwordProblem(body.next, user.name);
+    if (problem) return policyError(res, problem);
+    if (nameTaken(user.name, user.id)) return taken();
+    const h = await hashPassword(body.next);
+    // Single use: a second request that raced this one through the hash finds the code gone.
+    if (find() !== user) return invalid();
+    if (nameTaken(user.name, user.id)) return taken();
+    setPassword(user, h);
+    ACCOUNT_FAILS.clear(k);
+    saveDb();
+    audit(req, 'auth.password.reset', { user });
+    json(res, 200, { user: publicUser(user) }, { 'Set-Cookie': sessionCookie(user) });
+  }
+};
+
 /* ---------- routes ---------- */
 const routes = {
   'GET /api/health': async (req, res) => json(res, 200, { ok: true, users: db.users.length }),
@@ -739,6 +1160,8 @@ const routes = {
     // that has no Coach. The key's absence is that answer.
     json(res, 200, {
       invite_only: INVITE_ONLY, allow_guest: ALLOW_GUEST,
+      // Only when on, so an instance without passwords answers exactly as it did before (#118).
+      ...(PASSWORD_LOGIN ? { password_login: true } : {}),
       ...(readSession(req) ? { coach: coachConfig.publicConfig() } : {})
     });
   },
@@ -948,6 +1371,9 @@ const routes = {
     json(res, 200, { token: makeSession(user), user: { id: user.id, name: user.name, admin: isAdmin(user) } });
   },
 
+  // Absent entirely while PASSWORD_LOGIN is off, so each of them is a plain 404.
+  ...(PASSWORD_LOGIN ? passwordRoutes : {}),
+
   // `rev` is the server's own count of writes to this profile (also stored inside the document as
   // `_rev`, so every other reader of the file — reminder tick, admin, Coach, MCP — is unaffected).
   // A client pushes it back as `baseRev`, and a write over a document it never saw is refused.
@@ -1135,10 +1561,11 @@ const routes = {
         lastWorkout: last ? last.d : null,
         lastSync: S._ts || null,
         hasPush: db.subs.some(s => s.userId === u.id),
-        live: livePresence(u.id)
+        live: livePresence(u.id),
+        ...(PASSWORD_LOGIN ? { password: hasPassword(u) } : {})
       };
     });
-    json(res, 200, { users, invite_only: INVITE_ONLY, now: Date.now() });
+    json(res, 200, { users, invite_only: INVITE_ONLY, ...(PASSWORD_LOGIN ? { password_login: true } : {}), now: Date.now() });
   },
 
   // Drill-down: full workout history + body-weight log for one user.
@@ -1149,7 +1576,12 @@ const routes = {
     if (!u) return json(res, 404, { error: 'no such user' });
     const S = readState(u.id) || {};
     json(res, 200, {
-      user: { id: u.id, name: u.name, created: u.created || null, disabled: !!u.disabled, admin: isAdmin(u), invitedBy: u.invitedBy || null },
+      user: {
+        id: u.id, name: u.name, created: u.created || null, disabled: !!u.disabled, admin: isAdmin(u), invitedBy: u.invitedBy || null,
+        // Only on an instance with password sign-in: whether they have one, and until when an
+        // unused reset code is good.
+        ...(PASSWORD_LOGIN ? { password: hasPassword(u), resetUntil: u.pwReset?.exp > Date.now() ? u.pwReset.exp : null } : {})
+      },
       unit: S.unit || 'kg',
       lastSync: S._ts || null,
       routines: records(S.routines).map(r => ({ id: r.id, name: r.name, emoji: r.emoji, count: records(r.ex).length })),
@@ -1211,10 +1643,10 @@ const routes = {
     const admin = requireAdmin(req, res); if (!admin) return;
     const body = await readBody(req);
     let code;
-    // 16 hex chars = 64 bits, up from 8 chars / 32 bits. The app has no rate limiting by design
-    // (that's the reverse proxy's job) and /api/register/options tells a caller whether a code is
-    // good, so the code itself has to be the thing that isn't worth guessing. Codes already in
-    // db.json keep working — validation is an exact string compare, never a length or format check.
+    // 16 hex chars = 64 bits, up from 8 chars / 32 bits. Passkey signup has no rate limiting by
+    // design (that's the reverse proxy's job) and /api/register/options tells a caller whether a
+    // code is good, so the code itself has to be the thing that isn't worth guessing. Codes already
+    // in db.json keep working — validation is an exact string compare, never a length or format check.
     do { code = crypto.randomBytes(8).toString('hex').toUpperCase(); } while (db.invites.some(i => i.code === code));
     const invite = { code, note: text(body.note).slice(0, 60), createdBy: admin.id, created: new Date().toISOString() };
     db.invites.push(invite);
@@ -1326,11 +1758,24 @@ const server = http.createServer(async (req, res) => {
     console.warn('refused cross-origin', key, 'origin=' + req.headers.origin, 'expected=' + ORIGIN);
     return json(res, 403, { error: 'cross-origin request refused' });
   }
+  // After the origin check, so a forged request spends nobody's budget. The password routes only
+  // (see the sign-in throttle above).
+  if (key in THROTTLED) {
+    const addr = limitAddress(req);
+    const kind = THROTTLED[key];
+    const wait = AUTH_BURST.take(addr) || (kind ? ADDR_FAILS.retryAfter(kind + '|' + addr) : 0);
+    if (wait) return tooMany(res, wait);
+  }
   try { await handler(req, res); }
   catch (e) {
     if (e?.clientGone) { console.warn(key, 'client went away mid-body:', e.message); return; }
     if (e instanceof HttpError) {
       if (!res.headersSent) json(res, e.status, { error: e.message });
+      return;
+    }
+    // Every scrypt slot and the short queue behind them are taken (password.js).
+    if (e instanceof BusyError) {
+      if (!res.headersSent) json(res, 503, { error: 'the server is busy — try again in a moment', code: 'busy' }, { 'Retry-After': '2' });
       return;
     }
     console.error(key, e);

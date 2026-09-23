@@ -132,9 +132,28 @@ export async function passkeyRegister(name, code) {
   const res = await api('/api/register/verify', { method: 'POST', body: JSON.stringify({ cid, credential: credToJSON(cred) }) })
   return res.user
 }
-export async function passkeyLogin() {
+// One passkey ceremony, not yet sent anywhere: /api/login/verify turns it into a sign-in, and
+// POST /api/account/password takes it as proof before a first password is set (#118).
+export async function passkeyAssertion() {
   const { cid, options } = await api('/api/login/options', { method: 'POST', body: '{}' })
   const cred = await navigator.credentials.get({ publicKey: toRequestOptions(options) })
-  const res = await api('/api/login/verify', { method: 'POST', body: JSON.stringify({ cid, credential: credToJSON(cred) }) })
+  return { cid, credential: credToJSON(cred) }
+}
+export async function passkeyLogin() {
+  const res = await api('/api/login/verify', { method: 'POST', body: JSON.stringify(await passkeyAssertion()) })
   return res.user
+}
+
+// Name-and-password sign-in, on an instance that offers it (config.password_login). Each of
+// these answers with the same session cookie a passkey sign-in sets, so callers treat the user
+// they return exactly alike.
+const post = (path, body) => api(path, { method: 'POST', body: JSON.stringify(body) })
+export async function passwordLogin(name, password) {
+  return (await post('/api/login/password', { name, password })).user
+}
+export async function passwordRegister(name, password, code) {
+  return (await post('/api/register/password', { name, password, code: code || '' })).user
+}
+export async function passwordResetRedeem(name, code, next) {
+  return (await post('/api/login/password-reset', { name, code, next })).user
 }

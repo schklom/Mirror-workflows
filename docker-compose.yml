@@ -51,6 +51,10 @@ services:
       # cannot drift — change it in .env and both follow.
       - PORT=${PORT:-3000}
       - DATA_DIR=/data
+      # The API is reachable only through the web container here, and that container overwrites
+      # X-Forwarded-For / X-Real-IP with the real peer — so the sign-in throttle may count
+      # requests by those headers instead of lumping everyone in as "the web container".
+      - TRUST_PROXY=${TRUST_PROXY:-1}
     volumes:
       - ./data:/data         # users, passkeys, per-user state, session secret — BACK THIS UP
       # Provider credential cache (Codex). A sibling of ./data on purpose: the documented backup

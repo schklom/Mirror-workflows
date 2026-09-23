@@ -47,6 +47,10 @@ describe('auditReason', () => {
       expect(auditReason(m).length).toBeGreaterThan(3)
     }
   })
+  it('says what a throttle pause was for, including the kind the server passes in a variable', () => {
+    expect(auditLine({ ev: 'auth.throttled', ok: false, msg: 'signup' }).sub).toMatch(/invite codes/)
+    expect(auditLine({ ev: 'auth.throttled', ok: false, msg: 'password' }).sub).toMatch(/wrong passwords/)
+  })
   it('falls back to the raw code and tolerates none at all', () => {
     expect(auditReason('brand-new-code')).toBe('brand-new-code')
     expect(auditReason(undefined)).toBe('')

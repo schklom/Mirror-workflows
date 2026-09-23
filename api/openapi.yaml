@@ -14,11 +14,29 @@ info:
     HMAC-signed session cookies.
 
     ### Authentication
-    Sign-in is **passkey only** (WebAuthn, via `@simplewebauthn/server`). A successful
+    Sign-in is by **passkey** (WebAuthn, via `@simplewebauthn/server`). A successful
     `register/verify` or `login/verify` sets the session cookie; every authenticated
     route then works with that cookie. The paired mobile app has no shared cookie jar,
     so it redeems a short pairing code (`/api/pair/redeem`) for the *same* signed token
     and sends it as `Authorization: Bearer <token>` instead.
+
+    An instance started with `PASSWORD_LOGIN=1` also offers **name-and-password
+    sign-in** (tag `password`): opt-in per profile, scrypt-hashed, throttled, with an
+    admin-issued one-time reset code instead of e-mail. Its routes set exactly the same
+    cookie. With the flag off (the default) every one of them answers 404.
+
+    ### Throttling
+    The `password` routes are counted per client address: at most 60 requests a minute
+    across them, and wrong answers (a password, a reset code, an invite code on password
+    signup) pause the address after 20 for 30 s, doubling up to 15 min. Wrong passwords
+    also pause the *name* they were tried against after 5, for 1 min doubling up to 1 h,
+    whether or not a profile has that name. A password check counts from the moment it
+    starts, so checks sent at once get no more tries than checks sent one by one. A
+    paused caller gets `429 {"error": …, "code": "locked", "retryAfter": <s>}` with a
+    `Retry-After` header. The passkey and pairing routes are not throttled.
+    The address is the socket's, or with `TRUST_PROXY=1` the one a trusted proxy put in
+    `CF-Connecting-IP` / the last `X-Forwarded-For` entry / `X-Real-IP`; IPv6 clients are
+    counted by /64. Counters live in memory and reset on restart.
 
     ### Sessions
     The cookie/bearer value is `<payload>.<hmac>` where the payload is
@@ -33,6 +51,8 @@ info:
     a mismatch is refused with `403 {"error":"cross-origin request refused"}` on any
     non-GET route. Exempt: the WebAuthn and `pair/redeem` routes (each carries its own
     one-shot credential in the body) and any request authenticated with a Bearer token.
+    The password routes are **not** exempt: a hostile page knows a valid name and
+    password of its own, and could otherwise sign a visitor into it (login CSRF).
 
     ### Environment-dependent behavior
     - `INVITE_ONLY=1` — registration requires a valid invite code (minted by an admin).
@@ -44,6 +64,10 @@ info:
     - `AUDIT_LOG` (default on), `AUDIT_MAX` (default 5000 events), `AUDIT_DAYS`
       (default 90), `AUDIT_IP` (`off` | `net` | `full`, default off) — shape the audit
       log served by `GET /api/admin/audit`.
+    - `PASSWORD_LOGIN=1` — adds the `password` routes and `password_login: true` in
+      `GET /api/config`. Off by default.
+    - `TRUST_PROXY=1` — the throttle reads the client address from proxy headers (set by
+      the bundled `docker-compose.yml`, where only the web container can reach the API).
 
     ### Conventions
     - Every response body is JSON with `Cache-Control: no-store`.
@@ -78,6 +102,10 @@ tags:
     description: Passkey (WebAuthn) registration and login, sessions
   - name: pairing
     description: Mobile-app pairing (code from a signed-in browser tab)
+  - name: password
+    description: >-
+      Optional name-and-password sign-in (`PASSWORD_LOGIN=1`). Every route here is a 404
+      while the flag is off.
   - name: data
     description: Per-user state sync (the whole app state as one JSON blob)
   - name: push
@@ -124,7 +152,8 @@ paths:
       summary: Instance configuration
       description: |
         The flags the login screen needs before anyone is signed in. Both reflect
-        environment variables on the server (`INVITE_ONLY`, `ALLOW_GUEST`).
+        environment variables on the server (`INVITE_ONLY`, `ALLOW_GUEST`), and so does
+        `password_login`, which is there only when `PASSWORD_LOGIN=1`.
 
         A caller with a valid session also gets a `coach` key: the block when the
         instance has the AI Coach switched on **and** a provider connected, and `null`
@@ -171,6 +200,13 @@ paths:
                       community:
                         type: boolean
                         description: Whether "compare with others" is offered on this instance.
+                  password_login:
+                    type: boolean
+                    const: true
+                    description: >-
+                      Present (and true) only when the instance runs with
+                      PASSWORD_LOGIN=1 — the client then offers name-and-password
+                      sign-in next to passkeys.
               examples:
                 anonymous: { value: { invite_only: true, allow_guest: false } }
                 signedInNoCoach: { value: { invite_only: true, allow_guest: false, coach: null } }
@@ -179,6 +215,7 @@ paths:
                     invite_only: true
                     allow_guest: false
                     coach: { enabled: true, provider: compatible, providerLabel: "OpenAI-compatible endpoint", authMode: instance, community: false }
+                passwordLogin: { value: { invite_only: true, allow_guest: false, password_login: true } }
 
   /api/me:
     get:
@@ -515,6 +552,318 @@ paths:
             application/json:
               schema: { $ref: '#/components/schemas/Error' }
               example: { error: "invalid or expired code" }
+
+  /api/login/password:
+    post:
+      tags: [password]
+      operationId: loginPassword
+      summary: Sign in with a profile name and password
+      description: |
+        Only a profile that has set a password can sign in this way. The name is the
+        profile's display name, compared trimmed, NFKC-normalised and case-insensitively.
+        A wrong password, an unknown name and a name whose profile has no password all get
+        the same `401` after the same scrypt work, so neither the answer nor its timing says
+        which names exist. So does a password that was right when its check started but
+        was changed, reset or removed before the check finished. Five wrong passwords for a
+        name pause it (see *Throttling*); passkey sign-in is never paused by this. Sets the
+        same session cookie as `/api/login/verify`. **Not** CSRF-exempt.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, password]
+              properties:
+                name: { type: string }
+                password: { type: string, maxLength: 256 }
+            example: { name: "Ada", password: "correct horse battery staple" }
+      responses:
+        '200':
+          description: Signed in. The session cookie is set.
+          headers:
+            Set-Cookie:
+              description: Session cookie (see /api/register/verify).
+              schema: { type: string }
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user: { $ref: '#/components/schemas/SessionUser' }
+        '400':
+          description: Name or password missing.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              example: { error: "name and password required", code: "missing" }
+        '401':
+          description: Wrong name or password — deliberately one answer for every cause.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              example: { error: "wrong name or password", code: "bad-credentials" }
+        '403':
+          description: The right password for a disabled account.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              example: { error: "this account has been disabled", code: "disabled" }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+        '503': { $ref: '#/components/responses/Busy' }
+
+  /api/register/password:
+    post:
+      tags: [password]
+      operationId: registerPassword
+      summary: Create a profile with a name and password
+      description: |
+        For browsers that cannot make a passkey (plain http on a LAN address, some Firefox
+        setups). Creates the profile and signs it in. The same invite rules as passkey
+        registration apply: on an invite-only instance the code is checked first, checked
+        again after hashing, and burned. The password must be 10–256 characters and not one
+        of the passwords guessing scripts try first; no two profiles with a password may
+        share a name. **Not** CSRF-exempt.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, password]
+              properties:
+                name: { type: string, maxLength: 40 }
+                password: { type: string, minLength: 10, maxLength: 256 }
+                code: { type: string, description: Invite code (INVITE_ONLY only). }
+            example: { name: "Ada", password: "correct horse battery staple", code: "3F9C21A07B54D688" }
+      responses:
+        '200':
+          description: Registered and signed in. The session cookie is set.
+          headers:
+            Set-Cookie:
+              description: Session cookie (see /api/register/verify).
+              schema: { type: string }
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user: { $ref: '#/components/schemas/SessionUser' }
+        '400': { $ref: '#/components/responses/PasswordPolicy' }
+        '403':
+          description: Invite-only and the code is missing, used or revoked.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              example: { error: "a valid invite code is required", code: "invite" }
+        '409': { $ref: '#/components/responses/NameTaken' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+        '503': { $ref: '#/components/responses/Busy' }
+
+  /api/login/password-reset:
+    post:
+      tags: [password]
+      operationId: redeemPasswordReset
+      summary: Set a new password with an admin's one-time reset code
+      description: |
+        Redeems the code from `POST /api/admin/user/password-reset` (valid 24 h, single
+        use, stored only as a hash; dashes, spaces and case do not matter) and signs in.
+        A new password that breaks the policy is refused without using up the code. Every
+        other session of the account ends. Wrong codes count against the caller's address
+        only (see *Throttling*), never against the name, so they cannot keep a real code
+        from working. **Not** CSRF-exempt.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, code, next]
+              properties:
+                name: { type: string }
+                code: { type: string, example: "K7WQ-2MZP-4HXA" }
+                next: { type: string, minLength: 10, maxLength: 256 }
+      responses:
+        '200':
+          description: Password set and signed in. The session cookie is set.
+          headers:
+            Set-Cookie:
+              description: Session cookie (see /api/register/verify).
+              schema: { type: string }
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user: { $ref: '#/components/schemas/SessionUser' }
+        '400':
+          description: >-
+            `reset-invalid` (wrong, used or expired code — one answer for all),
+            `missing`, or a password-policy code.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              example: { error: "that reset code is wrong or has expired", code: "reset-invalid" }
+        '403':
+          description: The account has been disabled.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              example: { error: "this account has been disabled", code: "disabled" }
+        '409': { $ref: '#/components/responses/NameTaken' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+        '503': { $ref: '#/components/responses/Busy' }
+
+  /api/account/password:
+    get:
+      tags: [password]
+      operationId: getAccountPassword
+      summary: Whether this profile has a password
+      responses:
+        '200':
+          description: The profile's password state.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  set: { type: boolean }
+                  setAt: { oneOf: [{ type: string }, { type: 'null' }], description: ISO timestamp. }
+                  passkeys: { type: integer, description: 'How many passkeys the profile has; 0 means the password cannot be removed.' }
+                  name: { type: string, description: The name to sign in with. }
+                  nameTaken:
+                    type: boolean
+                    description: Another profile already signs in with this name, so no password can be set here.
+              example: { set: true, setAt: "2026-09-23T10:00:00.000Z", passkeys: 1, name: "Ada", nameTaken: false }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+    post:
+      tags: [password]
+      operationId: setAccountPassword
+      summary: Set or change this profile's password
+      description: |
+        Proof first: `current` when the profile has a password, or a passkey assertion made
+        for this request (`cid` from `POST /api/login/options`, `credential` signed by one of
+        *this* profile's passkeys) — the only way to set a first password, and the way to
+        replace a forgotten one. A session alone is never enough. Wrong `current` values
+        count toward the same pause as wrong sign-ins. On success the session version is
+        bumped, which ends every other session and pending pairing code of the account; the
+        caller's own continues on a fresh cookie, or a fresh `token` for a Bearer caller.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [next]
+              properties:
+                next: { type: string, minLength: 10, maxLength: 256 }
+                current: { type: string }
+                cid: { type: string }
+                credential: { $ref: '#/components/schemas/WebAuthnAuthenticationCredential' }
+      responses:
+        '200':
+          description: Saved. Other sessions have ended.
+          headers:
+            Set-Cookie:
+              description: A fresh session cookie for this browser (cookie callers).
+              schema: { type: string }
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok: { type: boolean, const: true }
+                  token: { type: string, description: 'Bearer callers only — the token to use from now on.' }
+        '400': { $ref: '#/components/responses/PasswordPolicy' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403':
+          description: >-
+            No acceptable proof: `current-required`, `current-wrong`, `passkey-required`
+            (no password yet, so a passkey has to confirm), or `passkey` (the assertion did
+            not verify or belongs to another profile).
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              example: { error: "your current password is not right", code: "current-wrong" }
+        '409': { $ref: '#/components/responses/NameTaken' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+        '503': { $ref: '#/components/responses/Busy' }
+    delete:
+      tags: [password]
+      operationId: removeAccountPassword
+      summary: Remove this profile's password
+      description: >-
+        Refused while the profile has no passkey: the password would be its last way in.
+        Existing sessions are left alone (`POST /api/logout/all` ends them). A profile
+        without a password gets 200 as well.
+      responses:
+        '200':
+          description: Removed (or there was none).
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Ok' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '409':
+          description: The password is the profile's only way in.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              example: { error: "the password is the only way into this profile", code: "last-way-in" }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+
+  /api/admin/user/password-reset:
+    post:
+      tags: [admin, password]
+      operationId: adminPasswordReset
+      summary: 'Admin: issue a one-time password reset code'
+      description: |
+        Returns a code (12 characters from the pairing alphabet, 60 bits) that is shown
+        once, stored only as a SHA-256, valid for 24 h and good for one
+        `POST /api/login/password-reset`. Issuing it removes the profile's current password
+        and bumps its session version (every session and pending pairing code ends);
+        passkeys keep working. A newer code replaces an older one. Admin accounts are
+        refused — an admin sets their own password in Settings. Audited as
+        `admin.password.reset`.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [id]
+              properties:
+                id: { type: string, description: The user id. }
+      responses:
+        '200':
+          description: The code, once.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok: { type: boolean, const: true }
+                  name: { type: string, description: The name to redeem it with. }
+                  code: { type: string }
+                  expires: { type: number, description: Expiry (ms). }
+              example: { ok: true, name: "Ada", code: "K7WQ-2MZP-4HXA", expires: 1790000000000 }
+        '400':
+          description: The target is an admin.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              example: { error: "an admin sets their own password in Settings" }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404':
+          description: No user with that id.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              example: { error: "no such user" }
+        '409': { $ref: '#/components/responses/NameTaken' }
 
   /api/data:
     get:
@@ -911,6 +1260,7 @@ paths:
                     type: array
                     items: { $ref: '#/components/schemas/AdminUserRow' }
                   invite_only: { type: boolean }
+                  password_login: { type: boolean, description: Present (true) with PASSWORD_LOGIN=1. }
                   now:
                     type: number
                     description: Server time (ms) — for rendering relative times.
@@ -1783,6 +2133,43 @@ components:
               error: { type: string }
               code: { type: string, enum: [off, busy, cap, consent, shared, unprivileged] }
           example: { error: "the Coach is already thinking about your training", code: busy }
+    TooManyRequests:
+      description: >-
+        Paused by the sign-in throttle (see *Throttling* in the description). The request
+        was not looked at; try again after `Retry-After` seconds.
+      headers:
+        Retry-After:
+          description: Seconds until the pause ends.
+          schema: { type: integer }
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          example: { error: "too many attempts — try again later", code: "locked", retryAfter: 60 }
+    Busy:
+      description: Every password check slot and the short queue behind them are taken.
+      headers:
+        Retry-After:
+          schema: { type: integer }
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          example: { error: "the server is busy — try again in a moment", code: "busy" }
+    PasswordPolicy:
+      description: >-
+        The new password breaks the policy — `too-short` (under 10 characters),
+        `too-long` (over 256) or `too-common` — or a field is `missing`.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          example: { error: "this password is too easy to guess", code: "too-common" }
+    NameTaken:
+      description: >-
+        Another profile already signs in with this name, or holds it with a reset code
+        that has not been used or expired yet.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          example: { error: "another profile already signs in with this name", code: "name-taken" }
 
   schemas:
     Error:
@@ -1792,6 +2179,14 @@ components:
         error:
           type: string
           description: Human-readable message. This is the only error shape the API has.
+        code:
+          type: string
+          description: >-
+            A stable reason on the password and throttle routes, for a client to word in
+            its own language (`bad-credentials`, `locked`, `too-short`, …).
+        retryAfter:
+          type: integer
+          description: 429 only — the same number of seconds as the Retry-After header.
 
     Ok:
       type: object
@@ -2069,6 +2464,9 @@ components:
         live:
           oneOf: [{ $ref: '#/components/schemas/Presence' }, { type: 'null' }]
           description: Currently training, or null.
+        password:
+          type: boolean
+          description: PASSWORD_LOGIN instances only — the profile has a password.
 
     Presence:
       type: object
@@ -2094,6 +2492,10 @@ components:
             disabled: { type: boolean }
             admin: { type: boolean }
             invitedBy: { oneOf: [{ type: string }, { type: 'null' }] }
+            password: { type: boolean, description: PASSWORD_LOGIN instances only. }
+            resetUntil:
+              oneOf: [{ type: number }, { type: 'null' }]
+              description: PASSWORD_LOGIN instances only — expiry (ms) of an unused reset code.
         unit: { type: string, enum: [kg, lb] }
         lastSync: { oneOf: [{ type: number }, { type: 'null' }] }
         routines:

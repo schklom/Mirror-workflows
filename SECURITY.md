@@ -49,7 +49,10 @@ in the thread; there's no objection, and no request to sit on it indefinitely.
 
 - **`api/server.js`** — forging or replaying a session cookie, bypassing passkey verification,
   reading or writing another user's data through `/api/data`, reaching `/api/admin/*` without
-  being an admin, or creating a profile without a valid code while `INVITE_ONLY=1`.
+  being an admin, or creating a profile without a valid code while `INVITE_ONLY=1`. With
+  `PASSWORD_LOGIN=1`: getting a password checked past the sign-in throttle, telling which names
+  have a password, setting a password on someone else's profile, or using a reset code twice or
+  after it expired (`api/password.js`, `api/rate-limit.js`).
 - **Frontend** — XSS in the React app, or anything that lets a page on another origin read or
   change a signed-in user's data.
 - **Shipped deployment config** — `docker-compose.yml`, `web/nginx.conf`, the two Dockerfiles:
@@ -62,17 +65,21 @@ in the thread; there's no objection, and no request to sit on it indefinitely.
   operator is trusted by design — see the security model below.
 - Admins reading their users' workout history. That is the documented purpose of the admin
   dashboard, not a leak.
-- **Missing rate limiting**, brute force, or "I sent 100k requests and it got slow". The app
-  has no rate limiting at all and doesn't pretend to; that belongs in the reverse proxy you put
-  in front of it. Genuine amplification (one small request causing unbounded work) *is* in scope.
+- **Missing rate limiting** on anything but password sign-in, or "I sent 100k requests and it got
+  slow". With `PASSWORD_LOGIN=1` the API throttles its password routes — sign-in, password signup,
+  reset codes, changing a password — and nothing else; volume against the rest, passkey sign-in
+  and pairing included, belongs in the reverse proxy you put in front of it. A way past that
+  throttle *is* in scope, and so is genuine amplification (one small request causing unbounded
+  work).
 - **Missing security headers.** `web/nginx.conf.template` sets `X-Frame-Options: DENY`,
   `Content-Security-Policy: frame-ancestors 'none'`, `X-Content-Type-Options: nosniff` and
   `Referrer-Policy: same-origin`. It deliberately does **not** set HSTS or a full CSP: TLS is the
   reverse proxy's job, and a script/style policy tight enough to be worth having needs testing
   against the built app rather than being asserted here. A concrete attack that a header would
   have stopped is still worth reporting.
-- Instances served over plain `http://` on a LAN IP. Unsupported: passkeys don't work there and
-  the session cookie isn't marked `Secure`.
+- Instances served over plain `http://` on a LAN IP. Passkeys don't work there, and with
+  password sign-in the password and the session cookie (not marked `Secure`) cross that network
+  in the clear. That is the documented trade of running without TLS, not a finding.
 - Scanner output with no working exploit, and `npm audit` findings in build-time
   devDependencies (Vite, Vitest, Capacitor CLI) that never reach a running instance.
 - The GitLab Pages demo build — it has no backend at all, everything stays in that browser.
@@ -84,10 +91,30 @@ Read this before hosting openGym for anyone other than yourself.
 
 ### What it does
 
-- **Passkeys only.** No passwords, no email addresses, no reset flow. Registration and login are
+- **Passkeys by default.** No email addresses, no email reset flow. Registration and login are
   verified server-side by `@simplewebauthn/server` against `expectedOrigin: ORIGIN` and
   `expectedRPID: RP_ID`, and the authenticator's signature counter is stored and updated on every
-  login (`api/server.js:561-620`, `api/server.js:622-675`).
+  login.
+- **Passwords only if the instance asks for them.** With `PASSWORD_LOGIN=1` a profile may also
+  set a password (nobody has one until they do). It is hashed with scrypt (N=2^15, r=8, p=1,
+  16-byte random salt, parameters stored with the hash) and compared in constant time; a name
+  with no password is checked against a dummy hash, so answer and timing are the same whether or
+  not it exists. At most two hashes run at once with a short queue behind them. A first password
+  needs a fresh passkey assertion by that profile, a change needs the current password (or that
+  assertion), and either ends every other session of the account. It cannot be removed while it
+  is the profile's only way in. Password routes keep the origin check below (no login CSRF).
+  An admin can issue a one-time reset code — 60 random bits, stored as a SHA-256, 24 hours, single
+  use — which also removes the old password and ends every session; admin accounts cannot be
+  reset that way (`api/password.js`, the password block in `api/server.js`).
+- **Password sign-in is throttled.** Every password route spends a budget of 60 requests a minute
+  per address; wrong passwords, reset codes and (on password signup) invite codes pause the
+  address after 20 (30 s, doubling to 15 min); wrong passwords pause the *name* after 5 (1 min,
+  doubling to 1 h), existing or not. A password check is counted the moment it starts, so guesses
+  sent all at once get no more checks than guesses sent one by one. Passkey sign-in, passkey
+  signup and pairing are not throttled at all, so nobody can pause them — not even behind a proxy
+  that shows the API one address for every visitor. The address is the socket peer unless
+  `TRUST_PROXY=1` (set by the bundled compose file, where only the web container reaches the
+  API), and IPv6 is counted per /64 (`api/rate-limit.js`).
 - **Sessions are a signed cookie.** It carries `<uid>:<expiry>:<version>` plus an
   HMAC-SHA256 tag over it, compared in constant time (`api/server.js:230-243`). The key is 32
   random bytes generated on first run and written to `./data/secret` with mode `0600`
@@ -161,10 +188,23 @@ Read this before hosting openGym for anyone other than yourself.
   `requireUserVerification: false` (`api/server.js:575`, `api/server.js:644`), so a passkey
   released without a biometric or PIN is still accepted. In practice: unlocked device ≈ account
   access.
-- **One passkey per profile, and no recovery.** Every successful registration creates a *new*
-  profile (`api/server.js:600-609`); there is no route to attach a second passkey to an existing
-  one, and no email or reset path. Lose the passkey and that profile is unreachable — only direct
-  surgery on `./data` gets it back.
+- **One passkey per profile, and recovery only through an admin.** Every successful
+  registration creates a *new* profile; there is no route to attach a second passkey to an
+  existing one, and no email path. Lose the passkey and that profile is unreachable — unless the
+  instance runs `PASSWORD_LOGIN=1`, where an admin can issue a reset code that sets a password on
+  it. Without that, only direct surgery on `./data` gets it back.
+- **A password is weaker than a passkey, and the throttle is per process.** It can be phished,
+  reused elsewhere or guessed; a stolen `db.json` allows offline guessing against the scrypt
+  hashes. The throttle's counters live in memory: a restart clears them, and several API replicas
+  would each keep their own. Behind a second proxy that hides the visitor's address every
+  visitor shares one per-address count, so one client can pause *password* sign-in for everybody
+  for up to 15 minutes at a time (the per-name pause still holds, and passkeys are never
+  paused). Anyone who knows a name can keep its password sign-in paused, which the activity log
+  shows as `auth.password.locked`. Only two password checks run at once, with 32 queued behind
+  them: someone sending from enough addresses can keep that queue full, and every password
+  sign-in then answers `503` until they stop — passkeys are unaffected. The only password
+  policy is 10–256 characters and a short built-in list of the passwords guessing scripts try
+  first; no breached-password database is bundled.
 - **Disabling someone isn't a ban.** They can still register a fresh profile with a new passkey
   unless `INVITE_ONLY=1` is set. It also makes them near-invisible in the activity log: a disabled
   account is refused at the session check, so nothing it does produces an entry except the failed
@@ -173,14 +213,13 @@ Read this before hosting openGym for anyone other than yourself.
   nginx listens on `:80` (`web/nginx.conf`); TLS is your reverse proxy's job. Without it,
   browsers won't do passkeys at all (except on `http://localhost`) and the session cookie is sent
   in the clear.
-- **No rate limiting anywhere.** Nothing throttles logins, registrations or writes, and
-  `POST /api/register/options` still answers whether an invite code is valid
-  (`api/server.js:544`), so an invite-only instance on the open internet should have a rate limit
-  in front of it. New invite codes are 16 hex characters — 64 bits (`api/server.js:891`) — which
-  makes guessing one impractical even unthrottled; codes generated by earlier versions are 8
-  characters / 32 bits and still work, so revoke and reissue any that are still unused. The only
-  hard limit
-  in the app is a 5 MB request body (`api/server.js:34`).
+- **Rate limiting covers password sign-in only.** The throttle above applies to the password
+  routes; passkey sign-in and signup, pairing, writes and everything else behind a session are
+  not limited, so an instance on the open internet should have a rate limit in front of it. `POST
+  /api/register/options` still answers whether an invite code is valid, unthrottled. New invite
+  codes are 16 hex characters — 64 bits — which makes guessing one impractical even unthrottled;
+  codes generated by earlier versions are 8 characters / 32 bits and still work, so revoke and
+  reissue any that are still unused. The other hard limit in the app is a 5 MB request body.
 - **The activity log is not an audit archive, and it records less than you might assume.** No IP
   address unless you set `AUDIT_IP` (`net` truncates to a /24 or /48; the default is `off`). When it is on, the
   address comes from `CF-Connecting-IP`, `X-Forwarded-For`, `X-Real-IP` or, failing all three,
@@ -197,13 +236,17 @@ Read this before hosting openGym for anyone other than yourself.
   and nothing else. Retention is a cap, not an archive: old events are dropped, not exported. Any
   admin can clear the whole log from the dashboard. And four of the paths that write to it —
   the invite check on `POST /api/register/options`, and the expired-challenge and unknown-passkey
-  branches of the register/login handshakes — are reachable **without a session**, so with no rate
-  limit in front (see below) anyone can fill the log with noise. It is an append of ~110 bytes per
+  branches of the register/login handshakes (and, with passwords on, the failed password and
+  reset-code attempts, within their throttle) — are reachable **without a session**, so anyone
+  can fill the log with noise. It is an append of ~110 bytes per
   event to a capped file, never a rewrite of `db.json`, so the cost is a log full of noise rather
   than a full disk or a slow server.
 - **A few endpoints answer without a session:** `/api/health` (which includes the total user
-  count), `/api/config` (whether invite-only is on), `/api/push/public-key`, and the
-  register/login handshakes.
+  count), `/api/config` (whether invite-only and password sign-in are on), `/api/push/public-key`,
+  the register/login handshakes, and with `PASSWORD_LOGIN=1` the password sign-in, password
+  registration and reset-code routes. Password registration says when a name is already taken
+  by a profile with a password, as any sign-up form with usernames does; on an invite-only
+  instance only someone with a valid code gets that far.
 - **Changing `RP_ID` invalidates every existing passkey.** They were bound to the old hostname
   and will fail verification against the new one. The data stays on disk but is unreachable until
   each user registers again — as a *new* profile. Choose your hostname before anyone registers.

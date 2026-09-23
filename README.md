@@ -201,6 +201,8 @@ All via `.env` (see `.env.example`):
 | `ADMIN_UIDS`  | User ids that get the admin dashboard (comma-separated) | *(none)*             |
 | `INVITE_ONLY` | Require an invite code to create a profile           | *(off)*                 |
 | `ALLOW_GUEST` | Offer "Continue without account" — set `0` to require a profile | *(on)*       |
+| `PASSWORD_LOGIN` | Offer name-and-password sign-in next to passkeys (see `docs/SELF_HOSTING.md`) | *(off)* |
+| `TRUST_PROXY` | Let the sign-in throttle read the visitor's address from proxy headers | `1` in `docker-compose.yml`, else *(off)* |
 | `AUDIT_LOG`   | Record sign-ins and admin actions — set `0` to record nothing | *(on)*        |
 | `AUDIT_MAX`   | Events kept in the activity log; `0` for no limit    | `5000`                  |
 | `AUDIT_DAYS`  | Days kept in the activity log; `0` to keep until `AUDIT_MAX` | `90`            |

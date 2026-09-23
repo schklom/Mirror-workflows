@@ -12,10 +12,15 @@ import { MOBILE } from '../lib/mobile.js'
 import { DEMO } from '../lib/demo.js'
 import { askAddDeviceData } from '../sheets.jsx'
 import { ConnectSheet } from '../views/MobileOnboarding.jsx'
+import { passwordOn, openPasswordSignIn } from './PasswordAuth.jsx'
 import { Section, Row, Button } from './ui.jsx'
 
 const ui = () => useUI.getState()
 const toast = m => ui().toast(m)
+// Whether this browser has a way to sign in at all: a passkey, or a password on an instance that
+// offers one (#118) — which is also what a browser without passkey support has left.
+const pwOn = () => passwordOn(useStore.getState?.()?.config)
+const canSignIn = () => webauthnOK() || pwOn()
 
 // "gym.example.com" out of the base URL the store keeps (a subpath stays: it is part of which
 // server this is). Anything unparseable is shown as it is.
@@ -58,7 +63,7 @@ export function connectionView(sync, { mobile = MOBILE } = {}) {
     default:   // 'local': no server at all — chosen, so it is said quietly, but it is said
       return mobile
         ? { tone: 'quiet', icon: 'lock', action: 'connect', line: t('On this phone only — not connected to a server'), banner: t('On this phone only — not connected to a server') }
-        : { tone: 'quiet', icon: 'lock', action: webauthnOK() ? 'signin' : null, line: t('Guest mode — data lives only in this browser.'), banner: t('Guest mode — data lives only in this browser.') }
+        : { tone: 'quiet', icon: 'lock', action: canSignIn() ? 'signin' : null, line: t('Guest mode — data lives only in this browser.'), banner: t('Guest mode — data lives only in this browser.') }
   }
 }
 
@@ -85,8 +90,14 @@ export function connectServer() {
 }
 
 // A browser whose session ended, or a guest: the passkey sign-in, and the same account merges
-// what this browser kept (adoptProfile).
-export async function signInAgain() {
+// what this browser kept (adoptProfile). On an instance with passwords the sign-in sheet comes
+// first, with the passkey one tap away on it: which of the two this account has is not
+// something this browser can know.
+export function signInAgain() {
+  if (pwOn()) { openPasswordSignIn(webauthnOK() ? passkeySignIn : undefined); return }
+  return passkeySignIn()
+}
+export async function passkeySignIn() {
   const st = useStore.getState()
   try {
     const u = await passkeyLogin()
@@ -161,7 +172,7 @@ export function OwedSheet({ kind, count: count0, exportBackup, done, close }) {
       {t('Try again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.')}
     </div>
     {refused && MOBILE && <><button className="btn primary" disabled={busy} onClick={() => { close(); pairAgain() }}>{t('Pair again')}</button><div style={{ height: 8 }} /></>}
-    {refused && !MOBILE && webauthnOK() && <><button className="btn primary" disabled={busy} onClick={() => { close(); signInAgain() }}>{t('Sign in with passkey')}</button><div style={{ height: 8 }} /></>}
+    {refused && !MOBILE && canSignIn() && <><button className="btn primary" disabled={busy} onClick={() => { close(); signInAgain() }}>{pwOn() ? t('Sign in') : t('Sign in with passkey')}</button><div style={{ height: 8 }} /></>}
     {!refused && <><button className="btn primary" disabled={busy} onClick={retry}>{busy ? t('Syncing…') : t('Try again')}</button><div style={{ height: 8 }} /></>}
     <Button icon="download" disabled={busy} onClick={exportBackup}>{t('Export backup (JSON)')}</Button>
     <div style={{ height: 8 }} />
@@ -181,6 +192,7 @@ export function ServerSyncSection({ children }) {
   const user = useStore(s => s.user)
   const sync = useStore(s => s.sync)
   useStore(s => s.S)   // the count of waiting changes follows every edit
+  useStore(s => s.config)   // whether "Sign in" may offer a password
   const unsynced = useStore(s => s.unsyncedChanges)
   const [busy, setBusy] = useState(false)
   // "Last synced: 3 minutes ago" goes stale on an open screen; a re-render now and then keeps it true.
@@ -207,7 +219,7 @@ export function ServerSyncSection({ children }) {
     <Row icon="reset" iconTint="var(--acc)" title={busy ? t('Syncing…') : t('Sync now')} onClick={now} />
     {sync.status === 'auth' && (MOBILE
       ? <Row icon="link" iconTint="var(--indigo)" title={t('Pair again')} subtitle={t('Your changes are kept here, and merged into your account once it is paired again.')} accessory="chevron" onClick={pairAgain} />
-      : webauthnOK() && <Row icon="person" iconTint="var(--blue)" title={t('Sign in with passkey')} subtitle={t('Your changes are kept here, and merged into your account once you are signed in again.')} accessory="chevron" onClick={signInAgain} />)}
+      : canSignIn() && <Row icon="person" iconTint="var(--blue)" title={pwOn() ? t('Sign in') : t('Sign in with passkey')} subtitle={t('Your changes are kept here, and merged into your account once you are signed in again.')} accessory="chevron" onClick={signInAgain} />)}
     {/* another account's, kept when this one signed in over a copy that still owed them */}
     <KeptChangesRows />
     {children}

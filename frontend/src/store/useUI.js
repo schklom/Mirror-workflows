@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { uid } from '../lib/format.js'
-import { beep, vibrate } from '../lib/sound.js'
+import { beep, chime, vibrate } from '../lib/sound.js'
 import { api } from '../lib/api.js'
 import { t } from '../lib/i18n.js'
 import { deviceId } from '../lib/push.js'
@@ -105,7 +105,7 @@ export const useUI = create((set, get) => ({
       const snd = useStore.getState().S.sound
       if (left <= 0) {
         if (seenLive) {
-          beep(snd, 880, 0.15); beep(snd, 880, 0.15, 0.25); beep(snd, 1320, 0.4, 0.5)
+          chime(snd)
           vibrate([200, 100, 200]); get().flashTimer()
         }
         // The toast stays even when the rest ran out while the app was hidden: a guest, or anyone
@@ -169,7 +169,7 @@ export const useUI = create((set, get) => ({
       const snd = useStore.getState().S.sound
       if (left <= 0) {
         if (seenLive) {
-          beep(snd, 880, 0.15); beep(snd, 880, 0.15, 0.25); beep(snd, 1320, 0.4, 0.5)
+          chime(snd)
           vibrate([200, 100, 200]); get().flashTimer()
         }
         const done = workDone

@@ -24,6 +24,8 @@
  *     is the exception: the edit may have taken away the set the kept weight came from, so it
  *     is the best of the merged history and of the editing copy's own, and the other copy's
  *     can no longer bring a corrected typo back. exNotes, barWeights: key union
+ *   - balanceOverrides: key union; of a key both have, the entry set last by its own `_ts`, a
+ *     clear included (mergeStampedMap), the newer copy's on a tie
  *   - `_ts`: the later of the two; `_rev` dropped (the server sets it); `active` left to the caller
  *
  * Known limit: with no record of what each side deleted, an entry removed on one device inside
@@ -111,6 +113,25 @@ export function stampWorkout(w, now = Date.now()) {
   return w
 }
 
+const stampOf = v => (v && typeof v === 'object' ? Number(v._ts) || 0 : 0)
+const isMap = v => !!v && typeof v === 'object' && !Array.isArray(v)
+
+/**
+ * A settings map whose entries carry their own edit time (`{ …, _ts }`), such as the Structural
+ * Balance overrides: every key of either side, and of a key both have, the entry set last — the
+ * same rule a routine follows. Taking the newer copy's entry lost a choice made on one device
+ * whenever the other had since logged a set; a plain key union brought a cleared entry back
+ * from the side that still had it. So a clear is written as a stamped entry, not a delete, and
+ * wins like any other edit. On a tie, or with `prefer`, the newer (preferred) side's entry stays.
+ */
+export function mergeStampedMap(newer, older, prefer) {
+  const n = isMap(newer) ? newer : {}
+  const o = isMap(older) ? older : {}
+  const out = { ...o, ...n }
+  if (!prefer) for (const k of Object.keys(o)) if (k in n && stampOf(o[k]) > stampOf(n[k])) out[k] = o[k]
+  return out
+}
+
 // `prefer` names the side whose settings, plan and per-exercise config win regardless of `_ts`:
 // on sign-in the server's profile is the truth and the device only contributes the entries it
 // logged while signed out. Without it the newer copy decides, as for a conflict between devices.
@@ -170,6 +191,7 @@ export function mergeStates(a, b, { prefer } = {}) {
   for (const f of ['exNotes', 'barWeights']) {
     if (n[f] || o[f]) out[f] = clone({ ...(o[f] || {}), ...(n[f] || {}) })
   }
+  if (n.balanceOverrides || o.balanceOverrides) out.balanceOverrides = clone(mergeStampedMap(n.balanceOverrides, o.balanceOverrides, prefer))
   out._ts = Math.max(a._ts || 0, b._ts || 0)
   delete out._rev
   return out

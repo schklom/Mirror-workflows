@@ -470,6 +470,11 @@ export default function Stats() {
     </div>
 
     {workouts.length > 0 && <MuscleBalance S={S} />}
+    {workouts.length > 0 && <div className="card row between" style={{ alignItems: 'center', gap: 12 }}>
+      <div style={{ minWidth: 0 }}><h2 style={{ margin: 0 }}>{t('Structural balance')}</h2>
+        <div className="muted small" style={{ marginTop: 4 }}>{t('See which lift is holding back the rest.')}</div></div>
+      <Button size="sm" variant="tinted" trailingIcon="chevronRight" style={{ flexShrink: 0 }} onClick={() => nav('/structural-balance')}>{t('Open')}</Button>
+    </div>}
     {hasEffort(S) && <EffortCard S={S} />}
 
     <div className="cols">

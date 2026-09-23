@@ -13,6 +13,7 @@ import { appBase } from '../lib/app-base.js'
 import { loadRemote, chooseLocal, forgetRemote, connect, normalizeServerUrl, renewToken } from '../lib/remote.js'
 import { loadCoachDevice, saveCoachDevice, coachDeviceSettings } from '../lib/coach-device.js'
 import { RTL_LANGS } from '../lib/i18n-core.js'
+import { DEFAULT_TEMPLATE_ID } from '../lib/structuralBalanceTemplates.js'
 
 import { WC_DEFAULT } from '../lib/workout-controls.js'
 
@@ -125,6 +126,12 @@ export const DEF = {
   // is the last time in that routine, 'best' the best set of the exercise ever logged. Tapping
   // the line switches it. Absent reads as 'last', the line as it always was.
   logRef: 'last',
+  // Structural Balance (views/StructuralBalance.jsx): which built-in ratio template is active,
+  // and per-role exercise overrides keyed by `${templateId}:${roleId}` — see
+  // lib/structuralBalance.js's overrideKey(). An override (`{ id, _ts }`, `id: null` once
+  // cleared) replaces that role's curated exercise-id whitelist with a single user-chosen
+  // exercise id; the stamp is what lets a sync keep the choice made last (lib/sync-merge.js).
+  balanceTemplate: DEFAULT_TEMPLATE_ID, balanceOverrides: {},
 }
 const clone = o => JSON.parse(JSON.stringify(o))
 

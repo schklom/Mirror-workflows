@@ -342,6 +342,22 @@ describe('Stats strength exercise rows', () => {
     expect(thrown).toEqual([])
     expect(mocks.exerciseHistorySheet).toHaveBeenCalledTimes(2)
   })
+
+  // The retained-strength bar used a 'to right' gradient, which fills from the left in Arabic too.
+  // A width fills from the inline start, the way the detrained rows' bars already did.
+  it('fills the retained-strength bar by width, so it follows the text direction', async () => {
+    resetFixture([workout('bench-old', BASE_NOW - 20 * DAY, [entry('0025', [set(true, { w: 80 })])])])
+    await mountStats()
+    await click(viewButton('Strength'))
+    await click(muscleCard().querySelector('[data-muscle="chest"]'))
+    const row = [...muscleCard().querySelectorAll('.mrow[role="button"]')].find(el => el.textContent.includes('Est. 1RM'))
+    expect(row).toBeTruthy()
+    const pct = row.querySelector('.v').textContent.match(/(\d+)%/)[1]
+    expect(Number(pct)).toBeLessThan(100)
+    const fill = row.querySelector('.bar i')
+    expect(fill.style.width).toBe(pct + '%')
+    expect(fill.getAttribute('style')).not.toMatch(/to right|gradient/)
+  })
 })
 
 describe('Stats exercise progress picker', () => {

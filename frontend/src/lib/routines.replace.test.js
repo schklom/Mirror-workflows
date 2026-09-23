@@ -87,7 +87,7 @@ describe('history after a replace', () => {
     const [bench] = buildCombinedEntries(st, ['A']).entries
     expect(work(bench).map(s => s.w)).toEqual([65, 65])
 
-    st.routines[0].ex[0] = replaceSlotExercise(st.routines[0].ex[0], DB_BENCH)
+    st.routines[0].ex[0] = replaceSlotExercise(st.routines[0].ex[0], DB_BENCH, st, 'A')
     const [db] = buildCombinedEntries(st, ['A']).entries
     expect(db.id).toBe(DB_BENCH)
     // Not the bench's 65: the dumbbells have never been logged, so they open at the slot's own
@@ -98,8 +98,52 @@ describe('history after a replace', () => {
 
     // The bench's sessions in this routine are still there if it comes back.
     expect(lastEntryFor(st, BENCH, 'A')?.sets.map(s => s.w)).toEqual([62.5, 62.5])
-    st.routines[0].ex[0] = replaceSlotExercise(st.routines[0].ex[0], BENCH)
+    st.routines[0].ex[0] = replaceSlotExercise(st.routines[0].ex[0], BENCH, st, 'A')
+    // The bench's own planned weight goes back into the slot, not whatever the dumbbells had.
+    expect(st.routines[0].ex[0].weight).toBe(60)
     const [back] = buildCombinedEntries(st, ['A']).entries
     expect(work(back).map(s => s.w)).toEqual([65, 65])
+  })
+
+  // An exercise the user already trains in another routine brings its own numbers. The slot's
+  // weight belongs to the exercise that was in it, and the next session reads a slot weight that
+  // differs from its last planned one as an edit to open at (#275) — so an 80 kg barbell bench
+  // carried onto dumbbells trained at 30 opened them at 80, and only when the rep schemes
+  // differed: a matching scheme carried on from the dumbbells' own history instead.
+  function twoRoutines(dbReps) {
+    const st = state()
+    st.routines = [
+      { id: 'A', name: 'Push', ex: [{ id: BENCH, sets: 3, mode: 'reps', reps: 8, weight: 80 }] },
+      { id: 'B', name: 'Upper', ex: [{ id: DB_BENCH, sets: 3, mode: 'reps', reps: dbReps, weight: 30 }] },
+    ]
+    train(st, 'B')
+    train(st, 'B')
+    return st
+  }
+
+  it('opens a replacement that has history elsewhere at its own weight when the rep schemes differ', () => {
+    const st = twoRoutines(10)
+    // Routine B's dumbbells: 30, then 32.5, and 35 next.
+    expect(work(buildCombinedEntries(st, ['B']).entries[0]).map(s => s.w)).toEqual([35, 35, 35])
+
+    st.routines[0].ex[0] = replaceSlotExercise(st.routines[0].ex[0], DB_BENCH, st, 'A')
+    expect(st.routines[0].ex[0]).toEqual({ id: DB_BENCH, sets: 3, mode: 'reps', reps: 8, weight: 30 })
+    const [db] = buildCombinedEntries(st, ['A']).entries
+    // Routine A's 3 × 8, at what the dumbbells were last lifted at — not the bench's 80.
+    expect(work(db).map(s => [s.w, s.r])).toEqual([[32.5, 8], [32.5, 8], [32.5, 8]])
+    expect(db.plan.why[0]).toBe('First time in this routine — starting from its own target.')
+  })
+
+  it('carries on from the replacement\'s own history when the rep schemes match', () => {
+    const st = twoRoutines(8)
+    st.routines[0].ex[0] = replaceSlotExercise(st.routines[0].ex[0], DB_BENCH, st, 'A')
+    const [db] = buildCombinedEntries(st, ['A']).entries
+    expect(work(db).map(s => [s.w, s.r])).toEqual([[35, 8], [35, 8], [35, 8]])
+  })
+
+  it('keeps the slot\'s weight for a replacement that has never been logged', () => {
+    const st = twoRoutines(10)
+    st.routines[0].ex[0] = replaceSlotExercise(st.routines[0].ex[0], '0047', st, 'A')
+    expect(st.routines[0].ex[0].weight).toBe(80)
   })
 })

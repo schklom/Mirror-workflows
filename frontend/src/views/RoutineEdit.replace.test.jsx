@@ -26,9 +26,10 @@ const benchSlot = { id: BENCH, sg: 'g1', sets: 4, mode: 'reps', reps: 6, weight:
 const rowSlot = { id: ROW, sg: 'g1', sets: 3, mode: 'reps', reps: 10, weight: 50 }
 let root, host, picker
 
-function mount() {
+function mount(workouts = [], routines = []) {
   const S = clone(DEF)
-  S.routines = [{ id: 'r1', name: 'Push', emoji: 'dumbbell', ex: [clone(benchSlot), clone(rowSlot)] }]
+  S.routines = [{ id: 'r1', name: 'Push', emoji: 'dumbbell', ex: [clone(benchSlot), clone(rowSlot)] }, ...routines]
+  S.workouts = workouts
   useStore.setState({ S, user: null })
   host = document.createElement('div')
   document.body.appendChild(host)
@@ -85,6 +86,20 @@ describe('RoutineEdit — Replace exercise', () => {
     expect(slots()[0]).toEqual({ id: DB_BENCH, sg: 'g1', sets: 3, mode: 'reps', reps: 8, weight: 30 })
     expect(slots()[1]).toEqual(rowSlot)
     expect(picker.close).toHaveBeenCalledOnce()
+  })
+
+  it('gives a replacement trained in another routine its own weight, not the old exercise\'s', () => {
+    // The dumbbells were planned at 30 in the upper-body routine: the bench's 80 is not theirs.
+    const upper = { id: 'r2', name: 'Upper', emoji: 'dumbbell', ex: [{ id: DB_BENCH, sets: 3, mode: 'reps', reps: 10, weight: 30 }] }
+    const planned = { sets: 3, reps: 10, weight: 30 }
+    const workout = {
+      id: 'w1', d: '2026-09-01', start: 1, end: 2, name: 'Upper', routineIds: ['r2'],
+      entries: [{ id: DB_BENCH, rid: 'r2', target: { sets: 3, mode: 'reps', reps: 10 }, planned, sets: [1, 2, 3].map(() => ({ w: 30, r: 10, done: true })) }],
+    }
+    mount([workout], [upper])
+    const onPick = openReplace()
+    act(() => onPick(EXIDX[DB_BENCH], true))
+    expect(slots()[0]).toEqual({ ...benchSlot, id: DB_BENCH, weight: 30 })
   })
 
   it('leaves a slot alone that changed under the picker', () => {

@@ -1,6 +1,7 @@
 import { uid } from './format.js'
 import { defaultConfig, isBw, modeOf } from './history.js'
 import { isBodyweightEq, isCardio } from './exercises.js'
+import { sessionsFor } from './progression.js'
 
 /**
  * Create a deep copy of a routine with a new id and a "(Copy)" suffix.
@@ -33,8 +34,16 @@ export function copyRoutine(routine, suffix = 'Copy') {
  * What is not carried is history. Progress belongs to a routine and an exercise together (#216),
  * so the new exercise starts on its own line — its own sessions in this routine, and until there
  * are any, the slot's numbers — and the old exercise keeps its sessions, ready if it comes back.
+ * That is also why the old exercise's weight gives way to the new one's own wherever the new one
+ * has been logged (`S`, and the routine `rid` the slot is in): the next session reads a slot
+ * weight that differs from the one its last session was planned at as a deliberate edit, and
+ * opens there (#275, nextPrescription). An 80 kg barbell bench carried onto dumbbells trained at
+ * 30 would open the dumbbells at 80 — and only when the two rep schemes differed, because a
+ * plan whose sets and reps match just carries on. With the new exercise's own planned weight in
+ * the slot, its history decides either way. One never logged keeps the slot's weight, since
+ * there is nothing better to start from.
  */
-export function replaceSlotExercise(slot, id) {
+export function replaceSlotExercise(slot, id, S, rid) {
   const old = slot || {}
   if ((modeOf(old) === 'cardio') !== isCardio(id)) {
     const kept = ['sg', 'note', 'restSec'].filter(key => old[key] != null)
@@ -42,10 +51,18 @@ export function replaceSlotExercise(slot, id) {
   }
   const { id: _replaced, bodyweight: _flag, ...carried } = old
   const out = { id, ...carried }
-  if (!isCardio(id) && isBw(old) !== isBodyweightEq(id)) {
+  if (isCardio(id)) return out
+  if (isBw(old) !== isBodyweightEq(id)) {
     out.weight = 0
     // A rep ceiling belongs to bodyweight work: it adds sets where there is no load to add.
     delete out.repsMax
   }
+  // The session the next prescription will read for this slot (nextPrescription), so the weight
+  // put here is the one that session was planned at: the restart rule then sees no edit and
+  // holds at what was lifted, or the plan carries on from it. A session saved before plans were
+  // stamped has no planned weight, and what was lifted in it is the nearest thing.
+  const mode = modeOf(out)
+  const last = S ? sessionsFor(S, id, out, rid).filter(s => s.mode === mode).at(-1) : null
+  if (last) out.weight = last.planned?.weight ?? last.weight ?? 0
   return out
 }

@@ -356,8 +356,11 @@ export default function RoutineEdit() {
       if (done) toast(t('Replaced with “{0}”', capWords(exerciseNameFor(ex))))
     }
     const picker = exercisePicker((ex, quick) => {
-      if (quick) { commit(ex, slot => replaceSlotExercise(slot, ex.id)); return }
-      const next = replaceSlotExercise(r.ex[i], ex.id)
+      // The new exercise's weight comes from its own sessions (lib/routines.js), read as they are
+      // now rather than as this render saw them: a sync can land while the picker is open.
+      const live = useStore.getState().S
+      if (quick) { commit(ex, slot => replaceSlotExercise(slot, ex.id, live, id)); return }
+      const next = replaceSlotExercise(r.ex[i], ex.id, live, id)
       exConfigSheet(ex, next, cfg => commit(ex, slot => ({ id: ex.id, sg: slot.sg, ...cfg })), null, r)
     }, { title: t('Replace exercise') })
   }

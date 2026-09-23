@@ -26,6 +26,14 @@ describe('replaceSlotExercise', () => {
     expect(slot.id).toBe(BENCH)
   })
 
+  it('changes nothing when the pick is the exercise already in the slot', () => {
+    // A push-up the user loaded with 20 kg and marked as not bodyweight, picked again from "Chosen".
+    const slot = { id: PUSH_UP, sg: 'sgA', sets: 3, mode: 'reps', reps: 8, weight: 20, bodyweight: false, side: true }
+    const same = replaceSlotExercise(slot, PUSH_UP, { workouts: [] }, 'A')
+    expect(same).toEqual(slot)
+    expect(same).not.toBe(slot)
+  })
+
   it('keeps a timed slot timed', () => {
     const next = replaceSlotExercise({ id: BENCH, sets: 3, mode: 'time', sec: 40, weight: 20 }, DB_BENCH)
     expect(next).toEqual({ id: DB_BENCH, sets: 3, mode: 'time', sec: 40, weight: 20 })

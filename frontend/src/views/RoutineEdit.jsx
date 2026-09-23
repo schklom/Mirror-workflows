@@ -359,6 +359,9 @@ export default function RoutineEdit() {
       // The new exercise's weight comes from its own sessions (lib/routines.js), read as they are
       // now rather than as this render saw them: a sync can land while the picker is open.
       const live = useStore.getState().S
+      // "+" on the exercise that is already in the slot: nothing to replace, and no toast that
+      // says something was.
+      if (quick && ex.id === openedOn) { picker.close(); return }
       if (quick) { commit(ex, slot => replaceSlotExercise(slot, ex.id, live, id)); return }
       const next = replaceSlotExercise(r.ex[i], ex.id, live, id)
       exConfigSheet(ex, next, cfg => commit(ex, slot => ({ id: ex.id, sg: slot.sg, ...cfg })), null, r)

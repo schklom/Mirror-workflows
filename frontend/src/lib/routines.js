@@ -42,9 +42,12 @@ export function copyRoutine(routine, suffix = 'Copy') {
  * plan whose sets and reps match just carries on. With the new exercise's own planned weight in
  * the slot, its history decides either way. One never logged keeps the slot's weight, since
  * there is nothing better to start from.
+ *
+ * Picking the exercise that is already in the slot replaces nothing, and changes nothing.
  */
 export function replaceSlotExercise(slot, id, S, rid) {
   const old = slot || {}
+  if (old.id === id) return { ...old }
   if ((modeOf(old) === 'cardio') !== isCardio(id)) {
     const kept = ['sg', 'note', 'restSec'].filter(key => old[key] != null)
     return { id, ...defaultConfig(id), ...Object.fromEntries(kept.map(key => [key, old[key]])) }

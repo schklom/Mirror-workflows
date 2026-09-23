@@ -88,6 +88,15 @@ describe('RoutineEdit — Replace exercise', () => {
     expect(picker.close).toHaveBeenCalledOnce()
   })
 
+  it('"+" on the exercise already in the slot changes nothing and says nothing', () => {
+    mount()
+    const onPick = openReplace()
+    act(() => onPick(EXIDX[BENCH], true))
+    expect(slots()).toEqual([benchSlot, rowSlot])
+    expect(picker.close).toHaveBeenCalledOnce()
+    expect(useUI.getState().toastMsg).toBe('')
+  })
+
   it('gives a replacement trained in another routine its own weight, not the old exercise\'s', () => {
     // The dumbbells were planned at 30 in the upper-body routine: the bench's 80 is not theirs.
     const upper = { id: 'r2', name: 'Upper', emoji: 'dumbbell', ex: [{ id: DB_BENCH, sets: 3, mode: 'reps', reps: 10, weight: 30 }] }

@@ -4,6 +4,8 @@ import { beep, chime, vibrate } from '../lib/sound.js'
 import { api } from '../lib/api.js'
 import { t } from '../lib/i18n.js'
 import { deviceId } from '../lib/push.js'
+import { MOBILE } from '../lib/mobile.js'
+import { armRestAlert, bindNativeRest, disarmRestAlert, hushRestTone } from '../lib/rest-alert.js'
 import { useStore } from './useStore.js'
 
 // Fire-and-forget: lets the server push a "rest over" alert if this tab gets suspended
@@ -13,13 +15,29 @@ import { useStore } from './useStore.js'
 const pushRestTimer = sec => { if (useStore.getState().user) api('/api/push/rest-timer', { method: 'POST', body: JSON.stringify({ seconds: sec, deviceId: deviceId() }) }).catch(() => {}) }
 const cancelPushRestTimer = () => { if (useStore.getState().user) api('/api/push/rest-timer/cancel', { method: 'POST', body: JSON.stringify({ deviceId: deviceId() }) }).catch(() => {}) }
 
+// Books the end of a rest with whatever can announce it while the app is not looking: in the
+// Android app a native alarm and the countdown notification, everywhere else (and wherever that
+// alarm could not be set) the server's push. The web build books the push at once, as before.
+const bookRestEnd = (endsAt, totalSec) => {
+  if (!MOBILE) { pushRestTimer(Math.max(1, Math.round((endsAt - Date.now()) / 1000))); return }
+  const { S } = useStore.getState()
+  armRestAlert(endsAt, { title: t('Rest over'), countdownTitle: t('Rest'), totalSec, accent: S.accent, sound: !!S.sound })
+    .then(ok => {
+      // Only for the rest that asked: one skipped or moved since then has booked its own end.
+      const tm = useUI.getState().timer
+      if (!ok && tm && !tm.paused && !tm.ready && tm.endsAt === endsAt) pushRestTimer(Math.max(1, Math.round((endsAt - Date.now()) / 1000)))
+    })
+}
+
 const notificationsSupported = () => typeof window !== 'undefined' && 'Notification' in window
 
 // Set the moment the tab goes hidden, never cleared here — timerTick/workTick read and
 // clear it themselves once they're running visible again. Lets a completion tick tell
 // "the countdown hit zero while the app was actually open" from "it hit zero while
 // backgrounded/closed and we're only just catching up now that it's open again" — the
-// latter must skip beep/vibrate/flash/toast and rely solely on the push notification.
+// latter must skip beep/vibrate/flash and rely on the alert armed when the rest started
+// (a native alarm on the mobile build, Web Push on the web build). The toast still shows
+// on reopen so a countdown that vanished does not look like a bug.
 let pageHiddenAt = null
 if (typeof document !== 'undefined') {
   document.addEventListener('visibilitychange', () => { if (document.hidden) pageHiddenAt = Date.now() })
@@ -78,14 +96,19 @@ const runRest = (set, get) => {
     const snd = useStore.getState().S.sound
     if (left <= 0) {
       if (seenLive) {
+        // The alarm is about to post the same moment. Tell it not to play, so this
+        // chime is the only one. Locked, this branch never runs and the alarm tone does.
+        hushRestTone()
         chime(snd)
         vibrate([200, 100, 200]); get().flashTimer()
       }
       // The toast stays even when the rest ran out while the app was hidden: a guest, or anyone
       // without push permission, gets no notification, and a countdown that silently vanishes
       // on reopen reads like a bug. Only the loud parts (beep, vibration, flash) are gated.
+      // The native alarm is left armed: this tick can come a little early, and with the screen
+      // locked it never runs at all.
       get().toast(t('Rest over — next set!'))
-      maybeRestNotification()
+      if (!MOBILE) maybeRestNotification()
       cancelPushRestTimer()
       stopRestTicking()
       set({ timer: { ...tm, left: 0, ready: true } })
@@ -148,7 +171,7 @@ export const useUI = create((set, get) => ({
     pageHiddenAt = document.hidden ? Date.now() : null
     const endsAt = Date.now() + sec * 1000
     set({ timer: { left: sec, total: sec, endsAt, forIdx } })
-    pushRestTimer(sec)
+    bookRestEnd(endsAt, sec)
     runRest(set, get)
   },
   // Holding the rest where it is — a longer break than planned, a machine to wait for, a phone
@@ -160,6 +183,7 @@ export const useUI = create((set, get) => ({
     if (!tm || tm.ready || tm.paused) return
     stopRestTicking()
     cancelPushRestTimer()
+    disarmRestAlert()
     const left = Math.max(1, Math.round((tm.endsAt - Date.now()) / 1000))
     set({ timer: { ...tm, left, paused: true } })
   },
@@ -172,8 +196,9 @@ export const useUI = create((set, get) => ({
     // As in startRest: the page may have been hidden and shown while paused, and that is no
     // catch-up of a countdown that was not running.
     pageHiddenAt = document.hidden ? Date.now() : null
-    set({ timer: { ...rest, endsAt: Date.now() + tm.left * 1000 } })
-    pushRestTimer(tm.left)
+    const endsAt = Date.now() + tm.left * 1000
+    set({ timer: { ...rest, endsAt } })
+    bookRestEnd(endsAt, tm.total)
     runRest(set, get)
   },
   addRest(sec) {
@@ -186,8 +211,9 @@ export const useUI = create((set, get) => ({
     if (left <= 0) { get().stopRest(); return }
     // Paused, there is no end to move and nothing booked on the server: the time is simply held.
     if (tm.paused) { set({ timer: { ...tm, left, total: tm.total + sec } }); return }
-    set({ timer: { ...tm, left, total: tm.total + sec, endsAt: tm.endsAt + sec * 1000 } })
-    pushRestTimer(left)
+    const endsAt = tm.endsAt + sec * 1000
+    set({ timer: { ...tm, left, total: tm.total + sec, endsAt } })
+    bookRestEnd(endsAt, tm.total + sec)
   },
   // The active list changed shape (an exercise removed or inserted at `at`): keep the rest
   // pointing at the same exercise. Returns nothing; the caller decides whether to stop instead.
@@ -196,8 +222,19 @@ export const useUI = create((set, get) => ({
     if (!tm || !(tm.forIdx >= at)) return
     set({ timer: { ...tm, forIdx: tm.forIdx + delta } })
   },
+  // The notification added time after this screen had already closed the rest.
+  // Put the countdown back without tearing down the native timer that is still running.
+  reviveRest(endsAt, total, left, paused) {
+    pageHiddenAt = document.hidden ? Date.now() : null
+    set({ timer: { left, total, endsAt, forIdx: get().timer?.forIdx, ...(paused ? { paused: true } : {}) } })
+    if (paused) stopRestTicking()
+    else runRest(set, get)
+  },
   stopRest() {
     stopRestTicking()
+    // Skip, Dismiss, a rest replacing this one and "rest off" all take the native alarm and
+    // its notifications down with it, or the alert fires after the user already moved on.
+    disarmRestAlert()
     if (get().timer) cancelPushRestTimer()
     set({ timer: null })
   },
@@ -284,3 +321,18 @@ export const useUI = create((set, get) => ({
     set({ work: null })
   }
 }))
+
+// Buttons on the rest notification (pause, ±15s, skip) change the countdown in the
+// service first, then mirror that into the in-app timer. skip ends it.
+bindNativeRest(ev => {
+  if (!ev) return
+  if (ev.type === 'skip') { useUI.getState().stopRest(); return }
+  const tm = useUI.getState().timer
+  const left = Math.max(0, Math.round((ev.leftMs || 0) / 1000))
+  const total = Math.max(1, Math.round((ev.totalMs || 0) / 1000))
+  if (!tm || tm.ready) {
+    if (ev.type === 'adjust' && left > 0) useUI.getState().reviveRest(ev.endsAt, total, left, ev.paused)
+    return
+  }
+  useUI.setState({ timer: { ...tm, left, total, endsAt: ev.endsAt || tm.endsAt, paused: !!ev.paused } })
+})

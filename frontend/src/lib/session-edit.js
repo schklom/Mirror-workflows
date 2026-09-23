@@ -48,6 +48,13 @@ export function editCompletedSession(state, ref) {
   const active = clone(original)
   active.cur = 0
   active.editingWorkoutId = key
+  // A workout saved before exclusion moved onto the entries (ENG-11) carries only the whole-workout
+  // flag. The editor rebuilds that flag from the entries (buildCompletedWorkout), so it is written
+  // onto each of them here, the way a session starts since: the edited workout stays out of
+  // progression, and a swap in the editor keeps its replacement out too.
+  if (original.excludeFromProgression === true) {
+    for (const entry of list(active.entries)) if (entry && entry.noProg !== true) entry.noProg = true
+  }
   // Worked out again on Save, from the edited sets.
   for (const k of ['vol', 'prs', '_ts']) delete active[k]
   state.active = active

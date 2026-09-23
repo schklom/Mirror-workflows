@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { editCompletedSession, saveWorkoutEdit } from './session-edit.js'
 import { mergeStates } from './sync-merge.js'
+import { entryExcluded, lastEntryFor } from './history.js'
 
 const entry = (w, id = '0025') => ({ id, sets: [{ w, r: 5, done: true }], target: { mode: 'reps' } })
 const fixture = () => ({
@@ -133,6 +134,23 @@ describe('saved workout editing', () => {
     const saved = saveWorkoutEdit(state)
     expect(saved).toMatchObject({ id: 'workout', d: '2026-08-20', start: 500, end: 1500, note: 'from phone' })
     expect(saved.entries[0].sets[0].w).toBe(50)
+  })
+
+  // A workout logged before exclusion moved onto the entries (ENG-11) carries only the whole-
+  // workout flag. Editing it must not turn it into a regular session that the next one of the
+  // exercise reads as its last time.
+  it('keeps a workout saved with the old exclude-from-progression flag out of progression after an edit', () => {
+    const state = fixture()
+    state.workouts[0] = { ...state.workouts[0], routineId: 'main', routineIds: ['main'], entries: [entry(80)] }
+    state.workouts.push({ id: 'rehab', d: '2026-09-02', start: 3000, end: 4000, routineId: 'rehab', routineIds: ['rehab'], excludeFromProgression: true, entries: [entry(10)], prs: [] })
+    expect(lastEntryFor(state, '0025').sets[0].w).toBe(80)
+    editCompletedSession(state, 'rehab')
+    state.active.entries[0].sets[0].r = 6
+    const saved = saveWorkoutEdit(state)
+    expect(saved.entries.every(e => entryExcluded(saved, e) && e.noProg === true)).toBe(true)
+    expect(saved.excludeFromProgression).toBe(true)
+    expect(saved.entries[0].sets[0].r).toBe(6)
+    expect(lastEntryFor(state, '0025').sets[0].w).toBe(80)
   })
 
   it('stamps the edit, and the edit replaces the old copy by id in a merge whichever copy is newer', () => {

@@ -313,10 +313,12 @@ main.api-main .lead { color: var(--fg-2); max-width: 58ch; margin: 14px 0 0; fon
     <span class="m get">GET</span>
     <span class="ep-path"><code>/api/config</code><span class="ep-chip public">public</span></span>
     <span class="ep-chev" aria-hidden="true"></span>
-    <span class="ep-sum">Public instance configuration</span>
+    <span class="ep-sum">Instance configuration</span>
   </summary>
   <div class="ep-body">
 <p>The flags the login screen needs before anyone is signed in. Both reflect environment variables on the server (<code>INVITE_ONLY</code>, <code>ALLOW_GUEST</code>).</p>
+<p>A caller with a valid session also gets a <code>coach</code> key: the block when the instance has the AI Coach switched on <b>and</b> a provider connected, and <code>null</code> when it has not. A caller with no session gets no key at all — the block names the provider this instance talks to, which is the same fact <code>GET /api/coach/disclosure</code> will not hand out unauthenticated.</p>
+<p>The key is always present for a session, <code>null</code> included, so a client that caches this answer can tell &quot;no Coach on this instance&quot; from &quot;you were not signed in when you asked&quot; and knows whether asking again would change it.</p>
     <p class="ep-auth"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2.5"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span>Public — no authentication required.</span></p>
 
 
@@ -324,7 +326,7 @@ main.api-main .lead { color: var(--fg-2); max-width: 58ch; margin: 14px 0 0; fon
     <div class="ptab">
   <div class="prow rrow">
     <span class="r-code s2">200</span>
-    <span class="p-desc">Instance flags.<span class="r-sig">{ invite_only: boolean, allow_guest: boolean }</span></span>
+    <span class="p-desc">Instance flags, plus the Coach block for a signed-in caller.<span class="r-sig">{ invite_only: boolean, allow_guest: boolean, coach: object | null }</span></span>
   </div>
     </div>
   </div>
@@ -345,7 +347,7 @@ main.api-main .lead { color: var(--fg-2); max-width: 58ch; margin: 14px 0 0; fon
     <span class="ep-sum">Who am I?</span>
   </summary>
   <div class="ep-body">
-<p>Resolves the current session to a user.</p>
+<p>Resolves the current session to a user. A paired phone (bearer token) whose token is past half of <code>SESSION_DAYS</code> also receives a fresh <code>token</code> to use from now on; it carries the account's current session version, so &quot;sign out everywhere&quot; revokes it like the old one. Cookie sessions never get one.</p>
     <p class="ep-auth"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2.5"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span>Requires a session — the cookie set at sign-in, or <code>Authorization: Bearer &lt;token&gt;</code> from mobile-app pairing.</span></p>
 
 
@@ -353,7 +355,7 @@ main.api-main .lead { color: var(--fg-2); max-width: 58ch; margin: 14px 0 0; fon
     <div class="ptab">
   <div class="prow rrow">
     <span class="r-code s2">200</span>
-    <span class="p-desc">A valid session.<span class="r-sig">{ user: <a href="#schema-SessionUser">SessionUser</a> }</span></span>
+    <span class="p-desc">A valid session.<span class="r-sig">{ user: <a href="#schema-SessionUser">SessionUser</a>, token: string }</span></span>
   </div>
   <div class="prow rrow">
     <span class="r-code s4">401</span>
@@ -706,7 +708,7 @@ main.api-main .lead { color: var(--fg-2); max-width: 58ch; margin: 14px 0 0; fon
   </div>
   <div class="prow rrow">
     <span class="r-code s4">400</span>
-    <span class="p-desc"><code>state</code> missing or not an object, <code>state</code> an array, or <code>workouts</code>/<code>routines</code> set to anything other than an array or null. Entries inside those two arrays that are not objects (<code>null</code>, numbers, nested arrays) are dropped before the write rather than refused, so a client with a damaged copy still syncs.<span class="r-sig"><code>{&quot;error&quot;:&quot;state required&quot;}</code> &middot; <code>{&quot;error&quot;:&quot;invalid state&quot;}</code></span></span>
+    <span class="p-desc"><code>state</code> missing or not an object, <code>state</code> an array or an object with nothing of the profile in it (<code>_rev</code>/<code>_ts</code> do not count — both would empty the profile), or <code>workouts</code>/<code>routines</code> set to anything other than an array or null. Entries inside those two arrays that are not objects (<code>null</code>, numbers, nested arrays) are dropped before the write rather than refused, so a client with a damaged copy still syncs.<span class="r-sig"><code>{&quot;error&quot;:&quot;state required&quot;}</code> &middot; <code>{&quot;error&quot;:&quot;invalid state&quot;}</code></span></span>
   </div>
   <div class="prow rrow">
     <span class="r-code s4">401</span>
@@ -1144,8 +1146,8 @@ main.api-main .lead { color: var(--fg-2); max-width: 58ch; margin: 14px 0 0; fon
   </div>
   <div class="prow">
     <span class="p-name">refine</span>
-    <span class="p-type">string <span class="p-hint">(&le; 1000 chars)</span></span>
-    <span class="p-desc">A change asked for in plain words, applied to the proposal now waiting.</span>
+    <span class="p-type">string <span class="p-hint">(&le; 4000 chars)</span></span>
+    <span class="p-desc">A change asked for in plain words, applied to the proposal now waiting. Cut to the instance's <code>maxMessageLen</code> (1000 unless the admin changed it; 200–4000).</span>
   </div>
 </div>
 <pre><code>{
@@ -1203,8 +1205,8 @@ main.api-main .lead { color: var(--fg-2); max-width: 58ch; margin: 14px 0 0; fon
 <p class="ep-h">Request body <span class="p-hint">(JSON)</span> <span class="p-hint">(optional)</span></p><div class="ptab">
   <div class="prow">
     <span class="p-name">note</span>
-    <span class="p-type">string <span class="p-hint">(&le; 1000 chars)</span></span>
-    <span class="p-desc">Anything the profile wants the Coach to know this time round.</span>
+    <span class="p-type">string <span class="p-hint">(&le; 4000 chars)</span></span>
+    <span class="p-desc">Anything the profile wants the Coach to know this time round. Cut to the instance's <code>maxMessageLen</code> (1000 unless the admin changed it; 200–4000).</span>
   </div>
 </div>
     <p class="ep-h">Responses</p>
@@ -1871,7 +1873,7 @@ main.api-main .lead { color: var(--fg-2); max-width: 58ch; margin: 14px 0 0; fon
   <div class="prow">
     <span class="p-name">baseUrl</span>
     <span class="p-type">string</span>
-    <span class="p-desc">Only for a provider with a configurable endpoint; validated before it is stored.</span>
+    <span class="p-desc">Only for a provider with a configurable endpoint; validated before it is stored. Empty means &quot;back to the default&quot;, so it is refused for a provider that has none.</span>
   </div>
   <div class="prow">
     <span class="p-name">community</span>
@@ -1893,6 +1895,11 @@ main.api-main .lead { color: var(--fg-2); max-width: 58ch; margin: 14px 0 0; fon
     <span class="p-type">integer <span class="p-hint">(0&ndash;5000)</span></span>
     <span class="p-desc">0 = no cap.</span>
   </div>
+  <div class="prow">
+    <span class="p-name">maxMessageLen</span>
+    <span class="p-type">integer <span class="p-hint">(200&ndash;4000)</span></span>
+    <span class="p-desc">How long a chat message, refinement or review note can be. Clamped into the range; not a number keeps the current value.</span>
+  </div>
 </div>
 <pre><code>{
   &quot;enabled&quot;: true,
@@ -1911,7 +1918,7 @@ main.api-main .lead { color: var(--fg-2); max-width: 58ch; margin: 14px 0 0; fon
   </div>
   <div class="prow rrow">
     <span class="r-code s4">400</span>
-    <span class="p-desc">Unknown provider, an endpoint set on a provider that has a fixed one, or a base URL that did not validate.<span class="r-sig"><code>{&quot;error&quot;:&quot;unknown provider&quot;}</code></span></span>
+    <span class="p-desc">Unknown provider, an endpoint set on a provider that has a fixed one, a base URL that did not validate, or an empty one for a provider with no default endpoint to fall back to (<code>compatible</code>).<span class="r-sig"><code>{&quot;error&quot;:&quot;unknown provider&quot;}</code></span></span>
   </div>
   <div class="prow rrow">
     <span class="r-code s4">401</span>
@@ -3055,6 +3062,11 @@ main.api-main .lead { color: var(--fg-2); max-width: 58ch; margin: 14px 0 0; fon
     <span class="p-desc"></span>
   </div>
   <div class="prow">
+    <span class="p-name">maxMessageLen</span>
+    <span class="p-type">integer <span class="p-hint">(200&ndash;4000)</span></span>
+    <span class="p-desc">The longest note or refinement this instance keeps, in characters. It rides on the poll so a chat that is already open follows an admin's change.</span>
+  </div>
+  <div class="prow">
     <span class="p-name">last</span>
     <span class="p-type">object | null</span>
     <span class="p-desc"></span>
@@ -3495,6 +3507,11 @@ main.api-main .lead { color: var(--fg-2); max-width: 58ch; margin: 14px 0 0; fon
     <span class="p-name">caps.instanceDaily</span>
     <span class="p-type">integer</span>
     <span class="p-desc"></span>
+  </div>
+  <div class="prow">
+    <span class="p-name">maxMessageLen</span>
+    <span class="p-type">integer</span>
+    <span class="p-desc">How long a chat message, refinement or review note can be (200–4000, default 1000).</span>
   </div>
   <div class="prow">
     <span class="p-name">community</span>

@@ -1284,8 +1284,10 @@ paths:
                   $ref: '#/components/schemas/CoachIntake'
                 refine:
                   type: string
-                  maxLength: 1000
-                  description: A change asked for in plain words, applied to the proposal now waiting.
+                  maxLength: 4000
+                  description: |
+                    A change asked for in plain words, applied to the proposal now waiting. Cut to
+                    the instance's `maxMessageLen` (1000 unless the admin changed it; 200–4000).
             example: { intake: { goal: muscle, experience: novice, daysPerWeek: 3, equipment: [dumbbell, barbell] } }
       responses:
         '202': { $ref: '#/components/responses/CoachJobQueued' }
@@ -1313,8 +1315,10 @@ paths:
               properties:
                 note:
                   type: string
-                  maxLength: 1000
-                  description: Anything the profile wants the Coach to know this time round.
+                  maxLength: 4000
+                  description: |
+                    Anything the profile wants the Coach to know this time round. Cut to the
+                    instance's `maxMessageLen` (1000 unless the admin changed it; 200–4000).
       responses:
         '202': { $ref: '#/components/responses/CoachJobQueued' }
         '401': { $ref: '#/components/responses/Unauthorized' }
@@ -1537,13 +1541,20 @@ paths:
                   description: For the provider being set (or the current one). Empty string clears it.
                 baseUrl:
                   type: string
-                  description: Only for a provider with a configurable endpoint; validated before it is stored.
+                  description: |
+                    Only for a provider with a configurable endpoint; validated before it is stored.
+                    Empty means "back to the default", so it is refused for a provider that has none.
                 community: { type: boolean, description: Offer the cohort comparison on this instance. }
                 caps:
                   type: object
                   properties:
                     perProfileDaily: { type: integer, minimum: 0, maximum: 200, description: 0 = no cap. }
                     instanceDaily: { type: integer, minimum: 0, maximum: 5000, description: 0 = no cap. }
+                maxMessageLen:
+                  type: integer
+                  minimum: 200
+                  maximum: 4000
+                  description: How long a chat message, refinement or review note can be. Clamped into the range; not a number keeps the current value.
             example: { enabled: true, provider: compatible, model: qwen3.8-27b, caps: { perProfileDaily: 10, instanceDaily: 0 } }
       responses:
         '200':
@@ -1552,7 +1563,10 @@ paths:
             application/json:
               schema: { $ref: '#/components/schemas/Ok' }
         '400':
-          description: Unknown provider, an endpoint set on a provider that has a fixed one, or a base URL that did not validate.
+          description: |
+            Unknown provider, an endpoint set on a provider that has a fixed one, a base URL that
+            did not validate, or an empty one for a provider with no default endpoint to fall back
+            to (`compatible`).
           content:
             application/json:
               schema: { $ref: '#/components/schemas/Error' }
@@ -2182,6 +2196,13 @@ components:
             - $ref: '#/components/schemas/CoachProposal'
             - type: 'null'
         cap: { $ref: '#/components/schemas/CoachCap' }
+        maxMessageLen:
+          type: integer
+          minimum: 200
+          maximum: 4000
+          description: |
+            The longest note or refinement this instance keeps, in characters. It rides on the
+            poll so a chat that is already open follows an admin's change.
         last:
           oneOf:
             - type: object
@@ -2345,6 +2366,7 @@ components:
           properties:
             perProfileDaily: { type: integer }
             instanceDaily: { type: integer }
+        maxMessageLen: { type: integer, description: 'How long a chat message, refinement or review note can be (200–4000, default 1000).' }
         community: { type: boolean }
         runtime:
           type: object

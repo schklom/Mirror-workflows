@@ -1321,7 +1321,6 @@ export default {
   "Don't save": 'न सहेजें',
   'Keep editing': 'संपादन जारी रखें',
   'This workout was deleted on another device. Your edits are still here.': 'यह वर्कआउट दूसरे डिवाइस पर मिटा दिया गया। आपके बदलाव अभी भी यहाँ हैं।',
-  'This workout changed on another device. Your edits are still here.': 'यह वर्कआउट दूसरे डिवाइस पर बदला गया। आपके बदलाव अभी भी यहाँ हैं।',
   'Close editor': 'संपादक बंद करें',
   'Editing a saved workout. Date and duration stay unchanged.': 'आप सहेजा हुआ वर्कआउट संपादित कर रहे हैं। तारीख और अवधि नहीं बदलेंगी।',
 }

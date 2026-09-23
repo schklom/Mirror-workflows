@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { localExtras, mergeBodyweight, mergeStates, newerOf, stampRoutines, unionById } from './sync-merge.js'
+import { localExtras, mergeBodyweight, mergeStates, newerOf, stampRoutines, stampWorkout, unionById } from './sync-merge.js'
 import { retimeWorkout } from './workout-date.js'
 
 const workout = (id, d = '2026-09-01', start = 1) => ({ id, d, start, entries: [] })
@@ -81,18 +81,79 @@ describe('mergeStates', () => {
     expect(m.barWeights).toEqual({ sq: 20, dl: 15 })
   })
 
-  it('does not resurrect a cached best lowered by the winning workout correction', () => {
-    const set = w => ({ id: 'sq', target: { mode: 'reps' }, sets: [{ w, r: 5, done: true }] })
-    const older = base({ _ts: 100, workouts: [{ ...workout('w1'), entries: [set(100)] }], exWeights: { sq: { w: 100, d: '2026-09-01' } } })
-    const corrected = base({ _ts: 200, workouts: [{ ...workout('w1'), entries: [set(80)] }], exWeights: { sq: { w: 80, d: '2026-09-01' } } })
-    expect(mergeStates(corrected, older).exWeights.sq).toEqual({ w: 80, d: '2026-09-01' })
-  })
+  // A workout edited after it was logged is stamped with the time of the edit (stampWorkout).
+  // Whichever copy is newer as a whole, the edited version replaces the old one by id, and the
+  // old one can no longer come back over it.
+  describe('a workout edited after it was logged', () => {
+    const set = (w, id = 'sq') => ({ id, target: { mode: 'reps' }, sets: [{ w, r: 5, done: true }] })
+    const logged = (entries, over = {}) => ({ ...workout('w1'), entries, ...over })
 
-  it('keeps assisted-machine correction caches ordered by less help', () => {
-    const set = w => ({ id: '0017', target: { mode: 'reps' }, sets: [{ w, r: 5, done: true }] })
-    const older = base({ _ts: 100, workouts: [{ ...workout('w1'), entries: [set(30)] }], exWeights: { '0017': { w: 30, d: '2026-09-01' } } })
-    const corrected = base({ _ts: 200, workouts: [{ ...workout('w1'), entries: [set(20)] }], exWeights: { '0017': { w: 20, d: '2026-09-01' } } })
-    expect(mergeStates(corrected, older).exWeights['0017']).toEqual({ w: 20, d: '2026-09-01' })
+    it('keeps the edit when the other copy is newer as a whole but still has the old version', () => {
+      const edited = base({ _ts: 100, workouts: [stampWorkout(logged([set(80)]), 100)] })
+      const stale = base({ _ts: 200, workouts: [logged([set(100)])], bodyweight: [{ d: '2026-09-02', w: 80, t: 200 }] })
+      for (const m of [mergeStates(edited, stale), mergeStates(stale, edited)]) {
+        expect(m.workouts).toHaveLength(1)
+        expect(m.workouts[0].entries[0].sets[0].w).toBe(80)
+        expect(m.bodyweight).toHaveLength(1)   // the newer copy's own change is kept too
+      }
+    })
+
+    it('keeps the later of two edits of the same workout, the newer copy\'s on a tie', () => {
+      const a = base({ _ts: 300, workouts: [stampWorkout(logged([set(80)]), 150)] })
+      const b = base({ _ts: 100, workouts: [stampWorkout(logged([set(90)]), 250)] })
+      expect(mergeStates(a, b).workouts[0].entries[0].sets[0].w).toBe(90)
+      expect(mergeStates(b, a).workouts[0].entries[0].sets[0].w).toBe(90)
+      const tie = base({ _ts: 100, workouts: [stampWorkout(logged([set(70)]), 250)] })
+      expect(mergeStates(b, { ...tie, _ts: 50 }).workouts[0].entries[0].sets[0].w).toBe(90)
+    })
+
+    it('a date move replaces the other copy by id too', () => {
+      const moved = retimeWorkout(logged([set(80)]), '2026-08-20', '07:00')
+      stampWorkout(moved, 100)
+      const m = mergeStates(base({ _ts: 100, workouts: [moved] }), base({ _ts: 200, workouts: [logged([set(80)])] }))
+      expect(m.workouts).toHaveLength(1)
+      expect(m.workouts[0].d).toBe('2026-08-20')
+    })
+
+    it('an edit of a workout the other copy deleted brings it back, edited', () => {
+      const edited = base({ _ts: 100, workouts: [stampWorkout(logged([set(80)]), 100)] })
+      const deleted = base({ _ts: 200, workouts: [] })
+      expect(mergeStates(deleted, edited).workouts.map(w => w.entries[0].sets[0].w)).toEqual([80])
+    })
+
+    it('sign-in keeps the preferred side\'s version as it is', () => {
+      const server = base({ _ts: 100, workouts: [logged([set(100)])] })
+      const device = base({ _ts: 50, workouts: [stampWorkout(logged([set(80)]), 300)] })
+      expect(mergeStates(server, device, { prefer: 'a' }).workouts[0].entries[0].sets[0].w).toBe(100)
+    })
+
+    // The kept load may be the typo the edit corrected: the other copy's must not bring it back.
+    it('does not resurrect a kept load the edit took away, from either side', () => {
+      const edited = base({ _ts: 100, workouts: [stampWorkout(logged([set(80)]), 100)], exWeights: { sq: { w: 80, d: '2026-09-01' } } })
+      const stale = base({ _ts: 200, workouts: [logged([set(1000)])], exWeights: { sq: { w: 1000, d: '2026-09-01' } } })
+      expect(mergeStates(edited, stale).exWeights.sq).toEqual({ w: 80, d: '2026-09-01' })
+      expect(mergeStates(stale, edited).exWeights.sq).toEqual({ w: 80, d: '2026-09-01' })
+    })
+
+    it('keeps a heavier set the other copy logged since, and its own kept load when that is better', () => {
+      const edited = base({ _ts: 100, workouts: [stampWorkout(logged([set(80)]), 100)], exWeights: { sq: { w: 85, d: '2026-08-01' } } })
+      const other = base({ _ts: 200, workouts: [logged([set(1000)]), { ...workout('w2', '2026-09-03'), entries: [set(90)] }], exWeights: { sq: { w: 1000, d: '2026-09-01' } } })
+      expect(mergeStates(other, edited).exWeights.sq).toEqual({ w: 90, d: '2026-09-03' })
+      const noLater = base({ _ts: 200, workouts: [logged([set(1000)])], exWeights: { sq: { w: 1000, d: '2026-09-01' } } })
+      expect(mergeStates(noLater, edited).exWeights.sq).toEqual({ w: 85, d: '2026-08-01' })
+    })
+
+    it('keeps assisted-machine kept loads ordered by less help', () => {
+      const edited = base({ _ts: 100, workouts: [stampWorkout(logged([set(20, '0017')]), 100)], exWeights: { '0017': { w: 20, d: '2026-09-01' } } })
+      const stale = base({ _ts: 200, workouts: [logged([set(30, '0017')])], exWeights: { '0017': { w: 30, d: '2026-09-01' } } })
+      expect(mergeStates(stale, edited).exWeights['0017']).toEqual({ w: 20, d: '2026-09-01' })
+    })
+
+    it('leaves the kept loads alone when only the date, the length or the note changed', () => {
+      const moved = stampWorkout(logged([set(80)], { note: 'moved' }), 100)
+      const other = base({ _ts: 200, workouts: [logged([set(80)])], exWeights: { sq: { w: 120, d: '2026-08-01' } } })
+      expect(mergeStates(other, base({ _ts: 100, workouts: [moved], exWeights: {} })).exWeights.sq).toEqual({ w: 120, d: '2026-08-01' })
+    })
   })
 
   it('is commutative on the union fields and idempotent', () => {

@@ -1,5 +1,3 @@
-import { bestWeightForEntry } from './history.js'
-
 /* Two copies of the account state, one merged copy.
  *
  * The server refuses a push over a document the device never saw (PUT /api/data with a stale
@@ -10,16 +8,22 @@ import { bestWeightForEntry } from './history.js'
  *
  * Rules, by field:
  *   - scalars and settings, `week`, `dayPlan`, `wc`, `reminder`, …: from the copy with the newer `_ts`
- *   - workouts, customEx, equipProfiles, gymCards: union by id, the newer copy's version of an
- *     id that both have; workouts sorted by day and start like every other writer
+ *   - customEx, equipProfiles, gymCards: union by id, the newer copy's version of an id that
+ *     both have
+ *   - workouts: union by id; of an id that both have, the version edited last by its own `_ts`
+ *     (stampWorkout — a workout changed after it was logged: its sets edited, moved to another
+ *     day, its length or note corrected), the newer copy's on a tie; sorted by day and start
+ *     like every other writer
  *   - routines: union by id in the newer copy's order; of an id that both have, the version
  *     edited last by its own `_ts` (stampRoutines), the newer copy's on a tie
  *   - bodyweight: union by day, the later-edited (`t`) entry of a day that both have
  *   - favEx: ordered set union, the newer copy first
- *   - exWeights: union by exercise, normally the larger `w`; when the winning side changed an
- *     existing workout, affected exercises are rebuilt from that side and the merged history so
- *     a deliberate history correction can lower a stale cached best. Assistance machines use
- *     their smaller-is-better ordering; exNotes and barWeights remain key unions.
+ *   - exWeights: union by exercise, the better `w` for that exercise — larger for an ordinary
+ *     lift, smaller on an assistance machine (a PR logged on the other device must not be
+ *     forgotten, whichever way it runs). An exercise in a workout whose edited version was kept
+ *     is the exception: the edit may have taken away the set the kept weight came from, so it
+ *     is the best of the merged history and of the editing copy's own, and the other copy's
+ *     can no longer bring a corrected typo back. exNotes, barWeights: key union
  *   - `_ts`: the later of the two; `_rev` dropped (the server sets it); `active` left to the caller
  *
  * Known limit: with no record of what each side deleted, an entry removed on one device inside
@@ -28,6 +32,7 @@ import { bestWeightForEntry } from './history.js'
  * would close it.
  */
 import { beatsWeight } from './exercises.js'
+import { bestWeightForEntry } from './history.js'
 
 const clone = o => JSON.parse(JSON.stringify(o))
 const list = v => (Array.isArray(v) ? v : [])
@@ -71,26 +76,39 @@ export function mergeBodyweight(a = [], b = []) {
 // harder setting and taking the larger would hand back the help the other device just dropped
 // (issue #232). `beatsWeight` knows which way round each exercise runs; the date breaks a tie
 // on an exercise where both sides moved in the same direction.
-function mergeExWeights(n = {}, o = {}, workouts = [], corrected = new Set()) {
+function mergeExWeights(n = {}, o = {}) {
   const out = { ...(o || {}), ...(n || {}) }
   for (const k of Object.keys(o || {})) {
     if (!(n && n[k] && o[k])) continue
     if (beatsWeight(k, o[k].w || 0, n[k].w || 0)) out[k] = o[k]
   }
-  for (const id of corrected) {
-    const logged = workouts.flatMap(workout => list(workout.entries)
-      .filter(entry => entry?.id === id)
-      .map(entry => ({ w: bestWeightForEntry(entry), d: workout.d })))
-      .filter(value => value.w > 0)
-    const candidates = [...logged, ...(n?.[id]?.w > 0 ? [n[id]] : [])]
-    let best = null
-    for (const candidate of candidates) {
-      if (!best || beatsWeight(id, candidate.w, best.w)) best = candidate
-    }
-    if (best) out[id] = best
-    else delete out[id]
-  }
   return out
+}
+
+// The kept load of an exercise that a kept workout edit touched (see mergeStates): the best set in
+// the merged history, or the editing copy's own kept load when that is better still — the other
+// copy's may be the very typo the edit corrected. `sources` are the exWeights of each copy whose
+// edit was kept. Nothing left to read removes the key, as the edit itself did.
+function correctedExWeight(id, workouts, sources) {
+  let best = null
+  const consider = c => { if (c && c.w > 0 && (!best || beatsWeight(id, c.w, best.w))) best = c }
+  for (const w of workouts) {
+    for (const e of list(w?.entries)) if (e?.id === id) consider({ w: bestWeightForEntry(e), d: w.d })
+  }
+  for (const src of sources) consider(src?.[id])
+  return best
+}
+
+/**
+ * Stamps `_ts` on a saved workout changed after it was logged — its sets edited, moved to another
+ * day or time, its length or its note corrected — the edit time mergeStates needs to keep the
+ * version edited last, the way stampRoutines does for a plan. Without it the copy that was newer
+ * as a whole decided: a phone that logged a weigh-in after the desktop corrected a workout brought
+ * the uncorrected one back on the next conflict. Mutates and returns `w`.
+ */
+export function stampWorkout(w, now = Date.now()) {
+  if (w && typeof w === 'object') w._ts = now
+  return w
 }
 
 // `prefer` names the side whose settings, plan and per-exercise config win regardless of `_ts`:
@@ -102,14 +120,31 @@ export function mergeStates(a, b, { prefer } = {}) {
   const n = prefer === 'a' ? a : prefer === 'b' ? b : newerOf(a, b)
   const o = n === a ? b : a
   const out = clone(n)
-  out.workouts = unionById(n.workouts, o.workouts, workoutKey).map(clone).sort(byDayStart)
-  const olderWorkouts = new Map(list(o.workouts).map(workout => [workoutKey(workout), workout]))
-  const corrected = new Set()
-  for (const workout of list(n.workouts)) {
-    const older = olderWorkouts.get(workoutKey(workout))
-    if (!older || JSON.stringify(workout.entries) === JSON.stringify(older.entries)) continue
-    for (const entry of [...list(workout.entries), ...list(older.entries)]) if (entry?.id != null) corrected.add(entry.id)
+  out.workouts = unionById(n.workouts, o.workouts, workoutKey).map(clone)
+  // A workout edited after it was logged keeps the version edited last, whichever copy is newer
+  // as a whole — the same rule as a routine's. `editedBy` notes, per exercise, the copies whose
+  // edit of its sets was kept, for the kept loads below. `prefer` (sign-in) keeps the preferred
+  // side's version as it is.
+  const editedBy = new Map()
+  if (!prefer) {
+    const mine = new Set(list(n.workouts).map(workoutKey))
+    const other = new Map(list(o.workouts).map(w => [workoutKey(w), w]))
+    out.workouts = out.workouts.map(w => {
+      const key = workoutKey(w)
+      const alt = mine.has(key) ? other.get(key) : null
+      if (!alt) return w
+      const [kept, lost, by] = (alt._ts || 0) > (w._ts || 0) ? [clone(alt), w, o] : [w, alt, n]
+      if ((kept._ts || 0) > (lost._ts || 0) && JSON.stringify(kept.entries) !== JSON.stringify(lost.entries)) {
+        for (const e of [...list(kept.entries), ...list(lost.entries)]) {
+          if (e?.id == null) continue
+          if (!editedBy.has(e.id)) editedBy.set(e.id, new Set())
+          editedBy.get(e.id).add(by.exWeights)
+        }
+      }
+      return kept
+    })
   }
+  out.workouts.sort(byDayStart)
   for (const f of ['routines', 'customEx', 'equipProfiles', 'gymCards']) {
     if (list(n[f]).length || list(o[f]).length) out[f] = unionById(n[f], o[f]).map(clone)
   }
@@ -126,7 +161,12 @@ export function mergeStates(a, b, { prefer } = {}) {
   }
   out.bodyweight = mergeBodyweight(n.bodyweight, o.bodyweight).map(clone)
   if (list(n.favEx).length || list(o.favEx).length) out.favEx = [...new Set([...list(n.favEx), ...list(o.favEx)])]
-  out.exWeights = clone(mergeExWeights(n.exWeights, o.exWeights, out.workouts, corrected))
+  out.exWeights = clone(mergeExWeights(n.exWeights, o.exWeights))
+  for (const [id, sources] of editedBy) {
+    const kept = correctedExWeight(id, out.workouts, sources)
+    if (kept) out.exWeights[id] = clone(kept)
+    else delete out.exWeights[id]
+  }
   for (const f of ['exNotes', 'barWeights']) {
     if (n[f] || o[f]) out[f] = clone({ ...(o[f] || {}), ...(n[f] || {}) })
   }

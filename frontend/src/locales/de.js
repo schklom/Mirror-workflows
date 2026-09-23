@@ -1341,7 +1341,6 @@ export default {
   "Don't save": 'Nicht speichern',
   'Keep editing': 'Weiter bearbeiten',
   'This workout was deleted on another device. Your edits are still here.': 'Dieses Training wurde auf einem anderen Gerät gelöscht. Deine Änderungen sind noch hier.',
-  'This workout changed on another device. Your edits are still here.': 'Dieses Training wurde auf einem anderen Gerät geändert. Deine Änderungen sind noch hier.',
   'Close editor': 'Editor schließen',
   'Editing a saved workout. Date and duration stay unchanged.': 'Du bearbeitest ein gespeichertes Training. Datum und Dauer bleiben unverändert.',
 }

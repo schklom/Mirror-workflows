@@ -1,147 +1,120 @@
+// Editing a workout that is already in history (#143): its exercises, sets and notes.
+//
+// The editor is the ordinary workout screen working on a copy in S.active (`editingWorkoutId`
+// says whose), so a reload, a closed tab or an offline spell keeps the draft, and the saved
+// record stays exactly as it was until Save. When the session happened — its day, start and
+// length — is not edited here: WorkoutDetail has its own rows for that (lib/workout-date.js).
+//
+// Save replaces the record by id. Getting that replacement onto every device is the sync's job,
+// not this file's: the record is stamped with the time of the edit (stampWorkout), and a conflict
+// between two copies keeps the version edited last (lib/sync-merge.js). So the edit replaces the
+// old copy wherever it is, is never joined by it as a duplicate, and an older copy cannot come
+// back over it on a 409.
 import { buildCompletedWorkout } from './finish-workout.js'
 import { beatsWeight } from './exercises.js'
 import { bestWeightForEntry, workoutVolume } from './history.js'
 import { hasCompletedWork } from './workout-model.js'
+import { stampWorkout } from './sync-merge.js'
+import { legacySyncKey, rebuildPrHistory } from './workout-date.js'
 
 const clone = value => structuredClone(value)
-const same = (a, b) => JSON.stringify(a) === JSON.stringify(b)
-const byDayStart = (a, b) => a.d === b.d ? (a.start || 0) - (b.start || 0) : a.d < b.d ? -1 : 1
+const list = v => (Array.isArray(v) ? v : [])
 
-// A saved-workout edit is an ordinary persisted active draft. The history record stays byte for
-// byte unchanged until Save, so reload, cancel and an offline spell cannot lose the original.
-export function editCompletedSession(state, workoutId) {
+// Which record the editor works on. A workout logged before ids existed is keyed by its day and
+// start, the way the sync keys it; Save freezes that key as its id (as a date move does), so the
+// other device's untouched copy is still recognised as the same record.
+const keyOf = w => (w?.id != null ? w.id : legacySyncKey(w))
+
+// The best load one workout logged for an exercise, across every occurrence of it.
+function bestIn(workout, id) {
+  let best = 0
+  for (const e of list(workout?.entries)) {
+    if (e?.id !== id) continue
+    const w = bestWeightForEntry(e)
+    if (beatsWeight(id, w, best)) best = w
+  }
+  return best
+}
+
+/**
+ * Opens the editor on a saved workout: a copy of it becomes S.active. `ref` is the workout or its
+ * id. Throws while another session is running, or when the workout is gone.
+ */
+export function editCompletedSession(state, ref) {
   if (state.active) throw new Error('Finish the current workout first.')
-  const original = state.workouts.find(workout => workout.id === workoutId)
-  if (!original) throw new Error('This workout is no longer available.')
+  const key = ref && typeof ref === 'object' ? keyOf(ref) : ref
+  const original = key == null ? null : list(state.workouts).find(w => keyOf(w) === key)
+  if (!original) throw new Error('Workout deleted')
   const active = clone(original)
-  active.entries = clone(original.entries)
   active.cur = 0
-  active.editingWorkoutId = original.id
-  active.editingOriginal = clone(original)
-  for (const key of ['vol', 'prs']) delete active[key]
+  active.editingWorkoutId = key
+  // Worked out again on Save, from the edited sets.
+  for (const k of ['vol', 'prs', '_ts']) delete active[k]
   state.active = active
   return active
 }
 
-// Refresh the record-derived caches that can become stale when a correction lowers or removes a
-// set. PRs are historical: each workout is compared only with sessions before it.
-export function rebuildHistoryDerived(state, exerciseIds) {
-  const ids = new Set(exerciseIds)
-  const best = new Map()
-  for (const workout of [...state.workouts].sort(byDayStart)) {
-    const existing = (workout.prs || []).filter(id => !ids.has(id))
-    for (const id of ids) {
-      let weight = 0
-      for (const entry of workout.entries.filter(entry => entry.id === id)) {
-        const entryWeight = bestWeightForEntry(entry)
-        if (beatsWeight(id, entryWeight, weight)) weight = entryWeight
-      }
-      const previous = best.get(id) || 0
-      if (beatsWeight(id, weight, previous)) existing.push(id)
-      if (beatsWeight(id, weight, previous)) best.set(id, weight)
-    }
-    workout.prs = [...new Set(existing)]
-  }
-  for (const id of ids) {
-    const candidates = state.workouts.flatMap(workout => workout.entries
-      .filter(entry => entry.id === id)
-      .map(entry => ({ w: bestWeightForEntry(entry), d: workout.d })))
-      .filter(value => value.w > 0)
-    let bestCandidate = null
-    for (const candidate of candidates) {
-      if (!bestCandidate || beatsWeight(id, candidate.w, bestCandidate.w)) bestCandidate = candidate
-    }
-    if (bestCandidate) state.exWeights[id] = bestCandidate
-    else delete state.exWeights[id]
-  }
-}
-
-export function saveWorkoutEdit(state) {
+/**
+ * Saves the editor into history and closes it. Returns the saved record.
+ *
+ * The record is the one history holds now, not the one the editor opened: another device may have
+ * moved it or corrected its note meanwhile, and what the editor does not edit stays as that left
+ * it. The sets are the editor's — the edit saved last wins, as it does between devices. A record
+ * deleted meanwhile (the deletion already reached this device) is not brought back behind the
+ * person's back: Save throws, and the draft stays open to keep editing or drop.
+ */
+export function saveWorkoutEdit(state, now = Date.now()) {
   const active = state.active
-  const original = active?.editingOriginal
-  const index = state.workouts.findIndex(workout => workout.id === active?.editingWorkoutId)
+  const key = active?.editingWorkoutId
+  const index = key == null ? -1 : list(state.workouts).findIndex(w => keyOf(w) === key)
   if (index < 0) throw new Error('This workout was deleted on another device. Your edits are still here.')
-  if (!original || !same(state.workouts[index], original)) {
-    throw new Error('This workout changed on another device. Your edits are still here.')
-  }
+  const current = state.workouts[index]
 
   const updated = buildCompletedWorkout(active, {
-    end: original.end,
-    prs: original.prs || [],
+    end: current.end,
+    prs: current.prs || [],
     snapshotFor: entry => entry.muscleSnapshot,
   })
-  updated.start = original.start
-  updated.d = original.d
-
   // Carry occurrence metadata opaquely, by order rather than exercise id: the same exercise may
-  // appear twice. Canonical completed-entry fields win, while live-only prescription data stays
-  // out of history just as it does after an ordinary workout.
+  // appear twice. Canonical completed-entry fields win, while live-only prescription data (the
+  // plan's explanation, the "carried over" marker) stays out of history as it does after an
+  // ordinary workout.
   const logged = active.entries.filter(entry => entry.sets.some(hasCompletedWork))
-  updated.entries = updated.entries.map((entry, index) => {
-    const merged = { ...clone(logged[index]), ...entry }
+  updated.entries = updated.entries.map((entry, i) => {
+    const merged = { ...clone(logged[i]), ...entry }
     delete merged.plan
-    for (const key of ['note', 'notePin', 'noProg', 'muscleSnapshot']) if (!(key in entry)) delete merged[key]
+    delete merged.carried
+    for (const k of ['note', 'notePin', 'noProg', 'muscleSnapshot', 'rid', 'planned']) if (!(k in entry)) delete merged[k]
     return merged
   })
-  const record = { ...original, ...updated, vol: workoutVolume(updated) }
-  for (const key of ['note', 'excludeFromProgression']) if (!(key in updated)) delete record[key]
+  const record = { ...current, ...updated, id: key, d: current.d, start: current.start, end: current.end }
+  for (const k of ['note', 'excludeFromProgression']) if (!(k in updated)) delete record[k]
+  record.vol = workoutVolume(record)
+  stampWorkout(record, now)
   state.workouts[index] = record
-  rebuildHistoryDerived(state, [...original.entries, ...active.entries].map(entry => entry.id))
-  state.active = null
-  return record
-}
 
-// The editor dirties the device state as its draft changes. If another device changes the source
-// record meanwhile, make that remote record the visible original before the normal state merge;
-// Save will then detect it instead of silently replacing it with the stale copy held at edit start.
-export function prepareLocalStateForEditMerge(local, remote, pending = []) {
-  const next = clone(local)
-  const receipts = Array.isArray(pending) ? pending : (pending?.id ? [pending] : [])
-  const active = local?.active
-  const activeEdit = active?.editingWorkoutId
-    ? { id: active.editingWorkoutId, original: active.editingOriginal, saved: active, activeDraft: true }
-    : null
-  const edits = [...(activeEdit ? [activeEdit] : []), ...receipts.filter(edit => edit.id !== activeEdit?.id)]
-  let blocked = false
-  let occupied = !!active
-  const affectedExerciseIds = new Set()
-  for (const edit of edits) {
-    const { id, original } = edit || {}
-    if (!id || !original) continue
-    const current = next.workouts?.find(workout => workout.id === id)
-    const remoteRecord = remote?.workouts?.find(workout => workout.id === id)
-    const saved = edit.saved || (!same(current, original) ? current : null)
-    if (remoteRecord && same(remoteRecord, original)) continue
+  // Badges are a claim about the sessions before each one. The edited session can earn one it now
+  // leads with, and a later one loses its own if the edit raised the bar above it — the same
+  // asymmetric rule a date move follows, so imported history never sprouts trophies.
+  const touched = [...new Set([...list(current.entries), ...record.entries].map(e => e?.id).filter(id => id != null))]
+  state.workouts = rebuildPrHistory(state.workouts, touched, record)
+  const saved = state.workouts.find(w => keyOf(w) === key)
 
-    // The server changed or deleted the source record. Its canonical record wins this merge. A
-    // saved local correction becomes an editor draft when the active slot is free; otherwise its
-    // receipt remains in localStorage and the caller stops before retrying the PUT.
-    next.workouts = next.workouts.filter(workout => workout.id !== id)
-    if (remoteRecord) next.workouts.push(clone(remoteRecord))
-    if (!edit.activeDraft && saved) {
-      if (!occupied) {
-        next.active = clone(saved)
-        next.active.entries = clone(saved.entries)
-        next.active.cur = 0
-        next.active.editingWorkoutId = id
-        next.active.editingOriginal = clone(remoteRecord || original)
-        for (const key of ['vol', 'prs']) delete next.active[key]
-        occupied = true
-      } else blocked = true
+  // The kept working weight of an exercise is lowered only when it came from this session and the
+  // edit took it away — a typed 1000 corrected to 100. Then it is the best set left in history, or
+  // gone. One confirmed anywhere else ("Tracked — next time starts at…") is left as it is.
+  for (const id of touched) {
+    const kept = state.exWeights?.[id]
+    const before = bestIn(current, id)
+    if (!kept || !(kept.w > 0) || kept.w !== before || !beatsWeight(id, before, bestIn(saved, id))) continue
+    let best = null
+    for (const w of state.workouts) {
+      const top = bestIn(w, id)
+      if (beatsWeight(id, top, best?.w || 0)) best = { w: top, d: w.d }
     }
-    // The saved correction may already have lowered this cache locally. Once it is moved back to
-    // a draft (or held in its receipt), the remote document owns derived state again.
-    for (const exerciseId of new Set([...(original.entries || []), ...(current?.entries || []), ...(remoteRecord?.entries || [])].map(entry => entry.id))) {
-      affectedExerciseIds.add(exerciseId)
-      if (remote?.exWeights?.[exerciseId]) next.exWeights[exerciseId] = clone(remote.exWeights[exerciseId])
-      else delete next.exWeights[exerciseId]
-    }
+    if (best) state.exWeights[id] = best
+    else delete state.exWeights[id]
   }
-  return { state: next, blocked, affectedExerciseIds: [...affectedExerciseIds] }
-}
-
-export const localStateForEditMerge = (local, remote, pending) => {
-  const prepared = prepareLocalStateForEditMerge(local, remote, pending)
-  rebuildHistoryDerived(prepared.state, prepared.affectedExerciseIds)
-  return prepared.state
+  state.active = null
+  return saved
 }

@@ -40,6 +40,7 @@ import { buildCombinedEntries, deriveSessionName } from './lib/session-merge.js'
 import { workoutsOn, backfillStart, backfillEnd, completeBackfill } from './lib/backfill.js'
 import { moveWorkout, sameWorkout, startTimeOf } from './lib/workout-date.js'
 import { editCompletedSession } from './lib/session-edit.js'
+import { stampWorkout } from './lib/sync-merge.js'
 
 const S = () => useStore.getState().S
 const update = (...a) => useStore.getState().update(...a)
@@ -1727,11 +1728,16 @@ function WorkoutDetail({ w, close }) {
   // The session note is editable here rather than only at the finish sheet: what you want to
   // record about a session is often clearer once you have looked at what you actually did.
   const [note, setNote] = useState(w.note || '')
+  // A note written here is an edit of the saved workout, stamped for the sync to keep it over an
+  // older copy of the same workout (stampWorkout) — and only when it changed, since a stamp
+  // outranks what another device wrote since.
   const saveNote = () => update(s => {
-    const rec = s.workouts.find(x => x.id === w.id)
+    const rec = s.workouts.find(x => sameWorkout(x, w))
     if (!rec) return
     const text = note.trim().slice(0, NOTE_MAX)
+    if (text === (rec.note || '')) return
     if (text) rec.note = text; else delete rec.note
+    stampWorkout(rec)
   })
   // onBlur alone loses the note: Escape, the Android back gesture and swipe-to-dismiss all
   // close the sheet without ever moving focus out of the textarea. Flush on unmount too. The
@@ -1744,9 +1750,10 @@ function WorkoutDetail({ w, close }) {
     const text = latest.current.trim().slice(0, NOTE_MAX)
     if (text === initial.current) return
     update(s => {
-      const rec = s.workouts.find(x => x.id === w.id)
-      if (!rec) return                       // deleted from this very sheet
+      const rec = s.workouts.find(x => sameWorkout(x, w))
+      if (!rec || text === (rec.note || '')) return   // deleted from this very sheet, or already saved
       if (text) rec.note = text; else delete rec.note
+      stampWorkout(rec)
     })
   }, [])
   // A combined session's entries carry a `rid`; group them into per-routine sections in merge
@@ -1793,8 +1800,12 @@ function WorkoutDetail({ w, close }) {
       onFocus={onNoteFocus} onChange={e => setNote(e.target.value)} onBlur={saveNote} />
     <div style={{ height: 14 }} />
     {st.active && <p className="small muted">{t('Finish the current workout first.')}</p>}
+    {/* The editor starts from the record as it is, so a note typed here goes in first — the same
+        flush the date row does, and the unmount hook then has nothing left to write over it. */}
     <Button icon="pencil" disabled={!!st.active} onClick={() => {
-      try { update(state => editCompletedSession(state, w.id)); close(); nav('/workout') }
+      saveNote()
+      initial.current = latest.current.trim().slice(0, NOTE_MAX)
+      try { update(state => { editCompletedSession(state, w) }); close(); nav('/workout') }
       catch (error) { toast(t(error.message)) }
     }}>{t('Edit workout')}</Button>
     <div style={{ height: 8 }} />

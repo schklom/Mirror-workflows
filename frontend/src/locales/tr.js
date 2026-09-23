@@ -1321,7 +1321,6 @@ export default {
   "Don't save": 'Kaydetme',
   'Keep editing': 'Düzenlemeye devam et',
   'This workout was deleted on another device. Your edits are still here.': 'Bu antrenman başka bir cihazda silindi. Düzenlemelerin hâlâ burada.',
-  'This workout changed on another device. Your edits are still here.': 'Bu antrenman başka bir cihazda değiştirildi. Düzenlemelerin hâlâ burada.',
   'Close editor': 'Düzenleyiciyi kapat',
   'Editing a saved workout. Date and duration stay unchanged.': 'Kayıtlı bir antrenmanı düzenliyorsun. Tarih ve süre değişmeden kalır.',
 }

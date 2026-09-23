@@ -1332,7 +1332,6 @@ export default {
   "Don't save": 'ไม่บันทึก',
   'Keep editing': 'แก้ไขต่อ',
   'This workout was deleted on another device. Your edits are still here.': 'การออกกำลังกายนี้ถูกลบในอุปกรณ์อื่น การแก้ไขของคุณยังอยู่ที่นี่',
-  'This workout changed on another device. Your edits are still here.': 'การออกกำลังกายนี้ถูกเปลี่ยนในอุปกรณ์อื่น การแก้ไขของคุณยังอยู่ที่นี่',
   'Close editor': 'ปิดตัวแก้ไข',
   'Editing a saved workout. Date and duration stay unchanged.': 'กำลังแก้ไขการออกกำลังกายที่บันทึกไว้ วันที่และระยะเวลาจะไม่เปลี่ยน',
 }

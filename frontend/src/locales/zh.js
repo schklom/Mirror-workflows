@@ -1321,7 +1321,6 @@ export default {
   "Don't save": '不保存',
   'Keep editing': '继续编辑',
   'This workout was deleted on another device. Your edits are still here.': '此训练已在另一台设备上删除。你的编辑仍保留在这里。',
-  'This workout changed on another device. Your edits are still here.': '此训练已在另一台设备上更改。你的编辑仍保留在这里。',
   'Close editor': '关闭编辑器',
   'Editing a saved workout. Date and duration stay unchanged.': '正在编辑已保存的训练。日期和时长保持不变。',
 }

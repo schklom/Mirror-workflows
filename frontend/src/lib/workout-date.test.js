@@ -208,6 +208,12 @@ describe('moveWorkout', () => {
     expect(out.map(x => x.id)).toEqual(['a', 'c', 'b'])
     expect(moveWorkout(list(), { id: 'c' }, '2026-01-05', '21:00').map(x => x.id)).toEqual(['a', 'b', 'c'])
   })
+  it('stamps the moved workout with the time of the move, and only that one', () => {
+    const list = [w('a', '2026-01-01', '18:00', 60), w('b', '2026-01-05', '18:00', 60)]
+    const out = moveWorkout(list, list[1], '2025-12-20', '07:00', 4242)
+    expect(out.find(x => x.id === 'b')._ts).toBe(4242)
+    expect(out.find(x => x.id === 'a')).not.toHaveProperty('_ts')
+  })
   it('returns null when the workout is not there', () => {
     expect(moveWorkout(list(), { id: 'zz' }, '2026-01-03', '07:00')).toBe(null)
     expect(moveWorkout(undefined, { id: 'a' }, '2026-01-03', '07:00')).toBe(null)

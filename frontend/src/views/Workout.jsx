@@ -1101,6 +1101,8 @@ function ActiveWorkout() {
       <SwipeCards index={unitIdx} count={units.length} revision={A}
         timerKey={timer && `${timer.endsAt}:${timer.forIdx ?? ''}`} workKey={work?.endsAt}
         onNavigate={navigateUnit} renderPreview={direction => {
+          // The card slid in shows what the card itself will: in the editor, no hold to start
+          // and no plates to load.
           const adjacent = units[unitIdx + direction] || []
           if (!adjacent.length) return null
           return adjacent.length > 1 ? (
@@ -1108,10 +1110,10 @@ function ActiveWorkout() {
               <div className="ss-hd"><Icon name="link" />{t('Superset · do these back-to-back, rest when done')}</div>
               {adjacent.map((idx, k) => <div key={idx} className="ss-ex">
                 {k > 0 && <div className="ss-amp">+</div>}
-                <ExerciseBlock entryIdx={idx} compact />
+                <ExerciseBlock entryIdx={idx} compact editing={editing} />
               </div>)}
             </div>
-          ) : <ExerciseBlock entryIdx={adjacent[0]} />
+          ) : <ExerciseBlock entryIdx={adjacent[0]} editing={editing} />
         }}>
       {isSuperset ? (
         <div className="ss-card">

@@ -227,7 +227,7 @@ it('edits a saved set without running live completion, rest or success feedback'
   await mount([exercise('plain-bench', [false], {
     plan: { policy: 'linear', kind: 'first', why: ['Nothing logged yet — this session sets the baseline.'] },
   })], 0, {
-    active: { editingWorkoutId: 'saved', editingOriginal: { id: 'saved' } },
+    active: { editingWorkoutId: 'saved' },
   })
   await toggleSet(0)
   expect(mocks.S.active.entries[0].sets[0].done).toBe(true)

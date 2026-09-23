@@ -1321,7 +1321,6 @@ export default {
   "Don't save": '저장하지 않기',
   'Keep editing': '계속 편집',
   'This workout was deleted on another device. Your edits are still here.': '이 운동은 다른 기기에서 삭제되었습니다. 편집 내용은 여기에 남아 있습니다.',
-  'This workout changed on another device. Your edits are still here.': '이 운동은 다른 기기에서 변경되었습니다. 편집 내용은 여기에 남아 있습니다.',
   'Close editor': '편집기 닫기',
   'Editing a saved workout. Date and duration stay unchanged.': '저장된 운동을 편집 중입니다. 날짜와 시간은 변경되지 않습니다.',
 }

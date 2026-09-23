@@ -1324,7 +1324,6 @@ export default {
   "Don't save": 'Ne mentse',
   'Keep editing': 'Szerkesztés folytatása',
   'This workout was deleted on another device. Your edits are still here.': 'Ezt az edzést egy másik eszközön törölték. A módosításaid továbbra is itt vannak.',
-  'This workout changed on another device. Your edits are still here.': 'Ezt az edzést egy másik eszközön módosították. A módosításaid továbbra is itt vannak.',
   'Close editor': 'Szerkesztő bezárása',
   'Editing a saved workout. Date and duration stay unchanged.': 'Mentett edzést szerkesztesz. A dátum és az időtartam változatlan marad.',
 }

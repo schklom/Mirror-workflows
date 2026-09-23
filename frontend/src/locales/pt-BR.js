@@ -728,7 +728,6 @@ export const PT_BR_OVERRIDES = {
   "Don't save": 'Não salvar',
   'Keep editing': 'Continuar editando',
   'This workout was deleted on another device. Your edits are still here.': 'Este treino foi excluído em outro dispositivo. Suas alterações continuam aqui.',
-  'This workout changed on another device. Your edits are still here.': 'Este treino foi alterado em outro dispositivo. Suas alterações continuam aqui.',
   'Close editor': 'Fechar editor',
   'Editing a saved workout. Date and duration stay unchanged.': 'Você está editando um treino salvo. A data e a duração permanecem iguais.',
 }

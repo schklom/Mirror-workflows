@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { editCompletedSession, localStateForEditMerge, saveWorkoutEdit } from './session-edit.js'
+import { editCompletedSession, saveWorkoutEdit } from './session-edit.js'
+import { mergeStates } from './sync-merge.js'
 
 const entry = (w, id = '0025') => ({ id, sets: [{ w, r: 5, done: true }], target: { mode: 'reps' } })
 const fixture = () => ({
@@ -36,30 +37,46 @@ describe('saved workout editing', () => {
     expect(saved.entries[1]).not.toHaveProperty('plan')
   })
 
-  it('rebuilds best weights and historical PR flags after lowering or deleting record work', () => {
+  it('rebuilds best weights and PR flags after lowering record work', () => {
     const state = fixture()
     state.workouts.push({ id: 'later', d: '2026-09-02', start: 3000, end: 4000, entries: [entry(30)], prs: [] })
     state.exWeights['0025'] = { w: 40, d: '2026-09-01' }
     editCompletedSession(state, 'workout')
     state.active.entries[0].sets[0].w = 20
     saveWorkoutEdit(state)
+    // The kept 40 came from this very session, and the edit took it away.
     expect(state.exWeights['0025']).toEqual({ w: 30, d: '2026-09-02' })
+    // Still the first 20 ever. The later 30 never had a badge, and a session that was not
+    // edited is never handed one (the rule a date move follows too, lib/workout-date.js).
     expect(state.workouts[0].prs).toEqual(['0025'])
-    expect(state.workouts[1].prs).toEqual(['0025'])
+    expect(state.workouts[1].prs).toEqual([])
+  })
+
+  it('takes a badge from a later session the edit raised the bar above, and leaves a kept load from elsewhere', () => {
+    const state = fixture()
+    state.workouts[0].prs = []
+    state.workouts.push({ id: 'later', d: '2026-09-02', start: 3000, end: 4000, entries: [entry(50)], prs: ['0025'] })
+    state.exWeights['0025'] = { w: 55, d: '2026-09-03' }   // confirmed in the top-weight sheet
+    editCompletedSession(state, 'workout')
+    state.active.entries[0].sets[0].w = 60
+    saveWorkoutEdit(state)
+    expect(state.workouts.map(w => w.prs)).toEqual([['0025'], []])
+    expect(state.exWeights['0025']).toEqual({ w: 55, d: '2026-09-03' })
   })
 
   it('keeps assisted-machine records ordered by less help after an edit', () => {
     const state = fixture()
     state.workouts[0].entries = [entry(30, '0017')]
     state.workouts[0].prs = ['0017']
-    state.workouts.push({ id: 'later', d: '2026-09-02', start: 3000, end: 4000, entries: [entry(25, '0017')], prs: [] })
-    state.exWeights['0017'] = { w: 30, d: '2026-09-01' }
+    state.workouts.push({ id: 'later', d: '2026-09-02', start: 3000, end: 4000, entries: [entry(25, '0017')], prs: ['0017'] })
+    state.exWeights['0017'] = { w: 25, d: '2026-09-02' }
     editCompletedSession(state, 'workout')
     state.active.entries[0].sets[0].w = 20
     saveWorkoutEdit(state)
-    expect(state.exWeights['0017']).toEqual({ w: 20, d: '2026-09-01' })
-    expect(state.workouts[0].prs).toEqual(['0017'])
-    expect(state.workouts[1].prs).toEqual([])
+    // 20 kg of help is less than the later 25: the edited session leads and the later one no
+    // longer does. Less help is a better kept load, so there is nothing to lower.
+    expect(state.workouts.map(w => w.prs)).toEqual([['0017'], []])
+    expect(state.exWeights['0017']).toEqual({ w: 25, d: '2026-09-02' })
   })
 
   it('preserves repeated occurrences, combined-routine ownership and per-side fields', () => {
@@ -94,45 +111,65 @@ describe('saved workout editing', () => {
     expect(saved.vol).toBe(80)
   })
 
-  it('keeps the draft when the original is missing or changed remotely', () => {
+  it('keeps the draft when the workout was deleted meanwhile', () => {
     const deleted = fixture()
     editCompletedSession(deleted, 'workout')
+    deleted.active.entries[0].sets[0].w = 50
     deleted.workouts = []
     expect(() => saveWorkoutEdit(deleted)).toThrow('deleted on another device')
     expect(deleted.active.editingWorkoutId).toBe('workout')
-
-    const changed = fixture()
-    editCompletedSession(changed, 'workout')
-    changed.workouts[0].note = 'remote'
-    expect(() => saveWorkoutEdit(changed)).toThrow('changed on another device')
-    expect(changed.active.editingWorkoutId).toBe('workout')
+    expect(deleted.active.entries[0].sets[0].w).toBe(50)
+    expect(deleted.workouts).toEqual([])
   })
 
-  it('feeds a remotely changed or deleted original into the current revision merge', () => {
-    const local = fixture()
-    editCompletedSession(local, 'workout')
-    local.active.entries[0].sets[0].w = 50
-    const remote = fixture()
-    remote.workouts[0].note = 'from phone'
-    remote.exWeights['0025'] = { w: 40, d: '2026-09-01' }
-    expect(localStateForEditMerge(local, remote).workouts[0].note).toBe('from phone')
-    expect(localStateForEditMerge(local, { ...remote, workouts: [] }).workouts).toEqual([])
-    expect(local.active.entries[0].sets[0].w).toBe(50)
+  // Another device moved the workout or corrected its note while this one edited its sets. What
+  // the editor does not edit stays as the other device left it; the sets are the editor's.
+  it('saves over the record as history holds it now, keeping what the editor does not edit', () => {
+    const state = fixture()
+    editCompletedSession(state, 'workout')
+    state.active.entries[0].sets[0].w = 50
+    Object.assign(state.workouts[0], { d: '2026-08-20', start: 500, end: 1500, note: 'from phone' })
+    state.active.note = 'from phone'
+    const saved = saveWorkoutEdit(state)
+    expect(saved).toMatchObject({ id: 'workout', d: '2026-08-20', start: 500, end: 1500, note: 'from phone' })
+    expect(saved.entries[0].sets[0].w).toBe(50)
   })
 
-  it('restores a locally saved correction as a draft when its first push conflicts', () => {
-    const local = fixture()
-    editCompletedSession(local, 'workout')
-    const original = structuredClone(local.active.editingOriginal)
-    local.active.entries[0].sets[0].w = 50
-    saveWorkoutEdit(local)
-    const remote = fixture()
-    remote.workouts[0].note = 'from phone'
-    remote.exWeights['0025'] = { w: 40, d: '2026-09-01' }
-    const merged = localStateForEditMerge(local, remote, { id: 'workout', original })
-    expect(merged.workouts[0].note).toBe('from phone')
-    expect(merged.active.entries[0].sets[0].w).toBe(50)
-    expect(merged.active.editingOriginal).toEqual(remote.workouts[0])
-    expect(merged.exWeights['0025'].w).toBe(40)
+  it('stamps the edit, and the edit replaces the old copy by id in a merge whichever copy is newer', () => {
+    const state = fixture()
+    editCompletedSession(state, 'workout')
+    state.active.entries[0].sets[0].w = 50
+    const saved = saveWorkoutEdit(state, 1234)
+    expect(saved._ts).toBe(1234)
+    const phone = { ...fixture(), _ts: 9999 }
+    for (const merged of [mergeStates({ ...state, _ts: 1234 }, phone), mergeStates(phone, { ...state, _ts: 1234 })]) {
+      expect(merged.workouts).toHaveLength(1)
+      expect(merged.workouts[0].entries[0].sets[0].w).toBe(50)
+    }
+  })
+
+  it('opens and saves a workout logged before ids, freezing its old key as its id', () => {
+    const state = fixture()
+    delete state.workouts[0].id
+    state.workouts.push({ d: '2026-09-02', start: 3000, end: 4000, entries: [entry(30)], prs: [] })
+    editCompletedSession(state, state.workouts[1])
+    expect(state.active.editingWorkoutId).toBe('2026-09-02|3000')
+    state.active.entries[0].sets[0].w = 35
+    const saved = saveWorkoutEdit(state)
+    expect(saved).toMatchObject({ id: '2026-09-02|3000', d: '2026-09-02', start: 3000 })
+    expect(state.workouts[0]).not.toHaveProperty('id')
+    expect(state.workouts[0].entries[0].sets[0].w).toBe(40)
+    const other = { ...fixture(), _ts: 9999, workouts: [state.workouts[0], { d: '2026-09-02', start: 3000, end: 4000, entries: [entry(30)], prs: [] }] }
+    expect(mergeStates(other, { ...state, _ts: 1 }).workouts.map(w => w.entries[0].sets[0].w)).toEqual([40, 35])
+  })
+
+  it('keeps only the loads, not the marks the live session used, and no prescription explanation', () => {
+    const state = fixture()
+    editCompletedSession(state, 'workout')
+    state.active.entries[0].sets[0] = { w: 45, r: 5, done: true, weightOrigin: 'manual' }
+    state.active.entries[0].plan = { kind: 'hold' }
+    state.active.entries[0].carried = true
+    const saved = saveWorkoutEdit(state)
+    expect(JSON.stringify(saved)).not.toMatch(/weightOrigin|"plan"|carried|editingWorkoutId/)
   })
 })

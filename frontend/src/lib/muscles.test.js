@@ -4,6 +4,7 @@ import {
   MUSCLE_NAME, exerciseMuscleSnapshot, hasExplicitMuscleMetadata, levelsOf, loadOf,
   loadOfWorkouts, matchesMuscleGroups, muscleBalanceWindow, muscleGroupsOf, musclesOf, rankOf
 } from './muscles.js'
+import { LANGS, DERIVED_LOCALES } from './i18n-core.js'
 
 describe('multi-muscle exercise metadata', () => {
   it('normalizes legacy primary/secondary fields and removes duplicate groups', () => {
@@ -217,7 +218,9 @@ describe('muscle balance windows and ranking', () => {
 describe('MUSCLE_NAME as i18n keys', () => {
   const packs = import.meta.glob('../locales/*.js', { eager: true })
   it('every display name is a key in every locale pack', () => {
-    expect(Object.keys(packs).length).toBe(14)
+    // One pack per selectable language, English (the source) and derived locales (de-CH)
+    // excepted. Read off LANGS rather than pinned, so a new language is covered the day it lands.
+    expect(Object.keys(packs).length).toBe(Object.keys(LANGS).filter(l => l !== 'en' && !DERIVED_LOCALES[l]).length)
     for (const [file, mod] of Object.entries(packs)) {
       const missing = Object.values(MUSCLE_NAME).filter(name => !(name in mod.default))
       expect(missing, file).toEqual([])

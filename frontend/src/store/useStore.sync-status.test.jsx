@@ -26,16 +26,19 @@ const USER = { id: 'user-1', name: 'One' }
 const fresh = { offline: false, pending: false, auth: false, lastError: null, lastSynced: 0, server: null }
 const signedIn = (S, extra = {}) => useStore.setState({ S, user: USER, ready: true, sync: { ...fresh }, ...extra })
 
+// config goes back to null as well: a boot test leaves a pre-sign-in copy behind (no `coach`
+// key), and setUser re-asks /api/config for such a copy (#249), which would take the next test's
+// queued answer meant for its pull.
 beforeEach(() => {
   localStorage.clear()
   localStorage.setItem('gym_owner', USER.id)
   api.mockReset(); toast.mockReset()
-  useStore.setState({ S: clone(DEF), user: null, ready: false, sync: { ...fresh } })
+  useStore.setState({ S: clone(DEF), user: null, ready: false, sync: { ...fresh }, config: null })
 })
 afterEach(() => {
   vi.useRealTimers()
   localStorage.clear()
-  useStore.setState({ S: clone(DEF), user: null, ready: false, sync: { ...fresh } })
+  useStore.setState({ S: clone(DEF), user: null, ready: false, sync: { ...fresh }, config: null })
 })
 
 describe('sync status', () => {

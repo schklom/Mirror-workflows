@@ -398,12 +398,14 @@ export function nextPrescription(S, cfg, routine) {
     const why = borrowed ? ['First time in this routine — starting from its own target.'] : ['Plan changed — starting from your new target.']
     if (mode === 'time') return { policy, kind: 'hold', sec: cfg.sec || last.goal || undefined, why }
     if (last.weight <= 0 && isBw(cfg)) return { policy, kind: 'hold', weight: 0, reps: cfg.reps || undefined, why }
+    // A loaded lift logged at 0 had no weight typed in (see below): the plan's, if it has one.
+    const held = last.weight > 0 ? { weight: last.weight } : cfg.weight > 0 ? { weight: cfg.weight } : {}
     if (policy === 'double') {
       const range = normalizeRepRange(cfg.reps || last.goal || 10, cfg.repsMin, repStep(cfg))
       const aim = Math.min(range.reps, Math.max(range.repsMin, last.low + repStep(cfg)))
-      return { policy, kind: 'hold', weight: last.weight, reps: aim, why }
+      return { policy, kind: 'hold', ...held, reps: aim, why }
     }
-    return { policy, kind: 'hold', weight: last.weight, reps: cfg.reps || undefined, why }
+    return { policy, kind: 'hold', ...held, reps: cfg.reps || undefined, why }
   }
 
   const stalls = stallCount(sessions, policy)

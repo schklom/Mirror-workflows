@@ -733,6 +733,11 @@ describe('an edited plan restarts progression (#275)', () => {
     expect(p.why[0]).toBe('First time in this routine — starting from its own target.')
   })
 
+  it('opens a loaded lift logged at 0 kg at the plan\'s weight when the plan changed', () => {
+    const S = { unit: 'kg', workouts: [logged(LIFT, { sets: 2, reps: 15, weight: 0 }, { sets: 2, reps: 15, weight: 0 }, 0, [15, 15])] }
+    expect(nextPrescription(S, { id: LIFT, sets: 2, reps: 10, weight: 50, prog: 'linear' }, R)).toMatchObject({ kind: 'hold', weight: 50, reps: 10 })
+  })
+
   it('continues another routine\'s progression when its plan is the same one (a copied routine)', () => {
     const B = { d: '2026-04-01', routineIds: ['b'], entries: [{ id: LIFT, rid: 'b', planned: { sets: 2, reps: 10, weight: 60 }, target: { sets: 2, reps: 10, weight: 60 }, sets: [{ w: 60, r: 10, done: true }, { w: 60, r: 10, done: true }] }] }
     expect(nextPrescription({ unit: 'kg', workouts: [B] }, { id: LIFT, sets: 2, reps: 10, weight: 60, prog: 'linear' }, { id: 'copy', ex: [] }))

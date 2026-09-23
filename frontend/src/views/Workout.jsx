@@ -80,6 +80,11 @@ function Elapsed({ start }) {
 // (cardio speed, stored in km/h) converts it for the screen.
 const viewOf = (col, value) => (col.view && value != null && value !== '' ? col.view(value) : value)
 
+// Arabic and Hebrew letters, the presentation forms included. A set summary with one in it is a
+// per-side set in Arabic ("يسار 15×8 · يمين 15×7"): forced left to right, its side words stood
+// on the wrong side of their numbers and the numbers after them turned round (8×15).
+const RTL_LETTER = /[֐-ࣿיִ-﷿ﹰ-﻿]/
+
 /* ---------- one exercise block (reps: weight×reps · time: a held duration · cardio: duration+speed) ---------- */
 // `compact` shrinks the block for a superset member; `dense` (compact view) goes further and
 // drops everything that is not a set you are logging — media, tag chips, the note lines, the
@@ -210,8 +215,9 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
     title={refAction} aria-label={`${refText}. ${refAction}`}
     onClick={() => update(s => { s.logRef = refBest ? 'last' : 'best' })}>
     {/* Each set on its own left-to-right island. In Arabic the first one followed the label's
-        direction and read 8×60, while those after a Latin "RIR" read 60×8. */}
-    <span>{ref ? <>{refHead}{refSets.map((l, i) => <Fragment key={i}>{i ? ', ' : ''}<bdi dir="ltr">{l}</bdi></Fragment>)}</> : refText}</span>
+        direction and read 8×60, while those after a Latin "RIR" read 60×8. A set that carries
+        words of a right-to-left script keeps its own direction, still isolated (RTL_LETTER). */}
+    <span>{ref ? <>{refHead}{refSets.map((l, i) => <Fragment key={i}>{i ? ', ' : ''}<bdi dir={RTL_LETTER.test(l) ? 'auto' : 'ltr'}>{l}</bdi></Fragment>)}</> : refText}</span>
     <Icon name="shuffle" />
   </button> : null
   // A bodyweight set has no weight to type, so the column is not there (issue #32) — one

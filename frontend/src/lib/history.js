@@ -123,11 +123,17 @@ export function setLabel(id, s, cfg, speedUnit) {
   // down. The row's own `r` is the total either way; a planned set's bursts already add up to it
   // (applyIntensifierPlan), while bursts added live sit on top of the activation set, which is
   // then whatever the total leaves over. Bursts that do not fit the total are not shown.
+  // A planned set has no activation set in front of its bursts, so when its total was raised by
+  // hand the leftover is not one: "60×2+6+3+2+1" read as a two-rep set nobody did. Which burst
+  // the extra reps belong to is not known, so such a set reads as its plain total. The target
+  // says whether the exercise plans rest-pause; a row added to it and given bursts live can only
+  // be told apart by that, and reads as its plain total too, which is still what was lifted.
+  const planned = c.intensifier?.type === 'restpause'
   const repsOf = side => {
     const reps = side.r || 0
     const bursts = clustersOf(side).map(b => Number(b?.r) || 0).filter(r => r > 0)
     const sum = bursts.reduce((a, b) => a + b, 0)
-    if (!bursts.length || sum > reps) return reps
+    if (!bursts.length || sum > reps || (planned && sum !== reps)) return reps
     return (reps > sum ? [reps - sum, ...bursts] : bursts).join('+')
   }
   // One side's "weight×reps" (or bodyweight "reps" / "+belt × reps"), the same shape a whole

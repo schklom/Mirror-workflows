@@ -121,6 +121,24 @@ describe('setLabel', () => {
     expect(setLabel(LIFT, { w: 60, r: 5, type: 'restpause', clusters: [{ r: 4 }, { r: 3 }] })).toBe('60×5')
   })
 
+  // A planned rest-pause set has no activation set: its bursts are the whole total. Raising the
+  // total by hand put the difference in front, "60×2+6+3+2+1", a two-rep set nobody did.
+  it('reads a planned rest-pause set whose total was raised by hand as its plain total', () => {
+    const cfg = { id: LIFT, reps: 8, intensifier: { type: 'restpause', totalReps: 12, restSec: 15 } }
+    const [, work] = applyIntensifierPlan([{ w: 60, r: 8, done: false }], cfg)
+    expect(setLabel(LIFT, work, cfg)).toBe('60×6+3+2+1')
+    expect(setLabel(LIFT, { ...work, r: 14 }, cfg)).toBe('60×14')
+    // a burst added live on top keeps the breakdown, since the total follows it
+    const added = { ...work, r: 13, clusters: [...work.clusters, { r: 1, restSec: 15 }] }
+    expect(setLabel(LIFT, added, cfg)).toBe('60×6+3+2+1+1')
+    // per side, each side is read the same way
+    const sided = applyIntensifierPlan([makeSideSet({ w: 20, r: 8, done: false })], { ...cfg, side: true })[1]
+    sided.sides.L = { ...sided.sides.L, r: sided.sides.L.r + 2 }
+    expect(setLabel(LIFT, sided, { ...cfg, side: true })).toBe('L 20×8 · R 20×3+2+1')
+    // an unplanned set with live bursts still shows its activation set first
+    expect(setLabel(LIFT, { w: 60, r: 16, type: 'restpause', clusters: [{ r: 4 }, { r: 2 }] }, { id: LIFT, reps: 10 })).toBe('60×10+4+2')
+  })
+
   it('reads drops and bursts of a bodyweight exercise as reps and added weight', () => {
     const cfg = { id: BW, bodyweight: true }
     expect(setLabel(BW, { w: 10, r: 8, type: 'dropset', drops: [{ w: 0, r: 5 }] }, cfg)).toBe('+10 × 8 ↘ 5')

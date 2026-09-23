@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { routineFromSession, saveSessionAsRoutine } from './session-routines.js'
 import { buildCompletedWorkout } from './finish-workout.js'
 import { buildSessionEntries } from './session-start.js'
-import { makeSideSet, setSideField, toggleSide } from './workout-model.js'
+import { makeSideSet, setSideField, toggleSide, isWarmupRow } from './workout-model.js'
 
 const row = (patch = {}) => ({ w: 40, r: 8, done: true, ...patch })
 const entry = (id, target, sets, extra = {}) => ({ id, target, sets, ...extra })
@@ -133,5 +133,78 @@ describe('saveSessionAsRoutine', () => {
     expect(state.routines[0].name).toBe('Push')
     state.routines[0].ex[0].reps = 99
     expect(session).toEqual(before)
+  })
+})
+
+// A copy made from a planned session is a routine like any other: the plan owns its sets and reps
+// (#275), and its first session continues from the logged one rather than restarting as an
+// edited plan. Each case trains the source routine the way the app does (buildSessionEntries →
+// buildCompletedWorkout), copies the saved workout and opens the copy.
+describe('a routine saved from a planned session', () => {
+  const BENCH = '0025'   // barbell bench press — loaded, 2.5 kg step
+  const PUSHUP = '0662'  // push-up — body weight
+  const work = e => e.sets.filter(s => !isWarmupRow(s))
+  const stateOf = routines => ({ unit: 'kg', exWeights: {}, routines: structuredClone(routines), workouts: [], week: {}, dayPlan: {} })
+  const train = (st, routine, typed = {}) => {
+    const entries = buildSessionEntries(st, routine).map(e => ({ ...e, rid: routine.id,
+      sets: e.sets.map(s => ({ ...s, ...(isWarmupRow(s) ? {} : typed), done: true })) }))
+    const n = st.workouts.length + 1
+    const saved = buildCompletedWorkout({ id: 'w' + n, d: `2026-09-${String(n).padStart(2, '0')}`, start: n * 1000, routineIds: [routine.id], name: routine.name, entries }, { end: n * 1000 + 1 })
+    st.workouts.push(saved)
+    return saved
+  }
+  const open = (st, routine) => buildSessionEntries(st, routine)[0]
+
+  it('keeps a double-progression range and its rule, not the reps of the day', () => {
+    const source = { id: 'A', name: 'Push', prog: 'double', ex: [{ id: BENCH, sets: 3, reps: 12, repsMin: 8, weight: 60 }] }
+    const st = stateOf([source])
+    const saved = train(st, source, { r: 9 })
+    const id = saveSessionAsRoutine(st, saved)
+    const copy = st.routines.find(r => r.id === id)
+    expect(copy.ex[0]).toMatchObject({ sets: 3, reps: 12, repsMin: 8, weight: 60, prog: 'double' })
+    // The copy picks up where the source stands: the same aim the source itself opens at next.
+    const next = open(st, copy)
+    expect(next.plan.why[0]).not.toBe('Plan changed — starting from your new target.')
+    expect(work(next).map(s => [s.w, s.r])).toEqual(work(open(st, source)).map(s => [s.w, s.r]))
+  })
+
+  it('takes the planned set count, not a set the bodyweight ceiling added or a bonus set', () => {
+    const source = { id: 'B', name: 'Body', ex: [{ id: PUSHUP, sets: 2, reps: 10, repsMax: 10, weight: 0, bodyweight: true }] }
+    const st = stateOf([source])
+    train(st, source, { r: 10 })
+    const saved = train(st, source, { r: 10 })   // the ceiling added a third set
+    expect(work(saved.entries[0])).toHaveLength(3)
+    const copy = routineFromSession(saved, 'Copy', st.routines)
+    expect(copy.ex[0]).toMatchObject({ sets: 2, reps: 10 })
+
+    const bonus = { ...saved, entries: [{ ...saved.entries[0], sets: [...saved.entries[0].sets, { w: 0, r: 12, done: true }] }] }
+    expect(routineFromSession(bonus, 'Copy', st.routines).ex[0].sets).toBe(2)
+  })
+
+  it('takes the planned reps when the session started from last time\'s', () => {
+    const source = { id: 'C', name: 'Legs', ex: [{ id: BENCH, sets: 2, reps: 5, weight: 100 }] }
+    const st = { ...stateOf([source]), startFrom: 'last' }
+    train(st, source, { r: 8 })
+    const saved = train(st, source)   // opened at last time's 8, not the plan's 5
+    expect(work(saved.entries[0]).map(s => s.r)).toEqual([8, 8])
+    expect(routineFromSession(saved, 'Copy', st.routines).ex[0].reps).toBe(5)
+  })
+
+  it('carries none of the session\'s own stamps into the plan', () => {
+    const source = { id: 'D', name: 'Pull', ex: [{ id: BENCH, sets: 2, reps: 8, weight: 50 }] }
+    const st = stateOf([source])
+    const saved = train(st, source)
+    saved.entries[0].noProg = true
+    saved.entries[0].target = { ...saved.entries[0].target, planned: { sets: 9 }, rid: 'D', carried: true }
+    const cfg = routineFromSession(saved, 'Copy', st.routines).ex[0]
+    for (const key of ['planned', 'plan', 'carried', 'rid', 'noProg', 'muscleSnapshot']) expect(cfg).not.toHaveProperty(key)
+    expect(cfg).toMatchObject({ id: BENCH, sets: 2, reps: 8 })
+  })
+
+  it('leaves the rule to the default when the source routine is gone', () => {
+    const source = { id: 'E', name: 'Gone', prog: 'double', ex: [{ id: BENCH, sets: 3, reps: 12, repsMin: 8, weight: 60 }] }
+    const st = stateOf([source])
+    const saved = train(st, source, { r: 9 })
+    expect(routineFromSession(saved, 'Copy', []).ex[0]).not.toHaveProperty('prog')
   })
 })

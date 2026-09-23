@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useUI } from '../store/useUI.js'
+import { useStore } from '../store/useStore.js'
 import { api } from '../lib/api.js'
 import Icon from '../components/Icon.jsx'
 import { Button, Switch, TextField } from '../components/ui.jsx'
@@ -42,7 +43,11 @@ export default function AdminCoach() {
   // toast that is gone before anyone has read the provider's reason.
   const [testResult, setTestResult] = useState(null)
 
-  const load = () => api('/api/admin/coach').then(r => { setD(r); setModels(r.knownModels || null) }).catch(e => toast(e.message || 'Failed to load'))
+  // Every change on this card ends in load(), so load() also re-reads /api/config. The app reads
+  // that once per boot, and the Plan tab's Coach card hangs off it: without the re-read, an admin
+  // who has just switched the Coach on and connected it finds no Coach anywhere until a reload,
+  // which reads as a setup that failed (Discord #install-help, 2026-09-19).
+  const load = () => api('/api/admin/coach').then(r => { setD(r); setModels(r.knownModels || null); useStore.getState().refreshConfig() }).catch(e => toast(e.message || 'Failed to load'))
   useEffect(() => { load() }, [])
 
   const patch = async body => {

@@ -25,6 +25,15 @@ import { Section, Row, Button, TextField } from '../components/ui.jsx'
 
 const STEPS = ['Loading the exercise catalogue…', 'Checking the endpoint…', 'Ready']
 
+// The phone calls the provider through CapacitorHttp, native networking that obeys the
+// platform's cleartext rule, and Android refuses unencrypted http:// from apps
+// (network_security_config.xml leaves it at the default, off). An http:// endpoint on the LAN
+// therefore failed as a bare "could not reach the provider", with nothing to say why. It is
+// refused up front with the two ways that work: HTTPS in front of the model, or the server's
+// Coach, which has no such rule and reaches http:// on its own network.
+const isCleartext = url => /^http:\/\//i.test(String(url || '').trim())
+const cleartextRefused = () => t('Android blocks unencrypted http:// connections from apps, so this phone can only reach an https:// endpoint. Put HTTPS in front of it (Tailscale or a reverse proxy), or choose “Use my self-hosted openGym”: your server can reach an http:// model on its own network.')
+
 export default function CoachSetup() {
   const nav = useNavigate()
   const user = useStore(s => s.user)
@@ -66,6 +75,7 @@ export default function CoachSetup() {
   const prepare = async () => {
     const v = validateBaseUrl(meta.baseUrl ? baseUrl : '')
     if (!v.ok) return toast(v.error)
+    if (isCleartext(v.value)) return toast(cleartextRefused())
     if (!meta.keyOptional && !key.trim() && !hasKey) return toast(t('Enter your API key'))
     setBusy(true); setStep(0)
     try {
@@ -85,6 +95,8 @@ export default function CoachSetup() {
   const save = async () => {
     const chosen = model || meta.defaultModel
     if (!chosen) return toast(t('Pick a model'))
+    // The endpoint can still be edited after the models were listed.
+    if (meta.baseUrl && isCleartext(baseUrl)) return toast(cleartextRefused())
     setBusy(true)
     try {
       // The mode first, the key second: the settings file is the cheap, reliable write, the
@@ -139,9 +151,10 @@ export default function CoachSetup() {
         </div>
       </Section>
 
-      {meta.baseUrl && <Section title={t('Endpoint')}>
+      {meta.baseUrl && <Section title={t('Endpoint')}
+        footer={isCleartext(baseUrl) ? <span style={{ color: 'var(--red)' }}>{cleartextRefused()}</span> : null}>
         <div style={{ padding: '8px 12px' }}>
-          <TextField value={baseUrl} placeholder="http://ollama.lan:11434" inputMode="url" autoCapitalize="none" autoCorrect="off"
+          <TextField value={baseUrl} placeholder="https://ollama.example.com" inputMode="url" autoCapitalize="none" autoCorrect="off"
             onChange={e => setBaseUrl(e.target.value)} />
         </div>
       </Section>}

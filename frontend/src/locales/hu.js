@@ -990,6 +990,7 @@ export default {
   'Could not reach the provider: {0}': 'A szolgáltató nem érhető el: {0}',
   'Each request goes straight to {0} with your key — nobody else sees it, and you pay for it.': 'Minden kérés közvetlenül ide megy a kulcsoddal: {0} — más nem látja, és te fizeted.',
   'Endpoint': 'Végpont',
+  'Android blocks unencrypted http:// connections from apps, so this phone can only reach an https:// endpoint. Put HTTPS in front of it (Tailscale or a reverse proxy), or choose “Use my self-hosted openGym”: your server can reach an http:// model on its own network.': 'Az Android letiltja az appokból induló titkosítatlan http:// kapcsolatokat, ezért ez a telefon csak https:// végpontot ér el. Tegyél elé HTTPS-t (Tailscale vagy reverse proxy), vagy válaszd „A saját openGym-szerveremet használom” lehetőséget: a szervered a saját hálózatán elér egy http:// modellt is.',
   'Enter your API key': 'Add meg az API-kulcsodat',
   'How should the Coach run?': 'Hogyan fusson az Edző?',
   'List models': 'Modellek listázása',

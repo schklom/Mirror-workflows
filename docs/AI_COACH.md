@@ -30,12 +30,37 @@ child process to drop privileges on, no runtime to carry in the image, and nothi
 
 A model on your own LAN is the compatible endpoint with no key: point it at
 `http://ollama.lan:11434` and pick a model from the list it serves. That is the whole
-configuration.
+configuration. (On the server, that is. The phone app's own-key Coach needs `https://`; see
+[On the phone](#on-the-phone).)
 
 ## Turning it on
 
 Nothing here is an environment variable or a restart — the whole point of the admin card is that
 enabling the Coach is a decision you make in the app.
+
+### Where people find it
+
+The Coach has one door: a **Coach** card at the top of the **Plan** tab (*Plan design and
+reviews, from your own training*), which opens the chat. The phone app also has
+**Settings → AI Coach**, where the phone chooses between your server's Coach and a key of its
+own (see [On the phone](#on-the-phone)).
+
+The card appears only when all of these hold:
+
+- **The master switch is on.** That is **Set up the Coach** on the admin card
+  (**Settings → Admin → AI Coach**), and afterwards the toggle at the top of the same card. A
+  provider that is connected and passes **Test the Coach** is not enough on its own: with the
+  switch off, the server tells every app there is no Coach, and the card reads *Off right
+  now — nobody sees it anywhere in the app*.
+- **The provider is connected**, so the admin card reads **ready**: a credential saved, or for
+  a compatible endpoint without a key, an endpoint.
+- **The person is signed in.** A guest in the browser has no Coach, because a job reads a
+  profile's synced data.
+- **`COACH_DISABLED` is not set** in the server's environment (see
+  [Off is really off](#off-is-really-off)).
+
+The admin's own app shows the change as soon as the admin card saves it. Everyone else's app
+picks it up the next time it is opened or reloaded.
 
 ### With an API key (Anthropic, OpenAI, Gemini, compatible)
 
@@ -61,7 +86,7 @@ The card says two things worth reading: which account is being spent, and — fo
 providers — that jobs run no child process at all, so the privilege-drop line reads as not
 applicable rather than as a problem.
 
-**3. Use it.** Each person opens **Plan → AI Coach**, agrees to the consent screen — which lists
+**3. Use it.** Each person opens **Plan → Coach**, agrees to the consent screen — which lists
 exactly what leaves the server, generated from the same module that builds payloads — and
 answers a short intake, one question per screen: goal, experience, days per week, session
 length, equipment, limitations. From then on the Coach is a chat. The answers are its first
@@ -413,6 +438,13 @@ The App-Store build has no server of its own, so the Coach there is a choice mad
   app's state, so it cannot ride along in a backup, an export or a sync. You pay: the screen
   says which host each request goes to and what leaves the device before you choose, and a
   local daily cap stands in for the one an admin would have set.
+
+  A compatible endpoint has to be **`https://`** here. Android does not let apps send
+  unencrypted `http://` traffic, so a model on your LAN at `http://ollama.lan:11434` cannot be
+  reached from the phone, and the setup screen says so as soon as such an address is typed.
+  Either put HTTPS in front of the model (Tailscale's HTTPS certificates, or a reverse proxy
+  with a certificate), or use the first option: the server has no such rule, and its Coach
+  reaches an `http://` model on its own network.
 
 ## Off is really off
 

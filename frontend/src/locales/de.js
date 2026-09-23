@@ -944,6 +944,7 @@ export default {
   'Could not reach the provider: {0}': 'Anbieter nicht erreichbar: {0}',
   'Each request goes straight to {0} with your key — nobody else sees it, and you pay for it.': 'Jede Anfrage geht direkt mit deinem Schlüssel an {0} — niemand sonst sieht sie, und du bezahlst dafür.',
   'Endpoint': 'Endpunkt',
+  'Android blocks unencrypted http:// connections from apps, so this phone can only reach an https:// endpoint. Put HTTPS in front of it (Tailscale or a reverse proxy), or choose “Use my self-hosted openGym”: your server can reach an http:// model on its own network.': 'Android blockiert unverschlüsselte http://-Verbindungen aus Apps, deshalb erreicht dieses Handy nur einen https://-Endpunkt. Stell HTTPS davor (Tailscale oder ein Reverse Proxy) oder wähle „Mein selbst gehostetes openGym nutzen“: Dein Server erreicht ein http://-Modell in seinem eigenen Netzwerk.',
   'Enter your API key': 'Gib deinen API-Schlüssel ein',
   'How should the Coach run?': 'Wie soll der Coach laufen?',
   'List models': 'Modelle laden',

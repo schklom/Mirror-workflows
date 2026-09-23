@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { buildSessionEntries, plannedConfigOf } from './session-start.js'
+import { buildSessionEntries, plannedConfigOf, builtOutOfProgression } from './session-start.js'
 import { readSession } from './progression.js'
 import { isWarmupRow } from './workout-model.js'
 
@@ -165,5 +165,26 @@ describe('plannedConfigOf', () => {
     const target = { sets: 2, reps: 8, weight: 60 }
     expect(plannedConfigOf({ target })).toEqual(target)
     expect(plannedConfigOf({ target })).not.toBe(target)
+  })
+})
+
+// An exercise's ⋯ menu sets `noProg` by hand; a deload or rehab routine freezes it onto its
+// exercises. Only the second is rebuilt without a prescription.
+describe('builtOutOfProgression', () => {
+  const deload = { id: 'd', excludeFromProgression: true }
+  const main = { id: 'm' }
+
+  it('is an exercise of a routine kept out of progression', () => {
+    expect(builtOutOfProgression({ noProg: true, rid: 'd' }, deload)).toBe(true)
+  })
+
+  it('is not an exercise kept out by hand in a routine that counts', () => {
+    expect(builtOutOfProgression({ noProg: true, rid: 'm' }, main)).toBe(false)
+  })
+
+  it('is not an exercise with no routine, nor one that was never kept out', () => {
+    expect(builtOutOfProgression({ noProg: true }, null)).toBe(false)
+    expect(builtOutOfProgression({ rid: 'd' }, deload)).toBe(false)
+    expect(builtOutOfProgression(null, deload)).toBe(false)
   })
 })

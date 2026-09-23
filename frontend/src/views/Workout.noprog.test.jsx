@@ -12,6 +12,9 @@ import { useUI } from '../store/useUI.js'
 import { buildCompletedWorkout } from '../lib/finish-workout.js'
 import { nextPrescription } from '../lib/progression.js'
 import { lastEntryFor } from '../lib/history.js'
+import { buildSessionEntries } from '../lib/session-start.js'
+import { swapActiveWorkoutExercise } from '../sheets.jsx'
+import { EXDB } from '../lib/exercises.js'
 
 vi.mock('../lib/sound.js', () => ({ beep: vi.fn(), chime: vi.fn(), vibrate: vi.fn(), unlock: vi.fn() }))
 vi.mock('../lib/api.js', () => ({ api: vi.fn(() => Promise.resolve({})), appBase: () => '/' }))
@@ -35,10 +38,10 @@ let container
 let sheetRoot
 let sheetContainer
 
-function renderWorkout(entries) {
+function renderWorkout(entries, { withRoutines = routines, withHistory = history } = {}) {
   const S = clone(DEF)
-  S.routines = clone(routines)
-  S.workouts = clone(history)
+  S.routines = clone(withRoutines)
+  S.workouts = clone(withHistory)
   S.active = { id: 'noprog-test', d: '2026-09-23', start: Date.now(), routineIds: ['main'], routineId: 'main', name: 'Main', bw: null, cur: 0, entries }
   useStore.setState({ S, user: null })
   container = document.createElement('div')
@@ -139,6 +142,92 @@ describe('don’t count this session for progression', () => {
     // 100 × 5 on the 20th was the last session that counted, not today's 80
     expect(plan.weight).toBe(102.5)
     expect(lastEntryFor(S, BENCH, 'main').d).toBe('2026-09-20')
+  })
+
+  // The flag set by hand only stops the session from counting; the rows stay at the
+  // prescription. A rebuild that read it as "a deload routine's exercise" put them back at the
+  // routine's own numbers with no prescription, and the Undo then let those numbers count.
+  describe('a rebuild of an exercise kept out by hand keeps its prescription', () => {
+    // Main plans 60; the last session that counted was 100 × 5, so today opens at 102.5.
+    const planned = [{ id: 'main', name: 'Main', ex: [{ id: BENCH, sets: 1, reps: 5, weight: 60 }, { id: ROW, sets: 1, reps: 8, weight: 30 }] }]
+    const logged = [{
+      id: 'w1', d: '2026-09-20', routineIds: ['main'],
+      entries: [
+        { id: BENCH, rid: 'main', target: { sets: 1, reps: 5, weight: 100 }, sets: [{ w: 100, r: 5, done: true }] },
+        { id: ROW, rid: 'main', target: { sets: 1, reps: 8, weight: 70 }, sets: [{ w: 70, r: 8, done: true }] },
+      ],
+    }]
+    const start = () => {
+      const S = { ...clone(DEF), routines: clone(planned), workouts: clone(logged) }
+      const [bench] = buildSessionEntries(S, planned[0]).map(e => ({ ...e, rid: 'main' }))
+      renderWorkout([bench], { withRoutines: planned, withHistory: logged })
+      expect(active().entries[0].sets.map(set => set.w)).toEqual([102.5])
+      const keepOut = menuItem(openMenu(), 'Don’t count for progression')
+      act(() => keepOut.click())
+      expect(active().entries[0].noProg).toBe(true)
+    }
+    const undoAndFinish = () => {
+      const undo = [...marker().querySelectorAll('button')].find(b => b.textContent === 'Undo')
+      act(() => undo.click())
+      expect(active().entries[0].noProg).toBeUndefined()
+      useStore.getState().update(s => { s.active.entries[0].sets.forEach(set => { set.done = true }) })
+      const saved = buildCompletedWorkout(active(), { end: Date.now() })
+      return { ...useStore.getState().S, active: null, workouts: [...logged, saved] }
+    }
+
+    it('Progression settings saved unchanged, then Undo: the session counts at 102.5 and the next one goes on from there', () => {
+      start()
+      const settings = menuItem(openMenu(), 'Progression settings')
+      act(() => settings.click())
+      const sheet = renderTopSheet()
+      const save = [...sheet.querySelectorAll('button')].find(b => b.textContent.trim() === 'Save')
+      act(() => save.click())
+
+      const [bench] = active().entries
+      expect(bench.noProg).toBe(true)
+      expect(bench.sets.map(set => set.w)).toEqual([102.5])
+      expect(bench.target.weight).toBe(102.5)
+      expect(bench.plan.kind).not.toBe('off')
+
+      const S = undoAndFinish()
+      expect(nextPrescription(S, planned[0].ex[0], planned[0]).weight).toBe(105)
+    })
+
+    it('a swap, then Undo: the replacement counts at its own prescription, not the routine’s numbers', () => {
+      start()
+      swapActiveWorkoutExercise(0)
+      const picker = useUI.getState().sheets.at(-1)
+      act(() => picker.render(picker.close).props.onPick(EXDB.find(e => e.id === ROW)))
+      const config = useUI.getState().sheets.at(-1)
+      act(() => config.render(config.close).props.onSave({ ...planned[0].ex[1] }))
+
+      const [row] = active().entries
+      expect(row.id).toBe(ROW)
+      // The mark stays on the slot, with its Undo on the card.
+      expect(row.noProg).toBe(true)
+      // 70 × 8 last time, and a row goes up in 5s: 75, the way the routine's own start builds it.
+      const S0 = { ...clone(DEF), routines: clone(planned), workouts: clone(logged) }
+      expect(buildSessionEntries(S0, planned[0])[1].sets.map(set => set.w)).toEqual([75])
+      expect(row.sets.map(set => set.w)).toEqual([75])
+      expect(row.plan.kind).not.toBe('off')
+
+      const S = undoAndFinish()
+      expect(nextPrescription(S, planned[0].ex[1], planned[0]).weight).toBe(80)
+    })
+  })
+
+  it('a deload routine’s exercise saved in Progression settings stays at the routine’s own numbers', () => {
+    // 70 × 8 in Main would put a counting row at 75; the deload keeps its 40.
+    const rowInMain = { id: 'w0', d: '2026-09-18', routineIds: ['main'], entries: [{ id: ROW, rid: 'main', target: { sets: 1, reps: 8, weight: 70 }, sets: [{ w: 70, r: 8, done: true }] }] }
+    renderWorkout([{ ...entry(ROW, 'deload', 40, { noProg: true }), target: { sets: 1, reps: 8, weight: 40 }, sets: [{ w: 40, r: 8, done: false }] }], { withHistory: [...history, rowInMain] })
+    const settings = menuItem(openMenu(), 'Progression settings')
+    act(() => settings.click())
+    const save = [...renderTopSheet().querySelectorAll('button')].find(b => b.textContent.trim() === 'Save')
+    act(() => save.click())
+    const [row] = active().entries
+    expect(row.noProg).toBe(true)
+    expect(row.plan.kind).toBe('off')
+    expect(row.sets.map(set => set.w)).toEqual([40])
   })
 
   it('a deload routine’s exercise shows the marker but offers neither the switch nor an undo', () => {

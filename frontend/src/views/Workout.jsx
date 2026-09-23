@@ -18,7 +18,7 @@ import Icon from '../components/Icon.jsx'
 import { Button, Check, NumberField } from '../components/ui.jsx'
 import { defaultIncrement, weightIncrement, stepWeight } from '../lib/progression.js'
 import { progressionGuidance } from '../lib/progression-copy.js'
-import { buildPlannedEntry, plannedConfigOf } from '../lib/session-start.js'
+import { buildPlannedEntry, plannedConfigOf, builtOutOfProgression } from '../lib/session-start.js'
 import { glyphOf } from '../lib/glyphs.js'
 import { isWarmupRow, isDropSet, isRestPauseSet, dropsOf, clustersOf, addDrop, addCluster, removeDropAt, removeClusterAt, setDropAt, setClusterAt, nextDropWeight, nextBurstReps, isSideSet, makeSideSet, setSideField, toggleSide, addSideDrop, removeSideDropAt, setSideDropAt, addSideCluster, removeSideClusterAt, setSideClusterAt } from '../lib/workout-model.js'
 import { canMoveActiveWorkoutUnit, moveActiveWorkoutUnit } from '../lib/active-workout-order.js'
@@ -729,6 +729,8 @@ function ActiveWorkout() {
   // It stamps the entry's `noProg`, the flag a deload routine freezes onto its entries: the saved
   // workout keeps it (finish-workout.js), and the next prescription and "last time" read past
   // this entry (history.js entryExcluded). This exercise, this session; the routine is untouched.
+  // Unlike a deload's, its rows keep the prescription through any rebuild (builtOutOfProgression),
+  // so switching it off again leaves the numbers this session should count at.
   const setNoProg = (idx, on) => update(s => {
     const e = s.active?.entries?.[idx]
     if (!e) return
@@ -858,7 +860,9 @@ function ActiveWorkout() {
         // rebuilt from the new config exactly the way the session start builds them (same reps
         // source, same prescription, same stamped target), and only what you already logged is
         // kept in place (done warm-ups first, then done work sets, then the fresh remainder).
-        const built = buildPlannedEntry(s, full, activeRoutine, { noProg: activeEntry.noProg === true })
+        // Without a prescription only in a routine kept out of progression: an exercise kept out
+        // by hand keeps its prescription, so its Undo leaves the numbers it should count at.
+        const built = buildPlannedEntry(s, full, activeRoutine, { noProg: builtOutOfProgression(activeEntry, activeRoutine) })
         const fresh = built.sets
         const doneWarm = activeEntry.sets.filter(x => x.done && isWarmupRow(x))
         const doneWork = activeEntry.sets.filter(x => x.done && !isWarmupRow(x))
@@ -1194,7 +1198,7 @@ function ActiveWorkout() {
       const curRid = curEntry?.rid
       const routine = curRid ? S.routines.find(r => r.id === curRid) : null
       const freestyle = !routine
-      const noProg = !freestyle && curEntry?.noProg === true && routine.excludeFromProgression === true
+      const noProg = !freestyle && builtOutOfProgression(curEntry, routine)
       // Freestyle has no routine prescription to apply: show the last target in the config
       // sheet and carry its completed rows forward. A planned session uses its configured
       // target when progression is off, while progression-enabled sessions keep their path.

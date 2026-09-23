@@ -109,6 +109,17 @@ describe('StructuralBalance view', () => {
     expect(host.querySelector('[data-role-id="narrowBench"] [data-exercise-name]').textContent).toBe('barbell close-grip bench press')
   })
 
+  it('picking a role\'s own default exercise does not mark it custom', () => {
+    const host = render()
+    const row = host.querySelector('[data-role-id="inclineBench"]')
+    act(() => [...row.querySelectorAll('button')].find(b => b.textContent.includes('Change exercise')).click())
+    const picker = useUI.getState().sheets.at(-1)
+    act(() => picker.render(picker.close).props.onPick({ id: '0047' })) // barbell incline bench press, the role's default
+    const after = host.querySelector('[data-role-id="inclineBench"]')
+    expect(after.textContent).not.toContain('Custom')
+    expect([...after.querySelectorAll('button')].some(b => b.textContent.includes('Use default exercise'))).toBe(false)
+  })
+
   it('the back chevron navigates to /stats', () => {
     const host = render()
     act(() => host.querySelector('.iconbtn').click())

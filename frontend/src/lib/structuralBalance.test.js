@@ -566,6 +566,24 @@ describe('stored overrides', () => {
   })
 })
 
+describe('an override of the role\'s own default exercise', () => {
+  it('is not custom, and reads the whole whitelist like the default', () => {
+    const template = TEMPLATES.atg
+    const stepUp = findRole(template, 'stepUp') // 0114 barbell step-up, then 0431 dumbbell step-up
+    const S = {
+      unit: 'kg', body: 'male', bodyweight: [{ d: '2026-01-01', w: 80 }],
+      balanceOverrides: { [overrideKey(template, stepUp)]: { id: '0114', _ts: 5 } },
+      workouts: [workoutAt('0431', NOW, [setDone(40, 15)])],
+    }
+    const row = computeBalance(S, template).find(r => r.roleId === 'stepUp')
+    expect(row).toMatchObject({ isOverridden: false, configuredExerciseId: '0114', mappedExerciseId: '0431' })
+    expect(row.status).toBe(BALANCE_STATUSES.BALANCED)
+
+    S.balanceOverrides = { [overrideKey(template, stepUp)]: { id: '0431', _ts: 6 } } // the fallback is a real choice
+    expect(computeBalance(S, template).find(r => r.roleId === 'stepUp')).toMatchObject({ isOverridden: true, configuredExerciseId: '0431' })
+  })
+})
+
 describe('computeBalance — full template end-to-end (Poliquin)', () => {
   it('resolves every role in order, mixing logged and unlogged roles', () => {
     const template = TEMPLATES.poliquin

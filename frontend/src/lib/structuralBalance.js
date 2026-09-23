@@ -189,7 +189,12 @@ export function withOverride(overrides, key, exId, now = Date.now()) {
   return { ...(overrides || {}), [key]: { id: exId || null, _ts: now } }
 }
 
-const overrideFor = (S, template, role) => overrideIdOf(S.balanceOverrides?.[overrideKey(template, role)])
+// A choice of the role's own default exercise is the default: not "Custom", and read across the
+// whole whitelist like the default is, rather than narrowed to that one exercise.
+const overrideFor = (S, template, role) => {
+  const id = overrideIdOf(S.balanceOverrides?.[overrideKey(template, role)])
+  return id && id !== role.exerciseIds[0] ? id : null
+}
 
 // The exercise ids to resolve "current" from: the user's chosen override if one exists for this
 // role, otherwise the role's curated whitelist.

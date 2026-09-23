@@ -735,6 +735,28 @@ export const PT_BR_OVERRIDES = {
   'This workout was deleted on another device. Your edits are still here.': 'Este treino foi excluído em outro dispositivo. Suas alterações continuam aqui.',
   'Close editor': 'Fechar editor',
   'Editing a saved workout. Date and duration stay unchanged.': 'Você está editando um treino salvo. A data e a duração permanecem iguais.',
+  // --- demo build (v1.3.7) ---
+  'A two-day rotation across three sessions a week, built around the equipment you listed. Compounds first, one pull for every press, and enough overlap between the days that nothing goes two weeks without being trained.': 'Uma rotação de dois dias em três sessões por semana, montada em torno do equipamento que você informou. Primeiro os exercícios compostos, uma puxada para cada empurrão e sobreposição suficiente entre os dias para que nada fique duas semanas sem ser treinado.',
+  'Body weight has been flat for four weeks while the goal is to gain. That is a kitchen problem rather than a training one — the plan is not what is holding it back.': 'O peso corporal está estagnado há quatro semanas enquanto o objetivo é ganhar. Isso é um problema de cozinha, não de treino — não é o plano que está segurando.',
+  'Demo data reset': 'Dados da demo redefinidos',
+  'Direct arm work, since you asked for it.': 'Trabalho direto de braços, já que você pediu.',
+  'Every top set on this one came in at RPE 9.5 or above for three sessions and the weight has not moved. Swapping the movement for four weeks usually breaks that stall faster than grinding the same one.': 'Todas as séries principais deste exercício ficaram em RPE 9,5 ou mais por três sessões e o peso não se mexeu. Trocar o movimento por quatro semanas costuma destravar essa estagnação mais rápido do que insistir no mesmo.',
+  'Example data, stored only in this browser — change anything you like.': 'Dados de exemplo, salvos somente neste navegador — mude o que quiser.',
+  'No training history yet — starting conservatively.': 'Ainda não há histórico de treino — começando com cautela.',
+  'Passkey sign-in, sync across your devices, your own data.': 'Login com chave de acesso, sincronização entre seus dispositivos, seus próprios dados.',
+  'Puts the example plan, workouts and weigh-ins back the way they started.': 'Redefine o plano, os treinos e as pesagens de exemplo como estavam no início.',
+  'Reset': 'Redefinir',
+  'Reset demo data': 'Redefinir dados da demo',
+  'Reset demo data?': 'Redefinir os dados da demo?',
+  'Revised as you asked. Everything you did not question is exactly as it was.': 'Revisado como você pediu. Tudo o que você não questionou está exatamente como estava.',
+  'Self-host it in a minute →': 'Hospede você mesmo em um minuto →',
+  'Self-host openGym': 'Hospedar o openGym por conta própria',
+  'Sessions have been running about fifteen minutes over. This is the accessory with the least to lose from one set fewer.': 'As sessões estão passando uns quinze minutos do previsto. Este é o exercício acessório que menos perde com uma série a menos.',
+  'The two big lower-body and pressing patterns first, while you are fresh.': 'Primeiro os dois grandes padrões de membros inferiores e de empurrar, enquanto você está descansado.',
+  'This demo runs entirely in your browser on example data — nothing is sent anywhere. Passkey sign-in and sync across your devices come with the openGym server, which you get by self-hosting it.': 'Esta demo roda inteiramente no seu navegador com dados de exemplo — nada é enviado para lugar nenhum. O login com chave de acesso e a sincronização entre seus dispositivos vêm com o servidor openGym, que você obtém hospedando-o por conta própria.',
+  'Three things worth changing, and one worth knowing about. Everything else is working — the squat and the pulls are both progressing on schedule.': 'Três coisas que vale a pena mudar e uma que vale a pena saber. Todo o resto está funcionando — o agachamento e as puxadas estão progredindo como previsto.',
+  'You have moved this session to Saturday three weeks running. Better the plan says so than that you keep overriding it.': 'Você mudou esta sessão para sábado três semanas seguidas. Melhor o plano dizer isso do que você ficar alterando toda vez.',
+  'You’re in the demo': 'Você está na demo',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

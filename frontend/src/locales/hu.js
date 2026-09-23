@@ -1253,4 +1253,15 @@ export default {
   'already added': 'már hozzáadva',
   'no exercises': 'nincs gyakorlat',
   'Pick equipment': 'Eszköz kiválasztása',
+  // --- plan vs session: the routine's own reps, per-routine progress (#275, #216) ---
+  'Planned sessions start from': 'A tervezett edzések kiindulópontja',
+  'The routine’s sets and reps. Your history decides the weight.': 'A rutin sorozatai és ismétlései. A súlyt az előzményeid döntik el.',
+  'Your last session': 'Az utolsó edzésed',
+  'The reps you logged last time in that routine, carried over.': 'Az abban a rutinban legutóbb rögzített ismétlések kerülnek át.',
+  'Plan changed — starting from your new target.': 'A terv megváltozott — az új célodtól indulsz.',
+  'First time in this routine — starting from its own target.': 'Először ebben a rutinban — a saját céljától indulsz.',
+  'No weight logged last time — enter what you lift and progression takes it from there.': 'Legutóbb nem volt súly rögzítve — add meg, mennyit emelsz, és onnan halad tovább a progresszió.',
+  'Plan: {0}': 'Terv: {0}',
+  'today {0}': 'ma {0}',
+  'reps from your last session': 'ismétlések az utolsó edzésedből',
 }

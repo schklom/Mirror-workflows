@@ -1261,4 +1261,15 @@ export default {
   'already added': 'เพิ่มแล้ว',
   'no exercises': 'ไม่มีท่าออกกำลังกาย',
   'Pick equipment': 'เลือกอุปกรณ์',
+  // --- plan vs session: the routine's own reps, per-routine progress (#275, #216) ---
+  'Planned sessions start from': 'จุดเริ่มต้นของเซสชันตามแผน',
+  'The routine’s sets and reps. Your history decides the weight.': 'จำนวนเซ็ตและครั้งตามรูทีน ส่วนน้ำหนักขึ้นอยู่กับประวัติของคุณ',
+  'Your last session': 'เซสชันล่าสุดของคุณ',
+  'The reps you logged last time in that routine, carried over.': 'ใช้จำนวนครั้งที่บันทึกไว้ครั้งก่อนในรูทีนนั้นต่อ',
+  'Plan changed — starting from your new target.': 'แผนเปลี่ยนแล้ว — เริ่มจากเป้าหมายใหม่ของคุณ',
+  'First time in this routine — starting from its own target.': 'ครั้งแรกในรูทีนนี้ — เริ่มจากเป้าหมายของรูทีนเอง',
+  'No weight logged last time — enter what you lift and progression takes it from there.': 'ครั้งก่อนไม่ได้บันทึกน้ำหนัก — กรอกน้ำหนักที่คุณยก แล้วการเพิ่มน้ำหนักจะเริ่มจากตรงนั้น',
+  'Plan: {0}': 'แผน: {0}',
+  'today {0}': 'วันนี้ {0}',
+  'reps from your last session': 'จำนวนครั้งจากเซสชันล่าสุด',
 }

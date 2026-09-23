@@ -1250,4 +1250,15 @@ export default {
   'already added': 'zaten ekli',
   'no exercises': 'egzersiz yok',
   'Pick equipment': 'Ekipman seç',
+  // --- plan vs session: the routine's own reps, per-routine progress (#275, #216) ---
+  'Planned sessions start from': 'Planlı seansların çıkış noktası',
+  'The routine’s sets and reps. Your history decides the weight.': 'Rutinin setleri ve tekrarları. Ağırlığı geçmişin belirler.',
+  'Your last session': 'Son seansın',
+  'The reps you logged last time in that routine, carried over.': 'O rutinde geçen sefer kaydettiğin tekrarlar aynen aktarılır.',
+  'Plan changed — starting from your new target.': 'Plan değişti — yeni hedefinden başlıyorsun.',
+  'First time in this routine — starting from its own target.': 'Bu rutinde ilk kez — rutinin kendi hedefinden başlıyorsun.',
+  'No weight logged last time — enter what you lift and progression takes it from there.': 'Geçen sefer ağırlık kaydedilmedi — kaldırdığın ağırlığı gir, ilerleme oradan devam etsin.',
+  'Plan: {0}': 'Plan: {0}',
+  'today {0}': 'bugün {0}',
+  'reps from your last session': 'tekrarlar son seansından',
 }

@@ -1250,4 +1250,15 @@ export default {
   'already added': 'già aggiunto',
   'no exercises': 'nessun esercizio',
   'Pick equipment': 'Scegli l’attrezzatura',
+  // --- plan vs session: the routine's own reps, per-routine progress (#275, #216) ---
+  'Planned sessions start from': 'Punto di partenza delle sessioni pianificate',
+  'The routine’s sets and reps. Your history decides the weight.': 'Serie e ripetizioni della routine. Il peso lo decide il tuo storico.',
+  'Your last session': 'La tua ultima sessione',
+  'The reps you logged last time in that routine, carried over.': 'Vengono riprese le ripetizioni registrate l’ultima volta in quella routine.',
+  'Plan changed — starting from your new target.': 'Piano cambiato: si riparte dal tuo nuovo obiettivo.',
+  'First time in this routine — starting from its own target.': 'Prima volta in questa routine: si parte dal suo obiettivo.',
+  'No weight logged last time — enter what you lift and progression takes it from there.': 'Nessun peso registrato l’ultima volta: inserisci quanto sollevi e la progressione riparte da lì.',
+  'Plan: {0}': 'Piano: {0}',
+  'today {0}': 'oggi {0}',
+  'reps from your last session': 'rip. dalla tua ultima sessione',
 }

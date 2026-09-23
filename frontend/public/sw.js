@@ -108,6 +108,9 @@ self.addEventListener('pushsubscriptionchange', e => {
 // the API's own `Cache-Control: no-store`, so the worker has to know to stay out of the way.
 const API = (() => { try { return new URL('api/', location.href).pathname } catch { return '/api/' } })()
 
+// How long a request for the app itself waits on the network before a cached copy answers it.
+const NET_WAIT_MS = 3000
+
 self.addEventListener('fetch', e => {
   const url = new URL(e.request.url)
   if (e.request.method !== 'GET' || url.origin !== location.origin) return
@@ -125,12 +128,25 @@ self.addEventListener('fetch', e => {
   // is why the shell never used to survive an offline reload.
   // A dead radio does not reject fetch() quickly — it just never settles — so a cold-launch of
   // the installed app with no network stayed on a blank screen forever, with the cache fallback
-  // below never getting a chance to run (issue #274). Bounding the request with an abortable
-  // timeout gives it up and falls back to the cached shell instead.
-  e.respondWith(fetch(e.request, { signal: AbortSignal.timeout(3000) }).then(res => {
-    if (res.ok) { const copy = res.clone(); caches.open(CACHE).then(c => c.put(e.request, copy)).catch(() => {}) }
-    return res
-  }).catch(() => caches.match(e.request, { ignoreSearch: true }).then(hit =>
-    hit || (e.request.mode === 'navigate' ? caches.match('index.html') : undefined)
-  )))
+  // never getting a chance to run (issue #274). So a request the network has not answered within
+  // NET_WAIT_MS is answered from the cache, when the cache has it. Nothing is aborted: an abort
+  // that fires once the headers are in errors the body the page is still reading, and on a slow
+  // connection a locale pack or a chunk that was on its way failed outright, every start again,
+  // since a body that never finishes is never cached either (and AbortSignal.timeout, which the
+  // abort used, does not exist before iOS 16: the handler threw before it answered at all, the
+  // cache fallback with it). A request the cache cannot answer keeps waiting for the network, as
+  // it always did; and the network's answer, whenever it comes, still refreshes the cache.
+  const fromCache = () => caches.match(e.request, { ignoreSearch: true }).then(hit =>
+    hit || (e.request.mode === 'navigate' ? caches.match('index.html') : undefined))
+  e.respondWith(new Promise(resolve => {
+    const slow = setTimeout(() => fromCache().then(hit => { if (hit) resolve(hit) }, () => {}), NET_WAIT_MS)
+    fetch(e.request).then(res => {
+      clearTimeout(slow)
+      if (res.ok) { const copy = res.clone(); caches.open(CACHE).then(c => c.put(e.request, copy)).catch(() => {}) }
+      resolve(res)
+    }, () => {
+      clearTimeout(slow)
+      resolve(fromCache())
+    })
+  }))
 })

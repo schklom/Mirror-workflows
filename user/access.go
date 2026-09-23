@@ -66,7 +66,7 @@ func (a *AccessController) IncrementLock(username string) {
 
 	a.lockedUsers[username] = lockedUser
 
-	// It is fiddly to distinguish between "locked accounts" (attemps >= 5)
+	// It is fiddly to distinguish between "locked accounts" (attemps >= MAX_ALLOWED_ATTEMPTS)
 	// and "accounts with failed login attempts".
 	// Thus the metrics simply expose the latter.
 	metrics.FailedLoginAccounts.Set(float64(len(a.lockedUsers)))

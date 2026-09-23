@@ -158,6 +158,17 @@ describe('rebuildPrHistory', () => {
     ], ['bench'], moved)
     expect(out.map(x => x.prs)).toEqual([[], []])
   })
+  // Less help is the record on an assistance machine (issue #232): the finish sheet awards the
+  // badge that way, and a move must judge it the same way round.
+  it('on an assistance machine the session with less help leads', () => {
+    const assisted = '0017'
+    const moved = w('moved', '2026-01-01', '18:00', 60, [entry(assisted, 20)], [])
+    const out = rebuildPrHistory([
+      moved,
+      w('later', '2026-01-08', '18:00', 60, [entry(assisted, 30)], [assisted]),
+    ], [assisted], moved)
+    expect(out.map(x => x.prs)).toEqual([[assisted], []])
+  })
   it('does nothing without exercises and never mutates the input', () => {
     const list = [w('a', '2026-01-01', '18:00', 60, [entry('bench', 100)], ['bench'])]
     expect(rebuildPrHistory(list, [])).toBe(list)

@@ -9,6 +9,7 @@
 // existed) so the date arithmetic and the badge surgery are testable without the UI.
 import { insertChronological, backfillStart } from './backfill.js'
 import { bestWeightForEntry } from './history.js'
+import { beatsWeight } from './exercises.js'
 
 // Before ids existed a workout was keyed for sync by its day and start time
 // (`workoutKey` in sync-merge.js). That is exactly what this edit changes, so moving such a
@@ -65,8 +66,10 @@ export function rebuildPrHistory(workouts, exerciseIds, moved = null) {
       trains = true
       const top = bestWeightForEntry(e)
       // Leads everything dated before it. The running best grows whether or not a badge is
-      // written, so a session that cannot gain one still raises the bar for the next.
-      const leads = top > 0 && top > (best.get(e.id) || 0)
+      // written, so a session that cannot gain one still raises the bar for the next. "Leads"
+      // is the finish sheet's own test (beatsWeight): on an assistance machine the record is the
+      // least help, so there a lighter load leads (issue #232).
+      const leads = beatsWeight(e.id, top, best.get(e.id) || 0)
       if (leads) best.set(e.id, top)
       if (leads && (w === moved || had.includes(e.id))) kept.push(e.id)
     }

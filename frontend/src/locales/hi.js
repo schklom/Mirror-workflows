@@ -1314,6 +1314,7 @@ export default {
   'Save as routine?': 'रूटीन के रूप में सहेजें?',
   'Save as routine': 'रूटीन के रूप में सहेजें',
   'Create an independent routine from these exercise targets. Your workout history is kept.': 'इन व्यायाम लक्ष्यों से एक स्वतंत्र रूटीन बनाएँ। आपका वर्कआउट इतिहास सुरक्षित रहेगा।',
+  'Pause': 'रोकें',
   'Keep timing after target': 'लक्ष्य के बाद भी समय जारी रखें',
   'Timed sets continue up to 15 extra minutes. Tap Done to log the actual duration.': 'समयबद्ध सेट 15 अतिरिक्त मिनट तक जारी रहेंगे। वास्तविक अवधि दर्ज करने के लिए “पूरा” दबाएँ।',
   'Edit workout': 'वर्कआउट संपादित करें',

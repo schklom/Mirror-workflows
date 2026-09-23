@@ -1325,6 +1325,7 @@ export default {
   'Save as routine?': 'บันทึกเป็นรูทีนไหม',
   'Save as routine': 'บันทึกเป็นรูทีน',
   'Create an independent routine from these exercise targets. Your workout history is kept.': 'สร้างรูทีนอิสระจากเป้าหมายเหล่านี้ ประวัติการออกกำลังกายของคุณจะยังคงอยู่',
+  'Pause': 'หยุดชั่วคราว',
   'Keep timing after target': 'จับเวลาต่อหลังถึงเป้าหมาย',
   'Timed sets continue up to 15 extra minutes. Tap Done to log the actual duration.': 'เซ็ตแบบจับเวลาจะทำต่อได้อีกสูงสุด 15 นาที แตะ “เสร็จแล้ว” เพื่อบันทึกระยะเวลาจริง',
   'Edit workout': 'แก้ไขการออกกำลังกาย',

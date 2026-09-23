@@ -60,11 +60,50 @@ let workTick = null
 let workDone = null
 const MAX_WORK_OVERTIME_SEC = 15 * 60
 
+const stopRestTicking = () => {
+  if (timerInt) clearInterval(timerInt); timerInt = null
+  if (timerTick) document.removeEventListener('visibilitychange', timerTick); timerTick = null
+}
+// The rest countdown's tick, from a start or from a resume: the same endsAt-based count either
+// way, so a paused rest carries on exactly as a started one runs.
+const runRest = (set, get) => {
+  stopRestTicking()
+  timerTick = () => {
+    const tm = get().timer
+    if (!tm || tm.ready || tm.paused) return
+    const left = Math.max(0, Math.round((tm.endsAt - Date.now()) / 1000))
+    const seenLive = !document.hidden && pageHiddenAt === null
+    if (!document.hidden) pageHiddenAt = null
+    if (left === tm.left) return
+    const snd = useStore.getState().S.sound
+    if (left <= 0) {
+      if (seenLive) {
+        beep(snd, 880, 0.15); beep(snd, 880, 0.15, 0.25); beep(snd, 1320, 0.4, 0.5)
+        vibrate([200, 100, 200]); get().flashTimer()
+      }
+      // The toast stays even when the rest ran out while the app was hidden: a guest, or anyone
+      // without push permission, gets no notification, and a countdown that silently vanishes
+      // on reopen reads like a bug. Only the loud parts (beep, vibration, flash) are gated.
+      get().toast(t('Rest over — next set!'))
+      maybeRestNotification()
+      cancelPushRestTimer()
+      stopRestTicking()
+      set({ timer: { ...tm, left: 0, ready: true } })
+      return
+    }
+    if (left <= 3) beep(snd, 660, 0.1)
+    set({ timer: { ...tm, left } })
+  }
+  timerInt = setInterval(timerTick, 1000)
+  document.addEventListener('visibilitychange', timerTick)
+}
+
 export const useUI = create((set, get) => ({
   sheets: [],          // { id, render:(close)=>JSX, kind:'sheet'|'center', locked }
   toastMsg: '',
-  timer: null,         // rest countdown between sets — { left, total, endsAt, forIdx, ready? }
+  timer: null,         // rest countdown between sets — { left, total, endsAt, forIdx, ready?, paused? }
                        // forIdx: index of the active entry whose set started the rest (undefined when unknown)
+                       // paused: held at `left`; `endsAt` means nothing until resumeRest sets it again
   work: null,          // work countdown DURING a timed set (issue #16) — { left, total, endsAt, label, overtime? }
   timerFlashId: 0,     // changing the id retriggers the theme-blink visual alert
 
@@ -110,35 +149,32 @@ export const useUI = create((set, get) => ({
     const endsAt = Date.now() + sec * 1000
     set({ timer: { left: sec, total: sec, endsAt, forIdx } })
     pushRestTimer(sec)
-    timerTick = () => {
-      const tm = get().timer
-      if (!tm || tm.ready) return
-      const left = Math.max(0, Math.round((tm.endsAt - Date.now()) / 1000))
-      const seenLive = !document.hidden && pageHiddenAt === null
-      if (!document.hidden) pageHiddenAt = null
-      if (left === tm.left) return
-      const snd = useStore.getState().S.sound
-      if (left <= 0) {
-        if (seenLive) {
-          beep(snd, 880, 0.15); beep(snd, 880, 0.15, 0.25); beep(snd, 1320, 0.4, 0.5)
-          vibrate([200, 100, 200]); get().flashTimer()
-        }
-        // The toast stays even when the rest ran out while the app was hidden: a guest, or anyone
-        // without push permission, gets no notification, and a countdown that silently vanishes
-        // on reopen reads like a bug. Only the loud parts (beep, vibration, flash) are gated.
-        get().toast(t('Rest over — next set!'))
-        maybeRestNotification()
-        cancelPushRestTimer()
-        if (timerInt) clearInterval(timerInt); timerInt = null
-        if (timerTick) document.removeEventListener('visibilitychange', timerTick); timerTick = null
-        set({ timer: { ...tm, left: 0, ready: true } })
-        return
-      }
-      if (left <= 3) beep(snd, 660, 0.1)
-      set({ timer: { ...tm, left } })
-    }
-    timerInt = setInterval(timerTick, 1000)
-    document.addEventListener('visibilitychange', timerTick)
+    runRest(set, get)
+  },
+  // Holding the rest where it is — a longer break than planned, a machine to wait for, a phone
+  // call (#193). Paused time does not count: the countdown stops, and so does everything that
+  // would announce its end — the server's push and the alert this tab shows are cancelled, not
+  // left to fire at the old time. The timed hold is a different timer and is not touched.
+  pauseRest() {
+    const tm = get().timer
+    if (!tm || tm.ready || tm.paused) return
+    stopRestTicking()
+    cancelPushRestTimer()
+    const left = Math.max(1, Math.round((tm.endsAt - Date.now()) / 1000))
+    set({ timer: { ...tm, left, paused: true } })
+  },
+  // Carrying on from where the pause held it: the end moves out by however long the pause was,
+  // and the push that announces it is booked again for the new time.
+  resumeRest() {
+    const tm = get().timer
+    if (!tm?.paused) return
+    const { paused, ...rest } = tm
+    // As in startRest: the page may have been hidden and shown while paused, and that is no
+    // catch-up of a countdown that was not running.
+    pageHiddenAt = document.hidden ? Date.now() : null
+    set({ timer: { ...rest, endsAt: Date.now() + tm.left * 1000 } })
+    pushRestTimer(tm.left)
+    runRest(set, get)
   },
   addRest(sec) {
     const tm = get().timer
@@ -148,6 +184,8 @@ export const useUI = create((set, get) => ({
     // taking off more than is left means "I'm ready now" — same as skipping, and it keeps a
     // negative duration out of both the progress bar and the server-side push schedule
     if (left <= 0) { get().stopRest(); return }
+    // Paused, there is no end to move and nothing booked on the server: the time is simply held.
+    if (tm.paused) { set({ timer: { ...tm, left, total: tm.total + sec } }); return }
     set({ timer: { ...tm, left, total: tm.total + sec, endsAt: tm.endsAt + sec * 1000 } })
     pushRestTimer(left)
   },
@@ -159,8 +197,7 @@ export const useUI = create((set, get) => ({
     set({ timer: { ...tm, forIdx: tm.forIdx + delta } })
   },
   stopRest() {
-    if (timerInt) clearInterval(timerInt); timerInt = null
-    if (timerTick) document.removeEventListener('visibilitychange', timerTick); timerTick = null
+    stopRestTicking()
     if (get().timer) cancelPushRestTimer()
     set({ timer: null })
   },

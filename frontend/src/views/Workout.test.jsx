@@ -1293,6 +1293,13 @@ describe('the plan line', () => {
     expect(container.textContent).not.toContain('Last time')
   })
 
+  it('sits next to a "Last time" that reads this routine\'s own last session (#216)', async () => {
+    const session = (d, rid, w, r) => ({ d, routineIds: [rid], entries: [{ id: 'plain-bench', rid, target: { reps: r, weight: w }, sets: [{ w, r, done: true }] }] })
+    await mount([planned({ rid: 'A' })], 0, { workouts: [session('2026-08-24', 'A', 60, 10), session('2026-08-26', 'B', 40, 15)] })
+    expect(container.textContent).toContain('60×10')
+    expect(container.textContent).not.toContain('40×15')
+  })
+
   it('is not there for an entry with no plan (freestyle, or started before plans were kept)', async () => {
     await mount([exercise('plain-bench', [false])])
     expect(container.querySelector('.planline')).toBeNull()

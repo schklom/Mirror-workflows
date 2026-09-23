@@ -138,6 +138,16 @@ describe('a planned session opens at the plan\'s reps', () => {
   }
 })
 
+describe('a routine whose only history is freestyle or imported', () => {
+  it('starts from its own sets × reps at the last weight, not from the other session\'s shape', () => {
+    const st = state([{ id: 'A', name: 'A', ex: [{ id: BENCH, sets: 2, reps: 10, weight: 50, mode: 'reps' }] }])
+    st.workouts.push({ id: 'imp', d: '2026-09-01', routineId: null, entries: [{ id: BENCH, sets: [{ w: 30, r: 15, done: true }, { w: 30, r: 15, done: true }, { w: 30, r: 15, done: true }] }] })
+    const [e] = start(st, ['A'])
+    expect(work(e).map(s => [s.w, s.r])).toEqual([[30, 10], [30, 10]])
+    expect(e.plan.why[0]).toBe('First time in this routine — starting from its own target.')
+  })
+})
+
 describe('an edited routine starts again from its new plan', () => {
   it('holds the weight at the new reps under the default policy', () => {
     const st = state([{ id: 'A', name: 'A', ex: [{ id: BENCH, sets: 2, reps: 15, weight: 50 }] }])

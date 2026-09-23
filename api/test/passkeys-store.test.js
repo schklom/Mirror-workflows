@@ -78,6 +78,16 @@ describe('passkeyName', () => {
     assert.equal(passkeyName(42), '');
     assert.equal(passkeyName({ toString: () => 'x' }), '');
   });
+
+  it('drops invisible format characters that reorder or hide text, and keeps the joiners', () => {
+    // Right-to-left override and isolates, zero-width space, word joiner, byte-order mark, soft hyphen.
+    assert.equal(passkeyName('Phone\u202Egnp.exe'), 'Phonegnp.exe');
+    assert.equal(passkeyName('\u2066Lap\u200Btop\u2069 \u2060\uFEFFkey\u00AD'), 'Laptop key');
+    assert.equal(passkeyName('\u200E\u200F\u061C'), '');
+    // An emoji sequence and a Devanagari conjunct keep their joiners.
+    assert.equal(passkeyName('👨\u200D👩\u200D👧 iPad'), '👨\u200D👩\u200D👧 iPad');
+    assert.equal(passkeyName('क्\u200Dष फ़ोन'), 'क्\u200Dष फ़ोन');
+  });
 });
 
 describe('removePasskeyRecord', () => {

@@ -17,8 +17,14 @@ export const NAME_MAX = 40;
 
 // A label someone typed: control characters out, runs of whitespace folded, capped. Empty means
 // no name, and the app shows a numbered "Passkey n" instead.
+//
+// Invisible format characters go too. The device redeeming a code names its own passkey, and the
+// owner and the admin read that name: a right-to-left override (U+202E) turns the rest of it
+// around, so a passkey could be made to read like another one. The two joiners stay, since emoji
+// sequences and several scripts (Devanagari and Arabic among them) need them to render.
 export const passkeyName = v => (typeof v === 'string' ? v : '')
-  .replace(/[\u0000-\u001f\u007f]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, NAME_MAX);
+  .replace(/[\u0000-\u001f\u007f]/g, ' ').replace(/(?![\u200c\u200d])\p{Cf}/gu, '')
+  .replace(/\s+/g, ' ').trim().slice(0, NAME_MAX);
 
 // `transports` comes from the browser that made the passkey, which is to say from the request. It
 // is handed back to browsers as a hint, so only a short list of short words is kept.

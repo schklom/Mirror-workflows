@@ -8,6 +8,7 @@ import { guestAllowed } from '../lib/guest.js'
 import { MOBILE, initReminderSync, nativeLoad, nativeSave, onAppActive, readJsonFile, syncReminder, writeAutoBackup, writeJsonFile } from '../lib/mobile.js'
 import { mergeStates, localExtras, stampRoutines } from '../lib/sync-merge.js'
 import { countChanges, syncFingerprint } from '../lib/sync-changes.js'
+import { saveWorkoutEdit } from '../lib/session-edit.js'
 import { appBase } from '../lib/app-base.js'
 import { loadRemote, chooseLocal, forgetRemote, connect, normalizeServerUrl, renewToken } from '../lib/remote.js'
 import { loadCoachDevice, saveCoachDevice, coachDeviceSettings } from '../lib/coach-device.js'
@@ -656,6 +657,16 @@ export const useStore = create((set, get) => {
       stampRoutines(prev.routines, S.routines)
       persist(S, push)
     },
+    // An edit of a saved workout (lib/session-edit.js) is saved or dropped like any other change:
+    // the store's own sync takes it to the server, and a conflict on the way is settled by
+    // mergeStates like one between two devices. A save that cannot happen throws before anything
+    // is written, and the editor stays open with the edits.
+    saveHistoryEdit() {
+      let saved = null
+      get().update(S => { saved = saveWorkoutEdit(S) })
+      return saved
+    },
+    discardHistoryEdit() { get().update(S => { S.active = null }) },
     // A replace that is meant to reach the server (backup import, reset) is a deliberate
     // overwrite, not a change to merge: the push it arms goes without a baseRev.
     replaceState(S, push = false) { if (push) forceNext = true; persist(clone(S), push) },

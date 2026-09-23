@@ -720,6 +720,17 @@ export const PT_BR_OVERRIDES = {
   'Create an independent routine from these exercise targets. Your workout history is kept.': 'Criar uma rotina independente a partir destes objetivos. O histórico de treinos será mantido.',
   'Keep timing after target': 'Continuar contando após o objetivo',
   'Timed sets continue up to 15 extra minutes. Tap Done to log the actual duration.': 'As séries cronometradas continuam por até 15 minutos extras. Toque em Concluído para registrar a duração real.',
+  'Edit workout': 'Editar treino',
+  'Workout updated': 'Treino atualizado',
+  'Save workout changes?': 'Salvar alterações do treino?',
+  'Save your edits to this workout, or keep the original record.': 'Salve as alterações deste treino ou mantenha o registro original.',
+  'Save changes': 'Salvar alterações',
+  "Don't save": 'Não salvar',
+  'Keep editing': 'Continuar editando',
+  'This workout was deleted on another device. Your edits are still here.': 'Este treino foi excluído em outro dispositivo. Suas alterações continuam aqui.',
+  'This workout changed on another device. Your edits are still here.': 'Este treino foi alterado em outro dispositivo. Suas alterações continuam aqui.',
+  'Close editor': 'Fechar editor',
+  'Editing a saved workout. Date and duration stay unchanged.': 'Você está editando um treino salvo. A data e a duração permanecem iguais.',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

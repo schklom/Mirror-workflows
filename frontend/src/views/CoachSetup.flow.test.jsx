@@ -180,10 +180,10 @@ describe('CoachSetup — bringing your own key', () => {
     expect(host.textContent).not.toContain('Endpoint')
     await click(chip('OpenAI-compatible endpoint'))
     expect(host.textContent).toContain('Endpoint')
-    expect(field('text').getAttribute('placeholder')).toBe('http://ollama.lan:11434')
+    expect(field('text').getAttribute('placeholder')).toBe('https://ollama.example.com')
     // With nothing typed there is no host to name, so the line falls back to the provider.
     expect(host.textContent).toContain('Each request goes straight to OpenAI-compatible endpoint with your key')
-    typeIn(field('text'), 'http://ollama.lan:11434')
+    typeIn(field('text'), 'https://ollama.lan:11434')
     expect(host.textContent).toContain('Each request goes straight to ollama.lan:11434 with your key')
   })
 
@@ -214,10 +214,10 @@ describe('CoachSetup — bringing your own key', () => {
   it('the OpenAI-compatible endpoint needs no key at all', async () => {
     await mount(); await openByok()
     await click(chip('OpenAI-compatible endpoint'))
-    typeIn(field('text'), 'http://ollama.lan:11434/')
+    typeIn(field('text'), 'https://ollama.lan:11434/')
     await click(btn('List models')); await settle()
     expect(mocks.toast).not.toHaveBeenCalled()
-    expect(localModels).toHaveBeenCalledWith({ provider: 'compatible', baseUrl: 'http://ollama.lan:11434' }, null)
+    expect(localModels).toHaveBeenCalledWith({ provider: 'compatible', baseUrl: 'https://ollama.lan:11434' }, null)
   })
 
   it('turns down a base URL that is not one, before anything is loaded', async () => {
@@ -344,11 +344,11 @@ describe('CoachSetup — saving', () => {
   })
 
   it('normalises the endpoint it saves for a compatible provider, and saves the model you pick', async () => {
-    await listed('compatible', ['qwen3-27b', 'llama-3.3'], { key: null, baseUrl: 'http://ollama.lan:11434//' })
+    await listed('compatible', ['qwen3-27b', 'llama-3.3'], { key: null, baseUrl: 'https://ollama.lan:11434//' })
     pickModel('llama-3.3')
     await click(btn('Save and use the Coach')); await settle()
     expect(mocks.setCoachLocal).toHaveBeenCalledWith({
-      mode: 'byok', provider: 'compatible', model: 'llama-3.3', baseUrl: 'http://ollama.lan:11434'
+      mode: 'byok', provider: 'compatible', model: 'llama-3.3', baseUrl: 'https://ollama.lan:11434'
     })
     expect(setApiKey).not.toHaveBeenCalled()
   })
@@ -364,7 +364,7 @@ describe('CoachSetup — saving', () => {
   })
 
   it('refuses to save a provider with no model picked and no default to fall back on', async () => {
-    await listed('compatible', [], { key: null, baseUrl: 'http://ollama.lan:11434' })
+    await listed('compatible', [], { key: null, baseUrl: 'https://ollama.lan:11434' })
     await click(btn('Save and use the Coach')); await settle()
     expect(mocks.toast).toHaveBeenCalledWith('Pick a model')
     expect(mocks.setCoachLocal).not.toHaveBeenCalled()
@@ -376,7 +376,7 @@ describe('CoachSetup — saving', () => {
   // two disagree — saved `baseUrl: null`, said "The Coach is on" and left for the conversation
   // with the phone pointed at nothing.
   it('refuses on Save the same endpoint it refused on List models', async () => {
-    await listed('compatible', ['qwen3-27b'], { key: null, baseUrl: 'http://ollama.lan:11434' })
+    await listed('compatible', ['qwen3-27b'], { key: null, baseUrl: 'https://ollama.lan:11434' })
     pickModel('qwen3-27b')
     typeIn(field('text'), 'ollama.lan')
     await click(btn('Save and use the Coach')); await settle()
@@ -388,7 +388,7 @@ describe('CoachSetup — saving', () => {
   it('refuses on Save an endpoint field cleared after a successful listing', async () => {
     // The same hole as above in the one shape the validator lets through: empty. Cleared after
     // listing, Save would have written `baseUrl: null` and pointed the phone at nothing.
-    await listed('compatible', ['qwen3-27b'], { key: null, baseUrl: 'http://ollama.lan:11434' })
+    await listed('compatible', ['qwen3-27b'], { key: null, baseUrl: 'https://ollama.lan:11434' })
     pickModel('qwen3-27b')
     typeIn(field('text'), '')
     await click(btn('Save and use the Coach')); await settle()

@@ -100,6 +100,12 @@ describe('routine drag handle', () => {
     expect(cssSource).toMatch(/\.routine-list\.is-reordering,\.routine-list\.is-reordering \*\{cursor:grabbing\}/)
   })
 
+  it('keeps the list one column on a computer, where #app lists otherwise go two-up', () => {
+    // The reorder reads rows top to bottom; in two columns a drop landed in the wrong place.
+    expect(cssSource).toMatch(/@media \(min-width:1000px\)\{[\s\S]*#app \.list\{display:grid/)
+    expect(cssSource).toMatch(/#app \.list\.routine-list\{display:flex;flex-direction:column\}/)
+  })
+
   it('picks the row up at once under a mouse and drops it where it is let go', () => {
     const layout = mount([configured('a'), configured('b'), configured('c'), configured('d')])
     const down = pointer(grip(0), 'pointerdown', { kind: 'mouse', y: layout.centers[0] })

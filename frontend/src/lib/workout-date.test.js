@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { legacySyncKey, startTimeOf, sameWorkout, retimeWorkout, rebuildPrHistory, moveWorkout } from './workout-date.js'
+import { legacySyncKey, startTimeOf, sameWorkout, retimeWorkout, rebuildPrHistory, moveWorkout, durationMinOf, setWorkoutDuration } from './workout-date.js'
 import { backfillStart } from './backfill.js'
 
 const set = w => ({ w, r: 5, done: true })
@@ -230,5 +230,38 @@ describe('moveWorkout', () => {
     expect(out).toHaveLength(1)
     expect(out[0].id).toBe('2026-01-05|1767636000000')
     expect(out[0].d).toBe('2026-01-03')
+  })
+})
+
+// The workout nobody ended until they got home: its length is corrected, nothing else moves.
+describe('setWorkoutDuration', () => {
+  it('reads a saved length in whole minutes, at least one', () => {
+    expect(durationMinOf(w('a', '2026-01-01', '18:00', 47))).toBe(47)
+    expect(durationMinOf({ start: 1000, end: 1000 })).toBe(1)
+    expect(durationMinOf({ start: 1000 })).toBe(1)
+  })
+  it('moves the end, keeps the start, the day, the order and the badges, and stamps the edit', () => {
+    const list = [w('a', '2026-01-01', '18:00', 300, [entry('bench', 100)], ['bench']), w('b', '2026-01-05', '18:00', 60)]
+    const out = setWorkoutDuration(list, list[0], 75, 4242)
+    expect(out.map(x => x.id)).toEqual(['a', 'b'])
+    expect(out[0]).toEqual({ ...list[0], end: list[0].start + 75 * 60000, _ts: 4242 })
+    expect(out[1]).toBe(list[1])
+    expect(list[0].end - list[0].start).toBe(300 * 60000)   // the input is left alone
+  })
+  it('never makes a session shorter than a minute', () => {
+    const list = [w('a', '2026-01-01', '18:00', 30)]
+    expect(setWorkoutDuration(list, list[0], 0)[0].end - list[0].start).toBe(60000)
+  })
+  it('returns null for no change, and for a workout that is gone', () => {
+    const list = [w('a', '2026-01-01', '18:00', 30)]
+    expect(setWorkoutDuration(list, list[0], 30)).toBeNull()
+    expect(setWorkoutDuration(list, { id: 'gone' }, 45)).toBeNull()
+  })
+  it('a record from before ids keeps the key the sync knows it by', () => {
+    const legacy = { d: '2026-01-01', start: 5000, end: 5000 + 600000, entries: [], prs: [] }
+    const out = setWorkoutDuration([legacy], legacy, 20)
+    expect(out[0]).not.toHaveProperty('id')
+    expect(legacySyncKey(out[0])).toBe(legacySyncKey(legacy))
+    expect(out[0].end).toBe(5000 + 20 * 60000)
   })
 })

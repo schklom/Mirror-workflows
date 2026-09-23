@@ -7,7 +7,7 @@ import React, { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { useStore } from './store/useStore.js'
 import { useUI } from './store/useUI.js'
-import { workoutDateSheet, workoutDetailSheet } from './sheets.jsx'
+import { workoutDateSheet, workoutDetailSheet, workoutDurationSheet } from './sheets.jsx'
 import { backfillStart } from './lib/backfill.js'
 import { startTimeOf } from './lib/workout-date.js'
 
@@ -150,5 +150,68 @@ describe('changing the date of a saved workout', () => {
     act(() => { button(host, 'Save').click() })
     expect(history().map(w => w.id)).toEqual(['early'])
     expect(useUI.getState().toast).not.toHaveBeenCalledWith('Workout moved')
+  })
+})
+
+// People forget to end a workout (Discord): a 47-minute session saved as five hours. The detail
+// sheet corrects the length; the start, the day, the sets and the badges stay.
+describe('changing the duration of a saved workout', () => {
+  beforeEach(() => {
+    globalThis.IS_REACT_ACT_ENVIRONMENT = true
+    useUI.setState({ sheets: [], toasts: [], toast: vi.fn() })
+    document.body.innerHTML = ''
+    setHistory([
+      workout('early', '2026-08-20', '18:00', 60, [entry('bench', 80)], ['bench']),
+      workout('forgot', '2026-08-25', '07:30', 300, [entry('bench', 90)], ['bench']),
+    ])
+  })
+  afterEach(unmountAll)
+
+  it('is offered from the workout detail sheet and opens at the length it has', () => {
+    const host = render(() => workoutDetailSheet(history()[1]))
+    const open = button(host, 'Change duration')
+    expect(open).toBeTruthy()
+    const edit = render(() => open.click())
+    expect(edit.querySelector('h3').textContent).toBe('Change duration')
+    expect(edit.querySelector('input.num').value).toBe('300')
+  })
+
+  it('shortens the session from its start and leaves everything else as it was', () => {
+    const before = history()[1]
+    const host = render(() => workoutDurationSheet(before))
+    act(() => { type(host.querySelector('input.num'), '50') })
+    act(() => { host.querySelector('button[aria-label="Decrease"]').click() })
+    act(() => { button(host, 'Save').click() })
+
+    const after = history()[1]
+    expect(after.end - after.start).toBe(45 * 60000)
+    expect(after.start).toBe(before.start)
+    expect(after.d).toBe(before.d)
+    expect(after.entries).toEqual(before.entries)
+    expect(after.prs).toEqual(['bench'])
+    expect(after._ts).toBeGreaterThan(0)   // stamped: the sync keeps it over an older copy
+    expect(history().map(w => w.id)).toEqual(['early', 'forgot'])
+    expect(useUI.getState().toast).toHaveBeenCalledWith('Duration changed')
+  })
+
+  it('saving the same length closes and touches nothing', () => {
+    const before = history()
+    const host = render(() => workoutDurationSheet(before[1]))
+    act(() => { button(host, 'Save').click() })
+    expect(history()).toEqual(before)
+    expect(useUI.getState().toast).not.toHaveBeenCalled()
+    expect(useUI.getState().sheets).toHaveLength(0)
+  })
+
+  it('keeps a note typed in the detail sheet but never blurred', () => {
+    const host = render(() => workoutDetailSheet(history()[1]))
+    act(() => { type(host.querySelector('textarea'), 'forgot to stop') })
+    const edit = render(() => button(host, 'Change duration').click())
+    act(() => { type(edit.querySelector('input.num'), '60') })
+    act(() => { button(edit, 'Save').click() })
+    unmountAll()
+    const saved = history().find(w => w.id === 'forgot')
+    expect(saved.note).toBe('forgot to stop')
+    expect(saved.end - saved.start).toBe(60 * 60000)
   })
 })

@@ -38,7 +38,7 @@ import { isFav, toggleFav, sortFavouritesFirst } from './lib/favourites.js'
 import { buildSessionEntries, buildPlannedEntry } from './lib/session-start.js'
 import { buildCombinedEntries, deriveSessionName } from './lib/session-merge.js'
 import { workoutsOn, backfillStart, backfillEnd, completeBackfill } from './lib/backfill.js'
-import { moveWorkout, sameWorkout, startTimeOf } from './lib/workout-date.js'
+import { moveWorkout, sameWorkout, startTimeOf, durationMinOf, setWorkoutDuration } from './lib/workout-date.js'
 import { editCompletedSession } from './lib/session-edit.js'
 import { stampWorkout } from './lib/sync-merge.js'
 
@@ -1720,6 +1720,32 @@ function WorkoutDateEdit({ w, onDone, close }) {
 }
 export const workoutDateSheet = (w, onDone) => ui().openSheet(close => <WorkoutDateEdit w={w} onDone={onDone} close={close} />)
 
+// Correcting how long a saved session ran — mostly the workout nobody ended until they got home
+// (Discord). The start stays, the end follows it; the sets, the order of history and the badges
+// do not depend on the length and are left alone.
+function WorkoutDurationEdit({ w, onDone, close }) {
+  const [dur, setDur] = useState(durationMinOf(w))
+  const save = () => {
+    let changed = false
+    update(s => {
+      const next = setWorkoutDuration(s.workouts, w, dur)
+      if (next) { s.workouts = next; changed = true }
+    })
+    close()
+    if (!changed) return
+    onDone && onDone()
+    toast(t('Duration changed'))
+  }
+  return <>
+    <h3>{t('Change duration')}</h3>
+    <div className="muted small" style={{ marginBottom: 12 }}>{t('Forgot to finish on time? Set how long the session really took. It keeps its start time and its sets.')}</div>
+    <Stepper label={t('Duration')} unit="min" value={dur} step={5} decimal={false} onChange={v => setDur(Math.max(1, Math.round(v)))} />
+    <div style={{ height: 18 }} />
+    <Button variant="primary" onClick={save}>{t('Save')}</Button>
+  </>
+}
+export const workoutDurationSheet = (w, onDone) => ui().openSheet(close => <WorkoutDurationEdit w={w} onDone={onDone} close={close} />)
+
 function WorkoutDetail({ w, close }) {
   const noteRef = useRef(null)
   const onNoteFocus = useSheetKeyboard(noteRef)
@@ -1816,6 +1842,11 @@ function WorkoutDetail({ w, close }) {
       initial.current = latest.current.trim().slice(0, NOTE_MAX)
       workoutDateSheet(w, close)
     }}>{t('Change date & time')}</Button>
+    <Button icon="timer" style={{ marginBottom: 8 }} onClick={() => {
+      saveNote()
+      initial.current = latest.current.trim().slice(0, NOTE_MAX)
+      workoutDurationSheet(w, close)
+    }}>{t('Change duration')}</Button>
     <Button icon="plus" onClick={() => confirmSheet({
       title: t('Save as routine?'),
       message: t('Create an independent routine from these exercise targets. Your workout history is kept.'),

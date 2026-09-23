@@ -617,6 +617,7 @@ export const PT_BR_OVERRIDES = {
   'Change date & time': 'Alterar data e hora',
   'Workout moved': 'Treino movido',
   'The session keeps its length. Personal records are worked out again from the new order.': 'A sessão mantém a duração. Os recordes pessoais são recalculados pela nova ordem.',
+  'Forgot to finish on time? Set how long the session really took. It keeps its start time and its sets.': 'Esqueceu de terminar na hora? Defina quanto tempo a sessão realmente durou. Ela mantém o horário de início e as séries.',
   'Finish the current workout first.': 'Termine primeiro o treino atual.',
   'Logging a past workout — no rest timers.': 'Registrando um treino passado — sem temporizadores de descanso.',
   // --- bar weight (plate math) --- ('Peso da barra', 'Barra ({0})', 'Barra {0}' inherit)

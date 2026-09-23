@@ -1,22 +1,39 @@
 // The persisted boundary for a finished session. Keep this pure so compatibility tests can
 // exercise the exact shape the UI writes without mounting React or mutating store state.
 import { bestWeightForEntry } from './history.js'
-import { hasCompletedWork } from './workout-model.js'
+import { hasCompletedWork, isSideSet } from './workout-model.js'
+
+// planSec is live-session bookkeeping: a hold displaced before it finished puts its plan aside so
+// the row still knows what it is asking for (Workout.startTimed). A finished session keeps only
+// what was logged, so the key never reaches S.workouts — an unfinished row goes back to recording
+// its plan, exactly as it did before any of this.
+//
+// weightOrigin is the same kind of bookkeeping (#209): it marks a load typed by hand so a later
+// edit of an earlier set does not cascade over it. Once the session is over there is nothing left
+// to cascade, and every load in history is simply the one logged. Kept, it would ride into the
+// saved workout, the server copy and every backup as a field nothing reads — on the row and on
+// each side of a per-side row, where the side keeps its own.
+//
+// Rows that carry neither are passed through by reference, so an ordinary session is the shape
+// it always was.
+function finishedRow(set) {
+  if (!set) return set
+  const sideMarked = isSideSet(set) && (set.sides.L.weightOrigin != null || set.sides.R.weightOrigin != null)
+  if (set.planSec == null && set.weightOrigin == null && !sideMarked) return set
+  const { planSec, weightOrigin, ...rest } = set
+  if (sideMarked) {
+    const side = ({ weightOrigin: _, ...kept }) => kept
+    rest.sides = { ...rest.sides, L: side(rest.sides.L), R: side(rest.sides.R) }
+  }
+  return planSec == null || rest.done ? rest : { ...rest, sec: planSec }
+}
 
 export function buildCompletedWorkout(active, { end = Date.now(), prs = [], snapshotFor } = {}) {
   const entries = (active?.entries || []).map(entry => {
     const completed = {
       id: entry.id,
-      // planSec is live-session bookkeeping: a hold displaced before it finished puts its plan
-      // aside so the row still knows what it is asking for (Workout.startTimed). A finished
-      // session keeps only what was logged, so the key never reaches S.workouts — an unfinished
-      // row goes back to recording its plan, exactly as it did before any of this. Rows without
-      // it are passed through by reference, so an ordinary session is the shape it always was.
-      sets: (entry.sets || []).map(set => {
-        if (!set || set.planSec == null) return set
-        const { planSec, ...rest } = set
-        return rest.done ? rest : { ...rest, sec: planSec }
-      }),
+      // Only what was logged — the live-session bookkeeping on a row stays behind (finishedRow).
+      sets: (entry.sets || []).map(finishedRow),
       topW: bestWeightForEntry(entry) || null,
       target: entry.target || null,
       // Which routine this entry came from, and whether it counts for progression. Written

@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { buildCompletedWorkout } from './finish-workout.js'
+import { cascadeWeight } from './history.js'
+import { buildSessionEntries } from './session-start.js'
+import { makeSideSet, setSideField, toggleSide, WEIGHT_ORIGIN_MANUAL } from './workout-model.js'
 
 describe('completed workout boundary', () => {
   it('builds the same legacy-shaped record doFinishWorkout stores and keeps it visible', () => {
@@ -38,6 +41,42 @@ describe('completed workout boundary', () => {
       { done: true, sec: 28, w: 0 },       // a logged row keeps its log
     ])
     expect(JSON.stringify(sets)).not.toContain('planSec')
+  })
+
+  // weightOrigin marks a load typed by hand during the session so a later edit of an earlier set
+  // does not cascade over it (#209). History has nothing left to cascade: the saved rows carry
+  // only the loads, and the plan the session was built from (`planned`) is kept as it was.
+  it('never stores weightOrigin, on a row or on either side, and keeps the plan stamps', () => {
+    const planned = { sets: 3, reps: 5, weight: 100 }
+    let rows = [{ w: 100, r: 5, done: true }, { w: 100, r: 5, done: false }, { w: 100, r: 5, done: false }]
+    rows[2] = { ...rows[2], w: 95, weightOrigin: WEIGHT_ORIGIN_MANUAL }
+    rows[1] = { ...rows[1], w: 105, weightOrigin: WEIGHT_ORIGIN_MANUAL }
+    rows = cascadeWeight(rows, 1, 105)
+    expect(rows[2]).toMatchObject({ w: 95, weightOrigin: WEIGHT_ORIGIN_MANUAL })   // a manual row stays put
+    rows = rows.map(row => ({ ...row, done: true }))
+    let side = setSideField(makeSideSet({ w: 20, r: 16 }), 'L', 'w', 22.5)
+    side.sides.L.weightOrigin = WEIGHT_ORIGIN_MANUAL
+    side = toggleSide(toggleSide(side, 'L'), 'R')
+
+    const active = {
+      id: 'a', d: '2026-09-18', start: 1000, routineIds: ['r'],
+      entries: [
+        { id: '0025', rid: 'r', target: { ...planned }, planned, sets: rows },
+        { id: 'lunge', rid: 'r', target: { sets: 1, reps: 16, side: true }, sets: [side] },
+      ],
+    }
+    const saved = buildCompletedWorkout(active, { end: 2000 })
+    expect(JSON.stringify(saved)).not.toContain('weightOrigin')
+    expect(saved.entries[0].sets.map(s => s.w)).toEqual([100, 105, 95])
+    expect(saved.entries[0].planned).toEqual(planned)
+    expect(saved.entries[1].sets[0].sides).toMatchObject({ L: { w: 22.5, done: true }, R: { w: 20, done: true } })
+    // The live rows keep their marks until the session is over.
+    expect(active.entries[0].sets[2].weightOrigin).toBe(WEIGHT_ORIGIN_MANUAL)
+
+    // The next session of the plan reads the loads back and carries no mark of its own.
+    const st = { unit: 'kg', exWeights: {}, routines: [{ id: 'r', ex: [{ id: '0025', ...planned }] }], workouts: [saved] }
+    const next = buildSessionEntries(st, st.routines[0])[0]
+    expect(JSON.stringify(next.sets)).not.toContain('weightOrigin')
   })
 
   it('leaves the rows it has nothing to strip exactly as they are', () => {

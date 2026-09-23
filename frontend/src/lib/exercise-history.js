@@ -1,4 +1,4 @@
-import { metricEntriesForExercise, bestWeightForEntry, completedRepsOf, modeOf } from './history.js'
+import { metricEntriesForExercise, metricRowsForEntry, bestWeightForEntry, completedRepsOf, modeOf } from './history.js'
 import { completedVolumeOf } from './workout-model.js'
 import { bestSetOf } from './onerm.js'
 import { beatsWeight } from './exercises.js'

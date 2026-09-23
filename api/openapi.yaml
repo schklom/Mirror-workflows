@@ -145,7 +145,11 @@ paths:
       tags: [auth]
       operationId: getMe
       summary: Who am I?
-      description: Resolves the current session to a user.
+      description: |
+        Resolves the current session to a user. A paired phone (bearer token) whose token is
+        past half of `SESSION_DAYS` also receives a fresh `token` to use from now on; it carries
+        the account's current session version, so "sign out everywhere" revokes it like the old
+        one. Cookie sessions never get one.
       responses:
         '200':
           description: A valid session.
@@ -155,6 +159,7 @@ paths:
                 type: object
                 properties:
                   user: { $ref: '#/components/schemas/SessionUser' }
+                  token: { type: string, description: 'Bearer sessions past half their lifetime only — the renewed token.' }
         '401': { $ref: '#/components/responses/Unauthorized' }
 
   /api/register/options:

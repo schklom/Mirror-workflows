@@ -367,6 +367,31 @@ describe('remote-mode boot and the durable file mirror', () => {
   })
 })
 
+describe('a token the server renews', () => {
+  it('is saved to the pairing file at boot and carried by every request after it', async () => {
+    pairedPhone()
+    const srv = serverWith(SERVER_STATE)
+    h.server = (path, method, init) => (path === '/api/me' ? json(200, { user: USER, token: 'TOKEN-RENEWED' }) : srv.handle(path, method, init))
+    const useStore = await freshStore()
+    await useStore.getState().boot()
+
+    expect(readFile('opengym-remote.json')).toEqual({ mode: 'remote', base: BASE, token: 'TOKEN-RENEWED', user: USER })
+    h.calls = []
+    useStore.getState().update(s => { s.workouts.push(workout('w2', '2026-09-15')) })
+    await useStore.getState().pushState()
+    expect(serverCalls()).toEqual([expect.objectContaining({ method: 'PUT', auth: 'Bearer TOKEN-RENEWED' })])
+  })
+
+  it('an answer without one leaves the pairing as it was', async () => {
+    pairedPhone()
+    serverWith(SERVER_STATE)
+    const useStore = await freshStore()
+    await useStore.getState().boot()
+    expect(readFile('opengym-remote.json')).toMatchObject({ token: 'TOKEN-OLD' })
+    expect(serverCalls().every(c => c.auth === 'Bearer TOKEN-OLD')).toBe(true)
+  })
+})
+
 describe('a request that never answers', () => {
   it('gives up after its timeout: the change stays owed, the phone says it is offline, and the next push goes out', async () => {
     pairedPhone()

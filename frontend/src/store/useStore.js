@@ -9,7 +9,7 @@ import { MOBILE, initReminderSync, nativeLoad, nativeSave, onAppActive, readJson
 import { mergeStates, localExtras, stampRoutines } from '../lib/sync-merge.js'
 import { countChanges, syncFingerprint } from '../lib/sync-changes.js'
 import { appBase } from '../lib/app-base.js'
-import { loadRemote, chooseLocal, forgetRemote, connect, normalizeServerUrl } from '../lib/remote.js'
+import { loadRemote, chooseLocal, forgetRemote, connect, normalizeServerUrl, renewToken } from '../lib/remote.js'
 import { loadCoachDevice, saveCoachDevice, coachDeviceSettings } from '../lib/coach-device.js'
 
 import { WC_DEFAULT } from '../lib/workout-controls.js'
@@ -881,6 +881,9 @@ export const useStore = create((set, get) => {
           try {
             const me = await api('/api/me')   // also catches a token revoked elsewhere (sign out everywhere)
             if (!me.user?.id) throw Object.assign(new Error('no user'), { status: 200, code: 'bad-response' })
+            // A token past half its life comes back renewed: kept, it never runs out on a phone
+            // that is used at all.
+            if (typeof me.token === 'string' && me.token) await renewToken(remote, me.token)
             get().setUser(me.user)
             // The paired server's /api/config, the same one the web boot reads: without it the
             // phone never learned whether the server offers the Coach and told everyone "your

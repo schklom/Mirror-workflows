@@ -409,11 +409,14 @@ function cookieToken(req) {
   }
   return null;
 }
-function readSession(req) {
+// The session behind a request: { user, exp, bearer } — `bearer` when it came in an Authorization
+// header (a paired phone) rather than the cookie — or null for no valid session at all.
+function sessionOf(req) {
   // The paired mobile app has no cookie jar shared with the API's origin, so it carries the same
   // signed token in an Authorization header instead — same payload, same verification below.
   const auth = req.headers.authorization || '';
-  const tok = cookieToken(req) || (auth.startsWith('Bearer ') ? auth.slice(7).trim() : null);
+  const cookie = cookieToken(req);
+  const tok = cookie || (auth.startsWith('Bearer ') ? auth.slice(7).trim() : null);
   if (!tok) return null;
   const payload = verifySig(tok);
   if (!payload) return null;
@@ -426,7 +429,10 @@ function readSession(req) {
   // payload (it still had to pass the HMAC, so this is belt-and-braces) and is refused outright.
   const claimed = ver === undefined ? 0 : Number(ver);
   if (!Number.isInteger(claimed) || claimed !== sessionVersion(user)) return null;
-  return user;
+  return { user, exp: +exp, bearer: !cookie };
+}
+function readSession(req) {
+  return sessionOf(req)?.user || null;
 }
 // Guard for /api/admin/* — resolves the caller and 401/403s if they aren't an admin.
 function requireAdmin(req, res) {
@@ -693,10 +699,19 @@ const routes = {
     json(res, 200, { invite_only: INVITE_ONLY, allow_guest: ALLOW_GUEST, ...(coach ? { coach } : {}) });
   },
 
+  // A paired phone's token was minted once, at pairing, and nothing ever renewed it: after
+  // SESSION_DAYS the server refused a phone that had been in use every day. The phone asks this
+  // on every start, so once its token is past half its life the answer carries a new one
+  // (`token`), which the phone saves in place of the old. makeSession() writes the account's
+  // current session version into it, so "sign out everywhere" ends a renewed token exactly as it
+  // ended the old one — and a revoked token never gets this far. A browser's cookie is left
+  // alone: signing in renews it, as before.
   'GET /api/me': async (req, res) => {
-    const user = readSession(req);
-    if (!user) return json(res, 401, { error: 'not signed in' });
-    json(res, 200, { user: { id: user.id, name: user.name, admin: isAdmin(user) } });
+    const s = sessionOf(req);
+    if (!s) return json(res, 401, { error: 'not signed in' });
+    const { user } = s;
+    const renew = s.bearer && s.exp - Date.now() < SESSION_DAYS * 86400000 / 2;
+    json(res, 200, { user: { id: user.id, name: user.name, admin: isAdmin(user) }, ...(renew ? { token: makeSession(user) } : {}) });
   },
 
   'POST /api/register/options': async (req, res) => {

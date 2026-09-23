@@ -5,8 +5,11 @@ from common.utils import b64
 from locust import HttpUser, task
 
 URL_API = "/api/v2"
+
 URL_REGISTER = URL_API + "/account/register"
 URL_LOGIN = URL_API + "/account/login"
+URL_DELETE = URL_API + "/account"
+
 URL_LOCATION = URL_API + "/data/location"
 URL_PICTURE = URL_API + "/data/picture"
 
@@ -28,6 +31,11 @@ class FMD(HttpUser):
             "registrationToken": "",
         }
         self.client.post(URL_REGISTER, json=register_request)
+
+    def on_stop(self):
+        token = self.get_access_token()
+        if token:
+            self.client.delete(URL_DELETE, headers={"Authorization": "Bearer " + token})
 
     def get_access_token(self) -> str | None:
         login_request = {

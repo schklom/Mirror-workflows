@@ -35,8 +35,8 @@ export const BORDERLINE_BAND_PCT = 5
 //   targetPctFemale  bodyweight-ratio only, when the source gives a distinct female figure for
 //                    the same exercise — picked when S.body === 'female'
 //   reps             bodyweight-ratio only: how many reps the source's load is for ("body
-//                    weight for 12"). The estimated 1RM is read back at that many reps before
-//                    it is compared (structuralBalance.js loadForReps)
+//                    weight for 12"). A set is read as the load it shows for that many reps
+//                    before it is compared (structuralBalance.js loadAtReps)
 //   repsTarget       rep-count only: target rep count at bodyweight
 //   repsTargetFemale rep-count only, when the source gives a distinct female rep target
 

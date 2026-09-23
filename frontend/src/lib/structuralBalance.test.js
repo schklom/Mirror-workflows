@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { computeBalance, classify, ratioFor, resolveCurrent, resolveCurrentReps, targetFor, overrideKey, overrideIdOf, withOverride, loadForReps } from './structuralBalance.js'
+import { computeBalance, classify, ratioFor, resolveCurrent, resolveCurrentReps, targetFor, overrideKey, overrideIdOf, withOverride, loadForReps, loadAtReps } from './structuralBalance.js'
 import { TEMPLATES, EVALUATION_MODES, BALANCE_STATUSES, BORDERLINE_BAND_PCT } from './structuralBalanceTemplates.js'
 
 const NOW = Date.parse('2026-01-15T00:00:00Z')
@@ -107,7 +107,7 @@ describe('computeBalance — bodyweight-ratio mode (ATG)', () => {
     // 58 kg for 12 at 80 kg estimates an 81.2 kg 1RM — over body weight, but 72.5% of the
     // body-weight-for-12 the standard asks for.
     const rdl = computeBalance(sWithBw(80, 58), template).find(r => r.roleId === 'romanianDeadlift')
-    expect(rdl.current.estKg).toBeCloseTo(81.2)
+    expect(rdl.current.repsKg).toBeCloseTo(58)
     expect(rdl.actualPct).toBeCloseTo(72.5, 1)
     expect(rdl.status).toBe(BALANCE_STATUSES.WEAK)
     // A heavy single is read forward the same way: 100 kg once is about 71 kg for 12.
@@ -122,6 +122,97 @@ describe('computeBalance — bodyweight-ratio mode (ATG)', () => {
     }
     expect(loadForReps(112, 12)).toBeCloseTo(80)
     expect(loadForReps(90, 1)).toBe(90)
+    expect(loadAtReps(81.3, 12, 12)).toBe(81.3) // exactly, not 81.3 × 1.4 rounded and divided back
+    expect(loadAtReps(40, 20, 15)).toBe(40) // more reps prove the load, they do not raise it
+    expect(loadAtReps(20, 6, 15)).toBeCloseTo(16) // 24 kg 1RM, read at 15
+    expect(loadAtReps(100, 1, 12)).toBeCloseTo(100 / 1.4) // a single is its own 1RM
+    expect(loadAtReps(0, 12, 12)).toBe(null)
+    expect(loadAtReps(40, 0, 12)).toBe(null)
+    expect(loadAtReps('x', 12, 12)).toBe(null)
+  })
+
+  // The step-up's standard is half body weight for 15: past the 12-rep cap of a 1RM estimate,
+  // which is no reason to leave the test itself unscored.
+  it('scores the step-up at its own 15 reps, and a set with more reps at its load', () => {
+    const stepUp = (id, sets, bw = 80) => computeBalance({
+      unit: 'kg', body: 'male', bodyweight: [{ d: '2026-01-01', w: bw }], workouts: [workoutAt(id, NOW, sets)],
+    }, template).find(r => r.roleId === 'stepUp')
+
+    const atStandard = stepUp('0114', [setDone(40, 15)])
+    expect(atStandard.actualPct).toBeCloseTo(50)
+    expect(atStandard.status).toBe(BALANCE_STATUSES.BALANCED)
+    expect(atStandard.current).toMatchObject({ repsKg: 40, w: 40, r: 15 })
+
+    expect(stepUp('0114', [setDone(40, 20)]).actualPct).toBeCloseTo(50)
+    expect(stepUp('0114', [setDone(38, 13)]).status).toBe(BALANCE_STATUSES.BORDERLINE) // 38 × (1 + 13/30) / 1.5 = 36.3 kg, 45.4%
+  })
+
+  it('reads a unilateral set by its better side, never by the both-sides total', () => {
+    const perSide = (L, R) => ({ done: true, w: Math.max(L[0], R[0]), r: L[1] + R[1], sides: {
+      L: { w: L[0], r: L[1], done: true }, R: { w: R[0], r: R[1], done: true },
+    } })
+    const role = (roleId, id, set) => computeBalance({
+      unit: 'kg', body: 'male', bodyweight: [{ d: '2026-01-01', w: 80 }], workouts: [workoutAt(id, NOW, [set])],
+    }, template).find(r => r.roleId === roleId)
+
+    // 20 kg for 6 a leg: a 24 kg 1RM, 16 kg for 15 — 20% of 80 kg, not the 23.3% the 12-rep total read.
+    const sixALeg = role('stepUp', '0431', perSide([20, 6], [20, 6]))
+    expect(sixALeg.actualPct).toBeCloseTo(20)
+    expect(sixALeg.current).toMatchObject({ w: 20, r: 6 })
+    // 7 a leg (14 in total) and the full 15 a leg (30) score instead of reading as no data.
+    expect(role('stepUp', '0431', perSide([20, 7], [20, 7])).actualPct).toBeCloseTo(20 * (1 + 7 / 30) / 1.5 / 80 * 100)
+    const fifteenALeg = role('stepUp', '0431', perSide([40, 15], [40, 15]))
+    expect(fifteenALeg.status).toBe(BALANCE_STATUSES.BALANCED)
+    expect(fifteenALeg.actualPct).toBeCloseTo(50)
+    // The stronger side is the reading, whichever it is.
+    expect(role('stepUp', '0431', perSide([20, 6], [25, 6])).current).toMatchObject({ w: 25, r: 6 })
+
+    // "Each hand, 8 reps" logged per side on a one-arm or alternating press: 8, not 16.
+    const shoulder = role('dbShoulderPress', '0361', perSide([26.4, 8], [26.4, 8]))
+    expect(shoulder.status).toBe(BALANCE_STATUSES.BALANCED)
+    expect(shoulder.actualPct).toBeCloseTo(33)
+    expect(role('dbShoulderPress', '0360', perSide([26.4, 8], [26.4, 8])).actualPct).toBeCloseTo(33)
+    const incline = role('inclineDbPress', '3545', perSide([32, 8], [32, 8]))
+    expect(incline.status).toBe(BALANCE_STATUSES.BALANCED)
+    expect(incline.actualPct).toBeCloseTo(40)
+  })
+
+  it('reads a unilateral set by side for a 1RM too', () => {
+    const S = { unit: 'kg', workouts: [workoutAt('0431', NOW, [
+      { done: true, w: 30, r: 10, sides: { L: { w: 30, r: 5, done: true }, R: { w: 30, r: 5, done: true } } },
+    ])] }
+    expect(resolveCurrent(S, ['0431'], 80).estKg).toBeCloseTo(35) // 30 × (1 + 5/30), not 30 × (1 + 10/30)
+    const eightAHand = { unit: 'kg', workouts: [workoutAt('0361', NOW, [
+      { done: true, w: 20, r: 16, sides: { L: { w: 20, r: 8, done: true }, R: { w: 20, r: 8, done: true } } },
+    ])] }
+    expect(resolveCurrent(eightAHand, ['0361'], 80).estKg).toBeCloseTo(25.3) // 16 in total is past the rep cap
+  })
+
+  // ATG's test is to load the bar to the standard, so a lifter lands exactly on it: that has to
+  // read as meeting it, in either unit and at any body weight, not as Borderline next to "100%".
+  it('a set of exactly the standard is balanced at any body weight, in kg and in lb', () => {
+    expect(computeBalance({ unit: 'lb', body: 'male', bodyweight: [{ d: '2026-01-01', w: 180 }],
+      workouts: [workoutAt('0085', NOW, [setDone(180, 12)])] }, template)
+      .find(r => r.roleId === 'romanianDeadlift').status).toBe(BALANCE_STATUSES.BALANCED)
+
+    const ratioRoles = template.roles.filter(r => r.evaluationMode === EVALUATION_MODES.BODYWEIGHT_RATIO)
+    const weighIns = [
+      ...Array.from({ length: 401 }, (_, i) => ['kg', 60 + i / 10]),
+      ...Array.from({ length: 121 }, (_, i) => ['lb', 140 + i / 2]),
+    ]
+    const missed = []
+    for (const body of ['male', 'female']) {
+      for (const role of ratioRoles) {
+        for (const [unit, bw] of weighIns) {
+          const S = { ...sWithBw(bw, 0), unit, body }
+          const target = targetFor(role, S)
+          S.workouts = [workoutAt(role.exerciseIds[0], NOW, [setDone(bw * target / 100, role.reps)])]
+          const row = computeBalance(S, template).find(r => r.roleId === role.id)
+          if (row.status !== BALANCE_STATUSES.BALANCED) missed.push(`${body} ${role.id} ${bw} ${unit}: ${row.actualPct}`)
+        }
+      }
+    }
+    expect(missed).toEqual([])
   })
 
   it('no-data when bodyweight was never logged', () => {

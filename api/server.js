@@ -814,7 +814,9 @@ const policyError = (res, problem) => json(res, 400, { error: POLICY_ERRORS[prob
 const WRONG = { error: 'wrong name or password', code: 'bad-credentials' };
 
 // A new password ends every other session of the account, the way "sign out everywhere" does,
-// pending pairing codes included; the caller's own is re-issued by the route.
+// pending pairing codes included; the caller's own is re-issued by the route. Always a new
+// record, never an edit of the old one: a check still running against the old one tells the two
+// apart by that (see POST /api/login/password).
 function setPassword(user, h) {
   user.pw = { h, set: new Date().toISOString() };
   delete user.pwReset;
@@ -847,7 +849,8 @@ async function passkeyStepUp(user, body) {
 // address before it runs, so that checks sent side by side cannot all start under the same
 // allowance (see the throttle above). Answers 429 itself and returns null when either is paused.
 // The caller settles it once: failed() for a wrong password, ok() for a right one, void() when the
-// answer says nothing against the password — the queue was full, or the account is disabled.
+// answer says nothing against the password — the queue was full, the account is disabled, or the
+// password changed while it was being checked.
 function passwordAttempt(req, res, k) {
   const addr = 'password|' + limitAddress(req);
   const wait = ACCOUNT_FAILS.retryAfter(k) || ADDR_FAILS.retryAfter(addr);
@@ -886,8 +889,19 @@ const passwordRoutes = {
     const check = passwordAttempt(req, res, k);
     if (!check) return;
     const user = passwordHolder(k);
-    if (!(await check.verify(pw, user?.pw?.h))) {
+    const rec = user?.pw;
+    if (!(await check.verify(pw, rec?.h))) {
       check.failed(user, 'bad-password');
+      return json(res, 401, WRONG);
+    }
+    // Right for the password read before the await — which a change, an admin reset or a removal
+    // may have replaced since (each puts a new record in user.pw or none; only a rehash edits it
+    // in place). A session signed now would carry the account's *new* session version and outlive
+    // the "signed out everywhere" that came with it, so the old password gets nothing; it is not
+    // counted as a wrong one either.
+    const still = () => hasPassword(user) && user.pw === rec && passwordHolder(k) === user;
+    if (!still()) {
+      check.void();
       return json(res, 401, WRONG);
     }
     if (user.disabled) {
@@ -896,14 +910,14 @@ const passwordRoutes = {
       return json(res, 403, { error: 'this account has been disabled', code: 'disabled' });
     }
     check.ok();
-    // A hash made with older parameters is replaced now, while the password is at hand — unless
-    // the password itself changed while the new hash was being made.
-    const old = user.pw.h;
-    if (needsRehash(old)) {
+    // A hash made with older parameters is replaced now, while the password is at hand.
+    if (needsRehash(rec.h)) {
       try {
         const h = await hashPassword(pw);
-        if (user.pw?.h === old) { user.pw.h = h; saveDb(); }
+        if (still()) { rec.h = h; saveDb(); }
       } catch (e) { if (!(e instanceof BusyError)) throw e; }
+      // The same question again: the password may have changed while the new hash was made.
+      if (!still()) return json(res, 401, WRONG);
     }
     audit(req, 'auth.password.ok', { user });
     json(res, 200, { user: publicUser(user) }, { 'Set-Cookie': sessionCookie(user) });
@@ -981,10 +995,13 @@ const passwordRoutes = {
       if (!current) return json(res, 403, { error: 'enter your current password', code: 'current-required' });
       const check = passwordAttempt(req, res, k);
       if (!check) return;
-      if (!(await check.verify(current, user.pw.h))) {
+      const rec = user.pw;
+      if (!(await check.verify(current, rec.h))) {
         check.failed(user, 'bad-current');
         return wrongCurrent();
       }
+      // Changed or removed while it was being checked: it is no longer the current password.
+      if (user.pw !== rec) { check.void(); return wrongCurrent(); }
       check.ok();
       proof = 'password';
     } else {

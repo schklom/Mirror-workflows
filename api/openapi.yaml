@@ -521,9 +521,10 @@ paths:
         profile's display name, compared trimmed, NFKC-normalised and case-insensitively.
         A wrong password, an unknown name and a name whose profile has no password all get
         the same `401` after the same scrypt work, so neither the answer nor its timing says
-        which names exist. Five wrong passwords for a name pause it (see *Throttling*);
-        passkey sign-in is never paused by this. Sets the same session cookie as
-        `/api/login/verify`. **Not** CSRF-exempt.
+        which names exist. So does a password that was right when its check started but
+        was changed, reset or removed before the check finished. Five wrong passwords for a
+        name pause it (see *Throttling*); passkey sign-in is never paused by this. Sets the
+        same session cookie as `/api/login/verify`. **Not** CSRF-exempt.
       security: []
       requestBody:
         required: true

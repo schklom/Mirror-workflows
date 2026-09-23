@@ -56,6 +56,14 @@ function softPasskey() {
 
 const GOOD = 'correct horse battery staple';
 let pwHash;   // one real hash of GOOD, made once — every user below that "has a password" shares it
+let oldHash;  // GOOD at N = 2^14, as an instance with older parameters would have stored it
+
+// A hash in password.js's own format at a cost other than today's, so a sign-in rehashes it.
+const hashAt = (pw, ln) => new Promise((resolve, reject) => {
+  const salt = crypto.randomBytes(16);
+  crypto.scrypt(pw.normalize('NFKC'), salt, 32, { N: 2 ** ln, r: 8, p: 1, maxmem: 64 * 1024 * 1024 }, (err, key) => err ? reject(err)
+    : resolve(`$scrypt$v=1$ln=${ln},r=8,p=1$${salt.toString('base64')}$${key.toString('base64')}`));
+});
 
 async function startServer(t, { env = {}, users = [], creds = [], invites = [] } = {}) {
   pwHash ??= await hashPassword(GOOD);
@@ -357,6 +365,54 @@ test('changing a password takes the current one and signs out every other sessio
   assert.equal((await h.req('GET', '/api/me', { cookie: r.cookie, ip })).status, 200, 'this one did not');
   assert.equal((await login(h, 'Ana', GOOD, ip)).status, 401);
   assert.equal((await login(h, 'Ana', next, ip)).status, 200);
+});
+
+// A sign-in with the old password that is still being checked when the password changes must not
+// come back with a session: signed after the change, it would carry the new session version and
+// outlive the "signed out everywhere" that the change is. Sign-ins every 20 ms from fresh addresses
+// straddle the change; whatever cookie any of them got, none may still work afterwards. Run once
+// with a current hash and once with one made at older parameters, whose sign-in rehashes — a
+// second await before the cookie is signed.
+for (const [label, stored] of [['current', () => pwHash], ['older parameters', () => oldHash]]) {
+  test(`sign-ins with the old password still running during a change get no lasting session (${label} hash)`, async t => {
+    pwHash ??= await hashPassword(GOOD);
+    oldHash ??= await hashAt(GOOD, 14);
+    const h = await startServer(t, { users: [user('u1', 'Ana', { pw: { h: stored(), set: new Date().toISOString() } })] });
+    const owner = `gymsid=${mintSession('u1')}`;
+    const next = 'a much better passphrase';
+    const attempts = [];
+    let change;
+    for (let i = 0; i < 30; i++) {
+      attempts.push(login(h, 'Ana', GOOD, `198.51.100.${10 + i}`));
+      if (i === 3) change = h.req('POST', '/api/account/password', { body: { next, current: GOOD }, cookie: owner, ip: '203.0.113.200' });
+      await new Promise(r => setTimeout(r, 20));
+    }
+    const done = await change;
+    assert.equal(done.status, 200, JSON.stringify(done.body));
+    const answers = await Promise.all(attempts);
+    for (const r of answers) assert.ok([200, 401, 429].includes(r.status), `status ${r.status}`);
+    const cookies = answers.map(r => r.cookie).filter(Boolean);
+    const alive = [];
+    for (const cookie of cookies) if ((await h.req('GET', '/api/me', { cookie })).status === 200) alive.push(cookie);
+    assert.equal(alive.length, 0, `${alive.length} of ${cookies.length} sessions signed with the old password survived the change`);
+    assert.equal((await h.req('GET', '/api/me', { cookie: done.cookie })).status, 200, "the owner's own session carries on");
+    assert.equal((await login(h, 'Ana', next, '203.0.113.201')).status, 200);
+  });
+}
+
+test('sign-ins still running when an admin resets the password answer 401, not a server error', async t => {
+  const h = await startServer(t, { env: { ADMIN_UIDS: 'adm' }, users: [user('adm', 'Root'), withPassword('u1', 'Ana')] });
+  const attempts = Array.from({ length: 5 }, (_, i) => login(h, 'Ana', GOOD, `198.51.100.${60 + i}`));
+  await new Promise(r => setTimeout(r, 30));
+  const reset = await h.req('POST', '/api/admin/user/password-reset', { body: { id: 'u1' }, cookie: `gymsid=${mintSession('adm')}`, ip: '203.0.113.210' });
+  assert.equal(reset.status, 200);
+  const answers = await Promise.all(attempts);
+  assert.ok(answers.some(r => r.status === 401), `none was still running: ${answers.map(r => r.status)}`);
+  for (const r of answers) {
+    assert.ok([200, 401].includes(r.status), `status ${r.status}: ${JSON.stringify(r.body)}`);
+    if (r.cookie) assert.equal((await h.req('GET', '/api/me', { cookie: r.cookie })).status, 401);
+  }
+  assert.doesNotMatch(h.log, /TypeError/);
 });
 
 test('wrong current passwords count toward the same pause as wrong sign-ins', async t => {

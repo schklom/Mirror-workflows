@@ -1307,4 +1307,11 @@ export default {
   // --- a missed day logged afterwards (#284) ---
   'Log this workout': 'यह वर्कआउट दर्ज करें',
   'Mark all sets done': 'सभी सेट पूरे मार्क करें',
+  // --- every weigh-in, week by week ---
+  'All weigh-ins': 'सभी वज़न मापन',
+  '{0} weigh-in': '{0} वज़न मापन',
+  '{0} weigh-ins': '{0} वज़न मापन',
+  'Weekly average': 'साप्ताहिक औसत',
+  'Week of {0}': '{0} वाला सप्ताह',
+  'Average {0}': 'औसत {0}',
 }

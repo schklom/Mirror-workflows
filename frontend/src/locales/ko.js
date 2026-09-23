@@ -1307,4 +1307,11 @@ export default {
   // --- a missed day logged afterwards (#284) ---
   'Log this workout': '이 운동 기록',
   'Mark all sets done': '모든 세트 완료로 표시',
+  // --- every weigh-in, week by week ---
+  'All weigh-ins': '모든 체중 기록',
+  '{0} weigh-in': '체중 기록 {0}개',
+  '{0} weigh-ins': '체중 기록 {0}개',
+  'Weekly average': '주간 평균',
+  'Week of {0}': '{0} 주',
+  'Average {0}': '평균 {0}',
 }

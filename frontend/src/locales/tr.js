@@ -1307,4 +1307,11 @@ export default {
   // --- a missed day logged afterwards (#284) ---
   'Log this workout': 'Bu antrenmanı kaydet',
   'Mark all sets done': 'Tüm setleri tamamlandı olarak işaretle',
+  // --- every weigh-in, week by week ---
+  'All weigh-ins': 'Tüm tartımlar',
+  '{0} weigh-in': '{0} tartım',
+  '{0} weigh-ins': '{0} tartım',
+  'Weekly average': 'Haftalık ortalama',
+  'Week of {0}': '{0} haftası',
+  'Average {0}': 'Ortalama {0}',
 }

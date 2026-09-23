@@ -1318,4 +1318,11 @@ export default {
   // --- a missed day logged afterwards (#284) ---
   'Log this workout': 'บันทึกการฝึกนี้',
   'Mark all sets done': 'ทำเครื่องหมายทุกเซ็ตว่าเสร็จแล้ว',
+  // --- every weigh-in, week by week ---
+  'All weigh-ins': 'บันทึกน้ำหนักทั้งหมด',
+  '{0} weigh-in': 'บันทึก {0} ครั้ง',
+  '{0} weigh-ins': 'บันทึก {0} ครั้ง',
+  'Weekly average': 'ค่าเฉลี่ยรายสัปดาห์',
+  'Week of {0}': 'สัปดาห์เริ่ม {0}',
+  'Average {0}': 'เฉลี่ย {0}',
 }

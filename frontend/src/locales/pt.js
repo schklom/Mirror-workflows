@@ -1307,4 +1307,11 @@ export default {
   // --- a missed day logged afterwards (#284) ---
   'Log this workout': 'Registar este treino',
   'Mark all sets done': 'Marcar todas as séries como feitas',
+  // --- every weigh-in, week by week ---
+  'All weigh-ins': 'Todas as pesagens',
+  '{0} weigh-in': '{0} pesagem',
+  '{0} weigh-ins': '{0} pesagens',
+  'Weekly average': 'Média semanal',
+  'Week of {0}': 'Semana de {0}',
+  'Average {0}': 'Média {0}',
 }

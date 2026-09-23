@@ -1310,4 +1310,11 @@ export default {
   // --- a missed day logged afterwards (#284) ---
   'Log this workout': 'Az edzés rögzítése',
   'Mark all sets done': 'Összes sorozat késznek jelölése',
+  // --- every weigh-in, week by week ---
+  'All weigh-ins': 'Összes mérés',
+  '{0} weigh-in': '{0} mérés',
+  '{0} weigh-ins': '{0} mérés',
+  'Weekly average': 'Heti átlag',
+  'Week of {0}': 'Hét: {0}',
+  'Average {0}': 'Átlag {0}',
 }

@@ -1307,4 +1307,11 @@ export default {
   // --- a missed day logged afterwards (#284) ---
   'Log this workout': '补记这次训练',
   'Mark all sets done': '将所有组标为完成',
+  // --- every weigh-in, week by week ---
+  'All weigh-ins': '全部称重记录',
+  '{0} weigh-in': '{0} 次称重',
+  '{0} weigh-ins': '{0} 次称重',
+  'Weekly average': '每周平均',
+  'Week of {0}': '{0} 起的一周',
+  'Average {0}': '平均 {0}',
 }

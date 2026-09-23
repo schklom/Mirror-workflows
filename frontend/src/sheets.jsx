@@ -37,6 +37,7 @@ import { isFav, toggleFav, sortFavouritesFirst } from './lib/favourites.js'
 import { buildSessionEntries, buildPlannedEntry } from './lib/session-start.js'
 import { buildCombinedEntries, deriveSessionName } from './lib/session-merge.js'
 import { workoutsOn, backfillStart, backfillEnd, completeBackfill } from './lib/backfill.js'
+import { weeklyWeights } from './lib/bodyweight.js'
 import { workoutText } from './lib/workout-text.js'
 import { copyText } from './lib/clipboard.js'
 
@@ -217,7 +218,6 @@ function BwSheet({ required, onDone, close }) {
     if (onDone) onDone(n); else toast(t('Weight saved'))
   }
   const recent = [...st.bodyweight].reverse().slice(0, 3)
-  const delEntry = d => update(s => { s.bodyweight = s.bodyweight.filter(b => b.d !== d) })
   return <>
     {/* This sheet opens `locked` — swipe/backdrop/Escape/Android-back all no-op on it (see
         Modals.jsx) so an accidental tap on "Start" can't be walked back by reflex the way
@@ -242,12 +242,11 @@ function BwSheet({ required, onDone, close }) {
     {!required && recent.length > 0 && <>
       <h4 className="sec">{t('Recent weigh-ins')}</h4>
       <div className="list" style={{ gap: 0 }}>
-        {recent.map(b => <div key={b.d} className="row between" style={{ padding: '9px 2px', borderBottom: '1px solid var(--sep)' }}>
-          <span className="small muted">{fmtDate(b.d, true)}</span>
-          <span className="row" style={{ gap: 12 }}><b>{fmtNum(b.w)} {unit}</b>
-            <button className="iconbtn" style={{ width: 32, height: 30, borderRadius: 8, fontSize: 15, color: 'var(--red)' }} onClick={() => delEntry(b.d)} aria-label="delete"><Icon name="trash" /></button></span>
-        </div>)}
+        {recent.map(b => <WeighInRow key={b.d} b={b} unit={unit} />)}
       </div>
+      {st.bodyweight.length > recent.length && <div className="row" style={{ justifyContent: 'flex-end', marginTop: 6 }}>
+        <Button size="sm" variant="ghost" trailingIcon="chevronRight" onClick={weighInsSheet}>{t('All weigh-ins')}</Button>
+      </div>}
     </>}
   </>
 }
@@ -255,6 +254,58 @@ export function bwSheet(opts = {}) {
   const h = ui().openSheet(close => <BwSheet {...opts} close={close} />, { locked: !!opts.required })
   return h
 }
+
+// One weigh-in with its delete button, in the log sheet's recent three and in the full list.
+function WeighInRow({ b, unit }) {
+  const delEntry = () => update(s => { s.bodyweight = s.bodyweight.filter(x => x.d !== b.d) })
+  return <div className="row between" style={{ padding: '9px 2px', borderBottom: '1px solid var(--sep)' }}>
+    <span className="small muted">{fmtDate(b.d, true)}</span>
+    <span className="row" style={{ gap: 12 }}><b>{fmtNum(b.w)} {unit}</b>
+      <button className="iconbtn" style={{ width: 32, height: 30, borderRadius: 8, fontSize: 15, color: 'var(--red)' }} onClick={delEntry} aria-label="delete"><Icon name="trash" /></button></span>
+  </div>
+}
+
+/* ============================ weigh-ins ============================ */
+// Every weigh-in, week by week (Discord 'Weight'): each week under its mean and how far that
+// moved from the week before, the numbers behind the curve on the card. The chart plots the
+// weekly means, since the swing from one morning to the next is what makes a single weigh-in
+// hard to read. The weeks start on the profile's first day of the week.
+function WeighIns() {
+  const st = useStore(s => s.S)
+  const ws = weekStartOf(st)
+  const weeks = useMemo(() => weeklyWeights(st.bodyweight, ws), [st.bodyweight, ws])
+  const points = useMemo(() => [...weeks].reverse()
+    .map(w => ({ t: new Date(w.key + 'T12:00:00').getTime(), y: Math.round(w.avg * 100) / 100, d: w.key })), [weeks])
+  const n = weeks.reduce((sum, w) => sum + w.n, 0)
+  if (!n) return <>
+    <h3>{t('Weigh-ins')}</h3>
+    <div className="empty"><div className="ico"><Icon name="scale" /></div>{t('No entries yet — log your weight to start the curve.')}</div>
+  </>
+  return <>
+    <h3 style={{ marginBottom: 2 }}>{t('Weigh-ins')}</h3>
+    <div className="muted small" style={{ marginBottom: 10 }}>{t(n === 1 ? '{0} weigh-in' : '{0} weigh-ins', n)}</div>
+    <div className="chart"><LineChart points={points} h={140} unit={st.unit} goal={st.targetW} /></div>
+    <div className="small dim" style={{ marginTop: 6 }}>{t('Weekly average')}</div>
+    {weeks.map(w => {
+      // Only a change the display can show: at one decimal, 0.02 kg is "0", and an arrow over a
+      // zero says something moved when, as far as the screen goes, nothing did.
+      const moved = w.delta != null && fmtNum(Math.abs(w.delta)) !== fmtNum(0)
+      return <div key={w.key} data-week={w.key}>
+        <div className="row between" style={{ margin: '16px 2px 4px', gap: 8 }}>
+          <span className="small" style={{ fontWeight: 600 }}>{t('Week of {0}', fmtDate(w.key))}</span>
+          <span className="small row" style={{ gap: 8 }}>
+            {moved && <span className="row" style={{ gap: 2, fontWeight: 500, color: bwDeltaColor(w.delta, w.avg) }}>
+              <Icon name={w.delta > 0 ? 'arrowUp' : 'arrowDown'} style={{ fontSize: 12 }} />{fmtNum(Math.abs(w.delta))}
+            </span>}
+            <span className="muted" style={{ whiteSpace: 'nowrap' }}>{t('Average {0}', fmtNum(w.avg) + ' ' + st.unit)}</span>
+          </span>
+        </div>
+        <div className="list" style={{ gap: 0 }}>{w.entries.map(b => <WeighInRow key={b.d} b={b} unit={st.unit} />)}</div>
+      </div>
+    })}
+  </>
+}
+export const weighInsSheet = () => ui().openSheet(close => <WeighIns close={close} />)
 
 /* ============================ import from another app ============================ */
 // Shows what a parsed export would actually do before anything is written. An import is

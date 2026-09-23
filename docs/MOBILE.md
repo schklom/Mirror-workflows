@@ -78,10 +78,14 @@ Where the phone keeps things, in case you ever need them by hand:
   belongs to: a paired phone only ever takes the file back for that account.
 - `opengym-stash.json`, same directory — changes kept by "Disconnect anyway" or by another
   account pairing, waiting for their server and account.
-- `Documents/opengym-backup-YYYY-MM-DD.json` — only with Settings → **Auto-backup on
-  changes** switched on: a dated copy after every finished workout or edited routine, in the
-  phone's Documents folder where a file manager or a sync app can reach it. Settings →
-  **Import backup** reads it back.
+- `Documents/openGym/opengym-backup-YYYY-MM-DD.json` — only with Settings → **Auto-backup on
+  changes** switched on: a dated copy after every finished workout or edited routine, in a
+  folder of its own under the phone's Documents folder, where a file manager or a sync app
+  (Syncthing, a cloud folder) can reach it without taking the rest of Documents along. One
+  file per day; each new copy deletes all but the newest 14 of these dated files in that
+  folder. Nothing else is deleted, in that folder or anywhere: other files you keep there, and
+  the copies versions before 1.3.9 wrote straight into `Documents/`, stay until you remove
+  them yourself. Settings → **Import backup** reads any of them back, wherever it is.
 
 ## Prerequisites
 

@@ -333,7 +333,7 @@ export default {
   'Export backup (JSON)': '백업 내보내기 (JSON)',
   'Import backup': '백업 가져오기',
   'Auto-backup on changes': '변경 시 자동 백업',
-  'Saves a dated copy to the Documents folder after finishing a workout or editing a routine — point a sync app at it, or copy it out by hand.': '운동을 마치거나 루틴을 수정한 뒤 날짜가 적힌 사본을 문서 폴더에 저장합니다 — 동기화 앱이 그 폴더를 보게 하거나 파일을 직접 복사하세요.',
+  'Saves a dated copy to Documents/openGym after finishing a workout or editing a routine, and keeps the newest {0} — point a sync app at that folder, or copy it out by hand.': '운동을 마치거나 루틴을 수정한 뒤 날짜가 적힌 사본을 문서/openGym 폴더에 저장하고 최근 {0}개만 남깁니다 — 동기화 앱이 그 폴더를 보게 하거나 파일을 직접 복사하세요.',
   'Reset everything?': '전부 초기화할까요?',
   'Reset everything': '전부 초기화',
   'Deletes your plan, workouts and body weight on this device. This cannot be undone.': '이 기기의 계획, 운동, 체중을 삭제합니다. 되돌릴 수 없어요.',

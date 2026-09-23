@@ -330,7 +330,7 @@ export const PT_BR_OVERRIDES = {
 
   // --- drop-sets, auto-backup and server pairing ---
   'Auto-backup on changes': 'Backup automático ao alterar',
-  'Saves a dated copy to the Documents folder after finishing a workout or editing a routine — point a sync app at it, or copy it out by hand.': 'Salva uma cópia datada na pasta Documentos depois de terminar um treino ou editar uma rotina — aponte um aplicativo de sincronização para ela, ou copie o arquivo na mão.',
+  'Saves a dated copy to Documents/openGym after finishing a workout or editing a routine, and keeps the newest {0} — point a sync app at that folder, or copy it out by hand.': 'Salva uma cópia datada na pasta Documentos/openGym depois de terminar um treino ou editar uma rotina e mantém as {0} mais recentes — aponte um aplicativo de sincronização para essa pasta, ou copie o arquivo na mão.',
   'Disconnect': 'Desconectar',
   'Disconnect from your server?': 'Desconectar do seu servidor?',
   'Disconnected — back to local-only': 'Desconectado — de volta ao modo somente local',

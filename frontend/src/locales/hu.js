@@ -333,7 +333,7 @@ export default {
   'Data': 'Adatok',
   'Export backup (JSON)': 'Biztonsági mentés exportálása (JSON)',
   'Import backup': 'Biztonsági mentés importálása',
-  'Saves a dated copy to the Documents folder after finishing a workout or editing a routine — point a sync app at it, or copy it out by hand.': 'Dátumozott másolatot ment a Dokumentumok mappába egy edzés befejezése vagy egy rutin szerkesztése után — irányíts rá egy szinkronizáló appot, vagy másold ki kézzel.',
+  'Saves a dated copy to Documents/openGym after finishing a workout or editing a routine, and keeps the newest {0} — point a sync app at that folder, or copy it out by hand.': 'Dátumozott másolatot ment a Dokumentumok/openGym mappába egy edzés befejezése vagy egy rutin szerkesztése után, és a legutóbbi {0} másolatot tartja meg — irányíts erre a mappára egy szinkronizáló appot, vagy másold ki kézzel.',
   'Auto-backup on changes': 'Automatikus mentés módosításkor',
   'Reset everything?': 'Mindent visszaállítasz?',
   'Reset everything': 'Minden visszaállítása',

@@ -348,7 +348,7 @@ export default {
   'Export backup (JSON)': 'Backup exportieren (JSON)',
   'Import backup': 'Backup importieren',
   'Auto-backup on changes': 'Automatische Sicherung bei Änderungen',
-  'Saves a dated copy to the Documents folder after finishing a workout or editing a routine — point a sync app at it, or copy it out by hand.': 'Speichert nach jedem beendeten Training oder jeder bearbeiteten Routine eine datierte Kopie im Ordner „Dokumente" — richte eine Sync-App darauf aus oder kopiere die Datei von Hand.',
+  'Saves a dated copy to Documents/openGym after finishing a workout or editing a routine, and keeps the newest {0} — point a sync app at that folder, or copy it out by hand.': 'Speichert nach jedem beendeten Training oder jeder bearbeiteten Routine eine datierte Kopie im Ordner „Dokumente/openGym“ und behält die neuesten {0} — richte eine Sync-App auf diesen Ordner aus oder kopiere die Datei von Hand.',
   'Reset everything?': 'Alles zurücksetzen?',
   'Reset everything': 'Alles zurücksetzen',
   'Deletes your plan, workouts and body weight on this device. This cannot be undone.': 'Löscht Plan, Trainings und Körpergewicht auf diesem Gerät. Das kann nicht rückgängig gemacht werden.',

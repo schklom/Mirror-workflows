@@ -333,7 +333,7 @@ export default {
   'Export backup (JSON)': 'बैकअप निर्यात करें (JSON)',
   'Import backup': 'बैकअप आयात करें',
   'Auto-backup on changes': 'बदलाव पर ऑटो-बैकअप',
-  'Saves a dated copy to the Documents folder after finishing a workout or editing a routine — point a sync app at it, or copy it out by hand.': 'वर्कआउट खत्म करने या रूटीन एडिट करने के बाद Documents फ़ोल्डर में तारीख़ वाली कॉपी सेव करता है — उस फ़ोल्डर पर कोई सिंक ऐप लगाएं, या फ़ाइल को हाथ से कॉपी करें।',
+  'Saves a dated copy to Documents/openGym after finishing a workout or editing a routine, and keeps the newest {0} — point a sync app at that folder, or copy it out by hand.': 'वर्कआउट खत्म करने या रूटीन एडिट करने के बाद Documents/openGym फ़ोल्डर में तारीख़ वाली कॉपी सेव करता है और सबसे नई {0} कॉपी रखता है — उस फ़ोल्डर पर कोई सिंक ऐप लगाएं, या फ़ाइल को हाथ से कॉपी करें।',
   'Reset everything?': 'सब कुछ रीसेट करें?',
   'Reset everything': 'सब कुछ रीसेट करें',
   'Deletes your plan, workouts and body weight on this device. This cannot be undone.': 'इस डिवाइस पर आपकी योजना, वर्कआउट और वज़न हट जाएँगे। इसे पूर्ववत नहीं किया जा सकता।',

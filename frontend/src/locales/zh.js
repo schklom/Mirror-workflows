@@ -333,7 +333,7 @@ export default {
   'Export backup (JSON)': '导出备份（JSON）',
   'Import backup': '导入备份',
   'Auto-backup on changes': '变更时自动备份',
-  'Saves a dated copy to the Documents folder after finishing a workout or editing a routine — point a sync app at it, or copy it out by hand.': '完成训练或编辑计划后，会在「文档」文件夹中保存一份带日期的副本——可以让同步应用指向该文件夹，或手动复制出来。',
+  'Saves a dated copy to Documents/openGym after finishing a workout or editing a routine, and keeps the newest {0} — point a sync app at that folder, or copy it out by hand.': '完成训练或编辑计划后，会在「文档/openGym」文件夹中保存一份带日期的副本，并只保留最近的 {0} 份——可以让同步应用指向该文件夹，或手动复制出来。',
   'Reset everything?': '重置所有内容？',
   'Reset everything': '重置所有内容',
   'Deletes your plan, workouts and body weight on this device. This cannot be undone.': '删除本设备上的计划、训练和体重。无法撤销。',

@@ -333,7 +333,7 @@ export default {
   'Export backup (JSON)': 'Yedeği dışa aktar (JSON)',
   'Import backup': 'Yedeği içe aktar',
   'Auto-backup on changes': 'Değişikliklerde otomatik yedek',
-  'Saves a dated copy to the Documents folder after finishing a workout or editing a routine — point a sync app at it, or copy it out by hand.': 'Bir antrenmanı bitirdikten veya bir rutini düzenledikten sonra Belgeler klasörüne tarihli bir kopya kaydeder — bir senkronizasyon uygulamasını o klasöre yönlendir ya da dosyayı elle kopyala.',
+  'Saves a dated copy to Documents/openGym after finishing a workout or editing a routine, and keeps the newest {0} — point a sync app at that folder, or copy it out by hand.': 'Bir antrenmanı bitirdikten veya bir rutini düzenledikten sonra Belgeler/openGym klasörüne tarihli bir kopya kaydeder ve en yeni {0} kopyayı tutar — bir senkronizasyon uygulamasını bu klasöre yönlendir ya da dosyayı elle kopyala.',
   'Reset everything?': 'Her şey sıfırlansın mı?',
   'Reset everything': 'Her şeyi sıfırla',
   'Deletes your plan, workouts and body weight on this device. This cannot be undone.': 'Bu cihazdaki planını, antrenmanlarını ve vücut ağırlığını siler. Geri alınamaz.',

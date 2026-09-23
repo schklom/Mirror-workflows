@@ -5,7 +5,7 @@ import { exOr } from '../lib/exercises.js'
 import { t, exerciseNameFor } from '../lib/i18n.js'
 import Icon from '../components/Icon.jsx'
 import { Button, Segmented } from '../components/ui.jsx'
-import { exercisePicker } from '../sheets.jsx'
+import { exercisePicker, bwSheet } from '../sheets.jsx'
 import { computeBalance, overrideKey, withOverride } from '../lib/structuralBalance.js'
 import { balanceStatusView } from '../lib/structuralBalance-view.js'
 import { TEMPLATES, TEMPLATE_LIST, DEFAULT_TEMPLATE_ID, EVALUATION_MODES } from '../lib/structuralBalanceTemplates.js'
@@ -70,6 +70,9 @@ export default function StructuralBalance() {
                 <span className="small dim" style={{ display: 'block' }}>
                   <span className="capitalize" data-exercise-name>{name}</span>{r.isOverridden ? ` · ${t('Custom')}` : ''}
                 </span>
+                {r.needsBodyweight && <span className="small" data-needs-bodyweight style={{ display: 'block', color: 'var(--label-2)' }}>
+                  {t('Log your body weight to score this lift.')}
+                </span>}
               </span>
               <span className="v" style={{ textAlign: 'right', flexShrink: 0 }}>
                 <span style={{ color: STATUS_COLOR[r.status] }}>{t(view.label)}</span>
@@ -77,6 +80,7 @@ export default function StructuralBalance() {
               </span>
             </div>
             <div style={{ display: 'flex', gap: 8 }}>
+              {r.needsBodyweight && <Button size="sm" variant="ghost" icon="plus" onClick={() => bwSheet()}>{t('Log body weight')}</Button>}
               <Button size="sm" variant="ghost" icon="pencil" onClick={() => changeExercise(role)}>{t('Change exercise')}</Button>
               {r.isOverridden && <Button size="sm" variant="ghost" onClick={() => clearOverride(role)}>{t('Use default exercise')}</Button>}
             </div>

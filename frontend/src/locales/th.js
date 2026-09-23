@@ -1346,4 +1346,5 @@ export default {
   'Change exercise': 'เปลี่ยนท่าฝึก',
   'Use default exercise': 'ใช้ท่าฝึกเริ่มต้น',
   'Custom': 'กำหนดเอง',
+  'Log your body weight to score this lift.': 'บันทึกน้ำหนักตัวเพื่อประเมินท่านี้',
 }

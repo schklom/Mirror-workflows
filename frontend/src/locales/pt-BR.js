@@ -744,6 +744,7 @@ export const PT_BR_OVERRIDES = {
   'Change exercise': 'Trocar exercício',
   'Use default exercise': 'Usar exercício padrão',
   'Custom': 'Personalizado',
+  'Log your body weight to score this lift.': 'Registre seu peso corporal para avaliar este exercício.',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

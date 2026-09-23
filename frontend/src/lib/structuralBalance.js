@@ -46,6 +46,11 @@ const beltOnLifter = id => {
 // body when the entry is flagged bodyweight — would score more help as a stronger lift. A 0
 // there is a row with no help entered, not a set done without any (history.js), and help at or
 // above body mass moved nothing: both are left unscored.
+const onLifter = entry => {
+  const bodyweight = entry.target?.bodyweight ?? entry.bodyweight
+  return bodyweight == null ? isBw({ id: entry.id }) || beltOnLifter(entry.id) : !!bodyweight
+}
+
 function setLoadKg(S, workout, entry, set, bodyweightKg) {
   const logged = kgOf(set.w || 0, S.unit)
   const stamped = workout?.bw > 0 ? kgOf(workout.bw, S.unit) : null
@@ -54,10 +59,20 @@ function setLoadKg(S, workout, entry, set, bodyweightKg) {
     if (!(logged > 0) || !(body > 0)) return null
     return body - logged > 0 ? body - logged : null
   }
-  const bodyweight = entry.target?.bodyweight ?? entry.bodyweight
-  const onLifter = bodyweight == null ? isBw({ id: entry.id }) || beltOnLifter(entry.id) : !!bodyweight
-  if (!onLifter) return logged
+  if (!onLifter(entry)) return logged
   return body > 0 ? body + logged : null
+}
+
+// Whether a role reads "No data" only for want of a weigh-in, with sets logged: a body-weight
+// standard with a lift to hold against it, or a lift on the lifter (a dip, a pull-up, an
+// assistance machine with its help entered) from sessions that carry no weigh-in of their own.
+// The screen says so, rather than a bare "No data" next to sets the user can see they logged.
+function waitsOnBodyweight(S, role, exerciseIds, current, bodyweightKg) {
+  if (bodyweightKg > 0 || role.evaluationMode === EVALUATION_MODES.REP_COUNT) return false
+  if (current) return role.evaluationMode === EVALUATION_MODES.BODYWEIGHT_RATIO
+  return (S.workouts || []).some(workout => !(workout?.bw > 0) && (workout.entries || []).some(entry =>
+    exerciseIds.includes(entry.id) && (isAssistedEntry(entry) || onLifter(entry)) &&
+    (entry.sets || []).some(set => set.done && !isWarmupRow(set) && (!isAssistedEntry(entry) || kgOf(set.w || 0, S.unit) > 0))))
 }
 
 // The lifts one logged row stands for, each as the { w, r } it is read from. A unilateral row's
@@ -246,13 +261,14 @@ function evaluateRole(template, role, currentByRoleId, bodyweightKg, S) {
   // it to name the role's exercise (and to show an override back to the user who chose it).
   const configuredExerciseId = override || role.exerciseIds[0] || null
   const base = { roleId: role.id, configuredExerciseId, targetPct, isOverridden: Boolean(override) }
+  const needsBodyweight = waitsOnBodyweight(S, role, exerciseIdsFor(S, template, role), current, bodyweightKg)
   if (!current) {
-    return { ...base, mappedExerciseId: null, current: null, actualPct: null, status: BALANCE_STATUSES.NO_DATA }
+    return { ...base, mappedExerciseId: null, current: null, actualPct: null, status: BALANCE_STATUSES.NO_DATA, needsBodyweight }
   }
   // An anchor role (no anchorRoleId) is compared against itself — always 100% when it has data.
   const anchorCurrent = role.anchorRoleId ? currentByRoleId.get(role.anchorRoleId) : current
   const actualPct = ratioFor(role, current, { anchorCurrent, bodyweightKg, targetPct })
-  return { ...base, mappedExerciseId: current.exId, current, actualPct, status: classify(actualPct, classifyTarget) }
+  return { ...base, mappedExerciseId: current.exId, current, actualPct, status: classify(actualPct, classifyTarget), needsBodyweight }
 }
 
 // Pure ratio-computation engine entry point.

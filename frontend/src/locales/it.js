@@ -1335,4 +1335,5 @@ export default {
   'Change exercise': 'Cambia esercizio',
   'Use default exercise': 'Usa esercizio predefinito',
   'Custom': 'Personalizzato',
+  'Log your body weight to score this lift.': 'Registra il tuo peso corporeo per valutare questo esercizio.',
 }

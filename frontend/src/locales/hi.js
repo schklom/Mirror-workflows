@@ -1335,4 +1335,5 @@ export default {
   'Change exercise': 'व्यायाम बदलें',
   'Use default exercise': 'डिफ़ॉल्ट व्यायाम उपयोग करें',
   'Custom': 'कस्टम',
+  'Log your body weight to score this lift.': 'इस व्यायाम का आकलन करने के लिए अपने शरीर का वज़न दर्ज करें।',
 }

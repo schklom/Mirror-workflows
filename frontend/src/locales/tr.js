@@ -1335,4 +1335,5 @@ export default {
   'Change exercise': 'Egzersizi değiştir',
   'Use default exercise': 'Varsayılan egzersizi kullan',
   'Custom': 'Özel',
+  'Log your body weight to score this lift.': 'Bu hareketin değerlendirilmesi için vücut ağırlığını kaydet.',
 }

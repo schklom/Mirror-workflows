@@ -566,6 +566,44 @@ describe('stored overrides', () => {
   })
 })
 
+// Without a weigh-in these rows can only read "No data", next to sets the user can see they
+// logged; the result says when a body weight is all that is missing, so the screen can ask.
+describe('a role waiting on a weigh-in says so', () => {
+  const role = (S, template, roleId) => computeBalance(S, template).find(r => r.roleId === roleId)
+
+  it('flags an ATG load standard with a lift logged and no body weight', () => {
+    const S = { unit: 'kg', workouts: [workoutAt('0085', NOW, [setDone(80, 12)])] }
+    expect(role(S, TEMPLATES.atg, 'romanianDeadlift')).toMatchObject({ status: BALANCE_STATUSES.NO_DATA, needsBodyweight: true })
+    expect(role(S, TEMPLATES.atg, 'goodMorning').needsBodyweight).toBe(false) // nothing logged
+    expect(role({ ...S, bodyweight: [{ d: '2026-01-01', w: 80 }] }, TEMPLATES.atg, 'romanianDeadlift'))
+      .toMatchObject({ status: BALANCE_STATUSES.BALANCED, needsBodyweight: false })
+  })
+
+  it('flags a dip or pull-up on the load table, not a lift that is plain load', () => {
+    const S = { unit: 'kg', workouts: [{ d: '2026-01-10', start: NOW, entries: [
+      { id: '0030', sets: [setDone(100, 1)] }, { id: '0251', sets: [setDone(10, 5)] },
+      { id: '0841', sets: [setDone(20, 5)] }, { id: '0031', sets: [setDone(35, 5)] },
+    ] }] }
+    expect(role(S, TEMPLATES.poliquin, 'dips')).toMatchObject({ status: BALANCE_STATUSES.NO_DATA, needsBodyweight: true })
+    expect(role(S, TEMPLATES.poliquin, 'supinePullups').needsBodyweight).toBe(true)
+    expect(role(S, TEMPLATES.poliquin, 'barbellCurl').needsBodyweight).toBe(false)
+    expect(role(S, TEMPLATES.poliquin, 'deadlift').needsBodyweight).toBe(false)
+    // A session with its own weigh-in scores without the profile's.
+    S.workouts[0].bw = 80
+    expect(role(S, TEMPLATES.poliquin, 'dips')).toMatchObject({ status: BALANCE_STATUSES.WEAK, needsBodyweight: false })
+  })
+
+  it('leaves out rep targets and an assistance machine with no help entered', () => {
+    const S = { unit: 'kg', workouts: [workoutAt('0652', NOW, [setDone(0, 4)])] }
+    expect(role(S, TEMPLATES.atg, 'pullups').needsBodyweight).toBe(false)
+    const poliquin = TEMPLATES.poliquin
+    const key = overrideKey(poliquin, findRole(poliquin, 'supinePullups'))
+    const assisted = w => ({ unit: 'kg', balanceOverrides: { [key]: '0017' }, workouts: [workoutAt('0017', NOW, [setDone(w, 5)])] })
+    expect(role(assisted(0), poliquin, 'supinePullups').needsBodyweight).toBe(false)
+    expect(role(assisted(20), poliquin, 'supinePullups').needsBodyweight).toBe(true)
+  })
+})
+
 describe('an override of the role\'s own default exercise', () => {
   it('is not custom, and reads the whole whitelist like the default', () => {
     const template = TEMPLATES.atg

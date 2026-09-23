@@ -1338,4 +1338,5 @@ export default {
   'Change exercise': 'Gyakorlat módosítása',
   'Use default exercise': 'Alapértelmezett gyakorlat használata',
   'Custom': 'Egyéni',
+  'Log your body weight to score this lift.': 'Rögzítsd a testsúlyodat, hogy ez a gyakorlat értékelhető legyen.',
 }

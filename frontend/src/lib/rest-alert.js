@@ -107,8 +107,7 @@ export function holdRestAlert(leftSec, totalSec) {
   })
 }
 
-// The page is visible and about to play the in-app beep. Skip the native tone so
-// the two don't both sound. The notification itself still posts.
+// What the notification's own buttons did (pause, ±15s, skip), for useUI to mirror in the bar.
 let onNativeRest = null
 export function bindNativeRest(cb) { onNativeRest = cb }
 
@@ -127,14 +126,6 @@ export function setRestAccent(key) {
   enqueue(async () => {
     const p = await restPlugin()
     if (p) await p.RestAlert.setAccent({ accent, ink })
-  })
-}
-
-export function hushRestTone() {
-  if (!MOBILE) return
-  enqueue(async () => {
-    const p = await restPlugin()
-    if (p) await p.RestAlert.suppressTone()
   })
 }
 

@@ -5,7 +5,7 @@ import { api } from '../lib/api.js'
 import { t } from '../lib/i18n.js'
 import { deviceId } from '../lib/push.js'
 import { MOBILE } from '../lib/mobile.js'
-import { armRestAlert, bindNativeRest, disarmRestAlert, holdRestAlert, hushRestTone } from '../lib/rest-alert.js'
+import { armRestAlert, bindNativeRest, disarmRestAlert, holdRestAlert } from '../lib/rest-alert.js'
 import { useStore } from './useStore.js'
 
 // Fire-and-forget: lets the server push a "rest over" alert if this tab gets suspended
@@ -96,9 +96,8 @@ const runRest = (set, get) => {
     const snd = useStore.getState().S.sound
     if (left <= 0) {
       if (seenLive) {
-        // The alarm is about to post the same moment. Tell it not to play, so this
-        // chime is the only one. Locked, this branch never runs and the alarm tone does.
-        hushRestTone()
+        // The Android alarm for this end stays quiet while the app is on screen, so this chime is
+        // the only one. Locked, this branch never runs and the alarm's tone does.
         chime(snd)
         vibrate([200, 100, 200]); get().flashTimer()
       }

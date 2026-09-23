@@ -151,7 +151,6 @@ public class RestTimerService extends Service {
             finishSkip();
             return;
         }
-        RestAlert.allowTone();
         if (paused) pausedLeft = left;
         else {
             endsAt = now + left;

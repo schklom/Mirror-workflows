@@ -21,11 +21,28 @@ import com.getcapacitor.annotation.CapacitorPlugin;
 @CapacitorPlugin(name = "RestAlert")
 public class RestAlertPlugin extends Plugin {
     private static RestAlertPlugin instance;
+    // Started to stopped is when the page is visible (document.hidden flips with it), so it is
+    // when the page's own countdown plays the end of a rest.
+    private static volatile boolean inFront;
 
     @Override
     public void load() {
         instance = this;
         super.load();
+    }
+
+    @Override
+    protected void handleOnStart() {
+        inFront = true;
+    }
+
+    @Override
+    protected void handleOnStop() {
+        inFront = false;
+    }
+
+    static boolean appInFront() {
+        return inFront;
     }
 
     static void emit(String type, long endsAt, long totalMs, long leftMs, boolean paused) {
@@ -121,12 +138,6 @@ public class RestAlertPlugin extends Plugin {
             i.putExtra("ink", ink);
             try { ctx.startService(i); } catch (Exception ignored) { /* no rest running */ }
         }
-        call.resolve();
-    }
-
-    @PluginMethod
-    public void suppressTone(PluginCall call) {
-        RestAlert.suppressTone();
         call.resolve();
     }
 

@@ -33,7 +33,6 @@ public final class RestAlert {
     static final String ACTION_ACCENT = "ch.duartesantos.opengym.rest.ACCENT";
     static final String ACTION_HOLD = "ch.duartesantos.opengym.rest.HOLD";
     static final String CHANNEL_ID = "rest-over";
-    private static volatile boolean toneSuppressed;
     private static String lastAlertTitle = "Rest over";
     private static boolean lastSound = true;
     private static String lastChannel = CHANNEL_ID;
@@ -59,8 +58,6 @@ public final class RestAlert {
                                 String channelId, String visibility, String importance, boolean localOnly,
                                 String countdownTitle, long totalMs) {
         if (channelId == null || channelId.isEmpty()) channelId = CHANNEL_ID;
-        // A new rest may play its tone. The in-app beep sets this only for the one it covers.
-        toneSuppressed = false;
         Intent intent = alarmIntent(ctx);
         intent.putExtra("id", id);
         intent.putExtra("title", title == null ? "" : title);
@@ -89,10 +86,6 @@ public final class RestAlert {
         lastChannel = channelId;
         startCountdown(ctx, at, totalMs, countdownTitle);
     }
-
-    public static void suppressTone() { toneSuppressed = true; }
-
-    public static void allowTone() { toneSuppressed = false; }
 
     public static void setAccentColor(int accent, int ink) {
         lastAccent = accent;
@@ -126,13 +119,19 @@ public final class RestAlert {
             cpu.acquire(10_000);
         } catch (Exception ignored) { /* tone still attempts without the lock */ }
         try {
+            // The app is on screen: the page has chimed, buzzed and flashed the end itself, and
+            // its bar says Ready. A tone and a banner on top would say it twice. Asking the page
+            // to hush this alarm instead raced it: the page's last tick and this alarm land in
+            // the same few milliseconds, and whichever came first decided.
+            if (RestAlertPlugin.appInFront()) {
+                stopCountdown(ctx);
+                return;
+            }
             pokeScreen(ctx);
             boolean shown = showNotification(ctx, intent);
             if (!shown) vibrateFallback(ctx);
-            // One beep. The in-app tone already played if the page was visible, and it asked
-            // us to skip this one. Locked, the page never gets there, so this is the beep.
-            boolean play = intent.getBooleanExtra("sound", true) && !toneSuppressed;
-            toneSuppressed = false;
+            // Locked or in the background, the page cannot play its chime, so this is the one.
+            boolean play = intent.getBooleanExtra("sound", true);
             if (play) playSound(ctx);
             // The countdown card is the foreground-service notification. Drop it once the
             // "rest over" alert is up, including when the WebView is frozen.

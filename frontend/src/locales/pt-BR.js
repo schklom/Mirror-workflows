@@ -710,7 +710,7 @@ export const PT_BR_OVERRIDES = {
   'No weight logged last time — enter what you lift and progression takes it from there.': 'Nenhum peso registrado na última vez — informe quanto você levanta e a progressão segue a partir daí.',
   'reps from your last session': 'reps da sua última sessão',
   // --- structural balance ---
-  'Structural Balance': 'Balanço estrutural',
+  'Structural balance': 'Balanço estrutural',
   'See which lift is holding back the rest.': 'Veja qual exercício está segurando os outros.',
   'Compare your lifts against a published ratio table to find the weak link.': 'Compare seus levantamentos com uma tabela de proporções publicada para encontrar o elo fraco.',
   'Open': 'Abrir',

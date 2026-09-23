@@ -1301,7 +1301,7 @@ export default {
   'today {0}': 'आज {0}',
   'reps from your last session': 'रेप्स आपके पिछले सेशन से',
   // --- structural balance ---
-  'Structural Balance': 'संरचनात्मक संतुलन',
+  'Structural balance': 'संरचनात्मक संतुलन',
   'See which lift is holding back the rest.': 'देखें कौन-सी लिफ्ट बाकी को पीछे खींच रही है।',
   'Compare your lifts against a published ratio table to find the weak link.': 'प्रकाशित अनुपात तालिका के आधार पर अपनी लिफ्ट्स की तुलना करें और कमज़ोर कड़ी पहचानें।',
   'Open': 'खोलें',

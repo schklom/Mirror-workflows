@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/useStore.js'
-import { EXIDX } from '../lib/exercises.js'
+import { exOr } from '../lib/exercises.js'
 import { t, exerciseNameFor } from '../lib/i18n.js'
 import Icon from '../components/Icon.jsx'
 import { Button, Segmented } from '../components/ui.jsx'
@@ -17,7 +17,9 @@ const STATUS_COLOR = {
   'no-data': 'var(--label-3)',
 }
 
-const exerciseName = id => (id && EXIDX[id] ? exerciseNameFor(EXIDX[id]) : null)
+// A role pointed at a custom exercise since deleted (on this device or another) still names
+// something rather than showing a blank line.
+const exerciseName = id => (id ? exerciseNameFor(exOr(id)) : null)
 
 export default function StructuralBalance() {
   const nav = useNavigate()
@@ -37,7 +39,7 @@ export default function StructuralBalance() {
 
   return <>
     <div className="hdr"><button className="iconbtn" onClick={() => nav('/stats')} aria-label={t('Stats')}><Icon name="chevronLeft" /></button>
-      <div style={{ flex: 1, marginLeft: 12 }}><h1>{t('Structural Balance')}</h1>
+      <div style={{ flex: 1, marginLeft: 12 }}><h1>{t('Structural balance')}</h1>
         <div className="sub">{t('Compare your lifts against a published ratio table to find the weak link.')}</div></div></div>
 
     <Segmented className="seg-range" value={templateId}

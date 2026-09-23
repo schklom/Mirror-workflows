@@ -1301,7 +1301,7 @@ export default {
   'today {0}': 'сегодня {0}',
   'reps from your last session': 'повт. с прошлой тренировки',
   // --- structural balance ---
-  'Structural Balance': 'Структурный баланс',
+  'Structural balance': 'Структурный баланс',
   'See which lift is holding back the rest.': 'Узнайте, какое упражнение сдерживает остальные.',
   'Compare your lifts against a published ratio table to find the weak link.': 'Сравните свои результаты с опубликованной таблицей соотношений, чтобы найти слабое звено.',
   'Open': 'Открыть',

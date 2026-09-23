@@ -1301,7 +1301,7 @@ export default {
   'today {0}': 'hoy {0}',
   'reps from your last session': 'reps de tu última sesión',
   // --- structural balance ---
-  'Structural Balance': 'Balance estructural',
+  'Structural balance': 'Balance estructural',
   'See which lift is holding back the rest.': 'Descubre qué ejercicio está frenando al resto.',
   'Compare your lifts against a published ratio table to find the weak link.': 'Compara tus levantamientos con una tabla de ratios publicada para encontrar el eslabón débil.',
   'Open': 'Abrir',

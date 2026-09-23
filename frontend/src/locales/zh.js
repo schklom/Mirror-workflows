@@ -1301,7 +1301,7 @@ export default {
   'today {0}': '今天 {0}',
   'reps from your last session': '次数沿用上次训练',
   // --- structural balance ---
-  'Structural Balance': '结构平衡',
+  'Structural balance': '结构平衡',
   'See which lift is holding back the rest.': '看看哪个动作拖了其他动作的后腿。',
   'Compare your lifts against a published ratio table to find the weak link.': '将你的动作成绩与已发布的比例表对比，找出最薄弱的环节。',
   'Open': '打开',

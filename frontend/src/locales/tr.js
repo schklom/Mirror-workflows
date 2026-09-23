@@ -1301,7 +1301,7 @@ export default {
   'today {0}': 'bugün {0}',
   'reps from your last session': 'tekrarlar son seansından',
   // --- structural balance ---
-  'Structural Balance': 'Yapısal denge',
+  'Structural balance': 'Yapısal denge',
   'See which lift is holding back the rest.': 'Hangi hareketin diğerlerini geride bıraktığını gör.',
   'Compare your lifts against a published ratio table to find the weak link.': 'Hareketlerini yayımlanmış bir oran tablosuyla karşılaştırarak zayıf halkayı bul.',
   'Open': 'Aç',

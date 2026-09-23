@@ -5,6 +5,9 @@ import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest'
 import { DEF, useStore } from '../store/useStore.js'
 import { useUI } from '../store/useUI.js'
 import StructuralBalance from './StructuralBalance.jsx'
+import Stats from './Stats.jsx'
+import { buildDemoState } from '../lib/demoSeed.js'
+import { TEMPLATE_LIST } from '../lib/structuralBalanceTemplates.js'
 
 const navSpy = vi.fn()
 vi.mock('react-router-dom', () => ({ useNavigate: () => navSpy }))
@@ -13,12 +16,12 @@ const clone = value => JSON.parse(JSON.stringify(value))
 globalThis.IS_REACT_ACT_ENVIRONMENT = true
 
 const mounted = []
-function render() {
+function render(View = StructuralBalance) {
   const host = document.createElement('div')
   document.body.appendChild(host)
   const root = createRoot(host)
   mounted.push(root)
-  act(() => root.render(<StructuralBalance />))
+  act(() => root.render(<View />))
   return host
 }
 
@@ -102,5 +105,44 @@ describe('StructuralBalance view', () => {
     const resetRow = host.querySelector('[data-role-id="inclineBench"]')
     expect(resetRow.textContent).not.toContain('Custom')
     expect([...resetRow.querySelectorAll('button')].some(b => b.textContent.includes('Use default exercise'))).toBe(false)
+  })
+})
+
+describe('the way in from Stats', () => {
+  it('is a card like the others that opens the screen, once there is a workout to read', () => {
+    const host = render(Stats)
+    const card = [...host.querySelectorAll('.card')].find(c => c.querySelector('h2')?.textContent === 'Structural balance')
+    expect(card).toBeTruthy()
+    expect(card.textContent).toContain('See which lift is holding back the rest.')
+    const open = [...card.querySelectorAll('button')].find(b => b.textContent.includes('Open'))
+    act(() => open.click())
+    expect(navSpy).toHaveBeenCalledWith('/structural-balance')
+  })
+
+  it('is not offered before the first workout', () => {
+    useStore.setState({ S: clone(DEF), user: null })
+    const host = render(Stats)
+    expect(host.textContent).not.toContain('Structural balance')
+  })
+})
+
+// The demo build (VITE_DEMO=1) boots a guest on the seeded example profile and has no server:
+// every template has to render against that profile, and score what it logs.
+describe('on the demo profile', () => {
+  it('renders every template and scores the lifts the example history has', () => {
+    useStore.setState({ S: Object.assign(clone(DEF), buildDemoState()), user: null })
+    const host = render()
+    const scored = {}
+    for (const tpl of TEMPLATE_LIST) {
+      const button = [...host.querySelectorAll('.seg button')].find(b => b.textContent === tpl.label)
+      act(() => button.click())
+      const rows = [...host.querySelectorAll('[data-role-id]')]
+      expect(rows.map(r => r.dataset.roleId)).toEqual(tpl.roles.map(r => r.id))
+      scored[tpl.id] = rows.filter(r => r.dataset.status !== 'no-data').map(r => r.dataset.roleId)
+    }
+    expect(scored.thibaudeauPowerlifting).toEqual(expect.arrayContaining(['squat', 'bench']))
+    expect(scored.atg).toEqual(expect.arrayContaining(['romanianDeadlift', 'atgDips']))
+    expect(host.textContent).not.toContain('NaN')
+    expect(host.textContent).not.toContain('undefined')
   })
 })

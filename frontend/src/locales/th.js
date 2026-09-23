@@ -1312,7 +1312,7 @@ export default {
   'today {0}': 'วันนี้ {0}',
   'reps from your last session': 'จำนวนครั้งจากเซสชันล่าสุด',
   // --- structural balance ---
-  'Structural Balance': 'สมดุลโครงสร้าง',
+  'Structural balance': 'สมดุลโครงสร้าง',
   'See which lift is holding back the rest.': 'ดูว่าท่าไหนที่ฉุดท่าอื่นไว้',
   'Compare your lifts against a published ratio table to find the weak link.': 'เปรียบเทียบท่าฝึกของคุณกับตารางอัตราส่วนที่เผยแพร่ เพื่อหาจุดอ่อน',
   'Open': 'เปิด',

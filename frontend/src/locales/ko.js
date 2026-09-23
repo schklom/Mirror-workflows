@@ -1301,7 +1301,7 @@ export default {
   'today {0}': '오늘 {0}',
   'reps from your last session': '지난 세션의 횟수',
   // --- structural balance ---
-  'Structural Balance': '구조적 밸런스',
+  'Structural balance': '구조적 밸런스',
   'See which lift is holding back the rest.': '어떤 운동이 나머지를 방해하는지 확인하세요.',
   'Compare your lifts against a published ratio table to find the weak link.': '공개된 비율 표와 운동 기록을 비교해 약점을 찾아보세요.',
   'Open': '열기',

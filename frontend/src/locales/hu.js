@@ -1304,7 +1304,7 @@ export default {
   'today {0}': 'ma {0}',
   'reps from your last session': 'ismétlések az utolsó edzésedből',
   // --- structural balance ---
-  'Structural Balance': 'Strukturális egyensúly',
+  'Structural balance': 'Strukturális egyensúly',
   'See which lift is holding back the rest.': 'Nézd meg, melyik gyakorlat fogja vissza a többit.',
   'Compare your lifts against a published ratio table to find the weak link.': 'Hasonlítsd össze gyakorlataidat egy közzétett arány-táblázattal, hogy megtaláld a leggyengébb láncszemet.',
   'Open': 'Megnyitás',

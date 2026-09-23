@@ -153,6 +153,11 @@ tags — a merge request from a fork can build an APK, but gets an unsigned one 
 the key. On a `v*` tag the signed APK is also pushed to the generic package registry, which is
 what the release links to.
 
+The release APK carries native code for ARM only (`arm64-v8a`, `armeabi-v7a`), which is every
+phone; the x86 builds of the barcode scanner's library would add about 12 MB for emulators
+alone. A debug build (`./gradlew assembleDebug`) keeps all four, so it still runs on an x86_64
+emulator.
+
 To build and sign your own:
 
 ```sh

@@ -52,6 +52,17 @@ export const fmtVol = (v, unit) => fmtNum(v) + ' ' + unit
 // Plural forms are not automatic when the English string is the key.
 export const exCount = n => t(n === 1 ? '{0} exercise' : '{0} exercises', n)
 export const routineCount = n => t(n === 1 ? '{0} routine' : '{0} routines', n)
+export const changeCount = n => t(n === 1 ? '{0} change' : '{0} changes', n)
+
+// "5 minutes ago", "yesterday", "now" — in the UI language, from the platform's own rules
+// (Intl.RelativeTimeFormat), so no pack has to carry a word for every unit and plural. Used for
+// when this device last synced; a time in the future (a clock set back since) reads as now.
+export function fmtAgo(ts, now = Date.now()) {
+  const s = Math.max(0, Math.round((now - ts) / 1000))
+  const [n, unit] = s < 60 ? [0, 'second'] : s < 3600 ? [Math.floor(s / 60), 'minute'] : s < 86400 ? [Math.floor(s / 3600), 'hour'] : [Math.floor(s / 86400), 'day']
+  try { return new Intl.RelativeTimeFormat(dateLocale(), { numeric: 'auto' }).format(-n, unit) }
+  catch { return new Date(ts).toLocaleString(dateLocale()) }
+}
 
 /* ---------------------------------------------------------------- week start --
    Where a week begins is a local convention, not a fact: most of Europe starts on

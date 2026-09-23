@@ -59,6 +59,9 @@
 
   --sab:env(safe-area-inset-bottom,0px);
   --sat:env(safe-area-inset-top,0px);
+  /* height of the connection indicator under the status bar, 0 while there is none — set by
+     components/SyncBanner.jsx. Whatever starts at the top of the screen starts below it. */
+  --conn:0px;
 }
 
 :root[data-theme="light"] {
@@ -162,7 +165,7 @@ button,.chip,.tile,.item,.wday,.cal-d,.swatch,.hm-c,.lrow,.seg button,.stp butto
 
 /* ---------------------------------------------------------------- layout -- */
 #app{
-  padding:calc(var(--sat) + 8px) var(--pad) calc(88px + var(--sab));
+  padding:calc(var(--sat) + var(--conn) + 8px) var(--pad) calc(88px + var(--sab));
   max-width:560px;margin:0 auto;
 }
 /* Keep the last workout controls clear of the mobile overlays without adding a second
@@ -172,14 +175,40 @@ body.resting #app{padding-bottom:calc(206px + var(--sab))}
 @keyframes viewfade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 #app.vfade{animation:viewfade var(--med) var(--ease)}
 
-/* sync banner: one line for a signed-in user whose changes are not on the server yet */
-.sync-banner{
-  display:flex;align-items:center;gap:9px;width:100%;text-align:left;
-  margin:0 0 12px;padding:9px 12px;border-radius:var(--r);
-  background:color-mix(in srgb,var(--yellow) 16%,var(--surface));color:var(--label);font-size:13px;line-height:1.35;
+/* Connection indicator (components/SyncBanner.jsx): pinned under the status bar for as long as
+   the app is not connected to a server. It carries the page's own ground and blur, like the
+   pinned workout header, so rows scrolling under it read as under it; --conn is the height of
+   its row, which #app and the pinned headers leave free. Above those headers (20, 40), below the
+   tab bar (50), the timer and every sheet. The sentence is never cut: its last words are the ones
+   that say the changes are kept, so a narrow phone gets a third line rather than an ellipsis. */
+.conn-bar{
+  position:fixed;left:0;right:0;top:0;z-index:45;
+  padding:var(--sat) var(--pad) 0;
+  background:color-mix(in srgb,var(--bg) 94%,transparent);
+  -webkit-backdrop-filter:saturate(180%) blur(10px);backdrop-filter:saturate(180%) blur(10px);
 }
-.sync-banner.off{background:color-mix(in srgb,var(--label-3) 18%,var(--surface))}
-.sync-banner .icn,.sync-banner svg{flex:none;font-size:16px;color:var(--label-2)}
+.conn-row{max-width:560px;margin:0 auto;padding:6px 0}
+.conn{
+  display:flex;align-items:center;gap:9px;width:100%;text-align:left;min-height:34px;
+  padding:6px 8px 6px 12px;border-radius:var(--r);
+  background:color-mix(in srgb,var(--yellow) 16%,var(--surface));color:var(--label);font-size:13px;line-height:1.3;
+}
+.conn .icn{flex:none;font-size:16px;color:var(--label-2)}
+.conn-t{flex:1;min-width:0;overflow-wrap:break-word}
+.conn-a{flex:none;padding:4px 10px;border-radius:99px;background:var(--surface-3);font-weight:600;white-space:nowrap}
+button.conn:active{filter:brightness(1.12)}
+.conn-bar.off .conn{background:color-mix(in srgb,var(--label-3) 18%,var(--surface))}
+.conn-bar.bad .conn{background:color-mix(in srgb,var(--red) 16%,var(--surface))}
+.conn-bar.bad .conn .icn{color:var(--red)}
+/* a deliberate local setup: said, not flagged — one small line, no fill */
+.conn-bar.quiet .conn-row{padding:2px 0 4px}
+.conn-bar.quiet .conn{min-height:26px;padding:2px 2px 2px 4px;background:none;color:var(--label-2);font-size:12px;gap:6px}
+.conn-bar.quiet .conn .icn{font-size:13px;color:var(--label-3)}
+.conn-bar.quiet .conn-a{padding:2px 9px;font-size:12px;color:var(--acc);background:var(--acc-soft)}
+:root[data-theme="light"] .conn-bar:not(.quiet) .conn-a{background:var(--surface)}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .conn-bar{background:var(--bg)}
+}
 /* large title, the way a nav bar does it */
 .hdr{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:8px 0 18px}
 /* The title block gives way, the button on the right never does: a flex item will not shrink
@@ -674,11 +703,12 @@ body.chips-dragging *{cursor:inherit}
 /* ------------------------------------------------------------- workout --- */
 /* Workout header. In list mode it is pinned: pulled up over #app's top padding so it sits flush
    with the screen edge from the first pixel, and given the page's own ground plus a light blur so
-   the rows scrolling underneath read as underneath. */
+   the rows scrolling underneath read as underneath. The connection indicator, when there is
+   one, sits over its top (--conn) and its content starts below it. */
 .whdr.stick{
   position:sticky;top:0;z-index:20;
-  margin:calc(-1 * (var(--sat) + 8px)) calc(-1 * var(--pad)) 6px;
-  padding:calc(var(--sat) + 8px) var(--pad) 0;
+  margin:calc(-1 * (var(--sat) + var(--conn) + 8px)) calc(-1 * var(--pad)) 6px;
+  padding:calc(var(--sat) + var(--conn) + 8px) var(--pad) 0;
   background:color-mix(in srgb,var(--bg) 94%,transparent);
   -webkit-backdrop-filter:saturate(180%) blur(10px);backdrop-filter:saturate(180%) blur(10px);
 }
@@ -1360,7 +1390,7 @@ body.chips-dragging *{cursor:inherit}
 /* scrolled to when the list opens (#224): clear the sticky header above it. Workout.jsx
    measures the header (--whdr-h on .workout-list, safe area included) because it grows when
    the session name wraps; the fallback is the height of a one-line header. */
-.wl-unit{scroll-margin-top:calc(var(--whdr-h, var(--sat) + 80px) + 16px)}
+.wl-unit{scroll-margin-top:calc(var(--whdr-h, var(--sat) + var(--conn) + 80px) + 16px)}
 .wl-unit.cur{box-shadow:inset 0 0 0 1.5px var(--acc-line)}
 .wl-hd{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
 /* part of the give-back above — one edge for all three insets of a row in the list view */
@@ -1393,7 +1423,8 @@ body.chips-dragging *{cursor:inherit}
 /* --------------------------------------------------- desktop (≥1000px) --- */
 .cols{display:block}
 @media (min-width:1000px){
-  #app{max-width:1080px;padding-top:32px;padding-bottom:calc(128px + var(--sab))}
+  #app{max-width:1080px;padding-top:calc(var(--conn) + 32px);padding-bottom:calc(128px + var(--sab))}
+  .conn-row{max-width:640px}   /* the width of the .narrow pages below it */
   body.resting #app{padding-bottom:calc(250px + var(--sab))}
   .workout-end-spacer{height:40px}
   .cols{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}

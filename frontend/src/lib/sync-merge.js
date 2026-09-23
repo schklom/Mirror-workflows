@@ -23,9 +23,10 @@
  *     forgotten, whichever way it runs). An exercise in a workout whose edited version was kept
  *     is the exception: the edit may have taken away the set the kept weight came from, so it
  *     is the best of the merged history and of the editing copy's own, and the other copy's
- *     can no longer bring a corrected typo back. exNotes, barWeights, loadKind, plates: key union
- *   - balanceOverrides: key union; of a key both have, the entry set last by its own `_ts`, a
- *     clear included (mergeStampedMap), the newer copy's on a tie
+ *     can no longer bring a corrected typo back. exNotes, barWeights: key union
+ *   - balanceOverrides, loadKind, plates: key union; of a key both have, the entry set last by
+ *     its own `_ts`, a clear included (mergeStampedMap), the newer copy's on a tie. For plates the
+ *     key is the unit, so the inventory of one unit is kept whole, as last edited
  *   - `_ts`: the later of the two; `_rev` dropped (the server sets it); `active` left to the caller
  *
  * Known limit: with no record of what each side deleted, an entry removed on one device inside
@@ -118,7 +119,7 @@ const isMap = v => !!v && typeof v === 'object' && !Array.isArray(v)
 
 /**
  * A settings map whose entries carry their own edit time (`{ …, _ts }`), such as the Structural
- * Balance overrides: every key of either side, and of a key both have, the entry set last — the
+ * Balance overrides or the plate-loading choices: every key of either side, and of a key both have, the entry set last — the
  * same rule a routine follows. Taking the newer copy's entry lost a choice made on one device
  * whenever the other had since logged a set; a plain key union brought a cleared entry back
  * from the side that still had it. So a clear is written as a stamped entry, not a delete, and
@@ -188,10 +189,15 @@ export function mergeStates(a, b, { prefer } = {}) {
     if (kept) out.exWeights[id] = clone(kept)
     else delete out.exWeights[id]
   }
-  for (const f of ['exNotes', 'barWeights', 'loadKind', 'plates']) {
+  for (const f of ['exNotes', 'barWeights']) {
     if (n[f] || o[f]) out[f] = clone({ ...(o[f] || {}), ...(n[f] || {}) })
   }
-  if (n.balanceOverrides || o.balanceOverrides) out.balanceOverrides = clone(mergeStampedMap(n.balanceOverrides, o.balanceOverrides, prefer))
+  // The plate-loading choices (lib/plates.js) are stamped the same way: an exercise's loading and
+  // a unit's plate inventory are each one choice, made on one device, that a later set logged on
+  // the other must not undo.
+  for (const f of ['balanceOverrides', 'loadKind', 'plates']) {
+    if (n[f] || o[f]) out[f] = clone(mergeStampedMap(n[f], o[f], prefer))
+  }
   out._ts = Math.max(a._ts || 0, b._ts || 0)
   delete out._rev
   return out

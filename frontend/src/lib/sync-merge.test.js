@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { localExtras, mergeBodyweight, mergeStampedMap, mergeStates, newerOf, stampRoutines, stampWorkout, unionById } from './sync-merge.js'
 import { retimeWorkout } from './workout-date.js'
+import { inventoryFor, loadKindFor, withLoadKind, withPlatePairs, withStandardPlates } from './plates.js'
 
 const workout = (id, d = '2026-09-01', start = 1) => ({ id, d, start, entries: [] })
 const routine = (id, name = id) => ({ id, name, ex: [] })
@@ -345,5 +346,69 @@ describe('balanceOverrides keep the choice made last', () => {
     const m = mergeStates(a, base({ _ts: 50 }))
     m.balanceOverrides.k.id = 'changed'
     expect(a.balanceOverrides.k.id).toBe('x')
+  })
+})
+
+// Plate loading (lib/plates.js): an exercise's loading and each unit's plate inventory are
+// stamped like a Structural Balance override, the way back to the default included, so the
+// change made last survives a conflict either way round. A plain key union let the copy that was
+// newer as a whole undo a choice made on the other device, and brought a reset list back.
+describe('plate loading keeps the choice made last', () => {
+  const SQUAT = '0043'   // barbell: per side unless you say otherwise
+
+  it('a load kind picked on the older copy survives the newer copy\'s earlier pick', () => {
+    const phone = base({ _ts: 100, loadKind: withLoadKind({}, SQUAT, 'none', 90) })
+    const desk = base({ _ts: 200, workouts: [workout('w2')], loadKind: withLoadKind({}, SQUAT, 'single', 20) })
+    for (const m of [mergeStates(phone, desk), mergeStates(desk, phone)]) {
+      expect(ids(m.workouts)).toEqual(['w2'])
+      expect(loadKindFor(m, SQUAT)).toBe('none')
+    }
+  })
+
+  it('going back to the equipment\'s loading is not undone by an older pick, and a later pick beats it', () => {
+    const back = base({ _ts: 100, loadKind: withLoadKind({}, SQUAT, null, 80) })
+    const stale = base({ _ts: 300, loadKind: withLoadKind({}, SQUAT, 'single', 40) })
+    expect(loadKindFor(mergeStates(back, stale), SQUAT)).toBe('pairs')
+    expect(loadKindFor(mergeStates(stale, back), SQUAT)).toBe('pairs')
+    const later = base({ _ts: 50, loadKind: withLoadKind({}, SQUAT, 'single', 95) })
+    expect(loadKindFor(mergeStates(back, later), SQUAT)).toBe('single')
+  })
+
+  it('exercises set on different devices are all kept; a bare kind from the first builds loses to a stamped one', () => {
+    const a = base({ _ts: 100, loadKind: { ...withLoadKind({}, 'a', 'single', 10), c: 'none' } })
+    const b = base({ _ts: 200, loadKind: { ...withLoadKind({}, 'b', 'none', 30), c: withLoadKind({}, 'c', 'single', 5).c } })
+    const m = mergeStates(b, a)
+    expect(Object.keys(m.loadKind).sort()).toEqual(['a', 'b', 'c'])
+    expect(m.loadKind.c).toEqual({ kind: 'single', _ts: 5 })
+  })
+
+  it('a unit\'s plate list is kept whole as last counted; the other unit\'s comes along', () => {
+    const home = withPlatePairs({ unit: 'lb' }, 45, 1, 90)
+    const phone = base({ _ts: 100, unit: 'lb', plates: home })
+    const desk = base({ _ts: 200, unit: 'lb', workouts: [workout('w2')], plates: { ...withPlatePairs({ unit: 'lb' }, 25, 2, 20), kg: { 20: 1, _ts: 15 } } })
+    for (const m of [mergeStates(phone, desk), mergeStates(desk, phone)]) {
+      expect(m.plates.lb).toEqual(home.lb)
+      expect(inventoryFor(m).find(p => p.w === 45).n).toBe(1)
+      expect(inventoryFor(m).find(p => p.w === 25).n).toBe(6)   // not the desk's 2: one list, not a mix
+      expect(m.plates.kg).toEqual({ 20: 1, _ts: 15 })
+    }
+  })
+
+  it('"Back to the standard set" wins against the other device\'s older list', () => {
+    const own = { unit: 'lb', plates: withPlatePairs({ unit: 'lb' }, 45, 1, 40) }
+    const reset = base({ _ts: 100, unit: 'lb', plates: withStandardPlates(own, 80) })
+    const stale = base({ _ts: 300, unit: 'lb', plates: own.plates })
+    for (const m of [mergeStates(reset, stale), mergeStates(stale, reset)]) {
+      expect(inventoryFor(m)).toEqual(inventoryFor({ unit: 'lb' }))
+    }
+  })
+
+  it('sign-in keeps the server\'s choices and adds what only the device has', () => {
+    const server = base({ _ts: 10, loadKind: withLoadKind({}, SQUAT, 'single', 5), plates: { kg: { 20: 1, _ts: 5 } } })
+    const local = base({ _ts: 90, loadKind: withLoadKind(withLoadKind({}, SQUAT, 'none', 80), 'b', 'single', 80), plates: { kg: { 20: 4, _ts: 80 }, lb: { 45: 2, _ts: 80 } } })
+    const m = mergeStates(server, local, { prefer: 'a' })
+    expect(m.loadKind).toEqual({ [SQUAT]: { kind: 'single', _ts: 5 }, b: { kind: 'single', _ts: 80 } })
+    expect(m.plates).toEqual({ kg: { 20: 1, _ts: 5 }, lb: { 45: 2, _ts: 80 } })
+    expect(mergeStates(base({ _ts: 500 }), base({ _ts: 1 })).plates).toBeUndefined()
   })
 })

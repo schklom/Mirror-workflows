@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { PLATE_SIZES, DEFAULT_PAIRS, inventoryFor, pairsOf, plateStack, plateDelta, loadKindFor, baseWeightFor, rowLoad, sameLoad } from './plates.js'
+import { PLATE_SIZES, DEFAULT_PAIRS, inventoryFor, pairsOf, ownsPlates, withPlatePairs, withStandardPlates, loadKindOf, withLoadKind, plateStack, plateDelta, loadKindFor, baseWeightFor, rowLoad, sameLoad } from './plates.js'
 import { EXDB } from './exercises-data.js'
 
 const idOf = eq => EXDB.find(e => e.eq === eq).id
@@ -29,6 +29,47 @@ describe('inventoryFor', () => {
   test('zero and junk counts drop out; the other unit\'s inventory is ignored', () => {
     const S = { unit: 'kg', plates: { kg: { 20: 2, 10: 0, 5: 'x', 2.5: 1.9 }, lb: { 45: 9 } } }
     expect(inventoryFor(S)).toEqual([{ w: 20, n: 2 }, { w: 2.5, n: 1 }])
+  })
+
+  test('a list\'s stamp is not a plate, and a stamped list with no sizes is the standard set', () => {
+    expect(inventoryFor({ unit: 'lb', plates: { lb: { 45: 1, _ts: 1700 } } })).toEqual([{ w: 45, n: 1 }])
+    expect(ownsPlates({ unit: 'lb', plates: { lb: { 45: 1, _ts: 1700 } } })).toBe(true)
+    const reset = { unit: 'lb', plates: { lb: { _ts: 1800 } } }
+    expect(ownsPlates(reset)).toBe(false)
+    expect(inventoryFor(reset)).toEqual(inventoryFor({ unit: 'lb' }))
+    // Owning none of anything is a list of its own, not the standard set.
+    const none = { unit: 'lb', plates: { lb: { 45: 0, 25: 0, _ts: 1900 } } }
+    expect(ownsPlates(none)).toBe(true)
+    expect(inventoryFor(none)).toEqual([])
+    expect(ownsPlates({ unit: 'kg', plates: { lb: { 45: 1 } } })).toBe(false)
+  })
+})
+
+describe('stored choices carry the time they were made', () => {
+  test('the first count copies the standard set in; later ones change one size; both stamped', () => {
+    const first = withPlatePairs({ unit: 'lb', plates: {} }, 45, 1, 100)
+    expect(first).toEqual({ lb: { 45: 1, 35: 6, 25: 6, 10: 6, 5: 6, 2.5: 6, _ts: 100 } })
+    const next = withPlatePairs({ unit: 'lb', plates: { ...first, kg: { 20: 2, _ts: 50 } } }, 15, 2.6, 200)
+    expect(next.lb).toEqual({ 45: 1, 35: 6, 25: 6, 15: 3, 10: 6, 5: 6, 2.5: 6, _ts: 200 })
+    expect(next.kg).toEqual({ 20: 2, _ts: 50 })   // the other unit is left alone
+    expect(withPlatePairs({ unit: 'lb', plates: first }, 45, -3, 300).lb[45]).toBe(0)
+  })
+
+  test('back to the standard set is a stamped list with no sizes, for this unit only', () => {
+    const S = { unit: 'kg', plates: { kg: { 20: 1, _ts: 100 }, lb: { 45: 1, _ts: 90 } } }
+    expect(withStandardPlates(S, 200)).toEqual({ kg: { _ts: 200 }, lb: { 45: 1, _ts: 90 } })
+    expect(withStandardPlates({ unit: 'kg' }, 200)).toEqual({ kg: { _ts: 200 } })
+  })
+
+  test('a load kind is stored with its time; null is the equipment\'s own, stamped too', () => {
+    expect(withLoadKind(undefined, 'a', 'single', 100)).toEqual({ a: { kind: 'single', _ts: 100 } })
+    expect(withLoadKind({ a: { kind: 'single', _ts: 100 } }, 'a', null, 200)).toEqual({ a: { kind: null, _ts: 200 } })
+    expect(withLoadKind({}, 'a', 'weird', 100)).toEqual({ a: { kind: null, _ts: 100 } })
+    expect(loadKindOf({ kind: 'none', _ts: 1 })).toBe('none')
+    expect(loadKindOf({ kind: null, _ts: 1 })).toBe(null)
+    expect(loadKindOf('pairs')).toBe('pairs')        // how the first builds stored it
+    expect(loadKindOf('weird')).toBe(null)
+    expect(loadKindOf(undefined)).toBe(null)
   })
 })
 
@@ -104,6 +145,13 @@ describe('loadKindFor', () => {
     expect(loadKindFor({ loadKind: { [db]: 'single' } }, db)).toBe('single')      // a plate-loaded leg press
     expect(loadKindFor({ loadKind: { [barbell]: 'none' } }, barbell)).toBe('none')
     expect(loadKindFor({ loadKind: { [barbell]: 'weird' } }, barbell)).toBe('pairs')
+  })
+
+  test('a stamped choice reads like a bare one; a stamped null is the equipment\'s own', () => {
+    expect(loadKindFor({ loadKind: { [db]: { kind: 'single', _ts: 5 } } }, db)).toBe('single')
+    expect(loadKindFor({ loadKind: { [barbell]: { kind: 'none', _ts: 5 } } }, barbell)).toBe('none')
+    expect(loadKindFor({ loadKind: { [barbell]: { kind: null, _ts: 5 } } }, barbell)).toBe('pairs')
+    expect(loadKindFor({ loadKind: { [bw]: { kind: null, _ts: 5 } } }, { id: bw, bodyweight: false })).toBe('none')
   })
 })
 

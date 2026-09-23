@@ -6,7 +6,7 @@ import { activeProfile, exAvailable, ALL_EQUIPMENT, newProfile } from './lib/equ
 import { fmtDate, fmtNum, fmtPlate, capWords, fmtVol, fmtDur, durPart, todayISO, isoOf, uid, exCount, routineCount, DAYN, DAYS, weekOrder, weekStartOf, weekDayOffset, MONTHS_LONG, ACCENTS } from './lib/format.js'
 import { lastEntryFor, bestWeightFor, bestWeightForEntry, buildSets, effectiveRoutineIds, workoutDay, workoutVolume, setsDone, setsDoneActive, setUnitsTotal, lastBW, supersetUnits, sessionSections, unitOf, setLabel, defaultConfig, cleanupSg, modeOf, effortOf, EFFORT, capEffort, stepEffort, isBw, isPerSide, sideReps, workSetsDone, applyIntensifierPlan, MAX_PLANNED_WARMUPS, NOTE_MAX } from './lib/history.js'
 import { usesBar, defaultBarWeight, hasBarOverride, isNoBar } from './lib/bar.js'
-import { PLATE_SIZES, inventoryFor, pairsOf, loadKindFor, baseWeightFor } from './lib/plates.js'
+import { PLATE_SIZES, pairsOf, ownsPlates, withPlatePairs, withStandardPlates, withLoadKind, loadKindFor, baseWeightFor } from './lib/plates.js'
 import { toScale, rirOf, EFFORT_PRESETS, effortColor } from './lib/effort.js'
 import { beep, vibrate } from './lib/sound.js'
 import { t, dateLocale, instrFor, exerciseNameFor, exerciseNameClass, getLang, INSTR_LANGS } from './lib/i18n.js'
@@ -664,10 +664,10 @@ function BarWeightEditor({ ex, cfg, extra }) {
   const noBar = bar && isNoBar(st, ex.id)
   const def = defaultBarWeight(ex.eq, st.unit)
   const base = baseWeightFor(st, ex)
+  // Picking what the equipment already implies puts the exercise back on it (a stamped null,
+  // lib/plates.js), so a later change of the equipment's own default still reaches it.
   const setKind = k => update(s => {
-    s.loadKind = s.loadKind || {}
-    // Picking what the equipment already implies stores nothing.
-    if (k === loadKindFor(null, ctx)) delete s.loadKind[ex.id]; else s.loadKind[ex.id] = k
+    s.loadKind = withLoadKind(s.loadKind, ex.id, k === loadKindFor(null, ctx) ? null : k)
   })
   const setBar = v => update(s => {
     s.barWeights = s.barWeights || {}
@@ -722,18 +722,14 @@ export const barWeightSheet = (exId, cfg) => ui().openSheet(close => <BarWeightS
 
 // The plates you own, as pairs per size, for the profile's unit (Settings → Equipment → Plates).
 // The first edit copies the standard set into S.plates[unit] and changes one count in it, so the
-// list you see is always the list the set rows load from. "Back to the standard set" drops the
-// unit's entry again.
+// list you see is always the list the set rows load from. "Back to the standard set" empties the
+// unit's list again. Both are stamped (lib/plates.js), so the last change wins a sync.
 function PlateInventorySheet({ close }) {
   const st = useStore(s => s.S)
   const unit = st.unit === 'lb' ? 'lb' : 'kg'
-  const own = !!st.plates?.[unit]
-  const setPairs = (w, n) => update(s => {
-    s.plates = s.plates || {}
-    if (!s.plates[unit]) s.plates[unit] = Object.fromEntries(inventoryFor(s).map(p => [p.w, p.n]))
-    s.plates[unit][w] = Math.max(0, Math.round(n || 0))
-  })
-  const reset = () => update(s => { if (s.plates) delete s.plates[unit] })
+  const own = ownsPlates(st)
+  const setPairs = (w, n) => update(s => { s.plates = withPlatePairs(s, w, n) })
+  const reset = () => update(s => { s.plates = withStandardPlates(s) })
   return <>
     <h3>{t('Plates')}</h3>
     <div className="muted small" style={{ marginBottom: 14 }}>

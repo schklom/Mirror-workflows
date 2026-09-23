@@ -1,7 +1,7 @@
 // Plate loading for a set row: which plates go on for THIS weight, from the plates you own.
 //
 // bar.js knows the bar and splits what is beyond it per side. This module turns that number
-// into plates ("45 · 5"), and does the same for a single stack (a dip belt, a landmine, a
+// into plates ("45 + 5"), and does the same for a single stack (a dip belt, a landmine, a
 // plate-loaded machine, a sled). Both read the plate inventory in S.plates: pairs per
 // denomination, kept per unit like the bar weight is — a 45 lb plate is a 45 lb plate, a unit
 // switch does not turn it into a 20.4 kg one — so a profile with no inventory of its own gets
@@ -28,26 +28,72 @@ const SINGLE_EQ = new Set(['weighted', 'sled machine'])
 
 const exOf = exOrId => (typeof exOrId === 'string' ? EXIDX[exOrId] : exOrId)
 const num = v => (typeof v === 'number' && Number.isFinite(v) ? v : Number(v) || 0)
+const unitOf = S => (S?.unit === 'lb' ? 'lb' : 'kg')
+
+// Both choices this module reads are stored with the time they were made, the way a Structural
+// Balance override is: S.loadKind[exId] is `{ kind, _ts }` and S.plates[unit] is
+// `{ [size]: pairs, …, _ts }`. Going back to the default — the equipment's own loading, the
+// standard plate set — is written as a stamped entry too (`kind: null`; a list with no sizes)
+// rather than a deleted key, so it wins a sync against the other device's older choice instead
+// of coming back from it (lib/sync-merge.js keeps whichever side set a key last).
+
+/** The sizes of a stored plate list with their counts, `_ts` and junk keys left out. */
+const sizesOf = entry => (entry && typeof entry === 'object' && !Array.isArray(entry)
+  ? Object.entries(entry).filter(([k]) => num(k) > 0)
+  : [])
+
+/** Whether this profile counts its own plates for its unit, rather than loading the standard set. */
+export const ownsPlates = S => sizesOf(S?.plates?.[unitOf(S)]).length > 0
 
 /**
  * The plates this profile can load, heaviest first: [{ w, n }] with n pairs (or plates, for a
- * single stack) of each size. S.plates[unit] is { [size]: count }; absent → the default set.
+ * single stack) of each size. S.plates[unit] is { [size]: count, _ts }; absent or without any
+ * size → the default set.
  */
 export function inventoryFor(S) {
-  const unit = S?.unit === 'lb' ? 'lb' : 'kg'
-  const own = S?.plates?.[unit]
-  const sizes = PLATE_SIZES[unit]
+  const unit = unitOf(S)
+  const own = sizesOf(S?.plates?.[unit])
   const out = []
-  if (own && typeof own === 'object') {
-    for (const [k, v] of Object.entries(own)) {
+  if (own.length) {
+    for (const [k, v] of own) {
       const w = num(k), n = Math.floor(num(v))
       if (w > 0 && n > 0) out.push({ w, n })
     }
   } else {
-    for (const w of sizes) if (!UNCOMMON[unit].has(w)) out.push({ w, n: DEFAULT_PAIRS })
+    for (const w of PLATE_SIZES[unit]) if (!UNCOMMON[unit].has(w)) out.push({ w, n: DEFAULT_PAIRS })
   }
   return out.sort((a, b) => b.w - a.w)
 }
+
+/**
+ * S.plates with `n` pairs of size `w` for the profile's unit, stamped. The first change copies
+ * the standard set in, so the list the inventory sheet shows is always the one the rows load from.
+ */
+export function withPlatePairs(S, w, n, now = Date.now()) {
+  const unit = unitOf(S)
+  const list = ownsPlates(S)
+    ? Object.fromEntries(sizesOf(S.plates[unit]))
+    : Object.fromEntries(inventoryFor(S).map(p => [p.w, p.n]))
+  list[w] = Math.max(0, Math.round(num(n)))
+  return { ...(S?.plates || {}), [unit]: { ...list, _ts: now } }
+}
+
+/** S.plates with the profile's unit back on the standard set: a stamped list with no sizes. */
+export const withStandardPlates = (S, now = Date.now()) => ({ ...(S?.plates || {}), [unitOf(S)]: { _ts: now } })
+
+/**
+ * An exercise's own loading as S.loadKind stores it: 'pairs' | 'single' | 'none', or null when
+ * the equipment decides. A bare string is how the first builds of plate loading stored it, and
+ * still reads as that kind.
+ */
+export function loadKindOf(value) {
+  const k = value && typeof value === 'object' ? value.kind : value
+  return k === 'pairs' || k === 'single' || k === 'none' ? k : null
+}
+
+/** S.loadKind with the exercise's loading set to `kind`, or back on its equipment's for null. */
+export const withLoadKind = (map, exId, kind, now = Date.now()) =>
+  ({ ...(map || {}), [exId]: { kind: loadKindOf(kind), _ts: now } })
 
 /** The count of one size in this profile's inventory (0 when it has none). */
 export const pairsOf = (S, w) => inventoryFor(S).find(p => p.w === w)?.n || 0
@@ -129,15 +175,16 @@ export function plateDelta(prev, next) {
  * How an exercise's weight is loaded: 'pairs' (a bar or a two-post machine — plates split per
  * side beyond the bar), 'single' (one stack: dip belt, landmine, plate-loaded machine, sled — all
  * of it beyond the base weight), 'none' (dumbbells, kettlebells, cables, pin machines, bands).
- * The user's own choice in S.loadKind wins; otherwise bar equipment → pairs, body-weight and
- * "weighted" exercises and sleds → single (the added load is what you hang on), the rest → none.
+ * The user's own choice in S.loadKind (loadKindOf) wins; otherwise bar equipment → pairs,
+ * body-weight and "weighted" exercises and sleds → single (the added load is what you hang on),
+ * the rest → none.
  * A band's "weight" is its tension, not plates, so bands are none even though isBw counts them.
  */
 export function loadKindFor(S, cfgOrId) {
   const cfg = typeof cfgOrId === 'string' ? { id: cfgOrId } : (cfgOrId || {})
   const ex = exOf(cfg.id)
-  const own = S?.loadKind?.[cfg.id]
-  if (own === 'pairs' || own === 'single' || own === 'none') return own
+  const own = loadKindOf(S?.loadKind?.[cfg.id])
+  if (own) return own
   if (usesBar(ex)) return 'pairs'
   if (ex?.eq === 'band' || ex?.eq === 'resistance band') return 'none'
   if (SINGLE_EQ.has(ex?.eq) || isBw(cfg)) return 'single'

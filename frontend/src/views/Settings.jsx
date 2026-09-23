@@ -7,7 +7,7 @@ import { speedUnitOf } from '../lib/speed.js'
 import { copyText } from '../lib/clipboard.js'
 import { useUI } from '../store/useUI.js'
 import { ACCENTS, todayISO, localTZ, weekStartOf, MONDAY, SUNDAY, fmtPlate } from '../lib/format.js'
-import { inventoryFor } from '../lib/plates.js'
+import { inventoryFor, ownsPlates } from '../lib/plates.js'
 import { effortOf } from '../lib/history.js'
 import { unlock, playOnSilentSupported, vibrateSupported } from '../lib/sound.js'
 import { api, webauthnOK, passkeyRegister, IS_ANDROID } from '../lib/api.js'
@@ -733,9 +733,7 @@ function EquipmentCard({ S, update }) {
     }),
   })
   // The plates you own, per unit (lib/plates.js) — what the set rows' plate lines load from.
-  const unit = S.unit === 'lb' ? 'lb' : 'kg'
-  const ownPlates = !!S.plates?.[unit]
-  const plateSummary = ownPlates
+  const plateSummary = ownsPlates(S)
     ? inventoryFor(S).map(p => fmtPlate(p.w) + '×' + p.n).join(' · ') || t('None')
     : t('Standard set — tap to count the pairs you own.')
   return <Section title={t('Equipment')} footer={t('Filters the exercise library and picker, and flags routine exercises that need something you don’t have in the active profile.')}>

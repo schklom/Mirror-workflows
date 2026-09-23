@@ -1,6 +1,8 @@
 // @vitest-environment happy-dom
 // The plate-loading editor (barWeightSheet) and the plate inventory sheet write S.loadKind,
-// S.barWeights and S.plates the way lib/plates.js reads them.
+// S.barWeights and S.plates the way lib/plates.js reads them: a load kind and a unit's plate list
+// are stamped with the time they were set, the way back to the default included, so the last
+// change wins a sync (lib/sync-merge.js).
 import React, { act } from 'react'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { createRoot } from 'react-dom/client'
@@ -24,6 +26,7 @@ function mountTopSheet() {
   return host
 }
 const S = () => useStore.getState().S
+const stamped = kind => ({ kind, _ts: expect.any(Number) })
 const segButton = (host, text) => [...host.querySelectorAll('.seg button')].find(b => b.textContent.trim() === text)
 const button = (host, text) => [...host.querySelectorAll('button')].find(b => b.textContent.trim() === text)
 // A labelled Stepper is .stp-w > .stp-l (label) + .stp (Decrease, value input, Increase).
@@ -54,7 +57,7 @@ describe('plate loading editor', () => {
     const host = mountTopSheet()
     expect(segButton(host, 'Off').classList.contains('on')).toBe(true)
     act(() => segButton(host, 'Single stack').click())
-    expect(S().loadKind[COCOONS]).toBe('single')
+    expect(S().loadKind[COCOONS]).toEqual(stamped('single'))
     // Without a config the equipment decides: body weight → single stack by default.
     useStore.setState(s => ({ S: { ...s.S, loadKind: {} } }))
     act(() => barWeightSheet(COCOONS))
@@ -69,11 +72,14 @@ describe('plate loading editor', () => {
     expect(segButton(host, 'Per side').classList.contains('on')).toBe(true)
     expect(S().loadKind).toEqual({})
     act(() => segButton(host, 'Single stack').click())
-    expect(S().loadKind[SQUAT]).toBe('single')
+    expect(S().loadKind[SQUAT]).toEqual(stamped('single'))
     act(() => segButton(host, 'Per side').click())
-    expect(S().loadKind[SQUAT]).toBeUndefined()   // back to what the equipment implies → key dropped
+    // Back to what the equipment implies: a stamped null, not a dropped key, so the way back
+    // wins a sync against the other device's older 'single' instead of losing to it.
+    expect(S().loadKind[SQUAT]).toEqual(stamped(null))
+    expect(segButton(host, 'Per side').classList.contains('on')).toBe(true)
     act(() => segButton(host, 'Off').click())
-    expect(S().loadKind[SQUAT]).toBe('none')
+    expect(S().loadKind[SQUAT]).toEqual(stamped('none'))
     expect(host.textContent).toContain('No plate line under the sets.')
   })
 
@@ -109,7 +115,7 @@ describe('plate loading editor', () => {
     const host = mountTopSheet()
     expect(segButton(host, 'Off').classList.contains('on')).toBe(true)
     act(() => segButton(host, 'Single stack').click())
-    expect(S().loadKind[LEG_PRESS]).toBe('single')
+    expect(S().loadKind[LEG_PRESS]).toEqual(stamped('single'))
     const st = stepperOf(host, 'Base weight (lb)')
     expect(st).toBeTruthy()
     expect(host.textContent).not.toContain('No bar')
@@ -141,6 +147,7 @@ describe('plate inventory sheet', () => {
     expect(S().plates.lb[45]).toBe(1)
     expect(S().plates.lb[35]).toBe(6)     // the rest of the standard set came along
     expect(S().plates.lb[15]).toBeUndefined()
+    expect(S().plates.lb._ts).toEqual(expect.any(Number))
     act(() => inc(stepperOf(host, '15 lb')).click())
     expect(S().plates.lb[15]).toBe(1)
     expect(valueOf(stepperOf(host, '45 lb'))).toBe('1')
@@ -148,12 +155,22 @@ describe('plate inventory sheet', () => {
     expect(host.textContent).toContain('Your own list for lb.')
   })
 
-  it('"Back to the standard set" drops the unit\'s own list', () => {
-    useStore.setState(s => ({ S: { ...s.S, plates: { lb: { 45: 1 }, kg: { 20: 2 } } } }))
+  it('"Back to the standard set" empties the unit\'s own list, stamped', () => {
+    useStore.setState(s => ({ S: { ...s.S, plates: { lb: { 45: 1, _ts: 5 }, kg: { 20: 2 } } } }))
     act(() => plateInventorySheet())
     const host = mountTopSheet()
+    expect(valueOf(stepperOf(host, '45 lb'))).toBe('1')
     act(() => button(host, 'Back to the standard set').click())
-    expect(S().plates).toEqual({ kg: { 20: 2 } })
+    // A list with no sizes, not a deleted unit: the reset has to win a sync against the other
+    // device's older list rather than get it back.
+    expect(S().plates).toEqual({ lb: { _ts: expect.any(Number) }, kg: { 20: 2 } })
+    expect(S().plates.lb._ts).toBeGreaterThan(5)
     expect(button(host, 'Back to the standard set')).toBeUndefined()
+    expect(valueOf(stepperOf(host, '45 lb'))).toBe('6')
+    expect(host.textContent).toContain('The standard set, plenty of each')
+    // …and the next change starts from the standard set again.
+    act(() => dec(stepperOf(host, '45 lb')).click())
+    expect(S().plates.lb[45]).toBe(5)
+    expect(S().plates.lb[35]).toBe(6)
   })
 })

@@ -718,6 +718,27 @@ describe('an edited plan restarts progression (#275)', () => {
     expect(nextPrescription(S, { id: LIFT, sets: 2, reps: 15, weight: 40, prog: 'linear' }, R)).toMatchObject({ kind: 'up', weight: 42.5 })
   })
 
+  // The weight is history's call — unless the same edit that changed the sets or reps changed the
+  // plan's weight too. 102.5 × 10 after 3 × 5 @ 100 was rewritten as 3 × 10 @ 70 is a load never
+  // lifted for those reps, and "starting from your new target" would not be true of it.
+  it('opens at the plan\'s new weight when the edit changed it along with the reps', () => {
+    const five = logged(LIFT, { sets: 3, reps: 5, weight: 100 }, { sets: 3, reps: 5, weight: 102.5 }, 102.5, [5, 5, 5])
+    const S = { unit: 'kg', workouts: [five] }
+    const p = nextPrescription(S, { id: LIFT, sets: 3, reps: 10, weight: 70, prog: 'linear' }, R)
+    expect(p).toMatchObject({ kind: 'hold', weight: 70, reps: 10 })
+    expect(p.why[0]).toBe('Plan changed — starting from your new target.')
+    // Only the reps edited, the weight the routine was created with left alone: what was lifted.
+    expect(nextPrescription(S, { id: LIFT, sets: 3, reps: 10, weight: 100, prog: 'linear' }, R)).toMatchObject({ kind: 'hold', weight: 102.5, reps: 10 })
+    // A weight edit alone restarts nothing: the sets and reps are the plan's, the history moves on.
+    expect(nextPrescription(S, { id: LIFT, sets: 3, reps: 5, weight: 70, prog: 'linear' }, R)).toMatchObject({ kind: 'up', weight: 105 })
+  })
+
+  it('starts a new weight at the bottom of a double-progression range', () => {
+    const twelve = logged(LIFT, { sets: 3, reps: 12, weight: 40 }, { sets: 3, reps: 12, weight: 40 }, 40, [12, 12, 12])
+    const p = nextPrescription({ unit: 'kg', workouts: [twelve] }, { id: LIFT, sets: 3, reps: 12, repsMin: 8, weight: 60, prog: 'double' }, R)
+    expect(p).toMatchObject({ kind: 'hold', weight: 60, reps: 8 })
+  })
+
   it('restarts a bodyweight goal from the new reps instead of climbing from the old ones', () => {
     const S = { unit: 'kg', workouts: [logged(PUSH, { sets: 2, reps: 15, weight: 0 }, { sets: 2, reps: 15, weight: 0 }, 0, [15, 15])] }
     const p = nextPrescription(S, { id: PUSH, sets: 2, reps: 10, weight: 0, bodyweight: true }, R)
@@ -760,6 +781,15 @@ describe('an edited plan restarts progression (#275)', () => {
     const B = { d: '2026-04-01', routineIds: ['b'], entries: [{ id: PUSH, rid: 'b', planned: { sets: 2, reps: 15, weight: 0 }, target: { sets: 2, reps: 15, weight: 0 }, sets: [{ w: 0, r: 15, done: true }, { w: 0, r: 15, done: true }] }] }
     const p = nextPrescription({ unit: 'kg', workouts: [B] }, { id: PUSH, sets: 2, reps: 10, weight: 0, bodyweight: true }, { id: 'a', ex: [] })
     expect(p).toMatchObject({ kind: 'hold', reps: 10 })
+    expect(p.why[0]).toBe('First time in this routine — starting from its own target.')
+  })
+
+  // A heavy day and a light day of the same lift (#216): the heavy day's first session opens at
+  // its own weight, not at the light day's.
+  it('starts a routine at its own weight when the routine it borrows from planned another', () => {
+    const B = { d: '2026-04-01', routineIds: ['b'], entries: [{ id: LIFT, rid: 'b', planned: { sets: 2, reps: 15, weight: 40 }, target: { sets: 2, reps: 15, weight: 40 }, sets: [{ w: 40, r: 15, done: true }, { w: 40, r: 15, done: true }] }] }
+    const p = nextPrescription({ unit: 'kg', workouts: [B] }, { id: LIFT, sets: 2, reps: 10, weight: 60, prog: 'linear' }, { id: 'a', ex: [] })
+    expect(p).toMatchObject({ kind: 'hold', weight: 60, reps: 10 })
     expect(p.why[0]).toBe('First time in this routine — starting from its own target.')
   })
 

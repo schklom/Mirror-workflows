@@ -46,15 +46,27 @@ describe('a planned session opens at the plan\'s reps', () => {
     expect(work(a)).toHaveLength(2)
     expect(reps(a)).toEqual([10, 10])
     expect(a.target.reps).toBe(10)
-    // A has no session of its own, so it starts from the exercise's last weight (#216) at its own
-    // sets × reps, and says so.
-    expect(work(a).map(s => s.w)).toEqual([40, 40])
+    // A has no session of its own, so it starts from its own sets × reps (#216), and says so. Its
+    // plan asks 60 where B's asked 40 — a heavy day and a light day — so it opens at its own 60,
+    // not at the light day's load.
+    expect(work(a).map(s => s.w)).toEqual([60, 60])
     expect(a.plan.why[0]).toBe('First time in this routine — starting from its own target.')
     // From then on A progresses on its own line, whatever B does.
     train(st, ['A'])
     train(st, ['B'], { r: 9 })
     const [again] = start(st, ['A'])
-    expect(work(again).map(s => [s.w, s.r])).toEqual([[42.5, 10], [42.5, 10]])
+    expect(work(again).map(s => [s.w, s.r])).toEqual([[62.5, 10], [62.5, 10]])
+  })
+
+  it('from the exercise\'s last weight when the other routine planned the same one', () => {
+    const st = state([
+      { id: 'A', name: 'Plan A', ex: [{ id: BENCH, sets: 2, reps: 10, weight: 40 }] },
+      { id: 'B', name: 'Plan B', ex: [{ id: BENCH, sets: 2, reps: 15, weight: 40 }] },
+    ])
+    train(st, ['B'])
+    train(st, ['B'])
+    const [a] = start(st, ['A'])
+    expect(work(a).map(s => [s.w, s.r])).toEqual([[42.5, 10], [42.5, 10]])
   })
 
   for (const prog of [undefined, 'linear', 'greyskull', 'off']) {
@@ -158,6 +170,21 @@ describe('an edited routine starts again from its new plan', () => {
     expect(e.plan.why[0]).toBe('Plan changed — starting from your new target.')
     train(st, ['A'])
     expect(start(st, ['A'])[0].plan.kind).toBe('up')   // and progresses from there
+  })
+
+  // The same edit that changed the reps changed the weight: 3 × 5 @ 100 rewritten as 3 × 10 @ 70
+  // opens at 70 × 10, not at the 102.5 progression reached for fives.
+  it('opens at the plan\'s new weight when the edit changed it too', () => {
+    const st = state([{ id: 'A', name: 'A', ex: [{ id: BENCH, sets: 3, reps: 5, weight: 100 }] }])
+    train(st, ['A'])
+    train(st, ['A'])
+    expect(work(start(st, ['A'])[0]).map(s => s.w)).toEqual([105, 105, 105])
+    Object.assign(cfgOf(st, 'A'), { reps: 10, weight: 70 })
+    const [e] = start(st, ['A'])
+    expect(work(e).map(s => [s.w, s.r])).toEqual([[70, 10], [70, 10], [70, 10]])
+    expect(e.plan.why[0]).toBe('Plan changed — starting from your new target.')
+    train(st, ['A'])
+    expect(work(start(st, ['A'])[0]).map(s => [s.w, s.r])).toEqual([[72.5, 10], [72.5, 10], [72.5, 10]])
   })
 
   it('aims inside the new range under double progression', () => {

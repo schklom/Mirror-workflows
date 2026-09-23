@@ -210,7 +210,8 @@ export function selectDeloadCandidate({ currentWeight, targetWeight, targetReps,
  * the seconds, for a hold) — as stamped on every entry a session builds (`entry.planned`, issue
  * #275). A prescription moves the session's `target`; this keeps what the routine said, which
  * is the only way the next session can tell a plan that was edited from one that progressed.
- * The weight rides along for reference and never restarts anything: history decides it.
+ * The weight never starts one on its own — history decides it — but once the sets or reps were
+ * edited, a weight edited with them is the one the new plan opens at (nextPrescription).
  */
 export function plannedOf(cfg) {
   const c = cfg || {}
@@ -395,19 +396,26 @@ export function nextPrescription(S, cfg, routine) {
   // (this one has none of its own yet, see sessionsFor) whose plan was not this one's. Its
   // numbers were judged against the old target, so they cannot say where the new one stands —
   // a bodyweight goal climbing from the old count, or a deload aimed at reps and sets the
-  // routine no longer asks for. The weight holds at what was last lifted; the sets and reps are
-  // the routine's own (double progression aims inside its new range, from what you managed).
+  // routine no longer asks for. The sets and reps are the routine's own (double progression aims
+  // inside its new range, from what you managed).
   // A borrowed session saved before plans were stamped is taken as a different plan.
   const borrowed = !!routine?.id && last.rid !== routine.id
   if (last.planned ? planChanged(last.planned, cfg) : borrowed) {
     const why = borrowed ? ['First time in this routine — starting from its own target.'] : ['Plan changed — starting from your new target.']
-    if (mode === 'time') return { policy, kind: 'hold', sec: cfg.sec || last.goal || undefined, why }
-    if (last.weight <= 0 && climbsReps(cfg)) return { policy, kind: 'hold', weight: 0, reps: cfg.reps || undefined, why }
+    // The weight holds at what was last lifted, unless the plan's own weight is not the one the
+    // session was built from: the same edit that turned 3 × 5 @ 100 into 3 × 10 @ 70 set 70,
+    // and 102.5 × 10 is a load never lifted for those reps. A routine whose weight nobody
+    // touched still carries the one it was created with, so there the history decides.
+    const set = cfg.weight > 0 && last.planned && (last.planned.weight ?? null) !== cfg.weight ? { weight: cfg.weight } : null
+    if (mode === 'time') return { policy, kind: 'hold', ...set, sec: cfg.sec || last.goal || undefined, why }
+    if (!set && last.weight <= 0 && climbsReps(cfg)) return { policy, kind: 'hold', weight: 0, reps: cfg.reps || undefined, why }
     // A loaded lift logged at 0 had no weight typed in (see below): the plan's, if it has one.
-    const held = last.weight > 0 ? { weight: last.weight } : cfg.weight > 0 ? { weight: cfg.weight } : {}
+    const held = set || (last.weight > 0 ? { weight: last.weight } : cfg.weight > 0 ? { weight: cfg.weight } : {})
     if (policy === 'double') {
       const range = normalizeRepRange(cfg.reps || last.goal || 10, cfg.repsMin, repStep(cfg))
-      const aim = Math.min(range.reps, Math.max(range.repsMin, last.low + repStep(cfg)))
+      // A new weight starts at the bottom of the range, the way a raise does: the reps managed
+      // were managed at another load.
+      const aim = set ? range.repsMin : Math.min(range.reps, Math.max(range.repsMin, last.low + repStep(cfg)))
       return { policy, kind: 'hold', ...held, reps: aim, why }
     }
     return { policy, kind: 'hold', ...held, reps: cfg.reps || undefined, why }

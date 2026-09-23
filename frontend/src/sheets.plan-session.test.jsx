@@ -78,13 +78,14 @@ describe('what you plan is what you train', () => {
     expect(rowsOf('A')).toEqual(['60x10', '60x10'])
     trainActive('2026-09-07')
     startOn('2026-09-09', ['B'])
-    expect(rowsOf('B')).toEqual(['60x15', '60x15'])      // B's first time: the last weight, B's reps
+    // B's first time: B's own plan, the light day's 40 at its 15 reps — not the heavy day's 60
+    expect(rowsOf('B')).toEqual(['40x15', '40x15'])
     trainActive('2026-09-09', 12)
     startOn('2026-09-14', ['A'])
     expect(rowsOf('A')).toEqual(['62.5x10', '62.5x10'])  // A's own line, not B's miss
     trainActive('2026-09-14')
     startOn('2026-09-16', ['B'])
-    expect(rowsOf('B')).toEqual(['60x15', '60x15'])      // B holds after its own miss
+    expect(rowsOf('B')).toEqual(['40x15', '40x15'])      // B holds after its own miss
   })
 
   it('"Your last session" still carries the 15s over', () => {

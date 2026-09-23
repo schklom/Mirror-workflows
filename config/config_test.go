@@ -21,7 +21,7 @@ func testValidateTileServerUrl(t *testing.T, input string, expectedOrigin string
 }
 
 func TestValidateTileServerUrlNotSet(t *testing.T) {
-	testValidateTileServerUrl(t, "", "https://*.tile.openstreetmap.org")
+	testValidateTileServerUrl(t, "", "https://tile.openstreetmap.org")
 }
 
 func TestValidateTileServerUrlStandard(t *testing.T) {

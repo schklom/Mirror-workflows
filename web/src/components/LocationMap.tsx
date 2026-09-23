@@ -66,7 +66,7 @@ export const LocationMap = () => {
         const url = await apiService().getTileServerUrl();
         setTileServerUrl(url);
       } catch {
-        setTileServerUrl('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+        setTileServerUrl('https://tile.openstreetmap.org/{z}/{x}/{y}.png');
       }
     })();
   }, []);

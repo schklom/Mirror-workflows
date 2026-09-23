@@ -187,6 +187,22 @@ describe('saved workout editing', () => {
     expect(lastEntryFor(state, '0025').sets[0].w).toBe(80)
   })
 
+  // A stamp outranks what another device wrote since. Opening the editor and saving without a
+  // change must not give the record one, or it beats sets added on the phone that have not synced.
+  it('leaves the record and its stamp alone when Save changed nothing', () => {
+    const state = fixture()
+    state.workouts[0] = { ...state.workouts[0], name: 'Legs', routineIds: [], routineId: null, entries: [{ ...entry(40), topW: 40 }], vol: 200, _ts: 7 }
+    const before = structuredClone(state.workouts)
+    editCompletedSession(state, 'workout')
+    expect(saveWorkoutEdit(state, 1234)).toEqual(before[0])
+    expect(state.workouts).toEqual(before)
+    expect(state.active).toBeNull()
+
+    editCompletedSession(state, 'workout')
+    state.active.entries[0].sets[0].r = 6
+    expect(saveWorkoutEdit(state, 1234)._ts).toBe(1234)
+  })
+
   it('stamps the edit, and the edit replaces the old copy by id in a merge whichever copy is newer', () => {
     const state = fixture()
     editCompletedSession(state, 'workout')

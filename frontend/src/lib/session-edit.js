@@ -34,6 +34,20 @@ const keyOf = w => (w?.id != null ? w.id : legacySyncKey(w))
 const SESSION_FIELDS = ['note', 'name', 'bw']
 const sessionField = (w, k) => (k === 'note' ? (w?.note || '').trim() : (w?.[k] ?? null))
 
+// The same data whatever order its keys were written in. A key holding undefined is no key, as it
+// is once the record is stored.
+function sameData(a, b) {
+  if (a === b) return true
+  if (!a || !b || typeof a !== 'object' || typeof b !== 'object' || Array.isArray(a) !== Array.isArray(b)) return false
+  const keys = o => Object.keys(o).filter(k => o[k] !== undefined)
+  const ka = keys(a)
+  return ka.length === keys(b).length && ka.every(k => sameData(a[k], b[k]))
+}
+// What Save would write, apart from what it works out again (the volume and the badges), the stamp
+// and the id it freezes for a workout from before ids.
+const DERIVED = ['id', 'vol', 'prs', '_ts']
+const savedData = w => Object.fromEntries(Object.entries(w).filter(([k]) => !DERIVED.includes(k)))
+
 // The best load one workout logged for an exercise, across every occurrence of it.
 function bestIn(workout, id) {
   let best = 0
@@ -114,6 +128,13 @@ export function saveWorkoutEdit(state, now = Date.now()) {
     const value = edited ? sessionField(updated, k) : current[k]
     if (value == null || value === '') delete record[k]
     else record[k] = value
+  }
+  // A Save that changed nothing closes the editor and leaves the record as it is. A new stamp
+  // would outrank an edit another device made since and has not synced yet (sets added on the
+  // phone), for nothing — the date and duration rows skip an unchanged save the same way.
+  if (sameData(savedData(record), savedData(current))) {
+    state.active = null
+    return current
   }
   record.vol = workoutVolume(record)
   stampWorkout(record, now)

@@ -104,6 +104,19 @@ describe('Settings → Account ID', () => {
     expect(idRow(page).textContent).toContain(ID)
   })
 
+  it('plain http without the Clipboard API still copies it, the way a selection copy does', async () => {
+    Object.defineProperty(navigator, 'clipboard', { value: undefined, configurable: true })
+    const execCommand = vi.fn(() => true)
+    Object.defineProperty(document, 'execCommand', { value: execCommand, configurable: true })
+    try {
+      const page = mount(<Settings />)
+      act(() => idRow(page).click())
+      await tick()
+      expect(execCommand).toHaveBeenCalledWith('copy')
+      expect(mocks.toast).toHaveBeenCalledWith('Account ID copied')
+    } finally { delete document.execCommand }
+  })
+
   it('a guest has no account and no id', () => {
     mocks.user = null
     const page = mount(<Settings />)

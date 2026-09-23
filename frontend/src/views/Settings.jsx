@@ -4,6 +4,7 @@ import { useStore, DEF, hasData } from '../store/useStore.js'
 import { workoutControls } from '../lib/workout-controls.js'
 import { convertStateUnit } from '../lib/units.js'
 import { speedUnitOf } from '../lib/speed.js'
+import { copyText } from '../lib/clipboard.js'
 import { useUI } from '../store/useUI.js'
 import { ACCENTS, todayISO, localTZ, weekStartOf, MONDAY, SUNDAY } from '../lib/format.js'
 import { effortOf } from '../lib/history.js'
@@ -750,12 +751,13 @@ function EquipmentCard({ S, update }) {
 
 // The account's id, small and one tap to copy (#219). It is what an admin puts in ADMIN_UIDS,
 // and the one thing that names an account beyond doubt when someone asks their admin for help:
-// display names are free text and need not be unique. Where the clipboard is out of reach the
-// id is still on screen to read out.
+// display names are free text and need not be unique. copyText also reaches the clipboard on a
+// plain-http LAN address, where the Clipboard API is missing and password sign-in (#118) is the
+// usual way in; where no copy works at all the id is still on screen to read out.
 function AccountIdRow({ id }) {
   const toast = useUI(s => s.toast)
   if (!id) return null
-  const copy = () => navigator.clipboard?.writeText(id).then(() => toast(t('Account ID copied')), () => {})
+  const copy = async () => { if (await copyText(id)) toast(t('Account ID copied')) }
   return <Row icon="person" iconTint="var(--grey)" title={t('Account ID')} subtitle={<span className="acct-id">{id}</span>} onClick={copy} />
 }
 

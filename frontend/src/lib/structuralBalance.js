@@ -1,4 +1,4 @@
-import { estimate1RM, FORMULAS } from './onerm.js'
+import { estimate1RM, FORMULAS, DEFAULT_FORMULA } from './onerm.js'
 import { LB_TO_KG } from './recovery.js'
 import { isBw } from './history.js'
 import { EXIDX, isAssisted } from './exercises.js'
@@ -85,11 +85,22 @@ export function loadAtReps(loadKg, setReps, reps) {
   return loadForReps(r === 1 ? w : FORMULAS.epley(w, r), reps)
 }
 
+// estimate1RM()'s estimate without its 0.1 kg rounding. A load table only ever divides one
+// estimate by another, and two rounded ones of loads exactly at its ratio land either side of it:
+// a 100 kg squat and a 125 kg deadlift, both for 5, read 124.94% of Poliquin's 125% — Borderline,
+// next to "125% / 125%". Its guards, the rep cap among them, still decide what is an estimate.
+function unrounded1RM(loadKg, reps) {
+  if (estimate1RM(loadKg, reps) === null) return null
+  const w = Number(loadKg)
+  const r = Number(reps)
+  return r === 1 ? w : FORMULAS[DEFAULT_FORMULA](w, Math.round(r))
+}
+
 // Best reading across a whitelist of exercise ids, in kg: the estimated 1RM (`estKg`), or with
 // `reps` the load for that many reps (`repsKg`, loadAtReps). Scans the log directly instead of
 // calling onerm.js's best1RM(), which reads `s.w` raw and so cannot see the body mass a dip or a
-// pull-up moves, nor a unilateral row's sides; the 1RM itself still goes through the shared
-// estimate1RM() so the formula, its rounding and its rep cap stay in one place.
+// pull-up moves, nor a unilateral row's sides; the 1RM itself still comes from the shared
+// estimate1RM()'s formula and rep cap.
 export function resolveCurrent(S, exerciseIds, bodyweightKg, reps = null) {
   const key = reps > 1 ? 'repsKg' : 'estKg'
   let best = null
@@ -102,7 +113,7 @@ export function resolveCurrent(S, exerciseIds, bodyweightKg, reps = null) {
         for (const lift of liftsOf(set)) {
           const loadKg = setLoadKg(S, workout, entry, lift, bodyweightKg)
           if (loadKg === null) continue
-          const kg = reps > 1 ? loadAtReps(loadKg, lift.r, reps) : estimate1RM(loadKg, lift.r)
+          const kg = reps > 1 ? loadAtReps(loadKg, lift.r, reps) : unrounded1RM(loadKg, lift.r)
           if (kg === null) continue
           if (!best || kg > best[key]) {
             best = { [key]: kg, w: Number(lift.w) || 0, r: Math.round(Number(lift.r)), d: workout.d, t: workout.start, exId }

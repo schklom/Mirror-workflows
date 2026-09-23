@@ -59,6 +59,38 @@ describe('computeBalance — load-ratio mode (Thibaudeau powerlifting)', () => {
     expect(withoutSquat.find(r => r.roleId === 'squat').status).toBe(BALANCE_STATUSES.NO_DATA)
   })
 
+  // Loads exactly at a table's ratio, lifted for the same reps, are exactly that ratio of each
+  // other — whatever the reps. Rounded estimates of both could land either side of it.
+  it('a lift exactly at its ratio of the anchor is balanced, at any reps', () => {
+    const poliquin = TEMPLATES.poliquin
+    const deadlift = computeBalance({ unit: 'kg', workouts: [
+      workoutAt('1436', NOW - 1000, [setDone(100, 5)]),
+      workoutAt('0032', NOW, [setDone(125, 5)]),
+    ] }, poliquin).find(r => r.roleId === 'deadlift')
+    expect(deadlift.actualPct).toBeCloseTo(125, 9)
+    expect(deadlift.status).toBe(BALANCE_STATUSES.BALANCED)
+
+    const missed = []
+    for (const tpl of [poliquin, template]) {
+      for (const role of tpl.roles.filter(r => r.anchorRoleId && !['dips', 'supinePullups'].includes(r.id))) {
+        const anchor = findRole(tpl, role.anchorRoleId)
+        for (let anchorKg = 40; anchorKg <= 250; anchorKg += 2.5) {
+          for (const reps of [1, 2, 3, 4, 5, 6, 8, 10, 12]) {
+            for (const unit of ['kg', 'lb']) {
+              const S = { unit, workouts: [
+                workoutAt(anchor.exerciseIds[0], NOW - 1000, [setDone(anchorKg, reps)]),
+                workoutAt(role.exerciseIds[0], NOW, [setDone(anchorKg * role.targetPct / 100, reps)]),
+              ] }
+              const row = computeBalance(S, tpl).find(r => r.roleId === role.id)
+              if (row.status !== BALANCE_STATUSES.BALANCED) missed.push(`${tpl.id} ${role.id} ${anchorKg} ${unit} × ${reps}: ${row.actualPct}`)
+            }
+          }
+        }
+      }
+    }
+    expect(missed).toEqual([])
+  })
+
   it('a non-anchor role is no-data when the anchor itself has no data, even if the role does', () => {
     const S = { unit: 'kg', workouts: [workoutAt('0025', NOW, [setDone(80, 1)])] } // bench logged, squat never
     const results = computeBalance(S, template)
@@ -185,7 +217,7 @@ describe('computeBalance — bodyweight-ratio mode (ATG)', () => {
     const eightAHand = { unit: 'kg', workouts: [workoutAt('0361', NOW, [
       { done: true, w: 20, r: 16, sides: { L: { w: 20, r: 8, done: true }, R: { w: 20, r: 8, done: true } } },
     ])] }
-    expect(resolveCurrent(eightAHand, ['0361'], 80).estKg).toBeCloseTo(25.3) // 16 in total is past the rep cap
+    expect(resolveCurrent(eightAHand, ['0361'], 80).estKg).toBeCloseTo(20 * (1 + 8 / 30)) // 16 in total is past the rep cap
   })
 
   // ATG's test is to load the bar to the standard, so a lifter lands exactly on it: that has to

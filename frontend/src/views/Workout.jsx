@@ -196,7 +196,7 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
   const refLine = ref ? <button type="button" className="refline small dim"
     title={refBest ? t('Show last time instead') : t('Show your best set instead')}
     onClick={() => update(s => { s.logRef = refBest ? 'last' : 'best' })}>
-    <span>{refBest ? t('Best set') : t('Last time')} ({fmtDate(ref.d)}): {(refBest ? [ref.set] : ref.sets).map(s => setLabel(entry.id, s, ref.target)).join(', ')}</span>
+    <span>{refBest ? t('Best set') : t('Last time')} ({fmtDate(ref.d)}): {(refBest ? [ref.set] : ref.sets).map(s => setLabel(entry.id, s, ref.target, speedUnitOf(S))).join(', ')}</span>
     <Icon name="shuffle" />
   </button> : null
   // A bodyweight set has no weight to type, so the column is not there (issue #32) — one

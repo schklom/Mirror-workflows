@@ -3,16 +3,18 @@
 // same labels the history shows, so a drop-set or a rest-pause set reads the same in both.
 // i18n-core rather than i18n, like history.js: nothing here needs the React half.
 import { setLabel, supersetUnits, workoutVolume } from './history.js'
+import { EXIDX } from './exercises.js'
 import { hasCompletedWork, isWarmupRow } from './workout-model.js'
 import { fmtDate, fmtNum, fmtVol, durPart, capWords } from './format.js'
-import { t } from './i18n-core.js'
+import { t, exerciseNameClass } from './i18n-core.js'
 
 /**
- * `unit` is the profile's, `nameOf(entry)` the exercise's display name. Blocks are separated by
- * a blank line: the heading, then each exercise (a superset's under one "Superset" line, its
- * members together), then the session note.
+ * `unit` is the profile's, `nameOf(entry)` the exercise's display name, `speedUnit` the one cardio
+ * is shown in (lib/speed.js; km/h when absent). Blocks are separated by a blank line: the heading,
+ * then each exercise (a superset's under one "Superset" line, its members together), then the
+ * session note.
  */
-export function workoutText(w, { unit, nameOf }) {
+export function workoutText(w, { unit, nameOf, speedUnit }) {
   const facts = [
     ...durPart((w.end || 0) - (w.start || 0)),
     fmtVol(w.vol ?? workoutVolume(w), unit),
@@ -25,7 +27,10 @@ export function workoutText(w, { unit, nameOf }) {
   const lines = entry => {
     const sets = (entry.sets || []).filter(s => hasCompletedWork(s) && !isWarmupRow(s))
     if (!sets.length) return null
-    return [capWords(nameOf(entry)), sets.map(s => setLabel(entry.id, s, entry.target)).join(', '), ...(entry.note ? [entry.note] : [])]
+    // Title case the way the screen shows it (exerciseNameClass): an English name gets it, a
+    // translated one keeps its own casing, which German's capitalised nouns depend on.
+    const name = nameOf(entry)
+    return [exerciseNameClass(EXIDX[entry.id]) ? capWords(name) : name, sets.map(s => setLabel(entry.id, s, entry.target, speedUnit)).join(', '), ...(entry.note ? [entry.note] : [])]
   }
   const entries = w.entries || []
   for (const group of supersetUnits(entries)) {

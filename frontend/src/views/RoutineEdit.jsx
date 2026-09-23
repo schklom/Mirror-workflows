@@ -353,7 +353,7 @@ export default function RoutineEdit() {
       picker.close()
       let done = false
       edit(x => { if (x[i] && x[i].id === openedOn) { x[i] = fn(x[i]); done = true } })
-      if (done) toast(t('Replaced with “{0}”', capWords(exerciseNameFor(ex))))
+      if (done) toast(t('Replaced with “{0}”', exerciseNameClass(ex) ? capWords(exerciseNameFor(ex)) : exerciseNameFor(ex)))
     }
     const picker = exercisePicker((ex, quick) => {
       // The slot and the history as they are now, not as this render saw them: a sync can land

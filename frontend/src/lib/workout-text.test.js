@@ -55,3 +55,15 @@ describe('workoutText', () => {
     expect(workoutText(bare, { unit: 'lb', nameOf })).toBe(`Legs — ${fmtDate('2026-09-03', true, true)}\n120 lb\n\nDumbbell Curl\n12×10`)
   })
 })
+
+// Cardio speed in the profile's unit, as the detail sheet above the button shows it (lib/speed.js).
+describe('workoutText speed unit', () => {
+  it('writes a run in mph when the profile shows mph, and in km/h by default', () => {
+    const w = { d: '2026-09-03', start: 0, end: 0, name: 'Run', entries: [
+      { id: 'run', target: { mode: 'cardio' }, sets: [{ min: 20, speed: 16.09344, done: true }] },
+    ] }
+    const nameOf = () => 'run'
+    expect(workoutText(w, { unit: 'lb', nameOf, speedUnit: 'mph' }).split('\n').at(-1)).toBe('20 min @ 10 mph')
+    expect(workoutText(w, { unit: 'kg', nameOf }).split('\n').at(-1)).toBe('20 min @ 16.1 km/h')
+  })
+})

@@ -1257,6 +1257,9 @@ export default {
   'Offline — showing the last copy synced with the server.': 'ออฟไลน์ — แสดงสำเนาล่าสุดที่ซิงค์กับเซิร์ฟเวอร์',
   'Not synced yet — tap to retry.': 'ยังไม่ได้ซิงค์ — แตะเพื่อลองใหม่',
   'Back online — synced with the server.': 'กลับมาออนไลน์แล้ว — ซิงค์กับเซิร์ฟเวอร์แล้ว',
+  'This phone is not connected to a server.': 'โทรศัพท์เครื่องนี้ไม่ได้เชื่อมต่อกับเซิร์ฟเวอร์ใด',
+  'The server did not answer in time.': 'เซิร์ฟเวอร์ไม่ตอบกลับภายในเวลาที่กำหนด',
+  'The server answered with something other than openGym data.': 'เซิร์ฟเวอร์ตอบกลับด้วยข้อมูลที่ไม่ใช่ข้อมูลของ openGym',
   // --- combine-routines sheet + custom-exercise equipment (v1.3.6) ---
   '{0} added — {1}': 'เพิ่ม {0} แล้ว — {1}',
   'already added': 'เพิ่มแล้ว',

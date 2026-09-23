@@ -1249,6 +1249,9 @@ export default {
   'Offline — showing the last copy synced with the server.': 'Offline — a szerverrel utoljára szinkronizált másolat látható.',
   'Not synced yet — tap to retry.': 'Még nincs szinkronizálva — koppints az újrapróbáláshoz.',
   'Back online — synced with the server.': 'Újra online — szinkronizálva a szerverrel.',
+  'This phone is not connected to a server.': 'Ez a telefon nem csatlakozik szerverhez.',
+  'The server did not answer in time.': 'A szerver nem válaszolt időben.',
+  'The server answered with something other than openGym data.': 'A szerver nem openGym-adatokkal válaszolt.',
   // --- combine-routines sheet + custom-exercise equipment (v1.3.6) ---
   '{0} added — {1}': '{0} hozzáadva — {1}',
   'already added': 'már hozzáadva',

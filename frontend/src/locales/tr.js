@@ -1246,6 +1246,9 @@ export default {
   'Offline — showing the last copy synced with the server.': 'Çevrimdışı — sunucuyla en son eşitlenen kopya gösteriliyor.',
   'Not synced yet — tap to retry.': 'Henüz eşitlenmedi — yeniden denemek için dokun.',
   'Back online — synced with the server.': 'Yeniden çevrimiçi — sunucuyla eşitlendi.',
+  'This phone is not connected to a server.': 'Bu telefon hiçbir sunucuya bağlı değil.',
+  'The server did not answer in time.': 'Sunucu zamanında yanıt vermedi.',
+  'The server answered with something other than openGym data.': 'Sunucu openGym verisi dışında bir şeyle yanıt verdi.',
   // --- combine-routines sheet + custom-exercise equipment (v1.3.6) ---
   '{0} added — {1}': '{0} eklendi — {1}',
   'already added': 'zaten ekli',

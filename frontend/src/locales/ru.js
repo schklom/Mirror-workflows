@@ -1246,6 +1246,9 @@ export default {
   'Offline — showing the last copy synced with the server.': 'Офлайн — показана последняя копия, синхронизированная с сервером.',
   'Not synced yet — tap to retry.': 'Ещё не синхронизировано — нажмите, чтобы повторить.',
   'Back online — synced with the server.': 'Снова онлайн — синхронизировано с сервером.',
+  'This phone is not connected to a server.': 'Этот телефон не подключён ни к одному серверу.',
+  'The server did not answer in time.': 'Сервер не ответил вовремя.',
+  'The server answered with something other than openGym data.': 'Сервер ответил чем-то, что не является данными openGym.',
   // --- combine-routines sheet + custom-exercise equipment (v1.3.6) ---
   '{0} added — {1}': '{0} добавлено — {1}',
   'already added': 'уже добавлено',

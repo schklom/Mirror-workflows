@@ -1246,6 +1246,9 @@ export default {
   'Offline — showing the last copy synced with the server.': '오프라인 — 서버와 마지막으로 동기화된 사본을 표시합니다.',
   'Not synced yet — tap to retry.': '아직 동기화되지 않음 — 다시 시도하려면 탭하세요.',
   'Back online — synced with the server.': '다시 온라인 — 서버와 동기화되었습니다.',
+  'This phone is not connected to a server.': '이 휴대폰은 서버에 연결되어 있지 않습니다.',
+  'The server did not answer in time.': '서버가 제시간에 응답하지 않았습니다.',
+  'The server answered with something other than openGym data.': '서버가 openGym 데이터가 아닌 응답을 보냈습니다.',
   // --- combine-routines sheet + custom-exercise equipment (v1.3.6) ---
   '{0} added — {1}': '{0} 추가됨 — {1}',
   'already added': '이미 추가됨',

@@ -152,6 +152,15 @@ describe('Server & sync', () => {
     expect(kept.textContent).toContain('gym.example.com')
     expect(kept.textContent).toContain('Added back when this device connects as that account again.')
   })
+
+  it('signed in as another account, the changes kept for the first are listed in the block', async () => {
+    mocks.MOBILE = false
+    mocks.user = { id: 'u2', name: 'bea' }
+    mocks.kept = [{ server: BASE, uid: 'u1', name: 'andi', at: 1 }]
+    const page = mount(<Settings />)
+    await settle()
+    expect(rowByTitle(block(page), 'Changes kept for andi')).toBeTruthy()
+  })
 })
 
 describe('leaving the server', () => {

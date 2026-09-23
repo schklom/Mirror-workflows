@@ -208,6 +208,8 @@ export function ServerSyncSection({ children }) {
     {sync.status === 'auth' && (MOBILE
       ? <Row icon="link" iconTint="var(--indigo)" title={t('Pair again')} subtitle={t('Your changes are kept here, and merged into your account once it is paired again.')} accessory="chevron" onClick={pairAgain} />
       : webauthnOK() && <Row icon="person" iconTint="var(--blue)" title={t('Sign in with passkey')} subtitle={t('Your changes are kept here, and merged into your account once you are signed in again.')} accessory="chevron" onClick={signInAgain} />)}
+    {/* another account's, kept when this one signed in over a copy that still owed them */}
+    <KeptChangesRows />
     {children}
   </Section>
 }

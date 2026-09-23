@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest'
 import { exerciseHistory, HISTORY_SESSIONS } from './exercise-history.js'
-import { estimate1RM } from './onerm.js'
+import { estimate1RM, e1rmSeries } from './onerm.js'
+import { lastEntryFor } from './history.js'
+import { nextPrescription } from './progression.js'
 
 const DAY = 86400000
 const T0 = Date.UTC(2026, 0, 5, 10)
@@ -148,5 +150,28 @@ describe('exerciseHistory', () => {
     ] }
     expect(exerciseHistory({ workouts: [hold] }, 'plank').sessions[0]).toMatchObject({ value: 45, volume: null })
     expect(exerciseHistory({ workouts: [run] }, 'run').sessions[0]).toMatchObject({ value: 25, volume: null })
+  })
+
+  // The history sheet and Stats speak for the exercise, so a combined day that trains it in two
+  // routines is one session with both occurrences. What the next session opens at is per routine
+  // slot (#216): each routine reads its own occurrence of that day, never the other one's or the
+  // two folded together.
+  it('reads both routines\' occurrences of a combined day, while each routine progresses from its own', () => {
+    const heavy = { id: 'bench', rid: 'A', target: { mode: 'reps', sets: 2, reps: 5 }, planned: { sets: 2, reps: 5 }, sets: [work(100, 5), work(100, 5)] }
+    const light = { id: 'bench', rid: 'B', target: { mode: 'reps', sets: 2, reps: 12 }, planned: { sets: 2, reps: 12 }, sets: [work(60, 12), work(60, 12)] }
+    const S = {
+      unit: 'kg', exWeights: {},
+      routines: [{ id: 'A', ex: [{ id: 'bench', sets: 2, reps: 5 }] }, { id: 'B', ex: [{ id: 'bench', sets: 2, reps: 12 }] }],
+      workouts: [{ id: 'ab', d: iso(3), start: T0 + 3 * DAY, routineIds: ['A', 'B'], entries: [heavy, light] }],
+    }
+    const h = exerciseHistory(S, 'bench')
+    expect(h).toMatchObject({ total: 1, best: 100 })
+    expect(h.sessions[0].sets).toEqual([...heavy.sets, ...light.sets])
+    expect(e1rmSeries(S, 'bench')).toHaveLength(1)
+
+    expect(lastEntryFor(S, 'bench', 'A').sets).toEqual(heavy.sets)
+    expect(lastEntryFor(S, 'bench', 'B').sets).toEqual(light.sets)
+    expect(nextPrescription(S, S.routines[0].ex[0], S.routines[0]).weight).toBe(102.5)
+    expect(nextPrescription(S, S.routines[1].ex[0], S.routines[1]).weight).toBe(62.5)
   })
 })

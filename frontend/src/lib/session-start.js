@@ -49,6 +49,29 @@ export function buildPlannedEntry(st, cfg, routine, { noProg = false } = {}) {
   return { target, plan, sets, planned: plannedOf(cfg), ...(carried ? { carried: true } : {}) }
 }
 
+/**
+ * What an exercise's settings sheet opens with in a running session: the entry's target with the
+ * sets and reps (the range, the seconds) its routine planned put back in place of today's.
+ *
+ * The sheet edits the plan. Today's target is the prescription, and a double-progression aim, a
+ * bodyweight climb or a set the rep ceiling added has moved it off the plan. Opened at those
+ * numbers, a save that changed nothing stamped them as the plan, and the next build read that as
+ * an edit: "Plan changed", the raise undone within the session, the climb started again the next
+ * time (#275). The weight stays today's, the one on the bar. An entry built before plans were
+ * stamped has only its target.
+ */
+export function plannedConfigOf(entry) {
+  const out = { ...(entry?.target || {}) }
+  const planned = entry?.planned
+  if (!planned) return out
+  for (const key of ['sets', 'reps', 'repsMin', 'sec']) {
+    if (planned[key] != null) out[key] = planned[key]
+    // A plan with no range has no bottom to keep.
+    else if (key === 'repsMin') delete out.repsMin
+  }
+  return out
+}
+
 // Returns a bare array of session entries. "Excluded from progression" is per-entry now
 // (`entry.noProg`, written only when true) rather than a wrapper flag — a rehab routine merged
 // into real work must exclude only its own exercises. The merge helper (lib/session-merge.js)

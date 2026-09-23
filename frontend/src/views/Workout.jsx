@@ -18,7 +18,7 @@ import Icon from '../components/Icon.jsx'
 import { Button, Check, NumberField } from '../components/ui.jsx'
 import { defaultIncrement, weightIncrement, stepWeight } from '../lib/progression.js'
 import { progressionGuidance } from '../lib/progression-copy.js'
-import { buildPlannedEntry } from '../lib/session-start.js'
+import { buildPlannedEntry, plannedConfigOf } from '../lib/session-start.js'
 import { glyphOf } from '../lib/glyphs.js'
 import { isWarmupRow, isDropSet, isRestPauseSet, dropsOf, clustersOf, addDrop, addCluster, removeDropAt, removeClusterAt, setDropAt, setClusterAt, nextDropWeight, nextBurstReps, isSideSet, makeSideSet, setSideField, toggleSide, addSideDrop, removeSideDropAt, setSideDropAt, addSideCluster, removeSideClusterAt, setSideClusterAt } from '../lib/workout-model.js'
 import { canMoveActiveWorkoutUnit, moveActiveWorkoutUnit } from '../lib/active-workout-order.js'
@@ -805,7 +805,10 @@ function ActiveWorkout() {
     // A combined session's entries each carry a `rid`; progression settings read from that
     // entry's own routine, not a session-wide one.
     const routine = state.routines.find(r => r.id === entry.rid)
-    exConfigSheet(exOr(entryId), entry.target, cfg => {
+    // The sheet opens at the plan's sets and reps rather than today's prescription (see
+    // plannedConfigOf), so saving it unchanged rebuilds the rows the entry already has.
+    const opened = plannedConfigOf(entry)
+    exConfigSheet(exOr(entryId), opened, cfg => {
       // Store updates clone the state tree. If this exact object is no longer at the captured
       // index, the list changed while the sheet was open; an id check alone cannot distinguish
       // duplicate occurrences of the same exercise, so fail closed before cloning again.
@@ -820,6 +823,10 @@ function ActiveWorkout() {
         // happens to occupy the same index.
         if (!activeEntry || activeEntry.id !== entryId) return
         const full = { ...cfg, id: activeEntry.id }
+        // The weight the sheet showed is today's. Left as it was, it is not an edit of the plan's:
+        // stamped as the plan, a later edit of the reps would restart from today's load as though
+        // it had been typed in (nextPrescription), so the plan keeps its own.
+        if ((cfg.weight || 0) === (opened.weight || 0) && activeEntry.planned?.weight != null) full.weight = activeEntry.planned.weight
         const activeRoutine = s.routines.find(r => r.id === activeEntry.rid)
         // A config without a set count keeps the rows the session already has.
         if (!(full.sets > 0)) full.sets = activeEntry.sets.filter(x => !isWarmupRow(x)).length || 1

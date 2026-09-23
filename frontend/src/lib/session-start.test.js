@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { buildSessionEntries } from './session-start.js'
+import { buildSessionEntries, plannedConfigOf } from './session-start.js'
 import { readSession } from './progression.js'
 import { isWarmupRow } from './workout-model.js'
 
@@ -141,5 +141,29 @@ describe('buildSessionEntries', () => {
   it('does not stamp rid — that is the merge helper’s job', () => {
     const r = { id: 'r', prog: 'off', ex: [{ id: '0025', sets: 3, reps: 5, weight: 60 }] }
     expect(buildSessionEntries(st, r)[0].rid).toBeUndefined()
+  })
+})
+
+// The mid-session settings sheet edits the plan, so it opens at the plan's sets and reps and at
+// today's weight — never at a prescription's aim, climb or added set (#275).
+describe('plannedConfigOf', () => {
+  it('puts the plan\'s sets, reps and range back in place of today\'s', () => {
+    const entry = {
+      target: { id: '0025', mode: 'reps', sets: 3, reps: 9, repsMin: 8, weight: 42.5, prog: 'double' },
+      planned: { sets: 3, reps: 12, repsMin: 8, weight: 40 },
+    }
+    expect(plannedConfigOf(entry)).toEqual({ id: '0025', mode: 'reps', sets: 3, reps: 12, repsMin: 8, weight: 42.5, prog: 'double' })
+  })
+
+  it('drops a bottom the plan does not have, and takes a hold\'s seconds', () => {
+    expect(plannedConfigOf({ target: { sets: 3, reps: 13, repsMin: 10, weight: 0 }, planned: { sets: 2, reps: 10, weight: 0 } }))
+      .toEqual({ sets: 2, reps: 10, weight: 0 })
+    expect(plannedConfigOf({ target: { mode: 'time', sets: 2, sec: 50, weight: 0 }, planned: { sets: 2, sec: 45, weight: 0 } }).sec).toBe(45)
+  })
+
+  it('opens an entry built before plans were stamped at its target', () => {
+    const target = { sets: 2, reps: 8, weight: 60 }
+    expect(plannedConfigOf({ target })).toEqual(target)
+    expect(plannedConfigOf({ target })).not.toBe(target)
   })
 })

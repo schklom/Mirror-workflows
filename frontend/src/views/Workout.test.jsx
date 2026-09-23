@@ -4,6 +4,9 @@ import { parseHTML } from 'linkedom'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import Workout from './Workout.jsx'
 import { nextPrescription } from '../lib/progression.js'
+import { buildCombinedEntries } from '../lib/session-merge.js'
+import { buildCompletedWorkout } from '../lib/finish-workout.js'
+import { isWarmupRow } from '../lib/workout-model.js'
 
 const mocks = vi.hoisted(() => {
   const state = {
@@ -631,7 +634,8 @@ describe('progression guidance', () => {
     expect(button.getAttribute('type')).toBe('button')
     expect(button.getAttribute('aria-label')).toBe('Open progression settings')
     expect(mocks.exConfigSheet).toHaveBeenCalledOnce()
-    expect(mocks.exConfigSheet.mock.calls[0][1]).toBe(second.target)
+    // An entry with no stamped plan opens at its target.
+    expect(mocks.exConfigSheet.mock.calls[0][1]).toEqual(second.target)
     expect(mocks.exConfigSheet.mock.calls[0][4]).toBe(mocks.S.routines[0])
 
     mocks.exConfigSheet.mock.calls[0][2]({ ...second.target, prog: 'double', repsMin: 6 })
@@ -769,6 +773,101 @@ describe('progression settings rebuild the rows like a session start', () => {
     const saved = await saveTen({ workouts: history, startFrom: 'last' })
     expect(saved.sets.map(s => s.r)).toEqual([15, 15])
     expect(saved.target.reps).toBe(10)
+  })
+})
+
+// The settings sheet edits the plan, so it opens at the plan's sets and reps, not at today's
+// prescription. Opened at today's numbers, a save that changed nothing stamped a double
+// progression's raised session, or a bodyweight climb, as the plan: "Plan changed", the raise
+// undone within the session, the climb started again at the next one (#275).
+describe('saving progression settings unchanged', () => {
+  const BENCH = '0025'    // barbell bench press
+  const PUSHUP = '0662'   // push-up
+  const rows = entry => entry.sets.filter(s => !isWarmupRow(s)).map(s => [s.w, s.r])
+  // Start the routine for real, tick every row and log it the way finishing a workout does.
+  let day = 1
+  const trainOnce = st => {
+    const entries = buildCombinedEntries(st, ['A']).entries.map(e => ({ ...e, sets: e.sets.map(x => ({ ...x, done: true })) }))
+    const active = { id: 'w' + day, d: `2026-08-${String(day).padStart(2, '0')}`, start: day * 1000, routineIds: ['A'], name: 'A', entries }
+    day++
+    st.workouts.push(buildCompletedWorkout(active, { end: active.start + 1 }))
+  }
+  const history = (cfg, sessions) => {
+    const st = { unit: 'kg', exWeights: {}, routines: [{ id: 'A', name: 'A', ex: [cfg] }], workouts: [] }
+    for (let i = 0; i < sessions; i++) trainOnce(st)
+    return st
+  }
+  // What the sheet hands back when it is saved as it opened: its own fields, nothing else.
+  const unchanged = opened => {
+    const { sets, mode, reps, repsMin, weight, prog, repsMax } = opened
+    return JSON.parse(JSON.stringify({ sets, mode: mode || 'reps', reps, repsMin, weight, prog, repsMax }))
+  }
+  const saveUnchanged = async st => {
+    const built = buildCombinedEntries(st, ['A']).entries
+    await mount(built, 0, { routines: st.routines, workouts: st.workouts })
+    const before = structuredClone(mocks.S.active.entries[0])
+    await pressProgression()
+    const [, opened, save] = mocks.exConfigSheet.mock.calls.at(-1)
+    await act(async () => { save(unchanged(opened)) })
+    return { before, opened, after: mocks.S.active.entries[0] }
+  }
+  // Finish the session in front of you and build the next one from the same routine.
+  const next = st => {
+    const active = structuredClone(mocks.S.active)
+    active.entries.forEach(e => e.sets.forEach(x => { x.done = true }))
+    st.workouts.push(buildCompletedWorkout({ ...active, d: '2026-09-01', routineIds: ['A'] }, { end: Date.now() }))
+    return buildCombinedEntries(st, ['A']).entries[0]
+  }
+
+  it('keeps a double-progression raise in place, and the next session builds on it', async () => {
+    const st = history({ id: BENCH, sets: 3, reps: 12, repsMin: 8, weight: 40, prog: 'double' }, 1)
+    const { before, opened, after } = await saveUnchanged(st)
+    expect(before.plan.kind).toBe('up')
+    expect(opened).toMatchObject({ sets: 3, reps: 12, repsMin: 8 })
+    expect(rows(after)).toEqual([[42.5, 8], [42.5, 8], [42.5, 8]])
+    expect(after.plan.kind).toBe('up')
+    expect(after.planned).toEqual(before.planned)
+    expect(after.target).toMatchObject({ weight: 42.5, reps: 8, repsMin: 8 })
+    expect(container.querySelector('.planline')?.textContent).toBe('Plan: 3 × 8–12')
+    const following = next(st)
+    expect(following.plan.why[0]).not.toBe('Plan changed — starting from your new target.')
+    expect(rows(following)).toEqual([[42.5, 9], [42.5, 9], [42.5, 9]])
+  })
+
+  it('keeps a bodyweight climb, and the next session climbs on from it', async () => {
+    const st = history({ id: PUSHUP, sets: 2, reps: 10, weight: 0, bodyweight: true }, 3)
+    const { before, opened, after } = await saveUnchanged(st)
+    expect(rows(before)).toEqual([[0, 13], [0, 13]])
+    expect(opened).toMatchObject({ sets: 2, reps: 10 })
+    expect(rows(after)).toEqual([[0, 13], [0, 13]])
+    expect(after.planned).toEqual(before.planned)
+    const following = next(st)
+    expect(following.plan.kind).toBe('up')
+    expect(rows(following)).toEqual([[0, 14], [0, 14]])
+  })
+
+  it('keeps a set the rep ceiling added, and the plan line still reads the plan', async () => {
+    const st = history({ id: PUSHUP, sets: 2, reps: 10, repsMax: 11, weight: 0, bodyweight: true }, 2)
+    const { before, opened, after } = await saveUnchanged(st)
+    expect(rows(before)).toEqual([[0, 10], [0, 10], [0, 10]])
+    expect(opened.sets).toBe(2)
+    expect(rows(after)).toEqual([[0, 10], [0, 10], [0, 10]])
+    expect(after.planned).toEqual(before.planned)
+    expect(container.querySelector('.planline')?.textContent).toBe('Plan: 2 × 10 · today 3 × 10')
+    expect(rows(next(st))).toEqual([[0, 11], [0, 11], [0, 11]])
+  })
+
+  it('keeps the plan\'s weight when only the reps are edited, so the restart holds what was lifted', async () => {
+    const st = history({ id: BENCH, sets: 3, reps: 12, repsMin: 8, weight: 40, prog: 'double' }, 1)
+    await mount(buildCombinedEntries(st, ['A']).entries, 0, { routines: st.routines, workouts: st.workouts })
+    await pressProgression()
+    const [, opened, save] = mocks.exConfigSheet.mock.calls.at(-1)
+    expect(opened.weight).toBe(42.5)          // today's, the one on the bar
+    await act(async () => { save({ ...unchanged(opened), reps: 10 }) })
+    const after = mocks.S.active.entries[0]
+    expect(after.planned).toEqual({ sets: 3, reps: 10, repsMin: 8, weight: 40 })
+    expect(after.plan.why[0]).toBe('Plan changed — starting from your new target.')
+    expect(rows(after).map(r => r[0])).toEqual([40, 40, 40])
   })
 })
 

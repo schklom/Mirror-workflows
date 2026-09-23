@@ -1328,4 +1328,6 @@ export default {
   'Save as routine?': 'Als Routine speichern?',
   'Save as routine': 'Als Routine speichern',
   'Create an independent routine from these exercise targets. Your workout history is kept.': 'Eine unabhängige Routine aus diesen Trainingszielen erstellen. Dein Trainingsverlauf bleibt erhalten.',
+  'Keep timing after target': 'Nach dem Ziel weiterzählen',
+  'Timed sets continue up to 15 extra minutes. Tap Done to log the actual duration.': 'Zeitbasierte Sätze laufen bis zu 15 zusätzliche Minuten weiter. Tippe auf „Fertig“, um die tatsächliche Dauer zu speichern.',
 }

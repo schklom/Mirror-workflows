@@ -1308,4 +1308,6 @@ export default {
   'Save as routine?': 'Сохранить как тренировку?',
   'Save as routine': 'Сохранить как тренировку',
   'Create an independent routine from these exercise targets. Your workout history is kept.': 'Создать отдельную тренировку из этих целей. История тренировок сохранится.',
+  'Keep timing after target': 'Продолжать отсчёт после цели',
+  'Timed sets continue up to 15 extra minutes. Tap Done to log the actual duration.': 'Подходы на время продолжаются ещё до 15 минут. Нажмите «Готово», чтобы записать фактическую длительность.',
 }

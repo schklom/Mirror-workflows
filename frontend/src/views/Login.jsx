@@ -108,7 +108,7 @@ export default function Login() {
       </> : pwOn ? <>
         {/* Plain http on a LAN address, or a browser without passkey support: the password is
             the way in, and the only way to create a profile from here. */}
-        <div className="card small muted" style={{ textAlign: 'left', marginBottom: 14 }}>{t("This browser doesn't support passkeys — sign in with your name and password instead.")}</div>
+        <div className="card small muted" style={{ textAlign: 'start', marginBottom: 14 }}>{t("This browser doesn't support passkeys — sign in with your name and password instead.")}</div>
         <Button variant="primary" icon="key" onClick={() => openPasswordSignIn()}>{t('Sign in with password')}</Button>
         <div style={{ height: 10 }} />
         <Button icon="sparkles" onClick={register}>{t('Create new profile')}</Button>

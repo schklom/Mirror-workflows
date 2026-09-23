@@ -153,6 +153,33 @@ describe('Stepper', () => {
     expect(onChange).toHaveBeenCalledTimes(3)           // nothing keeps ticking after release
   })
 
+  // A minimum holds for the buttons at once but for typing only once the field is left, so a
+  // field can be emptied to type a new number without the minimum landing in front of it.
+  it('applies `min` to the buttons at once and to typing on leaving the field', () => {
+    const onChange = vi.fn()
+    function MinHost() {
+      const [v, setV] = React.useState(5)
+      return <Stepper value={v} step={5} min={1} decimal={false} onChange={n => { setV(n); onChange(n) }} />
+    }
+    act(() => root.render(<MinHost />))
+    const minus = host.querySelector('button[aria-label="Decrease"]')
+    const field = host.querySelector('input.num')
+    act(() => minus.click())
+    expect(onChange).toHaveBeenLastCalledWith(1)
+    const type = value => {
+      Object.getOwnPropertyDescriptor(field.constructor.prototype, 'value').set.call(field, value)
+      field.dispatchEvent(new Event('input', { bubbles: true }))
+    }
+    act(() => type(''))
+    expect(field.value).toBe('')
+    act(() => type('7'))
+    expect(field.value).toBe('7')
+    act(() => type(''))
+    act(() => field.dispatchEvent(new FocusEvent('focusout', { bubbles: true })))
+    expect(onChange).toHaveBeenLastCalledWith(1)
+    expect(field.value).toBe('1')
+  })
+
   it('keeps working from the keyboard (click without a pointer)', () => {
     const onChange = vi.fn()
     const plus = mountStepper(10, onChange)

@@ -1871,7 +1871,7 @@ function WorkoutDurationEdit({ w, onDone, close }) {
   const save = () => {
     let changed = false
     update(s => {
-      const next = setWorkoutDuration(s.workouts, w, dur)
+      const next = setWorkoutDuration(s.workouts, w, dur)   // at least a minute, however the field was left
       if (next) { s.workouts = next; changed = true }
     })
     close()
@@ -1882,7 +1882,7 @@ function WorkoutDurationEdit({ w, onDone, close }) {
   return <>
     <h3>{t('Change duration')}</h3>
     <div className="muted small" style={{ marginBottom: 12 }}>{t('Forgot to finish on time? Set how long the session really took. It keeps its start time and its sets.')}</div>
-    <Stepper label={t('Duration')} unit="min" value={dur} step={5} decimal={false} onChange={v => setDur(Math.max(1, Math.round(v)))} />
+    <Stepper label={t('Duration')} unit="min" value={dur} step={5} min={1} decimal={false} onChange={v => setDur(Math.round(v))} />
     <div style={{ height: 18 }} />
     <Button variant="primary" onClick={save}>{t('Save')}</Button>
   </>
@@ -2142,7 +2142,7 @@ function LogPastWorkout({ initial, close }) {
   const go = replaceId => {
     close()
     const routineIds = routineId === PLANNED_DAY ? planned.map(r => r.id) : routineId ? [routineId] : []
-    beginBackfill({ iso: date, time, durationMin: dur, routineIds, replaceId })
+    beginBackfill({ iso: date, time, durationMin: Math.max(1, dur), routineIds, replaceId })
   }
   const submit = () => {
     if (!date || date > today) { toast(t('Pick a day up to today')); return }
@@ -2159,7 +2159,7 @@ function LogPastWorkout({ initial, close }) {
       <input type="date" className="timef" value={date} max={today} onChange={e => setDate(e.target.value)} /></Row>
     <Row icon="clock" title={t('Start time')}>
       <input type="time" className="timef" value={time} onChange={e => setTime(e.target.value)} /></Row>
-    <Stepper label={t('Duration')} unit="min" value={dur} step={5} decimal={false} onChange={v => setDur(Math.max(1, Math.round(v)))} />
+    <Stepper label={t('Duration')} unit="min" value={dur} step={5} min={1} decimal={false} onChange={v => setDur(Math.round(v))} />
     <div style={{ height: 8 }} />
     <SelectRow icon="dumbbell" title={t('Routine')} value={routineId} options={options} onChange={setRoutineId} />
     <div style={{ height: 18 }} />

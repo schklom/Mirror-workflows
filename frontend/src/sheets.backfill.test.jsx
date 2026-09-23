@@ -86,4 +86,26 @@ describe('log a past workout', () => {
     expect(new Date(A.start).getHours()).toBe(18)
     expect(A.backfill).toEqual({ durationMin: 60, replaceId: null })
   })
+
+  // The same keystroke clamp as the saved workout's duration: a 60 emptied to type 45 read 145.
+  it('lets the duration be emptied and retyped, and never starts a session of no length', () => {
+    logPastWorkoutSheet()
+    const host = mountTopSheet()
+    act(() => { type(host.querySelector('input[type=date]'), '2020-01-02') })
+    const field = host.querySelector('input.num')
+    act(() => { type(field, '') })
+    expect(field.value).toBe('')
+    act(() => { type(field, '45') })
+    act(() => { button(host, 'Continue').click() })
+    expect(useStore.getState().S.active.backfill.durationMin).toBe(45)
+  })
+
+  it('an emptied duration still starts a one-minute session, not the default hour', () => {
+    logPastWorkoutSheet()
+    const host = mountTopSheet()
+    act(() => { type(host.querySelector('input[type=date]'), '2020-01-02') })
+    act(() => { type(host.querySelector('input.num'), '') })
+    act(() => { button(host, 'Continue').click() })
+    expect(useStore.getState().S.active.backfill.durationMin).toBe(1)
+  })
 })

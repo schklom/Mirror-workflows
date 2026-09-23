@@ -218,6 +218,33 @@ describe('changing the duration of a saved workout', () => {
     expect(useUI.getState().toast).toHaveBeenCalledWith('Duration changed')
   })
 
+  // The minimum of a minute used to apply on every keystroke: emptying the field put a 1 back
+  // at once, and the 75 typed after it read 175 — saved as 2h 55m without a word.
+  it('lets the field be emptied to type a new length, and saves what was typed', () => {
+    const host = render(() => workoutDurationSheet(history()[1]))
+    const field = host.querySelector('input.num')
+    act(() => { type(field, '3') })
+    act(() => { type(field, '') })
+    expect(field.value).toBe('')
+    act(() => { type(field, '75') })
+    expect(field.value).toBe('75')
+    act(() => { button(host, 'Save').click() })
+    const after = history()[1]
+    expect(after.end - after.start).toBe(75 * 60000)
+  })
+
+  it('a field left empty or at 0 comes back as one minute, and saves as one', () => {
+    const host = render(() => workoutDurationSheet(history()[1]))
+    const field = host.querySelector('input.num')
+    act(() => { type(field, '0') })
+    expect(field.value).toBe('0')
+    act(() => { field.dispatchEvent(new FocusEvent('focusout', { bubbles: true })) })
+    expect(field.value).toBe('1')
+    act(() => { button(host, 'Save').click() })
+    const after = history()[1]
+    expect(after.end - after.start).toBe(60000)
+  })
+
   it('saving the same length closes and touches nothing', () => {
     const before = history()
     const host = render(() => workoutDurationSheet(before[1]))

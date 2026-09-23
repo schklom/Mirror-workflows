@@ -766,6 +766,7 @@ export const PT_BR_OVERRIDES = {
   'Shown under each exercise': 'Abaixo de cada exercício',
   'What you did the last time, in that routine.': 'O que você fez da última vez nessa rotina.',
   'Your heaviest set of the exercise, from any workout.': 'Sua série mais pesada do exercício, de qualquer treino.',
+  'Replaced with “{0}”': 'Substituído por “{0}”',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

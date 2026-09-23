@@ -4,7 +4,7 @@ import { useStore } from '../store/useStore.js'
 import { useUI } from '../store/useUI.js'
 import { exOr } from '../lib/exercises.js'
 import { activeProfile, exAvailable } from '../lib/equipment.js'
-import { uid } from '../lib/format.js'
+import { uid, capWords } from '../lib/format.js'
 import { t, exerciseNameFor, exerciseNameClass } from '../lib/i18n.js'
 import { supersetUnits, moveSupersetUnit, cleanupSg, exLine, defaultConfig } from '../lib/history.js'
 import { Thumb } from '../components/Media.jsx'
@@ -13,7 +13,10 @@ import Icon from '../components/Icon.jsx'
 import { glyphOf } from '../lib/glyphs.js'
 import { Button, Row, SelectRow, Switch } from '../components/ui.jsx'
 import SwipeToDelete from '../components/SwipeToDelete.jsx'
-import { copyRoutine, deleteRoutine } from '../lib/routines.js'
+import { copyRoutine, deleteRoutine, replaceSlotExercise } from '../lib/routines.js'
+import { planPrintHTML, printPlan } from '../lib/plan-share.js'
+import { MOBILE, printHtml } from '../lib/mobile.js'
+import { speedUnitOf } from '../lib/speed.js'
 import { POLICIES_FOR, POLICY_NAME, POLICY_DESC } from '../lib/progression.js'
 import BodyMap from '../components/BodyMap.jsx'
 import { loadOfRoutine, rankOf, MUSCLE_NAME } from '../lib/muscles.js'
@@ -221,8 +224,17 @@ function useRoutineReorder(routineIdentity, exercises, onDrop) {
         listIdentity: exercisesRef.current,
         snapshot: JSON.stringify(exercisesRef.current), active: false, timer: null,
       }
-      gesture.timer = window.setTimeout(() => lift(gesture), ROUTINE_LONG_PRESS_MS)
       gestureRef.current = gesture
+      // The grip, pressed with a mouse, picks the row up at once (#277): the hold exists so a
+      // finger can still scroll the list, and a mouse scrolls with its wheel. preventDefault
+      // keeps the press from starting a text selection or the row's swipe-to-delete, which
+      // listen to the mouse events a pointerdown would otherwise go on to fire.
+      if (event.pointerType === 'mouse' && target.closest('[data-drag-handle]')) {
+        event.preventDefault()
+        lift(gesture)
+        return
+      }
+      gesture.timer = window.setTimeout(() => lift(gesture), ROUTINE_LONG_PRESS_MS)
     }
     const onPointerMove = event => {
       const gesture = gestureRef.current
@@ -330,6 +342,43 @@ export default function RoutineEdit() {
       cleanupSg(ex)
     })
   }
+  // Replace (#110): the picker chooses what goes into slot `i`, and the slot keeps its sets, reps,
+  // weight and the rest (lib/routines.js replaceSlotExercise). "+" on a picker row replaces at
+  // once; tapping the row opens the new exercise's settings at those numbers first, the way the
+  // add flow does. One pick and the picker closes — it is a chooser here, not a stack you keep
+  // adding from. A slot that is no longer the exercise the sheet was opened on is left alone.
+  const replace = i => {
+    const openedOn = r.ex[i]?.id
+    const commit = (ex, fn) => {
+      picker.close()
+      let done = false
+      edit(x => { if (x[i] && x[i].id === openedOn) { x[i] = fn(x[i]); done = true } })
+      if (done) toast(t('Replaced with “{0}”', capWords(exerciseNameFor(ex))))
+    }
+    const picker = exercisePicker((ex, quick) => {
+      // The slot and the history as they are now, not as this render saw them: a sync can land
+      // while the picker is open, and the new exercise's weight comes from its own sessions.
+      const live = useStore.getState().S
+      const slot = live.routines.find(x => x.id === id)?.ex[i]
+      if (!slot || slot.id !== openedOn) { picker.close(); return }
+      // "+" on the exercise that is already in the slot: nothing to replace, and no toast that
+      // says something was.
+      if (quick && ex.id === openedOn) { picker.close(); return }
+      if (quick) { commit(ex, current => replaceSlotExercise(current, ex.id, live, id)); return }
+      const next = replaceSlotExercise(slot, ex.id, live, id)
+      exConfigSheet(ex, next, cfg => commit(ex, current => ({ id: ex.id, sg: current.sg, ...cfg })), null, r, null, null, t('Replace'))
+    }, { title: t('Replace exercise') })
+  }
+  // This routine on paper (#282): the weekly printout's page for one session, through the same
+  // two print paths — the browser's print dialog (→ Save as PDF) on the web, the native Print
+  // plugin in the app, where the WebView has no window.print().
+  const printRoutine = () => {
+    const owner = useStore.getState().user?.name || ''
+    // Android's print manager refuses a job without a name. The editor never leaves a name blank,
+    // but a routine that arrived from an import or another client may have none.
+    if (MOBILE) printHtml(planPrintHTML(S, owner, { routineId: id }), r.name || t('Routine')).catch(() => { /* dismissed */ })
+    else printPlan(S, owner, { routineId: id })
+  }
   const toggleLink = i => edit(ex => {
     if (i < 1) return
     const cur = ex[i], prev = ex[i - 1]
@@ -402,10 +451,13 @@ export default function RoutineEdit() {
           deleteLabel={t('Remove from routine')}
           onDelete={() => edit(x => { x.splice(i, 1); cleanupSg(x) })}
           onClick={() => {
-            exConfigSheet(ex, e, cfg => edit(x => { x[i] = { id: x[i].id, sg: x[i].sg, ...cfg } }), () => edit(x => { x.splice(i, 1); cleanupSg(x) }), r)
+            exConfigSheet(ex, e, cfg => edit(x => { x[i] = { id: x[i].id, sg: x[i].sg, ...cfg } }), () => edit(x => { x.splice(i, 1); cleanupSg(x) }), r, null, () => replace(i))
           }}>
+          {/* Shown on pointer devices only (index.css .routine-grip); the Move buttons and the
+              long press stay the way in for a keyboard and a finger. */}
+          <span className="routine-grip" data-drag-handle aria-hidden="true" title={t('Reorder exercises')}><Icon name="grip" /></span>
           <Thumb ex={ex} />
-          <div className="grow"><div className={`tt ${exerciseNameClass(ex)}`}>{exerciseNameFor(ex)}</div><div className="ss">{exLine(e, S.unit)}</div>
+          <div className="grow"><div className={`tt ${exerciseNameClass(ex)}`}>{exerciseNameFor(ex)}</div><div className="ss">{exLine(e, S.unit, speedUnitOf(S))}</div>
             {e.note && <div className="small dim" style={{ marginTop: 2 }}>{e.note}</div>}</div>
           {noEquip && <span className="tag" style={{ color: 'var(--orange)', borderColor: 'var(--orange)' }} title={t('Needs {0} — not in your active profile', t(ex.eq))}><Icon name="warning" /></span>}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 2, flex: 'none', alignItems: 'center' }}>
@@ -449,6 +501,8 @@ export default function RoutineEdit() {
       update(s => { s.routines.push(copy) })
       nav('/plan/r/' + copy.id)
     }}>{t('Copy routine')}</Button>
+    <div style={{ height: 10 }} />
+    <Button disabled={!r.ex.length} onClick={printRoutine}>{t('Print / Save as PDF')}</Button>
     <div style={{ height: 10 }} />
     <Button variant="danger" onClick={() => confirmSheet({
       title: t('Delete routine?'), message: t('“{0}” and its exercises will be removed.', r.name), confirmText: t('Delete'), danger: true,

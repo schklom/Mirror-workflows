@@ -1289,4 +1289,15 @@ export default {
   'Open Settings → “Pair the mobile app” on your openGym site in a browser and enter the new code shown there. What this phone kept is merged into your account.': 'Откройте Настройки → «Сопряжение мобильного приложения» на своём сайте openGym в браузере и введите показанный там новый код. То, что сохранил этот телефон, будет объединено с вашим аккаунтом.',
   '{0} change': '{0} изменение',
   '{0} changes': 'изменений: {0}',
+  // --- plan vs session: the routine's own reps, per-routine progress (#275, #216) ---
+  'Planned sessions start from': 'Основа запланированных тренировок',
+  'The routine’s sets and reps. Your history decides the weight.': 'Подходы и повторения из программы. Вес определяет ваша история.',
+  'Your last session': 'Ваша последняя тренировка',
+  'The reps you logged last time in that routine, carried over.': 'Повторения, записанные в прошлый раз в этой программе, переносятся.',
+  'Plan changed — starting from your new target.': 'План изменён — начинаем с новой цели.',
+  'First time in this routine — starting from its own target.': 'Впервые в этой программе — начинаем с её собственной цели.',
+  'No weight logged last time — enter what you lift and progression takes it from there.': 'В прошлый раз вес не был записан — укажите, с каким весом работаете, и прогрессия продолжится оттуда.',
+  'Plan: {0}': 'План: {0}',
+  'today {0}': 'сегодня {0}',
+  'reps from your last session': 'повт. с прошлой тренировки',
 }

@@ -25,7 +25,7 @@ import { importHevyData, HevyApiError, HEVY_DEV_SETTINGS, mergeHevyRoutines } fr
 import { buildPlanBundle, parsePlan, mergePlan, printPlan, planPrintHTML } from './lib/plan-share.js'
 import { estimate1RM, best1RM, is1RMRecord, REP_CAP } from './lib/onerm.js'
 import { exerciseHistory } from './lib/exercise-history.js'
-import { nextPrescription, applyPrescription, policyFor, defaultIncrement, POLICIES_FOR, POLICY_NAME, POLICY_DESC, MAX_BW_SETS, weightIncrement } from './lib/progression.js'
+import { policyFor, defaultIncrement, POLICIES_FOR, POLICY_NAME, POLICY_DESC, MAX_BW_SETS, weightIncrement } from './lib/progression.js'
 import { normalizeRepRange } from './lib/rep-range.js'
 import { MOBILE, shareExport, printHtml } from './lib/mobile.js'
 import { buildCompletedWorkout } from './lib/finish-workout.js'
@@ -34,7 +34,7 @@ import { nextUnfinishedUnit } from './lib/supersetFlow.js'
 import { swapActiveExercise } from './lib/active-exercise-swap.js'
 import { useSheetKeyboard, useRevealActiveChip, tappable } from './lib/use-sheet-keyboard.js'
 import { isFav, toggleFav, sortFavouritesFirst } from './lib/favourites.js'
-import { buildSessionEntries } from './lib/session-start.js'
+import { buildSessionEntries, buildPlannedEntry } from './lib/session-start.js'
 import { buildCombinedEntries, deriveSessionName } from './lib/session-merge.js'
 import { workoutsOn, backfillStart, backfillEnd, completeBackfill } from './lib/backfill.js'
 
@@ -1025,14 +1025,17 @@ export function swapActiveWorkoutExercise(index) {
     // Same rows the add flow builds: last time's loads and, in a planned session, the
     // prescription — swapping barbell for dumbbell bench must not start you at an empty bar.
     const step = modeOf(full) === 'reps' ? weightIncrement(full, st.unit) : defaultIncrement(ex.id, st.unit)
-    const plan = freestyle ? null : nextPrescription(st, full, slotRoutine)
-    const built = buildSets(st, full, { step, ...(freestyle ? { preferLast: true } : {}), ...(plan?.kind === 'off' ? { useTarget: true } : {}) })
+    const built = freestyle
+      ? { target: { ...cfg }, plan: null, sets: applyIntensifierPlan(buildSets(st, full, { step, preferLast: true }), full) }
+      : buildPlannedEntry(st, full, slotRoutine, { noProg: current.noProg === true })
     const replacement = {
       id: ex.id,
-      target: { ...cfg },
-      plan,
-      sets: applyIntensifierPlan(freestyle ? built : applyPrescription(built, plan, step), full),
+      ...built,
       ...(current.rid ? { rid: current.rid } : {}),
+      // A slot kept out of progression stays out once swapped. Replaced in place the entry keeps
+      // it anyway; inserted beside logged sets, the replacement would otherwise count as a
+      // regular session of the new exercise.
+      ...(current.noProg === true ? { noProg: true } : {}),
     }
 
     const apply = options => {

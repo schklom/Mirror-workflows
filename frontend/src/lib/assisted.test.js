@@ -73,6 +73,14 @@ describe('progression asks for less help', () => {
     expect(read.weight).toBe(20)
   })
 
+  // Progression itself leads here: once the help is gone the machine is a plain pull-up, and it
+  // climbs reps like one — not "No weight logged", sending you back to the plan's 30 kg of help.
+  it('climbs reps once it has taken all the help away', () => {
+    const p = nextPrescription(hist(0), cfg)
+    expect(p).toMatchObject({ kind: 'up', weight: 0, reps: 9 })
+    expect(nextPrescription(hist(5), { ...cfg, weight: 5 })).toMatchObject({ kind: 'up', weight: 0 })
+  })
+
   it('still adds weight on an ordinary lift', () => {
     const plain = { id: PLAIN, sets: 1, reps: 8, weight: 60, prog: 'linear', inc: 5 }
     const S = { unit: 'kg', workouts: [{ d: '2026-09-08', start: 1, entries: [{ id: PLAIN, target: plain, sets: [set(60, 8)] }] }] }

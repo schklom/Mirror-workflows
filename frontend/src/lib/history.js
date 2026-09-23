@@ -143,6 +143,21 @@ export function defaultConfig(id, mode) {
   if (m === 'time') return { sets: 3, sec: 45, weight: 0, mode: 'time', ...bw }
   return { sets: 3, reps: 10, weight: 0, mode: 'reps', ...bw }
 }
+// A double-progression range is stored as its top (`reps`) and its bottom (`repsMin`), and
+// reads as the range it is: "8–12". Printing the top alone made "Reps from 10, up to 15" read
+// as "2 × 15" in the plan and then open at 10. `fmt` formats each bound (a per-side split).
+const hasRange = cfg => cfg.repsMin > 0 && cfg.repsMin < cfg.reps
+const repsOf = (cfg, fmt = v => String(v)) => (hasRange(cfg) ? `${fmt(cfg.repsMin)}–${fmt(cfg.reps)}` : fmt(cfg.reps))
+
+/** "2 × 10", "3 × 8–12", "2 × 0:45": what a plan asks for per set, without its load. */
+export function setsRepsOf(cfg) {
+  const mode = modeOf(cfg)
+  const n = cfg.sets || 1
+  if (mode === 'cardio') return `${n} × ${cfg.min || 20} min`
+  if (mode === 'time') return `${n} × ${fmtSec(cfg.sec || 45)}`
+  return `${n} × ${repsOf(cfg)}`
+}
+
 // One-line summary of a planned exercise ("3 × 10 · 60 kg"), shared by the routine editor
 // and the plan export so a mode is described the same way everywhere.
 export function exLine(cfg, unit) {
@@ -151,10 +166,10 @@ export function exLine(cfg, unit) {
   // Added weight reads as added: "+10 kg" on a dip belt, "60 kg" on a barbell.
   const load = cfg.weight ? ' · ' + (isBw(cfg) ? '+' : '') + fmtNum(cfg.weight) + ' ' + unit : ''
   if (mode === 'cardio') return `${n} × ${cfg.min || 20} min @ ${fmtNum(cfg.speed || 8)} km/h`
-  if (mode === 'time') return `${n} × ${fmtSec(cfg.sec || 45)}${load}`
+  if (mode === 'time') return `${setsRepsOf(cfg)}${load}`
   // This is the line with room for it, so the split is spelled out: "3 × 16 · 8/side".
-  const split = isPerSide(cfg) ? ' · ' + t('{0}/side', fmtNum(sideReps(cfg.reps))) : ''
-  return `${n} × ${cfg.reps}${load}${split}`
+  const split = isPerSide(cfg) ? ' · ' + t('{0}/side', repsOf(cfg, v => fmtNum(sideReps(v)))) : ''
+  return `${setsRepsOf(cfg)}${load}${split}`
 }
 
 // Drop superset ids that no longer have an adjacent partner (after unlink/reorder/remove).
@@ -231,10 +246,46 @@ export function entryExcluded(w, entry) {
   return w?.excludeFromProgression === true || entry?.noProg === true
 }
 
-export function lastEntryFor(S, exId) {
-  for (let i = S.workouts.length - 1; i >= 0; i--) {
-    const w = S.workouts[i]
-    const en = w.entries.find(e => e.id === exId)
+/**
+ * Which routine a saved entry was planned by — the "slot" its numbers belong to (issue #216).
+ *
+ * Every entry of a session started since combined days carries its own `rid`. A session saved
+ * before that has none, and there the workout's routine stands in for all of its entries. The one
+ * exception is a newer session in which some entries carry a `rid` and this one does not: that is
+ * an exercise added to a freestyle session, and it belongs to no routine at all.
+ */
+export function entryRoutineId(w, en) {
+  if (en?.rid) return en.rid
+  if ((w?.entries || []).some(e => e && e.rid)) return null
+  return [].concat(w?.routineIds ?? [])[0] ?? w?.routineId ?? null
+}
+
+// The entry for one exercise in one saved workout. With a routine id it is that routine's own
+// entry — a combined A+B day can hold the same exercise twice, and the second one is not the
+// first one's history. Without, the first one, as it always was.
+const entryIn = (w, exId, rid) => (w.entries || []).find(e => e && e.id === exId && (!rid || entryRoutineId(w, e) === rid))
+
+/**
+ * The last counting session of an exercise: `{ d, sets, target, rid?, planned? }`, or null.
+ *
+ * Given a routine id, the routine's own last session of it (issue #216): the same bench press in
+ * a heavy day and a light day is two lines of progress, not one that zigzags between them. A
+ * routine that has never trained the exercise falls back to its last session anywhere, so a new
+ * or copied routine starts from what you actually lift rather than from nothing.
+ */
+export function lastEntryFor(S, exId, rid) {
+  if (rid) {
+    const own = lastEntryIn(S, exId, rid)
+    if (own) return own
+  }
+  return lastEntryIn(S, exId, null)
+}
+
+function lastEntryIn(S, exId, rid) {
+  const workouts = S.workouts || []
+  for (let i = workouts.length - 1; i >= 0; i--) {
+    const w = workouts[i]
+    const en = entryIn(w, exId, rid)
     if (!en) continue
     // A session that does not count — a planned deload, or a rehab block merged into a real
     // session — is not "last time" for the next regular prescription: its reps and durations
@@ -250,7 +301,10 @@ export function lastEntryFor(S, exId) {
     // `target` is what the session prescribed; finished workouts carry it so labels and the
     // progression engine can read a session back the way it was logged. Older workouts have
     // none — modeOf() falls back to the body part for them, which is what they were.
-    if (done.length) return { d: w.d, sets: done, target: en.target || null }
+    if (done.length) {
+      const slot = entryRoutineId(w, en)
+      return { d: w.d, sets: done, target: en.target || null, ...(slot ? { rid: slot } : {}), ...(en.planned ? { planned: en.planned } : {}) }
+    }
   }
   return null
 }
@@ -380,14 +434,22 @@ function buildWorkSets(S, cfg, options = {}) {
   const useTarget = !!options.useTarget
   // `lastEntryFor` now skips any entry that does not count — a planned deload, or a rehab
   // block merged into a real session (entryExcluded) — so the rows seed from the last
-  // *counting* session without this function pre-filtering the history itself.
-  const last = lastEntryFor(S, cfg.id)
+  // *counting* session without this function pre-filtering the history itself. `options.rid`
+  // is the routine the rows are for: its own last session of the exercise comes first (#216).
+  const last = lastEntryFor(S, cfg.id, options.rid)
   const n = Math.max(1, cfg.sets || 1)
   const mode = modeOf(cfg)
   const sets = []
   // A deload routine must use its own prescription instead of carrying regular-session values
-  // into the workout. Other planned sessions keep the existing history-first behaviour.
+  // into the workout. Other planned sessions read the weight from history (and the reps too,
+  // unless the plan owns them — see planReps below).
   const prevAt = i => (!useTarget && last ? (last.sets[i] || last.sets[last.sets.length - 1]) : null)
+  // `options.planReps`: a planned session opens at the routine's own reps, and history only
+  // decides the weight (Settings → "Planned sessions start from", lib/session-start.js). Without
+  // it every row copied last session's reps, so a plan edited from 15 to 10 — or trained at 15
+  // once — kept opening at 15 while the routine still read "2 × 10" (#275). Freestyle has no
+  // plan to own anything and keeps reproducing what you did (preferLast).
+  const planReps = !!options.planReps && !preferLast && cfg.reps > 0
 
   if (mode === 'cardio') {
     for (let i = 0; i < n; i++) {
@@ -406,23 +468,26 @@ function buildWorkSets(S, cfg, options = {}) {
     }
     return sets
   }
-  const conf = S.exWeights[cfg.id]
+  const conf = (S.exWeights || {})[cfg.id]
   for (let i = 0; i < n; i++) {
     const prev = prevAt(i)
     const usable = prev && prev.r > 0 ? prev : null
-    // Planned sessions may use the confirmed working weight, while freestyle should reproduce
-    // the load of each matching set when that option is requested.
+    // The weight comes from the last session this routine trained (or any, for a routine that
+    // never has). The confirmed working weight is keyed by exercise alone, so it is only the
+    // fallback once there is no session to read: taken first, it handed a light day the heavy
+    // day's number (#216). A progression policy overwrites this anyway (applyPrescription).
     // A deload uses the routine's target weight; a routine that never set one (weight 0) falls
     // back to the last regular load rather than prescribing an empty bar.
     const lastRegular = last ? (last.sets[i] || last.sets[last.sets.length - 1]) : null
     const w = useTarget
       ? (cfg.weight > 0 ? cfg.weight : (lastRegular && lastRegular.r > 0 ? lastRegular.w : cfg.weight))
-      : preferLast && usable ? usable.w : (conf && conf.w > 0 ? conf.w : (usable ? usable.w : cfg.weight))
-    const row = { w, r: usable ? usable.r : cfg.reps, done: false }
+      : usable ? usable.w : (conf && conf.w > 0 ? conf.w : cfg.weight)
+    const row = { w, r: planReps || !usable ? cfg.reps : usable.r, done: false }
     // A unilateral exercise logs each side on its own (issue #60): the row splits into L/R,
     // each seeded with half the total reps at the same weight. When "last time" was itself a
-    // per-side set, carry its two sides over verbatim so an asymmetry you logged persists.
-    if (isPerSide(cfg)) sets.push(usable && isSideSet(usable) ? seedSideFromLast(row, usable) : makeSideSet(row))
+    // per-side set, carry its two sides over so an asymmetry you logged persists — both sides'
+    // weights always, their reps only when the plan does not own them.
+    if (isPerSide(cfg)) sets.push(usable && isSideSet(usable) ? seedSideFromLast(row, usable, planReps) : makeSideSet(row))
     else sets.push(row)
   }
   return sets
@@ -430,12 +495,13 @@ function buildWorkSets(S, cfg, options = {}) {
 
 // Seed a fresh per-side row from a previous per-side set: same reps/weight each side, nothing
 // done, no effort carried (that is logged afresh each session). Falls back to an even split if
-// the previous row was not actually per-side.
-function seedSideFromLast(row, prev) {
+// the previous row was not actually per-side. With `planReps` the reps are the row's own —
+// the plan's total, split the way makeSideSet splits it — and only the weights carry over.
+function seedSideFromLast(row, prev, planReps) {
   const base = makeSideSet(row)
   if (!isSideSet(prev)) return base
-  const carry = s => ({ w: Number(s?.w) || 0, r: Number(s?.r) || 0, done: false })
-  return syncSideAggregate({ ...base, sides: { L: carry(prev.sides.L), R: carry(prev.sides.R) } })
+  const carry = (s, key) => ({ w: Number(s?.w) || 0, r: planReps ? base.sides[key].r : Number(s?.r) || 0, done: false })
+  return syncSideAggregate({ ...base, sides: { L: carry(prev.sides.L, 'L'), R: carry(prev.sides.R, 'R') } })
 }
 
 /**

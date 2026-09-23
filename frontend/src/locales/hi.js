@@ -1289,4 +1289,15 @@ export default {
   'Open Settings → “Pair the mobile app” on your openGym site in a browser and enter the new code shown there. What this phone kept is merged into your account.': 'ब्राउज़र में अपनी openGym साइट पर सेटिंग्स → "मोबाइल ऐप पेयर करें" खोलें और वहाँ दिखा नया कोड डालें। इस फ़ोन ने जो रखा है, वह आपके खाते में जोड़ दिया जाएगा।',
   '{0} change': '{0} बदलाव',
   '{0} changes': '{0} बदलाव',
+  // --- plan vs session: the routine's own reps, per-routine progress (#275, #216) ---
+  'Planned sessions start from': 'प्लान किए गए सेशन की शुरुआत',
+  'The routine’s sets and reps. Your history decides the weight.': 'रूटीन के सेट और रेप्स। वज़न आपका इतिहास तय करता है।',
+  'Your last session': 'आपका पिछला सेशन',
+  'The reps you logged last time in that routine, carried over.': 'उस रूटीन में पिछली बार दर्ज किए गए रेप्स आगे ले जाए जाते हैं।',
+  'Plan changed — starting from your new target.': 'प्लान बदला — आपके नए लक्ष्य से शुरुआत।',
+  'First time in this routine — starting from its own target.': 'इस रूटीन में पहली बार — इसके अपने लक्ष्य से शुरुआत।',
+  'No weight logged last time — enter what you lift and progression takes it from there.': 'पिछली बार कोई वज़न दर्ज नहीं हुआ — जितना उठाते हैं उतना दर्ज करें, प्रगति वहीं से आगे बढ़ेगी।',
+  'Plan: {0}': 'प्लान: {0}',
+  'today {0}': 'आज {0}',
+  'reps from your last session': 'रेप्स आपके पिछले सेशन से',
 }

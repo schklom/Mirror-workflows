@@ -1289,4 +1289,15 @@ export default {
   'Open Settings → “Pair the mobile app” on your openGym site in a browser and enter the new code shown there. What this phone kept is merged into your account.': '在浏览器中打开你的 openGym 网站的设置 →“配对手机应用”，然后输入那里显示的新配对码。这部手机保留的内容会合并到你的账号。',
   '{0} change': '{0} 项更改',
   '{0} changes': '{0} 项更改',
+  // --- plan vs session: the routine's own reps, per-routine progress (#275, #216) ---
+  'Planned sessions start from': '计划训练的起点',
+  'The routine’s sets and reps. Your history decides the weight.': '按训练日的组数和次数，重量由你的历史记录决定。',
+  'Your last session': '你的上次训练',
+  'The reps you logged last time in that routine, carried over.': '沿用你上次在该训练日记录的次数。',
+  'Plan changed — starting from your new target.': '计划已更改——从你的新目标开始。',
+  'First time in this routine — starting from its own target.': '第一次练这个训练日——从它自己的目标开始。',
+  'No weight logged last time — enter what you lift and progression takes it from there.': '上次没有记录重量——填上你实际举的重量，渐进就从那里开始。',
+  'Plan: {0}': '计划：{0}',
+  'today {0}': '今天 {0}',
+  'reps from your last session': '次数沿用上次训练',
 }

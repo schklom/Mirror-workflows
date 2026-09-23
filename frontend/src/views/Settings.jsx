@@ -301,6 +301,16 @@ export default function Settings() {
           value={['list', 'compact'].includes(S.workoutView) ? S.workoutView : 'cards'}
           onChange={v => update(s => { s.workoutView = v })} />
       </Row>
+      {/* Whose reps a planned session opens with (lib/session-start.js). The plan's by default:
+          the routine is what you said you would do, and history and progression decide the
+          weight. The other choice is the old behaviour, reps carried over from last time.
+          Absent (an older profile) reads as the plan. */}
+      <SelectRow icon="clipboard" iconTint="var(--acc)" title={t('Planned sessions start from')}
+        value={S.startFrom === 'last' ? 'last' : 'plan'} onChange={v => update(s => { s.startFrom = v })}
+        options={[
+          { value: 'plan', label: t('Your plan'), subtitle: t('The routine’s sets and reps. Your history decides the weight.') },
+          { value: 'last', label: t('Your last session'), subtitle: t('The reps you logged last time in that routine, carried over.') },
+        ]} />
       {/* The lean workout screen keeps the sets and one "more" button per exercise; each switch
           brings one of the old always-visible button groups back for people who liked them. */}
       <Row icon="wrench" iconTint="var(--purple)" title={t('Workout controls')} accessory="chevron"

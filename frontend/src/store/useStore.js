@@ -96,6 +96,11 @@ export const DEF = {
   // the session straight away; weight can still be logged from Home/Stats. Defaults on; an
   // older profile without the key reads as on (`!== false`).
   weighIn: true,
+  // Where a planned session's reps come from (Settings → During a workout, lib/session-start.js):
+  // 'plan' opens at the routine's own sets × reps and lets history and progression decide the
+  // weight; 'last' carries the reps over from the last session, the way it always worked before.
+  // Absent reads as 'plan' too, which is what the MCP bridge sees on a raw state file.
+  startFrom: 'plan',
 }
 const clone = o => JSON.parse(JSON.stringify(o))
 

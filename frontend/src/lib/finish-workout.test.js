@@ -49,6 +49,19 @@ describe('completed workout boundary', () => {
     expect(b.noProg).toBe(true)
   })
 
+  it('keeps the plan each entry was built from, next to the target the prescription moved', () => {
+    const active = {
+      id: 'w', d: '2026-08-08', start: 1, routineIds: ['strength'],
+      entries: [
+        { id: '0025', rid: 'strength', planned: { sets: 2, reps: 10, weight: 60 }, sets: [{ done: true, w: 62.5, r: 10 }], target: { sets: 2, reps: 10, weight: 62.5 } },
+        { id: '0031', sets: [{ done: true, w: 10, r: 12 }], target: { sets: 1, reps: 12 } },
+      ],
+    }
+    const [a, b] = buildCompletedWorkout(active).entries
+    expect(a.planned).toEqual({ sets: 2, reps: 10, weight: 60 })
+    expect('planned' in b).toBe(false)
+  })
+
   it('derives topW from the highest completed non-warm-up work set, not stale entry data', () => {
     const active = {
       id: 'active-1', d: '2026-08-08', start: 1000,

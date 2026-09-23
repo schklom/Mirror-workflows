@@ -1292,4 +1292,15 @@ export default {
   'Open Settings → “Pair the mobile app” on your openGym site in a browser and enter the new code shown there. What this phone kept is merged into your account.': 'Nyisd meg a Beállítások → „Mobilalkalmazás párosítása” menüpontot az openGym oldaladon egy böngészőben, és add meg az ott látható új kódot. Amit ez a telefon megőrzött, a fiókodba kerül.',
   '{0} change': '{0} módosítás',
   '{0} changes': '{0} módosítás',
+  // --- plan vs session: the routine's own reps, per-routine progress (#275, #216) ---
+  'Planned sessions start from': 'A tervezett edzések kiindulópontja',
+  'The routine’s sets and reps. Your history decides the weight.': 'A rutin sorozatai és ismétlései. A súlyt az előzményeid döntik el.',
+  'Your last session': 'Az utolsó edzésed',
+  'The reps you logged last time in that routine, carried over.': 'Az abban a rutinban legutóbb rögzített ismétlések kerülnek át.',
+  'Plan changed — starting from your new target.': 'A terv megváltozott — az új célodtól indulsz.',
+  'First time in this routine — starting from its own target.': 'Először ebben a rutinban — a saját céljától indulsz.',
+  'No weight logged last time — enter what you lift and progression takes it from there.': 'Legutóbb nem volt súly rögzítve — add meg, mennyit emelsz, és onnan halad tovább a progresszió.',
+  'Plan: {0}': 'Terv: {0}',
+  'today {0}': 'ma {0}',
+  'reps from your last session': 'ismétlések az utolsó edzésedből',
 }

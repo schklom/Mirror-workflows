@@ -699,6 +699,16 @@ export const PT_BR_OVERRIDES = {
   'Your data is removed from this browser; your profile on the server keeps it. First it checks that the server has every change — if not, you choose what happens to them.': 'Seus dados são removidos deste navegador; seu perfil no servidor os mantém. Antes é verificado se o servidor tem todas as alterações — se não tiver, você escolhe o que acontece com elas.',
   'Signs this profile out on every device, including this one. Phones paired with it are disconnected and have to be paired again. Your passkeys keep working — sign in with them again anytime.': 'Encerra a sessão deste perfil em todos os dispositivos, incluindo este. Os celulares pareados com ele são desconectados e precisam ser pareados de novo. Suas chaves de acesso continuam funcionando — entre com elas de novo quando quiser.',
   'Open Settings → “Pair the mobile app” on your openGym site in a browser and enter the new code shown there. What this phone kept is merged into your account.': 'No seu site openGym em um navegador, abra Configurações → “Parear o aplicativo” e digite o novo código mostrado lá. O que este celular manteve é incorporado à sua conta.',
+  // plan vs session (#275, #216) — pt-PT's "planeadas", "registado" and tu-forms read as
+  // Portugal here; "Plano: {0}" and "hoje {0}" are shared and inherit
+  'Planned sessions start from': 'Ponto de partida das sessões planejadas',
+  'The routine’s sets and reps. Your history decides the weight.': 'As séries e repetições da rotina. Seu histórico decide o peso.',
+  'Your last session': 'Sua última sessão',
+  'The reps you logged last time in that routine, carried over.': 'São mantidas as repetições que você registrou da última vez nessa rotina.',
+  'Plan changed — starting from your new target.': 'Plano alterado — você começa pela sua nova meta.',
+  'First time in this routine — starting from its own target.': 'Primeira vez nesta rotina — você começa pela meta dela.',
+  'No weight logged last time — enter what you lift and progression takes it from there.': 'Nenhum peso registrado na última vez — informe quanto você levanta e a progressão segue a partir daí.',
+  'reps from your last session': 'reps da sua última sessão',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

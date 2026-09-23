@@ -149,6 +149,15 @@ const BODYWEIGHT_EQ = new Set(['body weight', 'band', 'resistance band'])
 export const isBodyweightEq = idOrEx =>
   BODYWEIGHT_EQ.has((typeof idOrEx === 'string' ? EXIDX[idOrEx] : idOrEx)?.eq)
 
+// Equipment that is a load in its own right: a bar, a bell, a stack, a sled, a weight. A set on
+// one of these logged at 0 kg is a number nobody typed in. The rest of the catalogue that is not
+// bodyweight — an ab wheel, a stability ball, a bosu, a rope, a roller, the "assisted" straps —
+// often has no load to enter at all, so 0 there is the honest number and progression moves the
+// reps instead (lib/progression.js).
+const LOADED_EQ = new Set(['barbell', 'ez barbell', 'olympic barbell', 'trap bar', 'dumbbell', 'kettlebell', 'cable', 'leverage machine', 'smith machine', 'sled machine', 'weighted'])
+export const isLoadedEq = idOrEx =>
+  LOADED_EQ.has((typeof idOrEx === 'string' ? EXIDX[idOrEx] : idOrEx)?.eq)
+
 /* Assistance machines run the other way round: the stack carries part of your body weight, so
  * a smaller number is the harder set and the record (issue #232). Getting the set wrong is
  * worse than not having the feature — inverting a normal lift would hide real progress — so the

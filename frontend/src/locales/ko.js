@@ -1289,4 +1289,15 @@ export default {
   'Open Settings → “Pair the mobile app” on your openGym site in a browser and enter the new code shown there. What this phone kept is merged into your account.': '브라우저에서 openGym 사이트의 설정 → "모바일 앱 페어링"을 열고 거기에 표시된 새 코드를 입력하세요. 이 휴대폰에 보관된 내용은 계정에 병합됩니다.',
   '{0} change': '변경 {0}개',
   '{0} changes': '변경 {0}개',
+  // --- plan vs session: the routine's own reps, per-routine progress (#275, #216) ---
+  'Planned sessions start from': '계획된 세션의 시작 기준',
+  'The routine’s sets and reps. Your history decides the weight.': '루틴의 세트와 횟수. 무게는 기록에 따라 정해집니다.',
+  'Your last session': '지난 세션',
+  'The reps you logged last time in that routine, carried over.': '그 루틴에서 지난번에 기록한 횟수를 그대로 가져옵니다.',
+  'Plan changed — starting from your new target.': '계획이 바뀌었습니다 — 새 목표부터 시작합니다.',
+  'First time in this routine — starting from its own target.': '이 루틴에서 처음입니다 — 루틴의 목표부터 시작합니다.',
+  'No weight logged last time — enter what you lift and progression takes it from there.': '지난번에 무게가 기록되지 않았습니다 — 드는 무게를 입력하면 거기서부터 진행합니다.',
+  'Plan: {0}': '계획: {0}',
+  'today {0}': '오늘 {0}',
+  'reps from your last session': '지난 세션의 횟수',
 }

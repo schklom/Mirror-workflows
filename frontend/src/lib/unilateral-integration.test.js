@@ -42,7 +42,7 @@ describe('unilateral sets across session boundaries', () => {
 
   it('uses progressed side weights when building a routine session and its planned drops', () => {
     const cfg = { id: '0025', mode: 'reps', side: true, bodyweight: false, sets: 1, reps: 16, weight: 20, policy: 'linear', inc: 2.5, intensifier: { type: 'dropset', count: 1, pct: 20 } }
-    const S = { unit: 'kg', exWeights: {}, workouts: [{ id: 'w', d: '2026-09-01', entries: [{ ...entry(done(row())), target: cfg }] }] }
+    const S = { unit: 'kg', exWeights: {}, workouts: [{ id: 'w', d: '2026-09-01', routineIds: ['r'], entries: [{ ...entry(done(row())), target: cfg }] }] }
     const [built] = buildSessionEntries(S, { id: 'r', policy: 'linear', ex: [cfg] })
     expect(built.plan.kind).toBe('up')
     expect(built.sets[0].sides.L.w).toBe(built.plan.weight)

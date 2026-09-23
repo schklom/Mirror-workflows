@@ -5,7 +5,7 @@ import { workoutControls } from '../lib/workout-controls.js'
 import { useUI } from '../store/useUI.js'
 import { exOr, betterWeight } from '../lib/exercises.js'
 import { usesBar, barWeightFor, plateSplit } from '../lib/bar.js'
-import { effectiveRoutines, effectiveRoutineIds, lastEntryFor, bestWeightFor, bestWeightForEntry, buildSets, freestyleConfig, defaultConfig, setsDoneActive, setUnitsTotal, supersetUnits, unitOf, setLabel, modeOf, isBw, isPerSide, repStep, EFFORT, effortOf, stepEffort, capEffort, cascadeWeight, insertWarmupRow, removeRowAt, pairAdjacent, unpairSuperset, cleanupSg, applyIntensifierPlan, pinnedNoteFor, exNoteFor } from '../lib/history.js'
+import { effectiveRoutines, effectiveRoutineIds, lastEntryFor, bestWeightFor, bestWeightForEntry, buildSets, freestyleConfig, defaultConfig, setsDoneActive, setUnitsTotal, supersetUnits, unitOf, setLabel, modeOf, isBw, isPerSide, repStep, EFFORT, effortOf, stepEffort, capEffort, cascadeWeight, insertWarmupRow, removeRowAt, pairAdjacent, unpairSuperset, cleanupSg, applyIntensifierPlan, pinnedNoteFor, exNoteFor, setsRepsOf } from '../lib/history.js'
 import { fmtNum, capWords, fmtDate, todayISO, exCount, DAYN } from '../lib/format.js'
 import { beep, vibrate, unlock } from '../lib/sound.js'
 import { t, exerciseNameFor } from '../lib/i18n.js'
@@ -16,8 +16,9 @@ import { startFlow, exercisePicker, exConfigSheet, exerciseDetailSheet, finishWo
 import { effortColor } from '../lib/effort.js'
 import Icon from '../components/Icon.jsx'
 import { Button, Check, NumberField } from '../components/ui.jsx'
-import { nextPrescription, applyPrescription, defaultIncrement, weightIncrement, stepWeight } from '../lib/progression.js'
+import { defaultIncrement, weightIncrement, stepWeight } from '../lib/progression.js'
 import { progressionGuidance } from '../lib/progression-copy.js'
+import { buildPlannedEntry, plannedConfigOf } from '../lib/session-start.js'
 import { glyphOf } from '../lib/glyphs.js'
 import { isWarmupRow, isDropSet, isRestPauseSet, dropsOf, clustersOf, addDrop, addCluster, removeDropAt, removeClusterAt, setDropAt, setClusterAt, nextDropWeight, nextBurstReps, isSideSet, makeSideSet, setSideField, toggleSide, addSideDrop, removeSideDropAt, setSideDropAt, addSideCluster, removeSideClusterAt, setSideClusterAt } from '../lib/workout-model.js'
 import { canMoveActiveWorkoutUnit, moveActiveWorkoutUnit } from '../lib/active-workout-order.js'
@@ -71,7 +72,8 @@ function Elapsed({ start }) {
 /* ---------- one exercise block (reps: weight×reps · time: a held duration · cardio: duration+speed) ---------- */
 // `compact` shrinks the block for a superset member; `dense` (compact view) goes further and
 // drops everything that is not a set you are logging — media, tag chips, the note lines, the
-// "last time" recap and the progression line — leaving the name, the ⋯ menu and the sets.
+// "last time" recap and the progression line — leaving the name, the ⋯ menu, the one-line plan
+// the rows are measured against, and the sets.
 // Nothing dropped is lost: it is all still on the ⋯ menu, or one ⋮ switch back to list/cards.
 function ExerciseBlock({ entryIdx, compact, dense, onToggle, onToggleSide, onField, onAddSet, onRemoveSet, onAddWarmup, onRemoveSetAt, onStartTimed, onPairPrev, onPairNext, onSetRowRef, onProgressionSettings, onSwap, onMoveUp, onMoveDown, canMoveUp, canMoveDown, onRemoveExercise, busy }) {
   const S = useStore(s => s.S)
@@ -128,7 +130,9 @@ function ExerciseBlock({ entryIdx, compact, dense, onToggle, onToggleSide, onFie
   const mode = modeOf({ ...(entry.target || {}), id: entry.id })
   const cardio = mode === 'cardio'
   const timed = mode === 'time'
-  const last = lastEntryFor(S, entry.id)
+  // The routine's own last session of this exercise (or any, for a routine that has none), the
+  // same one the rows and the progression line were built from (#216).
+  const last = lastEntryFor(S, entry.id, entry.rid)
   const standingNote = exNoteFor(S, entry.id)
   // Only worth surfacing while there is still work left: once the exercise is finished, a note
   // telling you what to do in it is behind you, and the block is already long.
@@ -144,6 +148,26 @@ function ExerciseBlock({ entryIdx, compact, dense, onToggle, onToggleSide, onFie
   // the session was built so the reason matches the numbers already in the rows.
   const plan = entry.plan
   const guidance = progressionGuidance(plan)
+  // The plan this exercise was built from (issue #275), on one quiet line in every view — the
+  // routine's "2 × 10" is the thing the rows are measured against. When today's rows open
+  // somewhere else, the same line says so: progression moved the sets or reps (a bodyweight
+  // climb, a deload, an added set), or they carry last session's reps ("Your last session").
+  // An entry built before plans were stamped, and a freestyle one, has no plan to show.
+  const planned = entry.planned && mode !== 'cardio' ? entry.planned : null
+  const planLine = (() => {
+    if (!planned) return null
+    const today = entry.target || {}
+    const todaySets = today.sets || planned.sets || 1
+    const inPlan = timed
+      ? today.sec == null || today.sec === planned.sec
+      : today.reps == null || (planned.repsMin > 0 ? today.reps >= planned.repsMin && today.reps <= planned.reps : today.reps === planned.reps)
+    const note = todaySets !== (planned.sets || 1) || !inPlan
+      ? t('today {0}', setsRepsOf({ mode, sets: todaySets, reps: today.reps, sec: today.sec }))
+      : entry.carried ? t('reps from your last session') : null
+    return <div className="small dim planline" style={{ marginBottom: 4 }}>
+      {t('Plan: {0}', setsRepsOf({ ...planned, mode }))}{note ? ' · ' + note : ''}
+    </div>
+  })()
   // A bodyweight set has no weight to type, so the column is not there (issue #32) — one
   // stepper instead of two, which is the whole point of the flag. Adding a belt weight in the
   // config brings it back, now labelled as the addition it is.
@@ -375,6 +399,8 @@ function ExerciseBlock({ entryIdx, compact, dense, onToggle, onToggleSide, onFie
         <button className="iconbtn" aria-label={t('More')} title={t('More')} onClick={openMore}><Icon name="more" /></button>
       </div>
     </div>
+    {/* compact view keeps the plan line: it is what the rows are measured against */}
+    {dense && planLine}
     {wc.pairButtons && !compact && !dense && (onPairPrev || onPairNext) && <div className="row" style={{ gap: 6, flexWrap: 'wrap', marginBottom: 8 }}>
       {onPairPrev && <Button size="xs" variant="tinted" icon="link" title={t('Make superset with previous')} onClick={onPairPrev}>{t('Make superset with previous')}</Button>}
       {onPairNext && <Button size="xs" variant="tinted" icon="link" title={t('Make superset with next')} onClick={onPairNext}>{t('Make superset with next')}</Button>}
@@ -403,6 +429,7 @@ function ExerciseBlock({ entryIdx, compact, dense, onToggle, onToggleSide, onFie
       {t('From {0}:', fmtDate(pinnedNote.d, true))} {pinnedNote.note}
     </div>}
     {entry.note && <div className="exnote">{entry.note}</div>}
+    {planLine}
     {last && <div className="small dim" style={{ marginBottom: 4 }}>{t('Last time')} ({fmtDate(last.d)}): {last.sets.map(s => setLabel(entry.id, s, last.target)).join(', ')}</div>}
     {/* Bar + plates for barbell work: what to load per side for the set in front of you
         (first undone set; the heaviest row once everything is checked). The logged number
@@ -534,7 +561,7 @@ function ActiveWorkout() {
   // the whole session is visible and scrollable (Settings → During a workout → Workout view,
   // seeded onto s.active and overridable for this session from the header ⋮). compact is list
   // with the per-exercise media, tag chips, note lines, "last time" and progression line
-  // stripped — just names and set rows. Every set handler below is already entry-index
+  // stripped — just names, the one-line plan and set rows. Every set handler below is already entry-index
   // parameterised, so these only change what is rendered — completion, rest, top-weight and
   // auto-advance share one path. Unknown/absent values read as cards, keeping every
   // pre-existing profile (and a session started before this field) as it was.
@@ -778,7 +805,10 @@ function ActiveWorkout() {
     // A combined session's entries each carry a `rid`; progression settings read from that
     // entry's own routine, not a session-wide one.
     const routine = state.routines.find(r => r.id === entry.rid)
-    exConfigSheet(exOr(entryId), entry.target, cfg => {
+    // The sheet opens at the plan's sets and reps rather than today's prescription (see
+    // plannedConfigOf), so saving it unchanged rebuilds the rows the entry already has.
+    const opened = plannedConfigOf(entry)
+    exConfigSheet(exOr(entryId), opened, cfg => {
       // Store updates clone the state tree. If this exact object is no longer at the captured
       // index, the list changed while the sheet was open; an id check alone cannot distinguish
       // duplicate occurrences of the same exercise, so fail closed before cloning again.
@@ -793,21 +823,28 @@ function ActiveWorkout() {
         // happens to occupy the same index.
         if (!activeEntry || activeEntry.id !== entryId) return
         const full = { ...cfg, id: activeEntry.id }
+        // The weight the sheet showed is today's. Left as it was, it is not an edit of the plan's:
+        // stamped as the plan, a later edit of the reps would restart from today's load as though
+        // it had been typed in (nextPrescription), so the plan keeps its own.
+        if ((cfg.weight || 0) === (opened.weight || 0) && activeEntry.planned?.weight != null) full.weight = activeEntry.planned.weight
         const activeRoutine = s.routines.find(r => r.id === activeEntry.rid)
-        const step = modeOf(full) === 'reps' ? weightIncrement(full, s.unit) : defaultIncrement(activeEntry.id, s.unit)
         // A config without a set count keeps the rows the session already has.
         if (!(full.sets > 0)) full.sets = activeEntry.sets.filter(x => !isWarmupRow(x)).length || 1
-        const plan = nextPrescription(s, full, activeRoutine)
         // The sheet edits sets, reps, weight and warm-ups as well as the rule — so the rows are
-        // rebuilt from the new config the way the session was, and only what you already logged
-        // is kept in place (done warm-ups first, then done work sets, then the fresh remainder).
-        const fresh = applyIntensifierPlan(applyPrescription(buildSets(s, full, { step, useTarget: plan.kind === 'off' }), plan, step), full)
+        // rebuilt from the new config exactly the way the session start builds them (same reps
+        // source, same prescription, same stamped target), and only what you already logged is
+        // kept in place (done warm-ups first, then done work sets, then the fresh remainder).
+        const built = buildPlannedEntry(s, full, activeRoutine, { noProg: activeEntry.noProg === true })
+        const fresh = built.sets
         const doneWarm = activeEntry.sets.filter(x => x.done && isWarmupRow(x))
         const doneWork = activeEntry.sets.filter(x => x.done && !isWarmupRow(x))
         const freshWarm = fresh.filter(isWarmupRow)
         const freshWork = fresh.filter(x => !isWarmupRow(x))
-        activeEntry.target = { ...cfg }
-        activeEntry.plan = plan
+        activeEntry.target = built.target
+        activeEntry.plan = built.plan
+        activeEntry.planned = built.planned
+        if (built.carried) activeEntry.carried = true
+        else delete activeEntry.carried
         activeEntry.sets = [...doneWarm, ...freshWarm.slice(doneWarm.length), ...doneWork, ...freshWork.slice(doneWork.length)]
       })
     }, null, routine)
@@ -1066,26 +1103,30 @@ function ActiveWorkout() {
     <Button onClick={() => exercisePicker((ex, quick) => {
       // A freehand add inherits the current unit's routine (its `rid`) so it lands in that
       // routine's block in a combined session and gets a real prescription; a routine-less
-      // freestyle session has no `rid` to inherit. `noProg` is never set independently here —
-      // the only mid-session route to an excluded entry is "Add routine".
-      const curRid = A.entries[A.cur]?.rid
+      // freestyle session has no `rid` to inherit. It inherits the block's `noProg` too: an
+      // exercise added to a rehab or deload routine's block is kept out of progression like the
+      // rest of it, the way a swap or an edit there is — it takes the routine's own numbers and
+      // never becomes the baseline the regular sessions progress from.
+      const curEntry = A.entries[A.cur]
+      const curRid = curEntry?.rid
       const routine = curRid ? S.routines.find(r => r.id === curRid) : null
       const freestyle = !routine
+      const noProg = !freestyle && curEntry?.noProg === true
       // Freestyle has no routine prescription to apply: show the last target in the config
       // sheet and carry its completed rows forward. A planned session uses its configured
       // target when progression is off, while progression-enabled sessions keep their path.
       const seed = freestyle ? freestyleConfig(S, { id: ex.id, ...defaultConfig(ex.id) }) : null
       const commit = cfg => update(s => {
         const full = { ...cfg, id: ex.id }
-        const plan = freestyle ? null : nextPrescription(s, full, routine)
-        const sets = buildSets(s, full, {
-          step: modeOf(full) === 'reps' ? weightIncrement(full, s.unit) : defaultIncrement(ex.id, s.unit),
-          ...(freestyle ? { preferLast: true } : {}),
-          ...(plan?.kind === 'off' ? { useTarget: true } : {})
-        })
-        const progressed = freestyle ? sets : applyPrescription(sets, plan, modeOf(full) === 'reps' ? weightIncrement(full, s.unit) : defaultIncrement(ex.id, s.unit))
+        // A planned session builds the exercise the way its routine would (prescription, reps
+        // source, target); freestyle reproduces what you did last time.
+        const built = freestyle
+          ? { target: { ...cfg }, plan: null, sets: applyIntensifierPlan(buildSets(s, full, {
+            step: modeOf(full) === 'reps' ? weightIncrement(full, s.unit) : defaultIncrement(ex.id, s.unit), preferLast: true,
+          }), full) }
+          : buildPlannedEntry(s, full, routine, { noProg })
         const insertAt = insertionIndexAfterCurrentUnit(supersetUnits(s.active.entries), s.active.cur, s.active.entries.length)
-        s.active.entries.splice(insertAt, 0, { id: ex.id, target: { ...cfg }, plan, sets: applyIntensifierPlan(progressed, full), ...(curRid ? { rid: curRid } : {}) })
+        s.active.entries.splice(insertAt, 0, { id: ex.id, ...built, ...(curRid ? { rid: curRid } : {}), ...(noProg ? { noProg: true } : {}) })
         s.active.cur = insertAt
         useUI.getState().shiftRestOwner(insertAt, 1)
       })

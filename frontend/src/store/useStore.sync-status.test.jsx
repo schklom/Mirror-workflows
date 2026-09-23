@@ -315,6 +315,32 @@ describe('another account signing in on a copy that still owes the first', () =>
     expect(await useStore.getState().keptChanges()).toEqual([])
   })
 
+  it('on a device with no room for a second copy beside the first, the copy makes room for what it owed', async () => {
+    const S = { ...clone(DEF), _ts: 300, workouts: [workout('w1'), { ...workout('w-week', '2026-09-18'), note: 'x'.repeat(20000) }] }
+    signedIn(S)
+    localStorage.setItem('gym_state_v1', JSON.stringify(S))
+    localStorage.setItem('gym_sync', JSON.stringify({ rev: 1, ts: 100 }))
+    localStorage.setItem('gym_dirty', '1')
+    // A quota: room for one copy of this profile and a little more, never for two.
+    const used = () => Object.keys(localStorage).reduce((n, k) => n + k.length + localStorage.getItem(k).length, 0)
+    const quota = used() + 5000
+    const setItem = localStorage.setItem.bind(localStorage)
+    const full = vi.spyOn(localStorage, 'setItem').mockImplementation((k, v) => {
+      const prev = localStorage.getItem(k)
+      if (used() - (prev == null ? 0 : k.length + prev.length) + k.length + String(v).length > quota) throw new DOMException('The quota has been exceeded.', 'QuotaExceededError')
+      return setItem(k, v)
+    })
+    try {
+      api.mockImplementation(twosServer)
+      useStore.getState().setUser({ id: 'user-2', name: 'Two' })
+      await useStore.getState().adoptProfile(async () => false)
+    } finally { full.mockRestore() }
+
+    expect(ids(useStore.getState().S.workouts)).toEqual(['b1'])
+    expect(await useStore.getState().keptChanges()).toEqual([{ server: location.origin, uid: USER.id, name: 'One', at: expect.any(Number) }])
+    expect(ids(JSON.parse(localStorage.getItem('gym_stash'))[location.origin + '|' + USER.id].state.workouts)).toEqual(['w1', 'w-week'])
+  })
+
   it('a copy that owes nothing is replaced as before, with nothing kept', async () => {
     signedIn({ ...clone(DEF), _ts: 100, workouts: [workout('w1')] })
     localStorage.setItem('gym_sync', JSON.stringify({ rev: 1, ts: 100 }))

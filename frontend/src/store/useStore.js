@@ -535,7 +535,13 @@ export const useStore = create((set, get) => {
     state.active = S.active || prev?.active || null
     const entry = { server: server || null, uid, name: get().user?.id === uid ? get().user.name || '' : '', at: Date.now(), state }
     all[key] = entry
-    try { localStorage.setItem(STASH_KEY, JSON.stringify(all)) } catch { /* full — the file may still take it */ }
+    // A second full copy beside the first may not fit (a profile near the size limit): the copy
+    // in storage is wiped next anyway, so it makes the room.
+    const v = JSON.stringify(all)
+    try { localStorage.setItem(STASH_KEY, v) }
+    catch {
+      try { localStorage.removeItem(KEY); localStorage.setItem(STASH_KEY, v) } catch { /* still full — the file may still take it */ }
+    }
     if (MOBILE) keeping = readStashes().then(f => writeStashes({ ...f, [key]: entry })).catch(() => {})
   }
   const stashOwed = async () => {

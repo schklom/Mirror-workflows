@@ -7,7 +7,7 @@ import { useUI } from '../store/useUI.js'
 import { ACCENTS, todayISO, localTZ, weekStartOf, MONDAY, SUNDAY } from '../lib/format.js'
 import { effortOf } from '../lib/history.js'
 import { unlock, playOnSilentSupported } from '../lib/sound.js'
-import { api, webauthnOK, passkeyLogin, passkeyRegister, IS_ANDROID } from '../lib/api.js'
+import { api, webauthnOK, passkeyRegister, IS_ANDROID } from '../lib/api.js'
 import { pushSupported, enablePush, disablePush, sendTestPush, syncPushSubscription } from '../lib/push.js'
 import { wakeLockSupported } from '../lib/wakelock.js'
 import { t, LANGS, INSTR_LANGS } from '../lib/i18n.js'
@@ -15,9 +15,9 @@ import { DEMO, REPO } from '../lib/demo.js'
 import { MOBILE, isAndroid, shareExport, syncReminder } from '../lib/mobile.js'
 import { checkForUpdate, downloadAndInstall } from '../lib/update.js'
 import { forgetCoach } from '../lib/coach-api.js'
-import { ConnectSheet } from './MobileOnboarding.jsx'
-import { starterPlanSheet, confirmSheet, importFromApp, importFromHevy, equipmentProfileSheet, menuSheet, askAddDeviceData } from '../sheets.jsx'
+import { starterPlanSheet, confirmSheet, importFromApp, importFromHevy, equipmentProfileSheet, menuSheet } from '../sheets.jsx'
 import Icon from '../components/Icon.jsx'
+import { ServerSyncSection, KeptChangesRows, leaveServer, connectServer, signInAgain } from '../components/ServerSync.jsx'
 import { Section, Row, SelectRow, Switch, Segmented, Button, TextField } from '../components/ui.jsx'
 
 export default function Settings() {
@@ -25,7 +25,7 @@ export default function Settings() {
   const S = useStore(s => s.S)
   const user = useStore(s => s.user)
   const coachLocal = useStore(s => s.coachLocal)
-  const { update, replaceState, setUser, pullState, pushState, adoptProfile, signOut, signOutAll, resetDemo, disconnectServer } = useStore()
+  const { update, replaceState, setUser, pullState, pushState, resetDemo } = useStore()
   const toast = useUI(s => s.toast)
   const fileRef = useRef(null)
   const importRef = useRef(null)
@@ -119,8 +119,10 @@ export default function Settings() {
     }
   }
 
+  // Reads the store at the moment of the tap: the sheet that asks before a sign-out offers it too,
+  // and the copy it exports is the one that has not reached the server.
   const doExport = async () => {
-    const json = JSON.stringify(S, null, 2)
+    const json = JSON.stringify(useStore.getState().S, null, 2)
     const name = 'opengym-backup-' + todayISO() + '.json'
     // WKWebView can't download blob URLs — the native build hands the file to the share sheet.
     if (MOBILE) {
@@ -143,24 +145,33 @@ export default function Settings() {
     }
     rd.readAsText(f)
   }
-  const signInHere = async () => {
-    try { const u = await passkeyLogin(); setUser(u); await adoptProfile(askAddDeviceData); toast(t('Welcome back, {0}', u.name)) }
-    catch (e) { if (e.name !== 'NotAllowedError' && e.name !== 'AbortError') toast(e.message || t('Sign-in failed')) }
-  }
   const registerHere = () => useUI.getState().openSheet(close => <RegisterInline close={close} setUser={setUser} pushState={pushState} pullState={pullState} toast={toast} />)
-  // Ends the profile's sessions on every device — this one included, so on success it lands in
-  // the same place as the plain sign-out above (home, local data cleared). On failure nothing
-  // local is touched: still signed in here, and say so rather than leaving a half-signed-out app.
+  /* Disconnect (phone), Sign out, Sign out everywhere. None of them wipes this device while the
+     server is missing a change: the confirm no longer promises a sync it never checked, and when
+     something is owed, a second sheet says how much and offers to try again, to export a backup,
+     or to go ahead anyway with the changes kept on this device (components/ServerSync.jsx).
+     "Sign out everywhere" also ends every paired phone's token — the phones have no passkey to
+     sign in with, so they have to be paired again, and the confirm says so. Failing, it touches
+     nothing local: still signed in here, and the toast says so. */
+  const kept = t('The changes your server has not seen are kept on this device, and added back when it connects as this account again.')
+  const leave = (kind, after) => leaveServer(kind, { exportBackup: doExport, done: r => { nav('/home'); if (r.stashed) toast(kept); else if (after) toast(after) } })
+  const disconnect = () => confirmSheet({
+    title: t('Disconnect from your server?'),
+    message: t('This phone switches back to local-only and its copy of your account is removed. First it checks that your server has every change — if not, you choose what happens to them.'),
+    confirmText: t('Disconnect'), danger: true,
+    onConfirm: () => leave('disconnect', t('Disconnected — back to local-only')),
+  })
+  const signOutHere = () => confirmSheet({
+    title: t('Sign out?'),
+    message: t('Your data is removed from this browser; your profile on the server keeps it. First it checks that the server has every change — if not, you choose what happens to them.'),
+    confirmText: t('Sign out'), danger: true,
+    onConfirm: () => leave('signout'),
+  })
   const signOutEverywhere = () => confirmSheet({
     title: t('Sign out everywhere?'),
-    message: t('Signs this profile out on every device, including this one. Your passkeys keep working — sign in with them again anytime.'),
+    message: t('Signs this profile out on every device, including this one. Phones paired with it are disconnected and have to be paired again. Your passkeys keep working — sign in with them again anytime.'),
     confirmText: t('Sign out everywhere'), danger: true,
-    onConfirm: async () => {
-      // Refused while changes are still owed to the server: nothing was signed out or wiped,
-      // and the sync banner says what is waiting.
-      try { const r = await signOutAll(); if (r?.owed && !r.stashed) return; nav('/home'); toast(t('Signed out on all devices')) }
-      catch (e) { toast(t('Could not sign out everywhere — you are still signed in.')) }
-    },
+    onConfirm: () => leave('everywhere', t('Signed out on all devices')),
   })
   // Signed in, the empty state is pushed to the profile like any other change, so the wipe
   // reaches the server and every device that syncs with it — the dialog has to say so. The Coach
@@ -188,41 +199,44 @@ export default function Settings() {
       <div style={{ flex: 1, marginLeft: 10 }}><h1>{t('Settings')}</h1></div>
     </div>
 
-    {/* ---------- account (demo and mobile builds have nothing to sign in to) ---------- */}
-    <Section title={MOBILE ? (user ? t('Your server') : t('Your data')) : DEMO ? t('Demo') : t('Account')}>
-      {MOBILE ? (user ? <>
-        <Row icon="personCircle" iconTint="var(--grey)" title={user.name} subtitle={t('Synced with your openGym server.')} />
+    {/* ---------- the server: which one, which account, how that stands, "Sync now" ----------
+        A paired phone's Admin and Disconnect sit in the same block; a browser's account rows
+        follow in their own. */}
+    {user && !DEMO && <ServerSyncSection>
+      {MOBILE && <>
         {user.admin && <Row icon="wrench" iconTint="var(--indigo)" title={t('Admin dashboard')} accessory="chevron" onClick={() => nav('/admin')} />}
-        <Row icon="signOut" iconTint="var(--red)" title={t('Disconnect')} danger onClick={() => confirmSheet({
-          title: t('Disconnect from your server?'),
-          message: t('Your data is synced to your server first, then this device switches back to local-only.'),
-          confirmText: t('Disconnect'), danger: true,
-          onConfirm: async () => { const r = await disconnectServer(); if (r?.owed && !r.stashed) return; nav('/home'); toast(t('Disconnected — back to local-only')) },
-        })} />
-      </> : <>
+        <Row icon="signOut" iconTint="var(--red)" title={t('Disconnect')} danger onClick={disconnect} />
+      </>}
+    </ServerSyncSection>}
+
+    {/* ---------- account (demo and mobile builds have nothing to sign in to) ---------- */}
+    {!(MOBILE && user) && <Section title={MOBILE ? t('Your data') : DEMO ? t('Demo') : t('Account')}>
+      {MOBILE ? <>
         <Row icon="lock" iconTint="var(--acc)" title={t('All data stays on this phone')} subtitle={t('No account, no cloud — back it up anytime with Export below.')} />
         <Row icon="link" iconTint="var(--indigo)" title={t('Connect to my server')} subtitle={t('Sync this device to your own self-hosted openGym instead.')} accessory="chevron"
-          onClick={() => useUI.getState().openSheet(close => <ConnectSheet close={close} />)} />
-      </>) : DEMO ? <>
+          onClick={connectServer} />
+        <KeptChangesRows />
+      </> : DEMO ? <>
         <Row icon="sparkles" iconTint="var(--acc)" title={t('You’re in the demo')} subtitle={t('Example data, stored only in this browser — change anything you like.')} />
         <Row icon="reset" iconTint="var(--blue)" title={t('Reset demo data')} accessory="chevron"
           onClick={() => confirmSheet({ title: t('Reset demo data?'), message: t('Puts the example plan, workouts and weigh-ins back the way they started.'), confirmText: t('Reset'), onConfirm: () => { resetDemo(); nav('/home'); toast(t('Demo data reset')) } })} />
         <Row icon="rocket" iconTint="var(--indigo)" title={t('Self-host openGym')} subtitle={t('Passkey sign-in, sync across your devices, your own data.')} accessory="chevron"
           onClick={() => window.open(REPO, '_blank', 'noopener')} />
       </> : user ? <>
-        <Row icon="personCircle" iconTint="var(--grey)" title={user.name} subtitle={t('Signed in with passkey — data syncs to this profile.')} />
         {user.admin && <Row icon="wrench" iconTint="var(--indigo)" title={t('Admin dashboard')} accessory="chevron" onClick={() => nav('/admin')} />}
         <Row icon="link" iconTint="var(--blue)" title={t('Pair the mobile app')} subtitle={t('Connect the openGym app on your phone to this account.')} accessory="chevron"
           onClick={() => useUI.getState().openSheet(close => <PairSheet close={close} />)} />
-        <Row icon="signOut" iconTint="var(--red)" title={t('Sign out')} danger onClick={() => confirmSheet({ title: t('Sign out?'), message: t('Your data is synced to your profile first, then cleared from this device.'), confirmText: t('Sign out'), danger: true, onConfirm: async () => { const r = await signOut(); if (r?.owed && !r.stashed) return; nav('/home') } })} />
+        <Row icon="signOut" iconTint="var(--red)" title={t('Sign out')} danger onClick={signOutHere} />
         <Row icon="shield" iconTint="var(--red)" title={t('Sign out everywhere')} subtitle={t('Ends this profile’s sessions on all your devices.')} danger onClick={signOutEverywhere} />
       </> : webauthnOK() ? <>
         <Row icon="sparkles" iconTint="var(--acc)" title={t('Create passkey profile')} subtitle={t('Keeps your data safe and separate per person.')} accessory="chevron" onClick={registerHere} />
-        <Row icon="person" iconTint="var(--blue)" title={t('Sign in with passkey')} accessory="chevron" onClick={signInHere} />
-      </> : (
+        <Row icon="person" iconTint="var(--blue)" title={t('Sign in with passkey')} accessory="chevron" onClick={signInAgain} />
+        <KeptChangesRows />
+      </> : <>
         <Row icon="lock" iconTint="var(--grey)" title={t('Passkeys not supported in this browser.')} />
-      )}
-    </Section>
+        <KeptChangesRows />
+      </>}
+    </Section>}
     {!user && !DEMO && !MOBILE && <p className="sect-f" style={{ marginTop: -18, marginBottom: 22 }}>{t('Guest mode — data lives only in this browser.')}</p>}
 
     {/* ---------- the Coach on a phone: through the paired server, or with the user's own key ---------- */}

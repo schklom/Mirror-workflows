@@ -224,8 +224,17 @@ function useRoutineReorder(routineIdentity, exercises, onDrop) {
         listIdentity: exercisesRef.current,
         snapshot: JSON.stringify(exercisesRef.current), active: false, timer: null,
       }
-      gesture.timer = window.setTimeout(() => lift(gesture), ROUTINE_LONG_PRESS_MS)
       gestureRef.current = gesture
+      // The grip, pressed with a mouse, picks the row up at once (#277): the hold exists so a
+      // finger can still scroll the list, and a mouse scrolls with its wheel. preventDefault
+      // keeps the press from starting a text selection or the row's swipe-to-delete, which
+      // listen to the mouse events a pointerdown would otherwise go on to fire.
+      if (event.pointerType === 'mouse' && target.closest('[data-drag-handle]')) {
+        event.preventDefault()
+        lift(gesture)
+        return
+      }
+      gesture.timer = window.setTimeout(() => lift(gesture), ROUTINE_LONG_PRESS_MS)
     }
     const onPointerMove = event => {
       const gesture = gestureRef.current
@@ -429,6 +438,9 @@ export default function RoutineEdit() {
           onClick={() => {
             exConfigSheet(ex, e, cfg => edit(x => { x[i] = { id: x[i].id, sg: x[i].sg, ...cfg } }), () => edit(x => { x.splice(i, 1); cleanupSg(x) }), r, null, () => replace(i))
           }}>
+          {/* Shown on pointer devices only (index.css .routine-grip); the Move buttons and the
+              long press stay the way in for a keyboard and a finger. */}
+          <span className="routine-grip" data-drag-handle aria-hidden="true" title={t('Reorder exercises')}><Icon name="grip" /></span>
           <Thumb ex={ex} />
           <div className="grow"><div className="tt capitalize">{exerciseNameFor(ex)}</div><div className="ss">{exLine(e, S.unit, speedUnitOf(S))}</div>
             {e.note && <div className="small dim" style={{ marginTop: 2 }}>{e.note}</div>}</div>

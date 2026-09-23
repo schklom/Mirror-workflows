@@ -464,6 +464,19 @@ h4.sec{
   position:absolute;left:6px;right:6px;height:3px;border-radius:99px;
   background:var(--acc);transform:translateY(-50%);pointer-events:none;z-index:3;
 }
+/* The drag handle (#277, #114). A long press anywhere on a row reorders it on every device,
+   but nothing on screen said so, and with a mouse nobody holds a row to find out. So a pointer
+   device gets the grip it looks for, with a grab cursor, and pressing it picks the row up at
+   once (RoutineEdit.jsx). A touch screen keeps the long press and the row's full width. */
+.routine-grip{
+  display:none;flex:none;align-self:stretch;align-items:center;margin:-10px -6px -10px -4px;padding:0 4px;
+  color:var(--label-3);font-size:16px;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;
+}
+@media (hover:hover) and (pointer:fine){
+  .routine-grip{display:flex}
+  .routine-grip:hover{color:var(--label-2)}
+}
+.routine-list.is-reordering,.routine-list.is-reordering *{cursor:grabbing}
 .thumb{width:50px;height:50px;border-radius:9px;object-fit:cover;background:#fff;flex:none}
 /* exercise pictures are decoration inside tappable rows/cards: no save-image callout on
    a long press and no drag ghost when a scroll starts on the picture */

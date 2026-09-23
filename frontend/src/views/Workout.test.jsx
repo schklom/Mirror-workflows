@@ -761,6 +761,8 @@ describe('progression settings rebuild the rows like a session start', () => {
     expect(saved.sets.map(s => [s.w, s.r])).toEqual([[42.5, 10], [42.5, 10]])
     expect(saved.target).toMatchObject({ id: 'plain-bench', sets: 2, reps: 10, weight: 42.5 })
     expect(saved.plan.kind).toBe('up')
+    // The plan this session now follows, so the next one can tell it apart from the routine's.
+    expect(saved.planned).toEqual({ sets: 2, reps: 10, weight: 40 })
   })
 
   it('carries last session\'s reps when the profile starts from the last session', async () => {

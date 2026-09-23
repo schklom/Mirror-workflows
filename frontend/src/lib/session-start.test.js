@@ -27,7 +27,7 @@ describe('buildSessionEntries', () => {
     const st = {
       unit: 'kg', exWeights: {}, routines: [],
       workouts: [1, 2, 3].map((n) => ({
-        d: `2026-01-0${n}`,
+        d: `2026-01-0${n}`, routineIds: ['r'],
         entries: [{
           id: cfg.id,
           target: { sets: 3, reps: 8, weight: 60 },
@@ -52,7 +52,7 @@ describe('buildSessionEntries', () => {
   // plan's, so a routine edited from 15 to 10 opened at 15 and read 15 ≥ 10 as a hit forever.
   const history = (reps, extra = {}) => ({
     unit: 'kg', exWeights: {}, routines: [],
-    workouts: [{ d: '2026-01-01', entries: [{ id: '0025', target: { sets: 2, reps: 15, weight: 40 }, sets: reps.map(r => ({ w: 40, r, done: true })) }] }],
+    workouts: [{ d: '2026-01-01', routineIds: ['r'], entries: [{ id: '0025', target: { sets: 2, reps: 15, weight: 40 }, sets: reps.map(r => ({ w: 40, r, done: true })) }] }],
     ...extra,
   })
   // Greyskull has no hold: one failure resets it, so its miss case is a (non-Epley) deload.
@@ -87,7 +87,7 @@ describe('buildSessionEntries', () => {
     const side = (w, r) => ({ w, r, done: true })
     const st = {
       unit: 'kg', exWeights: {}, routines: [],
-      workouts: [{ d: '2026-01-01', entries: [{ id: '0025', target: { sets: 1, reps: 10, weight: 20, side: true }, sets: [
+      workouts: [{ d: '2026-01-01', routineIds: ['r'], entries: [{ id: '0025', target: { sets: 1, reps: 10, weight: 20, side: true }, sets: [
         { w: 22.5, r: 10, done: true, sides: { L: side(22.5, 5), R: side(20, 5) } },
       ] }] }],
     }
@@ -96,6 +96,25 @@ describe('buildSessionEntries', () => {
     expect(entry.plan.kind).toBe('up')
     expect([row.sides.L.r, row.sides.R.r]).toEqual([8, 8])
     expect(row.r).toBe(entry.target.reps)
+  })
+
+  it('stamps what the routine asked for on every entry, apart from the target it progressed', () => {
+    const cfg = { id: '0025', sets: 2, reps: 10, weight: 40, prog: 'linear' }
+    const [entry] = buildSessionEntries(history([15, 15]), { id: 'r', prog: 'linear', ex: [cfg] })
+    expect(entry.planned).toEqual({ sets: 2, reps: 10, weight: 40 })
+    expect(entry.target.weight).toBe(42.5)
+  })
+
+  it('opens an edited plan at its new numbers, and completing them reads as a hit', () => {
+    const st = history([15, 15])
+    st.workouts[0].entries[0].planned = { sets: 2, reps: 15, weight: 40 }
+    const cfg = { id: '0025', sets: 3, reps: 10, weight: 40, prog: 'linear' }
+    const [entry] = buildSessionEntries(st, { id: 'r', prog: 'linear', ex: [cfg] })
+    const work = entry.sets.filter(s => !isWarmupRow(s))
+    expect(entry.plan.kind).toBe('hold')
+    expect(work.map(s => [s.w, s.r])).toEqual([[40, 10], [40, 10], [40, 10]])
+    expect(entry.target).toMatchObject({ sets: 3, reps: 10, weight: 40 })
+    expect(readSession({ ...entry, sets: entry.sets.map(s => ({ ...s, done: true })) }, cfg).ok).toBe(true)
   })
 
   it('returns a bare array — no { entries, excluded } wrapper', () => {

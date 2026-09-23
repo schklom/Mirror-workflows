@@ -426,7 +426,9 @@ function sourceOf(S, cfg, plan, field, routine) {
   // exactly as session-start.js does with useTarget — history and the confirmed weight are ignored.
   if (!plan || plan.kind === 'off') return 'routine_plan'
   const decided = plan.kind !== 'first' && plan[field] != null
-  if (decided) return 'progression'
+  // A policy that settles on the routine's own reps or hold — a restart after the plan was
+  // edited, a bodyweight hold at the plan's count — is the plan speaking, not an override.
+  if (decided) return field !== 'weight' && plan[field] === cfg[field] ? 'routine_plan' : 'progression'
   const last = lastEntryFor(S, cfg.id, routine && routine.id)
   if (field === 'reps') return startsFromLast(S) && last ? 'last_session' : 'routine_plan'
   if (last) return 'last_session'

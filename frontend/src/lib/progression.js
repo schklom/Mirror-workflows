@@ -206,6 +206,30 @@ export function selectDeloadCandidate({ currentWeight, targetWeight, targetReps,
 }
 
 /**
+ * What a routine's exercise asks for — its sets and reps (the range, under double progression;
+ * the seconds, for a hold) — as stamped on every entry a session builds (`entry.planned`, issue
+ * #275). A prescription moves the session's `target`; this keeps what the routine said, which
+ * is the only way the next session can tell a plan that was edited from one that progressed.
+ * The weight rides along for reference and never restarts anything: history decides it.
+ */
+export function plannedOf(cfg) {
+  const c = cfg || {}
+  const mode = modeOf(c)
+  const out = { sets: Math.max(1, c.sets || 1) }
+  if (mode === 'reps' && c.reps > 0) out.reps = c.reps
+  if (mode === 'reps' && c.repsMin > 0) out.repsMin = c.repsMin
+  if (mode === 'time' && c.sec > 0) out.sec = c.sec
+  if (c.weight != null) out.weight = c.weight
+  return out
+}
+const PLAN_KEYS = ['sets', 'reps', 'repsMin', 'sec']
+const samePlan = (a, b) => PLAN_KEYS.every(k => (a[k] ?? null) === (b[k] ?? null))
+/** Did the routine's sets or reps change since the session that stamped `planned`? */
+export function planChanged(planned, cfg) {
+  return !!planned && !samePlan(planned, plannedOf(cfg))
+}
+
+/**
  * Reduce one finished workout entry to what a policy needs to judge it.
  *
  * Workouts only started recording their prescription in v1.2.2, so most existing history has
@@ -308,6 +332,9 @@ export function stallCount(sessions, policy) {
   for (let i = sessions.length - 1; i >= 0; i--) {
     if (sessions[i].ok) break
       if (i < sessions.length -1 && sessions[i].weight !== sessions[i+1].weight) break
+    // So does an edit of the plan (issue #275): misses against the old sets × reps say nothing
+    // about the new ones. Only sessions that both carry their plan can show one.
+    if (i < sessions.length - 1 && sessions[i].planned && sessions[i + 1].planned && !samePlan(sessions[i].planned, sessions[i + 1].planned)) break
     // Next part limits policy to double. Why? Double is the only policy that deliberately asks for less than it grades against
     // (Since it is geared towards climbing through a rep range). 
     // Specifically, `aim` (see `const aim`) climbs from the bottom of the range while `ok` needs the top. 
@@ -357,6 +384,27 @@ export function nextPrescription(S, cfg, routine) {
   const sessions = sessionsFor(S, cfg.id, cfg, routine?.id).filter(s => s.mode === mode)
   const last = sessions[sessions.length - 1]
   if (!last) return { policy, kind: 'first', why: ['Nothing logged yet — this session sets the baseline.'] }
+
+  // Start again from the plan (issue #275) when the last session was built from a different one:
+  // the routine's sets or reps were edited since, or the session is borrowed from another routine
+  // (this one has none of its own yet, see sessionsFor) whose plan was not this one's. Its
+  // numbers were judged against the old target, so they cannot say where the new one stands —
+  // a bodyweight goal climbing from the old count, or a deload aimed at reps and sets the
+  // routine no longer asks for. The weight holds at what was last lifted; the sets and reps are
+  // the routine's own (double progression aims inside its new range, from what you managed).
+  // A borrowed session saved before plans were stamped is taken as a different plan.
+  const borrowed = !!routine?.id && last.rid !== routine.id
+  if (last.planned ? planChanged(last.planned, cfg) : borrowed) {
+    const why = borrowed ? ['First time in this routine — starting from its own target.'] : ['Plan changed — starting from your new target.']
+    if (mode === 'time') return { policy, kind: 'hold', sec: cfg.sec || last.goal || undefined, why }
+    if (last.weight <= 0 && isBw(cfg)) return { policy, kind: 'hold', weight: 0, reps: cfg.reps || undefined, why }
+    if (policy === 'double') {
+      const range = normalizeRepRange(cfg.reps || last.goal || 10, cfg.repsMin, repStep(cfg))
+      const aim = Math.min(range.reps, Math.max(range.repsMin, last.low + repStep(cfg)))
+      return { policy, kind: 'hold', weight: last.weight, reps: aim, why }
+    }
+    return { policy, kind: 'hold', weight: last.weight, reps: cfg.reps || undefined, why }
+  }
 
   const stalls = stallCount(sessions, policy)
   const deloadAt = DELOAD_AFTER[policy] || 3
@@ -413,7 +461,9 @@ export function nextPrescription(S, cfg, routine) {
       weight: previous.weight ?? cfg.weight,
       reps: previous.reps ?? cfg.reps,
       repsMin: previous.repsMin ?? cfg.repsMin,
-      sets: previous.sets ?? cfg.sets,
+      // The sets are always the plan's: a loaded lift never gets a set count from progression,
+      // so an older one here can only be a plan since edited — and would grow the session back.
+      sets: cfg.sets ?? previous.sets,
       bodyweight: previous.bodyweight ?? cfg.bodyweight,
       side: previous.side ?? cfg.side,
       intensifier: previous.intensifier ?? cfg.intensifier
@@ -452,11 +502,11 @@ export function nextPrescription(S, cfg, routine) {
     const range = normalizeRepRange(cfg.reps || last.goal || 10, cfg.repsMin, repStep(cfg))
     const top = range.reps
     const bottom = range.repsMin
-    // `last.ok` only means "matched whatever was recorded as this session's target" - the
-    // first session for a fresh exercise (or one mid-climb) is seeded below the top of the
-    // range, so hitting that recorded target is compliance with the plan, not "reached the
-    // top". Double progression must not add weight until every set actually reaches the top
-    // of the range (issue #278).
+    // `last.ok` only means "matched whatever was recorded as this session's target" - and that
+    // target can sit below the top of the range: the bottom stamped after a raise, or a count
+    // from before the exercise moved to double progression. Hitting it is compliance with that
+    // session, not "reached the top". Double progression must not add weight until every set
+    // actually reaches the top of the range (issue #278).
     if (last.ok && last.low >= top) return {
       policy, kind: 'up', weight: harder(w, inc), reps: bottom,
       why: assisted

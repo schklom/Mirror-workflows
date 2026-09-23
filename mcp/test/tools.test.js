@@ -797,6 +797,26 @@ describe('preview_session', () => {
     expect(e.weight_source).toBe('progression')
   })
 
+  test('an edited routine restarts from its new reps, and says why (#275)', () => {
+    only({ id: '0025', sets: 2, reps: 10, weight: 60 }, {
+      workouts: [{
+        id: 'w1', d: '2026-07-20', routineIds: ['r-preview'], name: 'Preview',
+        entries: [{
+          id: '0025', rid: 'r-preview',
+          planned: { sets: 2, reps: 15, weight: 60 },
+          target: { sets: 2, reps: 15, weight: 60 },
+          sets: [{ w: 60, r: 15, done: true }, { w: 60, r: 15, done: true }]
+        }]
+      }]
+    })
+    const e = call('preview_session').exercises[0]
+    expect(e.prescription.kind).toBe('hold')
+    expect(e.prescription.why).toBe('Plan changed — starting from your new target.')
+    expect(e.opening_sets.map(s => [s.w, s.r])).toEqual([[60, 10], [60, 10]])
+    expect(e.reps_source).toBe('routine_plan')
+    expect(e.differs_from_plan).toBe(false)
+  })
+
   test('planned drop sets show up on the opening rows', () => {
     only({ id: '0025', sets: 2, reps: 10, weight: 50, intensifier: { type: 'dropset', count: 1, pct: 20 } })
     const e = call('preview_session').exercises[0]

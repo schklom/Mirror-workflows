@@ -57,7 +57,7 @@ describe('what you plan is what you train', () => {
     upd(s => { s.routines[0].ex[0] = { ...s.routines[0].ex[0], reps: 10 } })
     startOn('2026-09-14', ['A'])
     expect(S().active.entries[0].target.reps).toBe(10)
-    expect(rowsOf('A').map(r => r.split('x')[1])).toEqual(['10', '10'])
+    expect(rowsOf('A')).toEqual(['50x10', '50x10'])
   })
 
   it('logging 15 once on a 2 × 10 plan does not turn every later session into 15s', () => {
@@ -67,6 +67,24 @@ describe('what you plan is what you train', () => {
     trainActive('2026-09-07', 15)
     startOn('2026-09-14', ['A'])
     expect(rowsOf('A')).toEqual(['52.5x10', '52.5x10'])
+  })
+
+  it('a routine trains its own line: Plan B on Wednesday does not move Plan A on Monday (#216)', () => {
+    install([
+      { id: 'A', name: 'Plan A', emoji: 'dumbbell', ex: [{ id: BENCH, sets: 2, reps: 10, weight: 60, mode: 'reps' }] },
+      { id: 'B', name: 'Plan B', emoji: 'dumbbell', ex: [{ id: BENCH, sets: 2, reps: 15, weight: 40, mode: 'reps' }] },
+    ])
+    startOn('2026-09-07', ['A'])
+    expect(rowsOf('A')).toEqual(['60x10', '60x10'])
+    trainActive('2026-09-07')
+    startOn('2026-09-09', ['B'])
+    expect(rowsOf('B')).toEqual(['60x15', '60x15'])      // B's first time: the last weight, B's reps
+    trainActive('2026-09-09', 12)
+    startOn('2026-09-14', ['A'])
+    expect(rowsOf('A')).toEqual(['62.5x10', '62.5x10'])  // A's own line, not B's miss
+    trainActive('2026-09-14')
+    startOn('2026-09-16', ['B'])
+    expect(rowsOf('B')).toEqual(['60x15', '60x15'])      // B holds after its own miss
   })
 
   it('"Your last session" still carries the 15s over', () => {

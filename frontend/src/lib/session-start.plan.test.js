@@ -46,6 +46,15 @@ describe('a planned session opens at the plan\'s reps', () => {
     expect(work(a)).toHaveLength(2)
     expect(reps(a)).toEqual([10, 10])
     expect(a.target.reps).toBe(10)
+    // A has no session of its own, so it starts from the exercise's last weight (#216) at its own
+    // sets × reps, and says so.
+    expect(work(a).map(s => s.w)).toEqual([40, 40])
+    expect(a.plan.why[0]).toBe('First time in this routine — starting from its own target.')
+    // From then on A progresses on its own line, whatever B does.
+    train(st, ['A'])
+    train(st, ['B'], { r: 9 })
+    const [again] = start(st, ['A'])
+    expect(work(again).map(s => [s.w, s.r])).toEqual([[42.5, 10], [42.5, 10]])
   })
 
   for (const prog of [undefined, 'linear', 'greyskull', 'off']) {
@@ -127,6 +136,61 @@ describe('a planned session opens at the plan\'s reps', () => {
       })
     }
   }
+})
+
+describe('an edited routine starts again from its new plan', () => {
+  it('holds the weight at the new reps under the default policy', () => {
+    const st = state([{ id: 'A', name: 'A', ex: [{ id: BENCH, sets: 2, reps: 15, weight: 50 }] }])
+    train(st, ['A'])
+    cfgOf(st, 'A').reps = 10
+    const [e] = start(st, ['A'])
+    expect(work(e).map(s => [s.w, s.r])).toEqual([[50, 10], [50, 10]])
+    expect(e.plan.why[0]).toBe('Plan changed — starting from your new target.')
+    train(st, ['A'])
+    expect(start(st, ['A'])[0].plan.kind).toBe('up')   // and progresses from there
+  })
+
+  it('aims inside the new range under double progression', () => {
+    const st = state([{ id: 'A', name: 'A', ex: [{ id: BENCH, sets: 2, reps: 15, repsMin: 13, weight: 50, prog: 'double' }] }])
+    train(st, ['A'])
+    Object.assign(cfgOf(st, 'A'), { reps: 10, repsMin: 8 })
+    const [e] = start(st, ['A'])
+    expect(e.plan.kind).toBe('hold')
+    expect(reps(e)).toEqual([10, 10])
+  })
+
+  it('restarts a bodyweight rep goal from the new count, not from the old one plus a rep', () => {
+    const ARCHER = '3294'   // archer push-up — body-weight equipment
+    const st = state([{ id: 'A', name: 'A', ex: [{ id: ARCHER, sets: 2, reps: 15, weight: 0, mode: 'reps' }] }])
+    train(st, ['A'])
+    cfgOf(st, 'A', ARCHER).reps = 10
+    const [e] = start(st, ['A'])
+    expect(reps(e)).toEqual([10, 10])
+    train(st, ['A'])
+    expect(reps(start(st, ['A'])[0])).toEqual([11, 11])
+  })
+
+  it('does not deload toward the old reps, or grow back a removed set, after three misses', () => {
+    const st = state([{ id: 'A', name: 'A', ex: [{ id: BENCH, sets: 3, reps: 15, weight: 50 }] }])
+    for (let i = 0; i < 3; i++) train(st, ['A'], { r: 12 })
+    Object.assign(cfgOf(st, 'A'), { sets: 2, reps: 10 })
+    const [e] = start(st, ['A'])
+    expect(e.plan.kind).toBe('hold')
+    expect(work(e).map(s => [s.w, s.r])).toEqual([[50, 10], [50, 10]])
+  })
+
+  it('does not raise the weight off a bottom stamped after switching to double (#278)', () => {
+    const A = { id: 'A', name: 'A', ex: [{ id: BENCH, sets: 3, reps: 8, weight: 36, inc: 6 }] }
+    const st = state([A])
+    train(st, ['A'])                                        // 3 × 8 @ 36 under linear
+    st.routines[0].ex[0] = { ...st.routines[0].ex[0], reps: 12, repsMin: 8, prog: 'double' }
+    const [e] = start(st, ['A'])
+    expect(e.plan).toMatchObject({ kind: 'hold', weight: 36, reps: 9 })
+    train(st, ['A'], { r: 8, w: 42 })                      // the user overrides to 42, does 3 × 8
+    const [next] = start(st, ['A'])
+    expect(next.plan.kind).not.toBe('up')
+    expect(work(next).map(s => s.w)).toEqual([42, 42, 42])
+  })
 })
 
 describe('"Your last session" keeps the old carry-over', () => {

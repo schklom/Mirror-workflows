@@ -4,7 +4,7 @@
 // Imports both history.js and progression.js (which itself imports history.js); nothing in
 // either imports this file, so there is no cycle.
 import { buildSets, applyIntensifierPlan, modeOf } from './history.js'
-import { nextPrescription, applyPrescription, defaultIncrement, weightIncrement } from './progression.js'
+import { nextPrescription, applyPrescription, defaultIncrement, weightIncrement, plannedOf } from './progression.js'
 
 /**
  * Where a planned session's reps come from (Settings → During a workout). 'plan', the default:
@@ -37,7 +37,9 @@ export function buildPlannedEntry(st, cfg, routine, { noProg = false } = {}) {
   if (plan.reps != null) target.reps = plan.reps
   if (plan.sec != null) target.sec = plan.sec
   if (plan.sets != null) target.sets = plan.sets
-  return { target, plan, sets }
+  // `planned` is what the routine asked for, kept apart from the target the prescription moved,
+  // so the next session can tell an edited plan from a progressed one (nextPrescription).
+  return { target, plan, sets, planned: plannedOf(cfg) }
 }
 
 // Returns a bare array of session entries. "Excluded from progression" is per-entry now
@@ -50,7 +52,7 @@ export function buildSessionEntries(st, r) {
   // right weight already on the screen instead of being told about it afterwards.
   const noProg = r?.excludeFromProgression === true
   return (r ? r.ex : []).map(cfg => {
-    const { target, plan, sets } = buildPlannedEntry(st, cfg, r, { noProg })
-    return { id: cfg.id, sg: cfg.sg, target, plan, sets, ...(noProg ? { noProg: true } : {}) }
+    const { target, plan, sets, planned } = buildPlannedEntry(st, cfg, r, { noProg })
+    return { id: cfg.id, sg: cfg.sg, target, plan, sets, planned, ...(noProg ? { noProg: true } : {}) }
   })
 }

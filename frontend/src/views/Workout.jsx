@@ -811,6 +811,7 @@ function ActiveWorkout() {
         const freshWork = fresh.filter(x => !isWarmupRow(x))
         activeEntry.target = built.target
         activeEntry.plan = built.plan
+        activeEntry.planned = built.planned
         activeEntry.sets = [...doneWarm, ...freshWarm.slice(doneWarm.length), ...doneWork, ...freshWork.slice(doneWork.length)]
       })
     }, null, routine)

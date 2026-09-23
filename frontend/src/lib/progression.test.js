@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import {
-  readSession, sessionsFor, stallCount, nextPrescription, applyPrescription,
+  readSession, sessionsFor, stallCount, nextPrescription, applyPrescription, plannedOf, planChanged,
   policyFor, defaultIncrement, weightIncrement, epley1RM, deloadTarget1RM,
   deloadFactorOf, DELOAD_FACTOR, POLICIES_FOR, DELOAD_AFTER, MAX_BW_SETS
 } from './progression.js'
@@ -625,6 +625,103 @@ describe('routine slots (#216)', () => {
   it('reads a session saved before per-entry routine ids by the workout\'s routine', () => {
     const legacy = { unit: 'kg', workouts: [{ d: '2026-03-01', routineId: 'heavy', entries: [{ id: LIFT, target: { sets: 2, reps: 10, weight: 60 }, sets: [{ w: 60, r: 10, done: true }, { w: 60, r: 10, done: true }] }] }] }
     expect(sessionsFor(legacy, LIFT, null, 'heavy').map(s => s.rid)).toEqual(['heavy'])
+  })
+})
+
+// Issue #275: every session entry carries the plan it was built from (`planned`). When the
+// routine's sets or reps have changed since, or the last session is borrowed from another
+// routine with another plan, the next session starts again from the plan — the old target
+// cannot say where the new one stands.
+describe('an edited plan restarts progression (#275)', () => {
+  const PUSH = EXDB.find(e => e.eq === 'body weight' && e.bp !== 'cardio').id
+  const logged = (id, planned, target, w, reps, extra = {}) => ({
+    d: '2026-04-01', routineIds: ['r'],
+    entries: [{ id, planned, target, sets: reps.map(r => ({ w, r, done: true })), ...extra }],
+  })
+  const R = { id: 'r', ex: [] }
+
+  it('stamps only what the routine asks for, and tells an edit from a progression', () => {
+    expect(plannedOf({ id: LIFT, sets: 2, reps: 10, weight: 60, prog: 'linear', note: 'x' })).toEqual({ sets: 2, reps: 10, weight: 60 })
+    expect(plannedOf({ id: LIFT, sets: 3, reps: 12, repsMin: 8, weight: 40 })).toEqual({ sets: 3, reps: 12, repsMin: 8, weight: 40 })
+    expect(plannedOf({ id: LIFT, mode: 'time', sets: 2, sec: 45, weight: 0 })).toEqual({ sets: 2, sec: 45, weight: 0 })
+    const planned = plannedOf({ id: LIFT, sets: 2, reps: 10, weight: 60 })
+    expect(planChanged(planned, { id: LIFT, sets: 2, reps: 10, weight: 80 })).toBe(false)   // weight: history's call
+    expect(planChanged(planned, { id: LIFT, sets: 2, reps: 12, weight: 60 })).toBe(true)
+    expect(planChanged(planned, { id: LIFT, sets: 3, reps: 10, weight: 60 })).toBe(true)
+    expect(planChanged(planned, { id: LIFT, sets: 2, reps: 12, repsMin: 10, weight: 60 })).toBe(true)
+    expect(planChanged(undefined, { id: LIFT, sets: 2, reps: 12 })).toBe(false)
+  })
+
+  it('holds the weight at the new sets × reps when a loaded lift\'s plan was edited', () => {
+    const S = { unit: 'kg', workouts: [logged(LIFT, { sets: 2, reps: 15, weight: 40 }, { sets: 2, reps: 15, weight: 40 }, 40, [15, 15])] }
+    const p = nextPrescription(S, { id: LIFT, sets: 2, reps: 10, weight: 40, prog: 'linear' }, R)
+    expect(p).toMatchObject({ kind: 'hold', weight: 40, reps: 10 })
+    expect(p.why[0]).toBe('Plan changed — starting from your new target.')
+    // The same session under an unchanged plan progresses as usual.
+    expect(nextPrescription(S, { id: LIFT, sets: 2, reps: 15, weight: 40, prog: 'linear' }, R)).toMatchObject({ kind: 'up', weight: 42.5 })
+  })
+
+  it('restarts a bodyweight goal from the new reps instead of climbing from the old ones', () => {
+    const S = { unit: 'kg', workouts: [logged(PUSH, { sets: 2, reps: 15, weight: 0 }, { sets: 2, reps: 15, weight: 0 }, 0, [15, 15])] }
+    const p = nextPrescription(S, { id: PUSH, sets: 2, reps: 10, weight: 0, bodyweight: true }, R)
+    expect(p).toMatchObject({ kind: 'hold', weight: 0, reps: 10 })
+  })
+
+  it('does not deload toward the old target after three misses and an edit', () => {
+    const miss = { d: '2026-04-01', routineIds: ['r'], entries: [{ id: LIFT, planned: { sets: 3, reps: 15, weight: 50 }, target: { sets: 3, reps: 15, weight: 50 }, sets: [12, 12, 12].map(r => ({ w: 50, r, done: true })) }] }
+    const S = { unit: 'kg', workouts: [miss, miss, miss] }
+    expect(nextPrescription(S, { id: LIFT, sets: 3, reps: 15, weight: 50, prog: 'linear' }, R).kind).toBe('deload')
+    const p = nextPrescription(S, { id: LIFT, sets: 2, reps: 10, weight: 50, prog: 'linear' }, R)
+    expect(p).toMatchObject({ kind: 'hold', weight: 50, reps: 10 })
+    expect(p.sets).toBeUndefined()
+  })
+
+  it('ends a stall streak at the edit — misses against the old plan do not count', () => {
+    const at = (planned, reps) => ({ d: '2026-04-01', routineIds: ['r'], entries: [{ id: LIFT, planned, target: { ...planned }, sets: reps.map(r => ({ w: 50, r, done: true })) }] })
+    const old = { sets: 3, reps: 15, weight: 50 }
+    const now = { sets: 3, reps: 10, weight: 50 }
+    const S = { unit: 'kg', workouts: [at(old, [12, 12, 12]), at(old, [12, 12, 12]), at(now, [9, 9, 9])] }
+    expect(stallCount(sessionsFor(S, LIFT, null, 'r'))).toBe(1)
+    expect(nextPrescription(S, { id: LIFT, ...now, prog: 'linear' }, R).kind).toBe('hold')
+  })
+
+  it('aims inside the new range under double progression, from what you managed', () => {
+    // History at 3 × 8 under linear, then the exercise switched to double 8–12 (the #278 path):
+    // a restart at the same weight, aiming one rep up — not a raise off a bottom stamped as hit.
+    const S = { unit: 'kg', workouts: [logged(LIFT, { sets: 3, reps: 8, weight: 36 }, { sets: 3, reps: 8, weight: 36 }, 36, [8, 8, 8])] }
+    const p = nextPrescription(S, { id: LIFT, sets: 3, reps: 12, repsMin: 8, weight: 36, prog: 'double' }, R)
+    expect(p).toMatchObject({ kind: 'hold', weight: 36, reps: 9 })
+  })
+
+  it('restarts a timed hold at its new duration', () => {
+    const S = { unit: 'kg', workouts: [logged(LIFT, { sets: 2, sec: 60, weight: 0 }, { mode: 'time', sets: 2, sec: 60 }, 0, [], { sets: [{ sec: 60, done: true }, { sec: 60, done: true }] })] }
+    const p = nextPrescription(S, { id: LIFT, mode: 'time', sets: 2, sec: 30, weight: 0, prog: 'time' }, R)
+    expect(p).toMatchObject({ kind: 'hold', sec: 30 })
+  })
+
+  it('starts a routine from its own target when the only history is another routine\'s', () => {
+    const B = { d: '2026-04-01', routineIds: ['b'], entries: [{ id: PUSH, rid: 'b', planned: { sets: 2, reps: 15, weight: 0 }, target: { sets: 2, reps: 15, weight: 0 }, sets: [{ w: 0, r: 15, done: true }, { w: 0, r: 15, done: true }] }] }
+    const p = nextPrescription({ unit: 'kg', workouts: [B] }, { id: PUSH, sets: 2, reps: 10, weight: 0, bodyweight: true }, { id: 'a', ex: [] })
+    expect(p).toMatchObject({ kind: 'hold', reps: 10 })
+    expect(p.why[0]).toBe('First time in this routine — starting from its own target.')
+  })
+
+  it('continues another routine\'s progression when its plan is the same one (a copied routine)', () => {
+    const B = { d: '2026-04-01', routineIds: ['b'], entries: [{ id: LIFT, rid: 'b', planned: { sets: 2, reps: 10, weight: 60 }, target: { sets: 2, reps: 10, weight: 60 }, sets: [{ w: 60, r: 10, done: true }, { w: 60, r: 10, done: true }] }] }
+    expect(nextPrescription({ unit: 'kg', workouts: [B] }, { id: LIFT, sets: 2, reps: 10, weight: 60, prog: 'linear' }, { id: 'copy', ex: [] }))
+      .toMatchObject({ kind: 'up', weight: 62.5 })
+  })
+
+  it('leaves history saved before plans were stamped to progress as it always did', () => {
+    const S = { unit: 'kg', workouts: [{ d: '2026-04-01', routineIds: ['r'], entries: [{ id: LIFT, target: { sets: 2, reps: 15, weight: 40 }, sets: [{ w: 40, r: 15, done: true }, { w: 40, r: 15, done: true }] }] }] }
+    expect(nextPrescription(S, { id: LIFT, sets: 2, reps: 10, weight: 40, prog: 'linear' }, R)).toMatchObject({ kind: 'up', weight: 42.5 })
+  })
+
+  it('aims an Epley deload at the plan\'s set count even for history saved before plans were stamped', () => {
+    const miss = { d: '2026-04-01', routineIds: ['r'], entries: [{ id: LIFT, target: { sets: 3, reps: 8, weight: 60 }, sets: [6, 6, 6].map(r => ({ w: 60, r, done: true })) }] }
+    const p = nextPrescription({ unit: 'kg', workouts: [miss, miss, miss] }, { id: LIFT, sets: 2, reps: 8, weight: 60, prog: 'linear' }, R)
+    expect(p.kind).toBe('deload')
+    expect(p.sets).toBe(2)
   })
 })
 

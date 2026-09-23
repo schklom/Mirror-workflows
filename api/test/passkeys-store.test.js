@@ -1,6 +1,10 @@
+/* Bookkeeping for more than one passkey on a profile (#95). The routes are in
+   server-passkeys.test.js; this is the part that decides without a WebAuthn ceremony. */
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { addPasskeyRecord, listPasskeys, removePasskeyRecord } from '../passkeys-store.js';
+import {
+  addPasskeyRecord, listPasskeys, removePasskeyRecord, renamePasskeyRecord, passkeyName, MAX_PASSKEYS
+} from '../passkeys-store.js';
 
 const cred = (id, userId = 'u1') => ({
   id, userId, publicKey: 'pk-' + id, counter: 0, transports: ['internal']
@@ -9,28 +13,70 @@ const cred = (id, userId = 'u1') => ({
 describe('addPasskeyRecord', () => {
   it('attaches a credential to the existing user', () => {
     const db = { creds: [cred('hello', 'u1')] };
-    const r = addPasskeyRecord(db, 'u1', cred('phone', 'u1'));
-    assert.deepEqual(r, { ok: true });
+    const r = addPasskeyRecord(db, 'u1', { ...cred('phone', 'u1'), name: '  Work   phone ' });
+    assert.equal(r.ok, true);
     assert.equal(db.creds.length, 2);
     assert.equal(db.creds[1].id, 'phone');
     assert.equal(db.creds[1].userId, 'u1');
+    assert.equal(db.creds[1].name, 'Work phone');
     assert.ok(db.creds[1].created);
   });
 
   it('refuses a credential id that already exists', () => {
     const db = { creds: [cred('hello', 'u1')] };
     const r = addPasskeyRecord(db, 'u2', cred('hello', 'u2'));
-    assert.deepEqual(r, { error: 'credential already registered' });
+    assert.deepEqual(r, { error: 'credential already registered', code: 'credential-exists' });
     assert.equal(db.creds.length, 1);
+  });
+
+  it('keeps only a short list of short transport words', () => {
+    const db = { creds: [] };
+    addPasskeyRecord(db, 'u1', { ...cred('a'), transports: ['usb', 42, 'x'.repeat(100), ...Array(20).fill('nfc')] });
+    assert.deepEqual(db.creds[0].transports, ['usb', ...Array(7).fill('nfc')]);
+    addPasskeyRecord(db, 'u1', { ...cred('b'), transports: 'internal' });
+    assert.deepEqual(db.creds[1].transports, []);
+  });
+
+  it(`stops at ${MAX_PASSKEYS} passkeys per profile`, () => {
+    const db = { creds: Array.from({ length: MAX_PASSKEYS }, (_, i) => cred('k' + i)) };
+    assert.equal(addPasskeyRecord(db, 'u1', cred('one-more')).code, 'passkey-limit');
+    assert.equal(addPasskeyRecord(db, 'u2', cred('theirs', 'u2')).ok, true);
   });
 });
 
 describe('listPasskeys', () => {
   it('returns only this user’s credentials, without the public key', () => {
-    const db = { creds: [cred('a', 'u1'), cred('b', 'u2'), cred('c', 'u1')] };
+    const db = { creds: [cred('a', 'u1'), cred('b', 'u2'), { ...cred('c', 'u1'), name: 'Laptop', created: 'x', lastUsed: 'y' }] };
     const list = listPasskeys(db, 'u1');
     assert.deepEqual(list.map(c => c.id), ['a', 'c']);
     for (const c of list) assert.equal(c.publicKey, undefined);
+    assert.deepEqual(list[0], { id: 'a', name: null, created: null, lastUsed: null, transports: ['internal'] });
+    assert.deepEqual(list[1], { id: 'c', name: 'Laptop', created: 'x', lastUsed: 'y', transports: ['internal'] });
+  });
+});
+
+describe('renamePasskeyRecord', () => {
+  it('names one of the user’s passkeys, and an empty name clears it', () => {
+    const db = { creds: [cred('a', 'u1')] };
+    assert.equal(renamePasskeyRecord(db, 'u1', 'a', 'Security key\n').ok, true);
+    assert.equal(db.creds[0].name, 'Security key');
+    renamePasskeyRecord(db, 'u1', 'a', '   ');
+    assert.equal('name' in db.creds[0], false);
+  });
+
+  it('does not touch another user’s passkey', () => {
+    const db = { creds: [cred('a', 'u1')] };
+    assert.equal(renamePasskeyRecord(db, 'u2', 'a', 'mine now').code, 'not-found');
+    assert.equal(db.creds[0].name, undefined);
+  });
+});
+
+describe('passkeyName', () => {
+  it('folds whitespace and control characters, and caps the length', () => {
+    assert.equal(passkeyName('a\u0000b\tc'), 'a b c');
+    assert.equal(passkeyName('x'.repeat(100)).length, 40);
+    assert.equal(passkeyName(42), '');
+    assert.equal(passkeyName({ toString: () => 'x' }), '');
   });
 });
 
@@ -38,21 +84,28 @@ describe('removePasskeyRecord', () => {
   it('removes one of several passkeys', () => {
     const db = { creds: [cred('hello', 'u1'), cred('phone', 'u1')] };
     const r = removePasskeyRecord(db, 'u1', 'hello');
-    assert.deepEqual(r, { ok: true });
+    assert.equal(r.ok, true);
+    assert.equal(r.row.id, 'hello');
     assert.deepEqual(db.creds.map(c => c.id), ['phone']);
   });
 
-  it('refuses to remove the last passkey', () => {
-    const db = { creds: [cred('hello', 'u1')] };
+  it('refuses to remove the last passkey when nothing else signs the profile in', () => {
+    const db = { creds: [cred('hello', 'u1'), cred('other', 'u2')] };
     const r = removePasskeyRecord(db, 'u1', 'hello');
-    assert.deepEqual(r, { error: 'keep at least one passkey' });
-    assert.equal(db.creds.length, 1);
+    assert.deepEqual(r, { error: 'this passkey is the only way into this profile', code: 'last-way-in' });
+    assert.equal(db.creds.length, 2);
+  });
+
+  it('lets the last passkey go while a password still signs the profile in', () => {
+    const db = { creds: [cred('hello', 'u1')] };
+    assert.equal(removePasskeyRecord(db, 'u1', 'hello', 1).ok, true);
+    assert.equal(db.creds.length, 0);
   });
 
   it('does not let one user delete another’s passkey', () => {
     const db = { creds: [cred('hello', 'u1'), cred('other', 'u2')] };
     const r = removePasskeyRecord(db, 'u2', 'hello');
-    assert.deepEqual(r, { error: 'passkey not found' });
+    assert.deepEqual(r, { error: 'passkey not found', code: 'not-found' });
     assert.equal(db.creds.length, 2);
   });
 });

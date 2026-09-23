@@ -34,6 +34,9 @@ info:
     starts, so checks sent at once get no more tries than checks sent one by one. A
     paused caller gets `429 {"error": …, "code": "locked", "retryAfter": <s>}` with a
     `Retry-After` header. The passkey and pairing routes are not throttled.
+    The two routes that redeem a one-time device link (tag `passkeys`) share the
+    per-address budget, and wrong codes pause the address for link redemption only,
+    after 20, the way wrong reset codes do.
     The address is the socket's, or with `TRUST_PROXY=1` the one a trusted proxy put in
     `CF-Connecting-IP` / the last `X-Forwarded-For` entry / `X-Real-IP`; IPv6 clients are
     counted by /64. Counters live in memory and reset on restart.
@@ -53,6 +56,8 @@ info:
     one-shot credential in the body) and any request authenticated with a Bearer token.
     The password routes are **not** exempt: a hostile page knows a valid name and
     password of its own, and could otherwise sign a visitor into it (login CSRF).
+    Neither are the device-link routes: a link is redeemed on the app's own origin,
+    the only one a passkey can be created for.
 
     ### Environment-dependent behavior
     - `INVITE_ONLY=1` — registration requires a valid invite code (minted by an admin).
@@ -106,6 +111,10 @@ tags:
     description: >-
       Optional name-and-password sign-in (`PASSWORD_LOGIN=1`). Every route here is a 404
       while the flag is off.
+  - name: passkeys
+    description: >-
+      More than one passkey on a profile: list, add, rename, remove — and one-time device
+      links, which let another device of the same person add a passkey of its own.
   - name: data
     description: Per-user state sync (the whole app state as one JSON blob)
   - name: push
@@ -864,6 +873,313 @@ paths:
               schema: { $ref: '#/components/schemas/Error' }
               example: { error: "no such user" }
         '409': { $ref: '#/components/responses/NameTaken' }
+
+  /api/account/passkeys:
+    get:
+      tags: [passkeys]
+      operationId: listPasskeys
+      summary: This profile's passkeys
+      description: >-
+        Every passkey that signs this profile in, without key material. `created` and
+        `lastUsed` are null for a passkey made before they were recorded.
+      responses:
+        '200':
+          description: The list, and what it allows.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PasskeyList' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+    delete:
+      tags: [passkeys]
+      operationId: removePasskey
+      summary: Remove one passkey
+      description: |
+        Refused while it is the profile's last way in: its only passkey, and no password
+        that can sign in (a password counts only while `PASSWORD_LOGIN` is on). No proof is
+        asked — removing takes a way in away. Audited as `auth.passkey.remove`.
+
+        Sessions are not tied to the passkey that opened them, so a session it already
+        opened carries on; `POST /api/logout/all` ends those.
+      parameters:
+        - name: id
+          in: query
+          required: true
+          description: The passkey's `id` from the list (its WebAuthn credential id).
+          schema: { type: string }
+      responses:
+        '200':
+          description: Removed. The list as it is now.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PasskeyList'
+                  - type: object
+                    properties:
+                      ok: { type: boolean, const: true }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404':
+          description: No passkey of this profile has that id.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              example: { error: "passkey not found", code: "not-found" }
+        '409':
+          description: It is the profile's last way in.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              example: { error: "this passkey is the only way into this profile", code: "last-way-in" }
+
+  /api/account/passkeys/options:
+    post:
+      tags: [passkeys]
+      operationId: addPasskeyOptions
+      summary: 'Add a passkey (step 1): prove it is you, get creation options'
+      description: |
+        A session alone is never enough to add a way in that outlives "sign out
+        everywhere". The body carries the same proof `POST /api/account/password` takes:
+        a passkey assertion made for this request (`cid` from `POST /api/login/options`,
+        `credential` signed by one of *this* profile's passkeys), or `current`, the
+        profile's password — accepted even on an instance that has since switched password
+        sign-in off, so a password-only profile can move onto a passkey. Wrong passwords
+        count toward the sign-in pause.
+
+        The options use the profile's own user handle and list its passkeys in
+        `excludeCredentials`, so an authenticator that already holds one refuses. The
+        challenge is good for 5 minutes, for this profile, and only while the session
+        version is unchanged.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/OwnerProof' }
+      responses:
+        '200':
+          description: Ceremony options.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cid: { type: string, description: 'One-shot challenge id for /api/account/passkeys/verify.' }
+                  options: { $ref: '#/components/schemas/WebAuthnRegistrationOptions' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/ProofRefused' }
+        '409': { $ref: '#/components/responses/PasskeyLimit' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+        '503': { $ref: '#/components/responses/Busy' }
+
+  /api/account/passkeys/verify:
+    post:
+      tags: [passkeys]
+      operationId: addPasskeyVerify
+      summary: 'Add a passkey (step 2): store the new one'
+      description: >-
+        Verifies the attestation against the challenge from step 1 and stores the passkey
+        on this profile. Audited as `auth.passkey.add`, with the proof that allowed it.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [cid, credential]
+              properties:
+                cid: { type: string }
+                credential: { $ref: '#/components/schemas/WebAuthnRegistrationCredential' }
+                name: { type: string, maxLength: 40, description: 'A label of the owner''s choosing ("Work laptop").' }
+      responses:
+        '200':
+          description: Added. The list as it is now.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PasskeyList'
+                  - type: object
+                    properties:
+                      ok: { type: boolean, const: true }
+        '400':
+          description: Challenge expired, replayed or made for another profile, or the attestation did not verify.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              example: { error: "challenge expired — try again" }
+        '401':
+          description: >-
+            Not signed in — including a session that was ended ("sign out everywhere", a
+            new password) after step 1.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              example: { error: "not signed in" }
+        '409':
+          description: '`credential-exists` (that passkey is already registered) or `passkey-limit`.'
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              example: { error: "credential already registered", code: "credential-exists" }
+
+  /api/account/passkeys/rename:
+    post:
+      tags: [passkeys]
+      operationId: renamePasskey
+      summary: Name one passkey
+      description: An empty name clears it; the app then shows a numbered "Passkey n".
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [id]
+              properties:
+                id: { type: string }
+                name: { type: string, maxLength: 40 }
+      responses:
+        '200':
+          description: Renamed. The list as it is now.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PasskeyList'
+                  - type: object
+                    properties:
+                      ok: { type: boolean, const: true }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404':
+          description: No passkey of this profile has that id.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              example: { error: "passkey not found", code: "not-found" }
+
+  /api/account/device-link:
+    post:
+      tags: [passkeys]
+      operationId: createDeviceLink
+      summary: Make a one-time device link
+      description: |
+        For adding another device of the same person: returns a code of 12 characters from
+        the pairing alphabet (60 bits), which the app also shows as a QR code of
+        `<app>?link=<code>`. The other device redeems it with `/api/device-link/*` by
+        creating a passkey of its own. The code is shown once, stored only as a SHA-256,
+        good for 10 minutes and for one passkey; a newer one replaces it, and signing out
+        everywhere, a new password, an admin reset or a disable drop it. Same proof as
+        adding a passkey. Audited as `auth.link.create`.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/OwnerProof' }
+      responses:
+        '200':
+          description: The code, once.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: { type: string }
+                  expires: { type: number, description: Expiry (ms). }
+              example: { code: "K7WQ-2MZP-4HXA", expires: 1790000000000 }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/ProofRefused' }
+        '409': { $ref: '#/components/responses/PasskeyLimit' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+        '503': { $ref: '#/components/responses/Busy' }
+
+  /api/device-link/options:
+    post:
+      tags: [passkeys]
+      operationId: deviceLinkOptions
+      summary: 'Redeem a device link (step 1): check the code, get creation options'
+      description: |
+        Called on the other device, which has no session: the code is the credential.
+        Returns creation options for the profile the code belongs to, and that profile's
+        name. Does not use the code up, so a dismissed passkey prompt can be tried again.
+        Wrong codes count toward a per-address pause of link redemption (see
+        *Throttling*). **Not** CSRF-exempt.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [code]
+              properties:
+                code: { type: string, description: 'Case, spaces and dashes are ignored.' }
+            example: { code: "K7WQ-2MZP-4HXA" }
+      responses:
+        '200':
+          description: Ceremony options.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cid: { type: string }
+                  options: { $ref: '#/components/schemas/WebAuthnRegistrationOptions' }
+                  name: { type: string, description: The profile this device is being added to. }
+        '400': { $ref: '#/components/responses/LinkInvalid' }
+        '409': { $ref: '#/components/responses/PasskeyLimit' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+
+  /api/device-link/verify:
+    post:
+      tags: [passkeys]
+      operationId: deviceLinkVerify
+      summary: 'Redeem a device link (step 2): store the passkey and sign this device in'
+      description: |
+        Verifies the attestation against the challenge from step 1 (which must have been
+        made for this very code), stores the passkey on the code's profile, burns the code
+        and sets the session cookie — the passkey just made is what signs the device in.
+        Of two requests racing with one code, one wins. Audited as `auth.link.ok`, and every
+        refusal as `auth.link.fail`. **Not** CSRF-exempt.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [code, cid, credential]
+              properties:
+                code: { type: string }
+                cid: { type: string }
+                credential: { $ref: '#/components/schemas/WebAuthnRegistrationCredential' }
+                name: { type: string, maxLength: 40 }
+      responses:
+        '200':
+          description: Added and signed in.
+          headers:
+            Set-Cookie:
+              description: Session cookie (see /api/register/verify).
+              schema: { type: string }
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user: { $ref: '#/components/schemas/SessionUser' }
+        '400':
+          description: >-
+            `link-invalid` (see below), a challenge that expired or was made for another
+            code, or an attestation that did not verify.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              example: { error: "that code is wrong, used or expired", code: "link-invalid" }
+        '409':
+          description: '`credential-exists` or `passkey-limit`.'
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              example: { error: "credential already registered", code: "credential-exists" }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
 
   /api/data:
     get:
@@ -2171,6 +2487,30 @@ components:
           schema: { $ref: '#/components/schemas/Error' }
           example: { error: "another profile already signs in with this name", code: "name-taken" }
 
+    ProofRefused:
+      description: >-
+        No acceptable proof that the owner is here: `passkey-required` (no password, so a
+        passkey has to confirm), `passkey` (the assertion did not verify or belongs to
+        another profile), `current-required` or `current-wrong`.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          example: { error: "confirm with your passkey first", code: "passkey-required" }
+    PasskeyLimit:
+      description: The profile already has the most passkeys it can have (20).
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          example: { error: "a profile can have at most 20 passkeys", code: "passkey-limit" }
+    LinkInvalid:
+      description: >-
+        The code is wrong, used, replaced or expired, or its profile is gone or disabled —
+        one answer for all of them.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          example: { error: "that code is wrong, used or expired", code: "link-invalid" }
+
   schemas:
     Error:
       type: object
@@ -2192,6 +2532,40 @@ components:
       type: object
       properties:
         ok: { type: boolean, const: true }
+
+    PasskeyList:
+      type: object
+      properties:
+        passkeys:
+          type: array
+          items:
+            type: object
+            properties:
+              id: { type: string, description: WebAuthn credential id (base64url). }
+              name: { oneOf: [{ type: string }, { type: 'null' }] }
+              created: { oneOf: [{ type: string }, { type: 'null' }], description: ISO timestamp. }
+              lastUsed: { oneOf: [{ type: string }, { type: 'null' }], description: 'ISO timestamp of the last sign-in or confirmation with it.' }
+              transports: { type: array, items: { type: string } }
+        password:
+          type: boolean
+          description: The profile has a password, so `current` can prove an addition.
+        lastWayIn:
+          type: boolean
+          description: Removing any one passkey would be refused (409 `last-way-in`).
+      example:
+        passkeys: [{ id: "g3Xq…", name: "Laptop", created: "2026-09-23T10:00:00.000Z", lastUsed: "2026-09-23T10:00:00.000Z", transports: [internal] }]
+        password: false
+        lastWayIn: true
+
+    OwnerProof:
+      type: object
+      description: >-
+        Either a passkey assertion made for this request (`cid` + `credential`), or the
+        profile's current password (`current`).
+      properties:
+        cid: { type: string, description: 'From POST /api/login/options.' }
+        credential: { $ref: '#/components/schemas/WebAuthnAuthenticationCredential' }
+        current: { type: string }
 
     SessionUser:
       type: object

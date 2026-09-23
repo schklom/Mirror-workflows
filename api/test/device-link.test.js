@@ -1,18 +1,31 @@
+/* The device-link bookkeeping (#95): one code per profile, hashed at rest, good once and for a few
+   minutes. The routes around it are in server-passkeys.test.js. */
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { createDeviceLink, claimDeviceLink, deviceLinkUrl } from '../device-link.js';
+import {
+  createDeviceLink, findDeviceLink, burnDeviceLink, dropDeviceLinks, hashLinkCode, makeLinkCode, DEVICE_LINK_TTL_MS
+} from '../device-link.js';
 
 describe('createDeviceLink', () => {
-  it('issues a one-time token bound to the user, with an expiry', () => {
+  it('issues a code bound to the user, with an expiry, and keeps only its hash', () => {
     const db = { deviceLinks: [] };
     const now = 1_700_000_000_000;
-    const link = createDeviceLink(db, 'user-a', now, 15 * 60 * 1000);
+    const { code, link } = createDeviceLink(db, 'user-a', now, 10 * 60 * 1000);
     assert.equal(link.userId, 'user-a');
-    assert.equal(link.exp, now + 15 * 60 * 1000);
-    assert.equal(typeof link.token, 'string');
-    assert.ok(link.token.length >= 20);
+    assert.equal(link.exp, now + 10 * 60 * 1000);
+    assert.match(code, /^[A-HJ-NP-Z2-9]{4}-[A-HJ-NP-Z2-9]{4}-[A-HJ-NP-Z2-9]{4}$/);
     assert.equal(db.deviceLinks.length, 1);
-    assert.equal(db.deviceLinks[0].token, link.token);
+    assert.equal(db.deviceLinks[0].h, hashLinkCode(code));
+    // Nowhere in what is stored does the code itself appear.
+    assert.doesNotMatch(JSON.stringify(db), new RegExp(code.replace(/-/g, '')));
+    assert.doesNotMatch(JSON.stringify(db), new RegExp(code));
+  });
+
+  it('lasts ten minutes unless told otherwise', () => {
+    const db = {};
+    const { link } = createDeviceLink(db, 'user-a', 1000);
+    assert.equal(link.exp, 1000 + DEVICE_LINK_TTL_MS);
+    assert.equal(DEVICE_LINK_TTL_MS, 10 * 60 * 1000);
   });
 
   it('replaces any unused link for the same user', () => {
@@ -20,8 +33,8 @@ describe('createDeviceLink', () => {
     const first = createDeviceLink(db, 'user-a', 1000, 60_000);
     const second = createDeviceLink(db, 'user-a', 2000, 60_000);
     assert.equal(db.deviceLinks.length, 1);
-    assert.equal(db.deviceLinks[0].token, second.token);
-    assert.notEqual(first.token, second.token);
+    assert.equal(findDeviceLink(db, first.code, 2500), null);
+    assert.equal(findDeviceLink(db, second.code, 2500), second.link);
   });
 
   it('leaves another user’s unused link alone', () => {
@@ -30,46 +43,55 @@ describe('createDeviceLink', () => {
     createDeviceLink(db, 'user-b', 1000, 60_000);
     assert.equal(db.deviceLinks.length, 2);
   });
+
+  it('makes codes that differ', () => {
+    const seen = new Set(Array.from({ length: 200 }, makeLinkCode));
+    assert.equal(seen.size, 200);
+  });
 });
 
-describe('claimDeviceLink', () => {
-  it('returns the user and burns the token', () => {
+describe('findDeviceLink', () => {
+  it('finds the link however the code is typed, without using it up', () => {
     const db = { deviceLinks: [] };
-    const link = createDeviceLink(db, 'user-a', 1000, 60_000);
-    const claimed = claimDeviceLink(db, link.token, 2000);
-    assert.deepEqual(claimed, { userId: 'user-a' });
-    assert.equal(db.deviceLinks.length, 0);
-    assert.deepEqual(claimDeviceLink(db, link.token, 3000), { error: 'unknown or already used' });
+    const { code, link } = createDeviceLink(db, 'user-a', 1000, 60_000);
+    assert.equal(findDeviceLink(db, code, 2000), link);
+    assert.equal(findDeviceLink(db, ' ' + code.toLowerCase().replace(/-/g, ' ') + ' ', 2000), link);
+    assert.equal(db.deviceLinks.length, 1);
   });
 
-  it('refuses an expired link and removes it', () => {
+  it('is single use once burned', () => {
     const db = { deviceLinks: [] };
-    const link = createDeviceLink(db, 'user-a', 1000, 60_000);
-    const claimed = claimDeviceLink(db, link.token, 1000 + 60_000 + 1);
-    assert.deepEqual(claimed, { error: 'link expired' });
+    const { code, link } = createDeviceLink(db, 'user-a', 1000, 60_000);
+    burnDeviceLink(db, link);
+    assert.equal(findDeviceLink(db, code, 2000), null);
     assert.equal(db.deviceLinks.length, 0);
   });
 
-  it('refuses a missing token without touching other links', () => {
+  it('refuses an expired link and drops it', () => {
     const db = { deviceLinks: [] };
+    const { code } = createDeviceLink(db, 'user-a', 1000, 60_000);
+    assert.equal(findDeviceLink(db, code, 1000 + 60_000 + 1), null);
+    assert.equal(db.deviceLinks.length, 0);
+  });
+
+  it('refuses a wrong code without touching other links, and ignores rows that are not links', () => {
+    const db = { deviceLinks: [null, { userId: 'x', exp: Infinity }] };
     createDeviceLink(db, 'user-a', 1000, 60_000);
-    assert.deepEqual(claimDeviceLink(db, 'nope', 1000), { error: 'unknown or already used' });
+    assert.equal(findDeviceLink(db, 'nope', 1000), null);
+    assert.equal(findDeviceLink(db, 'AAAA-AAAA-AAAA', 1000), null);
+    assert.equal(findDeviceLink(db, { toString: 1 }, 1000), null);
     assert.equal(db.deviceLinks.length, 1);
   });
 });
 
-describe('deviceLinkUrl', () => {
-  it('puts the token on the origin as ?link=', () => {
-    assert.equal(
-      deviceLinkUrl('https://gym.avott.duckdns.org', 'abc+1'),
-      'https://gym.avott.duckdns.org/?link=abc%2B1'
-    );
-  });
-
-  it('does not double the slash when the origin already has one', () => {
-    assert.equal(
-      deviceLinkUrl('https://gym.example.com/', 'tok'),
-      'https://gym.example.com/?link=tok'
-    );
+describe('dropDeviceLinks', () => {
+  it('drops only that user’s links and says whether any went', () => {
+    const db = { deviceLinks: [] };
+    const a = createDeviceLink(db, 'user-a', 1000, 60_000);
+    const b = createDeviceLink(db, 'user-b', 1000, 60_000);
+    assert.equal(dropDeviceLinks(db, 'user-a'), true);
+    assert.equal(dropDeviceLinks(db, 'user-a'), false);
+    assert.equal(findDeviceLink(db, a.code, 2000), null);
+    assert.equal(findDeviceLink(db, b.code, 2000), b.link);
   });
 });

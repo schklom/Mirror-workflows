@@ -43,7 +43,3 @@ dist/
 
 db/fmd.sqlite-wal
 db/fmd.sqlite-shm
-
-#Python
-*__pycache__*
-*.pyc

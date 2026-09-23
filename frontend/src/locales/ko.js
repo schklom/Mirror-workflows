@@ -372,6 +372,8 @@ export default {
   'This browser cannot confirm with your passkey. Do this on a device that holds one.': '이 브라우저에서는 패스키로 확인할 수 없습니다. 패스키가 있는 기기에서 진행하세요.',
   'This browser cannot create passkeys, so it cannot be added with a code. Open the link in a browser that can.': '이 브라우저는 패스키를 만들 수 없어 코드로 추가할 수 없습니다. 패스키를 만들 수 있는 브라우저에서 링크를 여세요.',
   'This browser is signed in as “{0}”. Adding it to “{1}” signs “{0}” out here.': '이 브라우저는 "{0}"(으)로 로그인되어 있습니다. "{1}"에 추가하면 여기서 "{0}"은(는) 로그아웃됩니다.',
+  'This code is for a different profile that is also called “{0}”, not the one this browser is signed in as. Adding it there signs yours out here.': '이 코드는 이름이 똑같이 "{0}"인 다른 프로필의 것이며, 이 브라우저가 로그인한 프로필이 아닙니다. 브라우저를 그곳에 추가하면 지금 로그인된 프로필은 여기서 로그아웃됩니다.',
+  'Only continue if this code comes from a device of your own. This browser is then signed in to “{0}”, and what you log here goes to that profile.': '이 코드가 본인 기기에서 받은 것일 때만 계속하세요. 그러면 이 브라우저는 "{0}"(으)로 로그인되고, 여기서 기록하는 내용은 그 프로필로 들어갑니다.',
   'This code has expired.': '코드가 만료되었습니다.',
   'This device already has a passkey for this profile.': '이 기기에는 이미 이 프로필의 패스키가 있습니다.',
   'This passkey already belongs to a profile.': '이 패스키는 이미 프로필에 등록되어 있습니다.',

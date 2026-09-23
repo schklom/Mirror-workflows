@@ -378,6 +378,8 @@ export const PT_BR_OVERRIDES = {
   'This browser cannot confirm with your passkey. Do this on a device that holds one.': 'Este navegador não consegue confirmar com sua chave de acesso. Faça isso em um dispositivo que tenha uma.',
   'This browser cannot create passkeys, so it cannot be added with a code. Open the link in a browser that can.': 'Este navegador não consegue criar chaves de acesso, por isso não pode ser adicionado com um código. Abra o link em um navegador que consiga.',
   'This browser is signed in as “{0}”. Adding it to “{1}” signs “{0}” out here.': 'Este navegador está conectado como “{0}”. Adicioná-lo a “{1}” desconecta “{0}” aqui.',
+  'This code is for a different profile that is also called “{0}”, not the one this browser is signed in as. Adding it there signs yours out here.': 'Este código é de outro perfil que também se chama “{0}”, não daquele com que este navegador está conectado. Adicionar o navegador lá desconecta o seu perfil aqui.',
+  'Only continue if this code comes from a device of your own. This browser is then signed in to “{0}”, and what you log here goes to that profile.': 'Continue só se este código vier de um dispositivo seu. Este navegador fica então conectado a “{0}”, e o que você registrar aqui vai para esse perfil.',
   'This code has expired.': 'Este código expirou.',
   'This device already has a passkey for this profile.': 'Este dispositivo já tem uma chave de acesso para este perfil.',
   'This passkey already belongs to a profile.': 'Esta chave de acesso já pertence a um perfil.',

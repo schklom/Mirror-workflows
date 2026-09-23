@@ -346,6 +346,7 @@ test('a device link: made with proof, kept only as a hash, redeemed once by a ne
   const opt = await h.req('POST', '/api/device-link/options', { body: { code: code.toLowerCase() }, ip: '198.51.100.41' });
   assert.equal(opt.status, 200);
   assert.equal(opt.body.name, 'Ana');
+  assert.equal(opt.body.id, 'u1');   // what the other device tells profiles apart by, not the name
   assert.deepEqual(opt.body.options.excludeCredentials.map(c => c.id), [key.id]);
   const done = await h.req('POST', '/api/device-link/verify', {
     body: { code, cid: opt.body.cid, credential: phone.attestation(opt.body.options.challenge), name: 'Phone' }, ip: '198.51.100.41'

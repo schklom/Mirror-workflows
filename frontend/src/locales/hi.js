@@ -372,6 +372,8 @@ export default {
   'This browser cannot confirm with your passkey. Do this on a device that holds one.': 'यह ब्राउज़र आपकी पासकी से पुष्टि नहीं कर सकता। यह काम उस डिवाइस पर करें जिसमें पासकी रखी है।',
   'This browser cannot create passkeys, so it cannot be added with a code. Open the link in a browser that can.': 'यह ब्राउज़र पासकी नहीं बना सकता, इसलिए इसे कोड से नहीं जोड़ा जा सकता। लिंक ऐसे ब्राउज़र में खोलें जो पासकी बना सके।',
   'This browser is signed in as “{0}”. Adding it to “{1}” signs “{0}” out here.': 'यह ब्राउज़र "{0}" के रूप में साइन इन है। इसे "{1}" में जोड़ने से यहाँ "{0}" साइन आउट हो जाएगा।',
+  'This code is for a different profile that is also called “{0}”, not the one this browser is signed in as. Adding it there signs yours out here.': 'यह कोड किसी दूसरी प्रोफ़ाइल का है जिसका नाम भी "{0}" है, उसका नहीं जिससे यह ब्राउज़र साइन इन है। ब्राउज़र को वहाँ जोड़ने से आपकी प्रोफ़ाइल यहाँ से साइन आउट हो जाएगी।',
+  'Only continue if this code comes from a device of your own. This browser is then signed in to “{0}”, and what you log here goes to that profile.': 'आगे तभी बढ़ें जब यह कोड आपके अपने किसी डिवाइस से आया हो। फिर यह ब्राउज़र "{0}" में साइन इन हो जाएगा, और आप यहाँ जो भी दर्ज करेंगे वह उसी प्रोफ़ाइल में जाएगा।',
   'This code has expired.': 'यह कोड समाप्त हो चुका है।',
   'This device already has a passkey for this profile.': 'इस डिवाइस में इस प्रोफ़ाइल की पासकी पहले से है।',
   'This passkey already belongs to a profile.': 'यह पासकी पहले से किसी प्रोफ़ाइल की है।',

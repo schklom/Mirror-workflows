@@ -1566,6 +1566,8 @@ export default {
   'This browser cannot confirm with your passkey. Do this on a device that holds one.': 'لا يستطيع هذا المتصفح التأكيد بمفتاح المرور الخاص بك. افعل ذلك على جهاز يحفظ مفتاحًا.',
   'This browser cannot create passkeys, so it cannot be added with a code. Open the link in a browser that can.': 'لا يستطيع هذا المتصفح إنشاء مفاتيح مرور، لذا لا يمكن إضافته برمز. افتح الرابط في متصفح يستطيع ذلك.',
   'This browser is signed in as “{0}”. Adding it to “{1}” signs “{0}” out here.': 'هذا المتصفح مسجّل الدخول باسم «{0}». إضافته إلى «{1}» تُخرج «{0}» من هنا.',
+  'This code is for a different profile that is also called “{0}”, not the one this browser is signed in as. Adding it there signs yours out here.': 'هذا الرمز لملف شخصي آخر اسمه أيضًا «{0}»، وليس للملف الذي سجّل هذا المتصفح الدخول به. إضافة المتصفح إلى هناك تُخرج ملفك الشخصي من هنا.',
+  'Only continue if this code comes from a device of your own. This browser is then signed in to “{0}”, and what you log here goes to that profile.': 'تابع فقط إذا كان هذا الرمز من جهاز يخصّك. عندها يُسجَّل دخول هذا المتصفح إلى «{0}»، وكل ما تسجّله هنا يذهب إلى ذلك الملف الشخصي.',
   'This code has expired.': 'انتهت صلاحية هذا الرمز.',
   'This device already has a passkey for this profile.': 'لدى هذا الجهاز مفتاح مرور لهذا الملف الشخصي بالفعل.',
   'This passkey already belongs to a profile.': 'مفتاح المرور هذا مرتبط بملف شخصي بالفعل.',

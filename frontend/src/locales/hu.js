@@ -378,6 +378,8 @@ export default {
   'This browser cannot confirm with your passkey. Do this on a device that holds one.': 'Ez a böngésző nem tud megerősíteni a jelszókulcsoddal. Tedd ezt egy olyan eszközön, amelyik tárol egyet.',
   'This browser cannot create passkeys, so it cannot be added with a code. Open the link in a browser that can.': 'Ez a böngésző nem tud jelszókulcsot létrehozni, ezért kóddal sem adható hozzá. Nyisd meg a linket egy olyan böngészőben, amelyik képes rá.',
   'This browser is signed in as “{0}”. Adding it to “{1}” signs “{0}” out here.': 'Ez a böngésző „{0}” néven van bejelentkezve. Ha hozzáadod a(z) „{1}” profilhoz, „{0}” itt kijelentkezik.',
+  'This code is for a different profile that is also called “{0}”, not the one this browser is signed in as. Adding it there signs yours out here.': 'Ez a kód egy másik profilé, amelynek szintén „{0}” a neve, nem azé, amellyel ez a böngésző be van jelentkezve. Ha ott adod hozzá a böngészőt, a te profilod itt kijelentkezik.',
+  'Only continue if this code comes from a device of your own. This browser is then signed in to “{0}”, and what you log here goes to that profile.': 'Csak akkor folytasd, ha ez a kód a saját eszközödről származik. Ez a böngésző ezután a(z) „{0}” profilba lesz bejelentkezve, és amit itt rögzítesz, az abba a profilba kerül.',
   'This code has expired.': 'Ez a kód lejárt.',
   'This device already has a passkey for this profile.': 'Ezen az eszközön már van jelszókulcs ehhez a profilhoz.',
   'This passkey already belongs to a profile.': 'Ez a jelszókulcs már egy profilhoz tartozik.',

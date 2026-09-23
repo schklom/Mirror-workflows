@@ -1099,7 +1099,7 @@ paths:
       description: |
         Called on the other device, which has no session: the code is the credential.
         Returns creation options for the profile the code belongs to, and that profile's
-        name. Does not use the code up, so a dismissed passkey prompt can be tried again.
+        id and name. Does not use the code up, so a dismissed passkey prompt can be tried again.
         Wrong codes count toward a per-address pause of link redemption (see
         *Throttling*). **Not** CSRF-exempt.
       security: []
@@ -1123,6 +1123,7 @@ paths:
                 properties:
                   cid: { type: string }
                   options: { $ref: '#/components/schemas/WebAuthnRegistrationOptions' }
+                  id: { type: string, description: "The profile's id (also the options' user handle). Names are not unique; this is what tells two profiles apart." }
                   name: { type: string, description: The profile this device is being added to. }
         '400': { $ref: '#/components/responses/LinkInvalid' }
         '409': { $ref: '#/components/responses/PasskeyLimit' }

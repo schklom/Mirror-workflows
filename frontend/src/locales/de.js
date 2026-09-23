@@ -386,6 +386,8 @@ export default {
   'This browser cannot confirm with your passkey. Do this on a device that holds one.': 'Dieser Browser kann nicht mit deinem Passkey bestätigen. Mach das auf einem Gerät, auf dem einer gespeichert ist.',
   'This browser cannot create passkeys, so it cannot be added with a code. Open the link in a browser that can.': 'Dieser Browser kann keine Passkeys erstellen und lässt sich deshalb nicht per Code hinzufügen. Öffne den Link in einem Browser, der das kann.',
   'This browser is signed in as “{0}”. Adding it to “{1}” signs “{0}” out here.': 'Dieser Browser ist als „{0}“ angemeldet. Wenn du ihn zu „{1}“ hinzufügst, wird „{0}“ hier abgemeldet.',
+  'This code is for a different profile that is also called “{0}”, not the one this browser is signed in as. Adding it there signs yours out here.': 'Dieser Code gehört zu einem anderen Profil, das ebenfalls „{0}“ heißt, nicht zu dem, mit dem dieser Browser angemeldet ist. Fügst du den Browser dort hinzu, wird dein Profil hier abgemeldet.',
+  'Only continue if this code comes from a device of your own. This browser is then signed in to “{0}”, and what you log here goes to that profile.': 'Mach nur weiter, wenn dieser Code von einem deiner eigenen Geräte stammt. Dieser Browser wird dann bei „{0}“ angemeldet, und was du hier einträgst, landet in diesem Profil.',
   'This code has expired.': 'Dieser Code ist abgelaufen.',
   'This device already has a passkey for this profile.': 'Dieses Gerät hat schon einen Passkey für dieses Profil.',
   'This passkey already belongs to a profile.': 'Dieser Passkey gehört schon zu einem Profil.',

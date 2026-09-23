@@ -1336,7 +1336,10 @@ const passkeyRoutes = {
 
   // Redeeming, from the other device, which has no session: the code is the credential. Step one
   // checks it and hands back creation options for the profile it belongs to, and that profile's
-  // name, so the screen can say where this device is being added. It does not use the code up —
+  // name and id, so the screen can say where this device is being added — and tell it apart from
+  // the profile this browser is signed in as by the id, since names are not unique and whoever
+  // sends a code chooses the name of theirs. The id is the options' user handle anyway, so it
+  // tells the holder of the code nothing new. It does not use the code up —
   // a passkey prompt dismissed by mistake can be tried again — and wrong codes pause the address.
   // Not CSRF-exempt: only the app's own origin can create a passkey for it anyway, and a code
   // redeemed from anywhere else is not one the owner meant to hand over.
@@ -1357,7 +1360,7 @@ const passkeyRoutes = {
     if (passkeyCount(user) >= MAX_PASSKEYS) return json(res, 409, LIMIT);
     const options = await moreOptions(user);
     const cid = putChallenge({ challenge: options.challenge, uid: user.id, kind: 'link', lh: link.h });
-    json(res, 200, { cid, options, name: user.name });
+    json(res, 200, { cid, options, id: user.id, name: user.name });
   },
 
   // Step two: the new passkey is stored, the code is burned, and this device is signed in by the

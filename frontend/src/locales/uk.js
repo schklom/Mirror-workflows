@@ -1510,6 +1510,8 @@ export default {
   'This browser cannot confirm with your passkey. Do this on a device that holds one.': 'Цей браузер не може підтвердити твоїм ключем доступу. Зроби це на пристрої, де він зберігається.',
   'This browser cannot create passkeys, so it cannot be added with a code. Open the link in a browser that can.': 'Цей браузер не вміє створювати ключі доступу, тож його не можна додати за кодом. Відкрий посилання в браузері, який це вміє.',
   'This browser is signed in as “{0}”. Adding it to “{1}” signs “{0}” out here.': 'У цьому браузері виконано вхід як «{0}». Якщо додати його до «{1}», «{0}» тут вийде з акаунта.',
+  'This code is for a different profile that is also called “{0}”, not the one this browser is signed in as. Adding it there signs yours out here.': 'Цей код належить іншому профілю, який теж називається «{0}», а не тому, під яким виконано вхід у цьому браузері. Якщо додати браузер туди, твій профіль тут вийде з системи.',
+  'Only continue if this code comes from a device of your own. This browser is then signed in to “{0}”, and what you log here goes to that profile.': 'Продовжуй, лише якщо цей код надійшов з твого власного пристрою. Тоді в цьому браузері буде виконано вхід у «{0}», і все, що ти тут запишеш, потрапить до цього профілю.',
   'This code has expired.': 'Термін дії коду минув.',
   'This device already has a passkey for this profile.': 'На цьому пристрої вже є ключ доступу для цього профілю.',
   'This passkey already belongs to a profile.': 'Цей ключ доступу вже належить профілю.',

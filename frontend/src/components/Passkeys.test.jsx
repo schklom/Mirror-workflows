@@ -19,6 +19,7 @@ const mocks = vi.hoisted(() => {
   state.createPasskey = vi.fn(async () => ({ id: 'new-key', response: {} }))
   state.copyText = vi.fn(async () => true)
   state.confirmSheet = vi.fn()
+  state.askAddDeviceData = vi.fn()
   state.api = vi.fn(async (path, init) => {
     const method = init?.method || 'GET'
     state.calls.push({ path, method, body: init?.body ? JSON.parse(init.body) : null })
@@ -50,7 +51,7 @@ vi.mock('../lib/api.js', () => ({
   passwordLogin: vi.fn(), passwordRegister: vi.fn(), passwordResetRedeem: vi.fn(),
 }))
 vi.mock('../lib/clipboard.js', () => ({ copyText: (...a) => mocks.copyText(...a) }))
-vi.mock('../sheets.jsx', () => ({ askAddDeviceData: vi.fn(), confirmSheet: (...a) => mocks.confirmSheet(...a) }))
+vi.mock('../sheets.jsx', () => ({ askAddDeviceData: mocks.askAddDeviceData, confirmSheet: (...a) => mocks.confirmSheet(...a) }))
 // lean-qr loads on demand; what matters here is what the QR code carries.
 vi.mock('./QrCanvas.jsx', () => ({ default: ({ value }) => <canvas data-qr={value} /> }))
 
@@ -95,7 +96,7 @@ beforeEach(() => {
   mocks.answers = {}
   mocks.calls.length = 0
   mocks.store = { user: { id: 'u1', name: 'Ana' }, linkCode: null }
-  for (const f of [mocks.toast, mocks.setUser, mocks.adoptProfile, mocks.passkeyAssertion, mocks.createPasskey, mocks.copyText, mocks.confirmSheet]) f.mockClear()
+  for (const f of [mocks.toast, mocks.setUser, mocks.adoptProfile, mocks.passkeyAssertion, mocks.createPasskey, mocks.copyText, mocks.confirmSheet, mocks.askAddDeviceData]) f.mockClear()
 })
 afterEach(() => { vi.useRealTimers(); act(() => { mounted.splice(0).forEach(({ root, host }) => { root.unmount(); host.remove() }) }) })
 
@@ -266,7 +267,8 @@ describe('Settings: a code for another device', () => {
 })
 
 describe('the other device: redeeming a code', () => {
-  const OPTIONS = { cid: 'link-cid', options: { challenge: 'xyz' }, name: 'Ana' }
+  const OPTIONS = { cid: 'link-cid', options: { challenge: 'xyz' }, id: 'u1', name: 'Ana' }
+  const CAUTION = 'Only continue if this code comes from a device of your own. This browser is then signed in to “Ana”, and what you log here goes to that profile.'
 
   it('checks a code from the link at once, then creates the passkey and signs in like a passkey sign-in', async () => {
     mocks.store = { user: null, linkCode: 'K7WQ-2MZP-4HXA' }
@@ -277,6 +279,9 @@ describe('the other device: redeeming a code', () => {
     await settle()
     expect(mocks.calls[0]).toEqual({ path: '/api/device-link/options', method: 'POST', body: { code: 'K7WQ-2MZP-4HXA' } })
     expect(host.textContent).toContain('for the profile “Ana”')
+    // A guest is told where this device ends up, and that the code has to be their own.
+    expect(host.textContent).toContain(CAUTION)
+    expect(host.textContent).not.toMatch(/signed in as/)
     expect(byPlaceholder(host, 'Code from your other device').value).toBe('K7WQ-2MZP-4HXA')
     await submit(host)
     // The options already here are used as they are: the prompt opens straight from the tap.
@@ -285,10 +290,11 @@ describe('the other device: redeeming a code', () => {
     expect(mocks.calls.at(-1).path).toBe('/api/device-link/verify')
     expect(mocks.calls.at(-1).body).toMatchObject({ code: 'K7WQ-2MZP-4HXA', cid: 'link-cid', credential: { id: 'new-key' } })
     expect(mocks.setUser).toHaveBeenCalledWith({ id: 'u1', name: 'Ana', admin: false })
-    expect(mocks.adoptProfile).toHaveBeenCalled()
+    // What this device logged goes into that profile only when asked, even into an empty one.
+    expect(mocks.adoptProfile).toHaveBeenCalledWith(mocks.askAddDeviceData, { alwaysAsk: true })
     expect(mocks.store.linkCode).toBeNull()
     expect(close).toHaveBeenCalled()
-    expect(mocks.toast).toHaveBeenCalledWith('Welcome back, Ana')
+    expect(mocks.toast).toHaveBeenCalledWith('Signed in as Ana')
   })
 
   it('a typed code is checked on the tap; a wrong one stays on the sheet and says so', async () => {
@@ -320,12 +326,14 @@ describe('the other device: redeeming a code', () => {
   })
 
   it('the same account adding this browser keeps its copy as it is', async () => {
-    mocks.store = { user: { id: 'u1', name: 'Ana' }, linkCode: 'K7WQ-2MZP-4HXA' }
+    // Renamed since this browser signed in: the id is what makes it the same profile.
+    mocks.store = { user: { id: 'u1', name: 'Ana (old name)' }, linkCode: 'K7WQ-2MZP-4HXA' }
     mocks.answers['POST /api/device-link/options'] = OPTIONS
     mocks.answers['POST /api/device-link/verify'] = { user: { id: 'u1', name: 'Ana', admin: false } }
     const host = mount(<DeviceLinkRedeemSheet close={() => {}} />)
     await settle()
     expect(host.textContent).not.toMatch(/signed in as/)
+    expect(host.textContent).not.toContain(CAUTION)
     await submit(host)
     expect(mocks.adoptProfile).not.toHaveBeenCalled()
     expect(mocks.toast).toHaveBeenCalledWith('Passkey added')
@@ -337,6 +345,23 @@ describe('the other device: redeeming a code', () => {
     const host = mount(<DeviceLinkRedeemSheet close={() => {}} />)
     await settle()
     expect(host.textContent).toContain('This browser is signed in as “Bea”. Adding it to “Ana” signs “Bea” out here.')
+    expect(host.textContent).toContain(CAUTION)
+  })
+
+  it('tells a different profile with the same name apart by its id', async () => {
+    // Someone else's profile, named like the one signed in here on purpose.
+    mocks.store = { user: { id: 'u2', name: 'Ana' }, linkCode: 'K7WQ-2MZP-4HXA' }
+    mocks.answers['POST /api/device-link/options'] = OPTIONS
+    mocks.answers['POST /api/device-link/verify'] = { user: { id: 'u1', name: 'Ana', admin: false } }
+    const host = mount(<DeviceLinkRedeemSheet close={() => {}} />)
+    await settle()
+    expect(host.textContent).toContain('This code is for a different profile that is also called “Ana”, not the one this browser is signed in as. Adding it there signs yours out here.')
+    expect(host.textContent).toContain(CAUTION)
+    await submit(host)
+    // Went on anyway: signed in to that profile, never greeted as if it were the one before.
+    expect(mocks.adoptProfile).toHaveBeenCalledWith(mocks.askAddDeviceData, { alwaysAsk: true })
+    expect(mocks.toast).toHaveBeenCalledWith('Signed in as Ana')
+    expect(mocks.toast).not.toHaveBeenCalledWith('Passkey added')
   })
 
   it('a browser without passkeys is told plainly, and nothing is asked of the server', async () => {

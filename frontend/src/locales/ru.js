@@ -372,6 +372,8 @@ export default {
   'This browser cannot confirm with your passkey. Do this on a device that holds one.': 'Этот браузер не может подтвердить твоим ключом доступа. Сделай это на устройстве, где он хранится.',
   'This browser cannot create passkeys, so it cannot be added with a code. Open the link in a browser that can.': 'Этот браузер не умеет создавать ключи доступа, поэтому его нельзя добавить по коду. Открой ссылку в браузере, который это умеет.',
   'This browser is signed in as “{0}”. Adding it to “{1}” signs “{0}” out here.': 'В этом браузере выполнен вход как «{0}». Если добавить его к «{1}», «{0}» здесь выйдет из аккаунта.',
+  'This code is for a different profile that is also called “{0}”, not the one this browser is signed in as. Adding it there signs yours out here.': 'Этот код от другого профиля, который тоже называется «{0}», а не от того, под которым выполнен вход в этом браузере. Если добавить браузер туда, твой профиль здесь выйдет из системы.',
+  'Only continue if this code comes from a device of your own. This browser is then signed in to “{0}”, and what you log here goes to that profile.': 'Продолжай, только если этот код пришёл с твоего собственного устройства. Тогда в этом браузере будет выполнен вход в «{0}», и всё, что ты здесь запишешь, попадёт в этот профиль.',
   'This code has expired.': 'Срок действия кода истёк.',
   'This device already has a passkey for this profile.': 'На этом устройстве уже есть ключ доступа для этого профиля.',
   'This passkey already belongs to a profile.': 'Этот ключ доступа уже принадлежит профилю.',

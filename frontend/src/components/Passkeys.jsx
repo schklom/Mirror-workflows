@@ -266,14 +266,22 @@ export function DeviceLinkSheet({ close }) {
    in. The code comes from the link's ?link= (the store holds it, see boot()) or is typed. A code
    from a link is checked as the sheet opens, so it can say whose profile this device is joining
    and the passkey prompt then opens straight from the tap. The passkey is named after this
-   browser (deviceLabel), which the list in Settings can change. Signed in afterwards exactly as a
-   passkey sign-in on the sign-in screen is: the same account coming back merges what this device
-   kept for it (adoptProfile), and another account's copy is kept aside for that one (setUser). */
+   browser (deviceLabel), which the list in Settings can change. Signed in afterwards like a
+   passkey sign-in on the sign-in screen: the same account coming back merges what this device
+   kept for it (adoptProfile), and another account's copy is kept aside for that one (setUser).
+
+   A link opens this sheet by itself, and anyone can send one: a code for their own profile would
+   sign this browser in to it with a single tap and the passkey prompt, and whatever is logged
+   here afterwards would be theirs to read (login CSRF). So unless the code is for the profile
+   this browser is already signed in as — told apart by id, since names are not unique and the
+   sender chooses theirs — the sheet says which profile this device ends up in and to go on only
+   with a code from a device of one's own, and a guest's workouts go into that profile only when
+   the guest says so, even into one that has nothing yet (adoptProfile's alwaysAsk). */
 export function DeviceLinkRedeemSheet({ close }) {
   const user = useStore(s => s.user)
   const pending = useStore(s => s.linkCode)
   const [code, setCode] = useState(pending || '')
-  const [info, setInfo] = useState(null)   // { code, cid, options, name, at } from checking the code
+  const [info, setInfo] = useState(null)   // { code, cid, options, id, name, at } from checking the code
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState(null)
   const ref = useRef(null)
@@ -308,8 +316,9 @@ export function DeviceLinkRedeemSheet({ close }) {
       if (same) { toast(t('Passkey added')); return }
       // Signed in by now whatever happens next: a pull that fails is the sync banner's to say
       // (adoptProfile records it), not a reason to hide that this device got in.
-      await st.adoptProfile(askAddDeviceData).catch(() => {})
-      toast(t('Welcome back, {0}', r.user.name))
+      await st.adoptProfile(askAddDeviceData, { alwaysAsk: true }).catch(() => {})
+      // Not "Welcome back": this may be the first time this person has seen that profile.
+      toast(t('Signed in as {0}', r.user.name))
     } catch (e) {
       if (!dismissed(e)) setErr(passkeyError(e))
       // Answered by the server, the challenge is gone; the next try asks for a new one.
@@ -322,14 +331,19 @@ export function DeviceLinkRedeemSheet({ close }) {
     <div style={{ height: 12 }} />
     <Button onClick={close}>{t('Done')}</Button>
   </>
-  const joining = info && info.code === code.trim() ? info.name : null
+  const joining = info && info.code === code.trim() ? info : null
+  const elsewhere = joining && joining.id !== user?.id
   return <>
     <h3>{t('Add this device')}</h3>
     <div className="muted small" style={{ marginBottom: 14 }}>{joining
-      ? t('Create a passkey on this device for the profile “{0}”. It signs you in here from now on.', joining)
+      ? t('Create a passkey on this device for the profile “{0}”. It signs you in here from now on.', joining.name)
       : t('Enter the code your other device shows under Settings → Add another device. This device then gets a passkey of its own.')}</div>
-    {user && joining && user.name !== joining && <div className="card small muted" style={{ textAlign: 'start', marginBottom: 14 }}>
-      {t('This browser is signed in as “{0}”. Adding it to “{1}” signs “{0}” out here.', user.name, joining)}</div>}
+    {elsewhere && <div className="card small" style={{ textAlign: 'start', marginBottom: 14 }}>
+      {user && <div style={{ marginBottom: 8 }}>{user.name === joining.name
+        ? t('This code is for a different profile that is also called “{0}”, not the one this browser is signed in as. Adding it there signs yours out here.', joining.name)
+        : t('This browser is signed in as “{0}”. Adding it to “{1}” signs “{0}” out here.', user.name, joining.name)}</div>}
+      <div>{t('Only continue if this code comes from a device of your own. This browser is then signed in to “{0}”, and what you log here goes to that profile.', joining.name)}</div>
+    </div>}
     <form onSubmit={submit} noValidate>
       <input ref={ref} className="input" name="device-code" autoComplete="one-time-code" placeholder={t('Code from your other device')} maxLength={20}
         value={code} onChange={e => setCode(e.target.value.toUpperCase())} autoCapitalize="characters" autoCorrect="off" spellCheck={false}

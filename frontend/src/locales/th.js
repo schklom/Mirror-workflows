@@ -378,6 +378,8 @@ export default {
   'This browser cannot confirm with your passkey. Do this on a device that holds one.': 'เบราว์เซอร์นี้ยืนยันด้วยพาสคีย์ของคุณไม่ได้ ทำขั้นตอนนี้บนอุปกรณ์ที่เก็บพาสคีย์ไว้',
   'This browser cannot create passkeys, so it cannot be added with a code. Open the link in a browser that can.': 'เบราว์เซอร์นี้สร้างพาสคีย์ไม่ได้ จึงเพิ่มด้วยรหัสไม่ได้ เปิดลิงก์ในเบราว์เซอร์ที่สร้างพาสคีย์ได้',
   'This browser is signed in as “{0}”. Adding it to “{1}” signs “{0}” out here.': 'เบราว์เซอร์นี้เข้าสู่ระบบในชื่อ “{0}” อยู่ การเพิ่มเบราว์เซอร์นี้ให้ “{1}” จะทำให้ “{0}” ออกจากระบบที่นี่',
+  'This code is for a different profile that is also called “{0}”, not the one this browser is signed in as. Adding it there signs yours out here.': 'รหัสนี้เป็นของโปรไฟล์อื่นที่ชื่อ “{0}” เหมือนกัน ไม่ใช่โปรไฟล์ที่เบราว์เซอร์นี้เข้าสู่ระบบอยู่ การเพิ่มเบราว์เซอร์ไปที่นั่นจะทำให้โปรไฟล์ของคุณออกจากระบบที่นี่',
+  'Only continue if this code comes from a device of your own. This browser is then signed in to “{0}”, and what you log here goes to that profile.': 'ดำเนินการต่อเฉพาะเมื่อรหัสนี้มาจากอุปกรณ์ของคุณเองเท่านั้น จากนั้นเบราว์เซอร์นี้จะเข้าสู่ระบบในชื่อ “{0}” และสิ่งที่คุณบันทึกที่นี่จะเข้าไปอยู่ในโปรไฟล์นั้น',
   'This code has expired.': 'รหัสนี้หมดอายุแล้ว',
   'This device already has a passkey for this profile.': 'อุปกรณ์นี้มีพาสคีย์สำหรับโปรไฟล์นี้อยู่แล้ว',
   'This passkey already belongs to a profile.': 'พาสคีย์นี้เป็นของโปรไฟล์หนึ่งอยู่แล้ว',

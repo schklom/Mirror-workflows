@@ -893,7 +893,13 @@ export const useStore = create((set, get) => {
     // are added to the profile or dropped. A profile with no state yet simply takes the
     // device's data, as creating a profile always did. The same account signing in again is
     // different: see below.
-    async adoptProfile(ask) {
+    //
+    // `alwaysAsk` is for a profile this device joins with a code from another device (#95,
+    // DeviceLinkRedeemSheet). Nothing proves that profile is this person's own — whoever sends
+    // the code chooses it — so what a guest logged here is not moved into it unasked, not even
+    // into one with no state yet, where it would otherwise go without a word. Declined, this
+    // device takes that empty profile as it is, the way it takes a profile that has state.
+    async adoptProfile(ask, { alwaysAsk = false } = {}) {
       if (pulling) await pulling
       const sameAccount = rejoined
       let res
@@ -902,14 +908,24 @@ export const useStore = create((set, get) => {
       const { state, rev } = res
       const S = get().S
       reached()
+      const askAbout = async extras =>
+        (extras.workouts || extras.bodyweight || extras.customEx) && typeof ask === 'function' ? await ask(extras) : false
+      const serverCopy = Object.assign(clone(DEF), state, { active: S.active || null })
       if (!state) {
+        const push = hasData(S) && (!alwaysAsk || sameAccount || await askAbout(localExtras(S, null)))
+        if (hasData(S) && !push) {
+          if (rev != null) adopt(serverCopy, rev)
+          else { dropSync(); persist(serverCopy, false, false); markOwed(false) }
+          confirmed(get().S)
+          await applyStash()
+          return { adopted: true, added: false }
+        }
         markOwed(false)
-        if (hasData(S)) { if (rev != null) writeSync(rev, 0); forceNext = true; await get().pushState() }
+        if (push) { if (rev != null) writeSync(rev, 0); forceNext = true; await get().pushState() }
         else { if (rev != null) writeSync(rev, 0); confirmed(get().S) }
         await applyStash()
         return { adopted: false, added: false }
       }
-      const serverCopy = Object.assign(clone(DEF), state, { active: S.active || null })
       if (sameAccount) {
         // This copy already belongs to the account: a phone paired again after its token was
         // refused, a browser signed in again after its session ended. It may hold days the server
@@ -931,8 +947,7 @@ export const useStore = create((set, get) => {
         await applyStash()
         return { adopted: true, added: false, merged: true }
       }
-      const extras = localExtras(S, state)
-      const keep = (extras.workouts || extras.bodyweight || extras.customEx) && typeof ask === 'function' ? await ask(extras) : false
+      const keep = await askAbout(localExtras(S, state))
       if (keep) {
         const merged = Object.assign(clone(DEF), mergeStates(state, S, { prefer: 'a' }))
         merged.active = S.active || null

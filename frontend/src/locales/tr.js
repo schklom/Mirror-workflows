@@ -372,6 +372,8 @@ export default {
   'This browser cannot confirm with your passkey. Do this on a device that holds one.': 'Bu tarayıcı geçiş anahtarınla onaylayamaz. Bunu, anahtarın kayıtlı olduğu bir cihazda yap.',
   'This browser cannot create passkeys, so it cannot be added with a code. Open the link in a browser that can.': 'Bu tarayıcı geçiş anahtarı oluşturamadığı için kodla eklenemez. Bağlantıyı bunu yapabilen bir tarayıcıda aç.',
   'This browser is signed in as “{0}”. Adding it to “{1}” signs “{0}” out here.': 'Bu tarayıcıda “{0}” olarak oturum açık. Onu “{1}” profiline eklemek burada “{0}” oturumunu kapatır.',
+  'This code is for a different profile that is also called “{0}”, not the one this browser is signed in as. Adding it there signs yours out here.': 'Bu kod, yine “{0}” adını taşıyan başka bir profile ait; bu tarayıcıda oturumu açık olan profile değil. Tarayıcıyı oraya eklemek buradaki kendi profilinin oturumunu kapatır.',
+  'Only continue if this code comes from a device of your own. This browser is then signed in to “{0}”, and what you log here goes to that profile.': 'Yalnızca bu kod kendi cihazlarından birinden geliyorsa devam et. O zaman bu tarayıcıda “{0}” olarak oturum açılır ve burada kaydettiklerin o profile gider.',
   'This code has expired.': 'Bu kodun süresi doldu.',
   'This device already has a passkey for this profile.': 'Bu cihazda bu profil için zaten bir geçiş anahtarı var.',
   'This passkey already belongs to a profile.': 'Bu geçiş anahtarı zaten bir profile ait.',

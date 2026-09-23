@@ -372,6 +372,8 @@ export default {
   'This browser cannot confirm with your passkey. Do this on a device that holds one.': '此浏览器无法用你的通行密钥确认。请在保存了通行密钥的设备上操作。',
   'This browser cannot create passkeys, so it cannot be added with a code. Open the link in a browser that can.': '此浏览器无法创建通行密钥，因此不能通过代码添加。请在能创建通行密钥的浏览器中打开此链接。',
   'This browser is signed in as “{0}”. Adding it to “{1}” signs “{0}” out here.': '此浏览器已以“{0}”登录。将它添加到“{1}”会让“{0}”在这里退出登录。',
+  'This code is for a different profile that is also called “{0}”, not the one this browser is signed in as. Adding it there signs yours out here.': '这个代码属于另一个同样名为“{0}”的档案，而不是此浏览器当前登录的那个。将浏览器添加到那里，会让你的档案在这里退出登录。',
+  'Only continue if this code comes from a device of your own. This browser is then signed in to “{0}”, and what you log here goes to that profile.': '只有当这个代码来自你自己的设备时才继续。之后此浏览器将登录到“{0}”，你在这里记录的内容都会进入该档案。',
   'This code has expired.': '此代码已过期。',
   'This device already has a passkey for this profile.': '此设备已有该档案的通行密钥。',
   'This passkey already belongs to a profile.': '此通行密钥已属于某个档案。',

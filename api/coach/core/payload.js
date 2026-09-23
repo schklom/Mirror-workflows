@@ -384,6 +384,22 @@ function weighIns(S, from, to) {
     .filter(b => b.d && b.w !== undefined && (!from || b.d >= from) && (!to || b.d <= to));
 }
 
+/* The room's medians are computed on this server, but from other people's synced workouts —
+   state their own clients wrote. cohort.js keeps only catalogue exercises; this copy bounds
+   every field again, so what reaches one person's prompt never depends on that filter alone. */
+function cleanCohort(c) {
+  if (!c || typeof c !== 'object') return null;
+  const spw = c.sessionsPerWeek && typeof c.sessionsPerWeek === 'object' ? c.sessionsPerWeek : {};
+  return {
+    unit: word(c.unit, 8),
+    people: num(c.people) ?? null,
+    sessionsPerWeek: { median: num(spw.median) ?? null, you: num(spw.you) ?? null },
+    exercises: list(c.exercises).filter(x => x && typeof x === 'object').map(x => ({
+      id: ident(x.id), name: word(x.name, NAME_MAX), median: num(x.median) ?? null, you: num(x.you) ?? null
+    }))
+  };
+}
+
 /* ---------- one workout, for a debrief ---------- */
 export function findWorkout(S, workoutId) {
   const all = (S.workouts || []).filter(w => w && w.d);
@@ -472,7 +488,7 @@ export function build(S, opts = {}) {
       p.session = null;
       p.previous = [];
     }
-    if (opts.cohort) p.cohort = opts.cohort;
+    if (opts.cohort) p.cohort = cleanCohort(opts.cohort);
   } else if (opts.kind === 'review') {
     const workouts = reviewWindow(S, coach.lastReview?.at ? String(coach.lastReview.at).slice(0, 10) : null);
     const detailFrom = Math.max(0, workouts.length - FULL_DETAIL_SESSIONS);
@@ -484,7 +500,7 @@ export function build(S, opts = {}) {
     p.aggregates = aggregates(S, workouts);
     p.bodyweight = { goal: num(S.targetW) ?? null, series: weighIns(S, p.window.from, null) };
     if (opts.note) p.userNote = String(opts.note).slice(0, 1000);
-    if (opts.cohort) p.cohort = opts.cohort;
+    if (opts.cohort) p.cohort = cleanCohort(opts.cohort);
     // A review names mostly what is already trained; 60 candidates is plenty for a swap.
     p.library = librarySlice(S, p.coachProfile?.equipment, { keep: trainedIds(S, workouts), max: 60 });
   } else {

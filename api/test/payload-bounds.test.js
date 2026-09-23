@@ -206,3 +206,20 @@ test('the plan and the log a real app writes pass through exactly as before', ()
   assert.deepEqual(p.window.workouts.at(-1).entries[0].target, { sets: 3, reps: 10, sec: undefined, weight: 20 });
   assert.deepEqual(p.bodyweight, { goal: 80, series: [{ d: '2026-07-20', w: 78.5 }] });
 });
+
+test('the cohort is bounded where it joins the payload, whoever built it', () => {
+  const S = sampleState();
+  const cohort = {
+    unit: 'kg' + INJECT, people: INJECT, sessionsPerWeek: { median: INJECT, you: 2 },
+    exercises: [{ id: INJECT, name: INJECT, median: INJECT, you: 50 }, { id: '0001', name: 'Bench', median: 60, you: null }]
+  };
+  for (const kind of ['review', 'debrief']) {
+    const p = payload.build(S, { handle: 'h'.repeat(16), kind, cohort });
+    const json = JSON.stringify(p);
+    assert.ok(json.length < 100_000, kind + ' payload stays small');
+    assert.ok(!json.includes(INJECT.slice(0, payload.NAME_MAX + 1)), kind + ': no more of it than a name\'s length');
+    assert.equal(p.cohort.people, null);
+    assert.equal(p.cohort.exercises[1].name, 'Bench');
+    assert.equal(p.cohort.exercises[1].median, 60);
+  }
+});

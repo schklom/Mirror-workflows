@@ -77,10 +77,12 @@ describe('RoutineEdit — Replace exercise', () => {
     act(() => onPick(EXIDX[DB_BENCH], false))
     // No replace yet: the settings sheet for the new exercise is open, seeded with the slot.
     expect(slots()[0].id).toBe(BENCH)
-    const [ex, seeded, onSave, onDelete] = sheets.exConfigSheet.mock.calls[1]
+    const [ex, seeded, onSave, onDelete, , , , saveLabel] = sheets.exConfigSheet.mock.calls[1]
     expect(ex.id).toBe(DB_BENCH)
     expect(seeded).toEqual({ ...benchSlot, id: DB_BENCH })
     expect(onDelete).toBeNull()
+    // Saving there puts the exercise into the slot, and the button says so.
+    expect(saveLabel).toBe('Replace')
     act(() => onSave({ sets: 3, mode: 'reps', reps: 8, weight: 30 }))
     // Saved as the sheet left it, in the same place and the same superset.
     expect(slots()[0]).toEqual({ id: DB_BENCH, sg: 'g1', sets: 3, mode: 'reps', reps: 8, weight: 30 })
@@ -109,6 +111,15 @@ describe('RoutineEdit — Replace exercise', () => {
     const onPick = openReplace()
     act(() => onPick(EXIDX[DB_BENCH], true))
     expect(slots()[0]).toEqual({ ...benchSlot, id: DB_BENCH, weight: 30 })
+  })
+
+  it('seeds the new exercise\'s settings from the slot as it is now, not as the editor last drew it', () => {
+    mount()
+    const onPick = openReplace()
+    // Another device raises the bench while the picker is open.
+    act(() => useStore.getState().update(s => { s.routines[0].ex[0].sets = 5 }))
+    act(() => onPick(EXIDX[DB_BENCH], false))
+    expect(sheets.exConfigSheet.mock.calls[1][1]).toEqual({ ...benchSlot, id: DB_BENCH, sets: 5 })
   })
 
   it('leaves a slot alone that changed under the picker', () => {

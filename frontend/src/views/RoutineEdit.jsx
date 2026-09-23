@@ -356,15 +356,17 @@ export default function RoutineEdit() {
       if (done) toast(t('Replaced with “{0}”', capWords(exerciseNameFor(ex))))
     }
     const picker = exercisePicker((ex, quick) => {
-      // The new exercise's weight comes from its own sessions (lib/routines.js), read as they are
-      // now rather than as this render saw them: a sync can land while the picker is open.
+      // The slot and the history as they are now, not as this render saw them: a sync can land
+      // while the picker is open, and the new exercise's weight comes from its own sessions.
       const live = useStore.getState().S
+      const slot = live.routines.find(x => x.id === id)?.ex[i]
+      if (!slot || slot.id !== openedOn) { picker.close(); return }
       // "+" on the exercise that is already in the slot: nothing to replace, and no toast that
       // says something was.
       if (quick && ex.id === openedOn) { picker.close(); return }
-      if (quick) { commit(ex, slot => replaceSlotExercise(slot, ex.id, live, id)); return }
-      const next = replaceSlotExercise(r.ex[i], ex.id, live, id)
-      exConfigSheet(ex, next, cfg => commit(ex, slot => ({ id: ex.id, sg: slot.sg, ...cfg })), null, r)
+      if (quick) { commit(ex, current => replaceSlotExercise(current, ex.id, live, id)); return }
+      const next = replaceSlotExercise(slot, ex.id, live, id)
+      exConfigSheet(ex, next, cfg => commit(ex, current => ({ id: ex.id, sg: current.sg, ...cfg })), null, r, null, null, t('Replace'))
     }, { title: t('Replace exercise') })
   }
   // This routine on paper (#282): the weekly printout's page for one session, through the same
@@ -372,7 +374,9 @@ export default function RoutineEdit() {
   // plugin in the app, where the WebView has no window.print().
   const printRoutine = () => {
     const owner = useStore.getState().user?.name || ''
-    if (MOBILE) printHtml(planPrintHTML(S, owner, { routineId: id }), r.name).catch(() => { /* dismissed */ })
+    // Android's print manager refuses a job without a name. The editor never leaves a name blank,
+    // but a routine that arrived from an import or another client may have none.
+    if (MOBILE) printHtml(planPrintHTML(S, owner, { routineId: id }), r.name || t('Routine')).catch(() => { /* dismissed */ })
     else printPlan(S, owner, { routineId: id })
   }
   const toggleLink = i => edit(ex => {

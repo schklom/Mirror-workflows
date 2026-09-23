@@ -43,6 +43,15 @@ describe('Replace exercise', () => {
     expect(useUI.getState().sheets).toHaveLength(0)
   })
 
+  it('names its save button after what saving does, when the caller says', () => {
+    exConfigSheet(EXIDX['0289'], { sets: 3, mode: 'reps', reps: 10, weight: 30 }, vi.fn(), null, null, null, null, 'Replace')
+    const host = renderTop()
+    expect(button(host, 'Replace')).toBeTruthy()
+    expect(button(host, 'Save')).toBeUndefined()
+    exConfigSheet(EXIDX['0289'], { sets: 3, mode: 'reps', reps: 10, weight: 30 }, vi.fn(), null, null)
+    expect(button(renderTop(), 'Save')).toBeTruthy()
+  })
+
   it('is not offered where there is no slot to replace', () => {
     exConfigSheet(EXIDX['0025'], null, vi.fn(), null, null)
     expect(button(renderTop(), 'Replace exercise')).toBeUndefined()

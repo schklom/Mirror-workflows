@@ -25,9 +25,9 @@ import { printPlan } from '../lib/plan-share.js'
 globalThis.IS_REACT_ACT_ENVIRONMENT = true
 let root, host
 
-function mount(ex) {
+function mount(ex, name = 'Push day') {
   const S = JSON.parse(JSON.stringify(DEF))
-  S.routines = [{ id: 'r1', name: 'Push day', emoji: 'dumbbell', ex }]
+  S.routines = [{ id: 'r1', name, emoji: 'dumbbell', ex }]
   useStore.setState({ S, user: { id: 'u1', name: 'Ana' } })
   host = document.createElement('div')
   document.body.appendChild(host)
@@ -67,6 +67,13 @@ describe('RoutineEdit — print this routine (#282)', () => {
     expect(name).toBe('Push day')
     expect(html).toContain('<title>Push day</title>')
     expect(html).not.toContain('Week schedule')
+  })
+
+  it('names the print job even when the routine has no name, which Android refuses', () => {
+    env.mobile = true
+    mount([{ id: '0025', sets: 3, mode: 'reps', reps: 5, weight: 80 }], '')
+    act(() => printButton().click())
+    expect(env.printHtml.mock.calls[0][1]).toBe('Routine')
   })
 
   it('has nothing to print for an empty routine', () => {

@@ -29,9 +29,12 @@ const isAssistedEntry = entry => isAssisted(entry?.id ? { id: entry.id } : entry
 // as the belt alone, +20 kg for 5 would score a 23 kg pull-up. Bench dips and push-ups keep the
 // feet down and stay out, as does everything else on 'weighted' (a plate held for a crunch).
 const LIFTER_MOVEMENT = /\b(pull[- ]?ups?|chin[- ]?ups?|muscle[- ]?ups?|dips?)\b/i
+// Bench dips whose name does not say so: "weighted tricep dips" (1755) is done seated off the
+// edge of a bench, legs out in front, by its own instructions.
+const BENCH_DIP_IDS = new Set(['1755'])
 const beltOnLifter = id => {
   const ex = EXIDX[id]
-  return ex?.eq === 'weighted' && LIFTER_MOVEMENT.test(ex.n) && !/\bbench/i.test(ex.n)
+  return ex?.eq === 'weighted' && LIFTER_MOVEMENT.test(ex.n) && !/\bbench/i.test(ex.n) && !BENCH_DIP_IDS.has(id)
 }
 
 // What one completed set actually moved, in kg. On a bodyweight-configured entry `w` holds only

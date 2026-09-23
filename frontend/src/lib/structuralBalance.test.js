@@ -395,13 +395,14 @@ describe('a belt on a pull-up or a dip counts the lifter too', () => {
   })
 
   it('does the same for the other belt variants of pull-ups, chin-ups, muscle-ups and dips', () => {
-    for (const id of ['0841', '2987', '3290', '3286', '3313', '1755', '1767']) {
+    for (const id of ['0841', '2987', '3290', '3286', '3313', '1767']) {
       expect(resolveCurrent(bw80([[id, 10, 1]]), [id], 80).estKg).toBeCloseTo(90)
     }
   })
 
   it('leaves bench dips, push-ups and the rest of the weighted catalogue as plain load', () => {
-    for (const id of ['0830', '1754', '1310', '0852', '0832']) {
+    // 1755 "weighted tricep dips" is a bench dip by its instructions, though its name does not say so.
+    for (const id of ['0830', '1754', '1755', '1310', '0852', '0832']) {
       expect(resolveCurrent(bw80([[id, 10, 1]]), [id], 80).estKg).toBeCloseTo(10)
     }
   })

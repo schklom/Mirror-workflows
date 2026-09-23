@@ -512,3 +512,77 @@ test('link redemption keeps the origin check; the account routes do too', async 
   // The refused requests used nothing up.
   assert.equal((await h.req('POST', '/api/device-link/options', { body: { code }, ip })).status, 200);
 });
+
+test('a Settings or device-link challenge never finishes a sign-up, a sign-in or a proof — and the code stays good once', async t => {
+  const key = softPasskey(), thief = softPasskey(), phone = softPasskey(), newcomer = softPasskey();
+  const h = await startServer(t, { users: [user('u1', 'Ana')], creds: [key.row('u1')] });
+  const ip = '198.51.100.53', other = '203.0.113.53';
+  const { code } = (await makeLink(h, key, 'u1', ip)).body;
+  const linkOptions = async () => (await h.req('POST', '/api/device-link/options', { body: { code }, ip: other })).body;
+  const unchanged = () => {
+    const db = h.db();
+    assert.deepEqual(db.users.map(u => u.id), ['u1']);
+    assert.deepEqual(db.creds.map(c => c.id), [key.id]);
+    assert.equal(db.deviceLinks.length, 1);
+  };
+
+  // Someone who read the code sends the link's challenge to sign-up instead of to the link route.
+  for (let i = 0; i < 2; i++) {
+    const opt = await linkOptions();
+    const r = await h.req('POST', '/api/register/verify', { body: { cid: opt.cid, credential: thief.attestation(opt.options.challenge) }, ip: other });
+    assert.equal(r.status, 400);
+    assert.equal(r.cookie, null);
+    unchanged();
+  }
+  assert.ok(h.audit().some(e => e.ev === 'auth.register.fail' && e.msg === 'challenge-expired'));
+  assert.ok(!h.audit().some(e => e.ev === 'auth.register.ok'));
+
+  // A Settings ceremony's challenge is no sign-up either.
+  const add = (await h.req('POST', '/api/account/passkeys/options', { body: await h.stepUp(key, ip), cookie: mintSession('u1'), ip })).body;
+  const viaAdd = await h.req('POST', '/api/register/verify', { body: { cid: add.cid, credential: thief.attestation(add.options.challenge) }, ip });
+  assert.equal(viaAdd.status, 400);
+  assert.equal(viaAdd.cookie, null);
+  unchanged();
+
+  // Nor is a link's challenge a sign-in, or the proof that makes another code.
+  const asLogin = await linkOptions();
+  const signIn = await h.req('POST', '/api/login/verify', { body: { cid: asLogin.cid, credential: key.assertion(asLogin.options.challenge) }, ip: other });
+  assert.equal(signIn.status, 400);
+  assert.equal(signIn.cookie, null);
+  const asProof = await linkOptions();
+  const proof = await h.req('POST', '/api/account/device-link', { body: { cid: asProof.cid, credential: key.assertion(asProof.options.challenge) }, cookie: mintSession('u1'), ip });
+  assert.equal(proof.status, 403);
+  assert.equal(proof.body.code, 'passkey');
+  // …and a sign-up's challenge proves nothing.
+  const reg = (await h.req('POST', '/api/register/options', { body: { name: 'Mallory' }, ip })).body;
+  const regProof = await h.req('POST', '/api/account/device-link', { body: { cid: reg.cid, credential: key.assertion(reg.options.challenge) }, cookie: mintSession('u1'), ip });
+  assert.equal(regProof.status, 403);
+  unchanged();
+
+  // A link challenge fetched before "sign out everywhere" finishes nothing afterwards.
+  const early = await linkOptions();
+  const early2 = await linkOptions();
+  assert.equal((await h.req('POST', '/api/logout/all', { body: {}, cookie: mintSession('u1'), ip })).status, 200);
+  const late = await h.req('POST', '/api/register/verify', { body: { cid: early.cid, credential: thief.attestation(early.options.challenge) }, ip: other });
+  assert.equal(late.status, 400);
+  const late2 = await h.req('POST', '/api/device-link/verify', { body: { code, cid: early2.cid, credential: thief.attestation(early2.options.challenge) }, ip: other });
+  assert.equal(late2.status, 400);
+  assert.deepEqual(h.db().users.map(u => u.id), ['u1']);
+  assert.deepEqual(h.db().creds.map(c => c.id), [key.id]);
+
+  // The owner's next code is redeemed exactly once, by the link route.
+  const next = (await h.req('POST', '/api/account/device-link', { body: await h.stepUp(key, ip), cookie: mintSession('u1', 1), ip })).body.code;
+  const done = await redeem(h, next, phone, ip, 'Phone');
+  assert.equal(done.status, 200);
+  assert.equal(done.body.user.id, 'u1');
+  assert.equal((await redeem(h, next, softPasskey(), ip)).status, 400);
+  assert.deepEqual(h.db().creds.map(c => [c.id, c.userId]), [[key.id, 'u1'], [phone.id, 'u1']]);
+
+  // Sign-up with its own challenge still works, and makes one new profile.
+  const signUp = (await h.req('POST', '/api/register/options', { body: { name: 'Cleo' }, ip })).body;
+  const made = await h.req('POST', '/api/register/verify', { body: { cid: signUp.cid, credential: newcomer.attestation(signUp.options.challenge) }, ip });
+  assert.equal(made.status, 200, JSON.stringify(made.body));
+  assert.equal(made.body.user.name, 'Cleo');
+  assert.ok(made.cookie);
+  assert.equal(h.db().users.length, 2);
+});

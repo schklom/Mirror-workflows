@@ -542,7 +542,14 @@ function csrfOk(req, key) {
 }
 
 /* ---------- challenge store (in-memory, 5 min TTL) ---------- */
-const challenges = new Map(); // cid -> {challenge, name?, uid?, exp}
+// Every challenge says which ceremony it was handed out for (`kind`), and every route that takes
+// one back accepts only its own kind. Four ceremonies share this store — signing up, signing in,
+// adding a passkey in Settings and redeeming a device link (#95) — and the last two carry a `uid`
+// exactly like a sign-up's. When /api/register/verify asked only for a uid, the challenge that
+// POST /api/device-link/options hands to anyone holding a code finished a *sign-up* instead: a
+// passkey on the owner's profile and a session for it, without using the code up, as often as
+// wanted, and past "sign out everywhere".
+const challenges = new Map(); // cid -> {kind, challenge, name?, uid?, exp}
 function putChallenge(data) {
   const cid = crypto.randomBytes(16).toString('base64url');
   challenges.set(cid, { ...data, exp: Date.now() + 5 * 60000 });
@@ -882,7 +889,7 @@ function setPassword(user, h) {
 // to belong to this account.
 async function passkeyStepUp(user, body) {
   const c = takeChallenge(body.cid);
-  const cred = c && db.creds.find(x => x.id === body.credential?.id && x.userId === user.id);
+  const cred = c?.kind === 'login' && db.creds.find(x => x.id === body.credential?.id && x.userId === user.id);
   if (!cred) return false;
   try {
     const v = await verifyAuthenticationResponse({
@@ -1458,14 +1465,14 @@ const routes = {
       authenticatorSelection: { residentKey: 'required', userVerification: 'preferred' },
       excludeCredentials: []
     });
-    const cid = putChallenge({ challenge: options.challenge, name, uid, code });
+    const cid = putChallenge({ kind: 'register', challenge: options.challenge, name, uid, code });
     json(res, 200, { cid, options });
   },
 
   'POST /api/register/verify': async (req, res) => {
     const body = await readBody(req);
     const c = takeChallenge(body.cid);
-    if (!c || !c.uid) {
+    if (!c || c.kind !== 'register' || !c.uid) {
       audit(req, 'auth.register.fail', { ok: false, msg: 'challenge-expired' });
       return json(res, 400, { error: 'challenge expired — try again' });
     }
@@ -1521,14 +1528,14 @@ const routes = {
     const options = await generateAuthenticationOptions({
       rpID: RP_ID, userVerification: 'preferred', allowCredentials: []
     });
-    const cid = putChallenge({ challenge: options.challenge });
+    const cid = putChallenge({ kind: 'login', challenge: options.challenge });
     json(res, 200, { cid, options });
   },
 
   'POST /api/login/verify': async (req, res) => {
     const body = await readBody(req);
     const c = takeChallenge(body.cid);
-    if (!c) {
+    if (c?.kind !== 'login') {
       audit(req, 'auth.login.fail', { ok: false, msg: 'challenge-expired' });
       return json(res, 400, { error: 'challenge expired — try again' });
     }

@@ -259,6 +259,68 @@ describe('signing out never loses a change silently', () => {
   })
 })
 
+describe('a sign-out the server did not answer', () => {
+  // A copy in step with the server: nothing owed, so the sign-out goes ahead at once.
+  const inStep = async () => {
+    signedIn({ ...clone(DEF), _ts: 100, workouts: [workout('w1')] })
+    localStorage.setItem('gym_sync', JSON.stringify({ rev: 1, ts: 100 }))
+    api.mockResolvedValueOnce({ rev: 1 })
+    window.dispatchEvent(new Event('online'))
+    await new Promise(r => setTimeout(r, 10))
+    api.mockReset()
+  }
+
+  // The session cookie is HttpOnly: only the server's answer to /api/logout takes it out of the
+  // browser. A sign-out that could not reach the server left it there, still valid, and the next
+  // boot's /api/me signed the browser back in with no passkey — on a shared computer, into the
+  // account the last person signed out of.
+  it('a sign-out the server never heard is finished on the next boot, and until then nothing signs the browser back in', async () => {
+    await inStep()
+    api.mockRejectedValue(netError())
+    expect(await useStore.getState().signOut()).toEqual({ owed: false })
+    expect(useStore.getState().user).toBeNull()
+    expect(localStorage.getItem('gym_logout_owed')).toBe('1')
+
+    // Still unreachable: the old session is not even asked about.
+    api.mockReset()
+    api.mockImplementation(async (path, o) => {
+      if (path === '/api/config') return { allow_guest: true }
+      if (path === '/api/logout') throw httpError(502)
+      if (path === '/api/me') return { user: USER }
+      throw new Error('unexpected ' + path)
+    })
+    useStore.setState({ ready: false, config: null })
+    await useStore.getState().boot()
+    expect(paths()).toEqual(['GET /api/config', 'POST /api/logout'])
+    expect(useStore.getState().user).toBeNull()
+    expect(useStore.getState().ready).toBe(true)
+    expect(localStorage.getItem('gym_logout_owed')).toBe('1')
+
+    // The server answers again: the logout goes first, and /api/me finds nobody.
+    api.mockReset()
+    api.mockImplementation(async path => {
+      if (path === '/api/config') return { allow_guest: true }
+      if (path === '/api/logout') return { ok: true }
+      if (path === '/api/me') throw httpError(401)
+      throw new Error('unexpected ' + path)
+    })
+    useStore.setState({ ready: false, config: null })
+    await useStore.getState().boot()
+    expect(paths()).toEqual(['GET /api/config', 'POST /api/logout', 'GET /api/me'])
+    expect(useStore.getState().user).toBeNull()
+    expect(localStorage.getItem('gym_logout_owed')).toBeNull()
+  })
+
+  it('signing in again replaces the cookie a failed sign-out left behind, so the next boot asks /api/me as usual', async () => {
+    await inStep()
+    api.mockRejectedValue(netError())
+    await useStore.getState().signOut()
+    expect(localStorage.getItem('gym_logout_owed')).toBe('1')
+    useStore.getState().setUser(USER)   // a passkey or password sign-in
+    expect(localStorage.getItem('gym_logout_owed')).toBeNull()
+  })
+})
+
 describe('signing in again to the account this copy belongs to', () => {
   // A browser whose session ended mid-week: the copy is still here with its owner and owes the
   // server a workout, a routine edit and a setting.

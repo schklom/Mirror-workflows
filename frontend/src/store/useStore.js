@@ -33,6 +33,19 @@ const SYNCED_FP_KEY = 'gym_synced_fp'  // a fingerprint of that copy (lib/sync-c
 // reaches that server as that account again. On a phone also a file beside the state mirror.
 const STASH_KEY = 'gym_stash'
 const STASH_FILE = 'opengym-stash.json'
+// A browser sign-out whose request never reached the server. The session cookie is HttpOnly, so
+// only the server's answer to /api/logout takes it out of the browser; until that answer comes,
+// boot sends the logout again instead of asking /api/me, which would sign the browser straight
+// back in with no passkey or password. Any sign-in replaces the cookie and clears the mark.
+const LOGOUT_OWED_KEY = 'gym_logout_owed'
+// Reads the mark with no argument, sets or clears it with one. Storage that cannot be read owes nothing.
+function logoutOwed(on) {
+  try {
+    if (on === undefined) return localStorage.getItem(LOGOUT_OWED_KEY) === '1'
+    if (on) localStorage.setItem(LOGOUT_OWED_KEY, '1'); else localStorage.removeItem(LOGOUT_OWED_KEY)
+  } catch { /* private mode with storage blocked */ }
+  return false
+}
 // Mobile build: whose copy the file mirror (lib/mobile.js, opengym-state.json) holds, and which
 // one — { owner, ts }, written after it (saveMirror). A device fact, so never inside S.
 const MIRROR_OWNER_FILE = 'opengym-state-owner.json'
@@ -789,6 +802,7 @@ export const useStore = create((set, get) => {
         localStorage.setItem('gym_owner_name', u.name || '')
         localStorage.setItem('gym_owner', u.id)
         localStorage.setItem('gym_user', JSON.stringify(u)); localStorage.removeItem('gym_guest')
+        logoutOwed(false)   // this sign-in's cookie replaced the one a failed sign-out left behind
         // The file follows at once, as the new account's: until then it holds the previous one's.
         if (other && MOBILE) nativePersist(true)
         // The server answers /api/config with a `coach` key only to a session — the block, or
@@ -988,7 +1002,9 @@ export const useStore = create((set, get) => {
       const left = get().unsyncedChanges()
       if (left.owed && !force) return { owed: true, count: left.count }
       if (left.owed && !(await stashOwed())) return { owed: true, count: left.count, stashed: false }
-      try { await api('/api/logout', { method: 'POST', body: '{}' }) } catch (e) { /* the session ends here either way */ }
+      // The device is signed out either way. A request that did not get through leaves the cookie
+      // behind, still valid, so the logout is owed until the server answers it (see boot).
+      try { await api('/api/logout', { method: 'POST', body: '{}' }) } catch (e) { if (!MOBILE) logoutOwed(true) }
       await clearLocalSession()
       return left.owed ? { owed: true, count: left.count, stashed: true } : { owed: false }
     },
@@ -1140,6 +1156,12 @@ export const useStore = create((set, get) => {
       // an unreachable server must not be allowed to lock anyone out (#42).
       const cfg = await get().loadConfig()
       if (!guestAllowed(cfg)) get().setGuest(false)
+      // A sign-out that could not reach the server: finish it first. Still unanswered, the
+      // browser stays signed out rather than adopt the session it left behind.
+      if (logoutOwed()) {
+        try { await api('/api/logout', { method: 'POST', body: '{}' }); logoutOwed(false) } catch { /* owed until it is answered */ }
+        if (logoutOwed()) { finishBoot(); return }
+      }
       try {
         const me = await api('/api/me')
         if (!me.user?.id) throw Object.assign(new Error('no user'), { status: 200, code: 'bad-response' })

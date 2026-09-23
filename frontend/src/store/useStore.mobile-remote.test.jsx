@@ -341,6 +341,42 @@ describe('Disconnect anyway keeps the owed changes for the next pairing', () => 
   })
 })
 
+describe('another account paired on a phone that still owes the first', () => {
+  it('keeps the first account\'s changes aside under its own server, and gives them back when it pairs again', async () => {
+    pairedPhone()
+    h.server = refusing
+    const useStore = await freshStore()
+    await useStore.getState().boot()
+    useStore.getState().update(s => { s.workouts.push(workout('w2', '2026-09-15')) })
+    await useStore.getState().pushState()
+
+    const srv = serverWith(SERVER_STATE)
+    const OTHER = 'https://other.example.com'
+    const bea = { id: 'u2', name: 'bea' }
+    h.server = (path, method, init) => (path === '/api/pair/redeem' ? json(200, { token: 'T2', user: bea }) : srv.handle(path, method, init))
+    const prevFetch = globalThis.fetch
+    globalThis.fetch = window.fetch = vi.fn(async (url, init = {}) => {
+      h.calls.push({ url: String(url), method: (init.method || 'GET').toUpperCase(), auth: init.headers?.Authorization || null })
+      return String(url).startsWith(OTHER) ? h.server(String(url).slice(OTHER.length), (init.method || 'GET').toUpperCase(), init) : prevFetch(url, init)
+    })
+    await useStore.getState().connectToServer('other.example.com', 'ABCD2345', vi.fn(async () => false))
+
+    expect(ids(useStore.getState().S.workouts)).toEqual(['w1'])          // bea's copy is her server's
+    expect(ids(srv.doc.workouts)).toEqual(['w1'])                        // and nothing of andi's went there
+    const stash = readFile('opengym-stash.json')
+    expect(Object.keys(stash)).toEqual([BASE + '|u1'])                   // keyed by andi's server, not bea's
+    expect(ids(stash[BASE + '|u1'].state.workouts)).toEqual(['w1', 'w2'])
+    expect(stash[BASE + '|u1'].name).toBe('andi')
+
+    installFetch()
+    const home = serverWith(SERVER_STATE)
+    await useStore.getState().connectToServer('gym.example.com', 'ABCD2345', vi.fn(async () => false))
+    expect(ids(useStore.getState().S.workouts)).toEqual(['w1', 'w2'])
+    expect(ids(home.doc.workouts)).toEqual(['w1', 'w2'])
+    expect(readFile('opengym-stash.json')).toEqual({})
+  })
+})
+
 describe('remote-mode boot and the durable file mirror', () => {
   it('with localStorage gone, a change only the mirror holds is merged with the server copy and pushed', async () => {
     const mirror = { ...clone(SERVER_STATE), _ts: 5000, workouts: [workout('w1', '2026-09-10'), workout('w2', '2026-09-20')] }

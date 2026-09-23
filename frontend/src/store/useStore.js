@@ -132,6 +132,7 @@ export const useStore = create((set, get) => {
   let rejoined = false     // the account signing in is the one this copy already belongs to (setUser)
   let pairedBase = null    // mobile build: the address of the paired server, while there is one
   let fpOf = null          // the copy the stored fingerprint was last taken of (confirmed)
+  let keeping = null       // phone: the file write of what keepForPrevious set aside, until it lands
 
   const readStoredSync = () => { try { return JSON.parse(localStorage.getItem(SYNC_KEY)) || null } catch { return null } }
   const storedOwed = () => { try { return localStorage.getItem(DIRTY_KEY) === '1' } catch { return false } }
@@ -494,6 +495,26 @@ export const useStore = create((set, get) => {
     }
     return ok || empty
   }
+  // A different account signing in on a copy that still owes its own: the copy goes, as it always
+  // has — it must not be pushed into the new account — but what it owed is kept aside first, the
+  // way a forced sign-out keeps it, for when that account comes back. Written to localStorage
+  // right here, since setUser wipes the copy straight after; on a phone the file follows, and
+  // pairing waits for it (`keeping`) before it goes on.
+  const keepForPrevious = uid => {
+    const S = get().S
+    if (!owes() || !hasData(S)) return
+    const server = serverBase()
+    const key = stashKey(server, uid)
+    let all = {}
+    try { all = JSON.parse(localStorage.getItem(STASH_KEY)) || {} } catch { /* none */ }
+    const prev = all[key]?.state
+    const state = prev ? mergeStates(S, prev) : clone(S)
+    state.active = S.active || prev?.active || null
+    const entry = { server: server || null, uid, name: get().user?.id === uid ? get().user.name || '' : '', at: Date.now(), state }
+    all[key] = entry
+    try { localStorage.setItem(STASH_KEY, JSON.stringify(all)) } catch { /* full — the file may still take it */ }
+    if (MOBILE) keeping = readStashes().then(f => writeStashes({ ...f, [key]: entry })).catch(() => {})
+  }
   const stashOwed = async () => {
     const user = get().user
     if (!user) return true
@@ -615,12 +636,14 @@ export const useStore = create((set, get) => {
         // The local copy belongs to whoever last signed in here. When a session expires or is
         // revoked elsewhere, boot() only drops the user and the data stays; a different profile
         // signing in next must not inherit it (pullState would push it into that account, and
-        // carry the in-progress workout along). A proper sign-out clears the owner, so a guest's
+        // carry the in-progress workout along) — what it still owed its own account is kept aside
+        // for that account first (keepForPrevious). A proper sign-out clears the owner, so a guest's
         // data still moves into a freshly created profile. The same account coming back — a
         // phone paired again, a browser signed in again — is remembered for adoptProfile.
         const owner = localStorage.getItem('gym_owner')
         rejoined = owner === u.id
         if (owner && owner !== u.id) {
+          keepForPrevious(owner)
           forgetSync()
           localStorage.removeItem(KEY)
           persist(clone(DEF), false)
@@ -818,9 +841,12 @@ export const useStore = create((set, get) => {
     // account pairing again merges what the phone kept (adoptProfile).
     async connectToServer(url, code, ask) {
       const user = await connect(url, code)   // throws on a bad URL/expired code — caller shows it
+      // The account first, the address after: a copy another account still owed is kept aside
+      // for it under the server it belongs to, not the one being paired.
+      get().setUser(user)
+      if (keeping) { await keeping; keeping = null }
       pairedBase = normalizeServerUrl(url)
       setSync({ server: pairedBase })
-      get().setUser(user)
       await get().refreshConfig()   // what this server offers (the Coach, guest mode) — see boot()
       await get().adoptProfile(ask)
       syncReminder(get().S)

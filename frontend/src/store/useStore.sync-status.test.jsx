@@ -288,3 +288,40 @@ describe('signing in again to the account this copy belongs to', () => {
     expect(ids(useStore.getState().S.workouts)).toEqual(['w1', 'w-phone'])
   })
 })
+
+describe('another account signing in on a copy that still owes the first', () => {
+  const twosServer = async (path, o) => (o?.method === 'PUT' ? { ok: true, rev: 5 } : { state: { ...clone(DEF), _ts: 50, workouts: [workout('b1')], _rev: 4 }, rev: 4 })
+
+  it('keeps what the first account was owed aside for it — nothing of it goes into the new account — and gives it back when that account returns', async () => {
+    signedIn({ ...clone(DEF), _ts: 300, workouts: [workout('w1'), workout('w-week', '2026-09-18')] })
+    localStorage.setItem('gym_sync', JSON.stringify({ rev: 1, ts: 100 }))
+    localStorage.setItem('gym_dirty', '1')
+
+    api.mockImplementation(twosServer)
+    useStore.getState().setUser({ id: 'user-2', name: 'Two' })
+    await useStore.getState().adoptProfile(async () => false)
+
+    expect(ids(useStore.getState().S.workouts)).toEqual(['b1'])
+    expect(puts()).toHaveLength(0)
+    expect(await useStore.getState().keptChanges()).toEqual([{ server: location.origin, uid: USER.id, name: 'One', at: expect.any(Number) }])
+    expect(await useStore.getState().signOut()).toEqual({ owed: false })
+
+    api.mockReset()
+    api.mockImplementation(async (path, o) => (o?.method === 'PUT' ? { ok: true, rev: 3 } : { state: { ...clone(DEF), _ts: 200, workouts: [workout('w1')], _rev: 2 }, rev: 2 }))
+    useStore.getState().setUser(USER)
+    await useStore.getState().adoptProfile(async () => false)
+    expect(ids(useStore.getState().S.workouts)).toEqual(['w1', 'w-week'])
+    expect(ids(puts().at(-1).state.workouts)).toEqual(['w1', 'w-week'])
+    expect(await useStore.getState().keptChanges()).toEqual([])
+  })
+
+  it('a copy that owes nothing is replaced as before, with nothing kept', async () => {
+    signedIn({ ...clone(DEF), _ts: 100, workouts: [workout('w1')] })
+    localStorage.setItem('gym_sync', JSON.stringify({ rev: 1, ts: 100 }))
+    api.mockImplementation(twosServer)
+    useStore.getState().setUser({ id: 'user-2', name: 'Two' })
+    await useStore.getState().adoptProfile(async () => false)
+    expect(ids(useStore.getState().S.workouts)).toEqual(['b1'])
+    expect(await useStore.getState().keptChanges()).toEqual([])
+  })
+})

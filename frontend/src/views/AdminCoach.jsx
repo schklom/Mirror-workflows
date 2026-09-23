@@ -373,6 +373,7 @@ const failureTitle = cls => ({
   restart: 'The server restarted while a job was running',
   nostate: 'The user\'s training data could not be read',
   off: 'The Coach was off when the job ran',
+  toolarge: 'The user\'s training data made a request too large to send, so no provider was called',
   internal: 'Something went wrong on the server'
 }[cls] || cls || 'Failed')
 

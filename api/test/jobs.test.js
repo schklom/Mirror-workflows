@@ -274,6 +274,41 @@ test('consent withdrawn, or the Coach switched off, while a job waits: no payloa
   } finally { cfg.save({ enabled: true }); p.close(); }
 });
 
+test('a payload bigger than any real history is refused before the provider is called', async () => {
+  // Every field is bounded on its own now, so the only way left to a huge payload is sheer
+  // count — thousands of routines — or a field someone adds later and forgets to bound. Either
+  // way the instance's key must not pay for it.
+  const p = await holdingProvider();
+  try {
+    p.use();
+    const uid = 'u-toolarge';
+    const S = sampleState();
+    S.routines = Array.from({ length: 4000 }, (_, i) => ({
+      id: 'r' + i, name: 'Routine ' + i, emoji: '💪', prog: 'linear',
+      ex: [{ id: '0001', sets: 3, reps: 10, weight: 20 }, { id: '0007', sets: 3, sec: 45, mode: 'time' }]
+    }));
+    assert.ok(JSON.stringify(payload.build(S, { handle: 'h'.repeat(16), kind: 'review' })).length > payload.MAX_PAYLOAD_CHARS);
+    writeState(DIR, uid, S);
+    const before = cfg.load().log.length;
+    jobs.enqueue(uid, { kind: 'review' });
+    await settle(uid);
+    assert.equal(p.seen.length, 0, 'nothing reached the provider');
+    assert.equal(lastOutcome(uid).outcome, 'failed');
+    assert.equal(lastOutcome(uid).errorClass, 'toolarge');
+    // The admin's log says how big, and nothing of what was in it.
+    const line = cfg.load().log.slice(before).find(e => e.uid === uid);
+    assert.match(line.detail, /^payload of \d+k characters$/);
+
+    // The ordinary state next to it still goes out.
+    writeState(DIR, 'u-toolarge-ok', sampleState());
+    jobs.enqueue('u-toolarge-ok', { kind: 'review' });
+    await p.until(1);
+    p.answer(NOCHANGE);
+    await settle('u-toolarge-ok');
+    assert.equal(lastOutcome('u-toolarge-ok').outcome, 'nochange');
+  } finally { p.close(); }
+});
+
 test('a job interrupted by a restart is reported as failed, not left spinning', () => {
   const uid = 'u-restart';
   fs.mkdirSync(`${DIR}/coach`, { recursive: true });

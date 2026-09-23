@@ -17,6 +17,12 @@ export const CONTRACT = 1;
 // makes the payload bigger and the reading vaguer, not better.
 export const MAX_WEEKS = 12;
 export const MAX_SESSIONS = 60;
+// The ceiling on a whole payload, as JSON characters, which the server checks before a job
+// leaves (jobs.js). Every field below is bounded on its own; this is the backstop for how many
+// of them there are, and for a field added later that nobody bounded. A deliberately extreme
+// history (30 routines of 12 exercises, 200 custom exercises, 60 twelve-exercise sessions in
+// the review window) builds a review of about 240k; ordinary ones stay under 50k.
+export const MAX_PAYLOAD_CHARS = 300_000;
 
 /* ---------- what a person typed, bounded ----------
    Every free-text field below rides into the prompt, and the prompt is paid for by whoever runs
@@ -45,6 +51,28 @@ const count = (v, lo, hi) => {
 };
 // A weekday is 0-6, as a number or a one-digit string; null must not turn into Sunday.
 const weekday = d => (typeof d === 'number' ? d : typeof d === 'string' && /^\d$/.test(d) ? Number(d) : NaN);
+
+/* ---------- what the plan and the log hold, bounded by type ----------
+   The plan, the logged sets, the body-weight series and the exercise ids come from the same
+   client-written state as the profile, and PUT /api/data checks no more than that workouts and
+   routines are arrays. A field copied as it came is a field that can carry a megabyte of text
+   into the prompt, so each one is read by what it is meant to be. Anything else reads as
+   absent, as a wrong-typed profile field does. */
+// The app's own ids are uid() (13 characters) or a four-digit catalogue number; 64 is room for
+// any id an import or an older build ever wrote, and no room for a paragraph.
+export const ID_MAX = 64;
+// The progression engine's policies (frontend/src/lib/progression.js POLICIES, validate.js).
+const POLICIES = ['off', 'linear', 'greyskull', 'double', 'time'];
+const ident = v => (typeof v === 'string' ? v.slice(0, ID_MAX) : typeof v === 'number' && Number.isFinite(v) ? v : null);
+const policy = v => (POLICIES.includes(v) ? v : null);
+// A finite number, or a number written as a short string (the app writes numbers, but a
+// hand-made import may not, and the model reads "20" as well as 20). Kept as given rather than
+// converted, so a Coach change's `before` still equals what the plan holds.
+const NUMERIC = /^-?\d{1,9}(\.\d{1,6})?$/;
+const num = v => ((typeof v === 'number' && Number.isFinite(v)) || (typeof v === 'string' && NUMERIC.test(v)) ? v : undefined);
+// A date is the ISO day every screen writes; anything else is not a date.
+const day = v => (typeof v === 'string' && /^\d{4}-\d{2}-\d{2}/.test(v) ? v.slice(0, 10) : null);
+const list = v => (Array.isArray(v) ? v : []);
 function cleanProfile(profile) {
   const days = Array.isArray(profile.preferredDays) ? profile.preferredDays : [];
   const equipment = Array.isArray(profile.equipment) ? profile.equipment : [];
@@ -129,23 +157,25 @@ export function stallCount(sessions) {
 
 /* ---------- plan cleaning (mirrors plan-share.js cleanEx) ---------- */
 function cleanEx(e) {
-  const o = { id: e.id, name: LIB_BY_ID.get(e.id)?.n || null, sets: e.sets };
+  const o = { id: ident(e.id), name: LIB_BY_ID.get(e.id)?.n || null, sets: num(e.sets) };
   const mode = modeOf(e, LIB_BY_ID.get(e.id));
   o.mode = mode;
-  if (mode === 'cardio') { if (e.min != null) o.min = e.min; if (e.speed != null) o.speed = e.speed; }
-  else if (mode === 'time') { if (e.sec != null) o.sec = e.sec; if (e.weight) o.weight = e.weight; }
-  else { if (e.reps != null) o.reps = e.reps; if (e.weight) o.weight = e.weight; }
-  if (e.prog) o.prog = e.prog;
-  if (e.inc > 0) o.inc = e.inc;
-  if (e.repsMin != null) o.repsMin = e.repsMin;
+  const put = (k, v) => { if (num(v) !== undefined) o[k] = v; };
+  if (mode === 'cardio') { put('min', e.min); put('speed', e.speed); }
+  else if (mode === 'time') { put('sec', e.sec); if (e.weight) put('weight', e.weight); }
+  else { put('reps', e.reps); if (e.weight) put('weight', e.weight); }
+  if (policy(e.prog)) o.prog = e.prog;
+  if (e.inc > 0) put('inc', e.inc);
+  put('repsMin', e.repsMin);
   // repsMax is the ceiling that turns "+1 rep forever" into "add a set and start over"; without
   // it the Coach cannot see, or propose, how a bodyweight exercise is meant to progress.
-  if (e.repsMax != null) o.repsMax = e.repsMax;
+  put('repsMax', e.repsMax);
   // Written out only when they disagree with the catalogue, matching plan-share.js — an
   // absent flag has always meant "whatever the exercise says", and still does.
   if (e.bodyweight != null) o.bodyweight = !!e.bodyweight;
   if (e.side) o.side = true;
-  if (e.sg) o.sg = e.sg;
+  // A superset tag is an id the app mints (sg-0-1, hs + uid()), so it is bounded like one.
+  if (e.sg) o.sg = ident(e.sg);
   return o;
 }
 /**
@@ -191,13 +221,15 @@ export function canonicalPlan(S) {
 export function cleanPlan(S) {
   // Names and emoji are typed by the person, so they are cut like the profile's text. An emoji
   // is one grapheme, but a ZWJ family or a flag spells it with up to a dozen code units.
-  const routines = (S.routines || []).map(r => ({
-    id: r.id, name: r.name == null ? r.name : text(String(r.name), NAME_MAX),
+  const routines = list(S.routines).filter(r => r && typeof r === 'object').map(r => ({
+    id: ident(r.id), name: r.name == null ? r.name : text(String(r.name), NAME_MAX),
     emoji: r.emoji == null ? r.emoji : text(String(r.emoji), 16),
-    ...(r.prog ? { prog: r.prog } : {}), ex: (r.ex || []).map(cleanEx)
+    ...(policy(r.prog) ? { prog: r.prog } : {}),
+    ex: list(r.ex).filter(e => e && typeof e === 'object').map(cleanEx)
   }));
+  // A weekday holds routine ids, so each entry is bounded like one.
   const week = {};
-  [1, 2, 3, 4, 5, 6, 0].forEach(d => { if (S.week?.[d]?.length) week[d] = [].concat(S.week[d]); });
+  [1, 2, 3, 4, 5, 6, 0].forEach(d => { if (S.week?.[d]?.length) week[d] = [].concat(S.week[d]).map(ident); });
   return { routines, week };
 }
 
@@ -235,7 +267,7 @@ function aggregates(S, workouts) {
   for (const [id, sessions] of byEx) {
     const stalls = stallCount(sessions);
     if (stalls > 0 || sessions.length >= 3) {
-      exercises.push({ id, name: libraryName(id), sessions: sessions.length, stalls, lastOk: !!sessions[sessions.length - 1]?.ok });
+      exercises.push({ id: ident(id), name: libraryName(id), sessions: sessions.length, stalls, lastOk: !!sessions[sessions.length - 1]?.ok });
     }
   }
 
@@ -287,26 +319,40 @@ const fmtSet = s => {
   return (s.w != null ? s.w + 'x' : '') + (s.r != null ? s.r : '?') + eff;
 };
 
+/** One logged set, its numbers only. */
+function cleanSet(s) {
+  const o = { done: !!s.done };
+  if (isWarmupSet(s)) o.warmup = true;
+  for (const k of ['w', 'r', 'sec', 'min', 'speed', 'rir', 'rpe']) if (num(s[k]) !== undefined) o[k] = s[k];
+  return o;
+}
+const entriesOf = w => list(w.entries).filter(en => en && typeof en === 'object');
+const setsOf = en => list(en.sets).filter(s => s && typeof s === 'object');
+const targetOf = en => (en.target && typeof en.target === 'object'
+  ? { sets: num(en.target.sets), reps: num(en.target.reps), sec: num(en.target.sec), weight: num(en.target.weight) }
+  : null);
+
 /** One older workout as a summary: what was done, the top set, whether targets were hit. */
 function compactWorkout(w) {
   return {
-    d: w.d,
+    d: day(w.d),
     name: word(w.name, NAME_MAX),
     minutes: w.end && w.start ? Math.round((w.end - w.start) / 60000) : null,
-    prs: (w.prs || []).length,
+    prs: list(w.prs).length,
     compact: true,
-    entries: (w.entries || []).map(en => {
-      const sets = (en.sets || []).filter(s => !isWarmupSet(s));
+    entries: entriesOf(w).map(en => {
+      const sets = setsOf(en).filter(s => !isWarmupSet(s)).map(cleanSet);
       const done = sets.filter(s => s.done);
       let top = null;
       done.forEach(s => {
         if (!top || (s.w || 0) * (s.r || 0) + (s.sec || 0) > (top.w || 0) * (top.r || 0) + (top.sec || 0)) top = s;
       });
+      const target = targetOf(en);
       return {
-        id: en.id,
+        id: ident(en.id),
         name: libraryName(en.id),
         done: done.length + '/' + sets.length,
-        ...(en.target ? { target: fmtSet({ w: en.target.weight, r: en.target.reps, sec: en.target.sec }) } : {}),
+        ...(target ? { target: fmtSet({ w: target.weight, r: target.reps, sec: target.sec }) } : {}),
         ...(top ? { top: fmtSet(top) } : {})
       };
     })
@@ -316,30 +362,26 @@ function compactWorkout(w) {
 /** One workout, reduced to what a coach reads. */
 function cleanWorkout(w) {
   return {
-    d: w.d,
+    d: day(w.d),
     name: word(w.name, NAME_MAX),
     minutes: w.end && w.start ? Math.round((w.end - w.start) / 60000) : null,
     ...(w.rating ? { rating: typeof w.rating === 'number' ? w.rating : text(String(w.rating), 20) } : {}),
     ...(w.note ? { note: String(w.note).slice(0, 300) } : {}),
-    prs: (w.prs || []).length,
-    entries: (w.entries || []).map(en => ({
-      id: en.id,
+    prs: list(w.prs).length,
+    entries: entriesOf(w).map(en => ({
+      id: ident(en.id),
       name: libraryName(en.id),
-      target: en.target ? { sets: en.target.sets, reps: en.target.reps, sec: en.target.sec, weight: en.target.weight } : null,
-      sets: (en.sets || []).map(s => {
-        const o = { done: !!s.done };
-        if (isWarmupSet(s)) o.warmup = true;
-        if (s.w != null) o.w = s.w;
-        if (s.r != null) o.r = s.r;
-        if (s.sec != null) o.sec = s.sec;
-        if (s.min != null) o.min = s.min;
-        if (s.speed != null) o.speed = s.speed;
-        if (s.rir != null) o.rir = s.rir;
-        if (s.rpe != null) o.rpe = s.rpe;
-        return o;
-      })
+      target: targetOf(en),
+      sets: setsOf(en).map(cleanSet)
     }))
   };
+}
+
+/** The body-weight series between two days, each weigh-in a date and a number. */
+function weighIns(S, from, to) {
+  return list(S.bodyweight)
+    .map(b => ({ d: day(b?.d), w: num(b?.w) }))
+    .filter(b => b.d && b.w !== undefined && (!from || b.d >= from) && (!to || b.d <= to));
 }
 
 /* ---------- one workout, for a debrief ---------- */
@@ -414,14 +456,18 @@ export function build(S, opts = {}) {
       const all = (S.workouts || []).filter(x => x && x.d);
       const idx = all.indexOf(w);
       const previous = all.slice(0, idx).filter(x => x.name && x.name === w.name).slice(-3);
-      p.session = { id: w.id || null, ...cleanWorkout(w) };
+      p.session = { id: ident(w.id) || null, ...cleanWorkout(w) };
       p.previous = previous.map(cleanWorkout);
-      const inSession = new Set((w.entries || []).map(en => en.id));
+      const inSession = new Set(entriesOf(w).map(en => ident(en.id)));
       const agg = aggregates(S, [w]);
       p.aggregates = { ...agg, exercises: agg.exercises.filter(e => inSession.has(e.id)) };
-      const since = new Date(w.d + 'T12:00:00'); since.setDate(since.getDate() - 28);
-      const from = iso(since);
-      p.bodyweight = { goal: S.targetW ?? null, series: (S.bodyweight || []).filter(b => b.d >= from && b.d <= w.d).map(b => ({ d: b.d, w: b.w })) };
+      // The four weeks before the session. A session whose date does not parse has no "before",
+      // and used to throw here instead.
+      const on = day(w.d);
+      const since = new Date(on + 'T12:00:00');
+      since.setDate(since.getDate() - 28);
+      const dated = !!on && Number.isFinite(since.getTime());
+      p.bodyweight = { goal: num(S.targetW) ?? null, series: dated ? weighIns(S, iso(since), on) : [] };
     } else {
       p.session = null;
       p.previous = [];
@@ -431,15 +477,12 @@ export function build(S, opts = {}) {
     const workouts = reviewWindow(S, coach.lastReview?.at ? String(coach.lastReview.at).slice(0, 10) : null);
     const detailFrom = Math.max(0, workouts.length - FULL_DETAIL_SESSIONS);
     p.window = {
-      from: workouts[0]?.d || null,
-      to: workouts[workouts.length - 1]?.d || null,
+      from: day(workouts[0]?.d),
+      to: day(workouts[workouts.length - 1]?.d),
       workouts: workouts.map((w, i) => (i >= detailFrom ? cleanWorkout(w) : compactWorkout(w)))
     };
     p.aggregates = aggregates(S, workouts);
-    p.bodyweight = {
-      goal: S.targetW ?? null,
-      series: (S.bodyweight || []).filter(b => !p.window.from || b.d >= p.window.from).map(b => ({ d: b.d, w: b.w }))
-    };
+    p.bodyweight = { goal: num(S.targetW) ?? null, series: weighIns(S, p.window.from, null) };
     if (opts.note) p.userNote = String(opts.note).slice(0, 1000);
     if (opts.cohort) p.cohort = opts.cohort;
     // A review names mostly what is already trained; 60 candidates is plenty for a swap.
@@ -455,8 +498,8 @@ export function build(S, opts = {}) {
     if (Object.keys(best).length) {
       p.history = {
         sessions: (S.workouts || []).length,
-        since: (S.workouts || [])[0]?.d || null,
-        workingWeights: Object.entries(best).map(([id, w]) => ({ id, name: libraryName(id), best: w }))
+        since: day((S.workouts || [])[0]?.d),
+        workingWeights: Object.entries(best).map(([id, w]) => ({ id: ident(id), name: libraryName(id), best: w }))
       };
     }
     if (opts.refine && opts.previous) {

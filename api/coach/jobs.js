@@ -320,6 +320,13 @@ async function execute(job) {
     // this person opted in; null otherwise, and the payload then carries no `cohort` at all.
     cohort: (job.kind === 'review' || job.kind === 'debrief') ? cohortForPayload(job.uid) : null
   });
+  // The payload is paid for with the instance's key, and it is built from state the client
+  // wrote. The builder bounds each field; a payload that is still bigger than any real training
+  // history makes is refused here, before a provider is called, rather than sent and billed.
+  const size = JSON.stringify(payload).length;
+  if (size > payloadLib.MAX_PAYLOAD_CHARS) {
+    return finish(job, { outcome: 'failed', errorClass: 'toolarge', detail: `payload of ${Math.round(size / 1000)}k characters` });
+  }
 
   // An HTTPS provider has no child process, so no directory for one to live in either.
   const jobDir = adapter.spawns === false ? null : fs.mkdtempSync(path.join(os.tmpdir(), 'coach-'));

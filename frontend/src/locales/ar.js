@@ -813,6 +813,7 @@ export default {
   'Turn the Coach off': 'إيقاف المدرب',
   '{0} days a week': '{0} أيام في الأسبوع',
   '{0} min': '{0} دقيقة',
+  '{0}h {1}m': '{0} ساعة {1} دقيقة',
   'The Coach is on': 'المدرب يعمل',
   'Before the Coach starts': 'قبل أن يبدأ المدرب',
   'When you ask for a plan or a review, this instance sends the following to {0}, running on this server under the instance owner’s account.': 'عندما تطلب خطة أو مراجعة، يرسل هذا المثيل ما يلي إلى {0}، الذي يعمل على هذا الخادم تحت حساب مالك المثيل.',

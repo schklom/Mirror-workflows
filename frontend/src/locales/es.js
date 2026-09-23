@@ -832,6 +832,7 @@ export default {
   'Turn the Coach off': 'Desactivar el Entrenador',
   '{0} days a week': '{0} días a la semana',
   '{0} min': '{0} min',
+  '{0}h {1}m': '{0} h {1} min',
   'The Coach is on': 'Entrenador activado',
   'Before the Coach starts': 'Antes de empezar',
   'When you ask for a plan or a review, this instance sends the following to {0}, running on this server under the instance owner’s account.': 'Cuando pides un plan o una revisión, esta instancia envía lo siguiente a {0}, que se ejecuta en este servidor con la cuenta del propietario.',

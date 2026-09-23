@@ -1,5 +1,8 @@
-import { describe, expect, it } from 'vitest'
-import { fmtAgo, changeCount } from './format.js'
+import { afterEach, describe, expect, it } from 'vitest'
+import { fmtAgo, changeCount, fmtDur } from './format.js'
+import { _setLangState } from './i18n-core.js'
+import ar from '../locales/ar.js'
+import uk from '../locales/uk.js'
 
 // "Last synced: …" in Settings — the platform words it, in the UI language (en-GB here).
 describe('fmtAgo', () => {
@@ -21,5 +24,25 @@ describe('changeCount', () => {
   it('has a singular', () => {
     expect(changeCount(1)).toBe('1 change')
     expect(changeCount(3)).toBe('3 changes')
+  })
+})
+
+// A session's length in the UI language. The units were Latin letters in every pack, so an
+// Arabic or Ukrainian History row read "34 min" and "1h 5m" in the middle of its own script.
+describe('fmtDur', () => {
+  afterEach(() => _setLangState('en', {}, null, null))
+
+  it('reads minutes, and hours with minutes past the hour, in English as before', () => {
+    expect(fmtDur(34 * 60000)).toBe('34 min')
+    expect(fmtDur(175 * 60000)).toBe('2h 55m')
+  })
+
+  it('uses each pack\'s own units', () => {
+    _setLangState('ar', ar, null, null)
+    expect(fmtDur(34 * 60000)).toBe('34 دقيقة')
+    expect(fmtDur(65 * 60000)).toBe('1 ساعة 5 دقيقة')
+    _setLangState('uk', uk, null, null)
+    expect(fmtDur(34 * 60000)).toBe('34 хв')
+    expect(fmtDur(65 * 60000)).toBe('1 год 5 хв')
   })
 })

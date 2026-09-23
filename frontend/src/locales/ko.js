@@ -832,6 +832,7 @@ export default {
   'Turn the Coach off': '코치 끄기',
   '{0} days a week': '주 {0}일',
   '{0} min': '{0}분',
+  '{0}h {1}m': '{0}시간 {1}분',
   'The Coach is on': '코치 켜짐',
   'Before the Coach starts': '코치를 시작하기 전에',
   'When you ask for a plan or a review, this instance sends the following to {0}, running on this server under the instance owner’s account.': '계획이나 리뷰를 요청하면, 이 인스턴스는 다음 정보를 이 서버에서 운영자 계정으로 실행 중인 {0}에 전송합니다.',

@@ -1006,6 +1006,7 @@ export default {
   'Turn the Coach off': 'ปิดโค้ช',
   '{0} days a week': '{0} วันต่อสัปดาห์',
   '{0} min': '{0} นาที',
+  '{0}h {1}m': '{0} ชม. {1} นาที',
   'The Coach is on': 'โค้ชเปิดอยู่',
   'Before the Coach starts': 'ก่อนที่โค้ชจะเริ่ม',
   'When you ask for a plan or a review, this instance sends the following to {0}, running on this server under the instance owner’s account.': 'เมื่อคุณขอแผนหรือรีวิว อินสแตนซ์นี้จะส่งข้อมูลต่อไปนี้ไปยัง {0} ซึ่งทำงานบนเซิร์ฟเวอร์นี้ภายใต้บัญชีของเจ้าของอินสแตนซ์',

@@ -832,6 +832,7 @@ export default {
   'Turn the Coach off': 'Koç’u kapat',
   '{0} days a week': 'haftada {0} gün',
   '{0} min': '{0} dk',
+  '{0}h {1}m': '{0} sa {1} dk',
   'The Coach is on': 'Koç açık',
   'Before the Coach starts': 'Koç başlamadan önce',
   'When you ask for a plan or a review, this instance sends the following to {0}, running on this server under the instance owner’s account.': 'Bir plan veya değerlendirme istediğinde, bu sunucu şunları bu makinede sunucu sahibinin hesabıyla çalışan {0} hizmetine gönderir.',

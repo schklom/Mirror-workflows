@@ -832,6 +832,7 @@ export default {
   'Turn the Coach off': 'कोच बंद करें',
   '{0} days a week': 'हफ़्ते में {0} दिन',
   '{0} min': '{0} मिनट',
+  '{0}h {1}m': '{0} घंटे {1} मिनट',
   'The Coach is on': 'कोच चालू है',
   'Before the Coach starts': 'कोच के शुरू होने से पहले',
   'When you ask for a plan or a review, this instance sends the following to {0}, running on this server under the instance owner’s account.': 'जब आप प्लान या समीक्षा माँगते हैं, तो यह इंस्टेंस निम्नलिखित {0} को भेजता है, जो इसी सर्वर पर मालिक के खाते से चलता है।',

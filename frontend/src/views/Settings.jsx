@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useStore, DEF, hasData } from '../store/useStore.js'
 import { workoutControls } from '../lib/workout-controls.js'
 import { convertStateUnit } from '../lib/units.js'
+import { speedUnitOf } from '../lib/speed.js'
 import { useUI } from '../store/useUI.js'
 import { ACCENTS, todayISO, localTZ, weekStartOf, MONDAY, SUNDAY } from '../lib/format.js'
 import { effortOf } from '../lib/history.js'
@@ -260,6 +261,14 @@ export default function Settings() {
         <Segmented className="seg-inline"
           options={[{ value: 'kg', label: 'kg' }, { value: 'lb', label: 'lb' }]}
           value={S.unit} onChange={v => switchUnit(v)} />
+      </Row>
+      {/* Cardio speed (Discord "miles per hour"). Unlike the weight unit this converts nothing:
+          speeds stay stored in km/h and only what is shown and typed follows it (lib/speed.js).
+          Until chosen it follows the weight unit, so a profile in pounds already reads mph. */}
+      <Row icon="figureRun" iconTint="var(--teal)" title={t('Speed unit')}>
+        <Segmented className="seg-inline"
+          options={[{ value: 'kmh', label: 'km/h' }, { value: 'mph', label: 'mph' }]}
+          value={speedUnitOf(S)} onChange={v => update(s => { s.speedUnit = v })} />
       </Row>
       {/* Display only: one decimal reads fine for plate-loadable numbers, two for anyone whose
           per-side figure lands on .25 or .75, or who loads microplates (issue #139). Nothing is

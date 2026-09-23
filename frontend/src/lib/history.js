@@ -1,5 +1,6 @@
 // Pure helpers over the state object S (ported 1:1 from the vanilla app).
 import { todayISO, isoOf, weekKey, weekStartOf, fmtNum } from './format.js'
+import { fmtSpeed } from './speed.js'
 import { isCardio, isBodyweightEq, isAssisted, betterWeight } from './exercises.js'
 import { phaseForSet, modeForSet, modeForEntry, isWarmupRow, normalizeMode, completedVolumeOf, nextDropWeight, splitBurstReps, makeSideSet, isSideSet, syncSideAggregate } from './workout-model.js'
 const objectOf = value => value && typeof value === 'object' && !Array.isArray(value) ? value : {}
@@ -105,13 +106,14 @@ const effortTail = s => {
 
 // One-line summary of a logged set. `cfg` carries the mode when the caller has it (a routine
 // entry or a workout entry); passing an id alone keeps the old body-part behaviour.
-export function setLabel(id, s, cfg) {
+// `speedUnit` is the profile's (lib/speed.js speedUnitOf); without one a cardio set reads km/h.
+export function setLabel(id, s, cfg, speedUnit) {
   const c = cfg || { id }
   let mode = modeOf(c)
   // A set saved by an older build carries no target with it; the set's own fields still say what
   // it was — seconds for a timed set, minutes for cardio — so those are not read back as "0 reps".
   if (!cfg && !(s.r > 0)) { if (s.min > 0 || s.speed > 0) mode = 'cardio'; else if (s.sec > 0) mode = 'time' }
-  if (mode === 'cardio') return `${s.min || 0} min @ ${fmtNum(s.speed || 0)} km/h`
+  if (mode === 'cardio') return `${s.min || 0} min @ ${fmtSpeed(s.speed || 0, speedUnit)}`
   if (mode === 'time') return fmtSec(s.sec) + (s.w > 0 ? ` · ${fmtNum(s.w)}` : '')
   const bw = isBw({ ...c, id: c.id ?? id })
   // One side's "weight×reps" (or bodyweight "reps" / "+belt × reps"), the same shape a whole
@@ -159,13 +161,13 @@ export function setsRepsOf(cfg) {
 }
 
 // One-line summary of a planned exercise ("3 × 10 · 60 kg"), shared by the routine editor
-// and the plan export so a mode is described the same way everywhere.
-export function exLine(cfg, unit) {
+// and the plan export so a mode is described the same way everywhere. `speedUnit` as setLabel.
+export function exLine(cfg, unit, speedUnit) {
   const mode = modeOf(cfg)
   const n = cfg.sets || 1
   // Added weight reads as added: "+10 kg" on a dip belt, "60 kg" on a barbell.
   const load = cfg.weight ? ' · ' + (isBw(cfg) ? '+' : '') + fmtNum(cfg.weight) + ' ' + unit : ''
-  if (mode === 'cardio') return `${n} × ${cfg.min || 20} min @ ${fmtNum(cfg.speed || 8)} km/h`
+  if (mode === 'cardio') return `${n} × ${cfg.min || 20} min @ ${fmtSpeed(cfg.speed || 8, speedUnit)}`
   if (mode === 'time') return `${setsRepsOf(cfg)}${load}`
   // This is the line with room for it, so the split is spelled out: "3 × 16 · 8/side".
   const split = isPerSide(cfg) ? ' · ' + t('{0}/side', repsOf(cfg, v => fmtNum(sideReps(v)))) : ''

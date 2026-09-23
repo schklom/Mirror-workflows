@@ -14,6 +14,7 @@ import { deriveSessionName } from './session-merge.js'
 import { uid, todayISO, DAYN, weekOrder, weekStartOf, fmtNum, exCount } from './format.js'
 import { t, exerciseNameFor } from './i18n-core.js'
 import { convertWeight } from './units.js'
+import { fmtSpeed, speedUnitOf } from './speed.js'
 import { MUSCLES, inMuscleOrder } from './muscles.js'
 
 const PLAN_FMT = 1
@@ -289,12 +290,13 @@ export function mergePlan(s, bundle, { schedule } = {}) {
 const esc = str => String(str == null ? '' : str)
   .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 
-// One exercise's scheme, e.g. "3 × 10 · 60 kg", "3 × 0:45" or "2 × 20 min @ 8 km/h".
-function scheme(e, unit) {
+// One exercise's scheme, e.g. "3 × 10 · 60 kg", "3 × 0:45" or "2 × 20 min @ 8 km/h" — the speed
+// in the profile's unit (lib/speed.js), like the weight.
+function scheme(e, unit, speedUnit) {
   const sets = e.sets || 1
   const mode = modeOf(e)
   if (mode === 'cardio') {
-    const body = `${e.min || 20} min @ ${fmtNum(e.speed || 8)} km/h`
+    const body = `${e.min || 20} min @ ${fmtSpeed(e.speed || 8, speedUnit)}`
     return sets > 1 ? `${sets} × ${body}` : body
   }
   let s = mode === 'time' ? `${sets} × ${fmtSec(e.sec || 45)}` : `${sets} × ${e.reps ?? 10}`
@@ -317,14 +319,14 @@ function units(ex) {
 
 // `bare` leaves out the routine's own heading, for a page that is this one routine and already
 // names it at the top.
-function routineHTML(r, unit, { bare = false } = {}) {
+function routineHTML(r, unit, { bare = false, speedUnit } = {}) {
   const rows = units(r.ex).map(u => {
     const items = u.map(e => {
       const ex = EXIDX[e.id]
       const name = ex ? exerciseNameFor(ex) : t('Unknown exercise')
       const part = ex && ex.bp && ex.bp !== 'cardio' ? `<span class="part">${esc(ex.bp)}</span>` : ''
       const note = e.note ? `<div class="ex-note">${esc(e.note)}</div>` : ''
-      return `<div class="ex"><div class="ex-row"><div class="ex-n">${esc(name)}${part}</div><div class="ex-s">${esc(scheme(e, unit))}</div></div>${note}</div>`
+      return `<div class="ex"><div class="ex-row"><div class="ex-n">${esc(name)}${part}</div><div class="ex-s">${esc(scheme(e, unit, speedUnit))}</div></div>${note}</div>`
     }).join('')
     return u.length > 1
       ? `<div class="ss"><div class="ss-tag">${esc(t('Superset'))}</div><div class="ss-items">${items}</div></div>`
@@ -359,7 +361,7 @@ export function planPrintHTML(S, owner, { routineId } = {}) {
   const single = routineId ? (S.routines || []).find(r => r.id === routineId) || null : null
   const routines = routineId ? [single].filter(Boolean) : (S.routines || []).filter(r => r.ex && r.ex.length)
   const body = routines.length
-    ? routines.map(r => routineHTML(r, unit, { bare: !!single })).join('')
+    ? routines.map(r => routineHTML(r, unit, { bare: !!single, speedUnit: speedUnitOf(S) })).join('')
     : `<p class="none">${esc(t('No routines yet.'))}</p>`
   const title = single ? single.name : t('Weekly Training Plan')
   const sub = [single ? exCount(single.ex.length) : null, owner, todayISO()].filter(Boolean).map(esc).join(' · ')

@@ -72,6 +72,9 @@ export const DEF = {
   // Decimals on displayed weights: 1 by default, 2 for anyone loading quarter plates or
   // microplates (issue #139). Display only — nothing is stored or rounded differently.
   wdec: 1,
+  // Cardio speed shown in 'kmh' or 'mph'. null follows the weight unit (lb reads mph). Display
+  // only as well: every speed is stored in km/h (lib/speed.js).
+  speedUnit: null,
   // Per-exercise bar weight overrides, keyed by exercise id, in the profile unit (see
   // lib/bar.js). Personal equipment, so it syncs with the account but never travels in a
   // shared plan. Logged weights stay the total — this only feeds the plate math.

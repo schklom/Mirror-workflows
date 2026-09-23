@@ -7,6 +7,7 @@ import { exOr, betterWeight } from '../lib/exercises.js'
 import { usesBar, barWeightFor, plateSplit } from '../lib/bar.js'
 import { effectiveRoutines, effectiveRoutineIds, lastEntryFor, bestWeightFor, bestWeightForEntry, buildSets, freestyleConfig, defaultConfig, setsDoneActive, setUnitsTotal, supersetUnits, unitOf, setLabel, modeOf, isBw, isPerSide, repStep, EFFORT, effortOf, stepEffort, capEffort, cascadeWeight, insertWarmupRow, removeRowAt, pairAdjacent, unpairSuperset, cleanupSg, applyIntensifierPlan, pinnedNoteFor, exNoteFor, setsRepsOf } from '../lib/history.js'
 import { fmtNum, capWords, fmtDate, todayISO, exCount, DAYN } from '../lib/format.js'
+import { speedUnitOf, toSpeed, fromSpeed } from '../lib/speed.js'
 import { beep, vibrate, unlock } from '../lib/sound.js'
 import { t, exerciseNameFor } from '../lib/i18n.js'
 import { api, appBase } from '../lib/api.js'
@@ -68,6 +69,10 @@ function Elapsed({ start }) {
   }, [start])
   return <span>{t}</span>
 }
+
+// A set-row column's number as it is shown. Most columns show what is stored; one with a `view`
+// (cardio speed, stored in km/h) converts it for the screen.
+const viewOf = (col, value) => (col.view && value != null && value !== '' ? col.view(value) : value)
 
 /* ---------- one exercise block (reps: weight×reps · time: a held duration · cardio: duration+speed) ---------- */
 // `compact` shrinks the block for a superset member; `dense` (compact view) goes further and
@@ -185,7 +190,11 @@ function ExerciseBlock({ entryIdx, compact, dense, onToggle, onToggleSide, onFie
   const col1 = cardio ? { f: 'min', step: 1, dec: false, hd: t('Duration (min)') }
     : timed ? { f: 'sec', step: 5, dec: false, hd: t('Seconds') }
       : (bw && !added) ? repCol : loadCol
-  const col2 = cardio ? { f: 'speed', step: 0.5, dec: true, hd: t('Speed (km/h)') }
+  // Speed is stored in km/h and shown in the profile's unit (lib/speed.js): `view` turns the
+  // stored number into the one on screen, `store` the one typed or stepped back into km/h.
+  const speedUnit = speedUnitOf(S)
+  const col2 = cardio ? { f: 'speed', step: 0.5, dec: true, hd: speedUnit === 'mph' ? t('Speed (mph)') : t('Speed (km/h)'),
+    view: v => toSpeed(v, speedUnit), store: v => fromSpeed(v, speedUnit) }
     : timed ? ((bw && !added) ? null : loadCol)
       : (bw && !added) ? null : repCol
   // Effort (RIR or RPE, whichever the profile logs) only makes sense for weighted rep sets,
@@ -207,7 +216,9 @@ function ExerciseBlock({ entryIdx, compact, dense, onToggle, onToggleSide, onFie
     const fresh = useStore.getState().S.active?.entries[entryIdx]?.sets[i]
     const cur = fresh ? fresh[col.f] : s[col.f]
     if (mode === 'reps' && col.f === 'w') return onField(i, col.f, stepWeight(cur, col.step, dir))
-    onField(i, col.f, Math.max(0, Math.round(((cur || 0) + dir * col.step) * 100) / 100))
+    // The step is in the unit on screen: +0.5 mph, not +0.5 km/h shown as +0.31.
+    const next = Math.max(0, Math.round(((viewOf(col, cur) || 0) + dir * col.step) * 100) / 100)
+    onField(i, col.f, col.store ? col.store(next) : next)
   }
   // Uses the shared stepper markup so a set row picks up the same control styling
   // as every other +/- field in the app.
@@ -218,8 +229,8 @@ function ExerciseBlock({ entryIdx, compact, dense, onToggle, onToggleSide, onFie
   const cell = (s, i, col, cls) => (
     <div className={'stp ' + cls + (wc.steppers ? '' : ' plain')}>
       {wc.steppers && <button aria-label="Decrease" onClick={() => bump(s, i, col, -1)}><Icon name="minus" /></button>}
-      <span className="val"><NumberField decimal={col.dec} nullable={col.opt} value={s[col.f] ?? ''}
-        onChange={v => onField(i, col.f, v)} /></span>
+      <span className="val"><NumberField decimal={col.dec} nullable={col.opt} value={viewOf(col, s[col.f]) ?? ''}
+        onChange={v => onField(i, col.f, col.store ? col.store(v) : v)} /></span>
       {wc.steppers && <button aria-label="Increase" onClick={() => bump(s, i, col, 1)}><Icon name="plus" /></button>}
     </div>
   )
@@ -261,7 +272,7 @@ function ExerciseBlock({ entryIdx, compact, dense, onToggle, onToggleSide, onFie
     const warm = isWarmupRow(s)
     menuSheet({
       title: (warm ? t('Warm-up') : t('Set {0}', entry.sets.slice(0, i + 1).filter(x => isWarmupRow(x) === warm).length)),
-      subtitle: setLabel(entry.id, s, entry.target),
+      subtitle: setLabel(entry.id, s, entry.target, speedUnit),
       items: [
         !warm && mode === 'reps' && !isRestPauseSet(s) && { icon: 'arrowDown', label: t('Drop set'), sub: t('+ Drop'), onClick: () => addDropRow(i) },
         !warm && mode === 'reps' && !isDropSet(s) && { icon: 'bolt', label: t('Rest-pause burst'), sub: t('+ Burst'), onClick: () => addBurstRow(i) },
@@ -430,7 +441,7 @@ function ExerciseBlock({ entryIdx, compact, dense, onToggle, onToggleSide, onFie
     </div>}
     {entry.note && <div className="exnote">{entry.note}</div>}
     {planLine}
-    {last && <div className="small dim" style={{ marginBottom: 4 }}>{t('Last time')} ({fmtDate(last.d)}): {last.sets.map(s => setLabel(entry.id, s, last.target)).join(', ')}</div>}
+    {last && <div className="small dim" style={{ marginBottom: 4 }}>{t('Last time')} ({fmtDate(last.d)}): {last.sets.map(s => setLabel(entry.id, s, last.target, speedUnit)).join(', ')}</div>}
     {/* Bar + plates for barbell work: what to load per side for the set in front of you
         (first undone set; the heaviest row once everything is checked). The logged number
         stays the total — this chip is the split, and tapping it edits the bar's own weight

@@ -129,6 +129,12 @@ describe('get_routine', () => {
     expect(r.exercises[0]).toMatchObject({ reps: 8, reps_min: 8, reps_max: 12 })
   })
 
+  test('summarises a double-progression range as the range, not as its top', () => {
+    Object.assign(S.routines[0].ex[0], { mode: 'reps', sets: 3, reps: 12, repsMin: 8, weight: 40 })
+    const r = call('get_routine', { routine_id: S.routines[0].id })
+    expect(r.exercises[0].summary).toBe('3 × 8–12 · 40 kg')
+  })
+
   test('reports an exercise\'s own rest, and leaves it out when it inherits the timer', () => {
     S.routines[0].ex[0].restSec = 180
     delete S.routines[0].ex[1]?.restSec

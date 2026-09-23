@@ -143,6 +143,21 @@ export function defaultConfig(id, mode) {
   if (m === 'time') return { sets: 3, sec: 45, weight: 0, mode: 'time', ...bw }
   return { sets: 3, reps: 10, weight: 0, mode: 'reps', ...bw }
 }
+// A double-progression range is stored as its top (`reps`) and its bottom (`repsMin`), and
+// reads as the range it is: "8–12". Printing the top alone made "Reps from 10, up to 15" read
+// as "2 × 15" in the plan and then open at 10. `fmt` formats each bound (a per-side split).
+const hasRange = cfg => cfg.repsMin > 0 && cfg.repsMin < cfg.reps
+const repsOf = (cfg, fmt = v => String(v)) => (hasRange(cfg) ? `${fmt(cfg.repsMin)}–${fmt(cfg.reps)}` : fmt(cfg.reps))
+
+/** "2 × 10", "3 × 8–12", "2 × 0:45": what a plan asks for per set, without its load. */
+export function setsRepsOf(cfg) {
+  const mode = modeOf(cfg)
+  const n = cfg.sets || 1
+  if (mode === 'cardio') return `${n} × ${cfg.min || 20} min`
+  if (mode === 'time') return `${n} × ${fmtSec(cfg.sec || 45)}`
+  return `${n} × ${repsOf(cfg)}`
+}
+
 // One-line summary of a planned exercise ("3 × 10 · 60 kg"), shared by the routine editor
 // and the plan export so a mode is described the same way everywhere.
 export function exLine(cfg, unit) {
@@ -151,10 +166,10 @@ export function exLine(cfg, unit) {
   // Added weight reads as added: "+10 kg" on a dip belt, "60 kg" on a barbell.
   const load = cfg.weight ? ' · ' + (isBw(cfg) ? '+' : '') + fmtNum(cfg.weight) + ' ' + unit : ''
   if (mode === 'cardio') return `${n} × ${cfg.min || 20} min @ ${fmtNum(cfg.speed || 8)} km/h`
-  if (mode === 'time') return `${n} × ${fmtSec(cfg.sec || 45)}${load}`
+  if (mode === 'time') return `${setsRepsOf(cfg)}${load}`
   // This is the line with room for it, so the split is spelled out: "3 × 16 · 8/side".
-  const split = isPerSide(cfg) ? ' · ' + t('{0}/side', fmtNum(sideReps(cfg.reps))) : ''
-  return `${n} × ${cfg.reps}${load}${split}`
+  const split = isPerSide(cfg) ? ' · ' + t('{0}/side', repsOf(cfg, v => fmtNum(sideReps(v)))) : ''
+  return `${setsRepsOf(cfg)}${load}${split}`
 }
 
 // Drop superset ids that no longer have an adjacent partner (after unlink/reorder/remove).

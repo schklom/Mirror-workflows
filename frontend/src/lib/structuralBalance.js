@@ -1,6 +1,7 @@
 import { estimate1RM } from './onerm.js'
 import { LB_TO_KG } from './recovery.js'
 import { isBw } from './history.js'
+import { isAssisted } from './exercises.js'
 import { isSideSet, isWarmupRow } from './workout-model.js'
 import { BALANCE_STATUSES, BORDERLINE_BAND_PCT, EVALUATION_MODES } from './structuralBalanceTemplates.js'
 
@@ -16,19 +17,34 @@ export function bodyweightKgOf(S) {
   return kgOf(last.w, S.unit)
 }
 
+// An assistance machine (exercises.js isAssisted, issue #232), read the way onerm.js and
+// history.js read a logged entry — by the exercise, so the same machine counts the same way on
+// every screen.
+const isAssistedEntry = entry => isAssisted(entry?.id ? { id: entry.id } : entry)
+
 // What one completed set actually moved, in kg. On a bodyweight-configured entry `w` holds only
 // what was *added* (history.js: "`w` means *added* weight"), so the lifter's own mass has to be
 // added back: a chin-up with +10 kg is not a 10 kg lift, and Poliquin's dip/pull-up ratios are
 // against bodyweight + load. The weigh-in stamped on that session is the honest figure for an
 // old workout, with the profile's latest as the fallback; with neither, the set is left unscored
 // rather than scored against an invented body mass.
+//
+// On an assistance machine `w` is the help the stack gave, so it comes off the lifter's mass
+// instead: 20 kg of help at 80 kg is a 60 kg pull-up. Counting it as load — or adding it to the
+// body when the entry is flagged bodyweight — would score more help as a stronger lift. A 0
+// there is a row with no help entered, not a set done without any (history.js), and help at or
+// above body mass moved nothing: both are left unscored.
 function setLoadKg(S, workout, entry, set, bodyweightKg) {
-  const added = kgOf(set.w || 0, S.unit)
-  const bodyweight = entry.target?.bodyweight ?? entry.bodyweight
-  if (!isBw({ id: entry.id, bodyweight })) return added
+  const logged = kgOf(set.w || 0, S.unit)
   const stamped = workout?.bw > 0 ? kgOf(workout.bw, S.unit) : null
   const body = stamped ?? bodyweightKg
-  return body > 0 ? body + added : null
+  if (isAssistedEntry(entry)) {
+    if (!(logged > 0) || !(body > 0)) return null
+    return body - logged > 0 ? body - logged : null
+  }
+  const bodyweight = entry.target?.bodyweight ?? entry.bodyweight
+  if (!isBw({ id: entry.id, bodyweight })) return logged
+  return body > 0 ? body + logged : null
 }
 
 // Best estimated 1RM across a whitelist of exercise ids, in kg. Scans the log directly instead of
@@ -77,12 +93,14 @@ function bestRepsOf(entry) {
   return best
 }
 
+// A rep target is reps at body weight: reps the machine helped with are not those reps, so an
+// assistance machine a role was pointed at reads as no data here rather than as a pass.
 export function resolveCurrentReps(S, exerciseIds) {
   let best = null
   for (const exId of exerciseIds) {
     for (const workout of S.workouts || []) {
       const entry = (workout.entries || []).find(e => e.id === exId)
-      const found = entry && bestRepsOf(entry)
+      const found = entry && !isAssistedEntry(entry) && bestRepsOf(entry)
       if (found && (!best || found.r > best.r)) best = { ...found, d: workout.d, t: workout.start, exId }
     }
   }

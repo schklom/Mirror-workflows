@@ -237,6 +237,67 @@ describe('bodyweight exercises count the lifter, not just the belt', () => {
   })
 })
 
+// A role pointed at an assistance machine through the exercise picker (0017 assisted pull-up):
+// the logged number is the help, so it comes off the lifter instead of going on top.
+describe('an assistance machine counts the help against the lifter', () => {
+  const ASSISTED = '0017' // assisted pull-up, a leverage machine
+  const poliquin = TEMPLATES.poliquin
+  const pullRole = findRole(poliquin, 'supinePullups')
+  const lifter = (entry, extra = {}) => ({
+    unit: 'kg',
+    bodyweight: [{ d: '2026-01-01', w: 80 }],
+    balanceOverrides: { [overrideKey(poliquin, pullRole)]: ASSISTED },
+    workouts: [{ d: '2026-01-10', start: NOW, entries: [{ id: '0030', sets: [setDone(100, 1)] }, entry] }],
+    ...extra,
+  })
+  const pullups = S => computeBalance(S, poliquin).find(r => r.roleId === 'supinePullups')
+
+  it('scores body weight minus the help', () => {
+    const row = pullups(lifter({ id: ASSISTED, sets: [setDone(20, 1)] }))
+    expect(row.mappedExerciseId).toBe(ASSISTED)
+    expect(row.current.estKg).toBeCloseTo(60) // 80 kg lifter, 20 kg of help
+    expect(row.actualPct).toBeCloseTo(60)
+    expect(row.status).toBe(BALANCE_STATUSES.WEAK) // 87% target
+  })
+
+  it('reads less help as the stronger set, not more', () => {
+    const row = pullups(lifter({ id: ASSISTED, sets: [setDone(40, 1), setDone(10, 1)] }))
+    expect(row.current.estKg).toBeCloseTo(70)
+    expect(row.current.w).toBe(10)
+  })
+
+  it('still subtracts when the entry is flagged bodyweight', () => {
+    const row = pullups(lifter({ id: ASSISTED, target: { bodyweight: true }, sets: [setDone(20, 1)] }))
+    expect(row.current.estKg).toBeCloseTo(60) // not 80 + 20
+  })
+
+  it('uses the weigh-in stamped on the session, and converts a lb profile', () => {
+    const stamped = lifter({ id: ASSISTED, sets: [setDone(20, 1)] })
+    stamped.workouts[0].bw = 70
+    expect(pullups(stamped).current.estKg).toBeCloseTo(50)
+
+    const lb = lifter({ id: ASSISTED, sets: [setDone(44.09, 1)] }, { unit: 'lb', bodyweight: [{ d: '2026-01-01', w: 176.37 }] })
+    lb.workouts[0].entries[0].sets = [setDone(220.46, 1)] // the 100 kg anchor in lb
+    expect(pullups(lb).actualPct).toBeCloseTo(60, 0)
+  })
+
+  it('leaves a set unscored with no help entered, help at or above body weight, or no body weight', () => {
+    expect(pullups(lifter({ id: ASSISTED, sets: [setDone(0, 5)] })).status).toBe(BALANCE_STATUSES.NO_DATA)
+    expect(pullups(lifter({ id: ASSISTED, sets: [setDone(80, 5)] })).status).toBe(BALANCE_STATUSES.NO_DATA)
+    expect(pullups(lifter({ id: ASSISTED, sets: [setDone(20, 1)] }, { bodyweight: [] })).status).toBe(BALANCE_STATUSES.NO_DATA)
+  })
+
+  it('does not count helped reps toward a body-weight rep target', () => {
+    const atg = TEMPLATES.atg
+    const key = overrideKey(atg, findRole(atg, 'pullups'))
+    const S = { unit: 'kg', balanceOverrides: { [key]: ASSISTED }, workouts: [workoutAt(ASSISTED, NOW, [setDone(30, 12)])] }
+    const row = computeBalance(S, atg).find(r => r.roleId === 'pullups')
+    expect(row.isOverridden).toBe(true)
+    expect(row.status).toBe(BALANCE_STATUSES.NO_DATA)
+    expect(resolveCurrentReps(S, [ASSISTED])).toBe(null)
+  })
+})
+
 describe('rep-count on a unilateral set', () => {
   it('reads the better side, not the both-sides total', () => {
     // workout-model.js keeps `r` as L.r + R.r on a per-side row; a "10 reps" target is per limb.

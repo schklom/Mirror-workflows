@@ -216,14 +216,23 @@ function AuditCard({ tick }) {
 export default function Admin() {
   const nav = useNavigate()
   const user = useStore(s => s.user)
-  const toast = useUI(s => s.toast)
   const openSheet = useUI(s => s.openSheet)
   const [users, setUsers] = useState(null)
+  const [usersErr, setUsersErr] = useState(null)   // why the last load failed, until one succeeds
   const [invites, setInvites] = useState(null)
   const [inviteOnly, setInviteOnly] = useState(false)
   const [tick, setTick] = useState(0)          // the ↻ button; the activity log listens to it
 
-  const loadUsers = () => api('/api/admin/users').then(d => { setUsers(d.users); setInviteOnly(d.invite_only) }).catch(e => toast(e.message || 'Failed to load'))
+  // A failed load, or an answer without a list, used to leave the page on "Loading…" for good —
+  // with a toast every 15 seconds from the poll, or with nothing at all when the answer was
+  // someone else's page. It says so where the list would be instead, and the poll (or ↻) keeps
+  // trying; a list that did load stays up, marked as the last one that came through.
+  const loadUsers = () => api('/api/admin/users')
+    .then(d => {
+      if (!Array.isArray(d?.users)) throw new Error('The server answered without a list of users.')
+      setUsers(d.users); setInviteOnly(!!d.invite_only); setUsersErr(null)
+    })
+    .catch(e => setUsersErr(e.message || 'Failed to load'))
   const loadInvites = () => api('/api/admin/invites').then(d => setInvites(d.invites)).catch(() => {})
   // poll every 15s so the "training now" section stays live without a manual refresh
   useEffect(() => { if (!user?.admin) return; loadUsers(); loadInvites(); const iv = setInterval(loadUsers, 15000); return () => clearInterval(iv) }, [])
@@ -238,12 +247,20 @@ export default function Admin() {
     <div className="hdr">
       <button className="iconbtn" onClick={() => nav('/settings')} aria-label="Back"><Icon name="chevronLeft" /></button>
       <div style={{ flex: 1, marginLeft: 8 }}><h1 style={{ margin: 0 }}>Admin</h1>
-        <div className="sub">{users ? users.length + ' users · ' + activeCount + ' active this week' : 'Loading…'}</div></div>
+        <div className="sub">{users ? users.length + ' users · ' + activeCount + ' active this week' : usersErr ? 'Could not load' : 'Loading…'}</div></div>
       <button className="iconbtn" onClick={() => { loadUsers(); loadInvites(); setTick(n => n + 1) }} aria-label="refresh">↻</button>
     </div>
     <div className="adm-intro">
       Everything about running this instance: who uses it, how they get in, the AI Coach, and what has happened on it. Nothing here shows anyone's training data beyond counts.
     </div>
+
+    {usersErr && <div className="card" role="alert" style={{ borderColor: 'var(--red)' }}>
+      <div className="row between"><h2 style={{ margin: 0 }}>{users ? 'The last update failed' : 'Could not load the users'}</h2>
+        <Button size="sm" icon="reset" onClick={loadUsers}>Try again</Button></div>
+      <div className="adm-lead" style={{ marginBottom: 0 }}>
+        {usersErr} {users ? 'The list below is the last one that loaded.' : 'It tries again every 15 seconds.'}
+      </div>
+    </div>}
 
     <div className="tiles" style={{ marginBottom: 12 }}>
       <div className="tile"><div className="l">Users</div><div className="v">{users ? users.length : '—'}</div></div>

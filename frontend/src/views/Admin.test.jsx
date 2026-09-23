@@ -82,3 +82,43 @@ describe('Admin user drill-down', () => {
     expect(rows[0].textContent).toContain('1 sets')
   })
 })
+
+// The users call failing, or answering without a list, used to leave "Loading…" up for good —
+// what a paired phone that had lost its pairing showed its admin, and all it showed.
+describe('Admin when the users cannot be loaded', () => {
+  const text = page => page.textContent
+  it('an answer without a list is an error, not an endless "Loading…"', async () => {
+    mocks.answers['/api/admin/users'] = {}
+    const page = render(<Admin />)
+    await settle()
+    expect(text(page)).not.toContain('Loading…')
+    expect(text(page)).toContain('Could not load the users')
+    expect(text(page)).toContain('The server answered without a list of users.')
+  })
+
+  it('a failed call says why, and "Try again" loads the list once the server answers', async () => {
+    delete mocks.answers['/api/admin/users']
+    const page = render(<Admin />)
+    await settle()
+    expect(page.querySelector('[role="alert"]').textContent).toContain('not found')
+
+    mocks.answers['/api/admin/users'] = { users: [{ id: 'u1', name: 'Mallory', workouts: 2, lastSync: null, disabled: false }], invite_only: false }
+    const retry = [...page.querySelectorAll('button')].find(b => b.textContent === 'Try again')
+    act(() => retry.click())
+    await settle()
+    expect(page.querySelector('[role="alert"]')).toBeNull()
+    expect(text(page)).toContain('1 users')
+    expect([...page.querySelectorAll('.item')].some(el => el.textContent.includes('Mallory'))).toBe(true)
+  })
+
+  it('a list that loaded stays up when a later update fails, marked as the last one', async () => {
+    const page = render(<Admin />)
+    await settle()
+    delete mocks.answers['/api/admin/users']
+    const refresh = page.querySelector('[aria-label="refresh"]')
+    act(() => refresh.click())
+    await settle()
+    expect(text(page)).toContain('The last update failed')
+    expect([...page.querySelectorAll('.item')].some(el => el.textContent.includes('Mallory'))).toBe(true)
+  })
+})

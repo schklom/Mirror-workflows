@@ -1030,11 +1030,13 @@ export const useStore = create((set, get) => {
       } catch (e) {
         // The session ended (expired, revoked, signed out everywhere): back to the sign-in
         // screen, which says so. The copy stays here with its owner, and signing in again as the
-        // same account merges it (adoptProfile).
+        // same account merges it (adoptProfile). A later reload still says so while that copy
+        // owes its account changes — the user is gone by then, the owner and the copy are not —
+        // unless whoever is here chose to go on as a guest.
         if (e.status === 401) {
-          const had = !!get().user
+          const kept = !!get().user || (!get().isGuest() && !!localStorage.getItem('gym_owner') && owes())
           get().setUser(null)
-          if (had) failed(e, { pending: owes() })
+          if (kept) failed(e, { pending: owes() })
         }
         // Started without a network (a home-screen app reopened in the gym's basement), or
         // behind a proxy answering for the server: keep the signed-in copy and say so from the

@@ -121,13 +121,13 @@ describe('sync status', () => {
 })
 
 describe('the web boot', () => {
-  const boot = async me => {
+  const boot = async (me, user = USER) => {
     api.mockImplementation(async path => {
       if (path === '/api/config') return { allow_guest: true }
       if (path === '/api/me') return me()
       throw new Error('unexpected ' + path)
     })
-    useStore.setState({ user: USER, ready: false })
+    useStore.setState({ user, ready: false })
     await useStore.getState().boot()
   }
 
@@ -139,6 +139,23 @@ describe('the web boot', () => {
     expect(localStorage.getItem('gym_owner')).toBe(USER.id)
     expect(useStore.getState().sync).toMatchObject({ status: 'auth', lastError: { status: 401 } })
     useStore.getState().setGuest(true)   // "Continue without account"
+    expect(useStore.getState().sync.status).toBe('local')
+  })
+
+  it('a reload after that still says so while the copy owes its account changes — not once a guest chose to go on', async () => {
+    useStore.setState({ S: { ...clone(DEF), _ts: 100, workouts: [workout('w1')] } })
+    localStorage.setItem('gym_dirty', '1')
+    await boot(() => { throw httpError(401) }, null)
+    expect(useStore.getState().sync).toMatchObject({ status: 'auth', pending: true, lastError: { status: 401 } })
+
+    useStore.getState().setGuest(true)
+    await boot(() => { throw httpError(401) }, null)
+    expect(useStore.getState().sync.status).toBe('local')
+  })
+
+  it('a reload with nothing owed is simply signed out', async () => {
+    useStore.setState({ S: { ...clone(DEF), _ts: 100, workouts: [workout('w1')] } })
+    await boot(() => { throw httpError(401) }, null)
     expect(useStore.getState().sync.status).toBe('local')
   })
 

@@ -70,20 +70,25 @@ export default function Plan() {
             <div className="grow"><div className="tt">{t(DAYN[d])}</div></div>
             <span className="tag">{t('Rest')}</span>
             <Icon name="chevronRight" className="chev" /></div>
-          // A populated day: always-visible routine sub-rows + inline ✕, then ＋ Add routine.
+          // A populated day: always-visible routine sub-rows + inline ✕. Adding a second routine
+          // is a small ＋ in the day's header, centred over the ✕ column (#276): a full-width
+          // "＋ Add routine" under every planned day made the week read as a list of buttons,
+          // when most people train one routine a day. The ＋ keeps the option for those who don't.
           return <div key={d} className="item" style={{ display: 'block', padding: '10px 14px' }}>
             <div className="row between" style={{ marginBottom: 6 }}>
               <div className="tt">{t(DAYN[d])}</div>
-              <div className="small dim">{routineCount(dayRoutines.length)}</div>
+              <div className="row" style={{ gap: 8 }}>
+                <div className="small dim">{routineCount(dayRoutines.length)}</div>
+                <button className="iconbtn sm" aria-label={t('Add routine')} title={t('Add routine')}
+                  style={{ width: 30, height: 30, margin: '-5px 3px', fontSize: 15 }}
+                  onClick={() => dayAddRoutineSheet(d)}><Icon name="plus" /></button>
+              </div>
             </div>
             {dayRoutines.map(r => <div key={r.id} className="row" style={{ gap: 8, padding: '4px 0 4px 8px' }}>
               <span className="lrow-i" style={{ width: 26, height: 26, fontSize: 14 }}><Icon name={glyphOf(r.emoji)} /></span>
               <div className="grow" style={{ minWidth: 0 }}><div className="tt" style={{ fontSize: 14 }}>{r.name}</div><div className="ss">{exCount(r.ex.length)}</div></div>
               <button className="iconbtn sm" aria-label={t('Remove')} onClick={() => removeFromDay(d, r.id)}><Icon name="xmark" /></button>
             </div>)}
-            <button className="btn ghost sm" style={{ marginTop: 4, marginLeft: 8 }} onClick={() => dayAddRoutineSheet(d)}>
-              <Icon name="plus" /> {t('Add routine')}
-            </button>
           </div>
         })}
       </div>

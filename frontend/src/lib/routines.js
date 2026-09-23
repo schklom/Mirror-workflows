@@ -1,6 +1,6 @@
 import { uid } from './format.js'
 import { defaultConfig, isBw, modeOf } from './history.js'
-import { isBodyweightEq, isCardio } from './exercises.js'
+import { isAssisted, isBodyweightEq, isCardio } from './exercises.js'
 import { sessionsFor } from './progression.js'
 
 /**
@@ -23,13 +23,15 @@ export function copyRoutine(routine, suffix = 'Copy') {
  * it — sets, reps, weight, rest, warm-ups, the progression rule, the note, its superset — and only
  * the exercise changes. The old way (remove, add, configure again) lost all of that.
  *
- * Two things cannot come along. A cardio slot is minutes at a speed and a lifting slot is sets of
- * reps at a load, so between the two only the note, the rest and the superset carry over and the
- * rest starts from the new exercise's defaults. And a load means something else once the new
+ * Some things cannot come along. A cardio slot is minutes at a speed and a lifting slot is sets
+ * of reps at a load, so between the two only the note, the rest and the superset carry over and
+ * the rest starts from the new exercise's defaults. A load means something else once the new
  * exercise is bodyweight where the old one was not, or the other way round: 60 kg on a bench is
- * not 60 kg added to a push-up. There the weight goes back to 0. The bodyweight flag is stored
- * only where it overrides an exercise's equipment, so it is always dropped and the new exercise
- * follows its own.
+ * not 60 kg added to a push-up. The same goes for an assistance machine, where the number is
+ * help rather than load: 40 kg off a pull-up is not 40 kg on a pulldown. There the weight goes
+ * back to 0. The bodyweight, assisted and per-side flags describe the movement, not the
+ * prescription, so they are dropped and the new exercise follows its own, the way the Coach's
+ * swap does (lib/coach.js): a split squat's "per side" would split a back squat's reps into L/R.
  *
  * What is not carried is history. Progress belongs to a routine and an exercise together (#216),
  * so the new exercise starts on its own line — its own sessions in this routine, and until there
@@ -52,7 +54,7 @@ export function replaceSlotExercise(slot, id, S, rid) {
     const kept = ['sg', 'note', 'restSec'].filter(key => old[key] != null)
     return { id, ...defaultConfig(id), ...Object.fromEntries(kept.map(key => [key, old[key]])) }
   }
-  const { id: _replaced, bodyweight: _flag, ...carried } = old
+  const { id: _replaced, bodyweight: _flag, assisted: _assisted, side: _side, ...carried } = old
   const out = { id, ...carried }
   if (isCardio(id)) return out
   if (isBw(old) !== isBodyweightEq(id)) {
@@ -60,6 +62,7 @@ export function replaceSlotExercise(slot, id, S, rid) {
     // A rep ceiling belongs to bodyweight work: it adds sets where there is no load to add.
     delete out.repsMax
   }
+  if (isAssisted(old) !== isAssisted(id)) out.weight = 0
   // The session the next prescription will read for this slot (nextPrescription), so the weight
   // put here is the one that session was planned at: the restart rule then sees no edit and
   // holds at what was lifted, or the plan carries on from it. A session saved before plans were

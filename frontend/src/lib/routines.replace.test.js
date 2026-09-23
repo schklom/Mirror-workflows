@@ -12,12 +12,14 @@ const DB_BENCH = '0289'   // dumbbell bench press
 const PUSH_UP = '0662'    // push-up, body weight
 const PULL_UP = '0652'    // pull-up, body weight
 const BIKE = '2138'       // stationary bike, cardio
+const ASSISTED_PULL_UP = '0015' // assisted pull-up, a leverage machine: the weight is help
+const PULLDOWN = '0150'   // lat pulldown, cable
 
 describe('replaceSlotExercise', () => {
   it('keeps the slot\'s sets, reps, weight, rule, rest, warm-ups, note and superset', () => {
     const slot = {
       id: BENCH, sg: 'sgA', sets: 4, mode: 'reps', reps: 8, repsMin: 6, weight: 60, prog: 'double', inc: 1.25,
-      deloadFactor: 0.85, note: 'pause on the chest', warmupSets: 2, restSec: 150, side: true,
+      deloadFactor: 0.85, note: 'pause on the chest', warmupSets: 2, restSec: 150,
       intensifier: { type: 'dropset', count: 1, pct: 20 },
     }
     const next = replaceSlotExercise(slot, DB_BENCH)
@@ -26,12 +28,27 @@ describe('replaceSlotExercise', () => {
     expect(slot.id).toBe(BENCH)
   })
 
+  it('drops the flags that describe the old movement, so the new exercise follows its own', () => {
+    // A split squat's "per side" would turn a back squat's 16 reps into 8 a side with L/R rows.
+    expect(replaceSlotExercise({ id: BENCH, sets: 3, mode: 'reps', reps: 16, weight: 40, side: true, assisted: false }, DB_BENCH))
+      .toEqual({ id: DB_BENCH, sets: 3, mode: 'reps', reps: 16, weight: 40 })
+  })
+
   it('changes nothing when the pick is the exercise already in the slot', () => {
     // A push-up the user loaded with 20 kg and marked as not bodyweight, picked again from "Chosen".
     const slot = { id: PUSH_UP, sg: 'sgA', sets: 3, mode: 'reps', reps: 8, weight: 20, bodyweight: false, side: true }
     const same = replaceSlotExercise(slot, PUSH_UP, { workouts: [] }, 'A')
     expect(same).toEqual(slot)
     expect(same).not.toBe(slot)
+  })
+
+  it('drops a weight that is help on one side of the swap and load on the other', () => {
+    // 40 kg of help on an assisted pull-up is not a 40 kg pulldown …
+    expect(replaceSlotExercise({ id: ASSISTED_PULL_UP, sets: 3, mode: 'reps', reps: 8, weight: 40 }, PULLDOWN))
+      .toEqual({ id: PULLDOWN, sets: 3, mode: 'reps', reps: 8, weight: 0 })
+    // … and a 50 kg pulldown is not 50 kg taken off a pull-up.
+    expect(replaceSlotExercise({ id: PULLDOWN, sets: 3, mode: 'reps', reps: 8, weight: 50 }, ASSISTED_PULL_UP))
+      .toEqual({ id: ASSISTED_PULL_UP, sets: 3, mode: 'reps', reps: 8, weight: 0 })
   })
 
   it('keeps a timed slot timed', () => {

@@ -333,7 +333,7 @@ export const PT_BR_OVERRIDES = {
 
   // --- drop-sets, auto-backup and server pairing ---
   'Auto-backup on changes': 'Backup automático ao alterar',
-  'Saves a dated copy to the Documents folder after finishing a workout or editing a routine — point a sync app at it, or copy it out by hand.': 'Salva uma cópia datada na pasta Documentos depois de terminar um treino ou editar uma rotina — aponte um aplicativo de sincronização para ela, ou copie o arquivo na mão.',
+  'Saves a dated copy to Documents/openGym after finishing a workout or editing a routine, and keeps the newest {0} — point a sync app at that folder, or copy it out by hand.': 'Salva uma cópia datada na pasta Documentos/openGym depois de terminar um treino ou editar uma rotina e mantém as {0} mais recentes — aponte um aplicativo de sincronização para essa pasta, ou copie o arquivo na mão.',
   'Disconnect': 'Desconectar',
   'Disconnect from your server?': 'Desconectar do seu servidor?',
   'Disconnected — back to local-only': 'Desconectado — de volta ao modo somente local',
@@ -442,6 +442,7 @@ export const PT_BR_OVERRIDES = {
   'Bring my own API key': 'Usar minha própria chave de API',
   'An AI coach that can design your plan and adjust it from what you actually log. It runs with your own API key, it never changes anything without your say-so, and it is off until you turn it on.': 'Um treinador com IA que cria seu plano e o ajusta com base no que você registra. Roda com a sua própria chave de API, nunca muda nada sem a sua autorização e fica desligado até você ligá-lo.',
   'Could not reach the provider: {0}': 'Não foi possível contatar o provedor: {0}',
+  'Android blocks unencrypted http:// connections from apps, so this phone can only reach an https:// endpoint. Put HTTPS in front of it (Tailscale or a reverse proxy), or choose “Use my self-hosted openGym”: your server can reach an http:// model on its own network.': 'O Android bloqueia conexões http:// não criptografadas feitas por aplicativos, então este celular só consegue acessar um endpoint https://. Coloque HTTPS na frente (Tailscale ou um proxy reverso), ou escolha “Usar meu openGym self-hosted”: seu servidor consegue acessar um modelo http:// na própria rede.',
   'Each request goes straight to {0} with your key — nobody else sees it, and you pay for it.': 'Cada pedido vai direto para {0} com a sua chave — ninguém mais o vê, e é você quem paga.',
   'Enter your API key': 'Digite sua chave de API',
   'How should the Coach run?': 'Como o Treinador deve rodar?',

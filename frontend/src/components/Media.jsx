@@ -50,7 +50,13 @@ export default function Media({ ex, id, compact, minimizable }) {
   )
 }
 
+// A still that will not load (offline and never cached, a lapsed session on a gated instance, a
+// CDN hiccup) gets the same neutral tile as an exercise without media, instead of the browser's
+// broken-image glyph in a list of them (#281). The failure is remembered per image, so a list
+// that re-renders does not ask again; a new exercise in the same slot tries its own.
 export function Thumb({ ex }) {
-  if (!ex.img) return <div className="thumb thumb-x"><Icon name="dumbbell" /></div>
-  return <img className="thumb" loading="lazy" decoding="async" draggable={false} src={imgSrc(ex)} alt="" />
+  const src = ex.img ? imgSrc(ex) : null
+  const [broken, setBroken] = useState(null)
+  if (!src || broken === src) return <div className="thumb thumb-x"><Icon name="dumbbell" /></div>
+  return <img className="thumb" loading="lazy" decoding="async" draggable={false} src={src} alt="" onError={() => setBroken(src)} />
 }

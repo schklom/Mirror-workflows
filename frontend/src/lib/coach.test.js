@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import {
-  canonicalPlan, planHash, hashPlan, markStale, applicable, currentValue,
+  canonicalPlan, planHash, hashPlan, markStale, applicable, currentValue, ROUTINE_NAME_SEEN,
   pushSnapshot, revertLast, canRevert, appendLog, applyChangeSet, applyCreatedPlan,
   recordDismissal, validateProposal, coachAvailable, hasConsent,
   recordDebrief, logEntry, lightBundle, changeValues,
@@ -163,6 +163,22 @@ describe('staleness', () => {
     expect(markStale(wk(1, 'r1'), state({ week: { 1: ['r1'] } })).changes[0].status).toBe('proposed')
     // the day gained a routine since → stale
     expect(markStale(wk(1, ['r1', 'r2']), state({ week: { 1: ['r1', 'r2', 'r3'] } })).changes[0].status).toBe('stale')
+  })
+
+  it('a rename of a routine whose name is longer than the Coach reads is not shown as stale', async () => {
+    const { validateReview } = await import('../../../api/coach/core/validate.js')
+    const S = state()
+    S.routines[0].name = 'Upper body, heavy day — '.repeat(6)
+    // The real path: the server's payload cuts the name, and the validator copies what the
+    // payload held into `before`.
+    const checked = validateReview({ coach_contract: 1, summary: 's', changes: [{ type: 'rename-routine', target: { routineId: 'r1' }, after: 'Upper', why: 'shorter' }] }, serverPayload.cleanPlan(S))
+    const [c] = checked.proposal.changes
+    expect(c.before.length).toBeLessThan(S.routines[0].name.length)
+    expect(markStale(proposal([c]), S).changes[0].status).toBe('proposed')
+    // A name edited since the Coach read it is still caught.
+    S.routines[0].name = 'Lower ' + S.routines[0].name
+    expect(markStale(proposal([c]), S).changes[0].status).toBe('stale')
+    expect(ROUTINE_NAME_SEEN).toBe(serverPayload.NAME_MAX)
   })
 
   it('reads the current value for every scalar change type', () => {

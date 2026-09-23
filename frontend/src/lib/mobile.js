@@ -194,19 +194,54 @@ export async function printHtml(html, name) {
   await Print.printHtml({ html, name })
 }
 
-// "Auto-backup on changes" (Settings): a dated snapshot dropped into the Documents folder —
+// "Auto-backup on changes" (Settings): a dated snapshot dropped into Documents/openGym/ —
 // visible in Files (iOS) / a file manager (Android), unlike the private mirror nativeSave keeps
 // — so whatever the user points at that folder (a sync app, a manual copy) always has something
 // recent. One file per day; later triggers the same day just overwrite it.
+//
+// The folder is ours alone (#161): until v1.3.9 the files landed in the Documents root, so a
+// sync app pointed at them had to carry the whole Documents folder along, and a year of daily
+// copies piled up there. Now each write keeps only the newest AUTO_BACKUP_KEEP in the folder.
+// The root is never pruned: a manual export saved there carries the same name, and nothing
+// tells it apart from an old automatic copy, so those stay for the person to clear (Import
+// backup still reads either kind).
+export const AUTO_BACKUP_DIR = 'openGym'
+export const AUTO_BACKUP_KEEP = 14
+// Only the exact name writeAutoBackup gives its files is ever pruned; anything else someone
+// keeps in the folder is theirs.
+const AUTO_BACKUP_NAME = /^opengym-backup-\d{4}-\d{2}-\d{2}\.json$/
+
 export async function writeAutoBackup(state) {
+  const name = `opengym-backup-${todayISO()}.json`
+  let fs
   try {
-    const { Filesystem, Directory, Encoding } = await import('@capacitor/filesystem')
-    await Filesystem.writeFile({
-      path: `opengym-backup-${todayISO()}.json`,
-      directory: Directory.Documents,
+    fs = await import('@capacitor/filesystem')
+    await fs.Filesystem.writeFile({
+      path: `${AUTO_BACKUP_DIR}/${name}`,
+      directory: fs.Directory.Documents,
       data: JSON.stringify(state),
-      encoding: Encoding.UTF8,
+      encoding: fs.Encoding.UTF8,
       recursive: true,
     })
-  } catch (e) { /* best effort — the private mirror in Directory.Data still has the data */ }
+  } catch (e) { return }   // best effort — the private mirror in Directory.Data still has the data
+  // Pruning waits for a successful write: a full disk must never cost the copies already there.
+  await pruneAutoBackups(fs, name)
+}
+
+async function pruneAutoBackups({ Filesystem, Directory }, written) {
+  let files
+  try { files = (await Filesystem.readdir({ path: AUTO_BACKUP_DIR, directory: Directory.Documents })).files || [] } catch (e) { return }
+  const older = files
+    // Capacitor before 4 listed bare names; since then an object that also says what it is.
+    .filter(f => typeof f === 'string' || f?.type !== 'directory')
+    .map(f => (typeof f === 'string' ? f : f?.name))
+    // The copy just written is never a candidate, even if a clock set back makes it sort
+    // below the others: it is one of the AUTO_BACKUP_KEEP whatever its date says.
+    .filter(n => AUTO_BACKUP_NAME.test(n || '') && n !== written)
+    // Newest first by the date in the name, which a sync app or a copy cannot disturb the way
+    // it can a modification time.
+    .sort().reverse()
+  for (const n of older.slice(AUTO_BACKUP_KEEP - 1)) {
+    try { await Filesystem.deleteFile({ path: `${AUTO_BACKUP_DIR}/${n}`, directory: Directory.Documents }) } catch (e) { /* one stuck file does not stop the rest */ }
+  }
 }

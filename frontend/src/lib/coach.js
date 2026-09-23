@@ -16,6 +16,7 @@ import { EXIDX } from './exercises.js'
 import { modeOf, isBw, isPerSide, cleanupSg } from './history.js'
 import { uid, todayISO, DAYN } from './format.js'
 import { mergePlan } from './plan-share.js'
+import { deleteRoutine } from './routines.js'
 import { POLICIES } from './progression.js'
 import { t } from './i18n.js'
 
@@ -502,18 +503,10 @@ const CHANGE_APPLY = {
     })
   },
   'remove-routine': (s, c) => {
-    const id = c.target.routineId
-    s.routines = s.routines.filter(r => r.id !== id)
-    // A week pointing at a routine that no longer exists reads as a rest day anyway; clearing
-    // it keeps the plan honest rather than merely harmless.
-    Object.keys(s.week || {}).forEach(d => { if (s.week[d] === id) delete s.week[d] })
-    // RoutineEdit does the same on a hand-deleted routine. A pointer left behind here is not
-    // merely inert: the day still counts as overridden, so it wears a "rescheduled" badge for good.
-    const dropped = {}
-    Object.keys(s.dayPlan || {}).forEach(iso => {
-      if (s.dayPlan[iso] === id) { dropped[iso] = id; delete s.dayPlan[iso] }
-    })
-    recordDayPlanDrops(s, dropped)
+    // The same delete as Plan and RoutineEdit. It used to compare each weekday with ===, which
+    // missed a combined day (a list) and left the deleted id on it. The week comes back from the
+    // snapshot on a revert; the dropped reschedules are not in the snapshot, so they are recorded.
+    recordDayPlanDrops(s, deleteRoutine(s, c.target.routineId))
   },
   'rename-routine': (s, c) => { need(findRoutine(s, c.target.routineId)).name = c.after },
   week: (s, c) => {

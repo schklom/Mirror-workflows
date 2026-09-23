@@ -597,6 +597,16 @@ describe('removing a routine takes its per-date reschedules with it', () => {
     expect(revertLast(s)).toBe(true)
     expect(s.dayPlan['2099-01-01']).toBe('r2')
   })
+
+  it('pulls it from a combined day too, and a revert puts the day back whole', () => {
+    // The Coach compared each weekday with ===, so a combined day (a list) kept the deleted id.
+    const S = state({ week: { 1: ['r1', 'r2'], 3: ['r2'] } })
+    const s = apply(S, proposal([c]), ['c1'])
+    expect(s.week[1]).toEqual(['r1'])
+    expect(s.week[3]).toBeUndefined()
+    expect(revertLast(s)).toBe(true)
+    expect(s.week[1]).toEqual(['r1', 'r2'])
+  })
 })
 
 describe('what the log keeps, so a decision never makes a proposal vanish', () => {

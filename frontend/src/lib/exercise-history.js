@@ -108,15 +108,22 @@ export function bestSetFor(S, exId, mode = modeOf({ id: exId })) {
     if (a1 !== b1) return mode === 'reps' ? beatsWeight(exId, a1, b1) : a1 > b1
     return a2 > b2
   }
+  // One pass over the history as it is stored, with no copy and no sort: this runs on every
+  // render of every exercise card while the line shows the best set, and every stepper tap
+  // re-renders them all, so sorting a long imported history each time was the cost of a tap.
+  // Stored order is not always the order things happened in (a moved session keeps its place
+  // until it is filed again), so a tie is settled by the start time, not by which came first
+  // in the array; within one session the set logged first keeps it.
   let best = null
-  const logged = [...(S?.workouts || [])].sort((a, b) => startOf(a) - startOf(b))
-  for (const w of logged) {
+  for (const w of S?.workouts || []) {
+    let t = null
     for (const en of w.entries || []) {
       if (en.id !== exId) continue
       for (const set of metricRowsForEntry(en, mode)) {
-        if (!best || better(set, best.set)) best = { d: w.d, set, target: en.target || null }
+        t ??= startOf(w)
+        if (!best || better(set, best.set) || (!better(best.set, set) && t < best.t)) best = { d: w.d, set, target: en.target || null, t }
       }
     }
   }
-  return best
+  return best && { d: best.d, set: best.set, target: best.target }
 }

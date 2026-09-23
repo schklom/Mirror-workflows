@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { exerciseHistory, HISTORY_SESSIONS, bestSetFor } from './exercise-history.js'
 import { EXDB } from './exercises-data.js'
 import { estimate1RM, e1rmSeries } from './onerm.js'
@@ -203,6 +203,20 @@ describe('bestSetFor', () => {
     expect(bestSetFor(S, 'plank', 'reps')).toBeNull()
     const run = (i, min, speed) => ({ id: 'r' + i, d: iso(i), start: T0 + i * DAY, entries: [{ id: 'run', target: { mode: 'cardio' }, sets: [{ min, speed, done: true }] }] })
     expect(bestSetFor({ workouts: [run(0, 30, 9), run(1, 30, 10), run(2, 25, 12)] }, 'run', 'cardio').set).toMatchObject({ min: 30, speed: 10 })
+  })
+
+  // Asked on every render of every card while the line shows the best set, and each stepper tap
+  // re-renders them all: copying and sorting a long history each time was the cost of a tap.
+  it('settles a tie by start time in one pass, without sorting the history', () => {
+    const at = (i, rid) => ({ ...session(i, [work(80, 5)]), entries: [{ id: 'bench', rid, target: { mode: 'reps' }, sets: [work(80, 5)] }] })
+    const workouts = [at(5, 'c'), at(3, 'b'), at(1, 'a'), session(4, [work(70, 10)])]
+    const sort = vi.spyOn(Array.prototype, 'sort')
+    try {
+      expect(bestSetFor({ workouts }, 'bench', 'reps')).toMatchObject({ d: iso(1), target: { mode: 'reps' } })
+      expect(sort).not.toHaveBeenCalled()
+    } finally { sort.mockRestore() }
+    // a heavier set later on still beats an earlier tie
+    expect(bestSetFor({ workouts: [...workouts, session(6, [work(85, 1)])] }, 'bench', 'reps')).toMatchObject({ d: iso(6), set: { w: 85, r: 1 } })
   })
 
   it('takes the least help on an assistance machine, and nothing when nothing was logged', () => {

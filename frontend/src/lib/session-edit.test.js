@@ -130,10 +130,44 @@ describe('saved workout editing', () => {
     editCompletedSession(state, 'workout')
     state.active.entries[0].sets[0].w = 50
     Object.assign(state.workouts[0], { d: '2026-08-20', start: 500, end: 1500, note: 'from phone' })
-    state.active.note = 'from phone'
     const saved = saveWorkoutEdit(state)
     expect(saved).toMatchObject({ id: 'workout', d: '2026-08-20', start: 500, end: 1500, note: 'from phone' })
     expect(saved.entries[0].sets[0].w).toBe(50)
+    expect(saved).not.toHaveProperty('editBase')
+  })
+
+  // The note typed in WorkoutDetail after a reload that did not land on the editor, or one a sync
+  // brought in: a Save that only changed a weight neither writes the opened note back nor deletes
+  // the new one. A note or name the editor changed itself is still the editor's.
+  it('keeps a note written or renamed elsewhere while the editor was open, unless the editor changed it', () => {
+    const added = fixture()
+    delete added.workouts[0].note
+    editCompletedSession(added, 'workout')
+    added.active.entries[0].sets[0].w = 50
+    added.workouts[0].note = 'knee felt off'
+    added.workouts[0].name = 'Legs'
+    expect(saveWorkoutEdit(added)).toMatchObject({ note: 'knee felt off', name: 'Legs' })
+
+    const changed = fixture()
+    editCompletedSession(changed, 'workout')
+    changed.active.entries[0].sets[0].w = 50
+    changed.workouts[0].note = 'knee felt off'
+    expect(saveWorkoutEdit(changed).note).toBe('knee felt off')
+
+    const cleared = fixture()
+    editCompletedSession(cleared, 'workout')
+    cleared.workouts[0].note = 'knee felt off'
+    delete cleared.active.note
+    cleared.active.name = 'Heavy day'
+    const saved = saveWorkoutEdit(cleared)
+    expect(saved).not.toHaveProperty('note')
+    expect(saved.name).toBe('Heavy day')
+
+    const removedElsewhere = fixture()
+    editCompletedSession(removedElsewhere, 'workout')
+    removedElsewhere.active.entries[0].sets[0].w = 50
+    delete removedElsewhere.workouts[0].note
+    expect(saveWorkoutEdit(removedElsewhere)).not.toHaveProperty('note')
   })
 
   // A workout logged before exclusion moved onto the entries (ENG-11) carries only the whole-

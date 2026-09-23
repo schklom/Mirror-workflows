@@ -25,6 +25,15 @@ const list = v => (Array.isArray(v) ? v : [])
 // other device's untouched copy is still recognised as the same record.
 const keyOf = w => (w?.id != null ? w.id : legacySyncKey(w))
 
+// The fields of the whole workout the editor can change — its note, its name (renamed, or derived
+// again when a routine is added) and the body weight it was logged with — which the history can
+// change too while the editor is open: WorkoutDetail writes the note, and a sync brings in what
+// another device wrote. Save takes the draft's value only where the editor changed it, so an
+// editor opened on an old note does not write that old note back over a newer one, or delete a
+// note written meanwhile. The note is compared as the finish writes it, trimmed.
+const SESSION_FIELDS = ['note', 'name', 'bw']
+const sessionField = (w, k) => (k === 'note' ? (w?.note || '').trim() : (w?.[k] ?? null))
+
 // The best load one workout logged for an exercise, across every occurrence of it.
 function bestIn(workout, id) {
   let best = 0
@@ -48,6 +57,7 @@ export function editCompletedSession(state, ref) {
   const active = clone(original)
   active.cur = 0
   active.editingWorkoutId = key
+  active.editBase = Object.fromEntries(SESSION_FIELDS.map(k => [k, sessionField(original, k)]))
   // A workout saved before exclusion moved onto the entries (ENG-11) carries only the whole-workout
   // flag. The editor rebuilds that flag from the entries (buildCompletedWorkout), so it is written
   // onto each of them here, the way a session starts since: the edited workout stays out of
@@ -66,9 +76,10 @@ export function editCompletedSession(state, ref) {
  *
  * The record is the one history holds now, not the one the editor opened: another device may have
  * moved it or corrected its note meanwhile, and what the editor does not edit stays as that left
- * it. The sets are the editor's — the edit saved last wins, as it does between devices. A record
- * deleted meanwhile (the deletion already reached this device) is not brought back behind the
- * person's back: Save throws, and the draft stays open to keep editing or drop.
+ * it — the note and the name too, unless the editor changed them itself. The sets are the
+ * editor's — the edit saved last wins, as it does between devices. A record deleted meanwhile
+ * (the deletion already reached this device) is not brought back behind the person's back: Save
+ * throws, and the draft stays open to keep editing or drop.
  */
 export function saveWorkoutEdit(state, now = Date.now()) {
   const active = state.active
@@ -95,7 +106,15 @@ export function saveWorkoutEdit(state, now = Date.now()) {
     return merged
   })
   const record = { ...current, ...updated, id: key, d: current.d, start: current.start, end: current.end }
-  for (const k of ['note', 'excludeFromProgression']) if (!(k in updated)) delete record[k]
+  if (!('excludeFromProgression' in updated)) delete record.excludeFromProgression
+  const base = active.editBase
+  for (const k of SESSION_FIELDS) {
+    // A draft from before `editBase` existed has nothing to compare with, and keeps the editor's.
+    const edited = !base || sessionField(updated, k) !== base[k]
+    const value = edited ? sessionField(updated, k) : current[k]
+    if (value == null || value === '') delete record[k]
+    else record[k] = value
+  }
   record.vol = workoutVolume(record)
   stampWorkout(record, now)
   state.workouts[index] = record

@@ -4,7 +4,7 @@ import { useStore } from '../store/useStore.js'
 import { useUI } from '../store/useUI.js'
 import { exOr } from '../lib/exercises.js'
 import { activeProfile, exAvailable } from '../lib/equipment.js'
-import { uid } from '../lib/format.js'
+import { uid, capWords } from '../lib/format.js'
 import { t, exerciseNameFor } from '../lib/i18n.js'
 import { supersetUnits, moveSupersetUnit, cleanupSg, exLine, defaultConfig } from '../lib/history.js'
 import { Thumb } from '../components/Media.jsx'
@@ -13,7 +13,7 @@ import Icon from '../components/Icon.jsx'
 import { glyphOf } from '../lib/glyphs.js'
 import { Button, Row, SelectRow, Switch } from '../components/ui.jsx'
 import SwipeToDelete from '../components/SwipeToDelete.jsx'
-import { copyRoutine } from '../lib/routines.js'
+import { copyRoutine, replaceSlotExercise } from '../lib/routines.js'
 import { POLICIES_FOR, POLICY_NAME, POLICY_DESC } from '../lib/progression.js'
 import BodyMap from '../components/BodyMap.jsx'
 import { loadOfRoutine, rankOf, MUSCLE_NAME } from '../lib/muscles.js'
@@ -330,6 +330,25 @@ export default function RoutineEdit() {
       cleanupSg(ex)
     })
   }
+  // Replace (#110): the picker chooses what goes into slot `i`, and the slot keeps its sets, reps,
+  // weight and the rest (lib/routines.js replaceSlotExercise). "+" on a picker row replaces at
+  // once; tapping the row opens the new exercise's settings at those numbers first, the way the
+  // add flow does. One pick and the picker closes — it is a chooser here, not a stack you keep
+  // adding from. A slot that is no longer the exercise the sheet was opened on is left alone.
+  const replace = i => {
+    const openedOn = r.ex[i]?.id
+    const commit = (ex, fn) => {
+      picker.close()
+      let done = false
+      edit(x => { if (x[i] && x[i].id === openedOn) { x[i] = fn(x[i]); done = true } })
+      if (done) toast(t('Replaced with “{0}”', capWords(exerciseNameFor(ex))))
+    }
+    const picker = exercisePicker((ex, quick) => {
+      if (quick) { commit(ex, slot => replaceSlotExercise(slot, ex.id)); return }
+      const next = replaceSlotExercise(r.ex[i], ex.id)
+      exConfigSheet(ex, next, cfg => commit(ex, slot => ({ id: ex.id, sg: slot.sg, ...cfg })), null, r)
+    }, { title: t('Replace exercise') })
+  }
   const toggleLink = i => edit(ex => {
     if (i < 1) return
     const cur = ex[i], prev = ex[i - 1]
@@ -397,7 +416,7 @@ export default function RoutineEdit() {
           deleteLabel={t('Remove from routine')}
           onDelete={() => edit(x => { x.splice(i, 1); cleanupSg(x) })}
           onClick={() => {
-            exConfigSheet(ex, e, cfg => edit(x => { x[i] = { id: x[i].id, sg: x[i].sg, ...cfg } }), () => edit(x => { x.splice(i, 1); cleanupSg(x) }), r)
+            exConfigSheet(ex, e, cfg => edit(x => { x[i] = { id: x[i].id, sg: x[i].sg, ...cfg } }), () => edit(x => { x.splice(i, 1); cleanupSg(x) }), r, null, () => replace(i))
           }}>
           <Thumb ex={ex} />
           <div className="grow"><div className="tt capitalize">{exerciseNameFor(ex)}</div><div className="ss">{exLine(e, S.unit)}</div>

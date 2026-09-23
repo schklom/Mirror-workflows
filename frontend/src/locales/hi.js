@@ -430,6 +430,8 @@ export default {
   'Delete exercise': 'एक्सरसाइज़ हटाएं',
   'Edit or delete this exercise': 'इस एक्सरसाइज़ को संपादित या हटाएं',
   'Remove from routine': 'रूटीन से हटाएं',
+  'Replace exercise': 'व्यायाम बदलें',
+  'Replaced with “{0}”': '"{0}" से बदला गया',
   'Minimize': 'छोटा करें',
   'Expand': 'बड़ा करें',
   'Exercise animations': 'व्यायाम एनिमेशन',

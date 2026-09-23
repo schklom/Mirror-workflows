@@ -430,6 +430,8 @@ export default {
   'Delete exercise': '운동 삭제',
   'Edit or delete this exercise': '이 운동 편집 또는 삭제',
   'Remove from routine': '루틴에서 제거',
+  'Replace exercise': '운동 교체',
+  'Replaced with “{0}”': '"{0}"(으)로 교체됨',
   'Minimize': '축소',
   'Expand': '확대',
   'Exercise animations': '운동 애니메이션',

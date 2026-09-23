@@ -709,6 +709,7 @@ export const PT_BR_OVERRIDES = {
   'First time in this routine — starting from its own target.': 'Primeira vez nesta rotina — você começa pela meta dela.',
   'No weight logged last time — enter what you lift and progression takes it from there.': 'Nenhum peso registrado na última vez — informe quanto você levanta e a progressão segue a partir daí.',
   'reps from your last session': 'reps da sua última sessão',
+  'Replaced with “{0}”': 'Substituído por “{0}”',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

@@ -430,6 +430,8 @@ export default {
   'Delete exercise': 'Удалить упражнение',
   'Edit or delete this exercise': 'Изменить или удалить это упражнение',
   'Remove from routine': 'Убрать из программы',
+  'Replace exercise': 'Заменить упражнение',
+  'Replaced with “{0}”': 'Заменено на «{0}»',
   'Minimize': 'Свернуть',
   'Expand': 'Развернуть',
   'Exercise animations': 'Анимации упражнений',

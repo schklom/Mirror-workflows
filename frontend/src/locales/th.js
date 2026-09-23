@@ -435,6 +435,8 @@ export default {
   'Delete exercise': 'ลบท่าออกกำลังกาย',
   'Edit or delete this exercise': 'แก้ไขหรือลบท่านี้',
   'Remove from routine': 'ลบออกจากรูทีน',
+  'Replace exercise': 'แทนที่ท่าออกกำลังกาย',
+  'Replaced with “{0}”': 'แทนที่ด้วย “{0}” แล้ว',
   'Minimize': 'ย่อ',
   'Expand': 'ขยาย',
   'Exercise animations': 'ภาพเคลื่อนไหวท่าออกกำลังกาย',

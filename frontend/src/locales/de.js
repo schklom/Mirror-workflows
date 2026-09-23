@@ -449,6 +449,8 @@ export default {
   'Delete exercise': 'Übung löschen',
   'Edit or delete this exercise': 'Übung bearbeiten oder löschen',
   'Remove from routine': 'Aus Routine entfernen',
+  'Replace exercise': 'Übung ersetzen',
+  'Replaced with “{0}”': 'Ersetzt durch „{0}“',
   'Minimize': 'Verkleinern',
   'Expand': 'Vergrößern',
   'Exercise animations': 'Übungs-Animationen',

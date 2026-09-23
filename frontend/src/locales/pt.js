@@ -430,6 +430,8 @@ export default {
   'Delete exercise': 'Eliminar exercício',
   'Edit or delete this exercise': 'Editar ou eliminar este exercício',
   'Remove from routine': 'Remover da rotina',
+  'Replace exercise': 'Substituir exercício',
+  'Replaced with “{0}”': 'Substituído por «{0}»',
   'Minimize': 'Minimizar',
   'Expand': 'Ampliar',
   'Exercise animations': 'Animações dos exercícios',

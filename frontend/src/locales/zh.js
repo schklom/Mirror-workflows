@@ -430,6 +430,8 @@ export default {
   'Delete exercise': '删除动作',
   'Edit or delete this exercise': '编辑或删除此动作',
   'Remove from routine': '从计划中移除',
+  'Replace exercise': '替换动作',
+  'Replaced with “{0}”': '已替换为“{0}”',
   'Minimize': '缩小',
   'Expand': '放大',
   'Exercise animations': '动作动画',

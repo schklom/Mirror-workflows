@@ -430,6 +430,8 @@ export default {
   'Delete exercise': 'Egzersizi sil',
   'Edit or delete this exercise': 'Bu egzersizi düzenle veya sil',
   'Remove from routine': 'Rutinden çıkar',
+  'Replace exercise': 'Egzersizi değiştir',
+  'Replaced with “{0}”': '“{0}” ile değiştirildi',
   'Minimize': 'Küçült',
   'Expand': 'Büyüt',
   'Exercise animations': 'Egzersiz animasyonları',

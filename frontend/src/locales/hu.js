@@ -435,6 +435,8 @@ export default {
   'Delete exercise': 'Gyakorlat törlése',
   'Edit or delete this exercise': 'Gyakorlat szerkesztése vagy törlése',
   'Remove from routine': 'Eltávolítás a rutinból',
+  'Replace exercise': 'Gyakorlat lecserélése',
+  'Replaced with “{0}”': 'Lecserélve erre: „{0}”',
   'Minimize': 'Kicsinyítés',
   'Expand': 'Kibontás',
   'Exercise animations': 'Gyakorlat-animációk',

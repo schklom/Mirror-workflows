@@ -145,6 +145,22 @@ describe('StructuralBalance view', () => {
     expect([...scored.querySelectorAll('button')].some(b => b.textContent.includes('Log body weight'))).toBe(false)
   })
 
+  it('says why a logged lift is not scored when its anchor never was', () => {
+    const S = clone(DEF)
+    S.workouts = [workoutAt('0047', Date.now(), [setDoneSet(57.5, 10)])]   // incline bench, no close-grip bench
+    useStore.setState({ S, user: null })
+    const host = render()
+    const incline = host.querySelector('[data-role-id="inclineBench"]')
+    expect(incline.dataset.status).toBe('no-data')
+    expect(incline.textContent).toContain('Not scored')
+    expect(incline.textContent).not.toContain('No data')
+    expect(incline.querySelector('[data-needs-anchor]').textContent).toBe('Log the anchor lift to score this one.')
+    const anchor = host.querySelector('[data-role-id="narrowBench"]')
+    expect(anchor.textContent).toContain('No data')
+    expect(anchor.querySelector('[data-needs-anchor]')).toBe(null)
+    expect(host.querySelector('[data-role-id="frontSquat"] [data-needs-anchor]')).toBe(null)   // not logged either
+  })
+
   it('the back chevron navigates to /stats', () => {
     const host = render()
     act(() => host.querySelector('.iconbtn').click())

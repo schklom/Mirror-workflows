@@ -1542,4 +1542,6 @@ export default {
   'Use default exercise': 'Varsayılan egzersizi kullan',
   'Custom': 'Özel',
   'Log your body weight to score this lift.': 'Bu hareketin değerlendirilmesi için vücut ağırlığını kaydet.',
+  'Log the anchor lift to score this one.': 'Bunu değerlendirmek için referans hareketi kaydet.',
+  'Not scored': 'Değerlendirilmedi',
 }

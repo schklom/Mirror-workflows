@@ -1450,6 +1450,8 @@ export default {
   'Use default exercise': 'Використати вправу за замовчуванням',
   'Custom': 'Власний вибір',
   'Log your body weight to score this lift.': 'Запиши вагу тіла, щоб оцінити цю вправу.',
+  'Log the anchor lift to score this one.': 'Запиши опорну вправу, щоб оцінити цю.',
+  'Not scored': 'Не оцінено',
   // --- v1.3.9: password sign-in next to passkeys, admin reset codes (#118) ---
   'Sign in with password': 'Увійти з паролем',
   'Password': 'Пароль',

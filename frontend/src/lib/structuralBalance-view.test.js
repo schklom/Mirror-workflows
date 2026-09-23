@@ -12,4 +12,9 @@ describe('balanceStatusView', () => {
   it('falls back to no-data for an unknown status', () => {
     expect(balanceStatusView('bogus')).toEqual({ label: 'No data', severity: 3 })
   })
+
+  it('reads a logged lift with no anchor to hold it against as not scored, not as no data', () => {
+    expect(balanceStatusView('no-data', true)).toEqual({ label: 'Not scored', severity: 3 })
+    expect(balanceStatusView('no-data', false)).toEqual({ label: 'No data', severity: 3 })
+  })
 })

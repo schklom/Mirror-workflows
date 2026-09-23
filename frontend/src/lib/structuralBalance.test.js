@@ -694,3 +694,24 @@ describe('ratioFor', () => {
     expect(ratioFor(role, { estKg: 80 }, { bodyweightKg: null })).toBe(null)
   })
 })
+
+// A lift logged for months next to an anchor never logged read "No data", with nothing saying the
+// anchor was the reason. The result says so, like a missing weigh-in.
+describe('a role waiting on its anchor says so', () => {
+  const role = (S, template, roleId) => computeBalance(S, template).find(r => r.roleId === roleId)
+  const logged = { unit: 'kg', workouts: [workoutAt('0047', NOW - 1000, [setDone(57.5, 10)]), workoutAt('0031', NOW, [setDone(35, 8)])] }
+
+  it('flags a logged load-ratio lift whose anchor has no reading, and nothing else', () => {
+    expect(role(logged, TEMPLATES.poliquin, 'inclineBench')).toMatchObject({ status: BALANCE_STATUSES.NO_DATA, needsAnchor: true, mappedExerciseId: '0047' })
+    expect(role(logged, TEMPLATES.poliquin, 'barbellCurl')).toMatchObject({ status: BALANCE_STATUSES.NO_DATA, needsAnchor: true })
+    expect(role(logged, TEMPLATES.poliquin, 'frontSquat').needsAnchor).toBe(false)   // not logged: plain no data
+    expect(role(logged, TEMPLATES.poliquin, 'narrowBench').needsAnchor).toBe(false)  // the anchor itself
+  })
+
+  it('stops once the anchor is logged', () => {
+    const S = { ...logged, workouts: [...logged.workouts, workoutAt('0030', NOW, [setDone(100, 1)])] }
+    const incline = role(S, TEMPLATES.poliquin, 'inclineBench')
+    expect(incline.needsAnchor).toBe(false)
+    expect(incline.status).not.toBe(BALANCE_STATUSES.NO_DATA)
+  })
+})

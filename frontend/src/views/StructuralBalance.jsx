@@ -53,7 +53,7 @@ export default function StructuralBalance() {
     <div className="card">
       {results.map(r => {
         const role = template.roles.find(role => role.id === r.roleId)
-        const view = balanceStatusView(r.status)
+        const view = balanceStatusView(r.status, r.needsAnchor)
         // The exercise the number came from when there is one, otherwise the one this role is
         // set to — a role you just pointed at an exercise should name it, logged or not.
         const exId = r.mappedExerciseId || r.configuredExerciseId
@@ -75,6 +75,9 @@ export default function StructuralBalance() {
                 </span>
                 {r.needsBodyweight && <span className="small" data-needs-bodyweight style={{ display: 'block', color: 'var(--label-2)' }}>
                   {t('Log your body weight to score this lift.')}
+                </span>}
+                {r.needsAnchor && <span className="small" data-needs-anchor style={{ display: 'block', color: 'var(--label-2)' }}>
+                  {t('Log the anchor lift to score this one.')}
                 </span>}
               </span>
               <span className="v" style={{ textAlign: 'end', flexShrink: 0 }}>

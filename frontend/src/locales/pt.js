@@ -1542,4 +1542,6 @@ export default {
   'Use default exercise': 'Usar exercício predefinido',
   'Custom': 'Personalizado',
   'Log your body weight to score this lift.': 'Regista o teu peso corporal para avaliar este exercício.',
+  'Log the anchor lift to score this one.': 'Regista o exercício de referência para avaliar este.',
+  'Not scored': 'Sem avaliação',
 }

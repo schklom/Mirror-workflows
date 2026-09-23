@@ -266,12 +266,15 @@ function evaluateRole(template, role, currentByRoleId, bodyweightKg, S) {
   const base = { roleId: role.id, configuredExerciseId, targetPct, isOverridden: Boolean(override) }
   const needsBodyweight = waitsOnBodyweight(S, role, exerciseIdsFor(S, template, role), current, bodyweightKg)
   if (!current) {
-    return { ...base, mappedExerciseId: null, current: null, actualPct: null, status: BALANCE_STATUSES.NO_DATA, needsBodyweight }
+    return { ...base, mappedExerciseId: null, current: null, actualPct: null, status: BALANCE_STATUSES.NO_DATA, needsBodyweight, needsAnchor: false }
   }
   // An anchor role (no anchorRoleId) is compared against itself — always 100% when it has data.
   const anchorCurrent = role.anchorRoleId ? currentByRoleId.get(role.anchorRoleId) : current
   const actualPct = ratioFor(role, current, { anchorCurrent, bodyweightKg, targetPct })
-  return { ...base, mappedExerciseId: current.exId, current, actualPct, status: classify(actualPct, classifyTarget), needsBodyweight }
+  // Logged, but nothing to hold it against: the anchor never was. Still no score, but the view
+  // must not say there is no data for a lift with months of sets — it says what is missing.
+  const needsAnchor = !!role.anchorRoleId && role.evaluationMode === EVALUATION_MODES.LOAD_RATIO && !(anchorCurrent?.estKg > 0)
+  return { ...base, mappedExerciseId: current.exId, current, actualPct, status: classify(actualPct, classifyTarget), needsBodyweight, needsAnchor }
 }
 
 // Pure ratio-computation engine entry point.

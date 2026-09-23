@@ -1553,4 +1553,6 @@ export default {
   'Use default exercise': 'ใช้ท่าฝึกเริ่มต้น',
   'Custom': 'กำหนดเอง',
   'Log your body weight to score this lift.': 'บันทึกน้ำหนักตัวเพื่อประเมินท่านี้',
+  'Log the anchor lift to score this one.': 'บันทึกท่าอ้างอิงเพื่อประเมินท่านี้',
+  'Not scored': 'ยังไม่ได้ประเมิน',
 }

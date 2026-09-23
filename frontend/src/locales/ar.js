@@ -1506,6 +1506,8 @@ export default {
   'Use default exercise': 'استخدام التمرين الافتراضي',
   'Custom': 'مخصص',
   'Log your body weight to score this lift.': 'سجّل وزن جسمك لتقييم هذه الرفعة.',
+  'Log the anchor lift to score this one.': 'سجّل الرفعة المرجعية لتقييم هذه الرفعة.',
+  'Not scored': 'لم يُقيَّم',
   // --- v1.3.9: password sign-in next to passkeys, admin reset codes (#118) ---
   'Sign in with password': 'تسجيل الدخول بكلمة المرور',
   'Password': 'كلمة المرور',

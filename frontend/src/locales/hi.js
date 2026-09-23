@@ -1542,4 +1542,6 @@ export default {
   'Use default exercise': 'डिफ़ॉल्ट व्यायाम उपयोग करें',
   'Custom': 'कस्टम',
   'Log your body weight to score this lift.': 'इस व्यायाम का आकलन करने के लिए अपने शरीर का वज़न दर्ज करें।',
+  'Log the anchor lift to score this one.': 'इसका आकलन करने के लिए आधार व्यायाम दर्ज करें।',
+  'Not scored': 'आकलन नहीं हुआ',
 }

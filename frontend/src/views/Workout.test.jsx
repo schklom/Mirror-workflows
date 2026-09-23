@@ -386,6 +386,30 @@ describe('Workout set completion flow', () => {
     expect(mocks.startRest).not.toHaveBeenCalled()
   })
 
+  // A rest that ran out stays on screen as Ready (#204) until it is dismissed. It is not a rest
+  // counting down, so re-checking a finished set still owes the rest it always did (issue #3).
+  it('starts the rest a re-check owes while the last one only shows Ready', async () => {
+    await mount([exercise('current', [true, false, false])])
+    mocks.timer = { left: 0, total: 90, endsAt: Date.now() - 1000, forIdx: 0, ready: true }
+
+    await toggleSet(0)
+    await rerender()
+    await toggleSet(0)
+
+    expect(mocks.startRest).toHaveBeenCalledWith(90, 0)
+  })
+
+  it('leaves a rest that is still counting down alone on a re-check', async () => {
+    await mount([exercise('current', [true, false, false])])
+    mocks.timer = { left: 40, total: 90, endsAt: Date.now() + 40000, forIdx: 0 }
+
+    await toggleSet(0)
+    await rerender()
+    await toggleSet(0)
+
+    expect(mocks.startRest).not.toHaveBeenCalled()
+  })
+
   it('leaves a completed superset selected without opening a top-weight sheet', async () => {
     const group = 'superset-1'
     await mount([

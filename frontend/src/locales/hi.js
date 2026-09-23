@@ -1314,4 +1314,11 @@ export default {
   'Weekly average': 'साप्ताहिक औसत',
   'Week of {0}': '{0} वाला सप्ताह',
   'Average {0}': 'औसत {0}',
+  // --- last time or best set under each exercise (#173) ---
+  'Best set': 'सर्वश्रेष्ठ सेट',
+  'Show last time instead': 'इसके बजाय पिछली बार दिखाएँ',
+  'Show your best set instead': 'इसके बजाय अपना सर्वश्रेष्ठ सेट दिखाएँ',
+  'Shown under each exercise': 'हर व्यायाम के नीचे दिखाया जाता है',
+  'What you did the last time, in that routine.': 'उस रूटीन में पिछली बार आपने जो किया।',
+  'Your heaviest set of the exercise, from any workout.': 'किसी भी वर्कआउट से, इस व्यायाम का आपका सबसे भारी सेट।',
 }

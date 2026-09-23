@@ -1325,4 +1325,11 @@ export default {
   'Weekly average': 'ค่าเฉลี่ยรายสัปดาห์',
   'Week of {0}': 'สัปดาห์เริ่ม {0}',
   'Average {0}': 'เฉลี่ย {0}',
+  // --- last time or best set under each exercise (#173) ---
+  'Best set': 'เซ็ตที่ดีที่สุด',
+  'Show last time instead': 'แสดงครั้งก่อนแทน',
+  'Show your best set instead': 'แสดงเซ็ตที่ดีที่สุดของคุณแทน',
+  'Shown under each exercise': 'แสดงใต้แต่ละท่า',
+  'What you did the last time, in that routine.': 'สิ่งที่คุณทำครั้งก่อนในรูทีนนั้น',
+  'Your heaviest set of the exercise, from any workout.': 'เซ็ตที่หนักที่สุดของท่านี้ จากทุกการฝึก',
 }

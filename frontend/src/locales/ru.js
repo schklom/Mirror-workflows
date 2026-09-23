@@ -1314,4 +1314,11 @@ export default {
   'Weekly average': 'Среднее за неделю',
   'Week of {0}': 'Неделя с {0}',
   'Average {0}': 'В среднем {0}',
+  // --- last time or best set under each exercise (#173) ---
+  'Best set': 'Лучший подход',
+  'Show last time instead': 'Показать прошлый раз',
+  'Show your best set instead': 'Показать ваш лучший подход',
+  'Shown under each exercise': 'Под каждым упражнением',
+  'What you did the last time, in that routine.': 'Что вы сделали в прошлый раз в этой программе.',
+  'Your heaviest set of the exercise, from any workout.': 'Ваш самый тяжёлый подход в этом упражнении, из любой тренировки.',
 }

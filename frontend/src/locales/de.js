@@ -1334,4 +1334,11 @@ export default {
   'Weekly average': 'Wochendurchschnitt',
   'Week of {0}': 'Woche vom {0}',
   'Average {0}': 'Schnitt {0}',
+  // --- last time or best set under each exercise (#173) ---
+  'Best set': 'Bester Satz',
+  'Show last time instead': 'Stattdessen das letzte Mal zeigen',
+  'Show your best set instead': 'Stattdessen deinen besten Satz zeigen',
+  'Shown under each exercise': 'Unter jeder Übung angezeigt',
+  'What you did the last time, in that routine.': 'Was du beim letzten Mal in dieser Routine gemacht hast.',
+  'Your heaviest set of the exercise, from any workout.': 'Dein schwerster Satz der Übung, aus allen Trainings.',
 }

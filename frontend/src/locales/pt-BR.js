@@ -712,6 +712,13 @@ export const PT_BR_OVERRIDES = {
   // a missed day logged afterwards (#284) — pt-PT's "Registar" reads as Portugal; "Marcar todas
   // as séries como feitas" is shared and inherits
   'Log this workout': 'Registrar este treino',
+  // last time or best set under each exercise (#173) — pt-PT's "Por baixo" and tu-forms read as
+  // Portugal; "Melhor série" is shared and inherits
+  'Show last time instead': 'Mostrar a última vez',
+  'Show your best set instead': 'Mostrar sua melhor série',
+  'Shown under each exercise': 'Abaixo de cada exercício',
+  'What you did the last time, in that routine.': 'O que você fez da última vez nessa rotina.',
+  'Your heaviest set of the exercise, from any workout.': 'Sua série mais pesada do exercício, de qualquer treino.',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

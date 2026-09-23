@@ -1317,4 +1317,11 @@ export default {
   'Weekly average': 'Heti átlag',
   'Week of {0}': 'Hét: {0}',
   'Average {0}': 'Átlag {0}',
+  // --- last time or best set under each exercise (#173) ---
+  'Best set': 'Legjobb sorozat',
+  'Show last time instead': 'Inkább a legutóbbit mutasd',
+  'Show your best set instead': 'Inkább a legjobb sorozatodat mutasd',
+  'Shown under each exercise': 'Minden gyakorlat alatt',
+  'What you did the last time, in that routine.': 'Amit legutóbb abban a rutinban csináltál.',
+  'Your heaviest set of the exercise, from any workout.': 'A gyakorlat legnehezebb sorozata, bármelyik edzésedből.',
 }

@@ -1314,4 +1314,11 @@ export default {
   'Weekly average': '每周平均',
   'Week of {0}': '{0} 起的一周',
   'Average {0}': '平均 {0}',
+  // --- last time or best set under each exercise (#173) ---
+  'Best set': '最佳组',
+  'Show last time instead': '改为显示上次',
+  'Show your best set instead': '改为显示你的最佳组',
+  'Shown under each exercise': '每个动作下方显示',
+  'What you did the last time, in that routine.': '上次在该训练日完成的内容。',
+  'Your heaviest set of the exercise, from any workout.': '该动作在所有训练中最重的一组。',
 }

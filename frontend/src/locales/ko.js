@@ -1314,4 +1314,11 @@ export default {
   'Weekly average': '주간 평균',
   'Week of {0}': '{0} 주',
   'Average {0}': '평균 {0}',
+  // --- last time or best set under each exercise (#173) ---
+  'Best set': '최고 세트',
+  'Show last time instead': '대신 지난번 보기',
+  'Show your best set instead': '대신 최고 세트 보기',
+  'Shown under each exercise': '각 운동 아래에 표시',
+  'What you did the last time, in that routine.': '그 루틴에서 지난번에 한 내용.',
+  'Your heaviest set of the exercise, from any workout.': '모든 운동 중 이 운동의 가장 무거운 세트.',
 }

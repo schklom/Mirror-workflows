@@ -1314,4 +1314,11 @@ export default {
   'Weekly average': 'Haftalık ortalama',
   'Week of {0}': '{0} haftası',
   'Average {0}': 'Ortalama {0}',
+  // --- last time or best set under each exercise (#173) ---
+  'Best set': 'En iyi set',
+  'Show last time instead': 'Bunun yerine geçen seferi göster',
+  'Show your best set instead': 'Bunun yerine en iyi setini göster',
+  'Shown under each exercise': 'Her egzersizin altında',
+  'What you did the last time, in that routine.': 'O rutinde geçen sefer yaptıkların.',
+  'Your heaviest set of the exercise, from any workout.': 'Bu egzersizdeki en ağır setin, herhangi bir antrenmandan.',
 }

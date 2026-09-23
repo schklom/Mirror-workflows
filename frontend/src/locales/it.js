@@ -1314,4 +1314,11 @@ export default {
   'Weekly average': 'Media settimanale',
   'Week of {0}': 'Settimana del {0}',
   'Average {0}': 'Media {0}',
+  // --- last time or best set under each exercise (#173) ---
+  'Best set': 'Serie migliore',
+  'Show last time instead': 'Mostra invece l’ultima volta',
+  'Show your best set instead': 'Mostra invece la tua serie migliore',
+  'Shown under each exercise': 'Sotto ogni esercizio',
+  'What you did the last time, in that routine.': 'Quello che hai fatto l’ultima volta in quella routine.',
+  'Your heaviest set of the exercise, from any workout.': 'La tua serie più pesante dell’esercizio, da qualsiasi allenamento.',
 }

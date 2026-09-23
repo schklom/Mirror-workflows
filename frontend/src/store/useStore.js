@@ -101,6 +101,10 @@ export const DEF = {
   // weight; 'last' carries the reps over from the last session, the way it always worked before.
   // Absent reads as 'plan' too, which is what the MCP bridge sees on a raw state file.
   startFrom: 'plan',
+  // What the line under an exercise holds today's rows against (#173, views/Workout.jsx): 'last'
+  // is the last time in that routine, 'best' the best set of the exercise ever logged. Tapping
+  // the line switches it. Absent reads as 'last', the line as it always was.
+  logRef: 'last',
 }
 const clone = o => JSON.parse(JSON.stringify(o))
 

@@ -1022,6 +1022,10 @@ body.chips-dragging *{cursor:inherit}
 }
 .progline.warn{color:var(--yellow)}
 .progline svg{flex:none;margin-top:2px}
+/* "Last time" / "Best set" under the plan line (#173): a button that switches between the two,
+   looking like the plain line it replaced, with a small icon to say it can be tapped. */
+.refline{width:100%;display:flex;align-items:flex-start;gap:6px;margin-bottom:4px;padding:0;text-align:left}
+.refline svg{flex:none;margin-top:2px;font-size:12px}
 
 /* start a timed set (issue #16) — sits where you'd otherwise reach for the checkbox */
 .setrow .setgo{

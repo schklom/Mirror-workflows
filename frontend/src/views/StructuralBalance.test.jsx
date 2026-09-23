@@ -131,6 +131,9 @@ describe('StructuralBalance view', () => {
     expect(rdl.textContent).toContain('Log your body weight to score this lift.')
     expect(host.querySelector('[data-role-id="goodMorning"] [data-needs-bodyweight]')).toBe(null)
     const log = [...rdl.querySelectorAll('button')].find(b => b.textContent.includes('Log body weight'))
+    // Two buttons side by side squeeze each other's labels onto two lines at 360 px (Hungarian):
+    // the row wraps them instead.
+    expect(log.parentElement.style.flexWrap).toBe('wrap')
     act(() => log.click())
     expect(useUI.getState().sheets.length).toBe(1)
 

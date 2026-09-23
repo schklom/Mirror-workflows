@@ -1248,17 +1248,41 @@ describe('workout list view', () => {
   })
 
   it('marks the current unit and moves the mark with Set current', async () => {
-    await mount([exercise('plain-bench', [false]), exercise('plain-row', [false])], 0, {
-      workoutView: 'list', active: { workoutView: 'list' },
-    })
+    await mount([exercise('plain-bench', [false]), exercise('plain-row', [false])], 0, { workoutView: 'list' })
 
     await act(async () => { focusButton(units()[1]).dispatchEvent(new dom.Event('click', { bubbles: true })) })
     expect(mocks.S.active.cur).toBe(1)
 
-    // #260: "Set current" has no purpose besides jumping to that exercise, so it now also
-    // drops the session back into card view - the only place a single exercise is front and
-    // center - instead of leaving you in the list to tap Cards yourself.
+    // The list is the saved default here, so the tap only moves the mark and the list stays.
+    await rerender()
+    expect(mocks.S.active.workoutView).toBeUndefined()
+    expect(units()[0].textContent).not.toContain('Current')
+    expect(units()[1].textContent).toContain('Current')
+    expect(focusButton(units()[0])).toBeTruthy()
+  })
+
+  it('goes back to cards on Set current when the list was only opened for this session (#260)', async () => {
+    await mount([exercise('plain-bench', [false]), exercise('plain-row', [false])], 0, {
+      workoutView: 'cards', active: { workoutView: 'list' },
+    })
+
+    await act(async () => { focusButton(units()[1]).dispatchEvent(new dom.Event('click', { bubbles: true })) })
+    // Picking the exercise to look at next is all the tap is for, and cards are where one
+    // exercise is front and centre, so it does not take a second trip through the ⋮ menu.
+    expect(mocks.S.active.cur).toBe(1)
     expect(mocks.S.active.workoutView).toBe('cards')
+  })
+
+  it('stays in the list on Set current when the exercise buttons act on the current exercise', async () => {
+    await mount([exercise('plain-bench', [false]), exercise('plain-row', [false])], 0, {
+      workoutView: 'cards', wc: { exerciseButtons: true }, active: { workoutView: 'list' },
+    })
+
+    await act(async () => { focusButton(units()[1]).dispatchEvent(new dom.Event('click', { bubbles: true })) })
+    // Move/Swap/Remove below the list act on the exercise marked Current, so the tap picks their
+    // target and jumping away to cards would take the buttons out from under the athlete.
+    expect(mocks.S.active.cur).toBe(1)
+    expect(mocks.S.active.workoutView).toBe('list')
   })
 
   // Since !92 finishing an exercise no longer moves the current marker on its own (cards use

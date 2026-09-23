@@ -5,7 +5,7 @@ import { workoutControls } from '../lib/workout-controls.js'
 import { useUI } from '../store/useUI.js'
 import { exOr, betterWeight } from '../lib/exercises.js'
 import { usesBar, barWeightFor, plateSplit } from '../lib/bar.js'
-import { effectiveRoutines, effectiveRoutineIds, lastEntryFor, bestWeightFor, bestWeightForEntry, buildSets, freestyleConfig, defaultConfig, setsDoneActive, setUnitsTotal, supersetUnits, unitOf, setLabel, modeOf, isBw, isPerSide, repStep, EFFORT, effortOf, stepEffort, capEffort, cascadeWeight, insertWarmupRow, removeRowAt, pairAdjacent, unpairSuperset, cleanupSg, applyIntensifierPlan, pinnedNoteFor, exNoteFor } from '../lib/history.js'
+import { effectiveRoutines, effectiveRoutineIds, lastEntryFor, bestWeightFor, bestWeightForEntry, buildSets, freestyleConfig, defaultConfig, setsDoneActive, setUnitsTotal, supersetUnits, unitOf, setLabel, modeOf, isBw, isPerSide, repStep, EFFORT, effortOf, stepEffort, capEffort, cascadeWeight, insertWarmupRow, removeRowAt, pairAdjacent, unpairSuperset, cleanupSg, applyIntensifierPlan, pinnedNoteFor, exNoteFor, setsRepsOf } from '../lib/history.js'
 import { fmtNum, capWords, fmtDate, todayISO, exCount, DAYN } from '../lib/format.js'
 import { beep, vibrate, unlock } from '../lib/sound.js'
 import { t, exerciseNameFor } from '../lib/i18n.js'
@@ -72,7 +72,8 @@ function Elapsed({ start }) {
 /* ---------- one exercise block (reps: weight×reps · time: a held duration · cardio: duration+speed) ---------- */
 // `compact` shrinks the block for a superset member; `dense` (compact view) goes further and
 // drops everything that is not a set you are logging — media, tag chips, the note lines, the
-// "last time" recap and the progression line — leaving the name, the ⋯ menu and the sets.
+// "last time" recap and the progression line — leaving the name, the ⋯ menu, the one-line plan
+// the rows are measured against, and the sets.
 // Nothing dropped is lost: it is all still on the ⋯ menu, or one ⋮ switch back to list/cards.
 function ExerciseBlock({ entryIdx, compact, dense, onToggle, onToggleSide, onField, onAddSet, onRemoveSet, onAddWarmup, onRemoveSetAt, onStartTimed, onPairPrev, onPairNext, onSetRowRef, onProgressionSettings, onSwap, onMoveUp, onMoveDown, canMoveUp, canMoveDown, onRemoveExercise, busy }) {
   const S = useStore(s => s.S)
@@ -147,6 +148,26 @@ function ExerciseBlock({ entryIdx, compact, dense, onToggle, onToggleSide, onFie
   // the session was built so the reason matches the numbers already in the rows.
   const plan = entry.plan
   const guidance = progressionGuidance(plan)
+  // The plan this exercise was built from (issue #275), on one quiet line in every view — the
+  // routine's "2 × 10" is the thing the rows are measured against. When today's rows open
+  // somewhere else, the same line says so: progression moved the sets or reps (a bodyweight
+  // climb, a deload, an added set), or they carry last session's reps ("Your last session").
+  // An entry built before plans were stamped, and a freestyle one, has no plan to show.
+  const planned = entry.planned && mode !== 'cardio' ? entry.planned : null
+  const planLine = (() => {
+    if (!planned) return null
+    const today = entry.target || {}
+    const todaySets = today.sets || planned.sets || 1
+    const inPlan = timed
+      ? today.sec == null || today.sec === planned.sec
+      : today.reps == null || (planned.repsMin > 0 ? today.reps >= planned.repsMin && today.reps <= planned.reps : today.reps === planned.reps)
+    const note = todaySets !== (planned.sets || 1) || !inPlan
+      ? t('today {0}', setsRepsOf({ mode, sets: todaySets, reps: today.reps, sec: today.sec }))
+      : entry.carried ? t('reps from your last session') : null
+    return <div className="small dim planline" style={{ marginBottom: 4 }}>
+      {t('Plan: {0}', setsRepsOf({ ...planned, mode }))}{note ? ' · ' + note : ''}
+    </div>
+  })()
   // A bodyweight set has no weight to type, so the column is not there (issue #32) — one
   // stepper instead of two, which is the whole point of the flag. Adding a belt weight in the
   // config brings it back, now labelled as the addition it is.
@@ -378,6 +399,8 @@ function ExerciseBlock({ entryIdx, compact, dense, onToggle, onToggleSide, onFie
         <button className="iconbtn" aria-label={t('More')} title={t('More')} onClick={openMore}><Icon name="more" /></button>
       </div>
     </div>
+    {/* compact view keeps the plan line: it is what the rows are measured against */}
+    {dense && planLine}
     {wc.pairButtons && !compact && !dense && (onPairPrev || onPairNext) && <div className="row" style={{ gap: 6, flexWrap: 'wrap', marginBottom: 8 }}>
       {onPairPrev && <Button size="xs" variant="tinted" icon="link" title={t('Make superset with previous')} onClick={onPairPrev}>{t('Make superset with previous')}</Button>}
       {onPairNext && <Button size="xs" variant="tinted" icon="link" title={t('Make superset with next')} onClick={onPairNext}>{t('Make superset with next')}</Button>}
@@ -406,6 +429,7 @@ function ExerciseBlock({ entryIdx, compact, dense, onToggle, onToggleSide, onFie
       {t('From {0}:', fmtDate(pinnedNote.d, true))} {pinnedNote.note}
     </div>}
     {entry.note && <div className="exnote">{entry.note}</div>}
+    {planLine}
     {last && <div className="small dim" style={{ marginBottom: 4 }}>{t('Last time')} ({fmtDate(last.d)}): {last.sets.map(s => setLabel(entry.id, s, last.target)).join(', ')}</div>}
     {/* Bar + plates for barbell work: what to load per side for the set in front of you
         (first undone set; the heaviest row once everything is checked). The logged number
@@ -537,7 +561,7 @@ function ActiveWorkout() {
   // the whole session is visible and scrollable (Settings → During a workout → Workout view,
   // seeded onto s.active and overridable for this session from the header ⋮). compact is list
   // with the per-exercise media, tag chips, note lines, "last time" and progression line
-  // stripped — just names and set rows. Every set handler below is already entry-index
+  // stripped — just names, the one-line plan and set rows. Every set handler below is already entry-index
   // parameterised, so these only change what is rendered — completion, rest, top-weight and
   // auto-advance share one path. Unknown/absent values read as cards, keeping every
   // pre-existing profile (and a session started before this field) as it was.
@@ -812,6 +836,8 @@ function ActiveWorkout() {
         activeEntry.target = built.target
         activeEntry.plan = built.plan
         activeEntry.planned = built.planned
+        if (built.carried) activeEntry.carried = true
+        else delete activeEntry.carried
         activeEntry.sets = [...doneWarm, ...freshWarm.slice(doneWarm.length), ...doneWork, ...freshWork.slice(doneWork.length)]
       })
     }, null, routine)

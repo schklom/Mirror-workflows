@@ -1257,6 +1257,48 @@ describe('workout compact view', () => {
   })
 })
 
+// Issue #275: the card says what the routine planned, in every view, and when the rows opened
+// somewhere else — progression moved them, or they carry last session's reps.
+describe('the plan line', () => {
+  const planned = (extra = {}) => exercise('plain-bench', [false, false], {
+    planned: { sets: 2, reps: 10, weight: 60 },
+    target: { mode: 'reps', sets: 2, reps: 10, weight: 62.5, bodyweight: false },
+    ...extra,
+  })
+  const line = () => container.querySelector('.planline')?.textContent
+
+  it('shows the plan quietly when the rows are the plan', async () => {
+    await mount([planned()])
+    expect(line()).toBe('Plan: 2 × 10')
+  })
+
+  it('says when progression moved the sets or reps', async () => {
+    await mount([planned({ target: { mode: 'reps', sets: 3, reps: 10, weight: 0, bodyweight: true } })])
+    expect(line()).toBe('Plan: 2 × 10 · today 3 × 10')
+  })
+
+  it('says when the reps were carried over from the last session', async () => {
+    await mount([planned({ carried: true, sets: [{ w: 62.5, r: 15, done: false }, { w: 62.5, r: 15, done: false }] })])
+    expect(line()).toBe('Plan: 2 × 10 · reps from your last session')
+  })
+
+  it('reads a double-progression aim inside the range as the plan', async () => {
+    await mount([planned({ planned: { sets: 3, reps: 12, repsMin: 8, weight: 40 }, target: { mode: 'reps', sets: 3, reps: 11, repsMin: 8, weight: 40 } })])
+    expect(line()).toBe('Plan: 3 × 8–12')
+  })
+
+  it('stays in compact view, where the last-time recap and progression line go', async () => {
+    await mount([planned()], 0, { workoutView: 'compact' })
+    expect(line()).toBe('Plan: 2 × 10')
+    expect(container.textContent).not.toContain('Last time')
+  })
+
+  it('is not there for an entry with no plan (freestyle, or started before plans were kept)', async () => {
+    await mount([exercise('plain-bench', [false])])
+    expect(container.querySelector('.planline')).toBeNull()
+  })
+})
+
 describe('workout view header menu', () => {
   const openMenu = async () => {
     const btn = container.querySelector('button[aria-label="Workout view"]')

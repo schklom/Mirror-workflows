@@ -74,6 +74,10 @@ describe('buildSessionEntries', () => {
     const [entry] = buildSessionEntries(history([15, 15], { startFrom: 'last' }), { id: 'r', prog: 'linear', ex: [cfg] })
     expect(entry.sets.map(s => [s.w, s.r])).toEqual([[42.5, 15], [42.5, 15]])
     expect(entry.target.reps).toBe(10)
+    // …and marks the entry, so the workout card can say where the 15 came from.
+    expect(entry.carried).toBe(true)
+    expect(buildSessionEntries(history([15, 15]), { id: 'r', prog: 'linear', ex: [cfg] })[0].carried).toBeUndefined()
+    expect(buildSessionEntries(history([10, 10], { startFrom: 'last' }), { id: 'r', prog: 'linear', ex: [cfg] })[0].carried).toBeUndefined()
   })
 
   it('warms up at the plan\'s reps, not at last session\'s', () => {

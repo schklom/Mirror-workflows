@@ -1315,4 +1315,7 @@ export default {
   'Copy as text': 'คัดลอกเป็นข้อความ',
   'Copied': 'คัดลอกแล้ว',
   'Could not copy': 'คัดลอกไม่ได้',
+  // --- a missed day logged afterwards (#284) ---
+  'Log this workout': 'บันทึกการฝึกนี้',
+  'Mark all sets done': 'ทำเครื่องหมายทุกเซ็ตว่าเสร็จแล้ว',
 }

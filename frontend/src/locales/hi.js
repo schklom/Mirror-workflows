@@ -1304,4 +1304,7 @@ export default {
   'Copy as text': 'टेक्स्ट के रूप में कॉपी करें',
   'Copied': 'कॉपी हो गया',
   'Could not copy': 'कॉपी नहीं हो सका',
+  // --- a missed day logged afterwards (#284) ---
+  'Log this workout': 'यह वर्कआउट दर्ज करें',
+  'Mark all sets done': 'सभी सेट पूरे मार्क करें',
 }

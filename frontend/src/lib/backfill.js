@@ -1,6 +1,8 @@
 // Logging a workout after the fact. The session itself is the ordinary active workout with a
 // `backfill` field on it; these helpers are the parts that differ from a live session, kept
 // pure so the date arithmetic and the history surgery can be tested without the UI.
+import { bestWeightForEntry } from './history.js'
+import { isSideSet, syncSideAggregate } from './workout-model.js'
 
 export const workoutsOn = (S, iso) => (S.workouts || []).filter(w => w.d === iso)
 
@@ -36,4 +38,20 @@ export function completeBackfill(workouts, active, w) {
   const replaceId = active.backfill?.replaceId
   const kept = replaceId ? workouts.filter(x => x.id !== replaceId) : workouts
   return insertChronological(kept, w)
+}
+
+// "Mark all sets done" while logging a past workout (#284). A session written down after the
+// fact went as planned more often than not — a routine that is just a run is the case that asked
+// for it — and ticking every box one by one to say so is the chore that leaves it unlogged. Both
+// sides of a unilateral set are ticked, and each exercise gets the top weight that ticking its
+// last set would have stamped. Returns new entries; the caller stores them.
+export function markAllSetsDone(entries) {
+  return (entries || []).map(entry => {
+    const sets = (entry.sets || []).map(s => (isSideSet(s)
+      ? syncSideAggregate({ ...s, sides: { L: { ...s.sides.L, done: true }, R: { ...s.sides.R, done: true } } })
+      : { ...s, done: true }))
+    const next = { ...entry, sets }
+    next.topW = bestWeightForEntry(next) || null
+    return next
+  })
 }

@@ -1324,4 +1324,7 @@ export default {
   'Copy as text': 'Als Text kopieren',
   'Copied': 'Kopiert',
   'Could not copy': 'Kopieren nicht möglich',
+  // --- a missed day logged afterwards (#284) ---
+  'Log this workout': 'Dieses Training eintragen',
+  'Mark all sets done': 'Alle Sätze abhaken',
 }

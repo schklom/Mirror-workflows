@@ -1604,6 +1604,11 @@ function DayOverride({ iso, close }) {
   // one here collapses a combined day to it (docs/COMBINE_ROUTINES.md §8). The check marks
   // show everything currently planned for the day.
   const effIds = effectiveRoutineIds(st, iso)
+  // A planned day in the past with nothing logged was missed — or trained and never logged,
+  // like a run you forgot to start the app for (#284). Logging it opens "Log a past workout" on
+  // that date with the day's routines picked, where the time and the duration can still change.
+  const missed = iso < todayISO() && effIds.length > 0 && !workoutsOn(st, iso).length
+  const logIt = () => { close(); logPastWorkoutSheet({ iso, routineIds: effIds }) }
   const set = v => {
     update(s => { if (!v) delete s.dayPlan[iso]; else s.dayPlan[iso] = v })
     close()
@@ -1612,6 +1617,7 @@ function DayOverride({ iso, close }) {
   return <>
     <h3>{fmtDate(iso, true)}</h3>
     <div className="muted small" style={{ marginBottom: 12 }}>{t('Weekly plan:')} {weeklyNames.length ? deriveSessionName(weeklyNames) : t('Rest')}{hasOvr && <span style={{ color: 'var(--orange)' }}> · {t('changed for this day')}</span>}<br />{t('Sick, missed a day or want a different session? Pick what to train instead.')}</div>
+    {missed && <div style={{ marginBottom: 14 }}><Button variant="primary" icon="checkCircle" onClick={logIt}>{t('Log this workout')}</Button></div>}
     <div className="list">
       {st.routines.map(r => <div key={r.id} className="item" {...tappable(() => set(r.id))}>
         <span className="lrow-i"><Icon name={glyphOf(r.emoji)} /></span>
@@ -1857,19 +1863,28 @@ export function beginWorkout(routineIds, bw) {
 // The same screen as a live session, pointed at another day. `backfill` on the active
 // session is what tells the workout screen to drop the clock and the rest timers, and tells
 // the finish path to file the workout where its date belongs instead of at the end.
-function LogPastWorkout({ close }) {
+// `initial` is a missed day of the plan (#284): its date, and the routines planned for it. A
+// combined day is offered as the one session it plans, next to each routine on its own.
+const PLANNED_DAY = '__planned-day'
+function LogPastWorkout({ initial, close }) {
   const st = useStore(s => s.S)
   const yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1)
-  const [date, setDate] = useState(isoOf(yesterday))
+  const planned = [].concat(initial?.routineIds || []).map(id => st.routines.find(r => r.id === id)).filter(Boolean)
+  const [date, setDate] = useState(initial?.iso || isoOf(yesterday))
   const [time, setTime] = useState('18:00')
   const [dur, setDur] = useState(60)
-  const [routineId, setRoutineId] = useState('')
+  const [routineId, setRoutineId] = useState(planned.length > 1 ? PLANNED_DAY : planned[0]?.id || '')
   const today = todayISO()
-  const options = [{ value: '', label: t('Freestyle') }, ...st.routines.map(r => ({ value: r.id, label: r.name }))]
+  const options = [
+    { value: '', label: t('Freestyle') },
+    ...(planned.length > 1 ? [{ value: PLANNED_DAY, label: deriveSessionName(planned.map(r => r.name)) }] : []),
+    ...st.routines.map(r => ({ value: r.id, label: r.name })),
+  ]
 
   const go = replaceId => {
     close()
-    beginBackfill({ iso: date, time, durationMin: dur, routineId: routineId || null, replaceId })
+    const routineIds = routineId === PLANNED_DAY ? planned.map(r => r.id) : routineId ? [routineId] : []
+    beginBackfill({ iso: date, time, durationMin: dur, routineIds, replaceId })
   }
   const submit = () => {
     if (!date || date > today) { toast(t('Pick a day up to today')); return }
@@ -1907,15 +1922,18 @@ function SameDayChoice({ iso, existing, onReplace, onAdd, close }) {
     <Button variant="ghost" className="dim" onClick={close}>{t('Cancel')}</Button>
   </div>
 }
-export function logPastWorkoutSheet() {
+// History's button hands this its click event; only a day from the plan counts as `initial`.
+export function logPastWorkoutSheet(initial) {
   if (S().active) { toast(t('Finish the current workout first.')); return }
-  ui().openSheet(close => <LogPastWorkout close={close} />)
+  const from = typeof initial?.iso === 'string' ? initial : null
+  ui().openSheet(close => <LogPastWorkout initial={from} close={close} />)
 }
-// Backfill stays single-routine (the LogPastWorkout UI is one picker), but it emits the new
-// shape: a one-element (or empty) routine list, per-entry rid, no top-level routineId.
-function beginBackfill({ iso, time, durationMin, routineId, replaceId }) {
+// A backfilled session is built the way a live one is (buildCombinedEntries → buildPlannedEntry),
+// so its entries carry the same stamps: the routine list, per-entry rid and the plan, no
+// top-level routineId. One routine from the picker, or every routine of a missed combined day.
+function beginBackfill({ iso, time, durationMin, routineIds, replaceId }) {
   const st = S()
-  const { entries, routineIds: rids, routines } = buildCombinedEntries(st, routineId ? [routineId] : [])
+  const { entries, routineIds: rids, routines } = buildCombinedEntries(st, routineIds || [])
   update(s => {
     s.active = {
       id: uid(), d: iso, start: backfillStart(iso, time),

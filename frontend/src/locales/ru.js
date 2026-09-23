@@ -1304,4 +1304,7 @@ export default {
   'Copy as text': 'Скопировать как текст',
   'Copied': 'Скопировано',
   'Could not copy': 'Не удалось скопировать',
+  // --- a missed day logged afterwards (#284) ---
+  'Log this workout': 'Записать эту тренировку',
+  'Mark all sets done': 'Отметить все подходы выполненными',
 }

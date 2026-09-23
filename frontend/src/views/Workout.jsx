@@ -20,6 +20,7 @@ import { defaultIncrement, weightIncrement, stepWeight } from '../lib/progressio
 import { progressionGuidance } from '../lib/progression-copy.js'
 import { buildPlannedEntry, plannedConfigOf } from '../lib/session-start.js'
 import { glyphOf } from '../lib/glyphs.js'
+import { markAllSetsDone } from '../lib/backfill.js'
 import { isWarmupRow, isDropSet, isRestPauseSet, dropsOf, clustersOf, addDrop, addCluster, removeDropAt, removeClusterAt, setDropAt, setClusterAt, nextDropWeight, nextBurstReps, isSideSet, makeSideSet, setSideField, toggleSide, addSideDrop, removeSideDropAt, setSideDropAt, addSideCluster, removeSideClusterAt, setSideClusterAt } from '../lib/workout-model.js'
 import { canMoveActiveWorkoutUnit, moveActiveWorkoutUnit } from '../lib/active-workout-order.js'
 import { MUSCLE_NAME } from '../lib/muscles.js'
@@ -768,10 +769,22 @@ function ActiveWorkout() {
       { icon: 'minimize', label: t('Compact'), on: workoutView === 'compact', onClick: () => setWorkoutView('compact') },
     ],
   })
+  // Logging a past workout (#284): the sets were done days ago, so one tap ticks them all and
+  // offers the finish, the same sheet the last set of a live session opens. What went
+  // differently is still edited on the rows before finishing.
+  const markAllDone = () => {
+    update(s => { if (s.active) s.active.entries = markAllSetsDone(s.active.entries) }, true)
+    const fresh = useStore.getState().S.active
+    // Ticked here rather than row by row: without this, unticking and reticking one of them
+    // would count as new progress and replay the flow a first tick runs.
+    if (fresh) progressHighWater.current = fresh.entries.map(e => e.sets.filter(s => s.done).length)
+    workoutCompleteSheet()
+  }
   // The header ⋮: bring another routine into the session, then the layout switch nested a
   // level down (it used to be the whole menu).
   const openViewMenu = () => menuSheet({
     items: [
+      A.backfill && A.entries.length > 0 && { icon: 'checkCircle', label: t('Mark all sets done'), onClick: markAllDone },
       { icon: 'pencil', label: t('Rename workout'), onClick: renameWorkoutSheet },
       { icon: 'plus', label: t('Add routine'), sub: t('Bring another routine into this session'), onClick: addRoutineToSessionSheet },
       { icon: 'list', label: t('Layout'), sub: LAYOUT_LABEL[workoutView] || LAYOUT_LABEL.cards, onClick: openLayoutMenu },

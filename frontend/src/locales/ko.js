@@ -1304,4 +1304,7 @@ export default {
   'Copy as text': '텍스트로 복사',
   'Copied': '복사됨',
   'Could not copy': '복사할 수 없음',
+  // --- a missed day logged afterwards (#284) ---
+  'Log this workout': '이 운동 기록',
+  'Mark all sets done': '모든 세트 완료로 표시',
 }

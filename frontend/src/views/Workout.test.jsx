@@ -1705,3 +1705,31 @@ describe('set-row column header', () => {
     expect(container.querySelector('.setrow .stp.w').classList.contains('plain')).toBe(true)
   })
 })
+
+// #284: logging a past workout that went as planned takes one tap, not one per set.
+describe('mark all sets done while logging a past workout', () => {
+  const openMenu = async () => {
+    const btn = container.querySelector('button[aria-label="Workout view"]')
+    await act(async () => { btn.dispatchEvent(new dom.Event('click', { bubbles: true })) })
+    return mocks.menuSheet.mock.calls.at(-1)[0]
+  }
+  const labels = menu => menu.items.filter(Boolean).map(it => it.label)
+
+  it('ticks every set, stamps the top weight and offers the finish', async () => {
+    await mount([
+      exercise('plain-bench', [false, true]),
+      exercise('plain-row', [false], { sets: [{ w: 40, r: 8, done: false, phase: 'warmup' }, { w: 70, r: 8, done: false }] }),
+    ], 0, { active: { backfill: { durationMin: 60, replaceId: null }, routineIds: [] } })
+    const menu = await openMenu()
+    expect(labels(menu)[0]).toBe('Mark all sets done')
+    await act(async () => { menu.items.filter(Boolean)[0].onClick() })
+    expect(mocks.S.active.entries.every(e => e.sets.every(s => s.done))).toBe(true)
+    expect(mocks.S.active.entries.map(e => e.topW)).toEqual([60, 70])
+    expect(mocks.workoutCompleteSheet).toHaveBeenCalledTimes(1)
+  })
+
+  it('is only there for a past workout', async () => {
+    await mount([exercise('plain-bench', [false])], 0, { active: { routineIds: [] } })
+    expect(labels(await openMenu())).not.toContain('Mark all sets done')
+  })
+})

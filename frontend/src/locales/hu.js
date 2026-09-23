@@ -1307,4 +1307,7 @@ export default {
   'Copy as text': 'Másolás szövegként',
   'Copied': 'Kimásolva',
   'Could not copy': 'Nem sikerült másolni',
+  // --- a missed day logged afterwards (#284) ---
+  'Log this workout': 'Az edzés rögzítése',
+  'Mark all sets done': 'Összes sorozat késznek jelölése',
 }

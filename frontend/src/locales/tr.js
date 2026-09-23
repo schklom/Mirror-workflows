@@ -1304,4 +1304,7 @@ export default {
   'Copy as text': 'Metin olarak kopyala',
   'Copied': 'Kopyalandı',
   'Could not copy': 'Kopyalanamadı',
+  // --- a missed day logged afterwards (#284) ---
+  'Log this workout': 'Bu antrenmanı kaydet',
+  'Mark all sets done': 'Tüm setleri tamamlandı olarak işaretle',
 }

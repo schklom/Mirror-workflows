@@ -18,6 +18,28 @@ export const backfillStart = (iso, time = '18:00') => {
 // A live session ends when you tap finish; a logged one ends when you said it did.
 export const backfillEnd = active => active.start + Math.max(1, active.backfill?.durationMin || 60) * 60000
 
+// The history a session logged into the past is built from (#284): only what came before it.
+// Built from the whole log, "Log this workout" for a missed Monday opened at the weights Friday's
+// session had progressed to and saved them as Monday's — a spike on the chart, and a best set dated
+// days before it was lifted. A session sits where insertChronological files it, so everything filed
+// ahead of that spot is its past: earlier days, and earlier the same day. The workout it replaces
+// is not, since that one is gone once this is saved. A confirmed working weight (exWeights) dated
+// after the day is later progression as well; one with no date is kept, nothing says when it came.
+// A view for reading only: the lists are new, everything else is S's own.
+export function historyAsOf(S, { d, start = 0, replaceId = null }) {
+  const filedBefore = w => (w.d || '') < d || ((w.d || '') === d && (w.start || 0) <= start)
+  const workouts = (S.workouts || []).filter(w => filedBefore(w) && !(replaceId && w.id === replaceId))
+  const exWeights = Object.fromEntries(Object.entries(S.exWeights || {}).filter(([, kept]) => !kept?.d || kept.d <= d))
+  return { ...S, workouts, exWeights }
+}
+
+// The history the running session is built from and held against: as of its own day while it is
+// logged into the past, and the whole log for a live one (S itself, so that costs nothing).
+export const sessionHistory = S => {
+  const A = S?.active
+  return A?.backfill ? historyAsOf(S, { d: A.d, start: A.start, replaceId: A.backfill.replaceId }) : S
+}
+
 // The workouts array is chronological (History reverses it), so a past workout cannot just be
 // pushed — it goes where its date and start time put it, after anything from the same moment.
 export function insertChronological(workouts, w) {

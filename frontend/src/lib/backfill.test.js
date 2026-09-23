@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { workoutsOn, backfillStart, backfillEnd, insertChronological, completeBackfill, markAllSetsDone } from './backfill.js'
+import { workoutsOn, backfillStart, backfillEnd, insertChronological, completeBackfill, markAllSetsDone, historyAsOf, sessionHistory } from './backfill.js'
 
 const w = (id, d, start = 0) => ({ id, d, start })
 
@@ -55,6 +55,48 @@ describe('completeBackfill', () => {
     const out = completeBackfill(list, { backfill: { durationMin: 60, replaceId: 'b' } }, w('x', '2026-01-05', 30))
     expect(out.map(x => x.id)).toEqual(['a', 'x', 'd'])
     expect(list).toHaveLength(3)
+  })
+})
+
+// #284: a missed Monday logged on Saturday opened at Friday's progression and saved it as Monday's.
+// What a session logged into the past is built from is the history filed ahead of it.
+describe('historyAsOf', () => {
+  const list = [w('a', '2026-01-01', 10), w('b', '2026-01-05', 10), w('c', '2026-01-05', 20), w('d', '2026-01-09', 10)]
+  const S = { unit: 'kg', workouts: list, exWeights: { bench: { w: 100, d: '2026-01-09' }, row: { w: 60, d: '2026-01-02' }, curl: { w: 12 } } }
+
+  it('keeps what is filed ahead of the session: earlier days, and earlier the same day', () => {
+    expect(historyAsOf(S, { d: '2026-01-05', start: 15 }).workouts.map(x => x.id)).toEqual(['a', 'b'])
+    expect(historyAsOf(S, { d: '2026-01-05', start: 20 }).workouts.map(x => x.id)).toEqual(['a', 'b', 'c'])
+    expect(historyAsOf(S, { d: '2026-01-03' }).workouts.map(x => x.id)).toEqual(['a'])
+    expect(historyAsOf(S, { d: '2025-12-31' }).workouts).toEqual([])
+  })
+
+  it('leaves out the workout being replaced', () => {
+    expect(historyAsOf(S, { d: '2026-01-05', start: 30, replaceId: 'b' }).workouts.map(x => x.id)).toEqual(['a', 'c'])
+  })
+
+  it('drops a working weight confirmed after the day, and keeps one that carries no date', () => {
+    expect(historyAsOf(S, { d: '2026-01-05', start: 15 }).exWeights).toEqual({ row: { w: 60, d: '2026-01-02' }, curl: { w: 12 } })
+  })
+
+  it('reads without writing: S keeps its history, and everything else comes through', () => {
+    const view = historyAsOf(S, { d: '2026-01-03' })
+    expect(S.workouts).toHaveLength(4)
+    expect(Object.keys(S.exWeights)).toHaveLength(3)
+    expect(view.unit).toBe('kg')
+    expect(historyAsOf({}, { d: '2026-01-03' })).toMatchObject({ workouts: [], exWeights: {} })
+  })
+})
+
+describe('sessionHistory', () => {
+  const list = [w('a', '2026-01-01', 10), w('b', '2026-01-05', 10), w('d', '2026-01-09', 10)]
+
+  it('is the whole state for a live session, and the history before the day for a logged one', () => {
+    const live = { workouts: list, exWeights: {}, active: { d: '2026-01-10', start: 99 } }
+    expect(sessionHistory(live)).toBe(live)
+    const past = { workouts: list, exWeights: {}, active: { d: '2026-01-05', start: 50, backfill: { durationMin: 60, replaceId: 'b' } } }
+    expect(sessionHistory(past).workouts.map(x => x.id)).toEqual(['a'])
+    expect(sessionHistory({ workouts: list })).toEqual({ workouts: list })
   })
 })
 

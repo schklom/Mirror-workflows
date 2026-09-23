@@ -117,6 +117,24 @@ describe('logging a missed planned day', () => {
     expect(w.entries[0].planned).toMatchObject({ sets: 2, reps: 10 })
   })
 
+  // Review of #284: Monday missed, the routine trained again on Tuesday, Monday logged on
+  // Wednesday. Built from the whole log, Monday opened at the weight Tuesday had progressed to and
+  // was saved with it, filed ahead of Tuesday: a spike on the chart and a best set dated a day early.
+  it('builds a missed day from the sessions before it, not from one logged after it', () => {
+    const pushed = (id, d, w) => ({
+      id, d, start: new Date(d + 'T18:00:00').getTime(), end: new Date(d + 'T19:00:00').getTime(), name: 'Push',
+      routineIds: ['A'], prs: [], entries: [{ id: BENCH, rid: 'A', target: { sets: 2, reps: 10, weight: w, mode: 'reps' },
+        planned: { sets: 2, reps: 10, weight: 50 }, sets: [{ w, r: 10, done: true }, { w, r: 10, done: true }] }],
+    })
+    install({ workouts: [pushed('fri', '2026-09-11', 50), pushed('tue', '2026-09-15', 52.5)] })
+    dayOverrideSheet('2026-09-14')
+    tapInTopSheet('Log this workout')
+    tapInTopSheet('Continue')
+    const bench = S().active.entries.find(e => e.id === BENCH)
+    expect(bench.sets.filter(s => s.phase !== 'warmup').map(s => s.w)).toEqual([52.5, 52.5])
+    expect(bench.target.weight).toBe(52.5)
+  })
+
   it('still refuses while a workout is running', () => {
     const toast = vi.fn()
     useUI.setState({ toast })

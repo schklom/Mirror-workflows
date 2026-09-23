@@ -22,7 +22,7 @@ import { defaultIncrement, weightIncrement, stepWeight } from '../lib/progressio
 import { progressionGuidance } from '../lib/progression-copy.js'
 import { buildPlannedEntry, plannedConfigOf, builtOutOfProgression } from '../lib/session-start.js'
 import { glyphOf } from '../lib/glyphs.js'
-import { markAllSetsDone } from '../lib/backfill.js'
+import { markAllSetsDone, sessionHistory } from '../lib/backfill.js'
 import { bestSetFor } from '../lib/exercise-history.js'
 import { isWarmupRow, isDropSet, isRestPauseSet, dropsOf, clustersOf, addDrop, addCluster, removeDropAt, removeClusterAt, setDropAt, setClusterAt, nextDropWeight, nextBurstReps, isSideSet, makeSideSet, setSideField, toggleSide, addSideDrop, removeSideDropAt, setSideDropAt, addSideCluster, removeSideClusterAt, setSideClusterAt, WEIGHT_ORIGIN_MANUAL } from '../lib/workout-model.js'
 import { canMoveActiveWorkoutUnit, moveActiveWorkoutUnit } from '../lib/active-workout-order.js'
@@ -149,9 +149,12 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
   const mode = modeOf({ ...(entry.target || {}), id: entry.id })
   const cardio = mode === 'cardio'
   const timed = mode === 'time'
+  // The history the rows were built from: before the session's day when it is logged into the
+  // past (sessionHistory), so "last time", the best set and the Best chip are not from later on.
+  const H = sessionHistory(S)
   // The routine's own last session of this exercise (or any, for a routine that has none), the
   // same one the rows and the progression line were built from (#216).
-  const last = lastEntryFor(S, entry.id, entry.rid)
+  const last = lastEntryFor(H, entry.id, entry.rid)
   const standingNote = exNoteFor(S, entry.id)
   // Only worth surfacing while there is still work left: once the exercise is finished, a note
   // telling you what to do in it is behind you, and the block is already long.
@@ -159,8 +162,8 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
   // The number is the heaviest logged set, or the working weight you kept.
   // On an assistance machine the best is the least help, and a 0 on either side means "nothing
   // logged" rather than a record (issue #232).
-  const bestHist = bestWeightFor(S, entry.id)
-  const bestKept = (S.exWeights[entry.id] || {}).w || 0
+  const bestHist = bestWeightFor(H, entry.id)
+  const bestKept = (H.exWeights[entry.id] || {}).w || 0
   const best = cardio ? 0
     : bestHist > 0 && bestKept > 0 ? betterWeight(entry.id, bestHist, bestKept) : Math.max(bestHist, bestKept)
   // What the progression policy decided for this session, and why (issue #17). Computed when
@@ -192,7 +195,7 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
   // the number to beat. Tapping the line switches between the two, and the choice is the
   // profile's (S.logRef), so every exercise and the next session follow it.
   const refBest = S.logRef === 'best'
-  const ref = refBest ? bestSetFor(S, entry.id, mode) : last
+  const ref = refBest ? bestSetFor(H, entry.id, mode) : last
   // An exercise logged before only in another mode (reps then, a hold today) has a last time but
   // no best set to hold today's rows against. The line stays and says so: gone, it took the
   // switch back to "Last time" with it, reachable then only from Settings or another card.
@@ -917,11 +920,12 @@ function ActiveWorkout() {
         if (!(full.sets > 0)) full.sets = activeEntry.sets.filter(x => !isWarmupRow(x)).length || 1
         // The sheet edits sets, reps, weight and warm-ups as well as the rule — so the rows are
         // rebuilt from the new config exactly the way the session start builds them (same reps
-        // source, same prescription, same stamped target), and only what you already logged is
+        // source, same prescription, same stamped target, and in a workout logged into the past the
+        // same history from before its day), and only what you already logged is
         // kept in place (done warm-ups first, then done work sets, then the fresh remainder).
         // Without a prescription only in a routine kept out of progression: an exercise kept out
         // by hand keeps its prescription, so its Undo leaves the numbers it should count at.
-        const built = buildPlannedEntry(s, full, activeRoutine, { noProg: builtOutOfProgression(activeEntry, activeRoutine) })
+        const built = buildPlannedEntry(sessionHistory(s), full, activeRoutine, { noProg: builtOutOfProgression(activeEntry, activeRoutine) })
         const fresh = built.sets
         const doneWarm = activeEntry.sets.filter(x => x.done && isWarmupRow(x))
         const doneWork = activeEntry.sets.filter(x => x.done && !isWarmupRow(x))
@@ -1308,16 +1312,18 @@ function ActiveWorkout() {
       // Freestyle has no routine prescription to apply: show the last target in the config
       // sheet and carry its completed rows forward. A planned session uses its configured
       // target when progression is off, while progression-enabled sessions keep their path.
-      const seed = freestyle ? freestyleConfig(S, { id: ex.id, ...defaultConfig(ex.id) }) : null
+      const seed = freestyle ? freestyleConfig(sessionHistory(S), { id: ex.id, ...defaultConfig(ex.id) }) : null
       const commit = cfg => update(s => {
         const full = { ...cfg, id: ex.id }
         // A planned session builds the exercise the way its routine would (prescription, reps
         // source, target); freestyle reproduces what you did last time.
+        // Read from before the session's day when it is logged into the past (sessionHistory).
+        const past = sessionHistory(s)
         const built = freestyle
-          ? { target: { ...cfg }, plan: null, sets: applyIntensifierPlan(buildSets(s, full, {
+          ? { target: { ...cfg }, plan: null, sets: applyIntensifierPlan(buildSets(past, full, {
             step: modeOf(full) === 'reps' ? weightIncrement(full, s.unit) : defaultIncrement(ex.id, s.unit), preferLast: true,
           }), full) }
-          : buildPlannedEntry(s, full, routine, { noProg })
+          : buildPlannedEntry(past, full, routine, { noProg })
         const insertAt = insertionIndexAfterCurrentUnit(supersetUnits(s.active.entries), s.active.cur, s.active.entries.length)
         s.active.entries.splice(insertAt, 0, { id: ex.id, ...built, ...(curRid ? { rid: curRid } : {}), ...(noProg ? { noProg: true } : {}) })
         s.active.cur = insertAt

@@ -576,6 +576,19 @@ describe('adding an exercise to a block kept out of progression', () => {
     expect(added.sets.map(s => s.w)).toEqual([102.5])
   })
 
+  // #284 review: an exercise added to a workout logged into the past is built from what came
+  // before that day, like the rest of it, not from a session logged after it.
+  it('builds an exercise added to a workout logged into the past from the history before its day', async () => {
+    const later = [...history, {
+      d: '2026-08-31', routineIds: ['main'],
+      entries: [{ id: BENCH, rid: 'main', target: { sets: 1, reps: 5, weight: 102.5 }, sets: [{ w: 102.5, r: 5, done: true }] }],
+    }]
+    const past = { d: '2026-08-29', start: Date.parse('2026-08-29T18:00:00'), backfill: { durationMin: 60, replaceId: null } }
+    await mount([exercise('row', [false], { rid: 'main' })], 0, { routines, workouts: later, active: past })
+    await addExerciseThroughSheets({ id: BENCH }, { mode: 'reps', sets: 1, reps: 5, weight: 40 })
+    expect(mocks.S.active.entries[1].sets.map(s => s.w)).toEqual([102.5])
+  })
+
   it('does not pass on an exercise kept out by hand for today (its ⋯ menu)', async () => {
     await mount([exercise('row', [false], { rid: 'main', noProg: true })], 0, { routines, workouts: history })
     await addExerciseThroughSheets({ id: BENCH }, { mode: 'reps', sets: 1, reps: 5, weight: 40 })
@@ -1951,6 +1964,19 @@ describe('the reference line: last time or best set', () => {
     expect(mocks.S.logRef).toBe('last')
     await rerender()
     expect(line().textContent).toMatch(/^Last time \(.+\): 0:30$/)
+  })
+
+  // #284 review: a workout logged into the past is held against what came before its day, the
+  // history its rows were built from, not against a session logged after it.
+  it('reads the history before the day of a workout logged into the past', async () => {
+    const later = [...history, session('2026-08-28', 'A', 90, 3)]
+    const past = { d: '2026-08-25', start: Date.parse('2026-08-25T18:00:00'), backfill: { durationMin: 60, replaceId: null } }
+    await mount([exercise('plain-bench', [false], { rid: 'A' })], 0, { workouts: later, active: past })
+    expect(line().textContent).toMatch(/^Last time \(.+\): 60×10$/)
+    await act(async () => { line().dispatchEvent(new dom.Event('click', { bubbles: true })) })
+    await rerender()
+    expect(line().textContent).toMatch(/^Best set \(.+\): 80×5$/)
+    expect(container.textContent).toContain('Best: 80 kg')
   })
 
   // The text is the reference; the name also says what a tap does, after the text it shows.

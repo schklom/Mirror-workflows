@@ -38,7 +38,7 @@ import { useSheetKeyboard, useRevealActiveChip, tappable } from './lib/use-sheet
 import { isFav, toggleFav, sortFavouritesFirst } from './lib/favourites.js'
 import { buildSessionEntries, buildPlannedEntry, builtOutOfProgression } from './lib/session-start.js'
 import { buildCombinedEntries, deriveSessionName } from './lib/session-merge.js'
-import { workoutsOn, backfillStart, backfillEnd, completeBackfill } from './lib/backfill.js'
+import { workoutsOn, backfillStart, backfillEnd, completeBackfill, historyAsOf, sessionHistory } from './lib/backfill.js'
 import { moveWorkout, sameWorkout, startTimeOf, durationMinOf, setWorkoutDuration } from './lib/workout-date.js'
 import { editCompletedSession } from './lib/session-edit.js'
 import { stampWorkout } from './lib/sync-merge.js'
@@ -1095,10 +1095,12 @@ export function swapActiveWorkoutExercise(index) {
     const freestyle = !slotRoutine
     // Same rows the add flow builds: last time's loads and, in a planned session, the
     // prescription — swapping barbell for dumbbell bench must not start you at an empty bar.
+    // Built from what came before the session's day when it is logged into the past (sessionHistory).
     const step = modeOf(full) === 'reps' ? weightIncrement(full, st.unit) : defaultIncrement(ex.id, st.unit)
+    const past = sessionHistory(st)
     const built = freestyle
-      ? { target: { ...cfg }, plan: null, sets: applyIntensifierPlan(buildSets(st, full, { step, preferLast: true }), full) }
-      : buildPlannedEntry(st, full, slotRoutine, { noProg: builtOutOfProgression(current, slotRoutine) })
+      ? { target: { ...cfg }, plan: null, sets: applyIntensifierPlan(buildSets(past, full, { step, preferLast: true }), full) }
+      : buildPlannedEntry(past, full, slotRoutine, { noProg: builtOutOfProgression(current, slotRoutine) })
     const replacement = {
       id: ex.id,
       ...built,
@@ -2131,12 +2133,16 @@ export function logPastWorkoutSheet(initial) {
 // A backfilled session is built the way a live one is (buildCombinedEntries → buildPlannedEntry),
 // so its entries carry the same stamps: the routine list, per-entry rid and the plan, no
 // top-level routineId. One routine from the picker, or every routine of a missed combined day.
+// Only from the history before that day (historyAsOf): a session logged later must not hand its
+// progression back to the day it skipped.
 function beginBackfill({ iso, time, durationMin, routineIds, replaceId }) {
   const st = S()
-  const { entries, routineIds: rids, routines } = buildCombinedEntries(st, routineIds || [])
+  const start = backfillStart(iso, time)
+  const past = historyAsOf(st, { d: iso, start, replaceId })
+  const { entries, routineIds: rids, routines } = buildCombinedEntries(past, routineIds || [])
   update(s => {
     s.active = {
-      id: uid(), d: iso, start: backfillStart(iso, time),
+      id: uid(), d: iso, start,
       routineIds: rids,
       name: routines.length ? deriveSessionName(routines.map(r => r.name)) : t('Freestyle'),
       bw: null, cur: 0, entries,
@@ -2160,7 +2166,7 @@ function AddRoutineToSession({ close }) {
   if (!active) return null
   const inSession = new Set([].concat(active.routineIds || []))
   const add = r => {
-    const entries = buildSessionEntries(st, r).map(e => ({ ...e, rid: r.id }))
+    const entries = buildSessionEntries(sessionHistory(st), r).map(e => ({ ...e, rid: r.id }))
     update(s => {
       if (!s.active) return
       s.active.entries.push(...entries)

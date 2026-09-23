@@ -74,7 +74,8 @@ Where the phone keeps things, in case you ever need them by hand:
 
 - `opengym-state.json` in the app's private data directory — the durable copy of everything
   on the phone, written after every change (not reachable without a rooted phone or `adb`
-  on a debug build).
+  on a debug build). `opengym-state-owner.json` beside it says which account that copy
+  belongs to: a paired phone only ever takes the file back for that account.
 - `opengym-stash.json`, same directory — changes kept by "Disconnect anyway" or by another
   account pairing, waiting for their server and account.
 - `Documents/opengym-backup-YYYY-MM-DD.json` — only with Settings → **Auto-backup on

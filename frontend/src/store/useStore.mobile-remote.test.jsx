@@ -16,7 +16,8 @@ import { syncFingerprint } from '../lib/sync-changes.js'
 
 const h = vi.hoisted(() => {
   vi.stubEnv('VITE_MOBILE', '1')   // lib/mobile.js: MOBILE = import.meta.env.VITE_MOBILE === '1'
-  return { files: new Map(), server: null, calls: [] }
+  // `refuse`: file names whose writes fail, like a full disk.
+  return { files: new Map(), server: null, calls: [], refuse: new Set() }
 })
 
 vi.mock('@capacitor/filesystem', () => ({
@@ -28,7 +29,11 @@ vi.mock('@capacitor/filesystem', () => ({
       if (!h.files.has(k)) throw new Error('File does not exist')
       return { data: h.files.get(k) }
     },
-    writeFile: async ({ path, directory, data }) => { h.files.set(directory + '/' + path, data); return { uri: 'file://' + path } },
+    writeFile: async ({ path, directory, data }) => {
+      if (h.refuse.has(path)) throw new Error('No space left on device')
+      h.files.set(directory + '/' + path, data)
+      return { uri: 'file://' + path }
+    },
   },
 }))
 vi.mock('@capacitor/local-notifications', () => ({
@@ -106,6 +111,7 @@ function pairedPhone({ localStorage: withLocal = true, mirror, synced = true } =
   delete S._rev
   h.files.set('DATA/opengym-remote.json', JSON.stringify({ mode: 'remote', base: BASE, token: 'TOKEN-OLD', user: USER }))
   h.files.set('DATA/opengym-state.json', JSON.stringify(mirror || S))
+  h.files.set('DATA/opengym-state-owner.json', JSON.stringify({ owner: USER.id, ts: (mirror || S)._ts }))
   if (withLocal) {
     localStorage.setItem('gym_state_v1', JSON.stringify(S))
     localStorage.setItem('gym_user', JSON.stringify(USER))
@@ -138,7 +144,7 @@ async function freshStore() {
   return useStore
 }
 
-beforeEach(() => installFetch())
+beforeEach(() => { installFetch(); h.refuse.clear() })
 afterEach(async () => {
   window.dispatchEvent(new Event('pagehide'))
   await sleep(20)
@@ -325,6 +331,23 @@ describe('Disconnect anyway keeps the owed changes for the next pairing', () => 
     expect(localStorage.getItem('gym_dirty')).toBeNull()
   })
 
+  it('killed straight after, the next start is local and empty: the account\'s copy is in the stash, not back on the screen', async () => {
+    pairedPhone()
+    h.server = refusing
+    let useStore = await freshStore()
+    await useStore.getState().boot()
+    useStore.getState().update(s => { s.workouts.push(workout('w2', '2026-09-15')) })
+    await useStore.getState().pushState()
+    await sleep(900)
+    expect(await useStore.getState().disconnectServer({ force: true })).toMatchObject({ stashed: true })
+
+    useStore = await freshStore()
+    await useStore.getState().boot()
+    expect(useStore.getState().user).toBeNull()
+    expect(useStore.getState().S.workouts).toEqual([])
+    expect(ids(readFile('opengym-stash.json')[BASE + '|u1'].state.workouts)).toEqual(['w1', 'w2'])
+  })
+
   it('a stash for another account stays where it is', async () => {
     pairedPhone()
     h.server = refusing
@@ -400,6 +423,133 @@ describe('remote-mode boot and the durable file mirror', () => {
     await useStore.getState().boot()
     expect(srv.puts).toHaveLength(0)
     expect(useStore.getState().sync).toMatchObject({ status: 'ok', pending: false })
+  })
+
+  it('with storage behind the mirror (a save it refused), the mirror\'s change is merged with the server copy, not pushed over it', async () => {
+    const mirror = { ...clone(SERVER_STATE), _ts: 5000, workouts: [workout('w1', '2026-09-10'), workout('w2', '2026-09-20')] }
+    delete mirror._rev
+    pairedPhone({ mirror })
+    const srv = serverWith({ ...SERVER_STATE, workouts: [...SERVER_STATE.workouts, workout('w-web', '2026-09-19')], _rev: 6 })
+    const useStore = await freshStore()
+    await useStore.getState().boot()
+
+    expect(ids(srv.doc.workouts)).toEqual(['w1', 'w-web', 'w2'])
+    expect(srv.puts.at(-1).baseRev).toBe(6)
+  })
+})
+
+/* The mirror is only ever the copy of the account the phone is paired with, as it last stood.
+   Whatever replaces the copy wholesale — another account paired, the server's copy adopted —
+   used to reach the file only 800 ms later, and an adopted copy keeps the server's older `_ts`:
+   a start in between found the file "newer", took the copy it held, and pushed it over the
+   server's with a baseRev that matched. Here the app is killed straight after each of those, or
+   the file cannot be written at all, and the next cold start puts nothing back. */
+describe('the file mirror never brings back a copy that is not this account\'s latest', () => {
+  const BEA = { id: 'u2', name: 'bea' }
+  // Bea's account on the same server: her own document, and the pairing code that is hers.
+  const beaServer = () => {
+    const srv = serverWith({ _ts: 500, _rev: 3, unit: 'kg', workouts: [workout('b1', '2026-09-01')], routines: [], bodyweight: [] })
+    h.server = (path, method, init) => (path === '/api/me' || path === '/api/pair/redeem' ? json(200, { token: 'T2', user: BEA }) : srv.handle(path, method, init))
+    return srv
+  }
+  // Andi logs a workout on the paired phone; it reaches his server and the file.
+  const andiLogged = async () => {
+    pairedPhone()
+    serverWith(SERVER_STATE)
+    const useStore = await freshStore()
+    await useStore.getState().boot()
+    useStore.getState().update(s => { s.workouts.push(workout('a-secret', '2026-09-21')) })
+    await useStore.getState().pushState()
+    await sleep(900)
+    expect(ids(readFile('opengym-state.json').workouts)).toEqual(['w1', 'a-secret'])
+    return useStore
+  }
+
+  it('another account paired, then the app killed at once: the next start keeps her copy, and nothing of his reaches her account', async () => {
+    let useStore = await andiLogged()
+    const bea = beaServer()
+    await useStore.getState().connectToServer('gym.example.com', 'ABCD2345', vi.fn(async () => false))
+    expect(ids(useStore.getState().S.workouts)).toEqual(['b1'])
+
+    useStore = await freshStore()
+    await useStore.getState().boot()
+    expect(ids(useStore.getState().S.workouts)).toEqual(['b1'])
+    expect(ids(bea.doc.workouts)).toEqual(['b1'])
+    expect(bea.puts).toHaveLength(0)
+  })
+
+  it('another account paired while the file cannot be written: his copy left in it is never taken for hers', async () => {
+    let useStore = await andiLogged()
+    const bea = beaServer()
+    h.refuse.add('opengym-state.json')
+    await useStore.getState().connectToServer('gym.example.com', 'ABCD2345', vi.fn(async () => false))
+    await sleep(900)
+    expect(ids(readFile('opengym-state.json').workouts)).toEqual(['w1', 'a-secret'])
+
+    useStore = await freshStore()
+    await useStore.getState().boot()
+    expect(ids(useStore.getState().S.workouts)).toEqual(['b1'])
+    expect(ids(bea.doc.workouts)).toEqual(['b1'])
+    expect(bea.puts).toHaveLength(0)
+  })
+
+  it('a phone that kept its own workouts out of the account does not push them in on the next start', async () => {
+    h.files.clear()
+    localStorage.clear()
+    const local = { ...clone(DEF), _ts: Date.now(), workouts: [workout('mine', '2026-09-20')] }
+    localStorage.setItem('gym_state_v1', JSON.stringify(local))
+    h.files.set('DATA/opengym-remote.json', JSON.stringify({ mode: 'local' }))
+    h.files.set('DATA/opengym-state.json', JSON.stringify(local))
+    let useStore = await freshStore()
+    await useStore.getState().boot()
+    const srv = serverWith(SERVER_STATE)
+    const ask = vi.fn(async () => false)
+    await useStore.getState().connectToServer('gym.example.com', 'ABCD2345', ask)
+    expect(ask).toHaveBeenCalled()
+    expect(ids(useStore.getState().S.workouts)).toEqual(['w1'])
+
+    useStore = await freshStore()
+    await useStore.getState().boot()
+    expect(ids(useStore.getState().S.workouts)).toEqual(['w1'])
+    expect(ids(srv.doc.workouts)).toEqual(['w1'])
+    expect(srv.puts).toHaveLength(0)
+  })
+
+  // The phone's clock runs ahead: its copy says 3000, while the newer revision the server holds
+  // was written by a device whose clock says 2000. The pull adopts that revision as it is.
+  const clockAhead = () => {
+    const mine = { ...clone(DEF), ...clone(SERVER_STATE), _ts: 3000 }
+    delete mine._rev
+    pairedPhone({ mirror: mine })
+    localStorage.setItem('gym_state_v1', JSON.stringify(mine))
+    localStorage.setItem('gym_sync', JSON.stringify({ rev: 5, ts: 3000 }))
+    return serverWith({ ...SERVER_STATE, _ts: 2000, _rev: 6, workouts: [...SERVER_STATE.workouts, workout('w-other', '2026-09-19')] })
+  }
+
+  it('a copy adopted from the server with an older clock stays adopted after a kill straight after', async () => {
+    const srv = clockAhead()
+    let useStore = await freshStore()
+    await useStore.getState().boot()
+    expect(ids(useStore.getState().S.workouts)).toEqual(['w1', 'w-other'])
+
+    useStore = await freshStore()
+    await useStore.getState().boot()
+    expect(ids(useStore.getState().S.workouts)).toEqual(['w1', 'w-other'])
+    expect(ids(srv.doc.workouts)).toEqual(['w1', 'w-other'])
+    expect(srv.puts).toHaveLength(0)
+  })
+
+  it('with the file not writable at all, the copy before the adopt is merged at most — never pushed over the other device\'s work', async () => {
+    const srv = clockAhead()
+    h.refuse.add('opengym-state.json')
+    h.refuse.add('opengym-state-owner.json')
+    let useStore = await freshStore()
+    await useStore.getState().boot()
+
+    useStore = await freshStore()
+    await useStore.getState().boot()
+    expect(ids(srv.doc.workouts)).toEqual(['w1', 'w-other'])
+    expect(ids(useStore.getState().S.workouts)).toEqual(['w1', 'w-other'])
   })
 })
 

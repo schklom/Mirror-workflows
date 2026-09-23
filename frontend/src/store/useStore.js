@@ -29,6 +29,9 @@ const SYNCED_FP_KEY = 'gym_synced_fp'  // a fingerprint of that copy (lib/sync-c
 // reaches that server as that account again. On a phone also a file beside the state mirror.
 const STASH_KEY = 'gym_stash'
 const STASH_FILE = 'opengym-stash.json'
+// Mobile build: whose copy the file mirror (lib/mobile.js, opengym-state.json) holds, and which
+// one — { owner, ts }, written after it (saveMirror). A device fact, so never inside S.
+const MIRROR_OWNER_FILE = 'opengym-state-owner.json'
 const CHECK_MIN_MS = 3000    // rev checks closer together than this are the same event (focus + visibility)
 const POLL_MS = 30000        // while the app is open and signed in, ask the server for its revision this often
 export const DEF = {
@@ -133,6 +136,7 @@ export const useStore = create((set, get) => {
   let pairedBase = null    // mobile build: the address of the paired server, while there is one
   let fpOf = null          // the copy the stored fingerprint was last taken of (confirmed)
   let keeping = null       // phone: the file write of what keepForPrevious set aside, until it lands
+  let mirrorQ = Promise.resolve()   // phone: the file mirror's writes, one after the other (saveMirror)
 
   const readStoredSync = () => { try { return JSON.parse(localStorage.getItem(SYNC_KEY)) || null } catch { return null } }
   const storedOwed = () => { try { return localStorage.getItem(DIRTY_KEY) === '1' } catch { return false } }
@@ -232,11 +236,28 @@ export const useStore = create((set, get) => {
 
   initReminderSync(() => get().S)
 
+  // Mobile build: the file mirror, and beside it whose copy it is and which one (its `_ts`) —
+  // restoreFromMirror takes the file back only for that account, and only while the two agree,
+  // so a mirror write that failed, or a kill between the two writes, leaves a file that is never
+  // taken. One write at a time, each of the copy in the store when its turn comes: a slow write
+  // can never land after a later one.
+  const saveMirror = () => (mirrorQ = mirrorQ.then(async () => {
+    const S = get().S
+    let owner = null
+    try { owner = localStorage.getItem('gym_owner') } catch { /* unknown — the file is then nobody's */ }
+    await nativeSave(S)
+    await writeJsonFile(MIRROR_OWNER_FILE, { owner, ts: S._ts || 0 })
+  }).catch(() => {}))
   // Mobile build: mirror the state into a file in the app's data directory (survives WebView
   // storage eviction) and keep the native reminder schedule in step with the weekly plan.
-  const nativePersist = () => {
+  // `now` skips the wait and returns the write, for a copy that replaced the last one wholesale.
+  const nativePersist = (now = false) => {
     clearTimeout(saveTm)
-    saveTm = setTimeout(() => { saveTm = null; nativeSave(get().S); syncReminder(get().S) }, 800)
+    saveTm = null
+    const write = () => { saveTm = null; syncReminder(get().S); return saveMirror() }
+    if (now) return write()
+    saveTm = setTimeout(write, 800)
+    return null
   }
 
   // `_ts` is when this device last changed the data — it decides which copy wins on the next
@@ -273,7 +294,10 @@ export const useStore = create((set, get) => {
     meta.set(S, { base, owed: owed || !saved })
     if (!saved) saveOwed(true)
     set({ S })
-    if (MOBILE) nativePersist()
+    // A copy that replaces the last one wholesale and keeps an older stamp — adopted from the
+    // server — goes to the file at once. Until it does, the file holds the copy it replaced,
+    // which looks newer, and a start in between would take that one back (restoreFromMirror).
+    if (MOBILE) nativePersist(!stamp)
     if (push && get().user) {
       // Before boot has pulled, the copy in hand may be older than the server's: a push now
       // would carry it with a stale (or no) baseRev. It waits for finishBoot.
@@ -396,12 +420,7 @@ export const useStore = create((set, get) => {
   // same applies to the file mirror — backgrounding is often the last thing before the OS
   // kills the app.
   const flush = () => {
-    if (MOBILE && saveTm) {
-      clearTimeout(saveTm)
-      saveTm = null
-      nativeSave(get().S)
-      syncReminder(get().S)
-    }
+    if (MOBILE && saveTm) nativePersist(true)
     if (pushTm) {
       clearTimeout(pushTm)
       pushTm = null
@@ -470,6 +489,10 @@ export const useStore = create((set, get) => {
     persist(clone(DEF), false)
     localStorage.removeItem('gym_owner')
     setSync({ offline: false, auth: false, lastError: null, pending: false, lastSynced: 0 })
+    // On a phone the file is wiped with it, now rather than after the usual wait: a start in
+    // between would open in local mode on the signed-out account's data, since that boot takes
+    // the file whenever storage holds nothing.
+    return MOBILE ? nativePersist(true) : null
   }
 
   /* The changes a forced sign-out or disconnect keeps, so that no change is ever lost silently.
@@ -544,7 +567,7 @@ export const useStore = create((set, get) => {
     merged.active = S.active || keys.map(k => all[k].state?.active).find(Boolean) || null
     persist(merged, false)
     markOwed(true)
-    if (MOBILE) await nativeSave(get().S)   // the durable copy holds it before the stash goes
+    if (MOBILE) await nativePersist(true)   // the durable copy holds it before the stash goes
     await get().pushState()
     for (const k of keys) delete all[k]
     await writeStashes(all)
@@ -552,12 +575,24 @@ export const useStore = create((set, get) => {
 
   // The file mirror is the durable copy: WebView storage can be evicted while the files
   // directory survives. A mirror newer than what localStorage holds is a change this phone made
-  // and may not have sent — it is taken, and owed, so the pull merges it with the server's copy
-  // instead of letting either win outright.
-  const restoreFromMirror = async () => {
+  // and may not have sent — it is taken, and owed. Only the paired account's own, though, and
+  // only the copy the owner file says was written (saveMirror): one another account left there,
+  // or one the file never finished replacing, is not this account's latest — taken, it used to
+  // be pushed into whichever account was paired now. And it goes without the revision storage
+  // quotes, so the pull merges it with the server's copy (its first-sync path): the file can
+  // still hold a copy the server has since moved past, and a merge brings back at most what was
+  // deleted meanwhile, where a push with a matching baseRev dropped the other side's work.
+  const restoreFromMirror = async remote => {
     const saved = await nativeLoad()
     if (!saved || (saved._ts || 0) <= (get().S._ts || 0)) return
+    const of = await readJsonFile(MIRROR_OWNER_FILE)
+    const who = remote?.user?.id || null
+    let owner = null
+    try { owner = localStorage.getItem('gym_owner') } catch { /* evicted along with the copy */ }
+    if (!who || of?.owner !== who || (owner && owner !== who) || of.ts !== (saved._ts || 0)) return
+    try { if (!owner) localStorage.setItem('gym_owner', who) } catch { /* setUser writes it again */ }
     persist(Object.assign(clone(DEF), saved), false, false)
+    dropSync()
     markOwed(true)
   }
 
@@ -642,7 +677,8 @@ export const useStore = create((set, get) => {
         // phone paired again, a browser signed in again — is remembered for adoptProfile.
         const owner = localStorage.getItem('gym_owner')
         rejoined = owner === u.id
-        if (owner && owner !== u.id) {
+        const other = !!owner && owner !== u.id
+        if (other) {
           keepForPrevious(owner)
           forgetSync()
           localStorage.removeItem(KEY)
@@ -651,6 +687,8 @@ export const useStore = create((set, get) => {
         }
         localStorage.setItem('gym_owner', u.id)
         localStorage.setItem('gym_user', JSON.stringify(u)); localStorage.removeItem('gym_guest')
+        // The file follows at once, as the new account's: until then it holds the previous one's.
+        if (other && MOBILE) nativePersist(true)
       } else { rejoined = false; localStorage.removeItem('gym_user') }
       set({ user: u })
       setSync({})
@@ -825,7 +863,7 @@ export const useStore = create((set, get) => {
       if (left.owed && !force) return { owed: true, count: left.count }
       if (left.owed && !(await stashOwed())) return { owed: true, count: left.count, stashed: false }
       try { await api('/api/logout', { method: 'POST', body: '{}' }) } catch (e) { /* the session ends here either way */ }
-      clearLocalSession()
+      await clearLocalSession()
       return left.owed ? { owed: true, count: left.count, stashed: true } : { owed: false }
     },
 
@@ -849,7 +887,7 @@ export const useStore = create((set, get) => {
       setSync({ server: pairedBase })
       await get().refreshConfig()   // what this server offers (the Coach, guest mode) — see boot()
       await get().adoptProfile(ask)
-      syncReminder(get().S)
+      await nativePersist(true)   // the file holds this account's copy before anything else can happen
       set({ needsMobileOnboarding: false })
     },
     // Leaves remote mode and drops back to local-only, the way signOut does: never with changes
@@ -878,7 +916,7 @@ export const useStore = create((set, get) => {
       if (left.owed && !force) return { owed: true, count: left.count }
       await api('/api/logout/all', { method: 'POST', body: '{}' })
       if (left.owed && !(await stashOwed())) return { owed: true, count: left.count, stashed: false }
-      clearLocalSession()
+      await clearLocalSession()
       return left.owed ? { owed: true, count: left.count, stashed: true } : { owed: false }
     },
 
@@ -903,7 +941,7 @@ export const useStore = create((set, get) => {
           setRemoteAuth(remote.base, remote.token)
           pairedBase = remote.base || null
           setSync({ server: pairedBase })
-          await restoreFromMirror()
+          await restoreFromMirror(remote)
           try {
             const me = await api('/api/me')   // also catches a token revoked elsewhere (sign out everywhere)
             if (!me.user?.id) throw Object.assign(new Error('no user'), { status: 200, code: 'bad-response' })
@@ -936,7 +974,7 @@ export const useStore = create((set, get) => {
         if (saved && (!hasData(S) || (saved._ts || 0) >= (S._ts || 0))) {
           persist(Object.assign(clone(DEF), saved), false, false)
         } else if (hasData(S)) {
-          nativeSave(S)   // first run after an update from a file-less version: seed the mirror
+          nativePersist(true)   // first run after an update from a file-less version: seed the mirror
         }
         if (get().user) {
           // A phone that lost its pairing to a refused token under an earlier version: that boot

@@ -193,6 +193,29 @@ describe('an edited routine starts again from its new plan', () => {
   })
 })
 
+describe('bodyweight progression and a lift logged without a weight', () => {
+  const PUSHUP = '0662'   // push-up — body-weight equipment
+
+  it('adds a set at the rep ceiling and keeps it: 2 × 10, 2 × 11, 3 × 10, 3 × 11, 4 × 10 (#33)', () => {
+    const st = state([{ id: 'A', name: 'A', ex: [{ id: PUSHUP, sets: 2, reps: 10, repsMax: 11, weight: 0, bodyweight: true }] }])
+    const shape = []
+    for (let i = 0; i < 5; i++) {
+      const [e] = start(st, ['A'])
+      shape.push(`${work(e).length}x${reps(e)[0]}`)
+      train(st, ['A'])
+    }
+    expect(shape).toEqual(['2x10', '2x11', '3x10', '3x11', '4x10'])
+  })
+
+  it('does not climb reps on a loaded lift whose rows were logged at 0 kg', () => {
+    const st = state([{ id: 'A', name: 'A', ex: [{ id: BENCH, sets: 2, reps: 10, weight: 0 }] }])
+    train(st, ['A'])
+    const [e] = start(st, ['A'])
+    expect(e.plan.kind).toBe('hold')
+    expect(reps(e)).toEqual([10, 10])
+  })
+})
+
 describe('"Your last session" keeps the old carry-over', () => {
   it('opens at the reps logged last time, judged against the plan', () => {
     const st = state([{ id: 'A', name: 'A', ex: [{ id: BENCH, sets: 2, reps: 10, weight: 50 }] }], { startFrom: 'last' })

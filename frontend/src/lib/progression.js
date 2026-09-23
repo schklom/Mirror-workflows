@@ -424,28 +424,38 @@ export function nextPrescription(S, cfg, routine) {
   const w = last.weight
   // Bodyweight work carries no external load, so there is nothing to add or take away —
   // "deload your push-ups to 2.5 kg" is not advice. Progress in reps instead. This runs ahead
-  // of the individual policies because it is true for all of them. Note the trigger is the
-  // *logged* weight, not the `bw` flag: a dip done with a belt has a load to progress and
-  // belongs on the normal policies, and a barbell lift logged at 0 has nothing to add to.
-  if (w <= 0) {
+  // of the individual policies because it is true for all of them. The trigger is a bodyweight
+  // exercise logged without added weight: a dip done with a belt has a load to progress and
+  // belongs on the normal policies.
+  if (w <= 0 && isBw(cfg)) {
     const goal = last.goal || cfg.reps || 0
-    if (!last.ok || goal <= 0) return { policy, kind: 'hold', weight: 0, reps: goal || undefined, why: ['Bodyweight — same target again until every set is clean.'] }
+    // The set count this has reached: the plan's, or more once the ceiling below added sets.
+    // Read off the last session's target, or the added set lasted one session and the next
+    // clean one dropped back to the plan's count (issue #33 means it to stay).
+    const planSets = Math.max(1, cfg.sets || 1)
+    const reached = Math.max(planSets, (last.target && last.target.sets) || 0)
+    const keep = reached > planSets ? { sets: reached } : {}
+    if (!last.ok || goal <= 0) return { policy, kind: 'hold', weight: 0, reps: goal || undefined, ...keep, why: ['Bodyweight — same target again until every set is clean.'] }
     // A ceiling turns "+1 rep forever" into a plan (issue #33). Past the top of the range the
     // reps go back to the bottom and a set is added instead, which is how bodyweight work
     // actually progresses once a set of 30 push-ups stops being a strength stimulus.
     const top = cfg.repsMax > 0 ? cfg.repsMax : 0
     if (top > 0 && goal >= top) {
-      const sets = Math.max(1, cfg.sets || last.count || 1) + 1
+      const sets = reached + 1
       const bottom = Math.max(1, Math.min(cfg.reps || top, top))
       if (sets <= MAX_BW_SETS) return { policy, kind: 'up', weight: 0, reps: bottom, sets, why: ['{0} reps in every set — add a set and go back to {1}.', goal, bottom] }
       // Out of sets worth adding: more volume is no longer the answer, load or a harder
       // variation is — and that is a decision for a person, not a policy.
-      return { policy, kind: 'hold', weight: 0, reps: goal, why: ['{0} sets of {1} — time to add weight or move to a harder variation.', sets - 1, goal] }
+      return { policy, kind: 'hold', weight: 0, reps: goal, ...keep, why: ['{0} sets of {1} — time to add weight or move to a harder variation.', sets - 1, goal] }
     }
     // Unilateral work steps by two, so the total stays even and both sides get the rep.
     const next = goal + repStep(cfg)
-    return { policy, kind: 'up', weight: 0, reps: next, why: ['Bodyweight — every rep last time, so go for {0} this time.', next] }
+    return { policy, kind: 'up', weight: 0, reps: next, ...keep, why: ['Bodyweight — every rep last time, so go for {0} this time.', next] }
   }
+  // A loaded lift logged at 0 had its weight never typed in — a quick-added exercise starts at
+  // 0 kg. Climbing its reps as though it were a push-up turned a 2 × 10 bench into 2 × 11, 12…
+  // There is nothing to progress from, so it asks for the weight: the plan's, when it has one.
+  if (w <= 0) return { policy, kind: 'hold', ...(cfg.weight > 0 ? { weight: cfg.weight } : {}), why: ['No weight logged last time — enter what you lift and progression takes it from there.'] }
 
   // Epley deloads apply only to externally loaded rep work. Keep the prescribed target from the
   // session that stalled (falling back field-by-field to the current config), while the logged

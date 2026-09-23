@@ -255,7 +255,7 @@ describe('linear progression', () => {
 })
 
 describe('bodyweight exercises', () => {
-  const cfg = { id: LIFT, sets: 3, reps: 10, weight: 0, prog: 'linear' }
+  const cfg = { id: LIFT, sets: 3, reps: 10, weight: 0, prog: 'linear', bodyweight: true }
   const bw = rows => hist(LIFT, rows, { sets: 3, reps: 10 })
 
   it('never invents a weight to deload to — there is nothing to take off a push-up', () => {
@@ -328,10 +328,37 @@ describe('bodyweight exercises', () => {
     }
   })
 
+  it('keeps a set the ceiling added: the next clean session climbs reps at the new count (issue #33)', () => {
+    const grown = hist(LIFT, [[0, 10, 10, 10, 10]], { sets: 4, reps: 10 })
+    const p = nextPrescription(grown, { ...cfg, repsMax: 15 })
+    expect(p).toMatchObject({ kind: 'up', reps: 11, sets: 4 })
+    // and a miss holds that count too
+    const missed = hist(LIFT, [[0, 10, 10, 10, 8]], { sets: 4, reps: 10 })
+    expect(nextPrescription(missed, { ...cfg, repsMax: 15 })).toMatchObject({ kind: 'hold', reps: 10, sets: 4 })
+  })
+
   it('still adds load the moment the exercise is actually weighted', () => {
     const p = nextPrescription(hist(LIFT, [[10, 10, 10, 10]], { sets: 3, reps: 10 }), cfg)
     expect(p.kind).toBe('up')
     expect(p.weight).toBe(12.5)
+  })
+})
+
+// A quick-added exercise starts at 0 kg, and a bench press ticked off without typing a weight
+// is logged at 0. That is a missing number, not a push-up: it must not climb reps.
+describe('a loaded lift logged at 0 kg', () => {
+  const zero = hist(LIFT, [[0, 10, 10, 10]], { sets: 3, reps: 10 })
+
+  it('holds and asks for the weight instead of climbing reps', () => {
+    const p = nextPrescription(zero, { id: LIFT, sets: 3, reps: 10, weight: 0, prog: 'linear' })
+    expect(p.kind).toBe('hold')
+    expect(p.reps).toBeUndefined()
+    expect(p.weight).toBeUndefined()
+    expect(p.why[0]).toMatch(/No weight logged/)
+  })
+
+  it('falls back to the plan\'s weight when the routine has one', () => {
+    expect(nextPrescription(zero, { id: LIFT, sets: 3, reps: 10, weight: 60, prog: 'double' })).toMatchObject({ kind: 'hold', weight: 60 })
   })
 })
 

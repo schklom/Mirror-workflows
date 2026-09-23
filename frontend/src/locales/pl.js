@@ -1437,6 +1437,7 @@ export default {
   'Weekly average': 'Średnia tygodniowa',
   'Week of {0}': 'Tydzień od {0}',
   'Average {0}': 'Średnio {0}',
+  'Delete weigh-in?': 'Usunąć ważenie?',
   // --- last time or best set under each exercise (#173) ---
   'Best set': 'Najlepsza seria',
   'Show last time instead': 'Pokaż zamiast tego ostatni raz',

@@ -31,6 +31,7 @@ export const PT_BR_OVERRIDES = {
   'Start without weighing in': 'Iniciar sem se pesar',
   'Choose a different workout': 'Escolher outro treino',
   'Recent weigh-ins': 'Pesagens recentes',
+  'Delete weigh-in?': 'Excluir pesagem?',
   'Enter a valid weight': 'Informe um peso válido',
   'Weight saved': 'Peso salvo',
   'Your goal is drawn as a line through the weight charts, and gains/losses are colored by whether they move toward it.': 'Sua meta aparece como uma linha nos gráficos de peso, e os ganhos ou perdas mudam de cor conforme você se aproxima dela.',

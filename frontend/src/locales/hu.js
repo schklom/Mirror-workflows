@@ -1440,6 +1440,7 @@ export default {
   'Weekly average': 'Heti átlag',
   'Week of {0}': 'Hét: {0}',
   'Average {0}': 'Átlag {0}',
+  'Delete weigh-in?': 'Törlöd a mérést?',
   // --- last time or best set under each exercise (#173) ---
   'Best set': 'Legjobb sorozat',
   'Show last time instead': 'Inkább a legutóbbit mutasd',

@@ -1437,6 +1437,7 @@ export default {
   'Weekly average': 'Haftalık ortalama',
   'Week of {0}': '{0} haftası',
   'Average {0}': 'Ortalama {0}',
+  'Delete weigh-in?': 'Tartım silinsin mi?',
   // --- last time or best set under each exercise (#173) ---
   'Best set': 'En iyi set',
   'Show last time instead': 'Bunun yerine geçen seferi göster',

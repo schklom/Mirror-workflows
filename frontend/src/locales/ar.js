@@ -1428,6 +1428,7 @@ export default {
   'Weekly average': 'المتوسط الأسبوعي',
   'Week of {0}': 'أسبوع {0}',
   'Average {0}': 'المتوسط {0}',
+  'Delete weigh-in?': 'حذف قياس الوزن؟',
   'Best set': 'أفضل مجموعة',
   'Show last time instead': 'اعرض المرة السابقة بدلًا من ذلك',
   'Show your best set instead': 'اعرض أفضل مجموعة لك بدلًا من ذلك',

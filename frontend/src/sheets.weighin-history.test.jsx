@@ -61,12 +61,39 @@ describe('weigh-ins sheet', () => {
     expect([...mountTopSheet().querySelectorAll('[data-week]')].map(w => w.dataset.week)).toEqual(['2026-09-13', '2026-09-06', '2026-08-30'])
   })
 
-  it('deletes a weigh-in from the list', () => {
+  // The list is months of history scrolled on a phone: a stray tap on a trash button there must
+  // not take a past weigh-in with it, so the list asks first.
+  it('deletes a weigh-in from the list once that is confirmed', () => {
     weighInsSheet()
     const host = mountTopSheet()
     act(() => { host.querySelector('[data-week="2026-08-31"] button[aria-label="delete"]').click() })
+    expect(useStore.getState().S.bodyweight).toHaveLength(5)
+    expect(useUI.getState().sheets).toHaveLength(2)
+    const ask = mountTopSheet()
+    expect(ask.querySelector('h3').textContent).toBe('Delete weigh-in?')
+    expect(ask.textContent).toContain('80 kg')
+    act(() => { button(ask, 'Delete').click() })
     expect(useStore.getState().S.bodyweight.map(b => b.d)).toEqual(['2026-09-01', '2026-09-07', '2026-09-09', '2026-09-13'])
     expect(host.textContent).toContain('4 weigh-ins')
+  })
+
+  it('keeps the weigh-in when the question is cancelled', () => {
+    weighInsSheet()
+    const host = mountTopSheet()
+    act(() => { host.querySelector('[data-week="2026-08-31"] button[aria-label="delete"]').click() })
+    const ask = mountTopSheet()
+    act(() => { button(ask, 'Cancel').click() })
+    expect(useUI.getState().sheets).toHaveLength(1)
+    expect(useStore.getState().S.bodyweight).toHaveLength(5)
+  })
+
+  // The log sheet's recent three are the ones just typed: a typo there still goes in one tap.
+  it('still deletes one of the log sheet\'s recent weigh-ins in one tap', () => {
+    bwSheet()
+    const log = mountTopSheet()
+    act(() => { log.querySelector('button[aria-label="delete"]').click() })
+    expect(useUI.getState().sheets).toHaveLength(1)
+    expect(useStore.getState().S.bodyweight).toHaveLength(4)
   })
 
   it('has an empty state', () => {

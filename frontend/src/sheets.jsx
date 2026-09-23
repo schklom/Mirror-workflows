@@ -263,12 +263,19 @@ export function bwSheet(opts = {}) {
 }
 
 // One weigh-in with its delete button, in the log sheet's recent three and in the full list.
-function WeighInRow({ b, unit }) {
+// The full list asks first (`confirm`): it is months of history scrolled through on a phone, and a
+// stray tap on one of its trash buttons took a past weigh-in with nothing to bring it back. The log
+// sheet's three are the ones just typed, where taking back a typo in one tap is the point.
+function WeighInRow({ b, unit, confirm = false }) {
   const delEntry = () => update(s => { s.bodyweight = s.bodyweight.filter(x => x.d !== b.d) })
+  const ask = () => confirmSheet({
+    title: t('Delete weigh-in?'), message: `${fmtDate(b.d, true)} · ${fmtNum(b.w)} ${unit}`,
+    confirmText: t('Delete'), danger: true, onConfirm: delEntry,
+  })
   return <div className="row between" style={{ padding: '9px 2px', borderBottom: '1px solid var(--sep)' }}>
     <span className="small muted">{fmtDate(b.d, true)}</span>
     <span className="row" style={{ gap: 12 }}><b>{fmtNum(b.w)} {unit}</b>
-      <button className="iconbtn" style={{ width: 32, height: 30, borderRadius: 8, fontSize: 15, color: 'var(--red)' }} onClick={delEntry} aria-label="delete"><Icon name="trash" /></button></span>
+      <button className="iconbtn" style={{ width: 32, height: 30, borderRadius: 8, fontSize: 15, color: 'var(--red)' }} onClick={confirm ? ask : delEntry} aria-label="delete"><Icon name="trash" /></button></span>
   </div>
 }
 
@@ -307,7 +314,7 @@ function WeighIns() {
             <span className="muted" style={{ whiteSpace: 'nowrap' }}>{t('Average {0}', fmtNum(w.avg) + ' ' + st.unit)}</span>
           </span>
         </div>
-        <div className="list" style={{ gap: 0 }}>{w.entries.map(b => <WeighInRow key={b.d} b={b} unit={st.unit} />)}</div>
+        <div className="list" style={{ gap: 0 }}>{w.entries.map(b => <WeighInRow key={b.d} b={b} unit={st.unit} confirm />)}</div>
       </div>
     })}
   </>

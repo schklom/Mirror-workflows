@@ -1437,6 +1437,7 @@ export default {
   'Weekly average': '주간 평균',
   'Week of {0}': '{0} 주',
   'Average {0}': '평균 {0}',
+  'Delete weigh-in?': '체중 기록을 삭제할까요?',
   // --- last time or best set under each exercise (#173) ---
   'Best set': '최고 세트',
   'Show last time instead': '대신 지난번 보기',

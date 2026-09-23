@@ -1437,6 +1437,7 @@ export default {
   'Weekly average': '每周平均',
   'Week of {0}': '{0} 起的一周',
   'Average {0}': '平均 {0}',
+  'Delete weigh-in?': '删除称重记录？',
   // --- last time or best set under each exercise (#173) ---
   'Best set': '最佳组',
   'Show last time instead': '改为显示上次',

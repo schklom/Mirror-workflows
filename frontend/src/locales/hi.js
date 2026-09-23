@@ -1437,6 +1437,7 @@ export default {
   'Weekly average': 'साप्ताहिक औसत',
   'Week of {0}': '{0} वाला सप्ताह',
   'Average {0}': 'औसत {0}',
+  'Delete weigh-in?': 'वज़न मापन हटाएँ?',
   // --- last time or best set under each exercise (#173) ---
   'Best set': 'सर्वश्रेष्ठ सेट',
   'Show last time instead': 'इसके बजाय पिछली बार दिखाएँ',

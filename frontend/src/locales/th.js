@@ -1448,6 +1448,7 @@ export default {
   'Weekly average': 'ค่าเฉลี่ยรายสัปดาห์',
   'Week of {0}': 'สัปดาห์เริ่ม {0}',
   'Average {0}': 'เฉลี่ย {0}',
+  'Delete weigh-in?': 'ลบบันทึกน้ำหนักนี้?',
   // --- last time or best set under each exercise (#173) ---
   'Best set': 'เซ็ตที่ดีที่สุด',
   'Show last time instead': 'แสดงครั้งก่อนแทน',

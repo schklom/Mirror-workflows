@@ -1372,6 +1372,7 @@ export default {
   'Weekly average': 'Середнє за тиждень',
   'Week of {0}': 'Тиждень з {0}',
   'Average {0}': 'У середньому {0}',
+  'Delete weigh-in?': 'Видалити зважування?',
   'Best set': 'Найкращий підхід',
   'Show last time instead': 'Показати минулий раз',
   'Show your best set instead': 'Показати твій найкращий підхід',

@@ -1437,6 +1437,7 @@ export default {
   'Weekly average': 'Среднее за неделю',
   'Week of {0}': 'Неделя с {0}',
   'Average {0}': 'В среднем {0}',
+  'Delete weigh-in?': 'Удалить взвешивание?',
   // --- last time or best set under each exercise (#173) ---
   'Best set': 'Лучший подход',
   'Show last time instead': 'Показать прошлый раз',

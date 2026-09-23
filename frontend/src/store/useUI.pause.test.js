@@ -4,8 +4,8 @@
 import { describe, expect, it, beforeEach, afterEach, vi } from 'vitest'
 
 vi.mock('../lib/api.js', () => ({ api: vi.fn(() => Promise.resolve({ ok: true })) }))
-const { beep } = vi.hoisted(() => ({ beep: vi.fn() }))
-vi.mock('../lib/sound.js', () => ({ beep, vibrate: vi.fn() }))
+const { beep, chime } = vi.hoisted(() => ({ beep: vi.fn(), chime: vi.fn() }))
+vi.mock('../lib/sound.js', () => ({ beep, chime, vibrate: vi.fn() }))
 
 import { api } from '../lib/api.js'
 import { useUI } from './useUI.js'
@@ -22,6 +22,7 @@ describe('pausing the rest timer', () => {
     useUI.setState({ timer: null, work: null, timerFlashId: 0, toastMsg: '' })
     api.mockClear()
     beep.mockClear()
+    chime.mockClear()
   })
   afterEach(() => {
     useUI.getState().stopRest()
@@ -40,6 +41,7 @@ describe('pausing the rest timer', () => {
     expect(useUI.getState().timer).toMatchObject({ left: 60, paused: true })
     expect(useUI.getState().timer.ready).toBeUndefined()
     expect(beep).not.toHaveBeenCalled()
+    expect(chime).not.toHaveBeenCalled()
     expect(useUI.getState().toastMsg).toBe('')
 
     useUI.getState().resumeRest()
@@ -49,6 +51,7 @@ describe('pausing the rest timer', () => {
     vi.advanceTimersByTime(1000)
     expect(useUI.getState().timer).toMatchObject({ left: 0, ready: true, forIdx: 1 })
     expect(useUI.getState().timerFlashId).toBe(1)   // ended on screen: the usual alert
+    expect(chime).toHaveBeenCalledTimes(1)
   })
 
   it('cancels the push booked for the old end and books it again on resume', () => {
@@ -110,6 +113,6 @@ describe('pausing the rest timer', () => {
     useUI.getState().startWork(30, 'Plank', done)
     expect(useUI.getState().timer).toBeNull()
     vi.advanceTimersByTime(30000)
-    expect(done).toHaveBeenCalledExactlyOnceWith(30)
+    expect(done).toHaveBeenCalledExactlyOnceWith(30, { chimed: true })
   })
 })

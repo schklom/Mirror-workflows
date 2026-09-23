@@ -667,7 +667,7 @@ describe('a hold a rest displaced', () => {
   }
   // What useUI.abandonWork hands the owner: the seconds held, and "this was not a finish".
   const handBack = async (elapsed, call = 0) => {
-    await act(async () => { mocks.startWork.mock.calls[call][2](elapsed, true) })
+    await act(async () => { mocks.startWork.mock.calls[call][2](elapsed, { abandoned: true }) })
     await rerender()
   }
 

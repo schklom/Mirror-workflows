@@ -157,7 +157,7 @@ describe('a rest and a hold never run together', () => {
     // finish. The count alone would not say which: a hold left running reaches its own zero and
     // calls back too, with the full 30 s target for a set that stopped being held at 12.
     expect(holdDone).toHaveBeenCalledTimes(1)
-    expect(holdDone).toHaveBeenCalledWith(12, true)
+    expect(holdDone).toHaveBeenCalledWith(12, { abandoned: true })
   })
 
   // The hold cannot survive the rest, but the time it held is real: it is handed back on the way
@@ -170,7 +170,7 @@ describe('a rest and a hold never run together', () => {
     useUI.getState().startRest(90, 1)
     expect(useUI.getState().work).toBe(null)
     expect(holdDone).toHaveBeenCalledTimes(1)
-    expect(holdDone).toHaveBeenCalledWith(18, true)   // the seconds held, and: abandoned
+    expect(holdDone).toHaveBeenCalledWith(18, { abandoned: true })   // the seconds held, and: abandoned
   })
 
   it('under two seconds there is nothing to hand back — that was a play button by accident', () => {
@@ -187,7 +187,7 @@ describe('a rest and a hold never run together', () => {
     useUI.getState().startWork(45, 'Plank', first)
     vi.advanceTimersByTime(18_000)
     useUI.getState().startWork(60, 'Side plank', vi.fn())
-    expect(first).toHaveBeenCalledWith(18, true)
+    expect(first).toHaveBeenCalledWith(18, { abandoned: true })
     expect(useUI.getState().work.total).toBe(60)
   })
 
@@ -249,7 +249,7 @@ describe('rest readiness and optional timed-set overtime', () => {
     const done = vi.fn()
     useUI.getState().startWork(1, 'Hold', done)
     vi.advanceTimersByTime(901000)
-    expect(done).toHaveBeenCalledExactlyOnceWith(901)
+    expect(done).toHaveBeenCalledExactlyOnceWith(901, { chimed: false })
     expect(useUI.getState().work).toBeNull()
   })
 

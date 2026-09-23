@@ -18,6 +18,51 @@ export const CONTRACT = 1;
 export const MAX_WEEKS = 12;
 export const MAX_SESSIONS = 60;
 
+/* ---------- what a person typed, bounded ----------
+   Every free-text field below rides into the prompt, and the prompt is paid for by whoever runs
+   the instance: the Coach spends one instance-wide key. The intake screen caps what it lets you
+   type, but this module never sees that screen. It reads the profile from a POST body or from
+   the synced state, and a client can fill either with megabytes (the only server limit is the
+   5 MB body cap). So the text is cut here, the one place both the server and the phone build a
+   payload, to the limits the intake screen shows (CoachIntake.jsx). The system prompt already
+   reads this text as data rather than instruction (common rule 3); the bound is about size.
+   A field of the wrong type reads as absent rather than as "[object Object]". */
+export const PROFILE_TEXT_MAX = { limitations: 600, likes: 300, dislikes: 300, notes: 600 };
+// Goal and experience are enum words today (strength, returning, ...); 40 leaves room for new
+// ones without letting either carry a paragraph.
+export const PROFILE_WORD_MAX = 40;
+// The equipment taxonomy has 28 values, the longest 20 characters.
+export const PROFILE_EQUIPMENT_MAX = 40;
+// Routine, workout and custom-exercise names have no length limit in the app. The Coach writes
+// its own names at 40 (validate.js); twice that keeps any name a person would really type.
+export const NAME_MAX = 80;
+const text = (v, n) => (typeof v === 'string' ? v.slice(0, n) : '');
+const word = (v, n) => (typeof v === 'string' && v ? v.slice(0, n) : null);
+// Zero reads as absent, as `|| null` always made it; anything else is clamped into range.
+const count = (v, lo, hi) => {
+  const n = typeof v === 'number' || typeof v === 'string' ? Number(v) : NaN;
+  return Number.isFinite(n) && n ? Math.min(hi, Math.max(lo, Math.round(n))) : null;
+};
+// A weekday is 0-6, as a number or a one-digit string; null must not turn into Sunday.
+const weekday = d => (typeof d === 'number' ? d : typeof d === 'string' && /^\d$/.test(d) ? Number(d) : NaN);
+function cleanProfile(profile) {
+  const days = Array.isArray(profile.preferredDays) ? profile.preferredDays : [];
+  const equipment = Array.isArray(profile.equipment) ? profile.equipment : [];
+  return {
+    goal: word(profile.goal, PROFILE_WORD_MAX),
+    experience: word(profile.experience, PROFILE_WORD_MAX),
+    daysPerWeek: count(profile.daysPerWeek, 1, 7),
+    // Weekdays 0-6, each once: seven entries is the whole week, so anything past that is noise.
+    preferredDays: [...new Set(days.map(weekday).filter(d => Number.isInteger(d) && d >= 0 && d <= 6))],
+    sessionMin: count(profile.sessionMin, 1, 24 * 60),
+    equipment: equipment.filter(e => typeof e === 'string' && e).slice(0, PROFILE_EQUIPMENT_MAX).map(e => e.slice(0, PROFILE_WORD_MAX)),
+    limitations: text(profile.limitations, PROFILE_TEXT_MAX.limitations),
+    likes: text(profile.likes, PROFILE_TEXT_MAX.likes),
+    dislikes: text(profile.dislikes, PROFILE_TEXT_MAX.dislikes),
+    notes: text(profile.notes, PROFILE_TEXT_MAX.notes)
+  };
+}
+
 /* ---------- the data categories the consent screen names (FR-09/10) ----------
    Kept here, next to the code that acts on it, and rendered by the consent UI from the same
    list — a screen that drifts from the payload is worse than no screen. */
@@ -144,8 +189,12 @@ export function canonicalPlan(S) {
 }
 
 export function cleanPlan(S) {
+  // Names and emoji are typed by the person, so they are cut like the profile's text. An emoji
+  // is one grapheme, but a ZWJ family or a flag spells it with up to a dozen code units.
   const routines = (S.routines || []).map(r => ({
-    id: r.id, name: r.name, emoji: r.emoji, ...(r.prog ? { prog: r.prog } : {}), ex: (r.ex || []).map(cleanEx)
+    id: r.id, name: r.name == null ? r.name : text(String(r.name), NAME_MAX),
+    emoji: r.emoji == null ? r.emoji : text(String(r.emoji), 16),
+    ...(r.prog ? { prog: r.prog } : {}), ex: (r.ex || []).map(cleanEx)
   }));
   const week = {};
   [1, 2, 3, 4, 5, 6, 0].forEach(d => { if (S.week?.[d]?.length) week[d] = [].concat(S.week[d]); });
@@ -242,7 +291,7 @@ const fmtSet = s => {
 function compactWorkout(w) {
   return {
     d: w.d,
-    name: w.name || null,
+    name: word(w.name, NAME_MAX),
     minutes: w.end && w.start ? Math.round((w.end - w.start) / 60000) : null,
     prs: (w.prs || []).length,
     compact: true,
@@ -268,9 +317,9 @@ function compactWorkout(w) {
 function cleanWorkout(w) {
   return {
     d: w.d,
-    name: w.name || null,
+    name: word(w.name, NAME_MAX),
     minutes: w.end && w.start ? Math.round((w.end - w.start) / 60000) : null,
-    ...(w.rating ? { rating: w.rating } : {}),
+    ...(w.rating ? { rating: typeof w.rating === 'number' ? w.rating : text(String(w.rating), 20) } : {}),
     ...(w.note ? { note: String(w.note).slice(0, 300) } : {}),
     prs: (w.prs || []).length,
     entries: (w.entries || []).map(en => ({
@@ -337,30 +386,22 @@ export function build(S, opts = {}) {
     task: opts.kind === 'review' ? 'review' : opts.kind === 'debrief' ? 'debrief' : 'create',
     meta: {
       profile: opts.handle,
-      lang: S.lang || 'en',
-      unit: S.unit || 'kg',
+      // Both are short codes in any real state; cut anyway, since the state is the client's.
+      lang: word(S.lang, 16) || 'en',
+      unit: word(S.unit, 8) || 'kg',
       effortScale: effortOf(S),
       today: iso(new Date())
     },
-    coachProfile: profile ? {
-      goal: profile.goal || null,
-      experience: profile.experience || null,
-      daysPerWeek: profile.daysPerWeek || null,
-      preferredDays: profile.preferredDays || [],
-      sessionMin: profile.sessionMin || null,
-      equipment: profile.equipment || [],
-      limitations: profile.limitations || '',
-      likes: profile.likes || '',
-      dislikes: profile.dislikes || '',
-      notes: profile.notes || ''
-    } : null,
+    coachProfile: profile && typeof profile === 'object' ? cleanProfile(profile) : null,
     plan: cleanPlan(S)
   };
 
   // What the user already turned down, so the Coach does not re-propose it without new
   // evidence (FR-26). Summaries only — the log's full before/after stays on the device.
   const declined = (coach.log || [])
-    .flatMap(e => (e.decisions || []).filter(d => d.status === 'rejected').map(d => ({ type: d.type, why: d.why })))
+    // `why` was the Coach's own sentence, but it comes back from the synced state, which the
+    // client writes; it is cut at the length the intake allows a note.
+    .flatMap(e => (e.decisions || []).filter(d => d.status === 'rejected').map(d => ({ type: word(d.type, PROFILE_WORD_MAX), why: text(d.why, PROFILE_TEXT_MAX.notes) })))
     .slice(-15);
   if (declined.length) p.previouslyDeclined = declined;
 
@@ -402,9 +443,9 @@ export function build(S, opts = {}) {
     if (opts.note) p.userNote = String(opts.note).slice(0, 1000);
     if (opts.cohort) p.cohort = opts.cohort;
     // A review names mostly what is already trained; 60 candidates is plenty for a swap.
-    p.library = librarySlice(S, profile?.equipment, { keep: trainedIds(S, workouts), max: 60 });
+    p.library = librarySlice(S, p.coachProfile?.equipment, { keep: trainedIds(S, workouts), max: 60 });
   } else {
-    p.library = librarySlice(S, profile?.equipment, { keep: trainedIds(S, S.workouts || []) });
+    p.library = librarySlice(S, p.coachProfile?.equipment, { keep: trainedIds(S, S.workouts || []) });
     // Creation for a returning user: what they have actually handled, so proposed baselines
     // start from evidence rather than optimism (B2/FR-20).
     const best = {};

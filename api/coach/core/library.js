@@ -28,7 +28,10 @@ const slim = e => ({ id: e.id, n: e.n, bp: e.bp, ...(e.custom ? { custom: true }
 
 export function librarySlice(S, equipment, { keep = [], max = MAX_LIBRARY } = {}) {
   const wanted = (equipment || []).map(x => String(x).toLowerCase());
-  const customs = (S.customEx || []).map(c => ({ id: c.id, n: c.n, bp: c.bp, tg: null, eq: 'custom', custom: true }));
+  // A custom exercise's name and body part are whatever the person typed, and they ride into
+  // every prompt: cut to the bounds payload.js gives every other name (NAME_MAX, 80).
+  const cut = (v, n) => (typeof v === 'string' ? v.slice(0, n) : v);
+  const customs = (S.customEx || []).map(c => ({ id: c.id, n: cut(c.n, 80), bp: cut(c.bp, 40), tg: null, eq: 'custom', custom: true }));
   // No equipment stated (or "everything") ⇒ the whole catalogue. Filtering to nothing would
   // leave the Coach unable to propose anything at all, which is a worse failure than a
   // slightly larger payload.

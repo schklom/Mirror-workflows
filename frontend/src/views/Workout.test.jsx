@@ -504,6 +504,35 @@ describe('Workout add exercise flow', () => {
   })
 })
 
+// An exercise added to the block of a routine kept out of progression (a rehab or deload
+// routine) belongs to that block: its routine's own numbers, and no count toward progression.
+describe('adding an exercise to a block kept out of progression', () => {
+  const BENCH = '0025'
+  const history = [{
+    d: '2026-08-27', routineIds: ['main'],
+    entries: [{ id: BENCH, rid: 'main', target: { sets: 1, reps: 5, weight: 100 }, sets: [{ w: 100, r: 5, done: true }] }],
+  }]
+  const routines = [{ id: 'rehab', name: 'Rehab', excludeFromProgression: true, ex: [] }, { id: 'main', name: 'Main', ex: [] }]
+
+  it('is kept out too, at the numbers typed for it', async () => {
+    await mount([exercise('band-pull', [false], { rid: 'rehab', noProg: true })], 0, { routines, workouts: history })
+    await addExerciseThroughSheets({ id: BENCH }, { mode: 'reps', sets: 1, reps: 12, weight: 40 })
+    const added = mocks.S.active.entries[1]
+    expect(added).toMatchObject({ id: BENCH, rid: 'rehab', noProg: true })
+    expect(added.plan.kind).toBe('off')
+    expect(added.sets.map(s => [s.w, s.r])).toEqual([[40, 12]])
+  })
+
+  it('still progresses when the block is a regular routine\'s', async () => {
+    await mount([exercise('row', [false], { rid: 'main' })], 0, { routines, workouts: history })
+    await addExerciseThroughSheets({ id: BENCH }, { mode: 'reps', sets: 1, reps: 5, weight: 40 })
+    const added = mocks.S.active.entries[1]
+    expect(added.noProg).toBeUndefined()
+    expect(added.plan.kind).toBe('up')
+    expect(added.sets.map(s => s.w)).toEqual([102.5])
+  })
+})
+
 describe('active workout weight controls', () => {
   const press = async (label, selector) => {
     const control = container.querySelector(selector)

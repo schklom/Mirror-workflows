@@ -1032,6 +1032,10 @@ export function swapActiveWorkoutExercise(index) {
       id: ex.id,
       ...built,
       ...(current.rid ? { rid: current.rid } : {}),
+      // A slot kept out of progression stays out once swapped. Replaced in place the entry keeps
+      // it anyway; inserted beside logged sets, the replacement would otherwise count as a
+      // regular session of the new exercise.
+      ...(current.noProg === true ? { noProg: true } : {}),
     }
 
     const apply = options => {

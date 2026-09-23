@@ -1103,11 +1103,15 @@ function ActiveWorkout() {
     <Button onClick={() => exercisePicker((ex, quick) => {
       // A freehand add inherits the current unit's routine (its `rid`) so it lands in that
       // routine's block in a combined session and gets a real prescription; a routine-less
-      // freestyle session has no `rid` to inherit. `noProg` is never set independently here —
-      // the only mid-session route to an excluded entry is "Add routine".
-      const curRid = A.entries[A.cur]?.rid
+      // freestyle session has no `rid` to inherit. It inherits the block's `noProg` too: an
+      // exercise added to a rehab or deload routine's block is kept out of progression like the
+      // rest of it, the way a swap or an edit there is — it takes the routine's own numbers and
+      // never becomes the baseline the regular sessions progress from.
+      const curEntry = A.entries[A.cur]
+      const curRid = curEntry?.rid
       const routine = curRid ? S.routines.find(r => r.id === curRid) : null
       const freestyle = !routine
+      const noProg = !freestyle && curEntry?.noProg === true
       // Freestyle has no routine prescription to apply: show the last target in the config
       // sheet and carry its completed rows forward. A planned session uses its configured
       // target when progression is off, while progression-enabled sessions keep their path.
@@ -1120,9 +1124,9 @@ function ActiveWorkout() {
           ? { target: { ...cfg }, plan: null, sets: applyIntensifierPlan(buildSets(s, full, {
             step: modeOf(full) === 'reps' ? weightIncrement(full, s.unit) : defaultIncrement(ex.id, s.unit), preferLast: true,
           }), full) }
-          : buildPlannedEntry(s, full, routine)
+          : buildPlannedEntry(s, full, routine, { noProg })
         const insertAt = insertionIndexAfterCurrentUnit(supersetUnits(s.active.entries), s.active.cur, s.active.entries.length)
-        s.active.entries.splice(insertAt, 0, { id: ex.id, ...built, ...(curRid ? { rid: curRid } : {}) })
+        s.active.entries.splice(insertAt, 0, { id: ex.id, ...built, ...(curRid ? { rid: curRid } : {}), ...(noProg ? { noProg: true } : {}) })
         s.active.cur = insertAt
         useUI.getState().shiftRestOwner(insertAt, 1)
       })

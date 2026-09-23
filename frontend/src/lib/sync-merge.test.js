@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { localExtras, mergeBodyweight, mergeStates, newerOf, stampRoutines, unionById } from './sync-merge.js'
+import { localExtras, mergeBodyweight, mergeStampedMap, mergeStates, newerOf, stampRoutines, unionById } from './sync-merge.js'
 
 const workout = (id, d = '2026-09-01', start = 1) => ({ id, d, start, entries: [] })
 const routine = (id, name = id) => ({ id, name, ex: [] })
@@ -197,5 +197,57 @@ describe('routines keep the version edited last', () => {
     again[1]._ts = 99
     stampRoutines(next, again, 2000)
     expect(again.map(x => x._ts)).toEqual([1000, 99, 1000])
+  })
+})
+
+// Structural Balance's per-role exercise choices. Each carries the time it was made and a clear
+// is a stamped `id: null`, so the choice made last survives a conflict either way round — the
+// newer copy's map used to win wholesale (a role picked on the phone vanished once the desktop
+// logged a set), and a plain key union brought a cleared role back from the other device.
+describe('balanceOverrides keep the choice made last', () => {
+  const pick = (id, ts) => ({ id, _ts: ts })
+
+  it('a role chosen on the older copy survives the newer copy\'s earlier choice', () => {
+    const phone = base({ _ts: 100, balanceOverrides: { 'poliquin:dips': pick('0009', 90) } })
+    const desk = base({ _ts: 200, restSec: 60, workouts: [workout('w2')], balanceOverrides: { 'poliquin:dips': pick('0251', 20) } })
+    for (const m of [mergeStates(phone, desk), mergeStates(desk, phone)]) {
+      expect(m.restSec).toBe(60)
+      expect(m.balanceOverrides['poliquin:dips']).toEqual(pick('0009', 90))
+    }
+  })
+
+  it('a clear is not undone by the other device\'s older choice, and a later choice beats a clear', () => {
+    const cleared = base({ _ts: 100, balanceOverrides: { 'atg:pullups': pick(null, 80) } })
+    const stale = base({ _ts: 300, balanceOverrides: { 'atg:pullups': pick('0017', 40) } })
+    expect(mergeStates(cleared, stale).balanceOverrides['atg:pullups']).toEqual(pick(null, 80))
+    expect(mergeStates(stale, cleared).balanceOverrides['atg:pullups']).toEqual(pick(null, 80))
+    const later = base({ _ts: 50, balanceOverrides: { 'atg:pullups': pick('0652', 95) } })
+    expect(mergeStates(cleared, later).balanceOverrides['atg:pullups']).toEqual(pick('0652', 95))
+  })
+
+  it('roles set on different devices are all kept; a tie or an unstamped entry goes to the newer copy', () => {
+    const a = base({ _ts: 100, balanceOverrides: { 'poliquin:dips': pick('0009', 10), 'atg:nordicCurl': '0599' } })
+    const b = base({ _ts: 200, balanceOverrides: { 'poliquin:barbellCurl': pick('0031', 30), 'atg:nordicCurl': '3193' } })
+    const m = mergeStates(a, b)
+    expect(Object.keys(m.balanceOverrides).sort()).toEqual(['atg:nordicCurl', 'poliquin:barbellCurl', 'poliquin:dips'])
+    expect(m.balanceOverrides['atg:nordicCurl']).toBe('3193')
+    expect(mergeStampedMap({ k: pick('x', 5) }, { k: pick('y', 5) }).k.id).toBe('x')
+  })
+
+  it('prefer keeps the preferred side\'s choice; one side without the map keeps the other\'s', () => {
+    const server = base({ _ts: 10, balanceOverrides: { 'poliquin:dips': pick('0251', 5) } })
+    const local = base({ _ts: 90, balanceOverrides: { 'poliquin:dips': pick('0009', 80), 'atg:pullups': pick('0017', 80) } })
+    const m = mergeStates(server, local, { prefer: 'a' })
+    expect(m.balanceOverrides).toEqual({ 'poliquin:dips': pick('0251', 5), 'atg:pullups': pick('0017', 80) })
+    const bare = base({ _ts: 500 })
+    expect(mergeStates(bare, local).balanceOverrides).toEqual(local.balanceOverrides)
+    expect(mergeStates(bare, base({ _ts: 1 })).balanceOverrides).toBeUndefined()
+  })
+
+  it('the merged map is a copy, not the input', () => {
+    const a = base({ _ts: 100, balanceOverrides: { k: pick('x', 1) } })
+    const m = mergeStates(a, base({ _ts: 50 }))
+    m.balanceOverrides.k.id = 'changed'
+    expect(a.balanceOverrides.k.id).toBe('x')
   })
 })

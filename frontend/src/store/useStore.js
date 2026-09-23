@@ -104,8 +104,9 @@ export const DEF = {
   startFrom: 'plan',
   // Structural Balance (views/StructuralBalance.jsx): which built-in ratio template is active,
   // and per-role exercise overrides keyed by `${templateId}:${roleId}` — see
-  // lib/structuralBalance.js's overrideKey(). An override replaces that role's curated
-  // exercise-id whitelist with a single user-chosen exercise id.
+  // lib/structuralBalance.js's overrideKey(). An override (`{ id, _ts }`, `id: null` once
+  // cleared) replaces that role's curated exercise-id whitelist with a single user-chosen
+  // exercise id; the stamp is what lets a sync keep the choice made last (lib/sync-merge.js).
   balanceTemplate: DEFAULT_TEMPLATE_ID, balanceOverrides: {},
 }
 const clone = o => JSON.parse(JSON.stringify(o))

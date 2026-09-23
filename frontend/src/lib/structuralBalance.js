@@ -121,10 +121,27 @@ export function overrideKey(template, role) {
   return `${template.id}:${role.id}`
 }
 
+// One role's override as S.balanceOverrides stores it: `{ id, _ts }`, the chosen exercise and
+// when it was chosen, with `id: null` once the role is back on its default. The clear is kept
+// as a stamped entry rather than deleted so it can win a sync against the other device's older
+// choice (lib/sync-merge.js keeps whichever side set a role last). A bare id string is how the
+// first builds of this screen stored it, and still reads as that exercise.
+export function overrideIdOf(value) {
+  if (typeof value === 'string') return value || null
+  return value && typeof value.id === 'string' && value.id ? value.id : null
+}
+
+// `overrides` with the role under `key` set to `exId`, or back on its default for null.
+export function withOverride(overrides, key, exId, now = Date.now()) {
+  return { ...(overrides || {}), [key]: { id: exId || null, _ts: now } }
+}
+
+const overrideFor = (S, template, role) => overrideIdOf(S.balanceOverrides?.[overrideKey(template, role)])
+
 // The exercise ids to resolve "current" from: the user's chosen override if one exists for this
 // role, otherwise the role's curated whitelist.
 export function exerciseIdsFor(S, template, role) {
-  const override = S.balanceOverrides?.[overrideKey(template, role)]
+  const override = overrideFor(S, template, role)
   return override ? [override] : role.exerciseIds
 }
 
@@ -159,7 +176,7 @@ function evaluateRole(template, role, currentByRoleId, bodyweightKg, S) {
   // normalized to "% of the rep target" by the time it gets there.
   const targetPct = targetFor(role, S)
   const classifyTarget = role.evaluationMode === EVALUATION_MODES.REP_COUNT ? 100 : targetPct
-  const override = S.balanceOverrides?.[overrideKey(template, role)]
+  const override = overrideFor(S, template, role)
   // Which exercise this role is set to, whether or not it has ever been logged — the view needs
   // it to name the role's exercise (and to show an override back to the user who chose it).
   const configuredExerciseId = override || role.exerciseIds[0] || null

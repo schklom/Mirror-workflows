@@ -85,7 +85,9 @@ describe('StructuralBalance view', () => {
     const pickerView = picker.render(picker.close)
     act(() => pickerView.props.onPick({ id: '0043' })) // barbell full squat — deliberately not in inclineBench's whitelist
 
-    expect(useStore.getState().S.balanceOverrides['poliquin:inclineBench']).toBe('0043')
+    const chosen = useStore.getState().S.balanceOverrides['poliquin:inclineBench']
+    expect(chosen.id).toBe('0043')
+    expect(chosen._ts).toBeGreaterThan(0)
 
     const updatedRow = host.querySelector('[data-role-id="inclineBench"]')
     expect(updatedRow.textContent).toContain('Custom')
@@ -93,6 +95,12 @@ describe('StructuralBalance view', () => {
     const resetBtn = [...updatedRow.querySelectorAll('button')].find(b => b.textContent.includes('Use default exercise'))
     expect(resetBtn).toBeTruthy()
     act(() => resetBtn.click())
-    expect(useStore.getState().S.balanceOverrides['poliquin:inclineBench']).toBeUndefined()
+    // Cleared as a stamped entry, so the clear can win a sync against the other device's choice.
+    const cleared = useStore.getState().S.balanceOverrides['poliquin:inclineBench']
+    expect(cleared.id).toBe(null)
+    expect(cleared._ts).toBeGreaterThanOrEqual(chosen._ts)
+    const resetRow = host.querySelector('[data-role-id="inclineBench"]')
+    expect(resetRow.textContent).not.toContain('Custom')
+    expect([...resetRow.querySelectorAll('button')].some(b => b.textContent.includes('Use default exercise'))).toBe(false)
   })
 })

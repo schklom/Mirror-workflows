@@ -6,7 +6,7 @@ import { t, exerciseNameFor } from '../lib/i18n.js'
 import Icon from '../components/Icon.jsx'
 import { Button, Segmented } from '../components/ui.jsx'
 import { exercisePicker } from '../sheets.jsx'
-import { computeBalance, overrideKey } from '../lib/structuralBalance.js'
+import { computeBalance, overrideKey, withOverride } from '../lib/structuralBalance.js'
 import { balanceStatusView } from '../lib/structuralBalance-view.js'
 import { TEMPLATES, TEMPLATE_LIST, DEFAULT_TEMPLATE_ID, EVALUATION_MODES } from '../lib/structuralBalanceTemplates.js'
 
@@ -28,13 +28,9 @@ export default function StructuralBalance() {
   const results = useMemo(() => computeBalance(S, template), [S, template])
 
   const setOverride = (role, exId) => update(s => {
-    s.balanceOverrides = { ...s.balanceOverrides, [overrideKey(template, role)]: exId }
+    s.balanceOverrides = withOverride(s.balanceOverrides, overrideKey(template, role), exId)
   })
-  const clearOverride = role => update(s => {
-    const next = { ...s.balanceOverrides }
-    delete next[overrideKey(template, role)]
-    s.balanceOverrides = next
-  })
+  const clearOverride = role => setOverride(role, null)
   const changeExercise = role => {
     const picker = exercisePicker(ex => { setOverride(role, ex.id); picker.close() })
   }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { computeBalance, classify, ratioFor, resolveCurrent, resolveCurrentReps, targetFor, overrideKey } from './structuralBalance.js'
+import { computeBalance, classify, ratioFor, resolveCurrent, resolveCurrentReps, targetFor, overrideKey, overrideIdOf, withOverride } from './structuralBalance.js'
 import { TEMPLATES, EVALUATION_MODES, BALANCE_STATUSES, BORDERLINE_BAND_PCT } from './structuralBalanceTemplates.js'
 
 const NOW = Date.parse('2026-01-15T00:00:00Z')
@@ -359,6 +359,34 @@ describe('exercise override', () => {
     const reverted = computeBalance(withoutOverride, template).find(r => r.roleId === 'nordicCurl')
     expect(reverted.isOverridden).toBe(false)
     expect(reverted.status).toBe(BALANCE_STATUSES.BALANCED) // now reads the logged glute-ham raise set again
+  })
+})
+
+// How an override is stored: `{ id, _ts }`, a clear as `id: null` (see sync-merge.js).
+describe('stored overrides', () => {
+  const template = TEMPLATES.atg
+  const key = overrideKey(template, findRole(template, 'nordicCurl'))
+  const logged = { unit: 'kg', workouts: [workoutAt('3193', NOW, [setDone(0, 1)]), workoutAt('0599', NOW, [setDone(40, 1)])] }
+  const nordic = overrides => computeBalance({ ...logged, balanceOverrides: overrides }, template).find(r => r.roleId === 'nordicCurl')
+
+  it('withOverride stamps a choice and a clear, leaving the other roles alone', () => {
+    const set = withOverride({ other: { id: '0001', _ts: 1 } }, key, '0599', 1234)
+    expect(set).toEqual({ other: { id: '0001', _ts: 1 }, [key]: { id: '0599', _ts: 1234 } })
+    expect(withOverride(set, key, null, 2000)[key]).toEqual({ id: null, _ts: 2000 })
+    expect(withOverride(undefined, key, '0599', 5)).toEqual({ [key]: { id: '0599', _ts: 5 } })
+  })
+
+  it('reads a stamped choice, a cleared one as the default, and the first builds\' bare id', () => {
+    expect(overrideIdOf({ id: '0599', _ts: 3 })).toBe('0599')
+    expect(overrideIdOf({ id: null, _ts: 3 })).toBe(null)
+    expect(overrideIdOf('0599')).toBe('0599')
+    expect(overrideIdOf(undefined)).toBe(null)
+    expect(overrideIdOf('')).toBe(null)
+
+    expect(nordic({ [key]: { id: '0599', _ts: 3 } })).toMatchObject({ isOverridden: true, mappedExerciseId: '0599' })
+    const cleared = nordic({ [key]: { id: null, _ts: 9 } })
+    expect(cleared).toMatchObject({ isOverridden: false, configuredExerciseId: '3193', mappedExerciseId: '3193' })
+    expect(nordic({ [key]: '0599' })).toMatchObject({ isOverridden: true, mappedExerciseId: '0599' })
   })
 })
 

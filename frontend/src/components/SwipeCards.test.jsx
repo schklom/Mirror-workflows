@@ -138,4 +138,35 @@ describe('SwipeCards', () => {
     act(() => vi.advanceTimersByTime(201))
     expect(props.onNavigate).toHaveBeenCalledExactlyOnceWith(1)
   })
+
+  // In Arabic the exercises run from right to left like the text, so the next card lies to the
+  // left and comes in with a swipe to the right — the mirror of every gesture above.
+  describe('right to left', () => {
+    beforeEach(() => { document.documentElement.dir = 'rtl' })
+    afterEach(() => { document.documentElement.dir = '' })
+
+    it('a swipe to the right brings the next card in from the left', () => {
+      props = { ...props, index: 1 }
+      render()
+      pointer('pointerdown', 100)
+      pointer('pointermove', 250)
+      const preview = host.querySelector('.workout-swipe-preview')
+      expect(preview.textContent).toContain('Adjacent 1')
+      expect(preview.style.transform).toContain('-100%')
+      pointer('pointerup', 250)
+      act(() => vi.advanceTimersByTime(201))
+      expect(props.onNavigate).toHaveBeenCalledExactlyOnceWith(1)
+    })
+
+    it('a swipe to the left goes back to the previous card', () => {
+      props = { ...props, index: 1 }
+      render()
+      pointer('pointerdown', 250)
+      pointer('pointermove', 100)
+      expect(host.querySelector('.workout-swipe-preview').textContent).toContain('Adjacent -1')
+      pointer('pointerup', 100)
+      act(() => vi.advanceTimersByTime(201))
+      expect(props.onNavigate).toHaveBeenCalledExactlyOnceWith(-1)
+    })
+  })
 })

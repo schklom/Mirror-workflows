@@ -7,6 +7,12 @@ const COMMIT_DISTANCE = 70
 const GAP = 12
 const DURATION = 200
 
+// Which physical side the next card lies on: the right in a left-to-right language, the left in
+// a right-to-left one (Arabic), where the exercises run from right to left like the text. A
+// swipe towards the other side brings the next card in. `direction` stays logical throughout
+// (+1 next, -1 previous) and only the pixels are multiplied by this.
+const nextSide = () => (typeof document !== 'undefined' && document.documentElement.dir === 'rtl' ? -1 : 1)
+
 export default function SwipeCards({ children, renderPreview, onNavigate, index, count, revision, timerKey, workKey }) {
   const surface = useRef(null)
   const card = useRef(null)
@@ -18,13 +24,14 @@ export default function SwipeCards({ children, renderPreview, onNavigate, index,
   latest.current = { revision, timerKey, workKey }
 
   const paint = (offset, animate = false, toward = gesture.current?.direction) => {
+    const side = gesture.current?.side ?? nextSide()
     if (card.current) {
       card.current.style.transition = animate ? `transform ${DURATION}ms ease-out` : 'none'
       card.current.style.transform = `translateX(${offset}px)`
     }
     if (preview.current && toward) {
       preview.current.style.transition = animate ? `transform ${DURATION}ms ease-out` : 'none'
-      const start = toward > 0 ? '100% + ' : '-100% - '
+      const start = toward * side > 0 ? '100% + ' : '-100% - '
       preview.current.style.transform = `translateX(calc(${start}${GAP}px + ${offset}px))`
     }
   }
@@ -59,6 +66,7 @@ export default function SwipeCards({ children, renderPreview, onNavigate, index,
       y: event.clientY,
       offset: 0,
       direction: null,
+      side: nextSide(),
       revision,
       timerKey,
       workKey,
@@ -79,7 +87,7 @@ export default function SwipeCards({ children, renderPreview, onNavigate, index,
       event.currentTarget.setPointerCapture?.(event.pointerId)
     }
 
-    const nextDirection = dx < 0 ? 1 : -1
+    const nextDirection = dx * active.side < 0 ? 1 : -1
     const available = index + nextDirection >= 0 && index + nextDirection < count
     active.direction = nextDirection
     active.offset = available ? dx : dx * 0.35
@@ -107,7 +115,7 @@ export default function SwipeCards({ children, renderPreview, onNavigate, index,
       if (navigate) onNavigate(completedDirection)
     }
 
-    paint(commit ? -active.direction * (width + GAP) : 0, !reducedMotion, active.direction)
+    paint(commit ? -active.direction * active.side * (width + GAP) : 0, !reducedMotion, active.direction)
     if (reducedMotion) complete()
     else pending.current = setTimeout(complete, DURATION)
   }

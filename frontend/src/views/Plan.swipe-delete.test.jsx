@@ -55,6 +55,23 @@ describe('routine rows after swipe-to-delete', () => {
     expect(r.style.transform).toBe('translateX(0px)')
   })
 
+  // In Arabic the button sits at the row's inline end, the left, so the row slides the other way.
+  it('slide towards the right in a right-to-left language, where the button is on the left', () => {
+    document.documentElement.dir = 'rtl'
+    try {
+      const r = row('Push A')
+      act(() => { del('Push A').focus() })
+      expect(r.style.transform).toBe('translateX(76px)')
+      const start = new MouseEvent('mousedown', { bubbles: true, button: 0, clientX: 100, clientY: 10 })
+      act(() => { r.focus() })
+      expect(r.style.transform).toBe('translateX(0px)')
+      act(() => { r.dispatchEvent(start) })
+      act(() => { r.dispatchEvent(new MouseEvent('mousemove', { bubbles: true, buttons: 1, clientX: 180, clientY: 12 })) })
+      act(() => { r.dispatchEvent(new MouseEvent('mouseup', { bubbles: true, clientX: 180, clientY: 12 })) })
+      expect(r.style.transform).toBe('translateX(76px)')
+    } finally { document.documentElement.dir = '' }
+  })
+
   it('delete through the shared helper: the routine, its days and its reschedules', () => {
     act(() => { del('Pull A').dispatchEvent(new MouseEvent('click', { bubbles: true })) })
     const S = useStore.getState().S

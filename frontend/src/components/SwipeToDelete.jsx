@@ -32,7 +32,12 @@ import { t } from '../lib/i18n.js'
 // button sits in the tab order right before its row but under it on screen, so focusing it
 // slides the row open the way a swipe would, and moving focus on closes it again: otherwise
 // Tab would land on a button nobody can see.
+//
+// The button sits at the row's inline end: the right in a left-to-right language, the left in
+// Arabic. Offsets below are kept in that logical sense (negative = towards the start, opening)
+// and turned into pixels only in setX, so one gesture reads the same in both directions.
 const REVEAL = 76
+const endSide = () => (document.documentElement.dir === 'rtl' ? -1 : 1)
 export default function SwipeToDelete({ children, onDelete, deleteLabel, className, onClick, role, tabIndex, onKeyDown }) {
   const outerRef = useRef(null)
   const rowRef = useRef(null)
@@ -45,7 +50,7 @@ export default function SwipeToDelete({ children, onDelete, deleteLabel, classNa
     const el = rowRef.current
     if (!el) return
     el.style.transition = animate ? 'transform .18s ease-out' : 'none'
-    el.style.transform = `translateX(${x}px)`
+    el.style.transform = `translateX(${x * endSide()}px)`
   }
   const start = (x, y) => { drag.current = { startX: x, startY: y, delta: 0, open: drag.current.open, axis: null } }
   const move = (x, y, ev) => {
@@ -58,7 +63,7 @@ export default function SwipeToDelete({ children, onDelete, deleteLabel, classNa
     }
     if (d.axis === 'y') return
     ev?.preventDefault?.()
-    d.delta = dx
+    d.delta = dx * endSide()
     const base = d.open ? -REVEAL : 0
     setX(Math.max(-REVEAL - 12, Math.min(0, base + dx)), false)
   }
@@ -89,7 +94,7 @@ export default function SwipeToDelete({ children, onDelete, deleteLabel, classNa
       onMouseUp={end}
       onMouseLeave={() => { if (drag.current.startX !== null) end() }}>
       <button className="swipe-del" aria-label={deleteLabel || t('Delete')}
-        style={{ position: 'absolute', inset: '0 0 0 auto', width: REVEAL, background: 'var(--red)', color: '#fff', fontSize: 12, fontWeight: 600 }}
+        style={{ position: 'absolute', top: 0, bottom: 0, insetInlineEnd: 0, width: REVEAL, background: 'var(--red)', color: '#fff', fontSize: 12, fontWeight: 600 }}
         onFocus={() => { if (drag.current.open) return; focusOpened.current = true; drag.current.open = true; setX(-REVEAL, true) }}
         onBlur={() => { if (!focusOpened.current) return; focusOpened.current = false; drag.current.open = false; setX(0, true) }}
         onClick={() => { setX(0, true); drag.current.open = false; onDelete() }}>{t('Delete')}</button>

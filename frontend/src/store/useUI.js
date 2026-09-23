@@ -149,9 +149,10 @@ export const useUI = create((set, get) => ({
      purpose: the two mean opposite things, they must never run together, and a work set is
      something you are watching — so it gets no server push (that endpoint says "rest over",
      and a plank does not need a notification you are staring at anyway).
-     `onDone(elapsedSec)` is called both when the countdown reaches zero and on an early
-     finish; the elapsed time is what actually gets logged, so stopping at 0:38 of a 0:45
-     hold records 0:38 rather than crediting the full target. */
+     `onDone(elapsedSec, { chimed })` is called both when the countdown reaches zero and on an
+     early finish; the elapsed time is what actually gets logged, so stopping at 0:38 of a 0:45
+     hold records 0:38 rather than crediting the full target. `chimed` is true when the countdown
+     ran out in front of you and the end chime and buzz have just played. */
   startWork(sec, label, onDone) {
     get().stopWork()
     get().stopRest()
@@ -174,7 +175,8 @@ export const useUI = create((set, get) => ({
         }
         const done = workDone
         get().stopWork()
-        if (done) done(wk.total)
+        // `chimed` tells the set's own tick that this end has already sounded and buzzed.
+        if (done) done(wk.total, { chimed: seenLive })
         return
       }
       if (left <= 3) beep(snd, 660, 0.1)

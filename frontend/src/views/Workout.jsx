@@ -919,13 +919,16 @@ function ActiveWorkout() {
     // This tap may be the only one before the hold's countdown beeps (a timed first exercise):
     // get the audio context running while it still counts as a gesture (iOS, #152).
     unlock(S.sound)
-    useUI.getState().startWork(e.sets[i].sec || 45, exerciseNameFor(exOr(e.id)), elapsed => {
+    useUI.getState().startWork(e.sets[i].sec || 45, exerciseNameFor(exOr(e.id)), (elapsed, { chimed = false } = {}) => {
       mutEntry(idx, en => { en.sets[i].sec = elapsed })
-      if (!useStore.getState().S.active.entries[idx].sets[i].done) toggle(idx, i)
+      if (!useStore.getState().S.active.entries[idx].sets[i].done) toggle(idx, i, undefined, { quiet: chimed })
     })
   }
 
-  const toggle = (idx, i, side) => {
+  // `quiet`: the hold that ticks this set has just ended with the chime and its buzz pattern
+  // (store/useUI.js). The tick's own beep would sound over the chime's first note and clip it,
+  // and its short buzz would cut the pattern off: a new vibrate call replaces the running one.
+  const toggle = (idx, i, side, { quiet = false } = {}) => {
     // Ticking a set ends the typing in that row: drop the keyboard before the rest timer, the
     // effort sheet or the next exercise moves in. WebKit keeps the input focused across the
     // button tap, and a focused input with its keyboard gone is what leaves the tab bar
@@ -942,7 +945,7 @@ function ActiveWorkout() {
       else e.sets[i].done = !e.sets[i].done
       checked = e.sets[i].done
       if (e.sets[i].done) {
-        beep(S.sound, 1040, 0.12); vibrate(30)
+        if (!quiet) { beep(S.sound, 1040, 0.12); vibrate(30) }
         // The unit that owns the ticked set — not the marked one. Since !92 the marker no longer
         // follows a finished exercise, and in list mode any exercise can be worked on, so judging
         // the marker's unit here declared the workout complete after one set elsewhere.

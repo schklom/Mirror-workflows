@@ -307,6 +307,9 @@ h4.sec{
 .lrow-m{flex:1;min-width:auto;display:flex;flex-direction:column;gap:1px}
 .lrow-t{font-size:17px;letter-spacing:-.012em;line-height:1.25}
 .lrow-s{font-size:13px;color:var(--label-2);line-height:1.3}
+/* Settings → Account ID: a machine string, so a machine face, small, and free to break anywhere
+   rather than push the row past a phone's edge. */
+.acct-id{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px;overflow-wrap:anywhere}
 /* flex:none would let a long value ("Follow the routine (Linear progression)") run straight
    through the title next to it, since the title's column only holds out for its longest word.
    Letting the value shrink and ellipsise instead keeps the two out of each other's way.

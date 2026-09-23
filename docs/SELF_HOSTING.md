@@ -122,8 +122,10 @@ INVITE_ONLY=1              # new profiles need an invite code
 ALLOW_GUEST=0              # remove "Continue without account"
 ```
 
-Register your own passkey profile first, then find your id in `./data/db.json` under `users[].id`
-and put it in `ADMIN_UIDS`. You'll get an **Admin dashboard** link in Settings: who's training
+Register your own passkey profile first, then copy your id from **Settings → Account → Account
+ID** (tap it to copy; it is also in `./data/db.json` under `users[].id`) and put it in
+`ADMIN_UIDS`. The same row is how anyone on your instance tells you which account is theirs when
+they need help. You'll get an **Admin dashboard** link in Settings: who's training
 right now, each user's workout history and body weight, the ability to disable an account (signed
 out and locked out everywhere until you re-enable it), and — with `INVITE_ONLY=1` — generating and
 revoking invite codes. Existing accounts keep working when you switch invite-only on. Admin access
@@ -363,6 +365,40 @@ everybody registers again — which is why it pays to settle the domain before o
 > On a LAN without certificates there is nothing to configure that makes passkeys work over
 > plain `http://192.168.x.x`: browsers only allow WebAuthn on HTTPS (or `localhost`). Use guest
 > mode, the standalone mobile app (`docs/MOBILE.md`), or put a certificate in front of it.
+
+## Which passkey providers work
+
+openGym asks for a passkey and nothing more specific: no particular kind of device, no platform
+authenticator, no attestation, and sign-in lets the browser offer any passkey it can find for
+your hostname. So whatever stores passkeys on your device works, and which one you get is
+decided by your operating system and browser, not by openGym. The common questions:
+
+**Can I keep my passkey in Bitwarden, 1Password, Proton Pass or another password manager on
+Android?** Yes, on Android 14 or later. Switch the app on as a passkey provider in the system
+settings (*Passwords, passkeys & accounts*, or *Passwords & accounts*; the name varies by
+manufacturer). The system then offers that app when openGym asks to create or use a passkey. If
+Chrome keeps offering only Google Password Manager, look under *Autofill services* in Chrome's
+own settings for the option to use another service. On Android 13 and earlier, passkeys can only
+be stored in Google Password Manager. (#101)
+
+**Firefox on Windows 10 does not offer a QR code to sign in with my phone.** Firefox on Windows
+hands passkeys to Windows' own dialog, and the Windows 10 dialog has no *use a phone* option;
+Windows 11 added it. On Windows 10, sign in with Chrome or Edge, which show their own QR code, or
+keep the passkey in a password manager that has a Firefox extension. (#103)
+
+**Where does my passkey live?** Where you created it, and wherever that store syncs: Google
+Password Manager to Chrome on your other devices signed in to the same Google account, iCloud
+Keychain to your Apple devices, a password manager to every device it runs on. A passkey kept
+only on one phone (or on a hardware key) goes with that phone.
+
+**I lost my passkey.** An account has one passkey, the one it was registered with, and there is
+no self-service recovery yet. If any device is still signed in (a browser, a paired phone),
+export a backup there (**Settings → Export backup (JSON)**), register a new profile and import
+it. When you ask your admin for help, the id under **Settings → Account → Account ID** tells them
+exactly which account is yours.
+
+The phone app never uses a passkey at all: it pairs with a one-time code from a signed-in
+browser (see section 2).
 
 ## Troubleshooting
 

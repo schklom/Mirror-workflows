@@ -225,8 +225,10 @@ export function plannedOf(cfg) {
 }
 // Work with no load to enter climbs in reps, then sets, when it is logged at 0: a bodyweight
 // exercise, or one whose equipment is not a load of its own — an ab wheel, a stability ball, a
-// bosu (isLoadedEq). Only a loaded implement logged at 0 is a weight nobody typed in.
-const climbsReps = cfg => isBw(cfg) || !isLoadedEq(cfg.id)
+// bosu (isLoadedEq). Only a loaded implement logged at 0 is a weight nobody typed in. An
+// assistance machine at 0 is the one exception on a stack: no help left is where its own
+// progression leads (issue #232), and from there the work is a plain pull-up or dip.
+const climbsReps = cfg => isBw(cfg) || !isLoadedEq(cfg.id) || isAssisted(cfg)
 
 const PLAN_KEYS = ['sets', 'reps', 'repsMin', 'sec']
 const samePlan = (a, b) => PLAN_KEYS.every(k => (a[k] ?? null) === (b[k] ?? null))

@@ -143,6 +143,15 @@ export async function passkeyLogin() {
   const res = await api('/api/login/verify', { method: 'POST', body: JSON.stringify(await passkeyAssertion()) })
   return res.user
 }
+// A creation ceremony on options the server has already handed out: another passkey for a
+// signed-in profile, or one made with a code from another device (#95, components/Passkeys.jsx).
+// The options come in an earlier step so the prompt opens straight from the tap that asks for it.
+// They are copied first — the conversion writes buffers into them, and a prompt dismissed by
+// mistake is tried again with the same ones.
+export async function createPasskey(options) {
+  const cred = await navigator.credentials.create({ publicKey: toCreationOptions(JSON.parse(JSON.stringify(options))) })
+  return credToJSON(cred)
+}
 
 // Name-and-password sign-in, on an instance that offers it (config.password_login). Each of
 // these answers with the same session cookie a passkey sign-in sets, so callers treat the user

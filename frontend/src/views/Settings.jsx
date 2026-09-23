@@ -23,6 +23,7 @@ import { starterPlanSheet, confirmSheet, importFromApp, importFromHevy, equipmen
 import Icon from '../components/Icon.jsx'
 import { ServerSyncSection, KeptChangesRows, leaveServer, connectServer, passkeySignIn } from '../components/ServerSync.jsx'
 import { passwordOn, PasswordRow, openPasswordSignIn, openPasswordRegister } from '../components/PasswordAuth.jsx'
+import { usePasskeys, PasskeysRow, DeviceLinkRow } from '../components/Passkeys.jsx'
 import { Section, Row, SelectRow, Switch, Segmented, Button, TextField } from '../components/ui.jsx'
 
 export default function Settings() {
@@ -32,6 +33,11 @@ export default function Settings() {
   const coachLocal = useStore(s => s.coachLocal)
   // Name-and-password sign-in, where the instance offers it (#118).
   const pwOn = passwordOn(useStore(s => s.config))
+  // This profile's passkeys and the code for another device (#95). A change to them is read back
+  // here and by the password row, whose "Remove" depends on there being a passkey.
+  const passkeys = usePasskeys(!!user && !MOBILE && !DEMO)
+  const [credsV, setCredsV] = useState(0)
+  const credsChanged = () => { passkeys.load(); setCredsV(v => v + 1) }
   const { update, replaceState, setUser, pullState, pushState, resetDemo } = useStore()
   const toast = useUI(s => s.toast)
   const fileRef = useRef(null)
@@ -232,9 +238,11 @@ export default function Settings() {
           onClick={() => window.open(REPO, '_blank', 'noopener')} />
       </> : user ? <>
         {user.admin && <Row icon="wrench" iconTint="var(--indigo)" title={t('Admin dashboard')} accessory="chevron" onClick={() => nav('/admin')} />}
+        <PasskeysRow state={passkeys.st} changed={credsChanged} />
+        <DeviceLinkRow state={passkeys.st} />
         <Row icon="link" iconTint="var(--blue)" title={t('Pair the mobile app')} subtitle={t('Connect the openGym app on your phone to this account.')} accessory="chevron"
           onClick={() => useUI.getState().openSheet(close => <PairSheet close={close} />)} />
-        {pwOn && <PasswordRow />}
+        {pwOn && <PasswordRow version={credsV} />}
         <Row icon="signOut" iconTint="var(--red)" title={t('Sign out')} danger onClick={signOutHere} />
         <Row icon="shield" iconTint="var(--red)" title={t('Sign out everywhere')} subtitle={t('Ends this profile’s sessions on all your devices.')} danger onClick={signOutEverywhere} />
         <AccountIdRow id={user.id} />

@@ -82,6 +82,47 @@ describe('adoptProfile — sign-in takes the server profile', () => {
     expect(puts()[0].state.workouts.map(w => w.id)).toEqual(['w9'])
     expect(useStore.getState().S.unit).toBe('kg')
   })
+
+  // A profile joined with a code from somewhere else (#95): whoever sent the code chose it, so a
+  // guest's workouts are not moved into it unasked, even when it has nothing yet.
+  it('alwaysAsk: asks before moving the device data into an empty profile, and moves nothing when declined', async () => {
+    signedIn(clone(guest))
+    api.mockResolvedValueOnce({ state: null, rev: 0 })
+    const ask = vi.fn(async () => false)
+    const r = await useStore.getState().adoptProfile(ask, { alwaysAsk: true })
+    expect(ask).toHaveBeenCalledWith({ workouts: 1, bodyweight: 0, customEx: 0 })
+    expect(puts()).toHaveLength(0)
+    const S = useStore.getState().S
+    expect(S.workouts).toEqual([])
+    expect(S.routines).toEqual([])
+    expect(S.active).toEqual({ id: 'running' })   // the in-progress session stays with the device
+    expect(sync().rev).toBe(0)
+    expect(r).toEqual({ adopted: true, added: false })
+  })
+
+  it('alwaysAsk: moves the device data into an empty profile once the user says so', async () => {
+    signedIn(clone(guest))
+    api.mockResolvedValueOnce({ state: null, rev: 0 })
+    api.mockResolvedValueOnce({ ok: true, rev: 1 })
+    const ask = vi.fn(async () => true)
+    await useStore.getState().adoptProfile(ask, { alwaysAsk: true })
+    expect(ask).toHaveBeenCalledTimes(1)
+    expect(puts()).toHaveLength(1)
+    expect(puts()[0].state.workouts.map(w => w.id)).toEqual(['w9'])
+  })
+
+  it('alwaysAsk: the account this copy already belongs to is not asked about its own data', async () => {
+    useStore.setState({ S: clone(guest), ready: true, sync: { offline: false, pending: false, lastSynced: 0 } })
+    localStorage.setItem('gym_owner', 'user-1')
+    useStore.getState().setUser({ id: 'user-1', name: 'Ana' })
+    api.mockResolvedValueOnce({ state: null, rev: 0 })
+    api.mockResolvedValueOnce({ ok: true, rev: 1 })
+    const ask = vi.fn(async () => false)
+    await useStore.getState().adoptProfile(ask, { alwaysAsk: true })
+    expect(ask).not.toHaveBeenCalled()
+    expect(puts()).toHaveLength(1)
+    expect(puts()[0].state.workouts.map(w => w.id)).toEqual(['w9'])
+  })
 })
 
 describe('offline and unsynced flags', () => {

@@ -472,18 +472,46 @@ be stored in Google Password Manager. (#101)
 **Firefox on Windows 10 does not offer a QR code to sign in with my phone.** Firefox on Windows
 hands passkeys to Windows' own dialog, and the Windows 10 dialog has no *use a phone* option;
 Windows 11 added it. On Windows 10, sign in with Chrome or Edge, which show their own QR code, or
-keep the passkey in a password manager that has a Firefox extension. (#103)
+keep the passkey in a password manager that has a Firefox extension — or give that PC a passkey
+of its own (Windows Hello works in Firefox) with a code from your phone, below. (#103)
+
+**Can one profile have more than one passkey?** Yes. **Settings → Account → Passkeys** lists
+them — a name, when each was added and last used — and adds, renames or removes one. Adding one
+from there is for anything this browser can reach: another password manager, a security key, or
+your phone through the browser's own QR prompt. For a second device that can open openGym itself
+(a phone, a work laptop), use **Settings → Account → Add another device**: it shows a code of 12
+characters and a QR code of a link that carries it. Scan it with the other device, or type the
+code there under **Use a code from your other device** on the sign-in screen; the other device
+then creates a passkey of its own and is signed in by it. So a Windows Hello passkey on a PC and
+the phone's own passkey can sign in to the same profile, instead of the phone ending up with a
+second, empty one. (#95)
+
+Both ways ask you to confirm first — with a passkey the profile already has, or its password —
+because each adds a lasting way in: a session on its own may be a copied cookie. The code works
+once, for ten minutes, and is stored only as a hash; making a new one, signing out everywhere or
+changing the password voids it. Wrong codes count toward a per-address pause of code redemption,
+like wrong reset codes, and every passkey added or removed and every code made or used is in the
+activity log (`auth.passkey.*`, `auth.link.*`).
+
+The last way into a profile cannot be removed: its only passkey stays unless a password can sign
+in instead, which counts only while `PASSWORD_LOGIN=1`. Removing a passkey stops it signing in,
+but it does not end a session it already opened — sessions are not tied to one passkey. If the
+device is lost, remove its passkey *and* use **Sign out everywhere**.
 
 **Where does my passkey live?** Where you created it, and wherever that store syncs: Google
 Password Manager to Chrome on your other devices signed in to the same Google account, iCloud
 Keychain to your Apple devices, a password manager to every device it runs on. A passkey kept
 only on one phone (or on a hardware key) goes with that phone.
 
-**I lost my passkey.** An account has one passkey, the one it was registered with, and there is
-no self-service recovery yet. If any device is still signed in (a browser, a paired phone),
-export a backup there (**Settings → Export backup (JSON)**), register a new profile and import
-it. When you ask your admin for help, the id under **Settings → Account → Account ID** tells them
-exactly which account is yours.
+**I lost my passkey.** If the profile has another passkey, sign in with that one and remove the
+lost one under **Settings → Account → Passkeys** (then **Sign out everywhere**). A browser that
+is still signed in can give a new device a passkey with **Add another device** only if the
+profile also has a password: making the code asks for a passkey or the current password first,
+because a session on its own may be a stolen cookie. Otherwise there is no self-service recovery: with `PASSWORD_LOGIN=1` an admin can issue a reset code, and without
+it the only way back is a backup (**Settings → Export backup (JSON)**, from any device still
+signed in) imported into a new profile. When you ask your admin for help, the id under
+**Settings → Account → Account ID** tells them exactly which account is yours. Adding a second
+passkey early is what keeps one lost phone from being a lost profile.
 
 The phone app never uses a passkey at all: it pairs with a one-time code from a signed-in
 browser (see section 2).

@@ -50,6 +50,7 @@ describe('auditReason', () => {
   it('says what a throttle pause was for, including the kind the server passes in a variable', () => {
     expect(auditLine({ ev: 'auth.throttled', ok: false, msg: 'signup' }).sub).toMatch(/invite codes/)
     expect(auditLine({ ev: 'auth.throttled', ok: false, msg: 'password' }).sub).toMatch(/wrong passwords/)
+    expect(auditLine({ ev: 'auth.throttled', ok: false, msg: 'link' }).sub).toMatch(/device codes/)
   })
   it('falls back to the raw code and tolerates none at all', () => {
     expect(auditReason('brand-new-code')).toBe('brand-new-code')
@@ -64,6 +65,14 @@ describe('auditLine', () => {
     expect(REASONS).toEqual(expect.arrayContaining(['challenge-expired', 'code-invalid', 'user-unavailable']))
     expect(auditLine({ ev: 'auth.pair.fail', ok: false, msg: 'code-invalid' })).toEqual({ title: 'Pairing failed', sub: 'unknown caller · wrong or expired pairing code' })
     expect(auditLine({ ev: 'auth.pair.ok', ok: true, name: 'Verifier' })).toEqual({ title: 'Paired a phone', sub: 'Verifier' })
+  })
+
+  it('reads the passkey and device-code events, including the refusals passed on from passkeys-store.js (#95)', () => {
+    expect(EVENTS).toEqual(expect.arrayContaining(['auth.passkey.add', 'auth.passkey.remove', 'auth.link.create', 'auth.link.ok', 'auth.link.fail']))
+    expect(auditLine({ ev: 'auth.link.fail', ok: false, msg: 'link-invalid' })).toEqual({ title: 'Adding a device with a code failed', sub: 'unknown caller · wrong, used or expired device code' })
+    expect(auditLine({ ev: 'auth.passkey.fail', ok: false, name: 'Ana', msg: 'passkey-limit' }).sub).toBe('Ana · the profile already has as many passkeys as it can hold')
+    expect(auditLine({ ev: 'auth.passkey.add', ok: true, name: 'Ana', msg: 'password' })).toEqual({ title: 'Added a passkey', sub: 'Ana · password' })
+    expect(auditLine({ ev: 'auth.passkey.fail', ok: false, name: 'Ana', msg: 'credential-exists' }).sub).not.toMatch(/credential-exists/)
   })
 
   it('names the person who did it', () => {

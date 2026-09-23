@@ -123,6 +123,7 @@ export const LocationMap = () => {
           .tileLayer(tileServerUrl, {
             attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
             maxZoom: 19,
+            referrerPolicy: 'strict-origin-when-cross-origin',
           })
           .addTo(mapInstanceRef.current);
 

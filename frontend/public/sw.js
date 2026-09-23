@@ -1,9 +1,32 @@
 /* openGym service worker — the app shell and its hashed assets are cached at install and kept
-   fresh network-first, media (img/gif) cache-first. A home-screen app reopened without a network
-   comes back from here with the same bundle it last ran; the state itself lives in localStorage.
-   `CACHE` carries the build hash (vite.config.js rewrites it), so every deploy is a new worker
-   with its own cache and the previous build's files are dropped on activate. */
+   fresh network-first, media (img/gif) cache-first in a cache of its own. A home-screen app
+   reopened without a network comes back from here with the same bundle it last ran; the state
+   itself lives in localStorage. `CACHE` carries the build hash (vite.config.js rewrites it), so
+   every deploy is a new worker with its own cache and the previous build's files are dropped on
+   activate; the media cache (`MEDIA`) is kept across builds. */
 const CACHE = 'opengym-rt-__BUILD__'
+
+/* Exercise media (img/, gif/) lives in a cache of its own that outlives builds (#281). It used to
+   share the build's cache, so every update swept every animation along with the old bundle, and
+   an installed app opened offline after an update showed broken tiles for exercises it had shown
+   the day before. The media never changes under a given URL, so there is nothing to invalidate.
+
+   It is bounded instead: past MEDIA_MAX_BYTES (or MEDIA_MAX_ITEMS, for a server that sends no
+   Content-Length) the least recently used entries go first. The Cache API keeps entries in the
+   order they were written, so a hit is written back once per worker lifetime to move it to the
+   end: least recently used as far as this worker has seen, which is what "LRU-ish" means here.
+   The whole catalogue is about 140 MB, so the cap only bites for someone who has browsed most of
+   it. lib/media-prefetch.js fills this cache for the exercises in the plan and names it too, so
+   a new name has to change there as well (sw-media.test.js pins the two together). */
+const MEDIA = 'opengym-media-v1'
+const MEDIA_MAX_BYTES = 150 * 1024 * 1024
+const MEDIA_MAX_ITEMS = 3000
+// What an entry without a Content-Length is counted as: a little above the catalogue's average.
+const MEDIA_GUESS_BYTES = 64 * 1024
+// Trimming lists the whole cache, so it runs after every MEDIA_TRIM_EVERY new entries rather
+// than after each one, and once when a new worker activates.
+const MEDIA_TRIM_EVERY = 20
+const isMediaPath = p => p.includes('/img/') || p.includes('/gif/')
 
 // What the shell needs to boot without a network: index.html plus every script/style/icon it
 // references. Read from the served index.html so the list follows the build, not a hand-kept
@@ -54,12 +77,70 @@ self.addEventListener('activate', e => {
     // next load with a network.
     const c = await caches.open(CACHE)
     if (await c.match('index.html')) {
-      const keys = await caches.keys()
-      await Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
+      const old = (await caches.keys()).filter(k => k !== CACHE && k !== MEDIA)
+      // A build from before MEDIA existed kept its media in its own cache: move it across first,
+      // so the first update to this worker does not cost what the device already had offline.
+      await Promise.all(old.map(k => adoptMedia(k).catch(() => {})))
+      await Promise.all(old.map(k => caches.delete(k)))
+      await trimMedia().catch(() => {})
     }
     await self.clients.claim()
   })())
 })
+
+async function adoptMedia(name) {
+  const from = await caches.open(name)
+  const media = (await from.keys()).filter(r => { try { return isMediaPath(new URL(r.url || r, location.href).pathname) } catch { return false } })
+  if (!media.length) return
+  const to = await caches.open(MEDIA)
+  for (const r of media) {
+    if (await to.match(r)) continue
+    const res = await from.match(r)
+    if (res) await to.put(r, res)
+  }
+}
+
+let mediaPuts = 0
+// Oldest first, which after the write-backs below is least recently used first.
+async function trimMedia() {
+  if (!(await caches.keys()).includes(MEDIA)) return
+  const c = await caches.open(MEDIA)
+  const keys = await c.keys()
+  const sizes = await Promise.all(keys.map(k => c.match(k).then(r => Number(r && r.headers && r.headers.get('content-length')) || MEDIA_GUESS_BYTES, () => MEDIA_GUESS_BYTES)))
+  let bytes = sizes.reduce((a, b) => a + b, 0)
+  let items = keys.length
+  for (let i = 0; i < keys.length && (bytes > MEDIA_MAX_BYTES || items > MEDIA_MAX_ITEMS); i++) {
+    await c.delete(keys[i])
+    bytes -= sizes[i]; items--
+  }
+}
+
+// URLs written back this worker lifetime; see MEDIA above.
+const touched = new Set()
+function media(e) {
+  return caches.open(MEDIA).then(c => c.match(e.request).then(hit => {
+    if (hit) {
+      if (!touched.has(e.request.url)) {
+        touched.add(e.request.url)
+        const copy = hit.clone()
+        e.waitUntil(c.put(e.request, copy).catch(() => {}))
+      }
+      return hit
+    }
+    return fetch(e.request).then(res => {
+      // Only a real answer is kept. A gated instance answers a lapsed session with 401, and an
+      // auth proxy in front with its login page, a 200 of HTML after a redirect; stored under an
+      // image's URL, that would stand in for the animation for good.
+      const type = (res.headers && res.headers.get('content-type')) || ''
+      if (res.ok && !res.redirected && !/text\/html/i.test(type)) {
+        touched.add(e.request.url)
+        const copy = res.clone()
+        e.waitUntil(c.put(e.request, copy).then(() => { if (++mediaPuts >= MEDIA_TRIM_EVERY) { mediaPuts = 0; return trimMedia() } }).catch(() => {}))
+      }
+      return res
+    })
+  }))
+}
 
 // The payload is parsed inside waitUntil: a push whose handler throws before showing anything is
 // a "silent push", which Chrome counts against the site and eventually revokes. A body that is
@@ -116,11 +197,8 @@ self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET' || url.origin !== location.origin) return
   if (url.pathname.startsWith('/api/') || url.pathname.startsWith(API)) return    // never cache auth/data
 
-  const isMedia = url.pathname.includes('/img/') || url.pathname.includes('/gif/')
-  if (isMedia) {
-    e.respondWith(caches.open(CACHE).then(c => c.match(e.request).then(hit =>
-      hit || fetch(e.request).then(res => { if (res.ok) c.put(e.request, res.clone()); return res })
-    )))
+  if (isMediaPath(url.pathname)) {
+    e.respondWith(media(e))
     return
   }
   // Network first; the copy for the cache is cloned before the response is handed to the page —

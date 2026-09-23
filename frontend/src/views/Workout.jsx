@@ -193,10 +193,19 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
   // profile's (S.logRef), so every exercise and the next session follow it.
   const refBest = S.logRef === 'best'
   const ref = refBest ? bestSetFor(S, entry.id, mode) : last
-  const refLine = ref ? <button type="button" className="refline small dim"
-    title={refBest ? t('Show last time instead') : t('Show your best set instead')}
+  // An exercise logged before only in another mode (reps then, a hold today) has a last time but
+  // no best set to hold today's rows against. The line stays and says so: gone, it took the
+  // switch back to "Last time" with it, reachable then only from Settings or another card.
+  const refText = ref
+    ? `${refBest ? t('Best set') : t('Last time')} (${fmtDate(ref.d)}): ${(refBest ? [ref.set] : ref.sets).map(s => setLabel(entry.id, s, ref.target, speedUnitOf(S))).join(', ')}`
+    : refBest && last ? t('Best set: nothing logged this way yet') : null
+  const refAction = refBest ? t('Show last time instead') : t('Show your best set instead')
+  // The button's text is the reference, which says nothing about what a tap does; its name
+  // carries both, the reference first as it reads on screen, then the switch.
+  const refLine = refText ? <button type="button" className="refline small dim"
+    title={refAction} aria-label={`${refText}. ${refAction}`}
     onClick={() => update(s => { s.logRef = refBest ? 'last' : 'best' })}>
-    <span>{refBest ? t('Best set') : t('Last time')} ({fmtDate(ref.d)}): {(refBest ? [ref.set] : ref.sets).map(s => setLabel(entry.id, s, ref.target, speedUnitOf(S))).join(', ')}</span>
+    <span>{refText}</span>
     <Icon name="shuffle" />
   </button> : null
   // A bodyweight set has no weight to type, so the column is not there (issue #32) — one

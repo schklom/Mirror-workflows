@@ -1444,6 +1444,7 @@ export default {
   'Best set': 'Legjobb sorozat',
   'Show last time instead': 'Inkább a legutóbbit mutasd',
   'Show your best set instead': 'Inkább a legjobb sorozatodat mutasd',
+  'Best set: nothing logged this way yet': 'Legjobb sorozat: így még nincs rögzítve semmi',
   'Shown under each exercise': 'Minden gyakorlat alatt',
   'What you did the last time, in that routine.': 'Amit legutóbb abban a rutinban csináltál.',
   'Your heaviest set of the exercise, from any workout.': 'A gyakorlat legnehezebb sorozata, bármelyik edzésedből.',

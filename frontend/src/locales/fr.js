@@ -1441,6 +1441,7 @@ export default {
   'Best set': 'Meilleure série',
   'Show last time instead': 'Afficher plutôt la dernière fois',
   'Show your best set instead': 'Afficher plutôt ta meilleure série',
+  'Best set: nothing logged this way yet': 'Meilleure série : rien de noté ainsi pour l’instant',
   'Shown under each exercise': 'Sous chaque exercice',
   'What you did the last time, in that routine.': 'Ce que tu as fait la dernière fois dans cette routine.',
   'Your heaviest set of the exercise, from any workout.': 'Ta série la plus lourde de l’exercice, toutes séances confondues.',

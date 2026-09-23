@@ -1441,6 +1441,7 @@ export default {
   'Best set': 'En iyi set',
   'Show last time instead': 'Bunun yerine geçen seferi göster',
   'Show your best set instead': 'Bunun yerine en iyi setini göster',
+  'Best set: nothing logged this way yet': 'En iyi set: bu şekilde henüz kayıt yok',
   'Shown under each exercise': 'Her egzersizin altında',
   'What you did the last time, in that routine.': 'O rutinde geçen sefer yaptıkların.',
   'Your heaviest set of the exercise, from any workout.': 'Bu egzersizdeki en ağır setin, herhangi bir antrenmandan.',

@@ -1452,6 +1452,7 @@ export default {
   'Best set': 'เซ็ตที่ดีที่สุด',
   'Show last time instead': 'แสดงครั้งก่อนแทน',
   'Show your best set instead': 'แสดงเซ็ตที่ดีที่สุดของคุณแทน',
+  'Best set: nothing logged this way yet': 'เซ็ตที่ดีที่สุด: ยังไม่มีการบันทึกแบบนี้',
   'Shown under each exercise': 'แสดงใต้แต่ละท่า',
   'What you did the last time, in that routine.': 'สิ่งที่คุณทำครั้งก่อนในรูทีนนั้น',
   'Your heaviest set of the exercise, from any workout.': 'เซ็ตที่หนักที่สุดของท่านี้ จากทุกการฝึก',

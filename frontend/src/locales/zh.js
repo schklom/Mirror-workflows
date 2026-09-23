@@ -1441,6 +1441,7 @@ export default {
   'Best set': '最佳组',
   'Show last time instead': '改为显示上次',
   'Show your best set instead': '改为显示你的最佳组',
+  'Best set: nothing logged this way yet': '最佳组：还没有这样记录过',
   'Shown under each exercise': '每个动作下方显示',
   'What you did the last time, in that routine.': '上次在该训练日完成的内容。',
   'Your heaviest set of the exercise, from any workout.': '该动作在所有训练中最重的一组。',

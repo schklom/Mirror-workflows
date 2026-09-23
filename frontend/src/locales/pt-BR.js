@@ -807,6 +807,7 @@ export const PT_BR_OVERRIDES = {
   // Portugal; "Melhor série" is shared and inherits
   'Show last time instead': 'Mostrar a última vez',
   'Show your best set instead': 'Mostrar sua melhor série',
+  'Best set: nothing logged this way yet': 'Melhor série: ainda nada registrado assim',
   'Shown under each exercise': 'Abaixo de cada exercício',
   'What you did the last time, in that routine.': 'O que você fez da última vez nessa rotina.',
   'Your heaviest set of the exercise, from any workout.': 'Sua série mais pesada do exercício, de qualquer treino.',

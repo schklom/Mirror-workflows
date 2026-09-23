@@ -1441,6 +1441,7 @@ export default {
   'Best set': '최고 세트',
   'Show last time instead': '대신 지난번 보기',
   'Show your best set instead': '대신 최고 세트 보기',
+  'Best set: nothing logged this way yet': '최고 세트: 이 방식으로는 아직 기록 없음',
   'Shown under each exercise': '각 운동 아래에 표시',
   'What you did the last time, in that routine.': '그 루틴에서 지난번에 한 내용.',
   'Your heaviest set of the exercise, from any workout.': '모든 운동 중 이 운동의 가장 무거운 세트.',

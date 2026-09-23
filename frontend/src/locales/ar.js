@@ -1431,6 +1431,7 @@ export default {
   'Best set': 'أفضل مجموعة',
   'Show last time instead': 'اعرض المرة السابقة بدلًا من ذلك',
   'Show your best set instead': 'اعرض أفضل مجموعة لك بدلًا من ذلك',
+  'Best set: nothing logged this way yet': 'أفضل مجموعة: لم يُسجَّل شيء بهذه الطريقة بعد',
   'Shown under each exercise': 'يظهر تحت كل تمرين',
   'What you did the last time, in that routine.': 'ما أدّيته في المرة السابقة ضمن هذا الروتين.',
   'Your heaviest set of the exercise, from any workout.': 'أثقل مجموعة لك في هذا التمرين، من أي جلسة.',

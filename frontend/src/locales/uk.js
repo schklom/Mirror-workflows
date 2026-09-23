@@ -1375,6 +1375,7 @@ export default {
   'Best set': 'Найкращий підхід',
   'Show last time instead': 'Показати минулий раз',
   'Show your best set instead': 'Показати твій найкращий підхід',
+  'Best set: nothing logged this way yet': 'Найкращий підхід: так поки нічого не записано',
   'Shown under each exercise': 'Під кожною вправою',
   'What you did the last time, in that routine.': 'Твій результат минулого разу в цій програмі.',
   'Your heaviest set of the exercise, from any workout.': 'Твій найважчий підхід у цій вправі — з будь-якого тренування.',

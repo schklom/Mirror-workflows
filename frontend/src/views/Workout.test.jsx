@@ -1939,6 +1939,28 @@ describe('the reference line: last time or best set', () => {
     await mount([exercise('plain-bench', [false])], 0, { logRef: 'best' })
     expect(line()).toBeNull()
   })
+
+  // Logged before only as a hold, today as reps: there is a last time but no best set in this
+  // mode. The line used to vanish, and the switch back to "Last time" with it.
+  it('stays on the card when there is no best set in this mode yet, and still switches back', async () => {
+    const hold = { d: '2026-08-26', start: Date.parse('2026-08-26T18:00:00'), routineIds: ['A'],
+      entries: [{ id: 'plain-bench', rid: 'A', target: { mode: 'time', sec: 30 }, sets: [{ sec: 30, w: 0, done: true }] }] }
+    await mount([exercise('plain-bench', [false], { rid: 'A' })], 0, { workouts: [hold], logRef: 'best' })
+    expect(line().textContent).toBe('Best set: nothing logged this way yet')
+    await act(async () => { line().dispatchEvent(new dom.Event('click', { bubbles: true })) })
+    expect(mocks.S.logRef).toBe('last')
+    await rerender()
+    expect(line().textContent).toMatch(/^Last time \(.+\): 0:30$/)
+  })
+
+  // The text is the reference; the name also says what a tap does, after the text it shows.
+  it('names the switch a tap makes', async () => {
+    await mount([exercise('plain-bench', [false], { rid: 'A' })], 0, { workouts: history })
+    expect(line().getAttribute('aria-label')).toMatch(/^Last time \(.+\): 55×8\. Show your best set instead$/)
+    await act(async () => { line().dispatchEvent(new dom.Event('click', { bubbles: true })) })
+    await rerender()
+    expect(line().getAttribute('aria-label')).toMatch(/^Best set \(.+\): 80×5\. Show last time instead$/)
+  })
 })
 
 // #284: logging a past workout that went as planned takes one tap, not one per set.

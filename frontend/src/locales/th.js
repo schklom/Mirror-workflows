@@ -1311,4 +1311,8 @@ export default {
   'Plan: {0}': 'แผน: {0}',
   'today {0}': 'วันนี้ {0}',
   'reps from your last session': 'จำนวนครั้งจากเซสชันล่าสุด',
+  // --- a past workout: drop-sets, supersets, its exercises' history, copy as text ---
+  'Copy as text': 'คัดลอกเป็นข้อความ',
+  'Copied': 'คัดลอกแล้ว',
+  'Could not copy': 'คัดลอกไม่ได้',
 }

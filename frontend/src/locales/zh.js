@@ -1300,4 +1300,8 @@ export default {
   'Plan: {0}': '计划：{0}',
   'today {0}': '今天 {0}',
   'reps from your last session': '次数沿用上次训练',
+  // --- a past workout: drop-sets, supersets, its exercises' history, copy as text ---
+  'Copy as text': '复制为文本',
+  'Copied': '已复制',
+  'Could not copy': '无法复制',
 }

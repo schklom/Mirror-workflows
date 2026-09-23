@@ -1300,4 +1300,8 @@ export default {
   'Plan: {0}': 'План: {0}',
   'today {0}': 'сегодня {0}',
   'reps from your last session': 'повт. с прошлой тренировки',
+  // --- a past workout: drop-sets, supersets, its exercises' history, copy as text ---
+  'Copy as text': 'Скопировать как текст',
+  'Copied': 'Скопировано',
+  'Could not copy': 'Не удалось скопировать',
 }

@@ -1303,4 +1303,8 @@ export default {
   'Plan: {0}': 'Terv: {0}',
   'today {0}': 'ma {0}',
   'reps from your last session': 'ismétlések az utolsó edzésedből',
+  // --- a past workout: drop-sets, supersets, its exercises' history, copy as text ---
+  'Copy as text': 'Másolás szövegként',
+  'Copied': 'Kimásolva',
+  'Could not copy': 'Nem sikerült másolni',
 }

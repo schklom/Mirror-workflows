@@ -37,6 +37,8 @@ import { isFav, toggleFav, sortFavouritesFirst } from './lib/favourites.js'
 import { buildSessionEntries, buildPlannedEntry } from './lib/session-start.js'
 import { buildCombinedEntries, deriveSessionName } from './lib/session-merge.js'
 import { workoutsOn, backfillStart, backfillEnd, completeBackfill } from './lib/backfill.js'
+import { workoutText } from './lib/workout-text.js'
+import { copyText } from './lib/clipboard.js'
 
 const S = () => useStore.getState().S
 const update = (...a) => useStore.getState().update(...a)
@@ -1696,19 +1698,38 @@ function WorkoutDetail({ w, close }) {
       if (text) rec.note = text; else delete rec.note
     })
   }, [])
-  // A combined session's entries carry a `rid`; group them into per-routine sections in merge
-  // order. A legacy single-routine workout (one routineIds, or no rid anywhere) renders flat.
+  const nameOf = e => (EXIDX[e.id] ? exerciseNameFor(EXIDX[e.id]) : (e.n || e.id))
+  // Tapping an exercise opens its history (Discord 'Improvement ideas'): from one session to the
+  // curve it sits on, which is the question a past workout raises most often.
   const entryRow = (e, i) => {
     const ex = EXIDX[e.id]
-    return <div key={i} className="row" style={{ marginBottom: 12, alignItems: 'flex-start' }}>
+    return <div key={i} className="row wd-ex" style={{ alignItems: 'flex-start' }} {...tappable(() => exerciseHistorySheet(e.id))}>
       {ex && <Thumb ex={ex} />}
-      <div className="grow"><div className="tt capitalize" style={{ fontWeight: 600 }}>{ex ? exerciseNameFor(ex) : (e.n || e.id)} {w.prs && w.prs.includes(e.id) && <span className="pr"><Icon name="trophy" />PR</span>}</div>
+      <div className="grow"><div className="tt capitalize" style={{ fontWeight: 600 }}>{nameOf(e)} {w.prs && w.prs.includes(e.id) && <span className="pr"><Icon name="trophy" />PR</span>}</div>
         <div className="ss">{e.sets.filter(hasCompletedWork).map(s => setLabel(e.id, s, e.target)).join('  ·  ') || t('no sets')}</div>
         {e.note && <div className="small dim" style={{ marginTop: 3 }}>
           {e.notePin && <Icon name="flag" style={{ fontSize: 12, marginRight: 4, verticalAlign: '-1px', color: 'var(--yellow)' }} />}{e.note}
         </div>}</div>
+      <Icon name="chevronRight" className="chev" style={{ alignSelf: 'center' }} />
     </div>
   }
+  // Exercises done as a superset stay together under a "Superset" label and one bar, the way the
+  // routine editor shows them (Discord: "supersets aren't shown at all"). Adjacent entries with
+  // the same tag, as in the workout itself; a workout finished before the tag was kept has none.
+  const entryRows = items => supersetUnits(items.map(([e]) => e)).map(unit => {
+    if (unit.length < 2) return entryRow(...items[unit[0]])
+    return <div key={'ss' + items[unit[0]][1]} className="wd-ss">
+      <div className="ss-label"><Icon name="link" />{t('Superset')}</div>
+      {unit.map(k => entryRow(...items[k]))}
+    </div>
+  })
+  // Copied with the note as it stands in the box, which may not be saved yet.
+  const copyAsText = async () => {
+    const rec = { ...(st.workouts.find(x => x.id === w.id) || w), note: note.trim() }
+    toast(await copyText(workoutText(rec, { unit: st.unit, nameOf })) ? t('Copied') : t('Could not copy'))
+  }
+  // A combined session's entries carry a `rid`; group them into per-routine sections in merge
+  // order. A legacy single-routine workout (one routineIds, or no rid anywhere) renders flat.
   const groups = []
   w.entries.forEach((e, i) => {
     const key = e.rid || '__none'
@@ -1731,14 +1752,16 @@ function WorkoutDetail({ w, close }) {
           </div>
           <div className="small dim">{t('{0} sets', setN)} · {fmtVol(vol, st.unit)}</div>
         </div>
-        {g.items.map(([e, i]) => entryRow(e, i))}
+        {entryRows(g.items)}
       </div>
-    }) : w.entries.map((e, i) => entryRow(e, i))}
+    }) : entryRows(w.entries.map((e, i) => [e, i]))}
     <div className="small muted" style={{ margin: '4px 0 6px' }}>{t('Session note')}</div>
     <textarea ref={noteRef} className="input" rows={2} maxLength={NOTE_MAX} value={note}
       placeholder={t('How the session went as a whole.')}
       onFocus={onNoteFocus} onChange={e => setNote(e.target.value)} onBlur={saveNote} />
     <div style={{ height: 14 }} />
+    <Button icon="clipboard" onClick={copyAsText}>{t('Copy as text')}</Button>
+    <div style={{ height: 8 }} />
     <Button variant="danger" onClick={() => confirmSheet({ title: t('Delete workout?'), message: t('This removes it from your history for good.'), confirmText: t('Delete'), danger: true, onConfirm: () => { update(s => { s.workouts = s.workouts.filter(x => x.id !== w.id) }); close(); toast(t('Workout deleted')) } })}>{t('Delete workout')}</Button>
   </>
 }

@@ -161,3 +161,34 @@ describe('session notes', () => {
     expect('note' in buildCompletedWorkout(a)).toBe(false)
   })
 })
+
+// Discord (rubik_97): supersets appeared nowhere once the workout was saved, because the finish
+// whitelist dropped the group tag every other screen reads them from.
+describe('superset groups', () => {
+  const done = { w: 40, r: 10, done: true }
+  const open = { w: 40, r: 10, done: false }
+  const active = entries => ({ id: 'w', d: '2026-09-17', start: 1, routineIds: ['r1'], name: 'Arms', entries })
+
+  it('keeps the group on every member that was trained', () => {
+    const w = buildCompletedWorkout(active([
+      { id: 'a', sg: 'sg1', sets: [done], target: {} },
+      { id: 'b', sg: 'sg1', sets: [done], target: {} },
+      { id: 'c', sets: [done], target: {} },
+    ]))
+    expect(w.entries.map(e => e.sg)).toEqual(['sg1', 'sg1', undefined])
+    expect('sg' in w.entries[2]).toBe(false)
+  })
+
+  it('drops the tag of a member whose partner was never trained', () => {
+    const entries = [
+      { id: 'a', sg: 'sg1', sets: [done], target: {} },
+      { id: 'b', sg: 'sg1', sets: [open], target: {} },
+      { id: 'c', sets: [done], target: {} },
+    ]
+    const w = buildCompletedWorkout(active(entries))
+    expect(w.entries.map(e => e.id)).toEqual(['a', 'c'])
+    expect('sg' in w.entries[0]).toBe(false)
+    // the running session is not the one tidied up
+    expect(entries[0].sg).toBe('sg1')
+  })
+})

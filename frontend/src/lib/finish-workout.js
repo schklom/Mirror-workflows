@@ -1,6 +1,6 @@
 // The persisted boundary for a finished session. Keep this pure so compatibility tests can
 // exercise the exact shape the UI writes without mounting React or mutating store state.
-import { bestWeightForEntry } from './history.js'
+import { bestWeightForEntry, cleanupSg } from './history.js'
 import { hasCompletedWork } from './workout-model.js'
 
 export function buildCompletedWorkout(active, { end = Date.now(), prs = [], snapshotFor } = {}) {
@@ -18,6 +18,9 @@ export function buildCompletedWorkout(active, { end = Date.now(), prs = [], snap
       // What the routine asked for when the session was built (session-start.js), next to the
       // target the prescription moved — how the next session tells an edited plan (#275).
       ...(entry.planned ? { planned: entry.planned } : {}),
+      // The superset the exercise was done in, so the history can show the pairing. Without it
+      // the workout forgot at finish what it had been all session.
+      ...(entry.sg ? { sg: entry.sg } : {}),
     }
     const snapshot = typeof snapshotFor === 'function' ? snapshotFor(entry) : null
     if (snapshot && typeof snapshot === 'object' && !Array.isArray(snapshot) && Object.keys(snapshot).length) {
@@ -33,6 +36,10 @@ export function buildCompletedWorkout(active, { end = Date.now(), prs = [], snap
     }
     return completed
   }).filter(entry => entry.sets.some(hasCompletedWork))
+  // An exercise left without a single set drops out above, and its partner is then a superset
+  // of one. cleanupSg clears the tag it no longer shares with a neighbour; the entries are this
+  // function's own copies, so the running session is left alone.
+  cleanupSg(entries)
 
   const sessionNote = (active?.note || '').trim()
   const routineIds = [].concat(active?.routineIds ?? (active?.routineId ? [active.routineId] : []))

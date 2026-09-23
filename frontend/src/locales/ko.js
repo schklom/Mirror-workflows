@@ -1300,4 +1300,8 @@ export default {
   'Plan: {0}': '계획: {0}',
   'today {0}': '오늘 {0}',
   'reps from your last session': '지난 세션의 횟수',
+  // --- a past workout: drop-sets, supersets, its exercises' history, copy as text ---
+  'Copy as text': '텍스트로 복사',
+  'Copied': '복사됨',
+  'Could not copy': '복사할 수 없음',
 }

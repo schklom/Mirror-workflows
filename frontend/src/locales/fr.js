@@ -1300,4 +1300,8 @@ export default {
   'Plan: {0}': 'Plan : {0}',
   'today {0}': 'aujourd’hui {0}',
   'reps from your last session': 'reps de ta dernière séance',
+  // --- a past workout: drop-sets, supersets, its exercises' history, copy as text ---
+  'Copy as text': 'Copier en texte',
+  'Copied': 'Copié',
+  'Could not copy': 'Copie impossible',
 }

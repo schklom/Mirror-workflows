@@ -160,6 +160,7 @@ describe('StructuralBalance view', () => {
     const picker = useUI.getState().sheets.at(-1)
     expect(picker).toBeTruthy()
     const pickerView = picker.render(picker.close)
+    expect(pickerView.props.title).toBe('Change exercise')   // not the picker's own "Add exercise"
     act(() => pickerView.props.onPick({ id: '0043' })) // barbell full squat — deliberately not in inclineBench's whitelist
 
     const chosen = useStore.getState().S.balanceOverrides['poliquin:inclineBench']

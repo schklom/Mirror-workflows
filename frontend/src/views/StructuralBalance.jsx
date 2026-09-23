@@ -35,8 +35,10 @@ export default function StructuralBalance() {
     s.balanceOverrides = withOverride(s.balanceOverrides, overrideKey(template, role), exId)
   })
   const clearOverride = role => setOverride(role, null)
+  // Headed by what a pick does here, like the routine editor's Replace (#110): the picker's own
+  // heading is "Add exercise".
   const changeExercise = role => {
-    const picker = exercisePicker(ex => { setOverride(role, ex.id); picker.close() })
+    const picker = exercisePicker(ex => { setOverride(role, ex.id); picker.close() }, { title: t('Change exercise') })
   }
 
   return <>

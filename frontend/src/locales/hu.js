@@ -786,6 +786,9 @@ export default {
   'Exclude from automatic progression': 'Kihagyás az automatikus progresszióból',
   'Use for planned deloads. Workouts stay in history and statistics.': 'Tervezett deloadhoz. Az edzések megmaradnak az előzményekben és a statisztikában.',
   'The next regular target continues from the last included workout.': 'A következő normál cél az utolsó beszámított edzéstől folytatódik.',
+  'Deload routine': 'Deload rutin',
+  'Its workouts do not count toward progression. They still show in history and statistics.': 'Az edzései nem számítanak bele a progresszióba. Az előzményekben és a statisztikában továbbra is megjelennek.',
+  'A deload routine opens at the numbers set here, so the progression above does not apply to it.': 'A deload rutin az itt beállított értékekkel indul, így a fenti progresszió nem vonatkozik rá.',
   'Open progression settings': 'Progresszió beállításainak megnyitása',
   'Hevy is rate-limiting requests — wait a minute and try again': 'A Hevy korlátozza a kéréseket — várj egy percet, és próbáld újra',
   // --- log a past workout ---

@@ -794,6 +794,9 @@ export default {
   'Exclude from automatic progression': 'ไม่รวมในการเพิ่มน้ำหนักอัตโนมัติ',
   'Use for planned deloads. Workouts stay in history and statistics.': 'ใช้สำหรับดีโหลดที่วางแผนไว้ การฝึกยังอยู่ในประวัติและสถิติ',
   'The next regular target continues from the last included workout.': 'เป้าหมายปกติครั้งถัดไปจะต่อจากการฝึกล่าสุดที่นับรวม',
+  'Deload routine': 'รูทีนดีโหลด',
+  'Its workouts do not count toward progression. They still show in history and statistics.': 'การฝึกของรูทีนนี้ไม่นับรวมในการเพิ่มระดับ แต่ยังแสดงในประวัติและสถิติ',
+  'A deload routine opens at the numbers set here, so the progression above does not apply to it.': 'รูทีนดีโหลดเริ่มจากค่าที่ตั้งไว้ที่นี่ การเพิ่มระดับด้านบนจึงไม่มีผลกับรูทีนนี้',
   'Open progression settings': 'เปิดการตั้งค่าการเพิ่มน้ำหนัก',
   'Hevy is rate-limiting requests — wait a minute and try again': 'Hevy จำกัดจำนวนคำขอ — รอสักครู่แล้วลองอีกครั้ง',
   // --- log a past workout ---

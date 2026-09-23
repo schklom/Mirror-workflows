@@ -211,7 +211,8 @@ Read this before hosting openGym for anyone other than yourself.
   it. Without that, only direct surgery on `./data` gets it back.
 - **A device code is a capability, and removing a passkey does not end sessions.** Anyone who
   reads a code off the screen within its ten minutes can add a passkey to that profile; the owner
-  sees it in Settings → Passkeys and in the activity log (`auth.link.ok`) and can remove it.
+  sees it in Settings → Passkeys and can remove it. The instance's activity log records it as
+  `auth.link.ok`, but only an admin can read that log.
   Sessions are `uid:expiry:version` and are not tied to the passkey that opened them, so removing
   a passkey stops it signing in and drops an unused device code, but leaves any session it
   opened running; "sign out everywhere" ends those.

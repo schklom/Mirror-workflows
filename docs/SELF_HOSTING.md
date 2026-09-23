@@ -502,9 +502,10 @@ Keychain to your Apple devices, a password manager to every device it runs on. A
 only on one phone (or on a hardware key) goes with that phone.
 
 **I lost my passkey.** If the profile has another passkey, sign in with that one and remove the
-lost one under **Settings → Account → Passkeys** (then **Sign out everywhere**). If a browser is
-still signed in, it can give a new device a passkey with **Add another device**. Otherwise there
-is no self-service recovery: with `PASSWORD_LOGIN=1` an admin can issue a reset code, and without
+lost one under **Settings → Account → Passkeys** (then **Sign out everywhere**). A browser that
+is still signed in can give a new device a passkey with **Add another device** only if the
+profile also has a password: making the code asks for a passkey or the current password first,
+because a session on its own may be a stolen cookie. Otherwise there is no self-service recovery: with `PASSWORD_LOGIN=1` an admin can issue a reset code, and without
 it the only way back is a backup (**Settings → Export backup (JSON)**, from any device still
 signed in) imported into a new profile. When you ask your admin for help, the id under
 **Settings → Account → Account ID** tells them exactly which account is yours. Adding a second

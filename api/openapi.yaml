@@ -33,10 +33,13 @@ info:
     whether or not a profile has that name. A password check counts from the moment it
     starts, so checks sent at once get no more tries than checks sent one by one. A
     paused caller gets `429 {"error": …, "code": "locked", "retryAfter": <s>}` with a
-    `Retry-After` header. The passkey and pairing routes are not throttled.
-    The two routes that redeem a one-time device link (tag `passkeys`) share the
-    per-address budget, and wrong codes pause the address for link redemption only,
-    after 20, the way wrong reset codes do.
+    `Retry-After` header. Passkey sign-up and sign-in and the pairing routes are not
+    throttled. The two routes that redeem a one-time device link (tag `passkeys`) share
+    the per-address budget, and wrong codes pause the address for link redemption only,
+    after 20, the way wrong reset codes do. Adding a passkey in Settings
+    (`POST /api/account/passkeys/options`) and making a device code
+    (`POST /api/account/device-link`) spend the per-address budget too, and a current
+    password given there as proof counts like one given at sign-in.
     The address is the socket's, or with `TRUST_PROXY=1` the one a trusted proxy put in
     `CF-Connecting-IP` / the last `X-Forwarded-For` entry / `X-Real-IP`; IPv6 clients are
     counted by /64. Counters live in memory and reset on restart.
@@ -52,8 +55,10 @@ info:
     State-changing browser requests must come from the app's own origin. The server
     checks `Sec-Fetch-Site` (falling back to `Origin` vs the configured `ORIGIN`);
     a mismatch is refused with `403 {"error":"cross-origin request refused"}` on any
-    non-GET route. Exempt: the WebAuthn and `pair/redeem` routes (each carries its own
-    one-shot credential in the body) and any request authenticated with a Bearer token.
+    non-GET route. Exempt: passkey sign-up and sign-in (`register/options`,
+    `register/verify`, `login/options`, `login/verify`) and `pair/redeem`, each of which
+    carries its own one-shot credential in the body, and any request authenticated with a
+    Bearer token.
     The password routes are **not** exempt: a hostile page knows a valid name and
     password of its own, and could otherwise sign a visitor into it (login CSRF).
     Neither are the device-link routes: a link is redeemed on the app's own origin,

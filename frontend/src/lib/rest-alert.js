@@ -95,6 +95,18 @@ export function disarmRestAlert() {
   })
 }
 
+// The rest was paused in the app (#193): the notification stops its clock at the time held and
+// offers Resume, and the alarm for the old end is called off. Resuming arms it again for the new
+// end like any other rest; time added or taken while paused holds it again at the new figure.
+export function holdRestAlert(leftSec, totalSec) {
+  token++
+  if (!MOBILE) return
+  enqueue(async () => {
+    const p = await restPlugin()
+    if (p) await p.RestAlert.hold({ id: REST_ALERT_ID, leftMs: Math.max(1, leftSec) * 1000, totalMs: Math.max(1, totalSec) * 1000 })
+  })
+}
+
 // The page is visible and about to play the in-app beep. Skip the native tone so
 // the two don't both sound. The notification itself still posts.
 let onNativeRest = null

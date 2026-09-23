@@ -46,13 +46,19 @@ public class RestTimerService extends Service {
         String action = intent == null ? null : intent.getAction();
         if (RestAlert.ACTION_ACCENT.equals(action)) {
             if (!running) {
-                stopSelf();
+                // Only this start: a countdown asked for right behind it must still come up.
+                stopSelf(startId);
                 return START_NOT_STICKY;
             }
             accent = intent.getIntExtra("accent", accent);
             ink = intent.getIntExtra("ink", ink);
             RestAlert.setAccentColor(accent, ink);
             show();
+            return START_NOT_STICKY;
+        }
+        if (RestAlert.ACTION_HOLD.equals(action)) {
+            if (running) hold(intent.getLongExtra("leftMs", 0), intent.getLongExtra("totalMs", 0));
+            else stopSelf(startId);
             return START_NOT_STICKY;
         }
         if (RestAlert.ACTION_SKIP.equals(action)) {
@@ -118,6 +124,20 @@ public class RestTimerService extends Service {
         }
         show();
         emit("pause");
+    }
+
+    /**
+     * Paused in the app. The clock stops at the time the app holds, so the two read the same,
+     * and the button offers Resume. No event goes back: the app made this change. The plugin
+     * has already called off the alarm.
+     */
+    private void hold(long leftMs, long total) {
+        if (leftMs <= 0) return;
+        paused = true;
+        pausedLeft = leftMs;
+        if (total > 0) totalMs = total;
+        handler.removeCallbacks(tick);
+        show();
     }
 
     private void nudge(long deltaMs) {

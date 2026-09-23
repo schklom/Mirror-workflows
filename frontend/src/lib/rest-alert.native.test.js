@@ -57,6 +57,7 @@ describe('the rest alert in the iOS app', () => {
     h.platform = 'ios'
     const alert = await import('./rest-alert.js')
     await expect(alert.armRestAlert(Date.now() + 90_000, { totalSec: 90 })).resolves.toBe(false)
+    alert.holdRestAlert(60, 90)
     alert.setRestAccent('red')
     alert.disarmRestAlert()
     await settle()
@@ -71,12 +72,13 @@ describe('the rest alert in the Android app', () => {
     h.platform = 'android'
     const alert = await import('./rest-alert.js')
     await expect(alert.armRestAlert(Date.now() + 90_000, { totalSec: 90 })).resolves.toBe(true)
+    alert.holdRestAlert(60, 90)
     alert.setRestAccent('red')
     alert.disarmRestAlert()
     await settle()
     expect(h.registerPlugin).toHaveBeenCalledTimes(1)
     expect(h.calls).toContain('addListener')
-    expect(h.calls.filter(c => c !== 'addListener')).toEqual(['schedule', 'setAccent', 'cancel'])
+    expect(h.calls.filter(c => c !== 'addListener')).toEqual(['schedule', 'hold', 'setAccent', 'cancel'])
     expect(unhandled).toEqual([])
   })
 

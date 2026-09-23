@@ -86,6 +86,28 @@ public class RestAlertPlugin extends Plugin {
         call.resolve();
     }
 
+    /**
+     * The rest was paused in the app. The alarm for the old end is called off here, whether or
+     * not a countdown is on screen, and the countdown holds at the time the app shows. Resuming
+     * in the app schedules the new end, which restarts the clock.
+     */
+    @PluginMethod
+    public void hold(PluginCall call) {
+        Context ctx = getContext();
+        if (ctx == null) {
+            call.reject("no context");
+            return;
+        }
+        Context app = ctx.getApplicationContext();
+        RestAlert.cancelAlarmOnly(app, (int) number(call, "id", RestAlert.NOTIFICATION_ID));
+        Intent i = new Intent(app, RestTimerService.class);
+        i.setAction(RestAlert.ACTION_HOLD);
+        i.putExtra("leftMs", number(call, "leftMs", 0));
+        i.putExtra("totalMs", number(call, "totalMs", 0));
+        try { app.startService(i); } catch (Exception ignored) { /* no countdown on screen to hold */ }
+        call.resolve();
+    }
+
     @PluginMethod
     public void setAccent(PluginCall call) {
         int color = (int) number(call, "accent", 0xFF30D158L);

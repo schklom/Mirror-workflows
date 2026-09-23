@@ -31,6 +31,7 @@ public final class RestAlert {
     static final String ACTION_PLUS = "ch.duartesantos.opengym.rest.PLUS";
     static final String ACTION_SKIP = "ch.duartesantos.opengym.rest.SKIP";
     static final String ACTION_ACCENT = "ch.duartesantos.opengym.rest.ACCENT";
+    static final String ACTION_HOLD = "ch.duartesantos.opengym.rest.HOLD";
     static final String CHANNEL_ID = "rest-over";
     private static volatile boolean toneSuppressed;
     private static String lastAlertTitle = "Rest over";

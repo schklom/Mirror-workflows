@@ -16,8 +16,9 @@ import { startFlow, exercisePicker, exConfigSheet, exerciseDetailSheet, finishWo
 import { effortColor } from '../lib/effort.js'
 import Icon from '../components/Icon.jsx'
 import { Button, Check, NumberField } from '../components/ui.jsx'
-import { nextPrescription, applyPrescription, defaultIncrement, weightIncrement, stepWeight } from '../lib/progression.js'
+import { defaultIncrement, weightIncrement, stepWeight } from '../lib/progression.js'
 import { progressionGuidance } from '../lib/progression-copy.js'
+import { buildPlannedEntry } from '../lib/session-start.js'
 import { glyphOf } from '../lib/glyphs.js'
 import { isWarmupRow, isDropSet, isRestPauseSet, dropsOf, clustersOf, addDrop, addCluster, removeDropAt, removeClusterAt, setDropAt, setClusterAt, nextDropWeight, nextBurstReps, isSideSet, makeSideSet, setSideField, toggleSide, addSideDrop, removeSideDropAt, setSideDropAt, addSideCluster, removeSideClusterAt, setSideClusterAt } from '../lib/workout-model.js'
 import { canMoveActiveWorkoutUnit, moveActiveWorkoutUnit } from '../lib/active-workout-order.js'
@@ -796,20 +797,20 @@ function ActiveWorkout() {
         if (!activeEntry || activeEntry.id !== entryId) return
         const full = { ...cfg, id: activeEntry.id }
         const activeRoutine = s.routines.find(r => r.id === activeEntry.rid)
-        const step = modeOf(full) === 'reps' ? weightIncrement(full, s.unit) : defaultIncrement(activeEntry.id, s.unit)
         // A config without a set count keeps the rows the session already has.
         if (!(full.sets > 0)) full.sets = activeEntry.sets.filter(x => !isWarmupRow(x)).length || 1
-        const plan = nextPrescription(s, full, activeRoutine)
         // The sheet edits sets, reps, weight and warm-ups as well as the rule — so the rows are
-        // rebuilt from the new config the way the session was, and only what you already logged
-        // is kept in place (done warm-ups first, then done work sets, then the fresh remainder).
-        const fresh = applyIntensifierPlan(applyPrescription(buildSets(s, full, { step, rid: activeEntry.rid, useTarget: plan.kind === 'off' }), plan, step), full)
+        // rebuilt from the new config exactly the way the session start builds them (same reps
+        // source, same prescription, same stamped target), and only what you already logged is
+        // kept in place (done warm-ups first, then done work sets, then the fresh remainder).
+        const built = buildPlannedEntry(s, full, activeRoutine, { noProg: activeEntry.noProg === true })
+        const fresh = built.sets
         const doneWarm = activeEntry.sets.filter(x => x.done && isWarmupRow(x))
         const doneWork = activeEntry.sets.filter(x => x.done && !isWarmupRow(x))
         const freshWarm = fresh.filter(isWarmupRow)
         const freshWork = fresh.filter(x => !isWarmupRow(x))
-        activeEntry.target = { ...cfg }
-        activeEntry.plan = plan
+        activeEntry.target = built.target
+        activeEntry.plan = built.plan
         activeEntry.sets = [...doneWarm, ...freshWarm.slice(doneWarm.length), ...doneWork, ...freshWork.slice(doneWork.length)]
       })
     }, null, routine)
@@ -1079,15 +1080,15 @@ function ActiveWorkout() {
       const seed = freestyle ? freestyleConfig(S, { id: ex.id, ...defaultConfig(ex.id) }) : null
       const commit = cfg => update(s => {
         const full = { ...cfg, id: ex.id }
-        const plan = freestyle ? null : nextPrescription(s, full, routine)
-        const sets = buildSets(s, full, {
-          step: modeOf(full) === 'reps' ? weightIncrement(full, s.unit) : defaultIncrement(ex.id, s.unit),
-          ...(freestyle ? { preferLast: true } : { rid: curRid }),
-          ...(plan?.kind === 'off' ? { useTarget: true } : {})
-        })
-        const progressed = freestyle ? sets : applyPrescription(sets, plan, modeOf(full) === 'reps' ? weightIncrement(full, s.unit) : defaultIncrement(ex.id, s.unit))
+        // A planned session builds the exercise the way its routine would (prescription, reps
+        // source, target); freestyle reproduces what you did last time.
+        const built = freestyle
+          ? { target: { ...cfg }, plan: null, sets: applyIntensifierPlan(buildSets(s, full, {
+            step: modeOf(full) === 'reps' ? weightIncrement(full, s.unit) : defaultIncrement(ex.id, s.unit), preferLast: true,
+          }), full) }
+          : buildPlannedEntry(s, full, routine)
         const insertAt = insertionIndexAfterCurrentUnit(supersetUnits(s.active.entries), s.active.cur, s.active.entries.length)
-        s.active.entries.splice(insertAt, 0, { id: ex.id, target: { ...cfg }, plan, sets: applyIntensifierPlan(progressed, full), ...(curRid ? { rid: curRid } : {}) })
+        s.active.entries.splice(insertAt, 0, { id: ex.id, ...built, ...(curRid ? { rid: curRid } : {}) })
         s.active.cur = insertAt
         useUI.getState().shiftRestOwner(insertAt, 1)
       })

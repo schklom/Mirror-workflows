@@ -739,6 +739,37 @@ describe('progression guidance', () => {
   })
 })
 
+// Editing an exercise mid-session rebuilds its open rows the way the session start builds them:
+// the same reps source and the same stamped target, so saving "2 × 10" over a session carried at
+// 15 opens 10s, and the target the session is judged by says what the rows say.
+describe('progression settings rebuild the rows like a session start', () => {
+  const history = [{
+    d: '2026-08-27',
+    entries: [{ id: 'plain-bench', target: { sets: 2, reps: 15, weight: 40 }, sets: [{ w: 40, r: 15, done: true }, { w: 40, r: 15, done: true }] }],
+  }]
+  const plan = { policy: 'linear', kind: 'up', weight: 42.5, why: ['Every rep last time — {0} {1} more.', 2.5, 'kg'] }
+  const saveTen = async state => {
+    await mount([exercise('plain-bench', [false, false], { plan, target: { mode: 'reps', sets: 2, reps: 15, weight: 40 } })], 0, state)
+    await pressProgression()
+    const save = mocks.exConfigSheet.mock.calls.at(-1)[2]
+    await act(async () => { save({ mode: 'reps', sets: 2, reps: 10, weight: 40, prog: 'linear' }) })
+    return mocks.S.active.entries[0]
+  }
+
+  it('opens the plan\'s reps and stamps the prescription into the target', async () => {
+    const saved = await saveTen({ workouts: history })
+    expect(saved.sets.map(s => [s.w, s.r])).toEqual([[42.5, 10], [42.5, 10]])
+    expect(saved.target).toMatchObject({ id: 'plain-bench', sets: 2, reps: 10, weight: 42.5 })
+    expect(saved.plan.kind).toBe('up')
+  })
+
+  it('carries last session\'s reps when the profile starts from the last session', async () => {
+    const saved = await saveTen({ workouts: history, startFrom: 'last' })
+    expect(saved.sets.map(s => s.r)).toEqual([15, 15])
+    expect(saved.target.reps).toBe(10)
+  })
+})
+
 describe('effort cell (colour-coded RIR/RPE quick picker)', () => {
   // A rep exercise whose sets can carry an effort rating. `rir` per set is optional — an
   // unrated set simply omits the key, which is what the empty cell has to represent.

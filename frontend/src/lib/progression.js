@@ -332,7 +332,9 @@ export function stallCount(sessions, policy) {
  * Returns `{ weight, reps, sec, why, kind }` — `kind` being one of
  * first | up | hold | deload | off, and `why` a translatable template + args so the app can
  * always answer "why this number?". A field the policy has no opinion on comes back
- * undefined and the caller keeps whatever the plan said.
+ * undefined and the caller keeps whatever the plan said — for reps, unless the profile starts
+ * planned sessions from the last session, in which case the rows keep last time's (see
+ * startsFromLast in session-start.js).
  */
 export function nextPrescription(S, cfg, routine) {
   const mode = modeOf(cfg)
@@ -514,10 +516,16 @@ export function nextPrescription(S, cfg, routine) {
 export function applyPrescription(sets, p, step = 2.5) {
   if (!p || p.kind === 'off' || p.kind === 'first') return sets
   const out = sets.map(s => {
-    // Never rewrite a logged set, and never rewrite a warm-up: the prescription speaks to
-    // the work rows only (a ticked warm-up falling through here would be the data-loss the
-    // cascade fix removed, two files over).
-    if (s.done || isWarmupRow(s)) return s
+    // Never rewrite a logged set (a ticked warm-up falling through here would be the data-loss
+    // the cascade fix removed, two files over). The prescription speaks to the work rows; an
+    // open warm-up only follows the reps or the hold it settled on, because insertWarmupRow
+    // copied those from the work row before the policy had spoken. Its weight is re-ramped last.
+    if (s.done) return s
+    if (isWarmupRow(s)) {
+      if (p.reps != null && s.r != null) return { ...s, r: p.reps }
+      if (p.sec != null && s.sec != null) return { ...s, sec: p.sec }
+      return s
+    }
     if (isSideSet(s)) {
       const sides = Object.fromEntries(['L', 'R'].map(side => {
         const row = s.sides[side]

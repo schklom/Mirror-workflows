@@ -46,6 +46,58 @@ describe('buildSessionEntries', () => {
     expect(work.every(s => s.r === entry.target.reps && s.w === entry.target.weight)).toBe(true)
   })
 
+  // The same invariant for every other way a loaded rep policy opens a session: what the rows
+  // say is the target the session is judged by, so doing exactly what is on the screen is a hit.
+  // Linear and Greyskull used to open at last session's reps while the stamped target kept the
+  // plan's, so a routine edited from 15 to 10 opened at 15 and read 15 ≥ 10 as a hit forever.
+  const history = (reps, extra = {}) => ({
+    unit: 'kg', exWeights: {}, routines: [],
+    workouts: [{ d: '2026-01-01', entries: [{ id: '0025', target: { sets: 2, reps: 15, weight: 40 }, sets: reps.map(r => ({ w: 40, r, done: true })) }] }],
+    ...extra,
+  })
+  // Greyskull has no hold: one failure resets it, so its miss case is a (non-Epley) deload.
+  for (const [prog, kind, reps] of [['linear', 'up', [15, 15]], ['linear', 'hold', [15, 9]], ['greyskull', 'up', [15, 15]], ['greyskull', 'deload', [15, 9]]]) {
+    it(`opens ${prog} ${kind} at the plan's reps, and completing the rows reads as a hit`, () => {
+      const cfg = { id: '0025', sets: 2, reps: 10, weight: 40, prog }
+      const [entry] = buildSessionEntries(history(reps), { id: 'r', prog, ex: [cfg] })
+      const work = entry.sets.filter(s => !isWarmupRow(s))
+      expect(entry.plan.kind).toBe(kind)
+      expect(entry.target.reps).toBe(10)
+      expect(work.map(s => s.r)).toEqual([10, 10])
+      expect(work.every(s => s.r === entry.target.reps && s.w === entry.target.weight)).toBe(true)
+      expect(readSession({ ...entry, sets: entry.sets.map(s => ({ ...s, done: true })) }, cfg).ok).toBe(true)
+    })
+  }
+
+  it('carries last session\'s reps instead when the profile starts from the last session', () => {
+    const cfg = { id: '0025', sets: 2, reps: 10, weight: 40, prog: 'linear' }
+    const [entry] = buildSessionEntries(history([15, 15], { startFrom: 'last' }), { id: 'r', prog: 'linear', ex: [cfg] })
+    expect(entry.sets.map(s => [s.w, s.r])).toEqual([[42.5, 15], [42.5, 15]])
+    expect(entry.target.reps).toBe(10)
+  })
+
+  it('warms up at the plan\'s reps, not at last session\'s', () => {
+    const cfg = { id: '0025', sets: 2, reps: 10, weight: 40, warmupSets: 1 }
+    const [entry] = buildSessionEntries(history([15, 15]), { id: 'r', prog: 'linear', ex: [cfg] })
+    expect(entry.sets.map(s => [isWarmupRow(s) ? 'warm' : 'work', s.r])).toEqual([['warm', 10], ['work', 10], ['work', 10]])
+  })
+
+  it('splits the plan\'s reps evenly per side', () => {
+    const cfg = { id: '0025', sets: 1, reps: 16, weight: 20, side: true, prog: 'linear' }
+    const side = (w, r) => ({ w, r, done: true })
+    const st = {
+      unit: 'kg', exWeights: {}, routines: [],
+      workouts: [{ d: '2026-01-01', entries: [{ id: '0025', target: { sets: 1, reps: 10, weight: 20, side: true }, sets: [
+        { w: 22.5, r: 10, done: true, sides: { L: side(22.5, 5), R: side(20, 5) } },
+      ] }] }],
+    }
+    const [entry] = buildSessionEntries(st, { id: 'r', ex: [cfg] })
+    const row = entry.sets[0]
+    expect(entry.plan.kind).toBe('up')
+    expect([row.sides.L.r, row.sides.R.r]).toEqual([8, 8])
+    expect(row.r).toBe(entry.target.reps)
+  })
+
   it('returns a bare array — no { entries, excluded } wrapper', () => {
     const r = { id: 'r', prog: 'off', ex: [{ id: '0025', sets: 3, reps: 5, weight: 60 }] }
     const out = buildSessionEntries(st, r)

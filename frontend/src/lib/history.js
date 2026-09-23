@@ -428,6 +428,12 @@ function buildWorkSets(S, cfg, options = {}) {
   // A deload routine must use its own prescription instead of carrying regular-session values
   // into the workout. Other planned sessions keep the existing history-first behaviour.
   const prevAt = i => (!useTarget && last ? (last.sets[i] || last.sets[last.sets.length - 1]) : null)
+  // `options.planReps`: a planned session opens at the routine's own reps, and history only
+  // decides the weight (Settings → "Planned sessions start from", lib/session-start.js). Without
+  // it every row copied last session's reps, so a plan edited from 15 to 10 — or trained at 15
+  // once — kept opening at 15 while the routine still read "2 × 10" (#275). Freestyle has no
+  // plan to own anything and keeps reproducing what you did (preferLast).
+  const planReps = !!options.planReps && !preferLast && cfg.reps > 0
 
   if (mode === 'cardio') {
     for (let i = 0; i < n; i++) {
@@ -460,11 +466,12 @@ function buildWorkSets(S, cfg, options = {}) {
     const w = useTarget
       ? (cfg.weight > 0 ? cfg.weight : (lastRegular && lastRegular.r > 0 ? lastRegular.w : cfg.weight))
       : usable ? usable.w : (conf && conf.w > 0 ? conf.w : cfg.weight)
-    const row = { w, r: usable ? usable.r : cfg.reps, done: false }
+    const row = { w, r: planReps || !usable ? cfg.reps : usable.r, done: false }
     // A unilateral exercise logs each side on its own (issue #60): the row splits into L/R,
     // each seeded with half the total reps at the same weight. When "last time" was itself a
-    // per-side set, carry its two sides over verbatim so an asymmetry you logged persists.
-    if (isPerSide(cfg)) sets.push(usable && isSideSet(usable) ? seedSideFromLast(row, usable) : makeSideSet(row))
+    // per-side set, carry its two sides over so an asymmetry you logged persists — both sides'
+    // weights always, their reps only when the plan does not own them.
+    if (isPerSide(cfg)) sets.push(usable && isSideSet(usable) ? seedSideFromLast(row, usable, planReps) : makeSideSet(row))
     else sets.push(row)
   }
   return sets
@@ -472,12 +479,13 @@ function buildWorkSets(S, cfg, options = {}) {
 
 // Seed a fresh per-side row from a previous per-side set: same reps/weight each side, nothing
 // done, no effort carried (that is logged afresh each session). Falls back to an even split if
-// the previous row was not actually per-side.
-function seedSideFromLast(row, prev) {
+// the previous row was not actually per-side. With `planReps` the reps are the row's own —
+// the plan's total, split the way makeSideSet splits it — and only the weights carry over.
+function seedSideFromLast(row, prev, planReps) {
   const base = makeSideSet(row)
   if (!isSideSet(prev)) return base
-  const carry = s => ({ w: Number(s?.w) || 0, r: Number(s?.r) || 0, done: false })
-  return syncSideAggregate({ ...base, sides: { L: carry(prev.sides.L), R: carry(prev.sides.R) } })
+  const carry = (s, key) => ({ w: Number(s?.w) || 0, r: planReps ? base.sides[key].r : Number(s?.r) || 0, done: false })
+  return syncSideAggregate({ ...base, sides: { L: carry(prev.sides.L, 'L'), R: carry(prev.sides.R, 'R') } })
 }
 
 /**

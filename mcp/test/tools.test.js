@@ -754,21 +754,47 @@ describe('preview_session', () => {
     expect(out.overridden[0].reason).toMatch(/Every rep last time/)
   })
 
-  test('reps carry from the last session even when the routine asks for something else', () => {
-    only({ id: '0025', sets: 2, reps: 12, weight: 60 }, {
-      workouts: [{
-        id: 'w1', d: '2026-07-20', routineId: 'r-preview', name: 'Preview',
-        entries: [{
-          id: '0025',
-          target: { id: '0025', sets: 2, reps: 5, weight: 60 },
-          sets: [{ w: 60, r: 5, done: true }, { w: 60, r: 5, done: true }]
-        }]
-      }]
-    })
-    const e = call('preview_session').exercises[0]
+  const fiveLastTime = [{
+    id: 'w1', d: '2026-07-20', routineId: 'r-preview', name: 'Preview',
+    entries: [{
+      id: '0025',
+      target: { id: '0025', sets: 2, reps: 5, weight: 60 },
+      sets: [{ w: 60, r: 5, done: true }, { w: 60, r: 5, done: true }]
+    }]
+  }]
+
+  test('reps are the routine\'s own by default, whatever was logged last time', () => {
+    only({ id: '0025', sets: 2, reps: 12, weight: 60 }, { workouts: fiveLastTime })
+    const out = call('preview_session')
+    const e = out.exercises[0]
+    expect(out.starts_from).toBe('plan')
+    expect(e.opening_sets.map(s => s.r)).toEqual([12, 12])
+    expect(e.reps_source).toBe('routine_plan')
+    expect(e.changed).not.toContain('reps')
+  })
+
+  test('reps carry from the last session when the profile starts planned sessions from it', () => {
+    only({ id: '0025', sets: 2, reps: 12, weight: 60 }, { workouts: fiveLastTime })
+    S.startFrom = 'last'
+    _seedStateForTests(S)
+    const out = call('preview_session')
+    const e = out.exercises[0]
+    expect(out.starts_from).toBe('last_session')
     expect(e.opening_sets.map(s => s.r)).toEqual([5, 5])   // not the 12 the routine stores
     expect(e.reps_source).toBe('last_session')
     expect(e.changed).toContain('reps')
+  })
+
+  test('the weight comes from this routine\'s own last session, not another routine\'s (#216)', () => {
+    only({ id: '0025', sets: 2, reps: 10, weight: 60 }, {
+      workouts: [
+        { id: 'w1', d: '2026-07-20', routineIds: ['r-preview'], name: 'Preview', entries: [{ id: '0025', rid: 'r-preview', target: { sets: 2, reps: 10, weight: 60 }, sets: [{ w: 60, r: 10, done: true }, { w: 60, r: 10, done: true }] }] },
+        { id: 'w2', d: '2026-07-22', routineIds: ['r-light'], name: 'Light', entries: [{ id: '0025', rid: 'r-light', target: { sets: 2, reps: 15, weight: 40 }, sets: [{ w: 40, r: 15, done: true }, { w: 40, r: 15, done: true }] }] },
+      ]
+    })
+    const e = call('preview_session').exercises[0]
+    expect(e.opening_sets.map(s => [s.w, s.r])).toEqual([[62.5, 10], [62.5, 10]])
+    expect(e.weight_source).toBe('progression')
   })
 
   test('planned drop sets show up on the opening rows', () => {

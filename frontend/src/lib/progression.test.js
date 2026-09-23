@@ -853,6 +853,19 @@ describe('applyPrescription never touches warm-up rows (round 3)', () => {
     expect(out[0]).toEqual({ w: 20, r: 8, done: true, warmup: true })
   })
 
+  it('an open warm-up follows the reps or the hold the policy settled on, never a done one', () => {
+    // insertWarmupRow copies the work row's reps before the prescription is applied, so without
+    // this a bodyweight climb or a double-progression aim left the warm-up at the old number.
+    const reps = applyPrescription([
+      { w: 20, r: 8, done: true, warmup: true },
+      { w: 0, r: 10, done: false, phase: 'warmup' },
+      { w: 0, r: 10, done: false },
+    ], { kind: 'up', weight: 0, reps: 12 })
+    expect(reps.map(s => s.r)).toEqual([8, 12, 12])
+    const held = applyPrescription([{ sec: 30, w: 0, done: false, phase: 'warmup' }, { sec: 30, w: 0, done: false }], { kind: 'up', sec: 35 })
+    expect(held.map(s => s.sec)).toEqual([35, 35])
+  })
+
   it('an all-warm-up entry terminates and stays untouched', () => {
     const sets = [
       { w: 20, r: 8, done: true, warmup: true },

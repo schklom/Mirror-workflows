@@ -489,6 +489,35 @@ describe('buildSets', () => {
     expect(buildSets({ ...S, workouts: [] }, { id: LIFT, sets: 1, reps: 8, weight: 50 })).toEqual([{ w: 75, r: 8, done: false }])
   })
 
+  it('opens at the plan\'s reps with planReps, taking only the weight from the last session', () => {
+    const S = { exWeights: {}, workouts: [{ d: '2026-01-01', entries: [{ id: LIFT, sets: [{ w: 60, r: 15, done: true }, { w: 62.5, r: 12, done: true }] }] }] }
+    expect(buildSets(S, { id: LIFT, sets: 2, reps: 10, weight: 50 }, { planReps: true }))
+      .toEqual([{ w: 60, r: 10, done: false }, { w: 62.5, r: 10, done: false }])
+    // Planned warm-ups copy the work row, so they follow the plan too.
+    expect(buildSets(S, { id: LIFT, sets: 1, reps: 10, weight: 50, warmupSets: 1 }, { planReps: true, step: 2.5 }).map(s => s.r))
+      .toEqual([10, 10])
+  })
+
+  it('keeps each side\'s carried weight and splits the plan\'s reps evenly with planReps', () => {
+    const side = (w, r) => ({ w, r, done: true })
+    const S = { exWeights: {}, workouts: [{ d: '2026-01-01', entries: [{ id: LIFT, target: { side: true }, sets: [
+      { w: 22.5, r: 13, done: true, sides: { L: side(22.5, 7), R: side(20, 6) } },
+    ] }] }] }
+    const [row] = buildSets(S, { id: LIFT, sets: 1, reps: 16, weight: 20, side: true }, { planReps: true })
+    expect(row.sides.L).toMatchObject({ w: 22.5, r: 8 })
+    expect(row.sides.R).toMatchObject({ w: 20, r: 8 })
+    expect(row.r).toBe(16)
+    // Without it the logged asymmetry carries over, reps included.
+    const [carried] = buildSets(S, { id: LIFT, sets: 1, reps: 16, weight: 20, side: true })
+    expect([carried.sides.L.r, carried.sides.R.r]).toEqual([7, 6])
+  })
+
+  it('ignores planReps for freestyle, which reproduces what you did', () => {
+    const S = { exWeights: {}, workouts: [{ d: '2026-01-01', entries: [{ id: LIFT, sets: [{ w: 60, r: 15, done: true }] }] }] }
+    expect(buildSets(S, { id: LIFT, sets: 1, reps: 10, weight: 50 }, { planReps: true, preferLast: true }))
+      .toEqual([{ w: 60, r: 15, done: false }])
+  })
+
   it('can preserve each last set weight for freestyle instead of using the working-weight hint', () => {
     const S = { exWeights: { [LIFT]: { w: 75 } }, workouts: [{ d: '2026-01-01', entries: [{ id: LIFT, sets: [
       { w: 60, r: 10, done: true }, { w: 62.5, r: 8, done: true }

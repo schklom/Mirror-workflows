@@ -34,7 +34,7 @@ const LABELS = {
   'auth.password.change': 'Changed their password',
   'auth.password.remove': 'Removed their password',
   'auth.password.reset': 'Used a reset code',
-  // The sign-in throttle paused an address; `msg` says for what (password, signup, pair).
+  // The password throttle paused an address; `msg` says for what (password, signup).
   'auth.throttled': 'Too many failed attempts from one address',
   'admin.user.disable': 'Disabled an account',
   'admin.user.enable': 'Re-enabled an account',
@@ -66,7 +66,9 @@ const REASONS = {
   'unknown-name': 'no profile with a password has that name',
   'step-up-failed': 'the passkey confirming a new password was rejected',
   'reset-invalid': 'wrong or expired reset code',
-  'reset': 'too many wrong reset codes for one name'
+  // What an `auth.throttled` pause was for.
+  'password': 'wrong passwords or reset codes',
+  'signup': 'wrong invite codes on password signup'
 }
 export const auditReason = msg => REASONS[msg] || (msg ? String(msg) : '')
 

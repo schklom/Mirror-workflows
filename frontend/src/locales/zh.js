@@ -1305,4 +1305,7 @@ export default {
   'Plan: {0}': '计划：{0}',
   'today {0}': '今天 {0}',
   'reps from your last session': '次数沿用上次训练',
+  'Save as routine?': '要保存为训练计划吗？',
+  'Save as routine': '保存为训练计划',
+  'Create an independent routine from these exercise targets. Your workout history is kept.': '根据这些训练目标创建独立训练计划。你的训练记录会保留。',
 }

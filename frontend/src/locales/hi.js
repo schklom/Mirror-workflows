@@ -1305,4 +1305,7 @@ export default {
   'Plan: {0}': 'प्लान: {0}',
   'today {0}': 'आज {0}',
   'reps from your last session': 'रेप्स आपके पिछले सेशन से',
+  'Save as routine?': 'रूटीन के रूप में सहेजें?',
+  'Save as routine': 'रूटीन के रूप में सहेजें',
+  'Create an independent routine from these exercise targets. Your workout history is kept.': 'इन व्यायाम लक्ष्यों से एक स्वतंत्र रूटीन बनाएँ। आपका वर्कआउट इतिहास सुरक्षित रहेगा।',
 }

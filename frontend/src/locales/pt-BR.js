@@ -712,6 +712,9 @@ export const PT_BR_OVERRIDES = {
   'First time in this routine — starting from its own target.': 'Primeira vez nesta rotina — você começa pela meta dela.',
   'No weight logged last time — enter what you lift and progression takes it from there.': 'Nenhum peso registrado na última vez — informe quanto você levanta e a progressão segue a partir daí.',
   'reps from your last session': 'reps da sua última sessão',
+  'Save as routine?': 'Salvar como rotina?',
+  'Save as routine': 'Salvar como rotina',
+  'Create an independent routine from these exercise targets. Your workout history is kept.': 'Criar uma rotina independente a partir destes objetivos. O histórico de treinos será mantido.',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

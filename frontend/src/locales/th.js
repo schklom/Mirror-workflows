@@ -1316,4 +1316,7 @@ export default {
   'Plan: {0}': 'แผน: {0}',
   'today {0}': 'วันนี้ {0}',
   'reps from your last session': 'จำนวนครั้งจากเซสชันล่าสุด',
+  'Save as routine?': 'บันทึกเป็นรูทีนไหม',
+  'Save as routine': 'บันทึกเป็นรูทีน',
+  'Create an independent routine from these exercise targets. Your workout history is kept.': 'สร้างรูทีนอิสระจากเป้าหมายเหล่านี้ ประวัติการออกกำลังกายของคุณจะยังคงอยู่',
 }

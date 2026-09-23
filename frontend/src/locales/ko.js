@@ -1305,4 +1305,7 @@ export default {
   'Plan: {0}': '계획: {0}',
   'today {0}': '오늘 {0}',
   'reps from your last session': '지난 세션의 횟수',
+  'Save as routine?': '루틴으로 저장할까요?',
+  'Save as routine': '루틴으로 저장',
+  'Create an independent routine from these exercise targets. Your workout history is kept.': '이 운동 목표로 독립 루틴을 만듭니다. 운동 기록은 그대로 유지됩니다.',
 }

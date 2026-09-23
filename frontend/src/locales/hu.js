@@ -1308,4 +1308,7 @@ export default {
   'Plan: {0}': 'Terv: {0}',
   'today {0}': 'ma {0}',
   'reps from your last session': 'ismétlések az utolsó edzésedből',
+  'Save as routine?': 'Mentés rutinként?',
+  'Save as routine': 'Mentés rutinként',
+  'Create an independent routine from these exercise targets. Your workout history is kept.': 'Független rutin létrehozása ezekből a célokból. Az edzéstörténeted megmarad.',
 }

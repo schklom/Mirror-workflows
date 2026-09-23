@@ -1305,4 +1305,7 @@ export default {
   'Plan: {0}': 'Plan: {0}',
   'today {0}': 'hoy {0}',
   'reps from your last session': 'reps de tu última sesión',
+  'Save as routine?': '¿Guardar como rutina?',
+  'Save as routine': 'Guardar como rutina',
+  'Create an independent routine from these exercise targets. Your workout history is kept.': 'Crea una rutina independiente a partir de estos objetivos. Tu historial de entrenamientos se conserva.',
 }

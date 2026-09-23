@@ -51,6 +51,7 @@ public final class RestAlert {
     private static final long[] VIBRATE = new long[] {0, 200, 100, 200, 100, 400};
 
     private static AudioTrack current;
+    private static long firedFor;
 
     private RestAlert() {}
 
@@ -66,6 +67,7 @@ public final class RestAlert {
         intent.putExtra("visibility", visibility == null ? "public" : visibility);
         intent.putExtra("importance", importance == null ? "high" : importance);
         intent.putExtra("localOnly", localOnly);
+        intent.putExtra("at", at);
         PendingIntent pi = PendingIntent.getBroadcast(ctx, id, intent, FLAGS);
         AlarmManager am = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
         boolean exact = canExact(am);
@@ -76,7 +78,7 @@ public final class RestAlert {
             am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, at, pi);
             exact = false;
         }
-        if (!exact) Log.w("openGym", "exact alarms not allowed; rest alert may be late with the screen off");
+        if (!exact) Log.w("openGym", "exact alarms not allowed; the rest countdown sounds the end itself");
         if (Build.VERSION.SDK_INT >= 26) {
             NotificationManager nm = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
             ensureChannel(ctx, nm, channelId, importanceOf(importance), visibilityOf(visibility));
@@ -110,8 +112,33 @@ public final class RestAlert {
         nm.cancel(id);
     }
 
+    /**
+     * The countdown reached the end itself. Without the exact-alarm permission, which Android 14
+     * no longer grants at install, the alarm may be batched up to three quarters of the rest late
+     * (on an emulator it came 50 seconds after a 90-second rest), so the countdown sounds the end
+     * and the alarm is only the fallback for a countdown that was not running.
+     */
+    static void fireFromCountdown(Context ctx, long at) {
+        cancelAlarmOnly(ctx, NOTIFICATION_ID);
+        Intent intent = alarmIntent(ctx);
+        intent.putExtra("id", NOTIFICATION_ID);
+        intent.putExtra("title", lastAlertTitle);
+        intent.putExtra("sound", lastSound);
+        intent.putExtra("channelId", lastChannel);
+        intent.putExtra("at", at);
+        new Thread(() -> fire(ctx, intent), "opengym-rest").start();
+    }
+
+    /** One alert per end: the countdown and an exact alarm reach the same end in the same instant. */
+    private static synchronized boolean claim(long at) {
+        if (at > 0 && at == firedFor) return false;
+        firedFor = at;
+        return true;
+    }
+
     /** Runs off the main thread. Holds the CPU until the tone has finished. */
     public static void fire(Context ctx, Intent intent) {
+        if (!claim(intent.getLongExtra("at", 0))) return;
         PowerManager.WakeLock cpu = null;
         try {
             PowerManager pm = (PowerManager) ctx.getSystemService(Context.POWER_SERVICE);
@@ -130,12 +157,12 @@ public final class RestAlert {
             pokeScreen(ctx);
             boolean shown = showNotification(ctx, intent);
             if (!shown) vibrateFallback(ctx);
-            // Locked or in the background, the page cannot play its chime, so this is the one.
-            boolean play = intent.getBooleanExtra("sound", true);
-            if (play) playSound(ctx);
             // The countdown card is the foreground-service notification. Drop it once the
             // "rest over" alert is up, including when the WebView is frozen.
             stopCountdown(ctx);
+            // Locked or in the background, the page cannot play its chime, so this is the one.
+            boolean play = intent.getBooleanExtra("sound", true);
+            if (play) playSound(ctx);
         } finally {
             if (cpu != null && cpu.isHeld()) cpu.release();
         }
@@ -259,6 +286,7 @@ public final class RestAlert {
         intent.putExtra("visibility", "public");
         intent.putExtra("importance", "high");
         intent.putExtra("localOnly", false);
+        intent.putExtra("at", at);
         PendingIntent pi = PendingIntent.getBroadcast(ctx, NOTIFICATION_ID, intent, FLAGS);
         AlarmManager am = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
         try {

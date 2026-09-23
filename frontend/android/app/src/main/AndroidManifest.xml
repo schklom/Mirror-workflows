@@ -61,8 +61,12 @@
          on Android 12+. Where it isn't granted, scheduling silently falls back to inexact
          alarms — the reminder still arrives, just not to the minute. -->
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
-    <!-- Same exact-alarm permission as the day reminder. Where it isn't granted, the rest
-         alert falls back to an inexact alarm and, if this phone is paired, to Web Push. -->
+    <!-- Rest countdown (#296): the notification (asked for at the first rest on Android 13+),
+         the foreground service that keeps its clock, and the wake lock that lets that clock
+         reach the end on time with the screen off. The rest-over alarm uses the exact-alarm
+         permission above where it is granted; Android 14 no longer grants it at install, and
+         an inexact alarm can come most of a rest late, so the countdown sounds the end itself
+         and the alarm is only its fallback. -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <!-- The buzz at the end of a rest or a hold and on a set tick (navigator.vibrate). The
          WebView drops every vibrate call from an app without this permission, so the phone

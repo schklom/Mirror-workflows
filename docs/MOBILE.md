@@ -213,6 +213,9 @@ membership, the distribution certificate and profile as protected file variables
   service. `NOTICE.md` carries an app-store exception (an additional permission under
   AGPL §7) granted by the copyright holder — relevant only if store distribution ever happens.
 - The app requests notification permission when the workout-day reminder is switched on,
-  and again for the rest-timer alarm if it is still unanswered. On Android it declares
-  `SCHEDULE_EXACT_ALARM` so the reminder and the rest alert can fire on time with the
-  screen locked, where the user allows exact alarms.
+  and again at the first rest if it is still unanswered. On Android it declares
+  `SCHEDULE_EXACT_ALARM` so the reminder fires to the minute where the user allows exact
+  alarms (Android 14 no longer grants it at install). The rest countdown does not depend on
+  it: a foreground service (`specialUse`) keeps the countdown in the notification and holds a
+  wake lock until the end, so the end of a rest sounds on time with the screen locked; the
+  rest-over alarm is only its fallback.

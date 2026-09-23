@@ -104,14 +104,29 @@ describe('de-CH as a selectable language', () => {
 // brings its own casing, and applying capitalize on top of it produced "Bankdrücken Mit
 // Langhantel" in German and "Has" for Hungarian common nouns.
 describe('exerciseNameClass', () => {
+  const bench = { id: '0025', n: 'barbell bench press' }
+  const pushUp = { id: '0662', n: 'push-up' }
+  const custom = { id: 'custom-1', n: 'my own press' }
+
   it('title-cases only while the English fallback is showing', () => {
     _setLangState('en', {}, null, null)
-    expect(exerciseNameClass()).toBe('capitalize')
+    expect(exerciseNameClass(bench)).toBe('capitalize')
     _setLangState('de', {}, null, null)
-    expect(exerciseNameClass()).toBe('capitalize')
+    expect(exerciseNameClass(bench)).toBe('capitalize')
     _setLangState('de', {}, null, { '0025': 'Bankdrücken mit Langhantel' })
-    expect(exerciseNameClass()).toBe('')
+    expect(exerciseNameClass(bench)).toBe('')
     _setLangState('en', {}, null, null)
-    expect(exerciseNameClass()).toBe('capitalize')
+    expect(exerciseNameClass(bench)).toBe('capitalize')
+  })
+
+  // German covers the equipment exercises and not the body-weight ones: an exercise the pack
+  // has no entry for shows its lower-case English title and still needs the casing.
+  it('decides per exercise, so an untranslated one in a partial pack keeps its casing', () => {
+    _setLangState('de', {}, null, { '0025': 'Bankdrücken mit Langhantel' })
+    expect(exerciseNameClass(bench)).toBe('')
+    expect(exerciseNameClass(pushUp)).toBe('capitalize')
+    expect(exerciseNameClass(custom)).toBe('capitalize')
+    expect(exerciseNameClass(undefined)).toBe('capitalize')
+    _setLangState('en', {}, null, null)
   })
 })

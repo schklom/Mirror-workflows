@@ -107,6 +107,15 @@ describe('plateStack', () => {
     expect(plateStack(null, homeInv)).toEqual({ plates: [], missing: 0 })
     expect(plateStack(30, [])).toEqual({ plates: [], missing: 30 })
   })
+
+  test('beyond everything you own: every plate on, the rest missing, without a search', () => {
+    expect(plateStack(200, homeInv)).toEqual({ plates: [45, 35, 25, 15, 10, 5, 2.5], missing: 62.5 })
+    // A typo in a weight field is rendered on every keystroke; it must not build a table as
+    // long as the number (for this one, nine arrays of four million entries).
+    const t0 = performance.now()
+    for (let i = 0; i < 5; i++) expect(plateStack(999999.75, homeInv).missing).toBe(999999.75 - 137.5)
+    expect(performance.now() - t0).toBeLessThan(200)
+  })
 })
 
 describe('plateDelta', () => {

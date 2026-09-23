@@ -121,7 +121,11 @@ export function plateStack(weight, inv) {
     let k = Math.min(p.n, Math.floor(left / unit))
     while (k-- > 0) { greedy.push(p.w); left -= unit }
   }
-  if (left === 0) return { plates: greedy, missing: 0 }
+  // At or beyond everything you own, greedy has already put every plate on and the rest is
+  // missing. The search below would only find that again, with a table as long as the target:
+  // a typo like 9999 in a weight field built it on every keystroke.
+  const all = items.reduce((sum, p) => sum + q(p.w) * p.n, 0)
+  if (left === 0 || target >= all) return { plates: greedy, missing: left / Q }
   // 2. exact fit with the fewest plates: f[i][s] = min plates using sizes i.. to make s
   const n = items.length
   const INF = 1e9

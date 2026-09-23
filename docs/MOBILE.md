@@ -29,16 +29,58 @@ that's already signed in: Settings → **"Pair the mobile app"** shows a one-tim
 5 minutes); enter your server's address and that code in the app (same first-launch screen,
 or Settings → **"Connect to my server"** later) to finish. Notes:
 
-- Requires network access every time the app is used — there's no offline file mirror once
-  connected, same as the browser PWA.
+- Works offline too: the phone keeps its copy (and the file mirror) while connected, and
+  changes made without a network go to the server as soon as it is reachable again.
 - Use an HTTPS address if at all possible: the connection carries a bearer token instead of
   a cookie, and that token would otherwise cross the network in plain text.
+- The token lasts `SESSION_DAYS` (90 by default, see `docs/SELF_HOSTING.md`) and renews
+  itself: every time the app starts, a token past half its life is swapped for a fresh one.
+  A phone that is used at all never runs out; one left unopened for longer than
+  `SESSION_DAYS` has to be paired again.
 - "Sign out everywhere" (Settings → Account, in the browser) revokes a paired app's access
   too — it's the same signed session token either way, just delivered over a header instead
-  of a cookie. See `/api/pair/create` and `/api/pair/redeem` in `api/server.js` for the
-  exchange itself.
-- Settings → "Disconnect" syncs one last time, then drops the device cleanly back to local
-  mode.
+  of a cookie. The phone has no passkey to sign back in with, so it has to be **paired
+  again**; nothing on it is lost meanwhile (see below). See `/api/pair/create` and
+  `/api/pair/redeem` in `api/server.js` for the exchange itself.
+- Settings → "Disconnect" first checks that your server has every change. If it has, the
+  phone drops cleanly back to local mode. If not, it says how many changes are missing and
+  offers **Try again**, **Export backup**, or **Disconnect anyway** — which keeps those
+  changes on the phone and adds them back the next time it is paired with the same server
+  and account.
+
+### Connection states
+
+Settings → **Server & sync** shows the server, the account, how things stand, when the phone
+last held exactly what the server holds, how many changes are still waiting, and a **Sync
+now** button that says how it went. Whenever the app is *not* connected, a line under the
+status bar says so on every screen, and stays until the condition is gone:
+
+| The line says | What it means | What to do |
+|---|---|---|
+| *Offline — your changes are saved on this device…* | No answer at all: no network, the server is down, or it did not answer within 20 s (60 s for an upload). | Nothing — it syncs by itself once the server is reachable. **Try again** checks at once. |
+| *Your server answered with an error (HTTP 502)…* | The server (or the proxy in front of it) answered with an error. The code is the one the server sent. | Check the server and its proxy logs; **Try again** once it is back. A 413 means the proxy's upload limit is too small (`client_max_body_size`). |
+| *Your server's address answered with something other than openGym (HTTP 200)…* | Something else answered in the server's place — typically a proxy's sign-in page or a catch-all that serves the web app for `/api/*`. | Let `/api/*` through to the openGym API unchanged, including the `Authorization` header. |
+| *Your server no longer accepts this phone…* | The server refused the phone's token (401): "sign out everywhere", the account disabled, a `data/secret` that was replaced, a token older than `SESSION_DAYS`, or a proxy with its own login that rejects `Authorization: Bearer`. | **Pair again**: in a signed-in browser open Settings → "Pair the mobile app" and enter the new code. The address is already filled in. |
+| *This phone is no longer paired with your server…* | A phone that an earlier version of the app unpaired by itself after its token was refused. The address is gone. | **Pair again**, typing the address. |
+| *On this phone only — not connected to a server* | Local mode, chosen at first launch or after Disconnect. Said quietly. | Nothing, or **Connect** to pair with a server. |
+
+In every one of these states the phone keeps its data and every change you make. Pairing
+again with the **same account** merges what the phone kept with what the server has — new
+workouts from both sides, the later edit of each routine, the newer copy's settings — and
+nothing needs to be exported first. Pairing with a *different* account keeps the first
+account's unsent changes aside on the phone until that account comes back.
+
+Where the phone keeps things, in case you ever need them by hand:
+
+- `opengym-state.json` in the app's private data directory — the durable copy of everything
+  on the phone, written after every change (not reachable without a rooted phone or `adb`
+  on a debug build).
+- `opengym-stash.json`, same directory — changes kept by "Disconnect anyway" or by another
+  account pairing, waiting for their server and account.
+- `Documents/opengym-backup-YYYY-MM-DD.json` — only with Settings → **Auto-backup on
+  changes** switched on: a dated copy after every finished workout or edited routine, in the
+  phone's Documents folder where a file manager or a sync app can reach it. Settings →
+  **Import backup** reads it back.
 
 ## Prerequisites
 

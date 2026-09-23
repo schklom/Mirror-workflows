@@ -1378,4 +1378,12 @@ export default {
   'Shown under each exercise': 'Під кожною вправою',
   'What you did the last time, in that routine.': 'Твій результат минулого разу в цій програмі.',
   'Your heaviest set of the exercise, from any workout.': 'Твій найважчий підхід у цій вправі — з будь-якого тренування.',
+  // --- v1.3.9: vibration switch, an exercise kept out of progression, the deload routine (#294) ---
+  'Vibrate': 'Вібрація',
+  'Don’t count for progression': 'Не враховувати в прогресії',
+  'This exercise, this session only': 'Лише ця вправа, лише це тренування',
+  'Not counted for progression': 'Не враховується в прогресії',
+  'Deload routine': 'Розвантажувальна програма',
+  'Its workouts do not count toward progression. They still show in history and statistics.': 'Її тренування не враховуються в прогресії. В історії та статистиці вони все одно є.',
+  'A deload routine opens at the numbers set here, so the progression above does not apply to it.': 'Розвантажувальна програма починається із заданих тут значень, тож прогресія вище до неї не застосовується.',
 }

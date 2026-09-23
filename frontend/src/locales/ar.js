@@ -1434,4 +1434,12 @@ export default {
   'Shown under each exercise': 'يظهر تحت كل تمرين',
   'What you did the last time, in that routine.': 'ما أدّيته في المرة السابقة ضمن هذا الروتين.',
   'Your heaviest set of the exercise, from any workout.': 'أثقل مجموعة لك في هذا التمرين، من أي جلسة.',
+  // --- v1.3.9: vibration switch, an exercise kept out of progression, the deload routine (#294) ---
+  'Vibrate': 'الاهتزاز',
+  'Don’t count for progression': 'لا تحتسبه في التقدم',
+  'This exercise, this session only': 'هذا التمرين، في هذه الجلسة فقط',
+  'Not counted for progression': 'غير محتسب في التقدم',
+  'Deload routine': 'روتين تفريغ',
+  'Its workouts do not count toward progression. They still show in history and statistics.': 'لا تُحتسب تدريباته في التقدم، وتبقى ظاهرة في السجل والإحصائيات.',
+  'A deload routine opens at the numbers set here, so the progression above does not apply to it.': 'يبدأ روتين التفريغ بالأرقام المحددة هنا، لذا لا ينطبق عليه التقدم أعلاه.',
 }

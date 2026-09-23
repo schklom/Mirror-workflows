@@ -485,6 +485,59 @@ test('an admin reset: a one-time code that ends the old password, works once, an
   assert.ok(h.audit().some(e => e.ev === 'auth.password.reset' && !e.ok));
 });
 
+// The reset removes the old password at once, so for the day the code is valid the profile has
+// none — and a name only counted as taken by a password would be free for anyone to take, leaving
+// the code unredeemable (there is no rename) and the profile locked out.
+test('a pending reset keeps the name: nobody can take it until the code is used or expires', async t => {
+  const key = softPasskey();
+  const h = await startServer(t, {
+    env: { ADMIN_UIDS: 'adm' },
+    users: [
+      user('adm', 'Root'), withPassword('u1', 'Ana'), user('u2', 'ANA '), user('u3', 'Cleo'), user('u4', 'Dora'),
+      user('u5', 'Cleo', { pwReset: { h: hashResetCode('AAAA-BBBB-CCCC'), exp: Date.now() - 1000, by: 'adm' } })
+    ],
+    creds: [key.row('u2')]
+  });
+  const admin = `gymsid=${mintSession('adm')}`;
+  const ip = '198.51.100.240';
+  const { code } = (await h.req('POST', '/api/admin/user/password-reset', { body: { id: 'u1' }, cookie: admin, ip })).body;
+
+  // Registering the name, and another profile of that name setting a first password, are refused.
+  const squat = await h.req('POST', '/api/register/password', { body: { name: 'ana', password: GOOD }, ip });
+  assert.equal(squat.status, 409);
+  assert.equal(squat.body.code, 'name-taken');
+  const other = `gymsid=${mintSession('u2')}`;
+  assert.equal((await h.req('GET', '/api/account/password', { cookie: other, ip })).body.nameTaken, true);
+  const { cid, options } = (await h.req('POST', '/api/login/options', { body: {}, ip })).body;
+  const first = await h.req('POST', '/api/account/password', { body: { next: GOOD, cid, credential: key.assertion(options.challenge) }, cookie: other, ip });
+  assert.equal(first.status, 409);
+  // Nor can a second reset hand the name to the other profile.
+  assert.equal((await h.req('POST', '/api/admin/user/password-reset', { body: { id: 'u2' }, cookie: admin, ip })).status, 409);
+
+  // The code still works, and the name is Ana's again.
+  const r = await h.req('POST', '/api/login/password-reset', { body: { name: 'Ana', code, next: 'a brand new passphrase' }, ip });
+  assert.equal(r.status, 200);
+  assert.equal((await login(h, 'ana', 'a brand new passphrase', ip)).status, 200);
+  assert.equal(h.db().users.filter(u => u.pw && u.name.trim().toLowerCase() === 'ana').length, 1);
+
+  // An expired code holds nothing: that name is free.
+  assert.equal((await h.req('POST', '/api/register/password', { body: { name: 'cleo', password: GOOD }, ip })).status, 200);
+});
+
+test('registering a name while its reset code is redeemed leaves one password holder, the reset profile', async t => {
+  const h = await startServer(t, { env: { ADMIN_UIDS: 'adm' }, users: [user('adm', 'Root'), withPassword('u1', 'Bob')] });
+  const { code } = (await h.req('POST', '/api/admin/user/password-reset', { body: { id: 'u1' }, cookie: `gymsid=${mintSession('adm')}`, ip: '198.51.100.241' })).body;
+  const [reg, redeem] = await Promise.all([
+    h.req('POST', '/api/register/password', { body: { name: 'BOB', password: GOOD }, ip: '198.51.100.242' }),
+    h.req('POST', '/api/login/password-reset', { body: { name: 'bob', code, next: 'a brand new passphrase' }, ip: '198.51.100.243' })
+  ]);
+  assert.equal(redeem.status, 200);
+  assert.equal(reg.status, 409);
+  const holders = h.db().users.filter(u => u.pw && u.name.toLowerCase() === 'bob');
+  assert.deepEqual(holders.map(u => u.id), ['u1']);
+  assert.equal((await login(h, 'Bob', 'a brand new passphrase', '198.51.100.244')).status, 200);
+});
+
 // A 60-bit code that lives a day needs no per-name pause, and one would let anyone who knows the
 // name keep the real code refused for that whole day. Wrong codes count against the address only.
 test('wrong reset codes for a name do not lock out its real code, and do not touch the password count', async t => {

@@ -1531,7 +1531,9 @@ components:
           schema: { $ref: '#/components/schemas/Error' }
           example: { error: "this password is too easy to guess", code: "too-common" }
     NameTaken:
-      description: Another profile already signs in with this name.
+      description: >-
+        Another profile already signs in with this name, or holds it with a reset code
+        that has not been used or expired yet.
       content:
         application/json:
           schema: { $ref: '#/components/schemas/Error' }

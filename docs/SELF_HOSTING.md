@@ -236,6 +236,8 @@ a LAN-only address, see [SELF_HOSTING_HTTPS.md](./SELF_HOSTING_HTTPS.md).
   activity log shows it (`auth.password.locked`), and passkeys still work. A reset code is not
   paused per name — it is 60 random bits and lives a day — so nobody can keep a real code from
   working by sending wrong ones.
+- A pending reset code keeps its profile's name: until it is used or expires, nobody else can
+  register that name with a password or set a first password on another profile of that name.
 - Passwords need 10 to 256 characters and may not be one of a short built-in list of the
   passwords guessing scripts try first (`Password123!`, `qwerty…`, the profile's own name with
   digits). A long passphrase is the point.

@@ -800,9 +800,18 @@ function strikeAddress(req, kind) {
 // Profile names were never unique, so the rule is narrower than that: no two profiles *with a
 // password* may share a name. Setting one is refused while the name is taken that way, which is
 // also re-checked after every await, where another request could have taken it meanwhile.
+//
+// An unused reset code holds its profile's name too. The reset has already removed the old
+// password, and a name another profile took in the meantime would make the code impossible to
+// redeem — there is no rename — and leave that profile locked out. Sign-in itself only ever
+// looks at profiles that have a password (passwordHolder).
 const hasPassword = u => !!(u && u.pw && typeof u.pw.h === 'string');
 const passwordHolder = k => db.users.find(u => hasPassword(u) && nameKey(u.name) === k) || null;
-const nameTaken = (name, exceptId) => { const u = passwordHolder(nameKey(name)); return !!u && u.id !== exceptId; };
+const holdsName = u => hasPassword(u) || !!(u.pwReset && u.pwReset.exp > Date.now());
+const nameTaken = (name, exceptId) => {
+  const k = nameKey(name);
+  return db.users.some(u => u.id !== exceptId && holdsName(u) && nameKey(u.name) === k);
+};
 const passkeyCount = u => db.creds.filter(c => c.userId === u.id).length;
 const publicUser = u => ({ id: u.id, name: u.name, admin: isAdmin(u) });
 const POLICY_ERRORS = {
@@ -1072,6 +1081,7 @@ const passwordRoutes = {
     const find = () => db.users.find(u => u.pwReset && nameKey(u.name) === k && resetCodeMatches(code, u.pwReset)) || null;
     const user = find();
     const invalid = () => json(res, 400, { error: 'that reset code is wrong or has expired', code: 'reset-invalid' });
+    const taken = () => json(res, 409, { error: 'another profile already signs in with this name', code: 'name-taken' });
     if (!user) {
       strikeAddress(req, 'password');
       audit(req, 'auth.password.reset', { ok: false, msg: 'reset-invalid' });
@@ -1084,10 +1094,11 @@ const passwordRoutes = {
     // The code is good and stays good until a password is actually set with it.
     const problem = passwordProblem(body.next, user.name);
     if (problem) return policyError(res, problem);
-    if (nameTaken(user.name, user.id)) return json(res, 409, { error: 'another profile already signs in with this name', code: 'name-taken' });
+    if (nameTaken(user.name, user.id)) return taken();
     const h = await hashPassword(body.next);
     // Single use: a second request that raced this one through the hash finds the code gone.
     if (find() !== user) return invalid();
+    if (nameTaken(user.name, user.id)) return taken();
     setPassword(user, h);
     ACCOUNT_FAILS.clear(k);
     saveDb();

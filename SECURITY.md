@@ -52,7 +52,9 @@ in the thread; there's no objection, and no request to sit on it indefinitely.
   being an admin, or creating a profile without a valid code while `INVITE_ONLY=1`. With
   `PASSWORD_LOGIN=1`: getting a password checked past the sign-in throttle, telling which names
   have a password, setting a password on someone else's profile, or using a reset code twice or
-  after it expired (`api/password.js`, `api/rate-limit.js`).
+  after it expired (`api/password.js`, `api/rate-limit.js`). Adding a passkey to a profile that
+  is not yours, removing a profile's last way in, or redeeming a device code twice, after it
+  expired, or for a profile it was not made for (`api/passkeys-store.js`, `api/device-link.js`).
 - **Frontend** — XSS in the React app, or anything that lets a page on another origin read or
   change a signed-in user's data.
 - **Shipped deployment config** — `docker-compose.yml`, `web/nginx.conf`, the two Dockerfiles:
@@ -65,10 +67,11 @@ in the thread; there's no objection, and no request to sit on it indefinitely.
   operator is trusted by design — see the security model below.
 - Admins reading their users' workout history. That is the documented purpose of the admin
   dashboard, not a leak.
-- **Missing rate limiting** on anything but password sign-in, or "I sent 100k requests and it got
-  slow". With `PASSWORD_LOGIN=1` the API throttles its password routes — sign-in, password signup,
-  reset codes, changing a password — and nothing else; volume against the rest, passkey sign-in
-  and pairing included, belongs in the reverse proxy you put in front of it. A way past that
+- **Missing rate limiting** on anything but password sign-in and device codes, or "I sent 100k
+  requests and it got slow". With `PASSWORD_LOGIN=1` the API throttles its password routes —
+  sign-in, password signup, reset codes, changing a password — and it always throttles the
+  redemption of one-time device codes; nothing else. Volume against the rest, passkey sign-in and
+  pairing included, belongs in the reverse proxy you put in front of it. A way past that
   throttle *is* in scope, and so is genuine amplification (one small request causing unbounded
   work).
 - **Missing security headers.** `web/nginx.conf.template` sets `X-Frame-Options: DENY`,
@@ -106,13 +109,25 @@ Read this before hosting openGym for anyone other than yourself.
   An admin can issue a one-time reset code — 60 random bits, stored as a SHA-256, 24 hours, single
   use — which also removes the old password and ends every session; admin accounts cannot be
   reset that way (`api/password.js`, the password block in `api/server.js`).
+- **More than one passkey, and one-time device codes.** A profile can hold up to 20 passkeys.
+  Adding one from Settings, or making the code that lets another device add its own, needs the
+  same proof as a first password — a fresh assertion by one of that profile's passkeys, or its
+  current password — because each is a way in that outlives "sign out everywhere". The code is
+  12 characters (60 bits), shown once, stored as a SHA-256, good for ten minutes and one passkey;
+  a newer code, signing out everywhere, a new password, an admin reset or a disable voids it. It
+  never opens a session by itself: redeeming it registers a passkey on that profile (bound to
+  `ORIGIN`/`RP_ID` like any other), and that passkey signs the device in. The redemption routes
+  keep the origin check. A profile's last way in — its only passkey, unless a password can sign
+  in — cannot be removed. Every addition, removal, code and redemption is audited
+  (`api/passkeys-store.js`, `api/device-link.js`, the passkeys block in `api/server.js`).
 - **Password sign-in is throttled.** Every password route spends a budget of 60 requests a minute
   per address; wrong passwords, reset codes and (on password signup) invite codes pause the
   address after 20 (30 s, doubling to 15 min); wrong passwords pause the *name* after 5 (1 min,
   doubling to 1 h), existing or not. A password check is counted the moment it starts, so guesses
-  sent all at once get no more checks than guesses sent one by one. Passkey sign-in, passkey
-  signup and pairing are not throttled at all, so nobody can pause them — not even behind a proxy
-  that shows the API one address for every visitor. The address is the socket peer unless
+  sent all at once get no more checks than guesses sent one by one. The two routes that redeem a
+  device code share that budget, and wrong codes pause the address the same way, for code
+  redemption only. Passkey sign-in, passkey signup and pairing are not throttled at all, so nobody
+  can pause them — not even behind a proxy that shows the API one address for every visitor. The address is the socket peer unless
   `TRUST_PROXY=1` (set by the bundled compose file, where only the web container reaches the
   API), and IPv6 is counted per /64 (`api/rate-limit.js`).
 - **Sessions are a signed cookie.** It carries `<uid>:<expiry>:<version>` plus an
@@ -183,16 +198,23 @@ Read this before hosting openGym for anyone other than yourself.
   missing (`api/server.js:344`). Requests authenticated with a Bearer token skip the check —
   a browser never attaches one by itself, so there is no ambient authority to borrow — as do the
   register/login/pair handshakes, which carry their own credential in the body and act on no
-  existing session (`api/server.js:338`).
+  existing session (`api/server.js:338`). The device-code routes are not exempt: a code is
+  redeemed on the app's own origin, the only one a passkey for it can be created on.
 - **User verification is preferred, not required.** Both handshakes pass
   `requireUserVerification: false` (`api/server.js:575`, `api/server.js:644`), so a passkey
   released without a biometric or PIN is still accepted. In practice: unlocked device ≈ account
   access.
-- **One passkey per profile, and recovery only through an admin.** Every successful
-  registration creates a *new* profile; there is no route to attach a second passkey to an
-  existing one, and no email path. Lose the passkey and that profile is unreachable — unless the
+- **Recovery is another passkey, or an admin.** A profile can hold several passkeys, and a
+  signed-in device can give a new one its own with a device code; there is no email path. Lose
+  every passkey (and every signed-in device) and that profile is unreachable — unless the
   instance runs `PASSWORD_LOGIN=1`, where an admin can issue a reset code that sets a password on
   it. Without that, only direct surgery on `./data` gets it back.
+- **A device code is a capability, and removing a passkey does not end sessions.** Anyone who
+  reads a code off the screen within its ten minutes can add a passkey to that profile; the owner
+  sees it in Settings → Passkeys and in the activity log (`auth.link.ok`) and can remove it.
+  Sessions are `uid:expiry:version` and are not tied to the passkey that opened them, so removing
+  a passkey stops it signing in but leaves any session it opened running; "sign out everywhere"
+  ends those.
 - **A password is weaker than a passkey, and the throttle is per process.** It can be phished,
   reused elsewhere or guessed; a stolen `db.json` allows offline guessing against the scrypt
   hashes. The throttle's counters live in memory: a restart clears them, and several API replicas
@@ -213,9 +235,9 @@ Read this before hosting openGym for anyone other than yourself.
   nginx listens on `:80` (`web/nginx.conf`); TLS is your reverse proxy's job. Without it,
   browsers won't do passkeys at all (except on `http://localhost`) and the session cookie is sent
   in the clear.
-- **Rate limiting covers password sign-in only.** The throttle above applies to the password
-  routes; passkey sign-in and signup, pairing, writes and everything else behind a session are
-  not limited, so an instance on the open internet should have a rate limit in front of it. `POST
+- **Rate limiting covers password sign-in and device codes only.** The throttle above applies to
+  the password routes and to device-code redemption; passkey sign-in and signup, pairing, writes
+  and everything else behind a session are not limited, so an instance on the open internet should have a rate limit in front of it. `POST
   /api/register/options` still answers whether an invite code is valid, unthrottled. New invite
   codes are 16 hex characters — 64 bits — which makes guessing one impractical even unthrottled;
   codes generated by earlier versions are 8 characters / 32 bits and still work, so revoke and
@@ -243,7 +265,8 @@ Read this before hosting openGym for anyone other than yourself.
   than a full disk or a slow server.
 - **A few endpoints answer without a session:** `/api/health` (which includes the total user
   count), `/api/config` (whether invite-only and password sign-in are on), `/api/push/public-key`,
-  the register/login handshakes, and with `PASSWORD_LOGIN=1` the password sign-in, password
+  the register/login handshakes, the two device-code redemption routes (which name the profile a
+  valid code belongs to), and with `PASSWORD_LOGIN=1` the password sign-in, password
   registration and reset-code routes. Password registration says when a name is already taken
   by a profile with a password, as any sign-up form with usernames does; on an invite-only
   instance only someone with a valid code gets that far.

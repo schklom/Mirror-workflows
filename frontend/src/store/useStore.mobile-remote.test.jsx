@@ -366,3 +366,27 @@ describe('remote-mode boot and the durable file mirror', () => {
     expect(useStore.getState().sync).toMatchObject({ status: 'ok', pending: false })
   })
 })
+
+describe('a request that never answers', () => {
+  it('gives up after its timeout: the change stays owed, the phone says it is offline, and the next push goes out', async () => {
+    pairedPhone()
+    const srv = serverWith(SERVER_STATE)
+    const useStore = await freshStore()
+    await useStore.getState().boot()
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] })
+    try {
+      h.server = () => new Promise(() => {})   // a black-holed connection: no answer, no error
+      useStore.getState().update(s => { s.workouts.push(workout('w2', '2026-09-15')) }, false)
+      const push = useStore.getState().pushState()
+      await vi.advanceTimersByTimeAsync(61000)
+      await push
+      expect(useStore.getState().sync).toMatchObject({ status: 'offline', pending: true, lastError: { status: 0, code: 'timeout' } })
+      expect(localStorage.getItem('gym_dirty')).toBe('1')
+
+      h.server = srv.handle
+      await useStore.getState().pushState()
+      expect(ids(srv.doc.workouts)).toEqual(['w1', 'w2'])
+      expect(useStore.getState().sync.status).toBe('ok')
+    } finally { vi.useRealTimers() }
+  })
+})

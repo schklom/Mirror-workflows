@@ -76,6 +76,7 @@ export function PasswordSignInSheet({ close, onPasskey }) {
   const [pw, setPw] = useState('')
   const [code, setCode] = useState('')
   const [next, setNext] = useState('')
+  const [again, setAgain] = useState('')
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState(null)
   const nameRef = useRef(null)
@@ -89,6 +90,8 @@ export function PasswordSignInSheet({ close, onPasskey }) {
       : !reset && !pw ? t('Enter your password.')
       : reset && !code.trim() ? t('Enter the reset code.')
       : reset && length(next) < MIN_PASSWORD ? t('Use at least {0} characters.', MIN_PASSWORD)
+      // A typo here is only found at the next sign-in, and fixing it takes another code.
+      : reset && next !== again ? t('The two passwords are not the same.')
       : null
     if (bad) { setErr(bad); return }
     setBusy(true); setErr(null)
@@ -111,6 +114,9 @@ export function PasswordSignInSheet({ close, onPasskey }) {
         <div style={{ height: 10 }} />
         <input className="input" type="password" name="new-password" autoComplete="new-password" placeholder={t('New password')}
           value={next} onChange={e => setNext(e.target.value)} />
+        <div style={{ height: 10 }} />
+        <input className="input" type="password" name="new-password-again" autoComplete="new-password" placeholder={t('Repeat the password')}
+          value={again} onChange={e => setAgain(e.target.value)} />
         <div className="dim small" style={{ marginTop: 6 }}>{t('At least {0} characters. A few unrelated words make a good one.', MIN_PASSWORD)}</div>
       </> : <input className="input" type="password" name="password" autoComplete="current-password" placeholder={t('Password')}
         value={pw} onChange={e => setPw(e.target.value)} />}

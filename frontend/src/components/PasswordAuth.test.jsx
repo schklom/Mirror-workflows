@@ -132,7 +132,7 @@ describe('PasswordSignInSheet', () => {
     expect(close).not.toHaveBeenCalled()
   })
 
-  it('redeems a reset code with a new password; a too-short one is caught before any request', async () => {
+  it('redeems a reset code with a new password; a too-short or mistyped one is caught before any request', async () => {
     mocks.passwordResetRedeem.mockResolvedValue({ id: 'u1', name: 'Ana' })
     const host = mount(<PasswordSignInSheet close={() => {}} />)
     act(() => button(host, 'Have a reset code from your admin?').click())
@@ -143,7 +143,15 @@ describe('PasswordSignInSheet', () => {
     await submit(host)
     expect(alertText(host)).toBe('Use at least 10 characters.')
     expect(mocks.passwordResetRedeem).not.toHaveBeenCalled()
+    // A typo would only show at the next sign-in, and cost another code from the admin.
+    const again = byPlaceholder(host, 'Repeat the password')
+    expect(again.getAttribute('autocomplete')).toBe('new-password')
     type(byPlaceholder(host, 'New password'), 'a brand new passphrase')
+    type(again, 'a brand new passphrse')
+    await submit(host)
+    expect(alertText(host)).toBe('The two passwords are not the same.')
+    expect(mocks.passwordResetRedeem).not.toHaveBeenCalled()
+    type(again, 'a brand new passphrase')
     await submit(host)
     expect(mocks.passwordResetRedeem).toHaveBeenCalledWith('Ana', 'K7WQ-2MZP-4HXA', 'a brand new passphrase')
     expect(mocks.setUser).toHaveBeenCalled()

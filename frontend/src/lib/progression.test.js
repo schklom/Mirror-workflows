@@ -333,12 +333,25 @@ describe('bodyweight exercises', () => {
   })
 
   it('keeps a set the ceiling added: the next clean session climbs reps at the new count (issue #33)', () => {
-    const grown = hist(LIFT, [[0, 10, 10, 10, 10]], { sets: 4, reps: 10 })
+    const grown = stamped(hist(LIFT, [[0, 10, 10, 10, 10]], { sets: 4, reps: 10 }), plannedOf(cfg))
     const p = nextPrescription(grown, { ...cfg, repsMax: 15 })
     expect(p).toMatchObject({ kind: 'up', reps: 11, sets: 4 })
     // and a miss holds that count too
-    const missed = hist(LIFT, [[0, 10, 10, 10, 8]], { sets: 4, reps: 10 })
+    const missed = stamped(hist(LIFT, [[0, 10, 10, 10, 8]], { sets: 4, reps: 10 }), plannedOf(cfg))
     expect(nextPrescription(missed, { ...cfg, repsMax: 15 })).toMatchObject({ kind: 'hold', reps: 10, sets: 4 })
+  })
+
+  // A session saved before plans were stamped cannot say which plan its set count grew from: a
+  // routine cut from 4 sets to 3 before the upgrade would otherwise open at 4 for good, since
+  // every session after re-stamps that 4 against an unchanged plan of 3.
+  it('opens at the plan\'s set count after an older session with more sets', () => {
+    const legacy = hist(LIFT, [[0, 10, 10, 10, 10]], { sets: 4, reps: 10 })
+    const clean = nextPrescription(legacy, { ...cfg, repsMax: 15 })
+    expect(clean).toMatchObject({ kind: 'up', reps: 11 })
+    expect(clean.sets).toBeUndefined()
+    const missed = nextPrescription(hist(LIFT, [[0, 10, 10, 10, 8]], { sets: 4, reps: 10 }), { ...cfg, repsMax: 15 })
+    expect(missed).toMatchObject({ kind: 'hold', reps: 10 })
+    expect(missed.sets).toBeUndefined()
   })
 
   it('still adds load the moment the exercise is actually weighted', () => {

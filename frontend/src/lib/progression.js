@@ -438,9 +438,11 @@ export function nextPrescription(S, cfg, routine) {
     const goal = last.goal || cfg.reps || 0
     // The set count this has reached: the plan's, or more once the ceiling below added sets.
     // Read off the last session's target, or the added set lasted one session and the next
-    // clean one dropped back to the plan's count (issue #33 means it to stay).
+    // clean one dropped back to the plan's count (issue #33 means it to stay). Only a session
+    // that stamped its plan can say so — this plan, or it would have restarted above. An older
+    // one's target may hold a set count from a plan cut since, and it would be kept for good.
     const planSets = Math.max(1, cfg.sets || 1)
-    const reached = Math.max(planSets, (last.target && last.target.sets) || 0)
+    const reached = last.planned ? Math.max(planSets, (last.target && last.target.sets) || 0) : planSets
     const keep = reached > planSets ? { sets: reached } : {}
     if (!last.ok || goal <= 0) return { policy, kind: 'hold', weight: 0, reps: goal || undefined, ...keep, why: ['Bodyweight — same target again until every set is clean.'] }
     // A ceiling turns "+1 rep forever" into a plan (issue #33). Past the top of the range the

@@ -1503,6 +1503,27 @@ describe('workout list view', () => {
   })
 })
 
+// The card slid in during a swipe is the card that lands (renderPreview). Rendered without the
+// progression line, it grew by that line the moment it snapped into place.
+it('shows the progression line on the card a swipe slides in, as the card itself will', async () => {
+  const planned = id => exercise(id, [false], {
+    plan: { policy: 'linear', kind: 'up', weight: 62.5, why: ['Every rep last time — {0} {1} more.', 2.5, 'kg'] },
+  })
+  await mount([planned('plain-bench'), planned('plain-row')])
+  const surface = container.querySelector('[data-testid="workout-swipe-surface"]')
+  const pointer = (type, x) => {
+    const event = new dom.Event(type, { bubbles: true })
+    Object.assign(event, { pointerId: 1, pointerType: 'touch', clientX: x, clientY: 20 })
+    return act(async () => { surface.dispatchEvent(event) })
+  }
+  await pointer('pointerdown', 250)
+  await pointer('pointermove', 150)
+  const preview = container.querySelector('.workout-swipe-preview')
+  expect(preview).toBeTruthy()
+  expect(preview.querySelector('.progline')).toBeTruthy()
+  await pointer('pointercancel', 150)
+})
+
 describe('workout compact view', () => {
   const units = () => [...container.querySelectorAll('.wl-unit')]
   const withExtras = done => exercise('plain-bench', done, {

@@ -1103,7 +1103,9 @@ function ActiveWorkout() {
         timerKey={timer && `${timer.endsAt}:${timer.forIdx ?? ''}`} workKey={work?.endsAt}
         onNavigate={navigateUnit} renderPreview={direction => {
           // The card slid in shows what the card itself will: in the editor, no hold to start
-          // and no plates to load.
+          // and no plates to load; in a session, the progression line, or the card grows by it
+          // the moment it lands. It gets the card's own wiring for that — the preview is inert,
+          // so none of it can be pressed.
           const adjacent = units[unitIdx + direction] || []
           if (!adjacent.length) return null
           return adjacent.length > 1 ? (
@@ -1111,10 +1113,10 @@ function ActiveWorkout() {
               <div className="ss-hd"><Icon name="link" />{t('Superset · do these back-to-back, rest when done')}</div>
               {adjacent.map((idx, k) => <div key={idx} className="ss-ex">
                 {k > 0 && <div className="ss-amp">+</div>}
-                <ExerciseBlock entryIdx={idx} compact editing={editing} />
+                <ExerciseBlock entryIdx={idx} compact {...blockProps(idx)} />
               </div>)}
             </div>
-          ) : <ExerciseBlock entryIdx={adjacent[0]} editing={editing} />
+          ) : <ExerciseBlock entryIdx={adjacent[0]} {...blockProps(adjacent[0])} />
         }}>
       {isSuperset ? (
         <div className="ss-card">

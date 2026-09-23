@@ -128,7 +128,9 @@ function ExerciseBlock({ entryIdx, compact, dense, onToggle, onToggleSide, onFie
   const mode = modeOf({ ...(entry.target || {}), id: entry.id })
   const cardio = mode === 'cardio'
   const timed = mode === 'time'
-  const last = lastEntryFor(S, entry.id)
+  // The routine's own last session of this exercise (or any, for a routine that has none), the
+  // same one the rows and the progression line were built from (#216).
+  const last = lastEntryFor(S, entry.id, entry.rid)
   const standingNote = exNoteFor(S, entry.id)
   // Only worth surfacing while there is still work left: once the exercise is finished, a note
   // telling you what to do in it is behind you, and the block is already long.
@@ -801,7 +803,7 @@ function ActiveWorkout() {
         // The sheet edits sets, reps, weight and warm-ups as well as the rule — so the rows are
         // rebuilt from the new config the way the session was, and only what you already logged
         // is kept in place (done warm-ups first, then done work sets, then the fresh remainder).
-        const fresh = applyIntensifierPlan(applyPrescription(buildSets(s, full, { step, useTarget: plan.kind === 'off' }), plan, step), full)
+        const fresh = applyIntensifierPlan(applyPrescription(buildSets(s, full, { step, rid: activeEntry.rid, useTarget: plan.kind === 'off' }), plan, step), full)
         const doneWarm = activeEntry.sets.filter(x => x.done && isWarmupRow(x))
         const doneWork = activeEntry.sets.filter(x => x.done && !isWarmupRow(x))
         const freshWarm = fresh.filter(isWarmupRow)
@@ -1080,7 +1082,7 @@ function ActiveWorkout() {
         const plan = freestyle ? null : nextPrescription(s, full, routine)
         const sets = buildSets(s, full, {
           step: modeOf(full) === 'reps' ? weightIncrement(full, s.unit) : defaultIncrement(ex.id, s.unit),
-          ...(freestyle ? { preferLast: true } : {}),
+          ...(freestyle ? { preferLast: true } : { rid: curRid }),
           ...(plan?.kind === 'off' ? { useTarget: true } : {})
         })
         const progressed = freestyle ? sets : applyPrescription(sets, plan, modeOf(full) === 'reps' ? weightIncrement(full, s.unit) : defaultIncrement(ex.id, s.unit))

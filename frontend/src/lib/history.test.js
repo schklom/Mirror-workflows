@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { nextTrainingDay, modeOf, isTimed, fmtSec, setLabel, defaultConfig, buildSets, freestyleConfig, exLine, workoutVolume, bestWeightFor, bestWeightForEntry, effortOf, stepEffort, capEffort, isBw, isPerSide, sideReps, repStep, cascadeWeight, insertWarmupRow, removeRowAt, workSetsDone, setsDone, setsDoneActive, setUnits, doneUnits, setUnitsTotal, pairAdjacent, unpairSuperset, supersetUnits, applyIntensifierPlan, pinnedNoteFor, exNoteFor, effectiveRoutineIds, effectiveRoutines, effectiveRoutineId, effectiveRoutine, lastEntryFor, entryExcluded } from './history.js'
+import { nextTrainingDay, modeOf, isTimed, fmtSec, setLabel, defaultConfig, buildSets, freestyleConfig, exLine, workoutVolume, bestWeightFor, bestWeightForEntry, effortOf, stepEffort, capEffort, isBw, isPerSide, sideReps, repStep, cascadeWeight, insertWarmupRow, removeRowAt, workSetsDone, setsDone, setsDoneActive, setUnits, doneUnits, setUnitsTotal, pairAdjacent, unpairSuperset, supersetUnits, applyIntensifierPlan, pinnedNoteFor, exNoteFor, effectiveRoutineIds, effectiveRoutines, effectiveRoutineId, effectiveRoutine, lastEntryFor, entryExcluded, entryRoutineId } from './history.js'
 import { makeSideSet, setSideField, toggleSide } from './workout-model.js'
 import { EXDB } from './exercises.js'
 
@@ -481,9 +481,12 @@ describe('buildSets', () => {
       .toEqual([{ w: 40, r: 8, done: false }])
   })
 
-  it('still prefers the confirmed working weight for reps sets', () => {
+  it('seeds the weight from the last session, and the confirmed working weight only when there is none', () => {
+    // The confirmed weight is keyed by exercise alone — a heavy day's number — so it no longer
+    // beats the session the rows are read from (#216). It still fills in without history.
     const S = { exWeights: { [LIFT]: { w: 75 } }, workouts: [{ d: '2026-01-01', entries: [{ id: LIFT, sets: [{ w: 60, r: 10, done: true }] }] }] }
-    expect(buildSets(S, { id: LIFT, sets: 1, reps: 8, weight: 50 })).toEqual([{ w: 75, r: 10, done: false }])
+    expect(buildSets(S, { id: LIFT, sets: 1, reps: 8, weight: 50 })).toEqual([{ w: 60, r: 10, done: false }])
+    expect(buildSets({ ...S, workouts: [] }, { id: LIFT, sets: 1, reps: 8, weight: 50 })).toEqual([{ w: 75, r: 8, done: false }])
   })
 
   it('can preserve each last set weight for freestyle instead of using the working-weight hint', () => {
@@ -1159,6 +1162,57 @@ describe('lastEntryFor / buildSets skip a noProg entry', () => {
   it('bestWeightFor is unchanged — a heavy noProg set still counts toward Best', () => {
     const S = { workouts: [wk('2026-01-01', 60, 8), wk('2026-01-05', 140, 3, { noProg: true })] }
     expect(bestWeightFor(S, LIFT2)).toBe(140)
+  })
+})
+
+// Issue #216: the same exercise in two routines — a heavy day and a light day — is two lines of
+// history. Each routine reads its own, and one that has none reads the exercise's.
+describe('routine slots: lastEntryFor / buildSets read the routine\'s own history (#216)', () => {
+  const LIFT3 = EXDB.find(e => e.bp !== 'cardio' && e.eq !== 'body weight').id
+  const session = (d, rid, w, r, extra = {}) => ({ id: LIFT3, ...(rid ? { rid } : {}), target: { sets: 2, reps: r, weight: w }, sets: [{ w, r, done: true }, { w, r, done: true }], ...extra })
+  const S = {
+    exWeights: { [LIFT3]: { w: 60 } },
+    workouts: [
+      { d: '2026-01-01', routineIds: ['A'], entries: [session('2026-01-01', 'A', 60, 10)] },
+      { d: '2026-01-03', routineIds: ['B'], entries: [session('2026-01-03', 'B', 40, 15)] },
+    ],
+  }
+
+  it('takes the routine\'s own last session, not the latest one of the exercise', () => {
+    expect(lastEntryFor(S, LIFT3, 'A')).toMatchObject({ d: '2026-01-01', rid: 'A' })
+    expect(lastEntryFor(S, LIFT3, 'B')).toMatchObject({ d: '2026-01-03', rid: 'B' })
+    expect(lastEntryFor(S, LIFT3).d).toBe('2026-01-03')
+  })
+
+  it('falls back to the exercise\'s last session for a routine that never trained it', () => {
+    expect(lastEntryFor(S, LIFT3, 'C')).toMatchObject({ d: '2026-01-03', rid: 'B' })
+  })
+
+  it('reads a combined day by the entry that belongs to the routine, not the first one', () => {
+    const combined = { exWeights: {}, workouts: [{ d: '2026-01-05', routineIds: ['A', 'B'], entries: [session('', 'A', 60, 10), session('', 'B', 40, 15)] }] }
+    expect(lastEntryFor(combined, LIFT3, 'B').sets.map(s => [s.w, s.r])).toEqual([[40, 15], [40, 15]])
+    expect(lastEntryFor(combined, LIFT3, 'A').sets.map(s => [s.w, s.r])).toEqual([[60, 10], [60, 10]])
+  })
+
+  it('opens each routine\'s rows from its own line', () => {
+    const cfg = { id: LIFT3, sets: 2, reps: 10, weight: 0 }
+    expect(buildSets(S, cfg, { rid: 'A' }).map(s => s.w)).toEqual([60, 60])
+    expect(buildSets(S, cfg, { rid: 'B' }).map(s => s.w)).toEqual([40, 40])
+  })
+
+  it('gives a session saved before per-entry routine ids to the workout\'s routine', () => {
+    const legacy = { d: '2026-01-01', routineId: 'A', entries: [session('', null, 60, 10)] }
+    expect(entryRoutineId(legacy, legacy.entries[0])).toBe('A')
+    expect(entryRoutineId({ routineIds: ['B'], entries: [] }, { id: LIFT3 })).toBe('B')
+    expect(lastEntryFor({ workouts: [legacy] }, LIFT3, 'A')).toMatchObject({ rid: 'A' })
+  })
+
+  it('leaves an exercise added to a freestyle session without a routine', () => {
+    // "Add routine" on a freestyle session: the routine's entries carry its id, the exercise
+    // picked before it does not — it was never part of that routine's plan.
+    const w = { routineIds: ['A'], entries: [{ id: LIFT3 }, { id: 'x', rid: 'A' }] }
+    expect(entryRoutineId(w, w.entries[0])).toBeNull()
+    expect(entryRoutineId({ routineIds: [], entries: [{ id: LIFT3 }] }, { id: LIFT3 })).toBeNull()
   })
 })
 

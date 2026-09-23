@@ -16,7 +16,7 @@
 //   · fewer sets than prescribed                       → miss
 // So a session that fell apart can never advance the load as though it had succeeded.
 
-import { modeOf, repStep, rerampWarmups, isBw, isPerSide, entryExcluded } from './history.js'
+import { modeOf, repStep, rerampWarmups, isBw, isPerSide, entryExcluded, entryRoutineId } from './history.js'
 import { EXIDX, isAssisted } from './exercises.js'
 import { isWarmupRow, isSideSet, syncSideAggregate, makeSideSet } from './workout-model.js'
 import { normalizeRepRange } from './rep-range.js'
@@ -262,11 +262,28 @@ export function readSession(entry, fallback) {
   }
 }
 
-/** Every past session for one exercise, oldest first. `fallback` — see readSession. */
-export function sessionsFor(S, exId, fallback) {
+/**
+ * Every past session for one exercise, oldest first. `fallback` — see readSession.
+ *
+ * With a routine id, the sessions that routine trained (issue #216): a heavy day and a light day
+ * of the same lift each progress on their own line, and a combined day that holds the lift twice
+ * is read by the entry that belongs to the routine, not by whichever comes first. A routine with
+ * no session of its own reads the exercise's whole history instead, so a new or copied routine
+ * continues from where you are. Each session carries the routine it came from (`rid`) and the
+ * plan it was built from (`planned`), so the caller can tell a borrowed or outdated baseline.
+ */
+export function sessionsFor(S, exId, fallback, rid) {
+  if (rid) {
+    const own = sessionsIn(S, exId, fallback, rid)
+    if (own.length) return own
+  }
+  return sessionsIn(S, exId, fallback, null)
+}
+
+function sessionsIn(S, exId, fallback, rid) {
   const out = []
   ;(S.workouts || []).forEach(w => {
-    const entry = w.entries.find(e => e.id === exId)
+    const entry = (w.entries || []).find(e => e && e.id === exId && (!rid || entryRoutineId(w, e) === rid))
     if (!entry) return
     // A session that does not count for this exercise cannot become the baseline for its next
     // prescription. Exclusion is per-entry now (ENG-11): a legacy whole-workout
@@ -274,7 +291,9 @@ export function sessionsFor(S, exId, fallback) {
     // only its own. `noProg` is frozen onto the entry at build time, so later routine edits
     // never rewrite it. This is the only progression-exclusion path in the file.
     if (entryExcluded(w, entry)) return
-    if (entry.sets.some(s => s.done && !isWarmupRow(s))) out.push({ d: w.d, ...readSession(entry, fallback) })
+    if (!entry.sets.some(s => s.done && !isWarmupRow(s))) return
+    const slot = entryRoutineId(w, entry)
+    out.push({ d: w.d, ...(slot ? { rid: slot } : {}), ...(entry.planned ? { planned: entry.planned } : {}), ...readSession(entry, fallback) })
   })
   return out
 }
@@ -331,7 +350,9 @@ export function nextPrescription(S, cfg, routine) {
   const easier = weight => (assisted ? addStep(weight, inc, inc) : deloadTo(weight, inc))
 
 
-  const sessions = sessionsFor(S, cfg.id, cfg).filter(s => s.mode === mode)
+  // The routine's own sessions of this exercise, or the exercise's whole history when the
+  // routine has none yet (issue #216) — see sessionsFor.
+  const sessions = sessionsFor(S, cfg.id, cfg, routine?.id).filter(s => s.mode === mode)
   const last = sessions[sessions.length - 1]
   if (!last) return { policy, kind: 'first', why: ['Nothing logged yet — this session sets the baseline.'] }
 

@@ -9,8 +9,8 @@ import { nextPrescription, applyPrescription, defaultIncrement, weightIncrement 
 // Returns a bare array of session entries. "Excluded from progression" is per-entry now
 // (`entry.noProg`, written only when true) rather than a wrapper flag — a rehab routine merged
 // into real work must exclude only its own exercises. The merge helper (lib/session-merge.js)
-// stamps `entry.rid`; this builder is unaware of which routine it serves, so the single-routine
-// and combined paths share it unchanged.
+// stamps `entry.rid`, so the single-routine and combined paths share this builder unchanged; it
+// only reads the routine's id, to start each exercise from that routine's own history (#216).
 export function buildSessionEntries(st, r) {
   // The prescription is applied as the session is built, so you walk up to the bar with the
   // right weight already on the screen instead of being told about it afterwards. `plan` is
@@ -22,7 +22,7 @@ export function buildSessionEntries(st, r) {
     // plates exist), not the unit default; a timed exercise's `inc` is seconds, so it keeps the
     // default for its optional load.
     const step = modeOf(cfg) === 'reps' ? weightIncrement(cfg, st.unit) : defaultIncrement(cfg.id, st.unit)
-    const sets = applyIntensifierPlan(applyPrescription(buildSets(st, cfg, { step, useTarget: plan.kind === 'off' }), plan, step), cfg)
+    const sets = applyIntensifierPlan(applyPrescription(buildSets(st, cfg, { step, rid: r?.id, useTarget: plan.kind === 'off' }), plan, step), cfg)
     const target = { ...cfg }
     if (plan.weight != null) target.weight = plan.weight
     if (plan.reps != null) target.reps = plan.reps

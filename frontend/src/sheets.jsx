@@ -1026,7 +1026,7 @@ export function swapActiveWorkoutExercise(index) {
     // prescription — swapping barbell for dumbbell bench must not start you at an empty bar.
     const step = modeOf(full) === 'reps' ? weightIncrement(full, st.unit) : defaultIncrement(ex.id, st.unit)
     const plan = freestyle ? null : nextPrescription(st, full, slotRoutine)
-    const built = buildSets(st, full, { step, ...(freestyle ? { preferLast: true } : {}), ...(plan?.kind === 'off' ? { useTarget: true } : {}) })
+    const built = buildSets(st, full, { step, ...(freestyle ? { preferLast: true } : { rid: current.rid }), ...(plan?.kind === 'off' ? { useTarget: true } : {}) })
     const replacement = {
       id: ex.id,
       target: { ...cfg },

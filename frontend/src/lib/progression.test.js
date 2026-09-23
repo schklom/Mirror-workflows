@@ -580,6 +580,54 @@ describe('sessionsFor', () => {
   })
 })
 
+// Issue #216: a heavy day and a light day of the same lift progress on their own lines. The
+// routine's own sessions decide; a routine without any reads the exercise's whole history.
+describe('routine slots (#216)', () => {
+  const entry = (rid, w, r, extra = {}) => ({ id: LIFT, rid, target: { sets: 2, reps: r, weight: w }, sets: [{ w, r, done: true }, { w, r, done: true }], ...extra })
+  const S = {
+    unit: 'kg',
+    workouts: [
+      { d: '2026-03-01', routineIds: ['heavy'], entries: [entry('heavy', 60, 10)] },
+      { d: '2026-03-03', routineIds: ['light'], entries: [entry('light', 40, 15)] },
+    ],
+  }
+  const heavy = { id: 'heavy', prog: 'linear', ex: [] }
+  const light = { id: 'light', prog: 'linear', ex: [] }
+
+  it('reads only the routine\'s own sessions, each marked with its routine', () => {
+    expect(sessionsFor(S, LIFT, null, 'heavy').map(s => [s.d, s.rid, s.weight])).toEqual([['2026-03-01', 'heavy', 60]])
+    expect(sessionsFor(S, LIFT, null, 'light').map(s => [s.d, s.rid, s.weight])).toEqual([['2026-03-03', 'light', 40]])
+    expect(sessionsFor(S, LIFT)).toHaveLength(2)
+  })
+
+  it('progresses each routine from its own last session', () => {
+    expect(nextPrescription(S, { id: LIFT, sets: 2, reps: 10, weight: 60 }, heavy).weight).toBe(62.5)
+    expect(nextPrescription(S, { id: LIFT, sets: 2, reps: 15, weight: 40 }, light).weight).toBe(42.5)
+  })
+
+  it('falls back to the exercise\'s history for a routine that never trained it', () => {
+    expect(sessionsFor(S, LIFT, null, 'new').map(s => s.rid)).toEqual(['heavy', 'light'])
+  })
+
+  it('reads a combined day by the routine\'s own entry, not the first one', () => {
+    const combined = { unit: 'kg', workouts: [{ d: '2026-03-05', routineIds: ['heavy', 'light'], entries: [entry('heavy', 60, 10), entry('light', 40, 15)] }] }
+    expect(sessionsFor(combined, LIFT, null, 'light').map(s => s.weight)).toEqual([40])
+    expect(nextPrescription(combined, { id: LIFT, sets: 2, reps: 15, weight: 40 }, light).weight).toBe(42.5)
+  })
+
+  it('does not let a stall on one routine deload the other', () => {
+    const miss = (d, rid, w) => ({ d, routineIds: [rid], entries: [{ id: LIFT, rid, target: { sets: 2, reps: 10, weight: w }, sets: [{ w, r: 6, done: true }, { w, r: 6, done: true }] }] })
+    const st = { unit: 'kg', workouts: [miss('2026-03-01', 'heavy', 60), S.workouts[1], miss('2026-03-05', 'heavy', 60), miss('2026-03-07', 'heavy', 60)] }
+    expect(nextPrescription(st, { id: LIFT, sets: 2, reps: 10, weight: 60 }, heavy).kind).toBe('deload')
+    expect(nextPrescription(st, { id: LIFT, sets: 2, reps: 15, weight: 40 }, light).kind).toBe('up')
+  })
+
+  it('reads a session saved before per-entry routine ids by the workout\'s routine', () => {
+    const legacy = { unit: 'kg', workouts: [{ d: '2026-03-01', routineId: 'heavy', entries: [{ id: LIFT, target: { sets: 2, reps: 10, weight: 60 }, sets: [{ w: 60, r: 10, done: true }, { w: 60, r: 10, done: true }] }] }] }
+    expect(sessionsFor(legacy, LIFT, null, 'heavy').map(s => s.rid)).toEqual(['heavy'])
+  })
+})
+
 // "Excluded from progression" is per-entry now (ENG-11): a rehab routine combined with real
 // work must exclude only its own exercises, not the whole session.
 describe('per-entry noProg (combine routines)', () => {

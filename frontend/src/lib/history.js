@@ -231,10 +231,46 @@ export function entryExcluded(w, entry) {
   return w?.excludeFromProgression === true || entry?.noProg === true
 }
 
-export function lastEntryFor(S, exId) {
-  for (let i = S.workouts.length - 1; i >= 0; i--) {
-    const w = S.workouts[i]
-    const en = w.entries.find(e => e.id === exId)
+/**
+ * Which routine a saved entry was planned by — the "slot" its numbers belong to (issue #216).
+ *
+ * Every entry of a session started since combined days carries its own `rid`. A session saved
+ * before that has none, and there the workout's routine stands in for all of its entries. The one
+ * exception is a newer session in which some entries carry a `rid` and this one does not: that is
+ * an exercise added to a freestyle session, and it belongs to no routine at all.
+ */
+export function entryRoutineId(w, en) {
+  if (en?.rid) return en.rid
+  if ((w?.entries || []).some(e => e && e.rid)) return null
+  return [].concat(w?.routineIds ?? [])[0] ?? w?.routineId ?? null
+}
+
+// The entry for one exercise in one saved workout. With a routine id it is that routine's own
+// entry — a combined A+B day can hold the same exercise twice, and the second one is not the
+// first one's history. Without, the first one, as it always was.
+const entryIn = (w, exId, rid) => (w.entries || []).find(e => e && e.id === exId && (!rid || entryRoutineId(w, e) === rid))
+
+/**
+ * The last counting session of an exercise: `{ d, sets, target, rid?, planned? }`, or null.
+ *
+ * Given a routine id, the routine's own last session of it (issue #216): the same bench press in
+ * a heavy day and a light day is two lines of progress, not one that zigzags between them. A
+ * routine that has never trained the exercise falls back to its last session anywhere, so a new
+ * or copied routine starts from what you actually lift rather than from nothing.
+ */
+export function lastEntryFor(S, exId, rid) {
+  if (rid) {
+    const own = lastEntryIn(S, exId, rid)
+    if (own) return own
+  }
+  return lastEntryIn(S, exId, null)
+}
+
+function lastEntryIn(S, exId, rid) {
+  const workouts = S.workouts || []
+  for (let i = workouts.length - 1; i >= 0; i--) {
+    const w = workouts[i]
+    const en = entryIn(w, exId, rid)
     if (!en) continue
     // A session that does not count — a planned deload, or a rehab block merged into a real
     // session — is not "last time" for the next regular prescription: its reps and durations
@@ -250,7 +286,10 @@ export function lastEntryFor(S, exId) {
     // `target` is what the session prescribed; finished workouts carry it so labels and the
     // progression engine can read a session back the way it was logged. Older workouts have
     // none — modeOf() falls back to the body part for them, which is what they were.
-    if (done.length) return { d: w.d, sets: done, target: en.target || null }
+    if (done.length) {
+      const slot = entryRoutineId(w, en)
+      return { d: w.d, sets: done, target: en.target || null, ...(slot ? { rid: slot } : {}), ...(en.planned ? { planned: en.planned } : {}) }
+    }
   }
   return null
 }
@@ -380,8 +419,9 @@ function buildWorkSets(S, cfg, options = {}) {
   const useTarget = !!options.useTarget
   // `lastEntryFor` now skips any entry that does not count — a planned deload, or a rehab
   // block merged into a real session (entryExcluded) — so the rows seed from the last
-  // *counting* session without this function pre-filtering the history itself.
-  const last = lastEntryFor(S, cfg.id)
+  // *counting* session without this function pre-filtering the history itself. `options.rid`
+  // is the routine the rows are for: its own last session of the exercise comes first (#216).
+  const last = lastEntryFor(S, cfg.id, options.rid)
   const n = Math.max(1, cfg.sets || 1)
   const mode = modeOf(cfg)
   const sets = []
@@ -406,18 +446,20 @@ function buildWorkSets(S, cfg, options = {}) {
     }
     return sets
   }
-  const conf = S.exWeights[cfg.id]
+  const conf = (S.exWeights || {})[cfg.id]
   for (let i = 0; i < n; i++) {
     const prev = prevAt(i)
     const usable = prev && prev.r > 0 ? prev : null
-    // Planned sessions may use the confirmed working weight, while freestyle should reproduce
-    // the load of each matching set when that option is requested.
+    // The weight comes from the last session this routine trained (or any, for a routine that
+    // never has). The confirmed working weight is keyed by exercise alone, so it is only the
+    // fallback once there is no session to read: taken first, it handed a light day the heavy
+    // day's number (#216). A progression policy overwrites this anyway (applyPrescription).
     // A deload uses the routine's target weight; a routine that never set one (weight 0) falls
     // back to the last regular load rather than prescribing an empty bar.
     const lastRegular = last ? (last.sets[i] || last.sets[last.sets.length - 1]) : null
     const w = useTarget
       ? (cfg.weight > 0 ? cfg.weight : (lastRegular && lastRegular.r > 0 ? lastRegular.w : cfg.weight))
-      : preferLast && usable ? usable.w : (conf && conf.w > 0 ? conf.w : (usable ? usable.w : cfg.weight))
+      : usable ? usable.w : (conf && conf.w > 0 ? conf.w : cfg.weight)
     const row = { w, r: usable ? usable.r : cfg.reps, done: false }
     // A unilateral exercise logs each side on its own (issue #60): the row splits into L/R,
     // each seeded with half the total reps at the same weight. When "last time" was itself a

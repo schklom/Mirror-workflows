@@ -359,8 +359,13 @@ export default function RoutineEdit() {
       <SelectRow icon="chartLine" title={t('Progression')} sheetTitle={t('Progression')}
         value={r.prog || 'linear'} onChange={v => update(s => { s.routines.find(x => x.id === id).prog = v })}
         options={POLICIES_FOR.reps.map(p => ({ value: p, label: t(POLICY_NAME[p]), subtitle: t(POLICY_DESC[p]) }))} />
-      <Row icon="pause" iconTint="var(--orange)" title={t('Exclude from automatic progression')}
-        subtitle={t('Use for planned deloads. Workouts stay in history and statistics.')}>
+      {/* Two controls that read alike and are not (issue #294). Progression picks how this
+          routine's own targets move, and "No automatic progression" keeps them where they are.
+          This switch decides whether the routine's workouts count at all: a deload routine's
+          sessions open at its own numbers and are never the baseline the next regular session
+          progresses from (session-start.js, history.js entryExcluded). */}
+      <Row icon="pause" iconTint="var(--orange)" title={t('Deload routine')}
+        subtitle={t('Its workouts do not count toward progression. They still show in history and statistics.')}>
         <Switch checked={r.excludeFromProgression === true} onChange={v => update(s => {
           const routine = s.routines.find(x => x.id === id)
           if (v) routine.excludeFromProgression = true
@@ -370,8 +375,8 @@ export default function RoutineEdit() {
     </div>
     <div className="small dim" style={{ margin: '-10px 2px 16px' }}>
       {r.excludeFromProgression
-        ? t('The next regular target continues from the last included workout.')
-        : t('Applies to every exercise in this routine that does not set its own rule.')}
+        ? t('A deload routine opens at the numbers set here, so the progression above does not apply to it.') + ' ' + t('The next regular target continues from the last included workout.')
+        : t(POLICY_DESC[r.prog || 'linear'] || POLICY_DESC.linear) + ' ' + t('Applies to every exercise in this routine that does not set its own rule.')}
     </div>
 
     {missingCount > 0 && <div className="card" style={{ marginBottom: 16, borderColor: 'var(--orange)' }}>

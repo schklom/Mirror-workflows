@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { uid } from '../lib/format.js'
-import { beep, vibrate } from '../lib/sound.js'
+import { beep, chime, vibrate } from '../lib/sound.js'
 import { api } from '../lib/api.js'
 import { t } from '../lib/i18n.js'
 import { deviceId } from '../lib/push.js'
@@ -78,7 +78,7 @@ const runRest = (set, get) => {
     const snd = useStore.getState().S.sound
     if (left <= 0) {
       if (seenLive) {
-        beep(snd, 880, 0.15); beep(snd, 880, 0.15, 0.25); beep(snd, 1320, 0.4, 0.5)
+        chime(snd)
         vibrate([200, 100, 200]); get().flashTimer()
       }
       // The toast stays even when the rest ran out while the app was hidden: a guest, or anyone
@@ -207,9 +207,11 @@ export const useUI = create((set, get) => ({
      purpose: the two mean opposite things, they must never run together, and a work set is
      something you are watching — so it gets no server push (that endpoint says "rest over",
      and a plank does not need a notification you are staring at anyway).
-     `onDone(elapsedSec)` is called both when the countdown reaches zero and on an early
-     finish; the elapsed time is what actually gets logged, so stopping at 0:38 of a 0:45
-     hold records 0:38 rather than crediting the full target. */
+     `onDone(elapsedSec, { chimed, abandoned })` is called both when the countdown reaches zero and
+     on an early finish; the elapsed time is what actually gets logged, so stopping at 0:38 of a
+     0:45 hold records 0:38 rather than crediting the full target. `chimed` is true when the
+     countdown ran out in front of you and the end chime and buzz have just played; `abandoned`
+     when a rest displaced the hold (abandonWork). */
   startWork(sec, label, onDone) {
     get().abandonWork()   // a hold this one replaces keeps what it held, same as a rest replacing one
     get().stopRest()
@@ -228,13 +230,15 @@ export const useUI = create((set, get) => ({
       const snd = useStore.getState().S.sound
       if (left <= 0) {
         if (seenLive && !wk.alerted) {
-          beep(snd, 880, 0.15); beep(snd, 880, 0.15, 0.25); beep(snd, 1320, 0.4, 0.5)
+          chime(snd)
           vibrate([200, 100, 200]); get().flashTimer()
         }
         if (wk.overtime && left > -MAX_WORK_OVERTIME_SEC) { set({ work: { ...wk, left, alerted: true } }); return }
         const done = workDone
         get().stopWork()
-        if (done) done(wk.total - left)
+        // `chimed` tells the set's own tick that this end has already sounded and buzzed — not
+        // so when overtime ran out, whose end chime played when the target was reached.
+        if (done) done(wk.total - left, { chimed: seenLive && !wk.alerted })
         return
       }
       if (left <= 3) beep(snd, 660, 0.1)
@@ -270,7 +274,7 @@ export const useUI = create((set, get) => ({
     // tapped and thought better of, and rounding it up to one second the way an early finish does
     // would write a one-second plank over a real plan. (finishWorkEarly's Math.max(1, …) is right
     // for what it is: you pressed Done, so you held it, however briefly.)
-    if (done && elapsed >= 2) done(elapsed, true)
+    if (done && elapsed >= 2) done(elapsed, { abandoned: true })
   },
   // Abandon without logging anything.
   stopWork() {

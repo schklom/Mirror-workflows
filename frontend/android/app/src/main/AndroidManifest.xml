@@ -43,6 +43,10 @@
          on Android 12+. Where it isn't granted, scheduling silently falls back to inexact
          alarms — the reminder still arrives, just not to the minute. -->
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <!-- The buzz at the end of a rest or a hold and on a set tick (navigator.vibrate). The
+         WebView drops every vibrate call from an app without this permission, so the phone
+         stayed still. A normal permission: granted at install, no prompt. -->
+    <uses-permission android:name="android.permission.VIBRATE" />
     <!-- Gym check-in: scanning a membership QR/barcode with the camera. -->
     <uses-permission android:name="android.permission.CAMERA" />
 </manifest>

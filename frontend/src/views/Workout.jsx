@@ -19,13 +19,19 @@ import Icon from '../components/Icon.jsx'
 import { Button, Check, NumberField } from '../components/ui.jsx'
 import { defaultIncrement, weightIncrement, stepWeight } from '../lib/progression.js'
 import { progressionGuidance } from '../lib/progression-copy.js'
-import { buildPlannedEntry, plannedConfigOf } from '../lib/session-start.js'
+import { buildPlannedEntry, plannedConfigOf, builtOutOfProgression } from '../lib/session-start.js'
 import { glyphOf } from '../lib/glyphs.js'
 import { markAllSetsDone } from '../lib/backfill.js'
 import { bestSetFor } from '../lib/exercise-history.js'
 import { isWarmupRow, isDropSet, isRestPauseSet, dropsOf, clustersOf, addDrop, addCluster, removeDropAt, removeClusterAt, setDropAt, setClusterAt, nextDropWeight, nextBurstReps, isSideSet, makeSideSet, setSideField, toggleSide, addSideDrop, removeSideDropAt, setSideDropAt, addSideCluster, removeSideClusterAt, setSideClusterAt, WEIGHT_ORIGIN_MANUAL } from '../lib/workout-model.js'
 import { canMoveActiveWorkoutUnit, moveActiveWorkoutUnit } from '../lib/active-workout-order.js'
+import { nextOpenSet, workoutKeyAction } from '../lib/workout-keys.js'
 import { MUSCLE_NAME } from '../lib/muscles.js'
+
+// How long after a key starts a hold the same key is not yet its "Done" (#133). A USB button
+// that bounces, or a double press, sends two presses a moment apart: the first starts the hold,
+// and the second logged it at one second.
+const HOLD_KEY_GRACE_MS = 1500
 
 /* ---------- start chooser (no active workout) ---------- */
 function StartChooser() {
@@ -74,7 +80,7 @@ function Elapsed({ start }) {
 // "last time" recap and the progression line — leaving the name, the ⋯ menu, the one-line plan
 // the rows are measured against, and the sets.
 // Nothing dropped is lost: it is all still on the ⋯ menu, or one ⋮ switch back to list/cards.
-function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSide, onField, onAddSet, onRemoveSet, onAddWarmup, onRemoveSetAt, onStartTimed, onPairPrev, onPairNext, onSetRowRef, onProgressionSettings, onSwap, onMoveUp, onMoveDown, canMoveUp, canMoveDown, onRemoveExercise, busy }) {
+function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSide, onField, onAddSet, onRemoveSet, onAddWarmup, onRemoveSetAt, onStartTimed, onPairPrev, onPairNext, onSetRowRef, onProgressionSettings, onNoProg, onSwap, onMoveUp, onMoveDown, canMoveUp, canMoveDown, onRemoveExercise, busy }) {
   const S = useStore(s => s.S)
   const update = useStore(s => s.update)
   const working = useUI(s => s.work)
@@ -266,6 +272,7 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
       { icon: 'info', label: t('Details'), onClick: () => exerciseDetailSheet(ex) },
       { icon: 'history', label: t('History'), sub: last ? t('Last time') + ' ' + fmtDate(last.d) : undefined, onClick: () => exerciseHistorySheet(entry.id) },
       onProgressionSettings && { icon: 'chartLine', label: t('Progression settings'), sub: guidance ? t(guidance.policyLabel) : undefined, onClick: onProgressionSettings },
+      onNoProg && { icon: 'pause', label: t('Don’t count for progression'), sub: t('This exercise, this session only'), on: entry.noProg === true, onClick: () => onNoProg(entry.noProg !== true) },
       barInfo && { icon: 'barbell', label: t('Bar weight'), sub: barInfo.text, onClick: () => barWeightSheet(entry.id) },
       { icon: 'flame', label: t('Add warm-up set'), onClick: onAddWarmup },
       onPairPrev && { icon: 'link', label: t('Make superset with previous'), onClick: onPairPrev },
@@ -420,6 +427,13 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
         <button className="iconbtn" aria-label={t('More')} title={t('More')} onClick={openMore}><Icon name="more" /></button>
       </div>
     </div>
+    {/* Kept out of progression: by hand for this session (the ⋯ menu, with its undo right here),
+        or by a deload or rehab routine, which owns that choice and offers no undo. On in every
+        view, compact included: it changes what the next session is built from. */}
+    {entry.noProg === true && <div className="noprog">
+      <Icon name="pause" /><span>{t('Not counted for progression')}</span>
+      {onNoProg && <button type="button" className="chip" onClick={() => onNoProg(false)}>{t('Undo')}</button>}
+    </div>}
     {/* compact view keeps the plan line: it is what the rows are measured against */}
     {dense && planLine}
     {wc.pairButtons && !compact && !dense && (onPairPrev || onPairNext) && <div className="row" style={{ gap: 6, flexWrap: 'wrap', marginBottom: 8 }}>
@@ -745,6 +759,22 @@ function ActiveWorkout() {
 
   const moveCurrentUnit = direction => moveUnitAt(cur, direction)
 
+  // "Don't count for progression" from an exercise's ⋯ menu (Discord, asierlama: an injury day).
+  // It stamps the entry's `noProg`, the flag a deload routine freezes onto its entries: the saved
+  // workout keeps it (finish-workout.js), and the next prescription and "last time" read past
+  // this entry (history.js entryExcluded). This exercise, this session; the routine is untouched.
+  // Unlike a deload's, its rows keep the prescription through any rebuild (builtOutOfProgression),
+  // so switching it off again leaves the numbers this session should count at.
+  const setNoProg = (idx, on) => update(s => {
+    const e = s.active?.entries?.[idx]
+    if (!e) return
+    if (on) e.noProg = true
+    else delete e.noProg
+  })
+  // A deload or rehab routine keeps its own exercises out (RoutineEdit). That is the routine's
+  // setting, so its entries get the marker but no switch.
+  const routineKeepsOut = e => !!e?.rid && S.routines.some(r => r.id === e.rid && r.excludeFromProgression === true)
+
   // One prop object per entry so the card and list layouts share the exact same wiring. The
   // exercise-level actions (swap, move, remove) address the entry itself, so the "more" menu of
   // a superset member acts on that member, not on whatever the marker happens to point at.
@@ -766,6 +796,7 @@ function ActiveWorkout() {
     onRemoveSetAt: i => removeSetAt(idx, i),
     onStartTimed: i => startTimed(idx, i),
     onProgressionSettings: editing ? null : () => openProgressionSettings(idx),
+    onNoProg: routineKeepsOut(A.entries[idx]) ? null : on => setNoProg(idx, on),
   })
   const navigateUnit = direction => {
     const targetFor = active => {
@@ -868,7 +899,9 @@ function ActiveWorkout() {
         // rebuilt from the new config exactly the way the session start builds them (same reps
         // source, same prescription, same stamped target), and only what you already logged is
         // kept in place (done warm-ups first, then done work sets, then the fresh remainder).
-        const built = buildPlannedEntry(s, full, activeRoutine, { noProg: activeEntry.noProg === true })
+        // Without a prescription only in a routine kept out of progression: an exercise kept out
+        // by hand keeps its prescription, so its Undo leaves the numbers it should count at.
+        const built = buildPlannedEntry(s, full, activeRoutine, { noProg: builtOutOfProgression(activeEntry, activeRoutine) })
         const fresh = built.sets
         const doneWarm = activeEntry.sets.filter(x => x.done && isWarmupRow(x))
         const doneWork = activeEntry.sets.filter(x => x.done && !isWarmupRow(x))
@@ -933,7 +966,7 @@ function ActiveWorkout() {
     // the row is held to the end, ticked, or given a duration you typed yourself, and it never
     // reaches S.workouts (lib/finish-workout.js).
     const plan = (!e.sets[i].done && e.sets[i].planSec) || e.sets[i].sec || 45
-    useUI.getState().startWork(plan, exerciseNameFor(exOr(e.id)), (elapsed, abandoned) => {
+    useUI.getState().startWork(plan, exerciseNameFor(exOr(e.id)), (elapsed, { abandoned = false, chimed = false } = {}) => {
       // A hold a rest displaced (useUI.abandonWork: a set ticked on another row, or another
       // exercise) keeps its seconds and nothing else. It is not a finish: the row stays unticked
       // and starts no rest, because the rest that displaced the hold is already counting down —
@@ -947,11 +980,14 @@ function ActiveWorkout() {
         return
       }
       mutEntry(idx, en => { en.sets[i].sec = elapsed; delete en.sets[i].planSec })
-      if (!useStore.getState().S.active.entries[idx].sets[i].done) toggle(idx, i)
+      if (!useStore.getState().S.active.entries[idx].sets[i].done) toggle(idx, i, undefined, { quiet: chimed })
     })
   }
 
-  const toggle = (idx, i, side) => {
+  // `quiet`: the hold that ticks this set has just ended with the chime and its buzz pattern
+  // (store/useUI.js). The tick's own beep would sound over the chime's first note and clip it,
+  // and its short buzz would cut the pattern off: a new vibrate call replaces the running one.
+  const toggle = (idx, i, side, { quiet = false } = {}) => {
     // Ticking a set ends the typing in that row: drop the keyboard before the rest timer, the
     // effort sheet or the next exercise moves in. WebKit keeps the input focused across the
     // button tap, and a focused input with its keyboard gone is what leaves the tab bar
@@ -970,7 +1006,7 @@ function ActiveWorkout() {
       // A finished row has no use for a plan set aside by a hold that did not finish.
       if (checked && e.sets[i].planSec != null) delete e.sets[i].planSec
       if (e.sets[i].done && !editing) {
-        beep(S.sound, 1040, 0.12); vibrate(30)
+        if (!quiet) { beep(S.sound, 1040, 0.12); vibrate(30) }
         // The unit that owns the ticked set — not the marked one. Since !92 the marker no longer
         // follows a finished exercise, and in list mode any exercise can be worked on, so judging
         // the marker's unit here declared the workout complete after one set elsewhere.
@@ -1042,6 +1078,69 @@ function ActiveWorkout() {
       }
     }
   }
+
+  // Hardware keys (issue #133, lib/workout-keys.js): Space or Enter ticks the next set, ← and →
+  // switch exercise. The listener is added once and calls the handler of the latest render, so
+  // toggle() and navigateUnit() always see the session as it is now.
+  const tabbed = useRef(false)
+  const onKey = useRef(null)
+  // In the list the "current" exercise can be off screen. A key that moves it brings it into
+  // view the way opening the list does; ticking and tapping never scroll it (see above).
+  const showCurrent = () => {
+    if (!listMode) return
+    const scroll = () => {
+      const el = listRef.current?.querySelector('.wl-unit.cur')
+      if (el && typeof el.scrollIntoView === 'function') el.scrollIntoView({ block: 'start' })
+    }
+    // After the render that moves the marker, as the effect above waits for its frame.
+    if (window.requestAnimationFrame) window.requestAnimationFrame(scroll)
+    else window.setTimeout(scroll, 0)
+  }
+  onKey.current = event => {
+    // A sheet on top owns the keyboard (Escape closes it, Enter confirms in it).
+    if (useUI.getState().sheets.length) return false
+    const action = workoutKeyAction(event, { tabbed: tabbed.current })
+    if (!action) return false
+    event.preventDefault()
+    if (action !== 'tick') { navigateUnit(action === 'next' ? 1 : -1); showCurrent(); return true }
+    // A hold being timed: the key is its "Done", which logs what was actually held, once the
+    // hold has run past its first moments (HOLD_KEY_GRACE_MS).
+    const work = useUI.getState().work
+    if (work) {
+      if (Date.now() - (work.endsAt - work.total * 1000) >= HOLD_KEY_GRACE_MS) useUI.getState().finishWorkEarly()
+      return true
+    }
+    const fresh = useStore.getState().S.active
+    const next = nextOpenSet(fresh?.entries, fresh?.cur)
+    if (!next) return true
+    // The exercise on screen is finished: this press brings up the next one, and the one after
+    // ticks its set. A key never logs a set for an exercise that was not in front of you.
+    if (!next.current) { focusUnit(next.idx); showCurrent(); return true }
+    // A timed set is started rather than ticked, as its play button does; the timer ticks it.
+    if (!next.side && modeAt(next.idx) === 'time') startTimed(next.idx, next.i)
+    else toggle(next.idx, next.i, next.side)
+    return true
+  }
+  useEffect(() => {
+    // A Space that ticked must not also press the button a click left focus on. Preventing the
+    // keydown is enough for Chrome; Firefox presses a button on the keyup, so that goes too.
+    let spaceTaken = false
+    const down = event => {
+      if (event.key === 'Tab') { tabbed.current = true; return }
+      const taken = onKey.current?.(event) === true
+      if (event.key === ' ') spaceTaken = taken
+    }
+    const up = event => { if (event.key === ' ' && spaceTaken) { spaceTaken = false; event.preventDefault() } }
+    const pointer = () => { tabbed.current = false }
+    document.addEventListener('keydown', down)
+    document.addEventListener('keyup', up)
+    document.addEventListener('pointerdown', pointer, true)
+    return () => {
+      document.removeEventListener('keydown', down)
+      document.removeEventListener('keyup', up)
+      document.removeEventListener('pointerdown', pointer, true)
+    }
+  }, [])
 
   // Live-presence heartbeat so the admin dashboard can show who's training now. Signed-in only —
   // guests have no server session. Reads fresh state each tick so progress stays current.
@@ -1179,12 +1278,13 @@ function ActiveWorkout() {
       // freestyle session has no `rid` to inherit. It inherits the block's `noProg` too: an
       // exercise added to a rehab or deload routine's block is kept out of progression like the
       // rest of it, the way a swap or an edit there is — it takes the routine's own numbers and
-      // never becomes the baseline the regular sessions progress from.
+      // never becomes the baseline the regular sessions progress from. An exercise kept out by
+      // hand (its ⋯ menu) is that exercise's own choice for today and is not passed on.
       const curEntry = A.entries[A.cur]
       const curRid = curEntry?.rid
       const routine = curRid ? S.routines.find(r => r.id === curRid) : null
       const freestyle = !routine
-      const noProg = !freestyle && curEntry?.noProg === true
+      const noProg = !freestyle && builtOutOfProgression(curEntry, routine)
       // Freestyle has no routine prescription to apply: show the last target in the config
       // sheet and carry its completed rows forward. A planned session uses its configured
       // target when progression is off, while progression-enabled sessions keep their path.

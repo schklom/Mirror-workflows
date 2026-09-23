@@ -35,7 +35,7 @@ import { nextUnfinishedUnit } from './lib/supersetFlow.js'
 import { swapActiveExercise } from './lib/active-exercise-swap.js'
 import { useSheetKeyboard, useRevealActiveChip, tappable } from './lib/use-sheet-keyboard.js'
 import { isFav, toggleFav, sortFavouritesFirst } from './lib/favourites.js'
-import { buildSessionEntries, buildPlannedEntry } from './lib/session-start.js'
+import { buildSessionEntries, buildPlannedEntry, builtOutOfProgression } from './lib/session-start.js'
 import { buildCombinedEntries, deriveSessionName } from './lib/session-merge.js'
 import { workoutsOn, backfillStart, backfillEnd, completeBackfill } from './lib/backfill.js'
 import { moveWorkout, sameWorkout, startTimeOf, durationMinOf, setWorkoutDuration } from './lib/workout-date.js'
@@ -1086,14 +1086,16 @@ export function swapActiveWorkoutExercise(index) {
     const step = modeOf(full) === 'reps' ? weightIncrement(full, st.unit) : defaultIncrement(ex.id, st.unit)
     const built = freestyle
       ? { target: { ...cfg }, plan: null, sets: applyIntensifierPlan(buildSets(st, full, { step, preferLast: true }), full) }
-      : buildPlannedEntry(st, full, slotRoutine, { noProg: current.noProg === true })
+      : buildPlannedEntry(st, full, slotRoutine, { noProg: builtOutOfProgression(current, slotRoutine) })
     const replacement = {
       id: ex.id,
       ...built,
       ...(current.rid ? { rid: current.rid } : {}),
       // A slot kept out of progression stays out once swapped. Replaced in place the entry keeps
       // it anyway; inserted beside logged sets, the replacement would otherwise count as a
-      // regular session of the new exercise.
+      // regular session of the new exercise. Only a deload or rehab slot is built without a
+      // prescription (above): one kept out by hand keeps the marker and its Undo on the card,
+      // and an Undo must leave numbers that are right to count.
       ...(current.noProg === true ? { noProg: true } : {}),
     }
 

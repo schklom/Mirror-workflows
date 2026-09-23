@@ -72,6 +72,19 @@ export function plannedConfigOf(entry) {
   return out
 }
 
+/**
+ * Whether an entry is rebuilt the way an excluded routine builds its exercises: at the routine's
+ * own numbers, with no prescription (buildPlannedEntry's `noProg`).
+ *
+ * `entry.noProg` comes from two places. A deload or rehab routine freezes it onto every exercise
+ * it starts, and those are built without a prescription. An exercise's ⋯ menu sets it by hand for
+ * one session, and that only stops the session from counting: its rows stay at the prescription.
+ * Read as the first kind, a hand-set flag made a rebuild (Progression settings saved, a swap) drop
+ * today's 102.5 to the routine's own 60, and its Undo then let those 60 count as progress. So only
+ * an entry whose routine is itself kept out is built that way.
+ */
+export const builtOutOfProgression = (entry, routine) => entry?.noProg === true && routine?.excludeFromProgression === true
+
 // Returns a bare array of session entries. "Excluded from progression" is per-entry now
 // (`entry.noProg`, written only when true) rather than a wrapper flag — a rehab routine merged
 // into real work must exclude only its own exercises. The merge helper (lib/session-merge.js)

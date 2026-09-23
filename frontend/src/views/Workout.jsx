@@ -76,7 +76,7 @@ function Elapsed({ start }) {
 // "last time" recap and the progression line — leaving the name, the ⋯ menu, the one-line plan
 // the rows are measured against, and the sets.
 // Nothing dropped is lost: it is all still on the ⋯ menu, or one ⋮ switch back to list/cards.
-function ExerciseBlock({ entryIdx, compact, dense, onToggle, onToggleSide, onField, onAddSet, onRemoveSet, onAddWarmup, onRemoveSetAt, onStartTimed, onPairPrev, onPairNext, onSetRowRef, onProgressionSettings, onSwap, onMoveUp, onMoveDown, canMoveUp, canMoveDown, onRemoveExercise, busy }) {
+function ExerciseBlock({ entryIdx, compact, dense, onToggle, onToggleSide, onField, onAddSet, onRemoveSet, onAddWarmup, onRemoveSetAt, onStartTimed, onPairPrev, onPairNext, onSetRowRef, onProgressionSettings, onNoProg, onSwap, onMoveUp, onMoveDown, canMoveUp, canMoveDown, onRemoveExercise, busy }) {
   const S = useStore(s => s.S)
   const update = useStore(s => s.update)
   const working = useUI(s => s.work)
@@ -246,6 +246,7 @@ function ExerciseBlock({ entryIdx, compact, dense, onToggle, onToggleSide, onFie
       { icon: 'info', label: t('Details'), onClick: () => exerciseDetailSheet(ex) },
       { icon: 'history', label: t('History'), sub: last ? t('Last time') + ' ' + fmtDate(last.d) : undefined, onClick: () => exerciseHistorySheet(entry.id) },
       onProgressionSettings && { icon: 'chartLine', label: t('Progression settings'), sub: guidance ? t(guidance.policyLabel) : undefined, onClick: onProgressionSettings },
+      onNoProg && { icon: 'pause', label: t('Don’t count for progression'), sub: t('This exercise, this session only'), on: entry.noProg === true, onClick: () => onNoProg(entry.noProg !== true) },
       barInfo && { icon: 'barbell', label: t('Bar weight'), sub: barInfo.text, onClick: () => barWeightSheet(entry.id) },
       { icon: 'flame', label: t('Add warm-up set'), onClick: onAddWarmup },
       onPairPrev && { icon: 'link', label: t('Make superset with previous'), onClick: onPairPrev },
@@ -400,6 +401,13 @@ function ExerciseBlock({ entryIdx, compact, dense, onToggle, onToggleSide, onFie
         <button className="iconbtn" aria-label={t('More')} title={t('More')} onClick={openMore}><Icon name="more" /></button>
       </div>
     </div>
+    {/* Kept out of progression: by hand for this session (the ⋯ menu, with its undo right here),
+        or by a deload or rehab routine, which owns that choice and offers no undo. On in every
+        view, compact included: it changes what the next session is built from. */}
+    {entry.noProg === true && <div className="noprog">
+      <Icon name="pause" /><span>{t('Not counted for progression')}</span>
+      {onNoProg && <button type="button" className="chip" onClick={() => onNoProg(false)}>{t('Undo')}</button>}
+    </div>}
     {/* compact view keeps the plan line: it is what the rows are measured against */}
     {dense && planLine}
     {wc.pairButtons && !compact && !dense && (onPairPrev || onPairNext) && <div className="row" style={{ gap: 6, flexWrap: 'wrap', marginBottom: 8 }}>
@@ -717,6 +725,20 @@ function ActiveWorkout() {
 
   const moveCurrentUnit = direction => moveUnitAt(cur, direction)
 
+  // "Don't count for progression" from an exercise's ⋯ menu (Discord, asierlama: an injury day).
+  // It stamps the entry's `noProg`, the flag a deload routine freezes onto its entries: the saved
+  // workout keeps it (finish-workout.js), and the next prescription and "last time" read past
+  // this entry (history.js entryExcluded). This exercise, this session; the routine is untouched.
+  const setNoProg = (idx, on) => update(s => {
+    const e = s.active?.entries?.[idx]
+    if (!e) return
+    if (on) e.noProg = true
+    else delete e.noProg
+  })
+  // A deload or rehab routine keeps its own exercises out (RoutineEdit). That is the routine's
+  // setting, so its entries get the marker but no switch.
+  const routineKeepsOut = e => !!e?.rid && S.routines.some(r => r.id === e.rid && r.excludeFromProgression === true)
+
   // One prop object per entry so the card and list layouts share the exact same wiring. The
   // exercise-level actions (swap, move, remove) address the entry itself, so the "more" menu of
   // a superset member acts on that member, not on whatever the marker happens to point at.
@@ -737,6 +759,7 @@ function ActiveWorkout() {
     onRemoveSetAt: i => removeSetAt(idx, i),
     onStartTimed: i => startTimed(idx, i),
     onProgressionSettings: () => openProgressionSettings(idx),
+    onNoProg: routineKeepsOut(A.entries[idx]) ? null : on => setNoProg(idx, on),
   })
   const navigateUnit = direction => {
     const targetFor = active => {
@@ -1165,12 +1188,13 @@ function ActiveWorkout() {
       // freestyle session has no `rid` to inherit. It inherits the block's `noProg` too: an
       // exercise added to a rehab or deload routine's block is kept out of progression like the
       // rest of it, the way a swap or an edit there is — it takes the routine's own numbers and
-      // never becomes the baseline the regular sessions progress from.
+      // never becomes the baseline the regular sessions progress from. An exercise kept out by
+      // hand (its ⋯ menu) is that exercise's own choice for today and is not passed on.
       const curEntry = A.entries[A.cur]
       const curRid = curEntry?.rid
       const routine = curRid ? S.routines.find(r => r.id === curRid) : null
       const freestyle = !routine
-      const noProg = !freestyle && curEntry?.noProg === true
+      const noProg = !freestyle && curEntry?.noProg === true && routine.excludeFromProgression === true
       // Freestyle has no routine prescription to apply: show the last target in the config
       // sheet and carry its completed rows forward. A planned session uses its configured
       // target when progression is off, while progression-enabled sessions keep their path.

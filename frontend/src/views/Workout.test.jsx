@@ -531,6 +531,15 @@ describe('adding an exercise to a block kept out of progression', () => {
     expect(added.plan.kind).toBe('up')
     expect(added.sets.map(s => s.w)).toEqual([102.5])
   })
+
+  it('does not pass on an exercise kept out by hand for today (its ⋯ menu)', async () => {
+    await mount([exercise('row', [false], { rid: 'main', noProg: true })], 0, { routines, workouts: history })
+    await addExerciseThroughSheets({ id: BENCH }, { mode: 'reps', sets: 1, reps: 5, weight: 40 })
+    const added = mocks.S.active.entries[1]
+    expect(added.noProg).toBeUndefined()
+    expect(added.plan.kind).toBe('up')
+    expect(added.sets.map(s => s.w)).toEqual([102.5])
+  })
 })
 
 describe('active workout weight controls', () => {

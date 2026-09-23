@@ -95,6 +95,26 @@ describe('sw.js exercise media', () => {
     expect(await (await w.get('/gif/0003.gif')).text()).toBe('old gif')
   })
 
+  it('does not adopt a login page an older build had cached under an image\'s URL', async () => {
+    const w = worker()
+    const old = await w.caches.open('opengym-rt-oldbuild')
+    // v1.3.8 kept any ok answer, so a proxy's sign-in page could sit under a gif's URL. This
+    // small cache's clone() drops a `redirected` flag, so the page's own type is what is
+    // checked here.
+    await old.put(ORIGIN + '/gif/0004.gif', new Response('<html>sign in</html>', { headers: { 'content-type': 'text/html' } }))
+    await old.put(ORIGIN + '/gif/0005.gif', new Response('<html>sign in</html>', { headers: { 'content-type': 'Text/HTML; charset=utf-8' } }))
+    await old.put(ORIGIN + '/gif/0006.gif', new Response('real gif', { headers: { 'content-type': 'image/gif' } }))
+    const shell = await w.caches.open(BUILD)
+    await shell.put('index.html', new Response('<html></html>'))
+
+    await w.activate()
+    expect(w.media().urls()).toEqual([ORIGIN + '/gif/0006.gif'])
+    // With the old build gone, the next view with a network fetches the real animation.
+    await w.get('/gif/0005.gif')
+    expect(w.fetched).toEqual([ORIGIN + '/gif/0005.gif'])
+    expect(await (await w.caches.open(MEDIA)).match(ORIGIN + '/gif/0005.gif')).toBeTruthy()
+  })
+
   it('an activate with no media anywhere creates no media cache', async () => {
     const w = worker()
     const shell = await w.caches.open(BUILD)

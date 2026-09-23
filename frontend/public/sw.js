@@ -88,6 +88,14 @@ self.addEventListener('activate', e => {
   })())
 })
 
+// Only a real answer is kept. A gated instance answers a lapsed session with 401, and an auth
+// proxy in front with its login page, a 200 of HTML after a redirect; stored under an image's
+// URL, that would stand in for the animation for good, since nothing sweeps this cache.
+const realMedia = res => {
+  const type = (res.headers && res.headers.get('content-type')) || ''
+  return res.ok && !res.redirected && !/text\/html/i.test(type)
+}
+
 async function adoptMedia(name) {
   const from = await caches.open(name)
   const media = (await from.keys()).filter(r => { try { return isMediaPath(new URL(r.url || r, location.href).pathname) } catch { return false } })
@@ -95,8 +103,10 @@ async function adoptMedia(name) {
   const to = await caches.open(MEDIA)
   for (const r of media) {
     if (await to.match(r)) continue
+    // A build before this one kept any ok answer, a login page included. It went with that
+    // build's cache; carried into this one, it would stay.
     const res = await from.match(r)
-    if (res) await to.put(r, res)
+    if (res && realMedia(res)) await to.put(r, res)
   }
 }
 
@@ -128,11 +138,7 @@ function media(e) {
       return hit
     }
     return fetch(e.request).then(res => {
-      // Only a real answer is kept. A gated instance answers a lapsed session with 401, and an
-      // auth proxy in front with its login page, a 200 of HTML after a redirect; stored under an
-      // image's URL, that would stand in for the animation for good.
-      const type = (res.headers && res.headers.get('content-type')) || ''
-      if (res.ok && !res.redirected && !/text\/html/i.test(type)) {
+      if (realMedia(res)) {
         touched.add(e.request.url)
         const copy = res.clone()
         e.waitUntil(c.put(e.request, copy).then(() => { if (++mediaPuts >= MEDIA_TRIM_EVERY) { mediaPuts = 0; return trimMedia() } }).catch(() => {}))

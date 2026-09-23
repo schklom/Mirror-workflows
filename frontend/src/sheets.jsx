@@ -1268,7 +1268,9 @@ function ProgressionFields({ ex, mode, c, setC, routine, unit, perSide }) {
   const stride = mode === 'reps' && perSide ? 2 : 1
   const range = active === 'double' ? normalizeRepRange(c.reps, c.repsMin, stride) : null
   const epleyEligible = mode === 'reps' && !isBw({ ...c, id: ex.id }) && (active === 'linear' || active === 'double')
-  const deloadPercent = Math.round((Number(c.deloadFactor) > 0 ? Number(c.deloadFactor) : 0.9) * 100)
+  // What is typed is shown as typed, 0 for an emptied field included: shown as the default 90
+  // instead, the field could not be emptied to type a new percentage.
+  const deloadPercent = Math.round((c.deloadFactor != null && Number.isFinite(Number(c.deloadFactor)) ? Number(c.deloadFactor) : 0.9) * 100)
   const setRule = v => setC(x => {
     const next = { ...x, prog: v || undefined }
     return policyFor({ ...next, id: ex.id }, routine, mode) === 'double'
@@ -1297,14 +1299,23 @@ function ProgressionFields({ ex, mode, c, setC, routine, unit, perSide }) {
         <Stepper label={t('Reps up to')} value={c.reps ?? range.reps} step={stride} decimal={false}
           onChange={v => setC(x => ({ ...x, reps: v }))} />
       </>}
-      {epleyEligible && <Stepper label={t('Deload 1RM (%)')} value={deloadPercent} step={5} decimal={false}
-        onChange={v => setC(x => ({ ...x, deloadFactor: Math.max(0.5, Math.min(0.95, Number(v) / 100)) }))} />}
+      {epleyEligible && <Stepper label={t('Deload 1RM (%)')} value={deloadPercent} step={5} min={50} max={95} decimal={false}
+        onChange={v => setC(x => ({ ...x, deloadFactor: Number(v) / 100 }))} />}
     </div>}
     {invalid && <div className="small" role="alert" style={{ color: 'var(--red)', marginTop: -10, marginBottom: 18 }}>
       {t('Enter a positive step to use this progression rule.')}
     </div>}
   </>
 }
+
+// The drop-set and rest-pause fields take what is typed and are held to their minimums once left
+// (Stepper `min`). A sheet saved from a field still being typed in is held to them here: an
+// emptied weight drop would otherwise plan drops at the same weight.
+const intensifierToSave = x => (x.type === 'dropset'
+  ? { ...x, count: Math.max(1, Math.round(x.count) || 0), pct: Math.max(5, Number(x.pct) || 0) }
+  : x.type === 'restpause'
+    ? { ...x, totalReps: Math.max(1, Math.round(x.totalReps) || 0), restSec: Math.max(5, Number(x.restSec) || 0) }
+    : x)
 
 function ExConfig({ ex, existing, onSave, onDelete, onReplace, close, routine, initial, saveLabel }) {
   const st = useStore(s => s.S)
@@ -1389,7 +1400,7 @@ function ExConfig({ ex, existing, onSave, onDelete, onReplace, close, routine, i
       if (bw && !(out.weight > 0) && c.repsMax > 0) out.repsMax = Math.max(reps, Math.round(c.repsMax))
       // Every set in this exercise becomes a drop-set/rest-pause (buildSets stamps the rows) —
       // decided here, in the plan, not re-decided live each time you train it.
-      if (c.intensifier && c.intensifier.type) out.intensifier = c.intensifier
+      if (c.intensifier && c.intensifier.type) out.intensifier = intensifierToSave(c.intensifier)
       onSave(out)
     }
   }
@@ -1524,16 +1535,16 @@ function ExConfig({ ex, existing, onSave, onDelete, onReplace, close, routine, i
           ]} />
       </div>
       {c.intensifier?.type === 'dropset' && <div className="row cfgrow" style={{ marginBottom: 8 }}>
-        <Stepper label={t('Drops')} value={c.intensifier.count} step={1} decimal={false}
-          onChange={v => setC(x => ({ ...x, intensifier: { ...x.intensifier, count: Math.max(1, v) } }))} />
-        <Stepper label={t('Weight drop (%)')} value={c.intensifier.pct} step={5} decimal={false}
-          onChange={v => setC(x => ({ ...x, intensifier: { ...x.intensifier, pct: Math.max(5, v) } }))} />
+        <Stepper label={t('Drops')} value={c.intensifier.count} step={1} min={1} decimal={false}
+          onChange={v => setC(x => ({ ...x, intensifier: { ...x.intensifier, count: v } }))} />
+        <Stepper label={t('Weight drop (%)')} value={c.intensifier.pct} step={5} min={5} decimal={false}
+          onChange={v => setC(x => ({ ...x, intensifier: { ...x.intensifier, pct: v } }))} />
       </div>}
       {c.intensifier?.type === 'restpause' && <div className="row cfgrow" style={{ marginBottom: 8 }}>
-        <Stepper label={t('Rest-pause reps')} value={c.intensifier.totalReps} step={1} decimal={false}
-          onChange={v => setC(x => ({ ...x, intensifier: { ...x.intensifier, totalReps: Math.max(1, v) } }))} />
-        <Stepper label={t('Rest (s)')} value={c.intensifier.restSec} step={5} decimal={false}
-          onChange={v => setC(x => ({ ...x, intensifier: { ...x.intensifier, restSec: Math.max(5, v) } }))} />
+        <Stepper label={t('Rest-pause reps')} value={c.intensifier.totalReps} step={1} min={1} decimal={false}
+          onChange={v => setC(x => ({ ...x, intensifier: { ...x.intensifier, totalReps: v } }))} />
+        <Stepper label={t('Rest (s)')} value={c.intensifier.restSec} step={5} min={5} decimal={false}
+          onChange={v => setC(x => ({ ...x, intensifier: { ...x.intensifier, restSec: v } }))} />
       </div>}
       {c.intensifier?.type && <div className="small dim" style={{ marginTop: -2, marginBottom: 18 }}>
         {c.intensifier.type === 'dropset'

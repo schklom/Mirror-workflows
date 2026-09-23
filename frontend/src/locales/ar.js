@@ -310,7 +310,7 @@ export default {
   'Export backup (JSON)': 'تصدير نسخة احتياطية (JSON)',
   'Import backup': 'استيراد نسخة احتياطية',
   'Auto-backup on changes': 'نسخ احتياطي تلقائي عند التغييرات',
-  'Saves a dated copy to the Documents folder after finishing a workout or editing a routine — point a sync app at it, or copy it out by hand.': 'يحفظ نسخة مؤرخة في مجلد المستندات بعد إنهاء تمرين أو تعديل روتين — وجّه إليها تطبيق مزامنة أو انسخها يدويًا.',
+  'Saves a dated copy to Documents/openGym after finishing a workout or editing a routine, and keeps the newest {0} — point a sync app at that folder, or copy it out by hand.': 'يحفظ نسخة مؤرخة في مجلد «المستندات/openGym» بعد إنهاء تمرين أو تعديل روتين، ويحتفظ بأحدث {0} نسخة — وجّه تطبيق مزامنة إلى هذا المجلد أو انسخها يدويًا.',
   'Reset everything?': 'إعادة تعيين كل شيء؟',
   'Reset everything': 'إعادة تعيين كل شيء',
   'Deletes your plan, workouts and body weight on this device. This cannot be undone.': 'يحذف خطتك وتمارينك ووزن جسمك على هذا الجهاز. لا يمكن التراجع عن هذا.',
@@ -1447,4 +1447,8 @@ export default {
   'Replaced with “{0}”': 'تم الاستبدال بـ «{0}»',
   'Speed (mph)': 'السرعة (mph)',
   'Speed unit': 'وحدة السرعة',
+  // --- v1.3.9: the account id in Settings, an http:// Coach endpoint refused on the phone (#219) ---
+  'Account ID': 'معرّف الحساب',
+  'Account ID copied': 'تم نسخ معرّف الحساب',
+  'Android blocks unencrypted http:// connections from apps, so this phone can only reach an https:// endpoint. Put HTTPS in front of it (Tailscale or a reverse proxy), or choose “Use my self-hosted openGym”: your server can reach an http:// model on its own network.': 'يحظر Android اتصالات http:// غير المشفرة من التطبيقات، لذا لا يستطيع هذا الهاتف الوصول إلا إلى نقطة نهاية https://. ضع HTTPS أمامها (Tailscale أو وكيل عكسي)، أو اختر «استخدام openGym المستضاف ذاتيًا»: يستطيع خادمك الوصول إلى نموذج عبر http:// على شبكته.',
 }

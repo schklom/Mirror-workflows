@@ -294,7 +294,7 @@ export default {
   'Export backup (JSON)': 'Експорт резервної копії (JSON)',
   'Import backup': 'Імпорт резервної копії',
   'Auto-backup on changes': 'Автозбереження копії при змінах',
-  'Saves a dated copy to the Documents folder after finishing a workout or editing a routine — point a sync app at it, or copy it out by hand.': 'Зберігає копію з датою в папку «Документи» після завершення тренування або редагування програми — спрямуй туди застосунок синхронізації або скопіюй файл вручну.',
+  'Saves a dated copy to Documents/openGym after finishing a workout or editing a routine, and keeps the newest {0} — point a sync app at that folder, or copy it out by hand.': 'Зберігає копію з датою в папку «Документи/openGym» після завершення тренування або редагування програми й тримає {0} найновіших — спрямуй на цю папку застосунок синхронізації або скопіюй файл вручну.',
   'Reset everything?': 'Скинути все?',
   'Reset everything': 'Скинути все',
   'Deletes your plan, workouts and body weight on this device. This cannot be undone.': 'Видаляє план, тренування та вагу тіла на цьому пристрої. Скасувати неможливо.',
@@ -1391,4 +1391,8 @@ export default {
   'Replaced with “{0}”': 'Замінено на «{0}»',
   'Speed (mph)': 'Швидкість (миль/год)',
   'Speed unit': 'Одиниця швидкості',
+  // --- v1.3.9: the account id in Settings, an http:// Coach endpoint refused on the phone (#219) ---
+  'Account ID': 'ID акаунта',
+  'Account ID copied': 'ID акаунта скопійовано',
+  'Android blocks unencrypted http:// connections from apps, so this phone can only reach an https:// endpoint. Put HTTPS in front of it (Tailscale or a reverse proxy), or choose “Use my self-hosted openGym”: your server can reach an http:// model on its own network.': 'Android блокує незашифровані з’єднання http:// із застосунків, тож цей телефон може звертатися лише до ендпоінта https://. Постав перед ним HTTPS (Tailscale або зворотний проксі) або вибери «Використати мій власний openGym»: твій сервер може звертатися до моделі через http:// у своїй мережі.',
 }

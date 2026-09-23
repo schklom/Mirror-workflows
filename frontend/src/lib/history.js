@@ -441,7 +441,8 @@ function buildWorkSets(S, cfg, options = {}) {
   const mode = modeOf(cfg)
   const sets = []
   // A deload routine must use its own prescription instead of carrying regular-session values
-  // into the workout. Other planned sessions keep the existing history-first behaviour.
+  // into the workout. Other planned sessions read the weight from history (and the reps too,
+  // unless the plan owns them — see planReps below).
   const prevAt = i => (!useTarget && last ? (last.sets[i] || last.sets[last.sets.length - 1]) : null)
   // `options.planReps`: a planned session opens at the routine's own reps, and history only
   // decides the weight (Settings → "Planned sessions start from", lib/session-start.js). Without

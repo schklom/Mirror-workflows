@@ -218,13 +218,16 @@ export function ServerSyncSection({ children }) {
 // account — so a device that went ahead anyway still says what it holds and for whom.
 export function KeptChangesRows() {
   const kept = useStore(s => s.keptChanges)
+  const rev = useStore(s => s.keptRev)
   const user = useStore(s => s.user)
   const [rows, setRows] = useState([])
+  // Asked again when the account changes and whenever the kept changes do — the ones handed
+  // back on a sign-in go some moments after it.
   useEffect(() => {
     let gone = false
     if (typeof kept === 'function') kept().then(r => { if (!gone) setRows(r || []) }).catch(() => {})
     return () => { gone = true }
-  }, [kept, user?.id])
+  }, [kept, user?.id, rev])
   if (DEMO) return null
   return rows.map(k => <Row key={(k.server || '') + '|' + k.uid} icon="history" iconTint="var(--orange)"
     title={t('Changes kept for {0}', k.name || k.uid)}

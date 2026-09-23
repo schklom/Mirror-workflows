@@ -358,6 +358,29 @@ describe('another account signing in on a copy that still owes the first', () =>
     expect(ids(JSON.parse(localStorage.getItem('gym_stash'))[location.origin + '|' + USER.id].state.workouts)).toEqual(['w1', 'w-week'])
   })
 
+  it('names the first account, also when its session had already ended, and says when the kept changes move', async () => {
+    useStore.getState().setUser(USER)
+    useStore.setState({ S: { ...clone(DEF), _ts: 300, workouts: [workout('w1'), workout('w-week', '2026-09-18')] }, ready: true })
+    localStorage.setItem('gym_sync', JSON.stringify({ rev: 1, ts: 100 }))
+    localStorage.setItem('gym_dirty', '1')
+    useStore.getState().setUser(null)   // what the boot does when the server ended the session
+
+    const before = useStore.getState().keptRev
+    api.mockImplementation(twosServer)
+    useStore.getState().setUser({ id: 'user-2', name: 'Two' })
+    await useStore.getState().adoptProfile(async () => false)
+    expect(await useStore.getState().keptChanges()).toEqual([{ server: location.origin, uid: USER.id, name: 'One', at: expect.any(Number) }])
+    expect(useStore.getState().keptRev).toBeGreaterThan(before)
+
+    const listed = useStore.getState().keptRev
+    api.mockReset()
+    api.mockImplementation(async (path, o) => (o?.method === 'PUT' ? { ok: true, rev: 3 } : { state: { ...clone(DEF), _ts: 200, workouts: [workout('w1')], _rev: 2 }, rev: 2 }))
+    useStore.getState().setUser(USER)
+    await useStore.getState().adoptProfile(async () => false)
+    expect(await useStore.getState().keptChanges()).toEqual([])
+    expect(useStore.getState().keptRev).toBeGreaterThan(listed)
+  })
+
   it('a copy that owes nothing is replaced as before, with nothing kept', async () => {
     signedIn({ ...clone(DEF), _ts: 100, workouts: [workout('w1')] })
     localStorage.setItem('gym_sync', JSON.stringify({ rev: 1, ts: 100 }))

@@ -487,6 +487,7 @@ export const useStore = create((set, get) => {
     forgetSync()
     localStorage.removeItem(KEY)
     persist(clone(DEF), false)
+    localStorage.removeItem('gym_owner_name')
     localStorage.removeItem('gym_owner')
     setSync({ offline: false, auth: false, lastError: null, pending: false, lastSynced: 0 })
     // On a phone the file is wiped with it, now rather than after the usual wait: a start in
@@ -516,6 +517,7 @@ export const useStore = create((set, get) => {
       const back = await readJsonFile(STASH_FILE)
       ok = ok || (!!back && Object.keys(back).length === Object.keys(all).length)
     }
+    set({ keptRev: get().keptRev + 1 })
     return ok || empty
   }
   // A different account signing in on a copy that still owes its own: the copy goes, as it always
@@ -533,7 +535,11 @@ export const useStore = create((set, get) => {
     const prev = all[key]?.state
     const state = prev ? mergeStates(S, prev) : clone(S)
     state.active = S.active || prev?.active || null
-    const entry = { server: server || null, uid, name: get().user?.id === uid ? get().user.name || '' : '', at: Date.now(), state }
+    // The name comes from beside the owner when the account is no longer signed in here (its
+    // session ended), so the screens say whose changes these are rather than an id.
+    let name = get().user?.id === uid ? get().user.name || '' : ''
+    if (!name) { try { name = localStorage.getItem('gym_owner_name') || '' } catch { /* the id then */ } }
+    const entry = { server: server || null, uid, name, at: Date.now(), state }
     all[key] = entry
     // A second full copy beside the first may not fit (a profile near the size limit): the copy
     // in storage is wiped next anyway, so it makes the room.
@@ -542,6 +548,7 @@ export const useStore = create((set, get) => {
     catch {
       try { localStorage.removeItem(KEY); localStorage.setItem(STASH_KEY, v) } catch { /* still full — the file may still take it */ }
     }
+    set({ keptRev: get().keptRev + 1 })
     if (MOBILE) keeping = readStashes().then(f => writeStashes({ ...f, [key]: entry })).catch(() => {})
   }
   const stashOwed = async () => {
@@ -691,6 +698,7 @@ export const useStore = create((set, get) => {
           persist(clone(DEF), false)
           setSync({ pending: false, lastSynced: 0, lastError: null })
         }
+        localStorage.setItem('gym_owner_name', u.name || '')
         localStorage.setItem('gym_owner', u.id)
         localStorage.setItem('gym_user', JSON.stringify(u)); localStorage.removeItem('gym_guest')
         // The file follows at once, as the new account's: until then it holds the previous one's.
@@ -786,7 +794,9 @@ export const useStore = create((set, get) => {
 
     // The changes a forced sign-out or disconnect kept on this device, waiting for their server
     // and account: [{ server, uid, name, at }] — server null for a phone whose pairing was lost
-    // with its address. The copies themselves stay inside the store.
+    // with its address. The copies themselves stay inside the store. `keptRev` moves whenever
+    // they change, for a screen listing them to ask again.
+    keptRev: 0,
     async keptChanges() {
       const all = await readStashes()
       return Object.values(all).map(({ server, uid, name, at }) => ({ server: server || null, uid, name, at }))

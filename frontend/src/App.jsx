@@ -22,6 +22,7 @@ import Toast from './components/Toast.jsx'
 import SyncBanner from './components/SyncBanner.jsx'
 import RestTimer from './components/RestTimer.jsx'
 import TimerFlash from './components/TimerFlash.jsx'
+import { openDeviceLinkRedeem } from './components/Passkeys.jsx'
 import Login from './views/Login.jsx'
 import MobileOnboarding from './views/MobileOnboarding.jsx'
 import Home from './views/Home.jsx'
@@ -114,6 +115,16 @@ function Shell() {
     if (MOBILE || !user || !ready) return
     syncPushSubscription().catch(() => {})
   }, [user?.id, ready])
+  // Opened from a device-link QR code (#95): once boot knows who is here, the sheet that redeems
+  // it opens by itself — over the sign-in screen, or over the app for a guest or a signed-in
+  // browser. Once per visit; closed, the code stays for the sign-in screen's own button.
+  const linkCode = useStore(s => s.linkCode)
+  const linkOffered = useRef(false)
+  useEffect(() => {
+    if (!ready || !linkCode || linkOffered.current) return
+    linkOffered.current = true
+    openDeviceLinkRedeem()
+  }, [ready, linkCode])
   useEffect(() => {
     const onScroll = () => {
       // Modals pins the body while a sheet is open; scrollY is 0 then, not a position.

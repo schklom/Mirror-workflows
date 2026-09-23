@@ -202,10 +202,12 @@ export const openPasswordRegister = () => ui().openSheet(close => <PasswordRegis
    ceremony right now (a session on its own could be a copied cookie); a change needs the
    current password, or the passkey when it was forgotten. Saving signs every other device out,
    which the sheet says before anyone taps. */
-export function PasswordRow() {
+// `version` changes when the profile's passkeys do (Settings, components/Passkeys.jsx): whether the
+// password may be removed depends on them, so the row asks again.
+export function PasswordRow({ version = 0 }) {
   const [st, setSt] = useState(null)   // GET /api/account/password
   const load = () => api('/api/account/password').then(setSt).catch(() => {})
-  useEffect(() => { load() }, [])
+  useEffect(() => { load() }, [version])
   if (!st) return null
   // Nothing here could set a first password without a passkey ceremony.
   if (!st.set && (!webauthnOK() || !st.passkeys)) return null

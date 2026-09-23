@@ -10,6 +10,7 @@ import { mergeStates, localExtras, stampRoutines } from '../lib/sync-merge.js'
 import { countChanges, syncFingerprint } from '../lib/sync-changes.js'
 import { saveWorkoutEdit } from '../lib/session-edit.js'
 import { appBase } from '../lib/app-base.js'
+import { linkTokenFromSearch, stripLinkFromUrl } from '../lib/device-link.js'
 import { loadRemote, chooseLocal, forgetRemote, connect, normalizeServerUrl, renewToken } from '../lib/remote.js'
 import { loadCoachDevice, saveCoachDevice, coachDeviceSettings } from '../lib/coach-device.js'
 import { RTL_LANGS } from '../lib/i18n-core.js'
@@ -684,6 +685,9 @@ export const useStore = create((set, get) => {
        always did, and a configured one is the only place any of it appears. */
     config: null,
     needsMobileOnboarding: false,   // mobile build only — set true by boot() on a genuine first launch
+    // A one-time device-link code this page was opened with (?link=, #95), until it is redeemed.
+    // Never persisted: the code is good for minutes and belongs to this one visit.
+    linkCode: null,
     // Mobile build only: how the Coach runs on this phone — { mode: 'off'|'server'|'byok',
     // provider, model, baseUrl } from lib/coach-device.js. Never the key, never a proposal.
     coachLocal: null,
@@ -1099,6 +1103,11 @@ export const useStore = create((set, get) => {
         finishBoot()
         return
       }
+      // Opened from a device-link QR code (#95): the code comes off the address at once — a reload,
+      // a bookmark or a shared screenshot of the address bar must not carry it around — and waits
+      // here for the sheet that redeems it (App.jsx, components/Passkeys.jsx).
+      const linkCode = linkTokenFromSearch(window.location.search)
+      if (linkCode) { stripLinkFromUrl(); set({ linkCode }) }
       // Guests never authenticate, so an instance that turned guest mode off has no request to
       // refuse — the only way the switch reaches someone already inside is here, on their next
       // boot. Ending the session needs a positive `allow_guest: false`; see lib/guest.js for why

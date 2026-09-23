@@ -34,6 +34,15 @@ const LABELS = {
   'auth.password.change': 'Changed their password',
   'auth.password.remove': 'Removed their password',
   'auth.password.reset': 'Used a reset code',
+  // More than one passkey, and one-time codes for another device (#95). `msg` on an addition or a
+  // code is the proof it was made with (passkey, password); on a removal or a redemption, the
+  // passkey's name.
+  'auth.passkey.add': 'Added a passkey',
+  'auth.passkey.fail': 'Adding a passkey failed',
+  'auth.passkey.remove': 'Removed a passkey',
+  'auth.link.create': 'Made a one-time code for another device',
+  'auth.link.ok': 'Added a device with a one-time code',
+  'auth.link.fail': 'Adding a device with a code failed',
   // The password throttle paused an address; `msg` says for what (password, signup).
   'auth.throttled': 'Too many failed attempts from one address',
   'admin.user.disable': 'Disabled an account',
@@ -60,15 +69,18 @@ const REASONS = {
   'invite-invalid': 'the invite code was used or revoked in the meantime',
   'invite-rejected': 'wrong or already-used invite code',
   'code-invalid': 'wrong or expired pairing code',
-  'user-unavailable': 'the profile behind the pairing code is disabled or gone',
+  'user-unavailable': 'the profile behind the code is disabled or gone',
   'bad-password': 'wrong password',
   'bad-current': 'wrong current password while changing it',
   'unknown-name': 'no profile with a password has that name',
-  'step-up-failed': 'the passkey confirming a new password was rejected',
+  'step-up-failed': 'the passkey confirming the change was rejected',
   'reset-invalid': 'wrong or expired reset code',
+  'link-invalid': 'wrong, used or expired device code',
+  'passkey-limit': 'the profile already has as many passkeys as it can hold',
   // What an `auth.throttled` pause was for.
   'password': 'wrong passwords or reset codes',
-  'signup': 'wrong invite codes on password signup'
+  'signup': 'wrong invite codes on password signup',
+  'link': 'wrong one-time device codes'
 }
 export const auditReason = msg => REASONS[msg] || (msg ? String(msg) : '')
 

@@ -10,6 +10,7 @@ import Icon from '../components/Icon.jsx'
 import { Button, Segmented } from '../components/ui.jsx'
 import { askAddDeviceData } from '../sheets.jsx'
 import { passwordOn, PasswordRegisterForm, openPasswordSignIn } from '../components/PasswordAuth.jsx'
+import { openDeviceLinkRedeem } from '../components/Passkeys.jsx'
 
 function RegisterSheet({ close }) {
   const { setUser, pushState, pullState, loadConfig } = useStore()
@@ -104,7 +105,11 @@ export default function Login() {
         <div style={{ height: 10 }} />
         {pwOn && <><Button icon="key" onClick={() => openPasswordSignIn()}>{t('Sign in with password')}</Button><div style={{ height: 10 }} /></>}
         <Button icon="sparkles" onClick={register}>{t('Create new profile')}</Button>
-        {canGuest && <div style={{ height: 10 }} />}
+        {/* Already signed in on another device: a code from there gives this one a passkey of
+            its own (#95), instead of a new, empty profile. */}
+        <div style={{ height: 10 }} />
+        <Button variant="ghost" className="dim" icon="qr" onClick={openDeviceLinkRedeem}>{t('Use a code from your other device')}</Button>
+        {canGuest && <div style={{ height: 4 }} />}
       </> : pwOn ? <>
         {/* Plain http on a LAN address, or a browser without passkey support: the password is
             the way in, and the only way to create a profile from here. */}

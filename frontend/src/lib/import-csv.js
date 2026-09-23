@@ -335,8 +335,9 @@ const MON = {
   sept: 9, octo: 10, nove: 11, dece: 12,
   // Spanish · Portuguese
   ene: 1, fev: 2, abr: 4, ago: 8, set: 9, out: 10, dic: 12,
-  // German · Dutch
-  mrz: 3, mei: 5, okt: 10, dez: 12,
+  // German · Dutch — Dutch spells March "maart" and shortens it "mrt.", neither of which shares
+  // a prefix with any other language's March, so both are keys of their own.
+  mrz: 3, mei: 5, okt: 10, dez: 12, maart: 3, mrt: 3,
   // Italian
   gen: 1, mag: 5, giu: 6, lug: 7, ott: 10,
 }

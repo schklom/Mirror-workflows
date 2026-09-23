@@ -141,6 +141,21 @@ describe('localized month names', () => {
     expect(parseWhen('2 luglio 2024').d).toBe('2024-07-02')
   })
 
+  // Dutch writes March as "maart" (short "mrt."), which none of the prefixes above reach: every
+  // March row of a Dutch export was skipped. The rest of the Dutch year shares its keys with others.
+  it('reads all twelve Dutch months, written out and shortened', () => {
+    const long = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'augustus', 'september', 'oktober', 'november', 'december']
+    const short = ['jan.', 'feb.', 'mrt.', 'apr.', 'mei', 'jun.', 'jul.', 'aug.', 'sep.', 'okt.', 'nov.', 'dec.']
+    for (const names of [long, short]) {
+      names.forEach((name, i) => {
+        const input = `4 ${name} 2024, 18:00`
+        expect(parseWhen(input), input).toMatchObject({ d: `2024-${String(i + 1).padStart(2, '0')}-04` })
+      })
+    }
+    // a word that only starts like it is still no month
+    expect(parseWhen('4 maar 2024')).toBe(null)
+  })
+
   it('still reads English, month-first and numeric dates', () => {
     expect(parseWhen('18 Sep 2022, 10:30')).toMatchObject({ d: '2022-09-18' })
     expect(parseWhen('22 Dec 2025, 08:00')).toMatchObject({ d: '2025-12-22' })

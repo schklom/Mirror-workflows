@@ -1,7 +1,7 @@
 import { estimate1RM } from './onerm.js'
 import { LB_TO_KG } from './recovery.js'
 import { isBw } from './history.js'
-import { isAssisted } from './exercises.js'
+import { EXIDX, isAssisted } from './exercises.js'
 import { isSideSet, isWarmupRow } from './workout-model.js'
 import { BALANCE_STATUSES, BORDERLINE_BAND_PCT, EVALUATION_MODES } from './structuralBalanceTemplates.js'
 
@@ -21,6 +21,18 @@ export function bodyweightKgOf(S) {
 // history.js read a logged entry — by the exercise, so the same machine counts the same way on
 // every screen.
 const isAssistedEntry = entry => isAssisted(entry?.id ? { id: entry.id } : entry)
+
+// The catalogue's belt-and-vest variants of the hanging and supported movements ("weighted
+// pull-up", "weighted straight bar dip"): 'weighted' equipment rather than body weight, so
+// isBw() reads them as ordinary load, yet what is logged is the plate on the belt — the same
+// added weight a bodyweight entry holds. Poliquin's supine pull-up role lists one (0841); read
+// as the belt alone, +20 kg for 5 would score a 23 kg pull-up. Bench dips and push-ups keep the
+// feet down and stay out, as does everything else on 'weighted' (a plate held for a crunch).
+const LIFTER_MOVEMENT = /\b(pull[- ]?ups?|chin[- ]?ups?|muscle[- ]?ups?|dips?)\b/i
+const beltOnLifter = id => {
+  const ex = EXIDX[id]
+  return ex?.eq === 'weighted' && LIFTER_MOVEMENT.test(ex.n) && !/\bbench/i.test(ex.n)
+}
 
 // What one completed set actually moved, in kg. On a bodyweight-configured entry `w` holds only
 // what was *added* (history.js: "`w` means *added* weight"), so the lifter's own mass has to be
@@ -43,7 +55,8 @@ function setLoadKg(S, workout, entry, set, bodyweightKg) {
     return body - logged > 0 ? body - logged : null
   }
   const bodyweight = entry.target?.bodyweight ?? entry.bodyweight
-  if (!isBw({ id: entry.id, bodyweight })) return logged
+  const onLifter = bodyweight == null ? isBw({ id: entry.id }) || beltOnLifter(entry.id) : !!bodyweight
+  if (!onLifter) return logged
   return body > 0 ? body + logged : null
 }
 

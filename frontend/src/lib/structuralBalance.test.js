@@ -155,7 +155,7 @@ describe('resolveCurrent / resolveCurrentReps — best variant among a whitelist
         workoutAt('0841', NOW, [setDone(10, 5)]), // weighted pull-up: lower est, more recent
       ],
     }
-    const current = resolveCurrent(S, ['0032', '0841'], null)
+    const current = resolveCurrent(S, ['0032', '0841'], 80)
     expect(current.exId).toBe('0841')
     expect(current.w).toBe(20)
   })
@@ -234,6 +234,38 @@ describe('bodyweight exercises count the lifter, not just the belt', () => {
     const unflagged = bwLifter([{ id: '0652', target: { bodyweight: false }, sets: [setDone(20, 1)] }])
     const pullups = computeBalance(unflagged, template).find(r => r.roleId === 'supinePullups')
     expect(pullups.current.estKg).toBeCloseTo(20)
+  })
+})
+
+// The catalogue's weighted pull-up (0841, in Poliquin's supine pull-up role) is 'weighted'
+// equipment, not body weight — but what is logged on it is still the belt.
+describe('a belt on a pull-up or a dip counts the lifter too', () => {
+  const bw80 = ids => ({ unit: 'kg', workouts: ids.map(([id, w, r], i) => workoutAt(id, NOW + i, [setDone(w, r)])) })
+
+  it('scores the weighted pull-up as body weight plus the belt', () => {
+    const S = { ...bw80([['0030', 100, 1], ['0841', 20, 1]]), bodyweight: [{ d: '2026-01-01', w: 80 }] }
+    const pullups = computeBalance(S, TEMPLATES.poliquin).find(r => r.roleId === 'supinePullups')
+    expect(pullups.mappedExerciseId).toBe('0841')
+    expect(pullups.current.estKg).toBeCloseTo(100) // 80 + 20, not 20
+    expect(pullups.status).toBe(BALANCE_STATUSES.BALANCED)
+  })
+
+  it('does the same for the other belt variants of pull-ups, chin-ups, muscle-ups and dips', () => {
+    for (const id of ['0841', '2987', '3290', '3286', '3313', '1755', '1767']) {
+      expect(resolveCurrent(bw80([[id, 10, 1]]), [id], 80).estKg).toBeCloseTo(90)
+    }
+  })
+
+  it('leaves bench dips, push-ups and the rest of the weighted catalogue as plain load', () => {
+    for (const id of ['0830', '1754', '1310', '0852', '0832']) {
+      expect(resolveCurrent(bw80([[id, 10, 1]]), [id], 80).estKg).toBeCloseTo(10)
+    }
+  })
+
+  it('follows the per-exercise bodyweight flag when it is set, and needs a body weight', () => {
+    const off = { unit: 'kg', workouts: [{ d: '2026-01-10', start: NOW, entries: [{ id: '0841', target: { bodyweight: false }, sets: [setDone(20, 1)] }] }] }
+    expect(resolveCurrent(off, ['0841'], 80).estKg).toBeCloseTo(20)
+    expect(resolveCurrent(bw80([['0841', 20, 1]]), ['0841'], null)).toBe(null)
   })
 })
 

@@ -158,6 +158,13 @@ export function exerciseIdsFor(S, template, role) {
   return override ? [override] : role.exerciseIds
 }
 
+// ATG's figures are a load for a number of reps ("Romanian deadlift: body weight for 12"), not a
+// one-rep max, so the estimate is read back at the role's reps before it is compared — Epley, the
+// formula estimate1RM() estimates with, run the other way, so a set of exactly that many reps
+// comes back as its own load. Held against the 1RM itself, a lifter at 72% of body weight for 12
+// read as balanced on a body-weight-for-12 standard.
+export const loadForReps = (oneRmKg, reps) => (reps > 1 ? oneRmKg / (1 + reps / 30) : oneRmKg)
+
 // Actual percentage a role's current reading represents, given its evaluation mode. Returns
 // null when it can't be scored yet (anchor has no reading of its own, or bodyweight unknown).
 export function ratioFor(role, current, ctx) {
@@ -167,7 +174,7 @@ export function ratioFor(role, current, ctx) {
   }
   if (role.evaluationMode === EVALUATION_MODES.BODYWEIGHT_RATIO) {
     if (!(ctx.bodyweightKg > 0)) return null
-    return (current.estKg / ctx.bodyweightKg) * 100
+    return (loadForReps(current.estKg, role.reps) / ctx.bodyweightKg) * 100
   }
   // rep-count: the best completed-set rep count (resolveCurrentReps), as a percentage of the
   // target rep count.

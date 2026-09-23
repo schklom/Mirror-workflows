@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { computeBalance, classify, ratioFor, resolveCurrent, resolveCurrentReps, targetFor, overrideKey, overrideIdOf, withOverride } from './structuralBalance.js'
+import { computeBalance, classify, ratioFor, resolveCurrent, resolveCurrentReps, targetFor, overrideKey, overrideIdOf, withOverride, loadForReps } from './structuralBalance.js'
 import { TEMPLATES, EVALUATION_MODES, BALANCE_STATUSES, BORDERLINE_BAND_PCT } from './structuralBalanceTemplates.js'
 
 const NOW = Date.parse('2026-01-15T00:00:00Z')
@@ -82,7 +82,7 @@ describe('computeBalance — bodyweight-ratio mode (ATG)', () => {
     unit: 'kg',
     body: 'male',
     bodyweight: [{ d: '2026-01-01', w: bwKg }],
-    workouts: [workoutAt('0085', NOW, [setDone(rdlW, 1)])],
+    workouts: [workoutAt('0085', NOW, [setDone(rdlW, 12)])], // the standard is a load for 12
   })
 
   it('balanced/borderline/weak edges against bodyweight (male target 100%)', () => {
@@ -101,6 +101,27 @@ describe('computeBalance — bodyweight-ratio mode (ATG)', () => {
     const results = computeBalance(S, template)
     expect(results.find(r => r.roleId === 'romanianDeadlift').status).toBe(BALANCE_STATUSES.BALANCED)
     expect(results.find(r => r.roleId === 'romanianDeadlift').targetPct).toBe(80)
+  })
+
+  it('reads the estimate back at the role\'s reps: body weight for 12 is not a body-weight 1RM', () => {
+    // 58 kg for 12 at 80 kg estimates an 81.2 kg 1RM — over body weight, but 72.5% of the
+    // body-weight-for-12 the standard asks for.
+    const rdl = computeBalance(sWithBw(80, 58), template).find(r => r.roleId === 'romanianDeadlift')
+    expect(rdl.current.estKg).toBeCloseTo(81.2)
+    expect(rdl.actualPct).toBeCloseTo(72.5, 1)
+    expect(rdl.status).toBe(BALANCE_STATUSES.WEAK)
+    // A heavy single is read forward the same way: 100 kg once is about 71 kg for 12.
+    const single = { ...sWithBw(80, 0), workouts: [workoutAt('0085', NOW, [setDone(100, 1)])] }
+    expect(computeBalance(single, template).find(r => r.roleId === 'romanianDeadlift').actualPct).toBeCloseTo(89.3, 1)
+  })
+
+  it('every ATG load standard names its reps, and a set of exactly that many comes back as itself', () => {
+    for (const role of template.roles.filter(r => r.evaluationMode === EVALUATION_MODES.BODYWEIGHT_RATIO)) {
+      expect(role.reps, role.id).toBeGreaterThan(1)
+      expect(role.label).toContain(`${role.reps} reps`)
+    }
+    expect(loadForReps(112, 12)).toBeCloseTo(80)
+    expect(loadForReps(90, 1)).toBe(90)
   })
 
   it('no-data when bodyweight was never logged', () => {

@@ -34,6 +34,9 @@ export const BORDERLINE_BAND_PCT = 5
 //   targetPct      load-ratio (% of anchor's 1RM) / bodyweight-ratio (% of bodyweight)
 //   targetPctFemale  bodyweight-ratio only, when the source gives a distinct female figure for
 //                    the same exercise — picked when S.body === 'female'
+//   reps             bodyweight-ratio only: how many reps the source's load is for ("body
+//                    weight for 12"). The estimated 1RM is read back at that many reps before
+//                    it is compared (structuralBalance.js loadForReps)
 //   repsTarget       rep-count only: target rep count at bodyweight
 //   repsTargetFemale rep-count only, when the source gives a distinct female rep target
 
@@ -164,6 +167,7 @@ export const TEMPLATES = {
         exerciseIds: ['0085'],
         targetPct: 100,
         targetPctFemale: 80,
+        reps: 12,
       },
       {
         id: 'goodMorning',
@@ -172,6 +176,7 @@ export const TEMPLATES = {
         exerciseIds: ['0090'],
         targetPct: 66,
         targetPctFemale: 40,
+        reps: 10,
       },
       {
         id: 'stepUp',
@@ -180,6 +185,7 @@ export const TEMPLATES = {
         exerciseIds: ['0114', '0431'],
         targetPct: 50,
         targetPctFemale: 40,
+        reps: 15,
       },
       {
         id: 'nordicCurl',
@@ -210,13 +216,12 @@ export const TEMPLATES = {
       },
       {
         id: 'inclineDbPress',
-        // MVP simplification: source specifies 40%/20% bodyweight AND x8 reps; only the load
-        // percentage is scored (see plan §5 fidelity trade-off).
         label: 'Incline DB press (each hand, 8 reps)',
         evaluationMode: EVALUATION_MODES.BODYWEIGHT_RATIO,
         exerciseIds: ['0314', '3545'],
         targetPct: 40,
         targetPctFemale: 20,
+        reps: 8,
       },
       {
         id: 'dbShoulderPress',
@@ -225,6 +230,7 @@ export const TEMPLATES = {
         exerciseIds: ['0405', '0404', '0361', '0360'],
         targetPct: 33,
         targetPctFemale: 15,
+        reps: 8,
       },
     ],
   },

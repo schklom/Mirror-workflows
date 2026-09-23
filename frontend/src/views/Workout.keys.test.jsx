@@ -143,6 +143,23 @@ describe('workout keys (issue #133)', () => {
     expect(active().entries[0].sets[0].sec).toBe(10)
   })
 
+  it('a second press right after it starts a hold does not log the hold at a second', () => {
+    // A USB button that bounces, or a double press.
+    const plank = { id: '1001', target: { mode: 'time', sets: 1, sec: 45 }, sets: [{ sec: 45, w: 0, done: false }] }
+    renderWorkout([plank])
+    press(' ')
+    act(() => { vi.advanceTimersByTime(200) })
+    const second = press(' ')
+    expect(second.defaultPrevented).toBe(true)   // still the workout's key, it just does nothing
+    expect(useUI.getState().work).not.toBeNull()
+    expect(doneOf(0)).toEqual([false])
+    act(() => { vi.advanceTimersByTime(2_000) })
+    press(' ')
+    expect(useUI.getState().work).toBeNull()
+    expect(doneOf(0)).toEqual([true])
+    expect(active().entries[0].sets[0].sec).toBe(2)
+  })
+
   it('stops listening when the workout screen goes away', () => {
     renderWorkout([entry('1001', [false])])
     act(() => root.unmount())

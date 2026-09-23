@@ -28,6 +28,10 @@ import { MUSCLE_NAME } from '../lib/muscles.js'
 const SWIPE_MIN_DISTANCE = 48
 const SWIPE_AXIS_RATIO = 1.25
 const SWIPE_IGNORED_TARGETS = 'button,input,textarea,select,a,[role="button"],[role="checkbox"],[role="switch"],[role="slider"],[contenteditable="true"],.exmedia,[data-swipe-ignore]'
+// How long after a key starts a hold the same key is not yet its "Done" (#133). A USB button
+// that bounces, or a double press, sends two presses a moment apart: the first starts the hold,
+// and the second logged it at one second.
+const HOLD_KEY_GRACE_MS = 1500
 
 /* ---------- start chooser (no active workout) ---------- */
 function StartChooser() {
@@ -1038,8 +1042,13 @@ function ActiveWorkout() {
     if (!action) return false
     event.preventDefault()
     if (action !== 'tick') { navigateUnit(action === 'next' ? 1 : -1); showCurrent(); return true }
-    // A hold being timed: the key is its "Done", which logs what was actually held.
-    if (useUI.getState().work) { useUI.getState().finishWorkEarly(); return true }
+    // A hold being timed: the key is its "Done", which logs what was actually held, once the
+    // hold has run past its first moments (HOLD_KEY_GRACE_MS).
+    const work = useUI.getState().work
+    if (work) {
+      if (Date.now() - (work.endsAt - work.total * 1000) >= HOLD_KEY_GRACE_MS) useUI.getState().finishWorkEarly()
+      return true
+    }
     const fresh = useStore.getState().S.active
     const next = nextOpenSet(fresh?.entries, fresh?.cur)
     if (!next) return true

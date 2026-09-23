@@ -156,7 +156,9 @@ export default function Settings() {
     message: t('Signs this profile out on every device, including this one. Your passkeys keep working — sign in with them again anytime.'),
     confirmText: t('Sign out everywhere'), danger: true,
     onConfirm: async () => {
-      try { await signOutAll(); nav('/home'); toast(t('Signed out on all devices')) }
+      // Refused while changes are still owed to the server: nothing was signed out or wiped,
+      // and the sync banner says what is waiting.
+      try { const r = await signOutAll(); if (r?.owed && !r.stashed) return; nav('/home'); toast(t('Signed out on all devices')) }
       catch (e) { toast(t('Could not sign out everywhere — you are still signed in.')) }
     },
   })
@@ -195,7 +197,7 @@ export default function Settings() {
           title: t('Disconnect from your server?'),
           message: t('Your data is synced to your server first, then this device switches back to local-only.'),
           confirmText: t('Disconnect'), danger: true,
-          onConfirm: async () => { await disconnectServer(); nav('/home'); toast(t('Disconnected — back to local-only')) },
+          onConfirm: async () => { const r = await disconnectServer(); if (r?.owed && !r.stashed) return; nav('/home'); toast(t('Disconnected — back to local-only')) },
         })} />
       </> : <>
         <Row icon="lock" iconTint="var(--acc)" title={t('All data stays on this phone')} subtitle={t('No account, no cloud — back it up anytime with Export below.')} />
@@ -212,7 +214,7 @@ export default function Settings() {
         {user.admin && <Row icon="wrench" iconTint="var(--indigo)" title={t('Admin dashboard')} accessory="chevron" onClick={() => nav('/admin')} />}
         <Row icon="link" iconTint="var(--blue)" title={t('Pair the mobile app')} subtitle={t('Connect the openGym app on your phone to this account.')} accessory="chevron"
           onClick={() => useUI.getState().openSheet(close => <PairSheet close={close} />)} />
-        <Row icon="signOut" iconTint="var(--red)" title={t('Sign out')} danger onClick={() => confirmSheet({ title: t('Sign out?'), message: t('Your data is synced to your profile first, then cleared from this device.'), confirmText: t('Sign out'), danger: true, onConfirm: () => { signOut(); nav('/home') } })} />
+        <Row icon="signOut" iconTint="var(--red)" title={t('Sign out')} danger onClick={() => confirmSheet({ title: t('Sign out?'), message: t('Your data is synced to your profile first, then cleared from this device.'), confirmText: t('Sign out'), danger: true, onConfirm: async () => { const r = await signOut(); if (r?.owed && !r.stashed) return; nav('/home') } })} />
         <Row icon="shield" iconTint="var(--red)" title={t('Sign out everywhere')} subtitle={t('Ends this profile’s sessions on all your devices.')} danger onClick={signOutEverywhere} />
       </> : webauthnOK() ? <>
         <Row icon="sparkles" iconTint="var(--acc)" title={t('Create passkey profile')} subtitle={t('Keeps your data safe and separate per person.')} accessory="chevron" onClick={registerHere} />

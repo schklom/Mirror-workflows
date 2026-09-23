@@ -60,6 +60,18 @@ const enqueue = fn => {
   return run
 }
 
+// The native plugin, registered once: registerPlugin() warns on every call after the first. It
+// travels inside an object because a Capacitor plugin proxy answers `then` with a native call that
+// never settles, so a promise resolved with the bare proxy hangs for good (the Coach hang, #42).
+// Anything but the Android app gets null and registers nothing: iOS has no RestAlert, and every
+// call to it there, addListener included, rejects.
+let pluginP = null
+const restPlugin = () => pluginP || (pluginP = (async () => {
+  if (!(await isAndroid())) return null
+  const { registerPlugin } = await import('@capacitor/core')
+  return { RestAlert: registerPlugin('RestAlert') }
+})().catch(() => null))
+
 // Resolves true only when an Android alarm was scheduled. Callers use false as
 // "fall back to the server push" — web, iOS, and a failed schedule.
 export function armRestAlert(at, opts = {}) {
@@ -88,11 +100,12 @@ export function disarmRestAlert() {
 let onNativeRest = null
 export function bindNativeRest(cb) { onNativeRest = cb }
 
+// Caught, and only on Android: in the iOS app this listener used to reject at startup with
+// nobody to catch it.
 if (MOBILE) {
-  import('@capacitor/core').then(({ registerPlugin }) => {
-    const RestAlert = registerPlugin('RestAlert')
-    RestAlert.addListener('rest', ev => { if (onNativeRest) onNativeRest(ev) })
-  }).catch(() => {})
+  restPlugin()
+    .then(p => p && p.RestAlert.addListener('rest', ev => { if (onNativeRest) onNativeRest(ev) }))
+    .catch(() => {})
 }
 
 // The running countdown repaints with this swatch. No-op when no rest is on screen.
@@ -100,20 +113,16 @@ export function setRestAccent(key) {
   if (!MOBILE) return
   const { accent, ink } = accentColors(key)
   enqueue(async () => {
-    if (!(await isAndroid())) return
-    const { registerPlugin } = await import('@capacitor/core')
-    const RestAlert = registerPlugin('RestAlert')
-    await RestAlert.setAccent({ accent, ink })
+    const p = await restPlugin()
+    if (p) await p.RestAlert.setAccent({ accent, ink })
   })
 }
 
 export function hushRestTone() {
   if (!MOBILE) return
   enqueue(async () => {
-    if (!(await isAndroid())) return
-    const { registerPlugin } = await import('@capacitor/core')
-    const RestAlert = registerPlugin('RestAlert')
-    await RestAlert.suppressTone()
+    const p = await restPlugin()
+    if (p) await p.RestAlert.suppressTone()
   })
 }
 
@@ -131,10 +140,10 @@ async function ensureNotifPermission() {
 }
 
 async function deliver(alert) {
-  if (!(await isAndroid())) return 'skipped'
+  const p = await restPlugin()
+  if (!p) return 'skipped'
+  const { RestAlert } = p
   await ensureNotifPermission()
-  const { registerPlugin } = await import('@capacitor/core')
-  const RestAlert = registerPlugin('RestAlert')
   // Sound still schedules when notification permission is missing: the alarm tone does
   // not need it. The notification does, which is why we ask above.
   await RestAlert.schedule({
@@ -160,8 +169,6 @@ async function deliver(alert) {
 }
 
 async function cancelDelivered() {
-  if (!(await isAndroid())) return
-  const { registerPlugin } = await import('@capacitor/core')
-  const RestAlert = registerPlugin('RestAlert')
-  await RestAlert.cancel({ id: REST_ALERT_ID })
+  const p = await restPlugin()
+  if (p) await p.RestAlert.cancel({ id: REST_ALERT_ID })
 }

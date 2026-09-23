@@ -398,6 +398,27 @@ test('an expired link, a replaced link and a link of a disabled profile are all 
   assert.ok(h.audit().some(e => e.ev === 'auth.link.fail' && e.msg === 'user-unavailable' && e.uid === 'u2'));
 });
 
+test('removing a passkey drops an unused code, so one made with it just before adds nothing afterwards', async t => {
+  const key = softPasskey(), stolen = softPasskey(), thief = softPasskey();
+  const h = await startServer(t, { users: [user('u1', 'Ana')], creds: [key.row('u1'), stolen.row('u1', { name: 'Old phone' })] });
+  const ip = '198.51.100.54';
+  // Whoever holds the lost phone makes a code with its passkey…
+  const { code } = (await makeLink(h, stolen, 'u1', ip)).body;
+  assert.equal(h.db().deviceLinks.length, 1);
+  // …the owner removes that passkey…
+  assert.equal((await h.req('DELETE', '/api/account/passkeys?id=' + encodeURIComponent(stolen.id), { cookie: mintSession('u1'), ip })).status, 200);
+  assert.deepEqual(h.db().deviceLinks, []);
+  // …and the code no longer adds a new one.
+  const r = await redeem(h, code, thief, '203.0.113.54');
+  assert.equal(r.status, 400);
+  assert.equal(r.body.code, 'link-invalid');
+  assert.deepEqual(h.db().creds.map(c => c.id), [key.id]);
+  // A refused removal leaves the owner's own code alone.
+  const mine = (await makeLink(h, key, 'u1', ip)).body.code;
+  assert.equal((await h.req('DELETE', '/api/account/passkeys?id=' + encodeURIComponent(key.id), { cookie: mintSession('u1'), ip })).status, 409);
+  assert.equal((await h.req('POST', '/api/device-link/options', { body: { code: mine }, ip })).status, 200);
+});
+
 test('a newer link replaces the older one, and signing out everywhere or a new password drops it', async t => {
   const key = softPasskey();
   const h = await startServer(t, { users: [withPassword('u1', 'Ana')], creds: [key.row('u1')] });

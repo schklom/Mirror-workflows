@@ -1306,13 +1306,16 @@ const passkeyRoutes = {
   },
 
   // `?id=` — the credential id from the list. No proof: removing takes a way in away rather than
-  // adding one, and the last one is never removed (removePasskeyRecord).
+  // adding one, and the last one is never removed (removePasskeyRecord). An unused device code
+  // goes with it: a passkey is removed because it is lost or not trusted, and a code made with it
+  // just before — by whoever holds it — would otherwise add a fresh one right after.
   'DELETE /api/account/passkeys': async (req, res) => {
     const user = readSession(req);
     if (!user) return notSignedIn(res);
     const id = new URL(req.url, 'http://x').searchParams.get('id') || '';
     const r = removePasskeyRecord(db, user.id, id, passwordWayIn(user) ? 1 : 0);
     if (r.error) return json(res, r.code === 'last-way-in' ? 409 : 404, { error: r.error, code: r.code });
+    dropDeviceLinks(db, user.id);
     saveDb();
     audit(req, 'auth.passkey.remove', { user, msg: r.row.name || null });
     json(res, 200, { ok: true, ...passkeyState(user) });

@@ -213,8 +213,8 @@ Read this before hosting openGym for anyone other than yourself.
   reads a code off the screen within its ten minutes can add a passkey to that profile; the owner
   sees it in Settings → Passkeys and in the activity log (`auth.link.ok`) and can remove it.
   Sessions are `uid:expiry:version` and are not tied to the passkey that opened them, so removing
-  a passkey stops it signing in but leaves any session it opened running; "sign out everywhere"
-  ends those.
+  a passkey stops it signing in and drops an unused device code, but leaves any session it
+  opened running; "sign out everywhere" ends those.
 - **A password is weaker than a passkey, and the throttle is per process.** It can be phished,
   reused elsewhere or guessed; a stolen `db.json` allows offline guessing against the scrypt
   hashes. The throttle's counters live in memory: a restart clears them, and several API replicas

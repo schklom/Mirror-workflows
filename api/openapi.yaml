@@ -896,7 +896,9 @@ paths:
       description: |
         Refused while it is the profile's last way in: its only passkey, and no password
         that can sign in (a password counts only while `PASSWORD_LOGIN` is on). No proof is
-        asked — removing takes a way in away. Audited as `auth.passkey.remove`.
+        asked — removing takes a way in away. Audited as `auth.passkey.remove`. An unused
+        device code of the profile is dropped too, so one made with the removed passkey
+        cannot add another afterwards.
 
         Sessions are not tied to the passkey that opened them, so a session it already
         opened carries on; `POST /api/logout/all` ends those.

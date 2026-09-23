@@ -1979,6 +1979,17 @@ describe('the reference line: last time or best set', () => {
     expect(container.textContent).toContain('Best: 80 kg')
   })
 
+  // Arabic: a set right after the label took the label's direction and read 8×60, while the
+  // sets after a Latin "RIR" read 60×8. Each set is its own left-to-right island.
+  it('isolates every set from the text around it', async () => {
+    const two = [{ d: '2026-08-26', start: Date.parse('2026-08-26T18:00:00'), routineIds: ['A'],
+      entries: [{ id: 'plain-bench', rid: 'A', target: { reps: 8, weight: 60 }, sets: [{ w: 60, r: 8, rir: 3, done: true }, { w: 60, r: 8, rir: 2, done: true }] }] }]
+    await mount([exercise('plain-bench', [false], { rid: 'A' })], 0, { workouts: two })
+    const sets = [...line().querySelectorAll('bdi')]
+    expect(sets.map(b => [b.getAttribute('dir'), b.textContent])).toEqual([['ltr', '60×8 (RIR 3)'], ['ltr', '60×8 (RIR 2)']])
+    expect(line().textContent).toMatch(/^Last time \(.+\): 60×8 \(RIR 3\), 60×8 \(RIR 2\)$/)
+  })
+
   // The text is the reference; the name also says what a tap does, after the text it shows.
   it('names the switch a tap makes', async () => {
     await mount([exercise('plain-bench', [false], { rid: 'A' })], 0, { workouts: history })

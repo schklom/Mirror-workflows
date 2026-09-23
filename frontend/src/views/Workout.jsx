@@ -200,16 +200,18 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
   // An exercise logged before only in another mode (reps then, a hold today) has a last time but
   // no best set to hold today's rows against. The line stays and says so: gone, it took the
   // switch back to "Last time" with it, reachable then only from Settings or another card.
-  const refText = ref
-    ? `${refBest ? t('Best set') : t('Last time')} (${fmtDate(ref.d)}): ${(refBest ? [ref.set] : ref.sets).map(s => setLabel(entry.id, s, ref.target, speedUnitOf(S))).join(', ')}`
-    : refBest && last ? t('Best set: nothing logged this way yet') : null
+  const refHead = ref ? `${refBest ? t('Best set') : t('Last time')} (${fmtDate(ref.d)}): ` : ''
+  const refSets = ref ? (refBest ? [ref.set] : ref.sets).map(s => setLabel(entry.id, s, ref.target, speedUnitOf(S))) : []
+  const refText = ref ? refHead + refSets.join(', ') : refBest && last ? t('Best set: nothing logged this way yet') : null
   const refAction = refBest ? t('Show last time instead') : t('Show your best set instead')
   // The button's text is the reference, which says nothing about what a tap does; its name
   // carries both, the reference first as it reads on screen, then the switch.
   const refLine = refText ? <button type="button" className="refline small dim"
     title={refAction} aria-label={`${refText}. ${refAction}`}
     onClick={() => update(s => { s.logRef = refBest ? 'last' : 'best' })}>
-    <span>{refText}</span>
+    {/* Each set on its own left-to-right island. In Arabic the first one followed the label's
+        direction and read 8×60, while those after a Latin "RIR" read 60×8. */}
+    <span>{ref ? <>{refHead}{refSets.map((l, i) => <Fragment key={i}>{i ? ', ' : ''}<bdi dir="ltr">{l}</bdi></Fragment>)}</> : refText}</span>
     <Icon name="shuffle" />
   </button> : null
   // A bodyweight set has no weight to type, so the column is not there (issue #32) — one

@@ -23,7 +23,7 @@
  *     forgotten, whichever way it runs). An exercise in a workout whose edited version was kept
  *     is the exception: the edit may have taken away the set the kept weight came from, so it
  *     is the best of the merged history and of the editing copy's own, and the other copy's
- *     can no longer bring a corrected typo back. exNotes, barWeights: key union
+ *     can no longer bring a corrected typo back. exNotes, barWeights, loadKind, plates: key union
  *   - balanceOverrides: key union; of a key both have, the entry set last by its own `_ts`, a
  *     clear included (mergeStampedMap), the newer copy's on a tie
  *   - `_ts`: the later of the two; `_rev` dropped (the server sets it); `active` left to the caller
@@ -188,7 +188,7 @@ export function mergeStates(a, b, { prefer } = {}) {
     if (kept) out.exWeights[id] = clone(kept)
     else delete out.exWeights[id]
   }
-  for (const f of ['exNotes', 'barWeights']) {
+  for (const f of ['exNotes', 'barWeights', 'loadKind', 'plates']) {
     if (n[f] || o[f]) out[f] = clone({ ...(o[f] || {}), ...(n[f] || {}) })
   }
   if (n.balanceOverrides || o.balanceOverrides) out.balanceOverrides = clone(mergeStampedMap(n.balanceOverrides, o.balanceOverrides, prefer))

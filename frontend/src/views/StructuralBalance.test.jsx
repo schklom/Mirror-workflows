@@ -98,6 +98,17 @@ describe('StructuralBalance view', () => {
     }
   })
 
+  // Catalogue names are lower case ("barbell full squat"); every other list capitalises them.
+  it('capitalises each row\'s exercise name like the other lists, and only the name', () => {
+    const host = render()
+    for (const row of host.querySelectorAll('[data-role-id]')) {
+      const name = row.querySelector('[data-exercise-name]')
+      expect(name.classList.contains('capitalize'), row.dataset.roleId).toBe(true)
+      expect(name.textContent.length).toBeGreaterThan(0)
+    }
+    expect(host.querySelector('[data-role-id="narrowBench"] [data-exercise-name]').textContent).toBe('barbell close-grip bench press')
+  })
+
   it('the back chevron navigates to /stats', () => {
     const host = render()
     act(() => host.querySelector('.iconbtn').click())

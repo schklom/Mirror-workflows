@@ -68,7 +68,7 @@ export default function StructuralBalance() {
               <span className="nm" style={{ minWidth: 0, whiteSpace: 'normal', overflowWrap: 'anywhere' }}>
                 <span style={{ display: 'block' }}>{t(role.label)}</span>
                 <span className="small dim" style={{ display: 'block' }}>
-                  {name}{r.isOverridden ? ` · ${t('Custom')}` : ''}
+                  <span className="capitalize" data-exercise-name>{name}</span>{r.isOverridden ? ` · ${t('Custom')}` : ''}
                 </span>
               </span>
               <span className="v" style={{ textAlign: 'right', flexShrink: 0 }}>

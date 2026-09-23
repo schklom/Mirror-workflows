@@ -1442,4 +1442,9 @@ export default {
   'Deload routine': 'روتين تفريغ',
   'Its workouts do not count toward progression. They still show in history and statistics.': 'لا تُحتسب تدريباته في التقدم، وتبقى ظاهرة في السجل والإحصائيات.',
   'A deload routine opens at the numbers set here, so the progression above does not apply to it.': 'يبدأ روتين التفريغ بالأرقام المحددة هنا، لذا لا ينطبق عليه التقدم أعلاه.',
+  // --- v1.3.9: replace an exercise in a routine, cardio speed in mph (#110) ---
+  'Replace exercise': 'استبدال التمرين',
+  'Replaced with “{0}”': 'تم الاستبدال بـ «{0}»',
+  'Speed (mph)': 'السرعة (mph)',
+  'Speed unit': 'وحدة السرعة',
 }

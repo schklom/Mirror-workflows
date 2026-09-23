@@ -1386,4 +1386,9 @@ export default {
   'Deload routine': 'Розвантажувальна програма',
   'Its workouts do not count toward progression. They still show in history and statistics.': 'Її тренування не враховуються в прогресії. В історії та статистиці вони все одно є.',
   'A deload routine opens at the numbers set here, so the progression above does not apply to it.': 'Розвантажувальна програма починається із заданих тут значень, тож прогресія вище до неї не застосовується.',
+  // --- v1.3.9: replace an exercise in a routine, cardio speed in mph (#110) ---
+  'Replace exercise': 'Замінити вправу',
+  'Replaced with “{0}”': 'Замінено на «{0}»',
+  'Speed (mph)': 'Швидкість (миль/год)',
+  'Speed unit': 'Одиниця швидкості',
 }

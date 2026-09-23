@@ -14,6 +14,8 @@ import { glyphOf } from '../lib/glyphs.js'
 import { Button, Row, SelectRow, Switch } from '../components/ui.jsx'
 import SwipeToDelete from '../components/SwipeToDelete.jsx'
 import { copyRoutine, replaceSlotExercise } from '../lib/routines.js'
+import { planPrintHTML, printPlan } from '../lib/plan-share.js'
+import { MOBILE, printHtml } from '../lib/mobile.js'
 import { POLICIES_FOR, POLICY_NAME, POLICY_DESC } from '../lib/progression.js'
 import BodyMap from '../components/BodyMap.jsx'
 import { loadOfRoutine, rankOf, MUSCLE_NAME } from '../lib/muscles.js'
@@ -349,6 +351,14 @@ export default function RoutineEdit() {
       exConfigSheet(ex, next, cfg => commit(ex, slot => ({ id: ex.id, sg: slot.sg, ...cfg })), null, r)
     }, { title: t('Replace exercise') })
   }
+  // This routine on paper (#282): the weekly printout's page for one session, through the same
+  // two print paths — the browser's print dialog (→ Save as PDF) on the web, the native Print
+  // plugin in the app, where the WebView has no window.print().
+  const printRoutine = () => {
+    const owner = useStore.getState().user?.name || ''
+    if (MOBILE) printHtml(planPrintHTML(S, owner, { routineId: id }), r.name).catch(() => { /* dismissed */ })
+    else printPlan(S, owner, { routineId: id })
+  }
   const toggleLink = i => edit(ex => {
     if (i < 1) return
     const cur = ex[i], prev = ex[i - 1]
@@ -463,6 +473,8 @@ export default function RoutineEdit() {
       update(s => { s.routines.push(copy) })
       nav('/plan/r/' + copy.id)
     }}>{t('Copy routine')}</Button>
+    <div style={{ height: 10 }} />
+    <Button disabled={!r.ex.length} onClick={printRoutine}>{t('Print / Save as PDF')}</Button>
     <div style={{ height: 10 }} />
     <Button variant="danger" onClick={() => confirmSheet({
       title: t('Delete routine?'), message: t('“{0}” and its exercises will be removed.', r.name), confirmText: t('Delete'), danger: true,

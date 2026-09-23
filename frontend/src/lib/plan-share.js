@@ -315,7 +315,9 @@ function units(ex) {
   return out
 }
 
-function routineHTML(r, unit) {
+// `bare` leaves out the routine's own heading, for a page that is this one routine and already
+// names it at the top.
+function routineHTML(r, unit, { bare = false } = {}) {
   const rows = units(r.ex).map(u => {
     const items = u.map(e => {
       const ex = EXIDX[e.id]
@@ -330,7 +332,7 @@ function routineHTML(r, unit) {
   }).join('')
   const count = exCount(r.ex.length)
   return `<section class="routine">
-    <div class="r-head"><h2>${esc(r.name)}</h2><span class="r-count">${esc(count)}</span></div>
+    ${bare ? '' : `<div class="r-head"><h2>${esc(r.name)}</h2><span class="r-count">${esc(count)}</span></div>`}
     <div class="ex-list">${rows || `<div class="ex empty">${esc(t('No exercises yet.'))}</div>`}</div>
   </section>`
 }
@@ -347,16 +349,25 @@ function weekHTML(S) {
   return `<div class="week">${rows}</div>`
 }
 
-/** Full self-contained HTML for the print/PDF view. */
-export function planPrintHTML(S, owner) {
+/**
+ * Full self-contained HTML for the print/PDF view. With `routineId` it is that one routine on
+ * its own page (#282) — the session you take to the gym, not the week around it — so the week
+ * schedule is left out and the routine's name is the page title.
+ */
+export function planPrintHTML(S, owner, { routineId } = {}) {
   const unit = S.unit || 'kg'
-  const routines = (S.routines || []).filter(r => r.ex && r.ex.length)
+  const single = routineId ? (S.routines || []).find(r => r.id === routineId) || null : null
+  const routines = routineId ? [single].filter(Boolean) : (S.routines || []).filter(r => r.ex && r.ex.length)
   const body = routines.length
-    ? routines.map(r => routineHTML(r, unit)).join('')
+    ? routines.map(r => routineHTML(r, unit, { bare: !!single })).join('')
     : `<p class="none">${esc(t('No routines yet.'))}</p>`
-  const sub = [owner, todayISO()].filter(Boolean).map(esc).join(' · ')
+  const title = single ? single.name : t('Weekly Training Plan')
+  const sub = [single ? exCount(single.ex.length) : null, owner, todayISO()].filter(Boolean).map(esc).join(' · ')
+  const week = routineId ? '' : `<h3 class="block">${esc(t('Week schedule'))}</h3>
+  ${weekHTML(S)}
+  <h3 class="block">${esc(t('Routines'))}</h3>`
   return `<!doctype html><html><head><meta charset="utf-8">
-<title>${esc(t('Weekly Training Plan'))}</title>
+<title>${esc(title)}</title>
 <style>
   @page { margin: 16mm 15mm; }
   * { box-sizing: border-box; }
@@ -405,12 +416,10 @@ export function planPrintHTML(S, owner) {
 <body><div class="doc">
   <header>
     <div class="kicker">openGym</div>
-    <h1>${esc(t('Weekly Training Plan'))}</h1>
+    <h1>${esc(title)}</h1>
     ${sub ? `<div class="sub">${sub}</div>` : ''}
   </header>
-  <h3 class="block">${esc(t('Week schedule'))}</h3>
-  ${weekHTML(S)}
-  <h3 class="block">${esc(t('Routines'))}</h3>
+  ${week}
   ${body}
   <footer>${esc(t('Made with openGym'))} · opengym.duarte-santos.ch</footer>
 </div></body></html>`
@@ -419,8 +428,9 @@ export function planPrintHTML(S, owner) {
 /**
  * Render the plan and open the browser's print dialog (→ Save as PDF).
  * Uses a hidden iframe so we never navigate away or trip a popup blocker.
+ * `opts` is planPrintHTML's: `{ routineId }` prints a single routine.
  */
-export function printPlan(S, owner) {
+export function printPlan(S, owner, opts) {
   const ifr = document.createElement('iframe')
   ifr.setAttribute('aria-hidden', 'true')
   ifr.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0;opacity:0;'
@@ -435,7 +445,7 @@ export function printPlan(S, owner) {
     try { w.print() } catch (e) { cleanup() }
   }
   const doc = ifr.contentWindow.document
-  doc.open(); doc.write(planPrintHTML(S, owner)); doc.close()
+  doc.open(); doc.write(planPrintHTML(S, owner, opts)); doc.close()
   // Give the iframe a tick to lay out before printing.
   if (doc.readyState === 'complete') setTimeout(run, 120)
   else ifr.onload = () => setTimeout(run, 120)

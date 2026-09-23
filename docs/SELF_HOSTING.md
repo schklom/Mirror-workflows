@@ -40,7 +40,8 @@ So `http://localhost:8080` works on the machine running Docker, but **another de
 phone) cannot use `http://<your-LAN-ip>:8080`** — that's neither localhost nor HTTPS, so the
 passkey prompt won't appear. To use openGym from your phone you need a real HTTPS hostname.
 
-(You can still open it over LAN in **guest mode**, which stores data only in that browser.)
+(You can still open it over LAN in **guest mode**, which stores data only in that browser — or
+turn on **password sign-in**, see [§4](#password-sign-in-optional).)
 
 The standalone mobile app (`docs/MOBILE.md`) sidesteps this entirely for its "connect to my
 server" mode: instead of a passkey ceremony (impossible from inside its WebView, which never
@@ -173,6 +174,84 @@ rule for those paths; Authentik: unauthenticated paths; Cloudflare Access: a byp
 oauth2-proxy: `skip_auth_routes`. A proxy that cannot exempt a path (Teleport) has to serve the
 icons inline as `data:` URLs instead — Safari 26 accepts those, older iOS does not, which is why
 that is not the default here.
+
+### Password sign-in (optional)
+
+Passkeys are the default and stay the recommended way in. Some people cannot use them: a browser
+on a plain `http://` LAN address (passkeys need HTTPS or `localhost`), a Firefox setup that only
+offers a hardware key, a passkey on a phone that will not move to the desktop. For them there is
+an optional name-and-password sign-in, off unless you ask for it:
+
+```bash
+PASSWORD_LOGIN=1
+```
+
+What changes when it is on:
+
+- The sign-in screen offers **Sign in with password**, and **Create new profile** can use a
+  password instead of a passkey — in browsers without passkey support too. With `INVITE_ONLY=1`
+  it asks for the invite code exactly like passkey signup does.
+- Settings → Account gets a **Password** row. Nobody has a password until they set one there.
+  Setting a first password asks for the profile's passkey; changing it asks for the current
+  password (or the passkey, if it was forgotten). Either signs the profile out everywhere else,
+  and paired phones have to be paired again.
+- People sign in with their **profile name** — case and surrounding spaces do not matter — and the
+  password. Two profiles with a password cannot share a name; Settings says so when a name is
+  already taken that way.
+- A password cannot be removed while it is the profile's only way in (a profile made with a
+  password has no passkey).
+
+**Resetting a password.** There is no e-mail. In the admin dashboard open the user and choose
+**Reset password**. You get a one-time code such as `K7WQ-2MZP-4HXA` to hand over in person or
+by message: it is shown once, works once, is valid for 24 hours and is stored only as a hash.
+Issuing it removes their current password and signs them out everywhere at once — their passkeys
+keep working. They enter their name, the code and a new password under **Sign in with password →
+Have a reset code?**. The same code gets someone back in who lost their only passkey (#219).
+Admin accounts cannot be reset from the dashboard, so one admin cannot take over another's login;
+an admin sets their own password in Settings. Every step is in the activity log
+(`admin.password.reset`, `auth.password.reset`, `auth.password.ok` / `fail` / `locked`).
+
+**On a plain-HTTP LAN**, set `ORIGIN` to exactly the address people type, for example
+`ORIGIN=http://192.168.1.20:8080`. Browsers do not send `Sec-Fetch-Site` to plain-http addresses,
+so the API compares the request's `Origin` with `ORIGIN` instead and refuses sign-ins (and syncs)
+that come from anywhere else. Know what you are trading: without TLS the password and the session
+cookie (which cannot be `Secure` over http) cross your network in the clear. For a certificate on
+a LAN-only address, see [SELF_HOSTING_HTTPS.md](./SELF_HOSTING_HTTPS.md).
+
+**What a password gives up compared with a passkey:**
+
+- A passkey cannot be phished, reused or guessed — it is bound to your hostname and never leaves
+  the device. A password can be all three, which is why passkeys stay the default everywhere.
+- `db.json` holds a scrypt hash of each password (N=2^15, r=8, p=1, 16-byte random salt). Someone
+  with a copy of `./data` can try guesses offline, slowly; a passkey's public key gives them
+  nothing to try.
+- Guessing online is throttled. Five wrong passwords for a name pause password sign-in for that
+  name for a minute, doubling up to an hour, whoever sends them — names that do not exist pause
+  the same way, so a pause reveals nothing. Twenty wrong answers from one address pause that
+  address for 30 seconds, doubling up to 15 minutes, and every address gets 60 requests a minute
+  to the sign-in routes. Passkeys are never paused. The counters live in memory, so a restart
+  clears them.
+- The flip side: anyone who knows a name can keep that name's *password* sign-in paused. The
+  activity log shows it (`auth.password.locked`), and passkeys still work.
+- Passwords need 10 to 256 characters and may not be one of a short built-in list of the
+  passwords guessing scripts try first (`Password123!`, `qwerty…`, the profile's own name with
+  digits). A long passphrase is the point.
+
+**Which address counts as one visitor.** The throttle needs the visitor's address. With the
+bundled `docker-compose.yml` it reads the one the web container passes on: the compose file sets
+`TRUST_PROXY=1` for the api, because the API is reachable only through that container, which
+overwrites `X-Forwarded-For`. If you put another reverse proxy in front of the web container, every
+visitor may arrive as that proxy — then the per-address limits apply to everyone together, and the
+per-name pause is what protects the passwords. Behind Cloudflare, `CF_CONNECTING_IP` (see the
+activity log above) passes the real visitor on. Running the API without the web container, leave
+`TRUST_PROXY` off unless whatever is in front overwrites (not appends to) `X-Forwarded-For`.
+
+**Switching it off again** hides all of it and makes every password route answer 404. The stored
+hashes stay in `db.json` and work again if you switch it back on — but while it is off, a profile
+that only has a password cannot sign in.
+
+The mobile app keeps pairing: someone with a password signs in to the website with it and pairs
+from Settings → "Pair the mobile app", as with a passkey.
 
 ## 5. Fitting it into an existing stack
 

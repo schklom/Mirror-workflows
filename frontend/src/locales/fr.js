@@ -1320,7 +1320,7 @@ export default {
   'High-bar back squat (anchor)': 'Squat barre haute (référence)',
   'Front squat': 'Squat avant',
   'Deadlift': 'Soulevé de terre',
-  'Power clean': 'Épaulé-jeté (power clean)',
+  'Power clean': 'Épaulé (power clean)',
   'Squat (anchor)': 'Squat (référence)',
   'Bench press': 'Développé couché',
   'Military press': 'Développé militaire',

@@ -1310,7 +1310,7 @@ export default {
   'Weak': 'Fraco',
   'No data': 'Sem dados',
   'Poliquin': 'Poliquin',
-  'Thibaudeau — Powerlifting': 'Thibaudeau — Poderlevantamento',
+  'Thibaudeau — Powerlifting': 'Thibaudeau — Powerlifting',
   'ATG': 'ATG',
   'Close-grip bench press (anchor)': 'Supino pega fechada (referência)',
   'Incline bench press': 'Supino inclinado',

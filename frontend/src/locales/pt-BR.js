@@ -729,7 +729,7 @@ export const PT_BR_OVERRIDES = {
   'High-bar back squat (anchor)': 'Agachamento barra alta (referência)',
   'Front squat': 'Agachamento frontal',
   'Deadlift': 'Levantamento terra',
-  'Power clean': 'Power clean (arranque de potência)',
+  'Power clean': 'Power clean',
   'Squat (anchor)': 'Agachamento (referência)',
   'Bench press': 'Supino reto',
   'Military press': 'Desenvolvimento militar',

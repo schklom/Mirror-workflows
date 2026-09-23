@@ -1326,7 +1326,7 @@ export default {
   'Close-grip bench press (anchor)': 'เบนช์เพรสจับแคบ (ท่าอ้างอิง)',
   'Incline bench press': 'อินไคลน์เบนช์เพรส',
   'Dips (bodyweight + load)': 'ดิป (น้ำหนักตัว + น้ำหนักเสริม)',
-  'Supine pull-ups (bodyweight + load)': 'พูลอัพคว่ำมือจับหงาย (น้ำหนักตัว + น้ำหนักเสริม)',
+  'Supine pull-ups (bodyweight + load)': 'พูลอัพจับหงาย (น้ำหนักตัว + น้ำหนักเสริม)',
   'Standing barbell curl': 'บาร์เบลเคิร์ลยืน',
   'High-bar back squat (anchor)': 'สควอทวางบาร์สูง (ท่าอ้างอิง)',
   'Front squat': 'ฟรอนท์สควอท',

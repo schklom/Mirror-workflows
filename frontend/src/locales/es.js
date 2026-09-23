@@ -1317,7 +1317,7 @@ export default {
   'Dips (bodyweight + load)': 'Fondos (peso corporal + carga)',
   'Supine pull-ups (bodyweight + load)': 'Dominadas supinas (peso corporal + carga)',
   'Standing barbell curl': 'Curl con barra de pie',
-  'High-bar back squat (anchor)': 'Sentadilla alta (ancla)',
+  'High-bar back squat (anchor)': 'Sentadilla con barra alta (ancla)',
   'Front squat': 'Sentadilla frontal',
   'Deadlift': 'Peso muerto',
   'Power clean': 'Cargada de potencia',

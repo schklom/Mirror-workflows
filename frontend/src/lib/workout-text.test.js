@@ -56,6 +56,27 @@ describe('workoutText', () => {
   })
 })
 
+// A combined session can pair the last exercise of one routine with the first of the next. The
+// detail sheet splits the workout by routine first and shows those two apart, each in its own
+// section; the copied text paired them over the flat list and wrote "Superset" above them.
+describe('workoutText in a combined session', () => {
+  const nameOf = e => e.id
+  const row = (id, rid, sg) => ({ id, rid, ...(sg ? { sg } : {}), target: { mode: 'reps' }, sets: [{ w: 20, r: 10, done: true }] })
+  const at = entries => ({ d: '2026-09-03', start: 0, end: 0, name: 'Push + Pull', vol: 0, routineIds: ['A', 'B'], entries })
+
+  it('pairs a superset only inside one routine\'s section, as the detail sheet does', () => {
+    const text = workoutText(at([row('press', 'A'), row('fly', 'A', 'x'), row('row', 'B', 'x'), row('curl', 'B')]), { unit: 'kg', nameOf })
+    expect(text).not.toContain('Superset')
+    expect(text.split('\n\n').slice(1)).toEqual(['Press\n20×10', 'Fly\n20×10', 'Row\n20×10', 'Curl\n20×10'])
+  })
+
+  it('keeps a superset inside one routine together, and lists each routine\'s exercises in its section', () => {
+    // the curl was added to routine A late in the session, after routine B's exercises
+    const text = workoutText(at([row('press', 'A', 'y'), row('fly', 'A', 'y'), row('row', 'B'), row('curl', 'A')]), { unit: 'kg', nameOf })
+    expect(text.split('\n\n').slice(1)).toEqual(['Superset\nPress\n20×10\nFly\n20×10', 'Curl\n20×10', 'Row\n20×10'])
+  })
+})
+
 // Cardio speed in the profile's unit, as the detail sheet above the button shows it (lib/speed.js).
 describe('workoutText speed unit', () => {
   it('writes a run in mph when the profile shows mph, and in km/h by default', () => {

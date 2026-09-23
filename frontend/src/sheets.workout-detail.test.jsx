@@ -121,6 +121,25 @@ describe('workout detail', () => {
     expect(toast).toHaveBeenCalledWith('Copied')
   })
 
+  // One rule for both: a superset paired across two routines of a combined session is shown apart
+  // in the sheet, each under its own routine, and the copied text does not call it a superset.
+  it('groups a combined session\'s supersets the same way in the sheet and in the copied text', async () => {
+    const writeText = vi.fn(() => Promise.resolve())
+    vi.stubGlobal('navigator', { ...navigator, clipboard: { writeText } })
+    const w = workout([
+      { id: lifts[0], rid: 'A', sg: 'x', target: { mode: 'reps' }, sets: [done(40, 10)] },
+      { id: lifts[1], rid: 'B', sg: 'x', target: { mode: 'reps' }, sets: [done(20, 12)] },
+      { id: lifts[2], rid: 'B', target: { mode: 'reps' }, sets: [done(60, 5)] },
+    ], { routineIds: ['A', 'B'] })
+    useStore.setState(s => ({ S: { ...s.S, workouts: [w] } }))
+    workoutDetailSheet(w)
+    const host = mountTopSheet()
+    expect(host.querySelector('.wd-ss')).toBeNull()
+    expect(host.querySelectorAll('.wd-ex')).toHaveLength(3)
+    await act(async () => { button(host, 'Copy as text').click() })
+    expect(writeText.mock.calls[0][0]).not.toContain('Superset')
+  })
+
   it('says so when the clipboard refuses', async () => {
     vi.stubGlobal('navigator', { ...navigator, clipboard: { writeText: () => Promise.reject(new Error('denied')) } })
     document.execCommand = () => false

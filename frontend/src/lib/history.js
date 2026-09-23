@@ -665,6 +665,26 @@ export function supersetUnits(items) {
   return units
 }
 
+// A saved session's entries in the sections its detail sheet shows: one per routine (by `rid`, in
+// the order each first appears), the entries with no routine together, and inside each section its
+// superset units. Indexes point into `entries`. A superset never spans two sections — in a combined
+// session the last exercise of one routine can be paired with the first of the next, and they are
+// read back apart, each under its own routine. The detail sheet and "Copy as text" both group a
+// workout through this, so the text never shows a superset the sheet does not.
+export function sessionSections(entries) {
+  const list = Array.isArray(entries) ? entries : []
+  const sections = []
+  list.forEach((e, i) => {
+    const rid = e?.rid || null
+    let section = sections.find(x => x.rid === rid)
+    if (!section) { section = { rid, items: [] }; sections.push(section) }
+    section.items.push(i)
+  })
+  return sections.map(({ rid, items }) => ({
+    rid, items, units: supersetUnits(items.map(i => list[i])).map(unit => unit.map(k => items[k])),
+  }))
+}
+
 // Move the selected occurrence's complete display unit by one neighbouring unit. Returning a
 // new array keeps this helper pure; the caller decides how to persist it. Index identity matters
 // here because the same exercise id may appear more than once with different setup.

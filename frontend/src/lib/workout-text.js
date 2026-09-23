@@ -2,7 +2,7 @@
 // ideas'): something to paste into a chat, a coach's spreadsheet or a notes app. The sets are the
 // same labels the history shows, so a drop-set or a rest-pause set reads the same in both.
 // i18n-core rather than i18n, like history.js: nothing here needs the React half.
-import { setLabel, supersetUnits, workoutVolume } from './history.js'
+import { setLabel, sessionSections, workoutVolume } from './history.js'
 import { EXIDX } from './exercises.js'
 import { hasCompletedWork, isWarmupRow } from './workout-model.js'
 import { fmtDate, fmtNum, fmtVol, durPart, capWords } from './format.js'
@@ -32,8 +32,10 @@ export function workoutText(w, { unit, nameOf, speedUnit }) {
     const name = nameOf(entry)
     return [exerciseNameClass(EXIDX[entry.id]) ? capWords(name) : name, sets.map(s => setLabel(entry.id, s, entry.target, speedUnit)).join(', '), ...(entry.note ? [entry.note] : [])]
   }
+  // Grouped the way the detail sheet groups it (sessionSections): per routine first, so a
+  // superset is only ever paired inside one routine's section, in the order the sheet lists them.
   const entries = w.entries || []
-  for (const group of supersetUnits(entries)) {
+  for (const group of sessionSections(entries).flatMap(section => section.units)) {
     const members = group.map(i => lines(entries[i])).filter(Boolean)
     if (!members.length) continue
     blocks.push([...(members.length > 1 ? [t('Superset')] : []), ...members.flat()].join('\n'))

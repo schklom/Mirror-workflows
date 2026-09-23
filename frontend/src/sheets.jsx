@@ -4,7 +4,7 @@ import { useUI } from './store/useUI.js'
 import { EXDB, EXIDX, BODYPARTS, isCardio, isBodyweightEq, allExercises, equipmentOf, smOf, searchExercises, exOr, isAssisted, betterWeight, beatsWeight } from './lib/exercises.js'
 import { activeProfile, exAvailable, ALL_EQUIPMENT, newProfile } from './lib/equipment.js'
 import { fmtDate, fmtNum, capWords, fmtVol, fmtDur, durPart, todayISO, isoOf, uid, exCount, routineCount, DAYN, DAYS, weekOrder, weekStartOf, weekDayOffset, MONTHS_LONG, ACCENTS } from './lib/format.js'
-import { lastEntryFor, bestWeightFor, bestWeightForEntry, buildSets, effectiveRoutineIds, workoutDay, workoutVolume, setsDone, setsDoneActive, setUnitsTotal, lastBW, supersetUnits, unitOf, setLabel, defaultConfig, cleanupSg, modeOf, effortOf, EFFORT, capEffort, stepEffort, isBw, isPerSide, sideReps, workSetsDone, applyIntensifierPlan, MAX_PLANNED_WARMUPS, NOTE_MAX } from './lib/history.js'
+import { lastEntryFor, bestWeightFor, bestWeightForEntry, buildSets, effectiveRoutineIds, workoutDay, workoutVolume, setsDone, setsDoneActive, setUnitsTotal, lastBW, supersetUnits, sessionSections, unitOf, setLabel, defaultConfig, cleanupSg, modeOf, effortOf, EFFORT, capEffort, stepEffort, isBw, isPerSide, sideReps, workSetsDone, applyIntensifierPlan, MAX_PLANNED_WARMUPS, NOTE_MAX } from './lib/history.js'
 import { usesBar, barWeightFor, defaultBarWeight, hasBarOverride, isNoBar } from './lib/bar.js'
 import { toScale, rirOf, EFFORT_PRESETS, effortColor } from './lib/effort.js'
 import { beep, vibrate } from './lib/sound.js'
@@ -1878,11 +1878,11 @@ function WorkoutDetail({ w, close }) {
   // Exercises done as a superset stay together under a "Superset" label and one bar, the way the
   // routine editor shows them (Discord: "supersets aren't shown at all"). Adjacent entries with
   // the same tag, as in the workout itself; a workout finished before the tag was kept has none.
-  const entryRows = items => supersetUnits(items.map(([e]) => e)).map(unit => {
-    if (unit.length < 2) return entryRow(...items[unit[0]])
-    return <div key={'ss' + items[unit[0]][1]} className="wd-ss">
+  const entryRows = units => units.map(unit => {
+    if (unit.length < 2) return entryRow(w.entries[unit[0]], unit[0])
+    return <div key={'ss' + unit[0]} className="wd-ss">
       <div className="ss-label"><Icon name="link" />{t('Superset')}</div>
-      {unit.map(k => entryRow(...items[k]))}
+      {unit.map(i => entryRow(w.entries[i], i))}
     </div>
   })
   // Copied with the note as it stands in the box, which may not be saved yet.
@@ -1891,32 +1891,29 @@ function WorkoutDetail({ w, close }) {
     toast(await copyText(workoutText(rec, { unit: st.unit, nameOf, speedUnit: speedUnitOf(st) })) ? t('Copied') : t('Could not copy'))
   }
   // A combined session's entries carry a `rid`; group them into per-routine sections in merge
-  // order. A legacy single-routine workout (one routineIds, or no rid anywhere) renders flat.
-  const groups = []
-  w.entries.forEach((e, i) => {
-    const key = e.rid || '__none'
-    let g = groups.find(x => x.key === key)
-    if (!g) { g = { key, rid: e.rid || null, items: [] }; groups.push(g) }
-    g.items.push([e, i])
-  })
+  // order, with each section's supersets paired inside it (sessionSections, which "Copy as text"
+  // reads the workout through too). A legacy single-routine workout (one routineIds, or no rid
+  // anywhere) renders flat.
+  const groups = sessionSections(w.entries)
   const grouped = groups.length > 1 || (groups[0] && groups[0].rid && (w.routineIds || []).length > 1)
   return <>
     <h3>{w.name}</h3>
     <div className="muted small" style={{ marginBottom: 12 }}>{[fmtDate(w.d, true), ...durPart(w.end - w.start), fmtVol(w.vol, st.unit), ...(w.bw ? [fmtNum(w.bw) + ' ' + st.unit] : [])].join(' · ')}</div>
     {grouped ? groups.map(g => {
       const r = g.rid ? st.routines.find(x => x.id === g.rid) : null
-      const setN = g.items.reduce((n, [e]) => n + e.sets.filter(s => s.done && !isWarmupRow(s)).length, 0)
-      const vol = workoutVolume({ entries: g.items.map(([e]) => e) })
-      return <div key={g.key}>
+      const items = g.items.map(i => w.entries[i])
+      const setN = items.reduce((n, e) => n + e.sets.filter(s => s.done && !isWarmupRow(s)).length, 0)
+      const vol = workoutVolume({ entries: items })
+      return <div key={g.rid || '__none'}>
         <div className="row between" style={{ margin: '2px 0 8px', paddingBottom: 6, borderBottom: '1px solid var(--sep)' }}>
           <div className="row" style={{ gap: 7, fontWeight: 600 }}>
             {r && <Icon name={glyphOf(r.emoji)} />}{r ? r.name : t('Freestyle')}
           </div>
           <div className="small dim">{t('{0} sets', setN)} · {fmtVol(vol, st.unit)}</div>
         </div>
-        {entryRows(g.items)}
+        {entryRows(g.units)}
       </div>
-    }) : entryRows(w.entries.map((e, i) => [e, i]))}
+    }) : entryRows(groups[0]?.units || [])}
     <div className="small muted" style={{ margin: '4px 0 6px' }}>{t('Session note')}</div>
     <textarea ref={noteRef} className="input" rows={2} maxLength={NOTE_MAX} value={note}
       placeholder={t('How the session went as a whole.')}

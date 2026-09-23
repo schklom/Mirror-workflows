@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { nextTrainingDay, modeOf, isTimed, fmtSec, setLabel, defaultConfig, buildSets, freestyleConfig, exLine, workoutVolume, bestWeightFor, bestWeightForEntry, completedRepsOf, metricRowsForEntry, effortOf, stepEffort, capEffort, isBw, isPerSide, sideReps, repStep, cascadeWeight, insertWarmupRow, removeRowAt, workSetsDone, setsDone, setsDoneActive, setUnits, doneUnits, setUnitsTotal, pairAdjacent, unpairSuperset, supersetUnits, applyIntensifierPlan, pinnedNoteFor, exNoteFor, effectiveRoutineIds, effectiveRoutines, effectiveRoutineId, effectiveRoutine, lastEntryFor, entryExcluded, entryRoutineId, setsRepsOf } from './history.js'
+import { nextTrainingDay, modeOf, isTimed, fmtSec, setLabel, defaultConfig, buildSets, freestyleConfig, exLine, workoutVolume, bestWeightFor, bestWeightForEntry, completedRepsOf, metricRowsForEntry, effortOf, stepEffort, capEffort, isBw, isPerSide, sideReps, repStep, cascadeWeight, insertWarmupRow, removeRowAt, workSetsDone, setsDone, setsDoneActive, setUnits, doneUnits, setUnitsTotal, pairAdjacent, unpairSuperset, supersetUnits, sessionSections, applyIntensifierPlan, pinnedNoteFor, exNoteFor, effectiveRoutineIds, effectiveRoutines, effectiveRoutineId, effectiveRoutine, lastEntryFor, entryExcluded, entryRoutineId, setsRepsOf } from './history.js'
 import { makeSideSet, setSideField, toggleSide, WEIGHT_ORIGIN_MANUAL } from './workout-model.js'
 import { EXDB } from './exercises.js'
 
@@ -846,6 +846,26 @@ describe('superset editing', () => {
 
     expect(() => pairAdjacent(entries, 0, 2, 'sg-invalid')).toThrow(/adjacent/)
     expect(entries).toEqual([{ id: 'a' }, { id: 'b' }, { id: 'c' }])
+  })
+})
+
+// The one grouping the detail sheet and "Copy as text" share: per routine first, supersets inside.
+describe('sessionSections', () => {
+  it('splits by routine in the order each first appears and pairs supersets only inside a section', () => {
+    const entries = [
+      { id: 'a', rid: 'A', sg: 'x' }, { id: 'b', rid: 'B', sg: 'x' }, { id: 'c', rid: 'B', sg: 'y' },
+      { id: 'd', rid: 'B', sg: 'y' }, { id: 'e', rid: 'A' },
+    ]
+    expect(sessionSections(entries)).toEqual([
+      { rid: 'A', items: [0, 4], units: [[0], [4]] },
+      { rid: 'B', items: [1, 2, 3], units: [[1], [2, 3]] },
+    ])
+  })
+
+  it('keeps a workout without routines as one section, the flat list', () => {
+    const entries = [{ id: 'a', sg: 'x' }, { id: 'b', sg: 'x' }, { id: 'c' }]
+    expect(sessionSections(entries)).toEqual([{ rid: null, items: [0, 1, 2], units: supersetUnits(entries) }])
+    expect(sessionSections(undefined)).toEqual([])
   })
 })
 

@@ -261,7 +261,7 @@ h4.sec{
    German the title and the two buttons ("Ziel", "+ Eintragen") outgrow a 320px card by about
    55px, so the button pair may drop to a second line — still flush right, hence the auto margin. */
 .bw-head{flex-wrap:wrap;row-gap:8px}
-.bw-head>.row{margin-left:auto}
+.bw-head>.row{margin-inline-start:auto}
 
 /* ----------------------------------------------------------------- card -- */
 .card{
@@ -280,15 +280,15 @@ h4.sec{
 .sect-f{font-size:13px;color:var(--label-2);padding:7px 4px 0;line-height:1.38}
 
 .lrow{
-  display:flex;align-items:center;gap:12px;width:100%;text-align:left;
+  display:flex;align-items:center;gap:12px;width:100%;text-align: start;
   padding:11px 14px;min-height:46px;position:relative;color:var(--label);
   background:none;
 }
 /* hairline starts after the icon rail so the list reads as one object */
 .lrow+.lrow::before{
-  content:'';position:absolute;left:14px;right:0;top:0;height:var(--hair);background:var(--sep);
+  content:'';position:absolute;inset-inline-start:14px;inset-inline-end:0;top:0;height:var(--hair);background:var(--sep);
 }
-.lrow:has(.lrow-i)+.lrow:has(.lrow-i)::before{left:55px}
+.lrow:has(.lrow-i)+.lrow:has(.lrow-i)::before{inset-inline-start:55px}
 .lrow.tap:active{background:var(--surface-2)}
 .lrow-i{
   width:29px;height:29px;border-radius:7px;flex:none;font-size:18px;
@@ -315,7 +315,7 @@ h4.sec{
    to 21px. A basis of 45% fixes that but reserves the space even for "3", costing the title
    141px on the rows that need it most. A cap does neither. */
 .lrow-v{color:var(--label-2);font-size:17px;letter-spacing:-.012em;flex:0 1 auto;max-width:55%;min-width:0;
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:right}
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align: end}
 .lrow-c{color:var(--label);font-size:15px;flex:none;--icon-stroke:2.4}
 .lrow-k{color:var(--acc);font-size:17px;flex:none;--icon-stroke:2.4}
 .lrow.danger,.lrow.danger .lrow-t{color:var(--red)}
@@ -328,7 +328,7 @@ h4.sec{
   display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto;
 }
 .lrow.lrow-stack-value .lrow-m{grid-column:1;grid-row:1}
-.lrow.lrow-stack-value .lrow-v{grid-column:1;grid-row:2;width:100%;max-width:none;text-align:left}
+.lrow.lrow-stack-value .lrow-v{grid-column:1;grid-row:2;width:100%;max-width:none;text-align:start}
 .lrow.lrow-stack-value .lrow-c{grid-column:2;grid-row:1 / span 2;align-self:center}
 /* an (i) before a row's control: painted small and dim so the control stays the loud thing,
    but with a finger-sized target like everything else — the padding is the hit area and the
@@ -336,7 +336,7 @@ h4.sec{
    hit area back under the row's own 12px gap instead of adding to it. */
 .helpbtn{
   color:var(--label-3);font-size:16px;background:none;line-height:0;flex:none;
-  margin:-11px -2px -11px -4px;padding:11px 4px;
+  margin-block:-11px;margin-inline:-4px -2px;padding:11px 4px;
 }
 .helpbtn:active{color:var(--label)}
 
@@ -368,7 +368,7 @@ h4.sec{
    the WebView recomposites the blurred region on every scroll frame, and on Android that is
    the single most expensive thing on the screen. See @supports below for the no-blur case. */
 #tabbar{
-  position:fixed;left:0;right:0;bottom:0;z-index:50;
+  position:fixed;inset-inline-start:0;inset-inline-end:0;bottom:0;z-index:50;
   display:flex;justify-content:space-around;align-items:flex-end;
   padding:7px 6px calc(6px + var(--sab));
   background:color-mix(in srgb,var(--bg-el) 94%,transparent);
@@ -451,7 +451,7 @@ h4.sec{
 .item{
   display:flex;align-items:center;gap:12px;background:var(--surface);
   border-radius:var(--r-card);padding:10px 12px;min-height:60px;
-  transition:background var(--fast);text-align:left;width:100%;
+  transition:background var(--fast);text-align: start;width:100%;
 }
 .item:active{background:var(--surface-2)}
 .routine-list{position:relative}
@@ -484,7 +484,7 @@ h4.sec{
 .tag.acc{background:var(--acc-soft);color:var(--acc)}
 /* favourite marker (issue #6): a small yellow star glued to the exercise name — distinct from
    the accent "chosen" tag at the row's end, which means "already in a routine or the log" */
-.fav-star{color:var(--yellow);font-size:12px;display:inline-block;margin-right:5px;vertical-align:-1px}
+.fav-star{color:var(--yellow);font-size:12px;display:inline-block;margin-inline-end:5px;vertical-align:-1px}
 .fav-btn{margin-top:-4px}
 .fav-btn.on{color:var(--yellow)}
 
@@ -546,22 +546,22 @@ body.chips-dragging *{cursor:inherit}
 /* --- search field --- */
 .searchf{position:relative;display:flex;align-items:center}
 .searchf .lead{
-  position:absolute;left:11px;font-size:16px;color:var(--label-3);
+  position:absolute;inset-inline-start:11px;font-size:16px;color:var(--label-3);
   pointer-events:none;--icon-stroke:2.1;z-index:1;
 }
-.searchf .field{padding-left:35px;padding-right:36px;background:var(--surface-2);border-radius:10px}
+.searchf .field{padding-inline-start:35px;padding-inline-end:36px;background:var(--surface-2);border-radius:10px}
 :root[data-theme="light"] .searchf .field{background:rgba(118,118,128,.12)}
 .searchf .clear{
-  position:absolute;right:8px;width:22px;height:22px;border-radius:50%;
+  position:absolute;inset-inline-end:8px;width:22px;height:22px;border-radius:50%;
   background:var(--label-3);color:var(--bg);display:flex;align-items:center;
   justify-content:center;font-size:11px;--icon-stroke:3;
 }
 /* legacy .search wrapper */
 .search{position:relative}
-.search .input{padding-left:35px;background:var(--surface-2);border-radius:10px}
+.search .input{padding-inline-start:35px;background:var(--surface-2);border-radius:10px}
 :root[data-theme="light"] .search .input{background:rgba(118,118,128,.12)}
 .search>svg{
-  position:absolute;left:11px;top:50%;transform:translateY(-50%);z-index:1;
+  position:absolute;inset-inline-start:11px;top:50%;transform:translateY(-50%);z-index:1;
   width:16px;height:16px;stroke:var(--label-3);fill:none;stroke-width:2.1;stroke-linecap:round;
 }
 
@@ -594,7 +594,7 @@ body.chips-dragging *{cursor:inherit}
 .seg>button{flex:1 1 0;min-width:0}
 :root[data-theme="light"] .seg{background:rgba(118,118,128,.12)}
 .seg-sel{
-  position:absolute;z-index:0;top:2px;bottom:2px;left:2px;
+  position:absolute;z-index:0;top:2px;bottom:2px;inset-inline-start:2px;
   width:calc((100% - 4px)/var(--n));
   transform:translateX(calc(100% * var(--i)));
   background:var(--surface);border-radius:7px;
@@ -614,7 +614,7 @@ body.chips-dragging *{cursor:inherit}
    shrinks below its labels, so a row whose title and control do not both fit — most translated
    packs at 390px: "Übungs-Animationen" against "Voll · Klein · Aus" — wraps the control onto its
    own line under the title instead of painting it over the title. */
-.seg-inline{flex:none;min-width:132px;max-width:100%;margin-left:auto}
+.seg-inline{flex:none;min-width:132px;max-width:100%;margin-inline-start:auto}
 .lrow:has(.seg-inline){flex-wrap:wrap}
 .lrow:has(.seg-inline) .lrow-m{min-width:min(150px,100%)}
 .seg-range{margin-bottom:10px}
@@ -632,7 +632,7 @@ body.chips-dragging *{cursor:inherit}
    its picker icon. Such a row wraps the field onto a line of its own under the title instead, still
    flush right — the same way a row carrying an inline segmented control does. */
 .lrow:has(.timef){flex-wrap:wrap}
-.lrow>.timef{margin-left:auto}
+.lrow>.timef{margin-inline-start:auto}
 .timef::-webkit-calendar-picker-indicator{filter:invert(.5)}
 :root[data-theme="light"] .timef::-webkit-calendar-picker-indicator{filter:none}
 
@@ -668,7 +668,7 @@ body.chips-dragging *{cursor:inherit}
 /* --- slider --- */
 .sld{position:relative;height:32px;display:flex;align-items:center;cursor:pointer;touch-action:none}
 .sld-track{
-  position:absolute;left:0;right:0;height:6px;border-radius:99px;
+  position:absolute;inset-inline-start:0;inset-inline-end:0;height:6px;border-radius:99px;
   background:var(--surface-3);overflow:hidden;
 }
 .sld-fill{display:block;height:100%;background:var(--acc);border-radius:99px}
@@ -727,8 +727,8 @@ body.chips-dragging *{cursor:inherit}
   font-size:12px;font-weight:500;
   -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
 }
-.exmedia .gifhint{right:9px}
-.exmedia .giftoggle{left:9px}
+.exmedia .gifhint{inset-inline-end:9px}
+.exmedia .giftoggle{inset-inline-start:9px}
 .exmedia .gifhint .icn,.exmedia .giftoggle .icn{font-size:13px}
 /* superset: both exercises are on screen together, so the animations have to give way —
    at 180px you had to scroll a full screen between two exercises done back-to-back */
@@ -752,7 +752,7 @@ body.chips-dragging *{cursor:inherit}
 .sethead .ck-sp{width:30px;flex:none}
 .setrow{display:flex;align-items:center;gap:8px;padding:7px 0;position:relative}
 .setrow+.setrow::before{
-  content:'';position:absolute;left:32px;right:0;top:0;height:var(--hair);background:var(--sep);
+  content:'';position:absolute;inset-inline-start:32px;inset-inline-end:0;top:0;height:var(--hair);background:var(--sep);
 }
 .setph{margin:8px 0 2px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);display:flex;align-items:center;gap:10px}
 .setph::after{content:'';flex:1;height:1px;background:var(--sep)}
@@ -861,7 +861,7 @@ body.chips-dragging *{cursor:inherit}
 }
 .effpick .menu-item.on{background:color-mix(in srgb,var(--bc) 14%,var(--surface))}
 .effpick .menu-on.is-on{color:var(--bc)}
-.effpick .effpick-free{padding-right:8px}
+.effpick .effpick-free{padding-inline-end:8px}
 .effpick .effpick-free .stp{flex:none;width:148px}
 .effpick .effpick-free .stp .num{font-size:17px;font-weight:600}
 .effpick .effpick-free .stp .num::placeholder{color:var(--label-3);font-weight:500}
@@ -873,7 +873,7 @@ body.chips-dragging *{cursor:inherit}
    line up with the header exactly like a straight set — only the leading .n circle is replaced by
    a small L/R badge of the same width. */
 .setrow-side{display:flex;align-items:center;gap:8px;padding:4px 0;position:relative}
-.setrow-side+.setrow-side::before{content:'';position:absolute;left:32px;right:0;top:0;height:var(--hair);background:var(--sep)}
+.setrow-side+.setrow-side::before{content:'';position:absolute;inset-inline-start:32px;inset-inline-end:0;top:0;height:var(--hair);background:var(--sep)}
 .setrow-side>.n{align-self:center}
 .setrow-side .side-rows{flex:1;min-width:0;display:flex;flex-direction:column}
 /* inner side rows: no leading number circle (the badge takes its place), no top hairline between
@@ -983,7 +983,7 @@ body.chips-dragging *{cursor:inherit}
 /* Under an L/R row the set number already sits outside the .side-rows box, so the indent that
    tucks a straight row's drops under its number would be paid twice — at 320 px both number
    fields of a per-side drop collapsed to 0 px (QA C3). The label starts under the badge instead. */
-.setrow-side .side-rows .subrow{padding-left:0}
+.setrow-side .side-rows .subrow{padding-inline-start:0}
 .subrow .subn{font-size:11px;color:var(--label-3);flex:none;width:46px}
 /* the number outranks the buttons here as in the row above: room for "227.5" (a drop's weight)
    or "100" (the second mini is always reps) at 13 px, and the buttons shrink to 16 px first */
@@ -996,7 +996,7 @@ body.chips-dragging *{cursor:inherit}
 /* label 46, two minis at their floors 70 + 60, the ✕ and three gaps: 252 px with the indent — the
    whole row at 320 px. The label starts under the number circle's inner edge there instead. */
 @media (max-width:359px){
-  .subrow{padding-left:24px}
+  .subrow{padding-inline-start:24px}
 }
 /* The number is the set's menu (drop / burst / remove); a 24px circle needs a finger-sized hit area. */
 .setrow .n::before{content:'';position:absolute;inset:-10px}
@@ -1018,7 +1018,7 @@ body.chips-dragging *{cursor:inherit}
 /* why the next target is what it is (issue #17) */
 .progline{
   width:100%;display:flex;align-items:flex-start;gap:7px;margin:6px 0 2px;padding:0;
-  text-align:left;font-size:13px;line-height:1.38;color:var(--acc);
+  text-align: start;font-size:13px;line-height:1.38;color:var(--acc);
 }
 .progline.warn{color:var(--yellow)}
 .progline svg{flex:none;margin-top:2px}
@@ -1049,7 +1049,7 @@ body.chips-dragging *{cursor:inherit}
 
 /* --- rest timer --- */
 #timer{
-  position:fixed;left:12px;right:12px;bottom:calc(88px + var(--sab));z-index:60;
+  position:fixed;inset-inline-start:12px;inset-inline-end:12px;bottom:calc(88px + var(--sab));z-index:60;
   /* nearly opaque: the set rows underneath were reading through the old 82% and made the
      clock hard to pick out mid-set. The blur stays, so it still sits above the page. */
   background:color-mix(in srgb,var(--surface) 97%,transparent);
@@ -1070,7 +1070,7 @@ body.chips-dragging *{cursor:inherit}
 #timer.rest .head{display:flex;align-items:center;gap:12px}
 #timer.rest .acts{display:flex;align-items:center;gap:8px}
 #timer.rest .acts .btn{padding-top:11px;padding-bottom:11px}   /* sweaty hands, mid-set */
-#timer.rest .acts .skip{margin-left:auto;min-width:84px}
+#timer.rest .acts .skip{margin-inline-start:auto;min-width:84px}
 /* A paused rest reads as held: the clock and the bar step back until it runs again. */
 #timer.rest.paused .t,#timer.rest.paused .bar{opacity:.5}
 /* work timer (issue #16): the same bar doing the opposite job — outlined and tinted so a
@@ -1092,7 +1092,7 @@ body.chips-dragging *{cursor:inherit}
   touch-action:none;overscroll-behavior:none;
 }
 .sheet{
-  position:absolute;left:0;right:0;bottom:0;background:var(--bg-el);
+  position:absolute;inset-inline-start:0;inset-inline-end:0;bottom:0;background:var(--bg-el);
   border-radius:var(--r-xl) var(--r-xl) 0 0;
   padding:8px 18px calc(20px + var(--sab));
   /* A tall sheet stops short of the status bar / Dynamic Island: every cap carries the top
@@ -1135,7 +1135,7 @@ body.chips-dragging *{cursor:inherit}
 .efftbl{background:var(--surface);border-radius:var(--r-lg);overflow:hidden;margin:14px 0 12px}
 .efftbl .r{display:flex;align-items:center;gap:10px;padding:10px 14px;position:relative}
 .efftbl .r+.r::before{
-  content:'';position:absolute;left:14px;right:0;top:0;height:var(--hair);background:var(--sep);
+  content:'';position:absolute;inset-inline-start:14px;inset-inline-end:0;top:0;height:var(--hair);background:var(--sep);
 }
 .efftbl .n{
   width:36px;flex:none;text-align:center;font-size:17px;font-weight:600;
@@ -1184,7 +1184,7 @@ body.chips-dragging *{cursor:inherit}
 }
 .bwin{display:flex;align-items:baseline;justify-content:center;gap:7px;margin:16px 0}
 .bwin input{
-  width:150px;background:none;border:none;outline:none;text-align:right;
+  width:150px;background:none;border:none;outline:none;text-align: end;
   font-size:52px;font-weight:600;letter-spacing:-.035em;color:var(--label);
 }
 .bwin span{color:var(--label-2);font-size:19px}
@@ -1205,7 +1205,7 @@ body.chips-dragging *{cursor:inherit}
 /* --- activity heatmap --- */
 .hm-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:2px}
 .hm-wrap::-webkit-scrollbar{display:none}
-.hm-months{display:flex;margin-left:28px;margin-bottom:5px}
+.hm-months{display:flex;margin-inline-start:28px;margin-bottom:5px}
 .hm-months span{flex:none;width:14px;font-size:11px;color:var(--label-3);white-space:nowrap;overflow:visible}
 .hm-body{display:flex}
 .hm-days{display:flex;flex-direction:column;gap:3px;flex:none;width:28px}
@@ -1265,7 +1265,7 @@ body.chips-dragging *{cursor:inherit}
 .mrow .nm{flex:1;min-width:0;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .mrow .bar{width:74px;height:5px;border-radius:3px;background:var(--surface-2);flex:none;overflow:hidden}
 .mrow .bar i{display:block;height:100%;background:var(--acc);border-radius:3px}
-.mrow .v{font-size:12px;color:var(--label-2);min-width:52px;text-align:right;flex:none}
+.mrow .v{font-size:12px;color:var(--label-2);min-width:52px;text-align: end;flex:none}
 /* A headline number inside a card — tile weight without a tile around it, for the pair of
    readings at the top of the effort card. */
 .stat-v{font-size:26px;font-weight:600;letter-spacing:-.026em;line-height:1.1}
@@ -1309,7 +1309,7 @@ body.chips-dragging *{cursor:inherit}
 .empty{text-align:center;color:var(--label-2);padding:44px 20px;font-size:15px;line-height:1.45}
 .empty .ico{font-size:34px;color:var(--label-2);margin-bottom:12px;display:flex;justify-content:center}
 .steps-list{
-  padding-left:18px;color:var(--label-2);font-size:15px;line-height:1.5;
+  padding-inline-start:18px;color:var(--label-2);font-size:15px;line-height:1.5;
   display:flex;flex-direction:column;gap:9px;
 }
 .steps-list::marker{color:var(--label-3)}
@@ -1330,7 +1330,7 @@ body.chips-dragging *{cursor:inherit}
 .cal-d i.plan{background:var(--label-3)}
 .cal-d i.ovr{background:var(--orange)}
 .cal-legend{display:flex;gap:14px;justify-content:center;margin-top:12px;font-size:12px;color:var(--label-3)}
-.cal-legend i{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:5px}
+.cal-legend i{display:inline-block;width:6px;height:6px;border-radius:50%;margin-inline-end:5px}
 
 /* --- accent swatches --- */
 .swatches{display:flex;gap:12px;flex-wrap:wrap}
@@ -1341,7 +1341,7 @@ body.chips-dragging *{cursor:inherit}
 /* --- supersets --- */
 .ss-label{
   font-size:12px;font-weight:600;letter-spacing:-.004em;text-transform:none;
-  color:var(--acc);margin:8px 0 5px 4px;display:flex;align-items:center;gap:5px;
+  color:var(--acc);margin-block:8px 5px;margin-inline-start:4px;display:flex;align-items:center;gap:5px;
 }
 .ss-label .icn{font-size:13px}
 .item.in-ss{box-shadow:inset 3px 0 0 var(--acc)}
@@ -1371,11 +1371,11 @@ body.chips-dragging *{cursor:inherit}
      it is the line that decides whether the numbers fit. 8 px each, and the superset card inside
      a unit keeps 4 (none below 360), so every set row has the same 256 px at 320 as in a plain
      card, and 296–304 at 368. */
-  .wl-unit .card,.ss-card .card{padding-left:8px;padding-right:8px}
-  .wl-unit .ss-card{padding-left:4px;padding-right:4px}
+  .wl-unit .card,.ss-card .card{padding-inline:8px}
+  .wl-unit .ss-card{padding-inline:4px}
 }
 @media (max-width:359px){
-  .wl-unit .ss-card{padding-left:0;padding-right:0}
+  .wl-unit .ss-card{padding-inline:0}
 }
 .ss-hd{
   font-size:12px;font-weight:600;color:var(--acc);margin-bottom:12px;
@@ -1408,7 +1408,7 @@ body.chips-dragging *{cursor:inherit}
 .today-row{
   display:flex;align-items:center;justify-content:space-between;gap:10px;
   margin-top:12px;padding:12px 14px;border-radius:var(--r);background:var(--surface-2);
-  transition:background var(--fast);width:100%;text-align:left;cursor:pointer;
+  transition:background var(--fast);width:100%;text-align: start;cursor:pointer;
 }
 .today-row:active{background:var(--surface-3)}
 .today-row .lbl2{font-size:11px;font-weight:500;letter-spacing:.03em;text-transform:uppercase;color:var(--label-3)}
@@ -1509,7 +1509,7 @@ body.chips-dragging *{cursor:inherit}
 .cam-frame{position:absolute;inset:0;margin:auto;width:62%;aspect-ratio:1;border:2px dashed rgba(255,255,255,.75);border-radius:14px;pointer-events:none}
 /* ------------------------------------------------- the Coach entry on Plan -- */
 .coach-cta{
-  display:flex;align-items:center;gap:13px;width:100%;text-align:left;
+  display:flex;align-items:center;gap:13px;width:100%;text-align: start;
   margin-bottom:12px;padding:14px 16px;border-radius:var(--r-card);
   background:linear-gradient(135deg,var(--acc-soft),color-mix(in srgb,var(--acc) 6%,var(--surface)));
   border:1px solid color-mix(in srgb,var(--acc) 35%,transparent);
@@ -1524,3 +1524,27 @@ body.chips-dragging *{cursor:inherit}
 .coach-cta-t b{font-size:17px;font-weight:600;letter-spacing:-.015em;color:var(--label)}
 .coach-cta-t span{font-size:13px;color:var(--label-2);line-height:1.35}
 .coach-cta-chev{color:var(--acc);font-size:15px;flex:none}
+
+/* ----------------------------------------------------------- RTL (Arabic) -- */
+/* Directional icons flip: back chevrons point right, trailing chevrons point left. */
+[dir="rtl"] [data-icon="chevronLeft"],
+[dir="rtl"] [data-icon="chevronRight"]{transform:scaleX(-1)}
+/* Segmented control: flex order reverses, so the sliding indicator moves the other way. */
+[dir="rtl"] .seg-sel{transform:translateX(calc(-100% * var(--i)))}
+/* Numbers and dates inside Arabic text still read left-to-right. */
+[dir="rtl"] .num,[dir="rtl"] input[type="number"]{direction:ltr}
+/* Superset edge stripe points at the inline start (the right, in RTL). */
+[dir="rtl"] .item.in-ss{box-shadow:inset -3px 0 0 var(--acc)}
+/* Slider: the thumb is offset from inline-start, which is the right edge in RTL, so the
+   half-width centering shift points the other way. */
+[dir="rtl"] .sld-knob{transform:translateX(50%)}
+[dir="rtl"] .sld.dragging .sld-knob{transform:translateX(50%) scale(1.14)}
+/* Switch: the knob rests at inline-start (the right, in RTL), so "on" travels the other
+   way — the physical +20px would push it out of the track. */
+[dir="rtl"] .sw.on .knob{transform:translateX(-20px)}
+[dir="rtl"] .sw.on:active .knob{transform:translateX(-16px)}
+/* Chronological grids keep their left-to-right order: heatmap weeks and calendar
+   weekdays would otherwise mirror. */
+[dir="rtl"] .hm-wrap,[dir="rtl"] .cal-grid{direction:ltr}
+/* Tight tracking is tuned for Latin; Arabic is a connected script and gets none. */
+[dir="rtl"] *{letter-spacing:0}

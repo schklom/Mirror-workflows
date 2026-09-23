@@ -58,6 +58,60 @@ describe('Slider', () => {
   })
 })
 
+describe('Slider under dir=rtl', () => {
+  // The Slider scales from inline-start: min sits on the left in LTR and on the right in
+  // RTL. These cases pin the RTL behaviour — the pointer math, the grab point and the
+  // arrow keys — the parts that would silently break if the direction handling were
+  // dropped.
+  beforeEach(() => {
+    document.documentElement.dir = 'rtl'
+  })
+  afterEach(() => {
+    document.documentElement.dir = 'ltr'
+  })
+
+  const mountSlider = (value, onChange) => {
+    act(() => root.render(<Slider value={value} min={0} max={300} step={1} onChange={onChange} />))
+    const el = host.querySelector('.sld')
+    vi.spyOn(el, 'getBoundingClientRect').mockReturnValue({ left: 100, right: 400, width: 300, top: 0, bottom: 20, height: 20, x: 100, y: 0 })
+    return el
+  }
+
+  it('reads the pointer from the physical right: the left end is near max, the right end near min', () => {
+    const onChange = vi.fn()
+    const el = mountSlider(80, onChange)
+    pointer(el, 'pointerdown', { x: 110 })              // f = .033 → mirrored .967 → 290
+    expect(onChange).toHaveBeenLastCalledWith(290)
+    pointer(el, 'pointerdown', { x: 390 })              // f = .967 → mirrored .033 → 10
+    expect(onChange).toHaveBeenLastCalledWith(10)
+  })
+
+  it('grabs the knob from the right end and drags relative to the finger', () => {
+    const onChange = vi.fn()
+    const el = mountSlider(80, onChange)               // RTL knob sits at x=400-80=320
+    pointer(el, 'pointerdown', { x: 320 + SLIDER_GRAB_PX - 2 })
+    expect(onChange).not.toHaveBeenCalled()             // grabbing must not jump
+    pointer(window, 'pointermove', { x: 320 + SLIDER_GRAB_PX - 2 + 60 })
+    expect(onChange).toHaveBeenLastCalledWith(20)       // moved toward min by 60, not to the finger
+    pointer(window, 'pointerup')
+  })
+
+  it('swaps the horizontal arrows in RTL and keeps the vertical arrows as they are', () => {
+    const onChange = vi.fn()
+    const el = mountSlider(50, onChange)
+    // The arrow toward the inline-end (max) still increases — that is Left in RTL.
+    const key = k => act(() => el.dispatchEvent(new KeyboardEvent('keydown', { key: k, bubbles: true })))
+    key('ArrowLeft')
+    expect(onChange).toHaveBeenLastCalledWith(51)
+    key('ArrowRight')
+    expect(onChange).toHaveBeenLastCalledWith(49)
+    key('ArrowUp')
+    expect(onChange).toHaveBeenLastCalledWith(51)
+    key('ArrowDown')
+    expect(onChange).toHaveBeenLastCalledWith(49)
+  })
+})
+
 describe('Stepper', () => {
   // controlled like every real caller: the parent re-renders with the new value
   function Host({ initial, onChange, step }) {

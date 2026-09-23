@@ -67,7 +67,7 @@ export default function Login() {
       {head}
       <div className="muted" style={{ marginBottom: 30 }}>{t('Live demo — everything stays in this browser.')}</div>
       <Button variant="primary" icon="sparkles" onClick={() => setGuest(true)}>{t('Start the demo')}</Button>
-      <div className="card small muted" style={{ textAlign: 'left', marginTop: 16 }}>
+      <div className="card small muted" style={{ textAlign: 'start', marginTop: 16 }}>
         {t('This demo runs entirely in your browser on example data — nothing is sent anywhere. Passkey sign-in and sync across your devices come with the openGym server, which you get by self-hosting it.')}
       </div>
       <div className="dim small" style={{ marginTop: 22, lineHeight: 1.6 }}>
@@ -85,7 +85,7 @@ export default function Login() {
         <div style={{ height: 10 }} />
         <Button icon="sparkles" onClick={() => useUI.getState().openSheet(close => <RegisterSheet close={close} />)}>{t('Create new profile')}</Button>
         {canGuest && <div style={{ height: 10 }} />}
-      </> : <div className="card small muted" style={{ textAlign: 'left' }}>{canGuest
+      </> : <div className="card small muted" style={{ textAlign: 'start' }}>{canGuest
         ? t("This browser doesn't support passkeys — you can still use openGym locally on this device.")
         // Without passkeys and without the guest entrance there is no way in from this browser,
         // so say that plainly instead of offering a local profile that cannot be created.

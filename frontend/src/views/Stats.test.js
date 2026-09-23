@@ -39,7 +39,7 @@ describe('Stats mixed-entry metric contract', () => {
     expect(uiSource).toContain('sheetTitle, stackedValue = false')
     expect(uiSource).toContain("className={stackedValue ? 'lrow-stack-value' : ''}")
     expect(cssSource).toContain('.lrow.lrow-stack-value .lrow-m{grid-column:1;grid-row:1}')
-    expect(cssSource).toContain('.lrow.lrow-stack-value .lrow-v{grid-column:1;grid-row:2;width:100%;max-width:none;text-align:left}')
+    expect(cssSource).toContain('.lrow.lrow-stack-value .lrow-v{grid-column:1;grid-row:2;width:100%;max-width:none;text-align:start}')
     expect(cssSource).toContain('flex:0 1 auto;max-width:55%;min-width:0;')
     expect(cssSource).toContain('overflow:hidden;text-overflow:ellipsis;white-space:nowrap')
   })

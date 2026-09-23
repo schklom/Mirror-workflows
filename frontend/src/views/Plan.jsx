@@ -90,7 +90,7 @@ export default function Plan() {
               <div className="grow" style={{ minWidth: 0 }}><div className="tt" style={{ fontSize: 14 }}>{r.name}</div><div className="ss">{exCount(r.ex.length)}</div></div>
               <button className="iconbtn sm" aria-label={t('Remove')} onClick={() => removeFromDay(d, r.id)}><Icon name="xmark" /></button>
             </div>)}
-            <button className="btn ghost sm" style={{ marginTop: 4, marginLeft: 8 }} onClick={() => dayAddRoutineSheet(d)}>
+            <button className="btn ghost sm" style={{ marginTop: 4, marginInlineStart: 8 }} onClick={() => dayAddRoutineSheet(d)}>
               <Icon name="plus" /> {t('Add routine')}
             </button>
           </div>

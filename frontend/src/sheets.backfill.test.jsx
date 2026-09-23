@@ -73,7 +73,7 @@ describe('log a past workout', () => {
     // and where even the longest word leaves no room for the field (Polish "Godzina rozpoczęcia"
     // at 320px), the field drops onto its own line rather than over the edge of the card.
     expect(cssSource).toContain('.lrow:has(.timef){flex-wrap:wrap}')
-    expect(cssSource).toContain('.lrow>.timef{margin-left:auto}')
+    expect(cssSource).toContain('.lrow>.timef{margin-inline-start:auto}')
   })
 
   it('starts a backfilled session straight away on a free day', () => {

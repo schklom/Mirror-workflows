@@ -1208,7 +1208,6 @@ export default {
   'Bar {0}': '바 {0}',
   'Plate loading': '플레이트 끼우기',
   'Single stack': '단일 스택',
-  'No bar': '바 없음',
   'Bar only': '빈 바',
   'Load {0}': '{0} 불러오기',
   '{0} short': '{0} 부족',

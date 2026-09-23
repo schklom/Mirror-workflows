@@ -1208,7 +1208,6 @@ export default {
   'Bar {0}': 'Gryf {0}',
   'Plate loading': 'Dobieranie talerzy',
   'Single stack': 'Pojedynczy stos',
-  'No bar': 'Bez gryfu',
   'Bar only': 'Sam gryf',
   'Load {0}': 'Załóż {0}',
   '{0} short': 'brakuje {0}',

@@ -1208,7 +1208,6 @@ export default {
   'Bar {0}': 'Barre {0}',
   'Plate loading': 'Chargement des disques',
   'Single stack': 'Pile unique',
-  'No bar': 'Sans barre',
   'Bar only': 'Barre seule',
   'Load {0}': 'Charger {0}',
   '{0} short': '{0} en moins',

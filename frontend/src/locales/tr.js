@@ -1208,7 +1208,6 @@ export default {
   'Bar {0}': 'Bar {0}',
   'Plate loading': 'Disk yükleme',
   'Single stack': 'Tek yığın',
-  'No bar': 'Bar yok',
   'Bar only': 'Sadece bar',
   'Load {0}': '{0} yükle',
   '{0} short': '{0} eksik',

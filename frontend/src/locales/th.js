@@ -878,7 +878,6 @@ export default {
   'Bar {0}': 'บาร์ {0}',
   'Plate loading': 'การใส่แผ่นน้ำหนัก',
   'Single stack': 'กองเดียว',
-  'No bar': 'ไม่มีบาร์',
   'Bar only': 'บาร์เปล่า',
   'Load {0}': 'โหลด {0}',
   '{0} short': 'ขาดอีก {0}',

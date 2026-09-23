@@ -1208,7 +1208,6 @@ export default {
   'Bar {0}': 'Barra {0}',
   'Plate loading': 'Carga de discos',
   'Single stack': 'Pilha única',
-  'No bar': 'Sem barra',
   'Bar only': 'Só a barra',
   'Load {0}': 'Carregar {0}',
   '{0} short': '{0} a menos',

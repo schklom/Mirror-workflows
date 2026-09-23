@@ -870,7 +870,6 @@ export default {
   'Bar {0}': 'Rúd {0}',
   'Plate loading': 'Tárcsák felhelyezése',
   'Single stack': 'Egy oszlop',
-  'No bar': 'Nincs rúd',
   'Bar only': 'Csak a rúd',
   'Load {0}': '{0} betöltése',
   '{0} short': '{0} hiányzik',

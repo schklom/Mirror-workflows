@@ -1228,7 +1228,6 @@ export default {
   'Bar {0}': 'Stange {0}',
   'Plate loading': 'Scheiben laden',
   'Single stack': 'Einzelstapel',
-  'No bar': 'Keine Stange',
   'Bar only': 'Nur Stange',
   'Load {0}': '{0} laden',
   '{0} short': '{0} zu wenig',

@@ -1208,7 +1208,6 @@ export default {
   'Bar {0}': 'Bilanciere {0}',
   'Plate loading': 'Caricamento dischi',
   'Single stack': 'Pila unica',
-  'No bar': 'Senza bilanciere',
   'Bar only': 'Solo bilanciere',
   'Load {0}': 'Carica {0}',
   '{0} short': '{0} in meno',

@@ -1208,7 +1208,6 @@ export default {
   'Bar {0}': 'बार {0}',
   'Plate loading': 'प्लेट लोडिंग',
   'Single stack': 'एक स्टैक',
-  'No bar': 'बार नहीं',
   'Bar only': 'सिर्फ़ बार',
   'Load {0}': '{0} लोड करें',
   '{0} short': '{0} कम',

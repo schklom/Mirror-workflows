@@ -1208,7 +1208,6 @@ export default {
   'Bar {0}': '杆 {0}',
   'Plate loading': '配重',
   'Single stack': '单堆',
-  'No bar': '无杆',
   'Bar only': '空杠',
   'Load {0}': '加载{0}',
   '{0} short': '差 {0}',

@@ -26,9 +26,20 @@ const LABELS = {
   'auth.pair.create': 'Created a pairing code',
   'auth.pair.ok': 'Paired a phone',
   'auth.pair.fail': 'Pairing failed',
+  // Password sign-in (#118), where the instance offers it.
+  'auth.password.ok': 'Signed in with a password',
+  'auth.password.fail': 'Password sign-in failed',
+  'auth.password.locked': 'Password sign-in paused after repeated failures',
+  'auth.password.set': 'Set a password',
+  'auth.password.change': 'Changed their password',
+  'auth.password.remove': 'Removed their password',
+  'auth.password.reset': 'Used a reset code',
+  // The sign-in throttle paused an address; `msg` says for what (password, signup, pair).
+  'auth.throttled': 'Too many failed attempts from one address',
   'admin.user.disable': 'Disabled an account',
   'admin.user.enable': 'Re-enabled an account',
   'admin.user.delete': 'Deleted an account',
+  'admin.password.reset': 'Issued a password reset code',
   'admin.invite.create': 'Created an invite code',
   'admin.invite.revoke': 'Revoked an invite code',
   'admin.audit.clear': 'Cleared the activity log',
@@ -49,7 +60,13 @@ const REASONS = {
   'invite-invalid': 'the invite code was used or revoked in the meantime',
   'invite-rejected': 'wrong or already-used invite code',
   'code-invalid': 'wrong or expired pairing code',
-  'user-unavailable': 'the profile behind the pairing code is disabled or gone'
+  'user-unavailable': 'the profile behind the pairing code is disabled or gone',
+  'bad-password': 'wrong password',
+  'bad-current': 'wrong current password while changing it',
+  'unknown-name': 'no profile with a password has that name',
+  'step-up-failed': 'the passkey confirming a new password was rejected',
+  'reset-invalid': 'wrong or expired reset code',
+  'reset': 'too many wrong reset codes for one name'
 }
 export const auditReason = msg => REASONS[msg] || (msg ? String(msg) : '')
 

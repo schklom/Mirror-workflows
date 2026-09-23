@@ -133,6 +133,13 @@ export const planHash = S => hashPlan(canonicalPlan(S))
 const findRoutine = (S, id) => (S.routines || []).find(r => r.id === id) || null
 const findEx = (routine, id) => (routine?.ex || []).find(e => e.id === id) || null
 
+// The Coach reads a routine's name cut at 80 characters (NAME_MAX in api/coach/core/payload.js),
+// and the server copies that cut name into a rename's `before`. Compared whole, a longer name
+// never matched, and every rename of it was shown as already overtaken by an edit. Not imported
+// from payload.js, which would pull the exercise catalogue into the main bundle; coach.test.js
+// pins the two together.
+export const ROUTINE_NAME_SEEN = 80
+
 /** The plan's current value for whatever a change is about — what `before` is checked against. */
 export function currentValue(S, change) {
   const r = findRoutine(S, change.target?.routineId)
@@ -146,7 +153,7 @@ export function currentValue(S, change) {
     case 'inc': return e?.inc ?? null
     case 'exercise-prog': return e?.prog ?? null
     case 'routine-prog': return r?.prog ?? null
-    case 'rename-routine': return r?.name ?? null
+    case 'rename-routine': return r?.name == null ? null : String(r.name).slice(0, ROUTINE_NAME_SEEN)
     case 'week': return [].concat(S.week?.[change.target?.weekday] ?? [])   // routine-id list; [] = rest
     default: return undefined            // structural changes have no single scalar to compare
   }

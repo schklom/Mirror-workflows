@@ -243,8 +243,10 @@ describe('Settings → Password', () => {
     expect(mocks.passkeyAssertion).not.toHaveBeenCalled()
     expect(alertText(host)).toBe('Your current password is not right.')
     expect(close).not.toHaveBeenCalled()
-    // No passkey on this profile: the password is its only way in, so there is no "Remove".
+    // No passkey on this profile: the password is its only way in, so there is no "Remove" —
+    // and no "confirm with your passkey" either.
     expect(button(host, 'Remove password')).toBeUndefined()
+    expect(button(host, 'Forgot it? Confirm with your passkey instead')).toBeUndefined()
   })
 
   it('removing asks first and then deletes; only offered while a passkey remains', async () => {

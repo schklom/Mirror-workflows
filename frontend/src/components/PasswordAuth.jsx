@@ -202,7 +202,7 @@ export function PasswordRow() {
   useEffect(() => { load() }, [])
   if (!st) return null
   // Nothing here could set a first password without a passkey ceremony.
-  if (!st.set && !webauthnOK()) return null
+  if (!st.set && (!webauthnOK() || !st.passkeys)) return null
   const blocked = !st.set && st.nameTaken
   const subtitle = blocked ? t('Another profile already signs in with this name.')
     : st.set ? t('Set · sign in as “{0}”', st.name)
@@ -264,7 +264,7 @@ export function PasswordSheet({ status, close, done }) {
       <div style={{ height: 12 }} />
       <Button type="submit" variant="primary" disabled={busy}>{status.set ? t('Save') : t('Confirm with passkey & save')}</Button>
     </form>
-    {status.set && webauthnOK() && <>
+    {status.set && status.passkeys > 0 && webauthnOK() && <>
       <div style={{ height: 8 }} />
       <Button type="button" variant="ghost" className="dim" disabled={busy} onClick={() => save(true)}>{t('Forgot it? Confirm with your passkey instead')}</Button>
     </>}

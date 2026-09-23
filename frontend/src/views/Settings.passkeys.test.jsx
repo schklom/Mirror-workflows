@@ -115,6 +115,51 @@ describe('Settings: passkeys and another device', () => {
     } finally { mocks.list = list }
   })
 
+  // Settings opened while the server was down: both reads failed, and the rows stayed missing
+  // until Settings was opened again, even with the block above saying "All synced".
+  it('rows that found the server down come back once the store hears from it, and rows that loaded are not asked again', async () => {
+    const answer = mocks.api.getMockImplementation()
+    mocks.api.mockImplementation(async path => {
+      if (path === '/api/account/passkeys' || path === '/api/account/password') throw Object.assign(new Error('HTTP 502'), { status: 502, data: {} })
+      return answer(path)
+    })
+    const page = mount(<Settings />)
+    await settle()
+    expect(titles(section(page, 'Account'))).not.toEqual(expect.arrayContaining(['Passkeys']))
+    expect(titles(section(page, 'Account'))).not.toContain('Password')
+
+    mocks.api.mockImplementation(answer)
+    mocks.sync = { ...mocks.sync, lastSynced: mocks.sync.lastSynced + 30000 }   // a check that found both sides in step
+    act(() => mounted.at(-1).root.render(<Settings />))
+    await settle()
+    expect(titles(section(page, 'Account'))).toEqual(expect.arrayContaining(['Passkeys', 'Add another device', 'Password']))
+    expect(asked('/api/account/passkeys')).toBe(2)
+    expect(asked('/api/account/password')).toBe(2)
+
+    mocks.sync = { ...mocks.sync, lastSynced: mocks.sync.lastSynced + 30000 }
+    act(() => mounted.at(-1).root.render(<Settings />))
+    await settle()
+    expect(asked('/api/account/passkeys')).toBe(2)
+    expect(asked('/api/account/password')).toBe(2)
+  })
+
+  it('a refusal is an answer: a row the server turned down is not asked for on every sync', async () => {
+    const answer = mocks.api.getMockImplementation()
+    mocks.api.mockImplementation(async path => {
+      if (path === '/api/account/passkeys') throw Object.assign(new Error('HTTP 404'), { status: 404, data: {} })
+      return answer(path)
+    })
+    try {
+      const page = mount(<Settings />)
+      await settle()
+      mocks.sync = { ...mocks.sync, lastSynced: mocks.sync.lastSynced + 30000 }
+      act(() => mounted.at(-1).root.render(<Settings />))
+      await settle()
+      expect(titles(page)).not.toContain('Passkeys')
+      expect(asked('/api/account/passkeys')).toBe(1)
+    } finally { mocks.api.mockImplementation(answer) }
+  })
+
   it('a change to the passkeys reads the list and the password row again', async () => {
     const page = mount(<Settings />)
     await settle()

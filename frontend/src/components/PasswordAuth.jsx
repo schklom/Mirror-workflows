@@ -197,6 +197,18 @@ function PasswordRegisterSheet({ close }) {
 }
 export const openPasswordRegister = () => ui().openSheet(close => <PasswordRegisterSheet close={close} />)
 
+/* Settings' account rows read the server as the screen opens. One that found the server down
+   has nothing to show, and stayed missing until Settings was left and opened again, while the
+   block above it already said "All synced". It asks again whenever the store hears from the
+   server — a push or pull that landed, a check that found both sides in step — until it gets
+   an answer. A refusal (a server from before the route, a 403) is an answer: asking again
+   would only get the same one. */
+export const notReached = e => e?.status == null || e.status >= 500
+export function useAgainOnceReached(unreached, load) {
+  const reachedAt = useStore(s => s.sync?.lastSynced)
+  useEffect(() => { if (unreached) load() }, [reachedAt])
+}
+
 /* ------------------------------------------------------------------- Settings -------------
    Settings → Account → Password, for a signed-in browser. A first password needs a passkey
    ceremony right now (a session on its own could be a copied cookie); a change needs the
@@ -206,8 +218,10 @@ export const openPasswordRegister = () => ui().openSheet(close => <PasswordRegis
 // password may be removed depends on them, so the row asks again.
 export function PasswordRow({ version = 0 }) {
   const [st, setSt] = useState(null)   // GET /api/account/password
-  const load = () => api('/api/account/password').then(setSt).catch(() => {})
+  const [unreached, setUnreached] = useState(false)
+  const load = () => api('/api/account/password').then(r => { setSt(r); setUnreached(false) }).catch(e => setUnreached(notReached(e)))
   useEffect(() => { load() }, [version])
+  useAgainOnceReached(unreached, load)
   if (!st) return null
   // Nothing here could set a first password without a passkey ceremony.
   if (!st.set && (!webauthnOK() || !st.passkeys)) return null

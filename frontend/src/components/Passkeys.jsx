@@ -12,7 +12,7 @@ import { api, webauthnOK, passkeyAssertion, createPasskey } from '../lib/api.js'
 import { copyText } from '../lib/clipboard.js'
 import { deviceLinkUrl, deviceLabel } from '../lib/device-link.js'
 import { askAddDeviceData, confirmSheet } from '../sheets.jsx'
-import { passwordError } from './PasswordAuth.jsx'
+import { passwordError, notReached, useAgainOnceReached } from './PasswordAuth.jsx'
 import QrCanvas from './QrCanvas.jsx'
 import { Row, Button } from './ui.jsx'
 
@@ -59,8 +59,10 @@ export function passkeyError(e) {
 const listOf = r => (Array.isArray(r?.passkeys) ? r : null)
 export function usePasskeys(on) {
   const [st, setSt] = useState(null)
-  const load = () => api('/api/account/passkeys').then(r => setSt(listOf(r))).catch(() => {})
+  const [unreached, setUnreached] = useState(false)
+  const load = () => api('/api/account/passkeys').then(r => { setSt(listOf(r)); setUnreached(false) }).catch(e => setUnreached(notReached(e)))
   useEffect(() => { if (on) load() }, [on])
+  useAgainOnceReached(on && unreached, load)
   return { st, load, set: setSt }
 }
 

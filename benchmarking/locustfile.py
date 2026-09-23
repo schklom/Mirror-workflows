@@ -48,7 +48,7 @@ class FMD(HttpUser):
                 "items": [
                     {
                         "clientItemIdHex": uuid.uuid7().hex,
-                        "unixMillis": int(time()),
+                        "unixMillis": int(time() * 1000),
                         "ciphertext64": b64(data),
                     }
                 ]

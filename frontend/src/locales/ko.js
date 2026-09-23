@@ -1365,4 +1365,25 @@ export default {
   'Vertical pressing.': '수직 밀기.',
   'You have moved this session to Saturday three weeks running. Better the plan says so than that you keep overriding it.': '3주 연속으로 이 세션을 토요일로 옮겼어요. 매번 바꾸기보다 계획에 그렇게 적어 두는 편이 나아요.',
   'You’re in the demo': '데모 모드예요',
+  // --- a past workout: drop-sets, supersets, its exercises' history, copy as text ---
+  'Copy as text': '텍스트로 복사',
+  'Copied': '복사됨',
+  'Could not copy': '복사할 수 없음',
+  // --- a missed day logged afterwards (#284) ---
+  'Log this workout': '이 운동 기록',
+  'Mark all sets done': '모든 세트 완료로 표시',
+  // --- every weigh-in, week by week ---
+  'All weigh-ins': '모든 체중 기록',
+  '{0} weigh-in': '체중 기록 {0}개',
+  '{0} weigh-ins': '체중 기록 {0}개',
+  'Weekly average': '주간 평균',
+  'Week of {0}': '{0} 주',
+  'Average {0}': '평균 {0}',
+  // --- last time or best set under each exercise (#173) ---
+  'Best set': '최고 세트',
+  'Show last time instead': '대신 지난번 보기',
+  'Show your best set instead': '대신 최고 세트 보기',
+  'Shown under each exercise': '각 운동 아래에 표시',
+  'What you did the last time, in that routine.': '그 루틴에서 지난번에 한 내용.',
+  'Your heaviest set of the exercise, from any workout.': '모든 운동 중 이 운동의 가장 무거운 세트.',
 }

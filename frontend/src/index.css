@@ -1022,6 +1022,10 @@ body.chips-dragging *{cursor:inherit}
 }
 .progline.warn{color:var(--yellow)}
 .progline svg{flex:none;margin-top:2px}
+/* "Last time" / "Best set" under the plan line (#173): a button that switches between the two,
+   looking like the plain line it replaced, with a small icon to say it can be tapped. */
+.refline{width:100%;display:flex;align-items:flex-start;gap:6px;margin-bottom:4px;padding:0;text-align:left}
+.refline svg{flex:none;margin-top:2px;font-size:12px}
 
 /* start a timed set (issue #16) — sits where you'd otherwise reach for the checkbox */
 .setrow .setgo{
@@ -1345,6 +1349,14 @@ body.chips-dragging *{cursor:inherit}
 }
 .ss-label .icn{font-size:13px}
 .item.in-ss{box-shadow:inset 3px 0 0 var(--acc)}
+/* A past workout's detail: each exercise opens its history, and a superset's exercises share the
+   routine editor's label and bar. */
+.wd-ex{margin-bottom:12px;cursor:pointer;border-radius:10px}
+.wd-ex>.grow{flex:1;min-width:0}
+.wd-ex:active{background:var(--surface-2)}
+.wd-ss{box-shadow:inset 3px 0 0 var(--acc);padding-left:11px;margin-bottom:12px}
+.wd-ss .ss-label{margin:0 0 8px}
+.wd-ss .wd-ex:last-child{margin-bottom:0}
 .ss-card{
   border-radius:var(--r-lg);padding:14px;
   background:var(--surface);box-shadow:inset 0 0 0 1.5px var(--acc-line);

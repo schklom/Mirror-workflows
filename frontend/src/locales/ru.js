@@ -1365,4 +1365,25 @@ export default {
   'Vertical pressing.': 'Вертикальный жим.',
   'You have moved this session to Saturday three weeks running. Better the plan says so than that you keep overriding it.': 'Вы три недели подряд переносите эту тренировку на субботу. Пусть лучше так и будет записано в плане, чем вы каждый раз его переопределяете.',
   'You’re in the demo': 'Вы в демо-режиме',
+  // --- a past workout: drop-sets, supersets, its exercises' history, copy as text ---
+  'Copy as text': 'Скопировать как текст',
+  'Copied': 'Скопировано',
+  'Could not copy': 'Не удалось скопировать',
+  // --- a missed day logged afterwards (#284) ---
+  'Log this workout': 'Записать эту тренировку',
+  'Mark all sets done': 'Отметить все подходы выполненными',
+  // --- every weigh-in, week by week ---
+  'All weigh-ins': 'Все взвешивания',
+  '{0} weigh-in': 'Взвешиваний: {0}',
+  '{0} weigh-ins': 'Взвешиваний: {0}',
+  'Weekly average': 'Среднее за неделю',
+  'Week of {0}': 'Неделя с {0}',
+  'Average {0}': 'В среднем {0}',
+  // --- last time or best set under each exercise (#173) ---
+  'Best set': 'Лучший подход',
+  'Show last time instead': 'Показать прошлый раз',
+  'Show your best set instead': 'Показать ваш лучший подход',
+  'Shown under each exercise': 'Под каждым упражнением',
+  'What you did the last time, in that routine.': 'Что вы сделали в прошлый раз в этой программе.',
+  'Your heaviest set of the exercise, from any workout.': 'Ваш самый тяжёлый подход в этом упражнении, из любой тренировки.',
 }

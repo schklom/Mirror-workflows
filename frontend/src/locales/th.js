@@ -1376,4 +1376,25 @@ export default {
   'Vertical pressing.': 'ท่าดันแนวตั้ง',
   'You have moved this session to Saturday three weeks running. Better the plan says so than that you keep overriding it.': 'คุณย้ายเซสชันนี้ไปวันเสาร์สามสัปดาห์ติดกันแล้ว ให้แผนระบุไว้เลยดีกว่าต้องแก้ทุกครั้ง',
   'You’re in the demo': 'คุณอยู่ในโหมดเดโม',
+  // --- a past workout: drop-sets, supersets, its exercises' history, copy as text ---
+  'Copy as text': 'คัดลอกเป็นข้อความ',
+  'Copied': 'คัดลอกแล้ว',
+  'Could not copy': 'คัดลอกไม่ได้',
+  // --- a missed day logged afterwards (#284) ---
+  'Log this workout': 'บันทึกการฝึกนี้',
+  'Mark all sets done': 'ทำเครื่องหมายทุกเซ็ตว่าเสร็จแล้ว',
+  // --- every weigh-in, week by week ---
+  'All weigh-ins': 'บันทึกน้ำหนักทั้งหมด',
+  '{0} weigh-in': 'บันทึก {0} ครั้ง',
+  '{0} weigh-ins': 'บันทึก {0} ครั้ง',
+  'Weekly average': 'ค่าเฉลี่ยรายสัปดาห์',
+  'Week of {0}': 'สัปดาห์เริ่ม {0}',
+  'Average {0}': 'เฉลี่ย {0}',
+  // --- last time or best set under each exercise (#173) ---
+  'Best set': 'เซ็ตที่ดีที่สุด',
+  'Show last time instead': 'แสดงครั้งก่อนแทน',
+  'Show your best set instead': 'แสดงเซ็ตที่ดีที่สุดของคุณแทน',
+  'Shown under each exercise': 'แสดงใต้แต่ละท่า',
+  'What you did the last time, in that routine.': 'สิ่งที่คุณทำครั้งก่อนในรูทีนนั้น',
+  'Your heaviest set of the exercise, from any workout.': 'เซ็ตที่หนักที่สุดของท่านี้ จากทุกการฝึก',
 }

@@ -1,7 +1,7 @@
 // Pure helpers over the state object S (ported 1:1 from the vanilla app).
 import { todayISO, isoOf, weekKey, weekStartOf, fmtNum } from './format.js'
 import { isCardio, isBodyweightEq, isAssisted, betterWeight } from './exercises.js'
-import { phaseForSet, modeForSet, modeForEntry, isWarmupRow, normalizeMode, completedVolumeOf, hasCompletedWork, nextDropWeight, splitBurstReps, makeSideSet, isSideSet, syncSideAggregate, WEIGHT_ORIGIN_MANUAL } from './workout-model.js'
+import { phaseForSet, modeForSet, modeForEntry, isWarmupRow, normalizeMode, completedVolumeOf, hasCompletedWork, nextDropWeight, splitBurstReps, makeSideSet, isSideSet, syncSideAggregate, WEIGHT_ORIGIN_MANUAL, dropsOf, clustersOf } from './workout-model.js'
 const objectOf = value => value && typeof value === 'object' && !Array.isArray(value) ? value : {}
 // Completed-state-independent work rows whose authoritative mode matches the requested mode.
 const workRowsForMode = (entry = {}, mode = 'reps') => {
@@ -114,11 +114,25 @@ export function setLabel(id, s, cfg) {
   if (mode === 'cardio') return `${s.min || 0} min @ ${fmtNum(s.speed || 0)} km/h`
   if (mode === 'time') return fmtSec(s.sec) + (s.w > 0 ? ` · ${fmtNum(s.w)}` : '')
   const bw = isBw({ ...c, id: c.id ?? id })
-  // One side's "weight×reps" (or bodyweight "reps" / "+belt × reps"), the same shape a whole
-  // straight set reads as — reused for each side of a unilateral set below.
-  const oneSide = side => {
+  const load = (w, reps) => (bw ? (w > 0 ? `+${fmtNum(w)} × ` : '') + reps : `${fmtNum(w || 0)}×${reps}`)
+  // A rest-pause set's reps read as its bursts, "60×10+4+2", the way the protocol is written
+  // down. The row's own `r` is the total either way; a planned set's bursts already add up to it
+  // (applyIntensifierPlan), while bursts added live sit on top of the activation set, which is
+  // then whatever the total leaves over. Bursts that do not fit the total are not shown.
+  const repsOf = side => {
     const reps = side.r || 0
-    return bw ? (side.w > 0 ? `+${fmtNum(side.w)} × ` : '') + reps : `${fmtNum(side.w || 0)}×${reps}`
+    const bursts = clustersOf(side).map(b => Number(b?.r) || 0).filter(r => r > 0)
+    const sum = bursts.reduce((a, b) => a + b, 0)
+    if (!bursts.length || sum > reps) return reps
+    return (reps > sum ? [reps - sum, ...bursts] : bursts).join('+')
+  }
+  // One side's "weight×reps" (or bodyweight "reps" / "+belt × reps"), the same shape a whole
+  // straight set reads as — reused for each side of a unilateral set below. A drop-set's drops
+  // follow it ("100×8 ↘ 80×6"): the volume of the workout counts them, so the list has to show
+  // them, or the total includes weight nobody can see where it came from.
+  const oneSide = side => {
+    const drops = dropsOf(side).filter(d => (Number(d?.r) || 0) > 0)
+    return load(side.w, repsOf(side)) + drops.map(d => ' ↘ ' + load(Number(d.w) || 0, Number(d.r))).join('')
   }
   // A unilateral set logged per side (issue #60) reads "L 15×8 · R 15×7" — the asymmetry is the
   // whole point, so both sides are shown rather than a single combined total.

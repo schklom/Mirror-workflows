@@ -21,6 +21,8 @@ import { defaultIncrement, weightIncrement, stepWeight } from '../lib/progressio
 import { progressionGuidance } from '../lib/progression-copy.js'
 import { buildPlannedEntry, plannedConfigOf } from '../lib/session-start.js'
 import { glyphOf } from '../lib/glyphs.js'
+import { markAllSetsDone } from '../lib/backfill.js'
+import { bestSetFor } from '../lib/exercise-history.js'
 import { isWarmupRow, isDropSet, isRestPauseSet, dropsOf, clustersOf, addDrop, addCluster, removeDropAt, removeClusterAt, setDropAt, setClusterAt, nextDropWeight, nextBurstReps, isSideSet, makeSideSet, setSideField, toggleSide, addSideDrop, removeSideDropAt, setSideDropAt, addSideCluster, removeSideClusterAt, setSideClusterAt, WEIGHT_ORIGIN_MANUAL } from '../lib/workout-model.js'
 import { canMoveActiveWorkoutUnit, moveActiveWorkoutUnit } from '../lib/active-workout-order.js'
 import { MUSCLE_NAME } from '../lib/muscles.js'
@@ -174,6 +176,18 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
       {t('Plan: {0}', setsRepsOf({ ...planned, mode }))}{note ? ' · ' + note : ''}
     </div>
   })()
+  // What the rows are held against (#173): the last time in this routine (#216), or the best set
+  // of the exercise ever logged — after a bad day, "last time" puts the bad day on the screen as
+  // the number to beat. Tapping the line switches between the two, and the choice is the
+  // profile's (S.logRef), so every exercise and the next session follow it.
+  const refBest = S.logRef === 'best'
+  const ref = refBest ? bestSetFor(S, entry.id, mode) : last
+  const refLine = ref ? <button type="button" className="refline small dim"
+    title={refBest ? t('Show last time instead') : t('Show your best set instead')}
+    onClick={() => update(s => { s.logRef = refBest ? 'last' : 'best' })}>
+    <span>{refBest ? t('Best set') : t('Last time')} ({fmtDate(ref.d)}): {(refBest ? [ref.set] : ref.sets).map(s => setLabel(entry.id, s, ref.target)).join(', ')}</span>
+    <Icon name="shuffle" />
+  </button> : null
   // A bodyweight set has no weight to type, so the column is not there (issue #32) — one
   // stepper instead of two, which is the whole point of the flag. Adding a belt weight in the
   // config brings it back, now labelled as the addition it is.
@@ -437,7 +451,7 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
     </div>}
     {entry.note && <div className="exnote">{entry.note}</div>}
     {planLine}
-    {last && <div className="small dim" style={{ marginBottom: 4 }}>{t('Last time')} ({fmtDate(last.d)}): {last.sets.map(s => setLabel(entry.id, s, last.target)).join(', ')}</div>}
+    {refLine}
     {/* Bar + plates for barbell work: what to load per side for the set in front of you
         (first undone set; the heaviest row once everything is checked). The logged number
         stays the total — this chip is the split, and tapping it edits the bar's own weight
@@ -794,10 +808,22 @@ function ActiveWorkout() {
       { icon: 'minimize', label: t('Compact'), on: workoutView === 'compact', onClick: () => setWorkoutView('compact') },
     ],
   })
+  // Logging a past workout (#284): the sets were done days ago, so one tap ticks them all and
+  // offers the finish, the same sheet the last set of a live session opens. What went
+  // differently is still edited on the rows before finishing.
+  const markAllDone = () => {
+    update(s => { if (s.active) s.active.entries = markAllSetsDone(s.active.entries) }, true)
+    const fresh = useStore.getState().S.active
+    // Ticked here rather than row by row: without this, unticking and reticking one of them
+    // would count as new progress and replay the flow a first tick runs.
+    if (fresh) progressHighWater.current = fresh.entries.map(e => e.sets.filter(s => s.done).length)
+    workoutCompleteSheet()
+  }
   // The header ⋮: bring another routine into the session, then the layout switch nested a
   // level down (it used to be the whole menu).
   const openViewMenu = () => menuSheet({
     items: [
+      A.backfill && A.entries.length > 0 && { icon: 'checkCircle', label: t('Mark all sets done'), onClick: markAllDone },
       { icon: 'pencil', label: t('Rename workout'), onClick: renameWorkoutSheet },
       !editing && { icon: 'plus', label: t('Add routine'), sub: t('Bring another routine into this session'), onClick: addRoutineToSessionSheet },
       { icon: 'list', label: t('Layout'), sub: LAYOUT_LABEL[workoutView] || LAYOUT_LABEL.cards, onClick: openLayoutMenu },

@@ -1365,4 +1365,25 @@ export default {
   'Vertical pressing.': '垂直推。',
   'You have moved this session to Saturday three weeks running. Better the plan says so than that you keep overriding it.': '你已经连续三周把这次训练挪到周六了。与其每次都手动改，不如直接写进计划。',
   'You’re in the demo': '你正在演示模式中',
+  // --- a past workout: drop-sets, supersets, its exercises' history, copy as text ---
+  'Copy as text': '复制为文本',
+  'Copied': '已复制',
+  'Could not copy': '无法复制',
+  // --- a missed day logged afterwards (#284) ---
+  'Log this workout': '补记这次训练',
+  'Mark all sets done': '将所有组标为完成',
+  // --- every weigh-in, week by week ---
+  'All weigh-ins': '全部称重记录',
+  '{0} weigh-in': '{0} 次称重',
+  '{0} weigh-ins': '{0} 次称重',
+  'Weekly average': '每周平均',
+  'Week of {0}': '{0} 起的一周',
+  'Average {0}': '平均 {0}',
+  // --- last time or best set under each exercise (#173) ---
+  'Best set': '最佳组',
+  'Show last time instead': '改为显示上次',
+  'Show your best set instead': '改为显示你的最佳组',
+  'Shown under each exercise': '每个动作下方显示',
+  'What you did the last time, in that routine.': '上次在该训练日完成的内容。',
+  'Your heaviest set of the exercise, from any workout.': '该动作在所有训练中最重的一组。',
 }

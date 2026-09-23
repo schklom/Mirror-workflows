@@ -41,6 +41,9 @@ import { workoutsOn, backfillStart, backfillEnd, completeBackfill } from './lib/
 import { moveWorkout, sameWorkout, startTimeOf, durationMinOf, setWorkoutDuration } from './lib/workout-date.js'
 import { editCompletedSession } from './lib/session-edit.js'
 import { stampWorkout } from './lib/sync-merge.js'
+import { weeklyWeights } from './lib/bodyweight.js'
+import { workoutText } from './lib/workout-text.js'
+import { copyText } from './lib/clipboard.js'
 
 const S = () => useStore.getState().S
 const update = (...a) => useStore.getState().update(...a)
@@ -221,7 +224,6 @@ function BwSheet({ required, onDone, close }) {
     if (onDone) onDone(n); else toast(t('Weight saved'))
   }
   const recent = [...st.bodyweight].reverse().slice(0, 3)
-  const delEntry = d => update(s => { s.bodyweight = s.bodyweight.filter(b => b.d !== d) })
   return <>
     {/* This sheet opens `locked` — swipe/backdrop/Escape/Android-back all no-op on it (see
         Modals.jsx) so an accidental tap on "Start" can't be walked back by reflex the way
@@ -246,12 +248,11 @@ function BwSheet({ required, onDone, close }) {
     {!required && recent.length > 0 && <>
       <h4 className="sec">{t('Recent weigh-ins')}</h4>
       <div className="list" style={{ gap: 0 }}>
-        {recent.map(b => <div key={b.d} className="row between" style={{ padding: '9px 2px', borderBottom: '1px solid var(--sep)' }}>
-          <span className="small muted">{fmtDate(b.d, true)}</span>
-          <span className="row" style={{ gap: 12 }}><b>{fmtNum(b.w)} {unit}</b>
-            <button className="iconbtn" style={{ width: 32, height: 30, borderRadius: 8, fontSize: 15, color: 'var(--red)' }} onClick={() => delEntry(b.d)} aria-label="delete"><Icon name="trash" /></button></span>
-        </div>)}
+        {recent.map(b => <WeighInRow key={b.d} b={b} unit={unit} />)}
       </div>
+      {st.bodyweight.length > recent.length && <div className="row" style={{ justifyContent: 'flex-end', marginTop: 6 }}>
+        <Button size="sm" variant="ghost" trailingIcon="chevronRight" onClick={weighInsSheet}>{t('All weigh-ins')}</Button>
+      </div>}
     </>}
   </>
 }
@@ -259,6 +260,58 @@ export function bwSheet(opts = {}) {
   const h = ui().openSheet(close => <BwSheet {...opts} close={close} />, { locked: !!opts.required })
   return h
 }
+
+// One weigh-in with its delete button, in the log sheet's recent three and in the full list.
+function WeighInRow({ b, unit }) {
+  const delEntry = () => update(s => { s.bodyweight = s.bodyweight.filter(x => x.d !== b.d) })
+  return <div className="row between" style={{ padding: '9px 2px', borderBottom: '1px solid var(--sep)' }}>
+    <span className="small muted">{fmtDate(b.d, true)}</span>
+    <span className="row" style={{ gap: 12 }}><b>{fmtNum(b.w)} {unit}</b>
+      <button className="iconbtn" style={{ width: 32, height: 30, borderRadius: 8, fontSize: 15, color: 'var(--red)' }} onClick={delEntry} aria-label="delete"><Icon name="trash" /></button></span>
+  </div>
+}
+
+/* ============================ weigh-ins ============================ */
+// Every weigh-in, week by week (Discord 'Weight'): each week under its mean and how far that
+// moved from the week before, the numbers behind the curve on the card. The chart plots the
+// weekly means, since the swing from one morning to the next is what makes a single weigh-in
+// hard to read. The weeks start on the profile's first day of the week.
+function WeighIns() {
+  const st = useStore(s => s.S)
+  const ws = weekStartOf(st)
+  const weeks = useMemo(() => weeklyWeights(st.bodyweight, ws), [st.bodyweight, ws])
+  const points = useMemo(() => [...weeks].reverse()
+    .map(w => ({ t: new Date(w.key + 'T12:00:00').getTime(), y: Math.round(w.avg * 100) / 100, d: w.key })), [weeks])
+  const n = weeks.reduce((sum, w) => sum + w.n, 0)
+  if (!n) return <>
+    <h3>{t('Weigh-ins')}</h3>
+    <div className="empty"><div className="ico"><Icon name="scale" /></div>{t('No entries yet — log your weight to start the curve.')}</div>
+  </>
+  return <>
+    <h3 style={{ marginBottom: 2 }}>{t('Weigh-ins')}</h3>
+    <div className="muted small" style={{ marginBottom: 10 }}>{t(n === 1 ? '{0} weigh-in' : '{0} weigh-ins', n)}</div>
+    <div className="chart"><LineChart points={points} h={140} unit={st.unit} goal={st.targetW} /></div>
+    <div className="small dim" style={{ marginTop: 6 }}>{t('Weekly average')}</div>
+    {weeks.map(w => {
+      // Only a change the display can show: at one decimal, 0.02 kg is "0", and an arrow over a
+      // zero says something moved when, as far as the screen goes, nothing did.
+      const moved = w.delta != null && fmtNum(Math.abs(w.delta)) !== fmtNum(0)
+      return <div key={w.key} data-week={w.key}>
+        <div className="row between" style={{ margin: '16px 2px 4px', gap: 8 }}>
+          <span className="small" style={{ fontWeight: 600 }}>{t('Week of {0}', fmtDate(w.key))}</span>
+          <span className="small row" style={{ gap: 8 }}>
+            {moved && <span className="row" style={{ gap: 2, fontWeight: 500, color: bwDeltaColor(w.delta, w.avg) }}>
+              <Icon name={w.delta > 0 ? 'arrowUp' : 'arrowDown'} style={{ fontSize: 12 }} />{fmtNum(Math.abs(w.delta))}
+            </span>}
+            <span className="muted" style={{ whiteSpace: 'nowrap' }}>{t('Average {0}', fmtNum(w.avg) + ' ' + st.unit)}</span>
+          </span>
+        </div>
+        <div className="list" style={{ gap: 0 }}>{w.entries.map(b => <WeighInRow key={b.d} b={b} unit={st.unit} />)}</div>
+      </div>
+    })}
+  </>
+}
+export const weighInsSheet = () => ui().openSheet(close => <WeighIns close={close} />)
 
 /* ============================ import from another app ============================ */
 // Shows what a parsed export would actually do before anything is written. An import is
@@ -1623,6 +1676,11 @@ function DayOverride({ iso, close }) {
   // one here collapses a combined day to it (docs/COMBINE_ROUTINES.md §8). The check marks
   // show everything currently planned for the day.
   const effIds = effectiveRoutineIds(st, iso)
+  // A planned day in the past with nothing logged was missed — or trained and never logged,
+  // like a run you forgot to start the app for (#284). Logging it opens "Log a past workout" on
+  // that date with the day's routines picked, where the time and the duration can still change.
+  const missed = iso < todayISO() && effIds.length > 0 && !workoutsOn(st, iso).length
+  const logIt = () => { close(); logPastWorkoutSheet({ iso, routineIds: effIds }) }
   const set = v => {
     update(s => { if (!v) delete s.dayPlan[iso]; else s.dayPlan[iso] = v })
     close()
@@ -1631,6 +1689,7 @@ function DayOverride({ iso, close }) {
   return <>
     <h3>{fmtDate(iso, true)}</h3>
     <div className="muted small" style={{ marginBottom: 12 }}>{t('Weekly plan:')} {weeklyNames.length ? deriveSessionName(weeklyNames) : t('Rest')}{hasOvr && <span style={{ color: 'var(--orange)' }}> · {t('changed for this day')}</span>}<br />{t('Sick, missed a day or want a different session? Pick what to train instead.')}</div>
+    {missed && <div style={{ marginBottom: 14 }}><Button variant="primary" icon="checkCircle" onClick={logIt}>{t('Log this workout')}</Button></div>}
     <div className="list">
       {st.routines.map(r => <div key={r.id} className="item" {...tappable(() => set(r.id))}>
         <span className="lrow-i"><Icon name={glyphOf(r.emoji)} /></span>
@@ -1784,19 +1843,38 @@ function WorkoutDetail({ w, close }) {
       stampWorkout(rec)
     })
   }, [])
-  // A combined session's entries carry a `rid`; group them into per-routine sections in merge
-  // order. A legacy single-routine workout (one routineIds, or no rid anywhere) renders flat.
+  const nameOf = e => (EXIDX[e.id] ? exerciseNameFor(EXIDX[e.id]) : (e.n || e.id))
+  // Tapping an exercise opens its history (Discord 'Improvement ideas'): from one session to the
+  // curve it sits on, which is the question a past workout raises most often.
   const entryRow = (e, i) => {
     const ex = EXIDX[e.id]
-    return <div key={i} className="row" style={{ marginBottom: 12, alignItems: 'flex-start' }}>
+    return <div key={i} className="row wd-ex" style={{ alignItems: 'flex-start' }} {...tappable(() => exerciseHistorySheet(e.id))}>
       {ex && <Thumb ex={ex} />}
-      <div className="grow"><div className={`tt ${exerciseNameClass(ex)}`} style={{ fontWeight: 600 }}>{ex ? exerciseNameFor(ex) : (e.n || e.id)} {w.prs && w.prs.includes(e.id) && <span className="pr"><Icon name="trophy" />PR</span>}</div>
+      <div className="grow"><div className={`tt ${exerciseNameClass(ex)}`} style={{ fontWeight: 600 }}>{nameOf(e)} {w.prs && w.prs.includes(e.id) && <span className="pr"><Icon name="trophy" />PR</span>}</div>
         <div className="ss">{e.sets.filter(hasCompletedWork).map(s => setLabel(e.id, s, e.target)).join('  ·  ') || t('no sets')}</div>
         {e.note && <div className="small dim" style={{ marginTop: 3 }}>
           {e.notePin && <Icon name="flag" style={{ fontSize: 12, marginInlineEnd: 4, verticalAlign: '-1px', color: 'var(--yellow)' }} />}{e.note}
         </div>}</div>
+      <Icon name="chevronRight" className="chev" style={{ alignSelf: 'center' }} />
     </div>
   }
+  // Exercises done as a superset stay together under a "Superset" label and one bar, the way the
+  // routine editor shows them (Discord: "supersets aren't shown at all"). Adjacent entries with
+  // the same tag, as in the workout itself; a workout finished before the tag was kept has none.
+  const entryRows = items => supersetUnits(items.map(([e]) => e)).map(unit => {
+    if (unit.length < 2) return entryRow(...items[unit[0]])
+    return <div key={'ss' + items[unit[0]][1]} className="wd-ss">
+      <div className="ss-label"><Icon name="link" />{t('Superset')}</div>
+      {unit.map(k => entryRow(...items[k]))}
+    </div>
+  })
+  // Copied with the note as it stands in the box, which may not be saved yet.
+  const copyAsText = async () => {
+    const rec = { ...(st.workouts.find(x => sameWorkout(x, w)) || w), note: note.trim() }
+    toast(await copyText(workoutText(rec, { unit: st.unit, nameOf })) ? t('Copied') : t('Could not copy'))
+  }
+  // A combined session's entries carry a `rid`; group them into per-routine sections in merge
+  // order. A legacy single-routine workout (one routineIds, or no rid anywhere) renders flat.
   const groups = []
   w.entries.forEach((e, i) => {
     const key = e.rid || '__none'
@@ -1819,9 +1897,9 @@ function WorkoutDetail({ w, close }) {
           </div>
           <div className="small dim">{t('{0} sets', setN)} · {fmtVol(vol, st.unit)}</div>
         </div>
-        {g.items.map(([e, i]) => entryRow(e, i))}
+        {entryRows(g.items)}
       </div>
-    }) : w.entries.map((e, i) => entryRow(e, i))}
+    }) : entryRows(w.entries.map((e, i) => [e, i]))}
     <div className="small muted" style={{ margin: '4px 0 6px' }}>{t('Session note')}</div>
     <textarea ref={noteRef} className="input" rows={2} maxLength={NOTE_MAX} value={note}
       placeholder={t('How the session went as a whole.')}
@@ -1861,6 +1939,8 @@ function WorkoutDetail({ w, close }) {
         nav('/plan/r/' + id)
       }
     })}>{t('Save as routine')}</Button>
+    <div style={{ height: 8 }} />
+    <Button icon="clipboard" onClick={copyAsText}>{t('Copy as text')}</Button>
     <div style={{ height: 10 }} />
     {/* Matched the way the edits above are, not by id: a workout from before ids has none, and
         filtering on `x.id !== undefined` took every other one of them with it. */}
@@ -1962,19 +2042,28 @@ export function beginWorkout(routineIds, bw) {
 // The same screen as a live session, pointed at another day. `backfill` on the active
 // session is what tells the workout screen to drop the clock and the rest timers, and tells
 // the finish path to file the workout where its date belongs instead of at the end.
-function LogPastWorkout({ close }) {
+// `initial` is a missed day of the plan (#284): its date, and the routines planned for it. A
+// combined day is offered as the one session it plans, next to each routine on its own.
+const PLANNED_DAY = '__planned-day'
+function LogPastWorkout({ initial, close }) {
   const st = useStore(s => s.S)
   const yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1)
-  const [date, setDate] = useState(isoOf(yesterday))
+  const planned = [].concat(initial?.routineIds || []).map(id => st.routines.find(r => r.id === id)).filter(Boolean)
+  const [date, setDate] = useState(initial?.iso || isoOf(yesterday))
   const [time, setTime] = useState('18:00')
   const [dur, setDur] = useState(60)
-  const [routineId, setRoutineId] = useState('')
+  const [routineId, setRoutineId] = useState(planned.length > 1 ? PLANNED_DAY : planned[0]?.id || '')
   const today = todayISO()
-  const options = [{ value: '', label: t('Freestyle') }, ...st.routines.map(r => ({ value: r.id, label: r.name }))]
+  const options = [
+    { value: '', label: t('Freestyle') },
+    ...(planned.length > 1 ? [{ value: PLANNED_DAY, label: deriveSessionName(planned.map(r => r.name)) }] : []),
+    ...st.routines.map(r => ({ value: r.id, label: r.name })),
+  ]
 
   const go = replaceId => {
     close()
-    beginBackfill({ iso: date, time, durationMin: dur, routineId: routineId || null, replaceId })
+    const routineIds = routineId === PLANNED_DAY ? planned.map(r => r.id) : routineId ? [routineId] : []
+    beginBackfill({ iso: date, time, durationMin: dur, routineIds, replaceId })
   }
   const submit = () => {
     if (!date || date > today) { toast(t('Pick a day up to today')); return }
@@ -2012,15 +2101,18 @@ function SameDayChoice({ iso, existing, onReplace, onAdd, close }) {
     <Button variant="ghost" className="dim" onClick={close}>{t('Cancel')}</Button>
   </div>
 }
-export function logPastWorkoutSheet() {
+// History's button hands this its click event; only a day from the plan counts as `initial`.
+export function logPastWorkoutSheet(initial) {
   if (S().active) { toast(t('Finish the current workout first.')); return }
-  ui().openSheet(close => <LogPastWorkout close={close} />)
+  const from = typeof initial?.iso === 'string' ? initial : null
+  ui().openSheet(close => <LogPastWorkout initial={from} close={close} />)
 }
-// Backfill stays single-routine (the LogPastWorkout UI is one picker), but it emits the new
-// shape: a one-element (or empty) routine list, per-entry rid, no top-level routineId.
-function beginBackfill({ iso, time, durationMin, routineId, replaceId }) {
+// A backfilled session is built the way a live one is (buildCombinedEntries → buildPlannedEntry),
+// so its entries carry the same stamps: the routine list, per-entry rid and the plan, no
+// top-level routineId. One routine from the picker, or every routine of a missed combined day.
+function beginBackfill({ iso, time, durationMin, routineIds, replaceId }) {
   const st = S()
-  const { entries, routineIds: rids, routines } = buildCombinedEntries(st, routineId ? [routineId] : [])
+  const { entries, routineIds: rids, routines } = buildCombinedEntries(st, routineIds || [])
   update(s => {
     s.active = {
       id: uid(), d: iso, start: backfillStart(iso, time),

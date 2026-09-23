@@ -35,7 +35,7 @@ vi.mock('react-router-dom', () => ({ useNavigate: () => () => {} }))
 vi.mock('../sheets.jsx', () => ({
   bwSheet: () => {}, goalSheet: () => {}, calendarSheet: () => {}, workoutDetailSheet: () => {},
   exerciseHistorySheet: mocks.exerciseHistorySheet,
-  WorkoutRow: () => React.createElement('div'), bwDeltaColor: () => 'inherit',
+  WorkoutRow: () => React.createElement('div'), bwDeltaColor: () => 'inherit', weighInsSheet: () => {},
 }))
 vi.mock('../components/LineChart.jsx', () => ({ default: props => {
   mocks.charts.push(props)

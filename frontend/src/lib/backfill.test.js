@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { workoutsOn, backfillStart, backfillEnd, insertChronological, completeBackfill } from './backfill.js'
+import { workoutsOn, backfillStart, backfillEnd, insertChronological, completeBackfill, markAllSetsDone } from './backfill.js'
 
 const w = (id, d, start = 0) => ({ id, d, start })
 
@@ -55,5 +55,30 @@ describe('completeBackfill', () => {
     const out = completeBackfill(list, { backfill: { durationMin: 60, replaceId: 'b' } }, w('x', '2026-01-05', 30))
     expect(out.map(x => x.id)).toEqual(['a', 'x', 'd'])
     expect(list).toHaveLength(3)
+  })
+})
+
+// #284: a past session that went as planned is logged with one tap instead of one per set.
+describe('markAllSetsDone', () => {
+  it('ticks every row, warm-ups and both sides of a unilateral set included, and stamps the top weight', () => {
+    const side = (w, r) => ({ w, r, done: false })
+    const entries = [
+      { id: 'bench', target: { reps: 5 }, sets: [{ w: 40, r: 8, done: false, phase: 'warmup' }, { w: 60, r: 5, done: false }, { w: 62.5, r: 5, done: true }] },
+      { id: 'curl', target: { reps: 16, side: true }, sets: [{ w: 12, r: 16, done: false, sides: { L: side(12, 8), R: side(10, 8) } }] },
+      { id: 'run', target: { mode: 'cardio' }, sets: [{ min: 30, speed: 10, done: false }] },
+    ]
+    const out = markAllSetsDone(entries)
+    expect(out.every(e => e.sets.every(s => s.done === true))).toBe(true)
+    expect(out[1].sets[0].sides.L.done && out[1].sets[0].sides.R.done).toBe(true)
+    expect(out.map(e => e.topW)).toEqual([62.5, 12, null])
+    // new entries: the ones passed in are left as they were
+    expect(entries[0].sets[1].done).toBe(false)
+    expect(entries[1].sets[0].sides.L.done).toBe(false)
+  })
+
+  it('keeps everything else on the entry, the plan stamps included', () => {
+    const entry = { id: 'bench', rid: 'r1', planned: { sets: 1, reps: 5 }, sg: 'sg1', target: { reps: 5 }, sets: [{ w: 60, r: 5, done: false, rir: 2 }] }
+    expect(markAllSetsDone([entry])[0]).toEqual({ ...entry, sets: [{ w: 60, r: 5, done: true, rir: 2 }], topW: 60 })
+    expect(markAllSetsDone(undefined)).toEqual([])
   })
 })

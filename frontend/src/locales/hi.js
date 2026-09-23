@@ -1365,4 +1365,25 @@ export default {
   'Vertical pressing.': 'वर्टिकल प्रेसिंग।',
   'You have moved this session to Saturday three weeks running. Better the plan says so than that you keep overriding it.': 'आपने लगातार तीन हफ़्ते इस सत्र को शनिवार पर खिसकाया है। हर बार उसे बदलने से बेहतर है कि योजना ही ऐसा कहे।',
   'You’re in the demo': 'आप डेमो में हैं',
+  // --- a past workout: drop-sets, supersets, its exercises' history, copy as text ---
+  'Copy as text': 'टेक्स्ट के रूप में कॉपी करें',
+  'Copied': 'कॉपी हो गया',
+  'Could not copy': 'कॉपी नहीं हो सका',
+  // --- a missed day logged afterwards (#284) ---
+  'Log this workout': 'यह वर्कआउट दर्ज करें',
+  'Mark all sets done': 'सभी सेट पूरे मार्क करें',
+  // --- every weigh-in, week by week ---
+  'All weigh-ins': 'सभी वज़न मापन',
+  '{0} weigh-in': '{0} वज़न मापन',
+  '{0} weigh-ins': '{0} वज़न मापन',
+  'Weekly average': 'साप्ताहिक औसत',
+  'Week of {0}': '{0} वाला सप्ताह',
+  'Average {0}': 'औसत {0}',
+  // --- last time or best set under each exercise (#173) ---
+  'Best set': 'सर्वश्रेष्ठ सेट',
+  'Show last time instead': 'इसके बजाय पिछली बार दिखाएँ',
+  'Show your best set instead': 'इसके बजाय अपना सर्वश्रेष्ठ सेट दिखाएँ',
+  'Shown under each exercise': 'हर व्यायाम के नीचे दिखाया जाता है',
+  'What you did the last time, in that routine.': 'उस रूटीन में पिछली बार आपने जो किया।',
+  'Your heaviest set of the exercise, from any workout.': 'किसी भी वर्कआउट से, इस व्यायाम का आपका सबसे भारी सेट।',
 }

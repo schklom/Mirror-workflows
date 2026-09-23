@@ -1368,4 +1368,25 @@ export default {
   'Vertical pressing.': 'Függőleges nyomás.',
   'You have moved this session to Saturday three weeks running. Better the plan says so than that you keep overriding it.': 'Három héten át egymás után szombatra tetted át ezt az edzést. Jobb, ha ezt a terv mondja ki, mint hogy mindig felülírd.',
   'You’re in the demo': 'A demóban vagy',
+  // --- a past workout: drop-sets, supersets, its exercises' history, copy as text ---
+  'Copy as text': 'Másolás szövegként',
+  'Copied': 'Kimásolva',
+  'Could not copy': 'Nem sikerült másolni',
+  // --- a missed day logged afterwards (#284) ---
+  'Log this workout': 'Az edzés rögzítése',
+  'Mark all sets done': 'Összes sorozat késznek jelölése',
+  // --- every weigh-in, week by week ---
+  'All weigh-ins': 'Összes mérés',
+  '{0} weigh-in': '{0} mérés',
+  '{0} weigh-ins': '{0} mérés',
+  'Weekly average': 'Heti átlag',
+  'Week of {0}': 'Hét: {0}',
+  'Average {0}': 'Átlag {0}',
+  // --- last time or best set under each exercise (#173) ---
+  'Best set': 'Legjobb sorozat',
+  'Show last time instead': 'Inkább a legutóbbit mutasd',
+  'Show your best set instead': 'Inkább a legjobb sorozatodat mutasd',
+  'Shown under each exercise': 'Minden gyakorlat alatt',
+  'What you did the last time, in that routine.': 'Amit legutóbb abban a rutinban csináltál.',
+  'Your heaviest set of the exercise, from any workout.': 'A gyakorlat legnehezebb sorozata, bármelyik edzésedből.',
 }

@@ -1365,4 +1365,25 @@ export default {
   'Vertical pressing.': 'Empuje vertical.',
   'You have moved this session to Saturday three weeks running. Better the plan says so than that you keep overriding it.': 'Has movido esta sesión al sábado tres semanas seguidas. Mejor que lo diga el plan a que tengas que cambiarlo cada vez.',
   'You’re in the demo': 'Estás en la demo',
+  // --- a past workout: drop-sets, supersets, its exercises' history, copy as text ---
+  'Copy as text': 'Copiar como texto',
+  'Copied': 'Copiado',
+  'Could not copy': 'No se pudo copiar',
+  // --- a missed day logged afterwards (#284) ---
+  'Log this workout': 'Registrar este entrenamiento',
+  'Mark all sets done': 'Marcar todas las series como hechas',
+  // --- every weigh-in, week by week ---
+  'All weigh-ins': 'Todos los pesajes',
+  '{0} weigh-in': '{0} pesaje',
+  '{0} weigh-ins': '{0} pesajes',
+  'Weekly average': 'Media semanal',
+  'Week of {0}': 'Semana del {0}',
+  'Average {0}': 'Media {0}',
+  // --- last time or best set under each exercise (#173) ---
+  'Best set': 'Mejor serie',
+  'Show last time instead': 'Mostrar la última vez',
+  'Show your best set instead': 'Mostrar tu mejor serie',
+  'Shown under each exercise': 'Debajo de cada ejercicio',
+  'What you did the last time, in that routine.': 'Lo que hiciste la última vez en esa rutina.',
+  'Your heaviest set of the exercise, from any workout.': 'Tu serie más pesada del ejercicio, de cualquier entrenamiento.',
 }

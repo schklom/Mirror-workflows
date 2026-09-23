@@ -1,6 +1,7 @@
 import { metricEntriesForExercise, bestWeightForEntry, completedRepsOf, modeOf } from './history.js'
 import { completedVolumeOf } from './workout-model.js'
 import { bestSetOf } from './onerm.js'
+import { beatsWeight } from './exercises.js'
 
 // One exercise's past, read back for the history sheet (issue #43): a chart series and the
 // last few sessions, derived in a single pass over the log so the sheet can memoise the
@@ -83,4 +84,39 @@ export function exerciseHistory(S, exId, { limit = HISTORY_SESSIONS } = {}) {
     sessions: sessions.slice(-limit).reverse().map(s => ({ ...s, pr: s.id === prId })),
     points, e1rmPoints,
   }
+}
+
+/**
+ * The best set ever logged of an exercise, for the "Best set" reference on the workout card
+ * (#173) — the answer to "last time was a bad day, what can I actually do". It is the heaviest
+ * completed work set, and of equally heavy ones the one with the most reps: the same "heaviest"
+ * the Best chip and a PR mean, which on an assistance machine is the least help. A timed exercise
+ * compares holds, then their load; cardio compares minutes, then speed. An exercise never loaded
+ * (pull-ups) comes down to its reps that way.
+ *
+ * Unlike "Last time" this looks across every routine: a record belongs to the exercise, not to
+ * the slot it was set in. Only sets logged in `mode` count, so a hold is never measured against
+ * a rep set. A tie keeps the first time it was reached, as the PR marker does.
+ * Returns { d, set, target } or null.
+ */
+export function bestSetFor(S, exId, mode = modeOf({ id: exId })) {
+  const keys = s => mode === 'cardio' ? [Number(s.min) || 0, Number(s.speed) || 0]
+    : mode === 'time' ? [Number(s.sec) || 0, Number(s.w) || 0]
+      : [Number(s.w) || 0, Number(s.r) || 0]
+  const better = (a, b) => {
+    const [a1, a2] = keys(a), [b1, b2] = keys(b)
+    if (a1 !== b1) return mode === 'reps' ? beatsWeight(exId, a1, b1) : a1 > b1
+    return a2 > b2
+  }
+  let best = null
+  const logged = [...(S?.workouts || [])].sort((a, b) => startOf(a) - startOf(b))
+  for (const w of logged) {
+    for (const en of w.entries || []) {
+      if (en.id !== exId) continue
+      for (const set of metricRowsForEntry(en, mode)) {
+        if (!best || better(set, best.set)) best = { d: w.d, set, target: en.target || null }
+      }
+    }
+  }
+  return best
 }

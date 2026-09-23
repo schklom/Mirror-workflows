@@ -329,6 +329,14 @@ export default function Settings() {
           { value: 'plan', label: t('Your plan'), subtitle: t('The routine’s sets and reps. Your history decides the weight.') },
           { value: 'last', label: t('Your last session'), subtitle: t('The reps you logged last time in that routine, carried over.') },
         ]} />
+      {/* The line under each exercise that the rows are held against (#173). Tapping the line in
+          a workout switches it too; this is where the choice can be found without knowing that. */}
+      <SelectRow icon="history" iconTint="var(--blue)" title={t('Shown under each exercise')}
+        value={S.logRef === 'best' ? 'best' : 'last'} onChange={v => update(s => { s.logRef = v })}
+        options={[
+          { value: 'last', label: t('Last time'), subtitle: t('What you did the last time, in that routine.') },
+          { value: 'best', label: t('Best set'), subtitle: t('Your heaviest set of the exercise, from any workout.') },
+        ]} />
       {/* The lean workout screen keeps the sets and one "more" button per exercise; each switch
           brings one of the old always-visible button groups back for people who liked them. */}
       <Row icon="wrench" iconTint="var(--purple)" title={t('Workout controls')} accessory="chevron"

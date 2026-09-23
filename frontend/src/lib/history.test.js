@@ -92,6 +92,38 @@ describe('setLabel', () => {
     // and a set that somehow carries both is described once, by the one it was logged with
     expect(setLabel(LIFT, { w: 60, r: 10, rir: 2, rpe: 8 })).toBe('60×10 (RIR 2)')
   })
+
+  // Discord (rubik_97): a drop-set's drops were counted in the workout's volume but never shown,
+  // so the history detail listed less weight than its own total added up to.
+  it('lists a drop-set\'s drops after the main set, effort last', () => {
+    const drop = { w: 100, r: 8, type: 'dropset', drops: [{ w: 80, r: 6 }, { w: 60, r: 5 }] }
+    expect(setLabel(LIFT, drop)).toBe('100×8 ↘ 80×6 ↘ 60×5')
+    expect(setLabel(LIFT, { ...drop, rir: 0 })).toBe('100×8 ↘ 80×6 ↘ 60×5 (RIR 0)')
+    // a drop nobody did (no reps) is not work, and drops on a row that is not a drop-set are stale
+    expect(setLabel(LIFT, { w: 100, r: 8, type: 'dropset', drops: [{ w: 80, r: 0 }] })).toBe('100×8')
+    expect(setLabel(LIFT, { w: 100, r: 8, type: 'straight', drops: [{ w: 80, r: 6 }] })).toBe('100×8')
+  })
+
+  it('writes a rest-pause set as its bursts, adding up to the logged total', () => {
+    // bursts added live sit on top of the activation set: 10 + 4 + 2 = 16
+    expect(setLabel(LIFT, { w: 60, r: 16, type: 'restpause', clusters: [{ r: 4, restSec: 15 }, { r: 2, restSec: 15 }] })).toBe('60×10+4+2')
+    // a planned set's bursts are the whole total already (applyIntensifierPlan)
+    expect(setLabel(LIFT, { w: 60, r: 12, type: 'restpause', clusters: [6, 3, 2, 1].map(r => ({ r, restSec: 15 })) })).toBe('60×6+3+2+1')
+    // bursts that no longer fit the total (edited by hand) leave just the total
+    expect(setLabel(LIFT, { w: 60, r: 5, type: 'restpause', clusters: [{ r: 4 }, { r: 3 }] })).toBe('60×5')
+  })
+
+  it('reads drops and bursts of a bodyweight exercise as reps and added weight', () => {
+    const cfg = { id: BW, bodyweight: true }
+    expect(setLabel(BW, { w: 10, r: 8, type: 'dropset', drops: [{ w: 0, r: 5 }] }, cfg)).toBe('+10 × 8 ↘ 5')
+    expect(setLabel(BW, { w: 0, r: 12, type: 'restpause', clusters: [{ r: 3 }] }, cfg)).toBe('9+3')
+  })
+
+  it('shows each side\'s own drops on a unilateral drop-set', () => {
+    const side = (w, r, drops) => ({ w, r, done: true, type: 'dropset', drops })
+    const s = { w: 20, r: 16, done: true, type: 'dropset', sides: { L: side(20, 8, [{ w: 15, r: 6 }]), R: side(20, 8, [{ w: 15, r: 5 }]) } }
+    expect(setLabel(LIFT, s, { id: LIFT, side: true })).toBe('L 20×8 ↘ 15×6 · R 20×8 ↘ 15×5')
+  })
 })
 
 describe('effortOf', () => {

@@ -78,7 +78,8 @@ describe('unilateral sets across session boundaries', () => {
     expect(completed.entries[0].sets[0]).toEqual(s)
     expect(setsDone(completed)).toBe(1)
     expect(workoutVolume(completed)).toBe(20 * 8 + 16 * 8)
-    expect(setLabel('0025', s, entry(s).target)).toBe('L 20×8 · R —')
+    // the drop the volume counts is on the label too (Discord: drop-sets missing from history)
+    expect(setLabel('0025', s, entry(s).target)).toBe('L 20×8 ↘ 16×8 · R —')
     expect(workoutVolume({ entries: [entry({ ...s, phase: 'warmup' })] })).toBe(0)
   })
 

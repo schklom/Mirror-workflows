@@ -1906,3 +1906,56 @@ describe('set-row column header', () => {
     expect(container.querySelector('.setrow .stp.w').classList.contains('plain')).toBe(true)
   })
 })
+
+// #173: the line under an exercise holds the rows against the last time in this routine, or
+// against the best set of the exercise; tapping the line switches, for every exercise.
+describe('the reference line: last time or best set', () => {
+  const session = (d, rid, w, r) => ({ d, start: Date.parse(d + 'T18:00:00'), routineIds: [rid], entries: [{ id: 'plain-bench', rid, target: { reps: r, weight: w }, sets: [{ w, r, done: true }] }] })
+  const history = [session('2026-08-10', 'B', 80, 5), session('2026-08-24', 'A', 60, 10), session('2026-08-26', 'A', 55, 8)]
+  const line = () => container.querySelector('.refline')
+
+  it('reads last time in this routine by default, and the best set once switched', async () => {
+    await mount([exercise('plain-bench', [false], { rid: 'A' })], 0, { workouts: history })
+    expect(line().textContent).toMatch(/^Last time \(.+\): 55×8$/)
+    await act(async () => { line().dispatchEvent(new dom.Event('click', { bubbles: true })) })
+    expect(mocks.S.logRef).toBe('best')
+    await rerender()
+    // the heaviest set of the exercise from any routine, not just this one
+    expect(line().textContent).toMatch(/^Best set \(.+\): 80×5$/)
+    await act(async () => { line().dispatchEvent(new dom.Event('click', { bubbles: true })) })
+    expect(mocks.S.logRef).toBe('last')
+  })
+
+  it('is not there before the exercise was ever logged', async () => {
+    await mount([exercise('plain-bench', [false])], 0, { logRef: 'best' })
+    expect(line()).toBeNull()
+  })
+})
+
+// #284: logging a past workout that went as planned takes one tap, not one per set.
+describe('mark all sets done while logging a past workout', () => {
+  const openMenu = async () => {
+    const btn = container.querySelector('button[aria-label="Workout view"]')
+    await act(async () => { btn.dispatchEvent(new dom.Event('click', { bubbles: true })) })
+    return mocks.menuSheet.mock.calls.at(-1)[0]
+  }
+  const labels = menu => menu.items.filter(Boolean).map(it => it.label)
+
+  it('ticks every set, stamps the top weight and offers the finish', async () => {
+    await mount([
+      exercise('plain-bench', [false, true]),
+      exercise('plain-row', [false], { sets: [{ w: 40, r: 8, done: false, phase: 'warmup' }, { w: 70, r: 8, done: false }] }),
+    ], 0, { active: { backfill: { durationMin: 60, replaceId: null }, routineIds: [] } })
+    const menu = await openMenu()
+    expect(labels(menu)[0]).toBe('Mark all sets done')
+    await act(async () => { menu.items.filter(Boolean)[0].onClick() })
+    expect(mocks.S.active.entries.every(e => e.sets.every(s => s.done))).toBe(true)
+    expect(mocks.S.active.entries.map(e => e.topW)).toEqual([60, 70])
+    expect(mocks.workoutCompleteSheet).toHaveBeenCalledTimes(1)
+  })
+
+  it('is only there for a past workout', async () => {
+    await mount([exercise('plain-bench', [false])], 0, { active: { routineIds: [] } })
+    expect(labels(await openMenu())).not.toContain('Mark all sets done')
+  })
+})

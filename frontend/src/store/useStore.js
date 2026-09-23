@@ -118,6 +118,10 @@ export const DEF = {
   // language, so e.g. Italian can keep its parens while German pins names to English. Map
   // { '<lang>': boolean }; a missing key reads as off (translation shown as usual).
   enOnly: {},
+  // What the line under an exercise holds today's rows against (#173, views/Workout.jsx): 'last'
+  // is the last time in that routine, 'best' the best set of the exercise ever logged. Tapping
+  // the line switches it. Absent reads as 'last', the line as it always was.
+  logRef: 'last',
 }
 const clone = o => JSON.parse(JSON.stringify(o))
 

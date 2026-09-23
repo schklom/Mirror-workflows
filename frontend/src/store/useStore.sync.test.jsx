@@ -129,6 +129,7 @@ describe('pull against a revisioned server', () => {
     expect(useStore.getState().S.workouts.map(w => w.id)).toEqual(['w1'])
     expect(sync()).toEqual({ rev: 1, ts: 100 })
     expect(localStorage.getItem('gym_dirty')).toBeNull()
+    expect(useStore.getState().sync).toMatchObject({ status: 'auth', auth: true, lastError: { status: 401 } })
   })
 })
 

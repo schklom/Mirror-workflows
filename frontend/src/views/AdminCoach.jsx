@@ -62,7 +62,9 @@ export default function AdminCoach() {
   const test = async () => {
     setBusy(true); setTestResult({ pending: true })
     try {
-      const r = await api('/api/admin/coach/test', { method: 'POST', body: '{}' })
+      // The server gives the provider up to 90 s for this round-trip (api/coach/jobs.js testRun),
+      // longer than api()'s default for a request; a slow local model must still get its answer.
+      const r = await api('/api/admin/coach/test', { method: 'POST', body: '{}', timeout: 150000 })
       setTestResult(r)
       toast(r.ok ? 'Coach test passed ✅' : 'Test failed')
       await load()

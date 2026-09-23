@@ -51,7 +51,12 @@ you're poking at the API directly:
 
 - `POST /api/pair/create` (needs a session) and `POST /api/pair/redeem` (doesn't) implement
   this — see `api/server.js`. The returned token is the exact same signed value a cookie
-  carries, so "sign out everywhere" invalidates it too.
+  carries, so "sign out everywhere" invalidates it too — and a phone has no passkey to sign
+  back in with, so every paired phone has to be **paired again** afterwards. The phone says
+  so ("Your server no longer accepts this phone") and keeps its data until it is.
+- The token lasts `SESSION_DAYS` like a cookie, but renews itself: `GET /api/me`, which the
+  app calls on every start, answers a bearer token past half its lifetime with a fresh
+  `token` carrying the account's current session version. Revocation is unaffected.
 - The server reflects `Access-Control-Allow-Origin` for any request that sends an `Origin`
   header, so the app's own WebView origin can call the API cross-origin. It never sends
   `Access-Control-Allow-Credentials`, so this doesn't let a browser read your cookie session
@@ -192,6 +197,11 @@ Docker answers those lookups. Nothing listens there on another runtime, and an u
 resolver does not fail fast — every `/api` request hangs until it times out. On Kubernetes set
 it to the cluster DNS service address (`kubectl -n kube-system get svc kube-dns`, commonly
 `10.96.0.10`); under Podman, to whatever its network provides.
+
+`SESSION_DAYS` is how long a browser sign-in and a phone pairing last, counted from when they
+were issued; lowering it never cuts an existing session short. A browser renews its session by
+signing in; a paired phone renews its token by itself whenever it starts past half of that
+time, so only a phone left unopened for longer than `SESSION_DAYS` has to be paired again.
 
 The web image renders its nginx config from these when the container starts, so they take effect
 on a **prebuilt image** — no rebuild. `BACKEND` and `PORT` together are what `/api` is proxied to,
@@ -366,6 +376,9 @@ everybody registers again — which is why it pays to settle the domain before o
 | Day reminder fires at the wrong time | Toggle it off and on in Settings so it re-detects your browser's timezone (also happens automatically on every app load — see section 7). |
 | Notifications switch is off although I turned it on | The server no longer holds the subscription (rebuilt `data/db.json`, regenerated `vapid.json`); the app re-registers on the next start, or switch it on again. On iOS, push only works from the Home Screen icon. |
 | Want to reset a stuck login | Delete the cookie in your browser; sessions are just signed cookies. |
+| The app says "Your server no longer accepts this phone" (or "this browser") | The server answered 401. Usual causes: "sign out everywhere" was used, the account was disabled, `data/secret` was lost or replaced when the stack was moved (every session and pairing dies with it), or a proxy with its own login rejects requests that carry `Authorization: Bearer`. Nothing on the device is lost: pair the phone again (browser: Settings → "Pair the mobile app"), or sign in again in the browser, and what the device kept is merged into the account. |
+| The app says the server "answered with something other than openGym (HTTP 200)" | Something other than the API answered `/api/*` with a success page — an auth proxy's sign-in page, or a catch-all route serving `index.html`. Every API answer is JSON; forward `/api/*` to the API unchanged. |
+| The app says "Your server answered with an error (HTTP …)" | The code is what the server or its proxy sent: 502/504 usually means the API container is down or unreachable from `web`, 413 that the proxy's upload limit is too small. Changes stay on the device and go through once the server answers. |
 | `docker compose pull` fails with "denied" / "unauthorized" | The prebuilt images aren't published yet, or need to be, or the GHCR package is still private — build from source instead (`docker compose up -d --build`). |
 | Exercise images/GIFs blank when a routine is open | Fixed in current images (issue #79). On an older build, see the note below. |
 

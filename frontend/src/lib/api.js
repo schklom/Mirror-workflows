@@ -1,4 +1,8 @@
 // Backend + WebAuthn helpers (ported from the vanilla app).
+import { t } from './i18n-core.js'
+import { MOBILE } from './mobile.js'
+import { appBase } from './app-base.js'
+
 export const IS_APPLE = /iPhone|iPad|iPod|Macintosh/.test(navigator.userAgent)
 export const IS_ANDROID = /Android/.test(navigator.userAgent)
 export const BIO = IS_APPLE ? 'Face ID / Touch ID' : IS_ANDROID ? 'fingerprint or face unlock' : 'your fingerprint, face or PIN'
@@ -15,45 +19,77 @@ let remoteBase = ''
 let remoteToken = null
 export function setRemoteAuth(base, token) { remoteBase = base || ''; remoteToken = token || null }
 
-/* Where this copy of the app is served from, e.g. "/" or "/myGym/" (issue #238).
- *
- * The app routes behind the hash and its assets are relative (vite `base: './'`), so the only
- * thing that assumed the site root was the API call. A reverse proxy that puts openGym under a
- * subpath — and strips that prefix before the container sees it, which is what Caddy's
- * `handle_path` and its equivalents do — got `/api/...` at the proxy's own root, where there is
- * nothing to answer it.
- *
- * `location.pathname` is the base because the router never leaves it: every screen is a hash,
- * and a path that is not a file is sent back to the app's root before React boots
- * (web/nginx.conf.template). Anything after the last slash is therefore index.html or a stale
- * deep link, and is dropped.
- */
-export function appBase(loc = typeof location !== 'undefined' ? location : null) {
-  const path = (loc && loc.pathname) || '/'
-  return path.slice(0, path.lastIndexOf('/') + 1) || '/'
-}
+export { appBase }
+
+// How long one request may take before it counts as no answer at all. A black-holed connection
+// (captive portal, half-open socket, a phone between two networks) never settles on its own, and
+// the store runs one push and one pull at a time: a single hung request used to hold every later
+// sync behind it, silently, for as long as the socket hung. A GET is small; a PUT carries the
+// whole profile over what may be a slow uplink. A caller that knows its request is slow on
+// purpose (the admin's provider test) passes its own `timeout`; 0 means none.
+const TIMEOUT_GET_MS = 20000
+const TIMEOUT_MS = 60000
+
+const failure = (message, code, status) => Object.assign(new Error(message), { code, status })
 
 export async function api(path, opts) {
-  const headers = Object.assign({ 'Content-Type': 'application/json' }, opts && opts.headers)
+  const { timeout, ...init } = opts || {}
+  // A phone with no server to talk to: local mode, or a pairing that is gone. There is no
+  // relative URL to fall back on here — the WebView's own origin is Capacitor's local asset
+  // server, which answers ANY path, PUT included, with index.html and a 200, so a push "landed"
+  // there and the change was marked as synced while the server never saw it. status 0, not
+  // undefined: this is not "offline", and the store must not show it as such.
+  if (MOBILE && !remoteBase) throw failure(t('This phone is not connected to a server.'), 'not-paired', 0)
+  const headers = Object.assign({ 'Content-Type': 'application/json' }, init.headers)
   if (remoteToken) headers.Authorization = 'Bearer ' + remoteToken
   // A paired phone has an absolute base of its own; everyone else is relative to where the app
   // is served, so a subpath deployment reaches its own API instead of the proxy's root.
   const url = remoteBase ? remoteBase + path : appBase().replace(/\/$/, '') + path
-  const r = await fetch(url, Object.assign({}, opts, { headers }))
-  const data = await r.json().catch(() => ({}))
+  const ms = timeout != null ? timeout : (init.method || 'GET').toUpperCase() === 'GET' ? TIMEOUT_GET_MS : TIMEOUT_MS
+  return request(url, Object.assign({}, init, { headers }), ms)
+}
+
+// One exchange, bounded by `ms`. No status on the timeout, like a fetch that failed outright: to
+// the store both mean the server could not be reached, and the device says it is offline instead
+// of waiting forever.
+async function request(url, init, ms) {
+  const ctl = typeof AbortController === 'function' ? new AbortController() : null
+  let timer = null
+  const expired = new Promise((_, reject) => {
+    if (ms > 0) timer = setTimeout(() => { if (ctl) ctl.abort(); reject(failure(t('The server did not answer in time.'), 'timeout')) }, ms)
+  })
+  const answer = exchange(url, ctl ? Object.assign({}, init, { signal: ctl.signal }) : init)
+  answer.catch(() => {})   // it may still settle after the timeout has answered; nobody is listening then
+  try { return await Promise.race([answer, expired]) }
+  finally { clearTimeout(timer) }
+}
+
+// Every route of the API answers JSON (api/server.js json()). A 2xx whose body is not JSON is
+// therefore someone else's answer: Capacitor's local server on a phone that lost its pairing, an
+// auth proxy's login page, a proxy that sends /api/* to the app's index.html. Reading it as {}
+// made a push look accepted by a server "from before revisions" — the change was marked synced
+// and dropped from the queue. It is an error, with the status it came with.
+async function exchange(url, init) {
+  const r = await fetch(url, init)
+  let data
+  let parsed = true
+  try { data = await r.json() } catch { parsed = false }
+  const body = parsed && data && typeof data === 'object' ? data : null
   // The body rides along on the error: a 409 from /api/data carries the server's document.
-  if (!r.ok) { const e = new Error(data.error || ('HTTP ' + r.status)); e.status = r.status; e.data = data; throw e }
-  return data
+  if (!r.ok) { const e = new Error((body && body.error) || ('HTTP ' + r.status)); e.status = r.status; e.data = body || {}; throw e }
+  if (!body) throw failure(t('The server answered with something other than openGym data.'), 'bad-response', r.status)
+  return body
 }
 
 // Bootstraps the connection itself: the base isn't configured yet (that's what this call decides),
 // so it talks straight to the server the user typed in, no Authorization header.
 export async function pairRedeem(serverBase, code) {
-  const r = await fetch(serverBase + '/api/pair/redeem', {
+  const data = await request(serverBase + '/api/pair/redeem', {
     method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code })
-  })
-  const data = await r.json().catch(() => ({}))
-  if (!r.ok) { const e = new Error(data.error || ('HTTP ' + r.status)); e.status = r.status; throw e }
+  }, TIMEOUT_GET_MS)
+  // Anything that is not a pairing would be saved as one — and the phone would then send every
+  // change to a server that never gave it a token.
+  if (!data.token || !data.user) throw failure(t('The server answered with something other than openGym data.'), 'bad-response', 200)
   return data
 }
 

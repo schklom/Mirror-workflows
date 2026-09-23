@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { localExtras, mergeBodyweight, mergeStates, newerOf, unionById } from './sync-merge.js'
+import { localExtras, mergeBodyweight, mergeStates, newerOf, stampRoutines, unionById } from './sync-merge.js'
 
 const workout = (id, d = '2026-09-01', start = 1) => ({ id, d, start, entries: [] })
 const routine = (id, name = id) => ({ id, name, ex: [] })
@@ -149,5 +149,53 @@ describe('sign-in adoption helpers', () => {
     // the weigh-in both sides have for the same day: the later `t` wins, as between devices
     expect(m.bodyweight.find(e => e.d === '2026-09-01').w).toBe(79)
     expect(mergeStates(server, local).unit).toBe('kg')   // without prefer the newer copy decides
+  })
+})
+
+// A conflict used to hand every routine both sides had to the copy whose WHOLE state was newer.
+// The phone edits the push day, then the desktop toggles a setting: the desktop's copy is newer,
+// and the phone's edit was gone. Each routine now carries its own edit time.
+describe('routines keep the version edited last', () => {
+  const r = (id, reps, ts) => ({ id, name: id, ex: [{ id: 'bench', sets: 3, reps }], ...(ts != null ? { _ts: ts } : {}) })
+
+  it('the older copy\'s routine wins when it was edited after the newer copy\'s', () => {
+    const phone = base({ _ts: 100, routines: [r('push', 15, 90), r('pull', 8, 10)] })
+    const desk = base({ _ts: 200, restSec: 60, routines: [r('push', 10, 20), r('pull', 12, 150)] })
+    const m = mergeStates(phone, desk)
+    expect(m.restSec).toBe(60)                                              // settings: the newer copy
+    expect(m.routines.find(x => x.id === 'push').ex[0].reps).toBe(15)      // edited later on the phone
+    expect(m.routines.find(x => x.id === 'pull').ex[0].reps).toBe(12)      // edited later on the desk
+    expect(ids(m.routines)).toEqual(['push', 'pull'])                       // the newer copy's order
+    expect(mergeStates(desk, phone).routines).toEqual(m.routines)
+  })
+
+  it('without stamps, or on a tie, the newer copy\'s version stays', () => {
+    const a = base({ _ts: 100, routines: [r('push', 15)] })
+    const b = base({ _ts: 200, routines: [r('push', 10)] })
+    expect(mergeStates(a, b).routines[0].ex[0].reps).toBe(10)
+    const c = base({ _ts: 100, routines: [r('push', 15, 50)] })
+    const d = base({ _ts: 200, routines: [r('push', 10, 50)] })
+    expect(mergeStates(c, d).routines[0].ex[0].reps).toBe(10)
+  })
+
+  it('sign-in (prefer) keeps the preferred side\'s plan whatever the stamps say', () => {
+    const server = base({ _ts: 100, routines: [r('push', 10, 10)] })
+    const device = base({ _ts: 200, routines: [r('push', 15, 90)] })
+    expect(mergeStates(server, device, { prefer: 'a' }).routines[0].ex[0].reps).toBe(10)
+  })
+
+  it('stampRoutines stamps a new or edited routine and leaves the rest alone', () => {
+    const prev = [r('push', 10, 5), r('pull', 8, 6), r('legs', 5, 7)]
+    const next = JSON.parse(JSON.stringify(prev))
+    next[0].ex[0].reps = 12                     // edited
+    next.push(r('core', 20))                    // new
+    next.splice(2, 1)                           // legs deleted
+    stampRoutines(prev, next, 1000)
+    expect(next.map(x => x._ts)).toEqual([1000, 6, 1000])
+    // the stamp alone is not an edit: a routine that only carries a different _ts keeps it
+    const again = JSON.parse(JSON.stringify(next))
+    again[1]._ts = 99
+    stampRoutines(next, again, 2000)
+    expect(again.map(x => x._ts)).toEqual([1000, 99, 1000])
   })
 })

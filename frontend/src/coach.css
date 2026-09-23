@@ -79,10 +79,11 @@
 .chat-hdr{
   display:flex;align-items:center;gap:10px;
   /* Pinned like a messenger's title bar: it eats the app shell's top padding so the blur
-     reaches the status bar, and gives it back as its own padding. */
+     reaches the status bar, and gives it back as its own padding — below the connection
+     indicator (--conn) when there is one. */
   position:sticky;top:0;z-index:40;
-  margin:calc(-1 * (var(--sat) + 8px)) calc(-1 * var(--pad)) 8px;
-  padding:calc(var(--sat) + 8px) var(--pad) 8px;
+  margin:calc(-1 * (var(--sat) + var(--conn) + 8px)) calc(-1 * var(--pad)) 8px;
+  padding:calc(var(--sat) + var(--conn) + 8px) var(--pad) 8px;
   background:color-mix(in srgb,var(--bg) 88%,transparent);
   -webkit-backdrop-filter:saturate(180%) blur(12px);backdrop-filter:saturate(180%) blur(12px)
 }

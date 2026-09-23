@@ -8,8 +8,10 @@
  *
  * Rules, by field:
  *   - scalars and settings, `week`, `dayPlan`, `wc`, `reminder`, …: from the copy with the newer `_ts`
- *   - workouts, routines, customEx, equipProfiles, gymCards: union by id, the newer copy's version
- *     of an id that both have; workouts sorted by day and start like every other writer
+ *   - workouts, customEx, equipProfiles, gymCards: union by id, the newer copy's version of an
+ *     id that both have; workouts sorted by day and start like every other writer
+ *   - routines: union by id in the newer copy's order; of an id that both have, the version
+ *     edited last by its own `_ts` (stampRoutines), the newer copy's on a tie
  *   - bodyweight: union by day, the later-edited (`t`) entry of a day that both have
  *   - favEx: ordered set union, the newer copy first
  *   - exWeights: union by exercise, the better `w` for that exercise — larger for an ordinary
@@ -88,6 +90,17 @@ export function mergeStates(a, b, { prefer } = {}) {
   for (const f of ['routines', 'customEx', 'equipProfiles', 'gymCards']) {
     if (list(n[f]).length || list(o[f]).length) out[f] = unionById(n[f], o[f]).map(clone)
   }
+  // A routine edited on both sides keeps the version edited last. Taking the newer copy's
+  // version dropped a plan edit made on one device whenever the other had since logged a set or
+  // flipped a setting — its whole copy was newer, its version of that routine was not. `prefer`
+  // (sign-in) keeps the preferred side's plan as it is.
+  if (!prefer && out.routines) {
+    const other = new Map(list(o.routines).filter(r => r?.id != null).map(r => [r.id, r]))
+    out.routines = out.routines.map(r => {
+      const alt = r?.id != null && other.get(r.id)
+      return alt && (alt._ts || 0) > (r._ts || 0) ? clone(alt) : r
+    })
+  }
   out.bodyweight = mergeBodyweight(n.bodyweight, o.bodyweight).map(clone)
   if (list(n.favEx).length || list(o.favEx).length) out.favEx = [...new Set([...list(n.favEx), ...list(o.favEx)])]
   out.exWeights = clone(mergeExWeights(n.exWeights, o.exWeights))
@@ -97,6 +110,23 @@ export function mergeStates(a, b, { prefer } = {}) {
   out._ts = Math.max(a._ts || 0, b._ts || 0)
   delete out._rev
   return out
+}
+
+const sameRoutine = (a, b) => JSON.stringify({ ...a, _ts: 0 }) === JSON.stringify({ ...b, _ts: 0 })
+
+/**
+ * Stamps `_ts` on every routine of `next` that is new or differs from its version in `prev` — the
+ * edit time mergeStates needs to keep the routine edited last. The store runs it on every change
+ * (useStore update), so no screen that edits a plan has to remember to. Mutates and returns `next`.
+ */
+export function stampRoutines(prev = [], next = [], now = Date.now()) {
+  const before = new Map(list(prev).filter(r => r?.id != null).map(r => [r.id, r]))
+  for (const r of list(next)) {
+    if (!r || r.id == null) continue
+    const old = before.get(r.id)
+    if (!old || (old !== r && !sameRoutine(old, r))) r._ts = now
+  }
+  return next
 }
 
 // What `local` holds that `server` does not: the workouts and weigh-ins a device logged while it

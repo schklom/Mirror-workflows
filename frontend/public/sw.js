@@ -11,21 +11,54 @@ const CACHE = 'opengym-rt-__BUILD__'
 async function precache() {
   const c = await caches.open(CACHE)
   const res = await fetch('index.html', { cache: 'no-cache' })
-  if (!res.ok) return
+  // Whatever came back is not the shell: the server was restarting mid-deploy (5xx), or the
+  // request was answered by something else after a redirect — an auth proxy in front (Authelia,
+  // Cloudflare Access; docs/SELF_HOSTING.md) sends its login page once the session there expires.
+  // Throwing fails the install, which is the only thing that keeps the build already
+  // on this device, and its cache, in place; a returned-quietly install activates and sweeps.
+  if (!res.ok || res.redirected) throw new Error('precache: index.html ' + res.status + (res.redirected ? ' redirected' : ''))
   const html = await res.text()
+  const refs = [...new Set([...html.matchAll(/(?:src|href)="([^"]+)"/g)].map(m => m[1])
+    .filter(u => /\.(?:js|css|png|svg|webmanifest|json)(?:\?|$)/.test(u) && !/^(?:https?:)?\/\//.test(u)))]
+  // The scripts and the stylesheets ARE the app. Every sub-resource used to be best-effort, so an
+  // install that got index.html and lost one chunk to a flaky connection still activated, still
+  // swept the build this device came from, and the next offline open was a shell with no code:
+  // a blank page. A chunk that will not cache fails the install instead, which keeps the working
+  // build and its cache exactly where they are. Images, icons and the manifest stay best-effort —
+  // a missing icon is not a broken app.
+  const code = refs.filter(u => /\.(?:js|css)(?:\?|$)/.test(u))
+  // Fetched by hand rather than with `cache.add`, for the same reason index.html is: `add` takes
+  // a REDIRECT for an answer, and an auth proxy in front answers every request with its login
+  // page once the session there expires. A 200 of HTML stored under the main bundle's URL is
+  // worse than nothing cached at all —
+  // the install would report success and then sweep the build that still worked.
+  await Promise.all(code.map(async u => {
+    const r = await fetch(u, { cache: 'no-cache' }).catch(e => { throw new Error('precache: ' + u + ' — ' + (e?.message || e)) })
+    if (!r.ok || r.redirected) throw new Error('precache: ' + u + ' ' + r.status + (r.redirected ? ' redirected' : ''))
+    await c.put(u, r)
+  }))
+  await Promise.all(refs.filter(u => !code.includes(u)).map(u => c.add(u).catch(() => {})))
+  // The shell goes in last, so activate's guard — an index.html in THIS build's cache — means the
+  // whole shell is there rather than just its first file.
   await c.put('index.html', new Response(html, { headers: { 'content-type': 'text/html; charset=utf-8' } }))
-  const refs = [...html.matchAll(/(?:src|href)="([^"]+)"/g)].map(m => m[1])
-    .filter(u => /\.(?:js|css|png|svg|webmanifest|json)(?:\?|$)/.test(u) && !/^(?:https?:)?\/\//.test(u))
-  await Promise.all([...new Set(refs)].map(u => c.add(u).catch(() => {})))
 }
 
 self.addEventListener('install', e => {
-  e.waitUntil(precache().catch(() => {}).then(() => self.skipWaiting()))
+  e.waitUntil(precache().then(() => self.skipWaiting()))
 })
 self.addEventListener('activate', e => {
-  e.waitUntil(caches.keys().then(keys =>
-    Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
-  ).then(() => self.clients.claim()))
+  e.waitUntil((async () => {
+    // The previous build's files are what a reopen without a network comes back from, so they go
+    // only once this build's shell is really in its own cache. An install that never got the
+    // shell used to take them anyway, and the app opened on the browser's error page until the
+    // next load with a network.
+    const c = await caches.open(CACHE)
+    if (await c.match('index.html')) {
+      const keys = await caches.keys()
+      await Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
+    }
+    await self.clients.claim()
+  })())
 })
 
 // The payload is parsed inside waitUntil: a push whose handler throws before showing anything is
@@ -68,10 +101,20 @@ self.addEventListener('pushsubscriptionchange', e => {
   })())
 })
 
+// The API sits next to the app, wherever the app is served: /api/ at the site root, /myGym/api/
+// under a subpath (#238). Matching '/api/' alone let a subpath deployment's data answers into
+// the network-first branch below, which cached them and handed an old document back as a 200
+// once the network was gone — the page then took it for the server's word. The Cache API ignores
+// the API's own `Cache-Control: no-store`, so the worker has to know to stay out of the way.
+const API = (() => { try { return new URL('api/', location.href).pathname } catch { return '/api/' } })()
+
+// How long a request for the app itself waits on the network before a cached copy answers it.
+const NET_WAIT_MS = 3000
+
 self.addEventListener('fetch', e => {
   const url = new URL(e.request.url)
   if (e.request.method !== 'GET' || url.origin !== location.origin) return
-  if (url.pathname.startsWith('/api/')) return    // never cache auth/data
+  if (url.pathname.startsWith('/api/') || url.pathname.startsWith(API)) return    // never cache auth/data
 
   const isMedia = url.pathname.includes('/img/') || url.pathname.includes('/gif/')
   if (isMedia) {
@@ -83,10 +126,27 @@ self.addEventListener('fetch', e => {
   // Network first; the copy for the cache is cloned before the response is handed to the page —
   // cloning later, once the page has started reading the body, throws and caches nothing, which
   // is why the shell never used to survive an offline reload.
-  e.respondWith(fetch(e.request).then(res => {
-    if (res.ok) { const copy = res.clone(); caches.open(CACHE).then(c => c.put(e.request, copy)).catch(() => {}) }
-    return res
-  }).catch(() => caches.match(e.request, { ignoreSearch: true }).then(hit =>
-    hit || (e.request.mode === 'navigate' ? caches.match('index.html') : undefined)
-  )))
+  // A dead radio does not reject fetch() quickly — it just never settles — so a cold-launch of
+  // the installed app with no network stayed on a blank screen forever, with the cache fallback
+  // never getting a chance to run (issue #274). So a request the network has not answered within
+  // NET_WAIT_MS is answered from the cache, when the cache has it. Nothing is aborted: an abort
+  // that fires once the headers are in errors the body the page is still reading, and on a slow
+  // connection a locale pack or a chunk that was on its way failed outright, every start again,
+  // since a body that never finishes is never cached either (and AbortSignal.timeout, which the
+  // abort used, does not exist before iOS 16: the handler threw before it answered at all, the
+  // cache fallback with it). A request the cache cannot answer keeps waiting for the network, as
+  // it always did; and the network's answer, whenever it comes, still refreshes the cache.
+  const fromCache = () => caches.match(e.request, { ignoreSearch: true }).then(hit =>
+    hit || (e.request.mode === 'navigate' ? caches.match('index.html') : undefined))
+  e.respondWith(new Promise(resolve => {
+    const slow = setTimeout(() => fromCache().then(hit => { if (hit) resolve(hit) }, () => {}), NET_WAIT_MS)
+    fetch(e.request).then(res => {
+      clearTimeout(slow)
+      if (res.ok) { const copy = res.clone(); caches.open(CACHE).then(c => c.put(e.request, copy)).catch(() => {}) }
+      resolve(res)
+    }, () => {
+      clearTimeout(slow)
+      resolve(fromCache())
+    })
+  }))
 })

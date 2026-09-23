@@ -143,7 +143,6 @@ function Shell() {
           re-mounts the boundary, so the tab bar is always a way out */}
       <div id="app" className="vfade" key={loc.pathname}>
         <ErrorBoundary>
-          {authed && !needsMobileOnboarding && <SyncBanner />}
           {!authed ? <Login /> : needsMobileOnboarding ? <MobileOnboarding /> : (
             <Routes>
               <Route path="/home" element={<Home />} />
@@ -171,6 +170,10 @@ function Shell() {
           )}
         </ErrorBoundary>
       </div>
+      {/* Outside #app: the view's fade-in animates a transform, and a fixed element inside it
+          would ride along with the page for the length of it. Decides for itself when to show —
+          including on the sign-in screen, when the server has just ended the session. */}
+      <SyncBanner />
       {/* The chat owns the bottom of the screen: its composer sits where the tabs would be. */}
       {loc.pathname !== '/coach' && <TabBar onStart={startFlow} />}
       <RestTimer />

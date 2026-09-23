@@ -103,10 +103,11 @@ export const exerciseNameFor = ex => {
 // That is decided per exercise, not per language: German covers only part of the catalogue,
 // and an exercise it has no entry for shows its lower-case English title, which still needs
 // the casing ("push-up" would otherwise sit between "Bankdrücken" and "Kniebeuge"). A custom
-// exercise has no pack entry either and keeps the casing it always had.
+// exercise has no pack entry either and keeps the casing it always had, and so does every
+// exercise while "English names only" is on, since exerciseNameFor then shows the English title.
 // Callers spread this onto the element that holds exerciseNameFor(ex)'s output, nothing else —
 // muscle and equipment labels next to it are t() strings and keep their own capitalize.
-export const exerciseNameClass = ex => (exerciseNames && ex && exerciseNames[ex.id] ? '' : 'capitalize')
+export const exerciseNameClass = ex => (!enOnly && exerciseNames && ex && exerciseNames[ex.id] ? '' : 'capitalize')
 
 // Search both the localized and canonical English title without changing persisted data.
 export const exerciseNameSearchText = ex => {

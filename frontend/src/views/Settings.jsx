@@ -257,13 +257,13 @@ export default function Settings() {
         }))}
       />
       {EXERCISE_NAME_LANGS.includes(baseLang(S.lang || 'en')) && <>
-        <Row icon="textHeight" iconTint="var(--purple)" title={t('English exercise names')}
+        <Row icon="dumbbell" iconTint="var(--purple)" title={t('English exercise names')}
           subtitle={t('Show the English name in parentheses next to the translated one.')}>
           <Switch checked={S.enParens?.[baseLang(S.lang || 'en')] ?? true}
             disabled={S.enOnly?.[baseLang(S.lang || 'en')] === true}
             onChange={v => update(s => { s.enParens = { ...(s.enParens || {}), [baseLang(S.lang || 'en')]: v } })} />
         </Row>
-        <Row icon="textHeight" iconTint="var(--purple)" title={t('English names only')}
+        <Row icon="globe" iconTint="var(--purple)" title={t('English names only')}
           subtitle={t('Replace the translated names with the original English ones.')}>
           <Switch checked={S.enOnly?.[baseLang(S.lang || 'en')] === true}
             onChange={v => update(s => { s.enOnly = { ...(s.enOnly || {}), [baseLang(S.lang || 'en')]: v } })} />

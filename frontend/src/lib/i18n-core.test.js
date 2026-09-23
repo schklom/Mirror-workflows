@@ -1,8 +1,9 @@
 import { describe, it, expect } from 'vitest'
 import {
   LANGS, INSTR_LANGS, EXERCISE_NAME_LANGS, DATE_LOCALES, DERIVED_LOCALES,
-  baseLang, derivePack, dateLocale, getLang, t, _setLangState, exerciseNameClass
+  baseLang, derivePack, dateLocale, getLang, t, _setLangState, exerciseNameClass, exerciseNameFor
 } from './i18n-core.js'
+import { EXDB } from './exercises-data.js'
 import de from '../locales/de.js'
 
 describe('baseLang', () => {
@@ -127,6 +128,48 @@ describe('exerciseNameClass', () => {
     expect(exerciseNameClass(pushUp)).toBe('capitalize')
     expect(exerciseNameClass(custom)).toBe('capitalize')
     expect(exerciseNameClass(undefined)).toBe('capitalize')
+    _setLangState('en', {}, null, null)
+  })
+})
+
+// The two per-language switches in Settings (the English name in parentheses, English names
+// only) came with the Italian and French packs, but they have to hold for every pack the app
+// ships — German too, which covers only part of the catalogue.
+describe('English-name switches with every exercise-name pack', () => {
+  const packs = import.meta.glob('../exercise-names/*.js', { eager: true, import: 'default' })
+  const packFor = lang => packs[`../exercise-names/${lang}.js`]
+
+  it('ships a pack for every language listed as having one', () => {
+    for (const lang of EXERCISE_NAME_LANGS) expect(packFor(lang), lang).toBeTruthy()
+  })
+
+  for (const lang of EXERCISE_NAME_LANGS) {
+    it(`${lang}: parentheses off shows the translation alone, English only shows the English title`, () => {
+      const names = packFor(lang)
+      const ex = EXDB.find(e => names[e.id] && names[e.id].toLocaleLowerCase(lang) !== e.n.toLocaleLowerCase('en'))
+      expect(ex, lang).toBeTruthy()
+      _setLangState(lang, {}, null, names)
+      expect(exerciseNameFor(ex)).toBe(`${names[ex.id]} (${ex.n})`)
+      expect(exerciseNameClass(ex)).toBe('')
+      _setLangState(lang, {}, null, names, false)
+      expect(exerciseNameFor(ex)).toBe(names[ex.id])
+      expect(exerciseNameClass(ex)).toBe('')
+      _setLangState(lang, {}, null, names, true, true)
+      expect(exerciseNameFor(ex)).toBe(ex.n)
+      // The English title is stored lower-case, so it gets the title-casing back with it.
+      expect(exerciseNameClass(ex)).toBe('capitalize')
+      _setLangState('en', {}, null, null)
+    })
+  }
+
+  it('de: an exercise the partial pack does not cover is unaffected by either switch', () => {
+    const names = packFor('de')
+    const ex = EXDB.find(e => !names[e.id])
+    for (const [showEn, enOnly] of [[true, false], [false, false], [true, true]]) {
+      _setLangState('de', {}, null, names, showEn, enOnly)
+      expect(exerciseNameFor(ex)).toBe(ex.n)
+      expect(exerciseNameClass(ex)).toBe('capitalize')
+    }
     _setLangState('en', {}, null, null)
   })
 })

@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/useStore.js'
 import { exOr } from '../lib/exercises.js'
-import { t, exerciseNameFor } from '../lib/i18n.js'
+import { t, exerciseNameFor, exerciseNameClass } from '../lib/i18n.js'
 import Icon from '../components/Icon.jsx'
 import { Button, Segmented } from '../components/ui.jsx'
 import { exercisePicker, bwSheet } from '../sheets.jsx'
@@ -41,7 +41,7 @@ export default function StructuralBalance() {
 
   return <>
     <div className="hdr"><button className="iconbtn" onClick={() => nav('/stats')} aria-label={t('Stats')}><Icon name="chevronLeft" /></button>
-      <div style={{ flex: 1, marginLeft: 12 }}><h1>{t('Structural balance')}</h1>
+      <div style={{ flex: 1, marginInlineStart: 12 }}><h1>{t('Structural balance')}</h1>
         <div className="sub">{t('Compare your lifts against a published ratio table to find the weak link.')}</div></div></div>
 
     <Segmented className="seg-range" value={templateId}
@@ -54,7 +54,8 @@ export default function StructuralBalance() {
         const view = balanceStatusView(r.status)
         // The exercise the number came from when there is one, otherwise the one this role is
         // set to — a role you just pointed at an exercise should name it, logged or not.
-        const name = exerciseName(r.mappedExerciseId || r.configuredExerciseId)
+        const exId = r.mappedExerciseId || r.configuredExerciseId
+        const name = exerciseName(exId)
         const reps = role.evaluationMode === EVALUATION_MODES.REP_COUNT
         const actual = r.status === 'no-data' ? '—' : reps ? r.current.r : `${Math.round(r.actualPct)}%`
         const valueText = `${actual} / ${r.targetPct}${reps ? '' : '%'}`
@@ -68,13 +69,13 @@ export default function StructuralBalance() {
               <span className="nm" style={{ minWidth: 0, whiteSpace: 'normal', overflowWrap: 'anywhere' }}>
                 <span style={{ display: 'block' }}>{t(role.label)}</span>
                 <span className="small dim" style={{ display: 'block' }}>
-                  <span className="capitalize" data-exercise-name>{name}</span>{r.isOverridden ? ` · ${t('Custom')}` : ''}
+                  <span className={exId ? exerciseNameClass(exOr(exId)) : ''} data-exercise-name>{name}</span>{r.isOverridden ? ` · ${t('Custom')}` : ''}
                 </span>
                 {r.needsBodyweight && <span className="small" data-needs-bodyweight style={{ display: 'block', color: 'var(--label-2)' }}>
                   {t('Log your body weight to score this lift.')}
                 </span>}
               </span>
-              <span className="v" style={{ textAlign: 'right', flexShrink: 0 }}>
+              <span className="v" style={{ textAlign: 'end', flexShrink: 0 }}>
                 <span style={{ color: STATUS_COLOR[r.status] }}>{t(view.label)}</span>
                 <span className="dim small" style={{ display: 'block' }}>{valueText}</span>
               </span>

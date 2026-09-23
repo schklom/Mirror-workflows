@@ -98,7 +98,8 @@ describe('StructuralBalance view', () => {
     }
   })
 
-  // Catalogue names are lower case ("barbell full squat"); every other list capitalises them.
+  // Catalogue names are lower case ("barbell full squat"); every other list capitalises an English
+  // one (exerciseNameClass), while a translated name keeps its own casing.
   it('capitalises each row\'s exercise name like the other lists, and only the name', () => {
     const host = render()
     for (const row of host.querySelectorAll('[data-role-id]')) {

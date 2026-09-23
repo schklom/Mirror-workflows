@@ -68,6 +68,14 @@ describe('setLabel', () => {
     expect(setLabel(CARDIO, {})).toBe('0 min @ 0 km/h')
   })
 
+  // A target built without an id (a freestyle one) and without a mode used to fall back to reps,
+  // so a run read "0×0": the id the caller passes decides the mode then, as it does with no target.
+  it('reads a cardio set by the exercise id when its target carries neither id nor mode', () => {
+    expect(setLabel(CARDIO, { min: 20, speed: 9 }, { sets: 1, min: 20, speed: 8 })).toBe('20 min @ 9 km/h')
+    // a target that says otherwise still wins
+    expect(setLabel(CARDIO, { sec: 45, w: 0 }, { mode: 'time' })).toBe('0:45')
+  })
+
   it('appends RIR when present, including a valid 0', () => {
     expect(setLabel(LIFT, { w: 60, r: 10, rir: 2 })).toBe('60×10 (RIR 2)')
     expect(setLabel(LIFT, { w: 60, r: 10, rir: 1.5 })).toBe('60×10 (RIR 1.5)')

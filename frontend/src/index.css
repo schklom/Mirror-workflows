@@ -564,6 +564,16 @@ body.chips-dragging *{cursor:inherit}
   position:absolute;left:11px;top:50%;transform:translateY(-50%);z-index:1;
   width:16px;height:16px;stroke:var(--label-3);fill:none;stroke-width:2.1;stroke-linecap:round;
 }
+/* The live result count (Library and the exercise picker, from GitLab !31): a pill at the end
+   of the field while a search or filter narrows the list. The field makes room for it only while
+   it is there, so a long placeholder is not cut short for nothing. */
+.search.has-count .input{padding-right:62px}
+.search .search-count{
+  position:absolute;right:9px;top:50%;transform:translateY(-50%);
+  font-size:12px;font-weight:600;line-height:1.4;color:var(--label-2);
+  background:var(--surface-3);padding:2px 8px;border-radius:99px;
+  font-variant-numeric:tabular-nums;pointer-events:none;user-select:none;
+}
 
 /* --- switch --- */
 .sw{

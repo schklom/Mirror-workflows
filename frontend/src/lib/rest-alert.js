@@ -29,7 +29,7 @@ export function buildRestAlert({ at, title, countdownTitle, totalSec, accent, so
   return {
     id: REST_ALERT_ID,
     channelId: REST_CHANNEL_ID,
-    title: title || t('Rest over'),
+    title: title || t('Rest over — next set!'),
     countdownTitle: countdownTitle || t('Rest'),
     pause: t('Pause'),
     resume: t('Resume'),

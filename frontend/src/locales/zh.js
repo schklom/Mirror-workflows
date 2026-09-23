@@ -214,7 +214,6 @@ export default {
   'Superset · do these back-to-back, rest when done': '超级组 · 连续完成，全部做完再休息',
   'Freestyle workout — add your first exercise.': '自由训练——添加你的第一个动作。',
   'Finish workout early · {0} exercises': '提前结束 · {0} 个动作',
-  'Rest over': '休息结束',
   'Rest over — next set!': '休息结束——下一组！',
   'Hi {0}': '你好，{0}',
   'This week': '本周',

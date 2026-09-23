@@ -214,7 +214,6 @@ export default {
   'Superset · do these back-to-back, rest when done': 'Süperset · art arda yap, sonunda dinlen',
   'Freestyle workout — add your first exercise.': 'Serbest antrenman — ilk egzersizini ekle.',
   'Finish workout early · {0} exercises': 'Erken bitir · {0} egzersiz',
-  'Rest over': 'Bitti',
   'Rest over — next set!': 'Dinlenme bitti — sıradaki set!',
   'Hi {0}': 'Selam {0}',
   'This week': 'Bu hafta',

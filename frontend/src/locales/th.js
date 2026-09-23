@@ -213,7 +213,6 @@ export default {
   'Superset · do these back-to-back, rest when done': 'ซูเปอร์เซ็ต · ทำต่อเนื่องกัน แล้วค่อยพักหลังทำครบทั้งคู่',
   'Freestyle workout — add your first exercise.': 'ออกกำลังกายแบบฟรีสไตล์ — เพิ่มท่าแรกของคุณ',
   'Finish workout early · {0} exercises': 'จบก่อนกำหนด · {0} ท่า',
-  'Rest over': 'พักครบ',
   'Rest over — next set!': 'หมดเวลาพัก — เซ็ตถัดไป!',
   // --- home ---
   'Hi {0}': 'สวัสดี {0}',

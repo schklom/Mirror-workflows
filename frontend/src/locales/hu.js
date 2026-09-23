@@ -213,7 +213,6 @@ export default {
   'Superset · do these back-to-back, rest when done': 'Szuperszett · végezd egymás után, pihenj csak utána',
   'Freestyle workout — add your first exercise.': 'Szabad edzés — add hozzá az első gyakorlatot.',
   'Finish workout early · {0} exercises': 'Edzés korai befejezése · {0} gyakorlat',
-  'Rest over': 'Pihenő vége',
   'Rest over — next set!': 'Pihenő vége — jöhet a következő sorozat!',
   // --- home ---
   'Hi {0}': 'Szia {0}',

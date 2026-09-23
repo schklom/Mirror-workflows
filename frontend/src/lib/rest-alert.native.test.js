@@ -92,7 +92,7 @@ describe('the rest alert in the Android app', () => {
     const at = Date.now() + 90_000
     await alert.armRestAlert(at, { totalSec: 90, accent: 'red', sound: false })
     expect(schedule).toHaveBeenCalledWith(expect.objectContaining({
-      at, totalMs: 90_000, sound: false, pause: 'Pause', resume: 'Resume', skip: 'Skip',
+      at, totalMs: 90_000, sound: false, title: 'Rest over — next set!', pause: 'Pause', resume: 'Resume', skip: 'Skip',
       accent: (0xff000000 | 0xff453a) >>> 0, ink: 0xffffffff,
     }))
   })

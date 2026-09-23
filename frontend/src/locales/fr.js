@@ -214,7 +214,6 @@ export default {
   'Superset · do these back-to-back, rest when done': 'Superset · enchaîne-les, repos à la fin',
   'Freestyle workout — add your first exercise.': 'Séance libre — ajoute ton premier exercice.',
   'Finish workout early · {0} exercises': 'Terminer plus tôt · {0} exercices',
-  'Rest over': 'Repos fini',
   'Rest over — next set!': 'Repos fini — série suivante !',
   'Hi {0}': 'Salut {0}',
   'This week': 'Cette semaine',

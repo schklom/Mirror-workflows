@@ -214,7 +214,6 @@ export default {
   'Superset · do these back-to-back, rest when done': '슈퍼세트 · 연달아 수행하고, 전부 끝난 뒤 휴식',
   'Freestyle workout — add your first exercise.': '자유 운동 — 첫 운동을 추가하세요.',
   'Finish workout early · {0} exercises': '일찍 마치기 · 운동 {0}개',
-  'Rest over': '휴식 끝',
   'Rest over — next set!': '휴식 끝 — 다음 세트!',
   'Hi {0}': '안녕하세요 {0}',
   'This week': '이번 주',

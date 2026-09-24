@@ -1598,4 +1598,5 @@ export default {
   'or with your password': 'أو بكلمة المرور',
   '{0} passkeys': 'مفاتيح المرور: {0}',
   'Every exercise in this workout': 'كل التمارين في هذه الجلسة',
+  'No sets are left in this workout, so there is nothing to save. Delete it from your history?': 'لم تبقَ أي مجموعة في هذا التمرين، فلا يوجد ما يُحفظ. هل تريد حذفه من سجلك؟',
 }

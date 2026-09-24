@@ -1548,4 +1548,5 @@ export default {
   'Log the anchor lift to score this one.': 'Rögzítsd a viszonyítási alapul szolgáló gyakorlatot, hogy ez is értékelhető legyen.',
   'Not scored': 'Nincs értékelve',
   'Every exercise in this workout': 'Az edzés összes gyakorlata',
+  'No sets are left in this workout, so there is nothing to save. Delete it from your history?': 'Ebben az edzésben egy sorozat sem maradt, így nincs mit menteni. Törlöd az előzményeidből?',
 }

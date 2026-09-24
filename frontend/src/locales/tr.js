@@ -1545,4 +1545,5 @@ export default {
   'Log the anchor lift to score this one.': 'Bunu değerlendirmek için referans hareketi kaydet.',
   'Not scored': 'Değerlendirilmedi',
   'Every exercise in this workout': 'Bu antrenmandaki tüm egzersizler',
+  'No sets are left in this workout, so there is nothing to save. Delete it from your history?': 'Bu antrenmanda hiç set kalmadı, yani kaydedilecek bir şey yok. Geçmişinden silinsin mi?',
 }

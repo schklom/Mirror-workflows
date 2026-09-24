@@ -1565,4 +1565,5 @@ export default {
   'Log the anchor lift to score this one.': 'Trag die Anker-Übung ein, damit diese bewertet werden kann.',
   'Not scored': 'Nicht bewertet',
   'Every exercise in this workout': 'Alle Übungen dieses Trainings',
+  'No sets are left in this workout, so there is nothing to save. Delete it from your history?': 'In diesem Training ist kein Satz mehr übrig, es gibt also nichts zu speichern. Aus deinem Verlauf löschen?',
 }

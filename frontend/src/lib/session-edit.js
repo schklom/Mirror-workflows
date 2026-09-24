@@ -59,6 +59,32 @@ function bestIn(workout, id) {
   return best
 }
 
+// The kept working weight of an exercise is lowered only when it came from this session and the
+// edit took it away — a typed 1000 corrected to 100, or deleted with the rest of the workout. Then
+// it is the best set left in history, or gone. One confirmed anywhere else ("Tracked — next time
+// starts at…") is left as it is. `saved` is the record after the edit, null once it is deleted.
+function lowerKeptWeights(state, ids, current, saved) {
+  for (const id of ids) {
+    const kept = state.exWeights?.[id]
+    const before = bestIn(current, id)
+    if (!kept || !(kept.w > 0) || kept.w !== before || !beatsWeight(id, before, bestIn(saved, id))) continue
+    let best = null
+    for (const w of state.workouts) {
+      const top = bestIn(w, id)
+      if (beatsWeight(id, top, best?.w || 0)) best = { w: top, d: w.d }
+    }
+    if (best) state.exWeights[id] = best
+    else delete state.exWeights[id]
+  }
+}
+
+/**
+ * Whether the editor holds nothing Save could keep: not one set ticked done. Save drops an
+ * exercise without one (buildCompletedWorkout), so this draft would save as a workout with no
+ * exercises in it — an empty row in the history that counts as a training day.
+ */
+export const editLeftEmpty = active => !list(active?.entries).some(entry => list(entry?.sets).some(hasCompletedWork))
+
 /**
  * Opens the editor on a saved workout: a copy of it becomes S.active. `ref` is the workout or its
  * id. Throws while another session is running, or when the workout is gone.
@@ -103,6 +129,8 @@ export function saveWorkoutEdit(state, now = Date.now()) {
   const key = active?.editingWorkoutId
   const index = key == null ? -1 : list(state.workouts).findIndex(w => keyOf(w) === key)
   if (index < 0) throw new Error('This workout was deleted on another device. Your edits are still here.')
+  // Never saved empty: the editor asks to delete the workout instead (deleteEditedWorkout).
+  if (editLeftEmpty(active)) throw new Error('Nothing logged yet')
   const current = state.workouts[index]
 
   const updated = buildCompletedWorkout(active, {
@@ -149,22 +177,24 @@ export function saveWorkoutEdit(state, now = Date.now()) {
   const touched = [...new Set([...list(current.entries), ...record.entries].map(e => e?.id).filter(id => id != null))]
   state.workouts = rebuildPrHistory(state.workouts, touched, record)
   const saved = state.workouts.find(w => keyOf(w) === key)
-
-  // The kept working weight of an exercise is lowered only when it came from this session and the
-  // edit took it away — a typed 1000 corrected to 100. Then it is the best set left in history, or
-  // gone. One confirmed anywhere else ("Tracked — next time starts at…") is left as it is.
-  for (const id of touched) {
-    const kept = state.exWeights?.[id]
-    const before = bestIn(current, id)
-    if (!kept || !(kept.w > 0) || kept.w !== before || !beatsWeight(id, before, bestIn(saved, id))) continue
-    let best = null
-    for (const w of state.workouts) {
-      const top = bestIn(w, id)
-      if (beatsWeight(id, top, best?.w || 0)) best = { w: top, d: w.d }
-    }
-    if (best) state.exWeights[id] = best
-    else delete state.exWeights[id]
-  }
+  lowerKeptWeights(state, touched, current, saved)
   state.active = null
   return saved
+}
+
+/**
+ * Deletes the workout the editor is open on and closes the editor: what an edit that took out
+ * every set gets instead of Save (editLeftEmpty). The record is found the way Save finds it, and
+ * goes the way History's Delete takes it out; a kept working weight that came from it is lowered
+ * the way Save lowers one an edit took away. A record another device deleted meanwhile is already
+ * gone, and the editor just closes. Returns whether a record was removed.
+ */
+export function deleteEditedWorkout(state) {
+  const key = state.active?.editingWorkoutId
+  const current = key == null ? null : list(state.workouts).find(w => keyOf(w) === key)
+  state.active = null
+  if (!current) return false
+  state.workouts = state.workouts.filter(w => w !== current)
+  lowerKeptWeights(state, [...new Set(list(current.entries).map(e => e?.id).filter(id => id != null))], current, null)
+  return true
 }

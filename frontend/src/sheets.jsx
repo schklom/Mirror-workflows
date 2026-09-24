@@ -42,7 +42,7 @@ import { joinSessionNoProg } from './lib/session-noprog.js'
 import { buildCombinedEntries, deriveSessionName } from './lib/session-merge.js'
 import { workoutsOn, backfillStart, backfillEnd, completeBackfill, historyAsOf, sessionHistory } from './lib/backfill.js'
 import { moveWorkout, sameWorkout, startTimeOf, durationMinOf, setWorkoutDuration } from './lib/workout-date.js'
-import { editCompletedSession } from './lib/session-edit.js'
+import { editCompletedSession, editLeftEmpty } from './lib/session-edit.js'
 import { stampWorkout } from './lib/sync-merge.js'
 import { weeklyWeights } from './lib/bodyweight.js'
 import { workoutText } from './lib/workout-text.js'
@@ -2481,6 +2481,25 @@ function WorkoutComplete({ close }) {
 export const workoutCompleteSheet = () => ui().openSheet(close => <WorkoutComplete close={close} />, { kind: 'center' })
 
 export function saveWorkoutEdits(onExit = () => nav('/history')) {
+  // An edit that unticked or removed every set would save a workout with nothing in it, which
+  // the history would still list and count as a training day. Deleting it is what that edit
+  // means; Keep editing goes back to the sets.
+  if (editLeftEmpty(S().active)) {
+    confirmSheet({
+      title: t('Delete workout?'),
+      message: t('No sets are left in this workout, so there is nothing to save. Delete it from your history?'),
+      confirmText: t('Delete workout'), cancelText: t('Keep editing'), danger: true,
+      onConfirm: () => {
+        useStore.getState().deleteHistoryEdit()
+        useUI.getState().stopRest()
+        useUI.getState().stopWork()
+        useStore.getState().autoBackupNow()
+        toast(t('Workout deleted'))
+        onExit()
+      },
+    })
+    return
+  }
   try {
     useStore.getState().saveHistoryEdit()
     useUI.getState().stopRest()

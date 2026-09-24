@@ -1542,4 +1542,5 @@ export default {
   'or with your password': 'або своїм паролем',
   '{0} passkeys': 'Ключів доступу: {0}',
   'Every exercise in this workout': 'Усі вправи цього тренування',
+  'No sets are left in this workout, so there is nothing to save. Delete it from your history?': 'У цьому тренуванні не лишилося жодного підходу, тож зберігати нічого. Видалити його з історії?',
 }

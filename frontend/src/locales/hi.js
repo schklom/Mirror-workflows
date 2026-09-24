@@ -1545,4 +1545,5 @@ export default {
   'Log the anchor lift to score this one.': 'इसका आकलन करने के लिए आधार व्यायाम दर्ज करें।',
   'Not scored': 'आकलन नहीं हुआ',
   'Every exercise in this workout': 'इस वर्कआउट के सभी व्यायाम',
+  'No sets are left in this workout, so there is nothing to save. Delete it from your history?': 'इस वर्कआउट में कोई सेट नहीं बचा है, इसलिए सहेजने को कुछ नहीं है। इसे अपने इतिहास से हटाएँ?',
 }

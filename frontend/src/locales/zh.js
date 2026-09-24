@@ -1545,4 +1545,5 @@ export default {
   'Log the anchor lift to score this one.': '记录锚点动作以评估这个动作。',
   'Not scored': '未评估',
   'Every exercise in this workout': '本次训练的所有动作',
+  'No sets are left in this workout, so there is nothing to save. Delete it from your history?': '这次训练已经没有任何一组了，没有可保存的内容。要从历史中删除它吗？',
 }

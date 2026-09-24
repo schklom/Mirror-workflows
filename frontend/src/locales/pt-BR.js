@@ -903,6 +903,7 @@ export const PT_BR_OVERRIDES = {
   'Custom': 'Personalizado',
   'Log your body weight to score this lift.': 'Registre seu peso corporal para avaliar este exercício.',
   'Log the anchor lift to score this one.': 'Registre o exercício de referência para avaliar este.',
+  'No sets are left in this workout, so there is nothing to save. Delete it from your history?': 'Não sobrou nenhuma série neste treino, então não há nada para salvar. Excluí-lo do seu histórico?',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

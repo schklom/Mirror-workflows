@@ -1556,4 +1556,5 @@ export default {
   'Log the anchor lift to score this one.': 'บันทึกท่าอ้างอิงเพื่อประเมินท่านี้',
   'Not scored': 'ยังไม่ได้ประเมิน',
   'Every exercise in this workout': 'ทุกท่าในการออกกำลังกายครั้งนี้',
+  'No sets are left in this workout, so there is nothing to save. Delete it from your history?': 'การออกกำลังกายนี้ไม่เหลือเซ็ตแล้ว จึงไม่มีอะไรให้บันทึก ลบออกจากประวัติไหม?',
 }

@@ -1545,4 +1545,5 @@ export default {
   'Log the anchor lift to score this one.': 'Запишите опорное упражнение, чтобы оценить это.',
   'Not scored': 'Не оценено',
   'Every exercise in this workout': 'Все упражнения этой тренировки',
+  'No sets are left in this workout, so there is nothing to save. Delete it from your history?': 'В этой тренировке не осталось ни одного подхода, сохранять нечего. Удалить её из истории?',
 }

@@ -1545,4 +1545,5 @@ export default {
   'Log the anchor lift to score this one.': 'Registra l’esercizio di riferimento per valutare questo.',
   'Not scored': 'Non valutato',
   'Every exercise in this workout': 'Tutti gli esercizi di questo allenamento',
+  'No sets are left in this workout, so there is nothing to save. Delete it from your history?': 'In questo allenamento non è rimasta nessuna serie, quindi non c’è niente da salvare. Eliminarlo dalla cronologia?',
 }

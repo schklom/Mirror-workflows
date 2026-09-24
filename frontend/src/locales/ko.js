@@ -1545,4 +1545,5 @@ export default {
   'Log the anchor lift to score this one.': '이 운동을 평가하려면 기준 운동을 기록하세요.',
   'Not scored': '평가 안 됨',
   'Every exercise in this workout': '이번 세션의 모든 운동',
+  'No sets are left in this workout, so there is nothing to save. Delete it from your history?': '이 운동에 남은 세트가 없어 저장할 내용이 없습니다. 기록에서 삭제할까요?',
 }

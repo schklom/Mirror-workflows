@@ -475,6 +475,7 @@ export default {
   'back': 'espalda', 'cardio': 'cardio', 'chest': 'pecho', 'lower arms': 'antebrazos',
   'lower legs': 'pantorrillas', 'neck': 'cuello', 'shoulders': 'hombros',
   'upper arms': 'brazos', 'upper legs': 'piernas', 'waist': 'abdomen',
+  'full body': 'cuerpo completo',
   'Details': 'Detalles',
   'Finish': 'Terminar',
   'Start {0}': 'Empezar {0}',

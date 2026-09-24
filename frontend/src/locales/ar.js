@@ -354,6 +354,7 @@ export default {
   'upper arms': 'أعلى الذراعين',
   'upper legs': 'الفخذان',
   'waist': 'الخصر',
+  'full body': 'الجسم كامل',
   'Details': 'التفاصيل',
   'Finish': 'إنهاء',
   'Start {0}': 'بدء {0}',

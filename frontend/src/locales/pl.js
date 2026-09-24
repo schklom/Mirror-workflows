@@ -475,6 +475,7 @@ export default {
   'back': 'plecy', 'cardio': 'cardio', 'chest': 'klatka', 'lower arms': 'przedramiona',
   'lower legs': 'łydki', 'neck': 'kark', 'shoulders': 'barki',
   'upper arms': 'ramiona', 'upper legs': 'uda', 'waist': 'brzuch',
+  'full body': 'całe ciało',
   'Details': 'Szczegóły',
   'Finish': 'Zakończ',
   'Start {0}': 'Zacznij {0}',

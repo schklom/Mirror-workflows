@@ -475,6 +475,7 @@ export default {
   'back': 'спина', 'cardio': 'кардио', 'chest': 'грудь', 'lower arms': 'предплечья',
   'lower legs': 'голени', 'neck': 'шея', 'shoulders': 'плечи',
   'upper arms': 'руки', 'upper legs': 'бёдра', 'waist': 'пресс',
+  'full body': 'всё тело',
   'Details': 'Детали',
   'Finish': 'Завершить',
   'Start {0}': 'Начать {0}',

@@ -492,6 +492,7 @@ export default {
   'back': 'Rücken', 'cardio': 'Cardio', 'chest': 'Brust', 'lower arms': 'Unterarme',
   'lower legs': 'Unterschenkel', 'neck': 'Nacken', 'shoulders': 'Schultern',
   'upper arms': 'Oberarme', 'upper legs': 'Oberschenkel', 'waist': 'Rumpf',
+  'full body': 'Ganzkörper',
   // --- data terms: equipment ---
   'Details': 'Details',
   'Finish': 'Beenden',

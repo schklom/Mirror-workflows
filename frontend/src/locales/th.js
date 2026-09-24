@@ -477,6 +477,7 @@ export default {
   'back': 'หลัง', 'cardio': 'คาร์ดิโอ', 'chest': 'อก', 'lower arms': 'แขนท่อนล่าง',
   'lower legs': 'ขาท่อนล่าง', 'neck': 'คอ', 'shoulders': 'ไหล่',
   'upper arms': 'แขนท่อนบน', 'upper legs': 'ขาท่อนบน', 'waist': 'เอว',
+  'full body': 'ทั้งตัว',
   // --- data terms: equipment ---
   'Details': 'รายละเอียด',
   'Finish': 'เสร็จสิ้น',

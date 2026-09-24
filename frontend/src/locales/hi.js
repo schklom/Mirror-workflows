@@ -475,6 +475,7 @@ export default {
   'back': 'पीठ', 'cardio': 'कार्डियो', 'chest': 'छाती', 'lower arms': 'अग्रबाहु',
   'lower legs': 'पिंडलियाँ', 'neck': 'गर्दन', 'shoulders': 'कंधे',
   'upper arms': 'बाजू', 'upper legs': 'जाँघें', 'waist': 'पेट',
+  'full body': 'पूरा शरीर',
   'Details': 'विवरण',
   'Finish': 'समाप्त',
   'Start {0}': '{0} शुरू करें',

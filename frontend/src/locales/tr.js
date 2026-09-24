@@ -475,6 +475,7 @@ export default {
   'back': 'sırt', 'cardio': 'kardiyo', 'chest': 'göğüs', 'lower arms': 'ön kollar',
   'lower legs': 'baldırlar', 'neck': 'boyun', 'shoulders': 'omuzlar',
   'upper arms': 'üst kollar', 'upper legs': 'bacaklar', 'waist': 'karın',
+  'full body': 'tüm vücut',
   'Details': 'Ayrıntılar',
   'Finish': 'Bitir',
   'Start {0}': '{0} başlat',

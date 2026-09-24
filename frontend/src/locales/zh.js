@@ -475,6 +475,7 @@ export default {
   'back': '背部', 'cardio': '有氧', 'chest': '胸部', 'lower arms': '前臂',
   'lower legs': '小腿', 'neck': '颈部', 'shoulders': '肩部',
   'upper arms': '上臂', 'upper legs': '大腿', 'waist': '腰腹',
+  'full body': '全身',
   'Details': '详情',
   'Finish': '结束',
   'Start {0}': '开始 {0}',

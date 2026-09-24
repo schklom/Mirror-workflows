@@ -475,6 +475,7 @@ export default {
   'back': '등', 'cardio': '유산소', 'chest': '가슴', 'lower arms': '전완',
   'lower legs': '종아리', 'neck': '목', 'shoulders': '어깨',
   'upper arms': '팔', 'upper legs': '허벅지', 'waist': '복부',
+  'full body': '전신',
   'Details': '상세',
   'Finish': '마치기',
   'Start {0}': '{0} 시작',

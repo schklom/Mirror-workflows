@@ -477,6 +477,7 @@ export default {
   'back': 'hát', 'cardio': 'kardió', 'chest': 'mell', 'lower arms': 'alkar',
   'lower legs': 'lábszár', 'neck': 'nyak', 'shoulders': 'váll',
   'upper arms': 'felkar', 'upper legs': 'comb', 'waist': 'derék',
+  'full body': 'teljes test',
   // --- data terms: equipment ---
   'Details': 'Részletek',
   'Finish': 'Befejezés',

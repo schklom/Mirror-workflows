@@ -475,6 +475,7 @@ export default {
   'back': 'schiena', 'cardio': 'cardio', 'chest': 'petto', 'lower arms': 'avambracci',
   'lower legs': 'polpacci', 'neck': 'collo', 'shoulders': 'spalle',
   'upper arms': 'braccia', 'upper legs': 'gambe', 'waist': 'addome',
+  'full body': 'corpo intero',
   'Details': 'Dettagli',
   'Finish': 'Termina',
   'Start {0}': 'Inizia {0}',

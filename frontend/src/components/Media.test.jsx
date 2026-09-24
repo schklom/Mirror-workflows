@@ -157,6 +157,23 @@ describe('Media — a custom exercise', () => {
     expect(HTMLMediaElement.prototype.play).toHaveBeenCalled()
   })
 
+  it('plays only while it can be seen: a card off screen stops, and a loop starts again on its return', async () => {
+    const observers = []
+    const IO = globalThis.IntersectionObserver
+    globalThis.IntersectionObserver = class { constructor(cb) { this.cb = cb; observers.push(this) } observe() {} disconnect() {} }
+    try {
+      await holding(MAIN, POSTER)
+      await mountCustom(custom({ media: clip(8) }))
+      const plays = () => HTMLMediaElement.prototype.play.mock.calls.length
+      const before = plays()
+      expect(before).toBeGreaterThan(0)
+      await act(async () => { observers.at(-1).cb([{ isIntersecting: false }]) })
+      expect(HTMLMediaElement.prototype.pause).toHaveBeenCalled()
+      await act(async () => { observers.at(-1).cb([{ isIntersecting: true }]) })
+      expect(plays()).toBeGreaterThan(before)
+    } finally { globalThis.IntersectionObserver = IO }
+  })
+
   it('a long video waits for a tap, then plays with sound and its own controls', async () => {
     await holding(MAIN, POSTER)
     await mountCustom(custom({ media: clip(45) }))

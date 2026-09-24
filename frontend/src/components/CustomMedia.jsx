@@ -217,40 +217,55 @@ function CustomVideo({ m, id, cls, name, toggle, mini, still }) {
   const main = useMediaUrl(m, { auto: prefetchAllowed() })
   const ref = useRef(null)
   const box = useRef(null)
-  // A short clip loops by itself where it may; a long one, or one that may not, waits for a tap.
-  const [wantPlay, setWantPlay] = useState(loop && !still)
+  // Whether the box is on screen. Taken as yes until the observer says otherwise, so a browser
+  // without one simply plays; with one, the first answer comes within a frame.
+  const [visible, setVisible] = useState(true)
+  // What a tap asked for: null until the first tap, then play (true) or pause (false).
+  const [asked, setAsked] = useState(null)
   const [playing, setPlaying] = useState(false)
   const [broken, setBroken] = useState(false)
   // A long video is playing with sound and controls since its tap.
   const [open, setOpen] = useState(false)
+  // A short clip loops by itself where it may; a long one, or one that may not, waits for a tap.
+  // Either way only while it can be seen: a card beside the one on screen (the swipe layout keeps
+  // its neighbours rendered), one scrolled away in the list, or a sheet still sliding in does not
+  // decode anything.
+  const shouldPlay = visible && (asked ?? (loop && !still))
 
   useEffect(() => {
     const el = ref.current
     if (!el || !main.url) return
-    if (wantPlay) el.play().then(() => setPlaying(true)).catch(() => { setPlaying(false); setWantPlay(false) })
-    else { el.pause(); setPlaying(false) }
-  }, [wantPlay, main.url])
+    if (shouldPlay) {
+      const p = el.play()
+      // Refused (no user gesture where the browser wants one): it waits for a tap instead.
+      if (p && typeof p.then === 'function') p.then(() => setPlaying(true), () => { setPlaying(false); setAsked(false) })
+    } else el.pause()
+  }, [shouldPlay, main.url])
 
-  // Scrolled out of view, a playing video stops: in the list layout it would otherwise go on
-  // decoding (and, for a long one, talking) below the fold.
   useEffect(() => {
     const el = box.current
     if (!el || typeof IntersectionObserver !== 'function') return
-    const io = new IntersectionObserver(([e]) => { if (!e.isIntersecting && ref.current && !ref.current.paused) { ref.current.pause(); setPlaying(false); setWantPlay(false) } })
+    const io = new IntersectionObserver(([e]) => {
+      setVisible(e.isIntersecting)
+      // A long video leaving the screen stays paused when it comes back: it has sound.
+      if (!e.isIntersecting && !loopRef.current) setAsked(a => (a ? false : a))
+    })
     io.observe(el)
     return () => io.disconnect()
   }, [])
+  const loopRef = useRef(loop)
+  loopRef.current = loop && !open
 
   const onTap = () => {
     if (broken) { setBroken(false); main.load(); poster.load(); return }
-    if (!main.url) { main.load(); setWantPlay(true); if (!loop) setOpen(true); return }
+    if (!main.url) { main.load(); setAsked(true); if (!loop) setOpen(true); return }
     if (!loop) {
       // The first tap on a long video hands it the browser's own controls, with sound; after
       // that the controls are the video's, and taps on it are theirs.
-      if (!open) { setOpen(true); setWantPlay(true) }
+      if (!open) { setOpen(true); setAsked(true) }
       return
     }
-    setWantPlay(p => !p)
+    setAsked(!shouldPlay)
   }
 
   const loading = !main.url && main.status === 'loading'
@@ -259,7 +274,7 @@ function CustomVideo({ m, id, cls, name, toggle, mini, still }) {
     <div ref={box} className={cls + (broken || (!main.url && !poster.url) ? ' broken' : '')} id={id} onClick={open && main.url ? undefined : onTap}>
       {main.url && !broken
         ? <video ref={el => { ref.current = el; if (el && !open) mute(el) }} src={main.url} poster={poster.url || undefined}
-            playsInline loop={loop && !open} autoPlay={loop && !still} controls={open} muted={!open}
+            playsInline loop={loop && !open} controls={open} muted={!open}
             preload={loop ? 'auto' : 'metadata'} aria-label={name}
             onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)} onError={() => setBroken(true)} />
         : poster.url && !broken

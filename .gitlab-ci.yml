@@ -140,7 +140,7 @@ unit-test:
   stage: test
   script:
     - *go-setup
-    - go test -race $(go list ./... | grep -v /vendor/)\
+    - go test -race $(go list ./... | grep -v /vendor/)
 
 compile:
   stage: build

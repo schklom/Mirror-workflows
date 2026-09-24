@@ -203,7 +203,12 @@ export async function probeVideo(blob, mime, { doc = globalThis.document, timeou
       video.pause()
       const at = Number.isFinite(duration) && duration > 0 ? Math.min(0.5, duration / 2) : 0.1
       video.currentTime = at
-      await once(video, 'seeked', 3000)
+      // A slow device (an emulator, an older phone) can spend seconds on this seek right after a
+      // play that took as long: it gets the probe's whole budget. One that still has not landed
+      // draws the frame the element holds, if it holds one — a poster a little off the half
+      // second beats none, which no other device would ever make up for.
+      try { await once(video, 'seeked', timeoutMs) }
+      catch (e) { if (e?.message !== 'timeout' || !(video.readyState >= 2)) throw e }
       if (width && height) poster = await encode({ source: video, width, height }, POSTER_EDGE, 0.8, { doc })
     } catch { poster = null }
     return { width, height, duration, poster }

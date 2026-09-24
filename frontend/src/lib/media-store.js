@@ -263,6 +263,9 @@ export function getMediaStore() {
   if (!shared) shared = createMediaStore(MOBILE ? fsBackend() : idbBackend())
   return shared
 }
+/** Whether anything in this session has used the store (the sync at start, the editor, a
+ *  thumbnail) and so made and opened it. */
+export const mediaStoreInUse = () => shared !== null
 /** Tests only: swap the shared store (null makes a fresh one on next use). */
 export function _setMediaStore(s) { shared = s }
 

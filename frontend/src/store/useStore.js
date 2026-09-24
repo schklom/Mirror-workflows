@@ -9,7 +9,7 @@ import { MOBILE, initReminderSync, nativeLoad, nativeSave, onAppActive, readJson
 import { mergeStates, localExtras, stampRoutines, stampCustomEx } from '../lib/sync-merge.js'
 import { pendingRefCount, settleMedia, loadPending } from '../lib/media-owed.js'
 import { referencedHashes } from '../lib/media-refs.js'
-import { mediaStore } from '../lib/media-store.js'
+import { mediaStore, mediaStoreInUse } from '../lib/media-store.js'
 import { countChanges, syncFingerprint } from '../lib/sync-changes.js'
 import { saveWorkoutEdit } from '../lib/session-edit.js'
 import { appBase } from '../lib/app-base.js'
@@ -569,6 +569,7 @@ export const useStore = create((set, get) => {
   // Everything a sign-out leaves behind on this device, whichever way it was triggered. The owner
   // goes last, after the wiped copy is written — the storage listener above relies on the order.
   const clearLocalSession = () => {
+    const hadMedia = referencedHashes(get().S).size > 0
     get().setUser(null)
     localStorage.removeItem('gym_guest')
     forgetSync()
@@ -584,14 +585,18 @@ export const useStore = create((set, get) => {
     // The account's photos and videos go with its copy (a shared device keeps nothing of it),
     // except the ones a stash still refers to — whatever was pending is in a stash by now
     // (signOut refuses otherwise) and comes back with it. A file picked from here on is kept.
-    // After the state file, which is the one write a sign-out must not be kept waiting for. Even
+    // After the state file, which is the one write a sign-out must not be kept waiting for. Also
     // when the copy refers to no media any more: a photo removed in the last hour, or one whose
     // exercise was deleted, is still in the store until the local clean-up's grace has passed,
-    // and on a shared device it must not outlast the sign-out.
-    const since = Date.now()
-    Promise.resolve(wiped).then(() => readStashes())
-      .then(all => mediaStore.retainOnly(new Set(Object.values(all).flatMap(e => [...referencedHashes(e?.state)])), { keepPutAfter: since }))
-      .catch(() => {})
+    // and on a shared device it must not outlast the sign-out. The app's sync opens the store at
+    // start (lib/media-sync.js), so there this always runs; only a store nothing has opened is
+    // left alone, since nothing can have been put into it.
+    if (hadMedia || mediaStoreInUse()) {
+      const since = Date.now()
+      Promise.resolve(wiped).then(() => readStashes())
+        .then(all => mediaStore.retainOnly(new Set(Object.values(all).flatMap(e => [...referencedHashes(e?.state)])), { keepPutAfter: since }))
+        .catch(() => {})
+    }
     return wiped
   }
 

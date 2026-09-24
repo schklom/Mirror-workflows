@@ -113,6 +113,17 @@ describe('custom exercise photo, GIF or video, and link', () => {
     expect(JSON.stringify(S())).not.toContain('IMG_0042')
   })
 
+  it('holds the draft\'s files out of the local clean-up while the form is open', async () => {
+    customExSheet(null)
+    const form = renderTop()
+    await pick(form)
+    expect(media.isHeld(HASH)).toBe(true)
+    expect(media.isHeld(POSTER)).toBe(true)
+    act(() => { mounted.splice(0).forEach(root => root.unmount()) })
+    expect(media.isHeld(HASH)).toBe(false)
+    expect(media.isHeld(POSTER)).toBe(false)
+  })
+
   it('Remove takes the photo off on save', async () => {
     seed(custom({ media: REF }))
     customExSheet(S().customEx[0])

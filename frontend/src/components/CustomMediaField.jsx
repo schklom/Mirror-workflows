@@ -60,6 +60,14 @@ export default function CustomMediaField({ media, url, onChange }) {
     return () => { alive = false }
   }, [])
   const m = mediaOf({ media })
+  // The draft's files stay out of the local clean-up for as long as this form is open: its
+  // one-hour grace would otherwise take a file picked in a form left open longer, and the saved
+  // exercise would point at nothing.
+  const mainHash = m?.hash, posterHash = m?.poster?.hash
+  useEffect(() => {
+    if (!mainHash) return undefined
+    return mediaStore.hold([mainHash, posterHash])
+  }, [mainHash, posterHash])
   // Signed in to a server that answered without a `media` block: it predates the feature or has
   // MEDIA_UPLOADS=0. Nothing would ever reach it. A config not known yet (an offline start) is
   // not that answer — a file picked then waits here and goes up once the server is reached. A

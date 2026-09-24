@@ -73,6 +73,7 @@ export function createMediaStore(backend, {
   // hash → { url, refs, timer, file }  (file: a phone's file URL, which is never revoked)
   const urls = new Map()
   const making = new Map()   // hash → the url() in progress, so two callers make one
+  const held = new Map()     // hash → how many open editors hold it as their draft (hold)
 
   const emit = () => { for (const fn of listeners) { try { fn() } catch { /* a listener's own problem */ } } }
 
@@ -100,6 +101,21 @@ export function createMediaStore(backend, {
 
   const store = {
     ready,
+    /** Marks files as a draft's (an editor that is open) until the returned function is called.
+     *  The local clean-up keeps what is held however long ago it was put: its one-hour grace is
+     *  for a draft abandoned, not for one still being written. In memory only — a draft does not
+     *  outlive its tab. */
+    hold(hashes) {
+      const hs = [...new Set(hashes)].filter(Boolean)
+      for (const h of hs) held.set(h, (held.get(h) || 0) + 1)
+      let done = false
+      return () => {
+        if (done) return
+        done = true
+        for (const h of hs) { const n = (held.get(h) || 0) - 1; if (n > 0) held.set(h, n); else held.delete(h) }
+      }
+    },
+    isHeld: hash => held.has(hash),
     get persistent() { return persistent },
     get backendName() { return be.name },
     subscribe(fn) { listeners.add(fn); return () => listeners.delete(fn) },

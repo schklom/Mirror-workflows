@@ -263,6 +263,24 @@ describe('localMediaGc', () => {
     expect((await media.list()).map(r => r.hash).sort()).toEqual([hex('a'), hex('b'), hex('c'), hex('d'), hex('9')].sort())
   })
 
+  it('keeps the draft of an editor left open past the hour, and lets it go once the editor closes', async () => {
+    await put(hex('a')); await put(hex('b'))
+    const release = media.hold([hex('a'), hex('b')])
+    const release2 = media.hold([hex('a')])   // the same draft in a second form
+    clock += 2 * 3600000
+    const sync = make(appStore({ S: { customEx: [] }, user: null }))
+    await sync.localMediaGc()
+    expect(await media.has(hex('a'))).toBe(true)
+    expect(await media.has(hex('b'))).toBe(true)
+    release(); release()   // a second call changes nothing
+    await sync.localMediaGc()
+    expect(await media.has(hex('a'))).toBe(true)   // still held by the second form
+    expect(await media.has(hex('b'))).toBe(false)
+    release2()
+    await sync.localMediaGc()
+    expect(await media.has(hex('a'))).toBe(false)
+  })
+
   it('deletes nothing when the stash cannot be read', async () => {
     await put(hex('a'))
     clock += 2 * 3600000

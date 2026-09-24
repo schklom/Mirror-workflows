@@ -262,8 +262,8 @@ export function createMediaSync(deps = {}) {
   /**
    * Deletes the local files nothing needs any more. Live = what the state in memory references,
    * what the saved copy references (another tab may be on an older or newer one), what any stash
-   * references, and anything put in the last hour (a file picked in an editor that is still
-   * open). Signed in, the store is then kept under LOCAL_CACHE_MAX_MB by evicting main files
+   * references, what an open editor holds as its draft (mediaStore.hold), and anything put in the
+   * last hour (a draft abandoned without closing, or another tab's). Signed in, the store is then kept under LOCAL_CACHE_MAX_MB by evicting main files
    * that are safely on the server, least recently shown first; posters the state references and
    * pending files are never evicted, and a guest's or a local phone's referenced files are never
    * evicted at all — for them this is the only copy.
@@ -293,18 +293,20 @@ export function createMediaSync(deps = {}) {
       try {
         if (d.nativeLoad) { const saved = await d.nativeLoad(); if (saved) for (const h of referencedHashes(saved)) live.add(h) }
       } catch { return }   // the mirror could not be read: delete nothing rather than guess
+      // A file an open editor holds as its draft is live too, however long the editor has been open.
+      const held = r => typeof d.media.isHeld === 'function' && d.media.isHeld(r.hash)
       const cutoff = d.now() - LOCAL_GC_GRACE_MS
       const all = await d.media.list()
-      for (const r of all) if (!live.has(r.hash) && (r.putAt || 0) < cutoff) await d.media.remove(r.hash)
+      for (const r of all) if (!live.has(r.hash) && !held(r) && (r.putAt || 0) < cutoff) await d.media.remove(r.hash)
       if (!st.user) return
-      const left = (await d.media.list()).filter(r => live.has(r.hash) || (r.putAt || 0) >= cutoff)
+      const left = (await d.media.list()).filter(r => live.has(r.hash) || held(r) || (r.putAt || 0) >= cutoff)
       let bytes = left.reduce((n, r) => n + (r.size || 0), 0)
       if (bytes <= LOCAL_CACHE_MAX_MB * MB) return
       const refs = referencedFiles(st.S)
       const posters = new Set(refs.filter(f => f.poster).map(f => f.hash))
       const inState = new Set(refs.map(f => f.hash))
       const candidates = left
-        .filter(r => !r.pending && !posters.has(r.hash) && (r.putAt || 0) < cutoff)
+        .filter(r => !r.pending && !posters.has(r.hash) && !held(r) && (r.putAt || 0) < cutoff)
         .sort((a, b) => (inState.has(a.hash) - inState.has(b.hash)) || ((a.shownAt || 0) - (b.shownAt || 0)))
       for (const r of candidates) {
         if (bytes <= LOCAL_CACHE_MAX_MB * MB) break

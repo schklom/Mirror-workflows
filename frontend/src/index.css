@@ -458,11 +458,11 @@ h4.sec{
 }
 .item:active{background:var(--surface-2)}
 .routine-list{position:relative}
-/* One column at every width (#277). The desktop layout puts every #app list in two columns, and
-   the `.narrow .list` rule meant to undo that on the narrow pages loses to it on specificity. So
-   on a computer this list sat in a grid, while the reorder measures its rows top to bottom and
-   draws the drop line across the whole list: an exercise dragged just below the next one in its
-   column landed at the end. Supersets ("the exercise above") read as a column too. */
+/* One column at every width (#277), whatever page it is on. The desktop layout puts the #app
+   lists outside a .narrow page in two columns, and before the .narrow rule below won on
+   specificity this list sat in that grid on a computer, while the reorder measures its rows top
+   to bottom and draws the drop line across the whole list: an exercise dragged just below the
+   next one in its column landed at the end. Supersets ("the exercise above") read as a column too. */
 #app .list.routine-list{display:flex;flex-direction:column}
 .routine-drag-row{touch-action:pan-y;-webkit-touch-callout:none;position:relative;transition:transform var(--fast) var(--ease)}
 .routine-list.is-reordering{user-select:none;-webkit-user-select:none}
@@ -1491,8 +1491,13 @@ body.chips-dragging *{cursor:inherit}
   .workout-end-spacer{height:40px}
   .cols{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
   .cols>*{min-width:0}
+  /* Two columns on the full-width pages (Library, History, Stats, Plan, Muscles). A .narrow page
+     is a single 640px column and keeps its lists in one too. The #app in that selector is what
+     lets it win: `.narrow .list` alone lost to `#app .list` on specificity, so Home, Workout,
+     Admin and the rest showed their lists two-up on a computer. Sheets live in #modal-root,
+     outside #app, and are one column at every width. */
   #app .list{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-  #modal-root .list,.narrow .list{display:flex;flex-direction:column}
+  #modal-root .list,#app .narrow .list{display:flex;flex-direction:column}
   .narrow{max-width:640px;margin:0 auto}
   .tiles{grid-template-columns:repeat(4,1fr)}
   .cols .tiles,.center .tiles{grid-template-columns:1fr 1fr}   /* a 300px dialog has no room for four */

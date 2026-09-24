@@ -35,7 +35,9 @@ export function planMediaUrls(S, base = globalThis.location?.href, index = EXIDX
   const urls = new Set()
   for (const id of ids) {
     const ex = index[id]
-    if (!ex) continue   // a custom exercise has no media; an unknown id has nothing to fetch
+    // A custom exercise's photo or video is not a file of the shipped dataset: it lives in the
+    // local media store and has its own prefetch (lib/media-sync.js). An unknown id has nothing.
+    if (!ex || ex.custom) continue
     for (const src of [ex.gif && gifSrc(ex), ex.img && imgSrc(ex)]) {
       if (!src) continue
       const u = new URL(src, base)

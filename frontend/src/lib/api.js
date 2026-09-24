@@ -81,6 +81,117 @@ async function exchange(url, init) {
   return body
 }
 
+/* ------------------------------------------------ photos and videos of custom exercises ------
+   Two transports beside api(), for the one kind of body that is not JSON. Both go to the same
+   base api() uses and carry the paired phone's Bearer token the same way (the server's CORS
+   answer allows it for GET and PUT); both refuse to run on a phone without a server, like api(). */
+
+const mediaUrl = path => (remoteBase ? remoteBase + path : appBase().replace(/\/$/, '') + path)
+const mediaHeaders = () => (remoteToken ? { Authorization: 'Bearer ' + remoteToken } : {})
+const notPaired = () => failure(t('This phone is not connected to a server.'), 'not-paired', 0)
+const timedOut = () => failure(t('The server did not answer in time.'), 'timeout')
+
+/**
+ * GET a file as a Blob (lib/media-sync.js fetchToStore, which checks its hash before keeping it).
+ * An answer that announces more than `expectSize` (+1 KB) is refused before a byte is read, and
+ * one that turns out longer is cut off: a login page or a proxy's error is never read into
+ * memory. There is no total time limit — a video on a slow line takes what it takes — only an
+ * idle one: no bytes for `idleMs` and the download counts as offline (code 'timeout').
+ * Errors carry { status, code } like api()'s: the server's code on a refusal (media-missing).
+ */
+export async function apiBlob(path, { expectSize, idleMs = 30000, fetchImpl = globalThis.fetch } = {}) {
+  if (MOBILE && !remoteBase) throw notPaired()
+  const max = typeof expectSize === 'number' && expectSize >= 0 ? expectSize + 1024 : Infinity
+  const ctl = typeof AbortController === 'function' ? new AbortController() : null
+  let timer = null
+  let idle = false
+  // The stall is raced against every await, not left to the abort alone: a WebView whose reader
+  // does not settle on abort would otherwise hang the download for good.
+  let stalled = null
+  const stall = new Promise((_, reject) => { stalled = reject })
+  stall.catch(() => {})
+  const arm = () => { clearTimeout(timer); timer = setTimeout(() => { idle = true; ctl?.abort(); stalled(timedOut()) }, idleMs) }
+  const tooBig = status => failure('HTTP ' + status, 'too-large', status)
+  // What loses the race may still reject afterwards, with nobody left listening.
+  const orStall = p => { p.catch(() => {}); return Promise.race([p, stall]) }
+  arm()
+  try {
+    const r = await orStall(fetchImpl(mediaUrl(path), { headers: mediaHeaders(), cache: 'no-store', ...(ctl ? { signal: ctl.signal } : {}) }))
+    if (!r.ok) {
+      let body = null
+      try { body = await r.json() } catch { /* not JSON: a proxy's page */ }
+      throw Object.assign(new Error((body && body.error) || 'HTTP ' + r.status), { status: r.status, code: (body && body.code) || 'http', data: body || {} })
+    }
+    const announced = Number(r.headers?.get?.('content-length'))
+    if (Number.isFinite(announced) && announced > max) { ctl?.abort(); throw tooBig(r.status) }
+    const reader = r.body && typeof r.body.getReader === 'function' ? r.body.getReader() : null
+    if (!reader) {
+      const b = await orStall(r.blob())
+      if (b.size > max) throw tooBig(r.status)
+      return b
+    }
+    const parts = []
+    let n = 0
+    for (;;) {
+      arm()
+      const { done, value } = await orStall(reader.read())
+      if (done) break
+      n += value.length
+      if (n > max) { ctl?.abort(); throw tooBig(r.status) }
+      parts.push(value)
+    }
+    return new Blob(parts)
+  } catch (e) {
+    if (idle) throw timedOut()
+    throw e
+  } finally { clearTimeout(timer) }
+}
+
+/**
+ * PUT a file (XMLHttpRequest, because only it reports upload progress). `mime` is the type the
+ * MediaRef records, sent explicitly — a Blob read back from a phone's file carries whatever the
+ * local server guessed. Resolves with the server's JSON answer. Rejects with { status, code }:
+ * the server's own code on a refusal, plus `retryAfter` on a 429; 'proxy-too-large' for a 413
+ * that is not the API's JSON (nginx's client_max_body_size, Cloudflare's 100 MB); 'timeout' after
+ * `idleMs` without progress; no status at all when the network failed.
+ */
+export function apiUpload(path, blob, mime, { onProgress, idleMs = 60000, XHR = globalThis.XMLHttpRequest } = {}) {
+  if (MOBILE && !remoteBase) return Promise.reject(notPaired())
+  return new Promise((resolve, reject) => {
+    const xhr = new XHR()
+    let timer = null
+    let idle = false
+    const arm = () => { clearTimeout(timer); timer = setTimeout(() => { idle = true; xhr.abort() }, idleMs) }
+    xhr.open('PUT', mediaUrl(path))
+    xhr.setRequestHeader('Content-Type', mime)
+    for (const [k, v] of Object.entries(mediaHeaders())) xhr.setRequestHeader(k, v)
+    if (xhr.upload) xhr.upload.onprogress = e => { arm(); if (onProgress && e.lengthComputable) onProgress(e.loaded, e.total) }
+    xhr.onprogress = arm
+    xhr.onload = () => {
+      clearTimeout(timer)
+      let body = null
+      try { body = JSON.parse(xhr.responseText) } catch { /* not JSON */ }
+      if (body && typeof body !== 'object') body = null
+      if (xhr.status >= 200 && xhr.status < 300) {
+        if (body) resolve(body)
+        else reject(failure(t('The server answered with something other than openGym data.'), 'bad-response', xhr.status))
+        return
+      }
+      if (xhr.status === 413 && !body) { reject(failure('HTTP 413', 'proxy-too-large', 413)); return }
+      const e = Object.assign(new Error((body && body.error) || 'HTTP ' + xhr.status), { status: xhr.status, code: (body && body.code) || 'http', data: body || {} })
+      if (xhr.status === 429) {
+        const header = Number(xhr.getResponseHeader && xhr.getResponseHeader('Retry-After'))
+        e.retryAfter = Number(body && body.retryAfter) || (Number.isFinite(header) && header > 0 ? header : 60)
+      }
+      reject(e)
+    }
+    xhr.onerror = () => { clearTimeout(timer); reject(Object.assign(new Error('network'), { code: 'network' })) }
+    xhr.onabort = () => { clearTimeout(timer); reject(idle ? timedOut() : Object.assign(new Error('aborted'), { code: 'network' })) }
+    arm()
+    xhr.send(blob)
+  })
+}
+
 // Bootstraps the connection itself: the base isn't configured yet (that's what this call decides),
 // so it talks straight to the server the user typed in, no Authorization header.
 export async function pairRedeem(serverBase, code) {

@@ -8,8 +8,10 @@
  *
  * Rules, by field:
  *   - scalars and settings, `week`, `dayPlan`, `wc`, `reminder`, …: from the copy with the newer `_ts`
- *   - customEx, equipProfiles, gymCards: union by id, the newer copy's version of an id that
- *     both have
+ *   - equipProfiles, gymCards: union by id, the newer copy's version of an id that both have
+ *   - customEx: union by id; of an id that both have, the version edited last by its own `_ts`
+ *     (stampCustomEx), the newer copy's on a tie — a photo or link added on one device must not
+ *     be lost to the other's copy just because that one logged a set since
  *   - workouts: union by id; of an id that both have, the version edited last by its own `_ts`
  *     (stampWorkout — a workout changed after it was logged: its sets edited, moved to another
  *     day, its length or note corrected), the newer copy's on a tie; sorted by day and start
@@ -181,6 +183,17 @@ export function mergeStates(a, b, { prefer } = {}) {
       return alt && (alt._ts || 0) > (r._ts || 0) ? clone(alt) : r
     })
   }
+  // A custom exercise edited on both sides keeps the version edited last, the same rule and for
+  // the same reason. The merge is whole-entry: a device that later renames an exercise whose
+  // media it never saw change brings its old media back (the old file outlives the grace period
+  // on the server, so nothing breaks, it is only the older picture).
+  if (!prefer && out.customEx) {
+    const other = new Map(list(o.customEx).filter(c => c?.id != null).map(c => [c.id, c]))
+    out.customEx = out.customEx.map(c => {
+      const alt = c?.id != null && other.get(c.id)
+      return alt && (alt._ts || 0) > (c._ts || 0) ? clone(alt) : c
+    })
+  }
   out.bodyweight = mergeBodyweight(n.bodyweight, o.bodyweight).map(clone)
   if (list(n.favEx).length || list(o.favEx).length) out.favEx = [...new Set([...list(n.favEx), ...list(o.favEx)])]
   out.exWeights = clone(mergeExWeights(n.exWeights, o.exWeights))
@@ -216,6 +229,24 @@ export function stampRoutines(prev = [], next = [], now = Date.now()) {
     if (!r || r.id == null) continue
     const old = before.get(r.id)
     if (!old || (old !== r && !sameRoutine(old, r))) r._ts = now
+  }
+  return next
+}
+
+const sameEntry = (a, b) => JSON.stringify({ ...a, _ts: 0 }) === JSON.stringify({ ...b, _ts: 0 })
+
+/**
+ * Stamps `_ts` on every custom exercise of `next` that is new or differs from its version in
+ * `prev`, the way stampRoutines does for a plan — the edit time mergeStates needs to keep the
+ * version edited last. The store runs it on every change (useStore update). Mutates and returns
+ * `next`.
+ */
+export function stampCustomEx(prev = [], next = [], now = Date.now()) {
+  const before = new Map(list(prev).filter(c => c?.id != null).map(c => [c.id, c]))
+  for (const c of list(next)) {
+    if (!c || typeof c !== 'object' || c.id == null) continue
+    const old = before.get(c.id)
+    if (!old || (old !== c && !sameEntry(old, c))) c._ts = now
   }
   return next
 }

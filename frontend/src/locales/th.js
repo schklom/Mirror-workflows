@@ -376,6 +376,8 @@ export default {
   'Scan this with the other device, or open openGym there and enter the code on the sign-in screen. It works once, for {0} minutes.': 'สแกนด้วยอุปกรณ์อีกเครื่อง หรือเปิด openGym บนเครื่องนั้นแล้วกรอกรหัสในหน้าจอเข้าสู่ระบบ ใช้ได้ครั้งเดียวภายใน {0} นาที',
   'That code is wrong, used or expired — make a new one on your other device.': 'รหัสนี้ไม่ถูกต้อง ถูกใช้ไปแล้ว หรือหมดอายุ — สร้างรหัสใหม่บนอุปกรณ์อีกเครื่องของคุณ',
   'This browser cannot confirm with your passkey. Do this on a device that holds one.': 'เบราว์เซอร์นี้ยืนยันด้วยพาสคีย์ของคุณไม่ได้ ทำขั้นตอนนี้บนอุปกรณ์ที่เก็บพาสคีย์ไว้',
+  'First confirm that it is you.': 'ก่อนอื่นยืนยันว่าเป็นคุณ',
+  'This profile has no passkey, and this server does not take passwords, so nothing here can confirm that it is you. Ask your admin.': 'โปรไฟล์นี้ไม่มีพาสคีย์ และเซิร์ฟเวอร์นี้ไม่รับรหัสผ่าน จึงไม่มีสิ่งใดที่นี่ยืนยันได้ว่าเป็นคุณ โปรดติดต่อผู้ดูแลระบบของคุณ',
   'This browser cannot create passkeys, so it cannot be added with a code. Open the link in a browser that can.': 'เบราว์เซอร์นี้สร้างพาสคีย์ไม่ได้ จึงเพิ่มด้วยรหัสไม่ได้ เปิดลิงก์ในเบราว์เซอร์ที่สร้างพาสคีย์ได้',
   'This browser is signed in as “{0}”. Adding it to “{1}” signs “{0}” out here.': 'เบราว์เซอร์นี้เข้าสู่ระบบในชื่อ “{0}” อยู่ การเพิ่มเบราว์เซอร์นี้ให้ “{1}” จะทำให้ “{0}” ออกจากระบบที่นี่',
   'This code is for a different profile that is also called “{0}”, not the one this browser is signed in as. Adding it there signs yours out here.': 'รหัสนี้เป็นของโปรไฟล์อื่นที่ชื่อ “{0}” เหมือนกัน ไม่ใช่โปรไฟล์ที่เบราว์เซอร์นี้เข้าสู่ระบบอยู่ การเพิ่มเบราว์เซอร์ไปที่นั่นจะทำให้โปรไฟล์ของคุณออกจากระบบที่นี่',

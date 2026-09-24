@@ -133,3 +133,41 @@ describe('api() gives up on a request that never answers', () => {
     await expect(p).rejects.toMatchObject({ code: 'timeout' })
   })
 })
+
+// Settings asks for a passkey as proof before a way in is added or removed (components/
+// PasswordAuth.jsx, ProveOwner), and calls the prompt off when its sheet closes: the signal has
+// to reach the browser's prompt, or a prompt nobody sees any more could still answer.
+describe('passkeyAssertion', () => {
+  const originalCredentials = navigator.credentials
+  afterEach(() => { vi.unstubAllGlobals(); setCapability(navigator, 'credentials', originalCredentials) })
+  const options = () => new Response(JSON.stringify({ cid: 'c1', options: { challenge: 'AAAA', allowCredentials: [] } }), { status: 200, headers: { 'content-type': 'application/json' } })
+  const assertion = { id: 'k1', rawId: new Uint8Array([1]).buffer, type: 'public-key', response: { clientDataJSON: new Uint8Array([2]).buffer, authenticatorData: new Uint8Array([3]).buffer, signature: new Uint8Array([4]).buffer, userHandle: null } }
+
+  it('hands the signal to the prompt, and answers with the challenge id and the assertion', async () => {
+    const { passkeyAssertion } = await import('./api.js')
+    vi.stubGlobal('fetch', async () => options())
+    const get = vi.fn(async () => assertion)
+    setCapability(navigator, 'credentials', { get })
+    const ctl = new AbortController()
+    const r = await passkeyAssertion({ signal: ctl.signal })
+    expect(get.mock.calls[0][0].signal).toBe(ctl.signal)
+    expect(r.cid).toBe('c1')
+    expect(r.credential.id).toBe('k1')
+    // Without one, the prompt is asked for exactly as before.
+    await passkeyAssertion()
+    expect('signal' in get.mock.calls[1][0]).toBe(false)
+  })
+
+  it('a prompt called off rejects as an AbortError', async () => {
+    const { passkeyAssertion } = await import('./api.js')
+    vi.stubGlobal('fetch', async () => options())
+    setCapability(navigator, 'credentials', {
+      get: ({ signal }) => new Promise((resolve, reject) => signal.addEventListener('abort', () => reject(Object.assign(new Error('aborted'), { name: 'AbortError' }))))
+    })
+    const ctl = new AbortController()
+    const p = passkeyAssertion({ signal: ctl.signal })
+    await new Promise(r => setTimeout(r, 0))
+    ctl.abort()
+    await expect(p).rejects.toMatchObject({ name: 'AbortError' })
+  })
+})

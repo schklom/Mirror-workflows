@@ -7,8 +7,9 @@ import { passwordError, PasswordSignInSheet, PasswordRegisterForm, PasswordRow, 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true
 
 /* Password sign-in on screen (#118): the sign-in sheet and its reset-code half, creating a profile
-   with a password, and the Settings row that sets, changes or removes one. The API is a
-   stand-in; what each form sends, and what it says back in the UI language, is the point. */
+   with a password, and the Settings row that sets, changes or removes one — removing behind the
+   same proof step adding a passkey uses. The API is a stand-in; what each form sends, and what it
+   says back in the UI language, is the point. */
 const mocks = vi.hoisted(() => {
   const state = { webauthn: true, hasData: false, sheets: [], answers: {}, calls: [] }
   state.toast = vi.fn()
@@ -20,7 +21,6 @@ const mocks = vi.hoisted(() => {
   state.passwordRegister = vi.fn()
   state.passwordResetRedeem = vi.fn()
   state.passkeyAssertion = vi.fn(async () => ({ cid: 'c1', credential: { id: 'k1' } }))
-  state.confirmSheet = vi.fn()
   state.api = vi.fn(async (path, init) => {
     state.calls.push({ path, method: init?.method || 'GET', body: init?.body ? JSON.parse(init.body) : null })
     const a = state.answers[(init?.method || 'GET') + ' ' + path]
@@ -52,7 +52,7 @@ vi.mock('../lib/api.js', () => ({
   passwordRegister: (...a) => mocks.passwordRegister(...a),
   passwordResetRedeem: (...a) => mocks.passwordResetRedeem(...a),
 }))
-vi.mock('../sheets.jsx', () => ({ askAddDeviceData: vi.fn(), confirmSheet: (...a) => mocks.confirmSheet(...a) }))
+vi.mock('../sheets.jsx', () => ({ askAddDeviceData: vi.fn() }))
 
 const fail = (status, data) => Object.assign(new Error(data?.error || 'HTTP ' + status), { status, data })
 
@@ -76,6 +76,7 @@ const byPlaceholder = (host, p) => host.querySelector(`input[placeholder="${p}"]
 const button = (host, text) => [...host.querySelectorAll('button')].find(b => b.textContent === text)
 const submit = async host => { act(() => { host.querySelector('form').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })) }); await settle() }
 const alertText = host => host.querySelector('[role="alert"]')?.textContent || null
+const click = async (host, text) => { act(() => button(host, text).click()); await settle() }
 
 beforeEach(() => {
   mocks.webauthn = true
@@ -84,7 +85,7 @@ beforeEach(() => {
   mocks.answers = {}
   mocks.calls.length = 0
   for (const f of [mocks.toast, mocks.setUser, mocks.adoptProfile, mocks.pushState, mocks.pullState, mocks.passwordLogin,
-    mocks.passwordRegister, mocks.passwordResetRedeem, mocks.passkeyAssertion, mocks.confirmSheet]) f.mockClear()
+    mocks.passwordRegister, mocks.passwordResetRedeem, mocks.passkeyAssertion]) f.mockClear()
 })
 afterEach(() => { act(() => { mounted.splice(0).forEach(({ root, host }) => { root.unmount(); host.remove() }) }) })
 
@@ -257,17 +258,105 @@ describe('Settings → Password', () => {
     expect(button(host, 'Forgot it? Confirm with your passkey instead')).toBeUndefined()
   })
 
-  it('removing asks first and then deletes; only offered while a passkey remains', async () => {
-    const done = vi.fn()
-    const host = mount(<PasswordSheet status={{ set: true, passkeys: 2, name: 'Ana' }} close={() => {}} done={done} />)
+})
+
+/* Removing the password asks for the proof setting one does (proveOwner in api/server.js): the
+   password itself or a passkey of this profile, on the sheet that says what removing means. */
+describe('Settings → Password → Remove', () => {
+  const named = name => Object.assign(new Error(name), { name })
+  const deletes = () => mocks.calls.filter(c => c.method === 'DELETE')
+  function openRemove(status = { set: true, passkeys: 2, name: 'Ana' }) {
+    const done = vi.fn(), close = vi.fn()
+    const host = mount(<PasswordSheet status={status} close={close} done={done} />)
     act(() => button(host, 'Remove password').click())
-    expect(mocks.confirmSheet).toHaveBeenCalledTimes(1)
-    const opts = mocks.confirmSheet.mock.calls[0][0]
-    expect(opts.title).toBe('Remove your password?')
-    await act(async () => { opts.onConfirm() })
-    await settle()
-    expect(mocks.calls.at(-1)).toEqual({ path: '/api/account/password', method: 'DELETE', body: null })
+    const removeClose = vi.fn()
+    const sheet = mount(mocks.sheets.at(-1).render(removeClose))
+    return { sheet, close: removeClose, sheetClose: close, done }
+  }
+
+  it('asks for proof before anything is sent, then removes with the password as proof', async () => {
+    mocks.answers['DELETE /api/account/password'] = { ok: true }
+    const { sheet, close, sheetClose, done } = openRemove()
+    expect(sheet.querySelector('h3').textContent).toBe('Remove your password?')
+    expect(sheet.textContent).toContain('Only your passkeys sign in to this profile afterwards.')
+    expect(sheet.textContent).toContain('First confirm that it is you.')
+    expect(deletes()).toEqual([])
+    await submit(sheet)
+    expect(alertText(sheet)).toBe('Enter your password.')
+    expect(deletes()).toEqual([])
+    type(byPlaceholder(sheet, 'Current password'), 'correct horse battery')
+    await click(sheet, 'Remove')
+    expect(deletes()).toEqual([{ path: '/api/account/password', method: 'DELETE', body: { current: 'correct horse battery' } }])
+    expect(close).toHaveBeenCalled()
+    expect(sheetClose).toHaveBeenCalled()
     expect(done).toHaveBeenCalled()
     expect(mocks.toast).toHaveBeenCalledWith('Password removed')
+  })
+
+  it('or with a passkey of the profile, whose assertion goes with the removal', async () => {
+    mocks.answers['DELETE /api/account/password'] = { ok: true }
+    const { sheet, close } = openRemove()
+    expect(button(sheet, 'Confirm with a passkey').className).toMatch(/\bdanger\b/)
+    await click(sheet, 'Confirm with a passkey')
+    expect(mocks.passkeyAssertion).toHaveBeenCalledTimes(1)
+    expect(deletes()).toEqual([{ path: '/api/account/password', method: 'DELETE', body: { cid: 'c1', credential: { id: 'k1' } } }])
+    expect(close).toHaveBeenCalled()
+  })
+
+  it('a wrong password, a passkey the server refuses, or a removal that became the last way in stay on the sheet', async () => {
+    const { sheet, close, done } = openRemove()
+    mocks.answers['DELETE /api/account/password'] = fail(403, { code: 'current-wrong' })
+    type(byPlaceholder(sheet, 'Current password'), 'not it')
+    await submit(sheet)
+    expect(alertText(sheet)).toBe('Your current password is not right.')
+    mocks.answers['DELETE /api/account/password'] = fail(403, { code: 'passkey' })
+    await click(sheet, 'Confirm with a passkey')
+    expect(alertText(sheet)).toBe('Your passkey could not be confirmed.')
+    mocks.answers['DELETE /api/account/password'] = fail(409, { code: 'last-way-in' })
+    await click(sheet, 'Confirm with a passkey')
+    expect(alertText(sheet)).toBe('This password is the only way into your profile, so it cannot be removed.')
+    mocks.answers['DELETE /api/account/password'] = fail(429, { code: 'locked', retryAfter: 60 })
+    await submit(sheet)
+    expect(alertText(sheet)).toMatch(/^Too many attempts — try again /)
+    expect(close).not.toHaveBeenCalled()
+    expect(done).not.toHaveBeenCalled()
+    expect(mocks.toast).not.toHaveBeenCalled()
+  })
+
+  it('a dismissed passkey prompt removes nothing and is no error; Cancel just closes', async () => {
+    const { sheet, close } = openRemove()
+    mocks.passkeyAssertion.mockRejectedValueOnce(named('NotAllowedError'))
+    await click(sheet, 'Confirm with a passkey')
+    expect(deletes()).toEqual([])
+    expect(alertText(sheet)).toBeNull()
+    await click(sheet, 'Cancel')
+    expect(close).toHaveBeenCalled()
+    expect(deletes()).toEqual([])
+  })
+
+  it('a passkey prompt still open when the sheet goes removes nothing when it answers', async () => {
+    let answer, signal
+    mocks.passkeyAssertion.mockImplementationOnce(opts => new Promise(resolve => { signal = opts?.signal; answer = resolve }))
+    const { sheet } = openRemove()
+    await click(sheet, 'Confirm with a passkey')
+    act(() => { const m = mounted.pop(); m.root.unmount(); m.host.remove() })
+    expect(signal.aborted).toBe(true)
+    await act(async () => { answer({ cid: 'c1', credential: { id: 'k1' } }) })
+    await settle()
+    expect(deletes()).toEqual([])
+    expect(mocks.toast).not.toHaveBeenCalled()
+  })
+
+  it('without passkey support in this browser the password is the proof', async () => {
+    mocks.webauthn = false
+    const { sheet } = openRemove()
+    expect(button(sheet, 'Confirm with a passkey')).toBeUndefined()
+    expect(button(sheet, 'Remove').className).toMatch(/\bdanger\b/)
+    expect(byPlaceholder(sheet, 'Current password')).not.toBeNull()
+  })
+
+  it('only offered while a passkey remains', () => {
+    const host = mount(<PasswordSheet status={{ set: true, passkeys: 0, name: 'Ana' }} close={() => {}} done={() => {}} />)
+    expect(button(host, 'Remove password')).toBeUndefined()
   })
 })

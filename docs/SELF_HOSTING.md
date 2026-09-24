@@ -196,12 +196,22 @@ What changes when it is on:
 - Settings → Account gets a **Password** row. Nobody has a password until they set one there.
   Setting a first password asks for the profile's passkey; changing it asks for the current
   password (or the passkey, if it was forgotten). Either signs the profile out everywhere else,
-  and paired phones have to be paired again.
+  and paired phones have to be paired again. Removing it asks for the password or the passkey
+  too — a session on its own may be a copied cookie.
 - People sign in with their **profile name** — case and surrounding spaces do not matter — and the
   password. Two profiles with a password cannot share a name; Settings says so when a name is
   already taken that way.
 - A password cannot be removed while it is the profile's only way in (a profile made with a
   password has no passkey).
+- The password also confirms the changes that need proof — adding or removing a passkey, making
+  a code for another device — but only while `PASSWORD_LOGIN=1`.
+
+**Switching it off again** turns every password route off, and a password kept from before no
+longer confirms anything either: an old or reused one must not be enough to add a passkey. A
+profile that only has a password can then neither sign in nor add a passkey, even from a
+browser that is still signed in. Before you switch it off, have those profiles add a passkey
+(**Settings → Account → Passkeys → Add a passkey**, confirmed with their password); the admin
+dashboard marks every profile that has a password.
 
 **Resetting a password.** There is no e-mail. In the admin dashboard open the user and choose
 **Reset password**. You get a one-time code such as `K7WQ-2MZP-4HXA` to hand over in person or
@@ -486,8 +496,10 @@ then creates a passkey of its own and is signed in by it. So a Windows Hello pas
 the phone's own passkey can sign in to the same profile, instead of the phone ending up with a
 second, empty one. (#95)
 
-Both ways ask you to confirm first — with a passkey the profile already has, or its password —
-because each adds a lasting way in: a session on its own may be a copied cookie. The code works
+Both ways ask you to confirm first — with a passkey the profile already has, or its password
+while `PASSWORD_LOGIN=1` — because each adds a lasting way in: a session on its own may be a
+copied cookie. Removing a passkey asks for the same, since a copied cookie could otherwise pick
+which of your passkeys is left. The code works
 once, for ten minutes, and is stored only as a hash; making a new one, signing out everywhere or
 changing the password voids it. Wrong codes count toward a per-address pause of code redemption,
 like wrong reset codes, and every passkey added or removed and every code made or used is in the
@@ -504,9 +516,10 @@ Keychain to your Apple devices, a password manager to every device it runs on. A
 only on one phone (or on a hardware key) goes with that phone.
 
 **I lost my passkey.** If the profile has another passkey, sign in with that one and remove the
-lost one under **Settings → Account → Passkeys** (then **Sign out everywhere**). A browser that
-is still signed in can give a new device a passkey with **Add another device** only if the
-profile also has a password: making the code asks for a passkey or the current password first,
+lost one under **Settings → Account → Passkeys**, confirming with the passkey you signed in
+with (then **Sign out everywhere**). A browser that is still signed in can give a new device a
+passkey with **Add another device** only if the profile also has a password and
+`PASSWORD_LOGIN=1`: making the code asks for a passkey or the current password first,
 because a session on its own may be a stolen cookie. Otherwise there is no self-service recovery: with `PASSWORD_LOGIN=1` an admin can issue a reset code, and without
 it the only way back is a backup (**Settings → Export backup (JSON)**, from any device still
 signed in) imported into a new profile. When you ask your admin for help, the id under
@@ -533,7 +546,7 @@ browser (see section 2).
 | The app says "Your server answered with an error (HTTP …)" | The code is what the server or its proxy sent: 502/504 usually means the API container is down or unreachable from `web`, 413 that the proxy's upload limit is too small. Changes stay on the device and go through once the server answers. |
 | `docker compose pull` fails with "denied" / "unauthorized" | The prebuilt images aren't published yet, or need to be, or the GHCR package is still private — build from source instead (`docker compose up -d --build`). |
 | Exercise images/GIFs blank when a routine is open | Fixed in current images (issue #79). On an older build, see the note below. |
-| An exercise shows a plain tile instead of its animation when offline | The installed web app keeps the media of every exercise in your plan and your current workout, fetched in the background once the app has settled (not on a cellular or Data Saver connection, where the browser says so), plus everything it has shown you, up to 150 MB, across updates. An exercise outside your plan that was never shown while online has nothing to show offline. The phone app loads media from a CDN and is not covered by this. |
+| An exercise shows a plain tile instead of its animation when offline | The web app installed on the home screen keeps the media of every exercise in your plan and your current workout, fetched in the background once the app has settled (not on a cellular or Data Saver connection, where the browser says so), plus everything it has shown you, up to 150 MB, across updates. In an ordinary browser tab nothing is fetched ahead: only what it has shown you is kept. An exercise outside your plan that was never shown while online has nothing to show offline. The phone app loads media from a CDN and is not covered by this. |
 
 ### `VITE_IMG_BASE` / `VITE_GIF_BASE` are build-time, not run-time
 

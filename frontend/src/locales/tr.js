@@ -370,6 +370,8 @@ export default {
   'Scan this with the other device, or open openGym there and enter the code on the sign-in screen. It works once, for {0} minutes.': 'Bunu diğer cihazla tara ya da orada openGym’i açıp kodu giriş ekranına gir. Bir kez ve {0} dakika boyunca çalışır.',
   'That code is wrong, used or expired — make a new one on your other device.': 'Bu kod yanlış, kullanılmış ya da süresi dolmuş — diğer cihazında yeni bir tane oluştur.',
   'This browser cannot confirm with your passkey. Do this on a device that holds one.': 'Bu tarayıcı geçiş anahtarınla onaylayamaz. Bunu, anahtarın kayıtlı olduğu bir cihazda yap.',
+  'First confirm that it is you.': 'Önce sen olduğunu onayla.',
+  'This profile has no passkey, and this server does not take passwords, so nothing here can confirm that it is you. Ask your admin.': 'Bu profilin geçiş anahtarı yok ve bu sunucu şifre kabul etmiyor, bu yüzden burada sen olduğunu hiçbir şey onaylayamaz. Yöneticine başvur.',
   'This browser cannot create passkeys, so it cannot be added with a code. Open the link in a browser that can.': 'Bu tarayıcı geçiş anahtarı oluşturamadığı için kodla eklenemez. Bağlantıyı bunu yapabilen bir tarayıcıda aç.',
   'This browser is signed in as “{0}”. Adding it to “{1}” signs “{0}” out here.': 'Bu tarayıcıda “{0}” olarak oturum açık. Onu “{1}” profiline eklemek burada “{0}” oturumunu kapatır.',
   'This code is for a different profile that is also called “{0}”, not the one this browser is signed in as. Adding it there signs yours out here.': 'Bu kod, yine “{0}” adını taşıyan başka bir profile ait; bu tarayıcıda oturumu açık olan profile değil. Tarayıcıyı oraya eklemek buradaki kendi profilinin oturumunu kapatır.',

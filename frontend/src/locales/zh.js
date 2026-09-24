@@ -370,6 +370,8 @@ export default {
   'Scan this with the other device, or open openGym there and enter the code on the sign-in screen. It works once, for {0} minutes.': '用另一台设备扫描，或在那台设备上打开 openGym，在登录界面输入代码。仅可使用一次，{0} 分钟内有效。',
   'That code is wrong, used or expired — make a new one on your other device.': '代码错误、已被使用或已过期——请在你另一台设备上生成新的代码。',
   'This browser cannot confirm with your passkey. Do this on a device that holds one.': '此浏览器无法用你的通行密钥确认。请在保存了通行密钥的设备上操作。',
+  'First confirm that it is you.': '请先确认是你本人。',
+  'This profile has no passkey, and this server does not take passwords, so nothing here can confirm that it is you. Ask your admin.': '此档案没有通行密钥，而此服务器不接受密码，所以这里无法确认是你本人。请联系管理员。',
   'This browser cannot create passkeys, so it cannot be added with a code. Open the link in a browser that can.': '此浏览器无法创建通行密钥，因此不能通过代码添加。请在能创建通行密钥的浏览器中打开此链接。',
   'This browser is signed in as “{0}”. Adding it to “{1}” signs “{0}” out here.': '此浏览器已以“{0}”登录。将它添加到“{1}”会让“{0}”在这里退出登录。',
   'This code is for a different profile that is also called “{0}”, not the one this browser is signed in as. Adding it there signs yours out here.': '这个代码属于另一个同样名为“{0}”的档案，而不是此浏览器当前登录的那个。将浏览器添加到那里，会让你的档案在这里退出登录。',

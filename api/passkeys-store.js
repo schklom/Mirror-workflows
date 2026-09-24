@@ -72,14 +72,22 @@ export function renamePasskeyRecord(db, userId, credId, name) {
   return { ok: true, row };
 }
 
-// Refused when it would leave the profile with no way in at all: its last passkey goes only while
-// something else (`otherWays`) can still sign it in.
-export function removePasskeyRecord(db, userId, credId, otherWays = 0) {
-  db.creds = db.creds || [];
-  const i = db.creds.findIndex(c => c.id === credId && c.userId === userId);
-  if (i < 0) return { error: 'passkey not found', code: 'not-found' };
-  const mine = db.creds.filter(c => c.userId === userId).length;
+// Why removing `credId` would be refused, or null when it could go: not this profile's, or its
+// last way in — the last passkey goes only while something else (`otherWays`) can still sign it
+// in. On its own so server.js can ask before it asks the owner for proof, and again, through
+// removePasskeyRecord, once the proof is in.
+export function passkeyRemovalRefused(db, userId, credId, otherWays = 0) {
+  const creds = db.creds || [];
+  if (!creds.some(c => c.id === credId && c.userId === userId)) return { error: 'passkey not found', code: 'not-found' };
+  const mine = creds.filter(c => c.userId === userId).length;
   if (mine - 1 + otherWays < 1) return { error: 'this passkey is the only way into this profile', code: 'last-way-in' };
+  return null;
+}
+
+export function removePasskeyRecord(db, userId, credId, otherWays = 0) {
+  const refused = passkeyRemovalRefused(db, userId, credId, otherWays);
+  if (refused) return refused;
+  const i = db.creds.findIndex(c => c.id === credId && c.userId === userId);
   const [row] = db.creds.splice(i, 1);
   return { ok: true, row };
 }

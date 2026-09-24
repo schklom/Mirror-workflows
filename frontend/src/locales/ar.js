@@ -1585,6 +1585,8 @@ export default {
   'Scan this with the other device, or open openGym there and enter the code on the sign-in screen. It works once, for {0} minutes.': 'امسح هذا بالجهاز الآخر، أو افتح openGym هناك وأدخل الرمز في شاشة تسجيل الدخول. يعمل مرة واحدة، لمدة {0} دقائق.',
   'That code is wrong, used or expired — make a new one on your other device.': 'هذا الرمز خاطئ أو مستخدَم أو منتهي الصلاحية — أنشئ رمزًا جديدًا على جهازك الآخر.',
   'This browser cannot confirm with your passkey. Do this on a device that holds one.': 'لا يستطيع هذا المتصفح التأكيد بمفتاح المرور الخاص بك. افعل ذلك على جهاز يحفظ مفتاحًا.',
+  'First confirm that it is you.': 'أكّد أولًا أنك أنت.',
+  'This profile has no passkey, and this server does not take passwords, so nothing here can confirm that it is you. Ask your admin.': 'لا يملك هذا الملف الشخصي مفتاح مرور، ولا يقبل هذا الخادم كلمات المرور، لذا لا يمكن لأي شيء هنا تأكيد أنك أنت. تواصل مع المسؤول.',
   'This browser cannot create passkeys, so it cannot be added with a code. Open the link in a browser that can.': 'لا يستطيع هذا المتصفح إنشاء مفاتيح مرور، لذا لا يمكن إضافته برمز. افتح الرابط في متصفح يستطيع ذلك.',
   'This browser is signed in as “{0}”. Adding it to “{1}” signs “{0}” out here.': 'هذا المتصفح مسجّل الدخول باسم «{0}». إضافته إلى «{1}» تُخرج «{0}» من هنا.',
   'This code is for a different profile that is also called “{0}”, not the one this browser is signed in as. Adding it there signs yours out here.': 'هذا الرمز لملف شخصي آخر اسمه أيضًا «{0}»، وليس للملف الذي سجّل هذا المتصفح الدخول به. إضافة المتصفح إلى هناك تُخرج ملفك الشخصي من هنا.',

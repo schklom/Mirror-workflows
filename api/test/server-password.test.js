@@ -2,7 +2,7 @@
    rules that make a second way into an account safe to offer. Real server.js in a child, the
    same harness as server-pairing.test.js. Every test talks from its own X-Forwarded-For address
    (TRUST_PROXY=1), so one test's failures never pause another's. */
-import { test } from 'node:test';
+import { test, before } from 'node:test';
 import assert from 'node:assert/strict';
 import crypto from 'node:crypto';
 import http from 'node:http';
@@ -54,6 +54,9 @@ function softPasskey() {
 const GOOD = 'correct horse battery staple';
 let pwHash;   // one real hash of GOOD, made once — every user below that "has a password" shares it
 let oldHash;  // GOOD at N = 2^14, as an instance with older parameters would have stored it
+// Made before any test runs: withPassword() reads it while a test's arguments to startServer are
+// still being built, so a test run on its own would otherwise give its user no hash at all.
+before(async () => { pwHash ??= await hashPassword(GOOD); });
 
 // A hash in password.js's own format at a cost other than today's, so a sign-in rehashes it.
 const hashAt = (pw, ln) => new Promise((resolve, reject) => {
@@ -421,14 +424,77 @@ test('the last way in is never removed', async t => {
   const key = softPasskey();
   const h = await startServer(t, { users: [withPassword('u1', 'Ana'), withPassword('u2', 'Bea')], creds: [key.row('u2')] });
   const ip = '198.51.100.130';
-  const only = await h.req('DELETE', '/api/account/password', { cookie: `gymsid=${mintSession('u1')}`, ip });
+  // Refused before any proof is asked for: with the right password the answer is the same.
+  const only = await h.req('DELETE', '/api/account/password', { body: { current: GOOD }, cookie: `gymsid=${mintSession('u1')}`, ip });
   assert.equal(only.status, 409);
   assert.equal(only.body.code, 'last-way-in');
   assert.equal((await login(h, 'Ana', GOOD, ip)).status, 200);
-  const both = await h.req('DELETE', '/api/account/password', { cookie: `gymsid=${mintSession('u2')}`, ip });
+  const both = await h.req('DELETE', '/api/account/password', { body: { current: GOOD }, cookie: `gymsid=${mintSession('u2')}`, ip });
   assert.equal(both.status, 200);
   assert.equal((await login(h, 'Bea', GOOD, ip)).status, 401);
   assert.equal(h.db().users.find(u => u.id === 'u2').pw, undefined);
+  assert.ok(h.audit().some(e => e.ev === 'auth.password.remove' && e.uid === 'u2'));
+  // Nothing left to remove: the same answer, no proof needed.
+  assert.equal((await h.req('DELETE', '/api/account/password', { body: {}, cookie: `gymsid=${mintSession('u2')}`, ip })).status, 200);
+});
+
+// A stolen cookie must not take away the password that signs the owner in where passkeys do not
+// work, so removing it takes the proof setting one does. Every refusal below leaves it working.
+test('removing the password needs proof made for it: the password itself or a passkey assertion, nothing less', async t => {
+  const key = softPasskey(), other = softPasskey();
+  const h = await startServer(t, { users: [withPassword('u1', 'Ana'), user('u2', 'Bea')], creds: [key.row('u1'), other.row('u2')] });
+  const cookie = `gymsid=${mintSession('u1')}`;
+  const ip = '198.51.100.131';
+  const stepUp = async (pk, challenge) => {
+    const { cid, options } = (await h.req('POST', '/api/login/options', { body: {}, ip })).body;
+    return { cid, credential: pk.assertion(challenge ?? options.challenge) };
+  };
+  const refused = async (body, code) => {
+    const r = await h.req('DELETE', '/api/account/password', { body, cookie, ip });
+    assert.equal(r.status, 403, JSON.stringify(body)?.slice(0, 60));
+    assert.equal(r.body.code, code);
+    assert.ok(h.db().users[0].pw?.h, 'the password is still set');
+  };
+  await refused(undefined, 'current-required');
+  await refused({}, 'current-required');
+  await refused({ current: 'not the password at all' }, 'current-wrong');
+  assert.ok(h.audit().some(e => e.ev === 'auth.password.fail' && e.uid === 'u1' && e.msg === 'bad-current'));
+  // Bea's passkey, and an assertion over some other challenge than the one handed out.
+  await refused(await stepUp(other), 'passkey');
+  assert.ok(h.audit().some(e => e.ev === 'auth.password.fail' && e.uid === 'u1' && e.msg === 'step-up-failed'));
+  await refused(await stepUp(key, b64u(crypto.randomBytes(32))), 'passkey');
+  // A sign-up's challenge, signed as if it were a sign-in's.
+  const reg = (await h.req('POST', '/api/register/options', { body: { name: 'Mallory' }, ip })).body;
+  await refused({ cid: reg.cid, credential: key.assertion(reg.options.challenge) }, 'passkey');
+  // A proof that already signed someone in.
+  const spent = await stepUp(key);
+  assert.equal((await h.req('POST', '/api/login/verify', { body: spent, ip })).status, 200);
+  await refused(spent, 'passkey');
+  assert.equal((await login(h, 'Ana', GOOD, ip)).status, 200);
+  assert.ok(!h.audit().some(e => e.ev === 'auth.password.remove'));
+
+  const r = await h.req('DELETE', '/api/account/password', { body: await stepUp(key), cookie, ip });
+  assert.equal(r.status, 200);
+  assert.equal(h.db().users[0].pw, undefined);
+  assert.equal((await login(h, 'Ana', GOOD, ip)).status, 401);
+  assert.ok(h.audit().some(e => e.ev === 'auth.password.remove' && e.uid === 'u1'));
+  // Existing sessions are left alone.
+  assert.equal((await h.req('GET', '/api/me', { cookie, ip })).status, 200);
+});
+
+test('wrong passwords given to remove the password count toward the same pause as wrong sign-ins', async t => {
+  const key = softPasskey();
+  const h = await startServer(t, { users: [withPassword('u1', 'Ana')], creds: [key.row('u1')] });
+  const cookie = `gymsid=${mintSession('u1')}`;
+  const answers = [];
+  for (let i = 0; i < 7; i++) {
+    answers.push(await h.req('DELETE', '/api/account/password', { body: { current: 'guess number ' + i }, cookie, ip: `198.51.100.${140 + i}` }));
+  }
+  assert.deepEqual(answers.map(r => r.status), [403, 403, 403, 403, 403, 403, 429]);
+  assert.ok(h.audit().some(e => e.ev === 'auth.password.locked' && e.uid === 'u1'));
+  assert.equal((await login(h, 'Ana', GOOD, '198.51.100.150')).status, 429);
+  assert.equal((await h.req('DELETE', '/api/account/password', { body: { current: GOOD }, cookie, ip: '198.51.100.151' })).status, 429);
+  assert.ok(h.db().users[0].pw?.h);
 });
 
 test('an admin reset: a one-time code that ends the old password, works once, and expires', async t => {

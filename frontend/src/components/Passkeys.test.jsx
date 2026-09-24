@@ -7,8 +7,8 @@ import { passkeyError, PasskeysRow, PasskeysSheet, DeviceLinkSheet, DeviceLinkRe
 globalThis.IS_REACT_ACT_ENVIRONMENT = true
 
 /* More passkeys and one-time codes for another device, on screen (#95): the Settings list and
-   what editing, removing and adding send; the code sheet with its proof, QR and expiry; and the
-   other device's redeem sheet. The API and the passkey prompts are stand-ins; what each step
+   what editing, removing and adding send — removing and adding both behind the proof step; the
+   code sheet with its proof, QR and expiry; and the other device's redeem sheet. The API and the passkey prompts are stand-ins; what each step
    sends, and what it says back in the UI language, is the point. */
 const mocks = vi.hoisted(() => {
   const state = { webauthn: true, sheets: [], answers: {}, calls: [], store: {} }
@@ -18,7 +18,6 @@ const mocks = vi.hoisted(() => {
   state.passkeyAssertion = vi.fn(async () => ({ cid: 'login-cid', credential: { id: 'k1' } }))
   state.createPasskey = vi.fn(async () => ({ id: 'new-key', response: {} }))
   state.copyText = vi.fn(async () => true)
-  state.confirmSheet = vi.fn()
   state.askAddDeviceData = vi.fn()
   state.api = vi.fn(async (path, init) => {
     const method = init?.method || 'GET'
@@ -51,7 +50,7 @@ vi.mock('../lib/api.js', () => ({
   passwordLogin: vi.fn(), passwordRegister: vi.fn(), passwordResetRedeem: vi.fn(),
 }))
 vi.mock('../lib/clipboard.js', () => ({ copyText: (...a) => mocks.copyText(...a) }))
-vi.mock('../sheets.jsx', () => ({ askAddDeviceData: mocks.askAddDeviceData, confirmSheet: (...a) => mocks.confirmSheet(...a) }))
+vi.mock('../sheets.jsx', () => ({ askAddDeviceData: mocks.askAddDeviceData }))
 // lean-qr loads on demand; what matters here is what the QR code carries.
 vi.mock('./QrCanvas.jsx', () => ({ default: ({ value }) => <canvas data-qr={value} /> }))
 
@@ -81,6 +80,18 @@ const submit = async host => { act(() => { host.querySelector('form').dispatchEv
 const alertText = host => host.querySelector('[role="alert"]')?.textContent || null
 // The sheet a tap opened, mounted on its own.
 const openedSheet = (i = mocks.sheets.length - 1) => { const close = vi.fn(); return { host: mount(mocks.sheets[i].render(close)), close } }
+// The last sheet mounted goes away, as when it is closed.
+const unmountLast = () => act(() => { const m = mounted.pop(); m.root.unmount(); m.host.remove() })
+// A passkey prompt that stays open until the test answers it, and says whether it was called off.
+function openPrompt() {
+  const p = {}
+  mocks.passkeyAssertion.mockImplementationOnce(({ signal } = {}) => new Promise((resolve, reject) => {
+    p.signal = signal
+    p.answer = () => resolve({ cid: 'login-cid', credential: { id: 'k1' } })
+    p.fail = e => reject(e)
+  }))
+  return p
+}
 
 const LIST = {
   passkeys: [
@@ -96,7 +107,7 @@ beforeEach(() => {
   mocks.answers = {}
   mocks.calls.length = 0
   mocks.store = { user: { id: 'u1', name: 'Ana' }, linkCode: null }
-  for (const f of [mocks.toast, mocks.setUser, mocks.adoptProfile, mocks.passkeyAssertion, mocks.createPasskey, mocks.copyText, mocks.confirmSheet, mocks.askAddDeviceData]) f.mockClear()
+  for (const f of [mocks.toast, mocks.setUser, mocks.adoptProfile, mocks.passkeyAssertion, mocks.createPasskey, mocks.copyText, mocks.askAddDeviceData]) f.mockClear()
 })
 afterEach(() => { vi.useRealTimers(); act(() => { mounted.splice(0).forEach(({ root, host }) => { root.unmount(); host.remove() }) }) })
 
@@ -142,7 +153,7 @@ describe('Settings: the passkey list', () => {
     expect(edit.textContent).toMatch(/only way in/)
   })
 
-  it('renames one, and removes one only after the confirm that says sessions stay', async () => {
+  it('renames one', async () => {
     mocks.answers['GET /api/account/passkeys'] = LIST
     const changed = vi.fn()
     const host = mount(<PasskeysSheet close={() => {}} changed={changed} />)
@@ -156,27 +167,106 @@ describe('Settings: the passkey list', () => {
     expect(mocks.calls.at(-1)).toEqual({ path: '/api/account/passkeys/rename', method: 'POST', body: { id: 'k/1+', name: 'Work laptop' } })
     expect(close).toHaveBeenCalled()
     expect(changed).toHaveBeenCalledTimes(1)
-
-    act(() => button(edit, 'Remove passkey').click())
-    const confirm = mocks.confirmSheet.mock.calls[0][0]
-    expect(confirm.message).toMatch(/stays signed in — use Sign out everywhere/)
-    mocks.answers['DELETE /api/account/passkeys'] = { ...LIST, passkeys: [LIST.passkeys[1]], lastWayIn: true }
-    await act(() => confirm.onConfirm())
-    expect(mocks.calls.at(-1)).toEqual({ path: '/api/account/passkeys?id=k%2F1%2B', method: 'DELETE', body: null })
-    expect(mocks.toast).toHaveBeenCalledWith('Passkey removed')
-    expect(changed).toHaveBeenCalledTimes(2)
   })
+})
 
-  it('a refused removal says why', async () => {
-    mocks.answers['GET /api/account/passkeys'] = LIST
-    const host = mount(<PasskeysSheet close={() => {}} changed={() => {}} />)
+/* Removing asks for the proof adding does (proveOwner in api/server.js), on the sheet that says
+   what removing means: the tap that confirms it is the proof, and the proof goes with the removal
+   and nothing else. */
+describe('Settings: removing a passkey', () => {
+  async function openRemove(list = LIST) {
+    mocks.answers['GET /api/account/passkeys'] = list
+    const changed = vi.fn()
+    const host = mount(<PasskeysSheet close={() => {}} changed={changed} />)
     await settle()
     act(() => host.querySelector('.lrow').click())
-    const { host: edit } = openedSheet()
-    act(() => button(edit, 'Remove passkey').click())
+    const edit = openedSheet()
+    act(() => button(edit.host, 'Remove passkey').click())
+    return { ...openedSheet(), edit, changed }
+  }
+  const deletes = () => mocks.calls.filter(c => c.method === 'DELETE')
+
+  it('says sessions stay, sends nothing until the passkey confirms, then removes with that proof', async () => {
+    const { host, close, edit, changed } = await openRemove()
+    expect(host.querySelector('h3').textContent).toBe('Remove this passkey?')
+    expect(host.textContent).toContain('Laptop')
+    expect(host.textContent).toMatch(/stays signed in — use Sign out everywhere/)
+    expect(host.textContent).toContain('First confirm that it is you.')
+    // No password on this profile, or none that counts: the passkey is the only proof offered.
+    expect(byPlaceholder(host, 'Current password')).toBeNull()
+    expect(deletes()).toEqual([])
+    expect(button(host, 'Confirm with a passkey').className).toMatch(/\bdanger\b/)
+
+    mocks.answers['DELETE /api/account/passkeys'] = { ...LIST, passkeys: [LIST.passkeys[1]], lastWayIn: true }
+    await click(host, 'Confirm with a passkey')
+    expect(mocks.passkeyAssertion).toHaveBeenCalledTimes(1)
+    expect(deletes()).toEqual([{ path: '/api/account/passkeys?id=k%2F1%2B', method: 'DELETE', body: { cid: 'login-cid', credential: { id: 'k1' } } }])
+    expect(close).toHaveBeenCalled()
+    expect(edit.close).toHaveBeenCalled()
+    expect(changed).toHaveBeenCalledTimes(1)
+    expect(mocks.toast).toHaveBeenCalledWith('Passkey removed')
+  })
+
+  it('takes the password where it counts, and says when it is missing or wrong', async () => {
+    const { host, close } = await openRemove({ ...LIST, password: true })
+    const pw = byPlaceholder(host, 'Current password')
+    expect(pw.getAttribute('autocomplete')).toBe('current-password')
+    // Either way it removes, so both say so in red.
+    expect(button(host, 'Confirm with a passkey').className).toMatch(/\bdanger\b/)
+    expect(button(host, 'Remove').className).toMatch(/\bdanger\b/)
+    await submit(host)
+    expect(alertText(host)).toBe('Enter your password.')
+    expect(deletes()).toEqual([])
+    mocks.answers['DELETE /api/account/passkeys'] = fail(403, { code: 'current-wrong' })
+    type(pw, 'not it')
+    await submit(host)
+    expect(deletes().at(-1).body).toEqual({ current: 'not it' })
+    expect(alertText(host)).toBe('Your current password is not right.')
+    expect(close).not.toHaveBeenCalled()
+    mocks.answers['DELETE /api/account/passkeys'] = { ...LIST, passkeys: [LIST.passkeys[1]] }
+    type(pw, 'correct horse battery')
+    await click(host, 'Remove')
+    expect(deletes().at(-1).body).toEqual({ current: 'correct horse battery' })
+    expect(close).toHaveBeenCalled()
+  })
+
+  it('a refusal stays on the sheet and says why; nothing is removed', async () => {
+    const { host, close, changed } = await openRemove()
+    mocks.answers['DELETE /api/account/passkeys'] = fail(403, { code: 'passkey' })
+    await click(host, 'Confirm with a passkey')
+    expect(alertText(host)).toBe('Your passkey could not be confirmed.')
+    // Another device took the other passkey away meanwhile: this one is the last way in now.
     mocks.answers['DELETE /api/account/passkeys'] = fail(409, { code: 'last-way-in' })
-    await act(() => mocks.confirmSheet.mock.calls[0][0].onConfirm())
-    expect(mocks.toast).toHaveBeenCalledWith('It is your only way in, so it cannot be removed until there is another.')
+    await click(host, 'Confirm with a passkey')
+    expect(alertText(host)).toBe('It is your only way in, so it cannot be removed until there is another.')
+    expect(close).not.toHaveBeenCalled()
+    expect(changed).not.toHaveBeenCalled()
+    expect(mocks.toast).not.toHaveBeenCalled()
+  })
+
+  it('a dismissed prompt removes nothing and is no error; Cancel just closes', async () => {
+    const { host, close } = await openRemove()
+    mocks.passkeyAssertion.mockRejectedValueOnce(named('NotAllowedError'))
+    await click(host, 'Confirm with a passkey')
+    expect(deletes()).toEqual([])
+    expect(alertText(host)).toBeNull()
+    await click(host, 'Cancel')
+    expect(close).toHaveBeenCalled()
+    expect(deletes()).toEqual([])
+  })
+
+  it('a prompt still open when the sheet goes is called off, and an answer after that removes nothing', async () => {
+    const { host } = await openRemove()
+    const prompt = openPrompt()
+    await click(host, 'Confirm with a passkey')
+    expect(prompt.signal.aborted).toBe(false)
+    unmountLast()
+    expect(prompt.signal.aborted).toBe(true)
+    // A browser that answers anyway: the answer is for a sheet that is gone.
+    await act(async () => { prompt.answer() })
+    await settle()
+    expect(deletes()).toEqual([])
+    expect(mocks.toast).not.toHaveBeenCalled()
   })
 })
 
@@ -235,6 +325,23 @@ describe('Settings: adding a passkey', () => {
 })
 
 describe('Settings: a code for another device', () => {
+  it('says plainly when nothing here can confirm it is the owner', async () => {
+    // A profile that only has a password, on an instance that switched passwords off.
+    mocks.answers['GET /api/account/passkeys'] = { passkeys: [], password: false, lastWayIn: true }
+    const host = mount(<DeviceLinkSheet close={() => {}} />)
+    await settle()
+    expect(button(host, 'Confirm with a passkey')).toBeUndefined()
+    expect(byPlaceholder(host, 'Current password')).toBeNull()
+    expect(host.textContent).toMatch(/has no passkey, and this server does not take passwords/)
+    // A passkey this browser cannot use is another matter: another device can.
+    mocks.webauthn = false
+    mocks.answers['GET /api/account/passkeys'] = LIST
+    const other = mount(<DeviceLinkSheet close={() => {}} />)
+    await settle()
+    expect(other.textContent).toMatch(/This browser cannot confirm with your passkey/)
+    expect(mocks.calls.filter(c => c.method !== 'GET')).toEqual([])
+  })
+
   it('after the proof shows the code, a QR code of the link, and copies the link', async () => {
     mocks.answers['GET /api/account/passkeys'] = LIST
     mocks.answers['POST /api/account/device-link'] = { code: 'K7WQ-2MZP-4HXA', expires: Date.now() + 600000 }

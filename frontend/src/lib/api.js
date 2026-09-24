@@ -146,10 +146,12 @@ export async function passkeyRegister(name, code) {
   return res.user
 }
 // One passkey ceremony, not yet sent anywhere: /api/login/verify turns it into a sign-in, and
-// POST /api/account/password takes it as proof before a first password is set (#118).
-export async function passkeyAssertion() {
+// the account routes take it as proof that the owner is here (#118, #95). `signal` calls the
+// prompt off — a sheet that asked for it and was closed meanwhile (components/PasswordAuth.jsx,
+// ProveOwner) — which then rejects with an AbortError.
+export async function passkeyAssertion({ signal } = {}) {
   const { cid, options } = await api('/api/login/options', { method: 'POST', body: '{}' })
-  const cred = await navigator.credentials.get({ publicKey: toRequestOptions(options) })
+  const cred = await navigator.credentials.get({ publicKey: toRequestOptions(options), ...(signal ? { signal } : {}) })
   return { cid, credential: credToJSON(cred) }
 }
 export async function passkeyLogin() {

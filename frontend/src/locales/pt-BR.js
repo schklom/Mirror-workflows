@@ -908,6 +908,7 @@ export const PT_BR_OVERRIDES = {
   'Your server cannot be reached — showing the last copy synced with it.': 'Não é possível acessar o seu servidor — mostrando a última cópia sincronizada com ele.',
   'Pair again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.': 'Pareie de novo ou exporte um backup antes. Se continuar mesmo assim, uma cópia dessas alterações fica neste dispositivo até ele se conectar de novo a este servidor com esta conta — aí elas são adicionadas de volta.',
   'Sign in again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.': 'Entre de novo ou exporte um backup antes. Se continuar mesmo assim, uma cópia dessas alterações fica neste dispositivo até ele se conectar de novo a este servidor com esta conta — aí elas são adicionadas de volta.',
+  'No sets are left in this workout, so there is nothing to save. Delete it from your history?': 'Não sobrou nenhuma série neste treino, então não há nada para salvar. Excluí-lo do seu histórico?',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

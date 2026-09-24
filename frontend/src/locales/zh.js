@@ -1551,4 +1551,6 @@ export default {
   'Pair again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.': '请重新配对，或先导出备份。如果仍然继续，这些更改的副本会保留在此设备上，直到它再次以此账号连接到此服务器——届时会重新加入。',
   'Sign in again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.': '请重新登录，或先导出备份。如果仍然继续，这些更改的副本会保留在此设备上，直到它再次以此账号连接到此服务器——届时会重新加入。',
   '{0} set · {1} work': '{0} 组 · {1} 工作',
+  'Every exercise in this workout': '本次训练的所有动作',
+  'No sets are left in this workout, so there is nothing to save. Delete it from your history?': '这次训练已经没有任何一组了，没有可保存的内容。要从历史中删除它吗？',
 }

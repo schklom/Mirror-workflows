@@ -8,7 +8,7 @@ import { guestAllowed } from '../lib/guest.js'
 import { MOBILE, initReminderSync, nativeLoad, nativeSave, onAppActive, readJsonFile, syncReminder, writeAutoBackup, writeJsonFile } from '../lib/mobile.js'
 import { mergeStates, localExtras, stampRoutines } from '../lib/sync-merge.js'
 import { countChanges, syncFingerprint } from '../lib/sync-changes.js'
-import { saveWorkoutEdit } from '../lib/session-edit.js'
+import { saveWorkoutEdit, deleteEditedWorkout } from '../lib/session-edit.js'
 import { appBase } from '../lib/app-base.js'
 import { linkTokenFromSearch, stripLinkFromUrl } from '../lib/device-link.js'
 import { loadRemote, chooseLocal, forgetRemote, connect, normalizeServerUrl, renewToken } from '../lib/remote.js'
@@ -738,6 +738,12 @@ export const useStore = create((set, get) => {
       return saved
     },
     discardHistoryEdit() { get().update(S => { S.active = null }) },
+    // An edit that took out every set deletes the workout rather than saving it empty.
+    deleteHistoryEdit() {
+      let removed = false
+      get().update(S => { removed = deleteEditedWorkout(S) })
+      return removed
+    },
     // A replace that is meant to reach the server (backup import, reset) is a deliberate
     // overwrite, not a change to merge: the push it arms goes without a baseRev.
     replaceState(S, push = false) { if (push) forceNext = true; persist(clone(S), push) },

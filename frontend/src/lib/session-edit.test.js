@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { editCompletedSession, saveWorkoutEdit } from './session-edit.js'
+import { editCompletedSession, saveWorkoutEdit, editLeftEmpty, deleteEditedWorkout } from './session-edit.js'
 import { mergeStates } from './sync-merge.js'
 import { entryExcluded, lastEntryFor } from './history.js'
 
@@ -187,6 +187,20 @@ describe('saved workout editing', () => {
     expect(lastEntryFor(state, '0025').sets[0].w).toBe(80)
   })
 
+  // The header ⋮'s "Don't count for progression" for the whole workout (lib/session-noprog.js)
+  // opens on for a workout saved out as a whole, and off for one that counts.
+  it('opens a workout kept out as a whole with the whole-workout switch on, and a counting one with it off', () => {
+    const state = fixture()
+    state.workouts.push({ id: 'rehab', d: '2026-09-02', start: 3000, end: 4000, excludeFromProgression: true, entries: [{ ...entry(10), noProg: true }], prs: [] })
+    editCompletedSession(state, 'rehab')
+    expect(state.active.noProg).toBe(true)
+    const saved = saveWorkoutEdit(state)
+    expect(saved).not.toHaveProperty('noProg')
+
+    editCompletedSession(state, 'workout')
+    expect(state.active).not.toHaveProperty('noProg')
+  })
+
   // A stamp outranks what another device wrote since. Opening the editor and saving without a
   // change must not give the record one, or it beats sets added on the phone that have not synced.
   it('leaves the record and its stamp alone when Save changed nothing', () => {
@@ -239,5 +253,74 @@ describe('saved workout editing', () => {
     state.active.entries[0].carried = true
     const saved = saveWorkoutEdit(state)
     expect(JSON.stringify(saved)).not.toMatch(/weightOrigin|"plan"|carried|editingWorkoutId/)
+  })
+})
+
+// An edit that unticks or removes every set would save a workout with nothing in it. The editor
+// offers to delete it instead (sheets.jsx saveWorkoutEdits), and Save itself refuses.
+describe('an edit that leaves no set', () => {
+  it('is told apart from one with a set left, ticked sets only', () => {
+    const state = fixture()
+    editCompletedSession(state, 'workout')
+    expect(editLeftEmpty(state.active)).toBe(false)
+    state.active.entries[0].sets[0].done = false
+    expect(editLeftEmpty(state.active)).toBe(true)
+    state.active.entries = []
+    expect(editLeftEmpty(state.active)).toBe(true)
+    expect(editLeftEmpty(null)).toBe(true)
+    // one side of a per-side set is a set done
+    state.active.entries = [{ id: '0025', sets: [{ sides: { L: { w: 10, r: 5, done: true }, R: { w: 10, r: 5, done: false } } }] }]
+    expect(editLeftEmpty(state.active)).toBe(false)
+  })
+
+  it('is never saved: Save throws and the draft stays open', () => {
+    const state = fixture(), history = structuredClone(state.workouts)
+    editCompletedSession(state, 'workout')
+    state.active.entries = []
+    expect(() => saveWorkoutEdit(state)).toThrow('Nothing logged yet')
+    expect(state.workouts).toEqual(history)
+    expect(state.active.editingWorkoutId).toBe('workout')
+  })
+
+  it('deletes the workout and closes the editor, leaving the other workouts alone', () => {
+    const state = fixture()
+    state.workouts.push({ id: 'other', d: '2026-09-02', start: 3000, end: 4000, entries: [entry(30)], prs: [] })
+    editCompletedSession(state, 'workout')
+    state.active.entries = []
+    expect(deleteEditedWorkout(state)).toBe(true)
+    expect(state.active).toBeNull()
+    expect(state.workouts.map(w => w.id)).toEqual(['other'])
+  })
+
+  it('deletes a workout from before ids by the key the editor opened it with', () => {
+    const state = fixture()
+    delete state.workouts[0].id
+    state.workouts.push({ d: '2026-09-02', start: 3000, end: 4000, entries: [entry(30)], prs: [] })
+    editCompletedSession(state, state.workouts[1])
+    expect(deleteEditedWorkout(state)).toBe(true)
+    expect(state.workouts).toHaveLength(1)
+    expect(state.workouts[0].d).toBe('2026-09-01')
+  })
+
+  it('closes the editor when another device already deleted the workout', () => {
+    const state = fixture()
+    editCompletedSession(state, 'workout')
+    state.workouts = []
+    expect(deleteEditedWorkout(state)).toBe(false)
+    expect(state.active).toBeNull()
+  })
+
+  // A typed 1000 that a whole deleted workout carried is not left behind as the weight the next
+  // session starts from; one confirmed elsewhere stays.
+  it('lowers a kept working weight that came from the deleted workout, and only that one', () => {
+    const state = fixture()
+    state.workouts[0].entries = [entry(1000), entry(50, '0027')]
+    state.workouts.push({ id: 'earlier', d: '2026-08-20', start: 0, end: 1, entries: [entry(95)], prs: [] })
+    state.exWeights = { '0025': { w: 1000, d: '2026-09-01' }, '0027': { w: 70, d: '2026-08-01' } }
+    editCompletedSession(state, 'workout')
+    state.active.entries = []
+    deleteEditedWorkout(state)
+    expect(state.exWeights['0025']).toEqual({ w: 95, d: '2026-08-20' })
+    expect(state.exWeights['0027']).toEqual({ w: 70, d: '2026-08-01' })
   })
 })

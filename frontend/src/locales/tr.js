@@ -1551,4 +1551,6 @@ export default {
   'Pair again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.': 'Yeniden eşleştir ya da önce bir yedek dışa aktar. Yine de devam edersen bu değişikliklerin bir kopyası, cihaz bu hesapla bu sunucuya yeniden bağlanana kadar bu cihazda kalır — sonra geri eklenir.',
   'Sign in again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.': 'Yeniden giriş yap ya da önce bir yedek dışa aktar. Yine de devam edersen bu değişikliklerin bir kopyası, cihaz bu hesapla bu sunucuya yeniden bağlanana kadar bu cihazda kalır — sonra geri eklenir.',
   '{0} set · {1} work': '{0} set · {1} çalışma',
+  'Every exercise in this workout': 'Bu antrenmandaki tüm egzersizler',
+  'No sets are left in this workout, so there is nothing to save. Delete it from your history?': 'Bu antrenmanda hiç set kalmadı, yani kaydedilecek bir şey yok. Geçmişinden silinsin mi?',
 }

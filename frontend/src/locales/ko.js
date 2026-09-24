@@ -1551,4 +1551,6 @@ export default {
   'Pair again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.': '다시 페어링하거나 먼저 백업을 내보내세요. 그래도 계속하면 이 기기가 이 계정으로 이 서버에 다시 연결될 때까지 변경 사항의 사본이 이 기기에 보관되며, 그때 다시 추가됩니다.',
   'Sign in again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.': '다시 로그인하거나 먼저 백업을 내보내세요. 그래도 계속하면 이 기기가 이 계정으로 이 서버에 다시 연결될 때까지 변경 사항의 사본이 이 기기에 보관되며, 그때 다시 추가됩니다.',
   '{0} set · {1} work': '{0} 세트 · {1} 작업',
+  'Every exercise in this workout': '이번 세션의 모든 운동',
+  'No sets are left in this workout, so there is nothing to save. Delete it from your history?': '이 운동에 남은 세트가 없어 저장할 내용이 없습니다. 기록에서 삭제할까요?',
 }

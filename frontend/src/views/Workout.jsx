@@ -8,7 +8,7 @@ import { exOr, betterWeight } from '../lib/exercises.js'
 import { usesBar } from '../lib/bar.js'
 import { loadKindFor, baseWeightFor, inventoryFor, rowLoad, sameLoad, plateDelta } from '../lib/plates.js'
 import { effectiveRoutines, effectiveRoutineIds, lastEntryFor, bestWeightFor, bestWeightForEntry, buildSets, freestyleConfig, defaultConfig, setsDoneActive, setUnitsTotal, supersetUnits, unitOf, setLabel, modeOf, isBw, isPerSide, repStep, EFFORT, effortOf, stepEffort, capEffort, cascadeWeight, insertWarmupRow, removeRowAt, pairAdjacent, unpairSuperset, cleanupSg, applyIntensifierPlan, pinnedNoteFor, exNoteFor, setsRepsOf } from '../lib/history.js'
-import { fmtNum, fmtPlate, capWords, fmtDate, todayISO, exCount, DAYN } from '../lib/format.js'
+import { fmtNum, fmtPlate, exerciseNameText, fmtDate, todayISO, exCount, DAYN } from '../lib/format.js'
 import { speedUnitOf, toSpeed, fromSpeed } from '../lib/speed.js'
 import { beep, vibrate, unlock } from '../lib/sound.js'
 import { t, exerciseNameFor, exerciseNameClass } from '../lib/i18n.js'
@@ -22,6 +22,7 @@ import { Button, Check, NumberField } from '../components/ui.jsx'
 import { defaultIncrement, weightIncrement, stepWeight } from '../lib/progression.js'
 import { progressionGuidance } from '../lib/progression-copy.js'
 import { buildPlannedEntry, plannedConfigOf, builtOutOfProgression } from '../lib/session-start.js'
+import { sessionNoProg, setSessionNoProg, setEntryNoProg, joinSessionNoProg } from '../lib/session-noprog.js'
 import { glyphOf } from '../lib/glyphs.js'
 import { markAllSetsDone, sessionHistory } from '../lib/backfill.js'
 import { bestSetFor } from '../lib/exercise-history.js'
@@ -834,16 +835,18 @@ function ActiveWorkout() {
   // workout keeps it (finish-workout.js), and the next prescription and "last time" read past
   // this entry (history.js entryExcluded). This exercise, this session; the routine is untouched.
   // Unlike a deload's, its rows keep the prescription through any rebuild (builtOutOfProgression),
-  // so switching it off again leaves the numbers this session should count at.
-  const setNoProg = (idx, on) => update(s => {
-    const e = s.active?.entries?.[idx]
-    if (!e) return
-    if (on) e.noProg = true
-    else delete e.noProg
-  })
+  // so switching it off again leaves the numbers this session should count at. Counting one
+  // exercise again also ends "the whole workout" from the header ⋮ (lib/session-noprog.js).
+  const setNoProg = (idx, on) => update(s => setEntryNoProg(s.active, idx, on))
   // A deload or rehab routine keeps its own exercises out (RoutineEdit). That is the routine's
   // setting, so its entries get the marker but no switch.
   const routineKeepsOut = e => !!e?.rid && S.routines.some(r => r.id === e.rid && r.excludeFromProgression === true)
+  // The same for the whole session from the header ⋮ (Discord, asierlama: "exclude the current
+  // workout" on an injury day): every exercise gets the marker, and one added later joins them.
+  // Absent when a deload or rehab routine already keeps every exercise out, since nothing is left
+  // for the switch to change. Off counts them all again, apart from those.
+  const noProgSwitchable = !A.entries.length || A.entries.some(e => !routineKeepsOut(e))
+  const toggleSessionNoProg = () => update(s => setSessionNoProg(s.active, !sessionNoProg(s.active), routineKeepsOut))
 
   // One prop object per entry so the card and list layouts share the exact same wiring. The
   // exercise-level actions (swap, move, remove) address the entry itself, so the "more" menu of
@@ -927,6 +930,7 @@ function ActiveWorkout() {
       A.backfill && A.entries.length > 0 && { icon: 'checkCircle', label: t('Mark all sets done'), onClick: markAllDone },
       { icon: 'pencil', label: t('Rename workout'), onClick: renameWorkoutSheet },
       !editing && { icon: 'plus', label: t('Add routine'), sub: t('Bring another routine into this session'), onClick: addRoutineToSessionSheet },
+      noProgSwitchable && { icon: 'pause', label: t('Don’t count for progression'), sub: t('Every exercise in this workout'), on: sessionNoProg(A), onClick: toggleSessionNoProg },
       { icon: 'list', label: t('Layout'), sub: LAYOUT_LABEL[workoutView] || LAYOUT_LABEL.cards, onClick: openLayoutMenu },
     ],
   })
@@ -996,7 +1000,7 @@ function ActiveWorkout() {
     if (!e) return
     const hasDone = (e.sets || []).some(s => s.done)
     confirmSheet({
-      title: t('Remove {0}?', exerciseNameFor(exOr(e.id))),
+      title: t('Remove {0}?', exerciseNameText(exOr(e.id))),
       message: hasDone
         ? t('The sets you logged for this exercise in this session will be lost.')
         : t('This removes the exercise from your current session.'),
@@ -1011,7 +1015,7 @@ function ActiveWorkout() {
           <div className="muted small" style={{ marginBottom: 12 }}>{t('Which exercise in this superset do you want to remove?')}</div>
           <div className="list">
             {unit.map(idx => <div key={idx} className="item" onClick={() => { close(); confirmRemoveExercise(idx) }}>
-              <div className="grow"><div className="tt">{exerciseNameFor(exOr(A.entries[idx]?.id))}</div></div>
+              <div className="grow"><div className={`tt ${exerciseNameClass(exOr(A.entries[idx]?.id))}`}>{exerciseNameFor(exOr(A.entries[idx]?.id))}</div></div>
               <Icon name="chevronRight" />
             </div>)}
           </div>
@@ -1037,7 +1041,7 @@ function ActiveWorkout() {
     // the row is held to the end, ticked, or given a duration you typed yourself, and it never
     // reaches S.workouts (lib/finish-workout.js).
     const plan = (!e.sets[i].done && e.sets[i].planSec) || e.sets[i].sec || 45
-    useUI.getState().startWork(plan, exerciseNameFor(exOr(e.id)), (elapsed, { abandoned = false, chimed = false } = {}) => {
+    useUI.getState().startWork(plan, exerciseNameText(exOr(e.id)), (elapsed, { abandoned = false, chimed = false } = {}) => {
       // A hold a rest displaced (useUI.abandonWork: a set ticked on another row, or another
       // exercise) keeps its seconds and nothing else. It is not a finish: the row stays unticked
       // and starts no rest, because the rest that displaced the hold is already counting down —
@@ -1350,7 +1354,8 @@ function ActiveWorkout() {
       // exercise added to a rehab or deload routine's block is kept out of progression like the
       // rest of it, the way a swap or an edit there is — it takes the routine's own numbers and
       // never becomes the baseline the regular sessions progress from. An exercise kept out by
-      // hand (its ⋯ menu) is that exercise's own choice for today and is not passed on.
+      // hand (its ⋯ menu) is that exercise's own choice for today and is not passed on; a session
+      // kept out as a whole (the header ⋮) takes the new one with it (joinSessionNoProg).
       const curEntry = A.entries[A.cur]
       const curRid = curEntry?.rid
       const routine = curRid ? S.routines.find(r => r.id === curRid) : null
@@ -1372,7 +1377,7 @@ function ActiveWorkout() {
           }), full) }
           : buildPlannedEntry(past, full, routine, { noProg })
         const insertAt = insertionIndexAfterCurrentUnit(supersetUnits(s.active.entries), s.active.cur, s.active.entries.length)
-        s.active.entries.splice(insertAt, 0, { id: ex.id, ...built, ...(curRid ? { rid: curRid } : {}), ...(noProg ? { noProg: true } : {}) })
+        s.active.entries.splice(insertAt, 0, joinSessionNoProg(s.active, { id: ex.id, ...built, ...(curRid ? { rid: curRid } : {}), ...(noProg ? { noProg: true } : {}) }))
         s.active.cur = insertAt
         useUI.getState().shiftRestOwner(insertAt, 1)
       })
@@ -1381,7 +1386,7 @@ function ActiveWorkout() {
       // button. Quick-add commits with the same default (or, freestyle, last-session) config
       // the sheet would have opened with; tapping the row still opens that sheet for anyone
       // who wants to set sets/reps first.
-      if (quick) { commit(seed || defaultConfig(ex.id)); useUI.getState().toast(t('“{0}” added to {1}', exerciseNameClass(ex) ? capWords(exerciseNameFor(ex)) : exerciseNameFor(ex), routine ? routine.name : t('Freestyle'))) }
+      if (quick) { commit(seed || defaultConfig(ex.id)); useUI.getState().toast(t('“{0}” added to {1}', exerciseNameText(ex), routine ? routine.name : t('Freestyle'))) }
       else exConfigSheet(ex, null, commit, null, routine, seed)
     })} icon="plus">{t('Add exercise')}</Button>
     {wc.exerciseButtons && A.entries.length > 0 && <>

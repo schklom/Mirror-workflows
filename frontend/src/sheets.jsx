@@ -3,7 +3,7 @@ import { useStore } from './store/useStore.js'
 import { useUI } from './store/useUI.js'
 import { EXDB, EXIDX, BODYPARTS, isCardio, isBodyweightEq, allExercises, equipmentOf, smOf, searchExercises, exOr, isAssisted, betterWeight, beatsWeight } from './lib/exercises.js'
 import { activeProfile, exAvailable, ALL_EQUIPMENT, newProfile } from './lib/equipment.js'
-import { fmtDate, fmtNum, fmtPlate, capWords, fmtVol, fmtDur, durPart, todayISO, isoOf, uid, exCount, routineCount, setsWorkCount, DAYN, DAYS, weekOrder, weekStartOf, weekDayOffset, MONTHS_LONG, ACCENTS } from './lib/format.js'
+import { fmtDate, fmtNum, fmtPlate, exerciseNameText, fmtVol, fmtDur, durPart, todayISO, isoOf, uid, exCount, routineCount, setsWorkCount, DAYN, DAYS, weekOrder, weekStartOf, weekDayOffset, MONTHS_LONG, ACCENTS } from './lib/format.js'
 import { lastEntryFor, bestWeightFor, bestWeightForEntry, buildSets, effectiveRoutineIds, workoutDay, workoutVolume, setsDone, setsDoneActive, setUnitsTotal, lastBW, supersetUnits, sessionSections, unitOf, setLabel, defaultConfig, cleanupSg, modeOf, effortOf, EFFORT, capEffort, stepEffort, isBw, isPerSide, sideReps, workSetsDone, applyIntensifierPlan, MAX_PLANNED_WARMUPS, NOTE_MAX } from './lib/history.js'
 import { usesBar, defaultBarWeight, hasBarOverride, isNoBar } from './lib/bar.js'
 import { PLATE_SIZES, pairsOf, ownsPlates, withPlatePairs, withStandardPlates, withLoadKind, loadKindFor, baseWeightFor } from './lib/plates.js'
@@ -38,10 +38,11 @@ import { swapActiveExercise } from './lib/active-exercise-swap.js'
 import { useSheetKeyboard, useRevealActiveChip, tappable } from './lib/use-sheet-keyboard.js'
 import { isFav, toggleFav, sortFavouritesFirst } from './lib/favourites.js'
 import { buildSessionEntries, buildPlannedEntry, builtOutOfProgression } from './lib/session-start.js'
+import { joinSessionNoProg } from './lib/session-noprog.js'
 import { buildCombinedEntries, deriveSessionName } from './lib/session-merge.js'
 import { workoutsOn, backfillStart, backfillEnd, completeBackfill, historyAsOf, sessionHistory } from './lib/backfill.js'
 import { moveWorkout, sameWorkout, startTimeOf, durationMinOf, setWorkoutDuration } from './lib/workout-date.js'
-import { editCompletedSession } from './lib/session-edit.js'
+import { editCompletedSession, editLeftEmpty } from './lib/session-edit.js'
 import { stampWorkout } from './lib/sync-merge.js'
 import { weeklyWeights } from './lib/bodyweight.js'
 import { workoutText } from './lib/workout-text.js'
@@ -887,7 +888,7 @@ function AddToRoutine({ ex, close }) {
         if (r) r.ex.push({ id: ex.id, ...cfg })
       })
       const r = isNew ? S().routines[S().routines.length - 1] : st.routines.find(x => x.id === rid)
-      toast(t('“{0}” added to {1}', exerciseNameClass(ex) ? capWords(exerciseNameFor(ex)) : exerciseNameFor(ex), r ? r.name : t('routine')))
+      toast(t('“{0}” added to {1}', exerciseNameText(ex), r ? r.name : t('routine')))
       if (isNew && r) nav('/plan/r/' + r.id)
     }, null, isNew ? null : st.routines.find(x => x.id === rid))
   }
@@ -2236,7 +2237,9 @@ function AddRoutineToSession({ close }) {
     const entries = buildSessionEntries(sessionHistory(st), r).map(e => ({ ...e, rid: r.id }))
     update(s => {
       if (!s.active) return
-      s.active.entries.push(...entries)
+      // A session kept out of progression as a whole (the header ⋮) keeps the routine's
+      // exercises out too, the same as an exercise added on its own.
+      s.active.entries.push(...entries.map(e => joinSessionNoProg(s.active, e)))
       s.active.routineIds = [...[].concat(s.active.routineIds || []), r.id]
       if (!s.active.customName) {
         s.active.name = deriveSessionName(s.active.routineIds.map(id => s.routines.find(x => x.id === id)?.name).filter(Boolean))
@@ -2478,6 +2481,25 @@ function WorkoutComplete({ close }) {
 export const workoutCompleteSheet = () => ui().openSheet(close => <WorkoutComplete close={close} />, { kind: 'center' })
 
 export function saveWorkoutEdits(onExit = () => nav('/history')) {
+  // An edit that unticked or removed every set would save a workout with nothing in it, which
+  // the history would still list and count as a training day. Deleting it is what that edit
+  // means; Keep editing goes back to the sets.
+  if (editLeftEmpty(S().active)) {
+    confirmSheet({
+      title: t('Delete workout?'),
+      message: t('No sets are left in this workout, so there is nothing to save. Delete it from your history?'),
+      confirmText: t('Delete workout'), cancelText: t('Keep editing'), danger: true,
+      onConfirm: () => {
+        useStore.getState().deleteHistoryEdit()
+        useUI.getState().stopRest()
+        useUI.getState().stopWork()
+        useStore.getState().autoBackupNow()
+        toast(t('Workout deleted'))
+        onExit()
+      },
+    })
+    return
+  }
   try {
     useStore.getState().saveHistoryEdit()
     useUI.getState().stopRest()

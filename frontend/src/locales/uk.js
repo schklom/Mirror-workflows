@@ -1548,4 +1548,6 @@ export default {
   'Pair again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.': 'Спаруй знову або спершу експортуй резервну копію. Якщо все одно продовжити, копія цих змін залишиться на цьому пристрої, доки він знову не підключиться до цього сервера з цим акаунтом, — тоді їх буде додано назад.',
   'Sign in again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.': 'Увійди знову або спершу експортуй резервну копію. Якщо все одно продовжити, копія цих змін залишиться на цьому пристрої, доки він знову не підключиться до цього сервера з цим акаунтом, — тоді їх буде додано назад.',
   '{0} set · {1} work': '{0} підхід · робочих: {1}',
+  'Every exercise in this workout': 'Усі вправи цього тренування',
+  'No sets are left in this workout, so there is nothing to save. Delete it from your history?': 'У цьому тренуванні не лишилося жодного підходу, тож зберігати нічого. Видалити його з історії?',
 }

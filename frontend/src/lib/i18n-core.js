@@ -98,18 +98,26 @@ export const exerciseNameFor = ex => {
     : `${translated} (${ex.n})`
 }
 
-// EXDB stores English names lower-case and the UI title-cases them with CSS. A translated pack
-// carries its own casing and must not be cased again on top: German lower-cases adjectives
-// ("Assistiertes hängendes Knieheben"), Hungarian lower-cases common nouns. So the class that
-// does the title-casing belongs on the element only while the English fallback is showing.
-// That is decided per exercise, not per language: German covers only part of the catalogue,
-// and an exercise it has no entry for shows its lower-case English title, which still needs
-// the casing ("push-up" would otherwise sit between "Bankdrücken" and "Kniebeuge"). A custom
+// Exercise-name packs written in the language's own casing. German capitalises its nouns and
+// lower-cases the adjectives in front of them ("Assistiertes hängendes Knieheben"), which
+// title-casing on top would undo. Every other pack is stored lower-case, the way EXDB stores
+// the English names ("supino com barra"). Left without the title-casing English gets, those
+// read all lower-case in every list, card and history row. A new pack goes here only when it
+// carries real casing; i18n-core.test.js checks this list against the packs themselves.
+export const CASED_NAME_LANGS = ['de']
+
+// EXDB stores English names lower-case and the UI title-cases them with CSS. A pack in
+// CASED_NAME_LANGS carries its own casing and must not be cased again on top, so the class that
+// does the title-casing stays off its translated names. A lower-case pack is title-cased like
+// English. That is decided per exercise, not only per language: German covers only part of the
+// catalogue, and an exercise it has no entry for shows its lower-case English title, which still
+// needs the casing ("push-up" would otherwise sit between "Bankdrücken" and "Kniebeuge"). A custom
 // exercise has no pack entry either and keeps the casing it always had, and so does every
 // exercise while "English names only" is on, since exerciseNameFor then shows the English title.
 // Callers spread this onto the element that holds exerciseNameFor(ex)'s output, nothing else —
 // muscle and equipment labels next to it are t() strings and keep their own capitalize.
-export const exerciseNameClass = ex => (!enOnly && exerciseNames && ex && exerciseNames[ex.id] ? '' : 'capitalize')
+export const exerciseNameClass = ex => (!enOnly && exerciseNames && ex && exerciseNames[ex.id]
+  && CASED_NAME_LANGS.includes(baseLang(lang)) ? '' : 'capitalize')
 
 // Search both the localized and canonical English title without changing persisted data.
 export const exerciseNameSearchText = ex => {

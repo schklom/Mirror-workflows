@@ -1551,4 +1551,6 @@ export default {
   'Pair again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.': 'Sparuj ponownie albo najpierw wyeksportuj kopię. Jeśli mimo to przejdziesz dalej, kopia tych zmian zostanie na tym urządzeniu, aż ponownie połączy się z tym serwerem na tym koncie — wtedy zostaną dodane z powrotem.',
   'Sign in again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.': 'Zaloguj się ponownie albo najpierw wyeksportuj kopię. Jeśli mimo to przejdziesz dalej, kopia tych zmian zostanie na tym urządzeniu, aż ponownie połączy się z tym serwerem na tym koncie — wtedy zostaną dodane z powrotem.',
   '{0} set · {1} work': '{0} seria · {1} praca',
+  'Every exercise in this workout': 'Wszystkie ćwiczenia w tym treningu',
+  'No sets are left in this workout, so there is nothing to save. Delete it from your history?': 'W tym treningu nie została żadna seria, więc nie ma czego zapisać. Usunąć go z historii?',
 }

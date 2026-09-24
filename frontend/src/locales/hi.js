@@ -1551,4 +1551,6 @@ export default {
   'Pair again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.': 'फिर से पेयर करें, या पहले बैकअप निर्यात करें। फिर भी आगे बढ़ने पर इन बदलावों की एक कॉपी इस डिवाइस पर तब तक रहती है जब तक यह इसी खाते से इस सर्वर से फिर कनेक्ट नहीं होता — तब वे वापस जोड़ दिए जाते हैं।',
   'Sign in again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.': 'फिर से साइन इन करें, या पहले बैकअप निर्यात करें। फिर भी आगे बढ़ने पर इन बदलावों की एक कॉपी इस डिवाइस पर तब तक रहती है जब तक यह इसी खाते से इस सर्वर से फिर कनेक्ट नहीं होता — तब वे वापस जोड़ दिए जाते हैं।',
   '{0} set · {1} work': '{0} सेट · {1} काम',
+  'Every exercise in this workout': 'इस वर्कआउट के सभी व्यायाम',
+  'No sets are left in this workout, so there is nothing to save. Delete it from your history?': 'इस वर्कआउट में कोई सेट नहीं बचा है, इसलिए सहेजने को कुछ नहीं है। इसे अपने इतिहास से हटाएँ?',
 }

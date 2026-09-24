@@ -240,8 +240,34 @@ describe('leaving the server', () => {
     const sheet = openSheet()
     expect(sheet.textContent).toContain('Some changes on this device have not reached your server.')
     expect(buttonByText(sheet, 'Try again')).toBeUndefined()
+    // The sentence names the button that is there (it said "Try again" beside "Pair again").
+    expect(sheet.textContent).toContain('Pair again, or export a backup first.')
+    expect(sheet.textContent).not.toContain('Try again')
     act(() => buttonByText(sheet, 'Pair again').click())
     expect(openSheet().querySelector('.connect').dataset.again).toBe('true')
+  })
+
+  it('a browser the server refuses is told to sign in again, next to the button that does', async () => {
+    mocks.MOBILE = false
+    mocks.sync = sync('auth', { auth: true, pending: true, lastError: { status: 401, code: 'auth' } })
+    mocks.signOut.mockResolvedValueOnce({ owed: true, count: 2 })
+    const page = mount(<Settings />)
+    act(() => rowByTitle(page, 'Sign out').click())
+    await act(async () => { await confirm().onConfirm() })
+    const sheet = openSheet()
+    expect(sheet.textContent).toContain('Sign in again, or export a backup first.')
+    expect(sheet.textContent).not.toContain('Try again')
+    expect(buttonByText(sheet, 'Sign in with passkey')).toBeTruthy()
+  })
+
+  it('a server that is only out of reach still offers Try again, and says so', async () => {
+    mocks.disconnectServer.mockResolvedValueOnce({ owed: true, count: 1 })
+    const page = mount(<Settings />)
+    act(() => rowByTitle(page, 'Disconnect').click())
+    await act(async () => { await confirm().onConfirm() })
+    const sheet = openSheet()
+    expect(sheet.textContent).toContain('Try again, or export a backup first.')
+    expect(buttonByText(sheet, 'Try again')).toBeTruthy()
   })
 
   it('a copy that cannot be kept aside is not wiped either, and it says so', async () => {

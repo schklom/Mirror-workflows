@@ -1548,4 +1548,6 @@ export default {
   'Your server cannot be reached — your changes are saved on this device and sync once it answers again.': 'Twój serwer jest nieosiągalny — zmiany są zapisane na tym urządzeniu i zsynchronizują się, gdy znów odpowie.',
   'Your server cannot be reached — showing the last copy synced with it.': 'Twój serwer jest nieosiągalny — wyświetlana jest ostatnia kopia z nim zsynchronizowana.',
   'Server address unknown': 'Nieznany adres serwera',
+  'Pair again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.': 'Sparuj ponownie albo najpierw wyeksportuj kopię. Jeśli mimo to przejdziesz dalej, kopia tych zmian zostanie na tym urządzeniu, aż ponownie połączy się z tym serwerem na tym koncie — wtedy zostaną dodane z powrotem.',
+  'Sign in again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.': 'Zaloguj się ponownie albo najpierw wyeksportuj kopię. Jeśli mimo to przejdziesz dalej, kopia tych zmian zostanie na tym urządzeniu, aż ponownie połączy się z tym serwerem na tym koncie — wtedy zostaną dodane z powrotem.',
 }

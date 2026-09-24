@@ -1548,4 +1548,6 @@ export default {
   'Your server cannot be reached — your changes are saved on this device and sync once it answers again.': 'Não é possível chegar ao teu servidor — as tuas alterações ficam guardadas neste dispositivo e sincronizam assim que ele voltar a responder.',
   'Your server cannot be reached — showing the last copy synced with it.': 'Não é possível chegar ao teu servidor — a mostrar a última cópia sincronizada com ele.',
   'Server address unknown': 'Endereço do servidor desconhecido',
+  'Pair again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.': 'Emparelha de novo, ou exporta primeiro uma cópia. Se continuares mesmo assim, fica uma cópia destas alterações neste dispositivo até ele voltar a ligar-se a este servidor com esta conta — aí são novamente adicionadas.',
+  'Sign in again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.': 'Inicia sessão de novo, ou exporta primeiro uma cópia. Se continuares mesmo assim, fica uma cópia destas alterações neste dispositivo até ele voltar a ligar-se a este servidor com esta conta — aí são novamente adicionadas.',
 }

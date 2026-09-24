@@ -1551,4 +1551,6 @@ export default {
   'Your server cannot be reached — your changes are saved on this device and sync once it answers again.': 'A szervered nem érhető el — a módosításaid ezen az eszközön vannak mentve, és szinkronizálódnak, amint újra válaszol.',
   'Your server cannot be reached — showing the last copy synced with it.': 'A szervered nem érhető el — a vele utoljára szinkronizált másolat látható.',
   'Server address unknown': 'A szerver címe ismeretlen',
+  'Pair again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.': 'Párosítsd újra, vagy előbb exportálj egy biztonsági mentést. Ha mégis folytatod, a módosítások másolata ezen az eszközön marad, amíg újra nem csatlakozik ehhez a szerverhez ezzel a fiókkal — akkor visszakerülnek.',
+  'Sign in again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.': 'Jelentkezz be újra, vagy előbb exportálj egy biztonsági mentést. Ha mégis folytatod, a módosítások másolata ezen az eszközön marad, amíg újra nem csatlakozik ehhez a szerverhez ezzel a fiókkal — akkor visszakerülnek.',
 }

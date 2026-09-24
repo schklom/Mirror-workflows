@@ -1548,4 +1548,6 @@ export default {
   'Your server cannot be reached — your changes are saved on this device and sync once it answers again.': '无法连接你的服务器 — 你的更改已保存在此设备上，服务器恢复响应后会自动同步。',
   'Your server cannot be reached — showing the last copy synced with it.': '无法连接你的服务器 — 正在显示最后一次与它同步的副本。',
   'Server address unknown': '服务器地址未知',
+  'Pair again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.': '请重新配对，或先导出备份。如果仍然继续，这些更改的副本会保留在此设备上，直到它再次以此账号连接到此服务器——届时会重新加入。',
+  'Sign in again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.': '请重新登录，或先导出备份。如果仍然继续，这些更改的副本会保留在此设备上，直到它再次以此账号连接到此服务器——届时会重新加入。',
 }

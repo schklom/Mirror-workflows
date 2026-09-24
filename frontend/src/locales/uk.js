@@ -1545,4 +1545,6 @@ export default {
   'Your server cannot be reached — your changes are saved on this device and sync once it answers again.': 'Твій сервер недоступний — зміни збережено на цьому пристрої, вони синхронізуються, щойно він знову відповість.',
   'Your server cannot be reached — showing the last copy synced with it.': 'Твій сервер недоступний — показано останню копію, синхронізовану з ним.',
   'Server address unknown': 'Адреса сервера невідома',
+  'Pair again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.': 'Спаруй знову або спершу експортуй резервну копію. Якщо все одно продовжити, копія цих змін залишиться на цьому пристрої, доки він знову не підключиться до цього сервера з цим акаунтом, — тоді їх буде додано назад.',
+  'Sign in again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.': 'Увійди знову або спершу експортуй резервну копію. Якщо все одно продовжити, копія цих змін залишиться на цьому пристрої, доки він знову не підключиться до цього сервера з цим акаунтом, — тоді їх буде додано назад.',
 }

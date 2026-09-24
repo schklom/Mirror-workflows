@@ -1559,4 +1559,6 @@ export default {
   'Your server cannot be reached — your changes are saved on this device and sync once it answers again.': 'เชื่อมต่อเซิร์ฟเวอร์ของคุณไม่ได้ — การเปลี่ยนแปลงถูกบันทึกไว้ในอุปกรณ์นี้และจะซิงค์เมื่อเซิร์ฟเวอร์ตอบกลับอีกครั้ง',
   'Your server cannot be reached — showing the last copy synced with it.': 'เชื่อมต่อเซิร์ฟเวอร์ของคุณไม่ได้ — แสดงสำเนาล่าสุดที่ซิงค์กับเซิร์ฟเวอร์',
   'Server address unknown': 'ไม่ทราบที่อยู่เซิร์ฟเวอร์',
+  'Pair again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.': 'จับคู่ใหม่ หรือส่งออกข้อมูลสำรองก่อน หากดำเนินการต่อ สำเนาของการเปลี่ยนแปลงเหล่านี้จะอยู่ในอุปกรณ์นี้จนกว่าจะเชื่อมต่อกับเซิร์ฟเวอร์นี้ด้วยบัญชีนี้อีกครั้ง — แล้วจะถูกเพิ่มกลับเข้าไป',
+  'Sign in again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.': 'เข้าสู่ระบบอีกครั้ง หรือส่งออกข้อมูลสำรองก่อน หากดำเนินการต่อ สำเนาของการเปลี่ยนแปลงเหล่านี้จะอยู่ในอุปกรณ์นี้จนกว่าจะเชื่อมต่อกับเซิร์ฟเวอร์นี้ด้วยบัญชีนี้อีกครั้ง — แล้วจะถูกเพิ่มกลับเข้าไป',
 }

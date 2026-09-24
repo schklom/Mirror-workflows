@@ -1548,4 +1548,6 @@ export default {
   'Your server cannot be reached — your changes are saved on this device and sync once it answers again.': '서버에 연결할 수 없습니다 — 변경 사항은 이 기기에 저장되며 서버가 다시 응답하면 동기화됩니다.',
   'Your server cannot be reached — showing the last copy synced with it.': '서버에 연결할 수 없습니다 — 서버와 마지막으로 동기화된 사본을 표시합니다.',
   'Server address unknown': '서버 주소를 알 수 없음',
+  'Pair again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.': '다시 페어링하거나 먼저 백업을 내보내세요. 그래도 계속하면 이 기기가 이 계정으로 이 서버에 다시 연결될 때까지 변경 사항의 사본이 이 기기에 보관되며, 그때 다시 추가됩니다.',
+  'Sign in again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.': '다시 로그인하거나 먼저 백업을 내보내세요. 그래도 계속하면 이 기기가 이 계정으로 이 서버에 다시 연결될 때까지 변경 사항의 사본이 이 기기에 보관되며, 그때 다시 추가됩니다.',
 }

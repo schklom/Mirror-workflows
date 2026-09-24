@@ -906,6 +906,8 @@ export const PT_BR_OVERRIDES = {
   'The server cannot be reached': 'Não é possível acessar o servidor',
   'Your server cannot be reached — your changes are saved on this device and sync once it answers again.': 'Não é possível acessar o seu servidor — suas alterações ficam salvas neste dispositivo e sincronizam assim que ele voltar a responder.',
   'Your server cannot be reached — showing the last copy synced with it.': 'Não é possível acessar o seu servidor — mostrando a última cópia sincronizada com ele.',
+  'Pair again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.': 'Pareie de novo ou exporte um backup antes. Se continuar mesmo assim, uma cópia dessas alterações fica neste dispositivo até ele se conectar de novo a este servidor com esta conta — aí elas são adicionadas de volta.',
+  'Sign in again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.': 'Entre de novo ou exporte um backup antes. Se continuar mesmo assim, uma cópia dessas alterações fica neste dispositivo até ele se conectar de novo a este servidor com esta conta — aí elas são adicionadas de volta.',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

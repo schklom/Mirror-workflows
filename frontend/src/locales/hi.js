@@ -1548,4 +1548,6 @@ export default {
   'Your server cannot be reached — your changes are saved on this device and sync once it answers again.': 'आपके सर्वर तक नहीं पहुँचा जा सकता — आपके बदलाव इस डिवाइस पर सहेजे गए हैं और उसके फिर से जवाब देते ही सिंक हो जाएँगे।',
   'Your server cannot be reached — showing the last copy synced with it.': 'आपके सर्वर तक नहीं पहुँचा जा सकता — उससे सिंक की गई आख़िरी प्रति दिखाई जा रही है।',
   'Server address unknown': 'सर्वर का पता अज्ञात',
+  'Pair again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.': 'फिर से पेयर करें, या पहले बैकअप निर्यात करें। फिर भी आगे बढ़ने पर इन बदलावों की एक कॉपी इस डिवाइस पर तब तक रहती है जब तक यह इसी खाते से इस सर्वर से फिर कनेक्ट नहीं होता — तब वे वापस जोड़ दिए जाते हैं।',
+  'Sign in again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.': 'फिर से साइन इन करें, या पहले बैकअप निर्यात करें। फिर भी आगे बढ़ने पर इन बदलावों की एक कॉपी इस डिवाइस पर तब तक रहती है जब तक यह इसी खाते से इस सर्वर से फिर कनेक्ट नहीं होता — तब वे वापस जोड़ दिए जाते हैं।',
 }

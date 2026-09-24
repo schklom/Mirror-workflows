@@ -1601,4 +1601,6 @@ export default {
   'Your server cannot be reached — your changes are saved on this device and sync once it answers again.': 'تعذّر الوصول إلى خادمك — تُحفظ تغييراتك على هذا الجهاز وتتزامن عندما يستجيب مجددًا.',
   'Your server cannot be reached — showing the last copy synced with it.': 'تعذّر الوصول إلى خادمك — يُعرض آخر نسخة متزامنة معه.',
   'Server address unknown': 'عنوان الخادم غير معروف',
+  'Pair again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.': 'أقرِن الهاتف مجددًا، أو صدّر نسخة احتياطية أولًا. إذا تابعت على أي حال، فستبقى نسخة من هذه التغييرات على هذا الجهاز حتى يتصل بهذا الخادم بهذا الحساب مجددًا — وعندها تُضاف من جديد.',
+  'Sign in again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.': 'سجّل الدخول مجددًا، أو صدّر نسخة احتياطية أولًا. إذا تابعت على أي حال، فستبقى نسخة من هذه التغييرات على هذا الجهاز حتى يتصل بهذا الخادم بهذا الحساب مجددًا — وعندها تُضاف من جديد.',
 }

@@ -191,8 +191,13 @@ export function OwedSheet({ kind, count: count0, exportBackup, done, close }) {
       {count > 0 ? t('Not on your server yet: {0}', changeCount(count)) : t('Some changes on this device have not reached your server.')}
     </div>
     {(tried || refused) && view && <div className="small" style={{ color: 'var(--red)', marginBottom: 6 }}>{view.line}</div>}
+    {/* It names the button below it: Try again, or Pair again / Sign in where the server refuses. */}
     <div className="muted small" style={{ marginBottom: 18, lineHeight: 1.5 }}>
-      {t('Try again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.')}
+      {refused
+        ? (MOBILE
+          ? t('Pair again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.')
+          : t('Sign in again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.'))
+        : t('Try again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.')}
     </div>
     {refused && MOBILE && <><button className="btn primary" disabled={busy} onClick={() => { close(); pairAgain() }}>{t('Pair again')}</button><div style={{ height: 8 }} /></>}
     {refused && !MOBILE && canSignIn() && <><button className="btn primary" disabled={busy} onClick={() => { close(); signInAgain() }}>{pwOn() ? t('Sign in') : t('Sign in with passkey')}</button><div style={{ height: 8 }} /></>}

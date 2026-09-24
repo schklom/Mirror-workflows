@@ -835,7 +835,11 @@ function MediaRow() {
   const user = useStore(s => s.user)
   const config = useStore(s => s.config)
   const status = useSyncExternalStore(subscribeMediaStatus, getMediaStatus)
-  const remote = !!(user && config?.media)
+  // Signed in, the files go to the server unless it has said it stores none. A config not known
+  // yet — a phone started without a network; it is not kept between starts — is not that answer:
+  // what is waiting is counted as waiting (and goes up once the server answers), not called
+  // local-only as a guest's files are.
+  const remote = !!user && (config == null || !!config.media)
   useEffect(() => { if (remote) syncMedia() }, [remote])
   const pending = remote ? pendingRefCount(S) : 0
   const u = status.usage

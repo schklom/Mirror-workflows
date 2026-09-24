@@ -4,6 +4,7 @@ import { createRoot } from 'react-dom/client'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import Settings from './Settings.jsx'
 import { createMediaStore, memoryBackend, _setMediaStore } from '../lib/media-store.js'
+import { _resetMediaOwed } from '../lib/media-owed.js'
 import { readZip, zipStore } from '../lib/zip.js'
 import { sha256Hex } from '../lib/sha256.js'
 import { jpeg } from '../lib/media-samples.test-util.js'
@@ -103,6 +104,27 @@ describe('Settings — photos and videos', () => {
     expect(row('Export with photos & videos (.zip)')).toBeTruthy()
     expect(row('Photos & videos').textContent).toContain('Kept on this device only')
     expect(host.querySelector('input[type="file"][accept=".json,.zip,application/json,application/zip"]')).toBeTruthy()
+  })
+
+  // QA, v1.3.9: a paired phone started in airplane mode has no config yet (it is never cached),
+  // and the row called its photos "Kept on this device only" — the guest's sentence — with no
+  // count of what was waiting, while they went up by themselves once it was back online.
+  it('signed in with the server\'s config not known yet (an offline start): waiting to upload, not kept here only', async () => {
+    _resetMediaOwed()
+    await media.put(HASH, new Blob([PHOTO]), { mime: 'image/jpeg', pending: true })
+    mocks.user = { id: 'u1', name: 'Ana' }
+    mocks.config = null
+    mocks.sync = { status: 'offline', offline: true }
+    await mount()
+    expect(row('Photos & videos').textContent).not.toContain('Kept on this device only')
+    expect(row('Photos & videos').textContent).toContain('1 waiting to upload')
+  })
+
+  it('signed in to a server that stores no photos or videos: kept on this device only', async () => {
+    mocks.user = { id: 'u1', name: 'Ana' }
+    mocks.config = { invite_only: false }
+    await mount()
+    expect(row('Photos & videos').textContent).toContain('Kept on this device only')
   })
 
   it('without any, none of that shows', async () => {

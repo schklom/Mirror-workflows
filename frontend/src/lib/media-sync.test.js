@@ -1,10 +1,11 @@
 // @vitest-environment happy-dom
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { createMediaSync } from './media-sync.js'
 import { createMediaStore, memoryBackend } from './media-store.js'
 import { sha256Hex } from './sha256.js'
 import { _resetMediaOwed, getMediaStatus } from './media-owed.js'
 import { jpeg, png } from './media-samples.test-util.js'
+import { installedApp, prefetchAllowed } from './media-prefetch.js'
 
 const MB = 1024 * 1024
 const hex = c => c.repeat(64)
@@ -361,5 +362,43 @@ describe('localMediaGc', () => {
     clock += 2 * 3600000
     await make(appStore({ S, user: null })).localMediaGc()
     expect(await media.has(hex('a'))).toBe(true)
+  })
+})
+
+// lib/media-prefetch.js fetches the shipped catalogue's animations ahead only in the app installed
+// on the home screen (#281). That gate is the catalogue's alone: a custom exercise's own file has
+// no copy anywhere but this device and its server, so a browser tab still sends it, and still
+// makes the plan's files local, on any connection that is not metered.
+describe('in a browser tab, not the installed app', () => {
+  const tab = () => vi.stubGlobal('matchMedia', q => ({ media: q, matches: false, addEventListener() {}, removeEventListener() {} }))
+  const plain = store => createMediaSync({ store, media, api, apiUpload, apiBlob, toast, now: () => clock, locks: null, storage })
+  afterEach(() => vi.unstubAllGlobals())
+
+  it('a big file goes up without being forced', async () => {
+    tab()
+    expect(installedApp()).toBe(false)
+    expect(prefetchAllowed()).toBe(true)
+    const S = { customEx: [{ id: 'v', media: refOf(hex('a'), null, { kind: 'video', mime: 'video/mp4', size: 6 * MB }) }] }
+    await put(hex('a'), 6 * MB, 'video/mp4')
+    await plain(appStore({ S })).syncMedia()
+    expect(apiUpload).toHaveBeenCalledTimes(1)
+    expect(getMediaStatus().deferred || 0).toBe(0)
+  })
+
+  it('the plan\'s own photos are made local ahead', async () => {
+    tab()
+    const file = jpeg()
+    const h = await sha256Hex(file)
+    apiBlob.mockResolvedValue(new Blob([file]))
+    const S = {
+      routines: [{ id: 'r', ex: [{ id: 'c1' }] }],
+      customEx: [{ id: 'c1', custom: true, media: { kind: 'image', hash: h, mime: 'image/jpeg', size: file.length, width: 640, height: 480, at: 1 } }]
+    }
+    const stop = plain(appStore({ S })).startCustomMediaPrefetch({ delay: 0 })
+    try {
+      for (let i = 0; i < 50 && !(await media.has(h)); i++) await new Promise(r => setTimeout(r, 10))
+      expect(apiBlob).toHaveBeenCalledWith('/api/media/' + h, { expectSize: file.length })
+      expect(await media.get(h)).toMatchObject({ mime: 'image/jpeg', pending: false })
+    } finally { stop() }
   })
 })

@@ -10,7 +10,7 @@ globalThis.IS_REACT_ACT_ENVIRONMENT = true
    too. */
 const mocks = vi.hoisted(() => ({
   sync: { status: 'offline', lastError: { status: 0, code: 'network' } },
-  syncNow: null, signOut: null, syncMedia: null
+  syncNow: null, signOut: null, syncMedia: null, MOBILE: false
 }))
 vi.mock('../store/useStore.js', () => {
   const snap = () => ({ sync: mocks.sync, syncNow: mocks.syncNow, signOut: mocks.signOut, config: null })
@@ -25,6 +25,7 @@ vi.mock('../store/useUI.js', () => {
   return { useUI }
 })
 vi.mock('../lib/media-sync.js', () => ({ syncMedia: (...a) => mocks.syncMedia(...a) }))
+vi.mock('../lib/mobile.js', () => ({ get MOBILE() { return mocks.MOBILE } }))
 vi.mock('../lib/api.js', () => ({ passkeyLogin: vi.fn(), webauthnOK: () => true }))
 vi.mock('../sheets.jsx', () => ({ askAddDeviceData: vi.fn() }))
 vi.mock('../views/MobileOnboarding.jsx', () => ({ ConnectSheet: () => null }))
@@ -33,6 +34,8 @@ const { OwedSheet } = await import('./ServerSync.jsx')
 
 let host, root
 beforeEach(() => {
+  mocks.MOBILE = false
+  mocks.sync = { status: 'offline', lastError: { status: 0, code: 'network' } }
   mocks.syncNow = vi.fn(async () => mocks.sync)
   mocks.syncMedia = vi.fn(async () => {})
   mocks.signOut = vi.fn(async () => ({ owed: true, count: 0, media: 1 }))
@@ -76,5 +79,44 @@ describe('OwedSheet with photos and videos waiting', () => {
     expect(host.textContent).not.toContain('photos or videos')
     act(() => { button('Export backup (JSON)').click() })
     expect(json).toHaveBeenCalled()
+  })
+
+  // Where the phone-sync fixes and the media meet: a server that refuses the device is not
+  // something "Try again" can fix, for photos and videos no more than for changes.
+  it('refused phone with only photos or videos waiting: names them, and offers Pair again, not Try again', () => {
+    mocks.MOBILE = true
+    mocks.sync = { status: 'auth', auth: true, lastError: { status: 401, code: 'auth' } }
+    const zip = vi.fn()
+    act(() => root.render(<OwedSheet kind="disconnect" count={0} media={3} exportBackup={vi.fn()} exportBackupZip={zip} done={vi.fn()} close={vi.fn()} />))
+    expect(host.textContent).toContain('3 photos or videos have not reached your server yet.')
+    expect(host.textContent).not.toContain('Some changes on this device')
+    expect(host.textContent).toContain('The server refuses this phone')
+    expect(host.textContent).toContain('Pair again, or export a backup first.')
+    expect(host.textContent).not.toContain('Try again')
+    expect(button('Pair again')).toBeTruthy()
+    act(() => { button('Export with photos & videos (.zip)').click() })
+    expect(zip).toHaveBeenCalledTimes(1)
+    expect(button('Disconnect anyway')).toBeTruthy()
+    expect(mocks.syncMedia).not.toHaveBeenCalled()
+  })
+
+  it('refused browser with photos or videos waiting: Sign in again, and the backup that carries them', () => {
+    mocks.sync = { status: 'auth', auth: true, lastError: { status: 401, code: 'auth' } }
+    act(() => root.render(<OwedSheet kind="signout" count={null} media={1} exportBackup={vi.fn()} exportBackupZip={vi.fn()} done={vi.fn()} close={vi.fn()} />))
+    expect(host.textContent).toContain('Some changes on this device have not reached your server.')
+    expect(host.textContent).toContain('1 photos or videos have not reached your server yet.')
+    expect(host.textContent).toContain('Sign in again, or export a backup first.')
+    expect(host.textContent).not.toContain('Try again')
+    expect(button('Sign in with passkey')).toBeTruthy()
+    expect(button('Export with photos & videos (.zip)')).toBeTruthy()
+  })
+
+  it('a phone whose server is only out of reach still offers Try again for them', () => {
+    mocks.MOBILE = true
+    act(() => root.render(<OwedSheet kind="disconnect" count={0} media={2} exportBackup={vi.fn()} exportBackupZip={vi.fn()} done={vi.fn()} close={vi.fn()} />))
+    expect(host.textContent).toContain('2 photos or videos have not reached your server yet.')
+    expect(host.textContent).toContain('Try again, or export a backup first.')
+    expect(button('Try again')).toBeTruthy()
+    expect(button('Pair again')).toBeFalsy()
   })
 })

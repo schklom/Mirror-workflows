@@ -1354,7 +1354,9 @@ body.chips-dragging *{cursor:inherit}
   border-radius:var(--r-xl);padding:11px 20px;font-size:15px;font-weight:500;
   box-shadow:0 10px 30px -6px rgba(0,0,0,.5);
   opacity:0;pointer-events:none;transition:opacity var(--med),transform var(--med) var(--ease);
-  max-width:88vw;text-align:center;
+  /* As wide as its text up to 88vw. Without a width, left:50% left it half the screen to wrap
+     in, so a long message stood as a narrow column. */
+  width:max-content;max-width:88vw;text-align:center;
 }
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 

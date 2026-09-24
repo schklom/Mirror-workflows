@@ -1535,6 +1535,12 @@ paths:
             application/json:
               schema: { $ref: '#/components/schemas/Error' }
         '401': { $ref: '#/components/responses/Unauthorized' }
+        '403':
+          description: A browser request from another origin (see *CSRF*).
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              example: { error: "cross-origin request refused" }
 
   /api/media/sweep:
     post:
@@ -1568,6 +1574,12 @@ paths:
                   freedBytes: { type: integer }
                   usage: { $ref: '#/components/schemas/MediaUsage' }
         '401': { $ref: '#/components/responses/Unauthorized' }
+        '403':
+          description: A browser request from another origin (see *CSRF*).
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              example: { error: "cross-origin request refused" }
         '429':
           description: More than 10 sweeps this hour (`locked`).
           headers:

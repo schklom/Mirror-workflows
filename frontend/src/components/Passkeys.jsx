@@ -8,11 +8,11 @@ import { useStore } from '../store/useStore.js'
 import { useUI } from '../store/useUI.js'
 import { t } from '../lib/i18n.js'
 import { dateLocale } from '../lib/i18n-core.js'
-import { api, webauthnOK, passkeyAssertion, createPasskey } from '../lib/api.js'
+import { api, webauthnOK, createPasskey } from '../lib/api.js'
 import { copyText } from '../lib/clipboard.js'
 import { deviceLinkUrl, deviceLabel } from '../lib/device-link.js'
-import { askAddDeviceData, confirmSheet } from '../sheets.jsx'
-import { passwordError, notReached, useAgainOnceReached } from './PasswordAuth.jsx'
+import { askAddDeviceData } from '../sheets.jsx'
+import { passwordError, notReached, useAgainOnceReached, ProveOwner } from './PasswordAuth.jsx'
 import QrCanvas from './QrCanvas.jsx'
 import { Row, Button } from './ui.jsx'
 
@@ -66,43 +66,6 @@ export function usePasskeys(on) {
   return { st, load, set: setSt }
 }
 
-/* "Confirm it is you" — what the server asks before anything that adds a way in (proveOwner in
-   api/server.js): a passkey this profile already has, or its current password. Hands the body
-   the server takes to `onProof`, and shows the refusal when that throws. */
-function ProveOwner({ state, onProof }) {
-  const name = useStore(s => s.user?.name) || ''
-  const [pw, setPw] = useState('')
-  const [busy, setBusy] = useState(false)
-  const [err, setErr] = useState(null)
-  const run = async proof => {
-    if (busy) return
-    setBusy(true); setErr(null)
-    try { await onProof(await proof()) }
-    catch (e) { if (!dismissed(e)) setErr(passkeyError(e)) }
-    finally { setBusy(false) }
-  }
-  const withPasskey = state.passkeys.length > 0 && webauthnOK()
-  const withPassword = ev => {
-    ev.preventDefault()
-    if (!pw) { setErr(t('Enter your password.')); return }
-    run(async () => ({ current: pw }))
-  }
-  return <>
-    {withPasskey && <Button variant="primary" icon="lock" disabled={busy} onClick={() => run(passkeyAssertion)}>{t('Confirm with a passkey')}</Button>}
-    {state.password && <form onSubmit={withPassword} noValidate>
-      {withPasskey && <div className="dim small" style={{ margin: '14px 0 8px', textAlign: 'center' }}>{t('or with your password')}</div>}
-      {/* Tells a password manager which account the password belongs to. */}
-      <input type="text" name="username" autoComplete="username" value={name} readOnly hidden />
-      <input className="input" type="password" name="current-password" autoComplete="current-password" placeholder={t('Current password')}
-        value={pw} onChange={e => setPw(e.target.value)} />
-      <div style={{ height: 10 }} />
-      <Button type="submit" variant={withPasskey ? 'plain' : 'primary'} disabled={busy}>{t('Continue')}</Button>
-    </form>}
-    {!withPasskey && !state.password && <div className="dim small">{t('This browser cannot confirm with your passkey. Do this on a device that holds one.')}</div>}
-    {err && <div className="small" role="alert" style={errStyle}>{err}</div>}
-  </>
-}
-
 /* ------------------------------------------------------------------- Settings -------------
    Settings → Account: the passkeys, and a code for another device. `changed` tells Settings to
    read the list again, and the password row with it — whether a password may be removed depends
@@ -126,7 +89,7 @@ export function PasskeysSheet({ close, changed }) {
   const { st, set } = usePasskeys(true)
   const done = r => { set(listOf(r) || st); changed?.() }
   if (!st) return <><h3>{t('Passkeys')}</h3><div className="muted small">…</div></>
-  const edit = (p, i) => ui().openSheet(c => <PasskeySheet passkey={p} title={label(p, i)} lastWayIn={st.lastWayIn} close={c} done={done} />)
+  const edit = (p, i) => ui().openSheet(c => <PasskeySheet passkey={p} title={label(p, i)} state={st} close={c} done={done} />)
   const add = () => ui().openSheet(c => <AddPasskeySheet state={st} close={c} done={done} />)
   return <>
     <h3>{t('Passkeys')}</h3>
@@ -145,9 +108,8 @@ export function PasskeysSheet({ close, changed }) {
   </>
 }
 
-// One passkey: its name, and removing it. Removing does not end a session the passkey opened —
-// sessions are not tied to one (api/server.js) — which the confirm says, with the way to do that.
-function PasskeySheet({ passkey, title, lastWayIn, close, done }) {
+// One passkey: its name, and removing it (RemovePasskeySheet).
+function PasskeySheet({ passkey, title, state, close, done }) {
   const [name, setName] = useState(passkey.name || '')
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState(null)
@@ -159,14 +121,7 @@ function PasskeySheet({ passkey, title, lastWayIn, close, done }) {
     catch (e) { setErr(passkeyError(e)) }
     finally { setBusy(false) }
   }
-  const remove = () => confirmSheet({
-    title: t('Remove this passkey?'),
-    message: t('It can no longer sign in to this profile. A device already signed in with it stays signed in — use Sign out everywhere if it was lost.'),
-    confirmText: t('Remove'), danger: true,
-    onConfirm: () => api('/api/account/passkeys?id=' + encodeURIComponent(passkey.id), { method: 'DELETE' })
-      .then(r => { done(r); close(); toast(t('Passkey removed')) })
-      .catch(e => toast(passkeyError(e))),
-  })
+  const remove = () => ui().openSheet(c => <RemovePasskeySheet passkey={passkey} title={title} state={state} close={c} done={r => { done(r); close() }} />)
   const info = meta(passkey)
   return <>
     <h3>{title}</h3>
@@ -178,9 +133,33 @@ function PasskeySheet({ passkey, title, lastWayIn, close, done }) {
       <Button type="submit" variant="primary" disabled={busy}>{t('Save')}</Button>
     </form>
     <div style={{ height: 8 }} />
-    {lastWayIn
+    {state.lastWayIn
       ? <div className="dim small">{t('It is your only way in, so it cannot be removed until there is another.')}</div>
       : <button type="button" className="btn danger" disabled={busy} onClick={remove}>{t('Remove passkey')}</button>}
+  </>
+}
+
+/* Removing one asks for the proof adding one does (proveOwner in api/server.js): a copied
+   session must not choose which of the owner's passkeys is left. The proof is the confirmation,
+   so it is asked on the sheet that says what removing means; any passkey of the profile may give
+   it, this one included. Removing does not end a session the passkey opened — sessions are not
+   tied to one (api/server.js) — which the sheet says, with the way to do that. */
+function RemovePasskeySheet({ passkey, title, state, close, done }) {
+  const remove = async proof => {
+    const r = await api('/api/account/passkeys?id=' + encodeURIComponent(passkey.id), { method: 'DELETE', body: JSON.stringify(proof) })
+    close(); done(r)
+    toast(t('Passkey removed'))
+  }
+  return <>
+    <h3>{t('Remove this passkey?')}</h3>
+    <div className="small" style={{ fontWeight: 600, marginBottom: 6 }}>{title}</div>
+    <div className="muted small" style={{ marginBottom: 6 }}>
+      {t('It can no longer sign in to this profile. A device already signed in with it stays signed in — use Sign out everywhere if it was lost.')}
+    </div>
+    <div className="dim small" style={{ marginBottom: 14 }}>{t('First confirm that it is you.')}</div>
+    <ProveOwner passkey password={state.password} explain={passkeyError} danger submitText={t('Remove')} onProof={remove} />
+    <div style={{ height: 8 }} />
+    <Button type="button" variant="ghost" className="dim" onClick={close}>{t('Cancel')}</Button>
   </>
 }
 
@@ -218,7 +197,8 @@ function AddPasskeySheet({ state, close, done }) {
     <input className="input" placeholder={t('Name, e.g. Work laptop')} maxLength={40} value={name} onChange={e => setName(e.target.value)} />
     <div style={{ height: 12 }} />
     {ready ? <Button variant="primary" icon="plus" disabled={busy} onClick={create}>{t('Create passkey')}</Button>
-      : <ProveOwner state={state} onProof={async proof => setReady(await post('/api/account/passkeys/options', proof))} />}
+      : <ProveOwner passkey={state.passkeys.length > 0} password={state.password} explain={passkeyError}
+        onProof={async proof => setReady(await post('/api/account/passkeys/options', proof))} />}
     {err && <div className="small" role="alert" style={errStyle}>{err}</div>}
   </>
 }
@@ -244,7 +224,8 @@ export function DeviceLinkSheet({ close }) {
       <div className="muted small" style={{ marginBottom: 14 }}>
         {t('You get a code that lets your phone or another computer create a passkey for this profile. First confirm that it is you.')}
       </div>
-      <ProveOwner state={st} onProof={async proof => setLink(await post('/api/account/device-link', proof))} />
+      <ProveOwner passkey={st.passkeys.length > 0} password={st.password} explain={passkeyError}
+        onProof={async proof => setLink(await post('/api/account/device-link', proof))} />
     </> : expired ? <>
       <div className="muted small" style={{ marginBottom: 14 }}>{t('This code has expired.')}</div>
       <Button variant="primary" onClick={() => setLink(null)}>{t('Make a new code')}</Button>

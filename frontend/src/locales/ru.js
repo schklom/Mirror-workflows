@@ -370,6 +370,8 @@ export default {
   'Scan this with the other device, or open openGym there and enter the code on the sign-in screen. It works once, for {0} minutes.': 'Отсканируй это другим устройством или открой там openGym и введи код на экране входа. Код работает один раз в течение {0} минут.',
   'That code is wrong, used or expired — make a new one on your other device.': 'Этот код неверный, уже использован или истёк — создай новый на другом устройстве.',
   'This browser cannot confirm with your passkey. Do this on a device that holds one.': 'Этот браузер не может подтвердить твоим ключом доступа. Сделай это на устройстве, где он хранится.',
+  'First confirm that it is you.': 'Сначала подтверди, что это ты.',
+  'This profile has no passkey, and this server does not take passwords, so nothing here can confirm that it is you. Ask your admin.': 'У этого профиля нет ключа доступа, а этот сервер не принимает пароли, поэтому здесь нечем подтвердить, что это ты. Обратись к администратору.',
   'This browser cannot create passkeys, so it cannot be added with a code. Open the link in a browser that can.': 'Этот браузер не умеет создавать ключи доступа, поэтому его нельзя добавить по коду. Открой ссылку в браузере, который это умеет.',
   'This browser is signed in as “{0}”. Adding it to “{1}” signs “{0}” out here.': 'В этом браузере выполнен вход как «{0}». Если добавить его к «{1}», «{0}» здесь выйдет из аккаунта.',
   'This code is for a different profile that is also called “{0}”, not the one this browser is signed in as. Adding it there signs yours out here.': 'Этот код от другого профиля, который тоже называется «{0}», а не от того, под которым выполнен вход в этом браузере. Если добавить браузер туда, твой профиль здесь выйдет из системы.',

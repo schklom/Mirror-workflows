@@ -370,6 +370,8 @@ export default {
   'Scan this with the other device, or open openGym there and enter the code on the sign-in screen. It works once, for {0} minutes.': '다른 기기로 스캔하거나, 그 기기에서 openGym을 열고 로그인 화면에 코드를 입력하세요. 한 번만, {0}분 동안 사용할 수 있습니다.',
   'That code is wrong, used or expired — make a new one on your other device.': '코드가 틀렸거나 이미 사용되었거나 만료되었습니다 — 다른 기기에서 새 코드를 만드세요.',
   'This browser cannot confirm with your passkey. Do this on a device that holds one.': '이 브라우저에서는 패스키로 확인할 수 없습니다. 패스키가 있는 기기에서 진행하세요.',
+  'First confirm that it is you.': '먼저 본인인지 확인하세요.',
+  'This profile has no passkey, and this server does not take passwords, so nothing here can confirm that it is you. Ask your admin.': '이 프로필에는 패스키가 없고 이 서버는 비밀번호를 받지 않으므로, 여기서는 본인임을 확인할 방법이 없습니다. 관리자에게 문의하세요.',
   'This browser cannot create passkeys, so it cannot be added with a code. Open the link in a browser that can.': '이 브라우저는 패스키를 만들 수 없어 코드로 추가할 수 없습니다. 패스키를 만들 수 있는 브라우저에서 링크를 여세요.',
   'This browser is signed in as “{0}”. Adding it to “{1}” signs “{0}” out here.': '이 브라우저는 "{0}"(으)로 로그인되어 있습니다. "{1}"에 추가하면 여기서 "{0}"은(는) 로그아웃됩니다.',
   'This code is for a different profile that is also called “{0}”, not the one this browser is signed in as. Adding it there signs yours out here.': '이 코드는 이름이 똑같이 "{0}"인 다른 프로필의 것이며, 이 브라우저가 로그인한 프로필이 아닙니다. 브라우저를 그곳에 추가하면 지금 로그인된 프로필은 여기서 로그아웃됩니다.',

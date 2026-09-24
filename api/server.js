@@ -25,7 +25,7 @@ import {
 } from './password.js';
 import { createBackoff, createWindow } from './rate-limit.js';
 import {
-  listPasskeys, addPasskeyRecord, renamePasskeyRecord, removePasskeyRecord, MAX_PASSKEYS
+  listPasskeys, addPasskeyRecord, renamePasskeyRecord, removePasskeyRecord, passkeyRemovalRefused, MAX_PASSKEYS
 } from './passkeys-store.js';
 import { createDeviceLink, findDeviceLink, burnDeviceLink, dropDeviceLinks } from './device-link.js';
 
@@ -791,10 +791,11 @@ const THROTTLED = {
   'POST /api/login/password': 'password', 'POST /api/login/password-reset': 'password',
   'POST /api/register/password': 'signup',
   'POST /api/account/password': 'password', 'DELETE /api/account/password': null,
-  // Redeeming a device link (#95). Adding a passkey and making a link only spend the budget: the
-  // password that may prove them counts its own failures (passwordAttempt).
+  // Redeeming a device link (#95). Adding or removing a passkey and making a link only spend the
+  // budget: the password that may prove them counts its own failures (passwordAttempt).
   'POST /api/device-link/options': 'link', 'POST /api/device-link/verify': 'link',
-  'POST /api/account/passkeys/options': null, 'POST /api/account/device-link': null
+  'POST /api/account/passkeys/options': null, 'POST /api/account/device-link': null,
+  'DELETE /api/account/passkeys': null
 };
 
 // Which address the throttle counts against. Unlike clientIp() above, which only labels a log
@@ -854,6 +855,10 @@ function strikeAddress(req, kind) {
 // redeem — there is no rename — and leave that profile locked out. Sign-in itself only ever
 // looks at profiles that have a password (passwordHolder).
 const hasPassword = u => !!(u && u.pw && typeof u.pw.h === 'string');
+// A password that counts for anything: one the instance still lets people sign in with. With
+// PASSWORD_LOGIN off, a password kept from when it was on neither signs in nor proves anything
+// (proveOwner), and does not keep a profile's last passkey in place.
+const passwordWayIn = u => PASSWORD_LOGIN && hasPassword(u);
 const passwordHolder = k => db.users.find(u => hasPassword(u) && nameKey(u.name) === k) || null;
 const holdsName = u => hasPassword(u) || !!(u.pwReset && u.pwReset.exp > Date.now());
 const nameTaken = (name, exceptId) => {
@@ -938,14 +943,21 @@ function passwordAttempt(req, res, k) {
 }
 
 // Proof that whoever holds this session is the account's owner right now, for the changes that
-// add a lasting way in — a password, another passkey, a device link. A session on its own is not
-// enough for those: it may be a cookie someone walked off with, and each of them would outlive
-// "sign out everywhere". Either a passkey assertion made for this request (`cid` from
-// /api/login/options, `credential` signed by one of this account's passkeys), or the current
-// password when there is one. The password counts here even on an instance that has since
-// switched password sign-in off: it is still the owner's secret, and it is how a profile that only
-// ever had a password gets onto a passkey. Answers the refusal itself and returns null, or says
-// which proof it was ('passkey' | 'password'). Wrong passwords count toward the sign-in pause.
+// add or take away a lasting way in — setting a password, adding a passkey, making a device link,
+// removing a passkey or the password. A session on its own is not enough for those: it may be a
+// cookie someone walked off with. An addition would outlive "sign out everywhere"; a removal
+// would let whoever holds the cookie choose which of the owner's ways in is left — an old
+// security key rather than the phone the owner carries — or take away the password that signs
+// them in where passkeys do not work.
+//
+// Either a passkey assertion made for this request (`cid` from /api/login/options, `credential`
+// signed by one of this account's passkeys), or the current password — only while the instance
+// offers password sign-in. With PASSWORD_LOGIN off, a password kept from when it was on is a
+// secret nothing else checks any more, possibly an old or reused one, so it proves nothing either:
+// a stolen cookie and a guessed password must not add a passkey on an instance that switched
+// passwords off. A profile that only ever had a password is moved onto a passkey while the flag
+// is still on (docs/SELF_HOSTING.md). Answers the refusal itself and returns null, or says which
+// proof it was ('passkey' | 'password'). Wrong passwords count toward the sign-in pause.
 async function proveOwner(req, res, user, body, failEv) {
   if (body.credential) {
     if (await passkeyStepUp(user, body)) return 'passkey';
@@ -953,7 +965,7 @@ async function proveOwner(req, res, user, body, failEv) {
     json(res, 403, { error: 'the passkey could not be verified', code: 'passkey' });
     return null;
   }
-  if (!hasPassword(user)) {
+  if (!passwordWayIn(user)) {
     json(res, 403, { error: 'confirm with your passkey first', code: 'passkey-required' });
     return null;
   }
@@ -1099,12 +1111,25 @@ const passwordRoutes = {
   },
 
   // Never the last way in: a profile with no passkey keeps its password, because nothing else
-  // could sign it in again. Existing sessions are left alone; "sign out everywhere" ends them.
+  // could sign it in again. Same proof as setting one (proveOwner) — the password itself, or a
+  // passkey assertion made for this request — asked only once the removal could go ahead, so a
+  // refusal the profile's state already decides spends no passkey prompt and no password check.
+  // Existing sessions are left alone; "sign out everywhere" ends them.
   'DELETE /api/account/password': async (req, res) => {
     const user = readSession(req);
     if (!user) return json(res, 401, { error: 'not signed in' });
+    const body = await readBody(req);
+    const lastWayIn = () => json(res, 409, { error: 'the password is the only way into this profile', code: 'last-way-in' });
     if (!hasPassword(user)) return json(res, 200, { ok: true });
-    if (!passkeyCount(user)) return json(res, 409, { error: 'the password is the only way into this profile', code: 'last-way-in' });
+    if (!passkeyCount(user)) return lastWayIn();
+    const proof = await proveOwner(req, res, user, body, 'auth.password.fail');
+    if (!proof) return;
+    // Everything above awaited: the session may have ended, and the profile's last passkey may
+    // have been removed by a request that ran alongside this one.
+    if (readSession(req) !== user) return json(res, 401, { error: 'not signed in' });
+    if (proof === 'passkey') saveDb();   // the confirming passkey's counter and last use
+    if (!hasPassword(user)) return json(res, 200, { ok: true });
+    if (!passkeyCount(user)) return lastWayIn();
     delete user.pw;
     saveDb();
     audit(req, 'auth.password.remove', { user });
@@ -1189,18 +1214,18 @@ const passwordRoutes = {
 //   in Settings where the owner sees it and can remove it.
 //
 // Either way the new passkey is a way into the profile that outlives "sign out everywhere", so
-// both ask for the proof a first password does (proveOwner). Removing one never leaves a profile
-// without a way in: its last passkey stays unless a password can sign in instead.
+// both ask for the proof a first password does (proveOwner). So does removing one: a stolen
+// cookie must not choose which of the owner's passkeys is left. Removing one never leaves a
+// profile without a way in: its last passkey stays unless a password can sign in instead.
 //
 // Sessions are not tied to the passkey that opened them — a session is `uid:expiry:version`,
 // nothing more — so removing a passkey stops it signing in again but does not end a session it
 // already opened. "Sign out everywhere" does that, and Settings says so where a passkey is removed.
-const passwordWayIn = u => PASSWORD_LOGIN && hasPassword(u);
 const passkeyState = u => {
   const passkeys = listPasskeys(db, u.id);
-  // `password`: whether a password can confirm an addition (proveOwner). `lastWayIn`: whether
-  // removing any one passkey would be refused.
-  return { passkeys, password: hasPassword(u), lastWayIn: passkeys.length + (passwordWayIn(u) ? 1 : 0) <= 1 };
+  // `password`: whether the password can confirm an addition or a removal (proveOwner) — only
+  // while password sign-in is on. `lastWayIn`: whether removing any one passkey would be refused.
+  return { passkeys, password: passwordWayIn(u), lastWayIn: passkeys.length + (passwordWayIn(u) ? 1 : 0) <= 1 };
 };
 const LIMIT = { error: `a profile can have at most ${MAX_PASSKEYS} passkeys`, code: 'passkey-limit' };
 const LINK_INVALID = { error: 'that code is wrong, used or expired', code: 'link-invalid' };
@@ -1305,16 +1330,27 @@ const passkeyRoutes = {
     json(res, 200, { ok: true, ...passkeyState(user) });
   },
 
-  // `?id=` — the credential id from the list. No proof: removing takes a way in away rather than
-  // adding one, and the last one is never removed (removePasskeyRecord). An unused device code
-  // goes with it: a passkey is removed because it is lost or not trusted, and a code made with it
-  // just before — by whoever holds it — would otherwise add a fresh one right after.
+  // `?id=` — the credential id from the list; the body carries the same proof adding one takes
+  // (proveOwner), asked only once the removal could go ahead, so a refusal the list already
+  // decides spends no passkey prompt and no password check. The last one is never removed
+  // (removePasskeyRecord), checked again after the proof, since a request running alongside may
+  // have removed another passkey or the password meanwhile. An unused device code goes with it: a
+  // passkey is removed because it is lost or not trusted, and a code made with it just before — by
+  // whoever holds it — would otherwise add a fresh one right after.
   'DELETE /api/account/passkeys': async (req, res) => {
     const user = readSession(req);
     if (!user) return notSignedIn(res);
     const id = new URL(req.url, 'http://x').searchParams.get('id') || '';
+    const body = await readBody(req);
+    const refuse = r => json(res, r.code === 'last-way-in' ? 409 : 404, { error: r.error, code: r.code });
+    const refused = passkeyRemovalRefused(db, user.id, id, passwordWayIn(user) ? 1 : 0);
+    if (refused) return refuse(refused);
+    const proof = await proveOwner(req, res, user, body, 'auth.passkey.fail');
+    if (!proof) return;
+    if (readSession(req) !== user) return notSignedIn(res);
+    if (proof === 'passkey') saveDb();   // the confirming passkey's counter and last use
     const r = removePasskeyRecord(db, user.id, id, passwordWayIn(user) ? 1 : 0);
-    if (r.error) return json(res, r.code === 'last-way-in' ? 409 : 404, { error: r.error, code: r.code });
+    if (r.error) return refuse(r);
     dropDeviceLinks(db, user.id);
     saveDb();
     audit(req, 'auth.passkey.remove', { user, msg: r.row.name || null });

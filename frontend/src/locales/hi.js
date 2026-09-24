@@ -370,6 +370,8 @@ export default {
   'Scan this with the other device, or open openGym there and enter the code on the sign-in screen. It works once, for {0} minutes.': 'इसे दूसरे डिवाइस से स्कैन करें, या वहाँ openGym खोलकर साइन-इन स्क्रीन पर कोड दर्ज करें। यह एक बार, {0} मिनट तक काम करता है।',
   'That code is wrong, used or expired — make a new one on your other device.': 'यह कोड गलत है, इस्तेमाल हो चुका है या समाप्त हो गया है — अपने दूसरे डिवाइस पर नया बनाएँ।',
   'This browser cannot confirm with your passkey. Do this on a device that holds one.': 'यह ब्राउज़र आपकी पासकी से पुष्टि नहीं कर सकता। यह काम उस डिवाइस पर करें जिसमें पासकी रखी है।',
+  'First confirm that it is you.': 'पहले पुष्टि करें कि यह आप ही हैं।',
+  'This profile has no passkey, and this server does not take passwords, so nothing here can confirm that it is you. Ask your admin.': 'इस प्रोफ़ाइल में कोई पासकी नहीं है, और यह सर्वर पासवर्ड स्वीकार नहीं करता, इसलिए यहाँ कुछ भी पुष्टि नहीं कर सकता कि यह आप ही हैं। अपने एडमिन से संपर्क करें।',
   'This browser cannot create passkeys, so it cannot be added with a code. Open the link in a browser that can.': 'यह ब्राउज़र पासकी नहीं बना सकता, इसलिए इसे कोड से नहीं जोड़ा जा सकता। लिंक ऐसे ब्राउज़र में खोलें जो पासकी बना सके।',
   'This browser is signed in as “{0}”. Adding it to “{1}” signs “{0}” out here.': 'यह ब्राउज़र "{0}" के रूप में साइन इन है। इसे "{1}" में जोड़ने से यहाँ "{0}" साइन आउट हो जाएगा।',
   'This code is for a different profile that is also called “{0}”, not the one this browser is signed in as. Adding it there signs yours out here.': 'यह कोड किसी दूसरी प्रोफ़ाइल का है जिसका नाम भी "{0}" है, उसका नहीं जिससे यह ब्राउज़र साइन इन है। ब्राउज़र को वहाँ जोड़ने से आपकी प्रोफ़ाइल यहाँ से साइन आउट हो जाएगी।',

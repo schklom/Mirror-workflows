@@ -104,15 +104,20 @@ Read this before hosting openGym for anyone other than yourself.
   with no password is checked against a dummy hash, so answer and timing are the same whether or
   not it exists. At most two hashes run at once with a short queue behind them. A first password
   needs a fresh passkey assertion by that profile, a change needs the current password (or that
-  assertion), and either ends every other session of the account. It cannot be removed while it
-  is the profile's only way in. Password routes keep the origin check below (no login CSRF).
+  assertion), and either ends every other session of the account. Removing it needs the same
+  proof — the password itself or a fresh assertion — and it cannot be removed while it is the
+  profile's only way in. Password routes keep the origin check below (no login CSRF).
   An admin can issue a one-time reset code — 60 random bits, stored as a SHA-256, 24 hours, single
   use — which also removes the old password and ends every session; admin accounts cannot be
   reset that way (`api/password.js`, the password block in `api/server.js`).
 - **More than one passkey, and one-time device codes.** A profile can hold up to 20 passkeys.
-  Adding one from Settings, or making the code that lets another device add its own, needs the
-  same proof as a first password — a fresh assertion by one of that profile's passkeys, or its
-  current password — because each is a way in that outlives "sign out everywhere". The code is
+  Adding one from Settings, removing one, or making the code that lets another device add its
+  own, needs proof that the owner is there right now — a fresh assertion by one of that
+  profile's passkeys, made for that one request, or its current password — because an addition
+  is a way in that outlives "sign out everywhere", and a removal would let a stolen session
+  choose which of the owner's ways in is left. The password counts as proof only while
+  `PASSWORD_LOGIN=1`: with the flag off, a password kept from before is not checked at all, so
+  an old or reused one cannot be guessed into a new passkey. The code is
   12 characters (60 bits), shown once, stored as a SHA-256, good for ten minutes and one passkey;
   a newer code, signing out everywhere, a new password, an admin reset or a disable voids it. It
   never opens a session by itself: redeeming it registers a passkey on that profile (bound to

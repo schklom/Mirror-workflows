@@ -1,16 +1,18 @@
 // Name-and-password sign-in next to passkeys (#118), on an instance that offers it
 // (GET /api/config → `password_login`). Everything a password needs on screen lives here:
 // signing in, redeeming the one-time code an admin hands out, creating a profile with a
-// password, and the Settings row that sets, changes or removes one. Passkeys stay the default
-// wherever this appears; the rules themselves are the server's (api/password.js and the
-// password block in api/server.js), this only words them.
+// password, and the Settings row that sets, changes or removes one — and the "confirm it is you"
+// step (ProveOwner) that Settings asks for before a way in is added or removed, where the
+// password is one of the two answers. Passkeys stay the default wherever this appears; the rules
+// themselves are the server's (api/password.js and the password block in api/server.js), this
+// only words them.
 import { useEffect, useRef, useState } from 'react'
 import { useStore, hasData } from '../store/useStore.js'
 import { useUI } from '../store/useUI.js'
 import { t } from '../lib/i18n.js'
 import { dateLocale } from '../lib/i18n-core.js'
 import { api, webauthnOK, passkeyAssertion, passwordLogin, passwordRegister, passwordResetRedeem } from '../lib/api.js'
-import { askAddDeviceData, confirmSheet } from '../sheets.jsx'
+import { askAddDeviceData } from '../sheets.jsx'
 import { Row, Button } from './ui.jsx'
 
 // The server's floor (api/password.js MIN_LENGTH), checked here first so the common mistake is
@@ -197,6 +199,74 @@ function PasswordRegisterSheet({ close }) {
 }
 export const openPasswordRegister = () => ui().openSheet(close => <PasswordRegisterSheet close={close} />)
 
+/* "Confirm it is you" — what the server asks before anything that adds or takes away a way in
+   (proveOwner in api/server.js): a passkey this profile already has, or its current password
+   where that counts. `passkey`: the profile has one. `password`: its password counts as proof —
+   set, and the instance takes passwords (GET /api/account/passkeys → `password`). Hands the body
+   the server takes to `onProof` — for a removal, the removal itself — and shows the refusal,
+   worded by `explain`, when that throws. For a removal this step is the confirmation too, so
+   `danger` colours it and `submitText` names the action on the password's button.
+
+   A proof is made on the tap, for the one request it goes with, and never kept. A passkey prompt
+   still open when the sheet closes is called off, and whatever a prompt answers after that is
+   dropped: someone who backed out of removing a passkey must not have it removed by a prompt
+   they no longer see. */
+export function ProveOwner({ passkey, password, onProof, explain = passwordError, danger = false, submitText }) {
+  const name = useStore(s => s.user?.name) || ''
+  const [pw, setPw] = useState('')
+  const [busy, setBusy] = useState(false)
+  const [err, setErr] = useState(null)
+  const live = useRef(true)
+  const prompt = useRef(null)   // the AbortController of a passkey prompt still open
+  useEffect(() => {
+    // Set here, not only initially: StrictMode unmounts and mounts again, and the first cleanup
+    // must not leave the sheet thinking it is gone.
+    live.current = true
+    return () => { live.current = false; prompt.current?.abort() }
+  }, [])
+  const run = async proof => {
+    if (busy) return
+    setBusy(true); setErr(null)
+    const ctl = new AbortController()
+    prompt.current = ctl
+    try {
+      const body = await proof(ctl.signal)
+      if (!live.current) return
+      await onProof(body)
+    } catch (e) { if (live.current && !dismissed(e)) setErr(explain(e)) }
+    finally {
+      if (prompt.current === ctl) prompt.current = null
+      if (live.current) setBusy(false)
+    }
+  }
+  const withPasskey = !!passkey && webauthnOK()
+  const withPassword = ev => {
+    ev.preventDefault()
+    if (!pw) { setErr(t('Enter your password.')); return }
+    run(async () => ({ current: pw }))
+  }
+  // A removal's buttons are red whichever proof carries it: each of them removes.
+  const main = danger ? 'danger' : 'primary'
+  return <>
+    {withPasskey && <Button variant={main} icon="lock" disabled={busy} onClick={() => run(signal => passkeyAssertion({ signal }))}>{t('Confirm with a passkey')}</Button>}
+    {password && <form onSubmit={withPassword} noValidate>
+      {withPasskey && <div className="dim small" style={{ margin: '14px 0 8px', textAlign: 'center' }}>{t('or with your password')}</div>}
+      {/* Tells a password manager which account the password belongs to. */}
+      <input type="text" name="username" autoComplete="username" value={name} readOnly hidden />
+      <input className="input" type="password" name="current-password" autoComplete="current-password" placeholder={t('Current password')}
+        value={pw} onChange={e => setPw(e.target.value)} />
+      <div style={{ height: 10 }} />
+      <Button type="submit" variant={withPasskey && !danger ? 'plain' : main} disabled={busy}>{submitText || t('Continue')}</Button>
+    </form>}
+    {/* A profile with no passkey whose password no longer counts — the instance switched
+        passwords off — has nothing left to answer with (docs/SELF_HOSTING.md). */}
+    {!withPasskey && !password && <div className="dim small">{passkey
+      ? t('This browser cannot confirm with your passkey. Do this on a device that holds one.')
+      : t('This profile has no passkey, and this server does not take passwords, so nothing here can confirm that it is you. Ask your admin.')}</div>}
+    {err && <div className="small" role="alert" style={errStyle}>{err}</div>}
+  </>
+}
+
 /* Settings' account rows read the server as the screen opens. One that found the server down
    has nothing to show, and stayed missing until Settings was left and opened again, while the
    block above it already said "All synced". It asks again whenever the store hears from the
@@ -255,14 +325,7 @@ export function PasswordSheet({ status, close, done }) {
     } catch (e) { if (!dismissed(e)) setErr(passwordError(e)) }
     finally { setBusy(false) }
   }
-  const remove = () => confirmSheet({
-    title: t('Remove your password?'),
-    message: t('Only your passkeys sign in to this profile afterwards.'),
-    confirmText: t('Remove'), danger: true,
-    onConfirm: () => api('/api/account/password', { method: 'DELETE' })
-      .then(() => { close(); done(); toast(t('Password removed')) })
-      .catch(e => toast(passwordError(e))),
-  })
+  const remove = () => ui().openSheet(c => <RemovePasswordSheet status={status} close={c} done={() => { close(); done() }} />)
   return <>
     <h3>{status.set ? t('Change password') : t('Set a password')}</h3>
     <div className="muted small" style={{ marginBottom: 14 }}>
@@ -294,5 +357,26 @@ export function PasswordSheet({ status, close, done }) {
       <div style={{ height: 8 }} />
       <button type="button" className="btn danger" disabled={busy} onClick={remove}>{t('Remove password')}</button>
     </>}
+  </>
+}
+
+/* Removing the password asks for the proof setting one does (proveOwner in api/server.js): a
+   copied session must not take away the owner's way in where passkeys do not work. The proof is
+   the confirmation, so it is asked on the sheet that says what removing means — the password
+   itself, or a passkey of this profile. Only offered while a passkey remains (the last way in
+   stays), and the password counts here: this row exists only while the instance takes them. */
+function RemovePasswordSheet({ status, close, done }) {
+  const remove = async proof => {
+    await api('/api/account/password', { method: 'DELETE', body: JSON.stringify(proof) })
+    close(); done()
+    toast(t('Password removed'))
+  }
+  return <>
+    <h3>{t('Remove your password?')}</h3>
+    <div className="muted small" style={{ marginBottom: 6 }}>{t('Only your passkeys sign in to this profile afterwards.')}</div>
+    <div className="dim small" style={{ marginBottom: 14 }}>{t('First confirm that it is you.')}</div>
+    <ProveOwner passkey={status.passkeys > 0} password danger submitText={t('Remove')} onProof={remove} />
+    <div style={{ height: 8 }} />
+    <Button type="button" variant="ghost" className="dim" onClick={close}>{t('Cancel')}</Button>
   </>
 }

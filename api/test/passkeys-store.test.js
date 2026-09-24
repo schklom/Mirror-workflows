@@ -3,7 +3,7 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  addPasskeyRecord, listPasskeys, removePasskeyRecord, renamePasskeyRecord, passkeyName, MAX_PASSKEYS
+  addPasskeyRecord, listPasskeys, removePasskeyRecord, passkeyRemovalRefused, renamePasskeyRecord, passkeyName, MAX_PASSKEYS
 } from '../passkeys-store.js';
 
 const cred = (id, userId = 'u1') => ({
@@ -117,5 +117,19 @@ describe('removePasskeyRecord', () => {
     const r = removePasskeyRecord(db, 'u2', 'hello');
     assert.deepEqual(r, { error: 'passkey not found', code: 'not-found' });
     assert.equal(db.creds.length, 2);
+  });
+});
+
+describe('passkeyRemovalRefused', () => {
+  // Asked before the route asks the owner for proof, so it must answer as the removal would —
+  // and change nothing.
+  it('answers what removePasskeyRecord would, without removing anything', () => {
+    const db = { creds: [cred('hello', 'u1'), cred('phone', 'u1'), cred('other', 'u2')] };
+    assert.equal(passkeyRemovalRefused(db, 'u1', 'hello'), null);
+    assert.deepEqual(passkeyRemovalRefused(db, 'u1', 'other'), { error: 'passkey not found', code: 'not-found' });
+    assert.deepEqual(passkeyRemovalRefused(db, 'u2', 'other'), { error: 'this passkey is the only way into this profile', code: 'last-way-in' });
+    assert.equal(passkeyRemovalRefused(db, 'u2', 'other', 1), null);
+    assert.equal(passkeyRemovalRefused({}, 'u1', 'hello').code, 'not-found');
+    assert.equal(db.creds.length, 3);
   });
 });

@@ -16,5 +16,6 @@ createRoot(document.getElementById('root')).render(
 if (!MOBILE && 'serviceWorker' in navigator && location.protocol === 'https:') {
   navigator.serviceWorker.register('sw.js').catch(() => {})
   // The plan's exercise media, kept by the worker for a workout opened without a network (#281).
+  // It only fetches ahead while the page runs as the installed app; a tab keeps what it has shown.
   import('./lib/media-prefetch.js').then(m => m.startMediaPrefetch(useStore)).catch(() => {})
 }

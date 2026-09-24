@@ -8,9 +8,14 @@
 // it. URLs already in the cache are skipped, so after the first run this is a cache lookup per
 // exercise and no traffic.
 //
-// It stays off the network when the browser says data costs something: Data Saver, a cellular
-// connection, or a 2G-class one. Safari and Firefox say nothing about the connection, and there it
-// runs; the set is bounded by the plan (a few MB for a typical one) and each file goes once.
+// Only in the app installed on the home screen (installedApp). That is where a workout gets
+// opened in a gym basement with no signal; a browser tab is someone looking at the app, and
+// fetching a few megabytes of animations behind their back is not what they opened it for. A tab
+// keeps the worker's ordinary on-demand cache: whatever it has shown stays available offline.
+//
+// And never when the browser says data costs something: Data Saver, a cellular connection, or a
+// 2G-class one. Safari and Firefox say nothing about the connection, and there it runs; the set is
+// bounded by the plan (a few MB for a typical one) and each file goes once.
 //
 // Not in the phone app: it has no service worker, and its media comes from the CDN.
 import { EXIDX, imgSrc, gifSrc } from './exercises.js'
@@ -45,6 +50,19 @@ export function planMediaUrls(S, base = globalThis.location?.href, index = EXIDX
     }
   }
   return [...urls]
+}
+
+const STANDALONE = '(display-mode: standalone)'
+
+/**
+ * Whether this page runs as the app installed on the home screen, not in a browser tab: the
+ * display mode the manifest asks for (`standalone`), or iOS Safari's own flag, which a home-screen
+ * app there has had since before it knew display modes. `win.matchMedia` is called on `win` —
+ * a detached matchMedia throws in a browser.
+ */
+export function installedApp(win = globalThis, nav = win?.navigator) {
+  if (nav?.standalone === true) return true
+  try { return !!win?.matchMedia?.(STANDALONE)?.matches } catch { return false }
 }
 
 /** Whether the connection is one to spend a few megabytes on without asking. */
@@ -85,26 +103,29 @@ export async function prefetchMedia(urls, { cache, fetchImpl = globalThis.fetch,
 }
 
 /**
- * Keep the plan's media offline for as long as the page is open. `store` is the zustand store
- * (getState/subscribe). Returns a function that stops it.
+ * Keep the plan's media offline for as long as the page is open, while it runs as the installed
+ * app. `store` is the zustand store (getState/subscribe). Returns a function that stops it.
  */
-export function startMediaPrefetch(store, { delay = PREFETCH_DELAY_MS, nav = globalThis.navigator, cachesApi = globalThis.caches } = {}) {
+export function startMediaPrefetch(store, { delay = PREFETCH_DELAY_MS, win = globalThis, nav = win?.navigator, cachesApi = globalThis.caches } = {}) {
   const sw = nav?.serviceWorker
   if (!sw || !cachesApi) return () => {}
   let timer = null
   let running = false
   // The URL set the last complete run covered; the same set again has nothing left to fetch.
   let done = ''
+  // Asked on every run, and between files, not once at start: a desktop browser can move an open
+  // tab into the installed app's window (and back), and a phone can leave Wi-Fi mid-run.
+  const allowed = () => installedApp(win, nav) && prefetchAllowed(nav)
   const run = async () => {
     timer = null
     // Only through a worker that is in charge of this page: without one nothing would be kept.
-    if (running || !sw.controller || !prefetchAllowed(nav)) return
+    if (running || !sw.controller || !allowed()) return
     const urls = planMediaUrls(store.getState().S)
     const key = urls.join('\n')
     if (!urls.length || key === done) return
     running = true
     try {
-      const r = await prefetchMedia(urls, { cache: await cachesApi.open(MEDIA_CACHE), allowed: () => prefetchAllowed(nav) })
+      const r = await prefetchMedia(urls, { cache: await cachesApi.open(MEDIA_CACHE), allowed })
       if (r.fetched === r.missing) done = key
     } catch (e) { /* best effort: the next change or reconnect tries again */ }
     finally { running = false }
@@ -123,13 +144,18 @@ export function startMediaPrefetch(store, { delay = PREFETCH_DELAY_MS, nav = glo
     seen = S
     schedule()
   })
+  // A tab moved into the app's window becomes the installed app without a reload.
+  let mode = null
+  try { mode = win?.matchMedia?.(STANDALONE) || null } catch { /* no display modes to follow */ }
   globalThis.addEventListener?.('online', schedule)
   sw.addEventListener?.('controllerchange', schedule)
+  mode?.addEventListener?.('change', schedule)
   schedule()
   return () => {
     unsubscribe()
     if (timer) clearTimeout(timer)
     globalThis.removeEventListener?.('online', schedule)
     sw.removeEventListener?.('controllerchange', schedule)
+    mode?.removeEventListener?.('change', schedule)
   }
 }

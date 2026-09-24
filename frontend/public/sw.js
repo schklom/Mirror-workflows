@@ -16,8 +16,10 @@ const CACHE = 'opengym-rt-__BUILD__'
    order they were written, so a hit is written back once per worker lifetime to move it to the
    end: least recently used as far as this worker has seen, which is what "LRU-ish" means here.
    The whole catalogue is about 140 MB, so the cap only bites for someone who has browsed most of
-   it. lib/media-prefetch.js fills this cache for the exercises in the plan and names it too, so
-   a new name has to change there as well (sw-media.test.js pins the two together). */
+   it. lib/media-prefetch.js fills this cache ahead for the exercises in the plan — in the app
+   installed on the home screen only; a browser tab gets what it has shown and nothing more — and
+   names it too, so a new name has to change there as well (sw-media.test.js pins the two
+   together). */
 const MEDIA = 'opengym-media-v1'
 const MEDIA_MAX_BYTES = 150 * 1024 * 1024
 const MEDIA_MAX_ITEMS = 3000

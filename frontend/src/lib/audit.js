@@ -52,7 +52,11 @@ const LABELS = {
   'admin.invite.create': 'Created an invite code',
   'admin.invite.revoke': 'Revoked an invite code',
   'admin.audit.clear': 'Cleared the activity log',
-  'admin.denied': 'Blocked from the admin dashboard'
+  'admin.denied': 'Blocked from the admin dashboard',
+  // Photos and videos of custom exercises: "Reset everything" clearing a profile's files, and the
+  // upload or clean-up throttle pausing a profile (`msg` says which).
+  'media.sweep': 'Cleared unused photos and videos',
+  'media.throttled': 'Too many photo or video requests'
 }
 // An unknown event is shown raw rather than dropped or rendered as "undefined": a dashboard
 // that is one version behind the server should still say *something* truthful.
@@ -80,7 +84,10 @@ const REASONS = {
   // What an `auth.throttled` pause was for.
   'password': 'wrong passwords or reset codes',
   'signup': 'wrong invite codes on password signup',
-  'link': 'wrong one-time device codes'
+  'link': 'wrong one-time device codes',
+  // What a `media.throttled` pause was for.
+  'upload': 'photo and video uploads',
+  'sweep': 'clearing unused photos and videos'
 }
 export const auditReason = msg => REASONS[msg] || (msg ? String(msg) : '')
 

@@ -150,6 +150,25 @@ describe('syncMedia', () => {
     expect((await media.get(hex('a')))).toMatchObject({ pending: false, rejected: false })
   })
 
+  it('a file over this server\'s cap for its kind is refused here, never sent, and does not stop the files after it', async () => {
+    // Picked on a phone under the default caps, then paired to a server that allows 1 MB photos.
+    const S = { customEx: [{ id: 'a', media: refOf(hex('a'), null, { size: 3 * MB }) }, { id: 'b', media: refOf(hex('b')) }] }
+    await put(hex('a'), 3 * MB); await put(hex('b'))
+    const store = appStore({ S, config: { media: { imageMB: 1, gifMB: 8, videoMB: 40, videoSec: 60, quotaMB: 200 } } })
+    const sync = make(store)
+    await sync.syncMedia({ force: true })
+    expect(apiUpload.mock.calls.map(c => c[0])).toEqual(['/api/media/' + hex('b')])
+    expect(await media.get(hex('a'))).toMatchObject({ pending: true, rejected: true })
+    expect(toast).toHaveBeenCalledWith('The server refused the file as too large.')
+    expect(getMediaStatus().rejected).toBe(1)
+    // A video under the video cap is not held to the photo's.
+    const V = { customEx: [{ id: 'v', media: refOf(hex('c'), null, { kind: 'video', mime: 'video/mp4', size: 3 * MB }) }] }
+    await put(hex('c'), 3 * MB, 'video/mp4')
+    store.setState({ S: V })
+    await sync.syncMedia({ force: true })
+    expect(apiUpload.mock.calls.at(-1)[0]).toBe('/api/media/' + hex('c'))
+  })
+
   it('a big file waits for a connection that is not metered, unless the run is forced', async () => {
     const S = { customEx: [{ id: 'v', media: refOf(hex('a'), null, { kind: 'video', mime: 'video/mp4', size: 6 * MB }) }] }
     await put(hex('a'), 6 * MB, 'video/mp4')

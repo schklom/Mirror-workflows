@@ -594,7 +594,13 @@ export function createMediaStore({ dir, limits, now = Date.now, readState = () =
       if (!declared) throw new MediaError(415, 'media-type');
       cap = capOf(declared.kind);
       const len = contentLength(req);
-      if (len != null && len > cap) throw new MediaError(413, 'media-too-large', { maxMB: capMB(declared.kind) });
+      if (len != null && len > cap) {
+        // Drained like a refusal before receive() (discard): up to twice the LARGEST cap. Twice
+        // this kind's cap would cut a photo of 5 MB off at 4 MB with a reset, and a client that
+        // hits the reset before the answer reads a network error and tries again forever.
+        cap = maxCap;
+        throw new MediaError(413, 'media-too-large', { maxMB: capMB(declared.kind) });
+      }
       const have = e.hashes.get(hash);
       if (have) { drain(req, 2 * cap); touch(e, hash); return existed(hash, have); }
 

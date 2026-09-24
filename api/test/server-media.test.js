@@ -170,6 +170,16 @@ test('a declared length over the cap is answered before the body is sent', async
   assert.deepEqual(h.tmp(U1), []);
 });
 
+test('a body more than twice its kind\'s cap still gets its 413, not a reset', async t => {
+  // A 2000-byte image cap and a 5000-byte photo: a phone whose own limits were bigger than this
+  // server's. Draining only twice the image cap reset the connection before the answer.
+  const h = await start(t, { MEDIA_IMAGE_MAX_MB: String(2000 / 1048576) });
+  const r = await h.put(M.jpeg(5000));
+  assert.equal(r.status, 413);
+  assert.equal((await r.json()).code, 'media-too-large');
+  assert.deepEqual(h.tmp(U1), []);
+});
+
 test('the cap of what the bytes are applies, and the quota says how full it is', async t => {
   // 10 KB images, 1 MB GIFs, a 25 KB quota.
   const h = await start(t, { MEDIA_IMAGE_MAX_MB: '0.009765625', MEDIA_GIF_MAX_MB: '1', MEDIA_QUOTA_MB: '0.0244140625' });

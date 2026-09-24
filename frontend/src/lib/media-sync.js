@@ -24,7 +24,7 @@ import { sha256Hex } from './sha256.js'
 import { mediaStore as sharedStore } from './media-store.js'
 import { api, apiBlob, apiUpload } from './api.js'
 import { prefetchAllowed } from './media-prefetch.js'
-import { MB, BG_UPLOAD_METERED_MAX_MB, LOCAL_CACHE_MAX_MB, LOCAL_GC_GRACE_MS } from './media-limits.js'
+import { MB, BG_UPLOAD_METERED_MAX_MB, LOCAL_CACHE_MAX_MB, LOCAL_GC_GRACE_MS, limitsFrom } from './media-limits.js'
 import { MOBILE, nativeLoad } from './mobile.js'
 import { registerMediaRunner, publishMediaStatus, pendingRefCount, loadPending } from './media-owed.js'
 import { t } from './i18n-core.js'
@@ -130,10 +130,25 @@ export function createMediaSync(deps = {}) {
     }
     let deferred = 0, unavailable = 0, rejected = 0, skipped = 0, stopped = false
     let added = 0
+    const lim = limitsFrom(cfg)
+    const capOf = mime => {
+      const kind = MEDIA_MIMES[mime]?.kind
+      return Math.round((kind === 'video' ? lim.videoMB : kind === 'gif' ? lim.gifMB : lim.imageMB) * MB)
+    }
+    const refuse = async h => {
+      await d.media.markRejected(h)
+      rejected++
+      if (!rejectTold.has(h)) { rejectTold.add(h); d.toast(t('The server refused the file as too large.')) }
+    }
     for (const h of missing) {
       const rec = await d.media.get(h)
       if (!rec) { unavailable++; continue }   // nobody here has it: shown as missing until someone sends it
       if (rec.rejected && !retryRejected) { rejected++; continue }
+      // Over this server's cap for its kind (a phone picked it under the defaults, or the caps
+      // came down since): refused here, as the server would. Sent, a body more than twice the cap
+      // can end in a reset rather than the 413, which reads as no network — backed off and
+      // tried again for ever, and a forced run would stop at it every time.
+      if (rec.size > capOf(rec.mime)) { await refuse(h); continue }
       if (!force && rec.size > BG_UPLOAD_METERED_MAX_MB * MB && !d.allowed()) { deferred++; continue }   // big files wait for Wi-Fi
       if (!force && active(upBackoff, h)) { skipped++; continue }
       try {

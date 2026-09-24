@@ -85,8 +85,9 @@ export default function CustomMediaField({ media, url, onChange }) {
   }
 
   // "0:07 · 2.4 MB": the length of a clip or an animation, and the size of the file itself (the
-  // unit through the packs' own "{0} MB", so it reads Mo, МБ, م.ب where it should).
-  const sizeLine = m ? [m.dur != null && m.kind !== 'image' ? fmtClip(m.dur) : null, t('{0} MB', Math.max(0.1, Math.round((m.size / MB) * 10) / 10).toFixed(1))].filter(Boolean).join(' · ') : null
+  // unit through the packs' own "{0} MB", so it reads Mo, МБ, م.ب where it should, and the
+  // number with the language's own decimal mark).
+  const sizeLine = m ? [m.dur != null && m.kind !== 'image' ? fmtClip(m.dur) : null, t('{0} MB', fmtMB(Math.max(0.1, m.size / MB), { fixed: true }))].filter(Boolean).join(' · ') : null
   const subtitle = m
     ? <span className="cmf-sub"><Icon name={KIND_ICON[m.kind]} />{sizeLine}</span>
     : t('Optional — a picture makes it easier to spot in a list.')

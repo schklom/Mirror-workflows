@@ -7,6 +7,8 @@
  * Every MB is 2^20 bytes on both sides, and the server's values may be fractional.
  */
 
+import { dateLocale } from './i18n-core.js'
+
 export const MB = 1024 * 1024
 
 export const DEFAULT_LIMITS = Object.freeze({
@@ -39,5 +41,8 @@ export function limitsFrom(config) {
   return out
 }
 
-/** "2", "0.5", "40" — a cap as the error message says it. */
-export const fmtMB = mb => String(Math.round(mb * 10) / 10)
+/** "2", "0.5", "40" — a size in MB to one decimal, with the language's own decimal mark ("0,5"
+ *  in German and French). `fixed` keeps the one decimal on a whole number ("2.0"), for a line
+ *  that lists sizes. */
+export const fmtMB = (mb, { fixed = false } = {}) =>
+  (Math.round(mb * 10) / 10).toLocaleString(dateLocale(), { minimumFractionDigits: fixed ? 1 : 0, maximumFractionDigits: 1 })

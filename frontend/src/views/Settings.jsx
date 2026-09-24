@@ -20,7 +20,7 @@ import { referencedFiles } from '../lib/media-refs.js'
 import { mediaStore } from '../lib/media-store.js'
 import { syncMedia, fetchToStore } from '../lib/media-sync.js'
 import { getMediaStatus, subscribeMediaStatus, pendingRefCount } from '../lib/media-owed.js'
-import { limitsFrom, MB } from '../lib/media-limits.js'
+import { limitsFrom, fmtMB, MB } from '../lib/media-limits.js'
 import { setRestAccent } from '../lib/rest-alert.js'
 import { checkForUpdate, downloadAndInstall } from '../lib/update.js'
 import { forgetCoach } from '../lib/coach-api.js'
@@ -840,7 +840,7 @@ function MediaRow() {
   const pending = remote ? pendingRefCount(S) : 0
   const u = status.usage
   const usage = remote && u && u.quotaBytes > 0
-    ? t('{0} of {1} MB used on your server', Math.round((u.bytes || 0) / MB * 10) / 10, Math.round(u.quotaBytes / MB))
+    ? t('{0} of {1} MB used on your server', fmtMB((u.bytes || 0) / MB), fmtMB(Math.round(u.quotaBytes / MB)))
     : null
   const sub = remote
     ? [usage, pending ? t('{0} waiting to upload', pending) : null].filter(Boolean).join(' · ') || undefined

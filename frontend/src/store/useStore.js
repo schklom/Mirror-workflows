@@ -190,7 +190,11 @@ function loadState() {
   return s
 }
 
-const hasData = st => !!((st.workouts || []).length || (st.routines || []).length || (st.bodyweight || []).length)
+// Whether a copy holds anything of its own worth keeping over another: workouts, routines,
+// weigh-ins and custom exercises. A custom exercise is all a new guest may have made — with its
+// photo or video, which the server counts as unreferenced until the state that names it lands —
+// so a profile created from such a copy takes it at once, like one holding a workout.
+const hasData = st => !!((st.workouts || []).length || (st.routines || []).length || (st.bodyweight || []).length || (st.customEx || []).length)
 
 // Decide whether a pulled account state may replace the local saved state. A local active workout
 // is deliberately carried forward: the server stores completed/saved state, while the in-progress

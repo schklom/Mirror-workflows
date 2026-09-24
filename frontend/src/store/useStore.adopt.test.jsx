@@ -10,7 +10,7 @@ const { toast } = vi.hoisted(() => ({ toast: vi.fn() }))
 vi.mock('./useUI.js', () => ({ useUI: { getState: () => ({ toast }) } }))
 
 import { api } from '../lib/api.js'
-import { DEF, useStore } from './useStore.js'
+import { DEF, hasData, useStore } from './useStore.js'
 
 const clone = value => JSON.parse(JSON.stringify(value))
 const routine = id => ({ id, name: id, ex: [] })
@@ -98,6 +98,31 @@ describe('adoptProfile — sign-in takes the server profile', () => {
     expect(S.active).toEqual({ id: 'running' })   // the in-progress session stays with the device
     expect(sync().rev).toBe(0)
     expect(r).toEqual({ adopted: true, added: false })
+  })
+
+  // QA, v1.3.9: a guest whose only data was a custom exercise (with its photo) created a profile;
+  // the files went up, but the state stayed empty on the server for the next poll to find while
+  // Settings said "All synced" — and the server counted the uploaded files as unreferenced.
+  it('moves a copy holding only custom exercises into a profile that has no state yet', async () => {
+    const onlyCustom = { ...clone(DEF), _ts: 900, customEx: [{ id: 'c1', n: 'sandbag carry', bp: 'back', custom: true, media: { kind: 'image', hash: 'a'.repeat(64), mime: 'image/webp', size: 3, width: 8, height: 6, at: 1 } }] }
+    expect(hasData(onlyCustom)).toBe(true)   // what the register sheets check before pushing
+    signedIn(clone(onlyCustom))
+    api.mockResolvedValueOnce({ state: null, rev: 0 })
+    api.mockResolvedValueOnce({ ok: true, rev: 1 })
+    await useStore.getState().adoptProfile(vi.fn())
+    expect(puts()).toHaveLength(1)
+    expect(puts()[0].state.customEx.map(c => c.id)).toEqual(['c1'])
+    expect(puts()[0].state.customEx[0].media.hash).toBe('a'.repeat(64))
+    expect(sync().rev).toBe(1)
+  })
+
+  it('the first pull after a profile was created pushes a copy holding only custom exercises', async () => {
+    signedIn({ ...clone(DEF), _ts: 900, customEx: [{ id: 'c1', n: 'sandbag carry', bp: 'back', custom: true }] })
+    api.mockResolvedValueOnce({ state: null, rev: 0 })
+    api.mockResolvedValueOnce({ ok: true, rev: 1 })
+    await useStore.getState().pullState()
+    expect(puts()).toHaveLength(1)
+    expect(puts()[0].state.customEx.map(c => c.id)).toEqual(['c1'])
   })
 
   it('alwaysAsk: moves the device data into an empty profile once the user says so', async () => {

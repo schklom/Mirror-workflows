@@ -9,6 +9,7 @@ import { t } from '../lib/i18n.js'
 import { fmtAgo, changeCount } from '../lib/format.js'
 import { passkeyLogin, webauthnOK } from '../lib/api.js'
 import { MOBILE } from '../lib/mobile.js'
+import { syncMedia } from '../lib/media-sync.js'
 import { DEMO } from '../lib/demo.js'
 import { askAddDeviceData } from '../sheets.jsx'
 import { ConnectSheet } from '../views/MobileOnboarding.jsx'
@@ -125,19 +126,23 @@ async function attempt(kind, opts) {
     return null
   }
 }
-export async function leaveServer(kind, { exportBackup, done }) {
+export async function leaveServer(kind, { exportBackup, exportBackupZip, done }) {
   const r = await attempt(kind)
   if (!r) return
   if (r.owed && !r.stashed) {
-    ui().openSheet(close => <OwedSheet kind={kind} count={r.count} exportBackup={exportBackup} done={done} close={close} />, { kind: 'center', locked: true })
+    ui().openSheet(close => <OwedSheet kind={kind} count={r.count} media={r.media || 0} exportBackup={exportBackup} exportBackupZip={exportBackupZip} done={done} close={close} />, { kind: 'center', locked: true })
     return
   }
   done(r)
 }
 
-export function OwedSheet({ kind, count: count0, exportBackup, done, close }) {
+// `media`: photos or videos of custom exercises the server has not confirmed (useStore
+// unsyncedChanges). They are owed like any change, so the sheet names them; while there are any,
+// its export writes the backup with them (the plain JSON would leave exactly those out).
+export function OwedSheet({ kind, count: count0, media: media0 = 0, exportBackup, exportBackupZip, done, close }) {
   const sync = useStore(s => s.sync)
   const [count, setCount] = useState(count0)
+  const [media, setMedia] = useState(media0)
   const [busy, setBusy] = useState(false)
   const [tried, setTried] = useState(false)
   const view = connectionView(sync)
@@ -148,11 +153,12 @@ export function OwedSheet({ kind, count: count0, exportBackup, done, close }) {
   const retry = async () => {
     setBusy(true)
     await useStore.getState().syncNow()
+    await syncMedia({ force: true })
     const r = await attempt(kind)
     setBusy(false)
     if (!r) return
     if (!r.owed || r.stashed) return finish(r)
-    setCount(r.count); setTried(true)
+    setCount(r.count); setMedia(r.media || 0); setTried(true)
   }
   const anyway = async () => {
     setBusy(true)
@@ -164,9 +170,10 @@ export function OwedSheet({ kind, count: count0, exportBackup, done, close }) {
   }
   return <div style={{ textAlign: 'center', padding: '4px 0' }}>
     <h3 style={{ marginBottom: 8 }}>{t('Not everything is on your server yet')}</h3>
-    <div style={{ marginBottom: 6, fontWeight: 600 }}>
+    {(count !== 0 || !media) && <div style={{ marginBottom: 6, fontWeight: 600 }}>
       {count > 0 ? t('Not on your server yet: {0}', changeCount(count)) : t('Some changes on this device have not reached your server.')}
-    </div>
+    </div>}
+    {media > 0 && <div style={{ marginBottom: 6, fontWeight: 600 }}>{t('{0} photos or videos have not reached your server yet.', media)}</div>}
     {(tried || refused) && view && <div className="small" style={{ color: 'var(--red)', marginBottom: 6 }}>{view.line}</div>}
     <div className="muted small" style={{ marginBottom: 18, lineHeight: 1.5 }}>
       {t('Try again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.')}
@@ -174,7 +181,9 @@ export function OwedSheet({ kind, count: count0, exportBackup, done, close }) {
     {refused && MOBILE && <><button className="btn primary" disabled={busy} onClick={() => { close(); pairAgain() }}>{t('Pair again')}</button><div style={{ height: 8 }} /></>}
     {refused && !MOBILE && canSignIn() && <><button className="btn primary" disabled={busy} onClick={() => { close(); signInAgain() }}>{pwOn() ? t('Sign in') : t('Sign in with passkey')}</button><div style={{ height: 8 }} /></>}
     {!refused && <><button className="btn primary" disabled={busy} onClick={retry}>{busy ? t('Syncing…') : t('Try again')}</button><div style={{ height: 8 }} /></>}
-    <Button icon="download" disabled={busy} onClick={exportBackup}>{t('Export backup (JSON)')}</Button>
+    {media > 0 && exportBackupZip
+      ? <Button icon="download" disabled={busy} onClick={exportBackupZip}>{t('Export with photos & videos (.zip)')}</Button>
+      : <Button icon="download" disabled={busy} onClick={exportBackup}>{t('Export backup (JSON)')}</Button>}
     <div style={{ height: 8 }} />
     <button className="btn danger" disabled={busy} onClick={anyway}>{LEAVE[kind].anyway()}</button>
     <div style={{ height: 8 }} />

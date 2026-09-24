@@ -9,6 +9,7 @@
 //     a page break — each exercise, and each routine that fits, stays in one place.
 
 import { EXIDX, isBodyweightEq } from './exercises.js'
+import { cleanUrl } from './media-refs.js'
 import { modeOf, fmtSec, isBw, isPerSide, sideReps, MAX_PLANNED_WARMUPS } from './history.js'
 import { deriveSessionName } from './session-merge.js'
 import { uid, todayISO, DAYN, weekOrder, weekStartOf, fmtNum, exCount } from './format.js'
@@ -149,6 +150,11 @@ const muscleList = v => inMuscleOrder([...new Set((Array.isArray(v) ? v : []).fi
 function cleanCustom(c) {
   const o = { id: c.id, n: c.n, bp: c.bp }
   if (c.desc) o.desc = c.desc
+  // The link to a video or guide travels with a shared plan (#246), cleaned both ways like any
+  // other field of someone else's file; the exercise's own photo or video never does — it is a
+  // file on the sender's device and server, and a plan file is plain JSON.
+  const url = cleanUrl(c.url)
+  if (url) o.url = url
   if (typeof c.eq === 'string' && c.eq) o.eq = c.eq
   const prim = muscleList(c.primaries)
   const sm = muscleList(c.secondaries).filter(m => !prim.includes(m))

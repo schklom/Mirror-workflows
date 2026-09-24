@@ -498,6 +498,23 @@ describe('created plans', () => {
     customEx: []
   }
 
+  // A link is never the Coach's to write, and a file ref never travels in a plan: validatePlan
+  // drops both from the model's answer, and applying the plan drops them again, since mergePlan
+  // keeps a link on a plan's own exercises for a plan shared by a person.
+  it('never writes a link or a media ref onto the exercises it creates', () => {
+    const s = JSON.parse(JSON.stringify(state()))
+    const withLink = {
+      ...bundle,
+      routines: [...bundle.routines, { id: 'x3', name: 'C', ex: [{ id: 'cx1', sets: 3, reps: 8, mode: 'reps' }] }],
+      customEx: [{ id: 'cx1', n: 'Sled drag', bp: 'legs', url: 'https://evil.example/phish', media: { kind: 'image', hash: 'a'.repeat(64), mime: 'image/webp', size: 1, width: 1, height: 1, at: 1 } }]
+    }
+    applyCreatedPlan(s, { id: 'p1', kind: 'create', bundle: withLink }, { schedule: false })
+    const made = s.customEx.find(c => c.n === 'Sled drag')
+    expect(made).toBeTruthy()
+    expect(made.url).toBeUndefined()
+    expect(made.media).toBeUndefined()
+  })
+
   it('adds routines as new ones and never modifies what was already there', () => {
     const s = JSON.parse(JSON.stringify(state()))
     applyCreatedPlan(s, { id: 'p1', kind: 'create', bundle }, { schedule: false })

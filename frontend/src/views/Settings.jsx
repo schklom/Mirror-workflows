@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, forwardRef } from 'react'
+import { useEffect, useRef, useState, forwardRef, useSyncExternalStore } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore, DEF, hasData } from '../store/useStore.js'
 import { workoutControls } from '../lib/workout-controls.js'
@@ -15,7 +15,12 @@ import { pushSupported, enablePush, disablePush, sendTestPush, syncPushSubscript
 import { wakeLockSupported } from '../lib/wakelock.js'
 import { t, LANGS, INSTR_LANGS, EXERCISE_NAME_LANGS, baseLang } from '../lib/i18n.js'
 import { DEMO, REPO } from '../lib/demo.js'
-import { MOBILE, isAndroid, shareExport, syncReminder } from '../lib/mobile.js'
+import { MOBILE, isAndroid, shareExport, shareExportBlob, syncReminder } from '../lib/mobile.js'
+import { referencedFiles } from '../lib/media-refs.js'
+import { mediaStore } from '../lib/media-store.js'
+import { syncMedia, fetchToStore } from '../lib/media-sync.js'
+import { getMediaStatus, subscribeMediaStatus, pendingRefCount } from '../lib/media-owed.js'
+import { limitsFrom, MB } from '../lib/media-limits.js'
 import { setRestAccent } from '../lib/rest-alert.js'
 import { checkForUpdate, downloadAndInstall } from '../lib/update.js'
 import { forgetCoach } from '../lib/coach-api.js'
@@ -146,18 +151,51 @@ export default function Settings() {
     const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.click(); URL.revokeObjectURL(a.href)
     toast(t('Backup exported'))
   }
-  const doImport = ev => {
-    const f = ev.target.files[0]; if (!f) return
-    const rd = new FileReader()
-    rd.onload = () => {
-      try {
-        const data = JSON.parse(rd.result)
-        if (!data.workouts || !data.routines) throw new Error('not an openGym backup')
-        confirmSheet({ title: t('Import backup?'), message: t('This replaces all current data with the backup file.'), confirmText: t('Import'), danger: true, onConfirm: () => { replaceState(Object.assign(JSON.parse(JSON.stringify(DEF)), data), true); toast(t('Backup imported')) } })
-      } catch (e) { toast(t('Import failed: {0}', e.message)) }
+  // "Export with photos & videos": the same JSON plus every file the state refers to, in a zip
+  // (lib/backup-media.js). Signed in, a file this device never downloaded is fetched for it; one
+  // nobody has is left out and counted. The sign-out sheet offers it while media are waiting.
+  const doExportZip = async () => {
+    const { exportBackupZip } = await import('../lib/backup-media.js')
+    const st = useStore.getState()
+    const signedIn = !!(st.user && st.config?.media)
+    let out
+    try { out = await exportBackupZip(st.S, { fetchOne: signedIn ? fetchToStore : null }) }
+    catch { toast(t('Something went wrong')); return }
+    const name = 'opengym-backup-' + todayISO() + '.zip'
+    if (out.missing) toast(t('{0} files could not be included', out.missing))
+    if (MOBILE) {
+      try { await shareExportBlob(out.blob, name); if (!out.missing) toast(t('Backup exported')) } catch (e) { /* share sheet dismissed */ }
+      return
     }
-    rd.readAsText(f)
+    const a = document.createElement('a'); a.href = URL.createObjectURL(out.blob); a.download = name; a.click()
+    setTimeout(() => URL.revokeObjectURL(a.href), 60000)
+    if (!out.missing) toast(t('Backup exported'))
   }
+  // Import takes the JSON backup and the zip alike, told apart by their first bytes. A zip's
+  // files go into the local store only once the import is confirmed, each checked against its
+  // name first; the state's media refs and links pass the usual gates (lib/backup-media.js).
+  const doImport = async ev => {
+    const f = ev.target.files[0]; if (!f) return
+    ev.target.value = ''
+    let read
+    try {
+      const { readBackupFile } = await import('../lib/backup-media.js')
+      read = await readBackupFile(f)
+    } catch (e) { toast(t('Import failed: {0}', e.message)); return }
+    confirmSheet({
+      title: t('Import backup?'), message: t('This replaces all current data with the backup file.'), confirmText: t('Import'), danger: true,
+      onConfirm: async () => {
+        if (read.files.length) {
+          const { storeBackupMedia } = await import('../lib/backup-media.js')
+          await storeBackupMedia(read.files, { limits: limitsFrom(useStore.getState().config) })
+        }
+        replaceState(Object.assign(JSON.parse(JSON.stringify(DEF)), read.state), true)
+        toast(t('Backup imported'))
+      }
+    })
+  }
+  // Whether any custom exercise has a photo or video: the rows about them only show then.
+  const hasMedia = referencedFiles(S).length > 0
   const registerHere = () => useUI.getState().openSheet(close => <RegisterInline close={close} setUser={setUser} pushState={pushState} pullState={pullState} toast={toast} />)
   /* Disconnect (phone), Sign out, Sign out everywhere. None of them wipes this device while the
      server is missing a change: the confirm no longer promises a sync it never checked, and when
@@ -167,7 +205,7 @@ export default function Settings() {
      sign in with, so they have to be paired again, and the confirm says so. Failing, it touches
      nothing local: still signed in here, and the toast says so. */
   const kept = t('The changes your server has not seen are kept on this device, and added back when it connects as this account again.')
-  const leave = (kind, after) => leaveServer(kind, { exportBackup: doExport, done: r => { nav('/home'); if (r.stashed) toast(kept); else if (after) toast(after) } })
+  const leave = (kind, after) => leaveServer(kind, { exportBackup: doExport, exportBackupZip: doExportZip, done: r => { nav('/home'); if (r.stashed) toast(kept); else if (after) toast(after) } })
   const disconnect = () => confirmSheet({
     title: t('Disconnect from your server?'),
     message: t('This phone switches back to local-only and its copy of your account is removed. First it checks that your server has every change — if not, you choose what happens to them.'),
@@ -203,6 +241,7 @@ export default function Settings() {
       if (coachLocal?.mode === 'byok') forgetCoach().catch(() => {})
       replaceState(JSON.parse(JSON.stringify(DEF)), true)
       nav('/home'); toast(t('All data reset'))
+      clearMediaAfterReset(!!user).catch(() => {})
     },
   })
 
@@ -488,7 +527,9 @@ export default function Settings() {
         subtitle={t('Pull your history with a Hevy Pro API key')}
         accessory="chevron" onClick={importFromHevy} />
       <Row icon="upload" iconTint="var(--blue)" title={t('Import backup')} accessory="chevron" onClick={() => fileRef.current.click()} />
-      <Row icon="download" iconTint="var(--blue)" title={t('Export backup (JSON)')} accessory="chevron" onClick={doExport} />
+      <Row icon="download" iconTint="var(--blue)" title={t('Export backup (JSON)')} subtitle={hasMedia ? t('Without photos and videos') : undefined} accessory="chevron" onClick={doExport} />
+      {hasMedia && <Row icon="download" iconTint="var(--blue)" title={t('Export with photos & videos (.zip)')} accessory="chevron" onClick={doExportZip} />}
+      {hasMedia && <MediaRow />}
       {/* 14 is AUTO_BACKUP_KEEP in lib/mobile.js, written out because the Settings tests mock
           that module wholesale; mobile.autobackup.test.js pins the two together. */}
       {MOBILE && <Row icon="history" iconTint="var(--blue)" title={t('Auto-backup on changes')}
@@ -497,7 +538,7 @@ export default function Settings() {
       </Row>}
       <Row icon="trash" iconTint="var(--red)" title={t('Reset everything')} danger onClick={resetEverything} />
     </Section>
-    <input ref={fileRef} type="file" accept=".json,application/json" style={{ display: 'none' }} onChange={doImport} />
+    <input ref={fileRef} type="file" accept=".json,.zip,application/json,application/zip" style={{ display: 'none' }} onChange={doImport} />
     {/* Reset after reading so picking the same file twice still fires onChange. */}
     <input ref={importRef} type="file" accept=".csv,.xml,text/csv,text/xml" style={{ display: 'none' }}
       onChange={ev => { const f = ev.target.files[0]; if (f) importFromApp(f); ev.target.value = '' }} />
@@ -769,6 +810,45 @@ function EquipmentCard({ S, update }) {
 // display names are free text and need not be unique. copyText also reaches the clipboard on a
 // plain-http LAN address, where the Clipboard API is missing and password sign-in (#118) is the
 // usual way in; where no copy works at all the id is still on screen to read out.
+/* After "Reset everything": the photos and videos go too. Signed in, the empty state is pushed
+   first and, once the server holds it, the server is asked to drop every file that state no
+   longer refers to (POST /api/media/sweep) — asked before the push landed, it would still see the
+   old state and keep everything, which is the safe side. Then this device keeps only the files a
+   stash refers to: another account's changes kept here are not this reset's to delete. */
+async function clearMediaAfterReset(signedIn) {
+  const st = useStore.getState()
+  if (signedIn && typeof st.pushState === 'function') {
+    await st.pushState()
+    const now = useStore.getState()
+    if (now.sync?.status === 'ok' && now.config?.media) await api('/api/media/sweep', { method: 'POST', body: '{}' }).catch(() => {})
+  }
+  const keep = typeof st.stashedMediaHashes === 'function' ? await st.stashedMediaHashes() : new Set()
+  await mediaStore.retainOnly(keep)
+}
+
+/* Settings → Data → "Photos & videos": how much of the server's space they take and what is still
+   waiting to go up; a tap sends what is waiting now, offers again what the server refused, and
+   lets a device that showed a file as missing ask for it again. On a device without a server that
+   stores media, it says they are kept here only. */
+function MediaRow() {
+  const S = useStore(s => s.S)
+  const user = useStore(s => s.user)
+  const config = useStore(s => s.config)
+  const status = useSyncExternalStore(subscribeMediaStatus, getMediaStatus)
+  const remote = !!(user && config?.media)
+  useEffect(() => { if (remote) syncMedia() }, [remote])
+  const pending = remote ? pendingRefCount(S) : 0
+  const u = status.usage
+  const usage = remote && u && u.quotaBytes > 0
+    ? t('{0} of {1} MB used on your server', Math.round((u.bytes || 0) / MB * 10) / 10, Math.round(u.quotaBytes / MB))
+    : null
+  const sub = remote
+    ? [usage, pending ? t('{0} waiting to upload', pending) : null].filter(Boolean).join(' · ') || undefined
+    : t('Kept on this device only — Export with photos & videos keeps a copy.')
+  return <Row icon="image" iconTint="var(--teal)" title={t('Photos & videos')} subtitle={sub}
+    onClick={remote ? () => syncMedia({ force: true, retryRejected: true }) : undefined} />
+}
+
 function AccountIdRow({ id }) {
   const toast = useUI(s => s.toast)
   if (!id) return null

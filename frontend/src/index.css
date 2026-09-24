@@ -1349,7 +1349,9 @@ body.chips-dragging *{cursor:inherit}
   bottom:calc(96px + var(--sab));z-index:200;
   background:color-mix(in srgb,var(--surface-2) 88%,transparent);
   -webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);
-  border-radius:99px;padding:11px 20px;font-size:15px;font-weight:500;
+  /* 22px, not a pill radius: one line (about 41px high) still reads as a pill, and a toast that
+     wraps to four lines is a rounded box instead of a circle over the page. */
+  border-radius:var(--r-xl);padding:11px 20px;font-size:15px;font-weight:500;
   box-shadow:0 10px 30px -6px rgba(0,0,0,.5);
   opacity:0;pointer-events:none;transition:opacity var(--med),transform var(--med) var(--ease);
   max-width:88vw;text-align:center;

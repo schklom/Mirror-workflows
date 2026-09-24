@@ -4,6 +4,7 @@
 // it must never become the value of a promise (the Coach hang, #42): here that would hang every
 // rest alert call.
 import { afterAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import { readFileSync } from 'node:fs'
 
 const h = vi.hoisted(() => {
   vi.stubEnv('VITE_MOBILE', '1')   // lib/mobile.js: MOBILE = import.meta.env.VITE_MOBILE === '1'
@@ -95,5 +96,45 @@ describe('the rest alert in the Android app', () => {
       at, totalMs: 90_000, sound: false, title: 'Rest over — next set!', pause: 'Pause', resume: 'Resume', skip: 'Skip',
       accent: (0xff000000 | 0xff453a) >>> 0, ink: 0xffffffff,
     }))
+  })
+
+  // Settings → Vibrate off, with the phone locked: the notification still buzzed the whole
+  // pattern, and so did the stand-in buzz where notifications are off, because neither was told.
+  it('tells the plugin whether the end may buzz, on a channel that matches', async () => {
+    h.platform = 'android'
+    const schedule = vi.fn(async () => {})
+    h.registerPlugin = vi.fn(() => new Proxy({}, {
+      get: (_, prop) => prop === 'then' ? () => new Promise(() => {}) : prop === 'schedule' ? schedule : async () => ({ remove: async () => {} }),
+    }))
+    const alert = await import('./rest-alert.js')
+    await alert.armRestAlert(Date.now() + 90_000, { totalSec: 90 })
+    expect(schedule).toHaveBeenLastCalledWith(expect.objectContaining({ vibrate: true, channelId: 'rest-over' }))
+    await alert.armRestAlert(Date.now() + 90_000, { totalSec: 90, vibrate: false })
+    expect(schedule).toHaveBeenLastCalledWith(expect.objectContaining({ vibrate: false, channelId: 'rest-over-quiet' }))
+  })
+})
+
+// The native half cannot run here; what it must do with the flag is read off its source.
+describe('the Android side of Vibrate off', () => {
+  const src = name => readFileSync(new URL(`../../android/app/src/main/java/ch/duartesantos/opengym/${name}.java`, import.meta.url), 'utf8')
+  const alert = src('RestAlert')
+
+  it('reads the flag from the page, defaulting to on for an older page', () => {
+    expect(src('RestAlertPlugin')).toMatch(/call\.getBoolean\("vibrate", Boolean\.TRUE\)/)
+  })
+
+  it('posts on a channel created without vibration, and only buzzes by hand when allowed to', () => {
+    expect(alert).toMatch(/QUIET_CHANNEL_ID = "rest-over-quiet"/)
+    expect(alert).toMatch(/if \(!vibrate\) return QUIET_CHANNEL_ID;/)
+    expect(alert).toMatch(/channel\.enableVibration\(false\)/)
+    expect(alert).toMatch(/if \(!shown && vibrate\) vibrateFallback\(ctx\);/)
+    expect(alert).toMatch(/if \(vibrate\) b\.setVibrate\(VIBRATE\);/)
+    expect(alert.match(/\.setVibrate\(/g)).toHaveLength(1)
+  })
+
+  it('keeps the flag for an end the countdown or a moved alarm fires', () => {
+    // fireFromCountdown and updateAlarm build their own intents from the last schedule.
+    expect(alert.match(/intent\.putExtra\("vibrate", lastVibrate\);/g)).toHaveLength(2)
+    expect(alert).toMatch(/intent\.putExtra\("vibrate", vibrate\);/)
   })
 })

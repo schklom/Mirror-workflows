@@ -15,7 +15,7 @@ import com.getcapacitor.annotation.CapacitorPlugin;
  * Usage from JS:
  *   import { registerPlugin } from '@capacitor/core';
  *   const RestAlert = registerPlugin('RestAlert');
- *   await RestAlert.schedule({ id, at, title, sound, channelId, visibility, importance, localOnly });
+ *   await RestAlert.schedule({ id, at, title, sound, vibrate, channelId, visibility, importance, localOnly });
  *   await RestAlert.cancel({ id });
  */
 @CapacitorPlugin(name = "RestAlert")
@@ -82,6 +82,7 @@ public class RestAlertPlugin extends Plugin {
                 (int) number(call, "id", RestAlert.NOTIFICATION_ID),
                 call.getString("title", "Rest over"),
                 !Boolean.FALSE.equals(call.getBoolean("sound", Boolean.TRUE)),
+                !Boolean.FALSE.equals(call.getBoolean("vibrate", Boolean.TRUE)),
                 call.getString("channelId", RestAlert.CHANNEL_ID),
                 call.getString("visibility", "public"),
                 call.getString("importance", "high"),

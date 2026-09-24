@@ -123,6 +123,17 @@ describe('the rest the app starts, pauses and ends', () => {
     useUI.getState().startRest(90)
     expect(armRestAlert).toHaveBeenCalledWith(expect.any(Number), expect.objectContaining({ sound: false }))
   })
+
+  // Settings → Vibrate off buzzed at the end of every rest the phone was locked for: the page's own
+  // buzz was off, but the alarm it armed was never told (Android QA, v1.3.9).
+  it('tells the alarm whether the end may buzz', () => {
+    useUI.getState().startRest(90)
+    expect(armRestAlert).toHaveBeenLastCalledWith(expect.any(Number), expect.objectContaining({ vibrate: true }))
+    useUI.getState().stopRest()
+    useStore.setState({ S: { ...useStore.getState().S, vibrate: false } })
+    useUI.getState().startRest(90)
+    expect(armRestAlert).toHaveBeenLastCalledWith(expect.any(Number), expect.objectContaining({ vibrate: false }))
+  })
 })
 
 describe('the server push in the Android app', () => {

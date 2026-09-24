@@ -14,6 +14,10 @@ import { MOBILE, isAndroid } from './mobile.js'
 
 export const REST_ALERT_ID = 42
 export const REST_CHANNEL_ID = 'rest-over'
+// Settings → Vibrate off. A notification channel's vibration is the system's to keep once the
+// channel exists, so the app cannot switch it off on 'rest-over': an end that must not buzz is
+// posted on a second channel that never vibrates (RestAlert.java).
+export const REST_QUIET_CHANNEL_ID = 'rest-over-quiet'
 
 // One object the native side schedules. Public + high is what the notification shade can show.
 // The lock screen follows the user's notification settings.
@@ -22,13 +26,13 @@ export function accentColors(key) {
   return { accent: argb(ACCENTS[k]), ink: argb(ACCENT_INK[k]) }
 }
 
-export function buildRestAlert({ at, title, countdownTitle, totalSec, accent, sound = true, now = Date.now() } = {}) {
+export function buildRestAlert({ at, title, countdownTitle, totalSec, accent, sound = true, vibrate = true, now = Date.now() } = {}) {
   if (typeof at !== 'number' || !(at > now)) return null
   const totalMs = Math.max(1000, Math.round((totalSec > 0 ? totalSec : (at - now) / 1000) * 1000))
   const colors = accentColors(accent)
   return {
     id: REST_ALERT_ID,
-    channelId: REST_CHANNEL_ID,
+    channelId: vibrate ? REST_CHANNEL_ID : REST_QUIET_CHANNEL_ID,
     title: title || t('Rest over — next set!'),
     countdownTitle: countdownTitle || t('Rest'),
     pause: t('Pause'),
@@ -42,6 +46,7 @@ export function buildRestAlert({ at, title, countdownTitle, totalSec, accent, so
     at,
     allowWhileIdle: true,
     sound: !!sound,
+    vibrate: !!vibrate,
     localOnly: false,
     visibility: 'public',
     importance: 'high',
@@ -77,7 +82,7 @@ const restPlugin = () => pluginP || (pluginP = (async () => {
 export function armRestAlert(at, opts = {}) {
   if (!MOBILE) return Promise.resolve(false)
   const mine = ++token
-  const alert = buildRestAlert({ at, title: opts.title, countdownTitle: opts.countdownTitle, totalSec: opts.totalSec, accent: opts.accent, sound: opts.sound })
+  const alert = buildRestAlert({ at, title: opts.title, countdownTitle: opts.countdownTitle, totalSec: opts.totalSec, accent: opts.accent, sound: opts.sound, vibrate: opts.vibrate !== false })
   if (!alert) return Promise.resolve(false)
   return enqueue(async () => {
     let kind = 'failed'
@@ -154,6 +159,9 @@ async function deliver(alert) {
     at: alert.at,
     title: alert.title,
     sound: alert.sound,
+    // The end of a rest the app is not in front for: the notification, or the buzz standing in
+    // for it where notifications are off. With the app in front the page buzzes (lib/sound.js).
+    vibrate: alert.vibrate,
     channelId: alert.channelId,
     visibility: alert.visibility,
     importance: alert.importance,

@@ -21,7 +21,7 @@ const cancelPushRestTimer = () => { if (useStore.getState().user) api('/api/push
 const bookRestEnd = (endsAt, totalSec) => {
   if (!MOBILE) { pushRestTimer(Math.max(1, Math.round((endsAt - Date.now()) / 1000))); return }
   const { S } = useStore.getState()
-  armRestAlert(endsAt, { title: t('Rest over — next set!'), countdownTitle: t('Rest'), totalSec, accent: S.accent, sound: !!S.sound })
+  armRestAlert(endsAt, { title: t('Rest over — next set!'), countdownTitle: t('Rest'), totalSec, accent: S.accent, sound: !!S.sound, vibrate: S.vibrate !== false })
     .then(ok => {
       // Only for the rest that asked: one skipped or moved since then has booked its own end.
       const tm = useUI.getState().timer

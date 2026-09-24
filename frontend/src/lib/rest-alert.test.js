@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { armRestAlert, buildRestAlert, disarmRestAlert, REST_ALERT_ID, REST_CHANNEL_ID } from './rest-alert.js'
+import { armRestAlert, buildRestAlert, disarmRestAlert, REST_ALERT_ID, REST_CHANNEL_ID, REST_QUIET_CHANNEL_ID } from './rest-alert.js'
 
 describe('buildRestAlert', () => {
   const now = 1_700_000_000_000
@@ -29,6 +29,14 @@ describe('buildRestAlert', () => {
 
   it('still schedules when sound is off', () => {
     expect(buildRestAlert({ at: now + 1000, sound: false, now }).sound).toBe(false)
+  })
+
+  // A channel keeps the vibration it was created with, so Vibrate off cannot switch 'rest-over'
+  // off: that end goes out on a channel that never buzzes.
+  it('buzzes on the rest channel by default, and uses the quiet one when Vibrate is off', () => {
+    expect(buildRestAlert({ at: now + 1000, now })).toMatchObject({ vibrate: true, channelId: REST_CHANNEL_ID })
+    expect(buildRestAlert({ at: now + 1000, vibrate: false, now })).toMatchObject({ vibrate: false, channelId: REST_QUIET_CHANNEL_ID })
+    expect(REST_QUIET_CHANNEL_ID).not.toBe(REST_CHANNEL_ID)
   })
 
   it('refuses a deadline that has already passed', () => {

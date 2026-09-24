@@ -1550,4 +1550,5 @@ export default {
   'Server address unknown': '서버 주소를 알 수 없음',
   'Pair again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.': '다시 페어링하거나 먼저 백업을 내보내세요. 그래도 계속하면 이 기기가 이 계정으로 이 서버에 다시 연결될 때까지 변경 사항의 사본이 이 기기에 보관되며, 그때 다시 추가됩니다.',
   'Sign in again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.': '다시 로그인하거나 먼저 백업을 내보내세요. 그래도 계속하면 이 기기가 이 계정으로 이 서버에 다시 연결될 때까지 변경 사항의 사본이 이 기기에 보관되며, 그때 다시 추가됩니다.',
+  '{0} set · {1} work': '{0} 세트 · {1} 작업',
 }

@@ -1550,4 +1550,5 @@ export default {
   'Server address unknown': '服务器地址未知',
   'Pair again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.': '请重新配对，或先导出备份。如果仍然继续，这些更改的副本会保留在此设备上，直到它再次以此账号连接到此服务器——届时会重新加入。',
   'Sign in again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.': '请重新登录，或先导出备份。如果仍然继续，这些更改的副本会保留在此设备上，直到它再次以此账号连接到此服务器——届时会重新加入。',
+  '{0} set · {1} work': '{0} 组 · {1} 工作',
 }

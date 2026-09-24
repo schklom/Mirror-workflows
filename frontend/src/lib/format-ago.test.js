@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from 'vitest'
-import { fmtAgo, changeCount, fmtDur } from './format.js'
+import { fmtAgo, changeCount, setsWorkCount, fmtDur } from './format.js'
 import { _setLangState } from './i18n-core.js'
 import ar from '../locales/ar.js'
 import uk from '../locales/uk.js'
@@ -24,6 +24,23 @@ describe('changeCount', () => {
   it('has a singular', () => {
     expect(changeCount(1)).toBe('1 change')
     expect(changeCount(3)).toBe('3 changes')
+  })
+})
+
+// The finish summary of a one-set workout read "1 sets · 1 work" (Android QA, v1.3.9).
+describe('setsWorkCount', () => {
+  afterEach(() => _setLangState('en', {}, null, null))
+
+  it('has a singular', () => {
+    expect(setsWorkCount(1, 1)).toBe('1 set · 1 work')
+    expect(setsWorkCount(1, 0)).toBe('1 set · 0 work')
+    expect(setsWorkCount(4, 3)).toBe('4 sets · 3 work')
+  })
+
+  it('and the packs carry it', () => {
+    _setLangState('uk', uk, null, null)
+    expect(setsWorkCount(1, 1)).toBe(uk['{0} set · {1} work'].replace('{0}', '1').replace('{1}', '1'))
+    expect(uk['{0} set · {1} work']).not.toBe(uk['{0} sets · {1} work'])
   })
 })
 

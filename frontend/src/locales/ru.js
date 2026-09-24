@@ -1550,4 +1550,5 @@ export default {
   'Server address unknown': 'Адрес сервера неизвестен',
   'Pair again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.': 'Выполните сопряжение заново или сначала экспортируйте резервную копию. Если всё равно продолжить, копия этих изменений останется на этом устройстве, пока оно снова не подключится к этому серверу с этим аккаунтом, — тогда они будут добавлены обратно.',
   'Sign in again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.': 'Войдите снова или сначала экспортируйте резервную копию. Если всё равно продолжить, копия этих изменений останется на этом устройстве, пока оно снова не подключится к этому серверу с этим аккаунтом, — тогда они будут добавлены обратно.',
+  '{0} set · {1} work': '{0} подход · рабочих: {1}',
 }

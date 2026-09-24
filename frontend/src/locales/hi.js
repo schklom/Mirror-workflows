@@ -1550,4 +1550,5 @@ export default {
   'Server address unknown': 'सर्वर का पता अज्ञात',
   'Pair again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.': 'फिर से पेयर करें, या पहले बैकअप निर्यात करें। फिर भी आगे बढ़ने पर इन बदलावों की एक कॉपी इस डिवाइस पर तब तक रहती है जब तक यह इसी खाते से इस सर्वर से फिर कनेक्ट नहीं होता — तब वे वापस जोड़ दिए जाते हैं।',
   'Sign in again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.': 'फिर से साइन इन करें, या पहले बैकअप निर्यात करें। फिर भी आगे बढ़ने पर इन बदलावों की एक कॉपी इस डिवाइस पर तब तक रहती है जब तक यह इसी खाते से इस सर्वर से फिर कनेक्ट नहीं होता — तब वे वापस जोड़ दिए जाते हैं।',
+  '{0} set · {1} work': '{0} सेट · {1} काम',
 }

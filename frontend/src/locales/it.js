@@ -1550,4 +1550,5 @@ export default {
   'Server address unknown': 'Indirizzo del server sconosciuto',
   'Pair again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.': 'Abbina di nuovo, oppure esporta prima un backup. Se procedi comunque, una copia di queste modifiche resta su questo dispositivo finché non si ricollega a questo server con questo account — poi vengono aggiunte di nuovo.',
   'Sign in again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.': 'Accedi di nuovo, oppure esporta prima un backup. Se procedi comunque, una copia di queste modifiche resta su questo dispositivo finché non si ricollega a questo server con questo account — poi vengono aggiunte di nuovo.',
+  '{0} set · {1} work': '{0} serie · {1} lavoro',
 }

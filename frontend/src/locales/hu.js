@@ -1553,4 +1553,5 @@ export default {
   'Server address unknown': 'A szerver címe ismeretlen',
   'Pair again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.': 'Párosítsd újra, vagy előbb exportálj egy biztonsági mentést. Ha mégis folytatod, a módosítások másolata ezen az eszközön marad, amíg újra nem csatlakozik ehhez a szerverhez ezzel a fiókkal — akkor visszakerülnek.',
   'Sign in again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.': 'Jelentkezz be újra, vagy előbb exportálj egy biztonsági mentést. Ha mégis folytatod, a módosítások másolata ezen az eszközön marad, amíg újra nem csatlakozik ehhez a szerverhez ezzel a fiókkal — akkor visszakerülnek.',
+  '{0} set · {1} work': '{0} sorozat · {1} munka',
 }

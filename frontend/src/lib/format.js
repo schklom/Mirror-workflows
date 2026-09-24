@@ -56,6 +56,8 @@ export const fmtVol = (v, unit) => fmtNum(v) + ' ' + unit
 export const exCount = n => t(n === 1 ? '{0} exercise' : '{0} exercises', n)
 export const routineCount = n => t(n === 1 ? '{0} routine' : '{0} routines', n)
 export const changeCount = n => t(n === 1 ? '{0} change' : '{0} changes', n)
+// The Sets tile of the finish summary: all the sets logged, then how many of them were work sets.
+export const setsWorkCount = (n, work) => t(n === 1 ? '{0} set · {1} work' : '{0} sets · {1} work', n, work)
 
 // "5 minutes ago", "yesterday", "now" — in the UI language, from the platform's own rules
 // (Intl.RelativeTimeFormat), so no pack has to carry a word for every unit and plural. Used for

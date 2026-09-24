@@ -1603,4 +1603,5 @@ export default {
   'Server address unknown': 'عنوان الخادم غير معروف',
   'Pair again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.': 'أقرِن الهاتف مجددًا، أو صدّر نسخة احتياطية أولًا. إذا تابعت على أي حال، فستبقى نسخة من هذه التغييرات على هذا الجهاز حتى يتصل بهذا الخادم بهذا الحساب مجددًا — وعندها تُضاف من جديد.',
   'Sign in again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.': 'سجّل الدخول مجددًا، أو صدّر نسخة احتياطية أولًا. إذا تابعت على أي حال، فستبقى نسخة من هذه التغييرات على هذا الجهاز حتى يتصل بهذا الخادم بهذا الحساب مجددًا — وعندها تُضاف من جديد.',
+  '{0} set · {1} work': '{0} مجموعة · {1} عمل',
 }

@@ -24,7 +24,7 @@ import { sha256Hex } from './sha256.js'
 import { mediaStore as sharedStore } from './media-store.js'
 import { api, apiBlob, apiUpload } from './api.js'
 import { prefetchAllowed } from './media-prefetch.js'
-import { MB, BG_UPLOAD_METERED_MAX_MB, LOCAL_CACHE_MAX_MB, LOCAL_GC_GRACE_MS, limitsFrom } from './media-limits.js'
+import { MB, BG_UPLOAD_METERED_MAX_MB, LOCAL_CACHE_MAX_MB, LOCAL_GC_GRACE_MS, limitsFrom, fmtMB } from './media-limits.js'
 import { MOBILE, nativeLoad } from './mobile.js'
 import { registerMediaRunner, publishMediaStatus, pendingRefCount, loadPending } from './media-owed.js'
 import { t } from './i18n-core.js'
@@ -162,7 +162,7 @@ export function createMediaSync(deps = {}) {
         if (code === 'media-quota') {
           if (!quotaTold) {
             quotaTold = true
-            d.toast(t('Your photo and video space on the server is full ({0} of {1} MB).', Math.round(Number(e.data?.usedMB) || 0), Math.round(Number(e.data?.quotaMB) || 0)))
+            d.toast(t('Your photo and video space on the server is full ({0} of {1} MB).', fmtMB(Number(e.data?.usedMB) || 0), fmtMB(Number(e.data?.quotaMB) || 0)))
           }
           stopped = true
           break

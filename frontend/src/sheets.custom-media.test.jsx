@@ -170,4 +170,15 @@ describe('custom exercise photo, GIF or video, and link', () => {
     expect([...form.querySelectorAll('button')].some(b => b.textContent.trim() === 'Add')).toBe(false)
     expect(form.querySelector('input[type="url"]')).toBeTruthy()   // the link still works
   })
+
+  it('where this browser cannot keep files, Add is there but off, and says why', async () => {
+    const blocked = createMediaStore({ name: 'idb', persistent: true, open: async () => false })
+    _setMediaStore(blocked)
+    customExSheet(null)
+    const form = renderTop()
+    await settle()
+    expect(form.textContent).toContain('This browser cannot store photos or videos here.')
+    const add = [...form.querySelectorAll('button')].find(b => b.textContent.trim() === 'Add')
+    expect(add.disabled).toBe(true)
+  })
 })

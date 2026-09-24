@@ -56,7 +56,6 @@ export default function CustomMediaField({ media, url, onChange }) {
   // MEDIA_UPLOADS=0. Nothing would ever reach it. A config not known yet (an offline start) is
   // not that answer — a file picked then waits here and goes up once the server is reached.
   const serverLacks = !!user && !!config && !config.media
-  const canAdd = storable && !serverLacks
 
   const onFile = async ev => {
     const file = ev.target.files && ev.target.files[0]
@@ -96,7 +95,9 @@ export default function CustomMediaField({ media, url, onChange }) {
     <Row icon="image" iconTint="var(--blue)" title={t('Photo, GIF or video')} subtitle={subtitle}>
       <div className="cmf-act">
         {m && <span className="cmf-thumb"><CustomThumb ex={{ custom: true, media: m }} /></span>}
-        {canAdd && <Button variant="tinted" size="sm" icon={busy ? undefined : 'image'} disabled={busy} onClick={() => fileRef.current?.click()}>
+        {/* Hidden on a server that will never take a file; shown but off where this browser
+            cannot keep one, with the note below saying why. */}
+        {!serverLacks && <Button variant="tinted" size="sm" icon={busy ? undefined : 'image'} disabled={busy || !storable} onClick={() => fileRef.current?.click()}>
           {busy ? t('Loading…') : m ? t('Change') : t('Add')}
         </Button>}
         {m && <Button variant="ghost" size="sm" icon="xmark" aria-label={t('Remove')} title={t('Remove')} disabled={busy} onClick={() => { setWarning(null); onChange({ media: null }) }} />}

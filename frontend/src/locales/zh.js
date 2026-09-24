@@ -1544,4 +1544,5 @@ export default {
   'Log your body weight to score this lift.': '记录你的体重以评估这个动作。',
   'Log the anchor lift to score this one.': '记录锚点动作以评估这个动作。',
   'Not scored': '未评估',
+  'Every exercise in this workout': '本次训练的所有动作',
 }

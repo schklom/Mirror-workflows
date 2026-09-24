@@ -38,6 +38,7 @@ import { swapActiveExercise } from './lib/active-exercise-swap.js'
 import { useSheetKeyboard, useRevealActiveChip, tappable } from './lib/use-sheet-keyboard.js'
 import { isFav, toggleFav, sortFavouritesFirst } from './lib/favourites.js'
 import { buildSessionEntries, buildPlannedEntry, builtOutOfProgression } from './lib/session-start.js'
+import { joinSessionNoProg } from './lib/session-noprog.js'
 import { buildCombinedEntries, deriveSessionName } from './lib/session-merge.js'
 import { workoutsOn, backfillStart, backfillEnd, completeBackfill, historyAsOf, sessionHistory } from './lib/backfill.js'
 import { moveWorkout, sameWorkout, startTimeOf, durationMinOf, setWorkoutDuration } from './lib/workout-date.js'
@@ -2236,7 +2237,9 @@ function AddRoutineToSession({ close }) {
     const entries = buildSessionEntries(sessionHistory(st), r).map(e => ({ ...e, rid: r.id }))
     update(s => {
       if (!s.active) return
-      s.active.entries.push(...entries)
+      // A session kept out of progression as a whole (the header ⋮) keeps the routine's
+      // exercises out too, the same as an exercise added on its own.
+      s.active.entries.push(...entries.map(e => joinSessionNoProg(s.active, e)))
       s.active.routineIds = [...[].concat(s.active.routineIds || []), r.id]
       if (!s.active.customName) {
         s.active.name = deriveSessionName(s.active.routineIds.map(id => s.routines.find(x => x.id === id)?.name).filter(Boolean))

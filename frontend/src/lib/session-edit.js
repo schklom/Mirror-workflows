@@ -75,9 +75,12 @@ export function editCompletedSession(state, ref) {
   // A workout saved before exclusion moved onto the entries (ENG-11) carries only the whole-workout
   // flag. The editor rebuilds that flag from the entries (buildCompletedWorkout), so it is written
   // onto each of them here, the way a session starts since: the edited workout stays out of
-  // progression, and a swap in the editor keeps its replacement out too.
+  // progression, and a swap in the editor keeps its replacement out too. A workout out as a whole
+  // opens with the header's "Don't count for progression" on (lib/session-noprog.js), so it can
+  // be switched off there, and an exercise added in the editor stays out with the rest.
   if (original.excludeFromProgression === true) {
     for (const entry of list(active.entries)) if (entry && entry.noProg !== true) entry.noProg = true
+    active.noProg = true
   }
   // Worked out again on Save, from the edited sets.
   for (const k of ['vol', 'prs', '_ts']) delete active[k]

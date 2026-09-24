@@ -1541,4 +1541,5 @@ export default {
   'You get a code that lets your phone or another computer create a passkey for this profile. First confirm that it is you.': 'Ти отримаєш код, з яким твій телефон чи інший комп’ютер зможе створити ключ доступу для цього профілю. Спершу підтверди, що це ти.',
   'or with your password': 'або своїм паролем',
   '{0} passkeys': 'Ключів доступу: {0}',
+  'Every exercise in this workout': 'Усі вправи цього тренування',
 }

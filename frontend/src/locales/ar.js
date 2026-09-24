@@ -1597,4 +1597,5 @@ export default {
   'You get a code that lets your phone or another computer create a passkey for this profile. First confirm that it is you.': 'ستحصل على رمز يتيح لهاتفك أو لحاسوب آخر إنشاء مفتاح مرور لهذا الملف الشخصي. أكّد أولًا أنك أنت.',
   'or with your password': 'أو بكلمة المرور',
   '{0} passkeys': 'مفاتيح المرور: {0}',
+  'Every exercise in this workout': 'كل التمارين في هذه الجلسة',
 }

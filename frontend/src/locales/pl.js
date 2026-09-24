@@ -1544,4 +1544,5 @@ export default {
   'Log your body weight to score this lift.': 'Zapisz swoją masę ciała, aby ocenić to ćwiczenie.',
   'Log the anchor lift to score this one.': 'Zapisz ćwiczenie będące punktem odniesienia, aby ocenić to ćwiczenie.',
   'Not scored': 'Bez oceny',
+  'Every exercise in this workout': 'Wszystkie ćwiczenia w tym treningu',
 }

@@ -1544,4 +1544,5 @@ export default {
   'Log your body weight to score this lift.': 'Запишите вес тела, чтобы оценить это упражнение.',
   'Log the anchor lift to score this one.': 'Запишите опорное упражнение, чтобы оценить это.',
   'Not scored': 'Не оценено',
+  'Every exercise in this workout': 'Все упражнения этой тренировки',
 }

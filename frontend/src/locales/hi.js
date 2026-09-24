@@ -1544,4 +1544,5 @@ export default {
   'Log your body weight to score this lift.': 'इस व्यायाम का आकलन करने के लिए अपने शरीर का वज़न दर्ज करें।',
   'Log the anchor lift to score this one.': 'इसका आकलन करने के लिए आधार व्यायाम दर्ज करें।',
   'Not scored': 'आकलन नहीं हुआ',
+  'Every exercise in this workout': 'इस वर्कआउट के सभी व्यायाम',
 }

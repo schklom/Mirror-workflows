@@ -187,6 +187,20 @@ describe('saved workout editing', () => {
     expect(lastEntryFor(state, '0025').sets[0].w).toBe(80)
   })
 
+  // The header ⋮'s "Don't count for progression" for the whole workout (lib/session-noprog.js)
+  // opens on for a workout saved out as a whole, and off for one that counts.
+  it('opens a workout kept out as a whole with the whole-workout switch on, and a counting one with it off', () => {
+    const state = fixture()
+    state.workouts.push({ id: 'rehab', d: '2026-09-02', start: 3000, end: 4000, excludeFromProgression: true, entries: [{ ...entry(10), noProg: true }], prs: [] })
+    editCompletedSession(state, 'rehab')
+    expect(state.active.noProg).toBe(true)
+    const saved = saveWorkoutEdit(state)
+    expect(saved).not.toHaveProperty('noProg')
+
+    editCompletedSession(state, 'workout')
+    expect(state.active).not.toHaveProperty('noProg')
+  })
+
   // A stamp outranks what another device wrote since. Opening the editor and saving without a
   // change must not give the record one, or it beats sets added on the phone that have not synced.
   it('leaves the record and its stamp alone when Save changed nothing', () => {

@@ -1544,4 +1544,5 @@ export default {
   'Log your body weight to score this lift.': 'Note ton poids corporel pour évaluer cet exercice.',
   'Log the anchor lift to score this one.': 'Note l’exercice de référence pour évaluer celui-ci.',
   'Not scored': 'Non évalué',
+  'Every exercise in this workout': 'Tous les exercices de cette séance',
 }

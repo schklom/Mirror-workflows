@@ -1672,11 +1672,12 @@ describe('workout view header menu', () => {
     return mocks.menuSheet.mock.calls.at(-1)[0]
   }
 
-  it('includes Rename workout and Add routine, then a Layout sheet with the three layouts marked current', async () => {
+  it('includes Rename workout, Add routine and the whole-workout progression switch, then a Layout sheet with the three layouts marked current', async () => {
     await mount([exercise('plain-bench', [false])], 0, { active: { workoutView: 'list', routineIds: [] } })
 
     const menu = await openMenu()
-    expect(menu.items.filter(Boolean).map(it => it.label)).toEqual(['Rename workout', 'Add routine', 'Layout'])
+    expect(menu.items.filter(Boolean).map(it => it.label)).toEqual(['Rename workout', 'Add routine', 'Don’t count for progression', 'Layout'])
+    expect(item(menu, 'Don’t count for progression')).toMatchObject({ sub: 'Every exercise in this workout', on: false })
     expect(item(menu, 'Layout').sub).toBe('List')
 
     await act(async () => { item(menu, 'Rename workout').onClick() })

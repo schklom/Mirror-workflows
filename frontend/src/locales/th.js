@@ -1555,4 +1555,5 @@ export default {
   'Log your body weight to score this lift.': 'บันทึกน้ำหนักตัวเพื่อประเมินท่านี้',
   'Log the anchor lift to score this one.': 'บันทึกท่าอ้างอิงเพื่อประเมินท่านี้',
   'Not scored': 'ยังไม่ได้ประเมิน',
+  'Every exercise in this workout': 'ทุกท่าในการออกกำลังกายครั้งนี้',
 }

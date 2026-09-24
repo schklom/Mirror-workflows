@@ -22,6 +22,7 @@ import { Button, Check, NumberField } from '../components/ui.jsx'
 import { defaultIncrement, weightIncrement, stepWeight } from '../lib/progression.js'
 import { progressionGuidance } from '../lib/progression-copy.js'
 import { buildPlannedEntry, plannedConfigOf, builtOutOfProgression } from '../lib/session-start.js'
+import { sessionNoProg, setSessionNoProg, setEntryNoProg, joinSessionNoProg } from '../lib/session-noprog.js'
 import { glyphOf } from '../lib/glyphs.js'
 import { markAllSetsDone, sessionHistory } from '../lib/backfill.js'
 import { bestSetFor } from '../lib/exercise-history.js'
@@ -834,16 +835,18 @@ function ActiveWorkout() {
   // workout keeps it (finish-workout.js), and the next prescription and "last time" read past
   // this entry (history.js entryExcluded). This exercise, this session; the routine is untouched.
   // Unlike a deload's, its rows keep the prescription through any rebuild (builtOutOfProgression),
-  // so switching it off again leaves the numbers this session should count at.
-  const setNoProg = (idx, on) => update(s => {
-    const e = s.active?.entries?.[idx]
-    if (!e) return
-    if (on) e.noProg = true
-    else delete e.noProg
-  })
+  // so switching it off again leaves the numbers this session should count at. Counting one
+  // exercise again also ends "the whole workout" from the header ⋮ (lib/session-noprog.js).
+  const setNoProg = (idx, on) => update(s => setEntryNoProg(s.active, idx, on))
   // A deload or rehab routine keeps its own exercises out (RoutineEdit). That is the routine's
   // setting, so its entries get the marker but no switch.
   const routineKeepsOut = e => !!e?.rid && S.routines.some(r => r.id === e.rid && r.excludeFromProgression === true)
+  // The same for the whole session from the header ⋮ (Discord, asierlama: "exclude the current
+  // workout" on an injury day): every exercise gets the marker, and one added later joins them.
+  // Absent when a deload or rehab routine already keeps every exercise out, since nothing is left
+  // for the switch to change. Off counts them all again, apart from those.
+  const noProgSwitchable = !A.entries.length || A.entries.some(e => !routineKeepsOut(e))
+  const toggleSessionNoProg = () => update(s => setSessionNoProg(s.active, !sessionNoProg(s.active), routineKeepsOut))
 
   // One prop object per entry so the card and list layouts share the exact same wiring. The
   // exercise-level actions (swap, move, remove) address the entry itself, so the "more" menu of
@@ -927,6 +930,7 @@ function ActiveWorkout() {
       A.backfill && A.entries.length > 0 && { icon: 'checkCircle', label: t('Mark all sets done'), onClick: markAllDone },
       { icon: 'pencil', label: t('Rename workout'), onClick: renameWorkoutSheet },
       !editing && { icon: 'plus', label: t('Add routine'), sub: t('Bring another routine into this session'), onClick: addRoutineToSessionSheet },
+      noProgSwitchable && { icon: 'pause', label: t('Don’t count for progression'), sub: t('Every exercise in this workout'), on: sessionNoProg(A), onClick: toggleSessionNoProg },
       { icon: 'list', label: t('Layout'), sub: LAYOUT_LABEL[workoutView] || LAYOUT_LABEL.cards, onClick: openLayoutMenu },
     ],
   })
@@ -1350,7 +1354,8 @@ function ActiveWorkout() {
       // exercise added to a rehab or deload routine's block is kept out of progression like the
       // rest of it, the way a swap or an edit there is — it takes the routine's own numbers and
       // never becomes the baseline the regular sessions progress from. An exercise kept out by
-      // hand (its ⋯ menu) is that exercise's own choice for today and is not passed on.
+      // hand (its ⋯ menu) is that exercise's own choice for today and is not passed on; a session
+      // kept out as a whole (the header ⋮) takes the new one with it (joinSessionNoProg).
       const curEntry = A.entries[A.cur]
       const curRid = curEntry?.rid
       const routine = curRid ? S.routines.find(r => r.id === curRid) : null
@@ -1372,7 +1377,7 @@ function ActiveWorkout() {
           }), full) }
           : buildPlannedEntry(past, full, routine, { noProg })
         const insertAt = insertionIndexAfterCurrentUnit(supersetUnits(s.active.entries), s.active.cur, s.active.entries.length)
-        s.active.entries.splice(insertAt, 0, { id: ex.id, ...built, ...(curRid ? { rid: curRid } : {}), ...(noProg ? { noProg: true } : {}) })
+        s.active.entries.splice(insertAt, 0, joinSessionNoProg(s.active, { id: ex.id, ...built, ...(curRid ? { rid: curRid } : {}), ...(noProg ? { noProg: true } : {}) }))
         s.active.cur = insertAt
         useUI.getState().shiftRestOwner(insertAt, 1)
       })

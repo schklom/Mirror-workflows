@@ -49,6 +49,15 @@ describe('photos', () => {
     expect(d.decodeImage).not.toHaveBeenCalled()
   })
 
+  it('finds the frame header of a JPEG behind more than 256 KB of APP segments, and refuses it before decoding', async () => {
+    const d = deps()
+    const app = () => bytes([0xff, 0xe2], [0xff, 0xff], fill(0xffff - 2))   // one full-length APP2 segment
+    const big = jpeg(9000, 7000)
+    const padded = bytes(big.subarray(0, 2), app(), app(), app(), app(), app(), big.subarray(2))
+    await expect(ingestMediaFile(file(padded), LIMITS, d)).rejects.toMatchObject({ code: 'photo-too-big' })
+    expect(d.decodeImage).not.toHaveBeenCalled()
+  })
+
   it('refuses a raw photo over its cap, and steps the quality down before refusing an encoded one', async () => {
     await expect(ingestMediaFile(file(bytes(jpeg(), fill(41 * MB))), LIMITS, deps())).rejects.toMatchObject({ code: 'too-large', mb: 40 })
     const d = deps({ encodeImage: vi.fn(async (pic, edge) => ({ blob: new Blob([new Uint8Array(3 * MB)]), mime: 'image/webp', width: edge, height: edge })) })
@@ -90,6 +99,13 @@ describe('GIFs', () => {
     const d = deps({ decodeImage: vi.fn(async () => ({ source: {}, width: 40, height: 30, close: vi.fn() })) })
     const out = await ingestMediaFile(file(gif({ delays: [10] })), LIMITS, d)
     expect(out.media).toMatchObject({ kind: 'image', mime: 'image/webp' })
+  })
+
+  it('refuses an animation over 52 megapixels on its header, before decoding a frame', async () => {
+    const d = deps()
+    const g = gif({ w: 16000, h: 16000, blocks: [gce(10), frame(1, 1), gce(10), frame(1, 1)] })
+    await expect(ingestMediaFile(file(g), LIMITS, d)).rejects.toMatchObject({ code: 'photo-too-big' })
+    expect(d.decodeImage).not.toHaveBeenCalled()
   })
 
   it('refuses one over the GIF cap', async () => {

@@ -8,7 +8,8 @@
  *    miss a field. Before decoding, the header's pixel count is checked: a 100-megapixel photo
  *    would need several hundred MB just to open.
  *  - A GIF keeps its frames and loses its comment and metadata blocks (media-sniff cleanGif). A
- *    GIF of one frame is a photo and goes down that path.
+ *    GIF of one frame is a photo and goes down that path; an animation is held to the photo's
+ *    pixel guard on its logical screen.
  *  - An MP4/MOV keeps its video and sound; its metadata boxes and the samples of any track that is
  *    neither (timed metadata, GPS telemetry) are zeroed in place (media-sniff scrubMp4). A WebM is
  *    kept as it is — its scrub is deferred, and the docs say so.
@@ -119,7 +120,11 @@ async function photo(file, sniffed, limits, deps) {
   if (file.size > limits.rawPhotoMB * MB) throw new MediaError('too-large', { mb: limits.rawPhotoMB })
   if (!sniffed.input) {
     const head = new Uint8Array(await file.slice(0, 256 * 1024).arrayBuffer())
-    const d = imageDims(head)
+    let d = imageDims(head)
+    // A JPEG's frame header can sit behind APP segments bigger than that (a camera's maker notes,
+    // an embedded preview); the check that comes after the decode would come too late to save
+    // the memory, so the whole file — at most rawPhotoMB — is read for it instead.
+    if (!d && sniffed.mime === 'image/jpeg' && file.size > head.length) d = imageDims(new Uint8Array(await file.arrayBuffer()))
     if (d && d.width * d.height > MAX_PHOTO_MP * 1e6) throw new MediaError('photo-too-big')
   }
   const pic = await deps.decodeImage(file, sniffed.mime, deps)
@@ -139,6 +144,9 @@ async function gif(file, limits, deps) {
   const info = inspectGif(bytes)
   if (!info) throw new MediaError('unreadable')
   if (info.frames === 1) return photo(new Blob([bytes], { type: 'image/gif' }), { mime: 'image/gif' }, limits, deps)
+  // The same pixel guard as a photo's, on the logical screen, before the poster's decode — and
+  // before every device that shows it decodes the animation at full size.
+  if (info.width * info.height > MAX_PHOTO_MP * 1e6) throw new MediaError('photo-too-big')
   let clean
   try { clean = cleanGif(bytes) } catch { throw new MediaError('unreadable') }
   const main = { blob: new Blob([clean], { type: 'image/gif' }), mime: 'image/gif', width: info.width, height: info.height }

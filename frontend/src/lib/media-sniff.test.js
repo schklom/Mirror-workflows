@@ -139,6 +139,9 @@ describe('inspectMp4', () => {
   })
 })
 
+// A box shaped like a full box (version, flags, one field), enough for a walker to step over.
+const fullBoxLike = type => box(type, fill(4, 0), fill(4, 0))
+
 describe('scrubMp4', () => {
   const GPS = latin1('+47.3769+008.5417/ GPS FIX')
   const build = () => mp4({
@@ -182,6 +185,28 @@ describe('scrubMp4', () => {
     const before = file.slice()
     expect(() => scrubMp4(file)).toThrow()
     expect(file).toEqual(before)
+  })
+
+  it('zeroes a uuid box inside moov or a trak (a Canon keeps its EXIF and GPS there)', () => {
+    const { file } = mp4({
+      tracks: [{ handler: 'vide', fourcc: 'avc1', w: 640, h: 360, payload: fill(64, 0x77), extra: [box('uuid', fill(16, 0xab), latin1('CNTH GPSLatitude 48.8577'))] }],
+      moovExtra: [box('uuid', fill(16, 0x85), latin1('CMT4 GPSLatitude 48.8577'))]
+    })
+    const out = scrubMp4(file)
+    expect(has(out, 'GPSLatitude')).toBe(false)
+    expect(has(out, 'uuid')).toBe(false)
+    expect(inspectMp4(out)).toMatchObject({ width: 640, height: 360, codec: 'avc1', handlers: ['vide'] })
+  })
+
+  it('a fragmented file: zeroes the uuid and meta boxes of its fragments, and refuses one with a track that is neither picture nor sound', () => {
+    const frag = (...extra) => [box('moof', fullBoxLike('mfhd'), box('traf', fullBoxLike('tfhd'), ...extra)), box('mdat', fill(16, 0x77))]
+    const av = mp4({ top: frag(box('uuid', fill(16, 0x6d), latin1('SECRETGPS'))) }).file
+    expect(has(scrubMp4(av), 'SECRETGPS')).toBe(false)
+    const withText = mp4({
+      tracks: [{ handler: 'vide', fourcc: 'avc1', w: 640, h: 360, payload: fill(64, 0x77) }, { handler: 'text', fourcc: 'tx3g', payload: bytes() }],
+      top: [box('moof', fullBoxLike('mfhd'), box('traf', fullBoxLike('tfhd'))), box('mdat', latin1('SECRETGPS'))]
+    }).file
+    expect(() => scrubMp4(withText)).toThrow(/fragmented/)
   })
 
   it('refuses what is not an MP4', () => {

@@ -384,7 +384,8 @@ folder whose profile is not in `db.json` is left alone and logged once. A device
 file the server removed uploads it again.
 
 **Privacy.** The app re-encodes photos on the device, so no EXIF or GPS data survives, and blanks
-the metadata boxes and the GPS/telemetry tracks of MP4 and MOV videos. WebM videos are uploaded as
+the metadata boxes and the GPS/telemetry tracks of MP4 and MOV videos (a fragmented MP4 that
+carries such a track is refused rather than uploaded with it). WebM videos are uploaded as
 recorded. The server never decodes or changes a file. Like everything else in `./data`, the files
 are not encrypted at rest — whoever can read that folder can see them.
 

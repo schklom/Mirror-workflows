@@ -11,8 +11,9 @@
  *    GIF of one frame is a photo and goes down that path; an animation is held to the photo's
  *    pixel guard on its logical screen.
  *  - An MP4/MOV keeps its video and sound; its metadata boxes and the samples of any track that is
- *    neither (timed metadata, GPS telemetry) are zeroed in place (media-sniff scrubMp4). A WebM is
- *    kept as it is — its scrub is deferred, and the docs say so.
+ *    neither (timed metadata, GPS telemetry) are zeroed in place (media-sniff scrubMp4), and a
+ *    fragmented one with such a track is refused. A WebM is kept as it is — its scrub is
+ *    deferred, and the docs say so.
  * Every video is then opened in a hidden <video> once (probeVideo) for its size, its length when
  * the file does not say, and a poster frame. A video this browser cannot play is still accepted
  * — another device may play it — with a warning and no poster.

@@ -459,15 +459,23 @@ function sampleRanges(b, stbl) {
   return out
 }
 
+// Boxes that hold what a camera or an editor says about the recording rather than the recording:
+// QuickTime's user data, ISO metadata, and vendor boxes (a Canon keeps its EXIF, GPS included, in
+// a uuid box inside moov; XMP travels in one too).
+const METADATA_BOXES = new Set(['udta', 'meta', 'uuid'])
+
 /**
  * Zeroes, IN PLACE, what in an MP4/MOV can say where and by whom it was filmed, and returns the
- * same array. (a) Every udta and meta box under moov, and every top-level meta and uuid box,
- * becomes a 'free' box of the same size with a zeroed body: QuickTime's location and the
- * phone's make and model live there. (b) Every sample of a track that is neither picture nor
- * sound (timed metadata, an action camera's GPS and sensor tracks) is zeroed where it sits in
- * mdat; the track itself stays. No size changes, so stco/co64 stay right and the video and
- * sound bytes are untouched. Throws on a file that does not parse or whose sample tables point
- * outside it — such a file is refused rather than kept with its metadata.
+ * same array. (a) Every udta, meta and uuid box — at the top level, anywhere under moov, and
+ * directly under a fragment's moof and traf — becomes a 'free' box of the same size with a zeroed
+ * body: QuickTime's location, the phone's make and model and a camera's EXIF live there.
+ * (b) Every sample of a track that is neither picture nor sound (timed metadata, an action
+ * camera's GPS and sensor tracks, a subtitle track) is zeroed where it sits in mdat; the track
+ * itself stays. No size changes, so stco/co64 stay right and the video and sound bytes are
+ * untouched. Throws on a file that does not parse or whose sample tables point outside it — such
+ * a file is refused rather than kept with its metadata — and on a fragmented file (moof) that has
+ * such a track: its samples sit in fragments the sample table does not list, and the scrub does
+ * not walk trun, so it refuses rather than keep them.
  */
 export function scrubMp4(bytes) {
   const b = bytes
@@ -477,13 +485,32 @@ export function scrubMp4(bytes) {
     b[box.start + 4] = 0x66; b[box.start + 5] = 0x72; b[box.start + 6] = 0x65; b[box.start + 7] = 0x65   // 'free'
     b.fill(0, box.body, box.end)
   }
+  // The direct children of a box, for moof and traf (not containers the inspector descends into).
+  const kids = box => {
+    const out = []
+    for (let pos = box.body; pos < box.end;) {
+      const c = boxAt(b, pos, box.end)
+      if (!c) throw new Error('mp4: box overruns its parent')
+      out.push(c)
+      pos = c.end
+    }
+    return out
+  }
   const traks = []
   const counter = { n: 0 }
+  const fragmented = top.some(x => x.type === 'moof')
   for (const box of top) {
-    if (box.type === 'meta' || box.type === 'uuid') { blank(box); continue }
+    if (METADATA_BOXES.has(box.type)) { blank(box); continue }
+    if (box.type === 'moof') {
+      for (const c of kids(box)) {
+        if (METADATA_BOXES.has(c.type)) blank(c)
+        else if (c.type === 'traf') for (const g of kids(c)) if (METADATA_BOXES.has(g.type)) blank(g)
+      }
+      continue
+    }
     if (box.type !== 'moov') continue
     walkBoxes(b, box.body, box.end, c => {
-      if (c.type === 'udta' || c.type === 'meta') { blank(c); return false }
+      if (METADATA_BOXES.has(c.type)) { blank(c); return false }
       if (c.type === 'trak') traks.push(c)
       return true
     }, counter, 1, box)
@@ -493,7 +520,9 @@ export function scrubMp4(bytes) {
   const doomed = []
   for (const trak of traks) {
     const t = readTrak(b, trak)
-    if (KEEP_HANDLERS.has(t.handler) || !t.stbl) continue
+    if (KEEP_HANDLERS.has(t.handler)) continue
+    if (fragmented) throw new Error('mp4: fragmented file with a track that is neither picture nor sound')
+    if (!t.stbl) continue
     doomed.push(...sampleRanges(b, t.stbl))
   }
   for (const [off, size] of doomed) b.fill(0, off, off + size)

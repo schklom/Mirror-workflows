@@ -1593,8 +1593,10 @@ export default {
   '{0} waiting to upload': 'รออัปโหลด {0} รายการ',
   'Export with photos & videos (.zip)': 'ส่งออกพร้อมรูปภาพและวิดีโอ (.zip)',
   '{0} files could not be included': 'ใส่ไฟล์ไม่ได้ {0} ไฟล์',
+  '{0} file could not be included': 'ใส่ไฟล์ไม่ได้ {0} ไฟล์',
   'Without photos and videos': 'ไม่รวมรูปภาพและวิดีโอ',
   'Name it and pick a body part — it behaves like any other exercise.': 'ตั้งชื่อและเลือกส่วนร่างกาย — ใช้งานได้เหมือนท่าอื่นทุกประการ',
   'name + body part, and a photo or video if you like': 'ชื่อ + ส่วนร่างกาย และรูปหรือวิดีโอถ้าต้องการ',
   '{0} photos or videos have not reached your server yet.': 'มีรูปภาพหรือวิดีโอ {0} รายการที่ยังไม่ถึงเซิร์ฟเวอร์ของคุณ',
+  '{0} photo or video has not reached your server yet.': 'มีรูปภาพหรือวิดีโอ {0} รายการที่ยังไม่ถึงเซิร์ฟเวอร์ของคุณ',
 }

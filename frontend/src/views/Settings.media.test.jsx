@@ -150,6 +150,17 @@ describe('Settings — photos and videos', () => {
     vi.restoreAllMocks()
   })
 
+  it('the zip export names one file it could not include in the singular', async () => {
+    const created = vi.spyOn(URL, 'createObjectURL').mockImplementation(() => 'blob:zip')
+    vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {})
+    try {
+      await mount()   // the photo is not on this device, and a guest has nowhere to fetch it from
+      act(() => { row('Export with photos & videos (.zip)').click() })
+      await until(() => created.mock.calls.length > 0)
+      expect(mocks.toast).toHaveBeenCalledWith('1 file could not be included')
+    } finally { vi.restoreAllMocks() }
+  })
+
   it('importing a zip keeps its photo as pending, once confirmed', async () => {
     const S = stateWithPhoto()
     const zip = await zipStore([{ name: 'opengym-backup.json', blob: new Blob([JSON.stringify(S)]) }, { name: `media/${HASH}.jpg`, blob: new Blob([PHOTO]) }])

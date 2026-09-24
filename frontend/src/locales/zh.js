@@ -1582,8 +1582,10 @@ export default {
   '{0} waiting to upload': '{0} 个等待上传',
   'Export with photos & videos (.zip)': '连同照片和视频导出（.zip）',
   '{0} files could not be included': '有 {0} 个文件无法包含',
+  '{0} file could not be included': '有 {0} 个文件无法包含',
   'Without photos and videos': '不含照片和视频',
   'Name it and pick a body part — it behaves like any other exercise.': '起个名字并选择身体部位——它和其他动作用法一样。',
   'name + body part, and a photo or video if you like': '名称 + 身体部位，可附照片或视频',
   '{0} photos or videos have not reached your server yet.': '有 {0} 个照片或视频尚未到达你的服务器。',
+  '{0} photo or video has not reached your server yet.': '有 {0} 个照片或视频尚未到达你的服务器。',
 }

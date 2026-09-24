@@ -61,7 +61,14 @@ describe('OwedSheet with photos and videos waiting', () => {
   it('names the changes and the media when both are waiting', () => {
     act(() => root.render(<OwedSheet kind="signout" count={3} media={1} exportBackup={vi.fn()} exportBackupZip={vi.fn()} done={vi.fn()} close={vi.fn()} />))
     expect(host.textContent).toContain('Not on your server yet')
-    expect(host.textContent).toContain('1 photos or videos have not reached your server yet.')
+    expect(host.textContent).toContain('1 photo or video has not reached your server yet.')
+  })
+
+  // QA, v1.3.9: "1 photos or videos have not reached your server yet."
+  it('one file is named in the singular', () => {
+    act(() => root.render(<OwedSheet kind="signout" count={0} media={1} exportBackup={vi.fn()} exportBackupZip={vi.fn()} done={vi.fn()} close={vi.fn()} />))
+    expect(host.textContent).toContain('1 photo or video has not reached your server yet.')
+    expect(host.textContent).not.toContain('1 photos')
   })
 
   it('Try again sends them too — the refused ones included — and the sheet follows the new count', async () => {
@@ -104,7 +111,7 @@ describe('OwedSheet with photos and videos waiting', () => {
     mocks.sync = { status: 'auth', auth: true, lastError: { status: 401, code: 'auth' } }
     act(() => root.render(<OwedSheet kind="signout" count={null} media={1} exportBackup={vi.fn()} exportBackupZip={vi.fn()} done={vi.fn()} close={vi.fn()} />))
     expect(host.textContent).toContain('Some changes on this device have not reached your server.')
-    expect(host.textContent).toContain('1 photos or videos have not reached your server yet.')
+    expect(host.textContent).toContain('1 photo or video has not reached your server yet.')
     expect(host.textContent).toContain('Sign in again, or export a backup first.')
     expect(host.textContent).not.toContain('Try again')
     expect(button('Sign in with passkey')).toBeTruthy()

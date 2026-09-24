@@ -1582,8 +1582,10 @@ export default {
   '{0} waiting to upload': '{0} yükleme bekliyor',
   'Export with photos & videos (.zip)': 'Fotoğraf ve videolarla dışa aktar (.zip)',
   '{0} files could not be included': '{0} dosya eklenemedi',
+  '{0} file could not be included': '{0} dosya eklenemedi',
   'Without photos and videos': 'Fotoğraf ve videolar hariç',
   'Name it and pick a body part — it behaves like any other exercise.': 'Bir ad ver ve bir vücut bölgesi seç — diğer egzersizler gibi çalışır.',
   'name + body part, and a photo or video if you like': 'ad + vücut bölgesi, istersen bir fotoğraf veya video',
   '{0} photos or videos have not reached your server yet.': '{0} fotoğraf veya video henüz sunucuna ulaşmadı.',
+  '{0} photo or video has not reached your server yet.': '{0} fotoğraf veya video henüz sunucuna ulaşmadı.',
 }

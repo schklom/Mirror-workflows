@@ -937,10 +937,12 @@ export const PT_BR_OVERRIDES = {
   '{0} waiting to upload': '{0} aguardando envio',
   'Export with photos & videos (.zip)': 'Exportar com fotos e vídeos (.zip)',
   '{0} files could not be included': 'Não foi possível incluir {0} arquivos',
+  '{0} file could not be included': 'Não foi possível incluir {0} arquivo',
   'Without photos and videos': 'Sem fotos nem vídeos',
   'Name it and pick a body part — it behaves like any other exercise.': 'Dê um nome e escolha uma parte do corpo — ele funciona como qualquer outro exercício.',
   'name + body part, and a photo or video if you like': 'nome + parte do corpo, e uma foto ou vídeo se quiser',
   '{0} photos or videos have not reached your server yet.': '{0} fotos ou vídeos ainda não chegaram ao seu servidor.',
+  '{0} photo or video has not reached your server yet.': '{0} foto ou vídeo ainda não chegou ao seu servidor.',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

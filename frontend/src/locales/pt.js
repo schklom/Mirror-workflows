@@ -1582,8 +1582,10 @@ export default {
   '{0} waiting to upload': '{0} à espera de envio',
   'Export with photos & videos (.zip)': 'Exportar com fotos e vídeos (.zip)',
   '{0} files could not be included': 'Não foi possível incluir {0} ficheiros',
+  '{0} file could not be included': 'Não foi possível incluir {0} ficheiro',
   'Without photos and videos': 'Sem fotos nem vídeos',
   'Name it and pick a body part — it behaves like any other exercise.': 'Dá-lhe um nome e escolhe uma parte do corpo — comporta-se como qualquer outro exercício.',
   'name + body part, and a photo or video if you like': 'nome + parte do corpo, e uma foto ou vídeo se quiseres',
   '{0} photos or videos have not reached your server yet.': '{0} fotos ou vídeos ainda não chegaram ao teu servidor.',
+  '{0} photo or video has not reached your server yet.': '{0} foto ou vídeo ainda não chegou ao teu servidor.',
 }

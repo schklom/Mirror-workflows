@@ -1582,8 +1582,10 @@ export default {
   '{0} waiting to upload': '업로드 대기 {0}개',
   'Export with photos & videos (.zip)': '사진·동영상 포함 내보내기 (.zip)',
   '{0} files could not be included': '파일 {0}개를 포함하지 못했습니다',
+  '{0} file could not be included': '파일 {0}개를 포함하지 못했습니다',
   'Without photos and videos': '사진·동영상 제외',
   'Name it and pick a body part — it behaves like any other exercise.': '이름을 정하고 부위를 고르세요 — 다른 운동과 똑같이 쓸 수 있습니다.',
   'name + body part, and a photo or video if you like': '이름 + 부위, 원하면 사진이나 동영상도',
   '{0} photos or videos have not reached your server yet.': '아직 서버에 올라가지 않은 사진·동영상이 {0}개 있습니다.',
+  '{0} photo or video has not reached your server yet.': '아직 서버에 올라가지 않은 사진·동영상이 {0}개 있습니다.',
 }

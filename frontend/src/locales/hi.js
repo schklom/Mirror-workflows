@@ -1582,8 +1582,10 @@ export default {
   '{0} waiting to upload': '{0} अपलोड की प्रतीक्षा में',
   'Export with photos & videos (.zip)': 'फ़ोटो और वीडियो के साथ निर्यात करें (.zip)',
   '{0} files could not be included': '{0} फ़ाइलें शामिल नहीं हो सकीं',
+  '{0} file could not be included': '{0} फ़ाइल शामिल नहीं हो सकी',
   'Without photos and videos': 'फ़ोटो और वीडियो के बिना',
   'Name it and pick a body part — it behaves like any other exercise.': 'नाम दें और बॉडी पार्ट चुनें — यह किसी भी दूसरी एक्सरसाइज़ की तरह काम करती है।',
   'name + body part, and a photo or video if you like': 'नाम + बॉडी पार्ट, और चाहें तो एक फ़ोटो या वीडियो',
   '{0} photos or videos have not reached your server yet.': '{0} फ़ोटो या वीडियो अभी आपके सर्वर तक नहीं पहुँचे हैं।',
+  '{0} photo or video has not reached your server yet.': '{0} फ़ोटो या वीडियो अभी आपके सर्वर तक नहीं पहुँचा है।',
 }

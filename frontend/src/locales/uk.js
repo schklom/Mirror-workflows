@@ -1579,8 +1579,10 @@ export default {
   '{0} waiting to upload': 'Чекають на вивантаження: {0}',
   'Export with photos & videos (.zip)': 'Експорт із фото й відео (.zip)',
   '{0} files could not be included': 'Не вдалося додати файлів: {0}',
+  '{0} file could not be included': 'Не вдалося додати {0} файл',
   'Without photos and videos': 'Без фото й відео',
   'Name it and pick a body part — it behaves like any other exercise.': 'Дай назву й вибери частину тіла — вправа працює як будь-яка інша.',
   'name + body part, and a photo or video if you like': 'назва + частина тіла, а за бажання — фото чи відео',
   '{0} photos or videos have not reached your server yet.': 'Фото й відео, які ще не дійшли до твого сервера: {0}.',
+  '{0} photo or video has not reached your server yet.': 'Фото чи відео, яке ще не дійшло до твого сервера: {0}.',
 }

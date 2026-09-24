@@ -179,6 +179,15 @@ describe('custom exercise photo, GIF or video, and link', () => {
     expect(form.textContent).toContain('Your server does not store photos and videos yet.')
     expect([...form.querySelectorAll('button')].some(b => b.textContent.trim() === 'Add')).toBe(false)
     expect(form.querySelector('input[type="url"]')).toBeTruthy()   // the link still works
+    // A guest in the browser is on that same server: what it picked would never reach it either.
+    act(() => { mounted.splice(0).forEach(root => root.unmount()) })
+    useUI.setState({ sheets: [] })
+    useStore.setState({ user: null, config: { invite_only: false, allow_guest: true } })
+    customExSheet(null)
+    form = renderTop()
+    await settle()
+    expect(form.textContent).toContain('Your server does not store photos and videos yet.')
+    expect([...form.querySelectorAll('button')].some(b => b.textContent.trim() === 'Add')).toBe(false)
   })
 
   it('where this browser cannot keep files, Add is there but off, and says why', async () => {

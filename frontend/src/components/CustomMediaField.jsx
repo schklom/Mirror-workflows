@@ -17,6 +17,7 @@ import { useUI } from '../store/useUI.js'
 import { t } from '../lib/i18n.js'
 import { mediaOf, fmtClip } from '../lib/media-refs.js'
 import { mediaStore } from '../lib/media-store.js'
+import { MOBILE } from '../lib/mobile.js'
 import { limitsFrom, fmtMB, MB } from '../lib/media-limits.js'
 import { CustomThumb } from './CustomMedia.jsx'
 import { Row, Button } from './ui.jsx'
@@ -54,8 +55,11 @@ export default function CustomMediaField({ media, url, onChange }) {
   const m = mediaOf({ media })
   // Signed in to a server that answered without a `media` block: it predates the feature or has
   // MEDIA_UPLOADS=0. Nothing would ever reach it. A config not known yet (an offline start) is
-  // not that answer — a file picked then waits here and goes up once the server is reached.
-  const serverLacks = !!user && !!config && !config.media
+  // not that answer — a file picked then waits here and goes up once the server is reached. A
+  // guest in the browser is on that same server, and what it picks would be owed and never sent
+  // once it signs up; a phone in local mode has no server (a config left from an earlier pairing
+  // says nothing about it).
+  const serverLacks = (!!user || !MOBILE) && !!config && !config.media
 
   const onFile = async ev => {
     const file = ev.target.files && ev.target.files[0]

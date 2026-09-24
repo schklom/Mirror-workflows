@@ -337,6 +337,8 @@ function streamToFile(req, file, { max, maxMB, idleMs }) {
       clearTimeout(timer);
       req.off('data', onData); req.off('end', onEnd); req.off('error', onReqError); req.off('close', onClose);
       out.off('drain', onDrain);
+      // A socket that errors again after this must not become an unhandled 'error' event.
+      req.on('error', () => {});
     };
     function settle(err, val) {
       if (settled) return;
@@ -648,7 +650,10 @@ export function createMediaStore({ dir, limits, now = Date.now, readState = () =
       try { markIfUnreferenced(uid, e, hash); } catch (err) { log.error('media: could not mark', e.id, hash, err.message); }
       return { status: 201, body: { ok: true, hash, mime: sn.mime, size: got.size, existed: false } };
     } catch (err) {
-      if (err instanceof MediaError) drain(req, 2 * cap);
+      // Whatever went wrong on this side — a refusal, or the disk — the rest of the body is
+      // still on its way, and a request left paused would hold the connection until the
+      // request timeout. A client that hung up has nothing left to drain.
+      if (!err?.clientGone) drain(req, 2 * cap);
       throw err;
     } finally {
       if (tmp) { try { fs.unlinkSync(tmp); } catch { /* never created, or already gone */ } }

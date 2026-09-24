@@ -1547,4 +1547,5 @@ export default {
   'The server cannot be reached': 'सर्वर तक नहीं पहुँचा जा सकता',
   'Your server cannot be reached — your changes are saved on this device and sync once it answers again.': 'आपके सर्वर तक नहीं पहुँचा जा सकता — आपके बदलाव इस डिवाइस पर सहेजे गए हैं और उसके फिर से जवाब देते ही सिंक हो जाएँगे।',
   'Your server cannot be reached — showing the last copy synced with it.': 'आपके सर्वर तक नहीं पहुँचा जा सकता — उससे सिंक की गई आख़िरी प्रति दिखाई जा रही है।',
+  'Server address unknown': 'सर्वर का पता अज्ञात',
 }

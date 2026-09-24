@@ -1550,4 +1550,5 @@ export default {
   'The server cannot be reached': 'A szerver nem érhető el',
   'Your server cannot be reached — your changes are saved on this device and sync once it answers again.': 'A szervered nem érhető el — a módosításaid ezen az eszközön vannak mentve, és szinkronizálódnak, amint újra válaszol.',
   'Your server cannot be reached — showing the last copy synced with it.': 'A szervered nem érhető el — a vele utoljára szinkronizált másolat látható.',
+  'Server address unknown': 'A szerver címe ismeretlen',
 }

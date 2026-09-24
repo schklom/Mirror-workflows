@@ -1547,4 +1547,5 @@ export default {
   'The server cannot be reached': '无法连接服务器',
   'Your server cannot be reached — your changes are saved on this device and sync once it answers again.': '无法连接你的服务器 — 你的更改已保存在此设备上，服务器恢复响应后会自动同步。',
   'Your server cannot be reached — showing the last copy synced with it.': '无法连接你的服务器 — 正在显示最后一次与它同步的副本。',
+  'Server address unknown': '服务器地址未知',
 }

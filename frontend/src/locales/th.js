@@ -1558,4 +1558,5 @@ export default {
   'The server cannot be reached': 'เชื่อมต่อเซิร์ฟเวอร์ไม่ได้',
   'Your server cannot be reached — your changes are saved on this device and sync once it answers again.': 'เชื่อมต่อเซิร์ฟเวอร์ของคุณไม่ได้ — การเปลี่ยนแปลงถูกบันทึกไว้ในอุปกรณ์นี้และจะซิงค์เมื่อเซิร์ฟเวอร์ตอบกลับอีกครั้ง',
   'Your server cannot be reached — showing the last copy synced with it.': 'เชื่อมต่อเซิร์ฟเวอร์ของคุณไม่ได้ — แสดงสำเนาล่าสุดที่ซิงค์กับเซิร์ฟเวอร์',
+  'Server address unknown': 'ไม่ทราบที่อยู่เซิร์ฟเวอร์',
 }

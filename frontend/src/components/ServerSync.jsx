@@ -237,7 +237,9 @@ export function ServerSyncSection({ children }) {
     try { await syncNowWithToast() } finally { setBusy(false) }
   }
   return <Section title={t('Server & sync')}>
-    <Row icon="globe" iconTint="var(--blue)" title={sync.server ? hostOf(sync.server) : t('This phone is not connected to a server.')}
+    {/* No address: a phone an earlier version unpaired. The status row below already says it is
+        not connected; this row only says which server, and there is none to name. */}
+    <Row icon="globe" iconTint="var(--blue)" title={sync.server ? hostOf(sync.server) : t('Server address unknown')}
       subtitle={t('Signed in as {0}', user.name)} />
     <Row icon={view.icon} iconTint={TINT[view.tone]} title={view.line} subtitle={sub} className="sync-status" />
     <Row icon="reset" iconTint="var(--acc)" title={busy ? t('Syncing…') : t('Sync now')} onClick={now} />

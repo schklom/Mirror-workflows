@@ -1547,4 +1547,5 @@ export default {
   'The server cannot be reached': 'Сервер недоступен',
   'Your server cannot be reached — your changes are saved on this device and sync once it answers again.': 'Ваш сервер недоступен — изменения сохранены на этом устройстве и синхронизируются, как только он снова ответит.',
   'Your server cannot be reached — showing the last copy synced with it.': 'Ваш сервер недоступен — показана последняя копия, синхронизированная с ним.',
+  'Server address unknown': 'Адрес сервера неизвестен',
 }

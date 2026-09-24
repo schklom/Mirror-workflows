@@ -1600,4 +1600,5 @@ export default {
   'The server cannot be reached': 'تعذّر الوصول إلى الخادم',
   'Your server cannot be reached — your changes are saved on this device and sync once it answers again.': 'تعذّر الوصول إلى خادمك — تُحفظ تغييراتك على هذا الجهاز وتتزامن عندما يستجيب مجددًا.',
   'Your server cannot be reached — showing the last copy synced with it.': 'تعذّر الوصول إلى خادمك — يُعرض آخر نسخة متزامنة معه.',
+  'Server address unknown': 'عنوان الخادم غير معروف',
 }

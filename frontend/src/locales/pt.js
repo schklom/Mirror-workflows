@@ -1547,4 +1547,5 @@ export default {
   'The server cannot be reached': 'Não é possível chegar ao servidor',
   'Your server cannot be reached — your changes are saved on this device and sync once it answers again.': 'Não é possível chegar ao teu servidor — as tuas alterações ficam guardadas neste dispositivo e sincronizam assim que ele voltar a responder.',
   'Your server cannot be reached — showing the last copy synced with it.': 'Não é possível chegar ao teu servidor — a mostrar a última cópia sincronizada com ele.',
+  'Server address unknown': 'Endereço do servidor desconhecido',
 }

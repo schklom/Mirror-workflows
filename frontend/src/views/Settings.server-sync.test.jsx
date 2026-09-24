@@ -123,6 +123,17 @@ describe('Server & sync', () => {
     expect(mocks.toast).toHaveBeenCalledWith('The server refuses this phone')
   })
 
+  // A v1.3.8 phone that lost its pairing, upgraded: both rows said "This phone is not connected to a
+  // server." (Android QA, v1.3.9). The status row says it; the server row says there is no address.
+  it('a phone an earlier version unpaired says it is not connected once, and that its address is unknown', () => {
+    mocks.sync = sync('auth', { auth: true, pending: true, server: null, lastError: { status: 0, code: 'not-paired' } })
+    const page = mount(<Settings />)
+    const b = block(page)
+    expect(rowByTitle(b, 'Server address unknown').textContent).toContain('Signed in as andi')
+    expect([...b.querySelectorAll('.lrow-t')].filter(el => el.textContent === 'This phone is not connected to a server.')).toHaveLength(1)
+    expect(rowByTitle(b, 'Pair again')).toBeTruthy()
+  })
+
   it('a browser with a server error shows the HTTP code; one that never synced here says so', () => {
     mocks.MOBILE = false
     mocks.sync = sync('error', { pending: true, lastError: { status: 502, code: 'http' } })

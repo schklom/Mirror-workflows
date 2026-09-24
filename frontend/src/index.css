@@ -1124,8 +1124,10 @@ body.chips-dragging *{cursor:inherit}
 #timer.working{border:var(--hair) solid var(--acc)}
 #timer.working .t{color:var(--acc)}
 #timer.working .grow{flex:1;min-width:0}
+/* The label is the exercise name, handed in already cased (exerciseNameText): a capitalize here
+   would title-case German's own casing too. */
 #timer.working .lbl{
-  font-size:12px;color:var(--label-2);margin-bottom:5px;text-transform:capitalize;
+  font-size:12px;color:var(--label-2);margin-bottom:5px;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
 

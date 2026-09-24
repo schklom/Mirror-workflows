@@ -3,9 +3,9 @@ import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/useStore.js'
 import { EXIDX, matchExercise, betterWeight } from '../lib/exercises.js'
 import { lastBW, streakWeeks, setLabel, modeOf, effortOf, entriesForExercise, metricEntriesForExercise, metricModeForEntry, bestWeightForEntry, completedRepsOf, workoutDay } from '../lib/history.js'
-import { fmtNum, fmtDate, fmtVol, todayISO, weekStartOf } from '../lib/format.js'
+import { fmtNum, fmtDate, fmtVol, todayISO, weekStartOf, exerciseNameText } from '../lib/format.js'
 import { speedUnitOf, speedLabel, toSpeed } from '../lib/speed.js'
-import { t, exerciseNameFor, getLang } from '../lib/i18n.js'
+import { t, exerciseNameFor, exerciseNameClass, getLang } from '../lib/i18n.js'
 import { bwSheet, goalSheet, calendarSheet, workoutDetailSheet, exerciseHistorySheet, WorkoutRow, bwDeltaColor, weighInsSheet } from '../sheets.jsx'
 import LineChart from '../components/LineChart.jsx'
 import Heatmap from '../components/Heatmap.jsx'
@@ -196,7 +196,7 @@ function MuscleBalance({ S }) {
           <div key={row.id} className="mrow" style={{ minHeight: 48, alignItems: 'stretch', cursor: 'pointer' }} {...tappable(() => exerciseHistorySheet(row.id))}>
             <span className="nm" style={{ whiteSpace: 'normal', lineHeight: 1.35, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
               <span style={{ display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                {row.name}
+                <span className={EXIDX[row.id] ? exerciseNameClass(EXIDX[row.id]) : undefined}>{row.name}</span>
                 {row.primary === sel
                   ? <span className="dim" style={{ fontSize: 11, marginInlineStart: 6 }}>{t('primary')}</span>
                   : <span className="dim" style={{ fontSize: 11, marginInlineStart: 6 }}>{t('secondary')}</span>}
@@ -502,7 +502,7 @@ export default function Stats() {
         {exHist.length ? <>
           <div className="sect-b" style={{ marginBottom: 10 }}>
             <SelectRow title={t('Exercise')} sheetTitle={t('Exercise progress')} value={curEx} onChange={setExId} stackedValue
-              options={exHist.map(id => ({ value: id, label: nameOf(id) + (exCurrent[id].mx ? ' ' + '—' + ' ' + fmtNum(exCurrent[id].mx) + ' ' + exCurrent[id].unit : '') }))}
+              options={exHist.map(id => ({ value: id, label: (EXIDX[id] ? exerciseNameText(EXIDX[id]) : nameOf(id)) + (exCurrent[id].mx ? ' ' + '—' + ' ' + fmtNum(exCurrent[id].mx) + ' ' + exCurrent[id].unit : '') }))}
               search={{
                 placeholder: t('Search…'),
                 label: t('Search…'),

@@ -4,7 +4,7 @@ import { useStore } from '../store/useStore.js'
 import { useUI } from '../store/useUI.js'
 import { exOr } from '../lib/exercises.js'
 import { activeProfile, exAvailable } from '../lib/equipment.js'
-import { uid, capWords } from '../lib/format.js'
+import { uid, exerciseNameText } from '../lib/format.js'
 import { t, exerciseNameFor, exerciseNameClass } from '../lib/i18n.js'
 import { supersetUnits, moveSupersetUnit, cleanupSg, exLine, defaultConfig } from '../lib/history.js'
 import { Thumb } from '../components/Media.jsx'
@@ -353,7 +353,7 @@ export default function RoutineEdit() {
       picker.close()
       let done = false
       edit(x => { if (x[i] && x[i].id === openedOn) { x[i] = fn(x[i]); done = true } })
-      if (done) toast(t('Replaced with “{0}”', exerciseNameClass(ex) ? capWords(exerciseNameFor(ex)) : exerciseNameFor(ex)))
+      if (done) toast(t('Replaced with “{0}”', exerciseNameText(ex)))
     }
     const picker = exercisePicker((ex, quick) => {
       // The slot and the history as they are now, not as this render saw them: a sync can land
@@ -490,7 +490,7 @@ export default function RoutineEdit() {
     <Button variant="primary" onClick={() => exercisePicker((ex, quick) => {
       if (quick) {
         edit(x => x.push({ id: ex.id, ...defaultConfig(ex.id) }))
-        toast(t('“{0}” added to {1}', exerciseNameFor(ex), r.name))
+        toast(t('“{0}” added to {1}', exerciseNameText(ex), r.name))
       } else {
         exConfigSheet(ex, null, cfg => edit(x => { x.push({ id: ex.id, ...cfg }) }), null, r)
       }

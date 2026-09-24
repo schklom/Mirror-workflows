@@ -493,13 +493,15 @@ describe('Stats exercise progress picker', () => {
     await click(modal.querySelector('button[aria-label="Clear"]'))
     await setSearch('squat full bárbell')
 
-    expect(modal.textContent).toContain('barbell full squat')
-    expect(modal.textContent).not.toContain('barbell bench press')
+    // A catalogue name is title-cased like it is in every list (exerciseNameText); the legacy
+    // snapshot above keeps the name as it was typed.
+    expect(modal.textContent).toContain('Barbell Full Squat')
+    expect(modal.textContent).not.toContain('Barbell Bench Press')
 
-    const matching = [...modal.querySelectorAll('button')].find(button => button.textContent.includes('barbell full squat'))
+    const matching = [...modal.querySelectorAll('button')].find(button => button.textContent.includes('Barbell Full Squat'))
     await click(matching)
 
     expect(useUI.getState().sheets).toHaveLength(0)
-    expect(card.querySelector('.lrow-v').textContent).toContain('barbell full squat')
+    expect(card.querySelector('.lrow-v').textContent).toContain('Barbell Full Squat')
   })
 })

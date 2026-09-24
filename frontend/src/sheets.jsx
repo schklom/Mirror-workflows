@@ -3,7 +3,7 @@ import { useStore } from './store/useStore.js'
 import { useUI } from './store/useUI.js'
 import { EXDB, EXIDX, BODYPARTS, isCardio, isBodyweightEq, allExercises, equipmentOf, smOf, searchExercises, exOr, isAssisted, betterWeight, beatsWeight } from './lib/exercises.js'
 import { activeProfile, exAvailable, ALL_EQUIPMENT, newProfile } from './lib/equipment.js'
-import { fmtDate, fmtNum, fmtPlate, capWords, fmtVol, fmtDur, durPart, todayISO, isoOf, uid, exCount, routineCount, DAYN, DAYS, weekOrder, weekStartOf, weekDayOffset, MONTHS_LONG, ACCENTS } from './lib/format.js'
+import { fmtDate, fmtNum, fmtPlate, exerciseNameText, fmtVol, fmtDur, durPart, todayISO, isoOf, uid, exCount, routineCount, DAYN, DAYS, weekOrder, weekStartOf, weekDayOffset, MONTHS_LONG, ACCENTS } from './lib/format.js'
 import { lastEntryFor, bestWeightFor, bestWeightForEntry, buildSets, effectiveRoutineIds, workoutDay, workoutVolume, setsDone, setsDoneActive, setUnitsTotal, lastBW, supersetUnits, sessionSections, unitOf, setLabel, defaultConfig, cleanupSg, modeOf, effortOf, EFFORT, capEffort, stepEffort, isBw, isPerSide, sideReps, workSetsDone, applyIntensifierPlan, MAX_PLANNED_WARMUPS, NOTE_MAX } from './lib/history.js'
 import { usesBar, defaultBarWeight, hasBarOverride, isNoBar } from './lib/bar.js'
 import { PLATE_SIZES, pairsOf, ownsPlates, withPlatePairs, withStandardPlates, withLoadKind, loadKindFor, baseWeightFor } from './lib/plates.js'
@@ -887,7 +887,7 @@ function AddToRoutine({ ex, close }) {
         if (r) r.ex.push({ id: ex.id, ...cfg })
       })
       const r = isNew ? S().routines[S().routines.length - 1] : st.routines.find(x => x.id === rid)
-      toast(t('“{0}” added to {1}', exerciseNameClass(ex) ? capWords(exerciseNameFor(ex)) : exerciseNameFor(ex), r ? r.name : t('routine')))
+      toast(t('“{0}” added to {1}', exerciseNameText(ex), r ? r.name : t('routine')))
       if (isNew && r) nav('/plan/r/' + r.id)
     }, null, isNew ? null : st.routines.find(x => x.id === rid))
   }

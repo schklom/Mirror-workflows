@@ -1,5 +1,5 @@
 // Formatting + date helpers (ported from the vanilla app, unit taken from the store where needed).
-import { dateLocale, t } from './i18n-core.js'
+import { dateLocale, t, exerciseNameFor, exerciseNameClass } from './i18n-core.js'
 export const todayISO = () => {
   const d = new Date()
   return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0')
@@ -30,6 +30,10 @@ export const durPart = ms => (ms >= 60000 ? [fmtDur(ms)] : [])
 // Exercise names are stored lower-case and shown through CSS `capitalize`; text that has no
 // element of its own (a toast) capitalises here instead.
 export const capWords = s => String(s || '').replace(/(^|[\s(\-\/])(\p{Ll})/gu, (m, pre, ch) => pre + ch.toUpperCase())
+// An exercise's display name as plain text, cased the way its element would be on screen
+// (exerciseNameClass): for a toast, a dialog title or a picker label, which have no element of
+// their own to put the class on.
+export const exerciseNameText = ex => (exerciseNameClass(ex) ? capWords(exerciseNameFor(ex)) : exerciseNameFor(ex))
 /* How many decimals a weight is shown with. One is enough for plate-loadable numbers, but a
  * per-side figure from kg plates lands on .25 and .75 and reading those as .3 and .8 is the
  * complaint in issue #139 — as is microplate work. The setting is read here rather than passed

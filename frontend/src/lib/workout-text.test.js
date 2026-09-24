@@ -1,6 +1,8 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
 import { workoutText } from './workout-text.js'
 import { fmtDate } from './format.js'
+import { EXIDX } from './exercises.js'
+import { EXERCISE_NAME_LANGS, _setLangState, exerciseNameFor } from './i18n-core.js'
 
 // Discord 'Improvement ideas': a past workout copied as plain text to paste anywhere.
 describe('workoutText', () => {
@@ -86,5 +88,28 @@ describe('workoutText speed unit', () => {
     const nameOf = () => 'run'
     expect(workoutText(w, { unit: 'lb', nameOf, speedUnit: 'mph' }).split('\n').at(-1)).toBe('20 min @ 10 mph')
     expect(workoutText(w, { unit: 'kg', nameOf }).split('\n').at(-1)).toBe('20 min @ 16.1 km/h')
+  })
+})
+
+// Copy as text has no CSS to title-case with, so it capitalises itself wherever the screen does
+// (exerciseNameClass): every translated pack stored lower-case, and not German's own casing.
+describe('workoutText exercise names per language', () => {
+  const packs = import.meta.glob('../exercise-names/*.js', { eager: true, import: 'default' })
+  const w = { id: 'w2', d: '2026-09-03', start: 0, end: 0, name: 'Push', vol: 0,
+    entries: [{ id: '0025', target: { mode: 'reps' }, sets: [{ w: 60, r: 8, done: true }] }] }
+  const nameLine = () => workoutText(w, { unit: 'kg', nameOf: e => exerciseNameFor(EXIDX[e.id]) }).split('\n\n')[1].split('\n')[0]
+  afterEach(() => _setLangState('en', {}, null, null))
+
+  it('keeps German as the pack writes it and title-cases the lower-case packs', () => {
+    const expected = {
+      de: 'Bankdrücken mit Langhantel', es: 'Press De Banca Con Barra', fr: 'Développé Couché À La Barre',
+      it: 'Panca Piana Con Bilanciere', 'pt-BR': 'Supino Com Barra', ru: 'Жим Штанги Лёжа', hu: 'Fekvenyomás Rúddal',
+    }
+    for (const lang of EXERCISE_NAME_LANGS) {
+      _setLangState(lang, {}, null, packs[`../exercise-names/${lang}.js`], false)
+      expect(nameLine(), lang).toBe(expected[lang])
+    }
+    _setLangState('en', {}, null, null)
+    expect(nameLine()).toBe('Barbell Bench Press')
   })
 })

@@ -8,7 +8,7 @@ import { exOr, betterWeight } from '../lib/exercises.js'
 import { usesBar } from '../lib/bar.js'
 import { loadKindFor, baseWeightFor, inventoryFor, rowLoad, sameLoad, plateDelta } from '../lib/plates.js'
 import { effectiveRoutines, effectiveRoutineIds, lastEntryFor, bestWeightFor, bestWeightForEntry, buildSets, freestyleConfig, defaultConfig, setsDoneActive, setUnitsTotal, supersetUnits, unitOf, setLabel, modeOf, isBw, isPerSide, repStep, EFFORT, effortOf, stepEffort, capEffort, cascadeWeight, insertWarmupRow, removeRowAt, pairAdjacent, unpairSuperset, cleanupSg, applyIntensifierPlan, pinnedNoteFor, exNoteFor, setsRepsOf } from '../lib/history.js'
-import { fmtNum, fmtPlate, capWords, fmtDate, todayISO, exCount, DAYN } from '../lib/format.js'
+import { fmtNum, fmtPlate, exerciseNameText, fmtDate, todayISO, exCount, DAYN } from '../lib/format.js'
 import { speedUnitOf, toSpeed, fromSpeed } from '../lib/speed.js'
 import { beep, vibrate, unlock } from '../lib/sound.js'
 import { t, exerciseNameFor, exerciseNameClass } from '../lib/i18n.js'
@@ -996,7 +996,7 @@ function ActiveWorkout() {
     if (!e) return
     const hasDone = (e.sets || []).some(s => s.done)
     confirmSheet({
-      title: t('Remove {0}?', exerciseNameFor(exOr(e.id))),
+      title: t('Remove {0}?', exerciseNameText(exOr(e.id))),
       message: hasDone
         ? t('The sets you logged for this exercise in this session will be lost.')
         : t('This removes the exercise from your current session.'),
@@ -1011,7 +1011,7 @@ function ActiveWorkout() {
           <div className="muted small" style={{ marginBottom: 12 }}>{t('Which exercise in this superset do you want to remove?')}</div>
           <div className="list">
             {unit.map(idx => <div key={idx} className="item" onClick={() => { close(); confirmRemoveExercise(idx) }}>
-              <div className="grow"><div className="tt">{exerciseNameFor(exOr(A.entries[idx]?.id))}</div></div>
+              <div className="grow"><div className={`tt ${exerciseNameClass(exOr(A.entries[idx]?.id))}`}>{exerciseNameFor(exOr(A.entries[idx]?.id))}</div></div>
               <Icon name="chevronRight" />
             </div>)}
           </div>
@@ -1037,7 +1037,7 @@ function ActiveWorkout() {
     // the row is held to the end, ticked, or given a duration you typed yourself, and it never
     // reaches S.workouts (lib/finish-workout.js).
     const plan = (!e.sets[i].done && e.sets[i].planSec) || e.sets[i].sec || 45
-    useUI.getState().startWork(plan, exerciseNameFor(exOr(e.id)), (elapsed, { abandoned = false, chimed = false } = {}) => {
+    useUI.getState().startWork(plan, exerciseNameText(exOr(e.id)), (elapsed, { abandoned = false, chimed = false } = {}) => {
       // A hold a rest displaced (useUI.abandonWork: a set ticked on another row, or another
       // exercise) keeps its seconds and nothing else. It is not a finish: the row stays unticked
       // and starts no rest, because the rest that displaced the hold is already counting down —
@@ -1381,7 +1381,7 @@ function ActiveWorkout() {
       // button. Quick-add commits with the same default (or, freestyle, last-session) config
       // the sheet would have opened with; tapping the row still opens that sheet for anyone
       // who wants to set sets/reps first.
-      if (quick) { commit(seed || defaultConfig(ex.id)); useUI.getState().toast(t('“{0}” added to {1}', exerciseNameClass(ex) ? capWords(exerciseNameFor(ex)) : exerciseNameFor(ex), routine ? routine.name : t('Freestyle'))) }
+      if (quick) { commit(seed || defaultConfig(ex.id)); useUI.getState().toast(t('“{0}” added to {1}', exerciseNameText(ex), routine ? routine.name : t('Freestyle'))) }
       else exConfigSheet(ex, null, commit, null, routine, seed)
     })} icon="plus">{t('Add exercise')}</Button>
     {wc.exerciseButtons && A.entries.length > 0 && <>

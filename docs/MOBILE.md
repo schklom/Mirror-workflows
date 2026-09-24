@@ -87,6 +87,39 @@ Where the phone keeps things, in case you ever need them by hand:
   the copies versions before 1.3.9 wrote straight into `Documents/`, stay until you remove
   them yourself. Settings → **Import backup** reads any of them back, wherever it is.
 
+### Photos and videos of your own exercises
+
+An exercise you create can carry one photo, GIF or short video, and a link to a video or guide.
+The file is prepared on the phone before it is kept anywhere: a photo is re-encoded (at most
+1600 px, WebP or JPEG — the location and camera data a phone writes into a photo do not
+survive), a GIF loses its comment and metadata blocks, and an MP4/MOV keeps its picture and
+sound while its metadata and any GPS or sensor track are zeroed. The original file name is
+never stored.
+
+- **Where it lives:** `Library/opengym-media/` in the app's own storage (iOS's Library folder,
+  Android's files directory), one file per photo or video named by its SHA-256, plus a small
+  `index.json`. The state keeps only a reference of a few hundred bytes. A MOV is stored with
+  an `.mp4` name so the WebView plays it.
+- **Local mode:** that folder is the only copy. **Export with photos & videos (.zip)** in
+  Settings → Data writes a zip with the usual JSON backup and every file, through the share
+  sheet; **Import backup** takes that zip back. The daily auto-backup stays JSON only.
+- **Paired with a server:** files go up to the server (`PUT /api/media/{hash}`) and come down
+  with the phone's token into the same folder, so they show offline too. A file that has not
+  reached the server yet is owed like an unsynced change: **Disconnect** says so and keeps it.
+  Big files wait for Wi-Fi unless you tap Settings → **Photos & videos**.
+- **Backups:** Android's cloud backup leaves `opengym-media/` out
+  (`res/xml/backup_rules.xml`, `res/xml/data_extraction_rules.xml`) — Auto Backup drops an
+  app's whole backup past 25 MB, and a few videos would take the state file down with them. A
+  device-to-device transfer keeps it. iOS includes Library in iCloud and computer backups.
+- **Permissions:** Android already has the camera. iOS asks for the camera
+  (`NSCameraUsageDescription`, now also for photos and videos of exercises) and, to record a
+  video with sound from the picker, the microphone (`NSMicrophoneUsageDescription`).
+
+Worth checking on a real device after changes here, since no test runs a WebView: a short
+video autoplays muted in the Android WebView; a long video seeks from its `_capacitor_file_`
+URL on both platforms; an iPhone photo arrives as JPEG and an iPhone video (HEVC or H.264 MOV)
+plays; the zip export opens the share sheet.
+
 ## Prerequisites
 
 - Node 20+

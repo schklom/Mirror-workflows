@@ -569,7 +569,6 @@ export const useStore = create((set, get) => {
   // Everything a sign-out leaves behind on this device, whichever way it was triggered. The owner
   // goes last, after the wiped copy is written — the storage listener above relies on the order.
   const clearLocalSession = () => {
-    const hadMedia = referencedHashes(get().S).size > 0
     get().setUser(null)
     localStorage.removeItem('gym_guest')
     forgetSync()
@@ -585,15 +584,14 @@ export const useStore = create((set, get) => {
     // The account's photos and videos go with its copy (a shared device keeps nothing of it),
     // except the ones a stash still refers to — whatever was pending is in a stash by now
     // (signOut refuses otherwise) and comes back with it. A file picked from here on is kept.
-    // After the state file, which is the one write a sign-out must not be kept waiting for. A
-    // copy that referred to no media leaves the store alone; files of exercises deleted earlier
-    // are the local clean-up's (lib/media-sync.js localMediaGc).
-    if (hadMedia) {
-      const since = Date.now()
-      Promise.resolve(wiped).then(() => readStashes())
-        .then(all => mediaStore.retainOnly(new Set(Object.values(all).flatMap(e => [...referencedHashes(e?.state)])), { keepPutAfter: since }))
-        .catch(() => {})
-    }
+    // After the state file, which is the one write a sign-out must not be kept waiting for. Even
+    // when the copy refers to no media any more: a photo removed in the last hour, or one whose
+    // exercise was deleted, is still in the store until the local clean-up's grace has passed,
+    // and on a shared device it must not outlast the sign-out.
+    const since = Date.now()
+    Promise.resolve(wiped).then(() => readStashes())
+      .then(all => mediaStore.retainOnly(new Set(Object.values(all).flatMap(e => [...referencedHashes(e?.state)])), { keepPutAfter: since }))
+      .catch(() => {})
     return wiped
   }
 

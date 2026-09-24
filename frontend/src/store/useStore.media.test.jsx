@@ -85,6 +85,17 @@ describe('owed photos and videos', () => {
     expect(await media.has('c'.repeat(64))).toBe(false)
   })
 
+  it('a sign-out takes the account\'s files even when its copy no longer refers to any (a photo removed a moment ago)', async () => {
+    await media.put(A, new Blob(['abc']), { mime: 'image/webp', pending: false })
+    await new Promise(r => setTimeout(r, 5))   // put before the sign-out, not during it
+    useStore.setState({ S: { ...clone(DEF), _ts: 100 }, user: USER, ready: true, sync: { ...fresh } })
+    localStorage.setItem('gym_sync', JSON.stringify({ rev: 1, ts: 100 }))
+    api.mockImplementation(async (path, o) => (o?.method === 'PUT' ? { ok: true, rev: 2 } : { ok: true }))
+    expect(await useStore.getState().signOut()).toEqual({ owed: false })
+    await new Promise(r => setTimeout(r, 20))   // the purge runs after the wiped copy is written
+    expect(await media.has(A)).toBe(false)
+  })
+
   it('a different account signing in keeps the previous one\'s waiting photo aside, even with no workouts', async () => {
     await media.put(A, new Blob(['abc']), { mime: 'image/webp', pending: true })
     // The copy owes nothing else: no workouts, no routines — only the custom exercise and its photo.

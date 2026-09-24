@@ -1490,8 +1490,8 @@ const mediaRoutes = {
   // session and the hourly budget.
   'PUT /api/media/{hash}': async (req, res) => {
     const user = readSession(req);
-    if (!user) return json(res, 401, { error: 'not signed in' });
-    mediaThrottle(req, user, MEDIA_BURST);
+    if (!user) { MEDIA.discard(req); return json(res, 401, { error: 'not signed in' }); }
+    try { mediaThrottle(req, user, MEDIA_BURST); } catch (e) { MEDIA.discard(req); throw e; }
     const r = await MEDIA.receive(user.id, req.mediaHash, req);
     json(res, r.status, r.body);
   },

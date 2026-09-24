@@ -659,6 +659,10 @@ export function createMediaStore({ dir, limits, now = Date.now, readState = () =
 
   return {
     limits: L,
+    /** For a refusal decided before receive() (no session, the hourly budget): takes at most
+     *  twice the largest cap off the wire so the answer arrives, then closes the socket, instead
+     *  of leaving node to read an unbounded body to its end. */
+    discard: req => drain(req, 2 * maxCap),
     usage: uid => usageOf(entry(uid)),
     has: (uid, hash) => entry(uid).hashes.has(hash),
     /** { path, ext, mime, size } of a stored file, or null. Checks the disk, so a file that

@@ -199,6 +199,22 @@ test('a third upload at once is refused as busy', async t => {
   assert.equal((await h.store.receive('u1', M.sha(c), M.fakeReq(c))).status, 201, 'the slots came back');
 });
 
+test('a refused upload is drained up to twice the largest cap, then cut off', async t => {
+  const h = setup(t, { imageMB: 0.001, gifMB: 0.001, videoMB: 0.01 });
+  const small = M.jpeg(15000);                       // under 2 × 10 KB: read to its end
+  const a = M.fakeReq(small);
+  h.store.discard(a);
+  await new Promise(r => a.on('end', r));
+  assert.equal(a.readableEnded, true);
+  const big = M.jpeg(200000);                        // far over: cut off, not read to the end
+  const b = M.fakeReq(big, { chunk: 4096 });
+  let seen = 0;
+  b.on('data', d => { seen += d.length; });
+  h.store.discard(b);
+  await new Promise(r => b.on('close', r));
+  assert.ok(!b.readableEnded && seen < 40000, `read ${seen} bytes`);
+});
+
 test('the disk floor refuses an upload with 507 and holds no reservation afterwards', async t => {
   const h = setup(t, { minFreeMB: 1e9 });
   const bytes = M.jpeg();

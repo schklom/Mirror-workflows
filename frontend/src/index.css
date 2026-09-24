@@ -772,6 +772,55 @@ body.chips-dragging *{cursor:inherit}
 .exmedia-x{width:100%;height:320px;display:flex;align-items:center;justify-content:center;color:var(--label-3);font-size:34px}
 .exmedia.compact .exmedia-x{height:120px}
 .exmedia.mini .exmedia-x{height:84px}
+/* a custom exercise's own video (components/CustomMedia.jsx): the same box as a picture, on black
+   so a clip that does not fill it is letterboxed like any player */
+.exmedia video{width:100%;height:320px;object-fit:contain;display:block;background:#000}
+.exmedia.compact video{height:120px}
+.exmedia.mini video{height:84px}
+.exmedia:has(> video){background:#000}
+
+/* the link to a video or a guide (#246): a quiet action tile under the picture, or in its place.
+   A <button>, so the reset of the browser's button look comes first. */
+.exlink-card{
+  display:flex;align-items:center;gap:12px;width:100%;text-align:start;font:inherit;border:0;
+  background:var(--surface);border-radius:var(--r-card);
+  padding:10px 14px;margin-bottom:12px;
+  cursor:pointer;color:var(--label);
+  transition:background var(--fast),transform var(--fast);
+  user-select:none;-webkit-user-select:none;
+}
+.exlink-card:active{background:var(--surface-2);transform:scale(.98)}
+.exlink-icon{
+  width:34px;height:34px;border-radius:9px;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--surface-2);color:var(--label);font-size:18px;flex:none;
+}
+.exlink-meta{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.exlink-title{
+  font-size:15px;font-weight:500;color:var(--label);line-height:1.25;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+/* a host name reads left to right in every language; text-align keeps it on the reading side */
+.exlink-sub{
+  font-size:12px;color:var(--label-2);line-height:1.2;text-align:start;unicode-bidi:plaintext;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.exlink-arr{color:var(--label-3);font-size:14px;flex:none}
+.exlink-card.mini{padding:6px 12px;gap:10px}
+.exlink-card.mini .exlink-icon{width:28px;height:28px;font-size:15px;border-radius:7px}
+.exlink-card.mini .exlink-title{font-size:13px}
+
+/* the editor's field (components/CustomMediaField.jsx): the row, a 36px thumb of the draft, the
+   buttons beside it, the notes under it and the link input */
+.cmf{margin-top:8px}
+.cmf .lrow{padding-inline:4px}
+.cmf-act{display:flex;align-items:center;gap:6px;flex:none}
+.cmf-thumb .thumb{width:36px;height:36px;border-radius:8px}
+.cmf-thumb .thumb-x{font-size:16px}
+.cmf-sub{display:inline-flex;align-items:center;gap:4px}
+.cmf-sub .icn{font-size:13px}
+.cmf-note{margin:0 4px 6px;line-height:1.35}
+.cmf-link{margin-top:4px}
 
 .sethead{
   display:flex;align-items:center;gap:8px;padding:0 0 6px;
@@ -1506,7 +1555,7 @@ body.chips-dragging *{cursor:inherit}
   /* 520px fits the clock, the bar and all three controls on one line again */
   #timer.rest{flex-direction:row;align-items:center;gap:14px}
   #timer.rest .head{flex:1;min-width:0}
-  .exmedia img{height:380px}
+  .exmedia img,.exmedia video{height:380px}
   .hm-wrap{display:flex;flex-direction:column;align-items:center}
 }
 

@@ -8,7 +8,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 
 vi.mock('./mobile.js', () => ({ MOBILE: true }))
 
-import { api, setRemoteAuth } from './api.js'
+import { api, beacon, setRemoteAuth } from './api.js'
 
 afterEach(() => { vi.unstubAllGlobals(); setRemoteAuth('', null) })
 
@@ -28,5 +28,18 @@ describe('api() on the phone build', () => {
     await expect(api('/api/data/rev')).resolves.toEqual({ rev: 3 })
     expect(fetch.mock.calls[0][0]).toBe('https://gym.example.com/api/data/rev')
     expect(fetch.mock.calls[0][1].headers.Authorization).toBe('Bearer TOKEN')
+  })
+})
+
+// The workout screen's "left" beacon went to https://localhost/api/activity on every phone, paired
+// or not: Capacitor's asset server answered it with index.html (Android QA, v1.3.9).
+describe('the "left" beacon on the phone build', () => {
+  it('is never sent, paired or not: the api() call beside it is the one that reaches the server', () => {
+    const sendBeacon = vi.fn(() => true)
+    vi.stubGlobal('navigator', { ...navigator, sendBeacon })
+    expect(beacon('/api/activity', { active: false })).toBe(false)
+    setRemoteAuth('https://gym.example.com', 'TOKEN')
+    expect(beacon('/api/activity', { active: false })).toBe(false)
+    expect(sendBeacon).not.toHaveBeenCalled()
   })
 })

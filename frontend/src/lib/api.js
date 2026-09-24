@@ -81,6 +81,19 @@ async function exchange(url, init) {
   return body
 }
 
+// A "left" signal sent as the page goes: sendBeacon outlives a closing tab, where fetch may not.
+// Only the web app sends one, to its own origin with its session cookie. A beacon carries no
+// Authorization header, so a paired phone's server could not tell whose it is, and the phone's own
+// origin is Capacitor's asset server, which answers every path with index.html: the phones sent
+// every "left" to https://localhost/api/activity. The api() call beside it reaches the server.
+export function beacon(path, body) {
+  if (MOBILE) return false
+  try {
+    if (typeof navigator === 'undefined' || typeof navigator.sendBeacon !== 'function') return false
+    return !!navigator.sendBeacon(appBase().replace(/\/$/, '') + path, new Blob([JSON.stringify(body)], { type: 'application/json' }))
+  } catch { return false }
+}
+
 // Bootstraps the connection itself: the base isn't configured yet (that's what this call decides),
 // so it talks straight to the server the user typed in, no Authorization header.
 export async function pairRedeem(serverBase, code) {

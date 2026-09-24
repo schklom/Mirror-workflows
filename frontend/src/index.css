@@ -57,8 +57,13 @@
   --ease:cubic-bezier(.32,.72,0,1);
   --fast:140ms; --med:220ms;
 
-  --sab:env(safe-area-inset-bottom,0px);
-  --sat:env(safe-area-inset-top,0px);
+  /* The system bars the page is drawn under. env() is all a browser and the iOS app give; the
+     Android WebView reports only the camera cutout there, and on Android 15, which draws the app
+     under the status and navigation bars, the app passes the bars themselves as --native-sat and
+     --native-sab (MainActivity.java). The larger one wins, so a WebView that learns to report
+     the bars does not count them twice. */
+  --sab:max(env(safe-area-inset-bottom,0px),var(--native-sab,0px));
+  --sat:max(env(safe-area-inset-top,0px),var(--native-sat,0px));
   /* height of the connection indicator under the status bar, 0 while there is none — set by
      components/SyncBanner.jsx. Whatever starts at the top of the screen starts below it. */
   --conn:0px;

@@ -1558,6 +1558,7 @@ export default {
   'That video is too long — up to {0} seconds.': 'यह वीडियो बहुत लंबा है — अधिकतम {0} सेकंड।',
   'That photo is too large to process on this device.': 'यह फ़ोटो इस डिवाइस पर प्रोसेस करने के लिए बहुत बड़ी है।',
   'This browser cannot read that file.': 'यह ब्राउज़र उस फ़ाइल को नहीं पढ़ सकता।',
+  'There is no room left on this device for that file.': 'इस डिवाइस पर उस फ़ाइल के लिए जगह नहीं बची है।',
   'This video may not play on every device — MP4 (H.264) plays everywhere.': 'यह वीडियो शायद हर डिवाइस पर न चले — MP4 (H.264) हर जगह चलता है।',
   'Your photo and video space on the server is full ({0} of {1} MB).': 'सर्वर पर आपकी फ़ोटो और वीडियो की जगह भर गई है ({1} में से {0} MB)।',
   'The server refused the file as too large.': 'सर्वर ने फ़ाइल को बहुत बड़ी बताकर अस्वीकार कर दिया।',

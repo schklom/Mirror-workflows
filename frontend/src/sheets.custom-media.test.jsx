@@ -165,6 +165,15 @@ describe('custom exercise photo, GIF or video, and link', () => {
     expect(form.querySelector('.cmf-thumb')).toBeNull()
   })
 
+  it('a device with no room for the file says so, rather than that the file cannot be read', async () => {
+    media.put = vi.fn(async () => { throw new DOMException('The quota has been exceeded.', 'QuotaExceededError') })
+    customExSheet(null)
+    const form = renderTop()
+    await pick(form)
+    expect(useUI.getState().toastMsg).toBe('There is no room left on this device for that file.')
+    expect(form.querySelector('.cmf-thumb')).toBeNull()
+  })
+
   it('says a guest keeps it on this device only, and hides Add on a server that stores no media', async () => {
     customExSheet(null)
     let form = renderTop()

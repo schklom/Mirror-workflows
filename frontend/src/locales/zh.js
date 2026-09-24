@@ -1558,6 +1558,7 @@ export default {
   'That video is too long — up to {0} seconds.': '视频太长——最长 {0} 秒。',
   'That photo is too large to process on this device.': '照片太大，无法在此设备上处理。',
   'This browser cannot read that file.': '此浏览器无法读取该文件。',
+  'There is no room left on this device for that file.': '此设备上已没有空间存放该文件。',
   'This video may not play on every device — MP4 (H.264) plays everywhere.': '此视频可能无法在所有设备上播放——MP4（H.264）在任何设备上都能播放。',
   'Your photo and video space on the server is full ({0} of {1} MB).': '你在服务器上的照片和视频空间已满（{0} / {1} MB）。',
   'The server refused the file as too large.': '服务器因文件过大而拒绝了它。',

@@ -1611,6 +1611,7 @@ export default {
   'That video is too long — up to {0} seconds.': 'هذا الفيديو طويل جدًا — الحد الأقصى {0} ثانية.',
   'That photo is too large to process on this device.': 'هذه الصورة أكبر من أن تُعالَج على هذا الجهاز.',
   'This browser cannot read that file.': 'لا يستطيع هذا المتصفح قراءة ذلك الملف.',
+  'There is no room left on this device for that file.': 'لم تعد هناك مساحة على هذا الجهاز لذلك الملف.',
   'This video may not play on every device — MP4 (H.264) plays everywhere.': 'قد لا يعمل هذا الفيديو على كل الأجهزة — صيغة MP4 (H.264) تعمل في كل مكان.',
   'Your photo and video space on the server is full ({0} of {1} MB).': 'امتلأت مساحة الصور والفيديو الخاصة بك على الخادم ({0} من {1} م.ب).',
   'The server refused the file as too large.': 'رفض الخادم الملف لأنه كبير جدًا.',

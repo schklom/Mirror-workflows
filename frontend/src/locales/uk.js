@@ -1555,6 +1555,7 @@ export default {
   'That video is too long — up to {0} seconds.': 'Відео задовге — не довше {0} секунд.',
   'That photo is too large to process on this device.': 'Це фото завелике, щоб обробити його на цьому пристрої.',
   'This browser cannot read that file.': 'Цей браузер не може прочитати файл.',
+  'There is no room left on this device for that file.': 'На цьому пристрої не залишилося місця для цього файлу.',
   'This video may not play on every device — MP4 (H.264) plays everywhere.': 'Це відео може відтворюватися не на всіх пристроях — MP4 (H.264) працює скрізь.',
   'Your photo and video space on the server is full ({0} of {1} MB).': 'Місце для фото й відео на сервері закінчилося ({0} з {1} МБ).',
   'The server refused the file as too large.': 'Сервер відхилив файл як завеликий.',

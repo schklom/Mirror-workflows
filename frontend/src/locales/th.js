@@ -1569,6 +1569,7 @@ export default {
   'That video is too long — up to {0} seconds.': 'วิดีโอยาวเกินไป — ไม่เกิน {0} วินาที',
   'That photo is too large to process on this device.': 'รูปนี้ใหญ่เกินกว่าจะประมวลผลบนอุปกรณ์นี้ได้',
   'This browser cannot read that file.': 'เบราว์เซอร์นี้อ่านไฟล์นั้นไม่ได้',
+  'There is no room left on this device for that file.': 'อุปกรณ์นี้ไม่มีพื้นที่เหลือสำหรับไฟล์นั้น',
   'This video may not play on every device — MP4 (H.264) plays everywhere.': 'วิดีโอนี้อาจเล่นไม่ได้ในทุกอุปกรณ์ — MP4 (H.264) เล่นได้ทุกที่',
   'Your photo and video space on the server is full ({0} of {1} MB).': 'พื้นที่รูปภาพและวิดีโอของคุณบนเซิร์ฟเวอร์เต็มแล้ว ({0} จาก {1} MB)',
   'The server refused the file as too large.': 'เซิร์ฟเวอร์ปฏิเสธไฟล์เพราะใหญ่เกินไป',

@@ -25,8 +25,15 @@ import Icon from './Icon.jsx'
 
 const toast = m => useUI.getState().toast(m)
 
-/** The sentence for a refused file (MediaError codes from lib/media-ingest.js). */
+// A write the local store refused for room — IndexedDB's quota (Firefox names it its own way), or
+// a full phone under the file store. The file itself was fine; saying the browser cannot read it
+// would send someone looking for a different file.
+const noRoom = e => e?.name === 'QuotaExceededError' || e?.name === 'NS_ERROR_DOM_QUOTA_REACHED' || /ENOSPC|no space left/i.test(String(e?.message || ''))
+
+/** The sentence for a refused file (MediaError codes from lib/media-ingest.js), or for a device
+ *  that had no room to keep it. */
 export function mediaErrorText(e) {
+  if (noRoom(e)) return t('There is no room left on this device for that file.')
   switch (e?.code) {
     case 'type': return t('That file type is not supported — use a photo, a GIF, or an MP4, MOV or WebM video.')
     case 'too-large': return t('That file is too large — up to {0} MB.', fmtMB(e.mb))

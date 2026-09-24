@@ -1558,6 +1558,7 @@ export default {
   'That video is too long — up to {0} seconds.': '동영상이 너무 깁니다 — 최대 {0}초.',
   'That photo is too large to process on this device.': '이 사진은 이 기기에서 처리하기에 너무 큽니다.',
   'This browser cannot read that file.': '이 브라우저는 해당 파일을 읽을 수 없습니다.',
+  'There is no room left on this device for that file.': '이 기기에 해당 파일을 저장할 공간이 없습니다.',
   'This video may not play on every device — MP4 (H.264) plays everywhere.': '이 동영상은 일부 기기에서 재생되지 않을 수 있습니다 — MP4(H.264)는 어디서나 재생됩니다.',
   'Your photo and video space on the server is full ({0} of {1} MB).': '서버의 사진·동영상 공간이 가득 찼습니다 ({0} / {1} MB).',
   'The server refused the file as too large.': '파일이 너무 커서 서버가 거부했습니다.',

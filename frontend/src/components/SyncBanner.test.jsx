@@ -3,6 +3,7 @@ import React, { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import SyncBanner, { PENDING_GRACE_MS } from './SyncBanner.jsx'
+import { connectionView } from './ServerSync.jsx'
 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true
 
@@ -82,6 +83,30 @@ describe('connected and in step', () => {
     render()
     expect(bar()).toBeNull()
     expect(conn()).toBe('')
+  })
+
+  // QA, v1.3.9: with nothing waiting, the line came only with the next sync attempt, some 17 s
+  // after the browser said it was offline, and Settings said "All synced" until then.
+  it('the device going offline is said at once, not at the next sync attempt, and goes when it is back', async () => {
+    render()
+    expect(bar()).toBeNull()
+    act(() => network(false))
+    expect(text()).toBe('Offline — showing the last copy synced with the server.')
+    expect(bar().className).toContain('off')
+    expect(label()).toBe('Try again')
+    expect(connectionView(sync('ok'), { online: false }).line).toBe('Offline — the server cannot be reached')
+    act(() => network(true))
+    expect(bar()).toBeNull()
+  })
+
+  it('a change waiting while the device is offline says it is kept here, after the same grace as ever', () => {
+    vi.useFakeTimers()
+    network(false)
+    mocks.sync = sync('pending', { pending: true })
+    render()
+    expect(bar()).toBeNull()
+    act(() => { vi.advanceTimersByTime(PENDING_GRACE_MS) })
+    expect(text()).toBe('Offline — your changes are saved on this device and sync when you are back online.')
   })
 })
 

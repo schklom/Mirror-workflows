@@ -57,7 +57,11 @@ export function useOnline() {
 export function connectionView(sync, { mobile = MOBILE, online = isOnline() } = {}) {
   if (!sync) return null
   const err = sync.lastError || {}
-  switch (sync.status) {
+  // A device that says it has no network is offline whatever the last request found: said the
+  // moment it goes, not at the next sync attempt, which may be a poll away. Only the states that
+  // claim a working connection give way; a refusal or an error keeps its own words.
+  const status = !online && (sync.status === 'ok' || sync.status === 'pending') ? 'offline' : sync.status
+  switch (status) {
     case 'ok':
       return { tone: 'ok', icon: 'cloud', line: t('All synced'), banner: null, action: null }
     case 'pending':   // the sentence already says "tap to retry": no second word for it

@@ -36,7 +36,7 @@ const CONF_METRICS_ADDR_PORT = "MetricsAddrPort"
 
 // Default values
 
-const DEF_TILE_SERVER_URL = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+const DEF_TILE_SERVER_URL = "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
 
 // Set the default values for all config fields.
 //

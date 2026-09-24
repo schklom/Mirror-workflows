@@ -923,9 +923,14 @@ function CustomExForm({ existing, prefill, onDone, close }) {
   const [eq, setEq] = useState(existing ? (existing.eq || '') : '')
   const [desc, setDesc] = useState(existing ? (existing.desc || '') : '')
   const [media, setMedia] = useState(() => mediaOf(existing))
+  // Whether this form changed the media at all. An edit that did not touch it writes back what the
+  // exercise had, byte for byte: a ref from a newer version of the app (a codec or type this one
+  // does not know) reads as nothing here, and re-normalizing it on a rename would delete it on
+  // every device.
+  const [mediaTouched, setMediaTouched] = useState(false)
   const [url, setUrl] = useState(existing && typeof existing.url === 'string' ? existing.url : '')
   const onMedia = patch => {
-    if ('media' in patch) setMedia(patch.media)
+    if ('media' in patch) { setMedia(patch.media); setMediaTouched(true) }
     if ('url' in patch) setUrl(patch.url)
   }
   const [primaries, setPrimaries] = useState(() => {
@@ -960,7 +965,8 @@ function CustomExForm({ existing, prefill, onDone, close }) {
     // An empty field removes the link; anything else has to be a web address.
     const link = url.trim() ? cleanUrl(url) : null
     if (url.trim() && !link) { toast(t('That link is not a web address')); return }
-    const ref = normalizeMediaRef(media)
+    const keepMedia = !!existing && !mediaTouched
+    const ref = keepMedia ? null : normalizeMediaRef(media)
     // Stored in the map's order, not the order the chips were tapped in — the tags on the exercise
     // used to shuffle with every edit.
     const prim = bp === 'cardio' ? ['cardiovascular system'] : inMuscleOrder(primaries)
@@ -975,7 +981,7 @@ function CustomExForm({ existing, prefill, onDone, close }) {
     const tg = (existing && prim.includes(existing.tg)) ? existing.tg : (primaryTaps.find(m => prim.includes(m)) || prim[0] || '')
     let id = existing && existing.id
     const extra = c => {
-      if (ref) c.media = ref; else delete c.media
+      if (!keepMedia) { if (ref) c.media = ref; else delete c.media }
       if (link) c.url = link; else delete c.url
     }
     if (existing) update(s => { const c = (s.customEx || []).find(x => x.id === id); if (c) {

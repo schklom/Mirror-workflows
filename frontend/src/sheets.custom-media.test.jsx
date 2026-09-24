@@ -146,6 +146,16 @@ describe('custom exercise photo, GIF or video, and link', () => {
     expect(S().customEx[0].url).toBeUndefined()
   })
 
+  it('an edit that leaves the media alone keeps a ref this version cannot read (a newer app wrote it)', () => {
+    const future = { ...REF, kind: 'video', mime: 'video/mp4', codec: 'vvc1', dur: 12 }
+    seed(custom({ media: future }))
+    customExSheet(S().customEx[0])
+    const form = renderTop()
+    act(() => type(form.querySelector('input.input'), 'Sandbag carry, renamed'))
+    click(form, 'button', 'Save')
+    expect(S().customEx[0]).toMatchObject({ n: 'Sandbag carry, renamed', media: future })
+  })
+
   it('a refused file becomes the sentence for it, and the draft stays as it was', async () => {
     h.ingest = vi.fn(async () => { throw Object.assign(new Error('too-large'), { code: 'too-large', mb: 40 }) })
     customExSheet(null)

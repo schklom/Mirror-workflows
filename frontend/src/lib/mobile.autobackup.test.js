@@ -4,7 +4,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { todayISO } from './format.js'
 
-const h = vi.hoisted(() => ({ files: new Map(), refuseWrite: false, refuseList: false, stuck: new Set(), deleted: [] }))
+const h = vi.hoisted(() => ({ files: new Map(), refuseWrite: false, refuseList: false, stuck: new Set(), deleted: [], foreign: new Set() }))
 
 vi.mock('@capacitor/filesystem', () => ({
   Directory: { Data: 'DATA', Documents: 'DOCUMENTS', Cache: 'CACHE' },
@@ -12,6 +12,8 @@ vi.mock('@capacitor/filesystem', () => ({
   Filesystem: {
     writeFile: async ({ path, directory, data }) => {
       if (h.refuseWrite) throw new Error('No space left on device')
+      // Scoped storage: a file another install wrote cannot be written over.
+      if (h.foreign.has(path)) throw new Error(`/storage/emulated/0/Documents/${path}: open failed: EACCES (Permission denied)`)
       h.files.set(directory + '/' + path, data)
       return { uri: 'file://' + path }
     },
@@ -43,7 +45,7 @@ const inFolder = () => [...h.files.keys()].filter(k => k.startsWith('DOCUMENTS/o
 const put = (path, data = '{}') => h.files.set('DOCUMENTS/' + path, data)
 
 beforeEach(() => {
-  h.files.clear(); h.deleted.length = 0; h.stuck.clear()
+  h.files.clear(); h.deleted.length = 0; h.stuck.clear(); h.foreign.clear()
   h.refuseWrite = false; h.refuseList = false
 })
 
@@ -103,6 +105,38 @@ describe('writeAutoBackup', () => {
     await writeAutoBackup({})
     expect(inFolder()).toHaveLength(15)   // fourteen, plus the one that would not go
     expect(inFolder()).toContain(backup(day(0)))
+  })
+})
+
+// A reinstall (or the test build beside the real app) left today's name owned by the other install,
+// and every backup that day failed with EACCES and was dropped without a word (Android QA, v1.3.9).
+describe('writeAutoBackup where today\'s name belongs to another install', () => {
+  it('writes the copy under the day\'s second name, and again there on the next write', async () => {
+    const other = 'openGym/' + backup(todayISO())
+    put(other, '{"theirs":true}')
+    h.foreign.add(other)
+    await writeAutoBackup({ n: 1 })
+    const second = 'DOCUMENTS/openGym/' + backup(todayISO()).replace('.json', '-2.json')
+    expect(JSON.parse(h.files.get(second))).toEqual({ n: 1 })
+    await writeAutoBackup({ n: 2 })
+    expect(JSON.parse(h.files.get(second))).toEqual({ n: 2 })
+    expect(JSON.parse(h.files.get('DOCUMENTS/' + other))).toEqual({ theirs: true })
+  })
+
+  it('counts the second names among the fourteen it keeps, and prunes them like any other', async () => {
+    for (let i = 0; i < 20; i++) put('openGym/' + backup(day(i)).replace('.json', i % 2 ? '-2.json' : '.json'))
+    await writeAutoBackup({})
+    expect(inFolder()).toHaveLength(14)
+    expect(inFolder()).toContain(backup(todayISO()))
+    expect(inFolder()).not.toContain(backup(day(0)))
+    expect(inFolder()).not.toContain(backup(day(1)).replace('.json', '-2.json'))
+  })
+
+  it('a disk that takes neither name still deletes nothing', async () => {
+    for (let i = 0; i < 20; i++) put('openGym/' + backup(day(i)))
+    h.refuseWrite = true
+    await expect(writeAutoBackup({})).resolves.toBeUndefined()
+    expect(h.deleted).toEqual([])
   })
 })
 

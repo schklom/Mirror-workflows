@@ -207,23 +207,31 @@ export async function printHtml(html, name) {
 // backup still reads either kind).
 export const AUTO_BACKUP_DIR = 'openGym'
 export const AUTO_BACKUP_KEEP = 14
-// Only the exact name writeAutoBackup gives its files is ever pruned; anything else someone
+// Only the exact names writeAutoBackup gives its files are ever pruned; anything else someone
 // keeps in the folder is theirs.
-const AUTO_BACKUP_NAME = /^opengym-backup-\d{4}-\d{2}-\d{2}\.json$/
+const AUTO_BACKUP_NAME = /^opengym-backup-\d{4}-\d{2}-\d{2}(-2)?\.json$/
 
+// Android's scoped storage lets an install write over, list and delete only the files it wrote
+// itself. After a reinstall, or with the test build beside the real one, today's name can belong
+// to the other install: writing it fails with EACCES, and that day went without a copy, silently.
+// The copy then goes under the day's second name, which this install owns after its first write.
+// The other install's files stay where they are; this one cannot see them to prune them.
 export async function writeAutoBackup(state) {
-  const name = `opengym-backup-${todayISO()}.json`
+  const day = todayISO()
   let fs
-  try {
-    fs = await import('@capacitor/filesystem')
-    await fs.Filesystem.writeFile({
-      path: `${AUTO_BACKUP_DIR}/${name}`,
-      directory: fs.Directory.Documents,
-      data: JSON.stringify(state),
-      encoding: fs.Encoding.UTF8,
-      recursive: true,
-    })
-  } catch (e) { return }   // best effort — the private mirror in Directory.Data still has the data
+  try { fs = await import('@capacitor/filesystem') } catch (e) { return }
+  const write = name => fs.Filesystem.writeFile({
+    path: `${AUTO_BACKUP_DIR}/${name}`,
+    directory: fs.Directory.Documents,
+    data: JSON.stringify(state),
+    encoding: fs.Encoding.UTF8,
+    recursive: true,
+  })
+  let name = `opengym-backup-${day}.json`
+  try { await write(name) } catch (e) {
+    name = `opengym-backup-${day}-2.json`
+    try { await write(name) } catch (e2) { return }   // best effort — the private mirror in Directory.Data still has the data
+  }
   // Pruning waits for a successful write: a full disk must never cost the copies already there.
   await pruneAutoBackups(fs, name)
 }

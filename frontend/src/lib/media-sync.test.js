@@ -11,7 +11,7 @@ const hex = c => c.repeat(64)
 const refOf = (hash, poster, over = {}) => ({ kind: 'image', hash, mime: 'image/webp', size: 1000, width: 800, height: 600, ...(poster ? { poster: { hash: poster, mime: 'image/webp', size: 100, width: 480, height: 360 } } : {}), at: 1, ...over })
 
 function appStore(init) {
-  let st = { user: { id: 'u1' }, config: { media: { imageMB: 2, gifMB: 8, videoMB: 40, videoSec: 60, quotaMB: 200 } }, sync: { lastSynced: 0 }, S: { customEx: [] }, stashedMediaHashes: async () => new Set(), ...init }
+  let st = { ready: true, user: { id: 'u1' }, config: { media: { imageMB: 2, gifMB: 8, videoMB: 40, videoSec: 60, quotaMB: 200 } }, sync: { lastSynced: 0 }, S: { customEx: [] }, stashedMediaHashes: async () => new Set(), ...init }
   const subs = new Set()
   return {
     getState: () => st,
@@ -263,6 +263,59 @@ describe('localMediaGc', () => {
     clock += 2 * 3600000
     await make(appStore({ S })).localMediaGc()
     expect((await media.list()).map(r => r.hash).sort()).toEqual([hex('b'), hex('c'), hex('d')])
+  })
+
+  it('waits for boot: before `ready` nothing is removed, and the clean-up runs once it flips', async () => {
+    // A phone whose WebView storage was evicted: memory and localStorage are empty, the only
+    // reference to the file is in the state file boot has not restored yet.
+    const S = { customEx: [{ id: 'x', media: refOf(hex('a')) }] }
+    await put(hex('a')); await put(hex('b'))
+    clock += 2 * 3600000
+    const store = appStore({ S: { customEx: [] }, user: null, ready: false })
+    const sync = make(store)
+    expect(await sync.localMediaGc()).toBe(false)
+    expect(await media.has(hex('a'))).toBe(true)
+    expect(await media.has(hex('b'))).toBe(true)
+    store.setState({ S, ready: true })
+    expect(await sync.localMediaGc()).toBe(true)
+    expect(await media.has(hex('a'))).toBe(true)
+    expect(await media.has(hex('b'))).toBe(false)
+  })
+
+  it('start() leaves the store alone while boot runs, and cleans up after it has finished', async () => {
+    vi.useFakeTimers()
+    const idle = globalThis.requestIdleCallback
+    globalThis.requestIdleCallback = cb => setTimeout(cb, 1)   // the WebView's idle comes at once
+    try {
+      const S = { customEx: [{ id: 'x', media: refOf(hex('a')) }] }
+      await put(hex('a')); await put(hex('b'))
+      clock += 2 * 3600000
+      const store = appStore({ S: { customEx: [] }, user: null, ready: false })
+      const stop = make(store).start(store)
+      await vi.advanceTimersByTimeAsync(60000)
+      expect(await media.has(hex('a'))).toBe(true)
+      expect(await media.has(hex('b'))).toBe(true)
+      store.setState({ S, ready: true })   // boot restored the mirror and finished
+      await vi.advanceTimersByTimeAsync(15000)
+      expect(await media.has(hex('a'))).toBe(true)
+      expect(await media.has(hex('b'))).toBe(false)
+      stop()
+    } finally {
+      globalThis.requestIdleCallback = idle
+      vi.useRealTimers()
+    }
+  })
+
+  it('on a phone, keeps what the state file refers to, and deletes nothing when it cannot be read', async () => {
+    await put(hex('a')); await put(hex('b'))
+    clock += 2 * 3600000
+    const store = appStore({ S: { customEx: [] }, user: null })
+    await make(store, { nativeLoad: async () => ({ customEx: [{ id: 'x', media: refOf(hex('a')) }] }) }).localMediaGc()
+    expect(await media.has(hex('a'))).toBe(true)
+    expect(await media.has(hex('b'))).toBe(false)
+    await put(hex('c')); clock += 2 * 3600000
+    await make(store, { nativeLoad: async () => { throw new Error('io') } }).localMediaGc()
+    expect(await media.has(hex('c'))).toBe(true)
   })
 
   it('a guest never loses a referenced file to the cap', async () => {

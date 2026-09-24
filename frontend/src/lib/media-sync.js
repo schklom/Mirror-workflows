@@ -25,6 +25,7 @@ import { mediaStore as sharedStore } from './media-store.js'
 import { api, apiBlob, apiUpload } from './api.js'
 import { prefetchAllowed } from './media-prefetch.js'
 import { MB, BG_UPLOAD_METERED_MAX_MB, LOCAL_CACHE_MAX_MB, LOCAL_GC_GRACE_MS } from './media-limits.js'
+import { MOBILE, nativeLoad } from './mobile.js'
 import { registerMediaRunner, publishMediaStatus, pendingRefCount, loadPending } from './media-owed.js'
 import { t } from './i18n-core.js'
 
@@ -60,6 +61,10 @@ export function createMediaSync(deps = {}) {
     toast: msg => import('../store/useUI.js').then(({ useUI }) => useUI.getState().toast(msg)).catch(() => {}),
     locks: globalThis.navigator?.locks,
     storage: (() => { try { return globalThis.localStorage } catch { return null } })(),
+    // The phone's file mirror of the state (lib/mobile.js), read by the local clean-up: on a
+    // phone it is the durable copy and can be newer than localStorage (evicted WebView storage,
+    // a write refused for room), so what it refers to is kept even if memory does not know it yet.
+    nativeLoad: MOBILE ? () => nativeLoad() : null,
     ...deps
   }
   let store = d.store || null
@@ -67,6 +72,7 @@ export function createMediaSync(deps = {}) {
   let again = null
   let lastRun = { refs: '', at: 0, complete: false }
   let retryNotBefore = 0
+  let gcWaiting = false   // a clean-up asked for before boot finished, run once it has
   let quotaTold = false
   const rejectTold = new Set()
   const upBackoff = new Map()     // hash → { step, until }
@@ -246,9 +252,17 @@ export function createMediaSync(deps = {}) {
    * that are safely on the server, least recently shown first; posters the state references and
    * pending files are never evicted, and a guest's or a local phone's referenced files are never
    * evicted at all — for them this is the only copy.
+   *
+   * Not before boot has finished (`ready`): until then the state in memory can be the one
+   * localStorage held while the copy boot is about to restore — the phone's file mirror, the
+   * server's pull — refers to files memory does not know yet, and on a phone in local mode those
+   * files are the only copy. A call that comes too early is remembered and runs once `ready`
+   * flips (start). Resolves false when it did not run.
    */
   async function localMediaGc() {
-    if (!store) return
+    if (!store) return false
+    if (!store.getState().ready) { gcWaiting = true; return false }
+    gcWaiting = false
     await withLock('opengym-media', async () => {
       const st = store.getState()
       const live = referencedHashes(st.S)
@@ -259,6 +273,11 @@ export function createMediaSync(deps = {}) {
       try {
         if (typeof st.stashedMediaHashes === 'function') for (const h of await st.stashedMediaHashes()) live.add(h)
       } catch { return }   // the stash could not be read: delete nothing rather than guess
+      // A second guard on a phone: the mirror is read even after boot, since a copy that failed
+      // to reach localStorage lives only there and in memory, and memory may already have moved on.
+      try {
+        if (d.nativeLoad) { const saved = await d.nativeLoad(); if (saved) for (const h of referencedHashes(saved)) live.add(h) }
+      } catch { return }   // the mirror could not be read: delete nothing rather than guess
       const cutoff = d.now() - LOCAL_GC_GRACE_MS
       const all = await d.media.list()
       for (const r of all) if (!live.has(r.hash) && (r.putAt || 0) < cutoff) await d.media.remove(r.hash)
@@ -278,6 +297,7 @@ export function createMediaSync(deps = {}) {
         bytes -= r.size || 0
       }
     })
+    return true
   }
 
   /**
@@ -325,7 +345,8 @@ export function createMediaSync(deps = {}) {
   /**
    * Wires it all to the app store: a run 2 s after the referenced files change, a sync lands
    * (sync.lastSynced moves) or the account changes; a forced one when the network comes back;
-   * the local clean-up once the app is idle and 10 s after the references change. The references
+   * the local clean-up once the app is idle and 10 s after the references change — both only
+   * once boot has finished, and one asked for before that runs when it does. The references
    * are compared as a joined string, because every update clones the state and S.customEx is a
    * new array each time.
    */
@@ -350,6 +371,8 @@ export function createMediaSync(deps = {}) {
       const moved = refs !== prevRefs
       if (moved || s.sync?.lastSynced !== prev.sync?.lastSynced || s.user?.id !== prev.user?.id) schedule(2000)
       if (moved) scheduleGc(10000)
+      // Boot has restored the state: a clean-up that was asked for before now sees the real copy.
+      if (s.ready && !prev.ready && gcWaiting) scheduleGc(2000)
       prev = s
       prevRefs = refs
     })

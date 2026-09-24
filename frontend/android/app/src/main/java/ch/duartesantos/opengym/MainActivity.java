@@ -2,6 +2,7 @@ package ch.duartesantos.opengym;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
 import android.webkit.WebView;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -36,14 +37,17 @@ public class MainActivity extends BridgeActivity {
     private void passSystemBarsToPage() {
         if (Build.VERSION.SDK_INT < 35 || bridge == null) return;
         WebView web = bridge.getWebView();
-        if (web == null) return;
-        ViewCompat.setOnApplyWindowInsetsListener(web, (v, insets) -> {
+        if (web == null || !(web.getParent() instanceof View)) return;
+        // Read on the WebView's parent, which hands them on to the WebView untouched. A listener on
+        // the WebView itself would replace the one the WebView installs for its own insets, and
+        // env(safe-area-inset-top) went to 0 on every start.
+        View holder = (View) web.getParent();
+        ViewCompat.setOnApplyWindowInsetsListener(holder, (v, insets) -> {
             Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.displayCutout());
             float density = v.getResources().getDisplayMetrics().density;
             barTop = bars.top / density;
             barBottom = bars.bottom / density;
             applyBars(web);
-            // The WebView's own handling, which is where env(safe-area-inset-*) comes from.
             return ViewCompat.onApplyWindowInsets(v, insets);
         });
         // A page that loads (the first one, or a reload) starts without them.
@@ -53,7 +57,7 @@ public class MainActivity extends BridgeActivity {
                 applyBars(view);
             }
         });
-        ViewCompat.requestApplyInsets(web);
+        ViewCompat.requestApplyInsets(holder);
     }
 
     private void applyBars(WebView web) {

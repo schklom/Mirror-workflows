@@ -33,8 +33,15 @@ describe('the system bars on Android', () => {
     expect(activity).toMatch(/getDisplayMetrics\(\)\.density/)
   })
 
-  it('passes them again to every page that loads, and leaves the WebView its own handling', () => {
+  it('passes them again to every page that loads', () => {
     expect(activity).toMatch(/addWebViewListener[\s\S]*onPageLoaded[\s\S]*applyBars\(view\)/)
+  })
+
+  // The first version set its listener on the WebView, which replaced the WebView's own: env()
+  // reported 0 on every start, where it had reported the cutout on most.
+  it('reads them on the WebView\'s parent, and leaves the WebView its own listener', () => {
+    expect(activity).toMatch(/ViewCompat\.setOnApplyWindowInsetsListener\(holder,/)
+    expect(activity).not.toMatch(/setOnApplyWindowInsetsListener\(web\b/)
     expect(activity).toMatch(/return ViewCompat\.onApplyWindowInsets\(v, insets\);/)
   })
 })

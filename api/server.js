@@ -1492,6 +1492,7 @@ const mediaRoutes = {
     const user = readSession(req);
     if (!user) { MEDIA.discard(req); return json(res, 401, { error: 'not signed in' }); }
     try { mediaThrottle(req, user, MEDIA_BURST); } catch (e) { MEDIA.discard(req); throw e; }
+    req.allowSlowBody?.();   // a signed-in upload within its budget may take the half hour
     const r = await MEDIA.receive(user.id, req.mediaHash, req);
     json(res, r.status, r.body);
   },
@@ -2149,7 +2150,29 @@ coachJobs.setProposalHook((uid, pending) => {
 startCadence({ users: () => db.users, userNow });
 startWarmup();
 
+// node's requestTimeout is one number for every route, and it is half an hour (below) for the
+// sake of one: a video uploaded over a slow uplink. Every other request keeps node's old five
+// minutes to finish sending its body — readBody has no timer of its own, and a trickled body on
+// any route, the unauthenticated CSRF-exempt POSTs included, would otherwise hold its socket six
+// times as long. The upload route lifts it (req.allowSlowBody) only once the session and the
+// hourly budget have let the upload in; from there media.js's own idle timer takes over. The
+// tests shorten it, as they do REMINDER_TICK_MS.
+const BODY_TIMEOUT_MS = Math.max(50, +(process.env.BODY_TIMEOUT_MS || 300000) || 300000);
+function bodyDeadline(req) {
+  if (req.complete) return;
+  // The socket itself, not req: a route that answered without reading the body has finished its
+  // response, and node has already closed req (a no-op to destroy again) while the body trickles
+  // on. Only 'end' clears it — 'close' also fires at that early answer.
+  const socket = req.socket;
+  const timer = setTimeout(() => { if (!req.complete) socket.destroy(); }, BODY_TIMEOUT_MS);
+  timer.unref();
+  const clear = () => clearTimeout(timer);
+  req.once('end', clear);
+  req.allowSlowBody = clear;
+}
+
 const server = http.createServer(async (req, res) => {
+  bodyDeadline(req);
   // Same-origin (the deployed nginx-proxied web app) never triggers CORS, so this only matters
   // for the paired mobile app calling in from its own WebView origin. It carries no cookie
   // (auth is the Authorization header instead), so Allow-Credentials is deliberately never set —
@@ -2214,7 +2237,8 @@ const server = http.createServer(async (req, res) => {
 });
 // Node's default of 300 s for a whole request would answer 408 to a 40 MB video on a ~1 Mbit/s
 // uplink. Half an hour covers that; a stalled upload is cut much sooner by its own 60 s idle
-// timer in media.js, and a client that never finishes its headers still meets headersTimeout.
+// timer in media.js, a client that never finishes its headers still meets headersTimeout, and
+// every other route's body still has to arrive within five minutes (bodyDeadline above).
 server.requestTimeout = 30 * 60000;
 server.headersTimeout = 60000;
 // The port is read back off the listener rather than echoed from PORT, so the line states the

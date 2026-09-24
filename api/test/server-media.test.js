@@ -8,6 +8,7 @@ import assert from 'node:assert/strict';
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import http from 'node:http';
+import net from 'node:net';
 import os from 'node:os';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
@@ -434,6 +435,33 @@ test('boot removes the temp files of uploads the previous process was receiving'
   t.after(() => child.kill('SIGKILL'));
   await boundPort(child);
   assert.deepEqual(fs.readdirSync(tmp), []);
+});
+
+test('a trickled body is cut after the body deadline on every route but a signed-in upload', async t => {
+  const h = await start(t, { BODY_TIMEOUT_MS: '400' });
+  // Headers and a tenth of the promised body, then nothing: resolves with how the socket ended.
+  const trickle = (line, headers) => new Promise(resolve => {
+    const s = net.connect(h.port, '127.0.0.1', () => {
+      s.write(`${line} HTTP/1.1\r\nHost: 127.0.0.1\r\n${headers}Content-Length: 100\r\n\r\n` + '{"hashes":');
+    });
+    const timer = setTimeout(() => { s.destroy(); resolve('still open'); }, 3000);
+    s.on('error', () => {});
+    s.resume();   // read the early answer, or a paused socket never sees the server's FIN
+    s.on('close', () => { clearTimeout(timer); resolve('closed'); });
+  });
+  const c = `Cookie: gymsid=${mint(U1)}\r\nOrigin: ${ORIGIN}\r\nContent-Type: application/json\r\n`;
+  assert.equal(await trickle('POST /api/media/missing', c), 'closed', 'a JSON route reading its body');
+  assert.equal(await trickle('POST /api/logout', 'Content-Type: application/json\r\n'), 'closed', 'a route reachable without a session');
+  assert.equal(await trickle('PUT /api/media/' + 'd'.repeat(64), `Origin: ${ORIGIN}\r\nContent-Type: image/jpeg\r\n`), 'closed', 'an upload without a session');
+
+  // Signed in and within its budget, an upload may take longer than that.
+  const bytes = M.jpeg(20000);
+  const { req, response } = rawPut(h, M.sha(bytes), { length: bytes.length });
+  req.write(bytes.subarray(0, 5000));
+  await sleep(900);
+  req.end(bytes.subarray(5000));
+  const r = await response;
+  assert.equal(r.status, 201, JSON.stringify(r.body));
 });
 
 test('server.js gives a slow upload half an hour, not node\'s default five minutes', () => {

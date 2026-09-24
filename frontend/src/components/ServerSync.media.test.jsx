@@ -61,12 +61,12 @@ describe('OwedSheet with photos and videos waiting', () => {
     expect(host.textContent).toContain('1 photos or videos have not reached your server yet.')
   })
 
-  it('Try again sends them too, and the sheet follows the new count', async () => {
+  it('Try again sends them too — the refused ones included — and the sheet follows the new count', async () => {
     act(() => root.render(<OwedSheet kind="signout" count={0} media={1} exportBackup={vi.fn()} exportBackupZip={vi.fn()} done={vi.fn()} close={vi.fn()} />))
     mocks.signOut = vi.fn(async () => ({ owed: true, count: 0, media: 1 }))
     mocks.sync = { status: 'pending' }
     await act(async () => { button('Try again').click(); await new Promise(r => setTimeout(r, 0)) })
-    expect(mocks.syncMedia).toHaveBeenCalledWith({ force: true })
+    expect(mocks.syncMedia).toHaveBeenCalledWith({ force: true, retryRejected: true })
     expect(mocks.signOut).toHaveBeenCalled()
   })
 

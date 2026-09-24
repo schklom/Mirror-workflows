@@ -153,7 +153,10 @@ export function OwedSheet({ kind, count: count0, media: media0 = 0, exportBackup
   const retry = async () => {
     setBusy(true)
     await useStore.getState().syncNow()
-    await syncMedia({ force: true })
+    // Past the refusals too, as the Settings row does: a proxy's limit or the server's caps may
+    // have been fixed since, and a file refused for good would otherwise hold this sheet open on
+    // every try.
+    await syncMedia({ force: true, retryRejected: true })
     const r = await attempt(kind)
     setBusy(false)
     if (!r) return

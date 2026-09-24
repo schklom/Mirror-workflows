@@ -8,7 +8,8 @@
     "no_data": "Nog geen locatiegegevens. Stuur een locate-opdracht met de onderstaande knoppen!",
     "older": "Ouder",
     "newer": "Nieuwer",
-    "no_push_url": "Geen push-URL geconfigureerd. Het apparaat ontvangt geen opdrachten totdat u pushmeldingen instelt in de Android-app."
+    "no_push_url": "Geen push-URL geconfigureerd. Het apparaat ontvangt geen opdrachten totdat u pushmeldingen instelt in de Android-app.",
+    "delete_success": "Locatie verwijderd"
   },
   "command_failed": "Opdracht is mislukt!",
   "time": "Tijd",

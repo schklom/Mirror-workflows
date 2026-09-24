@@ -20,7 +20,9 @@
   "pictures": {
     "title": "Foto's",
     "empty": "Geen foto's beschikbaar",
-    "of": "van"
+    "of": "van",
+    "delete": "Foto verwijderen",
+    "delete_success": "Foto verwijderd"
   },
   "webcrypto_warning": {
     "title": "Web Cryptography API niet beschikbaar",

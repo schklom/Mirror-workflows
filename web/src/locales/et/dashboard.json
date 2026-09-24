@@ -8,7 +8,8 @@
     "older": "Vanem",
     "newer": "Uuem",
     "no_push_url": "Tõuketeenuse võrguaadress on salvestamata. Seade ei suuda käske vastu võtta enne, kui sa pole Androidi rakenduses tõuketeavitusi seadistanud.",
-    "recorded_at": "Salvestamise aeg"
+    "recorded_at": "Salvestamise aeg",
+    "delete_success": "Asukoht on kustutatud"
   },
   "command_failed": "Käsk ei toiminud!",
   "time": "Aeg",

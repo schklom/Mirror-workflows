@@ -1,4 +1,5 @@
 {
   "account_not_found": "Účet nenalezen. Zaregistrujte se prosím skrze aplikaci FMD pro Android.",
-  "login_failed": "Nepodařilo se přihlásit"
+  "login_failed": "Nepodařilo se přihlásit",
+  "delete_failed": "Smazání selhalo"
 }

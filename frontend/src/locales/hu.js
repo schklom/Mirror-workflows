@@ -1547,4 +1547,7 @@ export default {
   'Log your body weight to score this lift.': 'Rögzítsd a testsúlyodat, hogy ez a gyakorlat értékelhető legyen.',
   'Log the anchor lift to score this one.': 'Rögzítsd a viszonyítási alapul szolgáló gyakorlatot, hogy ez is értékelhető legyen.',
   'Not scored': 'Nincs értékelve',
+  'The server cannot be reached': 'A szerver nem érhető el',
+  'Your server cannot be reached — your changes are saved on this device and sync once it answers again.': 'A szervered nem érhető el — a módosításaid ezen az eszközön vannak mentve, és szinkronizálódnak, amint újra válaszol.',
+  'Your server cannot be reached — showing the last copy synced with it.': 'A szervered nem érhető el — a vele utoljára szinkronizált másolat látható.',
 }

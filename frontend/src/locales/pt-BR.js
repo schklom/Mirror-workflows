@@ -903,6 +903,9 @@ export const PT_BR_OVERRIDES = {
   'Custom': 'Personalizado',
   'Log your body weight to score this lift.': 'Registre seu peso corporal para avaliar este exercício.',
   'Log the anchor lift to score this one.': 'Registre o exercício de referência para avaliar este.',
+  'The server cannot be reached': 'Não é possível acessar o servidor',
+  'Your server cannot be reached — your changes are saved on this device and sync once it answers again.': 'Não é possível acessar o seu servidor — suas alterações ficam salvas neste dispositivo e sincronizam assim que ele voltar a responder.',
+  'Your server cannot be reached — showing the last copy synced with it.': 'Não é possível acessar o seu servidor — mostrando a última cópia sincronizada com ele.',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

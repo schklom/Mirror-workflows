@@ -1544,4 +1544,7 @@ export default {
   'Log your body weight to score this lift.': '이 운동을 평가하려면 체중을 기록하세요.',
   'Log the anchor lift to score this one.': '이 운동을 평가하려면 기준 운동을 기록하세요.',
   'Not scored': '평가 안 됨',
+  'The server cannot be reached': '서버에 연결할 수 없음',
+  'Your server cannot be reached — your changes are saved on this device and sync once it answers again.': '서버에 연결할 수 없습니다 — 변경 사항은 이 기기에 저장되며 서버가 다시 응답하면 동기화됩니다.',
+  'Your server cannot be reached — showing the last copy synced with it.': '서버에 연결할 수 없습니다 — 서버와 마지막으로 동기화된 사본을 표시합니다.',
 }

@@ -1544,4 +1544,7 @@ export default {
   'Log your body weight to score this lift.': 'Bu hareketin değerlendirilmesi için vücut ağırlığını kaydet.',
   'Log the anchor lift to score this one.': 'Bunu değerlendirmek için referans hareketi kaydet.',
   'Not scored': 'Değerlendirilmedi',
+  'The server cannot be reached': 'Sunucuya ulaşılamıyor',
+  'Your server cannot be reached — your changes are saved on this device and sync once it answers again.': 'Sunucuna ulaşılamıyor — değişikliklerin bu cihazda kayıtlı, sunucu yeniden yanıt verince eşitlenecek.',
+  'Your server cannot be reached — showing the last copy synced with it.': 'Sunucuna ulaşılamıyor — sunucuyla en son eşitlenen kopya gösteriliyor.',
 }

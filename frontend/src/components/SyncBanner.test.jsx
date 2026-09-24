@@ -46,8 +46,15 @@ vi.mock('../views/MobileOnboarding.jsx', () => ({ ConnectSheet: props => <div cl
 const BASE = 'https://gym.example.com'
 const sync = (status, extra = {}) => ({ status, offline: false, pending: false, auth: false, lastError: null, lastSynced: 0, server: BASE, ...extra })
 
+// Whether the device has a network (navigator.onLine), and the event that says it changed.
+const network = on => {
+  Object.defineProperty(navigator, 'onLine', { configurable: true, get: () => on })
+  window.dispatchEvent(new Event(on ? 'online' : 'offline'))
+}
+
 let host, root
 beforeEach(() => {
+  network(true)
   Object.assign(mocks, { MOBILE: false, DEMO: false, webauthn: true, user: { id: 'u1', name: 'andi' }, guest: false, onboarding: false, sync: sync('ok') })
   mocks.sheets.length = 0
   mocks.navs.length = 0
@@ -80,6 +87,7 @@ describe('connected and in step', () => {
 
 describe('not connected — it says so, and what to do', () => {
   it('offline with changes waiting: kept on this device, and a retry that reports back', async () => {
+    network(false)
     mocks.sync = sync('offline', { offline: true, pending: true, lastError: { status: 0, code: 'network' } })
     render()
     expect(text()).toBe('Offline — your changes are saved on this device and sync when you are back online.')
@@ -93,9 +101,32 @@ describe('not connected — it says so, and what to do', () => {
   })
 
   it('offline with nothing waiting: the copy on screen is the last synced one', () => {
+    network(false)
     mocks.sync = sync('offline', { offline: true, lastError: { status: 0, code: 'timeout' } })
     render()
     expect(text()).toBe('Offline — showing the last copy synced with the server.')
+  })
+
+  // A proxy answering 502 without a CORS header fails fetch exactly as no network does; the phone
+  // was online and still read "Offline … sync when you are back online" (Android QA, v1.3.9).
+  it('the server out of reach while the device is online is the server, not the device', async () => {
+    mocks.sync = sync('offline', { offline: true, pending: true, lastError: { status: 0, code: 'network' } })
+    render()
+    expect(text()).toBe('Your server cannot be reached — your changes are saved on this device and sync once it answers again.')
+    expect(bar().className).toContain('off')
+    expect(label()).toBe('Try again')
+    await act(async () => { button().click() })
+    expect(mocks.toast).toHaveBeenCalledWith('The server cannot be reached')
+  })
+
+  it('with nothing waiting it shows the last copy, and the words follow the network as it goes and comes', () => {
+    mocks.sync = sync('offline', { offline: true, lastError: { status: 0, code: 'network' } })
+    render()
+    expect(text()).toBe('Your server cannot be reached — showing the last copy synced with it.')
+    act(() => network(false))
+    expect(text()).toBe('Offline — showing the last copy synced with the server.')
+    act(() => network(true))
+    expect(text()).toBe('Your server cannot be reached — showing the last copy synced with it.')
   })
 
   it('a server error carries its HTTP code, for whoever runs the server', () => {

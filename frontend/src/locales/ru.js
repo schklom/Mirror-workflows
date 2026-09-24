@@ -1544,4 +1544,7 @@ export default {
   'Log your body weight to score this lift.': 'Запишите вес тела, чтобы оценить это упражнение.',
   'Log the anchor lift to score this one.': 'Запишите опорное упражнение, чтобы оценить это.',
   'Not scored': 'Не оценено',
+  'The server cannot be reached': 'Сервер недоступен',
+  'Your server cannot be reached — your changes are saved on this device and sync once it answers again.': 'Ваш сервер недоступен — изменения сохранены на этом устройстве и синхронизируются, как только он снова ответит.',
+  'Your server cannot be reached — showing the last copy synced with it.': 'Ваш сервер недоступен — показана последняя копия, синхронизированная с ним.',
 }

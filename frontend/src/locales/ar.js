@@ -1597,4 +1597,7 @@ export default {
   'You get a code that lets your phone or another computer create a passkey for this profile. First confirm that it is you.': 'ستحصل على رمز يتيح لهاتفك أو لحاسوب آخر إنشاء مفتاح مرور لهذا الملف الشخصي. أكّد أولًا أنك أنت.',
   'or with your password': 'أو بكلمة المرور',
   '{0} passkeys': 'مفاتيح المرور: {0}',
+  'The server cannot be reached': 'تعذّر الوصول إلى الخادم',
+  'Your server cannot be reached — your changes are saved on this device and sync once it answers again.': 'تعذّر الوصول إلى خادمك — تُحفظ تغييراتك على هذا الجهاز وتتزامن عندما يستجيب مجددًا.',
+  'Your server cannot be reached — showing the last copy synced with it.': 'تعذّر الوصول إلى خادمك — يُعرض آخر نسخة متزامنة معه.',
 }

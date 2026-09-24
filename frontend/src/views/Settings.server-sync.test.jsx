@@ -213,7 +213,7 @@ describe('leaving the server', () => {
     await act(async () => { buttonByText(sheet, 'Try again').click() })
     expect(mocks.syncNow).toHaveBeenCalledTimes(1)
     expect(mocks.navs).toEqual([])
-    expect(sheet.textContent).toContain('Offline — the server cannot be reached')   // why it is still waiting
+    expect(sheet.textContent).toContain('The server cannot be reached')   // why it is still waiting (the device itself is online)
 
     mocks.disconnectServer.mockResolvedValueOnce({ owed: false })
     await act(async () => { buttonByText(sheet, 'Try again').click() })

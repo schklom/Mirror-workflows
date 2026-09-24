@@ -1544,4 +1544,7 @@ export default {
   'Log your body weight to score this lift.': 'इस व्यायाम का आकलन करने के लिए अपने शरीर का वज़न दर्ज करें।',
   'Log the anchor lift to score this one.': 'इसका आकलन करने के लिए आधार व्यायाम दर्ज करें।',
   'Not scored': 'आकलन नहीं हुआ',
+  'The server cannot be reached': 'सर्वर तक नहीं पहुँचा जा सकता',
+  'Your server cannot be reached — your changes are saved on this device and sync once it answers again.': 'आपके सर्वर तक नहीं पहुँचा जा सकता — आपके बदलाव इस डिवाइस पर सहेजे गए हैं और उसके फिर से जवाब देते ही सिंक हो जाएँगे।',
+  'Your server cannot be reached — showing the last copy synced with it.': 'आपके सर्वर तक नहीं पहुँचा जा सकता — उससे सिंक की गई आख़िरी प्रति दिखाई जा रही है।',
 }

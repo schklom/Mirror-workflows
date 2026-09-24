@@ -1544,4 +1544,7 @@ export default {
   'Log your body weight to score this lift.': 'Registra tu peso corporal para evaluar este ejercicio.',
   'Log the anchor lift to score this one.': 'Registra el ejercicio ancla para evaluar este.',
   'Not scored': 'Sin evaluar',
+  'The server cannot be reached': 'No se puede llegar al servidor',
+  'Your server cannot be reached — your changes are saved on this device and sync once it answers again.': 'No se puede llegar a tu servidor: tus cambios se guardan en este dispositivo y se sincronizarán cuando vuelva a responder.',
+  'Your server cannot be reached — showing the last copy synced with it.': 'No se puede llegar a tu servidor: se muestra la última copia sincronizada con él.',
 }

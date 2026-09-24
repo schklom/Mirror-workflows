@@ -1544,4 +1544,7 @@ export default {
   'Log your body weight to score this lift.': 'Zapisz swoją masę ciała, aby ocenić to ćwiczenie.',
   'Log the anchor lift to score this one.': 'Zapisz ćwiczenie będące punktem odniesienia, aby ocenić to ćwiczenie.',
   'Not scored': 'Bez oceny',
+  'The server cannot be reached': 'Serwer jest nieosiągalny',
+  'Your server cannot be reached — your changes are saved on this device and sync once it answers again.': 'Twój serwer jest nieosiągalny — zmiany są zapisane na tym urządzeniu i zsynchronizują się, gdy znów odpowie.',
+  'Your server cannot be reached — showing the last copy synced with it.': 'Twój serwer jest nieosiągalny — wyświetlana jest ostatnia kopia z nim zsynchronizowana.',
 }

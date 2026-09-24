@@ -1541,4 +1541,7 @@ export default {
   'You get a code that lets your phone or another computer create a passkey for this profile. First confirm that it is you.': 'Ти отримаєш код, з яким твій телефон чи інший комп’ютер зможе створити ключ доступу для цього профілю. Спершу підтверди, що це ти.',
   'or with your password': 'або своїм паролем',
   '{0} passkeys': 'Ключів доступу: {0}',
+  'The server cannot be reached': 'Сервер недоступний',
+  'Your server cannot be reached — your changes are saved on this device and sync once it answers again.': 'Твій сервер недоступний — зміни збережено на цьому пристрої, вони синхронізуються, щойно він знову відповість.',
+  'Your server cannot be reached — showing the last copy synced with it.': 'Твій сервер недоступний — показано останню копію, синхронізовану з ним.',
 }

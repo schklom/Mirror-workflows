@@ -28,14 +28,32 @@ export const hostOf = base => {
   try { const u = new URL(base); return u.host + u.pathname.replace(/\/$/, '') } catch { return base || '' }
 }
 
+// Whether the device says it has a network at all. fetch fails the same way for a phone with no
+// network and for a server that is down, or behind a proxy whose error page carries no CORS
+// header (the phone app is another origin): only this tells "offline" from "your server".
+export const isOnline = () => typeof navigator === 'undefined' || navigator.onLine !== false
+// The same, for a screen that has to change its words when the network comes or goes.
+export function useOnline() {
+  const [online, setOnline] = useState(isOnline)
+  useEffect(() => {
+    const on = () => setOnline(isOnline())
+    window.addEventListener('online', on)
+    window.addEventListener('offline', on)
+    return () => { window.removeEventListener('online', on); window.removeEventListener('offline', on) }
+  }, [])
+  return online
+}
+
 /* One state of `sync`, in words:
      tone    'ok' | 'wait' | 'off' | 'bad' | 'quiet' — the colour, from fine to deliberate local use
      line    the short status line: Settings, and the toast after "Sync now"
      banner  the sentence the persistent indicator shows, or null when there is nothing to say
      action  what the indicator offers: 'retry' | 'pair' | 'signin' | 'connect' | null
-   `mobile` is the build (a phone pairs, a browser signs in). Every state that is not 'ok' says the
-   changes are kept on this device — that is the one thing the person needs to hear first. */
-export function connectionView(sync, { mobile = MOBILE } = {}) {
+   `mobile` is the build (a phone pairs, a browser signs in); `online` whether the device has a
+   network, which decides whether "offline" is the device or the server. Every state that is not
+   'ok' says the changes are kept on this device — that is the one thing the person needs to hear
+   first. */
+export function connectionView(sync, { mobile = MOBILE, online = isOnline() } = {}) {
   if (!sync) return null
   const err = sync.lastError || {}
   switch (sync.status) {
@@ -44,6 +62,11 @@ export function connectionView(sync, { mobile = MOBILE } = {}) {
     case 'pending':   // the sentence already says "tap to retry": no second word for it
       return { tone: 'wait', icon: 'reset', line: t('Waiting to sync'), banner: t('Not synced yet — tap to retry.'), action: 'retry', label: null }
     case 'offline':
+      if (online) return {
+        tone: 'off', icon: 'cloudSlash', action: 'retry',
+        line: err.code === 'timeout' ? t('The server did not answer in time.') : t('The server cannot be reached'),
+        banner: sync.pending ? t('Your server cannot be reached — your changes are saved on this device and sync once it answers again.') : t('Your server cannot be reached — showing the last copy synced with it.'),
+      }
       return {
         tone: 'off', icon: 'cloudSlash', action: 'retry',
         line: err.code === 'timeout' ? t('The server did not answer in time.') : t('Offline — the server cannot be reached'),
@@ -194,12 +217,13 @@ export function ServerSyncSection({ children }) {
   useStore(s => s.S)   // the count of waiting changes follows every edit
   useStore(s => s.config)   // whether "Sign in" may offer a password
   const unsynced = useStore(s => s.unsyncedChanges)
+  const online = useOnline()
   const [busy, setBusy] = useState(false)
   // "Last synced: 3 minutes ago" goes stale on an open screen; a re-render now and then keeps it true.
   const [, tick] = useState(0)
   useEffect(() => { const iv = setInterval(() => tick(n => n + 1), 30000); return () => clearInterval(iv) }, [])
   if (!user || !sync) return null
-  const view = connectionView(sync)
+  const view = connectionView(sync, { online })
   // While everything is fine, a change still in its short debounce is not news; once anything
   // is wrong, how much is waiting is exactly what the person needs.
   const owed = sync.status !== 'ok' && typeof unsynced === 'function' ? unsynced() : { owed: false }

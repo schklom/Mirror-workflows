@@ -174,6 +174,53 @@ describe('Media — a custom exercise', () => {
     } finally { globalThis.IntersectionObserver = IO }
   })
 
+  // QA, v1.3.9: reopened within the half-minute its file stays cached, the sheet was still sliding
+  // in when the file was there. The observer's first answer (off screen) paused the play() just
+  // started, the AbortError that followed was taken for a refusal, and the clip never started.
+  it('a play() cut short by its own pause (the sheet still sliding in) plays once the box is on screen', async () => {
+    const observers = []
+    const IO = globalThis.IntersectionObserver
+    globalThis.IntersectionObserver = class { constructor(cb) { this.cb = cb; observers.push(this) } observe() {} disconnect() {} }
+    let reject = null
+    HTMLMediaElement.prototype.play = vi.fn(function () { return new Promise((res, rej) => { reject = rej }) })
+    HTMLMediaElement.prototype.pause = vi.fn(function () {
+      reject?.(Object.assign(new Error('The play() request was interrupted by a call to pause().'), { name: 'AbortError' }))
+    })
+    try {
+      await holding(MAIN, POSTER)
+      await mountCustom(custom({ media: clip(10) }))
+      expect(HTMLMediaElement.prototype.play).toHaveBeenCalledTimes(1)
+      await act(async () => { observers.at(-1).cb([{ isIntersecting: false }]) })
+      await settle()
+      expect(HTMLMediaElement.prototype.pause).toHaveBeenCalled()
+      HTMLMediaElement.prototype.play = vi.fn(function () { return Promise.resolve() })
+      await act(async () => { observers.at(-1).cb([{ isIntersecting: true }]) })
+      await settle()
+      expect(HTMLMediaElement.prototype.play).toHaveBeenCalledTimes(1)
+      expect(host.querySelector('.gifhint').textContent).toContain('tap to pause')
+    } finally { globalThis.IntersectionObserver = IO }
+  })
+
+  it('a short clip the browser refuses to start unasked waits for a tap', async () => {
+    const observers = []
+    const IO = globalThis.IntersectionObserver
+    globalThis.IntersectionObserver = class { constructor(cb) { this.cb = cb; observers.push(this) } observe() {} disconnect() {} }
+    HTMLMediaElement.prototype.play = vi.fn(function () { return Promise.reject(Object.assign(new Error('no gesture'), { name: 'NotAllowedError' })) })
+    try {
+      await holding(MAIN, POSTER)
+      await mountCustom(custom({ media: clip(10) }))
+      expect(HTMLMediaElement.prototype.play).toHaveBeenCalledTimes(1)
+      await act(async () => { observers.at(-1).cb([{ isIntersecting: true }]) })
+      await settle()
+      expect(HTMLMediaElement.prototype.play).toHaveBeenCalledTimes(1)
+      expect(host.querySelector('.gifhint').textContent).toContain('tap to play')
+      HTMLMediaElement.prototype.play = vi.fn(function () { return Promise.resolve() })
+      act(() => { host.querySelector('.exmedia').click() })
+      await settle()
+      expect(HTMLMediaElement.prototype.play).toHaveBeenCalledTimes(1)
+    } finally { globalThis.IntersectionObserver = IO }
+  })
+
   it('a long video waits for a tap, then plays with sound and its own controls', async () => {
     await holding(MAIN, POSTER)
     await mountCustom(custom({ media: clip(45) }))

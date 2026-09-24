@@ -237,8 +237,16 @@ function CustomVideo({ m, id, cls, name, toggle, mini, still }) {
     if (!el || !main.url) return
     if (shouldPlay) {
       const p = el.play()
-      // Refused (no user gesture where the browser wants one): it waits for a tap instead.
-      if (p && typeof p.then === 'function') p.then(() => setPlaying(true), () => { setPlaying(false); setAsked(false) })
+      // Refused (no user gesture where the browser wants one): it waits for a tap instead. Only a
+      // refusal is one: an AbortError is this effect's own pause() cutting the play() short — a
+      // sheet still sliding in is off screen for the observer's first answer — and once the box
+      // is on screen the effect asks it to play again.
+      if (p && typeof p.then === 'function') {
+        p.then(() => setPlaying(true), e => {
+          if (e?.name === 'NotAllowedError') { setPlaying(false); setAsked(false) }
+          else setPlaying(!el.paused)
+        })
+      }
     } else el.pause()
   }, [shouldPlay, main.url])
 

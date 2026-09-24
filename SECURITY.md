@@ -167,6 +167,22 @@ Read this before hosting openGym for anyone other than yourself.
   (a stalling endpoint used to hang the request handler indefinitely), run at most 6 at a time,
   and each account is capped at 20 subscriptions, so one small request cannot become an unbounded
   burst of outbound connections (`api/server.js:108-110`).
+- **An uploaded photo or video can only be one of seven file types, and only its owner gets it
+  back.** People can attach one photo, GIF or short video to an exercise they made. The server
+  decides what a file is from its first bytes, never from its name or the type the client
+  declared, and stores JPEG, PNG, WebP, GIF, MP4, MOV and WebM only — SVG, HTML and everything
+  else is refused. It never decodes a file, so there is no image or video parser to attack. Each
+  file is named by its SHA-256, which the upload has to match, and kept per profile in
+  `./data/uploads/<uid>/` (folders `0700`, files `0600`, out of the Coach runtime's reach). It is
+  served to its owner only — no admin, Coach or plan-sharing route reads one — with a fixed
+  `Content-Type`, `nosniff`, `Content-Security-Policy: default-src 'none'; sandbox`,
+  `Cross-Origin-Resource-Policy: same-origin` and `Cache-Control: private, no-store`. Uploads
+  need the same session and origin check as every other write, are capped per file, per profile
+  (`MEDIA_QUOTA_MB`), to 600 an hour and two at a time per profile, streamed to disk rather than
+  held in memory, cut off after 60 s without a byte, and refused when the disk runs low
+  (`api/media.js`). The server never fetches anything a user supplies here: an exercise's link
+  is only ever opened by its owner's own tap, in a new browsing context with
+  `noopener,noreferrer`, and the Coach cannot write one.
 - **There is an activity log.** Sign-ins, sign-outs, failed and refused attempts, and every admin
   action are appended to `./data/audit.log`, one JSON object per line, and shown in the admin
   dashboard. It is on by default (`AUDIT_LOG=0` disables it) and capped at `AUDIT_MAX` events /
@@ -183,6 +199,14 @@ Read this before hosting openGym for anyone other than yourself.
   people, they are trusting you exactly as much as they'd trust any server operator.** With the
   activity log on, `./data/audit.log` adds everyone's sign-in times to that — worth remembering
   before an archive of `./data` goes somewhere you don't run.
+- **Photos and videos are not encrypted either, and a removed one lingers.** Whoever can read
+  `./data/uploads/` can see every profile's files. A file its owner stopped using is kept for
+  `MEDIA_GC_GRACE_DAYS` (14 by default) so their other devices can catch up, unless they use
+  "Reset everything". Location data is removed by the app before a file leaves the device, not by
+  the server: photos are re-encoded (no EXIF or GPS survives) and the metadata boxes and
+  telemetry tracks of MP4/MOV videos are blanked, but WebM videos are uploaded as recorded, and a
+  client other than the app can upload a file with its metadata intact — readable, still, only by
+  that same profile.
 - **Admins can read everything.** A user listed in `ADMIN_UIDS` (or flagged `admin: true` in
   `db.json`) gets every user's full history and body weight, can disable accounts, and can create
   or revoke invite codes (`api/server.js:825-947`). Off by default — a fresh instance has no admin.

@@ -7,6 +7,7 @@ import path from 'node:path';
 import https from 'node:https';
 import dns from 'node:dns';
 import net from 'node:net';
+import { pipeline } from 'node:stream/promises';
 import {
   generateRegistrationOptions, verifyRegistrationResponse,
   generateAuthenticationOptions, verifyAuthenticationResponse
@@ -28,6 +29,7 @@ import {
   listPasskeys, addPasskeyRecord, renamePasskeyRecord, removePasskeyRecord, passkeyRemovalRefused, MAX_PASSKEYS
 } from './passkeys-store.js';
 import { createDeviceLink, findDeviceLink, burnDeviceLink, dropDeviceLinks } from './device-link.js';
+import { createMediaStore, mediaLimits, mediaConfig, MediaError, HASH_RE } from './media.js';
 
 const PORT = +(process.env.PORT || 3000);
 const DATA = process.env.DATA_DIR || '/data';
@@ -1443,6 +1445,127 @@ const passkeyRoutes = {
   }
 };
 
+/* ---------- photos & videos of custom exercises (api/media.js) ---------- */
+// One photo, GIF or short video per custom exercise, stored per profile and named by its sha256.
+// The state only ever carries a small ref; the bytes arrive and leave through the routes below.
+// MEDIA_UPLOADS=0 takes the routes and the /api/config block away, but the store is created
+// either way: an admin deleting a profile must still remove files uploaded while it was on.
+const MEDIA_LIMITS = mediaLimits(process.env);
+const MEDIA_ON = MEDIA_LIMITS.enabled;
+const MEDIA = createMediaStore({ dir: path.join(DATA, 'uploads'), limits: MEDIA_LIMITS, readState });
+// Leftovers of uploads the previous process was receiving when it stopped.
+try { MEDIA.cleanTmp(); } catch (e) { console.error('media: boot cleanup failed', e.message); }
+// Per profile, not per address: every upload is signed in, and behind a proxy one address can be
+// a whole household. The hourly budget is generous (an import of a backup re-uploads everything
+// at once); the two-in-flight cap in media.js is what keeps one phone from holding many sockets.
+const MEDIA_BURST = createWindow({ max: MEDIA_LIMITS.uploadsPerHour, windowMs: 3600000 });
+// Deleting everything unreferenced is what "Reset everything" does; ten an hour is plenty.
+const MEDIA_SWEEPS = createWindow({ max: 10, windowMs: 3600000 });
+// Uid -> until when its throttle has already been recorded, so a client hammering a closed
+// window writes one audit line per window, not one per request.
+const mediaThrottleNoted = new Map();
+setInterval(() => {
+  MEDIA_BURST.sweep(); MEDIA_SWEEPS.sweep();
+  for (const [k, until] of mediaThrottleNoted) if (until < Date.now()) mediaThrottleNoted.delete(k);
+}, 600000).unref();
+function mediaThrottle(req, user, win) {
+  const wait = win.take(user.id);
+  if (!wait) return;
+  if ((mediaThrottleNoted.get(user.id) || 0) < Date.now()) {
+    mediaThrottleNoted.set(user.id, Date.now() + wait * 1000);
+    audit(req, 'media.throttled', { ok: false, user, msg: win === MEDIA_SWEEPS ? 'sweep' : 'upload' });
+  }
+  throw new MediaError(429, 'locked', { retryAfter: wait }, { 'Retry-After': String(wait) });
+}
+// Removes files that no profile's readable state has referenced for MEDIA_GC_GRACE_DAYS. Only
+// profiles in db.json are swept, and only when their state parses (see media.js for why a
+// missing anything never means "delete"). First pass a few minutes after boot, so an instance
+// that is redeployed more often than hourly still gets one.
+function mediaSweepAll() {
+  try {
+    const r = MEDIA.sweepAll({ uids: db.users.map(u => u.id) });
+    if (r.removed || r.tmp) console.log(`media: swept ${r.removed} unreferenced file(s), ${(r.freedBytes / 1048576).toFixed(1)} MB, ${r.tmp} stale upload(s)`);
+  } catch (e) { console.error('media: sweep failed', e); }
+}
+if (MEDIA_ON) {
+  setInterval(mediaSweepAll, 3600000).unref();
+  setTimeout(mediaSweepAll, 5 * 60000).unref();
+}
+
+// A stored file, streamed. The headers are the point: the bytes were chosen by a user, so the
+// answer must never be something a browser would run. The Content-Type comes from the sniffed
+// extension (never text/* or SVG), nosniff stops a browser second-guessing it, the sandbox CSP
+// neuters it even if opened as a page, CORP keeps other sites from embedding it, and no-store
+// keeps a copy out of the HTTP cache — the app's own media store is the only client cache, and
+// an HTTP-cache copy would outlive the sign-out purge. No Range and no ETag: nothing asks.
+async function sendMediaFile(res, f, hash) {
+  let fd;
+  try { fd = fs.openSync(f.path, 'r'); }
+  catch { throw new MediaError(404, 'media-missing'); }   // swept between the lookup and here
+  const size = fs.fstatSync(fd).size;
+  res.writeHead(200, {
+    'Content-Type': f.mime,
+    'Content-Length': String(size),
+    'Cache-Control': 'private, no-store',
+    'X-Content-Type-Options': 'nosniff',
+    'Content-Security-Policy': "default-src 'none'; sandbox",
+    'Cross-Origin-Resource-Policy': 'same-origin',
+    'Content-Disposition': `inline; filename="${hash}.${f.ext}"`,
+    'X-Robots-Tag': 'noindex',
+    // The paired phone reads the length before the body to refuse an oversized answer; it is
+    // CORS-safelisted already, this only spells it out for older WebViews.
+    'Access-Control-Expose-Headers': 'Content-Length'
+  });
+  try { await pipeline(fs.createReadStream(null, { fd }), res); }
+  catch { res.destroy(); }   // the client went away mid-download; nothing left to answer
+}
+
+const mediaRoutes = {
+  // The raw bytes of one file, named by the sha256 the client computed. media.js checks the
+  // hash, the magic bytes, the caps, the quota and the free disk; this route only adds the
+  // session and the hourly budget.
+  'PUT /api/media/{hash}': async (req, res) => {
+    const user = readSession(req);
+    if (!user) { MEDIA.discard(req); return json(res, 401, { error: 'not signed in' }); }
+    try { mediaThrottle(req, user, MEDIA_BURST); } catch (e) { MEDIA.discard(req); throw e; }
+    req.allowSlowBody?.();   // a signed-in upload within its budget may take the half hour
+    const r = await MEDIA.receive(user.id, req.mediaHash, req);
+    json(res, r.status, r.body);
+  },
+  'GET /api/media/{hash}': async (req, res) => {
+    const user = readSession(req);
+    if (!user) return json(res, 401, { error: 'not signed in' });
+    // Only ever the caller's own folder: another profile's file is exactly as missing as one
+    // that was never uploaded.
+    const f = MEDIA.file(user.id, req.mediaHash);
+    if (!f) throw new MediaError(404, 'media-missing');
+    await sendMediaFile(res, f, req.mediaHash);
+  },
+  // Which of these the server does not have, so a device uploads only those. Answered from the
+  // in-memory list of the caller's own folder.
+  'POST /api/media/missing': async (req, res) => {
+    const user = readSession(req);
+    if (!user) return json(res, 401, { error: 'not signed in' });
+    const body = await readBody(req);
+    const hashes = body.hashes;
+    if (!Array.isArray(hashes) || hashes.length > 1000 || !hashes.every(h => typeof h === 'string' && HASH_RE.test(h))) {
+      throw new MediaError(400, 'bad-request', { error: 'hashes must be a list of at most 1000 lowercase sha256 hex strings' });
+    }
+    json(res, 200, MEDIA.missing(user.id, hashes));
+  },
+  // "Reset everything": every file the caller's current state does not reference goes now,
+  // without the grace. A state that cannot be read removes nothing.
+  'POST /api/media/sweep': async (req, res) => {
+    const user = readSession(req);
+    if (!user) return json(res, 401, { error: 'not signed in' });
+    await readBody(req);
+    mediaThrottle(req, user, MEDIA_SWEEPS);
+    const r = MEDIA.sweep(user.id, { graceMs: 0 });
+    audit(req, 'media.sweep', { user, msg: `${r.removed} file(s), ${(r.freedBytes / 1048576).toFixed(1)} MB${r.skipped ? ', state unreadable' : ''}` });
+    json(res, 200, { removed: r.removed, freedBytes: r.freedBytes, usage: MEDIA.usage(user.id) });
+  }
+};
+
 /* ---------- routes ---------- */
 const routes = {
   'GET /api/health': async (req, res) => json(res, 200, { ok: true, users: db.users.length }),
@@ -1470,6 +1593,9 @@ const routes = {
       invite_only: INVITE_ONLY, allow_guest: ALLOW_GUEST,
       // Only when on, so an instance without passwords answers exactly as it did before (#118).
       ...(PASSWORD_LOGIN ? { password_login: true } : {}),
+      // Public like the two flags above: the caps are not a secret, and the absence of the
+      // block is how the app knows this server does not take photos and videos at all.
+      ...(MEDIA_ON ? { media: mediaConfig(MEDIA_LIMITS) } : {}),
       ...(readSession(req) ? { coach: coachConfig.publicConfig() } : {})
     });
   },
@@ -1761,6 +1887,12 @@ const routes = {
     // the old revision until some later write happened to land on a different tick. This is the
     // only writer of a state file in the tree, so evicting here is the whole fix.
     stateCache.delete(user.id);
+    // Starts (or stops) the grace clock of every stored file this write stopped (or started)
+    // referencing. Bookkeeping only: the state is already saved, so nothing here may turn a
+    // successful write into an error.
+    if (MEDIA_ON) {
+      try { MEDIA.noteState(user.id, body.state); } catch (e) { console.error('media noteState', e); }
+    }
     json(res, 200, { ok: true, ts: body.state._ts || null, rev: body.state._rev });
   },
 
@@ -1943,6 +2075,8 @@ const routes = {
     // The training history and any Coach credential of theirs, both outside db.json.
     try { fs.unlinkSync(stateFile(u.id)); } catch { /* already gone */ }
     try { coachConfig.clearProfileAuth(u.id); } catch { /* nothing stored */ }
+    // Their photos and videos — the one place a profile's folder under uploads/ is removed.
+    try { MEDIA.removeUser(u.id); } catch (e) { console.error('media: could not remove uploads of', u.id, e.message); }
     saveDb();
     // Logged with the name, because the id is about to mean nothing to anyone reading this back.
     audit(req, 'admin.user.delete', { user: admin, msg: name });
@@ -2026,7 +2160,12 @@ const routes = {
   // Routes live in coach/routes.js and are handed the helpers above rather than importing
   // them: they are closures over db and SECRET, and passing them in keeps that module free of
   // a cycle. Every one of them is inert while the feature is unconfigured.
-  ...coachRoutes({ json, readBody, readSession, requireAdmin })
+  ...coachRoutes({ json, readBody, readSession, requireAdmin }),
+
+  /* ---------- photos & videos ---------- */
+  // Absent, not refusing, when MEDIA_UPLOADS=0: a 404 is what a server from before the feature
+  // answers, and the client already treats that as "this server does not store them".
+  ...(MEDIA_ON ? mediaRoutes : {})
 };
 
 /* ---------- Coach: boot recovery, notifications, scheduled reviews ---------- */
@@ -2047,7 +2186,29 @@ coachJobs.setProposalHook((uid, pending) => {
 startCadence({ users: () => db.users, userNow });
 startWarmup();
 
+// node's requestTimeout is one number for every route, and it is half an hour (below) for the
+// sake of one: a video uploaded over a slow uplink. Every other request keeps node's old five
+// minutes to finish sending its body — readBody has no timer of its own, and a trickled body on
+// any route, the unauthenticated CSRF-exempt POSTs included, would otherwise hold its socket six
+// times as long. The upload route lifts it (req.allowSlowBody) only once the session and the
+// hourly budget have let the upload in; from there media.js's own idle timer takes over. The
+// tests shorten it, as they do REMINDER_TICK_MS.
+const BODY_TIMEOUT_MS = Math.max(50, +(process.env.BODY_TIMEOUT_MS || 300000) || 300000);
+function bodyDeadline(req) {
+  if (req.complete) return;
+  // The socket itself, not req: a route that answered without reading the body has finished its
+  // response, and node has already closed req (a no-op to destroy again) while the body trickles
+  // on. Only 'end' clears it — 'close' also fires at that early answer.
+  const socket = req.socket;
+  const timer = setTimeout(() => { if (!req.complete) socket.destroy(); }, BODY_TIMEOUT_MS);
+  timer.unref();
+  const clear = () => clearTimeout(timer);
+  req.once('end', clear);
+  req.allowSlowBody = clear;
+}
+
 const server = http.createServer(async (req, res) => {
+  bodyDeadline(req);
   // Same-origin (the deployed nginx-proxied web app) never triggers CORS, so this only matters
   // for the paired mobile app calling in from its own WebView origin. It carries no cookie
   // (auth is the Authorization header instead), so Allow-Credentials is deliberately never set —
@@ -2067,7 +2228,11 @@ const server = http.createServer(async (req, res) => {
   let url;
   try { url = new URL(req.url, 'http://x'); }
   catch { return json(res, 400, { error: 'bad request' }); }
-  const key = req.method + ' ' + url.pathname;
+  let key = req.method + ' ' + url.pathname;
+  // The one route with a parameter in its path. Mapped onto its template key here so the table
+  // above stays a plain lookup, and so csrfOk and the catch-all see one name for every file.
+  const mm = /^\/api\/media\/([0-9a-f]{64})$/.exec(url.pathname);
+  if (mm) { key = req.method + ' /api/media/{hash}'; req.mediaHash = mm[1]; }
   const handler = routes[key];
   if (!handler) return json(res, 404, { error: 'not found' });
   if (!csrfOk(req, key)) {
@@ -2092,6 +2257,11 @@ const server = http.createServer(async (req, res) => {
       if (!res.headersSent) json(res, e.status, { error: e.message });
       return;
     }
+    // A refused upload or a missing file: the caller's to act on, never a logged 500.
+    if (e instanceof MediaError) {
+      if (!res.headersSent) json(res, e.status, { error: e.message, code: e.code, ...e.extra }, e.headers);
+      return;
+    }
     // Every scrypt slot and the short queue behind them are taken (password.js).
     if (e instanceof BusyError) {
       if (!res.headersSent) json(res, 503, { error: 'the server is busy — try again in a moment', code: 'busy' }, { 'Retry-After': '2' });
@@ -2101,6 +2271,12 @@ const server = http.createServer(async (req, res) => {
     if (!res.headersSent) json(res, 500, { error: 'server error' });
   }
 });
+// Node's default of 300 s for a whole request would answer 408 to a 40 MB video on a ~1 Mbit/s
+// uplink. Half an hour covers that; a stalled upload is cut much sooner by its own 60 s idle
+// timer in media.js, a client that never finishes its headers still meets headersTimeout, and
+// every other route's body still has to arrive within five minutes (bodyDeadline above).
+server.requestTimeout = 30 * 60000;
+server.headersTimeout = 60000;
 // The port is read back off the listener rather than echoed from PORT, so the line states the
 // port that was actually bound: with PORT=0 the OS picks one, and a caller that did not choose it
 // (the tests spawn the server that way, and so does anyone running two instances on one box) has

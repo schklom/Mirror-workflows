@@ -88,7 +88,9 @@ gym.example.com {
 Route `gym.example.com` (HTTPS) → `web:80` (or `<docker-host>:8080`). Any reverse proxy works —
 openGym only needs the browser to reach it over `https://gym.example.com`. If that proxy caps
 request bodies (nginx does, at 1 MiB by default), allow at least 5 MiB on `/api/` — the app syncs
-its whole history in one PUT; the bundled web image already allows 5 MiB, matching the API.
+its whole history in one PUT; the bundled web image already allows 5 MiB, matching the API. The
+photos and videos people attach to their own exercises need more room and more time on
+`/api/media/` — see [Photos and videos of custom exercises](#photos-and-videos-of-custom-exercises).
 
 Then set your domain in `.env` and restart:
 
@@ -343,6 +345,60 @@ Either way, keep `ORIGIN` and `RP_ID` pointing at the address in the browser's b
 subpath changes nothing about section 2 — but it does mean two instances under one hostname share
 a passkey scope and can see each other's credentials. Give each its own hostname if that matters.
 
+### Photos and videos of custom exercises
+
+Anyone signed in can give an exercise they made one photo, GIF or short video (and, separately,
+a link, which the server never fetches). The file is uploaded to this server and stored under
+`./data/uploads/<profile id>/`, named by its SHA-256. Only its owner can download it again — no
+admin route, no Coach and no shared plan reads it. It is on by default, with these limits, all
+set in `.env`:
+
+| Variable | Default | Meaning |
+|---|---|---|
+| `MEDIA_UPLOADS` | `1` | `0` removes the upload routes; the app then offers the link field only |
+| `MEDIA_QUOTA_MB` | `200` | space per profile; `0` = no cap |
+| `MEDIA_IMAGE_MAX_MB` | `2` | a photo after the app shrank it to 1600 px, and every thumbnail |
+| `MEDIA_GIF_MAX_MB` | `8` | an animated GIF |
+| `MEDIA_VIDEO_MAX_MB` | `40` | a video, as recorded — the app does not re-encode videos |
+| `MEDIA_VIDEO_MAX_SEC` | `60` | a video's length |
+| `MEDIA_GC_GRACE_DAYS` | `14` | how long a file nobody uses any more is kept |
+| `MEDIA_UPLOADS_PER_HOUR` | `600` | uploads per profile per hour; at most two run at once |
+| `MEDIA_MIN_FREE_MB` | `512` | uploads are refused while the disk under `./data` has less free; `0` = no floor |
+| `MEDIA_UPLOAD_MAX` | `48m` | the web container's body limit on `/api/media/` (nginx syntax); keep it above `MEDIA_VIDEO_MAX_MB` |
+
+Every MB here is 1024 × 1024 bytes. The API reads the `MEDIA_*` caps; the app gets them from
+`/api/config` and refuses a file the server would refuse before uploading it.
+
+**Disk.** The worst case is `MEDIA_QUOTA_MB` times the number of profiles. On an instance with
+open signup, lower the quota. `MEDIA_MIN_FREE_MB` stops uploads before they fill the disk — a
+full disk is also a state save that cannot land, for everybody.
+
+**A reverse proxy in front** has to let the uploads through, or they fail with a 413 or a
+timeout the app can only report as "The server refused the file as too large":
+
+- **Body size**: at least `MEDIA_VIDEO_MAX_MB` on `/api/media/`. nginx allows 1 MiB unless told
+  otherwise (`client_max_body_size`); Cloudflare's free plan caps a request at 100 MB.
+- **Timeouts**: a 40 MB video over a slow mobile uplink takes minutes. Traefik v3 cuts a request
+  whose body is still arriving after its entryPoint's `readTimeout`, 60 s by default — raise
+  `entryPoints.<name>.transport.respondingTimeouts.readTimeout` (`600s`, say). nginx's
+  `client_body_timeout` counts the gap between two reads, so its default of 60 s is fine. The
+  API itself gives a request 30 minutes and drops one that sends nothing for 60 s.
+- **Content-Security-Policy**: if the proxy adds one, it must allow `blob:` in `img-src` and
+  `media-src`. The app shows the files from its own verified local copy through `blob:` URLs.
+
+**What is removed, and when.** A file goes when its owner's stored state has not used it for
+`MEDIA_GC_GRACE_DAYS` (checked every hour), after one hour unused when the owner's quota is full,
+at once when the owner uses "Reset everything", and with the profile when an admin deletes it.
+Nothing is deleted because a state file does not parse or a profile is missing from `db.json`: a
+folder whose profile is not in `db.json` is left alone and logged once. A device that still has a
+file the server removed uploads it again.
+
+**Privacy.** The app re-encodes photos on the device, so no EXIF or GPS data survives, and blanks
+the metadata boxes and the GPS/telemetry tracks of MP4 and MOV videos (a fragmented MP4 that
+carries such a track is refused rather than uploaded with it). WebM videos are uploaded as
+recorded. The server never decodes or changes a file. Like everything else in `./data`, the files
+are not encrypted at rest — whoever can read that folder can see them.
+
 ## 6. Backups
 
 Everything is in `./data`:
@@ -355,6 +411,18 @@ That archive contains all profiles, passkeys and workout history — and, if the
 on, `audit.log` with everyone's sign-in times. Worth knowing before you ship the archive to a
 backup service you don't run. Restore by unpacking it back into the project folder. (Individual
 users can also export their own data as JSON from Settings.)
+
+The photos and videos of custom exercises are in `data/uploads/`, and they are most of what makes
+the archive large. To leave them out:
+
+```bash
+tar czf opengym-backup-$(date +%F).tar.gz --exclude=data/uploads data/
+```
+
+Restored without them, every profile is intact, and an exercise whose file is gone shows a
+placeholder until one of its owner's devices — each keeps its own copy — uploads it again. When
+you move openGym to another server, copy the whole `data/`, `uploads/` included; each person can
+also carry their own through Settings → *Export with photos & videos* and import it there.
 
 If you enabled the AI Coach with the Codex provider, note what this archive deliberately does
 **not** contain: `./coach-auth`, where that provider keeps its refreshable sign-in. It is a
@@ -537,6 +605,7 @@ browser (see section 2).
 | "verification failed" on login | `RP_ID`/`ORIGIN` don't match the URL in the address bar. See the section above — start with what the server logged on startup. |
 | Media didn't download | `docker compose logs media`. Re-run `docker compose up -d`, or run `./scripts/fetch-media.sh`. |
 | Port 8080 already used | Set `WEB_PORT=9090` in `.env` (and update `ORIGIN` for local testing). |
+| A photo or video will not upload ("refused as too large", or it stops partway) | A proxy in front caps the body or cuts the request off: see [Photos and videos](#photos-and-videos-of-custom-exercises) for the body size and timeouts it needs. |
 | No "Notifications" option in Settings | Requires a signed-in profile and HTTPS (or `localhost`) — guest mode and plain HTTP over LAN can't subscribe. |
 | Day reminder fires at the wrong time | Toggle it off and on in Settings so it re-detects your browser's timezone (also happens automatically on every app load — see section 7). |
 | Notifications switch is off although I turned it on | The server no longer holds the subscription (rebuilt `data/db.json`, regenerated `vapid.json`); the app re-registers on the next start, or switch it on again. On iOS, push only works from the Home Screen icon. |

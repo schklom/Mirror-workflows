@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { localExtras, mergeBodyweight, mergeStampedMap, mergeStates, newerOf, stampRoutines, stampWorkout, unionById } from './sync-merge.js'
+import { localExtras, mergeBodyweight, mergeStampedMap, mergeStates, newerOf, stampCustomEx, stampRoutines, stampWorkout, unionById } from './sync-merge.js'
 import { retimeWorkout } from './workout-date.js'
 import { inventoryFor, loadKindFor, withLoadKind, withPlatePairs, withStandardPlates } from './plates.js'
 
@@ -410,5 +410,48 @@ describe('plate loading keeps the choice made last', () => {
     expect(m.loadKind).toEqual({ [SQUAT]: { kind: 'single', _ts: 5 }, b: { kind: 'single', _ts: 80 } })
     expect(m.plates).toEqual({ kg: { 20: 1, _ts: 5 }, lb: { 45: 2, _ts: 80 } })
     expect(mergeStates(base({ _ts: 500 }), base({ _ts: 1 })).plates).toBeUndefined()
+  })
+})
+
+describe('custom exercises keep the version edited last', () => {
+  const photo = hash => ({ kind: 'image', hash: hash.repeat(64), mime: 'image/webp', size: 10, width: 4, height: 3, at: 1 })
+  const cx = (over = {}) => ({ id: 'c1', n: 'sandbag carry', bp: 'back', custom: true, ...over })
+
+  it('a photo added on A survives a merge with B, which is newer as a whole', () => {
+    const A = base({ _ts: 100, customEx: [cx({ media: photo('a'), _ts: 90 })] })
+    const B = base({ _ts: 200, customEx: [cx({ _ts: 10 })], workouts: [workout('wB')] })
+    const out = mergeStates(A, B)
+    expect(out.customEx[0].media.hash).toBe('a'.repeat(64))
+    expect(ids(out.workouts)).toEqual(['wB'])
+    expect(mergeStates(B, A).customEx[0].media.hash).toBe('a'.repeat(64))
+  })
+
+  it('on a tie, or without stamps, the newer copy\'s version stays', () => {
+    const A = base({ _ts: 100, customEx: [cx({ url: 'https://a.example/', _ts: 7 })] })
+    const B = base({ _ts: 200, customEx: [cx({ url: 'https://b.example/', _ts: 7 })] })
+    expect(mergeStates(A, B).customEx[0].url).toBe('https://b.example/')
+    const C = base({ _ts: 100, customEx: [cx({ url: 'https://a.example/' })] })
+    const D = base({ _ts: 200, customEx: [cx({ url: 'https://b.example/' })] })
+    expect(mergeStates(C, D).customEx[0].url).toBe('https://b.example/')
+  })
+
+  it('sign-in (prefer) keeps the preferred side\'s version whatever the stamps say', () => {
+    const server = base({ _ts: 100, customEx: [cx({ _ts: 1 })] })
+    const device = base({ _ts: 50, customEx: [cx({ media: photo('d'), _ts: 99 })] })
+    expect(mergeStates(server, device, { prefer: 'a' }).customEx[0].media).toBeUndefined()
+  })
+
+  it('stampCustomEx stamps a new or edited exercise and leaves the rest alone', () => {
+    const prev = [cx({ _ts: 5 }), cx({ id: 'c2', n: 'b', _ts: 5 })]
+    const next = JSON.parse(JSON.stringify(prev))
+    next[0].media = photo('e')
+    next.push(cx({ id: 'c3', n: 'new' }))
+    stampCustomEx(prev, next, 1000)
+    expect(next.map(c => c._ts)).toEqual([1000, 5, 1000])
+    // Only the stamp differing is no edit.
+    const again = JSON.parse(JSON.stringify(next))
+    again[1]._ts = 6
+    stampCustomEx(next, again, 2000)
+    expect(again.map(c => c._ts)).toEqual([1000, 6, 1000])
   })
 })

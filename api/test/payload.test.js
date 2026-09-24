@@ -261,3 +261,28 @@ test('the last few chat lines travel as conversation — user text and Coach ver
   const none = payload.build(sampleState(), { handle: handleFor('u1'), kind: 'review' });
   assert.equal(none.conversation, undefined);
 });
+
+/* Custom exercises may carry a photo, GIF or video (a `media` ref: a SHA-256 naming a file on
+   the server, plus a poster's) and a link (`url`). Neither is anything the Coach needs to
+   reason about a plan, a hash is a handle on a private file, and a link may say more about a
+   person than their training does — so none of it may reach a provider, in any job. */
+test('a custom exercise\'s photo, video and link never reach the payload', () => {
+  const HASH = 'e'.repeat(64), POSTER = 'd'.repeat(64), URL = 'https://www.youtube.com/watch?v=private-clip-42';
+  const cx = {
+    id: 'cx1', n: 'Sandbag carry', bp: 'back', custom: true, url: URL,
+    media: { kind: 'video', hash: HASH, mime: 'video/mp4', size: 4000000, width: 1080, height: 1920, dur: 12.3, codec: 'avc1', poster: { hash: POSTER, mime: 'image/webp', size: 20000, width: 270, height: 480 }, at: 1 }
+  };
+  const S = sampleState({ customEx: [cx] });
+  S.routines[0].ex.push({ id: 'cx1', sets: 3, reps: 10, mode: 'reps' });
+  S.workouts[0].entries.push({ id: 'cx1', n: 'Sandbag carry', target: { sets: 3, reps: 10 }, sets: [{ w: 30, r: 10, done: true }] });
+  for (const kind of ['create', 'review', 'debrief']) {
+    const p = payload.build(S, { handle: handleFor('user-media'), kind, workoutId: 'w1' });
+    const json = JSON.stringify(p);
+    assert.ok(json.includes('Sandbag carry') || kind === 'debrief', `${kind}: the exercise itself is still there`);
+    for (const leak of [HASH, POSTER, URL, 'youtube', 'private-clip', '"media"', '"url"', '"poster"', 'video/mp4']) {
+      assert.ok(!json.includes(leak), `${kind} payload leaked ${leak}`);
+    }
+  }
+  const slice = payload.librarySlice(S, [], { keep: ['cx1'] }).find(e => e.id === 'cx1');
+  assert.deepEqual(slice, { id: 'cx1', n: 'Sandbag carry', bp: 'back', custom: true }, 'the library slice keeps a custom exercise to four fields');
+});

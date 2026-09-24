@@ -13,6 +13,9 @@ import { t, dateLocale, instrFor, exerciseNameFor, exerciseNameClass, getLang, I
 import { nav } from './lib/nav.js'
 import { buildStarterPlan, starterPlanDays, starterPlanOptions } from './lib/starter.js'
 import Media, { Thumb } from './components/Media.jsx'
+import CustomMediaField from './components/CustomMediaField.jsx'
+import { mediaOf, normalizeMediaRef, cleanUrl } from './lib/media-refs.js'
+import { syncMedia } from './lib/media-sync.js'
 import LineChart from './components/LineChart.jsx'
 import Stepper from './components/Stepper.jsx'
 import Icon from './components/Icon.jsx'
@@ -910,7 +913,9 @@ export const addToRoutineSheet = ex => ui().openSheet(close => <AddToRoutine ex=
 
 /* ============================ custom exercises (issue #11) ============================ */
 // Name + body part is all it takes — the exercise then behaves like any built-in one
-// (planning, logging, PRs, stats), just without an animation.
+// (planning, logging, PRs, stats). A photo, GIF or video of your own, and a link to a video or
+// guide, are optional (components/CustomMediaField.jsx): the state keeps a small reference to the
+// file, never the file itself, and the link is cleaned on save and again whenever it is opened.
 function CustomExForm({ existing, prefill, onDone, close }) {
   const nameRef = useRef(null)
   const onNameFocus = useSheetKeyboard(nameRef)
@@ -918,6 +923,17 @@ function CustomExForm({ existing, prefill, onDone, close }) {
   const [bp, setBp] = useState(existing ? existing.bp : '')
   const [eq, setEq] = useState(existing ? (existing.eq || '') : '')
   const [desc, setDesc] = useState(existing ? (existing.desc || '') : '')
+  const [media, setMedia] = useState(() => mediaOf(existing))
+  // Whether this form changed the media at all. An edit that did not touch it writes back what the
+  // exercise had, byte for byte: a ref from a newer version of the app (a codec or type this one
+  // does not know) reads as nothing here, and re-normalizing it on a rename would delete it on
+  // every device.
+  const [mediaTouched, setMediaTouched] = useState(false)
+  const [url, setUrl] = useState(existing && typeof existing.url === 'string' ? existing.url : '')
+  const onMedia = patch => {
+    if ('media' in patch) { setMedia(patch.media); setMediaTouched(true) }
+    if ('url' in patch) setUrl(patch.url)
+  }
   const [primaries, setPrimaries] = useState(() => {
     if (existing && Array.isArray(existing.primaries) && existing.primaries.length) return [...existing.primaries]
     if (existing?.bp === 'cardio') return ['cardiovascular system']
@@ -947,6 +963,11 @@ function CustomExForm({ existing, prefill, onDone, close }) {
     const dup = allExercises(S()).find(e => e.n.toLowerCase() === name.toLowerCase() && e.id !== (existing || {}).id)
     if (dup) { toast(t('“{0}” already exists', dup.n)); return }
     const d = desc.trim().slice(0, 1000)
+    // An empty field removes the link; anything else has to be a web address.
+    const link = url.trim() ? cleanUrl(url) : null
+    if (url.trim() && !link) { toast(t('That link is not a web address')); return }
+    const keepMedia = !!existing && !mediaTouched
+    const ref = keepMedia ? null : normalizeMediaRef(media)
     // Stored in the map's order, not the order the chips were tapped in — the tags on the exercise
     // used to shuffle with every edit.
     const prim = bp === 'cardio' ? ['cardiovascular system'] : inMuscleOrder(primaries)
@@ -960,20 +981,28 @@ function CustomExForm({ existing, prefill, onDone, close }) {
     // for the user who drops the target and adds nothing in its place.
     const tg = (existing && prim.includes(existing.tg)) ? existing.tg : (primaryTaps.find(m => prim.includes(m)) || prim[0] || '')
     let id = existing && existing.id
+    const extra = c => {
+      if (!keepMedia) { if (ref) c.media = ref; else delete c.media }
+      if (link) c.url = link; else delete c.url
+    }
     if (existing) update(s => { const c = (s.customEx || []).find(x => x.id === id); if (c) {
       c.n = name; c.bp = bp; c.desc = d; c.tg = tg; c.sm = sm; c.muscleGroups = groups; c.primaries = prim; c.secondaries = sm; c.eq = eq
+      extra(c)
     } })
     else {
       id = 'c' + uid()
-      update(s => { (s.customEx = s.customEx || []).push({ id, n: name, bp, desc: d, tg, sm, muscleGroups: groups, primaries: prim, secondaries: sm, eq, custom: true }) })
+      update(s => { const c = { id, n: name, bp, desc: d, tg, sm, muscleGroups: groups, primaries: prim, secondaries: sm, eq, custom: true }; extra(c); (s.customEx = s.customEx || []).push(c) })
     }
+    // The file goes to the server now rather than after the state's own debounce: another device
+    // that sees the reference first shows a tile until it arrives.
+    if (ref) syncMedia({ force: true })
     close()
     toast(existing ? t('Saved') : t('“{0}” created', name))
     onDone && onDone(EXIDX[id])
   }
   return <>
     <h3>{existing ? t('Edit custom exercise') : t('Create your own exercise')}</h3>
-    <div className="muted small" style={{ marginBottom: 12 }}>{t('Name it and pick a body part — it behaves like any other exercise, just without an animation.')}</div>
+    <div className="muted small" style={{ marginBottom: 12 }}>{t('Name it and pick a body part — it behaves like any other exercise.')}</div>
     <input ref={nameRef} className="input" placeholder={t('Exercise name')} value={n} onFocus={onNameFocus} onChange={e => setN(e.target.value)} />
     <div className="chips" style={{ margin: '12px 0' }}>
       {BODYPARTS.map(b => <button key={b} className={'chip' + (bp === b ? ' on' : '')} onClick={() => setBp(b)}>{t(b)}</button>)}
@@ -995,6 +1024,7 @@ function CustomExForm({ existing, prefill, onDone, close }) {
     {bp === 'cardio' && <div className="small dim row" style={{ marginBottom: 10, gap: 5 }}><Icon name="figureRun" style={{ fontSize: 13 }} />{t('Cardio exercises log time + speed instead of weight × reps.')}</div>}
     <textarea className="input" rows={4} maxLength={1000} placeholder={t('Description (optional) — setup, cues, anything you want to remember')}
       value={desc} onChange={e => setDesc(e.target.value)} />
+    <CustomMediaField media={media} url={url} onChange={onMedia} />
     <div style={{ height: 14 }} />
     <Button variant="primary" onClick={save}>{existing ? t('Save') : t('Create exercise')}</Button>
     {existing && <><div style={{ height: 8 }} /><Button variant="danger" icon="trash" onClick={() => { close(); deleteCustomEx(existing) }}>{t('Delete exercise')}</Button></>}
@@ -1106,7 +1136,7 @@ function ExercisePicker({ onPick, title, close }) {
     <div className="list">
       {!special && <div className="item" {...tappable(() => customExSheet(null, ex => onPick(ex), q.trim()))}>
         <div className="thumb thumb-x"><Icon name="sparkles" /></div>
-        <div className="grow"><div className="tt">{t('Create your own exercise')}</div><div className="ss">{t('name + body part, no animation')}</div></div><Icon name="plus" className="chev" />
+        <div className="grow"><div className="tt">{t('Create your own exercise')}</div><div className="ss">{t('name + body part, and a photo or video if you like')}</div></div><Icon name="plus" className="chev" />
       </div>}
       {f.slice(0, shown).map(e => <div key={e.id} className="item" {...tappable(() => onPick(e))}>
         <Thumb ex={e} /><div className="grow"><div className={`tt ${exerciseNameClass(e)}`}>{isFav(st, e.id) && <Icon name="starFill" className="fav-star" />}{exerciseNameFor(e)}</div><div className="ss capitalize">{t(MUSCLE_NAME[e.tg] || e.tg || e.bp)} · {t(e.eq)}</div></div>

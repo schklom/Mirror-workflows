@@ -78,10 +78,19 @@ info:
       `GET /api/config`. Off by default.
     - `TRUST_PROXY=1` — the throttle reads the client address from proxy headers (set by
       the bundled `docker-compose.yml`, where only the web container can reach the API).
+    - `MEDIA_UPLOADS` (default on; `0` removes the `media` routes and the `media` block of
+      `GET /api/config`), `MEDIA_QUOTA_MB` (200 per profile, `0` = no cap),
+      `MEDIA_IMAGE_MAX_MB` (2), `MEDIA_GIF_MAX_MB` (8), `MEDIA_VIDEO_MAX_MB` (40),
+      `MEDIA_VIDEO_MAX_SEC` (60), `MEDIA_GC_GRACE_DAYS` (14), `MEDIA_UPLOADS_PER_HOUR` (600
+      per profile), `MEDIA_MIN_FREE_MB` (512, `0` = no floor) — photos and videos of custom
+      exercises (tag `media`). Every MB here is 2^20 bytes.
 
     ### Conventions
-    - Every response body is JSON with `Cache-Control: no-store`.
-    - Errors are always `{"error": "<human-readable message>"}`.
+    - Every response body is JSON with `Cache-Control: no-store`. The one exception is
+      `GET /api/media/{hash}`, which answers with the stored file itself
+      (`Cache-Control: private, no-store`).
+    - Errors are always `{"error": "<human-readable message>"}`. The `password`, throttle and
+      `media` routes add a stable `code` for the client to word in its own language.
     - Unknown method+path pairs return `404 {"error":"not found"}`; an unhandled
       exception returns `500 {"error":"server error"}`.
     - Request bodies are parsed as JSON regardless of Content-Type. A body that does
@@ -128,6 +137,11 @@ tags:
     description: Live-workout presence heartbeat
   - name: admin
     description: Admin dashboard — requires an admin session (`ADMIN_UIDS` or `admin:true`)
+  - name: media
+    description: >-
+      The photo, GIF or video of a user's own custom exercise. Stored per profile and named
+      by the SHA-256 of its bytes; the state only carries a `MediaRef`. Every route here is a
+      404 when the instance runs with `MEDIA_UPLOADS=0`.
   - name: coach
     description: >-
       AI Coach — plans, reviews and debriefs. Every route here answers 503 unless the
@@ -168,6 +182,10 @@ paths:
         The flags the login screen needs before anyone is signed in. Both reflect
         environment variables on the server (`INVITE_ONLY`, `ALLOW_GUEST`), and so does
         `password_login`, which is there only when `PASSWORD_LOGIN=1`.
+
+        `media` is there unless the instance runs with `MEDIA_UPLOADS=0`, for everybody: the
+        caps are not a secret, and its absence is how the app knows this server does not
+        store photos and videos at all.
 
         A caller with a valid session also gets a `coach` key: the block when the
         instance has the AI Coach switched on **and** a provider connected, and `null`
@@ -221,6 +239,8 @@ paths:
                       Present (and true) only when the instance runs with
                       PASSWORD_LOGIN=1 — the client then offers name-and-password
                       sign-in next to passkeys.
+                  media:
+                    $ref: '#/components/schemas/MediaConfig'
               examples:
                 anonymous: { value: { invite_only: true, allow_guest: false } }
                 signedInNoCoach: { value: { invite_only: true, allow_guest: false, coach: null } }
@@ -230,6 +250,7 @@ paths:
                     allow_guest: false
                     coach: { enabled: true, provider: compatible, providerLabel: "OpenAI-compatible endpoint", authMode: instance, community: false }
                 passwordLogin: { value: { invite_only: true, allow_guest: false, password_login: true } }
+                media: { value: { invite_only: false, allow_guest: true, media: { imageMB: 2, gifMB: 8, videoMB: 40, videoSec: 60, quotaMB: 200 } } }
 
   /api/me:
     get:
@@ -1259,6 +1280,10 @@ paths:
         from before revisions, and deliberate replaces such as a backup import). The
         server stamps the new revision into the document as `_rev`; a `_rev` sent by
         the client is ignored.
+
+        Every accepted write also starts the grace period of each stored file (tag `media`)
+        the new state no longer references, and stops it for each one it references again.
+        That bookkeeping never changes the answer.
       requestBody:
         required: true
         content:
@@ -1336,6 +1361,260 @@ paths:
                 properties:
                   rev: { type: integer }
         '401': { $ref: '#/components/responses/Unauthorized' }
+
+  /api/media/{hash}:
+    parameters:
+      - name: hash
+        in: path
+        required: true
+        description: The SHA-256 of the file's bytes, 64 lowercase hex characters.
+        schema: { type: string, pattern: '^[0-9a-f]{64}$' }
+    get:
+      tags: [media]
+      operationId: getMedia
+      summary: Download one of your photos or videos
+      description: |
+        The stored file, whole, from the caller's own folder only: another profile's file
+        answers exactly like one that was never uploaded (404). The body is the file, not
+        JSON, with headers that keep a browser from ever treating it as a page:
+        `Content-Type` from the sniffed type (never `text/*` or SVG),
+        `X-Content-Type-Options: nosniff`, `Content-Security-Policy: default-src 'none'; sandbox`,
+        `Cross-Origin-Resource-Policy: same-origin`, `Content-Disposition: inline`,
+        `X-Robots-Tag: noindex` and `Cache-Control: private, no-store` — the app keeps its own
+        verified copy, and an HTTP-cache copy would outlive signing out.
+
+        No `Range` and no `ETag`: the app downloads a file once, checks it against its hash and
+        keeps it. A paired phone fetches with its bearer token; `<img src>` cannot carry one.
+        Not throttled.
+      responses:
+        '200':
+          description: The file.
+          headers:
+            Content-Length: { schema: { type: integer } }
+            Content-Disposition: { schema: { type: string }, example: 'inline; filename="<hash>.webp"' }
+          content:
+            image/jpeg: { schema: { type: string, format: binary } }
+            image/png: { schema: { type: string, format: binary } }
+            image/webp: { schema: { type: string, format: binary } }
+            image/gif: { schema: { type: string, format: binary } }
+            video/mp4: { schema: { type: string, format: binary } }
+            video/quicktime: { schema: { type: string, format: binary } }
+            video/webm: { schema: { type: string, format: binary } }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404':
+          description: Not in the caller's folder — never uploaded, removed by the sweep, or someone else's.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              example: { error: "no such file", code: "media-missing" }
+    put:
+      tags: [media]
+      operationId: putMedia
+      summary: Upload one photo, GIF or video
+      description: |
+        The body is the raw file; `Content-Type` must be one of the seven types below and
+        `Content-Length` is optional (chunked uploads are capped while they stream). The path
+        names the SHA-256 of the bytes, and the file is stored only if they hash to it.
+        Idempotent: uploading a file the server already has answers 200 with `existed: true`.
+
+        What is stored is decided by the file's first bytes, not by the declared type. The
+        declared type only has to be in the same category — a still (JPEG, PNG, WebP, GIF) or a
+        video (MP4, MOV, WebM): a JPEG declared as a GIF is stored as the JPEG it is, a video
+        declared as an image is refused. The cap of the kind the bytes turned out to be applies
+        (`MEDIA_IMAGE_MAX_MB`, `MEDIA_GIF_MAX_MB`, `MEDIA_VIDEO_MAX_MB`), and an MP4 or MOV must
+        be a well-formed file no longer than `MEDIA_VIDEO_MAX_SEC` (+1 s), read from its
+        headers. HEIC/AVIF, SVG, HTML and every other type are refused; the app converts HEIC
+        photos before uploading. The server never decodes or alters a file: the app has already
+        re-encoded photos and removed video metadata on the device.
+
+        Checked in this order: session (401), the hourly budget and at most two uploads at once
+        per profile (429), the declared type (415), a declared length over the cap (413 before
+        a byte is read), already stored (200), the quota (413 `media-quota`; files the profile
+        already dropped get one hour instead of the grace to make room), free disk (507), then
+        while and after streaming: size (413), hash (400), sniffed type (415), sniffed cap
+        (413), video checks (415/413). No bytes for 60 s ends the upload with 408. A refused
+        upload is read and discarded up to twice its cap, so the answer reaches the client.
+
+        A new file that the profile's state does not reference yet starts its grace period
+        at once, so a state push that never comes does not keep it forever.
+      requestBody:
+        required: true
+        content:
+          image/jpeg: { schema: { type: string, format: binary } }
+          image/png: { schema: { type: string, format: binary } }
+          image/webp: { schema: { type: string, format: binary } }
+          image/gif: { schema: { type: string, format: binary } }
+          video/mp4: { schema: { type: string, format: binary } }
+          video/quicktime: { schema: { type: string, format: binary } }
+          video/webm: { schema: { type: string, format: binary } }
+      responses:
+        '201':
+          description: Stored.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/MediaStored' }
+              example: { ok: true, hash: "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08", mime: "image/webp", size: 183204, existed: false }
+        '200':
+          description: The server already had these bytes (from this or another of your devices).
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/MediaStored' }
+              example: { ok: true, hash: "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08", mime: "image/webp", size: 183204, existed: true }
+        '400':
+          description: The bytes do not hash to the name in the path (`hash-mismatch`).
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              example: { error: "the file does not match its name", code: "hash-mismatch" }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403':
+          description: A browser request from another origin (see *CSRF*).
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              example: { error: "cross-origin request refused" }
+        '408':
+          description: No bytes arrived for 60 seconds (`timeout`). The connection is closed.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              example: { error: "the upload stalled", code: "timeout" }
+        '413':
+          description: |
+            - `media-too-large` — over the cap of its kind; `maxMB` says the cap.
+            - `media-quota` — the profile's space is full; `usedMB` and `quotaMB` say how full.
+            - `media-too-long` — a video longer than `maxSec` seconds.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              examples:
+                tooLarge: { value: { error: "that file is too large", code: "media-too-large", maxMB: 2 } }
+                quota: { value: { error: "your space for photos and videos is full", code: "media-quota", usedMB: 199.4, quotaMB: 200 } }
+                tooLong: { value: { error: "that video is too long", code: "media-too-long", maxSec: 60 } }
+        '415':
+          description: >-
+            `media-type` — the declared type is not one of the seven, the bytes are none of
+            them, or they are a video declared as an image (or the reverse). `media-invalid` —
+            an MP4 or MOV whose boxes do not add up.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              examples:
+                type: { value: { error: "that file type is not accepted", code: "media-type" } }
+                invalid: { value: { error: "that video could not be read", code: "media-invalid" } }
+        '429':
+          description: >-
+            `locked` — more than `MEDIA_UPLOADS_PER_HOUR` uploads this hour; `busy` — two
+            uploads of this profile are already in flight (`retryAfter` 5).
+          headers:
+            Retry-After: { schema: { type: integer } }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              examples:
+                locked: { value: { error: "too many uploads — try again later", code: "locked", retryAfter: 1740 } }
+                busy: { value: { error: "too many uploads at once — try again in a moment", code: "busy", retryAfter: 5 } }
+        '507':
+          description: The server's disk has less than `MEDIA_MIN_FREE_MB` free (`storage-full`).
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              example: { error: "the server is running out of disk space", code: "storage-full" }
+
+  /api/media/missing:
+    post:
+      tags: [media]
+      operationId: mediaMissing
+      summary: Which of these files the server does not have
+      description: |
+        The app sends every hash its state references and uploads only what comes back, so the
+        same call moves a guest's files into a new account, a phone's into its pairing, a
+        backup's into the server, and re-sends a file the sweep removed while a device still
+        had it. Answered from the caller's own folder only.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [hashes]
+              properties:
+                hashes:
+                  type: array
+                  maxItems: 1000
+                  items: { type: string, pattern: '^[0-9a-f]{64}$' }
+      responses:
+        '200':
+          description: The subset the server does not have, in the order sent, and the profile's usage.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  missing:
+                    type: array
+                    items: { type: string }
+                  usage: { $ref: '#/components/schemas/MediaUsage' }
+              example: { missing: ["b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9"], usage: { bytes: 52428800, count: 14, quotaBytes: 209715200 } }
+        '400':
+          description: '`hashes` is missing, not a list, longer than 1000, or holds something that is not a lowercase SHA-256 (`bad-request`).'
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403':
+          description: A browser request from another origin (see *CSRF*).
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              example: { error: "cross-origin request refused" }
+
+  /api/media/sweep:
+    post:
+      tags: [media]
+      operationId: mediaSweep
+      summary: Delete every file your current state does not reference
+      description: |
+        What "Reset everything" does after pushing the empty state: every stored file of the
+        caller that the stored state does not reference goes now, without the grace period.
+        A state that cannot be read removes nothing. At most 10 an hour per profile (429
+        `locked`). Recorded in the activity log as `media.sweep`.
+
+        Without this call nothing is lost either: the hourly sweep removes a file once the
+        state has not referenced it for `MEDIA_GC_GRACE_DAYS` days (14), and only for profiles
+        whose state reads — a missing or unreadable state, or a profile missing from `db.json`,
+        never deletes anything.
+      requestBody:
+        content:
+          application/json:
+            schema: { type: object }
+            example: {}
+      responses:
+        '200':
+          description: What was removed, and what is left.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  removed: { type: integer }
+                  freedBytes: { type: integer }
+                  usage: { $ref: '#/components/schemas/MediaUsage' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403':
+          description: A browser request from another origin (see *CSRF*).
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              example: { error: "cross-origin request refused" }
+        '429':
+          description: More than 10 sweeps this hour (`locked`).
+          headers:
+            Retry-After: { schema: { type: integer } }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              example: { error: "too many uploads — try again later", code: "locked", retryAfter: 1200 }
 
   /api/push/public-key:
     get:
@@ -1702,8 +1981,9 @@ paths:
       summary: 'Admin: delete a user and everything of theirs'
       description: |
         Removes the account for good: the user record, their passkeys, their push
-        subscriptions, their live presence, their training history file and any Coach
-        credential stored for them. Not reversible — `/api/admin/user/disable` is the
+        subscriptions, their live presence, their training history file, their uploaded
+        photos and videos (`DATA_DIR/uploads/<uid>/`) and any Coach credential stored for
+        them. Not reversible — `/api/admin/user/disable` is the
         reversible one. An admin cannot delete their own account, and the last admin
         cannot be deleted. Audited by name, since the id stops meaning anything.
       requestBody:
@@ -2559,8 +2839,10 @@ components:
         code:
           type: string
           description: >-
-            A stable reason on the password and throttle routes, for a client to word in
-            its own language (`bad-credentials`, `locked`, `too-short`, …).
+            A stable reason on the password, throttle and media routes, for a client to word
+            in its own language (`bad-credentials`, `locked`, `too-short`, `media-quota`, …).
+            Media refusals add the numbers to word it with (`maxMB`, `maxSec`, `usedMB`,
+            `quotaMB`).
         retryAfter:
           type: integer
           description: 429 only — the same number of seconds as the Retry-After header.
@@ -2751,7 +3033,7 @@ components:
         customEx:
           type: array
           description: User-created exercises (id, name, muscles…).
-          items: { type: object, additionalProperties: true }
+          items: { $ref: '#/components/schemas/CustomExercise' }
         exWeights:
           type: object
           description: 'Per-exercise last/best weight memory: exercise id → {w, d}.'
@@ -2779,6 +3061,84 @@ components:
             targetW, autoBackup, …) are flat settings values like the ones above.
           additionalProperties: true
       additionalProperties: true
+
+    CustomExercise:
+      type: object
+      description: >-
+        One exercise the user made (representative shape). The server stores it as sent and
+        reads only `media` from it, to know which uploaded files are still referenced.
+      properties:
+        id: { type: string }
+        n: { type: string, description: Name. }
+        bp: { type: string, description: Body part. }
+        custom: { type: boolean, const: true }
+        media:
+          $ref: '#/components/schemas/MediaRef'
+        url:
+          type: string
+          format: uri
+          maxLength: 2048
+          description: >-
+            One link — a video or a guide. http(s) only, no credentials. Neither the app nor
+            the server ever fetches it: the app opens it in a new browsing context on a tap.
+        _ts: { type: number, description: 'When this entry was last edited, ms — for merging two devices'' copies.' }
+      additionalProperties: true
+
+    MediaRef:
+      type: object
+      description: >-
+        What the state knows of an uploaded file. The bytes are behind
+        `GET /api/media/{hash}`; the server keeps a file as long as some `customEx[].media.hash`
+        or `.poster.hash` of the profile's state names it, and for `MEDIA_GC_GRACE_DAYS` after.
+      required: [kind, hash, mime, size, width, height, at]
+      properties:
+        kind: { type: string, enum: [image, gif, video], description: '`gif` means animated; a one-frame GIF is an `image`.' }
+        hash: { type: string, pattern: '^[0-9a-f]{64}$', description: SHA-256 of the stored file. }
+        mime: { type: string, enum: [image/webp, image/jpeg, image/png, image/gif, video/mp4, video/quicktime, video/webm] }
+        size: { type: integer, minimum: 1 }
+        width: { type: integer, minimum: 1, maximum: 16384 }
+        height: { type: integer, minimum: 1, maximum: 16384 }
+        dur: { type: number, minimum: 0, maximum: 3600, description: 'Seconds, one decimal; videos and animated GIFs, absent when unknown.' }
+        codec: { type: string, enum: [avc1, hvc1, av01, vp09, vp8, vp9, other], description: Videos only. }
+        poster:
+          type: object
+          description: A still of at most 480 px — always for images and GIFs, when possible for videos.
+          properties:
+            hash: { type: string, pattern: '^[0-9a-f]{64}$' }
+            mime: { type: string, enum: [image/webp, image/jpeg] }
+            size: { type: integer }
+            width: { type: integer }
+            height: { type: integer }
+        at: { type: number, description: When it was attached, ms. }
+
+    MediaConfig:
+      type: object
+      description: >-
+        The instance's media caps (`MEDIA_*`), in MB of 2^20 bytes. Absent when the instance
+        runs with `MEDIA_UPLOADS=0`.
+      properties:
+        imageMB: { type: number, description: 'A photo after the app re-encoded it, or a poster.' }
+        gifMB: { type: number }
+        videoMB: { type: number }
+        videoSec: { type: number }
+        quotaMB: { type: number, description: Per profile; 0 = no cap. }
+      example: { imageMB: 2, gifMB: 8, videoMB: 40, videoSec: 60, quotaMB: 200 }
+
+    MediaUsage:
+      type: object
+      properties:
+        bytes: { type: integer, description: What the profile's stored files take. }
+        count: { type: integer }
+        quotaBytes: { type: integer, description: The cap; 0 = no cap. }
+
+    MediaStored:
+      type: object
+      properties:
+        ok: { type: boolean, const: true }
+        hash: { type: string }
+        mime: { type: string, description: 'What the bytes are — not necessarily what was declared.' }
+        size: { type: integer }
+        existed: { type: boolean, description: The server already had this file. }
 
     Workout:
       type: object

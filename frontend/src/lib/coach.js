@@ -392,9 +392,13 @@ export function applyCreatedPlan(s, proposal, { schedule } = {}) {
   pushSnapshot(s, proposal.id, t('Before the Coach’s plan'))
   const bundle = proposal.bundle
   // The Coach's `why` texts are for the review screen; they have no place in the routine data.
+  // A link is never the Coach's to write: validatePlan already drops one from the model's plan,
+  // and this drops it again on the way into mergePlan, which would otherwise carry a `url` on a
+  // plan's own exercises through to the profile (cleanCustom keeps links for shared plans).
   const stripped = {
     ...bundle,
-    routines: bundle.routines.map(r => ({ ...r, why: undefined, ex: r.ex.map(e => ({ ...e, why: undefined, name: undefined })) }))
+    routines: bundle.routines.map(r => ({ ...r, why: undefined, ex: r.ex.map(e => ({ ...e, why: undefined, name: undefined })) })),
+    customEx: (bundle.customEx || []).map(c => { const { url, media, ...rest } = c || {}; return rest })
   }
   const res = mergePlan(s, stripped, { schedule })
   // Only when the week actually moved — with the switch off the old schedule still stands, and

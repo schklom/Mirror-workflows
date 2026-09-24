@@ -182,6 +182,24 @@ export async function shareExport(json, filename) {
   await Share.share({ title: filename, url: w.uri })
 }
 
+// The same for a binary export — the backup with photos and videos (lib/backup-media.js). The
+// file crosses the native bridge as base64 in 3 MB pieces, never as one string the size of the
+// whole zip, which could be a few hundred MB.
+export async function shareExportBlob(blob, filename) {
+  const { Filesystem, Directory } = await import('@capacitor/filesystem')
+  const { Share } = await import('@capacitor/share')
+  const { toBase64 } = await import('./media-store-fs.js')
+  const CHUNK = 3 * 1024 * 1024
+  for (let o = 0; o < blob.size || o === 0; o += CHUNK) {
+    const data = toBase64(new Uint8Array(await blob.slice(o, o + CHUNK).arrayBuffer()))
+    if (o === 0) await Filesystem.writeFile({ path: filename, directory: Directory.Cache, data })
+    else await Filesystem.appendFile({ path: filename, directory: Directory.Cache, data })
+    if (!blob.size) break
+  }
+  const { uri } = await Filesystem.getUri({ path: filename, directory: Directory.Cache })
+  await Share.share({ title: filename, url: uri })
+}
+
 // Hand a self-contained HTML document (lib/plan-share.js planPrintHTML) to the OS print flow.
 // Android routes it through the system PrintManager — "Save as PDF", "Save to Drive", a real
 // printer; iOS through the print sheet — "Save to Files" (as PDF), share, print. Either way the

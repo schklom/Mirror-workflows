@@ -6,7 +6,10 @@ import { registerCustom } from '../lib/exercises.js'
 import { DEMO, DEMO_SEEDED } from '../lib/demo.js'
 import { guestAllowed } from '../lib/guest.js'
 import { MOBILE, initReminderSync, nativeLoad, nativeSave, onAppActive, readJsonFile, syncReminder, writeAutoBackup, writeJsonFile } from '../lib/mobile.js'
-import { mergeStates, localExtras, stampRoutines } from '../lib/sync-merge.js'
+import { mergeStates, localExtras, stampRoutines, stampCustomEx } from '../lib/sync-merge.js'
+import { pendingRefCount, settleMedia, loadPending } from '../lib/media-owed.js'
+import { referencedHashes } from '../lib/media-refs.js'
+import { mediaStore, mediaStoreInUse } from '../lib/media-store.js'
 import { countChanges, syncFingerprint } from '../lib/sync-changes.js'
 import { saveWorkoutEdit, deleteEditedWorkout } from '../lib/session-edit.js'
 import { appBase } from '../lib/app-base.js'
@@ -545,11 +548,14 @@ export const useStore = create((set, get) => {
   })
 
   // Before a sign-out decides anything: the pull on its way has landed, and every push asked
-  // for — including one queued behind the push in flight — has run.
+  // for — including one queued behind the push in flight — has run. Then the photos and videos
+  // still waiting get one more try (lib/media-owed.js, at most a minute): they are owed exactly
+  // like a change is.
   const settle = async () => {
     if (pulling) await pulling
     await get().pushState()   // never throws — an owed copy stays owed when it does not land
     while (pushing) await pushing
+    await settleMedia(get().S)
   }
 
   // Forget where this device stood with the server — a different account, a sign-out. The copy
@@ -563,6 +569,7 @@ export const useStore = create((set, get) => {
   // Everything a sign-out leaves behind on this device, whichever way it was triggered. The owner
   // goes last, after the wiped copy is written — the storage listener above relies on the order.
   const clearLocalSession = () => {
+    const hadMedia = referencedHashes(get().S).size > 0
     get().setUser(null)
     localStorage.removeItem('gym_guest')
     forgetSync()
@@ -574,7 +581,23 @@ export const useStore = create((set, get) => {
     // On a phone the file is wiped with it, now rather than after the usual wait: a start in
     // between would open in local mode on the signed-out account's data, since that boot takes
     // the file whenever storage holds nothing.
-    return MOBILE ? nativePersist(true) : null
+    const wiped = MOBILE ? nativePersist(true) : null
+    // The account's photos and videos go with its copy (a shared device keeps nothing of it),
+    // except the ones a stash still refers to — whatever was pending is in a stash by now
+    // (signOut refuses otherwise) and comes back with it. A file picked from here on is kept.
+    // After the state file, which is the one write a sign-out must not be kept waiting for. Also
+    // when the copy refers to no media any more: a photo removed in the last hour, or one whose
+    // exercise was deleted, is still in the store until the local clean-up's grace has passed,
+    // and on a shared device it must not outlast the sign-out. The app's sync opens the store at
+    // start (lib/media-sync.js), so there this always runs; only a store nothing has opened is
+    // left alone, since nothing can have been put into it.
+    if (hadMedia || mediaStoreInUse()) {
+      const since = Date.now()
+      Promise.resolve(wiped).then(() => readStashes())
+        .then(all => mediaStore.retainOnly(new Set(Object.values(all).flatMap(e => [...referencedHashes(e?.state)])), { keepPutAfter: since }))
+        .catch(() => {})
+    }
+    return wiped
   }
 
   /* The changes a forced sign-out or disconnect keeps, so that no change is ever lost silently.
@@ -606,9 +629,11 @@ export const useStore = create((set, get) => {
   // way a forced sign-out keeps it, for when that account comes back. Written to localStorage
   // right here, since setUser wipes the copy straight after; on a phone the file follows, and
   // pairing waits for it (`keeping`) before it goes on.
+  // Photos or videos that never reached that account's server count as owed on their own, even on
+  // a copy with no workouts or routines yet — the custom exercise they belong to is all there is.
   const keepForPrevious = uid => {
     const S = get().S
-    if (!owes() || !hasData(S)) return
+    if (!(owes() && hasData(S)) && !pendingRefCount(S)) return
     const server = serverBase()
     const key = stashKey(server, uid)
     let all = {}
@@ -632,6 +657,9 @@ export const useStore = create((set, get) => {
     set({ keptRev: get().keptRev + 1 })
     if (MOBILE) keeping = readStashes().then(f => writeStashes({ ...f, [key]: entry })).catch(() => {})
   }
+  // What a sign-out or disconnect answers when something is owed: how many changes, and how many
+  // photos or videos, when there are any.
+  const owedResult = (left, extra = {}) => ({ owed: true, count: left.count, ...(left.media ? { media: left.media } : {}), ...extra })
   const stashOwed = async () => {
     const user = get().user
     if (!user) return true
@@ -692,6 +720,9 @@ export const useStore = create((set, get) => {
 
   const S0 = loadState()
   registerCustom(S0.customEx)
+  // Which photos and videos are still waiting for the server, known before the first sign-out
+  // check has to ask (lib/media-owed.js). A copy without any leaves the media store unopened.
+  if (referencedHashes(S0).size) loadPending()
   meta.set(S0, { base: readStoredSync(), owed: storedOwed() })
   const user0 = (() => { try { return JSON.parse(localStorage.getItem('gym_user')) || null } catch { return null } })()
   const sync0 = { offline: false, pending: storedOwed(), auth: false, lastError: null, lastSynced: (() => { try { return +localStorage.getItem(SYNCED_AT_KEY) || 0 } catch { return 0 } })(), server: serverBase() }
@@ -726,6 +757,7 @@ export const useStore = create((set, get) => {
       const S = clone(prev)
       mut(S)
       stampRoutines(prev.routines, S.routines)
+      stampCustomEx(prev.customEx, S.customEx)
       persist(S, push)
     },
     // An edit of a saved workout (lib/session-edit.js) is saved or dropped like any other change:
@@ -901,10 +933,16 @@ export const useStore = create((set, get) => {
     // differ from the last copy the two agreed on (plus one for settings and the plan) — null
     // when the device has no record of that copy (it last agreed with the server under an older
     // version), and then only `owed` is known.
+    //
+    // `media` counts the custom exercises whose photo or video the server has not confirmed
+    // (lib/media-owed.js); present only when there are any, and they are owed on their own.
     unsyncedChanges() {
-      if (!get().user || !owes()) return { owed: false, count: 0 }
+      if (!get().user) return { owed: false, count: 0 }
+      const media = pendingRefCount(get().S)
+      const withMedia = media ? { media } : {}
+      if (!owes()) return { owed: media > 0, count: 0, ...withMedia }
       const count = countChanges(get().S, readFingerprint())
-      return { owed: count !== 0, count }
+      return { owed: count !== 0 || media > 0, count, ...withMedia }
     },
 
     // The changes a forced sign-out or disconnect kept on this device, waiting for their server
@@ -915,6 +953,12 @@ export const useStore = create((set, get) => {
     async keptChanges() {
       const all = await readStashes()
       return Object.values(all).map(({ server, uid, name, at }) => ({ server: server || null, uid, name, at }))
+    },
+    // Every photo and video file the stashes refer to: they are kept on this device for as long
+    // as the stash is (lib/media-sync.js localMediaGc, Reset everything).
+    async stashedMediaHashes() {
+      const all = await readStashes()
+      return new Set(Object.values(all).flatMap(e => [...referencedHashes(e?.state)]))
     },
 
     // Sign-in (and pairing a phone) takes the server's profile as this device's copy — the
@@ -1006,13 +1050,13 @@ export const useStore = create((set, get) => {
     async signOut({ force = false } = {}) {
       await settle()
       const left = get().unsyncedChanges()
-      if (left.owed && !force) return { owed: true, count: left.count }
-      if (left.owed && !(await stashOwed())) return { owed: true, count: left.count, stashed: false }
+      if (left.owed && !force) return owedResult(left)
+      if (left.owed && !(await stashOwed())) return owedResult(left, { stashed: false })
       // The device is signed out either way. A request that did not get through leaves the cookie
       // behind, still valid, so the logout is owed until the server answers it (see boot).
       try { await api('/api/logout', { method: 'POST', body: '{}' }) } catch (e) { if (!MOBILE) logoutOwed(true) }
       await clearLocalSession()
-      return left.owed ? { owed: true, count: left.count, stashed: true } : { owed: false }
+      return left.owed ? owedResult(left, { stashed: true }) : { owed: false }
     },
 
     // Mobile-only ("connect to my server" onboarding, see App.jsx's needsMobileOnboarding).
@@ -1061,11 +1105,11 @@ export const useStore = create((set, get) => {
     async signOutAll({ force = false } = {}) {
       await settle()
       const left = get().unsyncedChanges()
-      if (left.owed && !force) return { owed: true, count: left.count }
+      if (left.owed && !force) return owedResult(left)
       await api('/api/logout/all', { method: 'POST', body: '{}' })
-      if (left.owed && !(await stashOwed())) return { owed: true, count: left.count, stashed: false }
+      if (left.owed && !(await stashOwed())) return owedResult(left, { stashed: false })
       await clearLocalSession()
-      return left.owed ? { owed: true, count: left.count, stashed: true } : { owed: false }
+      return left.owed ? owedResult(left, { stashed: true }) : { owed: false }
     },
 
     // Demo build only: drop the seeded example profile back in (Settings → "Reset demo data").
@@ -1074,6 +1118,8 @@ export const useStore = create((set, get) => {
       const { buildDemoState } = await import('../lib/demoSeed.js')
       markOwed(false)
       persist(Object.assign(clone(DEF), buildDemoState()), false)
+      // The demo's photos and videos were only ever in this browser, and the reset takes them too.
+      await mediaStore.clearAll().catch(() => {})
     },
 
     // Boot: ask the server who we are, then pull.

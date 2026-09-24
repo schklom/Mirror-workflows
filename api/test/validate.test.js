@@ -436,3 +436,19 @@ test('a debrief score outside 1-10 is clamped, not refused', () => {
   assert.equal(validateDebrief({ summary: 'ok', score: 14, nextTime: ['x'] }).proposal.score, 10);
   assert.equal(validateDebrief({ summary: 'ok', score: -2, nextTime: ['x'] }).proposal.score, 1);
 });
+
+/* A created plan's own exercises carry a name, a body part and a description, and nothing else:
+   a `url` the model made up is a link the app would offer the person to open, and a `media` ref
+   would point at a file the model never saw. Both are dropped, whatever the model wrote. */
+test('a plan\'s custom exercises lose any media or link the model put on them', () => {
+  const r = validatePlan({
+    routines: [{ name: 'A', ex: [{ id: 'cx1', sets: 3, reps: 10 }] }],
+    customEx: [{
+      id: 'cx1', n: 'Sandbag carry', bp: 'back', desc: 'Hug it, walk.',
+      url: 'https://evil.example/phish', img: 'https://evil.example/x.jpg', gif: 'data:image/gif;base64,R0lG',
+      media: { kind: 'image', hash: 'a'.repeat(64), mime: 'image/jpeg', size: 1, width: 1, height: 1, at: 1 }
+    }]
+  });
+  assert.equal(r.ok, true);
+  assert.deepEqual(r.bundle.customEx, [{ id: 'cx1', n: 'Sandbag carry', bp: 'back', desc: 'Hug it, walk.' }]);
+});

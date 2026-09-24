@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import App from './App.jsx'
 import { MOBILE } from './lib/mobile.js'
 import { useStore } from './store/useStore.js'
+import { startMediaSync } from './lib/media-sync.js'
 import './index.css'
 
 // App.jsx restores per-route scroll itself; the browser's own attempt races it.
@@ -11,6 +12,10 @@ if ('scrollRestoration' in history) history.scrollRestoration = 'manual'
 createRoot(document.getElementById('root')).render(
   <StrictMode><App /></StrictMode>
 )
+
+// The photos and videos of custom exercises, in every build (the phone and the demo included):
+// uploads of what the server lacks, the local clean-up, and the plan's files kept offline.
+startMediaSync(useStore)
 
 // Not in the mobile build: the native shell already serves everything from disk.
 if (!MOBILE && 'serviceWorker' in navigator && location.protocol === 'https:') {

@@ -22,6 +22,21 @@ export const PhotosModal = ({ isOpen, onClose }: PhotosModalProps) => {
   const moveBack = () => setSelectedIndex((i) => Math.max(0, i - 1));
   const moveForward = () => setSelectedIndex((i) => Math.min(pictures.length - 1, i + 1));
 
+  const deletePhoto = async () => {
+    const service = apiService() as ApiV2Service;
+    try {
+      const toDelete = pictures[selectedIndex].clientItemIdHex;
+      await service.deleteSinglePicture(toDelete);
+      useStore.setState({
+        pictures: [...pictures.slice(0, selectedIndex), ...pictures.slice(selectedIndex + 1)],
+      });
+      setSelectedIndex(Math.max(0, selectedIndex - 1));
+      toast.info(t('pictures.delete_success'));
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : t('errors:delete_failed'));
+    }
+  };
+
   // Load initial data
   useEffect(() => {
     if (isOpen && userData) {
@@ -81,25 +96,7 @@ export const PhotosModal = ({ isOpen, onClose }: PhotosModalProps) => {
                   variant="destructive"
                   size="sm"
                   className="self-start font-semibold"
-                  onClick={async () => {
-                    const service = apiService() as ApiV2Service;
-                    try {
-                      const toDelete = pictures[selectedIndex].clientItemIdHex;
-                      await service.deleteSinglePicture(toDelete);
-                      useStore.setState({
-                        pictures: [
-                          ...pictures.slice(0, selectedIndex),
-                          ...pictures.slice(selectedIndex + 1),
-                        ],
-                      });
-                      setSelectedIndex(Math.max(0, selectedIndex - 1));
-                      toast.info(t('pictures.delete_success'));
-                    } catch (error) {
-                      toast.error(
-                        error instanceof Error ? error.message : t('errors:delete_failed')
-                      );
-                    }
-                  }}
+                  onClick={async () => deletePhoto()}
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>

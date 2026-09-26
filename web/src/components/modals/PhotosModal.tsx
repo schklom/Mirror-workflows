@@ -19,6 +19,25 @@ export const PhotosModal = ({ isOpen, onClose }: PhotosModalProps) => {
   const { userData, pictures, isPicturesLoading } = useStore();
   const [selectedIndex, setSelectedIndex] = useState(0);
 
+  const moveBack = () => setSelectedIndex((i) => Math.max(0, i - 1));
+  const moveForward = () => setSelectedIndex((i) => Math.min(pictures.length - 1, i + 1));
+
+  const deletePhoto = async () => {
+    const service = apiService() as ApiV2Service;
+    try {
+      const toDelete = pictures[selectedIndex].clientItemIdHex;
+      await service.deleteSinglePicture(toDelete);
+      useStore.setState({
+        pictures: [...pictures.slice(0, selectedIndex), ...pictures.slice(selectedIndex + 1)],
+      });
+      setSelectedIndex(Math.max(0, selectedIndex - 1));
+      toast.info(t('pictures.delete_success'));
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : t('errors:delete_failed'));
+    }
+  };
+
+  // Load initial data
   useEffect(() => {
     if (isOpen && userData) {
       void (async () => {
@@ -35,6 +54,22 @@ export const PhotosModal = ({ isOpen, onClose }: PhotosModalProps) => {
       })();
     }
   }, [isOpen, userData]);
+
+  // Left/right navigation with arrow keys
+  useEffect(() => {
+    if (!isOpen && pictures.length === 0) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key == 'ArrowLeft') {
+        moveBack();
+      } else if (e.key == 'ArrowRight') {
+        moveForward();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, pictures.length]);
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -55,13 +90,32 @@ export const PhotosModal = ({ isOpen, onClose }: PhotosModalProps) => {
           )}
 
           {!isPicturesLoading && pictures.length > 0 && (
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-8">
+              {apiService() instanceof ApiV2Service && (
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  className="self-start font-semibold"
+                  onClick={async () => deletePhoto()}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              )}
+
+              <div className="relative flex w-full items-center justify-center">
+                <img
+                  src={`data:image/jpeg;base64,${pictures[selectedIndex].item}`}
+                  alt={`Device capture ${selectedIndex + 1}`}
+                  className="max-h-[70vh] max-w-full rounded object-contain"
+                />
+              </div>
+
               <div className="flex items-center justify-center gap-3">
                 <Button
                   variant="outline"
                   size="sm"
                   className="font-semibold"
-                  onClick={() => setSelectedIndex(Math.max(0, selectedIndex - 1))}
+                  onClick={() => moveBack()}
                   disabled={selectedIndex === 0}
                 >
                   <ChevronLeft className="h-4 w-4" />
@@ -76,51 +130,13 @@ export const PhotosModal = ({ isOpen, onClose }: PhotosModalProps) => {
                   variant="outline"
                   size="sm"
                   className="font-semibold"
-                  onClick={() => setSelectedIndex(Math.min(pictures.length - 1, selectedIndex + 1))}
+                  onClick={() => moveForward()}
                   disabled={selectedIndex === pictures.length - 1}
                 >
                   {t('dashboard:location.newer')}
                   <ChevronRight className="h-4 w-4" />
                 </Button>
               </div>
-
-              <div className="relative flex h-[70vh] w-full items-center justify-center">
-                <img
-                  src={`data:image/jpeg;base64,${pictures[selectedIndex].item}`}
-                  alt={`Device capture ${selectedIndex + 1}`}
-                  className="max-h-full max-w-full rounded object-contain"
-                />
-              </div>
-
-              {apiService() instanceof ApiV2Service && (
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  className="font-semibold"
-                  onClick={async () => {
-                    const service = apiService() as ApiV2Service;
-                    try {
-                      const toDelete = pictures[selectedIndex].clientItemIdHex;
-                      await service.deleteSinglePicture(toDelete);
-                      useStore.setState({
-                        pictures: [
-                          ...pictures.slice(0, selectedIndex),
-                          ...pictures.slice(selectedIndex + 1),
-                        ],
-                      });
-                      setSelectedIndex(Math.max(0, selectedIndex - 1));
-                      toast.info(t('pictures.delete_success'));
-                    } catch (error) {
-                      toast.error(
-                        error instanceof Error ? error.message : t('errors:delete_failed')
-                      );
-                    }
-                  }}
-                >
-                  <Trash2 className="h-4 w-4" />
-                  {t('pictures.delete')}
-                </Button>
-              )}
             </div>
           )}
         </div>

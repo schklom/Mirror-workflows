@@ -82,7 +82,6 @@ export const PhotosModal = ({ isOpen, onClose }: PhotosModalProps) => {
                   }}
                 >
                   <Trash2 className="h-4 w-4" />
-                  {t('pictures.delete')}
                 </Button>
               )}
 

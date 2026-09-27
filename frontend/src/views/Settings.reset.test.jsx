@@ -94,7 +94,7 @@ describe('Settings — reset everything', () => {
     mount()
     const dialog = openDialog()
     expect(dialog.title).toBe('Reset everything?')
-    expect(dialog.message).toBe('Deletes your plan, workouts and body weight on this device. This cannot be undone.')
+    expect(dialog.message).toBe('Deletes your plan, workouts, body weight, photos and videos on this device. This cannot be undone.')
     act(() => { dialog.onConfirm() })
     expect(mocks.replaceState).toHaveBeenCalledTimes(1)
     expect(mocks.replaceState.mock.calls[0]).toEqual([{ reminder: { time: '17:30' }, workouts: [] }, true])
@@ -107,7 +107,7 @@ describe('Settings — reset everything', () => {
     mocks.user = { uid: 'u1', name: 'Ana' }
     mount()
     const dialog = openDialog()
-    expect(dialog.message).toBe('Deletes your plan, workouts and body weight from your profile on this server and on every signed-in device. This cannot be undone.')
+    expect(dialog.message).toBe('Deletes your plan, workouts, body weight, photos and videos from your profile on this server and on every signed-in device. This cannot be undone.')
     act(() => { dialog.onConfirm() })
     expect(serverForgetCalls()).toHaveLength(1)
     expect(serverForgetCalls()[0][1]).toEqual({ method: 'POST', body: '{}' })
@@ -149,5 +149,13 @@ describe('Settings — reset everything', () => {
     expect(serverForgetCalls()).toHaveLength(0)
     expect(mocks.forgetCoach).toHaveBeenCalledTimes(1)
     expect(mocks.replaceState).toHaveBeenCalledTimes(1)
+  })
+})
+
+describe('Settings — footer', () => {
+  it('links the source code to its home on GitHub', () => {
+    mount()
+    const link = [...host.querySelectorAll('a')].find(a => a.textContent === 'source code')
+    expect(link.getAttribute('href')).toBe('https://github.com/DuarteSantos8/openGym')
   })
 })

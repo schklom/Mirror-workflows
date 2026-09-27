@@ -1625,4 +1625,5 @@ export default {
   // --- a swap or an add during a workout changes only this session ---
   'Use in this workout': '이번 운동에 사용',
   'Add to this workout': '이번 운동에 추가',
+  'No weight to enter — just time the hold.': '입력할 무게 없음 — 버티는 시간만 재세요.',
 }

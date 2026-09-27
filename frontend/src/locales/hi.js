@@ -1625,4 +1625,5 @@ export default {
   // --- a swap or an add during a workout changes only this session ---
   'Use in this workout': 'इस वर्कआउट में इस्तेमाल करें',
   'Add to this workout': 'इस वर्कआउट में जोड़ें',
+  'No weight to enter — just time the hold.': 'कोई वज़न नहीं भरना — बस होल्ड का समय गिनें।',
 }

@@ -1625,4 +1625,5 @@ export default {
   // --- a swap or an add during a workout changes only this session ---
   'Use in this workout': 'Usa in questo allenamento',
   'Add to this workout': 'Aggiungi a questo allenamento',
+  'No weight to enter — just time the hold.': 'Nessun peso da inserire — cronometra solo la tenuta.',
 }

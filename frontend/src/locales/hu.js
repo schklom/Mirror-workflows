@@ -1628,4 +1628,5 @@ export default {
   // --- a swap or an add during a workout changes only this session ---
   'Use in this workout': 'Használat ebben az edzésben',
   'Add to this workout': 'Hozzáadás ehhez az edzéshez',
+  'No weight to enter — just time the hold.': 'Nincs megadandó súly — csak a tartás idejét méred.',
 }

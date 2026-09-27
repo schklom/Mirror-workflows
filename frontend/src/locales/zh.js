@@ -1625,4 +1625,5 @@ export default {
   // --- a swap or an add during a workout changes only this session ---
   'Use in this workout': '用于本次训练',
   'Add to this workout': '添加到本次训练',
+  'No weight to enter — just time the hold.': '无需填写重量 — 只需为保持计时。',
 }

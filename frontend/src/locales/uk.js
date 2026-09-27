@@ -1622,4 +1622,5 @@ export default {
   // --- a swap or an add during a workout changes only this session ---
   'Use in this workout': 'Використати в цьому тренуванні',
   'Add to this workout': 'Додати до цього тренування',
+  'No weight to enter — just time the hold.': 'Вага не потрібна — лише засікайте час утримання.',
 }

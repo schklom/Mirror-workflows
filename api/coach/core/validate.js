@@ -53,6 +53,14 @@ const clampStr = (v, n) => String(v == null ? '' : v).slice(0, n);
    forever" into "add a set". A prompt that asks is not a guarantee; these are the two rules
    from it that have a single right answer, so they are checked here and the repair round gets
    a chance to fix them. Everything else in that file is coaching judgement and stays advisory. */
+// #313: the review prompt now states this rule, and the message names it, the offending id and
+// what to do instead — a bare "is already in routine" left a temperature-0 model nothing to
+// act on, and it replayed the same answer in its one repair round.
+const ALREADY_IN = (where, c, routine) =>
+  `${where} (${c.type}) brings in after.id "${(c.after || {}).id}", which is already in routine "${routine.name}" `
+  + `(routineId "${routine.id}") — a swap-exercise or add-exercise must bring in an exercise that routine does not have yet. `
+  + `Its exercises now are: ${exIdsOf(routine)}. Pick a different library id, or leave this change out`;
+const exIdsOf = routine => (routine.ex || []).map(e => `"${e.id}"`).join(', ') || '(none)';
 const ODD_PER_SIDE = where =>
   `${where} is a per-side exercise, so reps are the total across both sides and must be an even number`;
 const INVERTED_RANGE = where =>
@@ -227,6 +235,15 @@ export function validateReview(data, plan, ctx = {}) {
   const list = Array.isArray(data.changes) ? data.changes : null;
   if (!list) return fail(['changes must be an array (or set "nochange": true with a "reading")']);
 
+  // A swap-exercise or add-exercise that brings in an exercise the routine already has (#313)
+  // is the one refusal that is dropped rather than fatal when the rest of the answer is sound:
+  // like a change that restates the plan, it is self-contained — nothing else in the set can
+  // depend on an exercise that never arrives — and costing a whole review over it, when the
+  // lifter can simply not be shown it, helps nobody. When it is the only thing proposed, or
+  // something else is also wrong, it is reported with the rest so the repair round fixes both.
+  const dropped = [];
+  const dropDuplicate = msg => { errors.push(msg); dropped.push(msg); };
+
   list.slice(0, MAX_CHANGES).forEach((c, i) => {
     const where = `changes[${i}]`;
     if (!c || typeof c !== 'object') { errors.push(`${where} is not an object`); return; }
@@ -249,7 +266,8 @@ export function validateReview(data, plan, ctx = {}) {
       if (!target.exId) { errors.push(`${where}.target.exId is required for type "${c.type}"`); return; }
       planned = (routine.ex || []).find(e => e.id === target.exId) || null;
       if (!planned) {
-        errors.push(`${where}.target.exId "${target.exId}" is not in routine "${routine.name}"`); return;
+        errors.push(`${where}.target.exId "${target.exId}" is not in routine "${routine.name}" (routineId "${routine.id}") — `
+          + `a change's target.exId must be one of that routine's own exercises: ${exIdsOf(routine)}`); return;
       }
     }
 
@@ -285,7 +303,7 @@ export function validateReview(data, plan, ctx = {}) {
         // duplicate makes every later reorder unsatisfiable, makes each targeted change resolve
         // to whichever copy comes first, and makes one "drop it" delete both.
         if ((routine.ex || []).some(e => e.id === (c.after || {}).id)) {
-          errors.push(`${where}.after.id "${(c.after || {}).id}" is already in routine "${routine.name}"`); return;
+          dropDuplicate(ALREADY_IN(where, c, routine)); return;
         }
         const a = c.after || {};
         if (!isStr(a.id) || !knownEx(a.id)) { errors.push(`${where}.after.id must be an exercise id from the library`); return; }
@@ -312,7 +330,7 @@ export function validateReview(data, plan, ctx = {}) {
         // Same rule, minus the exercise being swapped out — replacing A with B when B is
         // already there is a duplicate, not a swap.
         if ((routine.ex || []).some(e => e.id === (c.after || {}).id && e.id !== target.exId)) {
-          errors.push(`${where}.after.id "${(c.after || {}).id}" is already in routine "${routine.name}"`); return;
+          dropDuplicate(ALREADY_IN(where, c, routine)); return;
         }
         const a = c.after || {};
         if (!isStr(a.id) || !knownEx(a.id)) { errors.push(`${where}.after.id must be an exercise id from the library`); return; }
@@ -430,7 +448,9 @@ export function validateReview(data, plan, ctx = {}) {
     changes.push(out);
   });
 
-  if (errors.length) return fail(errors);
+  if (errors.length > dropped.length) return fail(errors);
+  if (dropped.length && !changes.length) return fail(errors);
+  errors.length = 0;
   // Everything above validates one change against the ORIGINAL plan. These are the things that
   // are only wrong in company — each one validates alone, and together they are incoherent or
   // destructive. The user approves a screen, not a change, so the screen has to be coherent.
@@ -448,8 +468,17 @@ export function validateReview(data, plan, ctx = {}) {
   // "no change" and is reported as such below.
   const kept = changes.filter(ch => !(SCALAR.includes(ch.type) && sameValue(ch.before, ch.after)));
 
+  // Checked per change above against the plan as it stands; two changes that each bring the
+  // same exercise into one routine pass that alone and duplicate it together.
+  const incoming = new Map();
   kept.forEach(ch => {
     const rid = ch.target.routineId;
+    if (['add-exercise', 'swap-exercise'].includes(ch.type)) {
+      const key = rid + '\u0000' + ch.after.id;
+      if (incoming.has(key)) {
+        errors.push(`changes "${incoming.get(key)}" and "${ch.id}" both bring exercise "${ch.after.id}" into routine "${routines.get(rid)?.name || rid}" — an exercise can appear in a routine only once, so keep one of them`);
+      } else incoming.set(key, ch.id);
+    }
     if (rid) {
       if (!byRoutine.has(rid)) byRoutine.set(rid, []);
       byRoutine.get(rid).push(ch.type);
@@ -485,8 +514,12 @@ export function validateReview(data, plan, ctx = {}) {
     errors.push(`the plan would end up with more than the ${MAX_ROUTINES} routines allowed`);
   }
 
-  if (errors.length) return fail(errors);
+  if (errors.length) return fail([...errors, ...dropped]);
 
+  // Everything that was proposed turned out to duplicate an exercise or restate the plan. With
+  // a duplicate among them this is not an honest "no change" — the summary still describes the
+  // swap — so it goes back for repair rather than out as a reading.
+  if (!kept.length && dropped.length) return fail(dropped);
   if (!kept.length) {
     // An empty change list and "no changes" are the same outcome; treat it as the latter
     // rather than showing someone an empty proposal screen (FR-25).

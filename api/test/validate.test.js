@@ -452,3 +452,76 @@ test('a plan\'s custom exercises lose any media or link the model put on them', 
   assert.equal(r.ok, true);
   assert.deepEqual(r.bundle.customEx, [{ id: 'cx1', n: 'Sandbag carry', bp: 'back', desc: 'Hug it, walk.' }]);
 });
+
+/* ---------------- #313: an exercise already in the routine ---------------- */
+
+const swapIn = (id, over = {}) => change({ id: 'c9', type: 'swap-exercise', target: { routineId: 'r1', exId: '0001' }, after: { id, sets: 4, reps: 8 }, ...over });
+
+test('#313: a swap onto an exercise already in the routine, alone, goes back for repair naming the rule and the id', () => {
+  const r = review([swapIn('0007')]);
+  assert.equal(r.ok, false);
+  assert.equal(r.errors.length, 1);
+  const e = r.errors[0];
+  assert.ok(e.includes('"0007"') && e.includes('"r1"') && e.includes('Full body A'), e);
+  assert.match(e, /must bring in an exercise that routine does not have yet/);
+  assert.ok(e.includes('"0001", "0007"'), 'the routine\'s own ids are listed so the model can avoid them');
+  // Same for add-exercise.
+  const a = review([change({ type: 'add-exercise', target: { routineId: 'r1' }, after: { id: '0001', sets: 3, reps: 10 } })]);
+  assert.equal(a.ok, false);
+  assert.match(a.errors[0], /add-exercise.*"0001".*already in routine/);
+});
+
+test('#313: alongside sound changes, the duplicate is dropped and the rest reaches the screen', () => {
+  const r = review([change(), swapIn('0007')]);
+  assert.equal(r.ok, true);
+  assert.deepEqual(r.proposal.changes.map(c => c.id), ['c1']);
+  // A dropped duplicate does not turn a paired reorder into a "reordered and restructured" refusal.
+  const reorder = change({ id: 'c2', type: 'reorder', target: { routineId: 'r1' }, after: ['0007', '0001'] });
+  const r2 = review([reorder, swapIn('0007')]);
+  assert.equal(r2.ok, true);
+  assert.deepEqual(r2.proposal.changes.map(c => c.type), ['reorder']);
+});
+
+test('#313: a duplicate next to a change that is wrong for another reason is reported with it, not dropped', () => {
+  const r = review([change({ type: 'sets', after: 99 }), swapIn('0007')]);
+  assert.equal(r.ok, false);
+  assert.equal(r.errors.length, 2);
+  assert.ok(r.errors.some(e => /already in routine/.test(e)));
+});
+
+test('#313: a duplicate beside only restatements of the plan is not passed off as "no change"', () => {
+  const r = review([change({ after: 3 }), swapIn('0007')]);
+  assert.equal(r.ok, false);
+  assert.match(r.errors[0], /already in routine/);
+});
+
+test('#313: a duplicate is still reported when another change fails only in company', () => {
+  const r = review([
+    change({ id: 'w1', type: 'week', target: { weekday: 2 }, after: 'r1' }),
+    change({ id: 'w2', type: 'week', target: { weekday: 2 }, after: 'r2' }),
+    swapIn('0007')
+  ]);
+  assert.equal(r.ok, false);
+  assert.ok(r.errors.some(e => /weekday 2/.test(e)) && r.errors.some(e => /already in routine/.test(e)));
+});
+
+test('#313: two changes bringing the same exercise into one routine are refused together', () => {
+  const r = review([
+    change({ id: 'a1', type: 'add-exercise', target: { routineId: 'r1' }, after: { id: '0009', sets: 3, reps: 10 } }),
+    swapIn('0009')
+  ]);
+  assert.equal(r.ok, false);
+  assert.match(r.errors[0], /"a1" and "c9" both bring exercise "0009" into routine "Full body A"/);
+  // Into different routines is fine.
+  const ok = review([
+    change({ id: 'a1', type: 'add-exercise', target: { routineId: 'r2' }, after: { id: '0007', sets: 3, reps: 10 } }),
+    swapIn('0009')
+  ]);
+  assert.equal(ok.ok, true);
+});
+
+test('#313: an exId from another routine is refused with that routine\'s own ids', () => {
+  const r = review([change({ target: { routineId: 'r2', exId: '0001' } })]);
+  assert.equal(r.ok, false);
+  assert.match(r.errors[0], /must be one of that routine's own exercises: "0009"/);
+});

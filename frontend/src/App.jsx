@@ -95,6 +95,9 @@ function Shell() {
     mql.addEventListener('change', onChange)
     return () => mql.removeEventListener('change', onChange)
   }, [S.theme, S.accent])
+  // A profile that never picked a language follows the instance default or the browser (#303).
+  const config = useStore(s => s.config)
+  useEffect(() => { useStore.getState().applyAutoLang() }, [config, S.langAuto, S.lang])
   useEffect(() => { setLang(S.lang || 'en', S.enParens?.[baseLang(S.lang || 'en')] ?? true, S.enOnly?.[baseLang(S.lang || 'en')] === true) }, [S.lang, S.enParens, S.enOnly])
   // Same shape as the language: a module-level display setting, pushed when it changes (#139).
   useEffect(() => { setWeightDecimals(S.wdec) }, [S.wdec])

@@ -134,6 +134,22 @@ out and locked out everywhere until you re-enable it), and — with `INVITE_ONLY
 revoking invite codes. Existing accounts keep working when you switch invite-only on. Admin access
 is gated by your passkey and enforced server-side, so it needs no separate login.
 
+### Default language
+
+An instance whose people share a language can start everyone in it:
+
+```bash
+DEFAULT_LANG=pt-BR         # any code from Settings → Language: de, es, fr, pt-BR, …
+```
+
+The sign-in and create-profile screens open in that language, and so does every profile that
+has never picked one in **Settings → Language**. Anyone's own choice there always wins, and
+profiles that existed before this setting keep the language they have — the app cannot tell an
+old profile that chose English from one that never looked, so it leaves them alone. Without
+`DEFAULT_LANG`, a new visitor starts in their browser's language when openGym has it, else
+English. A code the app has no translation for is ignored. The phone app in local mode has no
+server to ask and is unaffected.
+
 ### The activity log
 
 The dashboard also keeps an **activity log**: sign-ins, sign-outs, failed attempts, refused

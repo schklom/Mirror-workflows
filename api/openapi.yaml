@@ -76,6 +76,8 @@ info:
       log served by `GET /api/admin/audit`.
     - `PASSWORD_LOGIN=1` — adds the `password` routes and `password_login: true` in
       `GET /api/config`. Off by default.
+    - `DEFAULT_LANG` (e.g. `pt-BR`; unset by default) — `default_lang` in `GET /api/config`,
+      the language of the sign-in screen and of every profile that never picked one.
     - `TRUST_PROXY=1` — the throttle reads the client address from proxy headers (set by
       the bundled `docker-compose.yml`, where only the web container can reach the API).
     - `MEDIA_UPLOADS` (default on; `0` removes the `media` routes and the `media` block of
@@ -181,7 +183,8 @@ paths:
       description: |
         The flags the login screen needs before anyone is signed in. Both reflect
         environment variables on the server (`INVITE_ONLY`, `ALLOW_GUEST`), and so does
-        `password_login`, which is there only when `PASSWORD_LOGIN=1`.
+        `password_login`, which is there only when `PASSWORD_LOGIN=1`, and `default_lang`,
+        which is there only when `DEFAULT_LANG` is set.
 
         `media` is there unless the instance runs with `MEDIA_UPLOADS=0`, for everybody: the
         caps are not a secret, and its absence is how the app knows this server does not
@@ -239,6 +242,14 @@ paths:
                       Present (and true) only when the instance runs with
                       PASSWORD_LOGIN=1 — the client then offers name-and-password
                       sign-in next to passkeys.
+                  default_lang:
+                    type: string
+                    example: pt-BR
+                    description: >-
+                      Present only when the instance runs with DEFAULT_LANG set: the
+                      language tag the sign-in screen, and every profile that has never
+                      picked a language in Settings, starts in. A profile's own choice
+                      always wins; a tag the app has no translation for is ignored.
                   media:
                     $ref: '#/components/schemas/MediaConfig'
               examples:

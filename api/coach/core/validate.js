@@ -260,8 +260,16 @@ export function validateReview(data, plan, ctx = {}) {
   // depend on an exercise that never arrives — and costing a whole review over it, when the
   // lifter can simply not be shown it, helps nobody. When it is the only thing proposed, or
   // something else is also wrong, it is reported with the rest so the repair round fixes both.
+  // Self-contained is checked, not assumed: another change in the same routine that names the
+  // exercise it swapped out or brought in was written with it in mind — "swap 0001 for 0007"
+  // next to "remove 0007" means something else once the swap is gone — so then it is fatal.
   const dropped = [];
-  const dropDuplicate = msg => { errors.push(msg); dropped.push(msg); };
+  const droppedRefs = [];
+  const dropDuplicate = (msg, where, c) => {
+    errors.push(msg); dropped.push(msg);
+    const t = c.target || {};
+    droppedRefs.push({ where, rid: t.routineId, ids: [t.exId, (c.after || {}).id].filter(isStr) });
+  };
 
   list.slice(0, MAX_CHANGES).forEach((c, i) => {
     const where = `changes[${i}]`;
@@ -322,7 +330,7 @@ export function validateReview(data, plan, ctx = {}) {
         // duplicate makes every later reorder unsatisfiable, makes each targeted change resolve
         // to whichever copy comes first, and makes one "drop it" delete both.
         if ((routine.ex || []).some(e => e.id === (c.after || {}).id)) {
-          dropDuplicate(ALREADY_IN(where, c, routine)); return;
+          dropDuplicate(ALREADY_IN(where, c, routine), where, c); return;
         }
         const a = c.after || {};
         if (!isStr(a.id) || !knownEx(a.id)) { errors.push(`${where}.after.id must be an exercise id from the library`); return; }
@@ -349,7 +357,7 @@ export function validateReview(data, plan, ctx = {}) {
         // Same rule, minus the exercise being swapped out — replacing A with B when B is
         // already there is a duplicate, not a swap.
         if ((routine.ex || []).some(e => e.id === (c.after || {}).id && e.id !== target.exId)) {
-          dropDuplicate(ALREADY_IN(where, c, routine)); return;
+          dropDuplicate(ALREADY_IN(where, c, routine), where, c); return;
         }
         const a = c.after || {};
         if (!isStr(a.id) || !knownEx(a.id)) { errors.push(`${where}.after.id must be an exercise id from the library`); return; }
@@ -467,6 +475,18 @@ export function validateReview(data, plan, ctx = {}) {
     changes.push(out);
   });
 
+  const namesOf = ch => {
+    const a = ch.after && typeof ch.after === 'object' && !Array.isArray(ch.after) ? ch.after : {};
+    return [ch.target.exId, a.id, a.with].filter(isStr);
+  };
+  droppedRefs.forEach(d => {
+    const dep = changes.find(ch => ch.target.routineId === d.rid && namesOf(ch).some(id => d.ids.includes(id)));
+    if (dep) {
+      const id = namesOf(dep).find(x => d.ids.includes(x));
+      errors.push(`${d.where} cannot just be left out: change "${dep.id}" (${dep.type}) in the same routine also names exercise "${id}", `
+        + `and without ${d.where} it would do something other than what was meant — propose these changes again as one set that holds together`);
+    }
+  });
   if (errors.length > dropped.length) return fail(errors);
   if (dropped.length && !changes.length) return fail(errors);
   errors.length = 0;

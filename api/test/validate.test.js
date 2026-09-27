@@ -482,7 +482,7 @@ test('#313: a swap onto an exercise already in the routine, alone, goes back for
 });
 
 test('#313: alongside sound changes, the duplicate is dropped and the rest reaches the screen', () => {
-  const r = review([change(), swapIn('0007')]);
+  const r = review([change({ target: { routineId: 'r2', exId: '0009' } }), swapIn('0007')]);
   assert.equal(r.ok, true);
   assert.deepEqual(r.proposal.changes.map(c => c.id), ['c1']);
   // A dropped duplicate does not turn a paired reorder into a "reordered and restructured" refusal.
@@ -490,6 +490,28 @@ test('#313: alongside sound changes, the duplicate is dropped and the rest reach
   const r2 = review([reorder, swapIn('0007')]);
   assert.equal(r2.ok, true);
   assert.deepEqual(r2.proposal.changes.map(c => c.type), ['reorder']);
+});
+
+test('#313: a duplicate is not dropped when another change in the routine names what it swapped out or brought in', () => {
+  // Swap 0001 for 0007 (already there) next to "remove 0007": dropping the swap would leave only
+  // the removal — the opposite of what was meant.
+  const remove = change({ id: 'c2', type: 'remove-exercise', target: { routineId: 'r1', exId: '0007' }, before: null, after: null });
+  const r = review([swapIn('0007'), remove]);
+  assert.equal(r.ok, false);
+  assert.ok(r.errors.some(e => /already in routine/.test(e)));
+  assert.ok(r.errors.some(e => /cannot just be left out: change "c2" \(remove-exercise\).*"0007"/.test(e)), r.errors.join(' | '));
+  // A chain: 0001 → 0007 dropped, 0007 → 0009 kept would swap out the wrong exercise.
+  const chain = change({ id: 'c3', type: 'swap-exercise', target: { routineId: 'r1', exId: '0007' }, after: { id: '0009' } });
+  const r2 = review([swapIn('0007'), chain]);
+  assert.equal(r2.ok, false);
+  assert.ok(r2.errors.some(e => /change "c3"/.test(e)));
+  // A change to the exercise the swap would have replaced, or a superset with it, depends on it too.
+  assert.equal(review([change(), swapIn('0007')]).ok, false);
+  assert.equal(review([swapIn('0007'), change({ id: 'c4', type: 'superset', target: { routineId: 'r1', exId: '0007' }, after: { link: true, with: '0001' } })]).ok, false);
+  // The same change in another routine is unrelated: the duplicate is dropped as before.
+  const other = review([swapIn('0007'), change({ id: 'c5', type: 'remove-exercise', target: { routineId: 'r2', exId: '0009' }, before: null, after: null })]);
+  assert.equal(other.ok, true);
+  assert.deepEqual(other.proposal.changes.map(c => c.id), ['c5']);
 });
 
 test('#313: a duplicate next to a change that is wrong for another reason is reported with it, not dropped', () => {

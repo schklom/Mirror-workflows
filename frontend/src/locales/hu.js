@@ -1625,4 +1625,7 @@ export default {
   'Its {0} photos or videos are deleted with it.': 'Vele együtt törlődnek a hozzá tartozó fotók és videók is ({0}).',
   'Its photo or video moves to the new workout.': 'A hozzá tartozó fotó vagy videó átkerül az új edzéshez.',
   'Its {0} photos or videos move to the new workout.': 'A hozzá tartozó fotók és videók ({0}) átkerülnek az új edzéshez.',
+  // --- a swap or an add during a workout changes only this session ---
+  'Use in this workout': 'Használat ebben az edzésben',
+  'Add to this workout': 'Hozzáadás ehhez az edzéshez',
 }

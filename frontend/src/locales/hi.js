@@ -1622,4 +1622,7 @@ export default {
   'Its {0} photos or videos are deleted with it.': 'इसकी {0} फ़ोटो या वीडियो भी इसके साथ हट जाएँगी।',
   'Its photo or video moves to the new workout.': 'इसकी फ़ोटो या वीडियो नए वर्कआउट में चली जाएगी।',
   'Its {0} photos or videos move to the new workout.': 'इसकी {0} फ़ोटो या वीडियो नए वर्कआउट में चली जाएँगी।',
+  // --- a swap or an add during a workout changes only this session ---
+  'Use in this workout': 'इस वर्कआउट में इस्तेमाल करें',
+  'Add to this workout': 'इस वर्कआउट में जोड़ें',
 }

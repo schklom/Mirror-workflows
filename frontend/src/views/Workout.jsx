@@ -1387,7 +1387,8 @@ function ActiveWorkout() {
       // the sheet would have opened with; tapping the row still opens that sheet for anyone
       // who wants to set sets/reps first.
       if (quick) { commit(seed || defaultConfig(ex.id)); useUI.getState().toast(t('“{0}” added to {1}', exerciseNameText(ex), routine ? routine.name : t('Freestyle'))) }
-      else exConfigSheet(ex, null, commit, null, routine, seed)
+      // The confirm names what it changes: this workout, never the routine behind it.
+      else exConfigSheet(ex, null, commit, null, routine, seed, null, t('Add to this workout'))
     })} icon="plus">{t('Add exercise')}</Button>
     {wc.exerciseButtons && A.entries.length > 0 && <>
       <div style={{ height: 6 }} />

@@ -1619,4 +1619,7 @@ export default {
   'Its {0} photos or videos are deleted with it.': 'Фото й відео ({0}) теж буде видалено.',
   'Its photo or video moves to the new workout.': 'Фото чи відео перейде до нового тренування.',
   'Its {0} photos or videos move to the new workout.': 'Фото й відео ({0}) перейдуть до нового тренування.',
+  // --- a swap or an add during a workout changes only this session ---
+  'Use in this workout': 'Використати в цьому тренуванні',
+  'Add to this workout': 'Додати до цього тренування',
 }

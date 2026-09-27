@@ -967,6 +967,9 @@ export const PT_BR_OVERRIDES = {
   'A progress photo or a form-check video, kept with this workout.': 'Uma foto de progresso ou um vídeo para conferir a técnica, salvos com este treino.',
   'Its photo or video is deleted with it.': 'A foto ou o vídeo dele também é excluído.',
   'Its {0} photos or videos are deleted with it.': 'As {0} fotos ou vídeos dele também são excluídos.',
+  // --- a swap or an add during a workout changes only this session ---
+  'Use in this workout': 'Usar neste treino',
+  'Add to this workout': 'Adicionar a este treino',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

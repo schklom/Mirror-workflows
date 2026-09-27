@@ -1622,4 +1622,7 @@ export default {
   'Its {0} photos or videos are deleted with it.': 'Anche le sue {0} foto o video vengono eliminati.',
   'Its photo or video moves to the new workout.': 'La sua foto o il suo video passa al nuovo allenamento.',
   'Its {0} photos or videos move to the new workout.': 'Le sue {0} foto o video passano al nuovo allenamento.',
+  // --- a swap or an add during a workout changes only this session ---
+  'Use in this workout': 'Usa in questo allenamento',
+  'Add to this workout': 'Aggiungi a questo allenamento',
 }

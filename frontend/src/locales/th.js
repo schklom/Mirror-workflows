@@ -1633,4 +1633,7 @@ export default {
   'Its {0} photos or videos are deleted with it.': 'รูปภาพหรือวิดีโอที่แนบไว้ {0} รายการจะถูกลบไปด้วย',
   'Its photo or video moves to the new workout.': 'รูปภาพหรือวิดีโอที่แนบไว้จะย้ายไปยังการออกกำลังกายใหม่',
   'Its {0} photos or videos move to the new workout.': 'รูปภาพหรือวิดีโอที่แนบไว้ {0} รายการจะย้ายไปยังการออกกำลังกายใหม่',
+  // --- a swap or an add during a workout changes only this session ---
+  'Use in this workout': 'ใช้ในการออกกำลังกายครั้งนี้',
+  'Add to this workout': 'เพิ่มในการออกกำลังกายครั้งนี้',
 }

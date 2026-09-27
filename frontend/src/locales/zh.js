@@ -1622,4 +1622,7 @@ export default {
   'Its {0} photos or videos are deleted with it.': '其中的 {0} 个照片或视频也会一并删除。',
   'Its photo or video moves to the new workout.': '其中的照片或视频会移到新的训练中。',
   'Its {0} photos or videos move to the new workout.': '其中的 {0} 个照片或视频会移到新的训练中。',
+  // --- a swap or an add during a workout changes only this session ---
+  'Use in this workout': '用于本次训练',
+  'Add to this workout': '添加到本次训练',
 }

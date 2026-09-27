@@ -1622,4 +1622,7 @@ export default {
   'Its {0} photos or videos are deleted with it.': '첨부된 사진·동영상 {0}개도 함께 삭제됩니다.',
   'Its photo or video moves to the new workout.': '첨부된 사진·동영상은 새 운동으로 옮겨집니다.',
   'Its {0} photos or videos move to the new workout.': '첨부된 사진·동영상 {0}개는 새 운동으로 옮겨집니다.',
+  // --- a swap or an add during a workout changes only this session ---
+  'Use in this workout': '이번 운동에 사용',
+  'Add to this workout': '이번 운동에 추가',
 }

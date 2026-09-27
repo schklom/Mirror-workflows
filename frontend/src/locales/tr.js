@@ -1622,4 +1622,7 @@ export default {
   'Its {0} photos or videos are deleted with it.': '{0} fotoğrafı veya videosu da onunla birlikte silinir.',
   'Its photo or video moves to the new workout.': 'Fotoğrafı veya videosu yeni antrenmana taşınır.',
   'Its {0} photos or videos move to the new workout.': '{0} fotoğrafı veya videosu yeni antrenmana taşınır.',
+  // --- a swap or an add during a workout changes only this session ---
+  'Use in this workout': 'Bu antrenmanda kullan',
+  'Add to this workout': 'Bu antrenmana ekle',
 }

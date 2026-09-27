@@ -212,6 +212,16 @@ describe('the Coach chat', () => {
     expect(mocks.S.coach.chat.at(-1).ref).toBe(mocks.S.coach.log.at(-1).id)
   })
 
+  it('lays the plan’s week out from the day the week is set to start on', async () => {
+    const days = () => [...container.querySelectorAll('.pcard-wd')].map(d => d.textContent)
+    await mount({ id: 'p1', kind: 'create', bundle: bundle({ 0: 'x1', 1: 'x2' }) })
+    expect(days()).toEqual(['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'])
+    const sunday = state(); sunday.weekStart = 0
+    await mount({ id: 'p1', kind: 'create', bundle: bundle({ 0: 'x1', 1: 'x2' }) }, null, { S: sunday })
+    expect(days()).toEqual(['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'])
+    expect([...container.querySelectorAll('.pcard-wd.on')].map(d => d.textContent)).toEqual(['Su', 'Mo'])
+  })
+
   it('offers the quick actions only when nothing is running', async () => {
     await mount(null)
     expect(byText(/Review my training/)).toBeTruthy()

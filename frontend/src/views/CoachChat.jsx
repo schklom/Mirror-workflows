@@ -17,7 +17,7 @@ import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/useStore.js'
 import { useUI } from '../store/useUI.js'
 import { t } from '../lib/i18n.js'
-import { fmtDate, fmtNum, DAYS } from '../lib/format.js'
+import { fmtDate, fmtNum, DAYS, weekOrder, weekStartOf } from '../lib/format.js'
 import { exLine } from '../lib/history.js'
 import { speedUnitOf } from '../lib/speed.js'
 import { DEMO } from '../lib/demo.js'
@@ -334,7 +334,7 @@ function PlanCard({ p, S, update, toast, nav, refresh }) {
         {!!b.basedOn && <p className="pcard-sum" style={{ fontSize: 13 }}>{b.basedOn}</p>}
       </div>
 
-      <WeekStrip days={weekDays} />
+      <WeekStrip days={weekDays} ws={weekStartOf(S)} />
 
       {b.routines.length > 1 && <div className="pcard-tabs">
         {b.routines.map((x, i) => <button key={x.id || i} className={'pcard-tab' + (i === tab ? ' on' : '')} onClick={() => setTab(i)}><Icon name={glyphOf(x.emoji)} />{x.name}</button>)}
@@ -356,8 +356,9 @@ function PlanCard({ p, S, update, toast, nav, refresh }) {
   </div>
 }
 
-const WeekStrip = ({ days }) => <div className="pcard-week">
-  {[1, 2, 3, 4, 5, 6, 0].map(d => <div key={d} className={'pcard-wd' + (days.has(d) ? ' on' : '')}>{t(DAYS[d])}</div>)}
+// In the order the week is set to start on (Settings), like the Plan's own week.
+const WeekStrip = ({ days, ws }) => <div className="pcard-week">
+  {weekOrder(ws).map(d => <div key={d} className={'pcard-wd' + (days.has(d) ? ' on' : '')}>{t(DAYS[d])}</div>)}
 </div>
 
 const RoutineBlock = ({ r, unit, speedUnit }) => <div className="pcard-rt">
@@ -634,7 +635,7 @@ function ProposalDetail({ entry, S }) {
     </>}
 
     {kind === 'create' && b && <>
-      <WeekStrip days={weekDays} />
+      <WeekStrip days={weekDays} ws={weekStartOf(S)} />
       {b.routines.length > 1 && <div className="pcard-tabs" style={{ paddingInline: 0 }}>
         {b.routines.map((x, i) => <button key={x.id || i} className={'pcard-tab' + (i === tab ? ' on' : '')} onClick={() => setTab(i)}><Icon name={glyphOf(x.emoji)} />{x.name}</button>)}
       </div>}

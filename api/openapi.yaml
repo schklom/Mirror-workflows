@@ -675,7 +675,9 @@ paths:
         again after hashing, and burned. The password must be 10–256 characters and not one
         of the passwords guessing scripts try first; no two profiles with a password may
         share a name. An optional `email` is stored as the profile's sign-in e-mail (see
-        `POST /api/account/email`); one that is in use is refused with `409 email-taken`,
+        `POST /api/account/email`); one that is not an address is refused with `400
+        email-invalid`, one that is in use with `409 email-taken` — asked only after the
+        hash and the second invite check, so without a valid code it is never answered —
         which counts against the caller's address like a wrong invite code. **Not**
         CSRF-exempt.
       security: []
@@ -705,7 +707,17 @@ paths:
                 type: object
                 properties:
                   user: { $ref: '#/components/schemas/SessionUser' }
-        '400': { $ref: '#/components/responses/PasswordPolicy' }
+        '400':
+          description: >-
+            The password breaks the policy — `too-short` (under 10 characters), `too-long`
+            (over 256) or `too-common` — a field is `missing`, or `email-invalid`: the
+            `email` given is not an e-mail address.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              examples:
+                policy: { value: { error: "this password is too easy to guess", code: "too-common" } }
+                email: { value: { error: "that is not an e-mail address", code: "email-invalid" } }
         '403':
           description: Invite-only and the code is missing, used or revoked.
           content:

@@ -145,9 +145,13 @@ Read this before hosting openGym for anyone other than yourself.
   the same proof as a password (`proveOwner`). It is folded like a name (NFKC, trimmed,
   lower-cased; at most 254 characters), unique across profiles and never another password
   holder's name, so an identifier never points at two accounts. Taking one in use answers `409
-  email-taken` — only after the proof in Settings, and each refusal (Settings or signup) counts
-  against the caller's address and account like a wrong invite code, so probing which addresses
-  are registered costs a passkey prompt or a password check per try and runs out after about 20.
+  email-taken`. In Settings that answer comes only after the owner's proof (a passkey prompt or
+  the current password per try). Password signup needs no session, so there it is the cheaper
+  question: it comes after the new password has been hashed and, with `INVITE_ONLY=1`, only to
+  someone holding a valid unused invite code (which a refusal does not use up); on an open
+  instance anyone can ask. Each refusal, in Settings or on signup, counts against the caller's
+  address (and in Settings the account) like a wrong invite code, so probing which addresses are
+  registered runs into a pause after about 20 tries.
   The full address is never logged or audited (masked to `a…@e…`) and is returned only to its
   owner (`GET /api/account/password`) and to admins (`GET /api/admin/users`, `/api/admin/user`);
   it is not in `/api/me`, Coach payloads, the MCP bridge or plan sharing.

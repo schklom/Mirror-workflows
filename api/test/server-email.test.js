@@ -299,6 +299,32 @@ test('an address is unique across profiles, case-insensitively, and never anothe
   assert.equal(leaks(h, 'example.com'), false);
 });
 
+test('on an invite-only instance signup says nothing about addresses without a valid invite, and a refusal keeps the invite', async t => {
+  const now = new Date().toISOString();
+  const h = await startServer(t, {
+    env: { INVITE_ONLY: '1' },
+    users: [withPassword('u1', 'Ana', { email: 'ana@example.com' })],
+    invites: [{ code: 'GOODCODE', created: now }, { code: 'USEDCODE', created: now, usedBy: 'u1' }, { code: 'GONECODE', created: now, revoked: true }]
+  });
+  // No code, a wrong one, a used one and a revoked one: the answer is about the invite, the
+  // same for an address in use as for a free one, and nothing counts against "email".
+  for (const [i, code] of ['', 'NOPE', 'USEDCODE', 'GONECODE'].entries()) {
+    for (const email of ['ana@example.com', 'free@example.com']) {
+      const r = await h.req('POST', '/api/register/password', { body: { name: 'Dee', password: GOOD, email, code }, ip: `198.51.100.${170 + i}` });
+      assert.equal(r.status, 403, `${code} ${email}`);
+      assert.equal(r.body.code, 'invite');
+    }
+  }
+  assert.equal(h.audit().some(e => e.msg === 'email-taken'), false);
+  // With a valid code the address in use is refused, and the code is still there to use.
+  let r = await h.req('POST', '/api/register/password', { body: { name: 'Dee', password: GOOD, email: 'ANA@example.com', code: 'goodcode' }, ip: '198.51.100.180' });
+  assert.equal(r.status, 409); assert.equal(r.body.code, 'email-taken');
+  assert.equal(h.db().invites.find(i => i.code === 'GOODCODE').usedBy, undefined);
+  r = await h.req('POST', '/api/register/password', { body: { name: 'Dee', password: GOOD, email: 'dee@example.com', code: 'GOODCODE' }, ip: '198.51.100.181' });
+  assert.equal(r.status, 200);
+  assert.equal(h.db().invites.find(i => i.code === 'GOODCODE').usedBy, h.db().users.find(u => u.name === 'Dee').id);
+});
+
 test('asking over and over whether an address is in use runs into a pause', async t => {
   const h = await startServer(t, { users: [withPassword('u1', 'Ana', { email: 'ana@example.com' }), withPassword('u2', 'Bea')] });
   const bea = `gymsid=${mintSession('u2')}`;

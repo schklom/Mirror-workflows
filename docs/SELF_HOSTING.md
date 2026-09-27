@@ -243,9 +243,12 @@ to anyone; it is only a second name that points at the account, and the password
 which says "some profile on this instance uses this address" — never which one. The alternative,
 accepting it silently, would leave someone who typed their address on a second profile believing
 it worked. So the answer is made expensive instead: in Settings it comes only after the proof (a
-passkey prompt or a password check per try), and every such refusal — in Settings or on signup —
-counts against the visitor's address (and in Settings the account): 20 are free, then a pause of
-30 seconds doubling to 15 minutes. That leaves a few tries an hour, comparable to what the
+passkey prompt or a password check per try). Signing up with a password needs no proof, so there
+the answer costs less: it comes after the new password is hashed and, with `INVITE_ONLY=1`, only
+to someone with a valid invite code (a refusal leaves the code unused); on an open instance
+anyone can ask. Every such refusal — in Settings or on signup — counts against the visitor's
+address (and in Settings the account): 20 are free, then a pause of 30 seconds doubling to 15
+minutes. That leaves a few tries an hour, comparable to what the
 name-taken answer already says about names. The other thing to know: once someone has paused an
 account by wrong passwords under its name, trying a guessed address shows the same pause, which
 ties that address to that name — the price of not letting a switch to the e-mail skip the pause.

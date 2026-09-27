@@ -890,10 +890,13 @@ const nameTaken = (name, exceptId) => {
    is in use answers 409. The route could be made to hide it — accept the address silently and
    leave it pointing nowhere — but then someone who typed their own address on a second profile
    would be told it was saved and find it did not sign in, which is worse. So it answers, and the
-   answer is made expensive instead: only a signed-in owner can ask (session + proveOwner, a
-   passkey prompt or a checked password per try), an address already in use counts against the
-   caller's address and account (20 free, then 30 s doubling to 15 min), and profile creation with
-   an address counts the same way. What that leaves is what the name-taken answer already gives
+   answer is made expensive instead: in Settings only a signed-in owner can ask (session +
+   proveOwner, a passkey prompt or a checked password per try), an address already in use counts
+   against the caller's address and account (20 free, then 30 s doubling to 15 min), and profile
+   creation with a password and an address counts the same way against the caller's address.
+   Signup needs no session, so it is the cheaper place to ask: it answers only after hashing the
+   new password and, on an invite-only instance, only to someone holding a valid invite code
+   (a refusal does not use it up); an open instance answers anyone. What that leaves is what the name-taken answer already gives
    away for names — "some profile here uses this", never which one — at a few tries an hour.
 
    Sign-in takes it in the same field as the name (loginTarget): an identifier with an "@" is
@@ -1122,7 +1125,9 @@ const passwordRoutes = {
     const taken = () => json(res, 409, { error: 'another profile already signs in with this name', code: 'name-taken' });
     if (nameTaken(name)) return taken();
     // An e-mail is optional here. One already in use counts against the address, the way it
-    // does in Settings: this route needs no session, so it is the cheaper place to ask.
+    // does in Settings: this route needs no session, so it is the cheaper place to ask. Whether
+    // it is in use is only answered after the hash and the invite check that follows it, so on
+    // an invite-only instance nobody without a valid code learns anything about addresses.
     const hasEmail = typeof body.email === 'string' && body.email.trim() !== '';
     const email = hasEmail ? normalizeEmail(body.email) : null;
     if (hasEmail && !email) return json(res, 400, EMAIL_ERRORS.invalid);
@@ -1132,7 +1137,6 @@ const passwordRoutes = {
       return json(res, 409, EMAIL_ERRORS.taken);
     };
     if (email && addressPaused(req, res, 'email')) return;
-    if (email && emailTaken(email)) return emailRefused();
     const h = await hashPassword(body.password);
     let inv = null;
     if (INVITE_ONLY) {
@@ -1143,6 +1147,7 @@ const passwordRoutes = {
       }
     }
     if (nameTaken(name)) return taken();
+    // No await from here to the push: nothing can take the address between this check and it.
     if (email && emailTaken(email)) return emailRefused();
     const created = new Date().toISOString();
     const user = { id: crypto.randomBytes(12).toString('base64url'), name, created, pw: { h, set: created }, ...(email ? { email } : {}) };

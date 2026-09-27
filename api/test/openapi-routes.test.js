@@ -64,3 +64,45 @@ test('every tag the spec uses is one the docs generator renders', () => {
   const known = [.../const TAGS = \{([\s\S]*?)\n\}/.exec(docs)[1].matchAll(/^\s{2}(\w+):/gm)].map(m => m[1]);
   for (const tag of used) assert.ok(known.includes(tag), `tag "${tag}" renders nowhere — add it to TAGS in scripts/build-api-docs.mjs`);
 });
+
+/* The e-mail routes answer with codes a client switches on. /api/register/password answered
+   `400 email-invalid` for a while with the spec listing only the password policy under 400. */
+test('every error code the e-mail and password signup routes return is in their spec entry', () => {
+  const server = read(path.join(API, 'server.js'));
+  const handler = key => {
+    const start = server.indexOf(`  '${key}': async`);
+    assert.ok(start >= 0, key);
+    const next = server.slice(start + 1).search(/\n {2}'(GET|POST|PUT|DELETE) \//);
+    return server.slice(start, next < 0 ? undefined : start + 1 + next);
+  };
+  const emailCodes = Object.fromEntries([...server.matchAll(/^\s{2}(\w+): \{ error: '[^']*', code: '([^']+)' \}/gm)].map(m => [m[1], m[2]]));
+  const operation = (p, method) => {
+    const from = spec.indexOf(`\n  ${p}:\n`);
+    assert.ok(from >= 0, p);
+    const rest = spec.slice(from + 1);
+    const block = rest.slice(0, rest.slice(1).search(/\n {2}\/|\n[a-zA-Z]/) + 1);
+    const op = block.slice(block.indexOf(`\n    ${method}:`));
+    const end = op.slice(1).search(/\n {4}\w+:/);
+    const text = end < 0 ? op : op.slice(0, end + 1);
+    // Follow the shared responses it points at.
+    const refs = [...text.matchAll(/#\/components\/responses\/(\w+)/g)].map(m => {
+      const at = spec.indexOf(`\n    ${m[1]}:\n`);
+      const tail = spec.slice(at + 1);
+      return tail.slice(0, tail.slice(1).search(/\n {4}\w+:/) + 1);
+    });
+    return [text, ...refs].join('\n');
+  };
+  for (const [key, p, method] of [
+    ['POST /api/register/password', '/api/register/password', 'post'],
+    ['POST /api/account/email', '/api/account/email', 'post']
+  ]) {
+    const src = handler(key);
+    const codes = new Set([
+      ...[...src.matchAll(/code: '([^']+)'/g)].map(m => m[1]),
+      ...[...src.matchAll(/EMAIL_ERRORS\.(\w+)/g)].map(m => emailCodes[m[1]])
+    ]);
+    assert.ok(codes.size > 1, key);
+    const doc = operation(p, method);
+    for (const c of codes) assert.ok(doc.includes(c), `${key} returns "${c}" but its openapi entry never mentions it`);
+  }
+});

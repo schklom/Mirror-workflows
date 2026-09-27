@@ -1637,4 +1637,11 @@ export default {
   'Use in this workout': 'ใช้ในการออกกำลังกายครั้งนี้',
   'Add to this workout': 'เพิ่มในการออกกำลังกายครั้งนี้',
   'No weight to enter — just time the hold.': 'ไม่ต้องใส่น้ำหนัก — แค่จับเวลาการค้างท่า',
+  // --- how this device confirms a passkey, and where it keeps it ---
+  'Face ID / Touch ID': 'Face ID / Touch ID',
+  'fingerprint or face unlock': 'ลายนิ้วมือหรือการปลดล็อกด้วยใบหน้า',
+  'your fingerprint, face or PIN': 'ลายนิ้วมือ ใบหน้า หรือ PIN ของคุณ',
+  'iCloud Keychain': 'พวงกุญแจ iCloud',
+  'Google Password Manager': 'เครื่องมือจัดการรหัสผ่านของ Google',
+  'your password manager': 'ตัวจัดการรหัสผ่านของคุณ',
 }

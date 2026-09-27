@@ -1626,4 +1626,11 @@ export default {
   'Use in this workout': '用于本次训练',
   'Add to this workout': '添加到本次训练',
   'No weight to enter — just time the hold.': '无需填写重量 — 只需为保持计时。',
+  // --- how this device confirms a passkey, and where it keeps it ---
+  'Face ID / Touch ID': '面容 ID / 触控 ID',
+  'fingerprint or face unlock': '指纹或人脸解锁',
+  'your fingerprint, face or PIN': '你的指纹、面容或 PIN 码',
+  'iCloud Keychain': 'iCloud 钥匙串',
+  'Google Password Manager': 'Google 密码管理工具',
+  'your password manager': '你的密码管理器',
 }

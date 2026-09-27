@@ -1623,4 +1623,11 @@ export default {
   'Use in this workout': 'Використати в цьому тренуванні',
   'Add to this workout': 'Додати до цього тренування',
   'No weight to enter — just time the hold.': 'Вага не потрібна — лише засікайте час утримання.',
+  // --- how this device confirms a passkey, and where it keeps it ---
+  'Face ID / Touch ID': 'Face ID / Touch ID',
+  'fingerprint or face unlock': 'відбиток пальця або розблокування обличчям',
+  'your fingerprint, face or PIN': 'відбиток пальця, обличчя або PIN-код',
+  'iCloud Keychain': 'Зв’язка ключів iCloud',
+  'Google Password Manager': 'Менеджер паролів Google',
+  'your password manager': 'ваш менеджер паролів',
 }

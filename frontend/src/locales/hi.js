@@ -1626,4 +1626,11 @@ export default {
   'Use in this workout': 'इस वर्कआउट में इस्तेमाल करें',
   'Add to this workout': 'इस वर्कआउट में जोड़ें',
   'No weight to enter — just time the hold.': 'कोई वज़न नहीं भरना — बस होल्ड का समय गिनें।',
+  // --- how this device confirms a passkey, and where it keeps it ---
+  'Face ID / Touch ID': 'Face ID / Touch ID',
+  'fingerprint or face unlock': 'फ़िंगरप्रिंट या फ़ेस अनलॉक',
+  'your fingerprint, face or PIN': 'अपने फ़िंगरप्रिंट, चेहरे या PIN',
+  'iCloud Keychain': 'iCloud कीचेन',
+  'Google Password Manager': 'Google पासवर्ड मैनेजर',
+  'your password manager': 'आपका पासवर्ड मैनेजर',
 }

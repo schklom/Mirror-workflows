@@ -1626,4 +1626,11 @@ export default {
   'Use in this workout': 'Utiliser dans cette séance',
   'Add to this workout': 'Ajouter à cette séance',
   'No weight to enter — just time the hold.': 'Aucun poids à saisir — chronomètre simplement le maintien.',
+  // --- how this device confirms a passkey, and where it keeps it ---
+  'Face ID / Touch ID': 'Face ID / Touch ID',
+  'fingerprint or face unlock': 'empreinte digitale ou déverrouillage par le visage',
+  'your fingerprint, face or PIN': 'ton empreinte, ton visage ou ton code PIN',
+  'iCloud Keychain': 'trousseau iCloud',
+  'Google Password Manager': 'Gestionnaire de mots de passe de Google',
+  'your password manager': 'ton gestionnaire de mots de passe',
 }

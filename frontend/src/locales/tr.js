@@ -1626,4 +1626,11 @@ export default {
   'Use in this workout': 'Bu antrenmanda kullan',
   'Add to this workout': 'Bu antrenmana ekle',
   'No weight to enter — just time the hold.': 'Girilecek ağırlık yok — sadece tutuşu süreyle ölç.',
+  // --- how this device confirms a passkey, and where it keeps it ---
+  'Face ID / Touch ID': 'Face ID / Touch ID',
+  'fingerprint or face unlock': 'parmak izi veya yüz tanıma',
+  'your fingerprint, face or PIN': 'parmak izi, yüz veya PIN',
+  'iCloud Keychain': 'iCloud Anahtar Zinciri',
+  'Google Password Manager': 'Google Şifre Yöneticisi',
+  'your password manager': 'şifre yöneticin',
 }

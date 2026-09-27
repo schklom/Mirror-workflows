@@ -1629,4 +1629,11 @@ export default {
   'Use in this workout': 'Használat ebben az edzésben',
   'Add to this workout': 'Hozzáadás ehhez az edzéshez',
   'No weight to enter — just time the hold.': 'Nincs megadandó súly — csak a tartás idejét méred.',
+  // --- how this device confirms a passkey, and where it keeps it ---
+  'Face ID / Touch ID': 'Face ID / Touch ID',
+  'fingerprint or face unlock': 'ujjlenyomat vagy arcfelismerés',
+  'your fingerprint, face or PIN': 'ujjlenyomat, arc vagy PIN-kód',
+  'iCloud Keychain': 'iCloud-kulcskarika',
+  'Google Password Manager': 'Google Jelszókezelő',
+  'your password manager': 'jelszókezelő',
 }

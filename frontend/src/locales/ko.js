@@ -1626,4 +1626,11 @@ export default {
   'Use in this workout': '이번 운동에 사용',
   'Add to this workout': '이번 운동에 추가',
   'No weight to enter — just time the hold.': '입력할 무게 없음 — 버티는 시간만 재세요.',
+  // --- how this device confirms a passkey, and where it keeps it ---
+  'Face ID / Touch ID': 'Face ID / Touch ID',
+  'fingerprint or face unlock': '지문 또는 얼굴 인식 잠금 해제',
+  'your fingerprint, face or PIN': '지문, 얼굴 또는 PIN',
+  'iCloud Keychain': 'iCloud 키체인',
+  'Google Password Manager': 'Google 비밀번호 관리자',
+  'your password manager': '비밀번호 관리자',
 }

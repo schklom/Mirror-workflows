@@ -971,6 +971,13 @@ export const PT_BR_OVERRIDES = {
   'Use in this workout': 'Usar neste treino',
   'Add to this workout': 'Adicionar a este treino',
   'No weight to enter — just time the hold.': 'Sem peso para informar — só cronometre a sustentação.',
+  // --- how this device confirms a passkey, and where it keeps it ---
+  'Face ID / Touch ID': 'Face ID / Touch ID',
+  'fingerprint or face unlock': 'impressão digital ou desbloqueio facial',
+  'your fingerprint, face or PIN': 'sua impressão digital, rosto ou PIN',
+  'iCloud Keychain': 'Chaves do iCloud',
+  'Google Password Manager': 'Gerenciador de senhas do Google',
+  'your password manager': 'seu gerenciador de senhas',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

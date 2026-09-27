@@ -52,7 +52,8 @@ const KIND_ICON = { image: 'image', gif: 'play', video: 'play' }
  * hashed, with a poster), puts its files into the local store as pending, and resolves the
  * MediaRef — or null after it toasted why not. `note` is the dim line that says where the files
  * will live; `canAdd` is false where nothing could keep them (a server without media, or a
- * browser that cannot store them), `showAdd` false only where the button should not even show.
+ * browser that cannot store them), `showAdd` false only where the button should not even show,
+ * `storable` false where this browser cannot keep a file at all.
  */
 export function useMediaPicker() {
   const user = useStore(s => s.user)
@@ -100,7 +101,7 @@ export function useMediaPicker() {
     : serverLacks ? t('Your server does not store photos and videos yet.')
       : !user ? t('Kept on this device only — Export with photos & videos keeps a copy.')
         : null
-  return { pick, busy, warning, setWarning, note, showAdd: !serverLacks, canAdd: !busy && storable && !serverLacks }
+  return { pick, busy, warning, setWarning, note, storable, showAdd: !serverLacks, canAdd: !busy && storable && !serverLacks }
 }
 
 export default function CustomMediaField({ media, url, onChange }) {

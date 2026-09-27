@@ -16,7 +16,7 @@ import { _setLangState } from './lib/i18n-core.js'
 import { bindUI } from './components/ui.jsx'
 import { createMediaStore, memoryBackend, _setMediaStore } from './lib/media-store.js'
 import { workoutDetailSheet, WorkoutRow } from './sheets.jsx'
-import WorkoutMediaSection from './components/WorkoutMedia.jsx'
+import WorkoutMediaSection, { openWorkoutMediaViewer } from './components/WorkoutMedia.jsx'
 import { WORKOUT_MEDIA_MAX } from './lib/media-refs.js'
 
 bindUI(useUI)
@@ -41,14 +41,14 @@ function renderTop() {
   return Object.assign(render(sheet.render(() => useUI.getState().closeSheet(sheet.id))), { sheet })
 }
 const settle = async () => { for (let i = 0; i < 6; i++) await act(async () => { await new Promise(r => setTimeout(r, 0)) }) }
-async function pick(host, count = 1) {
+async function pick(host, count = 1, ingested = count) {
   const input = host.querySelector('.wmedia input[type="file"]')
   const files = Array.from({ length: count }, (_, i) => new File(['x' + i], `IMG_00${i}.HEIC`, { type: 'image/heic' }))
   Object.defineProperty(input, 'files', { value: files, configurable: true })
   const before = h.ingest.mock.calls.length
   act(() => { input.dispatchEvent(new Event('change', { bubbles: true })) })
   const end = Date.now() + 4000
-  while ((h.ingest.mock.calls.length < before + count || host.textContent.includes('Loading…')) && Date.now() < end) {
+  while ((h.ingest.mock.calls.length < before + ingested || host.textContent.includes('Loading…')) && Date.now() < end) {
     await act(async () => { await new Promise(r => setTimeout(r, 10)) })
   }
   await settle()
@@ -133,25 +133,96 @@ describe('a workout\'s photos and videos', () => {
   it('a full workout offers no Add and says how many fit; a seventh picked in a batch is refused', async () => {
     workoutDetailSheet(S().workouts[0])
     const host = renderTop()
-    await pick(host, WORKOUT_MEDIA_MAX + 1)
+    await pick(host, WORKOUT_MEDIA_MAX + 1, WORKOUT_MEDIA_MAX)
     expect(S().workouts[0].media).toHaveLength(WORKOUT_MEDIA_MAX)
+    expect(h.ingest).toHaveBeenCalledTimes(WORKOUT_MEDIA_MAX)   // the seventh is never ingested
     expect(useUI.getState().toastMsg).toBe(`Up to ${WORKOUT_MEDIA_MAX} photos or videos per workout.`)
     expect(host.querySelector('.wmedia-add')).toBeNull()
     expect(host.textContent).toContain(`Up to ${WORKOUT_MEDIA_MAX} photos or videos per workout.`)
   })
 
-  it('a server without media storage gets no Add button, and says why', () => {
-    useStore.setState({ user: { id: 'u1', name: 'One' }, config: { passkeys: true } })
+  it('a batch bigger than the room left ingests only what fits', async () => {
+    useStore.setState(s => ({ S: { ...s.S, workouts: [workout({ media: [1, 3, 5, 7].map(n => refOf(n + 20)) })] } }))
     workoutDetailSheet(S().workouts[0])
     const host = renderTop()
+    await pick(host, 5, 2)
+    expect(h.ingest).toHaveBeenCalledTimes(2)
+    expect(S().workouts[0].media).toHaveLength(WORKOUT_MEDIA_MAX)
+    expect(useUI.getState().toastMsg).toBe(`Up to ${WORKOUT_MEDIA_MAX} photos or videos per workout.`)
+    expect([...media.pendingNow()]).toHaveLength(4)   // two files, each with its poster
+  })
+
+  it('a server without media storage: no section while there is nothing; with some, no Add and why', () => {
+    useStore.setState({ user: { id: 'u1', name: 'One' }, config: { passkeys: true } })
+    workoutDetailSheet(S().workouts[0])
+    expect(renderTop().querySelector('.wmedia')).toBeNull()
+    useStore.setState(s => ({ S: { ...s.S, workouts: [workout({ media: [refOf(1)] })] } }))
+    workoutDetailSheet(S().workouts[0])
+    const host = renderTop()
+    expect(host.querySelectorAll('.wmedia-item')).toHaveLength(1)
     expect(host.querySelector('.wmedia-add')).toBeNull()
     expect(host.textContent).toContain('Your server does not store photos and videos yet.')
   })
 
-  it('signed out, the finish screen\'s section explains itself and says the files stay here', () => {
+  it('signed in, Add is offered only when the server says a workout may carry media', () => {
+    const caps = { imageMB: 2, gifMB: 8, videoMB: 40, videoSec: 60, quotaMB: 200 }
+    useStore.setState({ user: { id: 'u1', name: 'One' }, config: { media: caps } })
+    expect(render(<WorkoutMediaSection w={S().workouts[0]} hint />).querySelector('.wmedia')).toBeNull()
+    useStore.setState({ config: { media: { ...caps, workouts: true } } })
+    expect(render(<WorkoutMediaSection w={S().workouts[0]} hint />).querySelector('.wmedia-add')).toBeTruthy()
+    // Config not known yet (offline start): offered, the files wait here.
+    useStore.setState({ config: null })
+    expect(render(<WorkoutMediaSection w={S().workouts[0]} />).querySelector('.wmedia-add')).toBeTruthy()
+    // A guest is not held to it: the files stay on the device.
+    useStore.setState({ user: null, config: { media: caps } })
+    expect(render(<WorkoutMediaSection w={S().workouts[0]} />).querySelector('.wmedia-add')).toBeTruthy()
+  })
+
+  it('a browser that cannot store files shows no empty section', async () => {
+    media = createMediaStore({ ...memoryBackend(), persistent: false, name: 'mem' }, { objectURL: { createObjectURL: () => 'blob:t/1', revokeObjectURL() {} } })
+    _setMediaStore(media)
+    const host = render(<WorkoutMediaSection w={S().workouts[0]} hint />)
+    await settle()
+    expect(host.querySelector('.wmedia')).toBeNull()
+  })
+
+  it('signed out, the finish screen\'s section explains itself; where the files live is said once there are some', () => {
     const host = render(<WorkoutMediaSection w={S().workouts[0]} hint />)
     expect(host.textContent).toContain('A progress photo or a form-check video, kept with this workout.')
-    expect(host.textContent).toContain('Kept on this device only')
+    expect(host.textContent).not.toContain('Kept on this device only')
+    useStore.setState(s => ({ S: { ...s.S, workouts: [workout({ media: [refOf(1)] })] } }))
+    const withOne = render(<WorkoutMediaSection w={S().workouts[0]} hint />)
+    expect(withOne.textContent).toContain('Kept on this device only')
+  })
+
+  it('the viewer takes focus, keeps Tab inside, and steps with the arrow keys (mirrored right to left)', () => {
+    useStore.setState(s => ({ S: { ...s.S, workouts: [workout({ media: [refOf(1), refOf(3), refOf(5)] })] } }))
+    const opener = document.createElement('button')
+    document.body.appendChild(opener)
+    opener.focus()
+    openWorkoutMediaViewer(S().workouts[0], 0)
+    const host = renderTop()
+    const box = host.querySelector('.mviewer')
+    const count = () => host.querySelector('.mviewer-count').textContent
+    expect(document.activeElement).toBe(host.querySelector('button[aria-label="Close"]'))
+    const key = (k, extra = {}) => act(() => { document.activeElement.dispatchEvent(new KeyboardEvent('keydown', { key: k, bubbles: true, cancelable: true, ...extra })) })
+    key('ArrowRight')
+    expect(count()).toBe('2 / 3')
+    key('ArrowLeft')
+    key('ArrowLeft')
+    expect(count()).toBe('3 / 3')
+    // Tab from the last control wraps to the first; Shift+Tab from the first to the last.
+    const buttons = [...box.querySelectorAll('button')]
+    buttons.at(-1).focus()
+    key('Tab')
+    expect(document.activeElement).toBe(buttons[0])
+    key('Tab', { shiftKey: true })
+    expect(document.activeElement).toBe(buttons.at(-1))
+    document.documentElement.dir = 'rtl'
+    try {
+      key('ArrowRight')
+      expect(count()).toBe('2 / 3')
+    } finally { document.documentElement.dir = 'ltr' }
   })
 
   it('Delete workout in the detail sheet says its photos and videos go with it', () => {

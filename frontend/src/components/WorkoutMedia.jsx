@@ -32,23 +32,43 @@ const useRecord = w => useStore(s => (s.S.workouts || []).find(x => x && sameWor
 export const workoutMediaCount = w => workoutMediaOf(w).length
 
 /**
+ * Whether a workout may be offered an Add at all, beside the picker's own reasons: signed in (a
+ * paired phone included), the server has to say it keeps a workout's files (`media.workouts` in
+ * /api/config) — one from before this feature stores an exercise's picture but its GC would sweep
+ * a file only a workout names. A config not known yet (an offline start) is not that answer, and
+ * a guest or a phone in local mode keeps its files on the device either way.
+ */
+export const serverTakesWorkoutMedia = (user, config) => !user || !config || !config.media || !!config.media.workouts
+
+/**
  * The grid of a workout's photos and videos with its Add tile. `hint` adds the one-line
- * explanation shown on the finish screen while there is nothing yet.
+ * explanation shown on the finish screen while there is nothing yet. Nothing at all while there
+ * is nothing to show and nothing could be added (a server that does not keep them, a browser
+ * that cannot store them).
  */
 export default function WorkoutMediaSection({ w, hint = false }) {
   const rec = useRecord(w)
   const update = useStore(s => s.update)
-  const { pick, busy, warning, note, showAdd, canAdd } = useMediaPicker()
+  const user = useStore(s => s.user)
+  const config = useStore(s => s.config)
+  const { pick, busy, warning, note, storable, showAdd: pickerShowsAdd, canAdd: pickerCanAdd } = useMediaPicker()
   const fileRef = useRef(null)
   if (!rec) return null
   const list = workoutMediaOf(rec)
   const room = WORKOUT_MEDIA_MAX - list.length
+  const showAdd = pickerShowsAdd && serverTakesWorkoutMedia(user, config)
+  const canAdd = pickerCanAdd && showAdd
+  if (!list.length && !(showAdd && storable)) return null
 
   const onFiles = async ev => {
-    const files = [...(ev.target.files || [])]
+    const picked = [...(ev.target.files || [])]
     ev.target.value = ''   // picking the same file again still fires onChange
+    // Only as many as still fit go through the ingest: a batch of twelve on a phone would
+    // otherwise re-encode (and store as pending) six files nothing will ever name.
+    const now = useStore.getState().S.workouts?.find(x => x && sameWorkout(x, w))
+    const files = picked.slice(0, Math.max(0, WORKOUT_MEDIA_MAX - workoutMediaOf(now).length))
     let added = 0
-    let full = false
+    let full = files.length < picked.length
     for (const file of files) {
       const got = await pick(file)
       if (!got) continue
@@ -56,7 +76,7 @@ export default function WorkoutMediaSection({ w, hint = false }) {
       update(s => { res = addWorkoutMedia(s, w, got) })
       if (res === 'added') added++
       else if (res === 'full') { full = true; break }
-      else if (res === 'gone') { toast(t('Workout deleted')); break }
+      else if (res === 'gone') { toast(t('Workout deleted')); full = false; break }
     }
     if (full) toast(t('Up to {0} photos or videos per workout.', WORKOUT_MEDIA_MAX))
     // Straight up, like an exercise's picture on save: the state push waits for its debounce.
@@ -85,7 +105,9 @@ export default function WorkoutMediaSection({ w, hint = false }) {
     {hint && !list.length && showAdd && <div className="small dim wmedia-note">{t('A progress photo or a form-check video, kept with this workout.')}</div>}
     {room <= 0 && <div className="small dim wmedia-note">{t('Up to {0} photos or videos per workout.', WORKOUT_MEDIA_MAX)}</div>}
     {warning && <div className="small dim wmedia-note">{warning}</div>}
-    {note && <div className="small dim wmedia-note">{note}</div>}
+    {/* Where the files live, or why none can be added — about the ones there are, so not
+        while there are none (the finish screen's hint says what the section is for). */}
+    {note && list.length > 0 && <div className="small dim wmedia-note">{note}</div>}
   </div>
 }
 
@@ -94,16 +116,25 @@ export function openWorkoutMediaViewer(w, index = 0) {
   useUI.getState().openSheet(close => <WorkoutMediaViewer w={w} index={index} close={close} />, { kind: 'viewer' })
 }
 
+const FOCUSABLE = 'button:not([disabled]), [href], input:not([disabled]), select, textarea, video[controls], [tabindex]:not([tabindex="-1"])'
+
 export function WorkoutMediaViewer({ w, index = 0, close }) {
   const rec = useRecord(w)
   const update = useStore(s => s.update)
   const list = workoutMediaOf(rec)
   const [i, setI] = useState(index)
   const [asking, setAsking] = useState(false)
+  const box = useRef(null)
   const at = Math.min(i, list.length - 1)
   const m = at >= 0 ? list[at] : null
   // The last one removed here, or the workout deleted on another device: nothing left to show.
   useEffect(() => { if (!m) close() }, [!m])
+  // Focus moves in on open (onto Close) and back to what opened it on the way out.
+  useEffect(() => {
+    const before = document.activeElement
+    box.current?.querySelector('button')?.focus()
+    return () => { if (before && typeof before.focus === 'function' && before.isConnected) before.focus() }
+  }, [])
   if (!m) return null
   const go = d => { setAsking(false); setI((at + d + list.length) % list.length) }
   const remove = () => {
@@ -112,7 +143,26 @@ export function WorkoutMediaViewer({ w, index = 0, close }) {
     setAsking(false)
     if (removed && at >= list.length - 1) setI(Math.max(0, at - 1))
   }
-  return <div className="mviewer" role="dialog" aria-modal="true" aria-label={t('Photos & videos')}>
+  // Tab stays inside the viewer (it covers the whole screen, and the page behind is not there to
+  // reach); left and right step through the list — mirrored where the language reads right to
+  // left, as the arrows on screen are. A video's own controls keep the arrows while focused.
+  const onKeyDown = e => {
+    if (e.key === 'Tab') {
+      const items = [...(box.current?.querySelectorAll(FOCUSABLE) || [])]
+      if (!items.length) return
+      const first = items[0], last = items.at(-1)
+      const inside = box.current.contains(document.activeElement)
+      if (e.shiftKey && (!inside || document.activeElement === first || document.activeElement === box.current)) { e.preventDefault(); last.focus() }
+      else if (!e.shiftKey && (!inside || document.activeElement === last)) { e.preventDefault(); first.focus() }
+      return
+    }
+    if ((e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') || list.length < 2 || asking) return
+    if (e.target?.tagName === 'VIDEO' || e.target?.tagName === 'INPUT') return
+    const rtl = document.documentElement.dir === 'rtl'
+    e.preventDefault()
+    go((e.key === 'ArrowRight') !== rtl ? 1 : -1)
+  }
+  return <div className="mviewer" role="dialog" aria-modal="true" aria-label={t('Photos & videos')} ref={box} tabIndex={-1} onKeyDown={onKeyDown}>
     <div className="mviewer-bar">
       <button type="button" className="iconbtn" aria-label={t('Close')} onClick={close}><Icon name="xmark" /></button>
       <span className="mviewer-count" dir="ltr">{at + 1} / {list.length}</span>

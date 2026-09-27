@@ -1,4 +1,5 @@
-/* The photo, GIF or video of a custom exercise, as the state holds it — and its link.
+/* The photo, GIF or video of a custom exercise, and the photos and videos of a logged workout,
+ * as the state holds them — and an exercise's link.
  *
  * The state never carries the bytes, only a MediaRef of a few hundred bytes (see the shape
  * below). The bytes live in the device's local media store (lib/media-store.js) and, signed in,
@@ -80,18 +81,68 @@ export function normalizeMediaRef(ref) {
 export const mediaOf = ex => (ex && ex.media ? normalizeMediaRef(ex.media) : null)
 
 /**
+ * How many photos and videos one logged workout keeps. Every ref travels in the whole-document
+ * push that each of the account's devices downloads (about 300 bytes each, plus its poster's
+ * files on every device that shows it), so the list is bounded like everything else in the
+ * state: six is a progress photo from a few angles plus a couple of form-check clips, one or two
+ * rows of thumbnails on a phone. A workout with more has to drop one first.
+ */
+export const WORKOUT_MEDIA_MAX = 6
+
+/**
+ * The photos and videos of a logged workout as they may be shown: each passes normalizeMediaRef,
+ * a file listed twice shows once, and never more than `max` — WORKOUT_MEDIA_MAX unless the
+ * caller asks otherwise (a hand-edited or foreign copy can hold anything). Oldest first, the
+ * order they were added in. A reading, never a rewrite: the list on the record keeps whatever
+ * this leaves out (lib/workout-media.js edits it as it stands).
+ */
+export function workoutMediaOf(w, max = WORKOUT_MEDIA_MAX) {
+  const raw = w && typeof w === 'object' && Array.isArray(w.media) ? w.media : []
+  const out = []
+  const seen = new Set()
+  for (const r of raw) {
+    const m = normalizeMediaRef(r)
+    if (!m || seen.has(m.hash)) continue
+    seen.add(m.hash)
+    out.push(m)
+    if (out.length >= max) break
+  }
+  return out
+}
+
+/**
+ * Every MediaRef-like object a state holds, as it stands (not normalised): each custom
+ * exercise's `media` and each entry of each logged workout's `media` list. The one walk behind
+ * referencedHashes, referencedFiles and the owed count, so they can never disagree about where
+ * media live. The session in progress is not walked: it never syncs (the server drops `active`),
+ * media are only ever attached to a saved workout, and the history editor's copy of one leaves
+ * them on the saved record (lib/session-edit.js).
+ */
+export function stateMediaRefs(state) {
+  const out = []
+  if (!state || typeof state !== 'object') return out
+  const isObj = v => !!v && typeof v === 'object' && !Array.isArray(v)
+  for (const c of Array.isArray(state.customEx) ? state.customEx : []) {
+    if (isObj(c) && isObj(c.media)) out.push(c.media)
+  }
+  for (const w of Array.isArray(state.workouts) ? state.workouts : []) {
+    if (!isObj(w) || !Array.isArray(w.media)) continue
+    for (const m of w.media) if (isObj(m)) out.push(m)
+  }
+  return out
+}
+
+/**
  * Every blob hash a state refers to, the same answer as api/media.js referencedHashes (the shared
- * fixture api/test/fixtures/media-refs.json pins both). Deliberately looser than
- * normalizeMediaRef: each of media.hash and media.poster.hash counts on its own as long as it is a
- * well-formed hash, because this set decides what is KEPT, and keeping too much is the safe side.
+ * fixture api/test/fixtures/media-refs.json pins both): customEx[].media and every entry of
+ * workouts[].media. Deliberately looser than normalizeMediaRef and workoutMediaOf: each hash and
+ * poster hash counts on its own as long as it is well-formed, and a workout's list counts past
+ * its cap, because this set decides what is KEPT, and keeping too much is the safe side.
  */
 export function referencedHashes(state) {
   const out = new Set()
-  const list = state && typeof state === 'object' && Array.isArray(state.customEx) ? state.customEx : []
   const add = r => { if (r && typeof r === 'object' && typeof r.hash === 'string' && HASH_RE.test(r.hash)) out.add(r.hash) }
-  for (const c of list) {
-    const m = c && typeof c === 'object' ? c.media : null
-    if (!m || typeof m !== 'object') continue
+  for (const m of stateMediaRefs(state)) {
     add(m)
     add(m.poster)
   }
@@ -103,15 +154,13 @@ export function referencedHashes(state) {
  * shows, so it is the file another device most wants soon, and it is small. Each hash comes with
  * what the state says about it — { hash, mime, size, poster } — which is what a download is
  * checked against. The first ref that names a hash decides; two exercises with the same file
- * describe it the same way unless someone edited one by hand.
+ * describe it the same way unless someone edited one by hand (an exercise's picture added to a
+ * workout too is one file).
  */
 export function referencedFiles(state) {
   const posters = new Map()
   const mains = new Map()
-  const list = state && typeof state === 'object' && Array.isArray(state.customEx) ? state.customEx : []
-  for (const c of list) {
-    const m = c && typeof c === 'object' ? c.media : null
-    if (!m || typeof m !== 'object') continue
+  for (const m of stateMediaRefs(state)) {
     const p = m.poster
     if (p && typeof p === 'object' && typeof p.hash === 'string' && HASH_RE.test(p.hash) && !posters.has(p.hash)) {
       posters.set(p.hash, { hash: p.hash, mime: p.mime, size: p.size, poster: true })

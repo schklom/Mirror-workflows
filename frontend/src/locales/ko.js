@@ -1608,4 +1608,18 @@ export default {
   'name + body part, and a photo or video if you like': '이름 + 부위, 원하면 사진이나 동영상도',
   '{0} photos or videos have not reached your server yet.': '아직 서버에 올라가지 않은 사진·동영상이 {0}개 있습니다.',
   '{0} photo or video has not reached your server yet.': '아직 서버에 올라가지 않은 사진·동영상이 {0}개 있습니다.',
+  // --- a logged workout's own photos and videos ---
+  'Add photo or video': '사진 또는 동영상 추가',
+  'Up to {0} photos or videos per workout.': '운동 한 번에 사진·동영상은 최대 {0}개까지입니다.',
+  'A progress photo or a form-check video, kept with this workout.': '진행 상황 사진이나 자세 점검 동영상을 이 운동에 함께 보관합니다.',
+  'Photo or video {0} of {1}': '사진·동영상 {1}개 중 {0}번째',
+  'Remove this photo or video?': '이 사진 또는 동영상을 제거할까요?',
+  'Close': '닫기',
+  'Previous': '이전',
+  '{0} photo or video': '사진·동영상 {0}개',
+  '{0} photos or videos': '사진·동영상 {0}개',
+  'Its photo or video is deleted with it.': '첨부된 사진·동영상도 함께 삭제됩니다.',
+  'Its {0} photos or videos are deleted with it.': '첨부된 사진·동영상 {0}개도 함께 삭제됩니다.',
+  'Its photo or video moves to the new workout.': '첨부된 사진·동영상은 새 운동으로 옮겨집니다.',
+  'Its {0} photos or videos move to the new workout.': '첨부된 사진·동영상 {0}개는 새 운동으로 옮겨집니다.',
 }

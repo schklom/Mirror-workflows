@@ -357,3 +357,21 @@ test('a routine icon in the payload is an icon key or an emoji, never text', () 
   assert.equal(icon('\u{1F1F4}\u{1F1E7}\u{1F1EA}\u{1F1FE}'), 'figureStrength');
   assert.equal(icon(undefined), undefined);
 });
+
+/* A logged workout's own photos and videos (workouts[].media) — progress photos, form-check
+   clips — are the most personal files in the profile. No job sends them, their hashes, their
+   posters or even the fact that there are any. */
+test('a workout\'s photos and videos never reach the payload', () => {
+  const HASH = 'a1'.repeat(32), POSTER = 'b2'.repeat(32), PHOTO = 'c3'.repeat(32);
+  const S = sampleState();
+  S.workouts[0].media = [
+    { kind: 'video', hash: HASH, mime: 'video/quicktime', size: 9000000, width: 1080, height: 1920, dur: 14, codec: 'hvc1', poster: { hash: POSTER, mime: 'image/jpeg', size: 30000, width: 270, height: 480 }, at: 1 },
+    { kind: 'image', hash: PHOTO, mime: 'image/webp', size: 300000, width: 1200, height: 1600, at: 2 }
+  ];
+  for (const kind of ['create', 'review', 'debrief']) {
+    const json = JSON.stringify(payload.build(S, { handle: handleFor('user-wmedia'), kind, workoutId: 'w1' }));
+    for (const leak of [HASH, POSTER, PHOTO, '"media"', '"poster"', 'video/quicktime', 'image/webp', 'hvc1']) {
+      assert.ok(!json.includes(leak), `${kind} payload leaked ${leak}`);
+    }
+  }
+});

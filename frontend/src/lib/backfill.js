@@ -3,6 +3,7 @@
 // pure so the date arithmetic and the history surgery can be tested without the UI.
 import { bestWeightForEntry } from './history.js'
 import { isSideSet, syncSideAggregate } from './workout-model.js'
+import { mergeWorkoutMedia, stampWorkout } from './sync-merge.js'
 
 export const workoutsOn = (S, iso) => (S.workouts || []).filter(w => w.d === iso)
 
@@ -56,10 +57,18 @@ export function insertChronological(workouts, w) {
 
 // The history after a backfilled session is filed: the workout it replaces (if any) is gone
 // and the new one sits in date order. Returns a new array; the caller stores it.
-export function completeBackfill(workouts, active, w) {
+//
+// Replacing re-logs that day's sets, not its photos and videos: those move onto the new record
+// (after any it has), stamped like any other edit of a saved workout, so the progress photo of a
+// day logged again is not dropped with the old sets. `w` is changed in place when they do.
+export function completeBackfill(workouts, active, w, now = Date.now()) {
   const replaceId = active.backfill?.replaceId
-  const kept = replaceId ? workouts.filter(x => x.id !== replaceId) : workouts
-  return insertChronological(kept, w)
+  if (!replaceId) return insertChronological(workouts, w)
+  const replaced = workouts.find(x => x.id === replaceId)
+  const had = Array.isArray(w.media) ? w.media.length : 0
+  if (replaced) mergeWorkoutMedia(w, replaced)
+  if ((Array.isArray(w.media) ? w.media.length : 0) > had) stampWorkout(w, now)
+  return insertChronological(workouts.filter(x => x.id !== replaceId), w)
 }
 
 // "Mark all sets done" while logging a past workout (#284). A session written down after the

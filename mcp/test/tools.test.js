@@ -900,3 +900,29 @@ describe('preview_session', () => {
     expect(() => call('preview_session', { routine_id: 'nope' })).toThrow(/no routine with id/)
   })
 })
+
+/* ---------- a workout's photos and videos ---------- */
+
+// workouts[].media — progress photos and form-check clips — are the owner's own files. The MCP
+// bridge answers from the same state file, so it must not pass on a single hash, poster or even
+// the key: an LLM client has nothing to do with them.
+describe('workout photos and videos never leave through MCP', () => {
+  const HASH = 'a1'.repeat(32), POSTER = 'b2'.repeat(32)
+  test('no tool answer carries them', () => {
+    for (const w of S.workouts) {
+      w.media = [{ kind: 'video', hash: HASH, mime: 'video/mp4', size: 900000, width: 720, height: 1280, dur: 9, codec: 'avc1', poster: { hash: POSTER, mime: 'image/webp', size: 9000, width: 270, height: 480 }, at: 1 }]
+    }
+    _seedStateForTests(S)
+    const newest = call('list_workouts', {}).workouts[0]
+    const answers = [
+      call('list_workouts', {}),
+      call('get_workout', newest.id ? { workout_id: newest.id } : { date: newest.date }),
+      call('muscle_balance', { period: 'all' }),
+      call('muscle_balance', { period: 'month' }),
+    ]
+    for (const a of answers) {
+      const json = JSON.stringify(a)
+      for (const leak of [HASH, POSTER, '"media"', '"poster"', 'video/mp4']) expect(json).not.toContain(leak)
+    }
+  })
+})

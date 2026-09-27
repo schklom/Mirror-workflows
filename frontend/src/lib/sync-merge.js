@@ -15,7 +15,10 @@
  *   - workouts: union by id; of an id that both have, the version edited last by its own `_ts`
  *     (stampWorkout — a workout changed after it was logged: its sets edited, moved to another
  *     day, its length or note corrected), the newer copy's on a tie; sorted by day and start
- *     like every other writer
+ *     like every other writer. Its `media` list is the exception: the union by hash of both
+ *     copies' lists (the kept version's in its order, then the other's extras), so a photo added
+ *     on one device survives the other's edit of the same workout — or its own photo
+ *     (mergeWorkoutMedia)
  *   - routines: union by id in the newer copy's order; of an id that both have, the version
  *     edited last by its own `_ts` (stampRoutines), the newer copy's on a tie
  *   - bodyweight: union by day, the later-edited (`t`) entry of a day that both have
@@ -63,6 +66,36 @@ export function unionById(newer = [], older = [], key = x => x?.id) {
 }
 
 const workoutKey = w => (w?.id != null ? w.id : `${w?.d}|${w?.start}`)
+
+/**
+ * The photos and videos of a workout both copies have: `kept`'s list as it stands (its order,
+ * its refs), then every ref of `other`'s list whose hash `kept` lacks. Whole-record merging lost a
+ * photo added on one device whenever the other edited that workout's note, date or length, or
+ * added a photo of its own, later — the other copy's version was kept, and with it its list.
+ *
+ * The price is the file's known limit, one field in: with no record of what was removed, a photo
+ * taken off on one device inside the conflict window comes back from the other copy that still
+ * lists it — a resurrected photo is one tap to remove again, a lost one is gone. A removal the
+ * other device has already pulled sticks, since neither copy lists it any more. Refs are carried
+ * as they are; readers normalise and cap (workoutMediaOf). Mutates and returns `kept`.
+ */
+export function mergeWorkoutMedia(kept, other) {
+  if (!kept || typeof kept !== 'object') return kept
+  const mine = list(kept.media)
+  const theirs = list(other?.media)
+  if (!theirs.length) return kept
+  const hashOf = m => (m && typeof m === 'object' && typeof m.hash === 'string' ? m.hash : null)
+  const seen = new Set(mine.map(hashOf).filter(Boolean))
+  const extra = []
+  for (const m of theirs) {
+    const h = hashOf(m)
+    if (!h || seen.has(h)) continue
+    seen.add(h)
+    extra.push(clone(m))
+  }
+  if (extra.length) kept.media = [...(Array.isArray(kept.media) ? kept.media : []), ...extra]
+  return kept
+}
 const byDayStart = (a, b) => (a.d === b.d ? (a.start || 0) - (b.start || 0) : a.d < b.d ? -1 : 1)
 
 /** One entry per day; where both have a day, the one edited later (`t`); sorted by day. */
@@ -167,6 +200,18 @@ export function mergeStates(a, b, { prefer } = {}) {
       }
       return kept
     })
+  }
+  // Of a workout both copies have, the kept version's media list gains the other's extras — with
+  // `prefer` too: signing in must not drop a photo added while signed out any more than a
+  // conflict may.
+  {
+    const nBy = new Map(list(n.workouts).map(w => [workoutKey(w), w]))
+    const oBy = new Map(list(o.workouts).map(w => [workoutKey(w), w]))
+    for (const w of out.workouts) {
+      const key = workoutKey(w)
+      const x = nBy.get(key), y = oBy.get(key)
+      if (x && y) { mergeWorkoutMedia(w, x); mergeWorkoutMedia(w, y) }
+    }
   }
   out.workouts.sort(byDayStart)
   for (const f of ['routines', 'customEx', 'equipProfiles', 'gymCards']) {

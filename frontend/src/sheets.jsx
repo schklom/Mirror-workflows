@@ -14,7 +14,8 @@ import { nav } from './lib/nav.js'
 import { buildStarterPlan, starterPlanDays, starterPlanOptions } from './lib/starter.js'
 import Media, { Thumb } from './components/Media.jsx'
 import CustomMediaField from './components/CustomMediaField.jsx'
-import { mediaOf, normalizeMediaRef, cleanUrl } from './lib/media-refs.js'
+import WorkoutMediaSection, { workoutMediaCount } from './components/WorkoutMedia.jsx'
+import { mediaOf, normalizeMediaRef, cleanUrl, workoutMediaOf } from './lib/media-refs.js'
 import { syncMedia } from './lib/media-sync.js'
 import LineChart from './components/LineChart.jsx'
 import Stepper from './components/Stepper.jsx'
@@ -45,7 +46,7 @@ import { joinSessionNoProg } from './lib/session-noprog.js'
 import { buildCombinedEntries, deriveSessionName } from './lib/session-merge.js'
 import { workoutsOn, backfillStart, backfillEnd, completeBackfill, historyAsOf, sessionHistory } from './lib/backfill.js'
 import { moveWorkout, sameWorkout, startTimeOf, durationMinOf, setWorkoutDuration } from './lib/workout-date.js'
-import { editCompletedSession, editLeftEmpty } from './lib/session-edit.js'
+import { editCompletedSession, editLeftEmpty, editedRecord } from './lib/session-edit.js'
 import { stampWorkout } from './lib/sync-merge.js'
 import { weeklyWeights } from './lib/bodyweight.js'
 import { workoutText } from './lib/workout-text.js'
@@ -2021,6 +2022,8 @@ function WorkoutDetail({ w, close }) {
         {entryRows(g.units)}
       </div>
     }) : entryRows(groups[0]?.units || [])}
+    {/* Progress photos and form-check videos: added and removed right here, on the saved record. */}
+    <WorkoutMediaSection w={w} />
     <div className="small muted" style={{ margin: '4px 0 6px' }}>{t('Session note')}</div>
     <textarea ref={noteRef} className="input" rows={2} maxLength={NOTE_MAX} value={note}
       placeholder={t('How the session went as a whole.')}
@@ -2065,8 +2068,14 @@ function WorkoutDetail({ w, close }) {
     <div style={{ height: 10 }} />
     {/* Matched the way the edits above are, not by id: a workout from before ids has none, and
         filtering on `x.id !== undefined` took every other one of them with it. */}
-    <Button variant="danger" onClick={() => confirmSheet({ title: t('Delete workout?'), message: t('This removes it from your history for good.'), confirmText: t('Delete'), danger: true, onConfirm: () => { update(s => { s.workouts = s.workouts.filter(x => !sameWorkout(x, w)) }); close(); toast(t('Workout deleted')) } })}>{t('Delete workout')}</Button>
+    <Button variant="danger" onClick={() => confirmSheet({ title: t('Delete workout?'), message: t('This removes it from your history for good.') + mediaGoesToo(S().workouts.find(x => sameWorkout(x, w))), confirmText: t('Delete'), danger: true, onConfirm: () => { update(s => { s.workouts = s.workouts.filter(x => !sameWorkout(x, w)) }); close(); toast(t('Workout deleted')) } })}>{t('Delete workout')}</Button>
   </>
+}
+// The sentence a workout's Delete adds when its photos and videos go with it — every file the
+// record lists, shown or not. Empty when it has none.
+function mediaGoesToo(rec) {
+  const n = workoutMediaOf(rec, Infinity).length
+  return n ? ' ' + t(n === 1 ? 'Its photo or video is deleted with it.' : 'Its {0} photos or videos are deleted with it.', n) : ''
 }
 export const workoutDetailSheet = w => ui().openSheet(close => <WorkoutDetail w={w} close={close} />)
 
@@ -2121,10 +2130,12 @@ export const calendarSheet = start => ui().openSheet(close => <Calendar start={s
 export function WorkoutRow({ w, onClick }) {
   const st = useStore(s => s.S)
   const glyph = glyphOf((st.routines.find(r => r.id === w.routineId) || {}).emoji)
+  const mediaN = workoutMediaCount(w)
   return <div className="item" {...tappable(onClick)}>
     <span className="lrow-i" style={{ width: 34, height: 34, borderRadius: 8, fontSize: 19 }}><Icon name={glyph} /></span>
     <div className="grow"><div className="tt">{w.name}</div>
       <div className="ss">{[fmtDate(w.d, true), ...durPart(w.end - w.start), t('{0} sets', setsDone(w)), fmtVol(w.vol, st.unit)].join(' · ')}</div></div>
+    {mediaN > 0 && <span className="wrow-media" title={t(mediaN === 1 ? '{0} photo or video' : '{0} photos or videos', mediaN)} aria-label={t(mediaN === 1 ? '{0} photo or video' : '{0} photos or videos', mediaN)}><Icon name="image" />{mediaN}</span>}
     {w.prs && w.prs.length > 0 && <span className="pr"><Icon name="trophy" />{w.prs.length} PR</span>}
     <Icon name="chevronRight" className="chev" />
   </div>
@@ -2209,14 +2220,20 @@ function LogPastWorkout({ initial, close }) {
   </>
 }
 // Three ways out when the day already has a workout. Replacing with several on that day means
-// picking which one; the rest of the day is left alone.
+// picking which one; the rest of the day is left alone. A workout with photos or videos says
+// they come along.
 function SameDayChoice({ iso, existing, onReplace, onAdd, close }) {
   return <div style={{ textAlign: 'center', padding: '4px 0' }}>
     <h3 style={{ marginBottom: 8 }}>{fmtDate(iso, true)}</h3>
     <div className="muted" style={{ marginBottom: 18, lineHeight: 1.5 }}>{t('There is already a workout on that day.')}</div>
-    {existing.map(w => <div key={w.id} style={{ marginBottom: 8 }}>
-      <button className="btn danger" onClick={() => onReplace(w.id)}>{existing.length > 1 ? t('Replace') + ' · ' + w.name : t('Replace')}</button>
-    </div>)}
+    {existing.map(w => {
+      // Replacing re-logs the sets; the photos and videos move to the new record (completeBackfill).
+      const n = workoutMediaOf(w, Infinity).length
+      return <div key={w.id} style={{ marginBottom: 8 }}>
+        <button className="btn danger" onClick={() => onReplace(w.id)}>{existing.length > 1 ? t('Replace') + ' · ' + w.name : t('Replace')}</button>
+        {n > 0 && <div className="small dim samed-media" style={{ marginTop: 4 }}>{t(n === 1 ? 'Its photo or video moves to the new workout.' : 'Its {0} photos or videos move to the new workout.', n)}</div>}
+      </div>
+    })}
     <button className="btn primary" onClick={onAdd}>{t('Add as second workout')}</button>
     <div style={{ height: 8 }} />
     <Button variant="ghost" className="dim" onClick={close}>{t('Cancel')}</Button>
@@ -2517,7 +2534,7 @@ export function saveWorkoutEdits(onExit = () => nav('/history')) {
   if (editLeftEmpty(S().active)) {
     confirmSheet({
       title: t('Delete workout?'),
-      message: t('No sets are left in this workout, so there is nothing to save. Delete it from your history?'),
+      message: t('No sets are left in this workout, so there is nothing to save. Delete it from your history?') + mediaGoesToo(editedRecord(S())),
       confirmText: t('Delete workout'), cancelText: t('Keep editing'), danger: true,
       onConfirm: () => {
         useStore.getState().deleteHistoryEdit()
@@ -2576,6 +2593,9 @@ function FinishSummary({ w, prs, e1prs = [], close }) {
     <h4 className="sec" style={{ textAlign: 'start' }}>{t('What you just trained')}</h4>
     <BodyMap load={loadOfWorkouts([w])} body={st.body} />
     <div style={{ height: 14 }} />
+    {/* The moment for a progress photo or the clip of a set: the workout is already saved, so
+        what is added here goes straight onto its record. */}
+    <div style={{ textAlign: 'start' }}><WorkoutMediaSection w={w} hint /></div>
     <Button variant="primary" onClick={() => { close(); nav('/home') }}>{t('Nice!')}</Button>
   </div>
 }

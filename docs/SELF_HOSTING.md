@@ -412,7 +412,9 @@ a passkey scope and can see each other's credentials. Give each its own hostname
 ### Photos and videos of custom exercises
 
 Anyone signed in can give an exercise they made one photo, GIF or short video (and, separately,
-a link, which the server never fetches). The file is uploaded to this server and stored under
+a link, which the server never fetches), and attach up to six photos or videos to a logged
+workout — a progress photo, a form-check clip. Both kinds share one quota and one set of limits.
+The file is uploaded to this server and stored under
 `./data/uploads/<profile id>/`, named by its SHA-256. Only its owner can download it again — no
 admin route, no Coach and no shared plan reads it. It is on by default, with these limits, all
 set in `.env`:

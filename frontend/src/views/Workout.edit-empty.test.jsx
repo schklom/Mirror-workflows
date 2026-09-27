@@ -25,9 +25,9 @@ let container
 let sheetRoot
 let sheetContainer
 
-function renderEditor() {
+function renderEditor(extra = {}) {
   const S = clone(DEF)
-  S.workouts = [clone(other), clone(saved)]
+  S.workouts = [clone(other), { ...clone(saved), ...extra }]
   S.workoutView = 'list'
   editCompletedSession(S, 'saved')
   useStore.setState({ S, user: null })
@@ -86,6 +86,14 @@ describe('saving an edit that leaves no set', () => {
     expect(S().active.editingWorkoutId).toBe('saved')
     expect(S().workouts.find(w => w.id === 'saved').entries).toHaveLength(2)
     expect(useUI.getState().toastMsg).toBe('')
+  })
+
+  it('says the workout\'s photos and videos go with it, when it has any', () => {
+    const ref = n => ({ kind: 'image', hash: String(n).repeat(64), mime: 'image/webp', size: 10, width: 8, height: 6, at: 1 })
+    renderEditor({ media: [ref(1), ref(2), ref(3)] })
+    untickAll()
+    tapSave()
+    expect(renderTopSheet().textContent).toContain('Delete it from your history? Its 3 photos or videos are deleted with it.')
   })
 
   it('Delete workout takes it out of the history and closes the editor', () => {

@@ -145,7 +145,8 @@ tags:
     description: Admin dashboard — requires an admin session (`ADMIN_UIDS` or `admin:true`)
   - name: media
     description: >-
-      The photo, GIF or video of a user's own custom exercise. Stored per profile and named
+      The photo, GIF or video of a user's own custom exercise, and the photos and videos
+      attached to a logged workout. Stored per profile (one quota for both) and named
       by the SHA-256 of its bytes; the state only carries a `MediaRef`. Every route here is a
       404 when the instance runs with `MEDIA_UPLOADS=0`.
   - name: coach
@@ -265,7 +266,7 @@ paths:
                     allow_guest: false
                     coach: { enabled: true, provider: compatible, providerLabel: "OpenAI-compatible endpoint", authMode: instance, community: false }
                 passwordLogin: { value: { invite_only: true, allow_guest: false, password_login: true } }
-                media: { value: { invite_only: false, allow_guest: true, media: { imageMB: 2, gifMB: 8, videoMB: 40, videoSec: 60, quotaMB: 200 } } }
+                media: { value: { invite_only: false, allow_guest: true, media: { imageMB: 2, gifMB: 8, videoMB: 40, videoSec: 60, quotaMB: 200, workouts: true } } }
 
   /api/me:
     get:
@@ -2050,7 +2051,8 @@ paths:
         user. Admin only. Anything in `routines`, `bodyweight` or `workouts` that is not
         an object is left out, and a list that is not an array reads as empty: PUT
         /api/data drops those entries now, but a state file written before it did still
-        has them and this route has to answer for it.
+        has them and this route has to answer for it. A workout's `media` (its photos and
+        videos) is left out: they are the owner's own.
       parameters:
         - name: id
           in: query
@@ -3249,8 +3251,9 @@ components:
       type: object
       description: >-
         What the state knows of an uploaded file. The bytes are behind
-        `GET /api/media/{hash}`; the server keeps a file as long as some `customEx[].media.hash`
-        or `.poster.hash` of the profile's state names it, and for `MEDIA_GC_GRACE_DAYS` after.
+        `GET /api/media/{hash}`; the server keeps a file as long as some `customEx[].media.hash`,
+        `workouts[].media[].hash` or `.poster.hash` of either in the profile's state names it, and
+        for `MEDIA_GC_GRACE_DAYS` after.
       required: [kind, hash, mime, size, width, height, at]
       properties:
         kind: { type: string, enum: [image, gif, video], description: '`gif` means animated; a one-frame GIF is an `image`.' }
@@ -3283,7 +3286,14 @@ components:
         videoMB: { type: number }
         videoSec: { type: number }
         quotaMB: { type: number, description: Per profile; 0 = no cap. }
-      example: { imageMB: 2, gifMB: 8, videoMB: 40, videoSec: 60, quotaMB: 200 }
+        workouts:
+          type: boolean
+          const: true
+          description: >-
+            This instance keeps the files a logged workout's `media` list names too, not only a
+            custom exercise's. Absent on an instance from before; the app then offers photos and
+            videos on custom exercises only.
+      example: { imageMB: 2, gifMB: 8, videoMB: 40, videoSec: 60, quotaMB: 200, workouts: true }
 
     MediaUsage:
       type: object
@@ -3336,6 +3346,17 @@ components:
                     rpe: { type: number }
                   additionalProperties: true
             additionalProperties: true
+        media:
+          type: array
+          maxItems: 6
+          items:
+            $ref: '#/components/schemas/MediaRef'
+          description: >-
+            Photos and videos attached to this workout (a progress photo, a form-check clip) —
+            at most six in the app. Refs only; the bytes are behind `/api/media/{hash}`, and the
+            server keeps every file any entry here names (the GC walks this list as it walks
+            each custom exercise's `media`).
+        _ts: { type: number, description: 'When this workout was last edited after it was logged, ms — for merging two devices'' copies.' }
       additionalProperties: true
 
     Routine:

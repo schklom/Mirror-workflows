@@ -80,6 +80,10 @@ function Sheet({ sheet }) {
   }, [])
 
   const close = () => closeSheet(sheet.id)
+  // Full screen, on black: a photo or video opened from a workout (WorkoutMedia.jsx). No
+  // backdrop to tap, no drag to dismiss — the viewer has its own close button, and back closes
+  // it like any sheet.
+  if (sheet.kind === 'viewer') return <div>{sheet.render(close)}</div>
   if (sheet.kind === 'center') {
     return (
       <div>

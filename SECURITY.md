@@ -188,7 +188,8 @@ Read this before hosting openGym for anyone other than yourself.
   and each account is capped at 20 subscriptions, so one small request cannot become an unbounded
   burst of outbound connections (`api/server.js:108-110`).
 - **An uploaded photo or video can only be one of seven file types, and only its owner gets it
-  back.** People can attach one photo, GIF or short video to an exercise they made. The server
+  back.** People can attach one photo, GIF or short video to an exercise they made, and up to
+  six to a workout they logged. The server
   decides what a file is from its first bytes, never from its name or the type the client
   declared, and stores JPEG, PNG, WebP, GIF, MP4, MOV and WebM only — SVG, HTML and everything
   else is refused. It never decodes a file, so there is no image or video parser to attack. Each

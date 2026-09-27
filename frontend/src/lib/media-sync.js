@@ -1,4 +1,4 @@
-/* Photos and videos of custom exercises between this device and its server.
+/* Photos and videos of custom exercises and of logged workouts between this device and its server.
  *
  * ONE mechanism for every move between modes, keyed by content hash and safe to repeat: ask the
  * server which of the state's files it lacks (POST /api/media/missing), then send the ones this
@@ -35,6 +35,9 @@ const SETTLE_BUDGET_MS = 60000
 const MISSING_CHUNK = 1000
 const UPLOAD_BACKOFF = [1, 2, 5, 15, 60].map(m => m * MIN)
 const MISSING_BACKOFF = [30000, 2 * MIN, 10 * MIN, 30 * MIN]
+// How many of the latest workouts with photos or videos get their posters made local ahead of
+// time: the history's first screens, a few KB each.
+const RECENT_WORKOUT_POSTERS = 20
 // Refusals that will not change by trying again: the file stays here, pending, and is not
 // offered again until someone asks (the Settings row).
 const REJECTED = new Set(['media-too-large', 'media-type', 'media-invalid', 'media-too-long', 'proxy-too-large', 'hash-mismatch'])
@@ -319,8 +322,10 @@ export function createMediaSync(deps = {}) {
 
   /**
    * Makes the posters and files of every custom exercise in the plan and in the session in
-   * progress local, so they show without a network. Signed in only (nothing to fetch from
-   * otherwise), and only on a connection that is not metered (prefetchAllowed).
+   * progress local, so they show without a network — and the posters of the photos and videos
+   * of the most recent workouts that have some (RECENT_WORKOUT_POSTERS), so the history's
+   * thumbnails do too; their main files come down when one is opened. Signed in only (nothing to
+   * fetch from otherwise), and only on a connection that is not metered (prefetchAllowed).
    */
   function startCustomMediaPrefetch({ delay = 8000 } = {}) {
     if (!store) return () => {}
@@ -332,7 +337,9 @@ export function createMediaSync(deps = {}) {
       ;(S?.routines || []).forEach(r => (r?.ex || []).forEach(e => { if (e?.id) ids.add(e.id) }))
       ;(S?.active?.entries || []).forEach(en => { if (en?.id) ids.add(en.id) })
       const used = { customEx: (S?.customEx || []).filter(c => c && ids.has(c.id)) }
-      return referencedFiles(used)
+      const withMedia = (Array.isArray(S?.workouts) ? S.workouts : []).filter(w => Array.isArray(w?.media) && w.media.length)
+      const posters = referencedFiles({ workouts: withMedia.slice(-RECENT_WORKOUT_POSTERS) }).filter(f => f.poster)
+      return [...referencedFiles(used), ...posters]
     }
     const runPrefetch = async () => {
       timer = null
@@ -350,7 +357,7 @@ export function createMediaSync(deps = {}) {
     const schedule = () => { clearTimeout(timer); timer = setTimeout(runPrefetch, delay) }
     let seen = store.getState().S
     const unsub = store.subscribe(s => {
-      if (s.S?.routines === seen?.routines && s.S?.active === seen?.active && s.S?.customEx === seen?.customEx) return
+      if (s.S?.routines === seen?.routines && s.S?.active === seen?.active && s.S?.customEx === seen?.customEx && s.S?.workouts === seen?.workouts) return
       seen = s.S
       schedule()
     })

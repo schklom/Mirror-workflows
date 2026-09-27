@@ -2182,7 +2182,9 @@ const routes = {
       lastSync: S._ts || null,
       routines: records(S.routines).map(r => ({ id: r.id, name: r.name, emoji: r.emoji, count: records(r.ex).length })),
       bodyweight: records(S.bodyweight),
-      workouts: records(S.workouts).reverse()   // records() already copied, so this reverse is ours: newest first for display
+      // records() already copied, so this reverse is ours: newest first for display. A workout's
+      // photos and videos are the owner's own: the admin view gets no refs to them.
+      workouts: records(S.workouts).reverse().map(({ media, ...w }) => w)
     });
   },
 

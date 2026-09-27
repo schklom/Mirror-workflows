@@ -78,7 +78,10 @@ export function mediaLimits(env = process.env) {
 }
 /** The block GET /api/config hands out. Public: the caps are not a secret, and the editor needs
  *  them before the first upload to refuse a file the server would refuse anyway. */
-export const mediaConfig = l => ({ imageMB: l.imageMB, gifMB: l.gifMB, videoMB: l.videoMB, videoSec: l.videoSec, quotaMB: l.quotaMB });
+// `workouts: true`: this server keeps the files a logged workout's `media` names (its GC walks
+// workouts[].media), so a signed-in client may offer attaching them. A server from before says
+// nothing, and the client offers them on custom exercises only.
+export const mediaConfig = l => ({ imageMB: l.imageMB, gifMB: l.gifMB, videoMB: l.videoMB, videoSec: l.videoSec, quotaMB: l.quotaMB, workouts: true });
 
 /* ---------------------------------------------------------------- errors */
 
@@ -274,21 +277,27 @@ export function mp4Info(fd, size) {
 /* ---------------------------------------------------------------- references */
 
 /**
- * Every blob a state refers to: customEx[].media.hash and customEx[].media.poster.hash.
- * Deliberately loose — each field counts on its own as long as it is a well-formed hash, even
- * when the rest of the ref would not pass the client's normalizeMediaRef. This set decides what
- * is KEPT, so erring towards more is the safe direction. frontend/src/lib/media-refs.js has to
- * agree with it; api/test/fixtures/media-refs.json pins both to the same answers.
+ * Every blob a state refers to: customEx[].media.hash and .poster.hash, and the same two of every
+ * entry of workouts[].media (the photos and videos of a logged workout). Deliberately loose —
+ * each field counts on its own as long as it is a well-formed hash, even when the rest of the ref
+ * would not pass the client's normalizeMediaRef, and a workout's list counts past the client's
+ * cap of six. This set decides what is KEPT, so erring towards more is the safe direction.
+ * `active` is not walked: PUT /api/data drops it before the state is stored.
+ * frontend/src/lib/media-refs.js has to agree with it; api/test/fixtures/media-refs.json pins
+ * both to the same answers.
  */
 export function referencedHashes(state) {
   const out = new Set();
-  const list = state && typeof state === 'object' && Array.isArray(state.customEx) ? state.customEx : [];
+  if (!state || typeof state !== 'object') return out;
+  const isObj = v => !!v && typeof v === 'object' && !Array.isArray(v);
   const add = r => { if (r && typeof r === 'object' && typeof r.hash === 'string' && HASH_RE.test(r.hash)) out.add(r.hash); };
-  for (const c of list) {
-    const m = c && typeof c === 'object' ? c.media : null;
-    if (!m || typeof m !== 'object') continue;
-    add(m);
-    add(m.poster);
+  const ref = m => { add(m); add(m.poster); };
+  for (const c of Array.isArray(state.customEx) ? state.customEx : []) {
+    if (isObj(c) && isObj(c.media)) ref(c.media);
+  }
+  for (const w of Array.isArray(state.workouts) ? state.workouts : []) {
+    if (!isObj(w) || !Array.isArray(w.media)) continue;
+    for (const m of w.media) if (isObj(m)) ref(m);
   }
   return out;
 }

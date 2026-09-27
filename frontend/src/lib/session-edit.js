@@ -110,6 +110,9 @@ export function editCompletedSession(state, ref) {
   }
   // Worked out again on Save, from the edited sets.
   for (const k of ['vol', 'prs', '_ts']) delete active[k]
+  // The workout's photos and videos are not the editor's: they stay on the saved record, which
+  // Save spreads under the edit, and the detail sheet adds or removes them there meanwhile.
+  delete active.media
   state.active = active
   return active
 }
@@ -182,6 +185,13 @@ export function saveWorkoutEdit(state, now = Date.now()) {
   return saved
 }
 
+/** The saved record the editor is open on, as history holds it now — or null (none open, or it
+ *  was deleted meanwhile). */
+export function editedRecord(state) {
+  const key = state?.active?.editingWorkoutId
+  return key == null ? null : list(state.workouts).find(w => keyOf(w) === key) || null
+}
+
 /**
  * Deletes the workout the editor is open on and closes the editor: what an edit that took out
  * every set gets instead of Save (editLeftEmpty). The record is found the way Save finds it, and
@@ -190,8 +200,7 @@ export function saveWorkoutEdit(state, now = Date.now()) {
  * gone, and the editor just closes. Returns whether a record was removed.
  */
 export function deleteEditedWorkout(state) {
-  const key = state.active?.editingWorkoutId
-  const current = key == null ? null : list(state.workouts).find(w => keyOf(w) === key)
+  const current = editedRecord(state)
   state.active = null
   if (!current) return false
   state.workouts = state.workouts.filter(w => w !== current)

@@ -85,4 +85,37 @@ describe('import', () => {
   it('sanitizeCustomMedia leaves a state without custom exercises alone', () => {
     expect(sanitizeCustomMedia({ workouts: [] })).toEqual({ workouts: [] })
   })
+
+  it('a workout\'s photos and videos come in through the same gates: bad refs dropped, one per file, at most six', () => {
+    const ok = n => ({ kind: 'image', hash: String(n).repeat(64), mime: 'image/webp', size: 10, width: 4, height: 3, at: 1 })
+    const S = { workouts: [
+      { id: 'w1', media: [ok(1), { ...ok(2), mime: 'text/html' }, ok(1), ok(3), ok(4), ok(5), ok(6), ok(7), ok(8)] },
+      { id: 'w2', media: 'x' },
+      { id: 'w3' }
+    ] }
+    sanitizeCustomMedia(S)
+    expect(S.workouts[0].media.map(m => m.hash[0])).toEqual(['1', '3', '4', '5', '6', '7'])
+    expect('media' in S.workouts[1]).toBe(false)
+    expect(S.workouts[2]).toEqual({ id: 'w3' })
+  })
+})
+
+describe('a workout\'s photos and videos in the zip', () => {
+  it('are exported next to the exercises\' and come back in from the zip', async () => {
+    const media = createMediaStore(memoryBackend())
+    const photo = jpeg(), clip = mp4().file
+    const p = await refFor(photo, 'image/jpeg')
+    const v = await refFor(clip, 'video/mp4', 'video')
+    await media.put(p.hash, new Blob([photo]), { mime: 'image/jpeg' })
+    await media.put(v.hash, new Blob([clip]), { mime: 'video/mp4' })
+    const S = { ...stateWith([]), workouts: [{ id: 'w1', d: '2026-09-20', start: 1, end: 2, entries: [], media: [p, v] }] }
+    const out = await exportBackupZip(S, { media })
+    expect(out).toMatchObject({ included: 2, missing: 0 })
+    const read = await readBackupFile(new File([out.blob], 'backup.zip'))
+    expect(read.state.workouts[0].media).toEqual([p, v])
+    expect(read.files.map(f => f.hash).sort()).toEqual([p.hash, v.hash].sort())
+    const into = createMediaStore(memoryBackend())
+    expect(await storeBackupMedia(read.files, { media: into })).toEqual({ stored: 2, skipped: 0 })
+    expect(await into.get(v.hash)).toMatchObject({ mime: 'video/mp4', pending: true })
+  })
 })

@@ -418,3 +418,41 @@ describe('in a browser tab, not the installed app', () => {
     } finally { stop() }
   })
 })
+
+// A logged workout's photos and videos (workouts[].media) go through the very same sync: the
+// server is asked about them and sent what it lacks, the local clean-up keeps them, and the most
+// recent workouts' posters are made local ahead so the history shows them offline.
+describe('a workout\'s photos and videos', () => {
+  const workoutWith = (...refs) => ({ id: 'w1', d: '2026-09-20', start: 1, end: 2, entries: [], media: refs })
+
+  it('are uploaded when the server lacks them, posters first', async () => {
+    await put(hex('a')); await put(hex('b'))
+    const S = { customEx: [], workouts: [workoutWith(refOf(hex('a'), hex('b')))] }
+    await make(appStore({ S })).syncMedia()
+    expect(JSON.parse(api.mock.calls[0][1].body).hashes).toEqual([hex('b'), hex('a')])
+    expect(apiUpload.mock.calls.map(c => c[0])).toEqual(['/api/media/' + hex('b'), '/api/media/' + hex('a')])
+    expect(media.pendingNow().size).toBe(0)
+  })
+
+  it('the local clean-up keeps a file only a workout refers to', async () => {
+    await put(hex('a')); await put(hex('c'))
+    clock += 2 * 3600000
+    await make(appStore({ S: { customEx: [], workouts: [workoutWith(refOf(hex('a')))] }, user: null })).localMediaGc()
+    expect((await media.list()).map(r => r.hash)).toEqual([hex('a')])
+  })
+
+  it('the posters of recent workouts are made local ahead; their main files wait to be opened', async () => {
+    const poster = jpeg()
+    const ph = await sha256Hex(poster)
+    apiBlob.mockResolvedValue(new Blob([poster]))
+    const ref = refOf(hex('a'), null, { kind: 'video', mime: 'video/mp4', size: 5 * MB, width: 1280, height: 720 })
+    ref.poster = { hash: ph, mime: 'image/jpeg', size: poster.length, width: 640, height: 480 }
+    const S = { customEx: [], routines: [], workouts: [workoutWith(ref)] }
+    const stop = make(appStore({ S })).startCustomMediaPrefetch({ delay: 0 })
+    try {
+      for (let i = 0; i < 50 && !(await media.has(ph)); i++) await new Promise(r => setTimeout(r, 10))
+      expect(await media.get(ph)).toMatchObject({ mime: 'image/jpeg', pending: false })
+      expect(apiBlob.mock.calls.map(c => c[0])).toEqual(['/api/media/' + ph])
+    } finally { stop() }
+  })
+})

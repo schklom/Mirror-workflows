@@ -132,3 +132,45 @@ describe('owed photos and videos', () => {
     expect(await media.list()).toEqual([])
   })
 })
+
+// A workout's own photos and videos (workouts[].media) ride the very same rules: owed while the
+// server lacks them, stashed with the copy on a forced sign-out, and their files kept for it.
+describe('owed photos and videos of a logged workout', () => {
+  const V = 'c'.repeat(64)
+  const VP = 'd'.repeat(64)
+  const clip = { kind: 'video', hash: V, mime: 'video/mp4', size: 3, width: 8, height: 6, dur: 7, poster: { hash: VP, mime: 'image/webp', size: 3, width: 8, height: 6 }, at: 2 }
+  const withWorkoutMedia = () => ({ ...clone(DEF), _ts: 100, workouts: [{ id: 'w1', d: '2026-09-20', start: 1, end: 2, name: 'Push', entries: [], media: [clone(ref), clone(clip)] }] })
+  async function signedIn() {
+    await media.put(A, new Blob(['abc']), { mime: 'image/webp', pending: false })
+    await media.put(P, new Blob(['abc']), { mime: 'image/webp', pending: false })
+    await media.put(V, new Blob(['abc']), { mime: 'video/mp4', pending: true })
+    await media.put(VP, new Blob(['abc']), { mime: 'image/webp', pending: true })
+    useStore.setState({ S: withWorkoutMedia(), user: USER, ready: true, sync: { ...fresh } })
+    localStorage.setItem('gym_sync', JSON.stringify({ rev: 1, ts: 100 }))
+    api.mockImplementation(async (path, o) => (o?.method === 'PUT' ? { ok: true, rev: 2 } : { ok: true }))
+  }
+
+  it('a clip that has not reached the server is owed, counted once with its poster', async () => {
+    await signedIn()
+    expect(useStore.getState().unsyncedChanges()).toMatchObject({ owed: true, media: 1 })
+    expect((await useStore.getState().signOut())).toMatchObject({ owed: true, media: 1 })
+    expect(useStore.getState().user).toEqual(USER)
+  })
+
+  it('going ahead anyway stashes the workout with its media, and every one of its files stays', async () => {
+    await signedIn()
+    const r = await useStore.getState().signOut({ force: true })
+    expect(r).toMatchObject({ owed: true, media: 1, stashed: true })
+    expect(useStore.getState().S.workouts).toEqual([])
+    expect(await useStore.getState().stashedMediaHashes()).toEqual(new Set([A, P, V, VP]))
+    await new Promise(r => setTimeout(r, 20))
+    for (const h of [A, P, V, VP]) expect(await media.has(h)).toBe(true)
+  })
+
+  it('once the server has it, nothing is owed', async () => {
+    await signedIn()
+    await media.markSynced(V)
+    await media.markSynced(VP)
+    expect(useStore.getState().unsyncedChanges()).toEqual({ owed: false, count: 0 })
+  })
+})

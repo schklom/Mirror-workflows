@@ -139,7 +139,8 @@ tags:
     description: Admin dashboard — requires an admin session (`ADMIN_UIDS` or `admin:true`)
   - name: media
     description: >-
-      The photo, GIF or video of a user's own custom exercise. Stored per profile and named
+      The photo, GIF or video of a user's own custom exercise, and the photos and videos
+      attached to a logged workout. Stored per profile (one quota for both) and named
       by the SHA-256 of its bytes; the state only carries a `MediaRef`. Every route here is a
       404 when the instance runs with `MEDIA_UPLOADS=0`.
   - name: coach
@@ -3088,8 +3089,9 @@ components:
       type: object
       description: >-
         What the state knows of an uploaded file. The bytes are behind
-        `GET /api/media/{hash}`; the server keeps a file as long as some `customEx[].media.hash`
-        or `.poster.hash` of the profile's state names it, and for `MEDIA_GC_GRACE_DAYS` after.
+        `GET /api/media/{hash}`; the server keeps a file as long as some `customEx[].media.hash`,
+        `workouts[].media[].hash` or `.poster.hash` of either in the profile's state names it, and
+        for `MEDIA_GC_GRACE_DAYS` after.
       required: [kind, hash, mime, size, width, height, at]
       properties:
         kind: { type: string, enum: [image, gif, video], description: '`gif` means animated; a one-frame GIF is an `image`.' }
@@ -3175,6 +3177,17 @@ components:
                     rpe: { type: number }
                   additionalProperties: true
             additionalProperties: true
+        media:
+          type: array
+          maxItems: 6
+          items:
+            $ref: '#/components/schemas/MediaRef'
+          description: >-
+            Photos and videos attached to this workout (a progress photo, a form-check clip) —
+            at most six in the app. Refs only; the bytes are behind `/api/media/{hash}`, and the
+            server keeps every file any entry here names (the GC walks this list as it walks
+            each custom exercise's `media`).
+        _ts: { type: number, description: 'When this workout was last edited after it was logged, ms — for merging two devices'' copies.' }
       additionalProperties: true
 
     Routine:

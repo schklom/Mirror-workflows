@@ -247,3 +247,36 @@ test('a new upload nobody references yet is marked, so the grace also covers a p
   await h.store.receive('u1', M.sha(b), M.fakeReq(b));
   assert.deepEqual(h.marks('u1'), { [M.sha(a)]: h.clock.t }, 'the referenced one is not marked');
 });
+
+// The photos and videos of a logged workout (workouts[].media) keep their files exactly like an
+// exercise's picture: a file only a workout refers to is never swept, and taking it off the
+// workout starts its grace like any other.
+const wref = (...hashes) => ({ workouts: [{ id: 'w1', d: '2026-09-20', start: 1, end: 2, entries: [], media: hashes.map((h, i) => ({ kind: 'image', hash: h, mime: 'image/jpeg', size: 1, width: 1, height: 1, at: i + 1 })) }] });
+
+test('a file referenced only by a workout is never swept, whatever the grace', t => {
+  const h = setup(t);
+  const photo = h.place('u1', M.jpeg()), gone = h.place('u1', M.jpeg(3000));
+  h.S.set('u1', wref(photo));
+  assert.equal(h.store.noteState('u1', wref(photo)), true, 'the other file gets its mark');
+  assert.deepEqual(Object.keys(h.marks('u1')), [gone]);
+  h.clock.t += 365 * DAY;
+  assert.deepEqual(h.store.sweep('u1'), { removed: 1, freedBytes: 3000, skipped: false });
+  assert.deepEqual(h.store.sweep('u1', { graceMs: 0 }), { removed: 0, freedBytes: 0, skipped: false });
+  assert.deepEqual(h.files('u1'), [`${photo}.jpg`]);
+});
+
+test('a photo taken off a workout is marked by the next state push and swept after the grace', t => {
+  const h = setup(t);
+  const a = h.place('u1', M.jpeg()), b = h.place('u1', M.jpeg(2000));
+  h.S.set('u1', wref(a, b));
+  assert.equal(h.store.noteState('u1', wref(a, b)), false);
+  // The owner removes b from the workout; the push lands.
+  h.S.set('u1', wref(a));
+  assert.equal(h.store.noteState('u1', wref(a)), true);
+  assert.deepEqual(h.marks('u1'), { [b]: h.clock.t });
+  h.clock.t += 14 * DAY - 1;
+  assert.equal(h.store.sweep('u1').removed, 0, 'inside the grace another device may still show it');
+  h.clock.t += 1;
+  assert.deepEqual(h.store.sweep('u1'), { removed: 1, freedBytes: 2000, skipped: false });
+  assert.deepEqual(h.files('u1'), [`${a}.jpg`]);
+});

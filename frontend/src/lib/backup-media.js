@@ -1,4 +1,4 @@
-/* Backups that carry the photos and videos of custom exercises.
+/* Backups that carry the photos and videos of custom exercises and of logged workouts.
  *
  * "Export backup (JSON)" stays what it always was: the state, with each exercise's small
  * reference to its file and never the file. "Export with photos & videos" writes a store-only zip
@@ -18,7 +18,7 @@
  * and links go through the same gates as everywhere else (sanitizeCustomMedia).
  */
 import { zipStore, readZip, looksLikeZip } from './zip.js'
-import { referencedFiles, normalizeMediaRef, cleanUrl, MEDIA_MIMES } from './media-refs.js'
+import { referencedFiles, normalizeMediaRef, workoutMediaOf, cleanUrl, MEDIA_MIMES } from './media-refs.js'
 import { sniffKind } from './media-sniff.js'
 import { sha256Hex } from './sha256.js'
 import { mediaStore } from './media-store.js'
@@ -31,20 +31,28 @@ const README = `openGym backup with photos and videos
 =====================================
 
 opengym-backup.json  your data - the same file "Export backup (JSON)" writes.
-media/               the photos, GIFs and videos of your own exercises, each named
-                     by its SHA-256, plus the small previews shown in lists.
+media/               the photos, GIFs and videos of your own exercises and of your
+                     workouts, each named by its SHA-256, plus the small previews
+                     shown in lists.
 
 To bring it back: openGym -> Settings -> Import backup, and pick this .zip as it is.
 Do not unpack and re-zip it: the app reads zips that are stored, not compressed.
 `
 
-/** The customEx media refs and links of an imported state, kept only where they pass the same
- *  checks as anywhere else; the rest of the state is left as it is. Mutates and returns it. */
+/** The media refs and links of an imported state — each custom exercise's picture and link, each
+ *  logged workout's photos and videos — kept only where they pass the same checks as anywhere
+ *  else (a workout's list also deduplicated and capped, workoutMediaOf); the rest of the state is
+ *  left as it is. Mutates and returns it. */
 export function sanitizeCustomMedia(state) {
   for (const c of Array.isArray(state?.customEx) ? state.customEx : []) {
     if (!c || typeof c !== 'object') continue
     if ('media' in c) { const m = normalizeMediaRef(c.media); if (m) c.media = m; else delete c.media }
     if ('url' in c) { const u = cleanUrl(c.url); if (u) c.url = u; else delete c.url }
+  }
+  for (const w of Array.isArray(state?.workouts) ? state.workouts : []) {
+    if (!w || typeof w !== 'object' || !('media' in w)) continue
+    const list = workoutMediaOf(w)
+    if (list.length) w.media = list; else delete w.media
   }
   return state
 }

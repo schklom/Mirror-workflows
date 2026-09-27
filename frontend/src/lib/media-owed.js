@@ -12,7 +12,7 @@
  * publishes what it last learned (usage on the server, what is waiting) for Settings and the
  * sign-out sheet.
  */
-import { HASH_RE } from './media-refs.js'
+import { HASH_RE, stateMediaRefs } from './media-refs.js'
 import { getMediaStore } from './media-store.js'
 
 let pending = new Set()
@@ -37,23 +37,21 @@ function watch() {
 export function loadPending() { watch() }
 
 /**
- * How many custom exercises of `S` have a photo or video (or its poster) that the server has not
- * confirmed. Counted per exercise, not per file, because that is what the sentence counts
- * ("2 photos or videos have not reached your server yet"); one exercise's main file and poster
- * are one photo to the person holding it.
+ * How many photos and videos of `S` — a custom exercise's, or one attached to a logged workout —
+ * have a file (or its poster) that the server has not confirmed. Counted per photo or video, not
+ * per file, because that is what the sentence counts ("2 photos or videos have not reached your
+ * server yet"); a main file and its poster are one photo to the person holding it.
  */
-const hasMedia = S => (Array.isArray(S?.customEx) ? S.customEx : []).some(c => c && typeof c === 'object' && c.media && typeof c.media === 'object')
+const hasMedia = S => stateMediaRefs(S).length > 0
 
 export function pendingRefCount(S) {
-  const list = Array.isArray(S?.customEx) ? S.customEx : []
+  const refs = stateMediaRefs(S)
   // A copy without media has nothing to count, and does not need the store opened to say so.
-  if (!hasMedia(S)) return 0
+  if (!refs.length) return 0
   watch()
   if (!pending.size) return 0
   const seen = new Set()
-  for (const c of list) {
-    const m = c && typeof c === 'object' ? c.media : null
-    if (!m || typeof m !== 'object') continue
+  for (const m of refs) {
     const main = typeof m.hash === 'string' && HASH_RE.test(m.hash) ? m.hash : null
     const poster = m.poster && typeof m.poster.hash === 'string' && HASH_RE.test(m.poster.hash) ? m.poster.hash : null
     if ((main && pending.has(main)) || (poster && pending.has(poster))) seen.add(main || poster)

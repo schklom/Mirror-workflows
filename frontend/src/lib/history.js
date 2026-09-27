@@ -535,9 +535,9 @@ function seedSideFromLast(row, prev, planReps) {
  * Must run AFTER applyPrescription: a drop-set's chain of drops is a percentage of each row's
  * own `w`, so it has to be computed from the final prescribed weight, not the pre-progression
  * one buildSets started from — otherwise a bumped working weight would leave stale, cheaper
- * drops sitting underneath it.
+ * drops sitting underneath it. `grid` puts each drop on a loadable weight (nextDropWeight).
  */
-export function applyIntensifierPlan(sets, cfg) {
+export function applyIntensifierPlan(sets, cfg, grid) {
   const kind = cfg && cfg.intensifier && cfg.intensifier.type
   if (kind !== 'dropset' && kind !== 'restpause') return sets
   if (kind === 'dropset') {
@@ -548,7 +548,7 @@ export function applyIntensifierPlan(sets, cfg) {
     const withDrops = row => {
       const drops = []
       let w = row.w || 0
-      for (let k = 0; k < count; k++) { w = nextDropWeight(w, pct); drops.push({ w, r: row.r }) }
+      for (let k = 0; k < count; k++) { w = nextDropWeight(w, pct, grid); drops.push({ w, r: row.r }) }
       return { ...row, type: 'dropset', drops }
     }
     return sets.map(s => {

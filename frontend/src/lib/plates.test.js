@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { PLATE_SIZES, DEFAULT_PAIRS, inventoryFor, pairsOf, ownsPlates, withPlatePairs, withStandardPlates, loadKindOf, withLoadKind, plateStack, plateDelta, loadKindFor, baseWeightFor, rowLoad, sameLoad } from './plates.js'
+import { PLATE_SIZES, DEFAULT_PAIRS, inventoryFor, pairsOf, ownsPlates, withPlatePairs, withStandardPlates, loadKindOf, withLoadKind, plateStack, plateDelta, loadKindFor, baseWeightFor, rowLoad, sameLoad, dropGrid } from './plates.js'
 import { EXDB } from './exercises-data.js'
 
 const idOf = eq => EXDB.find(e => e.eq === eq).id
@@ -211,5 +211,27 @@ describe('rowLoad', () => {
     expect(sameLoad(a, null)).toBe(false)
     // Same plates, different shortfall (325 vs 330 total on one pair of each): not the same line.
     expect(sameLoad(rowLoad('pairs', 325, 45, homeInv), rowLoad('pairs', 330, 45, homeInv))).toBe(false)
+  })
+})
+
+// QA 1.3.9: a drop-set's weight was rounded to .5 whatever the bar could carry.
+describe('dropGrid', () => {
+  const barbell = idOf('barbell'), db = idOf('dumbbell')
+  test('without a plate inventory of your own: the exercise\'s weight step', () => {
+    expect(dropGrid({ unit: 'kg' }, { id: db, inc: 2 })).toBe(2)
+    expect(dropGrid({ unit: 'kg' }, { id: barbell, inc: 1.25 })).toBe(1.25)
+  })
+  test('with your own plates on a bar: the heaviest load at or below the drop that they make', () => {
+    // A 20 kg bar and pairs of 10s and 5s only: loads step in 10s above the bar.
+    const S = { unit: 'kg', plates: { kg: { 10: 2, 5: 1, _ts: 1 } } }
+    const snap = dropGrid(S, { id: barbell })
+    expect(typeof snap).toBe('function')
+    expect(snap(48)).toBe(40)
+    expect(snap(64)).toBe(60)
+    expect(snap(15)).toBe(20)      // below the bar: the bar is the lightest you can load
+  })
+  test('a dumbbell is not plate-loaded, so plates do not decide its drop', () => {
+    const S = { unit: 'kg', plates: { kg: { 10: 2, _ts: 1 } } }
+    expect(dropGrid(S, { id: db, inc: 2 })).toBe(2)
   })
 })

@@ -46,7 +46,8 @@ describe('unilateral sets across session boundaries', () => {
     const [built] = buildSessionEntries(S, { id: 'r', policy: 'linear', ex: [cfg] })
     expect(built.plan.kind).toBe('up')
     expect(built.sets[0].sides.L.w).toBe(built.plan.weight)
-    expect(built.sets[0].sides.L.drops[0].w).toBe(18)
+    // 20% off 22.5 is 18, which a 2.5 kg step cannot load: the drop lands on 17.5.
+    expect(built.sets[0].sides.L.drops[0].w).toBe(17.5)
   })
 
   it('converts both limbs and their drops in history and the active session', () => {

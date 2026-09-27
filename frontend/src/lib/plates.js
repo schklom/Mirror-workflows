@@ -12,6 +12,7 @@
 import { EXIDX } from './exercises.js'
 import { usesBar, defaultBarWeight } from './bar.js'
 import { isBw } from './history.js'
+import { weightIncrement } from './progression.js'
 
 /** The plate sizes the inventory editor lists, heaviest first, per unit. */
 export const PLATE_SIZES = {
@@ -229,3 +230,24 @@ export function rowLoad(kind, weight, base, inv) {
 export const sameLoad = (a, b) =>
   !!a && !!b && a.barOnly === b.barOnly && a.missing === b.missing
   && a.plates.length === b.plates.length && a.plates.every((w, i) => w === b.plates[i])
+
+/**
+ * Where a drop-set's next weight may land (lib/workout-model.js nextDropWeight): on the plates
+ * this profile owns when it has counted them and the exercise is plate-loaded — the heaviest load
+ * at or below the drop that those plates make — else on the exercise's own weight step. A drop
+ * rounded to .5 read 48.5 kg on a bar that loads in 2.5s (QA 1.3.9).
+ */
+export function dropGrid(S, cfg) {
+  const kind = loadKindFor(S, cfg)
+  if (ownsPlates(S) && (kind === 'pairs' || kind === 'single')) {
+    const base = baseWeightFor(S, cfg?.id)
+    const inv = inventoryFor(S)
+    const per = kind === 'pairs' ? 2 : 1
+    return w => {
+      if (w <= base) return base > 0 ? base : w
+      const { perSide, missing } = rowLoad(kind, w, base, inv)
+      return base + per * Math.max(0, perSide - missing)
+    }
+  }
+  return weightIncrement(cfg, S?.unit === 'lb' ? 'lb' : 'kg')
+}

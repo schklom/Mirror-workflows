@@ -335,6 +335,7 @@ export default {
   'Another profile already uses this e-mail address.': 'Другой профиль уже использует этот адрес e-mail.',
   'Sign-in e-mail': 'E-mail для входа',
   'Sign in with “{0}” instead of your name': 'Входи с «{0}» вместо имени',
+  '“{0}” is saved, but signs in only once this profile has a password.': '«{0}» сохранён, но для входа сработает, только когда у этого профиля будет пароль.',
   'Not set — sign in with an e-mail instead of your name.': 'Не задан — входи с e-mail вместо имени.',
   'Change sign-in e-mail': 'Изменить e-mail для входа',
   'Add a sign-in e-mail': 'Добавить e-mail для входа',

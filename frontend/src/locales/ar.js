@@ -1551,6 +1551,7 @@ export default {
   'Another profile already uses this e-mail address.': 'هناك ملف شخصي آخر يستخدم عنوان البريد الإلكتروني هذا.',
   'Sign-in e-mail': 'بريد تسجيل الدخول',
   'Sign in with “{0}” instead of your name': 'سجّل الدخول بـ «{0}» بدلًا من اسمك',
+  '“{0}” is saved, but signs in only once this profile has a password.': '«{0}» محفوظ، لكنه لا يُستخدم لتسجيل الدخول إلا بعد أن يصبح لهذا الملف كلمة مرور.',
   'Not set — sign in with an e-mail instead of your name.': 'غير معيّن — سجّل الدخول ببريد إلكتروني بدلًا من اسمك.',
   'Change sign-in e-mail': 'تغيير بريد تسجيل الدخول',
   'Add a sign-in e-mail': 'إضافة بريد لتسجيل الدخول',

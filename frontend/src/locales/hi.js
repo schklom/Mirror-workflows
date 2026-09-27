@@ -335,6 +335,7 @@ export default {
   'Another profile already uses this e-mail address.': 'कोई दूसरी प्रोफ़ाइल पहले से यह ईमेल पता इस्तेमाल करती है।',
   'Sign-in e-mail': 'साइन-इन ईमेल',
   'Sign in with “{0}” instead of your name': 'अपने नाम की जगह "{0}" से साइन इन करें',
+  '“{0}” is saved, but signs in only once this profile has a password.': '"{0}" सेव है, लेकिन इससे साइन इन तभी होगा जब इस प्रोफ़ाइल का पासवर्ड हो।',
   'Not set — sign in with an e-mail instead of your name.': 'सेट नहीं है — अपने नाम की जगह ईमेल से साइन इन करें।',
   'Change sign-in e-mail': 'साइन-इन ईमेल बदलें',
   'Add a sign-in e-mail': 'साइन-इन ईमेल जोड़ें',

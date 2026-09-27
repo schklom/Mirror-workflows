@@ -1495,6 +1495,7 @@ export default {
   'Another profile already uses this e-mail address.': 'Інший профіль уже використовує цю адресу e-mail.',
   'Sign-in e-mail': 'E-mail для входу',
   'Sign in with “{0}” instead of your name': 'Входь з «{0}» замість імені',
+  '“{0}” is saved, but signs in only once this profile has a password.': '«{0}» збережено, але для входу спрацює, лише коли в цього профілю буде пароль.',
   'Not set — sign in with an e-mail instead of your name.': 'Не задано — входь з e-mail замість імені.',
   'Change sign-in e-mail': 'Змінити e-mail для входу',
   'Add a sign-in e-mail': 'Додати e-mail для входу',

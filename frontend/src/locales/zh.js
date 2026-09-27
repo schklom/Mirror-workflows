@@ -335,6 +335,7 @@ export default {
   'Another profile already uses this e-mail address.': '已有另一个档案在使用这个邮箱地址。',
   'Sign-in e-mail': '登录邮箱',
   'Sign in with “{0}” instead of your name': '用“{0}”代替名字登录',
+  '“{0}” is saved, but signs in only once this profile has a password.': '“{0}”已保存，但只有此个人资料设置了密码后才能用它登录。',
   'Not set — sign in with an e-mail instead of your name.': '未设置 — 用邮箱代替名字登录。',
   'Change sign-in e-mail': '更改登录邮箱',
   'Add a sign-in e-mail': '添加登录邮箱',

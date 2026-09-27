@@ -335,6 +335,7 @@ export default {
   'Another profile already uses this e-mail address.': 'Otro perfil ya usa esta dirección de correo.',
   'Sign-in e-mail': 'Correo de inicio de sesión',
   'Sign in with “{0}” instead of your name': 'Inicia sesión con «{0}» en lugar de tu nombre',
+  '“{0}” is saved, but signs in only once this profile has a password.': '«{0}» está guardado, pero solo sirve para iniciar sesión cuando este perfil tenga contraseña.',
   'Not set — sign in with an e-mail instead of your name.': 'Sin configurar — inicia sesión con un correo en lugar de tu nombre.',
   'Change sign-in e-mail': 'Cambiar correo de inicio de sesión',
   'Add a sign-in e-mail': 'Añadir un correo de inicio de sesión',

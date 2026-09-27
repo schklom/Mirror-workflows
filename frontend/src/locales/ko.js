@@ -335,6 +335,7 @@ export default {
   'Another profile already uses this e-mail address.': '다른 프로필이 이미 이 이메일 주소를 사용합니다.',
   'Sign-in e-mail': '로그인 이메일',
   'Sign in with “{0}” instead of your name': '이름 대신 "{0}"(으)로 로그인',
+  '“{0}” is saved, but signs in only once this profile has a password.': '"{0}"이(가) 저장되어 있지만, 이 프로필에 비밀번호가 있어야 로그인에 쓸 수 있어요.',
   'Not set — sign in with an e-mail instead of your name.': '설정 안 됨 — 이름 대신 이메일로 로그인하세요.',
   'Change sign-in e-mail': '로그인 이메일 변경',
   'Add a sign-in e-mail': '로그인 이메일 추가',

@@ -341,6 +341,7 @@ export default {
   'Another profile already uses this e-mail address.': 'Egy másik profil már használja ezt az e-mail-címet.',
   'Sign-in e-mail': 'Bejelentkezési e-mail',
   'Sign in with “{0}” instead of your name': 'Bejelentkezés „{0}” címmel a neved helyett',
+  '“{0}” is saved, but signs in only once this profile has a password.': '„{0}” el van mentve, de csak akkor lehet vele bejelentkezni, ha ennek a profilnak van jelszava.',
   'Not set — sign in with an e-mail instead of your name.': 'Nincs beállítva — jelentkezz be e-maillel a neved helyett.',
   'Change sign-in e-mail': 'Bejelentkezési e-mail módosítása',
   'Add a sign-in e-mail': 'Bejelentkezési e-mail hozzáadása',

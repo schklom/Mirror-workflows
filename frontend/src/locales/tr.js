@@ -335,6 +335,7 @@ export default {
   'Another profile already uses this e-mail address.': 'Başka bir profil bu e-posta adresini zaten kullanıyor.',
   'Sign-in e-mail': 'Giriş e-postası',
   'Sign in with “{0}” instead of your name': 'İsmin yerine “{0}” ile giriş yap',
+  '“{0}” is saved, but signs in only once this profile has a password.': '“{0}” kayıtlı, ancak bu profilin bir şifresi olduğunda giriş için kullanılabilir.',
   'Not set — sign in with an e-mail instead of your name.': 'Belirlenmedi — ismin yerine bir e-postayla giriş yap.',
   'Change sign-in e-mail': 'Giriş e-postasını değiştir',
   'Add a sign-in e-mail': 'Giriş e-postası ekle',

@@ -335,6 +335,7 @@ export default {
   'Another profile already uses this e-mail address.': 'Un autre profil utilise déjà cette adresse e-mail.',
   'Sign-in e-mail': 'E-mail de connexion',
   'Sign in with “{0}” instead of your name': 'Connecte-toi avec « {0} » au lieu de ton nom',
+  '“{0}” is saved, but signs in only once this profile has a password.': '« {0} » est enregistré, mais ne sert à te connecter qu’une fois que ce profil a un mot de passe.',
   'Not set — sign in with an e-mail instead of your name.': 'Non défini — connecte-toi avec un e-mail au lieu de ton nom.',
   'Change sign-in e-mail': 'Modifier l’e-mail de connexion',
   'Add a sign-in e-mail': 'Ajouter un e-mail de connexion',

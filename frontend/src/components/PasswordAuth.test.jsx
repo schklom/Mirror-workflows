@@ -2,7 +2,8 @@
 import React, { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { passwordError, PasswordSignInSheet, PasswordRegisterForm, PasswordRow, PasswordSheet, EmailSheet } from './PasswordAuth.jsx'
+import { passwordError, PasswordSignInSheet, PasswordRegisterForm, PasswordRow, PasswordSheet, EmailSheet, looksLikeEmail } from './PasswordAuth.jsx'
+import { normalizeEmail } from '../../../api/password.js'
 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true
 
@@ -298,6 +299,27 @@ describe('Settings → Password', () => {
     expect(sheet.querySelector('h3').textContent).toBe('Add a sign-in e-mail')
   })
 
+  // The server signs in by an address only for a profile with a password (emailHolder in
+  // api/server.js), so a passkey-only profile, or one whose name is blocked, is not offered one;
+  // an address saved while a password existed stays reachable, and says it is asleep.
+  it('the sign-in e-mail row needs a password, and a saved address without one says it does not sign in', async () => {
+    const titles = host => [...host.querySelectorAll('.lrow-t')].map(e => e.textContent)
+    const subs = host => [...host.querySelectorAll('.lrow-s')].map(e => e.textContent)
+    mocks.answers['GET /api/account/password'] = { set: false, setAt: null, passkeys: 1, name: 'Ana', nameTaken: false, email: null }
+    const passkeyOnly = mount(<PasswordRow />)
+    await settle()
+    expect(titles(passkeyOnly)).toEqual(['Password'])
+    mocks.answers['GET /api/account/password'] = { set: false, setAt: null, passkeys: 1, name: 'Ana', nameTaken: true, email: null }
+    const blocked = mount(<PasswordRow />)
+    await settle()
+    expect(titles(blocked)).toEqual(['Password'])
+    mocks.answers['GET /api/account/password'] = { set: false, setAt: null, passkeys: 1, name: 'Ana', nameTaken: false, email: 'ana@example.com' }
+    const kept = mount(<PasswordRow />)
+    await settle()
+    expect(titles(kept)).toEqual(['Password', 'Sign-in e-mail'])
+    expect(subs(kept)[1]).toBe('“ana@example.com” is saved, but signs in only once this profile has a password.')
+  })
+
   it('a first password is confirmed with the passkey and sent with its assertion', async () => {
     const done = vi.fn(), close = vi.fn()
     const host = mount(<PasswordSheet status={{ set: false, passkeys: 1, name: 'Ana' }} close={close} done={done} />)
@@ -491,6 +513,22 @@ describe('Settings → Sign-in e-mail', () => {
     type(byPlaceholder(host, 'E-mail address'), 'ANA@example.com')
     await submit(host)
     expect(alertText(host)).toBe('That is already your sign-in e-mail.')
+  })
+
+  it('the address it already has is recognised the way the server folds it (NFKC), not only by case', async () => {
+    const { host } = open({ set: true, passkeys: 1, name: 'Ana', email: 'ana@example.com' })
+    type(byPlaceholder(host, 'E-mail address'), '\uFF21na@example.com')   // a full-width "A"
+    await submit(host)
+    expect(alertText(host)).toBe('That is already your sign-in e-mail.')
+    expect(posts()).toEqual([])
+  })
+
+  it('looks at an address the way the server does, so nothing it accepts is refused here or the other way round', () => {
+    const cases = ['ana@example.com', ' Ana@Example.COM ', '\uFF21na@example.com', 'a.b+c@sub.example.co', 'ana@example.c', 'ana@example',
+      'ana@@example.com', 'a b@example.com', 'ana@.example.com', 'ana@-example.com', 'ana@example..com', 'a..b@example.com',
+      '"ana"@example.com', 'ana@exa,mple.com', 'ana@example.c0m', 'x'.repeat(65) + '@example.com', 'a@' + 'b'.repeat(250) + '.com',
+      'ana@exämple.de', 'ana@example.com.', '', '@example.com', 'ana@']
+    for (const c of cases) expect(looksLikeEmail(c), JSON.stringify(c)).toBe(normalizeEmail(c) !== null)
   })
 
   it('removing asks for the same proof, then removes', async () => {

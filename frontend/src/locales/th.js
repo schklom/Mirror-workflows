@@ -341,6 +341,7 @@ export default {
   'Another profile already uses this e-mail address.': 'มีโปรไฟล์อื่นใช้ที่อยู่อีเมลนี้อยู่แล้ว',
   'Sign-in e-mail': 'อีเมลสำหรับเข้าสู่ระบบ',
   'Sign in with “{0}” instead of your name': 'เข้าสู่ระบบด้วย “{0}” แทนชื่อของคุณ',
+  '“{0}” is saved, but signs in only once this profile has a password.': 'บันทึก “{0}” ไว้แล้ว แต่จะใช้เข้าสู่ระบบได้เมื่อโปรไฟล์นี้มีรหัสผ่านเท่านั้น',
   'Not set — sign in with an e-mail instead of your name.': 'ยังไม่ได้ตั้ง — เข้าสู่ระบบด้วยอีเมลแทนชื่อของคุณ',
   'Change sign-in e-mail': 'เปลี่ยนอีเมลสำหรับเข้าสู่ระบบ',
   'Add a sign-in e-mail': 'เพิ่มอีเมลสำหรับเข้าสู่ระบบ',

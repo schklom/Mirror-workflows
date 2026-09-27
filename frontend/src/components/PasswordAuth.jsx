@@ -20,9 +20,16 @@ import { Row, Button } from './ui.jsx'
 // answered without a round trip. The server still decides.
 export const MIN_PASSWORD = 10
 export const passwordOn = config => !!config?.password_login
-// The loosest look at an address that still catches a name typed in the wrong field; the server
-// (normalizeEmail in api/password.js) decides.
-export const looksLikeEmail = s => s.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(s)
+// An address the way the server stores and compares it (nameKey in api/password.js): NFKC,
+// trimmed, lower-cased.
+export const foldEmail = s => String(s || '').normalize('NFKC').trim().toLowerCase()
+// The server's own check (normalizeEmail and EMAIL_RE in api/password.js), so what passes here is
+// what the server takes; a test holds the two together. The server still decides.
+const EMAIL_RE = /^[^\s@<>()[\]\\,;:"]{1,64}@(?=.{1,253}$)[^\s@<>()[\]\\,;:"._-][^\s@<>()[\]\\,;:"]*\.[^\s@<>()[\]\\,;:".]{2,}$/u
+export const looksLikeEmail = s => {
+  const e = foldEmail(s)
+  return !!e && [...e].length <= 254 && EMAIL_RE.test(e) && !e.includes('..')
+}
 
 const ui = () => useUI.getState()
 const toast = m => ui().toast(m)
@@ -317,7 +324,9 @@ export function PasswordRow({ version = 0 }) {
   return <>
     <Row icon="key" iconTint="var(--orange)" title={t('Password')} subtitle={subtitle} accessory={blocked ? 'none' : 'chevron'}
       onClick={blocked ? undefined : () => ui().openSheet(close => <PasswordSheet status={st} close={close} done={load} />)} />
-    <EmailRow status={st} done={load} />
+    {/* The server only signs in by an address that belongs to a profile with a password, so
+        without one the row is left out; one already saved stays reachable to change or remove. */}
+    {(st.set || st.email) && <EmailRow status={st} done={load} />}
   </>
 }
 
@@ -407,7 +416,8 @@ function RemovePasswordSheet({ status, close, done }) {
    the proof a password does (ProveOwner): a copied session must not choose how the owner signs
    in. `status` is GET /api/account/password, whose `email` only the owner ever gets. */
 export function EmailRow({ status, done }) {
-  const subtitle = status.email ? t('Sign in with “{0}” instead of your name', status.email)
+  const subtitle = status.email && !status.set ? t('“{0}” is saved, but signs in only once this profile has a password.', status.email)
+    : status.email ? t('Sign in with “{0}” instead of your name', status.email)
     : t('Not set — sign in with an e-mail instead of your name.')
   return <Row icon="envelope" iconTint="var(--blue)" title={t('Sign-in e-mail')} subtitle={subtitle} accessory="chevron"
     onClick={() => ui().openSheet(close => <EmailSheet status={status} close={close} done={done} />)} />
@@ -424,7 +434,7 @@ export function EmailSheet({ status, close, done }) {
   const next = ev => {
     ev.preventDefault()
     const bad = !clean || !looksLikeEmail(clean) ? t('That is not an e-mail address.')
-      : clean.toLowerCase() === status.email ? t('That is already your sign-in e-mail.')
+      : foldEmail(clean) === status.email ? t('That is already your sign-in e-mail.')
       : null
     if (bad) { setErr(bad); return }
     setErr(null); setStep('confirm')

@@ -344,6 +344,7 @@ export const PT_BR_OVERRIDES = {
   'Another profile already uses this e-mail address.': 'Outro perfil já usa este endereço de e-mail.',
   'Sign-in e-mail': 'E-mail de login',
   'Sign in with “{0}” instead of your name': 'Entre com “{0}” em vez do seu nome',
+  '“{0}” is saved, but signs in only once this profile has a password.': '“{0}” está salvo, mas só serve para entrar depois que este perfil tiver uma senha.',
   'Not set — sign in with an e-mail instead of your name.': 'Não definido — entre com um e-mail em vez do seu nome.',
   'Change sign-in e-mail': 'Alterar e-mail de login',
   'Add a sign-in e-mail': 'Adicionar um e-mail de login',

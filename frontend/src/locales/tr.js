@@ -1598,4 +1598,8 @@ export default {
   'Previous': 'Önceki',
   '{0} photo or video': '{0} fotoğraf veya video',
   '{0} photos or videos': '{0} fotoğraf veya video',
+  'Its photo or video is deleted with it.': 'Fotoğrafı veya videosu da onunla birlikte silinir.',
+  'Its {0} photos or videos are deleted with it.': '{0} fotoğrafı veya videosu da onunla birlikte silinir.',
+  'Its photo or video moves to the new workout.': 'Fotoğrafı veya videosu yeni antrenmana taşınır.',
+  'Its {0} photos or videos move to the new workout.': '{0} fotoğrafı veya videosu yeni antrenmana taşınır.',
 }

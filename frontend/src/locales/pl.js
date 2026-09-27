@@ -1598,4 +1598,8 @@ export default {
   'Previous': 'Wstecz',
   '{0} photo or video': 'Zdjęcia lub filmy: {0}',
   '{0} photos or videos': 'Zdjęcia lub filmy: {0}',
+  'Its photo or video is deleted with it.': 'Jego zdjęcie lub film też zostanie usunięte.',
+  'Its {0} photos or videos are deleted with it.': 'Zdjęcia lub filmy ({0}) też zostaną usunięte.',
+  'Its photo or video moves to the new workout.': 'Zdjęcie lub film przejdzie do nowego treningu.',
+  'Its {0} photos or videos move to the new workout.': 'Zdjęcia lub filmy ({0}) przejdą do nowego treningu.',
 }

@@ -1598,4 +1598,8 @@ export default {
   'Previous': '上一个',
   '{0} photo or video': '{0} 个照片或视频',
   '{0} photos or videos': '{0} 个照片或视频',
+  'Its photo or video is deleted with it.': '其中的照片或视频也会一并删除。',
+  'Its {0} photos or videos are deleted with it.': '其中的 {0} 个照片或视频也会一并删除。',
+  'Its photo or video moves to the new workout.': '其中的照片或视频会移到新的训练中。',
+  'Its {0} photos or videos move to the new workout.': '其中的 {0} 个照片或视频会移到新的训练中。',
 }

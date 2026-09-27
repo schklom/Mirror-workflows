@@ -56,6 +56,21 @@ describe('log a past workout', () => {
     expect(useStore.getState().S.active).toBeNull()
   })
 
+  it('a workout with photos or videos says Replace moves them to the new one', () => {
+    const ref = n => ({ kind: 'image', hash: String(n).repeat(64), mime: 'image/webp', size: 10, width: 8, height: 6, at: 1 })
+    logPastWorkoutSheet()
+    let host = mountTopSheet()
+    act(() => { type(host.querySelector('input[type=date]'), todayISO()) })
+    act(() => { button(host, 'Continue').click() })
+    expect(mountTopSheet().textContent).not.toContain('new workout.')
+    useStore.setState(s => ({ S: { ...s.S, workouts: [{ ...s.S.workouts[0], media: [ref(1), ref(2)] }] } }))
+    logPastWorkoutSheet()
+    host = mountTopSheet()
+    act(() => { type(host.querySelector('input[type=date]'), todayISO()) })
+    act(() => { button(host, 'Continue').click() })
+    expect(mountTopSheet().textContent).toContain('Its 2 photos or videos move to the new workout.')
+  })
+
   // The Date and Start-time rows are the only .lrow rows in the app that pair a title with a
   // fixed-width field and nothing that can give way. A pixel floor under the title column therefore
   // comes straight out of the field: 104px pushed the date input 23px off a 320px screen, calendar

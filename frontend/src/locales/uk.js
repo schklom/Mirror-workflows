@@ -1595,4 +1595,8 @@ export default {
   'Previous': 'Назад',
   '{0} photo or video': 'Фото чи відео: {0}',
   '{0} photos or videos': 'Фото й відео: {0}',
+  'Its photo or video is deleted with it.': 'Фото чи відео теж буде видалено.',
+  'Its {0} photos or videos are deleted with it.': 'Фото й відео ({0}) теж буде видалено.',
+  'Its photo or video moves to the new workout.': 'Фото чи відео перейде до нового тренування.',
+  'Its {0} photos or videos move to the new workout.': 'Фото й відео ({0}) перейдуть до нового тренування.',
 }

@@ -1618,4 +1618,8 @@ export default {
   'Previous': 'Zurück',
   '{0} photo or video': '{0} Foto oder Video',
   '{0} photos or videos': '{0} Fotos oder Videos',
+  'Its photo or video is deleted with it.': 'Das Foto oder Video darin wird mitgelöscht.',
+  'Its {0} photos or videos are deleted with it.': 'Die {0} Fotos oder Videos darin werden mitgelöscht.',
+  'Its photo or video moves to the new workout.': 'Das Foto oder Video kommt ins neue Training mit.',
+  'Its {0} photos or videos move to the new workout.': 'Die {0} Fotos oder Videos kommen ins neue Training mit.',
 }

@@ -1598,4 +1598,8 @@ export default {
   'Previous': 'Prec.',
   '{0} photo or video': '{0} foto o video',
   '{0} photos or videos': '{0} foto o video',
+  'Its photo or video is deleted with it.': 'Anche la sua foto o il suo video viene eliminato.',
+  'Its {0} photos or videos are deleted with it.': 'Anche le sue {0} foto o video vengono eliminati.',
+  'Its photo or video moves to the new workout.': 'La sua foto o il suo video passa al nuovo allenamento.',
+  'Its {0} photos or videos move to the new workout.': 'Le sue {0} foto o video passano al nuovo allenamento.',
 }

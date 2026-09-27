@@ -154,6 +154,21 @@ describe('a workout\'s photos and videos', () => {
     expect(host.textContent).toContain('Kept on this device only')
   })
 
+  it('Delete workout in the detail sheet says its photos and videos go with it', () => {
+    useStore.setState(s => ({ S: { ...s.S, workouts: [workout({ media: [refOf(1)] })] } }))
+    workoutDetailSheet(S().workouts[0])
+    const host = renderTop()
+    act(() => [...host.querySelectorAll('button')].find(b => b.textContent.trim() === 'Delete workout').click())
+    expect(renderTop().textContent).toContain('This removes it from your history for good. Its photo or video is deleted with it.')
+  })
+
+  it('Delete workout without any says nothing about them', () => {
+    workoutDetailSheet(S().workouts[0])
+    const host = renderTop()
+    act(() => [...host.querySelectorAll('button')].find(b => b.textContent.trim() === 'Delete workout').click())
+    expect(renderTop().textContent).not.toContain('deleted with it')
+  })
+
   it('the history row shows how many a workout has', () => {
     const plain = render(<WorkoutRow w={workout()} onClick={() => {}} />)
     expect(plain.querySelector('.wrow-media')).toBeNull()

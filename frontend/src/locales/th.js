@@ -1609,4 +1609,8 @@ export default {
   'Previous': 'ก่อนหน้า',
   '{0} photo or video': 'รูปภาพหรือวิดีโอ {0} รายการ',
   '{0} photos or videos': 'รูปภาพหรือวิดีโอ {0} รายการ',
+  'Its photo or video is deleted with it.': 'รูปภาพหรือวิดีโอที่แนบไว้จะถูกลบไปด้วย',
+  'Its {0} photos or videos are deleted with it.': 'รูปภาพหรือวิดีโอที่แนบไว้ {0} รายการจะถูกลบไปด้วย',
+  'Its photo or video moves to the new workout.': 'รูปภาพหรือวิดีโอที่แนบไว้จะย้ายไปยังการออกกำลังกายใหม่',
+  'Its {0} photos or videos move to the new workout.': 'รูปภาพหรือวิดีโอที่แนบไว้ {0} รายการจะย้ายไปยังการออกกำลังกายใหม่',
 }

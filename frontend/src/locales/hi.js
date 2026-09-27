@@ -1598,4 +1598,8 @@ export default {
   'Previous': 'पिछला',
   '{0} photo or video': '{0} फ़ोटो या वीडियो',
   '{0} photos or videos': '{0} फ़ोटो या वीडियो',
+  'Its photo or video is deleted with it.': 'इसकी फ़ोटो या वीडियो भी इसके साथ हट जाएगी।',
+  'Its {0} photos or videos are deleted with it.': 'इसकी {0} फ़ोटो या वीडियो भी इसके साथ हट जाएँगी।',
+  'Its photo or video moves to the new workout.': 'इसकी फ़ोटो या वीडियो नए वर्कआउट में चली जाएगी।',
+  'Its {0} photos or videos move to the new workout.': 'इसकी {0} फ़ोटो या वीडियो नए वर्कआउट में चली जाएँगी।',
 }

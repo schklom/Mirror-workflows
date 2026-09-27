@@ -15,7 +15,7 @@ import { buildStarterPlan, starterPlanDays, starterPlanOptions } from './lib/sta
 import Media, { Thumb } from './components/Media.jsx'
 import CustomMediaField from './components/CustomMediaField.jsx'
 import WorkoutMediaSection, { workoutMediaCount } from './components/WorkoutMedia.jsx'
-import { mediaOf, normalizeMediaRef, cleanUrl } from './lib/media-refs.js'
+import { mediaOf, normalizeMediaRef, cleanUrl, workoutMediaOf } from './lib/media-refs.js'
 import { syncMedia } from './lib/media-sync.js'
 import LineChart from './components/LineChart.jsx'
 import Stepper from './components/Stepper.jsx'
@@ -46,7 +46,7 @@ import { joinSessionNoProg } from './lib/session-noprog.js'
 import { buildCombinedEntries, deriveSessionName } from './lib/session-merge.js'
 import { workoutsOn, backfillStart, backfillEnd, completeBackfill, historyAsOf, sessionHistory } from './lib/backfill.js'
 import { moveWorkout, sameWorkout, startTimeOf, durationMinOf, setWorkoutDuration } from './lib/workout-date.js'
-import { editCompletedSession, editLeftEmpty } from './lib/session-edit.js'
+import { editCompletedSession, editLeftEmpty, editedRecord } from './lib/session-edit.js'
 import { stampWorkout } from './lib/sync-merge.js'
 import { weeklyWeights } from './lib/bodyweight.js'
 import { workoutText } from './lib/workout-text.js'
@@ -2068,8 +2068,14 @@ function WorkoutDetail({ w, close }) {
     <div style={{ height: 10 }} />
     {/* Matched the way the edits above are, not by id: a workout from before ids has none, and
         filtering on `x.id !== undefined` took every other one of them with it. */}
-    <Button variant="danger" onClick={() => confirmSheet({ title: t('Delete workout?'), message: t('This removes it from your history for good.'), confirmText: t('Delete'), danger: true, onConfirm: () => { update(s => { s.workouts = s.workouts.filter(x => !sameWorkout(x, w)) }); close(); toast(t('Workout deleted')) } })}>{t('Delete workout')}</Button>
+    <Button variant="danger" onClick={() => confirmSheet({ title: t('Delete workout?'), message: t('This removes it from your history for good.') + mediaGoesToo(S().workouts.find(x => sameWorkout(x, w))), confirmText: t('Delete'), danger: true, onConfirm: () => { update(s => { s.workouts = s.workouts.filter(x => !sameWorkout(x, w)) }); close(); toast(t('Workout deleted')) } })}>{t('Delete workout')}</Button>
   </>
+}
+// The sentence a workout's Delete adds when its photos and videos go with it — every file the
+// record lists, shown or not. Empty when it has none.
+function mediaGoesToo(rec) {
+  const n = workoutMediaOf(rec, Infinity).length
+  return n ? ' ' + t(n === 1 ? 'Its photo or video is deleted with it.' : 'Its {0} photos or videos are deleted with it.', n) : ''
 }
 export const workoutDetailSheet = w => ui().openSheet(close => <WorkoutDetail w={w} close={close} />)
 
@@ -2214,14 +2220,20 @@ function LogPastWorkout({ initial, close }) {
   </>
 }
 // Three ways out when the day already has a workout. Replacing with several on that day means
-// picking which one; the rest of the day is left alone.
+// picking which one; the rest of the day is left alone. A workout with photos or videos says
+// they come along.
 function SameDayChoice({ iso, existing, onReplace, onAdd, close }) {
   return <div style={{ textAlign: 'center', padding: '4px 0' }}>
     <h3 style={{ marginBottom: 8 }}>{fmtDate(iso, true)}</h3>
     <div className="muted" style={{ marginBottom: 18, lineHeight: 1.5 }}>{t('There is already a workout on that day.')}</div>
-    {existing.map(w => <div key={w.id} style={{ marginBottom: 8 }}>
-      <button className="btn danger" onClick={() => onReplace(w.id)}>{existing.length > 1 ? t('Replace') + ' · ' + w.name : t('Replace')}</button>
-    </div>)}
+    {existing.map(w => {
+      // Replacing re-logs the sets; the photos and videos move to the new record (completeBackfill).
+      const n = workoutMediaOf(w, Infinity).length
+      return <div key={w.id} style={{ marginBottom: 8 }}>
+        <button className="btn danger" onClick={() => onReplace(w.id)}>{existing.length > 1 ? t('Replace') + ' · ' + w.name : t('Replace')}</button>
+        {n > 0 && <div className="small dim samed-media" style={{ marginTop: 4 }}>{t(n === 1 ? 'Its photo or video moves to the new workout.' : 'Its {0} photos or videos move to the new workout.', n)}</div>}
+      </div>
+    })}
     <button className="btn primary" onClick={onAdd}>{t('Add as second workout')}</button>
     <div style={{ height: 8 }} />
     <Button variant="ghost" className="dim" onClick={close}>{t('Cancel')}</Button>
@@ -2522,7 +2534,7 @@ export function saveWorkoutEdits(onExit = () => nav('/history')) {
   if (editLeftEmpty(S().active)) {
     confirmSheet({
       title: t('Delete workout?'),
-      message: t('No sets are left in this workout, so there is nothing to save. Delete it from your history?'),
+      message: t('No sets are left in this workout, so there is nothing to save. Delete it from your history?') + mediaGoesToo(editedRecord(S())),
       confirmText: t('Delete workout'), cancelText: t('Keep editing'), danger: true,
       onConfirm: () => {
         useStore.getState().deleteHistoryEdit()

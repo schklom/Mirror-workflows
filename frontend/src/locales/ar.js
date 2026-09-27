@@ -1651,4 +1651,8 @@ export default {
   'Previous': 'السابق',
   '{0} photo or video': '{0} صورة أو فيديو',
   '{0} photos or videos': '{0} من الصور أو مقاطع الفيديو',
+  'Its photo or video is deleted with it.': 'ستُحذف الصورة أو الفيديو المرفق معه أيضًا.',
+  'Its {0} photos or videos are deleted with it.': 'ستُحذف معه أيضًا الصور أو مقاطع الفيديو المرفقة ({0}).',
+  'Its photo or video moves to the new workout.': 'تنتقل الصورة أو الفيديو المرفق إلى التمرين الجديد.',
+  'Its {0} photos or videos move to the new workout.': 'تنتقل الصور أو مقاطع الفيديو المرفقة ({0}) إلى التمرين الجديد.',
 }

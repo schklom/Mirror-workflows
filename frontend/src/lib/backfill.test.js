@@ -56,6 +56,18 @@ describe('completeBackfill', () => {
     expect(out.map(x => x.id)).toEqual(['a', 'x', 'd'])
     expect(list).toHaveLength(3)
   })
+  it('carries the replaced workout\'s photos and videos onto the new record, stamped', () => {
+    const ref = n => ({ kind: 'image', hash: String(n).repeat(64), mime: 'image/webp', size: 10, width: 8, height: 6, at: 1 })
+    const withMedia = [list[0], { ...list[1], media: [ref(1), ref(2)] }, list[2]]
+    const x = w('x', '2026-01-05', 30)
+    const out = completeBackfill(withMedia, { backfill: { durationMin: 60, replaceId: 'b' } }, x, 777)
+    expect(out.map(y => y.id)).toEqual(['a', 'x', 'd'])
+    expect(out[1].media).toEqual([ref(1), ref(2)])
+    expect(out[1]._ts).toBe(777)
+    // Nothing to carry: no stamp, no empty list.
+    const plain = completeBackfill(list, { backfill: { durationMin: 60, replaceId: 'b' } }, w('y', '2026-01-05', 30), 777)
+    expect('media' in plain[1] || '_ts' in plain[1]).toBe(false)
+  })
 })
 
 // #284: a missed Monday logged on Saturday opened at Friday's progression and saved it as Monday's.

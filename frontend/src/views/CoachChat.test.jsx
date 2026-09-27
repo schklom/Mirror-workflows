@@ -42,6 +42,8 @@ vi.mock('../lib/coach-api.js', () => ({
   cohortStats: vi.fn(() => Promise.resolve({ ok: false, enabled: true, sharing: false })),
   setCohortShare: vi.fn(() => Promise.resolve({ ok: true, sharing: true })),
   JOB_ERRORS: { internal: 'x' },
+  awaitedJob: () => null,
+  settleAwaited: vi.fn(),
 }))
 vi.mock('../sheets.jsx', () => ({ startFlow: vi.fn(), confirmSheet: vi.fn() }))
 vi.mock('../lib/api.js', () => ({

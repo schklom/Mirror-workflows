@@ -46,11 +46,29 @@ const local = async () => {
   return localMod
 }
 
+// The job this app last started and has not written a reply for yet. A run that fails before
+// the first status poll — a provider refusing the connection answers in milliseconds — is never
+// seen running, so "running, then gone" cannot be the only way the chat learns a run ended: it
+// also compares the server's last outcome with the id the start request returned. Kept here,
+// at module level, because the plan the intake asks for is started on another screen.
+let awaited = null
+const track = async p => {
+  const r = await p
+  if (r?.job?.id) awaited = r.job.id
+  return r
+}
+export const awaitedJob = () => awaited
+export const settleAwaited = id => { if (!id || awaited === id) awaited = null }
+
 export const coachStatus = async () => DEMO ? (await demo()).demoStatus() : LOCAL() ? (await local()).localStatus() : api('/api/coach/status')
-export const requestReview = async note => DEMO ? (await demo()).demoReview(S()) : LOCAL() ? (await local()).localReview(S(), note) : api('/api/coach/review', { method: 'POST', body: JSON.stringify({ note: note || '', lang: getLang() }) })
-export const requestPlan = async intake => DEMO ? (await demo()).demoPlan(S(), intake) : LOCAL() ? (await local()).localPlan(S(), intake) : api('/api/coach/plan', { method: 'POST', body: JSON.stringify({ intake, lang: getLang() }) })
-export const refinePlan = async text => DEMO ? (await demo()).demoRefine(S()) : LOCAL() ? (await local()).localRefine(S(), text) : api('/api/coach/plan', { method: 'POST', body: JSON.stringify({ refine: text, lang: getLang() }) })
-export const requestDebrief = async workoutId => DEMO ? (await demo()).demoDebrief(S(), workoutId) : LOCAL() ? (await local()).localDebrief(S(), workoutId) : api('/api/coach/debrief', { method: 'POST', body: JSON.stringify({ workoutId: workoutId || null, lang: getLang() }) })
+const _requestReview = async note => DEMO ? (await demo()).demoReview(S()) : LOCAL() ? (await local()).localReview(S(), note) : api('/api/coach/review', { method: 'POST', body: JSON.stringify({ note: note || '', lang: getLang() }) })
+export const requestReview = async (...a) => track(_requestReview(...a))
+const _requestPlan = async intake => DEMO ? (await demo()).demoPlan(S(), intake) : LOCAL() ? (await local()).localPlan(S(), intake) : api('/api/coach/plan', { method: 'POST', body: JSON.stringify({ intake, lang: getLang() }) })
+export const requestPlan = async (...a) => track(_requestPlan(...a))
+const _refinePlan = async text => DEMO ? (await demo()).demoRefine(S()) : LOCAL() ? (await local()).localRefine(S(), text) : api('/api/coach/plan', { method: 'POST', body: JSON.stringify({ refine: text, lang: getLang() }) })
+export const refinePlan = async (...a) => track(_refinePlan(...a))
+const _requestDebrief = async workoutId => DEMO ? (await demo()).demoDebrief(S(), workoutId) : LOCAL() ? (await local()).localDebrief(S(), workoutId) : api('/api/coach/debrief', { method: 'POST', body: JSON.stringify({ workoutId: workoutId || null, lang: getLang() }) })
+export const requestDebrief = async (...a) => track(_requestDebrief(...a))
 // The room: anonymous medians across the profiles on this instance that opted in. Only a
 // server has a room; a phone with its own key and the demo both answer locally.
 export const cohortStats = async () => DEMO ? (await demo()).demoCohort(S()) : LOCAL() ? { ok: false, enabled: false } : api('/api/coach/cohort')
@@ -84,10 +102,16 @@ export function useCoachStatus(active = true) {
   const [state, setState] = useState({ job: null, pending: null, cap: null, loading: true })
   const timer = useRef(null)
   const loop = useRef(null)   // the running poll loop's `tick`, so a manual refresh can re-pace it
+  const seq = useRef(0)       // which status request is the newest one
 
   const refresh = useCallback(async () => {
+    const mine = ++seq.current
     try {
       const s = await coachStatus()
+      // An answer that arrives after a newer request was sent is older than what that request
+      // will bring: the idle poll in flight when a run is started must not land after the
+      // refresh that follows the start, putting back the run count and last outcome from before.
+      if (mine !== seq.current) return s
       setState({ ...s, loading: false })
       // A refresh that finds a job in flight — the one the caller just started — must not leave
       // the loop asleep on its idle cadence: without this the card shows up to a minute after
@@ -95,7 +119,7 @@ export function useCoachStatus(active = true) {
       if (s?.job && loop.current) { clearTimeout(timer.current); timer.current = setTimeout(loop.current, POLL_MS) }
       return s
     } catch {
-      setState(s => ({ ...s, loading: false }))
+      if (mine === seq.current) setState(s => ({ ...s, loading: false }))
       return null
     }
   }, [])

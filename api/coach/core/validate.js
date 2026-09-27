@@ -15,6 +15,7 @@
  * better second attempt than the first of them does.
  */
 import { libraryHas, libraryName } from './library.js';
+import { glyphStr } from './glyphs.js';
 
 // The closed list (FR-23 / C3). Adding a member here is a deliberate act with an apply
 // implementation on the client to match; there is no default case anywhere.
@@ -46,25 +47,8 @@ const isStr = v => typeof v === 'string' && v.trim().length > 0;
 const isNum = v => typeof v === 'number' && Number.isFinite(v);
 const isInt = (v, lo, hi) => Number.isInteger(v) && v >= lo && v <= hi;
 const clampStr = (v, n) => String(v == null ? '' : v).slice(0, n);
-// A routine's `emoji` holds an icon key now ('figureStrength'), a legacy emoji only on old state —
-// and the model copies whichever it sees in the plan. It is stored in the routine and sent back
-// to the model with the plan on every later job, so it is not free text: an icon key the app's
-// picker offers (frontend/src/lib/glyphs.js GLYPHS, held together by coach-parity.test.js), or a
-// legacy emoji made of pictographs and their joiners only — no letter, digit or tag character in
-// any script, so no words fit through. Anything else becomes the default icon.
-export const ROUTINE_GLYPHS = [
-  'figureStrength', 'arm', 'abs', 'legs', 'pullup',
-  'dumbbell', 'barbell', 'kettlebell', 'plate', 'machine',
-  'figureRun', 'bike', 'swim', 'boxing', 'timer',
-  'stretch', 'moon', 'heart', 'flame', 'bolt'
-];
-const DEFAULT_GLYPH = 'figureStrength';
-const EMOJI_ONLY = /^(?:\p{Extended_Pictographic}|[\u200d\ufe0f\u20e3\u{1F3FB}-\u{1F3FF}\u{1F1E6}-\u{1F1FF}])+$/u;
-const glyphStr = v => {
-  if (typeof v !== 'string' || !v) return DEFAULT_GLYPH;
-  if (ROUTINE_GLYPHS.includes(v)) return v;
-  return v.length <= 16 && EMOJI_ONLY.test(v) ? v : DEFAULT_GLYPH;
-};
+// Routine icons: an icon key the app knows or a legacy emoji, never free text (#311).
+export { ROUTINE_GLYPHS } from './glyphs.js';
 
 /* ---------- the two v1.2.4 flags, enforced rather than merely accepted ----------
    `prompts/common.md` tells the model that unilateral work is prescribed as the total across

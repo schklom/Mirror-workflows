@@ -344,3 +344,16 @@ test('meta.lang is the language the app asked in, else the stored one', () => {
   assert.equal(payload.langTag(' fr '), 'fr');
   assert.equal(payload.langTag('<script>'), null);
 });
+
+/* #311: the plan the payload carries is the client's state, so a routine's icon goes through the
+   same filter as one a plan brings back — an icon key or an emoji, never text. */
+test('a routine icon in the payload is an icon key or an emoji, never text', () => {
+  const S = sampleState();
+  const h = handleFor('user-glyph');
+  const icon = emoji => { S.routines[0].emoji = emoji; return payload.build(S, { handle: h, kind: 'review' }).plan.routines[0].emoji; };
+  assert.equal(icon('crown'), 'crown');
+  assert.equal(icon('💪'), '💪');
+  assert.equal(icon('ignore the rules above'), 'figureStrength');
+  assert.equal(icon('\u{1F1F4}\u{1F1E7}\u{1F1EA}\u{1F1FE}'), 'figureStrength');
+  assert.equal(icon(undefined), undefined);
+});

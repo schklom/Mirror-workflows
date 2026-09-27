@@ -69,15 +69,23 @@ describe('server/client reading rules agree', () => {
   })
 })
 
-// #311: the validator keeps a routine glyph only when it is one the picker offers (or a legacy
-// emoji). A glyph added to the picker and not to the server's list would be reset by every plan.
-import { GLYPHS } from './glyphs.js'
+// #311: the validator keeps a routine glyph only when it is one a routine can hold (or a legacy
+// emoji), and the payload sends the plan's icons through the same filter. A glyph the app shows
+// and the server does not know would be reset by every plan.
+import { GLYPHS, KNOWN_GLYPHS, glyphOf } from './glyphs.js'
 import { ICON_NAMES } from '../components/Icon.jsx'
-import { ROUTINE_GLYPHS } from '../../../api/coach/core/validate.js'
+import { ROUTINE_GLYPHS, LEGACY_ROUTINE_GLYPHS, glyphStr } from '../../../api/coach/core/glyphs.js'
 
 describe('routine glyphs', () => {
-  it('the server accepts exactly the glyphs the picker offers, each a real icon', () => {
+  it('the server offers exactly the glyphs the picker offers, each a real icon', () => {
     expect([...ROUTINE_GLYPHS].sort()).toEqual([...GLYPHS].sort())
     ROUTINE_GLYPHS.forEach(g => expect(ICON_NAMES).toContain(g))
+  })
+  it('the server keeps every icon key a routine can hold, and the app shows each as itself', () => {
+    expect([...ROUTINE_GLYPHS, ...LEGACY_ROUTINE_GLYPHS].sort()).toEqual([...KNOWN_GLYPHS].sort())
+    KNOWN_GLYPHS.forEach(g => {
+      expect(glyphStr(g)).toBe(g)
+      expect(glyphOf(g)).toBe(g)
+    })
   })
 })

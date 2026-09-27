@@ -22,15 +22,19 @@ info:
 
     An instance started with `PASSWORD_LOGIN=1` also offers **name-and-password
     sign-in** (tag `password`): opt-in per profile, scrypt-hashed, throttled, with an
-    admin-issued one-time reset code instead of e-mail. Its routes set exactly the same
-    cookie. With the flag off (the default) every one of them answers 404.
+    admin-issued one-time reset code instead of e-mail. A profile may also add an e-mail
+    address to sign in with instead of its name (`/api/account/email`); no mail is ever
+    sent to it. Its routes set exactly the same cookie. With the flag off (the default)
+    every one of them answers 404.
 
     ### Throttling
     The `password` routes are counted per client address: at most 60 requests a minute
     across them, and wrong answers (a password, a reset code, an invite code on password
-    signup) pause the address after 20 for 30 s, doubling up to 15 min. Wrong passwords
-    also pause the *name* they were tried against after 5, for 1 min doubling up to 1 h,
-    whether or not a profile has that name. A password check counts from the moment it
+    signup, an e-mail address already in use) pause the address after 20 for 30 s,
+    doubling up to 15 min. Wrong passwords also pause the *account* they were tried
+    against after 5, for 1 min doubling up to 1 h — the same pause whether the account
+    was named by its name or its e-mail — and an identifier that names no account is
+    paused the same way, as typed. A password check counts from the moment it
     starts, so checks sent at once get no more tries than checks sent one by one. A
     paused caller gets `429 {"error": …, "code": "locked", "retryAfter": <s>}` with a
     `Retry-After` header. Passkey sign-up and sign-in and the pairing routes are not
@@ -592,15 +596,20 @@ paths:
     post:
       tags: [password]
       operationId: loginPassword
-      summary: Sign in with a profile name and password
+      summary: Sign in with a profile name or e-mail and a password
       description: |
-        Only a profile that has set a password can sign in this way. The name is the
-        profile's display name, compared trimmed, NFKC-normalised and case-insensitively.
+        Only a profile that has set a password can sign in this way. The identifier is the
+        profile's display name or the e-mail address it added (`POST /api/account/email`),
+        compared trimmed, NFKC-normalised and case-insensitively. Send it as `identifier`
+        (what the app sends), `name` (the original field, still accepted) or `email`. In
+        `identifier` and `name`, a value with an `@` is looked up as an e-mail first and
+        then as a name; `email` is looked up only as an e-mail.
         A wrong password, an unknown name and a name whose profile has no password all get
         the same `401` after the same scrypt work, so neither the answer nor its timing says
         which names exist. So does a password that was right when its check started but
-        was changed, reset or removed before the check finished. Five wrong passwords for a
-        name pause it (see *Throttling*); passkey sign-in is never paused by this. Sets the
+        was changed, reset or removed before the check finished. Five wrong passwords for an
+        account pause it, whichever identifier they named it by (see *Throttling*); passkey
+        sign-in is never paused by this. Sets the
         same session cookie as `/api/login/verify`. **Not** CSRF-exempt.
       security: []
       requestBody:
@@ -609,11 +618,17 @@ paths:
           application/json:
             schema:
               type: object
-              required: [name, password]
+              required: [password]
+              description: One of `identifier`, `name` or `email`, and the password.
               properties:
-                name: { type: string }
+                identifier: { type: string, description: A profile name or an e-mail address. }
+                name: { type: string, description: 'The original field: a profile name, or an e-mail address.' }
+                email: { type: string, description: An e-mail address only. }
                 password: { type: string, maxLength: 256 }
-            example: { name: "Ada", password: "correct horse battery staple" }
+            examples:
+              byName: { value: { identifier: "Ada", password: "correct horse battery staple" } }
+              byEmail: { value: { identifier: "ada@example.com", password: "correct horse battery staple" } }
+              legacy: { value: { name: "Ada", password: "correct horse battery staple" } }
       responses:
         '200':
           description: Signed in. The session cookie is set.
@@ -659,7 +674,10 @@ paths:
         registration apply: on an invite-only instance the code is checked first, checked
         again after hashing, and burned. The password must be 10–256 characters and not one
         of the passwords guessing scripts try first; no two profiles with a password may
-        share a name. **Not** CSRF-exempt.
+        share a name. An optional `email` is stored as the profile's sign-in e-mail (see
+        `POST /api/account/email`); one that is in use is refused with `409 email-taken`,
+        which counts against the caller's address like a wrong invite code. **Not**
+        CSRF-exempt.
       security: []
       requestBody:
         required: true
@@ -672,6 +690,7 @@ paths:
                 name: { type: string, maxLength: 40 }
                 password: { type: string, minLength: 10, maxLength: 256 }
                 code: { type: string, description: Invite code (INVITE_ONLY only). }
+                email: { type: string, maxLength: 254, description: Optional sign-in e-mail. }
             example: { name: "Ada", password: "correct horse battery staple", code: "3F9C21A07B54D688" }
       responses:
         '200':
@@ -693,7 +712,14 @@ paths:
             application/json:
               schema: { $ref: '#/components/schemas/Error' }
               example: { error: "a valid invite code is required", code: "invite" }
-        '409': { $ref: '#/components/responses/NameTaken' }
+        '409':
+          description: >-
+            `name-taken` (see NameTaken) or `email-taken` — the e-mail is in use by another
+            profile.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              example: { error: "another profile already uses this e-mail address", code: "email-taken" }
         '429': { $ref: '#/components/responses/TooManyRequests' }
         '503': { $ref: '#/components/responses/Busy' }
 
@@ -708,7 +734,8 @@ paths:
         A new password that breaks the policy is refused without using up the code. Every
         other session of the account ends. Wrong codes count against the caller's address
         only (see *Throttling*), never against the name, so they cannot keep a real code
-        from working. **Not** CSRF-exempt.
+        from working. The profile is named by its name or its sign-in e-mail, in
+        `identifier`, `name` or `email` as at sign-in. **Not** CSRF-exempt.
       security: []
       requestBody:
         required: true
@@ -716,9 +743,11 @@ paths:
           application/json:
             schema:
               type: object
-              required: [name, code, next]
+              required: [code, next]
               properties:
-                name: { type: string }
+                identifier: { type: string, description: The profile name or its sign-in e-mail. }
+                name: { type: string, description: The original field; an e-mail works here too. }
+                email: { type: string }
                 code: { type: string, example: "K7WQ-2MZP-4HXA" }
                 next: { type: string, minLength: 10, maxLength: 256 }
       responses:
@@ -772,7 +801,10 @@ paths:
                   nameTaken:
                     type: boolean
                     description: Another profile already signs in with this name, so no password can be set here.
-              example: { set: true, setAt: "2026-09-23T10:00:00.000Z", passkeys: 1, name: "Ada", nameTaken: false }
+                  email:
+                    oneOf: [{ type: string }, { type: 'null' }]
+                    description: The e-mail this profile may sign in with (POST /api/account/email), or null.
+              example: { set: true, setAt: "2026-09-23T10:00:00.000Z", passkeys: 1, name: "Ada", nameTaken: false, email: "ada@example.com" }
         '401': { $ref: '#/components/responses/Unauthorized' }
     post:
       tags: [password]
@@ -860,6 +892,94 @@ paths:
             application/json:
               schema: { $ref: '#/components/schemas/Error' }
               example: { error: "the password is the only way into this profile", code: "last-way-in" }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+        '503': { $ref: '#/components/responses/Busy' }
+
+  /api/account/email:
+    post:
+      tags: [password]
+      operationId: setAccountEmail
+      summary: Set, change or remove the e-mail this profile may sign in with
+      description: |
+        An e-mail address to type at `POST /api/login/password` instead of the profile
+        name. No mail is ever sent to it — there is no verification and no reset mail;
+        resets stay the admin's one-time code — so it is only an identifier. Stored
+        trimmed, NFKC-normalised and lower-cased; at most 254 characters; unique across
+        every profile, and never another password-holding profile's name. An empty or null
+        `email` removes it (as `DELETE` does).
+
+        The body carries the same proof as setting a password (see OwnerProof): a session
+        alone is never enough. Saving the address the profile already has answers 200 with
+        no proof asked. An address in use by another profile is refused only after the
+        proof, with `409 email-taken`, and counts against the caller's address and account
+        (20 free, then 30 s doubling to 15 min) — so the answer never costs less than a
+        passkey prompt or a password check, and runs out after a few tries. It says an
+        address is in use somewhere on this instance, never by whom. Audited as
+        `auth.email.set` / `auth.email.change` with the address masked (`a…@e…`).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/OwnerProof'
+                - type: object
+                  properties:
+                    email:
+                      oneOf: [{ type: string, maxLength: 254 }, { type: 'null' }]
+            example: { email: "ada@example.com", current: "correct horse battery staple" }
+      responses:
+        '200':
+          description: Saved (or removed).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok: { type: boolean, const: true }
+                  email: { oneOf: [{ type: string }, { type: 'null' }], description: The address as stored. }
+              example: { ok: true, email: "ada@example.com" }
+        '400':
+          description: Not an e-mail address.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              example: { error: "that is not an e-mail address", code: "email-invalid" }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/ProofRefused' }
+        '409':
+          description: Another profile already uses this address.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              example: { error: "another profile already uses this e-mail address", code: "email-taken" }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+        '503': { $ref: '#/components/responses/Busy' }
+    delete:
+      tags: [password]
+      operationId: removeAccountEmail
+      summary: Remove the e-mail this profile may sign in with
+      description: >-
+        The profile then signs in by its name only. Takes the same proof as setting one
+        (OwnerProof); a profile without an e-mail gets 200 with none asked. Audited as
+        `auth.email.remove`.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/OwnerProof' }
+      responses:
+        '200':
+          description: Removed (or there was none).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok: { type: boolean, const: true }
+                  email: { type: 'null' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/ProofRefused' }
         '429': { $ref: '#/components/responses/TooManyRequests' }
         '503': { $ref: '#/components/responses/Busy' }
 
@@ -3241,6 +3361,9 @@ components:
         password:
           type: boolean
           description: PASSWORD_LOGIN instances only — the profile has a password.
+        email:
+          oneOf: [{ type: string }, { type: 'null' }]
+          description: PASSWORD_LOGIN instances only — the e-mail the profile signs in with, if any.
 
     Presence:
       type: object
@@ -3267,6 +3390,9 @@ components:
             admin: { type: boolean }
             invitedBy: { oneOf: [{ type: string }, { type: 'null' }] }
             password: { type: boolean, description: PASSWORD_LOGIN instances only. }
+            email:
+              oneOf: [{ type: string }, { type: 'null' }]
+              description: PASSWORD_LOGIN instances only — the sign-in e-mail, if any.
             resetUntil:
               oneOf: [{ type: number }, { type: 'null' }]
               description: PASSWORD_LOGIN instances only — expiry (ms) of an unused reset code.

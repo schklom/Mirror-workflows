@@ -34,6 +34,12 @@ const LABELS = {
   'auth.password.change': 'Changed their password',
   'auth.password.remove': 'Removed their password',
   'auth.password.reset': 'Used a reset code',
+  // The e-mail a profile may sign in with instead of its name. `msg` is the proof it was set with
+  // and the address masked to two characters ("password · a…@e…") — never the address itself.
+  'auth.email.set': 'Added a sign-in e-mail',
+  'auth.email.change': 'Changed their sign-in e-mail',
+  'auth.email.remove': 'Removed their sign-in e-mail',
+  'auth.email.fail': 'Changing the sign-in e-mail failed',
   // More than one passkey, and one-time codes for another device (#95). `msg` on an addition or a
   // code is the proof it was made with (passkey, password); on a removal or a redemption, the
   // passkey's name.
@@ -77,6 +83,8 @@ const REASONS = {
   'bad-password': 'wrong password',
   'bad-current': 'wrong current password while changing it',
   'unknown-name': 'no profile with a password has that name',
+  'unknown-email': 'no profile with a password has that e-mail',
+  'email-taken': 'another profile already uses that e-mail',
   'step-up-failed': 'the passkey confirming the change was rejected',
   'reset-invalid': 'wrong or expired reset code',
   'link-invalid': 'wrong, used or expired device code',
@@ -85,6 +93,7 @@ const REASONS = {
   'password': 'wrong passwords or reset codes',
   'signup': 'wrong invite codes on password signup',
   'link': 'wrong one-time device codes',
+  'email': 'e-mail addresses already in use',
   // What a `media.throttled` pause was for.
   'upload': 'photo and video uploads',
   'sweep': 'clearing unused photos and videos'

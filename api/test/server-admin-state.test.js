@@ -98,6 +98,17 @@ test('GET /api/admin/user opens a profile whose stored state predates the entry 
   assert.equal(h.stackFrames(), 0, `stack traces in the log:\n${h.log}`);
 });
 
+test('GET /api/admin/user leaves a workout\'s photos and videos out', async t => {
+  const h = await startServer(t);
+  const ref = { kind: 'image', hash: 'a'.repeat(64), mime: 'image/webp', size: 10, width: 8, height: 6, at: 1 };
+  h.plant({ workouts: [{ ...okW, media: [ref] }], routines: [okR], bodyweight: [okB], unit: 'kg' });
+  const r = await h.get(`/api/admin/user?id=${VICTIM}`);
+  assert.equal(r.status, 200);
+  assert.deepEqual(r.body.workouts.map(w => w.id), ['w1']);
+  assert.equal('media' in r.body.workouts[0], false);
+  assert.equal(JSON.stringify(r.body).includes('a'.repeat(64)), false);
+});
+
 test('the user list and the disable switch survive the same document', async t => {
   const h = await startServer(t);
   for (const [what, doc] of Object.entries(DOCS)) {

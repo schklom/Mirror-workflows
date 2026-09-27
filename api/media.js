@@ -78,7 +78,10 @@ export function mediaLimits(env = process.env) {
 }
 /** The block GET /api/config hands out. Public: the caps are not a secret, and the editor needs
  *  them before the first upload to refuse a file the server would refuse anyway. */
-export const mediaConfig = l => ({ imageMB: l.imageMB, gifMB: l.gifMB, videoMB: l.videoMB, videoSec: l.videoSec, quotaMB: l.quotaMB });
+// `workouts: true`: this server keeps the files a logged workout's `media` names (its GC walks
+// workouts[].media), so a signed-in client may offer attaching them. A server from before says
+// nothing, and the client offers them on custom exercises only.
+export const mediaConfig = l => ({ imageMB: l.imageMB, gifMB: l.gifMB, videoMB: l.videoMB, videoSec: l.videoSec, quotaMB: l.quotaMB, workouts: true });
 
 /* ---------------------------------------------------------------- errors */
 

@@ -84,9 +84,10 @@ export function askAddDeviceData(extras) {
 // everything that is not a set you are about to log: the point of a single "more" button is
 // that the ten things you do once a session stop competing with the two you do every set.
 // items: [{ icon, label, sub, onClick, danger, disabled, on }] — `on` draws a check for toggles.
-// titleClass replaces the title's default title-casing, for a title that is an exercise name
-// carrying its own casing from a translated pack (exerciseNameClass).
-function MenuSheet({ title, titleClass = 'capitalize', subtitle, items, close }) {
+// A title is shown as written: most are sentences ("Convert to lb?", "Set 2"), which a default
+// title-casing turned into "Convert To Lb?". An exercise name passes exerciseNameClass as
+// titleClass, which title-cases the lower-case packs and leaves a cased one alone.
+function MenuSheet({ title, titleClass = '', subtitle, items, close }) {
   return <>
     {title && <h3 className={titleClass || undefined} style={{ marginBottom: subtitle ? 2 : 10 }}>{title}</h3>}
     {subtitle && <div className="muted small" style={{ marginBottom: 10 }}>{subtitle}</div>}

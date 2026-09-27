@@ -3,7 +3,8 @@
 // signing in, redeeming the one-time code an admin hands out, creating a profile with a
 // password, and the Settings row that sets, changes or removes one — and the "confirm it is you"
 // step (ProveOwner) that Settings asks for before a way in is added or removed, where the
-// password is one of the two answers. Passkeys stay the default wherever this appears; the rules
+// password is one of the two answers — and the optional sign-in e-mail a profile may type there
+// instead of its name (EmailRow). Passkeys stay the default wherever this appears; the rules
 // themselves are the server's (api/password.js and the password block in api/server.js), this
 // only words them.
 import { useEffect, useRef, useState } from 'react'
@@ -19,6 +20,9 @@ import { Row, Button } from './ui.jsx'
 // answered without a round trip. The server still decides.
 export const MIN_PASSWORD = 10
 export const passwordOn = config => !!config?.password_login
+// The loosest look at an address that still catches a name typed in the wrong field; the server
+// (normalizeEmail in api/password.js) decides.
+export const looksLikeEmail = s => s.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(s)
 
 const ui = () => useUI.getState()
 const toast = m => ui().toast(m)
@@ -38,11 +42,13 @@ export function passwordError(e) {
   const code = e?.data?.code
   if (e?.status === 429 || code === 'locked') return t('Too many attempts — try again {0}.', fmtIn(e?.data?.retryAfter || 60))
   switch (code) {
-    case 'bad-credentials': return t('Wrong name or password.')
+    case 'bad-credentials': return t('Wrong name, e-mail or password.')
     case 'too-short': return t('Use at least {0} characters.', MIN_PASSWORD)
     case 'too-long': return t('That password is too long.')
     case 'too-common': return t('That password is too easy to guess — try a longer one, or a few unrelated words.')
     case 'name-taken': return t('Another profile already signs in with this name.')
+    case 'email-invalid': return t('That is not an e-mail address.')
+    case 'email-taken': return t('Another profile already uses this e-mail address.')
     case 'invite': return t('That invite code is not valid.')
     case 'current-required': case 'current-wrong': return t('Your current password is not right.')
     case 'passkey': case 'passkey-required': return t('Your passkey could not be confirmed.')
@@ -69,7 +75,7 @@ async function signedIn(u, close) {
 const field = { autoCapitalize: 'none', autoCorrect: 'off', spellCheck: false }
 const codeStyle = { letterSpacing: '.14em', fontWeight: 600, textAlign: 'center' }
 
-/* Sign in with name and password, or — one tap away — redeem a reset code from the admin, which
+/* Sign in with name (or the profile's sign-in e-mail) and password, or — one tap away — redeem a reset code from the admin, which
    sets a new password and signs in. `onPasskey`, when given, offers the passkey instead. The
    inputs carry the autocomplete names password managers look for, inside a real form. */
 export function PasswordSignInSheet({ close, onPasskey }) {
@@ -88,7 +94,7 @@ export function PasswordSignInSheet({ close, onPasskey }) {
     ev.preventDefault()
     if (busy) return
     const n = name.trim()
-    const bad = !n ? t('Enter a name')
+    const bad = !n ? t('Enter your name or e-mail.')
       : !reset && !pw ? t('Enter your password.')
       : reset && !code.trim() ? t('Enter the reset code.')
       : reset && length(next) < MIN_PASSWORD ? t('Use at least {0} characters.', MIN_PASSWORD)
@@ -105,9 +111,11 @@ export function PasswordSignInSheet({ close, onPasskey }) {
     <h3>{reset ? t('Reset your password') : t('Sign in with password')}</h3>
     <div className="muted small" style={{ marginBottom: 14 }}>{reset
       ? t('Enter the code your admin gave you and choose a new password. It signs you out everywhere else.')
-      : t('Use your profile name and the password you set for it.')}</div>
+      : t('Use your profile name — or the e-mail you added to it — and your password.')}</div>
     <form onSubmit={submit} noValidate>
-      <input ref={nameRef} className="input" name="username" autoComplete="username" placeholder={t('Your name')} maxLength={40}
+      {/* One field for both: the server looks an entry with an "@" up as an e-mail first. Not
+          type="email", which would refuse a plain name. */}
+      <input ref={nameRef} className="input" name="username" autoComplete="username" placeholder={t('Name or e-mail')} maxLength={254}
         value={name} onChange={e => setName(e.target.value)} {...field} />
       <div style={{ height: 10 }} />
       {reset ? <>
@@ -140,6 +148,7 @@ export const openPasswordSignIn = onPasskey => ui().openSheet(close => <Password
 /* The password half of creating a profile. Name and invite code are the caller's state, so
    switching between passkey and password on the sign-up sheet keeps what was typed. */
 export function PasswordRegisterForm({ close, inviteOnly, name, setName, code, setCode }) {
+  const [email, setEmail] = useState('')
   const [pw, setPw] = useState('')
   const [again, setAgain] = useState('')
   const [busy, setBusy] = useState(false)
@@ -148,7 +157,9 @@ export function PasswordRegisterForm({ close, inviteOnly, name, setName, code, s
     ev.preventDefault()
     if (busy) return
     const n = name.trim()
+    const mail = email.trim()
     const bad = !n ? t('Enter a name')
+      : mail && !looksLikeEmail(mail) ? t('That is not an e-mail address.')
       : inviteOnly && !code.trim() ? t('An invite code is required')
       : length(pw) < MIN_PASSWORD ? t('Use at least {0} characters.', MIN_PASSWORD)
       : pw !== again ? t('The two passwords are not the same.')
@@ -156,7 +167,7 @@ export function PasswordRegisterForm({ close, inviteOnly, name, setName, code, s
     if (bad) { setErr(bad); return }
     setBusy(true); setErr(null)
     try {
-      const u = await passwordRegister(n, pw, code.trim())
+      const u = await passwordRegister(n, pw, code.trim(), mail)
       const st = useStore.getState()
       st.setUser(u); close()
       if (hasData(useStore.getState().S)) { await st.pushState(); toast(t('Profile created — data from this device moved into it')) }
@@ -167,6 +178,10 @@ export function PasswordRegisterForm({ close, inviteOnly, name, setName, code, s
   return <form onSubmit={submit} noValidate>
     <input className="input" name="username" autoComplete="username" placeholder={t('Your name')} maxLength={40}
       value={name} onChange={e => setName(e.target.value)} {...field} />
+    <div style={{ height: 10 }} />
+    <input className="input" type="email" name="email" autoComplete="email" inputMode="email" placeholder={t('E-mail (optional)')} maxLength={254}
+      value={email} onChange={e => setEmail(e.target.value)} {...field} />
+    <div className="dim small" style={{ marginTop: 6 }}>{t('Lets you sign in with it instead of your name. Nothing is ever sent to it.')}</div>
     {inviteOnly && <>
       <div style={{ height: 10 }} />
       <input className="input" placeholder={t('Invite code')} maxLength={40} value={code}
@@ -299,8 +314,11 @@ export function PasswordRow({ version = 0 }) {
   const subtitle = blocked ? t('Another profile already signs in with this name.')
     : st.set ? t('Set · sign in as “{0}”', st.name)
     : t('Not set — lets you sign in where passkeys do not work.')
-  return <Row icon="key" iconTint="var(--orange)" title={t('Password')} subtitle={subtitle} accessory={blocked ? 'none' : 'chevron'}
-    onClick={blocked ? undefined : () => ui().openSheet(close => <PasswordSheet status={st} close={close} done={load} />)} />
+  return <>
+    <Row icon="key" iconTint="var(--orange)" title={t('Password')} subtitle={subtitle} accessory={blocked ? 'none' : 'chevron'}
+      onClick={blocked ? undefined : () => ui().openSheet(close => <PasswordSheet status={st} close={close} done={load} />)} />
+    <EmailRow status={st} done={load} />
+  </>
 }
 
 export function PasswordSheet({ status, close, done }) {
@@ -376,6 +394,85 @@ function RemovePasswordSheet({ status, close, done }) {
     <div className="muted small" style={{ marginBottom: 6 }}>{t('Only your passkeys sign in to this profile afterwards.')}</div>
     <div className="dim small" style={{ marginBottom: 14 }}>{t('First confirm that it is you.')}</div>
     <ProveOwner passkey={status.passkeys > 0} password danger submitText={t('Remove')} onProof={remove} />
+    <div style={{ height: 8 }} />
+    <Button type="button" variant="ghost" className="dim" onClick={close}>{t('Cancel')}</Button>
+  </>
+}
+
+/* Settings → Account → Sign-in e-mail, right under the password (and shown on the same terms:
+   only while the instance takes passwords, and only where something here can confirm it is the
+   owner). An address typed at "Sign in with password" instead of the profile name. Nothing is
+   ever sent to it — there is no mail server behind openGym — so it is not verified either, and a
+   forgotten password is still reset by the admin's code. Setting, changing and removing it ask
+   the proof a password does (ProveOwner): a copied session must not choose how the owner signs
+   in. `status` is GET /api/account/password, whose `email` only the owner ever gets. */
+export function EmailRow({ status, done }) {
+  const subtitle = status.email ? t('Sign in with “{0}” instead of your name', status.email)
+    : t('Not set — sign in with an e-mail instead of your name.')
+  return <Row icon="envelope" iconTint="var(--blue)" title={t('Sign-in e-mail')} subtitle={subtitle} accessory="chevron"
+    onClick={() => ui().openSheet(close => <EmailSheet status={status} close={close} done={done} />)} />
+}
+
+// Two steps: the address first, checked here before any passkey prompt opens, then the proof,
+// which carries the save. An address in use is only refused after the proof (the server's rule,
+// so that asking costs something), and is said on the proof step.
+export function EmailSheet({ status, close, done }) {
+  const [email, setEmail] = useState(status.email || '')
+  const [step, setStep] = useState('edit')   // 'edit' | 'confirm'
+  const [err, setErr] = useState(null)
+  const clean = email.trim()
+  const next = ev => {
+    ev.preventDefault()
+    const bad = !clean || !looksLikeEmail(clean) ? t('That is not an e-mail address.')
+      : clean.toLowerCase() === status.email ? t('That is already your sign-in e-mail.')
+      : null
+    if (bad) { setErr(bad); return }
+    setErr(null); setStep('confirm')
+  }
+  const save = async proof => {
+    await api('/api/account/email', { method: 'POST', body: JSON.stringify({ email: clean, ...proof }) })
+    close(); done()
+    toast(t('E-mail saved'))
+  }
+  const remove = () => ui().openSheet(c => <RemoveEmailSheet status={status} close={c} done={() => { close(); done() }} />)
+  return <>
+    <h3>{status.email ? t('Change sign-in e-mail') : t('Add a sign-in e-mail')}</h3>
+    <div className="muted small" style={{ marginBottom: 14 }}>
+      {t('Type it at “Sign in with password” instead of your profile name. Nothing is ever sent to it — a forgotten password is still reset by your admin.')}
+    </div>
+    {step === 'edit' ? <>
+      <form onSubmit={next} noValidate>
+        <input className="input" type="email" name="email" autoComplete="email" inputMode="email" placeholder={t('E-mail address')} maxLength={254}
+          value={email} onChange={e => setEmail(e.target.value)} {...field} />
+        {err && <div className="small" role="alert" style={errStyle}>{err}</div>}
+        <div style={{ height: 12 }} />
+        <Button type="submit" variant="primary">{t('Continue')}</Button>
+      </form>
+      {status.email && <>
+        <div style={{ height: 8 }} />
+        <button type="button" className="btn danger" onClick={remove}>{t('Remove e-mail')}</button>
+      </>}
+    </> : <>
+      <div className="small" style={{ marginBottom: 6, fontWeight: 600, overflowWrap: 'anywhere' }}>{clean}</div>
+      <div className="dim small" style={{ marginBottom: 14 }}>{t('First confirm that it is you.')}</div>
+      <ProveOwner passkey={status.passkeys > 0} password={!!status.set} submitText={t('Save')} onProof={save} />
+      <div style={{ height: 8 }} />
+      <Button type="button" variant="ghost" className="dim" onClick={() => setStep('edit')}>{t('Back')}</Button>
+    </>}
+  </>
+}
+
+function RemoveEmailSheet({ status, close, done }) {
+  const remove = async proof => {
+    await api('/api/account/email', { method: 'DELETE', body: JSON.stringify(proof) })
+    close(); done()
+    toast(t('E-mail removed'))
+  }
+  return <>
+    <h3>{t('Remove your sign-in e-mail?')}</h3>
+    <div className="muted small" style={{ marginBottom: 6 }}>{t('Afterwards you sign in with your profile name only.')}</div>
+    <div className="dim small" style={{ marginBottom: 14 }}>{t('First confirm that it is you.')}</div>
+    <ProveOwner passkey={status.passkeys > 0} password={!!status.set} danger submitText={t('Remove')} onProof={remove} />
     <div style={{ height: 8 }} />
     <Button type="button" variant="ghost" className="dim" onClick={close}>{t('Cancel')}</Button>
   </>

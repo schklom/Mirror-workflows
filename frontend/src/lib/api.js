@@ -283,11 +283,16 @@ export async function createPasskey(options) {
 // these answers with the same session cookie a passkey sign-in sets, so callers treat the user
 // they return exactly alike.
 const post = (path, body) => api(path, { method: 'POST', body: JSON.stringify(body) })
+// `name` is whatever was typed in "Name or e-mail": it goes in the original `name` field, which
+// the server matches against the profile's sign-in e-mail when it holds an "@" and against the
+// name otherwise — so the app and a server a version apart still understand each other.
 export async function passwordLogin(name, password) {
   return (await post('/api/login/password', { name, password })).user
 }
-export async function passwordRegister(name, password, code) {
-  return (await post('/api/register/password', { name, password, code: code || '' })).user
+// `email` is optional, and sent only when there is one: a server from before the field would
+// otherwise ignore it without a word, which is the same thing.
+export async function passwordRegister(name, password, code, email) {
+  return (await post('/api/register/password', { name, password, code: code || '', ...(email ? { email } : {}) })).user
 }
 export async function passwordResetRedeem(name, code, next) {
   return (await post('/api/login/password-reset', { name, code, next })).user

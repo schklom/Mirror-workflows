@@ -60,5 +60,10 @@ describe('Brazilian Portuguese locale', () => {
     expect(ptBR.soleus).toBe('sóleo')
     expect(ptBR.Unpair).toBe('Desvincular')
     expect(ptBR['Choose starter plan']).toBe('Escolha um plano inicial')
+    // The sign-in e-mail's strings are overridden, not inherited: pt-PT says palavra-passe and «».
+    expect(ptBR['Wrong name, e-mail or password.']).toBe('Nome, e-mail ou senha incorretos.')
+    expect(ptBR['Sign-in e-mail']).toBe('E-mail de login')
+    for (const key of ['Name or e-mail', 'Sign in with “{0}” instead of your name', 'Type it at “Sign in with password” instead of your profile name. Nothing is ever sent to it — a forgotten password is still reset by your admin.'])
+      expect(key in PT_BR_OVERRIDES, key).toBe(true)
   })
 })

@@ -47,9 +47,24 @@ const isNum = v => typeof v === 'number' && Number.isFinite(v);
 const isInt = (v, lo, hi) => Number.isInteger(v) && v >= lo && v <= hi;
 const clampStr = (v, n) => String(v == null ? '' : v).slice(0, n);
 // A routine's `emoji` holds an icon key now ('figureStrength'), a legacy emoji only on old state —
-// and the model copies whichever it sees in the plan. Eight characters was sized for an emoji and
-// cut keys to 'figureSt'. The client's glyphOf() maps anything unknown to the default icon.
-const glyphStr = v => clampStr(v || '🏋️', 32);
+// and the model copies whichever it sees in the plan. It is stored in the routine and sent back
+// to the model with the plan on every later job, so it is not free text: an icon key the app's
+// picker offers (frontend/src/lib/glyphs.js GLYPHS, held together by coach-parity.test.js), or a
+// legacy emoji made of pictographs and their joiners only — no letter, digit or tag character in
+// any script, so no words fit through. Anything else becomes the default icon.
+export const ROUTINE_GLYPHS = [
+  'figureStrength', 'arm', 'abs', 'legs', 'pullup',
+  'dumbbell', 'barbell', 'kettlebell', 'plate', 'machine',
+  'figureRun', 'bike', 'swim', 'boxing', 'timer',
+  'stretch', 'moon', 'heart', 'flame', 'bolt'
+];
+const DEFAULT_GLYPH = 'figureStrength';
+const EMOJI_ONLY = /^(?:\p{Extended_Pictographic}|[\u200d\ufe0f\u20e3\u{1F3FB}-\u{1F3FF}\u{1F1E6}-\u{1F1FF}])+$/u;
+const glyphStr = v => {
+  if (typeof v !== 'string' || !v) return DEFAULT_GLYPH;
+  if (ROUTINE_GLYPHS.includes(v)) return v;
+  return v.length <= 16 && EMOJI_ONLY.test(v) ? v : DEFAULT_GLYPH;
+};
 
 /* ---------- the two v1.2.4 flags, enforced rather than merely accepted ----------
    `prompts/common.md` tells the model that unilateral work is prescribed as the total across

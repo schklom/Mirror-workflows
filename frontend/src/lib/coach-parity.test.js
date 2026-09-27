@@ -68,3 +68,16 @@ describe('server/client reading rules agree', () => {
     expect(srvIsBw({ id: '0001', bodyweight: false }, bodyweightEx)).toBe(false)
   })
 })
+
+// #311: the validator keeps a routine glyph only when it is one the picker offers (or a legacy
+// emoji). A glyph added to the picker and not to the server's list would be reset by every plan.
+import { GLYPHS } from './glyphs.js'
+import { ICON_NAMES } from '../components/Icon.jsx'
+import { ROUTINE_GLYPHS } from '../../../api/coach/core/validate.js'
+
+describe('routine glyphs', () => {
+  it('the server accepts exactly the glyphs the picker offers, each a real icon', () => {
+    expect([...ROUTINE_GLYPHS].sort()).toEqual([...GLYPHS].sort())
+    ROUTINE_GLYPHS.forEach(g => expect(ICON_NAMES).toContain(g))
+  })
+})

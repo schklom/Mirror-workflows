@@ -1653,4 +1653,5 @@ export default {
   'Red': '빨강',
   'Teal': '청록',
   'Yellow': '노랑',
+  'Enter how long it took — at least 1 minute.': '걸린 시간을 입력하세요 — 최소 1분.',
 }

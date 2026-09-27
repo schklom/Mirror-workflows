@@ -68,6 +68,18 @@ describe('completeBackfill', () => {
     const plain = completeBackfill(list, { backfill: { durationMin: 60, replaceId: 'b' } }, w('y', '2026-01-05', 30), 777)
     expect('media' in plain[1] || '_ts' in plain[1]).toBe(false)
   })
+  // QA 1.3.9: the sets were logged again and the day's note went with the old record.
+  it('carries the replaced workout\'s note, ahead of one written now, stamped', () => {
+    const noted = [list[0], { ...list[1], note: 'knee felt off' }, list[2]]
+    const kept = completeBackfill(noted, { backfill: { durationMin: 60, replaceId: 'b' } }, w('x', '2026-01-05', 30), 777)
+    expect(kept[1]).toMatchObject({ id: 'x', note: 'knee felt off', _ts: 777 })
+    const both = completeBackfill(noted, { backfill: { durationMin: 60, replaceId: 'b' } }, { ...w('y', '2026-01-05', 30), note: 'redid it' }, 778)
+    expect(both[1].note).toBe('knee felt off\nredid it')
+    // The same note typed again is not doubled, and needs no stamp.
+    const same = completeBackfill(noted, { backfill: { durationMin: 60, replaceId: 'b' } }, { ...w('z', '2026-01-05', 30), note: 'knee felt off' }, 779)
+    expect(same[1].note).toBe('knee felt off')
+    expect('_ts' in same[1]).toBe(false)
+  })
 })
 
 // #284: a missed Monday logged on Saturday opened at Friday's progression and saved it as Monday's.
@@ -109,6 +121,17 @@ describe('sessionHistory', () => {
     const past = { workouts: list, exWeights: {}, active: { d: '2026-01-05', start: 50, backfill: { durationMin: 60, replaceId: 'b' } } }
     expect(sessionHistory(past).workouts.map(x => x.id)).toEqual(['a'])
     expect(sessionHistory({ workouts: list })).toEqual({ workouts: list })
+  })
+
+  // QA 1.3.9: the editor read the whole log, so "Last time" and the Best chip on a workout being
+  // corrected were itself or a later session.
+  it('is the history before the edited workout, without it, while a saved workout is in the editor', () => {
+    const editing = { workouts: list, exWeights: {}, active: { d: '2026-01-05', start: 10, editingWorkoutId: 'b' } }
+    expect(sessionHistory(editing).workouts.map(x => x.id)).toEqual(['a'])
+    // One from before ids, keyed by its day and start, is left out by its start.
+    const legacy = [w('a', '2026-01-01', 10), { ...w(undefined, '2026-01-05', 10), id: undefined }, w('d', '2026-01-09', 10)]
+    const old = { workouts: legacy, exWeights: {}, active: { d: '2026-01-05', start: 10, editingWorkoutId: '2026-01-05|10' } }
+    expect(sessionHistory(old).workouts.map(x => x.d)).toEqual(['2026-01-01'])
   })
 })
 

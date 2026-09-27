@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { editCompletedSession, saveWorkoutEdit, editLeftEmpty, deleteEditedWorkout } from './session-edit.js'
+import { editCompletedSession, saveWorkoutEdit, editLeftEmpty, deleteEditedWorkout, editChangesNothing } from './session-edit.js'
 import { mergeStates } from './sync-merge.js'
 import { entryExcluded, lastEntryFor } from './history.js'
 
@@ -322,5 +322,38 @@ describe('an edit that leaves no set', () => {
     deleteEditedWorkout(state)
     expect(state.exWeights['0025']).toEqual({ w: 95, d: '2026-08-20' })
     expect(state.exWeights['0027']).toEqual({ w: 70, d: '2026-08-01' })
+  })
+})
+
+// QA 1.3.9: closing the editor asked "Save workout changes?" about a workout nobody had touched.
+describe('editChangesNothing', () => {
+  it('is true for a workout opened and left alone, even after a reload', () => {
+    const state = fixture()
+    editCompletedSession(state, 'workout')
+    expect(editChangesNothing(state)).toBe(true)
+    expect(editChangesNothing(JSON.parse(JSON.stringify(state)))).toBe(true)
+  })
+  it('is false once a set, the note or the exercises changed', () => {
+    for (const change of [
+      s => { s.active.entries[0].sets[0].w = 45 },
+      s => { s.active.note = 'new' },
+      s => { s.active.entries.push(entry(20, 'added')) },
+    ]) {
+      const state = fixture()
+      editCompletedSession(state, 'workout')
+      change(state)
+      expect(editChangesNothing(state)).toBe(false)
+    }
+  })
+  it('is false for a draft left empty or a record deleted meanwhile, which still need a decision', () => {
+    const state = fixture()
+    editCompletedSession(state, 'workout')
+    state.active.entries[0].sets[0].done = false
+    expect(editChangesNothing(state)).toBe(false)
+    const gone = fixture()
+    editCompletedSession(gone, 'workout')
+    gone.workouts = []
+    expect(editChangesNothing(gone)).toBe(false)
+    expect(editChangesNothing({ active: null, workouts: [] })).toBe(false)
   })
 })

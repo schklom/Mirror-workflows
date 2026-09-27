@@ -27,18 +27,26 @@ export const backfillEnd = active => active.start + Math.max(1, active.backfill?
 // is not, since that one is gone once this is saved. A confirmed working weight (exWeights) dated
 // after the day is later progression as well; one with no date is kept, nothing says when it came.
 // A view for reading only: the lists are new, everything else is S's own.
-export function historyAsOf(S, { d, start = 0, replaceId = null }) {
-  const filedBefore = w => (w.d || '') < d || ((w.d || '') === d && (w.start || 0) <= start)
-  const workouts = (S.workouts || []).filter(w => filedBefore(w) && !(replaceId && w.id === replaceId))
+// `strict` leaves out a workout started at the very same moment too: the one being edited, when
+// it predates ids and has none to leave it out by.
+export function historyAsOf(S, { d, start = 0, replaceId = null, strict = false }) {
+  const sameDayBefore = w => (strict ? (w.start || 0) < start : (w.start || 0) <= start)
+  const filedBefore = w => (w.d || '') < d || ((w.d || '') === d && sameDayBefore(w))
+  const workouts = (S.workouts || []).filter(w => filedBefore(w) && !(replaceId != null && w.id === replaceId))
   const exWeights = Object.fromEntries(Object.entries(S.exWeights || {}).filter(([, kept]) => !kept?.d || kept.d <= d))
   return { ...S, workouts, exWeights }
 }
 
 // The history the running session is built from and held against: as of its own day while it is
-// logged into the past, and the whole log for a live one (S itself, so that costs nothing).
+// logged into the past, and the whole log for a live one (S itself, so that costs nothing). A
+// saved workout open in the editor is held against what came before it, without itself: read
+// from the whole log, its "Last time" line was itself, or a later session, and the Best chip
+// compared it with lifts made after it (QA 1.3.9).
 export const sessionHistory = S => {
   const A = S?.active
-  return A?.backfill ? historyAsOf(S, { d: A.d, start: A.start, replaceId: A.backfill.replaceId }) : S
+  if (A?.backfill) return historyAsOf(S, { d: A.d, start: A.start, replaceId: A.backfill.replaceId })
+  if (A?.editingWorkoutId != null) return historyAsOf(S, { d: A.d, start: A.start, replaceId: A.editingWorkoutId, strict: true })
+  return S
 }
 
 // The workouts array is chronological (History reverses it), so a past workout cannot just be
@@ -58,16 +66,25 @@ export function insertChronological(workouts, w) {
 // The history after a backfilled session is filed: the workout it replaces (if any) is gone
 // and the new one sits in date order. Returns a new array; the caller stores it.
 //
-// Replacing re-logs that day's sets, not its photos and videos: those move onto the new record
-// (after any it has), stamped like any other edit of a saved workout, so the progress photo of a
-// day logged again is not dropped with the old sets. `w` is changed in place when they do.
+// Replacing re-logs that day's sets, not its photos and videos or its session note: those move
+// onto the new record (the media after any it has; the note ahead of one written now), stamped
+// like any other edit of a saved workout, so the progress photo or the "felt the knee" of a day
+// logged again is not dropped with the old sets. `w` is changed in place when they do.
 export function completeBackfill(workouts, active, w, now = Date.now()) {
   const replaceId = active.backfill?.replaceId
   if (!replaceId) return insertChronological(workouts, w)
   const replaced = workouts.find(x => x.id === replaceId)
   const had = Array.isArray(w.media) ? w.media.length : 0
-  if (replaced) mergeWorkoutMedia(w, replaced)
-  if ((Array.isArray(w.media) ? w.media.length : 0) > had) stampWorkout(w, now)
+  let carried = false
+  if (replaced) {
+    mergeWorkoutMedia(w, replaced)
+    const old = (replaced.note || '').trim(), fresh = (w.note || '').trim()
+    if (old && old !== fresh) {
+      w.note = fresh && !fresh.includes(old) ? `${old}\n${fresh}` : (fresh || old)
+      carried = w.note !== fresh
+    }
+  }
+  if (carried || (Array.isArray(w.media) ? w.media.length : 0) > had) stampWorkout(w, now)
   return insertChronological(workouts.filter(x => x.id !== replaceId), w)
 }
 

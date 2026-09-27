@@ -1653,4 +1653,5 @@ export default {
   'Red': 'Rouge',
   'Teal': 'Turquoise',
   'Yellow': 'Jaune',
+  'Enter how long it took — at least 1 minute.': 'Indique combien de temps ça a duré — au moins 1 minute.',
 }

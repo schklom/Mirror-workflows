@@ -1653,4 +1653,5 @@ export default {
   'Red': 'लाल',
   'Teal': 'फ़िरोज़ी',
   'Yellow': 'पीला',
+  'Enter how long it took — at least 1 minute.': 'बताएँ कि इसमें कितना समय लगा — कम से कम 1 मिनट।',
 }

@@ -1706,4 +1706,5 @@ export default {
   'Red': 'أحمر',
   'Teal': 'أزرق مخضر',
   'Yellow': 'أصفر',
+  'Enter how long it took — at least 1 minute.': 'أدخل المدة التي استغرقها — دقيقة واحدة على الأقل.',
 }

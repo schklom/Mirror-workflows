@@ -115,11 +115,17 @@ describe('log a past workout', () => {
     expect(useStore.getState().S.active.backfill.durationMin).toBe(45)
   })
 
-  it('an emptied duration still starts a one-minute session, not the default hour', () => {
+  // An emptied duration is neither the default hour nor a silent minute (QA 1.3.9): nothing
+  // starts until a length is typed, and the sheet says so.
+  it('an emptied duration starts nothing and asks for a length', () => {
     logPastWorkoutSheet()
     const host = mountTopSheet()
     act(() => { type(host.querySelector('input[type=date]'), '2020-01-02') })
     act(() => { type(host.querySelector('input.num'), '') })
+    expect(host.textContent).toContain('Enter how long it took — at least 1 minute.')
+    act(() => { button(host, 'Continue').click() })
+    expect(useStore.getState().S.active).toBeFalsy()
+    act(() => { type(host.querySelector('input.num'), '1') })
     act(() => { button(host, 'Continue').click() })
     expect(useStore.getState().S.active.backfill.durationMin).toBe(1)
   })

@@ -1664,4 +1664,5 @@ export default {
   'Red': 'แดง',
   'Teal': 'เขียวน้ำทะเล',
   'Yellow': 'เหลือง',
+  'Enter how long it took — at least 1 minute.': 'ใส่ระยะเวลาที่ใช้ — อย่างน้อย 1 นาที',
 }

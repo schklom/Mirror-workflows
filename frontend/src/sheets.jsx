@@ -45,8 +45,8 @@ import { buildSessionEntries, buildPlannedEntry, builtOutOfProgression } from '.
 import { joinSessionNoProg } from './lib/session-noprog.js'
 import { buildCombinedEntries, deriveSessionName } from './lib/session-merge.js'
 import { workoutsOn, backfillStart, backfillEnd, completeBackfill, historyAsOf, sessionHistory } from './lib/backfill.js'
-import { moveWorkout, sameWorkout, startTimeOf, durationMinOf, setWorkoutDuration } from './lib/workout-date.js'
-import { editCompletedSession, editLeftEmpty, editedRecord } from './lib/session-edit.js'
+import { moveWorkout, sameWorkout, startTimeOf, durationMinOf, setWorkoutDuration, rebuildPrHistory } from './lib/workout-date.js'
+import { editCompletedSession, editLeftEmpty, editedRecord, editChangesNothing } from './lib/session-edit.js'
 import { stampWorkout } from './lib/sync-merge.js'
 import { weeklyWeights } from './lib/bodyweight.js'
 import { workoutText } from './lib/workout-text.js'
@@ -1915,7 +1915,11 @@ export const workoutDateSheet = (w, onDone) => ui().openSheet(close => <WorkoutD
 // do not depend on the length and are left alone.
 function WorkoutDurationEdit({ w, onDone, close }) {
   const [dur, setDur] = useState(durationMinOf(w))
+  // A cleared field reads as 0, and saving that made the session one minute long without a word
+  // (QA 1.3.9): it is refused with the reason under the field, and the saved length stays.
+  const durInvalid = !(dur >= 1)
   const save = () => {
+    if (durInvalid) { toast(t('Enter how long it took — at least 1 minute.')); return }
     let changed = false
     update(s => {
       const next = setWorkoutDuration(s.workouts, w, dur)   // at least a minute, however the field was left
@@ -1929,7 +1933,9 @@ function WorkoutDurationEdit({ w, onDone, close }) {
   return <>
     <h3>{t('Change duration')}</h3>
     <div className="muted small" style={{ marginBottom: 12 }}>{t('Forgot to finish on time? Set how long the session really took. It keeps its start time and its sets.')}</div>
-    <Stepper label={t('Duration')} unit={t('min')} value={dur} step={5} min={1} decimal={false} onChange={v => setDur(Math.round(v))} />
+    {/* min 0, not 1: the stepper would put a cleared field back to 1 as it lost focus to Save. */}
+    <Stepper label={t('Duration')} unit={t('min')} value={dur} step={5} min={0} decimal={false} invalid={durInvalid} onChange={v => setDur(Math.round(v))} />
+    {durInvalid && <div className="small" style={{ color: 'var(--red)', marginTop: 6 }}>{t('Enter how long it took — at least 1 minute.')}</div>}
     <div style={{ height: 18 }} />
     <Button variant="primary" onClick={save}>{t('Save')}</Button>
   </>
@@ -2203,6 +2209,7 @@ function LogPastWorkout({ initial, close }) {
   }
   const submit = () => {
     if (!date || date > today) { toast(t('Pick a day up to today')); return }
+    if (!(dur >= 1)) { toast(t('Enter how long it took — at least 1 minute.')); return }
     const existing = workoutsOn(st, date)
     if (!existing.length) { go(null); return }
     ui().openSheet(c => <SameDayChoice iso={date} existing={existing} close={c}
@@ -2216,7 +2223,8 @@ function LogPastWorkout({ initial, close }) {
       <input type="date" className="timef" value={date} max={today} onChange={e => setDate(e.target.value)} /></Row>
     <Row icon="clock" title={t('Start time')}>
       <input type="time" className="timef" value={time} onChange={e => setTime(e.target.value)} /></Row>
-    <Stepper label={t('Duration')} unit={t('min')} value={dur} step={5} min={1} decimal={false} onChange={v => setDur(Math.round(v))} />
+    <Stepper label={t('Duration')} unit={t('min')} value={dur} step={5} min={0} decimal={false} invalid={!(dur >= 1)} onChange={v => setDur(Math.round(v))} />
+    {!(dur >= 1) && <div className="small" style={{ color: 'var(--red)', marginTop: 6 }}>{t('Enter how long it took — at least 1 minute.')}</div>}
     <div style={{ height: 8 }} />
     <SelectRow icon="dumbbell" title={t('Routine')} value={routineId} options={options} onChange={setRoutineId} />
     <div style={{ height: 18 }} />
@@ -2562,18 +2570,20 @@ export function saveWorkoutEdits(onExit = () => nav('/history')) {
 }
 
 export function exitWorkoutEdit(onExit = () => nav('/history')) {
+  const leave = () => {
+    useStore.getState().discardHistoryEdit()
+    useUI.getState().stopRest()
+    useUI.getState().stopWork()
+    onExit()
+  }
+  // Nothing to save: closing just closes, as it does for a workout only looked at.
+  if (editChangesNothing(S())) { leave(); return }
   ui().openSheet(close => <>
     <h3>{t('Save workout changes?')}</h3>
     <p className="muted">{t('Save your edits to this workout, or keep the original record.')}</p>
     <Button variant="primary" onClick={() => { close(); saveWorkoutEdits(onExit) }}>{t('Save changes')}</Button>
     <div style={{ height: 8 }} />
-    <Button onClick={() => {
-      close()
-      useStore.getState().discardHistoryEdit()
-      useUI.getState().stopRest()
-      useUI.getState().stopWork()
-      onExit()
-    }}>{t("Don't save")}</Button>
+    <Button onClick={() => { close(); leave() }}>{t("Don't save")}</Button>
     <div style={{ height: 8 }} />
     <Button variant="ghost" className="dim" onClick={close}>{t('Keep editing')}</Button>
   </>, { kind: 'center' })
@@ -2620,8 +2630,10 @@ function doFinishWorkout() {
   const past = !!A.backfill
   const prs = []
   const e1prs = []
-  // A workout logged into the past cannot claim records against the history that came after
-  // it, so a backfilled session reports none and leaves the confirmed weights alone.
+  // A workout logged into the past is held against the history before it, the way an edit of a
+  // saved one is (rebuildPrHistory, below): it gains a badge it leads with, and a later session
+  // it outdoes loses its own. It used to report none at all while the editor's Save awarded them
+  // (QA 1.3.9). The confirmed weights are left alone either way.
   if (!past) A.entries.forEach(e => {
     const loads = e.sets.filter(s => s.done && !isWarmupRow(s)).map(s => s.w).filter(w => w > 0)
     const mx = loads.length ? loads.reduce((a, b) => betterWeight(e.id, a, b)) : 0
@@ -2637,9 +2649,14 @@ function doFinishWorkout() {
     snapshotFor: e => EXIDX[e.id]?.custom ? exerciseMuscleSnapshot(EXIDX[e.id]) : null,
   })
   w.vol = workoutVolume(w)
+  let shown = w
   update(s => {
     if (past) {
-      s.workouts = completeBackfill(s.workouts, A, w)
+      const replaced = A.backfill.replaceId ? s.workouts.find(x => x.id === A.backfill.replaceId) : null
+      const touched = [...new Set([...(replaced?.entries || []), ...w.entries].map(e => e?.id).filter(id => id != null))]
+      s.workouts = rebuildPrHistory(completeBackfill(s.workouts, A, w), touched, w)
+      shown = s.workouts.find(x => x === w || (w.id != null && x.id === w.id)) || w
+      prs.push(...[...(shown.prs || [])])
     } else {
       w.entries.forEach(e => {
         const mx = bestWeightForEntry(e)
@@ -2652,5 +2669,5 @@ function doFinishWorkout() {
   useStore.getState().autoBackupNow()
   useUI.getState().stopRest()
   beep(snd(), 880, 0.15); beep(snd(), 1100, 0.15, 0.18); beep(snd(), 1320, 0.3, 0.36)
-  ui().openSheet(close => <FinishSummary w={w} prs={prs} e1prs={e1prs} close={close} />, { kind: 'center', locked: true })
+  ui().openSheet(close => <FinishSummary w={shown} prs={prs} e1prs={e1prs} close={close} />, { kind: 'center', locked: true })
 }

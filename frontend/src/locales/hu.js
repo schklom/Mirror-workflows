@@ -1656,4 +1656,5 @@ export default {
   'Red': 'Piros',
   'Teal': 'Türkiz',
   'Yellow': 'Sárga',
+  'Enter how long it took — at least 1 minute.': 'Add meg, meddig tartott — legalább 1 perc.',
 }

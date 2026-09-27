@@ -1588,4 +1588,14 @@ export default {
   'name + body part, and a photo or video if you like': 'ad + vücut bölgesi, istersen bir fotoğraf veya video',
   '{0} photos or videos have not reached your server yet.': '{0} fotoğraf veya video henüz sunucuna ulaşmadı.',
   '{0} photo or video has not reached your server yet.': '{0} fotoğraf veya video henüz sunucuna ulaşmadı.',
+  // --- a logged workout's own photos and videos ---
+  'Add photo or video': 'Fotoğraf veya video ekle',
+  'Up to {0} photos or videos per workout.': 'Antrenman başına en fazla {0} fotoğraf veya video.',
+  'A progress photo or a form-check video, kept with this workout.': 'Bir gelişim fotoğrafı ya da tekniğini kontrol etmek için bir video, bu antrenmanla birlikte saklanır.',
+  'Photo or video {0} of {1}': 'Fotoğraf veya video {0}/{1}',
+  'Remove this photo or video?': 'Bu fotoğraf veya video kaldırılsın mı?',
+  'Close': 'Kapat',
+  'Previous': 'Önceki',
+  '{0} photo or video': '{0} fotoğraf veya video',
+  '{0} photos or videos': '{0} fotoğraf veya video',
 }

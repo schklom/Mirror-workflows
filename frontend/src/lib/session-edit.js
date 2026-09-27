@@ -110,6 +110,9 @@ export function editCompletedSession(state, ref) {
   }
   // Worked out again on Save, from the edited sets.
   for (const k of ['vol', 'prs', '_ts']) delete active[k]
+  // The workout's photos and videos are not the editor's: they stay on the saved record, which
+  // Save spreads under the edit, and the detail sheet adds or removes them there meanwhile.
+  delete active.media
   state.active = active
   return active
 }

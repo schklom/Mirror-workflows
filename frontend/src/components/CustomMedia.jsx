@@ -159,6 +159,22 @@ export default function CustomMedia({ ex, id, compact, minimizable }) {
   </>
 }
 
+/**
+ * One stored photo, GIF or video on its own, with the same rules as an exercise's: an image
+ * shows, a GIF plays and a tap stills it, a short clip loops muted, a long one shows its poster
+ * and plays with sound and controls on a tap. What the viewer of a workout's photos and videos
+ * shows (WorkoutMedia.jsx). `m` must already have passed normalizeMediaRef.
+ */
+export function MediaView({ m, cls = 'exmedia', name = '', still = false }) {
+  if (!m) return null
+  const motionless = still || reducedMotion()
+  return m.kind === 'video'
+    ? <CustomVideo key={m.hash} m={m} cls={cls} name={name} still={motionless} />
+    : m.kind === 'gif'
+      ? <CustomGif key={m.hash} m={m} cls={cls} name={name} />
+      : <CustomImage key={m.hash} m={m} cls={cls} name={name} />
+}
+
 // The tile that stands in for a file that is not here: a spinner-less dumbbell (nothing new to
 // translate), and a tap that asks again.
 const Tile = () => <div className="exmedia-x"><Icon name="dumbbell" /></div>

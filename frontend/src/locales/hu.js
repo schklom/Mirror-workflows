@@ -1591,4 +1591,14 @@ export default {
   'name + body part, and a photo or video if you like': 'név + testrész, és ha szeretnéd, egy fotó vagy videó',
   '{0} photos or videos have not reached your server yet.': '{0} fotó vagy videó még nem ért el a szerveredre.',
   '{0} photo or video has not reached your server yet.': '{0} fotó vagy videó még nem ért el a szerveredre.',
+  // --- a logged workout's own photos and videos ---
+  'Add photo or video': 'Fotó vagy videó hozzáadása',
+  'Up to {0} photos or videos per workout.': 'Edzésenként legfeljebb {0} fotó vagy videó.',
+  'A progress photo or a form-check video, kept with this workout.': 'Egy fotó a fejlődésedről vagy egy videó a technikád ellenőrzéséhez, ehhez az edzéshez mentve.',
+  'Photo or video {0} of {1}': '{0}. fotó vagy videó / {1}',
+  'Remove this photo or video?': 'Eltávolítod ezt a fotót vagy videót?',
+  'Close': 'Bezárás',
+  'Previous': 'Előző',
+  '{0} photo or video': '{0} fotó vagy videó',
+  '{0} photos or videos': '{0} fotó vagy videó',
 }

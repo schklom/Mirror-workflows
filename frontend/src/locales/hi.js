@@ -1588,4 +1588,14 @@ export default {
   'name + body part, and a photo or video if you like': 'नाम + बॉडी पार्ट, और चाहें तो एक फ़ोटो या वीडियो',
   '{0} photos or videos have not reached your server yet.': '{0} फ़ोटो या वीडियो अभी आपके सर्वर तक नहीं पहुँचे हैं।',
   '{0} photo or video has not reached your server yet.': '{0} फ़ोटो या वीडियो अभी आपके सर्वर तक नहीं पहुँचा है।',
+  // --- a logged workout's own photos and videos ---
+  'Add photo or video': 'फ़ोटो या वीडियो जोड़ें',
+  'Up to {0} photos or videos per workout.': 'हर वर्कआउट में अधिकतम {0} फ़ोटो या वीडियो।',
+  'A progress photo or a form-check video, kept with this workout.': 'प्रगति की फ़ोटो या तकनीक जाँचने का वीडियो, इसी वर्कआउट के साथ रखा जाता है।',
+  'Photo or video {0} of {1}': 'फ़ोटो या वीडियो {0} / {1}',
+  'Remove this photo or video?': 'यह फ़ोटो या वीडियो हटाएँ?',
+  'Close': 'बंद करें',
+  'Previous': 'पिछला',
+  '{0} photo or video': '{0} फ़ोटो या वीडियो',
+  '{0} photos or videos': '{0} फ़ोटो या वीडियो',
 }

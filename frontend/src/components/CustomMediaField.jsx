@@ -45,7 +45,16 @@ export function mediaErrorText(e) {
 
 const KIND_ICON = { image: 'image', gif: 'play', video: 'play' }
 
-export default function CustomMediaField({ media, url, onChange }) {
+/**
+ * The picking half of a media field, shared by the custom-exercise editor and a workout's photos
+ * and videos (WorkoutMedia.jsx) so both run the very same ingest and store path. pick(file)
+ * turns a picked file into what the state keeps (lib/media-ingest.js: re-encoded or scrubbed,
+ * hashed, with a poster), puts its files into the local store as pending, and resolves the
+ * MediaRef — or null after it toasted why not. `note` is the dim line that says where the files
+ * will live; `canAdd` is false where nothing could keep them (a server without media, or a
+ * browser that cannot store them), `showAdd` false only where the button should not even show.
+ */
+export function useMediaPicker() {
   const user = useStore(s => s.user)
   const config = useStore(s => s.config)
   const [busy, setBusy] = useState(false)
@@ -53,21 +62,11 @@ export default function CustomMediaField({ media, url, onChange }) {
   // Whether files picked here outlive the tab: false when IndexedDB is blocked and the store runs
   // in memory — then nothing is offered, since a saved exercise would point at nothing tomorrow.
   const [storable, setStorable] = useState(true)
-  const fileRef = useRef(null)
   useEffect(() => {
     let alive = true
     mediaStore.ready().then(() => { if (alive) setStorable(mediaStore.persistent) }).catch(() => { if (alive) setStorable(false) })
     return () => { alive = false }
   }, [])
-  const m = mediaOf({ media })
-  // The draft's files stay out of the local clean-up for as long as this form is open: its
-  // one-hour grace would otherwise take a file picked in a form left open longer, and the saved
-  // exercise would point at nothing.
-  const mainHash = m?.hash, posterHash = m?.poster?.hash
-  useEffect(() => {
-    if (!mainHash) return undefined
-    return mediaStore.hold([mainHash, posterHash])
-  }, [mainHash, posterHash])
   // Signed in to a server that answered without a `media` block: it predates the feature or has
   // MEDIA_UPLOADS=0. Nothing would ever reach it. A config not known yet (an offline start) is
   // not that answer — a file picked then waits here and goes up once the server is reached. A
@@ -76,10 +75,8 @@ export default function CustomMediaField({ media, url, onChange }) {
   // says nothing about it).
   const serverLacks = (!!user || !MOBILE) && !!config && !config.media
 
-  const onFile = async ev => {
-    const file = ev.target.files && ev.target.files[0]
-    ev.target.value = ''   // picking the same file again still fires onChange
-    if (!file) return
+  const pick = async file => {
+    if (!file) return null
     setBusy(true)
     setWarning(null)
     try {
@@ -90,13 +87,40 @@ export default function CustomMediaField({ media, url, onChange }) {
       // A guest's or a local phone's copy is the only one: ask the browser not to evict it under
       // storage pressure. Best effort, and absent on plain http.
       if (!user) { try { globalThis.navigator?.storage?.persist?.()?.catch?.(() => {}) } catch { /* not offered */ } }
-      onChange({ media: out.media })
       if (out.warnings.includes('codec')) setWarning(t('This video may not play on every device — MP4 (H.264) plays everywhere.'))
+      return out.media
     } catch (e) {
       toast(mediaErrorText(e))
+      return null
     } finally {
       setBusy(false)
     }
+  }
+  const note = !storable ? t('This browser cannot store photos or videos here.')
+    : serverLacks ? t('Your server does not store photos and videos yet.')
+      : !user ? t('Kept on this device only — Export with photos & videos keeps a copy.')
+        : null
+  return { pick, busy, warning, setWarning, note, showAdd: !serverLacks, canAdd: !busy && storable && !serverLacks }
+}
+
+export default function CustomMediaField({ media, url, onChange }) {
+  const { pick, busy, warning, setWarning, note, showAdd, canAdd } = useMediaPicker()
+  const fileRef = useRef(null)
+  const m = mediaOf({ media })
+  // The draft's files stay out of the local clean-up for as long as this form is open: its
+  // one-hour grace would otherwise take a file picked in a form left open longer, and the saved
+  // exercise would point at nothing.
+  const mainHash = m?.hash, posterHash = m?.poster?.hash
+  useEffect(() => {
+    if (!mainHash) return undefined
+    return mediaStore.hold([mainHash, posterHash])
+  }, [mainHash, posterHash])
+
+  const onFile = async ev => {
+    const file = ev.target.files && ev.target.files[0]
+    ev.target.value = ''   // picking the same file again still fires onChange
+    const got = await pick(file)
+    if (got) onChange({ media: got })
   }
 
   // "0:07 · 2.4 MB": the length of a clip or an animation, and the size of the file itself (the
@@ -106,10 +130,6 @@ export default function CustomMediaField({ media, url, onChange }) {
   const subtitle = m
     ? <span className="cmf-sub"><Icon name={KIND_ICON[m.kind]} />{sizeLine}</span>
     : t('Optional — a picture makes it easier to spot in a list.')
-  const note = !storable ? t('This browser cannot store photos or videos here.')
-    : serverLacks ? t('Your server does not store photos and videos yet.')
-      : !user ? t('Kept on this device only — Export with photos & videos keeps a copy.')
-        : null
 
   return <div className="cmf">
     <Row icon="image" iconTint="var(--blue)" title={t('Photo, GIF or video')} subtitle={subtitle}>
@@ -117,7 +137,7 @@ export default function CustomMediaField({ media, url, onChange }) {
         {m && <span className="cmf-thumb"><CustomThumb ex={{ custom: true, media: m }} /></span>}
         {/* Hidden on a server that will never take a file; shown but off where this browser
             cannot keep one, with the note below saying why. */}
-        {!serverLacks && <Button variant="tinted" size="sm" icon={busy ? undefined : 'image'} disabled={busy || !storable} onClick={() => fileRef.current?.click()}>
+        {showAdd && <Button variant="tinted" size="sm" icon={busy ? undefined : 'image'} disabled={!canAdd} onClick={() => fileRef.current?.click()}>
           {busy ? t('Loading…') : m ? t('Change') : t('Add')}
         </Button>}
         {m && <Button variant="ghost" size="sm" icon="xmark" aria-label={t('Remove')} title={t('Remove')} disabled={busy} onClick={() => { setWarning(null); onChange({ media: null }) }} />}

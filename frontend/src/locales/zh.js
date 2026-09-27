@@ -1588,4 +1588,14 @@ export default {
   'name + body part, and a photo or video if you like': '名称 + 身体部位，可附照片或视频',
   '{0} photos or videos have not reached your server yet.': '有 {0} 个照片或视频尚未到达你的服务器。',
   '{0} photo or video has not reached your server yet.': '有 {0} 个照片或视频尚未到达你的服务器。',
+  // --- a logged workout's own photos and videos ---
+  'Add photo or video': '添加照片或视频',
+  'Up to {0} photos or videos per workout.': '每次训练最多 {0} 个照片或视频。',
+  'A progress photo or a form-check video, kept with this workout.': '进度照片或动作检查视频，与本次训练一起保存。',
+  'Photo or video {0} of {1}': '第 {0} 个照片或视频，共 {1} 个',
+  'Remove this photo or video?': '移除这个照片或视频？',
+  'Close': '关闭',
+  'Previous': '上一个',
+  '{0} photo or video': '{0} 个照片或视频',
+  '{0} photos or videos': '{0} 个照片或视频',
 }

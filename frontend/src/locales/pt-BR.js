@@ -943,6 +943,8 @@ export const PT_BR_OVERRIDES = {
   'name + body part, and a photo or video if you like': 'nome + parte do corpo, e uma foto ou vídeo se quiser',
   '{0} photos or videos have not reached your server yet.': '{0} fotos ou vídeos ainda não chegaram ao seu servidor.',
   '{0} photo or video has not reached your server yet.': '{0} foto ou vídeo ainda não chegou ao seu servidor.',
+  // --- a logged workout's own photos and videos ---
+  'A progress photo or a form-check video, kept with this workout.': 'Uma foto de progresso ou um vídeo para conferir a técnica, salvos com este treino.',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

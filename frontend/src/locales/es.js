@@ -1588,4 +1588,14 @@ export default {
   'name + body part, and a photo or video if you like': 'nombre + parte del cuerpo, y una foto o vídeo si quieres',
   '{0} photos or videos have not reached your server yet.': '{0} fotos o vídeos aún no han llegado a tu servidor.',
   '{0} photo or video has not reached your server yet.': '{0} foto o vídeo aún no ha llegado a tu servidor.',
+  // --- a logged workout's own photos and videos ---
+  'Add photo or video': 'Añadir foto o vídeo',
+  'Up to {0} photos or videos per workout.': 'Hasta {0} fotos o vídeos por entrenamiento.',
+  'A progress photo or a form-check video, kept with this workout.': 'Una foto de progreso o un vídeo para revisar la técnica, guardados con este entrenamiento.',
+  'Photo or video {0} of {1}': 'Foto o vídeo {0} de {1}',
+  'Remove this photo or video?': '¿Quitar esta foto o vídeo?',
+  'Close': 'Cerrar',
+  'Previous': 'Anterior',
+  '{0} photo or video': '{0} foto o vídeo',
+  '{0} photos or videos': '{0} fotos o vídeos',
 }

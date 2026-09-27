@@ -1599,4 +1599,14 @@ export default {
   'name + body part, and a photo or video if you like': 'ชื่อ + ส่วนร่างกาย และรูปหรือวิดีโอถ้าต้องการ',
   '{0} photos or videos have not reached your server yet.': 'มีรูปภาพหรือวิดีโอ {0} รายการที่ยังไม่ถึงเซิร์ฟเวอร์ของคุณ',
   '{0} photo or video has not reached your server yet.': 'มีรูปภาพหรือวิดีโอ {0} รายการที่ยังไม่ถึงเซิร์ฟเวอร์ของคุณ',
+  // --- a logged workout's own photos and videos ---
+  'Add photo or video': 'เพิ่มรูปภาพหรือวิดีโอ',
+  'Up to {0} photos or videos per workout.': 'สูงสุด {0} รูปภาพหรือวิดีโอต่อการออกกำลังกายหนึ่งครั้ง',
+  'A progress photo or a form-check video, kept with this workout.': 'รูปความคืบหน้าหรือวิดีโอตรวจท่าทาง เก็บไว้กับการออกกำลังกายครั้งนี้',
+  'Photo or video {0} of {1}': 'รูปภาพหรือวิดีโอที่ {0} จาก {1}',
+  'Remove this photo or video?': 'ลบรูปภาพหรือวิดีโอนี้ไหม',
+  'Close': 'ปิด',
+  'Previous': 'ก่อนหน้า',
+  '{0} photo or video': 'รูปภาพหรือวิดีโอ {0} รายการ',
+  '{0} photos or videos': 'รูปภาพหรือวิดีโอ {0} รายการ',
 }

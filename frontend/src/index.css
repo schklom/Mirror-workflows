@@ -826,6 +826,46 @@ body.chips-dragging *{cursor:inherit}
 .cmf-sub .icn{font-size:13px}
 .cmf-note{margin:0 4px 6px;line-height:1.35}
 .cmf-link{margin-top:4px}
+/* A logged workout's photos and videos (WorkoutMedia.jsx): a grid of posters with an Add tile,
+   and the full-screen viewer they open in. Logical properties only, so RTL mirrors by itself. */
+.wmedia{margin:4px 0 12px}
+.wmedia-h{margin:0 0 6px}
+.wmedia-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:8px}
+.wmedia-item,.wmedia-add{
+  position:relative;aspect-ratio:1;border:0;padding:0;border-radius:10px;overflow:hidden;
+  background:var(--surface-2);color:var(--label-2);cursor:pointer;font:inherit;
+}
+.wmedia-item .thumb{width:100%;height:100%;border-radius:0;display:block}
+.wmedia-item .thumb-x{font-size:22px}
+.wmedia-kind{
+  position:absolute;inset-inline-end:5px;bottom:5px;width:22px;height:22px;border-radius:99px;
+  display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.55);color:#fff;font-size:12px;
+}
+.wmedia-add{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  color:var(--acc);font-size:11px;line-height:1.2;text-align:center;padding:6px;
+  border:1.5px dashed var(--sep)}
+.wmedia-add .icn{font-size:20px}
+.wmedia-add:disabled{opacity:.5;cursor:default}
+.wmedia-note{margin:6px 2px 0;line-height:1.35}
+.wrow-media{display:inline-flex;align-items:center;gap:3px;font-size:12px;color:var(--label-2);flex:none}
+.wrow-media .icn{font-size:13px}
+.mviewer{
+  position:absolute;inset:0;background:#000;color:#fff;display:flex;flex-direction:column;
+  padding:var(--sat) 0 var(--sab);animation:pop-fade .2s var(--ease);
+}
+@keyframes pop-fade{from{opacity:0}to{opacity:1}}
+.mviewer-bar{display:flex;align-items:center;justify-content:space-between;padding:6px 8px;flex:none}
+.mviewer .iconbtn{color:#fff;background:rgba(255,255,255,.12)}
+.mviewer-count{font-size:14px;font-variant-numeric:tabular-nums;opacity:.85}
+.mviewer-stage{flex:1;min-height:0;display:flex}
+.exmedia.viewer{flex:1;min-width:0;margin:0;border-radius:0;background:#000;display:flex;align-items:center;justify-content:center}
+.exmedia.viewer img,.exmedia.viewer video{width:100%;height:100%;max-height:100%;object-fit:contain;background:#000}
+.exmedia.viewer .exmedia-x{height:100%;color:rgba(255,255,255,.5)}
+.mviewer-nav{display:flex;justify-content:space-between;padding:8px 12px;flex:none}
+[dir="rtl"] .mviewer-nav .icn{transform:scaleX(-1)}
+.mviewer-ask{flex:none;padding:12px 16px;background:rgba(255,255,255,.08)}
+.mviewer-ask-t{font-weight:600;margin-bottom:10px}
+.mviewer-ask-b{display:flex;gap:8px;justify-content:flex-end}
 
 .sethead{
   display:flex;align-items:center;gap:8px;padding:0 0 6px;

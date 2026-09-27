@@ -1585,4 +1585,14 @@ export default {
   'name + body part, and a photo or video if you like': 'назва + частина тіла, а за бажання — фото чи відео',
   '{0} photos or videos have not reached your server yet.': 'Фото й відео, які ще не дійшли до твого сервера: {0}.',
   '{0} photo or video has not reached your server yet.': 'Фото чи відео, яке ще не дійшло до твого сервера: {0}.',
+  // --- a logged workout's own photos and videos ---
+  'Add photo or video': 'Додати фото чи відео',
+  'Up to {0} photos or videos per workout.': 'Не більше {0} фото чи відео на тренування.',
+  'A progress photo or a form-check video, kept with this workout.': 'Фото прогресу чи відео для перевірки техніки, збережені разом із цим тренуванням.',
+  'Photo or video {0} of {1}': 'Фото чи відео {0} з {1}',
+  'Remove this photo or video?': 'Видалити це фото чи відео?',
+  'Close': 'Закрити',
+  'Previous': 'Назад',
+  '{0} photo or video': 'Фото чи відео: {0}',
+  '{0} photos or videos': 'Фото й відео: {0}',
 }

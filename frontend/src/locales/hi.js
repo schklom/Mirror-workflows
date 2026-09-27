@@ -1622,4 +1622,8 @@ export default {
   'Its {0} photos or videos are deleted with it.': 'इसकी {0} फ़ोटो या वीडियो भी इसके साथ हट जाएँगी।',
   'Its photo or video moves to the new workout.': 'इसकी फ़ोटो या वीडियो नए वर्कआउट में चली जाएगी।',
   'Its {0} photos or videos move to the new workout.': 'इसकी {0} फ़ोटो या वीडियो नए वर्कआउट में चली जाएँगी।',
+  'The server has 1 workout that is not in this backup, logged since it was made or on another device. Replacing deletes it.': 'सर्वर पर 1 वर्कआउट है जो इस बैकअप में नहीं है — बैकअप के बाद या किसी दूसरे डिवाइस पर दर्ज। बदलने से वह हट जाएगा।',
+  'The server has {0} workouts that are not in this backup, logged since it was made or on another device. Replacing deletes them.': 'सर्वर पर {0} वर्कआउट हैं जो इस बैकअप में नहीं हैं — बैकअप के बाद या किसी दूसरे डिवाइस पर दर्ज। बदलने से वे हट जाएँगे।',
+  'Replace anyway': 'फिर भी बदलें',
+  'Merge them in': 'उन्हें मिलाएँ',
 }

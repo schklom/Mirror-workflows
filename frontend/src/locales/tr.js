@@ -1622,4 +1622,8 @@ export default {
   'Its {0} photos or videos are deleted with it.': '{0} fotoğrafı veya videosu da onunla birlikte silinir.',
   'Its photo or video moves to the new workout.': 'Fotoğrafı veya videosu yeni antrenmana taşınır.',
   'Its {0} photos or videos move to the new workout.': '{0} fotoğrafı veya videosu yeni antrenmana taşınır.',
+  'The server has 1 workout that is not in this backup, logged since it was made or on another device. Replacing deletes it.': 'Sunucuda bu yedekte olmayan 1 antrenman var; yedekten sonra ya da başka bir cihazda kaydedilmiş. Değiştirmek onu siler.',
+  'The server has {0} workouts that are not in this backup, logged since it was made or on another device. Replacing deletes them.': 'Sunucuda bu yedekte olmayan {0} antrenman var; yedekten sonra ya da başka bir cihazda kaydedilmiş. Değiştirmek onları siler.',
+  'Replace anyway': 'Yine de değiştir',
+  'Merge them in': 'Birleştir',
 }

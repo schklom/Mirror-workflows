@@ -1622,4 +1622,8 @@ export default {
   'Its {0} photos or videos are deleted with it.': 'Sus {0} fotos o vídeos también se eliminan.',
   'Its photo or video moves to the new workout.': 'Su foto o vídeo pasa al nuevo entrenamiento.',
   'Its {0} photos or videos move to the new workout.': 'Sus {0} fotos o vídeos pasan al nuevo entrenamiento.',
+  'The server has 1 workout that is not in this backup, logged since it was made or on another device. Replacing deletes it.': 'El servidor tiene 1 entrenamiento que no está en esta copia, registrado después de hacerla o en otro dispositivo. Reemplazar lo elimina.',
+  'The server has {0} workouts that are not in this backup, logged since it was made or on another device. Replacing deletes them.': 'El servidor tiene {0} entrenamientos que no están en esta copia, registrados después de hacerla o en otro dispositivo. Reemplazar los elimina.',
+  'Replace anyway': 'Reemplazar igualmente',
+  'Merge them in': 'Combinarlos',
 }

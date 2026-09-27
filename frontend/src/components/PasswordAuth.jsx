@@ -73,7 +73,7 @@ const dismissed = e => e?.name === 'NotAllowedError' || e?.name === 'AbortError'
 // merges what this device kept for it (adoptProfile).
 async function signedIn(u, close) {
   const st = useStore.getState()
-  st.setUser(u)
+  st.setUser(u, { adopt: true })
   close()
   await st.adoptProfile(askAddDeviceData)
   toast(t('Welcome back, {0}', u.name))

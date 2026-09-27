@@ -129,7 +129,7 @@ export async function passkeySignIn() {
   const st = useStore.getState()
   try {
     const u = await passkeyLogin()
-    st.setUser(u)
+    st.setUser(u, { adopt: true })
     await st.adoptProfile(askAddDeviceData)
     toast(t('Welcome back, {0}', u.name))
   } catch (e) { if (e.name !== 'NotAllowedError' && e.name !== 'AbortError') toast(e.message || t('Sign-in failed')) }

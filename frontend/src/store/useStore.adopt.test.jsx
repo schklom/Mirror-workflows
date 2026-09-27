@@ -39,7 +39,7 @@ describe('adoptProfile — sign-in takes the server profile', () => {
     expect(S.unit).toBe('lb'); expect(S.restSec).toBe(60)
     expect(S.workouts.map(w => w.id)).toEqual(['w1'])
     expect(S.routines.map(x => x.id)).toEqual(['r1'])
-    expect(S.active).toEqual({ id: 'running' })   // the in-progress session stays with the device
+    expect(S.active).toMatchObject({ id: 'running' })   // the in-progress session stays with the device
     expect(puts()).toHaveLength(0)
     expect(sync()).toEqual({ rev: 4, ts: 100 })
     expect(r).toEqual({ adopted: true, added: false })
@@ -48,6 +48,7 @@ describe('adoptProfile — sign-in takes the server profile', () => {
   it('adds the device\'s entries to the profile when asked to, keeping the profile\'s settings and plan', async () => {
     signedIn(clone(guest))
     api.mockResolvedValueOnce({ state: clone(server), rev: 4 })
+    api.mockResolvedValueOnce({ state: clone(server), rev: 4 })   // read again once answered
     api.mockResolvedValueOnce({ ok: true, rev: 5 })
     await useStore.getState().adoptProfile(async () => true)
     const S = useStore.getState().S
@@ -205,5 +206,73 @@ describe('revision check on resume', () => {
     await new Promise(r => setTimeout(r, 0))
     expect(useStore.getState().sync.offline).toBe(true)
     expect(useStore.getState().S.workouts.map(w => w.id)).toEqual(['w1'])
+  })
+})
+
+// QA, v1.3.9: the sign-in's question was open while a pull ran, and the device's copy — newer by
+// its stamp — was pushed over the profile. The web sign-ins hold sync just the same.
+describe('web sign-in: nothing syncs while the question is open', () => {
+  it('no pull, push or revision check before the answer; Keep takes the server copy as it is then', async () => {
+    signedIn(clone(guest), { user: null })
+    useStore.getState().setUser({ id: 'user-1' }, { adopt: true })
+    expect(JSON.parse(localStorage.getItem('gym_adopt'))).toMatchObject({ uid: 'user-1', rejoined: false })
+    let answer
+    const ask = vi.fn(() => new Promise(r => { answer = r }))
+    api.mockResolvedValueOnce({ state: clone(server), rev: 4 })
+    const done = useStore.getState().adoptProfile(ask)
+    await vi.waitFor(() => expect(ask).toHaveBeenCalled())
+
+    await useStore.getState().pullState()
+    await useStore.getState().pushState()
+    window.dispatchEvent(new Event('online'))
+    await new Promise(r => setTimeout(r, 10))
+    expect(paths()).toEqual(['/api/data'])
+
+    // another device wrote while the question was open
+    api.mockResolvedValueOnce({ state: { ...clone(server), _ts: 200, workouts: [workout('w1'), workout('w-other', '2026-09-20')], _rev: 5 }, rev: 5 })
+    answer(false)
+    await done
+    expect(puts()).toHaveLength(0)
+    expect(useStore.getState().S.workouts.map(w => w.id)).toEqual(['w1', 'w-other'])
+    expect(sync().rev).toBe(5)
+    expect(localStorage.getItem('gym_adopt')).toBeNull()
+  })
+
+  it('a sign-in whose adoption could not reach the server keeps sync held and asks again on the next check', async () => {
+    signedIn(clone(guest), { user: null })
+    useStore.getState().setUser({ id: 'user-1' }, { adopt: true })
+    api.mockRejectedValueOnce(netErr())
+    await expect(useStore.getState().adoptProfile(vi.fn())).rejects.toThrow()
+    await useStore.getState().pullState()
+    expect(puts()).toHaveLength(0)
+    expect(paths()).toEqual(['/api/data'])
+    // back online: the check runs the adoption again, question and all
+    const ask = vi.fn(async () => false)
+    api.mockResolvedValueOnce({ state: clone(server), rev: 4 })
+    await useStore.getState().resumeAdoption(ask)
+    expect(ask).toHaveBeenCalledWith({ workouts: 1, bodyweight: 0, customEx: 0 })
+    expect(puts()).toHaveLength(0)
+    expect(useStore.getState().S.workouts.map(w => w.id)).toEqual(['w1'])
+    expect(localStorage.getItem('gym_adopt')).toBeNull()
+  })
+})
+
+// QA, v1.3.9: "Back online — synced with the server" after switching accounts — the push the
+// previous account could not make offline was announced by the next account's first push.
+describe('the back-online toast belongs to the account that was offline', () => {
+  it('is not said after another account signs in', async () => {
+    localStorage.setItem('gym_owner', 'user-1')
+    signedIn({ ...clone(DEF), _ts: 100, workouts: [workout('w1')] })
+    useStore.getState().update(s => { s.restSec = 75 })
+    api.mockRejectedValueOnce(netErr())
+    await useStore.getState().pushState()
+    expect(useStore.getState().sync.offline).toBe(true)
+
+    useStore.getState().setUser({ id: 'user-2', name: 'Two' })
+    useStore.getState().update(s => { s.workouts.push(workout('w-two')) })
+    api.mockResolvedValueOnce({ ok: true, rev: 1 })
+    await useStore.getState().pushState()
+    await new Promise(r => setTimeout(r, 10))
+    expect(toast).not.toHaveBeenCalledWith('Back online — synced with the server.')
   })
 })

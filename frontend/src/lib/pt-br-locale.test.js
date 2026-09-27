@@ -65,5 +65,8 @@ describe('Brazilian Portuguese locale', () => {
     expect(ptBR['Sign-in e-mail']).toBe('E-mail de login')
     for (const key of ['Name or e-mail', 'Sign in with “{0}” instead of your name', '“{0}” is saved, but signs in only once this profile has a password.', 'Type it at “Sign in with password” instead of your profile name. Nothing is ever sent to it — a forgotten password is still reset by your admin.'])
       expect(key in PT_BR_OVERRIDES, key).toBe(true)
+    // So is the backup import's warning about the server's workouts: pt-PT says cópia and registado.
+    for (const key of ['The server has 1 workout that is not in this backup, logged since it was made or on another device. Replacing deletes it.', 'The server has {0} workouts that are not in this backup, logged since it was made or on another device. Replacing deletes them.', 'Replace anyway', 'Merge them in'])
+      expect(key in PT_BR_OVERRIDES, key).toBe(true)
   })
 })

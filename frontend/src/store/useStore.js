@@ -8,6 +8,7 @@ import { rememberDefaultLang } from '../lib/default-lang.js'
 import { guestAllowed } from '../lib/guest.js'
 import { MOBILE, initReminderSync, nativeLoad, nativeSave, onAppActive, readJsonFile, syncReminder, writeAutoBackup, writeJsonFile } from '../lib/mobile.js'
 import { mergeStates, localExtras, stampRoutines, stampCustomEx } from '../lib/sync-merge.js'
+import { convertStateUnit } from '../lib/units.js'
 import { pendingRefCount, settleMedia, loadPending } from '../lib/media-owed.js'
 import { referencedHashes } from '../lib/media-refs.js'
 import { mediaStore, mediaStoreInUse } from '../lib/media-store.js'
@@ -42,6 +43,13 @@ const STASH_FILE = 'opengym-stash.json'
 // boot sends the logout again instead of asking /api/me, which would sign the browser straight
 // back in with no passkey or password. Any sign-in replaces the cookie and clears the mark.
 const LOGOUT_OWED_KEY = 'gym_logout_owed'
+// A sign-in (or a phone's pairing) whose question about this device's own entries has not been
+// answered yet (adoptProfile): { uid, rejoined, alwaysAsk }. Until it is, nothing syncs — the copy
+// on this device may still be a guest's, and a pull or push in that window used to send it over the
+// account's profile (QA, v1.3.9: a phone's one workout replaced the twelve on the server while the
+// question was open). Kept in storage so an app killed with the question open asks it again on
+// the next start instead of pushing the copy it still holds.
+const ADOPT_KEY = 'gym_adopt'
 // Reads the mark with no argument, sets or clears it with one. Storage that cannot be read owes nothing.
 function logoutOwed(on) {
   try {
@@ -55,6 +63,10 @@ function logoutOwed(on) {
 const MIRROR_OWNER_FILE = 'opengym-state-owner.json'
 const CHECK_MIN_MS = 3000    // rev checks closer together than this are the same event (focus + visibility)
 const POLL_MS = 30000        // while the app is open and signed in, ask the server for its revision this often
+const AUTO_BACKUP_SOON_MS = 2000   // several photos picked at once make one backup
+// Which photos and videos each workout holds, as one string to compare.
+const workoutMediaKey = S => (Array.isArray(S?.workouts) ? S.workouts : [])
+  .map(w => (Array.isArray(w?.media) ? w.media.map(m => m?.hash || '').join(',') : '')).join('|')
 export const DEF = {
   unit: 'kg', restSec: 90, restPauseSec: 15, sound: true, soundOnSilent: false, timerFlash: false, timedSetOvertime: false, keepAwake: true, lang: 'en',
   theme: 'dark', accent: 'lime', body: 'male', targetW: null,
@@ -230,12 +242,22 @@ export const useStore = create((set, get) => {
   let lastCheck = 0
   let pollTm = null
   let offlineChanges = false   // a push failed for lack of network — the next one that lands says so
+  let backupTm = null      // phone: the auto-backup after workout media changed, on its debounce
+  let adoptHold = false    // a sign-in's adoption has not decided yet: no pull, no push (ADOPT_KEY)
+  let adoptClaimed = false // a sign-in is on its way to adoptProfile: nothing else starts one
+  let adopting = null      // the adoptProfile in flight
   let rejoined = false     // the account signing in is the one this copy already belongs to (setUser)
   let pairedBase = null    // mobile build: the address of the paired server, while there is one
   let fpOf = null          // the copy the stored fingerprint was last taken of (confirmed)
   let keeping = null       // phone: the file write of what keepForPrevious set aside, until it lands
   let mirrorQ = Promise.resolve()   // phone: the file mirror's writes, one after the other (saveMirror)
 
+  const readAdopt = () => { try { return JSON.parse(localStorage.getItem(ADOPT_KEY)) || null } catch { return null } }
+  const writeAdopt = v => { try { if (v) localStorage.setItem(ADOPT_KEY, JSON.stringify(v)); else localStorage.removeItem(ADOPT_KEY) } catch { /* the hold in memory still stands */ } }
+  // The adoption owed by the account signed in now, if there is one.
+  const adoptOwed = () => { const m = readAdopt(); const u = get()?.user; return m && u && m.uid === u.id ? m : null }
+  // The question is answered: sync as usual from here.
+  const releaseAdopt = () => { adoptHold = false; adoptClaimed = false; writeAdopt(null) }
   const readStoredSync = () => { try { return JSON.parse(localStorage.getItem(SYNC_KEY)) || null } catch { return null } }
   const storedOwed = () => { try { return localStorage.getItem(DIRTY_KEY) === '1' } catch { return false } }
 
@@ -423,6 +445,9 @@ export const useStore = create((set, get) => {
     if (!get().user || !get().ready || document.visibilityState === 'hidden') return
     if (!force && Date.now() - lastCheck < CHECK_MIN_MS) return
     lastCheck = Date.now()
+    // A sign-in still deciding what becomes of this copy: no check of its own. One whose
+    // adoption could not reach the server tries again here, question and all.
+    if (adoptHold) { if (!adopting && !adoptClaimed && adoptOwed()) get().resumeAdoption(); return }
     if (pulling) return pulling
     const { base } = metaOf()
     if (!base || owes()) return get().pullState()
@@ -454,10 +479,18 @@ export const useStore = create((set, get) => {
   const mergeInto = (local, remote, rev) => {
     const ts = metaOf().base?.ts || 0
     const merged = Object.assign(clone(DEF), mergeStates(local, remote))
-    merged.active = local.active || null
+    merged.active = carryActive(local, merged)
     persist(merged, false)
     if (rev == null) dropSync()
     else writeSync(rev, ts)
+  }
+  // The workout running on this device, carried from its copy into the one replacing it — in that
+  // copy's unit: a merge or a pull can bring the other device's switch to lb along, and a session
+  // left in kg would then log kg numbers under an lb label.
+  const carryActive = (from, to) => {
+    const a = from?.active || null
+    const fu = from?.unit || 'kg', tu = to?.unit || 'kg'
+    return !a || fu === tu ? a : convertStateUnit({ unit: fu, active: a }, tu).active
   }
   // Take the server's copy as this device's own, timestamp and all (see persist).
   const adopt = (next, rev) => { persist(next, false, false); writeSync(rev, next._ts); markOwed(false) }
@@ -576,6 +609,7 @@ export const useStore = create((set, get) => {
   // that replaces it descends from no revision and owes nothing.
   const forgetSync = () => {
     meta.set(get().S, { base: null, owed: false })
+    offlineChanges = false   // a push the previous account owed is not this one's to announce
     try { for (const k of [SYNC_KEY, DIRTY_KEY, SYNCED_AT_KEY, SYNCED_FP_KEY]) localStorage.removeItem(k) } catch { /* nothing to keep */ }
     fpOf = null
   }
@@ -587,6 +621,7 @@ export const useStore = create((set, get) => {
     get().setUser(null)
     localStorage.removeItem('gym_guest')
     forgetSync()
+    releaseAdopt()   // the copy it was about is gone
     localStorage.removeItem(KEY)
     // Signed out, this device is nobody's: the sign-in screen is in the instance's language.
     persist(freshState(), false)
@@ -710,6 +745,101 @@ export const useStore = create((set, get) => {
     await writeStashes(all)
   }
 
+  // adoptProfile's work (see there). Every way out answers the question — releaseAdopt — before
+  // the decision is written and pushed; only a server that could not be reached leaves it owed.
+  const runAdopt = async (ask, { alwaysAsk = false } = {}) => {
+    if (pulling) await pulling
+    // An adoption resumed after a restart is the sign-in's own: whether this copy already belonged
+    // to the account was decided then — boot's sign-in sees the owner that sign-in wrote.
+    const owedMark = adoptOwed()
+    const sameAccount = owedMark ? !!owedMark.rejoined : rejoined
+    if (owedMark?.alwaysAsk) alwaysAsk = true
+    let res
+    try { res = await api('/api/data') }
+    catch (e) {
+      failed(e)
+      // Nothing decided: with a sign-in that marked it, sync stays held and the next check asks
+      // again (checkRev); a bare call has nothing to hold for.
+      if (!owedMark) releaseAdopt()
+      throw e   // the caller's toast: sign-in needed the server anyway
+    }
+    let { state, rev } = res
+    reached()
+    let asked = false
+    const askAbout = async extras => {
+      if (!(extras.workouts || extras.bodyweight || extras.customEx) || typeof ask !== 'function') return false
+      asked = true
+      return !!(await ask(extras))
+    }
+    // The question can stay open for minutes: what is applied is the server's copy once it
+    // closes. Unreachable by then, the copy read before it stands — its revision is older than
+    // the server's, so the next pull still brings in what changed.
+    const reread = async () => {
+      if (!asked) return
+      try { const r = await api('/api/data'); if (r && r.state) ({ state, rev } = r) } catch { /* the first read */ }
+    }
+    const takeServer = () => {
+      const copy = Object.assign(clone(DEF), state)
+      copy.active = carryActive(get().S, copy)
+      if (rev != null) adopt(copy, rev)
+      else { dropSync(); persist(copy, false, false); markOwed(false) }
+      confirmed(get().S)
+    }
+    const S0 = get().S
+    if (!state) {
+      const push = hasData(S0) && (!alwaysAsk || sameAccount || await askAbout(localExtras(S0, null)))
+      releaseAdopt()
+      if (hasData(get().S) && !push) {
+        takeServer()
+        await applyStash()
+        return { adopted: true, added: false }
+      }
+      markOwed(false)
+      if (push) { if (rev != null) writeSync(rev, 0); forceNext = true; await get().pushState() }
+      else { if (rev != null) writeSync(rev, 0); confirmed(get().S) }
+      await applyStash()
+      return { adopted: false, added: false }
+    }
+    if (sameAccount) {
+      // This copy already belongs to the account: a phone paired again after its token was
+      // refused, a browser signed in again after its session ended. It may hold days the server
+      // never saw — new workouts, but also edits to routines and settings, which the question
+      // below never covered. Merged like a conflict between two devices (the union of entries,
+      // the later edit of each routine, the newer copy's settings) and pushed against the
+      // server's revision. Only a copy with nothing of its own since its base takes the
+      // server's as it is, so an entry deleted elsewhere meanwhile stays deleted.
+      releaseAdopt()
+      const S = get().S
+      const { base, owed } = metaOf()
+      if (!hasData(S) || (!owed && base && !localChanged(S))) {
+        takeServer()
+        await applyStash()
+        return { adopted: true, added: false, merged: false }
+      }
+      mergeInto(S, state, rev)
+      await get().pushState()
+      await applyStash()
+      return { adopted: true, added: false, merged: true }
+    }
+    const keep = await askAbout(localExtras(S0, state))
+    await reread()
+    releaseAdopt()
+    if (keep) {
+      const S = get().S
+      const merged = Object.assign(clone(DEF), mergeStates(state, S, { prefer: 'a' }))
+      merged.active = carryActive(S, merged)
+      persist(merged, false)
+      if (rev != null) writeSync(rev, 0)
+      else dropSync()
+      await get().pushState()
+      await applyStash()
+      return { adopted: true, added: true }
+    }
+    takeServer()
+    await applyStash()
+    return { adopted: true, added: false }
+  }
+
   // The file mirror is the durable copy: WebView storage can be evicted while the files
   // directory survives. A mirror newer than what localStorage holds is a change this phone made
   // and may not have sent — it is taken, and owed. Only the paired account's own, though, and
@@ -740,6 +870,7 @@ export const useStore = create((set, get) => {
   if (referencedHashes(S0).size) loadPending()
   meta.set(S0, { base: readStoredSync(), owed: storedOwed() })
   const user0 = (() => { try { return JSON.parse(localStorage.getItem('gym_user')) || null } catch { return null } })()
+  adoptHold = !!user0 && readAdopt()?.uid === user0.id
   const sync0 = { offline: false, pending: storedOwed(), auth: false, lastError: null, lastSynced: (() => { try { return +localStorage.getItem(SYNCED_AT_KEY) || 0 } catch { return 0 } })(), server: serverBase() }
   sync0.status = statusOf(sync0, user0)
 
@@ -774,6 +905,12 @@ export const useStore = create((set, get) => {
       stampRoutines(prev.routines, S.routines)
       stampCustomEx(prev.customEx, S.customEx)
       persist(S, push)
+      // A photo or video added to (or taken off) a workout is a change worth the day's backup too:
+      // the one finishing wrote went before the finish screen's pictures (autoBackupNow).
+      if (MOBILE && S.autoBackup && workoutMediaKey(prev) !== workoutMediaKey(S)) {
+        clearTimeout(backupTm)
+        backupTm = setTimeout(() => { backupTm = null; get().autoBackupNow() }, AUTO_BACKUP_SOON_MS)
+      }
     },
     // An edit of a saved workout (lib/session-edit.js) is saved or dropped like any other change:
     // the store's own sync takes it to the server, and a conflict on the way is settled by
@@ -790,6 +927,57 @@ export const useStore = create((set, get) => {
       let removed = false
       get().update(S => { removed = deleteEditedWorkout(S) })
       return removed
+    },
+    // Settings → unit. `convert` walks every stored weight into the new unit (lib/units.js); off,
+    // only the label changes. Either way the choice is stamped (`unitSet`), so a merge with a
+    // copy still in the old unit brings that copy over rather than mixing the two (lib/sync-merge.js),
+    // and a conversion goes to the server at once, as an ordinary conditional push: another device
+    // still logging in the old unit meets it on its very next push, and a copy it pushed first is
+    // converted before it is merged in.
+    setUnit(to, { convert = true } = {}) {
+      const S0 = get().S
+      if ((S0.unit || 'kg') === to) return null
+      const S = clone(convert ? convertStateUnit(S0, to) : { ...S0, unit: to })
+      S.unitSet = { at: Date.now(), convert }
+      persist(S, true)
+      return convert && get().ready ? get().pushState() : null
+    },
+    // Settings → Reset everything: the empty copy, stamped with when (`resetAt`). Pushed as a
+    // replace, and the stamp is what makes it hold: a device that has not seen the reset and
+    // still pushes a change of its own gets the 409, and its merge keeps only what that device
+    // made after the reset instead of bringing the whole profile back (lib/sync-merge.js).
+    resetEverything() {
+      const S = clone(DEF)
+      S.resetAt = Date.now()
+      get().replaceState(S, !!get().user)
+    },
+    // Before a backup replaces this copy (Settings → Import): the workouts the server holds that the
+    // backup does not — logged since it was made, or on another device meanwhile. The import is a
+    // deliberate replace and deletes them from the profile; the confirm says so and offers to merge
+    // them in instead (importBackup). null when there are none, when nobody is signed in, or when
+    // the server cannot be asked — the replace then goes as it always has.
+    async importConflict(backup) {
+      if (!get().user) return null
+      let res
+      try { res = await api('/api/data') } catch { return null }
+      const state = res?.state
+      if (!state) return null
+      const key = w => (w?.id != null ? w.id : `${w?.d}|${w?.start}`)
+      const inBackup = new Set((Array.isArray(backup?.workouts) ? backup.workouts : []).map(key))
+      const workouts = (Array.isArray(state.workouts) ? state.workouts : []).filter(w => w && !inBackup.has(key(w))).length
+      return workouts ? { workouts, state, rev: res.rev } : null
+    },
+    // A backup in place of this copy. With `mergeWith` — importConflict's answer — the server's copy
+    // is merged in instead of replaced: the backup's settings and plan, every entry of both
+    // (mergeStates with the backup preferred, in the backup's unit), pushed against that revision
+    // like any other change, so a workout logged meanwhile elsewhere is not lost either.
+    importBackup(backup, { mergeWith } = {}) {
+      const next = Object.assign(clone(DEF), backup)
+      if (!mergeWith?.state || !get().user) { get().replaceState(next, !!get().user); return }
+      const merged = Object.assign(clone(DEF), mergeStates(next, mergeWith.state, { prefer: 'a' }))
+      merged.active = next.active || null
+      persist(merged, true)
+      if (mergeWith.rev != null) writeSync(mergeWith.rev, 0)
     },
     // A replace that is meant to reach the server (backup import, reset) is a deliberate
     // overwrite, not a change to merge: the push it arms goes without a baseRev.
@@ -833,7 +1021,9 @@ export const useStore = create((set, get) => {
       return configFetch
     },
 
-    setUser(u) {
+    // `adopt` (a sign-in, a pairing — { alwaysAsk } for a device link): adoptProfile follows and
+    // decides what becomes of this copy; until it has, nothing is pulled or pushed (ADOPT_KEY).
+    setUser(u, { adopt } = {}) {
       if (u) {
         // The local copy belongs to whoever last signed in here. When a session expires or is
         // revoked elsewhere, boot() only drops the user and the data stays; a different profile
@@ -845,6 +1035,20 @@ export const useStore = create((set, get) => {
         const owner = localStorage.getItem('gym_owner')
         rejoined = owner === u.id
         const other = !!owner && owner !== u.id
+        // The hold goes on before anything else can run: a poll, a resume, a debounced push.
+        if (adopt) {
+          adoptHold = true
+          adoptClaimed = true
+          clearTimeout(pushTm)
+          pushTm = null
+          writeAdopt({ uid: u.id, rejoined, alwaysAsk: !!adopt.alwaysAsk })
+        } else {
+          // Boot signing the account back in: an adoption it still owes holds sync until it is
+          // answered (resumeAdoption); one another account left behind is void.
+          const m = readAdopt()
+          if (m && m.uid !== u.id) writeAdopt(null)
+          adoptHold = !!m && m.uid === u.id
+        }
         if (other) {
           keepForPrevious(owner)
           forgetSync()
@@ -865,7 +1069,7 @@ export const useStore = create((set, get) => {
         // nothing on this path waits for the answer. A copy that has the key was made for a
         // session and is already the right answer, Coach or no Coach.
         if (get().config && !('coach' in get().config)) get().refreshConfig()
-      } else { rejoined = false; localStorage.removeItem('gym_user') }
+      } else { rejoined = false; adoptHold = false; adoptClaimed = false; localStorage.removeItem('gym_user') }
       set({ user: u })
       setSync({})
     },
@@ -877,6 +1081,7 @@ export const useStore = create((set, get) => {
       if (!get().user) return
       clearTimeout(pushTm)
       pushTm = null
+      if (adoptHold) return   // the sign-in has not decided what this copy is yet (adoptProfile)
       if (pushing) { pushAgain = true; return pushing.then(() => pushing) }
       pushing = doPush().finally(() => {
         pushing = null
@@ -888,6 +1093,7 @@ export const useStore = create((set, get) => {
     // in the debounce goes first — the server's answer is then the one that already includes it,
     // and the push itself is what catches a conflict.
     async pullState() {
+      if (adoptHold) return   // as pushState: adoptProfile reads the server itself
       if (pulling) return pulling
       pulling = (async () => {
         try {
@@ -924,7 +1130,7 @@ export const useStore = create((set, get) => {
           const changed = dirty || localChanged(S)
           if (!serverMoved) { if (changed) await get().pushState(); else confirmed(S); return }
           if (!state) { writeSync(rev, 0); if (hasData(S)) await get().pushState(); return }
-          if (!changed) { adopt(Object.assign(clone(DEF), state, { active: S.active || null }), rev); confirmed(get().S); return }
+          if (!changed) { const next = Object.assign(clone(DEF), state); next.active = carryActive(S, next); adopt(next, rev); confirmed(get().S); return }
           mergeInto(S, state, rev)
           pushPending = false
           await get().pushState()
@@ -989,70 +1195,32 @@ export const useStore = create((set, get) => {
     // the code chooses it — so what a guest logged here is not moved into it unasked, not even
     // into one with no state yet, where it would otherwise go without a word. Declined, this
     // device takes that empty profile as it is, the way it takes a profile that has state.
-    async adoptProfile(ask, { alwaysAsk = false } = {}) {
-      if (pulling) await pulling
-      const sameAccount = rejoined
-      let res
-      try { res = await api('/api/data') }
-      catch (e) { failed(e); throw e }   // the caller's toast: sign-in needed the server anyway
-      const { state, rev } = res
-      const S = get().S
-      reached()
-      const askAbout = async extras =>
-        (extras.workouts || extras.bodyweight || extras.customEx) && typeof ask === 'function' ? await ask(extras) : false
-      const serverCopy = Object.assign(clone(DEF), state, { active: S.active || null })
-      if (!state) {
-        const push = hasData(S) && (!alwaysAsk || sameAccount || await askAbout(localExtras(S, null)))
-        if (hasData(S) && !push) {
-          if (rev != null) adopt(serverCopy, rev)
-          else { dropSync(); persist(serverCopy, false, false); markOwed(false) }
-          confirmed(get().S)
-          await applyStash()
-          return { adopted: true, added: false }
-        }
-        markOwed(false)
-        if (push) { if (rev != null) writeSync(rev, 0); forceNext = true; await get().pushState() }
-        else { if (rev != null) writeSync(rev, 0); confirmed(get().S) }
-        await applyStash()
-        return { adopted: false, added: false }
-      }
-      if (sameAccount) {
-        // This copy already belongs to the account: a phone paired again after its token was
-        // refused, a browser signed in again after its session ended. It may hold days the server
-        // never saw — new workouts, but also edits to routines and settings, which the question
-        // below never covered. Merged like a conflict between two devices (the union of entries,
-        // the later edit of each routine, the newer copy's settings) and pushed against the
-        // server's revision. Only a copy with nothing of its own since its base takes the
-        // server's as it is, so an entry deleted elsewhere meanwhile stays deleted.
-        const { base, owed } = metaOf()
-        if (!hasData(S) || (!owed && base && !localChanged(S))) {
-          if (rev != null) adopt(serverCopy, rev)
-          else { dropSync(); persist(serverCopy, false, false); markOwed(false) }
-          confirmed(get().S)
-          await applyStash()
-          return { adopted: true, added: false, merged: false }
-        }
-        mergeInto(S, state, rev)
-        await get().pushState()
-        await applyStash()
-        return { adopted: true, added: false, merged: true }
-      }
-      const keep = await askAbout(localExtras(S, state))
-      if (keep) {
-        const merged = Object.assign(clone(DEF), mergeStates(state, S, { prefer: 'a' }))
-        merged.active = S.active || null
-        persist(merged, false)
-        if (rev != null) writeSync(rev, 0)
-        else dropSync()
-        await get().pushState()
-        await applyStash()
-        return { adopted: true, added: true }
-      }
-      if (rev != null) adopt(serverCopy, rev)
-      else { dropSync(); persist(serverCopy, false, false); markOwed(false) }
-      confirmed(get().S)
-      await applyStash()
-      return { adopted: true, added: false }
+    //
+    // Nothing syncs from the sign-in until the answer is in (setUser's `adopt`, ADOPT_KEY): a poll or
+    // a resume pull in the meantime took the device's copy for a newer one of the account's and
+    // pushed it over the profile. And the answer is applied to the server's copy as it is once the
+    // question closes, not as it was when it opened — another device may have written meanwhile.
+    // Calls made while one is running get that one.
+    adoptProfile(ask, opts = {}) {
+      if (adopting) return adopting
+      adoptHold = true
+      adoptClaimed = false
+      adopting = runAdopt(ask, opts).finally(() => { adopting = null })
+      return adopting
+    },
+    // The adoption a sign-in still owes — the app was closed with its question open, or the server
+    // could not be reached for it: asked again, with the sign-in's own question.
+    async resumeAdoption(ask) {
+      const m = adoptOwed()
+      if (!m) { if (adoptHold && !adopting && !adoptClaimed) releaseAdopt(); return null }
+      if (adopting) return adopting
+      try {
+        if (typeof ask !== 'function') ask = (await import('../sheets.jsx')).askAddDeviceData
+        const r = await get().adoptProfile(ask, { alwaysAsk: !!m.alwaysAsk })
+        // A phone whose pairing ended here: what connectToServer does after its own adoption.
+        if (MOBILE) { await nativePersist(true); if (get().needsMobileOnboarding) set({ needsMobileOnboarding: false }) }
+        return r
+      } catch { return null }
     },
 
     /* Signing out wipes this device's copy — never while it holds changes the server has not
@@ -1088,7 +1256,7 @@ export const useStore = create((set, get) => {
       const user = await connect(url, code)   // throws on a bad URL/expired code — caller shows it
       // The account first, the address after: a copy another account still owed is kept aside
       // for it under the server it belongs to, not the one being paired.
-      get().setUser(user)
+      get().setUser(user, { adopt: true })
       if (keeping) { await keeping; keeping = null }
       pairedBase = normalizeServerUrl(url)
       setSync({ server: pairedBase })
@@ -1162,6 +1330,14 @@ export const useStore = create((set, get) => {
             // phone never learned whether the server offers the Coach and told everyone "your
             // server has no Coach enabled" — with the admin looking at a green test.
             await get().loadConfig()
+            // Closed with the pairing's question still open: asked again, and nothing is pulled
+            // or pushed until it is answered — this copy may still be the one from before pairing.
+            if (adoptOwed()) {
+              syncReminder(get().S)
+              finishBoot()
+              get().resumeAdoption()
+              return
+            }
             await get().pullState()
             if (!get().sync.lastError) await applyStash()   // only once the server really answered
           } catch (e) {
@@ -1233,6 +1409,9 @@ export const useStore = create((set, get) => {
         const me = await api('/api/me')
         if (!me.user?.id) throw Object.assign(new Error('no user'), { status: 200, code: 'bad-response' })
         get().setUser(me.user)
+        // Closed with the sign-in's question still open: asked again once the app is up (see the
+        // phone's boot above).
+        if (adoptOwed()) { finishBoot(); get().resumeAdoption(); return }
         await get().pullState()
         if (!get().sync.lastError) await applyStash()   // only once the server really answered
         // Re-stamp the reminder's timezone on every load — keeps it correct if you're travelling,

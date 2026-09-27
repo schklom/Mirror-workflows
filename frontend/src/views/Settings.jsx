@@ -2,7 +2,6 @@ import { useEffect, useRef, useState, forwardRef, useSyncExternalStore } from 'r
 import { useNavigate } from 'react-router-dom'
 import { useStore, DEF, hasData } from '../store/useStore.js'
 import { workoutControls } from '../lib/workout-controls.js'
-import { convertStateUnit } from '../lib/units.js'
 import { speedUnitOf } from '../lib/speed.js'
 import { copyText } from '../lib/clipboard.js'
 import { useUI } from '../store/useUI.js'
@@ -48,7 +47,7 @@ export default function Settings() {
   const passkeys = usePasskeys(!!user && !MOBILE && !DEMO)
   const [credsV, setCredsV] = useState(0)
   const credsChanged = () => { passkeys.load(); setCredsV(v => v + 1) }
-  const { update, replaceState, setUser, pullState, pushState, resetDemo } = useStore()
+  const { update, importConflict, importBackup, setUnit, resetEverything: resetAll, setUser, pullState, pushState, resetDemo } = useStore()
   const toast = useUI(s => s.toast)
   const fileRef = useRef(null)
   const importRef = useRef(null)
@@ -63,8 +62,8 @@ export default function Settings() {
       title: t('Convert to {0}?', v),
       subtitle: t('Every stored weight — logged sets, working weights, routine targets, body weight, bar weights — is in {0}. Convert the numbers, or keep them and only change the label?', S.unit),
       items: [
-        { icon: 'shuffle', label: t('Convert the numbers'), onClick: () => replaceState(convertStateUnit(useStore.getState().S, v)) },
-        { icon: 'pencil', label: t('Keep the numbers, change the label'), onClick: () => update(s => { s.unit = v }) },
+        { icon: 'shuffle', label: t('Convert the numbers'), onClick: () => setUnit(v) },
+        { icon: 'pencil', label: t('Keep the numbers, change the label'), onClick: () => setUnit(v, { convert: false }) },
       ],
     })
   }
@@ -187,16 +186,36 @@ export default function Settings() {
       const { readBackupFile } = await import('../lib/backup-media.js')
       read = await readBackupFile(f)
     } catch (e) { toast(t('Import failed: {0}', e.message)); return }
+    const apply = async mergeWith => {
+      if (read.files.length) {
+        const { storeBackupMedia } = await import('../lib/backup-media.js')
+        await storeBackupMedia(read.files, { limits: limitsFrom(useStore.getState().config) })
+      }
+      importBackup(read.state, { mergeWith })
+      toast(t('Backup imported'))
+    }
+    // Signed in, the server is asked first: a workout logged since the backup was made, or on
+    // another device meanwhile, would be deleted from the profile by the replace — said, with the
+    // choice to merge those in instead (useStore importConflict / importBackup).
+    const conflict = await importConflict(read.state)
+    if (conflict) {
+      const n = conflict.workouts
+      menuSheet({
+        title: t('Import backup?'),
+        subtitle: t(n === 1
+          ? 'The server has 1 workout that is not in this backup, logged since it was made or on another device. Replacing deletes it.'
+          : 'The server has {0} workouts that are not in this backup, logged since it was made or on another device. Replacing deletes them.', n),
+        items: [
+          { icon: 'trash', label: t('Replace anyway'), danger: true, onClick: () => apply(null) },
+          { icon: 'shuffle', label: t('Merge them in'), onClick: () => apply(conflict) },
+          { icon: 'xmark', label: t('Cancel'), onClick: () => {} },
+        ],
+      })
+      return
+    }
     confirmSheet({
       title: t('Import backup?'), message: t('This replaces all current data with the backup file.'), confirmText: t('Import'), danger: true,
-      onConfirm: async () => {
-        if (read.files.length) {
-          const { storeBackupMedia } = await import('../lib/backup-media.js')
-          await storeBackupMedia(read.files, { limits: limitsFrom(useStore.getState().config) })
-        }
-        replaceState(Object.assign(JSON.parse(JSON.stringify(DEF)), read.state), true)
-        toast(t('Backup imported'))
-      }
+      onConfirm: () => apply(null)
     })
   }
   // Whether any custom exercise has a photo or video: the rows about them only show then.
@@ -244,7 +263,7 @@ export default function Settings() {
     onConfirm: () => {
       if (user) api('/api/coach/forget', { method: 'POST', body: '{}' }).catch(() => {})
       if (coachLocal?.mode === 'byok') forgetCoach().catch(() => {})
-      replaceState(JSON.parse(JSON.stringify(DEF)), true)
+      resetAll()
       nav('/home'); toast(t('All data reset'))
       clearMediaAfterReset(!!user).catch(() => {})
     },

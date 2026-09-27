@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { localExtras, mergeBodyweight, mergeStampedMap, mergeStates, newerOf, stampCustomEx, stampRoutines, stampWorkout, unionById } from './sync-merge.js'
+import { localExtras, mergeBodyweight, mergeStampedMap, mergeStates, newerOf, sinceReset, stampCustomEx, stampRoutines, stampWorkout, unionById } from './sync-merge.js'
+import { convertBodyWeight, convertStateUnit, convertWeight } from './units.js'
 import { retimeWorkout } from './workout-date.js'
 import { inventoryFor, loadKindFor, withLoadKind, withPlatePairs, withStandardPlates } from './plates.js'
 
@@ -233,7 +234,9 @@ describe('sign-in adoption helpers', () => {
   const server = { _ts: 100, unit: 'lb', restSec: 60, workouts: [{ id: 'w1', d: '2026-09-01' }], bodyweight: [{ d: '2026-09-01', w: 80, t: 1 }], routines: [{ id: 'r1', name: 'A' }], week: { 1: ['r1'] } }
   const local = { _ts: 900, unit: 'kg', restSec: 90, workouts: [{ id: 'w9', d: '2026-09-11' }], bodyweight: [{ d: '2026-09-11', w: 81, t: 2 }, { d: '2026-09-01', w: 79, t: 9 }], routines: [{ id: 'rg', name: 'Guest' }], customEx: [{ id: 'c1', name: 'x' }], week: { 2: ['rg'] } }
   it('localExtras counts what the device has that the server does not', () => {
-    expect(localExtras(local, server)).toEqual({ workouts: 1, bodyweight: 1, customEx: 1 })
+    // the new day, and 09-01: the device's weigh-in of a day the server has too, entered later
+    // and different (79 kg is 174.2 lb, not the server's 80 lb)
+    expect(localExtras(local, server)).toEqual({ workouts: 1, bodyweight: 2, customEx: 1 })
     expect(localExtras(server, server)).toEqual({ workouts: 0, bodyweight: 0, customEx: 0 })
     expect(localExtras(null, server)).toEqual({ workouts: 0, bodyweight: 0, customEx: 0 })
   })
@@ -243,8 +246,9 @@ describe('sign-in adoption helpers', () => {
     expect(m.workouts.map(w => w.id)).toEqual(['w1', 'w9'])
     expect(m.routines.map(r => r.id).sort()).toEqual(['r1', 'rg'])
     expect(m.customEx.map(e => e.id)).toEqual(['c1'])
-    // the weigh-in both sides have for the same day: the later `t` wins, as between devices
-    expect(m.bodyweight.find(e => e.d === '2026-09-01').w).toBe(79)
+    // the weigh-in both sides have for the same day: the later `t` wins, as between devices —
+    // in the profile's unit (79 kg)
+    expect(m.bodyweight.find(e => e.d === '2026-09-01').w).toBe(174.2)
     expect(mergeStates(server, local).unit).toBe('kg')   // without prefer the newer copy decides
   })
 })
@@ -453,5 +457,120 @@ describe('custom exercises keep the version edited last', () => {
     again[1]._ts = 6
     stampCustomEx(next, again, 2000)
     expect(again.map(c => c._ts)).toEqual([1000, 6, 1000])
+  })
+})
+
+
+// QA, v1.3.9 (t9): a copy converted to lb met the other device's kg copy, and the merge compared
+// the numbers as they were — the server ended in kg with lb numbers in it.
+describe('two copies in different units', () => {
+  const lifted = (id, w) => ({ id, d: '2026-09-20', start: 1, end: 2, entries: [{ id: '0025', sets: [{ w, r: 5, done: true }] }] })
+  const kg = base({ _ts: 300, workouts: [lifted('w1', 60), lifted('w-kg', 70)], bodyweight: [{ d: '2026-09-27', w: 81, t: 300 }], exWeights: { '0025': { w: 55, d: '2026-09-20' } } })
+  const lb = { ...convertStateUnit(base({ _ts: 200, workouts: [lifted('w1', 60)], exWeights: { '0025': { w: 55, d: '2026-09-20' } } }), 'lb'), unitSet: { at: 200, convert: true } }
+
+  it('the unit chosen last stays, and the other copy is converted into it before anything is compared', () => {
+    for (const m of [mergeStates(kg, lb), mergeStates(lb, kg)]) {
+      expect(m.unit).toBe('lb')
+      expect(m.unitSet).toEqual({ at: 200, convert: true })
+      expect(m.workouts.find(w => w.id === 'w-kg').entries[0].sets[0].w).toBe(convertWeight(70, 'kg', 'lb'))
+      expect(m.workouts.find(w => w.id === 'w1').entries[0].sets[0].w).toBe(convertWeight(60, 'kg', 'lb'))
+      expect(m.bodyweight[0].w).toBe(convertBodyWeight(81, 'kg', 'lb'))
+      // the kept load is compared in one unit: 70 kg lifted since beats the 55 kg in both copies
+      expect(m.exWeights['0025'].w).toBe(convertWeight(55, 'kg', 'lb'))
+    }
+  })
+
+  it('with no switch stamped on either side, the newer copy\'s unit stays', () => {
+    const old = { ...convertStateUnit(base({ _ts: 100, workouts: [lifted('w1', 60)] }), 'lb') }
+    const m = mergeStates(old, kg)
+    expect(m.unit).toBe('kg')
+    expect(m.workouts.find(w => w.id === 'w1').entries[0].sets[0].w).toBe(60)
+  })
+
+  it('a label-only switch relabels the other copy instead of converting it', () => {
+    const relabelled = { ...base({ _ts: 200 }), unit: 'lb', unitSet: { at: 200, convert: false } }
+    const m = mergeStates(kg, relabelled)
+    expect(m.unit).toBe('lb')
+    expect(m.workouts.find(w => w.id === 'w-kg').entries[0].sets[0].w).toBe(70)
+    expect(m.bodyweight[0].w).toBe(81)
+  })
+
+  it('with prefer (sign-in), the preferred side\'s unit stays', () => {
+    const m = mergeStates(lb, kg, { prefer: 'a' })
+    expect(m.unit).toBe('lb')
+    expect(m.workouts.find(w => w.id === 'w-kg').entries[0].sets[0].w).toBe(convertWeight(70, 'kg', 'lb'))
+  })
+})
+
+// QA, v1.3.9 (t8): "Reset everything" on one device; another pushed a change of its own, got the
+// 409, merged, and the union brought the whole wiped profile back.
+describe('a reset holds against a copy that has not seen it', () => {
+  const R = 5000
+  const reset = base({ _ts: R, resetAt: R, restSec: 90 })
+  const w = (id, end, extra = {}) => ({ id, d: '2026-09-01', start: end - 10, end, entries: [{ id: '0025', sets: [{ w: 100, r: 5, done: true }] }], ...extra })
+  const stale = base({
+    _ts: 6000, restSec: 45,
+    workouts: [w('old', 1000), w('new', 5500), w('old-edited', 1000, { _ts: 5600 }), w('backfilled', 1000, { _ts: 5700 })],
+    routines: [{ id: 'r-old', name: 'old', ex: [], _ts: 100 }, { id: 'r-new', name: 'new', ex: [], _ts: 5800 }, { id: 'r-unstamped', name: 'x', ex: [] }],
+    bodyweight: [{ d: '2026-08-01', w: 80, t: 100 }, { d: '2026-09-27', w: 81, t: 5900 }],
+    customEx: [{ id: 'c-old', n: 'old', _ts: 100 }, { id: 'c-new', n: 'new', _ts: 5900 }],
+    favEx: ['0025'], exNotes: { '0025': 'seat 4' }, gymCards: [{ id: 'g1', value: '123' }],
+    exWeights: { '0025': { w: 140, d: '2026-08-01' }, '0100': { w: 30, d: '2026-08-01' } },
+    loadKind: { '0025': { kind: 'single', _ts: 100 }, '0100': { kind: 'pairs', _ts: 5900 } },
+  })
+
+  it('keeps only what the other copy made after the reset, whichever copy is newer', () => {
+    for (const m of [mergeStates(reset, stale), mergeStates(stale, reset)]) {
+      expect(ids(m.workouts).sort()).toEqual(['backfilled', 'new', 'old-edited'])
+      expect(ids(m.routines)).toEqual(['r-new'])
+      expect(m.bodyweight.map(e => e.d)).toEqual(['2026-09-27'])
+      expect(ids(m.customEx)).toEqual(['c-new'])
+      expect(m.favEx || []).toEqual([])
+      expect(m.exNotes || {}).toEqual({})
+      expect(m.gymCards || []).toEqual([])
+      expect(Object.keys(m.loadKind)).toEqual(['0100'])
+      // the kept loads are those of the workouts that remain, not the ones from before the reset
+      expect(m.exWeights).toEqual({ '0025': { w: 100, d: '2026-09-01' } })
+      expect(m.restSec).toBe(90)       // the reset copy's settings, though the other is newer
+      expect(m.resetAt).toBe(R)
+      expect(m._ts).toBe(6000)
+    }
+  })
+
+  it('two copies that both saw the reset merge as usual', () => {
+    const after = { ...stale, resetAt: R }
+    expect(ids(mergeStates(reset, after).workouts)).toHaveLength(4)
+  })
+
+  it('a later reset wins over an earlier one', () => {
+    const later = base({ _ts: 9000, resetAt: 9000 })
+    expect(mergeStates({ ...stale, resetAt: R }, later).workouts).toEqual([])
+  })
+
+  it('not on sign-in: the device\'s own entries are not a copy of the account\'s history', () => {
+    const m = mergeStates(reset, stale, { prefer: 'a' })
+    expect(ids(m.workouts)).toHaveLength(4)
+  })
+
+  it('sinceReset leaves the copy it reads alone', () => {
+    const before = JSON.stringify(stale)
+    sinceReset(stale, R)
+    expect(JSON.stringify(stale)).toBe(before)
+  })
+})
+
+// QA, v1.3.9: a weigh-in logged on the phone on a day the profile already had one was dropped on
+// pairing without the question being asked.
+describe('localExtras and the weigh-ins of a day both copies have', () => {
+  const server = { unit: 'kg', workouts: [], bodyweight: [{ d: '2026-09-27', w: 80, t: 100 }] }
+  it('counts a same-day weigh-in that differs and was entered later', () => {
+    expect(localExtras({ unit: 'kg', bodyweight: [{ d: '2026-09-27', w: 81.5, t: 200 }] }, server).bodyweight).toBe(1)
+  })
+  it('not the same reading, nor one the server\'s later entry replaced', () => {
+    expect(localExtras({ unit: 'kg', bodyweight: [{ d: '2026-09-27', w: 80, t: 200 }] }, server).bodyweight).toBe(0)
+    expect(localExtras({ unit: 'kg', bodyweight: [{ d: '2026-09-27', w: 82, t: 50 }] }, server).bodyweight).toBe(0)
+  })
+  it('compares in the server\'s unit', () => {
+    expect(localExtras({ unit: 'lb', bodyweight: [{ d: '2026-09-27', w: convertBodyWeight(80, 'kg', 'lb'), t: 200 }] }, server).bodyweight).toBe(0)
   })
 })

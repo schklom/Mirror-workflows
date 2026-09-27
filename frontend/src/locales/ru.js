@@ -1622,4 +1622,8 @@ export default {
   'Its {0} photos or videos are deleted with it.': 'Фото и видео ({0}) тоже будут удалены.',
   'Its photo or video moves to the new workout.': 'Фото или видео перейдёт в новую тренировку.',
   'Its {0} photos or videos move to the new workout.': 'Фото и видео ({0}) перейдут в новую тренировку.',
+  'The server has 1 workout that is not in this backup, logged since it was made or on another device. Replacing deletes it.': 'На сервере есть 1 тренировка, которой нет в этой копии: записана позже или на другом устройстве. Замена её удалит.',
+  'The server has {0} workouts that are not in this backup, logged since it was made or on another device. Replacing deletes them.': 'На сервере есть тренировки, которых нет в этой копии ({0}): записаны позже или на другом устройстве. Замена их удалит.',
+  'Replace anyway': 'Всё равно заменить',
+  'Merge them in': 'Объединить',
 }

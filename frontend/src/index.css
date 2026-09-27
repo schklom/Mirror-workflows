@@ -173,6 +173,9 @@ button,.chip,.tile,.item,.wday,.cal-d,.swatch,.hm-c,.lrow,.seg button,.stp butto
   padding:calc(var(--sat) + var(--conn) + 8px) var(--pad) calc(88px + var(--sab));
   max-width:560px;margin:0 auto;
 }
+/* Android 15 with the keyboard up: room to scroll the last field on a page above the keys.
+   The tab bar stays where it is, under the keyboard, rather than riding up on it. */
+:root[data-native-kb] #app,:root[data-native-kb] body.resting #app{padding-bottom:calc(88px + var(--native-kb))}
 /* Keep the last workout controls clear of the mobile overlays without adding a second
    screenful of blank scroll space. The stacked rest timer needs the larger reserve. */
 body.resting #app{padding-bottom:calc(206px + var(--sab))}
@@ -1239,16 +1242,24 @@ body.chips-dragging *{cursor:inherit}
   padding:8px 18px calc(20px + var(--sab));
   /* A tall sheet stops short of the status bar / Dynamic Island: every cap carries the top
      safe-area inset, which the layout viewport does not (viewport-fit=cover). */
-  max-height:90vh;max-height:min(90vh,calc(100dvh - var(--sat) - 8px));
+  max-height:90vh;max-height:min(90vh,calc(100dvh - var(--sat) - 8px - var(--native-kb,0px)));
   overflow-y:auto;scroll-padding-bottom:calc(20px + var(--sab));
   animation:sheetup .34s var(--ease);
   overscroll-behavior:contain;touch-action:pan-y;will-change:transform;
 }
 .sheet:has(.picker-search){
-  bottom:var(--picker-keyboard-bottom,0px);
+  bottom:max(var(--picker-keyboard-bottom,0px),var(--native-kb,0px));
   /* with the keyboard up the sheet is capped by the visual viewport — which still starts
      under the notch, hence the inset here too */
-  max-height:min(90vh,calc(100dvh - var(--sat) - 8px),calc(var(--picker-visual-height,100vh) - var(--sat) - 8px));
+  max-height:min(90vh,calc(100dvh - var(--sat) - 8px - var(--native-kb,0px)),calc(var(--picker-visual-height,100vh) - var(--sat) - 8px));
+}
+/* Android 15: the window is not resized for the soft keyboard, the app passes the height it
+   covers as --native-kb instead (MainActivity.keyboardScript, lib/native-keyboard.js). Every
+   sheet stands on the keyboard, and its foot drops the navigation-bar inset, which the keyboard
+   already covers. Older Android versions resize the window and never set the variable. */
+:root[data-native-kb] .sheet{
+  bottom:max(var(--picker-keyboard-bottom,0px),var(--native-kb,0px));
+  padding-bottom:20px;scroll-padding-bottom:20px;
 }
 :root[data-theme="light"] .sheet{background:var(--bg)}
 @keyframes sheetup{from{transform:translateY(100%)}to{transform:none}}
@@ -1267,6 +1278,11 @@ body.chips-dragging *{cursor:inherit}
   animation:pop .28s var(--ease);
 }
 :root[data-theme="light"] .center{background:#fff}
+/* a dialog with a field centres in what the Android 15 keyboard leaves */
+:root[data-native-kb] .center{
+  top:calc((100% - var(--native-kb)) / 2);
+  max-height:calc(100dvh - var(--native-kb) - 2*var(--sat) - 24px);
+}
 @keyframes pop{from{transform:translate(-50%,-50%) scale(.94);opacity:0}to{transform:translate(-50%,-50%) scale(1);opacity:1}}
 
 /* --- RIR/RPE conversion table (effort help sheet) ---

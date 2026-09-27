@@ -15,6 +15,8 @@
 
 import { useRef, useState, useEffect, useCallback, forwardRef } from 'react'
 import Icon from './Icon.jsx'
+import { sheetKeyboardInsets } from '../lib/use-sheet-keyboard.js'
+import { NATIVE_KEYBOARD_EVENT } from '../lib/native-keyboard.js'
 
 /* ============================ text ============================ */
 
@@ -343,9 +345,8 @@ function SelectSheet({ title, value, options, onChange, search, close }) {
     const sheet = input?.closest('.sheet')
     const viewport = window.visualViewport
     if (!sheet || !viewport) return
-    const visualHeight = Math.max(0, viewport.height || window.innerHeight)
-    const visualBottom = (viewport.offsetTop || 0) + visualHeight
-    const bottomInset = Math.max(0, window.innerHeight - visualBottom)
+    // the visual viewport, or on Android 15 the keyboard the app passes (lib/native-keyboard.js)
+    const { bottomInset, visualHeight } = sheetKeyboardInsets(window)
     sheet.style.setProperty('--picker-keyboard-bottom', `${bottomInset}px`)
     sheet.style.setProperty('--picker-visual-height', `${visualHeight}px`)
   }, [])
@@ -360,9 +361,11 @@ function SelectSheet({ title, value, options, onChange, search, close }) {
     sync()
     viewport.addEventListener('resize', sync)
     viewport.addEventListener('scroll', sync)
+    window.addEventListener(NATIVE_KEYBOARD_EVENT, sync)
     return () => {
       viewport.removeEventListener('resize', sync)
       viewport.removeEventListener('scroll', sync)
+      window.removeEventListener(NATIVE_KEYBOARD_EVENT, sync)
       const sheet = inputRef.current?.closest('.sheet')
       sheet?.style.removeProperty('--picker-keyboard-bottom')
       sheet?.style.removeProperty('--picker-visual-height')

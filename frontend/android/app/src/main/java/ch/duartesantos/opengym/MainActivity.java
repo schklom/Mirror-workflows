@@ -15,6 +15,8 @@ public class MainActivity extends BridgeActivity {
     // pixels; negative until the window has said.
     private float barTop = -1;
     private float barBottom = -1;
+    // How much of the page the soft keyboard covers, in CSS pixels; 0 while it is down.
+    private float keyboard = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,7 +49,11 @@ public class MainActivity extends BridgeActivity {
             float density = v.getResources().getDisplayMetrics().density;
             barTop = bars.top / density;
             barBottom = bars.bottom / density;
+            float kb = coveredByKeyboard(v, insets.getInsets(WindowInsetsCompat.Type.ime()).bottom) / density;
+            boolean kbChanged = kb != keyboard;
+            keyboard = kb;
             applyBars(web);
+            if (kbChanged) web.evaluateJavascript(keyboardScript(keyboard), null);
             return ViewCompat.onApplyWindowInsets(v, insets);
         });
         // A page that loads (the first one, or a reload) starts without them.
@@ -55,9 +61,26 @@ public class MainActivity extends BridgeActivity {
             @Override
             public void onPageLoaded(WebView view) {
                 applyBars(view);
+                view.evaluateJavascript(keyboardScript(keyboard), null);
             }
         });
         ViewCompat.requestApplyInsets(holder);
+    }
+
+    /**
+     * Edge to edge, adjustResize no longer shrinks the window for the soft keyboard: the WebView
+     * keeps its full height, innerHeight and visualViewport do not move, and a bottom sheet stays
+     * under the keys. The IME inset is the keyboard's top measured from the foot of the window;
+     * whatever the system did shrink the view by (should a device still resize it) is taken off,
+     * so the page is never lifted twice.
+     */
+    static int coveredByKeyboard(View v, int imeBottom) {
+        if (imeBottom <= 0) return 0;
+        View root = v.getRootView();
+        int[] at = new int[2];
+        v.getLocationInWindow(at);
+        int below = root.getHeight() - (at[1] + v.getHeight());
+        return Math.max(0, imeBottom - Math.max(0, below));
     }
 
     private void applyBars(WebView web) {
@@ -70,6 +93,16 @@ public class MainActivity extends BridgeActivity {
         return "(function(e){if(!e)return;"
                 + "e.style.setProperty('--native-sat','" + Float.toString(top) + "px');"
                 + "e.style.setProperty('--native-sab','" + Float.toString(bottom) + "px')"
+                + "})(document.documentElement)";
+    }
+
+    /** --native-kb on the page, and an event its sheets listen for (lib/native-keyboard.js). */
+    static String keyboardScript(float height) {
+        String px = Float.toString(height);
+        return "(function(e){if(!e)return;"
+                + "e.style.setProperty('--native-kb','" + px + "px');"
+                + "if(" + px + ">0)e.setAttribute('data-native-kb','');else e.removeAttribute('data-native-kb');"
+                + "window.dispatchEvent(new CustomEvent('opengym:native-keyboard',{detail:{height:" + px + "}}))"
                 + "})(document.documentElement)";
     }
 }

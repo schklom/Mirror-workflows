@@ -238,7 +238,10 @@ function corpusOf(e) {
     ...sm, ...sm.map(m => t(m)),
     e?.desc || ''
   ].join(' '))
-  const entry = { v, s, nameWords: name.split(/\s+/).filter(Boolean) }
+  // The name run together, so "benchpress" or "bench-press" finds "bench press" the way "pullup"
+  // already found the names that spell it that way (QA 1.3.9). Name only: joined across fields,
+  // a body part and an equipment word would start matching as one.
+  const entry = { v, s, joined: joinWords(name), nameWords: name.split(/\s+/).filter(Boolean) }
   corpusCache.set(e, entry)
   return entry
 }
@@ -264,12 +267,16 @@ function nearWord(a, b) {
 }
 
 const queryTokens = query => normalizeStr(query || '').split(/\s+/).filter(Boolean)
+const joinWords = str => str.replace(/[\s\-‐-―]+/g, '')
+
+// A token appears in the corpus as typed, or in the name with its spaces and hyphens left out.
+const hits = (entry, tok) => entry.s.includes(tok) || (tok.length >= 4 && entry.joined.includes(joinWords(tok)))
 
 // Every token has to appear in the corpus; a token listed in `fuzzy` may instead be one edit
 // away from a name word.
 const matchTokens = (e, tokens, fuzzy) => {
-  const { s, nameWords } = corpusOf(e)
-  return tokens.every(tok => s.includes(tok) || (fuzzy.has(tok) && nameWords.some(word => nearWord(tok, word))))
+  const entry = corpusOf(e)
+  return tokens.every(tok => hits(entry, tok) || (fuzzy.has(tok) && entry.nameWords.some(word => nearWord(tok, word))))
 }
 
 // Single-exercise check, used where the list is filtered one option at a time (the exercise
@@ -290,6 +297,6 @@ export function matchExercise(e, query) {
 export function searchExercises(list, query) {
   const tokens = queryTokens(query)
   if (!tokens.length) return list
-  const fuzzy = new Set(tokens.filter(tok => !list.some(e => corpusOf(e).s.includes(tok))))
+  const fuzzy = new Set(tokens.filter(tok => !list.some(e => hits(corpusOf(e), tok))))
   return list.filter(e => matchTokens(e, tokens, fuzzy))
 }

@@ -188,11 +188,28 @@ export function cleanUrl(raw) {
     if (/^[a-z0-9+.-]+:/i.test(s)) return null
     s = 'https://' + s
   }
+  // Chrome's URL parser takes "https://not a url" and percent-encodes the spaces into the host,
+  // so "not a url" typed into the link field was saved as a link (QA 1.3.9). The host has to
+  // be one a browser could reach: no whitespace in what was typed, and a dotted name,
+  // localhost or an IP address.
+  const authority = /^https?:\/\/([^/?#]*)/i.exec(s)?.[1] || ''
+  if (/\s/.test(authority)) return null
   let u
   try { u = new URL(s) } catch { return null }
   if (u.protocol !== 'http:' && u.protocol !== 'https:') return null
   if (!u.hostname || u.username || u.password) return null
+  if (!plausibleHost(u.hostname)) return null
   return u.href.length <= MAX_URL ? u.href : null
+}
+
+const LABEL = /^(?!-)[a-z0-9-]{1,63}(?<!-)$/i
+function plausibleHost(host) {
+  if (host.startsWith('[') && host.endsWith(']')) return true               // IPv6
+  const h = host.replace(/\.$/, '').toLowerCase()
+  if (h === 'localhost') return true
+  const labels = h.split('.')
+  // xn-- names are how the parser writes an international domain, so they pass as letters.
+  return labels.length >= 2 && labels.every(l => LABEL.test(l))
 }
 
 // Hosts whose pages are, in practice, a video: the card then says "Watch video" instead of

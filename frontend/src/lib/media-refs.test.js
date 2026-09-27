@@ -117,6 +117,18 @@ describe('cleanUrl', () => {
     expect(cleanUrl('https://exa mple.com')).toBeNull()
     expect(cleanUrl('https://')).toBeNull()
   })
+  // QA 1.3.9: Chrome parses "https://not a url" (the spaces go into the host as %20), so a
+  // sentence typed into the link field was saved as a link.
+  it('wants a host a browser could reach: no spaces, a dotted name, localhost or an IP', () => {
+    for (const u of ['not a url', 'https://not a url', 'hello', 'https://hello', 'http://a..b', 'https://-x.com', 'https://x%20y.com']) {
+      expect(cleanUrl(u), u).toBeNull()
+    }
+    expect(cleanUrl('http://localhost:8080/x')).toBe('http://localhost:8080/x')
+    expect(cleanUrl('http://192.168.1.10/guide')).toBe('http://192.168.1.10/guide')
+    expect(cleanUrl('http://[::1]:3000/')).toBe('http://[::1]:3000/')
+    expect(cleanUrl('https://müller.de/x')).toBe('https://xn--mller-kva.de/x')
+    expect(cleanUrl('example.com./x')).toBe('https://example.com./x')
+  })
 })
 
 describe('linkKind', () => {

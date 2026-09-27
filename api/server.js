@@ -745,6 +745,8 @@ function audit(req, ev, f = {}) {
   }
   if (f.target) { rec.tgt = f.target.id; rec.tname = String(f.target.name || '').slice(0, 40); }
   if (f.msg) rec.msg = String(f.msg).slice(0, 120);
+  // What a failed proof of ownership was guarding (proveOwner): 'email', 'passkey-add', …
+  if (f.act) rec.act = String(f.act).slice(0, 40);
   const ip = clientIp(req);
   if (ip) rec.ip = ip;
   try { fs.appendFileSync(auditFile, JSON.stringify(rec) + '\n'); }
@@ -1001,9 +1003,10 @@ function passwordAttempt(req, res, k) {
       catch (e) { settle(); throw e; }
     },
     // The audit line names the account only when there is one — what someone typed into the
-    // name field is sometimes their password.
-    failed(user, msg, unknown = 'unknown-name') {
-      audit(req, 'auth.password.fail', user ? { ok: false, user, msg } : { ok: false, msg: unknown });
+    // name field is sometimes their password. `ev`/`act` are for a password that was not a
+    // sign-in at all: the current one, proving a change (proveOwner) is logged as that change.
+    failed(user, msg, unknown = 'unknown-name', { ev = 'auth.password.fail', act } = {}) {
+      audit(req, ev, user ? { ok: false, user, msg, act } : { ok: false, msg: unknown, act });
       if (byName.lock) audit(req, 'auth.password.locked', user ? { ok: false, user } : { ok: false, msg: unknown });
       if (byAddr.lock) audit(req, 'auth.throttled', { ok: false, msg: 'password' });
     },
@@ -1029,10 +1032,13 @@ function passwordAttempt(req, res, k) {
 // passwords off. A profile that only ever had a password is moved onto a passkey while the flag
 // is still on (docs/SELF_HOSTING.md). Answers the refusal itself and returns null, or says which
 // proof it was ('passkey' | 'password'). Wrong passwords count toward the sign-in pause.
-async function proveOwner(req, res, user, body, failEv) {
+// `act` names the change being confirmed ('email', 'password-set', 'passkey-remove', …): a failed
+// proof is logged as `auth.proof.fail` for that change, not as a failed sign-in — the owner was
+// signed in all along, and "Password sign-in failed" sent an admin looking for the wrong thing.
+async function proveOwner(req, res, user, body, act) {
   if (body.credential) {
     if (await passkeyStepUp(user, body)) return 'passkey';
-    audit(req, failEv, { ok: false, user, msg: 'step-up-failed' });
+    audit(req, 'auth.proof.fail', { ok: false, user, msg: 'step-up-failed', act });
     json(res, 403, { error: 'the passkey could not be verified', code: 'passkey' });
     return null;
   }
@@ -1050,7 +1056,7 @@ async function proveOwner(req, res, user, body, failEv) {
   if (!check) return null;
   const rec = user.pw;
   if (!(await check.verify(current, rec.h))) {
-    check.failed(user, 'bad-current');
+    check.failed(user, 'bad-current', undefined, { ev: 'auth.proof.fail', act });
     return wrongCurrent();
   }
   // Changed or removed while it was being checked: it is no longer the current password.
@@ -1065,7 +1071,7 @@ if (PASSWORD_LOGIN) warmUp();
 // setting one; a profile without an address gets 200 with none asked.
 async function removeEmail(req, res, user, body) {
   if (!user.email) return json(res, 200, { ok: true, email: null });
-  const proof = await proveOwner(req, res, user, body, 'auth.email.fail');
+  const proof = await proveOwner(req, res, user, body, 'email-remove');
   if (!proof) return;
   if (readSession(req) !== user) return json(res, 401, { error: 'not signed in' });
   delete user.email;
@@ -1192,7 +1198,7 @@ const passwordRoutes = {
     if (problem) return policyError(res, problem);
     const taken = () => json(res, 409, { error: 'another profile already signs in with this name', code: 'name-taken' });
     if (nameTaken(user.name, user.id)) return taken();
-    const proof = await proveOwner(req, res, user, body, 'auth.password.fail');
+    const proof = await proveOwner(req, res, user, body, 'password');
     if (!proof) return;
     const h = await hashPassword(body.next);
     // Everything above awaited: an admin reset, a disable or "sign out everywhere" may have ended
@@ -1222,7 +1228,7 @@ const passwordRoutes = {
     const lastWayIn = () => json(res, 409, { error: 'the password is the only way into this profile', code: 'last-way-in' });
     if (!hasPassword(user)) return json(res, 200, { ok: true });
     if (!passkeyCount(user)) return lastWayIn();
-    const proof = await proveOwner(req, res, user, body, 'auth.password.fail');
+    const proof = await proveOwner(req, res, user, body, 'password-remove');
     if (!proof) return;
     // Everything above awaited: the session may have ended, and the profile's last passkey may
     // have been removed by a request that ran alongside this one.
@@ -1258,7 +1264,7 @@ const passwordRoutes = {
       return wait > 0 || addressPaused(req, res, 'email');
     };
     if (paused()) return;
-    const proof = await proveOwner(req, res, user, body, 'auth.email.fail');
+    const proof = await proveOwner(req, res, user, body, 'email');
     if (!proof) return;
     if (sessionOf(req)?.user !== user) return json(res, 401, { error: 'not signed in' });
     if (paused()) return;
@@ -1434,7 +1440,7 @@ const passkeyRoutes = {
     if (!user) return notSignedIn(res);
     const body = await readBody(req);
     if (passkeyCount(user) >= MAX_PASSKEYS) return json(res, 409, LIMIT);
-    const proof = await proveOwner(req, res, user, body, 'auth.passkey.fail');
+    const proof = await proveOwner(req, res, user, body, 'passkey-add');
     if (!proof) return;
     // Awaited: a sign-out everywhere, a disable or an admin reset may have ended this session.
     if (readSession(req) !== user) return notSignedIn(res);
@@ -1491,7 +1497,7 @@ const passkeyRoutes = {
     const refuse = r => json(res, r.code === 'last-way-in' ? 409 : 404, { error: r.error, code: r.code });
     const refused = passkeyRemovalRefused(db, user.id, id, passwordWayIn(user) ? 1 : 0);
     if (refused) return refuse(refused);
-    const proof = await proveOwner(req, res, user, body, 'auth.passkey.fail');
+    const proof = await proveOwner(req, res, user, body, 'passkey-remove');
     if (!proof) return;
     if (readSession(req) !== user) return notSignedIn(res);
     if (proof === 'passkey') saveDb();   // the confirming passkey's counter and last use
@@ -1510,7 +1516,7 @@ const passkeyRoutes = {
     if (!user) return notSignedIn(res);
     const body = await readBody(req);
     if (passkeyCount(user) >= MAX_PASSKEYS) return json(res, 409, LIMIT);
-    const proof = await proveOwner(req, res, user, body, 'auth.link.fail');
+    const proof = await proveOwner(req, res, user, body, 'device-link');
     if (!proof) return;
     if (readSession(req) !== user) return notSignedIn(res);
     const { code, link } = createDeviceLink(db, user.id);

@@ -186,7 +186,7 @@ test('another profile’s passkey, or a challenge minted for another profile, ad
   const wrong = await h.req('POST', '/api/account/passkeys/options', { body: await h.stepUp(ana, ip), cookie: mintSession('u2'), ip });
   assert.equal(wrong.status, 403);
   assert.equal(wrong.body.code, 'passkey');
-  assert.ok(h.audit().some(e => e.ev === 'auth.passkey.fail' && e.uid === 'u2' && e.msg === 'step-up-failed'));
+  assert.ok(h.audit().some(e => e.ev === 'auth.proof.fail' && e.act === 'passkey-add' && e.uid === 'u2' && e.msg === 'step-up-failed'));
   // Ana's ceremony finished under Bea's session.
   const opt = await h.req('POST', '/api/account/passkeys/options', { body: await h.stepUp(ana, ip), cookie: mintSession('u1'), ip });
   const hijack = await h.req('POST', '/api/account/passkeys/verify', {
@@ -227,7 +227,9 @@ test('the current password proves an addition while the instance offers password
   const wrong = await h.req('POST', '/api/account/passkeys/options', { body: { current: 'not it at all' }, cookie, ip });
   assert.equal(wrong.status, 403);
   assert.equal(wrong.body.code, 'current-wrong');
-  assert.ok(h.audit().some(e => e.ev === 'auth.password.fail' && e.msg === 'bad-current'));
+  // Logged as the change it guarded, not as a failed sign-in.
+  assert.ok(h.audit().some(e => e.ev === 'auth.proof.fail' && e.act === 'passkey-add' && e.msg === 'bad-current'));
+  assert.ok(!h.audit().some(e => e.ev === 'auth.password.fail'));
   const opt = await h.req('POST', '/api/account/passkeys/options', { body: { current: GOOD }, cookie, ip });
   assert.equal(opt.status, 200);
   assert.deepEqual(opt.body.options.excludeCredentials, []);
@@ -253,7 +255,7 @@ test('with PASSWORD_LOGIN off only a passkey proves anything; a stored password 
       }
     }
   }
-  assert.ok(!h.audit().some(e => e.ev === 'auth.password.fail' || e.ev === 'auth.password.locked'));
+  assert.ok(!h.audit().some(e => e.ev === 'auth.password.fail' || e.ev === 'auth.proof.fail' || e.ev === 'auth.password.locked'));
   assert.equal(h.db().creds.length, 2);
   assert.deepEqual(h.db().deviceLinks || [], []);
   // A profile with only a password cannot confirm anything at all.
@@ -342,7 +344,7 @@ test('removing a passkey needs proof made for it: none, another profile’s pass
   await refused({ current: GOOD }, 'passkey-required');
   // Bea's passkey says nothing about Ana.
   await refused(await h.stepUp(bea, ip), 'passkey');
-  assert.ok(h.audit().some(e => e.ev === 'auth.passkey.fail' && e.uid === 'u1' && e.msg === 'step-up-failed'));
+  assert.ok(h.audit().some(e => e.ev === 'auth.proof.fail' && e.act === 'passkey-remove' && e.uid === 'u1' && e.msg === 'step-up-failed'));
   // Challenges handed out for another ceremony, signed as if they were a sign-in's: adding a
   // passkey in Settings, a sign-up, redeeming a device link.
   const add = (await h.req('POST', '/api/account/passkeys/options', { body: await h.stepUp(b, ip), cookie, ip })).body;
@@ -392,7 +394,7 @@ test('wrong current passwords given to remove a passkey count toward the sign-in
   for (let i = 0; i < 7; i++) answers.push(await h.req('DELETE', url, { body: { current: 'wrong password ' + i }, cookie, ip }));
   assert.deepEqual(answers.map(r => r.status), [403, 403, 403, 403, 403, 403, 429]);
   assert.equal(answers[0].body.code, 'current-wrong');
-  assert.ok(h.audit().some(e => e.ev === 'auth.password.fail' && e.uid === 'u1' && e.msg === 'bad-current'));
+  assert.ok(h.audit().some(e => e.ev === 'auth.proof.fail' && e.act === 'passkey-remove' && e.uid === 'u1' && e.msg === 'bad-current'));
   assert.ok(h.audit().some(e => e.ev === 'auth.password.locked' && e.uid === 'u1'));
   // The name is paused: the right password waits too, from anywhere, and so does a sign-in.
   assert.equal((await h.req('DELETE', url, { body: { current: GOOD }, cookie, ip: '198.51.100.33' })).status, 429);

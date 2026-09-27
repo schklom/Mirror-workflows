@@ -49,6 +49,17 @@ const ALLOW_GUEST = !/^(0|false|no|off)$/i.test(process.env.ALLOW_GUEST || '');
 // every account that opts in, so an instance has to ask for it. While it is off every password
 // route answers 404 and the app shows none of it; hashes already stored stay where they are.
 const PASSWORD_LOGIN = /^(1|true|yes|on)$/i.test(process.env.PASSWORD_LOGIN || '');
+// The language the sign-in screen, and every profile that never picked one, starts in (#303) —
+// for an instance whose people share a language. Only a tag's shape is checked here; the app
+// matches it against the languages it has and ignores one it does not know. Unset, it is left
+// out of /api/config and the app behaves as before.
+const DEFAULT_LANG = (() => {
+  const v = String(process.env.DEFAULT_LANG || '').trim();
+  if (!v) return '';
+  if (/^[A-Za-z]{2,3}([-_][A-Za-z0-9]{2,8})?$/.test(v)) return v;
+  console.warn(`DEFAULT_LANG "${v.slice(0, 40)}" is not a language tag such as pt-BR or de — ignored`);
+  return '';
+})();
 // Whether the address a request came from may be read from the headers a proxy sets. Only the
 // sign-in throttle asks (limitAddress below); the bundled compose file sets it, because the API
 // is reachable there only through the web container, which overwrites those headers.
@@ -1593,6 +1604,8 @@ const routes = {
       invite_only: INVITE_ONLY, allow_guest: ALLOW_GUEST,
       // Only when on, so an instance without passwords answers exactly as it did before (#118).
       ...(PASSWORD_LOGIN ? { password_login: true } : {}),
+      // Public: the sign-in screen is the first thing that reads it.
+      ...(DEFAULT_LANG ? { default_lang: DEFAULT_LANG } : {}),
       // Public like the two flags above: the caps are not a secret, and the absence of the
       // block is how the app knows this server does not take photos and videos at all.
       ...(MEDIA_ON ? { media: mediaConfig(MEDIA_LIMITS) } : {}),

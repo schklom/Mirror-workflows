@@ -5,6 +5,7 @@ import { useUI } from './store/useUI.js'
 import { bindUI } from './components/ui.jsx'
 import { ACCENTS, setWeightDecimals } from './lib/format.js'
 import { setLang, useLang, baseLang } from './lib/i18n.js'
+import { effectiveLang } from './lib/default-lang.js'
 import { setPlayOnSilent, setVibrate } from './lib/sound.js'
 import { setNav } from './lib/nav.js'
 import { initBackButton } from './lib/back.js'
@@ -95,10 +96,14 @@ function Shell() {
     mql.addEventListener('change', onChange)
     return () => mql.removeEventListener('change', onChange)
   }, [S.theme, S.accent])
-  useEffect(() => { setLang(S.lang || 'en', S.enParens?.[baseLang(S.lang || 'en')] ?? true, S.enOnly?.[baseLang(S.lang || 'en')] === true) }, [S.lang, S.enParens, S.enOnly])
+  // A profile that never picked a language follows the instance default or the browser (#303) —
+  // worked out here, on this device, and never written into the synced state (lib/default-lang.js).
+  const config = useStore(s => s.config)
+  const lang = effectiveLang(S, config)
+  useEffect(() => { setLang(lang, S.enParens?.[baseLang(lang)] ?? true, S.enOnly?.[baseLang(lang)] === true) }, [lang, S.enParens, S.enOnly])
   // Same shape as the language: a module-level display setting, pushed when it changes (#139).
   useEffect(() => { setWeightDecimals(S.wdec) }, [S.wdec])
-  useEffect(() => { document.documentElement.lang = S.lang || 'en' }, [langV, S.lang])
+  useEffect(() => { document.documentElement.lang = lang }, [langV, lang])
   // Forward navigation starts at the top; going back lands where you left off.
   // The position is recorded from scroll events rather than read at route
   // change, because by then a shorter page may already have clamped it.

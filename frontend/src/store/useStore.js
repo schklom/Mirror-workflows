@@ -4,6 +4,7 @@ import { localTZ } from '../lib/format.js'
 import { t } from '../lib/i18n.js'
 import { registerCustom } from '../lib/exercises.js'
 import { DEMO, DEMO_SEEDED } from '../lib/demo.js'
+import { rememberDefaultLang } from '../lib/default-lang.js'
 import { guestAllowed } from '../lib/guest.js'
 import { MOBILE, initReminderSync, nativeLoad, nativeSave, onAppActive, readJsonFile, syncReminder, writeAutoBackup, writeJsonFile } from '../lib/mobile.js'
 import { mergeStates, localExtras, stampRoutines, stampCustomEx } from '../lib/sync-merge.js'
@@ -175,6 +176,17 @@ const detectedLang = () => {
   return 'en'
 }
 
+// A copy started from nothing on this device. `langAuto` marks its language as one nobody has
+// picked yet, so the instance's DEFAULT_LANG or the browser's language may set it
+// (lib/default-lang.js, #303); picking one in Settings clears it. DEF does not carry the mark:
+// merged under a saved copy it would claim that every existing profile never chose.
+export function freshState() {
+  const s = clone(DEF)
+  s.lang = detectedLang()
+  s.langAuto = true
+  return s
+}
+
 function loadState() {
   try {
     const raw = localStorage.getItem(KEY)
@@ -185,9 +197,7 @@ function loadState() {
       return s
     }
   } catch (e) { /* ignore */ }
-  const s = clone(DEF)
-  s.lang = detectedLang()
-  return s
+  return freshState()
 }
 
 // Whether a copy holds anything of its own worth keeping over another: workouts, routines,
@@ -531,7 +541,7 @@ export const useStore = create((set, get) => {
     if (!user || e.newValue === user.id) return
     clearTimeout(pushTm)
     pushTm = null
-    const S = e.newValue ? loadState() : clone(DEF)
+    const S = e.newValue ? loadState() : freshState()
     meta.set(S, e.newValue ? { base: readStoredSync(), owed: storedOwed() } : { base: null, owed: false })
     set({ user: null, S })
   })
@@ -578,7 +588,8 @@ export const useStore = create((set, get) => {
     localStorage.removeItem('gym_guest')
     forgetSync()
     localStorage.removeItem(KEY)
-    persist(clone(DEF), false)
+    // Signed out, this device is nobody's: the sign-in screen is in the instance's language.
+    persist(freshState(), false)
     localStorage.removeItem('gym_owner_name')
     localStorage.removeItem('gym_owner')
     setSync({ offline: false, auth: false, lastError: null, pending: false, lastSynced: 0 })
@@ -815,7 +826,7 @@ export const useStore = create((set, get) => {
     async refreshConfig() {
       if (configFetch) return configFetch
       configFetch = (async () => {
-        try { const c = await api('/api/config'); set({ config: c }); return c }
+        try { const c = await api('/api/config'); rememberDefaultLang(c); set({ config: c }); return c }
         catch { return null }
         finally { configFetch = null }
       })()

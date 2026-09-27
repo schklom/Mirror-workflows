@@ -10,7 +10,8 @@
  * handle stands in), passkey and credential material, push subscriptions, invite data, theme
  * and appearance settings, and every other profile's everything.
  */
-import { LIBRARY, LIB_BY_ID, libraryHas, libraryName, librarySlice, MAX_LIBRARY } from './library.js';
+import { glyphStr } from './glyphs.js';
+import { LIBRARY, LIB_BY_ID, libraryHas, libraryName, librarySlice, isStretch, MAX_LIBRARY } from './library.js';
 
 export const CONTRACT = 1;
 // Bounds from FR-22. A review reads a training block, not a training career: more history
@@ -50,6 +51,10 @@ export const PROFILE_EQUIPMENT_MAX = 40;
 export const NAME_MAX = 80;
 const text = (v, n) => (typeof v === 'string' ? v.slice(0, n) : '');
 const word = (v, n) => (typeof v === 'string' && v ? v.slice(0, n) : null);
+
+/** A language tag's shape ('de', 'pt-BR', 'zh_Hant'), or null — for a language that arrives with
+ *  a request or from the environment rather than from the state (#303). */
+export const langTag = v => (typeof v === 'string' && /^[A-Za-z]{2,3}([-_][A-Za-z0-9]{2,8})?$/.test(v.trim()) ? v.trim() : null);
 // Zero reads as absent, as `|| null` always made it; anything else is clamped into range.
 const count = (v, lo, hi) => {
   const n = typeof v === 'number' || typeof v === 'string' ? Number(v) : NaN;
@@ -236,11 +241,12 @@ export function canonicalPlan(S) {
 }
 
 export function cleanPlan(S) {
-  // Names and emoji are typed by the person, so they are cut like the profile's text. An emoji
-  // is one grapheme, but a ZWJ family or a flag spells it with up to a dozen code units.
+  // Names are typed by the person, so they are cut like the profile's text. The icon is held to
+  // what the validator lets a plan carry (an icon key or a legacy emoji, core/glyphs.js): it is
+  // the client's state, and free text in it would ride into every prompt.
   const routines = list(S.routines).filter(r => r && typeof r === 'object').map(r => ({
     id: ident(r.id), name: r.name == null ? r.name : text(String(r.name), NAME_MAX),
-    emoji: r.emoji == null ? r.emoji : text(String(r.emoji), 16),
+    emoji: r.emoji == null ? r.emoji : glyphStr(String(r.emoji)),
     ...(policy(r.prog) ? { prog: r.prog } : {}),
     ex: list(r.ex).filter(e => e && typeof e === 'object').map(cleanEx)
   }));
@@ -251,7 +257,7 @@ export function cleanPlan(S) {
 }
 
 // The catalogue lives in library.js; re-exported so older imports keep resolving.
-export { LIBRARY, MAX_LIBRARY, libraryHas, libraryName, librarySlice };
+export { LIBRARY, MAX_LIBRARY, libraryHas, libraryName, librarySlice, isStretch };
 
 /* ---------- effort scale (mirrors history.js effortOf) ---------- */
 const effortOf = S => {
@@ -445,7 +451,7 @@ export function workoutMeta(S, workoutId) {
  * Build a job payload.
  *
  * @param {object} S      the profile's synced state
- * @param {object} opts   { handle, kind, intake?, note?, refine?, previous?, workoutId?, cohort? }
+ * @param {object} opts   { handle, kind, intake?, note?, refine?, previous?, workoutId?, cohort?, lang? }
  *
  * `handle` is the opaque per-profile pseudonym the payload carries instead of a uid. It is
  * supplied rather than derived because the two runtimes mint it differently: the server keys
@@ -462,7 +468,9 @@ export function build(S, opts = {}) {
     meta: {
       profile: opts.handle,
       // Both are short codes in any real state; cut anyway, since the state is the client's.
-      lang: word(S.lang, 16) || 'en',
+      // `opts.lang` is the language the app is showing when it asked: a profile that never
+      // picked one has it worked out per device and never stored (#303).
+      lang: langTag(opts.lang) || word(S.lang, 16) || 'en',
       unit: word(S.unit, 8) || 'kg',
       effortScale: effortOf(S),
       today: iso(new Date())

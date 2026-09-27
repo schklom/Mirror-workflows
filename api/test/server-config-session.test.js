@@ -86,3 +86,15 @@ test('no Coach configured: no block for anyone, signed in or not', async t => {
   const signedIn = await fetch(`${h.api}/api/config`, { headers: { Cookie: `gymsid=${mint(UID)}` } }).then(r => r.json());
   assert.equal(signedIn.coach, null, 'the key says "asked with a session"; null says "no Coach here"');
 });
+
+test('GET /api/config: DEFAULT_LANG is public when set, absent when unset or malformed (#303)', async t => {
+  const set = await startServer(t, { DEFAULT_LANG: 'pt-BR' });
+  const anon = await fetch(`${set.api}/api/config`).then(r => r.json());
+  assert.deepEqual(anon, { invite_only: true, allow_guest: false, default_lang: 'pt-BR' }, 'the sign-in screen can read it');
+
+  const bad = await startServer(t, { DEFAULT_LANG: '<script>' });
+  assert.equal('default_lang' in await fetch(`${bad.api}/api/config`).then(r => r.json()), false);
+
+  const unset = await startServer(t, { DEFAULT_LANG: '' });
+  assert.equal('default_lang' in await fetch(`${unset.api}/api/config`).then(r => r.json()), false);
+});

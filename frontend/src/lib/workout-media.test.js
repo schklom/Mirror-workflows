@@ -99,14 +99,60 @@ describe('the sync keeps a media edit', () => {
     }
   })
 
-  it('a removal on one device beats the older copy that still shows it', () => {
+  it('a photo added on one device survives the other device\'s later note edit of the same workout', () => {
+    const base = state(workout({ _ts: 10 }))
+    const phone = structuredClone(base)
+    addWorkoutMedia(phone, { id: 'w1' }, photo(H(1)), 200)
+    phone._ts = 200
+    const desktop = structuredClone(base)
+    desktop.workouts[0].note = 'Felt strong'
+    desktop.workouts[0]._ts = 300   // stampWorkout: the note edit is the later edit of this workout
+    desktop._ts = 300
+    for (const merged of [mergeStates(desktop, phone), mergeStates(phone, desktop)]) {
+      expect(merged.workouts[0].note).toBe('Felt strong')
+      expect(merged.workouts[0].media.map(m => m.hash)).toEqual([H(1)])
+      expect(merged.workouts[0]._ts).toBe(300)
+    }
+  })
+
+  it('a photo on each device: both are kept, the later-edited copy\'s first', () => {
+    const base = state(workout({ _ts: 10, media: [photo(H(1))] }))
+    const phone = structuredClone(base)
+    addWorkoutMedia(phone, { id: 'w1' }, photo(H(2)), 200)
+    phone._ts = 200
+    const desktop = structuredClone(base)
+    addWorkoutMedia(desktop, { id: 'w1' }, clip(H(3), H(4)), 300)
+    desktop._ts = 300
+    for (const merged of [mergeStates(desktop, phone), mergeStates(phone, desktop)]) {
+      expect(merged.workouts[0].media.map(m => m.hash)).toEqual([H(1), H(3), H(2)])
+      expect(merged.workouts[0].media[1]).toEqual(clip(H(3), H(4)))
+    }
+  })
+
+  it('signing in (prefer) keeps the preferred version but not at the cost of the other\'s photo', () => {
+    const base = state(workout({ _ts: 10 }))
+    const device = structuredClone(base)
+    addWorkoutMedia(device, { id: 'w1' }, photo(H(1)), 200)
+    const server = structuredClone(base)
+    server.workouts[0].note = 'server'
+    const merged = mergeStates(server, device, { prefer: 'a' })
+    expect(merged.workouts[0].note).toBe('server')
+    expect(merged.workouts[0].media.map(m => m.hash)).toEqual([H(1)])
+  })
+
+  it('a removal inside the conflict window comes back from the copy that still lists it (resurrected beats lost); one already pulled sticks', () => {
     const base = state(workout({ _ts: 10, media: [photo(H(1)), photo(H(2))] }))
     const a = structuredClone(base)
     removeWorkoutMedia(a, { id: 'w1' }, H(1), 200)
     a._ts = 200
     const b = structuredClone(base)
     b._ts = 400
-    expect(mergeStates(b, a).workouts[0].media.map(m => m.hash)).toEqual([H(2)])
+    expect(mergeStates(b, a).workouts[0].media.map(m => m.hash)).toEqual([H(2), H(1)])
+    // Once the other device has the removal, neither copy lists it and it stays gone.
+    const pulled = structuredClone(a)
+    pulled.bodyweight = [{ d: '2026-09-21', w: 80, t: 500 }]
+    pulled._ts = 500
+    expect(mergeStates(pulled, a).workouts[0].media.map(m => m.hash)).toEqual([H(2)])
   })
 
   it('a media edit does not count as an edit of the sets (the kept loads are left alone)', () => {

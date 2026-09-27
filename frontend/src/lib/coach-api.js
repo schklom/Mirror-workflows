@@ -52,8 +52,7 @@ const local = async () => {
 // also compares the server's last outcome with the id the start request returned. Kept here,
 // at module level, because the plan the intake asks for is started on another screen.
 let awaited = null
-const track = async p => {
-  const r = await p
+const track = r => {
   if (r?.job?.id) awaited = r.job.id
   return r
 }
@@ -62,13 +61,13 @@ export const settleAwaited = id => { if (!id || awaited === id) awaited = null }
 
 export const coachStatus = async () => DEMO ? (await demo()).demoStatus() : LOCAL() ? (await local()).localStatus() : api('/api/coach/status')
 const _requestReview = async note => DEMO ? (await demo()).demoReview(S()) : LOCAL() ? (await local()).localReview(S(), note) : api('/api/coach/review', { method: 'POST', body: JSON.stringify({ note: note || '', lang: getLang() }) })
-export const requestReview = async (...a) => track(_requestReview(...a))
+export const requestReview = (...a) => _requestReview(...a).then(track)
 const _requestPlan = async intake => DEMO ? (await demo()).demoPlan(S(), intake) : LOCAL() ? (await local()).localPlan(S(), intake) : api('/api/coach/plan', { method: 'POST', body: JSON.stringify({ intake, lang: getLang() }) })
-export const requestPlan = async (...a) => track(_requestPlan(...a))
+export const requestPlan = (...a) => _requestPlan(...a).then(track)
 const _refinePlan = async text => DEMO ? (await demo()).demoRefine(S()) : LOCAL() ? (await local()).localRefine(S(), text) : api('/api/coach/plan', { method: 'POST', body: JSON.stringify({ refine: text, lang: getLang() }) })
-export const refinePlan = async (...a) => track(_refinePlan(...a))
+export const refinePlan = (...a) => _refinePlan(...a).then(track)
 const _requestDebrief = async workoutId => DEMO ? (await demo()).demoDebrief(S(), workoutId) : LOCAL() ? (await local()).localDebrief(S(), workoutId) : api('/api/coach/debrief', { method: 'POST', body: JSON.stringify({ workoutId: workoutId || null, lang: getLang() }) })
-export const requestDebrief = async (...a) => track(_requestDebrief(...a))
+export const requestDebrief = (...a) => _requestDebrief(...a).then(track)
 // The room: anonymous medians across the profiles on this instance that opted in. Only a
 // server has a room; a phone with its own key and the demo both answer locally.
 export const cohortStats = async () => DEMO ? (await demo()).demoCohort(S()) : LOCAL() ? { ok: false, enabled: false } : api('/api/coach/cohort')

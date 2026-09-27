@@ -19,7 +19,7 @@ const done = tx => new Promise((resolve, reject) => {
   tx.onabort = () => reject(tx.error || new Error('aborted'))
 })
 const meta = r => {
-  const { blob, ...rest } = r
+  const { blob, data, ...rest } = r
   return rest
 }
 
@@ -43,7 +43,7 @@ export function idbBackend({ idb = globalThis.indexedDB } = {}) {
         db.onversionchange = () => { try { db.close() } catch { /* already closed */ } }
         // A write test: some browsers open the database and then refuse every Blob put into it.
         const t = tx('readwrite')
-        t.objectStore(STORE).put({ hash: '.probe', blob: new Blob(['x']), mime: '', size: 1 })
+        t.objectStore(STORE).put({ hash: '.probe', data: new Uint8Array([120]).buffer, mime: '', size: 1 })
         t.objectStore(STORE).delete('.probe')
         await done(t)
         return true
@@ -69,11 +69,28 @@ export function idbBackend({ idb = globalThis.indexedDB } = {}) {
     },
     async getBlob(hash) {
       const r = await req(tx('readonly').objectStore(STORE).get(hash))
-      return r?.blob || null
+      if (!r) return null
+      if (r.data) return new Blob([r.data], { type: r.mime || '' })
+      if (!r.blob) return null
+      // A record from before `data`: read it through once. On WebKit a large one may no longer be
+      // readable — then it is missing (the caller fetches it again or shows the fallback tile)
+      // rather than a video that never plays. A readable one is rewritten in the new shape.
+      let buf
+      try { buf = await r.blob.arrayBuffer() } catch { return null }
+      if (typeof r.size === 'number' && buf.byteLength !== r.size) return null
+      try {
+        const t = tx('readwrite')
+        const { blob: _old, ...rest } = r
+        t.objectStore(STORE).put({ ...rest, data: buf })
+        await done(t)
+      } catch { /* still readable this time; the next read tries again */ }
+      return new Blob([buf], { type: r.mime || '' })
     },
     async put(rec, blob) {
+      // Read before the transaction opens: an await inside it would let it commit early.
+      const data = blob ? await blob.arrayBuffer() : undefined
       const t = tx('readwrite')
-      t.objectStore(STORE).put({ ...rec, blob })
+      t.objectStore(STORE).put(data ? { ...rec, data } : { ...rec })
       await done(t)
     },
     async patch(hash, fields) {

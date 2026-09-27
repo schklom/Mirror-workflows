@@ -978,6 +978,26 @@ export const PT_BR_OVERRIDES = {
   'iCloud Keychain': 'Chaves do iCloud',
   'Google Password Manager': 'Gerenciador de senhas do Google',
   'your password manager': 'seu gerenciador de senhas',
+  // --- screen-reader labels on icon buttons ---
+  'Previous week': 'Semana anterior',
+  'Next week': 'Próxima semana',
+  'Previous month': 'Mês anterior',
+  'Next month': 'Próximo mês',
+  'Decrease': 'Diminuir',
+  'Increase': 'Aumentar',
+  'Decrease by {0}': 'Diminuir {0}',
+  'Increase by {0}': 'Aumentar {0}',
+  'Clear': 'Limpar',
+  'QR code': 'QR code',
+  'Delete weigh-in': 'Excluir pesagem',
+  'Green': 'Verde',
+  'Blue': 'Azul',
+  'Orange': 'Laranja',
+  'Purple': 'Roxo',
+  'Pink': 'Rosa',
+  'Red': 'Vermelho',
+  'Teal': 'Turquesa',
+  'Yellow': 'Amarelo',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

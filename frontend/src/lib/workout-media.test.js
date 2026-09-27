@@ -2,7 +2,7 @@
 // stamp), what the sync merge keeps of it, what the history editor does with it, and the places
 // that must never carry it (copy as text, a routine saved from the workout, a plan file).
 import { describe, expect, it } from 'vitest'
-import { addWorkoutMedia, removeWorkoutMedia, workoutMediaRoom } from './workout-media.js'
+import { addWorkoutMedia, removeWorkoutMedia } from './workout-media.js'
 import { WORKOUT_MEDIA_MAX, workoutMediaOf, referencedHashes, referencedFiles, stateMediaRefs } from './media-refs.js'
 import { mergeStates } from './sync-merge.js'
 import { editCompletedSession, saveWorkoutEdit } from './session-edit.js'
@@ -40,7 +40,7 @@ describe('addWorkoutMedia / removeWorkoutMedia', () => {
     expect(addWorkoutMedia(S, { id: 'nope' }, photo(H(1)), 9)).toBe('gone')
     expect(S.workouts[0]._ts).toBe(3)
     for (let i = 0; i < WORKOUT_MEDIA_MAX; i++) expect(addWorkoutMedia(S, { id: 'w1' }, photo(H(i)), 10 + i)).toBe('added')
-    expect(workoutMediaRoom(S.workouts[0])).toBe(false)
+    expect(workoutMediaOf(S.workouts[0])).toHaveLength(WORKOUT_MEDIA_MAX)
     const stamp = S.workouts[0]._ts
     expect(addWorkoutMedia(S, { id: 'w1' }, photo(H(0)), 99)).toBe('dup')
     expect(addWorkoutMedia(S, { id: 'w1' }, photo(H(9)), 99)).toBe('full')
@@ -59,6 +59,27 @@ describe('addWorkoutMedia / removeWorkoutMedia', () => {
     expect('media' in S.workouts[0]).toBe(false)
     // …and its files are no longer referenced: the GCs take them (after the server's grace).
     expect(referencedHashes(S).size).toBe(0)
+  })
+
+  it('edits the list as it stands: a ref it cannot show, one past the cap and unknown fields stay on the record', () => {
+    const future = { kind: 'model3d', hash: H(7), mime: 'model/gltf-binary', size: 10, width: 1, height: 1, at: 1 }
+    const tagged = { ...photo(H(1)), caption: 'front' }
+    const many = [tagged, future, ...[2, 3, 4, 5, 6, 8].map(n => photo(H(n)))]   // seven that show
+    const S = state(workout({ _ts: 3, media: structuredClone(many) }))
+    expect(workoutMediaOf(S.workouts[0])).toHaveLength(WORKOUT_MEDIA_MAX)
+    expect(addWorkoutMedia(S, { id: 'w1' }, photo(H(9)), 9)).toBe('full')
+    expect(addWorkoutMedia(S, { id: 'w1' }, photo(H(8)), 9)).toBe('dup')   // past the cap, still on it
+    expect(S.workouts[0].media).toEqual(many)
+    expect(removeWorkoutMedia(S, { id: 'w1' }, H(3), 10)).toBe(true)
+    expect(S.workouts[0].media).toEqual(many.filter(m => m.hash !== H(3)))
+    // The one past the cap moves up into view; the unknown kind and the caption are still there.
+    expect(workoutMediaOf(S.workouts[0]).map(m => m.hash)).toEqual([1, 2, 4, 5, 6, 8].map(H))
+    expect(S.workouts[0].media[0].caption).toBe('front')
+    // With room again, an add goes on the end of the raw list.
+    expect(removeWorkoutMedia(S, { id: 'w1' }, H(4), 11)).toBe(true)
+    expect(addWorkoutMedia(S, { id: 'w1' }, photo(H(9)), 12)).toBe('added')
+    expect(S.workouts[0].media.at(-1)).toEqual(photo(H(9)))
+    expect(S.workouts[0].media[1]).toEqual(future)
   })
 })
 

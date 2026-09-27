@@ -4,6 +4,7 @@ import { createMediaStore, memoryBackend } from './media-store.js'
 import { zipStore, readZip } from './zip.js'
 import { sha256Hex } from './sha256.js'
 import { jpeg, png, mp4 } from './media-samples.test-util.js'
+import { workoutMediaOf } from './media-refs.js'
 
 const refFor = async (bytes, mime, kind = 'image') => ({ kind, hash: await sha256Hex(bytes), mime, size: bytes.length, width: 4, height: 3, at: 1 })
 const stateWith = customEx => ({ unit: 'kg', workouts: [], routines: [], bodyweight: [], customEx })
@@ -86,7 +87,7 @@ describe('import', () => {
     expect(sanitizeCustomMedia({ workouts: [] })).toEqual({ workouts: [] })
   })
 
-  it('a workout\'s photos and videos come in through the same gates: bad refs dropped, one per file, at most six', () => {
+  it('a workout\'s photos and videos come in through the same gates: bad refs dropped, one per file — past the cap kept, shown up to six', () => {
     const ok = n => ({ kind: 'image', hash: String(n).repeat(64), mime: 'image/webp', size: 10, width: 4, height: 3, at: 1 })
     const S = { workouts: [
       { id: 'w1', media: [ok(1), { ...ok(2), mime: 'text/html' }, ok(1), ok(3), ok(4), ok(5), ok(6), ok(7), ok(8)] },
@@ -94,7 +95,8 @@ describe('import', () => {
       { id: 'w3' }
     ] }
     sanitizeCustomMedia(S)
-    expect(S.workouts[0].media.map(m => m.hash[0])).toEqual(['1', '3', '4', '5', '6', '7'])
+    expect(S.workouts[0].media.map(m => m.hash[0])).toEqual(['1', '3', '4', '5', '6', '7', '8'])
+    expect(workoutMediaOf(S.workouts[0]).map(m => m.hash[0])).toEqual(['1', '3', '4', '5', '6', '7'])
     expect('media' in S.workouts[1]).toBe(false)
     expect(S.workouts[2]).toEqual({ id: 'w3' })
   })

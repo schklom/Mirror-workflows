@@ -41,8 +41,8 @@ Do not unpack and re-zip it: the app reads zips that are stored, not compressed.
 
 /** The media refs and links of an imported state — each custom exercise's picture and link, each
  *  logged workout's photos and videos — kept only where they pass the same checks as anywhere
- *  else (a workout's list also deduplicated and capped, workoutMediaOf); the rest of the state is
- *  left as it is. Mutates and returns it. */
+ *  else (a workout's list also deduplicated, but not capped: workoutMediaOf caps what shows);
+ *  the rest of the state is left as it is. Mutates and returns it. */
 export function sanitizeCustomMedia(state) {
   for (const c of Array.isArray(state?.customEx) ? state.customEx : []) {
     if (!c || typeof c !== 'object') continue
@@ -51,7 +51,9 @@ export function sanitizeCustomMedia(state) {
   }
   for (const w of Array.isArray(state?.workouts) ? state.workouts : []) {
     if (!w || typeof w !== 'object' || !('media' in w)) continue
-    const list = workoutMediaOf(w)
+    // Every ref that passes, not only the ones shown: a file with more than the cap keeps them
+    // all, and the workout shows the first WORKOUT_MEDIA_MAX as it would anywhere else.
+    const list = workoutMediaOf(w, Infinity)
     if (list.length) w.media = list; else delete w.media
   }
   return state

@@ -91,10 +91,12 @@ export const WORKOUT_MEDIA_MAX = 6
 
 /**
  * The photos and videos of a logged workout as they may be shown: each passes normalizeMediaRef,
- * a file listed twice shows once, and never more than WORKOUT_MEDIA_MAX (a hand-edited or
- * foreign copy can hold anything). Oldest first, the order they were added in.
+ * a file listed twice shows once, and never more than `max` — WORKOUT_MEDIA_MAX unless the
+ * caller asks otherwise (a hand-edited or foreign copy can hold anything). Oldest first, the
+ * order they were added in. A reading, never a rewrite: the list on the record keeps whatever
+ * this leaves out (lib/workout-media.js edits it as it stands).
  */
-export function workoutMediaOf(w) {
+export function workoutMediaOf(w, max = WORKOUT_MEDIA_MAX) {
   const raw = w && typeof w === 'object' && Array.isArray(w.media) ? w.media : []
   const out = []
   const seen = new Set()
@@ -103,7 +105,7 @@ export function workoutMediaOf(w) {
     if (!m || seen.has(m.hash)) continue
     seen.add(m.hash)
     out.push(m)
-    if (out.length >= WORKOUT_MEDIA_MAX) break
+    if (out.length >= max) break
   }
   return out
 }

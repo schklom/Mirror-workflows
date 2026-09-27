@@ -850,10 +850,12 @@ export function removeRowAt(rows, i) {
   return next
 }
 
-/** Completed non-warm-up sets across a workout's entries. */
+/** Completed non-warm-up sets across a workout's entries, counted the way setsDone counts them —
+ *  each side of a unilateral row on its own — so "22 sets · 19 work" never reads as three
+ *  warm-ups on a workout that had none. */
 export function workSetsDone(w) {
   return (w?.entries || []).reduce(
-    (n, e) => n + (e.sets || []).filter(s => s.done && !isWarmupRow(s)).length, 0,
+    (n, e) => n + (e.sets || []).reduce((m, s) => m + (isWarmupRow(s) ? 0 : doneUnits(s)), 0), 0,
   )
 }
 

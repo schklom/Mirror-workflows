@@ -771,6 +771,15 @@ describe('workoutVolume', () => {
     expect(workSetsDone(w)).toBe(1)
   })
 
+  it('counts work sets the way it counts all sets: each side of a unilateral row (QA 1.3.9)', () => {
+    const both = toggleSide(toggleSide(makeSideSet({ w: 20, r: 20 }), 'L'), 'R')
+    const one = toggleSide(makeSideSet({ w: 20, r: 20 }), 'L')
+    const w = { entries: [{ id: LIFT, sets: [both, one, { w: 30, r: 5, done: true }] }] }
+    expect(setsDone(w)).toBe(4)
+    // No warm-ups, so every set is a work set — the summary read "4 sets · 2 work".
+    expect(workSetsDone(w)).toBe(4)
+  })
+
   it('does not use a warm-up as the previous best working weight', () => {
     expect(bestWeightFor({ workouts: [{ entries: [{ id: LIFT, topW: 120, sets: [
       { phase: 'warmup', done: true, w: 120 },

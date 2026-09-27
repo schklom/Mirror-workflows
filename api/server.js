@@ -110,6 +110,18 @@ function atomicWrite(file, content, mode) {
   fs.renameSync(tmp, file);
 }
 const stateFile = uid => path.join(DATA, 'state-' + uid.replace(/[^a-zA-Z0-9_-]/g, '') + '.json');
+// When a profile last fetched its document (GET /api/data). The document's own `_ts` moves only
+// on a push, so a device that only ever read — a second phone, a profile that trains elsewhere
+// and just looks — showed "last sync never" in the admin dashboard (QA 1.3.9). Kept on the user
+// record and written at most every ten minutes per profile, since every foreground return pulls.
+const PULL_NOTE_MS = 10 * 60 * 1000;
+function notePull(user, now = Date.now()) {
+  if (user.lastPull && now - user.lastPull < PULL_NOTE_MS) return;
+  user.lastPull = now;
+  try { saveDb(); } catch (e) { console.error('db save failed', e.message); }
+}
+// The later of the last push and the last pull.
+const lastSyncOf = (u, S) => Math.max(S?._ts || 0, u?.lastPull || 0) || null;
 function readState(uid) {
   try { return JSON.parse(fs.readFileSync(stateFile(uid), 'utf8')); } catch { return null; }
 }
@@ -1975,6 +1987,7 @@ const routes = {
     const user = readSession(req);
     if (!user) return json(res, 401, { error: 'not signed in' });
     const state = readState(user.id);
+    notePull(user);
     json(res, 200, { state, rev: state?._rev || 0 });
   },
   // Just the revision: the client asks this every half minute while it is open and on every
@@ -2159,7 +2172,7 @@ const routes = {
         disabled: !!u.disabled, admin: isAdmin(u), invitedBy: u.invitedBy || null,
         workouts: workouts.length,
         lastWorkout: last ? last.d : null,
-        lastSync: S._ts || null,
+        lastSync: lastSyncOf(u, S),
         hasPush: db.subs.some(s => s.userId === u.id),
         live: livePresence(u.id),
         // The sign-in e-mail is an admin's to see (to hand out a reset code, to tell two
@@ -2185,7 +2198,7 @@ const routes = {
         ...(PASSWORD_LOGIN ? { password: hasPassword(u), email: u.email || null, resetUntil: u.pwReset?.exp > Date.now() ? u.pwReset.exp : null } : {})
       },
       unit: S.unit || 'kg',
-      lastSync: S._ts || null,
+      lastSync: lastSyncOf(u, S),
       routines: records(S.routines).map(r => ({ id: r.id, name: r.name, emoji: r.emoji, count: records(r.ex).length })),
       bodyweight: records(S.bodyweight),
       // records() already copied, so this reverse is ours: newest first for display. A workout's

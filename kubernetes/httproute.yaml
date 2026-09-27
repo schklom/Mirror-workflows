@@ -3,7 +3,6 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: opengym-tls
-  namespace: fitness
 spec:
   dnsNames:
     - opengym.example.com
@@ -12,6 +11,10 @@ spec:
     name: letsencrypt
   secretName: opengym-tls
 ---
+# The Gateway lives in another namespace, and its HTTPS listener has to read the certificate
+# above: a cross-namespace reference to a Secret needs this grant. The route below points at a
+# Service in its own namespace and needs none. Drop this if your listener carries its own
+# (e.g. wildcard) certificate.
 apiVersion: gateway.networking.k8s.io/v1beta1
 kind: ReferenceGrant
 metadata:
@@ -23,7 +26,8 @@ spec:
       namespace: envoy-gateway-system
   to:
     - group: ""
-      kind: Service
+      kind: Secret
+      name: opengym-tls
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute

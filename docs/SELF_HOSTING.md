@@ -292,6 +292,9 @@ from Settings → "Pair the mobile app", as with a passkey.
 
 ## 5. Fitting it into an existing stack
 
+Running Kubernetes? Example manifests (Deployment, PVCs, Service, Gateway API route) are in
+`kubernetes/`, described in [SELF_HOSTING_KUBERNETES.md](SELF_HOSTING_KUBERNETES.md).
+
 The defaults assume openGym is the only thing here: a service called `api` on port 3000, and nginx
 on port 80 inside its container. If you are merging this into a compose file that already has an
 `api`, or you put the web container behind your own reverse proxy on a different port, four

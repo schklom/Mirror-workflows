@@ -17,6 +17,10 @@ spec:
         app: opengym
     spec:
       initContainers:
+        # The exercise images and GIFs, one time (~140 MB) — the same download as the media
+        # service in docker-compose.yml. They are © Gym visual (https://gymvisual.com/), used
+        # under the exercises-dataset's terms and fetched from upstream, not redistributed by
+        # openGym; see NOTICE.md.
         - name: media-download
           image: alpine/git
           command: ["/bin/sh", "-c"]
@@ -48,6 +52,8 @@ spec:
               value: opengym.example.com
             - name: ORIGIN
               value: https://opengym.example.com
+            # Everything else in .env.example (INVITE_ONLY, ADMIN_UIDS, ALLOW_GUEST,
+            # DEFAULT_LANG, PASSWORD_LOGIN, the push keys, ...) goes here the same way.
           ports:
             - containerPort: 3000
               name: http
@@ -75,6 +81,8 @@ spec:
           env:
             - name: NGINX_PORT
               value: "80"
+            # Both containers share the pod's network, so the API is on localhost. An IP here
+            # also means nginx never needs RESOLVER (Docker's DNS by default) to find it.
             - name: BACKEND
               value: 127.0.0.1
             - name: PORT

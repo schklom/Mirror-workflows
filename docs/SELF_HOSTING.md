@@ -150,6 +150,11 @@ old profile that chose English from one that never looked, so it leaves them alo
 English. A code the app has no translation for is ignored. The phone app in local mode has no
 server to ask and is unaffected.
 
+Until someone picks a language, it is worked out on each device and not saved with the profile:
+without `DEFAULT_LANG`, the same profile can show in German on one phone and in English on a
+laptop, and the Coach answers in whichever the app is showing. A scheduled review, which no app
+asks for, is written in `DEFAULT_LANG` when it is set.
+
 ### The activity log
 
 The dashboard also keeps an **activity log**: sign-ins, sign-outs, failed attempts, refused

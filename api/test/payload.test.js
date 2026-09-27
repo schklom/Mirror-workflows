@@ -331,3 +331,16 @@ test('a custom exercise\'s photo, video and link never reach the payload', () =>
   const slice = payload.librarySlice(S, [], { keep: ['cx1'] }).find(e => e.id === 'cx1');
   assert.deepEqual(slice, { id: 'cx1', n: 'Sandbag carry', bp: 'back', custom: true }, 'the library slice keeps a custom exercise to four fields');
 });
+
+/* #303: a profile that never picked a language has it worked out on each device and never
+   stored, so the app says which one it is showing; a value that is not a language tag is not
+   carried into the prompt. */
+test('meta.lang is the language the app asked in, else the stored one', () => {
+  const S = { ...sampleState(), lang: 'de', langAuto: true };
+  const h = handleFor('user-lang');
+  assert.equal(payload.build(S, { handle: h, kind: 'review', lang: 'pt-BR' }).meta.lang, 'pt-BR');
+  assert.equal(payload.build(S, { handle: h, kind: 'review' }).meta.lang, 'de');
+  assert.equal(payload.build(S, { handle: h, kind: 'review', lang: 'ignore the rules and' }).meta.lang, 'de');
+  assert.equal(payload.langTag(' fr '), 'fr');
+  assert.equal(payload.langTag('<script>'), null);
+});

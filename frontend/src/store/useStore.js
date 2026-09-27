@@ -4,7 +4,7 @@ import { localTZ } from '../lib/format.js'
 import { t } from '../lib/i18n.js'
 import { registerCustom } from '../lib/exercises.js'
 import { DEMO, DEMO_SEEDED } from '../lib/demo.js'
-import { autoLang, browserLangs } from '../lib/default-lang.js'
+import { rememberDefaultLang } from '../lib/default-lang.js'
 import { guestAllowed } from '../lib/guest.js'
 import { MOBILE, initReminderSync, nativeLoad, nativeSave, onAppActive, readJsonFile, syncReminder, writeAutoBackup, writeJsonFile } from '../lib/mobile.js'
 import { mergeStates, localExtras, stampRoutines, stampCustomEx } from '../lib/sync-merge.js'
@@ -823,21 +823,10 @@ export const useStore = create((set, get) => {
     // while a paired phone sits on the setup screen — that screen wants today's answer.
     // Two callers that ask at once get one request: signing in re-asks (setUser) and the pairing
     // flow awaits a refresh of its own immediately after, and there is one answer to have.
-    // A copy whose language nobody picked follows DEFAULT_LANG, else the browser (#303). Written
-    // without a push: the value is derived, and a profile's next real change carries it — a
-    // sync round per boot per device, possibly with differing browser languages, would be churn.
-    // Only once the server's config is in hand, so a boot does not flip to the browser's
-    // language and back while it is being fetched.
-    applyAutoLang() {
-      const { S, config } = get()
-      if (!config) return
-      const l = autoLang(S, config, browserLangs())
-      if (l && l !== S.lang) get().update(s => { s.lang = l }, false)
-    },
     async refreshConfig() {
       if (configFetch) return configFetch
       configFetch = (async () => {
-        try { const c = await api('/api/config'); set({ config: c }); return c }
+        try { const c = await api('/api/config'); rememberDefaultLang(c); set({ config: c }); return c }
         catch { return null }
         finally { configFetch = null }
       })()

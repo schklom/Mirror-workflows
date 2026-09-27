@@ -245,6 +245,7 @@ export function enqueue(uid, opts) {
     intake: opts.intake || null,
     note: clampMessage(opts.note),
     refine: clampMessage(opts.refine),
+    lang: payloadLib.langTag(opts.lang),              // the language the app was showing (#303)
     state: 'queued',
     startedAt: Date.now()
   };
@@ -329,6 +330,9 @@ async function execute(job) {
     refine: job.refine,
     previous: pendingCreate?.bundle || null,
     workoutId: job.workoutId,
+    // The app says which language it is in. A scheduled review has no app behind it: a profile
+    // that never picked a language then gets the instance's DEFAULT_LANG, like its screens do.
+    lang: job.lang || (S.langAuto === true ? payloadLib.langTag(process.env.DEFAULT_LANG) : null),
     // The room's medians ride along on a review or a debrief when the admin allows it and
     // this person opted in; null otherwise, and the payload then carries no `cohort` at all.
     cohort: (job.kind === 'review' || job.kind === 'debrief') ? cohortForPayload(job.uid) : null

@@ -69,3 +69,29 @@ describe('planPrintHTML exercise-name casing per language', () => {
     })
   }
 })
+
+// QA 1.3.9: the printout read "3 × 12" for an 8–12 range, left the drop-set out, and glued an
+// untranslated body part onto the name ("…Curlupper Legs").
+describe('planPrintHTML prints the exercise as it is prescribed', () => {
+  const S2 = {
+    unit: 'kg', week: {},
+    routines: [{ id: 'r', name: 'Legs', ex: [
+      { id: '0025', sets: 3, mode: 'reps', reps: 12, repsMin: 8, weight: 60, intensifier: { type: 'dropset', count: 2, pct: 20 } },
+      { id: '0027', sets: 1, mode: 'reps', reps: 8, weight: 40, intensifier: { type: 'restpause', totalReps: 20, restSec: 15 } },
+    ] }],
+  }
+  afterEach(() => _setLangState('en', {}, null, null))
+
+  it('keeps the rep range and names the intensifier', () => {
+    const body = text(planPrintHTML(S2, '', { routineId: 'r' }))
+    expect(body).toContain('3 × 8–12 · 60 kg · Drop-set 2× −20%')
+    expect(body).toContain('1 × 8 · 40 kg · Rest-pause 20 reps')
+  })
+
+  it('translates the body part and keeps it a separate word', () => {
+    _setLangState('de', { chest: 'Brust', 'Drop-set': 'Dropsatz' }, null, null)
+    const html = planPrintHTML(S2, '', { routineId: 'r' })
+    expect(html).toContain(' <span class="part">Brust</span>')
+    expect(text(html)).toContain('Dropsatz 2×')
+  })
+})

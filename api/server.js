@@ -22,7 +22,8 @@ import { dayReminderPush, restTimerPush, testPush } from './push-messages.js';
 import { verifyError } from './verify-error.js';
 import {
   hashPassword, verifyPassword, needsRehash, passwordProblem, passwordLength, nameKey, BusyError,
-  MIN_LENGTH, MAX_LENGTH, makeResetCode, hashResetCode, resetCodeMatches, RESET_TTL_MS, warmUp
+  MIN_LENGTH, MAX_LENGTH, makeResetCode, hashResetCode, resetCodeMatches, RESET_TTL_MS, warmUp,
+  normalizeEmail, maskEmail
 } from './password.js';
 import { createBackoff, createWindow } from './rate-limit.js';
 import {
@@ -774,12 +775,15 @@ if (AUDIT_ON) {
 //   ADDR_FAILS   wrong answers per address and per kind (a password or reset code, an invite
 //                code on password signup, a device-link code): 20 free, then a pause of 30 s
 //                that doubles up to 15 min.
-//   ACCOUNT_FAILS  wrong passwords per *name*, whoever sends them: 5 free, then 1 min doubling
-//                up to 1 h, forgotten after a day without one or on the next success. This is
-//                the one that protects a password — an address is cheap to change, a name is
-//                not. It is keyed by the name as typed, existing or not, so a lockout never
-//                says whether an account is there; the count of a name that has a password is
-//                never evicted to make room for others. Passkeys are never paused by it.
+//   ACCOUNT_FAILS  wrong passwords per *account*, whoever sends them: 5 free, then 1 min
+//                doubling up to 1 h, forgotten after a day without one or on the next success.
+//                This is the one that protects a password — an address is cheap to change, an
+//                account is not. It is keyed by the account the name or e-mail resolves to
+//                (`acct:<id>`), so typing the e-mail after the name was paused meets the same
+//                pause; an identifier that resolves to nobody is counted as typed (`id:<fold>`),
+//                so a pause looks the same whether an account is there or not. The count of an
+//                account with a password is never evicted to make room for others. Passkeys
+//                are never paused by it.
 //
 // A password check is counted against the name and the address the moment it starts, not when
 // its answer comes back (passwordAttempt below): scrypt takes a tenth of a second, and counting
@@ -794,7 +798,7 @@ const ADDR_FAILS = createBackoff({ free: 20, baseMs: 30000, maxMs: 15 * 60000, f
 const ACCOUNT_FAILS = createBackoff({
   free: 5, baseMs: 60000, maxMs: 3600000, forgetMs: 24 * 3600000,
   // At most one per profile with a password, so this cannot grow without bound.
-  keep: k => !!passwordHolder(k)
+  keep: k => k.startsWith('acct:') && hasPassword(db.users.find(u => u.id === k.slice(5)))
 });
 setInterval(() => { AUTH_BURST.sweep(); ADDR_FAILS.sweep(); ACCOUNT_FAILS.sweep(); }, 60000).unref();
 
@@ -804,6 +808,9 @@ const THROTTLED = {
   'POST /api/login/password': 'password', 'POST /api/login/password-reset': 'password',
   'POST /api/register/password': 'signup',
   'POST /api/account/password': 'password', 'DELETE /api/account/password': null,
+  // Setting an e-mail only spends the budget and asks the address's e-mail pause; an address
+  // already in use counts against it (see POST /api/account/email).
+  'POST /api/account/email': 'email', 'DELETE /api/account/email': null,
   // Redeeming a device link (#95). Adding or removing a passkey and making a link only spend the
   // budget: the password that may prove them counts its own failures (passwordAttempt).
   'POST /api/device-link/options': 'link', 'POST /api/device-link/verify': 'link',
@@ -874,10 +881,61 @@ const hasPassword = u => !!(u && u.pw && typeof u.pw.h === 'string');
 const passwordWayIn = u => PASSWORD_LOGIN && hasPassword(u);
 const passwordHolder = k => db.users.find(u => hasPassword(u) && nameKey(u.name) === k) || null;
 const holdsName = u => hasPassword(u) || !!(u.pwReset && u.pwReset.exp > Date.now());
+// An e-mail is a second name to sign in with (see "e-mail as a sign-in name" below), so a name
+// is also taken by another profile's e-mail — only ever relevant for a name with an "@" in it.
 const nameTaken = (name, exceptId) => {
   const k = nameKey(name);
-  return db.users.some(u => u.id !== exceptId && holdsName(u) && nameKey(u.name) === k);
+  return db.users.some(u => u.id !== exceptId && ((holdsName(u) && nameKey(u.name) === k) || u.email === k));
 };
+
+/* ---------- e-mail as a sign-in name ----------
+   Optional, per profile, and only while PASSWORD_LOGIN is on: an address someone may type at the
+   password sign-in instead of their profile name. Nothing is ever sent to it — no verification,
+   no reset mail; resets stay the admin's one-time code — so the address is never proven to be
+   theirs, and it does not need to be: it is only an identifier that points at an account, and the
+   password is still what opens it. Stored as `u.email`, folded by normalizeEmail() (password.js).
+
+   It is unique across every profile, and no profile's address may be another password-holding
+   profile's name (nameTaken above says the same the other way round), so an identifier never
+   points at two accounts. That uniqueness is the one thing an address reveals: setting one that
+   is in use answers 409. The route could be made to hide it — accept the address silently and
+   leave it pointing nowhere — but then someone who typed their own address on a second profile
+   would be told it was saved and find it did not sign in, which is worse. So it answers, and the
+   answer is made expensive instead: in Settings only a signed-in owner can ask (session +
+   proveOwner, a passkey prompt or a checked password per try), an address already in use counts
+   against the caller's address and account (20 free, then 30 s doubling to 15 min), and profile
+   creation with a password and an address counts the same way against the caller's address.
+   Signup needs no session, so it is the cheaper place to ask: it answers only after hashing the
+   new password and, on an invite-only instance, only to someone holding a valid invite code
+   (a refusal does not use it up); an open instance answers anyone. What that leaves is what the name-taken answer already gives
+   away for names — "some profile here uses this", never which one — at a few tries an hour.
+
+   Sign-in takes it in the same field as the name (loginTarget): an identifier with an "@" is
+   looked up as an address first, then as a name, so a profile name that happens to contain an
+   "@" still signs in. Wrong passwords count against the account the identifier resolves to, so
+   switching between name and address does not reset the pause. The full address is never
+   written to the audit log or the console (maskEmail), is not part of /api/me, the Coach, the
+   MCP bridge or anything shared, and only its owner (GET /api/account/password) and an admin
+   (the user list) ever see it. */
+const emailHolder = e => db.users.find(u => hasPassword(u) && u.email === e) || null;
+const emailTaken = (e, exceptId) => db.users.some(u => u.id !== exceptId && (u.email === e || (holdsName(u) && nameKey(u.name) === e)));
+const EMAIL_ERRORS = {
+  invalid: { error: 'that is not an e-mail address', code: 'email-invalid' },
+  taken: { error: 'another profile already uses this e-mail address', code: 'email-taken' }
+};
+// Who a sign-in body names: `identifier` (what the app sends), `name` (what it sent before, and
+// what older clients still send — an address typed there works too) or `email` (only an address).
+// `key` is what wrong passwords are counted against: the account when there is one, otherwise the
+// identifier as folded, so an unknown one is paused exactly like a known one.
+function loginTarget(body) {
+  const onlyEmail = body.identifier === undefined && body.name === undefined;
+  const k = nameKey(text(body.identifier ?? body.name ?? body.email).slice(0, 300));
+  if (!k) return null;
+  const resolve = () => (k.includes('@') ? emailHolder(k) : null) || (onlyEmail ? null : passwordHolder(k));
+  const user = resolve();
+  return { k, user, resolve, email: k.includes('@'), key: user ? acctKey(user) : 'id:' + k };
+}
+const acctKey = u => 'acct:' + u.id;
 const passkeyCount = u => db.creds.filter(c => c.userId === u.id).length;
 const publicUser = u => ({ id: u.id, name: u.name, admin: isAdmin(u) });
 const POLICY_ERRORS = {
@@ -922,7 +980,7 @@ async function passkeyStepUp(user, body) {
   } catch { return false; }
 }
 
-// One password check against the name `k`, counted as a failure for the name and for the caller's
+// One password check against the account key `k` (loginTarget), counted as a failure for it and for the caller's
 // address before it runs, so that checks sent side by side cannot all start under the same
 // allowance (see the throttle above). Answers 429 itself and returns null when either is paused.
 // The caller settles it once: failed() for a wrong password, ok() for a right one, void() when the
@@ -944,9 +1002,9 @@ function passwordAttempt(req, res, k) {
     },
     // The audit line names the account only when there is one — what someone typed into the
     // name field is sometimes their password.
-    failed(user, msg) {
-      audit(req, 'auth.password.fail', user ? { ok: false, user, msg } : { ok: false, msg: 'unknown-name' });
-      if (byName.lock) audit(req, 'auth.password.locked', user ? { ok: false, user } : { ok: false, msg: 'unknown-name' });
+    failed(user, msg, unknown = 'unknown-name') {
+      audit(req, 'auth.password.fail', user ? { ok: false, user, msg } : { ok: false, msg: unknown });
+      if (byName.lock) audit(req, 'auth.password.locked', user ? { ok: false, user } : { ok: false, msg: unknown });
       if (byAddr.lock) audit(req, 'auth.throttled', { ok: false, msg: 'password' });
     },
     // A right password starts the name over; the address keeps whatever else it has run up.
@@ -988,7 +1046,7 @@ async function proveOwner(req, res, user, body, failEv) {
     json(res, 403, { error: 'enter your current password', code: 'current-required' });
     return null;
   }
-  const check = passwordAttempt(req, res, nameKey(user.name));
+  const check = passwordAttempt(req, res, acctKey(user));
   if (!check) return null;
   const rec = user.pw;
   if (!(await check.verify(current, rec.h))) {
@@ -1003,18 +1061,31 @@ async function proveOwner(req, res, user, body, failEv) {
 
 if (PASSWORD_LOGIN) warmUp();
 
+// Taking the address away: the profile then signs in by its name only. Asks the same proof as
+// setting one; a profile without an address gets 200 with none asked.
+async function removeEmail(req, res, user, body) {
+  if (!user.email) return json(res, 200, { ok: true, email: null });
+  const proof = await proveOwner(req, res, user, body, 'auth.email.fail');
+  if (!proof) return;
+  if (readSession(req) !== user) return json(res, 401, { error: 'not signed in' });
+  delete user.email;
+  saveDb();
+  audit(req, 'auth.email.remove', { user, msg: proof });
+  json(res, 200, { ok: true, email: null });
+}
+
 const passwordRoutes = {
   'POST /api/login/password': async (req, res) => {
     const body = await readBody(req);
-    const k = nameKey(text(body.name).slice(0, 200));
+    const target = loginTarget(body);
     const pw = typeof body.password === 'string' ? body.password : '';
-    if (!k || !pw) return json(res, 400, { error: 'name and password required', code: 'missing' });
-    const check = passwordAttempt(req, res, k);
+    if (!target || !pw) return json(res, 400, { error: 'name and password required', code: 'missing' });
+    const check = passwordAttempt(req, res, target.key);
     if (!check) return;
-    const user = passwordHolder(k);
+    const { user } = target;
     const rec = user?.pw;
     if (!(await check.verify(pw, rec?.h))) {
-      check.failed(user, 'bad-password');
+      check.failed(user, 'bad-password', target.email ? 'unknown-email' : 'unknown-name');
       return json(res, 401, WRONG);
     }
     // Right for the password read before the await — which a change, an admin reset or a removal
@@ -1022,7 +1093,7 @@ const passwordRoutes = {
     // in place). A session signed now would carry the account's *new* session version and outlive
     // the "signed out everywhere" that came with it, so the old password gets nothing; it is not
     // counted as a wrong one either.
-    const still = () => hasPassword(user) && user.pw === rec && passwordHolder(k) === user;
+    const still = () => hasPassword(user) && user.pw === rec && target.resolve() === user;
     if (!still()) {
       check.void();
       return json(res, 401, WRONG);
@@ -1064,6 +1135,19 @@ const passwordRoutes = {
     if (problem) return policyError(res, problem);
     const taken = () => json(res, 409, { error: 'another profile already signs in with this name', code: 'name-taken' });
     if (nameTaken(name)) return taken();
+    // An e-mail is optional here. One already in use counts against the address, the way it
+    // does in Settings: this route needs no session, so it is the cheaper place to ask. Whether
+    // it is in use is only answered after the hash and the invite check that follows it, so on
+    // an invite-only instance nobody without a valid code learns anything about addresses.
+    const hasEmail = typeof body.email === 'string' && body.email.trim() !== '';
+    const email = hasEmail ? normalizeEmail(body.email) : null;
+    if (hasEmail && !email) return json(res, 400, EMAIL_ERRORS.invalid);
+    const emailRefused = () => {
+      strikeAddress(req, 'email');
+      audit(req, 'auth.register.fail', { ok: false, name, msg: 'email-taken' });
+      return json(res, 409, EMAIL_ERRORS.taken);
+    };
+    if (email && addressPaused(req, res, 'email')) return;
     const h = await hashPassword(body.password);
     let inv = null;
     if (INVITE_ONLY) {
@@ -1074,8 +1158,10 @@ const passwordRoutes = {
       }
     }
     if (nameTaken(name)) return taken();
+    // No await from here to the push: nothing can take the address between this check and it.
+    if (email && emailTaken(email)) return emailRefused();
     const created = new Date().toISOString();
-    const user = { id: crypto.randomBytes(12).toString('base64url'), name, created, pw: { h, set: created } };
+    const user = { id: crypto.randomBytes(12).toString('base64url'), name, created, pw: { h, set: created }, ...(email ? { email } : {}) };
     if (inv) { user.invitedBy = inv.code; inv.usedBy = user.id; inv.usedAt = created; }
     db.users.push(user);
     saveDb();
@@ -1089,7 +1175,9 @@ const passwordRoutes = {
     if (!user) return json(res, 401, { error: 'not signed in' });
     json(res, 200, {
       set: hasPassword(user), setAt: user.pw?.set || null, passkeys: passkeyCount(user),
-      name: user.name, nameTaken: nameTaken(user.name, user.id)
+      name: user.name, nameTaken: nameTaken(user.name, user.id),
+      // Only the owner's own session is ever handed their address.
+      email: user.email || null
     });
   },
 
@@ -1104,7 +1192,6 @@ const passwordRoutes = {
     if (problem) return policyError(res, problem);
     const taken = () => json(res, 409, { error: 'another profile already signs in with this name', code: 'name-taken' });
     if (nameTaken(user.name, user.id)) return taken();
-    const k = nameKey(user.name);
     const proof = await proveOwner(req, res, user, body, 'auth.password.fail');
     if (!proof) return;
     const h = await hashPassword(body.next);
@@ -1114,8 +1201,8 @@ const passwordRoutes = {
     if (nameTaken(user.name, user.id)) return taken();
     const first = !hasPassword(user);
     setPassword(user, h);
-    // Whatever pause wrong guesses put on this name was about a password that no longer exists.
-    ACCOUNT_FAILS.clear(k);
+    // Whatever pause wrong guesses put on this account was about a password that no longer exists.
+    ACCOUNT_FAILS.clear(acctKey(user));
     saveDb();
     audit(req, first ? 'auth.password.set' : 'auth.password.change', { user, msg: proof });
     // This session carries on under the new version: a new cookie, or a new token for a phone.
@@ -1149,6 +1236,51 @@ const passwordRoutes = {
     json(res, 200, { ok: true });
   },
 
+  // Set, change (`email`) or remove (`email` empty or null, or DELETE) the address this profile
+  // may sign in with. The same proof as a password (proveOwner): an address that points at the
+  // account is part of how someone gets in, and a copied session must not choose it. An address
+  // already in use is refused only after the proof, and counts against the caller's address and
+  // account, so asking whether an address is in use costs a passkey prompt or a password check
+  // and runs out after a few tries (see "e-mail as a sign-in name" above).
+  'POST /api/account/email': async (req, res) => {
+    const s = sessionOf(req);
+    if (!s) return json(res, 401, { error: 'not signed in' });
+    const { user } = s;
+    const body = await readBody(req);
+    if (body.email == null || (typeof body.email === 'string' && body.email.trim() === '')) return removeEmail(req, res, user, body);
+    const email = normalizeEmail(body.email);
+    if (!email) return json(res, 400, EMAIL_ERRORS.invalid);
+    if (email === user.email) return json(res, 200, { ok: true, email });
+    const acct = 'email|' + acctKey(user);
+    const paused = () => {
+      const wait = ADDR_FAILS.retryAfter(acct);
+      if (wait) tooMany(res, wait);
+      return wait > 0 || addressPaused(req, res, 'email');
+    };
+    if (paused()) return;
+    const proof = await proveOwner(req, res, user, body, 'auth.email.fail');
+    if (!proof) return;
+    if (sessionOf(req)?.user !== user) return json(res, 401, { error: 'not signed in' });
+    if (paused()) return;
+    if (emailTaken(email, user.id)) {
+      if (proof === 'passkey') saveDb();   // the confirming passkey's counter and last use
+      strikeAddress(req, 'email');
+      ADDR_FAILS.fail(acct);
+      audit(req, 'auth.email.fail', { ok: false, user, msg: 'email-taken' });
+      return json(res, 409, EMAIL_ERRORS.taken);
+    }
+    const first = !user.email;
+    user.email = email;
+    saveDb();
+    audit(req, first ? 'auth.email.set' : 'auth.email.change', { user, msg: proof + ' · ' + maskEmail(email) });
+    json(res, 200, { ok: true, email });
+  },
+  'DELETE /api/account/email': async (req, res) => {
+    const user = readSession(req);
+    if (!user) return json(res, 401, { error: 'not signed in' });
+    removeEmail(req, res, user, await readBody(req));
+  },
+
   // An admin hands out a one-time code; the person redeems it below with a password of their
   // choosing. Issuing it ends the old password and every session of the account at once: a
   // reset is asked for when access is lost or in doubt, and a password someone else may know
@@ -1176,14 +1308,15 @@ const passwordRoutes = {
 
   'POST /api/login/password-reset': async (req, res) => {
     const body = await readBody(req);
-    const k = nameKey(text(body.name).slice(0, 200));
+    // The name or the e-mail, in the same fields sign-in takes them (loginTarget).
+    const k = nameKey(text(body.identifier ?? body.name ?? body.email).slice(0, 300));
     const code = text(body.code).slice(0, 64);
     if (!k || !code) return json(res, 400, { error: 'name and code required', code: 'missing' });
     // Wrong codes count against the address only. A per-name pause would add nothing against a
     // 60-bit code that lives a day, and would let anyone who knows the name keep the real code
     // refused for that whole day — after the reset has already removed the old password.
     if (addressPaused(req, res, 'password')) return;
-    const find = () => db.users.find(u => u.pwReset && nameKey(u.name) === k && resetCodeMatches(code, u.pwReset)) || null;
+    const find = () => db.users.find(u => u.pwReset && (nameKey(u.name) === k || u.email === k) && resetCodeMatches(code, u.pwReset)) || null;
     const user = find();
     const invalid = () => json(res, 400, { error: 'that reset code is wrong or has expired', code: 'reset-invalid' });
     const taken = () => json(res, 409, { error: 'another profile already signs in with this name', code: 'name-taken' });
@@ -1205,7 +1338,7 @@ const passwordRoutes = {
     if (find() !== user) return invalid();
     if (nameTaken(user.name, user.id)) return taken();
     setPassword(user, h);
-    ACCOUNT_FAILS.clear(k);
+    ACCOUNT_FAILS.clear(acctKey(user));
     saveDb();
     audit(req, 'auth.password.reset', { user });
     json(res, 200, { user: publicUser(user) }, { 'Set-Cookie': sessionCookie(user) });
@@ -2023,7 +2156,9 @@ const routes = {
         lastSync: S._ts || null,
         hasPush: db.subs.some(s => s.userId === u.id),
         live: livePresence(u.id),
-        ...(PASSWORD_LOGIN ? { password: hasPassword(u) } : {})
+        // The sign-in e-mail is an admin's to see (to hand out a reset code, to tell two
+        // profiles apart), and only while the instance takes passwords at all.
+        ...(PASSWORD_LOGIN ? { password: hasPassword(u), email: u.email || null } : {})
       };
     });
     json(res, 200, { users, invite_only: INVITE_ONLY, ...(PASSWORD_LOGIN ? { password_login: true } : {}), now: Date.now() });
@@ -2041,7 +2176,7 @@ const routes = {
         id: u.id, name: u.name, created: u.created || null, disabled: !!u.disabled, admin: isAdmin(u), invitedBy: u.invitedBy || null,
         // Only on an instance with password sign-in: whether they have one, and until when an
         // unused reset code is good.
-        ...(PASSWORD_LOGIN ? { password: hasPassword(u), resetUntil: u.pwReset?.exp > Date.now() ? u.pwReset.exp : null } : {})
+        ...(PASSWORD_LOGIN ? { password: hasPassword(u), email: u.email || null, resetUntil: u.pwReset?.exp > Date.now() ? u.pwReset.exp : null } : {})
       },
       unit: S.unit || 'kg',
       lastSync: S._ts || null,

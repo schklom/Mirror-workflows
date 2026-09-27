@@ -224,6 +224,8 @@ What changes when it is on:
 - People sign in with their **profile name** — case and surrounding spaces do not matter — and the
   password. Two profiles with a password cannot share a name; Settings says so when a name is
   already taken that way.
+- Optionally with an **e-mail address** instead of the name: see *Signing in with an e-mail*
+  below.
 - A password cannot be removed while it is the profile's only way in (a profile made with a
   password has no passkey).
 - The password also confirms the changes that need proof — adding or removing a passkey, making
@@ -236,15 +238,52 @@ browser that is still signed in. Before you switch it off, have those profiles a
 (**Settings → Account → Passkeys → Add a passkey**, confirmed with their password); the admin
 dashboard marks every profile that has a password.
 
+**Signing in with an e-mail.** Settings → Account also gets a **Sign-in e-mail** row, right under
+the password, and **Create new profile** with a password has an optional e-mail field. Whoever
+adds an address can type it at **Sign in with password** instead of their profile name (case and
+spaces do not matter). openGym has no mail server and **never sends anything** to it: there is no
+verification mail and no reset mail — a forgotten password is still reset with the admin's code
+below, which can be redeemed with the name or the e-mail. So the address is not proven to belong
+to anyone; it is only a second name that points at the account, and the password still opens it.
+
+- Adding, changing and removing it asks for the same proof as setting a password (the current
+  password or a passkey of the profile) — a session on its own may be a copied cookie.
+- An address belongs to one profile only, and can never be another password profile's name.
+  Taking one that is in use is refused ("Another profile already uses this e-mail address") — see
+  *What an e-mail gives away* below for what that says and how it is limited.
+- Wrong passwords count against the **account**, whether it was named by its name or its e-mail,
+  so switching between the two does not get around the pause.
+- Only the owner (in Settings) and admins (the user list and the user's page in the admin
+  dashboard) ever see the address. It is not written to the activity log (entries show it masked,
+  `a…@e…`) or the container log, is not part of what the Coach, the MCP server or plan sharing
+  see, and is not in `/api/me`. It is stored in `db.json` as `email` on the user, lower-cased.
+- With `PASSWORD_LOGIN` off, the row and the field are hidden and the address is not used; it
+  stays in `db.json` for when the flag comes back.
+
+**What an e-mail gives away.** A profile trying to take an address already in use is told so,
+which says "some profile on this instance uses this address" — never which one. The alternative,
+accepting it silently, would leave someone who typed their address on a second profile believing
+it worked. So the answer is made expensive instead: in Settings it comes only after the proof (a
+passkey prompt or a password check per try). Signing up with a password needs no proof, so there
+the answer costs less: it comes after the new password is hashed and, with `INVITE_ONLY=1`, only
+to someone with a valid invite code (a refusal leaves the code unused); on an open instance
+anyone can ask. Every such refusal — in Settings or on signup — counts against the visitor's
+address (and in Settings the account): 20 are free, then a pause of 30 seconds doubling to 15
+minutes. That leaves a few tries an hour, comparable to what the
+name-taken answer already says about names. The other thing to know: once someone has paused an
+account by wrong passwords under its name, trying a guessed address shows the same pause, which
+ties that address to that name — the price of not letting a switch to the e-mail skip the pause.
+
 **Resetting a password.** There is no e-mail. In the admin dashboard open the user and choose
 **Reset password**. You get a one-time code such as `K7WQ-2MZP-4HXA` to hand over in person or
 by message: it is shown once, works once, is valid for 24 hours and is stored only as a hash.
 Issuing it removes their current password and signs them out everywhere at once — their passkeys
-keep working. They enter their name, the code and a new password under **Sign in with password →
+keep working. They enter their name (or their sign-in e-mail), the code and a new password under **Sign in with password →
 Have a reset code?**. The same code gets someone back in who lost their only passkey (#219).
 Admin accounts cannot be reset from the dashboard, so one admin cannot take over another's login;
 an admin sets their own password in Settings. Every step is in the activity log
-(`admin.password.reset`, `auth.password.reset`, `auth.password.ok` / `fail` / `locked`).
+(`admin.password.reset`, `auth.password.reset`, `auth.password.ok` / `fail` / `locked`, and
+`auth.email.set` / `change` / `remove` / `fail` for the sign-in e-mail).
 
 **On a plain-HTTP LAN**, set `ORIGIN` to exactly the address people type, for example
 `ORIGIN=http://192.168.1.20:8080`. Browsers do not send `Sec-Fetch-Site` to plain-http addresses,
@@ -260,9 +299,10 @@ a LAN-only address, see [SELF_HOSTING_HTTPS.md](./SELF_HOSTING_HTTPS.md).
 - `db.json` holds a scrypt hash of each password (N=2^15, r=8, p=1, 16-byte random salt). Someone
   with a copy of `./data` can try guesses offline, slowly; a passkey's public key gives them
   nothing to try.
-- Guessing online is throttled. Five wrong passwords for a name pause password sign-in for that
-  name for a minute, doubling up to an hour, whoever sends them — names that do not exist pause
-  the same way, so a pause reveals nothing. Twenty wrong answers from one address pause that
+- Guessing online is throttled. Five wrong passwords for an account — named by its name or its
+  e-mail — pause password sign-in for that account for a minute, doubling up to an hour, whoever
+  sends them — names and addresses that do not exist pause the same way, so a pause reveals
+  nothing about whether they exist. Twenty wrong answers from one address pause that
   address for 30 seconds, doubling up to 15 minutes, and every address gets 60 requests a minute
   to the password routes. Guesses sent all at once count the same as guesses sent one by one.
   Passkey sign-in, passkey signup and phone pairing are not throttled at all, so they are never

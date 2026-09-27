@@ -116,6 +116,31 @@ export const needsRehash = stored => {
 // so "Ana", "ana " and "ＡＮＡ" are one name. The stored display name is never changed.
 export const nameKey = name => String(name || '').normalize('NFKC').trim().toLowerCase();
 
+/* ------------------------------------------------------------------ e-mail ----------------
+   An optional second name to sign in with. Nothing is ever sent to it — no verification, no
+   reset mail; an admin's code stays the only reset — so it is only ever compared, the way a name
+   is: the same fold as nameKey() (NFKC, trimmed, lower-cased). Lower-casing the local part is
+   stricter than RFC 5321 allows, and what every mail provider people actually use does anyway;
+   two profiles on one instance told apart only by the case of their address is not a thing
+   worth supporting. The syntax check is deliberately loose — one "@", something before it, a
+   dotted domain after it, no spaces or brackets — because nothing here delivers mail and a
+   stricter rule would only refuse real addresses. 254 is the longest address SMTP can carry. */
+export const EMAIL_MAX = 254;
+const EMAIL_RE = /^[^\s@<>()[\]\\,;:"]{1,64}@(?=.{1,253}$)[^\s@<>()[\]\\,;:"._-][^\s@<>()[\]\\,;:"]*\.[^\s@<>()[\]\\,;:".]{2,}$/u;
+/** The stored form of an address, or null when it is not one. */
+export function normalizeEmail(raw) {
+  if (typeof raw !== 'string') return null;
+  const e = nameKey(raw);
+  if (!e || [...e].length > EMAIL_MAX || !EMAIL_RE.test(e) || e.includes('..')) return null;
+  return e;
+}
+/** What the audit log and the console may say about an address: its first character and its
+ *  domain's, nothing that would let someone reading the log write to it. */
+export const maskEmail = e => {
+  const [local = '', domain = ''] = String(e || '').split('@');
+  return (local[0] || '?') + '…@' + (domain[0] || '?') + '…';
+};
+
 /* ------------------------------------------------------------------ policy ----------------
    Length first, which is what actually matters; then a short list of the passwords every
    guessing script tries first. The list only has to hold entries of MIN_LENGTH or more — the

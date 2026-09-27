@@ -52,7 +52,9 @@ in the thread; there's no objection, and no request to sit on it indefinitely.
   being an admin, or creating a profile without a valid code while `INVITE_ONLY=1`. With
   `PASSWORD_LOGIN=1`: getting a password checked past the sign-in throttle, telling which names
   have a password, setting a password on someone else's profile, or using a reset code twice or
-  after it expired (`api/password.js`, `api/rate-limit.js`). Adding a passkey to a profile that
+  after it expired (`api/password.js`, `api/rate-limit.js`); reading another profile's sign-in
+  e-mail without being an admin, setting one without the owner's proof, or dodging the account
+  pause by switching between name and e-mail. Adding a passkey to a profile that
   is not yours, removing a profile's last way in, or redeeming a device code twice, after it
   expired, or for a profile it was not made for (`api/passkeys-store.js`, `api/device-link.js`).
 - **Frontend** — XSS in the React app, or anything that lets a page on another origin read or
@@ -127,14 +129,32 @@ Read this before hosting openGym for anyone other than yourself.
   (`api/passkeys-store.js`, `api/device-link.js`, the passkeys block in `api/server.js`).
 - **Password sign-in is throttled.** Every password route spends a budget of 60 requests a minute
   per address; wrong passwords, reset codes and (on password signup) invite codes pause the
-  address after 20 (30 s, doubling to 15 min); wrong passwords pause the *name* after 5 (1 min,
-  doubling to 1 h), existing or not. A password check is counted the moment it starts, so guesses
+  address after 20 (30 s, doubling to 15 min); wrong passwords pause the *account* after 5 (1 min,
+  doubling to 1 h) — keyed by the account the name or sign-in e-mail resolves to, so switching
+  between the two does not reset it, and by the identifier as typed when it resolves to nobody. A password check is counted the moment it starts, so guesses
   sent all at once get no more checks than guesses sent one by one. The two routes that redeem a
   device code share that budget, and wrong codes pause the address the same way, for code
   redemption only. Passkey sign-in, passkey signup and pairing are not throttled at all, so nobody
   can pause them — not even behind a proxy that shows the API one address for every visitor. The address is the socket peer unless
   `TRUST_PROXY=1` (set by the bundled compose file, where only the web container reaches the
   API), and IPv6 is counted per /64 (`api/rate-limit.js`).
+- **A sign-in e-mail is an identifier, never a channel.** With `PASSWORD_LOGIN=1` a profile may add
+  an e-mail address to type at the password sign-in instead of its name. Nothing is ever sent to it
+  (there is no mail server): no verification, no reset mail, so it is not proven to be anyone's
+  and grants nothing on its own — the password still does. Adding, changing and removing it take
+  the same proof as a password (`proveOwner`). It is folded like a name (NFKC, trimmed,
+  lower-cased; at most 254 characters), unique across profiles and never another password
+  holder's name, so an identifier never points at two accounts. Taking one in use answers `409
+  email-taken`. In Settings that answer comes only after the owner's proof (a passkey prompt or
+  the current password per try). Password signup needs no session, so there it is the cheaper
+  question: it comes after the new password has been hashed and, with `INVITE_ONLY=1`, only to
+  someone holding a valid unused invite code (which a refusal does not use up); on an open
+  instance anyone can ask. Each refusal, in Settings or on signup, counts against the caller's
+  address (and in Settings the account) like a wrong invite code, so probing which addresses are
+  registered runs into a pause after about 20 tries.
+  The full address is never logged or audited (masked to `a…@e…`) and is returned only to its
+  owner (`GET /api/account/password`) and to admins (`GET /api/admin/users`, `/api/admin/user`);
+  it is not in `/api/me`, Coach payloads, the MCP bridge or plan sharing.
 - **Sessions are a signed cookie.** It carries `<uid>:<expiry>:<version>` plus an
   HMAC-SHA256 tag over it, compared in constant time (`api/server.js:230-243`). The key is 32
   random bytes generated on first run and written to `./data/secret` with mode `0600`
@@ -251,8 +271,11 @@ Read this before hosting openGym for anyone other than yourself.
   would each keep their own. Behind a second proxy that hides the visitor's address every
   visitor shares one per-address count, so one client can pause *password* sign-in for everybody
   for up to 15 minutes at a time (the per-name pause still holds, and passkeys are never
-  paused). Anyone who knows a name can keep its password sign-in paused, which the activity log
-  shows as `auth.password.locked`. Only two password checks run at once, with 32 queued behind
+  paused). Anyone who knows a name or a sign-in e-mail can keep its password sign-in paused, which the activity log
+  shows as `auth.password.locked`. Because the pause is per account, a paused account also
+  answers `429` for a guessed e-mail that belongs to it, which links that address to the name
+  that was paused; the `409 email-taken` answer says an address is in use on the instance (never
+  by whom), at the rate the throttle allows. Only two password checks run at once, with 32 queued behind
   them: someone sending from enough addresses can keep that queue full, and every password
   sign-in then answers `503` until they stop — passkeys are unaffected. The only password
   policy is 10–256 characters and a short built-in list of the passwords guessing scripts try

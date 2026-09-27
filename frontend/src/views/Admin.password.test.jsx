@@ -112,3 +112,27 @@ describe('Admin → Reset password', () => {
     expect(sheet.textContent).toMatch(/reset code until/)
   })
 })
+
+describe('Admin → sign-in e-mail', () => {
+  it('shows the address in the list and on the profile, and names it on the reset code sheet', async () => {
+    mocks.answers['/api/admin/users'] = { users: [{ id: 'u1', name: 'Mallory', workouts: 0, lastSync: null, disabled: false, password: true, email: 'mallory@example.com' }], invite_only: false, password_login: true }
+    mocks.answers['/api/admin/user'] = detail({ password: true, email: 'mallory@example.com', resetUntil: null })
+    const page = render(<Admin />)
+    await settle()
+    expect([...page.querySelectorAll('.item')].find(el => el.textContent.includes('Mallory')).textContent).toContain('mallory@example.com')
+    const sheet = await openMallory()
+    expect([...sheet.querySelectorAll('.adm-pill')].map(p => p.textContent)).toContain('mallory@example.com')
+    act(() => button(sheet, 'Reset password').click())
+    const before = mocks.sheets.length
+    await act(async () => { await mocks.confirm.mock.calls[0][0].onConfirm() })
+    await settle()
+    const code = render(mocks.sheets.slice(before).find(s => s.opts?.locked).render(() => {}))
+    expect(code.textContent).toContain('or their sign-in e-mail mallory@example.com')
+  })
+
+  it('shows nothing where the server sends no address', async () => {
+    mocks.answers['/api/admin/user'] = detail({ password: true, email: null, resetUntil: null })
+    const sheet = await openMallory()
+    expect(sheet.textContent).not.toContain('@')
+  })
+})

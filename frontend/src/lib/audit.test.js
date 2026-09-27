@@ -53,6 +53,7 @@ describe('auditReason', () => {
     expect(auditLine({ ev: 'auth.throttled', ok: false, msg: 'signup' }).sub).toMatch(/invite codes/)
     expect(auditLine({ ev: 'auth.throttled', ok: false, msg: 'password' }).sub).toMatch(/wrong passwords/)
     expect(auditLine({ ev: 'auth.throttled', ok: false, msg: 'link' }).sub).toMatch(/device codes/)
+    expect(auditLine({ ev: 'auth.throttled', ok: false, msg: 'email' }).sub).toMatch(/e-mail addresses/)
   })
   it('falls back to the raw code and tolerates none at all', () => {
     expect(auditReason('brand-new-code')).toBe('brand-new-code')
@@ -75,6 +76,16 @@ describe('auditLine', () => {
     expect(auditLine({ ev: 'auth.passkey.fail', ok: false, name: 'Ana', msg: 'passkey-limit' }).sub).toBe('Ana · the profile already has as many passkeys as it can hold')
     expect(auditLine({ ev: 'auth.passkey.add', ok: true, name: 'Ana', msg: 'password' })).toEqual({ title: 'Added a passkey', sub: 'Ana · password' })
     expect(auditLine({ ev: 'auth.passkey.fail', ok: false, name: 'Ana', msg: 'credential-exists' }).sub).not.toMatch(/credential-exists/)
+  })
+
+  it('reads the sign-in e-mail events, whose line carries only a masked address', () => {
+    // set/change are picked by a ternary the extraction above cannot read, like password set/change.
+    expect(EVENTS).toEqual(expect.arrayContaining(['auth.email.remove', 'auth.email.fail']))
+    expect(SERVER).toContain("first ? 'auth.email.set' : 'auth.email.change'")
+    expect(auditLabel('auth.email.change')).toBe('Changed their sign-in e-mail')
+    expect(auditLine({ ev: 'auth.email.set', ok: true, name: 'Ana', msg: 'passkey · a…@e…' })).toEqual({ title: 'Added a sign-in e-mail', sub: 'Ana · passkey · a…@e…' })
+    expect(auditLine({ ev: 'auth.email.fail', ok: false, name: 'Ana', msg: 'email-taken' }).sub).toBe('Ana · another profile already uses that e-mail')
+    expect(auditLine({ ev: 'auth.password.fail', ok: false, msg: 'unknown-email' }).sub).toBe('unknown caller · no profile with a password has that e-mail')
   })
 
   it('names the person who did it', () => {

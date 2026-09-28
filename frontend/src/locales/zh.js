@@ -1390,6 +1390,9 @@ export default {
   // --- sign-in adoption + offline banner (v1.3.6) ---
   'Add this device\'s workouts to your profile?': '把此设备上的训练加入你的个人资料？',
   '{0} workouts and {1} weigh-ins were logged on this device while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': '此设备在未登录时记录了 {0} 次训练和 {1} 次体重。把它们加入你的个人资料，或保持个人资料与服务器上的完全一致。',
+  '{0} workout and {1} weigh-in were logged on this device while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': '此设备在未登录时记录了 {0} 次训练和 {1} 次体重。把它们加入你的个人资料，或保持个人资料与服务器上的完全一致。',
+  '{0} workout and {1} weigh-ins were logged on this device while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': '此设备在未登录时记录了 {0} 次训练和 {1} 次体重。把它们加入你的个人资料，或保持个人资料与服务器上的完全一致。',
+  '{0} workouts and {1} weigh-in were logged on this device while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': '此设备在未登录时记录了 {0} 次训练和 {1} 次体重。把它们加入你的个人资料，或保持个人资料与服务器上的完全一致。',
   'Add them': '加入',
   'Keep profile as is': '保持不变',
   'Offline — your changes are saved on this device and sync when you are back online.': '离线 — 你的更改已保存在此设备上，恢复联网后会自动同步。',

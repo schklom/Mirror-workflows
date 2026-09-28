@@ -1390,6 +1390,9 @@ export default {
   // --- sign-in adoption + offline banner (v1.3.6) ---
   'Add this device\'s workouts to your profile?': '¿Añadir los entrenamientos de este dispositivo a tu perfil?',
   '{0} workouts and {1} weigh-ins were logged on this device while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': '{0} entrenamientos y {1} pesajes se registraron en este dispositivo sin iniciar sesión. Añádelos a tu perfil o deja el perfil exactamente como está en el servidor.',
+  '{0} workout and {1} weigh-in were logged on this device while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': '{0} entrenamiento y {1} pesaje se registraron en este dispositivo sin iniciar sesión. Añádelos a tu perfil o deja el perfil exactamente como está en el servidor.',
+  '{0} workout and {1} weigh-ins were logged on this device while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': '{0} entrenamiento y {1} pesajes se registraron en este dispositivo sin iniciar sesión. Añádelos a tu perfil o deja el perfil exactamente como está en el servidor.',
+  '{0} workouts and {1} weigh-in were logged on this device while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': '{0} entrenamientos y {1} pesaje se registraron en este dispositivo sin iniciar sesión. Añádelos a tu perfil o deja el perfil exactamente como está en el servidor.',
   'Add them': 'Añadirlos',
   'Keep profile as is': 'Dejar el perfil como está',
   'Offline — your changes are saved on this device and sync when you are back online.': 'Sin conexión: tus cambios se guardan en este dispositivo y se sincronizarán cuando vuelvas a estar en línea.',

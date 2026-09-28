@@ -1390,6 +1390,9 @@ export default {
   // --- sign-in adoption + offline banner (v1.3.6) ---
   'Add this device\'s workouts to your profile?': '이 기기의 운동을 프로필에 추가할까요?',
   '{0} workouts and {1} weigh-ins were logged on this device while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': '로그인하지 않은 상태에서 이 기기에 운동 {0}개와 체중 기록 {1}개가 기록되었습니다. 프로필에 추가하거나 서버에 있는 프로필을 그대로 유지하세요.',
+  '{0} workout and {1} weigh-in were logged on this device while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': '로그인하지 않은 상태에서 이 기기에 운동 {0}개와 체중 기록 {1}개가 기록되었습니다. 프로필에 추가하거나 서버에 있는 프로필을 그대로 유지하세요.',
+  '{0} workout and {1} weigh-ins were logged on this device while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': '로그인하지 않은 상태에서 이 기기에 운동 {0}개와 체중 기록 {1}개가 기록되었습니다. 프로필에 추가하거나 서버에 있는 프로필을 그대로 유지하세요.',
+  '{0} workouts and {1} weigh-in were logged on this device while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': '로그인하지 않은 상태에서 이 기기에 운동 {0}개와 체중 기록 {1}개가 기록되었습니다. 프로필에 추가하거나 서버에 있는 프로필을 그대로 유지하세요.',
   'Add them': '추가',
   'Keep profile as is': '프로필 그대로 유지',
   'Offline — your changes are saved on this device and sync when you are back online.': '오프라인 — 변경 사항은 이 기기에 저장되며 다시 온라인이 되면 동기화됩니다.',

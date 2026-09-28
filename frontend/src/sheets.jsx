@@ -68,13 +68,25 @@ function ConfirmDialog({ title, message, confirmText, cancelText, danger, onConf
     <Button variant="ghost" className="dim" onClick={() => { close(); onCancel && onCancel() }}>{cancelText || t('Cancel')}</Button>
   </div>
 }
+// "1 workouts and 1 weigh-ins" read wrong: a count of one takes the singular, per noun. Four
+// whole sentences rather than two spliced counts, so every language keeps its own word order.
+export function addDeviceDataMessage(workouts, weighIns) {
+  const one = n => Number(n) === 1
+  return one(workouts)
+    ? one(weighIns)
+      ? t('{0} workout and {1} weigh-in were logged on this device while signed out. Add them to your profile, or keep the profile exactly as it is on the server.', workouts, weighIns)
+      : t('{0} workout and {1} weigh-ins were logged on this device while signed out. Add them to your profile, or keep the profile exactly as it is on the server.', workouts, weighIns)
+    : one(weighIns)
+      ? t('{0} workouts and {1} weigh-in were logged on this device while signed out. Add them to your profile, or keep the profile exactly as it is on the server.', workouts, weighIns)
+      : t('{0} workouts and {1} weigh-ins were logged on this device while signed out. Add them to your profile, or keep the profile exactly as it is on the server.', workouts, weighIns)
+}
 // Sign-in found workouts on this device that the profile does not have (logged while signed
 // out). The profile is the truth — settings and plan come from the server either way — the
 // question is only whether these entries are added to it or dropped. Resolves true to add.
 export function askAddDeviceData(extras) {
   return new Promise(resolve => confirmSheet({
     title: t('Add this device\'s workouts to your profile?'),
-    message: t('{0} workouts and {1} weigh-ins were logged on this device while signed out. Add them to your profile, or keep the profile exactly as it is on the server.', extras.workouts, extras.bodyweight),
+    message: addDeviceDataMessage(extras.workouts, extras.bodyweight),
     confirmText: t('Add them'), cancelText: t('Keep profile as is'),
     onConfirm: () => resolve(true), onCancel: () => resolve(false), locked: true
   }))

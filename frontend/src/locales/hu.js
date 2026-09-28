@@ -1393,6 +1393,9 @@ export default {
   // --- sign-in adoption + offline banner (v1.3.6) ---
   'Add this device\'s workouts to your profile?': 'Hozzáadod az eszközön lévő edzéseket a profilodhoz?',
   '{0} workouts and {1} weigh-ins were logged on this device while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': '{0} edzés és {1} mérés került rögzítésre ezen az eszközön bejelentkezés nélkül. Add hozzá őket a profilodhoz, vagy hagyd a profilt pontosan úgy, ahogy a szerveren van.',
+  '{0} workout and {1} weigh-in were logged on this device while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': '{0} edzés és {1} mérés került rögzítésre ezen az eszközön bejelentkezés nélkül. Add hozzá őket a profilodhoz, vagy hagyd a profilt pontosan úgy, ahogy a szerveren van.',
+  '{0} workout and {1} weigh-ins were logged on this device while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': '{0} edzés és {1} mérés került rögzítésre ezen az eszközön bejelentkezés nélkül. Add hozzá őket a profilodhoz, vagy hagyd a profilt pontosan úgy, ahogy a szerveren van.',
+  '{0} workouts and {1} weigh-in were logged on this device while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': '{0} edzés és {1} mérés került rögzítésre ezen az eszközön bejelentkezés nélkül. Add hozzá őket a profilodhoz, vagy hagyd a profilt pontosan úgy, ahogy a szerveren van.',
   'Add them': 'Hozzáadás',
   'Keep profile as is': 'Profil marad',
   'Offline — your changes are saved on this device and sync when you are back online.': 'Offline — a módosításaid ezen az eszközön vannak mentve, és szinkronizálódnak, amint újra online leszel.',

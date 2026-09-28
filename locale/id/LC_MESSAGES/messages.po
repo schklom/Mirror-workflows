@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-06-07 02:22+0000\n"
-"PO-Revision-Date: 2026-06-14 18:01+0000\n"
+"PO-Revision-Date: 2026-09-29 01:30+0000\n"
 "Last-Translator: Dony Wibowo <dony@dony.me>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/tt-rss/webui/"
 "id/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 2026.7.dev0\n"
+"X-Generator: Weblate 2026.10.dev0\n"
 
 #: backend.php:55
 msgid "Use default"
@@ -621,7 +621,7 @@ msgstr "Debug"
 #: classes/Pref_Prefs.php:96
 msgid "Never apply these tags automatically (comma-separated list)."
 msgstr ""
-"Jangan pernah terapkan tag ini secara otomatis (dipisahkan dengan koma).﻿"
+"Jangan pernah terapkan tag ini secara otomatis (dipisahkan dengan koma)."
 
 #: classes/Pref_Prefs.php:100
 msgid "Blacklisted tags"

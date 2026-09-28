@@ -18,7 +18,7 @@
 // body-weight records are interesting here. parseBodyweight() scans for those without
 // building a DOM.
 
-import { EXDB, EXIDX } from './exercises.js'
+import { EXDB, EXIDX, isCardio as isCardioEx } from './exercises.js'
 import { uid } from './format.js'
 import { isWarmupRow } from './workout-model.js'
 import { HEVY_TITLE_MAP } from './hevy-id-map.js'
@@ -78,7 +78,13 @@ const COLUMNS = [
   ['seconds', ['seconds', 'duration seconds', 'set duration sec']],
   ['time', ['time', 'duration']],
   ['setType', ['set type']],
-  ['note', ['comment', 'comments', 'notes', 'note', 'workout notes']],
+  // Hevy numbers the supersets of a workout; rows sharing a number were done as one.
+  ['superset', ['superset id']],
+  // The session's note, before the per-set one: Strong writes both, "Notes" first, and a
+  // shared alias list handed the session note's column to nobody. Hevy calls it the workout's
+  // description.
+  ['workoutNote', ['workout notes', 'workout note', 'description']],
+  ['note', ['comment', 'comments', 'notes', 'note', 'exercise notes']],
 ]
 
 function mapHeader(header) {
@@ -404,6 +410,10 @@ export function parseWorkoutCSV(text, { unit = 'kg' } = {}) {
   const source = detectSource(rows[0])
   const dateCol = map.date !== undefined ? 'date' : map.startTime !== undefined ? 'startTime' : null
   if (!dateCol || map.exercise === undefined) return { error: 'unrecognised' }
+  // Strong's Duration is how long the whole workout took ("1h 5m", "52m"), written on every
+  // row; the set's own time is its Seconds column. Read as a set time it turned every
+  // weight-less row into an hour of cardio and left the workout itself at zero minutes.
+  if (source === 'Strong' && map.time !== undefined) { map.workoutDuration = map.time; delete map.time }
 
   const resolved = new Map()          // exercise name -> dataset id | null, resolved once
   const byDate = new Map()
@@ -434,6 +444,7 @@ export function parseWorkoutCSV(text, { unit = 'kg' } = {}) {
 
     const reps = Math.round(num(cell(r, 'reps')))
     const secs = num(cell(r, 'seconds'))
+    const setNote = cell(r, 'note')
     const mins = secs > 0 ? Math.round(secs / 60 * 10) / 10 : toMinutes(cell(r, 'time'))
     const km = map.distanceKm !== undefined && cell(r, 'distanceKm')
       ? num(cell(r, 'distanceKm'))
@@ -456,7 +467,10 @@ export function parseWorkoutCSV(text, { unit = 'kg' } = {}) {
       if (!c) {
         c = {
           id: 'im' + uid(), n: name.toLowerCase(), custom: true, eq: 'custom', tg: '', desc: '',
-          bp: CATEGORY_BP[cell(r, 'category').toLowerCase()] || (km || (mins && !reps) ? 'cardio' : null)
+          bp: CATEGORY_BP[cell(r, 'category').toLowerCase()] || (km ? 'cardio' : null)
+            // Seconds with nothing else is a hold when the name says what it is (a plank is
+            // core work); a name that says nothing keeps being read as cardio, as before.
+            || (mins && !reps ? (secs > 0 ? bpFromName(name.toLowerCase()) : null) || 'cardio' : null)
             || bpFromName(name.toLowerCase()) || 'upper legs',
         }
         created.set(key, c)
@@ -465,16 +479,26 @@ export function parseWorkoutCSV(text, { unit = 'kg' } = {}) {
       id = c.id
     }
 
-    const isCardio = (km > 0 || mins > 0) && !reps
+    // A Seconds column with no distance and no reps, on an exercise that is not cardio, is a
+    // timed hold (Strong's "Plank, 60 s"): a set of seconds, the way the app logs one — not a
+    // minute of cardio at zero speed. Strong's Seconds is always the set's own time, so its
+    // catalogue match decides; any other file also needs the name to say what it is, because a
+    // loose match ("Walking" → walking lunge) would turn a walk into a hold.
+    const nameBp = bpFromName(name.toLowerCase())
+    const exCardio = isCardioEx(id) || created.get(key)?.bp === 'cardio' || nameBp === 'cardio'
+    const timed = secs > 0 && !km && !reps && !exCardio && (source === 'Strong' || !!nameBp)
+    const isCardio = !timed && (km > 0 || mins > 0) && !reps
     // `u` carries the row's own unit into the conversion pass below and is dropped there —
     // it never reaches the stored set.
-    const set = isCardio
-      ? { min: mins || 0, speed: mins > 0 ? Math.round(km / (mins / 60) * 10) / 10 : 0, done: true, ...(warmup ? { phase: 'warmup' } : {}) }
-      : { w, r: reps || 0, done: true, u: rowUnit, ...(warmup ? { phase: 'warmup' } : {}) }
+    const set = timed
+      ? { sec: Math.round(secs), w, done: true, u: rowUnit, ...(warmup ? { phase: 'warmup' } : {}) }
+      : isCardio
+        ? { min: mins || 0, speed: mins > 0 ? Math.round(km / (mins / 60) * 10) / 10 : 0, done: true, ...(warmup ? { phase: 'warmup' } : {}) }
+        : { w, r: reps || 0, done: true, u: rowUnit, ...(warmup ? { phase: 'warmup' } : {}) }
     // Effort rides along only where the app can show it again: a weighted rep set. A treadmill
     // row with an RPE would have nowhere to put it. A set is kept on one scale, so a file
     // carrying both columns is read as RIR — the same precedence setLabel reads them back with.
-    if (!isCardio) {
+    if (!isCardio && !timed) {
       const rir = effortNum(cell(r, 'rir'), true)
       const rpe = rir == null ? effortNum(cell(r, 'rpe'), false) : null
       if (rir != null) { set.rir = rir; rirSets++ }
@@ -483,14 +507,29 @@ export function parseWorkoutCSV(text, { unit = 'kg' } = {}) {
 
     let day = byDate.get(when.d)
     if (!day) {
-      day = { ex: new Map(), name: cell(r, 'workoutName') || '', start: when.t, end: null }
+      day = { ex: new Map(), name: cell(r, 'workoutName') || '', start: when.t, end: null, note: '', notes: new Map(), sg: new Map(), groups: new Map() }
       byDate.set(when.d, day)
     }
     if (!day.name) day.name = cell(r, 'workoutName') || ''
+    if (!day.note) day.note = cell(r, 'workoutNote')
     if (map.endTime !== undefined) { const e = parseWhen(cell(r, 'endTime')); if (e && e.t != null) day.end = e.t }
-    else if (map.time !== undefined && !map.seconds && reps) { /* FitNotes' Time is per-set */ }
+    else if (map.workoutDuration !== undefined && day.end == null) {
+      const len = toMinutes(cell(r, 'workoutDuration'))
+      if (len > 0) day.end = (day.start ?? 18 * 3600000) + Math.round(len * 60000)
+    }
     if (!day.ex.has(id)) day.ex.set(id, [])
     day.ex.get(id).push(set)
+    // A note written against a set belongs to the exercise that day; the app keeps one per entry.
+    if (setNote) {
+      const list = day.notes.get(id) || []
+      if (!list.includes(setNote)) list.push(setNote)
+      day.notes.set(id, list)
+    }
+    const ss = cell(r, 'superset')
+    if (ss && !day.sg.has(id)) {
+      if (!day.groups.has(ss)) day.groups.set(ss, 'is' + uid())
+      day.sg.set(id, day.groups.get(ss))
+    }
     sets++
   }
 
@@ -518,14 +557,19 @@ export function parseWorkoutCSV(text, { unit = 'kg' } = {}) {
     const entries = [...day.ex.entries()].map(([id, ss]) => {
       const conv2 = ss.map(({ u, ...s }) => (s.w !== undefined ? { ...s, w: convRow({ ...s, u }) } : s))
       const mx = Math.max(0, ...conv2.filter(s => !isWarmupRow(s)).map(s => s.w || 0))
-      return { id, sets: conv2, topW: mx || null }
+      const note = (day.notes.get(id) || []).join(' · ').slice(0, 280)
+      return { id, sets: conv2, topW: mx || null, ...(day.sg.has(id) ? { sg: day.sg.get(id) } : {}), ...(note ? { note } : {}) }
     })
+    // A superset is exercises next to each other; one left without a neighbour sharing its
+    // tag is not a superset (the same rule history.js's cleanupSg applies).
+    entries.forEach((e, i) => { if (e.sg && entries[i - 1]?.sg !== e.sg && entries[i + 1]?.sg !== e.sg) delete e.sg })
     const base = new Date(d + 'T00:00:00').getTime()
     const start = base + (day.start ?? 18 * 3600000)
     const end = day.end != null ? base + day.end : start
     const w = {
       id: 'iw' + uid(), d, start, end: end > start ? end : start,
       routineId: null, name: day.name || 'Imported', entries, prs: [],
+      ...(day.note ? { note: day.note } : {}),
     }
     // Work sets only, like `workoutVolume` for a workout finished in the app: warm-ups are
     // promised to stay out of the volume, and this number is stored with the workout for good.

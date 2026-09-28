@@ -18,6 +18,15 @@ export function fmtDate(iso, long, withYear = false) {
   if (withYear) options.year = 'numeric'
   return d.toLocaleDateString(dateLocale(), options)
 }
+// A span of days, e.g. an import's first and last workout. The year is shown when the span
+// crosses one or lies outside the current year: "3 Feb – 21 Dec" over two years read as one.
+export function fmtDateRange(from, to, long, now = new Date()) {
+  if (!from) return ''
+  const last = to || from
+  const year = String(now.getFullYear())
+  const withYear = from.slice(0, 4) !== last.slice(0, 4) || from.slice(0, 4) !== year
+  return from === last ? fmtDate(from, long, withYear) : fmtDate(from, long, withYear) + ' – ' + fmtDate(last, long, withYear)
+}
 // In the UI language: the Latin h, m and min stood inside Arabic and Ukrainian rows.
 export function fmtDur(ms) {
   const m = Math.floor(ms / 60000)

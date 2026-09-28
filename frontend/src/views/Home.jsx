@@ -4,7 +4,7 @@ import { useStore } from '../store/useStore.js'
 import { effectiveRoutines, effectiveRoutineIds, nextTrainingDay, streakWeeks, lastBW, setsDoneActive } from '../lib/history.js'
 import { fmtNum, fmtDate, todayISO, isoOf, weekKey, weekStartOf, weekDayOffset, DAYS, DAYN } from '../lib/format.js'
 import { t, dateLocale } from '../lib/i18n.js'
-import { bwSheet, goalSheet, dayOverrideSheet, calendarSheet, startFlow, starterPlanSheet, bwDeltaColor } from '../sheets.jsx'
+import { bwSheet, goalSheet, dayOverrideSheet, calendarSheet, startFlow, starterPlanSheet, bwDeltaColor, weighInsSheet } from '../sheets.jsx'
 import LineChart from '../components/LineChart.jsx'
 import Icon from '../components/Icon.jsx'
 import { Button } from '../components/ui.jsx'
@@ -25,6 +25,9 @@ export default function Home() {
   const routine = todayRoutines[0] || null
   const todayName = todayRoutines.map(r => r.name).join(' + ')
   const todayOvr = S.dayPlan[todayISO()] !== undefined
+  // An open editor on a saved workout (lib/session-edit.js) holds S.active too, but it is not a
+  // session in progress: the row takes you back to it as an edit, the way the tab bar does.
+  const editingSaved = !!S.active?.editingWorkoutId
   // On a rest day, saying when you train next beats leaving the row as a full stop.
   const next = !S.active && !todayRoutines.length ? nextTrainingDay(S, todayISO()) : null
   const bw = lastBW(S)
@@ -68,9 +71,9 @@ export default function Home() {
 
     <div className="card">
       <div className="row between" style={{ marginBottom: 8 }}>
-        <button className="iconbtn" style={{ width: 30, height: 30, fontSize: 15 }} onClick={() => setWeekOffset(w => w - 1)} aria-label="Previous week"><Icon name="chevronLeft" /></button>
+        <button className="iconbtn" style={{ width: 30, height: 30, fontSize: 15 }} onClick={() => setWeekOffset(w => w - 1)} aria-label={t('Previous week')}><Icon name="chevronLeft" /></button>
         <div className="small muted" style={{ fontWeight: 500 }}>{wkLabel}</div>
-        <button className="iconbtn" style={{ width: 30, height: 30, fontSize: 15 }} onClick={() => setWeekOffset(w => w + 1)} aria-label="Next week"><Icon name="chevronRight" /></button>
+        <button className="iconbtn" style={{ width: 30, height: 30, fontSize: 15 }} onClick={() => setWeekOffset(w => w + 1)} aria-label={t('Next week')}><Icon name="chevronRight" /></button>
       </div>
       <div className="week">{strip}</div>
       {/* Once today's session is logged the row stops asking for it. The week strip already
@@ -81,18 +84,18 @@ export default function Home() {
       <div className="today-row" {...tappable(onToday)}>
         <div className="row" style={{ gap: 9, minWidth: 0 }}>
           <span className="lrow-i" style={{ background: S.active ? 'var(--orange)' : doneToday ? 'var(--surface-3)' : routine ? 'var(--acc)' : 'var(--surface-3)' }}>
-            <Icon name={S.active ? 'timer' : doneToday ? 'checkCircle' : routine ? glyphOf(routine.emoji) : 'moon'}
+            <Icon name={S.active ? (editingSaved ? 'pencil' : 'timer') : doneToday ? 'checkCircle' : routine ? glyphOf(routine.emoji) : 'moon'}
               style={doneToday && !S.active ? { color: 'var(--green)' } : undefined} />
           </span>
           <div style={{ minWidth: 0 }}>
             <div className="lbl2">{t('Today')}</div>
-            <div className="ttl">{S.active ? t('{0} — in progress', S.active.name)
+            <div className="ttl">{S.active ? (editingSaved ? S.active.name : t('{0} — in progress', S.active.name))
               : doneToday ? (doneToday.name ? t('{0} — done', doneToday.name) : t('Workout done'))
               : routine ? todayName : t('Rest day')}{todayOvr && routine && !doneToday ? ' · ' + t('rescheduled') : ''}</div>
             {next && !doneToday && <div className="ss">{t('Next session: {0}, {1}', t(DAYN[next.weekday]), next.routine.name)}</div>}
           </div>
         </div>
-        {S.active ? <span className="tag" style={{ color: 'var(--orange)', background: 'color-mix(in srgb,var(--orange) 16%,transparent)' }}>{t('Resume')}</span>
+        {S.active ? <span className="tag" style={{ color: 'var(--orange)', background: 'color-mix(in srgb,var(--orange) 16%,transparent)' }}>{editingSaved ? t('Edit') : t('Resume')}</span>
           : doneToday ? <span className="tag" style={{ color: 'var(--green)', background: 'color-mix(in srgb,var(--green) 16%,transparent)' }}>{t('Done')}</span>
           : routine ? <span className="tag acc">{t('Start')}</span>
           : <Icon name="plus" className="chev" />}
@@ -139,7 +142,7 @@ export default function Home() {
       </div>
     )}
 
-    <div className="card">
+    {S.showWeightCard !== false && <div className="card">
       <div className="row between bw-head" style={{ marginBottom: 6 }}>
         <h2 style={{ margin: 0 }}>{t('Body weight')}</h2>
         <div className="row" style={{ gap: 8 }}>
@@ -157,7 +160,7 @@ export default function Home() {
               {fmtNum(Math.abs(delta))}
             </span>
           )}
-          <span className="dim small" style={{ marginLeft: 'auto' }}>{fmtDate(bw.d, true)}</span>
+          <span className="dim small" style={{ marginInlineStart: 'auto' }}>{fmtDate(bw.d, true)}</span>
         </div>
         {S.targetW && (
           <div className="small row" style={{ color: 'var(--yellow)', marginTop: 4, gap: 5 }}>
@@ -166,10 +169,14 @@ export default function Home() {
           </div>
         )}
         <div className="chart" style={{ marginTop: 8 }}><LineChart points={bwPoints} h={130} unit={S.unit} goal={S.targetW} /></div>
+        {/* every weigh-in, week by week with its average (Discord 'Weight') */}
+        <div className="row" style={{ justifyContent: 'flex-end', marginTop: 4 }}>
+          <Button size="sm" variant="ghost" trailingIcon="chevronRight" onClick={weighInsSheet}>{t('All weigh-ins')}</Button>
+        </div>
       </> : <div className="muted small">{S.weighIn === false
         ? t('No entries yet — log your weight to start the curve.')
         : t("No entries yet — log your weight to start the curve. It's also asked before every workout.")}</div>}
-    </div>
+    </div>}
 
     <div className="card tappable" style={{ cursor: 'pointer' }} {...tappable(() => calendarSheet())}>
       <div className="row between">

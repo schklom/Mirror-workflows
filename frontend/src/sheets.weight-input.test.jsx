@@ -70,7 +70,7 @@ describe('weight read-out is a typable field', () => {
   it('steps on from the typed value and saves what ends up on screen', () => {
     const { input, button } = renderBw()
     act(() => type(input, '82.5'))
-    act(() => button('plus 0.1').click())
+    act(() => button('Increase by 0.1').click())
     expect(input.value).toBe('82.6')
 
     act(() => button('Save').click())

@@ -20,7 +20,11 @@ COPY frontend/package.json frontend/package-lock.json* ./
 RUN npm ci --ignore-scripts
 COPY api/coach/core/ /app/api/coach/core/
 COPY frontend/ ./
-RUN npm run build
+# Which build this is, shown in the app as "1.3.8+<build>" next to the version. Without it every
+# image built between two releases calls itself the same thing, and "which build are you running?"
+# cannot be answered from the phone. Unset, the app reports package.json's version as before.
+ARG APP_BUILD=""
+RUN APP_BUILD="$APP_BUILD" npm run build
 
 FROM nginx:alpine
 # Same reason as in api/Dockerfile: alpine fixes land faster than the nginx image is rebuilt.
@@ -62,6 +66,10 @@ ENV CF_CONNECTING_IP=""
 # slash. Empty (the default) serves the app at the root exactly as before. A proxy that strips
 # the prefix needs nothing here — the app derives the API address from its own URL.
 ENV BASE_PATH=""
+# The largest upload nginx lets through to the API's photo and video route (nginx size syntax).
+# Above the API's own video cap (MEDIA_VIDEO_MAX_MB, 40 by default) so the API, which says why,
+# is the one that refuses a file — raise both together.
+ENV MEDIA_UPLOAD_MAX=48m
 
 # Probe the port nginx was actually told to listen on (NGINX_PORT is configurable, so a
 # hardcoded http://localhost/ breaks on any instance that changed it), and address it as

@@ -256,3 +256,38 @@ describe('custom exercises in a shared plan', () => {
     expect(target.routines[0].ex[0].id).toBe('mine')
   })
 })
+
+describe('plan-share links and media (#246)', () => {
+  const photo = { kind: 'image', hash: 'a'.repeat(64), mime: 'image/webp', size: 10, width: 4, height: 3, at: 1 }
+  const withCustom = c => ({
+    unit: 'kg', week: {},
+    routines: [{ id: 'r1', name: 'Push', ex: [{ id: 'cx1', sets: 3, reps: 5 }] }],
+    customEx: [{ id: 'cx1', n: 'Landmine press', bp: 'shoulders', custom: true, ...c }]
+  })
+
+  it('a link travels with the plan and arrives on the new exercise; the photo never travels', () => {
+    const bundle = buildPlanBundle(withCustom({ url: 'https://youtu.be/abc', media: photo }), 'Plan')
+    expect(bundle.customEx[0].url).toBe('https://youtu.be/abc')
+    expect(JSON.stringify(bundle)).not.toContain('media')
+    expect(JSON.stringify(bundle)).not.toContain('a'.repeat(64))
+    const s = { unit: 'kg', week: {}, routines: [], customEx: [], dayPlan: {} }
+    mergePlan(s, parsePlan(JSON.stringify(bundle)))
+    expect(s.customEx[0]).toMatchObject({ n: 'Landmine press', url: 'https://youtu.be/abc', custom: true })
+    expect(s.customEx[0].media).toBeUndefined()
+  })
+
+  it('a link that is not a web address is dropped on the way in, and never backfilled onto an exercise you have', () => {
+    const file = buildPlanBundle(withCustom({}), 'Plan')
+    file.customEx[0].url = 'javascript:alert(document.cookie)'
+    file.customEx[0].media = photo
+    const s = { unit: 'kg', week: {}, routines: [], customEx: [], dayPlan: {} }
+    mergePlan(s, parsePlan(JSON.stringify(file)))
+    expect(s.customEx[0].url).toBeUndefined()
+    expect(s.customEx[0].media).toBeUndefined()
+
+    const mine = { unit: 'kg', week: {}, routines: [], dayPlan: {}, customEx: [{ id: 'mine', n: 'Landmine press', bp: 'shoulders', custom: true }] }
+    mergePlan(mine, parsePlan(JSON.stringify(buildPlanBundle(withCustom({ url: 'https://youtu.be/abc' }), 'Plan'))))
+    expect(mine.customEx).toHaveLength(1)
+    expect(mine.customEx[0].url).toBeUndefined()
+  })
+})

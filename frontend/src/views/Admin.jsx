@@ -30,9 +30,24 @@ const rel = ts => {
 }
 const dur = ms => { const m = Math.max(0, Math.floor(ms / 60000)); return m < 60 ? m + ' min' : Math.floor(m / 60) + ' h ' + (m % 60) + ' min' }
 
+// The one time the reset code is visible. Locked, so a tap beside the sheet cannot lose it
+// before it has been copied or written down.
+function ResetCodeSheet({ name, email, code, expires, close }) {
+  const toast = useUI(s => s.toast)
+  const copy = () => { navigator.clipboard?.writeText(code).catch(() => {}); toast('Copied') }
+  return <>
+    <h3>Reset code for {name}</h3>
+    <div className="adm-lead">Give them this code. They choose “Sign in with password” → “Have a reset code from your admin?”, enter their name <b>{name}</b>{email && <> (or their sign-in e-mail <b>{email}</b>)</>}, the code and a new password. It works once, until {new Date(expires).toLocaleString()}, and will not be shown again.</div>
+    <button className="adm-code" style={{ fontSize: 22, width: '100%', padding: '14px 0' }} onClick={copy} aria-label="copy code">{code}</button>
+    <div style={{ height: 12 }} />
+    <Button variant="primary" onClick={close}>Done</Button>
+  </>
+}
+
 function UserDetail({ id, onChanged, close }) {
   const [d, setD] = useState(null)
   const toast = useUI(s => s.toast)
+  const openSheet = useUI(s => s.openSheet)
   useEffect(() => { api('/api/admin/user?id=' + encodeURIComponent(id)).then(setD).catch(e => toast(e.message)) }, [id])
   if (!d) return <div className="muted small">Loading…</div>
   const u = d.user
@@ -61,15 +76,31 @@ function UserDetail({ id, onChanged, close }) {
       .then(() => { toast(disabled ? 'User disabled' : 'User enabled'); onChanged(); close() })
       .catch(e => toast(e.message))
   }
+  // Password sign-in (#118): the server only sends `password` when the instance offers it. The
+  // code comes back once, is shown once, and is never stored anywhere but as a hash.
+  const pwInstance = typeof u.password === 'boolean'
+  const resetPassword = () => confirmSheet({
+    title: 'Reset ' + u.name + '’s password?',
+    message: 'You get a one-time code to hand them. Their current password stops working now and they are signed out everywhere; their passkeys keep working. They set a new password with the code under “Sign in with password”. It is shown once and is valid for 24 hours.',
+    confirmText: 'Create reset code',
+    danger: true,
+    onConfirm: () => api('/api/admin/user/password-reset', { method: 'POST', body: JSON.stringify({ id: u.id }) })
+      .then(r => { onChanged(); close(); openSheet(done => <ResetCodeSheet name={r.name} email={u.email} code={r.code} expires={r.expires} close={done} />, { locked: true }) })
+      .catch(e => toast(e.message)),
+  })
   return <>
     <h3 className="capitalize">{u.name}</h3>
     <div className="row" style={{ gap: 6, flexWrap: 'wrap', margin: '8px 0 12px' }}>
       {u.admin && <span className="adm-pill acc">admin</span>}
       {u.disabled && <span className="adm-pill bad">disabled</span>}
       {u.invitedBy && <span className="adm-pill">invite {u.invitedBy}</span>}
+      {u.password && <span className="adm-pill">password</span>}
+      {/* The sign-in e-mail (password instances only): shown to admins and nobody else. */}
+      {u.email && <span className="adm-pill" title="sign-in e-mail">{u.email}</span>}
+      {u.resetUntil && <span className="adm-pill acc">reset code until {new Date(u.resetUntil).toLocaleString()}</span>}
       <span className="adm-pill">joined {u.created ? fmtDate(u.created.slice(0, 10)) : '—'}</span>
     </div>
-    <div className="tiles" style={{ textAlign: 'left' }}>
+    <div className="tiles" style={{ textAlign: 'start' }}>
       <div className="tile"><div className="l">Workouts</div><div className="v" style={{ fontSize: '1.1rem' }}>{workouts.length}</div></div>
       <div className="tile"><div className="l">Weigh-ins</div><div className="v" style={{ fontSize: '1.1rem' }}>{d.bodyweight.length}</div></div>
       <div className="tile"><div className="l">Routines</div><div className="v" style={{ fontSize: '1.1rem' }}>{d.routines.length}</div></div>
@@ -100,6 +131,12 @@ function UserDetail({ id, onChanged, close }) {
         })}>Delete account</button>
       <button className="btn" style={{ marginBottom: 4 }} onClick={exportUser}>Download their data</button>
       <div className="adm-hint">Deleting removes the account and every trace of its training history from this server.</div>
+      {pwInstance && <>
+        <button className="btn" style={{ margin: '14px 0 4px' }} onClick={resetPassword}>Reset password</button>
+        <div className="adm-hint">{u.password
+          ? 'For a forgotten password: a one-time code lets them choose a new one. Their current password stops working at once.'
+          : 'No password yet. A one-time code lets them set one — the way back in after losing their only passkey.'}</div>
+      </>}
     </>}
     <h4 className="sec">Workout history</h4>
     {workouts.length ? <div className="list" style={{ gap: 0 }}>
@@ -200,11 +237,11 @@ function AuditCard({ tick }) {
         <div className="grow">
           <div className="small" style={{ fontWeight: 600 }}>{line.title}
             {/* a red pill, not a red row: twenty fumbled Face IDs in a row shouldn't read as an incident */}
-            {!e.ok && <span className="adm-pill bad" style={{ marginLeft: 6 }}>failed</span>}
-            {auditCat(e.ev) === 'admin' && <span className="adm-pill acc" style={{ marginLeft: 6 }}>admin</span>}</div>
+            {!e.ok && <span className="adm-pill bad" style={{ marginInlineStart: 6 }}>failed</span>}
+            {auditCat(e.ev) === 'admin' && <span className="adm-pill acc" style={{ marginInlineStart: 6 }}>admin</span>}</div>
           {line.sub && <div className="dim" style={{ fontSize: '.72rem' }}>{line.sub}</div>}
         </div>
-        <span className="small muted" style={{ flex: 'none', marginLeft: 8 }}>{fmtWhen(e.ts, meta?.now)}</span>
+        <span className="small muted" style={{ flex: 'none', marginInlineStart: 8 }}>{fmtWhen(e.ts, meta?.now)}</span>
       </div>
     })}
     {meta && !rows.length && <div className="adm-empty">Nothing logged yet.</div>}
@@ -216,14 +253,23 @@ function AuditCard({ tick }) {
 export default function Admin() {
   const nav = useNavigate()
   const user = useStore(s => s.user)
-  const toast = useUI(s => s.toast)
   const openSheet = useUI(s => s.openSheet)
   const [users, setUsers] = useState(null)
+  const [usersErr, setUsersErr] = useState(null)   // why the last load failed, until one succeeds
   const [invites, setInvites] = useState(null)
   const [inviteOnly, setInviteOnly] = useState(false)
   const [tick, setTick] = useState(0)          // the ↻ button; the activity log listens to it
 
-  const loadUsers = () => api('/api/admin/users').then(d => { setUsers(d.users); setInviteOnly(d.invite_only) }).catch(e => toast(e.message || 'Failed to load'))
+  // A failed load, or an answer without a list, used to leave the page on "Loading…" for good —
+  // with a toast every 15 seconds from the poll, or with nothing at all when the answer was
+  // someone else's page. It says so where the list would be instead, and the poll (or ↻) keeps
+  // trying; a list that did load stays up, marked as the last one that came through.
+  const loadUsers = () => api('/api/admin/users')
+    .then(d => {
+      if (!Array.isArray(d?.users)) throw new Error('The server answered without a list of users.')
+      setUsers(d.users); setInviteOnly(!!d.invite_only); setUsersErr(null)
+    })
+    .catch(e => setUsersErr(e.message || 'Failed to load'))
   const loadInvites = () => api('/api/admin/invites').then(d => setInvites(d.invites)).catch(() => {})
   // poll every 15s so the "training now" section stays live without a manual refresh
   useEffect(() => { if (!user?.admin) return; loadUsers(); loadInvites(); const iv = setInterval(loadUsers, 15000); return () => clearInterval(iv) }, [])
@@ -237,13 +283,21 @@ export default function Admin() {
   return <div className="narrow">
     <div className="hdr">
       <button className="iconbtn" onClick={() => nav('/settings')} aria-label="Back"><Icon name="chevronLeft" /></button>
-      <div style={{ flex: 1, marginLeft: 8 }}><h1 style={{ margin: 0 }}>Admin</h1>
-        <div className="sub">{users ? users.length + ' users · ' + activeCount + ' active this week' : 'Loading…'}</div></div>
+      <div style={{ flex: 1, marginInlineStart: 8 }}><h1 style={{ margin: 0 }}>Admin</h1>
+        <div className="sub">{users ? users.length + ' users · ' + activeCount + ' active this week' : usersErr ? 'Could not load' : 'Loading…'}</div></div>
       <button className="iconbtn" onClick={() => { loadUsers(); loadInvites(); setTick(n => n + 1) }} aria-label="refresh">↻</button>
     </div>
     <div className="adm-intro">
       Everything about running this instance: who uses it, how they get in, the AI Coach, and what has happened on it. Nothing here shows anyone's training data beyond counts.
     </div>
+
+    {usersErr && <div className="card" role="alert" style={{ borderColor: 'var(--red)' }}>
+      <div className="row between"><h2 style={{ margin: 0 }}>{users ? 'The last update failed' : 'Could not load the users'}</h2>
+        <Button size="sm" icon="reset" onClick={loadUsers}>Try again</Button></div>
+      <div className="adm-lead" style={{ marginBottom: 0 }}>
+        {usersErr} {users ? 'The list below is the last one that loaded.' : 'It tries again every 15 seconds.'}
+      </div>
+    </div>}
 
     <div className="tiles" style={{ marginBottom: 12 }}>
       <div className="tile"><div className="l">Users</div><div className="v">{users ? users.length : '—'}</div></div>
@@ -270,11 +324,12 @@ export default function Admin() {
 
     <div className="card">
       <h2 style={{ margin: 0 }}>Users</h2>
-      <div className="adm-lead">Everyone with a profile on this instance. Tap one to see their activity or to disable the account — their data is never deleted from here.</div>
+      <div className="adm-lead">Everyone with a profile on this instance. Tap one to see their activity, to disable the account (nothing is deleted) or to delete it with all their data for good.</div>
       <div className="list">
         {(users || []).map(u => <div key={u.id} className="item" onClick={() => openUser(u.id)} style={u.disabled ? { opacity: .55 } : null}>
-          <div className="grow"><div className="tt">{u.live && <Icon name="dot" style={{ fontSize: 9, color: 'var(--green)', display: 'inline-block', marginRight: 5 }} />}{u.name} {u.admin && <span className="adm-pill acc" style={{ marginLeft: 4 }}>admin</span>}{u.disabled && <span className="adm-pill bad" style={{ marginLeft: 4 }}>disabled</span>}</div>
-            <div className="ss">{u.live ? 'training now · ' + u.live.name : u.workouts + ' workouts' + (u.lastWorkout ? ' · last ' + fmtDate(u.lastWorkout) : '') + ' · last sync ' + rel(u.lastSync)}</div></div>
+          <div className="grow"><div className="tt">{u.live && <Icon name="dot" style={{ fontSize: 9, color: 'var(--green)', display: 'inline-block', marginInlineEnd: 5 }} />}{u.name} {u.admin && <span className="adm-pill acc" style={{ marginInlineStart: 4 }}>admin</span>}{u.disabled && <span className="adm-pill bad" style={{ marginInlineStart: 4 }}>disabled</span>}</div>
+            <div className="ss">{u.live ? 'training now · ' + u.live.name : u.workouts + ' workouts' + (u.lastWorkout ? ' · last ' + fmtDate(u.lastWorkout) : '') + ' · last sync ' + rel(u.lastSync)}</div>
+            {u.email && <div className="ss" title="sign-in e-mail">{u.email}</div>}</div>
           {u.hasPush && <Icon name="bell" title="push notifications on" style={{ fontSize: 15, color: 'var(--label-3)' }} />}<Icon name="chevronRight" className="chev" />
         </div>)}
         {users && !users.length && <div className="adm-empty">No users yet.</div>}

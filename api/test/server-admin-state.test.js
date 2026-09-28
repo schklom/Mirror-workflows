@@ -7,12 +7,12 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import crypto from 'node:crypto';
-import net from 'node:net';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { boundPort } from './helpers.mjs';
 
 const API = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SECRET = crypto.randomBytes(32).toString('hex');
@@ -25,10 +25,6 @@ function mintSession(uid) {
 const ADMIN = 'u_adm_1', VICTIM = 'u_vic_1';
 const asAdmin = { Cookie: `gymsid=${mintSession(ADMIN)}`, 'Content-Type': 'application/json' };
 
-const freePort = () => new Promise(r => {
-  const s = net.createServer(); s.listen(0, '127.0.0.1', () => { const p = s.address().port; s.close(() => r(p)); });
-});
-
 async function startServer(t) {
   const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gym-admin-'));
   fs.writeFileSync(path.join(dataDir, 'secret'), SECRET, { mode: 0o600 });
@@ -38,21 +34,18 @@ async function startServer(t) {
       { id: VICTIM, name: 'Mallory', created: new Date().toISOString() }
     ], creds: [], subs: [], invites: []
   }));
-  const port = await freePort();
   const child = spawn(process.execPath, ['server.js'], {
     cwd: API, stdio: ['ignore', 'pipe', 'pipe'],
-    env: { ...process.env, PORT: String(port), DATA_DIR: dataDir, ORIGIN: 'http://localhost:8080', RP_ID: 'localhost' }
+    env: { ...process.env, PORT: '0', DATA_DIR: dataDir, ORIGIN: 'http://localhost:8080', RP_ID: 'localhost' }
   });
-  const h = { api: `http://127.0.0.1:${port}`, log: '', dataDir };
+  const h = { api: '', log: '', dataDir };
   child.stdout.on('data', d => h.log += d);
   child.stderr.on('data', d => h.log += d);
   t.after(() => { child.kill('SIGKILL'); fs.rmSync(dataDir, { recursive: true, force: true }); });
-  let up = false;
-  for (let i = 0; i < 100 && !up; i++) {
-    try { up = (await fetch(`${h.api}/api/health`)).ok; } catch { /* not up yet */ }
-    if (!up) await new Promise(r => setTimeout(r, 100));
-  }
-  assert.ok(up, `server never came up:\n${h.log}`);
+  // The boot line carries the port the listener bound, so it is both the address and the
+  // readiness signal — see boundPort in helpers.mjs for why the test does not pick one.
+  h.port = await boundPort(child, () => h.log);
+  h.api = `http://127.0.0.1:${h.port}`;
   // The boot line is fine; anything that looks like a stack frame after this is a defect.
   h.stackFrames = () => h.log.split('\n').filter(l => /^\s+at /.test(l)).length;
   h.plant = S => fs.writeFileSync(path.join(h.dataDir, `state-${VICTIM}.json`), JSON.stringify(S));
@@ -105,6 +98,17 @@ test('GET /api/admin/user opens a profile whose stored state predates the entry 
   assert.equal(h.stackFrames(), 0, `stack traces in the log:\n${h.log}`);
 });
 
+test('GET /api/admin/user leaves a workout\'s photos and videos out', async t => {
+  const h = await startServer(t);
+  const ref = { kind: 'image', hash: 'a'.repeat(64), mime: 'image/webp', size: 10, width: 8, height: 6, at: 1 };
+  h.plant({ workouts: [{ ...okW, media: [ref] }], routines: [okR], bodyweight: [okB], unit: 'kg' });
+  const r = await h.get(`/api/admin/user?id=${VICTIM}`);
+  assert.equal(r.status, 200);
+  assert.deepEqual(r.body.workouts.map(w => w.id), ['w1']);
+  assert.equal('media' in r.body.workouts[0], false);
+  assert.equal(JSON.stringify(r.body).includes('a'.repeat(64)), false);
+});
+
 test('the user list and the disable switch survive the same document', async t => {
   const h = await startServer(t);
   for (const [what, doc] of Object.entries(DOCS)) {
@@ -127,4 +131,25 @@ test('the user list and the disable switch survive the same document', async t =
   assert.equal(a.status, 200);
   assert.ok(a.body.events.some(e => e.ev === 'admin.user.disable'), JSON.stringify(a.body.events));
   assert.equal(h.stackFrames(), 0, `stack traces in the log:\n${h.log}`);
+});
+
+// QA 1.3.9: a profile that only ever pulled (a second device, someone who reads and never edits)
+// showed "last sync never" — only a push moved the document's `_ts`. A pull counts too.
+test('a pull shows as the last sync, in the list and the drill-down', async t => {
+  const h = await startServer(t);
+  h.plant({ _rev: 3, workouts: [okW] });
+  let row = (await h.get('/api/admin/users')).body.users.find(u => u.id === VICTIM);
+  assert.equal(row.lastSync, null);
+  const before = Date.now();
+  const pull = await fetch(`${h.api}/api/data`, { headers: { Cookie: `gymsid=${mintSession(VICTIM)}` } });
+  assert.equal(pull.status, 200);
+  row = (await h.get('/api/admin/users')).body.users.find(u => u.id === VICTIM);
+  assert.ok(row.lastSync >= before, JSON.stringify(row));
+  assert.ok((await h.get(`/api/admin/user?id=${VICTIM}`)).body.lastSync >= before);
+  // Kept across a restart: it is on the user record.
+  assert.ok(JSON.parse(fs.readFileSync(path.join(h.dataDir, 'db.json'), 'utf8')).users.find(u => u.id === VICTIM).lastPull >= before);
+  // A later push still wins when it is the newer of the two.
+  h.plant({ _rev: 4, _ts: Date.now() + 60000, workouts: [okW] });
+  row = (await h.get('/api/admin/users')).body.users.find(u => u.id === VICTIM);
+  assert.ok(row.lastSync > Date.now());
 });

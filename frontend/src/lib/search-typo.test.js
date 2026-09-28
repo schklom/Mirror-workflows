@@ -68,3 +68,16 @@ it('searchExercises over the real catalogue returns only exact hits for correctl
   }
   expect(searchExercises(EXDB, 'wrist')[0].n).toBe('band reverse wrist curl')
 })
+
+// QA 1.3.9: "pullup" found the pull-ups while "benchpress" found nothing — words typed together
+// (or hyphenated) match a name that spells them apart.
+it('finds a name typed with its words run together or hyphenated', () => {
+  const named = searchExercises(EXDB, 'bench press').filter(e => /bench press/.test(e.n)).map(e => e.id)
+  expect(named.length).toBeGreaterThan(0)
+  for (const q of ['benchpress', 'bench-press', 'Benchpress']) {
+    expect(searchExercises(EXDB, q).map(e => e.id), q).toEqual(expect.arrayContaining(named))
+  }
+  expect(matchExercise(benchPress, 'dumbbellbenchpress')).toBe(true)
+  // Only the name is run together: a body part and equipment word do not fuse into one.
+  expect(matchExercise(benchPress, 'chestdumbbell')).toBe(false)
+})

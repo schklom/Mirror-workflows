@@ -4,6 +4,8 @@
 // and back lands where it started for any plate-loadable number.
 import { isSideSet, syncSideAggregate } from './workout-model.js'
 import { workoutVolume } from './history.js'
+import { EXIDX } from './exercises.js'
+import { defaultBarWeight } from './bar.js'
 
 const LB_PER_KG = 2.2046226218
 
@@ -42,12 +44,32 @@ const convTarget = (cfg, from, to) => {
   if (Array.isArray(out.warmup)) out.warmup = out.warmup.map(w => (w && w.weight != null ? { ...w, weight: convertWeight(w.weight, from, to) } : w))
   return out
 }
+// A bar is a stamped object, not a number: the 45 lb bar IS the 20 kg bar (44.1 lb), so an
+// override that equals the old unit's default for that bar type drops out and the new unit's
+// default takes over — 45 lb → 20 kg, not 20.5, which with a kg plate set would leave every row
+// "1 kg short". An explicit 0 ("no bar", lib/bar.js) stays 0. A custom bar converts like any
+// other weight (a 33 lb women's bar → 15 kg), and drops out too if it lands on the new default.
+const convBarWeights = (bw, from, to) => {
+  const out = {}
+  for (const [id, v] of Object.entries(bw || {})) {
+    if (typeof v !== 'number' || !Number.isFinite(v) || v < 0) continue
+    if (v === 0) { out[id] = 0; continue }
+    const eq = EXIDX[id]?.eq
+    if (eq && v === defaultBarWeight(eq, from)) continue
+    const c = convertWeight(v, from, to)
+    if (eq && c === defaultBarWeight(eq, to)) continue
+    out[id] = c
+  }
+  return out
+}
 const convEntry = (e, from, to) => {
   if (!e || typeof e !== 'object') return e
   return {
     ...e,
     ...(e.topW != null ? { topW: convertWeight(e.topW, from, to) } : {}),
     ...(e.target ? { target: convTarget(e.target, from, to) } : {}),
+    // The plan the entry was built from (lib/session-start.js) carries the routine's weight too.
+    ...(e.planned ? { planned: convTarget(e.planned, from, to) } : {}),
     ...(Array.isArray(e.sets) ? { sets: e.sets.map(s => convSet(s, from, to)) } : {}),
   }
 }
@@ -72,7 +94,11 @@ export function convertStateUnit(S, to) {
   if (Array.isArray(S.bodyweight)) out.bodyweight = S.bodyweight.map(b => ({ ...b, w: bw(b.w) }))
   if (S.targetW != null) out.targetW = bw(S.targetW)
   if (S.exWeights) out.exWeights = Object.fromEntries(Object.entries(S.exWeights).map(([k, v]) => [k, v && typeof v === 'object' ? { ...v, w: c(v.w) } : c(v)]))
-  if (S.barWeights) out.barWeights = Object.fromEntries(Object.entries(S.barWeights).map(([k, v]) => [k, c(v)]))
+  if (S.barWeights) out.barWeights = convBarWeights(S.barWeights, from, to)
+  // The plate inventory (S.plates) is carried over as it is, not converted: it is kept per unit
+  // (lib/plates.js), because a 45 lb plate does not become a 20.4 kg one. After the switch the
+  // rows load from the new unit's own list, or the standard set until you count yours, and
+  // switching back finds the old list as you left it. The load kinds (S.loadKind) hold no weight.
   if (Array.isArray(S.routines)) out.routines = S.routines.map(r => ({ ...r, ex: (r.ex || []).map(cfg => convTarget(cfg, from, to)) }))
   if (Array.isArray(S.workouts)) out.workouts = S.workouts.map(convSession)
   if (S.active) out.active = convSession(S.active)

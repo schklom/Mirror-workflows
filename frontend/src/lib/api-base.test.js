@@ -2,8 +2,8 @@
 // Issue #238: openGym behind a reverse proxy that serves it under a subpath. The assets were
 // already relative; the API call was not, so it went to the proxy's own root where nothing
 // answers it. The base is read from where the app is being served.
-import { describe, it, expect } from 'vitest'
-import { appBase } from './api.js'
+import { describe, it, expect, vi, afterEach } from 'vitest'
+import { appBase, beacon } from './api.js'
 
 const at = pathname => appBase({ pathname })
 
@@ -28,5 +28,25 @@ describe('the app knows where it is served from', () => {
   it('survives a missing or odd location', () => {
     expect(appBase(null)).toBe('/')
     expect(at('')).toBe('/')
+  })
+})
+
+describe('the "left" beacon of the web app', () => {
+  afterEach(() => { vi.unstubAllGlobals(); history.replaceState(null, '', '/') })
+
+  it('goes to the API of the copy it was served from, as JSON', async () => {
+    history.replaceState(null, '', '/myGym/')
+    const sendBeacon = vi.fn(() => true)
+    vi.stubGlobal('navigator', { ...navigator, sendBeacon })
+    expect(beacon('/api/activity', { active: false })).toBe(true)
+    const [url, blob] = sendBeacon.mock.calls[0]
+    expect(url).toBe('/myGym/api/activity')
+    expect(blob.type).toBe('application/json')
+    expect(JSON.parse(await blob.text())).toEqual({ active: false })
+  })
+
+  it('a browser without sendBeacon just skips it', () => {
+    vi.stubGlobal('navigator', { ...navigator, sendBeacon: undefined })
+    expect(beacon('/api/activity', { active: false })).toBe(false)
   })
 })

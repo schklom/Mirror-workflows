@@ -25,9 +25,10 @@ describe('Stats mixed-entry metric contract', () => {
     expect(source).not.toContain('onExercise')
   })
 
-  it('uses the shared metric mode and row helpers rather than entryMode as a chart gate', () => {
+  it('uses the shared metric mode and occurrence helpers rather than entryMode as a chart gate', () => {
     expect(source).toContain('metricModeForEntry')
-    expect(source).toContain('metricRowsForEntry')
+    expect(source).toContain('metricEntriesForExercise')
+    expect(source).toContain('completedRepsOf')
     expect(source).toContain('bestWeightForEntry')
     expect(source).not.toContain('const loggedMode = entryMode(en)')
     expect(source).not.toContain('(en.topW || 0)')
@@ -38,7 +39,7 @@ describe('Stats mixed-entry metric contract', () => {
     expect(uiSource).toContain('sheetTitle, stackedValue = false')
     expect(uiSource).toContain("className={stackedValue ? 'lrow-stack-value' : ''}")
     expect(cssSource).toContain('.lrow.lrow-stack-value .lrow-m{grid-column:1;grid-row:1}')
-    expect(cssSource).toContain('.lrow.lrow-stack-value .lrow-v{grid-column:1;grid-row:2;width:100%;max-width:none;text-align:left}')
+    expect(cssSource).toContain('.lrow.lrow-stack-value .lrow-v{grid-column:1;grid-row:2;width:100%;max-width:none;text-align:start}')
     expect(cssSource).toContain('flex:0 1 auto;max-width:55%;min-width:0;')
     expect(cssSource).toContain('overflow:hidden;text-overflow:ellipsis;white-space:nowrap')
   })

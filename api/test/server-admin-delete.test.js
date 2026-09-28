@@ -6,12 +6,12 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import crypto from 'node:crypto';
-import net from 'node:net';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { boundPort } from './helpers.mjs';
 
 const API = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SECRET = crypto.randomBytes(32).toString('hex');
@@ -21,10 +21,6 @@ const mintSession = uid => {
 };
 const ADMIN = 'u_adm_1', ADMIN2 = 'u_adm_2', VICTIM = 'u_vic_1';
 const as = uid => ({ Cookie: `gymsid=${mintSession(uid)}`, 'Content-Type': 'application/json' });
-const freePort = () => new Promise(r => {
-  const s = net.createServer(); s.listen(0, '127.0.0.1', () => { const p = s.address().port; s.close(() => r(p)); });
-});
-
 async function startServer(t, { twoAdmins = false } = {}) {
   const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gym-del-'));
   fs.writeFileSync(path.join(dataDir, 'secret'), SECRET, { mode: 0o600 });
@@ -40,21 +36,18 @@ async function startServer(t, { twoAdmins = false } = {}) {
     invites: [{ code: 'CODE1', usedBy: VICTIM, usedAt: new Date().toISOString() }],
   }));
   fs.writeFileSync(path.join(dataDir, `state-${VICTIM}.json`), JSON.stringify({ unit: 'kg', workouts: [], _rev: 3 }));
-  const port = await freePort();
   const child = spawn(process.execPath, ['server.js'], {
     cwd: API, stdio: ['ignore', 'pipe', 'pipe'],
-    env: { ...process.env, PORT: String(port), DATA_DIR: dataDir, ORIGIN: 'http://localhost:8080', RP_ID: 'localhost' },
+    env: { ...process.env, PORT: '0', DATA_DIR: dataDir, ORIGIN: 'http://localhost:8080', RP_ID: 'localhost' },
   });
-  const h = { api: `http://127.0.0.1:${port}`, log: '', dataDir };
+  const h = { api: '', log: '', dataDir };
   child.stdout.on('data', d => h.log += d);
   child.stderr.on('data', d => h.log += d);
   t.after(() => { child.kill('SIGKILL'); fs.rmSync(dataDir, { recursive: true, force: true }); });
-  let up = false;
-  for (let i = 0; i < 100 && !up; i++) {
-    try { up = (await fetch(`${h.api}/api/health`)).ok; } catch { /* not up yet */ }
-    if (!up) await new Promise(r => setTimeout(r, 100));
-  }
-  assert.ok(up, `server never came up:\n${h.log}`);
+  // The boot line carries the port the listener bound, so it is both the address and the
+  // readiness signal — see boundPort in helpers.mjs for why the test does not pick one.
+  h.port = await boundPort(child, () => h.log);
+  h.api = `http://127.0.0.1:${h.port}`;
   h.del = async (id, uid = ADMIN) => {
     const r = await fetch(`${h.api}/api/admin/user/delete`, { method: 'POST', headers: { ...as(uid), Origin: 'http://localhost:8080' }, body: JSON.stringify({ id }) });
     return { status: r.status, body: await r.json() };

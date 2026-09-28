@@ -15,7 +15,7 @@ const nav = vi.fn()
 vi.mock('react-router-dom', () => ({ useNavigate: () => nav }))
 vi.mock('../sheets.jsx', () => ({
   starterPlanSheet: vi.fn(), bwSheet: vi.fn(), goalSheet: vi.fn(), dayOverrideSheet: vi.fn(),
-  calendarSheet: vi.fn(), startFlow: vi.fn(), bwDeltaColor: () => '',
+  calendarSheet: vi.fn(), startFlow: vi.fn(), bwDeltaColor: () => '', weighInsSheet: vi.fn(),
 }))
 
 const routines = [{ id: 'r1', name: 'Push', emoji: null, ex: [{ id: '0025' }] }]
@@ -64,5 +64,23 @@ describe('Home — the way to the Start screen when a plan already owns today', 
     setS({ active: { id: 'a', name: 'Push', start: Date.now(), cur: 0, entries: [] } })
     mount()
     expect(door()).toBeFalsy()
+  })
+
+  it('reads an open editor on a saved workout as an edit, not as a session in progress', () => {
+    setS({ active: { id: 'w', name: 'Push', start: 1000, cur: 0, entries: [], editingWorkoutId: 'w' } })
+    mount()
+    const row = host.querySelector('.today-row')
+    expect(row.querySelector('.ttl').textContent).toBe('Push')
+    expect(row.querySelector('.tag').textContent).toBe('Edit')
+    act(() => { row.dispatchEvent(new MouseEvent('click', { bubbles: true })) })
+    expect(nav).toHaveBeenCalledWith('/workout')
+  })
+
+  it('still reads a running session as in progress', () => {
+    setS({ active: { id: 'a', name: 'Push', start: Date.now(), cur: 0, entries: [] } })
+    mount()
+    const row = host.querySelector('.today-row')
+    expect(row.querySelector('.ttl').textContent).toBe('Push — in progress')
+    expect(row.querySelector('.tag').textContent).toBe('Resume')
   })
 })

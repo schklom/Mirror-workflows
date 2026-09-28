@@ -18,7 +18,7 @@
 // body-weight records are interesting here. parseBodyweight() scans for those without
 // building a DOM.
 
-import { EXDB, EXIDX } from './exercises.js'
+import { EXDB, EXIDX, isCardio as isCardioEx } from './exercises.js'
 import { uid } from './format.js'
 import { isWarmupRow } from './workout-model.js'
 import { HEVY_TITLE_MAP } from './hevy-id-map.js'
@@ -78,7 +78,13 @@ const COLUMNS = [
   ['seconds', ['seconds', 'duration seconds', 'set duration sec']],
   ['time', ['time', 'duration']],
   ['setType', ['set type']],
-  ['note', ['comment', 'comments', 'notes', 'note', 'workout notes']],
+  // Hevy numbers the supersets of a workout; rows sharing a number were done as one.
+  ['superset', ['superset id']],
+  // The session's note, before the per-set one: Strong writes both, "Notes" first, and a
+  // shared alias list handed the session note's column to nobody. Hevy calls it the workout's
+  // description.
+  ['workoutNote', ['workout notes', 'workout note', 'description']],
+  ['note', ['comment', 'comments', 'notes', 'note', 'exercise notes']],
 ]
 
 function mapHeader(header) {
@@ -320,17 +326,46 @@ const effortNum = (raw, zeroMeansRated) => {
 }
 const LB_TO_KG = 0.45359237
 const p2 = n => String(n).padStart(2, '0')
-const MON = { jan: 1, feb: 2, mar: 3, apr: 4, may: 5, jun: 6, jul: 7, aug: 8, sep: 9, oct: 10, nov: 11, dec: 12 }
+// Month names as the exporting app wrote them. Hevy and Strong localize the date on every
+// row to the language the app was set to, so an English-only table silently dropped seven
+// months of a French history: `févr.`/`août`/`déc.` never even matched, because the accent
+// falls inside the first three letters, and `avr.`/`mai`/`juin`/`juil.` matched the shape
+// but stood for nothing. Only janv./mars/sept./oct./nov. came through, by looking exactly
+// like their English counterparts. Keys are lower-case and stripped of diacritics.
+const MON = {
+  // English
+  jan: 1, feb: 2, mar: 3, apr: 4, may: 5, jun: 6, jul: 7, aug: 8, sep: 9, oct: 10, nov: 11, dec: 12,
+  // French — juin/juil. differ only at the fourth letter, which is why the lookup below
+  // tries the whole word and a 4-letter prefix before falling back to three.
+  janv: 1, fevr: 2, mars: 3, avri: 4, avr: 4, mai: 5, juin: 6, juil: 7, aout: 8,
+  sept: 9, octo: 10, nove: 11, dece: 12,
+  // Spanish · Portuguese
+  ene: 1, fev: 2, abr: 4, ago: 8, set: 9, out: 10, dic: 12,
+  // German · Dutch — Dutch spells March "maart" and shortens it "mrt.", neither of which shares
+  // a prefix with any other language's March, so both are keys of their own.
+  mrz: 3, mei: 5, okt: 10, dez: 12, maart: 3, mrt: 3,
+  // Italian
+  gen: 1, mag: 5, giu: 6, lug: 7, ott: 10,
+}
 
-/** "2020-12-30 18:51:52" · "2024-03-07" · "2024/03/07" · "2024.03.07" · "22 Dec 2025, 08:00" · "07/03/2024" -> { d, t } */
+/** A month word in any of the languages above -> 1-12, or null. */
+const monthOf = w => {
+  const k = String(w || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
+  return MON[k] || MON[k.slice(0, 4)] || MON[k.slice(0, 3)] || null
+}
+
+/** "2020-12-30 18:51:52" · "2024-03-07" · "2024/03/07" · "2024.03.07" · "22 Dec 2025, 08:00" · "21 août 2024, 18:00" · "07/03/2024" -> { d, t } */
 export function parseWhen(s) {
   const v = String(s || '').trim()
   let m = v.match(/^(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})(?:[T ](\d{1,2}):(\d{2}))?/)
   if (m) return { d: `${m[1]}-${p2(m[2])}-${p2(m[3])}`, t: hm(m[4], m[5]) }
-  m = v.match(/^(\d{1,2})\s+([A-Za-z]{3})[a-z]*\.?\s+(\d{4})(?:,?\s+(\d{1,2}):(\d{2}))?/)
-  if (m && MON[m[2].toLowerCase()]) return { d: `${m[3]}-${p2(MON[m[2].toLowerCase()])}-${p2(m[1])}`, t: hm(m[4], m[5]) }
-  m = v.match(/^([A-Za-z]{3})[a-z]*\.?\s+(\d{1,2}),?\s+(\d{4})(?:,?\s+(\d{1,2}):(\d{2}))?/)
-  if (m && MON[m[1].toLowerCase()]) return { d: `${m[3]}-${p2(MON[m[1].toLowerCase()])}-${p2(m[2])}`, t: hm(m[4], m[5]) }
+  // \p{L} rather than [A-Za-z]: the month word carries an accent in most languages.
+  m = v.match(/^(\d{1,2})\s+(\p{L}{3,})\.?\s+(\d{4})(?:,?\s+(\d{1,2}):(\d{2}))?/u)
+  let mon = m && monthOf(m[2])
+  if (mon) return { d: `${m[3]}-${p2(mon)}-${p2(m[1])}`, t: hm(m[4], m[5]) }
+  m = v.match(/^(\p{L}{3,})\.?\s+(\d{1,2}),?\s+(\d{4})(?:,?\s+(\d{1,2}):(\d{2}))?/u)
+  mon = m && monthOf(m[1])
+  if (mon) return { d: `${m[3]}-${p2(mon)}-${p2(m[2])}`, t: hm(m[4], m[5]) }
   // Day-first when ambiguous: FitNotes/Strong/Hevy all write unambiguous dates, so a
   // bare numeric one came through a spreadsheet, and those are usually European.
   m = v.match(/^(\d{1,2})[/.](\d{1,2})[/.](\d{4})(?:[, ]+(\d{1,2}):(\d{2}))?/)
@@ -375,6 +410,10 @@ export function parseWorkoutCSV(text, { unit = 'kg' } = {}) {
   const source = detectSource(rows[0])
   const dateCol = map.date !== undefined ? 'date' : map.startTime !== undefined ? 'startTime' : null
   if (!dateCol || map.exercise === undefined) return { error: 'unrecognised' }
+  // Strong's Duration is how long the whole workout took ("1h 5m", "52m"), written on every
+  // row; the set's own time is its Seconds column. Read as a set time it turned every
+  // weight-less row into an hour of cardio and left the workout itself at zero minutes.
+  if (source === 'Strong' && map.time !== undefined) { map.workoutDuration = map.time; delete map.time }
 
   const resolved = new Map()          // exercise name -> dataset id | null, resolved once
   const byDate = new Map()
@@ -405,6 +444,7 @@ export function parseWorkoutCSV(text, { unit = 'kg' } = {}) {
 
     const reps = Math.round(num(cell(r, 'reps')))
     const secs = num(cell(r, 'seconds'))
+    const setNote = cell(r, 'note')
     const mins = secs > 0 ? Math.round(secs / 60 * 10) / 10 : toMinutes(cell(r, 'time'))
     const km = map.distanceKm !== undefined && cell(r, 'distanceKm')
       ? num(cell(r, 'distanceKm'))
@@ -427,7 +467,10 @@ export function parseWorkoutCSV(text, { unit = 'kg' } = {}) {
       if (!c) {
         c = {
           id: 'im' + uid(), n: name.toLowerCase(), custom: true, eq: 'custom', tg: '', desc: '',
-          bp: CATEGORY_BP[cell(r, 'category').toLowerCase()] || (km || (mins && !reps) ? 'cardio' : null)
+          bp: CATEGORY_BP[cell(r, 'category').toLowerCase()] || (km ? 'cardio' : null)
+            // Seconds with nothing else is a hold when the name says what it is (a plank is
+            // core work); a name that says nothing keeps being read as cardio, as before.
+            || (mins && !reps ? (secs > 0 ? bpFromName(name.toLowerCase()) : null) || 'cardio' : null)
             || bpFromName(name.toLowerCase()) || 'upper legs',
         }
         created.set(key, c)
@@ -436,16 +479,26 @@ export function parseWorkoutCSV(text, { unit = 'kg' } = {}) {
       id = c.id
     }
 
-    const isCardio = (km > 0 || mins > 0) && !reps
+    // A Seconds column with no distance and no reps, on an exercise that is not cardio, is a
+    // timed hold (Strong's "Plank, 60 s"): a set of seconds, the way the app logs one — not a
+    // minute of cardio at zero speed. Strong's Seconds is always the set's own time, so its
+    // catalogue match decides; any other file also needs the name to say what it is, because a
+    // loose match ("Walking" → walking lunge) would turn a walk into a hold.
+    const nameBp = bpFromName(name.toLowerCase())
+    const exCardio = isCardioEx(id) || created.get(key)?.bp === 'cardio' || nameBp === 'cardio'
+    const timed = secs > 0 && !km && !reps && !exCardio && (source === 'Strong' || !!nameBp)
+    const isCardio = !timed && (km > 0 || mins > 0) && !reps
     // `u` carries the row's own unit into the conversion pass below and is dropped there —
     // it never reaches the stored set.
-    const set = isCardio
-      ? { min: mins || 0, speed: mins > 0 ? Math.round(km / (mins / 60) * 10) / 10 : 0, done: true, ...(warmup ? { phase: 'warmup' } : {}) }
-      : { w, r: reps || 0, done: true, u: rowUnit, ...(warmup ? { phase: 'warmup' } : {}) }
+    const set = timed
+      ? { sec: Math.round(secs), w, done: true, u: rowUnit, ...(warmup ? { phase: 'warmup' } : {}) }
+      : isCardio
+        ? { min: mins || 0, speed: mins > 0 ? Math.round(km / (mins / 60) * 10) / 10 : 0, done: true, ...(warmup ? { phase: 'warmup' } : {}) }
+        : { w, r: reps || 0, done: true, u: rowUnit, ...(warmup ? { phase: 'warmup' } : {}) }
     // Effort rides along only where the app can show it again: a weighted rep set. A treadmill
     // row with an RPE would have nowhere to put it. A set is kept on one scale, so a file
     // carrying both columns is read as RIR — the same precedence setLabel reads them back with.
-    if (!isCardio) {
+    if (!isCardio && !timed) {
       const rir = effortNum(cell(r, 'rir'), true)
       const rpe = rir == null ? effortNum(cell(r, 'rpe'), false) : null
       if (rir != null) { set.rir = rir; rirSets++ }
@@ -454,14 +507,29 @@ export function parseWorkoutCSV(text, { unit = 'kg' } = {}) {
 
     let day = byDate.get(when.d)
     if (!day) {
-      day = { ex: new Map(), name: cell(r, 'workoutName') || '', start: when.t, end: null }
+      day = { ex: new Map(), name: cell(r, 'workoutName') || '', start: when.t, end: null, note: '', notes: new Map(), sg: new Map(), groups: new Map() }
       byDate.set(when.d, day)
     }
     if (!day.name) day.name = cell(r, 'workoutName') || ''
+    if (!day.note) day.note = cell(r, 'workoutNote')
     if (map.endTime !== undefined) { const e = parseWhen(cell(r, 'endTime')); if (e && e.t != null) day.end = e.t }
-    else if (map.time !== undefined && !map.seconds && reps) { /* FitNotes' Time is per-set */ }
+    else if (map.workoutDuration !== undefined && day.end == null) {
+      const len = toMinutes(cell(r, 'workoutDuration'))
+      if (len > 0) day.end = (day.start ?? 18 * 3600000) + Math.round(len * 60000)
+    }
     if (!day.ex.has(id)) day.ex.set(id, [])
     day.ex.get(id).push(set)
+    // A note written against a set belongs to the exercise that day; the app keeps one per entry.
+    if (setNote) {
+      const list = day.notes.get(id) || []
+      if (!list.includes(setNote)) list.push(setNote)
+      day.notes.set(id, list)
+    }
+    const ss = cell(r, 'superset')
+    if (ss && !day.sg.has(id)) {
+      if (!day.groups.has(ss)) day.groups.set(ss, 'is' + uid())
+      day.sg.set(id, day.groups.get(ss))
+    }
     sets++
   }
 
@@ -489,14 +557,19 @@ export function parseWorkoutCSV(text, { unit = 'kg' } = {}) {
     const entries = [...day.ex.entries()].map(([id, ss]) => {
       const conv2 = ss.map(({ u, ...s }) => (s.w !== undefined ? { ...s, w: convRow({ ...s, u }) } : s))
       const mx = Math.max(0, ...conv2.filter(s => !isWarmupRow(s)).map(s => s.w || 0))
-      return { id, sets: conv2, topW: mx || null }
+      const note = (day.notes.get(id) || []).join(' · ').slice(0, 280)
+      return { id, sets: conv2, topW: mx || null, ...(day.sg.has(id) ? { sg: day.sg.get(id) } : {}), ...(note ? { note } : {}) }
     })
+    // A superset is exercises next to each other; one left without a neighbour sharing its
+    // tag is not a superset (the same rule history.js's cleanupSg applies).
+    entries.forEach((e, i) => { if (e.sg && entries[i - 1]?.sg !== e.sg && entries[i + 1]?.sg !== e.sg) delete e.sg })
     const base = new Date(d + 'T00:00:00').getTime()
     const start = base + (day.start ?? 18 * 3600000)
     const end = day.end != null ? base + day.end : start
     const w = {
       id: 'iw' + uid(), d, start, end: end > start ? end : start,
       routineId: null, name: day.name || 'Imported', entries, prs: [],
+      ...(day.note ? { note: day.note } : {}),
     }
     // Work sets only, like `workoutVolume` for a workout finished in the app: warm-ups are
     // promised to stay out of the volume, and this number is stored with the workout for good.

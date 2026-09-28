@@ -4,13 +4,13 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import crypto from 'node:crypto';
-import net from 'node:net';
 import http from 'node:http';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { boundPort } from './helpers.mjs';
 
 const API = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SECRET = crypto.randomBytes(32).toString('hex');
@@ -24,31 +24,24 @@ const UID = 'u_bad_1';
 const authed = { Cookie: `gymsid=${mintSession(UID)}`, 'Content-Type': 'application/json' };
 const anon = { 'Content-Type': 'application/json' };
 
-const freePort = () => new Promise(r => {
-  const s = net.createServer(); s.listen(0, '127.0.0.1', () => { const p = s.address().port; s.close(() => r(p)); });
-});
-
 async function startServer(t) {
   const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gym-bad-'));
   fs.writeFileSync(path.join(dataDir, 'secret'), SECRET, { mode: 0o600 });
   fs.writeFileSync(path.join(dataDir, 'db.json'), JSON.stringify({
     users: [{ id: UID, name: 'One', created: new Date().toISOString() }], creds: [], subs: [], invites: []
   }));
-  const port = await freePort();
   const child = spawn(process.execPath, ['server.js'], {
     cwd: API, stdio: ['ignore', 'pipe', 'pipe'],
-    env: { ...process.env, PORT: String(port), DATA_DIR: dataDir, ORIGIN: 'http://localhost:8080', RP_ID: 'localhost' }
+    env: { ...process.env, PORT: '0', DATA_DIR: dataDir, ORIGIN: 'http://localhost:8080', RP_ID: 'localhost' }
   });
-  const h = { api: `http://127.0.0.1:${port}`, log: '', dataDir };
+  const h = { api: '', log: '', dataDir };
   child.stdout.on('data', d => h.log += d);
   child.stderr.on('data', d => h.log += d);
   t.after(() => { child.kill('SIGKILL'); fs.rmSync(dataDir, { recursive: true, force: true }); });
-  let up = false;
-  for (let i = 0; i < 100 && !up; i++) {
-    try { up = (await fetch(`${h.api}/api/health`)).ok; } catch { /* not up yet */ }
-    if (!up) await new Promise(r => setTimeout(r, 100));
-  }
-  assert.ok(up, `server never came up:\n${h.log}`);
+  // The boot line carries the port the listener bound, so it is both the address and the
+  // readiness signal — see boundPort in helpers.mjs for why the test does not pick one.
+  h.port = await boundPort(child, () => h.log);
+  h.api = `http://127.0.0.1:${h.port}`;
   // The boot line is fine; anything that looks like a stack frame after this is a defect.
   h.stackFrames = () => h.log.split('\n').filter(l => /^\s+at /.test(l)).length;
   return h;

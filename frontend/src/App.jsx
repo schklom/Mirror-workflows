@@ -4,8 +4,9 @@ import { useStore } from './store/useStore.js'
 import { useUI } from './store/useUI.js'
 import { bindUI } from './components/ui.jsx'
 import { ACCENTS, setWeightDecimals } from './lib/format.js'
-import { setLang, useLang } from './lib/i18n.js'
-import { setPlayOnSilent } from './lib/sound.js'
+import { setLang, useLang, baseLang } from './lib/i18n.js'
+import { effectiveLang } from './lib/default-lang.js'
+import { setPlayOnSilent, setVibrate } from './lib/sound.js'
 import { setNav } from './lib/nav.js'
 import { initBackButton } from './lib/back.js'
 import { useWakeLock } from './lib/wakelock.js'
@@ -13,7 +14,7 @@ import { installViewportGuard } from './lib/viewport-guard.js'
 import { installChipDrag } from './lib/hchips.js'
 import { syncPushSubscription } from './lib/push.js'
 import { MOBILE } from './lib/mobile.js'
-import { startFlow } from './sheets.jsx'
+import { exitWorkoutEdit, startFlow } from './sheets.jsx'
 import Icon from './components/Icon.jsx'
 import TabBar from './components/TabBar.jsx'
 import ErrorBoundary from './components/ErrorBoundary.jsx'
@@ -22,6 +23,7 @@ import Toast from './components/Toast.jsx'
 import SyncBanner from './components/SyncBanner.jsx'
 import RestTimer from './components/RestTimer.jsx'
 import TimerFlash from './components/TimerFlash.jsx'
+import { openDeviceLinkRedeem } from './components/Passkeys.jsx'
 import Login from './views/Login.jsx'
 import MobileOnboarding from './views/MobileOnboarding.jsx'
 import Home from './views/Home.jsx'
@@ -33,6 +35,7 @@ import Stats from './views/Stats.jsx'
 import History from './views/History.jsx'
 import Library from './views/Library.jsx'
 import Muscles from './views/Muscles.jsx'
+import StructuralBalance from './views/StructuralBalance.jsx'
 import Settings from './views/Settings.jsx'
 import Admin from './views/Admin.jsx'
 import CoachChat from './views/CoachChat.jsx'
@@ -65,10 +68,23 @@ function Shell() {
   // iOS: whether timer sounds get past the ring/silent switch (Settings → Sounds). Page-level,
   // so it is applied here on load and on change rather than at each beep.
   useEffect(() => { setPlayOnSilent(!!S.soundOnSilent) }, [S.soundOnSilent])
+  // Settings → Vibrate, the same way: one page-level switch rather than a check at each buzz.
+  useEffect(() => { setVibrate(S.vibrate !== false) }, [S.vibrate])
   const isGuest = useStore(s => s.isGuest())
   const needsMobileOnboarding = useStore(s => s.needsMobileOnboarding)
   const langV = useLang()   // re-renders the whole shell when the language (pack) changes
   useEffect(() => { setNav(navigate) }, [navigate])
+  const lastEditPath = useRef(loc.pathname)
+  // Any in-app route exit, browser back included, returns to the persisted draft and asks for a
+  // save decision. Reload needs no prompt because the draft itself is already in local storage.
+  useEffect(() => {
+    const previous = lastEditPath.current
+    lastEditPath.current = loc.pathname
+    if (previous !== '/workout' || !S.active?.editingWorkoutId || loc.pathname === '/workout') return
+    const destination = loc.pathname + loc.search
+    navigate('/workout', { replace: true })
+    exitWorkoutEdit(() => navigate(destination, { replace: true }))
+  }, [loc.pathname, loc.search, S.active?.editingWorkoutId, navigate])
   useEffect(() => { applyPrefs(S.theme, S.accent) }, [S.theme, S.accent])
   // 'system' needs to react live if the OS theme flips while the app is open, not just on
   // the next mount — a fixed 'dark'/'light' choice never re-fires this since matchMedia
@@ -80,10 +96,14 @@ function Shell() {
     mql.addEventListener('change', onChange)
     return () => mql.removeEventListener('change', onChange)
   }, [S.theme, S.accent])
-  useEffect(() => { setLang(S.lang || 'en') }, [S.lang])
+  // A profile that never picked a language follows the instance default or the browser (#303) —
+  // worked out here, on this device, and never written into the synced state (lib/default-lang.js).
+  const config = useStore(s => s.config)
+  const lang = effectiveLang(S, config)
+  useEffect(() => { setLang(lang, S.enParens?.[baseLang(lang)] ?? true, S.enOnly?.[baseLang(lang)] === true) }, [lang, S.enParens, S.enOnly])
   // Same shape as the language: a module-level display setting, pushed when it changes (#139).
   useEffect(() => { setWeightDecimals(S.wdec) }, [S.wdec])
-  useEffect(() => { document.documentElement.lang = S.lang || 'en' }, [langV, S.lang])
+  useEffect(() => { document.documentElement.lang = lang }, [langV, lang])
   // Forward navigation starts at the top; going back lands where you left off.
   // The position is recorded from scroll events rather than read at route
   // change, because by then a shorter page may already have clamped it.
@@ -100,6 +120,16 @@ function Shell() {
     if (MOBILE || !user || !ready) return
     syncPushSubscription().catch(() => {})
   }, [user?.id, ready])
+  // Opened from a device-link QR code (#95): once boot knows who is here, the sheet that redeems
+  // it opens by itself — over the sign-in screen, or over the app for a guest or a signed-in
+  // browser. Once per visit; closed, the code stays for the sign-in screen's own button.
+  const linkCode = useStore(s => s.linkCode)
+  const linkOffered = useRef(false)
+  useEffect(() => {
+    if (!ready || !linkCode || linkOffered.current) return
+    linkOffered.current = true
+    openDeviceLinkRedeem()
+  }, [ready, linkCode])
   useEffect(() => {
     const onScroll = () => {
       // Modals pins the body while a sheet is open; scrollY is 0 then, not a position.
@@ -126,7 +156,7 @@ function Shell() {
     return () => window.cancelAnimationFrame(frame)
   }, [loc.pathname, navType])
   // bound to the workout, not to the route — checking Stats mid-session keeps the screen on
-  useWakeLock(!!S.active && S.keepAwake !== false)
+  useWakeLock(!!S.active && !S.active.editingWorkoutId && S.keepAwake !== false)
 
   const authed = user || isGuest
   if (!ready && !authed) return (
@@ -143,7 +173,6 @@ function Shell() {
           re-mounts the boundary, so the tab bar is always a way out */}
       <div id="app" className="vfade" key={loc.pathname}>
         <ErrorBoundary>
-          {authed && !needsMobileOnboarding && <SyncBanner />}
           {!authed ? <Login /> : needsMobileOnboarding ? <MobileOnboarding /> : (
             <Routes>
               <Route path="/home" element={<Home />} />
@@ -157,6 +186,7 @@ function Shell() {
               <Route path="/history" element={<History />} />
               <Route path="/library" element={<Library />} />
               <Route path="/muscles" element={<Muscles />} />
+              <Route path="/structural-balance" element={<StructuralBalance />} />
               <Route path="/settings" element={<Settings />} />
               {/* The Coach screens gate themselves on the instance config; the routes exist
                   unconditionally so a deep link from a notification lands somewhere sane
@@ -171,6 +201,10 @@ function Shell() {
           )}
         </ErrorBoundary>
       </div>
+      {/* Outside #app: the view's fade-in animates a transform, and a fixed element inside it
+          would ride along with the page for the length of it. Decides for itself when to show —
+          including on the sign-in screen, when the server has just ended the session. */}
+      <SyncBanner />
       {/* The chat owns the bottom of the screen: its composer sits where the tabs would be. */}
       {loc.pathname !== '/coach' && <TabBar onStart={startFlow} />}
       <RestTimer />

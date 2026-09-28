@@ -68,7 +68,7 @@ jobs:
       - name: Checkout patch
         uses: actions/checkout@v7
         with:
-          ref: 'Patch-OpenGym' # branch
+          ref: 'Patch-${{ env.LOCAL_BRANCH }}' # branch
           path: patch
           sparse-checkout: |
             patch.bash

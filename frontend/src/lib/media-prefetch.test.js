@@ -54,7 +54,8 @@ describe('prefetchAllowed', () => {
     expect(prefetchAllowed({ onLine: true, connection: { type: 'cellular', effectiveType: '4g' } })).toBe(false)
     expect(prefetchAllowed({ onLine: true, connection: { effectiveType: '2g' } })).toBe(false)
     expect(prefetchAllowed({ onLine: true, connection: { effectiveType: 'slow-2g' } })).toBe(false)
-    expect(prefetchAllowed(undefined)).toBe(false)
+    // null, not undefined: undefined takes the default, and Node 22 has a global navigator of its own.
+    expect(prefetchAllowed(null)).toBe(false)
   })
 })
 

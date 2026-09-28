@@ -2024,6 +2024,17 @@ const routes = {
       return json(res, 409, { error: 'conflict', rev: curRev, state: cur });
     }
     delete body.state.active;              // in-progress workouts stay device-local
+    // "Reset everything" stamps the profile (`resetAt`, with `resetIds`: what it wiped). The stamp
+    // only moves forward: a write without it, or with an older one — a client from before it, a
+    // backup restored over the profile — keeps the stored stamp. Otherwise every device that saw
+    // the reset would take that copy for one older than the reset, and wipe it again on its next
+    // merge (frontend/src/lib/sync-merge.js).
+    const storedReset = Number(cur?.resetAt) || 0;
+    if (storedReset > (Number(body.state.resetAt) || 0)) {
+      body.state.resetAt = cur.resetAt;
+      if (cur.resetIds && typeof cur.resetIds === 'object') body.state.resetIds = cur.resetIds;
+      else delete body.state.resetIds;
+    }
     body.state._rev = curRev + 1;          // server-owned; whatever the client sent is ignored
     atomicWrite(stateFile(user.id), JSON.stringify(body.state));
     // The stat cache cannot see this write on its own: mtime granularity is 4 ms here (ext4 on

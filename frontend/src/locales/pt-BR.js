@@ -971,6 +971,8 @@ export const PT_BR_OVERRIDES = {
   'The server has {0} workouts that are not in this backup, logged since it was made or on another device. Replacing deletes them.': 'O servidor tem {0} treinos que não estão neste backup, registrados depois dele ou em outro dispositivo. Substituir exclui esses treinos.',
   'Replace anyway': 'Substituir mesmo assim',
   'Merge them in': 'Juntar os treinos',
+  'Waiting for your answer about this device’s workouts': 'Aguardando sua resposta sobre os treinos deste dispositivo',
+  'Nothing syncs until you say whether this device’s workouts go into your profile — tap to answer.': 'Nada é sincronizado até você dizer se os treinos deste dispositivo vão para o seu perfil — toque para responder.',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

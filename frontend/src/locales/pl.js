@@ -1626,4 +1626,6 @@ export default {
   'The server has {0} workouts that are not in this backup, logged since it was made or on another device. Replacing deletes them.': 'Na serwerze jest {0} treningów, których nie ma w tej kopii – zapisanych później lub na innym urządzeniu. Zastąpienie je usunie.',
   'Replace anyway': 'Zastąp mimo to',
   'Merge them in': 'Scal je',
+  'Waiting for your answer about this device’s workouts': 'Czeka na Twoją odpowiedź w sprawie treningów z tego urządzenia',
+  'Nothing syncs until you say whether this device’s workouts go into your profile — tap to answer.': 'Nic się nie synchronizuje, dopóki nie zdecydujesz, czy treningi z tego urządzenia trafią do profilu – dotknij, aby odpowiedzieć.',
 }

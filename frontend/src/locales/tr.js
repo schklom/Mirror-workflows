@@ -1626,4 +1626,6 @@ export default {
   'The server has {0} workouts that are not in this backup, logged since it was made or on another device. Replacing deletes them.': 'Sunucuda bu yedekte olmayan {0} antrenman var; yedekten sonra ya da başka bir cihazda kaydedilmiş. Değiştirmek onları siler.',
   'Replace anyway': 'Yine de değiştir',
   'Merge them in': 'Birleştir',
+  'Waiting for your answer about this device’s workouts': 'Bu cihazdaki antrenmanlar için yanıtın bekleniyor',
+  'Nothing syncs until you say whether this device’s workouts go into your profile — tap to answer.': 'Bu cihazdaki antrenmanların profiline eklenip eklenmeyeceğini söyleyene kadar hiçbir şey eşitlenmez — yanıtlamak için dokun.',
 }

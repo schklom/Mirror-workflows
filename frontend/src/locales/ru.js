@@ -1626,4 +1626,6 @@ export default {
   'The server has {0} workouts that are not in this backup, logged since it was made or on another device. Replacing deletes them.': 'На сервере есть тренировки, которых нет в этой копии ({0}): записаны позже или на другом устройстве. Замена их удалит.',
   'Replace anyway': 'Всё равно заменить',
   'Merge them in': 'Объединить',
+  'Waiting for your answer about this device’s workouts': 'Ждём вашего ответа о тренировках с этого устройства',
+  'Nothing syncs until you say whether this device’s workouts go into your profile — tap to answer.': 'Ничего не синхронизируется, пока вы не решите, добавлять ли тренировки с этого устройства в профиль, — нажмите, чтобы ответить.',
 }

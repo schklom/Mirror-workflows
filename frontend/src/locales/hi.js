@@ -1626,4 +1626,6 @@ export default {
   'The server has {0} workouts that are not in this backup, logged since it was made or on another device. Replacing deletes them.': 'सर्वर पर {0} वर्कआउट हैं जो इस बैकअप में नहीं हैं — बैकअप के बाद या किसी दूसरे डिवाइस पर दर्ज। बदलने से वे हट जाएँगे।',
   'Replace anyway': 'फिर भी बदलें',
   'Merge them in': 'उन्हें मिलाएँ',
+  'Waiting for your answer about this device’s workouts': 'इस डिवाइस के वर्कआउट के बारे में आपके जवाब की प्रतीक्षा है',
+  'Nothing syncs until you say whether this device’s workouts go into your profile — tap to answer.': 'जब तक आप यह नहीं बताते कि इस डिवाइस के वर्कआउट आपकी प्रोफ़ाइल में जाएँ या नहीं, कुछ भी सिंक नहीं होगा — जवाब देने के लिए टैप करें।',
 }

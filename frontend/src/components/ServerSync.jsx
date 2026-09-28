@@ -66,6 +66,10 @@ export function connectionView(sync, { mobile = MOBILE, online = isOnline() } = 
       return { tone: 'ok', icon: 'cloud', line: t('All synced'), banner: null, action: null }
     case 'pending':   // the sentence already says "tap to retry": no second word for it
       return { tone: 'wait', icon: 'reset', line: t('Waiting to sync'), banner: t('Not synced yet — tap to retry.'), action: 'retry', label: null }
+    // A sign-in's question about this device's workouts is still open (useStore adoptProfile):
+    // nothing syncs until it is answered, and "retry" — Sync now — asks it again.
+    case 'held':
+      return { tone: 'wait', icon: 'reset', line: t('Waiting for your answer about this device’s workouts'), banner: t('Nothing syncs until you say whether this device’s workouts go into your profile — tap to answer.'), action: 'retry', label: null }
     case 'offline':
       if (online) return {
         tone: 'off', icon: 'cloudSlash', action: 'retry',

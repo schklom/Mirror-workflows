@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { localExtras, mergeBodyweight, mergeStampedMap, mergeStates, newerOf, sinceReset, stampCustomEx, stampRoutines, stampWorkout, unionById } from './sync-merge.js'
+import { keepReset, localExtras, mergeBodyweight, mergeResetIds, mergeStampedMap, mergeStates, newerOf, resetIdsOf, RESET_ID_MAX, sinceReset, stampCustomEx, stampRoutines, stampWorkout, unionById } from './sync-merge.js'
+import { mergeImport } from './import-csv.js'
 import { convertBodyWeight, convertStateUnit, convertWeight } from './units.js'
 import { retimeWorkout } from './workout-date.js'
 import { inventoryFor, loadKindFor, withLoadKind, withPlatePairs, withStandardPlates } from './plates.js'
@@ -519,7 +520,7 @@ describe('a reset holds against a copy that has not seen it', () => {
     loadKind: { '0025': { kind: 'single', _ts: 100 }, '0100': { kind: 'pairs', _ts: 5900 } },
   })
 
-  it('keeps only what the other copy made after the reset, whichever copy is newer', () => {
+  it('without resetIds (a reset from before they were kept) keeps only what the other copy made after it, whichever copy is newer', () => {
     for (const m of [mergeStates(reset, stale), mergeStates(stale, reset)]) {
       expect(ids(m.workouts).sort()).toEqual(['backfilled', 'new', 'old-edited'])
       expect(ids(m.routines)).toEqual(['r-new'])
@@ -555,7 +556,93 @@ describe('a reset holds against a copy that has not seen it', () => {
   it('sinceReset leaves the copy it reads alone', () => {
     const before = JSON.stringify(stale)
     sinceReset(stale, R)
+    sinceReset(stale, R, resetIdsOf(stale))
     expect(JSON.stringify(stale)).toBe(before)
+  })
+})
+
+// Review of the reset rule: judging by dates dropped a CSV import of old sessions, an Apple Health
+// weigh-in history, a workout logged on a device whose clock runs behind, and anything undated.
+// The reset now names what it wiped (resetIds), and only that goes.
+describe('a reset names what it wiped', () => {
+  const clone = v => JSON.parse(JSON.stringify(v))
+  const R = Date.now()
+  const w = (id, end, extra = {}) => ({ id, d: '2026-09-01', start: end - 10, end, entries: [{ id: '0025', sets: [{ w: 100, r: 5, done: true }] }], ...extra })
+  // what the profile held when it was reset — on the resetting device and on the stale one alike
+  const before = base({
+    _ts: R - 1000,
+    workouts: [w('old', R - 5000)], routines: [{ id: 'r-old', name: 'old', ex: [], _ts: R - 5000 }],
+    bodyweight: [{ d: '2026-08-01', w: 80, t: R - 5000 }], customEx: [{ id: 'c-old', n: 'old', _ts: R - 5000 }],
+    favEx: ['0025'], exNotes: { '0025': 'seat 4' }, gymCards: [{ id: 'g1', value: '123' }],
+    loadKind: { '0025': { kind: 'single', _ts: R - 5000 } },
+  })
+  const reset = base({ _ts: R, resetAt: R, resetIds: resetIdsOf(before) })
+
+  it('drops exactly the wiped entries of a copy that has not seen the reset', () => {
+    const stale = clone(before)
+    stale._ts = R + 10
+    for (const m of [mergeStates(reset, stale), mergeStates(stale, reset)]) {
+      expect(m.workouts).toEqual([])
+      expect(m.routines || []).toEqual([])
+      expect(m.bodyweight).toEqual([])
+      expect(m.customEx || []).toEqual([])
+      expect(m.favEx || []).toEqual([])
+      expect(m.exNotes || {}).toEqual({})
+      expect(m.gymCards || []).toEqual([])
+      expect(m.loadKind || {}).toEqual({})
+      expect(m.exWeights).toEqual({})
+      expect(m.resetAt).toBe(R)
+    }
+  })
+
+  it('keeps a CSV import of old sessions and an old weigh-in history made on that device', () => {
+    const stale = clone(before)
+    mergeImport(stale, { kind: 'workouts', customEx: [], workouts: [{ ...w('iw1', Date.parse('2024-03-01')), d: '2024-03-01' }] })
+    mergeImport(stale, { kind: 'bodyweight', bodyweight: [{ d: '2024-03-01', w: 80, t: Date.parse('2024-03-01') }] })
+    const m = mergeStates(stale, reset)
+    expect(ids(m.workouts)).toEqual(['iw1'])
+    expect(m.bodyweight.map(e => e.d)).toEqual(['2024-03-01'])
+  })
+
+  it('keeps a workout logged after the reset on a device whose clock runs behind', () => {
+    const stale = { ...clone(before), workouts: [...before.workouts, w('after-but-skewed', R - 60000)] }
+    expect(ids(mergeStates(stale, reset).workouts)).toEqual(['after-but-skewed'])
+  })
+
+  it('keeps entries with no date or stamp at all', () => {
+    const stale = { ...clone(before), workouts: [{ id: 'undated', entries: [] }], routines: [{ id: 'r-unstamped', name: 'x', ex: [] }], customEx: [{ id: 'c-unstamped', n: 'x' }] }
+    const m = mergeStates(reset, stale)
+    expect(ids(m.workouts)).toEqual(['undated'])
+    expect(ids(m.routines)).toEqual(['r-unstamped'])
+    expect(ids(m.customEx)).toEqual(['c-unstamped'])
+  })
+
+  it('the stamp only moves forward: with prefer, and with a copy that carries none', () => {
+    const backup = base({ _ts: 5, workouts: [w('restored', 4)] })
+    const m = mergeStates(backup, reset, { prefer: 'a' })
+    expect(m.resetAt).toBe(R)
+    expect(m.resetIds).toEqual(reset.resetIds)
+    expect(ids(m.workouts)).toEqual(['restored'])
+    // a copy restored with the stamp kept merges with one that saw the reset as usual
+    const restored = { ...backup, resetAt: R, resetIds: reset.resetIds, _ts: R + 5 }
+    const seen = base({ _ts: R + 1, resetAt: R, resetIds: reset.resetIds, workouts: [w('gym-today', R + 1)] })
+    expect(ids(mergeStates(seen, restored).workouts).sort()).toEqual(['gym-today', 'restored'])
+  })
+
+  it('keepReset: a replace never takes the stamp back; the same reset\'s names are joined', () => {
+    const cur = { resetAt: R, resetIds: { workouts: ['a'] } }
+    expect(keepReset(cur, { workouts: [] })).toMatchObject({ resetAt: R, resetIds: { workouts: ['a'] } })
+    expect(keepReset(cur, { resetAt: R + 1, resetIds: { workouts: ['b'] } }).resetIds).toEqual({ workouts: ['b'] })
+    expect(keepReset(cur, { resetAt: R, resetIds: { workouts: ['b'] } }).resetIds).toEqual({ workouts: ['a', 'b'] })
+    expect(keepReset({}, { workouts: [] })).toEqual({ workouts: [] })
+  })
+
+  it('names are joined across copies and bounded', () => {
+    expect(mergeResetIds({ workouts: ['a', 'b'] }, { workouts: ['b', 'c'], routines: ['r'] })).toEqual({ workouts: ['a', 'b', 'c'], routines: ['r'] })
+    const many = Array.from({ length: RESET_ID_MAX + 5 }, (_, i) => 'w' + i)
+    const out = mergeResetIds({ workouts: many }, null).workouts
+    expect(out).toHaveLength(RESET_ID_MAX)
+    expect(out.at(-1)).toBe('w' + (RESET_ID_MAX + 4))
   })
 })
 

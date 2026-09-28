@@ -1629,4 +1629,6 @@ export default {
   'The server has {0} workouts that are not in this backup, logged since it was made or on another device. Replacing deletes them.': 'A szerveren {0} edzés van, amely nincs ebben a mentésben – azóta vagy egy másik eszközön rögzítették. A csere törli őket.',
   'Replace anyway': 'Csere mégis',
   'Merge them in': 'Összefésülés',
+  'Waiting for your answer about this device’s workouts': 'Válaszra vár az eszköz edzéseiről',
+  'Nothing syncs until you say whether this device’s workouts go into your profile — tap to answer.': 'Semmi sem szinkronizálódik, amíg meg nem mondod, bekerüljenek-e az eszköz edzései a profilodba – koppints a válaszhoz.',
 }

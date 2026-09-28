@@ -51,10 +51,15 @@ describe('auto-backup and a workout\'s photos and videos', () => {
     expect(all).toHaveLength(1)
     expect(all[0].workouts[0].media.map(m => m.hash)).toEqual(['a'.repeat(64), 'b'.repeat(64)])
 
-    h.files.clear()
+  })
+
+  // Review of 771184c9: a removal wrote the day's backup over the copy that still had the photo.
+  it('taking a photo off, or deleting the workout, leaves the day\'s backup as it was', async () => {
+    useStore.setState({ S: { ...clone(DEF), autoBackup: true, workouts: [{ ...clone(W), media: [ref('a'), ref('b')] }] }, ready: true })
     useStore.getState().update(s => { removeWorkoutMedia(s, W, 'a'.repeat(64)) })
+    useStore.getState().update(s => { s.workouts = [] })
     await sleep(2300)
-    expect(backups()[0].workouts[0].media.map(m => m.hash)).toEqual(['b'.repeat(64)])
+    expect(backups()).toHaveLength(0)
   })
 
   it('nothing written for other changes, or with the setting off', async () => {

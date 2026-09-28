@@ -1646,4 +1646,6 @@ export default {
   'The server has {0} workouts that are not in this backup, logged since it was made or on another device. Replacing deletes them.': 'Auf dem Server sind {0} Trainings, die nicht in diesem Backup sind – seither oder auf einem anderen Gerät erfasst. Ersetzen löscht sie.',
   'Replace anyway': 'Trotzdem ersetzen',
   'Merge them in': 'Zusammenführen',
+  'Waiting for your answer about this device’s workouts': 'Wartet auf deine Antwort zu den Trainings dieses Geräts',
+  'Nothing syncs until you say whether this device’s workouts go into your profile — tap to answer.': 'Nichts wird synchronisiert, bis du sagst, ob die Trainings dieses Geräts in dein Profil kommen – tippe zum Antworten.',
 }

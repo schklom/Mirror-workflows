@@ -57,6 +57,19 @@ describe('importing a backup over a profile that moved on', () => {
     expect(put.state.restSec).toBe(120)
   })
 
+  // Review of 771184c9: a workout logged here and not yet sent was neither counted nor merged.
+  it('counts this device\'s unsent workouts too, and "Merge them in" keeps them', async () => {
+    signedIn({ ...clone(DEF), _ts: 200, workouts: [workout('w1')] }, 7)
+    useStore.getState().update(s => { s.workouts.push(workout('unsent', '2026-09-27')) })
+    api.mockResolvedValueOnce({ state: clone(SERVER), rev: 7 })
+    const c = await useStore.getState().importConflict(BACKUP)
+    expect(c).toMatchObject({ workouts: 2, local: true })   // 'elsewhere' on the server, 'unsent' here
+    api.mockResolvedValueOnce({ ok: true, rev: 8 })
+    useStore.getState().importBackup(BACKUP, { mergeWith: c })
+    await useStore.getState().pushState()
+    expect(ids(puts().at(-1).state.workouts)).toEqual(['w1', 'w2', 'elsewhere', 'unsent'])
+  })
+
   it('"Replace anyway" is the replace it always was', async () => {
     signedIn({ ...clone(DEF), _ts: 200, workouts: [workout('w1')] }, 6)
     api.mockResolvedValueOnce({ ok: true, rev: 8 })

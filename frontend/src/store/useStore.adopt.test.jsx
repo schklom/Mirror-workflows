@@ -6,8 +6,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 vi.mock('../lib/api.js', () => ({ api: vi.fn() }))
-const { toast } = vi.hoisted(() => ({ toast: vi.fn() }))
+const { toast, sheetAsk } = vi.hoisted(() => ({ toast: vi.fn(), sheetAsk: vi.fn() }))
 vi.mock('./useUI.js', () => ({ useUI: { getState: () => ({ toast }) } }))
+// The question an adoption resumed by the store itself asks (resumeAdoption, checkRev, Sync now).
+vi.mock('../sheets.jsx', () => ({ askAddDeviceData: (...a) => sheetAsk(...a) }))
 
 import { api } from '../lib/api.js'
 import { DEF, hasData, useStore } from './useStore.js'
@@ -254,6 +256,58 @@ describe('web sign-in: nothing syncs while the question is open', () => {
     expect(puts()).toHaveLength(0)
     expect(useStore.getState().S.workouts.map(w => w.id)).toEqual(['w1'])
     expect(localStorage.getItem('gym_adopt')).toBeNull()
+  })
+})
+
+// Review of 771184c9: the hold could outlive the session, and it held back more than the question.
+describe('the sign-in hold: never stuck, and only about what the device had', () => {
+  const settle = () => new Promise(r => setTimeout(r, 20))
+
+  it('a sign-in whose adoption never started (the pairing failed on the way) runs it on the next check', async () => {
+    signedIn(clone(guest), { user: null })
+    useStore.getState().setUser({ id: 'user-1' }, { adopt: true })
+    expect(useStore.getState().sync.status).toBe('held')
+    sheetAsk.mockResolvedValueOnce(false)
+    api.mockResolvedValueOnce({ state: clone(server), rev: 4 })
+    api.mockResolvedValueOnce({ state: clone(server), rev: 4 })
+    window.dispatchEvent(new Event('online'))
+    await vi.waitFor(() => expect(localStorage.getItem('gym_adopt')).toBeNull())
+    await settle()
+    expect(sheetAsk).toHaveBeenCalledWith({ workouts: 1, bodyweight: 0, customEx: 0 })
+    expect(useStore.getState().S.workouts.map(w => w.id)).toEqual(['w1'])
+    expect(useStore.getState().sync.status).not.toBe('held')
+  })
+
+  it('a bare adoption whose question throws lets go of the hold', async () => {
+    signedIn(clone(guest))
+    api.mockResolvedValueOnce({ state: clone(server), rev: 4 })
+    await expect(useStore.getState().adoptProfile(() => { throw new Error('sheet gone') })).rejects.toThrow('sheet gone')
+    api.mockResolvedValueOnce({ state: clone(server), rev: 4 })
+    api.mockResolvedValue({ ok: true, rev: 5 })
+    await useStore.getState().pullState()
+    expect(paths().filter(p => p === '/api/data').length).toBeGreaterThan(1)   // it pulled: not held
+    api.mockReset()
+  })
+
+  it('what was logged while held is not asked about, and "Keep profile as is" keeps it; Sync now asks the question', async () => {
+    signedIn(clone(guest), { user: null })
+    useStore.getState().setUser({ id: 'user-1' }, { adopt: true })
+    api.mockRejectedValueOnce(netErr())
+    await expect(useStore.getState().adoptProfile(vi.fn())).rejects.toThrow()
+    // held, the gym goes on: a workout logged on this device, now the account's
+    useStore.getState().update(s => { s.workouts.push(workout('w-later', '2026-09-25')) })
+    expect(useStore.getState().sync.status).not.toBe('ok')
+    sheetAsk.mockResolvedValueOnce(false)
+    api.mockResolvedValueOnce({ state: clone(server), rev: 4 })
+    api.mockResolvedValueOnce({ state: clone(server), rev: 4 })
+    api.mockResolvedValueOnce({ ok: true, rev: 5 })
+    await useStore.getState().syncNow()
+    expect(sheetAsk).toHaveBeenCalledWith({ workouts: 1, bodyweight: 0, customEx: 0 })   // w9 only
+    expect(useStore.getState().S.workouts.map(w => w.id)).toEqual(['w1', 'w-later'])
+    const put = puts().at(-1)
+    expect(put.baseRev).toBe(4)
+    expect(put.state.workouts.map(w => w.id)).toEqual(['w1', 'w-later'])
+    expect(put.state.unit).toBe('lb')   // the profile's settings
   })
 })
 

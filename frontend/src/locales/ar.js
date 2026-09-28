@@ -1679,4 +1679,6 @@ export default {
   'The server has {0} workouts that are not in this backup, logged since it was made or on another device. Replacing deletes them.': 'على الخادم {0} تمارين ليست في هذه النسخة الاحتياطية، سُجّلت بعد إنشائها أو على جهاز آخر. الاستبدال يحذفها.',
   'Replace anyway': 'استبدال على أي حال',
   'Merge them in': 'دمجها',
+  'Waiting for your answer about this device’s workouts': 'بانتظار إجابتك بشأن تمارين هذا الجهاز',
+  'Nothing syncs until you say whether this device’s workouts go into your profile — tap to answer.': 'لن تتم المزامنة حتى تحدد ما إذا كانت تمارين هذا الجهاز ستُضاف إلى ملفك — اضغط للإجابة.',
 }

@@ -1626,4 +1626,6 @@ export default {
   'The server has {0} workouts that are not in this backup, logged since it was made or on another device. Replacing deletes them.': '服务器上有 {0} 次训练不在此备份中，是备份之后或在其他设备上记录的。替换会删除它们。',
   'Replace anyway': '仍然替换',
   'Merge them in': '合并进来',
+  'Waiting for your answer about this device’s workouts': '正在等待你对本设备训练的答复',
+  'Nothing syncs until you say whether this device’s workouts go into your profile — tap to answer.': '在你决定是否将本设备的训练加入个人资料之前，不会同步任何内容——点按以答复。',
 }

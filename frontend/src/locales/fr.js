@@ -1626,4 +1626,6 @@ export default {
   'The server has {0} workouts that are not in this backup, logged since it was made or on another device. Replacing deletes them.': 'Le serveur a {0} séances absentes de cette sauvegarde, enregistrées depuis ou sur un autre appareil. Remplacer les supprime.',
   'Replace anyway': 'Remplacer quand même',
   'Merge them in': 'Les fusionner',
+  'Waiting for your answer about this device’s workouts': 'En attente de ta réponse sur les séances de cet appareil',
+  'Nothing syncs until you say whether this device’s workouts go into your profile — tap to answer.': 'Rien ne se synchronise tant que tu n’as pas dit si les séances de cet appareil vont dans ton profil — touche pour répondre.',
 }

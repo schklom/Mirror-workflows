@@ -1625,4 +1625,10 @@ export default {
   'Its {0} photos or videos are deleted with it.': 'Vele együtt törlődnek a hozzá tartozó fotók és videók is ({0}).',
   'Its photo or video moves to the new workout.': 'A hozzá tartozó fotó vagy videó átkerül az új edzéshez.',
   'Its {0} photos or videos move to the new workout.': 'A hozzá tartozó fotók és videók ({0}) átkerülnek az új edzéshez.',
+  'The server has 1 workout that is not in this backup, logged since it was made or on another device. Replacing deletes it.': 'A szerveren van 1 edzés, amely nincs ebben a mentésben – azóta vagy egy másik eszközön rögzítették. A csere törli.',
+  'The server has {0} workouts that are not in this backup, logged since it was made or on another device. Replacing deletes them.': 'A szerveren {0} edzés van, amely nincs ebben a mentésben – azóta vagy egy másik eszközön rögzítették. A csere törli őket.',
+  'Replace anyway': 'Csere mégis',
+  'Merge them in': 'Összefésülés',
+  'Waiting for your answer about this device’s workouts': 'Válaszra vár az eszköz edzéseiről',
+  'Nothing syncs until you say whether this device’s workouts go into your profile — tap to answer.': 'Semmi sem szinkronizálódik, amíg meg nem mondod, bekerüljenek-e az eszköz edzései a profilodba – koppints a válaszhoz.',
 }

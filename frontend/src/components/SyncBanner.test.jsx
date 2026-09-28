@@ -248,6 +248,18 @@ describe('no server at all', () => {
   })
 })
 
+// Review of 771184c9: while a sign-in's question held sync, the screens said nothing at all.
+describe('a sign-in waiting for its question', () => {
+  it('says nothing syncs until it is answered, and the tap runs Sync now, which asks it', () => {
+    mocks.sync = sync('held')
+    render()
+    expect(text()).toBe('Nothing syncs until you say whether this device’s workouts go into your profile — tap to answer.')
+    expect(connectionView(sync('held')).line).toBe('Waiting for your answer about this device’s workouts')
+    act(() => { button().click() })
+    expect(mocks.syncNow).toHaveBeenCalled()
+  })
+})
+
 describe('where it never shows', () => {
   it('the public demo, which has no server by design', () => {
     mocks.DEMO = true

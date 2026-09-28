@@ -396,7 +396,7 @@ describe('the other device: redeeming a code', () => {
     expect(mocks.createPasskey).toHaveBeenCalledWith({ challenge: 'xyz' })
     expect(mocks.calls.at(-1).path).toBe('/api/device-link/verify')
     expect(mocks.calls.at(-1).body).toMatchObject({ code: 'K7WQ-2MZP-4HXA', cid: 'link-cid', credential: { id: 'new-key' } })
-    expect(mocks.setUser).toHaveBeenCalledWith({ id: 'u1', name: 'Ana', admin: false })
+    expect(mocks.setUser).toHaveBeenCalledWith({ id: 'u1', name: 'Ana', admin: false }, { adopt: { alwaysAsk: true } })
     // What this device logged goes into that profile only when asked, even into an empty one.
     expect(mocks.adoptProfile).toHaveBeenCalledWith(mocks.askAddDeviceData, { alwaysAsk: true })
     expect(mocks.store.linkCode).toBeNull()

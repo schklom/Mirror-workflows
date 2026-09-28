@@ -34,6 +34,31 @@
  *     key is the unit, so the inventory of one unit is kept whole, as last edited
  *   - `_ts`: the later of the two; `_rev` dropped (the server sets it); `active` left to the caller
  *
+ * Two rules come before all of these:
+ *
+ *   - Units. Every weight in a copy is in its `unit`, so two copies in different units are never
+ *     merged number by number: one is brought into the other's unit first (sameUnit). The unit
+ *     that stays is the one chosen last — `unitSet.at`, stamped by a unit switch — or, with no
+ *     stamp to tell, the newer copy's; with `prefer`, the preferred side's. A switch that only
+ *     changed the label (`unitSet.convert === false`: the numbers were in the new unit all along)
+ *     relabels the other copy instead of converting it. A copy converted to lb on one device used
+ *     to meet the other device's kg copy and come back as kg with lb numbers under it.
+ *   - Reset. "Reset everything" stamps the empty copy with `resetAt` and with `resetIds`: the keys
+ *     of every entry it wiped — workouts, routines, custom exercises, weigh-ins (day and entry
+ *     time), gym cards, equipment profiles, favourites, notes, bar weights and the stamped
+ *     settings maps — of this device's copy and of the server's (resetIdsOf). A copy that has not
+ *     seen that reset (an older or no `resetAt`) loses exactly those entries and keeps everything
+ *     else, whatever its dates say: a CSV or Apple Health import of old sessions, a device whose
+ *     clock runs behind, an entry with no date at all (sinceReset). Only a reset stamped before
+ *     `resetIds` existed falls back to judging by time. The reset copy's settings and plan win
+ *     whatever the `_ts`. `resetAt` only ever moves forward: the merge keeps the later one (with
+ *     its ids; the union of both for the same reset), with `prefer` too, and so do a replace in
+ *     the store and the server's PUT — a restored backup that carried no stamp would otherwise be
+ *     taken for a copy older than the reset and wiped again. Before, a device with an unsent
+ *     change got the 409, merged, and its union brought the whole wiped profile back. Not with
+ *     `prefer`: a sign-in adds what a device logged signed out, which is not a copy of this
+ *     account's history.
+ *
  * Known limit: with no record of what each side deleted, an entry removed on one device inside
  * the conflict window comes back from the other. The window is a few seconds now (the store pulls
  * on resume and every push is conditional), and a resurrected entry beats a lost one. Tombstones
@@ -41,6 +66,7 @@
  */
 import { beatsWeight } from './exercises.js'
 import { bestWeightForEntry } from './history.js'
+import { convertStateUnit, convertBodyWeight } from './units.js'
 
 const clone = o => JSON.parse(JSON.stringify(o))
 const list = v => (Array.isArray(v) ? v : [])
@@ -168,15 +194,135 @@ export function mergeStampedMap(newer, older, prefer) {
   return out
 }
 
+const unitOf = S => (S?.unit === 'lb' ? 'lb' : 'kg')
+const unitStamp = S => Number(S?.unitSet?.at) || 0
+
+/**
+ * `follow` in the unit of `lead`: converted, or only relabelled when `lead`'s last switch kept the
+ * numbers (see the file's header). Returns `follow` itself when the units already agree.
+ */
+export function inUnitOf(follow, lead) {
+  const to = unitOf(lead)
+  if (!follow || unitOf(follow) === to) return follow
+  if (lead?.unitSet?.convert === false) return { ...follow, unit: to }
+  return convertStateUnit({ ...follow, unit: unitOf(follow) }, to)
+}
+
+/** When the entries of a copy were made — what sinceReset holds against a reset without ids. */
+const workoutTime = w => Number(w?._ts) || Number(w?.end) || Number(w?.start) || 0
+
+// What a reset records of the entries it wiped (resetIds), by field: how an entry is named.
+const bodyweightKey = e => `${e?.d}|${e?.t ?? ''}`
+const RESET_LISTS = {
+  workouts: workoutKey, routines: x => x?.id, customEx: x => x?.id, bodyweight: bodyweightKey,
+  gymCards: x => x?.id, equipProfiles: x => x?.id, favEx: x => x,
+}
+const RESET_MAPS = ['exNotes', 'barWeights', 'balanceOverrides', 'loadKind', 'plates']
+/** An entry's name in resetIds: a workout's id (or day and start), a weigh-in's day and time, … */
+export const entryKey = (field, x) => String(RESET_LISTS[field](x))
+// Per field, the most names a reset keeps — far more workouts than anyone logs, and a bound on
+// the document all the same. Past it the oldest names go first.
+export const RESET_ID_MAX = 20000
+const capIds = xs => (xs.length > RESET_ID_MAX ? xs.slice(xs.length - RESET_ID_MAX) : xs)
+
+/** Every field's names from `a` then `b`, each once, capped (see RESET_ID_MAX). */
+export function mergeResetIds(a, b) {
+  const out = {}
+  for (const f of [...Object.keys(RESET_LISTS), ...RESET_MAPS]) {
+    const xs = [...new Set([...list(a?.[f]), ...list(b?.[f])].filter(k => k != null).map(String))]
+    if (xs.length) out[f] = capIds(xs)
+  }
+  return out
+}
+
+/** The names of every entry the given copies hold — what a reset wipes (see the file's header). */
+export function resetIdsOf(...copies) {
+  let out = {}
+  for (const S of copies) {
+    if (!S || typeof S !== 'object') continue
+    const one = {}
+    for (const [f, key] of Object.entries(RESET_LISTS)) one[f] = list(S[f]).filter(x => x != null).map(key)
+    for (const f of RESET_MAPS) one[f] = Object.keys(isMap(S[f]) ? S[f] : {})
+    out = mergeResetIds(out, one)
+  }
+  return out
+}
+
+/**
+ * What a copy that has not seen a reset still contributes after it (see the file's header): with
+ * the reset's `ids`, everything but the entries it wiped; without (a reset from before ids were
+ * kept), only the entries made after `at`. The kept loads are those of the workouts that remain.
+ */
+export function sinceReset(S, at, ids) {
+  const out = clone(S)
+  if (ids && typeof ids === 'object') {
+    for (const [f, key] of Object.entries(RESET_LISTS)) {
+      const gone = new Set(list(ids[f]).map(String))
+      if (Array.isArray(S[f])) out[f] = clone(S[f].filter(x => x == null || !gone.has(String(key(x)))))
+    }
+    for (const f of RESET_MAPS) {
+      const gone = new Set(list(ids[f]).map(String))
+      if (isMap(S[f])) out[f] = clone(Object.fromEntries(Object.entries(S[f]).filter(([k]) => !gone.has(k))))
+    }
+  } else {
+    const after = v => (Number(v) || 0) > at
+    out.workouts = list(S.workouts).filter(w => w && after(workoutTime(w)))
+    out.routines = list(S.routines).filter(r => r && after(r._ts))
+    out.customEx = list(S.customEx).filter(c => c && after(c._ts))
+    out.bodyweight = list(S.bodyweight).filter(e => e && after(e.t))
+    // No time of their own: taken for what they were before the reset, which cleared them.
+    out.equipProfiles = []
+    out.gymCards = []
+    out.favEx = []
+    out.exNotes = {}
+    out.barWeights = {}
+    for (const f of ['balanceOverrides', 'loadKind', 'plates']) {
+      out[f] = Object.fromEntries(Object.entries(isMap(S[f]) ? S[f] : {}).filter(([, v]) => after(stampOf(v))))
+    }
+  }
+  const ex = {}
+  for (const w of out.workouts) {
+    for (const e of list(w.entries)) {
+      if (e?.id == null) continue
+      const wt = bestWeightForEntry(e)
+      if (wt > 0 && (!ex[e.id] || beatsWeight(e.id, wt, ex[e.id].w))) ex[e.id] = { w: wt, d: w.d }
+    }
+  }
+  out.exWeights = ex
+  return out
+}
+
 // `prefer` names the side whose settings, plan and per-exercise config win regardless of `_ts`:
 // on sign-in the server's profile is the truth and the device only contributes the entries it
 // logged while signed out. Without it the newer copy decides, as for a conflict between devices.
-export function mergeStates(a, b, { prefer } = {}) {
-  if (!a) return b ? clone(b) : b
-  if (!b) return clone(a)
-  const n = prefer === 'a' ? a : prefer === 'b' ? b : newerOf(a, b)
+export function mergeStates(a0, b0, { prefer } = {}) {
+  if (!a0) return b0 ? clone(b0) : b0
+  if (!b0) return clone(a0)
+  let a = a0, b = b0
+  // A reset seen by one copy only: the other keeps what was made after it, and the reset copy
+  // decides the rest (the file's header).
+  let side = prefer === 'a' || prefer === 'b' ? prefer : newerOf(a, b) === a ? 'a' : 'b'
+  const ra = Number(a.resetAt) || 0, rb = Number(b.resetAt) || 0
+  if (!prefer) {
+    if (ra > rb) { b = sinceReset(b, ra, a.resetIds); side = 'a' }
+    else if (rb > ra) { a = sinceReset(a, rb, b.resetIds); side = 'b' }
+  }
+  // The reset stamp only moves forward, with the names it wiped — with `prefer` too.
+  const resetAt = Math.max(ra, rb)
+  const resetIds = ra === rb ? (a0.resetIds || b0.resetIds ? mergeResetIds(a0.resetIds, b0.resetIds) : null)
+    : (ra > rb ? a0 : b0).resetIds || null
+  // One unit before anything is compared.
+  let lead = null
+  if (unitOf(a) !== unitOf(b)) {
+    lead = prefer || unitStamp(a) === unitStamp(b) ? (side === 'a' ? a : b) : unitStamp(a) > unitStamp(b) ? a : b
+    if (lead === a) b = inUnitOf(b, a); else a = inUnitOf(a, b)
+  }
+  const n = side === 'a' ? a : b
   const o = n === a ? b : a
   const out = clone(n)
+  // The unit is the lead's by now; so is the record of choosing it.
+  const unitBy = lead || (unitStamp(a) >= unitStamp(b) ? a : b)
+  if (unitBy.unitSet) out.unitSet = clone(unitBy.unitSet)
   out.workouts = unionById(n.workouts, o.workouts, workoutKey).map(clone)
   // A workout edited after it was logged keeps the version edited last, whichever copy is newer
   // as a whole — the same rule as a routine's. `editedBy` notes, per exercise, the copies whose
@@ -257,8 +403,29 @@ export function mergeStates(a, b, { prefer } = {}) {
     if (n[f] || o[f]) out[f] = clone(mergeStampedMap(n[f], o[f], prefer))
   }
   out._ts = Math.max(a._ts || 0, b._ts || 0)
+  if (resetAt) out.resetAt = resetAt
+  if (resetIds) out.resetIds = resetIds
+  else delete out.resetIds
   delete out._rev
   return out
+}
+
+/**
+ * `next` replacing `cur` wholesale (a backup import, a reset) never takes the reset stamp back:
+ * the later `resetAt` stays, with its names — a restored backup that carried none would otherwise
+ * be taken, on every device that saw the reset, for a copy from before it and wiped again.
+ * Mutates and returns `next`.
+ */
+export function keepReset(cur, next) {
+  if (!next || typeof next !== 'object') return next
+  const rc = Number(cur?.resetAt) || 0, rn = Number(next.resetAt) || 0
+  if (rc > rn) {
+    next.resetAt = cur.resetAt
+    if (cur.resetIds) next.resetIds = clone(cur.resetIds); else delete next.resetIds
+  } else if (rc && rc === rn && (cur.resetIds || next.resetIds)) {
+    next.resetIds = mergeResetIds(cur.resetIds, next.resetIds)
+  }
+  return next
 }
 
 const sameRoutine = (a, b) => JSON.stringify({ ...a, _ts: 0 }) === JSON.stringify({ ...b, _ts: 0 })
@@ -299,13 +466,20 @@ export function stampCustomEx(prev = [], next = [], now = Date.now()) {
 // What `local` holds that `server` does not: the workouts and weigh-ins a device logged while it
 // was signed out, and the custom exercises they use. Sign-in asks about these before the server's
 // profile replaces the local copy; zero of each means there is nothing to ask about.
+// A weigh-in on a day the server has one too counts when it differs and was entered later — the
+// one "Add them" keeps (mergeBodyweight). Counted only on days the server lacked, a weigh-in
+// made on the phone on a day the profile already had one was dropped without the question ever
+// being asked. Weights are compared in the server's unit.
 export function localExtras(local, server) {
   const have = new Set(list(server?.workouts).map(workoutKey))
-  const days = new Set(list(server?.bodyweight).map(e => e?.d))
+  const days = new Map(list(server?.bodyweight).filter(e => e && e.d != null).map(e => [e.d, e]))
   const ex = new Set(list(server?.customEx).map(e => e?.id))
+  const from = unitOf(local), to = unitOf(server)
+  const differs = (mine, theirs) =>
+    (Number(mine.t) || 0) > (Number(theirs.t) || 0) && Number(convertBodyWeight(mine.w, from, to)) !== Number(theirs.w)
   return {
     workouts: list(local?.workouts).filter(w => !have.has(workoutKey(w))).length,
-    bodyweight: list(local?.bodyweight).filter(e => e && e.d != null && !days.has(e.d)).length,
+    bodyweight: list(local?.bodyweight).filter(e => e && e.d != null && (!days.has(e.d) || differs(e, days.get(e.d)))).length,
     customEx: list(local?.customEx).filter(e => e && !ex.has(e.id)).length
   }
 }

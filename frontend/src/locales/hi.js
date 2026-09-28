@@ -1622,4 +1622,10 @@ export default {
   'Its {0} photos or videos are deleted with it.': 'इसकी {0} फ़ोटो या वीडियो भी इसके साथ हट जाएँगी।',
   'Its photo or video moves to the new workout.': 'इसकी फ़ोटो या वीडियो नए वर्कआउट में चली जाएगी।',
   'Its {0} photos or videos move to the new workout.': 'इसकी {0} फ़ोटो या वीडियो नए वर्कआउट में चली जाएँगी।',
+  'The server has 1 workout that is not in this backup, logged since it was made or on another device. Replacing deletes it.': 'सर्वर पर 1 वर्कआउट है जो इस बैकअप में नहीं है — बैकअप के बाद या किसी दूसरे डिवाइस पर दर्ज। बदलने से वह हट जाएगा।',
+  'The server has {0} workouts that are not in this backup, logged since it was made or on another device. Replacing deletes them.': 'सर्वर पर {0} वर्कआउट हैं जो इस बैकअप में नहीं हैं — बैकअप के बाद या किसी दूसरे डिवाइस पर दर्ज। बदलने से वे हट जाएँगे।',
+  'Replace anyway': 'फिर भी बदलें',
+  'Merge them in': 'उन्हें मिलाएँ',
+  'Waiting for your answer about this device’s workouts': 'इस डिवाइस के वर्कआउट के बारे में आपके जवाब की प्रतीक्षा है',
+  'Nothing syncs until you say whether this device’s workouts go into your profile — tap to answer.': 'जब तक आप यह नहीं बताते कि इस डिवाइस के वर्कआउट आपकी प्रोफ़ाइल में जाएँ या नहीं, कुछ भी सिंक नहीं होगा — जवाब देने के लिए टैप करें।',
 }

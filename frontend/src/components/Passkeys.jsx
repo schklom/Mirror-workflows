@@ -294,7 +294,9 @@ export function DeviceLinkRedeemSheet({ close }) {
       const st = useStore.getState()
       useStore.setState({ linkCode: null })
       const same = st.user?.id === r.user.id
-      st.setUser(r.user)
+      // Another profile: its question decides what becomes of this copy, and nothing syncs
+      // before it is answered (adoptProfile).
+      st.setUser(r.user, same ? undefined : { adopt: { alwaysAsk: true } })
       close()
       if (same) { toast(t('Passkey added')); return }
       // Signed in by now whatever happens next: a pull that fails is the sync banner's to say

@@ -2635,6 +2635,9 @@ function doFinishWorkout() {
   w.vol = workoutVolume(w)
   update(s => {
     if (past) {
+      // Its start and end are in the past; the stamp says when it was logged, which is what a
+      // merge after a reset elsewhere asks of it (lib/sync-merge.js sinceReset).
+      stampWorkout(w)
       s.workouts = completeBackfill(s.workouts, A, w)
     } else {
       w.entries.forEach(e => {

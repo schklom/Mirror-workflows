@@ -17,6 +17,10 @@ globalThis.IS_REACT_ACT_ENVIRONMENT = true
 const mocks = vi.hoisted(() => {
   const state = { S: null, user: null, config: null, sync: { status: 'ok' }, stashed: new Set() }
   state.replaceState = vi.fn()
+  state.importBackup = vi.fn()
+  state.resetEverything = vi.fn()
+  state.menuSheet = vi.fn()
+  state.conflict = null
   state.pushState = vi.fn(async () => {})
   state.confirmSheet = vi.fn()
   state.api = vi.fn(() => Promise.resolve({ ok: true }))
@@ -30,7 +34,8 @@ const mocks = vi.hoisted(() => {
     update: vi.fn(), replaceState: state.replaceState, setUser: vi.fn(), pullState: vi.fn(), pushState: state.pushState,
     signOut: vi.fn(), signOutAll: vi.fn(), resetDemo: vi.fn(), disconnectServer: vi.fn(),
     syncNow: vi.fn(), unsyncedChanges: () => ({ owed: false, count: 0 }), keptChanges: state.keptChanges,
-    stashedMediaHashes: async () => state.stashed
+    stashedMediaHashes: async () => state.stashed,
+    importConflict: async () => state.conflict, importBackup: state.importBackup, resetEverything: state.resetEverything
   })
   return state
 })
@@ -56,7 +61,7 @@ vi.mock('../lib/coach-api.js', () => ({ forgetCoach: vi.fn(() => Promise.resolve
 vi.mock('./MobileOnboarding.jsx', () => ({ ConnectSheet: () => null }))
 vi.mock('../sheets.jsx', () => ({
   starterPlanSheet: vi.fn(), confirmSheet: (...a) => mocks.confirmSheet(...a), importFromApp: vi.fn(),
-  importFromHevy: vi.fn(), equipmentProfileSheet: vi.fn(), menuSheet: vi.fn(), askAddDeviceData: vi.fn(),
+  importFromHevy: vi.fn(), equipmentProfileSheet: vi.fn(), menuSheet: (...a) => mocks.menuSheet(...a), askAddDeviceData: vi.fn(),
 }))
 
 globalThis.__APP_VERSION__ ??= 'test'
@@ -85,7 +90,8 @@ beforeEach(async () => {
   mocks.config = null
   mocks.sync = { status: 'ok' }
   mocks.stashed = new Set()
-  for (const f of [mocks.replaceState, mocks.pushState, mocks.confirmSheet, mocks.api, mocks.toast]) f.mockClear()
+  mocks.conflict = null
+  for (const f of [mocks.replaceState, mocks.importBackup, mocks.resetEverything, mocks.menuSheet, mocks.pushState, mocks.confirmSheet, mocks.api, mocks.toast]) f.mockClear()
   host = document.createElement('div')
   document.body.appendChild(host)
   root = createRoot(host)
@@ -173,9 +179,30 @@ describe('Settings — photos and videos', () => {
     expect(await media.has(HASH)).toBe(false)          // nothing before the confirm
     await act(async () => { await mocks.confirmSheet.mock.calls[0][0].onConfirm() })
     expect(await media.get(HASH)).toMatchObject({ mime: 'image/jpeg', pending: true })
-    expect(mocks.replaceState).toHaveBeenCalledTimes(1)
-    expect(mocks.replaceState.mock.calls[0][0].customEx[0].media.hash).toBe(HASH)
-    expect(mocks.replaceState.mock.calls[0][1]).toBe(true)
+    expect(mocks.importBackup).toHaveBeenCalledTimes(1)
+    expect(mocks.importBackup.mock.calls[0][0].customEx[0].media.hash).toBe(HASH)
+    expect(mocks.importBackup.mock.calls[0][1]).toEqual({ mergeWith: null })   // the replace
+  })
+
+  // QA, v1.3.9: the import replaced a workout another device had synced meanwhile, unsaid.
+  it('importing over a server that has workouts the backup lacks says how many, and can merge them in', async () => {
+    mocks.user = { id: 'u1', name: 'Ana' }
+    mocks.conflict = { workouts: 2, state: { workouts: [] }, rev: 9 }
+    const S = stateWithPhoto()
+    await mount()
+    const input = host.querySelector('input[type="file"][accept^=".json"]')
+    Object.defineProperty(input, 'files', { value: [new File([JSON.stringify(S)], 'backup.json')], configurable: true })
+    act(() => { input.dispatchEvent(new Event('change', { bubbles: true })) })
+    await until(() => mocks.menuSheet.mock.calls.length > 0)
+    expect(mocks.confirmSheet).not.toHaveBeenCalled()
+    const sheet = mocks.menuSheet.mock.calls[0][0]
+    expect(sheet.subtitle).toBe('The server has 2 workouts that are not in this backup, logged since it was made or on another device. Replacing deletes them.')
+    expect(sheet.items.map(i => i.label)).toEqual(['Replace anyway', 'Merge them in', 'Cancel'])
+    await act(async () => { await sheet.items[1].onClick() })
+    expect(mocks.importBackup).toHaveBeenCalledTimes(1)
+    expect(mocks.importBackup.mock.calls[0][1]).toEqual({ mergeWith: mocks.conflict })
+    await act(async () => { await sheet.items[0].onClick() })
+    expect(mocks.importBackup.mock.calls[1][1]).toEqual({ mergeWith: null })
   })
 
   it('Reset, signed in: pushes, asks the server to sweep, and keeps only what a stash refers to', async () => {

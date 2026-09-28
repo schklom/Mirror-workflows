@@ -1622,4 +1622,10 @@ export default {
   'Its {0} photos or videos are deleted with it.': '첨부된 사진·동영상 {0}개도 함께 삭제됩니다.',
   'Its photo or video moves to the new workout.': '첨부된 사진·동영상은 새 운동으로 옮겨집니다.',
   'Its {0} photos or videos move to the new workout.': '첨부된 사진·동영상 {0}개는 새 운동으로 옮겨집니다.',
+  'The server has 1 workout that is not in this backup, logged since it was made or on another device. Replacing deletes it.': '서버에 이 백업에 없는 운동이 1개 있습니다. 백업 이후 또는 다른 기기에서 기록된 것입니다. 바꾸면 삭제됩니다.',
+  'The server has {0} workouts that are not in this backup, logged since it was made or on another device. Replacing deletes them.': '서버에 이 백업에 없는 운동이 {0}개 있습니다. 백업 이후 또는 다른 기기에서 기록된 것입니다. 바꾸면 삭제됩니다.',
+  'Replace anyway': '그래도 바꾸기',
+  'Merge them in': '합치기',
+  'Waiting for your answer about this device’s workouts': '이 기기의 운동에 대한 답변을 기다리는 중',
+  'Nothing syncs until you say whether this device’s workouts go into your profile — tap to answer.': '이 기기의 운동을 프로필에 넣을지 정할 때까지 아무것도 동기화되지 않습니다. 탭하여 답하세요.',
 }

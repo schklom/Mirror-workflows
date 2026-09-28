@@ -1622,4 +1622,10 @@ export default {
   'Its {0} photos or videos are deleted with it.': 'Ses {0} photos ou vidéos sont supprimées avec elle.',
   'Its photo or video moves to the new workout.': 'Sa photo ou vidéo passe à la nouvelle séance.',
   'Its {0} photos or videos move to the new workout.': 'Ses {0} photos ou vidéos passent à la nouvelle séance.',
+  'The server has 1 workout that is not in this backup, logged since it was made or on another device. Replacing deletes it.': 'Le serveur a 1 séance absente de cette sauvegarde, enregistrée depuis ou sur un autre appareil. Remplacer la supprime.',
+  'The server has {0} workouts that are not in this backup, logged since it was made or on another device. Replacing deletes them.': 'Le serveur a {0} séances absentes de cette sauvegarde, enregistrées depuis ou sur un autre appareil. Remplacer les supprime.',
+  'Replace anyway': 'Remplacer quand même',
+  'Merge them in': 'Les fusionner',
+  'Waiting for your answer about this device’s workouts': 'En attente de ta réponse sur les séances de cet appareil',
+  'Nothing syncs until you say whether this device’s workouts go into your profile — tap to answer.': 'Rien ne se synchronise tant que tu n’as pas dit si les séances de cet appareil vont dans ton profil — touche pour répondre.',
 }

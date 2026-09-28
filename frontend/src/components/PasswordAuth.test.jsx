@@ -119,7 +119,7 @@ describe('PasswordSignInSheet', () => {
     type(name, '  Ana '); type(pw, 'correct horse battery')
     await submit(host)
     expect(mocks.passwordLogin).toHaveBeenCalledWith('Ana', 'correct horse battery')
-    expect(mocks.setUser).toHaveBeenCalledWith({ id: 'u1', name: 'Ana' })
+    expect(mocks.setUser).toHaveBeenCalledWith({ id: 'u1', name: 'Ana' }, { adopt: true })   // nothing syncs until the question is answered
     expect(close).toHaveBeenCalled()
     expect(mocks.adoptProfile).toHaveBeenCalled()
     expect(mocks.toast).toHaveBeenCalledWith('Welcome back, Ana')
@@ -176,7 +176,7 @@ describe('PasswordSignInSheet', () => {
     type(field, ' Ana@Example.com '); type(byPlaceholder(host, 'Password'), 'correct horse battery')
     await submit(host)
     expect(mocks.passwordLogin).toHaveBeenCalledWith('Ana@Example.com', 'correct horse battery')
-    expect(mocks.setUser).toHaveBeenCalledWith({ id: 'u1', name: 'Ana' })
+    expect(mocks.setUser).toHaveBeenCalledWith({ id: 'u1', name: 'Ana' }, { adopt: true })
   })
 
   it('a reset code is redeemed with the e-mail too', async () => {

@@ -1633,4 +1633,10 @@ export default {
   'Its {0} photos or videos are deleted with it.': 'รูปภาพหรือวิดีโอที่แนบไว้ {0} รายการจะถูกลบไปด้วย',
   'Its photo or video moves to the new workout.': 'รูปภาพหรือวิดีโอที่แนบไว้จะย้ายไปยังการออกกำลังกายใหม่',
   'Its {0} photos or videos move to the new workout.': 'รูปภาพหรือวิดีโอที่แนบไว้ {0} รายการจะย้ายไปยังการออกกำลังกายใหม่',
+  'The server has 1 workout that is not in this backup, logged since it was made or on another device. Replacing deletes it.': 'เซิร์ฟเวอร์มีการออกกำลังกาย 1 รายการที่ไม่อยู่ในข้อมูลสำรองนี้ บันทึกหลังจากนั้นหรือบนอุปกรณ์อื่น การแทนที่จะลบรายการนั้น',
+  'The server has {0} workouts that are not in this backup, logged since it was made or on another device. Replacing deletes them.': 'เซิร์ฟเวอร์มีการออกกำลังกาย {0} รายการที่ไม่อยู่ในข้อมูลสำรองนี้ บันทึกหลังจากนั้นหรือบนอุปกรณ์อื่น การแทนที่จะลบรายการเหล่านั้น',
+  'Replace anyway': 'แทนที่ต่อไป',
+  'Merge them in': 'รวมเข้าด้วยกัน',
+  'Waiting for your answer about this device’s workouts': 'กำลังรอคำตอบของคุณเกี่ยวกับการออกกำลังกายในอุปกรณ์นี้',
+  'Nothing syncs until you say whether this device’s workouts go into your profile — tap to answer.': 'จะไม่มีการซิงค์จนกว่าคุณจะบอกว่าจะเพิ่มการออกกำลังกายในอุปกรณ์นี้ลงในโปรไฟล์หรือไม่ — แตะเพื่อตอบ',
 }

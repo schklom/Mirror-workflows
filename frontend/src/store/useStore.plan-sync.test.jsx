@@ -18,7 +18,7 @@ import { api } from '../lib/api.js'
 import { DEF, useStore } from './useStore.js'
 import { buildCombinedEntries } from '../lib/session-merge.js'
 import { buildCompletedWorkout } from '../lib/finish-workout.js'
-import { convertStateUnit, convertWeight } from '../lib/units.js'
+import { convertWeight } from '../lib/units.js'
 import { isWarmupRow } from '../lib/workout-model.js'
 
 const BENCH = '0025'   // barbell bench press — loaded, 2.5 kg step
@@ -148,7 +148,7 @@ describe('converting the numbers to lb', () => {
     useStore.setState({ S, user: null, ready: true })
 
     // What Settings → Units → "Convert the numbers" does.
-    useStore.getState().replaceState(convertStateUnit(useStore.getState().S, 'lb'))
+    useStore.getState().setUnit('lb')
     const lb = useStore.getState().S
     expect(lb.workouts[0].entries[0].planned.weight).toBe(benchOf(lb).weight)
     expect(benchOf(lb).weight).toBe(convertWeight(100, 'kg', 'lb'))

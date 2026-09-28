@@ -1675,4 +1675,10 @@ export default {
   'Its {0} photos or videos are deleted with it.': 'ستُحذف معه أيضًا الصور أو مقاطع الفيديو المرفقة ({0}).',
   'Its photo or video moves to the new workout.': 'تنتقل الصورة أو الفيديو المرفق إلى التمرين الجديد.',
   'Its {0} photos or videos move to the new workout.': 'تنتقل الصور أو مقاطع الفيديو المرفقة ({0}) إلى التمرين الجديد.',
+  'The server has 1 workout that is not in this backup, logged since it was made or on another device. Replacing deletes it.': 'على الخادم تمرين واحد ليس في هذه النسخة الاحتياطية، سُجّل بعد إنشائها أو على جهاز آخر. الاستبدال يحذفه.',
+  'The server has {0} workouts that are not in this backup, logged since it was made or on another device. Replacing deletes them.': 'على الخادم {0} تمارين ليست في هذه النسخة الاحتياطية، سُجّلت بعد إنشائها أو على جهاز آخر. الاستبدال يحذفها.',
+  'Replace anyway': 'استبدال على أي حال',
+  'Merge them in': 'دمجها',
+  'Waiting for your answer about this device’s workouts': 'بانتظار إجابتك بشأن تمارين هذا الجهاز',
+  'Nothing syncs until you say whether this device’s workouts go into your profile — tap to answer.': 'لن تتم المزامنة حتى تحدد ما إذا كانت تمارين هذا الجهاز ستُضاف إلى ملفك — اضغط للإجابة.',
 }

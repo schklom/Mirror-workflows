@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { readFileSync } from 'node:fs'
-import { auditCat, auditLabel, auditReason, auditLine, fmtWhen } from './audit.js'
+import { auditCat, auditLabel, auditReason, auditLine, auditAct, fmtWhen } from './audit.js'
 
 // Every event name and reason code the server can emit, read off api/server.js itself rather
 // than kept as a second list here: the hand-kept copy silently missed the three pairing events
@@ -162,5 +162,22 @@ describe('fmtWhen', () => {
   it('returns an empty string for a missing timestamp', () => {
     expect(fmtWhen(0)).toBe('')
     expect(fmtWhen(undefined)).toBe('')
+  })
+})
+
+// QA 1.3.9: a wrong current password while changing the e-mail or adding a passkey was logged as
+// "Password sign-in failed · wrong current password while changing it". A failed proof is its
+// own event now and names the change it was guarding.
+describe('a failed proof of ownership', () => {
+  const ACTS = [...new Set([...SERVER.matchAll(/proveOwner\(req, res, user, body, '([a-z-]+)'\)/g)].map(m => m[1]))]
+  it('names every change the server asks a proof for', () => {
+    expect(ACTS.length).toBeGreaterThanOrEqual(7)
+    for (const act of ACTS) expect(auditAct(act), act).not.toBe(act)
+  })
+  it('reads as the change, not as a sign-in', () => {
+    expect(auditLine({ ev: 'auth.proof.fail', ok: false, name: 'Ana', act: 'email', msg: 'bad-current' }))
+      .toEqual({ title: 'Confirming a change failed', sub: 'Ana · changing the sign-in e-mail · wrong current password' })
+    expect(auditLine({ ev: 'auth.proof.fail', ok: false, name: 'Ana', act: 'passkey-remove', msg: 'step-up-failed' }).sub)
+      .toBe('Ana · removing a passkey · the passkey confirming the change was rejected')
   })
 })

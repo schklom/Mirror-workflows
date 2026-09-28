@@ -458,10 +458,10 @@ test('removing the password needs proof made for it: the password itself or a pa
   await refused(undefined, 'current-required');
   await refused({}, 'current-required');
   await refused({ current: 'not the password at all' }, 'current-wrong');
-  assert.ok(h.audit().some(e => e.ev === 'auth.password.fail' && e.uid === 'u1' && e.msg === 'bad-current'));
+  assert.ok(h.audit().some(e => e.ev === 'auth.proof.fail' && e.act === 'password-remove' && e.uid === 'u1' && e.msg === 'bad-current'));
   // Bea's passkey, and an assertion over some other challenge than the one handed out.
   await refused(await stepUp(other), 'passkey');
-  assert.ok(h.audit().some(e => e.ev === 'auth.password.fail' && e.uid === 'u1' && e.msg === 'step-up-failed'));
+  assert.ok(h.audit().some(e => e.ev === 'auth.proof.fail' && e.act === 'password-remove' && e.uid === 'u1' && e.msg === 'step-up-failed'));
   await refused(await stepUp(key, b64u(crypto.randomBytes(32))), 'passkey');
   // A sign-up's challenge, signed as if it were a sign-in's.
   const reg = (await h.req('POST', '/api/register/options', { body: { name: 'Mallory' }, ip })).body;

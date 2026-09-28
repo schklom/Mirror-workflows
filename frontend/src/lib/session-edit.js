@@ -47,6 +47,14 @@ function sameData(a, b) {
 // and the id it freezes for a workout from before ids.
 const DERIVED = ['id', 'vol', 'prs', '_ts']
 const savedData = w => Object.fromEntries(Object.entries(w).filter(([k]) => !DERIVED.includes(k)))
+// …compared the way the data reads, for asking whether closing loses anything: a record that never
+// had `routineIds` or a `topW` (an import, a workout from an older build) holds nothing a Save
+// would add beyond [] / null / the top set its sets already say. (Save itself still writes those.)
+const comparable = w => {
+  const out = Object.fromEntries(Object.entries(savedData(w)).filter(([, v]) => v !== null && !(Array.isArray(v) && !v.length)))
+  if (Array.isArray(out.entries)) out.entries = out.entries.map(e => (e && typeof e === 'object' ? (({ topW, ...rest }) => rest)(e) : e))
+  return out
+}
 
 // The best load one workout logged for an exercise, across every occurrence of it.
 function bestIn(workout, id) {
@@ -135,7 +143,46 @@ export function saveWorkoutEdit(state, now = Date.now()) {
   // Never saved empty: the editor asks to delete the workout instead (deleteEditedWorkout).
   if (editLeftEmpty(active)) throw new Error('Nothing logged yet')
   const current = state.workouts[index]
+  const record = draftRecord(active, current, key)
+  // A Save that changed nothing closes the editor and leaves the record as it is. A new stamp
+  // would outrank an edit another device made since and has not synced yet (sets added on the
+  // phone), for nothing — the date and duration rows skip an unchanged save the same way.
+  if (sameData(savedData(record), savedData(current))) {
+    state.active = null
+    return current
+  }
+  record.vol = workoutVolume(record)
+  stampWorkout(record, now)
+  state.workouts[index] = record
 
+  // Badges are a claim about the sessions before each one. The edited session can earn one it now
+  // leads with, and a later one loses its own if the edit raised the bar above it — the same
+  // asymmetric rule a date move follows, so imported history never sprouts trophies.
+  const touched = [...new Set([...list(current.entries), ...record.entries].map(e => e?.id).filter(id => id != null))]
+  state.workouts = rebuildPrHistory(state.workouts, touched, record)
+  const saved = state.workouts.find(w => keyOf(w) === key)
+  lowerKeptWeights(state, touched, current, saved)
+  state.active = null
+  return saved
+}
+
+/**
+ * Whether closing the editor would lose nothing: Save would write the record exactly as history
+ * holds it. Closing then just closes — asking "Save workout changes?" about a workout nobody
+ * touched (QA 1.3.9) made every look at a past session end in a question. A record deleted
+ * meanwhile, or a draft left empty, is a change: those still ask.
+ */
+export function editChangesNothing(state) {
+  const active = state?.active
+  const key = active?.editingWorkoutId
+  if (key == null || editLeftEmpty(active)) return false
+  const current = list(state.workouts).find(w => keyOf(w) === key)
+  if (!current) return false
+  return sameData(comparable(draftRecord(active, current, key)), comparable(current))
+}
+
+// The record Save would write for this draft over `current`, before its volume and stamp.
+function draftRecord(active, current, key) {
   const updated = buildCompletedWorkout(active, {
     end: current.end,
     prs: current.prs || [],
@@ -163,26 +210,7 @@ export function saveWorkoutEdit(state, now = Date.now()) {
     if (value == null || value === '') delete record[k]
     else record[k] = value
   }
-  // A Save that changed nothing closes the editor and leaves the record as it is. A new stamp
-  // would outrank an edit another device made since and has not synced yet (sets added on the
-  // phone), for nothing — the date and duration rows skip an unchanged save the same way.
-  if (sameData(savedData(record), savedData(current))) {
-    state.active = null
-    return current
-  }
-  record.vol = workoutVolume(record)
-  stampWorkout(record, now)
-  state.workouts[index] = record
-
-  // Badges are a claim about the sessions before each one. The edited session can earn one it now
-  // leads with, and a later one loses its own if the edit raised the bar above it — the same
-  // asymmetric rule a date move follows, so imported history never sprouts trophies.
-  const touched = [...new Set([...list(current.entries), ...record.entries].map(e => e?.id).filter(id => id != null))]
-  state.workouts = rebuildPrHistory(state.workouts, touched, record)
-  const saved = state.workouts.find(w => keyOf(w) === key)
-  lowerKeptWeights(state, touched, current, saved)
-  state.active = null
-  return saved
+  return record
 }
 
 /** The saved record the editor is open on, as history holds it now — or null (none open, or it

@@ -120,3 +120,18 @@ describe('active exercise swap locale coverage', () => {
     })
   })
 })
+
+// QA 1.3.9: the swap borrowed the routine editor's words — "Add exercise" over the picker and
+// "Add to routine" on the confirm — while it changes only today's session.
+describe('swap wording', () => {
+  it('titles the picker as a swap and confirms into this workout', () => {
+    swapActiveWorkoutExercise(1)
+    const picker = useUI.getState().sheets.at(-1)
+    const pickerView = picker.render(picker.close)
+    expect(pickerView.props.title).toBe('Swap exercise')
+    act(() => pickerView.props.onPick(EXDB[2]))
+    const configSheet = useUI.getState().sheets.at(-1)
+    const configView = configSheet.render(configSheet.close)
+    expect(configView.props.saveLabel).toBe('Use in this workout')
+  })
+})

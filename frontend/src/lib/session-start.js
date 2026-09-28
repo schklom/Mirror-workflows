@@ -6,6 +6,7 @@
 import { buildSets, applyIntensifierPlan, modeOf } from './history.js'
 import { isWarmupRow } from './workout-model.js'
 import { nextPrescription, applyPrescription, defaultIncrement, weightIncrement, plannedOf } from './progression.js'
+import { dropGrid } from './plates.js'
 
 /**
  * Where a planned session's reps come from (Settings → During a workout). 'plan', the default:
@@ -33,7 +34,7 @@ export function buildPlannedEntry(st, cfg, routine, { noProg = false } = {}) {
   const step = modeOf(cfg) === 'reps' ? weightIncrement(cfg, st.unit) : defaultIncrement(cfg.id, st.unit)
   const planReps = !startsFromLast(st)
   const rows = applyPrescription(buildSets(st, cfg, { step, rid: routine?.id, useTarget: plan.kind === 'off', planReps }), plan, step)
-  const sets = applyIntensifierPlan(rows, cfg)
+  const sets = applyIntensifierPlan(rows, cfg, dropGrid(st, cfg))
   const target = { ...cfg }
   if (plan.weight != null) target.weight = plan.weight
   if (plan.reps != null) target.reps = plan.reps

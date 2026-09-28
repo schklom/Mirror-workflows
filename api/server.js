@@ -110,6 +110,18 @@ function atomicWrite(file, content, mode) {
   fs.renameSync(tmp, file);
 }
 const stateFile = uid => path.join(DATA, 'state-' + uid.replace(/[^a-zA-Z0-9_-]/g, '') + '.json');
+// When a profile last fetched its document (GET /api/data). The document's own `_ts` moves only
+// on a push, so a device that only ever read — a second phone, a profile that trains elsewhere
+// and just looks — showed "last sync never" in the admin dashboard (QA 1.3.9). Kept on the user
+// record and written at most every ten minutes per profile, since every foreground return pulls.
+const PULL_NOTE_MS = 10 * 60 * 1000;
+function notePull(user, now = Date.now()) {
+  if (user.lastPull && now - user.lastPull < PULL_NOTE_MS) return;
+  user.lastPull = now;
+  try { saveDb(); } catch (e) { console.error('db save failed', e.message); }
+}
+// The later of the last push and the last pull.
+const lastSyncOf = (u, S) => Math.max(S?._ts || 0, u?.lastPull || 0) || null;
 function readState(uid) {
   try { return JSON.parse(fs.readFileSync(stateFile(uid), 'utf8')); } catch { return null; }
 }
@@ -745,6 +757,8 @@ function audit(req, ev, f = {}) {
   }
   if (f.target) { rec.tgt = f.target.id; rec.tname = String(f.target.name || '').slice(0, 40); }
   if (f.msg) rec.msg = String(f.msg).slice(0, 120);
+  // What a failed proof of ownership was guarding (proveOwner): 'email', 'passkey-add', …
+  if (f.act) rec.act = String(f.act).slice(0, 40);
   const ip = clientIp(req);
   if (ip) rec.ip = ip;
   try { fs.appendFileSync(auditFile, JSON.stringify(rec) + '\n'); }
@@ -1001,9 +1015,10 @@ function passwordAttempt(req, res, k) {
       catch (e) { settle(); throw e; }
     },
     // The audit line names the account only when there is one — what someone typed into the
-    // name field is sometimes their password.
-    failed(user, msg, unknown = 'unknown-name') {
-      audit(req, 'auth.password.fail', user ? { ok: false, user, msg } : { ok: false, msg: unknown });
+    // name field is sometimes their password. `ev`/`act` are for a password that was not a
+    // sign-in at all: the current one, proving a change (proveOwner) is logged as that change.
+    failed(user, msg, unknown = 'unknown-name', { ev = 'auth.password.fail', act } = {}) {
+      audit(req, ev, user ? { ok: false, user, msg, act } : { ok: false, msg: unknown, act });
       if (byName.lock) audit(req, 'auth.password.locked', user ? { ok: false, user } : { ok: false, msg: unknown });
       if (byAddr.lock) audit(req, 'auth.throttled', { ok: false, msg: 'password' });
     },
@@ -1029,10 +1044,13 @@ function passwordAttempt(req, res, k) {
 // passwords off. A profile that only ever had a password is moved onto a passkey while the flag
 // is still on (docs/SELF_HOSTING.md). Answers the refusal itself and returns null, or says which
 // proof it was ('passkey' | 'password'). Wrong passwords count toward the sign-in pause.
-async function proveOwner(req, res, user, body, failEv) {
+// `act` names the change being confirmed ('email', 'password-set', 'passkey-remove', …): a failed
+// proof is logged as `auth.proof.fail` for that change, not as a failed sign-in — the owner was
+// signed in all along, and "Password sign-in failed" sent an admin looking for the wrong thing.
+async function proveOwner(req, res, user, body, act) {
   if (body.credential) {
     if (await passkeyStepUp(user, body)) return 'passkey';
-    audit(req, failEv, { ok: false, user, msg: 'step-up-failed' });
+    audit(req, 'auth.proof.fail', { ok: false, user, msg: 'step-up-failed', act });
     json(res, 403, { error: 'the passkey could not be verified', code: 'passkey' });
     return null;
   }
@@ -1050,7 +1068,7 @@ async function proveOwner(req, res, user, body, failEv) {
   if (!check) return null;
   const rec = user.pw;
   if (!(await check.verify(current, rec.h))) {
-    check.failed(user, 'bad-current');
+    check.failed(user, 'bad-current', undefined, { ev: 'auth.proof.fail', act });
     return wrongCurrent();
   }
   // Changed or removed while it was being checked: it is no longer the current password.
@@ -1065,7 +1083,7 @@ if (PASSWORD_LOGIN) warmUp();
 // setting one; a profile without an address gets 200 with none asked.
 async function removeEmail(req, res, user, body) {
   if (!user.email) return json(res, 200, { ok: true, email: null });
-  const proof = await proveOwner(req, res, user, body, 'auth.email.fail');
+  const proof = await proveOwner(req, res, user, body, 'email-remove');
   if (!proof) return;
   if (readSession(req) !== user) return json(res, 401, { error: 'not signed in' });
   delete user.email;
@@ -1192,7 +1210,7 @@ const passwordRoutes = {
     if (problem) return policyError(res, problem);
     const taken = () => json(res, 409, { error: 'another profile already signs in with this name', code: 'name-taken' });
     if (nameTaken(user.name, user.id)) return taken();
-    const proof = await proveOwner(req, res, user, body, 'auth.password.fail');
+    const proof = await proveOwner(req, res, user, body, 'password');
     if (!proof) return;
     const h = await hashPassword(body.next);
     // Everything above awaited: an admin reset, a disable or "sign out everywhere" may have ended
@@ -1222,7 +1240,7 @@ const passwordRoutes = {
     const lastWayIn = () => json(res, 409, { error: 'the password is the only way into this profile', code: 'last-way-in' });
     if (!hasPassword(user)) return json(res, 200, { ok: true });
     if (!passkeyCount(user)) return lastWayIn();
-    const proof = await proveOwner(req, res, user, body, 'auth.password.fail');
+    const proof = await proveOwner(req, res, user, body, 'password-remove');
     if (!proof) return;
     // Everything above awaited: the session may have ended, and the profile's last passkey may
     // have been removed by a request that ran alongside this one.
@@ -1258,7 +1276,7 @@ const passwordRoutes = {
       return wait > 0 || addressPaused(req, res, 'email');
     };
     if (paused()) return;
-    const proof = await proveOwner(req, res, user, body, 'auth.email.fail');
+    const proof = await proveOwner(req, res, user, body, 'email');
     if (!proof) return;
     if (sessionOf(req)?.user !== user) return json(res, 401, { error: 'not signed in' });
     if (paused()) return;
@@ -1434,7 +1452,7 @@ const passkeyRoutes = {
     if (!user) return notSignedIn(res);
     const body = await readBody(req);
     if (passkeyCount(user) >= MAX_PASSKEYS) return json(res, 409, LIMIT);
-    const proof = await proveOwner(req, res, user, body, 'auth.passkey.fail');
+    const proof = await proveOwner(req, res, user, body, 'passkey-add');
     if (!proof) return;
     // Awaited: a sign-out everywhere, a disable or an admin reset may have ended this session.
     if (readSession(req) !== user) return notSignedIn(res);
@@ -1491,7 +1509,7 @@ const passkeyRoutes = {
     const refuse = r => json(res, r.code === 'last-way-in' ? 409 : 404, { error: r.error, code: r.code });
     const refused = passkeyRemovalRefused(db, user.id, id, passwordWayIn(user) ? 1 : 0);
     if (refused) return refuse(refused);
-    const proof = await proveOwner(req, res, user, body, 'auth.passkey.fail');
+    const proof = await proveOwner(req, res, user, body, 'passkey-remove');
     if (!proof) return;
     if (readSession(req) !== user) return notSignedIn(res);
     if (proof === 'passkey') saveDb();   // the confirming passkey's counter and last use
@@ -1510,7 +1528,7 @@ const passkeyRoutes = {
     if (!user) return notSignedIn(res);
     const body = await readBody(req);
     if (passkeyCount(user) >= MAX_PASSKEYS) return json(res, 409, LIMIT);
-    const proof = await proveOwner(req, res, user, body, 'auth.link.fail');
+    const proof = await proveOwner(req, res, user, body, 'device-link');
     if (!proof) return;
     if (readSession(req) !== user) return notSignedIn(res);
     const { code, link } = createDeviceLink(db, user.id);
@@ -1969,6 +1987,7 @@ const routes = {
     const user = readSession(req);
     if (!user) return json(res, 401, { error: 'not signed in' });
     const state = readState(user.id);
+    notePull(user);
     json(res, 200, { state, rev: state?._rev || 0 });
   },
   // Just the revision: the client asks this every half minute while it is open and on every
@@ -2164,7 +2183,7 @@ const routes = {
         disabled: !!u.disabled, admin: isAdmin(u), invitedBy: u.invitedBy || null,
         workouts: workouts.length,
         lastWorkout: last ? last.d : null,
-        lastSync: S._ts || null,
+        lastSync: lastSyncOf(u, S),
         hasPush: db.subs.some(s => s.userId === u.id),
         live: livePresence(u.id),
         // The sign-in e-mail is an admin's to see (to hand out a reset code, to tell two
@@ -2190,7 +2209,7 @@ const routes = {
         ...(PASSWORD_LOGIN ? { password: hasPassword(u), email: u.email || null, resetUntil: u.pwReset?.exp > Date.now() ? u.pwReset.exp : null } : {})
       },
       unit: S.unit || 'kg',
-      lastSync: S._ts || null,
+      lastSync: lastSyncOf(u, S),
       routines: records(S.routines).map(r => ({ id: r.id, name: r.name, emoji: r.emoji, count: records(r.ex).length })),
       bodyweight: records(S.bodyweight),
       // records() already copied, so this reverse is ours: newest first for display. A workout's

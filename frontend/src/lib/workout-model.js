@@ -107,10 +107,27 @@ export function setClusterAt(set, i, patch) {
   return { ...objectOf(set), clusters }
 }
 
-/** Suggested weight for the next drop: pct% lighter than the previous weight, rounded to .5. */
-export function nextDropWeight(prevWeight, pct = 20) {
+/**
+ * Suggested weight for the next drop: pct% lighter than the previous weight, on a weight you can
+ * actually load. `grid` is the exercise's weight step (5 → 80 kg, not 80.5) or a function that
+ * snaps a weight onto the plates you own (lib/plates.js dropGrid); without one it rounds to .5,
+ * the way it always did. A drop never comes out at or above the weight it drops from.
+ */
+export function nextDropWeight(prevWeight, pct = 20, grid) {
   const p = Math.min(90, Math.max(1, Number(pct) || 20))
-  return Math.round(Math.max(0, (Number(prevWeight) || 0) * (1 - p / 100)) * 2) / 2
+  const prev = Math.max(0, Number(prevWeight) || 0)
+  const raw = prev * (1 - p / 100)
+  const tidy = w => Math.round(w * 1000) / 1000
+  if (typeof grid === 'function') {
+    const w = Number(grid(raw))
+    if (Number.isFinite(w) && w >= 0) return tidy(w)
+  } else if (Number(grid) > 0) {
+    const step = Number(grid)
+    let w = Math.round(raw / step) * step
+    if (prev > 0 && w >= prev) w = prev - step
+    return tidy(Math.max(0, w))
+  }
+  return Math.round(raw * 2) / 2
 }
 
 /** Suggested reps for the next rest-pause burst: roughly half the previous rep count. */
@@ -263,11 +280,12 @@ function patchBothSides(row, fn) {
 }
 
 // Append a drop to both sides, each seeded from its own side's weight (pct lighter) and reps.
-export function addSideDrop(row, pct) {
+// `grid` as nextDropWeight's.
+export function addSideDrop(row, pct, grid) {
   return patchBothSides(row, side => {
     const drops = dropsOf(side)
     const base = drops.length ? drops[drops.length - 1].w : (side.w || 0)
-    return addDrop(side, { w: nextDropWeight(base, pct), r: side.r })
+    return addDrop(side, { w: nextDropWeight(base, pct, grid), r: side.r })
   })
 }
 export function removeSideDropAt(row, i) {

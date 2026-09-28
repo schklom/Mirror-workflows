@@ -233,16 +233,25 @@ describe('changing the duration of a saved workout', () => {
     expect(after.end - after.start).toBe(75 * 60000)
   })
 
-  it('a field left empty or at 0 comes back as one minute, and saves as one', () => {
-    const host = render(() => workoutDurationSheet(history()[1]))
+  // QA 1.3.9: a cleared field was put back to 1 as it lost focus to Save, and the session saved as
+  // one minute long without a word. It is refused now, with the reason, and the length is kept.
+  it('refuses a field left empty or at 0, says why, and keeps the saved length', () => {
+    const before = history()[1]
+    const host = render(() => workoutDurationSheet(before))
     const field = host.querySelector('input.num')
-    act(() => { type(field, '0') })
-    expect(field.value).toBe('0')
-    act(() => { field.dispatchEvent(new FocusEvent('focusout', { bubbles: true })) })
-    expect(field.value).toBe('1')
+    for (const typed of ['', '0']) {
+      act(() => { type(field, typed) })
+      act(() => { field.dispatchEvent(new FocusEvent('focusout', { bubbles: true })) })
+      expect(field.value === '' || field.value === '0', typed).toBe(true)
+      expect(host.textContent).toContain('Enter how long it took — at least 1 minute.')
+      act(() => { button(host, 'Save').click() })
+      expect(history()[1]).toEqual(before)
+      expect(useUI.getState().toast).toHaveBeenLastCalledWith('Enter how long it took — at least 1 minute.')
+    }
+    act(() => { type(field, '40') })
+    expect(host.textContent).not.toContain('at least 1 minute')
     act(() => { button(host, 'Save').click() })
-    const after = history()[1]
-    expect(after.end - after.start).toBe(60000)
+    expect(history()[1].end - history()[1].start).toBe(40 * 60000)
   })
 
   it('saving the same length closes and touches nothing', () => {

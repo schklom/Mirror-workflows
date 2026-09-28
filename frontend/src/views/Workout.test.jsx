@@ -545,6 +545,8 @@ describe('Workout add exercise flow', () => {
       'current-group', 'current-group',
     ])
     expect(mocks.S.active.cur).toBe(2)
+    // The confirm says where the exercise goes: this workout, not the routine (QA 1.3.9).
+    expect(mocks.exConfigSheet.mock.calls.at(-1)[7]).toBe('Add to this workout')
   })
 })
 

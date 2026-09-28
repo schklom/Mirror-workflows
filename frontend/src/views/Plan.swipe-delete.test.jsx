@@ -55,6 +55,22 @@ describe('routine rows after swipe-to-delete', () => {
     expect(r.style.transform).toBe('translateX(0px)')
   })
 
+  // QA 1.3.9: at rest the red button showed as a hairline round the row's rounded corners in
+  // dark mode. It is transparent until the row moves, and again once it has slid shut.
+  it('keep the red button invisible while shut, and show it while open', () => {
+    vi.useFakeTimers()
+    try {
+      const r = row('Push A'), b = del('Push A')
+      expect(b.style.opacity).toBe('0')
+      act(() => { b.focus() })
+      expect(b.style.opacity).toBe('1')
+      act(() => { r.focus() })
+      expect(b.style.opacity).toBe('1')          // still visible while the row slides back
+      act(() => { vi.advanceTimersByTime(250) })
+      expect(b.style.opacity).toBe('0')
+    } finally { vi.useRealTimers() }
+  })
+
   // In Arabic the button sits at the row's inline end, the left, so the row slides the other way.
   it('slide towards the right in a right-to-left language, where the button is on the left', () => {
     document.documentElement.dir = 'rtl'

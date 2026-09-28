@@ -90,3 +90,30 @@ describe('exercise settings: typing into a field with a minimum', () => {
     expect(onSave.mock.calls[0][0].deloadFactor).toBe(0.85)
   })
 })
+
+// QA 1.3.9: a timed bodyweight hold showed "Weight (kg)" and "Added (kg)", two fields bound to
+// the same value, under a Bodyweight row that said to "just log the reps".
+describe('exercise settings: a timed bodyweight hold', () => {
+  beforeEach(() => {
+    globalThis.IS_REACT_ACT_ENVIRONMENT = true
+    useUI.setState({ sheets: [] })
+    useStore.setState(s => ({ S: { ...s.S, unit: 'kg' } }))
+    document.body.innerHTML = ''
+  })
+  afterEach(() => { act(() => { mounted.splice(0).forEach(root => root.unmount()) }) })
+  const labels = host => [...host.querySelectorAll('.stp-l')].map(l => l.textContent)
+
+  it('has one weight field, the added load, and talks about the hold', () => {
+    const { host } = renderConfig({ mode: 'time', sec: 45, weight: 0, bodyweight: true })
+    expect(labels(host)).not.toContain('Weight (kg)')
+    expect(labels(host).filter(l => l === 'Added (kg)')).toHaveLength(1)
+    expect(host.textContent).toContain('No weight to enter — just time the hold.')
+    expect(host.textContent).not.toContain('just log the reps')
+  })
+
+  it('keeps the one weight field on a loaded hold', () => {
+    const { host } = renderConfig({ mode: 'time', sec: 45, weight: 10, bodyweight: false })
+    expect(labels(host)).toContain('Weight (kg)')
+    expect(labels(host)).not.toContain('Added (kg)')
+  })
+})

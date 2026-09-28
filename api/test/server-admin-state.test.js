@@ -132,3 +132,24 @@ test('the user list and the disable switch survive the same document', async t =
   assert.ok(a.body.events.some(e => e.ev === 'admin.user.disable'), JSON.stringify(a.body.events));
   assert.equal(h.stackFrames(), 0, `stack traces in the log:\n${h.log}`);
 });
+
+// QA 1.3.9: a profile that only ever pulled (a second device, someone who reads and never edits)
+// showed "last sync never" — only a push moved the document's `_ts`. A pull counts too.
+test('a pull shows as the last sync, in the list and the drill-down', async t => {
+  const h = await startServer(t);
+  h.plant({ _rev: 3, workouts: [okW] });
+  let row = (await h.get('/api/admin/users')).body.users.find(u => u.id === VICTIM);
+  assert.equal(row.lastSync, null);
+  const before = Date.now();
+  const pull = await fetch(`${h.api}/api/data`, { headers: { Cookie: `gymsid=${mintSession(VICTIM)}` } });
+  assert.equal(pull.status, 200);
+  row = (await h.get('/api/admin/users')).body.users.find(u => u.id === VICTIM);
+  assert.ok(row.lastSync >= before, JSON.stringify(row));
+  assert.ok((await h.get(`/api/admin/user?id=${VICTIM}`)).body.lastSync >= before);
+  // Kept across a restart: it is on the user record.
+  assert.ok(JSON.parse(fs.readFileSync(path.join(h.dataDir, 'db.json'), 'utf8')).users.find(u => u.id === VICTIM).lastPull >= before);
+  // A later push still wins when it is the newer of the two.
+  h.plant({ _rev: 4, _ts: Date.now() + 60000, workouts: [okW] });
+  row = (await h.get('/api/admin/users')).body.users.find(u => u.id === VICTIM);
+  assert.ok(row.lastSync > Date.now());
+});

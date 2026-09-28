@@ -162,6 +162,19 @@ describe('nextDropWeight / nextBurstReps', () => {
     expect(nextDropWeight(0, 20)).toBe(0)
   })
 
+  it('lands on the exercise\'s weight step when given one, and always below the weight it drops from', () => {
+    expect(nextDropWeight(60, 20, 2.5)).toBe(47.5)    // 48 is not loadable in 2.5s
+    expect(nextDropWeight(100, 20, 5)).toBe(80)
+    expect(nextDropWeight(80, 20, 5)).toBe(65)         // 64 → the nearest 5
+    expect(nextDropWeight(5, 5, 2.5)).toBe(2.5)        // rounding back up to 5 would be no drop
+    expect(nextDropWeight(2.5, 10, 2.5)).toBe(0)
+  })
+
+  it('takes a snapping function (the plates you own) as the grid', () => {
+    expect(nextDropWeight(100, 20, w => Math.floor(w / 10) * 10)).toBe(80)
+    expect(nextDropWeight(100, 25, w => Math.floor(w / 10) * 10)).toBe(70)
+  })
+
   it('roughly halves the previous rep count, floored at 1', () => {
     expect(nextBurstReps(8)).toBe(4)
     expect(nextBurstReps(1)).toBe(1)

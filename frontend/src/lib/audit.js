@@ -49,6 +49,8 @@ const LABELS = {
   'auth.link.create': 'Made a one-time code for another device',
   'auth.link.ok': 'Added a device with a one-time code',
   'auth.link.fail': 'Adding a device with a code failed',
+  // The owner's proof (current password or a passkey) for one of the changes below was refused.
+  'auth.proof.fail': 'Confirming a change failed',
   // The password throttle paused an address; `msg` says for what (password, signup).
   'auth.throttled': 'Too many failed attempts from one address',
   'admin.user.disable': 'Disabled an account',
@@ -81,7 +83,7 @@ const REASONS = {
   'code-invalid': 'wrong or expired pairing code',
   'user-unavailable': 'the profile behind the code is disabled or gone',
   'bad-password': 'wrong password',
-  'bad-current': 'wrong current password while changing it',
+  'bad-current': 'wrong current password',
   'unknown-name': 'no profile with a password has that name',
   'unknown-email': 'no profile with a password has that e-mail',
   'email-taken': 'another profile already uses that e-mail',
@@ -100,6 +102,18 @@ const REASONS = {
 }
 export const auditReason = msg => REASONS[msg] || (msg ? String(msg) : '')
 
+// What an `auth.proof.fail` was confirming (the server's `act`).
+const ACTS = {
+  'email': 'changing the sign-in e-mail',
+  'email-remove': 'removing the sign-in e-mail',
+  'password': 'setting or changing the password',
+  'password-remove': 'removing the password',
+  'passkey-add': 'adding a passkey',
+  'passkey-remove': 'removing a passkey',
+  'device-link': 'making a one-time code for another device'
+}
+export const auditAct = act => ACTS[act] || (act ? String(act) : '')
+
 // → { title, sub }. `sub` is the house "a · b · c" metadata line used by every list row.
 export function auditLine(e) {
   if (!e) return { title: '', sub: '' }
@@ -108,6 +122,7 @@ export function auditLine(e) {
   else if (e.uid) parts.push(e.uid)
   else if (!e.ok) parts.push('unknown caller')
   if (e.tname) parts.push('→ ' + e.tname)
+  if (e.act) parts.push(auditAct(e.act))
   // The reason codes and the invite codes share the msg field; only failures read as a reason.
   if (e.msg) parts.push(e.ok ? e.msg : auditReason(e.msg))
   if (e.ip) parts.push(e.ip)

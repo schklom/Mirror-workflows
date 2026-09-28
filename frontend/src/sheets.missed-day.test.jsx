@@ -111,7 +111,10 @@ describe('logging a missed planned day', () => {
     act(() => finishWorkout())
     expect(S().active).toBeNull()
     const [w] = S().workouts
-    expect(w).toMatchObject({ d: '2026-09-14', routineIds: ['A', 'B'], prs: [] })
+    expect(w).toMatchObject({ d: '2026-09-14', routineIds: ['A', 'B'] })
+    // Nothing logged before it: every loaded lift in it leads, and gets its badge the way Save in
+    // the editor would give it one (QA 1.3.9 — a backfilled finish used to award none).
+    expect(w.prs).toEqual(w.entries.filter(e => e.sets.some(x => x.w > 0)).map(e => e.id))
     expect(new Date(w.start).getHours()).toBe(18)
     expect(w.entries.map(e => [e.rid, e.sets.every(s => s.done)])).toEqual([['A', true], ['B', true]])
     expect(w.entries[0].planned).toMatchObject({ sets: 2, reps: 10 })
@@ -150,5 +153,34 @@ describe('logging a missed planned day', () => {
     const host = mountTopSheet()
     expect(host.querySelector('input[type=date]').value).toBe('2026-09-15')
     expect(host.textContent).toContain('Freestyle')
+  })
+})
+
+// QA 1.3.9: a past workout finished with no badges, while the same sets saved from the editor
+// earned them. Both now go through rebuildPrHistory: the logged day gains the badge it leads with
+// against what came before it, and a later session it outdoes loses its own.
+describe('badges on a workout logged into the past', () => {
+  const pushed = (id, d, w, prs = []) => ({
+    id, d, start: new Date(d + 'T18:00:00').getTime(), end: new Date(d + 'T19:00:00').getTime(), name: 'Push',
+    routineIds: ['A'], prs, entries: [{ id: BENCH, rid: 'A', target: { sets: 1, reps: 10, weight: w, mode: 'reps' },
+      sets: [{ w, r: 10, done: true }] }],
+  })
+  it('awards what the day leads with and takes the badge from a later session it outdoes', () => {
+    install({ workouts: [pushed('fri', '2026-09-11', 50, [BENCH]), pushed('tue', '2026-09-15', 52.5, [BENCH])] })
+    dayOverrideSheet('2026-09-14')
+    tapInTopSheet('Log this workout')
+    tapInTopSheet('Continue')
+    act(() => { useStore.getState().update(s => {
+      s.active.entries = markAllSetsDone(s.active.entries).map(e => e.id === BENCH
+        ? { ...e, sets: e.sets.map(x => (x.phase === 'warmup' ? x : { ...x, w: 60 })) }
+        : e)
+    }) })
+    act(() => finishWorkout())
+    const byDay = Object.fromEntries(S().workouts.map(w => [w.d, w.prs]))
+    expect(byDay['2026-09-14']).toContain(BENCH)
+    expect(byDay['2026-09-15']).not.toContain(BENCH)   // 52.5 no longer leads what came before it
+    expect(byDay['2026-09-11']).toContain(BENCH)
+    // The summary names it.
+    expect(mountTopSheet().textContent).toContain('New PR:')
   })
 })

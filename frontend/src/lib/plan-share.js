@@ -10,9 +10,9 @@
 
 import { EXIDX, isBodyweightEq } from './exercises.js'
 import { cleanUrl } from './media-refs.js'
-import { modeOf, fmtSec, isBw, isPerSide, sideReps, MAX_PLANNED_WARMUPS } from './history.js'
+import { modeOf, exLine, MAX_PLANNED_WARMUPS } from './history.js'
 import { deriveSessionName } from './session-merge.js'
-import { uid, todayISO, DAYN, weekOrder, weekStartOf, fmtNum, exCount } from './format.js'
+import { uid, todayISO, DAYN, weekOrder, weekStartOf, exCount } from './format.js'
 import { t, exerciseNameFor, exerciseNameClass, getLang, RTL_LANGS } from './i18n-core.js'
 import { convertWeight } from './units.js'
 import { fmtSpeed, speedUnitOf } from './speed.js'
@@ -296,8 +296,10 @@ export function mergePlan(s, bundle, { schedule } = {}) {
 const esc = str => String(str == null ? '' : str)
   .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 
-// One exercise's scheme, e.g. "3 × 10 · 60 kg", "3 × 0:45" or "2 × 20 min @ 8 km/h" — the speed
-// in the profile's unit (lib/speed.js), like the weight.
+// One exercise's scheme, e.g. "3 × 8–12 · 60 kg · drop-set 1× −20%", "3 × 0:45" or
+// "2 × 20 min @ 8 km/h" — the speed in the profile's unit (lib/speed.js), like the weight. The
+// reps half is exLine's, so a double-progression range prints as the range it is ("8–12", not
+// the top alone) and a per-side split reads "8/side" exactly as the routine editor shows it.
 function scheme(e, unit, speedUnit) {
   const sets = e.sets || 1
   const mode = modeOf(e)
@@ -305,11 +307,19 @@ function scheme(e, unit, speedUnit) {
     const body = `${e.min || 20} min @ ${fmtSpeed(e.speed || 8, speedUnit)}`
     return sets > 1 ? `${sets} × ${body}` : body
   }
-  let s = mode === 'time' ? `${sets} × ${fmtSec(e.sec || 45)}` : `${sets} × ${e.reps ?? 10}`
-  if (e.weight) s += ` · ${isBw(e) ? '+' : ''}${fmtNum(e.weight)} ${unit}`
-  // A printed plan is read at the rack, so the split earns its four characters.
-  if (mode !== 'time' && isPerSide(e)) s += ` · ${t('{0}/side', fmtNum(sideReps(e.reps ?? 10)))}`
-  return s
+  const line = exLine({ ...e, reps: e.reps ?? 10 }, unit, speedUnit)
+  const intens = intensifierLine(e.intensifier)
+  return intens ? `${line} · ${intens}` : line
+}
+
+// A drop-set or rest-pause is how the exercise is prescribed, so the printout names it — the
+// sheet at the rack otherwise reads as plain straight sets.
+function intensifierLine(x) {
+  const intens = cleanIntensifier(x)
+  if (!intens) return ''
+  return intens.type === 'dropset'
+    ? `${t('Drop-set')} ${intens.count}× −${intens.pct}%`
+    : `${t('Rest-pause')} ${intens.totalReps} ${t('reps')}`
 }
 
 // Group consecutive exercises sharing a superset id into rendered units.
@@ -330,7 +340,9 @@ function routineHTML(r, unit, { bare = false, speedUnit } = {}) {
     const items = u.map(e => {
       const ex = EXIDX[e.id]
       const name = ex ? exerciseNameFor(ex) : t('Unknown exercise')
-      const part = ex && ex.bp && ex.bp !== 'cardio' ? `<span class="part">${esc(ex.bp)}</span>` : ''
+      // Translated, and set apart by a real space: glued to the name, "capitalize" read the two as
+      // one word and printed "Curlupper Legs".
+      const part = ex && ex.bp && ex.bp !== 'cardio' ? ` <span class="part">${esc(t(ex.bp))}</span>` : ''
       const note = e.note ? `<div class="ex-note">${esc(e.note)}</div>` : ''
       return `<div class="ex"><div class="ex-row"><div class="ex-n ${ex ? exerciseNameClass(ex) : ''}">${esc(name)}${part}</div><div class="ex-s">${esc(scheme(e, unit, speedUnit))}</div></div>${note}</div>`
     }).join('')
@@ -411,7 +423,8 @@ export function planPrintHTML(S, owner, { routineId } = {}) {
   .ex-row { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; }
   .ex-n { font-weight: 500; }
   .ex-n.capitalize { text-transform: capitalize; }
-  .ex-n .part { text-transform: capitalize; color: #9aa0ae; font-weight: 400; font-size: 12px; margin-inline-start: 8px; }
+  .ex-n .part { display: inline-block; text-transform: none; color: #9aa0ae; font-weight: 400; font-size: 12px; margin-inline-start: 4px; }
+  .ex-n .part::first-letter { text-transform: uppercase; }
   .ex-s { color: #3d424e; white-space: nowrap; font-variant-numeric: tabular-nums; }
   .ex-note { color: #6a7080; font-size: 12px; margin-top: 2px; }
   .ex.empty, .none { color: #a2a8b6; }

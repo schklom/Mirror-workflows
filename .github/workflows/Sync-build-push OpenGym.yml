@@ -15,7 +15,7 @@ on:
 
 env:
   LOCAL_BRANCH: OpenGym
-  UPSTREAM_REPO: https://gitea.com/DuarteSantos/openGym
+  UPSTREAM_REPO: https://github.com/DuarteSantos8/openGym
   UPSTREAM_BRANCH: main
 
 jobs:

@@ -822,7 +822,7 @@ export default {
   'This session': 'Ez az edzés',
   'Note': 'Megjegyzés',
   'Ramp-up sets added before the work sets, so you do not have to add them by hand each session.': 'Fokozatosan növekvő sorozatok a munkasorozatok elé, hogy ne kelljen minden edzésen kézzel hozzáadnod őket.',
-  'Added before your work sets and left out of volume, records and progression. Each one closes half the gap to the work weight, and you can still change any of them mid-session.': 'A munkasorozatok elé kerülnek, és kimaradnak a volumenből, a rekordokból és a progresszióból. Mindegyik a felére zárja a különbséget a munkasúlyhoz, és edzés közben is bármelyiket módosíthatod.',
+  'Added before your work sets and left out of volume, records and progression. Each one closes half the gap to the work weight, never below the bar on a barbell lift, and you can still change any of them mid-session.': 'A munkasorozatok elé kerülnek, és kimaradnak a volumenből, a rekordokból és a progresszióból. Mindegyik a felére zárja a különbséget a munkasúlyhoz, rúddal végzett gyakorlatnál soha nem könnyebb az üres rúdnál, és edzés közben is bármelyiket módosíthatod.',
   'Warm-up sets': 'Bemelegítő sorozatok',
   'Most reps in a set per workout': 'Legtöbb ismétlés egy sorozatban edzésenként',
   'reps': 'ism.',

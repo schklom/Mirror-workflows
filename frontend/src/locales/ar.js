@@ -719,7 +719,7 @@ export default {
   'reps': 'تكرارات',
   'Most reps in a set per workout': 'أكثر تكرارات في مجموعة لكل تمرين',
   'Warm-up sets': 'مجموعات الإحماء',
-  'Added before your work sets and left out of volume, records and progression. Each one closes half the gap to the work weight, and you can still change any of them mid-session.': 'تُضاف قبل مجموعات العمل ولا تُحتسب في الحجم أو الأرقام القياسية أو التدرج. كل واحدة تقلص الفجوة إلى وزن العمل إلى النصف، ويمكنك تعديل أي منها أثناء الجلسة.',
+  'Added before your work sets and left out of volume, records and progression. Each one closes half the gap to the work weight, never below the bar on a barbell lift, and you can still change any of them mid-session.': 'تُضاف قبل مجموعات العمل ولا تُحتسب في الحجم أو الأرقام القياسية أو التدرج. كل واحدة تقلص الفجوة إلى وزن العمل إلى النصف، ولا تقل أبدًا عن وزن البار في تمارين البار، ويمكنك تعديل أي منها أثناء الجلسة.',
   'Ramp-up sets added before the work sets, so you do not have to add them by hand each session.': 'مجموعات إحماء تصاعدية تُضاف قبل مجموعات العمل، حتى لا تضطر لإضافتها يدويًا في كل جلسة.',
   'Note': 'ملاحظة',
   'This session': 'هذه الجلسة',

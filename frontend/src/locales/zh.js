@@ -1024,7 +1024,7 @@ export default {
   'reps': '次',
   'Most reps in a set per workout': '每次训练单组最多次数',
   'Warm-up sets': '热身组',
-  'Added before your work sets and left out of volume, records and progression. Each one closes half the gap to the work weight, and you can still change any of them mid-session.': '加在正式组之前，不计入容量、纪录和进阶。每一组都把与正式重量的差距缩小一半，训练中仍可随时调整任意一组。',
+  'Added before your work sets and left out of volume, records and progression. Each one closes half the gap to the work weight, never below the bar on a barbell lift, and you can still change any of them mid-session.': '加在正式组之前，不计入容量、纪录和进阶。每一组都把与正式重量的差距缩小一半，杠铃动作不会低于空杠，训练中仍可随时调整任意一组。',
   'Ramp-up sets added before the work sets, so you do not have to add them by hand each session.': '在正式组之前加入的爬升组，这样就不用每次手动添加。',
   'Note': '备注',
   'This session': '本次训练',

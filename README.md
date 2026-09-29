@@ -133,10 +133,10 @@ Traefik and nginx, and there are separate guides for
 [HTTPS on a LAN](docs/SELF_HOSTING_HTTPS.md) and [Kubernetes](docs/SELF_HOSTING_KUBERNETES.md).
 
 > [!NOTE]
-> Images are published from the same tag to `registry.gitlab.com/duartesantos8/opengym/{api,web}`
-> (what `docker-compose.yml` pulls) and `ghcr.io/duartesantos8/opengym-{api,web}`. Swap the
-> `image:` lines if you prefer GHCR, or run `docker compose up -d --build` to build locally. Either
-> way you don't need Node on the host.
+> Images are published from the same tag to `ghcr.io/duartesantos8/opengym-{api,web}`
+> (what `docker-compose.yml` pulls) and `registry.gitlab.com/duartesantos8/opengym/{api,web}`. Swap
+> the `image:` lines if you prefer GitLab's registry, or run `docker compose up -d --build` to build
+> locally. Either way you don't need Node on the host.
 
 <details>
 <summary><b>Configuration reference</b> (all through <code>.env</code>)</summary>

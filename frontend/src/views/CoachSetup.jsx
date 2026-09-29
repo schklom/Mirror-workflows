@@ -177,8 +177,8 @@ export default function CoachSetup() {
 
       <Section title={t('What leaves this phone')}>
         {DATA_CATEGORIES.map(k => {
-          const [title, sub] = CATEGORY_TEXT[k] || [k, '']
-          return <Row key={k} icon="check" iconTint="var(--acc)" title={t(title)} subtitle={t(sub)} />
+          const [title, sub] = CATEGORY_TEXT[k]?.() || [k, '']
+          return <Row key={k} icon="check" iconTint="var(--acc)" title={title} subtitle={sub} />
         })}
       </Section>
       <p className="sect-f" style={{ marginTop: -18, marginBottom: 22, lineHeight: 1.5 }}>

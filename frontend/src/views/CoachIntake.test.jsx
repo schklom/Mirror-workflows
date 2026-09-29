@@ -15,7 +15,8 @@ import { createRoot } from 'react-dom/client'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import CoachIntake from './CoachIntake.jsx'
 import { requestPlan, disclosure } from '../lib/coach-api.js'
-import { CONSENT_VERSION } from '../lib/coach.js'
+import { CONSENT_VERSION, CATEGORY_TEXT } from '../lib/coach.js'
+import { setLang } from '../lib/i18n.js'
 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true
 
@@ -209,6 +210,19 @@ describe('CoachIntake — the consent screen', () => {
     vi.mocked(disclosure).mockResolvedValue({ categories: ['plan', 'sleep'], providerLabel: 'x', payer: 'instance' })
     mount(); await settle()
     expect(all('.ob-consent-row').map(r => r.querySelector('b').textContent)).toEqual(['Your plan', 'sleep'])
+  })
+
+  it('names every category in the app’s language', async () => {
+    // The screen used to pass these lines to t() as variables, which check-source-strings cannot
+    // see, and eight of the ten had no translation in any pack.
+    const english = Object.values(CATEGORY_TEXT).map(text => text())
+    const de = (await import('../locales/de.js')).default
+    await setLang('de')
+    try {
+      mount()
+      expect(all('.ob-consent-row').map(r => [r.querySelector('b').textContent, r.querySelector('span').textContent]))
+        .toEqual(english.map(([title, sub]) => [de[title], de[sub]]))
+    } finally { await setLang('en') }
   })
 
   it('is skipped entirely once consent is on file', () => {

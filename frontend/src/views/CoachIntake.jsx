@@ -255,8 +255,8 @@ function Consent({ onAgree, onDecline }) {
     <div className="ob-sub" style={{ marginTop: 0 }}>{t('What it reads')}</div>
     <div className="ob-consent">
       {(info?.categories || Object.keys(CATEGORY_TEXT)).map(k => {
-        const [title, sub] = CATEGORY_TEXT[k] || [k, '']
-        return <div key={k} className="ob-consent-row"><Icon name="check" /><div><b>{t(title)}</b><span>{t(sub)}</span></div></div>
+        const [title, sub] = CATEGORY_TEXT[k]?.() || [k, '']
+        return <div key={k} className="ob-consent-row"><Icon name="check" /><div><b>{title}</b><span>{sub}</span></div></div>
       })}
     </div>
     <div className="ob-fine">

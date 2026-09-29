@@ -7,7 +7,7 @@ import {
   fmt, setLabel, exLine, muscleName, policyName, friendlyDuration, ratio, muscleOrder
 } from './labels.js'
 import {
-  modeOf, workoutVolume, setsDone, effectiveRoutine, effectiveRoutineIds, lastEntryFor
+  modeOf, workoutVolume, setsDone, effectiveRoutine, effectiveRoutineIds, lastEntryFor, workoutAt
 } from '../../frontend/src/lib/history.js'
 import { queueView, queueNext, pinState } from '../../frontend/src/lib/queue.js'
 import { exOr } from '../../frontend/src/lib/exercises.js'
@@ -466,7 +466,7 @@ export const muscleBalance = {
     const cutoff = period === 'week' ? midnightDaysBack(6)
       : period === 'month' ? midnightDaysBack(29)
         : Number.NEGATIVE_INFINITY
-    const workouts = (S.workouts || []).filter(w => (w.start || new Date(w.d + 'T12:00:00').getTime()) >= cutoff)
+    const workouts = (S.workouts || []).filter(w => workoutAt(w) >= cutoff)
     // loadOf() resolves each entry through EXIDX, which holds the catalogue only, so a
     // custom exercise's sets score zero here. Attaching the custom itself lets loadOf's own
     // `historical` branch resolve it. Only a *found* custom: exOr's miss placeholder carries

@@ -1,4 +1,5 @@
 import { EXIDX } from './exercises.js'
+import { workoutAt } from './history.js'
 import { MUSCLES, musclesOf } from './muscles.js'
 import { isWarmupRow, dropsOf } from './workout-model.js'
 
@@ -50,12 +51,11 @@ export function halfLifeDecay(ageMs, halfLifeMs) {
   return 0.5 ** (ageMs / halfLifeMs)
 }
 
-// The v2 data contract has one timestamp per workout, not per set. Keep this fallback in one
-// place so fatigue and strength use exactly the same stimulus time as effort.js.
-function workoutTimestamp(workout) {
-  const timestamp = workout?.start || new Date(workout?.d).getTime()
-  return Number.isFinite(timestamp) ? timestamp : Number(timestamp)
-}
+// The v2 data contract has one timestamp per workout, not per set. history.js owns the rule
+// (workoutAt) so fatigue, strength, effort.js and Stats all read the same stimulus time: a
+// start of 0 is a real timestamp, and a date-only workout is local noon rather than UTC
+// midnight, which is the previous day west of Greenwich.
+const workoutTimestamp = workoutAt
 
 function emptyMuscleMap(value) {
   return Object.fromEntries(MUSCLES.map(slug => [slug, value]))

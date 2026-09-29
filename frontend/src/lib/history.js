@@ -20,6 +20,21 @@ import { t } from './i18n-core.js'
 import { queueNext, pinState, queueLiveOn } from './queue.js'
 import { isPyramid, pyramidLabel, pyramidTargetAt, PYRAMID_MAX } from './pyramid.js'
 
+// When a workout happened, as epoch ms: its own recorded start, else noon on its calendar day.
+// Noon rather than midnight because `new Date('2026-09-22')` parses as UTC midnight, which any
+// negative UTC offset drags back into the day before; noon survives every zone and DST shift.
+// Several copies of this rule had drifted apart — some onto UTC midnight, some onto `||`, which
+// throws away a legitimate start of 0 — and readers that feed the strength/recovery decay off it
+// dated start-less history up to 14 h out, in a direction set by the reader's timezone. NaN when
+// the workout carries neither a start nor a usable day.
+export const workoutAt = w => {
+  if (Number.isFinite(w?.start)) return w.start
+  const day = w?.d
+  return typeof day === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(day)
+    ? new Date(day + 'T12:00:00').getTime()
+    : NaN
+}
+
 // How an exercise is logged (issue #16). This used to be derived from the body part alone,
 // which meant a plank or a farmer's carry could only be timed by filing it under cardio.
 // A routine entry can now say so explicitly:

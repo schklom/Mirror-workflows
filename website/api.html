@@ -1800,14 +1800,19 @@ main.api-main .lead { color: var(--fg-2); max-width: 58ch; margin: 14px 0 0; fon
     <span class="ep-sum">Live-workout presence heartbeat</span>
   </summary>
   <div class="ep-body">
-<p>The client pings this every ~20 s while a workout is on screen; the admin dashboard reads who is training right now. Purely ephemeral, in-memory, never persisted; entries expire ~70 s after the last ping. <code>{&quot;active&quot;: false}</code> drops the caller's entry immediately.</p>
+<p>The client pings this every ~20 s while a workout is on screen; the admin dashboard reads who is training right now. Purely ephemeral, in-memory, never persisted; entries expire 70 s after the last ping. <code>{&quot;active&quot;: false}</code> is the &quot;left&quot; signal: with <code>reason</code> <code>navigated</code> or <code>closed</code>, or with no reason, it drops the caller's entry immediately. With <code>reason: hidden</code> (the page went to the background) it marks the entry away instead, and the entry stops being listed 45 s after that mark unless a heartbeat arrives first; a heartbeat clears the mark. The 70 s expiry applies either way.</p>
     <p class="ep-auth"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2.5"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span>Requires a session — the cookie set at sign-in, or <code>Authorization: Bearer &lt;token&gt;</code> from mobile-app pairing.</span></p>
 
 <p class="ep-h">Request body <span class="p-hint">(JSON)</span></p><div class="ptab">
   <div class="prow">
     <span class="p-name">active</span>
     <span class="p-type">boolean</span>
-    <span class="p-desc">false ends the presence; true (with the fields below) updates it.</span>
+    <span class="p-desc">false ends the presence (see <code>reason</code>); true (with the fields below) updates it.</span>
+  </div>
+  <div class="prow">
+    <span class="p-name">reason</span>
+    <span class="p-type">&quot;navigated&quot; | &quot;closed&quot; | &quot;hidden&quot;</span>
+    <span class="p-desc">Why the client sent <code>active: false</code>: <code>navigated</code> (an in-app route change), <code>closed</code> (the page is going away) or <code>hidden</code> (the page went to the background). <code>navigated</code> and <code>closed</code> drop the entry at once, as no reason does; <code>hidden</code> marks it away rather than dropping it. Ignored with <code>active: true</code>.</span>
   </div>
   <div class="prow">
     <span class="p-name">name</span>

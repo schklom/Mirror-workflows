@@ -665,15 +665,28 @@ const b64uToBuf = s => Buffer.from(s, 'base64url');
 /* ---------- live presence (in-memory) ---------- */
 // Clients heartbeat /api/activity while a workout is on screen; the admin dashboard reads who's
 // live. Purely ephemeral — never persisted. Expires shortly after the last ping.
-const presence = new Map();               // uid -> { name, exIdx, exTotal, setsDone, setsTotal, startedAt, updatedAt }
+const presence = new Map();               // uid -> { name, exIdx, exTotal, setsDone, setsTotal, startedAt, updatedAt, hiddenAt? }
 const PRESENCE_TTL = 70000;               // ~3.5× the 20s client heartbeat
+// A "left" signal with reason `hidden` (the workout page went to the background) marks the row
+// away at that moment instead of dropping it. A phone locked between sets keeps the page running
+// and heartbeating, and the next heartbeat clears the mark, so the athlete never blinks off the
+// dashboard; an iOS home-screen app swiped away sends `hidden` and nothing after it, so it is gone
+// this long after instead of the full TTL. Two heartbeat intervals and 5 s: browsers throttle a
+// hidden page's timers, so its first heartbeat after the hide can run late, and one late
+// heartbeat must not take a locked phone off the list.
+const PRESENCE_HIDDEN_GRACE = 45000;
+// Whether a row counts as "training now". The one place that decides it: the admin list and the
+// sweep below both ask here.
+const presenceListed = (p, now) =>
+  now - p.updatedAt < PRESENCE_TTL && (p.hiddenAt === undefined || now - p.hiddenAt < PRESENCE_HIDDEN_GRACE);
 function livePresence(uid) {
   const p = presence.get(uid);
   if (!p) return null;
-  if (Date.now() - p.updatedAt > PRESENCE_TTL) { presence.delete(uid); return null; }
-  return p;
+  if (!presenceListed(p, Date.now())) { presence.delete(uid); return null; }
+  const { hiddenAt: _away, ...live } = p;   // the mark is bookkeeping; the dashboard gets the row it always did
+  return live;
 }
-setInterval(() => { for (const [k, v] of presence) if (Date.now() - v.updatedAt > PRESENCE_TTL) presence.delete(k); }, 30000).unref();
+setInterval(() => { const now = Date.now(); for (const [k, v] of presence) if (!presenceListed(v, now)) presence.delete(k); }, 30000).unref();
 
 /* ---------- audit log ---------- */
 // Who signed in, who tried and failed, and what an admin changed. One JSON object per line in
@@ -2153,12 +2166,15 @@ const routes = {
     json(res, 200, { ok: true });
   },
 
-  // Live-workout heartbeat: client pings while a workout is on screen; { active:false } drops it.
+  // Live-workout heartbeat: client pings while a workout is on screen; { active:false } drops it,
+  // except with reason `hidden`, which marks it away (see PRESENCE_HIDDEN_GRACE). `navigated`,
+  // `closed`, and no reason at all (older clients), drop it at once.
   'POST /api/activity': async (req, res) => {
     const user = readSession(req);
     if (!user) return json(res, 401, { error: 'not signed in' });
     const body = await readBody(req);
     if (body.active) {
+      // a fresh row, which also clears any hidden mark
       presence.set(user.id, {
         name: text(body.name).slice(0, 60),
         exIdx: +body.exIdx || 0, exTotal: +body.exTotal || 0,
@@ -2166,6 +2182,10 @@ const routes = {
         startedAt: +body.startedAt || Date.now(),
         updatedAt: Date.now()
       });
+    } else if (body.reason === 'hidden') {
+      // The first mark stands: a repeat without a heartbeat between cannot stretch the grace.
+      const p = presence.get(user.id);
+      if (p && p.hiddenAt === undefined) p.hiddenAt = Date.now();
     } else presence.delete(user.id);
     json(res, 200, { ok: true });
   },

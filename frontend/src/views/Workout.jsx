@@ -1235,13 +1235,38 @@ function ActiveWorkout() {
         setsDone: setsDoneActive(A2), setsTotal: tot, startedAt: A2.start
       }) }).catch(() => {})
     }
-    ping(true)
-    const iv = setInterval(() => { if (!stopped) ping(true) }, 20000)
+    // The cleanup below runs on in-app navigation only. A closed tab, or a home-screen app swiped
+    // away or killed by the phone, unmounts nothing, so "training now" kept the athlete until the
+    // server's presence expiry, 70 s after they had gone. So the page going away sends the "left"
+    // signal itself, and says why: `closed` on pagehide, which the server acts on at once, and
+    // `hidden` on visibilitychange, because iOS kills a hidden home-screen app without a pagehide.
+    // The server keeps a `hidden` athlete listed for 45 s and a heartbeat cancels it, so a hidden
+    // page that keeps running (a phone locked between sets) goes on heartbeating and never blinks
+    // off the list; an iOS app swiped away sends nothing after `hidden` and is gone in 45 s. Each
+    // is sent once per hide, re-armed by a heartbeat; the pagehide of a close that went hidden
+    // first still sends `closed`, and nothing follows `closed`. A page shown again heartbeats at once.
+    let sent = null
+    const live = () => { sent = null; ping(true) }
+    const leave = reason => {
+      if (sent === 'closed' || sent === reason) return
+      sent = reason; beacon('/api/activity', { active: false, reason })
+    }
+    const onVisibility = () => { if (document.visibilityState === 'hidden') leave('hidden'); else if (sent && !stopped) live() }
+    const onHide = () => leave('closed')
+    const onShow = e => { if (e.persisted && sent && !stopped) live() }
+    live()
+    const iv = setInterval(() => { if (!stopped) live() }, 20000)
+    document.addEventListener('visibilitychange', onVisibility)
+    window.addEventListener('pagehide', onHide)
+    window.addEventListener('pageshow', onShow)
     return () => {
       stopped = true; clearInterval(iv)
+      document.removeEventListener('visibilitychange', onVisibility)
+      window.removeEventListener('pagehide', onHide)
+      window.removeEventListener('pageshow', onShow)
       // best-effort "left" signal: the beacon survives a tab close, fetch covers in-app nav
-      beacon('/api/activity', { active: false })
-      api('/api/activity', { method: 'POST', body: JSON.stringify({ active: false }) }).catch(() => {})
+      beacon('/api/activity', { active: false, reason: 'navigated' })
+      api('/api/activity', { method: 'POST', body: JSON.stringify({ active: false, reason: 'navigated' }) }).catch(() => {})
     }
   }, [])
 

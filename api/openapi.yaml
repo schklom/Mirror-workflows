@@ -1974,8 +1974,12 @@ paths:
       description: |
         The client pings this every ~20 s while a workout is on screen; the admin
         dashboard reads who is training right now. Purely ephemeral, in-memory, never
-        persisted; entries expire ~70 s after the last ping. `{"active": false}`
-        drops the caller's entry immediately.
+        persisted; entries expire 70 s after the last ping. `{"active": false}` is the
+        "left" signal: with `reason` `navigated` or `closed`, or with no reason, it
+        drops the caller's entry immediately. With `reason: hidden` (the page went to
+        the background) it marks the entry away instead, and the entry stops being
+        listed 45 s after that mark unless a heartbeat arrives first; a heartbeat
+        clears the mark. The 70 s expiry applies either way.
       requestBody:
         required: true
         content:
@@ -1985,7 +1989,16 @@ paths:
               properties:
                 active:
                   type: boolean
-                  description: false ends the presence; true (with the fields below) updates it.
+                  description: false ends the presence (see `reason`); true (with the fields below) updates it.
+                reason:
+                  type: string
+                  enum: [navigated, closed, hidden]
+                  description: >-
+                    Why the client sent `active: false`: `navigated` (an in-app route
+                    change), `closed` (the page is going away) or `hidden` (the page went
+                    to the background). `navigated` and `closed` drop the entry at once,
+                    as no reason does; `hidden` marks it away rather than dropping it.
+                    Ignored with `active: true`.
                 name:
                   type: string
                   maxLength: 60

@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { parseHTML } from 'linkedom'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import Workout from './Workout.jsx'
+import { api, beacon } from '../lib/api.js'
 import { nextPrescription } from '../lib/progression.js'
 import { buildCombinedEntries } from '../lib/session-merge.js'
 import { buildCompletedWorkout } from '../lib/finish-workout.js'
@@ -11,6 +12,7 @@ import { isWarmupRow } from '../lib/workout-model.js'
 const mocks = vi.hoisted(() => {
   const state = {
     S: null,
+    user: null,
     timer: null,
     work: null,
     startRest: vi.fn(),
@@ -35,7 +37,7 @@ const mocks = vi.hoisted(() => {
   state.stopWork = vi.fn(() => { state.work = null })
   state.storeSnapshot = () => ({
     S: state.S,
-    user: null,
+    user: state.user,
     update: mut => {
       const next = structuredClone(state.S)
       mut(next)
@@ -93,6 +95,7 @@ vi.mock('../components/Media.jsx', () => ({ default: () => null }))
 // tests rather than declaring a vitest environment, so it must not depend on an ambient one.
 vi.mock('../lib/api.js', () => ({
   api: vi.fn(() => Promise.resolve({})),
+  beacon: vi.fn(),
   IS_APPLE: false, IS_ANDROID: false, BIO: 'biometrics',
 }))
 
@@ -217,6 +220,7 @@ async function rerenderAt(cur) {
 
 beforeEach(() => {
   vi.clearAllMocks()
+  mocks.user = null
   mocks.timer = null
   mocks.work = null
   mocks.scrollCalls.length = 0
@@ -805,6 +809,137 @@ describe('Workout discard timer lifecycle', () => {
     expect(mocks.work).toBeNull()
     expect(mocks.stopRest).toHaveBeenCalledOnce()
     expect(mocks.stopWork).toHaveBeenCalledOnce()
+  })
+})
+
+// The live-presence "left" signal goes through lib/api.js beacon() (upstream's: the web app's
+// own origin, nothing on a phone, where the api() call beside it reaches the server).
+describe('Workout live-presence heartbeat', () => {
+  it('leaving the screen signed in sends the "left" signal through beacon() and the API, as navigated', async () => {
+    mocks.user = { id: 'u1', name: 'Boris' }
+    await mount([exercise('plain-bench', [false])])
+    expect(api).toHaveBeenCalledWith('/api/activity', expect.objectContaining({ method: 'POST' }))
+    await unmount()
+    expect(beacon).toHaveBeenCalledTimes(1)
+    expect(beacon).toHaveBeenCalledWith('/api/activity', { active: false, reason: 'navigated' })
+    expect(api).toHaveBeenLastCalledWith('/api/activity', { method: 'POST', body: JSON.stringify({ active: false, reason: 'navigated' }) })
+  })
+
+  it('a guest has no server session, so there is no heartbeat and no signal', async () => {
+    await mount([exercise('plain-bench', [false])])
+    await unmount()
+    expect(beacon).not.toHaveBeenCalled()
+    expect(api).not.toHaveBeenCalledWith('/api/activity', expect.anything())
+  })
+})
+
+// A closed tab, or a home-screen app swiped away or killed by the phone, never unmounts the screen,
+// so the "left" signal in the effect cleanup never went and "training now" kept the athlete until
+// the server's presence expiry. The page going away sends it itself, with the reason the server
+// goes by: `closed` drops the athlete at once, `hidden` gives a heartbeat 45 s to cancel it.
+describe('Workout live-presence "left" signal when the page goes away', () => {
+  let visibility
+  const setVisibility = async state => {
+    visibility = state
+    await act(async () => { document.dispatchEvent(new dom.Event('visibilitychange')) })
+  }
+  const pagehide = async () => { await act(async () => { window.dispatchEvent(new dom.Event('pagehide')) }) }
+  const pageshow = async persisted => {
+    await act(async () => { window.dispatchEvent(Object.assign(new dom.Event('pageshow'), { persisted })) })
+  }
+  const heartbeats = () => vi.mocked(api).mock.calls.filter(([path, opts]) => path === '/api/activity' && JSON.parse(opts.body).active === true).length
+  const reasons = () => vi.mocked(beacon).mock.calls.map(([, body]) => body.reason)
+  const signedInMount = async () => {
+    mocks.user = { id: 'u1', name: 'Boris' }
+    await mount([exercise('plain-bench', [false])])
+    visibility = 'visible'
+    Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => visibility })
+  }
+  afterEach(() => { vi.useRealTimers() })
+
+  it('a closing tab (pagehide) sends it through beacon() as closed while the screen is still mounted', async () => {
+    await signedInMount()
+    await pagehide()
+    expect(beacon).toHaveBeenCalledTimes(1)
+    expect(beacon).toHaveBeenCalledWith('/api/activity', { active: false, reason: 'closed' })
+  })
+
+  it('an iOS home-screen app going hidden sends it as hidden, once, however many hidden events follow', async () => {
+    await signedInMount()
+    await setVisibility('hidden')
+    await setVisibility('hidden')
+    expect(beacon).toHaveBeenCalledTimes(1)
+    expect(beacon).toHaveBeenCalledWith('/api/activity', { active: false, reason: 'hidden' })
+  })
+
+  it('a close whose pagehide follows the hidden visibilitychange still sends closed, once', async () => {
+    await signedInMount()
+    await setVisibility('hidden')
+    await pagehide()
+    await pagehide()
+    expect(reasons()).toEqual(['hidden', 'closed'])
+  })
+
+  it('nothing follows closed: a visibilitychange to hidden after the pagehide sends nothing more', async () => {
+    await signedInMount()
+    await pagehide()
+    await setVisibility('hidden')
+    expect(reasons()).toEqual(['closed'])
+  })
+
+  it('shown again, the page heartbeats at once, and the next hide sends it again', async () => {
+    await signedInMount()
+    const before = heartbeats()
+    await setVisibility('hidden')
+    await setVisibility('visible')
+    expect(heartbeats()).toBe(before + 1)
+    await setVisibility('hidden')
+    expect(reasons()).toEqual(['hidden', 'hidden'])
+  })
+
+  it('a page back from the back/forward cache heartbeats at once, and its next close sends closed again', async () => {
+    await signedInMount()
+    const before = heartbeats()
+    await pagehide()
+    await pageshow(false)
+    expect(heartbeats()).toBe(before)
+    await pageshow(true)
+    expect(heartbeats()).toBe(before + 1)
+    await pagehide()
+    expect(reasons()).toEqual(['closed', 'closed'])
+  })
+
+  it('a hidden page that keeps heartbeating is re-armed, for hidden and for the close that follows', async () => {
+    vi.useFakeTimers({ toFake: ['setInterval', 'clearInterval'] })
+    await signedInMount()
+    await setVisibility('hidden')
+    expect(reasons()).toEqual(['hidden'])
+    const before = heartbeats()
+    await act(async () => { vi.advanceTimersByTime(20000) })
+    expect(heartbeats()).toBe(before + 1)
+    await setVisibility('hidden')
+    expect(reasons()).toEqual(['hidden', 'hidden'])
+    await pagehide()
+    expect(reasons()).toEqual(['hidden', 'hidden', 'closed'])
+  })
+
+  it('a guest sends nothing, and an unmounted screen stops listening', async () => {
+    await mount([exercise('plain-bench', [false])])
+    await pagehide()
+    expect(beacon).not.toHaveBeenCalled()
+    await unmount()
+
+    await signedInMount()
+    const win = window
+    const doc = document
+    await unmount()
+    expect(reasons()).toEqual(['navigated'])                 // the cleanup's own
+    const after = heartbeats()
+    win.dispatchEvent(new win.Event('pagehide'))
+    visibility = 'hidden'
+    doc.dispatchEvent(new win.Event('visibilitychange'))
+    expect(beacon).toHaveBeenCalledTimes(1)
+    expect(heartbeats()).toBe(after)
   })
 })
 

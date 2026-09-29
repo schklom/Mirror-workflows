@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tt-rss git\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-07 02:22+0000\n"
+"POT-Creation-Date: 2026-09-29 01:22+0000\n"
 "PO-Revision-Date: 2025-11-05 17:51+0000\n"
 "Last-Translator: LaurentC <laurentc@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/tt-rss/webui/es/"
@@ -103,16 +103,16 @@ msgstr "Usuario con poder"
 msgid "Administrator"
 msgstr "Administrador"
 
-#: index.php:120 prefs.php:119
+#: index.php:150 prefs.php:127
 msgid "Javascript is disabled. Please enable it."
 msgstr ""
 
-#: index.php:124 index.php:142 index.php:308 prefs.php:126
+#: index.php:154 index.php:172 index.php:338 prefs.php:134
 #: classes/Pref_Prefs.php:886 classes/Pref_Prefs.php:936
 #: classes/Pref_System.php:251 classes/Pref_System.php:262 js/PrefUsers.js:112
 #: js/PrefFeedTree.js:183 js/PrefFeedTree.js:190 js/PrefFeedTree.js:314
-#: js/PrefFeedTree.js:386 js/PrefFilterTree.js:124 js/Article.js:283
-#: js/Article.js:359 js/Headlines.js:352 js/Headlines.js:535
+#: js/PrefFeedTree.js:386 js/PrefFilterTree.js:124 js/Article.js:287
+#: js/Article.js:363 js/Headlines.js:361 js/Headlines.js:562
 #: js/CommonFilters.js:265 js/CommonFilters.js:391 js/PrefHelpers.js:26
 #: js/PrefHelpers.js:38 js/PrefHelpers.js:61 js/PrefHelpers.js:114
 #: js/PrefHelpers.js:242 js/PrefHelpers.js:293 js/PrefHelpers.js:444
@@ -123,224 +123,224 @@ msgstr ""
 msgid "Loading, please wait..."
 msgstr "Cargando. Por favor, espere..."
 
-#: index.php:158
+#: index.php:188
 #, fuzzy
 #| msgid "Collapse feedlist"
 msgid "Toggle feed list"
 msgstr "Colapsar la lista de fuentes"
 
-#: index.php:173 prefs.php:135 js/App.js:536
+#: index.php:203 prefs.php:143 js/App.js:536
 msgid "Communication problem with server."
 msgstr "Problema de comunicación con el servidor."
 
-#: index.php:176 prefs.php:137
+#: index.php:206 prefs.php:145
 msgid "Recent entries found in event log."
 msgstr "Se encontraron entradas recientes en el log de eventos."
 
-#: index.php:179 prefs.php:139
+#: index.php:209 prefs.php:147
 msgid "Updates for Tiny Tiny RSS are available."
 msgstr "Ya están disponibles las actualizaciones de Tiny Tiny RSS."
 
-#: index.php:183 prefs.php:142
+#: index.php:213 prefs.php:150
 msgid "Updates for some local plugins are available."
 msgstr "Ya están disponibles las actualizaciones de algunos plugins locales."
 
-#: index.php:191 js/Headlines.js:656
+#: index.php:221 js/Headlines.js:683
 msgid "Show articles"
 msgstr "Mostrar artículos"
 
-#: index.php:194
+#: index.php:224
 msgid "Adaptive"
 msgstr "Adaptable"
 
-#: index.php:195
+#: index.php:225
 msgid "All Articles"
 msgstr "Todos"
 
-#: index.php:196 classes/RPC.php:538
+#: index.php:226 classes/RPC.php:538
 msgid "Starred"
 msgstr "Favoritos"
 
-#: index.php:197 classes/RPC.php:539
+#: index.php:227 classes/RPC.php:539
 msgid "Published"
 msgstr "Publicados"
 
-#: index.php:198 js/Headlines.js:659
+#: index.php:228 js/Headlines.js:686
 msgid "Unread"
 msgstr "Sin leer"
 
-#: index.php:199
+#: index.php:229
 msgid "With Note"
 msgstr "Con anotación"
 
-#: index.php:202
+#: index.php:232
 msgid "Sort articles"
 msgstr "Ordenar artículos"
 
-#: index.php:206
+#: index.php:236
 msgid "Default"
 msgstr "Por defecto"
 
-#: index.php:207
+#: index.php:237
 msgid "Newest first"
 msgstr "Recientes primero"
 
-#: index.php:208
+#: index.php:238
 msgid "Oldest first"
 msgstr "Antiguos primero"
 
-#: index.php:209 classes/Pref_Filters.php:38 js/CommonFilters.js:418
+#: index.php:239 classes/Pref_Filters.php:38 js/CommonFilters.js:418
 msgid "Title"
 msgstr "Título"
 
-#: index.php:222 index.php:279 classes/RPC.php:525 classes/Pref_Filters.php:25
-#: js/Headlines.js:1548 js/FeedTree.js:94 js/FeedTree.js:133
-#: js/Headlines.js:669
+#: index.php:252 index.php:309 classes/RPC.php:525 classes/Pref_Filters.php:25
+#: js/Headlines.js:1580 js/FeedTree.js:77 js/FeedTree.js:92 js/FeedTree.js:97
+#: js/Headlines.js:696
 msgid "Mark as read"
 msgstr "Marcar como leído"
 
-#: index.php:223
+#: index.php:253
 msgid "Older than one day"
 msgstr "Más de un día"
 
-#: index.php:224
+#: index.php:254
 msgid "Older than one week"
 msgstr "Más de una semana"
 
-#: index.php:225
+#: index.php:255
 msgid "Older than two weeks"
 msgstr "Más de dos semanas"
 
-#: index.php:238
+#: index.php:268
 msgid "Switch to three panel view"
 msgstr ""
 
-#: index.php:239
+#: index.php:269
 #, fuzzy
 #| msgid "Switch to digest..."
 msgid "Switch to combined view"
 msgstr "Modo resumen..."
 
-#: index.php:240
+#: index.php:270
 #, fuzzy
 #| msgid "Toggle widescreen mode"
 msgid "Disable widescreen mode"
 msgstr "Alternar modo de pantalla ancha"
 
-#: index.php:241
+#: index.php:271
 #, fuzzy
 #| msgid "Toggle widescreen mode"
 msgid "Enable widescreen mode"
 msgstr "Alternar modo de pantalla ancha"
 
-#: index.php:242
+#: index.php:272
 #, fuzzy
 #| msgid "Assign selected articles to label?"
 msgid "Expand selected article only"
 msgstr "¿Asignar los artículos seleccionados a la etiqueta?"
 
-#: index.php:243
+#: index.php:273
 #, fuzzy
 #| msgid "Expand article"
 msgid "Expand all articles"
 msgstr "Ampliar el artículo"
 
-#: index.php:246
+#: index.php:276
 msgid "Actions..."
 msgstr "Acciones..."
 
-#: index.php:271
+#: index.php:301
 msgid "Preferences..."
 msgstr "Preferencias..."
 
-#: index.php:272 js/PrefHelpers.js:613
+#: index.php:302 js/PrefHelpers.js:613
 msgid "Search..."
 msgstr "Buscar..."
 
-#: index.php:273
+#: index.php:303
 msgid "Search feeds..."
 msgstr "Buscar feeds…"
 
-#: index.php:274
+#: index.php:304
 msgid "Feed actions:"
 msgstr "Acciones de la fuente:"
 
-#: index.php:275 plugins/bookmarklets/init.php:40
+#: index.php:305 plugins/bookmarklets/init.php:40
 #: plugins/bookmarklets/init.php:78
 msgid "Subscribe to feed..."
 msgstr "Suscribirse a una fuente..."
 
-#: index.php:276
+#: index.php:306
 msgid "Edit this feed..."
 msgstr "Editar esta fuente..."
 
-#: index.php:277 classes/Pref_Feeds.php:934 js/PrefFeedTree.js:119
+#: index.php:307 classes/Pref_Feeds.php:934 js/PrefFeedTree.js:119
 #: js/CommonDialogs.js:627
 msgid "Unsubscribe"
 msgstr "Cancelar la suscripción"
 
-#: index.php:278
+#: index.php:308
 msgid "All feeds:"
 msgstr "Todas las fuentes:"
 
-#: index.php:280
+#: index.php:310
 msgid "(Un)hide read feeds"
 msgstr "Ocultar/Mostrar fuentes leídas"
 
-#: index.php:281
+#: index.php:311
 msgid "UI layout:"
 msgstr "Diseño de la interfaz de usuario:"
 
-#: index.php:282 classes/RPC.php:534
+#: index.php:312 classes/RPC.php:534
 msgid "Toggle combined mode"
 msgstr "Alternar modo combinado"
 
-#: index.php:284 classes/RPC.php:511
+#: index.php:314 classes/RPC.php:511
 msgid "Toggle widescreen mode"
 msgstr "Alternar modo de pantalla ancha"
 
-#: index.php:286
+#: index.php:316
 msgid "Toggle expand all articles"
 msgstr "Alternar expandir todos los artículos"
 
-#: index.php:287
+#: index.php:317
 msgid "Other actions:"
 msgstr "Otras acciones:"
 
-#: index.php:288 classes/RPC.php:546
+#: index.php:318 classes/RPC.php:546
 msgid "Keyboard shortcuts help"
 msgstr "Ayuda para atajos de teclado"
 
-#: index.php:297
+#: index.php:327
 msgid "Logout"
 msgstr "Cerrar sesión"
 
-#: prefs.php:16 prefs.php:151 classes/RPC.php:541 classes/Pref_Prefs.php:938
+#: prefs.php:24 prefs.php:159 classes/RPC.php:541 classes/Pref_Prefs.php:938
 msgid "Preferences"
 msgstr "Preferencias"
 
-#: prefs.php:144
+#: prefs.php:152
 msgid "Exit preferences"
 msgstr "Salir de las preferencias"
 
-#: prefs.php:154 classes/Pref_Prefs.php:45 classes/Pref_Feeds.php:125
+#: prefs.php:162 classes/Pref_Prefs.php:45 classes/Pref_Feeds.php:125
 #: classes/Pref_Feeds.php:923
 msgid "Feeds"
 msgstr "Fuentes"
 
-#: prefs.php:158 classes/Pref_Filters.php:305
+#: prefs.php:166 classes/Pref_Filters.php:305
 msgid "Filters"
 msgstr "Filtros"
 
-#: prefs.php:162 classes/Feeds.php:1317 classes/Pref_Labels.php:21
+#: prefs.php:170 classes/Feeds.php:1319 classes/Pref_Labels.php:21
 msgid "Labels"
 msgstr "Marcadores"
 
-#: prefs.php:167
+#: prefs.php:175
 msgid "Users"
 msgstr "Usuarios"
 
-#: prefs.php:170
+#: prefs.php:178
 msgid "System"
 msgstr "Sistema"
 
@@ -410,15 +410,15 @@ msgstr "Cancelar búsqueda activa"
 msgid "Article"
 msgstr "Artículo"
 
-#: classes/RPC.php:496 js/Headlines.js:1424 js/Headlines.js:666
+#: classes/RPC.php:496 js/Headlines.js:1456 js/Headlines.js:693
 msgid "Toggle starred"
 msgstr "Alternar favoritos"
 
-#: classes/RPC.php:497 js/Headlines.js:1436 js/Headlines.js:667
+#: classes/RPC.php:497 js/Headlines.js:1468 js/Headlines.js:694
 msgid "Toggle published"
 msgstr "Alternar publicados"
 
-#: classes/RPC.php:498 js/Headlines.js:1412 js/Headlines.js:665
+#: classes/RPC.php:498 js/Headlines.js:1444 js/Headlines.js:692
 msgid "Toggle unread"
 msgstr "Alternar sin leer"
 
@@ -430,11 +430,11 @@ msgstr "Editar etiquetas"
 msgid "Open in new window"
 msgstr "Abrir en ventana nueva"
 
-#: classes/RPC.php:501 js/Headlines.js:1457
+#: classes/RPC.php:501 js/Headlines.js:1489
 msgid "Mark below as read"
 msgstr "Marcar artículos posteriores como leídos"
 
-#: classes/RPC.php:502 js/Headlines.js:1450
+#: classes/RPC.php:502 js/Headlines.js:1482
 msgid "Mark above as read"
 msgstr "Marcar artículos anteriores como leídos"
 
@@ -518,8 +518,8 @@ msgstr "Ocultar/Mostrar fuentes leídas"
 msgid "Subscribe to feed"
 msgstr "Suscribirse a una fuente"
 
-#: classes/RPC.php:524 js/PrefFeedTree.js:113 js/Headlines.js:1554
-#: js/Headlines.js:1619 js/FeedTree.js:101 js/CommonDialogs.js:375
+#: classes/RPC.php:524 js/PrefFeedTree.js:113 js/Headlines.js:1586
+#: js/Headlines.js:1651 js/FeedTree.js:78 js/CommonDialogs.js:375
 msgid "Edit feed"
 msgstr "Editar fuente"
 
@@ -543,7 +543,7 @@ msgstr "Depurar la actualización de fuentes"
 msgid "Debug viewfeed()"
 msgstr "Depurar viewfeed()"
 
-#: classes/RPC.php:531 js/FeedTree.js:166
+#: classes/RPC.php:531 js/FeedTree.js:103
 msgid "Mark all feeds as read"
 msgstr "Marcar todas las fuentes como leídas"
 
@@ -559,7 +559,7 @@ msgstr "Expandir automáticamente los artículos en el modo combinado"
 msgid "Go to"
 msgstr "Ir a"
 
-#: classes/RPC.php:536 classes/Feeds.php:1155
+#: classes/RPC.php:536 classes/Feeds.php:1157
 msgid "All articles"
 msgstr "Todos"
 
@@ -567,7 +567,7 @@ msgstr "Todos"
 msgid "Fresh"
 msgstr "Reciente"
 
-#: classes/RPC.php:540 classes/Feeds.php:1159
+#: classes/RPC.php:540 classes/Feeds.php:1161
 msgid "Recently read"
 msgstr "Leídos recientemente"
 
@@ -872,7 +872,7 @@ msgstr "Sus datos personales han sido guardados."
 msgid "Full name:"
 msgstr "Nombre completo:"
 
-#: classes/Pref_Prefs.php:306 classes/Handler_Public.php:534 js/PrefUsers.js:98
+#: classes/Pref_Prefs.php:306 classes/Handler_Public.php:518 js/PrefUsers.js:98
 msgid "Email:"
 msgstr "Correo electrónico:"
 
@@ -880,7 +880,7 @@ msgstr "Correo electrónico:"
 #: plugins/note/init.php:49 plugins/nsfw/init.php:105
 #: plugins/af_psql_trgm/init.php:193 js/CommonFilters.js:224
 #: js/CommonFilters.js:306 js/CommonFilters.js:506 js/CommonDialogs.js:628
-#: js/PrefUsers.js:119 js/PrefLabelTree.js:168 js/Article.js:365
+#: js/PrefUsers.js:119 js/PrefLabelTree.js:168 js/Article.js:369
 msgid "Save"
 msgstr "Guardar"
 
@@ -1025,7 +1025,7 @@ msgstr "Seleccionar"
 #: classes/Pref_Labels.php:176 classes/Pref_Feeds.php:916
 #: classes/Pref_Filters.php:775 classes/Pref_Users.php:208
 #: js/CommonFilters.js:430 js/CommonFilters.js:462 js/PrefFeedTree.js:519
-#: js/Headlines.js:658 js/PrefHelpers.js:186 js/CommonDialogs.js:279
+#: js/Headlines.js:685 js/PrefHelpers.js:186 js/CommonDialogs.js:279
 msgid "All"
 msgstr "Todo"
 
@@ -1033,7 +1033,7 @@ msgstr "Todo"
 #: classes/Pref_Labels.php:177 classes/Pref_Feeds.php:918
 #: classes/Pref_Filters.php:777 classes/Pref_Users.php:210
 #: js/CommonFilters.js:432 js/CommonFilters.js:464 js/PrefFeedTree.js:521
-#: js/Headlines.js:661 js/PrefHelpers.js:188 js/CommonDialogs.js:281
+#: js/Headlines.js:688 js/PrefHelpers.js:188 js/CommonDialogs.js:281
 msgid "None"
 msgstr "Nada"
 
@@ -1095,8 +1095,8 @@ msgstr "v%.2f, por %s"
 msgid "v%s, by %s"
 msgstr "v%s, por %s"
 
-#: classes/Pref_Prefs.php:1509 classes/Handler_Public.php:289
-#: include/login_form.php:159
+#: classes/Pref_Prefs.php:1509 classes/Handler_Public.php:273
+#: include/login_form.php:162
 msgid "Default profile"
 msgstr "Perfil por defecto"
 
@@ -1121,15 +1121,21 @@ msgstr ""
 "Contraseña generada <strong>%s</strong> para %s. Recuérdalo para futuras "
 "consultas."
 
-#: classes/Sessions.php:132
+#: classes/Sessions.php:134
 msgid "Session failed to validate (password changed)"
 msgstr "No se pudo validar la sesión (ha cambiado la contraseña)"
 
-#: classes/Sessions.php:137
+#: classes/Sessions.php:139
+#, fuzzy
+#| msgid "Session failed to validate (password changed)"
+msgid "Session failed to validate (access level changed)"
+msgstr "No se pudo validar la sesión (ha cambiado la contraseña)"
+
+#: classes/Sessions.php:144
 msgid "Session failed to validate (account is disabled)"
 msgstr "No se ha podido validar la sesión (la cuenta está desactivada)"
 
-#: classes/Sessions.php:156
+#: classes/Sessions.php:163
 msgid "Session failed to validate (user not found)"
 msgstr "No se pudo validar la sesión (usuario no encontrado)"
 
@@ -1137,7 +1143,7 @@ msgstr "No se pudo validar la sesión (usuario no encontrado)"
 msgid "Feed not found."
 msgstr "Fuente no encontrada."
 
-#: classes/Feeds.php:227 classes/Feeds.php:1157
+#: classes/Feeds.php:227 classes/Feeds.php:1159
 msgid "Archived articles"
 msgstr "Artículos archivados"
 
@@ -1186,39 +1192,39 @@ msgid "Some feeds have update errors (click for details)"
 msgstr ""
 "Error al actualizar algunas fuentes (pulse aquí para obtener los detalles)"
 
-#: classes/Feeds.php:1149
+#: classes/Feeds.php:1151
 msgid "Starred articles"
 msgstr "Favoritos"
 
-#: classes/Feeds.php:1151
+#: classes/Feeds.php:1153
 msgid "Published articles"
 msgstr "Publicados"
 
-#: classes/Feeds.php:1153
+#: classes/Feeds.php:1155
 msgid "Fresh articles"
 msgstr "Recientes"
 
-#: classes/Feeds.php:1313 classes/OPML.php:511 classes/Digest.php:107
+#: classes/Feeds.php:1315 classes/OPML.php:511 classes/Digest.php:107
 #: classes/Pref_Feeds.php:243 classes/Pref_Filters.php:1058
 #: include/controls.php:215
 msgid "Uncategorized"
 msgstr "Sin clasificar"
 
-#: classes/Feeds.php:1315
+#: classes/Feeds.php:1317
 msgid "Special"
 msgstr "Especial"
 
-#: classes/Feeds.php:1410
+#: classes/Feeds.php:1412
 #, php-format
 msgid "Incorrect search syntax: %s."
 msgstr "Sintaxis de búsqueda incorrecta: %s."
 
-#: classes/Feeds.php:1576
+#: classes/Feeds.php:1578
 #, php-format
 msgid "Search results: %s"
 msgstr "Resultados de búsqueda: %s"
 
-#: classes/Feeds.php:2282
+#: classes/Feeds.php:2289
 #, php-format
 msgid "The date keyword \"%s\" was not recognized."
 msgstr ""
@@ -1299,23 +1305,23 @@ msgstr "Error mientras se analizaba el documento."
 msgid "Git error [RC=%d]: %s"
 msgstr "Error de Git [RC=%d]: %s"
 
-#: classes/Handler_Public.php:399
+#: classes/Handler_Public.php:383
 msgid "Incorrect username or password"
 msgstr "Nombre de usuario o contraseña incorrecta"
 
-#: classes/Handler_Public.php:481
+#: classes/Handler_Public.php:465
 msgid "Password recovery"
 msgstr "Recuperación de contraseña"
 
-#: classes/Handler_Public.php:518 classes/Handler_Public.php:549
-#: classes/Handler_Public.php:610 classes/Handler_Public.php:727
-#: classes/Handler_Public.php:734 classes/Handler_Public.php:757
+#: classes/Handler_Public.php:502 classes/Handler_Public.php:533
+#: classes/Handler_Public.php:594 classes/Handler_Public.php:719
+#: classes/Handler_Public.php:726 classes/Handler_Public.php:749
 #: plugins/bookmarklets/init.php:97 plugins/bookmarklets/init.php:142
 #: plugins/bookmarklets/init.php:156 plugins/bookmarklets/init.php:161
 msgid "Return to Tiny Tiny RSS"
 msgstr "Volver a Tiny Tiny RSS"
 
-#: classes/Handler_Public.php:521
+#: classes/Handler_Public.php:505
 msgid ""
 "You will need to provide valid account name and email. Password reset link "
 "will be sent to your email address."
@@ -1324,62 +1330,62 @@ msgstr ""
 "válidos. Se enviará un enlace para crear una nueva contraseña a su correo "
 "electrónico."
 
-#: classes/Handler_Public.php:529 classes/Pref_Feeds.php:653
-#: plugins/bookmarklets/init.php:308 include/login_form.php:127
+#: classes/Handler_Public.php:513 classes/Pref_Feeds.php:653
+#: plugins/bookmarklets/init.php:308 include/login_form.php:128
 #: js/PrefUsers.js:64 js/CommonDialogs.js:585
 msgid "Login:"
 msgstr "Nombre de usuario:"
 
-#: classes/Handler_Public.php:542
+#: classes/Handler_Public.php:526
 #, php-format
 msgid "How much is %d + %d:"
 msgstr "Cuánto es %d + %d:"
 
-#: classes/Handler_Public.php:548 classes/Pref_Users.php:223
+#: classes/Handler_Public.php:532 classes/Pref_Users.php:223
 msgid "Reset password"
 msgstr "Redefinir contraseña"
 
-#: classes/Handler_Public.php:560
+#: classes/Handler_Public.php:544
 msgid "Some of the required form parameters are missing or incorrect."
 msgstr "Algunos de los parámetros necesarios son incorrectos o faltan."
 
-#: classes/Handler_Public.php:564 classes/Handler_Public.php:616
+#: classes/Handler_Public.php:548 classes/Handler_Public.php:600
 msgid "Go back"
 msgstr "Volver"
 
-#: classes/Handler_Public.php:602
+#: classes/Handler_Public.php:586
 msgid "[tt-rss] Password reset request"
 msgstr "[tt-rss] Petición de cambio de contraseña"
 
-#: classes/Handler_Public.php:612
+#: classes/Handler_Public.php:596
 msgid "Sorry, login and email combination not found."
 msgstr "Lo siento, combinación de usuario y correo electrónico incorrecta."
 
-#: classes/Handler_Public.php:632
+#: classes/Handler_Public.php:623
 msgid "Your access level is insufficient to run this script."
 msgstr "Su nivel de acceso es insuficiente para ejecutar este programa."
 
-#: classes/Handler_Public.php:689
+#: classes/Handler_Public.php:681
 #, fuzzy
 #| msgid "Feeds with update errors"
 msgid "Proceed with update?"
 msgstr "Fuentes con errores de actualización"
 
-#: classes/Handler_Public.php:694
+#: classes/Handler_Public.php:686
 msgid "Database Updater"
 msgstr "Actualizador de la base de datos"
 
-#: classes/Handler_Public.php:707
+#: classes/Handler_Public.php:699
 #, php-format
 msgid "Performing updates to version %d"
 msgstr "Realizando actualizaciones a la versión %d"
 
-#: classes/Handler_Public.php:722 classes/Handler_Public.php:749
+#: classes/Handler_Public.php:714 classes/Handler_Public.php:741
 #: js/PrefHelpers.js:417 js/PrefHelpers.js:760
 msgid "Update"
 msgstr "Actualizar"
 
-#: classes/Handler_Public.php:742
+#: classes/Handler_Public.php:734
 #, php-format
 msgid "Database schema needs update to the latest version (%d to %d)."
 msgstr "Tu base de datos necesita actualizarse a la última versión (%d a %d)."
@@ -1465,7 +1471,7 @@ msgid "Authentication"
 msgstr "Autenticación"
 
 #: classes/Pref_Feeds.php:659 plugins/bookmarklets/init.php:315
-#: include/login_form.php:137 js/CommonDialogs.js:591
+#: include/login_form.php:139 js/CommonDialogs.js:591
 msgid "Password:"
 msgstr "Contraseña:"
 
@@ -1477,7 +1483,7 @@ msgstr "Opciones"
 #: plugins/bookmarklets/init.php:288 js/CommonFilters.js:225
 #: js/CommonFilters.js:307 js/CommonFilters.js:507 js/CommonFilters.js:511
 #: js/CommonDialogs.js:629 js/PrefUsers.js:122 js/PrefFeedTree.js:467
-#: js/PrefLabelTree.js:171 js/Article.js:368 js/PrefHelpers.js:231
+#: js/PrefLabelTree.js:171 js/Article.js:372 js/PrefHelpers.js:231
 #: js/PrefHelpers.js:305 js/Feeds.js:659 js/Feeds.js:714
 #: js/CommonDialogs.js:113
 msgid "Cancel"
@@ -1569,7 +1575,7 @@ msgstr "Publicar artículo"
 msgid "Modify score"
 msgstr "Modificar puntuación"
 
-#: classes/Pref_Filters.php:30 js/Headlines.js:1506
+#: classes/Pref_Filters.php:30 js/Headlines.js:1538
 msgid "Assign label"
 msgstr "Asignar marcador"
 
@@ -2055,7 +2061,7 @@ msgstr "Compartir"
 msgid "Shared article will appear in the Published feed."
 msgstr "El artículo compartido aparecerá en la fuente Publicados."
 
-#: plugins/bookmarklets/init.php:328 include/login_form.php:205
+#: plugins/bookmarklets/init.php:328 include/login_form.php:208
 msgid "Log in"
 msgstr "Iniciar sesión"
 
@@ -2086,32 +2092,32 @@ msgid "Use this bookmarklet to publish arbitrary pages using Tiny Tiny RSS"
 msgstr ""
 "Use este bookmarklet para publicar cualquier página usando Tiny Tiny RSS"
 
-#: include/login_form.php:150
+#: include/login_form.php:153
 msgid "I forgot my password"
 msgstr "Olvidé mi contraseña"
 
-#: include/login_form.php:156
+#: include/login_form.php:159
 msgid "Profile:"
 msgstr "Perfil:"
 
-#: include/login_form.php:169
+#: include/login_form.php:172
 msgid "Use less traffic"
 msgstr "Usar menos tráfico"
 
-#: include/login_form.php:173
+#: include/login_form.php:176
 msgid "Does not display images in articles, reduces automatic refreshes."
 msgstr ""
 "No muestra imágenes en los artículos, reduce las actualizaciones automáticas."
 
-#: include/login_form.php:181 js/CommonDialogs.js:13
+#: include/login_form.php:184 js/CommonDialogs.js:13
 msgid "Safe mode"
 msgstr "Modo seguro"
 
-#: include/login_form.php:186
+#: include/login_form.php:189
 msgid "Uses default theme and prevents all plugins from loading."
 msgstr "Utiliza el tema por defecto y evita que se carguen todos los plugins."
 
-#: include/login_form.php:194
+#: include/login_form.php:197
 msgid "Remember me"
 msgstr "Recordarme"
 
@@ -2152,31 +2158,31 @@ msgstr "Error crítico"
 msgid "Unhandled exception"
 msgstr "Excepción no controlada"
 
-#: js/App.js:996
+#: js/App.js:1090
 msgid "Widescreen is not available in combined mode."
 msgstr "El modo de pantalla ancha no está disponible en el modo combinado."
 
-#: js/App.js:1250
+#: js/App.js:1775
 msgid "Please enable mail or mailto plugin first."
 msgstr "Por favor, habilite primero la extensión de correo."
 
-#: js/App.js:1313 js/App.js:1426 js/CommonDialogs.js:371
+#: js/App.js:1838 js/App.js:1951 js/CommonDialogs.js:371
 msgid "You can't edit this kind of feed."
 msgstr "No puede editar esta clase de fuente."
 
-#: js/App.js:1381
+#: js/App.js:1906
 msgid "Please enable af_readability first."
 msgstr "Por favor, active primero af_readability."
 
-#: js/App.js:1435
+#: js/App.js:1960
 msgid "Please select some feed first."
 msgstr "Por favor, seleccione primero alguna fuente."
 
-#: js/App.js:1440
+#: js/App.js:1965
 msgid "You can't unsubscribe from the category."
 msgstr "No puede cancelar la suscripción a la categoría."
 
-#: js/App.js:1446 js/CommonDialogs.js:345 js/CommonDialogs.js:382
+#: js/App.js:1971 js/CommonDialogs.js:345 js/CommonDialogs.js:382
 #, java-printf-format, javascript-format
 msgid "Unsubscribe from %s?"
 msgstr "¿Cancelar la suscripción a %s?"
@@ -2392,9 +2398,9 @@ msgstr "Eliminando las etiquetas seleccionadas..."
 msgid "Please enter new score for selected articles:"
 msgstr "Por favor, introduzca puntuación para los artículos seleccionados:"
 
-#: js/Article.js:56 js/Article.js:138 js/Headlines.js:939 js/Headlines.js:965
-#: js/Headlines.js:1107 js/Headlines.js:1124 js/Headlines.js:1141
-#: js/Headlines.js:1276 js/Headlines.js:977
+#: js/Article.js:56 js/Article.js:138 js/Headlines.js:971 js/Headlines.js:997
+#: js/Headlines.js:1139 js/Headlines.js:1156 js/Headlines.js:1173
+#: js/Headlines.js:1308 js/Headlines.js:1009
 msgid "No articles selected."
 msgstr "Ningún artículo seleccionado."
 
@@ -2416,105 +2422,105 @@ msgid_plural "comments"
 msgstr[0] "comentario"
 msgstr[1] "comentarios"
 
-#: js/Article.js:347
+#: js/Article.js:351
 msgid "Article tags"
 msgstr "Etiquetas del artículo"
 
-#: js/Article.js:354
+#: js/Article.js:358
 msgid "Tags for this article (separated by commas):"
 msgstr "Etiquetas para este artículo (separadas por comas):"
 
-#: js/Article.js:374
+#: js/Article.js:378
 msgid "Saving article tags..."
 msgstr "Guardando las etiquetas del artículo..."
 
-#: js/Headlines.js:643
+#: js/Headlines.js:670
 msgid "Cancel search"
 msgstr "Cancelar búsqueda"
 
-#: js/Headlines.js:657
+#: js/Headlines.js:684
 msgid "Select..."
 msgstr "Seleccionar..."
 
-#: js/Headlines.js:818 js/Headlines.js:870 js/Headlines.js:885
+#: js/Headlines.js:850 js/Headlines.js:902 js/Headlines.js:917
 msgid "Click to open next unread feed."
 msgstr "Pulse abrir la siguiente fuente sin leer."
 
-#: js/Headlines.js:882
+#: js/Headlines.js:914
 msgid "New articles found, reload feed to continue."
 msgstr ""
 "No se han encontrado artículos nuevos, vuelve a cargar la fuente para "
 "continuar."
 
-#: js/Headlines.js:1078
+#: js/Headlines.js:1110
 #, java-printf-format, javascript-format
 msgid "%d article selected"
 msgid_plural "%d articles selected"
 msgstr[0] "%d artículo seleccionado"
 msgstr[1] "%d artículos seleccionados"
 
-#: js/Headlines.js:1149
+#: js/Headlines.js:1181
 #, java-printf-format, javascript-format
 msgid "Delete %d selected article in %s?"
 msgid_plural "Delete %d selected articles in %s?"
 msgstr[0] "¿Borrar %d artículo seleccionado en %s?"
 msgstr[1] "¿Borrar %d artículos seleccionados en %s?"
 
-#: js/Headlines.js:1151
+#: js/Headlines.js:1183
 #, java-printf-format, javascript-format
 msgid "Delete %d selected article?"
 msgid_plural "Delete %d selected articles?"
 msgstr[0] "¿Borrar %d artículo seleccionado?"
 msgstr[1] "¿Borrar %d artículos seleccionados?"
 
-#: js/Headlines.js:1282
+#: js/Headlines.js:1314
 #, java-printf-format, javascript-format
 msgid "Mark %d selected article in %s as read?"
 msgid_plural "Mark %d selected articles in %s as read?"
 msgstr[0] "¿Marcar %d artículo seleccionado de %s como leído?"
 msgstr[1] "¿Marcar %d artículos seleccionados de %s como leídos?"
 
-#: js/Headlines.js:1298
+#: js/Headlines.js:1330
 msgid "No article is selected."
 msgstr "No se ha seleccionado ningún artículo."
 
-#: js/Headlines.js:1333
+#: js/Headlines.js:1365
 msgid "No articles found to mark"
 msgstr "No se han encontrado artículos que marcar"
 
-#: js/Headlines.js:1335
+#: js/Headlines.js:1367
 #, java-printf-format, javascript-format
 msgid "Mark %d article as read?"
 msgid_plural "Mark %d articles as read?"
 msgstr[0] "¿Marcar %d artículo como leído?"
 msgstr[1] "¿Marcar %d artículos como leídos?"
 
-#: js/Headlines.js:1394 js/Headlines.js:663
+#: js/Headlines.js:1426 js/Headlines.js:690
 msgid "Open original article"
 msgstr "Abrir artículo original"
 
-#: js/Headlines.js:1511
+#: js/Headlines.js:1543
 msgid "Remove label"
 msgstr "Borrar marcador"
 
-#: js/Headlines.js:1560 js/FeedTree.js:107 js/Headlines.js:467
-#: js/Headlines.js:516 js/Headlines.js:585
+#: js/Headlines.js:1592 js/FeedTree.js:79 js/Headlines.js:494
+#: js/Headlines.js:543 js/Headlines.js:612
 msgid "Open site"
 msgstr "Abrir sitio"
 
-#: js/Headlines.js:1569 js/FeedTree.js:116
+#: js/Headlines.js:1601 js/FeedTree.js:84
 msgid "Debug feed"
 msgstr "Depurar feed"
 
-#: js/Headlines.js:1590
+#: js/Headlines.js:1622
 msgid "Select articles in group"
 msgstr "Seleccionar los artículos del grupo"
 
-#: js/Headlines.js:1600
+#: js/Headlines.js:1632
 msgid "Mark group as read"
 msgstr "Marcar grupo como leído"
 
-#: js/Headlines.js:1612
+#: js/Headlines.js:1644
 msgid "Mark feed as read"
 msgstr "Marcar fuente como leída"
 
@@ -2817,7 +2823,7 @@ msgstr ""
 "Si ha importado marcadores y/o filtros, puede ser necesario recargar las "
 "preferencia para ver sus nuevos datos."
 
-#: js/FeedTree.js:139
+#: js/FeedTree.js:98
 msgid "(Un)collapse"
 msgstr "(Des)plegar"
 
@@ -2985,7 +2991,7 @@ msgstr "Icono de la fuente borrado."
 msgid "Upload new icon..."
 msgstr "Cargar nuevo icono..."
 
-#: js/CommonDialogs.js:645 js/Headlines.js:636
+#: js/CommonDialogs.js:645 js/Headlines.js:663
 msgid "Show as feed"
 msgstr "Mostrar como fuente"
 
@@ -3090,31 +3096,31 @@ msgstr "URL del artículo:"
 msgid "Attachments"
 msgstr "Adjuntos"
 
-#: js/Article.js:312 js/Headlines.js:548
+#: js/Article.js:316 js/Headlines.js:575
 msgid "Edit tags for this article"
 msgstr "Editar las etiquetas de este artículo"
 
-#: js/Headlines.js:468
+#: js/Headlines.js:495
 msgid "mark feed as read"
 msgstr "Marcar fuente como leída"
 
-#: js/Headlines.js:521
+#: js/Headlines.js:548
 msgid "Span all columns"
 msgstr "Extender todas las columnas"
 
-#: js/Headlines.js:660
+#: js/Headlines.js:687
 msgid "Invert"
 msgstr "Invertir"
 
-#: js/Headlines.js:670
+#: js/Headlines.js:697
 msgid "Set score"
 msgstr "Definir puntuación"
 
-#: js/Headlines.js:679
+#: js/Headlines.js:706
 msgid "Delete permanently"
 msgstr "Borrar permanentemente"
 
-#: js/Headlines.js:905
+#: js/Headlines.js:937
 msgid ""
 "Could not update headlines (invalid object received - see error console for "
 "details)"
@@ -3122,7 +3128,7 @@ msgstr ""
 "No se pudieron actualizar los titulares (objeto inválido recibido - vea la "
 "consola de errores para más detalles)"
 
-#: js/Headlines.js:1402
+#: js/Headlines.js:1434
 #, fuzzy
 #| msgid "Display article URL"
 msgid "Copy article URL"

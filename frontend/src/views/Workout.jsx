@@ -1042,7 +1042,7 @@ function ActiveWorkout() {
   //
   // The scroll waits for the next frame rather than running in the effect itself. App.jsx
   // restores the route's remembered position in a frame it asked for during the same commit
-  // (a reload, a back navigation), and a sheet closing (⋯ → Layout → List) puts the page back
+  // (a back navigation), and a sheet closing (⋯ → Layout → List) puts the page back
   // where it was before the sheet opened, in an effect cleanup that runs before this one —
   // both would win over a scroll made right here. A frame asked for now runs after theirs.
   const listRef = useRef(null)

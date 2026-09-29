@@ -147,8 +147,11 @@ describe('Plan — the rotation editor', () => {
     expect(host.textContent).toContain('Week schedule')
     expect(rows()[0].querySelectorAll('button').length).toBe(0)   // read-only: no per-row buttons at all
     expect(byLabel('Add routine to the rotation')).toBeUndefined()
-    expect(byLabel('Move up')).toBeUndefined()
-    expect(byLabel('Move down')).toBeUndefined()
+    // Scoped to the rotation block: the routines list further down the page has Move up/down
+    // buttons of its own (#142), and they are nothing to do with this pass.
+    const inRotation = label => [...host.querySelectorAll('.rotation button')].find(b => b.getAttribute('aria-label') === label)
+    expect(inRotation('Move up')).toBeUndefined()
+    expect(inRotation('Move down')).toBeUndefined()
     expect(mocks.S.queue.rotationId).toBeUndefined()
     click(byLabel('Use this rotation'))
     act(() => confirmSheet.mock.calls.at(-1)[0].onConfirm())

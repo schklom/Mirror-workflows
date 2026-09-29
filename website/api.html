@@ -2979,7 +2979,7 @@ main.api-main .lead { color: var(--fg-2); max-width: 58ch; margin: 14px 0 0; fon
   </summary>
   <div class="ep-body">
 <p>Checks the runtime, then asks the model for one fixed JSON object and validates the shape that comes back — the whole path a job takes, on nobody's profile.</p>
-<p>Always 200: the outcome is in the body, because &quot;the provider refused&quot; is an answer to the question the button asks, not a failure of the request. It brings the two short upstream retry pauses rather than <code>COACH_RETRY_DELAYS_MS</code>, since an admin is watching it through a proxy with a timeout of its own.</p>
+<p>Always 200: the outcome is in the body, because &quot;the provider refused&quot; is an answer to the question the button asks, not a failure of the request. An HTTPS provider gets the same retries as a job: a 429, 500, 502, 503, 504 or 529 is tried twice more, after pauses of 2 and 5 seconds, and only then reported. A runtime provider is asked once.</p>
     <p class="ep-auth"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2.5"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span>Admin only — a signed-in session whose user is an admin (<code>ADMIN_UIDS</code> or <code>admin:true</code>), as the session cookie or a Bearer token.</span></p>
 
 

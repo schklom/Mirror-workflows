@@ -158,9 +158,12 @@ export function initReminderSync(getState) {
     syncReminder(getState()).catch(() => {})
   }
   document.addEventListener('visibilitychange', resync)
-  import('@capacitor/app').then(({ App }) => {
+  // addListener is a promise of its own — it rejects when the App plugin is not behind the bridge
+  // (a native project cap sync never updated, a custom platform) — so it is returned into the
+  // catch below. Dropped inside a block, as it was before, that rejection went unhandled.
+  import('@capacitor/app').then(({ App }) =>
     App.addListener('appStateChange', ({ isActive }) => { if (isActive) resync() })
-  }).catch(() => {})
+  ).catch(() => {})
 }
 
 // Runs cb whenever the native shell returns to the foreground — the store pulls the account's
@@ -168,9 +171,10 @@ export function initReminderSync(getState) {
 // off mobile; the store's own visibility/focus listeners cover the browser.
 export function onAppActive(cb) {
   if (!MOBILE) return
-  import('@capacitor/app').then(({ App }) => {
+  // Returned, not dropped, for the same reason as in initReminderSync.
+  import('@capacitor/app').then(({ App }) =>
     App.addListener('appStateChange', ({ isActive }) => { if (isActive) cb() })
-  }).catch(() => {})
+  ).catch(() => {})
 }
 
 // WKWebView can't do blob-URL downloads, so the backup goes out through the OS share sheet

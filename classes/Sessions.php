@@ -125,11 +125,18 @@ class Sessions implements \SessionHandlerInterface {
 		$pdo = Db::pdo();
 
 		if (!empty($_SESSION['uid'])) {
-			$user = ORM::for_table('ttrss_users')->find_one($_SESSION['uid']);
+			$user = ORM::for_table('ttrss_users')
+				->select_many('pwd_hash', 'access_level')
+				->find_one($_SESSION['uid']);
 
 			if ($user) {
 				if ($user->pwd_hash != $_SESSION['pwd_hash']) {
 					$_SESSION['login_error_msg'] = __('Session failed to validate (password changed)');
+					return false;
+				}
+
+				if ($user->access_level != $_SESSION['access_level']) {
+					$_SESSION['login_error_msg'] = __('Session failed to validate (access level changed)');
 					return false;
 				}
 

@@ -4,7 +4,7 @@
 // (rest-day override, missing routine, zero-workout history, no synced state, superset links).
 import { describe, beforeAll, afterAll, beforeEach, test, expect, vi } from 'vitest'
 import { buildDemoState } from '../../frontend/src/lib/demoSeed.js'
-import { EXDB } from '../../frontend/src/lib/exercises.js'
+import { EXDB, exOr } from '../../frontend/src/lib/exercises.js'
 import { _seedStateForTests } from '../src/state.js'
 import { TOOLS } from '../src/tools.js'
 import { bestSetOf } from '../../frontend/src/lib/onerm.js'
@@ -953,6 +953,23 @@ describe('preview_session', () => {
     S.exWeights = exWeights
     _seedStateForTests(S)
   }
+
+  // The session builder reads equipment and body part from the global exercise index, which holds
+  // no custom exercises here (see customOf in tools.js). A custom leg lift then ramped on the small
+  // load step, where the app, which registers its customs, takes the larger one for legs.
+  test('a custom leg lift ramps on the same load step as in the app, and the index is left as it was', () => {
+    const custom = { id: 'c-hack', n: 'Hack Squat (mine)', bp: 'upper legs', eq: 'barbell', tg: 'quads', sm: [], custom: true }
+    S.customEx = [custom]
+    only({ id: 'c-hack', sets: 3, reps: 8, weight: 90, warmupSets: 2 }, { prog: 'off' })
+    try {
+      const r = call('preview_session')
+      expect(r.exercises[0].opening_sets.filter(x => x.phase === 'warmup').map(x => x.w)).toEqual([45, 65])
+      expect(exOr('c-hack').missing).toBe(true)   // taken back out of the index
+    } finally {
+      S.customEx = []
+      _seedStateForTests(S)
+    }
+  })
 
   test('defaults to the routine scheduled for today', () => {
     only({ id: '0025', sets: 3, reps: 8, weight: 50 })

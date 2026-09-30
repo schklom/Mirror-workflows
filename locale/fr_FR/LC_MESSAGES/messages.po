@@ -13,10 +13,10 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-09-29 01:22+0000\n"
-"PO-Revision-Date: 2026-09-29 01:30+0000\n"
+"PO-Revision-Date: 2026-09-30 11:51+0000\n"
 "Last-Translator: LaurentC <laurentc@users.noreply.hosted.weblate.org>\n"
-"Language-Team: French <https://hosted.weblate.org/projects/tt-rss/webui/fr/"
-">\n"
+"Language-Team: French <https://hosted.weblate.org/projects/tt-rss/webui/fr/>"
+"\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1113,21 +1113,19 @@ msgstr ""
 
 #: classes/Sessions.php:134
 msgid "Session failed to validate (password changed)"
-msgstr "Échec de la validation de la session (mot de passe changé)"
+msgstr "Échec de validation de la session (mot de passe changé)"
 
 #: classes/Sessions.php:139
-#, fuzzy
-#| msgid "Session failed to validate (password changed)"
 msgid "Session failed to validate (access level changed)"
-msgstr "Échec de la validation de la session (mot de passe changé)"
+msgstr "Échec de validation de la session (changement de permissions)"
 
 #: classes/Sessions.php:144
 msgid "Session failed to validate (account is disabled)"
-msgstr "Échec de la validation de la session (compte désactivé)"
+msgstr "Échec de validation de la session (compte désactivé)"
 
 #: classes/Sessions.php:163
 msgid "Session failed to validate (user not found)"
-msgstr "Échec de la validation de la session (utilisateur introuvable)"
+msgstr "Échec de validation de la session (utilisateur introuvable)"
 
 #: classes/Feeds.php:97 classes/Feeds.php:471
 msgid "Feed not found."

@@ -250,4 +250,27 @@ describe('Stats — weekly planned vs completed volume', () => {
     expect(comparison().textContent).not.toContain('Planned')
     expect(comparison().querySelector('[aria-label*="Planned"]')).toBeNull()
   })
+
+  it('omits 0/0 mappings while retaining planned-positive completed-zero rows', () => {
+    const zeroPress = { id: 'zero-press', n: 'Zero press', muscleWeights: { chest: 1, biceps: 0 }, custom: true }
+    const plannedOnly = { id: 'planned-only', n: 'Planned only', muscleWeights: { triceps: 1 }, custom: true }
+    mocks.S = state({
+      customEx: [zeroPress, plannedOnly],
+      routines: [{
+        id: 'zero-plan', name: 'Zero plan',
+        ex: [{ id: zeroPress.id, sets: 2 }, { id: plannedOnly.id, sets: 1 }],
+      }],
+      week: { 1: ['zero-plan'] },
+      workouts: [{
+        id: 'zero-workout', d: '2026-09-30', start: new Date('2026-09-30T12:00:00').getTime(),
+        entries: [{ id: zeroPress.id, exercise: zeroPress, sets: [{ done: true }, { done: true }] }],
+      }],
+    })
+    mount()
+
+    expect(mocks.bodyMaps.at(-1).load).toEqual({ chest: 2 })
+    expect(value('chest').textContent).toBe('2/2 · 100%')
+    expect(value('triceps').textContent).toBe('0/1 · 0%')
+    expect(row('biceps')).toBeNull()
+  })
 })

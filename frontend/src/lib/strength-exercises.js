@@ -38,15 +38,15 @@ function lastWorkSetAt(S, id) {
 
 function snapshotWeights(entry) {
   const catalogue = entry && typeof entry === 'object' ? EXIDX[entry.id] : null
-  if (catalogue) {
-    const weights = musclesOf(catalogue)
-    if (Object.keys(weights).length) return weights
-  }
+  if (catalogue) return musclesOf(catalogue)
   const direct = entry && typeof entry === 'object'
     ? (entry.muscleWeights || entry.muscleSnapshot?.muscleWeights)
     : null
   if (direct && typeof direct === 'object' && !Array.isArray(direct) && Object.keys(direct).length) {
-    return direct
+    return Object.fromEntries(Object.entries(direct).filter(([, value]) => {
+      const weight = Number(value)
+      return Number.isFinite(weight) && weight > 0
+    }))
   }
   return musclesOf(entry)
 }

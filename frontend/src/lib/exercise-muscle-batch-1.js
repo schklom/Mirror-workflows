@@ -14,9 +14,9 @@ export const OLYMPIC_LIFT_METADATA = Object.freeze(olympic)
 export { MACHINE_BATCH_2 }
 
 /**
- * Reserved for owner-approved corrections. This layer is intentionally separate from the
- * generated batch so a correction can replace a generated body part or muscle list without
- * editing generated data. Explicit metadata on a user/custom exercise wins as well.
+ * Populated owner-approved correction overlay, separate from the generated batches. These
+ * corrections retain explicit zero-credit muscle associations without editing generated data.
+ * Explicit metadata on a user/custom exercise wins as well.
  */
 const completeWeights = weights => Object.freeze(weights)
 const overridesFor = (ids, muscleWeights) => Object.fromEntries(

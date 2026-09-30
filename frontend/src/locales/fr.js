@@ -1383,7 +1383,7 @@ export default {
   'Next: {0}, today': 'À suivre : {0}, aujourd’hui',
   'Next: {0}': 'À suivre : {0}',
   'Next week starts {0}': 'La semaine prochaine commence le {0}',
-  'Week complete, ask the coach': 'Semaine terminée, demandez au coach',
+  'Week complete, ask the coach': 'Semaine terminée, demande au coach',
   'Up next': 'À suivre',
   'Later': 'Plus tard',
   // --- combine routines / layout / deload (v1.3.6) ---

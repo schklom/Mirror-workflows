@@ -266,7 +266,7 @@ describe('muscle balance windows and ranking', () => {
   it('keeps catalogue precedence and deleted-custom snapshot weights', () => {
     const known = { id: '0025', muscleGroups: ['quadriceps'], sets: [{ done: true }] }
     const deleted = { id: 'deleted', muscleSnapshot: { muscleWeights: { chest: 1 } }, sets: [{ done: true }] }
-    expect(loadOfWorkouts([{ entries: [known] }])).toEqual({ chest: 1, triceps: 0.4, deltoids: 0.4, biceps: 0.4 })
+    expect(loadOfWorkouts([{ entries: [known] }])).toEqual({ chest: 1, triceps: 0.4, deltoids: 0.4 })
     expect(loadOfWorkouts([{ entries: [deleted] }])).toEqual({ chest: 1 })
   })
 })

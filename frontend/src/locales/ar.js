@@ -885,7 +885,6 @@ export default {
   'Replaces your current week. Days this plan leaves empty become rest days.': 'يستبدل أسبوعك الحالي. الأيام التي تتركها هذه الخطة فارغة تصبح أيام راحة.',
   'Want something different?': 'تريد شيئًا مختلفًا؟',
   'Say it in your own words and the Coach will revise the whole plan.': 'قلها بكلماتك وسيراجع المدرب الخطة كاملة.',
-  'e.g. “swap the squats for split squats, and Mondays are short”': 'مثلًا «استبدل السكوات بالسكوات المنفصل، واجعل أيام الاثنين قصيرة»',
   'Ask for a revision': 'اطلب مراجعة',
   'Accept plan': 'قبول الخطة',
   'Could not apply those changes': 'تعذر تطبيق هذه التغييرات',

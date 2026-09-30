@@ -926,7 +926,6 @@ export default {
   'Replaces your current week. Days this plan leaves empty become rest days.': '현재 주간 일정을 대체합니다. 이 계획이 비워둔 날은 휴식일이 됩니다.',
   'Want something different?': '다른 걸 원하나요?',
   'Say it in your own words and the Coach will revise the whole plan.': '직접 말로 설명하면 코치가 계획 전체를 수정합니다.',
-  'e.g. “swap the squats for split squats, and Mondays are short”': '예: “스쿼트를 불가리안 스플릿 스쿼트로 바꾸고, 월요일은 시간이 짧아요”',
   'Ask for a revision': '수정 요청',
   'Accept plan': '계획 수락',
   'Could not apply those changes': '해당 변경을 적용하지 못했습니다',

@@ -926,7 +926,6 @@ export default {
   'Replaces your current week. Days this plan leaves empty become rest days.': 'Sustituye tu semana actual. Los días que este plan deje vacíos serán de descanso.',
   'Want something different?': '¿Quieres algo distinto?',
   'Say it in your own words and the Coach will revise the whole plan.': 'Dilo con tus palabras y el Entrenador revisará todo el plan.',
-  'e.g. “swap the squats for split squats, and Mondays are short”': 'p. ej. «cambia las sentadillas por zancadas búlgaras, y los lunes tengo poco tiempo»',
   'Ask for a revision': 'Pedir una revisión',
   'Accept plan': 'Aceptar plan',
   'Could not apply those changes': 'No se pudieron aplicar esos cambios',

@@ -736,7 +736,6 @@ export default {
   'Replaces your current week. Days this plan leaves empty become rest days.': 'Замінить твій поточний тиждень. Дні, які план лишає порожніми, стануть днями відпочинку.',
   'Want something different?': 'Хочеш інакше?',
   'Say it in your own words and the Coach will revise the whole plan.': 'Скажи своїми словами, і Тренер переробить весь план.',
-  'e.g. “swap the squats for split squats, and Mondays are short”': 'напр. «заміни присідання на болгарські випади, а по понеділках у мене мало часу»',
   'Ask for a revision': 'Запросити правку',
   'Accept plan': 'Прийняти план',
   'Could not apply those changes': 'Не вдалося застосувати ці зміни',

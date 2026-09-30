@@ -1090,7 +1090,6 @@ export default {
   'Replaces your current week. Days this plan leaves empty become rest days.': 'Lecseréli a jelenlegi hetedet. Az üresen hagyott napok pihenőnapok lesznek.',
   'Want something different?': 'Valami mást szeretnél?',
   'Say it in your own words and the Coach will revise the whole plan.': 'Írd le a saját szavaiddal, és az Edző az egész tervet átdolgozza.',
-  'e.g. “swap the squats for split squats, and Mondays are short”': 'pl. „a guggolást cseréld kitörésre, és a hétfők rövidek”',
   'Ask for a revision': 'Átdolgozás kérése',
   'Accept plan': 'Terv elfogadása',
   'Could not apply those changes': 'Nem sikerült alkalmazni a módosításokat',

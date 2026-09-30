@@ -926,7 +926,6 @@ export default {
   'Replaces your current week. Days this plan leaves empty become rest days.': '将替换你当前的一周安排。此计划留空的日子将成为休息日。',
   'Want something different?': '想要不一样的？',
   'Say it in your own words and the Coach will revise the whole plan.': '用你自己的话说出来，教练会修订整个计划。',
-  'e.g. “swap the squats for split squats, and Mondays are short”': '例如「把深蹲换成保加利亚分腿蹲，周一时间比较紧」',
   'Ask for a revision': '请求修订',
   'Accept plan': '采用此计划',
   'Could not apply those changes': '无法应用这些更改',

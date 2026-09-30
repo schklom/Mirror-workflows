@@ -545,7 +545,6 @@ export const PT_BR_OVERRIDES = {
   'Replaces your current week. Days this plan leaves empty become rest days.': 'Substitui sua semana atual. Os dias que este plano deixar vazios viram dias de descanso.',
   'Want something different?': 'Quer algo diferente?',
   'Say it in your own words and the Coach will revise the whole plan.': 'Diga com suas palavras e o Treinador revisa o plano inteiro.',
-  'e.g. “swap the squats for split squats, and Mondays are short”': 'ex.: “troque os agachamentos por afundos búlgaros, e às segundas tenho pouco tempo”',
   'Nothing changes, and the Coach will remember you turned these down.': 'Nada muda, e o Treinador vai lembrar que você recusou estas.',
   'Based on your last {0} sessions': 'Com base nas suas últimas {0} sessões',
   'Your plan changed since the Coach looked at it. Suggestions that no longer match are greyed out. Ask for a fresh review to see them again.': 'Seu plano mudou desde que o Treinador olhou. As sugestões que não batem mais aparecem esmaecidas. Peça uma nova revisão para vê-las de novo.',

@@ -918,7 +918,6 @@ export default {
   'Replaces your current week. Days this plan leaves empty become rest days.': '將直接取代目前的一週排程。此計畫未安排的日期將自動設為休息日。',
   'Want something different?': '想做些微調嗎？',
   'Say it in your own words and the Coach will revise the whole plan.': '直接用你的話描述需求，教練將全盤調整。',
-  'e.g. “swap the squats for split squats, and Mondays are short”': '例如：「把深蹲改成保加利亞分腿蹲，還有週一訓練時間要縮短」',
   'Ask for a revision': '請求修訂計畫',
   'Accept plan': '採納此計畫',
   'Could not apply those changes': '無法套用此變更',

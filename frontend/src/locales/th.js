@@ -1098,7 +1098,6 @@ export default {
   'Replaces your current week. Days this plan leaves empty become rest days.': 'แทนที่สัปดาห์ปัจจุบันของคุณ วันที่แผนนี้เว้นว่างจะกลายเป็นวันพัก',
   'Want something different?': 'อยากได้อะไรที่ต่างออกไปไหม',
   'Say it in your own words and the Coach will revise the whole plan.': 'บอกด้วยคำพูดของคุณเอง แล้วโค้ชจะปรับปรุงแผนทั้งหมด',
-  'e.g. “swap the squats for split squats, and Mondays are short”': 'เช่น “เปลี่ยนสควอตเป็นสปลิตสควอต และวันจันทร์มีเวลาน้อย”',
   'Ask for a revision': 'ขอปรับปรุง',
   'Accept plan': 'ยอมรับแผน',
   'Could not apply those changes': 'ไม่สามารถนำการเปลี่ยนแปลงเหล่านั้นไปใช้ได้',

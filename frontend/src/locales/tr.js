@@ -926,7 +926,6 @@ export default {
   'Replaces your current week. Days this plan leaves empty become rest days.': 'Mevcut haftanın yerine geçer. Bu planın boş bıraktığı günler dinlenme günü olur.',
   'Want something different?': 'Farklı bir şey mi istiyorsun?',
   'Say it in your own words and the Coach will revise the whole plan.': 'Kendi cümlelerinle söyle, Koç tüm planı yeniden düzenlesin.',
-  'e.g. “swap the squats for split squats, and Mondays are short”': 'örn. “squatları bulgar split squat ile değiştir, pazartesileri vaktim az”',
   'Ask for a revision': 'Düzeltme iste',
   'Accept plan': 'Planı kabul et',
   'Could not apply those changes': 'Bu değişiklikler uygulanamadı',

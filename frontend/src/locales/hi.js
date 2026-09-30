@@ -926,7 +926,6 @@ export default {
   'Replaces your current week. Days this plan leaves empty become rest days.': 'यह आपके मौजूदा हफ़्ते की जगह लेगा। जो दिन यह प्लान खाली छोड़ता है वे आराम के दिन बन जाएँगे।',
   'Want something different?': 'कुछ अलग चाहिए?',
   'Say it in your own words and the Coach will revise the whole plan.': 'अपने शब्दों में कहें और कोच पूरा प्लान संशोधित कर देगा।',
-  'e.g. “swap the squats for split squats, and Mondays are short”': 'जैसे “स्क्वैट की जगह स्प्लिट स्क्वैट कर दो, और सोमवार को समय कम रहता है”',
   'Ask for a revision': 'संशोधन माँगें',
   'Accept plan': 'प्लान स्वीकारें',
   'Could not apply those changes': 'वे बदलाव लागू नहीं हो सके',

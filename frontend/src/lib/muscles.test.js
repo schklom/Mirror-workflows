@@ -3,7 +3,8 @@ import { EXIDX, EXDB, smOf } from './exercises.js'
 import { LANGS, DERIVED_LOCALES } from './i18n-core.js'
 import {
   MUSCLE_NAME, exerciseMuscleSnapshot, hasExplicitMuscleMetadata, levelsOf, loadOf,
-  loadOfWorkouts, loadOfWeeklyPlan, matchesMuscleGroups, muscleBalanceWindow, muscleGroupsOf, musclesOf, rankOf
+  loadOfWorkouts, loadOfWeeklyPlan, matchesMuscleGroups, muscleBalanceWindow, muscleGroupsOf,
+  musclesOf, muscleWeightsOf, rankOf
 } from './muscles.js'
 
 describe('multi-muscle exercise metadata', () => {
@@ -47,6 +48,33 @@ describe('multi-muscle exercise metadata', () => {
       id: 'deleted-custom', muscleGroups: ['chest', 'chest', 'triceps'],
       sets: [{ done: true }]
     }] }])).toEqual({ chest: 1, triceps: 1 })
+  })
+})
+
+describe('explicit muscle weights', () => {
+  const complete = { chest: 1, deltoids: 0.4, triceps: 0 }
+
+  it('preserves every finite explicit weight from zero through one', () => {
+    expect(muscleWeightsOf({ muscleWeights: complete })).toEqual(complete)
+  })
+
+  it('keeps effective stimulus positive-only', () => {
+    expect(musclesOf({ muscleWeights: complete })).toEqual({ chest: 1, deltoids: 0.4 })
+  })
+
+  it('treats a recognized all-zero map as authoritative instead of using body-part defaults', () => {
+    const ex = { bp: 'chest', muscleWeights: { chest: 0, triceps: 0 } }
+    expect(muscleWeightsOf(ex)).toEqual({ chest: 0, triceps: 0 })
+    expect(musclesOf(ex)).toEqual({})
+  })
+
+  it('preserves complete weights in history snapshots', () => {
+    expect(exerciseMuscleSnapshot({ n: 'Press', bp: 'chest', muscleWeights: complete }))
+      .toMatchObject({ n: 'Press', bp: 'chest', muscleWeights: complete })
+  })
+
+  it('keeps legacy primary and secondary fallback weights', () => {
+    expect(muscleWeightsOf({ tg: 'pectorals', mg: 'triceps' })).toEqual({ chest: 1, triceps: 0.4 })
   })
 })
 

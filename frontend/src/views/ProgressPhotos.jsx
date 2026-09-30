@@ -1,22 +1,37 @@
-// Every progress photo across every logged workout, in one place, newest first — and a
-// before/after comparison between any two of them.
+// Every progress photo across every logged workout, in one place, newest first — a quick way to
+// add one to today, and a before/after comparison between any two.
 //
-// WorkoutMedia.jsx already lets a photo or video be attached to a finished workout, and that is
-// still where one is added or removed; this view only reads what is already there (workoutMediaOf,
-// the same list WorkoutMedia.jsx shows per workout) and lines every still up chronologically, plus
-// a slider to compare two dates directly. Nothing new to store, sync or back up — one more way to
-// look at data the media system already keeps, private to the account the same way everything
-// else there is (DATA_DIR/uploads/<uid>/, api/media.js).
+// WorkoutMedia.jsx already lets a photo or video be attached to a finished workout — that is
+// still the only place one is stored (addWorkoutMedia, a saved workout's own `media` list) and
+// where one is removed. What this view adds is a shortcut for the common case (today's workout
+// is already logged) straight onto the record WorkoutMedia.jsx would have written to anyway, plus
+// lining every still up chronologically and a slider to compare two dates directly. Nothing new
+// to store, sync or back up — one more way to reach and to look at data the media system already
+// keeps, private to the account the same way everything else there is (DATA_DIR/uploads/<uid>/,
+// api/media.js).
 import { useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/useStore.js'
 import { useUI } from '../store/useUI.js'
 import { t } from '../lib/i18n.js'
-import { fmtDate } from '../lib/format.js'
-import { workoutMediaOf } from '../lib/media-refs.js'
+import { fmtDate, todayISO } from '../lib/format.js'
+import { workoutMediaOf, WORKOUT_MEDIA_MAX } from '../lib/media-refs.js'
+import { addWorkoutMedia } from '../lib/workout-media.js'
+import { syncMedia } from '../lib/media-sync.js'
+import { useMediaPicker } from '../components/CustomMediaField.jsx'
 import { CustomThumb, MediaView, useMediaUrl } from '../components/CustomMedia.jsx'
 import { Button } from '../components/ui.jsx'
 import Icon from '../components/Icon.jsx'
+
+const toast = m => useUI.getState().toast(m)
+
+/** Today's own logged workout, the latest one if there is more than one — where "Add photo"
+ *  attaches to, same as opening that workout and using WorkoutMedia.jsx there directly. */
+export function todaysWorkout(S) {
+  const today = (S.workouts || []).filter(w => w.d === todayISO())
+  if (!today.length) return null
+  return today.reduce((a, b) => (b.start || 0) > (a.start || 0) ? b : a)
+}
 
 /**
  * Every still photo (no video — the comparison wants two stills, not two clips) across every
@@ -113,10 +128,14 @@ export function openProgressCompare(x, y) {
 export default function ProgressPhotos() {
   const nav = useNavigate()
   const S = useStore(s => s.S)
+  const update = useStore(s => s.update)
   const photos = useMemo(() => progressPhotosOf(S), [S.workouts])
   const groups = useMemo(() => groupByDate(photos), [photos])
   const [comparing, setComparing] = useState(false)
   const [picked, setPicked] = useState([])   // up to 2 hashes, in tap order
+  const today = todaysWorkout(S)
+  const { pick, busy, canAdd, showAdd } = useMediaPicker()
+  const fileRef = useRef(null)
 
   const toggle = p => setPicked(cur => {
     if (cur.includes(p.m.hash)) return cur.filter(h => h !== p.m.hash)
@@ -131,6 +150,21 @@ export default function ProgressPhotos() {
     cancelCompare()
     if (a && b) openProgressCompare(a, b)
   }
+  // Attaches straight onto today's already-logged workout — the file picker offers the camera
+  // on a phone the same way WorkoutMedia.jsx's does, since it is the very same input.
+  const onFile = async ev => {
+    const file = ev.target.files && ev.target.files[0]
+    ev.target.value = ''
+    if (!file || !today) return
+    if (workoutMediaOf(today).length >= WORKOUT_MEDIA_MAX) { toast(t('Up to {0} photos or videos per workout.', WORKOUT_MEDIA_MAX)); return }
+    const got = await pick(file)
+    if (!got) return
+    let res
+    update(s => { res = addWorkoutMedia(s, today, got) })
+    if (res === 'added') { toast(t('Photo added')); syncMedia({ force: true }) }
+    else if (res === 'full') toast(t('Up to {0} photos or videos per workout.', WORKOUT_MEDIA_MAX))
+    else if (res === 'gone') toast(t('Workout deleted'))
+  }
 
   return <>
     <div className="hdr"><button className="iconbtn" onClick={() => nav('/stats')} aria-label={t('Stats')}><Icon name="chevronLeft" /></button>
@@ -141,13 +175,22 @@ export default function ProgressPhotos() {
         : <Button size="sm" variant="tinted" onClick={() => setComparing(true)}>{t('Compare')}</Button>)}
     </div>
 
+    {!comparing && showAdd && <div className="row" style={{ marginBottom: 16 }}>
+      {today
+        ? <Button icon={busy ? 'image' : 'camera'} disabled={!canAdd} onClick={() => fileRef.current?.click()}>
+            {busy ? t('Loading…') : t('Add a photo to today')}
+          </Button>
+        : <Button icon="dumbbell" onClick={() => nav('/workout')}>{t('Log today’s workout to add a photo')}</Button>}
+      <input ref={fileRef} type="file" accept="image/*" hidden onChange={onFile} />
+    </div>}
+
     {comparing && <div className="small dim" style={{ margin: '0 0 12px' }}>
       {picked.length < 2 ? t('Pick two photos to compare.') : t('Ready — open the comparison.')}
     </div>}
 
     {!photos.length
       ? <div className="empty"><div className="ico"><Icon name="image" /></div>
-          {t('No progress photos yet — add one from a workout’s finish screen, or from its entry in History.')}
+          {t('No progress photos yet — the button above adds one to today, once today has a logged workout.')}
         </div>
       : groups.map(g => (
         <div key={g.d} style={{ marginBottom: 18 }}>

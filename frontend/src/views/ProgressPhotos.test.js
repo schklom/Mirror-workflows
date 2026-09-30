@@ -1,6 +1,7 @@
 // @vitest-environment happy-dom
 import { describe, it, expect } from 'vitest'
-import { progressPhotosOf, groupByDate, daysBetween } from './ProgressPhotos.jsx'
+import { progressPhotosOf, groupByDate, daysBetween, todaysWorkout } from './ProgressPhotos.jsx'
+import { todayISO } from '../lib/format.js'
 
 // normalizeMediaRef (lib/media-refs.js) only accepts a 64-hex-char hash — workoutMediaOf drops
 // anything else, so the fixtures need real ones. A short label maps to a stable fake hash.
@@ -67,6 +68,25 @@ describe('groupByDate', () => {
 
   it('is empty for an empty list', () => {
     expect(groupByDate([])).toEqual([])
+  })
+})
+
+describe('todaysWorkout', () => {
+  it('is null with no workout logged today', () => {
+    expect(todaysWorkout({ workouts: [{ d: '2020-01-01', start: 0 }] })).toBeNull()
+    expect(todaysWorkout({ workouts: [] })).toBeNull()
+  })
+
+  it('finds today\'s workout among others', () => {
+    const w = { id: 'today-one', d: todayISO(), start: 100 }
+    expect(todaysWorkout({ workouts: [{ d: '2020-01-01', start: 0 }, w] })).toBe(w)
+  })
+
+  it('picks the latest of two logged today (e.g. a morning and an evening session)', () => {
+    const early = { id: 'a', d: todayISO(), start: 100 }
+    const late = { id: 'b', d: todayISO(), start: 200 }
+    expect(todaysWorkout({ workouts: [early, late] })).toBe(late)
+    expect(todaysWorkout({ workouts: [late, early] })).toBe(late)
   })
 })
 

@@ -420,7 +420,7 @@ export default {
   'Appearance': '外觀',
   'synced with your profile': '已與個人檔案同步',
   'Language': '語言',
-  "Exercise instructions aren't available in this language yet — they stay in English.": '動作說明尚無繁體中文版本——將暫時維持英文顯示。',
+  "Exercise instructions aren't available in this language yet — they stay in English.": '此語言暫無動作說明——將維持以英文顯示。',
   'English exercise names': '英文動作名稱',
   'Show the English name in parentheses next to the translated one.': '在翻譯名稱旁的括號內顯示原英文名稱。',
   'English names only': '僅顯示英文名稱',

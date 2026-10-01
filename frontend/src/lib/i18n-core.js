@@ -9,7 +9,7 @@ export const LANGS = {
   tr: 'Türkçe', ru: 'Русский', uk: 'Українська', zh: '简体中文', 'zh-TW': '繁體中文',
   ko: '한국어', hi: 'हिन्दी', th: 'ไทย', hu: 'Magyar', ar: 'العربية'
 }
-export const INSTR_LANGS = ['en', 'es', 'fr', 'it', 'tr', 'ru', 'zh', 'hi', 'pl', 'ko', 'pt-BR', 'hu', 'ar']
+export const INSTR_LANGS = ['en', 'es', 'fr', 'it', 'tr', 'ru', 'zh', 'zh-TW', 'hi', 'pl', 'ko', 'pt-BR', 'hu', 'ar']
 export const EXERCISE_NAME_LANGS = ['pt-BR', 'hu', 'de', 'es', 'ru', 'it', 'fr']
 // Languages rendered right-to-left; i18n.js setLang applies the direction from this.
 export const RTL_LANGS = new Set(['ar'])

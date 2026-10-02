@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-09-29 01:22+0000\n"
-"PO-Revision-Date: 2026-09-29 01:30+0000\n"
+"PO-Revision-Date: 2026-10-01 12:51+0000\n"
 "Last-Translator: Dony Wibowo <dony@dony.me>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/tt-rss/webui/"
 "id/>\n"
@@ -847,11 +847,11 @@ msgstr "Konfigurasi telah disimpan.﻿"
 
 #: classes/Pref_Prefs.php:271
 msgid "Your personal data has been saved."
-msgstr "Data pribadi Anda telah disimpan.﻿"
+msgstr "Data pribadi anda telah disimpan."
 
 #: classes/Pref_Prefs.php:301
 msgid "Full name:"
-msgstr "Nama lengkap:﻿"
+msgstr "Nama lengkap:"
 
 #: classes/Pref_Prefs.php:306 classes/Handler_Public.php:518 js/PrefUsers.js:98
 msgid "Email:"
@@ -1107,10 +1107,8 @@ msgid "Session failed to validate (password changed)"
 msgstr "Sesi gagal memvalidasi (kata sandi diubah)﻿"
 
 #: classes/Sessions.php:139
-#, fuzzy
-#| msgid "Session failed to validate (password changed)"
 msgid "Session failed to validate (access level changed)"
-msgstr "Sesi gagal memvalidasi (kata sandi diubah)﻿"
+msgstr "Sesi gagal validasi (level akses berubah)﻿"
 
 #: classes/Sessions.php:144
 msgid "Session failed to validate (account is disabled)"

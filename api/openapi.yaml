@@ -10,7 +10,7 @@ info:
   summary: Passkey (WebAuthn) auth + per-user state storage for openGym
   description: |
     The backend of [openGym](https://opengym.duarte-santos.ch) — a free, open-source
-    gym & body-weight tracker. One Node file, no framework, JSON-file storage,
+    gym & body-weight tracker. A plain Node server, no framework, JSON-file storage,
     HMAC-signed session cookies.
 
     ### Authentication

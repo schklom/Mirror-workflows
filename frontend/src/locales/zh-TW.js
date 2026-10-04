@@ -1734,4 +1734,6 @@ export default {
   '{0} days apart': '相隔 {0} 天',
   '{0} photo': '{0} 張照片',
   '{0} photos': '{0} 張照片',
+  'Classic timer sound': '經典計時提示音',
+  'The quieter three-beep sound from before 1.3.9, instead of the louder chime.': '使用 1.3.9 版之前較輕柔的三聲嗶聲，而不是較響亮的提示音。',
 }

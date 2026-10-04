@@ -132,20 +132,31 @@ Visit `https://gym.example.com`, create your profile, and add it to your home sc
 ## 4. Multiple users
 
 Anyone who can reach the URL can create their own profile — each gets isolated data. That's the
-default: open signup, no admin.
+default: open signup, and **the first profile created on the instance is its admin**
+(`FIRST_USER_ADMIN`, on by default). So register your own profile before you share the address.
 
-If you'd rather control who gets in, three optional settings in `.env` turn that around:
+"First" is decided at the moment of registration: the instance had no profiles at all. It is
+never applied after the fact — an instance that already has profiles promotes nobody when it is
+upgraded — and an instance whose profiles were all deleted counts as fresh again. The flag is
+stored as `"admin": true` on that profile's entry in `./data/db.json`; delete that line (with the
+stack stopped) to take it back.
+
+If you'd rather control who gets in, these optional settings in `.env` turn that around:
 
 ```bash
-ADMIN_UIDS=youruserid      # comma-separated; these users get the admin dashboard
+ADMIN_UIDS=youruserid      # comma-separated; these users get the admin dashboard too
 INVITE_ONLY=1              # new profiles need an invite code
 ALLOW_GUEST=0              # remove "Continue without account"
+FIRST_USER_ADMIN=0         # the first profile is an ordinary one; admins only via ADMIN_UIDS
 ```
 
-Register your own passkey profile first, then copy your id from **Settings → Account → Account
-ID** (tap it to copy; it is also in `./data/db.json` under `users[].id`) and put it in
-`ADMIN_UIDS`. The same row is how anyone on your instance tells you which account is theirs when
-they need help. You'll get an **Admin dashboard** link in Settings: who's training
+Create your own profile before you switch `INVITE_ONLY` on: with no profile and no admin yet,
+nobody could generate the first code.
+
+For more admins (or on an instance that existed before `FIRST_USER_ADMIN`), copy the id from
+**Settings → Account → Account ID** (tap it to copy; it is also in `./data/db.json` under
+`users[].id`) and put it in `ADMIN_UIDS`. The same row is how anyone on your instance tells you
+which account is theirs when they need help. Admins get an **Admin dashboard** link in Settings: who's training
 right now, each user's workout history and body weight, the ability to disable an account (signed
 out and locked out everywhere until you re-enable it), and — with `INVITE_ONLY=1` — generating and
 revoking invite codes. Existing accounts keep working when you switch invite-only on. Admin access

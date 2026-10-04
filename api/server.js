@@ -37,10 +37,24 @@ const DATA = process.env.DATA_DIR || '/data';
 const RP_ID = process.env.RP_ID || 'localhost';
 const ORIGIN = process.env.ORIGIN || 'http://localhost:8080';
 const RP_NAME = process.env.RP_NAME || 'openGym';
-// Admin dashboard (issue): admins are matched by uid; INVITE_ONLY gates new signups behind a
-// code the admin generates. Both default off so a fresh self-hosted instance stays open.
+// Admin dashboard (issue): admins are matched by uid (or the admin flag FIRST_USER_ADMIN sets);
+// INVITE_ONLY gates new signups behind a code the admin generates. Off by default, so a fresh
+// self-hosted instance stays open.
 const ADMIN_UIDS = (process.env.ADMIN_UIDS || '').split(',').map(s => s.trim()).filter(Boolean);
 const INVITE_ONLY = /^(1|true|yes|on)$/i.test(process.env.INVITE_ONLY || '');
+// The first profile made on an instance with no profiles at all becomes its admin (#328), so a
+// fresh install has someone who can open the admin dashboard without editing ADMIN_UIDS and
+// restarting. Stored on the user record (user.admin), which isAdmin already honours. It is
+// decided at the moment of registration only: an instance that already has profiles changes
+// nothing on upgrade. Default ON; FIRST_USER_ADMIN=0 turns it off.
+const FIRST_USER_ADMIN = !/^(0|false|no|off)$/i.test(process.env.FIRST_USER_ADMIN || '');
+// Checked synchronously right before db.users.push, with no await in between, so two
+// registrations racing each other cannot both see an empty instance.
+function claimFirstAdmin(req, user) {
+  if (!FIRST_USER_ADMIN || db.users.length !== 0) return;
+  user.admin = true;
+  audit(req, 'admin.first-user', { user });
+}
 // Guest mode ("Continue without account") keeps everything in the browser and never touches this
 // server — but on an instance meant for a known set of people, an entrance nobody can walk back
 // out of is still the wrong front door (#42). Default ON, so existing instances are unchanged;
@@ -1181,6 +1195,7 @@ const passwordRoutes = {
     const created = new Date().toISOString();
     const user = { id: crypto.randomBytes(12).toString('base64url'), name, created, pw: { h, set: created }, ...(email ? { email } : {}) };
     if (inv) { user.invitedBy = inv.code; inv.usedBy = user.id; inv.usedAt = created; }
+    claimFirstAdmin(req, user);
     db.users.push(user);
     saveDb();
     audit(req, 'auth.register.ok', { user, msg: inv ? inv.code + ' · password' : 'password' });
@@ -1842,6 +1857,7 @@ const routes = {
     }
     const user = { id: c.uid, name: c.name, created: new Date().toISOString() };
     if (invite) { user.invitedBy = invite.code; invite.usedBy = user.id; invite.usedAt = user.created; }
+    claimFirstAdmin(req, user);
     db.users.push(user);
     db.creds.push({
       id: credential.id, userId: user.id,

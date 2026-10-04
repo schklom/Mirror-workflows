@@ -56,8 +56,10 @@ spec:
               value: opengym.example.com
             - name: ORIGIN
               value: https://opengym.example.com
-            # Everything else in .env.example (INVITE_ONLY, ADMIN_UIDS, ALLOW_GUEST,
-            # DEFAULT_LANG, PASSWORD_LOGIN, the push keys, ...) goes here the same way.
+            # Everything else in .env.example (INVITE_ONLY, ADMIN_UIDS, FIRST_USER_ADMIN,
+            # ALLOW_GUEST, DEFAULT_LANG, PASSWORD_LOGIN, the push keys, ...) goes here the
+            # same way. FIRST_USER_ADMIN is on unless set to "0": the first profile created on
+            # an empty instance becomes its admin.
             # TRUST_PROXY is left off on purpose: the web container overwrites X-Forwarded-For
             # with the address it was reached from, which here is the gateway's pod, so turning
             # it on changes nothing for the sign-in throttle — while any pod in the cluster that

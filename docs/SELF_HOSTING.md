@@ -154,8 +154,10 @@ the request is refused, pairing says so instead of "Failed to fetch".
 ## 4. Multiple users
 
 Anyone who can reach the URL can create their own profile — each gets isolated data. That's the
-default: open signup, and **the first profile created on the instance is its admin**
-(`FIRST_USER_ADMIN`, on by default). So register your own profile before you share the address.
+default: open signup. With `FIRST_USER_ADMIN=1` in `.env`, **the first profile created on the
+instance becomes its admin**, so a fresh install needs no `ADMIN_UIDS` edit. It is off by default,
+because an existing instance with no profiles yet would hand admin to whoever signs up first; if
+you turn it on, register your own profile before you share the address.
 
 "First" is decided at the moment of registration: the instance had no profiles at all. It is
 never applied after the fact — an instance that already has profiles promotes nobody when it is
@@ -169,7 +171,7 @@ If you'd rather control who gets in, these optional settings in `.env` turn that
 ADMIN_UIDS=youruserid      # comma-separated; these users get the admin dashboard too
 INVITE_ONLY=1              # new profiles need an invite code
 ALLOW_GUEST=0              # remove "Continue without account"
-FIRST_USER_ADMIN=0         # the first profile is an ordinary one; admins only via ADMIN_UIDS
+FIRST_USER_ADMIN=1         # the first profile on an empty instance becomes its admin
 ```
 
 Create your own profile before you switch `INVITE_ONLY` on: with no profile and no admin yet,

@@ -150,7 +150,7 @@ Traefik and nginx, and there are separate guides for
 | `RP_NAME` | Name shown in the passkey prompt | `openGym` |
 | `SESSION_DAYS` | How long a sign-in lasts, in days | `90` |
 | `ADMIN_UIDS` | User ids that get the admin dashboard, comma-separated | *(none)* |
-| `FIRST_USER_ADMIN` | The first profile created on an empty instance becomes its admin; `0` turns it off | *(on)* |
+| `FIRST_USER_ADMIN` | `1`: the first profile created on an empty instance becomes its admin | *(off)* |
 | `INVITE_ONLY` | Require an invite code to create a profile | *(off)* |
 | `ALLOW_GUEST` | Offer "Continue without account"; `0` requires a profile | *(on)* |
 | `PASSWORD_LOGIN` | Offer name-and-password sign-in next to passkeys | *(off)* |

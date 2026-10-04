@@ -47,8 +47,10 @@ const INVITE_ONLY = /^(1|true|yes|on)$/i.test(process.env.INVITE_ONLY || '');
 // fresh install has someone who can open the admin dashboard without editing ADMIN_UIDS and
 // restarting. Stored on the user record (user.admin), which isAdmin already honours. It is
 // decided at the moment of registration only: an instance that already has profiles changes
-// nothing on upgrade. Default ON; FIRST_USER_ADMIN=0 turns it off.
-const FIRST_USER_ADMIN = !/^(0|false|no|off)$/i.test(process.env.FIRST_USER_ADMIN || '');
+// nothing on upgrade. Default OFF: an existing instance with no profiles yet (guest-only, or phones
+// kept local) would otherwise hand admin to whoever signs up first after the upgrade.
+// FIRST_USER_ADMIN=1 turns it on for a fresh install.
+const FIRST_USER_ADMIN = /^(1|true|yes|on)$/i.test(process.env.FIRST_USER_ADMIN || '');
 // Checked synchronously right before db.users.push, with no await in between, so two
 // registrations racing each other cannot both see an empty instance.
 function claimFirstAdmin(req, user) {

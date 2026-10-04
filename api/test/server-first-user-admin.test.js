@@ -1,6 +1,6 @@
 /* FIRST_USER_ADMIN (#328): the first profile made on an instance with no profiles becomes its
    admin, through either way of registering. Never retroactive — an instance that already has
-   profiles changes nothing — and FIRST_USER_ADMIN=0 turns it off. Real server.js in a child, the
+   profiles changes nothing. Off unless FIRST_USER_ADMIN=1. Real server.js in a child, the
    same harness as server-passkeys.test.js. */
 import { test, before } from 'node:test';
 import assert from 'node:assert/strict';
@@ -124,7 +124,7 @@ async function registerPasskey(h, name, ip) {
 const stored = (h, id) => h.db().users.find(u => u.id === id);
 
 test('the first password registration on an empty instance is the admin, the second is not', async t => {
-  const h = await startServer(t);
+  const h = await startServer(t, { env: { FIRST_USER_ADMIN: '1' } });
   const first = await registerPassword(h, 'Ana', '198.51.100.10');
   assert.equal(first.status, 200);
   assert.equal(first.body.user.admin, true);
@@ -140,7 +140,7 @@ test('the first password registration on an empty instance is the admin, the sec
 });
 
 test('the first passkey registration on an empty instance is the admin, the second is not', async t => {
-  const h = await startServer(t);
+  const h = await startServer(t, { env: { FIRST_USER_ADMIN: '1' } });
   const first = await registerPasskey(h, 'Ana', '198.51.100.20');
   assert.equal(first.status, 200);
   assert.equal(first.body.user.admin, true);
@@ -151,8 +151,8 @@ test('the first passkey registration on an empty instance is the admin, the seco
   assert.equal('admin' in stored(h, second.body.user.id), false);
 });
 
-test('FIRST_USER_ADMIN=0 leaves the first profile an ordinary one', async t => {
-  for (const off of ['0', 'false', 'off']) {
+test('unset or FIRST_USER_ADMIN=0 leaves the first profile an ordinary one', async t => {
+  for (const off of [undefined, '', '0', 'false', 'off']) {
     const h = await startServer(t, { env: { FIRST_USER_ADMIN: off } });
     const r = await registerPassword(h, 'Ana', '198.51.100.30');
     assert.equal(r.status, 200);
@@ -164,7 +164,7 @@ test('FIRST_USER_ADMIN=0 leaves the first profile an ordinary one', async t => {
 });
 
 test('an instance that already has profiles promotes nobody on upgrade or on a new registration', async t => {
-  const h = await startServer(t, { users: [user('u1', 'Old'), user('u2', 'Older')] });
+  const h = await startServer(t, { env: { FIRST_USER_ADMIN: '1' }, users: [user('u1', 'Old'), user('u2', 'Older')] });
   assert.equal(stored(h, 'u1').admin, undefined);
   const r = await registerPassword(h, 'New', '198.51.100.40');
   assert.equal(r.status, 200);
@@ -175,7 +175,7 @@ test('an instance that already has profiles promotes nobody on upgrade or on a n
 });
 
 test('an ADMIN_UIDS admin stays an admin, and does not make the next profile one', async t => {
-  const h = await startServer(t, { env: { ADMIN_UIDS: 'u1' }, users: [user('u1', 'Owner')] });
+  const h = await startServer(t, { env: { ADMIN_UIDS: 'u1', FIRST_USER_ADMIN: '1' }, users: [user('u1', 'Owner')] });
   assert.equal((await h.req('GET', '/api/admin/users', { cookie: mintSession('u1') })).status, 200);
   const r = await registerPassword(h, 'Guest', '198.51.100.50');
   assert.equal(r.body.user.admin, false);

@@ -12,7 +12,7 @@ import { fmtNum, fmtPlate, exerciseNameText, fmtDate, todayISO, exCount, DAYN } 
 import { speedUnitOf, toSpeed, fromSpeed } from '../lib/speed.js'
 import { beep, vibrate, unlock } from '../lib/sound.js'
 import { pinState } from '../lib/queue.js'
-import { t, exerciseNameFor, exerciseNameClass } from '../lib/i18n.js'
+import { t, tn, exerciseNameFor, exerciseNameClass } from '../lib/i18n.js'
 import { api, beacon } from '../lib/api.js'
 import { pyramidRestFor, maxRecordAt } from '../lib/pyramid.js'
 import { insertionIndexAfterCurrentUnit, nextUnfinishedUnit, setProgressHighWater, supersetFlowStep, restAfterSet, restOnRecheck, restSecFor, warmupRestSecFor } from '../lib/supersetFlow.js'
@@ -570,7 +570,7 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
           {!warm && s.max && <div className="setph">{t('Max: as many reps as you can')}{(() => {
             const rec = maxRecordAt(H.workouts, entry.id, s.w)
             if (!rec) return null
-            return ' · ' + (rec.w > 0 ? t('Record: {0} reps at {1}', rec.r, fmtNum(rec.w) + ' ' + S.unit) : t('Record: {0} reps', rec.r))
+            return ' · ' + (rec.w > 0 ? tn('Record: {0} rep at {1}', 'Record: {0} reps at {1}', rec.r, fmtNum(rec.w) + ' ' + S.unit) : tn('Record: {0} rep', 'Record: {0} reps', rec.r))
           })()}</div>}
           {perSide && !warm && isSideSet(s) ? (
             // Unilateral work set: the number sits beside a two-row L/R stack, each side logged

@@ -1702,6 +1702,8 @@ export default {
   'Weight is up to you: pyramid sets are not progressed automatically.': '무게는 직접 정합니다: 피라미드 세트는 자동으로 증량되지 않습니다.',
   'Record: {0} reps at {1}': '기록: {1}로 {0}회',
   'Record: {0} reps': '기록: {0}회',
+  'Record: {0} rep at {1}': '기록: {1}로 {0}회',
+  'Record: {0} rep': '기록: {0}회',
   'Max reps': '최대 반복',
   'Most reps in a Max set per workout': '운동마다 최대 세트의 최다 반복 수',
   'A set left at 0 rest uses the exercise’s rest.': '휴식이 0인 세트는 운동의 휴식 시간을 사용합니다.',

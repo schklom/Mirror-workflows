@@ -1699,6 +1699,8 @@ export default {
   'Weight is up to you: pyramid sets are not progressed automatically.': 'Вагу обираєш ти: піраміда не прогресує автоматично.',
   'Record: {0} reps at {1}': 'Рекорд: {0} повт. з {1}',
   'Record: {0} reps': 'Рекорд: {0} повт.',
+  'Record: {0} rep at {1}': 'Рекорд: {0} повт. з {1}',
+  'Record: {0} rep': 'Рекорд: {0} повт.',
   'Max reps': 'Повт. Макс',
   'Most reps in a Max set per workout': 'Найбільше повторів у підході Макс за тренування',
   'A set left at 0 rest uses the exercise’s rest.': 'Підхід із відпочинком 0 використовує відпочинок вправи.',

@@ -1702,6 +1702,8 @@ export default {
   'Weight is up to you: pyramid sets are not progressed automatically.': 'Ağırlığı sen seçersin: piramit setler otomatik olarak ilerletilmez.',
   'Record: {0} reps at {1}': 'Rekor: {1} ile {0} tekrar',
   'Record: {0} reps': 'Rekor: {0} tekrar',
+  'Record: {0} rep at {1}': 'Rekor: {1} ile {0} tekrar',
+  'Record: {0} rep': 'Rekor: {0} tekrar',
   'Max reps': 'Maks tekrar',
   'Most reps in a Max set per workout': 'Antrenman başına bir Maks setteki en çok tekrar',
   'A set left at 0 rest uses the exercise’s rest.': 'Dinlenmesi 0 olan set, egzersizin dinlenmesini kullanır.',

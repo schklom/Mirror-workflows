@@ -1702,6 +1702,8 @@ export default {
   'Weight is up to you: pyramid sets are not progressed automatically.': 'वज़न आप चुनें: पिरामिड सेट अपने आप नहीं बढ़ते।',
   'Record: {0} reps at {1}': 'रिकॉर्ड: {1} पर {0} रेप',
   'Record: {0} reps': 'रिकॉर्ड: {0} रेप',
+  'Record: {0} rep at {1}': 'रिकॉर्ड: {1} पर {0} रेप',
+  'Record: {0} rep': 'रिकॉर्ड: {0} रेप',
   'Max reps': 'मैक्स रेप',
   'Most reps in a Max set per workout': 'हर वर्कआउट में मैक्स सेट के सबसे ज़्यादा रेप',
   'A set left at 0 rest uses the exercise’s rest.': '0 आराम वाला सेट एक्सरसाइज़ का आराम इस्तेमाल करता है।',

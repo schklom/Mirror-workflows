@@ -1755,6 +1755,8 @@ export default {
   'Weight is up to you: pyramid sets are not progressed automatically.': 'الوزن تختاره أنت: المجموعات الهرمية لا تتدرج تلقائيًا.',
   'Record: {0} reps at {1}': 'الرقم القياسي: {0} تكرار بوزن {1}',
   'Record: {0} reps': 'الرقم القياسي: {0} تكرار',
+  'Record: {0} rep at {1}': 'الرقم القياسي: {0} تكرار بوزن {1}',
+  'Record: {0} rep': 'الرقم القياسي: {0} تكرار',
   'Max reps': 'تكرارات أقصى',
   'Most reps in a Max set per workout': 'أكبر عدد تكرارات في مجموعة أقصى لكل تمرين',
   'A set left at 0 rest uses the exercise’s rest.': 'المجموعة ذات الراحة 0 تستخدم راحة التمرين.',

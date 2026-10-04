@@ -1722,6 +1722,8 @@ export default {
   'Weight is up to you: pyramid sets are not progressed automatically.': 'Das Gewicht wählst du selbst: Pyramidensätze werden nicht automatisch gesteigert.',
   'Record: {0} reps at {1}': 'Rekord: {0} Wdh. mit {1}',
   'Record: {0} reps': 'Rekord: {0} Wdh.',
+  'Record: {0} rep at {1}': 'Rekord: {0} Wdh. mit {1}',
+  'Record: {0} rep': 'Rekord: {0} Wdh.',
   'Max reps': 'Max-Wdh.',
   'Most reps in a Max set per workout': 'Meiste Wiederholungen in einem Max-Satz pro Training',
   'A set left at 0 rest uses the exercise’s rest.': 'Ein Satz mit 0 Pause nutzt die Pause der Übung.',

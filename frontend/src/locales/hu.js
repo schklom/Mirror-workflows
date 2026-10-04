@@ -1705,6 +1705,8 @@ export default {
   'Weight is up to you: pyramid sets are not progressed automatically.': 'A súlyt te választod: a piramis sorozatok nem progresszálnak automatikusan.',
   'Record: {0} reps at {1}': 'Rekord: {0} ism. {1} súllyal',
   'Record: {0} reps': 'Rekord: {0} ism.',
+  'Record: {0} rep at {1}': 'Rekord: {0} ism. {1} súllyal',
+  'Record: {0} rep': 'Rekord: {0} ism.',
   'Max reps': 'Max ism.',
   'Most reps in a Max set per workout': 'A legtöbb ismétlés egy Max sorozatban edzésenként',
   'A set left at 0 rest uses the exercise’s rest.': 'A 0 pihenőjű sorozat a gyakorlat pihenőjét használja.',

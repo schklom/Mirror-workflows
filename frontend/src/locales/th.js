@@ -1713,6 +1713,8 @@ export default {
   'Weight is up to you: pyramid sets are not progressed automatically.': 'น้ำหนักให้คุณเลือกเอง: เซ็ตพีระมิดไม่เพิ่มน้ำหนักอัตโนมัติ',
   'Record: {0} reps at {1}': 'สถิติ: {0} ครั้งที่ {1}',
   'Record: {0} reps': 'สถิติ: {0} ครั้ง',
+  'Record: {0} rep at {1}': 'สถิติ: {0} ครั้งที่ {1}',
+  'Record: {0} rep': 'สถิติ: {0} ครั้ง',
   'Max reps': 'ครั้งสูงสุด',
   'Most reps in a Max set per workout': 'จำนวนครั้งมากที่สุดในเซ็ตสูงสุดต่อการฝึก',
   'A set left at 0 rest uses the exercise’s rest.': 'เซ็ตที่พัก 0 จะใช้เวลาพักของท่านั้น',

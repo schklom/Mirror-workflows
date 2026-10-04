@@ -37,8 +37,8 @@ afterEach(async () => {
 })
 
 describe('every failure line, in every pack', () => {
-  it('reads all sixteen packs', () => {
-    expect(Object.keys(PACKS)).toHaveLength(16)
+  it('reads all seventeen packs', () => {
+    expect(Object.keys(PACKS)).toHaveLength(17)
   })
 
   it.each(Object.keys(PACKS).sort())('%s translates each one, and the map reads it from the pack', async lang => {

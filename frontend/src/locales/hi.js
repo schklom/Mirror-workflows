@@ -139,6 +139,7 @@ export default {
   'Completed': 'पूरा किया',
   'Rescheduled': 'बदला गया',
   'Tap a trained day for details · tap any other day to plan a session': 'विवरण के लिए ट्रेन किए दिन पर टैप करें · योजना बनाने के लिए किसी और दिन पर टैप करें',
+  '{0} set': '{0} सेट',
   '{0} sets': '{0} सेट',
   'no sets': 'कोई सेट नहीं',
   'Delete workout?': 'वर्कआउट हटाएँ?',

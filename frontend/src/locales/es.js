@@ -139,6 +139,7 @@ export default {
   'Completed': 'Completado',
   'Rescheduled': 'Reprogramado',
   'Tap a trained day for details · tap any other day to plan a session': 'Toca un día entrenado para ver detalles · toca cualquier otro día para planificar',
+  '{0} set': '{0} serie',
   '{0} sets': '{0} series',
   'no sets': 'sin series',
   'Delete workout?': '¿Eliminar entrenamiento?',

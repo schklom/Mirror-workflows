@@ -139,6 +139,7 @@ export default {
   'Completed': '已完成',
   'Rescheduled': '已改期',
   'Tap a trained day for details · tap any other day to plan a session': '点按已训练的日期查看详情 · 点按其他日期安排训练',
+  '{0} set': '{0} 组',
   '{0} sets': '{0} 组',
   'no sets': '无组数',
   'Delete workout?': '删除训练？',

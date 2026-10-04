@@ -146,6 +146,7 @@ export default {
   'Rescheduled': 'Verschoben',
   'Tap a trained day for details · tap any other day to plan a session': 'Tippe auf einen trainierten Tag für Details · tippe auf jeden anderen Tag, um zu planen',
   // --- workout lifecycle ---
+  '{0} set': '{0} Satz',
   '{0} sets': '{0} Sätze',
   'no sets': 'keine Sätze',
   'Delete workout?': 'Training löschen?',

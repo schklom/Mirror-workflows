@@ -123,6 +123,7 @@ export default {
   'Completed': 'Виконано',
   'Rescheduled': 'Перенесено',
   'Tap a trained day for details · tap any other day to plan a session': 'Натисни на день із тренуванням — деталі · на будь-який інший — планування',
+  '{0} set': 'підходів: {0}',
   '{0} sets': 'підходів: {0}',
   'no sets': 'немає підходів',
   'Delete workout?': 'Видалити тренування?',

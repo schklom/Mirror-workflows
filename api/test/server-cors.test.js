@@ -80,3 +80,10 @@ test('a preflight that asks for private-network access gets it', async t => {
   assert.equal(r.status, 204);
   assert.equal(r.headers['access-control-allow-private-network'], 'true');
 });
+
+test('a website on another origin gets no private-network access', async t => {
+  const port = await startServer(t);
+  const r = await send(port, 'OPTIONS', '/api/pair/redeem', preflight('https://evil.example', { 'Access-Control-Request-Private-Network': 'true' }));
+  assert.equal(r.status, 204);
+  assert.equal(r.headers['access-control-allow-private-network'], undefined);
+});

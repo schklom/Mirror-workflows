@@ -137,6 +137,7 @@ export default {
   'Rescheduled': 'เลื่อนแล้ว',
   'Tap a trained day for details · tap any other day to plan a session': 'แตะวันที่ออกกำลังกายแล้วเพื่อดูรายละเอียด · แตะวันอื่นเพื่อวางแผน',
   // --- workout lifecycle ---
+  '{0} set': '{0} เซ็ต',
   '{0} sets': '{0} เซ็ต',
   'no sets': 'ไม่มีเซ็ต',
   'Delete workout?': 'ลบการออกกำลังกายนี้?',

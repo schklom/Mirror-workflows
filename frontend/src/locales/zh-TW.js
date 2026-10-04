@@ -135,6 +135,7 @@ export default {
   'Planned': '已排定',
   'Rescheduled': '已改期',
   'Tap a trained day for details · tap any other day to plan a session': '點擊已訓練日期以查看詳情 · 點擊其他日期以排定課表',
+  '{0} set': '{0} 組',
   '{0} sets': '{0} 組',
   'no sets': '無組數',
   'Delete workout?': '刪除本次訓練？',

@@ -139,6 +139,7 @@ export default {
   'Completed': 'Tamamlandı',
   'Rescheduled': 'Ertelendi',
   'Tap a trained day for details · tap any other day to plan a session': 'Antrenman yapılan güne dokun: detaylar · başka bir güne dokun: planla',
+  '{0} set': '{0} set',
   '{0} sets': '{0} set',
   'no sets': 'set yok',
   'Delete workout?': 'Antrenman silinsin mi?',

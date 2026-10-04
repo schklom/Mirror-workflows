@@ -135,6 +135,7 @@ export default {
   'Completed': 'Выполнено',
   'Rescheduled': 'Перенесено',
   'Tap a trained day for details · tap any other day to plan a session': 'Нажми на день с тренировкой — детали · на любой другой — планирование',
+  '{0} set': 'подходов: {0}',
   '{0} sets': 'подходов: {0}',
   'no sets': 'нет подходов',
   'Delete workout?': 'Удалить тренировку?',

@@ -145,6 +145,7 @@ export default {
   'Completed': 'مكتمل',
   'Rescheduled': 'أُعيدت جدولته',
   'Tap a trained day for details · tap any other day to plan a session': 'اضغط على يوم تدرّبت فيه للتفاصيل · اضغط على أي يوم آخر لجدولة جلسة',
+  '{0} set': '{0} مجموعة',
   '{0} sets': '{0} مجموعات',
   'no sets': 'بدون مجموعات',
   'Delete workout?': 'حذف التمرين؟',

@@ -139,6 +139,7 @@ export default {
   'Completed': '완료',
   'Rescheduled': '변경됨',
   'Tap a trained day for details · tap any other day to plan a session': '운동한 날을 탭하면 상세 정보 · 다른 날을 탭하면 계획 설정',
+  '{0} set': '{0}세트',
   '{0} sets': '{0}세트',
   'no sets': '세트 없음',
   'Delete workout?': '운동을 삭제할까요?',

@@ -137,6 +137,7 @@ export default {
   'Rescheduled': 'Áthelyezve',
   'Tap a trained day for details · tap any other day to plan a session': 'Koppints egy edzett napra a részletekért · koppints bármely másik napra egy edzés tervezéséhez',
   // --- workout lifecycle ---
+  '{0} set': '{0} sorozat',
   '{0} sets': '{0} sorozat',
   'no sets': 'nincs sorozat',
   'Delete workout?': 'Törlöd az edzést?',

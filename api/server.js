@@ -2403,6 +2403,9 @@ function bodyDeadline(req) {
   req.allowSlowBody = clear;
 }
 
+// The Capacitor WebView origins of the Android and iOS app.
+const APP_ORIGINS = new Set(['https://localhost', 'capacitor://localhost', 'http://localhost']);
+
 const server = http.createServer(async (req, res) => {
   bodyDeadline(req);
   // Same-origin (the deployed nginx-proxied web app) never triggers CORS, so this only matters
@@ -2414,7 +2417,10 @@ const server = http.createServer(async (req, res) => {
   if (req.method === 'OPTIONS') {
     // Chrome's Private Network Access asks before a page reaches a LAN address (a phone pairing
     // with 192.168.x.x); an answer without this header is refused like a CORS failure (#329).
-    const pna = String(req.headers['access-control-request-private-network'] || '').toLowerCase() === 'true';
+    // Only the app's own WebView origins get it, so an arbitrary website still can't reach a
+    // LAN-only instance through the visitor's browser.
+    const pna = String(req.headers['access-control-request-private-network'] || '').toLowerCase() === 'true'
+      && APP_ORIGINS.has(origin);
     res.writeHead(204, {
       'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE,OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, Authorization',

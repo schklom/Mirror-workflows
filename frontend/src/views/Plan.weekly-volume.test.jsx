@@ -50,4 +50,20 @@ describe('Plan — weekly muscle volume', () => {
     expect(summary().textContent).toContain('No muscle volume planned.')
     expect(summary().querySelector('.mrow')).toBeNull()
   })
+
+  it('omits explicit zero-weight muscles from planned volume', () => {
+    const zeroPress = { id: 'zero-press', n: 'Zero press', muscleWeights: { chest: 1, biceps: 0 }, custom: true }
+    useStore.setState(s => ({
+      S: {
+        ...s.S,
+        customEx: [zeroPress],
+        routines: [{ id: 'zero-plan', name: 'Zero plan', ex: [{ id: zeroPress.id, sets: 2 }] }],
+        week: { 1: ['zero-plan'] },
+      },
+    }))
+    mount()
+
+    expect(summary().textContent).toContain('Chest2 sets')
+    expect(summary().textContent).not.toContain('Biceps')
+  })
 })

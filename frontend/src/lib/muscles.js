@@ -186,16 +186,16 @@ export function matchesMuscleGroups(ex, requested) {
   return wanted.some(group => groups.has(group))
 }
 
-/** Muscles one exercise trains: { slug: 0…1 }. Duplicate metadata never adds load twice. */
-export function musclesOf(ex) {
+/** Complete muscle-weight metadata, including explicit zero-credit associations. */
+export function muscleWeightsOf(ex) {
   if (!ex) return {}
   const sourceEx = metadataOf(ex)
-  if (sourceEx !== ex) return musclesOf(sourceEx)
+  if (sourceEx !== ex) return muscleWeightsOf(sourceEx)
   if (ex.muscleWeights && typeof ex.muscleWeights === 'object' && !Array.isArray(ex.muscleWeights)) {
     const snapshot = {}
     MUSCLES.forEach(slug => {
       const weight = Number(ex.muscleWeights[slug])
-      if (Number.isFinite(weight) && weight > 0) snapshot[slug] = weight
+      if (Number.isFinite(weight) && weight >= 0 && weight <= 1) snapshot[slug] = weight
     })
     if (Object.keys(snapshot).length) return snapshot
   }
@@ -221,13 +221,18 @@ export function musclesOf(ex) {
   return out
 }
 
+/** Muscles one exercise trains: positive effective stimulus only. */
+export function musclesOf(ex) {
+  return Object.fromEntries(Object.entries(muscleWeightsOf(ex)).filter(([, weight]) => weight > 0))
+}
+
 /** Snapshot display and weighted muscle metadata into a completed history entry. */
 export function exerciseMuscleSnapshot(ex) {
   if (!ex || typeof ex !== 'object') return {}
   const out = {}
   if (ex.n != null) out.n = ex.n
   if (ex.bp != null) out.bp = ex.bp
-  const weights = musclesOf(ex)
+  const weights = muscleWeightsOf(ex)
   if (Object.keys(weights).length) out.muscleWeights = { ...weights }
   const parts = explicitPartsOf(ex)
   if (parts) {

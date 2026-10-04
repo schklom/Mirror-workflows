@@ -1008,6 +1008,10 @@ export const PT_BR_OVERRIDES = {
   'Teal': 'Turquesa',
   'Yellow': 'Amarelo',
   'Enter how long it took — at least 1 minute.': 'Informe quanto tempo levou — pelo menos 1 minuto.',
+  // --- repeat a saved workout today (#58) ---
+  'Nothing to repeat — its exercises no longer exist.': 'Nada para repetir — os exercícios dele não existem mais.',
+  '{0} exercise no longer exists and was left out.': '{0} exercício não existe mais e ficou de fora.',
+  '{0} exercises no longer exist and were left out.': '{0} exercícios não existem mais e ficaram de fora.',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

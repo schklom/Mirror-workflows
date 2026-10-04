@@ -1666,4 +1666,9 @@ export default {
   'Teal': 'Türkiz',
   'Yellow': 'Sárga',
   'Enter how long it took — at least 1 minute.': 'Add meg, meddig tartott — legalább 1 perc.',
+  // --- repeat a saved workout today (#58) ---
+  'Repeat today': 'Ismétlés ma',
+  'Nothing to repeat — its exercises no longer exist.': 'Nincs mit megismételni — a gyakorlatai már nem léteznek.',
+  '{0} exercise no longer exists and was left out.': '{0} gyakorlat már nem létezik, kimaradt.',
+  '{0} exercises no longer exist and were left out.': '{0} gyakorlat már nem létezik, kimaradtak.',
 }

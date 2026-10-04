@@ -1663,4 +1663,9 @@ export default {
   'Teal': '青色',
   'Yellow': '黄色',
   'Enter how long it took — at least 1 minute.': '请输入用时 — 至少 1 分钟。',
+  // --- repeat a saved workout today (#58) ---
+  'Repeat today': '今天再练一次',
+  'Nothing to repeat — its exercises no longer exist.': '没有可重复的内容——其中的动作已不存在。',
+  '{0} exercise no longer exists and was left out.': '有 {0} 个动作已不存在，已略过。',
+  '{0} exercises no longer exist and were left out.': '有 {0} 个动作已不存在，已略过。',
 }

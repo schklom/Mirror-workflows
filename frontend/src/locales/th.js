@@ -1674,4 +1674,9 @@ export default {
   'Teal': 'เขียวน้ำทะเล',
   'Yellow': 'เหลือง',
   'Enter how long it took — at least 1 minute.': 'ใส่ระยะเวลาที่ใช้ — อย่างน้อย 1 นาที',
+  // --- repeat a saved workout today (#58) ---
+  'Repeat today': 'ทำซ้ำวันนี้',
+  'Nothing to repeat — its exercises no longer exist.': 'ไม่มีอะไรให้ทำซ้ำ — ท่าในการฝึกนี้ไม่มีอยู่แล้ว',
+  '{0} exercise no longer exists and was left out.': 'ท่า {0} ท่าไม่มีอยู่แล้วและถูกข้ามไป',
+  '{0} exercises no longer exist and were left out.': 'ท่า {0} ท่าไม่มีอยู่แล้วและถูกข้ามไป',
 }

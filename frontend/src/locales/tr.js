@@ -1663,4 +1663,9 @@ export default {
   'Teal': 'Turkuaz',
   'Yellow': 'Sarı',
   'Enter how long it took — at least 1 minute.': 'Ne kadar sürdüğünü gir — en az 1 dakika.',
+  // --- repeat a saved workout today (#58) ---
+  'Repeat today': 'Bugün tekrarla',
+  'Nothing to repeat — its exercises no longer exist.': 'Tekrarlanacak bir şey yok — egzersizleri artık yok.',
+  '{0} exercise no longer exists and was left out.': '{0} egzersiz artık yok ve dışarıda bırakıldı.',
+  '{0} exercises no longer exist and were left out.': '{0} egzersiz artık yok ve dışarıda bırakıldı.',
 }

@@ -1663,4 +1663,9 @@ export default {
   'Teal': 'फ़िरोज़ी',
   'Yellow': 'पीला',
   'Enter how long it took — at least 1 minute.': 'बताएँ कि इसमें कितना समय लगा — कम से कम 1 मिनट।',
+  // --- repeat a saved workout today (#58) ---
+  'Repeat today': 'आज दोहराएँ',
+  'Nothing to repeat — its exercises no longer exist.': 'दोहराने को कुछ नहीं — इसके एक्सरसाइज़ अब मौजूद नहीं हैं।',
+  '{0} exercise no longer exists and was left out.': '{0} एक्सरसाइज़ अब मौजूद नहीं है और छोड़ दी गई।',
+  '{0} exercises no longer exist and were left out.': '{0} एक्सरसाइज़ अब मौजूद नहीं हैं और छोड़ दी गईं।',
 }

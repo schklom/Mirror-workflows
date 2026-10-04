@@ -1663,4 +1663,9 @@ export default {
   'Teal': '청록',
   'Yellow': '노랑',
   'Enter how long it took — at least 1 minute.': '걸린 시간을 입력하세요 — 최소 1분.',
+  // --- repeat a saved workout today (#58) ---
+  'Repeat today': '오늘 반복',
+  'Nothing to repeat — its exercises no longer exist.': '반복할 것이 없습니다 — 이 운동의 종목이 더 이상 없습니다.',
+  '{0} exercise no longer exists and was left out.': '운동 {0}개가 더 이상 없어 제외했습니다.',
+  '{0} exercises no longer exist and were left out.': '운동 {0}개가 더 이상 없어 제외했습니다.',
 }

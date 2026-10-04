@@ -1683,4 +1683,9 @@ export default {
   'Teal': 'Türkis',
   'Yellow': 'Gelb',
   'Enter how long it took — at least 1 minute.': 'Gib ein, wie lange es gedauert hat — mindestens 1 Minute.',
+  // --- repeat a saved workout today (#58) ---
+  'Repeat today': 'Heute wiederholen',
+  'Nothing to repeat — its exercises no longer exist.': 'Nichts zu wiederholen — seine Übungen gibt es nicht mehr.',
+  '{0} exercise no longer exists and was left out.': '{0} Übung gibt es nicht mehr und wurde ausgelassen.',
+  '{0} exercises no longer exist and were left out.': '{0} Übungen gibt es nicht mehr und wurden ausgelassen.',
 }

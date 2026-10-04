@@ -1716,4 +1716,9 @@ export default {
   'Teal': 'أزرق مخضر',
   'Yellow': 'أصفر',
   'Enter how long it took — at least 1 minute.': 'أدخل المدة التي استغرقها — دقيقة واحدة على الأقل.',
+  // --- repeat a saved workout today (#58) ---
+  'Repeat today': 'كرّره اليوم',
+  'Nothing to repeat — its exercises no longer exist.': 'لا شيء لتكراره — لم تعد تمارينه موجودة.',
+  '{0} exercise no longer exists and was left out.': 'لم يعد {0} تمرين موجودًا وتم تركه.',
+  '{0} exercises no longer exist and were left out.': 'لم تعد {0} تمارين موجودة وتم تركها.',
 }

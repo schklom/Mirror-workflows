@@ -1660,4 +1660,9 @@ export default {
   'Teal': 'Бірюзовий',
   'Yellow': 'Жовтий',
   'Enter how long it took — at least 1 minute.': 'Вкажи, скільки це тривало — щонайменше 1 хвилину.',
+  // --- repeat a saved workout today (#58) ---
+  'Repeat today': 'Повторити сьогодні',
+  'Nothing to repeat — its exercises no longer exist.': 'Нічого повторювати — його вправ більше немає.',
+  '{0} exercise no longer exists and was left out.': '{0} вправи більше немає, її пропущено.',
+  '{0} exercises no longer exist and were left out.': 'Вправ, яких більше немає, пропущено: {0}.',
 }

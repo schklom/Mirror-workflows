@@ -3558,6 +3558,11 @@ main.api-main .lead { color: var(--fg-2); max-width: 58ch; margin: 14px 0 0; fon
     <span class="p-desc"></span>
   </div>
   <div class="prow">
+    <span class="p-name">queue</span>
+    <span class="p-type">object</span>
+    <span class="p-desc">A planner's floating week {ids, since, startsOn, label} — the week's sessions as an ordered queue, the first undone one is today's. Written only by an API client (never by the app), read by the reminder tick.</span>
+  </div>
+  <div class="prow">
     <span class="p-name">week</span>
     <span class="p-type">object</span>
     <span class="p-desc">Weekly plan: weekday (0=Sunday … 6) → routine id.</span>

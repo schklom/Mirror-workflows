@@ -1666,4 +1666,6 @@ export default {
   'Enter how long it took — at least 1 minute.': 'Inserisci quanto è durato — almeno 1 minuto.',
   'Your server was reached, but it refused the app’s request (CORS). If a reverse proxy such as Traefik adds CORS headers, let requests from {0} through to openGym unchanged — see “Phone app and CORS” in docs/SELF_HOSTING.md.': 'Il server è stato raggiunto, ma ha rifiutato la richiesta dell’app (CORS). Se un reverse proxy come Traefik aggiunge header CORS, lascia passare fino a openGym, senza modificarle, le richieste da {0} — vedi «Phone app and CORS» in docs/SELF_HOSTING.md.',
   'Could not reach {0}. Check the address and that this phone can reach it.': 'Impossibile raggiungere {0}. Controlla l’indirizzo e che questo telefono possa raggiungerlo.',
+  'Vibrate when the phone is on silent': 'Vibra anche con il telefono in silenzioso',
+  'The end of a rest or a hold buzzes like an alarm, even in silent mode.': 'La fine di un recupero o di una tenuta vibra come una sveglia, anche in silenzioso.',
 }

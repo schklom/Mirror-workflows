@@ -1011,6 +1011,8 @@ export const PT_BR_OVERRIDES = {
   'Move out of the superset': 'Tirar do superset',
   'Your server was reached, but it refused the app’s request (CORS). If a reverse proxy such as Traefik adds CORS headers, let requests from {0} through to openGym unchanged — see “Phone app and CORS” in docs/SELF_HOSTING.md.': 'Seu servidor foi alcançado, mas recusou a solicitação do aplicativo (CORS). Se um proxy reverso como o Traefik adiciona cabeçalhos CORS, deixe as solicitações de {0} passarem até o openGym sem alterações — veja “Phone app and CORS” em docs/SELF_HOSTING.md.',
   'Could not reach {0}. Check the address and that this phone can reach it.': 'Não foi possível alcançar {0}. Verifique o endereço e se este celular consegue acessá-lo.',
+  'Vibrate when the phone is on silent': 'Vibrar com o celular no silencioso',
+  'The end of a rest or a hold buzzes like an alarm, even in silent mode.': 'O fim de um descanso ou de uma isometria vibra como um alarme, mesmo no silencioso.',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

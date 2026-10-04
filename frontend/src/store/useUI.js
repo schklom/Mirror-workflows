@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { uid } from '../lib/format.js'
-import { beep, chime, vibrate } from '../lib/sound.js'
+import { beep, chime, vibrate, alertBuzz } from '../lib/sound.js'
 import { api } from '../lib/api.js'
 import { t } from '../lib/i18n.js'
 import { deviceId } from '../lib/push.js'
@@ -21,7 +21,7 @@ const cancelPushRestTimer = () => { if (useStore.getState().user) api('/api/push
 const bookRestEnd = (endsAt, totalSec) => {
   if (!MOBILE) { pushRestTimer(Math.max(1, Math.round((endsAt - Date.now()) / 1000))); return }
   const { S } = useStore.getState()
-  armRestAlert(endsAt, { title: t('Rest over — next set!'), countdownTitle: t('Rest'), totalSec, accent: S.accent, sound: !!S.sound, vibrate: S.vibrate !== false })
+  armRestAlert(endsAt, { title: t('Rest over — next set!'), countdownTitle: t('Rest'), totalSec, accent: S.accent, sound: !!S.sound, vibrate: S.vibrate !== false, alarmBuzz: S.vibrate !== false && !!S.vibrateOnSilent })
     .then(ok => {
       // Only for the rest that asked: one skipped or moved since then has booked its own end.
       const tm = useUI.getState().timer
@@ -99,7 +99,7 @@ const runRest = (set, get) => {
         // The Android alarm for this end stays quiet while the app is on screen, so this chime is
         // the only one. Locked, this branch never runs and the alarm's tone does.
         chime(snd)
-        vibrate([200, 100, 200]); get().flashTimer()
+        alertBuzz([200, 100, 200]); get().flashTimer()
       }
       // The toast stays even when the rest ran out while the app was hidden: a guest, or anyone
       // without push permission, gets no notification, and a countdown that silently vanishes
@@ -280,7 +280,7 @@ export const useUI = create((set, get) => ({
       if (left <= 0) {
         if (seenLive && !wk.alerted) {
           chime(snd)
-          vibrate([200, 100, 200]); get().flashTimer()
+          alertBuzz([200, 100, 200]); get().flashTimer()
         }
         if (wk.overtime && left > -MAX_WORK_OVERTIME_SEC) { set({ work: { ...wk, left, alerted: true } }); return }
         const done = workDone

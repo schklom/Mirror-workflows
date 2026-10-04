@@ -114,6 +114,50 @@ describe('the rest alert in the Android app', () => {
   })
 })
 
+// #375: "Vibrate when the phone is on silent".
+describe('the alarm buzz in the Android app', () => {
+  const capture = () => {
+    const calls = {}
+    h.registerPlugin = vi.fn(() => new Proxy({}, {
+      get: (_, prop) => {
+        if (prop === 'then') return () => new Promise(() => {})
+        return async (...args) => { (calls[prop] = calls[prop] || []).push(args[0]); return prop === 'addListener' ? { remove: async () => {} } : undefined }
+      },
+    }))
+    return calls
+  }
+
+  it('tells the alarm to buzz as an alarm only with Vibrate on', async () => {
+    h.platform = 'android'
+    const calls = capture()
+    const alert = await import('./rest-alert.js')
+    await alert.armRestAlert(Date.now() + 90_000, { totalSec: 90, alarmBuzz: true })
+    expect(calls.schedule.at(-1)).toMatchObject({ vibrate: true, alarmBuzz: true })
+    await alert.armRestAlert(Date.now() + 90_000, { totalSec: 90, vibrate: false, alarmBuzz: true })
+    expect(calls.schedule.at(-1)).toMatchObject({ vibrate: false, alarmBuzz: false })
+    await alert.armRestAlert(Date.now() + 90_000, { totalSec: 90 })
+    expect(calls.schedule.at(-1)).toMatchObject({ alarmBuzz: false })
+  })
+
+  it('buzzAsAlarm reaches the plugin with the pattern and answers true', async () => {
+    h.platform = 'android'
+    const calls = capture()
+    const alert = await import('./rest-alert.js')
+    await expect(alert.buzzAsAlarm([200, 100, 200])).resolves.toBe(true)
+    expect(calls.buzz).toEqual([{ pattern: [200, 100, 200] }])
+    await expect(alert.buzzAsAlarm([])).resolves.toBe(false)
+    expect(calls.buzz).toHaveLength(1)
+  })
+
+  it('answers false in the iOS app without touching any plugin', async () => {
+    h.platform = 'ios'
+    const alert = await import('./rest-alert.js')
+    await expect(alert.buzzAsAlarm([200, 100, 200])).resolves.toBe(false)
+    expect(h.registerPlugin).not.toHaveBeenCalled()
+    expect(unhandled).toEqual([])
+  })
+})
+
 // The native half cannot run here; what it must do with the flag is read off its source.
 describe('the Android side of Vibrate off', () => {
   const src = name => readFileSync(new URL(`../../android/app/src/main/java/ch/duartesantos/opengym/${name}.java`, import.meta.url), 'utf8')
@@ -136,5 +180,27 @@ describe('the Android side of Vibrate off', () => {
     // fireFromCountdown and updateAlarm build their own intents from the last schedule.
     expect(alert.match(/intent\.putExtra\("vibrate", lastVibrate\);/g)).toHaveLength(2)
     expect(alert).toMatch(/intent\.putExtra\("vibrate", vibrate\);/)
+  })
+})
+
+describe('the Android side of the alarm buzz (#375)', () => {
+  const src = name => readFileSync(new URL(`../../android/app/src/main/java/ch/duartesantos/opengym/${name}.java`, import.meta.url), 'utf8')
+  const alert = src('RestAlert')
+  const plugin = src('RestAlertPlugin')
+
+  it('reads the flag from the page, off for an older page, and offers buzz()', () => {
+    expect(plugin).toMatch(/call\.getBoolean\("alarmBuzz", Boolean\.FALSE\)/)
+    expect(plugin).toMatch(/@PluginMethod\s+public void buzz\(PluginCall call\)/)
+  })
+
+  it('buzzes with the alarm usage, on every API level the app runs on', () => {
+    expect(alert).toMatch(/VibrationAttributes\.createForUsage\(VibrationAttributes\.USAGE_ALARM\)/)
+    expect(alert).toMatch(/setUsage\(AudioAttributes\.USAGE_ALARM\)/)
+  })
+
+  it('posts the notification on the quiet channel then, so the ringer-on phone buzzes once', () => {
+    expect(alert).toMatch(/boolean vibrate = intent\.getBooleanExtra\("vibrate", true\) && !alarmBuzz;/)
+    expect(alert).toMatch(/if \(alarmBuzz\) buzz\(ctx, VIBRATE\);/)
+    expect(alert.match(/intent\.putExtra\("alarmBuzz", lastAlarmBuzz\);/g)).toHaveLength(2)
   })
 })

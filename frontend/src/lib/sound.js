@@ -138,3 +138,19 @@ export function vibrate(p) {
   if (!buzz) return
   try { navigator.vibrate && navigator.vibrate(p) } catch (e) { /* */ }
 }
+
+// Settings → "Vibrate when the phone is on silent" (#375), Android app only. The page's buzz is an
+// ordinary one, and a phone on silent drops it; the end of a rest or a hold then goes through the
+// native side as an alarm (lib/rest-alert.js buzzAsAlarm), which silent mode lets through. App.jsx
+// hands that buzzer in while the setting is on; it answers false when it could not buzz, and the
+// page's own buzz stands in. A set tick never comes here: it should not override silent.
+let alarmBuzzer = null
+export function setAlarmBuzzer(fn) { alarmBuzzer = typeof fn === 'function' ? fn : null }
+export function alertBuzz(p) {
+  if (!buzz) return
+  const native = alarmBuzzer
+  if (!native) { vibrate(p); return }
+  let asked
+  try { asked = Promise.resolve(native(p)) } catch (e) { asked = Promise.resolve(false) }
+  asked.then(ok => { if (!ok) vibrate(p) }, () => vibrate(p))
+}

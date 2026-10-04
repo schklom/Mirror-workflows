@@ -13,7 +13,7 @@ import { useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/useStore.js'
 import { useUI } from '../store/useUI.js'
-import { t } from '../lib/i18n.js'
+import { t, tn } from '../lib/i18n.js'
 import { fmtDate, todayISO } from '../lib/format.js'
 import { workoutMediaOf, WORKOUT_MEDIA_MAX } from '../lib/media-refs.js'
 import { addWorkoutMedia } from '../lib/workout-media.js'
@@ -43,7 +43,8 @@ export function progressPhotosOf(S) {
   for (const w of (S && S.workouts) || []) {
     for (const m of workoutMediaOf(w)) {
       if (m.kind === 'video') continue
-      out.push({ d: w.d, start: w.start || 0, w, m })
+      // `key`: the same file can sit on two workouts (one hash), and each is its own photo here.
+      out.push({ key: (w.id || w.start || w.d) + ':' + m.hash, d: w.d, start: w.start || 0, w, m })
     }
   }
   out.sort((a, b) => (a.d < b.d ? 1 : a.d > b.d ? -1 : b.start - a.start))
@@ -104,7 +105,7 @@ function ProgressCompare({ a, b, close }) {
   return <div className="mviewer" role="dialog" aria-modal="true" aria-label={t('Compare photos')}>
     <div className="mviewer-bar">
       <button type="button" className="iconbtn" aria-label={t('Close')} onClick={close}><Icon name="xmark" /></button>
-      <span className="mviewer-count">{days > 0 ? t('{0} days apart', days) : t('Same day')}</span>
+      <span className="mviewer-count">{days > 0 ? tn('{0} day apart', '{0} days apart', days) : t('Same day')}</span>
       <span style={{ width: 36 }} />
     </div>
     <div className="pp-compare" ref={stageRef} data-swipe-ignore
@@ -132,21 +133,21 @@ export default function ProgressPhotos() {
   const photos = useMemo(() => progressPhotosOf(S), [S.workouts])
   const groups = useMemo(() => groupByDate(photos), [photos])
   const [comparing, setComparing] = useState(false)
-  const [picked, setPicked] = useState([])   // up to 2 hashes, in tap order
+  const [picked, setPicked] = useState([])   // up to 2 photo keys, in tap order
   const today = todaysWorkout(S)
   const { pick, busy, canAdd, showAdd } = useMediaPicker()
   const fileRef = useRef(null)
 
   const toggle = p => setPicked(cur => {
-    if (cur.includes(p.m.hash)) return cur.filter(h => h !== p.m.hash)
-    return cur.length >= 2 ? [cur[1], p.m.hash] : [...cur, p.m.hash]
+    if (cur.includes(p.key)) return cur.filter(k => k !== p.key)
+    return cur.length >= 2 ? [cur[1], p.key] : [...cur, p.key]
   })
   const cancelCompare = () => { setComparing(false); setPicked([]) }
   const runCompare = () => {
     if (picked.length !== 2) return
     const [ha, hb] = picked
-    const a = photos.find(p => p.m.hash === ha)
-    const b = photos.find(p => p.m.hash === hb)
+    const a = photos.find(p => p.key === ha)
+    const b = photos.find(p => p.key === hb)
     cancelCompare()
     if (a && b) openProgressCompare(a, b)
   }
@@ -169,7 +170,7 @@ export default function ProgressPhotos() {
   return <>
     <div className="hdr"><button className="iconbtn" onClick={() => nav('/stats')} aria-label={t('Stats')}><Icon name="chevronLeft" /></button>
       <div style={{ flex: 1, marginInlineStart: 12 }}><h1>{t('Progress photos')}</h1>
-        <div className="sub">{t('{0} photos', photos.length)}</div></div>
+        <div className="sub">{tn('{0} photo', '{0} photos', photos.length)}</div></div>
       {photos.length >= 2 && (comparing
         ? <Button size="sm" variant="ghost" onClick={cancelCompare}>{t('Cancel')}</Button>
         : <Button size="sm" variant="tinted" onClick={() => setComparing(true)}>{t('Compare')}</Button>)}
@@ -197,9 +198,9 @@ export default function ProgressPhotos() {
           <div className="small muted" style={{ marginBottom: 6 }}>{fmtDate(g.d, true, true)}</div>
           <div className="wmedia-grid">
             {g.items.map(p => {
-              const selected = picked.includes(p.m.hash)
+              const selected = picked.includes(p.key)
               return (
-                <button key={p.m.hash} type="button" data-swipe-ignore
+                <button key={p.key} type="button" data-swipe-ignore
                   className={'wmedia-item' + (selected ? ' pp-selected' : '')}
                   aria-label={fmtDate(p.d, true)}
                   onClick={() => (comparing ? toggle(p) : openPhotoView(p))}>

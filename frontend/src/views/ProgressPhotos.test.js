@@ -100,3 +100,13 @@ describe('daysBetween', () => {
     expect(daysBetween('2026-01-01', '2026-01-01')).toBe(0)
   })
 })
+
+describe('progressPhotosOf — one file on two workouts', () => {
+  it('keeps them apart, so the grid and the comparison can tell them apart', () => {
+    const m = img('shared')
+    const S = { workouts: [{ id: 'w1', d: '2026-09-01', start: 1, media: [m] }, { id: 'w2', d: '2026-09-08', start: 2, media: [m] }] }
+    const keys = progressPhotosOf(S).map(p => p.key)
+    expect(keys).toHaveLength(2)
+    expect(new Set(keys).size).toBe(2)
+  })
+})

@@ -1055,6 +1055,11 @@ export const PT_BR_OVERRIDES = {
   'Routine updated': 'Rotina atualizada',
   '{0} set becomes {1}: one on each side, {2}s held every time.': '{0} série vira {1}: uma de cada lado, {2} s de isometria cada vez.',
   '{0} sets become {1}: one on each side, {2}s held every time.': '{0} séries viram {1}: uma de cada lado, {2} s de isometria cada vez.',
+  'Every photo you kept with a workout, lined up by date — and a before/after slider.': 'Todas as fotos que você salvou com um treino, ordenadas por data — e um controle deslizante antes/depois.',
+  'Log today’s workout to add a photo': 'Registre o treino de hoje para adicionar uma foto',
+  'No progress photos yet — the button above adds one to today, once today has a logged workout.': 'Ainda sem fotos de progresso — o botão acima adiciona uma a hoje, quando hoje tiver um treino registrado.',
+  'Pick two photos to compare.': 'Escolha duas fotos para comparar.',
+  'Ready — open the comparison.': 'Pronto — abra a comparação.',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

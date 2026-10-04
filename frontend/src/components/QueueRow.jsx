@@ -12,7 +12,7 @@ import Icon from './Icon.jsx'
 // S.dayPlan) is not lit and wears its day instead of a state word — it still starts on a tap.
 // Reads through queueView so the words here and the today row (effectiveRoutineIds →
 // queueNext) can never disagree about which is next.
-export default function QueueRow({ S, today, onStart }) {
+export default function QueueRow({ S, today, onStart, managed }) {
   const v = queueView(S, today)
   if (!v) return null
   const word = { done: t('Done'), next: t('Up next'), later: t('Later') }
@@ -23,8 +23,10 @@ export default function QueueRow({ S, today, onStart }) {
   // "today" only when the today row really offers it: a 'rest' or routine override for today
   // wins over the queue there (effectiveRoutineIds), and this line must not contradict it.
   const shownToday = !!next && effectiveRoutineIds(S, today, today).includes(next.id)
-  const status = v.complete ? t('Week complete, ask the coach')
-    : v.waiting ? t('Next week starts {0}', fmtDate(v.startsOn, true))
+  // A pass this app manages refills itself (lib/rotation.js) — "ask the coach" and naming a
+  // whole week are a planner's copy, wrong for a pass with no coach and no week shape at all.
+  const status = v.complete ? (managed ? t('Pass complete') : t('Week complete, ask the coach'))
+    : v.waiting ? (managed ? t('Next pass starts {0}', fmtDate(v.startsOn, true)) : t('Next week starts {0}', fmtDate(v.startsOn, true)))
     : shownToday ? t('Next: {0}, today', next.name)
     : next ? t('Next: {0}', next.name)
     : t('Next: {0}', pinned.name + ' · ' + fmtDate(pinned.on, true))

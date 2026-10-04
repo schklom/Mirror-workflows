@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { queueDone, queueRemaining, queueNext, queueView, weekTally, pinState } from './queue.js'
+import { queueDone, queueRemaining, queueNext, queueView, weekTally, pinState, queueOf } from './queue.js'
 
 // The DONE RULE is shared with the api's reminder copy (and any planner writing S.queue); these
 // cases are the ones every copy must agree on. Dates are plain strings so nothing here reads the clock.
@@ -313,5 +313,25 @@ describe('weekTally — the streak card fraction', () => {
     const s = S({ queue: null, week: { 0: ['own'] }, workouts: [own('2026-09-06')] })
     expect(weekTally({ ...s, weekStart: 0 }, TODAY)).toEqual({ done: 1, planned: 1 })
     expect(weekTally({ ...s, weekStart: 1 }, TODAY)).toEqual({ done: 0, planned: 1 })
+  })
+})
+
+describe('queueOf — the shared normalization', () => {
+  it('keeps the first occurrence of a repeated id and drops deleted ones', () => {
+    const st = S({ queue: { ids: ['d1', 'd2', 'd1', 'gone'], since: SINCE, startsOn: '2026-09-07', label: 'US W1' } })
+    expect(queueOf(st).ids).toEqual(['d1', 'd2'])
+    // the persisted payload is left exactly as it arrived
+    expect(st.queue.ids).toEqual(['d1', 'd2', 'd1', 'gone'])
+  })
+
+  it('a malformed, duplicate-only or all-deleted queue reads as no queue', () => {
+    expect(queueOf(S({ queue: null }))).toBe(null)
+    expect(queueOf(S({ queue: { ids: 'nope' } }))).toBe(null)
+    expect(queueOf(S({ queue: { ids: ['gone'], since: SINCE } }))).toBe(null)
+  })
+
+  it('a repeated id is one chip, not two', () => {
+    const st = S({ queue: { ids: ['d1', 'd1', 'd2'], since: SINCE, startsOn: '2026-09-07', label: 'US W1' } })
+    expect(queueView(st, TODAY).items.map(i => i.id)).toEqual(['d1', 'd2'])
   })
 })

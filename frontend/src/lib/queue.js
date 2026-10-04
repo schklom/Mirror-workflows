@@ -8,10 +8,14 @@
 //     since:    number        ms epoch of the apply; a workout STARTED at/after it is this week's
 //     startsOn: 'YYYY-MM-DD'  local date the queue becomes active (the planner's calendar-week rule)
 //     label:    string        progress-row title, e.g. 'US W1'
+//     rotationId?: string   set only by the in-app rotation editor (lib/rotation.js): this pass
+//                           is managed here and refills itself when complete. A planner's queue
+//                           omits it and is never rewritten by the app.
 //   }
 //
-// The app never writes `S.queue`; a planner does — any API client that PUTs state with a queue
-// (a coaching agent, a script). null = the weekday model alone.
+// The app writes `S.queue` itself only for the in-app rotation feature (lib/rotation.js, marked
+// by `rotationId`); otherwise a planner does — any API client that PUTs state with a queue (a
+// coaching agent, a script). null = the weekday model alone.
 //
 // PINS — a session can be given a day. The day sheet writes the per-date override that already
 // exists (`S.dayPlan[iso] = <queue routine id>`); nothing new is stored. A pin re-dates the
@@ -39,15 +43,19 @@ const nameParts = w => String(w.name || '').split(' + ')
 
 // Tolerant reader: whole-state sync is last-writer-wins, so a half-written or older-shaped
 // queue can arrive from another client. A bad shape reads as "no queue" rather than taking
-// Home down with it. A session whose routine no longer exists (deleted in the editor — the
-// app never rewrites S.queue) is dropped from the week: it could never be started or logged,
+// Home down with it. A session whose routine no longer exists (deleted in the editor — a
+// planner's queue is never rewritten by the app; a rotation-managed one is, by lib/rotation.js)
+// is dropped from the week: it could never be started or logged,
 // and keeping it would pin the whole week on it; a queue left with no session at all reads as
 // no queue. A missing startsOn means active since the day of the apply.
-const queueOf = S => {
+export const queueOf = S => {
   const q = S?.queue
   if (!q || typeof q !== 'object' || !Array.isArray(q.ids)) return null
   const routines = Array.isArray(S.routines) ? S.routines : []
-  const ids = q.ids.filter(id => routines.some(r => r.id === id))
+  // First valid occurrence of each id: a queue is a set of sessions, and a repeated id would
+  // otherwise show twice in the progress row and count twice in the week's tally. The persisted
+  // payload is never rewritten — normalizing is a read, not a migration.
+  const ids = q.ids.filter((id, i) => q.ids.indexOf(id) === i && routines.some(r => r.id === id))
   if (!ids.length) return null
   return { ...q, ids, startsOn: typeof q.startsOn === 'string' ? q.startsOn : isoOf(new Date(q.since || 0)) }
 }

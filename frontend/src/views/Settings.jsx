@@ -18,6 +18,7 @@ import { t, tn, LANGS, INSTR_LANGS, EXERCISE_NAME_LANGS, baseLang } from '../lib
 import { effectiveLang } from '../lib/default-lang.js'
 import { DEMO, REPO } from '../lib/demo.js'
 import { MOBILE, isAndroid, shareExport, shareExportBlob, syncReminder } from '../lib/mobile.js'
+import { NUDGE_COPY, NUDGE_TONES, toneOf } from '../lib/nudge.js'
 import { referencedFiles } from '../lib/media-refs.js'
 import { mediaStore } from '../lib/media-store.js'
 import { syncMedia, fetchToStore } from '../lib/media-sync.js'
@@ -784,7 +785,7 @@ function MobileReminderCard({ S, update, toast }) {
   }
   return (
     <Section title={t('Notifications')}
-      footer={S.reminder?.on ? t('Reminds you at this time on days that have a routine planned.') : null}>
+      footer={S.reminder?.on ? t('Reminds you at this time on days that have a routine planned.') + nudgeNote(S) : null}>
       <Row icon="calendar" iconTint="var(--orange)" title={t('Workout day reminder')}>
         <Switch checked={!!S.reminder?.on} onChange={toggle} />
       </Row>
@@ -794,9 +795,30 @@ function MobileReminderCard({ S, update, toast }) {
             onChange={e => setReminder({ time: e.target.value })} />
         </Row>
       )}
+      {S.reminder?.on && <NudgeRows S={S} setReminder={setReminder} />}
     </Section>
   )
 }
+
+// The missed-workout nudge (lib/nudge.js): a switch and its tone, under the reminder they ride
+// on — the server sends it with the same push (or the phone schedules it beside the reminder).
+function NudgeRows({ S, setReminder }) {
+  const r = S.reminder || {}
+  return <>
+    <Row icon="flame" iconTint="var(--red)" title={t('Nudge me when I skip a planned workout')}>
+      <Switch checked={!!r.nudge} onChange={() => setReminder({ nudge: !r.nudge })} />
+    </Row>
+    {r.nudge && (
+      <SelectRow icon="sparkles" iconTint="var(--blue)" title={t('Nudge tone')}
+        value={toneOf(r)} onChange={v => setReminder({ tone: v })}
+        options={NUDGE_TONES.map(k => ({ value: k, label: toneLabel(k), subtitle: t(NUDGE_COPY[k].title) }))} />
+    )}
+  </>
+}
+const toneLabel = k => k === 'guilt' ? t('Guilt trip') : k === 'drill' ? t('Drill sergeant') : t('Friendly')
+const nudgeNote = S => S.reminder?.nudge
+  ? ' ' + t('One nudge in the evening of a planned day with nothing logged, between 20:00 and 21:30. After 3 missed days in a row it goes quiet until your next workout.')
+  : ''
 
 function PushCard({ S, update, toast }) {
   const [on, setOn] = useState(false)
@@ -840,7 +862,8 @@ function PushCard({ S, update, toast }) {
       title={t('Notifications')}
       footer={on && S.reminder?.on
         ? t("Only sent on days you have a routine planned and haven't logged a workout yet.") +
-          (S.reminder?.tz ? ' ' + t('Timezone: {0} (auto-detected, updates if you travel).', S.reminder.tz) : '')
+          (S.reminder?.tz ? ' ' + t('Timezone: {0} (auto-detected, updates if you travel).', S.reminder.tz) : '') +
+          nudgeNote(S)
         : null}
     >
       <Row icon="bell" iconTint="var(--red)" title={t('Push notifications')} subtitle={t('Rest-timer alerts, even if openGym is closed.')}>
@@ -856,6 +879,9 @@ function PushCard({ S, update, toast }) {
           <input type="time" className="timef" value={S.reminder?.time || DEF.reminder.time}
             onChange={e => update(s => { s.reminder = { ...(s.reminder || DEF.reminder), time: e.target.value, tz: localTZ() } })} />
         </Row>
+      )}
+      {on && S.reminder?.on && (
+        <NudgeRows S={S} setReminder={patch => update(s => { s.reminder = { ...(s.reminder || DEF.reminder), ...patch, tz: localTZ() } })} />
       )}
     </Section>
     {on && <div style={{ marginTop: -12, marginBottom: 22 }}><Button size="sm" icon="bell" onClick={test}>{t('Send test notification')}</Button></div>}

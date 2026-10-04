@@ -273,7 +273,10 @@ membership, the distribution certificate and profile as protected file variables
 - The app requests notification permission when the workout-day reminder is switched on,
   and again at the first rest if it is still unanswered. On Android it declares
   `SCHEDULE_EXACT_ALARM` so the reminder fires to the minute where the user allows exact
-  alarms (Android 14 no longer grants it at install). The rest countdown does not depend on
+  alarms (Android 14 no longer grants it at install). The opt-in missed-workout nudge is
+  scheduled the same way, beside the reminder: one notification on the evening (20:00–21:30) of
+  each upcoming planned day, at most 3 past the last workout, rescheduled whenever a workout is
+  logged. The rest countdown does not depend on
   it: a foreground service (`specialUse`) keeps the countdown in the notification and holds a
   wake lock until the end, so the end of a rest sounds on time with the screen locked; the
   rest-over alarm is only its fallback.

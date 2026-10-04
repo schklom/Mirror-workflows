@@ -12,6 +12,7 @@
 import { t, tn } from './i18n-core.js'
 import { isoOf, todayISO } from './format.js'
 import { effectiveRoutineIds } from './history.js'
+import { NUDGE_COPY, lineIndex, nudgeFor, nudgeMinute, toneOf } from './nudge.js'
 
 export const MOBILE = import.meta.env.VITE_MOBILE === '1'
 
@@ -127,6 +128,45 @@ export function buildReminderNotifications(S, now = new Date()) {
   return notifications
 }
 
+// The missed-workout nudge (lib/nudge.js) as native notifications: one per future date that would
+// be a missed day if nothing gets logged before its evening. nudgeFor() reads only workouts up to
+// that date, so asking about tomorrow and the day after already applies the back-off of a break
+// that goes on — at most 3 of these are ever queued past the last workout. Logging a workout
+// resyncs (every persist does), which drops the day and resets the count.
+export const NUDGE_WINDOW_DAYS = 7
+const NUDGE_ID_BASE = 2000
+export function buildNudgeNotifications(S, now = new Date()) {
+  const r = S?.reminder
+  if (!r?.on || !r.nudge) return []
+  const at = nudgeMinute(r.time || '08:00')
+  if (at == null) return []
+  const routines = Array.isArray(S.routines) ? S.routines : []
+  const copy = NUDGE_COPY[toneOf(r)]
+  const date = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 12)
+  const notifications = []
+  for (let offset = 0; offset < NUDGE_WINDOW_DAYS; offset++) {
+    const day = new Date(date)
+    day.setDate(date.getDate() + offset)
+    const iso = isoOf(day)
+    // a session on screen right now is today's workout in the making, not a miss
+    if (offset === 0 && S.active) continue
+    const ids = nudgeFor(S, iso)
+    if (!ids) continue
+    const names = ids.map(id => routines.find(x => x.id === id)?.name).filter(Boolean)
+    const label = names.length && names.length <= 2 ? names.join(' + ') : tn('{0} routine', '{0} routines', ids.length)
+    const when = new Date(day)
+    when.setHours(Math.floor(at / 60), at % 60, 0, 0)
+    if (when <= now) continue
+    notifications.push({
+      id: NUDGE_ID_BASE + offset,
+      title: t(copy.title),
+      body: t(copy.lines[lineIndex(iso, copy.lines.length)], label),
+      schedule: { at: when, allowWhileIdle: true },
+    })
+  }
+  return notifications
+}
+
 // (Re)schedule the workout-day reminder: one one-off notification per future calendar date in
 // the bounded window. Cheap enough to run after any state change — the plan or the reminder time
 // may just have been edited. `interactive` gates the OS permission prompt to the Settings toggle;
@@ -137,13 +177,14 @@ export async function syncReminder(S, interactive = false) {
     await LocalNotifications.cancel({ notifications: [
       ...LEGACY_REMINDER_IDS,
       ...Array.from({ length: REMINDER_WINDOW_DAYS }, (_, d) => ({ id: REMINDER_ID_BASE + d })),
+      ...Array.from({ length: NUDGE_WINDOW_DAYS }, (_, d) => ({ id: NUDGE_ID_BASE + d })),
     ] }).catch(() => {})
     const r = S.reminder
     if (!r?.on) return true
     let perm = await LocalNotifications.checkPermissions()
     if (perm.display !== 'granted' && interactive) perm = await LocalNotifications.requestPermissions()
     if (perm.display !== 'granted') return false
-    const notifications = buildReminderNotifications(S)
+    const notifications = [...buildReminderNotifications(S), ...buildNudgeNotifications(S)]
     if (notifications.length) await LocalNotifications.schedule({ notifications })
     return true
   } catch (e) { return false }

@@ -13,6 +13,14 @@ const rebuild = cfg => buildSessionEntries(
 )[0]
 
 describe('routineFromSession', () => {
+  it('saves a per-side timed hold with its planned sets, not one per side row (#322)', () => {
+    const hold = side => ({ sec: 40, w: 0, side, done: true })
+    const w = { id: 'w-hold', entries: [entry('plank', { mode: 'time', side: true, sets: 2, sec: 30 }, [hold('L'), hold('R'), hold('L'), hold('R')])] }
+    const cfg = routineFromSession(w, 'Core').ex[0]
+    expect(cfg).toMatchObject({ mode: 'time', side: true, sets: 2, sec: 40 })
+    expect(rebuild(cfg).sets).toHaveLength(4)
+  })
+
   it('copies the saved setup and derives current reps, weight, warm-ups, and per-side state', () => {
     const session = {
       name: 'Evening push',

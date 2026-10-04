@@ -9,7 +9,7 @@
 // narrowed to this one entry of this one workout, so "last time" is that day.
 import { EXIDX } from './exercises.js'
 import { routineFromSession } from './session-routines.js'
-import { buildSets, applyIntensifierPlan, modeOf } from './history.js'
+import { buildSets, applyIntensifierPlan, modeOf, setsFromRows } from './history.js'
 import { isWarmupRow } from './workout-model.js'
 import { dropGrid } from './plates.js'
 import { weightIncrement, defaultIncrement } from './progression.js'
@@ -34,7 +34,8 @@ export function repeatSessionEntries(st, w, { exists = id => !!EXIDX[id] } = {})
     const { sg, ...setup } = copied
     // As many work sets as were logged that day, done ones — the copy for a routine takes the
     // plan's count, but repeating a day means the day: the bonus set, or the set skipped.
-    const done = (source?.sets || []).filter(row => row?.done && !isWarmupRow(row)).length
+    // A per-side timed hold logs a left and a right row per set (setsFromRows).
+    const done = setsFromRows(setup, (source?.sets || []).filter(row => row?.done && !isWarmupRow(row)).length)
     const cfg = { ...setup, ...(done ? { sets: done } : {}) }
     const step = modeOf(cfg) === 'reps' ? weightIncrement(cfg, st?.unit) : defaultIncrement(cfg.id, st?.unit)
     // Only this entry of this workout is history here, so a later session of the same exercise,

@@ -103,4 +103,11 @@ describe('repeatSessionEntries (#58)', () => {
   it('a workout with nothing to repeat gives nothing', () => {
     expect(repeatSessionEntries(state(), { name: 'Empty', entries: [] }, { exists })).toEqual({ entries: [], skipped: 0 })
   })
+  it('repeats a per-side timed hold as its sets, not one set per side row (#58 x #322)', () => {
+    const hold = side => ({ sec: 30, w: 0, side, done: true })
+    const w = { name: 'Core', entries: [entry('plank', { mode: 'time', side: true, sets: 2, sec: 30 }, [hold('L'), hold('R'), hold('L'), hold('R')])] }
+    const { entries } = repeatSessionEntries(state({ workouts: [w] }), w, { exists })
+    expect(entries[0].target.sets).toBe(2)
+    expect(entries[0].sets.map(s => s.side)).toEqual(['L', 'R', 'L', 'R'])
+  })
 })

@@ -56,6 +56,14 @@ export const sideReps = reps => (reps || 0) / 2
 // Unilateral work moves in pairs, so its rep target steps by two — 16, 18, 20 — and a total
 // that stayed odd would put a rep on one side and not the other.
 export const repStep = cfg => (isPerSide(cfg) ? 2 : 1)
+// How many planned sets a count of logged work rows stands for: the inverse of buildSets, which
+// lays a per-side timed hold out as one left and one right row per set. Without it a copy of
+// such a session (Repeat today, Save as routine) read 2 sets as 4 and buildSets doubled them
+// again. A pair with only one side logged still counts as its set.
+export const setsFromRows = (cfg, rows) => {
+  const n = Math.max(0, Number(rows) || 0)
+  return modeOf(cfg) === 'time' && isPerSide(cfg) ? Math.ceil(n / 2) : n
+}
 
 // mm:ss for a work duration — seconds alone read badly past a minute ("90 s" vs "1:30").
 export function fmtSec(sec) {

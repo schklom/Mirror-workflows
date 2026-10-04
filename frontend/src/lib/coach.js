@@ -523,7 +523,7 @@ const CHANGE_APPLY = {
   week: (s, c) => {
     // A single-routine op: the slot is a list, but the Coach only ever names one routine (or
     // rest), and it replaces the day. This collapses a combined day to one routine — the same
-    // stated limitation as a DayOverride (see docs/COMBINE_ROUTINES.md §8).
+    // stated limitation as a DayOverride (see docs/dev/COMBINE_ROUTINES.md §8).
     const d = c.target.weekday
     if (c.after == null || c.after === 'rest') delete s.week[d]
     else s.week[d] = [c.after]

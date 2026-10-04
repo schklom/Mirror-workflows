@@ -1,4 +1,13 @@
-# Building the mobile app (iOS / Android)
+# The phone app (Android and iOS)
+
+**Just want the app?** Download the APK from the
+[latest release](https://github.com/DuarteSantos8/openGym/releases/latest) and read
+[how the phone app works](#how-the-phone-app-works) and
+[connecting it to your server](#connecting-the-app-to-your-own-server). On an iPhone, see
+[what's possible](#iphone--whats-actually-possible). Everything from [Prerequisites](#prerequisites)
+on is for building the app yourself.
+
+## How the phone app works
 
 openGym ships in two flavors from the same codebase:
 

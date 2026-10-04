@@ -233,18 +233,17 @@ stay in your phone's secure hardware or your password manager.
 
 ## Documentation
 
-| Guide | What's in it |
+The [documentation index](docs/README.md) sorts every guide by who it's for. The most used ones:
+
+| I want to | Read |
 |---|---|
-| [Self-hosting](docs/SELF_HOSTING.md) | HTTPS, reverse proxies, multiple users, password sign-in, backups, updates |
-| [HTTPS on a LAN](docs/SELF_HOSTING_HTTPS.md) | Certificates at home without exposing the server to the internet |
-| [Kubernetes](docs/SELF_HOSTING_KUBERNETES.md) | The manifests in `kubernetes/` |
-| [Mobile](docs/MOBILE.md) | The Android and iOS apps, connecting them to your server, building them |
-| [AI coach](docs/AI_COACH.md) | Providers, what leaves your server, what the model is allowed to change |
-| [Data imports](docs/DATA_IMPORTS.md) | FitNotes, Strong, Hevy, Apple Health |
-| [HTTP API](docs/API.md) | The OpenAPI spec and how to lint it |
-| [MCP server](mcp/README.md) | Connecting Claude Desktop, Cursor and others to your history |
-| [Security](SECURITY.md) | Reporting a vulnerability, and the security model |
-| [Contributing](CONTRIBUTING.md) | Dev setup, guidelines, what CI checks |
+| Get a quick answer | [FAQ](docs/FAQ.md) |
+| Set up my own instance | [Self-hosting](docs/SELF_HOSTING.md) |
+| Use the Android or iPhone app | [Phone app](docs/MOBILE.md) |
+| Bring my history from another app | [Importing data](docs/DATA_IMPORTS.md) |
+| Turn on the AI coach | [AI coach](docs/AI_COACH.md) |
+| Contribute code | [Contributing](CONTRIBUTING.md) |
+| Report a security problem | [Security](SECURITY.md) |
 
 ## Roadmap
 

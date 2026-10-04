@@ -23,7 +23,8 @@ mcp/       optional MCP server — read-only stdio bridge exposing a user's work
 media/     exercise img/gif, gitignored, fetched at runtime by the `media` compose service.
 website/   static project site (plain HTML/CSS/JS), deployed separately.
 kubernetes/ example manifests (docs/SELF_HOSTING_KUBERNETES.md).
-docs/      user and operator guides: SELF_HOSTING*, MOBILE, AI_COACH, DATA_IMPORTS, API.
+docs/      guides indexed in docs/README.md (FAQ, SELF_HOSTING*, MOBILE, AI_COACH, DATA_IMPORTS, API);
+           docs/dev/ holds feature design notes (SET_TYPES: drop sets/rest-pause, LIST_VIEW, COMBINE_ROUTINES).
 ```
 
 ## Commands

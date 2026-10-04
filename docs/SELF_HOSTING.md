@@ -3,6 +3,23 @@
 openGym is two small containers (a web server and an API) plus a folder of your data.
 This guide takes you from "just cloned it" to "using it from my phone over the internet".
 
+**On this page**
+
+1. [Run it locally](#1-run-it-locally-5-minutes) — five minutes, nothing else needed
+2. [The passkey requirement](#2-understand-the-passkey-requirement-important) — why your phone needs HTTPS
+3. [HTTPS on your own domain](#3-expose-it-over-https-on-your-own-domain) — Cloudflare Tunnel, Caddy, Traefik, nginx
+4. [Multiple users](#4-multiple-users) — admin dashboard, invites, language, activity log, password sign-in
+5. [Fitting into an existing stack](#5-fitting-it-into-an-existing-stack) — ports, subpaths, media uploads
+6. [Backups](#6-backups)
+7. [Notifications](#7-notifications)
+8. [Updating](#8-updating)
+- [Passkeys fail even though `RP_ID` looks right](#passkeys-fail-even-though-rp_id-looks-right)
+- [Which passkey providers work](#which-passkey-providers-work)
+- [Troubleshooting](#troubleshooting)
+
+HTTPS on a LAN without a public domain has [its own guide](SELF_HOSTING_HTTPS.md), and so does
+[Kubernetes](SELF_HOSTING_KUBERNETES.md). Short answers to common questions are in the [FAQ](FAQ.md).
+
 ## 1. Run it locally (5 minutes)
 
 Requirements: [Docker](https://docs.docker.com/get-docker/) with the Compose plugin.

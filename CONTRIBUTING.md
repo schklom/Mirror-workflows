@@ -15,7 +15,7 @@ mcp/       Optional read-only MCP server for LLM clients (Claude Desktop, Cursor
            Docker build; it only runs when a client spawns it. See mcp/README.md.
 website/   The static project site at opengym.duarte-santos.ch.
 kubernetes/ Example manifests (docs/SELF_HOSTING_KUBERNETES.md).
-docs/      User and operator guides.
+docs/      User and operator guides (index: docs/README.md); docs/dev/ has feature design notes.
 media/     Exercise images and GIFs, gitignored and fetched at runtime.
 ```
 

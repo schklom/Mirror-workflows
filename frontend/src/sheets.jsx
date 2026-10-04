@@ -1814,7 +1814,7 @@ function DayOverride({ iso, close }) {
   const weeklyNames = [].concat(st.week[wd] || []).map(id => st.routines.find(r => r.id === id)?.name).filter(Boolean)
   const hasOvr = st.dayPlan[iso] !== undefined
   // A weekday can hold several routines; the per-date override stays single-pick, so picking
-  // one here collapses a combined day to it (docs/COMBINE_ROUTINES.md §8). The check marks
+  // one here collapses a combined day to it (docs/dev/COMBINE_ROUTINES.md §8). The check marks
   // show everything currently planned for the day.
   const effIds = effectiveRoutineIds(st, iso)
   // A planned day in the past with nothing logged was missed — or trained and never logged,

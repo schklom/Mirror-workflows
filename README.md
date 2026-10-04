@@ -183,30 +183,12 @@ Details and build instructions: [docs/MOBILE.md](docs/MOBILE.md).
 
 ## How it works
 
-```mermaid
-flowchart LR
-    phone["Phone or laptop<br/>browser or PWA"]
-
-    subgraph host["Your server"]
-        direction LR
-        media["media<br/>one-shot download"]
-        web["web<br/>nginx: serves the app,<br/>proxies /api"]
-        api["api<br/>Node + WebAuthn"]
-        data[("./data<br/>JSON files")]
-        mcp["MCP server<br/>optional, read-only"]
-    end
-
-    upstream["Exercise media<br/>upstream dataset"]
-    ai["AI provider<br/>optional, your key"]
-
-    phone -- HTTPS --> web
-    upstream -. first start .-> media
-    media -- shared volume --> web
-    web -- /api --> api
-    api --> data
-    data -.-> mcp
-    api -. coach only .-> ai
-```
+<p align="center">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/diagrams/architecture-dark.png">
+  <img src="docs/diagrams/architecture.png" alt="Architecture: the phone talks HTTPS to nginx (web), which serves the app and proxies /api to the Node api; the api stores JSON in ./data. A one-shot media service downloads exercise media on first start; the AI coach and MCP server are optional." width="520">
+</picture>
+</p>
 
 - **`frontend/`** is React 19 and Vite (React Router, Zustand), built to static files inside Docker.
 - **`api/`** is plain `node:http` with two dependencies: `@simplewebauthn/server` for passkeys and
@@ -225,22 +207,12 @@ Each profile's data is one document with a server revision. A device sends the r
 saw along with its changes; if another device wrote in between, the server refuses and returns the
 current document so the device can merge and retry.
 
-```mermaid
-sequenceDiagram
-    participant P as Phone
-    participant S as Server
-    participant L as Laptop
-
-    P->>S: save (baseRev 7)
-    S-->>P: ok, rev 8
-    L->>S: save (baseRev 7)
-    S-->>L: 409 conflict + current doc (rev 8)
-    Note over L: merge local changes<br/>into rev 8
-    L->>S: save (baseRev 8)
-    S-->>L: ok, rev 9
-    P->>S: poll
-    S-->>P: rev 9
-```
+<p align="center">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/diagrams/sync-dark.png">
+  <img src="docs/diagrams/sync.png" alt="Sync: a device saves with the revision it last saw; if another device wrote in between, the server answers 409 with the current document, the device merges and saves again." width="560">
+</picture>
+</p>
 
 Nothing that hasn't reached the server is discarded on disconnect or sign-out, and the app shows a
 banner whenever it's working offline.
@@ -280,17 +252,15 @@ A release roughly every two weeks, each small and themed. The full plan is in
 [ROADMAP.md](ROADMAP.md), and the issues sit in the
 [GitHub milestones](https://github.com/DuarteSantos8/openGym/milestones).
 
-```mermaid
-timeline
-    title Next releases
-    v1.3.10 (Oct 2026) : Session queue and rotation
-    v1.3.11 (Nov 2026) : Programmes and phases
-    v1.3.12–13 (Nov–Dec 2026) : Progression engine (AMRAP, %1RM, 5/3/1)
-    v1.3.14 (Dec 2026) : Cardio, alternatives, groups
-    v1.4.0 (Jan 2027) : Database storage (the one compatibility break)
-    v1.4.1–3 (Jan–Feb 2027) : Search, OIDC login, trainer role
-    v1.4.4–7 (Mar–Apr 2027) : iOS app, Health Connect, catalogue, skins
-```
+| Release | Planned | Theme |
+|---|---|---|
+| v1.3.10 | Oct 2026 | Session queue and rotation |
+| v1.3.11 | Nov 2026 | Programmes and phases |
+| v1.3.12–13 | Nov–Dec 2026 | Progression engine: AMRAP, %1RM, 5/3/1 |
+| v1.3.14 | Dec 2026 | Cardio, exercise alternatives, groups |
+| v1.4.0 | Jan 2027 | Database storage (the one compatibility break) |
+| v1.4.1–3 | Jan–Feb 2027 | Search, OIDC login, trainer role |
+| v1.4.4–7 | Mar–Apr 2027 | iOS app, Health Connect, catalogue, skins |
 
 ## Community
 
@@ -341,9 +311,12 @@ the same way.
 ## Support
 
 openGym is free and stays free: AGPL, no paid tier, nothing held back for sponsors. If it replaced a
-paid tracker for you and you'd like to chip in, there's
-[Buy Me a Coffee](https://buymeacoffee.com/duartesantos). A star, a bug report or a pull request
-helps just as much.
+paid tracker for you and you'd like to chip in, there's a coffee button below. A star, a bug report
+or a pull request helps just as much.
+
+<a href="https://buymeacoffee.com/duartesantos" target="_blank">
+  <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" height="60" width="217">
+</a>
 
 [![Star History Chart](https://api.star-history.com/svg?repos=duartesantos8/opengym&type=Date)](https://star-history.com/#DuarteSantos8/openGym&Date)
 

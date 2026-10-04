@@ -60,14 +60,12 @@ it in review.
 
 ## What CI does with your pull request
 
-```mermaid
-flowchart LR
-    pr["Pull request<br/>on GitHub"] --> actions["GitHub Actions<br/>frontend, api, MCP tests<br/>+ build and boot both api images"]
-    actions --> review["Review and merge<br/>into main"]
-    review --> mirror["Mirror workflow<br/>pushes to GitLab"]
-    mirror --> gitlab["GitLab CI<br/>signed APK, multi-arch images,<br/>SBOMs, release"]
-    gitlab --> ghcr["GHCR images<br/>on release"]
-```
+<p align="center">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/diagrams/ci-dark.png">
+  <img src="docs/diagrams/ci.png" alt="CI path: pull request on GitHub, GitHub Actions tests and image builds, review and merge into main, mirror workflow pushes to GitLab, GitLab CI builds the signed APK, images and SBOMs, GHCR images on release." width="280">
+</picture>
+</p>
 
 A pull request runs the three test suites and builds and boots both api image targets. The APK and
 the published images come from GitLab CI on the mirror, built from `main` after the merge. If your

@@ -1716,4 +1716,11 @@ export default {
   'Update “{0}”?': '“{0}” 루틴을 업데이트할까요?',
   'Copy this exercise’s warm-up sets, rest and note from this session into the routine. Your workout history is kept.': '이 세션의 워밍업 세트, 휴식, 메모를 이 운동의 루틴에 복사합니다. 운동 기록은 그대로 유지됩니다.',
   'Routine updated': '루틴 업데이트됨',
+  'per side': '한쪽당',
+  'Left': '왼쪽',
+  'Right': '오른쪽',
+  'Set {0} — {1}': '{0}세트 — {1}',
+  '{0} set becomes {1}: one on each side, {2}s held every time.': '{0}세트가 {1}세트가 됩니다: 양쪽 각각 한 번씩, 매번 {2}초 유지.',
+  '{0} sets become {1}: one on each side, {2}s held every time.': '{0}세트가 {1}세트가 됩니다: 양쪽 각각 한 번씩, 매번 {2}초 유지.',
+  'For a side plank, single-arm hold and the like — trains each side on its own.': '사이드 플랭크, 한 팔 버티기 등에 — 각 쪽을 따로 훈련합니다.',
 }

@@ -1716,4 +1716,11 @@ export default {
   'Update “{0}”?': '更新训练日「{0}」？',
   'Copy this exercise’s warm-up sets, rest and note from this session into the routine. Your workout history is kept.': '将本次训练中该动作的热身组、休息时间和备注复制到训练日中。训练历史会保留。',
   'Routine updated': '训练日已更新',
+  'per side': '每侧',
+  'Left': '左侧',
+  'Right': '右侧',
+  'Set {0} — {1}': '第 {0} 组 — {1}',
+  '{0} set becomes {1}: one on each side, {2}s held every time.': '{0} 组变为 {1} 组：每侧各一组，每次保持 {2} 秒。',
+  '{0} sets become {1}: one on each side, {2}s held every time.': '{0} 组变为 {1} 组：每侧各一组，每次保持 {2} 秒。',
+  'For a side plank, single-arm hold and the like — trains each side on its own.': '适用于侧平板支撑、单臂悬挂等——每侧单独训练。',
 }

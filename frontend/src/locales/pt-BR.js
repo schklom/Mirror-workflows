@@ -1053,6 +1053,8 @@ export const PT_BR_OVERRIDES = {
   'Update “{0}”?': 'Atualizar “{0}”?',
   'Copy this exercise’s warm-up sets, rest and note from this session into the routine. Your workout history is kept.': 'Copia as séries de aquecimento, o descanso e a anotação deste exercício desta sessão para a rotina. Seu histórico de treinos é mantido.',
   'Routine updated': 'Rotina atualizada',
+  '{0} set becomes {1}: one on each side, {2}s held every time.': '{0} série vira {1}: uma de cada lado, {2} s de isometria cada vez.',
+  '{0} sets become {1}: one on each side, {2}s held every time.': '{0} séries viram {1}: uma de cada lado, {2} s de isometria cada vez.',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

@@ -1719,4 +1719,11 @@ export default {
   'Update “{0}”?': 'Frissíted a(z) „{0}” rutint?',
   'Copy this exercise’s warm-up sets, rest and note from this session into the routine. Your workout history is kept.': 'A gyakorlat bemelegítő sorozatait, pihenőjét és jegyzetét átmásolja ebből az edzésből a rutinba. Az edzéselőzményeid megmaradnak.',
   'Routine updated': 'Rutin frissítve',
+  'per side': 'oldalanként',
+  'Left': 'Bal',
+  'Right': 'Jobb',
+  'Set {0} — {1}': '{0}. sorozat — {1}',
+  '{0} set becomes {1}: one on each side, {2}s held every time.': '{0} sorozatból {1} lesz: oldalanként egy, minden alkalommal {2} mp tartás.',
+  '{0} sets become {1}: one on each side, {2}s held every time.': '{0} sorozatból {1} lesz: oldalanként egy, minden alkalommal {2} mp tartás.',
+  'For a side plank, single-arm hold and the like — trains each side on its own.': 'Oldalsó plankhoz, egykezes tartáshoz és hasonlókhoz — minden oldalt külön edz.',
 }

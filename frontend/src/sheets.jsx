@@ -1581,7 +1581,7 @@ function ExConfig({ ex, existing, onSave, onDelete, onReplace, close, routine, i
       {mode !== 'cardio' && <Row icon="shuffle" iconTint="var(--blue)" title={t('Per side')}
         subtitle={mode === 'time'
           ? (perSide
-            ? t('{0} sets become {1}: one on each side, {2}s held every time.', c.sets || 0, (c.sets || 0) * 2, c.sec || 0)
+            ? tn('{0} set becomes {1}: one on each side, {2}s held every time.', '{0} sets become {1}: one on each side, {2}s held every time.', c.sets || 0, (c.sets || 0) * 2, c.sec || 0)
             : t('For a side plank, single-arm hold and the like — trains each side on its own.'))
           : (perSide ? t('You still log the total: {0} is {1} per side.', c.reps || 0, fmtNum(sideReps(c.reps))) : t('For lunges, single-arm rows and the like.'))}>
         {/* Reps: turning it on rounds the target up to an even number, since half of an odd total

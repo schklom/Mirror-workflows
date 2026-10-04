@@ -1716,4 +1716,11 @@ export default {
   'Update “{0}”?': '“{0}” rutini güncellensin mi?',
   'Copy this exercise’s warm-up sets, rest and note from this session into the routine. Your workout history is kept.': 'Bu egzersizin ısınma setlerini, dinlenme süresini ve notunu bu antrenmandan rutine kopyalar. Antrenman geçmişin korunur.',
   'Routine updated': 'Rutin güncellendi',
+  'per side': 'taraf başına',
+  'Left': 'Sol',
+  'Right': 'Sağ',
+  'Set {0} — {1}': 'Set {0} — {1}',
+  '{0} set becomes {1}: one on each side, {2}s held every time.': '{0} set {1} olur: her tarafa bir tane, her seferinde {2} sn tutuş.',
+  '{0} sets become {1}: one on each side, {2}s held every time.': '{0} set {1} olur: her tarafa bir tane, her seferinde {2} sn tutuş.',
+  'For a side plank, single-arm hold and the like — trains each side on its own.': 'Yan plank, tek kolla tutuş ve benzerleri için — her tarafı ayrı çalıştırır.',
 }

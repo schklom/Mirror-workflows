@@ -1716,4 +1716,11 @@ export default {
   'Update “{0}”?': 'रूटीन “{0}” अपडेट करें?',
   'Copy this exercise’s warm-up sets, rest and note from this session into the routine. Your workout history is kept.': 'इस सत्र से इस एक्सरसाइज़ के वार्म-अप सेट, आराम और नोट को रूटीन में कॉपी करें। आपका वर्कआउट इतिहास सुरक्षित रहता है।',
   'Routine updated': 'रूटीन अपडेट हो गया',
+  'per side': 'प्रति तरफ़',
+  'Left': 'बायाँ',
+  'Right': 'दायाँ',
+  'Set {0} — {1}': 'सेट {0} — {1}',
+  '{0} set becomes {1}: one on each side, {2}s held every time.': '{0} सेट {1} बन जाता है: हर तरफ़ एक, हर बार {2} सेकंड होल्ड।',
+  '{0} sets become {1}: one on each side, {2}s held every time.': '{0} सेट {1} बन जाते हैं: हर तरफ़ एक, हर बार {2} सेकंड होल्ड।',
+  'For a side plank, single-arm hold and the like — trains each side on its own.': 'साइड प्लैंक, एक हाथ से होल्ड और ऐसे व्यायामों के लिए — हर तरफ़ को अलग से ट्रेन करता है।',
 }

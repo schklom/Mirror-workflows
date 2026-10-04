@@ -1727,4 +1727,11 @@ export default {
   'Update “{0}”?': 'อัปเดตรูทีน “{0}” ไหม?',
   'Copy this exercise’s warm-up sets, rest and note from this session into the routine. Your workout history is kept.': 'คัดลอกเซ็ตวอร์มอัพ เวลาพัก และโน้ตของท่านี้จากเซสชันนี้ไปยังรูทีน ประวัติการออกกำลังกายของคุณจะยังอยู่ครบ',
   'Routine updated': 'อัปเดตรูทีนแล้ว',
+  'per side': 'ต่อข้าง',
+  'Left': 'ซ้าย',
+  'Right': 'ขวา',
+  'Set {0} — {1}': 'เซ็ต {0} — {1}',
+  '{0} set becomes {1}: one on each side, {2}s held every time.': '{0} เซ็ตกลายเป็น {1} เซ็ต: ข้างละหนึ่งเซ็ต ค้างไว้ {2} วินาทีทุกครั้ง',
+  '{0} sets become {1}: one on each side, {2}s held every time.': '{0} เซ็ตกลายเป็น {1} เซ็ต: ข้างละหนึ่งเซ็ต ค้างไว้ {2} วินาทีทุกครั้ง',
+  'For a side plank, single-arm hold and the like — trains each side on its own.': 'สำหรับแพลงก์ด้านข้าง การค้างแขนเดียว และท่าที่คล้ายกัน — ฝึกแต่ละข้างแยกกัน',
 }

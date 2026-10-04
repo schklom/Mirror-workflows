@@ -1736,4 +1736,11 @@ export default {
   'Update “{0}”?': 'Routine „{0}“ aktualisieren?',
   'Copy this exercise’s warm-up sets, rest and note from this session into the routine. Your workout history is kept.': 'Übernimmt die Aufwärmsätze, die Pause und die Notiz dieser Übung aus dieser Einheit in die Routine. Dein Trainingsverlauf bleibt erhalten.',
   'Routine updated': 'Routine aktualisiert',
+  'per side': 'pro Seite',
+  'Left': 'Links',
+  'Right': 'Rechts',
+  'Set {0} — {1}': 'Satz {0} — {1}',
+  '{0} set becomes {1}: one on each side, {2}s held every time.': 'Aus {0} Satz werden {1}: einer pro Seite, jedes Mal {2} s gehalten.',
+  '{0} sets become {1}: one on each side, {2}s held every time.': 'Aus {0} Sätzen werden {1}: einer pro Seite, jedes Mal {2} s gehalten.',
+  'For a side plank, single-arm hold and the like — trains each side on its own.': 'Für Seitstütz, einarmiges Halten und Ähnliches — trainiert jede Seite für sich.',
 }

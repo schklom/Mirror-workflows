@@ -1769,4 +1769,11 @@ export default {
   'Update “{0}”?': 'تحديث «{0}»؟',
   'Copy this exercise’s warm-up sets, rest and note from this session into the routine. Your workout history is kept.': 'انسخ مجموعات الإحماء والراحة والملاحظة الخاصة بهذا التمرين من هذه الجلسة إلى الروتين. يبقى سجل تمارينك كما هو.',
   'Routine updated': 'تم تحديث الروتين',
+  'per side': 'لكل جانب',
+  'Left': 'يسار',
+  'Right': 'يمين',
+  'Set {0} — {1}': 'المجموعة {0} — {1}',
+  '{0} set becomes {1}: one on each side, {2}s held every time.': '{0} مجموعة تصبح {1}: واحدة لكل جانب، مع ثبات {2} ث في كل مرة.',
+  '{0} sets become {1}: one on each side, {2}s held every time.': '{0} مجموعات تصبح {1}: واحدة لكل جانب، مع ثبات {2} ث في كل مرة.',
+  'For a side plank, single-arm hold and the like — trains each side on its own.': 'للبلانك الجانبي والثبات بذراع واحدة وما شابه — يدرّب كل جانب على حدة.',
 }

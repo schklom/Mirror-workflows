@@ -1716,4 +1716,11 @@ export default {
   'Update “{0}”?': 'Atualizar «{0}»?',
   'Copy this exercise’s warm-up sets, rest and note from this session into the routine. Your workout history is kept.': 'Copia as séries de aquecimento, o descanso e a nota deste exercício desta sessão para a rotina. O teu histórico de treinos é mantido.',
   'Routine updated': 'Rotina atualizada',
+  'per side': 'por lado',
+  'Left': 'Esquerda',
+  'Right': 'Direita',
+  'Set {0} — {1}': 'Série {0} — {1}',
+  '{0} set becomes {1}: one on each side, {2}s held every time.': '{0} série passa a {1}: uma de cada lado, {2} s de isometria de cada vez.',
+  '{0} sets become {1}: one on each side, {2}s held every time.': '{0} séries passam a {1}: uma de cada lado, {2} s de isometria de cada vez.',
+  'For a side plank, single-arm hold and the like — trains each side on its own.': 'Para prancha lateral, isometria com um braço e afins — treina cada lado separadamente.',
 }

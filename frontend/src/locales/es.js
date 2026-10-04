@@ -1763,4 +1763,20 @@ export default {
   'Could not reach {0}. Check the address and that this phone can reach it.': 'No se pudo llegar a {0}. Comprueba la dirección y que este teléfono pueda alcanzarlo.',
   'Vibrate when the phone is on silent': 'Vibrar con el teléfono en silencio',
   'The end of a rest or a hold buzzes like an alarm, even in silent mode.': 'El final de un descanso o de un aguante vibra como una alarma, incluso en silencio.',
+  // --- repeat a saved workout today (#58) ---
+  'Repeat today': 'Repetir hoy',
+  'Nothing to repeat — its exercises no longer exist.': 'Nada que repetir: sus ejercicios ya no existen.',
+  '{0} exercise no longer exists and was left out.': '{0} ejercicio ya no existe y se ha omitido.',
+  '{0} exercises no longer exist and were left out.': '{0} ejercicios ya no existen y se han omitido.',
+  // --- show connection status, and the dot when it is off (#369, #330) ---
+  'Show connection status': 'Mostrar el estado de la conexión',
+  'Off: the bar at the top is hidden. A dot on Home still warns when syncing is stuck.': 'Desactivado: la barra de arriba se oculta. Un punto en Inicio sigue avisando cuando la sincronización se atasca.',
+  'Connection problem': 'Problema de conexión',
+  // --- auto-backup into a folder chosen on Android (#161) ---
+  'Backup folder': 'Carpeta de copias',
+  'Chosen folder': 'Carpeta elegida',
+  'Use default folder': 'Usar la carpeta predeterminada',
+  'This folder can’t be used for backups.': 'Esta carpeta no se puede usar para las copias.',
+  'openGym can no longer write to “{0}” — the copies go to Documents/openGym again. Choose the folder again to go back to it.': 'openGym ya no puede escribir en «{0}»: las copias vuelven a Documents/openGym. Elige la carpeta otra vez para volver a usarla.',
+  'openGym can no longer write to the chosen folder — the copies go to Documents/openGym again. Choose the folder again to go back to it.': 'openGym ya no puede escribir en la carpeta elegida: las copias vuelven a Documents/openGym. Elige la carpeta otra vez para volver a usarla.',
 }

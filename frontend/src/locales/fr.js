@@ -1763,4 +1763,20 @@ export default {
   'Could not reach {0}. Check the address and that this phone can reach it.': 'Impossible de joindre {0}. Vérifie l’adresse et que ce téléphone peut y accéder.',
   'Vibrate when the phone is on silent': 'Vibrer même si le téléphone est en mode silencieux',
   'The end of a rest or a hold buzzes like an alarm, even in silent mode.': 'La fin d’un repos ou d’un maintien vibre comme une alarme, même en mode silencieux.',
+  // --- repeat a saved workout today (#58) ---
+  'Repeat today': 'Refaire aujourd’hui',
+  'Nothing to repeat — its exercises no longer exist.': 'Rien à refaire — ses exercices n’existent plus.',
+  '{0} exercise no longer exists and was left out.': '{0} exercice n’existe plus et a été laissé de côté.',
+  '{0} exercises no longer exist and were left out.': '{0} exercices n’existent plus et ont été laissés de côté.',
+  // --- show connection status, and the dot when it is off (#369, #330) ---
+  'Show connection status': 'Afficher l’état de la connexion',
+  'Off: the bar at the top is hidden. A dot on Home still warns when syncing is stuck.': 'Désactivé : la barre du haut est masquée. Un point sur Accueil prévient quand même si la synchronisation est bloquée.',
+  'Connection problem': 'Problème de connexion',
+  // --- auto-backup into a folder chosen on Android (#161) ---
+  'Backup folder': 'Dossier des sauvegardes',
+  'Chosen folder': 'Dossier choisi',
+  'Use default folder': 'Utiliser le dossier par défaut',
+  'This folder can’t be used for backups.': 'Ce dossier ne peut pas servir aux sauvegardes.',
+  'openGym can no longer write to “{0}” — the copies go to Documents/openGym again. Choose the folder again to go back to it.': 'openGym ne peut plus écrire dans « {0} » — les copies vont de nouveau dans Documents/openGym. Choisis à nouveau le dossier pour y revenir.',
+  'openGym can no longer write to the chosen folder — the copies go to Documents/openGym again. Choose the folder again to go back to it.': 'openGym ne peut plus écrire dans le dossier choisi — les copies vont de nouveau dans Documents/openGym. Choisis à nouveau le dossier pour y revenir.',
 }

@@ -1763,4 +1763,20 @@ export default {
   'Could not reach {0}. Check the address and that this phone can reach it.': '{0} adresine ulaşılamadı. Adresi ve bu telefonun ona erişebildiğini kontrol et.',
   'Vibrate when the phone is on silent': 'Telefon sessizdeyken de titreş',
   'The end of a rest or a hold buzzes like an alarm, even in silent mode.': 'Dinlenmenin ya da tutuşun sonu, sessiz modda bile alarm gibi titreşir.',
+  // --- repeat a saved workout today (#58) ---
+  'Repeat today': 'Bugün tekrarla',
+  'Nothing to repeat — its exercises no longer exist.': 'Tekrarlanacak bir şey yok — egzersizleri artık yok.',
+  '{0} exercise no longer exists and was left out.': '{0} egzersiz artık yok ve dışarıda bırakıldı.',
+  '{0} exercises no longer exist and were left out.': '{0} egzersiz artık yok ve dışarıda bırakıldı.',
+  // --- show connection status, and the dot when it is off (#369, #330) ---
+  'Show connection status': 'Bağlantı durumunu göster',
+  'Off: the bar at the top is hidden. A dot on Home still warns when syncing is stuck.': 'Kapalı: üstteki şerit gizlenir. Eşitleme takılırsa Ana sayfadaki bir nokta yine uyarır.',
+  'Connection problem': 'Bağlantı sorunu',
+  // --- auto-backup into a folder chosen on Android (#161) ---
+  'Backup folder': 'Yedek klasörü',
+  'Chosen folder': 'Seçilen klasör',
+  'Use default folder': 'Varsayılan klasörü kullan',
+  'This folder can’t be used for backups.': 'Bu klasör yedekler için kullanılamıyor.',
+  'openGym can no longer write to “{0}” — the copies go to Documents/openGym again. Choose the folder again to go back to it.': 'openGym artık “{0}” klasörüne yazamıyor — kopyalar yeniden Documents/openGym klasörüne gidiyor. Ona dönmek için klasörü yeniden seç.',
+  'openGym can no longer write to the chosen folder — the copies go to Documents/openGym again. Choose the folder again to go back to it.': 'openGym artık seçilen klasöre yazamıyor — kopyalar yeniden Documents/openGym klasörüne gidiyor. Ona dönmek için klasörü yeniden seç.',
 }

@@ -1763,4 +1763,20 @@ export default {
   'Could not reach {0}. Check the address and that this phone can reach it.': '{0}에 연결할 수 없습니다. 주소와 이 휴대폰에서 접속할 수 있는지 확인하세요.',
   'Vibrate when the phone is on silent': '무음 모드에서도 진동',
   'The end of a rest or a hold buzzes like an alarm, even in silent mode.': '휴식이나 버티기가 끝나면 무음 모드에서도 알람처럼 진동합니다.',
+  // --- repeat a saved workout today (#58) ---
+  'Repeat today': '오늘 반복',
+  'Nothing to repeat — its exercises no longer exist.': '반복할 것이 없습니다 — 이 운동의 종목이 더 이상 없습니다.',
+  '{0} exercise no longer exists and was left out.': '운동 {0}개가 더 이상 없어 제외했습니다.',
+  '{0} exercises no longer exist and were left out.': '운동 {0}개가 더 이상 없어 제외했습니다.',
+  // --- show connection status, and the dot when it is off (#369, #330) ---
+  'Show connection status': '연결 상태 표시',
+  'Off: the bar at the top is hidden. A dot on Home still warns when syncing is stuck.': '끄면 위쪽 막대가 숨겨집니다. 동기화가 멈추면 홈의 점이 계속 알려 줍니다.',
+  'Connection problem': '연결 문제',
+  // --- auto-backup into a folder chosen on Android (#161) ---
+  'Backup folder': '백업 폴더',
+  'Chosen folder': '선택한 폴더',
+  'Use default folder': '기본 폴더 사용',
+  'This folder can’t be used for backups.': '이 폴더는 백업에 사용할 수 없습니다.',
+  'openGym can no longer write to “{0}” — the copies go to Documents/openGym again. Choose the folder again to go back to it.': 'openGym이 더 이상 “{0}”에 쓸 수 없습니다 — 사본은 다시 Documents/openGym에 저장됩니다. 그 폴더로 돌아가려면 다시 선택하세요.',
+  'openGym can no longer write to the chosen folder — the copies go to Documents/openGym again. Choose the folder again to go back to it.': 'openGym이 더 이상 선택한 폴더에 쓸 수 없습니다 — 사본은 다시 Documents/openGym에 저장됩니다. 그 폴더로 돌아가려면 다시 선택하세요.',
 }

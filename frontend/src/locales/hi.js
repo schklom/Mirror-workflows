@@ -1763,4 +1763,20 @@ export default {
   'Could not reach {0}. Check the address and that this phone can reach it.': '{0} तक नहीं पहुँच सके। पता जाँचें और देखें कि यह फ़ोन उस तक पहुँच सकता है।',
   'Vibrate when the phone is on silent': 'फ़ोन साइलेंट पर हो तब भी कंपन करें',
   'The end of a rest or a hold buzzes like an alarm, even in silent mode.': 'आराम या होल्ड का अंत अलार्म की तरह कंपन करता है, साइलेंट मोड में भी।',
+  // --- repeat a saved workout today (#58) ---
+  'Repeat today': 'आज दोहराएँ',
+  'Nothing to repeat — its exercises no longer exist.': 'दोहराने को कुछ नहीं — इसके एक्सरसाइज़ अब मौजूद नहीं हैं।',
+  '{0} exercise no longer exists and was left out.': '{0} एक्सरसाइज़ अब मौजूद नहीं है और छोड़ दी गई।',
+  '{0} exercises no longer exist and were left out.': '{0} एक्सरसाइज़ अब मौजूद नहीं हैं और छोड़ दी गईं।',
+  // --- show connection status, and the dot when it is off (#369, #330) ---
+  'Show connection status': 'कनेक्शन की स्थिति दिखाएँ',
+  'Off: the bar at the top is hidden. A dot on Home still warns when syncing is stuck.': 'बंद: ऊपर की पट्टी छिप जाती है। सिंक अटकने पर होम पर एक बिंदु फिर भी चेतावनी देता है।',
+  'Connection problem': 'कनेक्शन में समस्या',
+  // --- auto-backup into a folder chosen on Android (#161) ---
+  'Backup folder': 'बैकअप फ़ोल्डर',
+  'Chosen folder': 'चुना गया फ़ोल्डर',
+  'Use default folder': 'डिफ़ॉल्ट फ़ोल्डर इस्तेमाल करें',
+  'This folder can’t be used for backups.': 'इस फ़ोल्डर को बैकअप के लिए इस्तेमाल नहीं किया जा सकता।',
+  'openGym can no longer write to “{0}” — the copies go to Documents/openGym again. Choose the folder again to go back to it.': 'openGym अब “{0}” में नहीं लिख सकता — कॉपियाँ फिर से Documents/openGym में जाती हैं। उसमें वापस जाने के लिए फ़ोल्डर फिर से चुनें।',
+  'openGym can no longer write to the chosen folder — the copies go to Documents/openGym again. Choose the folder again to go back to it.': 'openGym अब चुने गए फ़ोल्डर में नहीं लिख सकता — कॉपियाँ फिर से Documents/openGym में जाती हैं। उसमें वापस जाने के लिए फ़ोल्डर फिर से चुनें।',
 }

@@ -77,6 +77,12 @@ status bar says so on every screen, and stays until the condition is gone:
 | *This phone is no longer paired with your server…* | A phone that an earlier version of the app unpaired by itself after its token was refused. The address is gone. | **Pair again**, typing the address. |
 | *On this phone only — not connected to a server* | Local mode, chosen at first launch or after Disconnect. Said quietly. | Nothing, or **Connect** to pair with a server. |
 
+Don't want the line? Settings → Appearance → **Show connection status** turns it off (it is on
+by default, and the setting travels with your profile). A phone kept local on purpose then shows
+nothing at all. On a phone with a server, a problem — offline, an error, a refused phone, or
+changes still waiting after a few seconds — puts a small orange dot on the **Home** tab and on
+the Settings gear instead; Settings → Server & sync says what it is.
+
 In every one of these states the phone keeps its data and every change you make. Pairing
 again with the **same account** merges what the phone kept with what the server has — new
 workouts from both sides, the later edit of each routine, the newer copy's settings — and
@@ -99,6 +105,12 @@ Where the phone keeps things, in case you ever need them by hand:
   folder. Nothing else is deleted, in that folder or anywhere: other files you keep there, and
   the copies versions before 1.3.9 wrote straight into `Documents/`, stay until you remove
   them yourself. Settings → **Import backup** reads any of them back, wherever it is.
+  On Android, Settings → **Backup folder** (under Auto-backup) picks another folder with the
+  system folder picker — a sync app's folder, an SD card — and the copies go there instead,
+  pruned to the same 14. The choice belongs to this phone and does not sync. If the folder
+  stops accepting copies (the permission revoked, the folder deleted), they go to
+  `Documents/openGym` again and Settings says so until you choose the folder again or tap
+  **Use default folder**.
 
 ### Photos and videos of your own exercises
 

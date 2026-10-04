@@ -1760,4 +1760,20 @@ export default {
   'Could not reach {0}. Check the address and that this phone can reach it.': 'Не вдалося зв’язатися з {0}. Перевір адресу і чи може цей телефон до нього дістатися.',
   'Vibrate when the phone is on silent': 'Вібрувати в беззвучному режимі',
   'The end of a rest or a hold buzzes like an alarm, even in silent mode.': 'Кінець відпочинку чи утримання вібрує як будильник, навіть у беззвучному режимі.',
+  // --- repeat a saved workout today (#58) ---
+  'Repeat today': 'Повторити сьогодні',
+  'Nothing to repeat — its exercises no longer exist.': 'Нічого повторювати — його вправ більше немає.',
+  '{0} exercise no longer exists and was left out.': '{0} вправи більше немає, її пропущено.',
+  '{0} exercises no longer exist and were left out.': 'Вправ, яких більше немає, пропущено: {0}.',
+  // --- show connection status, and the dot when it is off (#369, #330) ---
+  'Show connection status': 'Показувати стан з’єднання',
+  'Off: the bar at the top is hidden. A dot on Home still warns when syncing is stuck.': 'Вимк.: смугу вгорі приховано. Крапка на «Головній» однаково попередить, якщо синхронізація застрягла.',
+  'Connection problem': 'Проблема зі з’єднанням',
+  // --- auto-backup into a folder chosen on Android (#161) ---
+  'Backup folder': 'Папка резервних копій',
+  'Chosen folder': 'Вибрана папка',
+  'Use default folder': 'Використовувати типову папку',
+  'This folder can’t be used for backups.': 'Цю папку не можна використовувати для резервних копій.',
+  'openGym can no longer write to “{0}” — the copies go to Documents/openGym again. Choose the folder again to go back to it.': 'openGym більше не може записувати в «{0}» — копії знову зберігаються в Documents/openGym. Вибери папку ще раз, щоб повернутися до неї.',
+  'openGym can no longer write to the chosen folder — the copies go to Documents/openGym again. Choose the folder again to go back to it.': 'openGym більше не може записувати у вибрану папку — копії знову зберігаються в Documents/openGym. Вибери папку ще раз, щоб повернутися до неї.',
 }

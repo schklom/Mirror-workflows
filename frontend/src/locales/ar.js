@@ -1816,4 +1816,20 @@ export default {
   'Could not reach {0}. Check the address and that this phone can reach it.': 'تعذّر الوصول إلى {0}. تحقّق من العنوان ومن أن هذا الهاتف يستطيع الوصول إليه.',
   'Vibrate when the phone is on silent': 'الاهتزاز عندما يكون الهاتف صامتًا',
   'The end of a rest or a hold buzzes like an alarm, even in silent mode.': 'تهتز نهاية الراحة أو التثبيت مثل المنبّه، حتى في الوضع الصامت.',
+  // --- repeat a saved workout today (#58) ---
+  'Repeat today': 'كرّره اليوم',
+  'Nothing to repeat — its exercises no longer exist.': 'لا شيء لتكراره — لم تعد تمارينه موجودة.',
+  '{0} exercise no longer exists and was left out.': 'لم يعد {0} تمرين موجودًا وتم تركه.',
+  '{0} exercises no longer exist and were left out.': 'لم تعد {0} تمارين موجودة وتم تركها.',
+  // --- show connection status, and the dot when it is off (#369, #330) ---
+  'Show connection status': 'إظهار حالة الاتصال',
+  'Off: the bar at the top is hidden. A dot on Home still warns when syncing is stuck.': 'عند الإيقاف: يُخفى الشريط في الأعلى. تبقى نقطة على الرئيسية تنبّهك عندما تتعثر المزامنة.',
+  'Connection problem': 'مشكلة في الاتصال',
+  // --- auto-backup into a folder chosen on Android (#161) ---
+  'Backup folder': 'مجلد النسخ الاحتياطي',
+  'Chosen folder': 'المجلد المختار',
+  'Use default folder': 'استخدام المجلد الافتراضي',
+  'This folder can’t be used for backups.': 'لا يمكن استخدام هذا المجلد للنسخ الاحتياطية.',
+  'openGym can no longer write to “{0}” — the copies go to Documents/openGym again. Choose the folder again to go back to it.': 'لم يعد بإمكان openGym الكتابة في «{0}» — تُحفظ النسخ في Documents/openGym من جديد. اختر المجلد مرة أخرى للعودة إليه.',
+  'openGym can no longer write to the chosen folder — the copies go to Documents/openGym again. Choose the folder again to go back to it.': 'لم يعد بإمكان openGym الكتابة في المجلد المختار — تُحفظ النسخ في Documents/openGym من جديد. اختر المجلد مرة أخرى للعودة إليه.',
 }

@@ -1763,4 +1763,20 @@ export default {
   'Could not reach {0}. Check the address and that this phone can reach it.': 'Nie można połączyć się z {0}. Sprawdź adres i czy ten telefon ma do niego dostęp.',
   'Vibrate when the phone is on silent': 'Wibruj także przy wyciszonym telefonie',
   'The end of a rest or a hold buzzes like an alarm, even in silent mode.': 'Koniec przerwy lub utrzymania wibruje jak budzik, nawet w trybie cichym.',
+  // --- repeat a saved workout today (#58) ---
+  'Repeat today': 'Powtórz dziś',
+  'Nothing to repeat — its exercises no longer exist.': 'Nie ma czego powtórzyć — jego ćwiczenia już nie istnieją.',
+  '{0} exercise no longer exists and was left out.': '{0} ćwiczenie już nie istnieje i zostało pominięte.',
+  '{0} exercises no longer exist and were left out.': 'Ćwiczenia, których już nie ma, zostały pominięte: {0}.',
+  // --- show connection status, and the dot when it is off (#369, #330) ---
+  'Show connection status': 'Pokazuj stan połączenia',
+  'Off: the bar at the top is hidden. A dot on Home still warns when syncing is stuck.': 'Wyłączone: pasek u góry jest ukryty. Kropka na ekranie Start nadal ostrzega, gdy synchronizacja utknie.',
+  'Connection problem': 'Problem z połączeniem',
+  // --- auto-backup into a folder chosen on Android (#161) ---
+  'Backup folder': 'Folder kopii zapasowych',
+  'Chosen folder': 'Wybrany folder',
+  'Use default folder': 'Użyj domyślnego folderu',
+  'This folder can’t be used for backups.': 'Tego folderu nie można użyć do kopii zapasowych.',
+  'openGym can no longer write to “{0}” — the copies go to Documents/openGym again. Choose the folder again to go back to it.': 'openGym nie może już zapisywać w „{0}” — kopie znów trafiają do Documents/openGym. Wybierz folder ponownie, aby do niego wrócić.',
+  'openGym can no longer write to the chosen folder — the copies go to Documents/openGym again. Choose the folder again to go back to it.': 'openGym nie może już zapisywać w wybranym folderze — kopie znów trafiają do Documents/openGym. Wybierz folder ponownie, aby do niego wrócić.',
 }

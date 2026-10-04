@@ -1774,4 +1774,20 @@ export default {
   'Could not reach {0}. Check the address and that this phone can reach it.': 'ไม่สามารถเข้าถึง {0} ได้ ตรวจสอบที่อยู่และดูว่าโทรศัพท์เครื่องนี้เข้าถึงได้หรือไม่',
   'Vibrate when the phone is on silent': 'สั่นแม้โทรศัพท์อยู่ในโหมดเงียบ',
   'The end of a rest or a hold buzzes like an alarm, even in silent mode.': 'เมื่อหมดเวลาพักหรือการค้าง โทรศัพท์จะสั่นเหมือนนาฬิกาปลุก แม้อยู่ในโหมดเงียบ',
+  // --- repeat a saved workout today (#58) ---
+  'Repeat today': 'ทำซ้ำวันนี้',
+  'Nothing to repeat — its exercises no longer exist.': 'ไม่มีอะไรให้ทำซ้ำ — ท่าในการฝึกนี้ไม่มีอยู่แล้ว',
+  '{0} exercise no longer exists and was left out.': 'ท่า {0} ท่าไม่มีอยู่แล้วและถูกข้ามไป',
+  '{0} exercises no longer exist and were left out.': 'ท่า {0} ท่าไม่มีอยู่แล้วและถูกข้ามไป',
+  // --- show connection status, and the dot when it is off (#369, #330) ---
+  'Show connection status': 'แสดงสถานะการเชื่อมต่อ',
+  'Off: the bar at the top is hidden. A dot on Home still warns when syncing is stuck.': 'ปิด: แถบด้านบนจะถูกซ่อน แต่จุดบนหน้าหลักยังเตือนเมื่อการซิงค์ค้าง',
+  'Connection problem': 'การเชื่อมต่อมีปัญหา',
+  // --- auto-backup into a folder chosen on Android (#161) ---
+  'Backup folder': 'โฟลเดอร์สำรองข้อมูล',
+  'Chosen folder': 'โฟลเดอร์ที่เลือก',
+  'Use default folder': 'ใช้โฟลเดอร์เริ่มต้น',
+  'This folder can’t be used for backups.': 'ใช้โฟลเดอร์นี้สำหรับสำรองข้อมูลไม่ได้',
+  'openGym can no longer write to “{0}” — the copies go to Documents/openGym again. Choose the folder again to go back to it.': 'openGym เขียนลงใน “{0}” ไม่ได้แล้ว — สำเนาจะกลับไปเก็บที่ Documents/openGym เลือกโฟลเดอร์อีกครั้งเพื่อกลับไปใช้',
+  'openGym can no longer write to the chosen folder — the copies go to Documents/openGym again. Choose the folder again to go back to it.': 'openGym เขียนลงในโฟลเดอร์ที่เลือกไม่ได้แล้ว — สำเนาจะกลับไปเก็บที่ Documents/openGym เลือกโฟลเดอร์อีกครั้งเพื่อกลับไปใช้',
 }

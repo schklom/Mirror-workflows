@@ -1943,6 +1943,20 @@ describe('the reference line: last time or best set', () => {
     expect(mocks.S.logRef).toBe('last')
   })
 
+  // #363: how long ago, counted from the session's own day; the date stays in the title and name.
+  it('says how long ago, counted from the day the session is logged on', async () => {
+    await mount([exercise('plain-bench', [false], { rid: 'A' })], 0, { workouts: history, active: { d: '2026-08-29' } })
+    expect(line().textContent).toBe('Last time (3 days ago): 55×8')
+    const time = line().querySelector('time')
+    expect(time.outerHTML).toMatch(/datetime="2026-08-26"/i)
+    expect(time.getAttribute('title')).toMatch(/2026/)
+    expect(line().getAttribute('aria-label')).toMatch(/^Last time \(3 days ago, .+2026\): 55×8\. Show your best set instead$/)
+    await unmount()
+    // back-filled into the past: last time is counted from that day, not from today
+    await mount([exercise('plain-bench', [false], { rid: 'A' })], 0, { workouts: history.slice(0, 2), active: { d: '2026-08-25' } })
+    expect(line().textContent).toBe('Last time (yesterday): 60×10')
+  })
+
   it('is not there before the exercise was ever logged', async () => {
     await mount([exercise('plain-bench', [false])], 0, { logRef: 'best' })
     expect(line()).toBeNull()

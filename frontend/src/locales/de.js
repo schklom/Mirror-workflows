@@ -1783,4 +1783,20 @@ export default {
   'Could not reach {0}. Check the address and that this phone can reach it.': '{0} ist nicht erreichbar. Prüf die Adresse und ob dieses Handy den Server erreichen kann.',
   'Vibrate when the phone is on silent': 'Auch bei stummgeschaltetem Telefon vibrieren',
   'The end of a rest or a hold buzzes like an alarm, even in silent mode.': 'Das Ende einer Pause oder einer Haltezeit vibriert wie ein Wecker, auch im Lautlos-Modus.',
+  // --- repeat a saved workout today (#58) ---
+  'Repeat today': 'Heute wiederholen',
+  'Nothing to repeat — its exercises no longer exist.': 'Nichts zu wiederholen — seine Übungen gibt es nicht mehr.',
+  '{0} exercise no longer exists and was left out.': '{0} Übung gibt es nicht mehr und wurde ausgelassen.',
+  '{0} exercises no longer exist and were left out.': '{0} Übungen gibt es nicht mehr und wurden ausgelassen.',
+  // --- show connection status, and the dot when it is off (#369, #330) ---
+  'Show connection status': 'Verbindungsstatus anzeigen',
+  'Off: the bar at the top is hidden. A dot on Home still warns when syncing is stuck.': 'Aus: Die Leiste oben ist ausgeblendet. Ein Punkt auf Start warnt trotzdem, wenn die Synchronisierung hängt.',
+  'Connection problem': 'Verbindungsproblem',
+  // --- auto-backup into a folder chosen on Android (#161) ---
+  'Backup folder': 'Backup-Ordner',
+  'Chosen folder': 'Gewählter Ordner',
+  'Use default folder': 'Standardordner verwenden',
+  'This folder can’t be used for backups.': 'Dieser Ordner kann nicht für Backups verwendet werden.',
+  'openGym can no longer write to “{0}” — the copies go to Documents/openGym again. Choose the folder again to go back to it.': 'openGym kann nicht mehr in „{0}“ schreiben — die Kopien landen wieder in Documents/openGym. Wähle den Ordner erneut, um zu ihm zurückzukehren.',
+  'openGym can no longer write to the chosen folder — the copies go to Documents/openGym again. Choose the folder again to go back to it.': 'openGym kann nicht mehr in den gewählten Ordner schreiben — die Kopien landen wieder in Documents/openGym. Wähle den Ordner erneut, um zu ihm zurückzukehren.',
 }

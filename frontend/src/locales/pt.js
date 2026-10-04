@@ -1763,4 +1763,20 @@ export default {
   'Could not reach {0}. Check the address and that this phone can reach it.': 'Não foi possível alcançar {0}. Verifica o endereço e se este telemóvel o consegue alcançar.',
   'Vibrate when the phone is on silent': 'Vibrar com o telemóvel em silêncio',
   'The end of a rest or a hold buzzes like an alarm, even in silent mode.': 'O fim de um descanso ou de uma isometria vibra como um alarme, mesmo em silêncio.',
+  // --- repeat a saved workout today (#58) ---
+  'Repeat today': 'Repetir hoje',
+  'Nothing to repeat — its exercises no longer exist.': 'Nada para repetir — os exercícios dele já não existem.',
+  '{0} exercise no longer exists and was left out.': '{0} exercício já não existe e ficou de fora.',
+  '{0} exercises no longer exist and were left out.': '{0} exercícios já não existem e ficaram de fora.',
+  // --- show connection status, and the dot when it is off (#369, #330) ---
+  'Show connection status': 'Mostrar o estado da ligação',
+  'Off: the bar at the top is hidden. A dot on Home still warns when syncing is stuck.': 'Desligado: a barra no topo fica oculta. Um ponto no Início continua a avisar quando a sincronização fica parada.',
+  'Connection problem': 'Problema de ligação',
+  // --- auto-backup into a folder chosen on Android (#161) ---
+  'Backup folder': 'Pasta das cópias de segurança',
+  'Chosen folder': 'Pasta escolhida',
+  'Use default folder': 'Usar a pasta predefinida',
+  'This folder can’t be used for backups.': 'Esta pasta não pode ser usada para cópias de segurança.',
+  'openGym can no longer write to “{0}” — the copies go to Documents/openGym again. Choose the folder again to go back to it.': 'O openGym já não consegue escrever em «{0}» — as cópias voltam a ir para Documents/openGym. Escolhe a pasta de novo para voltar a ela.',
+  'openGym can no longer write to the chosen folder — the copies go to Documents/openGym again. Choose the folder again to go back to it.': 'O openGym já não consegue escrever na pasta escolhida — as cópias voltam a ir para Documents/openGym. Escolhe a pasta de novo para voltar a ela.',
 }

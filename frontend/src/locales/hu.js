@@ -1766,4 +1766,20 @@ export default {
   'Could not reach {0}. Check the address and that this phone can reach it.': 'A(z) {0} nem érhető el. Ellenőrizd a címet, és hogy ez a telefon eléri-e.',
   'Vibrate when the phone is on silent': 'Rezgés akkor is, ha a telefon némítva van',
   'The end of a rest or a hold buzzes like an alarm, even in silent mode.': 'A pihenő vagy a tartás vége ébresztőként rezeg, néma módban is.',
+  // --- repeat a saved workout today (#58) ---
+  'Repeat today': 'Ismétlés ma',
+  'Nothing to repeat — its exercises no longer exist.': 'Nincs mit megismételni — a gyakorlatai már nem léteznek.',
+  '{0} exercise no longer exists and was left out.': '{0} gyakorlat már nem létezik, kimaradt.',
+  '{0} exercises no longer exist and were left out.': '{0} gyakorlat már nem létezik, kimaradtak.',
+  // --- show connection status, and the dot when it is off (#369, #330) ---
+  'Show connection status': 'Kapcsolat állapotának mutatása',
+  'Off: the bar at the top is hidden. A dot on Home still warns when syncing is stuck.': 'Kikapcsolva: a felső sáv rejtve marad. Ha a szinkronizálás elakad, egy pont a Kezdőlapon továbbra is jelez.',
+  'Connection problem': 'Kapcsolati probléma',
+  // --- auto-backup into a folder chosen on Android (#161) ---
+  'Backup folder': 'Mentési mappa',
+  'Chosen folder': 'Választott mappa',
+  'Use default folder': 'Alapértelmezett mappa használata',
+  'This folder can’t be used for backups.': 'Ez a mappa nem használható mentésekhez.',
+  'openGym can no longer write to “{0}” — the copies go to Documents/openGym again. Choose the folder again to go back to it.': 'Az openGym már nem tud írni ide: „{0}” — a másolatok ismét a Documents/openGym mappába kerülnek. Válaszd ki újra a mappát, hogy visszatérj hozzá.',
+  'openGym can no longer write to the chosen folder — the copies go to Documents/openGym again. Choose the folder again to go back to it.': 'Az openGym már nem tud írni a választott mappába — a másolatok ismét a Documents/openGym mappába kerülnek. Válaszd ki újra a mappát, hogy visszatérj hozzá.',
 }

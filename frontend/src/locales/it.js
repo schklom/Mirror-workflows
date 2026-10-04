@@ -1763,4 +1763,20 @@ export default {
   'Could not reach {0}. Check the address and that this phone can reach it.': 'Impossibile raggiungere {0}. Controlla l’indirizzo e che questo telefono possa raggiungerlo.',
   'Vibrate when the phone is on silent': 'Vibra anche con il telefono in silenzioso',
   'The end of a rest or a hold buzzes like an alarm, even in silent mode.': 'La fine di un recupero o di una tenuta vibra come una sveglia, anche in silenzioso.',
+  // --- repeat a saved workout today (#58) ---
+  'Repeat today': 'Ripeti oggi',
+  'Nothing to repeat — its exercises no longer exist.': 'Niente da ripetere: i suoi esercizi non esistono più.',
+  '{0} exercise no longer exists and was left out.': '{0} esercizio non esiste più ed è stato tralasciato.',
+  '{0} exercises no longer exist and were left out.': '{0} esercizi non esistono più e sono stati tralasciati.',
+  // --- show connection status, and the dot when it is off (#369, #330) ---
+  'Show connection status': 'Mostra lo stato della connessione',
+  'Off: the bar at the top is hidden. A dot on Home still warns when syncing is stuck.': 'Disattivato: la barra in alto è nascosta. Un punto su Home avvisa comunque quando la sincronizzazione si blocca.',
+  'Connection problem': 'Problema di connessione',
+  // --- auto-backup into a folder chosen on Android (#161) ---
+  'Backup folder': 'Cartella dei backup',
+  'Chosen folder': 'Cartella scelta',
+  'Use default folder': 'Usa la cartella predefinita',
+  'This folder can’t be used for backups.': 'Questa cartella non si può usare per i backup.',
+  'openGym can no longer write to “{0}” — the copies go to Documents/openGym again. Choose the folder again to go back to it.': 'openGym non può più scrivere in «{0}»: le copie tornano in Documents/openGym. Scegli di nuovo la cartella per tornarci.',
+  'openGym can no longer write to the chosen folder — the copies go to Documents/openGym again. Choose the folder again to go back to it.': 'openGym non può più scrivere nella cartella scelta: le copie tornano in Documents/openGym. Scegli di nuovo la cartella per tornarci.',
 }

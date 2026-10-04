@@ -1079,6 +1079,20 @@ export const PT_BR_OVERRIDES = {
   'Could not reach {0}. Check the address and that this phone can reach it.': 'Não foi possível alcançar {0}. Verifique o endereço e se este celular consegue acessá-lo.',
   'Vibrate when the phone is on silent': 'Vibrar com o celular no silencioso',
   'The end of a rest or a hold buzzes like an alarm, even in silent mode.': 'O fim de um descanso ou de uma isometria vibra como um alarme, mesmo no silencioso.',
+  // --- repeat a saved workout today (#58) ---
+  'Nothing to repeat — its exercises no longer exist.': 'Nada para repetir — os exercícios dele não existem mais.',
+  '{0} exercise no longer exists and was left out.': '{0} exercício não existe mais e ficou de fora.',
+  '{0} exercises no longer exist and were left out.': '{0} exercícios não existem mais e ficaram de fora.',
+  // --- show connection status, and the dot when it is off (#369, #330) ---
+  'Show connection status': 'Mostrar o status da conexão',
+  'Off: the bar at the top is hidden. A dot on Home still warns when syncing is stuck.': 'Desligado: a barra no topo fica oculta. Um ponto no Início continua avisando quando a sincronização fica parada.',
+  'Connection problem': 'Problema de conexão',
+  // --- auto-backup into a folder chosen on Android (#161) ---
+  'Backup folder': 'Pasta de backup',
+  'Use default folder': 'Usar a pasta padrão',
+  'This folder can’t be used for backups.': 'Esta pasta não pode ser usada para backups.',
+  'openGym can no longer write to “{0}” — the copies go to Documents/openGym again. Choose the folder again to go back to it.': 'O openGym não consegue mais gravar em “{0}” — as cópias voltam para Documents/openGym. Escolha a pasta de novo para voltar a ela.',
+  'openGym can no longer write to the chosen folder — the copies go to Documents/openGym again. Choose the folder again to go back to it.': 'O openGym não consegue mais gravar na pasta escolhida — as cópias voltam para Documents/openGym. Escolha a pasta de novo para voltar a ela.',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

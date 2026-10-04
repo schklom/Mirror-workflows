@@ -82,6 +82,24 @@ export function fmtAgo(ts, now = Date.now()) {
   catch { return new Date(ts).toLocaleString(dateLocale()) }
 }
 
+// How long before `dayIso` a logged day was, in calendar days (#363): "yesterday", "3 days ago",
+// "2 weeks ago", "last month". For the "Last time (…)" line of a workout, so `dayIso` is the
+// session's own day, not the wall clock: a workout logged into the past counts back from its
+// day. Whole calendar days at noon, so a DST weekend between the two is not a day short.
+// The words come from Intl.RelativeTimeFormat, so no pack carries them; it has no compound form
+// ("1 week 1 day ago"), which is why a span rounds down to its coarsest unit. A year or more
+// back reads as the date with its year, which says more than "1 year ago". A day after `dayIso`
+// (a clock set back) reads as today.
+export function fmtDaysAgo(iso, dayIso = todayISO()) {
+  const at = s => Date.UTC(+s.slice(0, 4), +s.slice(5, 7) - 1, +s.slice(8, 10))
+  const days = Math.max(0, Math.round((at(dayIso) - at(iso)) / 86400000))
+  if (!(days >= 0)) return fmtDate(iso)
+  if (days >= 365) return fmtDate(iso, false, true)
+  const [n, unit] = days < 7 ? [days, 'day'] : days < 35 ? [Math.floor(days / 7), 'week'] : [Math.max(1, Math.floor(days / 30.44)), 'month']
+  try { return new Intl.RelativeTimeFormat(dateLocale(), { numeric: 'auto' }).format(-n, unit) }
+  catch { return fmtDate(iso) }
+}
+
 /* ---------------------------------------------------------------- week start --
    Where a week begins is a local convention, not a fact: most of Europe starts on
    Monday, most of the Americas and much of Asia on Sunday. The app used to assume

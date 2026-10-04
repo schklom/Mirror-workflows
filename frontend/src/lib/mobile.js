@@ -238,6 +238,11 @@ const AUTO_BACKUP_NAME = /^opengym-backup-\d{4}-\d{2}-\d{2}(-2)?\.json$/
 // The other install's files stay where they are; this one cannot see them to prune them.
 export async function writeAutoBackup(state) {
   const day = todayISO()
+  // A folder the person chose (Android, #161) comes first. When it can no longer be written —
+  // the permission revoked, the folder deleted, the sync app gone — the copy goes to the default
+  // folder after all, and Settings says so: a backup that silently stops is the one thing this
+  // feature must not do.
+  if (await writeToChosenFolder(state, day)) return
   let fs
   try { fs = await import('@capacitor/filesystem') } catch (e) { return }
   const write = name => fs.Filesystem.writeFile({
@@ -273,3 +278,93 @@ async function pruneAutoBackups({ Filesystem, Directory }, written) {
     try { await Filesystem.deleteFile({ path: `${AUTO_BACKUP_DIR}/${n}`, directory: Directory.Documents }) } catch (e) { /* one stuck file does not stop the rest */ }
   }
 }
+/* ------------------------------------------------- the backup folder (#161) --
+   Android only: the system folder picker (Storage Access Framework) through the local
+   BackupFolder plugin (android/.../BackupFolderPlugin.java), since @capacitor/filesystem cannot
+   write into a picked folder. The choice is a fact of this phone, kept in its own private file
+   and never in S: S syncs and exports, and a content:// address means nothing anywhere else.
+
+   { uri, label }       the chosen folder, and its name as the picker showed it
+   { lost, lostLabel }  the folder stopped accepting copies; they go to Documents/openGym again
+   {}                   the default, Documents/openGym */
+export const BACKUP_FOLDER_FILE = 'opengym-backup-folder.json'
+
+// The plugin proxy lives here and is never handed through a promise: a Capacitor plugin proxy
+// answers every property, `then` included, so a promise resolving to it never settles (#42/#58).
+let folderPlugin = null
+async function loadFolderPlugin() {
+  if (folderPlugin) return
+  const { registerPlugin } = await import('@capacitor/core')
+  folderPlugin = registerPlugin('BackupFolder')
+}
+
+let folderState = null   // the file's content once read; {} for the default
+const folderListeners = new Set()
+const setFolderState = async next => {
+  folderState = next
+  await writeJsonFile(BACKUP_FOLDER_FILE, next)
+  folderListeners.forEach(fn => { try { fn(next) } catch (e) { /* a listener's problem */ } })
+}
+
+/** Where auto-backup writes on this phone: { uri, label } | { lost, lostLabel } | {}. */
+export async function backupFolder() {
+  if (!folderState) {
+    const saved = await readJsonFile(BACKUP_FOLDER_FILE)
+    folderState = saved && typeof saved === 'object' ? saved : {}
+  }
+  return folderState
+}
+
+/** Settings listens, so a fallback in the middle of a backup shows without a reload. */
+export function onBackupFolderChange(fn) {
+  folderListeners.add(fn)
+  return () => folderListeners.delete(fn)
+}
+
+/** Opens the system folder picker. Resolves to the new state, or null when cancelled. */
+export async function chooseBackupFolder() {
+  await loadFolderPlugin()
+  const picked = await folderPlugin.pick()
+  if (!picked?.uri) return null
+  const before = await backupFolder()
+  if (before.uri && before.uri !== picked.uri) await releaseFolder(before.uri)
+  const next = { uri: picked.uri, label: picked.label || null }
+  await setFolderState(next)
+  return next
+}
+
+/** Back to Documents/openGym; also how the warning about a lost folder is put away. */
+export async function resetBackupFolder() {
+  const before = await backupFolder()
+  if (before.uri) await releaseFolder(before.uri)
+  await setFolderState({})
+  return folderState
+}
+
+async function releaseFolder(uri) {
+  try { await loadFolderPlugin(); await folderPlugin.release({ uri }) } catch (e) { /* already gone */ }
+}
+
+// True when today's copy is in the chosen folder. False with no folder chosen, and after a
+// failure, which is recorded so Settings can say the copies went to the default folder.
+async function writeToChosenFolder(state, day) {
+  const folder = await backupFolder()
+  if (!folder.uri) return false
+  const name = `opengym-backup-${day}.json`
+  try {
+    await loadFolderPlugin()
+    const { ok } = await folderPlugin.check({ uri: folder.uri })
+    if (!ok) throw new Error('permission lost')
+    await folderPlugin.write({ uri: folder.uri, name, data: JSON.stringify(state) })
+  } catch (e) {
+    await setFolderState({ lost: true, lostLabel: folder.label || null })
+    await releaseFolder(folder.uri)
+    return false
+  }
+  // Pruning waits for a successful write, and only ever touches the app's own dated names.
+  try { await folderPlugin.prune({ uri: folder.uri, keep: AUTO_BACKUP_KEEP, pattern: AUTO_BACKUP_NAME.source, written: name }) } catch (e) { /* housekeeping */ }
+  return true
+}
+
+// Tests only: forget the cached choice, as a fresh start of the app would.
+export function _resetBackupFolder() { folderState = null; folderPlugin = null; folderListeners.clear() }

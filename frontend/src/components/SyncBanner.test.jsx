@@ -2,7 +2,7 @@
 import React, { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import SyncBanner, { PENDING_GRACE_MS } from './SyncBanner.jsx'
+import SyncBanner, { PENDING_GRACE_MS, useConnectionTrouble } from './SyncBanner.jsx'
 import { connectionView } from './ServerSync.jsx'
 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true
@@ -14,12 +14,12 @@ globalThis.IS_REACT_ACT_ENVIRONMENT = true
    waiting for its push does not flash it. The store is a stand-in: its `sync` is what each test
    sets; ServerSync.jsx (the words and the actions) is the real one. */
 const mocks = vi.hoisted(() => {
-  const state = { MOBILE: false, DEMO: false, webauthn: true, user: null, guest: false, onboarding: false, sync: null, sheets: [], navs: [] }
+  const state = { MOBILE: false, DEMO: false, webauthn: true, user: null, guest: false, onboarding: false, sync: null, S: {}, sheets: [], navs: [] }
   state.toast = vi.fn()
   state.syncNow = vi.fn(async () => state.sync)
   state.passkeyLogin = vi.fn(async () => ({ id: 'u1', name: 'andi' }))
   state.snapshot = () => ({
-    user: state.user, sync: state.sync, needsMobileOnboarding: state.onboarding,
+    S: state.S, user: state.user, sync: state.sync, needsMobileOnboarding: state.onboarding,
     isGuest: () => state.guest, syncNow: state.syncNow,
     setUser: vi.fn(), adoptProfile: vi.fn(async () => ({})),
   })
@@ -56,7 +56,7 @@ const network = on => {
 let host, root
 beforeEach(() => {
   network(true)
-  Object.assign(mocks, { MOBILE: false, DEMO: false, webauthn: true, user: { id: 'u1', name: 'andi' }, guest: false, onboarding: false, sync: sync('ok') })
+  Object.assign(mocks, { MOBILE: false, DEMO: false, webauthn: true, user: { id: 'u1', name: 'andi' }, guest: false, onboarding: false, sync: sync('ok'), S: {} })
   mocks.sheets.length = 0
   mocks.navs.length = 0
   mocks.toast.mockClear(); mocks.syncNow.mockClear(); mocks.passkeyLogin.mockClear()
@@ -303,5 +303,77 @@ describe('a change waiting while the server is reachable', () => {
     act(() => { vi.advanceTimersByTime(PENDING_GRACE_MS) })
     expect(bar()).toBeNull()
     expect(conn()).toBe('')
+  })
+})
+
+// Settings → "Show connection status" (#369, #330): off hides the bar in every state; a problem
+// then shows as a dot (useConnectionTrouble), and a device with no server never gets one.
+describe('with the connection status switched off', () => {
+  const Probe = () => <i className="probe" data-trouble={String(useConnectionTrouble())} />
+  const both = () => act(() => root.render(<><SyncBanner /><Probe /></>))
+  const trouble = () => host.querySelector('.probe').dataset.trouble === 'true'
+
+  it('hides the bar whatever it would say, and gives the page its height back', () => {
+    for (const [st, extra, who] of [
+      ['offline', { pending: true }, {}], ['error', { lastError: { status: 502 } }, {}], ['auth', {}, {}], ['held', {}, {}],
+      ['local', { server: null }, { MOBILE: true, user: null, guest: true }], ['local', {}, { user: null, guest: true }],
+    ]) {
+      Object.assign(mocks, { MOBILE: false, user: { id: 'u1', name: 'andi' }, guest: false }, who, { sync: sync(st, extra), S: { connStatus: true } })
+      both()
+      expect(bar(), st).not.toBeNull()
+      expect(conn(), st).not.toBe('')
+      mocks.S = { connStatus: false }
+      both()
+      expect(bar(), st).toBeNull()
+      expect(conn(), st).toBe('')
+    }
+  })
+
+  it('an older profile without the setting still shows it', () => {
+    mocks.S = {}
+    mocks.sync = sync('offline', { pending: true })
+    both()
+    expect(bar()).not.toBeNull()
+    expect(trouble()).toBe(false)
+  })
+
+  it('a dot for offline, an error, a refusal and an open sign-in question', () => {
+    mocks.S = { connStatus: false }
+    for (const st of ['offline', 'error', 'auth', 'held']) {
+      mocks.sync = sync(st, st === 'error' ? { lastError: { status: 500 } } : {})
+      both()
+      expect(trouble(), st).toBe(true)
+    }
+    mocks.sync = sync('ok')
+    both()
+    expect(trouble()).toBe(false)
+  })
+
+  it('a change waiting gets the dot only after the grace period', () => {
+    vi.useFakeTimers()
+    mocks.S = { connStatus: false }
+    mocks.sync = sync('pending', { pending: true })
+    both()
+    expect(trouble()).toBe(false)
+    act(() => { vi.advanceTimersByTime(PENDING_GRACE_MS + 100) })
+    expect(trouble()).toBe(true)
+  })
+
+  it('never for a phone kept local or a guest: no server is a choice, not a fault', () => {
+    mocks.S = { connStatus: false }
+    Object.assign(mocks, { MOBILE: true, user: null, guest: true, sync: sync('local', { server: null }) })
+    both()
+    expect(trouble()).toBe(false)
+    Object.assign(mocks, { MOBILE: false, user: null, guest: true, sync: sync('local') })
+    both()
+    expect(trouble()).toBe(false)
+  })
+
+  it('no dot while the bar is on: it already says so', () => {
+    mocks.S = { connStatus: true }
+    mocks.sync = sync('offline', { pending: true })
+    both()
+    expect(bar()).not.toBeNull()
+    expect(trouble()).toBe(false)
   })
 })

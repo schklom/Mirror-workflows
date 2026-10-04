@@ -39,6 +39,8 @@ import { buildCompletedWorkout, sessionEnd } from './lib/finish-workout.js'
 import { refillAfter } from './lib/rotation.js'
 import { isWarmupRow, hasCompletedWork } from './lib/workout-model.js'
 import { saveSessionAsRoutine } from './lib/session-routines.js'
+import { repeatSessionEntries } from './lib/session-repeat.js'
+import { nextUnfinishedUnit } from './lib/supersetFlow.js'
 import { swapActiveExercise } from './lib/active-exercise-swap.js'
 import { useSheetKeyboard, useRevealActiveChip, tappable } from './lib/use-sheet-keyboard.js'
 import { isFav, toggleFav, sortFavouritesFirst } from './lib/favourites.js'
@@ -2163,6 +2165,13 @@ function WorkoutDetail({ w, close }) {
       catch (error) { toast(t(error.message)) }
     }}>{t('Edit workout')}</Button>
     <div style={{ height: 8 }} />
+    {/* The same exercises again, today, as a new session (#58): the rows read what was logged
+        in this workout. The record itself stays as it is. */}
+    <Button icon="reset" disabled={!!st.active} style={{ marginBottom: 8 }} onClick={() => {
+      saveNote()
+      initial.current = latest.current.trim().slice(0, NOTE_MAX)
+      repeatWorkout(w, close)
+    }}>{t('Repeat today')}</Button>
     {/* The note lives in a textarea that only writes on blur, and moving the workout re-keys a
         legacy record — so flush it first and stop the unmount hook writing it a second time. */}
     <Button icon="calendar" style={{ marginBottom: 8 }} onClick={() => {
@@ -2293,6 +2302,33 @@ export function beginWorkout(routineIds, bw) {
   })
   useUI.getState().stopRest()
   nav('/workout')
+}
+
+// "Repeat today" (#58): a saved workout's exercises as a new freestyle session dated today, each
+// seeded from what that workout logged (lib/session-repeat.js). The weigh-in asks first, the
+// way starting any workout does.
+export function repeatWorkout(w, close) {
+  const st = S()
+  if (st.active) { toast(t('Finish the current workout first.')); return }
+  const { entries, skipped } = repeatSessionEntries(st, w)
+  if (!entries.length) { toast(t('Nothing to repeat — its exercises no longer exist.')); return }
+  const go = bw => {
+    if (S().active) { toast(t('Finish the current workout first.')); return }
+    update(s => {
+      s.active = {
+        id: uid(), d: todayISO(), start: Date.now(), routineIds: [],
+        name: w.name || t('Freestyle'), bw: bw || null, cur: 0, entries,
+        workoutView: s.workoutView || 'cards',
+      }
+    })
+    useUI.getState().stopRest()
+    if (close) close()
+    nav('/workout')
+    if (skipped) toast(tn('{0} exercise no longer exists and was left out.', '{0} exercises no longer exist and were left out.', skipped))
+  }
+  if (st.weighIn === false) { go(null); return }
+  if (close) close()
+  bwSheet({ required: true, onDone: go })
 }
 
 /* ============================ log a past workout ============================ */

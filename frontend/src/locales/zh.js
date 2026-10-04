@@ -1735,7 +1735,7 @@ export default {
   // --- update a routine from a running workout ---
   'Update routine': '更新训练日',
   'Update “{0}”?': '更新训练日「{0}」？',
-  'Copy this exercise’s warm-up sets, rest and note from this session into the routine. Your workout history is kept.': '将本次训练中该动作的热身组、休息时间和备注复制到训练日中。训练历史会保留。',
+  'Copy this exercise’s warm-up sets, and the rest and note from its Progression settings, into the routine. A note added for today stays with this workout. Your workout history is kept.': '将该动作的热身组，以及其渐进设置中的休息时间和备注，复制到训练日中。为今天添加的备注会留在本次训练中。训练历史会保留。',
   'Routine updated': '训练日已更新',
   'per side': '每侧',
   'Left': '左侧',

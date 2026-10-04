@@ -1735,7 +1735,7 @@ export default {
   // --- update a routine from a running workout ---
   'Update routine': 'रूटीन अपडेट करें',
   'Update “{0}”?': 'रूटीन “{0}” अपडेट करें?',
-  'Copy this exercise’s warm-up sets, rest and note from this session into the routine. Your workout history is kept.': 'इस सत्र से इस एक्सरसाइज़ के वार्म-अप सेट, आराम और नोट को रूटीन में कॉपी करें। आपका वर्कआउट इतिहास सुरक्षित रहता है।',
+  'Copy this exercise’s warm-up sets, and the rest and note from its Progression settings, into the routine. A note added for today stays with this workout. Your workout history is kept.': 'इस एक्सरसाइज़ के वार्म-अप सेट, और इसकी प्रगति सेटिंग से आराम और नोट को रूटीन में कॉपी करें। आज के लिए जोड़ा गया नोट इसी वर्कआउट के साथ रहता है। आपका वर्कआउट इतिहास सुरक्षित रहता है।',
   'Routine updated': 'रूटीन अपडेट हो गया',
   'per side': 'प्रति तरफ़',
   'Left': 'बायाँ',

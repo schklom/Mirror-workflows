@@ -1788,7 +1788,7 @@ export default {
   // --- update a routine from a running workout ---
   'Update routine': 'تحديث الروتين',
   'Update “{0}”?': 'تحديث «{0}»؟',
-  'Copy this exercise’s warm-up sets, rest and note from this session into the routine. Your workout history is kept.': 'انسخ مجموعات الإحماء والراحة والملاحظة الخاصة بهذا التمرين من هذه الجلسة إلى الروتين. يبقى سجل تمارينك كما هو.',
+  'Copy this exercise’s warm-up sets, and the rest and note from its Progression settings, into the routine. A note added for today stays with this workout. Your workout history is kept.': 'انسخ مجموعات الإحماء لهذا التمرين، والراحة والملاحظة من إعدادات التقدم الخاصة به، إلى الروتين. تبقى الملاحظة التي أضفتها لهذا اليوم مع هذا التمرين. يبقى سجل تمارينك كما هو.',
   'Routine updated': 'تم تحديث الروتين',
   'per side': 'لكل جانب',
   'Left': 'يسار',

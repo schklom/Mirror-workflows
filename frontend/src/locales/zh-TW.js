@@ -1710,7 +1710,7 @@ export default {
   'No muscle volume planned.': '尚未排定肌肉訓練量。',
   'Update routine': '更新課表',
   'Update “{0}”?': '要更新課表「{0}」嗎？',
-  'Copy this exercise’s warm-up sets, rest and note from this session into the routine. Your workout history is kept.': '將這次訓練中此動作的熱身組、休息時間與備忘錄複製到課表中。你的訓練紀錄會保留。',
+  'Copy this exercise’s warm-up sets, and the rest and note from its Progression settings, into the routine. A note added for today stays with this workout. Your workout history is kept.': '將此動作的熱身組，以及其漸進超負荷設定中的休息時間與備忘錄，複製到課表中。為今天新增的備忘錄會留在這次訓練中。你的訓練紀錄會保留。',
   'Routine updated': '課表已更新',
   'per side': '每側',
   'Left': '左側',

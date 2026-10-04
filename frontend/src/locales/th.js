@@ -1746,7 +1746,7 @@ export default {
   // --- update a routine from a running workout ---
   'Update routine': 'อัปเดตรูทีน',
   'Update “{0}”?': 'อัปเดตรูทีน “{0}” ไหม?',
-  'Copy this exercise’s warm-up sets, rest and note from this session into the routine. Your workout history is kept.': 'คัดลอกเซ็ตวอร์มอัพ เวลาพัก และโน้ตของท่านี้จากเซสชันนี้ไปยังรูทีน ประวัติการออกกำลังกายของคุณจะยังอยู่ครบ',
+  'Copy this exercise’s warm-up sets, and the rest and note from its Progression settings, into the routine. A note added for today stays with this workout. Your workout history is kept.': 'คัดลอกเซ็ตวอร์มอัพของท่านี้ รวมถึงเวลาพักและโน้ตจากการตั้งค่าการเพิ่มน้ำหนัก ไปยังรูทีน โน้ตที่เพิ่มไว้สำหรับวันนี้จะอยู่กับการออกกำลังกายครั้งนี้ ประวัติการออกกำลังกายของคุณจะยังอยู่ครบ',
   'Routine updated': 'อัปเดตรูทีนแล้ว',
   'per side': 'ต่อข้าง',
   'Left': 'ซ้าย',

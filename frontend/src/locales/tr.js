@@ -1735,7 +1735,7 @@ export default {
   // --- update a routine from a running workout ---
   'Update routine': 'Rutini güncelle',
   'Update “{0}”?': '“{0}” rutini güncellensin mi?',
-  'Copy this exercise’s warm-up sets, rest and note from this session into the routine. Your workout history is kept.': 'Bu egzersizin ısınma setlerini, dinlenme süresini ve notunu bu antrenmandan rutine kopyalar. Antrenman geçmişin korunur.',
+  'Copy this exercise’s warm-up sets, and the rest and note from its Progression settings, into the routine. A note added for today stays with this workout. Your workout history is kept.': 'Bu egzersizin ısınma setlerini ve İlerleme ayarlarındaki dinlenme süresi ile notu rutine kopyalar. Bugün için eklenen not bu antrenmanda kalır. Antrenman geçmişin korunur.',
   'Routine updated': 'Rutin güncellendi',
   'per side': 'taraf başına',
   'Left': 'Sol',

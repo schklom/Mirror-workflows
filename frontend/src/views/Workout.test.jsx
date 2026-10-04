@@ -2104,6 +2104,24 @@ describe('Update routine, from the More menu of an exercise', () => {
     expect(mocks.S.routines[0].ex[0]).toMatchObject({ restSec: 150, note: 'pause on the chest' })
   })
 
+  it('leaves the note added for today with the workout, and says so before confirming', async () => {
+    // "Add note" in the ⋯ menu is today's note (entry.note, kept with the finished workout and
+    // optionally pinned for next time); the routine's own note is the one on Progression settings.
+    await mount([ownEntry({ note: 'Elbows tucked' })], 0, { routines: [routine()] })
+    await openMore()
+    expect(item('Update routine')).toBeUndefined()
+    await act(async () => { item('Add warm-up set').onClick() })
+    await rerender()
+    await openMore()
+    expect(item('Update routine').sub).toBe('Warm-up sets 0 → 1')
+    item('Update routine').onClick()
+    const { message } = mocks.confirmSheet.mock.calls[0][0]
+    expect(message).toMatch(/Progression settings/)
+    expect(message).toMatch(/note added for today stays with this workout/)
+    mocks.confirmSheet.mock.calls[0][0].onConfirm()
+    expect(mocks.S.routines[0].ex[0].note).toBeUndefined()
+  })
+
   it('does not write into a workout that changed while the confirmation was open', async () => {
     await mount([ownEntry({ target: { mode: 'reps', reps: 5, weight: 60, restSec: 150 } })], 0, { routines: [routine()] })
     await openMore()

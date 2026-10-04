@@ -1735,7 +1735,7 @@ export default {
   // --- update a routine from a running workout ---
   'Update routine': 'Actualizar rutina',
   'Update “{0}”?': '¿Actualizar «{0}»?',
-  'Copy this exercise’s warm-up sets, rest and note from this session into the routine. Your workout history is kept.': 'Copia a la rutina las series de calentamiento, el descanso y la nota de este ejercicio de esta sesión. Tu historial de entrenamientos se conserva.',
+  'Copy this exercise’s warm-up sets, and the rest and note from its Progression settings, into the routine. A note added for today stays with this workout. Your workout history is kept.': 'Copia a la rutina las series de calentamiento de este ejercicio, y el descanso y la nota de sus Ajustes de progresión. Una nota añadida para hoy se queda con este entrenamiento. Tu historial de entrenamientos se conserva.',
   'Routine updated': 'Rutina actualizada',
   'per side': 'por lado',
   'Left': 'Izquierda',

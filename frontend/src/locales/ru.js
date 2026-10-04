@@ -1739,7 +1739,7 @@ export default {
   // --- update a routine from a running workout ---
   'Update routine': 'Обновить программу',
   'Update “{0}”?': 'Обновить программу «{0}»?',
-  'Copy this exercise’s warm-up sets, rest and note from this session into the routine. Your workout history is kept.': 'Копирует разминочные подходы, отдых и заметку этого упражнения из этой тренировки в программу. История тренировок сохраняется.',
+  'Copy this exercise’s warm-up sets, and the rest and note from its Progression settings, into the routine. A note added for today stays with this workout. Your workout history is kept.': 'Копирует в программу разминочные подходы этого упражнения, а также отдых и заметку из его настроек прогрессии. Заметка на сегодня остаётся с этой тренировкой. История тренировок сохраняется.',
   'Routine updated': 'Программа обновлена',
   'per side': 'на сторону',
   'Left': 'Левая',

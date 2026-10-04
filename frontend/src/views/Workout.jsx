@@ -968,7 +968,7 @@ function ActiveWorkout() {
         : (c.key === 'warmupSets' ? t('Warm-up sets') : t('Rest (s)')) + ' ' + c.from + ' → ' + c.to).join(' · '),
       run: () => confirmSheet({
         title: t('Update “{0}”?', routine.name),
-        message: t('Copy this exercise’s warm-up sets, rest and note from this session into the routine. Your workout history is kept.'),
+        message: t('Copy this exercise’s warm-up sets, and the rest and note from its Progression settings, into the routine. A note added for today stays with this workout. Your workout history is kept.'),
         confirmText: t('Update routine'),
         onConfirm: () => {
           let applied = null

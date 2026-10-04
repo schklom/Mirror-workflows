@@ -1735,7 +1735,7 @@ export default {
   // --- update a routine from a running workout ---
   'Update routine': '루틴 업데이트',
   'Update “{0}”?': '“{0}” 루틴을 업데이트할까요?',
-  'Copy this exercise’s warm-up sets, rest and note from this session into the routine. Your workout history is kept.': '이 세션의 워밍업 세트, 휴식, 메모를 이 운동의 루틴에 복사합니다. 운동 기록은 그대로 유지됩니다.',
+  'Copy this exercise’s warm-up sets, and the rest and note from its Progression settings, into the routine. A note added for today stays with this workout. Your workout history is kept.': '이 운동의 워밍업 세트와 진행 설정의 휴식, 메모를 루틴에 복사합니다. 오늘을 위해 추가한 메모는 이 운동 기록에 남습니다. 운동 기록은 그대로 유지됩니다.',
   'Routine updated': '루틴 업데이트됨',
   'per side': '한쪽당',
   'Left': '왼쪽',

@@ -1738,7 +1738,7 @@ export default {
   // --- update a routine from a running workout ---
   'Update routine': 'Rutin frissítése',
   'Update “{0}”?': 'Frissíted a(z) „{0}” rutint?',
-  'Copy this exercise’s warm-up sets, rest and note from this session into the routine. Your workout history is kept.': 'A gyakorlat bemelegítő sorozatait, pihenőjét és jegyzetét átmásolja ebből az edzésből a rutinba. Az edzéselőzményeid megmaradnak.',
+  'Copy this exercise’s warm-up sets, and the rest and note from its Progression settings, into the routine. A note added for today stays with this workout. Your workout history is kept.': 'Átmásolja a rutinba a gyakorlat bemelegítő sorozatait, valamint a pihenőt és a jegyzetet a Progresszió beállításaiból. A mai napra írt jegyzet ennél az edzésnél marad. Az edzéselőzményeid megmaradnak.',
   'Routine updated': 'Rutin frissítve',
   'per side': 'oldalanként',
   'Left': 'Bal',

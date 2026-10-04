@@ -20,6 +20,7 @@ import { modeOf, repStep, rerampWarmups, isBw, isPerSide, entryExcluded, entryRo
 import { EXIDX, isAssisted, isLoadedEq } from './exercises.js'
 import { isWarmupRow, isSideSet, syncSideAggregate, makeSideSet } from './workout-model.js'
 import { normalizeRepRange } from './rep-range.js'
+import { isPyramid } from './pyramid.js'
 
 export const POLICIES = ['off', 'linear', 'greyskull', 'double', 'time']
 
@@ -99,6 +100,8 @@ export const MAX_BW_SETS = 6
 // The policy in force for one exercise: its own override, else the routine's default, else
 // the mode's default. Reps keeps behaving the way the app always did (all reps → add a step).
 export function policyFor(cfg, routine, mode) {
+  // Pyramid sets are never progressed: the lifter picks every set's weight (CONTEXT.md).
+  if (isPyramid(cfg)) return 'off'
   const m = mode || modeOf(cfg || {})
   const allowed = POLICIES_FOR[m] || ['off']
   const pick = (cfg && cfg.prog) || (routine && routine.prog) || (m === 'reps' ? 'linear' : 'off')
@@ -262,7 +265,12 @@ export function readSession(entry, fallback) {
   // Warm-up rows are prep, not the session: one filtered read beats guarding every consumer
   // below (an undone warm-up otherwise poisons `ok` forever and its reps drag `low`/`count`).
   const logged = ((entry && entry.sets) || []).filter(s => !isWarmupRow(s))
-  const planned = target.sets || logged.length
+  // A timed per-side hold doubles its row count (buildWorkSets: one set on the plan becomes an
+  // L row and an R row) — `target.sets` is still the plan's pre-doubling number, so it has to
+  // double here too, or `sets` below stops after the first side's rows and the other side's
+  // holds never reach `ok`/`held`/`best`.
+  const plannedRows = target.sets || logged.length
+  const planned = mode === 'time' && isPerSide(target) ? plannedRows * 2 : plannedRows
   const enough = logged.length >= planned
   // Only the sets the plan asked for decide what happens next (issue #233). A set added on top
   // is extra work, and it used to be read as part of the prescription: one heavier bonus set

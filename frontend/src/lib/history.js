@@ -17,6 +17,8 @@ const workRowsForMode = (entry = {}, mode = 'reps') => {
 // for the hook — and it re-exports this very `t` from core, so nothing changes here except what
 // gets dragged along behind it.
 import { t } from './i18n-core.js'
+import { queueNext, pinState, queueLiveOn } from './queue.js'
+import { isPyramid, pyramidLabel, pyramidTargetAt, PYRAMID_MAX } from './pyramid.js'
 
 // How an exercise is logged (issue #16). This used to be derived from the body part alone,
 // which meant a plank or a farmer's carry could only be timed by filing it under cardio.
@@ -179,6 +181,7 @@ export function setsRepsOf(cfg) {
   const n = cfg.sets || 1
   if (mode === 'cardio') return `${n} × ${cfg.min || 20} min`
   if (mode === 'time') return `${n} × ${fmtSec(cfg.sec || 45)}`
+  if (isPyramid(cfg)) return pyramidLabel(cfg.pyramid)
   return `${n} × ${repsOf(cfg)}`
 }
 
@@ -190,7 +193,9 @@ export function exLine(cfg, unit, speedUnit) {
   // Added weight reads as added: "+10 kg" on a dip belt, "60 kg" on a barbell.
   const load = cfg.weight ? ' · ' + (isBw(cfg) ? '+' : '') + fmtNum(cfg.weight) + ' ' + unit : ''
   if (mode === 'cardio') return `${n} × ${cfg.min || 20} min @ ${fmtSpeed(cfg.speed || 8, speedUnit)}`
-  if (mode === 'time') return `${setsRepsOf(cfg)}${load}`
+  // A timed hold has no rep count to spell a split out of ("8/side" below) — "per side" says it
+  // happens twice, once each side (buildWorkSets), rather than trying to divide a duration.
+  if (mode === 'time') return `${setsRepsOf(cfg)}${load}${isPerSide(cfg) ? ' · ' + t('per side') : ''}`
   // This is the line with room for it, so the split is spelled out: "3 × 16 · 8/side".
   const split = isPerSide(cfg) ? ' · ' + t('{0}/side', repsOf(cfg, v => fmtNum(sideReps(v)))) : ''
   return `${setsRepsOf(cfg)}${load}${split}`
@@ -392,13 +397,29 @@ export function bestWeightFor(S, exId) {
  *
  * `S.dayPlan[iso]` stays scalar (a routine id, the `'rest'` sentinel, or undefined): the
  * per-date override and Start-time are single-pick. All array-tolerance is on `S.week`.
+ *
+ * A coach week (`S.queue`, lib/queue.js) has no weekdays: its sessions are done in order, and
+ * the first undone one is today's session — so it goes in front of whatever the weekday
+ * holds. The planner's own weekday pointers (a week applied before the queue existed) are
+ * hidden behind it; routines you planned yourself ride along as a combined day. `today` is a
+ * parameter so tests and the reminder builder can pin the clock; the override still wins.
+ *
+ * An override naming a queue session is a PIN (queue.js): the session is that day's, with the
+ * weekday's own routines riding along as on any queue day, and the floating rule skips it on
+ * other days. Once the session is done the pin is fulfilled and the day reads as if unpinned.
  */
-export function effectiveRoutineIds(S, iso) {
+export function effectiveRoutineIds(S, iso, today = todayISO()) {
   const ov = S.dayPlan[iso]
   if (ov === 'rest') return []
-  if (ov && S.routines.some(r => r.id === ov)) return [ov]
+  const pin = pinState(S, ov)
+  if (!pin && ov && S.routines.some(r => r.id === ov)) return [ov]
   const wd = new Date(iso + 'T12:00:00').getDay()
-  return [].concat(S.week[wd] || []).filter(id => S.routines.some(r => r.id === id))
+  const weekday = [].concat(S.week[wd] || []).filter(id => S.routines.some(r => r.id === id))
+  const q = pin === 'open' ? ov : queueNext(S, iso, today)
+  // The planner's weekday pointers stay hidden on the queue's day even when it has no session for
+  // it (every remaining one pinned to another day): those sessions have their days.
+  const own = q || queueLiveOn(S, iso, today) ? weekday.filter(id => !S.queue.ids.includes(id)) : weekday
+  return q ? [q, ...own] : own
 }
 export function effectiveRoutines(S, iso) {
   return effectiveRoutineIds(S, iso).map(id => S.routines.find(r => r.id === id)).filter(Boolean)
@@ -483,12 +504,20 @@ function buildWorkSets(S, cfg, options = {}) {
     return sets
   }
   if (mode === 'time') {
-    for (let i = 0; i < n; i++) {
+    // A timed hold has no rep count to split in half, so "per side" here means the whole hold
+    // happens once per side rather than once total: the planned sets double (2 sets of 30s
+    // becomes 2 left + 2 right, each still 30s) instead of the duration being divided. Plain
+    // rows tagged with `side`, not the L/R sub-row pair reps uses (isSideSet) — there is only
+    // one duration to log per row, not two independent values to track side by side.
+    const count = isPerSide(cfg) ? n * 2 : n
+    for (let i = 0; i < count; i++) {
       // Only carry a previous value over when it came from a timed set — switching an
       // exercise from reps to time must not seed the duration from a rep count.
       const prev = prevAt(i)
       const carried = prev && prev.sec > 0 ? prev : null
-      sets.push({ sec: carried ? carried.sec : (cfg.sec || 45), w: carried ? (carried.w || 0) : (cfg.weight || 0), done: false })
+      const row = { sec: carried ? carried.sec : (cfg.sec || 45), w: carried ? (carried.w || 0) : (cfg.weight || 0), done: false }
+      if (isPerSide(cfg)) row.side = i % 2 === 0 ? 'L' : 'R'
+      sets.push(row)
     }
     return sets
   }
@@ -507,6 +536,16 @@ function buildWorkSets(S, cfg, options = {}) {
       ? (cfg.weight > 0 ? cfg.weight : (lastRegular && lastRegular.r > 0 ? lastRegular.w : cfg.weight))
       : usable ? usable.w : (conf && conf.w > 0 ? conf.w : cfg.weight)
     const row = { w, r: planReps || !usable ? cfg.reps : usable.r, done: false }
+    // Pyramid sets: the plan owns each set's own target; a max set opens at what you managed
+    // in that same set last time, so the number to beat is already there.
+    if (isPyramid(cfg)) {
+      const target = pyramidTargetAt(cfg.pyramid, i)
+      // A pyramid is never progressed, so a planned session builds it with `useTarget` and
+      // `usable` is null there: the max set reads the same set last time directly.
+      const seed = usable || (lastRegular && lastRegular.r > 0 ? lastRegular : null)
+      if (target === PYRAMID_MAX) { row.r = seed ? seed.r : 0; row.max = true }
+      else row.r = target
+    }
     // A unilateral exercise logs each side on its own (issue #60): the row splits into L/R,
     // each seeded with half the total reps at the same weight. When "last time" was itself a
     // per-side set, carry its two sides over so an asymmetry you logged persists — both sides'

@@ -11,8 +11,10 @@ import { effectiveRoutines, effectiveRoutineIds, lastEntryFor, bestWeightFor, be
 import { fmtNum, fmtPlate, exerciseNameText, fmtDate, todayISO, exCount, DAYN } from '../lib/format.js'
 import { speedUnitOf, toSpeed, fromSpeed } from '../lib/speed.js'
 import { beep, vibrate, unlock } from '../lib/sound.js'
-import { t, exerciseNameFor, exerciseNameClass } from '../lib/i18n.js'
+import { pinState } from '../lib/queue.js'
+import { t, tn, exerciseNameFor, exerciseNameClass } from '../lib/i18n.js'
 import { api, beacon } from '../lib/api.js'
+import { pyramidRestFor, maxRecordAt } from '../lib/pyramid.js'
 import { insertionIndexAfterCurrentUnit, nextUnfinishedUnit, setProgressHighWater, supersetFlowStep, restAfterSet, restOnRecheck, restSecFor, warmupRestSecFor } from '../lib/supersetFlow.js'
 import Media from '../components/Media.jsx'
 import { startFlow, exercisePicker, exConfigSheet, exerciseDetailSheet, finishWorkout, exitWorkoutEdit, workoutCompleteSheet, confirmSheet, exerciseNoteSheet, sessionNoteSheet, renameWorkoutSheet, swapActiveWorkoutExercise, barWeightSheet, menuSheet, effortPickerSheet, exerciseHistorySheet, addRoutineToSessionSheet } from '../sheets.jsx'
@@ -23,6 +25,7 @@ import { Button, Check, NumberField } from '../components/ui.jsx'
 import { defaultIncrement, weightIncrement, stepWeight } from '../lib/progression.js'
 import { progressionGuidance } from '../lib/progression-copy.js'
 import { buildPlannedEntry, plannedConfigOf, builtOutOfProgression } from '../lib/session-start.js'
+import { routineChangesFromEntry, updateRoutineFromEntry } from '../lib/routines.js'
 import { sessionNoProg, setSessionNoProg, setEntryNoProg, joinSessionNoProg } from '../lib/session-noprog.js'
 import { glyphOf } from '../lib/glyphs.js'
 import { markAllSetsDone, sessionHistory } from '../lib/backfill.js'
@@ -44,7 +47,7 @@ function StartChooser() {
   const todayIds = effectiveRoutineIds(S, todayISO())
   const todayRoutines = effectiveRoutines(S, todayISO())
   const todayName = todayRoutines.map(r => r.name).join(' + ')
-  const todayOvr = S.dayPlan[todayISO()] !== undefined
+  const todayOvr = S.dayPlan[todayISO()] !== undefined && pinState(S, S.dayPlan[todayISO()]) !== 'done' // a fulfilled pin is no override
   const idSet = new Set(todayIds)
   const others = S.routines.filter(r => !idSet.has(r.id))
   return <div className="narrow">
@@ -93,7 +96,7 @@ const RTL_LETTER = /[֐-ࣿיִ-﷿ﹰ-﻿]/
 // "last time" recap and the progression line — leaving the name, the ⋯ menu, the one-line plan
 // the rows are measured against, and the sets.
 // Nothing dropped is lost: it is all still on the ⋯ menu, or one ⋮ switch back to list/cards.
-function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSide, onField, onAddSet, onRemoveSet, onAddWarmup, onRemoveSetAt, onStartTimed, onPairPrev, onPairNext, onSetRowRef, onProgressionSettings, onNoProg, onSwap, onMoveUp, onMoveDown, canMoveUp, canMoveDown, onRemoveExercise, busy }) {
+function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSide, onField, onAddSet, onRemoveSet, onAddWarmup, onRemoveSetAt, onStartTimed, onPairPrev, onPairNext, onSetRowRef, onProgressionSettings, onNoProg, routineUpdate, onSwap, onMoveUp, onMoveDown, canMoveUp, canMoveDown, onRemoveExercise, busy }) {
   const S = useStore(s => s.S)
   const update = useStore(s => s.update)
   const working = useUI(s => s.work)
@@ -354,6 +357,7 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
       onNoProg && { icon: 'pause', label: t('Don’t count for progression'), sub: t('This exercise, this session only'), on: entry.noProg === true, onClick: () => onNoProg(entry.noProg !== true) },
       plateLoading && { icon: 'plate', label: t('Plate loading'), sub: loadSummary, onClick: () => barWeightSheet(entry.id, cfg) },
       { icon: 'flame', label: t('Add warm-up set'), onClick: onAddWarmup },
+      routineUpdate && { icon: 'upload', label: t('Update routine'), sub: routineUpdate.sub, onClick: routineUpdate.run },
       onPairPrev && { icon: 'link', label: t('Make superset with previous'), onClick: onPairPrev },
       onPairNext && { icon: 'link', label: t('Make superset with next'), onClick: onPairNext },
       onSwap && { icon: 'shuffle', label: t('Swap exercise'), onClick: onSwap, disabled: busy },
@@ -364,10 +368,20 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
   })
   // The set number is the set's own menu: drop / burst / remove — three things that used to
   // sit as chips and an X on every single row.
+  // A timed per-side exercise plans in L/R pairs (buildWorkSets, addSet below), so the two
+  // halves of a pair read as one set number — "Set 1 — Left" then "Set 1 — Right" — rather than
+  // counting every row and making the second half look like an extra set.
+  const setNumOf = (s, i) => {
+    const warm = isWarmupRow(s)
+    const phaseNum = entry.sets.slice(0, i + 1).filter(x => isWarmupRow(x) === warm).length
+    return s.side ? Math.ceil(phaseNum / 2) : phaseNum
+  }
+  const sideTagOf = s => s.side === 'L' ? t('Left') : s.side === 'R' ? t('Right') : null
   const openSetMenu = (s, i) => {
     const warm = isWarmupRow(s)
+    const sideTag = sideTagOf(s)
     menuSheet({
-      title: (warm ? t('Warm-up') : t('Set {0}', entry.sets.slice(0, i + 1).filter(x => isWarmupRow(x) === warm).length)),
+      title: warm ? t('Warm-up') : sideTag ? t('Set {0} — {1}', setNumOf(s, i), sideTag) : t('Set {0}', setNumOf(s, i)),
       subtitle: setLabel(entry.id, s, entry.target, speedUnit),
       items: [
         !warm && mode === 'reps' && !isRestPauseSet(s) && { icon: 'arrowDown', label: t('Drop set'), sub: t('+ Drop'), onClick: () => addDropRow(i) },
@@ -524,10 +538,11 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
     {!dense && <>
     <div className="row" style={{ gap: 6, flexWrap: 'wrap', marginBottom: 8 }}>
       {cardio && <span className="tag acc"><Icon name="figureRun" />{t('Cardio')}</span>}
-      {/* A unilateral exercise is logged per side directly (the L/R rows below), so the old
-          "{n} per side" chip — which halved the combined total for display — is gone: the split
-          is no longer derived, it is what you enter. The tag only flags that this is per-side. */}
-      {!cardio && !timed && isPerSide(cfg) && <span className="tag acc nocap"><Icon name="shuffle" />{t('Per side')}</span>}
+      {/* A unilateral exercise is logged per side directly (the L/R rows below for reps, a
+          "Left"/"Right" tag on each doubled row for a timed hold), so the old "{n} per side"
+          chip — which halved the combined total for display — is gone: the split is no longer
+          derived, it is what you enter. The tag only flags that this is per-side. */}
+      {!cardio && isPerSide(cfg) && <span className="tag acc nocap"><Icon name="shuffle" />{t('Per side')}</span>}
       {(ex.tg || ex.bp) && <span className="tag">{t(MUSCLE_NAME[ex.tg] || ex.tg || ex.bp)}</span>}
       {ex.eq && <span className="tag">{t(ex.eq)}</span>}
       {best > 0 && <span className="tag nocap">{t('Best:')} {fmtNum(best)} {S.unit}</span>}
@@ -564,6 +579,13 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
         return <div key={i}>
           {isFirstWarmup && <div className="setph">{t('Warm-up')}</div>}
           {!warm && warmBefore && <div className="setsep" />}
+          {/* A pyramid's Max set: the reps are what you managed, not a number to hit. */}
+          {/* With the record to beat at this set's weight or heavier, from before this session. */}
+          {!warm && s.max && <div className="setph">{t('Max: as many reps as you can')}{(() => {
+            const rec = maxRecordAt(H.workouts, entry.id, s.w)
+            if (!rec) return null
+            return ' · ' + (rec.w > 0 ? tn('Record: {0} rep at {1}', 'Record: {0} reps at {1}', rec.r, fmtNum(rec.w) + ' ' + S.unit) : tn('Record: {0} rep', 'Record: {0} reps', rec.r))
+          })()}</div>}
           {perSide && !warm && isSideSet(s) ? (
             // Unilateral work set: the number sits beside a two-row L/R stack, each side logged
             // and ticked on its own (issue #60).
@@ -578,7 +600,8 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
             </div>
           ) : (
           <div ref={el => onSetRowRef?.(i, el)} className={'setrow' + (s.done ? ' done' : '') + (col3 ? ' eff3' : '') + (timed ? ' timed' : '')}>
-            <button type="button" className="n" aria-label={t('Set {0}', phaseNum)} title={t('More')} onClick={() => openSetMenu(s, i)}>{phaseNum}</button>
+            <button type="button" className="n" aria-label={sideTagOf(s) ? t('Set {0} — {1}', setNumOf(s, i), sideTagOf(s)) : t('Set {0}', setNumOf(s, i))} title={t('More')} onClick={() => openSetMenu(s, i)}>{setNumOf(s, i)}</button>
+            {sideTagOf(s) && <span className="tag acc nocap">{sideTagOf(s)}</span>}
             {cell(s, i, col1, 'w')}
             {col2 && cell(s, i, col2, 'r')}
             {col3 && effortCell(s, i, col3)}
@@ -847,9 +870,17 @@ function ActiveWorkout() {
     const l = e.sets[e.sets.length - 1]
     const m = modeOf({ ...(e.target || {}), id: e.id })
     if (m === 'cardio') e.sets.push({ min: l ? l.min : (e.target.min || 20), speed: l ? l.speed : (e.target.speed || 8), done: false })
-    else if (m === 'time') e.sets.push({ sec: l ? l.sec : (e.target.sec || 45), w: l ? (l.w || 0) : (e.target.weight || 0), done: false })
+    else if (m === 'time') {
+      const sec = l ? l.sec : (e.target.sec || 45)
+      const w = l ? (l.w || 0) : (e.target.weight || 0)
+      // A timed per-side exercise is planned in pairs (buildWorkSets), so one more "set" is one
+      // more hold on each side, not a lone row an L/R count would fall out of sync with.
+      if (isPerSide({ ...(e.target || {}), id: e.id })) e.sets.push({ sec, w, done: false, side: 'L' }, { sec, w, done: false, side: 'R' })
+      else e.sets.push({ sec, w, done: false })
+    }
     else {
-      const row = { w: l ? l.w : 0, r: l ? l.r : e.target.reps, done: false }
+      // An extra set past a pyramid copies the last one's target, Max included.
+      const row = { w: l ? l.w : 0, r: l ? l.r : e.target.reps, done: false, ...(l && l.max ? { max: true } : {}) }
       // A unilateral exercise keeps adding per-side rows (issue #60): seed each side from the
       // previous set's own side when it had one, else split the row's total evenly.
       e.sets.push(isPerSide({ ...(e.target || {}), id: e.id })
@@ -916,6 +947,38 @@ function ActiveWorkout() {
   // for the switch to change. Off counts them all again, apart from those.
   const noProgSwitchable = !A.entries.length || A.entries.some(e => !routineKeepsOut(e))
   const toggleSessionNoProg = () => update(s => setSessionNoProg(s.active, !sessionNoProg(s.active), routineKeepsOut))
+  // Warm-ups added in the session, and the rest or note edited on the exercise's settings sheet
+  // from inside it, belong to this session only: the routine is the plan, and finishing never
+  // edits it (lib/session-routines.js). This is the explicit way to keep them — an item in the
+  // exercise's ⋯ menu, there only while the routine's slot says something else than the session
+  // did. Sets, reps and weight are not part of it (routineChangesFromEntry).
+  const routineUpdateFor = idx => {
+    const entry = A.entries[idx]
+    const routine = !editing && entry?.rid ? S.routines.find(r => r.id === entry.rid) : null
+    const found = routine ? routineChangesFromEntry(routine, A.entries, idx) : null
+    if (!found) return null
+    const activeId = A.id
+    const entryId = entry.id
+    return {
+      sub: found.changes.map(c => c.key === 'note' ? t('Note')
+        : (c.key === 'warmupSets' ? t('Warm-up sets') : t('Rest (s)')) + ' ' + c.from + ' → ' + c.to).join(' · '),
+      run: () => confirmSheet({
+        title: t('Update “{0}”?', routine.name),
+        message: t('Copy this exercise’s warm-up sets, rest and note from this session into the routine. Your workout history is kept.'),
+        confirmText: t('Update routine'),
+        onConfirm: () => {
+          let applied = null
+          update(s => {
+            // The sheet can outlive the workout, or the exercise at this index: fail closed.
+            const target = s.routines.find(r => r.id === routine.id)
+            if (!target || s.active?.id !== activeId || s.active.entries?.[idx]?.id !== entryId) return
+            applied = updateRoutineFromEntry(target, s.active.entries, idx)
+          })
+          if (applied) useUI.getState().toast(t('Routine updated'))
+        },
+      }),
+    }
+  }
 
   // One prop object per entry so the card and list layouts share the exact same wiring. The
   // exercise-level actions (swap, move, remove) address the entry itself, so the "more" menu of
@@ -939,6 +1002,7 @@ function ActiveWorkout() {
     onStartTimed: i => startTimed(idx, i),
     onProgressionSettings: editing ? null : () => openProgressionSettings(idx),
     onNoProg: routineKeepsOut(A.entries[idx]) ? null : on => setNoProg(idx, on),
+    routineUpdate: routineUpdateFor(idx),
   })
   const navigateUnit = direction => {
     const targetFor = active => {
@@ -1190,7 +1254,9 @@ function ActiveWorkout() {
       // The rest this set has earned: the exercise's own restSec when it set one, the global
       // timer when it did not, and the longest of the group's across a superset (issue #10).
       // Resolved once here so every branch below times the same break.
-      const restSec = restSecFor(fresh.entries, freshUnit || [idx], S.restSec)
+      // A pyramid set may carry its own rest, standing in for the exercise's (pyramidRestFor).
+      const setRest = { idx, sec: pyramidRestFor(fresh.entries[idx].target, fresh.entries[idx].sets, i) }
+      const restSec = restSecFor(fresh.entries, freshUnit || [idx], S.restSec, setRest)
       // A warm-up ramp set may rest shorter than a work set (the exercise's warmupRestSec); the
       // last ramp set, into the first work set, still gets the working rest.
       const restAfter = warmupRestSecFor(fresh.entries[idx], i, restSec)

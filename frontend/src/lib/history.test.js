@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { nextTrainingDay, modeOf, isTimed, fmtSec, setLabel, defaultConfig, buildSets, freestyleConfig, exLine, workoutVolume, bestWeightFor, bestWeightForEntry, completedRepsOf, metricRowsForEntry, effortOf, stepEffort, capEffort, isBw, isPerSide, sideReps, repStep, cascadeWeight, insertWarmupRow, removeRowAt, workSetsDone, setsDone, setsDoneActive, setUnits, doneUnits, setUnitsTotal, pairAdjacent, unpairSuperset, supersetUnits, sessionSections, applyIntensifierPlan, pinnedNoteFor, exNoteFor, effectiveRoutineIds, effectiveRoutines, effectiveRoutineId, effectiveRoutine, lastEntryFor, entryExcluded, entryRoutineId, setsRepsOf } from './history.js'
 import { makeSideSet, setSideField, toggleSide, WEIGHT_ORIGIN_MANUAL } from './workout-model.js'
 import { EXDB } from './exercises.js'
+import { todayISO, isoOf } from './format.js'
 
 // Real ids out of the shipped catalogue, so the body-part fallback is exercised for real.
 const CARDIO = EXDB.find(e => e.bp === 'cardio').id
@@ -347,9 +348,12 @@ describe('sideReps', () => {
   })
 })
 
-describe('exLine — per side never reaches a timed hold', () => {
-  it('ignores a stale side flag on a hold, which has no reps to split', () => {
-    expect(exLine({ id: LIFT, sets: 3, sec: 45, mode: 'time', side: true }, 'kg')).toBe('3 × 0:45')
+describe('exLine — per side on a timed hold', () => {
+  it('reads "per side" rather than splitting a duration in half', () => {
+    expect(exLine({ id: LIFT, sets: 3, sec: 45, mode: 'time', side: true }, 'kg')).toBe('3 × 0:45 · per side')
+  })
+  it('leaves a plain hold untouched', () => {
+    expect(exLine({ id: LIFT, sets: 3, sec: 45, mode: 'time' }, 'kg')).toBe('3 × 0:45')
   })
 })
 
@@ -526,6 +530,22 @@ describe('buildSets', () => {
   it('builds timed sets, carrying the planned duration and load', () => {
     expect(buildSets(emptyS, { id: LIFT, mode: 'time', sets: 2, sec: 60, weight: 20 }))
       .toEqual([{ sec: 60, w: 20, done: false }, { sec: 60, w: 20, done: false }])
+  })
+
+  it('doubles a per-side timed hold — once on each side, full duration both times', () => {
+    expect(buildSets(emptyS, { id: LIFT, mode: 'time', sets: 2, sec: 30, weight: 0, side: true }))
+      .toEqual([
+        { sec: 30, w: 0, done: false, side: 'L' }, { sec: 30, w: 0, done: false, side: 'R' },
+        { sec: 30, w: 0, done: false, side: 'L' }, { sec: 30, w: 0, done: false, side: 'R' },
+      ])
+  })
+
+  it('carries a per-side timed hold forward by row, L and R each keeping their own history', () => {
+    const S = { exWeights: {}, workouts: [{ d: '2026-01-01', entries: [{ id: LIFT, target: { mode: 'time', side: true }, sets: [
+      { sec: 40, w: 5, done: true, side: 'L' }, { sec: 35, w: 5, done: true, side: 'R' },
+    ] }] }] }
+    expect(buildSets(S, { id: LIFT, mode: 'time', sets: 1, sec: 30, weight: 0, side: true }))
+      .toEqual([{ sec: 40, w: 5, done: false, side: 'L' }, { sec: 35, w: 5, done: false, side: 'R' }])
   })
 
   it('builds cardio sets unchanged', () => {
@@ -1099,6 +1119,17 @@ describe('nextTrainingDay', () => {
     const off = base({ week: { 3: 'r1', 5: 'r2' }, dayPlan: { '2026-08-19': 'rest' } })
     expect(nextTrainingDay(off, TUE)).toMatchObject({ weekday: 5 })
   })
+
+  it('finds a coach week waiting on its start day (lib/queue.js)', () => {
+    // effectiveRoutineIds defaults `today` to the clock, so this one case is pinned relative
+    // to the real today: a queue that starts in three days is found three days out.
+    const today = todayISO()
+    const d = new Date(today + 'T12:00:00'); d.setDate(d.getDate() + 3)
+    const startsOn = isoOf(d)
+    const S = base({ workouts: [], queue: { ids: ['r2'], since: Date.now(), startsOn, label: 'W2' } })
+    expect(nextTrainingDay(S, today)).toMatchObject({ iso: startsOn })
+    expect(nextTrainingDay(S, today).routine.name).toBe('B')
+  })
 })
 
 describe('pinnedNoteFor', () => {
@@ -1284,6 +1315,86 @@ describe('effectiveRoutineIds / effectiveRoutines', () => {
   })
 })
 
+// ---- coach queue: the week's sessions in order, the first undone one is today's (lib/queue.js) ----
+describe('effectiveRoutineIds — coach queue', () => {
+  const routines = [
+    { id: 'd1', name: 'US W1 D1', ex: [{ id: '1' }] }, { id: 'd2', name: 'US W1 D2', ex: [{ id: '1' }] },
+    { id: 'own', name: 'Core', ex: [{ id: '2' }] },
+  ]
+  const TODAY = '2026-09-09'                     // a Wednesday → getDay() 3
+  const SINCE = Date.parse('2026-09-07T08:00:00')
+  const S = (over = {}) => ({
+    routines, week: {}, dayPlan: {}, workouts: [],
+    queue: { ids: ['d1', 'd2'], since: SINCE, startsOn: '2026-09-07', label: 'US W1' },
+    ...over,
+  })
+  const done = id => ({ id: 'w' + id, d: '2026-09-08', start: SINCE + 3600000, routineIds: [id], routineId: id, name: routines.find(r => r.id === id).name })
+
+  it('today gets the first undone session; other days get nothing from the queue', () => {
+    expect(effectiveRoutineIds(S(), TODAY, TODAY)).toEqual(['d1'])
+    expect(effectiveRoutineIds(S(), '2026-09-10', TODAY)).toEqual([])
+    expect(effectiveRoutineIds(S({ workouts: [done('d1')] }), TODAY, TODAY)).toEqual(['d2'])
+  })
+
+  it('before startsOn the session sits on that day, not on today', () => {
+    const s = S({ queue: { ...S().queue, startsOn: '2026-09-14' } })
+    expect(effectiveRoutineIds(s, TODAY, TODAY)).toEqual([])
+    expect(effectiveRoutineIds(s, '2026-09-14', TODAY)).toEqual(['d1'])
+  })
+
+  it('a complete week hands the day back to the weekday plan', () => {
+    const s = S({ workouts: [done('d1'), done('d2')], week: { 3: ['own'] } })
+    expect(effectiveRoutineIds(s, TODAY, TODAY)).toEqual(['own'])
+    expect(effectiveRoutineIds(S({ workouts: [done('d1'), done('d2')] }), TODAY, TODAY)).toEqual([])
+  })
+
+  it('a per-date override still wins over the queue', () => {
+    expect(effectiveRoutineIds(S({ dayPlan: { [TODAY]: 'rest' } }), TODAY, TODAY)).toEqual([])
+    expect(effectiveRoutineIds(S({ dayPlan: { [TODAY]: 'own' } }), TODAY, TODAY)).toEqual(['own'])
+  })
+
+  it('own routines on the weekday ride along behind the session', () => {
+    expect(effectiveRoutineIds(S({ week: { 3: ['own'] } }), TODAY, TODAY)).toEqual(['d1', 'own'])
+  })
+
+  it('legacy coach weekday pointers are hidden behind the queue', () => {
+    expect(effectiveRoutineIds(S({ week: { 3: ['d2', 'own'] } }), TODAY, TODAY)).toEqual(['d1', 'own'])
+    expect(effectiveRoutineIds(S({ week: { 3: 'd1' } }), TODAY, TODAY)).toEqual(['d1'])
+  })
+
+  it('without a queue the weekday plan answers as before', () => {
+    expect(effectiveRoutineIds(S({ queue: null, week: { 3: ['own'] } }), TODAY, TODAY)).toEqual(['own'])
+  })
+
+  // ---- pins: an override naming a queue session re-dates it (lib/queue.js pinState) ----
+  it('a session pinned to a later day is that day\'s, with the weekday\'s own routine riding along; today floats past it', () => {
+    const s = S({ dayPlan: { '2026-09-11': 'd1' }, week: { 5: ['own'] } })
+    expect(effectiveRoutineIds(s, '2026-09-11', TODAY)).toEqual(['d1', 'own'])
+    expect(effectiveRoutineIds(s, TODAY, TODAY)).toEqual(['d2'])
+    // Pinned to today: it is today's session, ahead of the floating order.
+    expect(effectiveRoutineIds(S({ dayPlan: { [TODAY]: 'd2' } }), TODAY, TODAY)).toEqual(['d2'])
+  })
+
+  it('a fulfilled pin reads as no override: the day goes back to the floating rule or the weekday', () => {
+    const s = S({ dayPlan: { '2026-09-11': 'd1' }, workouts: [done('d1')], week: { 5: ['own'] } })
+    expect(effectiveRoutineIds(s, '2026-09-11', TODAY)).toEqual(['own'])
+    expect(effectiveRoutineIds(s, TODAY, TODAY)).toEqual(['d2'])
+    // Done early on the pinned day itself: today's answer is the next floating session.
+    expect(effectiveRoutineIds(S({ dayPlan: { [TODAY]: 'd1' }, workouts: [done('d1')] }), TODAY, TODAY)).toEqual(['d2'])
+  })
+
+  it('with every remaining session pinned to other days, today shows only your own routines — a coach pointer on the weekday stays hidden', () => {
+    const s = S({ dayPlan: { '2026-09-11': 'd1', '2026-09-12': 'd2' }, week: { 3: ['d2', 'own'] } })
+    expect(effectiveRoutineIds(s, TODAY, TODAY)).toEqual(['own'])
+    expect(effectiveRoutineIds(S({ dayPlan: { '2026-09-11': 'd1', '2026-09-12': 'd2' }, week: { 3: 'd1' } }), TODAY, TODAY)).toEqual([])
+  })
+
+  it('a plain routine override is still single-pick, and \'rest\' still wins over a pin', () => {
+    expect(effectiveRoutineIds(S({ dayPlan: { [TODAY]: 'own' }, week: { 3: ['own'] } }), TODAY, TODAY)).toEqual(['own'])
+    expect(effectiveRoutineIds(S({ dayPlan: { [TODAY]: 'rest', '2026-09-11': 'd1' } }), TODAY, TODAY)).toEqual([])
+  })
+})
+
 describe('nextTrainingDay on a combined day', () => {
   const TUE = '2026-08-18'
   it('is trainable when any one routine of the day has exercises; return shape carries routines', () => {
@@ -1398,5 +1509,28 @@ describe('per-side volume and legacy timed sets (QA round 2026-09-12)', () => {
     expect(setLabel('0001', { sec: 45, done: true })).toBe('0:45')
     expect(setLabel('0001', { min: 20, speed: 8, done: true })).toBe('20 min @ 8 km/h')
     expect(setLabel('0025', { w: 60, r: 10, done: true })).toBe('60×10')
+  })
+})
+
+describe('a rotation day and a fixed weekday day are one combined day', () => {
+  const routines = [{ id: 'a', name: 'A', ex: [] }, { id: 'core', name: 'Core', ex: [] }]
+  const TODAY = '2026-09-14'   // a Monday
+  const S = over => ({
+    routines, workouts: [], dayPlan: {}, week: { 1: ['core'] },
+    queue: { ids: ['a'], since: Date.parse('2026-09-13T08:00:00'), startsOn: '2026-09-13', label: 'My split', rotationId: 'r1' },
+    rotation: { id: 'r1', sequence: ['a'], label: 'My split' }, ...over,
+  })
+
+  it('the queue session comes first, the weekday routine rides along', () => {
+    expect(effectiveRoutineIds(S(), TODAY, TODAY)).toEqual(['a', 'core'])
+  })
+
+  it('a malformed queue falls back to the plain weekday plan', () => {
+    expect(effectiveRoutineIds(S({ queue: { ids: ['gone'], since: 1 } }), TODAY, TODAY)).toEqual(['core'])
+  })
+
+  it('a repeated queue id does not repeat the day', () => {
+    const dup = S({ queue: { ids: ['a', 'a'], since: Date.parse('2026-09-13T08:00:00'), startsOn: '2026-09-13', label: 'My split' } })
+    expect(effectiveRoutineIds(dup, TODAY, TODAY)).toEqual(['a', 'core'])
   })
 })

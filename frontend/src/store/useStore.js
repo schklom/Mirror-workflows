@@ -75,6 +75,15 @@ export const DEF = {
   unit: 'kg', restSec: 90, restPauseSec: 15, sound: true, soundOnSilent: false, timerFlash: false, timedSetOvertime: false, keepAwake: true, lang: 'en',
   theme: 'dark', accent: 'lime', body: 'male', targetW: null,
   bodyweight: [], routines: [], week: {}, dayPlan: {},
+  queue: null,   // a planner's floating week (lib/queue.js) — via the API, or by this rotation feature (below)
+  // The in-app rotation's reusable definition — { id, sequence, label } (lib/rotation.js). Never
+  // a live queue: it only ever feeds `queue`, and `queue.rotationId` says the pass is managed here.
+  rotation: null,
+  // null | 'week' | 'rotation' — which of the two scheduling screens Home/Plan show. A live
+  // queue always wins regardless of this (scheduleModeOf, lib/rotation.js): the flag exists only
+  // to keep Rotation selected, and the weekday grid hidden, from the moment it's chosen in
+  // Settings/Plan through to the first routine being added — there's no queue yet to derive it from.
+  scheduleMode: null,
   exWeights: {}, workouts: [], active: null, customEx: [], gifSize: 'full',
   // Stats activity heatmap metric. Profiles without this key continue to open on time.
   heatmapMetric: 'time',

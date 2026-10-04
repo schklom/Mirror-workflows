@@ -70,6 +70,12 @@ export const getVersion = () => version
 // Translate a source string; {0},{1}… are replaced with args (also on the English fallback).
 export function t(s, ...args) {
   let v = dict[s] || s
+  // A plural key (an object of forms, read by tn()) reached through plain t() — a call site
+  // that was not moved to tn(). Pick a form rather than crash on replaceAll.
+  if (v && typeof v === 'object') {
+    const forms = v
+    v = (typeof args[0] === 'number' && forms[pluralCategory(args[0])]) || forms.other || forms.many || forms.one || s
+  }
   for (let i = 0; i < args.length; i++) v = v.replaceAll('{' + i + '}', args[i])
   return v
 }

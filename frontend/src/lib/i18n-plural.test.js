@@ -1,5 +1,5 @@
 import { describe, it, expect, afterEach } from 'vitest'
-import { tn, _setLangState } from './i18n-core.js'
+import { t, tn, _setLangState } from './i18n-core.js'
 import ru from '../locales/ru.js'
 import de from '../locales/de.js'
 
@@ -56,5 +56,11 @@ describe('tn() — plural forms from the pack', () => {
       expect(Object.keys(value), key).toEqual(expect.arrayContaining(['one', 'few', 'many']))
       for (const form of Object.values(value)) expect(typeof form, key).toBe('string')
     }
+  })
+
+  it('does not crash when a plural key is read through plain t()', () => {
+    _setLangState('ru', ru, null, null)
+    expect(t('{0} exercises', 5)).toBe('5 упражнений')
+    expect(t('{0} exercises', 2)).toBe('2 упражнения')
   })
 })

@@ -1711,4 +1711,9 @@ export default {
   'Max reps': 'मैक्स रेप',
   'Most reps in a Max set per workout': 'हर वर्कआउट में मैक्स सेट के सबसे ज़्यादा रेप',
   'A set left at 0 rest uses the exercise’s rest.': '0 आराम वाला सेट एक्सरसाइज़ का आराम इस्तेमाल करता है।',
+  // --- update a routine from a running workout ---
+  'Update routine': 'रूटीन अपडेट करें',
+  'Update “{0}”?': 'रूटीन “{0}” अपडेट करें?',
+  'Copy this exercise’s warm-up sets, rest and note from this session into the routine. Your workout history is kept.': 'इस सत्र से इस एक्सरसाइज़ के वार्म-अप सेट, आराम और नोट को रूटीन में कॉपी करें। आपका वर्कआउट इतिहास सुरक्षित रहता है।',
+  'Routine updated': 'रूटीन अपडेट हो गया',
 }

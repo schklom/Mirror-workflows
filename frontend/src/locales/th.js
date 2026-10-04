@@ -1722,4 +1722,9 @@ export default {
   'Max reps': 'ครั้งสูงสุด',
   'Most reps in a Max set per workout': 'จำนวนครั้งมากที่สุดในเซ็ตสูงสุดต่อการฝึก',
   'A set left at 0 rest uses the exercise’s rest.': 'เซ็ตที่พัก 0 จะใช้เวลาพักของท่านั้น',
+  // --- update a routine from a running workout ---
+  'Update routine': 'อัปเดตรูทีน',
+  'Update “{0}”?': 'อัปเดตรูทีน “{0}” ไหม?',
+  'Copy this exercise’s warm-up sets, rest and note from this session into the routine. Your workout history is kept.': 'คัดลอกเซ็ตวอร์มอัพ เวลาพัก และโน้ตของท่านี้จากเซสชันนี้ไปยังรูทีน ประวัติการออกกำลังกายของคุณจะยังอยู่ครบ',
+  'Routine updated': 'อัปเดตรูทีนแล้ว',
 }

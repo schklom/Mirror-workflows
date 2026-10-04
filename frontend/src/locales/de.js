@@ -1731,4 +1731,9 @@ export default {
   'Max reps': 'Max-Wdh.',
   'Most reps in a Max set per workout': 'Meiste Wiederholungen in einem Max-Satz pro Training',
   'A set left at 0 rest uses the exercise’s rest.': 'Ein Satz mit 0 Pause nutzt die Pause der Übung.',
+  // --- update a routine from a running workout ---
+  'Update routine': 'Routine aktualisieren',
+  'Update “{0}”?': 'Routine „{0}“ aktualisieren?',
+  'Copy this exercise’s warm-up sets, rest and note from this session into the routine. Your workout history is kept.': 'Übernimmt die Aufwärmsätze, die Pause und die Notiz dieser Übung aus dieser Einheit in die Routine. Dein Trainingsverlauf bleibt erhalten.',
+  'Routine updated': 'Routine aktualisiert',
 }

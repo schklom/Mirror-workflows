@@ -1708,4 +1708,9 @@ export default {
   'Max reps': 'Повт. Макс',
   'Most reps in a Max set per workout': 'Найбільше повторів у підході Макс за тренування',
   'A set left at 0 rest uses the exercise’s rest.': 'Підхід із відпочинком 0 використовує відпочинок вправи.',
+  // --- update a routine from a running workout ---
+  'Update routine': 'Оновити програму',
+  'Update “{0}”?': 'Оновити програму «{0}»?',
+  'Copy this exercise’s warm-up sets, rest and note from this session into the routine. Your workout history is kept.': 'Копіює розминкові підходи, відпочинок і нотатку цієї вправи з цього тренування до програми. Історія тренувань зберігається.',
+  'Routine updated': 'Програму оновлено',
 }

@@ -1711,4 +1711,9 @@ export default {
   'Max reps': '최대 반복',
   'Most reps in a Max set per workout': '운동마다 최대 세트의 최다 반복 수',
   'A set left at 0 rest uses the exercise’s rest.': '휴식이 0인 세트는 운동의 휴식 시간을 사용합니다.',
+  // --- update a routine from a running workout ---
+  'Update routine': '루틴 업데이트',
+  'Update “{0}”?': '“{0}” 루틴을 업데이트할까요?',
+  'Copy this exercise’s warm-up sets, rest and note from this session into the routine. Your workout history is kept.': '이 세션의 워밍업 세트, 휴식, 메모를 이 운동의 루틴에 복사합니다. 운동 기록은 그대로 유지됩니다.',
+  'Routine updated': '루틴 업데이트됨',
 }

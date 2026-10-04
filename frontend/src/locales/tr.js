@@ -1711,4 +1711,9 @@ export default {
   'Max reps': 'Maks tekrar',
   'Most reps in a Max set per workout': 'Antrenman başına bir Maks setteki en çok tekrar',
   'A set left at 0 rest uses the exercise’s rest.': 'Dinlenmesi 0 olan set, egzersizin dinlenmesini kullanır.',
+  // --- update a routine from a running workout ---
+  'Update routine': 'Rutini güncelle',
+  'Update “{0}”?': '“{0}” rutini güncellensin mi?',
+  'Copy this exercise’s warm-up sets, rest and note from this session into the routine. Your workout history is kept.': 'Bu egzersizin ısınma setlerini, dinlenme süresini ve notunu bu antrenmandan rutine kopyalar. Antrenman geçmişin korunur.',
+  'Routine updated': 'Rutin güncellendi',
 }

@@ -1764,4 +1764,9 @@ export default {
   'Max reps': 'تكرارات أقصى',
   'Most reps in a Max set per workout': 'أكبر عدد تكرارات في مجموعة أقصى لكل تمرين',
   'A set left at 0 rest uses the exercise’s rest.': 'المجموعة ذات الراحة 0 تستخدم راحة التمرين.',
+  // --- update a routine from a running workout ---
+  'Update routine': 'تحديث الروتين',
+  'Update “{0}”?': 'تحديث «{0}»؟',
+  'Copy this exercise’s warm-up sets, rest and note from this session into the routine. Your workout history is kept.': 'انسخ مجموعات الإحماء والراحة والملاحظة الخاصة بهذا التمرين من هذه الجلسة إلى الروتين. يبقى سجل تمارينك كما هو.',
+  'Routine updated': 'تم تحديث الروتين',
 }

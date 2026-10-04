@@ -1714,4 +1714,9 @@ export default {
   'Max reps': 'Max ism.',
   'Most reps in a Max set per workout': 'A legtöbb ismétlés egy Max sorozatban edzésenként',
   'A set left at 0 rest uses the exercise’s rest.': 'A 0 pihenőjű sorozat a gyakorlat pihenőjét használja.',
+  // --- update a routine from a running workout ---
+  'Update routine': 'Rutin frissítése',
+  'Update “{0}”?': 'Frissíted a(z) „{0}” rutint?',
+  'Copy this exercise’s warm-up sets, rest and note from this session into the routine. Your workout history is kept.': 'A gyakorlat bemelegítő sorozatait, pihenőjét és jegyzetét átmásolja ebből az edzésből a rutinba. Az edzéselőzményeid megmaradnak.',
+  'Routine updated': 'Rutin frissítve',
 }

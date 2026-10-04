@@ -18,7 +18,6 @@ const mocks = vi.hoisted(() => {
     stopRest: null,
     stopWork: null,
     confirmSheet: vi.fn(),
-    topWeightSheet: vi.fn(),
     workoutCompleteSheet: vi.fn(),
     exercisePicker: vi.fn(),
     exConfigSheet: vi.fn(),
@@ -71,7 +70,6 @@ vi.mock('../sheets.jsx', () => ({
   exercisePicker: mocks.exercisePicker,
   exConfigSheet: mocks.exConfigSheet,
   exerciseDetailSheet: vi.fn(),
-  topWeightSheet: mocks.topWeightSheet,
   finishWorkout: vi.fn(),
   exitWorkoutEdit: vi.fn(),
   workoutCompleteSheet: mocks.workoutCompleteSheet,
@@ -291,7 +289,6 @@ describe('Workout set completion flow', () => {
 
     expect(mocks.S.active.entries[0].topW).toBe(60)
     expect(mocks.S.exWeights['plain-bench']).toBeUndefined()   // written at the finish, not while ticking
-    expect(mocks.topWeightSheet).not.toHaveBeenCalled()
     expect(mocks.S.active.cur).toBe(0)
     expect(mocks.startRest).toHaveBeenCalledWith(90, expect.any(Number))
 
@@ -310,14 +307,12 @@ describe('Workout set completion flow', () => {
 
     await toggleSet(0)
 
-    expect(mocks.topWeightSheet).not.toHaveBeenCalled()
     expect(mocks.S.active.cur).toBe(1)
     expect(mocks.startRest).not.toHaveBeenCalled()
 
     await rerender()
     await toggleSet(1)
 
-    expect(mocks.topWeightSheet).not.toHaveBeenCalled()
     expect(mocks.S.active.cur).toBe(1)
     expect(mocks.startRest).toHaveBeenCalledWith(90, expect.any(Number))
 
@@ -380,7 +375,6 @@ describe('Workout set completion flow', () => {
 
     await toggleSet(0)
 
-    expect(mocks.topWeightSheet).not.toHaveBeenCalled()
     expect(mocks.S.active.cur).toBe(0)
     expect(mocks.startRest).not.toHaveBeenCalled()
   })
@@ -438,7 +432,6 @@ describe('Workout set completion flow', () => {
     ], 1)
     await toggleSet(5)
 
-    expect(mocks.topWeightSheet).not.toHaveBeenCalled()
     expect(mocks.S.active.cur).toBe(1)
     expect(mocks.startRest).toHaveBeenCalledWith(90, expect.any(Number))
   })
@@ -480,7 +473,6 @@ describe('Workout set completion flow', () => {
 
     await toggleSet(0)
 
-    expect(mocks.topWeightSheet).not.toHaveBeenCalled()
     expect(mocks.workoutCompleteSheet).not.toHaveBeenCalled()
     expect(mocks.S.active.cur).toBe(0)
     expect(mocks.startRest).toHaveBeenCalledWith(90, expect.any(Number))
@@ -1661,7 +1653,7 @@ describe('the plan line', () => {
 
 describe('workout view header menu', () => {
   const openMenu = async () => {
-    const btn = container.querySelector('button[aria-label="Workout view"]')
+    const btn = container.querySelector('button[aria-label="Workout options"]')
     expect(btn).toBeTruthy()
     await act(async () => { btn.dispatchEvent(new dom.Event('click', { bubbles: true })) })
     return mocks.menuSheet.mock.calls.at(-1)[0]
@@ -2026,7 +2018,7 @@ describe('the reference line: last time or best set', () => {
 // #284: logging a past workout that went as planned takes one tap, not one per set.
 describe('mark all sets done while logging a past workout', () => {
   const openMenu = async () => {
-    const btn = container.querySelector('button[aria-label="Workout view"]')
+    const btn = container.querySelector('button[aria-label="Workout options"]')
     await act(async () => { btn.dispatchEvent(new dom.Event('click', { bubbles: true })) })
     return mocks.menuSheet.mock.calls.at(-1)[0]
   }

@@ -4,7 +4,7 @@ import { useUI } from './store/useUI.js'
 import { EXDB, EXIDX, BODYPARTS, isCardio, isBodyweightEq, allExercises, equipmentOf, smOf, searchExercises, exOr, isAssisted, betterWeight, beatsWeight } from './lib/exercises.js'
 import { activeProfile, exAvailable, ALL_EQUIPMENT, newProfile } from './lib/equipment.js'
 import { fmtDate, fmtDateRange, fmtNum, fmtPlate, exerciseNameText, fmtVol, fmtDur, durPart, todayISO, isoOf, uid, exCount, routineCount, setsWorkCount, DAYN, DAYS, weekOrder, weekStartOf, weekDayOffset, MONTHS_LONG, ACCENTS } from './lib/format.js'
-import { lastEntryFor, bestWeightFor, bestWeightForEntry, buildSets, effectiveRoutineIds, workoutDay, workoutVolume, setsDone, setsDoneActive, setUnitsTotal, lastBW, supersetUnits, sessionSections, unitOf, setLabel, defaultConfig, cleanupSg, modeOf, effortOf, EFFORT, capEffort, stepEffort, isBw, isPerSide, sideReps, workSetsDone, applyIntensifierPlan, MAX_PLANNED_WARMUPS, NOTE_MAX } from './lib/history.js'
+import { lastEntryFor, bestWeightFor, bestWeightForEntry, buildSets, effectiveRoutineIds, workoutDay, workoutVolume, setsDone, setsDoneActive, setUnitsTotal, lastBW, sessionSections, setLabel, defaultConfig, cleanupSg, modeOf, effortOf, EFFORT, capEffort, stepEffort, isBw, isPerSide, sideReps, workSetsDone, applyIntensifierPlan, MAX_PLANNED_WARMUPS, NOTE_MAX } from './lib/history.js'
 import { usesBar, defaultBarWeight, hasBarOverride, isNoBar } from './lib/bar.js'
 import { PLATE_SIZES, pairsOf, ownsPlates, withPlatePairs, withStandardPlates, withLoadKind, loadKindFor, baseWeightFor, dropGrid } from './lib/plates.js'
 import { toScale, rirOf, EFFORT_PRESETS, effortColor } from './lib/effort.js'
@@ -34,10 +34,9 @@ import { policyFor, defaultIncrement, POLICIES_FOR, POLICY_NAME, POLICY_DESC, MA
 import { normalizeRepRange } from './lib/rep-range.js'
 import { MOBILE, shareExport, printHtml } from './lib/mobile.js'
 import { speedUnitOf, toSpeed, fromSpeed } from './lib/speed.js'
-import { buildCompletedWorkout } from './lib/finish-workout.js'
+import { buildCompletedWorkout, sessionEnd } from './lib/finish-workout.js'
 import { isWarmupRow, hasCompletedWork } from './lib/workout-model.js'
 import { saveSessionAsRoutine } from './lib/session-routines.js'
-import { nextUnfinishedUnit } from './lib/supersetFlow.js'
 import { swapActiveExercise } from './lib/active-exercise-swap.js'
 import { useSheetKeyboard, useRevealActiveChip, tappable } from './lib/use-sheet-keyboard.js'
 import { isFav, toggleFav, sortFavouritesFirst } from './lib/favourites.js'
@@ -682,10 +681,22 @@ function BarWeightEditor({ ex, cfg, extra }) {
   const noBar = bar && isNoBar(st, ex.id)
   const def = defaultBarWeight(ex.eq, st.unit)
   const base = baseWeightFor(st, ex)
+  // The kinds a pick would only be restating. With a `cfg` there is one: the same default the
+  // rows derive. Without one the equipment decides — and for body-weight equipment that answer
+  // ('single', the load being whatever you hang on) is not the one a routine logging the total
+  // derives ('none', bodyweight: false), so the segment sits lit on a kind the rows do not use
+  // and the pick that would fix it is the only way to say so: both readings are consulted, and
+  // it is stored unless it is the default under either. Everything else keeps the plain rule —
+  // a dumbbell's cfg-less 'none' is what a dumbbell row derives, and storing it would freeze
+  // 'none' onto the exercise everywhere, override the 'single' an added-weight entry derives,
+  // and leave no pick that takes the key off again.
+  const defaults = cfg ? [loadKindFor(null, ctx)]
+    : isBodyweightEq(ex.id) ? [true, false].map(b => loadKindFor(null, { id: ex.id, bodyweight: b }))
+    : [loadKindFor(null, ctx)]
   // Picking what the equipment already implies puts the exercise back on it (a stamped null,
   // lib/plates.js), so a later change of the equipment's own default still reaches it.
   const setKind = k => update(s => {
-    s.loadKind = withLoadKind(s.loadKind, ex.id, k === loadKindFor(null, ctx) ? null : k)
+    s.loadKind = withLoadKind(s.loadKind, ex.id, defaults.every(d => d === k) ? null : k)
   })
   const setBar = v => update(s => {
     s.barWeights = s.barWeights || {}
@@ -1123,9 +1134,10 @@ function ExercisePicker({ onPick, title, close }) {
     </div>
     {/* .picker-search is what index.css keys the keyboard-aware sheet layout on: the sheet
         lifts above the keys and the search stays put while the list scrolls under it. */}
-    <div className="picker-search"><div className={'search' + (narrowed ? ' has-count' : '')}><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
+    <div className="picker-search"><div className={'search' + (narrowed ? ' has-count' : '') + (q ? ' has-clear' : '')}><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
       <input ref={searchRef} className="input" placeholder={t('Search {0} exercises…', all.length)} value={q} onFocus={onSearchFocus} onChange={e => { setQ(e.target.value); setShown(50) }} />
-      {narrowed && <span className="search-count" role="status" aria-label={exCount(f.length)}>{fmtNum(f.length)}</span>}</div></div>
+      {narrowed && <span className="search-count" role="status" aria-label={exCount(f.length)}>{fmtNum(f.length)}</span>}
+      {q && <button className="clear" onClick={() => { setQ(''); setShown(50) }} aria-label={t('Clear')}><Icon name="xmark" /></button>}</div></div>
     {profile && <div className="small dim row" style={{ margin: '8px 0 2px', gap: 6, alignItems: 'center' }}>
       <Icon name="dumbbell" style={{ fontSize: 13 }} />
       {showAll ? t('Showing all equipment') : t('Showing what you have in "{0}"', profile.name)}
@@ -2341,60 +2353,6 @@ export function addRoutineToSessionSheet() {
   ui().openSheet(close => <AddRoutineToSession close={close} />)
 }
 
-function TopWeight({ entryIdx, close }) {
-  const st = useStore(s => s.S)
-  const A = st.active
-  // The workout can end underneath this sheet: finishing from the last exercise clears
-  // `active`, and this re-renders before the sheet is torn down. Everything below is
-  // read defensively and the sheet dismisses itself — reading A.entries straight took
-  // the whole app down with it. Hooks still run unconditionally, so the bail-out has
-  // to sit after every one of them.
-  const entry = A ? A.entries[entryIdx] : null
-  const ex = entry && EXIDX[entry.id]
-  // "Best" runs the other way on an assistance machine: the lightest setting is the record, and
-  // a 0 means nothing logged rather than a new low (issue #232).
-  const fold = (a, b) => (a > 0 && b > 0 ? betterWeight(entry.id, a, b) : Math.max(a, b))
-  const doneW = entry ? entry.sets.filter(s => s.done && !isWarmupRow(s)).map(s => s.w || 0).filter(w => w > 0) : []
-  const maxSet = entry && doneW.length ? doneW.reduce((a, b) => betterWeight(entry.id, a, b)) : 0
-  const prevBest = entry ? fold((st.exWeights[entry.id] || {}).w || 0, bestWeightFor(st, entry.id)) : 0
-  const [v, setV] = useState(entry ? (fold(maxSet, prevBest) || entry.target.weight || 0) : 0)
-  useEffect(() => { if (!entry) close() }, [!entry])
-
-  const units = supersetUnits(A ? A.entries : [])
-  const unit = entry ? unitOf(units, entryIdx) : []
-  const unitDone = !!entry && unit.every(i => A.entries[i].sets.every(s => s.done))
-  const nextUnit = unitDone ? nextUnfinishedUnit(A.entries, units, entryIdx) : null
-  const workoutDone = unitDone && !nextUnit
-  if (!entry || !ex) return null
-
-  const commit = advance => {
-    const n = Math.round((v || 0) * 10) / 10
-    if (!isFinite(n) || n < 0) { toast(t('Enter a valid weight')); return }
-    update(s => {
-      s.active.entries[entryIdx].topW = n
-      const cur = s.exWeights[entry.id]
-      s.exWeights[entry.id] = { w: cur && cur.w > 0 && n > 0 ? betterWeight(entry.id, n, cur.w) : Math.max(n, cur ? cur.w : 0), d: todayISO() }
-    })
-    close()
-    if (advance && unitDone) {
-      if (workoutDone) workoutCompleteSheet()               // no unfinished unit → finish/continue prompt
-      else update(s => { s.active.cur = nextUnit[0] })
-    } else toast(t('Tracked — next time starts at {0}', fmtNum(S().exWeights[entry.id].w) + ' ' + st.unit))
-  }
-  return <>
-    <h3 className={`row ${exerciseNameClass(ex)}`} style={{ gap: 8 }}><Icon name="checkCircle" style={{ color: 'var(--acc)' }} />{t('{0} done', exerciseNameFor(ex))}</h3>
-    <div className="muted small">{t('Confirm the weight you worked with — your highest becomes the default next time.')}{!unitDone && unit.length > 1 ? ' ' + t('Then finish the superset partner.') : ''}</div>
-    <WeightInput value={v} setValue={setV} unit={st.unit} />
-    <div style={{ height: 10 }} />
-    {prevBest > 0 ? <div className="small dim" style={{ textAlign: 'center', marginBottom: 12 }}>{t('Previous best:')} {fmtNum(prevBest)} {st.unit}{maxSet > prevBest && <span style={{ color: 'var(--yellow)' }}> — {t('new record!')}</span>}</div> : <div style={{ height: 4 }} />}
-    {unitDone ? <>
-      <Button variant="primary" trailingIcon={workoutDone ? null : 'chevronRight'} onClick={() => commit(true)}>{workoutDone ? t('Save') : t('Save & next exercise')}</Button>
-      <div style={{ height: 8 }} /><Button variant="ghost" className="dim" onClick={() => commit(false)}>{t('Just close')}</Button>
-    </> : <Button variant="primary" onClick={() => commit(false)}>{t('Save weight')}</Button>}
-  </>
-}
-export const topWeightSheet = entryIdx => ui().openSheet(close => <TopWeight entryIdx={entryIdx} close={close} />)
-
 /* ============================ exercise notes ============================
    Two notes, one sheet, because from the user's side it is one question — "what do I want to
    remember about this exercise?" — with two different lifetimes:
@@ -2656,7 +2614,7 @@ function doFinishWorkout() {
     if (rec && !prs.includes(e.id)) e1prs.push({ id: e.id, ...rec })
   })
   const w = buildCompletedWorkout(A, {
-    end: past ? backfillEnd(A) : Date.now(),
+    end: past ? backfillEnd(A) : sessionEnd(A),
     prs,
     snapshotFor: e => EXIDX[e.id]?.custom ? exerciseMuscleSnapshot(EXIDX[e.id]) : null,
   })
@@ -2683,6 +2641,10 @@ function doFinishWorkout() {
   })
   useStore.getState().autoBackupNow()
   useUI.getState().stopRest()
+  // A hold still counting (a plank left unchecked, then Finish early) goes with the workout, as
+  // on Discard: its bar is app-wide and would chime over the summary, and its callback writes
+  // into s.active, which is gone. What it held is not logged, like any set left unchecked.
+  useUI.getState().stopWork()
   beep(snd(), 880, 0.15); beep(snd(), 1100, 0.15, 0.18); beep(snd(), 1320, 0.3, 0.36)
   ui().openSheet(close => <FinishSummary w={shown} prs={prs} e1prs={e1prs} close={close} />, { kind: 'center', locked: true })
 }

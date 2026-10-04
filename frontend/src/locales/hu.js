@@ -872,6 +872,7 @@ export default {
   'Showing all equipment': 'Minden eszköz megjelenítve',
   'Move up': 'Feljebb',
   'Move down': 'Lejjebb',
+  'Move out of the superset': 'Kivétel a szuperszettből',
   'Swap exercise': 'Gyakorlat cseréje',
   'Swap exercise?': 'Cseréled a gyakorlatot?',
   'Logged sets stay with the original exercise. Choose where the replacement belongs.': 'A naplózott sorozatok az eredeti gyakorlatnál maradnak. Válaszd ki, hová kerüljön a csere.',
@@ -1761,4 +1762,8 @@ export default {
   '{0} days apart': '{0} nap különbség',
   '{0} photo': '{0} fotó',
   '{0} photos': '{0} fotó',
+  'Your server was reached, but it refused the app’s request (CORS). If a reverse proxy such as Traefik adds CORS headers, let requests from {0} through to openGym unchanged — see “Phone app and CORS” in docs/SELF_HOSTING.md.': 'A szervered elérhető, de elutasította az app kérését (CORS). Ha egy reverse proxy, például a Traefik CORS-fejléceket ad hozzá, engedd át változatlanul az openGymhez a(z) {0} felől érkező kéréseket — lásd: „Phone app and CORS”, docs/SELF_HOSTING.md.',
+  'Could not reach {0}. Check the address and that this phone can reach it.': 'A(z) {0} nem érhető el. Ellenőrizd a címet, és hogy ez a telefon eléri-e.',
+  'Vibrate when the phone is on silent': 'Rezgés akkor is, ha a telefon némítva van',
+  'The end of a rest or a hold buzzes like an alarm, even in silent mode.': 'A pihenő vagy a tartás vége ébresztőként rezeg, néma módban is.',
 }

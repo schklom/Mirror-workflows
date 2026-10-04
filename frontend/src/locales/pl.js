@@ -45,6 +45,7 @@ export default {
   'R': 'P',
   'Move up': 'Przenieś w górę',
   'Move down': 'Przenieś w dół',
+  'Move out of the superset': 'Wyjmij z superserii',
   'Sunday': 'Niedziela', 'Monday': 'Poniedziałek', 'Tuesday': 'Wtorek', 'Wednesday': 'Środa',
   'Thursday': 'Czwartek', 'Friday': 'Piątek', 'Saturday': 'Sobota',
   'Su': 'Nd', 'Mo': 'Pn', 'Tu': 'Wt', 'We': 'Śr', 'Th': 'Cz', 'Fr': 'Pt', 'Sa': 'So',
@@ -1758,4 +1759,8 @@ export default {
   '{0} days apart': { one: '{0} dzień różnicy', few: '{0} dni różnicy', many: '{0} dni różnicy' },
   '{0} photo': '{0} zdjęcie',
   '{0} photos': { one: '{0} zdjęcie', few: '{0} zdjęcia', many: '{0} zdjęć' },
+  'Your server was reached, but it refused the app’s request (CORS). If a reverse proxy such as Traefik adds CORS headers, let requests from {0} through to openGym unchanged — see “Phone app and CORS” in docs/SELF_HOSTING.md.': 'Serwer odpowiada, ale odrzucił żądanie aplikacji (CORS). Jeśli reverse proxy, np. Traefik, dodaje nagłówki CORS, przepuść żądania z {0} do openGym bez zmian — zobacz „Phone app and CORS” w docs/SELF_HOSTING.md.',
+  'Could not reach {0}. Check the address and that this phone can reach it.': 'Nie można połączyć się z {0}. Sprawdź adres i czy ten telefon ma do niego dostęp.',
+  'Vibrate when the phone is on silent': 'Wibruj także przy wyciszonym telefonie',
+  'The end of a rest or a hold buzzes like an alarm, even in silent mode.': 'Koniec przerwy lub utrzymania wibruje jak budzik, nawet w trybie cichym.',
 }

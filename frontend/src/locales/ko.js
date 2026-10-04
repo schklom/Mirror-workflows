@@ -45,6 +45,7 @@ export default {
   'R': '우',
   'Move up': '위로 이동',
   'Move down': '아래로 이동',
+  'Move out of the superset': '슈퍼세트에서 빼기',
   'Sunday': '일요일', 'Monday': '월요일', 'Tuesday': '화요일', 'Wednesday': '수요일',
   'Thursday': '목요일', 'Friday': '금요일', 'Saturday': '토요일',
   'Su': '일', 'Mo': '월', 'Tu': '화', 'We': '수', 'Th': '목', 'Fr': '금', 'Sa': '토',
@@ -1758,4 +1759,8 @@ export default {
   '{0} days apart': '{0}일 차이',
   '{0} photo': '사진 {0}장',
   '{0} photos': '사진 {0}장',
+  'Your server was reached, but it refused the app’s request (CORS). If a reverse proxy such as Traefik adds CORS headers, let requests from {0} through to openGym unchanged — see “Phone app and CORS” in docs/SELF_HOSTING.md.': '서버에 연결되었지만 앱의 요청을 거부했습니다(CORS). Traefik 같은 리버스 프록시가 CORS 헤더를 추가한다면 {0}에서 오는 요청을 그대로 openGym까지 통과시키세요 — docs/SELF_HOSTING.md의 “Phone app and CORS”를 참고하세요.',
+  'Could not reach {0}. Check the address and that this phone can reach it.': '{0}에 연결할 수 없습니다. 주소와 이 휴대폰에서 접속할 수 있는지 확인하세요.',
+  'Vibrate when the phone is on silent': '무음 모드에서도 진동',
+  'The end of a rest or a hold buzzes like an alarm, even in silent mode.': '휴식이나 버티기가 끝나면 무음 모드에서도 알람처럼 진동합니다.',
 }

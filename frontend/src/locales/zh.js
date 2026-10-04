@@ -45,6 +45,7 @@ export default {
   'R': '右',
   'Move up': '上移',
   'Move down': '下移',
+  'Move out of the superset': '移出超级组',
   'Sunday': '星期日', 'Monday': '星期一', 'Tuesday': '星期二', 'Wednesday': '星期三',
   'Thursday': '星期四', 'Friday': '星期五', 'Saturday': '星期六',
   'Su': '日', 'Mo': '一', 'Tu': '二', 'We': '三', 'Th': '四', 'Fr': '五', 'Sa': '六',
@@ -1758,4 +1759,8 @@ export default {
   '{0} days apart': '相隔 {0} 天',
   '{0} photo': '{0} 张照片',
   '{0} photos': '{0} 张照片',
+  'Your server was reached, but it refused the app’s request (CORS). If a reverse proxy such as Traefik adds CORS headers, let requests from {0} through to openGym unchanged — see “Phone app and CORS” in docs/SELF_HOSTING.md.': '已连接到你的服务器，但它拒绝了应用的请求（CORS）。如果 Traefik 等反向代理会添加 CORS 头，请让来自 {0} 的请求原样转发到 openGym — 参见 docs/SELF_HOSTING.md 中的 “Phone app and CORS”。',
+  'Could not reach {0}. Check the address and that this phone can reach it.': '无法连接到 {0}。请检查地址，以及这部手机能否访问它。',
+  'Vibrate when the phone is on silent': '手机静音时也振动',
+  'The end of a rest or a hold buzzes like an alarm, even in silent mode.': '休息或保持结束时会像闹钟一样振动，即使在静音模式下。',
 }

@@ -26,7 +26,7 @@ export function accentColors(key) {
   return { accent: argb(ACCENTS[k]), ink: argb(ACCENT_INK[k]) }
 }
 
-export function buildRestAlert({ at, title, countdownTitle, totalSec, accent, sound = true, vibrate = true, now = Date.now() } = {}) {
+export function buildRestAlert({ at, title, countdownTitle, totalSec, accent, sound = true, vibrate = true, alarmBuzz = false, now = Date.now() } = {}) {
   if (typeof at !== 'number' || !(at > now)) return null
   const totalMs = Math.max(1000, Math.round((totalSec > 0 ? totalSec : (at - now) / 1000) * 1000))
   const colors = accentColors(accent)
@@ -47,6 +47,9 @@ export function buildRestAlert({ at, title, countdownTitle, totalSec, accent, so
     allowWhileIdle: true,
     sound: !!sound,
     vibrate: !!vibrate,
+    // Settings → "Vibrate when the phone is on silent" (#375): the end buzzes as an alarm, which
+    // silent mode lets through, instead of through the notification channel, which it mutes.
+    alarmBuzz: !!vibrate && !!alarmBuzz,
     localOnly: false,
     visibility: 'public',
     importance: 'high',
@@ -82,7 +85,7 @@ const restPlugin = () => pluginP || (pluginP = (async () => {
 export function armRestAlert(at, opts = {}) {
   if (!MOBILE) return Promise.resolve(false)
   const mine = ++token
-  const alert = buildRestAlert({ at, title: opts.title, countdownTitle: opts.countdownTitle, totalSec: opts.totalSec, accent: opts.accent, sound: opts.sound, vibrate: opts.vibrate !== false })
+  const alert = buildRestAlert({ at, title: opts.title, countdownTitle: opts.countdownTitle, totalSec: opts.totalSec, accent: opts.accent, sound: opts.sound, vibrate: opts.vibrate !== false, alarmBuzz: !!opts.alarmBuzz })
   if (!alert) return Promise.resolve(false)
   return enqueue(async () => {
     let kind = 'failed'
@@ -124,6 +127,18 @@ if (MOBILE) {
     .catch(() => {})
 }
 
+// A buzz that silent mode lets through (#375): the native side vibrates as an alarm. Resolves true
+// once it did, false anywhere it cannot (the web, iOS, a failed call) for the caller to buzz the
+// ordinary way instead. Never resolves with the plugin itself — see restPlugin.
+export function buzzAsAlarm(pattern) {
+  if (!MOBILE) return Promise.resolve(false)
+  const p = Array.isArray(pattern) ? pattern.filter(n => Number.isFinite(n) && n >= 0).map(Math.round) : (Number.isFinite(pattern) && pattern > 0 ? [Math.round(pattern)] : [])
+  if (!p.length) return Promise.resolve(false)
+  return restPlugin()
+    .then(plugin => (plugin ? plugin.RestAlert.buzz({ pattern: p }).then(() => true) : false))
+    .catch(() => false)
+}
+
 // The running countdown repaints with this swatch. No-op when no rest is on screen.
 export function setRestAccent(key) {
   if (!MOBILE) return
@@ -162,6 +177,7 @@ async function deliver(alert) {
     // The end of a rest the app is not in front for: the notification, or the buzz standing in
     // for it where notifications are off. With the app in front the page buzzes (lib/sound.js).
     vibrate: alert.vibrate,
+    alarmBuzz: alert.alarmBuzz,
     channelId: alert.channelId,
     visibility: alert.visibility,
     importance: alert.importance,

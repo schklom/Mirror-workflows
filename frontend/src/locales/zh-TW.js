@@ -1754,4 +1754,9 @@ export default {
   'The Coach isn’t set up on this phone — check Settings → AI Coach.': '此手機尚未設定 AI 教練——請查看「設定 → AI 教練」。',
   'Your AI provider couldn’t answer.': '你的 AI 服務供應商無法回應。',
   'Something went wrong on this phone.': '此手機上發生問題。',
+  'Move out of the superset': '移出超級組',
+  'Your server was reached, but it refused the app’s request (CORS). If a reverse proxy such as Traefik adds CORS headers, let requests from {0} through to openGym unchanged — see “Phone app and CORS” in docs/SELF_HOSTING.md.': '已連線到你的伺服器，但它拒絕了 App 的請求（CORS）。如果 Traefik 等反向代理會加入 CORS 標頭，請讓來自 {0} 的請求原封不動地轉送到 openGym——請參閱 docs/SELF_HOSTING.md 中的「Phone app and CORS」。',
+  'Could not reach {0}. Check the address and that this phone can reach it.': '無法連線到 {0}。請檢查網址，以及這支手機能否連到它。',
+  'Vibrate when the phone is on silent': '手機靜音時也震動',
+  'The end of a rest or a hold buzzes like an alarm, even in silent mode.': '休息或靜態維持結束時，會像鬧鐘一樣震動，即使在靜音模式下也一樣。',
 }

@@ -535,6 +535,15 @@ export default function Settings() {
           <Switch checked={S.vibrate !== false} onChange={v => update(s => { s.vibrate = v })} />
         </Row>
       )}
+      {/* Android app only (#375): silent mode mutes the ordinary buzz and the notification's, so
+          the end of a rest or a hold can buzz as an alarm instead. Opt-in, like the iOS row above:
+          an alarm-class buzz is the most insistent thing an app can do on some phones. */}
+      {MOBILE && android && vibrateSupported() && S.vibrate !== false && (
+        <Row icon="bell" iconTint="var(--indigo)" title={t('Vibrate when the phone is on silent')}
+          subtitle={t('The end of a rest or a hold buzzes like an alarm, even in silent mode.')}>
+          <Switch checked={!!S.vibrateOnSilent} onChange={v => update(s => { s.vibrateOnSilent = v })} />
+        </Row>
+      )}
       <Row icon="sun" iconTint="var(--yellow)" title={t('Flash screen when timer ends')}>
         <Switch checked={!!S.timerFlash} onChange={v => update(s => { s.timerFlash = v })} />
       </Row>

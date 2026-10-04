@@ -36,6 +36,7 @@ export default {
   'Next': 'Далі',
   'Move up': 'Перемістити вгору',
   'Move down': 'Перемістити вниз',
+  'Move out of the superset': 'Винести із суперсету',
   'Sunday': 'Неділя', 'Monday': 'Понеділок', 'Tuesday': 'Вівторок', 'Wednesday': 'Середа',
   'Thursday': 'Четвер', 'Friday': "П'ятниця", 'Saturday': 'Субота',
   'Su': 'Нд', 'Mo': 'Пн', 'Tu': 'Вт', 'We': 'Ср', 'Th': 'Чт', 'Fr': 'Пт', 'Sa': 'Сб',
@@ -1755,4 +1756,8 @@ export default {
   '{0} days apart': { one: '{0} день між ними', few: '{0} дні між ними', many: '{0} днів між ними' },
   '{0} photo': '{0} фото',
   '{0} photos': '{0} фото',
+  'Your server was reached, but it refused the app’s request (CORS). If a reverse proxy such as Traefik adds CORS headers, let requests from {0} through to openGym unchanged — see “Phone app and CORS” in docs/SELF_HOSTING.md.': 'Сервер доступний, але відхилив запит застосунку (CORS). Якщо зворотний проксі, як-от Traefik, додає заголовки CORS, пропускай запити з {0} до openGym без змін — див. «Phone app and CORS» у docs/SELF_HOSTING.md.',
+  'Could not reach {0}. Check the address and that this phone can reach it.': 'Не вдалося зв’язатися з {0}. Перевір адресу і чи може цей телефон до нього дістатися.',
+  'Vibrate when the phone is on silent': 'Вібрувати в беззвучному режимі',
+  'The end of a rest or a hold buzzes like an alarm, even in silent mode.': 'Кінець відпочинку чи утримання вібрує як будильник, навіть у беззвучному режимі.',
 }

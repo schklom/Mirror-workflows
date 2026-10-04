@@ -2396,10 +2396,14 @@ const server = http.createServer(async (req, res) => {
   const origin = req.headers.origin;
   if (origin) { res.setHeader('Access-Control-Allow-Origin', origin); res.setHeader('Vary', 'Origin'); }
   if (req.method === 'OPTIONS') {
+    // Chrome's Private Network Access asks before a page reaches a LAN address (a phone pairing
+    // with 192.168.x.x); an answer without this header is refused like a CORS failure (#329).
+    const pna = String(req.headers['access-control-request-private-network'] || '').toLowerCase() === 'true';
     res.writeHead(204, {
       'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE,OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-      'Access-Control-Max-Age': '86400'
+      'Access-Control-Max-Age': '86400',
+      ...(pna ? { 'Access-Control-Allow-Private-Network': 'true' } : {})
     });
     return res.end();
   }

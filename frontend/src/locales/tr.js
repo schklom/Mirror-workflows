@@ -45,6 +45,7 @@ export default {
   'R': 'R',
   'Move up': 'Yukarı taşı',
   'Move down': 'Aşağı taşı',
+  'Move out of the superset': 'Süpersetten çıkar',
   'Sunday': 'Pazar', 'Monday': 'Pazartesi', 'Tuesday': 'Salı', 'Wednesday': 'Çarşamba',
   'Thursday': 'Perşembe', 'Friday': 'Cuma', 'Saturday': 'Cumartesi',
   'Su': 'Pz', 'Mo': 'Pt', 'Tu': 'Sa', 'We': 'Ça', 'Th': 'Pe', 'Fr': 'Cu', 'Sa': 'Ct',
@@ -1758,4 +1759,8 @@ export default {
   '{0} days apart': '{0} gün arayla',
   '{0} photo': '{0} fotoğraf',
   '{0} photos': '{0} fotoğraf',
+  'Your server was reached, but it refused the app’s request (CORS). If a reverse proxy such as Traefik adds CORS headers, let requests from {0} through to openGym unchanged — see “Phone app and CORS” in docs/SELF_HOSTING.md.': "Sunucuna ulaşıldı ama uygulamanın isteğini reddetti (CORS). Traefik gibi bir ters vekil sunucu CORS başlıkları ekliyorsa {0} adresinden gelen istekleri değiştirmeden openGym'e ilet — docs/SELF_HOSTING.md içindeki “Phone app and CORS” bölümüne bak.",
+  'Could not reach {0}. Check the address and that this phone can reach it.': '{0} adresine ulaşılamadı. Adresi ve bu telefonun ona erişebildiğini kontrol et.',
+  'Vibrate when the phone is on silent': 'Telefon sessizdeyken de titreş',
+  'The end of a rest or a hold buzzes like an alarm, even in silent mode.': 'Dinlenmenin ya da tutuşun sonu, sessiz modda bile alarm gibi titreşir.',
 }

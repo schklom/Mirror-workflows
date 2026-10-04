@@ -17,14 +17,18 @@ export function ConnectSheet({ close, initialUrl = '', again = false }) {
   const [url, setUrl] = useState(initialUrl)
   const [code, setCode] = useState('')
   const [busy, setBusy] = useState(false)
+  // Why the last try failed, under the fields: a toast is gone in two seconds, too soon to read
+  // "the server was reached but refused the app's request" and act on it (#329).
+  const [error, setError] = useState('')
   const ref = useRef(null)
   const codeRef = useRef(null)
   useEffect(() => { setTimeout(() => (initialUrl ? codeRef : ref).current?.focus(), 250) }, [])
   const go = async () => {
     if (!url.trim() || !code.trim()) { useUI.getState().toast(t('Enter your server address and the code')); return }
     setBusy(true)
+    setError('')
     try { await connectToServer(url.trim(), code.trim(), askAddDeviceData); close(); useUI.getState().toast(t('Connected')) }
-    catch (e) { useUI.getState().toast(e.message || t('Could not connect')) }
+    catch (e) { setError(e.message || t('Could not connect')) }
     finally { setBusy(false) }
   }
   return <>
@@ -39,6 +43,7 @@ export function ConnectSheet({ close, initialUrl = '', again = false }) {
     <div style={{ height: 10 }} />
     <input ref={codeRef} className="input" placeholder={t('Pairing code')} maxLength={8} value={code}
       onChange={e => setCode(e.target.value.toUpperCase())} style={{ letterSpacing: '.14em', fontWeight: 600, textAlign: 'center' }} />
+    {error && <div className="small" role="alert" style={{ color: 'var(--red)', marginTop: 10, lineHeight: 1.45, overflowWrap: 'anywhere' }}>{error}</div>}
     <div style={{ height: 12 }} />
     <Button variant="primary" onClick={go} disabled={busy}>{busy ? t('Connecting…') : t('Connect')}</Button>
   </>

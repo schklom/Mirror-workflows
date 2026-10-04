@@ -9,9 +9,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import Workout from './Workout.jsx'
 import { DEF, useStore } from '../store/useStore.js'
 import { useUI } from '../store/useUI.js'
-import { beep, chime, vibrate } from '../lib/sound.js'
+import { beep, chime, vibrate, alertBuzz } from '../lib/sound.js'
 
-vi.mock('../lib/sound.js', () => ({ beep: vi.fn(), chime: vi.fn(), vibrate: vi.fn(), unlock: vi.fn() }))
+vi.mock('../lib/sound.js', () => ({ beep: vi.fn(), chime: vi.fn(), vibrate: vi.fn(), alertBuzz: vi.fn(), unlock: vi.fn() }))
 vi.mock('../lib/api.js', () => ({ api: vi.fn(() => Promise.resolve({})), appBase: () => '/' }))
 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true
@@ -44,7 +44,7 @@ const doneOf = () => useStore.getState().S.active.entries[0].sets.map(s => s.don
 beforeEach(() => {
   vi.useFakeTimers()
   localStorage.clear()
-  vi.mocked(beep).mockClear(); vi.mocked(chime).mockClear(); vi.mocked(vibrate).mockClear()
+  vi.mocked(beep).mockClear(); vi.mocked(chime).mockClear(); vi.mocked(vibrate).mockClear(); vi.mocked(alertBuzz).mockClear()
   useUI.setState({ sheets: [], toastMsg: '', timer: null, work: null })
   root = null
   container = null
@@ -67,7 +67,9 @@ describe('the end of a hold', () => {
     expect(doneOf()).toEqual([true, false])
     expect(chime).toHaveBeenCalledOnce()
     expect(tickBeeps()).toEqual([])
-    expect(vibrate.mock.calls).toEqual([[[200, 100, 200]]])
+    // The end's buzz goes through alertBuzz, which can buzz as an alarm on silent (#375).
+    expect(alertBuzz.mock.calls).toEqual([[[200, 100, 200]]])
+    expect(vibrate).not.toHaveBeenCalled()
   })
 
   it('finished early with Done: the set ticks the way a tap does, beep and buzz', () => {

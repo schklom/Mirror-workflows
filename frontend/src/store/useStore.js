@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import { api, setRemoteAuth } from '../lib/api.js'
 import { localTZ } from '../lib/format.js'
 import { t } from '../lib/i18n.js'
-import { registerCustom } from '../lib/exercises.js'
+import { registerCustom, healCustomEx } from '../lib/exercises.js'
 import { DEMO, DEMO_SEEDED } from '../lib/demo.js'
 import { rememberDefaultLang } from '../lib/default-lang.js'
 import { guestAllowed } from '../lib/guest.js'
@@ -72,7 +72,7 @@ const gainedWorkoutMedia = (prev, next) => {
   return workoutMediaHashes(next).some(h => !had.has(h))
 }
 export const DEF = {
-  unit: 'kg', restSec: 90, restPauseSec: 15, sound: true, soundOnSilent: false, timerFlash: false, timedSetOvertime: false, keepAwake: true, lang: 'en',
+  unit: 'kg', restSec: 90, restPauseSec: 15, sound: true, soundOnSilent: false, vibrateOnSilent: false, timerFlash: false, timedSetOvertime: false, keepAwake: true, lang: 'en',
   theme: 'dark', accent: 'lime', body: 'male', targetW: null,
   bodyweight: [], routines: [], week: {}, dayPlan: {},
   queue: null,   // a planner's floating week (lib/queue.js) — via the API, or by this rotation feature (below)
@@ -407,6 +407,10 @@ export const useStore = create((set, get) => {
   const persist = (S, push = true, stamp = true) => {
     const { base, owed } = metaOf()   // the copy being replaced; the new one stands where it stood
     if (stamp) S._ts = Math.max(Date.now(), (base?.ts || 0) + 1)
+    // Every copy that enters the store — an edit, a pull, an adoption, a restored backup — has its
+    // custom exercises marked as such (#378): one stored without the flag by an older plan import
+    // goes out with it on the next push, without a stamp of its own (healCustomEx).
+    S.customEx = healCustomEx(S.customEx)
     registerCustom(S.customEx)
     // A refused write used to take the change with it — Finish looked like it simply did
     // nothing. The copy is kept in memory either way and marked as owed to the server, so a
@@ -922,6 +926,7 @@ export const useStore = create((set, get) => {
   }
 
   const S0 = loadState()
+  S0.customEx = healCustomEx(S0.customEx)
   registerCustom(S0.customEx)
   // Which photos and videos are still waiting for the server, known before the first sign-out
   // check has to ask (lib/media-owed.js). A copy without any leaves the media store unopened.

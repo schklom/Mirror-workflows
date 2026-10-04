@@ -45,6 +45,7 @@ export default {
   'R': 'D',
   'Move up': 'Subir',
   'Move down': 'Bajar',
+  'Move out of the superset': 'Sacar de la superserie',
   'Sunday': 'Domingo', 'Monday': 'Lunes', 'Tuesday': 'Martes', 'Wednesday': 'Miércoles',
   'Thursday': 'Jueves', 'Friday': 'Viernes', 'Saturday': 'Sábado',
   'Su': 'Do', 'Mo': 'Lu', 'Tu': 'Ma', 'We': 'Mi', 'Th': 'Ju', 'Fr': 'Vi', 'Sa': 'Sá',
@@ -1758,4 +1759,8 @@ export default {
   '{0} days apart': '{0} días de diferencia',
   '{0} photo': '{0} foto',
   '{0} photos': '{0} fotos',
+  'Your server was reached, but it refused the app’s request (CORS). If a reverse proxy such as Traefik adds CORS headers, let requests from {0} through to openGym unchanged — see “Phone app and CORS” in docs/SELF_HOSTING.md.': 'Se llegó a tu servidor, pero rechazó la solicitud de la app (CORS). Si un proxy inverso como Traefik añade cabeceras CORS, deja pasar sin cambios hasta openGym las solicitudes de {0}; consulta «Phone app and CORS» en docs/SELF_HOSTING.md.',
+  'Could not reach {0}. Check the address and that this phone can reach it.': 'No se pudo llegar a {0}. Comprueba la dirección y que este teléfono pueda alcanzarlo.',
+  'Vibrate when the phone is on silent': 'Vibrar con el teléfono en silencio',
+  'The end of a rest or a hold buzzes like an alarm, even in silent mode.': 'El final de un descanso o de un aguante vibra como una alarma, incluso en silencio.',
 }

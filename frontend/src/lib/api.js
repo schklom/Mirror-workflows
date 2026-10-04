@@ -210,12 +210,47 @@ export function apiUpload(path, blob, mime, { onProgress, idleMs = 60000, XHR = 
   })
 }
 
+// "Failed to fetch" is all the WebView says when pairing never got an answer (#329), and it says
+// the same for a wrong address and for a reverse proxy that answered the CORS preflight itself
+// without letting the app's origin in (a Traefik `headers` middleware with an allow-list, which
+// never passes the OPTIONS on to openGym). A no-cors request needs no preflight and tells the two
+// apart: it settles when the server is there at all. Its answer cannot be read, nor needs to be.
+const PROBE_MS = 5000
+const hostOfBase = base => {
+  try { const u = new URL(base); return u.host + u.pathname.replace(/\/$/, '') } catch { return base || '' }
+}
+async function whyUnreachable(base, ms) {
+  let reached = false
+  const ctl = typeof AbortController === 'function' ? new AbortController() : null
+  let timer = null
+  try {
+    await Promise.race([
+      fetch(base + '/api/health', { mode: 'no-cors', cache: 'no-store', ...(ctl ? { signal: ctl.signal } : {}) }),
+      new Promise((_, reject) => { timer = setTimeout(() => { if (ctl) ctl.abort(); reject(new Error('timeout')) }, ms) }),
+    ])
+    reached = true
+  } catch { /* not reachable either */ }
+  finally { clearTimeout(timer) }
+  if (reached) {
+    const origin = globalThis.location?.origin || 'https://localhost'
+    return failure(t('Your server was reached, but it refused the app’s request (CORS). If a reverse proxy such as Traefik adds CORS headers, let requests from {0} through to openGym unchanged — see “Phone app and CORS” in docs/SELF_HOSTING.md.', origin), 'cors')
+  }
+  return failure(t('Could not reach {0}. Check the address and that this phone can reach it.', hostOfBase(base)), 'unreachable')
+}
+
 // Bootstraps the connection itself: the base isn't configured yet (that's what this call decides),
 // so it talks straight to the server the user typed in, no Authorization header.
-export async function pairRedeem(serverBase, code) {
-  const data = await request(serverBase + '/api/pair/redeem', {
-    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code })
-  }, TIMEOUT_GET_MS)
+export async function pairRedeem(serverBase, code, { probeMs = PROBE_MS } = {}) {
+  let data
+  try {
+    data = await request(serverBase + '/api/pair/redeem', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code })
+    }, TIMEOUT_GET_MS)
+  } catch (e) {
+    // The server answered (any status) or did not answer in time: that error says it already.
+    if (e && (e.status != null || e.code)) throw e
+    throw await whyUnreachable(serverBase, probeMs)
+  }
   // Anything that is not a pairing would be saved as one — and the phone would then send every
   // change to a server that never gave it a token.
   if (!data.token || !data.user) throw failure(t('The server answered with something other than openGym data.'), 'bad-response', 200)

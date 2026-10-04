@@ -739,6 +739,34 @@ export function moveSupersetUnit(items, index, direction) {
   reordered[target] = selected
   return reordered.flat().map(i => items[i])
 }
+// The routine editor's up/down arrows (#377). A member of a superset moves inside it, past the
+// next member; at the superset's edge it leaves it — its position kept, its `sg` dropped — so the
+// next press moves it on as an exercise of its own. Anything else (a single exercise, a lone
+// leftover `sg`) moves as a whole unit, as moveSupersetUnit does: it jumps a superset and never
+// joins one (that is the link button's job). Moving a whole superset is left to drag. Returns the
+// new list — entries that change are copies, the others keep their identity — or null when the
+// press would do nothing. A superset left with one member is dissolved here, like cleanupSg would.
+export function moveRoutineEntry(items, index, direction) {
+  if (!Array.isArray(items) || (direction !== -1 && direction !== 1)) return null
+  if (!Number.isInteger(index) || index < 0 || index >= items.length) return null
+  const group = contiguousSgGroup(items, index)
+  if (group.length < 2) return moveSupersetUnit(items, index, direction)
+  const next = items.slice()
+  const other = index + direction
+  if (group.includes(other)) {
+    next[index] = items[other]
+    next[other] = items[index]
+    return next
+  }
+  const { sg, ...left } = items[index]
+  next[index] = left
+  const rest = group.filter(i => i !== index)
+  if (rest.length === 1) {
+    const { sg: _gone, ...alone } = items[rest[0]]
+    next[rest[0]] = alone
+  }
+  return next
+}
 export function unitOf(units, idx) { return units.find(u => u.includes(idx)) || [idx] }
 
 export function streakWeeks(S) {

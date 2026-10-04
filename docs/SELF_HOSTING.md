@@ -129,6 +129,28 @@ Visit `https://gym.example.com`, create your profile, and add it to your home sc
 > Changing `RP_ID` later invalidates existing passkeys (they were bound to the old hostname).
 > Pick your domain before people register.
 
+#### Phone app and CORS
+
+The browser app is served from your domain, so it never makes a cross-origin request. The
+[phone app](MOBILE.md#connecting-the-app-to-your-own-server) does: its WebView runs at
+`https://localhost` (Android) or `capacitor://localhost` (iOS), and the browser engine asks your
+server first (a CORS preflight, `OPTIONS`) before every request with a JSON body or a token.
+**openGym answers that preflight itself** — it allows the requesting origin, the methods
+`GET, POST, PUT, DELETE, OPTIONS` and the headers `Content-Type, Authorization` — so the proxy only
+has to pass it through unchanged.
+
+Don't put a CORS middleware on the openGym route. A Traefik `headers` middleware with
+`accessControlAllowOriginList` (or nginx `add_header Access-Control-*` with an `if
+($request_method = OPTIONS) { return 204; }`) answers the preflight on its own and never forwards
+it; when the app's origin is not on its list, the phone refuses to send the real request and
+pairing fails with "Failed to fetch" while the openGym containers log nothing. In Traefik's access
+log that shows as `"OPTIONS /api/pair/redeem HTTP/2.0" 200 0 "-" "-" … "-" 0ms` — no backend
+service, no time spent. If the middleware has to stay (it is shared with other routes), add
+`https://localhost` and `capacitor://localhost` to the allowed origins, the methods and headers
+above to its lists, and don't set allow-credentials (the app authenticates with a bearer token,
+never a cookie). The app tells the two cases apart since v1.3.10: when the server is reachable but
+the request is refused, pairing says so instead of "Failed to fetch".
+
 ## 4. Multiple users
 
 Anyone who can reach the URL can create their own profile — each gets isolated data. That's the

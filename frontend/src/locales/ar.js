@@ -736,6 +736,7 @@ export default {
   'Rest-pause always trains as one warm-up set at this rep count, then one rest-pause work set — "Sets" is not used.': 'يتدرب الريست بوز دائمًا كمجموعة إحماء واحدة بهذا العدد من التكرارات، ثم مجموعة عمل ريست بوز واحدة — ولا يُستخدم خيار «المجموعات».',
   'Move up': 'تحريك لأعلى',
   'Move down': 'تحريك لأسفل',
+  'Move out of the superset': 'إخراج من السوبر سِت',
   'Swap exercise': 'استبدال التمرين',
   'Swap exercise?': 'استبدال التمرين؟',
   'Logged sets stay with the original exercise. Choose where the replacement belongs.': 'تبقى المجموعات المسجلة مع التمرين الأصلي. اختر مكان التمرين البديل.',
@@ -1811,4 +1812,8 @@ export default {
   '{0} days apart': 'بفارق {0} أيام',
   '{0} photo': '{0} صورة',
   '{0} photos': '{0} صور',
+  'Your server was reached, but it refused the app’s request (CORS). If a reverse proxy such as Traefik adds CORS headers, let requests from {0} through to openGym unchanged — see “Phone app and CORS” in docs/SELF_HOSTING.md.': 'تم الوصول إلى خادمك، لكنه رفض طلب التطبيق (CORS). إذا كان وكيل عكسي مثل Traefik يضيف ترويسات CORS، فدَع الطلبات القادمة من {0} تمر إلى openGym دون تغيير — راجع «Phone app and CORS» في docs/SELF_HOSTING.md.',
+  'Could not reach {0}. Check the address and that this phone can reach it.': 'تعذّر الوصول إلى {0}. تحقّق من العنوان ومن أن هذا الهاتف يستطيع الوصول إليه.',
+  'Vibrate when the phone is on silent': 'الاهتزاز عندما يكون الهاتف صامتًا',
+  'The end of a rest or a hold buzzes like an alarm, even in silent mode.': 'تهتز نهاية الراحة أو التثبيت مثل المنبّه، حتى في الوضع الصامت.',
 }

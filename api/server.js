@@ -18,7 +18,7 @@ import * as coachJobs from './coach/jobs.js';
 import { coachRoutes } from './coach/routes.js';
 import { startCadence } from './coach/cadence.js';
 import { startWarmup } from './coach/warmup.js';
-import { dayReminderPush, restTimerPush, testPush } from './push-messages.js';
+import { dayReminderPush, nudgePush, restTimerPush, testPush } from './push-messages.js';
 import { verifyError } from './verify-error.js';
 import {
   hashPassword, verifyPassword, needsRehash, passwordProblem, passwordLength, nameKey, BusyError,
@@ -32,6 +32,7 @@ import {
 import { createDeviceLink, findDeviceLink, burnDeviceLink, dropDeviceLinks } from './device-link.js';
 import { createMediaStore, mediaLimits, mediaConfig, MediaError, HASH_RE } from './media.js';
 import { effectiveRoutineId } from './queue.js';
+import { nudgeFor, nudgeWindowOpen, toneOf } from './nudge.js';
 
 const PORT = +(process.env.PORT || 3000);
 const DATA = process.env.DATA_DIR || '/data';
@@ -396,6 +397,23 @@ function readStateCached(uid) {
   while (stateCache.size > STATE_CACHE_MAX) stateCache.delete(stateCache.keys().next().value);
   return S;
 }
+// Missed-workout nudge (nudge.js): opt-in on top of the reminder, so it needs everything the
+// reminder does (a push subscription, the reminder on, a zone). Owed from 20:00 — or 2 h after the
+// reminder — until 21:30 on the user's clock, the same catch-up idea as the reminder's window: a
+// restart inside the evening still sends it. Once per local date (`user.lastNudge`), never while
+// a workout is on screen, and nudgeFor() decides the day and the back-off.
+function nudgeTick(user, S, now) {
+  if (!S.reminder.nudge || user.lastNudge === now.date) return;
+  if (!nudgeWindowOpen(S.reminder.time, now.hhmm)) return;
+  if (livePresence(user.id)) return; // a session is under way — today's workout in the making
+  const rid = nudgeFor(S, now.date);
+  if (!rid) return;
+  const routine = (S.routines || []).find(r => r?.id === rid);
+  console.log('nudge firing', user.id, rid);
+  user.lastNudge = now.date;
+  saveDb();
+  sendPush(user.id, nudgePush(S.lang, toneOf(S.reminder), routine, now.date));
+}
 setInterval(() => {
   for (const user of db.users) {
     if (!db.subs.some(s => s.userId === user.id)) continue;
@@ -407,6 +425,7 @@ setInterval(() => {
       if (!S?.reminder?.on) continue;
       const now = userNow(S.reminder.tz || 'UTC');
       if (!now) continue;
+      nudgeTick(user, S, now);
       const late = minutesLate(S.reminder.time, now);
       if (!(late >= 0 && late <= REMINDER_WINDOW_MIN)) continue;
       if (user.lastReminder === now.date) continue;

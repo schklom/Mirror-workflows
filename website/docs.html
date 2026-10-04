@@ -242,7 +242,7 @@
   <p>The app requests notification permission only when you switch the workout-day reminder
      on, and declares <code>SCHEDULE_EXACT_ALARM</code> so reminders fire to the minute.
      Reminders are scheduled per calendar date — a day you already trained, or rescheduled
-     away, stays quiet.</p>
+     away, stays quiet. The missed-workout nudge, when switched on, is scheduled the same way.</p>
 
   <h2 id="iphone">Use on iPhone</h2>
   <p>Apple does not allow installing apps outside the App Store, so there is no iOS download —
@@ -458,6 +458,10 @@
     <li><b>Workout-day reminder:</b> an optional notification on days you have a workout
         planned but haven't logged one. It fires at <i>your</i> local time — each device
         reports its own timezone — and follows you if you travel.</li>
+    <li><b>Missed-workout nudge:</b> opt-in, under the reminder. Skip a planned workout and you
+        get one nudge that evening, in the tone you picked: <i>Friendly</i>, <i>Guilt trip</i>
+        (&ldquo;I miss you&rdquo;) or <i>Drill sergeant</i>. Rest days stay quiet, and after
+        three missed days in a row it stops until your next workout.</li>
     <li><b>Installable PWA</b> (self-hosted): add it to your home screen from any browser and
         it opens full-screen with its own icon.</li>
   </ul>
@@ -534,6 +538,9 @@ docker compose up -d   # restart alone does NOT re-read .env</code></pre>
      re-registers its subscription with the server on every signed-in start, so one the server
      lost heals itself; and a rest-timer alert belongs to the device that started the rest, so
      finishing a rest on the desktop no longer silences the phone.</p>
+  <p>The optional <b>missed-workout nudge</b> rides on the reminder: one push between 20:00 and
+     21:30 (or from 2 hours after a late reminder) on a planned day with nothing logged and no
+     workout on screen, at most three missed days in a row, then quiet until the next workout.</p>
 
   <h3 id="sh-sync">Sync between devices</h3>
   <p>Signed in, <b>the profile on the server is the truth</b>. Signing in on a device adopts it

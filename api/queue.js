@@ -107,7 +107,7 @@ export function effectiveRoutineId(S, iso) {
 
 // Is `iso` a day the queue speaks for, with sessions still to do? (`today === iso` here, so
 // "the queue's day" is any day from startsOn on.)
-function queueLiveOn(S, iso) {
+export function queueLiveOn(S, iso) {
   const q = queueOf(S);
   return !!q && iso >= q.startsOn && q.ids.some(id => !queueDone(S, id, q.startsOn));
 }

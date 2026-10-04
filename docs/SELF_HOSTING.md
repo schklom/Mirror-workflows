@@ -563,6 +563,14 @@ first run and saved to `./data/vapid.json`, and each user's browser reports its 
 automatically when they turn the reminder on — it fires at their local time, and follows them if
 they travel, regardless of what timezone the server itself runs in.
 
+Under the reminder there is an opt-in **missed-workout nudge** ("Nudge me when I skip a planned
+workout", with a tone: Friendly, Guilt trip or Drill sergeant). It is one push on the evening of a
+planned day with no workout logged: from 20:00 on the user's clock (or 2 hours after the reminder,
+if that is later) until 21:30, and not while a workout is on screen. A rest day never gets one, a
+coach week or rotation only counts the second day off in a row, and after 3 missed days in a row
+it goes quiet until the next workout is logged. Like the reminder it needs the push subscription
+and the reminder switched on; the text is localized from the user's app language.
+
 Where it works: any desktop browser, Android Chrome, and on iOS only the app **added to the Home
 Screen** (Safari in a tab has no Web Push). The Android APK's day reminder is a local
 notification. Its rest timer is a local alarm: the notification shade shows the time left as a

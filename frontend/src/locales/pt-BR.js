@@ -1093,6 +1093,21 @@ export const PT_BR_OVERRIDES = {
   'This folder can’t be used for backups.': 'Esta pasta não pode ser usada para backups.',
   'openGym can no longer write to “{0}” — the copies go to Documents/openGym again. Choose the folder again to go back to it.': 'O openGym não consegue mais gravar em “{0}” — as cópias voltam para Documents/openGym. Escolha a pasta de novo para voltar a ela.',
   'openGym can no longer write to the chosen folder — the copies go to Documents/openGym again. Choose the folder again to go back to it.': 'O openGym não consegue mais gravar na pasta escolhida — as cópias voltam para Documents/openGym. Escolha a pasta de novo para voltar a ela.',
+  // --- missed-workout nudge (lib/nudge.js; the push copy is mirrored in api/nudge-copy.js) ---
+  'Nudge me when I skip a planned workout': 'Me avise quando eu pular um treino planejado',
+  'One nudge in the evening of a planned day with nothing logged, between 20:00 and 21:30. After 3 missed days in a row it goes quiet until your next workout.': 'Um aviso à noite em um dia planejado sem nada registrado, entre 20:00 e 21:30. Depois de 3 dias perdidos seguidos ele fica quieto até o seu próximo treino.',
+  '{0} is still waiting. What’s up?': '{0} ainda está esperando você. E aí?',
+  'No {0} today? Even a short session tomorrow counts.': 'Hoje não teve {0}? Amanhã até um treino curto conta.',
+  'Hey, {0} didn’t happen today. All good?': 'Ei, hoje não teve {0}. Tudo certo?',
+  'I miss you': 'Estou com saudade de você',
+  '{0} waited by the door all evening. For you.': '{0} esperou você na porta a noite toda. Você.',
+  'The barbell asked about you today. I didn’t know what to say.': 'A barra perguntou de você hoje. Não soube o que dizer.',
+  'Was it something I said? {0} misses you.': 'Foi alguma coisa que eu disse? {0} está com saudade de você.',
+  'I saved you a spot on the bench. It’s still empty.': 'Guardei um lugar no banco para você. Continua vazio.',
+  'Your gains are packing their bags. {0} tomorrow, no excuses!': 'Seus ganhos estão fazendo as malas. {0} amanhã, sem desculpas!',
+  '{0} doesn’t do itself, recruit. Move it!': '{0} não se faz sozinho, recruta. Mexa-se!',
+  'Excuses don’t lift weights. Report for {0} tomorrow!': 'Desculpa não levanta peso. Amanhã você se apresenta para {0}!',
+  'Your muscles filed a missing-person report. Show up for {0}!': 'Seus músculos registraram seu desaparecimento. Apresente-se para {0}!',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

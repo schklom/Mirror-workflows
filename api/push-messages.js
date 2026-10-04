@@ -1,3 +1,6 @@
+import { NUDGE_COPY } from './nudge-copy.js';
+import { lineIndex } from './nudge.js';
+
 const COPY = {
   en: {
     restTitle: 'Rest over 💪',
@@ -37,4 +40,22 @@ export function dayReminderPush(lang, routine) {
     body: copy.dayBody,
     tag: 'day-reminder',
   };
+}
+
+// The missed-workout nudge (nudge.js). Its copy is translated in the frontend packs and generated
+// into nudge-copy.js, so every language the app speaks has it — unlike the strings above, which
+// predate that and fall back to English. de-CH is de with ß written ss, as in the frontend
+// (lib/i18n-core.js DERIVED_LOCALES).
+const nudgeCopyFor = lang => {
+  if (lang === 'de-CH') {
+    const ch = s => s.replace(/ß/g, 'ss');
+    return Object.fromEntries(Object.entries(NUDGE_COPY.de).map(([k, c]) => [k, { title: ch(c.title), lines: c.lines.map(ch) }]));
+  }
+  return NUDGE_COPY[lang] || NUDGE_COPY.en;
+};
+export function nudgePush(lang, tone, routine, iso) {
+  const copy = nudgeCopyFor(lang)[NUDGE_COPY.en[tone] ? tone : 'friendly'];
+  const line = copy.lines[lineIndex(iso, copy.lines.length)];
+  const name = routine?.name || 'openGym';
+  return { title: copy.title, body: line.replace('{0}', () => name), tag: 'nudge' };
 }

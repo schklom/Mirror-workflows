@@ -1704,4 +1704,8 @@ export default {
   'Max reps': '力竭次數',
   'Most reps in a Max set per workout': '每次訓練中力竭組的最多次數',
   'A set left at 0 rest uses the exercise’s rest.': '休息設為 0 的組會使用該動作的休息時間。',
+  'Show less': '顯示更少',
+  'Completed': '已完成',
+  'Weekly muscle volume': '每週肌肉訓練量',
+  'No muscle volume planned.': '尚未排定肌肉訓練量。',
 }

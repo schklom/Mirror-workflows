@@ -1668,4 +1668,8 @@ export default {
   'Nothing to repeat — its exercises no longer exist.': '반복할 것이 없습니다 — 이 운동의 종목이 더 이상 없습니다.',
   '{0} exercise no longer exists and was left out.': '운동 {0}개가 더 이상 없어 제외했습니다.',
   '{0} exercises no longer exist and were left out.': '운동 {0}개가 더 이상 없어 제외했습니다.',
+  // --- show connection status, and the dot when it is off (#369, #330) ---
+  'Show connection status': '연결 상태 표시',
+  'Off: the bar at the top is hidden. A dot on Home still warns when syncing is stuck.': '끄면 위쪽 막대가 숨겨집니다. 동기화가 멈추면 홈의 점이 계속 알려 줍니다.',
+  'Connection problem': '연결 문제',
 }

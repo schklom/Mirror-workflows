@@ -1721,4 +1721,8 @@ export default {
   'Nothing to repeat — its exercises no longer exist.': 'لا شيء لتكراره — لم تعد تمارينه موجودة.',
   '{0} exercise no longer exists and was left out.': 'لم يعد {0} تمرين موجودًا وتم تركه.',
   '{0} exercises no longer exist and were left out.': 'لم تعد {0} تمارين موجودة وتم تركها.',
+  // --- show connection status, and the dot when it is off (#369, #330) ---
+  'Show connection status': 'إظهار حالة الاتصال',
+  'Off: the bar at the top is hidden. A dot on Home still warns when syncing is stuck.': 'عند الإيقاف: يُخفى الشريط في الأعلى. تبقى نقطة على الرئيسية تنبّهك عندما تتعثر المزامنة.',
+  'Connection problem': 'مشكلة في الاتصال',
 }

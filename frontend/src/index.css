@@ -400,6 +400,14 @@ h4.sec{
 #tabbar button .icn{font-size:25px;--icon-stroke:1.65;color:var(--label)}
 #tabbar button.on{color:var(--acc)}
 #tabbar button.on .icn{--icon-stroke:2;color:inherit;opacity:1}
+/* A connection problem while the banner is switched off (Settings → Show connection status):
+   a dot on the Home tab and on the Settings gear. */
+#tabbar .tab-ic{position:relative;display:inline-flex}
+.tab-dot{
+  position:absolute;top:-1px;right:-3px;width:8px;height:8px;border-radius:50%;
+  background:var(--orange);box-shadow:0 0 0 2px var(--bg-el);pointer-events:none;
+}
+.iconbtn .tab-dot{top:5px;right:5px;box-shadow:0 0 0 2px var(--bg)}
 #tabbar button.start{margin-top:-24px}
 #tabbar button.start .cir{
   width:52px;height:52px;border-radius:50%;background:var(--acc);color:var(--on-acc);

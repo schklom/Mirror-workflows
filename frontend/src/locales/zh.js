@@ -1668,4 +1668,8 @@ export default {
   'Nothing to repeat — its exercises no longer exist.': '没有可重复的内容——其中的动作已不存在。',
   '{0} exercise no longer exists and was left out.': '有 {0} 个动作已不存在，已略过。',
   '{0} exercises no longer exist and were left out.': '有 {0} 个动作已不存在，已略过。',
+  // --- show connection status, and the dot when it is off (#369, #330) ---
+  'Show connection status': '显示连接状态',
+  'Off: the bar at the top is hidden. A dot on Home still warns when syncing is stuck.': '关闭：隐藏顶部的提示栏。同步卡住时，“首页”上的小圆点仍会提醒你。',
+  'Connection problem': '连接问题',
 }

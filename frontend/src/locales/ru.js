@@ -1668,4 +1668,8 @@ export default {
   'Nothing to repeat — its exercises no longer exist.': 'Нечего повторять — его упражнений больше нет.',
   '{0} exercise no longer exists and was left out.': '{0} упражнения больше нет, оно пропущено.',
   '{0} exercises no longer exist and were left out.': 'Упражнений, которых больше нет, пропущено: {0}.',
+  // --- show connection status, and the dot when it is off (#369, #330) ---
+  'Show connection status': 'Показывать состояние подключения',
+  'Off: the bar at the top is hidden. A dot on Home still warns when syncing is stuck.': 'Выкл.: полоса сверху скрыта. Точка на «Главной» всё равно предупредит, если синхронизация застряла.',
+  'Connection problem': 'Проблема с подключением',
 }

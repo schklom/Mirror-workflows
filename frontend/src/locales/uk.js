@@ -1665,4 +1665,8 @@ export default {
   'Nothing to repeat — its exercises no longer exist.': 'Нічого повторювати — його вправ більше немає.',
   '{0} exercise no longer exists and was left out.': '{0} вправи більше немає, її пропущено.',
   '{0} exercises no longer exist and were left out.': 'Вправ, яких більше немає, пропущено: {0}.',
+  // --- show connection status, and the dot when it is off (#369, #330) ---
+  'Show connection status': 'Показувати стан з’єднання',
+  'Off: the bar at the top is hidden. A dot on Home still warns when syncing is stuck.': 'Вимк.: смугу вгорі приховано. Крапка на «Головній» однаково попередить, якщо синхронізація застрягла.',
+  'Connection problem': 'Проблема зі з’єднанням',
 }

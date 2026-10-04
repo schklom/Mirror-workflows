@@ -1668,4 +1668,8 @@ export default {
   'Nothing to repeat — its exercises no longer exist.': 'दोहराने को कुछ नहीं — इसके एक्सरसाइज़ अब मौजूद नहीं हैं।',
   '{0} exercise no longer exists and was left out.': '{0} एक्सरसाइज़ अब मौजूद नहीं है और छोड़ दी गई।',
   '{0} exercises no longer exist and were left out.': '{0} एक्सरसाइज़ अब मौजूद नहीं हैं और छोड़ दी गईं।',
+  // --- show connection status, and the dot when it is off (#369, #330) ---
+  'Show connection status': 'कनेक्शन की स्थिति दिखाएँ',
+  'Off: the bar at the top is hidden. A dot on Home still warns when syncing is stuck.': 'बंद: ऊपर की पट्टी छिप जाती है। सिंक अटकने पर होम पर एक बिंदु फिर भी चेतावनी देता है।',
+  'Connection problem': 'कनेक्शन में समस्या',
 }

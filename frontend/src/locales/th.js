@@ -1679,4 +1679,8 @@ export default {
   'Nothing to repeat — its exercises no longer exist.': 'ไม่มีอะไรให้ทำซ้ำ — ท่าในการฝึกนี้ไม่มีอยู่แล้ว',
   '{0} exercise no longer exists and was left out.': 'ท่า {0} ท่าไม่มีอยู่แล้วและถูกข้ามไป',
   '{0} exercises no longer exist and were left out.': 'ท่า {0} ท่าไม่มีอยู่แล้วและถูกข้ามไป',
+  // --- show connection status, and the dot when it is off (#369, #330) ---
+  'Show connection status': 'แสดงสถานะการเชื่อมต่อ',
+  'Off: the bar at the top is hidden. A dot on Home still warns when syncing is stuck.': 'ปิด: แถบด้านบนจะถูกซ่อน แต่จุดบนหน้าหลักยังเตือนเมื่อการซิงค์ค้าง',
+  'Connection problem': 'การเชื่อมต่อมีปัญหา',
 }

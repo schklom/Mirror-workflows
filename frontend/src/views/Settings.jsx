@@ -530,6 +530,12 @@ export default function Settings() {
           onChange={v => update(s => { s.body = v })}
         />
       </Row>
+      {/* The bar at the top that says the app is offline, kept local, or not synced (#369, #330).
+          Here and not under Server & sync, which a phone kept local never shows. */}
+      {!DEMO && <Row icon="cloud" iconTint="var(--blue)" title={t('Show connection status')}
+        subtitle={t('Off: the bar at the top is hidden. A dot on Home still warns when syncing is stuck.')}>
+        <Switch checked={S.connStatus !== false} onChange={v => update(s => { s.connStatus = v })} />
+      </Row>}
       <div className="lrow" style={{ flexDirection: 'column', alignItems: 'stretch', gap: 12, paddingTop: 13, paddingBottom: 14 }}>
         <span className="lrow-t">{t('Accent color')}</span>
         <div className="swatches">

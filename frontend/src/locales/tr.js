@@ -1668,4 +1668,8 @@ export default {
   'Nothing to repeat — its exercises no longer exist.': 'Tekrarlanacak bir şey yok — egzersizleri artık yok.',
   '{0} exercise no longer exists and was left out.': '{0} egzersiz artık yok ve dışarıda bırakıldı.',
   '{0} exercises no longer exist and were left out.': '{0} egzersiz artık yok ve dışarıda bırakıldı.',
+  // --- show connection status, and the dot when it is off (#369, #330) ---
+  'Show connection status': 'Bağlantı durumunu göster',
+  'Off: the bar at the top is hidden. A dot on Home still warns when syncing is stuck.': 'Kapalı: üstteki şerit gizlenir. Eşitleme takılırsa Ana sayfadaki bir nokta yine uyarır.',
+  'Connection problem': 'Bağlantı sorunu',
 }

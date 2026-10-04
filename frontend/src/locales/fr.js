@@ -1668,4 +1668,8 @@ export default {
   'Nothing to repeat — its exercises no longer exist.': 'Rien à refaire — ses exercices n’existent plus.',
   '{0} exercise no longer exists and was left out.': '{0} exercice n’existe plus et a été laissé de côté.',
   '{0} exercises no longer exist and were left out.': '{0} exercices n’existent plus et ont été laissés de côté.',
+  // --- show connection status, and the dot when it is off (#369, #330) ---
+  'Show connection status': 'Afficher l’état de la connexion',
+  'Off: the bar at the top is hidden. A dot on Home still warns when syncing is stuck.': 'Désactivé : la barre du haut est masquée. Un point sur Accueil prévient quand même si la synchronisation est bloquée.',
+  'Connection problem': 'Problème de connexion',
 }

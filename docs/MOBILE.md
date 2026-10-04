@@ -101,6 +101,12 @@ Where the phone keeps things, in case you ever need them by hand:
   folder. Nothing else is deleted, in that folder or anywhere: other files you keep there, and
   the copies versions before 1.3.9 wrote straight into `Documents/`, stay until you remove
   them yourself. Settings → **Import backup** reads any of them back, wherever it is.
+  On Android, Settings → **Backup folder** (under Auto-backup) picks another folder with the
+  system folder picker — a sync app's folder, an SD card — and the copies go there instead,
+  pruned to the same 14. The choice belongs to this phone and does not sync. If the folder
+  stops accepting copies (the permission revoked, the folder deleted), they go to
+  `Documents/openGym` again and Settings says so until you choose the folder again or tap
+  **Use default folder**.
 
 ### Photos and videos of your own exercises
 

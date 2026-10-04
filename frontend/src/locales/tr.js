@@ -1672,4 +1672,11 @@ export default {
   'Show connection status': 'Bağlantı durumunu göster',
   'Off: the bar at the top is hidden. A dot on Home still warns when syncing is stuck.': 'Kapalı: üstteki şerit gizlenir. Eşitleme takılırsa Ana sayfadaki bir nokta yine uyarır.',
   'Connection problem': 'Bağlantı sorunu',
+  // --- auto-backup into a folder chosen on Android (#161) ---
+  'Backup folder': 'Yedek klasörü',
+  'Chosen folder': 'Seçilen klasör',
+  'Use default folder': 'Varsayılan klasörü kullan',
+  'This folder can’t be used for backups.': 'Bu klasör yedekler için kullanılamıyor.',
+  'openGym can no longer write to “{0}” — the copies go to Documents/openGym again. Choose the folder again to go back to it.': 'openGym artık “{0}” klasörüne yazamıyor — kopyalar yeniden Documents/openGym klasörüne gidiyor. Ona dönmek için klasörü yeniden seç.',
+  'openGym can no longer write to the chosen folder — the copies go to Documents/openGym again. Choose the folder again to go back to it.': 'openGym artık seçilen klasöre yazamıyor — kopyalar yeniden Documents/openGym klasörüne gidiyor. Ona dönmek için klasörü yeniden seç.',
 }

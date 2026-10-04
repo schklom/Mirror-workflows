@@ -23,6 +23,7 @@ public class MainActivity extends BridgeActivity {
         registerPlugin(InstallPlugin.class);
         registerPlugin(PrintPlugin.class);
         registerPlugin(RestAlertPlugin.class);
+        registerPlugin(BackupFolderPlugin.class);
         super.onCreate(savedInstanceState);
         passSystemBarsToPage();
     }

@@ -1672,4 +1672,11 @@ export default {
   'Show connection status': '연결 상태 표시',
   'Off: the bar at the top is hidden. A dot on Home still warns when syncing is stuck.': '끄면 위쪽 막대가 숨겨집니다. 동기화가 멈추면 홈의 점이 계속 알려 줍니다.',
   'Connection problem': '연결 문제',
+  // --- auto-backup into a folder chosen on Android (#161) ---
+  'Backup folder': '백업 폴더',
+  'Chosen folder': '선택한 폴더',
+  'Use default folder': '기본 폴더 사용',
+  'This folder can’t be used for backups.': '이 폴더는 백업에 사용할 수 없습니다.',
+  'openGym can no longer write to “{0}” — the copies go to Documents/openGym again. Choose the folder again to go back to it.': 'openGym이 더 이상 “{0}”에 쓸 수 없습니다 — 사본은 다시 Documents/openGym에 저장됩니다. 그 폴더로 돌아가려면 다시 선택하세요.',
+  'openGym can no longer write to the chosen folder — the copies go to Documents/openGym again. Choose the folder again to go back to it.': 'openGym이 더 이상 선택한 폴더에 쓸 수 없습니다 — 사본은 다시 Documents/openGym에 저장됩니다. 그 폴더로 돌아가려면 다시 선택하세요.',
 }

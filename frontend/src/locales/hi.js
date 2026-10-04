@@ -1672,4 +1672,11 @@ export default {
   'Show connection status': 'कनेक्शन की स्थिति दिखाएँ',
   'Off: the bar at the top is hidden. A dot on Home still warns when syncing is stuck.': 'बंद: ऊपर की पट्टी छिप जाती है। सिंक अटकने पर होम पर एक बिंदु फिर भी चेतावनी देता है।',
   'Connection problem': 'कनेक्शन में समस्या',
+  // --- auto-backup into a folder chosen on Android (#161) ---
+  'Backup folder': 'बैकअप फ़ोल्डर',
+  'Chosen folder': 'चुना गया फ़ोल्डर',
+  'Use default folder': 'डिफ़ॉल्ट फ़ोल्डर इस्तेमाल करें',
+  'This folder can’t be used for backups.': 'इस फ़ोल्डर को बैकअप के लिए इस्तेमाल नहीं किया जा सकता।',
+  'openGym can no longer write to “{0}” — the copies go to Documents/openGym again. Choose the folder again to go back to it.': 'openGym अब “{0}” में नहीं लिख सकता — कॉपियाँ फिर से Documents/openGym में जाती हैं। उसमें वापस जाने के लिए फ़ोल्डर फिर से चुनें।',
+  'openGym can no longer write to the chosen folder — the copies go to Documents/openGym again. Choose the folder again to go back to it.': 'openGym अब चुने गए फ़ोल्डर में नहीं लिख सकता — कॉपियाँ फिर से Documents/openGym में जाती हैं। उसमें वापस जाने के लिए फ़ोल्डर फिर से चुनें।',
 }

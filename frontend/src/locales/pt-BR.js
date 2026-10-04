@@ -1016,6 +1016,12 @@ export const PT_BR_OVERRIDES = {
   'Show connection status': 'Mostrar o status da conexão',
   'Off: the bar at the top is hidden. A dot on Home still warns when syncing is stuck.': 'Desligado: a barra no topo fica oculta. Um ponto no Início continua avisando quando a sincronização fica parada.',
   'Connection problem': 'Problema de conexão',
+  // --- auto-backup into a folder chosen on Android (#161) ---
+  'Backup folder': 'Pasta de backup',
+  'Use default folder': 'Usar a pasta padrão',
+  'This folder can’t be used for backups.': 'Esta pasta não pode ser usada para backups.',
+  'openGym can no longer write to “{0}” — the copies go to Documents/openGym again. Choose the folder again to go back to it.': 'O openGym não consegue mais gravar em “{0}” — as cópias voltam para Documents/openGym. Escolha a pasta de novo para voltar a ela.',
+  'openGym can no longer write to the chosen folder — the copies go to Documents/openGym again. Choose the folder again to go back to it.': 'O openGym não consegue mais gravar na pasta escolhida — as cópias voltam para Documents/openGym. Escolha a pasta de novo para voltar a ela.',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

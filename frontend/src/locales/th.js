@@ -1683,4 +1683,11 @@ export default {
   'Show connection status': 'แสดงสถานะการเชื่อมต่อ',
   'Off: the bar at the top is hidden. A dot on Home still warns when syncing is stuck.': 'ปิด: แถบด้านบนจะถูกซ่อน แต่จุดบนหน้าหลักยังเตือนเมื่อการซิงค์ค้าง',
   'Connection problem': 'การเชื่อมต่อมีปัญหา',
+  // --- auto-backup into a folder chosen on Android (#161) ---
+  'Backup folder': 'โฟลเดอร์สำรองข้อมูล',
+  'Chosen folder': 'โฟลเดอร์ที่เลือก',
+  'Use default folder': 'ใช้โฟลเดอร์เริ่มต้น',
+  'This folder can’t be used for backups.': 'ใช้โฟลเดอร์นี้สำหรับสำรองข้อมูลไม่ได้',
+  'openGym can no longer write to “{0}” — the copies go to Documents/openGym again. Choose the folder again to go back to it.': 'openGym เขียนลงใน “{0}” ไม่ได้แล้ว — สำเนาจะกลับไปเก็บที่ Documents/openGym เลือกโฟลเดอร์อีกครั้งเพื่อกลับไปใช้',
+  'openGym can no longer write to the chosen folder — the copies go to Documents/openGym again. Choose the folder again to go back to it.': 'openGym เขียนลงในโฟลเดอร์ที่เลือกไม่ได้แล้ว — สำเนาจะกลับไปเก็บที่ Documents/openGym เลือกโฟลเดอร์อีกครั้งเพื่อกลับไปใช้',
 }

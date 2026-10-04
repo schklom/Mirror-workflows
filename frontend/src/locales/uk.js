@@ -1669,4 +1669,11 @@ export default {
   'Show connection status': 'Показувати стан з’єднання',
   'Off: the bar at the top is hidden. A dot on Home still warns when syncing is stuck.': 'Вимк.: смугу вгорі приховано. Крапка на «Головній» однаково попередить, якщо синхронізація застрягла.',
   'Connection problem': 'Проблема зі з’єднанням',
+  // --- auto-backup into a folder chosen on Android (#161) ---
+  'Backup folder': 'Папка резервних копій',
+  'Chosen folder': 'Вибрана папка',
+  'Use default folder': 'Використовувати типову папку',
+  'This folder can’t be used for backups.': 'Цю папку не можна використовувати для резервних копій.',
+  'openGym can no longer write to “{0}” — the copies go to Documents/openGym again. Choose the folder again to go back to it.': 'openGym більше не може записувати в «{0}» — копії знову зберігаються в Documents/openGym. Вибери папку ще раз, щоб повернутися до неї.',
+  'openGym can no longer write to the chosen folder — the copies go to Documents/openGym again. Choose the folder again to go back to it.': 'openGym більше не може записувати у вибрану папку — копії знову зберігаються в Documents/openGym. Вибери папку ще раз, щоб повернутися до неї.',
 }

@@ -1672,4 +1672,11 @@ export default {
   'Show connection status': '显示连接状态',
   'Off: the bar at the top is hidden. A dot on Home still warns when syncing is stuck.': '关闭：隐藏顶部的提示栏。同步卡住时，“首页”上的小圆点仍会提醒你。',
   'Connection problem': '连接问题',
+  // --- auto-backup into a folder chosen on Android (#161) ---
+  'Backup folder': '备份文件夹',
+  'Chosen folder': '所选文件夹',
+  'Use default folder': '使用默认文件夹',
+  'This folder can’t be used for backups.': '此文件夹无法用于备份。',
+  'openGym can no longer write to “{0}” — the copies go to Documents/openGym again. Choose the folder again to go back to it.': 'openGym 无法再写入“{0}”——副本会重新保存到 Documents/openGym。重新选择该文件夹即可改回。',
+  'openGym can no longer write to the chosen folder — the copies go to Documents/openGym again. Choose the folder again to go back to it.': 'openGym 无法再写入所选文件夹——副本会重新保存到 Documents/openGym。重新选择该文件夹即可改回。',
 }

@@ -1675,4 +1675,11 @@ export default {
   'Show connection status': 'Kapcsolat állapotának mutatása',
   'Off: the bar at the top is hidden. A dot on Home still warns when syncing is stuck.': 'Kikapcsolva: a felső sáv rejtve marad. Ha a szinkronizálás elakad, egy pont a Kezdőlapon továbbra is jelez.',
   'Connection problem': 'Kapcsolati probléma',
+  // --- auto-backup into a folder chosen on Android (#161) ---
+  'Backup folder': 'Mentési mappa',
+  'Chosen folder': 'Választott mappa',
+  'Use default folder': 'Alapértelmezett mappa használata',
+  'This folder can’t be used for backups.': 'Ez a mappa nem használható mentésekhez.',
+  'openGym can no longer write to “{0}” — the copies go to Documents/openGym again. Choose the folder again to go back to it.': 'Az openGym már nem tud írni ide: „{0}” — a másolatok ismét a Documents/openGym mappába kerülnek. Válaszd ki újra a mappát, hogy visszatérj hozzá.',
+  'openGym can no longer write to the chosen folder — the copies go to Documents/openGym again. Choose the folder again to go back to it.': 'Az openGym már nem tud írni a választott mappába — a másolatok ismét a Documents/openGym mappába kerülnek. Válaszd ki újra a mappát, hogy visszatérj hozzá.',
 }

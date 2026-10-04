@@ -1672,4 +1672,11 @@ export default {
   'Show connection status': 'Pokazuj stan połączenia',
   'Off: the bar at the top is hidden. A dot on Home still warns when syncing is stuck.': 'Wyłączone: pasek u góry jest ukryty. Kropka na ekranie Start nadal ostrzega, gdy synchronizacja utknie.',
   'Connection problem': 'Problem z połączeniem',
+  // --- auto-backup into a folder chosen on Android (#161) ---
+  'Backup folder': 'Folder kopii zapasowych',
+  'Chosen folder': 'Wybrany folder',
+  'Use default folder': 'Użyj domyślnego folderu',
+  'This folder can’t be used for backups.': 'Tego folderu nie można użyć do kopii zapasowych.',
+  'openGym can no longer write to “{0}” — the copies go to Documents/openGym again. Choose the folder again to go back to it.': 'openGym nie może już zapisywać w „{0}” — kopie znów trafiają do Documents/openGym. Wybierz folder ponownie, aby do niego wrócić.',
+  'openGym can no longer write to the chosen folder — the copies go to Documents/openGym again. Choose the folder again to go back to it.': 'openGym nie może już zapisywać w wybranym folderze — kopie znów trafiają do Documents/openGym. Wybierz folder ponownie, aby do niego wrócić.',
 }

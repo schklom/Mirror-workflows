@@ -42,6 +42,10 @@ or Settings → **"Connect to my server"** later) to finish. Notes:
   changes made without a network go to the server as soon as it is reachable again.
 - Use an HTTPS address if at all possible: the connection carries a bearer token instead of
   a cookie, and that token would otherwise cross the network in plain text.
+- Pairing says your server "refused the app's request (CORS)", or fails with "Failed to fetch"
+  on an older version, while the browser works? A reverse proxy in front is answering the app's
+  CORS preflight itself. openGym answers it on its own; see
+  [Phone app and CORS](SELF_HOSTING.md#phone-app-and-cors).
 - The token lasts `SESSION_DAYS` (90 by default, see `docs/SELF_HOSTING.md`) and renews
   itself: every time the app starts, a token past half its life is swapped for a fresh one.
   A phone that is used at all never runs out; one left unopened for longer than

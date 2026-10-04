@@ -1664,4 +1664,6 @@ export default {
   'Teal': 'Turkusowy',
   'Yellow': 'Żółty',
   'Enter how long it took — at least 1 minute.': 'Wpisz, ile to trwało — co najmniej 1 minutę.',
+  'Your server was reached, but it refused the app’s request (CORS). If a reverse proxy such as Traefik adds CORS headers, let requests from {0} through to openGym unchanged — see “Phone app and CORS” in docs/SELF_HOSTING.md.': 'Serwer odpowiada, ale odrzucił żądanie aplikacji (CORS). Jeśli reverse proxy, np. Traefik, dodaje nagłówki CORS, przepuść żądania z {0} do openGym bez zmian — zobacz „Phone app and CORS” w docs/SELF_HOSTING.md.',
+  'Could not reach {0}. Check the address and that this phone can reach it.': 'Nie można połączyć się z {0}. Sprawdź adres i czy ten telefon ma do niego dostęp.',
 }

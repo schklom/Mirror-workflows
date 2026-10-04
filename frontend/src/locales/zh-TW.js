@@ -1708,4 +1708,8 @@ export default {
   'Completed': '已完成',
   'Weekly muscle volume': '每週肌肉訓練量',
   'No muscle volume planned.': '尚未排定肌肉訓練量。',
+  'Update routine': '更新課表',
+  'Update “{0}”?': '要更新課表「{0}」嗎？',
+  'Copy this exercise’s warm-up sets, rest and note from this session into the routine. Your workout history is kept.': '將這次訓練中此動作的熱身組、休息時間與備忘錄複製到課表中。你的訓練紀錄會保留。',
+  'Routine updated': '課表已更新',
 }

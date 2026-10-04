@@ -10,6 +10,7 @@
 import { isWarmupRow } from './workout-model.js'
 import { EXIDX, smOf } from './exercises.js'
 import { todayISO, weekKey, MONDAY } from './format.js'
+import { queueOf } from './queue.js'
 
 // The muscles a map can shade, in head-to-toe order — also the order of any list
 // built from them, so "what am I neglecting" reads top-down like a body.
@@ -292,18 +293,26 @@ export function muscleBalanceWindow(workouts, win, now = Date.now(), today = tod
 export const loadOfRoutine = (routine, exercises = {}) =>
   loadOf((routine?.ex || []).map(c => ({ id: c.id, ex: exercises[c.id] || c, sets: c.sets || 1 })))
 
-/** Effective sets programmed by the live recurring week; overrides and history are not plans. */
+/**
+ * Effective sets programmed by the live recurring week; overrides and history are not plans.
+ * A floating week or rotation (S.queue, lib/queue.js) is the plan too: each of its sessions once,
+ * beside your own weekday routines — the same split the Home streak card tallies (weekTally).
+ */
 export function loadOfWeeklyPlan(S) {
   const routines = new Map((S?.routines || []).map(routine => [routine.id, routine]))
   const exercises = Object.fromEntries((S?.customEx || []).map(exercise => [exercise.id, exercise]))
+  const q = queueOf(S)
+  const queued = new Set(q ? (S.queue.ids || []) : [])
+  const ids = [
+    ...Object.values(S?.week || {}).flatMap(value => [].concat(value || [])).filter(id => !queued.has(id)),
+    ...(q ? q.ids : []),
+  ]
   const load = {}
-  for (const value of Object.values(S?.week || {})) {
-    for (const id of [].concat(value || [])) {
-      const routine = routines.get(id)
-      if (!routine) continue
-      for (const [slug, sets] of Object.entries(loadOfRoutine(routine, exercises))) {
-        load[slug] = (load[slug] || 0) + sets
-      }
+  for (const id of ids) {
+    const routine = routines.get(id)
+    if (!routine) continue
+    for (const [slug, sets] of Object.entries(loadOfRoutine(routine, exercises))) {
+      load[slug] = (load[slug] || 0) + sets
     }
   }
   return load

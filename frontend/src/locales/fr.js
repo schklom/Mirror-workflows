@@ -45,6 +45,7 @@ export default {
   'R': 'D',
   'Move up': 'Monter',
   'Move down': 'Descendre',
+  'Move out of the superset': 'Sortir du superset',
   'Sunday': 'Dimanche', 'Monday': 'Lundi', 'Tuesday': 'Mardi', 'Wednesday': 'Mercredi',
   'Thursday': 'Jeudi', 'Friday': 'Vendredi', 'Saturday': 'Samedi',
   'Su': 'Di', 'Mo': 'Lu', 'Tu': 'Ma', 'We': 'Me', 'Th': 'Je', 'Fr': 'Ve', 'Sa': 'Sa',

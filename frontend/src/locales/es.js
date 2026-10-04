@@ -45,6 +45,7 @@ export default {
   'R': 'D',
   'Move up': 'Subir',
   'Move down': 'Bajar',
+  'Move out of the superset': 'Sacar de la superserie',
   'Sunday': 'Domingo', 'Monday': 'Lunes', 'Tuesday': 'Martes', 'Wednesday': 'Miércoles',
   'Thursday': 'Jueves', 'Friday': 'Viernes', 'Saturday': 'Sábado',
   'Su': 'Do', 'Mo': 'Lu', 'Tu': 'Ma', 'We': 'Mi', 'Th': 'Ju', 'Fr': 'Vi', 'Sa': 'Sá',

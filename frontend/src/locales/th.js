@@ -875,6 +875,7 @@ export default {
   'Rest-pause always trains as one warm-up set at this rep count, then one rest-pause work set — "Sets" is not used.': 'เรสต์-พอสจะฝึกเป็นเซ็ตวอร์มอัพหนึ่งเซ็ตที่จำนวนครั้งนี้ ตามด้วยเซ็ตหลักแบบเรสต์-พอสหนึ่งเซ็ตเสมอ — ไม่ใช้ค่า "เซ็ต"',
   'Move up': 'เลื่อนขึ้น',
   'Move down': 'เลื่อนลง',
+  'Move out of the superset': 'ย้ายออกจากซูเปอร์เซ็ต',
   'Swap exercise': 'สลับท่าออกกำลังกาย',
   'Swap exercise?': 'สลับท่าออกกำลังกาย?',
   'Logged sets stay with the original exercise. Choose where the replacement belongs.': 'เซ็ตที่บันทึกแล้วจะอยู่กับท่าเดิม เลือกว่าจะวางท่าใหม่ไว้ตรงไหน',

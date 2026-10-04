@@ -36,6 +36,7 @@ export default {
   'Next': 'Далі',
   'Move up': 'Перемістити вгору',
   'Move down': 'Перемістити вниз',
+  'Move out of the superset': 'Винести із суперсету',
   'Sunday': 'Неділя', 'Monday': 'Понеділок', 'Tuesday': 'Вівторок', 'Wednesday': 'Середа',
   'Thursday': 'Четвер', 'Friday': "П'ятниця", 'Saturday': 'Субота',
   'Su': 'Нд', 'Mo': 'Пн', 'Tu': 'Вт', 'We': 'Ср', 'Th': 'Чт', 'Fr': 'Пт', 'Sa': 'Сб',

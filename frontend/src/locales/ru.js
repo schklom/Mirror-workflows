@@ -45,6 +45,7 @@ export default {
   'R': 'П',
   'Move up': 'Переместить вверх',
   'Move down': 'Переместить вниз',
+  'Move out of the superset': 'Вынести из суперсета',
   'Sunday': 'Воскресенье', 'Monday': 'Понедельник', 'Tuesday': 'Вторник', 'Wednesday': 'Среда',
   'Thursday': 'Четверг', 'Friday': 'Пятница', 'Saturday': 'Суббота',
   'Su': 'Вс', 'Mo': 'Пн', 'Tu': 'Вт', 'We': 'Ср', 'Th': 'Чт', 'Fr': 'Пт', 'Sa': 'Сб',

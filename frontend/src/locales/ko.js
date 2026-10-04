@@ -45,6 +45,7 @@ export default {
   'R': '우',
   'Move up': '위로 이동',
   'Move down': '아래로 이동',
+  'Move out of the superset': '슈퍼세트에서 빼기',
   'Sunday': '일요일', 'Monday': '월요일', 'Tuesday': '화요일', 'Wednesday': '수요일',
   'Thursday': '목요일', 'Friday': '금요일', 'Saturday': '토요일',
   'Su': '일', 'Mo': '월', 'Tu': '화', 'We': '수', 'Th': '목', 'Fr': '금', 'Sa': '토',

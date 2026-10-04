@@ -45,6 +45,7 @@ export default {
   'R': 'P',
   'Move up': 'Przenieś w górę',
   'Move down': 'Przenieś w dół',
+  'Move out of the superset': 'Wyjmij z superserii',
   'Sunday': 'Niedziela', 'Monday': 'Poniedziałek', 'Tuesday': 'Wtorek', 'Wednesday': 'Środa',
   'Thursday': 'Czwartek', 'Friday': 'Piątek', 'Saturday': 'Sobota',
   'Su': 'Nd', 'Mo': 'Pn', 'Tu': 'Wt', 'We': 'Śr', 'Th': 'Cz', 'Fr': 'Pt', 'Sa': 'So',

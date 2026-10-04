@@ -732,6 +732,7 @@ export default {
   'Rest-pause always trains as one warm-up set at this rep count, then one rest-pause work set — "Sets" is not used.': 'يتدرب الريست بوز دائمًا كمجموعة إحماء واحدة بهذا العدد من التكرارات، ثم مجموعة عمل ريست بوز واحدة — ولا يُستخدم خيار «المجموعات».',
   'Move up': 'تحريك لأعلى',
   'Move down': 'تحريك لأسفل',
+  'Move out of the superset': 'إخراج من السوبر سِت',
   'Swap exercise': 'استبدال التمرين',
   'Swap exercise?': 'استبدال التمرين؟',
   'Logged sets stay with the original exercise. Choose where the replacement belongs.': 'تبقى المجموعات المسجلة مع التمرين الأصلي. اختر مكان التمرين البديل.',

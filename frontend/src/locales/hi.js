@@ -45,6 +45,7 @@ export default {
   'R': 'दा',
   'Move up': 'ऊपर ले जाएँ',
   'Move down': 'नीचे ले जाएँ',
+  'Move out of the superset': 'सुपरसेट से बाहर ले जाएँ',
   'Sunday': 'रविवार', 'Monday': 'सोमवार', 'Tuesday': 'मंगलवार', 'Wednesday': 'बुधवार',
   'Thursday': 'गुरुवार', 'Friday': 'शुक्रवार', 'Saturday': 'शनिवार',
   'Su': 'र', 'Mo': 'सो', 'Tu': 'मं', 'We': 'बु', 'Th': 'गु', 'Fr': 'शु', 'Sa': 'श',

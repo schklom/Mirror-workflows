@@ -867,6 +867,7 @@ export default {
   'Showing all equipment': 'Minden eszköz megjelenítve',
   'Move up': 'Feljebb',
   'Move down': 'Lejjebb',
+  'Move out of the superset': 'Kivétel a szuperszettből',
   'Swap exercise': 'Gyakorlat cseréje',
   'Swap exercise?': 'Cseréled a gyakorlatot?',
   'Logged sets stay with the original exercise. Choose where the replacement belongs.': 'A naplózott sorozatok az eredeti gyakorlatnál maradnak. Válaszd ki, hová kerüljön a csere.',

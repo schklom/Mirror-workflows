@@ -45,6 +45,7 @@ export default {
   'R': 'D',
   'Move up': 'Mover para cima',
   'Move down': 'Mover para baixo',
+  'Move out of the superset': 'Tirar da supersérie',
   'Sunday': 'Domingo', 'Monday': 'Segunda-feira', 'Tuesday': 'Terça-feira', 'Wednesday': 'Quarta-feira',
   'Thursday': 'Quinta-feira', 'Friday': 'Sexta-feira', 'Saturday': 'Sábado',
   'Su': 'Do', 'Mo': 'Se', 'Tu': 'Te', 'We': 'Qa', 'Th': 'Qi', 'Fr': 'Sx', 'Sa': 'Sá',

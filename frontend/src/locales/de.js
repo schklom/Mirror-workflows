@@ -47,6 +47,7 @@ export default {
   'R': 'R',
   'Move up': 'Nach oben',
   'Move down': 'Nach unten',
+  'Move out of the superset': 'Aus dem Supersatz lösen',
   // --- days & months ---
   'Sunday': 'Sonntag', 'Monday': 'Montag', 'Tuesday': 'Dienstag', 'Wednesday': 'Mittwoch',
   'Thursday': 'Donnerstag', 'Friday': 'Freitag', 'Saturday': 'Samstag',

@@ -616,7 +616,7 @@ export default function Settings({ page = null, find = null }) {
         </>}
       </Section>
       <Section footer={t('Switching the unit offers to convert every stored weight.')}>
-        <Row icon="ruler" iconTint="var(--teal)" title={t('Weight unit')}>
+        <Row icon="scale" iconTint="var(--teal)" title={t('Weight unit')}>
           <Segmented className="seg-inline"
             options={[{ value: 'kg', label: 'kg' }, { value: 'lb', label: 'lb' }]}
             value={S.unit} onChange={v => switchUnit(v)} />
@@ -632,7 +632,7 @@ export default function Settings({ page = null, find = null }) {
         {/* Cardio speed (Discord "miles per hour"). Unlike the weight unit this converts nothing:
             speeds stay stored in km/h and only what is shown and typed follows it (lib/speed.js).
             Until chosen it follows the weight unit, so a profile in pounds already reads mph. */}
-        <Row icon="ruler" iconTint="var(--teal)" title={t('Speed unit')}>
+        <Row icon="figureRun" iconTint="var(--teal)" title={t('Speed unit')}>
           <Segmented className="seg-inline"
             options={[{ value: 'kmh', label: 'km/h' }, { value: 'mph', label: 'mph' }]}
             value={speedUnitOf(S)} onChange={v => update(s => { s.speedUnit = v })} />

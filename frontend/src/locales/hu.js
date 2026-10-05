@@ -1796,4 +1796,6 @@ export default {
   'Your muscles filed a missing-person report. Show up for {0}!': 'Az izmaid eltűntként jelentettek. Jelentkezz: {0}!',
   'That address answers, but it isn’t an openGym server. Check the URL.': 'Ez a cím válaszol, de nem openGym-szerver. Ellenőrizd az URL-t.',
   'Switch sides': 'Oldalcsere',
+  'Saves a dated copy to “{0}” after finishing a workout or editing a routine, and keeps the newest {1}.': 'Minden befejezett edzés vagy rutinmódosítás után dátumozott másolatot ment ide: „{0}”, és a legújabb {1} darabot megtartja.',
+  'Saves a dated copy to the folder you chose after finishing a workout or editing a routine, and keeps the newest {0}.': 'Minden befejezett edzés vagy rutinmódosítás után dátumozott másolatot ment a választott mappába, és a legújabb {0} darabot megtartja.',
 }

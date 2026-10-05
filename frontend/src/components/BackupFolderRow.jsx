@@ -11,14 +11,31 @@ const DEFAULT_FOLDER = 'Documents/openGym'
    (lib/mobile.js), so it is read here and not from the synced state. When the chosen folder
    stops taking copies they go to Documents/openGym again, and this says so until the folder is
    chosen again or the default is confirmed. */
-export default function BackupFolderRow() {
+export function useBackupFolder(enabled = true) {
   const [folder, setFolder] = useState(null)
   useEffect(() => {
+    if (!enabled) return undefined
     let live = true
-    backupFolder().then(f => { if (live) setFolder(f) }).catch(() => { if (live) setFolder({}) })
-    const off = onBackupFolderChange(f => { if (live) setFolder(f) })
+    let off = () => {}
+    try {
+      backupFolder().then(f => { if (live) setFolder(f) }).catch(() => { if (live) setFolder({}) })
+      off = onBackupFolderChange(f => { if (live) setFolder(f) })
+    } catch (e) { setFolder({}) }
     return () => { live = false; off() }
-  }, [])
+  }, [enabled])
+  return [folder, setFolder]
+}
+
+/* The Auto-backup row's subtitle names where the copies go: the chosen folder once there is one,
+   not Documents/openGym regardless (Android QA). `keep` is AUTO_BACKUP_KEEP. */
+export function autoBackupSubtitle(folder, keep) {
+  if (folder?.uri && folder.label) return t('Saves a dated copy to “{0}” after finishing a workout or editing a routine, and keeps the newest {1}.', folder.label, keep)
+  if (folder?.uri) return t('Saves a dated copy to the folder you chose after finishing a workout or editing a routine, and keeps the newest {0}.', keep)
+  return t('Saves a dated copy to Documents/openGym after finishing a workout or editing a routine, and keeps the newest {0}. Point a sync app at that folder, or copy it out by hand.', keep)
+}
+
+export default function BackupFolderRow() {
+  const [folder, setFolder] = useBackupFolder()
   if (!folder) return null
 
   const choose = async () => {

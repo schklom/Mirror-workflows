@@ -330,6 +330,8 @@ h4.sec{
 .lrow-c{color:var(--label);font-size:15px;flex:none;--icon-stroke:2.4}
 .lrow-k{color:var(--acc);font-size:17px;flex:none;--icon-stroke:2.4}
 .lrow.danger,.lrow.danger .lrow-t{color:var(--red)}
+/* A warning under a settings row reads at subtitle size: a sentence, not a row title. */
+.lrow.backup-lost .lrow-t{font-size:13px;line-height:1.3;color:var(--label-2);letter-spacing:0}
 /* The Stats exercise name gets its own line so long names cannot run into the title.
    Two columns only — label/value on the left, chevron on the right — so this is for rows
    WITHOUT an icon. `.lrow-i` is not placed here; on a row that has one it would auto-place

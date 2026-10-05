@@ -9,7 +9,7 @@ import { bindUI } from '../components/ui.jsx'
 globalThis.IS_REACT_ACT_ENVIRONMENT = true
 
 const mocks = vi.hoisted(() => {
-  const state = { S: null, MOBILE: true, android: true }
+  const state = { S: null, MOBILE: true, android: true, folder: {}, asked: [] }
   state.snapshot = () => ({
     S: state.S,
     user: null,
@@ -41,7 +41,14 @@ vi.mock('../lib/api.js', () => ({
 vi.mock('../lib/push.js', () => ({ pushSupported: () => false, enablePush: vi.fn(), disablePush: vi.fn(), sendTestPush: vi.fn() }))
 vi.mock('../lib/wakelock.js', () => ({ wakeLockSupported: () => false }))
 vi.mock('../lib/mobile.js', () => ({ get MOBILE() { return mocks.MOBILE }, isAndroid: () => Promise.resolve(mocks.android), shareExport: vi.fn(), syncReminder: vi.fn() }))
-vi.mock('../components/BackupFolderRow.jsx', () => ({ default: () => <div className="backup-folder-row" /> }))
+vi.mock('../components/BackupFolderRow.jsx', async () => {
+  const real = await vi.importActual('../components/BackupFolderRow.jsx')
+  return {
+    default: () => <div className="backup-folder-row" />,
+    useBackupFolder: enabled => { mocks.asked.push(enabled); return [enabled ? mocks.folder : null, () => {}] },
+    autoBackupSubtitle: real.autoBackupSubtitle,
+  }
+})
 vi.mock('../lib/update.js', () => ({ checkForUpdate: () => new Promise(() => {}), downloadAndInstall: vi.fn() }))
 vi.mock('./MobileOnboarding.jsx', () => ({ ConnectSheet: () => null }))
 vi.mock('../sheets.jsx', () => ({
@@ -65,6 +72,8 @@ beforeEach(() => {
   }
   mocks.MOBILE = true
   mocks.android = true
+  mocks.folder = {}
+  mocks.asked = []
   host = document.createElement('div')
   document.body.appendChild(host)
   root = createRoot(host)
@@ -93,5 +102,22 @@ describe('the backup folder rows', () => {
     mocks.android = false
     await mount()
     expect(shown()).toBe(false)
+  })
+})
+
+// Android QA: the Auto-backup row still said Documents/openGym after another folder was chosen.
+describe('the Auto-backup row', () => {
+  const subtitle = () => [...host.querySelectorAll('.lrow')].find(r => r.textContent.includes('Auto-backup on changes'))?.querySelector('.lrow-s')?.textContent
+  it('names the chosen folder', async () => {
+    mocks.S.autoBackup = true
+    mocks.folder = { uri: 'content://tree/Sync', label: 'SyncFolder' }
+    await mount()
+    expect(subtitle()).toContain('“SyncFolder”')
+    expect(subtitle()).not.toContain('Documents/openGym')
+  })
+  it('names Documents/openGym with no folder chosen', async () => {
+    mocks.S.autoBackup = true
+    await mount()
+    expect(subtitle()).toContain('Documents/openGym')
   })
 })

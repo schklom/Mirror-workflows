@@ -1793,4 +1793,6 @@ export default {
   'Your muscles filed a missing-person report. Show up for {0}!': 'Os teus músculos deram-te como desaparecido. Apresenta-te para {0}!',
   'That address answers, but it isn’t an openGym server. Check the URL.': 'Esse endereço responde, mas não é um servidor openGym. Verifica o URL.',
   'Switch sides': 'Troca de lado',
+  'Saves a dated copy to “{0}” after finishing a workout or editing a routine, and keeps the newest {1}.': 'Guarda uma cópia datada em «{0}» depois de terminares um treino ou editares uma rotina, e mantém as {1} mais recentes.',
+  'Saves a dated copy to the folder you chose after finishing a workout or editing a routine, and keeps the newest {0}.': 'Guarda uma cópia datada na pasta que escolheste depois de terminares um treino ou editares uma rotina, e mantém as {0} mais recentes.',
 }

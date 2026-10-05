@@ -1114,6 +1114,8 @@ export const PT_BR_OVERRIDES = {
   '{1} animated exercises + {0} of your own': '{1} exercícios animados + {0} seus',
   'That address answers, but it isn’t an openGym server. Check the URL.': 'Esse endereço responde, mas não é um servidor openGym. Verifique a URL.',
   'Switch sides': 'Troque de lado',
+  'Saves a dated copy to “{0}” after finishing a workout or editing a routine, and keeps the newest {1}.': 'Salva uma cópia datada em “{0}” depois de terminar um treino ou editar uma rotina, e mantém as {1} mais recentes.',
+  'Saves a dated copy to the folder you chose after finishing a workout or editing a routine, and keeps the newest {0}.': 'Salva uma cópia datada na pasta que você escolheu depois de terminar um treino ou editar uma rotina, e mantém as {0} mais recentes.',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

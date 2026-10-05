@@ -1797,4 +1797,6 @@ export default {
   'Your muscles filed a missing-person report. Show up for {0}!': 'Ваши мышцы подали заявление о пропаже. Явиться на «{0}»!',
   'That address answers, but it isn’t an openGym server. Check the URL.': 'По этому адресу что-то отвечает, но это не сервер openGym. Проверьте URL.',
   'Switch sides': 'Смените сторону',
+  'Saves a dated copy to “{0}” after finishing a workout or editing a routine, and keeps the newest {1}.': 'Сохраняет копию с датой в «{0}» после каждой тренировки или правки программы и хранит {1} последних.',
+  'Saves a dated copy to the folder you chose after finishing a workout or editing a routine, and keeps the newest {0}.': 'Сохраняет копию с датой в выбранную папку после каждой тренировки или правки программы и хранит {0} последних.',
 }

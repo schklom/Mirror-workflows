@@ -1803,6 +1803,8 @@ export default {
   'Excuses don’t lift weights. Report for {0} tomorrow!': 'ข้ออ้างยกน้ำหนักไม่ได้ พรุ่งนี้มารายงานตัวที่ {0}!',
   'Your muscles filed a missing-person report. Show up for {0}!': 'กล้ามเนื้อของคุณแจ้งคนหายแล้ว มารายงานตัวที่ {0}!',
   'That address answers, but it isn’t an openGym server. Check the URL.': 'ที่อยู่นี้ตอบกลับ แต่ไม่ใช่เซิร์ฟเวอร์ openGym ตรวจสอบ URL อีกครั้ง',
+  'That address answers, but a login page or proxy rule replied instead of openGym. Let /api/ through to openGym unchanged. See “Phone app and CORS” in docs/SELF_HOSTING.md.': 'ที่อยู่นี้ตอบกลับ แต่เป็นหน้าเข้าสู่ระบบหรือกฎของพร็อกซีที่ตอบแทน openGym ให้ /api/ ผ่านไปถึง openGym โดยไม่เปลี่ยนแปลง ดู “Phone app and CORS” ใน docs/SELF_HOSTING.md',
+  'The app can only pair with an https:// address. Your phone blocks plain http:// before anything is even sent.': 'แอปจับคู่ได้เฉพาะกับที่อยู่ https:// เท่านั้น โทรศัพท์ของคุณบล็อก http:// ธรรมดาก่อนที่จะส่งอะไรออกไปเลย',
   'Switch sides': 'สลับข้าง',
   'Saves a dated copy to “{0}” after finishing a workout or editing a routine, and keeps the newest {1}.': 'บันทึกสำเนาพร้อมวันที่ไว้ใน “{0}” ทุกครั้งที่จบการออกกำลังกายหรือแก้รูทีน และเก็บไว้ {1} ชุดล่าสุด',
   'Saves a dated copy to the folder you chose after finishing a workout or editing a routine, and keeps the newest {0}.': 'บันทึกสำเนาพร้อมวันที่ไว้ในโฟลเดอร์ที่คุณเลือกทุกครั้งที่จบการออกกำลังกายหรือแก้รูทีน และเก็บไว้ {0} ชุดล่าสุด',

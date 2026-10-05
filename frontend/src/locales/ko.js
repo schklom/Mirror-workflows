@@ -1792,6 +1792,8 @@ export default {
   'Excuses don’t lift weights. Report for {0} tomorrow!': '핑계는 무게를 들지 않는다. 내일 {0}에 집합!',
   'Your muscles filed a missing-person report. Show up for {0}!': '근육들이 실종 신고를 냈다. {0}에 출석하라!',
   'That address answers, but it isn’t an openGym server. Check the URL.': '이 주소는 응답하지만 openGym 서버가 아닙니다. URL을 확인하세요.',
+  'That address answers, but a login page or proxy rule replied instead of openGym. Let /api/ through to openGym unchanged. See “Phone app and CORS” in docs/SELF_HOSTING.md.': '이 주소는 응답하지만 openGym 대신 로그인 페이지나 프록시 규칙이 응답했습니다. /api/ 를 그대로 openGym까지 통과시켜 주세요. docs/SELF_HOSTING.md의 “Phone app and CORS”를 참고하세요.',
+  'The app can only pair with an https:// address. Your phone blocks plain http:// before anything is even sent.': '앱은 https:// 주소로만 연결할 수 있습니다. 휴대폰이 일반 http:// 요청을 보내기도 전에 차단합니다.',
   'Switch sides': '방향 바꾸기',
   'Saves a dated copy to “{0}” after finishing a workout or editing a routine, and keeps the newest {1}.': '운동을 마치거나 루틴을 수정할 때마다 “{0}”에 날짜가 붙은 사본을 저장하고 최신 {1}개를 보관합니다.',
   'Saves a dated copy to the folder you chose after finishing a workout or editing a routine, and keeps the newest {0}.': '운동을 마치거나 루틴을 수정할 때마다 선택한 폴더에 날짜가 붙은 사본을 저장하고 최신 {0}개를 보관합니다.',

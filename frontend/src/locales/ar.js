@@ -1845,6 +1845,8 @@ export default {
   'Excuses don’t lift weights. Report for {0} tomorrow!': 'الأعذار لا ترفع الأوزان. احضر غدًا إلى {0}!',
   'Your muscles filed a missing-person report. Show up for {0}!': 'عضلاتك أبلغت عن فقدانك. احضر إلى {0}!',
   'That address answers, but it isn’t an openGym server. Check the URL.': 'هذا العنوان يستجيب، لكنه ليس خادم openGym. تحقّق من الرابط.',
+  'That address answers, but a login page or proxy rule replied instead of openGym. Let /api/ through to openGym unchanged. See “Phone app and CORS” in docs/SELF_HOSTING.md.': 'هذا العنوان يستجيب، لكن صفحة تسجيل دخول أو قاعدة في البروكسي ردّت بدلًا من openGym. اترك /api/ يصل إلى openGym دون تغيير. راجع “Phone app and CORS” في docs/SELF_HOSTING.md.',
+  'The app can only pair with an https:// address. Your phone blocks plain http:// before anything is even sent.': 'لا يمكن للتطبيق الاقتران إلا بعنوان https://. هاتفك يحظر http:// العادي قبل إرسال أي شيء.',
   'Switch sides': 'بدّل الجهة',
   'Saves a dated copy to “{0}” after finishing a workout or editing a routine, and keeps the newest {1}.': 'يحفظ نسخة مؤرّخة في «{0}» بعد إنهاء تمرين أو تعديل روتين، ويحتفظ بأحدث {1}.',
   'Saves a dated copy to the folder you chose after finishing a workout or editing a routine, and keeps the newest {0}.': 'يحفظ نسخة مؤرّخة في المجلد الذي اخترته بعد إنهاء تمرين أو تعديل روتين، ويحتفظ بأحدث {0}.',

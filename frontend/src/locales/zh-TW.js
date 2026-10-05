@@ -1785,6 +1785,8 @@ export default {
   'Excuses don’t lift weights. Report for {0} tomorrow!': '藉口舉不起重量。明天準時報到練 {0}！',
   'Your muscles filed a missing-person report. Show up for {0}!': '你的肌肉已經報案協尋你了。馬上來練 {0}！',
   'That address answers, but it isn’t an openGym server. Check the URL.': '這個位址有回應，但不是 openGym 伺服器。請檢查網址。',
+  'That address answers, but a login page or proxy rule replied instead of openGym. Let /api/ through to openGym unchanged. See “Phone app and CORS” in docs/SELF_HOSTING.md.': '這個位址有回應，但回應的是登入頁面或代理規則，而不是 openGym。請讓 /api/ 原封不動地通到 openGym。參見 docs/SELF_HOSTING.md 中的“Phone app and CORS”。',
+  'The app can only pair with an https:// address. Your phone blocks plain http:// before anything is even sent.': 'App 只能與 https:// 位址配對。手機會在送出任何內容之前就擋下一般的 http://。',
   'Switch sides': '換邊',
   'Saves a dated copy to “{0}” after finishing a workout or editing a routine, and keeps the newest {1}.': '每次完成訓練或修改課表後，在「{0}」中儲存一份附日期的副本，並保留最新的 {1} 份。',
   'Saves a dated copy to the folder you chose after finishing a workout or editing a routine, and keeps the newest {0}.': '每次完成訓練或修改課表後，在你選擇的資料夾中儲存一份附日期的副本，並保留最新的 {0} 份。',

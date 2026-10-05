@@ -1898,4 +1898,5 @@ export default {
   'Order and supersets': 'Reihenfolge und Supersätze',
   'Sets, reps, rest, progression': 'Sätze, Wdh., Pause, Progression',
   'This workout': 'Dieses Training',
+  'Turn on push notifications first.': 'Schalte zuerst die Push-Benachrichtigungen ein.',
 }

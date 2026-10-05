@@ -1878,4 +1878,5 @@ export default {
   'Order and supersets': 'क्रम और सुपरसेट',
   'Sets, reps, rest, progression': 'सेट, रेप्स, आराम, प्रगति',
   'This workout': 'यह वर्कआउट',
+  'Turn on push notifications first.': 'पहले पुश सूचनाएँ चालू करें।',
 }

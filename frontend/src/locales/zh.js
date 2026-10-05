@@ -1878,4 +1878,5 @@ export default {
   'Order and supersets': '顺序与超级组',
   'Sets, reps, rest, progression': '组数、次数、休息、渐进',
   'This workout': '本次训练',
+  'Turn on push notifications first.': '请先打开推送通知。',
 }

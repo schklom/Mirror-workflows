@@ -1878,4 +1878,5 @@ export default {
   'Order and supersets': 'Ordre et supersets',
   'Sets, reps, rest, progression': 'Séries, reps, repos, progression',
   'This workout': 'Cette séance',
+  'Turn on push notifications first.': 'Active d’abord les notifications push.',
 }

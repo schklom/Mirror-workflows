@@ -1164,6 +1164,7 @@ export const PT_BR_OVERRIDES = {
   'Enter the code your other device shows under Settings → Account → Add another device. This device then gets a passkey of its own.': 'Digite o código que seu outro dispositivo mostra em Configurações → Conta → Adicionar outro dispositivo. Este dispositivo passa a ter uma chave de acesso própria.',
   'Open Settings → Account → “Pair the mobile app” on the openGym site you’re already signed into, then enter its address and the code shown there.': 'No site openGym em que você já está conectado, abra Configurações → Conta → “Parear o aplicativo”, depois digite o endereço e o código mostrado lá.',
   'Open Settings → Account → “Pair the mobile app” on your openGym site in a browser and enter the new code shown there. What this phone kept is merged into your account.': 'No seu site openGym em um navegador, abra Configurações → Conta → “Parear o aplicativo” e digite o novo código mostrado lá. O que este celular manteve é incorporado à sua conta.',
+  'Turn on push notifications first.': 'Ative primeiro as notificações push.',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

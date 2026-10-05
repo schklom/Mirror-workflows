@@ -1931,4 +1931,5 @@ export default {
   'Order and supersets': 'الترتيب والمجموعات المتتالية',
   'Sets, reps, rest, progression': 'المجموعات، التكرارات، الراحة، التقدم',
   'This workout': 'هذا التمرين',
+  'Turn on push notifications first.': 'فعّل الإشعارات الفورية أولًا.',
 }

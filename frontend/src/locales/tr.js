@@ -1878,4 +1878,5 @@ export default {
   'Order and supersets': 'Sıra ve süper setler',
   'Sets, reps, rest, progression': 'Setler, tekrarlar, dinlenme, ilerleme',
   'This workout': 'Bu antrenman',
+  'Turn on push notifications first.': 'Önce anlık bildirimleri aç.',
 }

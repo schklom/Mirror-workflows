@@ -9,9 +9,9 @@ import { PAGES, PAGE_IDS, ROOT_GROUPS, SEARCH, pageVisible, searchSettings, page
 globalThis.IS_REACT_ACT_ENVIRONMENT = true
 
 const mocks = vi.hoisted(() => {
-  const state = { S: null, user: null, MOBILE: false, sheets: [], navs: [] }
+  const state = { S: null, user: null, sync: null, MOBILE: false, push: false, sheets: [], navs: [], toast: null }
   state.snapshot = () => ({
-    S: state.S, user: state.user, coachLocal: null, sync: null, config: null,
+    S: state.S, user: state.user, coachLocal: null, sync: state.sync, config: null,
     update: mut => { const next = structuredClone(state.S); mut(next); state.S = next },
     replaceState: vi.fn(), setUser: vi.fn(), pullState: vi.fn(), pushState: vi.fn(), setUnit: vi.fn(),
     resetEverything: vi.fn(), resetDemo: vi.fn(), importBackup: vi.fn(), importConflict: vi.fn(),
@@ -24,14 +24,14 @@ vi.mock('../store/useStore.js', () => {
   return { useStore, DEF: { reminder: { time: '17:30' } }, hasData: () => false }
 })
 vi.mock('../store/useUI.js', () => {
-  const snap = () => ({ toast: vi.fn(), openSheet: render => { mocks.sheets.push(render); return { close: vi.fn() } } })
+  const snap = () => ({ toast: mocks.toast, openSheet: render => { mocks.sheets.push(render); return { close: vi.fn() } } })
   const useUI = selector => selector ? selector(snap()) : snap()
   useUI.getState = snap
   return { useUI }
 })
 vi.mock('react-router-dom', () => ({ useNavigate: () => (...a) => mocks.navs.push(a) }))
-vi.mock('../lib/api.js', () => ({ api: vi.fn(() => Promise.resolve({})), webauthnOK: () => false, passkeyLogin: vi.fn(), passkeyRegister: vi.fn(), IS_ANDROID: false }))
-vi.mock('../lib/push.js', () => ({ pushSupported: () => false, enablePush: vi.fn(), disablePush: vi.fn(), sendTestPush: vi.fn(), syncPushSubscription: vi.fn() }))
+vi.mock('../lib/api.js', () => ({ api: vi.fn(path => Promise.resolve(path === '/api/account/passkeys' ? { passkeys: [] } : {})), webauthnOK: () => false, passkeyLogin: vi.fn(), passkeyRegister: vi.fn(), IS_ANDROID: false }))
+vi.mock('../lib/push.js', () => ({ pushSupported: () => mocks.push, enablePush: vi.fn(), disablePush: vi.fn(), sendTestPush: vi.fn(), syncPushSubscription: vi.fn(() => Promise.resolve(mocks.pushOn)) }))
 vi.mock('../lib/wakelock.js', () => ({ wakeLockSupported: () => true }))
 vi.mock('../lib/mobile.js', () => ({ get MOBILE() { return mocks.MOBILE }, isAndroid: () => Promise.resolve(false), shareExport: vi.fn(), shareExportBlob: vi.fn(), syncReminder: vi.fn() }))
 vi.mock('./MobileOnboarding.jsx', () => ({ ConnectSheet: () => null }))
@@ -52,7 +52,11 @@ beforeEach(() => {
     reminder: { on: false, time: '17:30' },
   }
   mocks.user = null
+  mocks.sync = null
   mocks.MOBILE = false
+  mocks.push = false
+  mocks.pushOn = false
+  mocks.toast = vi.fn()
   mocks.sheets = []
   mocks.navs = []
   Object.defineProperty(navigator, 'vibrate', { value: () => true, configurable: true, writable: true })
@@ -66,7 +70,7 @@ afterEach(() => {
   delete navigator.vibrate
 })
 
-const mount = (page = null, find = null) => act(() => root.render(<Settings page={page} find={find} />))
+const mount = (page = null, find = null, via = null) => act(() => root.render(<Settings page={page} find={find} via={via} />))
 const rowTitled = title => [...host.querySelectorAll('.lrow')].find(r => r.querySelector('.lrow-t')?.textContent === title)
 const titles = () => [...host.querySelectorAll('.lrow .lrow-t')].map(e => e.textContent)
 
@@ -74,6 +78,7 @@ const titles = () => [...host.querySelectorAll('.lrow .lrow-t')].map(e => e.text
 const guestWeb = {
   user: null, mobile: false, android: false, demo: false, wakeOK: true, hasMedia: false, pwOn: false, webauthn: false,
   sound: true, playOnSilent: false, canVibrate: true, vibrate: true, profiles: true, nameLang: false,
+  pushOK: false, reminderOn: false, nudge: false, autoBackup: false, synced: false, installTip: true, androidWeb: false,
 }
 
 describe('the root', () => {
@@ -139,6 +144,74 @@ describe('the root', () => {
     expect(mocks.navs.at(-1)).toEqual(['/settings/alerts', { state: { find: 'Vibrate' } }])
     type('zzzz')
     expect(host.querySelector('.sp-empty').textContent).toBe('No setting matches “zzzz”.')
+  })
+})
+
+// Each search hit is a row on its page, on the device and profile it was offered for. The ctx is
+// the one Settings builds (views/Settings.jsx) for the same mocks; push-dependent web rows are
+// the exception the page settles on open (`via`), tested on their own below.
+describe('the search lands on a row', () => {
+  const scenarios = {
+    'guest in a browser': () => {},
+    'signed in, browser without push': () => { mocks.user = { id: 'u1', name: 'Dana' }; mocks.sync = { status: 'ok', server: 'https://gym.example' } },
+    'phone, reminder off': () => { mocks.MOBILE = true },
+    'phone, reminder and nudge on': () => { mocks.MOBILE = true; mocks.S.reminder = { on: true, time: '17:30', nudge: true }; mocks.S.autoBackup = true },
+    'phone paired with a server': () => { mocks.MOBILE = true; mocks.user = { id: 'u1', name: 'Dana' }; mocks.sync = { status: 'ok', server: 'https://gym.example' } },
+  }
+  const ctxNow = () => ({
+    ...guestWeb, user: mocks.user, mobile: mocks.MOBILE, pushOK: !mocks.MOBILE && mocks.push,
+    reminderOn: !!mocks.S.reminder?.on, nudge: !!mocks.S.reminder?.nudge, autoBackup: !!mocks.S.autoBackup,
+    synced: !!mocks.sync, installTip: !mocks.MOBILE, hasMedia: false, wakeOK: true,
+  })
+  for (const [name, setUp] of Object.entries(scenarios)) it(name, async () => {
+    setUp()
+    const ctx = ctxNow()
+    const byPage = {}
+    for (const e of SEARCH) if (pageVisible(PAGES[e.page].parent || e.page, ctx) && (!e.when || e.when(ctx))) (byPage[e.page] ||= []).push(e.title)
+    for (const [page, want] of Object.entries(byPage)) {
+      if (page === 'coach') continue
+      mount(page)
+      await act(async () => {})   // the passkey list, asked of the server on open
+      const have = [...titles(), ...[...host.querySelectorAll('.btn')].map(b => b.textContent.trim())]
+      for (const title of want) expect(have, `${page}: ${title}`).toContain(title)
+    }
+  })
+
+  it('finds the rows that used to be missing', () => {
+    const tr = s => s
+    const web = { ...guestWeb, user: { id: 'u' }, synced: true, pushOK: true, reminderOn: true, nudge: true }
+    expect(searchSettings('reminder time', web, tr).map(h => h.title)).toEqual(['Reminder time'])
+    expect(searchSettings('tone', web, tr).map(h => h.title)).toContain('Nudge tone')
+    expect(searchSettings('test notification', web, tr).map(h => h.title)).toEqual(['Send test notification'])
+    expect(searchSettings('server', web, tr).map(h => h.title)).toContain('Sync now')
+    expect(searchSettings('sync', web, tr).map(h => h.title)).toContain('Sync now')
+    expect(searchSettings('home screen', web, tr).map(h => h.title)).toEqual(['In Safari: Share → Add to Home Screen'])
+    expect(searchSettings('install', { ...web, androidWeb: true }, tr).map(h => h.title)).toEqual(['In Chrome: ⋮ menu → Add to Home screen'])
+    expect(searchSettings('backup folder', { ...guestWeb, mobile: true, android: true, autoBackup: true }, tr).map(h => h.title)).toEqual(['Backup folder'])
+    expect(searchSettings('backup folder', { ...guestWeb, mobile: true, android: true }, tr)).toEqual([])
+  })
+
+  it('a web reminder row waits for push to answer, and flashes Push notifications when it stays off', async () => {
+    vi.useFakeTimers()
+    try {
+      mocks.user = { id: 'u1', name: 'Dana' }
+      mocks.push = true
+      mocks.S.reminder = { on: true, time: '17:30' }
+      mount('reminders', 'Nudge me when I skip a planned workout', 'Push notifications')
+      await act(async () => { await vi.advanceTimersByTimeAsync(1600) })
+      expect(rowTitled('Push notifications').classList.contains('sp-flash')).toBe(true)
+      expect(mocks.toast).toHaveBeenCalledWith('Turn on push notifications first.')
+
+      // push on: the row appears once the server answers, and that row is the one flashed
+      mocks.pushOn = true
+      mocks.toast.mockClear()
+      act(() => root.render(null))
+      mount('reminders', 'Nudge me when I skip a planned workout', 'Push notifications')
+      await act(async () => { await vi.advanceTimersByTimeAsync(50) })
+      expect(rowTitled('Nudge me when I skip a planned workout').classList.contains('sp-flash')).toBe(true)
+      await act(async () => { await vi.advanceTimersByTimeAsync(1600) })
+      expect(mocks.toast).not.toHaveBeenCalled()
+    } finally { vi.useRealTimers() }
   })
 })
 
@@ -276,7 +349,10 @@ describe('searchSettings', () => {
     expect(pageTrail('advanced', tr)).toBe('Workout › Fine-tuning')
     expect(searchSettings('overtime', guestWeb, tr)[0].trail).toBe('Workout › Fine-tuning')
     expect(searchSettings('nudge', guestWeb, tr)).toEqual([])                              // no Reminders for a web guest
-    expect(searchSettings('nudge', { ...guestWeb, user: { id: 'u' } }, tr).map(h => h.title)).toEqual(['Nudge me when I skip a planned workout'])
+    expect(searchSettings('nudge', { ...guestWeb, user: { id: 'u' } }, tr)).toEqual([])         // no push in this browser
+    expect(searchSettings('nudge', { ...guestWeb, user: { id: 'u' }, pushOK: true }, tr)).toEqual([])   // the reminder is off
+    expect(searchSettings('nudge', { ...guestWeb, user: { id: 'u' }, pushOK: true, reminderOn: true }, tr).map(h => h.title)).toEqual(['Nudge me when I skip a planned workout'])
+    expect(searchSettings('nudge', { ...guestWeb, mobile: true, reminderOn: true }, tr).map(h => h.title)).toEqual(['Nudge me when I skip a planned workout'])
     expect(searchSettings('coach', guestWeb, tr)).toEqual([])
     expect(searchSettings('coach', { ...guestWeb, mobile: true }, tr)[0].page).toBe('coach')
     expect(searchSettings('vibrate silent', { ...guestWeb, mobile: true, android: true }, tr).map(h => h.title)).toEqual(['Vibrate on silent too'])

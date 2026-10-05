@@ -1875,4 +1875,5 @@ export default {
   'Order and supersets': 'Порядок і суперсети',
   'Sets, reps, rest, progression': 'Підходи, повтори, відпочинок, прогресія',
   'This workout': 'Це тренування',
+  'Turn on push notifications first.': 'Спершу увімкни push-сповіщення.',
 }

@@ -1896,7 +1896,7 @@ body.no-tabbar.resting #toast{bottom:calc(100px + var(--sab))}
 .sp-version{text-align:center;margin-top:4px;line-height:1.6}
 .lrow.dis .lrow-i,.lrow.dis .lrow-t,.lrow.dis .sw{opacity:.45}
 /* a row a search result jumped to: a short accent wash that fades out */
-.lrow.sp-flash{animation:spflash 1.8s ease}
+.lrow.sp-flash,.btn.sp-flash{animation:spflash 1.8s ease}
 @keyframes spflash{0%,45%{background:var(--acc-soft)}100%{background:transparent}}
 .sp-empty{color:var(--label-2);text-align:center;padding:28px 12px;line-height:1.4}
 

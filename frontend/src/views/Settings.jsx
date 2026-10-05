@@ -58,7 +58,7 @@ export function SettingsRoute() {
   const ctx = { user: useStore(s => s.user), mobile: MOBILE }
   if (page && (!PAGES[page] || !pageVisible(PAGES[page].parent || page, ctx))) return <Navigate to="/settings" replace />
   if (page === 'coach') return <Navigate to="/coach/setup" replace />
-  return <Settings key={page || 'root'} page={page || null} find={loc.state?.find || null} />
+  return <Settings key={page || 'root'} page={page || null} find={loc.state?.find || null} via={loc.state?.via || null} />
 }
 
 // "Mon" / "Sun" in the app's language, for the Plan & schedule row's preview.
@@ -71,7 +71,7 @@ const standalone = () => {
   try { return !!(window.matchMedia?.('(display-mode: standalone)').matches || window.navigator.standalone === true) } catch { return false }
 }
 
-export default function Settings({ page = null, find = null }) {
+export default function Settings({ page = null, find = null, via = null }) {
   const nav = useNavigate()
   const S = useStore(s => s.S)
   const user = useStore(s => s.user)
@@ -159,16 +159,36 @@ export default function Settings({ page = null, find = null }) {
     isAndroid().then(ok => { setAndroid(ok); if (ok && page === 'about') checkForUpdate().then(setUpdateInfo).catch(() => {}) })
   }, [page])
 
-  // A search hit: scroll its row into view and flash it once.
+  // A search hit: scroll its row (or button) into view and flash it once. A row that shows only
+  // once the page has heard back from the server (web push, the passkey list) is waited for a
+  // moment; still missing, the hit's `via` row, if it names one, is flashed instead, with a word
+  // on why.
   useEffect(() => {
     if (!find || !body.current) return
-    const label = t(find)
-    const row = [...body.current.querySelectorAll('.lrow')].find(r => r.querySelector('.lrow-t')?.textContent === label)
-    if (!row) return
-    row.classList.add('sp-flash')
-    if (typeof row.scrollIntoView === 'function') row.scrollIntoView({ block: 'center' })
-    const tm = setTimeout(() => row.classList.remove('sp-flash'), 1900)
-    return () => clearTimeout(tm)
+    const el = body.current
+    const named = label => [...el.querySelectorAll('.lrow')].find(r => r.querySelector('.lrow-t')?.textContent === label)
+      || [...el.querySelectorAll('.btn')].find(b => b.textContent.trim() === label)
+    let tm = null
+    const flash = row => {
+      row.classList.add('sp-flash')
+      if (typeof row.scrollIntoView === 'function') row.scrollIntoView({ block: 'center' })
+      tm = setTimeout(() => row.classList.remove('sp-flash'), 1900)
+    }
+    const row = named(t(find))
+    if (row) { flash(row); return () => clearTimeout(tm) }
+    let done = false
+    const mo = typeof MutationObserver === 'function' ? new MutationObserver(() => {
+      const r = named(t(find))
+      if (r && !done) { done = true; mo.disconnect(); clearTimeout(wait); flash(r) }
+    }) : null
+    mo?.observe(el, { childList: true, subtree: true })
+    const wait = setTimeout(() => {
+      if (done) return
+      done = true; mo?.disconnect()
+      const r = via && named(t(via))
+      if (r) { flash(r); toast(t('Turn on push notifications first.')) }
+    }, 1500)
+    return () => { done = true; mo?.disconnect(); clearTimeout(wait); clearTimeout(tm) }
   }, [find])
 
   // The same check, on demand: the automatic one is silent when it finds nothing or cannot
@@ -364,6 +384,8 @@ export default function Settings({ page = null, find = null }) {
     user, mobile: MOBILE, android, demo: DEMO, wakeOK, hasMedia, pwOn, webauthn: webauthnOK(),
     sound: !!S.sound, playOnSilent: playOnSilentSupported(), canVibrate, vibrate: S.vibrate !== false,
     profiles: (S.equipProfiles || []).length > 0, nameLang: EXERCISE_NAME_LANGS.includes(baseLang(lang)),
+    pushOK: !MOBILE && pushSupported(), reminderOn: !!S.reminder?.on, nudge: !!S.reminder?.nudge,
+    autoBackup: !!S.autoBackup, synced: !!sync, installTip: !MOBILE && !standalone(), androidWeb: IS_ANDROID,
   }
   const mode = scheduleModeOf(S)
   const layout = ['list', 'compact'].includes(S.workoutView) ? S.workoutView : 'cards'
@@ -838,7 +860,7 @@ export default function Settings({ page = null, find = null }) {
   return <SettingsRoot ctx={ctx} preview={preview} open={open} user={user} sync={sync}
     home={() => nav('/home')} go={(hit) => {
       if (hit.page === 'coach') { nav('/coach/setup'); return }
-      nav('/settings/' + hit.page, hit.isPage ? undefined : { state: { find: hit.title } })
+      nav('/settings/' + hit.page, hit.isPage ? undefined : { state: hit.via ? { find: hit.title, via: hit.via } : { find: hit.title } })
     }} />
 }
 

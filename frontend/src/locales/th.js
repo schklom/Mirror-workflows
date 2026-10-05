@@ -1889,4 +1889,5 @@ export default {
   'Order and supersets': 'ลำดับและซูเปอร์เซ็ต',
   'Sets, reps, rest, progression': 'เซ็ต ครั้ง เวลาพัก การเพิ่มน้ำหนัก',
   'This workout': 'การออกกำลังกายครั้งนี้',
+  'Turn on push notifications first.': 'เปิดการแจ้งเตือนแบบพุชก่อน',
 }

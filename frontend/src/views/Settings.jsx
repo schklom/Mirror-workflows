@@ -45,8 +45,10 @@ import { PAGES, ROOT_GROUPS, pageVisible, searchSettings, pageTrail } from './se
    reads. `page` is the open page (null for the root), `find` a row a search hit asked for, which
    is scrolled to and flashed. */
 
-// What was typed into the search, kept while you step into a hit and back out again.
-let lastQuery = ''
+// What was typed into the search, kept while you step into a hit and back out again: tied to
+// the history entry it was typed on, so Back (in the app, the browser's or Android's) brings the
+// results back, while Settings opened afresh from anywhere (the gear, a tab) starts at the root.
+let lastQuery = { q: '', key: null }
 
 // The route: /settings and /settings/<page>. An unknown page, or one this device does not have
 // (the Coach page off the phone app), goes back to the root.
@@ -834,15 +836,17 @@ export default function Settings({ page = null, find = null }) {
 
   /* ---------------- the root ---------------- */
   return <SettingsRoot ctx={ctx} preview={preview} open={open} user={user} sync={sync}
-    home={() => { lastQuery = ''; nav('/home') }} go={(hit) => {
+    home={() => nav('/home')} go={(hit) => {
       if (hit.page === 'coach') { nav('/coach/setup'); return }
       nav('/settings/' + hit.page, hit.isPage ? undefined : { state: { find: hit.title } })
     }} />
 }
 
 function SettingsRoot({ ctx, preview, open, user, sync, home, go }) {
-  const [q, setQ] = useState(lastQuery)
-  const set = v => { lastQuery = v; setQ(v) }
+  // The router's key for this history entry (what useLocation().key reads), taken once.
+  const [key] = useState(() => window.history.state?.key || null)
+  const [q, setQ] = useState(() => (key && lastQuery.key === key ? lastQuery.q : ''))
+  const set = v => { lastQuery = { q: v, key }; setQ(v) }
   const hits = q.trim() ? searchSettings(q, ctx) : null
   // The account card: who this is, and the one line that matters about it.
   const acct = DEMO ? { title: t('Demo'), sub: t('Example data, only in this browser.') }

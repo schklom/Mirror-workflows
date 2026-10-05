@@ -142,6 +142,29 @@ describe('the root', () => {
   })
 })
 
+describe('the search query', () => {
+  const type = v => act(() => {
+    const input = host.querySelector('.sp-search input')
+    Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set.call(input, v)
+    input.dispatchEvent(new Event('input', { bubbles: true }))
+  })
+  afterEach(() => window.history.replaceState(null, ''))
+  it('comes back with Back to the same entry, and is gone when Settings is opened afresh', () => {
+    window.history.replaceState({ key: 'root1', idx: 1 }, '')
+    mount()
+    type('vib')
+    act(() => root.render(null))
+    mount()                                                   // Back from the hit: same entry
+    expect(host.querySelector('.sp-search input').value).toBe('vib')
+    expect(titles()).toContain('Vibrate')
+    act(() => root.render(null))
+    window.history.replaceState({ key: 'root2', idx: 3 }, '')  // the gear, a tab, Android Back then the gear
+    mount()
+    expect(host.querySelector('.sp-search input').value).toBe('')
+    expect(titles()).toContain('Timer alerts')
+  })
+})
+
 describe('the pages', () => {
   it('each search entry is a row on its page (guest in a browser)', () => {
     const byPage = {}

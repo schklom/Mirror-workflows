@@ -272,3 +272,49 @@ describe('Home — a session pinned to a day', () => {
     expect(startFlow).toHaveBeenCalledWith(['d1'])
   })
 })
+
+// Android QA (1.3.10 rc): the today row reported the last finished session ("Full Body A, Done")
+// while the progress row and Start already named the next one for today.
+describe('Home — the today row follows today\'s plan, not just the last session', () => {
+  const today = todayISO()
+  const at = (id, start, name) => ({ id: 'w-' + id + start, d: today, start, end: start + 1000, routineIds: id ? [id] : [], routineId: id, name: name || routines.find(r => r.id === id).name, entries: [] })
+  const tag = () => host.querySelector('.today-row .tag')?.textContent
+
+  it('a queue session done today: the row offers the next one, like the progress row', () => {
+    setS({ workouts: [at('d1', Date.now() - 3600000)] })
+    mount()
+    expect(status()).toBe('Next: US W1 D2, today')
+    expect(todayTitle()).toBe('US W1 D2')
+    expect(tag()).toBe('Start')
+  })
+
+  it('a freestyle session on a planned day leaves the plan offered', () => {
+    const wd = new Date(today + 'T12:00:00').getDay()
+    setS({ queue: null, week: { [wd]: ['own'] }, workouts: [at(null, Date.now() - 3600000, 'Freestyle')] })
+    mount()
+    expect(todayTitle()).toBe('Core')
+    expect(tag()).toBe('Start')
+  })
+
+  it('the planned routine done today still reads as done', () => {
+    const wd = new Date(today + 'T12:00:00').getDay()
+    setS({ queue: null, week: { [wd]: ['own'] }, workouts: [at('own', Date.now() - 3600000)] })
+    mount()
+    expect(todayTitle()).toBe('Core (done)')
+    expect(tag()).toBe('Done')
+  })
+
+  it('Start new pass after a session today: the pass runs today, from its first session', () => {
+    const now = Date.now()
+    setS({
+      rotation: { id: 'rot', sequence: ['d1', 'd2', 'd3'], label: 'Rotation' },
+      queue: { ids: ['d1', 'd2', 'd3'], since: now - 1000, startsOn: today, label: 'Rotation', rotationId: 'rot', strict: true },
+      workouts: [at('d1', now - 3600000)],
+    })
+    mount()
+    expect(chipTexts()).toEqual(['US W1 D1Up next', 'US W1 D2Later', 'US W1 D3Later'])
+    expect(status()).toBe('Next: US W1 D1, today')
+    expect(todayTitle()).toBe('US W1 D1')
+    expect(tag()).toBe('Start')
+  })
+})

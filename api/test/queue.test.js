@@ -240,3 +240,13 @@ test('queue: a rotation pass hides only the weekdays it covers', () => {
   // r1 is the queue's own session, so the weekday's r1 adds nothing; r3 is the athlete's own day.
   assert.equal(effectiveRoutineId(S, '2026-09-14'), 'r1');
 });
+
+test('queue: a strict pass (the app\'s "Start new pass") ignores a same-named workout from before since', () => {
+  const early = { d: '2026-09-07', start: 500, routineIds: ['r1'], name: 'Push' };
+  const loose = { ...base, workouts: [early], queue: { ids: ['r1', 'r2'], since: 1000, startsOn: '2026-09-07', label: 'R' } };
+  assert.equal(effectiveRoutineId(loose, '2026-09-07'), 'r2'); // dated name clause credits it
+  const strict = { ...loose, queue: { ...loose.queue, strict: true } };
+  assert.equal(effectiveRoutineId(strict, '2026-09-07'), 'r1');
+  const after = { ...strict, workouts: [early, { ...early, start: 2000 }] };
+  assert.equal(effectiveRoutineId(after, '2026-09-07'), 'r2');
+});

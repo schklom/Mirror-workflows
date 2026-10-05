@@ -91,6 +91,7 @@ export function saveRotation(s, ids, label, today = todayISO(), now = Date.now()
     startsOn: prev?.startsOn ?? today,
     label,
     rotationId: s.rotation.id,
+    ...(prev?.strict === true ? { strict: true } : {}),
   }
   // A session dropped from the rotation leaves its future pin behind otherwise — dayPlan then
   // still resolves that date to a session the queue no longer has (pinState/queue.js).
@@ -120,19 +121,18 @@ const lastCreditDay = s => {
 }
 
 /**
- * Plan's "Start new pass": throw the current pass away and begin the saved sequence again. From
- * today — unless today's own workout closed the pass being replaced, which would otherwise be
- * credited twice (see THE ONE-DAY BOUNDARY above).
+ * Plan's "Start new pass": throw the current pass away and begin the saved sequence again, right
+ * now. Today is its first day, so Home, Start and the day sheet all name its first session as
+ * today's, and nothing logged before this moment counts for it (`strict`, queue.js): a session
+ * done earlier today was the old pass's, even under the same routine name.
  */
 export function startNewPass(s, today = todayISO(), now = Date.now()) {
   if (!s.rotation) return
   const ids = rotationIds(s)
   if (!ids.length) return
   const q = queueOf(s)
-  const last = lastCreditDay(s)
-  const startsOn = last && last >= today ? dayAfter(last) : today
   if (q) sweepPins(s, q.ids, today)
-  s.queue = newPass(ids, s.rotation.label || '', s.rotation.id, startsOn, q ? sinceAfter(s, q, now) : now)
+  s.queue = { ...newPass(ids, s.rotation.label || '', s.rotation.id, today, q ? sinceAfter(s, q, now) : now), strict: true }
 }
 
 /** Is `ids` some circular ordering of `seq`? (Both already normalized, so ids are unique.) */

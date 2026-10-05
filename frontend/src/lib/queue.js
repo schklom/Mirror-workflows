@@ -8,6 +8,10 @@
 //     since:    number        ms epoch of the apply; a workout STARTED at/after it is this week's
 //     startsOn: 'YYYY-MM-DD'  local date the queue becomes active (the planner's calendar-week rule)
 //     label:    string        progress-row title, e.g. 'US W1'
+//     strict?:  true        only a workout STARTED at/after `since` counts; the dated name clause of
+//                           the DONE RULE is off. Plan's "Start new pass" sets it: the new pass
+//                           starts at that moment, and a session logged earlier the same day was
+//                           the old pass's, whatever its name says.
 //     rotationId?: string   set only by the in-app rotation editor (lib/rotation.js): this pass
 //                           is managed here and refills itself when complete. A planner's queue
 //                           omits it and is never rewritten by the app.
@@ -63,7 +67,7 @@ export const queueOf = S => {
 // The DONE RULE for one workout and one session — `isDone` asks it across the log.
 const countsFor = (S, q, w, id) => routineIdsOf(w).includes(id)
   && ((w.start ?? 0) >= q.since
-    || (String(w.d || '') >= q.startsOn && nameParts(w).includes(S.routines.find(r => r.id === id)?.name)))
+    || (q.strict !== true && String(w.d || '') >= q.startsOn && nameParts(w).includes(S.routines.find(r => r.id === id)?.name)))
 const isDone = (S, q, id) => S.workouts.some(w => countsFor(S, q, w, id))
 
 /** The week's sessions already done, in slot order. `[]` without a queue. */

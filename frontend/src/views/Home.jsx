@@ -46,8 +46,15 @@ export default function Home() {
   wkStart.setDate(today.getDate() - weekDayOffset(today.getDay(), ws) + weekOffset * 7)
   const doneDays = new Set(S.workouts.map(w => w.d))
   // The last session logged for today, if any — what the row below reports instead of asking
-  // you to start the one you already did. Last wins, so a second session names itself.
-  const doneToday = S.workouts.filter(w => w.d === todayISO()).at(-1) || null
+  // you to start the one you already did. Last wins, so a second session names itself. Only once
+  // today's plan is covered, though: a freestyle session on a planned day, or the rotation's
+  // first session done when its next one is today's too, leaves the row offering what is still
+  // to do, as Start and the progress row already do. A queue session is never "covered" by an
+  // earlier workout: the queue only names one it does not count as done yet.
+  const loggedToday = S.workouts.filter(w => w.d === todayISO())
+  const queueIds = queueOf(S)?.ids || []
+  const coveredToday = id => !queueIds.includes(id) && loggedToday.some(w => (Array.isArray(w.routineIds) ? w.routineIds : [w.routineId]).includes(id))
+  const doneToday = (todayRoutines.every(r => coveredToday(r.id)) && loggedToday.at(-1)) || null
   const strip = []
   for (let i = 0; i < 7; i++) {
     const d = new Date(wkStart); d.setDate(wkStart.getDate() + i)

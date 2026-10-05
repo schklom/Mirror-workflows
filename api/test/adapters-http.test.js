@@ -15,7 +15,7 @@ const openai = (await import('../coach/core/adapters/openai.js')).default;
 const gemini = (await import('../coach/core/adapters/gemini.js')).default;
 const compatible = (await import('../coach/core/adapters/compatible.js')).default;
 const { attemptOnce } = await import('../coach/core/pipeline.js');
-const { HTTP_PROVIDERS, validateBaseUrl } = await import('../coach/core/providers.js');
+const { HTTP_PROVIDERS, validateBaseUrl, validateHeaders } = await import('../coach/core/providers.js');
 const { SYSTEM_PROMPT } = await import('../coach/core/system-prompt.js');
 
 /** A fetch that records what it was asked and answers from a script. Like the real one, it
@@ -304,4 +304,37 @@ test('models(): OpenAI’s list is cut to what Chat Completions can use; a compa
   const { default: compatible } = await import('../coach/core/adapters/compatible.js');
   const co = fakeFetch([ok({ data: [{ id: 'qwen2.5:3b' }, { id: 'llama3.2' }] })]);
   assert.deepEqual((await compatible.models({ providerOptions: { compatible: { baseUrl: 'http://ollama:11434' } } }, {}, { fetch: co })).models, ['llama3.2', 'qwen2.5:3b']);
+});
+
+test('compatible: configured extra headers ride on models, check and jobs — auth framing always wins', async () => {
+  const cfg = { provider: 'compatible', providerOptions: { compatible: { baseUrl: 'http://ollama.lan:11434', headers: { 'x-opencode-session': 'sess-1' } } } };
+  const m = fakeFetch([ok({ data: [] })]);
+  await compatible.models(cfg, env, { fetch: m });
+  assert.equal(m.calls[0].headers['x-opencode-session'], 'sess-1');
+  assert.equal(m.calls[0].headers.authorization, 'Bearer compat-1');
+  const j = fakeFetch([ok({ choices: [{ message: { content: ANSWER }, finish_reason: 'stop' }] })]);
+  await compatible.invoke({ cfg, prompt: 'P', env, model: 'llama3', fetch: j });
+  assert.equal(j.calls[0].headers['x-opencode-session'], 'sess-1');
+
+  // A stored map from before a name was reserved must not override auth framing.
+  const evil = { provider: 'compatible', providerOptions: { compatible: { baseUrl: 'http://x', headers: { authorization: 'Bearer evil', 'content-type': 'text/plain' } } } };
+  const e = fakeFetch([ok({ choices: [{ message: { content: ANSWER }, finish_reason: 'stop' }] })]);
+  await compatible.invoke({ cfg: evil, prompt: 'P', env, model: 'llama3', fetch: e });
+  assert.equal(e.calls[0].headers.authorization, 'Bearer compat-1');
+  assert.equal(e.calls[0].headers['content-type'], 'application/json');
+});
+
+test('validateHeaders: small maps pass, framing names and junk do not', () => {
+  assert.deepEqual(validateHeaders(null).value, null);
+  assert.deepEqual(validateHeaders({}).value, null);
+  assert.deepEqual(validateHeaders({ 'X-Opencode-Session': ' abc ' }).value, { 'x-opencode-session': 'abc' });
+  for (const bad of ['authorization', 'Content-Type', 'content-length', 'Host', 'cookie']) {
+    assert.equal(validateHeaders({ [bad]: 'x' }).ok, false, bad);
+  }
+  assert.equal(validateHeaders({ 'not a name!': 'x' }).ok, false);
+  assert.equal(validateHeaders({ a: '' }).ok, false);
+  assert.equal(validateHeaders('x-opencode-session: abc').ok, false);
+  assert.equal(validateHeaders([['a', 'b']]).ok, false);
+  const many = {}; for (let i = 0; i < 9; i++) many['x-h-' + i] = 'v';
+  assert.equal(validateHeaders(many).ok, false);
 });

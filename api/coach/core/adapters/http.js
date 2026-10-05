@@ -19,7 +19,7 @@
  *
  * A provider is described by a spec (see anthropic.js etc.); this file owns the transport.
  */
-import { HTTP_PROVIDERS, baseUrlFor } from '../providers.js';
+import { HTTP_PROVIDERS, baseUrlFor, extraHeadersFor } from '../providers.js';
 
 export const MAX_OUTPUT_TOKENS = 16000;
 const DEFAULT_TIMEOUT_MS = 5 * 60000;
@@ -101,7 +101,7 @@ export function httpAdapter(spec) {
       if (!key && !meta.keyOptional) return { ok: false, error: 'no API key configured', models: [] };
       let res;
       try {
-        res = await call(fetchImpl, base + spec.modelsPath, { method: 'GET', headers: spec.headers(key) }, timeoutMs, signal);
+        res = await call(fetchImpl, base + spec.modelsPath, { method: 'GET', headers: { ...extraHeadersFor(id, cfg), ...spec.headers(key) } }, timeoutMs, signal);
       } catch (e) {
         return { ok: false, error: e.name === 'AbortError' ? 'timed out' : `could not reach ${hostOf(base)}: ${trim(e.message, 120)}`, models: [] };
       }
@@ -135,7 +135,7 @@ export function httpAdapter(spec) {
         try {
           res = await call(fetchImpl, base + spec.path(chosen), {
             method: 'POST',
-            headers: { 'content-type': 'application/json', ...spec.headers(key) },
+            headers: { ...extraHeadersFor(id, cfg), 'content-type': 'application/json', ...spec.headers(key) },
             body: JSON.stringify(body)
           }, timeoutMs, signal);
         } catch (e) {

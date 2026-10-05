@@ -9,7 +9,7 @@ import { ACCENTS, ACCENT_NAMES, todayISO, localTZ, weekStartOf, MONDAY, SUNDAY, 
 import { inventoryFor, ownsPlates } from '../lib/plates.js'
 import { effortOf } from '../lib/history.js'
 import { unlock, playOnSilentSupported, vibrateSupported } from '../lib/sound.js'
-import { scheduleModeOf, queueRecovery, rotationIds, startPass, stopPass } from '../lib/rotation.js'
+import { scheduleModeOf, chooseFixedWeek, chooseRotation } from '../lib/rotation.js'
 import { queueOf } from '../lib/queue.js'
 import { api, webauthnOK, passkeyRegister, IS_ANDROID } from '../lib/api.js'
 import { pushSupported, enablePush, disablePush, sendTestPush, syncPushSubscription } from '../lib/push.js'
@@ -91,15 +91,15 @@ export default function Settings() {
         title: t('Switch to Fixed Week?'),
         message: t('The rotation stops and its current pass is dropped. Your weekday plan is untouched, and the sequence is kept so you can start a new pass later.'),
         confirmText: t('Use Fixed Week'),
-        onConfirm: () => update(s => { if (!externalQ) stopPass(s); s.scheduleMode = 'week' }),
+        onConfirm: () => update(s => { chooseFixedWeek(s) }),
       })
       return
     }
-    update(s => { s.scheduleMode = 'rotation' })
-    // A malformed queue is not a live pass: Plan's recovery is the honest answer, not a new pass
-    // written over data another client may still fix.
-    if (!queueRecovery(S) && rotationIds(S).length) update(s => { startPass(s) })
-    else nav('/plan')
+    // The same switch as Plan's "How you train" (lib/rotation.js). With nothing to start (no
+    // saved sequence, or a malformed queue Plan has to sort out) Plan is where to go next.
+    let started = false
+    update(s => { started = chooseRotation(s) })
+    if (!started) nav('/plan')
   }
 
   // --- update check state ---

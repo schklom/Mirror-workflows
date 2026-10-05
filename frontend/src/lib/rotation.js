@@ -112,6 +112,30 @@ export function stopPass(s, today = todayISO()) {
   s.queue = null
 }
 
+/**
+ * "How you train: Rotation", the one switch Plan and Settings share. Holds Rotation selected
+ * (S.scheduleMode) and starts a pass from the saved sequence when there is one to start. A
+ * malformed queue is not a live pass: Plan's recovery is the honest answer there, not a new pass
+ * written over data another client may still fix. Returns true when a pass started.
+ */
+export function chooseRotation(s, today = todayISO(), now = Date.now()) {
+  s.scheduleMode = 'rotation'
+  if (queueRecovery(s) || !rotationIds(s).length) return false
+  return startPass(s, today, now)
+}
+
+/**
+ * "How you train: Fixed week". Stops this app's own pass and keeps the saved sequence for a
+ * later start; the weekday plan was never touched. A planner's queue (no matching rotationId)
+ * is never this app's to drop, so only the mode flag moves for it.
+ */
+export function chooseFixedWeek(s, today = todayISO()) {
+  const q = queueOf(s)
+  const external = !!q && (!s.rotation || q.rotationId !== s.rotation.id)
+  if (!external) stopPass(s, today)
+  s.scheduleMode = 'week'
+}
+
 /** The latest day a workout could have credited the current pass, or null. */
 const lastCreditDay = s => {
   const q = queueOf(s)

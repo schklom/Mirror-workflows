@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { scheduleModeOf, queueRecovery, rotationIds, startPass, saveRotation, startNewPass, stopPass, refillAfter } from './rotation.js'
+import { scheduleModeOf, queueRecovery, rotationIds, startPass, saveRotation, startNewPass, stopPass, refillAfter, chooseRotation, chooseFixedWeek } from './rotation.js'
 import { queueNext, queueRemaining, queueView } from './queue.js'
 import { effectiveRoutineIds } from './history.js'
 
@@ -300,5 +300,45 @@ describe('the finished-workout boundary', () => {
     expect(queueRemaining(s)).toEqual(['a', 'b'])
     expect(queueView(s, TODAY).waiting).toBe(true)
     expect(s.dayPlan).toEqual({})
+  })
+})
+
+describe('the How you train switch Plan and Settings share', () => {
+  const saved = { id: 'r1', sequence: ['a', 'b'], label: 'Rotation' }
+
+  it('Rotation starts a pass from the saved sequence, today, owned by this app', () => {
+    const s = S({ rotation: saved })
+    expect(chooseRotation(s, TODAY, NOW)).toBe(true)
+    expect(s.scheduleMode).toBe('rotation')
+    expect(s.queue).toMatchObject({ ids: ['a', 'b'], startsOn: TODAY, rotationId: 'r1' })
+  })
+
+  it('Rotation with nothing saved only holds the choice', () => {
+    const s = S()
+    expect(chooseRotation(s, TODAY, NOW)).toBe(false)
+    expect(s.scheduleMode).toBe('rotation')
+    expect(s.queue).toBe(null)
+  })
+
+  it('Rotation never writes a pass over a malformed queue', () => {
+    const s = S({ rotation: saved, queue: { ids: ['gone'], since: NOW } })
+    expect(chooseRotation(s, TODAY, NOW)).toBe(false)
+    expect(s.queue.ids).toEqual(['gone'])
+  })
+
+  it('Fixed week stops this app’s pass, keeps the sequence and the weekdays', () => {
+    const s = S({ rotation: saved, queue: pass(['a', 'b'], { rotationId: 'r1' }), week: { 1: ['own'] }, scheduleMode: 'rotation' })
+    chooseFixedWeek(s, TODAY)
+    expect(s.queue).toBe(null)
+    expect(s.scheduleMode).toBe('week')
+    expect(s.rotation).toEqual(saved)
+    expect(s.week).toEqual({ 1: ['own'] })
+  })
+
+  it('Fixed week leaves a planner’s queue alone', () => {
+    const s = S({ queue: pass(['a', 'b']) })
+    chooseFixedWeek(s, TODAY)
+    expect(s.queue.ids).toEqual(['a', 'b'])
+    expect(s.scheduleMode).toBe('week')
   })
 })

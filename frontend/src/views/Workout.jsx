@@ -1184,7 +1184,7 @@ function ActiveWorkout() {
       title: t('Rest for this exercise'),
       value: entry.target?.restSec > 0 ? entry.target.restSec : 0, max: REST_MAX,
       off: t('Default ({0})', fmtRest(state.restSec)),
-      footer: t('Rest after each set of this exercise. Leave at 0 to use your default rest timer.'),
+      footer: t('Rest after each set of this exercise. 0:00 means your default rest.'),
       onDone: v => update(s => {
         const e = s.active?.id === activeId ? s.active.entries?.[idx] : null
         if (!e || e.id !== entryId) return

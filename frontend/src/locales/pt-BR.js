@@ -728,7 +728,7 @@ export const PT_BR_OVERRIDES = {
   '{0}: what’s planned': '{0}: previsto',
 
   // --- per-exercise rest ---
-  'Rest after each set of this exercise. Leave at 0 to use your default rest timer.': 'Descanso depois de cada série deste exercício. Deixe em 0 para usar o temporizador de descanso padrão.',
+  'Rest after each set of this exercise. 0:00 means your default rest.': 'Descanso depois de cada série deste exercício. Em 0:00 vale o seu descanso padrão.',
   'Hevy is rate-limiting requests. Wait a minute and try again': 'O Hevy está limitando as solicitações. Espere um minuto e tente de novo',
   'Log a past workout': 'Registrar um treino passado',
   'Logged on the usual workout screen, without timers.': 'Registrado na tela de treino habitual, só sem temporizadores.',

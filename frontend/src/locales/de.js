@@ -203,7 +203,7 @@ export default {
   'Remove drop': 'Dropsatz entfernen',
   'Remove burst': 'Burst entfernen',
   'Rest (s)': 'Pause (s)',
-  'Rest after each set of this exercise. Leave at 0 to use your default rest timer.': 'Pause nach jedem Satz dieser Übung. Auf 0 lassen, um den Standard-Pausen-Timer zu nutzen.',
+  'Rest after each set of this exercise. 0:00 means your default rest.': 'Pause nach jedem Satz dieser Übung. Bei 0:00 gilt deine Standard-Pause.',
   'Drop-set / rest-pause': 'Dropsatz / Rest-Pause',
   'Intensifier': 'Intensivierungstechnik',
   'None': 'Keine',

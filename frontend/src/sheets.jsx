@@ -1602,12 +1602,12 @@ function ExConfig({ ex, existing, onSave, onDelete, onReplace, close, routine, i
         onClick={() => durationSheet({
           title: t('Rest for this exercise'), value: c.restSec > 0 ? c.restSec : 0, max: REST_MAX,
           off: t('Default ({0})', fmtRest(st.restSec)),
-          footer: t('Rest after each set of this exercise. Leave at 0 to use your default rest timer.'),
+          footer: t('Rest after each set of this exercise. 0:00 means your default rest.'),
           onDone: v => setC(x => ({ ...x, restSec: v })),
         })} />
     </div>
     <div className="small dim" style={{ marginBottom: 18 }}>
-      {t('Rest after each set of this exercise. Leave at 0 to use your default rest timer.')}
+      {t('Rest after each set of this exercise. 0:00 means your default rest.')}
     </div>
     {/* ---------- bodyweight + per side (issues #31/#32/#33) ---------- */}
     {!cardio && <div className="sect-b" style={{ marginBottom: 8 }}>

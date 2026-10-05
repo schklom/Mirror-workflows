@@ -41,6 +41,9 @@ describe('exercise settings: rest on the wheel', () => {
     const wheel = render(useUI.getState().sheets.at(-1))
     expect(wheel.querySelector('h3').textContent).toBe('Rest for this exercise')
     expect(wheel.querySelector('.dw-read').textContent).toBe('Default (2:00)')
+    // The copy names the wheel's 0:00, not a "0" the row never shows (QA 10-05).
+    expect(host.textContent).toContain('0:00 means your default rest.')
+    expect(host.textContent).not.toMatch(/Leave at 0/)
     // Done keeps 0:00, the default; the value shown stays the default's.
     act(() => [...wheel.querySelectorAll('button')].find(b => b.textContent === 'Done').click())
     act(() => save(host))

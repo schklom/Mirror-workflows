@@ -1770,6 +1770,8 @@ export default {
   'Excuses don’t lift weights. Report for {0} tomorrow!': 'Le scuse non sollevano pesi. Domani ti presenti a {0}!',
   'Your muscles filed a missing-person report. Show up for {0}!': 'I tuoi muscoli hanno denunciato la tua scomparsa. Presentati a {0}!',
   'That address answers, but it isn’t an openGym server. Check the URL.': 'Quell’indirizzo risponde, ma non è un server openGym. Controlla l’URL.',
+  'That address answers, but a login page or proxy rule replied instead of openGym. Let /api/ through to openGym unchanged. See “Phone app and CORS” in docs/SELF_HOSTING.md.': 'Quell’indirizzo risponde, ma al posto di openGym ha risposto una pagina di login o una regola del proxy. Lascia passare /api/ fino a openGym senza modifiche. Vedi “Phone app and CORS” in docs/SELF_HOSTING.md.',
+  'The app can only pair with an https:// address. Your phone blocks plain http:// before anything is even sent.': 'L’app può collegarsi solo a un indirizzo https://. Il telefono blocca il semplice http:// prima ancora di inviare qualcosa.',
   'Switch sides': 'Cambia lato',
   'Saves a dated copy to “{0}” after finishing a workout or editing a routine, and keeps the newest {1}.': 'Salva una copia datata in “{0}” dopo ogni allenamento finito o routine modificata, e tiene le {1} più recenti.',
   'Saves a dated copy to the folder you chose after finishing a workout or editing a routine, and keeps the newest {0}.': 'Salva una copia datata nella cartella che hai scelto dopo ogni allenamento finito o routine modificata, e tiene le {0} più recenti.',

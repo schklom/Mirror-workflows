@@ -1767,6 +1767,8 @@ export default {
   'Excuses don’t lift weights. Report for {0} tomorrow!': 'Відмовки не піднімають ваги. Завтра з’явитися на «{0}»!',
   'Your muscles filed a missing-person report. Show up for {0}!': 'Твої м’язи заявили про твоє зникнення. З’явитися на «{0}»!',
   'That address answers, but it isn’t an openGym server. Check the URL.': 'Ця адреса відповідає, але це не сервер openGym. Перевір URL.',
+  'That address answers, but a login page or proxy rule replied instead of openGym. Let /api/ through to openGym unchanged. See “Phone app and CORS” in docs/SELF_HOSTING.md.': 'Ця адреса відповідає, але замість openGym відповіла сторінка входу або правило проксі. Пропусти /api/ до openGym без змін. Див. “Phone app and CORS” у docs/SELF_HOSTING.md.',
+  'The app can only pair with an https:// address. Your phone blocks plain http:// before anything is even sent.': 'Застосунок може підключитися лише до адреси https://. Телефон блокує звичайний http:// ще до того, як щось буде надіслано.',
   'Switch sides': 'Зміни сторону',
   'Saves a dated copy to “{0}” after finishing a workout or editing a routine, and keeps the newest {1}.': 'Зберігає копію з датою в «{0}» після кожного тренування чи зміни програми й тримає {1} найновіших.',
   'Saves a dated copy to the folder you chose after finishing a workout or editing a routine, and keeps the newest {0}.': 'Зберігає копію з датою у вибрану теку після кожного тренування чи зміни програми й тримає {0} найновіших.',

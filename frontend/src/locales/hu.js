@@ -1773,6 +1773,8 @@ export default {
   'Excuses don’t lift weights. Report for {0} tomorrow!': 'A kifogások nem emelnek súlyt. Holnap jelentkezel: {0}!',
   'Your muscles filed a missing-person report. Show up for {0}!': 'Az izmaid eltűntként jelentettek. Jelentkezz: {0}!',
   'That address answers, but it isn’t an openGym server. Check the URL.': 'Ez a cím válaszol, de nem openGym-szerver. Ellenőrizd az URL-t.',
+  'That address answers, but a login page or proxy rule replied instead of openGym. Let /api/ through to openGym unchanged. See “Phone app and CORS” in docs/SELF_HOSTING.md.': 'Ez a cím válaszol, de openGym helyett egy bejelentkezési oldal vagy proxyszabály felelt. Engedd át a /api/ útvonalat változatlanul az openGymhez. Lásd: “Phone app and CORS”, docs/SELF_HOSTING.md.',
+  'The app can only pair with an https:// address. Your phone blocks plain http:// before anything is even sent.': 'Az app csak https:// címmel tud párosodni. A telefonod a sima http://-t már azelőtt letiltja, hogy bármi elmenne.',
   'Switch sides': 'Oldalcsere',
   'Saves a dated copy to “{0}” after finishing a workout or editing a routine, and keeps the newest {1}.': 'Minden befejezett edzés vagy rutinmódosítás után dátumozott másolatot ment ide: „{0}”, és a legújabb {1} darabot megtartja.',
   'Saves a dated copy to the folder you chose after finishing a workout or editing a routine, and keeps the newest {0}.': 'Minden befejezett edzés vagy rutinmódosítás után dátumozott másolatot ment a választott mappába, és a legújabb {0} darabot megtartja.',

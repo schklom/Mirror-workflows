@@ -220,7 +220,12 @@ const PROBE_MS = 5000
 const hostOfBase = base => {
   try { const u = new URL(base); return u.host + u.pathname.replace(/\/$/, '') } catch { return base || '' }
 }
-async function healthIsNotOpenGym(base, ms) {
+// What /api/health says when it can be read (the app's native fetch reads it past CORS):
+// 'opengym', 'front' when something in front of openGym answered in its place (a redirect, a
+// 401/403 or an HTML page: an SSO login, forward-auth, a proxy rule), 'other' for an answer that
+// is just not openGym's (another app's JSON, a proxy's plain "404 page not found"), and null
+// when nothing readable came back.
+async function healthAnswer(base, ms) {
   const ctl = typeof AbortController === 'function' ? new AbortController() : null
   let timer = null
   try {
@@ -228,11 +233,16 @@ async function healthIsNotOpenGym(base, ms) {
       nativeFetch(base + '/api/health', { method: 'GET', headers: { Accept: 'application/json' }, ...(ctl ? { signal: ctl.signal } : {}) }),
       new Promise((_, reject) => { timer = setTimeout(() => { if (ctl) ctl.abort(); reject(new Error('timeout')) }, ms) }),
     ])
+    const text = await res.text()
     let body = null
-    try { body = JSON.parse(await res.text()) } catch { body = null }
-    return !(res.ok && body && typeof body === 'object' && body.ok === true)
+    try { body = JSON.parse(text) } catch { body = null }
+    if (res.ok && body && typeof body === 'object' && body.ok === true) return 'opengym'
+    const type = (res.headers && typeof res.headers.get === 'function' && res.headers.get('content-type')) || ''
+    const html = /html/i.test(type) || /^\s*</.test(text || '')
+    if ((res.status >= 300 && res.status < 400) || res.status === 401 || res.status === 403 || res.status === 407 || html) return 'front'
+    return 'other'
   } catch {
-    return false
+    return null
   } finally { clearTimeout(timer) }
 }
 async function whyUnreachable(base, ms) {
@@ -248,9 +258,14 @@ async function whyUnreachable(base, ms) {
   } catch { /* not reachable either */ }
   finally { clearTimeout(timer) }
   // Something answered. Whether it is openGym needs a readable answer: in the app the native
-  // fetch reads /api/health past CORS. A page that is not openGym's health JSON means a wrong
-  // address, not a proxy (#329). No readable answer at all leaves the CORS explanation.
-  if (reached && (await healthIsNotOpenGym(base, ms))) {
+  // fetch reads /api/health past CORS. A login page or a proxy rule answering in openGym's place
+  // is not a wrong address, and a page that is simply not openGym's is (#329). No readable
+  // answer at all leaves the CORS explanation.
+  const answer = reached ? await healthAnswer(base, ms) : null
+  if (answer === 'front') {
+    return failure(t('That address answers, but a login page or proxy rule replied instead of openGym. Let /api/ through to openGym unchanged. See “Phone app and CORS” in docs/SELF_HOSTING.md.'), 'proxy-answered')
+  }
+  if (answer === 'other') {
     return failure(t('That address answers, but it isn’t an openGym server. Check the URL.'), 'not-opengym')
   }
   if (reached) {
@@ -258,6 +273,19 @@ async function whyUnreachable(base, ms) {
     return failure(t('Your server was reached, but it refused the app’s request (CORS). If a reverse proxy such as Traefik adds CORS headers, let requests from {0} through to openGym unchanged. See “Phone app and CORS” in docs/SELF_HOSTING.md.', origin), 'cors')
   }
   return failure(t('Could not reach {0}. Check the address and that this phone can reach it.', hostOfBase(base)), 'unreachable')
+}
+
+// The app's WebView is an https:// page with mixed content off, so a plain http:// server is
+// refused before a single byte goes out, and the probes above would only say "could not reach".
+// localhost counts as secure and is let through.
+async function blockedAsMixedContent(base) {
+  let u
+  try { u = new URL(base) } catch { return false }
+  if (u.protocol !== 'http:' || /^(localhost|127\.\d+\.\d+\.\d+|\[::1\])$/i.test(u.hostname)) return false
+  try {
+    const cap = await import('@capacitor/core')
+    return !!(cap && cap.Capacitor && cap.Capacitor.isNativePlatform())
+  } catch { return false }
 }
 
 // Bootstraps the connection itself: the base isn't configured yet (that's what this call decides),
@@ -271,6 +299,9 @@ export async function pairRedeem(serverBase, code, { probeMs = PROBE_MS } = {}) 
   } catch (e) {
     // The server answered (any status) or did not answer in time: that error says it already.
     if (e && (e.status != null || e.code)) throw e
+    if (await blockedAsMixedContent(serverBase)) {
+      throw failure(t('The app can only pair with an https:// address. Your phone blocks plain http:// before anything is even sent.'), 'insecure')
+    }
     throw await whyUnreachable(serverBase, probeMs)
   }
   // Anything that is not a pairing would be saved as one — and the phone would then send every

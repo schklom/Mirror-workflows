@@ -286,6 +286,8 @@ export default {
   'Copy': 'Kopie',
   // --- library / history ---
   '{0} exercises with animations': '{0} Übungen mit Animationen',
+  '{1} animated exercises + 1 of your own': '{1} Übungen mit Animation + 1 eigene',
+  '{1} animated exercises + {0} of your own': '{1} Übungen mit Animation + {0} eigene',
   'Search…': 'Suchen…',
   'No workouts yet. Your first one will land here.': 'Noch keine Trainings. Dein erstes landet hier.',
   // --- login / account ---

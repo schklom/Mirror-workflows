@@ -269,6 +269,8 @@ export default {
   'Copy routine': '複製課表',
   'Copy': '副本',
   '{0} exercises with animations': '{0} 個附帶動畫說明的動作',
+  '{1} animated exercises + 1 of your own': '{1} 個動畫動作 + 1 個自訂',
+  '{1} animated exercises + {0} of your own': '{1} 個動畫動作 + {0} 個自訂',
   'Search…': '搜尋…',
   'No workouts yet. Your first one will land here.': '還沒有訓練紀錄。你的第一次訓練會出現在這裡。',
   'Enter a name': '請輸入名稱',

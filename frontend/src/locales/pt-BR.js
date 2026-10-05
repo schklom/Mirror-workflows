@@ -1110,6 +1110,8 @@ export const PT_BR_OVERRIDES = {
   'Test sent! Should pop up any second': 'Teste enviado! Deve aparecer a qualquer momento',
   'That\'s not a QR code. Only QR cards can be shown here': 'Isso não é um código QR. Aqui só dá para mostrar cartões QR',
   'A clean printout, one page per plan. No exercise ever gets split across pages.': 'Uma impressão limpa, uma página por plano. Nenhum exercício fica dividido entre páginas.',
+  '{1} animated exercises + 1 of your own': '{1} exercícios animados + 1 seu',
+  '{1} animated exercises + {0} of your own': '{1} exercícios animados + {0} seus',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

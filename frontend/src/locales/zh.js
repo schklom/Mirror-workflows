@@ -273,6 +273,8 @@ export default {
   'Copy routine': '复制训练日',
   'Copy': '副本',
   '{0} exercises with animations': '{0} 个带动画的动作',
+  '{1} animated exercises + 1 of your own': '{1} 个动画动作 + 1 个自建',
+  '{1} animated exercises + {0} of your own': '{1} 个动画动作 + {0} 个自建',
   'Search…': '搜索…',
   'No workouts yet. Your first one will land here.': '还没有训练。你的第一次训练会出现在这里。',
   'Enter a name': '请输入名字',

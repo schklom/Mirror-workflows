@@ -230,6 +230,12 @@ button.conn:active{filter:brightness(1.12)}
 .hdr h1{font-size:34px;line-height:1.06;font-weight:700;letter-spacing:-.028em;overflow-wrap:break-word}
 @media (max-width:420px){.hdr h1{font-size:30px}}
 .hdr .sub{color:var(--label-2);font-size:15px;letter-spacing:-.006em;margin-top:4px}
+/* Library: the count line runs under the title row at full width instead of beside the "By muscle"
+   button, which left it ~200px on a phone: the catalogue count plus your own exercises stays one
+   line in every language. The ellipsis is only the safety net (the strings are kept short), and
+   text-overflow follows the text direction, so Arabic clips on its own end. */
+.hdr.lib-hdr{flex-wrap:wrap;align-items:center;row-gap:0}
+.hdr.lib-hdr>.sub.lib-count{flex:1 0 100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 .iconbtn{
   width:36px;height:36px;border-radius:50%;flex:none;

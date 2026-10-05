@@ -265,6 +265,8 @@ export default {
   'Copy routine': 'Копировать программу',
   'Copy': 'Копия',
   '{0} exercises with animations': '{0} упражнений с анимациями',
+  '{1} animated exercises + 1 of your own': '{1} упр. с анимацией + 1 своё',
+  '{1} animated exercises + {0} of your own': { one: '{1} упр. с анимацией + {0} своё', few: '{1} упр. с анимацией + {0} своих', many: '{1} упр. с анимацией + {0} своих', other: '{1} упр. с анимацией + {0} своего' },
   'Search…': 'Поиск…',
   'No workouts yet. Your first one will land here.': 'Тренировок пока нет. Первая появится здесь.',
   'Enter a name': 'Введите имя',

@@ -273,6 +273,8 @@ export default {
   'Copy routine': 'Copier la routine',
   'Copy': 'Copie',
   '{0} exercises with animations': '{0} exercices avec animations',
+  '{1} animated exercises + 1 of your own': '{1} exercices animés + 1 perso',
+  '{1} animated exercises + {0} of your own': '{1} exercices animés + {0} perso',
   'Search…': 'Rechercher…',
   'No workouts yet. Your first one will land here.': 'Aucune séance pour l’instant. Ta première atterrira ici.',
   'Enter a name': 'Entre un nom',

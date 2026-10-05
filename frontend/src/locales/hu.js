@@ -277,6 +277,8 @@ export default {
   'Copy': 'Másolat',
   // --- library / history ---
   '{0} exercises with animations': '{0} gyakorlat animációval',
+  '{1} animated exercises + 1 of your own': '{1} animált gyakorlat + 1 saját',
+  '{1} animated exercises + {0} of your own': '{1} animált gyakorlat + {0} saját',
   'Search…': 'Keresés…',
   'No workouts yet. Your first one will land here.': 'Még nincs edzés. Az első ide fog landolni.',
   // --- login / account ---

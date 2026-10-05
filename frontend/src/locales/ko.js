@@ -273,6 +273,8 @@ export default {
   'Copy routine': '루틴 복사',
   'Copy': '복사본',
   '{0} exercises with animations': '애니메이션이 있는 운동 {0}개',
+  '{1} animated exercises + 1 of your own': '애니메이션 운동 {1}개 + 내 운동 1개',
+  '{1} animated exercises + {0} of your own': '애니메이션 운동 {1}개 + 내 운동 {0}개',
   'Search…': '검색…',
   'No workouts yet. Your first one will land here.': '아직 운동 기록이 없어요. 첫 운동이 여기에 쌓일 거예요.',
   'Enter a name': '이름을 입력하세요',

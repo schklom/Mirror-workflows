@@ -238,6 +238,8 @@ export default {
   '“{0}” and its exercises will be removed.': '«{0}» та її вправи буде видалено.',
   'Delete routine': 'Видалити програму',
   '{0} exercises with animations': '{0} вправ з анімаціями',
+  '{1} animated exercises + 1 of your own': '{1} вправ з анімаціями + 1 власна',
+  '{1} animated exercises + {0} of your own': { one: '{1} вправ з анімаціями + {0} власна', few: '{1} вправ з анімаціями + {0} власні', many: '{1} вправ з анімаціями + {0} власних', other: '{1} вправ з анімаціями + {0} власної' },
   'Search…': 'Пошук…',
   'No workouts yet. Your first one will land here.': 'Тренувань поки немає. Перше з’явиться саме тут.',
   '{0} loaded': '{0} завантажено',

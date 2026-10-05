@@ -257,6 +257,8 @@ export default {
   '“{0}” and its exercises will be removed.': 'سيُحذف «{0}» مع تمارينه.',
   'Delete routine': 'حذف الروتين',
   '{0} exercises with animations': '{0} تمارين مع رسوم متحركة',
+  '{1} animated exercises + 1 of your own': '{1} تمرين متحرك + 1 خاص بك',
+  '{1} animated exercises + {0} of your own': { zero: '{1} تمرين متحرك + {0} خاص بك', one: '{1} تمرين متحرك + {0} خاص بك', two: '{1} تمرين متحرك + {0} خاصان بك', few: '{1} تمرين متحرك + {0} تمارين خاصة', many: '{1} تمرين متحرك + {0} تمرينًا خاصًا', other: '{1} تمرين متحرك + {0} تمرين خاص' },
   'Search…': 'بحث…',
   'No workouts yet. Your first one will land here.': 'لا توجد تمارين بعد. أول تمرين لك سيحطّ هنا.',
   'Enter a name': 'أدخل اسماً',

@@ -277,6 +277,8 @@ export default {
   'Copy': 'สำเนา',
   // --- library / history ---
   '{0} exercises with animations': '{0} ท่าพร้อมภาพเคลื่อนไหว',
+  '{1} animated exercises + 1 of your own': '{1} ท่าพร้อมภาพเคลื่อนไหว + ของคุณ 1 ท่า',
+  '{1} animated exercises + {0} of your own': '{1} ท่าพร้อมภาพเคลื่อนไหว + ของคุณ {0} ท่า',
   'Search…': 'ค้นหา…',
   'No workouts yet. Your first one will land here.': 'ยังไม่มีการออกกำลังกาย ครั้งแรกของคุณจะมาโผล่ตรงนี้',
   // --- login / account ---

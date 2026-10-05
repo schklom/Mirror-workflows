@@ -87,6 +87,10 @@ export function armRestAlert(at, opts = {}) {
   const mine = ++token
   const alert = buildRestAlert({ at, title: opts.title, countdownTitle: opts.countdownTitle, totalSec: opts.totalSec, accent: opts.accent, sound: opts.sound, vibrate: opts.vibrate !== false, alarmBuzz: !!opts.alarmBuzz })
   if (!alert) return Promise.resolve(false)
+  // Outside the chain and never awaited: the alarm, its tone and the alarm buzz do not need the
+  // notification permission, and a dialog left open while the phone is put away must not hold
+  // the alarm back until the rest is long over.
+  askNotifPermissionOnce()
   return enqueue(async () => {
     let kind = 'failed'
     try { kind = await deliver(alert) } catch { kind = 'failed' }
@@ -149,26 +153,50 @@ export function setRestAccent(key) {
   })
 }
 
-async function ensureNotifPermission() {
-  try {
-    const { LocalNotifications } = await import('@capacitor/local-notifications')
-    let perm = await LocalNotifications.checkPermissions()
-    if (perm.display === 'granted') return true
-    if (perm.display === 'denied') return false
-    perm = await LocalNotifications.requestPermissions()
-    return perm.display === 'granted'
-  } catch {
-    return false
-  }
+// The notification permission is asked once, the first time a rest starts. The answer is kept:
+// Android lets an app ask again after a "Don't allow", and asking on every rest would pop the
+// dialog between every set. Settings → Notifications in the system is where it changes later.
+export const NOTIF_ASKED_KEY = 'gym_rest_notif_asked'
+let askP = null
+const readAsked = () => { try { return localStorage.getItem(NOTIF_ASKED_KEY) } catch { return null } }
+const writeAsked = v => { try { localStorage.setItem(NOTIF_ASKED_KEY, v) } catch { /* asked again next launch */ } }
+
+export function askNotifPermissionOnce() {
+  if (askP) return askP
+  askP = (async () => {
+    try {
+      if (!(await isAndroid())) return false
+      const { LocalNotifications } = await import('@capacitor/local-notifications')
+      const perm = await LocalNotifications.checkPermissions()
+      if (perm.display === 'granted') return true
+      if (perm.display === 'denied' || readAsked()) return false
+      const got = await LocalNotifications.requestPermissions()
+      // Kept only once really answered. Leaving the app closes the dialog and reports "denied",
+      // but the permission still reads 'prompt' then: nobody chose, so the next launch asks again
+      // (this one does not: askP holds the answer for the rest of the session).
+      const after = got.display === 'granted' ? got : await LocalNotifications.checkPermissions().catch(() => got)
+      if (after.display !== 'prompt') writeAsked(got.display === 'granted' ? 'granted' : 'denied')
+      return got.display === 'granted'
+    } catch {
+      return false
+    }
+  })()
+  return askP
 }
 
+// Test seam: a fresh launch.
+export function _resetNotifAsk() { askP = null }
+
 async function deliver(alert) {
+  // The end passed while the call waited its turn (a slow bridge, a frozen WebView): nothing to
+  // ring any more, and the plugin would refuse it ("at must be in the future").
+  if (!(alert.at > Date.now())) return 'expired'
   const p = await restPlugin()
   if (!p) return 'skipped'
   const { RestAlert } = p
-  await ensureNotifPermission()
-  // Sound still schedules when notification permission is missing: the alarm tone does
-  // not need it. The notification does, which is why we ask above.
+  if (!(alert.at > Date.now())) return 'expired'
+  // Sound, the alarm buzz and the alarm itself need no notification permission; only the
+  // countdown card does, and askNotifPermissionOnce() asks for it on the side.
   await RestAlert.schedule({
     id: alert.id,
     at: alert.at,

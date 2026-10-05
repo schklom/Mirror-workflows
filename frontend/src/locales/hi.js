@@ -1791,4 +1791,5 @@ export default {
   '{0} doesn’t do itself, recruit. Move it!': '{0} अपने आप नहीं होगा, रंगरूट। चलो, हिलो!',
   'Excuses don’t lift weights. Report for {0} tomorrow!': 'बहाने वज़न नहीं उठाते। कल {0} के लिए हाज़िर हो!',
   'Your muscles filed a missing-person report. Show up for {0}!': 'आपकी मांसपेशियों ने गुमशुदगी की रिपोर्ट लिखाई है। {0} के लिए हाज़िर हो!',
+  'That address answers, but it isn’t an openGym server. Check the URL.': 'यह पता जवाब देता है, लेकिन यह openGym सर्वर नहीं है। URL जाँचें।',
 }

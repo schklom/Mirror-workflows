@@ -1791,4 +1791,5 @@ export default {
   '{0} doesn’t do itself, recruit. Move it!': '{0}不会自己完成，新兵。动起来！',
   'Excuses don’t lift weights. Report for {0} tomorrow!': '借口举不起重量。明天准时报到练{0}！',
   'Your muscles filed a missing-person report. Show up for {0}!': '你的肌肉已经报了失踪。马上来练{0}！',
+  'That address answers, but it isn’t an openGym server. Check the URL.': '该地址有响应，但不是 openGym 服务器。请检查网址。',
 }

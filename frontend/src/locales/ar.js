@@ -1844,4 +1844,5 @@ export default {
   '{0} doesn’t do itself, recruit. Move it!': '{0} لن ينجز نفسه أيها المجنّد. تحرّك!',
   'Excuses don’t lift weights. Report for {0} tomorrow!': 'الأعذار لا ترفع الأوزان. احضر غدًا إلى {0}!',
   'Your muscles filed a missing-person report. Show up for {0}!': 'عضلاتك أبلغت عن فقدانك. احضر إلى {0}!',
+  'That address answers, but it isn’t an openGym server. Check the URL.': 'هذا العنوان يستجيب، لكنه ليس خادم openGym. تحقّق من الرابط.',
 }

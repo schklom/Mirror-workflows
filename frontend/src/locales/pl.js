@@ -1791,4 +1791,5 @@ export default {
   '{0} doesn’t do itself, recruit. Move it!': 'Trening „{0}” sam się nie zrobi, rekrucie. Ruszaj się!',
   'Excuses don’t lift weights. Report for {0} tomorrow!': 'Wymówki nie podnoszą ciężarów. Jutro meldujesz się na „{0}”!',
   'Your muscles filed a missing-person report. Show up for {0}!': 'Twoje mięśnie zgłosiły twoje zaginięcie. Stawić się na „{0}”!',
+  'That address answers, but it isn’t an openGym server. Check the URL.': 'Ten adres odpowiada, ale to nie jest serwer openGym. Sprawdź URL.',
 }

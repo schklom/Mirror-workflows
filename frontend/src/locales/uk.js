@@ -1788,4 +1788,5 @@ export default {
   '{0} doesn’t do itself, recruit. Move it!': 'Тренування «{0}» саме себе не зробить, новобранцю. Ворушися!',
   'Excuses don’t lift weights. Report for {0} tomorrow!': 'Відмовки не піднімають ваги. Завтра з’явитися на «{0}»!',
   'Your muscles filed a missing-person report. Show up for {0}!': 'Твої м’язи заявили про твоє зникнення. З’явитися на «{0}»!',
+  'That address answers, but it isn’t an openGym server. Check the URL.': 'Ця адреса відповідає, але це не сервер openGym. Перевір URL.',
 }

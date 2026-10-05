@@ -2,6 +2,7 @@
 import { t } from './i18n-core.js'
 import { MOBILE } from './mobile.js'
 import { appBase } from './app-base.js'
+import { nativeFetch } from './capacitor-fetch.js'
 
 export const IS_APPLE = /iPhone|iPad|iPod|Macintosh/.test(navigator.userAgent)
 export const IS_ANDROID = /Android/.test(navigator.userAgent)
@@ -219,6 +220,21 @@ const PROBE_MS = 5000
 const hostOfBase = base => {
   try { const u = new URL(base); return u.host + u.pathname.replace(/\/$/, '') } catch { return base || '' }
 }
+async function healthIsNotOpenGym(base, ms) {
+  const ctl = typeof AbortController === 'function' ? new AbortController() : null
+  let timer = null
+  try {
+    const res = await Promise.race([
+      nativeFetch(base + '/api/health', { method: 'GET', headers: { Accept: 'application/json' }, ...(ctl ? { signal: ctl.signal } : {}) }),
+      new Promise((_, reject) => { timer = setTimeout(() => { if (ctl) ctl.abort(); reject(new Error('timeout')) }, ms) }),
+    ])
+    let body = null
+    try { body = JSON.parse(await res.text()) } catch { body = null }
+    return !(res.ok && body && typeof body === 'object' && body.ok === true)
+  } catch {
+    return false
+  } finally { clearTimeout(timer) }
+}
 async function whyUnreachable(base, ms) {
   let reached = false
   const ctl = typeof AbortController === 'function' ? new AbortController() : null
@@ -231,6 +247,12 @@ async function whyUnreachable(base, ms) {
     reached = true
   } catch { /* not reachable either */ }
   finally { clearTimeout(timer) }
+  // Something answered. Whether it is openGym needs a readable answer: in the app the native
+  // fetch reads /api/health past CORS. A page that is not openGym's health JSON means a wrong
+  // address, not a proxy (#329). No readable answer at all leaves the CORS explanation.
+  if (reached && (await healthIsNotOpenGym(base, ms))) {
+    return failure(t('That address answers, but it isn’t an openGym server. Check the URL.'), 'not-opengym')
+  }
   if (reached) {
     const origin = globalThis.location?.origin || 'https://localhost'
     return failure(t('Your server was reached, but it refused the app’s request (CORS). If a reverse proxy such as Traefik adds CORS headers, let requests from {0} through to openGym unchanged. See “Phone app and CORS” in docs/SELF_HOSTING.md.', origin), 'cors')

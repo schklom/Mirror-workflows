@@ -1304,8 +1304,8 @@ body.chips-dragging *{cursor:inherit}
 @keyframes slideup{from{transform:translateY(16px);opacity:0}to{transform:none;opacity:1}}
 #timer .bar{position:absolute;top:0;inset-inline-start:0;inset-inline-end:0;height:3px;background:var(--surface-3)}
 #timer .bar i{display:block;height:100%;background:var(--acc);transition:width 1s linear}
-/* The clock is what the bar is for, so it never gives up width: the buttons do (Skip's label is
-   the one that gives, ending in … in a long language on a narrow phone). The label under the
+/* The clock is what the bar is for, so it never gives up width: the buttons do (Skip is the one that
+   gives: in a long language on a narrow phone it becomes an icon, RestTimer.jsx useSkipFits). The label under the
    clock fills the clock's width but does not widen it. */
 #timer .tclock{flex:none;min-width:0;display:flex;flex-direction:column;align-items:flex-start;text-align:start;padding:2px 0}
 #timer .t{font-size:28px;font-weight:600;line-height:1.1;letter-spacing:-.026em;font-variant-numeric:tabular-nums;white-space:nowrap}
@@ -1331,6 +1331,12 @@ body.chips-dragging *{cursor:inherit}
    between counting and Ready; so does the pause slot, kept invisible once the rest is over. */
 #timer .acts .skip > span > span{grid-area:1/1;min-width:0;overflow:hidden;text-overflow:ellipsis}
 #timer .acts .skip .off,#timer .acts .pause-slot{visibility:hidden}
+/* Hidden copies of both labels, at their natural width, that RestTimer measures to decide
+   whether Skip shows its label or only its icon (skip-forward, or × once Ready). */
+#timer .acts .skip{position:relative}
+#timer .acts .skip > .skip-probe{position:absolute;inset-inline-start:0;top:0;visibility:hidden;pointer-events:none;display:block;overflow:visible;width:max-content}
+#timer .acts .skip > .skip-probe > span{display:block;width:max-content;white-space:nowrap}
+#timer .acts .skip.icon-only{min-width:0}
 /* A paused rest reads as held: the clock and the bar step back until it runs again. */
 #timer.rest.paused .t,#timer.rest.paused .bar{opacity:.5}
 /* work timer (issue #16): the same bar doing the opposite job — outlined and tinted so a

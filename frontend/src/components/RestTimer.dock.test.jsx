@@ -64,7 +64,7 @@ describe('the docked rest bar', () => {
     const slots = () => [...host.querySelectorAll('#timer .acts > button')].map(b => b.className.match(/adj|pause-slot|pause|skip/)[0])
     expect(slots()).toEqual(['adj', 'adj', 'pause', 'skip'])
     expect(host.querySelector('#timer .t').dataset.alt).toBe('Ready')
-    const skipCell = () => [...host.querySelectorAll('#timer .skip > span > span')].map(s => s.textContent).sort()
+    const skipCell = () => [...host.querySelectorAll('#timer .skip > span:not(.skip-probe) > span')].map(s => s.textContent).sort()
     expect(skipCell()).toEqual(['Dismiss', 'Skip'])
     act(() => vi.advanceTimersByTime(1000))
     expect(host.querySelector('#timer .t').textContent).toBe('Ready')
@@ -76,6 +76,27 @@ describe('the docked rest bar', () => {
     expect(stand.getAttribute('aria-hidden')).toBe('true')
     expect(stand.tabIndex).toBe(-1)
     expect(host.querySelector('#timer .skip .off').getAttribute('aria-hidden')).toBe('true')
+  })
+
+  it('shows Skip as an icon, named in full, when its label does not fit, and Dismiss as × once Ready', () => {
+    const rect = Element.prototype.getBoundingClientRect
+    Element.prototype.getBoundingClientRect = function () {
+      const r = rect.call(this)
+      return this.parentElement?.classList.contains('skip-probe') ? { ...r, width: 400 } : r
+    }
+    try {
+      act(() => useUI.getState().startRest(1, 0))
+      mount()
+      const skip = host.querySelector('#timer .skip')
+      expect(skip.classList.contains('icon-only')).toBe(true)
+      expect(skip.getAttribute('aria-label')).toBe('Skip')
+      expect(skip.querySelector('.on')).toBeNull()
+      expect(skip.querySelector('svg')).toBeTruthy()
+      act(() => vi.advanceTimersByTime(1000))
+      expect(host.querySelector('#timer .skip').getAttribute('aria-label')).toBe('Dismiss')
+      act(() => host.querySelector('#timer .skip').click())
+      expect(useUI.getState().timer).toBeNull()
+    } finally { Element.prototype.getBoundingClientRect = rect }
   })
 
   it('says Paused under the clock while the rest is held', () => {

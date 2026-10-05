@@ -8,6 +8,7 @@ export const WC_DEFAULT = Object.freeze({
   setShortcuts: false,    // "+ Drop" / "+ Burst" chips on every set and the warm-up/remove/add row
   pairButtons: false,     // "Make superset with previous/next" in the exercise header
   exerciseButtons: false, // Move up/down, Swap, Remove exercise below the exercise
+  swipeSets: true,        // swipe a set row: toward the start deletes (with Undo), toward the end copies
 })
 
 export function workoutControls(S) {

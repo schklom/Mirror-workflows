@@ -2,6 +2,7 @@ import { useStore } from '../store/useStore.js'
 import { useUI } from '../store/useUI.js'
 import { t } from '../lib/i18n.js'
 import { effortOf } from '../lib/history.js'
+import { workoutControls } from '../lib/workout-controls.js'
 import { unlock, vibrateSupported, appleTouchDevice } from '../lib/sound.js'
 import { wakeLockSupported } from '../lib/wakelock.js'
 import { MOBILE } from '../lib/mobile.js'
@@ -64,6 +65,10 @@ export function WorkoutSettings({ close }) {
         <Segmented className="seg-inline"
           options={[{ value: 'none', label: t('Off') }, { value: 'rir', label: t('RIR') }, { value: 'rpe', label: t('RPE') }]}
           value={effortOf(S)} onChange={v => update(s => { s.effort = v; delete s.showRir })} />
+      </Row>
+      <Row icon="swap" iconTint="var(--indigo)" title={t('Swipe on sets')} subtitle={t('Left deletes, right copies')}>
+        <Switch aria-label={t('Swipe on sets')} checked={workoutControls(S).swipeSets}
+          onChange={v => update(s => { s.wc = { ...workoutControls(s), swipeSets: v } })} />
       </Row>
       <Row icon="image" iconTint="var(--teal)" title={t('Exercise animations')}>
         <Segmented className="seg-inline"

@@ -527,6 +527,10 @@ export default function Settings({ page = null, find = null, via = null }) {
           <Row icon="bolt" iconTint="var(--orange)" title={t('Drop and burst shortcuts on every set')}>
             <Switch checked={wc.setShortcuts} onChange={v => setWc('setShortcuts', v)} />
           </Row>
+          {/* Swipe on sets (v1.3.11): not a button, but the same question of what a set row does. */}
+          <Row icon="swap" iconTint="var(--indigo)" title={t('Swipe on sets')} subtitle={t('Left deletes, right copies')}>
+            <Switch aria-label={t('Swipe on sets')} checked={wc.swipeSets} onChange={v => setWc('swipeSets', v)} />
+          </Row>
           <Row icon="link" iconTint="var(--blue)" title={t('Superset buttons in the exercise header')}>
             <Switch checked={wc.pairButtons} onChange={v => setWc('pairButtons', v)} />
           </Row>

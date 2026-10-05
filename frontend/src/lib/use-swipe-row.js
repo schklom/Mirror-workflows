@@ -177,7 +177,7 @@ export function useSwipeRow({ canDelete = true, onCommit, onBlocked, onStart, cl
     outer.classList.toggle('go-del', off < 0)
     outer.classList.toggle('go-cp', off > 0)
     // A tiny buzz crossing the commit point, either way (Android; Safari has no vibrate).
-    if (!ms && armed !== prevArmed) {
+    if (!ms && armed !== prevArmed && g.current?.lock) {
       const deleting = armed === 'delete' || prevArmed === 'delete'
       if (!(deleting && props.current.canDelete === false)) vibrate(8)
     }

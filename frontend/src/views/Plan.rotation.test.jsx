@@ -1,8 +1,9 @@
 // @vitest-environment happy-dom
-// Plan's rotation editor: one row per sequence position, add/remove/move writing straight through
-// lib/rotation.js, adoption of an externally written queue, recovery for a malformed one, and the
-// weekday grid staying up alongside the editor for any live queue — hidden only with Rotation
-// chosen and nothing built yet, or a saved sequence whose routines are all gone.
+// Plan → Schedule since v1.3.11: ONE "How you train: Fixed Week | Rotation" control (the same
+// switch and keys as Settings, lib/rotation.js chooseRotation / chooseFixedWeek). Fixed Week shows
+// the weekdays; Rotation shows the loop (add, Edit to reorder and remove, Start the loop over),
+// with the weekdays that still hold a routine beside it. An externally written queue is read-only
+// until adopted, and a malformed one offers recovery.
 import React, { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
@@ -10,7 +11,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 globalThis.IS_REACT_ACT_ENVIRONMENT = true
 
 const mocks = vi.hoisted(() => {
-  const state = { S: null }
+  const state = { S: null, nav: null }
   state.snapshot = () => ({
     S: state.S,
     update: mut => { const next = structuredClone(state.S); mut(next); state.S = next },
@@ -23,10 +24,10 @@ vi.mock('../store/useStore.js', () => {
   useStore.getState = mocks.snapshot
   return { useStore }
 })
-vi.mock('react-router-dom', () => ({ useNavigate: () => vi.fn() }))
+vi.mock('react-router-dom', () => ({ useNavigate: () => mocks.nav }))
 vi.mock('../sheets.jsx', () => ({
-  dayAssignSheet: vi.fn(), dayAddRoutineSheet: vi.fn(), starterPlanSheet: vi.fn(),
-  planToolsSheet: vi.fn(), menuSheet: vi.fn(), confirmSheet: vi.fn(),
+  dayAssignSheet: vi.fn(), starterPlanSheet: vi.fn(), menuSheet: vi.fn(), confirmSheet: vi.fn(),
+  planHasRoutines: () => true, exportPlanFile: vi.fn(), printWholePlan: vi.fn(), importPlanFile: vi.fn(),
 }))
 vi.mock('../lib/mobile.js', () => ({ MOBILE: false }))
 vi.mock('../lib/demo.js', () => ({ DEMO: false }))
@@ -42,61 +43,110 @@ const routines = [
   { id: 'c', name: 'C', emoji: null, ex: [{ id: '0025' }] },
 ]
 const live = (over = {}) => ({ ids: ['a', 'b'], since: Date.now() - 86400000, startsOn: todayISO(), label: 'My split', ...over })
+const saved = { id: 'r1', sequence: ['a', 'b'], label: 'My split' }
 const baseS = over => ({ routines, week: { 1: ['c'] }, dayPlan: {}, workouts: [], queue: null, rotation: null, scheduleMode: null, ...over })
 
 let host, root
-beforeEach(() => { host = document.createElement('div'); document.body.appendChild(host); root = createRoot(host); menuSheet.mockClear(); confirmSheet.mockClear() })
+beforeEach(() => {
+  localStorage.removeItem('gym_plan_view')
+  host = document.createElement('div'); document.body.appendChild(host); root = createRoot(host)
+  menuSheet.mockClear(); confirmSheet.mockClear(); mocks.nav = vi.fn()
+})
 afterEach(() => { act(() => root.unmount()); host.remove() })
 
+// the mocked store is not reactive: re-mount to see a write render
 const mount = over => { mocks.S = baseS(over); act(() => root.render(<Plan />)) }
+const remount = () => act(() => root.render(<Plan key={Math.random()} />))
 const rows = () => [...host.querySelectorAll('.rotation-row')]
 const names = () => rows().map(r => r.querySelector('.tt').textContent)
 const click = el => act(() => el.dispatchEvent(new MouseEvent('click', { bubbles: true })))
 const byLabel = label => [...host.querySelectorAll('button')].find(b => b.getAttribute('aria-label') === label || b.textContent.trim() === label)
+const modeButtons = () => [...host.querySelectorAll('.plan-mode .seg button')]
+const pickMode = label => click(modeButtons().find(b => b.textContent === label))
+const selectedMode = () => modeButtons().find(b => b.className.includes('on'))?.textContent
+const headings = () => [...host.querySelectorAll('h4.sec')].map(h => h.firstChild.textContent)
+const subtitle = () => host.querySelector('.hdr .sub').textContent
 
-describe('Plan — the rotation editor', () => {
-  it('lists the live pass in order, and keeps the weekday grid up for a managed pass too', () => {
-    // A managed pass no longer hides the grid: the weekday routines still ride alongside it
-    // (effectiveRoutineIds, history.js) and feed the same tally (weekTally, queue.js), so hiding
-    // the grid would hide the very thing a combined count depends on.
-    mount({ queue: live({ rotationId: 'r1' }), rotation: { id: 'r1', sequence: ['a', 'b'], label: 'My split' } })
-    expect(names()).toEqual(['A', 'B'])
-    expect(host.textContent).toContain('Week schedule')
-    expect(host.textContent).toContain('C')   // week[1] = ['c'] (baseS) rides along beside the pass
-  })
-
-  it('a coach queue with S.scheduleMode stuck on "rotation" still shows Week schedule, never Build a rotation instead', () => {
-    // scheduleMode is stale/irrelevant once a queue is live — it only matters with no queue at
-    // all (the from-scratch setup gap hideGrid exists for).
-    mount({ queue: live(), scheduleMode: 'rotation' })   // external queue; no S.rotation
-    expect(host.textContent).toContain('Week schedule')
-    expect(byLabel('Build a rotation instead')).toBeUndefined()
-  })
-
-  it('nothing saved shows the weekday grid, with a button into the rotation editor', () => {
+describe('Plan — How you train', () => {
+  it('nothing saved: Fixed Week with the weekdays, and no rotation buttons of its own', () => {
     mount()
-    expect(host.textContent).toContain('Week schedule')
+    expect(selectedMode()).toBe('Fixed Week')
+    expect(headings()).toContain('This week')
+    expect(subtitle()).toBe('Your weekly routine')
     expect(rows()).toEqual([])
-    click(byLabel('Build a rotation instead'))
+    // the old duplicate controls are gone: the mode control is the one way in and out
+    expect(byLabel('Build a rotation instead')).toBeUndefined()
+    expect(byLabel('Cancel')).toBeUndefined()
+  })
+
+  it('Rotation with nothing saved holds the choice and shows an empty loop instead of the week', () => {
+    mount()
+    pickMode('Rotation')
     expect(mocks.S.scheduleMode).toBe('rotation')
-    // the mocked store is not reactive, so re-mount to see the persisted choice render
-    mount({ scheduleMode: mocks.S.scheduleMode })
-    expect(host.textContent).toContain('Rotation')
-    expect(host.textContent).not.toContain('Week schedule')
+    expect(mocks.S.queue).toBe(null)
+    remount()
+    expect(selectedMode()).toBe('Rotation')
+    expect(headings()).toContain('The loop')
+    expect(headings()).not.toContain('This week')
+    expect(host.textContent).toContain('No rotation yet.')
+    // the subtitle stops saying "weekly" once you train in a loop
+    expect(subtitle()).toBe('Your routines in a loop')
   })
 
-  it('Cancel gives the schedule back to the weekday plan', () => {
+  it('back to Fixed Week with nothing running needs no confirmation', () => {
     mount({ scheduleMode: 'rotation' })
-    expect(host.textContent).toContain('Rotation')
-    click(byLabel('Cancel'))
+    pickMode('Fixed Week')
+    expect(confirmSheet).not.toHaveBeenCalled()
     expect(mocks.S.scheduleMode).toBe('week')
-    mount({ scheduleMode: mocks.S.scheduleMode })
-    expect(host.textContent).toContain('Week schedule')
-    expect(host.textContent).not.toContain('Rotation')
   })
 
-  it('adding a routine offers only the ones not in the sequence, and saves the pass', () => {
-    mount({ queue: live({ rotationId: 'r1' }), rotation: { id: 'r1', sequence: ['a', 'b'], label: 'My split' } })
+  it('Rotation starts a pass from a saved loop', () => {
+    mount({ rotation: saved })
+    pickMode('Rotation')
+    expect(mocks.S.queue).toMatchObject({ ids: ['a', 'b'], rotationId: 'r1', startsOn: todayISO() })
+    expect(mocks.S.scheduleMode).toBe('rotation')
+  })
+
+  it('leaving a running loop asks first, then keeps the loop and the weekdays', () => {
+    mount({ queue: live({ rotationId: 'r1' }), rotation: saved, dayPlan: { [todayISO()]: 'a' } })
+    expect(selectedMode()).toBe('Rotation')
+    pickMode('Fixed Week')
+    expect(mocks.S.queue).not.toBe(null)
+    expect(confirmSheet).toHaveBeenCalledTimes(1)
+    act(() => confirmSheet.mock.calls[0][0].onConfirm())
+    expect(mocks.S.queue).toBe(null)
+    expect(mocks.S.scheduleMode).toBe('week')
+    expect(mocks.S.rotation.sequence).toEqual(['a', 'b'])
+    expect(mocks.S.week).toEqual({ 1: ['c'] })
+    expect(mocks.S.dayPlan).toEqual({})
+  })
+})
+
+describe('Plan — the loop', () => {
+  it('lists the live pass in order with its state, and keeps the weekdays that hold a routine', () => {
+    mount({ queue: live({ rotationId: 'r1' }), rotation: saved })
+    expect(names()).toEqual(['A', 'B'])
+    expect(rows().map(r => r.querySelector('.ss').textContent)).toEqual(['Up next', 'Later'])
+    expect(rows()[0].querySelector('.plan-order').className).toContain('next')
+    expect(host.textContent).toContain('0 of 2 done this round.')
+    // week[1] = ['c'] rides along beside the pass (effectiveRoutineIds), so it stays in sight
+    expect(headings()).toContain('Also on fixed days')
+    expect(host.querySelector('.plan-day[data-day="1"] .tt').textContent).toBe('C')
+    expect(host.querySelectorAll('.plan-day').length).toBe(1)
+  })
+
+  it('a session done this round reads Done and moves Up next along', () => {
+    const since = Date.now() - 86400000
+    mount({
+      queue: live({ since, rotationId: 'r1' }), rotation: saved,
+      workouts: [{ id: 'w1', d: todayISO(), start: Date.now() - 1000, routineIds: ['a'], routineId: 'a', name: 'A', entries: [] }],
+    })
+    expect(rows().map(r => r.querySelector('.ss').textContent)).toEqual(['Done', 'Up next'])
+    expect(host.textContent).toContain('1 of 2 done this round.')
+  })
+
+  it('adding a routine offers only the ones not in the loop, and saves the pass', () => {
+    mount({ queue: live({ rotationId: 'r1' }), rotation: saved })
     click(byLabel('Add routine to the rotation'))
     const items = menuSheet.mock.calls[0][0].items
     expect(items.map(i => i.label)).toEqual(['C'])
@@ -105,16 +155,32 @@ describe('Plan — the rotation editor', () => {
     expect(mocks.S.rotation.sequence).toEqual(['a', 'b', 'c'])
   })
 
-  it('move down reorders without restarting the pass', () => {
+  it('Edit reveals the handles; moving one reorders without restarting the pass', () => {
     const since = Date.now() - 86400000
-    mount({ queue: live({ since, rotationId: 'r1' }), rotation: { id: 'r1', sequence: ['a', 'b'], label: 'My split' } })
-    click(rows()[0].querySelector('[aria-label="Move down"]'))
+    mount({ queue: live({ since, rotationId: 'r1' }), rotation: saved })
+    expect(host.querySelector('[data-reorder-handle]')).toBe(null)
+    click(byLabel('Edit'))
+    const handle = rows()[0].querySelector('[data-reorder-handle]')
+    act(() => { handle.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true })) })
     expect(mocks.S.queue.ids).toEqual(['b', 'a'])
     expect(mocks.S.queue.since).toBe(since)
   })
 
+  it('a drag on the handle reorders the loop too', () => {
+    mount({ queue: live({ ids: ['a', 'b', 'c'], rotationId: 'r1' }), rotation: { ...saved, sequence: ['a', 'b', 'c'] } })
+    click(byLabel('Edit'))
+    rows().forEach((row, i) => { row.getBoundingClientRect = () => ({ top: i * 68, bottom: i * 68 + 60, height: 60, left: 0, right: 300, width: 300 }) })
+    const h = rows()[2].querySelector('[data-reorder-handle]')
+    const fire = (type, y) => act(() => { h.dispatchEvent(new PointerEvent(type, { bubbles: true, pointerId: 7, button: 0, clientY: y })) })
+    fire('pointerdown', 166)
+    fire('pointermove', 20)
+    fire('pointerup', 20)
+    expect(mocks.S.queue.ids).toEqual(['c', 'a', 'b'])
+  })
+
   it('removing the last routine hands the schedule back to the weekday plan', () => {
     mount({ queue: live({ ids: ['a'], rotationId: 'r1' }), rotation: { id: 'r1', sequence: ['a'], label: 'My split' } })
+    click(byLabel('Edit'))
     click(rows()[0].querySelector('[aria-label="Remove"]'))
     expect(mocks.S.queue).toBe(null)
     expect(mocks.S.rotation).toBe(null)
@@ -122,10 +188,37 @@ describe('Plan — the rotation editor', () => {
     expect(mocks.S.week).toEqual({ 1: ['c'] })
   })
 
-  it('an externally written pass says so, keeps the weekday grid, and can be adopted behind a confirm', () => {
-    mount({ queue: live() })                       // no rotationId, no rotation
-    expect(host.textContent).toContain('Externally managed')
-    expect(host.textContent).toContain('Week schedule')
+  it('Start the loop over rewinds the current round, strictly from now', () => {
+    mount({
+      queue: live({ since: Date.now() - 5 * 86400000, startsOn: '2026-09-01', rotationId: 'r1' }),
+      rotation: saved,
+    })
+    click(byLabel('Start the loop over'))
+    expect(mocks.S.queue.startsOn).toBe(todayISO())
+    expect(mocks.S.queue.ids).toEqual(['a', 'b'])
+    expect(mocks.S.queue.strict).toBe(true)
+  })
+
+  it('a saved loop with no round running offers Start the loop', () => {
+    mount({ rotation: saved, scheduleMode: 'rotation' })
+    expect(names()).toEqual(['A', 'B'])
+    expect(byLabel('Start the loop over')).toBeUndefined()
+    click(byLabel('Start the loop'))
+    expect(mocks.S.queue.ids).toEqual(['a', 'b'])
+    expect(mocks.S.queue.rotationId).toBe('r1')
+  })
+})
+
+describe('Plan — someone else’s queue, and a broken one', () => {
+  it('an externally written pass is locked: no mode control, no edits, adoption behind a confirm', () => {
+    mount({ queue: live(), scheduleMode: 'rotation' })   // no rotationId, no rotation
+    expect(modeButtons()).toEqual([])
+    expect(host.querySelector('.plan-mode').textContent).toContain('Externally managed')
+    expect(byLabel('Build a rotation instead')).toBeUndefined()
+    expect(byLabel('Edit')).toBeUndefined()
+    expect(byLabel('Add routine to the rotation')).toBeUndefined()
+    expect(rows()[0].querySelectorAll('button').length).toBe(0)
+    expect(headings()).toContain('Also on fixed days')
     click(byLabel('Use this rotation'))
     expect(mocks.S.rotation).toBe(null)            // not adopted yet — waiting on the confirm
     act(() => confirmSheet.mock.calls.at(-1)[0].onConfirm())
@@ -135,94 +228,68 @@ describe('Plan — the rotation editor', () => {
     // otherwise repeat that name on every pass this app generates on its own from here on.
     expect(mocks.S.rotation.label).toBe('Rotation')
     expect(mocks.S.queue.label).toBe('Rotation')
-    // (the mocked store is not reactive, so re-mount to see the adopted pass render)
-    mount({ queue: live({ rotationId: mocks.S.rotation.id }), rotation: mocks.S.rotation })
+    remount()
     expect(host.textContent).not.toContain('Externally managed')
-    expect(host.textContent).toContain('Week schedule')
+    expect(selectedMode()).toBe('Rotation')
   })
 
-  it('an external queue keeps its rows read-only — no button but the adoption one writes rotationId', () => {
-    mount({ queue: live() })                       // no rotationId, no rotation in state
-    expect(host.textContent).toContain('Externally managed')
-    expect(host.textContent).toContain('Week schedule')
-    expect(rows()[0].querySelectorAll('button').length).toBe(0)   // read-only: no per-row buttons at all
-    expect(byLabel('Add routine to the rotation')).toBeUndefined()
-    // Scoped to the rotation block: the routines list further down the page has Move up/down
-    // buttons of its own (#142), and they are nothing to do with this pass.
-    const inRotation = label => [...host.querySelectorAll('.rotation button')].find(b => b.getAttribute('aria-label') === label)
-    expect(inRotation('Move up')).toBeUndefined()
-    expect(inRotation('Move down')).toBeUndefined()
-    expect(mocks.S.queue.rotationId).toBeUndefined()
-    click(byLabel('Use this rotation'))
-    act(() => confirmSheet.mock.calls.at(-1)[0].onConfirm())
-    expect(mocks.S.queue.rotationId).toBe(mocks.S.rotation.id)
-  })
-
-  it('Start new pass rewinds the current one', () => {
-    mount({
-      queue: live({ since: Date.now() - 5 * 86400000, startsOn: '2026-09-01', rotationId: 'r1' }),
-      rotation: { id: 'r1', sequence: ['a', 'b'], label: 'My split' },
-    })
-    click(byLabel('Start new pass'))
-    expect(mocks.S.queue.startsOn).toBe(todayISO())
-    expect(mocks.S.queue.ids).toEqual(['a', 'b'])
-  })
-
-  it('a malformed queue offers recovery instead of an editor full of nothing', () => {
+  it('a malformed queue offers recovery instead of a loop full of nothing', () => {
     mount({ queue: { ids: ['gone'], since: Date.now() } })
     expect(host.textContent).toContain('This rotation couldn’t be read')
     click(byLabel('Discard it'))
     expect(mocks.S.queue).toBe(null)
   })
 
-  it('Discard it leaves a clear way back in, not a hidden grid with a saved sequence stuck behind it', () => {
-    // A saved sequence survives the corrupt queue — without also giving up scheduleMode, that
-    // combination (no queue, scheduleMode still 'rotation') keeps hideGrid true and the grid's
-    // own "Start pass" — the way out — hidden right along with it.
-    mount({ queue: { ids: ['gone'], since: Date.now() }, rotation: { id: 'r1', sequence: ['a', 'b'], label: 'My split' } })
+  it('Discard it leaves a clear way back in: Rotation starts the saved loop again', () => {
+    mount({ queue: { ids: ['gone'], since: Date.now() }, rotation: saved, scheduleMode: 'rotation' })
     click(byLabel('Discard it'))
     expect(mocks.S.queue).toBe(null)
     expect(mocks.S.scheduleMode).toBe('week')
-    // (the mocked store is not reactive, so re-mount to see the discarded state render)
-    mount({ scheduleMode: mocks.S.scheduleMode, rotation: { id: 'r1', sequence: ['a', 'b'], label: 'My split' } })
-    expect(host.textContent).toContain('Week schedule')
-    expect(byLabel('Start pass')).toBeDefined()
-    click(byLabel('Start pass'))
+    remount()
+    expect(headings()).toContain('This week')
+    pickMode('Rotation')
     expect(mocks.S.queue.ids).toEqual(['a', 'b'])
   })
 
-  it('a saved sequence with no live pass offers Start pass, not Build a rotation instead', () => {
-    // The state "Discard it" or Settings' "Use Fixed Week" leave behind: a saved rotation, no queue.
-    mount({ rotation: { id: 'r1', sequence: ['a', 'b'], label: 'My split' } })
-    expect(host.textContent).toContain('Week schedule')
-    expect(byLabel('Build a rotation instead')).toBeUndefined()
-    click(byLabel('Start pass'))
-    expect(mocks.S.queue.ids).toEqual(['a', 'b'])
-    expect(mocks.S.queue.rotationId).toBe('r1')
-  })
-
-  it('every routine in the rotation getting deleted still leaves a way back in, not a locked editor', () => {
-    // Deleting every routine from the Routines list (elsewhere in the app) leaves S.queue and
-    // S.rotation referencing ids that exist nowhere in S.routines any more — queueOf reads that
-    // as no queue at all (queueRecovery), while S.scheduleMode is still 'rotation' from before.
-    mount({
-      routines: [],   // every routine gone
-      queue: { ids: ['a', 'b'], since: Date.now() },
-      rotation: { id: 'r1', sequence: ['a', 'b'], label: 'My split' },
-      scheduleMode: 'rotation',
-    })
-    // Recovery no longer hides the grid — this is a fix-up, not the from-scratch setup gap.
+  it('every routine in the loop deleted still leaves a way back in, not a locked editor', () => {
+    mount({ routines: [], queue: { ids: ['a', 'b'], since: Date.now() }, rotation: saved, scheduleMode: 'rotation' })
     expect(host.textContent).toContain('This rotation couldn’t be read')
-    expect(host.textContent).toContain('Week schedule')
     click(byLabel('Discard it'))
-    expect(mocks.S.queue).toBe(null)
     expect(mocks.S.scheduleMode).toBe('week')
-    // (the mocked store is not reactive, so re-mount to see the discarded state render)
-    mount({ routines: [], scheduleMode: mocks.S.scheduleMode, rotation: { id: 'r1', sequence: ['a', 'b'], label: 'My split' } })
-    expect(host.textContent).toContain('Week schedule')
-    // No routine in the saved sequence survives — "Start pass" would start nothing, so the offer
-    // is a fresh build instead, not gated on `!S.rotation` alone (that object is still there).
-    expect(byLabel('Start pass')).toBeUndefined()
-    expect(byLabel('Build a rotation instead')).toBeDefined()
+    remount()
+    // nothing in the saved loop survives, so Rotation only holds the choice: a fresh build
+    pickMode('Rotation')
+    expect(mocks.S.queue).toBe(null)
+    expect(mocks.S.scheduleMode).toBe('rotation')
+  })
+})
+
+describe('Plan — Schedule extras', () => {
+  it('links to the weekly muscle volume in Stats', () => {
+    mount()
+    click(byLabel('Weekly muscle volume') || [...host.querySelectorAll('.plan-link button')][0])
+    expect(mocks.nav).toHaveBeenCalledWith('/stats?focus=weekly-volume')
+  })
+
+  it('switches to Routines and remembers it for next time', () => {
+    mount()
+    const seg = label => [...host.querySelectorAll('.plan-views button')].find(b => b.textContent === label)
+    click(seg('Routines'))
+    expect(localStorage.getItem('gym_plan_view')).toBe('routines')
+    expect(host.querySelector('.plan-mode')).toBe(null)
+    expect(host.querySelector('.plan-routines')).toBeTruthy()
+    act(() => root.unmount()); root = createRoot(host)
+    act(() => root.render(<Plan />))
+    expect(seg('Routines').className).toContain('on')
+    click(seg('Schedule'))
+    expect(localStorage.getItem('gym_plan_view')).toBe('schedule')
+    expect(host.querySelector('.plan-mode')).toBeTruthy()
+  })
+
+  it('one Plan menu holds share, print, import and the starter plans', () => {
+    mount()
+    click(byLabel('Plan options'))
+    const items = menuSheet.mock.calls.at(-1)[0].items.filter(Boolean)
+    expect(items.map(i => i.label)).toEqual(['Export plan file', 'Print / Save as PDF', 'Import a plan file', 'Load starter plan'])
   })
 })

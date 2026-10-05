@@ -1,20 +1,36 @@
+import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/useStore.js'
-import { DAYN, weekOrder, weekStartOf, uid, exCount, routineCount, fmtNum } from '../lib/format.js'
+import { DAYN, DAYS, weekOrder, weekStartOf, uid, exCount, routineCount, todayISO, fmtDate } from '../lib/format.js'
 import { t } from '../lib/i18n.js'
-import { dayAssignSheet, dayAddRoutineSheet, starterPlanSheet, planToolsSheet, confirmSheet, menuSheet } from '../sheets.jsx'
+import {
+  dayAssignSheet, starterPlanSheet, confirmSheet, menuSheet,
+  planHasRoutines, exportPlanFile, printWholePlan, importPlanFile,
+} from '../sheets.jsx'
 import Icon from '../components/Icon.jsx'
-import { Button } from '../components/ui.jsx'
+import { Button, Row, Section, Segmented } from '../components/ui.jsx'
 import SwipeToDelete from '../components/SwipeToDelete.jsx'
 import { deleteRoutine } from '../lib/routines.js'
 import { tappable } from '../lib/use-sheet-keyboard.js'
+import { useListReorder, moved } from '../lib/use-list-reorder.js'
 import { glyphOf, DEFAULT_GLYPH } from '../lib/glyphs.js'
 import { DEMO } from '../lib/demo.js'
 import { MOBILE } from '../lib/mobile.js'
 import { coachAvailable } from '../lib/coach.js'
-import { queueOf } from '../lib/queue.js'
-import { scheduleModeOf, queueRecovery, rotationIds, saveRotation, startNewPass, startPass, stopPass } from '../lib/rotation.js'
-import { loadOfWeeklyPlan, MUSCLE_NAME, rankOf } from '../lib/muscles.js'
+import { queueOf, queueView } from '../lib/queue.js'
+import { deriveSessionName } from '../lib/session-merge.js'
+import {
+  scheduleModeOf, queueRecovery, rotationIds, saveRotation, startNewPass, startPass, stopPass,
+  chooseRotation, chooseFixedWeek,
+} from '../lib/rotation.js'
+
+// Plan has two views (v1.3.11): Schedule (how you train, and when) and Routines (what you
+// train). The last one you looked at comes back: a per-device convenience, never synced, so it
+// lives in this browser's storage and not in S.
+export const PLAN_VIEW_KEY = 'gym_plan_view'
+const readView = () => {
+  try { return localStorage.getItem(PLAN_VIEW_KEY) === 'routines' ? 'routines' : 'schedule' } catch { return 'schedule' }
+}
 
 export default function Plan() {
   const nav = useNavigate()
@@ -23,43 +39,56 @@ export default function Plan() {
   const config = useStore(s => s.config)
   const coachMode = useStore(s => s.coachLocal?.mode)
   const user = useStore(s => s.user)
-  const weeklyLoad = loadOfWeeklyPlan(S)
-  const weeklyMuscles = rankOf(weeklyLoad).worked
-
-  /* The Coach's only entry point in the app. Its screens have existed since the UI landed and
-     nothing linked to them, so the feature was reachable only by typing the URL — enabled,
-     configured, and invisible. The same predicate every other Coach surface uses gates it, so
-     an instance without the feature sees exactly the Plan screen it saw before. */
-  const showCoach = coachAvailable(config, user, { demo: DEMO, mobile: MOBILE, coachMode })
-
-  // Swap with the neighbour, the way the routine editor moves an exercise. `S.routines` is the
-  // one order the whole app reads, so this is all there is to it (#142).
-  const moveRoutine = (i, delta) => update(s => {
-    const to = i + delta
-    if (to < 0 || to >= s.routines.length) return
-    const [moved] = s.routines.splice(i, 1)
-    s.routines.splice(to, 0, moved)
-  })
-
-  const addRoutine = () => {
-    const r = { id: uid(), name: t('New routine'), emoji: DEFAULT_GLYPH, ex: [] }
-    update(s => { s.routines.push(r) })
-    nav('/plan/r/' + r.id)
+  const fileRef = useRef(null)
+  const [view, setViewState] = useState(readView)
+  const setView = v => {
+    setViewState(v)
+    try { localStorage.setItem(PLAN_VIEW_KEY, v) } catch { /* private mode: the view just isn't remembered */ }
   }
 
-  // Pull one routine off a weekday; drop the key when the day empties (never store []).
-  const removeFromDay = (d, rid) => update(s => {
-    const next = [].concat(s.week[d] || []).filter(id => id !== rid)
-    if (next.length) s.week[d] = next; else delete s.week[d]
-  })
+  /* The Coach's way in from Plan. It used to be a banner over the week; it is the last entry of the
+     Plan menu now, gated by the same predicate every other Coach surface uses, so an instance
+     without the feature sees exactly the menu it would have without it. */
+  const showCoach = coachAvailable(config, user, { demo: DEMO, mobile: MOBILE, coachMode })
 
-  // The same confirmation and the same delete as RoutineEdit's "Delete routine" button, minus
-  // its navigation back to /plan, which this screen already is.
-  const confirmDelete = r => confirmSheet({
-    title: t('Delete routine?'), message: t('“{0}” and its exercises will be removed.', r.name), confirmText: t('Delete'), danger: true,
-    onConfirm: () => update(s => { deleteRoutine(s, r.id) })
-  })
+  // Share, print, import, starter plans and the Coach: one menu behind the header button, so the
+  // two views below are only about the plan itself.
+  const openMenu = () => {
+    const has = planHasRoutines(S)
+    menuSheet({
+      title: t('Plan'),
+      subtitle: has ? null : t('Add an exercise to a routine first. An empty plan has nothing to share.'),
+      items: [
+        { icon: 'share', label: t('Export plan file'), sub: t('A small file a friend can import into their own openGym. Routines only, none of your workouts or weigh-ins.'), disabled: !has, onClick: exportPlanFile },
+        { icon: 'note', label: t('Print / Save as PDF'), disabled: !has, onClick: printWholePlan },
+        { icon: 'download', label: t('Import a plan file'), onClick: () => fileRef.current?.click() },
+        { icon: 'clipboard', label: t('Load starter plan'), onClick: starterPlanSheet },
+        showCoach && { icon: 'sparkles', label: t('Coach'), sub: t('Plan design and reviews, from your own training'), onClick: () => nav('/coach') },
+      ],
+    })
+  }
+  const pickFile = ev => { const f = ev.target.files[0]; ev.target.value = ''; importPlanFile(f) }
 
+  const mode = scheduleModeOf(S)
+
+  return <div className="narrow plan">
+    <div className="hdr">
+      <div><h1>{t('Plan')}</h1><div className="sub">{mode === 'rotation' ? t('Your routines in a loop') : t('Your weekly routine')}</div></div>
+      <button className="iconbtn" onClick={openMenu} aria-label={t('Plan options')} title={t('Plan options')}><Icon name="share" /></button>
+    </div>
+    <input ref={fileRef} type="file" accept="application/json,.json" onChange={pickFile} hidden />
+    <Segmented className="plan-views" value={view} onChange={setView}
+      options={[{ value: 'schedule', label: t('Schedule') }, { value: 'routines', label: t('Routines') }]} />
+    {view === 'routines'
+      ? <Routines S={S} update={update} nav={nav} />
+      : <Schedule S={S} update={update} nav={nav} mode={mode} />}
+  </div>
+}
+
+/* ================================ Schedule ================================ */
+
+function Schedule({ S, update, nav, mode }) {
+  const [editLoop, setEditLoop] = useState(false)
   /* The rotation editor. What it shows is the live pass when there is one, otherwise the saved
      sequence — S.rotation is only a definition, so the pass is the truth whenever it exists.
      Every edit writes straight through saveRotation: an edit IS the save (and, for a queue
@@ -72,25 +101,31 @@ export default function Plan() {
   // saved rotation here — that's what makes it someone else's to write, not this app's.
   const managed = !!liveQ && !!S.rotation && liveQ.rotationId === S.rotation.id
   const external = !!liveQ && !managed
-  // The editor shows for any live queue — so "Use this rotation" stays reachable for a planner's
-  // week — or once Rotation is chosen with nothing built yet (S.scheduleMode). The weekday grid
-  // stays up for ANY live queue, managed or not: the weekday routines ride along beside it either
-  // way (effectiveRoutineIds, history.js) and feed the same tally (weekTally, queue.js), so hiding
-  // the grid would hide the very thing that explains a combined count. It is hidden only while
-  // Rotation is chosen with nothing built yet — there is no queue at that point for it to sit
-  // beside, so a plain weekday grid would just be noise — and never during recovery: a malformed
-  // queue (deleting every routine in the sequence leaves exactly this — S.queue and S.scheduleMode
-  // both still 'rotation' with nothing left for queueOf to resolve) is a fix-up, not a from-scratch
-  // setup, and the grid is the fallback schedule while it's sorted out.
-  const rotating = scheduleModeOf(S) === 'rotation' || queueRecovery(S)
-  const hideGrid = !liveQ && !queueRecovery(S) && S.scheduleMode === 'rotation'
+  const recovery = queueRecovery(S)
+  const qv = liveQ ? queueView(S, todayISO()) : null
+
+  // "How you train" is the same switch as Settings' (lib/rotation.js chooseRotation /
+  // chooseFixedWeek), on the same keys. Leaving a running loop asks first: its progress goes,
+  // the loop itself and the weekdays stay. With nothing running there is nothing to lose.
+  const setMode = v => {
+    if (v === mode) return
+    if (v === 'rotation') { update(s => { chooseRotation(s) }); return }
+    if (!liveQ) { update(s => { chooseFixedWeek(s) }); return }
+    confirmSheet({
+      title: t('Back to a fixed week?'),
+      message: t('The loop stops. Your weekdays stay as they are, and the loop is saved for later.'),
+      confirmText: t('Use Fixed Week'),
+      onConfirm: () => update(s => { chooseFixedWeek(s) }),
+    })
+  }
+
   const setSeq = ids => update(s => {
     // Emptying the sequence is how you leave the rotation from here: no pass, no definition, and
     // the weekday plan — untouched all along — is the schedule again.
     if (ids.length) saveRotation(s, ids, seqLabel)
     else { stopPass(s); s.rotation = null; s.scheduleMode = 'week' }
   })
-  const moveInSeq = (i, d) => { const n = [...seq]; const [x] = n.splice(i, 1); n.splice(i + d, 0, x); setSeq(n) }
+  const loopReorder = useListReorder(seq.length, (from, to) => setSeq(moved(seq, from, to)))
   const addToSeq = () => menuSheet({
     title: t('Add to the rotation'),
     items: S.routines.filter(r => !seq.includes(r.id)).map(r => ({
@@ -109,139 +144,177 @@ export default function Plan() {
     onConfirm: () => update(s => saveRotation(s, seq, t('Rotation'))),
   })
 
-  return <>
-    <div className="hdr">
-      <div><h1>{t('Plan')}</h1><div className="sub">{t('Your weekly routine')}</div></div>
-      <button className="iconbtn" onClick={planToolsSheet} aria-label={t('Share your plan')} title={t('Share your plan')}><Icon name="upload" /></button>
+  const ws = weekStartOf(S)
+  const todayDow = new Date().getDay()
+  const routineOf = id => S.routines.find(x => x.id === id)
+  const dayRoutines = d => [].concat(S.week[d] || []).map(routineOf).filter(Boolean)
+  // One weekday: what is on it at a glance, and a tap to change it (dayAssignSheet picks one
+  // routine, several for a combined day, or a rest day).
+  const dayRow = d => {
+    const rs = dayRoutines(d)
+    return <div key={d} className="item plan-day" data-day={d} aria-label={t(DAYN[d])} {...tappable(() => dayAssignSheet(d))}>
+      <span className={'plan-day-n' + (d === todayDow ? ' today' : '')} aria-hidden="true">{t(DAYS[d])}</span>
+      <span className={'lrow-i' + (rs.length ? '' : ' rest')}><Icon name={rs.length ? glyphOf(rs[0].emoji) : 'moon'} /></span>
+      <div className="grow">
+        <div className="tt">{rs.length ? deriveSessionName(rs.map(r => r.name)) : t('Rest day')}</div>
+        <div className="ss">{rs.length === 1 ? exCount(rs[0].ex.length) : rs.length ? routineCount(rs.length) : t('Tap to plan something')}</div>
+      </div>
+      <Icon name="chevronRight" className="chev" />
     </div>
-    {showCoach && <button className="coach-cta" onClick={() => nav('/coach')}>
-      <span className="coach-cta-av"><Icon name="sparkles" /></span>
-      <span className="coach-cta-t">
-        <b>{t('Coach')}</b>
-        <span>{t('Plan design and reviews, from your own training')}</span>
-      </span>
-      <Icon name="chevronRight" className="coach-cta-chev" />
-    </button>}
+  }
+  const plannedDays = weekOrder(ws).filter(d => dayRoutines(d).length)
+  const doneCount = qv ? qv.items.filter(i => i.state === 'done').length : 0
+  const stateWord = item => item.state === 'pinned' ? fmtDate(item.on, true)
+    : { done: t('Done'), next: t('Up next'), later: t('Later') }[item.state]
+  const editing = editLoop && !external
 
-    <div className="cols"><div>
-      {/* Rotation (lib/rotation.js) shows for any live queue, so a coach's week can still be
-          adopted from here. The weekday grid stays up beside it either way — managed or
-          external — since the weekday routines ride along regardless (effectiveRoutineIds,
-          history.js) and the grid is what explains their share of the combined tally. */}
-      {rotating && <div className="rotation">
-        <h4 className="sec">{t('Rotation')}{external && <span className="tag" style={{ marginLeft: 8 }}>{t('Externally managed')}</span>}</h4>
-        {queueRecovery(S) ? <div className="empty">
-          {t('This rotation couldn’t be read. Another device may have written it.')}
-          <div style={{ marginTop: 10 }}>
-            {/* Also gives up S.scheduleMode='rotation' — otherwise the editor stays up with a
-                saved sequence and no queue, and hideGrid keeps the weekday grid (and its own
-                "Start pass" way out of that state) hidden along with it: a dead end. */}
-            <Button size="sm" variant="tinted" aria-label={t('Discard it')} onClick={() => update(s => { s.queue = null; s.scheduleMode = 'week' })}>{t('Discard it')}</Button>
-          </div>
-        </div> : <>
-          {seq.length ? <div className="list" style={{ display: 'flex', flexDirection: 'column' }}>
-            {seq.map((id, i) => {
-              const r = S.routines.find(x => x.id === id)
-              return <div key={id} className="item rotation-row">
-                <span className="lrow-i"><Icon name={glyphOf(r?.emoji)} /></span>
-                <div className="grow" style={{ minWidth: 0 }}>
-                  <div className="tt">{r?.name ?? id}</div><div className="ss">{t('Position {0}', i + 1)}</div>
-                </div>
-                {/* A coach's own queue is read-only here: the one way to change what it holds is
-                    to adopt it first ("Use this rotation" below), never a tap on one of its rows. */}
-                {!external && <>
-                  <button className="iconbtn sm" aria-label={t('Move up')} title={t('Move up')} disabled={i === 0} onClick={() => moveInSeq(i, -1)}><Icon name="chevronUp" /></button>
-                  <button className="iconbtn sm" aria-label={t('Move down')} title={t('Move down')} disabled={i === seq.length - 1} onClick={() => moveInSeq(i, 1)}><Icon name="chevronDown" /></button>
-                  <button className="iconbtn sm" aria-label={t('Remove')} title={t('Remove')} onClick={() => setSeq(seq.filter(x => x !== id))}><Icon name="xmark" /></button>
-                </>}
-              </div>
-            })}
-          </div> : <div className="empty">{t('No rotation yet. Add routines in the order you want to train them. The first one you haven’t logged stays up next.')}</div>}
-          <div className="row" style={{ gap: 8, marginTop: 8, flexWrap: 'wrap' }}>
-            {!external && <Button size="sm" variant="tinted" icon="plus" aria-label={t('Add routine to the rotation')}
-              disabled={S.routines.every(r => seq.includes(r.id))} onClick={addToSeq}>{t('Add routine')}</Button>}
-            {external && <Button size="sm" variant="tinted" aria-label={t('Use this rotation')} onClick={adopt}>{t('Use this rotation')}</Button>}
-            {!!liveQ && !external && <Button size="sm" aria-label={t('Start new pass')}
-              onClick={() => update(s => startNewPass(s))}>{t('Start new pass')}</Button>}
-            {!liveQ && !queueRecovery(S) && <Button size="sm" variant="tinted" aria-label={t('Cancel')} onClick={() => update(s => { s.scheduleMode = 'week' })}>{t('Cancel')}</Button>}
-          </div>
-        </>}
-      </div>}
-      {!hideGrid && <>
-        <h4 className="sec">{t('Week schedule')}</h4>
-        <div className="list" style={{ display: 'flex', flexDirection: 'column' }}>
-          {weekOrder(weekStartOf(S)).map(d => {
-            const dayRoutines = [].concat(S.week[d] || []).map(id => S.routines.find(x => x.id === id)).filter(Boolean)
-            // An empty day stays one tappable row → pick its first routine (today's behaviour).
-            if (!dayRoutines.length) return <div key={d} className="item" {...tappable(() => dayAssignSheet(d))}>
-              <div className="grow"><div className="tt">{t(DAYN[d])}</div></div>
-              <span className="tag">{t('Rest')}</span>
-              <Icon name="chevronRight" className="chev" /></div>
-            // A populated day: always-visible routine sub-rows + inline ✕. Adding a second routine
-            // is a small ＋ in the day's header, centred over the ✕ column (#276): a full-width
-            // "＋ Add routine" under every planned day made the week read as a list of buttons,
-            // when most people train one routine a day. The ＋ keeps the option for those who don't.
-            return <div key={d} className="item" style={{ display: 'block', padding: '10px 14px' }}>
-              <div className="row between" style={{ marginBottom: 6 }}>
-                <div className="tt">{t(DAYN[d])}</div>
-                <div className="row" style={{ gap: 8 }}>
-                  <div className="small dim">{routineCount(dayRoutines.length)}</div>
-                  <button className="iconbtn sm" aria-label={t('Add routine')} title={t('Add routine')}
-                    style={{ width: 30, height: 30, margin: '-5px 3px', fontSize: 15 }}
-                    onClick={() => dayAddRoutineSheet(d)}><Icon name="plus" /></button>
-                </div>
-              </div>
-              {dayRoutines.map(r => <div key={r.id} className="row" style={{ gap: 8, padding: '4px 0 4px 8px' }}>
-                <span className="lrow-i" style={{ width: 26, height: 26, fontSize: 14 }}><Icon name={glyphOf(r.emoji)} /></span>
-                <div className="grow" style={{ minWidth: 0 }}><div className="tt" style={{ fontSize: 14 }}>{r.name}</div><div className="ss">{exCount(r.ex.length)}</div></div>
-                <button className="iconbtn sm" aria-label={t('Remove')} onClick={() => removeFromDay(d, r.id)}><Icon name="xmark" /></button>
-              </div>)}
-            </div>
-          })}
-        </div>
-        {/* Three dead ends land here with no active pass — "Discard it" on a malformed queue,
-            Settings' "Use Fixed Week" (which keeps the sequence on purpose), and every routine
-            the saved sequence names getting deleted out from under it. "Build a rotation instead"
-            used to stay hidden on `!S.rotation` alone, which a saved-but-now-empty sequence still
-            satisfies (S.rotation itself is untouched) — gated on the ids actually surviving
-            instead, it offers a fresh start exactly when there is nothing left to resume. */}
-        {!liveQ && seq.length > 0
-          ? <Button size="sm" variant="tinted" icon="shuffle" style={{ marginTop: 8 }}
-              aria-label={t('Start pass')} onClick={() => update(s => startPass(s))}>{t('Start pass')}</Button>
-          : !liveQ && !seq.length && <Button size="sm" variant="tinted" icon="shuffle" style={{ marginTop: 8 }}
-              aria-label={t('Build a rotation instead')} onClick={() => update(s => { s.scheduleMode = 'rotation' })}>{t('Build a rotation instead')}</Button>}
-      </>}
-      <div className="card" data-weekly-muscle-volume style={{ marginTop: 12 }}>
-        <h2>{t('Weekly muscle volume')}</h2>
-        {weeklyMuscles.length ? weeklyMuscles.map(muscle => <div className="mrow" key={muscle}>
-          <span className="nm">{t(MUSCLE_NAME[muscle])}</span>
-          <span className="v">{t('{0} sets', fmtNum(Math.round(weeklyLoad[muscle] * 10) / 10))}</span>
-        </div>) : <div className="muted small">{t('No muscle volume planned.')}</div>}
+  return <>
+    <Section className="plan-mode" footer={mode === 'rotation'
+      ? t('Routines in a loop. Whatever is next stays next until you train it, whatever the day.')
+      : t('The same routines on the same weekdays, every week.')}>
+      <Row icon="repeat" iconTint="var(--orange)" title={t('How you train')}>
+        {/* A planner's own queue is not this app's to switch off: text, not a control. */}
+        {external
+          ? <span className="small dim plan-mode-locked">{t('Rotation')} · {t('Externally managed')}</span>
+          : <Segmented className="seg-inline" value={mode} onChange={setMode}
+              options={[{ value: 'week', label: t('Fixed Week') }, { value: 'rotation', label: t('Rotation') }]} />}
+      </Row>
+    </Section>
+
+    {!S.routines.length && <div className="empty plan-empty">
+      <div className="ico"><Icon name="clipboard" /></div>{t('No routines yet.')}<br />{t('Make one, or grab the starter plan to get going.')}
+      <div style={{ marginTop: 12 }}><Button icon="clipboard" onClick={starterPlanSheet}>{t('Load starter plan')}</Button></div>
+    </div>}
+
+    {/* A queue payload that arrived unusable: a fix-up, shown whichever way you train. Giving it
+        up also gives up S.scheduleMode='rotation', or the loop would sit there with no queue. */}
+    {recovery && <div className="empty">
+      {t('This rotation couldn’t be read. Another device may have written it.')}
+      <div style={{ marginTop: 10 }}>
+        <Button size="sm" variant="tinted" aria-label={t('Discard it')} onClick={() => update(s => { s.queue = null; s.scheduleMode = 'week' })}>{t('Discard it')}</Button>
       </div>
-    </div><div>
-      <div className="row between" style={{ marginTop: 22, marginBottom: 10 }}>
-        <h4 className="sec" style={{ margin: 0 }}>{t('Routines')}</h4>
-        <Button size="sm" variant="tinted" icon="plus" onClick={addRoutine}>{t('New')}</Button>
-      </div>
-      {S.routines.length ? <div className="list routine-list">{S.routines.map((r, i) => <SwipeToDelete key={r.id} className="item"
-        deleteLabel={t('Delete routine')} onDelete={() => confirmDelete(r)} {...tappable(() => nav('/plan/r/' + r.id))}>
-        <span className="lrow-i"><Icon name={glyphOf(r.emoji)} /></span>
-        <div className="grow"><div className="tt">{r.name}</div><div className="ss">{exCount(r.ex.length)}</div></div>
-        {/* The order of this list is the order of `S.routines`, and every other screen reads the
-            same array — the Start screen, the day-assignment sheets, the routine pickers. So
-            moving a routine here moves it everywhere, which is what the request asked for (#142). */}
-        {S.routines.length > 1 && <div style={{ display: 'flex', gap: 2, flex: 'none' }}>
-          <button className="iconbtn" aria-label={t('Move up')} title={t('Move up')} disabled={i === 0}
-            style={{ width: 28, height: 24, borderRadius: 7, fontSize: 12 }}
-            onClick={ev => { ev.stopPropagation(); moveRoutine(i, -1) }}><Icon name="chevronUp" /></button>
-          <button className="iconbtn" aria-label={t('Move down')} title={t('Move down')} disabled={i === S.routines.length - 1}
-            style={{ width: 28, height: 24, borderRadius: 7, fontSize: 12 }}
-            onClick={ev => { ev.stopPropagation(); moveRoutine(i, 1) }}><Icon name="chevronDown" /></button>
+    </div>}
+
+    {mode === 'week' ? <>
+      <h4 className="sec">{t('This week')}</h4>
+      <div className="list plan-week">{weekOrder(ws).map(dayRow)}</div>
+      <p className="sect-f">{t('Want two routines on one day? Tap the day and pick both.')}</p>
+    </> : <div className="rotation">
+      <div className="row between plan-sec-h">
+        <h4 className="sec">{t('The loop')}{external && <span className="tag" style={{ marginInlineStart: 8 }}>{t('Externally managed')}</span>}</h4>
+        {/* A coach's own queue is read-only here: the one way to change what it holds is to
+            adopt it first ("Use this rotation" below), never a tap on one of its rows. */}
+        {!external && <div className="row" style={{ gap: 6 }}>
+          {seq.length > 0 && <button className="plan-textbtn" aria-pressed={editLoop} onClick={() => setEditLoop(e => !e)}>{editLoop ? t('Done') : t('Edit')}</button>}
+          <Button size="sm" variant="tinted" icon="plus" aria-label={t('Add routine to the rotation')}
+            disabled={S.routines.every(r => seq.includes(r.id))} onClick={addToSeq}>{t('Add')}</Button>
         </div>}
-        <Icon name="chevronRight" className="chev" /></SwipeToDelete>)}</div> : <>
-        <div className="empty"><div className="ico"><Icon name="clipboard" /></div>{t('No routines yet.')}<br />{t('Make one, or grab the starter plan to get going.')}</div>
-        <Button icon="sparkles" onClick={starterPlanSheet}>{t('Load starter plan')}</Button>
+      </div>
+      {seq.length ? <div className="list plan-loop" ref={loopReorder.listRef}>
+        {seq.map((id, i) => {
+          const r = routineOf(id)
+          const item = qv?.items[i]
+          return <div key={id} data-reorder-row className={'item rotation-row' + (item?.state === 'done' ? ' is-done' : '')} style={loopReorder.rowStyle(i)}>
+            {editing && <button className="plan-minus" aria-label={t('Remove')} title={t('Remove')}
+              onClick={() => setSeq(seq.filter(x => x !== id))}><Icon name="minus" /></button>}
+            <span className={'plan-order' + (item?.state === 'next' ? ' next' : '')}>{item?.state === 'done' ? <Icon name="check" /> : i + 1}</span>
+            <span className="lrow-i"><Icon name={glyphOf(r?.emoji)} /></span>
+            <div className="grow" style={{ minWidth: 0 }}>
+              <div className="tt">{r?.name ?? id}</div>
+              <div className="ss">{item ? stateWord(item) : r ? exCount(r.ex.length) : ''}</div>
+            </div>
+            {editing && seq.length > 1 && <button className="plan-handle" aria-label={t('Drag to reorder')} title={t('Drag to reorder')}
+              {...loopReorder.handle(i)}><Icon name="chevronsUpDown" /></button>}
+          </div>
+        })}
+      </div> : <div className="empty">{t('No rotation yet. Add routines in the order you want to train them. The first one you haven’t logged stays up next.')}</div>}
+      {seq.length > 0 && <p className="sect-f">
+        {qv ? (qv.waiting ? t('Next pass starts {0}', fmtDate(qv.startsOn, true)) : t('{0} of {1} done this round.', doneCount, qv.items.length)) + ' ' : ''}
+        {external ? '' : editing ? t('Drag to reorder. Tap the red button to take one out.') : t('Trained out of order? Just pick another routine on Home.')}
+      </p>}
+      <div className="row" style={{ gap: 8, marginTop: 4, flexWrap: 'wrap' }}>
+        {external && <Button size="sm" variant="tinted" aria-label={t('Use this rotation')} onClick={adopt}>{t('Use this rotation')}</Button>}
+        {/* Throws the current round away and starts the saved loop again today; nothing logged
+            before this moment counts for it (startNewPass, the strict pass). */}
+        {!!liveQ && !external && <Button size="sm" icon="reset" aria-label={t('Start the loop over')}
+          onClick={() => update(s => startNewPass(s))}>{t('Start the loop over')}</Button>}
+        {/* Rotation chosen and a loop saved, but no round running (it was stopped elsewhere). */}
+        {!liveQ && !recovery && seq.length > 0 && <Button size="sm" variant="tinted" icon="play" aria-label={t('Start the loop')}
+          onClick={() => update(s => startPass(s))}>{t('Start the loop')}</Button>}
+      </div>
+      {/* The weekday routines ride along beside a loop (effectiveRoutineIds, history.js) and feed
+          the same tally (weekTally, queue.js), so the days that still hold one stay in sight. */}
+      {plannedDays.length > 0 && <>
+        <h4 className="sec">{t('Also on fixed days')}</h4>
+        <div className="list plan-week">{plannedDays.map(dayRow)}</div>
+        <p className="sect-f">{t('These count on top of the loop. Tap a day to change or clear it.')}</p>
       </>}
-    </div></div>
+    </div>}
+
+    {/* Weekly muscle volume is analysis: it moved to Stats, next to Muscle balance. */}
+    <Section className="plan-link">
+      <Row icon="chart" iconTint="var(--indigo)" title={t('Weekly muscle volume')} subtitle={t('Now in Stats, next to Muscle balance')}
+        accessory="chevron" onClick={() => nav('/stats?focus=weekly-volume')} />
+    </Section>
+  </>
+}
+
+/* ================================ Routines ================================ */
+
+function Routines({ S, update, nav }) {
+  const [edit, setEdit] = useState(false)
+  const routines = S.routines
+  // The order of this list is the order of `S.routines`, and every other screen reads the same
+  // array (the Start screen, the day sheets, the routine pickers), so moving a routine here moves
+  // it everywhere (#142). Reordering lives behind Edit, like on an iPhone.
+  const reorder = useListReorder(routines.length, (from, to) => update(s => {
+    if (to < 0 || to >= s.routines.length) return
+    const [m] = s.routines.splice(from, 1)
+    s.routines.splice(to, 0, m)
+  }))
+
+  const addRoutine = () => {
+    const r = { id: uid(), name: t('New routine'), emoji: DEFAULT_GLYPH, ex: [] }
+    update(s => { s.routines.push(r) })
+    nav('/plan/r/' + r.id)
+  }
+  // The same confirmation and the same delete as RoutineEdit's "Delete routine" button, minus
+  // its navigation back to /plan, which this screen already is.
+  const confirmDelete = r => confirmSheet({
+    title: t('Delete routine?'), message: t('“{0}” and its exercises will be removed.', r.name), confirmText: t('Delete'), danger: true,
+    onConfirm: () => update(s => { deleteRoutine(s, r.id) })
+  })
+  // The weekdays a routine is on, short, in the order the week runs.
+  const order = weekOrder(weekStartOf(S))
+  const daysOf = id => order.filter(d => [].concat(S.week[d] || []).includes(id)).map(d => t(DAYS[d]))
+  const sub = r => [exCount(r.ex.length), daysOf(r.id).join(', ')].filter(Boolean).join(' · ')
+
+  return <>
+    <div className="row between plan-sec-h plan-routines-bar">
+      {routines.length > 0
+        ? <button className="plan-textbtn" aria-pressed={edit} onClick={() => setEdit(e => !e)}>{edit ? t('Done') : t('Edit')}</button>
+        : <span />}
+      <Button size="sm" variant="tinted" icon="plus" onClick={addRoutine}>{t('New routine')}</Button>
+    </div>
+    {routines.length ? <>
+      {edit
+        ? <div className="list routine-list plan-routines is-editing" ref={reorder.listRef}>{routines.map((r, i) =>
+          <div key={r.id} data-reorder-row className="item plan-routine" style={reorder.rowStyle(i)}>
+            <button className="plan-minus" aria-label={t('Delete routine')} title={t('Delete routine')} onClick={() => confirmDelete(r)}><Icon name="minus" /></button>
+            <span className="lrow-i"><Icon name={glyphOf(r.emoji)} /></span>
+            <div className="grow"><div className="tt">{r.name}</div><div className="ss">{sub(r)}</div></div>
+            {routines.length > 1 && <button className="plan-handle" aria-label={t('Drag to reorder')} title={t('Drag to reorder')}
+              {...reorder.handle(i)}><Icon name="chevronsUpDown" /></button>}
+          </div>)}</div>
+        : <div className="list routine-list plan-routines">{routines.map(r => <SwipeToDelete key={r.id} className="item plan-routine"
+          deleteLabel={t('Delete routine')} onDelete={() => confirmDelete(r)} {...tappable(() => nav('/plan/r/' + r.id))}>
+          <span className="lrow-i"><Icon name={glyphOf(r.emoji)} /></span>
+          <div className="grow"><div className="tt">{r.name}</div><div className="ss">{sub(r)}</div></div>
+          <Icon name="chevronRight" className="chev" /></SwipeToDelete>)}</div>}
+      <p className="sect-f">{edit ? t('Drag to reorder. Tap the red button to delete.') : t('Tap a routine to edit it. Reorder and delete are behind Edit.')}</p>
+    </> : <>
+      <div className="empty"><div className="ico"><Icon name="clipboard" /></div>{t('No routines yet.')}<br />{t('Make one, or grab the starter plan to get going.')}</div>
+      <Button icon="clipboard" onClick={starterPlanSheet}>{t('Load starter plan')}</Button>
+    </>}
   </>
 }

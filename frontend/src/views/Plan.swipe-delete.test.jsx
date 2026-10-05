@@ -21,13 +21,14 @@ let host, root
 beforeEach(() => {
   globalThis.IS_REACT_ACT_ENVIRONMENT = true
   nav.mockClear()
+  localStorage.setItem('gym_plan_view', 'routines')   // the Routines view (v1.3.11)
   host = document.createElement('div'); document.body.appendChild(host); root = createRoot(host)
   useStore.setState(s => ({ S: { ...s.S,
     routines: [routine('a', 'Push A'), routine('b', 'Pull A')],
     week: { 1: ['a', 'b'], 3: ['b'] }, dayPlan: { '2099-01-01': 'b' } }, user: null }))
   act(() => root.render(<Plan />))
 })
-afterEach(() => { act(() => root.unmount()); host.remove() })
+afterEach(() => { act(() => root.unmount()); host.remove(); localStorage.removeItem('gym_plan_view') })
 
 const row = name => [...host.querySelectorAll('.item[role="button"]')].find(e => e.querySelector('.tt')?.textContent === name)
 const del = name => row(name).parentElement.querySelector('button.swipe-del')

@@ -1733,23 +1733,44 @@ body.chips-dragging *{cursor:inherit}
 .cam-wrap{position:relative;width:100%;aspect-ratio:3/4;max-height:58vh;border-radius:var(--r-lg);overflow:hidden;background:#000}
 .cam-wrap video{width:100%;height:100%;object-fit:cover;display:block}
 .cam-frame{position:absolute;inset:0;margin:auto;width:62%;aspect-ratio:1;border:2px dashed rgba(255,255,255,.75);border-radius:14px;pointer-events:none}
-/* ------------------------------------------------- the Coach entry on Plan -- */
-.coach-cta{
-  display:flex;align-items:center;gap:13px;width:100%;text-align: start;
-  margin-bottom:12px;padding:14px 16px;border-radius:var(--r-card);
-  background:linear-gradient(135deg,var(--acc-soft),color-mix(in srgb,var(--acc) 6%,var(--surface)));
-  border:1px solid color-mix(in srgb,var(--acc) 35%,transparent);
-  transition:transform var(--fast),filter var(--fast)
+/* ---------------------------------------------------------------- Plan -- */
+/* Schedule | Routines (views/Plan.jsx). A settings-like page, one column at every width. */
+.plan-views{margin-bottom:18px}
+.plan-views button{min-height:34px;font-size:15px}
+.plan .plan-mode .lrow-t{white-space:nowrap}
+.plan-mode-locked{margin-inline-start:auto;text-align:end}
+.plan-sec-h{margin:22px 0 8px;gap:8px}
+.plan-sec-h h4.sec{margin:0}
+.plan-routines-bar{margin-top:0}
+.plan-textbtn{color:var(--acc);font-size:16px;padding:6px 4px;position:relative}
+.plan-textbtn::before{content:'';position:absolute;inset:-6px}
+.plan .sect-f{margin:0 0 4px}
+.plan .list+.sect-f{padding-top:8px}
+/* a weekday: short day name, the routine's glyph (a moon on a rest day), what is on it */
+.plan-day-n{width:30px;flex:none;font-size:15px;font-weight:600;color:var(--label-2)}
+.plan-day-n.today{color:var(--acc)}
+.item .lrow-i.rest{background:var(--surface-3);color:var(--label-2)}
+/* the loop: a numbered position, lit when up next, a tick once done this round */
+.plan-order{
+  width:24px;height:24px;border-radius:50%;flex:none;display:grid;place-items:center;
+  font-size:13px;font-weight:600;color:var(--label-2);background:var(--surface-3);--icon-stroke:2.6;
 }
-.coach-cta:active{transform:scale(.985);filter:brightness(1.06)}
-.coach-cta-av{
-  width:42px;height:42px;border-radius:13px;flex:none;display:grid;place-items:center;font-size:21px;
-  background:var(--acc);color:var(--on-acc);box-shadow:0 6px 18px -6px color-mix(in srgb,var(--acc) 60%,transparent)
+.plan-order.next{background:var(--acc);color:var(--on-acc)}
+.rotation-row.is-done .tt{color:var(--label-2)}
+/* Edit mode, as on an iPhone: a red minus at the start, a handle at the end */
+.plan-minus{
+  width:24px;height:24px;border-radius:50%;flex:none;display:grid;place-items:center;
+  background:var(--red);color:#fff;font-size:14px;--icon-stroke:2.6;position:relative;
 }
-.coach-cta-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
-.coach-cta-t b{font-size:17px;font-weight:600;letter-spacing:-.015em;color:var(--label)}
-.coach-cta-t span{font-size:13px;color:var(--label-2);line-height:1.35}
-.coach-cta-chev{color:var(--acc);font-size:15px;flex:none}
+.plan-minus::before{content:'';position:absolute;inset:-10px}
+.plan-handle{
+  flex:none;align-self:stretch;display:flex;align-items:center;padding:0 6px;margin:-10px -6px -10px 0;
+  color:var(--label-3);font-size:18px;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;
+}
+.plan-handle:active{cursor:grabbing;color:var(--label-2)}
+.plan [data-reorder-row]{transition:transform var(--fast) var(--ease)}
+.plan-link{margin-top:24px}
+.plan-empty{padding:28px 20px}
 
 /* ----------------------------------------------------------- RTL (Arabic) -- */
 /* Directional icons flip: back chevrons point right, trailing chevrons point left. */

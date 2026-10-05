@@ -322,7 +322,7 @@ export function DeviceLinkRedeemSheet({ close }) {
     <h3>{t('Add this device')}</h3>
     <div className="muted small" style={{ marginBottom: 14 }}>{joining
       ? t('Create a passkey on this device for the profile “{0}”. It signs you in here from now on.', joining.name)
-      : t('Enter the code your other device shows under Settings → Add another device. This device then gets a passkey of its own.')}</div>
+      : t('Enter the code your other device shows under Settings → Account → Add another device. This device then gets a passkey of its own.')}</div>
     {elsewhere && <div className="card small" style={{ textAlign: 'start', marginBottom: 14 }}>
       {user && <div style={{ marginBottom: 8 }}>{user.name === joining.name
         ? t('This code is for a different profile that is also called “{0}”, not the one this browser is signed in as. Adding it there signs yours out here.', joining.name)

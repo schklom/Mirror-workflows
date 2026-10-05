@@ -128,6 +128,12 @@ export function unlock(enabled) {
 // this one). Applied by App.jsx whenever the setting is loaded or changed.
 export const playOnSilentSupported = () => {
   if (typeof navigator === 'undefined' || !navigator.audioSession) return false
+  return appleTouchDevice()
+}
+// An iPhone or iPad, in Safari, a home-screen web app or the iOS app (an iPad reports itself as
+// a Mac with a touch screen). Settings says "Not on iPhone" on the Vibrate row here.
+export const appleTouchDevice = () => {
+  if (typeof navigator === 'undefined') return false
   const ua = navigator.userAgent || ''
   return /iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1)
 }

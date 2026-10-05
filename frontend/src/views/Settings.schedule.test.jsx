@@ -1,5 +1,5 @@
 // @vitest-environment happy-dom
-// Settings → Scheduling: the control's selection is DERIVED from the live queue (never stored),
+// Settings → Plan & schedule → How you train: the control's selection is DERIVED from the live queue (never stored),
 // Fixed Week clears the pass after confirming and keeps the rotation, and Rotation
 // either starts a pass from the saved sequence or sends you to Plan.
 import React, { act } from 'react'
@@ -64,13 +64,13 @@ beforeEach(() => {
 })
 afterEach(() => { act(() => root.unmount()); host.remove() })
 
-const mount = over => { mocks.S = baseS(over); act(() => root.render(<Settings />)) }
-// the two-option Segmented rendered by the Scheduling row
+const mount = over => { mocks.S = baseS(over); act(() => root.render(<Settings page="plan" />)) }
+// the two-option Segmented rendered by the How you train row
 const seg = () => [...host.querySelectorAll('button')].filter(b => ['Fixed Week', 'Rotation'].includes(b.textContent))
 const pick = label => act(() => seg().find(b => b.textContent === label).dispatchEvent(new MouseEvent('click', { bubbles: true })))
 const selected = () => seg().find(b => b.className.includes('on'))?.textContent
 
-describe('Settings — Scheduling', () => {
+describe('Settings — How you train (Plan & schedule)', () => {
   it('selects Fixed Week without a usable queue, Rotation with one this app manages', () => {
     mount()
     expect(selected()).toBe('Fixed Week')
@@ -91,7 +91,7 @@ describe('Settings — Scheduling', () => {
     expect(selected()).toBe('Rotation')
   })
 
-  it('a planner-written queue makes Scheduling read-only text, not a control to flip', () => {
+  it('a planner-written queue makes How you train read-only text, not a control to flip', () => {
     // No rotationId, and no S.rotation to match it against — this app does not own the queue.
     mount({ queue: { ids: ['a', 'b'], since: Date.now(), startsOn: todayISO(), label: 'US W1' } })
     expect(seg()).toEqual([])

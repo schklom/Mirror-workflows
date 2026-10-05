@@ -1880,4 +1880,7 @@ export default {
   'Paused': 'หยุดชั่วคราว',
   'Scroll to 0:00 to end the rest now.': 'เลื่อนไปที่ 0:00 เพื่อจบการพักทันที',
   'Time left': 'เวลาที่เหลือ',
+  'All settings': 'การตั้งค่าทั้งหมด',
+  'Changes stick for your next workouts too.': 'การเปลี่ยนแปลงจะใช้กับการออกกำลังกายครั้งต่อไปด้วย',
+  'Workout settings': 'ตั้งค่าระหว่างออกกำลังกาย',
 }

@@ -1869,4 +1869,7 @@ export default {
   'Paused': '일시정지됨',
   'Scroll to 0:00 to end the rest now.': '0:00으로 돌리면 휴식이 바로 끝나요.',
   'Time left': '남은 시간',
+  'All settings': '전체 설정',
+  'Changes stick for your next workouts too.': '변경 사항은 다음 운동에도 그대로 적용돼요.',
+  'Workout settings': '운동 중 설정',
 }

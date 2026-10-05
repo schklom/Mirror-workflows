@@ -1869,4 +1869,7 @@ export default {
   'Paused': 'Em pausa',
   'Scroll to 0:00 to end the rest now.': 'Roda até 0:00 para acabar já o descanso.',
   'Time left': 'Tempo que falta',
+  'All settings': 'Todas as definições',
+  'Changes stick for your next workouts too.': 'As alterações ficam para os próximos treinos também.',
+  'Workout settings': 'Definições do treino',
 }

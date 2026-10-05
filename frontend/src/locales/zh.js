@@ -1869,4 +1869,7 @@ export default {
   'Paused': '已暂停',
   'Scroll to 0:00 to end the rest now.': '滚到 0:00 可立即结束休息。',
   'Time left': '剩余时间',
+  'All settings': '所有设置',
+  'Changes stick for your next workouts too.': '更改也会用于你之后的训练。',
+  'Workout settings': '训练设置',
 }

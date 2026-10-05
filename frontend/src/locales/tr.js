@@ -1869,4 +1869,7 @@ export default {
   'Paused': 'Duraklatıldı',
   'Scroll to 0:00 to end the rest now.': 'Dinlenmeyi hemen bitirmek için 0:00\'a kaydır.',
   'Time left': 'Kalan süre',
+  'All settings': 'Tüm ayarlar',
+  'Changes stick for your next workouts too.': 'Değişiklikler sonraki antrenmanlarında da geçerli.',
+  'Workout settings': 'Antrenman ayarları',
 }

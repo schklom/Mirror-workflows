@@ -4,6 +4,9 @@
 import pt from './pt.js'
 
 export const PT_BR_OVERRIDES = {
+  'All settings': 'Todas as configurações',
+  'Changes stick for your next workouts too.': 'As mudanças valem para os próximos treinos também.',
+  'Workout settings': 'Configurações do treino',
   'Change the time left': 'Mudar o tempo que falta',
   'Paused': 'Pausado',
   'Scroll to 0:00 to end the rest now.': 'Role até 0:00 para encerrar o descanso agora.',

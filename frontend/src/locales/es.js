@@ -1869,4 +1869,7 @@ export default {
   'Paused': 'En pausa',
   'Scroll to 0:00 to end the rest now.': 'Gira hasta 0:00 para terminar el descanso ya.',
   'Time left': 'Tiempo restante',
+  'All settings': 'Todos los ajustes',
+  'Changes stick for your next workouts too.': 'Los cambios se quedan para tus próximos entrenamientos.',
+  'Workout settings': 'Ajustes del entrenamiento',
 }

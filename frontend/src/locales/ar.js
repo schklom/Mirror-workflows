@@ -1922,4 +1922,7 @@ export default {
   'Paused': 'متوقف مؤقتًا',
   'Scroll to 0:00 to end the rest now.': 'مرّر إلى 0:00 لإنهاء الراحة الآن.',
   'Time left': 'الوقت المتبقي',
+  'All settings': 'كل الإعدادات',
+  'Changes stick for your next workouts too.': 'تبقى التغييرات لتمارينك القادمة أيضًا.',
+  'Workout settings': 'إعدادات التمرين الحالي',
 }

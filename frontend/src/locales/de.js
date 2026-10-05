@@ -1889,4 +1889,7 @@ export default {
   'Paused': 'Pausiert',
   'Scroll to 0:00 to end the rest now.': 'Auf 0:00 drehen beendet die Pause sofort.',
   'Time left': 'Restzeit',
+  'All settings': 'Alle Einstellungen',
+  'Changes stick for your next workouts too.': 'Änderungen gelten auch für deine nächsten Trainings.',
+  'Workout settings': 'Trainings-Einstellungen',
 }

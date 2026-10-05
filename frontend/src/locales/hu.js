@@ -1872,4 +1872,7 @@ export default {
   'Paused': 'Szüneteltetve',
   'Scroll to 0:00 to end the rest now.': 'Görgesd 0:00-ra, és a pihenő azonnal véget ér.',
   'Time left': 'Hátralévő idő',
+  'All settings': 'Összes beállítás',
+  'Changes stick for your next workouts too.': 'A változások a következő edzésekre is érvényesek.',
+  'Workout settings': 'Edzés beállításai',
 }

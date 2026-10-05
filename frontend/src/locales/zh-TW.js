@@ -1862,4 +1862,7 @@ export default {
   'Paused': '已暫停',
   'Scroll to 0:00 to end the rest now.': '捲到 0:00 可立即結束休息。',
   'Time left': '剩餘時間',
+  'All settings': '所有設定',
+  'Changes stick for your next workouts too.': '變更也會套用到之後的訓練。',
+  'Workout settings': '訓練設定',
 }

@@ -1869,4 +1869,7 @@ export default {
   'Paused': 'रुका हुआ',
   'Scroll to 0:00 to end the rest now.': 'आराम अभी खत्म करने के लिए 0:00 तक स्क्रॉल करें।',
   'Time left': 'बचा समय',
+  'All settings': 'सभी सेटिंग्स',
+  'Changes stick for your next workouts too.': 'बदलाव आपके अगले वर्कआउट के लिए भी रहेंगे।',
+  'Workout settings': 'वर्कआउट सेटिंग',
 }

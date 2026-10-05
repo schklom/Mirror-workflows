@@ -1873,4 +1873,7 @@ export default {
   'Paused': 'На паузе',
   'Scroll to 0:00 to end the rest now.': 'Прокрутите до 0:00, чтобы сразу закончить отдых.',
   'Time left': 'Осталось',
+  'All settings': 'Все настройки',
+  'Changes stick for your next workouts too.': 'Изменения сохранятся и для следующих тренировок.',
+  'Workout settings': 'Настройки тренировки',
 }

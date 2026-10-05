@@ -1869,4 +1869,7 @@ export default {
   'Paused': 'Wstrzymano',
   'Scroll to 0:00 to end the rest now.': 'Przewiń do 0:00, by od razu skończyć przerwę.',
   'Time left': 'Pozostały czas',
+  'All settings': 'Wszystkie ustawienia',
+  'Changes stick for your next workouts too.': 'Zmiany zostają też na kolejne treningi.',
+  'Workout settings': 'Ustawienia treningu',
 }

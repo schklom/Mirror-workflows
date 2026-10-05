@@ -389,6 +389,15 @@ export default function RoutineEdit() {
     cleanupSg(ex)
   })
 
+  const addExercise = () => exercisePicker((ex, quick) => {
+    if (quick) {
+      edit(x => x.push({ id: ex.id, ...defaultConfig(ex.id) }))
+      toast(t('“{0}” added to {1}', exerciseNameText(ex), r.name))
+    } else {
+      exConfigSheet(ex, null, cfg => edit(x => { x.push({ id: ex.id, ...cfg }) }), null, r)
+    }
+  })
+
   const units = supersetUnits(r.ex)
   const unitFirst = new Set(units.filter(u => u.length > 1).map(u => u[0]))
   const inSS = new Set(units.filter(u => u.length > 1).flat())
@@ -436,6 +445,12 @@ export default function RoutineEdit() {
       </div>
     </div>}
 
+    {/* "Add exercise" heads the list (v1.3.11): with it under the last exercise, a long routine
+        had to be scrolled to the bottom before anything could be added. */}
+    <div className="row between plan-sec-h routine-ex-h">
+      <h4 className="sec">{t('Exercises')}</h4>
+      <Button size="sm" variant="tinted" icon="plus" onClick={addExercise}>{t('Add exercise')}</Button>
+    </div>
     {r.ex.length ? <div ref={reorder.listRef} onClickCapture={reorder.onClickCapture}
       className={'list routine-list' + (reorder.drag ? ' is-reordering' : '')}>{r.ex.map((e, i) => {
       // An unresolvable id is shown rather than skipped — hiding it left an entry you
@@ -491,15 +506,6 @@ export default function RoutineEdit() {
     })()}
 
     <div className="small dim row" style={{ margin: '10px 2px', gap: 5 }}><Icon name="link" style={{ fontSize: 13 }} />{t('Tap the link button on an exercise to superset it with the one above. You’ll do them back-to-back.')}</div>
-    <Button variant="primary" onClick={() => exercisePicker((ex, quick) => {
-      if (quick) {
-        edit(x => x.push({ id: ex.id, ...defaultConfig(ex.id) }))
-        toast(t('“{0}” added to {1}', exerciseNameText(ex), r.name))
-      } else {
-        exConfigSheet(ex, null, cfg => edit(x => { x.push({ id: ex.id, ...cfg }) }), null, r)
-      }
-    })} icon="plus">{t('Add exercise')}</Button>
-    <div style={{ height: 10 }} />
     <Button onClick={() => {
       const copy = copyRoutine(r, t('Copy'))
       update(s => { s.routines.push(copy) })

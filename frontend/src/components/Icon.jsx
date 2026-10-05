@@ -105,7 +105,6 @@ const P = {
   cloud: <path d="M7 18.2h10.2a3.6 3.6 0 0 0 .1-7.2 5.4 5.4 0 0 0-10.4.6A3.3 3.3 0 0 0 7 18.2Z" />,
   cloudSlash: <><path d="M7 18.2h10.2a3.6 3.6 0 0 0 .1-7.2 5.4 5.4 0 0 0-10.4.6A3.3 3.3 0 0 0 7 18.2Z" /><path d="M4 3.6l16 16.8" /></>,
   download: <path d="M12 3.8v11.4M7.6 11.2 12 15.6l4.4-4.4M4.6 19.4h14.8" />,
-  upload: <path d="M12 15.6V4.2M7.6 8.2 12 3.8l4.4 4.4M4.6 19.4h14.8" />,
   wrench: <path d="M15.2 3.9a5 5 0 0 0-4.8 6.6l-6 6a2.1 2.1 0 0 0 3 3l6-6a5 5 0 0 0 6.1-6.3l-2.9 2.9-2.8-.7-.7-2.8Z" />,
   // checkered, not a pennant — this marks "finish workout", and a 2×2 grid is
   // what reads as a finish line at 16px
@@ -119,7 +118,7 @@ const P = {
   chevronsUpDown: <path d="m7.6 9.4 4.4-4.4 4.4 4.4M7.6 14.6l4.4 4.4 4.4-4.4" />,
   // a rotation: the routines go round in a loop (shuffle stays for freestyle)
   repeat: <><path d="m17.6 4.4 2.4 2.4-2.4 2.4" /><path d="M4.4 11.6V10a3.2 3.2 0 0 1 3.2-3.2H20" /><path d="m6.4 19.6-2.4-2.4 2.4-2.4" /><path d="M19.6 12.4V14a3.2 3.2 0 0 1-3.2 3.2H4" /></>,
-  // share or export: out of the box, never `upload`, which is a backup coming in
+  // share or export: out of the box (download is the way in)
   share: <><path d="M12 14.4V3.8M8.4 7.4 12 3.8l3.6 3.6" /><path d="M8 10.2H6.6a2 2 0 0 0-2 2v6.2a2 2 0 0 0 2 2h10.8a2 2 0 0 0 2-2v-6.2a2 2 0 0 0-2-2H16" /></>,
   note: <><rect x="4.6" y="3.6" width="14.8" height="16.8" rx="2.6" /><path d="M8.4 8.6h7.2M8.4 12h7.2M8.4 15.4h4" /></>,
   history: <><path d="M4.5 12.2a7.6 7.6 0 1 0 2.5-5.6" /><path d="M4.1 4.4v4.3h4.3" /><path d="M12 8.3v4.2l3.1 1.9" /></>,
@@ -142,31 +141,43 @@ const P = {
   phoneScreen: <><rect x="6.6" y="3.4" width="10.8" height="17.2" rx="2.4" /><path d="M10.6 5.8h2.8" /></>,
   ruler: <><rect x="3.4" y="8" width="17.2" height="8" rx="1.6" /><path d="M7 8v3M10.4 8v2M13.8 8v3M17.2 8v2" /></>,
   palette: <><path d="M12 3.6a8.4 8.4 0 0 0 0 16.8c1.2 0 1.8-.7 1.8-1.6 0-1.1-.9-1.4-.9-2.4 0-.9.7-1.5 1.6-1.5h2.2a3.6 3.6 0 0 0 3.6-3.6c0-4.3-3.8-7.7-8.3-7.7Z" /><circle cx="8" cy="11.2" r="1.1" /><circle cx="11" cy="7.6" r="1.1" /><circle cx="15.2" cy="8.4" r="1.1" /></>,
-  // a rotation: two arrows running round (shuffle stays "freestyle")
   // swap or replace: two opposed arrows
   swap: <path d="M4.4 8.2h14.4M15.2 4.6l3.6 3.6-3.6 3.6M19.6 15.8H5.2M8.8 12.2l-3.6 3.6 3.6 3.6" />,
-  // share or export: a box with an arrow leaving it
+  // the workout layout, and its Cards option: two stacked cards
   layout: <><rect x="4" y="4" width="16" height="7" rx="2" /><rect x="4" y="13" width="16" height="7" rx="2" /></>,
+  // per side: one line down the middle, an arrow out to each side
   sides: <><path d="M12 3.6v16.8" /><path d="M8.6 8.4 5.2 12l3.4 3.6M15.4 8.4l3.4 3.6-3.4 3.6" /></>,
   hourglass: <path d="M6.8 3.8h10.4M6.8 20.2h10.4M8 3.8v2.6c0 2.2 4 3.6 4 5.6s-4 3.4-4 5.6v2.6M16 3.8v2.6c0 2.2-4 3.6-4 5.6s4 3.4 4 5.6v2.6" />,
   // effort per set (RIR / RPE)
   gauge: <><path d="M4.2 16.6a8 8 0 1 1 15.6 0" /><path d="m12 14.4 3.6-4.6" /><circle cx="12" cy="14.6" r="1.2" /></>,
+  // don't count for progression, and a deload routine (pause is only for pausing)
   chartLineSlash: <><path d="M3.6 20.2V4.4M3.6 20.2h16.8M6.4 16.4l3.9-4.8 3.1 2.7 5.2-6.6" /><path d="M4.6 4.6 19.8 19.8" /></>,
+  // warm-up (flame is the streak only)
   sunrise: <path d="M3.6 17.4h16.8M7.6 17.4a4.4 4.4 0 0 1 8.8 0M12 6.4v2.4M5.4 10.2 7 11.8M18.6 10.2 17 11.8M8.4 20.4h7.2" />,
   plusCircle: <><circle cx="12" cy="12" r="8.2" /><path d="M12 8.2v7.6M8.2 12h7.6" /></>,
   // a timed set's clock (timer stays the rest timer)
   stopwatch: <><circle cx="12" cy="13.4" r="7.2" /><path d="M12 9.6v3.8M9.6 3.4h4.8M18 7.2l1.4-1.4" /></>,
   // exercise settings: two sliders
   slider: <><path d="M4.4 7.4h9.2M17.8 7.4h1.8M4.4 16.6h1.8M10.4 16.6h9.2" /><circle cx="15.7" cy="7.4" r="2.1" /><circle cx="8.3" cy="16.6" r="2.1" /></>,
-}
 
-// A few keys are aliases so call sites can say what they mean.
-P.search = P.magnifier
-P.settings = P.gear
-P.exercises = P.magnifier
-P.weight = P.scale
-P.streak = P.flame
-P.done = P.check
+  /* ---- v1.3.11 icon sweep: the meanings shuffle, pause and friends used to share ---- */
+  // the Compact layout: four tight rows, where `list` has three with bullets
+  compact: <path d="M4.4 6.4h15.2M4.4 10.1h15.2M4.4 13.9h15.2M4.4 17.6h15.2" />,
+  // convert the numbers to the other unit
+  calculator: <><rect x="5.4" y="3.4" width="13.2" height="17.2" rx="2.6" /><path d="M8.6 7.6h6.8M9 12h.01M12 12h.01M15 12h.01M9 16.2h.01M12 16.2h.01M15 16.2h.01" /></>,
+  // merge an import into what is already here: two lines that become one
+  merge: <><path d="M6.4 3.8v3.4c0 3 5.6 4.6 5.6 8.2v4.8M17.6 3.8v3.4c0 3-5.6 4.6-5.6 8.2" /><path d="m8.8 17 3.2 3.2 3.2-3.2" /></>,
+  // pyramid sets: the weight steps up set by set
+  steps: <path d="M3.6 19.8h4.6v-4.6h4.6v-4.6h4.6V6h3" />,
+  // a note pinned to show next time (flag is Finish workout)
+  pin: <path d="M9.2 3.8h5.6M10.2 3.8v5.4l-3.4 3.8h10.4l-3.4-3.8V3.8M12 13v7.2" />,
+  // copy to the clipboard: two overlapping sheets
+  copy: <><rect x="8.4" y="8.4" width="11.6" height="11.6" rx="2.4" /><path d="M15.6 8.4v-2A2.4 2.4 0 0 0 13.2 4H6.4A2.4 2.4 0 0 0 4 6.4v6.8a2.4 2.4 0 0 0 2.4 2.4h2" /></>,
+  // a passkey (key is the password, lock is "stays on this device")
+  fingerprint: <><path d="M5.2 9.2a7.8 7.8 0 0 1 13.6 0" /><path d="M4.8 14.4v-1.2a7.2 7.2 0 0 1 .4-2.4M18.8 9.2a7.6 7.6 0 0 1 .4 2.6v3" /><path d="M8.6 20a9.6 9.6 0 0 1-1.2-4.6v-2.2a4.6 4.6 0 0 1 9.2 0v1.6" /><path d="M12 13v2.6a9.4 9.4 0 0 0 1.6 5" /><path d="M16.6 18.2v.6c0 .6.1 1.2.2 1.6" /></>,
+  // how a message sounds (the nudge tone)
+  chat: <path d="M5.6 4.8h12.8a2.2 2.2 0 0 1 2.2 2.2v8a2.2 2.2 0 0 1-2.2 2.2H11l-4.4 3.4v-3.4h-1a2.2 2.2 0 0 1-2.2-2.2V7a2.2 2.2 0 0 1 2.2-2.2Z" />,
+}
 
 export const ICON_NAMES = Object.keys(P)
 

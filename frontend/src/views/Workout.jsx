@@ -240,7 +240,7 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
         direction and read 8×60, while those after a Latin "RIR" read 60×8. A set that carries
         words of a right-to-left script keeps its own direction, still isolated (RTL_LETTER). */}
     <span>{ref ? <>{refLabel} (<time dateTime={ref.d} title={fmtDate(ref.d, true, true)}>{refAgo}</time>): {refSets.map((l, i) => <Fragment key={i}>{i ? ', ' : ''}<bdi dir={RTL_LETTER.test(l) ? 'auto' : 'ltr'}>{l}</bdi></Fragment>)}</> : refText}</span>
-    <Icon name="shuffle" />
+    <Icon name="history" />
   </button> : null
   // A bodyweight set has no weight to type, so the column is not there (issue #32) — one
   // stepper instead of two, which is the whole point of the flag. Adding a belt weight in the
@@ -385,7 +385,7 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
         onProgressionSettings && { icon: 'slider', label: t('Exercise settings'), sub: guidance ? t(guidance.policyLabel) : t('Sets, reps, rest, progression'), onClick: onProgressionSettings },
         onRest && { icon: 'timer', label: t('Rest timer'), sub: restSub, onClick: onRest },
         plateLoading && { icon: 'plate', label: t('Plate loading'), sub: loadSummary, onClick: () => barWeightSheet(entry.id, cfg) },
-        routineUpdate && { icon: 'upload', label: t('Update routine'), sub: routineUpdate.sub, onClick: routineUpdate.run },
+        routineUpdate && { icon: 'clipboard', label: t('Update routine'), sub: routineUpdate.sub, onClick: routineUpdate.run },
       ] },
       { title: t('Order and supersets'), items: [
         onPairPrev && { icon: 'link', label: t('Make superset with previous'), onClick: onPairPrev },
@@ -555,7 +555,7 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
       <div style={{ flex: 1, minWidth: 0, fontSize: (compact || dense) ? 17 : 20, fontWeight: 600, letterSpacing: '-.02em', lineHeight: 1.2 }} className={exerciseNameClass(ex)}>{exerciseNameFor(ex)}</div>
       <div className="row" style={{ gap: 2, flex: 'none' }}>
         {entry.note && <button className="iconbtn" aria-label={t('Note')} title={t('Note')} style={{ color: 'var(--acc)' }}
-          onClick={() => exerciseNoteSheet(entryIdx)}><Icon name="pencil" /></button>}
+          onClick={() => exerciseNoteSheet(entryIdx)}><Icon name="note" /></button>}
         <button className="iconbtn" aria-label={t('More')} title={t('More')} onClick={openMore}><Icon name="more" /></button>
       </div>
     </div>
@@ -563,7 +563,7 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
         or by a deload or rehab routine, which owns that choice and offers no undo. On in every
         view, compact included: it changes what the next session is built from. */}
     {entry.noProg === true && <div className="noprog">
-      <Icon name="pause" /><span>{t('Not counted for progression')}</span>
+      <Icon name="chartLineSlash" /><span>{t('Not counted for progression')}</span>
       {onNoProg && <button type="button" className="chip" onClick={() => onNoProg(false)}>{t('Undo')}</button>}
     </div>}
     {/* compact view keeps the plan line: it is what the rows are measured against */}
@@ -581,7 +581,7 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
           "Left"/"Right" tag on each doubled row for a timed hold), so the old "{n} per side"
           chip — which halved the combined total for display — is gone: the split is no longer
           derived, it is what you enter. The tag only flags that this is per-side. */}
-      {!cardio && isPerSide(cfg) && <span className="tag acc nocap"><Icon name="shuffle" />{t('Per side')}</span>}
+      {!cardio && isPerSide(cfg) && <span className="tag acc nocap"><Icon name="sides" />{t('Per side')}</span>}
       {(ex.tg || ex.bp) && <span className="tag">{t(MUSCLE_NAME[ex.tg] || ex.tg || ex.bp)}</span>}
       {ex.eq && <span className="tag">{t(ex.eq)}</span>}
       {best > 0 && <span className="tag nocap">{t('Best:')} {fmtNum(best)} {S.unit}</span>}
@@ -593,7 +593,7 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
     {cfg.note && <div className="exnote">{cfg.note}</div>}
     {standingNote && <div className="exnote"><Icon name="info" style={{ fontSize: 13, marginInlineEnd: 5, verticalAlign: '-2px' }} />{standingNote}</div>}
     {pinnedNote && <div className="exnote" style={{ color: 'var(--yellow)' }}>
-      <Icon name="flag" style={{ fontSize: 13, marginInlineEnd: 5, verticalAlign: '-2px' }} />
+      <Icon name="pin" style={{ fontSize: 13, marginInlineEnd: 5, verticalAlign: '-2px' }} />
       {t('From {0}:', fmtDate(pinnedNote.d, true))} {pinnedNote.note}
     </div>}
     {entry.note && <div className="exnote">{entry.note}</div>}
@@ -684,7 +684,7 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
       })}
       <div style={{ height: 8 }} />
       {wc.setShortcuts ? <div className="row" style={{ flexWrap: 'wrap' }}>
-        <Button size="sm" icon="flame" onClick={onAddWarmup}>{t('Add warm-up set')}</Button>
+        <Button size="sm" icon="sunrise" onClick={onAddWarmup}>{t('Add warm-up set')}</Button>
         <Button size="sm" icon="minus" disabled={entry.sets.length <= 1} onClick={onRemoveSet}>{t('Remove set')}</Button>
         <Button size="sm" icon="plus" onClick={onAddSet}>{t('Add set')}</Button>
       </div> : <Button size="sm" icon="plus" onClick={onAddSet}>{t('Add set')}</Button>}
@@ -1083,9 +1083,9 @@ function ActiveWorkout() {
   const openLayoutMenu = () => menuSheet({
     title: t('Layout'),
     items: [
-      { icon: 'clipboard', label: t('Cards'), on: workoutView === 'cards', onClick: () => setWorkoutView('cards') },
+      { icon: 'layout', label: t('Cards'), on: workoutView === 'cards', onClick: () => setWorkoutView('cards') },
       { icon: 'list', label: t('List'), on: workoutView === 'list', onClick: () => setWorkoutView('list') },
-      { icon: 'minimize', label: t('Compact'), on: workoutView === 'compact', onClick: () => setWorkoutView('compact') },
+      { icon: 'compact', label: t('Compact'), on: workoutView === 'compact', onClick: () => setWorkoutView('compact') },
     ],
   })
   // Logging a past workout (#284): the sets were done days ago, so one tap ticks them all and
@@ -1640,7 +1640,7 @@ function ActiveWorkout() {
       </div>
       <div style={{ height: 6 }} />
       <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <Button size="sm" icon="shuffle" aria-label={t('Swap exercise')} disabled={!!work}
+        <Button size="sm" icon="swap" aria-label={t('Swap exercise')} disabled={!!work}
           onClick={() => swapActiveWorkoutExercise(cur)}>{t('Swap exercise')}</Button>
       </div>
       <div style={{ height: 6 }} />
@@ -1652,7 +1652,7 @@ function ActiveWorkout() {
     {/* Wrapping up is when you know how the session went, so the note sits with the finish
         button rather than somewhere in the header. */}
     <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 10 }}>
-      <Button size="sm" icon="pencil" variant={A.note ? 'tinted' : undefined} onClick={sessionNoteSheet}>
+      <Button size="sm" icon="note" variant={A.note ? 'tinted' : undefined} onClick={sessionNoteSheet}>
         {A.note ? t('Edit session note') : t('Add session note')}
       </Button>
     </div>

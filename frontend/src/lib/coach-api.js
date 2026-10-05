@@ -149,16 +149,16 @@ export function useCoachStatus(active = true) {
 export const JOB_ERRORS = {
   get off() { return t('The Coach isn’t set up on this instance.') },
   get busy() { return t('The Coach is already thinking about your training.') },
-  get cap() { return t('The Coach is resting — try again tomorrow.') },
+  get cap() { return t('The Coach is taking a rest day. Try again tomorrow.') },
   get consent() { return t('The Coach needs your go-ahead first.') },
   get timeout() { return t('The Coach took too long and gave up.') },
-  get auth() { return t('The Coach couldn’t sign in to its provider — the instance owner needs to check its setup.') },
+  get auth() { return t('The Coach couldn’t sign in to its provider. The instance owner needs to check its setup.') },
   get missing() { return t('The Coach isn’t installed properly on this instance.') },
-  get provider() { return t('The Coach couldn’t run — the instance owner needs to check its setup.') },
+  get provider() { return t('The Coach couldn’t run. The instance owner needs to check its setup.') },
   get unusable() { return t('The Coach answered with something the app couldn’t use.') },
   get restart() { return t('The server restarted while the Coach was thinking.') },
   get nostate() { return t('The Coach couldn’t read your training data.') },
-  get noworkout() { return t('There is no workout to look at yet — log one first.') },
+  get noworkout() { return t('There’s no workout to look at yet. Log one first.') },
   // The refusal at enqueue when the process cannot drop privileges (api/coach/jobs.js). The same
   // words as api/coach/routes.js USER_ERROR.unprivileged; what to fix goes to the admin card.
   get unprivileged() { return t('The Coach is switched off on this instance for safety reasons.') },
@@ -169,8 +169,8 @@ export const JOB_ERRORS = {
 // check anything, the person reading this is the operator, and the provider's own words
 // are the only thing that lets them fix it (a spent quota, a wrong model, a rejected key).
 export const BYOK_ERRORS = {
-  get auth() { return t('Your AI provider rejected the key on this phone — check it under Settings → AI Coach.') },
-  get missing() { return t('The Coach isn’t set up on this phone — check Settings → AI Coach.') },
+  get auth() { return t('Your AI provider rejected the key on this phone. Check it under Settings → AI Coach.') },
+  get missing() { return t('The Coach isn’t set up on this phone. Check Settings → AI Coach.') },
   get provider() { return t('Your AI provider couldn’t answer.') },
   get unusable() { return t('The Coach answered with something the app couldn’t use.') },
   get internal() { return t('Something went wrong on this phone.') }

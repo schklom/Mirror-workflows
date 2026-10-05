@@ -6,7 +6,7 @@ import { MUSCLE_NAME } from '../lib/muscles.js'
 import { activeProfile, exAvailable } from '../lib/equipment.js'
 import { bestWeightFor } from '../lib/history.js'
 import { fmtNum, exCount } from '../lib/format.js'
-import { t, exerciseNameFor, exerciseNameClass } from '../lib/i18n.js'
+import { t, tn, exerciseNameFor, exerciseNameClass } from '../lib/i18n.js'
 import { Thumb } from '../components/Media.jsx'
 import { exerciseDetailSheet, addToRoutineSheet, customExSheet } from '../sheets.jsx'
 import Icon from '../components/Icon.jsx'
@@ -24,6 +24,9 @@ export default function Library() {
   const [shown, setShown] = useState(40)
   const bpStrip = useRef(null), eqStrip = useRef(null)
   const profile = activeProfile(S)
+  // Your own exercises, counted the way the list below shows them (allExercises puts every
+  // custom entry in front of the catalogue; deleting one removes it from customEx outright).
+  const ownCount = (S.customEx || []).filter(c => c && c.id).length
   const base = searchExercises(allExercises(S).filter(e => !bp || e.bp === bp), q)
   const eqFiltered = (profile && !showAll) ? base.filter(e => exAvailable(S, e)) : base
   const eqOpts = equipmentOf(eqFiltered)
@@ -38,8 +41,11 @@ export default function Library() {
   const narrowed = !!(q.trim() || bp || eqOn)
 
   return <>
-    <div className="hdr"><div><h1>{t('Exercises')}</h1><div className="sub">{t('{0} exercises with animations', EXDB.length)}</div></div>
+    <div className="hdr lib-hdr"><div><h1>{t('Exercises')}</h1></div>
       <Button size="sm" variant="tinted" icon="target" onClick={() => nav('/muscles')}>{t('By muscle')}</Button>
+      <div className="sub lib-count">{ownCount
+        ? tn('{1} animated exercises + 1 of your own', '{1} animated exercises + {0} of your own', ownCount, EXDB.length)
+        : t('{0} exercises with animations', EXDB.length)}</div>
     </div>
     <div className={'search' + (narrowed ? ' has-count' : '') + (q ? ' has-clear' : '')} style={{ marginBottom: 10 }}><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
       <input className="input" placeholder={t('Search…')} value={q} onChange={e => { setQ(e.target.value); setShown(40) }} />

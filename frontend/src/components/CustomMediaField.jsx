@@ -35,9 +35,9 @@ const noRoom = e => e?.name === 'QuotaExceededError' || e?.name === 'NS_ERROR_DO
 export function mediaErrorText(e) {
   if (noRoom(e)) return t('There is no room left on this device for that file.')
   switch (e?.code) {
-    case 'type': return t('That file type is not supported — use a photo, a GIF, or an MP4, MOV or WebM video.')
-    case 'too-large': return t('That file is too large — up to {0} MB.', fmtMB(e.mb))
-    case 'too-long': return t('That video is too long — up to {0} seconds.', e.sec)
+    case 'type': return t('That file type isn’t supported. Use a photo, a GIF, or an MP4, MOV or WebM video.')
+    case 'too-large': return t('That file is too big. Max {0} MB.', fmtMB(e.mb))
+    case 'too-long': return t('That video is too long. Max {0} seconds.', e.sec)
     case 'photo-too-big': return t('That photo is too large to process on this device.')
     default: return t('This browser cannot read that file.')
   }
@@ -88,7 +88,7 @@ export function useMediaPicker() {
       // A guest's or a local phone's copy is the only one: ask the browser not to evict it under
       // storage pressure. Best effort, and absent on plain http.
       if (!user) { try { globalThis.navigator?.storage?.persist?.()?.catch?.(() => {}) } catch { /* not offered */ } }
-      if (out.warnings.includes('codec')) setWarning(t('This video may not play on every device — MP4 (H.264) plays everywhere.'))
+      if (out.warnings.includes('codec')) setWarning(t('This video may not play on every device. MP4 (H.264) plays everywhere.'))
       return out.media
     } catch (e) {
       toast(mediaErrorText(e))
@@ -99,7 +99,7 @@ export function useMediaPicker() {
   }
   const note = !storable ? t('This browser cannot store photos or videos here.')
     : serverLacks ? t('Your server does not store photos and videos yet.')
-      : !user ? t('Kept on this device only — Export with photos & videos keeps a copy.')
+      : !user ? t('Kept on this device only. Export with photos & videos keeps a copy.')
         : null
   return { pick, busy, warning, setWarning, note, storable, showAdd: !serverLacks, canAdd: !busy && storable && !serverLacks }
 }
@@ -130,7 +130,7 @@ export default function CustomMediaField({ media, url, onChange }) {
   const sizeLine = m ? [m.dur != null && m.kind !== 'image' ? fmtClip(m.dur) : null, t('{0} MB', fmtMB(Math.max(0.1, m.size / MB), { fixed: true }))].filter(Boolean).join(' · ') : null
   const subtitle = m
     ? <span className="cmf-sub"><Icon name={KIND_ICON[m.kind]} />{sizeLine}</span>
-    : t('Optional — a picture makes it easier to spot in a list.')
+    : t('Optional. A picture makes it easier to spot in a list.')
 
   return <div className="cmf">
     <Row icon="image" iconTint="var(--blue)" title={t('Photo, GIF or video')} subtitle={subtitle}>

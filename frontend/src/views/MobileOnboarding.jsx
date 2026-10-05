@@ -64,7 +64,7 @@ export default function MobileOnboarding() {
       <div style={{ height: 10 }} />
       <Button icon="rocket" onClick={() => useUI.getState().openSheet(close => <ConnectSheet close={close} />)}>{t('Connect to my server')}</Button>
       <div className="dim small" style={{ marginTop: 26, lineHeight: 1.5 }}>
-        {t('Local keeps everything on this phone. Connecting syncs to your own openGym server instead — you can switch later in Settings.')}
+        {t('Local keeps everything on this phone. Connecting syncs to your own openGym server instead. You can switch later in Settings.')}
       </div>
     </div>
   )

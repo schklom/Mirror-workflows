@@ -106,16 +106,16 @@ export default function AdminCoach() {
   const hasEndpoint = !needsEndpoint || !!d.baseUrl
   const live = d.enabled && d.runtime.ok && authed && hasEndpoint
 
-  const status = !d.enabled ? 'Off — users see no Coach anywhere in the app.'
+  const status = !d.enabled ? 'Off. Users won’t see the Coach anywhere in the app.'
     : live ? <>On · {meta.label}{d.model ? ' · ' + d.model : ''}</>
-      : !hasEndpoint ? 'On, but no endpoint yet — finish step 2.'
-        : !authed ? 'On, but no credential yet — finish the Credential step.'
-          : !d.runtime.ok ? 'On, but the provider cannot be reached — see the Test step.'
+      : !hasEndpoint ? 'On, but no endpoint yet. Finish step 2.'
+        : !authed ? 'On, but no credential yet. Finish the Credential step.'
+          : !d.runtime.ok ? 'On, but the provider can’t be reached. See the Test step.'
             : 'On'
 
   // Chips, grouped.
   const groups = [
-    { title: 'Paste an API key', hint: 'Plain HTTPS to the provider. Works on the default api image — nothing extra to install.', items: d.providers.filter(p => p.http) },
+    { title: 'Paste an API key', hint: 'Plain HTTPS to the provider. Works on the default api image, nothing extra to install.', items: d.providers.filter(p => p.http) },
     { title: 'Runs a local AI runtime', hint: 'Needs the bigger api image built with --target coach.', items: d.providers.filter(p => RUNTIME_IDS.includes(p.id)) },
     { title: 'Testing', hint: 'A built-in fake that answers instantly, so the whole loop can be tried without an account.', items: d.providers.filter(p => TESTING_IDS.includes(p.id)) }
   ]
@@ -145,9 +145,9 @@ export default function AdminCoach() {
     <div className="adm-hero">
       <div className="adm-hero-av"><Icon name="sparkles" /></div>
       <h2>AI Coach</h2>
-      <p>An optional coach that designs training plans and reviews what people actually log. Off right now — nobody sees it anywhere in the app.</p>
+      <p>An optional coach that designs training plans and reviews what people actually log. Off right now, so nobody sees it anywhere in the app.</p>
       <div className="adm-hero-feats">
-        <div><Icon name="clipboard" /><span><b>Bring any AI.</b> An API key from Anthropic, OpenAI or Gemini — or a free local model via Ollama.</span></div>
+        <div><Icon name="clipboard" /><span><b>Bring any AI.</b> An API key from Anthropic, OpenAI or Gemini, or a free local model via Ollama.</span></div>
         <div><Icon name="shield" /><span><b>Private by design.</b> A strict allowlist decides what leaves; every change needs the user's yes and can be undone.</span></div>
         <div><Icon name="person" /><span><b>Each user decides.</b> Turning it on only makes the Coach available; every person consents for themselves.</span></div>
       </div>
@@ -167,7 +167,7 @@ export default function AdminCoach() {
     {!live && <div className="adm-progress" aria-hidden="true"><i style={{ width: Math.round(doneCount / flags.length * 100) + '%' }} /></div>}
     <div className="adm-lead">
       {live ? 'Users find the Coach under Plan → Coach. This switch is the only place it can be turned off for everyone.'
-        : `${doneCount} of ${flags.length} steps done — finish the open step and the next one unfolds.`}
+        : `${doneCount} of ${flags.length} steps done. Finish the open step and the next one unfolds.`}
     </div>
 
     {d.enabled && <>
@@ -188,7 +188,7 @@ export default function AdminCoach() {
 
       {/* ---------- endpoint (compatible only) ---------- */}
       {needsEndpoint && <Step n={num()} title="Endpoint" hint={d.baseUrl || 'Where the model runs'} done={step2Done} {...stepAt()}>
-        <div className="adm-hint">The address of any server that speaks OpenAI's chat API: <b>Ollama</b>, <b>LM Studio</b>, <b>vLLM</b>, <b>OpenRouter</b>, or a gateway of your own. Just the base — no <code>/v1</code>, no key in the URL.</div>
+        <div className="adm-hint">The address of any server that speaks OpenAI's chat API: <b>Ollama</b>, <b>LM Studio</b>, <b>vLLM</b>, <b>OpenRouter</b>, or a gateway of your own. Just the base: no <code>/v1</code>, no key in the URL.</div>
         <div className="adm-field">
           <label>Base URL</label>
           <TextField key={d.baseUrl || ''} defaultValue={d.baseUrl || ''} placeholder="http://ollama:11434  or  https://openrouter.ai/api" inputMode="url" autoCapitalize="none" autoCorrect="off"
@@ -247,7 +247,7 @@ export default function AdminCoach() {
               {chosenModel && !models.includes(chosenModel) && <option value={chosenModel}>{chosenModel} (not in the list)</option>}
               {models.map(m => <option key={m} value={m}>{m}</option>)}
             </select>
-            : <TextField key={d.provider} defaultValue={chosenModel} placeholder={meta.defaultModel ? `Default: ${meta.defaultModel}` : needsEndpoint ? 'e.g. qwen2.5:3b — or press "List models"' : '(runtime default)'}
+            : <TextField key={d.provider} defaultValue={chosenModel} placeholder={meta.defaultModel ? `Default: ${meta.defaultModel}` : needsEndpoint ? 'e.g. qwen2.5:3b, or press "List models"' : '(runtime default)'}
               onBlur={e => e.target.value !== chosenModel && patch({ model: e.target.value })} />}
         </div>
         {meta.http && <div className="adm-actions">
@@ -308,7 +308,7 @@ export default function AdminCoach() {
               ? 'One API key for the whole instance: every profile may use the Coach with it, and the daily limits above are what bound the spend.'
               : d.boundUid
                 ? 'One personal account, already in use by one profile. Every other profile is refused, so nobody spends somebody else\'s subscription.'
-                : 'One personal account. The first profile to use it becomes the only one allowed to — every other profile is then refused. Paste an API key instead if the whole instance should have the Coach.'}</div>
+                : 'One personal account. The first profile to use it becomes the only one allowed to; every other profile is then refused. Paste an API key instead if the whole instance should have the Coach.'}</div>
 
           <div className="adm-group-t" style={{ marginTop: 14 }}>Isolation</div>
           <div className="adm-hint">{d.unprivileged && !d.unprivileged.ok
@@ -316,7 +316,7 @@ export default function AdminCoach() {
             : d.unprivileged?.dropped
               ? 'Jobs run as a separate unprivileged user that cannot read your data directory or secrets.'
               : d.unprivileged?.why?.includes('no child process')
-                ? 'Not needed for this provider — it makes an HTTPS request and starts no program on this server.'
+                ? 'Not needed for this provider. It makes an HTTPS request and starts no program on this server.'
                 : 'Jobs run with the server\'s own user on this host (no separate user to drop to).'}</div>
         </div>
       </details>
@@ -369,7 +369,7 @@ function CredentialPill({ auth }) {
   const s = auth?.state
   if (s === 'connected') return <span className="adm-pill ok">connected{auth.account ? ' · ' + auth.account : ''}</span>
   if (s === 'not-required') return <span className="adm-pill">not needed</span>
-  if (s === 'optional') return <span className="adm-pill">optional — none saved</span>
+  if (s === 'optional') return <span className="adm-pill">optional, none saved</span>
   if (s === 'unreadable') return <span className="adm-pill bad">can't be read</span>
   return <span className="adm-pill warn">needed</span>
 }
@@ -379,7 +379,7 @@ const credentialHint = (auth, meta) => {
   if (s === 'connected') return 'Connected' + (auth.account ? ' as ' + auth.account : '')
   if (s === 'not-required') return 'Not needed'
   if (s === 'optional') return 'Optional for this endpoint'
-  if (s === 'unreadable') return 'Stored key can\'t be read — add it again'
+  if (s === 'unreadable') return 'Stored key can\'t be read. Add it again'
   return meta.setupToken ? 'Token or API key needed' : 'API key needed'
 }
 
@@ -450,7 +450,7 @@ function ApiKeySheet({ close, onDone, label, placeholder, optional }) {
   return <>
     <h3>{label} API key</h3>
     <div className="muted small" style={{ lineHeight: 1.5, marginBottom: 12 }}>
-      Stored encrypted on this server and sent to the provider only while a job runs. It is never shown again and never leaves the server{optional ? ' — and for an endpoint that takes no key, you can leave this empty and close the sheet.' : '.'}
+      Stored encrypted on this server and sent to the provider only while a job runs. It is never shown again and never leaves the server{optional ? '. For an endpoint that takes no key, you can leave this empty and close the sheet.' : '.'}
     </div>
     <TextField value={key} autoFocus type="password" placeholder={placeholder || 'sk-…'} autoCapitalize="none" autoCorrect="off" onChange={e => setKey(e.target.value)} />
     <div style={{ height: 12 }} />

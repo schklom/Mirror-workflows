@@ -33,7 +33,7 @@ export function buildRestAlert({ at, title, countdownTitle, totalSec, accent, so
   return {
     id: REST_ALERT_ID,
     channelId: vibrate ? REST_CHANNEL_ID : REST_QUIET_CHANNEL_ID,
-    title: title || t('Rest over — next set!'),
+    title: title || t('Rest’s over. Next set!'),
     countdownTitle: countdownTitle || t('Rest'),
     pause: t('Pause'),
     resume: t('Resume'),

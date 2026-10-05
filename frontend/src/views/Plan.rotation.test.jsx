@@ -170,7 +170,7 @@ describe('Plan — the rotation editor', () => {
 
   it('a malformed queue offers recovery instead of an editor full of nothing', () => {
     mount({ queue: { ids: ['gone'], since: Date.now() } })
-    expect(host.textContent).toContain('This rotation could not be read')
+    expect(host.textContent).toContain('This rotation couldn’t be read')
     click(byLabel('Discard it'))
     expect(mocks.S.queue).toBe(null)
   })
@@ -212,7 +212,7 @@ describe('Plan — the rotation editor', () => {
       scheduleMode: 'rotation',
     })
     // Recovery no longer hides the grid — this is a fix-up, not the from-scratch setup gap.
-    expect(host.textContent).toContain('This rotation could not be read')
+    expect(host.textContent).toContain('This rotation couldn’t be read')
     expect(host.textContent).toContain('Week schedule')
     click(byLabel('Discard it'))
     expect(mocks.S.queue).toBe(null)

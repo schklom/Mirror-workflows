@@ -17,7 +17,7 @@ import { validateBaseUrl, baseUrlFor } from './core/providers.js';
 const USER_ERROR = {
   off: 'the Coach is not set up on this instance',
   busy: 'the Coach is already thinking about your training',
-  cap: 'the Coach is resting — try again tomorrow',
+  cap: 'the Coach is taking a rest day, try again tomorrow',
   consent: 'the Coach needs your go-ahead first',
   // Verbatim, because it tells the user the one thing that resolves it and names who resolves
   // it. A vaguer message here turns into a support question for the person running the box.

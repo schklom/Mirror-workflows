@@ -233,7 +233,7 @@ async function whyUnreachable(base, ms) {
   finally { clearTimeout(timer) }
   if (reached) {
     const origin = globalThis.location?.origin || 'https://localhost'
-    return failure(t('Your server was reached, but it refused the app’s request (CORS). If a reverse proxy such as Traefik adds CORS headers, let requests from {0} through to openGym unchanged — see “Phone app and CORS” in docs/SELF_HOSTING.md.', origin), 'cors')
+    return failure(t('Your server was reached, but it refused the app’s request (CORS). If a reverse proxy such as Traefik adds CORS headers, let requests from {0} through to openGym unchanged. See “Phone app and CORS” in docs/SELF_HOSTING.md.', origin), 'cors')
   }
   return failure(t('Could not reach {0}. Check the address and that this phone can reach it.', hostOfBase(base)), 'unreachable')
 }

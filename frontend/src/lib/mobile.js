@@ -121,7 +121,7 @@ export function buildReminderNotifications(S, now = new Date()) {
     notifications.push({
       id: REMINDER_ID_BASE + offset,
       title: t('Workout day'),
-      body: t('{0} is on the plan today — let’s go!', label),
+      body: t('{0} is on the plan today. Let’s go!', label),
       schedule: { at, allowWhileIdle: true },
     })
   }

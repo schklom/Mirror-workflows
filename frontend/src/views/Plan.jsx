@@ -131,7 +131,7 @@ export default function Plan() {
       {rotating && <div className="rotation">
         <h4 className="sec">{t('Rotation')}{external && <span className="tag" style={{ marginLeft: 8 }}>{t('Externally managed')}</span>}</h4>
         {queueRecovery(S) ? <div className="empty">
-          {t('This rotation could not be read — it may have been written by another device.')}
+          {t('This rotation couldn’t be read. Another device may have written it.')}
           <div style={{ marginTop: 10 }}>
             {/* Also gives up S.scheduleMode='rotation' — otherwise the editor stays up with a
                 saved sequence and no queue, and hideGrid keeps the weekday grid (and its own
@@ -156,7 +156,7 @@ export default function Plan() {
                 </>}
               </div>
             })}
-          </div> : <div className="empty">{t('No rotation yet. Add routines in the order you want to train them — the first one you have not logged stays next.')}</div>}
+          </div> : <div className="empty">{t('No rotation yet. Add routines in the order you want to train them. The first one you haven’t logged stays up next.')}</div>}
           <div className="row" style={{ gap: 8, marginTop: 8, flexWrap: 'wrap' }}>
             {!external && <Button size="sm" variant="tinted" icon="plus" aria-label={t('Add routine to the rotation')}
               disabled={S.routines.every(r => seq.includes(r.id))} onClick={addToSeq}>{t('Add routine')}</Button>}
@@ -239,7 +239,7 @@ export default function Plan() {
             onClick={ev => { ev.stopPropagation(); moveRoutine(i, 1) }}><Icon name="chevronDown" /></button>
         </div>}
         <Icon name="chevronRight" className="chev" /></SwipeToDelete>)}</div> : <>
-        <div className="empty"><div className="ico"><Icon name="clipboard" /></div>{t('No routines yet.')}<br />{t('Create one or load the starter plan.')}</div>
+        <div className="empty"><div className="ico"><Icon name="clipboard" /></div>{t('No routines yet.')}<br />{t('Make one, or grab the starter plan to get going.')}</div>
         <Button icon="sparkles" onClick={starterPlanSheet}>{t('Load starter plan')}</Button>
       </>}
     </div></div>

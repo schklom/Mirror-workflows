@@ -326,7 +326,7 @@ function EffortCard({ S }) {
       </div>
       <div className="small dim" style={{ marginTop: 8 }}>{t('{0} of {1} finished sets rated', sum.rated, sum.done)}</div>
       {effortOf(S) === 'none' && <div className="small" style={{ color: 'var(--yellow)', marginTop: 4 }}>
-        {t('Effort per set is switched off — turn it on in Settings to keep rating.')}
+        {t('Effort per set is switched off. Turn it on in Settings to keep rating.')}
       </div>}
       {pts.length > 1 && <>
         <h4 className="sec" style={{ marginTop: 12 }}>{t('Week by week')}</h4>
@@ -339,7 +339,7 @@ function EffortCard({ S }) {
         <span className="v">{b.n ? b.n + ' · ' + Math.round(b.pct * 100) + '%' : '—'}</span>
       </div>)}
       <div className="small dim" style={{ marginTop: 8 }}>
-        {t('Most working sets belong close to failure without living there — half at the floor and half at the top average out to a healthy-looking middle.')}
+        {t('Most working sets belong close to failure, not at it. Half at the floor and half at the top still average out to a healthy-looking middle.')}
       </div>
     </>}
   </div>
@@ -531,7 +531,7 @@ export default function Stats() {
     </div>
 
     <div className="card">
-      <h2>{t('Activity — last 12 months')}</h2>
+      <h2>{t('Activity (last 12 months)')}</h2>
       <Heatmap
         S={S}
         metric={S.heatmapMetric === 'vol' ? 'vol' : 'time'}
@@ -548,7 +548,7 @@ export default function Stats() {
     </div>}
     {workouts.length > 0 && <div className="card row between" style={{ alignItems: 'center', gap: 12 }}>
       <div style={{ minWidth: 0 }}><h2 style={{ margin: 0 }}>{t('Progress photos')}</h2>
-        <div className="muted small" style={{ marginTop: 4 }}>{t('Every photo you kept with a workout, lined up by date — and a before/after slider.')}</div></div>
+        <div className="muted small" style={{ marginTop: 4 }}>{t('Every photo you kept with a workout, lined up by date. Plus a before/after slider.')}</div></div>
       <Button size="sm" variant="tinted" trailingIcon="chevronRight" style={{ flexShrink: 0 }} onClick={() => nav('/progress-photos')}>{t('Open')}</Button>
     </div>}
     {hasEffort(S) && <EffortCard S={S} />}
@@ -599,12 +599,12 @@ export default function Stats() {
             {onEff || onMax ? '' : <> · {t('Best:')}{' '}<b className="accent">{fmtNum(onE1 ? e1Best.est : exBest)} {onE1 ? S.unit : exUnit}</b></>}
           </div>
           {onE1 && <div className="small dim" style={{ marginTop: 4 }}>
-            {t('Best estimate from {0} on {1} — an estimate, not a tested max.', fmtNum(e1Best.w) + ' ' + S.unit + ' × ' + e1Best.r, fmtDate(e1Best.d, true))}
+            {t('Best estimate from {0} on {1}. An estimate, not a tested max.', fmtNum(e1Best.w) + ' ' + S.unit + ' × ' + e1Best.r, fmtDate(e1Best.d, true))}
           </div>}
           {!onEff && !onE1 && !onMax && showEff && <div className="small dim" style={{ marginTop: 4 }}>
-            {t('A fuller dot means less left in the tank — the same weight at a lower {0} is progress the line alone does not show.', hd)}
+            {t('A fuller dot means less left in the tank. The same weight at a lower {0} is progress the line alone doesn’t show.', hd)}
           </div>}
-        </> : <div className="muted small">{t('Finish your first workout to see progress curves here.')}</div>}
+        </> : <div className="muted small">{t('Finish your first workout and your progress curves will show up here.')}</div>}
       </div>
     </div>
 

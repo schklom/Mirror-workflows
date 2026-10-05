@@ -187,7 +187,7 @@ describe('leaving the server', () => {
     expect(mocks.disconnectServer).toHaveBeenCalledWith(undefined)
     expect(mocks.sheets).toHaveLength(0)
     expect(mocks.navs).toEqual(['/home'])
-    expect(mocks.toast).toHaveBeenCalledWith('Disconnected — back to local-only')
+    expect(mocks.toast).toHaveBeenCalledWith('Disconnected. Back to local-only')
   })
 
   it('with changes waiting it asks: how many, try again, export, or disconnect anyway — which keeps them', async () => {
@@ -279,7 +279,7 @@ describe('leaving the server', () => {
     mocks.disconnectServer.mockResolvedValueOnce({ owed: true, count: 1, stashed: false })
     await act(async () => { buttonByText(sheet, 'Disconnect anyway').click() })
     expect(mocks.navs).toEqual([])
-    expect(mocks.toast).toHaveBeenLastCalledWith('Could not keep a copy of the changes on this device — nothing was removed.')
+    expect(mocks.toast).toHaveBeenLastCalledWith('Couldn’t keep a copy of the changes on this device. Nothing was removed.')
   })
 
   it('browser: Sign out checks first too, and "Sign out everywhere" says paired phones have to be paired again', async () => {
@@ -300,6 +300,6 @@ describe('leaving the server', () => {
     expect(confirm().message).toContain('Phones paired with it are disconnected and have to be paired again.')
     mocks.signOutAll.mockRejectedValueOnce(new Error('HTTP 502'))
     await act(async () => { await confirm().onConfirm() })
-    expect(mocks.toast).toHaveBeenLastCalledWith('Could not sign out everywhere — you are still signed in.')
+    expect(mocks.toast).toHaveBeenLastCalledWith('Couldn’t sign out everywhere. You’re still signed in.')
   })
 })

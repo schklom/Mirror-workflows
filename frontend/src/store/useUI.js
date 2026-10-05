@@ -21,7 +21,7 @@ const cancelPushRestTimer = () => { if (useStore.getState().user) api('/api/push
 const bookRestEnd = (endsAt, totalSec) => {
   if (!MOBILE) { pushRestTimer(Math.max(1, Math.round((endsAt - Date.now()) / 1000))); return }
   const { S } = useStore.getState()
-  armRestAlert(endsAt, { title: t('Rest over — next set!'), countdownTitle: t('Rest'), totalSec, accent: S.accent, sound: !!S.sound, vibrate: S.vibrate !== false, alarmBuzz: S.vibrate !== false && !!S.vibrateOnSilent })
+  armRestAlert(endsAt, { title: t('Rest’s over. Next set!'), countdownTitle: t('Rest'), totalSec, accent: S.accent, sound: !!S.sound, vibrate: S.vibrate !== false, alarmBuzz: S.vibrate !== false && !!S.vibrateOnSilent })
     .then(ok => {
       // Only for the rest that asked: one skipped or moved since then has booked its own end.
       const tm = useUI.getState().timer
@@ -63,8 +63,8 @@ const maybeRestNotification = async () => {
     // Android Chrome forbids the Notification constructor (Illegal constructor) - the
     // service-worker registration path is the one that actually pops there.
     const opts = { tag: 'rest-timer', icon: 'icon-512.png' }
-    if (reg?.showNotification) { reg.showNotification(t('Rest over — next set!'), opts); return }
-    new Notification(t('Rest over — next set!'), opts)
+    if (reg?.showNotification) { reg.showNotification(t('Rest’s over. Next set!'), opts); return }
+    new Notification(t('Rest’s over. Next set!'), opts)
   } catch {
     // Intentionally ignore: notification APIs vary by browser and policy in edge cases.
   }
@@ -106,7 +106,7 @@ const runRest = (set, get) => {
       // on reopen reads like a bug. Only the loud parts (beep, vibration, flash) are gated.
       // The native alarm is left armed: this tick can come a little early, and with the screen
       // locked it never runs at all.
-      get().toast(t('Rest over — next set!'))
+      get().toast(t('Rest’s over. Next set!'))
       if (!MOBILE) maybeRestNotification()
       cancelPushRestTimer()
       stopRestTicking()

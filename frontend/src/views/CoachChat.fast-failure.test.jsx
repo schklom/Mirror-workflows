@@ -56,7 +56,7 @@ vi.mock('../lib/api.js', () => ({
   }),
 }))
 
-const FAILED = 'The Coach couldn’t run — the instance owner needs to check its setup.'
+const FAILED = 'The Coach couldn’t run. The instance owner needs to check its setup.'
 let root, container
 
 function installDom() {

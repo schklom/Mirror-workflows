@@ -65,21 +65,21 @@ export function connectionView(sync, { mobile = MOBILE, online = isOnline() } = 
     case 'ok':
       return { tone: 'ok', icon: 'cloud', line: t('All synced'), banner: null, action: null }
     case 'pending':   // the sentence already says "tap to retry": no second word for it
-      return { tone: 'wait', icon: 'reset', line: t('Waiting to sync'), banner: t('Not synced yet — tap to retry.'), action: 'retry', label: null }
+      return { tone: 'wait', icon: 'reset', line: t('Waiting to sync'), banner: t('Not synced yet. Tap to retry.'), action: 'retry', label: null }
     // A sign-in's question about this device's workouts is still open (useStore adoptProfile):
     // nothing syncs until it is answered, and "retry" — Sync now — asks it again.
     case 'held':
-      return { tone: 'wait', icon: 'reset', line: t('Waiting for your answer about this device’s workouts'), banner: t('Nothing syncs until you say whether this device’s workouts go into your profile — tap to answer.'), action: 'retry', label: null }
+      return { tone: 'wait', icon: 'reset', line: t('Waiting for your answer about this device’s workouts'), banner: t('Nothing syncs until you say whether this device’s workouts go into your profile. Tap to answer.'), action: 'retry', label: null }
     case 'offline':
       if (online) return {
         tone: 'off', icon: 'cloudSlash', action: 'retry',
         line: err.code === 'timeout' ? t('The server did not answer in time.') : t('The server cannot be reached'),
-        banner: sync.pending ? t('Your server cannot be reached — your changes are saved on this device and sync once it answers again.') : t('Your server cannot be reached — showing the last copy synced with it.'),
+        banner: sync.pending ? t('Your server can’t be reached. Your changes are saved on this device and sync once it answers again.') : t('Your server can’t be reached. Showing the last copy synced with it.'),
       }
       return {
         tone: 'off', icon: 'cloudSlash', action: 'retry',
-        line: err.code === 'timeout' ? t('The server did not answer in time.') : t('Offline — the server cannot be reached'),
-        banner: sync.pending ? t('Offline — your changes are saved on this device and sync when you are back online.') : t('Offline — showing the last copy synced with the server.'),
+        line: err.code === 'timeout' ? t('The server did not answer in time.') : t('Offline. The server can’t be reached'),
+        banner: sync.pending ? t('Offline. Your changes are saved on this device and sync when you’re back online.') : t('Offline. Showing the last copy synced with the server.'),
       }
     case 'error':
       return err.code === 'bad-response'
@@ -94,8 +94,8 @@ export function connectionView(sync, { mobile = MOBILE, online = isOnline() } = 
         : { tone: 'bad', icon: 'lock', action: 'pair', line: t('The server refuses this phone'), banner: t('Your server no longer accepts this phone. Your changes are kept here.') }
     default:   // 'local': no server at all — chosen, so it is said quietly, but it is said
       return mobile
-        ? { tone: 'quiet', icon: 'lock', action: 'connect', line: t('On this phone only — not connected to a server'), banner: t('On this phone only — not connected to a server') }
-        : { tone: 'quiet', icon: 'lock', action: canSignIn() ? 'signin' : null, line: t('Guest mode — data lives only in this browser.'), banner: t('Guest mode — data lives only in this browser.') }
+        ? { tone: 'quiet', icon: 'lock', action: 'connect', line: t('On this phone only, not connected to a server'), banner: t('On this phone only, not connected to a server') }
+        : { tone: 'quiet', icon: 'lock', action: canSignIn() ? 'signin' : null, line: t('Guest mode: your data lives only in this browser.'), banner: t('Guest mode: your data lives only in this browser.') }
   }
 }
 
@@ -153,7 +153,7 @@ const LEAVE = {
 async function attempt(kind, opts) {
   try { return await LEAVE[kind].run(useStore.getState(), opts) }
   catch (e) {   // only "sign out everywhere" throws: the other sessions are all still valid
-    toast(t('Could not sign out everywhere — you are still signed in.'))
+    toast(t('Couldn’t sign out everywhere. You’re still signed in.'))
     return null
   }
 }
@@ -199,7 +199,7 @@ export function OwedSheet({ kind, count: count0, media: media0 = 0, exportBackup
     const r = await attempt(kind, { force: true })
     setBusy(false)
     if (!r) return
-    if (r.owed && !r.stashed) { toast(t('Could not keep a copy of the changes on this device — nothing was removed.')); return }
+    if (r.owed && !r.stashed) { toast(t('Couldn’t keep a copy of the changes on this device. Nothing was removed.')); return }
     finish(r)
   }
   return <div style={{ textAlign: 'center', padding: '4px 0' }}>
@@ -213,9 +213,9 @@ export function OwedSheet({ kind, count: count0, media: media0 = 0, exportBackup
     <div className="muted small" style={{ marginBottom: 18, lineHeight: 1.5 }}>
       {refused
         ? (MOBILE
-          ? t('Pair again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.')
-          : t('Sign in again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.'))
-        : t('Try again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again — then they are added back.')}
+          ? t('Pair again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again. Then they’re added back.')
+          : t('Sign in again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again. Then they’re added back.'))
+        : t('Try again, or export a backup first. Going ahead anyway keeps a copy of these changes on this device until it connects to this server as this account again. Then they’re added back.')}
     </div>
     {refused && MOBILE && <><button className="btn primary" disabled={busy} onClick={() => { close(); pairAgain() }}>{t('Pair again')}</button><div style={{ height: 8 }} /></>}
     {refused && !MOBILE && canSignIn() && <><button className="btn primary" disabled={busy} onClick={() => { close(); signInAgain() }}>{pwOn() ? t('Sign in') : t('Sign in with passkey')}</button><div style={{ height: 8 }} /></>}

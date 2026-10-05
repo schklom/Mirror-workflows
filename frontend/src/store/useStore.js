@@ -546,7 +546,7 @@ export const useStore = create((set, get) => {
       // "syncs when you're back online" has just kept its word.
       if (offlineChanges) {
         offlineChanges = false
-        import('./useUI.js').then(({ useUI }) => useUI.getState().toast(t('Back online — synced with the server.'))).catch(() => {})
+        import('./useUI.js').then(({ useUI }) => useUI.getState().toast(t('Back online and synced with the server.'))).catch(() => {})
       }
     } catch (e) {
       if (e.status === 409 && e.data && attempt < 2) {

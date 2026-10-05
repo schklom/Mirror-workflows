@@ -186,12 +186,12 @@ export default function ProgressPhotos() {
     </div>}
 
     {comparing && <div className="small dim" style={{ margin: '0 0 12px' }}>
-      {picked.length < 2 ? t('Pick two photos to compare.') : t('Ready — open the comparison.')}
+      {picked.length < 2 ? t('Pick two photos to compare.') : t('Ready! Open the comparison.')}
     </div>}
 
     {!photos.length
       ? <div className="empty"><div className="ico"><Icon name="image" /></div>
-          {t('No progress photos yet — the button above adds one to today, once today has a logged workout.')}
+          {t('No progress photos yet. The button above adds one to today, once today has a logged workout.')}
         </div>
       : groups.map(g => (
         <div key={g.d} style={{ marginBottom: 18 }}>

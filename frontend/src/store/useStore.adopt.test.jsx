@@ -170,7 +170,7 @@ describe('offline and unsynced flags', () => {
     expect(useStore.getState().sync).toMatchObject({ offline: false, pending: false })
     expect(localStorage.getItem('gym_dirty')).toBeNull()
     await new Promise(r => setTimeout(r, 0))   // the toast goes through a lazy import of useUI
-    expect(toast).toHaveBeenCalledWith('Back online — synced with the server.')
+    expect(toast).toHaveBeenCalledWith('Back online and synced with the server.')
   })
 
   it('a push the server refused is pending but not offline', async () => {
@@ -327,6 +327,6 @@ describe('the back-online toast belongs to the account that was offline', () => 
     api.mockResolvedValueOnce({ ok: true, rev: 1 })
     await useStore.getState().pushState()
     await new Promise(r => setTimeout(r, 10))
-    expect(toast).not.toHaveBeenCalledWith('Back online — synced with the server.')
+    expect(toast).not.toHaveBeenCalledWith('Back online and synced with the server.')
   })
 })

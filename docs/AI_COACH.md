@@ -210,7 +210,7 @@ In instance mode it depends on what kind of credential was pasted:
 - **A personal credential** — a Claude Code setup token or an OAuth login — **binds to the first
   profile that spends it**. Any other profile is refused:
 
-> This instance is configured with a single shared account — ask your admin to enable
+> This instance is configured with a single shared account. Ask your admin to enable
 > per-profile sign-in.
 
 No job runs. That is a refusal, not a warning, on purpose — a warning moves the decision onto

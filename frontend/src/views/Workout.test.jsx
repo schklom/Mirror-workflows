@@ -223,7 +223,7 @@ beforeEach(() => {
 
 it('edits a saved set without running live completion, rest or success feedback', async () => {
   await mount([exercise('plain-bench', [false], {
-    plan: { policy: 'linear', kind: 'first', why: ['Nothing logged yet — this session sets the baseline.'] },
+    plan: { policy: 'linear', kind: 'first', why: ['Nothing logged yet, so this session sets the baseline.'] },
   })], 0, {
     active: { editingWorkoutId: 'saved' },
   })
@@ -807,18 +807,18 @@ describe('progression guidance', () => {
         policy: 'linear',
         kind: 'up',
         weight: 62.5,
-        why: ['Every rep last time — {0} {1} more.', 2.5, 'kg'],
+        why: ['Every rep last time. {0} {1} more.', 2.5, 'kg'],
       },
     })])
 
     expect(container.querySelector('.progline')?.textContent)
-      .toContain('Linear progression · Every rep last time — 2.5 kg more.')
+      .toContain('Linear progression · Every rep last time. 2.5 kg more.')
   })
 
   it('is a keyboard-accessible button that opens settings for the pressed grouped entry', async () => {
     const plan = {
       policy: 'linear', kind: 'up', weight: 62.5,
-      why: ['Every rep last time — {0} {1} more.', 2.5, 'kg'],
+      why: ['Every rep last time. {0} {1} more.', 2.5, 'kg'],
     }
     const first = exercise('plain-bench', [false], { sg: 'group', plan })
     const second = exercise('plain-bench', [false], {
@@ -846,7 +846,7 @@ describe('progression guidance', () => {
   it('does not save into a different duplicate occurrence after the entry list shifts', async () => {
     const plan = {
       policy: 'linear', kind: 'up', weight: 62.5,
-      why: ['Every rep last time — {0} {1} more.', 2.5, 'kg'],
+      why: ['Every rep last time. {0} {1} more.', 2.5, 'kg'],
     }
     const first = exercise('plain-bench', [false], { plan, target: { mode: 'reps', reps: 5, weight: 60, marker: 'first' } })
     const second = exercise('plain-bench', [false], { plan, target: { mode: 'reps', reps: 8, weight: 80, marker: 'second' } })
@@ -866,7 +866,7 @@ describe('progression guidance', () => {
   it('does not save through a sheet left open from a replaced workout', async () => {
     const plan = {
       policy: 'linear', kind: 'up', weight: 62.5,
-      why: ['Every rep last time — {0} {1} more.', 2.5, 'kg'],
+      why: ['Every rep last time. {0} {1} more.', 2.5, 'kg'],
     }
     const original = exercise('plain-bench', [false], { plan })
     await mount([original])
@@ -888,7 +888,7 @@ describe('progression guidance', () => {
     const entry = exercise('plain-bench', [true, false], {
       plan: {
         policy: 'linear', kind: 'up', weight: 62.5,
-        why: ['Every rep last time — {0} {1} more.', 2.5, 'kg'],
+        why: ['Every rep last time. {0} {1} more.', 2.5, 'kg'],
       },
     })
     await mount([entry])
@@ -903,7 +903,7 @@ describe('progression guidance', () => {
     const entry = exercise('plain-bench', [true, false], {
       plan: {
         policy: 'linear', kind: 'up', weight: 62.5,
-        why: ['Every rep last time — {0} {1} more.', 2.5, 'kg'],
+        why: ['Every rep last time. {0} {1} more.', 2.5, 'kg'],
       },
     })
     await mount([entry])
@@ -930,7 +930,7 @@ describe('progression guidance', () => {
     expect(saved.sets[0]).toEqual({ w: 60, r: 5, done: true })
     expect(saved.sets[1]).toEqual({ w: 62.5, r: 3, done: false })
     expect(container.querySelector('.progline')?.textContent)
-      .toContain('Double progression · Top of the rep range in every set — 2.5 kg more, back to 3 reps.')
+      .toContain('Double progression · Top of the rep range in every set. 2.5 kg more, back to 3 reps.')
 
     const persisted = JSON.parse(JSON.stringify(mocks.S))
     await unmount()
@@ -938,7 +938,7 @@ describe('progression guidance', () => {
     installDom()
     await act(async () => { root.render(React.createElement(Workout)) })
     expect(container.querySelector('.progline')?.textContent)
-      .toContain('Double progression · Top of the rep range in every set — 2.5 kg more, back to 3 reps.')
+      .toContain('Double progression · Top of the rep range in every set. 2.5 kg more, back to 3 reps.')
   })
 })
 
@@ -950,7 +950,7 @@ describe('progression settings rebuild the rows like a session start', () => {
     d: '2026-08-27',
     entries: [{ id: 'plain-bench', target: { sets: 2, reps: 15, weight: 40 }, sets: [{ w: 40, r: 15, done: true }, { w: 40, r: 15, done: true }] }],
   }]
-  const plan = { policy: 'linear', kind: 'up', weight: 42.5, why: ['Every rep last time — {0} {1} more.', 2.5, 'kg'] }
+  const plan = { policy: 'linear', kind: 'up', weight: 42.5, why: ['Every rep last time. {0} {1} more.', 2.5, 'kg'] }
   const saveTen = async state => {
     await mount([exercise('plain-bench', [false, false], { plan, target: { mode: 'reps', sets: 2, reps: 15, weight: 40 } })], 0, state)
     await pressProgression()
@@ -1029,7 +1029,7 @@ describe('saving progression settings unchanged', () => {
     expect(after.target).toMatchObject({ weight: 42.5, reps: 8, repsMin: 8 })
     expect(container.querySelector('.planline')?.textContent).toBe('Plan: 3 × 8–12')
     const following = next(st)
-    expect(following.plan.why[0]).not.toBe('Plan changed — starting from your new target.')
+    expect(following.plan.why[0]).not.toBe('Plan changed, so starting from your new target.')
     expect(rows(following)).toEqual([[42.5, 9], [42.5, 9], [42.5, 9]])
   })
 
@@ -1065,7 +1065,7 @@ describe('saving progression settings unchanged', () => {
     await act(async () => { save({ ...unchanged(opened), reps: 10 }) })
     const after = mocks.S.active.entries[0]
     expect(after.planned).toEqual({ sets: 3, reps: 10, repsMin: 8, weight: 40 })
-    expect(after.plan.why[0]).toBe('Plan changed — starting from your new target.')
+    expect(after.plan.why[0]).toBe('Plan changed, so starting from your new target.')
     expect(rows(after).map(r => r[0])).toEqual([40, 40, 40])
   })
 })
@@ -1523,7 +1523,7 @@ describe('workout list view', () => {
 // progression line, it grew by that line the moment it snapped into place.
 it('shows the progression line on the card a swipe slides in, as the card itself will', async () => {
   const planned = id => exercise(id, [false], {
-    plan: { policy: 'linear', kind: 'up', weight: 62.5, why: ['Every rep last time — {0} {1} more.', 2.5, 'kg'] },
+    plan: { policy: 'linear', kind: 'up', weight: 62.5, why: ['Every rep last time. {0} {1} more.', 2.5, 'kg'] },
   })
   await mount([planned('plain-bench'), planned('plain-row')])
   const surface = container.querySelector('[data-testid="workout-swipe-surface"]')
@@ -1545,7 +1545,7 @@ describe('workout compact view', () => {
   const withExtras = done => exercise('plain-bench', done, {
     plan: {
       policy: 'linear', kind: 'up', weight: 62.5,
-      why: ['Every rep last time — {0} {1} more.', 2.5, 'kg'],
+      why: ['Every rep last time. {0} {1} more.', 2.5, 'kg'],
     },
   })
 

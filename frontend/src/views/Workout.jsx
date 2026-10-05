@@ -51,7 +51,7 @@ function StartChooser() {
   const idSet = new Set(todayIds)
   const others = S.routines.filter(r => !idSet.has(r.id))
   return <div className="narrow">
-    <div className="hdr"><div><h1>{t('Start workout')}</h1><div className="sub">{t(DAYN[new Date().getDay()])} — {todayRoutines.length ? t('today is {0}', todayName) : t('rest day, but no one’s stopping you')}</div></div></div>
+    <div className="hdr"><div><h1>{t('Start workout')}</h1><div className="sub">{t(DAYN[new Date().getDay()])} · {todayRoutines.length ? t('today is {0}', todayName) : t('rest day, but no one’s stopping you')}</div></div></div>
     {todayRoutines.length > 0 && <div className="card" style={{ borderColor: 'var(--acc)' }}>
       <h2 className="accent">{t("Today's plan")}{todayOvr ? ' · ' + t('rescheduled') : ''}</h2>
       <div className="row between" style={{ marginBottom: 12 }}>
@@ -385,7 +385,7 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
     const warm = isWarmupRow(s)
     const sideTag = sideTagOf(s)
     menuSheet({
-      title: warm ? t('Warm-up') : sideTag ? t('Set {0} — {1}', setNumOf(s, i), sideTag) : t('Set {0}', setNumOf(s, i)),
+      title: warm ? t('Warm-up') : sideTag ? t('Set {0} ({1})', setNumOf(s, i), sideTag) : t('Set {0}', setNumOf(s, i)),
       subtitle: setLabel(entry.id, s, entry.target, speedUnit),
       items: [
         !warm && mode === 'reps' && !isRestPauseSet(s) && { icon: 'arrowDown', label: t('Drop set'), sub: t('+ Drop'), onClick: () => addDropRow(i) },
@@ -604,7 +604,7 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
             </div>
           ) : (
           <div ref={el => onSetRowRef?.(i, el)} className={'setrow' + (s.done ? ' done' : '') + (col3 ? ' eff3' : '') + (timed ? ' timed' : '')}>
-            <button type="button" className="n" aria-label={sideTagOf(s) ? t('Set {0} — {1}', setNumOf(s, i), sideTagOf(s)) : t('Set {0}', setNumOf(s, i))} title={t('More')} onClick={() => openSetMenu(s, i)}>{setNumOf(s, i)}</button>
+            <button type="button" className="n" aria-label={sideTagOf(s) ? t('Set {0} ({1})', setNumOf(s, i), sideTagOf(s)) : t('Set {0}', setNumOf(s, i))} title={t('More')} onClick={() => openSetMenu(s, i)}>{setNumOf(s, i)}</button>
             {sideTagOf(s) && <span className="tag acc nocap">{sideTagOf(s)}</span>}
             {cell(s, i, col1, 'w')}
             {col2 && cell(s, i, col2, 'r')}
@@ -1401,7 +1401,7 @@ function ActiveWorkout() {
     <div className="wprog"><i style={{ width: (total ? done / total * 100 : 0) + '%' }} /></div>
     </div>
     {editing && <p className="muted small">{t('Editing a saved workout. Date and duration stay unchanged.')}</p>}
-    {A.backfill && <div className="muted small" style={{ marginBottom: 8 }}>{t('Logging a past workout — no rest timers.')}</div>}
+    {A.backfill && <div className="muted small" style={{ marginBottom: 8 }}>{t('Logging a past workout, so no rest timers.')}</div>}
 
     {A.entries.length ? (listMode ? (
       <div className="workout-list" data-testid="workout-list" ref={listRef}>
@@ -1479,7 +1479,7 @@ function ActiveWorkout() {
         <ExerciseBlock entryIdx={cur} onPairPrev={onPairPrev} onPairNext={onPairNext} {...blockProps(cur)} />
       )}
       </SwipeCards>
-    </>) : <div className="empty"><div className="ico"><Icon name="shuffle" /></div>{t('Freestyle workout — add your first exercise.')}</div>}
+    </>) : <div className="empty"><div className="ico"><Icon name="shuffle" /></div>{t('Freestyle workout. Add your first exercise and off you go.')}</div>}
 
     <div style={{ height: 12 }} />
     {!listMode && <div className="row">

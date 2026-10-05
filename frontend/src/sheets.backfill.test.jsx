@@ -122,7 +122,7 @@ describe('log a past workout', () => {
     const host = mountTopSheet()
     act(() => { type(host.querySelector('input[type=date]'), '2020-01-02') })
     act(() => { type(host.querySelector('input.num'), '') })
-    expect(host.textContent).toContain('Enter how long it took — at least 1 minute.')
+    expect(host.textContent).toContain('Enter how long it took (at least 1 minute).')
     act(() => { button(host, 'Continue').click() })
     expect(useStore.getState().S.active).toBeFalsy()
     act(() => { type(host.querySelector('input.num'), '1') })

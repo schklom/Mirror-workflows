@@ -48,7 +48,7 @@ export function passkeyError(e) {
     case 'last-way-in': return t('It is your only way in, so it cannot be removed until there is another.')
     case 'passkey-limit': return t('This profile already has as many passkeys as it can hold.')
     case 'credential-exists': return t('This passkey already belongs to a profile.')
-    case 'link-invalid': return t('That code is wrong, used or expired — make a new one on your other device.')
+    case 'link-invalid': return t('That code is wrong, already used or expired. Make a new one on your other device.')
   }
   return passwordError(e)
 }
@@ -74,7 +74,7 @@ export function PasskeysRow({ state, changed }) {
   if (!state) return null
   const n = state.passkeys.length
   return <Row icon="lock" iconTint="var(--acc)" title={t('Passkeys')} accessory="chevron"
-    subtitle={n === 0 ? t('None yet — add one to sign in without your password.') : tn('1 passkey', '{0} passkeys', n)}
+    subtitle={n === 0 ? t('None yet. Add one and sign in without your password.') : tn('1 passkey', '{0} passkeys', n)}
     onClick={() => ui().openSheet(close => <PasskeysSheet close={close} changed={changed} />)} />
 }
 
@@ -154,7 +154,7 @@ function RemovePasskeySheet({ passkey, title, state, close, done }) {
     <h3>{t('Remove this passkey?')}</h3>
     <div className="small" style={{ fontWeight: 600, marginBottom: 6 }}>{title}</div>
     <div className="muted small" style={{ marginBottom: 6 }}>
-      {t('It can no longer sign in to this profile. A device already signed in with it stays signed in — use Sign out everywhere if it was lost.')}
+      {t('It can no longer sign in to this profile. A device already signed in with it stays signed in. If it was lost, use Sign out everywhere.')}
     </div>
     <div className="dim small" style={{ marginBottom: 14 }}>{t('First confirm that it is you.')}</div>
     <ProveOwner passkey password={state.password} explain={passkeyError} danger submitText={t('Remove')} onProof={remove} />
@@ -192,7 +192,7 @@ function AddPasskeySheet({ state, close, done }) {
   return <>
     <h3>{t('Add a passkey')}</h3>
     <div className="muted small" style={{ marginBottom: 14 }}>{ready
-      ? t('Confirmed. Now create the new passkey — your browser asks where to keep it.')
+      ? t('Confirmed. Now create the new passkey; your browser will ask where to keep it.')
       : t('For this device, a security key, a password manager, or your phone through the browser’s own QR code. First confirm that it is you.')}</div>
     <input className="input" placeholder={t('Name, e.g. Work laptop')} maxLength={40} value={name} onChange={e => setName(e.target.value)} />
     <div style={{ height: 12 }} />

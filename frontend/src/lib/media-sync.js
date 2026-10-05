@@ -181,8 +181,8 @@ export function createMediaSync(deps = {}) {
           if (!rejectTold.has(h)) {
             rejectTold.add(h)
             d.toast(code === 'media-type' || code === 'media-invalid'
-              ? t('That file type is not supported — use a photo, a GIF, or an MP4, MOV or WebM video.')
-              : code === 'media-too-long' ? t('That video is too long — up to {0} seconds.', Number(e.data?.maxSec) || 60)
+              ? t('That file type isn’t supported. Use a photo, a GIF, or an MP4, MOV or WebM video.')
+              : code === 'media-too-long' ? t('That video is too long. Max {0} seconds.', Number(e.data?.maxSec) || 60)
                 : t('The server refused the file as too large.'))
           }
           continue

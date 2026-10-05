@@ -351,6 +351,44 @@ export const useUI = create((set, get) => ({
   }
 }))
 
+// A reload in the middle of a rest (pull to refresh, a WebView restart, an update) used to drop
+// the countdown while its alarm still rang later. The rest lives on in sessionStorage for this
+// tab and comes back at boot while its end is still ahead, held if it was paused. Its end was
+// booked when it started (the server's push, the Android alarm), and that booking survives the
+// reload, so it is not booked again: the alert fires once, and the bar's own tick at zero calls
+// the push off as it always does. A rest that ended meanwhile, or one left with no session
+// running, is dropped.
+export const REST_KEY = 'gym_rest'
+const restStore = () => { try { return typeof sessionStorage === 'undefined' ? null : sessionStorage } catch { return null } }
+const saveRest = tm => {
+  const ss = restStore()
+  if (!ss) return
+  try {
+    if (!tm || tm.ready) ss.removeItem(REST_KEY)
+    else ss.setItem(REST_KEY, JSON.stringify({ endsAt: tm.endsAt, total: tm.total, forIdx: tm.forIdx ?? null, kind: tm.kind || null, paused: !!tm.paused, left: tm.left }))
+  } catch { /* the rest just does not outlive a reload */ }
+}
+export function restoreRest(now = Date.now()) {
+  const ss = restStore()
+  let saved = null
+  try { saved = JSON.parse(ss?.getItem(REST_KEY) || 'null') } catch { saved = null }
+  if (!saved || useUI.getState().timer) return false
+  const total = Math.round(Number(saved.total))
+  const ok = useStore.getState().S?.active && total > 0 && (saved.paused ? saved.left > 0 : saved.endsAt > now)
+  if (!ok) { try { ss.removeItem(REST_KEY) } catch { /* nothing to drop */ } return false }
+  const base = { total, forIdx: saved.forIdx ?? undefined, ...(saved.kind === 'switch' ? { kind: 'switch' } : {}) }
+  if (saved.paused) {
+    useUI.setState({ timer: { ...base, left: Math.round(saved.left), endsAt: saved.endsAt, paused: true } })
+    return true
+  }
+  pageHiddenAt = typeof document !== 'undefined' && document.hidden ? now : null
+  useUI.setState({ timer: { ...base, left: Math.max(1, Math.round((saved.endsAt - now) / 1000)), endsAt: saved.endsAt } })
+  runRest(useUI.setState, useUI.getState)
+  return true
+}
+useUI.subscribe((s, prev) => { if (s.timer !== prev.timer) saveRest(s.timer) })
+restoreRest()
+
 // Buttons on the rest notification (pause, ±15s, skip) change the countdown in the
 // service first, then mirror that into the in-app timer. skip ends it. Seconds round up, as the
 // notification's clock does, so a pause in the last half second still holds a second here.

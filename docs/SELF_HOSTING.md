@@ -63,7 +63,7 @@ turn on **password sign-in**, see [§4](#password-sign-in-optional).)
 The standalone mobile app (`docs/MOBILE.md`) sidesteps this entirely for its "connect to my
 server" mode: instead of a passkey ceremony (impossible from inside its WebView, which never
 runs at your real hostname), it pairs by redeeming a short one-time code — minted from
-Settings → "Pair the mobile app" in an already signed-in browser tab — for a bearer token
+Settings → Account → "Pair the mobile app" in an already signed-in browser tab — for a bearer token
 sent as an `Authorization` header rather than a cookie. Two consequences worth knowing if
 you're poking at the API directly:
 
@@ -180,7 +180,7 @@ nobody could generate the first code.
 For more admins (or on an instance that existed before `FIRST_USER_ADMIN`), copy the id from
 **Settings → Account → Account ID** (tap it to copy; it is also in `./data/db.json` under
 `users[].id`) and put it in `ADMIN_UIDS`. The same row is how anyone on your instance tells you
-which account is theirs when they need help. Admins get an **Admin dashboard** link in Settings: who's training
+which account is theirs when they need help. Admins get an **Admin dashboard** link in Settings → Account: who's training
 right now, each user's workout history and body weight, the ability to disable an account (signed
 out and locked out everywhere until you re-enable it), and — with `INVITE_ONLY=1` — generating and
 revoking invite codes. Existing accounts keep working when you switch invite-only on. Admin access
@@ -191,11 +191,11 @@ is gated by your passkey and enforced server-side, so it needs no separate login
 An instance whose people share a language can start everyone in it:
 
 ```bash
-DEFAULT_LANG=pt-BR         # any code from Settings → Language: de, es, fr, pt-BR, …
+DEFAULT_LANG=pt-BR         # any code from Settings → Units & language → Language: de, es, fr, pt-BR, …
 ```
 
 The sign-in and create-profile screens open in that language, and so does every profile that
-has never picked one in **Settings → Language**. Anyone's own choice there always wins, and
+has never picked one in **Settings → Units & language → Language**. Anyone's own choice there always wins, and
 profiles that existed before this setting keep the language they have — the app cannot tell an
 old profile that chose English from one that never looked, so it leaves them alone. Without
 `DEFAULT_LANG`, a new visitor starts in their browser's language when openGym has it, else
@@ -385,7 +385,7 @@ hashes stay in `db.json` and work again if you switch it back on — but while i
 that only has a password cannot sign in.
 
 The mobile app keeps pairing: someone with a password signs in to the website with it and pairs
-from Settings → "Pair the mobile app", as with a passkey.
+from Settings → Account → "Pair the mobile app", as with a passkey.
 
 ## 5. Fitting it into an existing stack
 
@@ -528,7 +528,7 @@ tar czf opengym-backup-$(date +%F).tar.gz data/
 That archive contains all profiles, passkeys and workout history — and, if the activity log is
 on, `audit.log` with everyone's sign-in times. Worth knowing before you ship the archive to a
 backup service you don't run. Restore by unpacking it back into the project folder. (Individual
-users can also export their own data as JSON from Settings.)
+users can also export their own data as JSON from Settings → Data & backup.)
 
 The photos and videos of custom exercises are in `data/uploads/`, and they are most of what makes
 the archive large. To leave them out:
@@ -540,7 +540,7 @@ tar czf opengym-backup-$(date +%F).tar.gz --exclude=data/uploads data/
 Restored without them, every profile is intact, and an exercise whose file is gone shows a
 placeholder until one of its owner's devices — each keeps its own copy — uploads it again. When
 you move openGym to another server, copy the whole `data/`, `uploads/` included; each person can
-also carry their own through Settings → *Export with photos & videos* and import it there.
+also carry their own through Settings → Data & backup → *Export with photos & videos* and import it there.
 
 If you enabled the AI Coach with the Codex provider, note what this archive deliberately does
 **not** contain: `./coach-auth`, where that provider keeps its refreshable sign-in. It is a
@@ -557,7 +557,7 @@ in this archive — and unreadable without the secret next to them, like everyth
 
 openGym can push two kinds of alert to your phone/desktop, even when the app isn't open:
 rest-timer-over, and a reminder on days you have a workout planned but haven't logged one yet.
-Turn it on per-profile in **Settings → Notifications** (requires a signed-in passkey profile and
+Turn it on per-profile in **Settings → Reminders** (requires a signed-in passkey profile and
 HTTPS — see section 3).
 
 No setup needed server-side, and nothing to configure per timezone: VAPID keys are generated on
@@ -582,7 +582,7 @@ cannot be scheduled. A reminder that was due while the server was down or
 restarting is still sent up to 15 minutes late, once; the browser re-registers its subscription
 with the server on every signed-in start, so a subscription the server lost heals itself.
 
-**Keep screen awake** (Settings → *During a workout*) has the same transport requirement: the
+**Keep screen awake** (Settings → *Workout*) has the same transport requirement: the
 Wake Lock API is only available over HTTPS or on `http://localhost`, so on a plain-LAN-IP
 instance the switch shows as unsupported. Nothing to configure server-side either way, and iOS
 refuses the lock while the phone is in Low Power Mode.
@@ -715,7 +715,7 @@ with (then **Sign out everywhere**). A browser that is still signed in can give 
 passkey with **Add another device** only if the profile also has a password and
 `PASSWORD_LOGIN=1`: making the code asks for a passkey or the current password first,
 because a session on its own may be a stolen cookie. Otherwise there is no self-service recovery: with `PASSWORD_LOGIN=1` an admin can issue a reset code, and without
-it the only way back is a backup (**Settings → Export backup (JSON)**, from any device still
+it the only way back is a backup (**Settings → Data & backup → Export backup (JSON)**, from any device still
 signed in) imported into a new profile. When you ask your admin for help, the id under
 **Settings → Account → Account ID** tells them exactly which account is yours. Adding a second
 passkey early is what keeps one lost phone from being a lost profile.
@@ -732,8 +732,8 @@ browser (see section 2).
 | Media didn't download | `docker compose logs media`. Re-run `docker compose up -d`, or run `./scripts/fetch-media.sh`. |
 | Port 8080 already used | Set `WEB_PORT=9090` in `.env` (and update `ORIGIN` for local testing). |
 | A photo or video will not upload ("refused as too large", or it stops partway) | A proxy in front caps the body or cuts the request off: see [Photos and videos](#photos-and-videos-of-custom-exercises) for the body size and timeouts it needs. |
-| No "Notifications" option in Settings | Requires a signed-in profile and HTTPS (or `localhost`) — guest mode and plain HTTP over LAN can't subscribe. |
-| Day reminder fires at the wrong time | Toggle it off and on in Settings so it re-detects your browser's timezone (also happens automatically on every app load — see section 7). |
+| No "Reminders" page in Settings | Requires a signed-in profile and HTTPS (or `localhost`) — guest mode and plain HTTP over LAN can't subscribe. |
+| Day reminder fires at the wrong time | Toggle it off and on in Settings → Reminders so it re-detects your browser's timezone (also happens automatically on every app load — see section 7). |
 | Notifications switch is off although I turned it on | The server no longer holds the subscription (rebuilt `data/db.json`, regenerated `vapid.json`); the app re-registers on the next start, or switch it on again. On iOS, push only works from the Home Screen icon. |
 | Want to reset a stuck login | Delete the cookie in your browser; sessions are just signed cookies. |
 | The app says "Your server no longer accepts this phone" (or "this browser") | The server answered 401. Usual causes: "sign out everywhere" was used, the account was disabled, `data/secret` was lost or replaced when the stack was moved (every session and pairing dies with it), or a proxy with its own login rejects requests that carry `Authorization: Bearer`. Nothing on the device is lost: pair the phone again (browser: Settings → "Pair the mobile app"), or sign in again in the browser, and what the device kept is merged into the account. |

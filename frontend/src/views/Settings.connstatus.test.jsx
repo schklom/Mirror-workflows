@@ -72,7 +72,7 @@ afterEach(() => {
   host.remove()
 })
 
-const mount = () => act(() => root.render(<Settings />))
+const mount = () => act(() => root.render(<Settings page="look" />))
 const row = () => [...host.querySelectorAll('.lrow')].find(r => r.textContent.includes('Show connection status'))
 
 describe('Show connection status', () => {

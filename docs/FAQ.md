@@ -36,7 +36,7 @@ checks for updates itself. Get it from the
 On a self-hosted instance, in the `./data` folder next to `docker-compose.yml`: one JSON file per
 profile plus the account list. Back up that folder and you've backed up everything. In the phone app
 it's in the app's private storage. In guest mode it's only in that browser. You can export
-everything as one file at any time under **Settings → Data**.
+everything as one file at any time under **Settings → Data & backup**.
 
 ### Does the app send anything anywhere?
 

@@ -83,10 +83,10 @@ afterEach(() => {
 
 // The effect resolves two promises (isAndroid, then checkForUpdate) before the row can render.
 const mount = async () => {
-  await act(async () => { root.render(<Settings />) })
+  await act(async () => { root.render(<Settings page="alerts" />) })
   await act(async () => { await Promise.resolve(); await Promise.resolve() })
 }
-const TITLE = 'Vibrate when the phone is on silent'
+const TITLE = 'Vibrate on silent too'
 const rowTitled = title => [...host.querySelectorAll('.lrow')].find(r => r.querySelector('.lrow-t')?.textContent === title)
 const switchIn = row => row.querySelector('[role="switch"]') || row.querySelector('input[type="checkbox"]') || row.querySelector('button')
 
@@ -97,7 +97,7 @@ describe('Settings — vibrate when the phone is on silent', () => {
     await mount()
     const row = rowTitled(TITLE)
     expect(row).toBeTruthy()
-    expect(row.querySelector('.lrow-s').textContent).toBe('The end of a rest or a hold buzzes like an alarm, even in silent mode.')
+    expect(row.querySelector('.lrow-s').textContent).toBe('The end of a rest or a hold buzzes like an alarm, even in silent mode.Android app only')
     const rows = [...host.querySelectorAll('.lrow')]
     expect(rows.indexOf(row)).toBe(rows.indexOf(rowTitled('Vibrate')) + 1)
     expect(switchIn(row).getAttribute('aria-checked')).toBe('false')

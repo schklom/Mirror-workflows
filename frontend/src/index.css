@@ -1780,6 +1780,59 @@ body.chips-dragging *{cursor:inherit}
 /* Stats: the card Plan links to clears the sticky banners when it is scrolled to */
 #weekly-volume{scroll-margin-top:calc(var(--sat) + var(--conn) + 96px)}
 
+/* ------------------------------------------------- duration wheel picker -- */
+/* components/DurationWheel.jsx: two scroll-snap wheels under one highlight band. --dw-item is
+   WHEEL_ITEM there. The band sits behind the rows; the rows fade and lean back toward the edges
+   (painted from JS while scrolling), and the mask softens the top and bottom rows further. */
+.dw{--dw-item:40px;position:relative;display:flex;justify-content:center;height:calc(var(--dw-item) * 5);
+  margin:4px auto 16px;max-width:320px;user-select:none;-webkit-user-select:none;touch-action:pan-y}
+.dw-band{position:absolute;inset-inline:6px;top:calc(var(--dw-item) * 2);height:var(--dw-item);border-radius:10px;
+  background:color-mix(in srgb,var(--label) 10%,transparent);pointer-events:none}
+.dw-col{position:relative;flex:1;min-width:0;outline:none;border-radius:10px}
+.dw-col:focus-visible::after{content:'';position:absolute;inset-inline:8px;top:calc(var(--dw-item) * 2);height:var(--dw-item);
+  border-radius:10px;box-shadow:0 0 0 2px var(--acc);pointer-events:none}
+.dw-scroll{height:100%;overflow-y:scroll;overflow-x:hidden;scroll-snap-type:y mandatory;overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;scrollbar-width:none;perspective:420px;
+  -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 34%,#000 66%,transparent 100%);
+  mask-image:linear-gradient(to bottom,transparent 0,#000 34%,#000 66%,transparent 100%)}
+.dw-scroll::-webkit-scrollbar{display:none}
+.dw-pad{height:calc(var(--dw-item) * 2)}
+.dw-it{height:var(--dw-item);scroll-snap-align:center;display:flex;align-items:center;justify-content:flex-end;
+  padding-inline-end:calc(50% + 2px);font-size:22px;font-variant-numeric:tabular-nums;color:var(--label-2);
+  cursor:pointer;transform-origin:50% 50%;will-change:transform,opacity}
+.dw-it.on{color:var(--label);font-weight:600}
+.dw-it.out{color:var(--label-4)}
+.dw-unit{position:absolute;top:calc(var(--dw-item) * 2);height:var(--dw-item);display:flex;align-items:center;
+  inset-inline-start:calc(50% + 8px);font-size:17px;font-weight:600;color:var(--label);pointer-events:none}
+.dw-read{text-align:center;font-size:34px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums;margin:-4px 0 2px}
+.dw-foot{text-align:center;margin:-6px 0 14px;line-height:1.4}
+@media (hover:hover){.dw-it:hover{color:var(--label)}}
+
+/* ------------------------------------------------------- Settings (v1.3.11) -- */
+/* A sub-page's nav bar: the back button names where it goes, the title sits in the middle. */
+.sp-nav{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,max-content) minmax(0,1fr);align-items:center;column-gap:6px;
+  min-height:44px;margin:4px -6px 10px}
+.sp-back{display:inline-flex;align-items:center;gap:2px;color:var(--acc);font-size:17px;padding:6px;border-radius:10px;
+  min-width:0;max-width:100%;justify-self:start}
+.sp-back span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sp-back .icn{font-size:22px;--icon-stroke:2.2;flex:none}
+.sp-title{text-align:center;font-weight:600;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:0}
+.sp-root-title{font-size:34px;line-height:1.06;font-weight:700;letter-spacing:-.028em;margin:2px 0 10px}
+@media (max-width:420px){.sp-root-title{font-size:30px}}
+.sp-search{margin-bottom:18px}
+/* the account card on top of the root: a big round avatar, the name, one line under it */
+.lrow.sp-acct{padding-block:12px;gap:14px}
+.sp-avatar{width:56px;height:56px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:30px;
+  background:linear-gradient(160deg,var(--surface-3),var(--surface-2));color:var(--label-2)}
+.sp-acct .lrow-t{font-size:19px;font-weight:600}
+.sp-avatar.on{background:var(--acc-soft);color:var(--acc);font-size:24px;font-weight:700}
+.sp-version{text-align:center;margin-top:4px;line-height:1.6}
+.lrow.dis .lrow-i,.lrow.dis .lrow-t,.lrow.dis .sw{opacity:.45}
+/* a row a search result jumped to: a short accent wash that fades out */
+.lrow.sp-flash{animation:spflash 1.8s ease}
+@keyframes spflash{0%,45%{background:var(--acc-soft)}100%{background:transparent}}
+.sp-empty{color:var(--label-2);text-align:center;padding:28px 12px;line-height:1.4}
+
 /* ----------------------------------------------------------- RTL (Arabic) -- */
 /* Directional icons flip: back chevrons point right, trailing chevrons point left. */
 [dir="rtl"] [data-icon="chevronLeft"],

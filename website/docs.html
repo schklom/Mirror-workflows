@@ -665,8 +665,10 @@ ALLOW_GUEST=0              # remove "Continue without account"</code></pre>
   </ol>
   <p>Worth knowing: the pairing exchanges the code for a bearer token that is the same signed
      value a session cookie carries — so <b>"sign out everywhere"</b> in the browser revokes
-     paired apps too. Use an HTTPS address if at all possible (the token would otherwise
-     cross the network in plain text). A connected app keeps working without a network on the
+     paired apps too. Use an <code>https://</code> address: the phone blocks a plain
+     <code>http://</code> server before anything is sent. Pairing fails while the browser works?
+     A reverse proxy or a login page in front of <code>/api/</code> is answering instead of
+     openGym; see <a href="https://github.com/DuarteSantos8/openGym/blob/main/docs/SELF_HOSTING.md#phone-app-and-cors" rel="noopener">Phone app and CORS</a>. A connected app keeps working without a network on the
      last copy it synced — it shows an "Offline" line under the header and pushes your changes
      as soon as the connection is back, same as the browser PWA. Settings → <b>Disconnect</b> syncs one last
      time, then drops the device cleanly back to local mode. (For the curious: it's

@@ -135,7 +135,7 @@ The browser app is served from your domain, so it never makes a cross-origin req
 [phone app](MOBILE.md#connecting-the-app-to-your-own-server) does: its WebView runs at
 `https://localhost` (Android) or `capacitor://localhost` (iOS), and the browser engine asks your
 server first (a CORS preflight, `OPTIONS`) before every request with a JSON body or a token.
-**openGym answers that preflight itself** — it allows the requesting origin, the methods
+**openGym answers that preflight itself**: it allows the requesting origin, the methods
 `GET, POST, PUT, DELETE, OPTIONS` and the headers `Content-Type, Authorization` — so the proxy only
 has to pass it through unchanged.
 
@@ -143,13 +143,53 @@ Don't put a CORS middleware on the openGym route. A Traefik `headers` middleware
 `accessControlAllowOriginList` (or nginx `add_header Access-Control-*` with an `if
 ($request_method = OPTIONS) { return 204; }`) answers the preflight on its own and never forwards
 it; when the app's origin is not on its list, the phone refuses to send the real request and
-pairing fails with "Failed to fetch" while the openGym containers log nothing. In Traefik's access
-log that shows as `"OPTIONS /api/pair/redeem HTTP/2.0" 200 0 "-" "-" … "-" 0ms` — no backend
-service, no time spent. If the middleware has to stay (it is shared with other routes), add
+pairing fails while the openGym containers log nothing. In Traefik's access log the preflight then
+looks like this:
+
+```
+"OPTIONS /api/pair/redeem HTTP/2.0" 200 0 "https://localhost/" "Mozilla/5.0 (Linux; Android 10; K; wv) ..." 16011 "websecure-opengym_rtr@file" "-" 0ms
+```
+
+The signature is status `200` with backend `"-"` and `0ms`: the router matched, but no service
+was asked and no time was spent. When openGym answers it, you see `204`, the openGym service
+name and a few milliseconds. If the middleware has to stay (it is shared with other routes), add
 `https://localhost` and `capacitor://localhost` to the allowed origins, the methods and headers
 above to its lists, and don't set allow-credentials (the app authenticates with a bearer token,
-never a cookie). The app tells the two cases apart since v1.3.10: when the server is reachable but
-the request is refused, pairing says so instead of "Failed to fetch".
+never a cookie).
+
+The same thing breaks in other shapes:
+
+- **A second `Access-Control-Allow-Origin`.** openGym already sends one. A proxy that adds its
+  own (Nginx Proxy Manager's "Advanced" tab or a custom location with `add_header
+  Access-Control-Allow-Origin ...`, a Caddy `header` line, a Traefik middleware) makes it two,
+  and the browser engine refuses a response with two, even when both say the same origin.
+  Remove the proxy's copy.
+- **A rewritten or stripped header.** A proxy that sets the header to a fixed origin (your
+  domain, or `*` together with credentials) or drops the `Access-Control-*` headers from
+  openGym's answer refuses the app just the same. Pass them through untouched.
+- **SSO or forward-auth in front of `/api/`.** Authelia, Authentik, oauth2-proxy, Cloudflare
+  Access or basic auth answer the app with a redirect to a login page or a `401`, and the
+  preflight never carries cookies, so it can't log in. openGym has its own sign-in (passkeys,
+  passwords and the app's bearer token), so exclude `/api/` from proxy auth. Keep the auth on the
+  rest of the site if you like; the phone app only talks to `/api/`.
+
+Check it yourself from any machine; this is the preflight the phone sends:
+
+```bash
+curl -si -X OPTIONS https://HOST/api/pair/redeem \
+  -H 'Origin: https://localhost' \
+  -H 'Access-Control-Request-Method: POST' \
+  -H 'Access-Control-Request-Headers: content-type'
+```
+
+Expect `HTTP/2 204` (or `HTTP/1.1 204`) with exactly one `access-control-allow-origin:
+https://localhost` line. A `200` with no CORS headers, a `30x` or `401`, an HTML page or two
+`access-control-allow-origin` lines mean the proxy is in the way.
+
+The app tells these cases apart since v1.3.10: when the server is reachable but the request is
+refused, pairing says so instead of "Failed to fetch", and when a login page or proxy rule
+answered in openGym's place, it says that too. The app also only pairs with an `https://` address:
+its WebView is an https page, so the phone blocks a plain `http://` server before anything is sent.
 
 ## 4. Multiple users
 

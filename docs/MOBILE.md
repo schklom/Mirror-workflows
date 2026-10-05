@@ -40,12 +40,15 @@ or Settings → **"Connect to my server"** later) to finish. Notes:
 
 - Works offline too: the phone keeps its copy (and the file mirror) while connected, and
   changes made without a network go to the server as soon as it is reachable again.
-- Use an HTTPS address if at all possible: the connection carries a bearer token instead of
-  a cookie, and that token would otherwise cross the network in plain text.
-- Pairing says your server "refused the app's request (CORS)", or fails with "Failed to fetch"
-  on an older version, while the browser works? A reverse proxy in front is answering the app's
-  CORS preflight itself. openGym answers it on its own; see
-  [Phone app and CORS](SELF_HOSTING.md#phone-app-and-cors).
+- Use an `https://` address. The app's WebView is an https page, so the phone blocks a plain
+  `http://` server before anything is sent, and pairing says so. It also keeps the bearer token
+  (the connection carries one instead of a cookie) off the network in plain text.
+- Pairing says your server "refused the app's request (CORS)", or that "a login page or proxy
+  rule replied instead of openGym", or fails with "Failed to fetch" on an older version, while
+  the browser works? Something in front of openGym is answering the app instead: a reverse proxy
+  handling the CORS preflight itself, adding a second `Access-Control-Allow-Origin`, or SSO /
+  forward-auth on `/api/`. openGym answers the preflight and does its own sign-in; see
+  [Phone app and CORS](SELF_HOSTING.md#phone-app-and-cors) for the fixes and a `curl` self-check.
 - The token lasts `SESSION_DAYS` (90 by default, see `docs/SELF_HOSTING.md`) and renews
   itself: every time the app starts, a token past half its life is swapped for a fresh one.
   A phone that is used at all never runs out; one left unopened for longer than

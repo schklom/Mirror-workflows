@@ -1200,6 +1200,18 @@ body.chips-dragging *{cursor:inherit}
 .menu-list .menu-item.disabled{opacity:.4;pointer-events:none}
 .menu-on{color:transparent;font-size:16px;flex:none}
 .menu-on.is-on{color:var(--acc)}
+/* A grouped menu (menuSheet's `sections`): groups sit apart, each with a small header, so a long
+   list reads as four short ones. */
+.menu-group.grouped+.menu-group.grouped{margin-top:14px}
+.menu-group.grouped .menu-list{gap:0;background:var(--surface);border-radius:var(--r-card);overflow:hidden}
+.menu-group.grouped .menu-item{border-radius:0;position:relative}
+.menu-group.grouped .menu-item+.menu-item::before{
+  content:'';position:absolute;top:0;inset-inline-start:56px;inset-inline-end:0;height:var(--hair);background:var(--sep-op);
+}
+.menu-sec{font-size:13px;font-weight:600;color:var(--label-2);padding:0 6px 6px;letter-spacing:.005em}
+.menu-list .menu-item.accent .lrow-i{background:var(--acc);color:var(--on-acc)}
+.menu-chev{color:var(--label-3);font-size:14px;flex:none}
+[dir="rtl"] .menu-chev{transform:scaleX(-1)}
 .setextra{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 8px 32px}
 .setextra .chip.add{display:inline-flex;align-items:center;gap:4px;color:var(--acc)}
 .setextra .chip.add svg{width:13px;height:13px}

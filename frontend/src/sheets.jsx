@@ -99,23 +99,33 @@ export function askAddDeviceData(extras) {
 // everything that is not a set you are about to log: the point of a single "more" button is
 // that the ten things you do once a session stop competing with the two you do every set.
 // items: [{ icon, label, sub, onClick, danger, disabled, on }] — `on` draws a check for toggles.
+// sections: [{ title, items }] instead of `items` splits a longer menu into groups, each with an
+// optional small header; a group whose items are all falsy is left out, header and all.
+// `accent` tints a row's icon, for the one entry a menu leads with.
 // A title is shown as written: most are sentences ("Convert to lb?", "Set 2"), which a default
 // title-casing turned into "Convert To Lb?". An exercise name passes exerciseNameClass as
 // titleClass, which title-cases the lower-case packs and leaves a cased one alone.
-function MenuSheet({ title, titleClass = '', subtitle, items, close }) {
+function MenuSheet({ title, titleClass = '', subtitle, items, sections, close }) {
+  const groups = (sections || [{ items }])
+    .map(g => ({ title: g.title, items: (g.items || []).filter(Boolean) }))
+    .filter(g => g.items.length)
   return <>
     {title && <h3 className={titleClass || undefined} style={{ marginBottom: subtitle ? 2 : 10 }}>{title}</h3>}
     {subtitle && <div className="muted small" style={{ marginBottom: 10 }}>{subtitle}</div>}
-    <div className="list menu-list">
-      {items.filter(Boolean).map((it, i) => <div key={i}
-        className={'item menu-item' + (it.danger ? ' danger' : '') + (it.disabled ? ' disabled' : '')}
-        aria-disabled={it.disabled || undefined}
-        {...tappable(it.disabled ? null : () => { close(); it.onClick && it.onClick() })}>
-        {it.icon && <span className="lrow-i"><Icon name={it.icon} /></span>}
-        <div className="grow"><div className="tt">{it.label}</div>{it.sub && <div className="ss">{it.sub}</div>}</div>
-        {it.on != null && <span className={'menu-on' + (it.on ? ' is-on' : '')}><Icon name="check" /></span>}
-      </div>)}
-    </div>
+    {groups.map((g, gi) => <div key={gi} className={'menu-group' + (sections ? ' grouped' : '')}>
+      {g.title && <div className="menu-sec">{g.title}</div>}
+      <div className="list menu-list">
+        {g.items.map((it, i) => <div key={i}
+          className={'item menu-item' + (it.danger ? ' danger' : '') + (it.disabled ? ' disabled' : '') + (it.accent ? ' accent' : '')}
+          aria-disabled={it.disabled || undefined}
+          {...tappable(it.disabled ? null : () => { close(); it.onClick && it.onClick() })}>
+          {it.icon && <span className="lrow-i"><Icon name={it.icon} /></span>}
+          <div className="grow"><div className="tt">{it.label}</div>{it.sub && <div className="ss">{it.sub}</div>}</div>
+          {it.on != null && <span className={'menu-on' + (it.on ? ' is-on' : '')}><Icon name="check" /></span>}
+          {it.chevron && <Icon name="chevronRight" className="menu-chev" />}
+        </div>)}
+      </div>
+    </div>)}
   </>
 }
 export function menuSheet(opts) {

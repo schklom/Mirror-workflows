@@ -150,8 +150,7 @@ function Schedule({ S, update, nav, mode }) {
   const dayRoutines = d => [].concat(S.week[d] || []).map(routineOf).filter(Boolean)
   // One weekday: what is on it at a glance, and a tap to change it (dayAssignSheet picks one
   // routine, several for a combined day, or a rest day).
-  const dayRow = d => {
-    const rs = dayRoutines(d)
+  const dayRow = (d, rs = dayRoutines(d)) => {
     return <div key={d} className="item plan-day" data-day={d} aria-label={t(DAYN[d])} {...tappable(() => dayAssignSheet(d))}>
       <span className={'plan-day-n' + (d === todayDow ? ' today' : '')} aria-hidden="true">{t(DAYS[d])}</span>
       <span className={'lrow-i' + (rs.length ? '' : ' rest')}><Icon name={rs.length ? glyphOf(rs[0].emoji) : 'moon'} /></span>
@@ -162,7 +161,10 @@ function Schedule({ S, update, nav, mode }) {
       <Icon name="chevronRight" className="chev" />
     </div>
   }
-  const plannedDays = weekOrder(ws).filter(d => dayRoutines(d).length)
+  // Beside a loop, a weekday shows only what it adds to it: a routine that is in the loop already
+  // is the loop's session, the same rule Home follows (effectiveRoutineIds, history.js).
+  const extraRoutines = d => dayRoutines(d).filter(r => !seq.includes(r.id))
+  const plannedDays = weekOrder(ws).filter(d => extraRoutines(d).length)
   const doneCount = qv ? qv.items.filter(i => i.state === 'done').length : 0
   const stateWord = item => item.state === 'pinned' ? fmtDate(item.on, true)
     : { done: t('Done'), next: t('Up next'), later: t('Later') }[item.state]
@@ -197,7 +199,7 @@ function Schedule({ S, update, nav, mode }) {
 
     {mode === 'week' ? <>
       <h4 className="sec">{t('This week')}</h4>
-      <div className="list plan-week">{weekOrder(ws).map(dayRow)}</div>
+      <div className="list plan-week">{weekOrder(ws).map(d => dayRow(d))}</div>
       <p className="sect-f">{t('Want two routines on one day? Tap the day and pick both.')}</p>
     </> : <div className="rotation">
       <div className="row between plan-sec-h">
@@ -243,10 +245,11 @@ function Schedule({ S, update, nav, mode }) {
           onClick={() => update(s => startPass(s))}>{t('Start the loop')}</Button>}
       </div>
       {/* The weekday routines ride along beside a loop (effectiveRoutineIds, history.js) and feed
-          the same tally (weekTally, queue.js), so the days that still hold one stay in sight. */}
+          the same tally (weekTally, queue.js), so the days that still add one stay in sight; a
+          day whose only routines are in the loop already adds nothing and is left out. */}
       {plannedDays.length > 0 && <>
         <h4 className="sec">{t('Also on fixed days')}</h4>
-        <div className="list plan-week">{plannedDays.map(dayRow)}</div>
+        <div className="list plan-week">{plannedDays.map(d => dayRow(d, extraRoutines(d)))}</div>
         <p className="sect-f">{t('These count on top of the loop. Tap a day to change or clear it.')}</p>
       </>}
     </div>}

@@ -72,8 +72,8 @@ export default function Home() {
   const queue = queueView(S, todayISO())
   // This card shows one thing or the other — QueueRow for a live queue, or Rotation chosen with
   // nothing built yet (S.scheduleMode), in which case there is no queue for QueueRow to render and
-  // an empty-state card takes its place — but that is Home's own layout, not a claim that Plan's
-  // weekday grid goes away too: it stays up alongside a live queue there (Plan.jsx, hideGrid).
+  // an empty-state card takes its place. Plan does the same in rotation mode: no weekday grid, only
+  // the days that add a routine the loop does not have (Plan.jsx, "Also on fixed days").
   const rotating = scheduleModeOf(S) === 'rotation'
   // A planner-written queue (no rotationId) still names its weekday when it hasn't started yet —
   // that copy predates rotation and stays as it is. Our own rotation has no weekday of its own

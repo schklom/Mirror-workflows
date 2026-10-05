@@ -135,6 +135,17 @@ describe('Plan — the loop', () => {
     expect(host.querySelectorAll('.plan-day').length).toBe(1)
   })
 
+  it('a weekday shows only what the loop does not have, and a day with nothing else is left out', () => {
+    mount({ queue: live({ rotationId: 'r1' }), rotation: saved, week: { 1: ['a', 'c'], 3: ['b'], 5: ['a'] } })
+    expect(headings()).toContain('Also on fixed days')
+    expect([...host.querySelectorAll('.plan-day')].map(d => d.dataset.day)).toEqual(['1'])
+    expect(host.querySelector('.plan-day[data-day="1"] .tt').textContent).toBe('C')
+    remount()
+    mount({ queue: live({ rotationId: 'r1' }), rotation: saved, week: { 3: ['b'], 5: ['a'] } })
+    expect(headings()).not.toContain('Also on fixed days')
+    expect(host.querySelectorAll('.plan-day').length).toBe(0)
+  })
+
   it('a session done this round reads Done and moves Up next along', () => {
     const since = Date.now() - 86400000
     mount({

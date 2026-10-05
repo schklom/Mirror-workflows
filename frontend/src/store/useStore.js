@@ -223,6 +223,15 @@ export function freshState() {
   return s
 }
 
+// A copy that starts over on this device: Reset everything, or another account signing in here.
+// It is a new profile like freshState's (weigh-in off, small animations), but in the language
+// already on screen, and still marked as never picked when it never was.
+export function restartedState(cur) {
+  const s = freshState()
+  if (cur?.lang) { s.lang = cur.lang; s.langAuto = cur.langAuto === true }
+  return s
+}
+
 function loadState() {
   try {
     const raw = localStorage.getItem(KEY)
@@ -1017,10 +1026,10 @@ export const useStore = create((set, get) => {
       persist(S, true)
       return convert && get().ready ? get().pushState() : null
     },
-    // Settings → Reset everything: the empty copy, stamped with when (`resetAt`). Pushed as a
-    // replace, and the stamp is what makes it hold: a device that has not seen the reset and
-    // still pushes a change of its own gets the 409, and its merge keeps only what that device
-    // made after the reset instead of bringing the whole profile back (lib/sync-merge.js).
+    // Settings → Reset everything: a new profile (restartedState), stamped with when (`resetAt`).
+    // Pushed as a replace, and the stamp is what makes it hold: a device that has not seen the
+    // reset and still pushes a change of its own gets the 409, and its merge keeps only what that
+    // device made after the reset instead of bringing the whole profile back (lib/sync-merge.js).
     //
     // With it goes `resetIds`, the names of every entry the reset wiped: this copy's, the earlier
     // resets' (a copy older than those too is still judged right), and the server's once it
@@ -1029,7 +1038,7 @@ export const useStore = create((set, get) => {
     // Resolves once the server's names are in (or could not be had).
     resetEverything() {
       const cur = get().S
-      const S = clone(DEF)
+      const S = restartedState(cur)
       S.resetAt = Math.max(Date.now(), (Number(cur.resetAt) || 0) + 1)
       S.resetIds = mergeResetIds(cur.resetIds, resetIdsOf(cur))
       get().replaceState(S, !!get().user)
@@ -1149,7 +1158,7 @@ export const useStore = create((set, get) => {
           keepForPrevious(owner)
           forgetSync()
           localStorage.removeItem(KEY)
-          persist(clone(DEF), false)
+          persist(restartedState(get().S), false)
           setSync({ pending: false, lastSynced: 0, lastError: null })
         }
         // The mark, with the names of what this copy holds now (`pre`) — what the question is

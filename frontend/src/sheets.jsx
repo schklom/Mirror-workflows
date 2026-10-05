@@ -1809,44 +1809,54 @@ export const effortPickerSheet = (kind, value, onPick) =>
 /* ============================ share / print / import a plan ============================ */
 export const planToolsSheet = () => ui().openSheet(close => <PlanTools close={close} />)
 
+// The three things the Plan menu and this sheet both do with a plan, so the two can never drift.
+export const planHasRoutines = st => (st.routines || []).some(r => r.ex && r.ex.length)
+export async function exportPlanFile() {
+  const st = S(), user = useStore.getState().user
+  const bundle = buildPlanBundle(st, user?.name ? t('{0}’s plan', user.name) : '')
+  const json = JSON.stringify(bundle, null, 2)
+  const name = 'opengym-plan-' + todayISO() + '.json'
+  if (MOBILE) { try { await shareExport(json, name) } catch (e) { /* dismissed */ } return }
+  const blob = new Blob([json], { type: 'application/json' })
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.click(); URL.revokeObjectURL(a.href)
+  toast(t('Plan file saved. Send it to a friend!'))
+}
+// Web: the browser's print dialog (→ Save as PDF). Mobile: the OS print flow via the native
+// Print plugin — Android WebView has no window.print(). Same printable HTML both ways.
+export function printWholePlan() {
+  const st = S(), owner = useStore.getState().user?.name || ''
+  if (MOBILE) printHtml(planPrintHTML(st, owner), t('Weekly Training Plan')).catch(() => { /* dismissed */ })
+  else printPlan(st, owner)
+}
+// A picked plan file → the import sheet, or a toast saying why not.
+export function importPlanFile(f, onRead) {
+  if (!f) return
+  const rd = new FileReader()
+  rd.onload = () => {
+    try { const bundle = parsePlan(rd.result, S().unit || 'kg'); onRead?.(); planImportSheet(bundle) }
+    catch (e) { toast(t('Import failed: {0}', e.message)) }
+  }
+  rd.readAsText(f)
+}
+
 function PlanTools({ close }) {
   const st = useStore(s => s.S)
-  const user = useStore(s => s.user)
   const fileRef = useRef(null)
-  const hasRoutines = (st.routines || []).some(r => r.ex && r.ex.length)
+  const hasRoutines = planHasRoutines(st)
 
-  const exportFile = async () => {
-    const bundle = buildPlanBundle(st, user?.name ? t('{0}’s plan', user.name) : '')
-    const json = JSON.stringify(bundle, null, 2)
-    const name = 'opengym-plan-' + todayISO() + '.json'
-    if (MOBILE) { try { await shareExport(json, name) } catch (e) { /* dismissed */ } close(); return }
-    const blob = new Blob([json], { type: 'application/json' })
-    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.click(); URL.revokeObjectURL(a.href)
-    close(); toast(t('Plan file saved. Send it to a friend!'))
-  }
+  const exportFile = async () => { await exportPlanFile(); close() }
   const pickFile = ev => {
-    const f = ev.target.files[0]; ev.target.value = ''; if (!f) return
-    const rd = new FileReader()
-    rd.onload = () => {
-      try { const bundle = parsePlan(rd.result, st.unit || 'kg'); close(); planImportSheet(bundle) }
-      catch (e) { toast(t('Import failed: {0}', e.message)) }
-    }
-    rd.readAsText(f)
+    const f = ev.target.files[0]; ev.target.value = ''
+    importPlanFile(f, close)
   }
 
   return <>
     <h3>{t('Share your plan')}</h3>
     <div className="muted small" style={{ marginBottom: 16 }}>{t('Send your routines to a friend, or put your week on paper.')}</div>
-    <Button variant="primary" icon="upload" onClick={exportFile} disabled={!hasRoutines}>{t('Export plan file')}</Button>
+    <Button variant="primary" icon="share" onClick={exportFile} disabled={!hasRoutines}>{t('Export plan file')}</Button>
     <div className="dim small" style={{ margin: '7px 2px 0', lineHeight: 1.4 }}>{t('A small file a friend can import into their own openGym. Routines only, none of your workouts or weigh-ins.')}</div>
     <div style={{ height: 12 }} />
-    <Button variant="tinted" icon="download" onClick={() => {
-      close()
-      // Web: the browser's print dialog (→ Save as PDF). Mobile: the OS print flow via the
-      // native Print plugin — Android WebView has no window.print(). Same printable HTML both ways.
-      if (MOBILE) printHtml(planPrintHTML(st, user?.name || ''), t('Weekly Training Plan')).catch(() => { /* dismissed */ })
-      else printPlan(st, user?.name || '')
-    }} disabled={!hasRoutines}>{t('Print / Save as PDF')}</Button>
+    <Button variant="tinted" icon="note" onClick={() => { close(); printWholePlan() }} disabled={!hasRoutines}>{t('Print / Save as PDF')}</Button>
     <div className="dim small" style={{ margin: '7px 2px 0', lineHeight: 1.4 }}>{t('A clean printout, one page per plan. No exercise ever gets split across pages.')}</div>
     {!hasRoutines && <div className="dim small" style={{ margin: '12px 2px 0' }}>{t('Add an exercise to a routine first. An empty plan has nothing to share.')}</div>}
     <h4 className="sec">{t('Got a plan from a friend?')}</h4>
@@ -1946,48 +1956,38 @@ function DayOverride({ iso, close }) {
 }
 export const dayOverrideSheet = iso => ui().openSheet(close => <DayOverride iso={iso} close={close} />)
 
+// Plan → Schedule → a weekday. One sheet for the whole day: tap routines to put them on it or
+// take them off (two or more make a combined day, docs/dev/COMBINE_ROUTINES.md), in the order
+// tapped, which is the order the session runs them; "Rest day" clears it. The sheet stays open
+// for a second pick, so "Done" closes it. The weekday never stores [] (the key goes instead).
 function DayAssign({ day, close }) {
   const st = useStore(s => s.S)
-  // A weekday holds a routine-id list; this single-pick sheet sets an empty day to exactly one
-  // routine (or rest). The inline ＋ Add routine on the Plan screen is what appends to a
-  // populated day.
   const cur = [].concat(st.week[day] || [])
-  const set = v => { update(s => { if (v) s.week[day] = [v]; else delete s.week[day] }); close() }
+  const toggle = id => update(s => {
+    const ids = [].concat(s.week[day] || [])
+    const next = ids.includes(id) ? ids.filter(x => x !== id) : [...ids, id]
+    if (next.length) s.week[day] = next; else delete s.week[day]
+  })
+  const rest = () => { update(s => { delete s.week[day] }); close() }
   return <>
-    <h3>{t(DAYN[day])}</h3>
-    <div className="list">
-      <div className="item" {...tappable(() => set(''))}><span className="lrow-i" style={{ background: 'var(--surface-3)' }}><Icon name="moon" /></span><div className="grow"><div className="tt">{t('Rest day')}</div></div>{!cur.length && <Icon name="check" className="accent" />}</div>
-      {st.routines.map(r => <div key={r.id} className="item" {...tappable(() => set(r.id))}>
-        <span className="lrow-i"><Icon name={glyphOf(r.emoji)} /></span>
-        <div className="grow"><div className="tt">{r.name}</div><div className="ss">{exCount(r.ex.length)}</div></div>
-        {cur.includes(r.id) && <Icon name="check" className="accent" />}</div>)}
-    </div>
-  </>
-}
-export const dayAssignSheet = day => ui().openSheet(close => <DayAssign day={day} close={close} />)
-
-// ＋ Add routine on a populated weekday: single-pick, appends to the day's list. A routine
-// already on that day is disabled; picking one closes the sheet.
-function DayAddRoutine({ day, close }) {
-  const st = useStore(s => s.S)
-  const on = new Set([].concat(st.week[day] || []))
-  const add = id => { update(s => { s.week[day] = [...[].concat(s.week[day] || []), id] }); close() }
-  return <>
-    <h3>{t('Add routine')}</h3>
-    <div className="list">
+    <h3 style={{ marginBottom: 2 }}>{t(DAYN[day])}</h3>
+    <div className="muted small" style={{ marginBottom: 10 }}>{t('Pick one routine, or more to train them together.')}</div>
+    <div className="list menu-list">
+      <div className="item menu-item" {...tappable(rest)}><span className="lrow-i" style={{ background: 'var(--surface-3)' }}><Icon name="moon" /></span><div className="grow"><div className="tt">{t('Rest day')}</div></div><span className={'menu-on' + (!cur.length ? ' is-on' : '')}><Icon name="check" /></span></div>
       {st.routines.map(r => {
-        const already = on.has(r.id)
-        return <div key={r.id} className={'item' + (already ? ' disabled' : '')} aria-disabled={already || undefined}
-          {...tappable(already ? null : () => add(r.id))}>
+        const on = cur.includes(r.id)
+        return <div key={r.id} className="item menu-item" aria-pressed={on} {...tappable(() => toggle(r.id))}>
           <span className="lrow-i"><Icon name={glyphOf(r.emoji)} /></span>
           <div className="grow"><div className="tt">{r.name}</div><div className="ss">{exCount(r.ex.length)}</div></div>
-          {already ? <span className="tag">{t('already added')}</span> : <Icon name="chevronRight" className="chev" />}
+          <span className={'menu-on' + (on ? ' is-on' : '')}><Icon name="check" /></span>
         </div>
       })}
     </div>
+    <div style={{ height: 12 }} />
+    <Button variant="primary" onClick={close}>{t('Done')}</Button>
   </>
 }
-export const dayAddRoutineSheet = day => ui().openSheet(close => <DayAddRoutine day={day} close={close} />)
+export const dayAssignSheet = day => ui().openSheet(close => <DayAssign day={day} close={close} />)
 
 /* ============================ workout detail ============================ */
 // Correcting when a saved session happened: typed in from another app, or logged on the wrong

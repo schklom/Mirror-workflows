@@ -2124,10 +2124,16 @@ describe('Update routine, from the More menu of an exercise', () => {
   it('names the rest and note edited on the settings sheet mid-session', async () => {
     await mount([ownEntry({ target: { mode: 'reps', reps: 5, weight: 60, restSec: 150, note: 'pause on the chest' } })], 0, { routines: [routine({ restSec: 90 })] })
     await openMore()
-    expect(item('Update routine').sub).toBe('Rest (s) 90 → 150 · Note')
+    expect(item('Update routine').sub).toBe('Rest 1:30 → 2:30 · Note')
     item('Update routine').onClick()
     mocks.confirmSheet.mock.calls[0][0].onConfirm()
     expect(mocks.S.routines[0].ex[0]).toMatchObject({ restSec: 150, note: 'pause on the chest' })
+  })
+
+  it('names a slot with no rest of its own as the default, as the wheel does', async () => {
+    await mount([ownEntry({ target: { mode: 'reps', reps: 5, weight: 60, restSec: 180 } })], 0, { routines: [routine()] })
+    await openMore()
+    expect(item('Update routine').sub).toBe('Rest Default (1:30) → 3:00')
   })
 
   it('leaves the note added for today with the workout, and says so before confirming', async () => {

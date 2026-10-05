@@ -986,6 +986,7 @@ function ActiveWorkout() {
   // edits it (lib/session-routines.js). This is the explicit way to keep them — an item in the
   // exercise's ⋯ menu, there only while the routine's slot says something else than the session
   // did. Sets, reps and weight are not part of it (routineChangesFromEntry).
+  const restWord = v => (Number(v) > 0 ? fmtRest(v) : t('Default ({0})', fmtRest(S.restSec)))
   const routineUpdateFor = idx => {
     const entry = A.entries[idx]
     const routine = !editing && entry?.rid ? S.routines.find(r => r.id === entry.rid) : null
@@ -994,8 +995,10 @@ function ActiveWorkout() {
     const activeId = A.id
     const entryId = entry.id
     return {
+      // A rest reads as the wheel shows it: "3:00", and 0 (no rest of its own) as the default.
       sub: found.changes.map(c => c.key === 'note' ? t('Note')
-        : (c.key === 'warmupSets' ? t('Warm-up sets') : t('Rest (s)')) + ' ' + c.from + ' → ' + c.to).join(' · '),
+        : c.key === 'warmupSets' ? t('Warm-up sets') + ' ' + c.from + ' → ' + c.to
+        : t('Rest') + ' ' + restWord(c.from) + ' → ' + restWord(c.to)).join(' · '),
       run: () => confirmSheet({
         title: t('Update “{0}”?', routine.name),
         message: t('Copy this exercise’s warm-up sets, and the rest and note from its Exercise settings, into the routine. A note added for today stays with this workout. Your workout history is kept.'),

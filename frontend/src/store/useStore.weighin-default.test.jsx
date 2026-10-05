@@ -23,3 +23,15 @@ describe('weigh-in default', () => {
     expect(off.weighIn).toBe(false)
   })
 })
+
+describe('exercise animations default', () => {
+  it('a fresh profile starts with Small animations, the thumbnail on the workout screen', () => {
+    expect(freshState().gifSize).toBe('mini')
+  })
+
+  it('DEF keeps Full, so an existing profile without the key is not changed under it', () => {
+    expect(DEF.gifSize).toBe('full')
+    const S = restoredStateFor({ workouts: [], routines: [], bodyweight: [], customEx: [] }, { workouts: [{ id: 'w1' }], routines: [] })
+    expect(S.gifSize).toBe('full')
+  })
+})

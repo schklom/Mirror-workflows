@@ -217,6 +217,9 @@ export function freshState() {
   s.lang = detectedLang()
   s.langAuto = true
   s.weighIn = false
+  // Exercise animations: Small (v1.3.11), a thumbnail beside the exercise name that a tap opens,
+  // so the first set is on screen without scrolling. DEF stays 'full' for a profile saved before.
+  s.gifSize = 'mini'
   return s
 }
 

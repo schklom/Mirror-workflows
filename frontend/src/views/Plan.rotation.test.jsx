@@ -271,6 +271,11 @@ describe('Plan — Schedule extras', () => {
     expect(mocks.nav).toHaveBeenCalledWith('/stats?focus=weekly-volume')
   })
 
+  it('has no volume link before there is a routine (Stats has no card to show then)', () => {
+    mount({ routines: [], week: {} })
+    expect(host.querySelector('.plan-link')).toBe(null)
+  })
+
   it('switches to Routines and remembers it for next time', () => {
     mount()
     const seg = label => [...host.querySelectorAll('.plan-views button')].find(b => b.textContent === label)

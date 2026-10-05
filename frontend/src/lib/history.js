@@ -578,7 +578,9 @@ export function applyIntensifierPlan(sets, cfg, grid) {
       w: source?.sides?.[key]?.w ?? w, r: reps, done: false, type: 'restpause',
       clusters: splitBurstReps(reps).map(r => ({ r, restSec })),
     })
-    return [warmup, syncSideAggregate({ ...work, sides: {
+    // The warm-up is per side too (issue #60): makeSideSet splits its combined reps the same
+    // way the work set's are, each side its own reps/weight/effort and done tick.
+    return [makeSideSet(warmup), syncSideAggregate({ ...work, sides: {
       L: side('L', Math.ceil(totalReps / 2)), R: side('R', Math.floor(totalReps / 2)),
     } })]
   }
@@ -797,7 +799,11 @@ export function rerampWarmups(rows, step = 2.5) {
     const w = target > from
       ? Math.max(0, Math.min(target, Math.floor((from + (target - from) / 2) / step) * step))
       : target
-    out[i] = { ...out[i], w }
+    // A per-side warm-up ramps the same bar for both limbs: set each side's weight and resync
+    // the aggregate, so the L/R rows and the row's own `w` agree. A straight row sets `w` alone.
+    out[i] = isSideSet(out[i])
+      ? syncSideAggregate({ ...out[i], sides: { L: { ...out[i].sides.L, w }, R: { ...out[i].sides.R, w } } })
+      : { ...out[i], w }
     from = w
   }
   return out
@@ -837,8 +843,15 @@ export function insertWarmupRow(rows, mode, target, step = 2.5) {
         r: work ? work.r : (prev ? prev.r : target.reps),
         done: false, phase: 'warmup', warmup: true,
       }
+  // A unilateral exercise warms up per side too (issue #60): the warm-up row splits into L/R
+  // like the work sets it ramps toward, each side logged and ticked on its own with its own
+  // reps and effort. The reps `r` above is the combined total (the work set's, or the plan's
+  // even target), so makeSideSet halves it the same way a work row is split; both sides share
+  // the ramped weight. Only reps-mode warm-ups split — a timed hold or a cardio warm-up is not
+  // per-side. makeSideSet spreads the row, so `phase`/`warmup` carry onto the side set.
+  const warmRow = mode === 'reps' && isPerSide(target) ? makeSideSet(warm) : warm
   const next = rows.slice()
-  next.splice(at, 0, warm)
+  next.splice(at, 0, warmRow)
   return next
 }
 

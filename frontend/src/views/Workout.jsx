@@ -563,9 +563,11 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
         return <div key={i}>
           {isFirstWarmup && <div className="setph">{t('Warm-up')}</div>}
           {!warm && warmBefore && <div className="setsep" />}
-          {perSide && !warm && isSideSet(s) ? (
-            // Unilateral work set: the number sits beside a two-row L/R stack, each side logged
-            // and ticked on its own (issue #60).
+          {perSide && isSideSet(s) ? (
+            // Unilateral set: the number sits beside a two-row L/R stack, each side logged and
+            // ticked on its own (issue #60). Warm-ups split the same way as the work sets they
+            // ramp toward — their rows are side sets too — so the `!warm` exclusion is gone; a
+            // warm-up side set has no drops/bursts, so sideExtras renders nothing under it.
             <div ref={el => onSetRowRef?.(i, el)} className={'setrow-side' + (s.done ? ' done' : '')}>
               <button type="button" className="n" aria-label={t('Set {0}', phaseNum)} title={t('More')} onClick={() => openSetMenu(s, i)}>{phaseNum}</button>
               <div className="side-rows">

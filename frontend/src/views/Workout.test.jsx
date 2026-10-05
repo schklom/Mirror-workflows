@@ -1906,6 +1906,29 @@ describe('set-row column header', () => {
     expect(container.querySelector('.setrow-side .sidetag')).toBeTruthy()
   })
 
+  // A unilateral warm-up is a side set too (issue #60), so it renders as the L/R stack like the
+  // work set below it — not the old single scalar row where 12 reps meant 6 per side on one line
+  // with one shared RIR. The render guard dropped its `!warm` exclusion for exactly this.
+  it('renders a per-side warm-up as its own L/R stack, not a single scalar row', async () => {
+    const side = (r) => ({ w: 20, r, done: false })
+    await mount([
+      exercise('side-curl', [], {
+        target: { mode: 'reps', side: true, reps: 16, weight: 20, bodyweight: false },
+        sets: [
+          // a per-side warm-up (half the reps on each side) ...
+          { w: 10, r: 16, phase: 'warmup', warmup: true, done: false, sides: { L: side(8), R: side(8) } },
+          // ... and a per-side work set
+          { w: 20, r: 16, done: false, sides: { L: side(8), R: side(8) } },
+        ],
+      }),
+    ])
+    // both the warm-up and the work set render as L/R stacks: two side rows, four L/R badges
+    expect(container.querySelectorAll('.setrow-side').length).toBe(2)
+    expect(container.querySelectorAll('.setrow-side .sidetag').length).toBe(4)
+    // the warm-up phase label is present, and no warm-up fell through to a scalar .setrow
+    expect(container.querySelector('.setph')).toBeTruthy()
+  })
+
   // A weighted hold's row has the play button in front of the tick, so its cells get less room than
   // a straight row's and the CSS sizes them (and the header over them) by the `timed` marker.
   it('marks a timed hold\'s rows and header, and neither on a rep set', async () => {

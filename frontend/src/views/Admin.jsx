@@ -123,7 +123,7 @@ function UserDetail({ id, onChanged, close }) {
           danger: true,
           onConfirm: () => confirmSheet({
             title: 'Delete ' + u.name + ' for good?',
-            message: 'Last chance — there is no undo and no backup of this on the server.',
+            message: 'Last chance. There’s no undo and no backup of this on the server.',
             confirmText: 'Delete account',
             danger: true,
             onConfirm: doDelete,
@@ -135,7 +135,7 @@ function UserDetail({ id, onChanged, close }) {
         <button className="btn" style={{ margin: '14px 0 4px' }} onClick={resetPassword}>Reset password</button>
         <div className="adm-hint">{u.password
           ? 'For a forgotten password: a one-time code lets them choose a new one. Their current password stops working at once.'
-          : 'No password yet. A one-time code lets them set one — the way back in after losing their only passkey.'}</div>
+          : 'No password yet. A one-time code lets them set one. That’s the way back in after losing their only passkey.'}</div>
       </>}
     </>}
     <h4 className="sec">Workout history</h4>
@@ -169,7 +169,7 @@ function InvitesCard({ invites, reload, inviteOnly }) {
     <div className="adm-lead">
       {inviteOnly
         ? 'Sign-up is invite-only: someone needs one of these codes to create a profile. Each code works once.'
-        : 'Sign-up is open, so codes are optional here — they only record who invited whom.'}
+        : 'Sign-up is open, so codes are optional here. They only record who invited whom.'}
     </div>
     {open.length ? <>
       <div className="adm-group-t">Unused · tap to copy</div>

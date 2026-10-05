@@ -88,7 +88,7 @@ export default function CoachChat() {
           ? { role: 'coach', kind: 'error', text: jobErrorText(cls, lastError?.detail) }
           : { role: 'coach', kind: 'nochange', text: last?.reading
             ? last.reading
-            : t('I looked through everything and there is nothing I would change right now. Keep going — ask me again after a few more sessions.') })
+            : t('I looked through everything and there is nothing I would change right now. Keep it up, and ask me again after a few more sessions.') })
       }
     })
   }, [job, pending, loading, last?.id])
@@ -143,7 +143,7 @@ export default function CoachChat() {
     <h3>{t('Improve which routine?')}</h3>
     <div className="sect-b">
       {(S.routines || []).map(r => <Row key={r.id} icon={glyphOf(r.emoji)} iconTint="var(--acc)" title={r.name} subtitle={tn('{0} exercise', '{0} exercises', (r.ex || []).length)} accessory="chevron" onClick={() => { close(); askImprove(r) }} />)}
-      {!(S.routines || []).length && <div className="chat-empty">{t('You have no routines yet — ask the Coach for a plan first.')}</div>}
+      {!(S.routines || []).length && <div className="chat-empty">{t('You don’t have any routines yet. Ask the Coach for a plan first.')}</div>}
     </div>
     <div style={{ height: 10 }} />
   </div>)
@@ -174,7 +174,7 @@ export default function CoachChat() {
     confirmText: t('Undo'),
     onConfirm: () => {
       let ok = false
-      update(s => { ok = revertLast(s); if (ok) appendChat(s, { role: 'coach', kind: 'reverted', text: t('Done — your plan is back to how it was before my last changes.') }) })
+      update(s => { ok = revertLast(s); if (ok) appendChat(s, { role: 'coach', kind: 'reverted', text: t('Done! Your plan is back to how it was before my last changes.') }) })
       toast(ok ? t('Plan restored') : t('Nothing to undo'))
     }
   })
@@ -196,7 +196,7 @@ export default function CoachChat() {
     </div>
 
     <div className="msgs">
-      <Bubble role="coach">{t('Hi — I’m your Coach. I build your plan from your answers and adjust it from what you actually log. Nothing changes until you say so.')}</Bubble>
+      <Bubble role="coach">{t('Hi, I’m your Coach. I build your plan from your answers and adjust it from what you actually log. Nothing changes until you say so.')}</Bubble>
 
       {(coach.chat || []).map(m => <Message key={m.id} m={m} S={S} profile={coach.profile} openSheet={openSheet} />)}
 
@@ -288,7 +288,7 @@ function Typing({ S, kind, coachLocal, config }) {
     <div className="typing-eta">
       {doing} {eta}
       {local ? ' ' + t('A local model can take longer.') : ''}
-      {' ' + t('You can leave — it keeps going.')}
+      {' ' + t('Feel free to leave, it keeps going.')}
     </div>
   </div>
 }
@@ -309,8 +309,8 @@ function PlanCard({ p, S, update, toast, nav, refresh }) {
         const res = applyCreatedPlan(s, p, { schedule })
         n = res?.routines?.length || b.routines.length
         appendChat(s, { role: 'coach', kind: 'applied', ref: res.logId, text: schedule
-          ? t('Imported — {0} routines are in your plan and your week is set. See you at the next session.', n)
-          : t('Imported — {0} routines are in your plan. Your week is unchanged; schedule them whenever you like.', n) })
+          ? t('Imported! {0} routines are in your plan and your week is set. See you at the next session.', n)
+          : t('Imported! {0} routines are in your plan. Your week is unchanged; schedule them whenever you like.', n) })
       })
       resolvePending({ accepted: ['plan'] }).catch(() => {})
       toast(t('Your plan is live'))
@@ -397,7 +397,7 @@ function ReviewCard({ p, S, update, toast, refresh }) {
     title: t('Dismiss these suggestions?'), message: t('Nothing changes, and the Coach will remember you turned these down.'),
     confirmText: t('Dismiss'), danger: true,
     onConfirm: () => {
-      update(s => { const ref = recordDismissal(s, marked); appendChat(s, { role: 'coach', kind: 'dismissed', ref, text: t('Understood — I will not suggest these again without new evidence.') }) })
+      update(s => { const ref = recordDismissal(s, marked); appendChat(s, { role: 'coach', kind: 'dismissed', ref, text: t('Got it. I won’t suggest these again without new evidence.') }) })
       resolvePending({ dismissed: true }).catch(() => {})
       refresh()
     }
@@ -413,7 +413,7 @@ function ReviewCard({ p, S, update, toast, refresh }) {
           {t('Based on your last {0} sessions', marked.evidence.sessions)}{marked.evidence.from ? ` · ${fmtDate(marked.evidence.from)} – ${fmtDate(marked.evidence.to)}` : ''}
         </p>}
         {marked.planMoved && <p className="pcard-sum" style={{ fontSize: 13, color: 'var(--yellow)' }}>
-          {t('Your plan changed since the Coach looked at it. Suggestions that no longer match are greyed out — ask for a fresh review to see them again.')}
+          {t('Your plan changed since the Coach looked at it. Suggestions that no longer match are greyed out. Ask for a fresh review to see them again.')}
         </p>}
       </div>
 
@@ -446,7 +446,7 @@ function ChangeRow({ c, S, stale, badge, children }) {
       <div className="pcard-chg-t">{changeTitle(c, S)}{c.routineName ? <span className="dim" style={{ fontWeight: 400 }}> · {c.routineName}</span> : null}</div>
       {vals && <div className="pcard-chg-v"><span className="tag">{vals.before}</span><Icon name="chevronRight" style={{ fontSize: 12, color: 'var(--label-3)' }} /><span className="tag acc">{vals.after}</span></div>}
       <div className="pcard-chg-w">{c.why}</div>
-      {stale && <div className="pcard-chg-stale">{t('Doesn’t match your plan any more — can’t be applied.')}</div>}
+      {stale && <div className="pcard-chg-stale">{t('Doesn’t match your plan any more, so it can’t be applied.')}</div>}
     </div>
     {badge}
     {children}
@@ -658,7 +658,7 @@ function HistorySheet({ S, close, openSheet }) {
   const icon = { create: ['clipboard', 'var(--indigo)'], review: ['sparkles', 'var(--acc)'], debrief: ['checkCircle', 'var(--green)'], revert: ['reset', 'var(--blue)'] }
   return <div className="chat-menu">
     <h3>{t('Everything the Coach proposed')}</h3>
-    {!log.length && <div className="chat-empty">{t('Nothing yet. Every plan, suggestion and debrief will be kept here — whether you said yes or no.')}</div>}
+    {!log.length && <div className="chat-empty">{t('Nothing yet. Every plan, suggestion and debrief will be kept here, whether you said yes or no.')}</div>}
     <div className="sect-b">
       {log.map(e => {
         const [ic, tint] = icon[e.kind] || ['sparkles', 'var(--acc)']
@@ -700,13 +700,13 @@ function CohortSheet({ S, update, toast }) {
   return <div className="chat-menu">
     <h3>{t('Compare with others here')}</h3>
     <Section footer={t('Only medians across everyone who shares, never a name, a body weight or a single session. Turning this off removes you from the numbers immediately.')}>
-      <Row icon="person" iconTint="var(--teal)" title={t('Include me')} subtitle={sharing ? t('Your lifts count towards the medians') : t('Off — you see nothing and share nothing')}>
+      <Row icon="person" iconTint="var(--teal)" title={t('Include me')} subtitle={sharing ? t('Your lifts count towards the medians') : t('Off. You see nothing and share nothing')}>
         <Switch checked={sharing} disabled={busy || !d} onChange={share} />
       </Row>
     </Section>
     {!d && <div className="chat-empty">{t('Loading…')}</div>}
     {d && sharing && !d.ok && <div className="chat-empty">{d.people != null
-      ? t('Not enough people share yet — {0} of {1} needed. Ask your gym mates.', d.people, d.minPeople)
+      ? t('Not enough people are sharing yet ({0} of {1} needed). Rope in your gym mates!', d.people, d.minPeople)
       : t('Not available right now.')}</div>}
     {d && sharing && d.ok && <div className="ins" style={{ padding: 0 }}>
       <div className="ins-tiles">
@@ -755,7 +755,7 @@ function CadenceSheet({ update }) {
   const patch = fn => update(s => { const c = (s.coach = s.coach || emptyCoach()); fn(c) })
   return <>
     <h3>{t('Automatic reviews')}</h3>
-    <Section footer={mode === 'off' ? t('Off — the Coach only looks when you ask it to.') : t('You are only notified when the Coach actually has something to suggest.')}>
+    <Section footer={mode === 'off' ? t('Off. The Coach only looks when you ask.') : t('You are only notified when the Coach actually has something to suggest.')}>
       <SelectRow icon="clock" iconTint="var(--purple)" title={t('When')} value={mode} onChange={setMode}
         options={[
           { value: 'off', label: t('Off') },

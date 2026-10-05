@@ -762,7 +762,7 @@ describe('AdminCoach — readiness and the step count', () => {
     mocks.routes['/api/admin/coach'] = status({ runtime: { ok: false, version: null, error: 'connect ECONNREFUSED', needsKey: false } })
     await mount()
     expect(host.querySelector('.adm-pill').textContent).toBe('not ready')
-    expect(host.textContent).toContain('the provider cannot be reached')
+    expect(host.textContent).toContain('the provider can’t be reached')
     expect(host.textContent).toContain('connect ECONNREFUSED')
   })
 

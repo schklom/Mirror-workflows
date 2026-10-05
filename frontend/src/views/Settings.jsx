@@ -69,7 +69,7 @@ export default function Settings() {
     if (v === S.unit) return
     menuSheet({
       title: t('Convert to {0}?', v),
-      subtitle: t('Every stored weight — logged sets, working weights, routine targets, body weight, bar weights — is in {0}. Convert the numbers, or keep them and only change the label?', S.unit),
+      subtitle: t('Every stored weight (logged sets, working weights, routine targets, body weight, bar weights) is in {0}. Convert the numbers, or keep them and only change the label?', S.unit),
       items: [
         { icon: 'shuffle', label: t('Convert the numbers'), onClick: () => setUnit(v) },
         { icon: 'pencil', label: t('Keep the numbers, change the label'), onClick: () => setUnit(v, { convert: false }) },
@@ -126,7 +126,7 @@ export default function Settings() {
       setUpdateInfo(info)
       if (!info.hasUpdate) toast(t('You have the latest version.'))
     } catch {
-      toast(t('Could not check for updates — are you online?'))
+      toast(t('Couldn’t check for updates. Are you online?'))
     }
     setChecking(false)
   }
@@ -158,7 +158,7 @@ export default function Settings() {
                 if (hashRes.ok) expectedHash = (await hashRes.text()).split(/\s/)[0]
               } catch (e) { /* reported below */ }
             }
-            if (!/^[0-9a-f]{64}$/i.test(expectedHash || '')) throw new Error(t('Checksum not available — not installing'))
+            if (!/^[0-9a-f]{64}$/i.test(expectedHash || '')) throw new Error(t('Checksum not available, so not installing'))
             await downloadAndInstall(updateInfo.apkUrl, expectedHash, (received, total) => {
               if (setProgress) setProgress(received, total)
             })
@@ -266,19 +266,19 @@ export default function Settings() {
   const leave = (kind, after) => leaveServer(kind, { exportBackup: doExport, exportBackupZip: doExportZip, done: r => { nav('/home'); if (r.stashed) toast(kept); else if (after) toast(after) } })
   const disconnect = () => confirmSheet({
     title: t('Disconnect from your server?'),
-    message: t('This phone switches back to local-only and its copy of your account is removed. First it checks that your server has every change — if not, you choose what happens to them.'),
+    message: t('This phone switches back to local-only and its copy of your account is removed. First it checks that your server has every change. If not, you choose what happens to them.'),
     confirmText: t('Disconnect'), danger: true,
-    onConfirm: () => leave('disconnect', t('Disconnected — back to local-only')),
+    onConfirm: () => leave('disconnect', t('Disconnected. Back to local-only')),
   })
   const signOutHere = () => confirmSheet({
     title: t('Sign out?'),
-    message: t('Your data is removed from this browser; your profile on the server keeps it. First it checks that the server has every change — if not, you choose what happens to them.'),
+    message: t('Your data is removed from this browser; your profile on the server keeps it. First it checks that the server has every change. If not, you choose what happens to them.'),
     confirmText: t('Sign out'), danger: true,
     onConfirm: () => leave('signout'),
   })
   const signOutEverywhere = () => confirmSheet({
     title: t('Sign out everywhere?'),
-    message: t('Signs this profile out on every device, including this one. Phones paired with it are disconnected and have to be paired again. Your passkeys keep working — sign in with them again anytime.'),
+    message: t('Signs this profile out on every device, including this one. Phones paired with it are disconnected and have to be paired again. Your passkeys keep working, so you can sign in with them again anytime.'),
     confirmText: t('Sign out everywhere'), danger: true,
     onConfirm: () => leave('everywhere', t('Signed out on all devices')),
   })
@@ -323,12 +323,12 @@ export default function Settings() {
     {/* ---------- account (demo and mobile builds have nothing to sign in to) ---------- */}
     {!(MOBILE && user) && <Section title={MOBILE ? t('Your data') : DEMO ? t('Demo') : t('Account')}>
       {MOBILE ? <>
-        <Row icon="lock" iconTint="var(--acc)" title={t('All data stays on this phone')} subtitle={t('No account, no cloud — back it up anytime with Export below.')} />
+        <Row icon="lock" iconTint="var(--acc)" title={t('All data stays on this phone')} subtitle={t('No account, no cloud. Back it up anytime with Export below.')} />
         <Row icon="link" iconTint="var(--indigo)" title={t('Connect to my server')} subtitle={t('Sync this device to your own self-hosted openGym instead.')} accessory="chevron"
           onClick={connectServer} />
         <KeptChangesRows />
       </> : DEMO ? <>
-        <Row icon="sparkles" iconTint="var(--acc)" title={t('You’re in the demo')} subtitle={t('Example data, stored only in this browser — change anything you like.')} />
+        <Row icon="sparkles" iconTint="var(--acc)" title={t('You’re in the demo')} subtitle={t('Example data, stored only in this browser. Go wild and change anything you like.')} />
         <Row icon="reset" iconTint="var(--blue)" title={t('Reset demo data')} accessory="chevron"
           onClick={() => confirmSheet({ title: t('Reset demo data?'), message: t('Puts the example plan, workouts and weigh-ins back the way they started.'), confirmText: t('Reset'), onConfirm: () => { resetDemo(); nav('/home'); toast(t('Demo data reset')) } })} />
         <Row icon="rocket" iconTint="var(--indigo)" title={t('Self-host openGym')} subtitle={t('Passkey sign-in, sync across your devices, your own data.')} accessory="chevron"
@@ -358,12 +358,12 @@ export default function Settings() {
         <KeptChangesRows />
       </>}
     </Section>}
-    {!user && !DEMO && !MOBILE && <p className="sect-f" style={{ marginTop: -18, marginBottom: 22 }}>{t('Guest mode — data lives only in this browser.')}</p>}
+    {!user && !DEMO && !MOBILE && <p className="sect-f" style={{ marginTop: -18, marginBottom: 22 }}>{t('Guest mode: your data lives only in this browser.')}</p>}
 
     {/* ---------- the Coach on a phone: through the paired server, or with the user's own key ---------- */}
     {MOBILE && <Section title={t('AI Coach')}>
       <Row icon="sparkles" iconTint="var(--acc)" title={t('AI Coach')} accessory="chevron"
-        subtitle={coachLocal?.mode === 'server' ? t('Runs on your openGym server') : coachLocal?.mode === 'byok' ? t('Runs on this phone with your own API key') : t('Off — choose how the Coach should run.')}
+        subtitle={coachLocal?.mode === 'server' ? t('Runs on your openGym server') : coachLocal?.mode === 'byok' ? t('Runs on this phone with your own API key') : t('Off. Choose how the Coach should run.')}
         onClick={() => nav('/coach/setup')} />
     </Section>}
 
@@ -383,7 +383,7 @@ export default function Settings() {
         value={lang} onChange={v => update(s => { s.lang = v; s.langAuto = false })}
         options={Object.entries(LANGS).map(([k, name]) => ({
           value: k, label: name,
-          subtitle: INSTR_LANGS.includes(k) ? null : t("Exercise instructions aren't available in this language yet — they stay in English."),
+          subtitle: INSTR_LANGS.includes(k) ? null : t("Exercise instructions aren't translated into this language yet, so they stay in English."),
         }))}
       />
       {EXERCISE_NAME_LANGS.includes(baseLang(lang)) && <>
@@ -613,7 +613,7 @@ export default function Settings() {
     <Section title={t('Data')}>
       <Row icon="sparkles" iconTint="var(--acc)" title={t('Load starter plan')} accessory="chevron" onClick={starterPlanSheet} />
       <Row icon="shuffle" iconTint="var(--teal)" title={t('Import from another app')}
-        subtitle={t('FitNotes, Strong, Hevy — or body weight from Apple Health')}
+        subtitle={t('FitNotes, Strong, Hevy, or body weight from Apple Health')}
         accessory="chevron" onClick={() => importRef.current.click()} />
       <Row icon="key" iconTint="var(--teal)" title={t('Import from Hevy')}
         subtitle={t('Pull your history with a Hevy Pro API key')}
@@ -625,7 +625,7 @@ export default function Settings() {
       {/* 14 is AUTO_BACKUP_KEEP in lib/mobile.js, written out because the Settings tests mock
           that module wholesale; mobile.autobackup.test.js pins the two together. */}
       {MOBILE && <Row icon="history" iconTint="var(--blue)" title={t('Auto-backup on changes')}
-        subtitle={t('Saves a dated copy to Documents/openGym after finishing a workout or editing a routine, and keeps the newest {0} — point a sync app at that folder, or copy it out by hand.', 14)}>
+        subtitle={t('Saves a dated copy to Documents/openGym after finishing a workout or editing a routine, and keeps the newest {0}. Point a sync app at that folder, or copy it out by hand.', 14)}>
         <Switch checked={!!S.autoBackup} onChange={v => update(s => { s.autoBackup = v })} />
       </Row>}
       {/* Android only: the system folder picker (#161). iOS shows Documents in Files already. */}
@@ -641,7 +641,7 @@ export default function Settings() {
     {!MOBILE && <Section title={t('Tip')}>
       <Row icon="lightbulb" iconTint="var(--yellow)"
         title={IS_ANDROID ? t('In Chrome: ⋮ menu → Add to Home screen') : t('In Safari: Share → Add to Home Screen')}
-        subtitle={t('to install openGym as a full-screen app.') + ' ' + (user ? t('Your data syncs with your profile — sign in anywhere to see it.') : t('Guest data stays on this device — export a backup now and then!'))} />
+        subtitle={t('to install openGym as a full-screen app.') + ' ' + (user ? t('Your data syncs with your profile. Sign in anywhere and it’s there.') : t('Guest data stays on this device, so export a backup now and then!'))} />
     </Section>}
 
     {/* ---------- updates: the last thing on the page, so keeping openGym current is one tap ----------
@@ -677,11 +677,11 @@ export default function Settings() {
 // paragraph is a bad way to say that — the conversion table shows it in one look. Reading down
 // a column is the answer to "what do I put here", so the numbers get their own aligned columns.
 const EFFORT_ROWS = [
-  ['0', '10', 'Nothing left — went to failure'],
+  ['0', '10', 'Nothing left, went to failure'],
   ['1', '9', 'One more rep in the tank'],
   ['2', '8', 'Two more reps'],
   ['3', '7', 'Three more reps'],
-  ['4+', '≤6', 'Easy — warm-up territory'],
+  ['4+', '≤6', 'Easy, warm-up territory'],
 ]
 // RIR 2 / RPE 8: the row a working set usually lands on — the anchor the others are read
 // against. Not where the stepper starts; + walks up from the bottom of the scale.
@@ -758,8 +758,8 @@ function effortHelpSheet() {
       ))}
     </div>
     <div className="dim small" style={{ lineHeight: 1.5, display: 'grid', gap: 8 }}>
-      <div>{t('RIR counts the reps you left; RPE reads the same effort off a 10-point scale — so RPE ≈ 10 − RIR. Pick the one you already think in.')}</div>
-      <div>{t('The highlighted row is where most working sets land. Sets you have already logged keep their own scale, and nothing else reads the value — progression and estimated 1RM are unaffected.')}</div>
+      <div>{t('RIR counts the reps you left in the tank; RPE reads the same effort off a 10-point scale, so RPE ≈ 10 − RIR. Pick whichever you already think in.')}</div>
+      <div>{t('The highlighted row is where most working sets land. Sets you have already logged keep their own scale, and nothing else reads the value, so progression and estimated 1RM are unaffected.')}</div>
     </div>
     <div style={{ height: 8 }} />
   </>)
@@ -847,7 +847,7 @@ function PushCard({ S, update, toast }) {
     setBusy(false)
   }
   const test = async () => {
-    try { await sendTestPush(); toast(t('Test sent — should arrive any second')) }
+    try { await sendTestPush(); toast(t('Test sent! Should pop up any second')) }
     catch (e) { toast(e.message || t('Test failed')) }
   }
 
@@ -904,7 +904,7 @@ function EquipmentCard({ S, update }) {
   // The plates you own, per unit (lib/plates.js) — what the set rows' plate lines load from.
   const plateSummary = ownsPlates(S)
     ? inventoryFor(S).map(p => fmtPlate(p.w) + '×' + p.n).join(' · ') || t('None')
-    : t('Standard set — tap to count the pairs you own.')
+    : t('Standard set. Tap to count the pairs you own.')
   return <Section title={t('Equipment')} footer={t('Filters the exercise library and picker, and flags routine exercises that need something you don’t have in the active profile.')}>
     <Row icon="plate" iconTint="var(--orange)" title={t('Plates')} subtitle={plateSummary} accessory="chevron" onClick={() => plateInventorySheet()} />
     {profiles.length > 0 && <Row icon="dumbbell" iconTint="var(--acc)" title={t('Filter by equipment')}>
@@ -967,7 +967,7 @@ function MediaRow() {
     : null
   const sub = remote
     ? [usage, pending ? t('{0} waiting to upload', pending) : null].filter(Boolean).join(' · ') || undefined
-    : t('Kept on this device only — Export with photos & videos keeps a copy.')
+    : t('Kept on this device only. Export with photos & videos keeps a copy.')
   return <Row icon="image" iconTint="var(--teal)" title={t('Photos & videos')} subtitle={sub}
     onClick={remote ? () => syncMedia({ force: true, retryRejected: true }) : undefined} />
 }
@@ -1015,7 +1015,7 @@ function RegisterInline({ close, setUser, pushState, pullState, toast }) {
     if (inviteOnly && !code.trim()) { toast(t('An invite code is required')); return }
     try {
       const u = await passkeyRegister(n, code.trim()); setUser(u); close()
-      if (hasData(useStore.getState().S)) { await pushState(); toast(t('Profile created — data moved into it')) }
+      if (hasData(useStore.getState().S)) { await pushState(); toast(t('Profile created, and your data moved into it')) }
       else { await pullState(); toast(t('Welcome, {0}', u.name)) }
     } catch (e) { if (e.name !== 'NotAllowedError' && e.name !== 'AbortError') toast(e.message || t('Registration failed')) }
   }
@@ -1027,7 +1027,7 @@ function RegisterInline({ close, setUser, pushState, pullState, toast }) {
       <div style={{ height: 10 }} />
       <input className="input" placeholder={t('Invite code')} maxLength={40} value={code}
         onChange={e => setCode(e.target.value.toUpperCase())} style={{ letterSpacing: '.14em', fontWeight: 600, textAlign: 'center' }} />
-      <div className="dim small" style={{ marginTop: 6 }}>{t('This app is invite-only — enter the code you were given.')}</div>
+      <div className="dim small" style={{ marginTop: 6 }}>{t('This app is invite-only. Enter the code you were given.')}</div>
     </>}
     <div style={{ height: 12 }} /><Button variant="primary" onClick={go}>{t('Create passkey')}</Button>
   </>

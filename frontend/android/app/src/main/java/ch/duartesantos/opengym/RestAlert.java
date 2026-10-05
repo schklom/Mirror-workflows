@@ -224,7 +224,7 @@ public final class RestAlert {
     @SuppressWarnings("deprecation")
     private static boolean showNotification(Context ctx, Intent intent, boolean alarmBuzz) {
         String title = intent.getStringExtra("title");
-        if (title == null || title.isEmpty()) title = "Rest over — next set!";
+        if (title == null || title.isEmpty()) title = "Rest’s over. Next set!";
         // With the alarm buzz on, the notification itself stays still: the buzz comes from buzz().
         boolean vibrate = intent.getBooleanExtra("vibrate", true) && !alarmBuzz;
         String channelId = channelFor(intent.getStringExtra("channelId"), vibrate);

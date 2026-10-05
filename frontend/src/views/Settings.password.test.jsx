@@ -83,7 +83,7 @@ describe('Settings with password sign-in', () => {
     await settle()
     const account = section(page, 'Account')
     expect(titles(account)).toContain('Password')
-    expect(rowByTitle(account, 'Password').textContent).toContain('Not set — lets you sign in where passkeys do not work.')
+    expect(rowByTitle(account, 'Password').textContent).toContain('Not set. Handy for signing in where passkeys don’t work.')
 
     mocks.config = null
     const off = mount(<Settings />)

@@ -204,9 +204,9 @@ export default function CoachIntake() {
         <p className="ob-p">{t('Injuries, joints that complain, movements you cannot do, or practical limits like training at 6am in a flat.')}</p>
         <div className="ob-field">
           <TextArea rows={4} maxLength={600} value={p.limitations} onChange={e => set({ limitations: e.target.value })}
-            placeholder={t('e.g. “dodgy left shoulder — no barbell overhead press”')} />
+            placeholder={t('e.g. “dodgy left shoulder, no barbell overhead press”')} />
         </div>
-        <div className="ob-note warn">{t('If something actually hurts, see a professional — the Coach will program conservatively but it cannot diagnose anything.')}</div>
+        <div className="ob-note warn">{t('If something actually hurts, see a professional. The Coach will program conservatively, but it can’t diagnose anything.')}</div>
       </>}
 
       {key === 'extras' && <>
@@ -246,7 +246,7 @@ function Consent({ onAgree, onDecline }) {
   const [info, setInfo] = useState(null)
   useEffect(() => { disclosure().then(setInfo).catch(() => {}) }, [])
   const who = info?.payer === 'you'
-    ? t('Sent straight to {0} with your own API key — you pay for every request.', info.host || info.providerLabel)
+    ? t('Sent straight to {0} with your own API key. You pay for every request.', info.host || info.providerLabel)
     : t('Sent to {0}, running on this server under the instance owner’s account.', info?.providerLabel || config?.coach?.providerLabel || t('the configured AI provider'))
   return <>
     <div className="ob-eyebrow">{t('Before we start')}</div>
@@ -265,7 +265,7 @@ function Consent({ onAgree, onDecline }) {
       <div style={{ color: 'var(--yellow)' }}>{t('The Coach is not a doctor or a physiotherapist. If something hurts, ask a professional.')}</div>
     </div>
     <div className="ob-foot" style={{ flexDirection: 'column' }}>
-      <Button variant="primary" onClick={onAgree}>{t('I understand — let’s go')}</Button>
+      <Button variant="primary" onClick={onAgree}>{t('I understand, let’s go')}</Button>
       <Button onClick={onDecline}>{t('Not now')}</Button>
     </div>
   </>

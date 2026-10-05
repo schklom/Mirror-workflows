@@ -91,10 +91,10 @@ describe('connected and in step', () => {
     render()
     expect(bar()).toBeNull()
     act(() => network(false))
-    expect(text()).toBe('Offline — showing the last copy synced with the server.')
+    expect(text()).toBe('Offline. Showing the last copy synced with the server.')
     expect(bar().className).toContain('off')
     expect(label()).toBe('Try again')
-    expect(connectionView(sync('ok'), { online: false }).line).toBe('Offline — the server cannot be reached')
+    expect(connectionView(sync('ok'), { online: false }).line).toBe('Offline. The server can’t be reached')
     act(() => network(true))
     expect(bar()).toBeNull()
   })
@@ -106,7 +106,7 @@ describe('connected and in step', () => {
     render()
     expect(bar()).toBeNull()
     act(() => { vi.advanceTimersByTime(PENDING_GRACE_MS) })
-    expect(text()).toBe('Offline — your changes are saved on this device and sync when you are back online.')
+    expect(text()).toBe('Offline. Your changes are saved on this device and sync when you’re back online.')
   })
 })
 
@@ -115,21 +115,21 @@ describe('not connected — it says so, and what to do', () => {
     network(false)
     mocks.sync = sync('offline', { offline: true, pending: true, lastError: { status: 0, code: 'network' } })
     render()
-    expect(text()).toBe('Offline — your changes are saved on this device and sync when you are back online.')
+    expect(text()).toBe('Offline. Your changes are saved on this device and sync when you’re back online.')
     expect(bar().className).toContain('off')
     expect(label()).toBe('Try again')
     // Its row's height is what the page and the pinned headers leave free.
     expect(conn()).not.toBe('')
     await act(async () => { button().click() })
     expect(mocks.syncNow).toHaveBeenCalledTimes(1)
-    expect(mocks.toast).toHaveBeenCalledWith('Offline — the server cannot be reached')
+    expect(mocks.toast).toHaveBeenCalledWith('Offline. The server can’t be reached')
   })
 
   it('offline with nothing waiting: the copy on screen is the last synced one', () => {
     network(false)
     mocks.sync = sync('offline', { offline: true, lastError: { status: 0, code: 'timeout' } })
     render()
-    expect(text()).toBe('Offline — showing the last copy synced with the server.')
+    expect(text()).toBe('Offline. Showing the last copy synced with the server.')
   })
 
   // A proxy answering 502 without a CORS header fails fetch exactly as no network does; the phone
@@ -137,7 +137,7 @@ describe('not connected — it says so, and what to do', () => {
   it('the server out of reach while the device is online is the server, not the device', async () => {
     mocks.sync = sync('offline', { offline: true, pending: true, lastError: { status: 0, code: 'network' } })
     render()
-    expect(text()).toBe('Your server cannot be reached — your changes are saved on this device and sync once it answers again.')
+    expect(text()).toBe('Your server can’t be reached. Your changes are saved on this device and sync once it answers again.')
     expect(bar().className).toContain('off')
     expect(label()).toBe('Try again')
     await act(async () => { button().click() })
@@ -147,11 +147,11 @@ describe('not connected — it says so, and what to do', () => {
   it('with nothing waiting it shows the last copy, and the words follow the network as it goes and comes', () => {
     mocks.sync = sync('offline', { offline: true, lastError: { status: 0, code: 'network' } })
     render()
-    expect(text()).toBe('Your server cannot be reached — showing the last copy synced with it.')
+    expect(text()).toBe('Your server can’t be reached. Showing the last copy synced with it.')
     act(() => network(false))
-    expect(text()).toBe('Offline — showing the last copy synced with the server.')
+    expect(text()).toBe('Offline. Showing the last copy synced with the server.')
     act(() => network(true))
-    expect(text()).toBe('Your server cannot be reached — showing the last copy synced with it.')
+    expect(text()).toBe('Your server can’t be reached. Showing the last copy synced with it.')
   })
 
   it('a server error carries its HTTP code, for whoever runs the server', () => {
@@ -213,7 +213,7 @@ describe('no server at all', () => {
     mocks.sync = sync('local', { server: null })
     render()
     expect(bar().className).toContain('quiet')
-    expect(text()).toBe('On this phone only — not connected to a server')
+    expect(text()).toBe('On this phone only, not connected to a server')
     expect(label()).toBe('Connect')
     act(() => button().click())
     expect(openedConnect().dataset.again).toBe('false')
@@ -224,7 +224,7 @@ describe('no server at all', () => {
     mocks.guest = true
     mocks.sync = sync('local')
     render()
-    expect(text()).toBe('Guest mode — data lives only in this browser.')
+    expect(text()).toBe('Guest mode: your data lives only in this browser.')
     act(() => button().click())
     expect(mocks.navs).toEqual(['/settings'])
     expect(mocks.passkeyLogin).not.toHaveBeenCalled()
@@ -236,7 +236,7 @@ describe('no server at all', () => {
     mocks.webauthn = false
     mocks.sync = sync('local')
     render()
-    expect(text()).toBe('Guest mode — data lives only in this browser.')
+    expect(text()).toBe('Guest mode: your data lives only in this browser.')
     expect(button()).toBeNull()
   })
 
@@ -253,7 +253,7 @@ describe('a sign-in waiting for its question', () => {
   it('says nothing syncs until it is answered, and the tap runs Sync now, which asks it', () => {
     mocks.sync = sync('held')
     render()
-    expect(text()).toBe('Nothing syncs until you say whether this device’s workouts go into your profile — tap to answer.')
+    expect(text()).toBe('Nothing syncs until you say whether this device’s workouts go into your profile. Tap to answer.')
     expect(connectionView(sync('held')).line).toBe('Waiting for your answer about this device’s workouts')
     act(() => { button().click() })
     expect(mocks.syncNow).toHaveBeenCalled()
@@ -289,7 +289,7 @@ describe('a change waiting while the server is reachable', () => {
     act(() => { vi.advanceTimersByTime(PENDING_GRACE_MS - 100) })
     expect(bar()).toBeNull()
     act(() => { vi.advanceTimersByTime(200) })
-    expect(text()).toBe('Not synced yet — tap to retry.')
+    expect(text()).toBe('Not synced yet. Tap to retry.')
     expect(label()).toBeNull()   // the sentence already says "tap to retry"
   })
 

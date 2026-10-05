@@ -1116,6 +1116,22 @@ export const PT_BR_OVERRIDES = {
   'Switch sides': 'Troque de lado',
   'Saves a dated copy to “{0}” after finishing a workout or editing a routine, and keeps the newest {1}.': 'Salva uma cópia datada em “{0}” depois de terminar um treino ou editar uma rotina, e mantém as {1} mais recentes.',
   'Saves a dated copy to the folder you chose after finishing a workout or editing a routine, and keeps the newest {0}.': 'Salva uma cópia datada na pasta que você escolheu depois de terminar um treino ou editar uma rotina, e mantém as {0} mais recentes.',
+  'Your routines in a loop': 'Suas rotinas em ciclo',
+  'Back to a fixed week?': 'Voltar para uma semana fixa?',
+  'The loop stops. Your weekdays stay as they are, and the loop is saved for later.': 'O ciclo para. Seus dias da semana ficam como estão e o ciclo fica salvo para depois.',
+  'Routines in a loop. Whatever is next stays next until you train it, whatever the day.': 'Rotinas em ciclo. A próxima continua sendo a próxima até você treinar, seja qual for o dia.',
+  'The same routines on the same weekdays, every week.': 'As mesmas rotinas nos mesmos dias, toda semana.',
+  'How you train': 'Como você treina',
+  'Want two routines on one day? Tap the day and pick both.': 'Duas rotinas em um dia? Toque no dia e escolha as duas.',
+  'Drag to reorder. Tap the red button to take one out.': 'Arraste para reordenar. Toque no botão vermelho para tirar uma.',
+  'Trained out of order? Just pick another routine on Home.': 'Treinou fora de ordem? É só escolher outra rotina no Início.',
+  'These count on top of the loop. Tap a day to change or clear it.': 'Contam além do ciclo. Toque em um dia para mudar ou limpar.',
+  'Tap to plan something': 'Toque para planejar algo',
+  'Drag to reorder': 'Arraste para reordenar',
+  'Drag to reorder. Tap the red button to delete.': 'Arraste para reordenar. Toque no botão vermelho para excluir.',
+  'Tap a routine to edit it. Reorder and delete are behind Edit.': 'Toque em uma rotina para editar. Reordenar e excluir ficam em Editar.',
+  'Pick one routine, or more to train them together.': 'Escolha uma rotina, ou várias para treinar juntas.',
+  'Planned sets per week, from your plan.': 'Séries planejadas por semana, a partir do seu plano.',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

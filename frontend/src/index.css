@@ -1296,19 +1296,24 @@ body.chips-dragging *{cursor:inherit}
 @keyframes slideup{from{transform:translateY(16px);opacity:0}to{transform:none;opacity:1}}
 #timer .bar{position:absolute;top:0;inset-inline-start:0;inset-inline-end:0;height:3px;background:var(--surface-3)}
 #timer .bar i{display:block;height:100%;background:var(--acc);transition:width 1s linear}
-#timer .tclock{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;text-align:start;padding:2px 0}
+/* The clock is what the bar is for, so it never gives up width: the buttons do (Skip's label is
+   the one that gives, ending in … in a long language on a narrow phone). The label under the
+   clock fills the clock's width but does not widen it. */
+#timer .tclock{flex:none;min-width:0;display:flex;flex-direction:column;align-items:flex-start;text-align:start;padding:2px 0}
 #timer .t{font-size:28px;font-weight:600;line-height:1.1;letter-spacing:-.026em;font-variant-numeric:tabular-nums;white-space:nowrap}
 #timer .lbl{
-  font-size:12px;color:var(--label-2);max-width:100%;margin-top:1px;
+  font-size:12px;color:var(--label-2);width:0;min-width:100%;margin-top:1px;
   display:inline-flex;align-items:center;gap:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
 #timer .lbl .icn{font-size:10px;flex:none;opacity:.8}
-#timer .acts{display:flex;align-items:center;gap:6px;flex:none}
+#timer .acts{display:flex;align-items:center;justify-content:flex-end;gap:6px;flex:1 1 auto;min-width:0}
 #timer .acts .btn{padding-top:11px;padding-bottom:11px}   /* sweaty hands, mid-set */
 #timer .acts .adj{padding-inline:9px;gap:2px}
 #timer .acts .btn.plain{background:var(--surface-2);color:var(--label)}
 #timer .acts .btn.plain:active{background:var(--surface-3)}
-#timer .acts .skip{min-width:70px}
+#timer .acts .btn{flex:none}
+#timer .acts .skip{min-width:min(70px,100%);flex:0 1 auto}
+#timer .acts .skip span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 /* A paused rest reads as held: the clock and the bar step back until it runs again. */
 #timer.rest.paused .t,#timer.rest.paused .bar{opacity:.5}
 /* work timer (issue #16): the same bar doing the opposite job — outlined and tinted so a
@@ -1318,6 +1323,10 @@ body.chips-dragging *{cursor:inherit}
 /* The label is the exercise name, handed in already cased (exerciseNameText): a capitalize here
    would title-case German's own casing too. */
 #timer.working .lbl{display:block}
+/* A hold's label is the exercise name, so there the clock side takes the room and its two
+   buttons keep theirs; the time itself still never shrinks (the label adds no minimum). */
+#timer.working .tclock{flex:1 1 0;min-width:auto}
+#timer.working .acts{flex:none}
 /* Docked on the workout screen: edge to edge, flush with the bottom, the home indicator's inset
    inside it. */
 body.no-tabbar #timer{
@@ -1326,8 +1335,15 @@ body.no-tabbar #timer{
   box-shadow:0 -10px 30px -14px rgba(0,0,0,.55);
 }
 body.no-tabbar #timer.working{box-shadow:inset 0 var(--hair) 0 var(--acc),0 -10px 30px -14px rgba(0,0,0,.55)}
+@media (max-width:399px){
+  #timer .acts{gap:4px}
+  #timer .acts .adj{padding-inline:6px;gap:1px}
+  #timer .acts .pause{padding-inline:10px}
+  #timer .acts .skip{padding-inline:10px}
+}
 @media (max-width:359px){
-  #timer .acts .adj{padding-inline:7px}
+  body.no-tabbar #timer,#timer{padding-inline:10px}
+  #timer .t{font-size:25px}
   #timer .acts .skip{min-width:0}
 }
 

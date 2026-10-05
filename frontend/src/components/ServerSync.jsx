@@ -221,8 +221,8 @@ export function OwedSheet({ kind, count: count0, media: media0 = 0, exportBackup
     {refused && !MOBILE && canSignIn() && <><button className="btn primary" disabled={busy} onClick={() => { close(); signInAgain() }}>{pwOn() ? t('Sign in') : t('Sign in with passkey')}</button><div style={{ height: 8 }} /></>}
     {!refused && <><button className="btn primary" disabled={busy} onClick={retry}>{busy ? t('Syncing…') : t('Try again')}</button><div style={{ height: 8 }} /></>}
     {media > 0 && exportBackupZip
-      ? <Button icon="download" disabled={busy} onClick={exportBackupZip}>{t('Export with photos & videos (.zip)')}</Button>
-      : <Button icon="download" disabled={busy} onClick={exportBackup}>{t('Export backup (JSON)')}</Button>}
+      ? <Button icon="share" disabled={busy} onClick={exportBackupZip}>{t('Export with photos & videos (.zip)')}</Button>
+      : <Button icon="share" disabled={busy} onClick={exportBackup}>{t('Export backup (JSON)')}</Button>}
     <div style={{ height: 8 }} />
     <button className="btn danger" disabled={busy} onClick={anyway}>{LEAVE[kind].anyway()}</button>
     <div style={{ height: 8 }} />
@@ -269,8 +269,8 @@ export function ServerSyncSection({ children }) {
     <Row icon={view.icon} iconTint={TINT[view.tone]} title={view.line} subtitle={sub} className="sync-status" />
     <Row icon="reset" iconTint="var(--acc)" title={busy ? t('Syncing…') : t('Sync now')} onClick={now} />
     {sync.status === 'auth' && (MOBILE
-      ? <Row icon="link" iconTint="var(--indigo)" title={t('Pair again')} subtitle={t('Your changes are kept here, and merged into your account once it is paired again.')} accessory="chevron" onClick={pairAgain} />
-      : canSignIn() && <Row icon="person" iconTint="var(--blue)" title={pwOn() ? t('Sign in') : t('Sign in with passkey')} subtitle={t('Your changes are kept here, and merged into your account once you are signed in again.')} accessory="chevron" onClick={signInAgain} />)}
+      ? <Row icon="qr" iconTint="var(--indigo)" title={t('Pair again')} subtitle={t('Your changes are kept here, and merged into your account once it is paired again.')} accessory="chevron" onClick={pairAgain} />
+      : canSignIn() && <Row icon={pwOn() ? 'person' : 'fingerprint'} iconTint="var(--blue)" title={pwOn() ? t('Sign in') : t('Sign in with passkey')} subtitle={t('Your changes are kept here, and merged into your account once you are signed in again.')} accessory="chevron" onClick={signInAgain} />)}
     {/* another account's, kept when this one signed in over a copy that still owed them */}
     <KeptChangesRows />
     {children}

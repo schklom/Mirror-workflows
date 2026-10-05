@@ -107,7 +107,7 @@ export default function Settings({ page = null, find = null }) {
       title: t('Convert to {0}?', v),
       subtitle: t('Every stored weight (logged sets, working weights, routine targets, body weight, bar weights) is in {0}. Convert the numbers, or keep them and only change the label?', S.unit),
       items: [
-        { icon: 'shuffle', label: t('Convert the numbers'), onClick: () => setUnit(v) },
+        { icon: 'calculator', label: t('Convert the numbers'), onClick: () => setUnit(v) },
         { icon: 'pencil', label: t('Keep the numbers, change the label'), onClick: () => setUnit(v, { convert: false }) },
       ],
     })
@@ -292,7 +292,7 @@ export default function Settings({ page = null, find = null }) {
           : 'The server has {0} workouts that are not in this backup, logged since it was made or on another device. Replacing deletes them.', n),
         items: [
           { icon: 'trash', label: t('Replace anyway'), danger: true, onClick: () => apply(null) },
-          { icon: 'shuffle', label: t('Merge them in'), onClick: () => apply(conflict) },
+          { icon: 'merge', label: t('Merge them in'), onClick: () => apply(conflict) },
           { icon: 'xmark', label: t('Cancel'), onClick: () => {} },
         ],
       })
@@ -525,7 +525,7 @@ export default function Settings({ page = null, find = null }) {
               is not an improvement for everyone: louder is a cost with headphones or in a quiet
               room. The chime by default; Classic brings the original back unchanged
               (lib/sound.js's CLASSIC). Stored as S.classicChime, as before. */}
-          {S.sound && <SelectRow icon="bell" iconTint="var(--pink)" title={t('Sound')}
+          {S.sound && <SelectRow icon="speaker" iconTint="var(--pink)" title={t('Sound')}
             value={S.classicChime ? 'classic' : 'chime'} onChange={v => update(s => { s.classicChime = v === 'classic' })}
             options={[
               { value: 'chime', label: t('Chime (louder)') },
@@ -616,7 +616,7 @@ export default function Settings({ page = null, find = null }) {
         </>}
       </Section>
       <Section footer={t('Switching the unit offers to convert every stored weight.')}>
-        <Row icon="scale" iconTint="var(--teal)" title={t('Weight unit')}>
+        <Row icon="ruler" iconTint="var(--teal)" title={t('Weight unit')}>
           <Segmented className="seg-inline"
             options={[{ value: 'kg', label: 'kg' }, { value: 'lb', label: 'lb' }]}
             value={S.unit} onChange={v => switchUnit(v)} />
@@ -632,7 +632,7 @@ export default function Settings({ page = null, find = null }) {
         {/* Cardio speed (Discord "miles per hour"). Unlike the weight unit this converts nothing:
             speeds stay stored in km/h and only what is shown and typed follows it (lib/speed.js).
             Until chosen it follows the weight unit, so a profile in pounds already reads mph. */}
-        <Row icon="figureRun" iconTint="var(--teal)" title={t('Speed unit')}>
+        <Row icon="ruler" iconTint="var(--teal)" title={t('Speed unit')}>
           <Segmented className="seg-inline"
             options={[{ value: 'kmh', label: 'km/h' }, { value: 'mph', label: 'mph' }]}
             value={speedUnitOf(S)} onChange={v => update(s => { s.speedUnit = v })} />
@@ -766,7 +766,7 @@ export default function Settings({ page = null, find = null }) {
           Admin and Disconnect sit in the same block; a browser's account rows follow in their own. */}
       {user && !DEMO && <ServerSyncSection>
         {MOBILE && <>
-          {user.admin && <Row icon="wrench" iconTint="var(--indigo)" title={t('Admin dashboard')} accessory="chevron" onClick={() => nav('/admin')} />}
+          {user.admin && <Row icon="crown" iconTint="var(--indigo)" title={t('Admin dashboard')} accessory="chevron" onClick={() => nav('/admin')} />}
           <AccountIdRow id={user.id} />
           <Row icon="signOut" iconTint="var(--red)" title={t('Disconnect')} danger onClick={disconnect} />
         </>}
@@ -776,33 +776,33 @@ export default function Settings({ page = null, find = null }) {
       {!(MOBILE && user) && <Section title={MOBILE ? t('Your data') : DEMO ? t('Demo') : t('Account')}>
         {MOBILE ? <>
           <Row icon="lock" iconTint="var(--acc)" title={t('All data stays on this phone')} subtitle={t('No account, no cloud. Back it up anytime in Data & backup.')} />
-          <Row icon="link" iconTint="var(--indigo)" title={t('Connect to my server')} subtitle={t('Sync this device to your own self-hosted openGym instead.')} accessory="chevron"
+          <Row icon="cloud" iconTint="var(--indigo)" title={t('Connect to my server')} subtitle={t('Sync this device to your own self-hosted openGym instead.')} accessory="chevron"
             onClick={connectServer} />
           <KeptChangesRows />
         </> : DEMO ? <>
-          <Row icon="sparkles" iconTint="var(--acc)" title={t('You’re in the demo')} subtitle={t('Example data, stored only in this browser. Go wild and change anything you like.')} />
+          <Row icon="info" iconTint="var(--acc)" title={t('You’re in the demo')} subtitle={t('Example data, stored only in this browser. Go wild and change anything you like.')} />
           <Row icon="reset" iconTint="var(--blue)" title={t('Reset demo data')} accessory="chevron"
             onClick={() => confirmSheet({ title: t('Reset demo data?'), message: t('Puts the example plan, workouts and weigh-ins back the way they started.'), confirmText: t('Reset'), onConfirm: () => { resetDemo(); nav('/home'); toast(t('Demo data reset')) } })} />
           <Row icon="rocket" iconTint="var(--indigo)" title={t('Self-host openGym')} subtitle={t('Passkey sign-in, sync across your devices, your own data.')} accessory="chevron"
             onClick={() => window.open(REPO, '_blank', 'noopener')} />
         </> : user ? <>
-          {user.admin && <Row icon="wrench" iconTint="var(--indigo)" title={t('Admin dashboard')} accessory="chevron" onClick={() => nav('/admin')} />}
+          {user.admin && <Row icon="crown" iconTint="var(--indigo)" title={t('Admin dashboard')} accessory="chevron" onClick={() => nav('/admin')} />}
           <PasskeysRow state={passkeys.st} changed={credsChanged} />
           <DeviceLinkRow state={passkeys.st} />
-          <Row icon="link" iconTint="var(--blue)" title={t('Pair the mobile app')} subtitle={t('Connect the openGym app on your phone to this account.')} accessory="chevron"
+          <Row icon="qr" iconTint="var(--blue)" title={t('Pair the mobile app')} subtitle={t('Connect the openGym app on your phone to this account.')} accessory="chevron"
             onClick={() => useUI.getState().openSheet(close => <PairSheet close={close} />)} />
           {pwOn && <PasswordRow version={credsV} />}
           <Row icon="signOut" iconTint="var(--red)" title={t('Sign out')} danger onClick={signOutHere} />
           <Row icon="shield" iconTint="var(--red)" title={t('Sign out everywhere')} subtitle={t('Ends this profile’s sessions on all your devices.')} danger onClick={signOutEverywhere} />
           <AccountIdRow id={user.id} />
         </> : webauthnOK() ? <>
-          <Row icon="sparkles" iconTint="var(--acc)" title={t('Create passkey profile')} subtitle={t('Keeps your data safe and separate per person.')} accessory="chevron" onClick={registerHere} />
-          <Row icon="person" iconTint="var(--blue)" title={t('Sign in with passkey')} accessory="chevron" onClick={passkeySignIn} />
+          <Row icon="plusCircle" iconTint="var(--acc)" title={t('Create passkey profile')} subtitle={t('Keeps your data safe and separate per person.')} accessory="chevron" onClick={registerHere} />
+          <Row icon="fingerprint" iconTint="var(--blue)" title={t('Sign in with passkey')} accessory="chevron" onClick={passkeySignIn} />
           {pwOn && <Row icon="key" iconTint="var(--orange)" title={t('Sign in with password')} accessory="chevron" onClick={() => openPasswordSignIn()} />}
           <KeptChangesRows />
         </> : pwOn ? <>
           {/* No passkeys in this browser (plain http on a LAN address, say): a password is the way in. */}
-          <Row icon="sparkles" iconTint="var(--acc)" title={t('Create new profile')} subtitle={t('Keeps your data safe and separate per person.')} accessory="chevron" onClick={openPasswordRegister} />
+          <Row icon="plusCircle" iconTint="var(--acc)" title={t('Create new profile')} subtitle={t('Keeps your data safe and separate per person.')} accessory="chevron" onClick={openPasswordRegister} />
           <Row icon="key" iconTint="var(--orange)" title={t('Sign in with password')} accessory="chevron" onClick={() => openPasswordSignIn()} />
           <KeptChangesRows />
         </> : <>
@@ -984,11 +984,11 @@ function MobileReminderCard({ S, update, toast }) {
 function NudgeRows({ S, setReminder }) {
   const r = S.reminder || {}
   return <>
-    <Row icon="flame" iconTint="var(--red)" title={t('Nudge me when I skip a planned workout')}>
+    <Row icon="bell" iconTint="var(--red)" title={t('Nudge me when I skip a planned workout')}>
       <Switch checked={!!r.nudge} onChange={() => setReminder({ nudge: !r.nudge })} />
     </Row>
     {r.nudge && (
-      <SelectRow icon="sparkles" iconTint="var(--blue)" title={t('Nudge tone')}
+      <SelectRow icon="chat" iconTint="var(--blue)" title={t('Nudge tone')}
         value={toneOf(r)} onChange={v => setReminder({ tone: v })}
         options={NUDGE_TONES.map(k => ({ value: k, label: toneLabel(k), subtitle: t(NUDGE_COPY[k].title) }))} />
     )}
@@ -1086,14 +1086,14 @@ function EquipmentCard({ S, update }) {
     : t('Standard set. Tap to count the pairs you own.')
   return <Section title={t('Equipment')} footer={t('Filters the exercise library and picker, and flags routine exercises that need something you don’t have in the active profile.')}>
     <Row icon="plate" iconTint="var(--orange)" title={t('Plates')} subtitle={plateSummary} accessory="chevron" onClick={() => plateInventorySheet()} />
-    {profiles.length > 0 && <Row icon="dumbbell" iconTint="var(--acc)" title={t('Filter by equipment')}>
+    {profiles.length > 0 && <Row icon="kettlebell" iconTint="var(--acc)" title={t('Filter by equipment')}>
       <Switch checked={!!S.equipFilterOn} onChange={v => update(s => { s.equipFilterOn = v })} />
     </Row>}
-    {profiles.length > 0 && <SelectRow icon="list" iconTint="var(--blue)" title={t('Active profile')}
+    {profiles.length > 0 && <SelectRow icon="house" iconTint="var(--blue)" title={t('Active profile')}
       value={S.activeEquipId || ''} onChange={v => update(s => { s.activeEquipId = v })}
       options={profiles.map(p => ({ value: p.id, label: p.name }))} />}
     {profiles.map(p => (
-      <Row key={p.id} icon="dumbbell" iconTint="var(--teal)" title={p.name}
+      <Row key={p.id} icon="house" iconTint="var(--teal)" title={p.name}
         subtitle={t('{0} equipment types', p.equipment.length)} accessory="chevron"
         onClick={() => equipmentProfileSheet(p)}>
         <button className="iconbtn" aria-label={t('Delete')} onClick={ev => { ev.stopPropagation(); remove(p) }}><Icon name="trash" /></button>
@@ -1155,7 +1155,7 @@ function AccountIdRow({ id }) {
   const toast = useUI(s => s.toast)
   if (!id) return null
   const copy = async () => { if (await copyText(id)) toast(t('Account ID copied')) }
-  return <Row icon="person" iconTint="var(--grey)" title={t('Account ID')} subtitle={<span className="acct-id">{id}</span>} onClick={copy} />
+  return <Row icon="personCircle" iconTint="var(--grey)" title={t('Account ID')} subtitle={<span className="acct-id">{id}</span>} onClick={copy} />
 }
 
 // Lets the mobile app's "connect to my server" mode (lib/remote.js) authenticate without a

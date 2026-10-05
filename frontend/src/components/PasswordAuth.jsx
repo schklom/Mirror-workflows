@@ -146,7 +146,7 @@ export function PasswordSignInSheet({ close, onPasskey }) {
       {reset ? t('Sign in with password') : t('Have a reset code from your admin?')}</Button>
     {onPasskey && !reset && webauthnOK() && <>
       <div style={{ height: 8 }} />
-      <Button type="button" icon="person" onClick={() => { close(); onPasskey() }}>{t('Sign in with passkey')}</Button>
+      <Button type="button" icon="fingerprint" onClick={() => { close(); onPasskey() }}>{t('Sign in with passkey')}</Button>
     </>}
   </>
 }
@@ -270,7 +270,7 @@ export function ProveOwner({ passkey, password, onProof, explain = passwordError
   // A removal's buttons are red whichever proof carries it: each of them removes.
   const main = danger ? 'danger' : 'primary'
   return <>
-    {withPasskey && <Button variant={main} icon="lock" disabled={busy} onClick={() => run(signal => passkeyAssertion({ signal }))}>{t('Confirm with a passkey')}</Button>}
+    {withPasskey && <Button variant={main} icon="fingerprint" disabled={busy} onClick={() => run(signal => passkeyAssertion({ signal }))}>{t('Confirm with a passkey')}</Button>}
     {password && <form onSubmit={withPassword} noValidate>
       {withPasskey && <div className="dim small" style={{ margin: '14px 0 8px', textAlign: 'center' }}>{t('or with your password')}</div>}
       {/* Tells a password manager which account the password belongs to. */}

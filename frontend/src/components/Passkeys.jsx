@@ -73,7 +73,7 @@ export function usePasskeys(on) {
 export function PasskeysRow({ state, changed }) {
   if (!state) return null
   const n = state.passkeys.length
-  return <Row icon="lock" iconTint="var(--acc)" title={t('Passkeys')} accessory="chevron"
+  return <Row icon="fingerprint" iconTint="var(--acc)" title={t('Passkeys')} accessory="chevron"
     subtitle={n === 0 ? t('None yet. Add one and sign in without your password.') : tn('1 passkey', '{0} passkeys', n)}
     onClick={() => ui().openSheet(close => <PasskeysSheet close={close} changed={changed} />)} />
 }
@@ -97,7 +97,7 @@ export function PasskeysSheet({ close, changed }) {
       {t('Each one signs in to this profile from the device or password manager that keeps it. Tap one to rename or remove it.')}
     </div>
     {st.passkeys.length > 0 && <div className="sect-b">
-      {st.passkeys.map((p, i) => <Row key={p.id} icon="lock" iconTint="var(--grey)" title={label(p, i)} subtitle={meta(p) || null}
+      {st.passkeys.map((p, i) => <Row key={p.id} icon="fingerprint" iconTint="var(--grey)" title={label(p, i)} subtitle={meta(p) || null}
         accessory="chevron" onClick={() => edit(p, i)} />)}
     </div>}
     {st.passkeys.length === 1 && st.lastWayIn && <div className="dim small" style={{ marginTop: 8 }}>
@@ -237,7 +237,7 @@ export function DeviceLinkSheet({ close }) {
       {/* Read out or typed character by character: left to right in every language. */}
       <div className="card" dir="ltr" style={{ textAlign: 'center', fontSize: 24, fontWeight: 700, letterSpacing: '.12em', padding: '14px 0' }}>{link.code}</div>
       <div style={{ height: 12 }} />
-      <Button icon="link" onClick={copy}>{t('Copy link')}</Button>
+      <Button icon="copy" onClick={copy}>{t('Copy link')}</Button>
     </>}
     <div style={{ height: 8 }} />
     <Button variant="ghost" onClick={close}>{t('Done')}</Button>

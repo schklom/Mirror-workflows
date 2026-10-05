@@ -1685,8 +1685,6 @@ export default {
   'Start pass': '开始一轮',
   'This rotation couldn’t be read. Another device may have written it.': '无法读取此轮换。可能是另一台设备写入的。',
   'Discard it': '丢弃它',
-  'Switch to Fixed Week?': '切换到固定周？',
-  'The rotation stops and its current pass is dropped. Your weekday plan is untouched, and the sequence is kept so you can start a new pass later.': '轮换会停止，当前这一轮会被丢弃。你的每周计划不会受到影响，顺序会被保留，方便你以后重新开始新一轮。',
   'Use Fixed Week': '使用固定周',
   'No rotation yet. Add routines to it in Plan.': '还没有轮换。在计划中添加训练日。',
   'Set up in Plan': '在计划中设置',

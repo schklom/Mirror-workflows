@@ -109,12 +109,20 @@ describe('Settings — How you train (Plan & schedule)', () => {
     })
     pick('Fixed Week')
     expect(mocks.S.queue).not.toBe(null)          // nothing happens before the confirmation
+    expect(confirmSheet.mock.calls[0][0]).toMatchObject({ title: 'Back to a fixed week?', confirmText: 'Use Fixed Week' })   // Plan's words
     act(() => confirmSheet.mock.calls[0][0].onConfirm())
     expect(mocks.S.queue).toBe(null)
     expect(mocks.S.scheduleMode).toBe('week')
     expect(mocks.S.rotation.sequence).toEqual(['a', 'b'])
     expect(mocks.S.week).toEqual({ 1: ['a'] })
     expect(mocks.S.dayPlan).toEqual({ '2020-01-01': 'b' })   // today's pin swept; the past one is not this pass's business
+  })
+
+  it('Fixed Week with nothing running switches at once, as on Plan', () => {
+    mount({ scheduleMode: 'rotation' })
+    pick('Fixed Week')
+    expect(confirmSheet).not.toHaveBeenCalled()
+    expect(mocks.S.scheduleMode).toBe('week')
   })
 
   it('Rotation starts a fresh pass from the saved sequence', () => {

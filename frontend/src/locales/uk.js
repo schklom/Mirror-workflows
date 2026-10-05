@@ -1682,8 +1682,6 @@ export default {
   'Start pass': 'Почати цикл',
   'This rotation couldn’t be read. Another device may have written it.': 'Не вдалося прочитати цю ротацію. Можливо, її записав інший пристрій.',
   'Discard it': 'Скасувати її',
-  'Switch to Fixed Week?': 'Перейти на фіксований тиждень?',
-  'The rotation stops and its current pass is dropped. Your weekday plan is untouched, and the sequence is kept so you can start a new pass later.': 'Ротація зупиниться, а її поточний цикл буде скасовано. Твій тижневий план не зміниться, а послідовність збережеться, тож пізніше можна буде почати новий цикл.',
   'Use Fixed Week': 'Використати фіксований тиждень',
   'No rotation yet. Add routines to it in Plan.': 'Ротації поки немає. Додай до неї програми в Плані.',
   'Set up in Plan': 'Налаштувати в Плані',

@@ -117,15 +117,17 @@ export default function Settings({ page = null, find = null }) {
   // written by a planner switches the app to Rotation on its own — but choosing Rotation with
   // nothing built yet has no queue to derive from, so S.scheduleMode is what keeps it selected
   // (and the weekday grid hidden, on both Home and Plan) until the first routine is added.
-  // Fixed Week stops the pass but keeps the sequence for a later fresh pass.
+  // Fixed Week behaves as on Plan (views/Plan.jsx setMode), with the same words: with no loop
+  // running there is nothing to lose and it switches at once; a running loop asks first.
   const setScheduleMode = v => {
     if (v === scheduleModeOf(S)) return
     if (v === 'week') {
       // A planner's own queue is never this app's to drop — this control is text-only while one
       // is live (below), but the guard stays here too rather than trust the render alone.
+      if (!liveQ) { update(s => { chooseFixedWeek(s) }); return }
       confirmSheet({
-        title: t('Switch to Fixed Week?'),
-        message: t('The rotation stops and its current pass is dropped. Your weekday plan is untouched, and the sequence is kept so you can start a new pass later.'),
+        title: t('Back to a fixed week?'),
+        message: t('The loop stops. Your weekdays stay as they are, and the loop is saved for later.'),
         confirmText: t('Use Fixed Week'),
         onConfirm: () => update(s => { chooseFixedWeek(s) }),
       })

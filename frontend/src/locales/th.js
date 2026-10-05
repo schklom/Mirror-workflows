@@ -1696,8 +1696,6 @@ export default {
   'Start pass': 'เริ่มรอบ',
   'This rotation couldn’t be read. Another device may have written it.': 'อ่านการหมุนเวียนนี้ไม่ได้ อาจถูกเขียนมาจากอุปกรณ์อื่น',
   'Discard it': 'ทิ้งไป',
-  'Switch to Fixed Week?': 'เปลี่ยนเป็นสัปดาห์คงที่?',
-  'The rotation stops and its current pass is dropped. Your weekday plan is untouched, and the sequence is kept so you can start a new pass later.': 'การหมุนเวียนจะหยุด และรอบปัจจุบันจะถูกยกเลิก แผนรายสัปดาห์ของคุณจะไม่ถูกแตะต้องเลย และลำดับจะถูกเก็บไว้เพื่อเริ่มรอบใหม่ได้ในภายหลัง',
   'Use Fixed Week': 'ใช้สัปดาห์คงที่',
   'No rotation yet. Add routines to it in Plan.': 'ยังไม่มีการหมุนเวียน เพิ่มรูทีนได้ในแผน',
   'Set up in Plan': 'ตั้งค่าในแผน',

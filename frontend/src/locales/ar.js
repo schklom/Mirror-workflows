@@ -1738,8 +1738,6 @@ export default {
   'Start pass': 'بدء الدورة',
   'This rotation couldn’t be read. Another device may have written it.': 'تعذّرت قراءة هذا التناوب. ربما كتبه جهاز آخر.',
   'Discard it': 'التخلص منه',
-  'Switch to Fixed Week?': 'التبديل إلى الأسبوع الثابت؟',
-  'The rotation stops and its current pass is dropped. Your weekday plan is untouched, and the sequence is kept so you can start a new pass later.': 'يتوقف التناوب وتُلغى دورته الحالية. تبقى خطتك الأسبوعية دون تغيير، ويُحتفظ بالتسلسل حتى تتمكن من بدء دورة جديدة لاحقًا.',
   'Use Fixed Week': 'استخدام الأسبوع الثابت',
   'No rotation yet. Add routines to it in Plan.': 'لا يوجد تناوب بعد. أضِف الروتينات إليه من الخطة.',
   'Set up in Plan': 'الإعداد في الخطة',

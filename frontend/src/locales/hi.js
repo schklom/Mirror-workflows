@@ -1685,8 +1685,6 @@ export default {
   'Start pass': 'पास शुरू करें',
   'This rotation couldn’t be read. Another device may have written it.': 'यह रोटेशन पढ़ा नहीं जा सका। हो सकता है इसे किसी दूसरे डिवाइस ने लिखा हो।',
   'Discard it': 'इसे हटा दें',
-  'Switch to Fixed Week?': 'नियत सप्ताह पर स्विच करें?',
-  'The rotation stops and its current pass is dropped. Your weekday plan is untouched, and the sequence is kept so you can start a new pass later.': 'रोटेशन रुक जाता है और उसका मौजूदा पास हटा दिया जाता है। आपकी साप्ताहिक योजना अछूती रहती है, और क्रम सुरक्षित रहता है ताकि आप बाद में नया पास शुरू कर सकें।',
   'Use Fixed Week': 'नियत सप्ताह का उपयोग करें',
   'No rotation yet. Add routines to it in Plan.': 'अभी कोई रोटेशन नहीं। योजना में इसमें रूटीन जोड़ें।',
   'Set up in Plan': 'योजना में सेट करें',

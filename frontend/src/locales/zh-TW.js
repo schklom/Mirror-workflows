@@ -1658,8 +1658,6 @@ export default {
   'Start pass': '開始這一輪',
   'This rotation couldn’t be read. Another device may have written it.': '無法讀取這個輪替。可能是另一台裝置寫入的。',
   'Discard it': '捨棄它',
-  'Switch to Fixed Week?': '要切換到固定週嗎？',
-  'The rotation stops and its current pass is dropped. Your weekday plan is untouched, and the sequence is kept so you can start a new pass later.': '輪替會停止，目前這一輪會被捨棄。你的每週計畫不受影響，順序也會保留，之後可以再開始新一輪。',
   'Use Fixed Week': '使用固定週',
   'No rotation yet. Add routines to it in Plan.': '尚未建立輪替。請在「計畫」中加入課表。',
   'Set up in Plan': '在「計畫」中設定',

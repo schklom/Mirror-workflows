@@ -1045,8 +1045,6 @@ export const PT_BR_OVERRIDES = {
   'Start pass': 'Iniciar passagem',
   'This rotation couldn’t be read. Another device may have written it.': 'Não foi possível ler esta rotação. Talvez outro dispositivo tenha gravado ela.',
   'Discard it': 'Descartar',
-  'Switch to Fixed Week?': 'Mudar para Semana fixa?',
-  'The rotation stops and its current pass is dropped. Your weekday plan is untouched, and the sequence is kept so you can start a new pass later.': 'A rotação para e a passagem atual é descartada. Seu plano semanal fica intocado, e a sequência é salva para que você possa iniciar uma nova passagem mais tarde.',
   'Use Fixed Week': 'Usar Semana fixa',
   'No rotation yet. Add routines to it in Plan.': 'Ainda sem rotação. Adicione rotinas no Plano.',
   'Set up in Plan': 'Configurar no Plano',

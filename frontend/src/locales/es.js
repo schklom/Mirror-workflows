@@ -1685,8 +1685,6 @@ export default {
   'Start pass': 'Iniciar pasada',
   'This rotation couldn’t be read. Another device may have written it.': 'No se pudo leer esta rotación. Puede que la haya escrito otro dispositivo.',
   'Discard it': 'Descartarla',
-  'Switch to Fixed Week?': '¿Cambiar a Semana fija?',
-  'The rotation stops and its current pass is dropped. Your weekday plan is untouched, and the sequence is kept so you can start a new pass later.': 'La rotación se detiene y su pasada actual se descarta. Tu plan semanal no se toca, y la secuencia se guarda para que puedas iniciar una nueva pasada más adelante.',
   'Use Fixed Week': 'Usar Semana fija',
   'No rotation yet. Add routines to it in Plan.': 'Aún no hay rotación. Añade rutinas en el Plan.',
   'Set up in Plan': 'Configurar en el Plan',

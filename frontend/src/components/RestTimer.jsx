@@ -75,23 +75,31 @@ export default function RestTimer() {
   // −15 and +15 sit together in number-line order; Skip is pushed to the far edge, away from the
   // button you tap to buy more time. Pause sits between them as an icon (#193): it holds the
   // time, it neither adds nor ends it. A rest that is over has nothing left to hold, so Ready
-  // offers no pause.
+  // offers no pause, but its slot stays (an invisible stand-in) and Skip is as wide as Dismiss
+  // (both labels share one cell, one of them hidden), and the clock keeps room for the other of
+  // its two faces (data-alt, a hidden line in index.css): the row never reflows when the rest
+  // turns Ready, so a thumb on +15 never lands on −15.
   const label = timer.kind === 'switch' ? t('Switch sides') : timer.paused ? t('Paused') : t('Rest')
   return (
     <div id="timer" className={'rest' + (timer.paused ? ' paused' : '') + (timer.kind === 'switch' ? ' switch' : '') + (timer.ready ? ' ready' : '')}>
       <div className="bar" aria-hidden="true"><i style={{ width: pct + '%' }} /></div>
       <button type="button" className="tclock" onClick={adjustRestSheet}
         aria-label={(timer.ready ? t('Ready') : clock(timer.left)) + '. ' + t('Change the time left')}>
-        <span className="t" role={timer.ready ? 'status' : undefined}>{timer.ready ? t('Ready') : clock(timer.left)}</span>
+        <span className="t" role={timer.ready ? 'status' : undefined} data-alt={timer.ready ? '0:00' : t('Ready')}>{timer.ready ? t('Ready') : clock(timer.left)}</span>
         <span className="lbl">{label}<Icon name="chevronDown" /></span>
       </button>
       <div className="acts">
         <Button size="sm" className="adj" icon="minus" onClick={() => addRest(-15)}>15s</Button>
         <Button size="sm" className="adj" icon="plus" disabled={!timer.ready && timer.left >= REST_MAX} onClick={() => addRest(15)}>15s</Button>
-        {!timer.ready && <Button size="sm" className="pause" icon={timer.paused ? 'play' : 'pause'}
-          aria-label={t(timer.paused ? 'Resume' : 'Pause')} aria-pressed={!!timer.paused}
-          onClick={timer.paused ? resumeRest : pauseRest} />}
-        <Button size="sm" variant="primary" className="skip" onClick={stopRest}>{t(timer.ready ? 'Dismiss' : 'Skip')}</Button>
+        {timer.ready
+          ? <Button size="sm" className="pause-slot" icon="pause" disabled tabIndex={-1} aria-hidden="true" />
+          : <Button size="sm" className="pause" icon={timer.paused ? 'play' : 'pause'}
+            aria-label={t(timer.paused ? 'Resume' : 'Pause')} aria-pressed={!!timer.paused}
+            onClick={timer.paused ? resumeRest : pauseRest} />}
+        <Button size="sm" variant="primary" className="skip" onClick={stopRest}>
+          <span className="on">{t(timer.ready ? 'Dismiss' : 'Skip')}</span>
+          <span className="off" aria-hidden="true">{t(timer.ready ? 'Skip' : 'Dismiss')}</span>
+        </Button>
       </div>
     </div>
   )

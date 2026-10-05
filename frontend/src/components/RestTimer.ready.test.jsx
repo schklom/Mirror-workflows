@@ -41,7 +41,7 @@ describe('RestTimer Ready and overtime display', () => {
 
     expect(host.querySelector('#timer .t').textContent).toBe('Ready')
     expect(host.querySelector('#timer .t').getAttribute('role')).toBe('status')
-    expect(host.querySelector('#timer .skip').textContent).toBe('Dismiss')
+    expect(host.querySelector('#timer .skip .on').textContent).toBe('Dismiss')
     expect(useUI.getState().timer.forIdx).toBe(4)
 
     act(() => root.render(null))

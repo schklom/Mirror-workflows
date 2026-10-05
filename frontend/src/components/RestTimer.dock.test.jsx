@@ -50,9 +50,32 @@ describe('the docked rest bar', () => {
     const bar = host.querySelector('#timer.rest')
     expect(bar.querySelector('button.tclock .t').textContent).toBe('1:30')
     expect(bar.querySelector('.tclock .lbl').textContent).toBe('Rest')
-    expect([...bar.querySelectorAll('.acts > button')].map(b => b.getAttribute('aria-label') || b.textContent.trim()))
+    expect([...bar.querySelectorAll('.acts > button')].map(b => b.getAttribute('aria-label') || (b.querySelector('.on') || b).textContent.trim()))
       .toEqual(['15s', '15s', 'Pause', 'Skip'])
     expect(bar.querySelector('.tclock').getAttribute('aria-label')).toBe('1:30. Change the time left')
+  })
+
+  // QA 10-05: Ready used to drop the pause button and reflow the row, so the spot +15 had been
+  // in became −15. The slots stay put now: the pause slot is kept (inert, invisible) and Skip
+  // carries Dismiss in the same cell, so its width does not change either.
+  it('keeps every button in its slot when the rest turns Ready', () => {
+    act(() => useUI.getState().startRest(1, 0))
+    mount()
+    const slots = () => [...host.querySelectorAll('#timer .acts > button')].map(b => b.className.match(/adj|pause-slot|pause|skip/)[0])
+    expect(slots()).toEqual(['adj', 'adj', 'pause', 'skip'])
+    expect(host.querySelector('#timer .t').dataset.alt).toBe('Ready')
+    const skipCell = () => [...host.querySelectorAll('#timer .skip > span > span')].map(s => s.textContent).sort()
+    expect(skipCell()).toEqual(['Dismiss', 'Skip'])
+    act(() => vi.advanceTimersByTime(1000))
+    expect(host.querySelector('#timer .t').textContent).toBe('Ready')
+    expect(slots()).toEqual(['adj', 'adj', 'pause-slot', 'skip'])
+    expect(host.querySelector('#timer .t').dataset.alt).toBe('0:00')
+    expect(skipCell()).toEqual(['Dismiss', 'Skip'])
+    const stand = host.querySelector('#timer .pause-slot')
+    expect(stand.disabled).toBe(true)
+    expect(stand.getAttribute('aria-hidden')).toBe('true')
+    expect(stand.tabIndex).toBe(-1)
+    expect(host.querySelector('#timer .skip .off').getAttribute('aria-hidden')).toBe('true')
   })
 
   it('says Paused under the clock while the rest is held', () => {

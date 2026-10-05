@@ -75,6 +75,18 @@ const maybeRestNotification = async () => {
 }
 
 let toastTm = null
+const TOAST_MS = 2200
+const TOAST_ACTION_MS = 5000
+let toastLeft = 0
+let toastT0 = 0
+let toastPaused = false
+let toastSeq = 0
+const runToast = set => {
+  toastPaused = false
+  toastT0 = Date.now()
+  clearTimeout(toastTm)
+  toastTm = setTimeout(() => set({ toastMsg: '', toastAction: null }), toastLeft)
+}
 let timerInt = null
 let timerTick = null
 let workInt = null
@@ -135,6 +147,7 @@ const runRest = (set, get) => {
 export const useUI = create((set, get) => ({
   sheets: [],          // { id, render:(close)=>JSX, kind:'sheet'|'center', locked }
   toastMsg: '',
+  toastAction: null,   // { label, run, id } while the toast offers an action (Undo)
   timer: null,         // rest countdown between sets — { left, total, endsAt, forIdx, ready?, paused?, kind? }
                        // kind: 'switch' for the short pause between the two sides of a timed set
                        // forIdx: index of the active entry whose set started the rest (undefined when unknown)
@@ -156,10 +169,35 @@ export const useUI = create((set, get) => ({
   closeSheet(id) { set(s => ({ sheets: s.sheets.filter(x => x.id !== id) })) },
   closeAll() { set({ sheets: [] }) },
 
-  toast(msg) {
-    set({ toastMsg: msg })
+  // A toast is 2.2 s of text. With an action (`{ action: 'Undo', onAction }`) it stays 5 s, shows
+  // the action as a button at its end and holds still while a finger rests on it (pauseToast). A
+  // new toast replaces the one showing, action and all: the old Undo is gone, what it would have
+  // undone stays done. The action runs once at most, and the toast goes with it.
+  toast(msg, { action, onAction, ms } = {}) {
+    const withAction = !!(action && typeof onAction === 'function')
     clearTimeout(toastTm)
-    toastTm = setTimeout(() => set({ toastMsg: '' }), 2200)
+    toastLeft = ms || (withAction ? TOAST_ACTION_MS : TOAST_MS)
+    toastSeq += 1
+    set({ toastMsg: msg, toastAction: withAction ? { label: action, run: onAction, id: toastSeq } : null })
+    runToast(set)
+  },
+  runToastAction() {
+    const act = get().toastAction
+    if (!act) return
+    clearTimeout(toastTm)
+    set({ toastMsg: '', toastAction: null })
+    act.run()
+  },
+  pauseToast() {
+    if (!get().toastAction || toastPaused) return
+    toastPaused = true
+    clearTimeout(toastTm)
+    toastLeft = Math.max(400, toastLeft - (Date.now() - toastT0))
+  },
+  resumeToast() {
+    if (!toastPaused) return
+    toastPaused = false
+    if (get().toastMsg) runToast(set)
   },
 
   startRest(sec, forIdx, { kind } = {}) {

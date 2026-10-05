@@ -1602,6 +1602,12 @@ body.no-tabbar #timer.working{box-shadow:inset 0 var(--hair) 0 var(--acc),0 -10p
   width:max-content;max-width:88vw;text-align:center;
 }
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+/* With an action (Undo): the message, then the button at the end, and the toast takes taps. */
+#toast.has-action{pointer-events:auto;display:flex;align-items:center;gap:6px;padding:4px 6px 4px 18px;text-align:start}
+#toast.has-action .toast-msg{flex:1;min-width:0;padding:7px 0}
+#toast .toast-act{flex:none;display:inline-flex;align-items:center;gap:5px;color:var(--acc);font-weight:700;padding:8px 12px;border-radius:14px;min-height:36px}
+#toast .toast-act:active{background:color-mix(in srgb,var(--label) 10%,transparent)}
+#toast .toast-act .icn{font-size:16px}
 body.no-tabbar #toast{bottom:calc(24px + var(--sab))}
 body.no-tabbar.resting #toast{bottom:calc(100px + var(--sab))}
 

@@ -1645,6 +1645,11 @@ describe('the plan line', () => {
     expect(container.textContent).not.toContain('40×15')
   })
 
+  it('reads a pyramid as its targets, like the routine row (#367)', async () => {
+    await mount([planned({ planned: { sets: 5, reps: 12 }, target: { mode: 'reps', sets: 5, reps: 12, pyramid: [12, 8, 6, 'max', 12] } })])
+    expect(line()).toBe('Plan: 12 · 8 · 6 · Max · 12')
+  })
+
   it('is not there for an entry with no plan (freestyle, or started before plans were kept)', async () => {
     await mount([exercise('plain-bench', [false])])
     expect(container.querySelector('.planline')).toBeNull()

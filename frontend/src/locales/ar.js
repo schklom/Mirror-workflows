@@ -1845,4 +1845,5 @@ export default {
   'Excuses don’t lift weights. Report for {0} tomorrow!': 'الأعذار لا ترفع الأوزان. احضر غدًا إلى {0}!',
   'Your muscles filed a missing-person report. Show up for {0}!': 'عضلاتك أبلغت عن فقدانك. احضر إلى {0}!',
   'That address answers, but it isn’t an openGym server. Check the URL.': 'هذا العنوان يستجيب، لكنه ليس خادم openGym. تحقّق من الرابط.',
+  'Switch sides': 'بدّل الجهة',
 }

@@ -83,3 +83,47 @@ describe('the end of a hold', () => {
     expect(vibrate).toHaveBeenLastCalledWith(30)
   })
 })
+
+// Owner's call: a timed per-side set pauses ten seconds to switch sides between its left and
+// right hold, and rests in full only once both are held.
+describe('a per-side hold', () => {
+  const sidePlank = () => ({ id: '1001', target: { mode: 'time', sets: 2, sec: 10, side: true }, sets: [
+    { sec: 10, w: 0, done: false, side: 'L' }, { sec: 10, w: 0, done: false, side: 'R' },
+    { sec: 10, w: 0, done: false, side: 'L' }, { sec: 10, w: 0, done: false, side: 'R' },
+  ] })
+  const holdRow = n => {
+    const go = container.querySelectorAll('button[aria-label="Start set"]')[n]
+    act(() => go.click())
+    act(() => { vi.advanceTimersByTime(11_000) })
+  }
+
+  it('left held: a 10 s "Switch sides" countdown, which ends with the chime and goes', () => {
+    renderWorkout([sidePlank()])
+    holdRow(0)
+    expect(doneOf()).toEqual([true, false, false, false])
+    const tm = useUI.getState().timer
+    expect(tm).toMatchObject({ kind: 'switch', total: 10 })
+    expect(chime).toHaveBeenCalledTimes(1)
+    act(() => { vi.advanceTimersByTime(10_000) })
+    expect(useUI.getState().timer).toBeNull()
+    expect(chime).toHaveBeenCalledTimes(2)
+    expect(alertBuzz).toHaveBeenCalledTimes(2)
+  })
+
+  it('right held too: the set\'s full rest, not another switch', () => {
+    renderWorkout([sidePlank()])
+    holdRow(0)
+    holdRow(1)
+    expect(doneOf()).toEqual([true, true, false, false])
+    const tm = useUI.getState().timer
+    expect(tm.kind).toBeUndefined()
+    expect(tm.total).toBe(useStore.getState().S.restSec)
+  })
+
+  it('Left and Right pills carry both words, so they are one width (#322)', () => {
+    renderWorkout([sidePlank()])
+    const pills = [...container.querySelectorAll('.sidepill')]
+    expect(pills.map(p => p.textContent)).toEqual(['Left', 'Right', 'Left', 'Right'])
+    for (const p of pills) expect([p.dataset.l, p.dataset.r]).toEqual(['Left', 'Right'])
+  })
+})

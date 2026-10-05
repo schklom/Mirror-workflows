@@ -1792,4 +1792,5 @@ export default {
   'Excuses don’t lift weights. Report for {0} tomorrow!': '핑계는 무게를 들지 않는다. 내일 {0}에 집합!',
   'Your muscles filed a missing-person report. Show up for {0}!': '근육들이 실종 신고를 냈다. {0}에 출석하라!',
   'That address answers, but it isn’t an openGym server. Check the URL.': '이 주소는 응답하지만 openGym 서버가 아닙니다. URL을 확인하세요.',
+  'Switch sides': '방향 바꾸기',
 }

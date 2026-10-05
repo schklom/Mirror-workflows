@@ -1789,4 +1789,5 @@ export default {
   'Excuses don’t lift weights. Report for {0} tomorrow!': 'Відмовки не піднімають ваги. Завтра з’явитися на «{0}»!',
   'Your muscles filed a missing-person report. Show up for {0}!': 'Твої м’язи заявили про твоє зникнення. З’явитися на «{0}»!',
   'That address answers, but it isn’t an openGym server. Check the URL.': 'Ця адреса відповідає, але це не сервер openGym. Перевір URL.',
+  'Switch sides': 'Зміни сторону',
 }

@@ -1792,4 +1792,5 @@ export default {
   'Excuses don’t lift weights. Report for {0} tomorrow!': 'Las excusas no levantan pesas. ¡Mañana te presentas a {0}!',
   'Your muscles filed a missing-person report. Show up for {0}!': 'Tus músculos pusieron una denuncia por desaparición. ¡Preséntate a {0}!',
   'That address answers, but it isn’t an openGym server. Check the URL.': 'Esa dirección responde, pero no es un servidor de openGym. Revisa la URL.',
+  'Switch sides': 'Cambia de lado',
 }

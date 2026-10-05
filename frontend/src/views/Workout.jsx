@@ -96,6 +96,10 @@ const RTL_LETTER = /[֐-ࣿיִ-﷿ﹰ-﻿]/
 // "last time" recap and the progression line — leaving the name, the ⋯ menu, the one-line plan
 // the rows are measured against, and the sets.
 // Nothing dropped is lost: it is all still on the ⋯ menu, or one ⋮ switch back to list/cards.
+// The pause between the left and the right side of one timed per-side set (owner's call): long
+// enough to turn over, far shorter than the rest the set earns once both sides are held.
+const SWITCH_SIDES_SEC = 10
+
 function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSide, onField, onAddSet, onRemoveSet, onAddWarmup, onRemoveSetAt, onStartTimed, onPairPrev, onPairNext, onSetRowRef, onProgressionSettings, onNoProg, routineUpdate, onSwap, onMoveUp, onMoveDown, canMoveUp, canMoveDown, onRemoveExercise, busy }) {
   const S = useStore(s => s.S)
   const update = useStore(s => s.update)
@@ -608,7 +612,10 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
           ) : (
           <div ref={el => onSetRowRef?.(i, el)} className={'setrow' + (s.done ? ' done' : '') + (col3 ? ' eff3' : '') + (timed ? ' timed' : '')}>
             <button type="button" className="n" aria-label={sideTagOf(s) ? t('Set {0} ({1})', setNumOf(s, i), sideTagOf(s)) : t('Set {0}', setNumOf(s, i))} title={t('More')} onClick={() => openSetMenu(s, i)}>{setNumOf(s, i)}</button>
-            {sideTagOf(s) && <span className="tag acc nocap">{sideTagOf(s)}</span>}
+            {/* Both words sit in the pill's one grid cell (::before/::after, hidden), so Left and
+                Right are as wide as the longer of the two in every language and the inputs
+                after them line up (#322). */}
+            {sideTagOf(s) && <span className="tag acc nocap sidepill" data-l={t('Left')} data-r={t('Right')}><span>{sideTagOf(s)}</span></span>}
             {cell(s, i, col1, 'w')}
             {col2 && cell(s, i, col2, 'r')}
             {col3 && effortCell(s, i, col3)}
@@ -1275,6 +1282,18 @@ function ActiveWorkout() {
       if (!progress.isNew) {
         const rest = useUI.getState().timer
         if (!restBeforeWarmup && restOnRecheck({ timerRunning: !!(rest && !rest.ready), unitDone: freshUnitDone, lastUnit: freshWorkoutDone })) startRest(restAfter, idx)
+        return
+      }
+
+      // Between the two sides of one timed per-side set (a side plank's left, then its right):
+      // a short "Switch sides" pause instead of the set's whole rest, which comes once both
+      // sides are held (owner's call). A rest switched Off stays off.
+      const rows = fresh.entries[idx].sets
+      const sideOf = r => r && !isWarmupRow(r) ? r.side : null
+      const partner = sideOf(rows[i]) === 'L' && sideOf(rows[i + 1]) === 'R' ? rows[i + 1]
+        : sideOf(rows[i]) === 'R' && sideOf(rows[i - 1]) === 'L' ? rows[i - 1] : null
+      if (m === 'time' && partner && !partner.done && restAfter > 0) {
+        startRest(Math.min(SWITCH_SIDES_SEC, restAfter), idx, { kind: 'switch' })
         return
       }
 

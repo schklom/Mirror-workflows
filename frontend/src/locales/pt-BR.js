@@ -1113,6 +1113,7 @@ export const PT_BR_OVERRIDES = {
   '{1} animated exercises + 1 of your own': '{1} exercícios animados + 1 seu',
   '{1} animated exercises + {0} of your own': '{1} exercícios animados + {0} seus',
   'That address answers, but it isn’t an openGym server. Check the URL.': 'Esse endereço responde, mas não é um servidor openGym. Verifique a URL.',
+  'Switch sides': 'Troque de lado',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

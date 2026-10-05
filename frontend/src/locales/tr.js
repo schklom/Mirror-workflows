@@ -1792,4 +1792,5 @@ export default {
   'Excuses don’t lift weights. Report for {0} tomorrow!': 'Bahaneler ağırlık kaldırmaz. Yarın {0} için hazır ol!',
   'Your muscles filed a missing-person report. Show up for {0}!': 'Kasların kayıp ilanı verdi. {0} için içtimaya gel!',
   'That address answers, but it isn’t an openGym server. Check the URL.': 'Bu adres yanıt veriyor ama bir openGym sunucusu değil. URL’yi kontrol et.',
+  'Switch sides': 'Taraf değiştir',
 }

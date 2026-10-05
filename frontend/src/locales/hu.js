@@ -1795,4 +1795,5 @@ export default {
   'Excuses don’t lift weights. Report for {0} tomorrow!': 'A kifogások nem emelnek súlyt. Holnap jelentkezel: {0}!',
   'Your muscles filed a missing-person report. Show up for {0}!': 'Az izmaid eltűntként jelentettek. Jelentkezz: {0}!',
   'That address answers, but it isn’t an openGym server. Check the URL.': 'Ez a cím válaszol, de nem openGym-szerver. Ellenőrizd az URL-t.',
+  'Switch sides': 'Oldalcsere',
 }

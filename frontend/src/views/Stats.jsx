@@ -346,10 +346,44 @@ function EffortCard({ S }) {
 }
 
 // Stats = the analytics hub: all charts, progress and history live here.
+// The muscle volume your plan programs in a week: every weekday routine once, plus each session
+// of a running rotation (lib/muscles.js loadOfWeeklyPlan). It used to sit on Plan; it is analysis,
+// so it lives here now, next to Muscle balance, and Plan links to it (/stats?focus=weekly-volume).
+const PLAN_VOLUME_ROWS = 5
+export function WeeklyPlanVolume({ S }) {
+  const [all, setAll] = useState(false)
+  const load = loadOfWeeklyPlan(S)
+  const muscles = rankOf(load).worked
+  const shown = all ? muscles : muscles.slice(0, PLAN_VOLUME_ROWS)
+  const max = muscles.length ? load[muscles[0]] : 0
+  return <div className="card" id="weekly-volume" data-weekly-muscle-volume>
+    <h2 style={{ marginBottom: 2 }}>{t('Weekly muscle volume')}</h2>
+    <div className="muted small" style={{ marginBottom: 10 }}>{t('Planned sets per week, from your plan.')}</div>
+    {muscles.length ? shown.map(muscle => <div className="mrow" key={muscle}>
+      <span className="nm">{t(MUSCLE_NAME[muscle])}</span>
+      <span className="bar"><i style={{ width: Math.round(load[muscle] / max * 100) + '%' }} /></span>
+      <span className="v">{t('{0} sets', fmtNum(Math.round(load[muscle] * 10) / 10))}</span>
+    </div>) : <div className="muted small">{t('No muscle volume planned.')}</div>}
+    {muscles.length > PLAN_VOLUME_ROWS && <>
+      <div style={{ height: 8 }} />
+      <Button className="weekly-plan-toggle" trailingIcon={all ? 'chevronUp' : 'chevronDown'} aria-expanded={all}
+        onClick={() => setAll(v => !v)}>{t(all ? 'Show less' : 'Show more')}</Button>
+    </>}
+  </div>
+}
+
 export default function Stats() {
   const nav = useNavigate()
   const S = useStore(s => s.S)
   const [range, setRange] = useState(90)
+  // Plan's "Weekly muscle volume" row lands here (/stats?focus=weekly-volume). The router is a
+  // HashRouter, so the query sits in the hash; the scroll waits a frame for the page's own
+  // scroll-to-top on navigation to have happened first.
+  useEffect(() => {
+    if (!/[?&]focus=weekly-volume\b/.test(window.location.hash || '')) return
+    const frame = window.requestAnimationFrame(() => document.getElementById('weekly-volume')?.scrollIntoView?.({ block: 'start', behavior: 'smooth' }))
+    return () => window.cancelAnimationFrame(frame)
+  }, [])
   const [exId, setExId] = useState(null)
   const [exMetric, setExMetric] = useState('top')
   const now = Date.now()
@@ -541,6 +575,7 @@ export default function Stats() {
     </div>
 
     {(workouts.length > 0 || Object.keys(loadOfWeeklyPlan(S)).length > 0) && <MuscleBalance S={S} />}
+    {S.routines.length > 0 && <WeeklyPlanVolume S={S} />}
     {workouts.length > 0 && <div className="card row between" style={{ alignItems: 'center', gap: 12 }}>
       <div style={{ minWidth: 0 }}><h2 style={{ margin: 0 }}>{t('Structural balance')}</h2>
         <div className="muted small" style={{ marginTop: 4 }}>{t('See which lift is holding back the rest.')}</div></div>

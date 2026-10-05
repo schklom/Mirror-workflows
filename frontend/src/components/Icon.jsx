@@ -115,6 +115,13 @@ const P = {
   more: <><circle cx="5.5" cy="12" r="1.6" fill="currentColor" stroke="none" /><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none" /><circle cx="18.5" cy="12" r="1.6" fill="currentColor" stroke="none" /></>,
   // the drag handle: two columns of three dots, the grip a pointer-device user looks for
   grip: <>{[6.2, 12, 17.8].map(y => [9.2, 14.8].map(x => <circle key={x + '-' + y} cx={x} cy={y} r="1.5" fill="currentColor" stroke="none" />))}</>,
+  // reorder by dragging: up and down chevrons stacked, where the grip above is for a mouse
+  chevronsUpDown: <path d="m7.6 9.4 4.4-4.4 4.4 4.4M7.6 14.6l4.4 4.4 4.4-4.4" />,
+  // a rotation: the routines go round in a loop (shuffle stays for freestyle)
+  repeat: <><path d="m17.6 4.4 2.4 2.4-2.4 2.4" /><path d="M4.4 11.6V10a3.2 3.2 0 0 1 3.2-3.2H20" /><path d="m6.4 19.6-2.4-2.4 2.4-2.4" /><path d="M19.6 12.4V14a3.2 3.2 0 0 1-3.2 3.2H4" /></>,
+  // share or export: out of the box, never `upload`, which is a backup coming in
+  share: <><path d="M12 14.4V3.8M8.4 7.4 12 3.8l3.6 3.6" /><path d="M8 10.2H6.6a2 2 0 0 0-2 2v6.2a2 2 0 0 0 2 2h10.8a2 2 0 0 0 2-2v-6.2a2 2 0 0 0-2-2H16" /></>,
+  note: <><rect x="4.6" y="3.6" width="14.8" height="16.8" rx="2.6" /><path d="M8.4 8.6h7.2M8.4 12h7.2M8.4 15.4h4" /></>,
   history: <><path d="M4.5 12.2a7.6 7.6 0 1 0 2.5-5.6" /><path d="M4.1 4.4v4.3h4.3" /><path d="M12 8.3v4.2l3.1 1.9" /></>,
   signOut: <><path d="M14.2 4.6H7a1.9 1.9 0 0 0-1.9 1.9v11a1.9 1.9 0 0 0 1.9 1.9h7.2" /><path d="m16.8 8.4 3.6 3.6-3.6 3.6M20.4 12H10.2" /></>,
   shuffle: <><path d="M3.6 7.2h2.9c1.6 0 2.8.9 3.8 2.4l3 4.8c1 1.5 2.2 2.4 3.8 2.4h2.9M3.6 16.8h2.9c1.6 0 2.8-.9 3.8-2.4l.7-1.1M15.6 9.9l.7-1.1c1-1.5 2.2-2.4 3.8-2.4h1.9" /><path d="m17.9 4.3 2.8 2.1-2.8 2.1M17.9 14.7l2.8 2.1-2.8 2.1" /></>,

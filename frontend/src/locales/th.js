@@ -1895,4 +1895,6 @@ export default {
   'Move {0}': 'ย้าย {0}',
   'Build your loop in Plan': 'สร้างการวนรอบในแผน',
   'week start': 'วันเริ่มสัปดาห์',
+  'Finish workout?': 'จบการออกกำลังกายไหม?',
+  'Finish and save': 'จบและบันทึก',
 }

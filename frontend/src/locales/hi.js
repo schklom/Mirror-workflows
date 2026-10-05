@@ -1884,4 +1884,6 @@ export default {
   'Move {0}': '{0} खिसकाएँ',
   'Build your loop in Plan': 'योजना में अपना चक्र बनाएं',
   'week start': 'सप्ताह की शुरुआत',
+  'Finish workout?': 'वर्कआउट समाप्त करें?',
+  'Finish and save': 'समाप्त करें और सहेजें',
 }

@@ -1884,4 +1884,6 @@ export default {
   'Move {0}': 'Mover {0}',
   'Build your loop in Plan': 'Crie o seu ciclo no Plano',
   'week start': 'início da semana',
+  'Finish workout?': 'Terminar o treino?',
+  'Finish and save': 'Terminar e guardar',
 }

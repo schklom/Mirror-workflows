@@ -1167,6 +1167,7 @@ export const PT_BR_OVERRIDES = {
   'Turn on push notifications first.': 'Ative primeiro as notificações push.',
   'Delete {0}': 'Excluir {0}',
   'Build your loop in Plan': 'Monte seu ciclo no Plano',
+  'Finish and save': 'Terminar e salvar',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

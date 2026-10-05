@@ -7,7 +7,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createRoot } from 'react-dom/client'
 import { DEF, useStore } from './store/useStore.js'
 import { useUI } from './store/useUI.js'
-import { finishWorkout } from './sheets.jsx'
+import { finishWorkout, finishWorkoutSheet } from './sheets.jsx'
 import { EXDB } from './lib/exercises-data.js'
 
 const clone = v => JSON.parse(JSON.stringify(v))
@@ -80,5 +80,52 @@ describe('finishing while a timed hold runs', () => {
     expect(useUI.getState().work).toBeNull()
     expect(() => vi.advanceTimersByTime(60_000)).not.toThrow()
     expect(held).not.toHaveBeenCalled()
+  })
+})
+
+// The header's Finish pill (v1.3.11): a sheet with Finish and save and Discard workout, the
+// unchecked-sets warning as its subtitle, and no second question after Finish and save.
+describe('the Finish sheet', () => {
+  const sheetText = () => {
+    const sheet = useUI.getState().sheets.at(-1)
+    const host = document.createElement('div')
+    document.body.appendChild(host)
+    const root = createRoot(host)
+    mounted.push(root)
+    act(() => root.render(sheet.render(() => useUI.getState().closeSheet(sheet.id))))
+    return host
+  }
+  const tapItem = (host, text) => act(() => { [...host.querySelectorAll('.menu-item')].find(el => el.textContent.includes(text)).click() })
+
+  it('all sets done: Finish workout? and a save that needs no confirm', () => {
+    install([{ w: 40, r: 5, done: true }])
+    act(() => finishWorkoutSheet({ onDiscard: vi.fn() }))
+    const host = sheetText()
+    expect(host.querySelector('h3').textContent).toBe('Finish workout?')
+    expect([...host.querySelectorAll('.menu-item .tt')].map(e => e.textContent)).toEqual(['Finish and save', 'Discard workout'])
+    expect(host.querySelector('.menu-item.danger').textContent).toContain('Discard workout')
+    tapItem(host, 'Finish and save')
+    expect(S().active).toBeNull()
+    expect(S().workouts).toHaveLength(1)
+  })
+
+  it('keeps the early-finish wording as its message, and Discard calls the screen\'s own discard', () => {
+    install([{ w: 40, r: 5, done: true }, { w: 40, r: 5 }, { w: 40, r: 5 }])
+    const onDiscard = vi.fn()
+    act(() => finishWorkoutSheet({ onDiscard }))
+    const host = sheetText()
+    expect(host.querySelector('h3').textContent).toBe('Finish early?')
+    expect(host.textContent).toContain('2 sets still unchecked. Finish the workout now?')
+    tapItem(host, 'Discard workout')
+    expect(onDiscard).toHaveBeenCalledOnce()
+    expect(S().active).not.toBeNull()
+  })
+
+  it('nothing checked: says so', () => {
+    install([{ w: 40, r: 5 }])
+    act(() => finishWorkoutSheet({ onDiscard: vi.fn() }))
+    const host = sheetText()
+    expect(host.querySelector('h3').textContent).toBe('Nothing logged yet')
+    expect(host.textContent).toContain('You haven’t checked off any sets.')
   })
 })

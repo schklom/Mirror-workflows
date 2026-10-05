@@ -1904,4 +1904,6 @@ export default {
   'Move {0}': '{0} verschieben',
   'Build your loop in Plan': 'Kreislauf im Plan erstellen',
   'week start': 'Wochenstart',
+  'Finish workout?': 'Training beenden?',
+  'Finish and save': 'Beenden und speichern',
 }

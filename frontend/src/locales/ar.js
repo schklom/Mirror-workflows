@@ -1937,4 +1937,6 @@ export default {
   'Move {0}': 'نقل {0}',
   'Build your loop in Plan': 'أنشئ دورتك في الخطة',
   'week start': 'بداية الأسبوع',
+  'Finish workout?': 'إنهاء التمرين؟',
+  'Finish and save': 'إنهاء وحفظ',
 }

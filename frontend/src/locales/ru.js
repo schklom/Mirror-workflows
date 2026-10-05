@@ -1888,4 +1888,6 @@ export default {
   'Move {0}': 'Переместить {0}',
   'Build your loop in Plan': 'Собери круг в Плане',
   'week start': 'начало недели',
+  'Finish workout?': 'Завершить тренировку?',
+  'Finish and save': 'Завершить и сохранить',
 }

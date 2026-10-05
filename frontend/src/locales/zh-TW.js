@@ -1877,4 +1877,6 @@ export default {
   'Move {0}': '移動 {0}',
   'Build your loop in Plan': '在計畫中建立循環',
   'week start': '每週開始',
+  'Finish workout?': '結束訓練？',
+  'Finish and save': '結束並儲存',
 }

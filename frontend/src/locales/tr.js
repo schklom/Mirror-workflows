@@ -1884,4 +1884,6 @@ export default {
   'Move {0}': '{0} taşı',
   'Build your loop in Plan': 'Döngünü Plan\'da oluştur',
   'week start': 'hafta başlangıcı',
+  'Finish workout?': 'Antrenman bitirilsin mi?',
+  'Finish and save': 'Bitir ve kaydet',
 }

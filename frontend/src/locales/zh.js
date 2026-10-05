@@ -1884,4 +1884,6 @@ export default {
   'Move {0}': '移动 {0}',
   'Build your loop in Plan': '在计划中创建循环',
   'week start': '每周开始',
+  'Finish workout?': '结束训练？',
+  'Finish and save': '结束并保存',
 }

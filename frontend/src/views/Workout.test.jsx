@@ -7,6 +7,7 @@ import { nextPrescription } from '../lib/progression.js'
 import { buildCombinedEntries } from '../lib/session-merge.js'
 import { buildCompletedWorkout } from '../lib/finish-workout.js'
 import { isWarmupRow } from '../lib/workout-model.js'
+import { finishWorkout, finishWorkoutSheet } from '../sheets.jsx'
 
 // A menu's actions in order, whether it came as one list or in groups (menuSheet `sections`).
 const menuItemsOf = menu => (menu.sections ? menu.sections.flatMap(g => g.items || []) : menu.items || []).filter(Boolean)
@@ -77,6 +78,7 @@ vi.mock('../sheets.jsx', () => ({
   exConfigSheet: mocks.exConfigSheet,
   exerciseDetailSheet: vi.fn(),
   finishWorkout: vi.fn(),
+  finishWorkoutSheet: vi.fn(),
   exitWorkoutEdit: vi.fn(),
   workoutCompleteSheet: mocks.workoutCompleteSheet,
   confirmSheet: mocks.confirmSheet,
@@ -2192,6 +2194,12 @@ describe('the workout screen chrome (v1.3.11)', () => {
     const pill = container.querySelector('.whdr-finish')
     expect(pill.textContent).toBe('Finish')
     expect(container.querySelector('button[aria-label="Discard"]')).toBeNull()
+    // the pill opens the Finish sheet, whose Discard is the screen's own (with its confirm)
+    finishWorkoutSheet.mockClear()
+    await click(pill)
+    expect(finishWorkoutSheet).toHaveBeenCalledOnce()
+    finishWorkoutSheet.mock.calls[0][0].onDiscard()
+    expect(mocks.confirmSheet.mock.calls.at(-1)[0].title).toBe('Discard workout?')
     await click(container.querySelector('button[aria-label="Minimize"]'))
     expect(mocks.nav).toHaveBeenCalledWith('/home')
     expect(mocks.S.active).not.toBeNull()
@@ -2202,6 +2210,10 @@ describe('the workout screen chrome (v1.3.11)', () => {
     const pill = container.querySelector('.whdr-finish')
     expect(pill.textContent).toBe('Save')
     expect(pill.getAttribute('aria-label')).toBe('Save changes')
+    finishWorkoutSheet.mockClear(); finishWorkout.mockClear()
+    await click(pill)
+    expect(finishWorkout).toHaveBeenCalledOnce()           // the editor saves at once
+    expect(finishWorkoutSheet).not.toHaveBeenCalled()
     expect(container.querySelector('button[aria-label="Close editor"]')).toBeTruthy()
     expect(container.querySelector('button[aria-label="Minimize"]')).toBeNull()
   })

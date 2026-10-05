@@ -1887,4 +1887,6 @@ export default {
   'Move {0}': '{0} áthelyezése',
   'Build your loop in Plan': 'Állítsd össze a köröd a Tervben',
   'week start': 'hét kezdete',
+  'Finish workout?': 'Befejezed az edzést?',
+  'Finish and save': 'Befejezés és mentés',
 }

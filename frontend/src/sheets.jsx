@@ -2739,6 +2739,26 @@ export function finishWorkout() {
   if (done < total) { confirmSheet({ title: t('Finish early?'), message: tn('{0} set still unchecked. Finish the workout now?', '{0} sets still unchecked. Finish the workout now?', total - done), confirmText: t('Finish workout'), onConfirm: doFinishWorkout }); return }
   doFinishWorkout()
 }
+// The workout screen's Finish pill (v1.3.11): one sheet with both ways out, Finish and save or
+// Discard. It says what finishWorkout's confirm would have said about sets still unchecked, so
+// the save needs no second question. `onDiscard` is the screen's own discard, with its confirm.
+// The editor of a saved workout still saves at once.
+export function finishWorkoutSheet({ onDiscard } = {}) {
+  if (S().active?.editingWorkoutId) { saveWorkoutEdits(); return }
+  const A = S().active
+  if (!A) return
+  const done = setsDoneActive(A)
+  const total = setUnitsTotal(A.entries)
+  menuSheet({
+    title: !done ? t('Nothing logged yet') : done < total ? t('Finish early?') : t('Finish workout?'),
+    subtitle: !done ? t('You haven’t checked off any sets. Finish the workout anyway?')
+      : done < total ? tn('{0} set still unchecked. Finish the workout now?', '{0} sets still unchecked. Finish the workout now?', total - done) : null,
+    sections: [
+      { items: [{ icon: 'flag', accent: true, label: t('Finish and save'), onClick: doFinishWorkout }] },
+      { items: [onDiscard && { icon: 'trash', danger: true, label: t('Discard workout'), onClick: onDiscard }] },
+    ],
+  })
+}
 function doFinishWorkout() {
   const st = S()
   const A = st.active

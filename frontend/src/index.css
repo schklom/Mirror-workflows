@@ -692,7 +692,14 @@ body.chips-dragging *{cursor:inherit}
 .lrow:has(.seg-inline){flex-wrap:wrap}
 .lrow:has(.seg-inline) .lrow-m{min-width:min(150px,100%)}
 .seg-range{margin-bottom:10px}
-.seg-inline button{padding:5px 10px;font-size:13px;min-height:28px}
+/* Every segment as wide as the widest label (QA 10-05: with flex:1 1 0 the track was sized by the
+   labels' sum but split evenly, so "Compact" / "Versteckt" got less than its own width and
+   touched the segment's edge). A grid of equal 1fr columns sizes each to the widest one, so the
+   thumb (100%/n) still lines up; the sliding thumb is absolutely positioned with no grid
+   placement, so its box is the track's padding box, as in the flex version. */
+.seg-inline{display:grid;grid-auto-flow:column;grid-auto-columns:1fr}
+.seg-inline button{padding:5px 12px;font-size:13px;min-height:28px}
+.seg-inline button span{white-space:nowrap}
 .seg-inline button .icn{font-size:14px}
 
 /* native time input, restyled to sit in a row like a value label */

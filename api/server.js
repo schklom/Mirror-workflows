@@ -882,7 +882,7 @@ function limitAddress(req) {
   return /^\d{1,3}(\.\d{1,3}){3}$/.test(raw) ? raw : 'unknown';
 }
 function tooMany(res, secs) {
-  json(res, 429, { error: 'too many attempts — try again later', code: 'locked', retryAfter: secs }, { 'Retry-After': String(secs) });
+  json(res, 429, { error: 'too many attempts, try again later', code: 'locked', retryAfter: secs }, { 'Retry-After': String(secs) });
 }
 // Whether the caller's address is paused for `kind`, answering 429 when it is. A route asks this
 // again right before the check it guards, with no await in between: the dispatcher asked before
@@ -1199,7 +1199,7 @@ const passwordRoutes = {
       inv = invite();
       if (!inv) {
         audit(req, 'auth.register.fail', { ok: false, name, msg: 'invite-invalid' });
-        return json(res, 403, { error: 'invite code is no longer valid — ask for a new one', code: 'invite' });
+        return json(res, 403, { error: 'invite code is no longer valid, ask for a new one', code: 'invite' });
       }
     }
     if (nameTaken(name)) return taken();
@@ -1497,7 +1497,7 @@ const passkeyRoutes = {
     const c = takeChallenge(text(body.cid));
     if (!c || c.kind !== 'add' || c.uid !== user.id) {
       audit(req, 'auth.passkey.fail', { ok: false, user, msg: 'challenge-expired' });
-      return json(res, 400, { error: 'challenge expired — try again' });
+      return json(res, 400, { error: 'challenge expired, try again' });
     }
     const cred = await newPasskey(req, res, c, body, 'auth.passkey.fail', user);
     if (!cred) return;
@@ -1610,7 +1610,7 @@ const passkeyRoutes = {
     }
     if (!c || c.kind !== 'link' || c.lh !== link.h || c.uid !== link.userId) {
       audit(req, 'auth.link.fail', { ok: false, uid: link.userId, msg: 'challenge-expired' });
-      return json(res, 400, { error: 'challenge expired — try again' });
+      return json(res, 400, { error: 'challenge expired, try again' });
     }
     const owner = db.users.find(u => u.id === link.userId);
     const cred = await newPasskey(req, res, c, body, 'auth.link.fail', owner || { id: link.userId });
@@ -1834,7 +1834,7 @@ const routes = {
     const c = takeChallenge(body.cid);
     if (!c || c.kind !== 'register' || !c.uid) {
       audit(req, 'auth.register.fail', { ok: false, msg: 'challenge-expired' });
-      return json(res, 400, { error: 'challenge expired — try again' });
+      return json(res, 400, { error: 'challenge expired, try again' });
     }
     let verification;
     try {
@@ -1865,7 +1865,7 @@ const routes = {
       invite = db.invites.find(i => i.code === c.code && !i.usedBy && !i.revoked);
       if (!invite) {
         audit(req, 'auth.register.fail', { ok: false, name: c.name, msg: 'invite-invalid' });
-        return json(res, 403, { error: 'invite code is no longer valid — ask for a new one' });
+        return json(res, 403, { error: 'invite code is no longer valid, ask for a new one' });
       }
     }
     const user = { id: c.uid, name: c.name, created: new Date().toISOString() };
@@ -1898,7 +1898,7 @@ const routes = {
     const c = takeChallenge(body.cid);
     if (c?.kind !== 'login') {
       audit(req, 'auth.login.fail', { ok: false, msg: 'challenge-expired' });
-      return json(res, 400, { error: 'challenge expired — try again' });
+      return json(res, 400, { error: 'challenge expired, try again' });
     }
     const cred = db.creds.find(x => x.id === body.credential?.id);
     if (!cred) {
@@ -1906,7 +1906,7 @@ const routes = {
       // would let an admin correlate an unknown device across attempts. Nothing here identifies
       // the caller beyond the timestamp (and the network, if AUDIT_IP is on).
       audit(req, 'auth.login.fail', { ok: false, msg: 'unknown-credential' });
-      return json(res, 404, { error: 'unknown passkey — create a profile first' });
+      return json(res, 404, { error: 'unknown passkey, create a profile first' });
     }
     let verification;
     try {
@@ -2330,7 +2330,7 @@ const routes = {
     const body = await readBody(req);
     const inv = db.invites.find(i => i.code === text(body.code).toUpperCase());
     if (!inv) return json(res, 404, { error: 'no such code' });
-    if (inv.usedBy) return json(res, 400, { error: 'already used — cannot revoke' });
+    if (inv.usedBy) return json(res, 400, { error: 'already used, cannot revoke' });
     db.invites = db.invites.filter(i => i.code !== inv.code);
     saveDb();
     audit(req, 'admin.invite.revoke', { user: admin, msg: inv.code });
@@ -2491,7 +2491,7 @@ const server = http.createServer(async (req, res) => {
     }
     // Every scrypt slot and the short queue behind them are taken (password.js).
     if (e instanceof BusyError) {
-      if (!res.headersSent) json(res, 503, { error: 'the server is busy — try again in a moment', code: 'busy' }, { 'Retry-After': '2' });
+      if (!res.headersSent) json(res, 503, { error: 'the server is busy, try again in a moment', code: 'busy' }, { 'Retry-After': '2' });
       return;
     }
     console.error(key, e);

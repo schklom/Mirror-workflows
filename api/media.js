@@ -95,8 +95,8 @@ const MESSAGES = {
   'media-missing': 'no such file',
   'hash-mismatch': 'the file does not match its name',
   'storage-full': 'the server is running out of disk space',
-  busy: 'too many uploads at once — try again in a moment',
-  locked: 'too many uploads — try again later',
+  busy: 'too many uploads at once, try again in a moment',
+  locked: 'too many uploads, try again later',
   timeout: 'the upload stalled'
 };
 /** A refusal the client caused or can act on. The server's catch-all answers it as

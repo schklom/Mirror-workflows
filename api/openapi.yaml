@@ -398,13 +398,13 @@ paths:
           content:
             application/json:
               schema: { $ref: '#/components/schemas/Error' }
-              example: { error: "challenge expired — try again" }
+              example: { error: "challenge expired, try again" }
         '403':
           description: Invite-only and the code became invalid since step 1.
           content:
             application/json:
               schema: { $ref: '#/components/schemas/Error' }
-              example: { error: "invite code is no longer valid — ask for a new one" }
+              example: { error: "invite code is no longer valid, ask for a new one" }
         '409':
           description: This credential id is already registered.
           content:
@@ -488,7 +488,7 @@ paths:
           content:
             application/json:
               schema: { $ref: '#/components/schemas/Error' }
-              example: { error: "unknown passkey — create a profile first" }
+              example: { error: "unknown passkey, create a profile first" }
         '500':
           description: Credential exists but its user record is missing (corrupt db).
           content:
@@ -1207,7 +1207,7 @@ paths:
           content:
             application/json:
               schema: { $ref: '#/components/schemas/Error' }
-              example: { error: "challenge expired — try again" }
+              example: { error: "challenge expired, try again" }
         '401':
           description: >-
             Not signed in — including a session that was ended ("sign out everywhere", a
@@ -1659,8 +1659,8 @@ paths:
             application/json:
               schema: { $ref: '#/components/schemas/Error' }
               examples:
-                locked: { value: { error: "too many uploads — try again later", code: "locked", retryAfter: 1740 } }
-                busy: { value: { error: "too many uploads at once — try again in a moment", code: "busy", retryAfter: 5 } }
+                locked: { value: { error: "too many uploads, try again later", code: "locked", retryAfter: 1740 } }
+                busy: { value: { error: "too many uploads at once, try again in a moment", code: "busy", retryAfter: 5 } }
         '507':
           description: The server's disk has less than `MEDIA_MIN_FREE_MB` free (`storage-full`).
           content:
@@ -1761,7 +1761,7 @@ paths:
           content:
             application/json:
               schema: { $ref: '#/components/schemas/Error' }
-              example: { error: "too many uploads — try again later", code: "locked", retryAfter: 1200 }
+              example: { error: "too many uploads, try again later", code: "locked", retryAfter: 1200 }
 
   /api/push/public-key:
     get:
@@ -2262,7 +2262,7 @@ paths:
           content:
             application/json:
               schema: { $ref: '#/components/schemas/Error' }
-              example: { error: "already used — cannot revoke" }
+              example: { error: "already used, cannot revoke" }
         '401': { $ref: '#/components/responses/Unauthorized' }
         '403': { $ref: '#/components/responses/Forbidden' }
         '404':
@@ -2962,7 +2962,7 @@ components:
       content:
         application/json:
           schema: { $ref: '#/components/schemas/Error' }
-          example: { error: "too many attempts — try again later", code: "locked", retryAfter: 60 }
+          example: { error: "too many attempts, try again later", code: "locked", retryAfter: 60 }
     Busy:
       description: Every password check slot and the short queue behind them are taken.
       headers:
@@ -2971,7 +2971,7 @@ components:
       content:
         application/json:
           schema: { $ref: '#/components/schemas/Error' }
-          example: { error: "the server is busy — try again in a moment", code: "busy" }
+          example: { error: "the server is busy, try again in a moment", code: "busy" }
     PasswordPolicy:
       description: >-
         The new password breaks the policy — `too-short` (under 10 characters),

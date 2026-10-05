@@ -1883,4 +1883,5 @@ export default {
   'Delete {0}': 'Usuń {0}',
   'Move {0}': 'Przenieś {0}',
   'Build your loop in Plan': 'Zbuduj pętlę w Planie',
+  'week start': 'początek tygodnia',
 }

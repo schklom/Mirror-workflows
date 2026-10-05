@@ -1886,4 +1886,5 @@ export default {
   'Delete {0}': '{0} törlése',
   'Move {0}': '{0} áthelyezése',
   'Build your loop in Plan': 'Állítsd össze a köröd a Tervben',
+  'week start': 'hét kezdete',
 }

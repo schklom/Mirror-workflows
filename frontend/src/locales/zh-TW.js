@@ -1876,4 +1876,5 @@ export default {
   'Delete {0}': '刪除 {0}',
   'Move {0}': '移動 {0}',
   'Build your loop in Plan': '在計畫中建立循環',
+  'week start': '每週開始',
 }

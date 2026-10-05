@@ -1903,4 +1903,5 @@ export default {
   'Delete {0}': '{0} löschen',
   'Move {0}': '{0} verschieben',
   'Build your loop in Plan': 'Kreislauf im Plan erstellen',
+  'week start': 'Wochenstart',
 }

@@ -1883,4 +1883,5 @@ export default {
   'Delete {0}': '{0} sil',
   'Move {0}': '{0} taşı',
   'Build your loop in Plan': 'Döngünü Plan\'da oluştur',
+  'week start': 'hafta başlangıcı',
 }

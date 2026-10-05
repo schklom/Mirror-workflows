@@ -1883,4 +1883,5 @@ export default {
   'Delete {0}': '{0} 삭제',
   'Move {0}': '{0} 이동',
   'Build your loop in Plan': '계획에서 순환 만들기',
+  'week start': '주 시작',
 }

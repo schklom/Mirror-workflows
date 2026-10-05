@@ -1880,4 +1880,5 @@ export default {
   'Delete {0}': 'Видалити {0}',
   'Move {0}': 'Перемістити {0}',
   'Build your loop in Plan': 'Збери коло в Плані',
+  'week start': 'початок тижня',
 }

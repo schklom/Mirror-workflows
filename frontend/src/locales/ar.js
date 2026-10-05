@@ -1936,4 +1936,5 @@ export default {
   'Delete {0}': 'حذف {0}',
   'Move {0}': 'نقل {0}',
   'Build your loop in Plan': 'أنشئ دورتك في الخطة',
+  'week start': 'بداية الأسبوع',
 }

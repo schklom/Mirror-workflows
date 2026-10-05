@@ -1883,4 +1883,5 @@ export default {
   'Delete {0}': '删除 {0}',
   'Move {0}': '移动 {0}',
   'Build your loop in Plan': '在计划中创建循环',
+  'week start': '每周开始',
 }

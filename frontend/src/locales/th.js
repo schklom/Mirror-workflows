@@ -1894,4 +1894,5 @@ export default {
   'Delete {0}': 'ลบ {0}',
   'Move {0}': 'ย้าย {0}',
   'Build your loop in Plan': 'สร้างการวนรอบในแผน',
+  'week start': 'วันเริ่มสัปดาห์',
 }

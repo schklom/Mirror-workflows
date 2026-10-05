@@ -1882,4 +1882,5 @@ export default {
   'Remove {0}': '{0} 빼기',
   'Delete {0}': '{0} 삭제',
   'Move {0}': '{0} 이동',
+  'Build your loop in Plan': '계획에서 순환 만들기',
 }

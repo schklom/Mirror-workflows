@@ -1882,4 +1882,5 @@ export default {
   'Remove {0}': 'Togli {0}',
   'Delete {0}': 'Elimina {0}',
   'Move {0}': 'Sposta {0}',
+  'Build your loop in Plan': 'Crea il tuo ciclo in Piano',
 }

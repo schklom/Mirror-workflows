@@ -1935,4 +1935,5 @@ export default {
   'Remove {0}': 'إزالة {0}',
   'Delete {0}': 'حذف {0}',
   'Move {0}': 'نقل {0}',
+  'Build your loop in Plan': 'أنشئ دورتك في الخطة',
 }

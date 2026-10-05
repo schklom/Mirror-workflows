@@ -1875,4 +1875,5 @@ export default {
   'Remove {0}': '移除 {0}',
   'Delete {0}': '刪除 {0}',
   'Move {0}': '移動 {0}',
+  'Build your loop in Plan': '在計畫中建立循環',
 }

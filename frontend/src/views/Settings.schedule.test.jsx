@@ -69,6 +69,7 @@ const mount = over => { mocks.S = baseS(over); act(() => root.render(<Settings p
 const seg = () => [...host.querySelectorAll('button')].filter(b => ['Fixed Week', 'Rotation'].includes(b.textContent))
 const pick = label => act(() => seg().find(b => b.textContent === label).dispatchEvent(new MouseEvent('click', { bubbles: true })))
 const selected = () => seg().find(b => b.className.includes('on'))?.textContent
+const buildRow = () => [...host.querySelectorAll('.lrow')].find(r => r.textContent.includes('Build your loop in Plan'))
 
 describe('Settings — How you train (Plan & schedule)', () => {
   it('selects Fixed Week without a usable queue, Rotation with one this app manages', () => {
@@ -135,18 +136,29 @@ describe('Settings — How you train (Plan & schedule)', () => {
     expect(mocks.nav).not.toHaveBeenCalled()
   })
 
-  it('Rotation with nothing saved sends you to Plan, but stays selected — a live queue is not the only signal', () => {
+  it('Rotation with nothing saved stays selected and stays here, with a row that leads to Plan', () => {
     mount()
+    expect(buildRow()).toBeUndefined()
     pick('Rotation')
     expect(mocks.S.queue).toBe(null)
     expect(mocks.S.scheduleMode).toBe('rotation')
+    expect(mocks.nav).not.toHaveBeenCalled()
+    act(() => root.render(<Settings page="plan" key="again" />))
+    act(() => buildRow().click())
     expect(mocks.nav).toHaveBeenCalledWith('/plan')
   })
 
-  it('a malformed queue sends you to Plan instead of starting a pass over it', () => {
+  it('a malformed queue is not started over; the row leads to Plan, which does the recovery', () => {
     mount({ queue: { ids: ['gone'], since: Date.now() }, rotation: { id: 'r1', sequence: ['a'], label: 'x' } })
     pick('Rotation')
     expect(mocks.S.queue.ids).toEqual(['gone'])   // untouched: Plan does the recovery
-    expect(mocks.nav).toHaveBeenCalledWith('/plan')
+    expect(mocks.nav).not.toHaveBeenCalled()
+    act(() => root.render(<Settings page="plan" key="again" />))
+    expect(buildRow()).toBeTruthy()
+  })
+
+  it('no row to Plan while a loop is running', () => {
+    mount({ queue: { ids: ['a', 'b'], since: Date.now(), rotationId: 'r1' }, rotation: { id: 'r1', sequence: ['a', 'b'], label: 'x' } })
+    expect(buildRow()).toBeUndefined()
   })
 })

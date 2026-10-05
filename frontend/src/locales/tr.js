@@ -1882,4 +1882,5 @@ export default {
   'Remove {0}': '{0} çıkar',
   'Delete {0}': '{0} sil',
   'Move {0}': '{0} taşı',
+  'Build your loop in Plan': 'Döngünü Plan\'da oluştur',
 }

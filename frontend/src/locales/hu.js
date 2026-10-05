@@ -1885,4 +1885,5 @@ export default {
   'Remove {0}': '{0} eltávolítása',
   'Delete {0}': '{0} törlése',
   'Move {0}': '{0} áthelyezése',
+  'Build your loop in Plan': 'Állítsd össze a köröd a Tervben',
 }

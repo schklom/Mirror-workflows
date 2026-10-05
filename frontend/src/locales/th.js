@@ -1893,4 +1893,5 @@ export default {
   'Remove {0}': 'เอา {0} ออก',
   'Delete {0}': 'ลบ {0}',
   'Move {0}': 'ย้าย {0}',
+  'Build your loop in Plan': 'สร้างการวนรอบในแผน',
 }

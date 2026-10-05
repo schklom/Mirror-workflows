@@ -1879,4 +1879,5 @@ export default {
   'Remove {0}': 'Прибрати {0}',
   'Delete {0}': 'Видалити {0}',
   'Move {0}': 'Перемістити {0}',
+  'Build your loop in Plan': 'Збери коло в Плані',
 }

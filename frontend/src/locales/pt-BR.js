@@ -1166,6 +1166,7 @@ export const PT_BR_OVERRIDES = {
   'Open Settings → Account → “Pair the mobile app” on your openGym site in a browser and enter the new code shown there. What this phone kept is merged into your account.': 'No seu site openGym em um navegador, abra Configurações → Conta → “Parear o aplicativo” e digite o novo código mostrado lá. O que este celular manteve é incorporado à sua conta.',
   'Turn on push notifications first.': 'Ative primeiro as notificações push.',
   'Delete {0}': 'Excluir {0}',
+  'Build your loop in Plan': 'Monte seu ciclo no Plano',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

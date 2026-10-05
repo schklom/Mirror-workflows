@@ -136,10 +136,9 @@ export default function Settings({ page = null, find = null, via = null }) {
       return
     }
     // The same switch as Plan's "How you train" (lib/rotation.js). With nothing to start (no
-    // saved sequence, or a malformed queue Plan has to sort out) Plan is where to go next.
-    let started = false
-    update(s => { started = chooseRotation(s) })
-    if (!started) nav('/plan')
+    // saved sequence, or a malformed queue Plan has to sort out) the choice holds and you stay
+    // here: the page then offers the way to Plan (below), so picking a value never leaves it.
+    update(s => { chooseRotation(s) })
   }
 
   // --- update check state ---
@@ -604,6 +603,9 @@ export default function Settings({ page = null, find = null, via = null }) {
                 options={[{ value: 'week', label: t('Fixed Week') }, { value: 'rotation', label: t('Rotation') }]}
                 value={mode} onChange={setScheduleMode} />}
         </Row>
+        {/* Rotation chosen with no loop running yet: the loop is built on Plan. */}
+        {mode === 'rotation' && !liveQ && <Row icon="calendar" iconTint="var(--orange)" title={t('Build your loop in Plan')}
+          accessory="chevron" onClick={() => nav('/plan')} />}
         {/* Monday or Sunday: the Plan list, the Home strip, the calendar grid and every "this
             week" total follow it. Stored as a getDay() index (see lib/format.js). */}
         <Row icon="calendar" iconTint="var(--orange)" title={t('Week starts on')}>

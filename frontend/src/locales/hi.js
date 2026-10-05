@@ -1882,4 +1882,5 @@ export default {
   'Remove {0}': '{0} हटाएँ',
   'Delete {0}': '{0} मिटाएँ',
   'Move {0}': '{0} खिसकाएँ',
+  'Build your loop in Plan': 'योजना में अपना चक्र बनाएं',
 }

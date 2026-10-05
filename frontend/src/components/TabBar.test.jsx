@@ -95,4 +95,23 @@ describe('the tab icons and labels', () => {
     expect(icon(tabs()[2])).toBe('play')
     expect(label(tabs()[2])).toBe('Resume')
   })
+
+  it('shows a minimized session’s running time, still named Resume', () => {
+    vi.useFakeTimers()
+    try {
+      vi.setSystemTime(new Date(2026, 9, 5, 18, 0, 0))
+      act(() => { useStore.getState().update(s => { s.active = { id: 'a', entries: [], cur: 0, start: Date.now() - 754_000 } }, false) })
+      act(() => { root.render(<TabBar onStart={() => {}} />) })
+      const start = tabs()[2]
+      expect(label(start)).toBe('12:34')
+      expect(start.getAttribute('aria-label')).toBe('Resume')
+      act(() => { vi.advanceTimersByTime(2000) })
+      expect(label(start)).toBe('12:36')
+      expect(tabs()[2]).toBe(start)   // the same button, only its text ticks
+
+      // a past workout being edited has no clock running
+      act(() => { useStore.getState().update(s => { s.active.editingWorkoutId = 'w1' }, false) })
+      expect(label(tabs()[2])).toBe('Edit workout')
+    } finally { vi.useRealTimers() }
+  })
 })

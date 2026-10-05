@@ -10,20 +10,24 @@ const clock = sec => Math.floor(sec / 60) + ':' + String(sec % 60).padStart(2, '
 
 // The clock is a button: a tap opens the wheel at the time that is left, for a rest that wants
 // to be a round 2:00 rather than eight taps of +15. 0:00 ends the rest, like Skip. What is left
-// is read again at Done, since the rest kept counting while the wheel was open.
+// is read again at Done, since the rest kept counting while the wheel was open. Done on a wheel
+// nobody turned changes nothing: the rest keeps the seconds it counted down meanwhile, and one
+// that ran out (or a switch-sides pause that ended) is not started again.
 export function adjustRestSheet() {
   const tm = useUI.getState().timer
   if (!tm) return
+  const opened = tm.ready ? 0 : Math.min(tm.left, REST_MAX)
   durationSheet({
-    title: t('Time left'), value: tm.ready ? 0 : tm.left, max: REST_MAX, off: t('Skip'),
+    title: t('Time left'), value: opened, max: REST_MAX, off: t('Skip'),
     footer: t('Scroll to 0:00 to end the rest now.'),
-    onDone: v => applyRestLeft(v),
+    onDone: v => applyRestLeft(v, opened),
   })
 }
 
 // What the wheel's Done does to the rest as it is by then: a new time left, the rest ended at
 // 0:00, or a fresh rest when the old one has run out (Ready) or was skipped meanwhile.
-export function applyRestLeft(v) {
+export function applyRestLeft(v, opened) {
+  if (opened !== undefined && v === opened) return
   const ui = useUI.getState()
   const now = ui.timer
   if (!now) { if (v > 0) ui.startRest(v); return }
@@ -83,7 +87,7 @@ export default function RestTimer() {
       </button>
       <div className="acts">
         <Button size="sm" className="adj" icon="minus" onClick={() => addRest(-15)}>15s</Button>
-        <Button size="sm" className="adj" icon="plus" onClick={() => addRest(15)}>15s</Button>
+        <Button size="sm" className="adj" icon="plus" disabled={!timer.ready && timer.left >= REST_MAX} onClick={() => addRest(15)}>15s</Button>
         {!timer.ready && <Button size="sm" className="pause" icon={timer.paused ? 'play' : 'pause'}
           aria-label={t(timer.paused ? 'Resume' : 'Pause')} aria-pressed={!!timer.paused}
           onClick={timer.paused ? resumeRest : pauseRest} />}

@@ -89,6 +89,50 @@ describe('the docked rest bar', () => {
     expect(useUI.getState().timer.ready).toBeUndefined()
   })
 
+  it('Done on an untouched wheel leaves the rest alone', () => {
+    // still counting: the seconds that passed while the wheel was open are not given back
+    act(() => useUI.getState().startRest(60, 0))
+    mount()
+    act(() => host.querySelector('#timer .tclock').click())
+    act(() => vi.advanceTimersByTime(10_000))
+    let { el, r } = sheetHost()
+    act(() => { [...el.querySelectorAll('button')].find(b => b.textContent === 'Done').click() })
+    act(() => r.unmount()); el.remove()
+    expect(useUI.getState().timer.left).toBe(50)
+
+    // ran out meanwhile: no fresh rest nobody asked for
+    act(() => useUI.getState().startRest(5, 2))
+    act(() => host.querySelector('#timer .tclock').click())
+    act(() => vi.advanceTimersByTime(5000))
+    expect(useUI.getState().timer.ready).toBe(true);
+    ({ el, r } = sheetHost())
+    act(() => { [...el.querySelectorAll('button')].find(b => b.textContent === 'Done').click() })
+    act(() => r.unmount()); el.remove()
+    expect(useUI.getState().timer).toMatchObject({ ready: true, left: 0 })
+
+    // a switch-sides pause that ended does not turn into a plain rest
+    act(() => useUI.getState().startRest(5, 1, { kind: 'switch' }))
+    act(() => host.querySelector('#timer .tclock').click())
+    act(() => vi.advanceTimersByTime(5000))
+    expect(useUI.getState().timer).toBeNull();
+    ({ el, r } = sheetHost())
+    act(() => { [...el.querySelectorAll('button')].find(b => b.textContent === 'Done').click() })
+    act(() => r.unmount()); el.remove()
+    expect(useUI.getState().timer).toBeNull()
+  })
+
+  it('+15 s stops at the wheel maximum of 15:00', () => {
+    act(() => useUI.getState().startRest(890, 0))
+    mount()
+    act(() => useUI.getState().addRest(15))
+    expect(useUI.getState().timer).toMatchObject({ left: 900, total: 900 })
+    act(() => useUI.getState().addRest(15))
+    expect(useUI.getState().timer.left).toBe(900)
+    expect(host.querySelectorAll('#timer .adj')[1].disabled).toBe(true)
+    act(() => useUI.getState().addRest(-15))
+    expect(useUI.getState().timer.left).toBe(885)
+  })
+
   it('keeps a paused rest paused at the new time', () => {
     act(() => useUI.getState().startRest(90, 0))
     act(() => useUI.getState().pauseRest())

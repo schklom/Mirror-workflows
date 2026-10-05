@@ -7,6 +7,7 @@ import { deviceId } from '../lib/push.js'
 import { MOBILE } from '../lib/mobile.js'
 import { armRestAlert, bindNativeRest, disarmRestAlert, holdRestAlert } from '../lib/rest-alert.js'
 import { useStore } from './useStore.js'
+import { REST_MAX } from '../lib/duration.js'
 
 // Fire-and-forget: lets the server push a "rest over" alert if this tab gets suspended
 // before the local timer completes. No-ops for guests / offline. The device id keeps the
@@ -216,7 +217,10 @@ export const useUI = create((set, get) => ({
   addRest(sec) {
     const tm = get().timer
     if (!tm) return
-    if (tm.ready) { if (sec > 0) get().startRest(sec, tm.forIdx); else get().stopRest(); return }
+    if (tm.ready) { if (sec > 0) get().startRest(Math.min(sec, REST_MAX), tm.forIdx); else get().stopRest(); return }
+    // +15 s stops where the wheel does (15:00), so the two never disagree about a rest's length.
+    if (sec > 0) sec = Math.min(sec, Math.max(0, REST_MAX - tm.left))
+    if (!sec) return
     const left = tm.left + sec
     // taking off more than is left means "I'm ready now" — same as skipping, and it keeps a
     // negative duration out of both the progress bar and the server-side push schedule

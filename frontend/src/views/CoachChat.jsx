@@ -475,8 +475,8 @@ function Insights({ S, window: win, compact }) {
   return <div className="ins">
     <div className="ins-tiles">
       <Tile v={ins.sessions} l={t('Sessions')} />
-      <Tile v={ins.minutes != null ? ins.minutes : '—'} l={t('Min / session')} />
-      <Tile v={ins.volume ? kfmt(ins.volume) : '—'} l={t('Volume ({0})', S.unit)} />
+      <Tile v={ins.minutes != null ? ins.minutes : '–'} l={t('Min / session')} />
+      <Tile v={ins.volume ? kfmt(ins.volume) : '–'} l={t('Volume ({0})', S.unit)} />
       <Tile v={ins.sets} l={t('Sets')} />
     </div>
 
@@ -526,9 +526,9 @@ function DebriefBody({ p, S }) {
     {live && <div className="ins">
       <div className="ins-tiles">
         <Tile v={live.now.sets} l={t('Sets')} />
-        <Tile v={live.now.minutes != null ? live.now.minutes : '—'} l={t('Minutes')} />
-        <Tile v={live.now.volume ? kfmt(live.now.volume) : '—'} l={t('Volume ({0})', S.unit)} />
-        <Tile v={live.now.prs || '—'} l={t('PRs')} />
+        <Tile v={live.now.minutes != null ? live.now.minutes : '–'} l={t('Minutes')} />
+        <Tile v={live.now.volume ? kfmt(live.now.volume) : '–'} l={t('Volume ({0})', S.unit)} />
+        <Tile v={live.now.prs || '–'} l={t('PRs')} />
       </div>
       {live.then && <div className="ins-cmp">
         {t('vs. last {0} on {1}:', w.name || t('session'), fmtDate(live.prevDate))}{' '}
@@ -713,7 +713,7 @@ function CohortSheet({ S, update, toast }) {
         <Tile v={d.people} l={t('People')} />
         <Tile v={fmtNum(d.sessionsPerWeek.you)} l={t('Your sessions / wk')} />
         <Tile v={fmtNum(d.sessionsPerWeek.median)} l={t('Median / wk')} />
-        <Tile v={d.rankPct != null ? d.rankPct + '%' : '—'} l={t('Your strength rank')} />
+        <Tile v={d.rankPct != null ? d.rankPct + '%' : '–'} l={t('Your strength rank')} />
       </div>
       {!!d.exercises.length && <div className="ins-block">
         <div className="ins-h"><span>{t('Estimated 1RM, you vs. median')}</span><span className="dim">{S.unit}</span></div>
@@ -721,7 +721,7 @@ function CohortSheet({ S, update, toast }) {
           const max = Math.max(x.median, x.you || 0) || 1
           return <div key={x.id} className="cmp">
             <div className="cmp-h"><span>{x.name}</span><span className="dim">{x.people} {t('people')}</span></div>
-            <div className="cmp-bar you"><i style={{ width: Math.round((x.you || 0) / max * 100) + '%' }} /><span>{t('You')} · {x.you != null ? fmtNum(x.you) : '—'}</span></div>
+            <div className="cmp-bar you"><i style={{ width: Math.round((x.you || 0) / max * 100) + '%' }} /><span>{t('You')} · {x.you != null ? fmtNum(x.you) : '–'}</span></div>
             <div className="cmp-bar"><i style={{ width: Math.round(x.median / max * 100) + '%' }} /><span>{t('Median')} · {fmtNum(x.median)}</span></div>
           </div>
         })}

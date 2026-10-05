@@ -98,7 +98,7 @@ function UserDetail({ id, onChanged, close }) {
       {/* The sign-in e-mail (password instances only): shown to admins and nobody else. */}
       {u.email && <span className="adm-pill" title="sign-in e-mail">{u.email}</span>}
       {u.resetUntil && <span className="adm-pill acc">reset code until {new Date(u.resetUntil).toLocaleString()}</span>}
-      <span className="adm-pill">joined {u.created ? fmtDate(u.created.slice(0, 10)) : '—'}</span>
+      <span className="adm-pill">joined {u.created ? fmtDate(u.created.slice(0, 10)) : '–'}</span>
     </div>
     <div className="tiles" style={{ textAlign: 'start' }}>
       <div className="tile"><div className="l">Workouts</div><div className="v" style={{ fontSize: '1.1rem' }}>{workouts.length}</div></div>
@@ -300,10 +300,10 @@ export default function Admin() {
     </div>}
 
     <div className="tiles" style={{ marginBottom: 12 }}>
-      <div className="tile"><div className="l">Users</div><div className="v">{users ? users.length : '—'}</div></div>
-      <div className="tile"><div className="l">Training now</div><div className="v" style={{ color: liveUsers.length ? 'var(--acc)' : undefined }}>{users ? liveUsers.length : '—'}</div></div>
-      <div className="tile"><div className="l">Active 7 days</div><div className="v">{users ? activeCount : '—'}</div></div>
-      <div className="tile"><div className="l">Disabled</div><div className="v">{users ? disabledCount : '—'}</div></div>
+      <div className="tile"><div className="l">Users</div><div className="v">{users ? users.length : '–'}</div></div>
+      <div className="tile"><div className="l">Training now</div><div className="v" style={{ color: liveUsers.length ? 'var(--acc)' : undefined }}>{users ? liveUsers.length : '–'}</div></div>
+      <div className="tile"><div className="l">Active 7 days</div><div className="v">{users ? activeCount : '–'}</div></div>
+      <div className="tile"><div className="l">Disabled</div><div className="v">{users ? disabledCount : '–'}</div></div>
     </div>
 
     {liveUsers.length > 0 && <div className="card" style={{ borderColor: 'var(--acc)' }}>

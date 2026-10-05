@@ -345,7 +345,7 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
     // "+" between plates: "45 + 5 per side" reads as a sum, a dot did not (Boris, 2026-09-13).
     const stack = L.plates.map(w => fmtPlate(w)).join(' + ')
     const text = L.barOnly ? t('Bar only')
-      : L.kind === 'pairs' ? t('{0} per side', stack || '—') : t('Load {0}', stack || '—')
+      : L.kind === 'pairs' ? t('{0} per side', stack || '–') : t('Load {0}', stack || '–')
     const d = prev && !dense ? plateDelta(prev.plates, L.plates) : null
     const moves = d ? [...d.strip.map(w => '−' + fmtPlate(w)), ...d.add.map(w => '+' + fmtPlate(w))] : []
     return <div className="plateline">

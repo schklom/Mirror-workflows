@@ -316,11 +316,11 @@ function EffortCard({ S }) {
     {sum.rated === 0 ? <div className="muted small">{t('No rated sets in this period.')}</div> : <>
       <div className="row between" style={{ alignItems: 'flex-end', gap: 12 }}>
         <div>
-          <div className="stat-v">{sum.avg == null ? '—' : fmtNum(toScale(kind, sum.avg)) + ' ' + hd}</div>
+          <div className="stat-v">{sum.avg == null ? '–' : fmtNum(toScale(kind, sum.avg)) + ' ' + hd}</div>
           <div className="small dim">{t('average effort')}</div>
         </div>
         <div style={{ textAlign: 'end' }}>
-          <div className="stat-v" style={{ color: 'var(--yellow)' }}>{sum.hardPct == null ? '—' : Math.round(sum.hardPct * 100) + '%'}</div>
+          <div className="stat-v" style={{ color: 'var(--yellow)' }}>{sum.hardPct == null ? '–' : Math.round(sum.hardPct * 100) + '%'}</div>
           <div className="small dim">{t('at {0} {1} or harder', hd, fmtNum(toScale(kind, HARD_RIR)))}</div>
         </div>
       </div>
@@ -336,7 +336,7 @@ function EffortCard({ S }) {
       {hist.map(b => <div key={b.rir} className="mrow">
         <span className="nm">{hd} {binLabel(b)}</span>
         <span className="bar"><i style={{ width: Math.round(b.n / maxBin * 100) + '%', background: b.rir <= HARD_RIR ? 'var(--yellow)' : 'var(--label-3)' }} /></span>
-        <span className="v">{b.n ? b.n + ' · ' + Math.round(b.pct * 100) + '%' : '—'}</span>
+        <span className="v">{b.n ? b.n + ' · ' + Math.round(b.pct * 100) + '%' : '–'}</span>
       </div>)}
       <div className="small dim" style={{ marginTop: 8 }}>
         {t('Most working sets belong close to failure, not at it. Half at the floor and half at the top still average out to a healthy-looking middle.')}
@@ -526,7 +526,7 @@ export default function Stats() {
       <div className="tile"><div className="l"><Icon name="dumbbell" />{t('Workouts')}</div><div className="v">{workouts.length}</div></div>
       <div className="tile"><div className="l"><Icon name="calendar" />{t('This month')}</div><div className="v">{monthW}</div></div>
       <div className="tile"><div className="l"><Icon name="flame" />{t('Week streak')}</div><div className="v">{streakWeeks(S)}</div></div>
-      <div className="tile"><div className="l"><Icon name="scale" />{t('Weight 30d')}</div><div className="v" style={{ fontSize: 22, color: bwDelta30 === null ? 'inherit' : bwDeltaColor(bwDelta30, (lastBW(S) || {}).w || 0) }}>{bwDelta30 === null ? '—' : (bwDelta30 > 0 ? '+' : '') + fmtNum(bwDelta30) + ' ' + S.unit}</div></div>
+      <div className="tile"><div className="l"><Icon name="scale" />{t('Weight 30d')}</div><div className="v" style={{ fontSize: 22, color: bwDelta30 === null ? 'inherit' : bwDeltaColor(bwDelta30, (lastBW(S) || {}).w || 0) }}>{bwDelta30 === null ? '–' : (bwDelta30 > 0 ? '+' : '') + fmtNum(bwDelta30) + ' ' + S.unit}</div></div>
 
     </div>
 
@@ -576,7 +576,7 @@ export default function Stats() {
         {exHist.length ? <>
           <div className="sect-b" style={{ marginBottom: 10 }}>
             <SelectRow title={t('Exercise')} sheetTitle={t('Exercise progress')} value={curEx} onChange={setExId} stackedValue
-              options={exHist.map(id => ({ value: id, label: (EXIDX[id] ? exerciseNameText(EXIDX[id]) : nameOf(id)) + (exCurrent[id].mx ? ' ' + '—' + ' ' + fmtNum(exCurrent[id].mx) + ' ' + exCurrent[id].unit : '') }))}
+              options={exHist.map(id => ({ value: id, label: (EXIDX[id] ? exerciseNameText(EXIDX[id]) : nameOf(id)) + (exCurrent[id].mx ? ' · ' + fmtNum(exCurrent[id].mx) + ' ' + exCurrent[id].unit : '') }))}
               search={{
                 placeholder: t('Search…'),
                 label: t('Search…'),

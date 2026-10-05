@@ -1865,4 +1865,8 @@ export default {
   'Enter the code your other device shows under Settings → Account → Add another device. This device then gets a passkey of its own.': '输入你另一台设备在“设置 → 账号 → 添加其他设备”中显示的代码。之后此设备会有自己的通行密钥。',
   'Open Settings → Account → “Pair the mobile app” on the openGym site you’re already signed into, then enter its address and the code shown there.': '在你已登录的 openGym 网站上，打开 设置 → 账号 →“配对手机应用”，然后输入其地址和那里显示的配对码。',
   'Open Settings → Account → “Pair the mobile app” on your openGym site in a browser and enter the new code shown there. What this phone kept is merged into your account.': '在浏览器中打开你的 openGym 网站的 设置 → 账号 →“配对手机应用”，然后输入那里显示的新配对码。这部手机保留的内容会合并到你的账号。',
+  'Change the time left': '调整剩余时间',
+  'Paused': '已暂停',
+  'Scroll to 0:00 to end the rest now.': '滚到 0:00 可立即结束休息。',
+  'Time left': '剩余时间',
 }

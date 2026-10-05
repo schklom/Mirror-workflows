@@ -1885,4 +1885,8 @@ export default {
   'Enter the code your other device shows under Settings → Account → Add another device. This device then gets a passkey of its own.': 'Gib den Code ein, den dein anderes Gerät unter Einstellungen → Konto → Weiteres Gerät hinzufügen zeigt. Dieses Gerät bekommt dann einen eigenen Passkey.',
   'Open Settings → Account → “Pair the mobile app” on the openGym site you’re already signed into, then enter its address and the code shown there.': 'Öffne auf der openGym-Seite, bei der du bereits angemeldet bist, Einstellungen → Konto → „Mobile App koppeln“, und gib dann deren Adresse und den dort angezeigten Code ein.',
   'Open Settings → Account → “Pair the mobile app” on your openGym site in a browser and enter the new code shown there. What this phone kept is merged into your account.': 'Öffne auf deiner openGym-Seite im Browser Einstellungen → Konto → „Mobile App koppeln“ und gib den neuen Code ein, der dort angezeigt wird. Was dieses Handy aufbewahrt hat, wird in dein Konto übernommen.',
+  'Change the time left': 'Restzeit ändern',
+  'Paused': 'Pausiert',
+  'Scroll to 0:00 to end the rest now.': 'Auf 0:00 drehen beendet die Pause sofort.',
+  'Time left': 'Restzeit',
 }

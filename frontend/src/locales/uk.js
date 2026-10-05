@@ -1862,4 +1862,8 @@ export default {
   'Enter the code your other device shows under Settings → Account → Add another device. This device then gets a passkey of its own.': 'Введи код, який інший пристрій показує в розділі Налаштування → Акаунт → Додати інший пристрій. Тоді цей пристрій отримає власний ключ доступу.',
   'Open Settings → Account → “Pair the mobile app” on the openGym site you’re already signed into, then enter its address and the code shown there.': 'Відкрий Налаштування → Акаунт → «Спарувати мобільний застосунок» на сайті openGym, куди ти вже увійшов, і введи його адресу та показаний там код.',
   'Open Settings → Account → “Pair the mobile app” on your openGym site in a browser and enter the new code shown there. What this phone kept is merged into your account.': 'Відкрий Налаштування → Акаунт → «Спарувати мобільний застосунок» на своєму сайті openGym у браузері й введи показаний там новий код. Те, що зберіг цей телефон, буде об’єднано з твоїм акаунтом.',
+  'Change the time left': 'Змінити залишок часу',
+  'Paused': 'На паузі',
+  'Scroll to 0:00 to end the rest now.': 'Прокрутіть до 0:00, щоб одразу завершити відпочинок.',
+  'Time left': 'Залишилось',
 }

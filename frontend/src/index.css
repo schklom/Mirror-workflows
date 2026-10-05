@@ -170,10 +170,13 @@ button,.chip,.tile,.item,.wday,.cal-d,.swatch,.hm-c,.lrow,.seg button,.stp butto
 }
 /* Android 15 with the keyboard up: room to scroll the last field on a page above the keys.
    The tab bar stays where it is, under the keyboard, rather than riding up on it. */
-:root[data-native-kb] #app,:root[data-native-kb] body.resting #app{padding-bottom:calc(88px + var(--native-kb))}
+:root[data-native-kb] #app,:root[data-native-kb] body.resting #app,:root[data-native-kb] body.no-tabbar.resting #app{padding-bottom:calc(88px + var(--native-kb))}
 /* Keep the last workout controls clear of the mobile overlays without adding a second
    screenful of blank scroll space. The stacked rest timer needs the larger reserve. */
-body.resting #app{padding-bottom:calc(206px + var(--sab))}
+body.resting #app{padding-bottom:calc(166px + var(--sab))}
+/* The workout screen has no tab bar (App.jsx): only the docked rest bar, when it is there. */
+body.no-tabbar #app{padding-bottom:calc(24px + var(--sab))}
+body.no-tabbar.resting #app{padding-bottom:calc(96px + var(--sab))}
 .workout-end-spacer{height:0}
 @keyframes viewfade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 #app.vfade{animation:viewfade var(--med) var(--ease)}
@@ -1257,44 +1260,57 @@ body.chips-dragging *{cursor:inherit}
 }
 
 /* --- rest timer --- */
+/* One row: the clock (a button, tap to set the time left), then the controls; the progress is a
+   thin line along the top edge, so it takes no width from them. On the workout screen, which has
+   no tab bar (body.no-tabbar, App.jsx), the bar is docked to the bottom edge; anywhere else it
+   sits just above the tab bar. */
 #timer{
   position:fixed;inset-inline-start:12px;inset-inline-end:12px;bottom:calc(88px + var(--sab));z-index:60;
   /* nearly opaque: the set rows underneath were reading through the old 82% and made the
      clock hard to pick out mid-set. The blur stays, so it still sits above the page. */
   background:color-mix(in srgb,var(--surface) 97%,transparent);
   -webkit-backdrop-filter:saturate(180%) blur(10px);backdrop-filter:saturate(180%) blur(10px);
-  border-radius:var(--r-lg);padding:12px 14px;
-  display:flex;align-items:center;gap:12px;
+  border-radius:var(--r-lg);padding:12px 12px 10px;overflow:hidden;
+  display:flex;align-items:center;gap:10px;
   box-shadow:0 12px 34px -8px rgba(0,0,0,.55);
   animation:slideup var(--med) var(--ease);
 }
 @keyframes slideup{from{transform:translateY(16px);opacity:0}to{transform:none;opacity:1}}
-#timer .t{font-size:26px;font-weight:600;letter-spacing:-.026em;font-variant-numeric:tabular-nums;min-width:66px}
-#timer .bar{flex:1;height:4px;background:var(--surface-3);border-radius:99px;overflow:hidden}
+#timer .bar{position:absolute;top:0;inset-inline-start:0;inset-inline-end:0;height:3px;background:var(--surface-3)}
 #timer .bar i{display:block;height:100%;background:var(--acc);transition:width 1s linear}
-/* rest variant: −15/+15/Skip and the clock won't share one line on a phone, so the clock and
-   bar take the top row and the controls take their own. The work timer keeps a single row —
-   it only ever has two buttons. */
-#timer.rest{flex-direction:column;align-items:stretch;gap:10px}
-#timer.rest .head{display:flex;align-items:center;gap:12px}
-#timer.rest .acts{display:flex;align-items:center;gap:8px}
-#timer.rest .acts .btn{padding-top:11px;padding-bottom:11px}   /* sweaty hands, mid-set */
-#timer.rest .acts .skip{margin-inline-start:auto;min-width:84px}
+#timer .tclock{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;text-align:start;padding:2px 0}
+#timer .t{font-size:28px;font-weight:600;line-height:1.1;letter-spacing:-.026em;font-variant-numeric:tabular-nums;white-space:nowrap}
+#timer .lbl{
+  font-size:12px;color:var(--label-2);max-width:100%;margin-top:1px;
+  display:inline-flex;align-items:center;gap:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+#timer .lbl .icn{font-size:10px;flex:none;opacity:.8}
+#timer .acts{display:flex;align-items:center;gap:6px;flex:none}
+#timer .acts .btn{padding-top:11px;padding-bottom:11px}   /* sweaty hands, mid-set */
+#timer .acts .adj{padding-inline:9px;gap:2px}
+#timer .acts .btn.plain{background:var(--surface-2);color:var(--label)}
+#timer .acts .btn.plain:active{background:var(--surface-3)}
+#timer .acts .skip{min-width:70px}
 /* A paused rest reads as held: the clock and the bar step back until it runs again. */
 #timer.rest.paused .t,#timer.rest.paused .bar{opacity:.5}
-/* Switch sides: the short pause inside one timed per-side set, named above its bar. */
-#timer.rest.switch .grow{flex:1;min-width:0}
-#timer.rest.switch .lbl{font-size:12px;color:var(--label-2);margin-bottom:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* work timer (issue #16): the same bar doing the opposite job — outlined and tinted so a
    glance tells "you are holding this" apart from "you are recovering". */
-#timer.working{border:var(--hair) solid var(--acc)}
+#timer.working{box-shadow:inset 0 0 0 var(--hair) var(--acc),0 12px 34px -8px rgba(0,0,0,.55)}
 #timer.working .t{color:var(--acc)}
-#timer.working .grow{flex:1;min-width:0}
 /* The label is the exercise name, handed in already cased (exerciseNameText): a capitalize here
    would title-case German's own casing too. */
-#timer.working .lbl{
-  font-size:12px;color:var(--label-2);margin-bottom:5px;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+#timer.working .lbl{display:block}
+/* Docked on the workout screen: edge to edge, flush with the bottom, the home indicator's inset
+   inside it. */
+body.no-tabbar #timer{
+  inset-inline-start:0;inset-inline-end:0;bottom:0;
+  border-radius:var(--r-xl) var(--r-xl) 0 0;padding:14px 14px calc(10px + var(--sab));
+  box-shadow:0 -10px 30px -14px rgba(0,0,0,.55);
+}
+body.no-tabbar #timer.working{box-shadow:inset 0 var(--hair) 0 var(--acc),0 -10px 30px -14px rgba(0,0,0,.55)}
+@media (max-width:359px){
+  #timer .acts .adj{padding-inline:7px}
+  #timer .acts .skip{min-width:0}
 }
 
 /* ---------------------------------------------------------------- modal -- */
@@ -1529,6 +1545,8 @@ body.chips-dragging *{cursor:inherit}
   width:max-content;max-width:88vw;text-align:center;
 }
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+body.no-tabbar #toast{bottom:calc(24px + var(--sab))}
+body.no-tabbar.resting #toast{bottom:calc(100px + var(--sab))}
 
 /* ---------------------------------------------------------------- misc --- */
 .empty{text-align:center;color:var(--label-2);padding:44px 20px;font-size:15px;line-height:1.45}
@@ -1664,7 +1682,9 @@ body.chips-dragging *{cursor:inherit}
 @media (min-width:1000px){
   #app{max-width:1080px;padding-top:calc(var(--conn) + 32px);padding-bottom:calc(128px + var(--sab))}
   .conn-row{max-width:640px}   /* the width of the .narrow pages below it */
-  body.resting #app{padding-bottom:calc(250px + var(--sab))}
+  body.resting #app{padding-bottom:calc(220px + var(--sab))}
+  body.no-tabbar #app{padding-bottom:calc(40px + var(--sab))}
+  body.no-tabbar.resting #app{padding-bottom:calc(130px + var(--sab))}
   .workout-end-spacer{height:40px}
   .cols{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
   .cols>*{min-width:0}
@@ -1687,9 +1707,7 @@ body.chips-dragging *{cursor:inherit}
   .sheet{left:50%;right:auto;margin-left:-320px;width:640px;border-radius:var(--r-xl) var(--r-xl) 0 0}
   .center{width:340px}
   #timer{left:50%;right:auto;margin-left:-260px;width:520px;bottom:112px}
-  /* 520px fits the clock, the bar and all three controls on one line again */
-  #timer.rest{flex-direction:row;align-items:center;gap:14px}
-  #timer.rest .head{flex:1;min-width:0}
+  body.no-tabbar #timer{left:50%;right:auto;bottom:16px;border-radius:var(--r-xl);padding-bottom:10px;box-shadow:0 12px 40px -10px rgba(0,0,0,.5)}
   .exmedia img,.exmedia video{height:380px}
   .hm-wrap{display:flex;flex-direction:column;align-items:center}
 }

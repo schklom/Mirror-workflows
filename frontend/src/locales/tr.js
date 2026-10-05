@@ -1865,4 +1865,8 @@ export default {
   'Enter the code your other device shows under Settings → Account → Add another device. This device then gets a passkey of its own.': 'Diğer cihazının Ayarlar → Hesap → Başka bir cihaz ekle bölümünde gösterdiği kodu gir. Böylece bu cihazın da kendi geçiş anahtarı olur.',
   'Open Settings → Account → “Pair the mobile app” on the openGym site you’re already signed into, then enter its address and the code shown there.': 'Zaten oturum açtığın openGym sitesinde Ayarlar → Hesap → “Mobil uygulamayı eşleştir”i aç, ardından adresini ve orada gösterilen kodu gir.',
   'Open Settings → Account → “Pair the mobile app” on your openGym site in a browser and enter the new code shown there. What this phone kept is merged into your account.': 'Bir tarayıcıda openGym sitende Ayarlar → Hesap → “Mobil uygulamayı eşleştir”i aç ve orada gösterilen yeni kodu gir. Bu telefonun sakladıkları hesabınla birleştirilir.',
+  'Change the time left': 'Kalan süreyi değiştir',
+  'Paused': 'Duraklatıldı',
+  'Scroll to 0:00 to end the rest now.': 'Dinlenmeyi hemen bitirmek için 0:00\'a kaydır.',
+  'Time left': 'Kalan süre',
 }

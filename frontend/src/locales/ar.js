@@ -1918,4 +1918,8 @@ export default {
   'Enter the code your other device shows under Settings → Account → Add another device. This device then gets a passkey of its own.': 'أدخل الرمز الذي يعرضه جهازك الآخر في الإعدادات ← الحساب ← إضافة جهاز آخر. سيحصل هذا الجهاز بعدها على مفتاح مرور خاص به.',
   'Open Settings → Account → “Pair the mobile app” on the openGym site you’re already signed into, then enter its address and the code shown there.': 'افتح الإعدادات ← الحساب ← «إقران تطبيق الجوال» في موقع openGym الذي سجلت دخولك إليه، ثم أدخل عنوانه والرمز المعروض هناك.',
   'Open Settings → Account → “Pair the mobile app” on your openGym site in a browser and enter the new code shown there. What this phone kept is merged into your account.': 'افتح الإعدادات ← الحساب ← «إقران تطبيق الجوال» في موقع openGym الخاص بك من متصفح وأدخل الرمز الجديد الظاهر هناك. ما احتفظ به هذا الهاتف يُدمج في حسابك.',
+  'Change the time left': 'غيّر الوقت المتبقي',
+  'Paused': 'متوقف مؤقتًا',
+  'Scroll to 0:00 to end the rest now.': 'مرّر إلى 0:00 لإنهاء الراحة الآن.',
+  'Time left': 'الوقت المتبقي',
 }

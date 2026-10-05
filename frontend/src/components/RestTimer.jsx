@@ -1,21 +1,53 @@
 import { useEffect } from 'react'
 import { useUI } from '../store/useUI.js'
 import { t } from '../lib/i18n.js'
+import { REST_MAX } from '../lib/duration.js'
+import { durationSheet } from './DurationWheel.jsx'
 import { Button } from './ui.jsx'
+import Icon from './Icon.jsx'
 
 const clock = sec => Math.floor(sec / 60) + ':' + String(sec % 60).padStart(2, '0')
+
+// The clock is a button: a tap opens the wheel at the time that is left, for a rest that wants
+// to be a round 2:00 rather than eight taps of +15. 0:00 ends the rest, like Skip. What is left
+// is read again at Done, since the rest kept counting while the wheel was open.
+export function adjustRestSheet() {
+  const tm = useUI.getState().timer
+  if (!tm) return
+  durationSheet({
+    title: t('Time left'), value: tm.ready ? 0 : tm.left, max: REST_MAX, off: t('Skip'),
+    footer: t('Scroll to 0:00 to end the rest now.'),
+    onDone: v => applyRestLeft(v),
+  })
+}
+
+// What the wheel's Done does to the rest as it is by then: a new time left, the rest ended at
+// 0:00, or a fresh rest when the old one has run out (Ready) or was skipped meanwhile.
+export function applyRestLeft(v) {
+  const ui = useUI.getState()
+  const now = ui.timer
+  if (!now) { if (v > 0) ui.startRest(v); return }
+  if (v <= 0) { ui.stopRest(); return }
+  if (now.ready) { ui.startRest(v, now.forIdx); return }
+  if (v !== now.left) ui.addRest(v - now.left)
+}
 
 // One bar, two meanings: the rest countdown between sets, and the work countdown during a
 // timed set (issue #16). They are mutually exclusive by construction — startWork() stops any
 // running rest — so the bar can never have to show both, and a work set gets its own colour
 // plus a "Done" that logs the time actually held.
+//
+// v1.3.11: on the workout screen (which has no tab bar, see App.jsx) the bar is docked at the
+// bottom edge instead of floating as a card over the next set's row, and it is one row: the
+// clock (tap to set it), then −15 s, +15 s, pause and Skip. The progress runs along its top edge,
+// so it takes no width from the buttons. Elsewhere it sits on top of the tab bar.
 export default function RestTimer() {
   const timer = useUI(s => s.timer)
   const work = useUI(s => s.work)
   const { addRest, stopRest, pauseRest, resumeRest, finishWorkEarly, stopWork } = useUI()
   const on = work || timer
-  // The bar is fixed above the tab bar and floats over whatever is beneath it — during a
-  // rest that was the next set's row. Extra bottom padding lets the page scroll clear.
+  // The page keeps room at its bottom for the bar (index.css body.resting), so the last set and
+  // the Finish button can scroll clear of it.
   useEffect(() => {
     document.body.classList.toggle('resting', !!on)
     return () => document.body.classList.remove('resting')
@@ -25,34 +57,33 @@ export default function RestTimer() {
 
   if (work) return (
     <div id="timer" className="working">
-      <div className="t">{work.left <= 0 && work.overtime ? '+' + clock(-work.left) : clock(work.left)}</div>
-      <div className="grow">
-        {work.label && <div className="lbl">{work.label}</div>}
-        <div className="bar"><i style={{ width: pct + '%' }} /></div>
-      </div>
-      <Button size="sm" onClick={stopWork}>{t('Cancel')}</Button>
-      <Button size="sm" variant="primary" icon="check" onClick={finishWorkEarly}>{t('Done')}</Button>
-    </div>
-  )
-  // Three controls plus the clock don't fit one line on a phone — at 360px the bar is left
-  // with about 30px and stops saying anything. So the rest variant stacks: clock and bar
-  // read at a glance, controls get their own row. −15 and +15 sit together in number-line
-  // order; Skip is pushed to the far edge, away from the button you tap to buy more time.
-  // Pause sits between them as an icon (#193): it holds the time, it neither adds nor ends it.
-  // A rest that is over has nothing left to hold, so Ready offers no pause.
-  return (
-    <div id="timer" className={'rest' + (timer.paused ? ' paused' : '') + (timer.kind === 'switch' ? ' switch' : '')}>
-      <div className="head">
-        <div className="t" role={timer.ready ? 'status' : undefined}>{timer.ready ? t('Ready') : clock(timer.left)}</div>
-        {/* The short pause between the two sides of a timed set says what it is for. */}
-        {timer.kind === 'switch' ? <div className="grow">
-          <div className="lbl">{t('Switch sides')}</div>
-          <div className="bar"><i style={{ width: pct + '%' }} /></div>
-        </div> : <div className="bar"><i style={{ width: pct + '%' }} /></div>}
+      <div className="bar" aria-hidden="true"><i style={{ width: pct + '%' }} /></div>
+      <div className="tclock">
+        <span className="t">{work.left <= 0 && work.overtime ? '+' + clock(-work.left) : clock(work.left)}</span>
+        {work.label && <span className="lbl">{work.label}</span>}
       </div>
       <div className="acts">
-        <Button size="sm" icon="minus" onClick={() => addRest(-15)}>15s</Button>
-        <Button size="sm" icon="plus" onClick={() => addRest(15)}>15s</Button>
+        <Button size="sm" onClick={stopWork}>{t('Cancel')}</Button>
+        <Button size="sm" variant="primary" icon="check" onClick={finishWorkEarly}>{t('Done')}</Button>
+      </div>
+    </div>
+  )
+  // −15 and +15 sit together in number-line order; Skip is pushed to the far edge, away from the
+  // button you tap to buy more time. Pause sits between them as an icon (#193): it holds the
+  // time, it neither adds nor ends it. A rest that is over has nothing left to hold, so Ready
+  // offers no pause.
+  const label = timer.kind === 'switch' ? t('Switch sides') : timer.paused ? t('Paused') : t('Rest')
+  return (
+    <div id="timer" className={'rest' + (timer.paused ? ' paused' : '') + (timer.kind === 'switch' ? ' switch' : '') + (timer.ready ? ' ready' : '')}>
+      <div className="bar" aria-hidden="true"><i style={{ width: pct + '%' }} /></div>
+      <button type="button" className="tclock" onClick={adjustRestSheet}
+        aria-label={(timer.ready ? t('Ready') : clock(timer.left)) + '. ' + t('Change the time left')}>
+        <span className="t" role={timer.ready ? 'status' : undefined}>{timer.ready ? t('Ready') : clock(timer.left)}</span>
+        <span className="lbl">{label}<Icon name="chevronDown" /></span>
+      </button>
+      <div className="acts">
+        <Button size="sm" className="adj" icon="minus" onClick={() => addRest(-15)}>15s</Button>
+        <Button size="sm" className="adj" icon="plus" onClick={() => addRest(15)}>15s</Button>
         {!timer.ready && <Button size="sm" className="pause" icon={timer.paused ? 'play' : 'pause'}
           aria-label={t(timer.paused ? 'Resume' : 'Pause')} aria-pressed={!!timer.paused}
           onClick={timer.paused ? resumeRest : pauseRest} />}

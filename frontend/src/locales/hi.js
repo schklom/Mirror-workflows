@@ -1865,4 +1865,8 @@ export default {
   'Enter the code your other device shows under Settings → Account → Add another device. This device then gets a passkey of its own.': 'वह कोड दर्ज करें जो आपका दूसरा डिवाइस सेटिंग्स → खाता → दूसरा डिवाइस जोड़ें में दिखाता है। फिर इस डिवाइस को अपनी पासकी मिल जाएगी।',
   'Open Settings → Account → “Pair the mobile app” on the openGym site you’re already signed into, then enter its address and the code shown there.': 'जिस openGym साइट में आप पहले से साइन इन हैं, वहाँ सेटिंग्स → खाता → "मोबाइल ऐप पेयर करें" खोलें, फिर उसका पता और वहाँ दिखा कोड डालें।',
   'Open Settings → Account → “Pair the mobile app” on your openGym site in a browser and enter the new code shown there. What this phone kept is merged into your account.': 'ब्राउज़र में अपनी openGym साइट पर सेटिंग्स → खाता → "मोबाइल ऐप पेयर करें" खोलें और वहाँ दिखा नया कोड डालें। इस फ़ोन ने जो रखा है, वह आपके खाते में जोड़ दिया जाएगा।',
+  'Change the time left': 'बचा समय बदलें',
+  'Paused': 'रुका हुआ',
+  'Scroll to 0:00 to end the rest now.': 'आराम अभी खत्म करने के लिए 0:00 तक स्क्रॉल करें।',
+  'Time left': 'बचा समय',
 }

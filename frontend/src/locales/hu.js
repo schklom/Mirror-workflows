@@ -1868,4 +1868,8 @@ export default {
   'Enter the code your other device shows under Settings → Account → Add another device. This device then gets a passkey of its own.': 'Add meg a kódot, amelyet a másik eszközöd a Beállítások → Fiók → Másik eszköz hozzáadása alatt mutat. Ez az eszköz ezután saját jelszókulcsot kap.',
   'Open Settings → Account → “Pair the mobile app” on the openGym site you’re already signed into, then enter its address and the code shown there.': 'Nyisd meg a Beállítások → Fiók → „Mobilalkalmazás párosítása” menüpontot azon az openGym oldalon, ahová már be vagy jelentkezve, majd add meg az ott látható címet és kódot.',
   'Open Settings → Account → “Pair the mobile app” on your openGym site in a browser and enter the new code shown there. What this phone kept is merged into your account.': 'Nyisd meg a Beállítások → Fiók → „Mobilalkalmazás párosítása” menüpontot az openGym oldaladon egy böngészőben, és add meg az ott látható új kódot. Amit ez a telefon megőrzött, a fiókodba kerül.',
+  'Change the time left': 'Hátralévő idő módosítása',
+  'Paused': 'Szüneteltetve',
+  'Scroll to 0:00 to end the rest now.': 'Görgesd 0:00-ra, és a pihenő azonnal véget ér.',
+  'Time left': 'Hátralévő idő',
 }

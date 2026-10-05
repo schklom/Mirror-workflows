@@ -1865,4 +1865,8 @@ export default {
   'Enter the code your other device shows under Settings → Account → Add another device. This device then gets a passkey of its own.': '다른 기기의 설정 → 계정 → 다른 기기 추가에 표시되는 코드를 입력하세요. 그러면 이 기기에도 자체 패스키가 생깁니다.',
   'Open Settings → Account → “Pair the mobile app” on the openGym site you’re already signed into, then enter its address and the code shown there.': '이미 로그인된 openGym 사이트에서 설정 → 계정 → "모바일 앱 페어링"을 열고, 주소와 거기에 표시된 코드를 입력하세요.',
   'Open Settings → Account → “Pair the mobile app” on your openGym site in a browser and enter the new code shown there. What this phone kept is merged into your account.': '브라우저에서 openGym 사이트의 설정 → 계정 → "모바일 앱 페어링"을 열고 거기에 표시된 새 코드를 입력하세요. 이 휴대폰에 보관된 내용은 계정에 병합됩니다.',
+  'Change the time left': '남은 시간 변경',
+  'Paused': '일시정지됨',
+  'Scroll to 0:00 to end the rest now.': '0:00으로 돌리면 휴식이 바로 끝나요.',
+  'Time left': '남은 시간',
 }

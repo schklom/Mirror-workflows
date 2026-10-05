@@ -1876,4 +1876,8 @@ export default {
   'Enter the code your other device shows under Settings → Account → Add another device. This device then gets a passkey of its own.': 'กรอกรหัสที่อุปกรณ์อีกเครื่องแสดงใน ตั้งค่า → บัญชี → เพิ่มอุปกรณ์อื่น แล้วอุปกรณ์นี้จะได้พาสคีย์ของตัวเอง',
   'Open Settings → Account → “Pair the mobile app” on the openGym site you’re already signed into, then enter its address and the code shown there.': 'เปิด ตั้งค่า → บัญชี → “จับคู่แอปมือถือ” บนเว็บไซต์ openGym ที่คุณเข้าสู่ระบบอยู่แล้ว จากนั้นป้อนที่อยู่และรหัสที่แสดงไว้ที่นั่น',
   'Open Settings → Account → “Pair the mobile app” on your openGym site in a browser and enter the new code shown there. What this phone kept is merged into your account.': 'เปิด ตั้งค่า → บัญชี → “จับคู่แอปมือถือ” บนเว็บไซต์ openGym ของคุณในเบราว์เซอร์ แล้วป้อนรหัสใหม่ที่แสดงไว้ที่นั่น สิ่งที่โทรศัพท์เครื่องนี้เก็บไว้จะรวมเข้ากับบัญชีของคุณ',
+  'Change the time left': 'เปลี่ยนเวลาที่เหลือ',
+  'Paused': 'หยุดชั่วคราว',
+  'Scroll to 0:00 to end the rest now.': 'เลื่อนไปที่ 0:00 เพื่อจบการพักทันที',
+  'Time left': 'เวลาที่เหลือ',
 }

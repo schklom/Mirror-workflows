@@ -917,6 +917,32 @@ export function insertWarmupRow(rows, mode, target, step = 2.5) {
   return next
 }
 
+// The set-number menu's "Make it a warm-up set": the row takes the shape insertWarmupRow gives a
+// warm-up (its weight, reps and tick kept; drops, bursts, sides and effort dropped, since a
+// warm-up has none) and moves to the end of the warm-ups, so it is numbered, rested and left out
+// of progression and records like any other warm-up. A row that is one already is left alone.
+export function makeWarmupAt(rows, i) {
+  const src = rows[i]
+  if (!src || isWarmupRow(src)) return rows
+  const warm = { w: src.w || 0, r: src.r, done: !!src.done, phase: 'warmup', warmup: true }
+  if (src.at != null) warm.at = src.at
+  return placeRow(rows, i, warm)
+}
+// And back: "Count it as a working set" makes it the first work set.
+export function makeWorkAt(rows, i) {
+  const src = rows[i]
+  if (!src || !isWarmupRow(src)) return rows
+  const { phase, warmup, ...work } = src
+  return placeRow(rows, i, work)
+}
+// Takes row i out and puts `row` where the work sets begin.
+const placeRow = (rows, i, row) => {
+  const next = rows.filter((_, j) => j !== i)
+  const firstWork = next.findIndex(x => !isWarmupRow(x))
+  next.splice(firstWork === -1 ? next.length : firstWork, 0, row)
+  return next
+}
+
 /** Remove the row at `i`, never emptying the entry below one row. */
 export function removeRowAt(rows, i) {
   if (rows.length <= 1) return rows.slice()

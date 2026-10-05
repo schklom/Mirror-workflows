@@ -1889,4 +1889,6 @@ export default {
   'week start': 'hét kezdete',
   'Finish workout?': 'Befejezed az edzést?',
   'Finish and save': 'Befejezés és mentés',
+  'Make it a warm-up set': 'Legyen bemelegítő sorozat',
+  'Count it as a working set': 'Számítson munkasorozatnak',
 }

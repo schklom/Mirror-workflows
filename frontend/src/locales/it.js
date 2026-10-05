@@ -1886,4 +1886,6 @@ export default {
   'week start': 'inizio settimana',
   'Finish workout?': 'Terminare l’allenamento?',
   'Finish and save': 'Termina e salva',
+  'Make it a warm-up set': 'Rendila serie di riscaldamento',
+  'Count it as a working set': 'Conta come serie allenante',
 }

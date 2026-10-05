@@ -1886,4 +1886,6 @@ export default {
   'week start': '주 시작',
   'Finish workout?': '운동을 마칠까요?',
   'Finish and save': '마치고 저장',
+  'Make it a warm-up set': '워밍업 세트로 바꾸기',
+  'Count it as a working set': '본 세트로 세기',
 }

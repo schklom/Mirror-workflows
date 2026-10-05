@@ -1879,4 +1879,6 @@ export default {
   'week start': '每週開始',
   'Finish workout?': '結束訓練？',
   'Finish and save': '結束並儲存',
+  'Make it a warm-up set': '改為熱身組',
+  'Count it as a working set': '算作正式組',
 }

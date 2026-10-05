@@ -1897,4 +1897,6 @@ export default {
   'week start': 'วันเริ่มสัปดาห์',
   'Finish workout?': 'จบการออกกำลังกายไหม?',
   'Finish and save': 'จบและบันทึก',
+  'Make it a warm-up set': 'เปลี่ยนเป็นเซ็ตวอร์มอัพ',
+  'Count it as a working set': 'นับเป็นเซ็ตจริง',
 }

@@ -1886,4 +1886,6 @@ export default {
   'week start': 'hafta başlangıcı',
   'Finish workout?': 'Antrenman bitirilsin mi?',
   'Finish and save': 'Bitir ve kaydet',
+  'Make it a warm-up set': 'Isınma setine çevir',
+  'Count it as a working set': 'Çalışma seti say',
 }

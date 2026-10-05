@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { nextTrainingDay, modeOf, isTimed, fmtSec, setLabel, defaultConfig, buildSets, freestyleConfig, exLine, workoutVolume, bestWeightFor, bestWeightForEntry, completedRepsOf, metricRowsForEntry, effortOf, stepEffort, capEffort, isBw, isPerSide, sideReps, repStep, cascadeWeight, insertWarmupRow, removeRowAt, workSetsDone, setsDone, setsDoneActive, setUnits, doneUnits, setUnitsTotal, pairAdjacent, unpairSuperset, supersetUnits, sessionSections, applyIntensifierPlan, pinnedNoteFor, exNoteFor, effectiveRoutineIds, effectiveRoutines, effectiveRoutineId, effectiveRoutine, lastEntryFor, entryExcluded, entryRoutineId, setsRepsOf } from './history.js'
+import { nextTrainingDay, modeOf, isTimed, fmtSec, setLabel, defaultConfig, buildSets, freestyleConfig, exLine, workoutVolume, bestWeightFor, bestWeightForEntry, completedRepsOf, metricRowsForEntry, effortOf, stepEffort, capEffort, isBw, isPerSide, sideReps, repStep, cascadeWeight, insertWarmupRow, makeWarmupAt, makeWorkAt, removeRowAt, workSetsDone, setsDone, setsDoneActive, setUnits, doneUnits, setUnitsTotal, pairAdjacent, unpairSuperset, supersetUnits, sessionSections, applyIntensifierPlan, pinnedNoteFor, exNoteFor, effectiveRoutineIds, effectiveRoutines, effectiveRoutineId, effectiveRoutine, lastEntryFor, entryExcluded, entryRoutineId, setsRepsOf } from './history.js'
 import { makeSideSet, setSideField, toggleSide, WEIGHT_ORIGIN_MANUAL } from './workout-model.js'
 import { EXDB } from './exercises.js'
 import { todayISO, isoOf } from './format.js'
@@ -1532,5 +1532,27 @@ describe('a rotation day and a fixed weekday day are one combined day', () => {
   it('a repeated queue id does not repeat the day', () => {
     const dup = S({ queue: { ids: ['a', 'a'], since: Date.parse('2026-09-13T08:00:00'), startsOn: '2026-09-13', label: 'My split' } })
     expect(effectiveRoutineIds(dup, TODAY, TODAY)).toEqual(['a', 'core'])
+  })
+})
+
+describe('switching a row between warm-up and work', () => {
+  it('makeWarmupAt gives the warm-up shape, keeps the numbers and the tick, and moves it in front of the work', () => {
+    const rows = [{ w: 40, r: 8, phase: 'warmup', warmup: true, done: true }, { w: 100, r: 5, done: true, at: 7 }, { w: 100, r: 5, done: false, type: 'dropset', drops: [{ w: 80, r: 4 }], rir: 2 }]
+    const next = makeWarmupAt(rows, 2)
+    expect(next).toEqual([rows[0], { w: 100, r: 5, done: false, phase: 'warmup', warmup: true }, rows[1]])
+    expect(makeWarmupAt(rows, 1)[1]).toEqual({ w: 100, r: 5, done: true, phase: 'warmup', warmup: true, at: 7 })
+    expect(makeWarmupAt(rows, 0)).toBe(rows)
+  })
+
+  it('a warm-up made one is left out of the best weight and the work-set count', () => {
+    const e = { id: 'x', sets: makeWarmupAt([{ w: 60, r: 5, done: true }, { w: 120, r: 3, done: true }], 1) }
+    expect(bestWeightForEntry(e)).toBe(60)
+    expect(workSetsDone({ entries: [e] })).toBe(1)
+  })
+
+  it('makeWorkAt makes it the first work set', () => {
+    const rows = [{ w: 40, r: 8, phase: 'warmup', warmup: true }, { w: 60, r: 8, phase: 'warmup', warmup: true, done: true }, { w: 100, r: 5 }]
+    expect(makeWorkAt(rows, 0)).toEqual([rows[1], { w: 40, r: 8 }, rows[2]])
+    expect(makeWorkAt(rows, 2)).toBe(rows)
   })
 })

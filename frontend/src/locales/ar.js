@@ -1939,4 +1939,6 @@ export default {
   'week start': 'بداية الأسبوع',
   'Finish workout?': 'إنهاء التمرين؟',
   'Finish and save': 'إنهاء وحفظ',
+  'Make it a warm-up set': 'اجعلها مجموعة إحماء',
+  'Count it as a working set': 'احسبها مجموعة عمل',
 }

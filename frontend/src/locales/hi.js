@@ -1886,4 +1886,6 @@ export default {
   'week start': 'सप्ताह की शुरुआत',
   'Finish workout?': 'वर्कआउट समाप्त करें?',
   'Finish and save': 'समाप्त करें और सहेजें',
+  'Make it a warm-up set': 'इसे वार्म-अप सेट बनाएं',
+  'Count it as a working set': 'इसे वर्किंग सेट गिनें',
 }

@@ -1769,7 +1769,8 @@ describe('workout controls: the more menu and the set menu', () => {
   it('opens a per-set menu from the set number with drop, burst and remove', async () => {
     await mount([exercise('plain-bench', [false, false])])
     await act(async () => { container.querySelector('button[aria-label="Set 2"]').dispatchEvent(new dom.Event('click', { bubbles: true })) })
-    expect(menuItemsOf(lastMenu()).map(it => it.label)).toEqual(['Drop set', 'Rest-pause burst', 'Remove this set'])
+    expect(menuItemsOf(lastMenu()).map(it => it.label)).toEqual(['Make it a warm-up set', 'Drop set', 'Rest-pause burst', 'Remove this set'])
+    expect(item('Make it a warm-up set').icon).toBe('sunrise')
 
     await act(async () => { item('Drop set').onClick() })
     expect(mocks.S.active.entries[0].sets[1].drops?.length).toBe(1)
@@ -1777,6 +1778,28 @@ describe('workout controls: the more menu and the set menu', () => {
     await act(async () => { container.querySelector('button[aria-label="Set 2"]').dispatchEvent(new dom.Event('click', { bubbles: true })) })
     await act(async () => { item('Remove this set').onClick() })
     expect(mocks.S.active.entries[0].sets.length).toBe(1)
+  })
+
+  it('makes a work set a warm-up and back, and keeps one work set', async () => {
+    await mount([exercise('plain-bench', [true, false])])
+    // a warm-up's number button is "Set 1" too, so rows are picked by position
+    const openSet = async k => { await act(async () => { container.querySelectorAll('button.n')[k].dispatchEvent(new dom.Event('click', { bubbles: true })) }) }
+    await openSet(1)
+    await act(async () => { item('Make it a warm-up set').onClick() })
+    const sets = () => mocks.S.active.entries[0].sets
+    // moved in front of the work sets, in the shape Add warm-up set gives one
+    expect(sets()[0]).toEqual({ w: 60, r: 5, done: false, phase: 'warmup', warmup: true })
+    expect(isWarmupRow(sets()[1])).toBe(false)
+    // the last work set cannot become one too
+    await rerender()
+    await openSet(1)
+    expect(item('Make it a warm-up set')).toBeUndefined()
+    // and a warm-up counts as a working set again
+    await openSet(0)
+    expect(lastMenu().title).toBe('Warm-up')
+    await act(async () => { item('Count it as a working set').onClick() })
+    expect(sets().every(x => !isWarmupRow(x))).toBe(true)
+    expect(sets()[0]).toEqual({ w: 60, r: 5, done: false })
   })
 
   it('brings the legacy button rows back per switch', async () => {
@@ -2271,10 +2294,10 @@ describe('the workout screen chrome (v1.3.11)', () => {
     expect(item('Rest timer')).toBeUndefined()
   })
 
-  it('groups the set menu under a header, with Remove on its own', async () => {
+  it('groups the set menu: the warm-up switch, then Add to this set, with Remove on its own', async () => {
     await mount([exercise('plain-bench', [false, false])])
     await click(container.querySelector('button[aria-label="Set 1"]'))
-    expect(lastMenu().sections.map(g => g.title)).toEqual(['Add to this set', undefined])
+    expect(lastMenu().sections.map(g => g.title)).toEqual([undefined, 'Add to this set', undefined])
   })
 
   it('shows a thumbnail instead of the animation when animations are Small, and a tap brings it back', async () => {

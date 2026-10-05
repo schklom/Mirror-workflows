@@ -1890,4 +1890,6 @@ export default {
   'week start': 'начало недели',
   'Finish workout?': 'Завершить тренировку?',
   'Finish and save': 'Завершить и сохранить',
+  'Make it a warm-up set': 'Сделать разминочным подходом',
+  'Count it as a working set': 'Считать рабочим подходом',
 }

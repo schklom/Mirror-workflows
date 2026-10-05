@@ -1883,4 +1883,6 @@ export default {
   'week start': 'початок тижня',
   'Finish workout?': 'Завершити тренування?',
   'Finish and save': 'Завершити й зберегти',
+  'Make it a warm-up set': 'Зробити розминковим підходом',
+  'Count it as a working set': 'Рахувати робочим підходом',
 }

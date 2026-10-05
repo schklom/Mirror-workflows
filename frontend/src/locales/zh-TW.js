@@ -1865,4 +1865,6 @@ export default {
   'All settings': '所有設定',
   'Changes stick for your next workouts too.': '變更也會套用到之後的訓練。',
   'Workout settings': '訓練設定',
+  'Default ({0})': '預設（{0}）',
+  'Rest for this exercise': '此動作的組間休息',
 }

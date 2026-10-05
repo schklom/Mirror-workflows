@@ -4,6 +4,8 @@
 import pt from './pt.js'
 
 export const PT_BR_OVERRIDES = {
+  'Default ({0})': 'Padrão ({0})',
+  'Rest for this exercise': 'Descanso deste exercício',
   'All settings': 'Todas as configurações',
   'Changes stick for your next workouts too.': 'As mudanças valem para os próximos treinos também.',
   'Workout settings': 'Configurações do treino',

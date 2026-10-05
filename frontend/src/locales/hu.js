@@ -1875,4 +1875,6 @@ export default {
   'All settings': 'Összes beállítás',
   'Changes stick for your next workouts too.': 'A változások a következő edzésekre is érvényesek.',
   'Workout settings': 'Edzés beállításai',
+  'Default ({0})': 'Alapértelmezett ({0})',
+  'Rest for this exercise': 'Pihenő ennél a gyakorlatnál',
 }

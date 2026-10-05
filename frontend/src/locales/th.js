@@ -1883,4 +1883,6 @@ export default {
   'All settings': 'การตั้งค่าทั้งหมด',
   'Changes stick for your next workouts too.': 'การเปลี่ยนแปลงจะใช้กับการออกกำลังกายครั้งต่อไปด้วย',
   'Workout settings': 'ตั้งค่าระหว่างออกกำลังกาย',
+  'Default ({0})': 'ค่าเริ่มต้น ({0})',
+  'Rest for this exercise': 'เวลาพักของท่านี้',
 }

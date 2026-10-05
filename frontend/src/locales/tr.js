@@ -1872,4 +1872,6 @@ export default {
   'All settings': 'Tüm ayarlar',
   'Changes stick for your next workouts too.': 'Değişiklikler sonraki antrenmanlarında da geçerli.',
   'Workout settings': 'Antrenman ayarları',
+  'Default ({0})': 'Varsayılan ({0})',
+  'Rest for this exercise': 'Bu egzersizin dinlenmesi',
 }

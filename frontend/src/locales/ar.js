@@ -1925,4 +1925,6 @@ export default {
   'All settings': 'كل الإعدادات',
   'Changes stick for your next workouts too.': 'تبقى التغييرات لتمارينك القادمة أيضًا.',
   'Workout settings': 'إعدادات التمرين الحالي',
+  'Default ({0})': 'الافتراضي ({0})',
+  'Rest for this exercise': 'الراحة لهذا التمرين',
 }

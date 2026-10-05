@@ -1872,4 +1872,6 @@ export default {
   'All settings': '所有设置',
   'Changes stick for your next workouts too.': '更改也会用于你之后的训练。',
   'Workout settings': '训练设置',
+  'Default ({0})': '默认（{0}）',
+  'Rest for this exercise': '本动作的休息',
 }

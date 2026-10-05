@@ -1876,4 +1876,6 @@ export default {
   'All settings': 'Все настройки',
   'Changes stick for your next workouts too.': 'Изменения сохранятся и для следующих тренировок.',
   'Workout settings': 'Настройки тренировки',
+  'Default ({0})': 'По умолчанию ({0})',
+  'Rest for this exercise': 'Отдых для этого упражнения',
 }

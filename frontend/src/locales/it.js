@@ -1872,4 +1872,6 @@ export default {
   'All settings': 'Tutte le impostazioni',
   'Changes stick for your next workouts too.': 'Le modifiche valgono anche per i prossimi allenamenti.',
   'Workout settings': 'Impostazioni allenamento',
+  'Default ({0})': 'Predefinito ({0})',
+  'Rest for this exercise': 'Recupero per questo esercizio',
 }

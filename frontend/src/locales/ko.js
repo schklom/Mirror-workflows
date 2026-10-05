@@ -1872,4 +1872,6 @@ export default {
   'All settings': '전체 설정',
   'Changes stick for your next workouts too.': '변경 사항은 다음 운동에도 그대로 적용돼요.',
   'Workout settings': '운동 중 설정',
+  'Default ({0})': '기본값 ({0})',
+  'Rest for this exercise': '이 운동의 휴식',
 }

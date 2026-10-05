@@ -1872,4 +1872,6 @@ export default {
   'All settings': 'सभी सेटिंग्स',
   'Changes stick for your next workouts too.': 'बदलाव आपके अगले वर्कआउट के लिए भी रहेंगे।',
   'Workout settings': 'वर्कआउट सेटिंग',
+  'Default ({0})': 'डिफ़ॉल्ट ({0})',
+  'Rest for this exercise': 'इस एक्सरसाइज़ का आराम',
 }

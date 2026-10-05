@@ -496,7 +496,6 @@ export default {
   'upper arms': 'felkar', 'upper legs': 'comb', 'waist': 'derék',
   'full body': 'teljes test',
   // --- data terms: equipment ---
-  'Details': 'Részletek',
   'Finish': 'Befejezés',
   'Start {0}': '{0} indítása',
   'Guest mode: your data lives only in this browser.': 'Vendég mód: az adataid csak ebben a böngészőben élnek.',
@@ -906,7 +905,6 @@ export default {
   'Deload routine': 'Deload rutin',
   'Its workouts do not count toward progression. They still show in history and statistics.': 'Az edzései nem számítanak bele a progresszióba. Az előzményekben és a statisztikában továbbra is megjelennek.',
   'A deload routine opens at the numbers set here, so the progression above does not apply to it.': 'A deload rutin az itt beállított értékekkel indul, így a fenti progresszió nem vonatkozik rá.',
-  'Open progression settings': 'Progresszió beállításainak megnyitása',
   'Hevy is rate-limiting requests. Wait a minute and try again': 'A Hevy korlátozza a kéréseket. Várj egy percet, és próbáld újra',
   // --- log a past workout ---
   'Log a past workout': 'Korábbi edzés rögzítése',
@@ -1330,7 +1328,6 @@ export default {
   'Camera access was denied. Allow it in your browser and try again.': 'A kamera-hozzáférés elutasítva. Engedélyezd a böngészőben, és próbáld újra.',
   'Add note': 'Jegyzet hozzáadása',
   'Edit note': 'Jegyzet szerkesztése',
-  'Progression settings': 'Progresszió beállításai',
   'Don’t count for progression': 'Ne számítson bele a progresszióba',
   'This exercise, this session only': 'Csak ez a gyakorlat, csak ezen az edzésen',
   'Not counted for progression': 'Nem számít bele a progresszióba',
@@ -1713,7 +1710,6 @@ export default {
   // --- update a routine from a running workout ---
   'Update routine': 'Rutin frissítése',
   'Update “{0}”?': 'Frissíted a(z) „{0}” rutint?',
-  'Copy this exercise’s warm-up sets, and the rest and note from its Progression settings, into the routine. A note added for today stays with this workout. Your workout history is kept.': 'Átmásolja a rutinba a gyakorlat bemelegítő sorozatait, valamint a pihenőt és a jegyzetet a Progresszió beállításaiból. A mai napra írt jegyzet ennél az edzésnél marad. Az edzéselőzményeid megmaradnak.',
   'Routine updated': 'Rutin frissítve',
   'per side': 'oldalanként',
   'Left': 'Bal',
@@ -1877,4 +1873,14 @@ export default {
   'Workout settings': 'Edzés beállításai',
   'Default ({0})': 'Alapértelmezett ({0})',
   'Rest for this exercise': 'Pihenő ennél a gyakorlatnál',
+  'Add to this set': 'Hozzáadás ehhez a sorozathoz',
+  'Copy this exercise’s warm-up sets, and the rest and note from its Exercise settings, into the routine. A note added for today stays with this workout. Your workout history is kept.': 'Átmásolja a rutinba a gyakorlat bemelegítő sorozatait, valamint a pihenőt és a jegyzetet a Gyakorlat beállításaiból. A mai napra írt jegyzet ennél az edzésnél marad. Az edzéselőzményeid megmaradnak.',
+  'Discard workout': 'Edzés elvetése',
+  'Exercise settings': 'Gyakorlat beállításai',
+  'How to do it': 'Így csináld',
+  'Look it up': 'Utánanézni',
+  'Open exercise settings': 'Gyakorlat beállításainak megnyitása',
+  'Order and supersets': 'Sorrend és szupersorozatok',
+  'Sets, reps, rest, progression': 'Sorozatok, ismétlések, pihenő, progresszió',
+  'This workout': 'Ez az edzés',
 }

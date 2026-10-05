@@ -496,7 +496,6 @@ export default {
   'upper arms': 'แขนท่อนบน', 'upper legs': 'ขาท่อนบน', 'waist': 'เอว',
   'full body': 'ทั้งตัว',
   // --- data terms: equipment ---
-  'Details': 'รายละเอียด',
   'Finish': 'เสร็จสิ้น',
   'Start {0}': 'เริ่ม {0}',
   'Guest mode: your data lives only in this browser.': 'โหมดผู้เยี่ยมชม: ข้อมูลของคุณอยู่ในเบราว์เซอร์นี้เท่านั้น',
@@ -914,7 +913,6 @@ export default {
   'Deload routine': 'รูทีนดีโหลด',
   'Its workouts do not count toward progression. They still show in history and statistics.': 'การฝึกของรูทีนนี้ไม่นับรวมในการเพิ่มระดับ แต่ยังแสดงในประวัติและสถิติ',
   'A deload routine opens at the numbers set here, so the progression above does not apply to it.': 'รูทีนดีโหลดเริ่มจากค่าที่ตั้งไว้ที่นี่ การเพิ่มระดับด้านบนจึงไม่มีผลกับรูทีนนี้',
-  'Open progression settings': 'เปิดการตั้งค่าการเพิ่มน้ำหนัก',
   'Hevy is rate-limiting requests. Wait a minute and try again': 'Hevy กำลังจำกัดจำนวนคำขอ รอสักนาทีแล้วลองอีกครั้ง',
   // --- log a past workout ---
   'Log a past workout': 'บันทึกการฝึกย้อนหลัง',
@@ -1338,7 +1336,6 @@ export default {
   'Camera access was denied. Allow it in your browser and try again.': 'การเข้าถึงกล้องถูกปฏิเสธ อนุญาตในเบราว์เซอร์แล้วลองอีกครั้ง',
   'Add note': 'เพิ่มโน้ต',
   'Edit note': 'แก้ไขโน้ต',
-  'Progression settings': 'ตั้งค่าการเพิ่มน้ำหนัก',
   'Don’t count for progression': 'ไม่นับรวมในการเพิ่มระดับ',
   'This exercise, this session only': 'เฉพาะท่านี้ และเฉพาะรอบนี้เท่านั้น',
   'Not counted for progression': 'ไม่ถูกนับรวมในการเพิ่มระดับ',
@@ -1721,7 +1718,6 @@ export default {
   // --- update a routine from a running workout ---
   'Update routine': 'อัปเดตรูทีน',
   'Update “{0}”?': 'อัปเดตรูทีน “{0}” ไหม?',
-  'Copy this exercise’s warm-up sets, and the rest and note from its Progression settings, into the routine. A note added for today stays with this workout. Your workout history is kept.': 'คัดลอกเซ็ตวอร์มอัพของท่านี้ รวมถึงเวลาพักและโน้ตจากการตั้งค่าการเพิ่มน้ำหนัก ไปยังรูทีน โน้ตที่เพิ่มไว้สำหรับวันนี้จะอยู่กับการออกกำลังกายครั้งนี้ ประวัติการออกกำลังกายของคุณจะยังอยู่ครบ',
   'Routine updated': 'อัปเดตรูทีนแล้ว',
   'per side': 'ต่อข้าง',
   'Left': 'ซ้าย',
@@ -1885,4 +1881,14 @@ export default {
   'Workout settings': 'ตั้งค่าระหว่างออกกำลังกาย',
   'Default ({0})': 'ค่าเริ่มต้น ({0})',
   'Rest for this exercise': 'เวลาพักของท่านี้',
+  'Add to this set': 'เพิ่มในเซ็ตนี้',
+  'Copy this exercise’s warm-up sets, and the rest and note from its Exercise settings, into the routine. A note added for today stays with this workout. Your workout history is kept.': 'คัดลอกเซ็ตวอร์มอัพของท่านี้ รวมถึงเวลาพักและโน้ตจากการตั้งค่าท่าออกกำลังกาย ไปยังรูทีน โน้ตที่เพิ่มไว้สำหรับวันนี้จะอยู่กับการออกกำลังกายครั้งนี้ ประวัติการออกกำลังกายของคุณจะยังอยู่ครบ',
+  'Discard workout': 'ทิ้งการออกกำลังกายนี้',
+  'Exercise settings': 'ตั้งค่าท่าออกกำลังกาย',
+  'How to do it': 'วิธีทำ',
+  'Look it up': 'ดูข้อมูล',
+  'Open exercise settings': 'เปิดการตั้งค่าท่าออกกำลังกาย',
+  'Order and supersets': 'ลำดับและซูเปอร์เซ็ต',
+  'Sets, reps, rest, progression': 'เซ็ต ครั้ง เวลาพัก การเพิ่มน้ำหนัก',
+  'This workout': 'การออกกำลังกายครั้งนี้',
 }

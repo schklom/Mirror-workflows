@@ -206,7 +206,7 @@ describe('plate line under set rows', () => {
     document.body.appendChild(sc)
     const sr = createRoot(sc)
     act(() => sr.render(useUI.getState().sheets.at(-1).render(() => {})))
-    expect(sc.textContent).toContain('Details')
+    expect(sc.textContent).toContain('How to do it')
     expect(sc.textContent).not.toContain('Plate loading')
     act(() => sr.unmount()); sc.remove()
   })

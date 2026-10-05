@@ -17,6 +17,10 @@ import { api, beacon } from '../lib/api.js'
 import { pyramidRestFor, maxRecordAt, isPyramid, pyramidLabel } from '../lib/pyramid.js'
 import { insertionIndexAfterCurrentUnit, nextUnfinishedUnit, setProgressHighWater, supersetFlowStep, restAfterSet, restOnRecheck, restSecFor, warmupRestSecFor } from '../lib/supersetFlow.js'
 import Media from '../components/Media.jsx'
+import WorkoutThumb, { hasWorkoutMedia } from '../components/WorkoutThumb.jsx'
+import { workoutSettingsSheet } from '../components/WorkoutSettingsSheet.jsx'
+import { durationSheet } from '../components/DurationWheel.jsx'
+import { REST_MAX, fmtRest } from '../lib/duration.js'
 import { startFlow, exercisePicker, exConfigSheet, exerciseDetailSheet, finishWorkout, exitWorkoutEdit, workoutCompleteSheet, confirmSheet, exerciseNoteSheet, sessionNoteSheet, renameWorkoutSheet, swapActiveWorkoutExercise, barWeightSheet, menuSheet, effortPickerSheet, exerciseHistorySheet, addRoutineToSessionSheet } from '../sheets.jsx'
 import { afterScrollRestore, scrollRestorePending } from '../components/Modals.jsx'
 import { effortColor } from '../lib/effort.js'
@@ -100,7 +104,7 @@ const RTL_LETTER = /[֐-ࣿיִ-﷿ﹰ-﻿]/
 // enough to turn over, far shorter than the rest the set earns once both sides are held.
 const SWITCH_SIDES_SEC = 10
 
-function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSide, onField, onAddSet, onRemoveSet, onAddWarmup, onRemoveSetAt, onStartTimed, onPairPrev, onPairNext, onSetRowRef, onProgressionSettings, onNoProg, routineUpdate, onSwap, onMoveUp, onMoveDown, canMoveUp, canMoveDown, onRemoveExercise, busy }) {
+function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSide, onField, onAddSet, onRemoveSet, onAddWarmup, onRemoveSetAt, onStartTimed, onPairPrev, onPairNext, onSetRowRef, onProgressionSettings, onRest, onNoProg, routineUpdate, onSwap, onMoveUp, onMoveDown, canMoveUp, canMoveDown, onRemoveExercise, busy }) {
   const S = useStore(s => s.S)
   const update = useStore(s => s.update)
   const working = useUI(s => s.work)
@@ -162,6 +166,7 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
     return { ...setClusterAt(row, ci, { r: v }), r: Math.max(0, (row.r || 0) + delta) }
   })
   const ex = exOr(entry.id)
+  const thumb = !dense && S.gifSize === 'mini' && hasWorkoutMedia(ex)
   const mode = modeOf({ ...(entry.target || {}), id: entry.id })
   const cardio = mode === 'cardio'
   const timed = mode === 'time'
@@ -356,25 +361,41 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
   }
   // Everything about this exercise that is not a set you are logging right now lives behind one
   // button. What used to be a row of buttons in the header, a chip under the bar, a strip of
-  // three under the sets and four more below the card is a single list you open once a session.
+  // three under the sets and four more below the card is a single list you open once a session,
+  // in groups since v1.3.11: what you change today, what you look up, the exercise's settings,
+  // the order of the session, and Remove on its own at the end.
+  // The exercise's own rest, or the default it falls back to (lib/supersetFlow.js restSecFor).
+  const ownRest = entry.target?.restSec > 0 ? entry.target.restSec : 0
+  const restSub = ownRest ? fmtRest(ownRest) : t('Default ({0})', fmtRest(S.restSec))
   const openMore = () => menuSheet({
     title: exerciseNameFor(ex),
     titleClass: exerciseNameClass(ex),
-    items: [
-      { icon: 'pencil', label: entry.note ? t('Edit note') : t('Add note'), sub: entry.note || undefined, onClick: () => exerciseNoteSheet(entryIdx) },
-      { icon: 'info', label: t('Details'), onClick: () => exerciseDetailSheet(ex) },
-      { icon: 'history', label: t('History'), sub: last ? t('Last time') + ' ' + fmtDate(last.d) : undefined, onClick: () => exerciseHistorySheet(entry.id) },
-      onProgressionSettings && { icon: 'chartLine', label: t('Progression settings'), sub: guidance ? t(guidance.policyLabel) : undefined, onClick: onProgressionSettings },
-      onNoProg && { icon: 'pause', label: t('Don’t count for progression'), sub: t('This exercise, this session only'), on: entry.noProg === true, onClick: () => onNoProg(entry.noProg !== true) },
-      plateLoading && { icon: 'plate', label: t('Plate loading'), sub: loadSummary, onClick: () => barWeightSheet(entry.id, cfg) },
-      { icon: 'flame', label: t('Add warm-up set'), onClick: onAddWarmup },
-      routineUpdate && { icon: 'upload', label: t('Update routine'), sub: routineUpdate.sub, onClick: routineUpdate.run },
-      onPairPrev && { icon: 'link', label: t('Make superset with previous'), onClick: onPairPrev },
-      onPairNext && { icon: 'link', label: t('Make superset with next'), onClick: onPairNext },
-      onSwap && { icon: 'shuffle', label: t('Swap exercise'), onClick: onSwap, disabled: busy },
-      onMoveUp && { icon: 'chevronUp', label: t('Move up'), onClick: onMoveUp, disabled: busy || !canMoveUp },
-      onMoveDown && { icon: 'chevronDown', label: t('Move down'), onClick: onMoveDown, disabled: busy || !canMoveDown },
-      onRemoveExercise && { icon: 'trash', label: t('Remove exercise'), onClick: onRemoveExercise, danger: true, disabled: busy },
+    sections: [
+      { title: t('Today'), items: [
+        onSwap && { icon: 'swap', label: t('Swap exercise'), onClick: onSwap, disabled: busy },
+        { icon: 'sunrise', label: t('Add warm-up set'), onClick: onAddWarmup },
+        { icon: 'note', label: entry.note ? t('Edit note') : t('Add note'), sub: entry.note || undefined, onClick: () => exerciseNoteSheet(entryIdx) },
+        onNoProg && { icon: 'chartLineSlash', label: t('Don’t count for progression'), sub: t('This exercise, this session only'), on: entry.noProg === true, onClick: () => onNoProg(entry.noProg !== true) },
+      ] },
+      { title: t('Look it up'), items: [
+        { icon: 'history', label: t('History'), sub: last ? t('Last time') + ' ' + fmtDate(last.d) : undefined, onClick: () => exerciseHistorySheet(entry.id) },
+        { icon: 'info', label: t('How to do it'), onClick: () => exerciseDetailSheet(ex) },
+      ] },
+      { title: t('Settings'), items: [
+        onProgressionSettings && { icon: 'slider', label: t('Exercise settings'), sub: guidance ? t(guidance.policyLabel) : t('Sets, reps, rest, progression'), onClick: onProgressionSettings },
+        onRest && { icon: 'timer', label: t('Rest timer'), sub: restSub, onClick: onRest },
+        plateLoading && { icon: 'plate', label: t('Plate loading'), sub: loadSummary, onClick: () => barWeightSheet(entry.id, cfg) },
+        routineUpdate && { icon: 'upload', label: t('Update routine'), sub: routineUpdate.sub, onClick: routineUpdate.run },
+      ] },
+      { title: t('Order and supersets'), items: [
+        onPairPrev && { icon: 'link', label: t('Make superset with previous'), onClick: onPairPrev },
+        onPairNext && { icon: 'link', label: t('Make superset with next'), onClick: onPairNext },
+        onMoveUp && { icon: 'chevronUp', label: t('Move up'), onClick: onMoveUp, disabled: busy || !canMoveUp },
+        onMoveDown && { icon: 'chevronDown', label: t('Move down'), onClick: onMoveDown, disabled: busy || !canMoveDown },
+      ] },
+      { items: [
+        onRemoveExercise && { icon: 'trash', label: t('Remove exercise'), onClick: onRemoveExercise, danger: true, disabled: busy },
+      ] },
     ],
   })
   // The set number is the set's own menu: drop / burst / remove — three things that used to
@@ -394,10 +415,14 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
     menuSheet({
       title: warm ? t('Warm-up') : sideTag ? t('Set {0} ({1})', setNumOf(s, i), sideTag) : t('Set {0}', setNumOf(s, i)),
       subtitle: setLabel(entry.id, s, entry.target, speedUnit),
-      items: [
-        !warm && mode === 'reps' && !isRestPauseSet(s) && { icon: 'arrowDown', label: t('Drop set'), sub: t('+ Drop'), onClick: () => addDropRow(i) },
-        !warm && mode === 'reps' && !isDropSet(s) && { icon: 'bolt', label: t('Rest-pause burst'), sub: t('+ Burst'), onClick: () => addBurstRow(i) },
-        { icon: 'trash', label: t('Remove this set'), danger: true, disabled: !editing && entry.sets.length <= 1, onClick: () => onRemoveSetAt(i) },
+      sections: [
+        { title: t('Add to this set'), items: [
+          !warm && mode === 'reps' && !isRestPauseSet(s) && { icon: 'arrowDown', label: t('Drop set'), sub: t('+ Drop'), onClick: () => addDropRow(i) },
+          !warm && mode === 'reps' && !isDropSet(s) && { icon: 'bolt', label: t('Rest-pause burst'), sub: t('+ Burst'), onClick: () => addBurstRow(i) },
+        ] },
+        { items: [
+          { icon: 'trash', label: t('Remove this set'), danger: true, disabled: !editing && entry.sets.length <= 1, onClick: () => onRemoveSetAt(i) },
+        ] },
       ],
     })
   }
@@ -522,9 +547,12 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
     </div>
   )
   return <>
-    {!dense && <Media ex={ex} key={entry.id} compact={compact} minimizable />}
-    <div className="row between" style={{ marginBottom: 6 }}>
-      <div style={{ fontSize: (compact || dense) ? 17 : 20, fontWeight: 600, letterSpacing: '-.02em', lineHeight: 1.2 }} className={exerciseNameClass(ex)}>{exerciseNameFor(ex)}</div>
+    {/* Animations set to Small: a thumbnail beside the name instead of a strip above it, so the
+        first set is on screen without scrolling; a tap brings the full animation back. */}
+    {!dense && !thumb && <Media ex={ex} key={entry.id} compact={compact} minimizable />}
+    <div className="row between exhd" style={{ marginBottom: 6 }}>
+      {thumb && <WorkoutThumb ex={ex} onExpand={() => update(s => { s.gifSize = 'full' })} />}
+      <div style={{ flex: 1, minWidth: 0, fontSize: (compact || dense) ? 17 : 20, fontWeight: 600, letterSpacing: '-.02em', lineHeight: 1.2 }} className={exerciseNameClass(ex)}>{exerciseNameFor(ex)}</div>
       <div className="row" style={{ gap: 2, flex: 'none' }}>
         {entry.note && <button className="iconbtn" aria-label={t('Note')} title={t('Note')} style={{ color: 'var(--acc)' }}
           onClick={() => exerciseNoteSheet(entryIdx)}><Icon name="pencil" /></button>}
@@ -572,7 +600,7 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
     {planLine}
     {refLine}
     {guidance && onProgressionSettings && <button type="button" className={'progline' + (plan.kind === 'deload' ? ' warn' : '')}
-      aria-label={t('Open progression settings')} onClick={onProgressionSettings}>
+      aria-label={t('Open exercise settings')} onClick={onProgressionSettings}>
       <Icon name={plan.kind === 'up' ? 'arrowUp' : plan.kind === 'deload' ? 'arrowDown' : 'lightbulb'} />
       <span><strong>{t(guidance.policyLabel)}</strong> · {t(...guidance.why)}</span>
     </button>}
@@ -978,7 +1006,7 @@ function ActiveWorkout() {
         : (c.key === 'warmupSets' ? t('Warm-up sets') : t('Rest (s)')) + ' ' + c.from + ' → ' + c.to).join(' · '),
       run: () => confirmSheet({
         title: t('Update “{0}”?', routine.name),
-        message: t('Copy this exercise’s warm-up sets, and the rest and note from its Progression settings, into the routine. A note added for today stays with this workout. Your workout history is kept.'),
+        message: t('Copy this exercise’s warm-up sets, and the rest and note from its Exercise settings, into the routine. A note added for today stays with this workout. Your workout history is kept.'),
         confirmText: t('Update routine'),
         onConfirm: () => {
           let applied = null
@@ -1015,6 +1043,7 @@ function ActiveWorkout() {
     onRemoveSetAt: i => removeSetAt(idx, i),
     onStartTimed: i => startTimed(idx, i),
     onProgressionSettings: editing ? null : () => openProgressionSettings(idx),
+    onRest: editing ? null : () => openExerciseRest(idx),
     onNoProg: routineKeepsOut(A.entries[idx]) ? null : on => setNoProg(idx, on),
     routineUpdate: routineUpdateFor(idx),
   })
@@ -1070,17 +1099,104 @@ function ActiveWorkout() {
     if (fresh) progressHighWater.current = fresh.entries.map(e => e.sets.filter(s => s.done).length)
     workoutCompleteSheet()
   }
-  // The header ⋮: bring another routine into the session, then the layout switch nested a
-  // level down (it used to be the whole menu).
+  // Adds an exercise after the current unit: the button under the session and the ⋯ menu's Add.
+  const addExercise = () => exercisePicker((ex, quick) => {
+    // A freehand add inherits the current unit's routine (its `rid`) so it lands in that
+    // routine's block in a combined session and gets a real prescription; a routine-less
+    // freestyle session has no `rid` to inherit. It inherits the block's `noProg` too: an
+    // exercise added to a rehab or deload routine's block is kept out of progression like the
+    // rest of it, the way a swap or an edit there is — it takes the routine's own numbers and
+    // never becomes the baseline the regular sessions progress from. An exercise kept out by
+    // hand (its ⋯ menu) is that exercise's own choice for today and is not passed on; a session
+    // kept out as a whole (the header ⋮) takes the new one with it (joinSessionNoProg).
+    const curEntry = A.entries[A.cur]
+    const curRid = curEntry?.rid
+    const routine = curRid ? S.routines.find(r => r.id === curRid) : null
+    const freestyle = !routine
+    const noProg = !freestyle && builtOutOfProgression(curEntry, routine)
+    // Freestyle has no routine prescription to apply: show the last target in the config
+    // sheet and carry its completed rows forward. A planned session uses its configured
+    // target when progression is off, while progression-enabled sessions keep their path.
+    const seed = freestyle ? freestyleConfig(sessionHistory(S), { id: ex.id, ...defaultConfig(ex.id) }) : null
+    const commit = cfg => update(s => {
+      const full = { ...cfg, id: ex.id }
+      // A planned session builds the exercise the way its routine would (prescription, reps
+      // source, target); freestyle reproduces what you did last time.
+      // Read from before the session's day when it is logged into the past (sessionHistory).
+      const past = sessionHistory(s)
+      const built = freestyle
+        ? { target: { ...cfg }, plan: null, sets: applyIntensifierPlan(buildSets(past, full, {
+          step: modeOf(full) === 'reps' ? weightIncrement(full, s.unit) : defaultIncrement(ex.id, s.unit), preferLast: true,
+        }), full, dropGrid(s, full)) }
+        : buildPlannedEntry(past, full, routine, { noProg })
+      const insertAt = insertionIndexAfterCurrentUnit(supersetUnits(s.active.entries), s.active.cur, s.active.entries.length)
+      s.active.entries.splice(insertAt, 0, joinSessionNoProg(s.active, { id: ex.id, ...built, ...(curRid ? { rid: curRid } : {}), ...(noProg ? { noProg: true } : {}) }))
+      s.active.cur = insertAt
+      useUI.getState().shiftRestOwner(insertAt, 1)
+    })
+    // The "+" on a picker row reads as "add this now" — routed through the same detail
+    // sheet before, so it added nothing until you'd scrolled past it and found the real
+    // button. Quick-add commits with the same default (or, freestyle, last-session) config
+    // the sheet would have opened with; tapping the row still opens that sheet for anyone
+    // who wants to set sets/reps first.
+    if (quick) { commit(seed || defaultConfig(ex.id)); useUI.getState().toast(t('“{0}” added to {1}', exerciseNameText(ex), routine ? routine.name : t('Freestyle'))) }
+    // The confirm names what it changes: this workout, never the routine behind it.
+    else exConfigSheet(ex, null, commit, null, routine, seed, null, t('Add to this workout'))
+  })
+  // Ending the session without saving it. The ⋯ menu's last item since the header's ✕ became the
+  // ⌄ that only leaves the screen (v1.3.11).
+  const discardWorkout = () => confirmSheet({
+    title: t('Discard workout?'), message: t('The sets you logged in this session will be lost.'), confirmText: t('Discard'), danger: true,
+    onConfirm: () => { update(s => { s.active = null }); stopRest(); stopWork(); nav('/home') },
+  })
+  // The header ⋯, in groups: the settings you change at the gym first (their own sheet, the same
+  // values as Settings), then what to add, what to change about this workout, and Discard last.
+  // Layout here stays this session's own (s.active.workoutView); the settings sheet's Layout is
+  // the saved one.
   const openViewMenu = () => menuSheet({
-    items: [
-      A.backfill && A.entries.length > 0 && { icon: 'checkCircle', label: t('Mark all sets done'), onClick: markAllDone },
-      { icon: 'pencil', label: t('Rename workout'), onClick: renameWorkoutSheet },
-      !editing && { icon: 'plus', label: t('Add routine'), sub: t('Bring another routine into this session'), onClick: addRoutineToSessionSheet },
-      noProgSwitchable && { icon: 'pause', label: t('Don’t count for progression'), sub: t('Every exercise in this workout'), on: sessionNoProg(A), onClick: toggleSessionNoProg },
-      { icon: 'list', label: t('Layout'), sub: LAYOUT_LABEL[workoutView] || LAYOUT_LABEL.cards, onClick: openLayoutMenu },
+    sections: [
+      { items: [
+        { icon: 'gear', accent: true, chevron: true, label: t('Workout settings'),
+          sub: [S.restSec > 0 ? t('{0} rest', fmtRest(S.restSec)) : t('No rest timer'), S.sound ? t('Sound') : t('Silent')].join(' · '),
+          onClick: workoutSettingsSheet },
+      ] },
+      { title: t('Add'), items: [
+        { icon: 'plusCircle', label: t('Add exercise'), onClick: addExercise },
+        !editing && { icon: 'clipboard', label: t('Add routine'), sub: t('Bring another routine into this session'), onClick: addRoutineToSessionSheet },
+      ] },
+      { title: t('This workout'), items: [
+        A.backfill && A.entries.length > 0 && { icon: 'checkCircle', label: t('Mark all sets done'), onClick: markAllDone },
+        { icon: 'pencil', label: t('Rename workout'), onClick: renameWorkoutSheet },
+        { icon: 'layout', label: t('Layout'), sub: LAYOUT_LABEL[workoutView] || LAYOUT_LABEL.cards, onClick: openLayoutMenu },
+        { icon: 'note', label: A.note ? t('Edit session note') : t('Add session note'), onClick: sessionNoteSheet },
+        noProgSwitchable && { icon: 'chartLineSlash', label: t('Don’t count for progression'), sub: t('Every exercise in this workout'), on: sessionNoProg(A), onClick: toggleSessionNoProg },
+      ] },
+      { items: [
+        !editing && { icon: 'trash', label: t('Discard workout'), danger: true, onClick: discardWorkout },
+      ] },
     ],
   })
+  // An exercise's own rest, from its ⋯ menu: the same wheel as the default rest timer, where 0:00
+  // means "no rest of its own", so the default applies. Like everything edited on the exercise
+  // from inside the session it is this session's; the menu's Update routine offers to keep it.
+  const openExerciseRest = idx => {
+    const state = useStore.getState().S
+    const entry = state.active?.entries?.[idx]
+    if (!entry) return
+    const activeId = state.active.id
+    const entryId = entry.id
+    durationSheet({
+      title: t('Rest for this exercise'),
+      value: entry.target?.restSec > 0 ? entry.target.restSec : 0, max: REST_MAX,
+      off: t('Default ({0})', fmtRest(state.restSec)),
+      footer: t('Rest after each set of this exercise. Leave at 0 to use your default rest timer.'),
+      onDone: v => update(s => {
+        const e = s.active?.id === activeId ? s.active.entries?.[idx] : null
+        if (!e || e.id !== entryId) return
+        e.target = { ...(e.target || {}), restSec: v }
+      }),
+    })
+  }
   const openProgressionSettings = idx => {
     const state = useStore.getState().S
     const entry = state.active?.entries?.[idx]
@@ -1412,13 +1528,16 @@ function ActiveWorkout() {
         set counter, discard/finish, progress) stays pinned — the one thing you want in view
         while you are somewhere in the middle of a long stack. Cards mode never scrolls far. */}
     <div className={'whdr' + (listMode ? ' stick' : '')} ref={hdrRef}>
-    <div className="hdr">
-      <button className="iconbtn" aria-label={t(editing ? 'Close editor' : 'Discard')} onClick={() => editing ? exitWorkoutEdit() : confirmSheet({ title: t('Discard workout?'), message: t('The sets you logged in this session will be lost.'), confirmText: t('Discard'), danger: true, onConfirm: () => { update(s => { s.active = null }); stopRest(); stopWork(); nav('/home') } })}><Icon name="xmark" /></button>
-      <div style={{ textAlign: 'center' }}><div style={{ fontWeight: 600 }}>{A.name}</div><div className="sub">{(A.backfill || editing) ? fmtDate(A.d, true) : <Elapsed start={A.start} />} · {t('{0} sets', done + '/' + total)}</div></div>
-      <div className="row" style={{ gap: 4, flex: 'none' }}>
-        <button className="iconbtn" aria-label={t('Workout options')} title={t('Workout options')} onClick={openViewMenu}><Icon name="more" /></button>
-        <button className="iconbtn" style={{ color: 'var(--acc)' }} aria-label={t(editing ? 'Save changes' : 'Finish')} onClick={finishWorkout}><Icon name="check" /></button>
-      </div>
+    {/* ⌄ leaves the screen and keeps the session running (the tab bar's Resume brings it back);
+        in the editor of a saved workout it is the ✕ that closes the editor. Discard is in the ⋯
+        menu now, and Finish is a labelled pill rather than a check that looked like a set tick. */}
+    <div className="hdr whdr-bar">
+      {editing
+        ? <button className="iconbtn" aria-label={t('Close editor')} title={t('Close editor')} onClick={() => exitWorkoutEdit()}><Icon name="xmark" /></button>
+        : <button className="iconbtn" aria-label={t('Minimize')} title={t('Minimize')} onClick={() => nav('/home')}><Icon name="chevronDown" /></button>}
+      <div className="whdr-mid"><div className="whdr-name">{A.name}</div><div className="sub">{(A.backfill || editing) ? fmtDate(A.d, true) : <Elapsed start={A.start} />} · {t('{0} sets', done + '/' + total)}</div></div>
+      <button className="iconbtn" aria-label={t('Workout options')} title={t('Workout options')} onClick={openViewMenu}><Icon name="more" /></button>
+      <button className="btn primary pill whdr-finish" aria-label={editing ? t('Save changes') : undefined} onClick={finishWorkout}>{editing ? t('Save') : t('Finish')}</button>
     </div>
     <div className="wprog"><i style={{ width: (total ? done / total * 100 : 0) + '%' }} /></div>
     </div>
@@ -1510,49 +1629,7 @@ function ActiveWorkout() {
     </div>}
     {!listMode && <div style={{ height: 10 }} />}
     {wc.exerciseButtons && listMode && A.entries.length > 0 && <div className="muted small" style={{ marginBottom: 6 }}>{t('Move, swap and remove below act on the exercise marked {0}.', t('Current'))}</div>}
-    <Button onClick={() => exercisePicker((ex, quick) => {
-      // A freehand add inherits the current unit's routine (its `rid`) so it lands in that
-      // routine's block in a combined session and gets a real prescription; a routine-less
-      // freestyle session has no `rid` to inherit. It inherits the block's `noProg` too: an
-      // exercise added to a rehab or deload routine's block is kept out of progression like the
-      // rest of it, the way a swap or an edit there is — it takes the routine's own numbers and
-      // never becomes the baseline the regular sessions progress from. An exercise kept out by
-      // hand (its ⋯ menu) is that exercise's own choice for today and is not passed on; a session
-      // kept out as a whole (the header ⋮) takes the new one with it (joinSessionNoProg).
-      const curEntry = A.entries[A.cur]
-      const curRid = curEntry?.rid
-      const routine = curRid ? S.routines.find(r => r.id === curRid) : null
-      const freestyle = !routine
-      const noProg = !freestyle && builtOutOfProgression(curEntry, routine)
-      // Freestyle has no routine prescription to apply: show the last target in the config
-      // sheet and carry its completed rows forward. A planned session uses its configured
-      // target when progression is off, while progression-enabled sessions keep their path.
-      const seed = freestyle ? freestyleConfig(sessionHistory(S), { id: ex.id, ...defaultConfig(ex.id) }) : null
-      const commit = cfg => update(s => {
-        const full = { ...cfg, id: ex.id }
-        // A planned session builds the exercise the way its routine would (prescription, reps
-        // source, target); freestyle reproduces what you did last time.
-        // Read from before the session's day when it is logged into the past (sessionHistory).
-        const past = sessionHistory(s)
-        const built = freestyle
-          ? { target: { ...cfg }, plan: null, sets: applyIntensifierPlan(buildSets(past, full, {
-            step: modeOf(full) === 'reps' ? weightIncrement(full, s.unit) : defaultIncrement(ex.id, s.unit), preferLast: true,
-          }), full, dropGrid(s, full)) }
-          : buildPlannedEntry(past, full, routine, { noProg })
-        const insertAt = insertionIndexAfterCurrentUnit(supersetUnits(s.active.entries), s.active.cur, s.active.entries.length)
-        s.active.entries.splice(insertAt, 0, joinSessionNoProg(s.active, { id: ex.id, ...built, ...(curRid ? { rid: curRid } : {}), ...(noProg ? { noProg: true } : {}) }))
-        s.active.cur = insertAt
-        useUI.getState().shiftRestOwner(insertAt, 1)
-      })
-      // The "+" on a picker row reads as "add this now" — routed through the same detail
-      // sheet before, so it added nothing until you'd scrolled past it and found the real
-      // button. Quick-add commits with the same default (or, freestyle, last-session) config
-      // the sheet would have opened with; tapping the row still opens that sheet for anyone
-      // who wants to set sets/reps first.
-      if (quick) { commit(seed || defaultConfig(ex.id)); useUI.getState().toast(t('“{0}” added to {1}', exerciseNameText(ex), routine ? routine.name : t('Freestyle'))) }
-      // The confirm names what it changes: this workout, never the routine behind it.
-      else exConfigSheet(ex, null, commit, null, routine, seed, null, t('Add to this workout'))
-    })} icon="plus">{t('Add exercise')}</Button>
+    <Button onClick={addExercise} icon="plus">{t('Add exercise')}</Button>
     {wc.exerciseButtons && A.entries.length > 0 && <>
       <div style={{ height: 6 }} />
       <div className="row">

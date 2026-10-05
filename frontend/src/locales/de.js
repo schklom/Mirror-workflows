@@ -511,7 +511,6 @@ export default {
   'upper arms': 'Oberarme', 'upper legs': 'Oberschenkel', 'waist': 'Rumpf',
   'full body': 'Ganzkörper',
   // --- data terms: equipment ---
-  'Details': 'Details',
   'Finish': 'Beenden',
   'Start {0}': '{0} starten',
   'Guest mode: your data lives only in this browser.': 'Gastmodus: deine Daten leben nur in diesem Browser.',
@@ -1258,7 +1257,6 @@ export default {
   'What should change?': 'Was soll anders sein?',
   'Coach is thinking…': 'Coach denkt nach…',
   'Message the Coach…': 'Nachricht an den Coach…',
-  'Open progression settings': 'Progressions-Einstellungen öffnen',
   'Hevy is rate-limiting requests. Wait a minute and try again': 'Hevy drosselt die Anfragen. Eine Minute warten und erneut versuchen',
   // --- log a past workout ---
   'Log a past workout': 'Vergangenes Training eintragen',
@@ -1347,7 +1345,6 @@ export default {
   'Camera access was denied. Allow it in your browser and try again.': 'Kamerazugriff wurde verweigert. Erlaube ihn im Browser und versuch es erneut.',
   'Add note': 'Notiz hinzufügen',
   'Edit note': 'Notiz bearbeiten',
-  'Progression settings': 'Progressions-Einstellungen',
   'Don’t count for progression': 'Nicht für die Progression zählen',
   'This exercise, this session only': 'Nur diese Übung, nur in dieser Einheit',
   'Not counted for progression': 'Zählt nicht für die Progression',
@@ -1730,7 +1727,6 @@ export default {
   // --- update a routine from a running workout ---
   'Update routine': 'Routine aktualisieren',
   'Update “{0}”?': 'Routine „{0}“ aktualisieren?',
-  'Copy this exercise’s warm-up sets, and the rest and note from its Progression settings, into the routine. A note added for today stays with this workout. Your workout history is kept.': 'Übernimmt die Aufwärmsätze dieser Übung sowie Pause und Notiz aus ihren Progressions-Einstellungen in die Routine. Eine Notiz für heute bleibt bei diesem Training. Dein Trainingsverlauf bleibt erhalten.',
   'Routine updated': 'Routine aktualisiert',
   'per side': 'pro Seite',
   'Left': 'Links',
@@ -1894,4 +1890,14 @@ export default {
   'Workout settings': 'Trainings-Einstellungen',
   'Default ({0})': 'Standard ({0})',
   'Rest for this exercise': 'Pause für diese Übung',
+  'Add to this set': 'Zu diesem Satz hinzufügen',
+  'Copy this exercise’s warm-up sets, and the rest and note from its Exercise settings, into the routine. A note added for today stays with this workout. Your workout history is kept.': 'Übernimmt die Aufwärmsätze dieser Übung sowie Pause und Notiz aus ihren Übungs-Einstellungen in die Routine. Eine Notiz für heute bleibt bei diesem Training. Dein Trainingsverlauf bleibt erhalten.',
+  'Discard workout': 'Training verwerfen',
+  'Exercise settings': 'Übungs-Einstellungen',
+  'How to do it': 'So geht’s',
+  'Look it up': 'Nachschlagen',
+  'Open exercise settings': 'Übungs-Einstellungen öffnen',
+  'Order and supersets': 'Reihenfolge und Supersätze',
+  'Sets, reps, rest, progression': 'Sätze, Wdh., Pause, Progression',
+  'This workout': 'Dieses Training',
 }

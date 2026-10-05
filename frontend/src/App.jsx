@@ -162,6 +162,16 @@ function Shell() {
   }, [loc.pathname, navType])
   // bound to the workout, not to the route — checking Stats mid-session keeps the screen on
   useWakeLock(!!S.active && !S.active.editingWorkoutId && S.keepAwake !== false)
+  // A running workout has the whole screen (v1.3.11): no tab bar, and the rest bar docks to the
+  // bottom edge in its place. Its header's ⌄ goes back to the app, where the tab bar's Resume
+  // brings it back.
+  const inWorkout = loc.pathname === '/workout' && !!S.active
+  useEffect(() => {
+    document.body.classList.toggle('no-tabbar', inWorkout)
+    return () => document.body.classList.remove('no-tabbar')
+  }, [inWorkout])
+  // The chat owns the bottom of the screen as well: its composer sits where the tabs would be.
+  const noTabs = inWorkout || loc.pathname === '/coach'
 
   const authed = user || isGuest
   if (!ready && !authed) return (
@@ -212,8 +222,7 @@ function Shell() {
           would ride along with the page for the length of it. Decides for itself when to show —
           including on the sign-in screen, when the server has just ended the session. */}
       <SyncBanner />
-      {/* The chat owns the bottom of the screen: its composer sits where the tabs would be. */}
-      {loc.pathname !== '/coach' && <TabBar onStart={startFlow} />}
+      {!noTabs && <TabBar onStart={startFlow} />}
       <RestTimer />
       <Modals />
       <Toast />

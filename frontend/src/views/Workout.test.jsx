@@ -8,6 +8,9 @@ import { buildCombinedEntries } from '../lib/session-merge.js'
 import { buildCompletedWorkout } from '../lib/finish-workout.js'
 import { isWarmupRow } from '../lib/workout-model.js'
 
+// A menu's actions in order, whether it came as one list or in groups (menuSheet `sections`).
+const menuItemsOf = menu => (menu.sections ? menu.sections.flatMap(g => g.items || []) : menu.items || []).filter(Boolean)
+
 const mocks = vi.hoisted(() => {
   const state = {
     S: null,
@@ -29,6 +32,9 @@ const mocks = vi.hoisted(() => {
     effortPickerSheet: vi.fn(),
     exerciseHistorySheet: vi.fn(),
     renameWorkoutSheet: vi.fn(),
+    durationSheet: vi.fn(),
+    workoutSettingsSheet: vi.fn(),
+    nav: vi.fn(),
   }
   state.stopRest = vi.fn(() => { state.timer = null })
   state.stopWork = vi.fn(() => { state.work = null })
@@ -64,7 +70,7 @@ vi.mock('../store/useUI.js', () => {
   useUI.getState = mocks.uiSnapshot
   return { useUI }
 })
-vi.mock('react-router-dom', () => ({ useNavigate: () => () => {} }))
+vi.mock('react-router-dom', () => ({ useNavigate: () => mocks.nav }))
 vi.mock('../sheets.jsx', () => ({
   startFlow: vi.fn(),
   exercisePicker: mocks.exercisePicker,
@@ -87,6 +93,12 @@ vi.mock('../sheets.jsx', () => ({
   addRoutineToSessionSheet: vi.fn(),
 }))
 vi.mock('../components/Media.jsx', () => ({ default: () => null }))
+vi.mock('../components/WorkoutThumb.jsx', () => ({
+  default: ({ onExpand }) => React.createElement('button', { className: 'wthumb', 'aria-label': 'Expand', onClick: onExpand }),
+  hasWorkoutMedia: () => true,
+}))
+vi.mock('../components/DurationWheel.jsx', () => ({ durationSheet: mocks.durationSheet }))
+vi.mock('../components/WorkoutSettingsSheet.jsx', () => ({ workoutSettingsSheet: mocks.workoutSettingsSheet }))
 // api.js reads navigator.userAgent at module scope. This file installs its own DOM inside the
 // tests rather than declaring a vitest environment, so it must not depend on an ambient one.
 vi.mock('../lib/api.js', () => ({
@@ -175,10 +187,14 @@ async function pressProgression(index = 0) {
   return button
 }
 
+// Discard lives at the end of the header's ⋯ menu (v1.3.11); the header's ⌄ only leaves the screen.
 async function requestDiscard() {
-  const button = container.querySelector('button[aria-label="Discard"]')
+  const button = container.querySelector('button[aria-label="Workout options"]')
   expect(button).toBeTruthy()
   await act(async () => { button.dispatchEvent(new dom.Event('click', { bubbles: true })) })
+  const discard = menuItemsOf(mocks.menuSheet.mock.calls.at(-1)[0]).find(it => it.label === 'Discard workout')
+  expect(discard?.danger).toBe(true)
+  await act(async () => { discard.onClick() })
 }
 
 async function rerender() {
@@ -236,7 +252,7 @@ it('edits a saved set without running live completion, rest or success feedback'
   expect(container.querySelector('.progline')).toBeNull()
   const more = container.querySelector('button[aria-label="More"]')
   await act(async () => { more.dispatchEvent(new dom.Event('click', { bubbles: true })) })
-  expect(mocks.menuSheet.mock.calls.at(-1)[0].items.filter(Boolean).map(item => item.label)).not.toContain('Progression settings')
+  expect(menuItemsOf(mocks.menuSheet.mock.calls.at(-1)[0]).map(item => item.label)).not.toContain('Progression settings')
 })
 
 afterEach(async () => {
@@ -831,7 +847,7 @@ describe('progression guidance', () => {
 
     expect(button.tagName).toBe('BUTTON')
     expect(button.getAttribute('type')).toBe('button')
-    expect(button.getAttribute('aria-label')).toBe('Open progression settings')
+    expect(button.getAttribute('aria-label')).toBe('Open exercise settings')
     expect(mocks.exConfigSheet).toHaveBeenCalledOnce()
     // An entry with no stamped plan opens at its target.
     expect(mocks.exConfigSheet.mock.calls[0][1]).toEqual(second.target)
@@ -1663,7 +1679,7 @@ describe('workout view header menu', () => {
     await act(async () => { btn.dispatchEvent(new dom.Event('click', { bubbles: true })) })
     return mocks.menuSheet.mock.calls.at(-1)[0]
   }
-  const item = (menu, label) => menu.items.filter(Boolean).find(it => it.label === label)
+  const item = (menu, label) => menuItemsOf(menu).find(it => it.label === label)
 
   // The header ⋮ now leads with "Add routine"; the layouts moved to a nested "Layout" sheet.
   const openLayout = async menu => {
@@ -1671,11 +1687,16 @@ describe('workout view header menu', () => {
     return mocks.menuSheet.mock.calls.at(-1)[0]
   }
 
-  it('includes Rename workout, Add routine and the whole-workout progression switch, then a Layout sheet with the three layouts marked current', async () => {
+  it('groups Workout settings, Add, This workout and Discard, then a Layout sheet with the three layouts marked current', async () => {
     await mount([exercise('plain-bench', [false])], 0, { active: { workoutView: 'list', routineIds: [] } })
 
     const menu = await openMenu()
-    expect(menu.items.filter(Boolean).map(it => it.label)).toEqual(['Rename workout', 'Add routine', 'Don’t count for progression', 'Layout'])
+    expect(menu.sections.map(g => g.title)).toEqual([undefined, 'Add', 'This workout', undefined])
+    expect(menuItemsOf(menu).map(it => it.label)).toEqual([
+      'Workout settings', 'Add exercise', 'Add routine', 'Rename workout', 'Layout', 'Add session note', 'Don’t count for progression', 'Discard workout',
+    ])
+    expect(item(menu, 'Workout settings').sub).toBe('1:30 rest · Silent')
+    expect(item(menu, 'Discard workout').danger).toBe(true)
     expect(item(menu, 'Don’t count for progression')).toMatchObject({ sub: 'Every exercise in this workout', on: false })
     expect(item(menu, 'Layout').sub).toBe('List')
 
@@ -1683,7 +1704,7 @@ describe('workout view header menu', () => {
     expect(mocks.renameWorkoutSheet).toHaveBeenCalled()
 
     const layout = await openLayout(menu)
-    expect(layout.items.filter(Boolean).map(it => it.label)).toEqual(['Cards', 'List', 'Compact'])
+    expect(menuItemsOf(layout).map(it => it.label)).toEqual(['Cards', 'List', 'Compact'])
     expect(item(layout, 'List').on).toBe(true)
     expect(item(layout, 'Cards').on).toBe(false)
   })
@@ -1701,7 +1722,7 @@ describe('workout view header menu', () => {
 
 describe('workout controls: the more menu and the set menu', () => {
   const lastMenu = () => mocks.menuSheet.mock.calls.at(-1)[0]
-  const item = label => lastMenu().items.filter(Boolean).find(it => it.label === label)
+  const item = label => menuItemsOf(lastMenu()).find(it => it.label === label)
 
   it('shows one More button per exercise and no legacy button rows by default', async () => {
     await mount([exercise('plain-bench', [false]), exercise('plain-row', [false])])
@@ -1716,8 +1737,8 @@ describe('workout controls: the more menu and the set menu', () => {
     await mount([exercise('plain-bench', [false]), exercise('plain-row', [false])], 0)
     await act(async () => { container.querySelector('button[aria-label="More"]').dispatchEvent(new dom.Event('click', { bubbles: true })) })
     expect(mocks.menuSheet).toHaveBeenCalledOnce()
-    expect(lastMenu().items.filter(Boolean).map(it => it.label)).toEqual(expect.arrayContaining([
-      'Add note', 'Details', 'Add warm-up set', 'Make superset with next', 'Swap exercise', 'Move up', 'Move down', 'Remove exercise',
+    expect(menuItemsOf(lastMenu()).map(it => it.label)).toEqual(expect.arrayContaining([
+      'Add note', 'How to do it', 'Add warm-up set', 'Make superset with next', 'Swap exercise', 'Move up', 'Move down', 'Remove exercise',
     ]))
     expect(item('Move up').disabled).toBe(true)
     expect(item('Move down').disabled).toBe(false)
@@ -1746,7 +1767,7 @@ describe('workout controls: the more menu and the set menu', () => {
   it('opens a per-set menu from the set number with drop, burst and remove', async () => {
     await mount([exercise('plain-bench', [false, false])])
     await act(async () => { container.querySelector('button[aria-label="Set 2"]').dispatchEvent(new dom.Event('click', { bubbles: true })) })
-    expect(lastMenu().items.filter(Boolean).map(it => it.label)).toEqual(['Drop set', 'Rest-pause burst', 'Remove this set'])
+    expect(menuItemsOf(lastMenu()).map(it => it.label)).toEqual(['Drop set', 'Rest-pause burst', 'Remove this set'])
 
     await act(async () => { item('Drop set').onClick() })
     expect(mocks.S.active.entries[0].sets[1].drops?.length).toBe(1)
@@ -2041,7 +2062,7 @@ describe('mark all sets done while logging a past workout', () => {
     await act(async () => { btn.dispatchEvent(new dom.Event('click', { bubbles: true })) })
     return mocks.menuSheet.mock.calls.at(-1)[0]
   }
-  const labels = menu => menu.items.filter(Boolean).map(it => it.label)
+  const labels = menu => menuItemsOf(menu).map(it => it.label)
 
   it('ticks every set, stamps the top weight and offers the finish', async () => {
     await mount([
@@ -2049,8 +2070,8 @@ describe('mark all sets done while logging a past workout', () => {
       exercise('plain-row', [false], { sets: [{ w: 40, r: 8, done: false, phase: 'warmup' }, { w: 70, r: 8, done: false }] }),
     ], 0, { active: { backfill: { durationMin: 60, replaceId: null }, routineIds: [] } })
     const menu = await openMenu()
-    expect(labels(menu)[0]).toBe('Mark all sets done')
-    await act(async () => { menu.items.filter(Boolean)[0].onClick() })
+    expect(menu.sections[2].items.filter(Boolean)[0].label).toBe('Mark all sets done')
+    await act(async () => { menu.sections[2].items.filter(Boolean)[0].onClick() })
     expect(mocks.S.active.entries.every(e => e.sets.every(s => s.done))).toBe(true)
     expect(mocks.S.active.entries.map(e => e.topW)).toEqual([60, 70])
     expect(mocks.workoutCompleteSheet).toHaveBeenCalledTimes(1)
@@ -2064,7 +2085,7 @@ describe('mark all sets done while logging a past workout', () => {
 
 describe('Update routine, from the More menu of an exercise', () => {
   const lastMenu = () => mocks.menuSheet.mock.calls.at(-1)[0]
-  const item = label => lastMenu().items.filter(Boolean).find(it => it.label === label)
+  const item = label => menuItemsOf(lastMenu()).find(it => it.label === label)
   const openMore = async () => {
     await act(async () => { container.querySelector('button[aria-label="More"]').dispatchEvent(new dom.Event('click', { bubbles: true })) })
   }
@@ -2121,7 +2142,7 @@ describe('Update routine, from the More menu of an exercise', () => {
     expect(item('Update routine').sub).toBe('Warm-up sets 0 → 1')
     item('Update routine').onClick()
     const { message } = mocks.confirmSheet.mock.calls[0][0]
-    expect(message).toMatch(/Progression settings/)
+    expect(message).toMatch(/Exercise settings/)
     expect(message).toMatch(/note added for today stays with this workout/)
     mocks.confirmSheet.mock.calls[0][0].onConfirm()
     expect(mocks.S.routines[0].ex[0].note).toBeUndefined()
@@ -2151,5 +2172,106 @@ describe('Update routine, from the More menu of an exercise', () => {
     await mount([ownEntry({ target: { mode: 'reps', reps: 5, weight: 60, restSec: 150 } })], 0, { routines: [routine()], active: { editingWorkoutId: 'saved' } })
     await openMore()
     expect(item('Update routine')).toBeUndefined()
+  })
+})
+
+describe('the workout screen chrome (v1.3.11)', () => {
+  const lastMenu = () => mocks.menuSheet.mock.calls.at(-1)[0]
+  const item = label => menuItemsOf(lastMenu()).find(it => it.label === label)
+  const click = async el => { await act(async () => { el.dispatchEvent(new dom.Event('click', { bubbles: true })) }) }
+  const openMore = () => click(container.querySelector('button[aria-label="More"]'))
+
+  it('has a labelled Finish pill and a ⌄ that leaves the screen with the session still running', async () => {
+    await mount([exercise('plain-bench', [false])])
+    const pill = container.querySelector('.whdr-finish')
+    expect(pill.textContent).toBe('Finish')
+    expect(container.querySelector('button[aria-label="Discard"]')).toBeNull()
+    await click(container.querySelector('button[aria-label="Minimize"]'))
+    expect(mocks.nav).toHaveBeenCalledWith('/home')
+    expect(mocks.S.active).not.toBeNull()
+  })
+
+  it('says Save in the editor of a saved workout, and keeps its close button', async () => {
+    await mount([exercise('plain-bench', [true])], 0, { active: { editingWorkoutId: 'saved' } })
+    const pill = container.querySelector('.whdr-finish')
+    expect(pill.textContent).toBe('Save')
+    expect(pill.getAttribute('aria-label')).toBe('Save changes')
+    expect(container.querySelector('button[aria-label="Close editor"]')).toBeTruthy()
+    expect(container.querySelector('button[aria-label="Minimize"]')).toBeNull()
+  })
+
+  it('leads the workout menu with Workout settings, which opens its sheet', async () => {
+    await mount([exercise('plain-bench', [false])], 0, { restSec: 0, sound: true })
+    await click(container.querySelector('button[aria-label="Workout options"]'))
+    const ws = menuItemsOf(lastMenu())[0]
+    expect(ws).toMatchObject({ label: 'Workout settings', sub: 'No rest timer · Sound', accent: true })
+    ws.onClick()
+    expect(mocks.workoutSettingsSheet).toHaveBeenCalledOnce()
+  })
+
+  it('adds an exercise from the workout menu the same way as the button under the session', async () => {
+    await mount([exercise('plain-bench', [false])])
+    await click(container.querySelector('button[aria-label="Workout options"]'))
+    item('Add exercise').onClick()
+    expect(mocks.exercisePicker).toHaveBeenCalledOnce()
+  })
+
+  it('groups the exercise menu: today, look it up, settings, order, and Remove on its own', async () => {
+    await mount([exercise('plain-bench', [false]), exercise('plain-row', [false])])
+    await openMore()
+    const groups = lastMenu().sections.map(g => [g.title, g.items.filter(Boolean).map(it => it.label)])
+    expect(groups).toEqual([
+      ['Today', ['Swap exercise', 'Add warm-up set', 'Add note', 'Don’t count for progression']],
+      ['Look it up', ['History', 'How to do it']],
+      ['Settings', ['Exercise settings', 'Rest timer', 'Plate loading']],
+      ['Order and supersets', ['Make superset with next', 'Move up', 'Move down']],
+      [undefined, ['Remove exercise']],
+    ])
+  })
+
+  it('sets an exercise’s own rest on the wheel, 0:00 meaning the default', async () => {
+    await mount([exercise('plain-bench', [false])])
+    await openMore()
+    expect(item('Rest timer').sub).toBe('Default (1:30)')
+    item('Rest timer').onClick()
+    const opts = mocks.durationSheet.mock.calls.at(-1)[0]
+    expect(opts).toMatchObject({ title: 'Rest for this exercise', value: 0, max: 900, off: 'Default (1:30)' })
+    await act(async () => { opts.onDone(135) })
+    expect(mocks.S.active.entries[0].target.restSec).toBe(135)
+    await rerender()
+    await openMore()
+    expect(item('Rest timer').sub).toBe('2:15')
+    item('Rest timer').onClick()
+    expect(mocks.durationSheet.mock.calls.at(-1)[0].value).toBe(135)
+    await act(async () => { mocks.durationSheet.mock.calls.at(-1)[0].onDone(0) })
+    expect(mocks.S.active.entries[0].target.restSec).toBe(0)
+  })
+
+  it('has no rest item in the editor of a saved workout', async () => {
+    await mount([exercise('plain-bench', [true])], 0, { active: { editingWorkoutId: 'saved' } })
+    await openMore()
+    expect(item('Rest timer')).toBeUndefined()
+  })
+
+  it('groups the set menu under a header, with Remove on its own', async () => {
+    await mount([exercise('plain-bench', [false, false])])
+    await click(container.querySelector('button[aria-label="Set 1"]'))
+    expect(lastMenu().sections.map(g => g.title)).toEqual(['Add to this set', undefined])
+  })
+
+  it('shows a thumbnail instead of the animation when animations are Small, and a tap brings it back', async () => {
+    await mount([exercise('plain-bench', [false])], 0, { gifSize: 'mini' })
+    const thumb = container.querySelector('.wthumb')
+    expect(thumb).toBeTruthy()
+    await click(thumb)
+    expect(mocks.S.gifSize).toBe('full')
+  })
+
+  it('has no thumbnail with full animations, or in the compact layout', async () => {
+    await mount([exercise('plain-bench', [false])], 0, { gifSize: 'full' })
+    expect(container.querySelector('.wthumb')).toBeNull()
+    await unmount()
+    await mount([exercise('plain-bench', [false])], 0, { gifSize: 'mini', active: { workoutView: 'compact' } })
+    expect(container.querySelector('.wthumb')).toBeNull()
   })
 })

@@ -4,6 +4,16 @@
 import pt from './pt.js'
 
 export const PT_BR_OVERRIDES = {
+  'Add to this set': 'Adicionar a esta série',
+  'Copy this exercise’s warm-up sets, and the rest and note from its Exercise settings, into the routine. A note added for today stays with this workout. Your workout history is kept.': 'Copia para a rotina as séries de aquecimento deste exercício, e o descanso e a anotação das Configurações do exercício dele. Uma anotação adicionada para hoje fica com este treino. Seu histórico de treinos é mantido.',
+  'Discard workout': 'Descartar treino',
+  'Exercise settings': 'Configurações do exercício',
+  'How to do it': 'Como fazer',
+  'Look it up': 'Consultar',
+  'Open exercise settings': 'Abrir configurações do exercício',
+  'Order and supersets': 'Ordem e supersets',
+  'Sets, reps, rest, progression': 'Séries, reps, descanso, progressão',
+  'This workout': 'Este treino',
   'Default ({0})': 'Padrão ({0})',
   'Rest for this exercise': 'Descanso deste exercício',
   'All settings': 'Todas as configurações',
@@ -719,7 +729,6 @@ export const PT_BR_OVERRIDES = {
 
   // --- per-exercise rest ---
   'Rest after each set of this exercise. Leave at 0 to use your default rest timer.': 'Descanso depois de cada série deste exercício. Deixe em 0 para usar o temporizador de descanso padrão.',
-  'Open progression settings': 'Abrir configurações de progressão',
   'Hevy is rate-limiting requests. Wait a minute and try again': 'O Hevy está limitando as solicitações. Espere um minuto e tente de novo',
   'Log a past workout': 'Registrar um treino passado',
   'Logged on the usual workout screen, without timers.': 'Registrado na tela de treino habitual, só sem temporizadores.',
@@ -780,7 +789,6 @@ export const PT_BR_OVERRIDES = {
   'Clear selection': 'Limpar seleção',
   'Primary target': 'Músculo principal',
   'Also trains': 'Também trabalha',
-  'Progression settings': 'Configurações de progressão',
   'Off: tap the number and type it': 'Desligado: toque no número e digite',
   'Move, swap and remove buttons below the exercise': 'Botões mover, trocar e remover abaixo do exercício',
   'Everything hidden here stays one tap away: the ⋯ button of an exercise and the number of a set.': 'Tudo o que você esconde aqui fica a um toque: o botão ⋯ de um exercício e o número de uma série.',
@@ -1052,7 +1060,6 @@ export const PT_BR_OVERRIDES = {
   // --- update a routine from a running workout ---
   'Update routine': 'Atualizar rotina',
   'Update “{0}”?': 'Atualizar “{0}”?',
-  'Copy this exercise’s warm-up sets, and the rest and note from its Progression settings, into the routine. A note added for today stays with this workout. Your workout history is kept.': 'Copia para a rotina as séries de aquecimento deste exercício, e o descanso e a anotação das Configurações de progressão dele. Uma anotação adicionada para hoje fica com este treino. Seu histórico de treinos é mantido.',
   'Routine updated': 'Rotina atualizada',
   '{0} set becomes {1}: one on each side, {2}s held every time.': '{0} série vira {1}: uma de cada lado, {2} s de isometria cada vez.',
   '{0} sets become {1}: one on each side, {2}s held every time.': '{0} séries viram {1}: uma de cada lado, {2} s de isometria cada vez.',

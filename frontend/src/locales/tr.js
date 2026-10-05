@@ -1890,4 +1890,16 @@ export default {
   'Finish and save': 'Bitir ve kaydet',
   'Make it a warm-up set': 'Isınma setine çevir',
   'Count it as a working set': 'Çalışma seti say',
+  // Swipe on sets (v1.3.11)
+  'Copy this set': 'Bu seti kopyala',
+  'Set {0} gone.': 'Set {0} gitti.',
+  'Set {0} gone. Its timer stopped too.': 'Set {0} gitti. Zamanlayıcısı da durdu.',
+  'Warm-up gone.': 'Isınma gitti.',
+  'Copied. One more like that one.': 'Kopyalandı. Aynısından bir tane daha.',
+  'Keep at least one set, champ': 'En az bir set kalsın, şampiyon',
+  'Too late, that one’s gone': 'Çok geç, o gitti',
+  'Psst: swipe a set. Left deletes, right copies.': 'Psst: bir seti kaydır. Sola silir, sağa kopyalar.',
+  'Swipe on sets': 'Setlerde kaydırma',
+  'Left deletes, right copies': 'Sola silir, sağa kopyalar',
+  'Options: copy, remove': 'Seçenekler: kopyala, kaldır',
 }

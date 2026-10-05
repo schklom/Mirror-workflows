@@ -1890,4 +1890,16 @@ export default {
   'Finish and save': '结束并保存',
   'Make it a warm-up set': '改为热身组',
   'Count it as a working set': '算作正式组',
+  // Swipe on sets (v1.3.11)
+  'Copy this set': '复制这一组',
+  'Set {0} gone.': '第 {0} 组已删除。',
+  'Set {0} gone. Its timer stopped too.': '第 {0} 组已删除，它的计时器也停了。',
+  'Warm-up gone.': '热身组已删除。',
+  'Copied. One more like that one.': '已复制。再来一组一样的。',
+  'Keep at least one set, champ': '至少留一组吧，冠军',
+  'Too late, that one’s gone': '太晚了，那组已经没了',
+  'Psst: swipe a set. Left deletes, right copies.': '悄悄告诉你：滑动一组。左滑删除，右滑复制。',
+  'Swipe on sets': '在组上滑动',
+  'Left deletes, right copies': '左滑删除，右滑复制',
+  'Options: copy, remove': '选项：复制、删除',
 }

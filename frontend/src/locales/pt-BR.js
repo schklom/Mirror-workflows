@@ -1170,6 +1170,14 @@ export const PT_BR_OVERRIDES = {
   'Delete {0}': 'Excluir {0}',
   'Build your loop in Plan': 'Monte seu ciclo no Plano',
   'Finish and save': 'Terminar e salvar',
+  // Swipe on sets (v1.3.11)
+  'Set {0} gone.': 'Série {0} já era.',
+  'Set {0} gone. Its timer stopped too.': 'Série {0} já era. O timer também.',
+  'Warm-up gone.': 'Aquecimento já era.',
+  'Keep at least one set, champ': 'Deixe pelo menos uma série, campeão',
+  'Too late, that one’s gone': 'Tarde demais, já era',
+  'Psst: swipe a set. Left deletes, right copies.': 'Psiu: deslize uma série. Esquerda exclui, direita copia.',
+  'Left deletes, right copies': 'Esquerda exclui, direita copia',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

@@ -1890,4 +1890,16 @@ export default {
   'Finish and save': 'समाप्त करें और सहेजें',
   'Make it a warm-up set': 'इसे वार्म-अप सेट बनाएं',
   'Count it as a working set': 'इसे वर्किंग सेट गिनें',
+  // Swipe on sets (v1.3.11)
+  'Copy this set': 'यह सेट कॉपी करें',
+  'Set {0} gone.': 'सेट {0} हट गया।',
+  'Set {0} gone. Its timer stopped too.': 'सेट {0} हट गया। उसका टाइमर भी रुक गया।',
+  'Warm-up gone.': 'वार्म-अप हट गया।',
+  'Copied. One more like that one.': 'कॉपी हो गया। एक और बिल्कुल वैसा ही।',
+  'Keep at least one set, champ': 'कम से कम एक सेट रहने दें, चैंपियन',
+  'Too late, that one’s gone': 'बहुत देर हो गई, वो जा चुका',
+  'Psst: swipe a set. Left deletes, right copies.': 'सुनिए: किसी सेट को स्वाइप करें। बाएँ हटाता है, दाएँ कॉपी करता है।',
+  'Swipe on sets': 'सेट पर स्वाइप',
+  'Left deletes, right copies': 'बाएँ हटाता है, दाएँ कॉपी करता है',
+  'Options: copy, remove': 'विकल्प: कॉपी, हटाएँ',
 }

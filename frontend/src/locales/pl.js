@@ -1890,4 +1890,16 @@ export default {
   'Finish and save': 'Zakończ i zapisz',
   'Make it a warm-up set': 'Zamień na serię rozgrzewkową',
   'Count it as a working set': 'Licz jako serię roboczą',
+  // Swipe on sets (v1.3.11)
+  'Copy this set': 'Skopiuj tę serię',
+  'Set {0} gone.': 'Seria {0} usunięta.',
+  'Set {0} gone. Its timer stopped too.': 'Seria {0} usunięta. Jej minutnik też.',
+  'Warm-up gone.': 'Rozgrzewka usunięta.',
+  'Copied. One more like that one.': 'Skopiowano. Jeszcze jedna taka sama.',
+  'Keep at least one set, champ': 'Zostaw choć jedną serię, mistrzu',
+  'Too late, that one’s gone': 'Za późno, już jej nie ma',
+  'Psst: swipe a set. Left deletes, right copies.': 'Psst: przesuń serię. W lewo usuwa, w prawo kopiuje.',
+  'Swipe on sets': 'Przesuwanie serii',
+  'Left deletes, right copies': 'W lewo usuwa, w prawo kopiuje',
+  'Options: copy, remove': 'Opcje: kopiuj, usuń',
 }

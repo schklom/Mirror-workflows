@@ -1893,4 +1893,16 @@ export default {
   'Finish and save': 'Befejezés és mentés',
   'Make it a warm-up set': 'Legyen bemelegítő sorozat',
   'Count it as a working set': 'Számítson munkasorozatnak',
+  // Swipe on sets (v1.3.11)
+  'Copy this set': 'Sorozat másolása',
+  'Set {0} gone.': '{0}. sorozat törölve.',
+  'Set {0} gone. Its timer stopped too.': '{0}. sorozat törölve. Az időzítője is leállt.',
+  'Warm-up gone.': 'Bemelegítés törölve.',
+  'Copied. One more like that one.': 'Kimásolva. Még egy ugyanilyen.',
+  'Keep at least one set, champ': 'Legalább egy sorozat maradjon, bajnok',
+  'Too late, that one’s gone': 'Késő, az már nincs meg',
+  'Psst: swipe a set. Left deletes, right copies.': 'Pszt: húzz el egy sorozatot. Balra töröl, jobbra másol.',
+  'Swipe on sets': 'Húzás a sorozatokon',
+  'Left deletes, right copies': 'Balra töröl, jobbra másol',
+  'Options: copy, remove': 'Lehetőségek: másolás, eltávolítás',
 }

@@ -1910,4 +1910,16 @@ export default {
   'Finish and save': 'Beenden und speichern',
   'Make it a warm-up set': 'Zum Aufwärmsatz machen',
   'Count it as a working set': 'Als Arbeitssatz zählen',
+  // Swipe on sets (v1.3.11)
+  'Copy this set': 'Diesen Satz kopieren',
+  'Set {0} gone.': 'Satz {0} ist weg.',
+  'Set {0} gone. Its timer stopped too.': 'Satz {0} ist weg. Sein Timer auch.',
+  'Warm-up gone.': 'Aufwärmsatz ist weg.',
+  'Copied. One more like that one.': 'Kopiert. Noch einer wie der.',
+  'Keep at least one set, champ': 'Ein Satz bleibt mindestens, Champ',
+  'Too late, that one’s gone': 'Zu spät, der ist weg',
+  'Psst: swipe a set. Left deletes, right copies.': 'Psst: Wisch über einen Satz. Links löscht, rechts kopiert.',
+  'Swipe on sets': 'Wischen auf Sätzen',
+  'Left deletes, right copies': 'Links löscht, rechts kopiert',
+  'Options: copy, remove': 'Optionen: kopieren, entfernen',
 }

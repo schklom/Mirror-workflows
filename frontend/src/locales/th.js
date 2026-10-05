@@ -1901,4 +1901,16 @@ export default {
   'Finish and save': 'จบและบันทึก',
   'Make it a warm-up set': 'เปลี่ยนเป็นเซ็ตวอร์มอัพ',
   'Count it as a working set': 'นับเป็นเซ็ตจริง',
+  // Swipe on sets (v1.3.11)
+  'Copy this set': 'คัดลอกเซ็ตนี้',
+  'Set {0} gone.': 'ลบเซ็ต {0} แล้ว',
+  'Set {0} gone. Its timer stopped too.': 'ลบเซ็ต {0} แล้ว ตัวจับเวลาก็หยุดด้วย',
+  'Warm-up gone.': 'ลบวอร์มอัพแล้ว',
+  'Copied. One more like that one.': 'คัดลอกแล้ว อีกเซ็ตแบบเดิมเป๊ะ',
+  'Keep at least one set, champ': 'เก็บไว้อย่างน้อยหนึ่งเซ็ตนะแชมป์',
+  'Too late, that one’s gone': 'สายไปแล้ว เซ็ตนั้นไปแล้ว',
+  'Psst: swipe a set. Left deletes, right copies.': 'ชู่: ปัดเซ็ตได้นะ ซ้ายลบ ขวาคัดลอก',
+  'Swipe on sets': 'ปัดบนเซ็ต',
+  'Left deletes, right copies': 'ซ้ายลบ ขวาคัดลอก',
+  'Options: copy, remove': 'ตัวเลือก: คัดลอก, ลบ',
 }

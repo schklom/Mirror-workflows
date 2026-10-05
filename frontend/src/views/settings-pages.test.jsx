@@ -255,6 +255,11 @@ describe('the pages', () => {
     expect([...host.querySelectorAll('.sect-t')].map(e => e.textContent)).toEqual(['Rest', 'Logging', 'Before and during'])
     expect(titles()).toEqual(['Rest timer', 'Rest-pause rest', 'Effort per set', 'Shown under each exercise', 'Layout',
       'Weigh in before workouts', 'Keep screen awake', 'Exercise animations', 'Fine-tuning'])
+    // QA 10-05: the "screen stays on" line is the awake row's own subtitle, not a section footer
+    // that read as if it explained the animations above it.
+    expect(rowTitled('Keep screen awake').querySelector('.lrow-s').textContent).toMatch(/^The screen stays on/)
+    expect(rowTitled('Exercise animations').querySelector('.lrow-s')).toBeNull()
+    expect([...host.querySelectorAll('.sect-f')].some(f => /screen stays on/.test(f.textContent))).toBe(false)
     mount('advanced')
     expect(titles()).toEqual(['Planned sessions start from', 'Keep timing after target', 'Weight and reps buttons',
       'Drop and burst shortcuts on every set', 'Superset buttons in the exercise header', 'Move, swap and remove buttons below the exercise'])

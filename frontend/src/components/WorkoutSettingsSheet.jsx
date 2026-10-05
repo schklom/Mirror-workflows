@@ -50,7 +50,7 @@ export function WorkoutSettings({ close }) {
         <Switch checked={!!S.timerFlash} onChange={v => update(s => { s.timerFlash = v })} />
       </Row>
       {(wakeOK || !MOBILE) && <Row icon="phoneScreen" iconTint="var(--yellow)" title={t('Keep screen awake')}
-        subtitle={wakeOK ? null : t('Not supported in this browser.')}>
+        subtitle={wakeOK ? t('The screen stays on while a workout is running, so you don’t have to unlock your phone between sets.') : t('Not supported in this browser.')}>
         <Switch checked={wakeOK && S.keepAwake !== false} disabled={!wakeOK} onChange={v => update(s => { s.keepAwake = v })} />
       </Row>}
     </Section>

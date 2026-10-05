@@ -53,6 +53,8 @@ describe('the in-workout settings sheet', () => {
       'Layout', 'Effort per set', 'Exercise animations', 'All settings',
     ])
     expect(row('Rest timer').querySelector('.lrow-v').textContent).toBe('1:30')
+    expect(row('Keep screen awake').querySelector('.lrow-s').textContent).toMatch(/^The screen stays on/)
+    expect(row('Exercise animations').querySelector('.lrow-s')).toBeNull()
   })
 
   it('writes the same fields as Settings', () => {

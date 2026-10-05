@@ -468,7 +468,7 @@ export default function Settings({ page = null, find = null, via = null }) {
             value={layout} onChange={v => update(s => { s.workoutView = v })} />
         </Row>
       </Section>
-      <Section title={t('Before and during')} footer={wakeOK ? t('The screen stays on while a workout is running, so you don’t have to unlock your phone between sets.') : null}>
+      <Section title={t('Before and during')}>
         {/* The quick weigh-in that opens on Start (sheets.jsx startFlow, issue #137); off skips
             straight to the session. Home and Stats still log weight by hand. */}
         <Row icon="scale" iconTint="var(--green)" title={t('Weigh in before workouts')}
@@ -477,7 +477,7 @@ export default function Settings({ page = null, find = null, via = null }) {
         </Row>
         {(wakeOK || !MOBILE) && (
           <Row icon="phoneScreen" iconTint="var(--yellow)" title={t('Keep screen awake')}
-            subtitle={wakeOK ? null : t('Not supported in this browser.')}>
+            subtitle={wakeOK ? t('The screen stays on while a workout is running, so you don’t have to unlock your phone between sets.') : t('Not supported in this browser.')}>
             <Switch checked={wakeOK && S.keepAwake !== false} disabled={!wakeOK}
               onChange={v => update(s => { s.keepAwake = v })} />
           </Row>

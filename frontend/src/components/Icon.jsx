@@ -125,6 +125,36 @@ const P = {
   camera: <><path d="M3.6 8.8a2 2 0 0 1 2-2h1.9l1.3-2.1h6.4l1.3 2.1h1.9a2 2 0 0 1 2 2v8.4a2 2 0 0 1-2 2H5.6a2 2 0 0 1-2-2Z" /><circle cx="12" cy="12.8" r="3.3" /></>,
   image: <><rect x="3.6" y="4.8" width="16.8" height="14.4" rx="2.6" /><circle cx="8.6" cy="9.6" r="1.7" /><path d="m4.4 17.4 4.8-4.6 3.3 3 3-2.6 4.1 4" /></>,
   warning: <><path d="M12 3.4 21.2 19.4H2.8Z" /><path d="M12 9.6v4.4" /><circle cx="12" cy="16.6" r=".9" fill="currentColor" stroke="none" /></>,
+
+  /* ---- v1.3.11: one icon per concept (the Settings redesign names them) ---- */
+  // sound, not "notification": a speaker with two waves
+  speaker: <><path d="M4.6 9.4h3.2l4.6-3.8v12.8l-4.6-3.8H4.6Z" /><path d="M15.6 9.2a4 4 0 0 1 0 5.6M18 6.8a7.4 7.4 0 0 1 0 10.4" /></>,
+  // a phone with buzz marks on both sides
+  vibrate: <><rect x="8" y="4.2" width="8" height="15.6" rx="2" /><path d="M4.8 9v6M19.2 9v6M2.6 10.6v2.8M21.4 10.6v2.8" /></>,
+  // keep the screen on (sun stays flash and the light theme)
+  phoneScreen: <><rect x="6.6" y="3.4" width="10.8" height="17.2" rx="2.4" /><path d="M10.6 5.8h2.8" /></>,
+  ruler: <><rect x="3.4" y="8" width="17.2" height="8" rx="1.6" /><path d="M7 8v3M10.4 8v2M13.8 8v3M17.2 8v2" /></>,
+  palette: <><path d="M12 3.6a8.4 8.4 0 0 0 0 16.8c1.2 0 1.8-.7 1.8-1.6 0-1.1-.9-1.4-.9-2.4 0-.9.7-1.5 1.6-1.5h2.2a3.6 3.6 0 0 0 3.6-3.6c0-4.3-3.8-7.7-8.3-7.7Z" /><circle cx="8" cy="11.2" r="1.1" /><circle cx="11" cy="7.6" r="1.1" /><circle cx="15.2" cy="8.4" r="1.1" /></>,
+  // a rotation: two arrows running round (shuffle stays "freestyle")
+  repeat: <><path d="m17.6 4.4 2.4 2.4-2.4 2.4" /><path d="M4.4 11.6V10a3.2 3.2 0 0 1 3.2-3.2H20" /><path d="m6.4 19.6-2.4-2.4 2.4-2.4" /><path d="M19.6 12.4V14a3.2 3.2 0 0 1-3.2 3.2H4" /></>,
+  // swap or replace: two opposed arrows
+  swap: <path d="M4.4 8.2h14.4M15.2 4.6l3.6 3.6-3.6 3.6M19.6 15.8H5.2M8.8 12.2l-3.6 3.6 3.6 3.6" />,
+  // share or export: a box with an arrow leaving it
+  share: <><path d="M12 14.4V3.8M8.4 7.4 12 3.8l3.6 3.6" /><path d="M8 10.2H6.6a2 2 0 0 0-2 2v6.2a2 2 0 0 0 2 2h10.8a2 2 0 0 0 2-2v-6.2a2 2 0 0 0-2-2H16" /></>,
+  layout: <><rect x="4" y="4" width="16" height="7" rx="2" /><rect x="4" y="13" width="16" height="7" rx="2" /></>,
+  sides: <><path d="M12 3.6v16.8" /><path d="M8.6 8.4 5.2 12l3.4 3.6M15.4 8.4l3.4 3.6-3.4 3.6" /></>,
+  hourglass: <path d="M6.8 3.8h10.4M6.8 20.2h10.4M8 3.8v2.6c0 2.2 4 3.6 4 5.6s-4 3.4-4 5.6v2.6M16 3.8v2.6c0 2.2-4 3.6-4 5.6s4 3.4 4 5.6v2.6" />,
+  // effort per set (RIR / RPE)
+  gauge: <><path d="M4.2 16.6a8 8 0 1 1 15.6 0" /><path d="m12 14.4 3.6-4.6" /><circle cx="12" cy="14.6" r="1.2" /></>,
+  chartLineSlash: <><path d="M3.6 20.2V4.4M3.6 20.2h16.8M6.4 16.4l3.9-4.8 3.1 2.7 5.2-6.6" /><path d="M4.6 4.6 19.8 19.8" /></>,
+  sunrise: <path d="M3.6 17.4h16.8M7.6 17.4a4.4 4.4 0 0 1 8.8 0M12 6.4v2.4M5.4 10.2 7 11.8M18.6 10.2 17 11.8M8.4 20.4h7.2" />,
+  chevronsUpDown: <path d="m7.6 9.4 4.4-4.4 4.4 4.4M7.6 14.6l4.4 4.4 4.4-4.4" />,
+  note: <><rect x="4.6" y="3.6" width="14.8" height="16.8" rx="2.6" /><path d="M8.4 8.6h7.2M8.4 12h7.2M8.4 15.4h4" /></>,
+  plusCircle: <><circle cx="12" cy="12" r="8.2" /><path d="M12 8.2v7.6M8.2 12h7.6" /></>,
+  // a timed set's clock (timer stays the rest timer)
+  stopwatch: <><circle cx="12" cy="13.4" r="7.2" /><path d="M12 9.6v3.8M9.6 3.4h4.8M18 7.2l1.4-1.4" /></>,
+  // exercise settings: two sliders
+  slider: <><path d="M4.4 7.4h9.2M17.8 7.4h1.8M4.4 16.6h1.8M10.4 16.6h9.2" /><circle cx="15.7" cy="7.4" r="2.1" /><circle cx="8.3" cy="16.6" r="2.1" /></>,
 }
 
 // A few keys are aliases so call sites can say what they mean.

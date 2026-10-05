@@ -58,7 +58,10 @@ describe('routine order', () => {
     mount()
     edit()
     expect(handles().length).toBe(3)
-    expect(host.querySelectorAll('button[aria-label="Delete routine"]').length).toBe(3)
+    // each named for its routine, so a screen reader can tell three of them apart
+    expect([...host.querySelectorAll('.plan-minus')].map(b => b.getAttribute('aria-label'))).toEqual(['Delete Push A', 'Delete Pull A', 'Delete Legs A'])
+    expect(handles().map(b => b.getAttribute('aria-label'))).toEqual(['Move Push A', 'Move Pull A', 'Move Legs A'])
+    expect(host.textContent).toContain('Drag to reorder. Tap the minus to delete.')
     click(rows()[0])
     expect(nav).not.toHaveBeenCalled()
     click(button('Done'))
@@ -111,7 +114,7 @@ describe('routine order', () => {
   it('the red minus deletes only after the confirmation, routine, days and all', () => {
     mount()
     edit()
-    click(rows()[1].querySelector('button[aria-label="Delete routine"]'))
+    click(rows()[1].querySelector('button[aria-label="Delete Pull A"]'))
     expect(stored()).toEqual(['Push A', 'Pull A', 'Legs A'])
     expect(confirmSheet).toHaveBeenCalledTimes(1)
     expect(confirmSheet.mock.calls[0][0].message).toContain('Pull A')
@@ -125,7 +128,7 @@ describe('routine order', () => {
     mount()
     edit()
     expect(handles()).toEqual([])
-    expect(host.querySelector('button[aria-label="Delete routine"]')).toBeTruthy()
+    expect(host.querySelector('.plan-minus')).toBeTruthy()
   })
 
   it('New routine sits at the top and opens the editor on the new routine', () => {

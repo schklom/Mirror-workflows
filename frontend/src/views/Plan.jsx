@@ -215,7 +215,7 @@ function Schedule({ S, update, nav, mode }) {
           const r = routineOf(id)
           const item = qv?.items[i]
           return <div key={id} data-reorder-row className={'item rotation-row' + (item?.state === 'done' ? ' is-done' : '')} style={loopReorder.rowStyle(i)}>
-            {editing && <button className="plan-minus" aria-label={t('Remove')} title={t('Remove')}
+            {editing && <button className="plan-minus" aria-label={t('Remove {0}', r?.name ?? id)} title={t('Remove')}
               onClick={() => setSeq(seq.filter(x => x !== id))}><Icon name="minus" /></button>}
             <span className={'plan-order' + (item?.state === 'next' ? ' next' : '')}>{item?.state === 'done' ? <Icon name="check" /> : i + 1}</span>
             <span className="lrow-i"><Icon name={glyphOf(r?.emoji)} /></span>
@@ -223,14 +223,14 @@ function Schedule({ S, update, nav, mode }) {
               <div className="tt">{r?.name ?? id}</div>
               <div className="ss">{item ? stateWord(item) : r ? exCount(r.ex.length) : ''}</div>
             </div>
-            {editing && seq.length > 1 && <button className="plan-handle" aria-label={t('Drag to reorder')} title={t('Drag to reorder')}
+            {editing && seq.length > 1 && <button className="plan-handle" aria-label={t('Move {0}', r?.name ?? id)} title={t('Drag to reorder')}
               {...loopReorder.handle(i)}><Icon name="chevronsUpDown" /></button>}
           </div>
         })}
       </div> : <div className="empty">{t('No rotation yet. Add routines in the order you want to train them. The first one you haven’t logged stays up next.')}</div>}
       {seq.length > 0 && <p className="sect-f">
         {qv ? (qv.waiting ? t('Next pass starts {0}', fmtDate(qv.startsOn, true)) : t('{0} of {1} done this round.', doneCount, qv.items.length)) + ' ' : ''}
-        {external ? '' : editing ? t('Drag to reorder. Tap the red button to take one out.') : t('Trained out of order? Just pick another routine on Home.')}
+        {external ? '' : editing ? t('Drag to reorder. Tap the minus to take one out.') : t('Trained out of order? Just pick another routine on Home.')}
       </p>}
       <div className="row" style={{ gap: 8, marginTop: 4, flexWrap: 'wrap' }}>
         {external && <Button size="sm" variant="tinted" aria-label={t('Use this rotation')} onClick={adopt}>{t('Use this rotation')}</Button>}
@@ -301,10 +301,10 @@ function Routines({ S, update, nav }) {
       {edit
         ? <div className="list routine-list plan-routines is-editing" ref={reorder.listRef}>{routines.map((r, i) =>
           <div key={r.id} data-reorder-row className="item plan-routine" style={reorder.rowStyle(i)}>
-            <button className="plan-minus" aria-label={t('Delete routine')} title={t('Delete routine')} onClick={() => confirmDelete(r)}><Icon name="minus" /></button>
+            <button className="plan-minus" aria-label={t('Delete {0}', r.name)} title={t('Delete routine')} onClick={() => confirmDelete(r)}><Icon name="minus" /></button>
             <span className="lrow-i"><Icon name={glyphOf(r.emoji)} /></span>
             <div className="grow"><div className="tt">{r.name}</div><div className="ss">{sub(r)}</div></div>
-            {routines.length > 1 && <button className="plan-handle" aria-label={t('Drag to reorder')} title={t('Drag to reorder')}
+            {routines.length > 1 && <button className="plan-handle" aria-label={t('Move {0}', r.name)} title={t('Drag to reorder')}
               {...reorder.handle(i)}><Icon name="chevronsUpDown" /></button>}
           </div>)}</div>
         : <div className="list routine-list plan-routines">{routines.map(r => <SwipeToDelete key={r.id} className="item plan-routine"
@@ -312,7 +312,7 @@ function Routines({ S, update, nav }) {
           <span className="lrow-i"><Icon name={glyphOf(r.emoji)} /></span>
           <div className="grow"><div className="tt">{r.name}</div><div className="ss">{sub(r)}</div></div>
           <Icon name="chevronRight" className="chev" /></SwipeToDelete>)}</div>}
-      <p className="sect-f">{edit ? t('Drag to reorder. Tap the red button to delete.') : t('Tap a routine to edit it. Reorder and delete are behind Edit.')}</p>
+      <p className="sect-f">{edit ? t('Drag to reorder. Tap the minus to delete.') : t('Tap a routine to edit it. Reorder and delete are behind Edit.')}</p>
     </> : <>
       <div className="empty"><div className="ico"><Icon name="clipboard" /></div>{t('No routines yet.')}<br />{t('Make one, or grab the starter plan to get going.')}</div>
       <Button icon="clipboard" onClick={starterPlanSheet}>{t('Load starter plan')}</Button>

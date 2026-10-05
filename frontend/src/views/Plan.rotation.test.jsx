@@ -181,7 +181,10 @@ describe('Plan — the loop', () => {
   it('removing the last routine hands the schedule back to the weekday plan', () => {
     mount({ queue: live({ ids: ['a'], rotationId: 'r1' }), rotation: { id: 'r1', sequence: ['a'], label: 'My split' } })
     click(byLabel('Edit'))
-    click(rows()[0].querySelector('[aria-label="Remove"]'))
+    const minus = rows()[0].querySelector('.plan-minus')
+    expect(minus.getAttribute('aria-label')).toBe('Remove ' + routines.find(r => r.id === 'a').name)   // named for its routine
+    expect(host.textContent).toContain('Drag to reorder. Tap the minus to take one out.')
+    click(minus)
     expect(mocks.S.queue).toBe(null)
     expect(mocks.S.rotation).toBe(null)
     expect(mocks.S.scheduleMode).toBe('week')

@@ -1127,12 +1127,12 @@ export const PT_BR_OVERRIDES = {
   'The same routines on the same weekdays, every week.': 'As mesmas rotinas nos mesmos dias, toda semana.',
   'How you train': 'Como você treina',
   'Want two routines on one day? Tap the day and pick both.': 'Duas rotinas em um dia? Toque no dia e escolha as duas.',
-  'Drag to reorder. Tap the red button to take one out.': 'Arraste para reordenar. Toque no botão vermelho para tirar uma.',
+  'Drag to reorder. Tap the minus to take one out.': 'Arraste para reordenar. Toque no sinal de menos para tirar uma.',
   'Trained out of order? Just pick another routine on Home.': 'Treinou fora de ordem? É só escolher outra rotina no Início.',
   'These count on top of the loop. Tap a day to change or clear it.': 'Contam além do ciclo. Toque em um dia para mudar ou limpar.',
   'Tap to plan something': 'Toque para planejar algo',
   'Drag to reorder': 'Arraste para reordenar',
-  'Drag to reorder. Tap the red button to delete.': 'Arraste para reordenar. Toque no botão vermelho para excluir.',
+  'Drag to reorder. Tap the minus to delete.': 'Arraste para reordenar. Toque no sinal de menos para excluir.',
   'Tap a routine to edit it. Reorder and delete are behind Edit.': 'Toque em uma rotina para editar. Reordenar e excluir ficam em Editar.',
   'Pick one routine, or more to train them together.': 'Escolha uma rotina, ou várias para treinar juntas.',
   'Planned sets per week, from your plan.': 'Séries planejadas por semana, a partir do seu plano.',
@@ -1165,6 +1165,7 @@ export const PT_BR_OVERRIDES = {
   'Open Settings → Account → “Pair the mobile app” on the openGym site you’re already signed into, then enter its address and the code shown there.': 'No site openGym em que você já está conectado, abra Configurações → Conta → “Parear o aplicativo”, depois digite o endereço e o código mostrado lá.',
   'Open Settings → Account → “Pair the mobile app” on your openGym site in a browser and enter the new code shown there. What this phone kept is merged into your account.': 'No seu site openGym em um navegador, abra Configurações → Conta → “Parear o aplicativo” e digite o novo código mostrado lá. O que este celular manteve é incorporado à sua conta.',
   'Turn on push notifications first.': 'Ative primeiro as notificações push.',
+  'Delete {0}': 'Excluir {0}',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

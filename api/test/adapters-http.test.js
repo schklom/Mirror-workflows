@@ -305,3 +305,25 @@ test('models(): OpenAI’s list is cut to what Chat Completions can use; a compa
   const co = fakeFetch([ok({ data: [{ id: 'qwen2.5:3b' }, { id: 'llama3.2' }] })]);
   assert.deepEqual((await compatible.models({ providerOptions: { compatible: { baseUrl: 'http://ollama:11434' } } }, {}, { fetch: co })).models, ['llama3.2', 'qwen2.5:3b']);
 });
+
+test('invoke sends the configured maxTokens override, and the adapter default when none is given', async () => {
+  const { MAX_OUTPUT_TOKENS } = await import('../coach/core/adapters/http.js');
+
+  // No override: every caller that configures nothing (the phone, warmup) still gets the default.
+  const d = fakeFetch([ok({ choices: [{ message: { content: ANSWER }, finish_reason: 'stop' }] })]);
+  await compatible.invoke({ cfg: cfgCompat, prompt: 'P', env: {}, model: 'm', fetch: d });
+  assert.equal(d.calls[0].body.max_tokens, MAX_OUTPUT_TOKENS);
+
+  // An override, on each wire shape that carries the ceiling.
+  const o = fakeFetch([ok({ choices: [{ message: { content: ANSWER }, finish_reason: 'stop' }] })]);
+  await openai.invoke({ cfg: {}, prompt: 'P', env, model: 'gpt-x', fetch: o, maxTokens: 48000 });
+  assert.equal(o.calls[0].body.max_completion_tokens, 48000);
+
+  const a = fakeFetch([ok({ content: [{ type: 'text', text: ANSWER }], stop_reason: 'end_turn' })]);
+  await anthropic.invoke({ cfg: {}, prompt: 'P', env, fetch: a, maxTokens: 48000 });
+  assert.equal(a.calls[0].body.max_tokens, 48000);
+
+  const g = fakeFetch([ok({ candidates: [{ content: { parts: [{ text: ANSWER }] }, finishReason: 'STOP' }] })]);
+  await gemini.invoke({ cfg: {}, prompt: 'P', env, model: 'gemini-z', fetch: g, maxTokens: 48000 });
+  assert.equal(g.calls[0].body.generationConfig.maxOutputTokens, 48000);
+});

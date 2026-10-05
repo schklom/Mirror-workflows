@@ -166,6 +166,7 @@ export function coachRoutes({ json, readBody, readSession, requireAdmin }) {
         knownModels: check.models || null,
         caps: cfg.caps,
         maxMessageLen: cfg.maxMessageLen,
+        maxOutputTokens: cfg.maxOutputTokens,
         community: !!cfg.community,
         runtime: { ok: !!check.ok, version: check.version || null, error: check.error || null, needsKey: !!check.needsKey },
         authMode: cfg.authMode,
@@ -236,6 +237,12 @@ export function coachRoutes({ json, readBody, readSession, requireAdmin }) {
         patch.maxMessageLen = Math.max(
           cfgStore.MAX_MESSAGE_LEN_FLOOR,
           Math.min(cfgStore.MAX_MESSAGE_LEN_CEILING, +body.maxMessageLen || current.maxMessageLen)
+        );
+      }
+      if (body.maxOutputTokens !== undefined) {
+        patch.maxOutputTokens = Math.max(
+          cfgStore.MAX_OUTPUT_TOKENS_FLOOR,
+          Math.min(cfgStore.MAX_OUTPUT_TOKENS_CEILING, +body.maxOutputTokens || current.maxOutputTokens)
         );
       }
       cfgStore.save(patch);

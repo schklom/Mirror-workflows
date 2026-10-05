@@ -127,6 +127,16 @@ that way:
   Servers that reject schemas get plain JSON mode automatically, then no JSON mode — the
   validator is the gate either way.
 
+#### When a plan comes back cut off
+
+Every answer has a ceiling on how much the provider may write, set on **Settings → Admin
+dashboard → AI Coach → Advanced → Max output tokens** (16000 by default). A reasoning model — a
+DeepSeek V3/R1-class endpoint, or a "thinking" Gemini or OpenAI model — counts its hidden
+reasoning against that same ceiling, so a `create` or `refine` can be cut off even though the
+plan itself is short. If a job fails with *"the answer was cut off at the output limit"*, raise
+it; keep it within the model's own output limit (65536 on most current hosted models, lower on a
+small local one).
+
 ### With a runtime in the container (Claude Agent SDK, Codex CLI)
 
 **1. Build the image that has an AI runtime in it.** The default image deliberately has none:

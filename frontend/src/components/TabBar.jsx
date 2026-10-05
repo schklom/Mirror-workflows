@@ -46,13 +46,14 @@ export default function TabBar({ onStart }) {
       <Tab active={on('plan')} icon="calendar" label={t('Plan')} onClick={() => nav('/plan')} />
       {/* On the workout screen itself there is nothing to resume, so the button reads as the
           tab it is and stays lit (#29); anywhere else it brings you back to the exercise you
-          were on — the marker is kept in S.active.cur and never moves on its own (#21). */}
+          were on — the marker is kept in S.active.cur and never moves on its own (#21). The
+          glyph is always play: start and resume are one concept, and an exercise is a dumbbell. */}
       <button className={'start' + (S.active ? ' rec' : '') + (S.active && cur === 'workout' ? ' on' : '')} onClick={startWorkout}>
-        <span className="cir"><Icon name={S.active ? (cur === 'workout' ? 'dumbbell' : 'play') : 'dumbbell'} /></span>
+        <span className="cir"><Icon name="play" /></span>
         <span>{S.active ? (cur === 'workout' ? t('Workout') : S.active.editingWorkoutId ? t('Edit workout') : t('Resume')) : t('Start')}</span>
       </button>
       <Tab active={on('stats')} icon="chart" label={t('Stats')} onClick={() => nav('/stats')} />
-      <Tab active={on('library')} icon="list" label={t('Exercises')} onClick={() => nav('/library')} />
+      <Tab active={on('library')} icon="dumbbell" label={t('Exercises')} onClick={() => nav('/library')} />
     </nav>
   )
 }

@@ -943,6 +943,51 @@ const placeRow = (rows, i, row) => {
   return next
 }
 
+// What a copied set leaves behind (v1.3.11, swipe right or "Copy this set"): the tick and when it
+// happened, a hold's set-aside plan, the manual-weight marker (the copy follows a weight change
+// above it like any inherited row) and the drop/burst sub-rows, which belong to the set that was
+// actually done. Weight, reps, time, speed, effort, the warm-up phase, a pyramid's Max and the
+// side layout all come along.
+const NOT_COPIED = ['done', 'at', 'planSec', 'weightOrigin', 'type', 'drops', 'clusters']
+const bare = src => {
+  const out = { ...src }
+  for (const k of NOT_COPIED) delete out[k]
+  return out
+}
+function copyOfRow(src) {
+  if (isSideSet(src)) {
+    const side = sd => ({ ...bare(sd), done: false })
+    return syncSideAggregate({ ...bare(src), sides: { L: side(src.sides.L), R: side(src.sides.R) }, done: false })
+  }
+  return { ...bare(src), done: false }
+}
+
+/** "One more like this one": a copy of row `i` right below it, unticked and without sub-rows.
+ *  A timed per-side hold is planned as an L row then an R row (buildSets), so copying either
+ *  half copies the pair and puts it after the pair, keeping every L next to its R. */
+export function copySpanAt(rows, i) {
+  const work = r => r && !isWarmupRow(r) ? r.side : null
+  const start = work(rows[i]) === 'R' && work(rows[i - 1]) === 'L' ? i - 1 : i
+  const end = work(rows[start]) === 'L' && work(rows[start + 1]) === 'R' ? start + 1 : start
+  return { start, end }
+}
+export function copyRowAt(rows, i) {
+  if (!rows[i]) return rows.slice()
+  const { start, end } = copySpanAt(rows, i)
+  const next = rows.slice()
+  next.splice(end + 1, 0, ...rows.slice(start, end + 1).map(copyOfRow))
+  return next
+}
+
+/** Undo for a removed set: `row` back at index `i` exactly as it was (tick, values, sub-rows).
+ *  An index past the end (the entry lost rows since) lands it last. */
+export function insertRowAt(rows, i, row) {
+  const next = rows.slice()
+  const at = Number.isInteger(i) ? Math.max(0, Math.min(i, next.length)) : next.length
+  next.splice(at, 0, row)
+  return next
+}
+
 /** Remove the row at `i`, never emptying the entry below one row. */
 export function removeRowAt(rows, i) {
   if (rows.length <= 1) return rows.slice()

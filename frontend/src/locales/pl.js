@@ -1791,4 +1791,8 @@ export default {
   '{0} doesn’t do itself, recruit. Move it!': 'Trening „{0}” sam się nie zrobi, rekrucie. Ruszaj się!',
   'Excuses don’t lift weights. Report for {0} tomorrow!': 'Wymówki nie podnoszą ciężarów. Jutro meldujesz się na „{0}”!',
   'Your muscles filed a missing-person report. Show up for {0}!': 'Twoje mięśnie zgłosiły twoje zaginięcie. Stawić się na „{0}”!',
+  'That address answers, but it isn’t an openGym server. Check the URL.': 'Ten adres odpowiada, ale to nie jest serwer openGym. Sprawdź URL.',
+  'Switch sides': 'Zmień stronę',
+  'Saves a dated copy to “{0}” after finishing a workout or editing a routine, and keeps the newest {1}.': 'Zapisuje kopię z datą w „{0}” po każdym zakończonym treningu lub edycji planu i trzyma {1} najnowszych.',
+  'Saves a dated copy to the folder you chose after finishing a workout or editing a routine, and keeps the newest {0}.': 'Zapisuje kopię z datą w wybranym folderze po każdym zakończonym treningu lub edycji planu i trzyma {0} najnowszych.',
 }

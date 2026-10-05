@@ -1802,4 +1802,8 @@ export default {
   '{0} doesn’t do itself, recruit. Move it!': '{0} ไม่ทำตัวเองหรอก พลทหาร เคลื่อนไหว!',
   'Excuses don’t lift weights. Report for {0} tomorrow!': 'ข้ออ้างยกน้ำหนักไม่ได้ พรุ่งนี้มารายงานตัวที่ {0}!',
   'Your muscles filed a missing-person report. Show up for {0}!': 'กล้ามเนื้อของคุณแจ้งคนหายแล้ว มารายงานตัวที่ {0}!',
+  'That address answers, but it isn’t an openGym server. Check the URL.': 'ที่อยู่นี้ตอบกลับ แต่ไม่ใช่เซิร์ฟเวอร์ openGym ตรวจสอบ URL อีกครั้ง',
+  'Switch sides': 'สลับข้าง',
+  'Saves a dated copy to “{0}” after finishing a workout or editing a routine, and keeps the newest {1}.': 'บันทึกสำเนาพร้อมวันที่ไว้ใน “{0}” ทุกครั้งที่จบการออกกำลังกายหรือแก้รูทีน และเก็บไว้ {1} ชุดล่าสุด',
+  'Saves a dated copy to the folder you chose after finishing a workout or editing a routine, and keeps the newest {0}.': 'บันทึกสำเนาพร้อมวันที่ไว้ในโฟลเดอร์ที่คุณเลือกทุกครั้งที่จบการออกกำลังกายหรือแก้รูทีน และเก็บไว้ {0} ชุดล่าสุด',
 }

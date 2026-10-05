@@ -330,6 +330,8 @@ h4.sec{
 .lrow-c{color:var(--label);font-size:15px;flex:none;--icon-stroke:2.4}
 .lrow-k{color:var(--acc);font-size:17px;flex:none;--icon-stroke:2.4}
 .lrow.danger,.lrow.danger .lrow-t{color:var(--red)}
+/* A warning under a settings row reads at subtitle size: a sentence, not a row title. */
+.lrow.backup-lost .lrow-t{font-size:13px;line-height:1.3;color:var(--label-2);letter-spacing:0}
 /* The Stats exercise name gets its own line so long names cannot run into the title.
    Two columns only — label/value on the left, chevron on the right — so this is for rows
    WITHOUT an icon. `.lrow-i` is not placed here; on a row that has one it would auto-place
@@ -523,6 +525,12 @@ h4.sec{
   font-weight:500;text-transform:capitalize;
 }
 .tag.acc{background:var(--acc-soft);color:var(--acc)}
+/* Left / Right on a per-side row: one width for both (#322). The two hidden words share the
+   visible one's grid cell, so the pill is as wide as the longer word. */
+.tag.sidepill{display:inline-grid;justify-items:center;flex:none}
+.tag.sidepill>span,.tag.sidepill::before,.tag.sidepill::after{grid-area:1/1}
+.tag.sidepill::before{content:attr(data-l);visibility:hidden}
+.tag.sidepill::after{content:attr(data-r);visibility:hidden}
 /* favourite marker (issue #6): a small yellow star glued to the exercise name — distinct from
    the accent "chosen" tag at the row's end, which means "already in a routine or the log" */
 .fav-star{color:var(--yellow);font-size:12px;display:inline-block;margin-inline-end:5px;vertical-align:-1px}
@@ -1262,6 +1270,9 @@ body.chips-dragging *{cursor:inherit}
 #timer.rest .acts .skip{margin-inline-start:auto;min-width:84px}
 /* A paused rest reads as held: the clock and the bar step back until it runs again. */
 #timer.rest.paused .t,#timer.rest.paused .bar{opacity:.5}
+/* Switch sides: the short pause inside one timed per-side set, named above its bar. */
+#timer.rest.switch .grow{flex:1;min-width:0}
+#timer.rest.switch .lbl{font-size:12px;color:var(--label-2);margin-bottom:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* work timer (issue #16): the same bar doing the opposite job — outlined and tinted so a
    glance tells "you are holding this" apart from "you are recovering". */
 #timer.working{border:var(--hair) solid var(--acc)}

@@ -41,10 +41,14 @@ export default function RestTimer() {
   // Pause sits between them as an icon (#193): it holds the time, it neither adds nor ends it.
   // A rest that is over has nothing left to hold, so Ready offers no pause.
   return (
-    <div id="timer" className={'rest' + (timer.paused ? ' paused' : '')}>
+    <div id="timer" className={'rest' + (timer.paused ? ' paused' : '') + (timer.kind === 'switch' ? ' switch' : '')}>
       <div className="head">
         <div className="t" role={timer.ready ? 'status' : undefined}>{timer.ready ? t('Ready') : clock(timer.left)}</div>
-        <div className="bar"><i style={{ width: pct + '%' }} /></div>
+        {/* The short pause between the two sides of a timed set says what it is for. */}
+        {timer.kind === 'switch' ? <div className="grow">
+          <div className="lbl">{t('Switch sides')}</div>
+          <div className="bar"><i style={{ width: pct + '%' }} /></div>
+        </div> : <div className="bar"><i style={{ width: pct + '%' }} /></div>}
       </div>
       <div className="acts">
         <Button size="sm" icon="minus" onClick={() => addRest(-15)}>15s</Button>

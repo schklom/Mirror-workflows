@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { scheduleModeOf, queueRecovery, rotationIds, startPass, saveRotation, startNewPass, stopPass, refillAfter } from './rotation.js'
-import { queueRemaining, queueView } from './queue.js'
+import { queueNext, queueRemaining, queueView } from './queue.js'
+import { effectiveRoutineIds } from './history.js'
 
 const routines = [{ id: 'a', name: 'A' }, { id: 'b', name: 'B' }, { id: 'c', name: 'C' }, { id: 'own', name: 'Core' }]
 const TODAY = '2026-09-12'
@@ -100,16 +101,34 @@ describe('editing the sequence', () => {
     expect(s.dayPlan).toEqual({ '2026-09-11': 'b', '2026-09-14': 'a' })
   })
 
-  it('Start new pass rewinds to today, and to tomorrow when today closed the old one', () => {
+  it('Start new pass starts now: today is its first day, and nothing logged before counts', () => {
     const base = { rotation: { id: 'r1', sequence: ['a', 'b'], label: 'My split' } }
     const stale = S({ ...base, queue: pass(['a', 'b'], { rotationId: 'r1' }), workouts: [w('a', '2026-09-10'), w('b', '2026-09-10')] })
     startNewPass(stale, TODAY, NOW)
-    expect(stale.queue.startsOn).toBe(TODAY)
-    // …but a pass closed by a workout dated today must not have that same workout credit the new one
-    const fresh = S({ ...base, queue: pass(['a', 'b'], { rotationId: 'r1' }), workouts: [w('a', '2026-09-10'), w('b', TODAY)] })
+    expect(stale.queue).toMatchObject({ startsOn: TODAY, since: NOW, strict: true })
+    // Android QA: A was logged today, then "Start new pass". The pass used to wait for tomorrow
+    // ("Next pass starts …" over a pass in progress, Home and Start naming different sessions),
+    // and A logged earlier today still read as Done by its name.
+    const fresh = S({ ...base, queue: pass(['a', 'b'], { rotationId: 'r1' }), workouts: [w('a', TODAY)] })
     startNewPass(fresh, TODAY, NOW)
-    expect(fresh.queue.startsOn).toBe('2026-09-13')
-    expect(fresh.queue.since).toBe(NOW)
+    expect(fresh.queue.startsOn).toBe(TODAY)
+    const v = queueView(fresh, TODAY)
+    expect(v.waiting).toBe(false)
+    expect(v.items.map(i => i.state)).toEqual(['next', 'later'])
+    expect(queueNext(fresh, TODAY, TODAY)).toBe('a')
+    expect(effectiveRoutineIds(fresh, TODAY, TODAY)).toEqual(['a'])
+    // a session done after the start moment counts as usual
+    fresh.workouts.push(w('a', TODAY, NOW + 60_000))
+    expect(queueView(fresh, TODAY).items.map(i => i.state)).toEqual(['done', 'next'])
+    expect(effectiveRoutineIds(fresh, TODAY, TODAY)).toEqual(['b'])
+  })
+
+  it('an edit keeps a new pass strict', () => {
+    const s = S({ rotation: { id: 'r1', sequence: ['a', 'b'], label: 'My split' }, queue: pass(['a', 'b'], { rotationId: 'r1' }), workouts: [w('a', TODAY)] })
+    startNewPass(s, TODAY, NOW)
+    saveRotation(s, ['b', 'a'], 'My split', TODAY, NOW + 5000)
+    expect(s.queue).toMatchObject({ strict: true, since: NOW, startsOn: TODAY })
+    expect(queueRemaining(s)).toEqual(['b', 'a'])
   })
 
   it('Start new pass sweeps the old pass\'s future pins — a stale one would otherwise resurface as open on the new pass', () => {

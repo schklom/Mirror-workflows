@@ -9,10 +9,13 @@ afterEach(() => { vi.unstubAllGlobals(); vi.useRealTimers() })
 
 const failed = () => Promise.reject(new TypeError('Failed to fetch'))
 const opaque = () => Promise.resolve(new Response(null, { status: 200 }))
+// The no-cors probe settles; the readable one is refused by the browser, as for any server
+// that does not let this origin in.
+const corsOnly = (url, init) => (init && init.mode === 'no-cors' ? opaque() : failed())
 
 describe('pairRedeem when the request never gets an answer', () => {
   it('server reachable without CORS: says the proxy refused the app, naming the app\'s origin', async () => {
-    const fetch = vi.fn((url, init) => (url.endsWith('/api/pair/redeem') ? failed() : opaque()))
+    const fetch = vi.fn((url, init) => (url.endsWith('/api/pair/redeem') ? failed() : corsOnly(url, init)))
     vi.stubGlobal('fetch', fetch)
     const e = await pairRedeem('https://gym.example.com', 'ABCD2345').catch(x => x)
     expect(e.code).toBe('cors')
@@ -22,6 +25,25 @@ describe('pairRedeem when the request never gets an answer', () => {
     const probe = fetch.mock.calls[1]
     expect(probe[0]).toBe('https://gym.example.com/api/health')
     expect(probe[1]).toMatchObject({ mode: 'no-cors', cache: 'no-store' })
+  })
+
+  it('openGym behind a proxy that refuses the app: its health answer read, still the CORS message', async () => {
+    const health = () => Promise.resolve(new Response(JSON.stringify({ ok: true, users: 2 }), { status: 200, headers: { 'content-type': 'application/json' } }))
+    vi.stubGlobal('fetch', vi.fn((url, init) => (url.endsWith('/api/pair/redeem') ? failed() : init && init.mode === 'no-cors' ? opaque() : health())))
+    const e = await pairRedeem('https://gym.example.com', 'ABCD2345').catch(x => x)
+    expect(e.code).toBe('cors')
+  })
+
+  // A static site, another app, a router page: it answers, but /api/health is not openGym's.
+  it.each([
+    ['a 404 page', () => new Response('<h1>not found</h1>', { status: 404, headers: { 'content-type': 'text/html' } })],
+    ['an HTML page', () => new Response('<h1>static</h1>', { status: 200, headers: { 'content-type': 'text/html' } })],
+    ['another app\'s JSON', () => new Response(JSON.stringify({ status: 'UP' }), { status: 200, headers: { 'content-type': 'application/json' } })],
+  ])('a server that answers with %s: says it is not an openGym server', async (_, page) => {
+    vi.stubGlobal('fetch', vi.fn((url, init) => (url.endsWith('/api/pair/redeem') ? failed() : init && init.mode === 'no-cors' ? opaque() : Promise.resolve(page()))))
+    const e = await pairRedeem('https://gym.example.com', 'ABCD2345').catch(x => x)
+    expect(e.code).toBe('not-opengym')
+    expect(e.message).toBe('That address answers, but it isn’t an openGym server. Check the URL.')
   })
 
   it('server not reachable at all: says so, with the address', async () => {

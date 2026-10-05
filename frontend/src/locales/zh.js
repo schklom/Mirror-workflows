@@ -1791,4 +1791,8 @@ export default {
   '{0} doesn’t do itself, recruit. Move it!': '{0}不会自己完成，新兵。动起来！',
   'Excuses don’t lift weights. Report for {0} tomorrow!': '借口举不起重量。明天准时报到练{0}！',
   'Your muscles filed a missing-person report. Show up for {0}!': '你的肌肉已经报了失踪。马上来练{0}！',
+  'That address answers, but it isn’t an openGym server. Check the URL.': '该地址有响应，但不是 openGym 服务器。请检查网址。',
+  'Switch sides': '换边',
+  'Saves a dated copy to “{0}” after finishing a workout or editing a routine, and keeps the newest {1}.': '每次完成训练或修改计划后，在“{0}”中保存一份带日期的副本，并保留最新的 {1} 份。',
+  'Saves a dated copy to the folder you chose after finishing a workout or editing a routine, and keeps the newest {0}.': '每次完成训练或修改计划后，在你选择的文件夹中保存一份带日期的副本，并保留最新的 {0} 份。',
 }

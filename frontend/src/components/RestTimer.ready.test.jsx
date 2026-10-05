@@ -99,3 +99,17 @@ describe('RestTimer pause and resume', () => {
     expect(pause()).toBeNull()
   })
 })
+
+describe('RestTimer switch-sides pause', () => {
+  it('names the pause, counts it down, and goes without a Ready or a toast', () => {
+    useUI.setState({ toastMsg: '' })
+    act(() => useUI.getState().startRest(10, 0, { kind: 'switch' }))
+    mount()
+    expect(host.querySelector('#timer.switch .lbl')?.textContent).toBe('Switch sides')
+    expect(host.querySelector('#timer .t').textContent).toBe('0:10')
+    act(() => vi.advanceTimersByTime(10_000))
+    expect(useUI.getState().timer).toBeNull()
+    expect(useUI.getState().toastMsg).toBe('')
+    expect(host.querySelector('#timer')).toBeNull()
+  })
+})

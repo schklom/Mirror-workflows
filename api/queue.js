@@ -11,7 +11,9 @@
 // week (on or after `startsOn`) whose merged name (`'A + B'`) names the routine under its current
 // title. The date bound keeps a past week's workout, which a planner's reused ids and names can
 // make look identical, from counting. Only finished workouts (`S.workouts`) count; an in-progress
-// session never does. Missed sets are the planner's business, not the queue's.
+// session never does. Missed sets are the planner's business, not the queue's. A queue with
+// `strict: true` (the app's "Start new pass") drops the dated name clause: only a workout started
+// at/after `since` counts, so a session logged earlier that day stays the old pass's.
 //
 // NEXT RULE (shared with the frontend): once `startsOn` is reached, the day's session is the
 // first not-done one in slot order — unless pins say otherwise.
@@ -33,7 +35,7 @@ function nameParts(w) {
 function queueDone(S, id, startsOn) {
   const currentName = (S.routines || []).find(r => r?.id === id)?.name;
   return (S.workouts || []).some(w => routineIdsOf(w).includes(id)
-    && ((w.start ?? 0) >= S.queue.since || (String(w.d || '') >= startsOn && nameParts(w).includes(currentName))));
+    && ((w.start ?? 0) >= S.queue.since || (S.queue.strict !== true && String(w.d || '') >= startsOn && nameParts(w).includes(currentName))));
 }
 // The calendar date of an instant where the USER is. The frontend's fallback for a missing
 // startsOn is the device's local date of the apply; the closest thing here is the zone the

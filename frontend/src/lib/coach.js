@@ -639,7 +639,7 @@ export function changeValues(c, S) {
       const ids = [].concat(v ?? []).filter(x => x && x !== 'rest')
       return ids.length ? ids.map(routineName).join(' + ') : t('Rest')
     }
-    if (v == null) return '—'
+    if (v == null) return '–'
     if (typeof v === 'object') return v.id ? exTitle(v.id) : v.name || JSON.stringify(v)
     if (Array.isArray(v)) return v.length + ''
     return String(v)

@@ -1791,4 +1791,8 @@ export default {
   '{0} doesn’t do itself, recruit. Move it!': '{0}은(는) 저절로 되지 않는다, 훈련병. 움직여!',
   'Excuses don’t lift weights. Report for {0} tomorrow!': '핑계는 무게를 들지 않는다. 내일 {0}에 집합!',
   'Your muscles filed a missing-person report. Show up for {0}!': '근육들이 실종 신고를 냈다. {0}에 출석하라!',
+  'That address answers, but it isn’t an openGym server. Check the URL.': '이 주소는 응답하지만 openGym 서버가 아닙니다. URL을 확인하세요.',
+  'Switch sides': '방향 바꾸기',
+  'Saves a dated copy to “{0}” after finishing a workout or editing a routine, and keeps the newest {1}.': '운동을 마치거나 루틴을 수정할 때마다 “{0}”에 날짜가 붙은 사본을 저장하고 최신 {1}개를 보관합니다.',
+  'Saves a dated copy to the folder you chose after finishing a workout or editing a routine, and keeps the newest {0}.': '운동을 마치거나 루틴을 수정할 때마다 선택한 폴더에 날짜가 붙은 사본을 저장하고 최신 {0}개를 보관합니다.',
 }

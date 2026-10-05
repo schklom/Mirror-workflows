@@ -14,7 +14,7 @@ import { beep, vibrate, unlock } from '../lib/sound.js'
 import { pinState } from '../lib/queue.js'
 import { t, tn, exerciseNameFor, exerciseNameClass } from '../lib/i18n.js'
 import { api, beacon } from '../lib/api.js'
-import { pyramidRestFor, maxRecordAt } from '../lib/pyramid.js'
+import { pyramidRestFor, maxRecordAt, isPyramid, pyramidLabel } from '../lib/pyramid.js'
 import { insertionIndexAfterCurrentUnit, nextUnfinishedUnit, setProgressHighWater, supersetFlowStep, restAfterSet, restOnRecheck, restSecFor, warmupRestSecFor } from '../lib/supersetFlow.js'
 import Media from '../components/Media.jsx'
 import { startFlow, exercisePicker, exConfigSheet, exerciseDetailSheet, finishWorkout, exitWorkoutEdit, workoutCompleteSheet, confirmSheet, exerciseNoteSheet, sessionNoteSheet, renameWorkoutSheet, swapActiveWorkoutExercise, barWeightSheet, menuSheet, effortPickerSheet, exerciseHistorySheet, addRoutineToSessionSheet } from '../sheets.jsx'
@@ -96,6 +96,10 @@ const RTL_LETTER = /[֐-ࣿיִ-﷿ﹰ-﻿]/
 // "last time" recap and the progression line — leaving the name, the ⋯ menu, the one-line plan
 // the rows are measured against, and the sets.
 // Nothing dropped is lost: it is all still on the ⋯ menu, or one ⋮ switch back to list/cards.
+// The pause between the left and the right side of one timed per-side set (owner's call): long
+// enough to turn over, far shorter than the rest the set earns once both sides are held.
+const SWITCH_SIDES_SEC = 10
+
 function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSide, onField, onAddSet, onRemoveSet, onAddWarmup, onRemoveSetAt, onStartTimed, onPairPrev, onPairNext, onSetRowRef, onProgressionSettings, onNoProg, routineUpdate, onSwap, onMoveUp, onMoveDown, canMoveUp, canMoveDown, onRemoveExercise, busy }) {
   const S = useStore(s => s.S)
   const update = useStore(s => s.update)
@@ -191,6 +195,9 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
   const planLine = (() => {
     if (!planned) return null
     const today = entry.target || {}
+    // A pyramid reads as its targets, as on the routine row: "12 · 8 · 6 · Max · 12", never the
+    // set count times the first target (#367). Its rows are the plan; nothing moves them.
+    if (isPyramid(today)) return <div className="small dim planline" style={{ marginBottom: 4 }}>{t('Plan: {0}', pyramidLabel(today.pyramid))}</div>
     const todaySets = today.sets || planned.sets || 1
     const inPlan = timed
       ? today.sec == null || today.sec === planned.sec
@@ -338,7 +345,7 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
     // "+" between plates: "45 + 5 per side" reads as a sum, a dot did not (Boris, 2026-09-13).
     const stack = L.plates.map(w => fmtPlate(w)).join(' + ')
     const text = L.barOnly ? t('Bar only')
-      : L.kind === 'pairs' ? t('{0} per side', stack || '—') : t('Load {0}', stack || '—')
+      : L.kind === 'pairs' ? t('{0} per side', stack || '–') : t('Load {0}', stack || '–')
     const d = prev && !dense ? plateDelta(prev.plates, L.plates) : null
     const moves = d ? [...d.strip.map(w => '−' + fmtPlate(w)), ...d.add.map(w => '+' + fmtPlate(w))] : []
     return <div className="plateline">
@@ -605,7 +612,10 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
           ) : (
           <div ref={el => onSetRowRef?.(i, el)} className={'setrow' + (s.done ? ' done' : '') + (col3 ? ' eff3' : '') + (timed ? ' timed' : '')}>
             <button type="button" className="n" aria-label={sideTagOf(s) ? t('Set {0} ({1})', setNumOf(s, i), sideTagOf(s)) : t('Set {0}', setNumOf(s, i))} title={t('More')} onClick={() => openSetMenu(s, i)}>{setNumOf(s, i)}</button>
-            {sideTagOf(s) && <span className="tag acc nocap">{sideTagOf(s)}</span>}
+            {/* Both words sit in the pill's one grid cell (::before/::after, hidden), so Left and
+                Right are as wide as the longer of the two in every language and the inputs
+                after them line up (#322). */}
+            {sideTagOf(s) && <span className="tag acc nocap sidepill" data-l={t('Left')} data-r={t('Right')}><span>{sideTagOf(s)}</span></span>}
             {cell(s, i, col1, 'w')}
             {col2 && cell(s, i, col2, 'r')}
             {col3 && effortCell(s, i, col3)}
@@ -1272,6 +1282,18 @@ function ActiveWorkout() {
       if (!progress.isNew) {
         const rest = useUI.getState().timer
         if (!restBeforeWarmup && restOnRecheck({ timerRunning: !!(rest && !rest.ready), unitDone: freshUnitDone, lastUnit: freshWorkoutDone })) startRest(restAfter, idx)
+        return
+      }
+
+      // Between the two sides of one timed per-side set (a side plank's left, then its right):
+      // a short "Switch sides" pause instead of the set's whole rest, which comes once both
+      // sides are held (owner's call). A rest switched Off stays off.
+      const rows = fresh.entries[idx].sets
+      const sideOf = r => r && !isWarmupRow(r) ? r.side : null
+      const partner = sideOf(rows[i]) === 'L' && sideOf(rows[i + 1]) === 'R' ? rows[i + 1]
+        : sideOf(rows[i]) === 'R' && sideOf(rows[i - 1]) === 'L' ? rows[i - 1] : null
+      if (m === 'time' && partner && !partner.done && restAfter > 0) {
+        startRest(Math.min(SWITCH_SIDES_SEC, restAfter), idx, { kind: 'switch' })
         return
       }
 

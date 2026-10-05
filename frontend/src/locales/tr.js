@@ -1791,4 +1791,8 @@ export default {
   '{0} doesn’t do itself, recruit. Move it!': '{0} kendi kendine yapılmaz, acemi. Kımılda!',
   'Excuses don’t lift weights. Report for {0} tomorrow!': 'Bahaneler ağırlık kaldırmaz. Yarın {0} için hazır ol!',
   'Your muscles filed a missing-person report. Show up for {0}!': 'Kasların kayıp ilanı verdi. {0} için içtimaya gel!',
+  'That address answers, but it isn’t an openGym server. Check the URL.': 'Bu adres yanıt veriyor ama bir openGym sunucusu değil. URL’yi kontrol et.',
+  'Switch sides': 'Taraf değiştir',
+  'Saves a dated copy to “{0}” after finishing a workout or editing a routine, and keeps the newest {1}.': 'Her antrenman bitince veya rutin düzenlenince «{0}» klasörüne tarihli bir kopya kaydeder ve en yeni {1} kopyayı tutar.',
+  'Saves a dated copy to the folder you chose after finishing a workout or editing a routine, and keeps the newest {0}.': 'Her antrenman bitince veya rutin düzenlenince seçtiğin klasöre tarihli bir kopya kaydeder ve en yeni {0} kopyayı tutar.',
 }

@@ -18,14 +18,17 @@ const cancelPushRestTimer = () => { if (useStore.getState().user) api('/api/push
 // Books the end of a rest with whatever can announce it while the app is not looking: in the
 // Android app a native alarm and the countdown notification, everywhere else (and wherever that
 // alarm could not be set) the server's push. The web build books the push at once, as before.
-const bookRestEnd = (endsAt, totalSec) => {
-  if (!MOBILE) { pushRestTimer(Math.max(1, Math.round((endsAt - Date.now()) / 1000))); return }
+// A switch-sides pause (Workout.jsx SWITCH_SIDES_SEC) books no server push, whose words are "rest over":
+// it is ten seconds between the two sides of a hold, and the app is in your hand.
+const bookRestEnd = (endsAt, totalSec, kind) => {
+  const switching = kind === 'switch'
+  if (!MOBILE) { if (!switching) pushRestTimer(Math.max(1, Math.round((endsAt - Date.now()) / 1000))); return }
   const { S } = useStore.getState()
-  armRestAlert(endsAt, { title: t('Rest’s over. Next set!'), countdownTitle: t('Rest'), totalSec, accent: S.accent, sound: !!S.sound, vibrate: S.vibrate !== false, alarmBuzz: S.vibrate !== false && !!S.vibrateOnSilent })
+  armRestAlert(endsAt, { title: switching ? t('Switch sides') : t('Rest’s over. Next set!'), countdownTitle: switching ? t('Switch sides') : t('Rest'), totalSec, accent: S.accent, sound: !!S.sound, vibrate: S.vibrate !== false, alarmBuzz: S.vibrate !== false && !!S.vibrateOnSilent })
     .then(ok => {
       // Only for the rest that asked: one skipped or moved since then has booked its own end.
       const tm = useUI.getState().timer
-      if (!ok && tm && !tm.paused && !tm.ready && tm.endsAt === endsAt) pushRestTimer(Math.max(1, Math.round((endsAt - Date.now()) / 1000)))
+      if (!ok && !switching && tm && !tm.paused && !tm.ready && tm.endsAt === endsAt) pushRestTimer(Math.max(1, Math.round((endsAt - Date.now()) / 1000)))
     })
 }
 
@@ -94,6 +97,14 @@ const runRest = (set, get) => {
     if (!document.hidden) pageHiddenAt = null
     if (left === tm.left) return
     const { sound: snd, classicChime } = useStore.getState().S
+    if (left <= 0 && tm.kind === 'switch') {
+      // Over like a hold is: the chime and its buzz, then the bar goes. No "Ready", no toast:
+      // the other side is the next thing, one tap away.
+      if (seenLive) { chime(snd, classicChime); alertBuzz([200, 100, 200]); get().flashTimer() }
+      stopRestTicking()
+      set({ timer: null })
+      return
+    }
     if (left <= 0) {
       if (seenLive) {
         // The Android alarm for this end stays quiet while the app is on screen, so this chime is
@@ -123,7 +134,8 @@ const runRest = (set, get) => {
 export const useUI = create((set, get) => ({
   sheets: [],          // { id, render:(close)=>JSX, kind:'sheet'|'center', locked }
   toastMsg: '',
-  timer: null,         // rest countdown between sets — { left, total, endsAt, forIdx, ready?, paused? }
+  timer: null,         // rest countdown between sets — { left, total, endsAt, forIdx, ready?, paused?, kind? }
+                       // kind: 'switch' for the short pause between the two sides of a timed set
                        // forIdx: index of the active entry whose set started the rest (undefined when unknown)
                        // paused: held at `left`; `endsAt` means nothing until resumeRest sets it again
   work: null,          // work countdown DURING a timed set (issue #16) — { left, total, endsAt, label, overtime? }
@@ -149,7 +161,7 @@ export const useUI = create((set, get) => ({
     toastTm = setTimeout(() => set({ toastMsg: '' }), 2200)
   },
 
-  startRest(sec, forIdx) {
+  startRest(sec, forIdx, { kind } = {}) {
     get().stopRest()
     // Rest timer set to Off. Stopping and returning rather than starting a zero-length timer
     // keeps every caller honest: the four places that start a rest do not each need to know.
@@ -169,8 +181,8 @@ export const useUI = create((set, get) => ({
     // with no beep, no vibration and no flash. Each timer starts from where the page is now.
     pageHiddenAt = document.hidden ? Date.now() : null
     const endsAt = Date.now() + sec * 1000
-    set({ timer: { left: sec, total: sec, endsAt, forIdx } })
-    bookRestEnd(endsAt, sec)
+    set({ timer: { left: sec, total: sec, endsAt, forIdx, ...(kind === 'switch' ? { kind } : {}) } })
+    bookRestEnd(endsAt, sec, kind)
     runRest(set, get)
   },
   // Holding the rest where it is — a longer break than planned, a machine to wait for, a phone
@@ -198,7 +210,7 @@ export const useUI = create((set, get) => ({
     pageHiddenAt = document.hidden ? Date.now() : null
     const endsAt = Date.now() + tm.left * 1000
     set({ timer: { ...rest, endsAt } })
-    bookRestEnd(endsAt, tm.total)
+    bookRestEnd(endsAt, tm.total, tm.kind)
     runRest(set, get)
   },
   addRest(sec) {
@@ -214,7 +226,7 @@ export const useUI = create((set, get) => ({
     if (tm.paused) { set({ timer: { ...tm, left, total: tm.total + sec } }); holdRestAlert(left, tm.total + sec); return }
     const endsAt = tm.endsAt + sec * 1000
     set({ timer: { ...tm, left, total: tm.total + sec, endsAt } })
-    bookRestEnd(endsAt, tm.total + sec)
+    bookRestEnd(endsAt, tm.total + sec, tm.kind)
   },
   // The active list changed shape (an exercise removed or inserted at `at`): keep the rest
   // pointing at the same exercise. Returns nothing; the caller decides whether to stop instead.
@@ -230,13 +242,14 @@ export const useUI = create((set, get) => ({
   followNativeRest({ endsAt, left, total, paused }) {
     const tm = get().timer
     const forIdx = tm?.forIdx
+    const kind = tm?.kind === 'switch' ? { kind: 'switch' } : {}
     if (paused) {
       stopRestTicking()
-      set({ timer: { left, total, endsAt, forIdx, paused: true } })
+      set({ timer: { left, total, endsAt, forIdx, ...kind, paused: true } })
       return
     }
     const ticking = !!timerInt && !!tm && !tm.paused && !tm.ready
-    set({ timer: { left, total, endsAt, forIdx } })
+    set({ timer: { left, total, endsAt, forIdx, ...kind } })
     if (ticking) return
     // As in resumeRest: a hide from while it was held or over is no catch-up of this countdown.
     pageHiddenAt = document.hidden ? Date.now() : null

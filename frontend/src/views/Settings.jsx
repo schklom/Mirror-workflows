@@ -821,7 +821,9 @@ export default function Settings({ page = null, find = null }) {
     const parent = PAGES[page].parent
     return <div className="narrow" ref={body}>
       <div className="sp-nav">
-        <button className="sp-back" onClick={back} aria-label={t('Back')}>
+        {/* Named by what it says ("Settings", "Workout"), so a voice command for the visible
+            word finds it; the chevron is hidden from assistive tech. */}
+        <button className="sp-back" onClick={back}>
           <Icon name="chevronLeft" /><span>{parent ? t(PAGES[parent].title) : t('Settings')}</span>
         </button>
         <h1 className="sp-title">{t(PAGES[page].title)}</h1>

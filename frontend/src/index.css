@@ -1873,11 +1873,14 @@ body.no-tabbar.resting #toast{bottom:calc(100px + var(--sab))}
 @media (hover:hover){.dw-it:hover{color:var(--label)}}
 
 /* ------------------------------------------------------- Settings (v1.3.11) -- */
-/* A sub-page's nav bar: the back button names where it goes, the title sits in the middle. */
-.sp-nav{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,max-content) minmax(0,1fr);align-items:center;column-gap:6px;
+/* A sub-page's nav bar: the back button names where it goes, the title sits in the middle.
+   The back column is at least as wide as its label ("Einstellungen" stays whole), and the two
+   side columns share what is left equally, so the title is centred whenever it can be and moves
+   over when the label needs the room. Only a label past half the screen is cut. */
+.sp-nav{display:grid;grid-template-columns:minmax(max-content,1fr) minmax(0,max-content) minmax(0,1fr);align-items:center;column-gap:6px;
   min-height:44px;margin:4px -6px 10px}
 .sp-back{display:inline-flex;align-items:center;gap:2px;color:var(--acc);font-size:17px;padding:6px;border-radius:10px;
-  min-width:0;max-width:100%;justify-self:start}
+  min-width:0;max-width:50vw;justify-self:start}
 .sp-back span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sp-back .icn{font-size:22px;--icon-stroke:2.2;flex:none}
 .sp-title{text-align:center;font-weight:600;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:0}

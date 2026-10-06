@@ -1940,4 +1940,9 @@ export default {
   'Options: copy, remove': 'ตัวเลือก: คัดลอก, ลบ',
   'Another device synced while you were importing, so its changes were kept next to the backup.': 'อุปกรณ์อื่นซิงก์ระหว่างที่คุณนำเข้า เลยเก็บการเปลี่ยนแปลงของมันไว้คู่กับข้อมูลสำรอง',
   'Save as a backup file': 'บันทึกเป็นไฟล์สำรอง',
+  'Add this device\'s plan to your profile?': 'เพิ่มแผนจากอุปกรณ์นี้ลงในโปรไฟล์ของคุณหรือไม่',
+  'Your plan, notes or gym cards on this device were set up while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': 'แผน โน้ต หรือบัตรยิมบนอุปกรณ์นี้ถูกสร้างขณะไม่ได้ลงชื่อเข้าใช้ เพิ่มลงในโปรไฟล์ของคุณ หรือคงโปรไฟล์ไว้ตามที่อยู่บนเซิร์ฟเวอร์',
+  '{0} routine was made on this device while signed out. Add it to your profile, or keep the profile exactly as it is on the server.': 'มีการสร้างรูทีน {0} รายการบนอุปกรณ์นี้ขณะไม่ได้ลงชื่อเข้าใช้ เพิ่มลงในโปรไฟล์ของคุณ หรือคงโปรไฟล์ไว้ตามที่อยู่บนเซิร์ฟเวอร์',
+  '{0} routines were made on this device while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': 'มีการสร้างรูทีน {0} รายการบนอุปกรณ์นี้ขณะไม่ได้ลงชื่อเข้าใช้ เพิ่มลงในโปรไฟล์ของคุณ หรือคงโปรไฟล์ไว้ตามที่อยู่บนเซิร์ฟเวอร์',
+  'This device, before signing in': 'อุปกรณ์นี้ ก่อนลงชื่อเข้าใช้',
 }

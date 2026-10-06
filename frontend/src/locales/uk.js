@@ -1926,4 +1926,9 @@ export default {
   'Options: copy, remove': 'Дії: копіювати, видалити',
   'Another device synced while you were importing, so its changes were kept next to the backup.': 'Інший пристрій синхронізувався під час імпорту, тож його зміни збережено поруч із копією.',
   'Save as a backup file': 'Зберегти як файл копії',
+  'Add this device\'s plan to your profile?': 'Додати план із цього пристрою в профіль?',
+  'Your plan, notes or gym cards on this device were set up while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': 'План, нотатки чи картки залу на цьому пристрої створено без входу. Додай їх у профіль або лиши профіль точно таким, як на сервері.',
+  '{0} routine was made on this device while signed out. Add it to your profile, or keep the profile exactly as it is on the server.': 'На цьому пристрої без входу створено програм: {0}. Додай її в профіль або лиши профіль точно таким, як на сервері.',
+  '{0} routines were made on this device while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': 'На цьому пристрої без входу створено програм: {0}. Додай їх у профіль або лиши профіль точно таким, як на сервері.',
+  'This device, before signing in': 'Цей пристрій, до входу',
 }

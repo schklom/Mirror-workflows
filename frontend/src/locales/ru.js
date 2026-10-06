@@ -1933,4 +1933,9 @@ export default {
   'Options: copy, remove': 'Действия: копировать, удалить',
   'Another device synced while you were importing, so its changes were kept next to the backup.': 'Другое устройство синхронизировалось во время импорта, поэтому его изменения сохранены рядом с копией.',
   'Save as a backup file': 'Сохранить как файл копии',
+  'Add this device\'s plan to your profile?': 'Добавить план с этого устройства в профиль?',
+  'Your plan, notes or gym cards on this device were set up while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': 'План, заметки или карты зала на этом устройстве созданы без входа. Добавьте их в профиль или оставьте профиль ровно таким, как на сервере.',
+  '{0} routine was made on this device while signed out. Add it to your profile, or keep the profile exactly as it is on the server.': '{0} программа создана на этом устройстве без входа. Добавьте её в профиль или оставьте профиль ровно таким, как на сервере.',
+  '{0} routines were made on this device while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': '{0} программ создано на этом устройстве без входа. Добавьте их в профиль или оставьте профиль ровно таким, как на сервере.',
+  'This device, before signing in': 'Это устройство, до входа',
 }

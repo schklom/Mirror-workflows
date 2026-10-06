@@ -941,6 +941,18 @@ export const useStore = create((set, get) => {
     await writeStashes(all)
   }
 
+  // "Keep profile as is": what this device held before the sign-in leaves the screen, but not the
+  // device. It is kept aside like a kept change (its own key, never added back on its own) and can
+  // be saved as a backup file from Settings, in case the answer was the wrong one.
+  const keepDeviceCopy = async () => {
+    const S = get().S
+    if (!hasData(S)) return
+    const all = await readStashes()
+    const uid = 'device-' + Date.now().toString(36)
+    all[stashKey(serverBase(), uid)] = { server: serverBase() || null, uid, name: t('This device, before signing in'), at: Date.now(), state: clone(S) }
+    await writeStashes(all)
+  }
+
   // adoptProfile's work (see there). Every way out answers the question — releaseAdopt — before
   // the decision is written and pushed; only a server that could not be reached leaves it owed.
   const runAdopt = async (ask, { alwaysAsk = false } = {}) => {
@@ -963,7 +975,7 @@ export const useStore = create((set, get) => {
     reached()
     let asked = false
     const askAbout = async extras => {
-      if (!(extras.workouts || extras.bodyweight || extras.customEx) || typeof ask !== 'function') return false
+      if (!(extras.workouts || extras.bodyweight || extras.customEx || extras.routines || extras.setup) || typeof ask !== 'function') return false
       asked = true
       return !!(await ask(extras))
     }
@@ -986,6 +998,7 @@ export const useStore = create((set, get) => {
       const push = hasData(S0) && (!alwaysAsk || sameAccount || await askAbout(localExtras(S0, null)))
       releaseAdopt()
       if (hasData(get().S) && !push) {
+        if (asked) await keepDeviceCopy()
         takeServer()
         await applyStash()
         return { adopted: true, added: false }
@@ -1029,6 +1042,11 @@ export const useStore = create((set, get) => {
       const S = get().S
       const merged = Object.assign(clone(DEF), mergeStates(state, S, { prefer: 'a' }))
       merged.active = carryActive(S, merged)
+      // The account's plan wins; a day it has nothing planned for takes the device's.
+      for (const f of ['week', 'dayPlan']) {
+        const mine = S[f] && typeof S[f] === 'object' ? S[f] : {}
+        merged[f] = { ...mine, ...(merged[f] || {}) }
+      }
       persist(merged, false)
       if (rev != null) writeSync(rev, 0, state?._wid)
       else dropSync()
@@ -1037,6 +1055,7 @@ export const useStore = create((set, get) => {
       return { adopted: true, added: true }
     }
     const later = pre ? splitByPre(get().S, pre).later : null
+    if (asked) await keepDeviceCopy()
     takeServer()
     if (later) {
       const S = get().S

@@ -858,9 +858,20 @@ export function localExtras(local, server) {
   const from = unitOf(local), to = unitOf(server)
   const differs = (mine, theirs) =>
     (Number(mine.t) || 0) > (Number(theirs.t) || 0) && Number(convertBodyWeight(mine.w, from, to)) !== Number(theirs.w)
+  // Routines, and the rest of what a device sets up (plan days, exercise notes, gym cards,
+  // equipment profiles), count too: a guest who only built a plan was never asked, and signing in
+  // dropped it. Present only when there are any.
+  const ids = f => new Set(list(server?.[f]).map(x => x?.id))
+  const routines = list(local?.routines).filter(r => r && r.id != null && !ids('routines').has(r.id)).length
+  const keysNew = f => Object.entries(isMap(local?.[f]) ? local[f] : {})
+    .filter(([k, v]) => v != null && !(Array.isArray(v) && !v.length) && !(isMap(server?.[f]) && k in server[f])).length
+  const setup = ['gymCards', 'equipProfiles'].reduce((n, f) => n + list(local?.[f]).filter(x => x && x.id != null && !ids(f).has(x.id)).length, 0) +
+    keysNew('week') + keysNew('dayPlan') + keysNew('exNotes')
   return {
     workouts: list(local?.workouts).filter(w => !have.has(workoutKey(w))).length,
     bodyweight: list(local?.bodyweight).filter(e => e && e.d != null && (!days.has(e.d) || differs(e, days.get(e.d)))).length,
-    customEx: list(local?.customEx).filter(e => e && !ex.has(e.id)).length
+    customEx: list(local?.customEx).filter(e => e && !ex.has(e.id)).length,
+    ...(routines ? { routines } : {}),
+    ...(setup ? { setup } : {}),
   }
 }

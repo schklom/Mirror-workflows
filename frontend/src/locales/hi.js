@@ -1929,4 +1929,9 @@ export default {
   'Options: copy, remove': 'विकल्प: कॉपी, हटाएँ',
   'Another device synced while you were importing, so its changes were kept next to the backup.': 'आयात के दौरान किसी दूसरे डिवाइस ने सिंक किया, इसलिए उसके बदलाव बैकअप के साथ रखे गए।',
   'Save as a backup file': 'बैकअप फ़ाइल के रूप में सहेजें',
+  'Add this device\'s plan to your profile?': 'इस डिवाइस का प्लान अपनी प्रोफ़ाइल में जोड़ें?',
+  'Your plan, notes or gym cards on this device were set up while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': 'इस डिवाइस पर आपका प्लान, नोट्स या जिम कार्ड बिना साइन इन किए बनाए गए। इन्हें अपनी प्रोफ़ाइल में जोड़ें, या प्रोफ़ाइल को ठीक वैसा ही रखें जैसा सर्वर पर है।',
+  '{0} routine was made on this device while signed out. Add it to your profile, or keep the profile exactly as it is on the server.': '{0} रूटीन इस डिवाइस पर बिना साइन इन किए बनाया गया। इसे अपनी प्रोफ़ाइल में जोड़ें, या प्रोफ़ाइल को ठीक वैसा ही रखें जैसा सर्वर पर है।',
+  '{0} routines were made on this device while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': '{0} रूटीन इस डिवाइस पर बिना साइन इन किए बनाए गए। इन्हें अपनी प्रोफ़ाइल में जोड़ें, या प्रोफ़ाइल को ठीक वैसा ही रखें जैसा सर्वर पर है।',
+  'This device, before signing in': 'यह डिवाइस, साइन इन से पहले',
 }

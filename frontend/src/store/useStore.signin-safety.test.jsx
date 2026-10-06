@@ -68,3 +68,41 @@ describe('sign-in "Add them" keeps the account\'s own entries and history', () =
     expect(merged.favEx).toContain('0025')
   })
 })
+
+describe('sign-in asks about a plan built while signed out, and keeps what it drops', () => {
+  const server = () => ({ ...clone(DEF), _ts: Date.now() - 1e6, routines: [{ id: 'sr1', name: 'Push Day', ex: [] }], week: { 1: 'sr1' }, workouts: [{ id: 'sw1', d: '2026-09-01', start: 1, entries: [] }], _rev: 7 })
+  const guestPlan = () => {
+    up(s => {
+      s.routines = [{ id: 'g1', name: 'LOCAL A', ex: [] }, { id: 'g2', name: 'LOCAL B', ex: [] }]
+      s.week = { 1: 'g1', 4: 'g2' }
+      s.exNotes = { '0025': 'elbows in' }
+      s.gymCards = [{ id: 'card1', label: 'FitX', value: '123', fmt: 'qrcode' }]
+      s.restSec = 75
+    })
+  }
+  it('a guest with only a plan is asked; "Add them" keeps the routines, the free plan days, notes and cards', async () => {
+    guestPlan()
+    api.mockImplementation(async (p, o) => (o?.method === 'PUT' ? { ok: true, rev: 8 } : { state: server(), rev: 7 }))
+    useStore.getState().setUser({ id: 'u1', name: 'x' }, { adopt: true })
+    const ask = vi.fn(async () => true)
+    await useStore.getState().adoptProfile(ask)
+    expect(ask).toHaveBeenCalledWith(expect.objectContaining({ routines: 2, setup: 3 }))
+    const S = useStore.getState().S
+    expect(S.routines.map(r => r.id).sort()).toEqual(['g1', 'g2', 'sr1'])
+    expect(S.week).toEqual({ 1: 'sr1', 4: 'g2' })   // the account's Monday, the device's Thursday
+    expect(S.exNotes['0025']).toBe('elbows in')
+    expect(S.gymCards.map(c => c.id)).toEqual(['card1'])
+  })
+  it('"Keep profile as is" keeps the device\'s copy aside, to save as a backup file', async () => {
+    guestPlan()
+    api.mockImplementation(async (p, o) => (o?.method === 'PUT' ? { ok: true, rev: 8 } : { state: server(), rev: 7 }))
+    useStore.getState().setUser({ id: 'u1', name: 'x' }, { adopt: true })
+    await useStore.getState().adoptProfile(async () => false)
+    expect(useStore.getState().S.routines.map(r => r.id)).toEqual(['sr1'])
+    const kept = await useStore.getState().keptChanges()
+    expect(kept).toHaveLength(1)
+    const state = await useStore.getState().keptState(kept[0].server, kept[0].uid)
+    expect(state.routines.map(r => r.id)).toEqual(['g1', 'g2'])
+    expect(state.restSec).toBe(75)
+  })
+})

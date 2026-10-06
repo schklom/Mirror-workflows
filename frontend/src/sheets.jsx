@@ -88,10 +88,21 @@ export function addDeviceDataMessage(workouts, weighIns) {
 // Sign-in found workouts on this device that the profile does not have (logged while signed
 // out). The profile is the truth — settings and plan come from the server either way — the
 // question is only whether these entries are added to it or dropped. Resolves true to add.
+// Routines and the rest of a plan made here while signed out: asked about as well (they come along
+// with "Add them"), in their own words when there is nothing else.
+export function addDeviceSetupMessage(routines) {
+  const n = Number(routines) || 0
+  return n === 0
+    ? t('Your plan, notes or gym cards on this device were set up while signed out. Add them to your profile, or keep the profile exactly as it is on the server.')
+    : n === 1
+      ? t('{0} routine was made on this device while signed out. Add it to your profile, or keep the profile exactly as it is on the server.', n)
+      : t('{0} routines were made on this device while signed out. Add them to your profile, or keep the profile exactly as it is on the server.', n)
+}
 export function askAddDeviceData(extras) {
+  const logged = extras.workouts || extras.bodyweight || extras.customEx
   return new Promise(resolve => confirmSheet({
-    title: t('Add this device\'s workouts to your profile?'),
-    message: addDeviceDataMessage(extras.workouts, extras.bodyweight),
+    title: logged ? t('Add this device\'s workouts to your profile?') : t('Add this device\'s plan to your profile?'),
+    message: logged ? addDeviceDataMessage(extras.workouts, extras.bodyweight) : addDeviceSetupMessage(extras.routines),
     confirmText: t('Add them'), cancelText: t('Keep profile as is'),
     onConfirm: () => resolve(true), onCancel: () => resolve(false), locked: true
   }))

@@ -1929,4 +1929,9 @@ export default {
   'Options: copy, remove': 'Opcje: kopiuj, usuń',
   'Another device synced while you were importing, so its changes were kept next to the backup.': 'Inne urządzenie zsynchronizowało się podczas importu, więc jego zmiany zostały obok kopii.',
   'Save as a backup file': 'Zapisz jako plik kopii',
+  'Add this device\'s plan to your profile?': 'Dodać plan z tego urządzenia do profilu?',
+  'Your plan, notes or gym cards on this device were set up while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': 'Plan, notatki lub karty siłowni na tym urządzeniu powstały bez logowania. Dodaj je do profilu albo zostaw profil dokładnie taki, jaki jest na serwerze.',
+  '{0} routine was made on this device while signed out. Add it to your profile, or keep the profile exactly as it is on the server.': '{0} rutyna powstała na tym urządzeniu bez logowania. Dodaj ją do profilu albo zostaw profil dokładnie taki, jaki jest na serwerze.',
+  '{0} routines were made on this device while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': '{0} rutyn powstało na tym urządzeniu bez logowania. Dodaj je do profilu albo zostaw profil dokładnie taki, jaki jest na serwerze.',
+  'This device, before signing in': 'To urządzenie, przed zalogowaniem',
 }

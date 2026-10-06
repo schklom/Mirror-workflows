@@ -1932,4 +1932,9 @@ export default {
   'Options: copy, remove': 'Lehetőségek: másolás, eltávolítás',
   'Another device synced while you were importing, so its changes were kept next to the backup.': 'Egy másik eszköz szinkronizált importálás közben, így a változásai megmaradtak a mentés mellett.',
   'Save as a backup file': 'Mentés biztonsági fájlként',
+  'Add this device\'s plan to your profile?': 'Hozzáadod az eszközön lévő tervet a profilodhoz?',
+  'Your plan, notes or gym cards on this device were set up while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': 'Az eszközön lévő terved, jegyzeteid vagy kártyáid bejelentkezés nélkül készültek. Add hozzá őket a profilodhoz, vagy hagyd a profilt pontosan úgy, ahogy a szerveren van.',
+  '{0} routine was made on this device while signed out. Add it to your profile, or keep the profile exactly as it is on the server.': '{0} rutin készült ezen az eszközön bejelentkezés nélkül. Add hozzá a profilodhoz, vagy hagyd a profilt pontosan úgy, ahogy a szerveren van.',
+  '{0} routines were made on this device while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': '{0} rutin készült ezen az eszközön bejelentkezés nélkül. Add hozzá őket a profilodhoz, vagy hagyd a profilt pontosan úgy, ahogy a szerveren van.',
+  'This device, before signing in': 'Ez az eszköz, bejelentkezés előtt',
 }

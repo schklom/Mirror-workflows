@@ -1929,4 +1929,9 @@ export default {
   'Options: copy, remove': '选项：复制、删除',
   'Another device synced while you were importing, so its changes were kept next to the backup.': '导入时另一台设备同步了，所以它的更改也和备份一起保留了。',
   'Save as a backup file': '保存为备份文件',
+  'Add this device\'s plan to your profile?': '把此设备上的计划加入你的个人资料？',
+  'Your plan, notes or gym cards on this device were set up while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': '此设备在未登录时设置了计划、备注或健身房卡。把它们加入你的个人资料，或保持个人资料与服务器上的完全一致。',
+  '{0} routine was made on this device while signed out. Add it to your profile, or keep the profile exactly as it is on the server.': '此设备在未登录时创建了 {0} 个训练计划。把它加入你的个人资料，或保持个人资料与服务器上的完全一致。',
+  '{0} routines were made on this device while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': '此设备在未登录时创建了 {0} 个训练计划。把它们加入你的个人资料，或保持个人资料与服务器上的完全一致。',
+  'This device, before signing in': '此设备（登录前）',
 }

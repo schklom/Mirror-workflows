@@ -238,7 +238,8 @@ describe('sign-in adoption helpers', () => {
   it('localExtras counts what the device has that the server does not', () => {
     // the new day, and 09-01: the device's weigh-in of a day the server has too, entered later
     // and different (79 kg is 174.2 lb, not the server's 80 lb)
-    expect(localExtras(local, server)).toEqual({ workouts: 1, bodyweight: 2, customEx: 1 })
+    // and the routine and plan day the device made (a guest who only built a plan is asked too)
+    expect(localExtras(local, server)).toEqual({ workouts: 1, bodyweight: 2, customEx: 1, routines: 1, setup: 1 })
     expect(localExtras(server, server)).toEqual({ workouts: 0, bodyweight: 0, customEx: 0 })
     expect(localExtras(null, server)).toEqual({ workouts: 0, bodyweight: 0, customEx: 0 })
   })

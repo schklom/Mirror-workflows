@@ -1194,6 +1194,11 @@ export const PT_BR_OVERRIDES = {
   'Left deletes, right copies': 'Esquerda exclui, direita copia',
   'Another device synced while you were importing, so its changes were kept next to the backup.': 'Outro dispositivo sincronizou durante a importação, então as alterações dele ficaram junto com o backup.',
   'Save as a backup file': 'Salvar como arquivo de backup',
+  'Add this device\'s plan to your profile?': 'Adicionar o plano deste dispositivo ao seu perfil?',
+  'Your plan, notes or gym cards on this device were set up while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': 'Seu plano, notas ou cartões da academia neste dispositivo foram criados sem login. Adicione-os ao seu perfil ou mantenha o perfil exatamente como está no servidor.',
+  '{0} routine was made on this device while signed out. Add it to your profile, or keep the profile exactly as it is on the server.': '{0} rotina foi criada neste dispositivo sem login. Adicione-a ao seu perfil ou mantenha o perfil exatamente como está no servidor.',
+  '{0} routines were made on this device while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': '{0} rotinas foram criadas neste dispositivo sem login. Adicione-as ao seu perfil ou mantenha o perfil exatamente como está no servidor.',
+  'This device, before signing in': 'Este dispositivo, antes do login',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

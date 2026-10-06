@@ -1929,4 +1929,9 @@ export default {
   'Options: copy, remove': '옵션: 복사, 삭제',
   'Another device synced while you were importing, so its changes were kept next to the backup.': '가져오는 동안 다른 기기가 동기화해서, 그 변경 사항도 백업과 함께 남겨 뒀어요.',
   'Save as a backup file': '백업 파일로 저장',
+  'Add this device\'s plan to your profile?': '이 기기의 계획을 프로필에 추가할까요?',
+  'Your plan, notes or gym cards on this device were set up while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': '로그인하지 않은 상태에서 이 기기에 계획, 메모 또는 헬스장 카드가 만들어졌습니다. 프로필에 추가하거나 서버에 있는 프로필을 그대로 유지하세요.',
+  '{0} routine was made on this device while signed out. Add it to your profile, or keep the profile exactly as it is on the server.': '로그인하지 않은 상태에서 이 기기에 루틴 {0}개가 만들어졌습니다. 프로필에 추가하거나 서버에 있는 프로필을 그대로 유지하세요.',
+  '{0} routines were made on this device while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': '로그인하지 않은 상태에서 이 기기에 루틴 {0}개가 만들어졌습니다. 프로필에 추가하거나 서버에 있는 프로필을 그대로 유지하세요.',
+  'This device, before signing in': '로그인 전의 이 기기',
 }

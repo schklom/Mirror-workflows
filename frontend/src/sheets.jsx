@@ -848,6 +848,30 @@ function OneRM({ ex }) {
 // A muscle the catalogue credits with nothing (a bench press's biceps, #359) is not one it trains,
 // so it is not shown as a tag either; "By muscle" already leaves the exercise out.
 const trainedBy = ex => { const weights = muscleWeightsOf(ex); return slug => weights[slug] !== 0 }
+// The detail page's tags: body part, main muscles, equipment, then up to three helpers. A word
+// says once what it says: the body part "Chest" and the main muscle "Chest" of a bench press
+// were two tags (QA 10-06), and a helper never repeats a main muscle.
+export function detailTags(ex) {
+  const seen = new Set()
+  const out = []
+  const add = (label, extra) => {
+    const k = String(label || '').trim().toLocaleLowerCase()
+    if (!k || seen.has(k)) return false
+    seen.add(k)
+    out.push({ key: out.length, label, ...extra })
+    return true
+  }
+  add(t(ex.bp), { acc: true })
+  if (ex.bp === 'cardio') add(t(MUSCLE_NAME['cardiovascular system']), { icon: 'figureStrength' })
+  else for (const s of (ex.primaries?.length ? ex.primaries : (ex.tg ? [ex.tg] : [])).filter(trainedBy(ex))) add(t(MUSCLE_NAME[s] || s), { icon: 'figureStrength' })
+  add(t(ex.eq), { icon: 'kettlebell' })
+  let helpers = 0
+  for (const s of (ex.secondaries?.length ? ex.secondaries : smOf(ex)).filter(trainedBy(ex))) {
+    if (helpers >= 3) break
+    if (add(t(MUSCLE_NAME[s] || s))) helpers++
+  }
+  return out
+}
 
 function ExerciseDetail({ ex, close }) {
   const st = useStore(s => s.S)
@@ -869,10 +893,7 @@ function ExerciseDetail({ ex, close }) {
     </div>
     <Media ex={ex} />
     <div className="row" style={{ gap: 6, flexWrap: 'wrap', margin: '10px 0' }}>
-      <span className="tag acc">{t(ex.bp)}</span>
-      {ex.bp === 'cardio' ? <span className="tag"><Icon name="figureStrength" />{t(MUSCLE_NAME['cardiovascular system'])}</span> : (ex.primaries?.length ? ex.primaries : (ex.tg ? [ex.tg] : [])).filter(trainedBy(ex)).map((s, i) => <span key={i} className="tag"><Icon name="figureStrength" />{t(MUSCLE_NAME[s]  || s)}</span>)}
-      <span className="tag"><Icon name="kettlebell" />{t(ex.eq)}</span>
-      {(ex.secondaries?.length ? ex.secondaries : smOf(ex)).filter(trainedBy(ex)).slice(0, 3).map((s, i) => <span key={i} className="tag">{t(MUSCLE_NAME[s] || s)}</span>)}
+      {detailTags(ex).map(tg => <span key={tg.key} className={'tag' + (tg.acc ? ' acc' : '')}>{tg.icon && <Icon name={tg.icon} />}{tg.label}</span>)}
     </div>
     {ex.desc && <div className="exnote">{ex.desc}</div>}
     {best > 0 && <div className="small row" style={{ marginBottom: 6, gap: 5 }}><Icon name="trophy" style={{ fontSize: 14, color: 'var(--yellow)' }} />{t('Best:')} <b className="accent" style={{ whiteSpace: 'nowrap' }}>{fmtNum(best)} {st.unit}</b>{last ? ` · ${t('last')} ${fmtDate(last.d)}: ${last.sets.map(s => setLabel(ex.id, s, last.target, speedUnitOf(st))).join(', ')}` : ''}</div>}

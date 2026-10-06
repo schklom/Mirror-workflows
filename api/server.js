@@ -803,8 +803,10 @@ if (AUDIT_ON) {
 // since none of them exists otherwise — and so are the two that redeem a device link (#95).
 // Passkey sign-in, passkey registration and phone pairing stay out of it, as they always were:
 // nothing there is worth guessing (an assertion is a signature, an invite code 64 random bits, a
-// pairing code lives five minutes), and behind a proxy that hands the API one address for every
-// visitor a per-address count on them would let one stranger pause everybody's way in. A
+// pairing code 40 bits that live five minutes, one per profile), and behind a proxy that hands the
+// API one address for every visitor a per-address count on them would let one stranger pause
+// everybody's way in. Their failures are still written to the audit log, but only a few per
+// address a minute (auditFail below), so a flood of junk cannot push everything else out of it. A
 // device-link code is 60 bits that live ten minutes, no more worth guessing than a pairing code,
 // but it is counted the way a reset code is: every wrong one is a guess at a way into somebody's
 // profile, and the pause it can start only ever stops link redemption, never a sign-in.
@@ -897,6 +899,20 @@ function addressPaused(req, res, kind) {
 function strikeAddress(req, kind) {
   const lock = ADDR_FAILS.fail(kind + '|' + limitAddress(req));
   if (lock) audit(req, 'auth.throttled', { ok: false, msg: kind });
+}
+
+// A failure on a route anyone can call without a session (passkey sign-in and sign-up, pairing)
+// is audited like any other, but only the first few per address and event a minute, and only so
+// many from everybody together. The log keeps the newest AUDIT_MAX rows, so without this a few
+// thousand junk requests (no Origin needed: these routes are CSRF-exempt) pushed every sign-in,
+// admin action and deletion out of it in seconds. Nobody is refused anything here: what is
+// dropped is a row that says the same thing as the ten before it.
+const FAIL_AUDIT = createWindow({ max: 10, windowMs: 60000 });
+const FAIL_AUDIT_ALL = createWindow({ max: 120, windowMs: 60000 });
+setInterval(() => { FAIL_AUDIT.sweep(); FAIL_AUDIT_ALL.sweep(); }, 60000).unref();
+function auditFail(req, ev, f) {
+  if (FAIL_AUDIT.take(ev + '|' + limitAddress(req)) || FAIL_AUDIT_ALL.take(ev)) return;
+  audit(req, ev, f);
 }
 
 /* ---------- password sign-in (#118) ---------- */
@@ -1833,7 +1849,7 @@ const routes = {
     const body = await readBody(req);
     const c = takeChallenge(body.cid);
     if (!c || c.kind !== 'register' || !c.uid) {
-      audit(req, 'auth.register.fail', { ok: false, msg: 'challenge-expired' });
+      auditFail(req, 'auth.register.fail', { ok: false, msg: 'challenge-expired' });
       return json(res, 400, { error: 'challenge expired, try again', code: 'challenge-expired' });
     }
     let verification;
@@ -1847,11 +1863,11 @@ const routes = {
       });
     } catch (e) {
       // e.message can echo attacker-supplied response fields, so only the reason code is kept.
-      audit(req, 'auth.register.fail', { ok: false, name: c.name, msg: 'verify-error' });
+      auditFail(req, 'auth.register.fail', { ok: false, name: c.name, msg: 'verify-error' });
       return json(res, 400, { error: verifyError(e, { rpId: RP_ID, origin: ORIGIN }) });
     }
     if (!verification.verified) {
-      audit(req, 'auth.register.fail', { ok: false, name: c.name, msg: 'not-verified' });
+      auditFail(req, 'auth.register.fail', { ok: false, name: c.name, msg: 'not-verified' });
       return json(res, 400, { error: 'not verified' });
     }
     const { credential } = verification.registrationInfo;
@@ -1897,7 +1913,7 @@ const routes = {
     const body = await readBody(req);
     const c = takeChallenge(body.cid);
     if (c?.kind !== 'login') {
-      audit(req, 'auth.login.fail', { ok: false, msg: 'challenge-expired' });
+      auditFail(req, 'auth.login.fail', { ok: false, msg: 'challenge-expired' });
       return json(res, 400, { error: 'challenge expired, try again', code: 'challenge-expired' });
     }
     const cred = db.creds.find(x => x.id === body.credential?.id);
@@ -1905,7 +1921,7 @@ const routes = {
       // No credential id goes in the log: it is a stable handle for one passkey, and recording it
       // would let an admin correlate an unknown device across attempts. Nothing here identifies
       // the caller beyond the timestamp (and the network, if AUDIT_IP is on).
-      audit(req, 'auth.login.fail', { ok: false, msg: 'unknown-credential' });
+      auditFail(req, 'auth.login.fail', { ok: false, msg: 'unknown-credential' });
       return json(res, 404, { error: 'unknown passkey, create a profile first', code: 'unknown-credential' });
     }
     let verification;
@@ -1924,11 +1940,11 @@ const routes = {
         }
       });
     } catch (e) {
-      audit(req, 'auth.login.fail', { ok: false, user: db.users.find(u => u.id === cred.userId), uid: cred.userId, msg: 'verify-error' });
+      auditFail(req, 'auth.login.fail', { ok: false, user: db.users.find(u => u.id === cred.userId), uid: cred.userId, msg: 'verify-error' });
       return json(res, 400, { error: verifyError(e, { rpId: RP_ID, origin: ORIGIN }) });
     }
     if (!verification.verified) {
-      audit(req, 'auth.login.fail', { ok: false, user: db.users.find(u => u.id === cred.userId), uid: cred.userId, msg: 'not-verified' });
+      auditFail(req, 'auth.login.fail', { ok: false, user: db.users.find(u => u.id === cred.userId), uid: cred.userId, msg: 'not-verified' });
       return json(res, 400, { error: 'not verified' });
     }
     cred.counter = verification.authenticationInfo.newCounter;
@@ -1991,7 +2007,7 @@ const routes = {
     const p = pairings.get(code);
     if (p) pairings.delete(code);
     if (!p || p.exp < Date.now()) {
-      audit(req, 'auth.pair.fail', { ok: false, msg: 'code-invalid' });
+      auditFail(req, 'auth.pair.fail', { ok: false, msg: 'code-invalid' });
       return json(res, 400, { error: 'invalid or expired code', code: 'pair-invalid' });
     }
     const user = db.users.find(u => u.id === p.uid);

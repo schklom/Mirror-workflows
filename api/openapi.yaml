@@ -38,7 +38,8 @@ info:
     starts, so checks sent at once get no more tries than checks sent one by one. A
     paused caller gets `429 {"error": …, "code": "locked", "retryAfter": <s>}` with a
     `Retry-After` header. Passkey sign-up and sign-in and the pairing routes are not
-    throttled. The two routes that redeem a one-time device link (tag `passkeys`) share
+    throttled (their failures reach the audit log at most ten a minute per address).
+    The two routes that redeem a one-time device link (tag `passkeys`) share
     the per-address budget, and wrong codes pause the address for link redemption only,
     after 20, the way wrong reset codes do. Adding or removing a passkey in Settings
     (`POST /api/account/passkeys/options`, `DELETE /api/account/passkeys`) and making a

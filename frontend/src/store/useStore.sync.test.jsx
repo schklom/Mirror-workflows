@@ -423,3 +423,49 @@ describe('an edited workout between devices', () => {
     expect(weightsIn(useStore.getState().S)).toEqual([['w1', 50]])
   })
 })
+
+describe('removals and settings across a conflict', () => {
+  it('a workout deleted on the other device stays deleted when this one comes back with a change', async () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(10000)
+    // A deleted W through the store (update records when), then pushed.
+    signedIn({ ...clone(DEF), _ts: 100, workouts: [workout('W'), workout('keep')] })
+    useStore.getState().update(s => { s.workouts = s.workouts.filter(w => w.id !== 'W') }, false)
+    const fromA = clone(useStore.getState().S)
+    expect(fromA.deleted).toEqual({ workouts: { W: 10000 } })
+
+    // B was offline with W still there and logged a setting change later.
+    vi.setSystemTime(20000)
+    localStorage.clear()
+    api.mockReset()
+    signedIn({ ...clone(DEF), _ts: 100, workouts: [workout('W'), workout('keep')] })
+    localStorage.setItem('gym_sync', JSON.stringify({ rev: 1, ts: 100 }))
+    useStore.getState().update(s => { s.restSec = 45 }, false)
+    api.mockRejectedValueOnce(httpError(409, { error: 'conflict', rev: 2, state: { ...fromA, _rev: 2 } }))
+    api.mockResolvedValueOnce({ ok: true, rev: 3 })
+
+    await useStore.getState().pushState()
+
+    expect(puts().at(-1).state.workouts.map(w => w.id)).toEqual(['keep'])
+    expect(puts().at(-1).state.restSec).toBe(45)
+    expect(useStore.getState().S.workouts.map(w => w.id)).toEqual(['keep'])
+  })
+
+  it('a day of the plan set offline survives the other device syncing something later', async () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(10000)
+    signedIn({ ...clone(DEF), _ts: 100 })
+    localStorage.setItem('gym_sync', JSON.stringify({ rev: 1, ts: 100 }))
+    useStore.getState().update(s => { s.week = { ...s.week, 3: ['upperB'] } }, false)
+    // the other device logged a weigh-in after it (its copy is newer as a whole)
+    const other = { ...clone(DEF), _ts: 50000, bodyweight: [{ d: '2026-09-05', w: 80, t: 50000 }], _rev: 2 }
+    api.mockRejectedValueOnce(httpError(409, { error: 'conflict', rev: 2, state: other }))
+    api.mockResolvedValueOnce({ ok: true, rev: 3 })
+
+    await useStore.getState().pushState()
+
+    const sent = puts().at(-1).state
+    expect(sent.week).toEqual({ 3: ['upperB'] })
+    expect(sent.bodyweight.map(e => e.d)).toEqual(['2026-09-05'])
+  })
+})

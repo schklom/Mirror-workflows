@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { keepReset, localExtras, mergeBodyweight, mergeResetIds, mergeStampedMap, mergeStates, newerOf, resetIdsOf, RESET_ID_MAX, sinceReset, stampCustomEx, stampRoutines, stampWorkout, unionById } from './sync-merge.js'
+import { keepReset, localExtras, mergeDeletions, stampDeletions, stampEdits, mergeBodyweight, mergeResetIds, mergeStampedMap, mergeStates, newerOf, resetIdsOf, RESET_ID_MAX, sinceReset, stampCustomEx, stampRoutines, stampWorkout, unionById } from './sync-merge.js'
 import { mergeImport } from './import-csv.js'
 import { convertBodyWeight, convertStateUnit, convertWeight } from './units.js'
 import { retimeWorkout } from './workout-date.js'
@@ -12,6 +12,7 @@ const base = (over = {}) => ({
   workouts: [], routines: [], bodyweight: [], customEx: [], favEx: [], exWeights: {}, exNotes: {}, barWeights: {},
   equipProfiles: [], gymCards: [], _ts: 0, ...over
 })
+const clone = o => JSON.parse(JSON.stringify(o))
 const ids = xs => (xs || []).map(x => x.id)
 
 describe('newerOf / unionById / mergeBodyweight', () => {
@@ -659,5 +660,169 @@ describe('localExtras and the weigh-ins of a day both copies have', () => {
   })
   it('compares in the server\'s unit', () => {
     expect(localExtras({ unit: 'lb', bodyweight: [{ d: '2026-09-27', w: convertBodyWeight(80, 'kg', 'lb'), t: 200 }] }, server).bodyweight).toBe(0)
+  })
+})
+
+describe('a removal holds against a copy that was offline', () => {
+  // A removes, B was offline the whole time and logged a weigh-in later (its copy is newer).
+  const W = { id: 'W', d: '2026-09-01', start: 100, end: 200, entries: [{ id: '0025', sets: [{ w: 150, r: 1, done: true }] }] }
+  const both = base({
+    _ts: 300, workouts: [W, workout('keep')], routines: [{ ...routine('r1'), _ts: 50 }],
+    customEx: [{ id: 'c1', n: 'Sync me', _ts: 50 }], favEx: ['0025', 'c1'], gymCards: [{ id: 'g1', value: '1' }],
+    bodyweight: [{ d: '2026-09-02', w: 80, t: 60 }], exWeights: { '0025': { w: 150, d: '2026-09-01' } },
+  })
+  const removedOnA = () => {
+    const a = clone(both)
+    a.workouts = a.workouts.filter(w => w.id !== 'W')
+    a.routines = []
+    a.customEx = []
+    a.favEx = ['0025']
+    a.gymCards = []
+    a.bodyweight = []
+    a.exWeights = {}
+    a._ts = 1000
+    return stampDeletions(both, a, 1000)
+  }
+  const offlineB = () => {
+    const b = clone(both)
+    b.bodyweight = [...b.bodyweight, { d: '2026-09-05', w: 79, t: 2000 }]
+    b._ts = 2000
+    return b
+  }
+
+  it('stamps what a change removed, and nothing when nothing was', () => {
+    const a = removedOnA()
+    expect(a.deleted).toEqual({
+      workouts: { W: 1000 }, routines: { r1: 1000 }, customEx: { c1: 1000 },
+      bodyweight: { '2026-09-02': 1000 }, gymCards: { g1: 1000 }, favEx: { c1: 1000 },
+    })
+    expect(stampDeletions(both, clone(both), 1000).deleted).toBeUndefined()
+  })
+
+  it('stays removed, whichever copy is newer', () => {
+    for (const m of [mergeStates(removedOnA(), offlineB()), mergeStates(offlineB(), removedOnA())]) {
+      expect(ids(m.workouts)).toEqual(['keep'])
+      expect(m.routines).toEqual([])
+      expect(m.customEx).toEqual([])
+      expect(m.favEx).toEqual(['0025'])
+      expect(m.gymCards).toEqual([])
+      expect(m.bodyweight.map(e => e.d)).toEqual(['2026-09-05'])   // B's new weigh-in is kept
+      // the removed workout's PR goes with it, though B still had it as its kept load
+      expect(m.exWeights['0025']).toBeUndefined()
+      expect(m.deleted.workouts).toEqual({ W: 1000 })
+    }
+  })
+
+  it('an edit made after the removal keeps the entry', () => {
+    const b = offlineB()
+    b.routines = [{ ...routine('r1', 'edited'), _ts: 1500 }]
+    b.workouts = b.workouts.map(w => (w.id === 'W' ? { ...w, note: 'x', _ts: 1500 } : w))
+    const m = mergeStates(removedOnA(), b)
+    expect(ids(m.routines)).toEqual(['r1'])
+    expect(ids(m.workouts)).toContain('W')
+  })
+
+  it('a favourite starred again after the removal comes back with it', () => {
+    const a = removedOnA()
+    const again = clone(a)
+    again.favEx = ['0025', 'c1']
+    stampDeletions(a, again, 1500)
+    expect(again.deleted.favEx).toEqual({ c1: -1500 })
+    expect(mergeStates(again, offlineB()).favEx.sort()).toEqual(['0025', 'c1'])
+    expect(mergeDeletions(a.deleted, again.deleted).favEx).toEqual({ c1: -1500 })
+  })
+})
+
+describe('settings and plan days keep the change made last', () => {
+  // B, offline, sets Wednesday and the rest timer; A logs a weigh-in later and flips the sound.
+  const start = () => base({ _ts: 100, week: { 1: ['r1'] }, restSec: 90, sound: true, exNotes: { '0025': 'seat 4' } })
+  const onB = () => {
+    const b = start()
+    const next = clone(b)
+    next.week[3] = ['upperB']
+    next.restSec = 120
+    delete next.exNotes['0025']
+    next._ts = 500
+    return stampEdits(b, next, 500)
+  }
+  const onA = () => {
+    const a = start()
+    const next = clone(a)
+    next.sound = false
+    next.bodyweight = [{ d: '2026-09-05', w: 79, t: 900 }]
+    next._ts = 900
+    return stampEdits(a, next, 900)
+  }
+
+  it('stamps each changed setting and plan day on its own', () => {
+    expect(onB().edited).toEqual({ 'week.3': 500, restSec: 500, 'exNotes.0025': 500 })
+    expect(onA().edited).toEqual({ sound: 900 })   // a weigh-in has its own merge, no stamp
+  })
+
+  it('takes each from the copy that changed it, whichever copy is newer', () => {
+    for (const m of [mergeStates(onA(), onB()), mergeStates(onB(), onA())]) {
+      expect(m.week).toEqual({ 1: ['r1'], 3: ['upperB'] })
+      expect(m.restSec).toBe(120)
+      expect(m.sound).toBe(false)
+      expect(m.exNotes).toEqual({})                  // a cleared note stays cleared
+      expect(m.bodyweight.map(e => e.d)).toEqual(['2026-09-05'])
+      expect(m.edited).toEqual({ 'week.3': 500, restSec: 500, 'exNotes.0025': 500, sound: 900 })
+    }
+  })
+
+  it('a later change of the same day wins, a removal included', () => {
+    const a = onA()
+    const next = clone(a)
+    next.week[3] = ['legs']
+    next.restSec = 60
+    stampEdits(a, next, 1000)
+    expect(mergeStates(onB(), next).week).toEqual({ 1: ['r1'], 3: ['legs'] })
+    expect(mergeStates(onB(), next).restSec).toBe(60)
+    // A pulled B's Wednesday, then cleared it while B (offline again) still has it
+    const seen = mergeStates(onA(), onB())
+    const cleared = clone(seen)
+    delete cleared.week[3]
+    stampEdits(seen, cleared, 1000)
+    for (const m of [mergeStates(onB(), cleared), mergeStates(cleared, onB())]) expect(m.week).toEqual({ 1: ['r1'] })
+  })
+
+  it('a rotation refill on one device survives a setting saved later on the other', () => {
+    const s0 = base({ _ts: 100, queue: { ids: ['a', 'b'], since: 1, startsOn: '2026-09-01', rotationId: 'r' }, rotation: { id: 'r', sequence: ['a', 'b'] } })
+    const phone = clone(s0)
+    phone.queue = { ids: ['a', 'b'], since: 400, startsOn: '2026-09-06', rotationId: 'r' }
+    phone._ts = 400
+    stampEdits(s0, phone, 400)
+    const desk = clone(s0)
+    desk.restSec = 45
+    desk._ts = 800
+    stampEdits(s0, desk, 800)
+    for (const m of [mergeStates(phone, desk), mergeStates(desk, phone)]) {
+      expect(m.queue.since).toBe(400)
+      expect(m.restSec).toBe(45)
+    }
+  })
+
+  it('unstamped copies still follow the newer one; sign-in keeps the preferred side', () => {
+    const m = mergeStates(base({ _ts: 1, restSec: 30 }), base({ _ts: 2, restSec: 60 }))
+    expect(m.restSec).toBe(60)
+    const signIn = mergeStates(base({ _ts: 1, restSec: 30 }), onB(), { prefer: 'a' })
+    expect(signIn.restSec).toBe(30)
+  })
+})
+
+describe('a reset leads the unit over a copy that switched before it', () => {
+  it('the reset copy is in kg, the stale lb copy is converted into it', () => {
+    const R = 5000
+    const reset = base({ _ts: R, resetAt: R, unit: 'kg', resetIds: { bodyweight: ['2026-08-01|100'] } })
+    const stale = base({
+      _ts: 6000, unit: 'lb', unitSet: { at: 100, convert: true }, restSec: 45,
+      bodyweight: [{ d: '2026-08-01', w: 176, t: 100 }, { d: '2026-09-27', w: 220, t: 5900 }],
+    })
+    for (const m of [mergeStates(reset, stale), mergeStates(stale, reset)]) {
+      expect(m.unit).toBe('kg')
+      expect(m.unitSet).toBeUndefined()
+      expect(m.bodyweight).toEqual([{ d: '2026-09-27', w: convertBodyWeight(220, 'lb', 'kg'), t: 5900 }])
+      expect(m.restSec).toBe(90)
+    }
   })
 })

@@ -7,7 +7,7 @@ import { DEMO, DEMO_SEEDED } from '../lib/demo.js'
 import { rememberDefaultLang } from '../lib/default-lang.js'
 import { guestAllowed } from '../lib/guest.js'
 import { MOBILE, initReminderSync, nativeLoad, nativeSave, onAppActive, readJsonFile, syncReminder, writeAutoBackup, writeJsonFile } from '../lib/mobile.js'
-import { mergeStates, localExtras, stampRoutines, stampCustomEx, inUnitOf, keepReset, resetIdsOf, mergeResetIds, entryKey } from '../lib/sync-merge.js'
+import { mergeStates, localExtras, stampRoutines, stampCustomEx, stampDeletions, stampEdits, inUnitOf, keepReset, resetIdsOf, mergeResetIds, entryKey } from '../lib/sync-merge.js'
 import { convertStateUnit } from '../lib/units.js'
 import { pendingRefCount, settleMedia, loadPending } from '../lib/media-owed.js'
 import { referencedHashes } from '../lib/media-refs.js'
@@ -1013,8 +1013,13 @@ export const useStore = create((set, get) => {
       const prev = get().S
       const S = clone(prev)
       mut(S)
-      stampRoutines(prev.routines, S.routines)
-      stampCustomEx(prev.customEx, S.customEx)
+      const now = Date.now()
+      stampRoutines(prev.routines, S.routines, now)
+      stampCustomEx(prev.customEx, S.customEx, now)
+      // What the change removed, and which settings and plan days it touched, each with its time:
+      // a conflict then keeps a removal and the setting changed last (lib/sync-merge.js).
+      stampDeletions(prev, S, now)
+      stampEdits(prev, S, now)
       persist(S, push)
       // A photo or video added to a workout is a change worth the day's backup too: the one
       // finishing wrote went before the finish screen's pictures (autoBackupNow). Not a removal,

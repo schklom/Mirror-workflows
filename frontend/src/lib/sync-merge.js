@@ -7,7 +7,10 @@
  * entries and lets the newer copy decide everything that has no natural union.
  *
  * Rules, by field:
- *   - scalars and settings, `week`, `dayPlan`, `wc`, `reminder`, …: from the copy with the newer `_ts`
+ *   - scalars and settings, `week`, `dayPlan`, `wc`, `reminder`, `queue`, `rotation`, …: each from
+ *     the copy that changed it last by its own stamp in `edited` (stampEdits; `week`, `dayPlan`,
+ *     exNotes and barWeights per day or per exercise), from the copy with the newer `_ts` when
+ *     neither side stamped it or on a tie
  *   - equipProfiles, gymCards: union by id, the newer copy's version of an id that both have
  *   - customEx: union by id; of an id that both have, the version edited last by its own `_ts`
  *     (stampCustomEx), the newer copy's on a tie — a photo or link added on one device must not
@@ -59,10 +62,10 @@
  *     `prefer`: a sign-in adds what a device logged signed out, which is not a copy of this
  *     account's history.
  *
- * Known limit: with no record of what each side deleted, an entry removed on one device inside
- * the conflict window comes back from the other. The window is a few seconds now (the store pulls
- * on resume and every push is conditional), and a resurrected entry beats a lost one. Tombstones
- * would close it.
+ * After all of these, removals: an entry either copy records in `deleted` (stampDeletions) as
+ * removed after it was last edited is left out, whatever the other copy still holds. Without it a
+ * device that came back online after any time away brought back every workout, routine, custom
+ * exercise, weigh-in or favourite the other device had removed meanwhile.
  */
 import { beatsWeight } from './exercises.js'
 import { bestWeightForEntry } from './history.js'
@@ -289,7 +292,188 @@ export function sinceReset(S, at, ids) {
     }
   }
   out.exWeights = ex
+  // The reset copy's settings, plan and unit win whatever this copy's own stamps say (the file's
+  // header): stamps from before the reset would otherwise outrank the fresh profile's defaults,
+  // a unit switch made long ago would bring the old unit back over the reset's.
+  delete out.edited
+  delete out.unitSet
   return out
+}
+
+// ---- Deletions (`deleted`) ------------------------------------------------------------------
+//
+//   S.deleted = { workouts: { <key>: at }, routines: {…}, customEx, bodyweight, gymCards,
+//                 equipProfiles, favEx }
+//
+// A positive `at` is when the entry was removed on some device; a negative one (-at) is when it
+// was added back after such a removal (a favourite starred again). The store writes them on every
+// change (stampDeletions, useStore update) and the merge honours them (applyDeletions): a removal
+// beats any copy of the entry edited before it, so a device that was offline for a week no longer
+// brings back the workout, routine or custom exercise deleted meanwhile. An edit made after the
+// removal (the entry's own `_ts`, a weigh-in's `t`) keeps it, as does an add-back stamped later.
+const DEL_LISTS = {
+  workouts: workoutKey, routines: x => x?.id, customEx: x => x?.id, bodyweight: e => e?.d,
+  gymCards: x => x?.id, equipProfiles: x => x?.id, favEx: x => x,
+}
+// When an entry was last edited, to hold against a removal. Entries with no time of their own
+// (cards, profiles, favourites) count as older than any removal.
+const DEL_TIME = {
+  workouts: workoutTime, routines: x => Number(x?._ts) || 0, customEx: x => Number(x?._ts) || 0,
+  bodyweight: e => Number(e?.t) || 0,
+}
+// Per field, the most stamps kept; past it the oldest go first.
+export const DELETED_MAX = 5000
+const capStamps = m => {
+  const ks = Object.keys(m)
+  if (ks.length <= DELETED_MAX) return m
+  ks.sort((x, y) => Math.abs(m[x]) - Math.abs(m[y]))
+  for (const k of ks.slice(0, ks.length - DELETED_MAX)) delete m[k]
+  return m
+}
+
+/**
+ * Records in `next.deleted` every entry `prev` had and `next` no longer has, at `now`, and marks
+ * as added back (`-now`) any entry `next` has again whose removal was on record. Mutates and
+ * returns `next`; adds no `deleted` when there is nothing to record.
+ */
+export function stampDeletions(prev, next, now = Date.now()) {
+  if (!next || typeof next !== 'object') return next
+  const del = isMap(next.deleted) ? next.deleted : {}
+  let touched = false
+  for (const [f, key] of Object.entries(DEL_LISTS)) {
+    const before = list(prev?.[f]), after = list(next[f])
+    if (before === after) continue
+    const have = new Set(after.filter(x => x != null).map(x => String(key(x))))
+    const m = isMap(del[f]) ? del[f] : {}
+    let changed = false
+    for (const x of before) {
+      if (x == null) continue
+      const k = String(key(x))
+      if (!have.has(k)) { m[k] = now; changed = true }
+    }
+    for (const k of Object.keys(m)) if (m[k] > 0 && have.has(k)) { m[k] = -now; changed = true }
+    if (changed) { del[f] = capStamps(m); touched = true }
+  }
+  if (touched) next.deleted = del
+  return next
+}
+
+/** Both copies' records of removals: per entry, the later stamp. */
+export function mergeDeletions(a, b) {
+  const out = {}
+  for (const f of Object.keys(DEL_LISTS)) {
+    const x = isMap(a?.[f]) ? a[f] : {}, y = isMap(b?.[f]) ? b[f] : {}
+    const m = { ...x }
+    for (const [k, v] of Object.entries(y)) if (!(k in m) || Math.abs(Number(v) || 0) > Math.abs(Number(m[k]) || 0)) m[k] = v
+    if (Object.keys(m).length) out[f] = capStamps(m)
+  }
+  return Object.keys(out).length ? out : null
+}
+
+/**
+ * `S` without the entries `deleted` says were removed after they were last edited. Returns the
+ * removed workouts too (their kept loads need a second look). Mutates `S`.
+ */
+function applyDeletions(S, deleted) {
+  const gone = []
+  if (!deleted) return gone
+  for (const [f, key] of Object.entries(DEL_LISTS)) {
+    const m = deleted[f]
+    if (!isMap(m) || !Array.isArray(S[f])) continue
+    const time = DEL_TIME[f] || (() => 0)
+    S[f] = S[f].filter(x => {
+      if (x == null) return true
+      const at = Number(m[String(key(x))]) || 0
+      const drop = at > 0 && at >= time(x)
+      if (drop && f === 'workouts') gone.push(x)
+      return !drop
+    })
+  }
+  return gone
+}
+
+// ---- Edit stamps (`edited`) -----------------------------------------------------------------
+//
+//   S.edited = { restSec: at, queue: at, rotation: at, 'week.3': at, 'dayPlan.2026-10-08': at, … }
+//
+// When each setting, and each day of the plan, was last changed on some device. The store writes
+// them on every change (stampEdits, useStore update) and the merge takes each one from the copy
+// that changed it last (applyEdits) rather than the whole lot from the copy that changed anything
+// last: Wednesday set on an offline phone survives the weigh-in the desktop logged meanwhile, and
+// a rotation pass refilled on the phone survives a setting flipped on the desktop. Fields with a
+// merge of their own are not stamped here; a field nobody stamped follows the newer copy, as before.
+const OWN_MERGE = new Set([
+  '_ts', '_rev', 'active', 'unit', 'unitSet', 'resetAt', 'resetIds', 'deleted', 'edited',
+  'workouts', 'routines', 'customEx', 'equipProfiles', 'gymCards', 'bodyweight', 'favEx',
+  'exWeights', 'balanceOverrides', 'loadKind', 'plates',
+])
+// Stamped per key instead of whole: one day of the plan, one exercise's note or bar.
+const PER_KEY = new Set(['week', 'dayPlan', 'exNotes', 'barWeights'])
+// A per-key stamp of a key neither copy holds any more is dropped after this long.
+const EDIT_KEEP_MS = 180 * 86400000
+const same = (x, y) => JSON.stringify(x) === JSON.stringify(y)
+
+/**
+ * Stamps in `next.edited` every field (and every day of the plan, note, bar weight) that differs
+ * from `prev`, at `now`. Mutates and returns `next`.
+ */
+export function stampEdits(prev, next, now = Date.now()) {
+  if (!next || typeof next !== 'object') return next
+  const ed = isMap(next.edited) ? next.edited : {}
+  let touched = false
+  for (const k of new Set([...Object.keys(prev || {}), ...Object.keys(next)])) {
+    if (OWN_MERGE.has(k)) continue
+    const p = prev?.[k], n = next[k]
+    if (PER_KEY.has(k)) {
+      const pm = isMap(p) ? p : {}, nm = isMap(n) ? n : {}
+      if (p === n) continue
+      for (const s of new Set([...Object.keys(pm), ...Object.keys(nm)])) {
+        if ((s in pm) !== (s in nm) || !same(pm[s], nm[s])) { ed[`${k}.${s}`] = now; touched = true }
+      }
+    } else if (p !== n && !same(p, n)) { ed[k] = now; touched = true }
+  }
+  if (touched) {
+    for (const [k, at] of Object.entries(ed)) {
+      const dot = k.indexOf('.')
+      if (dot < 0 || now - at < EDIT_KEEP_MS) continue
+      const m = next[k.slice(0, dot)]
+      if (!isMap(m) || !(k.slice(dot + 1) in m)) delete ed[k]
+    }
+    next.edited = ed
+  }
+  return next
+}
+
+/** Both copies' edit stamps: per key, the later one. */
+function mergeEdits(a, b) {
+  const x = isMap(a) ? a : {}, y = isMap(b) ? b : {}
+  const out = { ...x }
+  for (const [k, v] of Object.entries(y)) if (!((Number(out[k]) || 0) >= (Number(v) || 0))) out[k] = v
+  return Object.keys(out).length ? out : null
+}
+
+/**
+ * Into `out` (a merge built from `n`, the newer copy), every stamped field and plan day from the
+ * copy that changed it last, removal included. A tie or a field nobody stamped stays as it is.
+ */
+function applyEdits(out, n, o) {
+  const en = isMap(n.edited) ? n.edited : {}, eo = isMap(o.edited) ? o.edited : {}
+  for (const k of new Set([...Object.keys(en), ...Object.keys(eo)])) {
+    const tn = Number(en[k]) || 0, to = Number(eo[k]) || 0
+    if (tn === to) continue
+    const src = to > tn ? o : n
+    const dot = k.indexOf('.')
+    if (dot < 0) {
+      if (OWN_MERGE.has(k) || PER_KEY.has(k)) continue
+      if (k in src) out[k] = clone(src[k]); else delete out[k]
+      continue
+    }
+    const f = k.slice(0, dot), s = k.slice(dot + 1)
+    if (!PER_KEY.has(f)) continue
+    const from = isMap(src[f]) ? src[f] : {}
+    const into = isMap(out[f]) ? out[f] : (out[f] = {})
+    if (s in from) into[s] = clone(from[s]); else delete into[s]
+  }
 }
 
 // `prefer` names the side whose settings, plan and per-exercise config win regardless of `_ts`:
@@ -387,6 +571,19 @@ export function mergeStates(a0, b0, { prefer } = {}) {
   }
   out.bodyweight = mergeBodyweight(n.bodyweight, o.bodyweight).map(clone)
   if (list(n.favEx).length || list(o.favEx).length) out.favEx = [...new Set([...list(n.favEx), ...list(o.favEx)])]
+  // What either device removed stays removed (the `deleted` section above). A workout taken out
+  // this way leaves its exercises' kept loads to be read again, as an edit of it would: from the
+  // merged history and from the deleting copy's own, which already let go of what it held.
+  const deleted = mergeDeletions(a.deleted, b.deleted)
+  for (const w of applyDeletions(out, deleted)) {
+    const k = String(workoutKey(w))
+    const by = [n, o].filter(S => Number(S.deleted?.workouts?.[k]) > 0).map(S => S.exWeights)
+    for (const e of list(w.entries)) {
+      if (e?.id == null) continue
+      if (!editedBy.has(e.id)) editedBy.set(e.id, new Set())
+      for (const src of by) editedBy.get(e.id).add(src)
+    }
+  }
   out.exWeights = clone(mergeExWeights(n.exWeights, o.exWeights))
   for (const [id, sources] of editedBy) {
     const kept = correctedExWeight(id, out.workouts, sources)
@@ -402,6 +599,14 @@ export function mergeStates(a0, b0, { prefer } = {}) {
   for (const f of ['balanceOverrides', 'loadKind', 'plates']) {
     if (n[f] || o[f]) out[f] = clone(mergeStampedMap(n[f], o[f], prefer))
   }
+  // Each stamped setting and plan day from the copy that changed it last (the `edited` section
+  // above). `prefer` (sign-in) keeps the preferred side's, stamps and all.
+  if (!prefer) {
+    applyEdits(out, n, o)
+    const edited = mergeEdits(n.edited, o.edited)
+    if (edited) out.edited = edited; else delete out.edited
+  }
+  if (deleted) out.deleted = deleted; else delete out.deleted
   out._ts = Math.max(a._ts || 0, b._ts || 0)
   if (resetAt) out.resetAt = resetAt
   if (resetIds) out.resetIds = resetIds

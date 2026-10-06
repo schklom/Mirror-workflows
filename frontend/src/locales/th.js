@@ -1915,4 +1915,6 @@ export default {
   'That took a little too long. Give it another go.': 'ใช้เวลานานไปหน่อย ลองอีกครั้งนะ',
   'That code didn’t work. Codes last 5 minutes and work once, so grab a fresh one.': 'รหัสนี้ใช้ไม่ได้ รหัสใช้ได้ 5 นาทีและใช้ได้ครั้งเดียว ขอรหัสใหม่นะ',
   'Create profile with a password': 'สร้างโปรไฟล์ด้วยรหัสผ่าน',
+  'Set {0} done': 'เซ็ต {0} เสร็จแล้ว',
+  'Set {0} ({1}) done': 'เซ็ต {0} ({1}) เสร็จแล้ว',
 }

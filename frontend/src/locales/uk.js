@@ -1901,4 +1901,6 @@ export default {
   'That took a little too long. Give it another go.': 'Це тривало трохи задовго. Спробуйте ще раз.',
   'That code didn’t work. Codes last 5 minutes and work once, so grab a fresh one.': 'Цей код не спрацював. Коди діють 5 хвилин і лише один раз, тож візьміть свіжий.',
   'Create profile with a password': 'Створити профіль з паролем',
+  'Set {0} done': 'Підхід {0} виконано',
+  'Set {0} ({1}) done': 'Підхід {0} ({1}) виконано',
 }

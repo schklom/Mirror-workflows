@@ -1908,4 +1908,6 @@ export default {
   'That took a little too long. Give it another go.': 'Это заняло слишком много времени. Попробуйте ещё раз.',
   'That code didn’t work. Codes last 5 minutes and work once, so grab a fresh one.': 'Этот код не сработал. Коды действуют 5 минут и только один раз, так что возьмите свежий.',
   'Create profile with a password': 'Создать профиль с паролем',
+  'Set {0} done': 'Подход {0} выполнен',
+  'Set {0} ({1}) done': 'Подход {0} ({1}) выполнен',
 }

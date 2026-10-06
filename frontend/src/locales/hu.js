@@ -1907,4 +1907,6 @@ export default {
   'That took a little too long. Give it another go.': 'Ez egy kicsit túl sokáig tartott. Próbáld újra.',
   'That code didn’t work. Codes last 5 minutes and work once, so grab a fresh one.': 'Ez a kód nem működött. A kódok 5 percig érvényesek és csak egyszer használhatók, úgyhogy kérj egy újat.',
   'Create profile with a password': 'Profil létrehozása jelszóval',
+  'Set {0} done': '{0}. sorozat kész',
+  'Set {0} ({1}) done': '{0}. sorozat ({1}) kész',
 }

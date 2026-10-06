@@ -1904,4 +1904,6 @@ export default {
   'That took a little too long. Give it another go.': '조금 너무 오래 걸렸어요. 다시 해 보세요.',
   'That code didn’t work. Codes last 5 minutes and work once, so grab a fresh one.': '이 코드는 안 됐어요. 코드는 5분 동안 한 번만 쓸 수 있으니 새 코드를 받아 주세요.',
   'Create profile with a password': '비밀번호로 프로필 만들기',
+  'Set {0} done': '{0}세트 완료',
+  'Set {0} ({1}) done': '{0}세트({1}) 완료',
 }

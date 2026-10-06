@@ -1957,4 +1957,6 @@ export default {
   'That took a little too long. Give it another go.': 'استغرق ذلك وقتًا أطول قليلًا من اللازم. جرّب مرة أخرى.',
   'That code didn’t work. Codes last 5 minutes and work once, so grab a fresh one.': 'لم ينجح هذا الرمز. الرموز صالحة لمدة 5 دقائق ولمرة واحدة فقط، فاطلب رمزًا جديدًا.',
   'Create profile with a password': 'إنشاء ملف شخصي بكلمة مرور',
+  'Set {0} done': 'المجموعة {0} مكتملة',
+  'Set {0} ({1}) done': 'المجموعة {0} ({1}) مكتملة',
 }

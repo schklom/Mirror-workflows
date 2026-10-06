@@ -1904,4 +1904,6 @@ export default {
   'That took a little too long. Give it another go.': 'Ci è voluto un po’ troppo. Riprova.',
   'That code didn’t work. Codes last 5 minutes and work once, so grab a fresh one.': 'Questo codice non ha funzionato. I codici durano 5 minuti e valgono una volta sola, quindi prendine uno nuovo.',
   'Create profile with a password': 'Crea profilo con password',
+  'Set {0} done': 'Serie {0} fatta',
+  'Set {0} ({1}) done': 'Serie {0} ({1}) fatta',
 }

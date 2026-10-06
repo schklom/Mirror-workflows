@@ -510,6 +510,14 @@ describe('Workout set completion flow', () => {
   })
 })
 
+describe('set ticks for screen readers', () => {
+  it('names each tick by its set, not just "checkbox"', async () => {
+    await mount([exercise('named-ticks', [false, false])])
+    const labels = [...container.querySelectorAll('[role="checkbox"]')].map(c => c.getAttribute('aria-label'))
+    expect(labels).toEqual(['Set 1 done', 'Set 2 done'])
+  })
+})
+
 describe('Workout add exercise flow', () => {
   it.each([
     ['freestyle', {}],

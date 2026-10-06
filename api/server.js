@@ -603,7 +603,12 @@ function csrfOk(req, key) {
 // passkey on the owner's profile and a session for it, without using the code up, as often as
 // wanted, and past "sign out everywhere".
 const challenges = new Map(); // cid -> {kind, challenge, name?, uid?, exp}
+// POST /api/login/options is anonymous and unthrottled, and every call leaves a challenge here
+// for five minutes, so the Map has a ceiling: past it the oldest goes. A ceremony takes seconds,
+// so only a flood far beyond any real sign-in traffic reaches back far enough to cost one.
+const MAX_CHALLENGES = 20000;
 function putChallenge(data) {
+  while (challenges.size >= MAX_CHALLENGES) challenges.delete(challenges.keys().next().value);
   const cid = crypto.randomBytes(16).toString('base64url');
   challenges.set(cid, { ...data, exp: Date.now() + 5 * 60000 });
   return cid;
@@ -1993,6 +1998,9 @@ const routes = {
   'POST /api/pair/create': async (req, res) => {
     const user = readSession(req);
     if (!user) return json(res, 401, { error: 'not signed in' });
+    // One live code per profile: the newest is the one on screen. Keeping every code minted
+    // let one session grow this Map without limit for five minutes at a time.
+    for (const [k, v] of pairings) if (v.uid === user.id) pairings.delete(k);
     const code = makePairCode();
     pairings.set(code, { uid: user.id, exp: Date.now() + 5 * 60000 });
     audit(req, 'auth.pair.create', { user });

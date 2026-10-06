@@ -549,7 +549,8 @@ paths:
       description: |
         Called from an already signed-in browser tab (Settings → "Pair the mobile
         app"). Returns an 8-character code (alphabet without 0/O/1/I) the phone
-        redeems within 5 minutes via /api/pair/redeem. One-shot.
+        redeems within 5 minutes via /api/pair/redeem. One-shot. One live code per
+        profile: minting a new one retires the previous one.
       responses:
         '200':
           description: A fresh pairing code.

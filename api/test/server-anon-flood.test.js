@@ -71,3 +71,13 @@ test('junk passkey sign-ins and sign-ups are answered but not each written to th
   assert.equal(rows.filter(r => r.ev === 'auth.login.fail').length, 10);
   assert.equal(rows.filter(r => r.ev === 'auth.register.fail').length, 10);
 });
+
+test('minting a pairing code retires the profile\'s previous one', async t => {
+  const h = await startServer(t);
+  const mint = async () => (await (await h.post('/api/pair/create', {}, { ...cookie, Origin: 'http://localhost:8080' })).json()).code;
+  const first = await mint();
+  const second = await mint();
+  assert.notEqual(first, second);
+  assert.equal((await h.post('/api/pair/redeem', { code: first })).status, 400, 'the older code is gone');
+  assert.equal((await h.post('/api/pair/redeem', { code: second })).status, 200, 'the newest one works');
+});

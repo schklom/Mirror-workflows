@@ -61,6 +61,14 @@ describe('plan-share units', () => {
 })
 
 describe('what survives a shared plan', () => {
+  it('carries Per side on a timed hold, and on reps work; never on cardio', () => {
+    const hold = roundTrip({ mode: 'time', sec: 30, sets: 2, reps: undefined, weight: undefined, side: true })
+    expect(hold).toMatchObject({ mode: 'time', sec: 30, sets: 2, side: true })
+    expect(roundTrip({ side: true }).side).toBe(true)
+    const cardio = parsePlan(JSON.stringify(buildPlanBundle({ routines: [{ id: 'r1', name: 'Run', ex: [{ id: '0025', sets: 1, mode: 'cardio', min: 20, side: true }] }], week: {}, customEx: [] }, 'Plan'))).routines[0].ex[0]
+    expect(cardio.side).toBeUndefined()
+  })
+
   it('carries a drop-set prescription', () => {
     expect(roundTrip({ intensifier: { type: 'dropset', count: 2, pct: 20 } }).intensifier)
       .toEqual({ type: 'dropset', count: 2, pct: 20 })

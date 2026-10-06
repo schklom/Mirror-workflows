@@ -1694,7 +1694,8 @@ body.no-tabbar.resting #toast{bottom:calc(100px + var(--sab))}
 .swatches{display:flex;gap:12px;flex-wrap:wrap}
 .swatch{width:32px;height:32px;border-radius:50%;flex:none;position:relative;transition:transform var(--fast)}
 .swatch:active{transform:scale(.9)}
-.swatch.on::after{content:'';position:absolute;inset:-4px;border-radius:50%;box-shadow:0 0 0 2px var(--label)}
+/* The ring takes no taps: over the own colour it lay on the colour input, so the picker never opened. */
+.swatch.on::after{content:'';position:absolute;inset:-4px;border-radius:50%;box-shadow:0 0 0 2px var(--label);pointer-events:none}
 /* The user's own colour (Settings → Accent color): a rainbow ring until there is one, then filled
    with it. The native colour input lies over it, invisible, so the tap lands on the input itself. */
 .swatch-own{display:inline-flex;align-items:center;justify-content:center;font-size:15px;--icon-stroke:2.4}

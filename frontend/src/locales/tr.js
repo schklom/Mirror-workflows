@@ -1896,4 +1896,7 @@ export default {
   'That looks too heavy. Keep it at {0} or less.': 'Bu fazla ağır görünüyor. En fazla {0}.',
   'That’s still in the future. Try an earlier start.': 'Bu hâlâ gelecekte. Daha erken bir başlangıç dene.',
   'That’s more than a day. Keep it to 24 hours or less.': 'Bu bir günden fazla. En fazla 24 saat.',
+  'That file isn’t an openGym backup.': 'Bu dosya bir openGym yedeği değil.',
+  'That zip was repacked. Import the original backup file.': 'Bu zip yeniden paketlenmiş. Orijinal yedek dosyasını içe aktar.',
+  'Couldn’t read that file.': 'Bu dosya okunamadı.',
 }

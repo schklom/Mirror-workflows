@@ -1893,4 +1893,7 @@ export default {
   'That looks too heavy. Keep it at {0} or less.': 'Це забагато. Не більше {0}.',
   'That’s still in the future. Try an earlier start.': 'Це ще в майбутньому. Вибери ранніший час початку.',
   'That’s more than a day. Keep it to 24 hours or less.': 'Це більше доби. Не більше 24 годин.',
+  'That file isn’t an openGym backup.': 'Цей файл не резервна копія openGym.',
+  'That zip was repacked. Import the original backup file.': 'Цей zip перепакували. Імпортуй оригінальний файл резервної копії.',
+  'Couldn’t read that file.': 'Не вдалося прочитати цей файл.',
 }

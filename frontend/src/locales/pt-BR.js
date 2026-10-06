@@ -1175,6 +1175,9 @@ export const PT_BR_OVERRIDES = {
   'That looks too heavy. Keep it at {0} or less.': 'Isso parece pesado demais. No máximo {0}.',
   'That’s still in the future. Try an earlier start.': 'Isso ainda está no futuro. Tente um horário de início mais cedo.',
   'That’s more than a day. Keep it to 24 hours or less.': 'Isso é mais de um dia. No máximo 24 horas.',
+  'That file isn’t an openGym backup.': 'Esse arquivo não é um backup do openGym.',
+  'That zip was repacked. Import the original backup file.': 'Esse zip foi recompactado. Importe o arquivo de backup original.',
+  'Couldn’t read that file.': 'Não foi possível ler esse arquivo.',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

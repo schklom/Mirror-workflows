@@ -299,3 +299,10 @@ describe('plan-share links and media (#246)', () => {
     expect(mine.customEx[0].url).toBeUndefined()
   })
 })
+
+describe('parsePlan refuses a file that is not a plan in words', () => {
+  it('text that is not JSON says it is not a plan file, not the parser message', () => {
+    expect(() => parsePlan('hello there')).toThrow('this isn’t an openGym plan file')
+    try { parsePlan('{oops') } catch (e) { expect(e.code).toBe('not-plan') }
+  })
+})

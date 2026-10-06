@@ -1896,4 +1896,7 @@ export default {
   'That looks too heavy. Keep it at {0} or less.': 'Isso parece pesado demais. No máximo {0}.',
   'That’s still in the future. Try an earlier start.': 'Isso ainda está no futuro. Experimenta uma hora de início mais cedo.',
   'That’s more than a day. Keep it to 24 hours or less.': 'Isso é mais de um dia. No máximo 24 horas.',
+  'That file isn’t an openGym backup.': 'Esse ficheiro não é uma cópia de segurança do openGym.',
+  'That zip was repacked. Import the original backup file.': 'Esse zip foi recompactado. Importa o ficheiro de cópia original.',
+  'Couldn’t read that file.': 'Não foi possível ler esse ficheiro.',
 }

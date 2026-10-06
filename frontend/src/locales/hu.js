@@ -1899,4 +1899,7 @@ export default {
   'That looks too heavy. Keep it at {0} or less.': 'Ez túl soknak tűnik. Legfeljebb {0}.',
   'That’s still in the future. Try an earlier start.': 'Ez még a jövőben van. Próbálj korábbi kezdést.',
   'That’s more than a day. Keep it to 24 hours or less.': 'Ez több mint egy nap. Legfeljebb 24 óra.',
+  'That file isn’t an openGym backup.': 'Ez a fájl nem openGym-mentés.',
+  'That zip was repacked. Import the original backup file.': 'Ezt a zipet újracsomagolták. Az eredeti mentésfájlt importáld.',
+  'Couldn’t read that file.': 'Ezt a fájlt nem sikerült beolvasni.',
 }

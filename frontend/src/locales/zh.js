@@ -1896,4 +1896,7 @@ export default {
   'That looks too heavy. Keep it at {0} or less.': '这好像太重了。最多 {0}。',
   'That’s still in the future. Try an earlier start.': '这还在未来。试试更早的开始时间。',
   'That’s more than a day. Keep it to 24 hours or less.': '超过一天了。最多 24 小时。',
+  'That file isn’t an openGym backup.': '这个文件不是 openGym 备份。',
+  'That zip was repacked. Import the original backup file.': '这个 zip 被重新打包过。请导入原始备份文件。',
+  'Couldn’t read that file.': '无法读取这个文件。',
 }

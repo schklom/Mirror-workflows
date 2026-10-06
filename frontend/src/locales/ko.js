@@ -1896,4 +1896,7 @@ export default {
   'That looks too heavy. Keep it at {0} or less.': '너무 무거워 보여요. 최대 {0}까지예요.',
   'That’s still in the future. Try an earlier start.': '아직 미래예요. 더 이른 시작 시간을 골라 보세요.',
   'That’s more than a day. Keep it to 24 hours or less.': '하루가 넘어요. 최대 24시간까지예요.',
+  'That file isn’t an openGym backup.': '이 파일은 openGym 백업이 아니에요.',
+  'That zip was repacked. Import the original backup file.': '이 zip은 다시 압축됐어요. 원본 백업 파일을 가져오세요.',
+  'Couldn’t read that file.': '이 파일을 읽을 수 없어요.',
 }

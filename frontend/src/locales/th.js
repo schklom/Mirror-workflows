@@ -1907,4 +1907,7 @@ export default {
   'That looks too heavy. Keep it at {0} or less.': 'ดูหนักเกินไปนะ ใส่ได้ไม่เกิน {0}',
   'That’s still in the future. Try an earlier start.': 'ยังเป็นเวลาในอนาคตอยู่เลย ลองเวลาเริ่มที่เร็วกว่านี้',
   'That’s more than a day. Keep it to 24 hours or less.': 'เกินหนึ่งวันแล้ว ใส่ได้ไม่เกิน 24 ชั่วโมง',
+  'That file isn’t an openGym backup.': 'ไฟล์นี้ไม่ใช่ข้อมูลสำรองของ openGym',
+  'That zip was repacked. Import the original backup file.': 'zip นี้ถูกบีบอัดใหม่ นำเข้าไฟล์สำรองต้นฉบับแทน',
+  'Couldn’t read that file.': 'อ่านไฟล์นี้ไม่ได้',
 }

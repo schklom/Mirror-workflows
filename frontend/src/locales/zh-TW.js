@@ -1889,4 +1889,7 @@ export default {
   'That looks too heavy. Keep it at {0} or less.': '這好像太重了。最多 {0}。',
   'That’s still in the future. Try an earlier start.': '這還在未來。試試更早的開始時間。',
   'That’s more than a day. Keep it to 24 hours or less.': '超過一天了。最多 24 小時。',
+  'That file isn’t an openGym backup.': '這個檔案不是 openGym 備份。',
+  'That zip was repacked. Import the original backup file.': '這個 zip 被重新打包過。請匯入原始備份檔案。',
+  'Couldn’t read that file.': '無法讀取這個檔案。',
 }

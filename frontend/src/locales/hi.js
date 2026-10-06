@@ -1896,4 +1896,7 @@ export default {
   'That looks too heavy. Keep it at {0} or less.': 'यह बहुत भारी लग रहा है। ज़्यादा से ज़्यादा {0}।',
   'That’s still in the future. Try an earlier start.': 'यह अभी भविष्य में है। थोड़ा पहले का शुरू होने का समय चुनें।',
   'That’s more than a day. Keep it to 24 hours or less.': 'यह एक दिन से ज़्यादा है। ज़्यादा से ज़्यादा 24 घंटे।',
+  'That file isn’t an openGym backup.': 'यह फ़ाइल openGym बैकअप नहीं है।',
+  'That zip was repacked. Import the original backup file.': 'यह zip दोबारा पैक की गई है। मूल बैकअप फ़ाइल इम्पोर्ट करें।',
+  'Couldn’t read that file.': 'यह फ़ाइल पढ़ी नहीं जा सकी।',
 }

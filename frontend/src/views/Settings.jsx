@@ -293,7 +293,10 @@ export default function Settings({ page = null, find = null, via = null }) {
     try {
       const { readBackupFile } = await import('../lib/backup-media.js')
       read = await readBackupFile(f)
-    } catch (e) { toast(t('Import failed: {0}', e.message)); return }
+    } catch (e) {
+      const { backupImportError } = await import('../lib/backup-media.js')
+      toast(backupImportError(e)); return
+    }
     const apply = async mergeWith => {
       if (read.files.length) {
         const { storeBackupMedia } = await import('../lib/backup-media.js')

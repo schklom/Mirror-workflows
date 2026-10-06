@@ -1879,7 +1879,8 @@ export function importPlanFile(f, onRead) {
   const rd = new FileReader()
   rd.onload = () => {
     try { const bundle = parsePlan(rd.result, S().unit || 'kg'); onRead?.(); planImportSheet(bundle) }
-    catch (e) { toast(t('Import failed: {0}', e.message)) }
+    // parsePlan's own refusal is written for people; anything else is not shown raw.
+    catch (e) { toast(e?.code === 'not-plan' ? t('Import failed: {0}', e.message) : t('Couldn’t read that file.')) }
   }
   rd.readAsText(f)
 }

@@ -245,6 +245,9 @@ describe('Home — a session pinned to a day', () => {
     mount()
     expect(chipTexts()).toEqual(['US W1 D1' + fmtDate(on, true), 'US W1 D2Up next', 'US W1 D3Later'])
     expect(chips()[0].className).toBe('chip')
+    // the date keeps .chip's capitals ("Seg." in Portuguese); only the state words opt out
+    expect(chips()[0].querySelector('.qstate')).toBeNull()
+    expect(chips()[1].querySelector('.qstate').textContent).toBe('Up next')
     expect(chips()[0].disabled).toBe(false)
     expect(chips()[1].className).toBe('chip on')
     expect(status()).toBe('Next: US W1 D2, today')

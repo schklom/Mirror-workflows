@@ -2,7 +2,7 @@
 import { todayISO, isoOf, weekKey, weekStartOf, fmtNum } from './format.js'
 import { fmtSpeed } from './speed.js'
 import { isCardio, isBodyweightEq, isAssisted, betterWeight } from './exercises.js'
-import { phaseForSet, modeForSet, modeForEntry, isWarmupRow, normalizeMode, completedVolumeOf, hasCompletedWork, nextDropWeight, splitBurstReps, makeSideSet, isSideSet, syncSideAggregate, WEIGHT_ORIGIN_MANUAL, dropsOf, clustersOf } from './workout-model.js'
+import { phaseForSet, modeForSet, modeForEntry, isWarmupRow, isDropSet, isRestPauseSet, normalizeMode, completedVolumeOf, hasCompletedWork, nextDropWeight, splitBurstReps, makeSideSet, isSideSet, syncSideAggregate, WEIGHT_ORIGIN_MANUAL, dropsOf, clustersOf } from './workout-model.js'
 const objectOf = value => value && typeof value === 'object' && !Array.isArray(value) ? value : {}
 // Completed-state-independent work rows whose authoritative mode matches the requested mode.
 const workRowsForMode = (entry = {}, mode = 'reps') => {
@@ -921,9 +921,15 @@ export function insertWarmupRow(rows, mode, target, step = 2.5) {
 // warm-up (its weight, reps and tick kept; drops, bursts, sides and effort dropped, since a
 // warm-up has none) and moves to the end of the warm-ups, so it is numbered, rested and left out
 // of progression and records like any other warm-up. A row that is one already is left alone.
+// Only a plain straight set: a warm-up is one weight times one rep count, so a drop set would
+// lose its drops, a rest-pause row would add its bursts into one inflated rep count, and a
+// per-side row would merge both sides with no way back (a per-side warm-up is never made a work
+// set again).
+export const canBeWarmup = row => !!row && !isWarmupRow(row) && !isSideSet(row) && !isDropSet(row) && !isRestPauseSet(row)
+
 export function makeWarmupAt(rows, i) {
   const src = rows[i]
-  if (!src || isWarmupRow(src)) return rows
+  if (!canBeWarmup(src)) return rows
   const warm = { w: src.w || 0, r: src.r, done: !!src.done, phase: 'warmup', warmup: true }
   if (src.at != null) warm.at = src.at
   return placeRow(rows, i, warm)

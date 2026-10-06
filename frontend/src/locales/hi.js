@@ -508,7 +508,7 @@ export default {
   'assisted': 'सहायता प्राप्त', 'band': 'बैंड', 'barbell': 'बारबेल', 'body weight': 'शरीर का वज़न',
   'bosu ball': 'बोसु बॉल', 'cable': 'केबल', 'dumbbell': 'डम्बल',
   'elliptical machine': 'एलिप्टिकल मशीन', 'ez barbell': 'EZ बारबेल', 'hammer': 'हैमर',
-  'kettlebell': 'केटलबेल', 'leverage machine': 'लीवरेज मशीन', 'medicine ball': 'मेडिसिन बॉल',
+  'kettlebell': 'केटलबेल', 'clubbell': 'क्लबबेल', 'macebell': 'मेसबेल', 'leverage machine': 'लीवरेज मशीन', 'medicine ball': 'मेडिसिन बॉल',
   'olympic barbell': 'ओलंपिक बारबेल', 'resistance band': 'रेज़िस्टेंस बैंड', 'roller': 'रोलर',
   'rope': 'रस्सी', 'skierg machine': 'स्कीअर्ग', 'sled machine': 'स्लेड मशीन',
   'smith machine': 'स्मिथ मशीन', 'stability ball': 'स्टेबिलिटी बॉल', 'stationary bike': 'स्थिर साइकिल',

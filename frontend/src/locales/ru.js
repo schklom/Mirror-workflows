@@ -508,7 +508,7 @@ export default {
   'assisted': 'с поддержкой', 'band': 'лента', 'barbell': 'штанга', 'body weight': 'свой вес',
   'bosu ball': 'босу', 'cable': 'блок', 'dumbbell': 'гантель',
   'elliptical machine': 'эллипсоид', 'ez barbell': 'EZ-гриф', 'hammer': 'молот',
-  'kettlebell': 'гиря', 'leverage machine': 'рычажный тренажёр', 'medicine ball': 'медбол',
+  'kettlebell': 'гиря', 'clubbell': 'клаббелл', 'macebell': 'булава', 'leverage machine': 'рычажный тренажёр', 'medicine ball': 'медбол',
   'olympic barbell': 'олимпийская штанга', 'resistance band': 'эспандер', 'roller': 'ролик',
   'rope': 'канат', 'skierg machine': 'SkiErg', 'sled machine': 'сани',
   'smith machine': 'машина Смита', 'stability ball': 'фитбол', 'stationary bike': 'велотренажёр',

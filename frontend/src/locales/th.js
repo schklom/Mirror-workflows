@@ -511,7 +511,7 @@ export default {
   'assisted': 'มีตัวช่วย', 'band': 'ยางยืด', 'barbell': 'บาร์เบล', 'body weight': 'น้ำหนักตัว',
   'bosu ball': 'บอลโบซู', 'cable': 'สายเคเบิล', 'dumbbell': 'ดัมเบล',
   'elliptical machine': 'เครื่องเอลลิปติคัล', 'ez barbell': 'อีซีบาร์', 'hammer': 'แฮมเมอร์',
-  'kettlebell': 'เคทเทิลเบล', 'leverage machine': 'เครื่องคานงัด', 'medicine ball': 'เมดิซินบอล',
+  'kettlebell': 'เคทเทิลเบล', 'clubbell': 'คลับเบล', 'macebell': 'เมซเบล', 'leverage machine': 'เครื่องคานงัด', 'medicine ball': 'เมดิซินบอล',
   'olympic barbell': 'บาร์เบลโอลิมปิก', 'resistance band': 'ยางยืดออกกำลังกาย', 'roller': 'ลูกกลิ้ง',
   'rope': 'เชือก', 'skierg machine': 'เครื่องสกีเอิร์ก', 'sled machine': 'สเลด',
   'smith machine': 'สมิธแมชชีน', 'stability ball': 'บอลออกกำลังกาย', 'stationary bike': 'จักรยานปั่นอยู่กับที่',

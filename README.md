@@ -24,6 +24,8 @@ on your phone, synced across your devices, behind your own passkey login.
 [Roadmap](ROADMAP.md) ·
 [Changelog](CHANGELOG.md)
 
+<a href="https://buymeacoffee.com/duartesantos" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" height="45" width="163"></a>
+
 </div>
 
 <table align="center">

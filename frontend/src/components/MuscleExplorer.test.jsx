@@ -79,3 +79,31 @@ describe('MuscleExplorer body-part chips keep the equipment filter', () => {
     expect(isOn(chipByText(host, 'Any equipment'))).toBe(true)
   })
 })
+
+describe('MuscleExplorer search: the × and live count the Library has (#338)', () => {
+  function type(el, value) {
+    Object.getOwnPropertyDescriptor(el.constructor.prototype, 'value').set.call(el, value)
+    el.dispatchEvent(new Event('input', { bubbles: true }))
+  }
+  it('shows a count while narrowed and a × that empties only the text', () => {
+    const host = render()
+    act(() => { muscleChip(host, 'Biceps').click() })
+    const input = host.querySelector('.search input')
+    const count = () => host.querySelector('.search .search-count')
+    const clear = () => host.querySelector('.search .clear')
+    const rows = () => host.querySelectorAll('.list .item').length
+    expect(count()).toBeNull()
+    expect(clear()).toBeNull()
+    act(() => type(input, 'curl'))
+    expect(clear().getAttribute('aria-label')).toBe('Clear')
+    expect(Number(count().textContent)).toBeGreaterThan(0)
+    expect(rows()).toBe(Math.min(40, Number(count().textContent)))
+    act(() => clear().click())
+    expect(input.value).toBe('')
+    expect(clear()).toBeNull()
+    expect(count()).toBeNull()
+    act(() => { chipByText(host, 'upper arms').click() })
+    expect(count()).toBeTruthy()
+    expect(clear()).toBeNull()
+  })
+})

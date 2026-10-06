@@ -357,7 +357,8 @@ export const useStore = create((set, get) => {
   // A sign-in whose question is still open (adoptHold, e.g. its GET failed) holds a copy that has
   // reached no server yet: with any data in it, it is owed, so a sign-out asks and keeps it aside
   // instead of wiping the guest's history and what was logged during the hold.
-  const owes = () => metaOf().owed || pushPending || pushTm !== null || !!pushing || localChanged() || (adoptHold && hasData(get().S))
+  const owesOwn = () => metaOf().owed || pushPending || pushTm !== null || !!pushing || localChanged()
+  const owes = () => owesOwn() || (adoptHold && hasData(get().S))
 
   /* The connection as the screens show it (components/SyncBanner.jsx, Settings). The flags are set
      where each outcome is known; `status` is derived from them here, once, so no screen has to
@@ -839,7 +840,8 @@ export const useStore = create((set, get) => {
   const keepForPrevious = uid => {
     syncFromSaved()
     const S = get().S
-    if (!(owes() && hasData(S)) && !pendingRefCount(S)) return
+    // (owesOwn: the hold set for the account signing in now says nothing about this copy)
+    if (!(owesOwn() && hasData(S)) && !pendingRefCount(S)) return
     const server = serverBase()
     const key = stashKey(server, uid)
     let all = {}

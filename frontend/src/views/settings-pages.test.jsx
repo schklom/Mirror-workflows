@@ -262,7 +262,7 @@ describe('the pages', () => {
     expect([...host.querySelectorAll('.sect-f')].some(f => /screen stays on/.test(f.textContent))).toBe(false)
     mount('advanced')
     expect(titles()).toEqual(['Planned sessions start from', 'Keep timing after target', 'Weight and reps buttons',
-      'Drop and burst shortcuts on every set', 'Superset buttons in the exercise header', 'Move, swap and remove buttons below the exercise'])
+      'Drop and burst shortcuts on every set', 'Swipe on sets', 'Superset buttons in the exercise header', 'Move, swap and remove buttons below the exercise'])
   })
 
   it('the Fine-tuning switches write S.wc as the old Workout controls sheet did', () => {

@@ -46,6 +46,60 @@ export function deleteRoutine(s, id) {
 }
 
 /**
+ * Everything deleteRoutine is about to take away, so an Undo can put the routine back where it
+ * was (Plan's swipe and minus, v1.3.11): the routine itself and its place in the list, its place
+ * on each weekday that holds it, the reschedules that name it, and its places in the saved loop
+ * and the live queue. deleteRoutine leaves the last two alone (an id that no longer resolves is
+ * skipped where they are read), but a save in between may have dropped it, so they are kept too.
+ * Null when there is no such routine.
+ */
+export function routineSnapshot(S, id) {
+  const index = (S.routines || []).findIndex(r => r.id === id)
+  if (index < 0) return null
+  const week = {}
+  Object.keys(S.week || {}).forEach(d => {
+    const at = [].concat(S.week[d]).indexOf(id)
+    if (at >= 0) week[d] = at
+  })
+  const dayPlan = {}
+  Object.keys(S.dayPlan || {}).forEach(iso => { if (S.dayPlan[iso] === id) dayPlan[iso] = id })
+  const seqAt = Array.isArray(S.rotation?.sequence) ? S.rotation.sequence.indexOf(id) : -1
+  const queueAt = Array.isArray(S.queue?.ids) ? S.queue.ids.indexOf(id) : -1
+  return { routine: structuredClone(S.routines[index]), index, week, dayPlan, seqAt, queueAt }
+}
+
+const putBack = (list, at, id) => {
+  if (list.includes(id)) return list
+  const next = list.slice()
+  next.splice(Math.min(at, next.length), 0, id)
+  return next
+}
+
+/**
+ * Undo for deleteRoutine, in place on a store draft, from a routineSnapshot taken just before it.
+ * Each pointer goes back to its old position, or to the end of a list that has since got
+ * shorter; a reschedule only where that date has not been planned again since. False, and nothing
+ * changed, when a routine with that id exists again (another device put it back first).
+ */
+export function restoreRoutine(s, snap) {
+  if (!snap?.routine || !Array.isArray(s.routines)) return false
+  const id = snap.routine.id
+  if (s.routines.some(r => r.id === id)) return false
+  s.routines.splice(Math.min(snap.index, s.routines.length), 0, structuredClone(snap.routine))
+  if (Object.keys(snap.week).length) s.week = s.week || {}
+  Object.entries(snap.week).forEach(([d, at]) => {
+    s.week[d] = putBack(s.week[d] == null ? [] : [].concat(s.week[d]), at, id)
+  })
+  if (Object.keys(snap.dayPlan).length) s.dayPlan = s.dayPlan || {}
+  Object.keys(snap.dayPlan).forEach(iso => { if (s.dayPlan[iso] == null) s.dayPlan[iso] = id })
+  if (snap.seqAt >= 0 && Array.isArray(s.rotation?.sequence)) {
+    s.rotation = { ...s.rotation, sequence: putBack(s.rotation.sequence, snap.seqAt, id) }
+  }
+  if (snap.queueAt >= 0 && Array.isArray(s.queue?.ids)) s.queue = { ...s.queue, ids: putBack(s.queue.ids, snap.queueAt, id) }
+  return true
+}
+
+/**
  * A routine slot with another exercise in it (#110): the machine you planned around is gone, or
  * a variation takes over the lift for a block. The slot keeps its place and what was set up for
  * it — sets, reps, weight, rest, warm-ups, the progression rule, the note, its superset — and only

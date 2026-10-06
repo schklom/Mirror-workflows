@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { commitFor, shapeOffset, armedFor, axisOf, inEdgeZone, velocityOf, REVEAL, OPEN_MIN, EDGE } from './use-swipe-row.js'
+import { commitFor, shapeOffset, armedFor, axisOf, inEdgeZone, velocityOf, REVEAL, OPEN_MIN, EDGE, BAND } from './use-swipe-row.js'
 
 // Offsets and velocities are logical (negative = toward the start of the line: left in English,
 // right in Arabic), so one table covers both directions; the component turns them into pixels.
@@ -77,5 +77,22 @@ describe('velocityOf', () => {
   it('reads px/ms between the first and last sample', () => {
     expect(velocityOf([[0, 0]])).toBe(0)
     expect(velocityOf([[0, 0], [50, -40], [100, -80]])).toBeCloseTo(-0.8)
+  })
+})
+
+// Plan's remove-only rows (v1.3.11): the loop and a routine's exercises have nothing to copy.
+describe('a row with nothing on the end side', () => {
+  it('gives a short rubber band toward the end, and never more', () => {
+    expect(shapeOffset(10, W, false)).toBeGreaterThan(0)
+    expect(shapeOffset(10, W, false)).toBeLessThan(10)
+    expect(shapeOffset(300, W, false)).toBe(BAND)
+    expect(shapeOffset(-100, W, false)).toBe(shapeOffset(-100, W))   // the start side is untouched
+  })
+  it('never arms, opens or acts toward the end, however far or fast', () => {
+    expect(armedFor(W, W, false)).toBeNull()
+    expect(commitFor(BAND, W, 0, false)).toBe('close')
+    expect(commitFor(W, W, 5, false)).toBe('close')
+    expect(commitFor(-W * 0.7, W, 0, false)).toBe('delete')
+    expect(commitFor(-REVEAL, W, 0, false)).toBe('open-delete')
   })
 })

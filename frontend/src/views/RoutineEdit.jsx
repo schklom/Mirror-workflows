@@ -12,7 +12,8 @@ import { glyphPicker, exercisePicker, exConfigSheet, confirmSheet } from '../she
 import Icon from '../components/Icon.jsx'
 import { glyphOf } from '../lib/glyphs.js'
 import { Button, Row, SelectRow, Switch } from '../components/ui.jsx'
-import SwipeToDelete from '../components/SwipeToDelete.jsx'
+import SwipeRow from '../components/SwipeRow.jsx'
+import { workoutControls } from '../lib/workout-controls.js'
 import { copyRoutine, deleteRoutine, replaceSlotExercise } from '../lib/routines.js'
 import { planPrintHTML, printPlan } from '../lib/plan-share.js'
 import { MOBILE, printHtml } from '../lib/mobile.js'
@@ -212,7 +213,7 @@ function useRoutineReorder(routineIdentity, exercises, onDrop) {
       }
       if (event.isPrimary === false || (event.pointerType === 'mouse' && event.button !== 0)) return
       const target = event.target
-      if (!target?.closest || target.closest('button,a,input,textarea,select,[data-nodrag]')) return
+      if (!target?.closest || target.closest('button:not([data-row-open]),a,input,textarea,select,[data-nodrag]')) return
       const row = target.closest('[data-routine-row]')
       if (!row || !list.contains(row)) return
       const sourceIndex = Number(row.dataset.exIndex)
@@ -312,7 +313,45 @@ function useRoutineReorder(routineIdentity, exercises, onDrop) {
     window.clearTimeout(suppressTimerRef.current)
     event.preventDefault(); event.stopPropagation()
   }
-  return { listRef, drag, onClickCapture }
+  // Whether a long press has picked a row up: the row's swipe stays out of the way while it has.
+  const lifted = () => !!gestureRef.current?.active
+  return { listRef, drag, onClickCapture, lifted }
+}
+
+/**
+ * Takes exercise `i` out of routine `routineId` with an Undo (v1.3.11: the row's swipe and the
+ * exercise sheet's Remove). While the routine's exercises are still what the removal left, Undo
+ * puts the list back as it was, superset links included (a partner left alone loses its link,
+ * cleanupSg). Once something else changed them, the exercise goes back in at its old place.
+ */
+export function removeRoutineExercise(routineId, i) {
+  const st = useStore.getState()
+  const routine = st.S.routines.find(x => x.id === routineId)
+  const slot = routine?.ex?.[i]
+  if (!slot) return false
+  const before = structuredClone(routine.ex)
+  st.update(s => {
+    const ex = s.routines.find(x => x.id === routineId)?.ex
+    if (!ex) return
+    ex.splice(i, 1); cleanupSg(ex)
+  })
+  const after = JSON.stringify(useStore.getState().S.routines.find(x => x.id === routineId)?.ex)
+  useUI.getState().toast(t('“{0}” left the routine.', exerciseNameText(exOr(slot.id))),
+    { action: t('Undo'), onAction: () => undoRemoveRoutineExercise({ routineId, i, before, after }) })
+  return true
+}
+export function undoRemoveRoutineExercise({ routineId, i, before, after }) {
+  if (!useStore.getState().S.routines.some(x => x.id === routineId)) {
+    useUI.getState().toast(t('Too late, that one’s gone'))
+    return false
+  }
+  useStore.getState().update(s => {
+    const routine = s.routines.find(x => x.id === routineId)
+    if (JSON.stringify(routine.ex) === after) { routine.ex = structuredClone(before); return }
+    routine.ex.splice(Math.min(i, routine.ex.length), 0, structuredClone(before[i]))
+    cleanupSg(routine.ex)
+  })
+  return true
 }
 
 export default function RoutineEdit() {
@@ -403,6 +442,7 @@ export default function RoutineEdit() {
   const inSS = new Set(units.filter(u => u.length > 1).flat())
   const profile = activeProfile(S)
   const missingCount = profile ? r.ex.filter(e => !exAvailable(S, exOr(e.id))).length : 0
+  const swipe = workoutControls(S).swipeSets
 
   return <div className="narrow">
     <div className="hdr">
@@ -462,22 +502,20 @@ export default function RoutineEdit() {
       const leavesUp = inSS.has(i) && !linkedPrev
       const leavesDown = inSS.has(i) && r.ex[i + 1]?.sg !== e.sg
       const isDragging = reorder.drag && i >= reorder.drag.first && i <= reorder.drag.last
-      return <div key={i} data-routine-row data-ex-index={i}
-        className={'routine-drag-row' + (isDragging ? ' is-dragging' : '')}
-        style={isDragging ? { transform: `translate3d(0, ${reorder.drag.deltaY}px, 0)` } : undefined}>
-        {unitFirst.has(i) && <div className="ss-label"><Icon name="link" />{t('Superset')}</div>}
-        <SwipeToDelete className={'item' + (inSS.has(i) ? ' in-ss' : '')}
-          deleteLabel={t('Remove from routine')}
-          onDelete={() => edit(x => { x.splice(i, 1); cleanupSg(x) })}
-          onClick={() => {
-            exConfigSheet(ex, e, cfg => edit(x => { x[i] = { id: x[i].id, sg: x[i].sg, ...cfg } }), () => edit(x => { x.splice(i, 1); cleanupSg(x) }), r, null, () => replace(i))
-          }}>
+      const removeHere = () => removeRoutineExercise(id, i)
+      // A tap anywhere on the row opens the exercise's sheet; its Remove is the keyboard's way
+      // to take it out. The row itself is no button (it holds the link and Move buttons, which a
+      // screen reader would lose inside one): the name is, a real <button> a click bubbles up
+      // from. The long press treats it as the row (data-row-open, useRoutineReorder).
+      const item = <div className={'item' + (inSS.has(i) ? ' in-ss' : '')} onClick={() => {
+          exConfigSheet(ex, e, cfg => edit(x => { x[i] = { id: x[i].id, sg: x[i].sg, ...cfg } }), removeHere, r, null, () => replace(i))
+        }}>
           {/* Shown on pointer devices only (index.css .routine-grip); the Move buttons and the
               long press stay the way in for a keyboard and a finger. */}
           <span className="routine-grip" data-drag-handle aria-hidden="true" title={t('Reorder exercises')}><Icon name="grip" /></span>
           <Thumb ex={ex} />
-          <div className="grow"><div className={`tt ${exerciseNameClass(ex)}`}>{exerciseNameFor(ex)}</div><div className="ss">{exLine(e, S.unit, speedUnitOf(S))}</div>
-            {e.note && <div className="small dim" style={{ marginTop: 2 }}>{e.note}</div>}</div>
+          <button type="button" className="grow item-open" data-row-open><span className={`tt ${exerciseNameClass(ex)}`}>{exerciseNameFor(ex)}</span><span className="ss">{exLine(e, S.unit, speedUnitOf(S))}</span>
+            {e.note && <span className="small dim" style={{ marginTop: 2 }}>{e.note}</span>}</button>
           {noEquip && <span className="tag" style={{ color: 'var(--orange)', borderColor: 'var(--orange)' }} title={t('Needs {0}, which isn’t in your active profile', t(ex.eq))}><Icon name="warning" /></span>}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 2, flex: 'none', alignItems: 'center' }}>
             {i > 0 && <button className={'iconbtn' + (linkedPrev ? ' on-ss' : '')} title={t('Superset with exercise above')} style={{ width: 32, height: 28, borderRadius: 8, fontSize: 15 }} onClick={ev => { ev.stopPropagation(); toggleLink(i) }}><Icon name="link" /></button>}
@@ -486,7 +524,19 @@ export default function RoutineEdit() {
               <button className="iconbtn" aria-label={t('Move down')} title={leavesDown ? t('Move out of the superset') : t('Move down')} disabled={!moveRoutineEntry(r.ex, i, 1)} style={{ width: 28, height: 24, borderRadius: 7, fontSize: 12 }} onClick={ev => { ev.stopPropagation(); move(i, 1) }}><Icon name="chevronDown" /></button>
             </div>
           </div>
-        </SwipeToDelete>
+        </div>
+      return <div key={i} data-routine-row data-ex-index={i}
+        className={'routine-drag-row' + (isDragging ? ' is-dragging' : '')}
+        style={isDragging ? { transform: `translate3d(0, ${reorder.drag.deltaY}px, 0)` } : undefined}>
+        {unitFirst.has(i) && <div className="ss-label"><Icon name="link" />{t('Superset')}</div>}
+        {/* Swipe (v1.3.11, Settings → Swipe actions): toward the start takes the exercise out,
+            with an Undo; nothing on the other side. The long press still picks the row up to
+            reorder it (a press that has lifted keeps the swipe out), and the row's sheet keeps
+            Remove for a keyboard. Rows are keyed by index, so the row shuts when the count changes. */}
+        {swipe
+          ? <SwipeRow className="swrow-item" deleteLabel={t('Remove')} deleteIcon="minus" closeKey={r.ex.length}
+            canSwipe={() => !reorder.lifted()} onDelete={removeHere}>{item}</SwipeRow>
+          : item}
       </div>
     })}{reorder.drag && <div className="routine-drop-indicator" data-testid="routine-drop-indicator"
       aria-hidden="true" style={{ top: `${reorder.drag.indicatorTop}px` }} />}</div> : <div className="empty"><div className="ico"><Icon name="dumbbell" /></div>{t('No exercises yet. Add your first one!')}</div>}

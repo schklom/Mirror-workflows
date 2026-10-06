@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { scheduleModeOf, queueRecovery, rotationIds, startPass, saveRotation, startNewPass, stopPass, refillAfter, chooseRotation, chooseFixedWeek } from './rotation.js'
+import { scheduleModeOf, queueRecovery, rotationIds, startPass, saveRotation, startNewPass, stopPass, refillAfter, refillIfComplete, chooseRotation, chooseFixedWeek } from './rotation.js'
 import { queueNext, queueRemaining, queueView } from './queue.js'
 import { effectiveRoutineIds } from './history.js'
 
@@ -379,5 +379,29 @@ describe('the How you train switch Plan and Settings share', () => {
     chooseFixedWeek(s, TODAY)
     expect(s.queue.ids).toEqual(['a', 'b'])
     expect(s.scheduleMode).toBe('week')
+  })
+})
+
+describe('a complete managed pass left behind by a sync merge', () => {
+  const managed = (ids, workouts, over = {}) => S({
+    rotation: { id: 'r1', sequence: ['a', 'b', 'c'], label: 'My split' },
+    queue: pass(ids, { rotationId: 'r1' }),
+    workouts, ...over,
+  })
+
+  it('refills from the latest workout that credited it', () => {
+    // the phone's refill lost to the desktop's older queue: the pass is complete, nothing refilled it
+    const s = managed(['a', 'b', 'c'], [w('a', '2026-09-10'), w('c', '2026-09-11'), w('b', TODAY)])
+    expect(refillIfComplete(s, TODAY, NOW)).toBe(true)
+    expect(s.queue).toEqual({ ids: ['c', 'a', 'b'], since: NOW, startsOn: '2026-09-13', label: 'My split', rotationId: 'r1' })
+  })
+
+  it('leaves an incomplete pass, a planner queue and no queue alone', () => {
+    const open = managed(['a', 'b', 'c'], [w('a', TODAY)])
+    expect(refillIfComplete(open, TODAY, NOW)).toBe(false)
+    expect(open.queue.ids).toEqual(['a', 'b', 'c'])
+    const planner = managed(['a', 'b', 'c'], [w('a', '2026-09-10'), w('b', '2026-09-11'), w('c', TODAY)], { queue: pass(['a', 'b', 'c']) })
+    expect(refillIfComplete(planner, TODAY, NOW)).toBe(false)
+    expect(refillIfComplete(S(), TODAY, NOW)).toBe(false)
   })
 })

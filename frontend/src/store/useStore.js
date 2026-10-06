@@ -7,6 +7,7 @@ import { DEMO, DEMO_SEEDED } from '../lib/demo.js'
 import { rememberDefaultLang } from '../lib/default-lang.js'
 import { guestAllowed } from '../lib/guest.js'
 import { MOBILE, initReminderSync, nativeLoad, nativeSave, onAppActive, readJsonFile, syncReminder, writeAutoBackup, writeJsonFile } from '../lib/mobile.js'
+import { refillIfComplete } from '../lib/rotation.js'
 import { mergeStates, localExtras, stampRoutines, stampCustomEx, stampDeletions, stampEdits, inUnitOf, keepReset, resetIdsOf, mergeResetIds, entryKey } from '../lib/sync-merge.js'
 import { convertStateUnit } from '../lib/units.js'
 import { pendingRefCount, settleMedia, loadPending } from '../lib/media-owed.js'
@@ -522,6 +523,10 @@ export const useStore = create((set, get) => {
     const ts = metaOf().base?.ts || 0
     const merged = Object.assign(clone(DEF), mergeStates(local, remote))
     merged.active = carryActive(local, merged)
+    // A pass of this app's rotation that the merge left complete (each copy finished a session of
+    // it, or one copy's refill lost to the other's older queue) starts its next pass here, as the
+    // finish that completed it would have (lib/rotation.js).
+    if (refillIfComplete(merged)) merged.edited = { ...(merged.edited || {}), queue: Date.now() }
     persist(merged, false)
     if (rev == null) dropSync()
     else writeSync(rev, ts)

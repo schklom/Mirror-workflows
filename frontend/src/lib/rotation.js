@@ -213,3 +213,19 @@ export function refillAfter(s, w, today = todayISO(), now = Date.now()) {
   s.queue = newPass(rotate(seq, last), s.rotation.label || '', s.rotation.id, dayAfter(bound), sinceAfter(s, q, now))
   return true
 }
+
+/**
+ * A complete pass this app manages, refilled as the finish that completed it would have
+ * (refillAfter), taking the latest workout that credited it as that finish. For a copy that
+ * reached this state without a finish on this device: a sync merge that took both devices'
+ * sessions of the pass, or kept the other copy's queue over this one's refill. Returns true when
+ * it refilled; anything else (no managed pass, an incomplete one) is left alone.
+ */
+export function refillIfComplete(s, today = todayISO(), now = Date.now()) {
+  const q = queueOf(s)
+  if (!q?.rotationId || !s.rotation?.id || q.rotationId !== s.rotation.id) return false
+  if (!queueView(s, today)?.complete) return false
+  const last = creditWindow(s, q)
+    .sort((x, y) => (x.d === y.d ? (x.start || 0) - (y.start || 0) : x.d < y.d ? -1 : 1)).at(-1)
+  return last ? refillAfter(s, last, today, now) : false
+}

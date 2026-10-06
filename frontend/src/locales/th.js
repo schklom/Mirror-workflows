@@ -1593,6 +1593,7 @@ export default {
   'That file is too big. Max {0} MB.': 'ไฟล์ใหญ่เกินไป สูงสุด {0} MB',
   'That video is too long. Max {0} seconds.': 'วิดีโอยาวเกินไป สูงสุด {0} วินาที',
   'That photo is too large to process on this device.': 'รูปนี้ใหญ่เกินกว่าจะประมวลผลบนอุปกรณ์นี้ได้',
+  'You’re offline. Try again once you’re back online.': 'ตอนนี้ออฟไลน์อยู่ ลองอีกครั้งเมื่อกลับมาออนไลน์นะ',
   'This browser cannot read that file.': 'เบราว์เซอร์นี้อ่านไฟล์นั้นไม่ได้',
   'There is no room left on this device for that file.': 'อุปกรณ์นี้ไม่มีพื้นที่เหลือสำหรับไฟล์นั้น',
   'This video may not play on every device. MP4 (H.264) plays everywhere.': 'วิดีโอนี้อาจเล่นไม่ได้ในบางอุปกรณ์ MP4 (H.264) เล่นได้ทุกที่',

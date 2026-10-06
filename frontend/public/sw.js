@@ -35,6 +35,12 @@ const MEDIA_GUESS_BYTES = 64 * 1024
 const MEDIA_TRIM_EVERY = 20
 const isMediaPath = p => p.includes('/img/') || p.includes('/gif/')
 
+// The code the app loads only when it needs it (the photo and video ingest, the QR reader...),
+// listed by the build (vite.config.js, scripts/sw-stamp.mjs). Without it the first photo added
+// offline after an update had no ingest to run. Unstamped (a dev server, a test) it is empty.
+const LAZY = '__LAZY__'
+const lazyAssets = () => { try { const a = JSON.parse(LAZY); return Array.isArray(a) ? a : [] } catch { return [] } }
+
 // What the shell needs to boot without a network: index.html plus every script/style/icon it
 // references. Read from the served index.html so the list follows the build, not a hand-kept
 // manifest that would go stale the first time a chunk is renamed.
@@ -68,6 +74,14 @@ async function precache() {
     await c.put(u, r)
   }))
   await Promise.all(refs.filter(u => !code.includes(u)).map(u => c.add(u).catch(() => {})))
+  // Best effort, like the icons: a chunk missing here is fetched when it is needed, as before, and
+  // must not keep a working build from installing. Fetched by hand for the same redirect reason.
+  await Promise.all(lazyAssets().filter(u => !code.includes(u)).map(async u => {
+    try {
+      const r = await fetch(u, { cache: 'no-cache' })
+      if (r.ok && !r.redirected) await c.put(u, r)
+    } catch { /* fetched on demand instead */ }
+  }))
   // The shell goes in last, so activate's guard — an index.html in THIS build's cache — means the
   // whole shell is there rather than just its first file.
   await c.put('index.html', new Response(html, { headers: { 'content-type': 'text/html; charset=utf-8' } }))

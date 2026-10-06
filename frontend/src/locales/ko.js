@@ -1582,6 +1582,7 @@ export default {
   'That file is too big. Max {0} MB.': '파일이 너무 큽니다. 최대 {0} MB.',
   'That video is too long. Max {0} seconds.': '동영상이 너무 깁니다. 최대 {0}초.',
   'That photo is too large to process on this device.': '이 사진은 이 기기에서 처리하기에 너무 큽니다.',
+  'You’re offline. Try again once you’re back online.': '오프라인 상태예요. 다시 연결되면 한 번 더 해 보세요.',
   'This browser cannot read that file.': '이 브라우저는 해당 파일을 읽을 수 없습니다.',
   'There is no room left on this device for that file.': '이 기기에 해당 파일을 저장할 공간이 없습니다.',
   'This video may not play on every device. MP4 (H.264) plays everywhere.': '이 동영상은 일부 기기에서 재생되지 않을 수 있어요. MP4(H.264)는 어디서나 재생돼요.',

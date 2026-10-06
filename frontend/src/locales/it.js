@@ -1582,6 +1582,7 @@ export default {
   'That file is too big. Max {0} MB.': 'Il file è troppo grande. Massimo {0} MB.',
   'That video is too long. Max {0} seconds.': 'Il video è troppo lungo. Massimo {0} secondi.',
   'That photo is too large to process on this device.': 'Questa foto è troppo grande per essere elaborata su questo dispositivo.',
+  'You’re offline. Try again once you’re back online.': 'Sei offline. Riprova appena torni online.',
   'This browser cannot read that file.': 'Questo browser non riesce a leggere il file.',
   'There is no room left on this device for that file.': 'Su questo dispositivo non c’è più spazio per il file.',
   'This video may not play on every device. MP4 (H.264) plays everywhere.': 'Questo video potrebbe non funzionare su tutti i dispositivi. L’MP4 (H.264) funziona ovunque.',

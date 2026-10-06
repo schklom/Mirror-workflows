@@ -948,6 +948,7 @@ export const PT_BR_OVERRIDES = {
   'That file is too big. Max {0} MB.': 'Esse arquivo é grande demais. Máximo de {0} MB.',
   'That video is too long. Max {0} seconds.': 'Esse vídeo é longo demais. Máximo de {0} segundos.',
   'That photo is too large to process on this device.': 'Essa foto é grande demais para ser processada neste dispositivo.',
+  'You’re offline. Try again once you’re back online.': 'Você está offline. Tente de novo quando a conexão voltar.',
   'This browser cannot read that file.': 'Este navegador não consegue ler esse arquivo.',
   'There is no room left on this device for that file.': 'Não há mais espaço neste dispositivo para esse arquivo.',
   'This video may not play on every device. MP4 (H.264) plays everywhere.': 'Este vídeo pode não rodar em todos os dispositivos. MP4 (H.264) roda em qualquer lugar.',

@@ -1572,6 +1572,7 @@ export default {
   'That file is too big. Max {0} MB.': 'Файл завеликий. Максимум {0} МБ.',
   'That video is too long. Max {0} seconds.': 'Відео задовге. Максимум {0} секунд.',
   'That photo is too large to process on this device.': 'Це фото завелике, щоб обробити його на цьому пристрої.',
+  'You’re offline. Try again once you’re back online.': 'Ти офлайн. Спробуй ще раз, коли з’явиться інтернет.',
   'This browser cannot read that file.': 'Цей браузер не може прочитати файл.',
   'There is no room left on this device for that file.': 'На цьому пристрої не залишилося місця для цього файлу.',
   'This video may not play on every device. MP4 (H.264) plays everywhere.': 'Це відео може не відтворюватися на всіх пристроях. MP4 (H.264) працює скрізь.',

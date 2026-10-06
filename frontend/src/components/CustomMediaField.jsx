@@ -39,9 +39,16 @@ export function mediaErrorText(e) {
     case 'too-large': return t('That file is too big. Max {0} MB.', fmtMB(e.mb))
     case 'too-long': return t('That video is too long. Max {0} seconds.', e.sec)
     case 'photo-too-big': return t('That photo is too large to process on this device.')
+    case 'offline': return t('You’re offline. Try again once you’re back online.')
     default: return t('This browser cannot read that file.')
   }
 }
+
+// The ingest is split off and loaded on first use. A failed load is not remembered here, so the
+// next pick (back online) tries again.
+const loadIngest = () => import('../lib/media-ingest.js').catch(() => {
+  throw Object.assign(new Error('media ingest did not load'), { code: 'offline' })
+})
 
 const KIND_ICON = { image: 'image', gif: 'play', video: 'play' }
 
@@ -82,7 +89,8 @@ export function useMediaPicker() {
     setWarning(null)
     try {
       // The ingest (decoders, canvas, the MP4 walk) only loads when someone picks a file.
-      const { ingestMediaFile } = await import('../lib/media-ingest.js')
+      // Offline before that code was ever cached, the load fails: that is no fault of the file.
+      const { ingestMediaFile } = await loadIngest()
       const out = await ingestMediaFile(file, limitsFrom(config))
       for (const b of out.blobs) await mediaStore.put(b.hash, b.blob, { mime: b.mime, pending: true })
       // A guest's or a local phone's copy is the only one: ask the browser not to evict it under

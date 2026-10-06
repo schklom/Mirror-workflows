@@ -1628,6 +1628,7 @@ export default {
   'That file is too big. Max {0} MB.': 'هذا الملف كبير جدًا. الحد الأقصى {0} م.ب.',
   'That video is too long. Max {0} seconds.': 'هذا الفيديو طويل جدًا. الحد الأقصى {0} ثانية.',
   'That photo is too large to process on this device.': 'هذه الصورة أكبر من أن تُعالَج على هذا الجهاز.',
+  'You’re offline. Try again once you’re back online.': 'أنت غير متصل بالإنترنت. حاول مجددًا عند عودة الاتصال.',
   'This browser cannot read that file.': 'لا يستطيع هذا المتصفح قراءة ذلك الملف.',
   'There is no room left on this device for that file.': 'لم تعد هناك مساحة على هذا الجهاز لذلك الملف.',
   'This video may not play on every device. MP4 (H.264) plays everywhere.': 'قد لا يعمل هذا الفيديو على كل الأجهزة. صيغة MP4 (H.264) تعمل في كل مكان.',

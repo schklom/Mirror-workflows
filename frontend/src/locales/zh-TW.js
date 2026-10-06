@@ -1566,6 +1566,7 @@ export default {
   'That file is too big. Max {0} MB.': '檔案太大了。上限 {0} MB。',
   'That video is too long. Max {0} seconds.': '影片太長了。最長 {0} 秒。',
   'That photo is too large to process on this device.': '照片解析度過大，無法在此裝置上進行運算處理。',
+  'You’re offline. Try again once you’re back online.': '目前離線。等網路恢復後再試一次。',
   'This browser cannot read that file.': '此瀏覽器無法讀取該檔案。',
   'There is no room left on this device for that file.': '此裝置可用儲存空間已不足以存放該檔案。',
   'This video may not play on every device. MP4 (H.264) plays everywhere.': '此影片可能無法在所有裝置上播放。MP4（H.264）到哪都能播。',

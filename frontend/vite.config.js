@@ -4,6 +4,7 @@ import { join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { lazyAssets, stampSw } from './scripts/sw-stamp.mjs'
 
 const backend = process.env.API_TARGET || 'http://127.0.0.1:3000'
 // The API refuses a state-changing request that a browser sent from anywhere other than its own
@@ -38,16 +39,20 @@ const umami = {
 // stamp is a hash of the built index.html — it changes exactly when the bundle does.
 // The directory is the one this build wrote to (`--outDir` included), not a fixed ./dist/: a
 // build into a private outDir left `__BUILD__` unstamped in its sw.js.
+// The worker also gets the build's code that loads on demand (`__LAZY__`, scripts/sw-stamp.mjs),
+// so it is there offline before the page has ever needed it.
 let outDir = fileURLToPath(new URL('./dist/', import.meta.url))
+let lazy = []
 const swStamp = {
   name: 'opengym-sw-stamp',
   apply: 'build',
   configResolved(config) { outDir = resolve(config.root, config.build.outDir) },
+  generateBundle(_, bundle) { lazy = lazyAssets(bundle) },
   closeBundle() {
     const html = join(outDir, 'index.html'), sw = join(outDir, 'sw.js')
     if (!existsSync(html) || !existsSync(sw)) return
     const stamp = createHash('sha256').update(readFileSync(html)).digest('hex').slice(0, 10)
-    writeFileSync(sw, readFileSync(sw, 'utf8').replace('__BUILD__', stamp))
+    writeFileSync(sw, stampSw(readFileSync(sw, 'utf8'), { stamp, lazy }))
   }
 }
 

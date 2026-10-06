@@ -1582,6 +1582,7 @@ export default {
   'That file is too big. Max {0} MB.': 'Bu dosya çok büyük. En fazla {0} MB.',
   'That video is too long. Max {0} seconds.': 'Bu video çok uzun. En fazla {0} saniye.',
   'That photo is too large to process on this device.': 'Bu fotoğraf bu cihazda işlenemeyecek kadar büyük.',
+  'You’re offline. Try again once you’re back online.': 'Çevrimdışısın. İnternet gelince tekrar dene.',
   'This browser cannot read that file.': 'Bu tarayıcı bu dosyayı okuyamıyor.',
   'There is no room left on this device for that file.': 'Bu cihazda bu dosya için yer kalmadı.',
   'This video may not play on every device. MP4 (H.264) plays everywhere.': 'Bu video her cihazda oynamayabilir. MP4 (H.264) her yerde oynar.',

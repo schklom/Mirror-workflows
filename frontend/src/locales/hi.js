@@ -1582,6 +1582,7 @@ export default {
   'That file is too big. Max {0} MB.': 'यह फ़ाइल बहुत बड़ी है। अधिकतम {0} MB।',
   'That video is too long. Max {0} seconds.': 'यह वीडियो बहुत लंबा है। अधिकतम {0} सेकंड।',
   'That photo is too large to process on this device.': 'यह फ़ोटो इस डिवाइस पर प्रोसेस करने के लिए बहुत बड़ी है।',
+  'You’re offline. Try again once you’re back online.': 'आप ऑफ़लाइन हैं। इंटरनेट वापस आने पर फिर से कोशिश करें।',
   'This browser cannot read that file.': 'यह ब्राउज़र उस फ़ाइल को नहीं पढ़ सकता।',
   'There is no room left on this device for that file.': 'इस डिवाइस पर उस फ़ाइल के लिए जगह नहीं बची है।',
   'This video may not play on every device. MP4 (H.264) plays everywhere.': 'यह वीडियो शायद हर डिवाइस पर न चले। MP4 (H.264) हर जगह चलता है।',

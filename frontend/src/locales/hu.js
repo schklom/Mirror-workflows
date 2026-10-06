@@ -1585,6 +1585,7 @@ export default {
   'That file is too big. Max {0} MB.': 'Ez a fájl túl nagy. Legfeljebb {0} MB.',
   'That video is too long. Max {0} seconds.': 'Ez a videó túl hosszú. Legfeljebb {0} másodperc.',
   'That photo is too large to process on this device.': 'Ez a fotó túl nagy ahhoz, hogy ezen az eszközön feldolgozható legyen.',
+  'You’re offline. Try again once you’re back online.': 'Nincs internetkapcsolat. Próbáld újra, ha újra van net.',
   'This browser cannot read that file.': 'Ez a böngésző nem tudja beolvasni a fájlt.',
   'There is no room left on this device for that file.': 'Ezen az eszközön nincs már hely ehhez a fájlhoz.',
   'This video may not play on every device. MP4 (H.264) plays everywhere.': 'Lehet, hogy ez a videó nem minden eszközön játszható le. Az MP4 (H.264) mindenhol megy.',

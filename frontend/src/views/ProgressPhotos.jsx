@@ -108,7 +108,9 @@ function ProgressCompare({ a, b, close }) {
       <span className="mviewer-count">{days > 0 ? tn('{0} day apart', '{0} days apart', days) : t('Same day')}</span>
       <span style={{ width: 36 }} />
     </div>
-    <div className="pp-compare" ref={stageRef} data-swipe-ignore
+    {/* A photo has no reading direction: before stays on the left and the finger drives the
+        handle the same way in Arabic, so the stage is ltr like DurationWheel's wheel. */}
+    <div className="pp-compare" dir="ltr" ref={stageRef} data-swipe-ignore
       onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={endDrag} onPointerCancel={endDrag}>
       {after.url && <img className="pp-img" src={after.url} alt="" draggable={false} />}
       {before.url && <img className="pp-img" src={before.url} alt="" draggable={false}

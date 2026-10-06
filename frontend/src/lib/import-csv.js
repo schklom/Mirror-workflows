@@ -344,6 +344,8 @@ const effortNum = (raw, zeroMeansRated) => {
   return Math.min(10, Math.round(n * 100) / 100)
 }
 const LB_TO_KG = 0.45359237
+// Past these a cell is broken, not a record (the heaviest lifts ever logged stay well under).
+const MAX_KG = 2000, MAX_REPS = 1000, MAX_KM = 1000, MAX_BODY_KG = 650
 const p2 = n => String(n).padStart(2, '0')
 // Month names as the exporting app wrote them. Hevy and Strong localize the date on every
 // row to the language the app was set to, so an English-only table silently dropped seven
@@ -377,14 +379,14 @@ const monthOf = w => {
 export function parseWhen(s) {
   const v = String(s || '').trim()
   let m = v.match(/^(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})(?:[T ](\d{1,2}):(\d{2}))?/)
-  if (m) return { d: `${m[1]}-${p2(m[2])}-${p2(m[3])}`, t: hm(m[4], m[5]) }
+  if (m) return calendarDay(m[1], m[2], m[3], m[4], m[5])
   // \p{L} rather than [A-Za-z]: the month word carries an accent in most languages.
   m = v.match(/^(\d{1,2})\s+(\p{L}{3,})\.?\s+(\d{4})(?:,?\s+(\d{1,2}):(\d{2}))?/u)
   let mon = m && monthOf(m[2])
-  if (mon) return { d: `${m[3]}-${p2(mon)}-${p2(m[1])}`, t: hm(m[4], m[5]) }
+  if (mon) return calendarDay(m[3], mon, m[1], m[4], m[5])
   m = v.match(/^(\p{L}{3,})\.?\s+(\d{1,2}),?\s+(\d{4})(?:,?\s+(\d{1,2}):(\d{2}))?/u)
   mon = m && monthOf(m[1])
-  if (mon) return { d: `${m[3]}-${p2(mon)}-${p2(m[2])}`, t: hm(m[4], m[5]) }
+  if (mon) return calendarDay(m[3], mon, m[2], m[4], m[5])
   // Day-first when ambiguous: FitNotes/Strong/Hevy all write unambiguous dates, so a
   // bare numeric one came through a spreadsheet, and those are usually European.
   m = v.match(/^(\d{1,2})[/.](\d{1,2})[/.](\d{4})(?:[, ]+(\d{1,2}):(\d{2}))?/)
@@ -392,7 +394,7 @@ export function parseWhen(s) {
     const [, a, b, y] = m
     const day = +a > 12 ? a : +b > 12 ? b : a
     const mon = day === a ? b : a
-    return { d: `${y}-${p2(mon)}-${p2(day)}`, t: hm(m[4], m[5]) }
+    return calendarDay(y, mon, day, m[4], m[5])
   }
   return null
 }
@@ -400,6 +402,19 @@ export function parseWhen(s) {
 export const daysBetween = (a, b) => {
   const n = (Date.UTC(+b.slice(0, 4), +b.slice(5, 7) - 1, +b.slice(8, 10)) - Date.UTC(+a.slice(0, 4), +a.slice(5, 7) - 1, +a.slice(8, 10))) / 86400000
   return isFinite(n) && n > 0 && n < 2 ? n : 0
+}
+// A date only counts when it is one: a real calendar day (no 31 February, no month 13), not
+// before 1900 and not in the future. A day of slack covers a file written in a time zone
+// ahead of this one. Anything else is a broken cell, and filed as a workout it would sit
+// in the history as "Invalid Date" or a session from the year 9999.
+function calendarDay(y, mo, d, h, mi) {
+  y = +y; mo = +mo; d = +d
+  const at = new Date(Date.UTC(y, mo - 1, d))
+  if (y < 1900 || at.getUTCFullYear() !== y || at.getUTCMonth() !== mo - 1 || at.getUTCDate() !== d) return null
+  if (h !== undefined && (+h > 23 || +mi > 59)) return null
+  const now = new Date()
+  if (at.getTime() > Date.UTC(now.getFullYear(), now.getMonth(), now.getDate() + 1)) return null
+  return { d: `${y}-${p2(mo)}-${p2(d)}`, t: hm(h, mi) }
 }
 const hm = (h, mi) => (h === undefined ? null : (parseInt(h, 10) || 0) * 3600000 + (parseInt(mi, 10) || 0) * 60000)
 
@@ -484,6 +499,10 @@ export function parseWorkoutCSV(text, { unit = 'kg' } = {}) {
         ? toKm(cell(r, 'distanceM'), 'm')
         : toKm(cell(r, 'distance'), cell(r, 'distanceUnit'))
     if (!w && !reps && !mins && !km) { skipped++; continue }
+    // Nobody lifts a negative weight or 2 t, nor does 1,000 reps in a set; a cell like that is
+    // broken, and kept it would show as an infinite PR or a NaN chart. Skip the row, say so.
+    const maxW = rowUnit === 'lb' || (!rowUnit && unit === 'lb') ? MAX_KG / LB_TO_KG : MAX_KG
+    if (w < 0 || reps < 0 || secs < 0 || mins < 0 || km < 0 || w > maxW || reps > MAX_REPS || mins > 24 * 60 || km > MAX_KM) { skipped++; continue }
     const warmup = /warm/i.test(cell(r, 'setType'))
     if (warmup) warmups++
 
@@ -657,7 +676,7 @@ export function parseBodyweight(text, { unit = 'kg' } = {}) {
       // `[\d.]+` lets a bare "." through, which parseFloat reads as NaN, and a zeroed record is
       // no weigh-in either — the same gate the CSV branch below applies with `!w`.
       const w = parseFloat(val[1])
-      if (!isFinite(w) || !w) continue
+      if (!isFinite(w) || !w || !bodyOk(w, fileUnit || unit)) continue
       out.set(when.d, { w, t: new Date(dt[1]).getTime() || null })
     }
   } else {
@@ -673,7 +692,7 @@ export function parseBodyweight(text, { unit = 'kg' } = {}) {
     for (let i = 1; i < rows.length; i++) {
       const when = parseWhen(String(rows[i][dCol] ?? ''))
       const w = num(rows[i][wCol])
-      if (!when || !w) continue
+      if (!when || !w || !bodyOk(w, fileUnit || unit)) continue
       out.set(when.d, { w, t: new Date(when.d).getTime() + (when.t ?? 0) })
     }
   }
@@ -690,6 +709,9 @@ export function parseBodyweight(text, { unit = 'kg' } = {}) {
     fileUnit, converted, from: dates[0], to: dates[dates.length - 1],
   }
 }
+
+/** A weigh-in a person could have: above zero and below MAX_BODY_KG in the given unit. */
+const bodyOk = (w, u) => w > 0 && w <= (u === 'lb' ? MAX_BODY_KG / LB_TO_KG : MAX_BODY_KG)
 
 /** Sniff the file and parse it as whatever it is. */
 export function parseImport(text, opts) {

@@ -82,8 +82,8 @@ describe('numbers that are not numbers', () => {
     expect(one({ w: '"52,5"', u: 'kg', r: 5 }).workouts[0].entries[0].sets[0].w).toBe(52.5)
   })
 
-  it('reps: a billion is kept, text is 0', () => {
-    expect(one({ w: 50, u: 'kg', r: '1e9' }).workouts[0].entries[0].sets[0].r).toBe(1e9)
+  it('reps: a billion is a broken cell and skipped, text is 0', () => {
+    expect(one({ w: 50, u: 'kg', r: '1e9' })).toMatchObject({ workouts: [], skipped: 1 })
     expect(one({ w: 50, u: 'kg', r: 'ten' }).workouts[0].entries[0].sets[0].r).toBe(0)
   })
 
@@ -232,7 +232,7 @@ describe('mergeImport adds and never overwrites', () => {
 
   it('weigh-ins: existing days win and the list stays sorted', () => {
     const S = state()
-    const p = parseImport('Date,Weight (kg)\n2024-03-07,999\n2024-03-05,79\n2024-03-09,81', kg)
+    const p = parseImport('Date,Weight (kg)\n2024-03-07,99\n2024-03-05,79\n2024-03-09,81', kg)
     expect(p.kind).toBe('bodyweight')
     expect(mergeImport(S, p)).toEqual({ added: 2, skipped: 1 })
     expect(S.bodyweight.map(b => [b.d, b.w])).toEqual([['2024-03-05', 79], ['2024-03-07', 80], ['2024-03-09', 81]])

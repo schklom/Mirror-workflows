@@ -35,7 +35,7 @@ describe('the import summary’s dates', () => {
   afterEach(() => { if (root) act(() => root.unmount()); root = null; document.body.innerHTML = '' })
 
   it('carry the year when the history spans two years', async () => {
-    const text = await summaryFor(csv('2025-02-03', '2026-12-21'))
+    const text = await summaryFor(csv('2025-02-03', '2026-01-21'))
     expect(text).toContain('2025')
     expect(text).toContain('2026')
   })

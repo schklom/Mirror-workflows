@@ -5,7 +5,7 @@ import { vibrate } from './sound.js'
 // toward the start of the line (left in a left-to-right language, right in Arabic) deletes, toward
 // the end copies. A short swipe leaves the row open on a button; a long one, or a flick, acts on
 // release. Everything below is in that logical sense: a negative offset is toward the start and
-// is turned into pixels only when painted, the way SwipeToDelete and SwipeCards do it.
+// is turned into pixels only when painted, the way SwipeCards does it.
 //
 // The row is almost all controls (the set number, the steppers, the value fields, the tick), so a
 // swipe may start on any of them, and a tap must still be a tap. Nothing is captured until the
@@ -19,6 +19,10 @@ import { vibrate } from './sound.js'
 // that, so the zone costs almost no row.
 //
 // Mouse drags are not swipes: a desktop has the set-number menu and the keyboard.
+//
+// Plan's lists use the same gesture (v1.3.11): routines (delete, duplicate), the loop and a
+// routine's exercises (remove only). A row with nothing on the end side (`canCopy` false) only
+// gives a short rubber band that way, so it still feels alive but never shows an empty pane.
 
 export const EDGE = 24
 export const SLOP = 8
@@ -31,6 +35,8 @@ export const COPY_AT = 0.4
 export const COPY_FLING_AT = 0.25
 export const FLING = 0.5
 export const RESIST = 0.35
+/** How far a row with no end-side action gives toward the end before it stops. */
+export const BAND = 14
 const PEEK = 32
 
 /** +1 in a left-to-right page, -1 in a right-to-left one: logical offset × this = pixels. */
@@ -47,7 +53,8 @@ export function axisOf(dx, dy) {
 
 /** Where the row sits for a raw logical drag `raw` on a row `w` wide: with the finger up to the
  *  commit point, then at a third of the pace beyond it, never past the row's own width. */
-export function shapeOffset(raw, w) {
+export function shapeOffset(raw, w, canCopy = true) {
+  if (raw > 0 && !canCopy) return Math.min(BAND, raw * RESIST)
   const at = (raw < 0 ? DELETE_AT : COPY_AT) * w
   const d = Math.abs(raw)
   const out = d <= at ? d : at + (d - at) * RESIST
@@ -55,16 +62,17 @@ export function shapeOffset(raw, w) {
 }
 
 /** Whether an offset is past the commit point, i.e. letting go now acts. */
-export function armedFor(o, w) {
+export function armedFor(o, w, canCopy = true) {
   if (o < 0) return -o >= DELETE_AT * w - 0.5 ? 'delete' : null
-  if (o > 0) return o >= COPY_AT * w - 0.5 ? 'copy' : null
+  if (o > 0) return canCopy && o >= COPY_AT * w - 0.5 ? 'copy' : null
   return null
 }
 
 /** What letting go does, for a row resting at logical offset `o` on a row `w` wide, released at
  *  logical velocity `v` (px/ms): 'delete' | 'copy' act; 'open-delete' | 'open-copy' leave the row
- *  open on its button; 'close' snaps it shut. A flick back the other way always closes. */
-export function commitFor(o, w, v = 0) {
+ *  open on its button; 'close' snaps it shut. A flick back the other way always closes. A row
+ *  with no end-side action (`canCopy` false) only ever closes from that side. */
+export function commitFor(o, w, v = 0, canCopy = true) {
   if (o < 0) {
     const d = -o
     if (d >= DELETE_AT * w || (d >= DELETE_FLING_AT * w && -v > FLING)) return 'delete'
@@ -72,6 +80,7 @@ export function commitFor(o, w, v = 0) {
     return d >= OPEN_MIN ? 'open-delete' : 'close'
   }
   if (o > 0) {
+    if (!canCopy) return 'close'
     if (o >= COPY_AT * w || (o >= COPY_FLING_AT * w && v > FLING)) return 'copy'
     if (-v > FLING) return 'close'
     return o >= OPEN_MIN ? 'open-copy' : 'close'
@@ -138,8 +147,11 @@ function install() {
  * side and turns a delete into a rubber band and `onBlocked()`. `closeKey` closes the row whenever
  * it changes (the entry's rows were added or removed, a tick, a timer start: the row under the
  * finger may no longer be the set it was). `onStart` runs when a swipe locks (the hint chip goes).
+ * `canCopy` false is a delete-only row. `canSwipe()`, when given, is asked as a touch starts and
+ * again before it locks: false leaves the touch to someone else (the routine editor's long-press
+ * reorder, once it has picked a row up).
  */
-export function useSwipeRow({ canDelete = true, onCommit, onBlocked, onStart, closeKey }) {
+export function useSwipeRow({ canDelete = true, canCopy = true, canSwipe, onCommit, onBlocked, onStart, closeKey }) {
   const outerRef = useRef(null)
   const frontRef = useRef(null)
   const delRef = useRef(null)
@@ -152,7 +164,7 @@ export function useSwipeRow({ canDelete = true, onCommit, onBlocked, onStart, cl
   const anim = useRef(null)
   const [openSide, setOpenSide] = useState(null)
   const props = useRef({})
-  props.current = { canDelete, onCommit, onBlocked, onStart }
+  props.current = { canDelete, canCopy, canSwipe, onCommit, onBlocked, onStart }
 
   const later = (fn, ms) => { const id = setTimeout(fn, ms); timers.current.push(id); return id }
   const clearTimers = () => { timers.current.forEach(clearTimeout); timers.current = [] }
@@ -161,7 +173,8 @@ export function useSwipeRow({ canDelete = true, onCommit, onBlocked, onStart, cl
     const outer = outerRef.current, front = frontRef.current
     if (!outer || !front) return
     const w = outer.clientWidth || 1
-    const prevArmed = armedFor(o.current, w)
+    const copy = props.current.canCopy !== false
+    const prevArmed = armedFor(o.current, w, copy)
     o.current = off
     const tr = ms && !reducedMotion() ? `${ms}ms cubic-bezier(.32,.72,0,1)` : ''
     front.style.transition = tr ? `transform ${tr}` : 'none'
@@ -172,7 +185,7 @@ export function useSwipeRow({ canDelete = true, onCommit, onBlocked, onStart, cl
       pane.style.transition = tr ? `width ${tr}` : 'none'
       pane.style.width = width + 'px'
     }
-    const armed = armedFor(off, w)
+    const armed = armedFor(off, w, copy)
     del?.classList.toggle('armed', armed === 'delete')
     cp?.classList.toggle('armed', armed === 'copy')
     outer.classList.toggle('go-del', off < 0)
@@ -244,6 +257,7 @@ export function useSwipeRow({ canDelete = true, onCommit, onBlocked, onStart, cl
   }
 
   const doCopy = () => {
+    if (props.current.canCopy === false) { close(); return }
     if (shared.open?.el === outerRef.current) shared.open = null
     setOpenSide(null)
     vibrate(15)
@@ -256,7 +270,7 @@ export function useSwipeRow({ canDelete = true, onCommit, onBlocked, onStart, cl
   const release = v => {
     const outer = outerRef.current
     if (!outer) return
-    const act = commitFor(o.current, outer.clientWidth || 1, v)
+    const act = commitFor(o.current, outer.clientWidth || 1, v, props.current.canCopy !== false)
     if (act === 'delete') doDelete()
     else if (act === 'copy') doCopy()
     else if (act === 'open-delete') openTo('delete')
@@ -269,8 +283,9 @@ export function useSwipeRow({ canDelete = true, onCommit, onBlocked, onStart, cl
   useEffect(() => () => { clearTimers(); clearTimeout(peeking.current); anim.current?.cancel?.(); if (shared.open?.el === outerRef.current) shared.open = null }, [])
 
   // touchmove is attached by hand and not passive, so a locked sideways swipe can keep the page
-  // from scrolling under it on browsers that do not honour touch-action on the row (see the
-  // comment block in SwipeToDelete.jsx). Before the lock it does nothing.
+  // from scrolling under it on browsers that do not honour touch-action on the row: React's own
+  // touch handlers are passive, and on iOS Safari a touch that starts on a row is claimed for the
+  // page's scroll before a passive handler gets a say. Before the lock it does nothing.
   useEffect(() => {
     install()
     const el = outerRef.current
@@ -284,6 +299,7 @@ export function useSwipeRow({ canDelete = true, onCommit, onBlocked, onStart, cl
     if (busy.current || g.current) return
     if (e.pointerType !== 'touch' && e.pointerType !== 'pen') return
     if (e.target.closest?.('.subrow,.swpane')) return
+    if (props.current.canSwipe && !props.current.canSwipe()) return
     const width = typeof window !== 'undefined' ? window.innerWidth : 0
     if (width && inEdgeZone(e.clientX, width)) return
     // A real touch beats the first-use hint: it stops where it is and the row is the finger's
@@ -299,6 +315,7 @@ export function useSwipeRow({ canDelete = true, onCommit, onBlocked, onStart, cl
       const axis = axisOf(dx, dy)
       if (!axis) return
       if (axis === 'y') { g.current = null; return }
+      if (props.current.canSwipe && !props.current.canSwipe()) { g.current = null; return }
       d.lock = 'x'
       try { outerRef.current?.setPointerCapture?.(e.pointerId) } catch { /* the gesture still tracks */ }
       swallowNextClick()
@@ -313,7 +330,7 @@ export function useSwipeRow({ canDelete = true, onCommit, onBlocked, onStart, cl
     d.samples.push([now, logical])
     while (d.samples.length > 2 && now - d.samples[0][0] > 100) d.samples.shift()
     const w = outerRef.current?.clientWidth || 1
-    paint(Math.max(-w, Math.min(w, shapeOffset(d.o0 + logical, w))))
+    paint(Math.max(-w, Math.min(w, shapeOffset(d.o0 + logical, w, props.current.canCopy !== false))))
   }
   const end = (e, cancelled) => {
     const d = g.current
@@ -324,10 +341,11 @@ export function useSwipeRow({ canDelete = true, onCommit, onBlocked, onStart, cl
     release(cancelled ? 0 : velocityOf(d.samples))
   }
 
-  // The first-use hint: a nudge toward the start (red shows), back, toward the end, back.
+  // The first-use hint: a nudge toward the start (red shows), back, toward the end, back. A
+  // delete-only row nudges toward the start only.
   const peek = useCallback(() => {
     if (reducedMotion() || busy.current || peeking.current || g.current) return
-    const steps = [[-PEEK, 250], [0, 250], [PEEK, 250], [0, 250]]
+    const steps = [[-PEEK, 250], [0, 250], ...(props.current.canCopy === false ? [] : [[PEEK, 250], [0, 250]])]
     let k = 0
     const step = () => {
       if (k >= steps.length) { peeking.current = null; return }

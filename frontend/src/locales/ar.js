@@ -1980,4 +1980,10 @@ export default {
   'Swipe on sets': 'السحب على المجموعات',
   'Left deletes, right copies': 'لليمين حذف، لليسار نسخ',
   'Options: copy, remove': 'خيارات: نسخ، إزالة',
+  'Your own color': 'لونك الخاص',
+  'Pick your own color': 'اختر لونك الخاص',
+  'Change your own color': 'غيّر لونك الخاص',
+  'A touch lighter in dark mode, so you can still read it.': 'أفتح قليلًا في الوضع الداكن حتى تبقى قراءته سهلة.',
+  'A touch darker in light mode, so you can still read it.': 'أغمق قليلًا في الوضع الفاتح حتى تبقى قراءته سهلة.',
+  'custom color picker': 'لون خاص مخصص منتقي الألوان',
 }

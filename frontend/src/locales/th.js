@@ -1938,4 +1938,10 @@ export default {
   'Swipe on sets': 'ปัดบนเซ็ต',
   'Left deletes, right copies': 'ซ้ายลบ ขวาคัดลอก',
   'Options: copy, remove': 'ตัวเลือก: คัดลอก, ลบ',
+  'Your own color': 'สีของคุณเอง',
+  'Pick your own color': 'เลือกสีของคุณเอง',
+  'Change your own color': 'เปลี่ยนสีของคุณเอง',
+  'A touch lighter in dark mode, so you can still read it.': 'ในโหมดมืดจะสว่างขึ้นนิดหน่อย จะได้ยังอ่านออก',
+  'A touch darker in light mode, so you can still read it.': 'ในโหมดสว่างจะเข้มขึ้นนิดหน่อย จะได้ยังอ่านออก',
+  'custom color picker': 'สีเอง กำหนดเอง ตัวเลือกสี',
 }

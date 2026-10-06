@@ -1927,4 +1927,10 @@ export default {
   'Swipe on sets': '세트 스와이프',
   'Left deletes, right copies': '왼쪽은 삭제, 오른쪽은 복사',
   'Options: copy, remove': '옵션: 복사, 삭제',
+  'Your own color': '나만의 색상',
+  'Pick your own color': '나만의 색상 고르기',
+  'Change your own color': '나만의 색상 바꾸기',
+  'A touch lighter in dark mode, so you can still read it.': '다크 모드에서는 잘 보이도록 살짝 밝게 표시돼요.',
+  'A touch darker in light mode, so you can still read it.': '라이트 모드에서는 잘 보이도록 살짝 어둡게 표시돼요.',
+  'custom color picker': '나만의 색상 사용자 지정 색상 선택기',
 }

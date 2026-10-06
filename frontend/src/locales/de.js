@@ -1947,4 +1947,10 @@ export default {
   'Swipe on sets': 'Wischen auf Sätzen',
   'Left deletes, right copies': 'Links löscht, rechts kopiert',
   'Options: copy, remove': 'Optionen: kopieren, entfernen',
+  'Your own color': 'Deine eigene Farbe',
+  'Pick your own color': 'Eigene Farbe auswählen',
+  'Change your own color': 'Eigene Farbe ändern',
+  'A touch lighter in dark mode, so you can still read it.': 'Im dunklen Modus etwas heller, damit du sie noch lesen kannst.',
+  'A touch darker in light mode, so you can still read it.': 'Im hellen Modus etwas dunkler, damit du sie noch lesen kannst.',
+  'custom color picker': 'eigene Farbe benutzerdefiniert Farbwähler Farbauswahl',
 }

@@ -1192,6 +1192,11 @@ export const PT_BR_OVERRIDES = {
   'Too late, that one’s gone': 'Tarde demais, já era',
   'Psst: swipe a set. Left deletes, right copies.': 'Psiu: deslize uma série. Esquerda exclui, direita copia.',
   'Left deletes, right copies': 'Esquerda exclui, direita copia',
+  'Your own color': 'Sua própria cor',
+  'Pick your own color': 'Escolha sua própria cor',
+  'Change your own color': 'Mude sua própria cor',
+  'A touch lighter in dark mode, so you can still read it.': 'Um pouco mais clara no modo escuro, para você continuar lendo.',
+  'A touch darker in light mode, so you can still read it.': 'Um pouco mais escura no modo claro, para você continuar lendo.',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

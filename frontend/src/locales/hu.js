@@ -1930,4 +1930,10 @@ export default {
   'Swipe on sets': 'Húzás a sorozatokon',
   'Left deletes, right copies': 'Balra töröl, jobbra másol',
   'Options: copy, remove': 'Lehetőségek: másolás, eltávolítás',
+  'Your own color': 'Saját színed',
+  'Pick your own color': 'Válassz saját színt',
+  'Change your own color': 'Saját szín módosítása',
+  'A touch lighter in dark mode, so you can still read it.': 'Sötét módban kicsit világosabb, hogy olvasható maradjon.',
+  'A touch darker in light mode, so you can still read it.': 'Világos módban kicsit sötétebb, hogy olvasható maradjon.',
+  'custom color picker': 'saját szín egyéni színválasztó',
 }

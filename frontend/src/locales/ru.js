@@ -1931,4 +1931,10 @@ export default {
   'Swipe on sets': 'Свайп по подходам',
   'Left deletes, right copies': 'Влево удаляет, вправо копирует',
   'Options: copy, remove': 'Действия: копировать, удалить',
+  'Your own color': 'Свой цвет',
+  'Pick your own color': 'Выбрать свой цвет',
+  'Change your own color': 'Изменить свой цвет',
+  'A touch lighter in dark mode, so you can still read it.': 'В тёмной теме чуть светлее, чтобы его было видно.',
+  'A touch darker in light mode, so you can still read it.': 'В светлой теме чуть темнее, чтобы его было видно.',
+  'custom color picker': 'свой цвет пользовательский палитра выбор цвета',
 }

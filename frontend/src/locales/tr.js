@@ -1927,4 +1927,10 @@ export default {
   'Swipe on sets': 'Setlerde kaydırma',
   'Left deletes, right copies': 'Sola silir, sağa kopyalar',
   'Options: copy, remove': 'Seçenekler: kopyala, kaldır',
+  'Your own color': 'Kendi rengin',
+  'Pick your own color': 'Kendi rengini seç',
+  'Change your own color': 'Kendi rengini değiştir',
+  'A touch lighter in dark mode, so you can still read it.': 'Karanlık modda biraz daha açık, hâlâ okunabilsin diye.',
+  'A touch darker in light mode, so you can still read it.': 'Aydınlık modda biraz daha koyu, hâlâ okunabilsin diye.',
+  'custom color picker': 'kendi renk özel renk seçici',
 }

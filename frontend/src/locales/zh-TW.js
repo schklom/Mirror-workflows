@@ -1920,4 +1920,10 @@ export default {
   'Swipe on sets': '在組上滑動',
   'Left deletes, right copies': '左滑刪除，右滑複製',
   'Options: copy, remove': '選項：複製、刪除',
+  'Your own color': '你自己的顏色',
+  'Pick your own color': '選擇你自己的顏色',
+  'Change your own color': '更改你自己的顏色',
+  'A touch lighter in dark mode, so you can still read it.': '深色模式下會稍微調亮一點，讓你看得清楚。',
+  'A touch darker in light mode, so you can still read it.': '淺色模式下會稍微調暗一點，讓你看得清楚。',
+  'custom color picker': '自訂顏色 自己的顏色 取色器 調色盤',
 }

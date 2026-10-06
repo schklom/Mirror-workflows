@@ -1927,4 +1927,10 @@ export default {
   'Swipe on sets': 'सेट पर स्वाइप',
   'Left deletes, right copies': 'बाएँ हटाता है, दाएँ कॉपी करता है',
   'Options: copy, remove': 'विकल्प: कॉपी, हटाएँ',
+  'Your own color': 'आपका अपना रंग',
+  'Pick your own color': 'अपना रंग चुनें',
+  'Change your own color': 'अपना रंग बदलें',
+  'A touch lighter in dark mode, so you can still read it.': 'डार्क मोड में थोड़ा हल्का, ताकि पढ़ने में आए।',
+  'A touch darker in light mode, so you can still read it.': 'लाइट मोड में थोड़ा गहरा, ताकि पढ़ने में आए।',
+  'custom color picker': 'अपना रंग कस्टम रंग चुनने वाला',
 }

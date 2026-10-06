@@ -1927,4 +1927,10 @@ export default {
   'Swipe on sets': 'Deslizar en las series',
   'Left deletes, right copies': 'Izquierda borra, derecha copia',
   'Options: copy, remove': 'Opciones: copiar, quitar',
+  'Your own color': 'Tu propio color',
+  'Pick your own color': 'Elige tu propio color',
+  'Change your own color': 'Cambia tu propio color',
+  'A touch lighter in dark mode, so you can still read it.': 'Un pelín más claro en modo oscuro, para que se siga leyendo.',
+  'A touch darker in light mode, so you can still read it.': 'Un pelín más oscuro en modo claro, para que se siga leyendo.',
+  'custom color picker': 'color propio personalizado selector de color',
 }

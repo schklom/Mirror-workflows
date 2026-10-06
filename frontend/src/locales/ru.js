@@ -1626,6 +1626,7 @@ export default {
   'Your AI provider couldn’t answer.': 'Ваш провайдер ИИ не смог ответить.',
   'Something went wrong on this phone.': 'На этом телефоне что-то пошло не так.',
   'Coach week': 'Неделя тренера',
+  'Your loop': 'Твой круг',
   // Rotation (lib/rotation.js) — an in-app alternative to the weekday plan.
   'Rotation': 'Ротация',
   'Fixed Week': 'Фиксированная неделя',
@@ -1637,6 +1638,7 @@ export default {
   'No rotation yet. Add routines in the order you want to train them. The first one you haven’t logged stays up next.': 'Ротации пока нет. Добавляй программы в том порядке, в котором хочешь их тренировать. Первая незаписанная всегда идёт следующей.',
   'Use this rotation': 'Использовать эту ротацию',
   'Use this rotation?': 'Использовать эту ротацию?',
+  'Your own loop gets replaced.': 'Твой собственный круг будет заменён.',
   'Your coach gives up control of this week: openGym owns the queue from here on and repeats these sessions by itself once they are all done. A new week from the coach’s app would replace this rotation.': 'Твой тренер отказывается от контроля над этой неделей: очередь с этого момента принадлежит openGym, который сам повторяет эти сессии, как только они все завершены. Новая неделя из приложения тренера заменит эту ротацию.',
   'Start new pass': 'Начать новый проход',
   'Start pass': 'Начать проход',
@@ -1645,8 +1647,8 @@ export default {
   'Use Fixed Week': 'Использовать фиксированную неделю',
   'No rotation yet. Add routines to it in Plan.': 'Ротации пока нет. Добавь в неё программы в разделе «План».',
   'Set up in Plan': 'Настроить в Плане',
-  'Pass complete': 'Проход завершён',
-  'Next pass starts {0}': 'Следующий проход начнётся {0}',
+  'Round complete': 'Круг пройден',
+  'Next round starts {0}.': 'Следующий круг начнётся {0}.',
   // --- plural forms, read by tn(). Russian needs three where English has two, so these
   // --- keys answer with the forms instead of one string. The key stays the English plural.
   '{0} exercises': { one: '{0} упражнение', few: '{0} упражнения', many: '{0} упражнений' },

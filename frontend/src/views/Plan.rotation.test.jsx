@@ -35,7 +35,7 @@ vi.mock('../lib/coach.js', () => ({ coachAvailable: () => false }))
 
 import Plan from './Plan.jsx'
 import { menuSheet, confirmSheet } from '../sheets.jsx'
-import { todayISO } from '../lib/format.js'
+import { todayISO, isoOf, fmtDate } from '../lib/format.js'
 
 const routines = [
   { id: 'a', name: 'A', emoji: null, ex: [{ id: '0025' }] },
@@ -221,6 +221,13 @@ describe('Plan — the loop', () => {
     expect(mocks.S.queue.strict).toBe(true)
   })
 
+  it('a round waiting on its first day ends its sentence before the hint', () => {
+    const d = new Date(); d.setDate(d.getDate() + 1)
+    const tomorrow = isoOf(d)
+    mount({ queue: live({ startsOn: tomorrow, rotationId: 'r1' }), rotation: saved })
+    expect(host.querySelector('.rotation .sect-f').textContent).toBe('Next round starts ' + fmtDate(tomorrow, true) + '. Trained out of order? Just pick another routine on Home.')
+  })
+
   it('a saved loop with no round running offers Start the loop', () => {
     mount({ rotation: saved, scheduleMode: 'rotation' })
     expect(names()).toEqual(['A', 'B'])
@@ -253,6 +260,16 @@ describe('Plan — someone else’s queue, and a broken one', () => {
     remount()
     expect(host.textContent).not.toContain('Externally managed')
     expect(selectedMode()).toBe('Rotation')
+  })
+
+  it('adopting a coach queue over a different loop of your own says the loop gets replaced', () => {
+    mount({ queue: live({ ids: ['b', 'c'] }), rotation: { id: 'r0', sequence: ['a', 'b'], label: 'Mine' }, scheduleMode: 'rotation' })
+    click(byLabel('Use this rotation'))
+    expect(confirmSheet.mock.calls.at(-1)[0].message).toMatch(/ Your own loop gets replaced\.$/)
+    // the same sessions in the same order: nothing of yours is lost, nothing to warn about
+    mount({ queue: live({ ids: ['a', 'b'] }), rotation: { id: 'r0', sequence: ['a', 'b'], label: 'Mine' }, scheduleMode: 'rotation' })
+    click(byLabel('Use this rotation'))
+    expect(confirmSheet.mock.calls.at(-1)[0].message).not.toContain('Your own loop')
   })
 
   it('a malformed queue offers recovery instead of a loop full of nothing', () => {

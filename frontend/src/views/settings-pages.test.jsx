@@ -185,6 +185,7 @@ describe('the search lands on a row', () => {
     expect(searchSettings('test notification', web, tr).map(h => h.title)).toEqual(['Send test notification'])
     expect(searchSettings('server', web, tr).map(h => h.title)).toContain('Sync now')
     expect(searchSettings('sync', web, tr).map(h => h.title)).toContain('Sync now')
+    expect(searchSettings('loop', web, tr).map(h => h.title)).toContain('How you train')
     expect(searchSettings('home screen', web, tr).map(h => h.title)).toEqual(['In Safari: Share → Add to Home Screen'])
     expect(searchSettings('install', { ...web, androidWeb: true }, tr).map(h => h.title)).toEqual(['In Chrome: ⋮ menu → Add to Home screen'])
     expect(searchSettings('backup folder', { ...guestWeb, mobile: true, android: true, autoBackup: true }, tr).map(h => h.title)).toEqual(['Backup folder'])

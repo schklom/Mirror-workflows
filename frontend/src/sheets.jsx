@@ -1953,6 +1953,8 @@ function DayOverride({ iso, close }) {
   // already pinned to another day says so in place of its exercise count. Done sessions and
   // your own routines follow in the plain list.
   const remaining = queueRemaining(st)
+  // Your own rotation's pass (its rotationId matches the saved rotation) is your loop, not a coach's week.
+  const ownLoop = !!st.queue && !!st.rotation && st.queue.rotationId === st.rotation.id
   const coach = remaining.map(id => st.routines.find(r => r.id === id)).filter(Boolean)
   // Active pins straight from the plan (earliest day per session, today or later) — not the
   // row's 'pinned' items, which leave out the session pinned to today itself.
@@ -1972,7 +1974,7 @@ function DayOverride({ iso, close }) {
     <div className="muted small" style={{ marginBottom: 12 }}>{t('Weekly plan:')} {weeklyNames.length ? deriveSessionName(weeklyNames) : t('Rest')}{changed && <span style={{ color: 'var(--orange)' }}> · {t('changed for this day')}</span>}<br />{t('Sick, missed a day or want a different session? Pick what to train instead.')}</div>
     {missed && <div style={{ marginBottom: 14 }}><Button variant="primary" icon="checkCircle" onClick={logIt}>{t('Log this workout')}</Button></div>}
     {coach.length > 0 && <>
-      <h4 className="sec" style={{ marginTop: 0 }}>{t('Coach week')}</h4>
+      <h4 className="sec" style={{ marginTop: 0 }}>{ownLoop ? t('Your loop') : t('Coach week')}</h4>
       <div className="list" style={{ marginBottom: 8 }}>{coach.map(row)}</div>
     </>}
     <div className="list">

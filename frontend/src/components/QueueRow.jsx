@@ -25,15 +25,16 @@ export default function QueueRow({ S, today, onStart, managed }) {
   const shownToday = !!next && effectiveRoutineIds(S, today, today).includes(next.id)
   // A pass this app manages refills itself (lib/rotation.js) — "ask the coach" and naming a
   // whole week are a planner's copy, wrong for a pass with no coach and no week shape at all.
-  const status = v.complete ? (managed ? t('Pass complete') : t('Week complete, ask the coach'))
-    : v.waiting ? (managed ? t('Next pass starts {0}', fmtDate(v.startsOn, true)) : t('Next week starts {0}', fmtDate(v.startsOn, true)))
+  const status = v.complete ? (managed ? t('Round complete') : t('Week complete, ask the coach'))
+    : v.waiting ? (managed ? t('Next round starts {0}.', fmtDate(v.startsOn, true)) : t('Next week starts {0}', fmtDate(v.startsOn, true)))
     : shownToday ? t('Next: {0}, today', next.name)
     : next ? t('Next: {0}', next.name)
     : t('Next: {0}', pinned.name + ' · ' + fmtDate(pinned.on, true))
   return <div className="queue">
     <div className="row between" style={{ marginBottom: 8 }}>
       <div className="small muted" style={{ fontWeight: 500 }}>{v.label}</div>
-      <div className="small muted">{v.items.length - v.remaining.length} / {v.items.length}</div>
+      {/* Your own loop speaks in rounds, as Plan does; a coach's week keeps its plain count. */}
+      <div className="small muted">{managed ? t('{0} of {1} done this round.', v.items.length - v.remaining.length, v.items.length) : `${v.items.length - v.remaining.length} / ${v.items.length}`}</div>
     </div>
     {/* three chips do not fit one phone row and .chips hides its scrollbar — wrap instead */}
     <div className="chips" style={{ flexWrap: 'wrap' }}>

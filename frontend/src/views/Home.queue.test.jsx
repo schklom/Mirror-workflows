@@ -144,7 +144,9 @@ describe('Home — coach week progress row', () => {
       workouts: [logged('d1'), logged('d2'), logged('d3')],
     })
     mount()
-    expect(status()).toBe('Pass complete')
+    expect(status()).toBe('Round complete')
+    // your own loop counts in rounds, like Plan; a coach week keeps the bare count (above)
+    expect(host.querySelectorAll('.queue .row .small')[1].textContent).toBe('3 of 3 done this round.')
   })
 
   it('a managed pass waiting on its startsOn says so without naming a coach week', () => {
@@ -154,7 +156,7 @@ describe('Home — coach week progress row', () => {
       rotation: { id: 'r1', sequence: ['d1', 'd2', 'd3'], label: 'US W1' },
     })
     mount()
-    expect(status()).toBe('Next pass starts ' + fmtDate(startsOn, true))
+    expect(status()).toBe('Next round starts ' + fmtDate(startsOn, true) + '.')
   })
 
   it('own routines on the weekday ride along beside the queue session', () => {
@@ -208,7 +210,7 @@ describe('Home — coach week progress row', () => {
     })
     mount()
     expect(card()).toMatch(/^2 \/ 4 this week · 2 workouts total$/)
-    expect(host.querySelectorAll('.queue .row .small')[1].textContent).toBe('1 / 3')
+    expect(host.querySelectorAll('.queue .row .small')[1].textContent).toBe('1 of 3 done this round.')
   })
 
   it('without a queue the weekday dots are back', () => {

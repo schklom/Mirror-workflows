@@ -142,9 +142,13 @@ function Schedule({ S, update, nav, mode }) {
   // later week written by the coach's app simply replaces it (the whole queue object, token and all).
   // The rotation takes a name of its own here rather than the planner's (e.g. "US W1") — that
   // name is this one pass's, and refillAfter would otherwise repeat it on every pass after it.
+  // A loop of your own saved here is overwritten by the adoption, so the confirm says so.
+  const ownSeq = S.rotation?.sequence || []
+  const replacesOwn = ownSeq.length > 0 && (ownSeq.length !== seq.length || ownSeq.some((id, i) => id !== seq[i]))
   const adopt = () => confirmSheet({
     title: t('Use this rotation?'),
-    message: t('Your coach gives up control of this week: openGym owns the queue from here on and repeats these sessions by itself once they are all done. A new week from the coach’s app would replace this rotation.'),
+    message: t('Your coach gives up control of this week: openGym owns the queue from here on and repeats these sessions by itself once they are all done. A new week from the coach’s app would replace this rotation.')
+      + (replacesOwn ? ' ' + t('Your own loop gets replaced.') : ''),
     confirmText: t('Use this rotation'),
     onConfirm: () => update(s => saveRotation(s, seq, t('Rotation'))),
   })
@@ -236,7 +240,7 @@ function Schedule({ S, update, nav, mode }) {
         })}
       </div> : <div className="empty">{t('No rotation yet. Add routines in the order you want to train them. The first one you haven’t logged stays up next.')}</div>}
       {seq.length > 0 && <p className="sect-f">
-        {qv ? (qv.waiting ? t('Next pass starts {0}', fmtDate(qv.startsOn, true)) : t('{0} of {1} done this round.', doneCount, qv.items.length)) + ' ' : ''}
+        {qv ? (qv.waiting ? t('Next round starts {0}.', fmtDate(qv.startsOn, true)) : t('{0} of {1} done this round.', doneCount, qv.items.length)) + ' ' : ''}
         {external ? '' : editing ? t('Drag to reorder. Tap the minus to take one out.') : t('Trained out of order? Just pick another routine on Home.')}
       </p>}
       <div className="row" style={{ gap: 8, marginTop: 4, flexWrap: 'wrap' }}>

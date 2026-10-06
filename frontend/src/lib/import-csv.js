@@ -34,13 +34,14 @@ export function parseCSV(text) {
   const rows = []
   let row = [], field = '', quoted = false
   const s = String(text).replace(/^﻿/, '')
+  const sep = delimiterOf(s)
   for (let i = 0; i < s.length; i++) {
     const c = s[i]
     if (quoted) {
       if (c === '"') { if (s[i + 1] === '"') { field += '"'; i++ } else quoted = false }
       else field += c
     } else if (c === '"') quoted = true
-    else if (c === ',') { row.push(field); field = '' }
+    else if (c === sep) { row.push(field); field = '' }
     else if (c === '\n' || c === '\r') {
       if (c === '\r' && s[i + 1] === '\n') i++
       row.push(field); field = ''
@@ -53,7 +54,18 @@ export function parseCSV(text) {
   return rows
 }
 
-const norm = h => h.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim()
+// Strong's current export (and any spreadsheet saved in a comma-decimal locale) separates
+// fields with ';'. The header line decides: it holds no numbers, so a ';' there is a separator.
+function delimiterOf(s) {
+  const nl = s.search(/[\r\n]/)
+  const head = (nl < 0 ? s : s.slice(0, nl)).replace(/"[^"]*"/g, '')
+  const count = ch => head.split(ch).length - 1
+  return count(';') > count(',') ? ';' : ','
+}
+
+// '#' reads as "no": Strong's "Workout #" is the session number, and stripped to "workout" it
+// took the place of the workout's name.
+const norm = h => h.toLowerCase().replace(/#/g, ' no ').replace(/[^a-z0-9]+/g, ' ').trim()
 
 // header text -> the field we care about. Specific names first; first match wins.
 const COLUMNS = [
@@ -61,6 +73,7 @@ const COLUMNS = [
   ['date', ['date', 'workout date']],
   ['startTime', ['start time', 'start date']],
   ['endTime', ['end time']],
+  ['workoutNo', ['workout no']],
   ['workoutName', ['workout name', 'title', 'workout']],
   ['category', ['category', 'body part', 'muscle group']],
   ['weightKg', ['weight kg']],
@@ -73,10 +86,13 @@ const COLUMNS = [
   ['rpe', ['rpe', 'rpe rating']],
   ['rir', ['rir', 'reps in reserve']],
   ['distanceKm', ['distance km']],
+  ['distanceM', ['distance meters', 'distance m', 'distance metres']],
   ['distance', ['distance']],
   ['distanceUnit', ['distance unit']],
   ['seconds', ['seconds', 'duration seconds', 'set duration sec']],
   ['time', ['time', 'duration']],
+  // Strong's current export: the whole workout's length, in seconds, on every row.
+  ['durationSec', ['duration sec', 'duration secs']],
   ['setType', ['set type']],
   // Hevy numbers the supersets of a workout; rows sharing a number were done as one.
   ['superset', ['superset id']],
@@ -418,6 +434,13 @@ export function parseWorkoutCSV(text, { unit = 'kg' } = {}) {
   // row; the set's own time is its Seconds column. Read as a set time it turned every
   // weight-less row into an hour of cardio and left the workout itself at zero minutes.
   if (source === 'Strong' && map.time !== undefined) { map.workoutDuration = map.time; delete map.time }
+  // The newer Strong export writes that length in seconds instead. Elsewhere a seconds column
+  // under that name is the set's own time.
+  if (map.durationSec !== undefined) {
+    if (source === 'Strong') map.workoutDurationSec = map.durationSec
+    else if (map.seconds === undefined) map.seconds = map.durationSec
+    delete map.durationSec
+  }
 
   const resolved = new Map()          // exercise name -> dataset id | null, resolved once
   const byDate = new Map()
@@ -452,7 +475,9 @@ export function parseWorkoutCSV(text, { unit = 'kg' } = {}) {
     const mins = secs > 0 ? Math.round(secs / 60 * 10) / 10 : toMinutes(cell(r, 'time'))
     const km = map.distanceKm !== undefined && cell(r, 'distanceKm')
       ? num(cell(r, 'distanceKm'))
-      : toKm(cell(r, 'distance'), cell(r, 'distanceUnit'))
+      : map.distanceM !== undefined && cell(r, 'distanceM')
+        ? toKm(cell(r, 'distanceM'), 'm')
+        : toKm(cell(r, 'distance'), cell(r, 'distanceUnit'))
     if (!w && !reps && !mins && !km) { skipped++; continue }
     const warmup = /warm/i.test(cell(r, 'setType'))
     if (warmup) warmups++
@@ -517,8 +542,10 @@ export function parseWorkoutCSV(text, { unit = 'kg' } = {}) {
     if (!day.name) day.name = cell(r, 'workoutName') || ''
     if (!day.note) day.note = cell(r, 'workoutNote')
     if (map.endTime !== undefined) { const e = parseWhen(cell(r, 'endTime')); if (e && e.t != null) day.end = e.t }
-    else if (map.workoutDuration !== undefined && day.end == null) {
-      const len = toMinutes(cell(r, 'workoutDuration'))
+    else if ((map.workoutDuration !== undefined || map.workoutDurationSec !== undefined) && day.end == null) {
+      const len = map.workoutDurationSec !== undefined
+        ? num(cell(r, 'workoutDurationSec')) / 60
+        : toMinutes(cell(r, 'workoutDuration'))
       if (len > 0) day.end = (day.start ?? 18 * 3600000) + Math.round(len * 60000)
     }
     if (!day.ex.has(id)) day.ex.set(id, [])

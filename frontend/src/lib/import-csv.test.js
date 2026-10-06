@@ -187,3 +187,30 @@ describe('localized month names', () => {
     expect(parsed.to).toBe('2024-12-23')
   })
 })
+
+// Strong's current export (GitHub #394): ';'-separated, "Workout #" in front of the name, the
+// workout's length in seconds and distances in meters.
+const STRONG_NEW = [
+  '"Workout #";"Date";"Workout Name";"Duration (sec)";"Exercise Name";"Set Order";"Weight (kg)";"Reps";"RPE";"Distance (meters)";"Seconds";"Notes";"Workout Notes"',
+  '1;"2026-09-01 18:00:00";"Push";3720;"Bench Press (Barbell)";1;60;10;;;0;"";""',
+  '1;"2026-09-01 18:00:00";"Push";3720;"Bench Press (Barbell)";2;62,5;8;8;;0;"";""',
+  '1;"2026-09-01 18:00:00";"Push";3720;"Plank";1;0;0;;;60;"";""',
+  '2;"2026-09-03 07:30:00";"Legs";1800;"Running";1;0;0;;5000;1500;"";""',
+].join('\n')
+
+describe('Strong semicolon export', () => {
+  it('reads the columns, the duration in seconds and meters as meters', () => {
+    const parsed = parseWorkoutCSV(STRONG_NEW, { unit: 'kg' })
+    expect(parsed.error).toBeUndefined()
+    expect(parsed.source).toBe('Strong')
+    const [push, legs] = parsed.workouts
+    expect(push.name).toBe('Push')
+    expect((push.end - push.start) / 60000).toBe(62)
+    expect(push.entries[0].sets.map(s => s.w)).toEqual([60, 62.5])
+    expect(push.entries[1].sets[0].sec).toBe(60)
+    expect(legs.name).toBe('Legs')
+    expect((legs.end - legs.start) / 60000).toBe(30)
+    // 5000 m in 25 min is 12 km/h, not 12,000.
+    expect(legs.entries[0].sets[0]).toMatchObject({ min: 25, speed: 12 })
+  })
+})

@@ -300,6 +300,9 @@ export default function Settings({ page = null, find = null, via = null }) {
         await storeBackupMedia(read.files, { limits: limitsFrom(useStore.getState().config) })
       }
       importBackup(read.state, { mergeWith })
+      // The photos it brought are pending here and maybe gone from the server (a reset): sent now,
+      // not after the ten-minute dedupe of the run before the reset.
+      if (read.files.length) syncMedia({ force: true })
       toast(t('Backup imported'))
     }
     // Signed in, the server is asked first: a workout logged since the backup was made, or on

@@ -352,14 +352,17 @@ export const useUI = create((set, get) => ({
 }))
 
 // A reload in the middle of a rest (pull to refresh, a WebView restart, an update) used to drop
-// the countdown while its alarm still rang later. The rest lives on in sessionStorage for this
-// tab and comes back at boot while its end is still ahead, held if it was paused. Its end was
-// booked when it started (the server's push, the Android alarm), and that booking survives the
-// reload, so it is not booked again: the alert fires once, and the bar's own tick at zero calls
-// the push off as it always does. A rest that ended meanwhile, or one left with no session
-// running, is dropped.
+// the countdown while its alarm still rang later. The rest lives on in localStorage and comes
+// back at boot while its end is still ahead, held if it was paused. Not sessionStorage: that
+// dies with the process, and Android killing the app mid-rest (or iOS dropping the home-screen
+// app) took the bar with it. On the web its end was booked when it started (the server's push,
+// per device, which survives the reload), so it is not booked again: the alert fires once, and
+// the bar's own tick at zero calls the push off as it always does. In the app the countdown
+// notification lives in the app's process and may be gone with it, so the end is booked again
+// there: the alarm has a fixed id and the new booking replaces the old one, it never adds a second.
+// A rest that ended meanwhile, or one left with no session running, is dropped.
 export const REST_KEY = 'gym_rest'
-const restStore = () => { try { return typeof sessionStorage === 'undefined' ? null : sessionStorage } catch { return null } }
+const restStore = () => { try { return typeof localStorage === 'undefined' ? null : localStorage } catch { return null } }
 const saveRest = tm => {
   const ss = restStore()
   if (!ss) return
@@ -379,10 +382,12 @@ export function restoreRest(now = Date.now()) {
   const base = { total, forIdx: saved.forIdx ?? undefined, ...(saved.kind === 'switch' ? { kind: 'switch' } : {}) }
   if (saved.paused) {
     useUI.setState({ timer: { ...base, left: Math.round(saved.left), endsAt: saved.endsAt, paused: true } })
+    if (MOBILE) holdRestAlert(Math.round(saved.left), total)
     return true
   }
   pageHiddenAt = typeof document !== 'undefined' && document.hidden ? now : null
   useUI.setState({ timer: { ...base, left: Math.max(1, Math.round((saved.endsAt - now) / 1000)), endsAt: saved.endsAt } })
+  if (MOBILE) bookRestEnd(saved.endsAt, total, base.kind)
   runRest(useUI.setState, useUI.getState)
   return true
 }

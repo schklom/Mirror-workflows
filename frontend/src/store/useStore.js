@@ -560,7 +560,9 @@ export const useStore = create((set, get) => {
     forceNext = false
     const asReplace = replaceRev
     replaceRev = null
-    const body = { state: S }
+    // `stamped`: this client stamps its own changes; the server stamps only for one that does not
+    // (api/sync-stamps.js).
+    const body = { state: S, stamped: true }
     if (asReplace != null) body.baseRev = asReplace
     else if (!force && base) body.baseRev = base.rev
     try {

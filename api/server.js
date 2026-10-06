@@ -32,6 +32,7 @@ import {
 import { createDeviceLink, findDeviceLink, burnDeviceLink, dropDeviceLinks } from './device-link.js';
 import { createMediaStore, mediaLimits, mediaConfig, MediaError, HASH_RE } from './media.js';
 import { effectiveRoutineId } from './queue.js';
+import { stampPut } from './sync-stamps.js';
 import { nudgeFor, nudgeWindowOpen, toneOf } from './nudge.js';
 
 const PORT = +(process.env.PORT || 3000);
@@ -2109,6 +2110,12 @@ const routes = {
       if (cur.resetIds && typeof cur.resetIds === 'object') body.state.resetIds = cur.resetIds;
       else delete body.state.resetIds;
     }
+    // The records of removals and edits only grow, and what a writer that does not stamp its own
+    // changes (an older app, an API script) changed is stamped here, so it is neither wiped nor
+    // undone by the next device that merges (sync-stamps.js).
+    // A document nested too deep to compare is the bad request the stringify below refuses too.
+    try { stampPut(cur, body.state, { overRead: body.baseRev != null && body.baseRev === curRev, stamped: body.stamped === true }); }
+    catch (e) { if (e instanceof RangeError) return json(res, 400, { error: 'invalid state' }); throw e; }
     body.state._rev = curRev + 1;          // server-owned; whatever the client sent is ignored
     // JSON.parse takes any nesting, JSON.stringify recurses and runs out of stack on a document
     // nested some thousands deep. No client builds one; it is a bad request, not a server error.

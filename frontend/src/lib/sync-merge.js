@@ -512,7 +512,7 @@ export function stampEdits(prev, next, now = Date.now()) {
 }
 
 /** Both copies' edit stamps: per key, the later one. */
-function mergeEdits(a, b) {
+export function mergeEdits(a, b) {
   const x = isMap(a) ? a : {}, y = isMap(b) ? b : {}
   const out = { ...x }
   for (const [k, v] of Object.entries(y)) if (!((Number(out[k]) || 0) >= (Number(v) || 0))) out[k] = v

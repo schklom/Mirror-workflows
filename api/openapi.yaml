@@ -1430,6 +1430,18 @@ paths:
         server stamps the new revision into the document as `_rev`; a `_rev` sent by
         the client is ignored.
 
+        The records of removals (`deleted`) and of edits (`edited`) never shrink: the
+        stored ones are joined into the write (a reset keeps its own). A writer that does
+        not stamp its own changes (no `stamped: true`; an API script, an older app) and
+        sends the current `baseRev` gets them stamped by the server, at the server's time:
+        every entry it removed (a workout, routine, custom exercise, weigh-in, card,
+        profile or favourite), every setting and plan day it changed (`queue`,
+        `week.<day>`, …), and every entry it edited (`_ts`, per field `_f`). That keeps a
+        planner's new week, or a routine it removed, from being undone by a phone that
+        reconnects later with an older change. An entry the document holds while a
+        removal on record says it was deleted after its last edit is kept and marked as
+        added back.
+
         Every accepted write also starts the grace period of each stored file (tag `media`)
         the new state no longer references, and stops it for each one it references again.
         That bookkeeping never changes the answer.
@@ -1447,6 +1459,12 @@ paths:
                   description: >-
                     The revision this client last read or wrote. Omit or null for an
                     unconditional overwrite.
+                stamped:
+                  type: boolean
+                  description: >-
+                    True when the client stamps its own changes in `deleted`, `edited` and
+                    each entry's `_ts`/`_f`, as the app does. Omit it to have the server
+                    stamp what changed against the stored document.
       responses:
         '200':
           description: Saved.
@@ -3194,6 +3212,19 @@ components:
           type: integer
           readOnly: true
           description: Server-set revision, incremented on every accepted PUT. Ignored when sent by a client.
+        deleted:
+          type: object
+          description: >-
+            When entries were removed, per list and entry key ({ workouts: { <id>: ms } }, weigh-ins
+            by day, favourites by exercise id). A negative stamp is an add-back after a removal.
+            Never shrinks on the server; stamped for writers that do not stamp (see PUT /api/data).
+          additionalProperties: { type: object, additionalProperties: { type: number } }
+        edited:
+          type: object
+          description: >-
+            When each setting and plan day was last changed, ms ({ queue: ms, 'week.3': ms, … }).
+            Never shrinks on the server; stamped for writers that do not stamp (see PUT /api/data).
+          additionalProperties: { type: number }
         unit: { type: string, enum: [kg, lb] }
         lang:
           type: string
@@ -3210,7 +3241,7 @@ components:
         queue:
           type: object
           nullable: true
-          description: A planner's floating week {ids, since, startsOn, label} — the week's sessions as an ordered queue, the first undone one is today's. Written only by an API client (never by the app), read by the reminder tick.
+          description: A planner's floating week {ids, since, startsOn, label} — the week's sessions as an ordered queue, the first undone one is today's. Written by an API client or by the app's own rotation feature, read by the reminder tick.
         week:
           type: object
           description: 'Weekly plan: weekday (0=Sunday … 6) → routine id.'

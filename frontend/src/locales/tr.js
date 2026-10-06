@@ -627,6 +627,13 @@ export default {
   'Not in the library, so they’re added as your own exercises': 'Kütüphanede yoklar, o yüzden kendi egzersizlerin olarak eklendiler',
   'Nothing new to import': 'İçe aktarılacak yeni bir şey yok',
   '{0} workouts imported': '{0} antrenman içe aktarıldı',
+  '{0} rows skipped (couldn’t read them)': '{0} satır atlandı (okunamadı)',
+  '{0} row skipped (couldn’t read it)': '{0} satır atlandı (okunamadı)',
+  '{0} set brings an {1} with it. Switch on Effort per set in Settings to see it.': '{0} set beraberinde bir {1} getiriyor. Görmek için Ayarlar’da «Set başına efor» seçeneğini aç.',
+  '{0} set brings an {1} with it.': '{0} set beraberinde bir {1} getiriyor.',
+  '{0} routine imported': '{0} rutin içe aktarıldı',
+  '{0} weigh-in imported': '{0} tartım içe aktarıldı',
+  '{0} workout imported': '{0} antrenman içe aktarıldı',
   '{0} weigh-ins imported': '{0} tartım içe aktarıldı',
   'Could not read that file': 'Dosya okunamadı',
   'That file is empty': 'Bu dosya boş',
@@ -765,7 +772,7 @@ export default {
   'Bodyweight: same target again until every set is clean.': 'Vücut ağırlığı: her set temiz çıkana kadar aynı hedef.',
 
   // --- effort per set (RIR / RPE) ---
-  '{0} sets bring an {1} with them. Switch on Effort per set in Settings to see it.': '{0} setler yanında bir {1} getirir. Görmek için Ayarlar’da «Set başına efor» seçeneğini aç.',
+  '{0} sets bring an {1} with them. Switch on Effort per set in Settings to see it.': '{0} set beraberinde bir {1} getiriyor. Görmek için Ayarlar’da «Set başına efor» seçeneğini aç.',
   '{0} sets bring an {1} with them.': '{0} set beraberinde bir {1} getiriyor.',
   'RIR': 'RIR',
   'RPE': 'RPE',

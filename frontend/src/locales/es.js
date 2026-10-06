@@ -627,6 +627,13 @@ export default {
   'Not in the library, so they’re added as your own exercises': 'No están en la biblioteca, así que se añaden como ejercicios propios',
   'Nothing new to import': 'Nada nuevo que importar',
   '{0} workouts imported': '{0} entrenamientos importados',
+  '{0} rows skipped (couldn’t read them)': '{0} filas omitidas (no se pudieron leer)',
+  '{0} row skipped (couldn’t read it)': '{0} fila omitida (no se pudo leer)',
+  '{0} set brings an {1} with it. Switch on Effort per set in Settings to see it.': '{0} serie trae un {1}. Activa «Esfuerzo por serie» en Ajustes para verlo.',
+  '{0} set brings an {1} with it.': '{0} serie trae un {1}.',
+  '{0} routine imported': '{0} rutina importada',
+  '{0} weigh-in imported': '{0} pesaje importado',
+  '{0} workout imported': '{0} entrenamiento importado',
   '{0} weigh-ins imported': '{0} pesajes importados',
   'Could not read that file': 'No se pudo leer ese archivo',
   'That file is empty': 'Ese archivo está vacío',
@@ -765,7 +772,7 @@ export default {
   'Bodyweight: same target again until every set is clean.': 'Peso corporal: el mismo objetivo hasta que todas las series salgan limpias.',
 
   // --- effort per set (RIR / RPE) ---
-  '{0} sets bring an {1} with them. Switch on Effort per set in Settings to see it.': 'Las series {0} traen un {1}. Activa «Esfuerzo por serie» en Ajustes para verlo.',
+  '{0} sets bring an {1} with them. Switch on Effort per set in Settings to see it.': '{0} series traen un {1}. Activa «Esfuerzo por serie» en Ajustes para verlo.',
   '{0} sets bring an {1} with them.': '{0} series traen un {1}.',
   'RIR': 'RIR',
   'RPE': 'RPE',

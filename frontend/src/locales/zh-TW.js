@@ -619,6 +619,13 @@ export default {
   'Not in the library, so they’re added as your own exercises': '不在動作庫中，所以已新增為你的自訂動作',
   'Nothing new to import': '沒有可匯入的新資料',
   '{0} workouts imported': '已匯入 {0} 次訓練紀錄',
+  '{0} rows skipped (couldn’t read them)': '已略過 {0} 列（無法讀取）',
+  '{0} row skipped (couldn’t read it)': '已略過 {0} 列（無法讀取）',
+  '{0} set brings an {1} with it. Switch on Effort per set in Settings to see it.': '{0} 組自帶 {1}。在設定中開啟「每組自覺強度」就能看到。',
+  '{0} set brings an {1} with it.': '{0} 組自帶 {1}。',
+  '{0} routine imported': '已成功匯入 {0} 份訓練課表',
+  '{0} weigh-in imported': '已匯入 {0} 筆體重紀錄',
+  '{0} workout imported': '已匯入 {0} 次訓練紀錄',
   '{0} weigh-ins imported': '已匯入 {0} 筆體重紀錄',
   'Could not read that file': '無法讀取該檔案',
   'That file is empty': '該檔案為空白內容',
@@ -758,7 +765,7 @@ export default {
 
   // --- effort per set (RIR / RPE) ---
   '{0} sets bring an {1} with them. Switch on Effort per set in Settings to see it.': '{0} 組自帶 {1}。在設定中開啟「每組自覺強度」就能看到。',
-  '{0} sets bring an {1} with them.': '{0} 組自帶 {1} 欄位。',
+  '{0} sets bring an {1} with them.': '{0} 組自帶 {1}。',
   'RIR': 'RIR (保留次數)',
   'RPE': 'RPE (自覺強度)',
   'Effort per set': '每組自覺強度',

@@ -373,6 +373,11 @@ function WeighIns() {
 export const weighInsSheet = () => ui().openSheet(close => <WeighIns close={close} />)
 
 /* ============================ import from another app ============================ */
+// "12 sets bring an RPE with them": the file rated its sets. The column is off by default, so
+// with it off the line says where to switch it on.
+const effortLine = (effort, n, scale) => effort === 'none'
+  ? tn('{0} set brings an {1} with it. Switch on Effort per set in Settings to see it.', '{0} sets bring an {1} with them. Switch on Effort per set in Settings to see it.', n, scale)
+  : tn('{0} set brings an {1} with it.', '{0} sets bring an {1} with them.', n, scale)
 // Shows what a parsed export would actually do before anything is written. An import is
 // the one action where "just try it" is expensive — it's someone's entire training
 // history — so the numbers, the unit conversion and the exercises we couldn't recognise
@@ -390,8 +395,8 @@ function ImportSummary({ parsed, close }) {
     update(s => { res = mergeImport(s, parsed) })
     close()
     toast(isBW
-      ? t('{0} weigh-ins imported', res.added)
-      : t('{0} workouts imported', res.added))
+      ? tn('{0} weigh-in imported', '{0} weigh-ins imported', res.added)
+      : tn('{0} workout imported', '{0} workouts imported', res.added))
   }
 
   return <>
@@ -426,10 +431,12 @@ function ImportSummary({ parsed, close }) {
     {/* The file rated its sets. Say so: the column is off by default, so the ratings would
         otherwise arrive invisibly and look like they had been dropped. */}
     {!isBW && (parsed.rirSets + parsed.rpeSets) > 0 && <div className="small dim" style={{ marginBottom: 10 }}>
-      {t(effortOf(st) === 'none'
-        ? '{0} sets bring an {1} with them. Switch on Effort per set in Settings to see it.'
-        : '{0} sets bring an {1} with them.',
-      parsed.rirSets || parsed.rpeSets, parsed.rirSets ? 'RIR' : 'RPE')}
+      {effortLine(effortOf(st), parsed.rirSets || parsed.rpeSets, parsed.rirSets ? 'RIR' : 'RPE')}
+    </div>}
+    {/* Rows the parser could not use (no date or name, nothing measured, impossible numbers)
+        are left out; say how many, so a short history does not look like a lost one. */}
+    {!isBW && parsed.skipped > 0 && <div className="small dim" style={{ marginBottom: 10 }}>
+      {tn('{0} row skipped (couldn’t read it)', '{0} rows skipped (couldn’t read them)', parsed.skipped)}
     </div>}
     {!isBW && parsed.unmatchedNames.length > 0 && <>
       <h4 className="sec">{t('Not in the library, so they’re added as your own exercises')}</h4>
@@ -538,17 +545,17 @@ function HevyImportSheet({ close }) {
       if (wantWorkouts && payload.workouts.workouts.length) {
         const res = mergeImport(s, payload.workouts)
         addedW = res.added
-        parts.push(t('{0} workouts imported', res.added))
+        parts.push(tn('{0} workout imported', '{0} workouts imported', res.added))
       }
       if (wantRoutines && payload.routines.routines.length) {
         const res = mergeHevyRoutines(s, payload.routines)
         addedR = res.added
-        parts.push(t('{0} routines imported', res.added))
+        parts.push(tn('{0} routine imported', '{0} routines imported', res.added))
       }
       if (wantBody && payload.bodyweight.bodyweight.length) {
         const res = mergeImport(s, payload.bodyweight)
         addedB = res.added
-        parts.push(t('{0} weigh-ins imported', res.added))
+        parts.push(tn('{0} weigh-in imported', '{0} weigh-ins imported', res.added))
       }
     })
     close()
@@ -643,10 +650,7 @@ function HevyImportSheet({ close }) {
       {t('Hevy stores weights in kg, so they’ll be converted to {0}.', st.unit)}
     </div>}
     {wantWorkouts && (w.rirSets + w.rpeSets) > 0 && <div className="small dim" style={{ marginBottom: 10 }}>
-      {t(effortOf(st) === 'none'
-        ? '{0} sets bring an {1} with them. Switch on Effort per set in Settings to see it.'
-        : '{0} sets bring an {1} with them.',
-      w.rirSets || w.rpeSets, w.rirSets ? 'RIR' : 'RPE')}
+      {effortLine(effortOf(st), w.rirSets || w.rpeSets, w.rirSets ? 'RIR' : 'RPE')}
     </div>}
     {unmatched.length > 0 && <>
       <h4 className="sec">{t('Not in the library, so they’re added as your own exercises')}</h4>

@@ -150,7 +150,8 @@ const PLAN_COPY = {
   '5x5': () => ({ name: t('5×5'), about: t('Five sets of five on the main barbell lifts.') })
 }
 
-// Adds the plan's routines and puts them on its weekdays. Existing routines are never touched
+// Adds the plan's routines (reusing one you already have under the same name) and puts them on
+// its weekdays. Existing routines are never touched
 // and only the weekdays the plan asks for are reassigned; an id with no plan behind it changes
 // nothing at all. planId is deliberately required — a default invites `onClick={loadStarterPlan}`,
 // which hands the click event in as the plan and silently loads nothing.
@@ -158,8 +159,15 @@ export function loadStarterPlan(planId) {
   const plan = buildStarterPlan(planId)
   if (!plan) return false
   update(st => {
-    st.routines.push(...plan.routines)
-    plan.schedule.forEach(({ day, routineId }) => { st.week[day] = [routineId] })
+    // Loading the same plan again reuses the routines it added last time (same name) for the
+    // weekdays instead of a second Upper A, Lower A, ... under the same names.
+    const idOf = {}
+    plan.routines.forEach(r => {
+      const have = st.routines.find(x => x.name === r.name)
+      if (have) idOf[r.id] = have.id
+      else { st.routines.push(r); idOf[r.id] = r.id }
+    })
+    plan.schedule.forEach(({ day, routineId }) => { st.week[day] = [idOf[routineId]] })
   })
   toast(t('{0} loaded', PLAN_COPY[planId]().name))
   return true

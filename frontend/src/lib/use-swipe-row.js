@@ -146,7 +146,8 @@ export function useSwipeRow({ canDelete = true, onCommit, onBlocked, onStart, cl
   const cpRef = useRef(null)
   const g = useRef(null)          // the gesture in progress
   const o = useRef(0)             // current logical offset
-  const busy = useRef(false)      // an act or a peek is animating
+  const busy = useRef(false)      // an act is animating
+  const peeking = useRef(null)    // the first-use hint's pending timer while it plays
   const timers = useRef([])
   const anim = useRef(null)
   const [openSide, setOpenSide] = useState(null)
@@ -185,6 +186,7 @@ export function useSwipeRow({ canDelete = true, onCommit, onBlocked, onStart, cl
 
   const reset = useCallback(() => {
     clearTimers()
+    clearTimeout(peeking.current); peeking.current = null
     anim.current?.cancel?.()
     anim.current = null
     busy.current = false
@@ -264,7 +266,7 @@ export function useSwipeRow({ canDelete = true, onCommit, onBlocked, onStart, cl
 
   // Any change the row's owner names closes it at once and drops a gesture mid-way.
   useEffect(() => { reset() }, [closeKey, reset])
-  useEffect(() => () => { clearTimers(); anim.current?.cancel?.(); if (shared.open?.el === outerRef.current) shared.open = null }, [])
+  useEffect(() => () => { clearTimers(); clearTimeout(peeking.current); anim.current?.cancel?.(); if (shared.open?.el === outerRef.current) shared.open = null }, [])
 
   // touchmove is attached by hand and not passive, so a locked sideways swipe can keep the page
   // from scrolling under it on browsers that do not honour touch-action on the row (see the
@@ -284,6 +286,9 @@ export function useSwipeRow({ canDelete = true, onCommit, onBlocked, onStart, cl
     if (e.target.closest?.('.subrow,.swpane')) return
     const width = typeof window !== 'undefined' ? window.innerWidth : 0
     if (width && inEdgeZone(e.clientX, width)) return
+    // A real touch beats the first-use hint: it stops where it is and the row is the finger's
+    // (QA 10-06: a swipe in the hint's first two seconds used to be swallowed).
+    if (peeking.current) { clearTimeout(peeking.current); peeking.current = null; paint(0) }
     g.current = { id: e.pointerId, x0: e.clientX, y0: e.clientY, o0: o.current, lock: null, samples: [] }
   }
   const onPointerMove = e => {
@@ -321,15 +326,14 @@ export function useSwipeRow({ canDelete = true, onCommit, onBlocked, onStart, cl
 
   // The first-use hint: a nudge toward the start (red shows), back, toward the end, back.
   const peek = useCallback(() => {
-    if (reducedMotion() || busy.current || g.current) return
-    busy.current = true
+    if (reducedMotion() || busy.current || peeking.current || g.current) return
     const steps = [[-PEEK, 250], [0, 250], [PEEK, 250], [0, 250]]
     let k = 0
     const step = () => {
-      if (k >= steps.length) { busy.current = false; return }
+      if (k >= steps.length) { peeking.current = null; return }
       const [off, ms] = steps[k++]
       paint(off, ms)
-      later(step, ms + 50)
+      peeking.current = setTimeout(step, ms + 50)
     }
     step()
   }, [paint])

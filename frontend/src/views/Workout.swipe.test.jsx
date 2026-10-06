@@ -400,6 +400,21 @@ describe('the one-time hint', () => {
     expect(container.querySelector('.swhint')).toBeNull()
   })
 
+  it('gives way to a real swipe while it is still nudging the row', () => {
+    const widthSpy = vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(360)
+    try {
+      setActive([entry('1001', [row(80, true), row(70)])], { hints: {} })
+      render()
+      act(() => vi.advanceTimersByTime(700))
+      expect(useUI.getState().swipeHint).toMatchObject({ idx: 0, i: 1 })
+      act(() => vi.advanceTimersByTime(100))    // mid-nudge
+      const hinted = container.querySelectorAll('.swrow')[1]
+      swipe(hinted, 100, 330)
+      act(() => vi.advanceTimersByTime(400))
+      expect(sets().map(s => [s.w, s.done])).toEqual([[80, true], [70, false], [70, false]])
+    } finally { widthSpy.mockRestore() }
+  })
+
   it('stays away with swiping off, or once seen', () => {
     setActive([entry('1001', [row(80)])], { hints: {}, wc: { swipeSets: false } })
     render()

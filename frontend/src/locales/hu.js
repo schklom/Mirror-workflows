@@ -1904,4 +1904,5 @@ export default {
   'Couldn’t read that file.': 'Ezt a fájlt nem sikerült beolvasni.',
   'This server doesn’t know that passkey. Make a profile first.': 'Ez a szerver nem ismeri ezt a jelszókulcsot. Előbb hozz létre egy profilt.',
   'That took a little too long. Give it another go.': 'Ez egy kicsit túl sokáig tartott. Próbáld újra.',
+  'That code didn’t work. Codes last 5 minutes and work once, so grab a fresh one.': 'Ez a kód nem működött. A kódok 5 percig érvényesek és csak egyszer használhatók, úgyhogy kérj egy újat.',
 }

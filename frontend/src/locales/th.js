@@ -1912,4 +1912,5 @@ export default {
   'Couldn’t read that file.': 'อ่านไฟล์นี้ไม่ได้',
   'This server doesn’t know that passkey. Make a profile first.': 'เซิร์ฟเวอร์นี้ไม่รู้จักพาสคีย์นี้ สร้างโปรไฟล์ก่อนนะ',
   'That took a little too long. Give it another go.': 'ใช้เวลานานไปหน่อย ลองอีกครั้งนะ',
+  'That code didn’t work. Codes last 5 minutes and work once, so grab a fresh one.': 'รหัสนี้ใช้ไม่ได้ รหัสใช้ได้ 5 นาทีและใช้ได้ครั้งเดียว ขอรหัสใหม่นะ',
 }

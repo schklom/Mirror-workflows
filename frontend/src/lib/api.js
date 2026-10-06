@@ -297,6 +297,9 @@ export async function pairRedeem(serverBase, code, { probeMs = PROBE_MS } = {}) 
       method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code })
     }, TIMEOUT_GET_MS)
   } catch (e) {
+    // A wrong, spent or expired code is the one refusal a person can fix, and the server says it
+    // in English only ('invalid or expired code'), so it is said here in the UI language.
+    if (e && e.status === 400) throw failure(t('That code didn’t work. Codes last 5 minutes and work once, so grab a fresh one.'), 'pair-invalid', 400)
     // The server answered (any status) or did not answer in time: that error says it already.
     if (e && (e.status != null || e.code)) throw e
     if (await blockedAsMixedContent(serverBase)) {

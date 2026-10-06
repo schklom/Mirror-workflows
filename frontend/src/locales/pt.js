@@ -1901,4 +1901,5 @@ export default {
   'Couldn’t read that file.': 'Não foi possível ler esse ficheiro.',
   'This server doesn’t know that passkey. Make a profile first.': 'Este servidor não conhece essa passkey. Cria primeiro um perfil.',
   'That took a little too long. Give it another go.': 'Demorou um bocadinho demais. Tenta outra vez.',
+  'That code didn’t work. Codes last 5 minutes and work once, so grab a fresh one.': 'Esse código não funcionou. Os códigos duram 5 minutos e só servem uma vez, por isso pede um novo.',
 }

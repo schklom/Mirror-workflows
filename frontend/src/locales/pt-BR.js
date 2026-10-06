@@ -1180,6 +1180,7 @@ export const PT_BR_OVERRIDES = {
   'Couldn’t read that file.': 'Não foi possível ler esse arquivo.',
   'This server doesn’t know that passkey. Make a profile first.': 'Este servidor não conhece essa chave de acesso. Crie um perfil primeiro.',
   'That took a little too long. Give it another go.': 'Demorou um pouquinho demais. Tente de novo.',
+  'That code didn’t work. Codes last 5 minutes and work once, so grab a fresh one.': 'Esse código não funcionou. Os códigos duram 5 minutos e só valem uma vez, então pegue um novo.',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

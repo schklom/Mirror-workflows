@@ -1905,4 +1905,5 @@ export default {
   'Couldn’t read that file.': 'Не удалось прочитать этот файл.',
   'This server doesn’t know that passkey. Make a profile first.': 'Этот сервер не знает такой ключ доступа. Сначала создайте профиль.',
   'That took a little too long. Give it another go.': 'Это заняло слишком много времени. Попробуйте ещё раз.',
+  'That code didn’t work. Codes last 5 minutes and work once, so grab a fresh one.': 'Этот код не сработал. Коды действуют 5 минут и только один раз, так что возьмите свежий.',
 }

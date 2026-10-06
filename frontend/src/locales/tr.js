@@ -1901,4 +1901,5 @@ export default {
   'Couldn’t read that file.': 'Bu dosya okunamadı.',
   'This server doesn’t know that passkey. Make a profile first.': 'Bu sunucu o geçiş anahtarını tanımıyor. Önce bir profil oluştur.',
   'That took a little too long. Give it another go.': 'Bu biraz fazla uzun sürdü. Bir kez daha dene.',
+  'That code didn’t work. Codes last 5 minutes and work once, so grab a fresh one.': 'Bu kod işe yaramadı. Kodlar 5 dakika geçerli ve tek kullanımlık, yenisini al.',
 }

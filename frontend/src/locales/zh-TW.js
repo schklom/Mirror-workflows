@@ -1894,4 +1894,5 @@ export default {
   'Couldn’t read that file.': '無法讀取這個檔案。',
   'This server doesn’t know that passkey. Make a profile first.': '這個伺服器不認得這個通行密鑰。請先建立個人檔案。',
   'That took a little too long. Give it another go.': '花的時間有點太久了。再試一次吧。',
+  'That code didn’t work. Codes last 5 minutes and work once, so grab a fresh one.': '這個代碼沒用。代碼只在 5 分鐘內有效，而且只能用一次，換個新的吧。',
 }

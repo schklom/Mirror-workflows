@@ -82,10 +82,17 @@ describe('pairRedeem when the request never gets an answer', () => {
     expect(e.code).toBe('unreachable')
   })
 
-  it('an answer from the server is passed on as it is, with no probe', async () => {
-    const fetch = vi.fn(async () => new Response(JSON.stringify({ error: 'invalid or expired code' }), { status: 400, headers: { 'content-type': 'application/json' } }))
+  it('a refused code is said in words a person can act on, with no probe', async () => {
+    const fetch = vi.fn(async () => new Response(JSON.stringify({ error: 'invalid or expired code', code: 'pair-invalid' }), { status: 400, headers: { 'content-type': 'application/json' } }))
     vi.stubGlobal('fetch', fetch)
-    await expect(pairRedeem('https://gym.example.com', 'ABCD2345')).rejects.toMatchObject({ status: 400, message: 'invalid or expired code' })
+    await expect(pairRedeem('https://gym.example.com', 'ABCD2345')).rejects.toMatchObject({ status: 400, code: 'pair-invalid', message: 'That code didn’t work. Codes last 5 minutes and work once, so grab a fresh one.' })
+    expect(fetch).toHaveBeenCalledTimes(1)
+  })
+
+  it('any other answer from the server is passed on as it is, with no probe', async () => {
+    const fetch = vi.fn(async () => new Response(JSON.stringify({ error: 'the server is busy, try again in a moment', code: 'busy' }), { status: 503, headers: { 'content-type': 'application/json' } }))
+    vi.stubGlobal('fetch', fetch)
+    await expect(pairRedeem('https://gym.example.com', 'ABCD2345')).rejects.toMatchObject({ status: 503, message: 'the server is busy, try again in a moment' })
     expect(fetch).toHaveBeenCalledTimes(1)
   })
 

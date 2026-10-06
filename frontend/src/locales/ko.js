@@ -1901,4 +1901,5 @@ export default {
   'Couldn’t read that file.': '이 파일을 읽을 수 없어요.',
   'This server doesn’t know that passkey. Make a profile first.': '이 서버는 이 패스키를 몰라요. 먼저 프로필을 만들어 주세요.',
   'That took a little too long. Give it another go.': '조금 너무 오래 걸렸어요. 다시 해 보세요.',
+  'That code didn’t work. Codes last 5 minutes and work once, so grab a fresh one.': '이 코드는 안 됐어요. 코드는 5분 동안 한 번만 쓸 수 있으니 새 코드를 받아 주세요.',
 }

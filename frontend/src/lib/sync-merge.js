@@ -772,6 +772,7 @@ export function highestStamp(S) {
     }
   }
   for (const f of ['balanceOverrides', 'loadKind', 'plates']) if (isMap(S[f])) for (const v of Object.values(S[f])) see(stampOf(v))
+  for (const e of list(S.bodyweight)) if (e && typeof e === 'object') see(e.t)
   return m
 }
 
@@ -796,6 +797,15 @@ export function stampChange(prev, next, wall = Date.now()) {
     const p = isMap(prev?.[f]) ? prev[f] : {}, n = isMap(next[f]) ? next[f] : null
     if (!n) continue
     for (const [k, v] of Object.entries(n)) if (isMap(v) && v._ts != null && stampOf(v) !== stampOf(p[k])) v._ts = now
+  }
+  // A weigh-in the change logged or corrected (its `t` moved): the newer entry of a day wins the
+  // merge (mergeBodyweight), so it takes the change's time like any other stamp. One whose weight
+  // only a unit switch converted keeps its own.
+  const bwBefore = new Map(list(prev?.bodyweight).filter(e => e && e.d != null).map(e => [e.d, e]))
+  for (const e of list(next.bodyweight)) {
+    if (!e || typeof e !== 'object' || e.d == null || e.t == null) continue
+    const old = bwBefore.get(e.d)
+    if (!old || old.t !== e.t) e.t = Math.max(Number(e.t) || 0, now)
   }
   stampRoutines(prev?.routines, next.routines, now)
   stampCustomEx(prev?.customEx, next.customEx, now)

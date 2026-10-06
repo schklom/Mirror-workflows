@@ -204,6 +204,8 @@ describe('the search lands on a row', () => {
     expect(searchSettings('server', web, tr).map(h => h.title)).toContain('Sync now')
     expect(searchSettings('sync', web, tr).map(h => h.title)).toContain('Sync now')
     expect(searchSettings('loop', web, tr).map(h => h.title)).toContain('How you train')
+    expect(searchSettings('swipe', web, tr)[0].title).toBe('Swipe on sets')
+    expect(searchSettings('gesture', web, tr).map(h => h.title)).toEqual(['Swipe on sets'])
     expect(searchSettings('home screen', web, tr).map(h => h.title)).toEqual(['In Safari: Share → Add to Home Screen'])
     expect(searchSettings('install', { ...web, androidWeb: true }, tr).map(h => h.title)).toEqual(['In Chrome: ⋮ menu → Add to Home screen'])
     expect(searchSettings('backup folder', { ...guestWeb, mobile: true, android: true, autoBackup: true }, tr).map(h => h.title)).toEqual(['Backup folder'])
@@ -398,6 +400,8 @@ describe('searchSettings', () => {
       expect(first('Feste Woche')).toBe('How you train')
       expect(first('Wochenstart')).toBe('Week starts on')
       expect(first('kompakt')).toBe('Layout')
+      expect(first('wischen')).toBe('Swipe on sets')
+      expect(first('Geste')).toBe('Swipe on sets')
       await setLang('ar')
       expect(searchSettings('تناوب', guestWeb, t).map(h => h.title)).toContain('How you train')
     } finally { await setLang('en') }

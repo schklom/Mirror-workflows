@@ -1894,6 +1894,7 @@ export default {
   'Move {0}': 'Переместить {0}',
   'Build your loop in Plan': 'Собери круг в Плане',
   'week start': 'начало недели',
+  'swipe gesture': 'свайп жест смахивание',
   'Finish workout?': 'Завершить тренировку?',
   'Finish and save': 'Завершить и сохранить',
   'Make it a warm-up set': 'Сделать разминочным подходом',

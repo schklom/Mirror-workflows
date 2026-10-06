@@ -1890,6 +1890,7 @@ export default {
   'Move {0}': '{0} खिसकाएँ',
   'Build your loop in Plan': 'योजना में अपना चक्र बनाएं',
   'week start': 'सप्ताह की शुरुआत',
+  'swipe gesture': 'स्वाइप इशारा',
   'Finish workout?': 'वर्कआउट समाप्त करें?',
   'Finish and save': 'समाप्त करें और सहेजें',
   'Make it a warm-up set': 'इसे वार्म-अप सेट बनाएं',

@@ -1901,6 +1901,7 @@ export default {
   'Move {0}': 'ย้าย {0}',
   'Build your loop in Plan': 'สร้างการวนรอบในแผน',
   'week start': 'วันเริ่มสัปดาห์',
+  'swipe gesture': 'ปัด ท่าทาง',
   'Finish workout?': 'จบการออกกำลังกายไหม?',
   'Finish and save': 'จบและบันทึก',
   'Make it a warm-up set': 'เปลี่ยนเป็นเซ็ตวอร์มอัพ',

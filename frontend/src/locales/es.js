@@ -1890,6 +1890,7 @@ export default {
   'Move {0}': 'Mover {0}',
   'Build your loop in Plan': 'Crea tu bucle en Plan',
   'week start': 'inicio de semana',
+  'swipe gesture': 'deslizar gesto',
   'Finish workout?': '¿Terminar entrenamiento?',
   'Finish and save': 'Terminar y guardar',
   'Make it a warm-up set': 'Convertir en serie de calentamiento',

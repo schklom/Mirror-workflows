@@ -1910,6 +1910,7 @@ export default {
   'Move {0}': '{0} verschieben',
   'Build your loop in Plan': 'Kreislauf im Plan erstellen',
   'week start': 'Wochenstart',
+  'swipe gesture': 'Wischgeste wischen',
   'Finish workout?': 'Training beenden?',
   'Finish and save': 'Beenden und speichern',
   'Make it a warm-up set': 'Zum Aufwärmsatz machen',

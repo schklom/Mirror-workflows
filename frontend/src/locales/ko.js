@@ -1890,6 +1890,7 @@ export default {
   'Move {0}': '{0} 이동',
   'Build your loop in Plan': '계획에서 순환 만들기',
   'week start': '주 시작',
+  'swipe gesture': '스와이프 제스처 밀기',
   'Finish workout?': '운동을 마칠까요?',
   'Finish and save': '마치고 저장',
   'Make it a warm-up set': '워밍업 세트로 바꾸기',

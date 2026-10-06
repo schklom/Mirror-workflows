@@ -1943,6 +1943,7 @@ export default {
   'Move {0}': 'نقل {0}',
   'Build your loop in Plan': 'أنشئ دورتك في الخطة',
   'week start': 'بداية الأسبوع',
+  'swipe gesture': 'سحب إيماءة تمرير',
   'Finish workout?': 'إنهاء التمرين؟',
   'Finish and save': 'إنهاء وحفظ',
   'Make it a warm-up set': 'اجعلها مجموعة إحماء',

@@ -937,7 +937,7 @@ export default {
   'Before the Coach’s plan': 'Avant le plan du Coach',
   'Before the Coach’s changes': 'Avant les changements du Coach',
   'Add {0}': 'Ajouter {0}',
-  'Drop {0}': 'Retirer {0}',
+  'Drop {0}': 'Drop {0}',
   'Swap {0} for {1}': 'Remplacer {0} par {1}',
   '{0}: sets': '{0} : séries',
   '{0}: reps': '{0} : répétitions',

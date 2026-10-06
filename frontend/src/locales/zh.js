@@ -937,7 +937,7 @@ export default {
   'Before the Coach’s plan': '教练计划之前',
   'Before the Coach’s changes': '教练更改之前',
   'Add {0}': '添加 {0}',
-  'Drop {0}': '移除 {0}',
+  'Drop {0}': '递减 {0}',
   'Swap {0} for {1}': '将 {0} 换成 {1}',
   '{0}: sets': '{0}：组数',
   '{0}: reps': '{0}：次数',

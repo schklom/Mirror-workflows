@@ -937,7 +937,7 @@ export default {
   'Before the Coach’s plan': 'कोच के प्लान से पहले',
   'Before the Coach’s changes': 'कोच के बदलावों से पहले',
   'Add {0}': '{0} जोड़ें',
-  'Drop {0}': '{0} हटाएँ',
+  'Drop {0}': 'ड्रॉप {0}',
   'Swap {0} for {1}': '{0} की जगह {1}',
   '{0}: sets': '{0}: सेट',
   '{0}: reps': '{0}: रेप्स',

@@ -929,7 +929,7 @@ export default {
   'Before the Coach’s plan': '套用教練計畫前',
   'Before the Coach’s changes': '套用教練修改前',
   'Add {0}': '新增 {0}',
-  'Drop {0}': '移除 {0}',
+  'Drop {0}': '遞減 {0}',
   'Swap {0} for {1}': '將 {0} 替換為 {1}',
   '{0}: sets': '{0}：組數',
   '{0}: reps': '{0}：次數',

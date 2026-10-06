@@ -937,7 +937,7 @@ export default {
   'Before the Coach’s plan': 'Koç’un planından önce',
   'Before the Coach’s changes': 'Koç’un değişikliklerinden önce',
   'Add {0}': '{0} ekle',
-  'Drop {0}': '{0} çıkar',
+  'Drop {0}': 'Düşüş {0}',
   'Swap {0} for {1}': '{0} yerine {1}',
   '{0}: sets': '{0}: set',
   '{0}: reps': '{0}: tekrar',

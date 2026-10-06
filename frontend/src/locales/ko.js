@@ -937,7 +937,7 @@ export default {
   'Before the Coach’s plan': '코치 계획 전',
   'Before the Coach’s changes': '코치 변경 전',
   'Add {0}': '{0} 추가',
-  'Drop {0}': '{0} 제외',
+  'Drop {0}': '드롭 {0}',
   'Swap {0} for {1}': '{0}을(를) {1}(으)로 교체',
   '{0}: sets': '{0}: 세트',
   '{0}: reps': '{0}: 횟수',

@@ -175,6 +175,7 @@ test('the three hot-path state reads all go through readStateCached', () => {
   }
   // GET /api/data hands out the document itself and PUT compares against it — both want the real
   // thing, uncached.
-  assert.match(handler('GET /api/data'), /readState\(user\.id\)/);
-  assert.match(handler('PUT /api/data'), /readState\(user\.id\)/);
+  // (readStateStrict: a file that cannot be read is a 503, not an empty profile.)
+  assert.match(handler('GET /api/data'), /readStateStrict\(user\.id\)/);
+  assert.match(handler('PUT /api/data'), /readStateStrict\(user\.id\)/);
 });

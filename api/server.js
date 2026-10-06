@@ -115,15 +115,45 @@ if (!fs.existsSync(secretFile)) fs.writeFileSync(secretFile, crypto.randomBytes(
 const SECRET = fs.readFileSync(secretFile, 'utf8').trim();
 
 const dbFile = path.join(DATA, 'db.json');
-let db = { users: [], creds: [], subs: [], invites: [] };
-try { db = JSON.parse(fs.readFileSync(dbFile, 'utf8')); } catch {}
+// Every account, passkey and invite. Only a missing file starts empty: an unreadable one (a write
+// cut short by a power loss, a damaged restore) used to boot with no users at all, and the first
+// save then replaced it — every profile locked out, every training history orphaned, and with
+// FIRST_USER_ADMIN the first visitor made admin. Now the damaged file is kept aside and the copy
+// saveDb keeps of the previous version (db.json.bak) is used; with neither readable the server
+// refuses to start, saying why, rather than start as a new instance.
+function loadDb() {
+  let raw;
+  try { raw = fs.readFileSync(dbFile, 'utf8'); }
+  catch (e) { if (e.code === 'ENOENT') return { users: [], creds: [], subs: [], invites: [] }; throw e; }
+  const parse = text => { const v = JSON.parse(text); if (!v || typeof v !== 'object' || Array.isArray(v)) throw new Error('not an object'); return v; };
+  try { return parse(raw); } catch (err) {
+    const aside = `${dbFile}.unreadable-${Date.now()}`;
+    try { fs.copyFileSync(dbFile, aside); } catch { /* the original stays where it is anyway */ }
+    console.error(`db.json cannot be read (${err.message}); kept a copy as ${path.basename(aside)}`);
+    try {
+      const bak = parse(fs.readFileSync(dbFile + '.bak', 'utf8'));
+      console.error('db.json: using db.json.bak, the version before the last save');
+      return bak;
+    } catch {
+      console.error('db.json: no readable db.json.bak either. Refusing to start: restore db.json from a backup.');
+      process.exit(1);
+    }
+  }
+}
+let db = loadDb();
+db.users = db.users || [];
+db.creds = db.creds || [];
 db.subs = db.subs || [];
 db.invites = db.invites || [];
 db.deviceLinks = db.deviceLinks || [];   // unused one-time device links, hashed (device-link.js)
 const isAdmin = user => !!user && (user.admin === true || ADMIN_UIDS.includes(user.id));
 // 0600: db.json holds passkey credential material. It used to be covered by a blanket 0700 on
 // the whole directory; now that the directory stays traversable, the file carries its own mode.
-function saveDb() { atomicWrite(dbFile, JSON.stringify(db, null, 2), 0o600); }
+// The version being replaced is kept as db.json.bak first: loadDb falls back to it.
+function saveDb() {
+  try { fs.copyFileSync(dbFile, dbFile + '.bak'); fs.chmodSync(dbFile + '.bak', 0o600); } catch { /* none yet */ }
+  atomicWrite(dbFile, JSON.stringify(db, null, 2), 0o600);
+}
 // Flushed before and after the rename (durable.js): a host reset must not bring back the file
 // the client was told had been replaced.
 function atomicWrite(file, content, mode) { durableWrite(file, content, mode); }
@@ -145,6 +175,16 @@ function notePull(user, now = Date.now()) {
 const lastSyncOf = (u, S) => Math.max(S?._ts || 0, u?.lastPull || 0) || null;
 function readState(uid) {
   try { return JSON.parse(fs.readFileSync(stateFile(uid), 'utf8')); } catch { return null; }
+}
+// GET and PUT /api/data tell a profile with no state yet from one whose file cannot be read: the
+// second answers 503 instead of an empty profile, which a device would adopt, or a write would
+// replace, losing what a restore could still bring back.
+const UNREADABLE = Symbol('unreadable');
+function readStateStrict(uid) {
+  let raw;
+  try { raw = fs.readFileSync(stateFile(uid), 'utf8'); }
+  catch (e) { return e.code === 'ENOENT' ? null : UNREADABLE; }
+  try { return JSON.parse(raw); } catch { return UNREADABLE; }
 }
 // An entry is an object a reader can dereference, and `records` is every entry of a stored
 // list. PUT /api/data drops the rest on the way in — a null workout, a routine that is a
@@ -2044,7 +2084,8 @@ const routes = {
   'GET /api/data': async (req, res) => {
     const user = readSession(req);
     if (!user) return json(res, 401, { error: 'not signed in' });
-    const state = readState(user.id);
+    const state = readStateStrict(user.id);
+    if (state === UNREADABLE) { console.error('state file unreadable for', user.id); return json(res, 503, { error: 'state unreadable' }); }
     notePull(user);
     json(res, 200, { state, rev: state?._rev || 0 });
   },
@@ -2096,7 +2137,8 @@ const routes = {
     // before revisions, or a deliberate replace such as a backup import) overwrites, as before.
     // readState and atomicWrite are synchronous with nothing awaited between them, so the
     // compare-and-write is atomic for this process.
-    const cur = readState(user.id);
+    const cur = readStateStrict(user.id);
+    if (cur === UNREADABLE) { console.error('state file unreadable for', user.id); return json(res, 503, { error: 'state unreadable' }); }
     const curRev = cur?._rev || 0;
     // `_rev` is a counter, so after the data directory went back in time (a restored backup, a
     // write lost to a power cut) the same number names a different document. Every write also gets

@@ -36,12 +36,14 @@ export default function QueueRow({ S, today, onStart, managed }) {
       {/* Your own loop speaks in rounds, as Plan does; a coach's week keeps its plain count. */}
       <div className="small muted">{managed ? t('{0} of {1} done this round.', v.items.length - v.remaining.length, v.items.length) : `${v.items.length - v.remaining.length} / ${v.items.length}`}</div>
     </div>
+    {/* The state word keeps its sentence case ("Up next", as on Plan): .chip capitalizes every
+        word for the routine names, which made it "Up Next" here (QA 10-06). */}
     {/* three chips do not fit one phone row and .chips hides its scrollbar — wrap instead */}
     <div className="chips" style={{ flexWrap: 'wrap' }}>
       {v.items.map((i, n) => <button key={n} className={'chip' + (i.state === 'next' ? ' on' : '')}
         disabled={i.state === 'done'} onClick={() => onStart(i.id)}
         style={{ display: 'inline-flex', alignItems: 'center', gap: 5, opacity: i.state === 'done' ? 0.55 : undefined }}>
-        {i.state === 'done' && <Icon name="check" />}{i.name}<span className="dim">{i.state === 'pinned' ? fmtDate(i.on, true) : word[i.state]}</span>
+        {i.state === 'done' && <Icon name="check" />}{i.name}<span className="dim qstate">{i.state === 'pinned' ? fmtDate(i.on, true) : word[i.state]}</span>
       </button>)}
     </div>
     <div className="small muted queue-status" style={{ marginTop: 8 }}>{status}</div>

@@ -70,6 +70,15 @@ describe('Home — coach week progress row', () => {
     expect(todayTitle()).toBe('US W1 D1')
   })
 
+  it('keeps "Up next" in sentence case, as Plan says it, though .chip capitalizes names', async () => {
+    setS()
+    mount()
+    expect(chips()[0].querySelector('.qstate').textContent).toBe('Up next')
+    const { readFileSync } = await import('node:fs')
+    const css = readFileSync(`${process.cwd()}/src/index.css`, 'utf8')
+    expect(css).toMatch(/\.chip \.qstate\{text-transform:none\}/)
+  })
+
   it('a finished workout on a routine marks its chip done and moves the light on', () => {
     setS({ workouts: [logged('d1')] })
     mount()

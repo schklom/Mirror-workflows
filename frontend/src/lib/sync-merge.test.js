@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { keepReset, localExtras, mergeDeletions, stampDeletions, stampEdits, mergeBodyweight, mergeResetIds, mergeStampedMap, mergeStates, newerOf, resetIdsOf, RESET_ID_MAX, sinceReset, stampCustomEx, stampRoutines, stampWorkout, unionById } from './sync-merge.js'
+import { highestStamp, stampChange, keepReset, localExtras, mergeDeletions, stampDeletions, stampEdits, mergeBodyweight, mergeResetIds, mergeStampedMap, mergeStates, newerOf, resetIdsOf, RESET_ID_MAX, sinceReset, stampCustomEx, stampRoutines, stampWorkout, unionById } from './sync-merge.js'
 import { mergeImport } from './import-csv.js'
 import { convertBodyWeight, convertStateUnit, convertWeight } from './units.js'
 import { retimeWorkout } from './workout-date.js'
@@ -757,6 +757,50 @@ describe('added back means brought back by this change', () => {
     const tablet = update(b0, 30, S => { S.favEx = ['bench'] })
     expect(mergeStates(tablet, phone).favEx).toEqual(['bench'])
     expect(mergeStates(phone, tablet).favEx).toEqual(['bench'])
+  })
+})
+
+
+describe('a change is stamped after everything the copy it was made on carries (stampChange)', () => {
+  const T = Date.UTC(2026, 9, 6, 12), DAY = 86400000
+  const change = (prev, wall, mut) => { const n = clone(prev); mut(n); n._ts = stampChange(prev, n, wall); return n }
+
+  it('a phone a day behind keeps the setting, rename and delete it made after the web change it saw', () => {
+    const b0 = { _ts: T - 3600000, restSec: 90, routines: [{ id: 'r1', name: 'Pull', ex: [], _ts: T - 7200000 }],
+      workouts: [{ id: 'w1', d: '2026-10-06', start: T - 7200000, end: T - 3600000, entries: [] }] }
+    const web = change(b0, T, S => { S.restSec = 180; S.routines[0].name = 'Push A'; S.workouts[0].note = 'x'; stampWorkout(S.workouts[0], T) })
+    // the phone pulled the web's copy, then (a minute later, its clock a day behind) changes all three
+    const phone = change(web, T + 60000 - DAY, S => { S.restSec = 95; S.routines[0].name = 'Push B'; S.workouts = [] })
+    expect(phone._ts).toBeGreaterThan(web._ts)
+    // the web, meanwhile offline with an unrelated change, merges the phone's copy
+    const web2 = change(web, T + 30000, S => { S.theme = 'light' })
+    for (const m of [mergeStates(web2, phone), mergeStates(phone, web2)]) {
+      expect(m.restSec).toBe(95)
+      expect(m.routines[0].name).toBe('Push B')
+      expect(m.workouts).toEqual([])
+      expect(m.theme).toBe('light')
+    }
+  })
+
+  it('a delete is always stamped after the entry it removes', () => {
+    const b0 = { _ts: 10, workouts: [{ id: 'dupe', d: '2026-10-06', start: T - 100, end: T }], bodyweight: [{ d: '2026-10-06', w: 80, t: T + 7200e3 }] }
+    const n = change(b0, T - DAY, S => { S.workouts = []; S.bodyweight = [] })
+    expect(n.deleted.workouts.dupe).toBeGreaterThan(T)
+    expect(n.deleted.bodyweight['2026-10-06']).toBeGreaterThan(T + 7200e3)
+  })
+
+  it('a weigh-in logged again after seeing a delete stamped by a clock that runs ahead is kept', () => {
+    const D = '2026-10-06'
+    const b0 = { _ts: T - 5e5, workouts: [], bodyweight: [{ d: D, w: 82, t: T - 4e5 }] }
+    const A = change(b0, T + 7200e3, S => { S.bodyweight = [] })            // clock two hours ahead
+    const B = change(A, T + 600e3, S => { S.bodyweight = [{ d: D, w: 80.4, t: T + 600e3 }] })
+    const A2 = change(A, T + 7200e3 + 5, S => { S.restSec = 120 })
+    expect(mergeStates(A2, B).bodyweight.map(e => e.w)).toEqual([80.4])
+  })
+
+  it('highestStamp reads every kind of stamp', () => {
+    expect(highestStamp({ _ts: 1, edited: { a: 5 }, deleted: { workouts: { x: -9 } }, routines: [{ _ts: 3, _f: { name: 12 } }], plates: { kg: { _ts: 7 } } })).toBe(12)
+    expect(highestStamp(null)).toBe(0)
   })
 })
 

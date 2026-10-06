@@ -10,7 +10,7 @@ import { describe, expect, it } from 'vitest'
 import * as M from './sync-merge.js'
 import * as U from './units.js'
 
-const { mergeStates, stampRoutines, stampCustomEx, stampWorkout, keepReset, stampDeletions, stampEdits } = M
+const { mergeStates, stampWorkout, keepReset } = M
 const unitOps = []
 const clone = o => (o === undefined ? undefined : JSON.parse(JSON.stringify(o)))
 const DEL = '__DELETED__'
@@ -47,7 +47,7 @@ function run(seed, opts = {}) {
 
   // ---- store model -----------------------------------------------------------------------
   function persist(r, S, stamp = true) {
-    if (stamp) S._ts = Math.max(nowOf(r), (r.base?.ts || 0) + 1)
+    if (stamp) S._ts = Math.max(nowOf(r), (r.base?.ts || 0) + 1, Number(S._ts) || 0)
     r.S = S
   }
   function update(r, mut) {
@@ -55,11 +55,7 @@ function run(seed, opts = {}) {
     const S = clone(prev)
     const ok = mut(S, nowOf(r))
     if (ok === false) return false
-    const now = nowOf(r)
-    stampRoutines(prev.routines, S.routines, now)
-    stampCustomEx(prev.customEx, S.customEx, now)
-    stampDeletions(prev, S, now)
-    stampEdits(prev, S, now)
+    S._ts = M.stampChange(prev, S, nowOf(r))
     persist(r, S)
     r.pushTm = true
     return true
@@ -349,6 +345,20 @@ const CASES = [
   { name: 'with resets', seeds: 150, opts: { reset: true, ops: 80 } },
   { name: 'with unit switches', seeds: 150, opts: { units: true, ops: 80 } },
 ]
+
+describe('sync fuzz: clocks up to a day apart still converge, with nothing duplicated', () => {
+  it('three devices, skewed clocks', () => {
+    const bad = []
+    for (let s = 1; s <= 200; s++) {
+      const { problems } = run(s, { skew: 86400000, ops: 80, replicas: 3 })
+      // which of two changes neither device had seen comes last is the clocks' call; only
+      // convergence and duplicates are checked here (the ordering is checked without skew)
+      const hard = problems.filter(p => p.startsWith('no-converge') || p.startsWith('dup'))
+      if (hard.length) bad.push(`seed ${s}: ${hard.join('; ')}`)
+    }
+    expect(bad.slice(0, 5)).toEqual([])
+  })
+})
 
 describe('sync fuzz: every device converges on every last change', () => {
   for (const c of CASES) {

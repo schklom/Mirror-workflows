@@ -347,10 +347,13 @@ export function stampDeletions(prev, next, now = Date.now()) {
     const have = new Set(after.filter(x => x != null).map(x => String(key(x))))
     const m = isMap(del[f]) ? del[f] : {}
     let changed = false
+    const time = DEL_TIME[f] || (() => 0)
     for (const x of before) {
       if (x == null) continue
       const k = String(key(x))
-      if (!have.has(k)) { m[k] = now; changed = true }
+      // Never stamped before the entry's own time: a removal is always after what it removed,
+      // whatever this device's clock says (stampChange).
+      if (!have.has(k)) { m[k] = Math.max(now, time(x) + 1); changed = true }
     }
     // Added back: only a key this change brought in, not every key the copy merely still holds.
     // A copy keeps an entry whose removal it has on record when that entry was edited after the
@@ -650,6 +653,65 @@ export function keepReset(cur, next) {
     next.resetIds = mergeResetIds(cur.resetIds, next.resetIds)
   }
   return next
+}
+
+// ---- One causal time per change ---------------------------------------------------------------
+//
+// Every stamp above is a wall-clock time, compared between devices. A phone whose clock runs
+// behind stamped its later change before the change it had already seen, and lost to it on the
+// next merge: its setting, its routine edit, its delete reverted, silently, on every device. So a
+// change is stamped after every stamp the copy it was made on carries (stampChange): a change
+// made after seeing another always wins over it, whatever either clock says. Only changes neither
+// device had seen are still ordered by their clocks.
+
+/** The latest stamp a copy carries: its `_ts`, every setting, removal and entry stamp. */
+export function highestStamp(S) {
+  let m = 0
+  const see = v => { const n = Math.abs(Number(v) || 0); if (n > m) m = n }
+  if (!S || typeof S !== 'object') return 0
+  see(S._ts)
+  see(S.unitSet?.at)
+  see(S.resetAt)
+  if (isMap(S.edited)) for (const v of Object.values(S.edited)) see(v)
+  if (isMap(S.deleted)) for (const f of Object.values(S.deleted)) if (isMap(f)) for (const v of Object.values(f)) see(v)
+  for (const f of ['workouts', 'routines', 'customEx', 'equipProfiles', 'gymCards']) {
+    for (const x of list(S[f])) {
+      if (!x || typeof x !== 'object') continue
+      see(x._ts)
+      if (isMap(x._f)) for (const v of Object.values(x._f)) see(v)
+    }
+  }
+  for (const f of ['balanceOverrides', 'loadKind', 'plates']) if (isMap(S[f])) for (const v of Object.values(S[f])) see(stampOf(v))
+  return m
+}
+
+/**
+ * Stamps everything the change from `prev` to `next` touched, at one time that comes after every
+ * stamp `prev` carries (and `wall`, this device's clock): routines, custom exercises, workouts a
+ * screen re-stamped (stampWorkout), removals, settings and plan days. Mutates `next`; returns
+ * the time used, for the copy's own `_ts`.
+ */
+export function stampChange(prev, next, wall = Date.now()) {
+  const now = Math.max(Number(wall) || 0, highestStamp(prev) + 1)
+  if (!next || typeof next !== 'object') return now
+  const before = new Map(list(prev?.workouts).filter(w => w && w.id != null).map(w => [w.id, w]))
+  for (const w of list(next.workouts)) {
+    if (!w || typeof w !== 'object' || w.id == null || w._ts == null) continue
+    const old = before.get(w.id)
+    if (old && w._ts !== old._ts) w._ts = now
+  }
+  // Settings maps whose entries carry their own stamp (mergeStampedMap): an entry the change
+  // re-stamped takes the change's time.
+  for (const f of ['balanceOverrides', 'loadKind', 'plates']) {
+    const p = isMap(prev?.[f]) ? prev[f] : {}, n = isMap(next[f]) ? next[f] : null
+    if (!n) continue
+    for (const [k, v] of Object.entries(n)) if (isMap(v) && v._ts != null && stampOf(v) !== stampOf(p[k])) v._ts = now
+  }
+  stampRoutines(prev?.routines, next.routines, now)
+  stampCustomEx(prev?.customEx, next.customEx, now)
+  stampDeletions(prev, next, now)
+  stampEdits(prev, next, now)
+  return now
 }
 
 const sameRoutine = (a, b) => JSON.stringify({ ...a, _ts: 0 }) === JSON.stringify({ ...b, _ts: 0 })

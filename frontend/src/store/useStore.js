@@ -8,7 +8,7 @@ import { rememberDefaultLang } from '../lib/default-lang.js'
 import { guestAllowed } from '../lib/guest.js'
 import { MOBILE, initReminderSync, nativeLoad, nativeSave, onAppActive, readJsonFile, syncReminder, writeAutoBackup, writeJsonFile } from '../lib/mobile.js'
 import { refillIfComplete } from '../lib/rotation.js'
-import { mergeStates, localExtras, stampRoutines, stampCustomEx, stampDeletions, stampEdits, inUnitOf, keepReset, resetIdsOf, mergeResetIds, entryKey } from '../lib/sync-merge.js'
+import { mergeStates, localExtras, stampChange, highestStamp, inUnitOf, keepReset, resetIdsOf, mergeResetIds, entryKey } from '../lib/sync-merge.js'
 import { convertStateUnit } from '../lib/units.js'
 import { pendingRefCount, settleMedia, loadPending } from '../lib/media-owed.js'
 import { referencedHashes } from '../lib/media-refs.js'
@@ -430,7 +430,7 @@ export const useStore = create((set, get) => {
   // a pull replaced it with the server's copy.
   const persist = (S, push = true, stamp = true) => {
     const { base, owed } = metaOf()   // the copy being replaced; the new one stands where it stood
-    if (stamp) S._ts = Math.max(Date.now(), (base?.ts || 0) + 1)
+    if (stamp) S._ts = Math.max(Date.now(), (base?.ts || 0) + 1, Number(S._ts) || 0)
     // Every copy that enters the store — an edit, a pull, an adoption, a restored backup — has its
     // custom exercises marked as such (#378): one stored without the flag by an older plan import
     // goes out with it on the next push, without a stamp of its own (healCustomEx).
@@ -529,7 +529,7 @@ export const useStore = create((set, get) => {
     // A pass of this app's rotation that the merge left complete (each copy finished a session of
     // it, or one copy's refill lost to the other's older queue) starts its next pass here, as the
     // finish that completed it would have (lib/rotation.js).
-    if (refillIfComplete(merged)) merged.edited = { ...(merged.edited || {}), queue: Date.now() }
+    if (refillIfComplete(merged)) merged.edited = { ...(merged.edited || {}), queue: Math.max(Date.now(), highestStamp(merged) + 1) }
     persist(merged, false)
     if (rev == null) dropSync()
     else writeSync(rev, ts)
@@ -1021,13 +1021,11 @@ export const useStore = create((set, get) => {
       const prev = get().S
       const S = clone(prev)
       mut(S)
-      const now = Date.now()
-      stampRoutines(prev.routines, S.routines, now)
-      stampCustomEx(prev.customEx, S.customEx, now)
-      // What the change removed, and which settings and plan days it touched, each with its time:
-      // a conflict then keeps a removal and the setting changed last (lib/sync-merge.js).
-      stampDeletions(prev, S, now)
-      stampEdits(prev, S, now)
+      // What the change removed, and which routines, workouts, settings and plan days it touched,
+      // each with one time that comes after every stamp the copy already carries: a conflict then
+      // keeps a removal and the edit made last, even from a device whose clock runs behind
+      // (lib/sync-merge.js stampChange).
+      S._ts = stampChange(prev, S, Date.now())
       persist(S, push)
       // A photo or video added to a workout is a change worth the day's backup too: the one
       // finishing wrote went before the finish screen's pictures (autoBackupNow). Not a removal,
@@ -1063,7 +1061,7 @@ export const useStore = create((set, get) => {
       const S0 = get().S
       if ((S0.unit || 'kg') === to) return null
       const S = clone(convert ? convertStateUnit(S0, to) : { ...S0, unit: to })
-      S.unitSet = { at: Date.now(), convert }
+      S.unitSet = { at: Math.max(Date.now(), highestStamp(S0) + 1), convert }
       persist(S, true)
       return convert && get().ready ? get().pushState() : null
     },
@@ -1080,7 +1078,7 @@ export const useStore = create((set, get) => {
     resetEverything() {
       const cur = get().S
       const S = restartedState(cur)
-      S.resetAt = Math.max(Date.now(), (Number(cur.resetAt) || 0) + 1)
+      S.resetAt = Math.max(Date.now(), highestStamp(cur) + 1)
       S.resetIds = mergeResetIds(cur.resetIds, resetIdsOf(cur))
       get().replaceState(S, !!get().user)
       if (!get().user) return Promise.resolve()

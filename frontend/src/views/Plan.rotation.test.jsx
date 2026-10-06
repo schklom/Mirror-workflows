@@ -189,7 +189,7 @@ describe('Plan — the loop', () => {
     expect(mocks.S.queue.ids).toEqual(['c', 'a', 'b'])
   })
 
-  it('removing the last routine hands the schedule back to the weekday plan', () => {
+  it('removing the last routine keeps Rotation with an empty loop, ready for another routine', () => {
     mount({ queue: live({ ids: ['a'], rotationId: 'r1' }), rotation: { id: 'r1', sequence: ['a'], label: 'My split' } })
     click(byLabel('Edit'))
     const minus = rows()[0].querySelector('.plan-minus')
@@ -197,9 +197,17 @@ describe('Plan — the loop', () => {
     expect(host.textContent).toContain('Drag to reorder. Tap the minus to take one out.')
     click(minus)
     expect(mocks.S.queue).toBe(null)
-    expect(mocks.S.rotation).toBe(null)
-    expect(mocks.S.scheduleMode).toBe('week')
+    expect(mocks.S.rotation).toEqual({ id: 'r1', sequence: [], label: 'My split' })
+    expect(mocks.S.scheduleMode).toBe('rotation')
     expect(mocks.S.week).toEqual({ 1: ['c'] })
+    remount()
+    expect(selectedMode()).toBe('Rotation')
+    expect(host.textContent).toContain('No rotation yet.')
+    // swapping the only routine: add another one back in, same rotation id
+    click(byLabel('Add routine to the rotation'))
+    act(() => menuSheet.mock.calls.at(-1)[0].items.find(i => i.label === 'B').onClick())
+    expect(mocks.S.rotation).toMatchObject({ id: 'r1', sequence: ['b'] })
+    expect(mocks.S.queue.ids).toEqual(['b'])
   })
 
   it('Start the loop over rewinds the current round, strictly from now', () => {

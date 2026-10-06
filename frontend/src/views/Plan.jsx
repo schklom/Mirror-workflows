@@ -120,10 +120,15 @@ function Schedule({ S, update, nav, mode }) {
   }
 
   const setSeq = ids => update(s => {
-    // Emptying the sequence is how you leave the rotation from here: no pass, no definition, and
-    // the weekday plan — untouched all along — is the schedule again.
+    // Emptying the sequence stops the pass but stays on Rotation with an empty loop ('No rotation
+    // yet'), so taking out the last routine to swap it for another never throws you onto the
+    // weekday grid. Leaving the rotation is the 'How you train' switch's job.
     if (ids.length) saveRotation(s, ids, seqLabel)
-    else { stopPass(s); s.rotation = null; s.scheduleMode = 'week' }
+    else {
+      stopPass(s)
+      if (s.rotation) s.rotation = { ...s.rotation, sequence: [] }
+      s.scheduleMode = 'rotation'
+    }
   })
   const loopReorder = useListReorder(seq.length, (from, to) => setSeq(moved(seq, from, to)))
   const addToSeq = () => menuSheet({

@@ -97,8 +97,18 @@ export function saveRotation(s, ids, label, today = todayISO(), now = Date.now()
   // still resolves that date to a session the queue no longer has (pinState/queue.js).
   sweepPins(s, (prev?.ids || []).filter(id => !ids.includes(id)), today)
   // An edit (e.g. removing the last session still to do) can leave the pass complete on the
-  // spot — without this it would sit idle until a workout happened to reach refillAfter.
-  if (queueView(s, today)?.complete) startNewPass(s, today, now)
+  // spot — without this it would sit idle until a workout happened to reach refillAfter. Only an
+  // edit that removed or reordered sessions of a pass that already existed: a pass this save just
+  // created or grew is complete only because its sessions were trained already, and those
+  // workouts are exactly what it should be showing as done (building the loop one routine at a
+  // time after training the first one today). The new pass follows refill semantics: it starts
+  // the day after the last workout that credited this one, so nothing already logged re-ticks it.
+  if (prev && ids.every(id => prev.ids.includes(id)) && queueView(s, today)?.complete) {
+    const q = queueOf(s)
+    const last = lastCreditDay(s)
+    sweepPins(s, q.ids, today)
+    s.queue = newPass(rotationIds(s), label, s.rotation.id, last ? dayAfter(last) : today, sinceAfter(s, q, now))
+  }
 }
 
 /**

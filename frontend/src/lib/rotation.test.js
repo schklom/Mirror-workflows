@@ -91,6 +91,31 @@ describe('editing the sequence', () => {
     expect(queueRemaining(s)).toEqual(['a'])
   })
 
+  it('building the loop one routine at a time keeps a session trained today as done', () => {
+    // Night QA: Leg Day trained today, then Rotation built as [A], [A,B], [A,B,C]. The first save
+    // was complete on the spot, started a strict pass from now, and A read as 'Up next', 0 of 3.
+    const s = S({ workouts: [w('a', TODAY)] })
+    saveRotation(s, ['a'], 'My split', TODAY, NOW)
+    saveRotation(s, ['a', 'b'], 'My split', TODAY, NOW + 1000)
+    saveRotation(s, ['a', 'b', 'c'], 'My split', TODAY, NOW + 2000)
+    expect(s.queue.strict).toBeUndefined()
+    expect(s.queue.startsOn).toBe(TODAY)
+    expect(queueView(s, TODAY).items.map(i => i.state)).toEqual(['done', 'next', 'later'])
+  })
+
+  it('a removal that completes the pass with today\'s workout starts the next one tomorrow, not strict', () => {
+    const s = S({
+      rotation: { id: 'r1', sequence: ['a', 'b'], label: 'My split' },
+      queue: pass(['a', 'b'], { rotationId: 'r1' }),
+      workouts: [w('a', TODAY)],
+    })
+    saveRotation(s, ['a'], 'My split', TODAY, NOW)
+    expect(s.queue.strict).toBeUndefined()
+    expect(s.queue.startsOn).toBe('2026-09-13')
+    expect(queueView(s, TODAY).waiting).toBe(true)
+    expect(queueRemaining(s)).toEqual(['a'])
+  })
+
   it('removing a session clears its future pin, but leaves past pins and pins on kept sessions alone', () => {
     const s = S({
       rotation: { id: 'r1', sequence: ['a', 'b', 'c'], label: 'My split' },

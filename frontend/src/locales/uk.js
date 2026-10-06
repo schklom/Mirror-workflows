@@ -1924,4 +1924,5 @@ export default {
   'Swipe on sets': 'Свайп по підходах',
   'Left deletes, right copies': 'Ліворуч видаляє, праворуч копіює',
   'Options: copy, remove': 'Дії: копіювати, видалити',
+  'Another device synced while you were importing, so its changes were kept next to the backup.': 'Інший пристрій синхронізувався під час імпорту, тож його зміни збережено поруч із копією.',
 }

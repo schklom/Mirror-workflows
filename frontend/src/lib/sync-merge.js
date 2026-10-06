@@ -655,6 +655,42 @@ export function keepReset(cur, next) {
   return next
 }
 
+// ---- A restored backup ------------------------------------------------------------------------
+//
+// A backup brought back over the profile (Settings, Import) is a deliberate add-back: the main way
+// to undo a mistake. Its entries are older than any removal recorded since it was made, so the
+// merge used to delete them again (the removal record outlived the restore), at once with "Merge
+// them in" and on the next conflict of any other device with "Replace". And a device with an older
+// unsent setting change won over the restored settings, which carried no stamp. So a restore marks
+// every entry it holds whose removal is on record (here or in `others`) as added back at `now`,
+// stamps its settings, plan days and plans as changed at `now`, and keeps the record of removals.
+
+/** Stamps `next`, a restored backup, as described above. Mutates and returns `next`. */
+export function stampRestore(next, others = [], now = Date.now()) {
+  if (!next || typeof next !== 'object') return next
+  let del = mergeDeletions(next.deleted, null)
+  for (const o of others) del = mergeDeletions(del, o?.deleted)
+  del = del || {}
+  for (const [f, key] of Object.entries(DEL_LISTS)) {
+    const m = del[f]
+    if (!isMap(m)) continue
+    for (const x of list(next[f])) {
+      if (x == null) continue
+      const k = String(key(x))
+      if (Number(m[k]) > 0) m[k] = -now
+    }
+  }
+  if (Object.keys(del).length) next.deleted = del; else delete next.deleted
+  const ed = isMap(next.edited) ? { ...next.edited } : {}
+  for (const k of Object.keys(next)) if (!OWN_MERGE.has(k) && !PER_KEY.has(k)) ed[k] = now
+  for (const f of PER_KEY) {
+    for (const S of [next, ...others]) for (const s of Object.keys(isMap(S?.[f]) ? S[f] : {})) ed[`${f}.${s}`] = now
+  }
+  next.edited = ed
+  for (const f of ['routines', 'customEx']) for (const x of list(next[f])) if (x && typeof x === 'object') x._ts = now
+  return next
+}
+
 // ---- One causal time per change ---------------------------------------------------------------
 //
 // Every stamp above is a wall-clock time, compared between devices. A phone whose clock runs

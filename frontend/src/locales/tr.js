@@ -1927,4 +1927,5 @@ export default {
   'Swipe on sets': 'Setlerde kaydırma',
   'Left deletes, right copies': 'Sola silir, sağa kopyalar',
   'Options: copy, remove': 'Seçenekler: kopyala, kaldır',
+  'Another device synced while you were importing, so its changes were kept next to the backup.': 'İçe aktarırken başka bir cihaz eşitlendi, onun değişiklikleri de yedeğin yanında tutuldu.',
 }

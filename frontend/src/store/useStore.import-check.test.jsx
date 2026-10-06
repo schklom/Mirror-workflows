@@ -70,13 +70,21 @@ describe('importing a backup over a profile that moved on', () => {
     expect(ids(puts().at(-1).state.workouts)).toEqual(['w1', 'w2', 'elsewhere', 'unsent'])
   })
 
-  it('"Replace anyway" is the replace it always was', async () => {
+  it('"Replace anyway" replaces, against the revision the check read (or the copy\'s own)', async () => {
     signedIn({ ...clone(DEF), _ts: 200, workouts: [workout('w1')] }, 6)
+    api.mockResolvedValueOnce({ state: clone(SERVER), rev: 7 })
+    await useStore.getState().importConflict(BACKUP)
     api.mockResolvedValueOnce({ ok: true, rev: 8 })
     useStore.getState().importBackup(BACKUP)
     await useStore.getState().pushState()
-    const put = puts().at(-1)
-    expect(put.baseRev).toBeUndefined()
+    let put = puts().at(-1)
+    expect(put.baseRev).toBe(7)
     expect(ids(put.state.workouts)).toEqual(['w1', 'w2'])
+    // no check before it (the server could not be asked): the copy's own revision
+    api.mockResolvedValueOnce({ ok: true, rev: 9 })
+    useStore.getState().importBackup(BACKUP)
+    await useStore.getState().pushState()
+    put = puts().at(-1)
+    expect(put.baseRev).toBe(8)
   })
 })

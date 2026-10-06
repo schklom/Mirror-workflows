@@ -1947,4 +1947,5 @@ export default {
   'Swipe on sets': 'Wischen auf Sätzen',
   'Left deletes, right copies': 'Links löscht, rechts kopiert',
   'Options: copy, remove': 'Optionen: kopieren, entfernen',
+  'Another device synced while you were importing, so its changes were kept next to the backup.': 'Ein anderes Gerät hat während des Imports synchronisiert, seine Änderungen bleiben neben dem Backup erhalten.',
 }

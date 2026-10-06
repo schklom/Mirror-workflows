@@ -1938,4 +1938,5 @@ export default {
   'Swipe on sets': 'ปัดบนเซ็ต',
   'Left deletes, right copies': 'ซ้ายลบ ขวาคัดลอก',
   'Options: copy, remove': 'ตัวเลือก: คัดลอก, ลบ',
+  'Another device synced while you were importing, so its changes were kept next to the backup.': 'อุปกรณ์อื่นซิงก์ระหว่างที่คุณนำเข้า เลยเก็บการเปลี่ยนแปลงของมันไว้คู่กับข้อมูลสำรอง',
 }

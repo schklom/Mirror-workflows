@@ -1927,4 +1927,5 @@ export default {
   'Swipe on sets': '在组上滑动',
   'Left deletes, right copies': '左滑删除，右滑复制',
   'Options: copy, remove': '选项：复制、删除',
+  'Another device synced while you were importing, so its changes were kept next to the backup.': '导入时另一台设备同步了，所以它的更改也和备份一起保留了。',
 }

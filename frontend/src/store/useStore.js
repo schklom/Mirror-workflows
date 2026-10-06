@@ -8,7 +8,7 @@ import { rememberDefaultLang } from '../lib/default-lang.js'
 import { guestAllowed } from '../lib/guest.js'
 import { MOBILE, initReminderSync, nativeLoad, nativeSave, onAppActive, readJsonFile, syncReminder, writeAutoBackup, writeJsonFile } from '../lib/mobile.js'
 import { refillIfComplete } from '../lib/rotation.js'
-import { mergeStates, localExtras, stampChange, highestStamp, inUnitOf, keepReset, resetIdsOf, mergeResetIds, entryKey } from '../lib/sync-merge.js'
+import { mergeStates, localExtras, stampChange, highestStamp, stampRestore, inUnitOf, keepReset, resetIdsOf, mergeResetIds, entryKey } from '../lib/sync-merge.js'
 import { convertStateUnit } from '../lib/units.js'
 import { pendingRefCount, settleMedia, loadPending } from '../lib/media-owed.js'
 import { referencedHashes } from '../lib/media-refs.js'
@@ -275,7 +275,11 @@ export const useStore = create((set, get) => {
   let pulling = null       // the GET in flight, so two resume signals make one request
   let configFetch = null   // the /api/config in flight, so two callers make one request
   let pushPending = false  // a change made before boot's pull — pushed once boot is through
-  let forceNext = false    // the next push replaces the server copy outright (import, reset)
+  let forceNext = false    // the next push replaces the server copy outright (reset)
+  // A backup import's replace: pushed against the revision the import's check read (importRead),
+  // so a change another device synced while the confirm was open is merged in, not wiped.
+  let replaceRev = null
+  let importRead = null    // what importConflict last read: { uid, state, rev }
   let lastCheck = 0
   let pollTm = null
   let offlineChanges = false   // a push failed for lack of network — the next one that lands says so
@@ -554,8 +558,11 @@ export const useStore = create((set, get) => {
     // replaced whatever another device had written in the meantime.
     const force = forceNext
     forceNext = false
+    const asReplace = replaceRev
+    replaceRev = null
     const body = { state: S }
-    if (!force && base) body.baseRev = base.rev
+    if (asReplace != null) body.baseRev = asReplace
+    else if (!force && base) body.baseRev = base.rev
     try {
       const r = await api('/api/data', { method: 'PUT', body: JSON.stringify(body) })
       // A server from before revisions answers without one — then there is nothing to hold the
@@ -575,7 +582,13 @@ export const useStore = create((set, get) => {
       if (e.status === 409 && e.data && attempt < 2) {
         // Another device wrote since this one last read. The server sent its document along;
         // merge and push once more against that revision. A second refusal in a row leaves the
-        // copy owed and the next resume pull takes it from there.
+        // copy owed and the next resume pull takes it from there. A backup import whose replace
+        // met another device's sync keeps that device's changes too, and says so.
+        if (asReplace != null) {
+          import('./useUI.js')
+            .then(({ useUI }) => useUI.getState().toast(t('Another device synced while you were importing, so its changes were kept next to the backup.')))
+            .catch(() => {})
+        }
         mergeInto(get().S, e.data.state, e.data.rev || 0)
         return doPush(attempt + 1)
       }
@@ -1100,6 +1113,7 @@ export const useStore = create((set, get) => {
       let res
       try { res = await api('/api/data') } catch { return null }
       const state = res?.state
+      importRead = { uid: get().user?.id, state: state || null, rev: res?.rev ?? null }
       if (!state) return null
       const key = w => entryKey('workouts', w)
       const inBackup = new Set((Array.isArray(backup?.workouts) ? backup.workouts : []).filter(Boolean).map(key))
@@ -1115,21 +1129,43 @@ export const useStore = create((set, get) => {
     // any): the backup's settings and plan, every entry of all of them (mergeStates with the backup
     // preferred, in the backup's unit), pushed against that revision like any other change, so a
     // workout logged meanwhile elsewhere, or here, is not lost either.
+    //
+    // Either way the backup is a deliberate add-back (lib/sync-merge.js stampRestore): what it holds
+    // stays, though this device or the server recorded it as deleted since, and its settings and
+    // plan are the latest choice, on every device. The replace goes against the revision the check
+    // read (or this copy's own): a change another device synced meanwhile is merged in, not wiped.
     importBackup(backup, { mergeWith } = {}) {
+      const cur = get().S
+      const uid = get().user?.id
+      const read = mergeWith?.state ? mergeWith : importRead && importRead.uid === uid ? importRead : null
+      importRead = null
+      const server = read?.state || null
+      const now = Math.max(Date.now(), highestStamp(cur) + 1, highestStamp(server) + 1, highestStamp(backup) + 1)
       const next = Object.assign(clone(DEF), backup)
-      if (!mergeWith?.state || !get().user) { get().replaceState(next, !!get().user); return }
-      const others = mergeWith.local ? mergeStates(get().S, mergeWith.state) : mergeWith.state
+      if (!mergeWith?.state || !uid) {
+        stampRestore(next, [cur, server], now)
+        next._ts = now
+        get().replaceState(next, !!uid, { baseRev: read?.rev ?? metaOf().base?.rev ?? null })
+        return
+      }
+      const others = mergeWith.local ? mergeStates(cur, mergeWith.state) : mergeWith.state
       // The merge keeps the backup's reset stamp (prefer); a later one this copy or the server's
       // holds stays, as it does on a replace.
-      const merged = keepReset(others, keepReset(get().S, Object.assign(clone(DEF), mergeStates(next, others, { prefer: 'a' }))))
+      const merged = keepReset(others, keepReset(cur, Object.assign(clone(DEF), mergeStates(next, others, { prefer: 'a' }))))
+      stampRestore(merged, [cur, mergeWith.state, next], now)
+      merged._ts = now
       merged.active = next.active || null
       persist(merged, true)
       if (mergeWith.rev != null) writeSync(mergeWith.rev, 0)
     },
     // A replace that is meant to reach the server (backup import, reset) is a deliberate
-    // overwrite, not a change to merge: the push it arms goes without a baseRev. It never takes
-    // the reset stamp back (keepReset).
-    replaceState(S, push = false) { if (push) forceNext = true; persist(keepReset(get().S, clone(S)), push) },
+    // overwrite, not a change to merge: the push it arms goes without a baseRev — or, given one
+    // (an import), against that revision, so a 409 merges what another device wrote since. It
+    // never takes the reset stamp back (keepReset).
+    replaceState(S, push = false, { baseRev = null } = {}) {
+      if (push) { if (baseRev != null) replaceRev = baseRev; else forceNext = true }
+      persist(keepReset(get().S, clone(S)), push)
+    },
 
     // Fires after the moments where losing local data would actually hurt — a workout just
     // logged, a routine just edited — not on every keystroke. No-op off mobile or with the

@@ -1920,4 +1920,5 @@ export default {
   'Swipe on sets': '在組上滑動',
   'Left deletes, right copies': '左滑刪除，右滑複製',
   'Options: copy, remove': '選項：複製、刪除',
+  'Another device synced while you were importing, so its changes were kept next to the backup.': '匯入時另一台裝置同步了，所以它的變更也和備份一起保留了。',
 }

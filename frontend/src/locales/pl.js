@@ -1927,4 +1927,5 @@ export default {
   'Swipe on sets': 'Przesuwanie serii',
   'Left deletes, right copies': 'W lewo usuwa, w prawo kopiuje',
   'Options: copy, remove': 'Opcje: kopiuj, usuń',
+  'Another device synced while you were importing, so its changes were kept next to the backup.': 'Inne urządzenie zsynchronizowało się podczas importu, więc jego zmiany zostały obok kopii.',
 }

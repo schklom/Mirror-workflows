@@ -1927,4 +1927,5 @@ export default {
   'Swipe on sets': 'सेट पर स्वाइप',
   'Left deletes, right copies': 'बाएँ हटाता है, दाएँ कॉपी करता है',
   'Options: copy, remove': 'विकल्प: कॉपी, हटाएँ',
+  'Another device synced while you were importing, so its changes were kept next to the backup.': 'आयात के दौरान किसी दूसरे डिवाइस ने सिंक किया, इसलिए उसके बदलाव बैकअप के साथ रखे गए।',
 }

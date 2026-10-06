@@ -45,8 +45,11 @@ export function NumberField({ value, onChange, decimal = true, nullable = false,
   const commit = raw => {
     let s = raw.replace(/,/g, '.').replace(/[^0-9.]/g, '')
     const i = s.indexOf('.')
-    if (i !== -1) s = decimal ? s.slice(0, i + 1) + s.slice(i + 1).replace(/\./g, '') : s.slice(0, i)
-    const n = s === '' || s === '.' ? (nullable ? null : 0) : Math.max(0, parseFloat(s))
+    if (i !== -1) s = s.slice(0, i + 1) + s.slice(i + 1).replace(/\./g, '')
+    // A whole-number field keeps what was typed after a separator on screen until blur and
+    // counts only the part before it: cutting the separator off at each keystroke read 8.5 as 85.
+    const whole = !decimal && i !== -1 ? s.slice(0, i) : s
+    const n = whole === '' || whole === '.' ? (nullable ? null : 0) : Math.max(0, parseFloat(whole))
     committed.current = n
     setDraft(s)
     onChange(n)

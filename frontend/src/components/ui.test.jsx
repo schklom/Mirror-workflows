@@ -226,6 +226,31 @@ describe('NumberField fit', () => {
   })
 })
 
+describe('NumberField whole numbers', () => {
+  // Typed one key at a time, "8.5" in a reps field used to lose the "." on the second key and
+  // then read the 5 as a second digit: 85 reps.
+  it('takes 8.5 typed key by key as 8, not 85, and shows the whole number after blur', () => {
+    const changes = []
+    function Harness() {
+      const [v, setV] = useState(10)
+      return <NumberField decimal={false} value={v} onChange={n => { changes.push(n); setV(n) }} />
+    }
+    act(() => root.render(<Harness />))
+    const input = host.querySelector('input')
+    const type = value => act(() => {
+      Object.getOwnPropertyDescriptor(input.constructor.prototype, 'value').set.call(input, value)
+      input.dispatchEvent(new Event('input', { bubbles: true }))
+    })
+    type('8'); type(input.value + '.'); type(input.value + '5')
+    expect(changes).toEqual([8, 8, 8])
+    expect(input.value).toBe('8.5')
+    act(() => input.dispatchEvent(new FocusEvent('focusout', { bubbles: true })))
+    expect(input.value).toBe('8')
+    type('8,5')
+    expect(changes.at(-1)).toBe(8)
+  })
+})
+
 describe('NumberField select on tap', () => {
   // In WebKit the release of the tap that focused the field moves the caret and drops the
   // focus-time selection, so typing 65 over 62.5 read 6265.5. happy-dom cannot move a caret;

@@ -552,6 +552,25 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
       <button aria-label={t('Increase')} onClick={() => onChange(snapWeightStep ? stepWeight(value, step, 1) : Math.max(0, Math.round(((value || 0) + step) * 100) / 100))}><Icon name="plus" /></button>
     </div>
   )
+  // A plain set row (anything but a reps L/R stack). Its own function since a timed per-side
+  // hold draws two of them, L then R, inside one swipe so the pair slides as the one set it is.
+  const plainRow = (s, i) => (
+    <div ref={el => onSetRowRef?.(i, el)} className={'setrow' + (s.done ? ' done' : '') + (col3 ? ' eff3' : '') + (timed ? ' timed' : '')}>
+      <button type="button" className="n" aria-label={sideTagOf(s) ? t('Set {0} ({1})', setNumOf(s, i), sideTagOf(s)) : t('Set {0}', setNumOf(s, i))} aria-describedby={optsId} title={t('More')} onClick={() => openSetMenu(s, i)}>{setNumOf(s, i)}</button>
+      {/* Both words sit in the pill's one grid cell (::before/::after, hidden), so Left and
+          Right are as wide as the longer of the two in every language and the inputs
+          after them line up (#322). */}
+      {sideTagOf(s) && <span className="tag acc nocap sidepill" data-l={t('Left')} data-r={t('Right')}><span>{sideTagOf(s)}</span></span>}
+      {cell(s, i, col1, 'w')}
+      {col2 && cell(s, i, col2, 'r')}
+      {col3 && effortCell(s, i, col3)}
+      {/* A timed set is started, not typed: the timer counts the hold down and checks the
+          set off itself. The checkbox stays for anyone who timed it on their own watch. */}
+      {timed && !editing && <button className="setgo" aria-label={t('Start set')} disabled={s.done || !!working}
+        onClick={() => onStartTimed(i)}><Icon name="play" /></button>}
+      <Check checked={s.done} label={sideTagOf(s) ? t('Set {0} ({1}) done', setNumOf(s, i), sideTagOf(s)) : t('Set {0} done', setNumOf(s, i))} onChange={() => onToggle(i)} />
+    </div>
+  )
   // Swipe on sets (v1.3.11, Settings → Workout): a set row swiped toward the start of the line is
   // removed with an Undo, toward the end copied below itself. Off, the row is the plain row it
   // was, and the Cards swipe works from it again. The row closes whenever its exercise's rows
@@ -559,17 +578,21 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
   // could otherwise end up showing another set.
   const swipeOn = !!(wc.swipeSets && onCopySetAt && onRemoveSetAt)
   const dismissHint = () => { if (useUI.getState().swipeHint) setUI({ swipeHint: null }) }
-  const swipeRow = (s, i, row) => !swipeOn ? row : (
-    <SwipeRow canDelete={editing || entry.sets.length > setSpanAt(entry.sets, i)[1]}
+  const swipeRow = (s, i, row) => {
+    if (!swipeOn) return row
+    // A timed per-side pair comes here once, at its L row, and stands for both rows.
+    const [from, count] = setSpanAt(entry.sets, i)
+    const mine = j => j != null && j >= from && j < from + count
+    return <SwipeRow canDelete={editing || entry.sets.length > count}
       onDelete={() => onRemoveSetAt(i)} onCopy={() => onCopySetAt(i)}
       onBlocked={() => useUI.getState().toast(t('Keep at least one set, champ'))}
       onStart={dismissHint}
-      closeKey={[entry.sets.length, s.done ? 1 : 0, s.sides?.L?.done ? 1 : 0, s.sides?.R?.done ? 1 : 0, restEnds || 0, working?.endsAt || 0, S.active.cur].join('|')}
-      flash={setFlash && setFlash.i === i ? setFlash.id : 0}
-      peek={swipeHint && swipeHint.i === i ? swipeHint.id : 0}>
+      closeKey={[entry.sets.length, s.done ? 1 : 0, count === 2 && entry.sets[from + 1]?.done ? 1 : 0, s.sides?.L?.done ? 1 : 0, s.sides?.R?.done ? 1 : 0, restEnds || 0, working?.endsAt || 0, S.active.cur].join('|')}
+      flash={setFlash && mine(setFlash.i) ? setFlash.id : 0}
+      peek={swipeHint && mine(swipeHint.i) ? swipeHint.id : 0}>
       {row}
     </SwipeRow>
-  )
+  }
   return <>
     {/* Animations set to Small: a thumbnail beside the name instead of a strip above it, so the
         first set is on screen without scrolling; a tap brings the full animation back. */}
@@ -640,6 +663,11 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
         const isFirstWarmup = warm && !warmBefore
         // Numbering restarts per phase: with two warm-ups the first work set reads 1, not 3.
         const phaseNum = entry.sets.slice(0, i + 1).filter(x => isWarmupRow(x) === warm).length
+        // A timed per-side hold is an L row and an R row that delete and copy as one set, so they
+        // also swipe as one: the L row's turn draws both, the R row's draws neither.
+        const [spanStart, spanCount] = setSpanAt(entry.sets, i)
+        const pairHead = spanCount === 2 && spanStart === i
+        const pairTail = spanCount === 2 && spanStart !== i
         return <div key={i}>
           {isFirstWarmup && <div className="setph">{t('Warm-up')}</div>}
           {!warm && warmBefore && <div className="setsep" />}
@@ -650,7 +678,7 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
             if (!rec) return null
             return ' · ' + (rec.w > 0 ? tn('Record: {0} rep at {1}', 'Record: {0} reps at {1}', rec.r, fmtNum(rec.w) + ' ' + S.unit) : tn('Record: {0} rep', 'Record: {0} reps', rec.r))
           })()}</div>}
-          {swipeRow(s, i, perSide && !warm && isSideSet(s) ? (
+          {!pairTail && swipeRow(s, i, perSide && !warm && isSideSet(s) ? (
             // Unilateral work set: the number sits beside a two-row L/R stack, each side logged
             // and ticked on its own (issue #60).
             <div ref={el => onSetRowRef?.(i, el)} className={'setrow-side' + (s.done ? ' done' : '')}>
@@ -662,23 +690,7 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
                 {sideExtras(s, i, 'R')}
               </div>
             </div>
-          ) : (
-          <div ref={el => onSetRowRef?.(i, el)} className={'setrow' + (s.done ? ' done' : '') + (col3 ? ' eff3' : '') + (timed ? ' timed' : '')}>
-            <button type="button" className="n" aria-label={sideTagOf(s) ? t('Set {0} ({1})', setNumOf(s, i), sideTagOf(s)) : t('Set {0}', setNumOf(s, i))} aria-describedby={optsId} title={t('More')} onClick={() => openSetMenu(s, i)}>{setNumOf(s, i)}</button>
-            {/* Both words sit in the pill's one grid cell (::before/::after, hidden), so Left and
-                Right are as wide as the longer of the two in every language and the inputs
-                after them line up (#322). */}
-            {sideTagOf(s) && <span className="tag acc nocap sidepill" data-l={t('Left')} data-r={t('Right')}><span>{sideTagOf(s)}</span></span>}
-            {cell(s, i, col1, 'w')}
-            {col2 && cell(s, i, col2, 'r')}
-            {col3 && effortCell(s, i, col3)}
-            {/* A timed set is started, not typed: the timer counts the hold down and checks the
-                set off itself. The checkbox stays for anyone who timed it on their own watch. */}
-            {timed && !editing && <button className="setgo" aria-label={t('Start set')} disabled={s.done || !!working}
-              onClick={() => onStartTimed(i)}><Icon name="play" /></button>}
-            <Check checked={s.done} label={sideTagOf(s) ? t('Set {0} ({1}) done', setNumOf(s, i), sideTagOf(s)) : t('Set {0} done', setNumOf(s, i))} onChange={() => onToggle(i)} />
-          </div>
-          ))}
+          ) : pairHead ? <>{plainRow(s, i)}{plainRow(entry.sets[i + 1], i + 1)}</> : plainRow(s, i))}
           {swipeHint && swipeHint.i === i && swipeOn && <div className="swhint">
             <button type="button" onClick={() => setUI({ swipeHint: null })}>
               <Icon name="swap" /><span>{t('Psst: swipe a set. Left deletes, right copies.')}</span><Icon name="xmark" />

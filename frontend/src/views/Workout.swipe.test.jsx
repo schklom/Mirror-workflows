@@ -336,6 +336,42 @@ describe('the swipe on a rendered set row', () => {
   })
 })
 
+describe('the swipe on a timed per-side pair', () => {
+  const pair = sec => [{ sec, w: 0, done: false, side: 'L' }, { sec, w: 0, done: false, side: 'R' }]
+  const sided = rows => entry('1002', rows, { target: { sets: rows.length / 2, sec: 30, mode: 'time', side: true } })
+  const swrows = () => [...container.querySelectorAll('.swrow')]
+  let widthSpy
+  beforeEach(() => { widthSpy = vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(360) })
+  afterEach(() => widthSpy.mockRestore())
+
+  it('slides the L and R rows together, as the one set it deletes', () => {
+    setActive([sided([...pair(30), ...pair(40)])])
+    render()
+    // one swipe per pair, each holding both of its rows
+    expect(swrows()).toHaveLength(2)
+    for (const sw of swrows()) expect(sw.querySelector('.swfront').querySelectorAll('.setrow')).toHaveLength(2)
+    expect(container.querySelectorAll('.setrow')).toHaveLength(4)
+    swipe(swrows()[0].querySelector('.swfront'), 330, 60)
+    act(() => vi.advanceTimersByTime(800))
+    expect(sets()).toEqual(pair(40))
+  })
+
+  it('copies the pair from either row, and draws both rows without swiping', () => {
+    setActive([sided(pair(30))])
+    render()
+    const right = swrows()[0].querySelectorAll('.setrow')[1]
+    swipe(right, 100, 330)
+    act(() => vi.advanceTimersByTime(400))
+    expect(sets()).toEqual([...pair(30), ...pair(30)])
+    act(() => root.unmount()); container.remove()
+
+    setActive([sided(pair(30))], { wc: { swipeSets: false } })
+    render()
+    expect(swrows()).toHaveLength(0)
+    expect(container.querySelectorAll('.setrow')).toHaveLength(2)
+  })
+})
+
 describe('the one-time hint', () => {
   it('nudges the first unticked set once per person, with a chip', () => {
     setActive([entry('1001', [row(80, true), row(80)])], { hints: {} })

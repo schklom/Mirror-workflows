@@ -290,6 +290,24 @@ describe('sessionEnd: a workout finished long after its last set', () => {
     expect(sessionEnd({ entries: [{ id: 'x', sets: [{ done: true, w: 50, r: 8 }] }] }, 42)).toBe(42)
   })
 
+  it('does not cut a long cardio finisher or hold off as a forgotten break', () => {
+    // Bench 0 to 40 min, a 30-minute treadmill row ticked at 72, Finish at 73.
+    const active = { entries: [
+      { id: 'x', sets: [0, 20, 40].map(m => ({ done: true, w: 50, r: 8, at: T0 + m * MIN })) },
+      { id: 'run', sets: [{ done: true, min: 30, speed: 10, at: T0 + 72 * MIN }] },
+    ] }
+    expect(sessionEnd(active, T0 + 73 * MIN)).toBe(T0 + 73 * MIN)
+    // Its own length is all it is credited: the same row ticked the next morning still is a break.
+    active.entries[1].sets[0].at = T0 + 24 * 60 * MIN
+    expect(sessionEnd(active, T0 + 24 * 60 * MIN + 1)).toBe(T0 + 40 * MIN)
+    // A long per-side hold counts both sides.
+    const hold = { entries: [
+      { id: 'x', sets: [{ done: true, w: 50, r: 8, at: T0 }] },
+      { id: 'plank', sets: [{ done: true, at: T0 + 30 * MIN, sides: { L: { sec: 330, done: true }, R: { sec: 330, done: true } } }] },
+    ] }
+    expect(sessionEnd(hold, T0 + 31 * MIN)).toBe(T0 + 31 * MIN)
+  })
+
   it('counts a per-side set once one side is done', () => {
     const active = { entries: [{ id: 'x', sets: [{
       w: 20, r: 8, done: false, at: T0,

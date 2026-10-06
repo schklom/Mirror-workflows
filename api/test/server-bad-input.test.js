@@ -144,7 +144,7 @@ test('PUT /api/data: an array is not a document, and null entries never reach th
   assert.equal(onDisk()._rev, 1);
   assert.deepEqual(onDisk().workouts.map(w => w.id), ['w1']);
   r = await status(h, 'GET', '/api/data/rev', authed);
-  assert.deepEqual(r.body, { rev: 1 });
+  assert.deepEqual(r.body, { rev: 1, wid: onDisk()._wid });
 
   // Null and other non-object entries are dropped: every server-side reader of the document
   // (reminder tick, admin drill-down) dereferences the entries, and a 400 would strand a client
@@ -174,7 +174,7 @@ test('PUT /api/data: a document nested too deep to store is a 400, not a 500, an
   assert.equal(r.body.error, 'invalid state');
   assert.equal(onDisk()._rev, 1);
   r = await status(h, 'GET', '/api/data/rev', authed);
-  assert.deepEqual(r.body, { rev: 1 });
+  assert.deepEqual(r.body, { rev: 1, wid: onDisk()._wid });
   assert.equal(h.stackFrames(), 0, `stack traces in the log:\n${h.log}`);
 });
 

@@ -239,6 +239,7 @@ button.conn:active{filter:brightness(1.12)}
    text-overflow follows the text direction, so Arabic clips on its own end. */
 .hdr.lib-hdr{flex-wrap:wrap;align-items:center;row-gap:0}
 .hdr.lib-hdr>.sub.lib-count{flex:1 0 100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:360px){.hdr.lib-hdr>.sub.lib-count{white-space:normal;overflow:visible;text-overflow:clip}}
 
 .iconbtn{
   width:36px;height:36px;border-radius:50%;flex:none;

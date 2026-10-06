@@ -142,7 +142,7 @@ describe('Library header count', () => {
     expect(one).not.toBe(five.replace('5', '1'))
   })
 
-  it('keeps the subtitle on one line, clipping with an ellipsis rather than wrapping', () => {
+  it('keeps the subtitle on one line on wider screens, clipping with an ellipsis', () => {
     expect(sub(render())).toBeTruthy()
     const rule = cssSource.match(/^\.hdr\.lib-hdr>\.sub\.lib-count\{([^}]*)\}/m)?.[1] || ''
     expect(rule).toContain('white-space:nowrap')
@@ -150,5 +150,11 @@ describe('Library header count', () => {
     expect(rule).toContain('text-overflow:ellipsis')
     expect(rule).toContain('flex:1 0 100%')
     expect(cssSource).toMatch(/^\.hdr\.lib-hdr\{[^}]*flex-wrap:wrap/m)
+  })
+
+  it('lets the subtitle wrap on narrow phones so nothing is cut at 320 px', () => {
+    const narrow = cssSource.match(/@media \(max-width:360px\)\{\.hdr\.lib-hdr>\.sub\.lib-count\{([^}]*)\}\}/)?.[1] || ''
+    expect(narrow).toContain('white-space:normal')
+    expect(narrow).toContain('overflow:visible')
   })
 })

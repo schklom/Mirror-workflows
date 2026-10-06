@@ -1926,6 +1926,7 @@ export default {
   'Duplicate': '복제',
   'Copied as “{0}”.': '"{0}"(으)로 복사했어요.',
   '“{0}” gone.': '"{0}" 삭제됨.',
+  'It’s already back.': '이미 돌아와 있어요.',
   '“{0}” is out of the loop.': '"{0}"이(가) 순환에서 빠졌어요.',
   '“{0}” left the routine.': '"{0}"이(가) 루틴에서 빠졌어요.',
   'Swipe actions': '스와이프 동작',

@@ -50,6 +50,8 @@ export function deleteRoutineWithUndo(id) {
 export function undoDeleteRoutine(snap) {
   let ok = false
   useStore.getState().update(s => { ok = restoreRoutine(s, snap) })
+  // False when a sync brought it back first (another device's Undo, or its later edit).
+  if (!ok) useUI.getState().toast(t('It’s already back.'))
   return ok
 }
 
@@ -65,27 +67,47 @@ export function takeOutOfLoop(id, setSeq, seq, label) {
   const snap = structuredClone({ rotation: before.rotation ?? null, queue: before.queue ?? null, dayPlan: before.dayPlan ?? {} })
   setSeq(seq.filter(x => x !== id))
   const after = useStore.getState().S
-  const mark = JSON.stringify([after.rotation ?? null, after.queue ?? null])
+  const mark = loopMark(after)
   const name = before.routines.find(r => r.id === id)?.name ?? id
   useUI.getState().toast(t('“{0}” is out of the loop.', name), { action: t('Undo'), onAction: () => undoTakeOut({ id, at, label, snap, mark }) })
   return true
 }
+// What the loop looked like right after a removal: the saved loop, the pass and the mode switch.
+const loopMark = S => JSON.stringify([S.rotation ?? null, S.queue ?? null, S.scheduleMode ?? null])
 export function undoTakeOut({ id, at, label, snap, mark }) {
+  if (!useStore.getState().S.routines.some(r => r.id === id)) {
+    useUI.getState().toast(t('Too late, that one’s gone'))
+    return false
+  }
   useStore.getState().update(s => {
-    if (!s.routines.some(r => r.id === id)) return
-    if (JSON.stringify([s.rotation ?? null, s.queue ?? null]) === mark) {
+    if (loopMark(s) === mark) {
       s.rotation = snap.rotation
       s.queue = snap.queue
       const pins = Object.entries(snap.dayPlan).filter(([iso]) => s.dayPlan?.[iso] == null)
       if (pins.length) s.dayPlan = { ...(s.dayPlan || {}), ...Object.fromEntries(pins) }
       return
     }
-    const ids = queueOf(s)?.ids ?? rotationIds(s)
+    // Only a loop that is still this app's and still running gets a pass written. After "Fixed
+    // week", or with a coach's or planner's queue in charge, a new pass would quietly take over
+    // again, so the routine just goes back into the saved loop for the next time it starts.
+    const q = queueOf(s)
+    const ours = scheduleModeOf(s) === 'rotation' && (!s.queue || (!!q && !!s.rotation && q.rotationId === s.rotation.id))
+    if (!ours) {
+      const seq = Array.isArray(s.rotation?.sequence) ? s.rotation.sequence : null
+      if (seq && !seq.includes(id)) {
+        const next = seq.slice()
+        next.splice(Math.min(at, next.length), 0, id)
+        s.rotation = { ...s.rotation, sequence: next }
+      }
+      return
+    }
+    const ids = q?.ids ?? rotationIds(s)
     if (ids.includes(id)) return
     const next = ids.slice()
     next.splice(Math.min(at, next.length), 0, id)
     saveRotation(s, next, s.queue?.label || s.rotation?.label || label)
   })
+  return true
 }
 
 // The flash a row lands with when a swipe brought it (a duplicate, an undo): one per new value.
@@ -373,7 +395,11 @@ function Routines({ S, update, nav }) {
       s.routines.splice(at < 0 ? s.routines.length : at + 1, 0, copy)
     })
     setFlash({ id: copy.id, n: ++flashSeq })
-    useUI.getState().toast(t('Copied as “{0}”.', copy.name))
+    // With its own Undo: the toast takes the place of any Undo still showing (one toast at a
+    // time), so the newest swipe is at least the one you can take back.
+    useUI.getState().toast(t('Copied as “{0}”.', copy.name), { action: t('Undo'), onAction: () => {
+      update(s => { if (s.routines.some(x => x.id === copy.id)) deleteRoutine(s, copy.id) })
+    } })
   }
   // The weekdays a routine is on, short, in the order the week runs.
   const order = weekOrder(weekStartOf(S))

@@ -1979,6 +1979,7 @@ export default {
   'Duplicate': 'تكرار',
   'Copied as “{0}”.': 'نُسخ باسم «{0}».',
   '“{0}” gone.': 'ذهب «{0}».',
+  'It’s already back.': 'لقد عاد بالفعل.',
   '“{0}” is out of the loop.': 'خرج «{0}» من الدورة.',
   '“{0}” left the routine.': 'غادر «{0}» الروتين.',
   'Swipe actions': 'إجراءات السحب',

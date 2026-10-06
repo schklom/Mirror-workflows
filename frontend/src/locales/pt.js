@@ -1926,6 +1926,7 @@ export default {
   'Duplicate': 'Duplicar',
   'Copied as “{0}”.': 'Copiada como «{0}».',
   '“{0}” gone.': '«{0}» já foi.',
+  'It’s already back.': 'Já voltou.',
   '“{0}” is out of the loop.': '«{0}» saiu do ciclo.',
   '“{0}” left the routine.': '«{0}» saiu da rotina.',
   'Swipe actions': 'Ações ao deslizar',

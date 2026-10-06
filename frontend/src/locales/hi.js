@@ -1926,6 +1926,7 @@ export default {
   'Duplicate': 'डुप्लिकेट',
   'Copied as “{0}”.': '"{0}" नाम से कॉपी हुआ।',
   '“{0}” gone.': '"{0}" चला गया।',
+  'It’s already back.': 'वो पहले ही वापस आ गया।',
   '“{0}” is out of the loop.': '"{0}" चक्र से बाहर।',
   '“{0}” left the routine.': '"{0}" ने रूटीन छोड़ दिया।',
   'Swipe actions': 'स्वाइप ऐक्शन',

@@ -1946,6 +1946,7 @@ export default {
   'Duplicate': 'Duplizieren',
   'Copied as “{0}”.': 'Kopiert als „{0}“.',
   '“{0}” gone.': '„{0}“ ist weg.',
+  'It’s already back.': 'Ist schon wieder da.',
   '“{0}” is out of the loop.': '„{0}“ ist raus aus dem Kreislauf.',
   '“{0}” left the routine.': '„{0}“ hat die Routine verlassen.',
   'Swipe actions': 'Wischaktionen',

@@ -9,7 +9,8 @@ import { DEF, useStore } from '../store/useStore.js'
 import { useUI } from '../store/useUI.js'
 import { closeOpenRow } from '../lib/use-swipe-row.js'
 import { restoreRoutine, routineSnapshot, deleteRoutine } from '../lib/routines.js'
-import Plan from './Plan.jsx'
+import Plan, { deleteRoutineWithUndo, takeOutOfLoop } from './Plan.jsx'
+import { chooseFixedWeek, saveRotation, scheduleModeOf } from '../lib/rotation.js'
 
 const nav = vi.fn()
 vi.mock('react-router-dom', () => ({ useNavigate: () => nav }))
@@ -125,6 +126,25 @@ describe('the routines list', () => {
     expect(nav).not.toHaveBeenCalled()
   })
 
+  it('the duplicate’s toast has its own Undo, which takes the copy away again', () => {
+    mount('routines')
+    swipe(rowOf('Push A'), 100, 330)
+    expect(S().routines).toHaveLength(4)
+    expect(useUI.getState().toastAction).toBeTruthy()
+    undo()
+    expect(S().routines.map(r => r.id)).toEqual(['a', 'b', 'c'])
+  })
+
+  it('an Undo that finds the routine already back says so instead of nothing', () => {
+    mount('routines')
+    act(() => { deleteRoutineWithUndo('b') })
+    const pending = useUI.getState().toastAction
+    act(() => useStore.getState().update(s => { s.routines.splice(1, 0, routine('b', 'Pull A')) }))   // a sync brought it back
+    act(() => pending.run())
+    expect(S().routines.map(r => r.id)).toEqual(['a', 'b', 'c'])
+    expect(useUI.getState().toastMsg).toBe('It’s already back.')
+  })
+
   it('Edit’s minus deletes the same way, with the Undo in place of the confirm', () => {
     mount('routines')
     click(host.querySelector('.plan-textbtn'))
@@ -178,6 +198,56 @@ describe('the loop', () => {
     act(() => pending.run())
     expect(S().queue.ids).toEqual(['c', 'b', 'a'])
     expect(S().rotation.sequence).toEqual(['c', 'b', 'a'])
+  })
+
+  // The store's update, the way Plan's editor saves (Plan.jsx setSeq).
+  const setSeq = ids => useStore.getState().update(s => {
+    if (ids.length) saveRotation(s, ids, 'My loop')
+    else { s.queue = null; s.rotation = { ...s.rotation, sequence: [] }; s.scheduleMode = 'rotation' }
+  })
+
+  it('Undo after switching to Fixed week puts the routine back in the saved loop and stays on Fixed week', () => {
+    mount('schedule', clone(loop))
+    act(() => { takeOutOfLoop('b', setSeq, ['a', 'b', 'c'], 'My loop') })
+    const pending = useUI.getState().toastAction
+    act(() => useStore.getState().update(s => { chooseFixedWeek(s) }))
+    act(() => pending.run())
+    expect(S().queue).toBeNull()
+    expect(scheduleModeOf(S())).toBe('week')
+    expect(S().rotation.sequence).toEqual(['a', 'b', 'c'])
+  })
+
+  it('the same after taking out the last routine, where the loop itself did not change', () => {
+    mount('schedule', { ...clone(loop), rotation: { ...loop.rotation, sequence: ['a'] }, queue: { ...loop.queue, ids: ['a'] } })
+    act(() => { takeOutOfLoop('a', setSeq, ['a'], 'My loop') })
+    expect(S().queue).toBeNull()
+    const pending = useUI.getState().toastAction
+    act(() => useStore.getState().update(s => { chooseFixedWeek(s) }))
+    act(() => pending.run())
+    expect(S().queue).toBeNull()
+    expect(scheduleModeOf(S())).toBe('week')
+    expect(S().rotation.sequence).toEqual(['a'])
+  })
+
+  it('a coach’s queue written meanwhile is left alone by the Undo', () => {
+    mount('schedule', clone(loop))
+    act(() => { takeOutOfLoop('b', setSeq, ['a', 'b', 'c'], 'My loop') })
+    const pending = useUI.getState().toastAction
+    const coach = { ids: ['c', 'a'], since: 5, startsOn: '2026-10-02', label: 'Coach' }
+    act(() => useStore.getState().update(s => { s.queue = clone(coach) }))
+    act(() => pending.run())
+    expect(S().queue).toEqual(coach)
+    expect(S().rotation.sequence).toEqual(['a', 'b', 'c'])
+  })
+
+  it('Undo for a routine deleted meanwhile says it is too late', () => {
+    mount('schedule', clone(loop))
+    act(() => { takeOutOfLoop('b', setSeq, ['a', 'b', 'c'], 'My loop') })
+    const pending = useUI.getState().toastAction
+    act(() => useStore.getState().update(s => { deleteRoutine(s, 'b') }))
+    act(() => pending.run())
+    expect(S().queue.ids).toEqual(['a', 'c'])
+    expect(useUI.getState().toastMsg).toBe('Too late, that one’s gone')
   })
 
   it('the edit-mode minus has the same Undo, and weekday rows never swipe', () => {

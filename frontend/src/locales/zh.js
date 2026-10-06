@@ -1926,6 +1926,7 @@ export default {
   'Duplicate': '复制一份',
   'Copied as “{0}”.': '已复制为“{0}”。',
   '“{0}” gone.': '“{0}”没了。',
+  'It’s already back.': '它已经回来了。',
   '“{0}” is out of the loop.': '“{0}”已移出循环。',
   '“{0}” left the routine.': '“{0}”已离开计划。',
   'Swipe actions': '滑动操作',

@@ -1926,6 +1926,7 @@ export default {
   'Duplicate': 'Çoğalt',
   'Copied as “{0}”.': '“{0}” olarak kopyalandı.',
   '“{0}” gone.': '“{0}” gitti.',
+  'It’s already back.': 'Zaten geri geldi.',
   '“{0}” is out of the loop.': '“{0}” döngüden çıktı.',
   '“{0}” left the routine.': '“{0}” rutinden ayrıldı.',
   'Swipe actions': 'Kaydırma eylemleri',

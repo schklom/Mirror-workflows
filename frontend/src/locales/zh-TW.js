@@ -1919,6 +1919,7 @@ export default {
   'Duplicate': '複製一份',
   'Copied as “{0}”.': '已複製為「{0}」。',
   '“{0}” gone.': '「{0}」沒了。',
+  'It’s already back.': '它已經回來了。',
   '“{0}” is out of the loop.': '「{0}」已移出循環。',
   '“{0}” left the routine.': '「{0}」已離開課表。',
   'Swipe actions': '滑動操作',

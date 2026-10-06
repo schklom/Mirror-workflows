@@ -1937,6 +1937,7 @@ export default {
   'Duplicate': 'ทำสำเนา',
   'Copied as “{0}”.': 'คัดลอกเป็น “{0}” แล้ว',
   '“{0}” gone.': '“{0}” ไปแล้ว',
+  'It’s already back.': 'กลับมาแล้ว',
   '“{0}” is out of the loop.': '“{0}” ออกจากการวนรอบแล้ว',
   '“{0}” left the routine.': '“{0}” ออกจากรูทีนแล้ว',
   'Swipe actions': 'การปัดเพื่อสั่งงาน',

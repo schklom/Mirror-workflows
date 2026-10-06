@@ -1923,6 +1923,7 @@ export default {
   'Duplicate': 'Дублювати',
   'Copied as “{0}”.': 'Скопійовано як «{0}».',
   '“{0}” gone.': '«{0}» більше нема.',
+  'It’s already back.': 'Уже на місці.',
   '“{0}” is out of the loop.': '«{0}» вибуває з кола.',
   '“{0}” left the routine.': '«{0}» покидає тренування.',
   'Swipe actions': 'Дії свайпом',

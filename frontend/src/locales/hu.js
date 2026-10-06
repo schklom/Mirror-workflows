@@ -1929,6 +1929,7 @@ export default {
   'Duplicate': 'Duplikálás',
   'Copied as “{0}”.': 'Másolva ezen a néven: „{0}”.',
   '“{0}” gone.': '„{0}” eltűnt.',
+  'It’s already back.': 'Már visszajött.',
   '“{0}” is out of the loop.': '„{0}” kikerült a körből.',
   '“{0}” left the routine.': '„{0}” kilépett a rutinból.',
   'Swipe actions': 'Húzásos műveletek',

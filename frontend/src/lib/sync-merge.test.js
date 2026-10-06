@@ -733,6 +733,30 @@ describe('a removal holds against a copy that was offline', () => {
   })
 })
 
+describe('added back means brought back by this change', () => {
+  const update = (S, now, mut) => { const n = clone(S); mut(n); stampDeletions(S, n, now); stampEdits(S, n, now); n._ts = now; return n }
+  it('an unrelated edit does not re-stamp an entry the copy only still holds, so a later delete sticks', () => {
+    const W = { id: 'w1', d: '2026-10-01', start: 1000, end: 2000, entries: [{ id: 'bench', sets: [{ w: 60, r: 5 }] }] }
+    const b0 = { unit: 'kg', workouts: [W], restSec: 90, _ts: 2000 }
+    const phone1 = update(b0, 10000, S => { S.workouts = [] })
+    const laptop1 = update(b0, 20000, S => { stampWorkout(S.workouts[0], 20000); S.workouts[0].entries[0].sets[0].w = 62.5 })
+    const server = mergeStates(laptop1, phone1)
+    expect(ids(server.workouts)).toEqual(['w1'])   // the edit came after the delete: kept
+    const phone2 = update(server, 30000, S => { S.workouts = [] })
+    const laptop2 = update(server, 40000, S => { S.restSec = 120 })
+    expect(laptop2.deleted.workouts.w1).toBe(10000)   // not -40000
+    expect(mergeStates(laptop2, phone2).workouts).toEqual([])
+  })
+  it('a star set on a device that never saw an earlier unstar wins over it', () => {
+    const b0 = { unit: 'kg', favEx: [], _ts: 1 }
+    let phone = update(b0, 10, S => { S.favEx = ['bench'] })
+    phone = update(phone, 20, S => { S.favEx = [] })
+    const tablet = update(b0, 30, S => { S.favEx = ['bench'] })
+    expect(mergeStates(tablet, phone).favEx).toEqual(['bench'])
+    expect(mergeStates(phone, tablet).favEx).toEqual(['bench'])
+  })
+})
+
 describe('settings and plan days keep the change made last', () => {
   // B, offline, sets Wednesday and the rest timer; A logs a weigh-in later and flips the sound.
   const start = () => base({ _ts: 100, week: { 1: ['r1'] }, restSec: 90, sound: true, exNotes: { '0025': 'seat 4' } })

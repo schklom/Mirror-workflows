@@ -333,8 +333,8 @@ const capStamps = m => {
 
 /**
  * Records in `next.deleted` every entry `prev` had and `next` no longer has, at `now`, and marks
- * as added back (`-now`) any entry `next` has again whose removal was on record. Mutates and
- * returns `next`; adds no `deleted` when there is nothing to record.
+ * as added back (`-now`) any entry `next` brought in again whose removal was on record (and any
+ * favourite starred). Mutates and returns `next`; adds no `deleted` when there is nothing to record.
  */
 export function stampDeletions(prev, next, now = Date.now()) {
   if (!next || typeof next !== 'object') return next
@@ -351,7 +351,17 @@ export function stampDeletions(prev, next, now = Date.now()) {
       const k = String(key(x))
       if (!have.has(k)) { m[k] = now; changed = true }
     }
-    for (const k of Object.keys(m)) if (m[k] > 0 && have.has(k)) { m[k] = -now; changed = true }
+    // Added back: only a key this change brought in, not every key the copy merely still holds.
+    // A copy keeps an entry whose removal it has on record when that entry was edited after the
+    // removal (applyDeletions); re-stamping it as added back on any unrelated change made the
+    // stale copy outrank a later removal from another device, and the entry came back everywhere.
+    // A favourite has no edit time of its own, so a star is always stamped: a device that never
+    // saw the earlier unstar must still win against it with the star it set later.
+    const had = new Set(before.filter(x => x != null).map(x => String(key(x))))
+    for (const k of have) {
+      if (had.has(k)) continue
+      if (k in m ? m[k] > 0 : f === 'favEx') { m[k] = -now; changed = true }
+    }
     if (changed) { del[f] = capStamps(m); touched = true }
   }
   if (touched) next.deleted = del

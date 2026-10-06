@@ -34,8 +34,9 @@ const pad2 = n => String(n).padStart(2, '0')
 /**
  * One wheel. `index` is what the parent holds; `onPick(i)` is called when the wheel comes to
  * rest on another row. `nonce` re-syncs the wheel to `index` after a pick the parent clamped.
+ * `rowRef.current()` answers the row under the band right now, settled or not.
  */
-export function WheelColumn({ count, index, onPick, label, unit, format = String, valueText, disabledAt, step = 10, nonce = 0 }) {
+export function WheelColumn({ count, index, onPick, label, unit, format = String, valueText, disabledAt, step = 10, nonce = 0, rowRef }) {
   const scroller = useRef(null)
   const live = useRef(index)          // the row under the band right now
   const touching = useRef(false)
@@ -49,6 +50,7 @@ export function WheelColumn({ count, index, onPick, label, unit, format = String
 
   const clampIdx = i => Math.max(0, Math.min(count - 1, i))
   const rowAt = el => clampIdx(Math.round(el.scrollTop / WHEEL_ITEM))
+  if (rowRef) rowRef.current = () => clampIdx(live.current)
 
   // The rows near the band lean back like a drum: smaller and fainter the further they are.
   const paint = useCallback(() => {
@@ -196,15 +198,19 @@ export function WheelColumn({ count, index, onPick, label, unit, format = String
 /**
  * Minutes and seconds wheels for a duration in seconds. `onChange(sec)` gets every value the
  * wheels come to rest on, already clamped to [min, max]. `off` names 0 for a screen reader
- * ("Off" for the rest timer); without it 0 reads as "0 seconds".
+ * ("Off" for the rest timer); without it 0 reads as "0 seconds". `readRef.current()` answers the
+ * duration the wheels show right now, also while one is still rolling to rest: a Done tapped
+ * straight after a flick must not save the value from before it.
  */
-export default function DurationWheel({ value, onChange, min = 0, max = REST_MAX, off = null, className = '' }) {
+export default function DurationWheel({ value, onChange, min = 0, max = REST_MAX, off = null, className = '', readRef }) {
   const v = clampDuration(value, min, max)
   const { m, s } = splitDuration(v)
   const maxM = Math.floor(max / 60)
   const [nonce, setNonce] = useState(0)
   const live = useRef({ m, s })
   live.current = { m, s }
+  const mRow = useRef(null), sRow = useRef(null)
+  if (readRef) readRef.current = () => joinDuration(mRow.current ? mRow.current() : m, sRow.current ? sRow.current() : s, min, max)
   const pick = (mm, ss) => {
     const next = joinDuration(mm, ss, min, max)
     setNonce(n => n + 1)            // the wheels go back to what was kept, if it was clamped
@@ -214,10 +220,10 @@ export default function DurationWheel({ value, onChange, min = 0, max = REST_MAX
   return (
     <div className={'dw ' + className} data-nodrag="" dir="ltr">
       <span className="dw-band" aria-hidden="true" />
-      <WheelColumn count={maxM + 1} index={m} nonce={nonce} step={5}
+      <WheelColumn count={maxM + 1} index={m} nonce={nonce} step={5} rowRef={mRow}
         onPick={i => pick(i, live.current.s)} label={t('Minutes')} unit={t('min')} valueText={text}
         disabledAt={i => i * 60 > max || (i + 1) * 60 - 1 < min} />
-      <WheelColumn count={60} index={s} nonce={nonce} step={10} format={pad2}
+      <WheelColumn count={60} index={s} nonce={nonce} step={10} format={pad2} rowRef={sRow}
         onPick={i => pick(live.current.m, i)} label={t('Seconds')} unit={t('sec')} valueText={text}
         disabledAt={i => m * 60 + i > max || m * 60 + i < min} />
     </div>
@@ -228,12 +234,13 @@ export default function DurationWheel({ value, onChange, min = 0, max = REST_MAX
    closing the sheet any other way leaves the setting as it was. */
 function DurationSheet({ title, value, min, max, off, footer, onDone, close }) {
   const [v, setV] = useState(clampDuration(value, min, max))
+  const read = useRef(null)
   return <>
     <h3>{title}</h3>
     <div className="dw-read" aria-hidden="true">{fmtDuration(v, { off })}</div>
-    <DurationWheel value={v} onChange={setV} min={min} max={max} off={off} />
+    <DurationWheel value={v} onChange={setV} min={min} max={max} off={off} readRef={read} />
     {footer && <p className="dim small dw-foot">{footer}</p>}
-    <Button variant="primary" onClick={() => { close(); onDone(v) }}>{t('Done')}</Button>
+    <Button variant="primary" onClick={() => { const now = read.current ? read.current() : v; close(); onDone(now) }}>{t('Done')}</Button>
     <div style={{ height: 8 }} />
   </>
 }

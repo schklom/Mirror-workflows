@@ -145,6 +145,22 @@ describe('durationSheet', () => {
     expect(onDone).toHaveBeenCalledWith(106)
   })
 
+  it('Done straight after a flick saves where the wheel is, not the value from before it', () => {
+    vi.useFakeTimers()
+    const onDone = vi.fn()
+    durationSheet({ title: 'Rest timer', value: 105, off: 'Off', onDone })
+    act(() => root.render(mocks.sheets[0](vi.fn())))
+    const [min] = host.querySelectorAll('[role="spinbutton"]')
+    const scroller = min.querySelector('.dw-scroll')
+    act(() => {
+      scroller.scrollTop = 3 * WHEEL_ITEM
+      scroller.dispatchEvent(new Event('scroll'))
+    })
+    // still rolling: no settle yet, and Done is tapped right away
+    act(() => { [...host.querySelectorAll('button')].find(b => b.textContent === 'Done').click() })
+    expect(onDone).toHaveBeenCalledWith(3 * 60 + 45)
+  })
+
   it('reads 0 as Off', () => {
     durationSheet({ title: 'Rest timer', value: 0, off: 'Off', onDone: vi.fn() })
     act(() => root.render(mocks.sheets[0](vi.fn())))

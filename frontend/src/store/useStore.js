@@ -32,6 +32,8 @@ const KEY = 'gym_state_v1'
 // in the store); this marker is written beside the saved copy for whichever tab loads it next.
 // See pushState/pullState.
 const SYNC_KEY = 'gym_sync'
+// Which write of the saved copy this is: a tab finds another tab's write by it (persist, joinSaved).
+const WID_KEY = 'gym_state_wid'
 const DIRTY_KEY = 'gym_dirty'          // the saved copy owes the server a change
 const SYNCED_AT_KEY = 'gym_synced_at'  // when this device and the server last held the same copy
 const SYNCED_FP_KEY = 'gym_synced_fp'  // a fingerprint of that copy (lib/sync-changes.js)
@@ -291,6 +293,9 @@ export const useStore = create((set, get) => {
   let fpOf = null          // the copy the stored fingerprint was last taken of (confirmed)
   let keeping = null       // phone: the file write of what keepForPrevious set aside, until it lands
   let mirrorQ = Promise.resolve()   // phone: the file mirror's writes, one after the other (saveMirror)
+  // The write of the saved copy this tab last read or made, and whose copy it was (joinSaved).
+  let seenWid = (() => { try { return localStorage.getItem(WID_KEY) } catch { return null } })()
+  let seenOwner = (() => { try { return localStorage.getItem('gym_owner') } catch { return null } })()
 
   const readAdopt = () => { try { return JSON.parse(localStorage.getItem(ADOPT_KEY)) || null } catch { return null } }
   const writeAdopt = v => { try { if (v) localStorage.setItem(ADOPT_KEY, JSON.stringify(v)); else localStorage.removeItem(ADOPT_KEY) } catch { /* the hold in memory still stands */ } }
@@ -434,9 +439,44 @@ export const useStore = create((set, get) => {
   // before the revision it builds on: that stamp came from the clock of whichever device wrote
   // it, and with this clock behind, the change looked older than its own base — unchanged — and
   // a pull replaced it with the server's copy.
+  /* Two tabs of one browser share the saved copy, and each writes its own copy over it whole. A
+     change one tab saved and had not pushed (offline, the server down, a guest who never pushes)
+     was gone as soon as the other tab saved anything, or the closed tab's finished workout was:
+     no trace in storage, on the server or in the count of changes owed. And a second tab's pull
+     wrote its `active: null` over the workout running in the first. So every write of the saved
+     copy carries a write id (WID_KEY). A tab that finds another tab's write there joins that copy
+     into its own first, the way two devices merge (joinSaved), and a tab told of one by the
+     browser (the storage event below) takes it into memory straight away. The running workout
+     belongs to the browser, not the tab: it is the saved copy's unless this change touched it. */
+  const sameCopy = (a, b) => JSON.stringify({ ...a, _ts: 0 }) === JSON.stringify({ ...b, _ts: 0 })
+  const readWid = () => { try { return localStorage.getItem(WID_KEY) } catch { return null } }
+  const readOwner = () => { try { return localStorage.getItem('gym_owner') } catch { return null } }
+  const readSaved = () => {
+    try { const raw = localStorage.getItem(KEY); return raw ? Object.assign(clone(DEF), JSON.parse(raw)) : null } catch { return null }
+  }
+  // Another tab's copy joined into `mine`; `touched` when this change set the running workout.
+  const joinTabs = (mine, theirs, touched) => {
+    const merged = Object.assign(clone(DEF), mergeStates(mine, theirs))
+    merged.active = touched ? carryActive(mine, merged) : carryActive(theirs, merged)
+    return merged
+  }
+  // `S` with what another tab saved since this one last read or wrote the copy; null when there is
+  // nothing to join (the same write, no saved copy, or a copy another account's sign-in replaced).
+  const joinSaved = (S, prev) => {
+    if (readWid() === seenWid || readOwner() !== seenOwner) return null
+    const theirs = readSaved()
+    if (!theirs) return null
+    const touched = JSON.stringify(prev?.active ?? null) !== JSON.stringify(S?.active ?? null)
+    const merged = joinTabs(S, theirs, touched)
+    return sameCopy(merged, S) ? null : merged
+  }
+
   const persist = (S, push = true, stamp = true) => {
     const { base, owed } = metaOf()   // the copy being replaced; the new one stands where it stood
-    if (stamp) S._ts = Math.max(Date.now(), (base?.ts || 0) + 1, Number(S._ts) || 0)
+    const joined = joinSaved(S, get()?.S)
+    if (joined) S = joined
+    // A join holds another tab's changes, which this copy then owes the server too.
+    if (stamp || joined) S._ts = Math.max(Date.now(), (base?.ts || 0) + 1, Number(S._ts) || 0)
     // Every copy that enters the store — an edit, a pull, an adoption, a restored backup — has its
     // custom exercises marked as such (#378): one stored without the flag by an older plan import
     // goes out with it on the next push, without a stamp of its own (healCustomEx).
@@ -452,6 +492,10 @@ export const useStore = create((set, get) => {
       // copy's, which costs one merge at worst — never a newer one, which would lose data.
       saveMarker(base)
       localStorage.setItem(KEY, JSON.stringify(S))
+      const wid = Date.now().toString(36) + Math.random().toString(36).slice(2, 8)
+      localStorage.setItem(WID_KEY, wid)
+      seenWid = wid
+      seenOwner = readOwner()
       toldNoRoom = false
     } catch (e) {
       saved = false
@@ -462,7 +506,7 @@ export const useStore = create((set, get) => {
           .catch(() => {})
       }
     }
-    meta.set(S, { base, owed: owed || !saved })
+    meta.set(S, { base, owed: owed || !saved || (!!joined && storedOwed()) })
     if (!saved) saveOwed(true)
     set({ S })
     // A copy that replaces the last one wholesale and keeps an older stamp — adopted from the
@@ -644,6 +688,8 @@ export const useStore = create((set, get) => {
     pushTm = null
     const S = e.newValue ? loadState() : freshState()
     meta.set(S, e.newValue ? { base: readStoredSync(), owed: storedOwed() } : { base: null, owed: false })
+    seenWid = readWid()
+    seenOwner = readOwner()
     set({ user: null, S })
   })
   // Another tab of this browser synced — its marker moved to a revision this tab's copy does not
@@ -662,11 +708,39 @@ export const useStore = create((set, get) => {
     checkRev(true)
   })
 
+  // Another tab saved: its copy joins this one's at once, so this tab shows it and never writes
+  // over it. When the saved copy holds everything this tab has, this tab takes it as it is, with
+  // where it stands with the server (its marker and dirty flag); otherwise the join is saved and
+  // pushed like any change.
+  const syncFromSaved = () => {
+    const wid = readWid()
+    if (wid === seenWid || readOwner() !== seenOwner) return
+    const theirs = readSaved()
+    if (!theirs) return
+    const mine = get().S
+    const merged = joinTabs(mine, theirs, false)
+    seenWid = wid
+    if (sameCopy(merged, mine)) return
+    if (sameCopy(merged, theirs)) {
+      merged._ts = Math.max(Number(theirs._ts) || 0, Number(mine._ts) || 0)
+      meta.set(merged, { base: readStoredSync(), owed: storedOwed() })
+      registerCustom(merged.customEx)
+      set({ S: merged })
+      return
+    }
+    persist(merged, true)
+  }
+  window.addEventListener('storage', e => {
+    if (e.key !== WID_KEY || !e.newValue || e.newValue === seenWid) return
+    syncFromSaved()
+  })
+
   // Before a sign-out decides anything: the pull on its way has landed, and every push asked
   // for — including one queued behind the push in flight — has run. Then the photos and videos
   // still waiting get one more try (lib/media-owed.js, at most a minute): they are owed exactly
   // like a change is.
   const settle = async () => {
+    syncFromSaved()   // what another tab of this browser saved and has not sent counts too
     if (pulling) await pulling
     await get().pushState()   // never throws — an owed copy stays owed when it does not land
     while (pushing) await pushing
@@ -750,6 +824,7 @@ export const useStore = create((set, get) => {
   // Photos or videos that never reached that account's server count as owed on their own, even on
   // a copy with no workouts or routines yet — the custom exercise they belong to is all there is.
   const keepForPrevious = uid => {
+    syncFromSaved()
     const S = get().S
     if (!(owes() && hasData(S)) && !pendingRefCount(S)) return
     const server = serverBase()

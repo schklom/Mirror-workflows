@@ -325,7 +325,11 @@ export function useSwipeRow({ canDelete = true, canCopy = true, canSwipe, onComm
       outerRef.current?.classList.add('dragging')
       props.current.onStart?.()
     }
-    const logical = dx * lineDir()
+    follow(d, e)
+  }
+  // The row under the finger, and a sample for the release's speed.
+  const follow = (d, e) => {
+    const logical = (e.clientX - d.x0) * lineDir()
     const now = e.timeStamp || Date.now()
     d.samples.push([now, logical])
     while (d.samples.length > 2 && now - d.samples[0][0] > 100) d.samples.shift()
@@ -338,6 +342,9 @@ export function useSwipeRow({ canDelete = true, canCopy = true, canSwipe, onComm
     g.current = null
     if (!d.lock) return
     outerRef.current?.classList.remove('dragging')
+    // Where the finger lifted counts: a busy phone can drop the last moves of a fast swipe, and
+    // the row then stopped short of where the finger was and only opened (QA 2026-10-06).
+    if (!cancelled && Number.isFinite(e.clientX)) follow(d, e)
     release(cancelled ? 0 : velocityOf(d.samples))
   }
 

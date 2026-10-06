@@ -1905,4 +1905,6 @@ export default {
   'Make it a warm-up set': 'เปลี่ยนเป็นเซ็ตวอร์มอัพ',
   'Count it as a working set': 'นับเป็นเซ็ตจริง',
   'That looks too heavy. Keep it at {0} or less.': 'ดูหนักเกินไปนะ ใส่ได้ไม่เกิน {0}',
+  'That’s still in the future. Try an earlier start.': 'ยังเป็นเวลาในอนาคตอยู่เลย ลองเวลาเริ่มที่เร็วกว่านี้',
+  'That’s more than a day. Keep it to 24 hours or less.': 'เกินหนึ่งวันแล้ว ใส่ได้ไม่เกิน 24 ชั่วโมง',
 }

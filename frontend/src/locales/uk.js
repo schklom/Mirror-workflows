@@ -1891,4 +1891,6 @@ export default {
   'Make it a warm-up set': 'Зробити розминковим підходом',
   'Count it as a working set': 'Рахувати робочим підходом',
   'That looks too heavy. Keep it at {0} or less.': 'Це забагато. Не більше {0}.',
+  'That’s still in the future. Try an earlier start.': 'Це ще в майбутньому. Вибери ранніший час початку.',
+  'That’s more than a day. Keep it to 24 hours or less.': 'Це більше доби. Не більше 24 годин.',
 }

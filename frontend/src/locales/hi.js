@@ -1894,4 +1894,6 @@ export default {
   'Make it a warm-up set': 'इसे वार्म-अप सेट बनाएं',
   'Count it as a working set': 'इसे वर्किंग सेट गिनें',
   'That looks too heavy. Keep it at {0} or less.': 'यह बहुत भारी लग रहा है। ज़्यादा से ज़्यादा {0}।',
+  'That’s still in the future. Try an earlier start.': 'यह अभी भविष्य में है। थोड़ा पहले का शुरू होने का समय चुनें।',
+  'That’s more than a day. Keep it to 24 hours or less.': 'यह एक दिन से ज़्यादा है। ज़्यादा से ज़्यादा 24 घंटे।',
 }

@@ -1897,4 +1897,6 @@ export default {
   'Make it a warm-up set': 'Legyen bemelegítő sorozat',
   'Count it as a working set': 'Számítson munkasorozatnak',
   'That looks too heavy. Keep it at {0} or less.': 'Ez túl soknak tűnik. Legfeljebb {0}.',
+  'That’s still in the future. Try an earlier start.': 'Ez még a jövőben van. Próbálj korábbi kezdést.',
+  'That’s more than a day. Keep it to 24 hours or less.': 'Ez több mint egy nap. Legfeljebb 24 óra.',
 }

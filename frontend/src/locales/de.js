@@ -1914,4 +1914,6 @@ export default {
   'Make it a warm-up set': 'Zum Aufwärmsatz machen',
   'Count it as a working set': 'Als Arbeitssatz zählen',
   'That looks too heavy. Keep it at {0} or less.': 'Das wirkt zu schwer. Höchstens {0}, bitte.',
+  'That’s still in the future. Try an earlier start.': 'Das liegt noch in der Zukunft. Probier eine frühere Startzeit.',
+  'That’s more than a day. Keep it to 24 hours or less.': 'Das ist mehr als ein Tag. Höchstens 24 Stunden, bitte.',
 }

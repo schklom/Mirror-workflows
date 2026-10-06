@@ -1894,4 +1894,6 @@ export default {
   'Make it a warm-up set': '워밍업 세트로 바꾸기',
   'Count it as a working set': '본 세트로 세기',
   'That looks too heavy. Keep it at {0} or less.': '너무 무거워 보여요. 최대 {0}까지예요.',
+  'That’s still in the future. Try an earlier start.': '아직 미래예요. 더 이른 시작 시간을 골라 보세요.',
+  'That’s more than a day. Keep it to 24 hours or less.': '하루가 넘어요. 최대 24시간까지예요.',
 }

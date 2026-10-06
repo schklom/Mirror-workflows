@@ -1173,6 +1173,8 @@ export const PT_BR_OVERRIDES = {
   'Build your loop in Plan': 'Monte seu ciclo no Plano',
   'Finish and save': 'Terminar e salvar',
   'That looks too heavy. Keep it at {0} or less.': 'Isso parece pesado demais. No máximo {0}.',
+  'That’s still in the future. Try an earlier start.': 'Isso ainda está no futuro. Tente um horário de início mais cedo.',
+  'That’s more than a day. Keep it to 24 hours or less.': 'Isso é mais de um dia. No máximo 24 horas.',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

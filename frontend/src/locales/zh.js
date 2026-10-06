@@ -1894,4 +1894,6 @@ export default {
   'Make it a warm-up set': '改为热身组',
   'Count it as a working set': '算作正式组',
   'That looks too heavy. Keep it at {0} or less.': '这好像太重了。最多 {0}。',
+  'That’s still in the future. Try an earlier start.': '这还在未来。试试更早的开始时间。',
+  'That’s more than a day. Keep it to 24 hours or less.': '超过一天了。最多 24 小时。',
 }

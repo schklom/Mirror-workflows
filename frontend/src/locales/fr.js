@@ -1894,4 +1894,6 @@ export default {
   'Make it a warm-up set': 'En faire une série d’échauffement',
   'Count it as a working set': 'Compter comme série de travail',
   'That looks too heavy. Keep it at {0} or less.': 'Ça semble trop lourd. Pas plus de {0}.',
+  'That’s still in the future. Try an earlier start.': 'C’est encore dans le futur. Essaie une heure de début plus tôt.',
+  'That’s more than a day. Keep it to 24 hours or less.': 'C’est plus d’une journée. Reste à 24 heures maximum.',
 }

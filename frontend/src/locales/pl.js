@@ -1894,4 +1894,6 @@ export default {
   'Make it a warm-up set': 'Zamień na serię rozgrzewkową',
   'Count it as a working set': 'Licz jako serię roboczą',
   'That looks too heavy. Keep it at {0} or less.': 'To wygląda na za dużo. Maksymalnie {0}.',
+  'That’s still in the future. Try an earlier start.': 'To jeszcze przyszłość. Spróbuj wcześniejszej godziny startu.',
+  'That’s more than a day. Keep it to 24 hours or less.': 'To ponad doba. Maksymalnie 24 godziny.',
 }

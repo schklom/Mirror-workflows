@@ -1894,4 +1894,6 @@ export default {
   'Make it a warm-up set': 'Isınma setine çevir',
   'Count it as a working set': 'Çalışma seti say',
   'That looks too heavy. Keep it at {0} or less.': 'Bu fazla ağır görünüyor. En fazla {0}.',
+  'That’s still in the future. Try an earlier start.': 'Bu hâlâ gelecekte. Daha erken bir başlangıç dene.',
+  'That’s more than a day. Keep it to 24 hours or less.': 'Bu bir günden fazla. En fazla 24 saat.',
 }

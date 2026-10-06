@@ -2749,27 +2749,38 @@ export function saveWorkoutEdits(onExit = () => nav('/history')) {
   } catch (error) { toast(t(error.message)) }
 }
 
+// The one save prompt that may be open: { id, onExit }. Closing the editor and a route exit
+// can both ask in the same moment (the X, then the route change its tap set off); a second
+// prompt stacked under the first came back after Save changes and asked all over again
+// (QA 10-06). The second ask now joins the open prompt and only says where to go after it.
+let savePrompt = null
+const promptOpen = () => !!savePrompt && useUI.getState().sheets.some(x => x.id === savePrompt.id)
+
 export function exitWorkoutEdit(onExit = () => nav('/history')) {
   if (!S().active?.editingWorkoutId) { onExit(); return }
+  if (promptOpen()) { savePrompt.onExit = onExit; return }
+  const prompt = { id: null, onExit }
+  const done = () => prompt.onExit()
   const leave = () => {
     // A stale prompt's Don't save must not throw away whatever is in S.active by now.
-    if (!S().active?.editingWorkoutId) { onExit(); return }
+    if (!S().active?.editingWorkoutId) { done(); return }
     useStore.getState().discardHistoryEdit()
     useUI.getState().stopRest()
     useUI.getState().stopWork()
-    onExit()
+    done()
   }
   // Nothing to save: closing just closes, as it does for a workout only looked at.
   if (editChangesNothing(S())) { leave(); return }
-  ui().openSheet(close => <>
+  prompt.id = ui().openSheet(close => <>
     <h3>{t('Save workout changes?')}</h3>
     <p className="muted">{t('Save your edits to this workout, or keep the original record.')}</p>
-    <Button variant="primary" onClick={() => { close(); saveWorkoutEdits(onExit) }}>{t('Save changes')}</Button>
+    <Button variant="primary" onClick={() => { close(); saveWorkoutEdits(done) }}>{t('Save changes')}</Button>
     <div style={{ height: 8 }} />
     <Button onClick={() => { close(); leave() }}>{t("Don't save")}</Button>
     <div style={{ height: 8 }} />
     <Button variant="ghost" className="dim" onClick={close}>{t('Keep editing')}</Button>
-  </>, { kind: 'center' })
+  </>, { kind: 'center' })?.id
+  savePrompt = prompt
 }
 
 function FinishSummary({ w, prs, e1prs = [], close }) {

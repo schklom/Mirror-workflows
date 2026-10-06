@@ -42,27 +42,40 @@ describe('closing the saved-workout editor', () => {
   })
   afterEach(() => { act(() => { mounted.splice(0).forEach(root => root.unmount()) }) })
 
-  it('a second, stale save prompt only leaves: no delete offer, no false toast', () => {
+  it('a second ask while the prompt is open joins it: one prompt, one save, the latest way out', () => {
     exitWorkoutEdit()
-    exitWorkoutEdit()   // the route-exit prompt that raced the first one
-    expect(useUI.getState().sheets.length).toBe(2)
-    const second = renderTop()
-    const first = useUI.getState().sheets[0]
-    act(() => { useUI.getState().closeSheet(useUI.getState().sheets.at(-1).id) })
-    // Save on the first prompt saves and closes the editor.
-    const host = document.createElement('div'); document.body.appendChild(host)
-    const root = createRoot(host); mounted.push(root)
-    act(() => root.render(first.render(() => useUI.getState().closeSheet(first.id))))
+    exitWorkoutEdit(() => navigated.push('/stats'))   // the route exit that raced the X
+    expect(useUI.getState().sheets.length).toBe(1)
+    const host = renderTop()
     act(() => { button(host, 'Save changes').click() })
     expect(useStore.getState().S.active).toBeNull()
     expect(useStore.getState().S.workouts[0].entries[0].sets[0].w).toBe(50)
     expect(useUI.getState().toastMsg).toBe('Workout updated')
-    // The stale one's Save now just finishes leaving.
-    act(() => { button(second, 'Save changes').click() })
+    expect(useUI.getState().sheets.length).toBe(0)
+    expect(useStore.getState().S.workouts).toHaveLength(1)
+    expect(navigated).toEqual(['/stats'])
+  })
+
+  it('a stale prompt left open after the editor closed only leaves: no delete offer, no false toast', () => {
+    exitWorkoutEdit()
+    const stale = renderTop()
+    // The editor closes some other way (a save from the bottom button) while the prompt is up.
+    act(() => { saveWorkoutEdits(() => navigated.push('/history')) })
+    expect(useUI.getState().toastMsg).toBe('Workout updated')
+    act(() => { button(stale, 'Save changes').click() })
     expect(useUI.getState().sheets.length).toBe(0)
     expect(useUI.getState().toastMsg).toBe('Workout updated')
     expect(useStore.getState().S.workouts).toHaveLength(1)
     expect(navigated).toEqual(['/history', '/history'])
+  })
+
+  it('after a prompt was answered, the next close asks afresh', () => {
+    exitWorkoutEdit()
+    const h = renderTop()
+    act(() => { button(h, 'Keep editing').click() })
+    expect(useUI.getState().sheets.length).toBe(0)
+    exitWorkoutEdit()
+    expect(useUI.getState().sheets.length).toBe(1)
   })
 
   it('with no editor open, closing and saving open nothing', () => {

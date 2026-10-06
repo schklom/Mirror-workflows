@@ -806,7 +806,9 @@ body.chips-dragging *{cursor:inherit}
 .hdr.whdr-bar{align-items:center;gap:8px;margin:4px 0 12px}
 .whdr-mid{flex:1;min-width:0;text-align:center}
 .whdr-name{font-weight:600;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.whdr-mid .sub{font-size:13px;margin-top:1px;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* The clock and set count may take a second line: in ru/uk the count is the long half and a
+   one-line ellipsis cut exactly the 0/19 the line is there for. */
+.whdr-mid .sub{font-size:13px;margin-top:1px;font-variant-numeric:tabular-nums;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden;overflow-wrap:anywhere;text-wrap:balance}
 .btn.pill.whdr-finish{width:auto;flex:none;padding:8px 16px;border-radius:99px;font-size:15px;max-width:40%}
 /* Animations set to Small: the picture beside the exercise name, with an expand badge. */
 .wthumb{position:relative;flex:none;width:48px;height:48px;border-radius:10px;overflow:hidden;padding:0}

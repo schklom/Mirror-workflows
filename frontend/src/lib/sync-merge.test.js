@@ -618,9 +618,12 @@ describe('a reset names what it wiped', () => {
     expect(ids(m.customEx)).toEqual(['c-unstamped'])
   })
 
-  it('the stamp only moves forward: with prefer, and with a copy that carries none', () => {
+  it('the stamp only moves forward: kept by a backup merged over it (keepReset), and with a copy that carries none', () => {
     const backup = base({ _ts: 5, workouts: [w('restored', 4)] })
-    const m = mergeStates(backup, reset, { prefer: 'a' })
+    // with prefer the merge itself keeps the preferred side's stamp (a guest's reset is not the
+    // account's); the import puts the replaced copy's back with keepReset
+    expect(mergeStates(backup, reset, { prefer: 'a' }).resetAt).toBeUndefined()
+    const m = keepReset(reset, mergeStates(backup, reset, { prefer: 'a' }))
     expect(m.resetAt).toBe(R)
     expect(m.resetIds).toEqual(reset.resetIds)
     expect(ids(m.workouts)).toEqual(['restored'])

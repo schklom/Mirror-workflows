@@ -55,7 +55,7 @@
  *     clock runs behind, an entry with no date at all (sinceReset). Only a reset stamped before
  *     `resetIds` existed falls back to judging by time. The reset copy's settings and plan win
  *     whatever the `_ts`. `resetAt` only ever moves forward: the merge keeps the later one (with
- *     its ids; the union of both for the same reset), with `prefer` too, and so do a replace in
+ *     its ids; the union of both for the same reset; with `prefer`, the preferred side's), and so do a replace in
  *     the store and the server's PUT — a restored backup that carried no stamp would otherwise be
  *     taken for a copy older than the reset and wiped again. Before, a device with an unsent
  *     change got the 409, merged, and its union brought the whole wiped profile back. Not with
@@ -63,7 +63,8 @@
  *     account's history.
  *
  * After all of these, removals: an entry either copy records in `deleted` (stampDeletions) as
- * removed after it was last edited is left out, whatever the other copy still holds. Without it a
+ * removed after it was last edited is left out, whatever the other copy still holds. With
+ * `prefer` the reset stamp and the removals are the preferred side's only. Without it a
  * device that came back online after any time away brought back every workout, routine, custom
  * exercise, weigh-in or favourite the other device had removed meanwhile.
  */
@@ -501,9 +502,14 @@ export function mergeStates(a0, b0, { prefer } = {}) {
     if (ra > rb) { b = sinceReset(b, ra, a.resetIds); side = 'a' }
     else if (rb > ra) { a = sinceReset(a, rb, b.resetIds); side = 'b' }
   }
-  // The reset stamp only moves forward, with the names it wiped — with `prefer` too.
-  const resetAt = Math.max(ra, rb)
-  const resetIds = ra === rb ? (a0.resetIds || b0.resetIds ? mergeResetIds(a0.resetIds, b0.resetIds) : null)
+  // The reset stamp only moves forward, with the names it wiped. With `prefer` it is the
+  // preferred side's: a reset made on a guest copy, or on a phone in local mode, wiped that copy,
+  // not the account it signs in to — carried over, it made every other device of the account drop
+  // its unsent settings and plan as if the account had been reset (a backup import keeps the
+  // stamp of the copy it replaces on its own, keepReset).
+  const resetAt = prefer ? (prefer === 'a' ? ra : rb) : Math.max(ra, rb)
+  const resetIds = prefer ? (prefer === 'a' ? a0 : b0).resetIds || null
+    : ra === rb ? (a0.resetIds || b0.resetIds ? mergeResetIds(a0.resetIds, b0.resetIds) : null)
     : (ra > rb ? a0 : b0).resetIds || null
   // One unit before anything is compared.
   let lead = null
@@ -584,7 +590,10 @@ export function mergeStates(a0, b0, { prefer } = {}) {
   // What either device removed stays removed (the `deleted` section above). A workout taken out
   // this way leaves its exercises' kept loads to be read again, as an edit of it would: from the
   // merged history and from the deleting copy's own, which already let go of what it held.
-  const deleted = mergeDeletions(a.deleted, b.deleted)
+  // With `prefer` only the preferred side's removals count: a guest's are about the guest's own
+  // entries, and keyed by day (weigh-ins) or exercise (favourites) they also named the account's
+  // weigh-in of that day and its favourite, which the guest never had.
+  const deleted = prefer ? mergeDeletions(prefer === 'a' ? a.deleted : b.deleted, null) : mergeDeletions(a.deleted, b.deleted)
   for (const w of applyDeletions(out, deleted)) {
     const k = String(workoutKey(w))
     const by = [n, o].filter(S => Number(S.deleted?.workouts?.[k]) > 0).map(S => S.exWeights)

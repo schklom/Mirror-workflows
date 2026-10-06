@@ -1121,7 +1121,9 @@ export const useStore = create((set, get) => {
       const next = Object.assign(clone(DEF), backup)
       if (!mergeWith?.state || !get().user) { get().replaceState(next, !!get().user); return }
       const others = mergeWith.local ? mergeStates(get().S, mergeWith.state) : mergeWith.state
-      const merged = keepReset(get().S, Object.assign(clone(DEF), mergeStates(next, others, { prefer: 'a' })))
+      // The merge keeps the backup's reset stamp (prefer); a later one this copy or the server's
+      // holds stays, as it does on a replace.
+      const merged = keepReset(others, keepReset(get().S, Object.assign(clone(DEF), mergeStates(next, others, { prefer: 'a' }))))
       merged.active = next.active || null
       persist(merged, true)
       if (mergeWith.rev != null) writeSync(mergeWith.rev, 0)

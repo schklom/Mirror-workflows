@@ -9,7 +9,7 @@ import { EXIDX } from './exercises.js'
 import { uid } from './format.js'
 import { isWarmupRow } from './workout-model.js'
 import { HEVY_ID_MAP, HEVY_TITLE_MAP } from './hevy-id-map.js'
-import { daysBetween } from './import-csv.js'
+import { daysBetween, importId } from './import-csv.js'
 
 export { HEVY_ID_MAP, HEVY_TITLE_MAP }
 export const HEVY_API = 'https://api.hevyapp.com'
@@ -178,7 +178,7 @@ function makeResolver(templates) {
       const t = templateId ? byId.get(templateId) : null
       const name = (t?.title || fallbackTitle || 'exercise').toLowerCase()
       c = {
-        id: 'im' + uid(), n: name, custom: true, eq: 'custom', tg: '', desc: '',
+        id: importId('im', 'Hevy|' + key), n: name, custom: true, eq: 'custom', tg: '', desc: '',
         bp: bpOfTemplate(t) || (t?.type === 'distance_duration' || t?.type === 'duration' ? 'cardio' : null)
           || 'upper legs',
       }
@@ -284,7 +284,8 @@ export function parseHevyWorkouts(workouts, templates, { unit = 'kg' } = {}) {
     const startMs = base + (day.start ?? 18 * 3600000)
     const endMs = day.end != null ? base + day.end : startMs
     const workout = {
-      id: 'iw' + uid(), d, start: startMs, end: endMs > startMs ? endMs : startMs,
+      // From what it is (importId), so the same import on two devices merges into one.
+      id: importId('iw', JSON.stringify(['Hevy', d, startMs, day.name || '', entries.map(e => [e.id, e.sets])])), d, start: startMs, end: endMs > startMs ? endMs : startMs,
       routineId: null, name: day.name || 'Imported', entries, prs: [],
     }
     // Work sets only, the number `workoutVolume` gives a workout finished in the app; it is stored for good.

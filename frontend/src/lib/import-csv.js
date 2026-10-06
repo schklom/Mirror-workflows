@@ -443,6 +443,22 @@ const toKm = (v, unit) => num(v) * (KM[String(unit || 'km').toLowerCase().trim()
  * of several thousand sets will contain oddities, and losing the file over one of them
  * helps nobody. Bad rows are counted and reported instead.
  */
+// Ids of what an import makes, from what it is rather than at random: the same file imported on
+// two devices before they synced made every session and custom exercise twice (two random ids
+// each), and the merge, which unites by id, kept both. The same session from the same app now has
+// the same id wherever it is imported, and the merge keeps one. (cyrb53, 53 bits, base 36.)
+export function importId(prefix, text) {
+  let h1 = 0xdeadbeef, h2 = 0x41c6ce57
+  for (let i = 0; i < text.length; i++) {
+    const ch = text.charCodeAt(i)
+    h1 = Math.imul(h1 ^ ch, 2654435761)
+    h2 = Math.imul(h2 ^ ch, 1597334677)
+  }
+  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909)
+  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909)
+  return prefix + (4294967296 * (2097151 & h2) + (h1 >>> 0)).toString(36)
+}
+
 export function parseWorkoutCSV(text, { unit = 'kg' } = {}) {
   const rows = parseCSV(text)
   if (rows.length < 2) return { error: 'empty' }
@@ -519,7 +535,7 @@ export function parseWorkoutCSV(text, { unit = 'kg' } = {}) {
       let c = created.get(key)
       if (!c) {
         c = {
-          id: 'im' + uid(), n: name.toLowerCase(), custom: true, eq: 'custom', tg: '', desc: '',
+          id: importId('im', source + '|' + name.toLowerCase()), n: name.toLowerCase(), custom: true, eq: 'custom', tg: '', desc: '',
           bp: CATEGORY_BP[cell(r, 'category').toLowerCase()] || (km ? 'cardio' : null)
             // Seconds with nothing else is a hold when the name says what it is (a plank is
             // core work); a name that says nothing keeps being read as cardio, as before.
@@ -584,7 +600,7 @@ export function parseWorkoutCSV(text, { unit = 'kg' } = {}) {
     }
     const ss = cell(r, 'superset')
     if (ss && !day.sg.has(id)) {
-      if (!day.groups.has(ss)) day.groups.set(ss, 'is' + uid())
+      if (!day.groups.has(ss)) day.groups.set(ss, importId('is', when.d + '|' + ss))
       day.sg.set(id, day.groups.get(ss))
     }
     sets++
@@ -624,7 +640,7 @@ export function parseWorkoutCSV(text, { unit = 'kg' } = {}) {
     const start = base + (day.start ?? 18 * 3600000)
     const end = day.end != null ? base + day.end : start
     const w = {
-      id: 'iw' + uid(), d, start, end: end > start ? end : start,
+      id: importId('iw', JSON.stringify([source, d, start, day.name || '', entries.map(e => [e.id, e.sets])])), d, start, end: end > start ? end : start,
       routineId: null, name: day.name || 'Imported', entries, prs: [],
       ...(day.note ? { note: day.note } : {}),
     }
@@ -749,7 +765,9 @@ export function mergeImport(S, parsed) {
   const fresh = parsed.workouts.filter(w => !have.has(w.d))
     .map(w => ({ ...w, entries: w.entries.map(e => (exIdMap[e.id] ? { ...e, id: exIdMap[e.id] } : e)) }))
   const used = new Set(fresh.flatMap(w => w.entries.map(e => e.id)))
-  const customs = parsed.customEx.filter(c => used.has(c.id) && !EXIDX[c.id])
+  // (one an earlier import of the same name already made has the same id now: kept once)
+  const known = new Set(S.customEx.map(c => c?.id))
+  const customs = parsed.customEx.filter(c => used.has(c.id) && !EXIDX[c.id] && !known.has(c.id))
   S.customEx = [...S.customEx, ...customs]
   S.workouts = [...S.workouts, ...fresh].sort((a, b) => (a.d < b.d ? -1 : 1))
   // seed the weight suggestions from the newest imported set of each lift

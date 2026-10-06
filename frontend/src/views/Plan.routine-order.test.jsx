@@ -8,6 +8,7 @@ import React, { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { useStore } from '../store/useStore.js'
+import { useUI } from '../store/useUI.js'
 import Plan from './Plan.jsx'
 
 const nav = vi.fn()
@@ -111,16 +112,19 @@ describe('routine order', () => {
     expect(stored()).toEqual(['Push A', 'Pull A', 'Legs A'])
   })
 
-  it('the red minus deletes only after the confirmation, routine, days and all', () => {
+  // v1.3.11: an Undo in place of the confirmation, the same as the row's swipe (Plan.swipe.test.jsx).
+  it('the red minus deletes at once, routine, days and all, and Undo puts it all back', () => {
     mount()
     edit()
+    const week = useStore.getState().S.week
     click(rows()[1].querySelector('button[aria-label="Delete Pull A"]'))
-    expect(stored()).toEqual(['Push A', 'Pull A', 'Legs A'])
-    expect(confirmSheet).toHaveBeenCalledTimes(1)
-    expect(confirmSheet.mock.calls[0][0].message).toContain('Pull A')
-    act(() => confirmSheet.mock.calls[0][0].onConfirm())
+    expect(confirmSheet).not.toHaveBeenCalled()
     expect(stored()).toEqual(['Push A', 'Legs A'])
     expect(useStore.getState().S.week).toEqual({})
+    expect(useUI.getState().toastMsg).toBe('“Pull A” gone.')
+    act(() => useUI.getState().runToastAction())
+    expect(stored()).toEqual(['Push A', 'Pull A', 'Legs A'])
+    expect(useStore.getState().S.week).toEqual(week)
   })
 
   it('leaves the handle out when there is nothing to reorder', () => {

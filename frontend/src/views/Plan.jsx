@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/useStore.js'
+import { useUI } from '../store/useUI.js'
 import { DAYN, DAYS, weekOrder, weekStartOf, uid, exCount, routineCount, todayISO, fmtDate } from '../lib/format.js'
 import { t } from '../lib/i18n.js'
 import {
@@ -9,8 +10,9 @@ import {
 } from '../sheets.jsx'
 import Icon from '../components/Icon.jsx'
 import { Button, Row, Section, Segmented } from '../components/ui.jsx'
-import SwipeToDelete from '../components/SwipeToDelete.jsx'
-import { deleteRoutine } from '../lib/routines.js'
+import SwipeRow from '../components/SwipeRow.jsx'
+import { copyRoutine, deleteRoutine, restoreRoutine, routineSnapshot } from '../lib/routines.js'
+import { workoutControls } from '../lib/workout-controls.js'
 import { tappable } from '../lib/use-sheet-keyboard.js'
 import { useListReorder, moved } from '../lib/use-list-reorder.js'
 import { glyphOf, DEFAULT_GLYPH } from '../lib/glyphs.js'
@@ -31,6 +33,63 @@ export const PLAN_VIEW_KEY = 'gym_plan_view'
 const readView = () => {
   try { return localStorage.getItem(PLAN_VIEW_KEY) === 'routines' ? 'routines' : 'schedule' } catch { return 'schedule' }
 }
+
+/* Undo for Plan's two removals (v1.3.11). Both go through the store's normal update, so sync
+   sees an ordinary edit (a routine put back clears its own removal stamp, lib/sync-merge.js). */
+
+/** Deletes a routine with an Undo toast in place of a confirm: the toast puts it back exactly,
+ *  list place, weekdays, reschedules and loop included (lib/routines.js routineSnapshot). */
+export function deleteRoutineWithUndo(id) {
+  const st = useStore.getState()
+  const snap = routineSnapshot(st.S, id)
+  if (!snap) return false
+  st.update(s => { deleteRoutine(s, id) })
+  useUI.getState().toast(t('“{0}” gone.', snap.routine.name), { action: t('Undo'), onAction: () => undoDeleteRoutine(snap) })
+  return true
+}
+export function undoDeleteRoutine(snap) {
+  let ok = false
+  useStore.getState().update(s => { ok = restoreRoutine(s, snap) })
+  return ok
+}
+
+/** Takes a routine out of the loop (the swipe and the edit-mode minus), with an Undo. The removal
+ *  is the editor's own (`setSeq`), which may sweep the routine's future pins or roll a finished
+ *  round over; so while the loop is still what the removal left, Undo puts the loop, the round and
+ *  the swept pins back as they were. Once something else changed the loop, it just slots the
+ *  routine back in at its old place, through the same save an edit uses. */
+export function takeOutOfLoop(id, setSeq, seq, label) {
+  const at = seq.indexOf(id)
+  if (at < 0) return false
+  const before = useStore.getState().S
+  const snap = structuredClone({ rotation: before.rotation ?? null, queue: before.queue ?? null, dayPlan: before.dayPlan ?? {} })
+  setSeq(seq.filter(x => x !== id))
+  const after = useStore.getState().S
+  const mark = JSON.stringify([after.rotation ?? null, after.queue ?? null])
+  const name = before.routines.find(r => r.id === id)?.name ?? id
+  useUI.getState().toast(t('“{0}” is out of the loop.', name), { action: t('Undo'), onAction: () => undoTakeOut({ id, at, label, snap, mark }) })
+  return true
+}
+export function undoTakeOut({ id, at, label, snap, mark }) {
+  useStore.getState().update(s => {
+    if (!s.routines.some(r => r.id === id)) return
+    if (JSON.stringify([s.rotation ?? null, s.queue ?? null]) === mark) {
+      s.rotation = snap.rotation
+      s.queue = snap.queue
+      const pins = Object.entries(snap.dayPlan).filter(([iso]) => s.dayPlan?.[iso] == null)
+      if (pins.length) s.dayPlan = { ...(s.dayPlan || {}), ...Object.fromEntries(pins) }
+      return
+    }
+    const ids = queueOf(s)?.ids ?? rotationIds(s)
+    if (ids.includes(id)) return
+    const next = ids.slice()
+    next.splice(Math.min(at, next.length), 0, id)
+    saveRotation(s, next, s.queue?.label || s.rotation?.label || label)
+  })
+}
+
+// The flash a row lands with when a swipe brought it (a duplicate, an undo): one per new value.
+let flashSeq = 0
 
 export default function Plan() {
   const nav = useNavigate()
@@ -131,6 +190,8 @@ function Schedule({ S, update, nav, mode }) {
     }
   })
   const loopReorder = useListReorder(seq.length, (from, to) => setSeq(moved(seq, from, to)))
+  const takeOut = id => takeOutOfLoop(id, setSeq, seq, seqLabel)
+  const swipe = workoutControls(S).swipeSets && !external
   const addToSeq = () => menuSheet({
     title: t('Add to the rotation'),
     items: S.routines.filter(r => !seq.includes(r.id)).map(r => ({
@@ -225,9 +286,12 @@ function Schedule({ S, update, nav, mode }) {
         {seq.map((id, i) => {
           const r = routineOf(id)
           const item = qv?.items[i]
-          return <div key={id} data-reorder-row className={'item rotation-row' + (item?.state === 'done' ? ' is-done' : '')} style={loopReorder.rowStyle(i)}>
+          // The loop's swipe is remove-only (v1.3.11): a routine is in the loop once, so there is
+          // nothing to copy. The row the reorder measures is the swipe's outer element.
+          const reorderProps = { 'data-reorder-row': '', style: loopReorder.rowStyle(i) }
+          const row = <div {...(swipe ? {} : { key: id, ...reorderProps })} className={'item rotation-row' + (item?.state === 'done' ? ' is-done' : '')}>
             {editing && <button className="plan-minus" aria-label={t('Remove {0}', r?.name ?? id)} title={t('Remove')}
-              onClick={() => setSeq(seq.filter(x => x !== id))}><Icon name="minus" /></button>}
+              onClick={() => takeOut(id)}><Icon name="minus" /></button>}
             <span className={'plan-order' + (item?.state === 'next' ? ' next' : '')}>{item?.state === 'done' ? <Icon name="check" /> : i + 1}</span>
             <span className="lrow-i"><Icon name={glyphOf(r?.emoji)} /></span>
             <div className="grow" style={{ minWidth: 0 }}>
@@ -237,6 +301,10 @@ function Schedule({ S, update, nav, mode }) {
             {editing && seq.length > 1 && <button className="plan-handle" aria-label={t('Move {0}', r?.name ?? id)} title={t('Drag to reorder')}
               {...loopReorder.handle(i)}><Icon name="chevronsUpDown" /></button>}
           </div>
+          return swipe
+            ? <SwipeRow key={id} {...reorderProps} className="swrow-item" deleteLabel={t('Remove')} deleteIcon="minus"
+              onDelete={() => takeOut(id)}>{row}</SwipeRow>
+            : row
         })}
       </div> : <div className="empty">{t('No rotation yet. Add routines in the order you want to train them. The first one you haven’t logged stays up next.')}</div>}
       {seq.length > 0 && <p className="sect-f">
@@ -276,6 +344,8 @@ function Schedule({ S, update, nav, mode }) {
 
 function Routines({ S, update, nav }) {
   const [edit, setEdit] = useState(false)
+  const [flash, setFlash] = useState(null)
+  const swipe = workoutControls(S).swipeSets
   const routines = S.routines
   // The order of this list is the order of `S.routines`, and every other screen reads the same
   // array (the Start screen, the day sheets, the routine pickers), so moving a routine here moves
@@ -291,12 +361,20 @@ function Routines({ S, update, nav }) {
     update(s => { s.routines.push(r) })
     nav('/plan/r/' + r.id)
   }
-  // The same confirmation and the same delete as RoutineEdit's "Delete routine" button, minus
-  // its navigation back to /plan, which this screen already is.
-  const confirmDelete = r => confirmSheet({
-    title: t('Delete routine?'), message: t('“{0}” and its exercises will be removed.', r.name), confirmText: t('Delete'), danger: true,
-    onConfirm: () => update(s => { deleteRoutine(s, r.id) })
-  })
+  // The same delete as RoutineEdit's "Delete routine" button (lib/routines.js), with an Undo in
+  // place of its confirm (v1.3.11): the swipe and the edit-mode minus both land here.
+  const remove = r => deleteRoutineWithUndo(r.id)
+  // The swipe's other side: a copy right below the original, named the way "Copy routine" names
+  // one, and staying on this list rather than opening it.
+  const duplicate = r => {
+    const copy = copyRoutine(r, t('Copy'))
+    update(s => {
+      const at = s.routines.findIndex(x => x.id === r.id)
+      s.routines.splice(at < 0 ? s.routines.length : at + 1, 0, copy)
+    })
+    setFlash({ id: copy.id, n: ++flashSeq })
+    useUI.getState().toast(t('Copied as “{0}”.', copy.name))
+  }
   // The weekdays a routine is on, short, in the order the week runs.
   const order = weekOrder(weekStartOf(S))
   const daysOf = id => order.filter(d => [].concat(S.week[d] || []).includes(id)).map(d => t(DAYS[d]))
@@ -313,17 +391,26 @@ function Routines({ S, update, nav }) {
       {edit
         ? <div className="list routine-list plan-routines is-editing" ref={reorder.listRef}>{routines.map((r, i) =>
           <div key={r.id} data-reorder-row className="item plan-routine" style={reorder.rowStyle(i)}>
-            <button className="plan-minus" aria-label={t('Delete {0}', r.name)} title={t('Delete routine')} onClick={() => confirmDelete(r)}><Icon name="minus" /></button>
+            <button className="plan-minus" aria-label={t('Delete {0}', r.name)} title={t('Delete routine')} onClick={() => remove(r)}><Icon name="minus" /></button>
             <span className="lrow-i"><Icon name={glyphOf(r.emoji)} /></span>
             <div className="grow"><div className="tt">{r.name}</div><div className="ss">{sub(r)}</div></div>
             {routines.length > 1 && <button className="plan-handle" aria-label={t('Move {0}', r.name)} title={t('Drag to reorder')}
               {...reorder.handle(i)}><Icon name="chevronsUpDown" /></button>}
           </div>)}</div>
-        : <div className="list routine-list plan-routines">{routines.map(r => <SwipeToDelete key={r.id} className="item plan-routine"
-          deleteLabel={t('Delete routine')} onDelete={() => confirmDelete(r)} {...tappable(() => nav('/plan/r/' + r.id))}>
-          <span className="lrow-i"><Icon name={glyphOf(r.emoji)} /></span>
-          <div className="grow"><div className="tt">{r.name}</div><div className="ss">{sub(r)}</div></div>
-          <Icon name="chevronRight" className="chev" /></SwipeToDelete>)}</div>}
+        : <div className="list routine-list plan-routines">{routines.map(r => {
+          const row = <div key={r.id} className="item plan-routine" {...tappable(() => nav('/plan/r/' + r.id))}>
+            <span className="lrow-i"><Icon name={glyphOf(r.emoji)} /></span>
+            <div className="grow"><div className="tt">{r.name}</div><div className="ss">{sub(r)}</div></div>
+            <Icon name="chevronRight" className="chev" /></div>
+          // Swipe (v1.3.11, Settings → Swipe actions): toward the start deletes with an Undo,
+          // toward the end duplicates. Edit's minus and the routine's own page stay the way in
+          // for a keyboard and a screen reader.
+          return swipe
+            ? <SwipeRow key={r.id} className="swrow-item" copyLabel={t('Duplicate')}
+              onDelete={() => remove(r)} onCopy={() => duplicate(r)}
+              flash={flash?.id === r.id ? flash.n : 0}>{row}</SwipeRow>
+            : row
+        })}</div>}
       <p className="sect-f">{edit ? t('Drag to reorder. Tap the minus to delete.') : t('Tap a routine to edit it. Reorder and delete are behind Edit.')}</p>
     </> : <>
       <div className="empty"><div className="ico"><Icon name="clipboard" /></div>{t('No routines yet.')}<br />{t('Make one, or grab the starter plan to get going.')}</div>

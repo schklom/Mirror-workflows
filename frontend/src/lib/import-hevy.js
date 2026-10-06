@@ -9,6 +9,7 @@ import { EXIDX } from './exercises.js'
 import { uid } from './format.js'
 import { isWarmupRow } from './workout-model.js'
 import { HEVY_ID_MAP, HEVY_TITLE_MAP } from './hevy-id-map.js'
+import { daysBetween } from './import-csv.js'
 
 export { HEVY_ID_MAP, HEVY_TITLE_MAP }
 export const HEVY_API = 'https://api.hevyapp.com'
@@ -230,7 +231,8 @@ export function parseHevyWorkouts(workouts, templates, { unit = 'kg' } = {}) {
       day = { ex: new Map(), name: title, start: start.t, end: end?.t ?? null }
       byDate.set(start.d, day)
     } else if (!day.name && title) day.name = title
-    if (end?.t != null) day.end = end.t
+    // Past midnight the end's clock restarts; count it from the start day's midnight instead.
+    if (end?.t != null) day.end = end.t + daysBetween(start.d, end.d) * 86400000
 
     for (const ex of w.exercises || []) {
       const id = R.resolve(ex.exercise_template_id, ex.title)

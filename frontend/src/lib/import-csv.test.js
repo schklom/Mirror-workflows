@@ -214,3 +214,15 @@ describe('Strong semicolon export', () => {
     expect(legs.entries[0].sets[0]).toMatchObject({ min: 25, speed: 12 })
   })
 })
+
+describe('session past midnight', () => {
+  it('Hevy CSV: 23:30 to 00:20 the next day is 50 minutes on the start day', () => {
+    const csv = [
+      '"title","start_time","end_time","description","exercise_title","superset_id","exercise_notes","set_index","set_type","weight_kg","reps","distance_km","duration_seconds","rpe"',
+      '"Run","6 Sep 2026, 23:30","7 Sep 2026, 00:20","","Running",,"",0,"normal",,,8.2,2900,',
+    ].join('\n')
+    const [w] = parseWorkoutCSV(csv, { unit: 'kg' }).workouts
+    expect(w.d).toBe('2026-09-06')
+    expect((w.end - w.start) / 60000).toBe(50)
+  })
+})

@@ -396,6 +396,11 @@ export function parseWhen(s) {
   }
   return null
 }
+/** Whole calendar days from one "YYYY-MM-DD" to another (0 when either is unreadable). */
+export const daysBetween = (a, b) => {
+  const n = (Date.UTC(+b.slice(0, 4), +b.slice(5, 7) - 1, +b.slice(8, 10)) - Date.UTC(+a.slice(0, 4), +a.slice(5, 7) - 1, +a.slice(8, 10))) / 86400000
+  return isFinite(n) && n > 0 && n < 2 ? n : 0
+}
 const hm = (h, mi) => (h === undefined ? null : (parseInt(h, 10) || 0) * 3600000 + (parseInt(mi, 10) || 0) * 60000)
 
 /** "HH:MM:SS" · "MM:SS" · "90" -> minutes */
@@ -541,7 +546,9 @@ export function parseWorkoutCSV(text, { unit = 'kg' } = {}) {
     }
     if (!day.name) day.name = cell(r, 'workoutName') || ''
     if (!day.note) day.note = cell(r, 'workoutNote')
-    if (map.endTime !== undefined) { const e = parseWhen(cell(r, 'endTime')); if (e && e.t != null) day.end = e.t }
+    // The end is kept as time since the start day's midnight, so a session that runs past
+    // midnight ends on the next day's clock plus 24 h rather than before it began.
+    if (map.endTime !== undefined) { const e = parseWhen(cell(r, 'endTime')); if (e && e.t != null) day.end = e.t + daysBetween(when.d, e.d) * 86400000 }
     else if ((map.workoutDuration !== undefined || map.workoutDurationSec !== undefined) && day.end == null) {
       const len = map.workoutDurationSec !== undefined
         ? num(cell(r, 'workoutDurationSec')) / 60

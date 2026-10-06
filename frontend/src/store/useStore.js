@@ -325,15 +325,22 @@ export const useStore = create((set, get) => {
     if (!m) { m = { base: readStoredSync(), owed: storedOwed() }; meta.set(S, m) }
     return m
   }
+  // The saved copy is not the one in memory: its last write was refused (storage full). The
+  // marker and the dirty flag then must not describe the copy in memory, or a restart loads the
+  // older saved copy as one in step with a newer revision, calls it synced, and its next push
+  // (a conditional one that matches) deletes from the server everything it received meanwhile.
+  // Until a write lands again the marker is left out (a restart merges, its first-sync path) and
+  // the copy stays owed.
+  let storeLag = false
   const saveMarker = base => {
     try {
-      if (!base) { localStorage.removeItem(SYNC_KEY); return }
+      if (!base || storeLag) { localStorage.removeItem(SYNC_KEY); return }
       const v = JSON.stringify(base)
       // Unchanged, it is not written again: other tabs react to this key moving (see below).
       if (localStorage.getItem(SYNC_KEY) !== v) localStorage.setItem(SYNC_KEY, v)
     } catch { /* storage refused — the copy in memory still knows */ }
   }
-  const saveOwed = owed => { try { if (owed) localStorage.setItem(DIRTY_KEY, '1'); else localStorage.removeItem(DIRTY_KEY) } catch { /* as above */ } }
+  const saveOwed = owed => { try { if (owed || storeLag) localStorage.setItem(DIRTY_KEY, '1'); else localStorage.removeItem(DIRTY_KEY) } catch { /* as above */ } }
   // `wid`: the write id of the server's document at that revision (api/server.js PUT /api/data):
   // the same `rev` after the server went back in time names a different document.
   const writeSync = (rev, ts, wid) => {
@@ -497,8 +504,11 @@ export const useStore = create((set, get) => {
       seenWid = wid
       seenOwner = readOwner()
       toldNoRoom = false
+      if (storeLag) { storeLag = false; saveMarker(base) }   // the saved copy is this one again
     } catch (e) {
       saved = false
+      storeLag = true
+      try { localStorage.removeItem(SYNC_KEY) } catch { /* nothing to take back */ }
       if (!toldNoRoom) {
         toldNoRoom = true
         import('./useUI.js')

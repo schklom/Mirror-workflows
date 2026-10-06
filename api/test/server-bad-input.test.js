@@ -161,6 +161,23 @@ test('PUT /api/data: an array is not a document, and null entries never reach th
   assert.equal(h.stackFrames(), 0, `stack traces in the log:\n${h.log}`);
 });
 
+test('PUT /api/data: a document nested too deep to store is a 400, not a 500, and nothing is written', async t => {
+  const h = await startServer(t);
+  const onDisk = () => JSON.parse(fs.readFileSync(path.join(h.dataDir, `state-${UID}.json`), 'utf8'));
+  let r = await status(h, 'PUT', '/api/data', authed, JSON.stringify({ state: { workouts: [], routines: [], unit: 'kg' }, baseRev: 0 }));
+  assert.equal(r.status, 200);
+  // JSON.parse takes this (it is not recursive in V8); JSON.stringify on the way to the disk is.
+  const depth = 200000;
+  const deep = '{"state":{"workouts":[],"routines":[],"x":' + '['.repeat(depth) + ']'.repeat(depth) + '},"baseRev":1}';
+  r = await status(h, 'PUT', '/api/data', authed, deep);
+  assert.equal(r.status, 400);
+  assert.equal(r.body.error, 'invalid state');
+  assert.equal(onDisk()._rev, 1);
+  r = await status(h, 'GET', '/api/data/rev', authed);
+  assert.deepEqual(r.body, { rev: 1 });
+  assert.equal(h.stackFrames(), 0, `stack traces in the log:\n${h.log}`);
+});
+
 test('POST /api/push/rest-timer: a missing or invalid `seconds` is a 400, never a 1-second timer', async t => {
   const h = await startServer(t);
   const post = b => status(h, 'POST', '/api/push/rest-timer', authed, b);

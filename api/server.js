@@ -2110,7 +2110,12 @@ const routes = {
       else delete body.state.resetIds;
     }
     body.state._rev = curRev + 1;          // server-owned; whatever the client sent is ignored
-    atomicWrite(stateFile(user.id), JSON.stringify(body.state));
+    // JSON.parse takes any nesting, JSON.stringify recurses and runs out of stack on a document
+    // nested some thousands deep. No client builds one; it is a bad request, not a server error.
+    let text;
+    try { text = JSON.stringify(body.state); }
+    catch (e) { if (e instanceof RangeError) return json(res, 400, { error: 'invalid state' }); throw e; }
+    atomicWrite(stateFile(user.id), text);
     // The stat cache cannot see this write on its own: mtime granularity is 4 ms here (ext4 on
     // this kernel — 3901 of 3999 back-to-back same-size writes shared one timestamp), and a
     // `_rev` going from 7 to 8 does not change the file's size, so two writes inside one 4 ms

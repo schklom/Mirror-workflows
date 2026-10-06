@@ -1902,4 +1902,5 @@ export default {
   'This server doesn’t know that passkey. Make a profile first.': 'Questo server non conosce questa passkey. Crea prima un profilo.',
   'That took a little too long. Give it another go.': 'Ci è voluto un po’ troppo. Riprova.',
   'That code didn’t work. Codes last 5 minutes and work once, so grab a fresh one.': 'Questo codice non ha funzionato. I codici durano 5 minuti e valgono una volta sola, quindi prendine uno nuovo.',
+  'Create profile with a password': 'Crea profilo con password',
 }

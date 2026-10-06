@@ -1899,4 +1899,5 @@ export default {
   'This server doesn’t know that passkey. Make a profile first.': 'Цей сервер не знає такого ключа доступу. Спершу створіть профіль.',
   'That took a little too long. Give it another go.': 'Це тривало трохи задовго. Спробуйте ще раз.',
   'That code didn’t work. Codes last 5 minutes and work once, so grab a fresh one.': 'Цей код не спрацював. Коди діють 5 хвилин і лише один раз, тож візьміть свіжий.',
+  'Create profile with a password': 'Створити профіль з паролем',
 }

@@ -1902,4 +1902,5 @@ export default {
   'This server doesn’t know that passkey. Make a profile first.': 'यह सर्वर इस पासकी को नहीं पहचानता। पहले एक प्रोफ़ाइल बनाएँ।',
   'That took a little too long. Give it another go.': 'इसमें थोड़ा ज़्यादा समय लग गया। एक बार फिर कोशिश करें।',
   'That code didn’t work. Codes last 5 minutes and work once, so grab a fresh one.': 'यह कोड काम नहीं किया। कोड 5 मिनट चलते हैं और सिर्फ़ एक बार काम करते हैं, तो एक नया कोड ले लें।',
+  'Create profile with a password': 'पासवर्ड के साथ प्रोफ़ाइल बनाएँ',
 }

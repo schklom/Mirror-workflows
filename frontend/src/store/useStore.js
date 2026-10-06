@@ -783,6 +783,7 @@ export const useStore = create((set, get) => {
     persist(freshState(), false)
     localStorage.removeItem('gym_owner_name')
     localStorage.removeItem('gym_owner')
+    seenOwner = null   // a guest's tab now: it joins what other signed-out tabs save (as setUser)
     setSync({ offline: false, auth: false, lastError: null, pending: false, lastSynced: 0 })
     // On a phone the file is wiped with it, now rather than after the usual wait: a start in
     // between would open in local mode on the signed-out account's data, since that boot takes
@@ -1358,6 +1359,10 @@ export const useStore = create((set, get) => {
           if (m && m.uid !== u.id) writeAdopt(null)
           adoptHold = !!m && m.uid === u.id
         }
+        // What another tab of this browser saved under the copy's owner so far is this copy's
+        // too: the question below is about it, and from here on this tab joins only the
+        // account's saves (seenOwner below).
+        syncFromSaved()
         if (other) {
           keepForPrevious(owner)
           forgetSync()
@@ -1370,6 +1375,10 @@ export const useStore = create((set, get) => {
         if (adopt) writeAdopt({ uid: u.id, rejoined, alwaysAsk: !!adopt.alwaysAsk, pre: preOf(get().S) })
         localStorage.setItem('gym_owner_name', u.name || '')
         localStorage.setItem('gym_owner', u.id)
+        // This tab now joins the account's saves like any tab opened on it: one opened after the
+        // sign-in saves under the new owner, and a tab still comparing against the old one took
+        // no part until it had saved itself, then wrote its copy over theirs (joinSaved).
+        seenOwner = u.id
         localStorage.setItem('gym_user', JSON.stringify(u)); localStorage.removeItem('gym_guest')
         logoutOwed(false)   // this sign-in's cookie replaced the one a failed sign-out left behind
         // The file follows at once, as the new account's: until then it holds the previous one's.

@@ -141,4 +141,64 @@ describe('two tabs of one browser keep each other\'s changes', () => {
     expect(r.owed).toBe(false)
     expect(ids(srv.doc)).toEqual(['w1', 'w2'])
   })
+  // QA retest 2026-10-06: the tab that signed in (or signed up) still compared against the owner it
+  // had loaded with, so it took no part in the join until it had saved once itself, and that save
+  // wrote its copy over a weigh-in and a running workout another tab had logged.
+  it('a tab that just signed in sees the other tab\'s saves and keeps them, running workout included', async () => {
+    localStorage.removeItem('gym_owner')
+    localStorage.setItem('gym_state_v1', JSON.stringify({ ...clone(DEF), _ts: 100, workouts: [w('g1')] }))
+    const srv = server(null)
+    const A = await openTab(null)
+    A.getState().setUser({ id: OWNER, name: 'Tess' })   // signs up here; nothing saved since
+    const B = await openTab()                              // opened afterwards, on the account
+    srv.offline = true
+    B.getState().update(s => {
+      s.bodyweight = [{ d: '2026-09-05', w: 66.6, t: Date.now() }]
+      s.active = { id: 'run2', start: Date.now(), entries: [{ id: 'bench', sets: [{ w: 60, r: 5, done: true }] }] }
+    })
+    announce()
+    expect(A.getState().S.bodyweight.map(e => e.w)).toEqual([66.6])
+    expect(A.getState().S.active?.id).toBe('run2')
+    A.getState().update(s => { s.restSec = 135 })
+    expect(saved().bodyweight.map(e => e.w)).toEqual([66.6])
+    expect(saved().active?.id).toBe('run2')
+    expect(saved().restSec).toBe(135)
+  })
+
+  it('a tab that just signed in joins a closed tab\'s save on its next change', async () => {
+    localStorage.removeItem('gym_owner')
+    localStorage.setItem('gym_state_v1', JSON.stringify({ ...clone(DEF), _ts: 100, workouts: [w('g1')] }))
+    const srv = server(null)
+    const A = await openTab(null)
+    A.getState().setUser({ id: OWNER, name: 'Tess' })
+    const B = await openTab()
+    srv.offline = true
+    B.getState().update(s => { s.workouts.push(w('w2', '2026-09-02')); s.bodyweight = [{ d: '2026-09-05', w: 66.6, t: Date.now() }] })
+    B.setState({ user: null, ready: false })   // closed before the browser told A
+    A.getState().update(s => { s.restSec = 135 })
+    expect(ids(saved())).toEqual(['g1', 'w2'])
+    expect(saved().bodyweight.map(e => e.w)).toEqual([66.6])
+  })
+
+  it('a tab that signed out joins what another signed-out tab saves next', async () => {
+    const srv = server({ ...clone(DEF), _ts: 100, workouts: [w('w1')], _rev: 1 })
+    savedCopy(srv.doc, 1)
+    const A = await openTab()
+    await A.getState().signOut()
+    const B = await openTab(null)   // a guest tab opened after the sign-out
+    B.getState().update(s => { s.workouts.push(w('g9', '2026-09-09')) })
+    A.getState().update(s => { s.restSec = 50 })
+    expect(ids(saved())).toEqual(['g9'])
+    expect(saved().restSec).toBe(50)
+  })
+  it('a sign-in asks about what another guest tab saved too, and then joins only the account\'s saves', async () => {
+    localStorage.removeItem('gym_owner')
+    localStorage.setItem('gym_state_v1', JSON.stringify({ ...clone(DEF), _ts: 100, workouts: [w('g1')] }))
+    server(null)
+    const A = await openTab(null)
+    const B = await openTab(null)
+    B.getState().update(s => { s.workouts.push(w('g2', '2026-09-02')) })   // A not told yet
+    A.getState().setUser({ id: OWNER, name: 'Tess' }, { adopt: true })
+    expect(JSON.parse(localStorage.getItem('gym_adopt')).pre.workouts.sort()).toEqual(['g1', 'g2'])
+  })
 })

@@ -1172,6 +1172,7 @@ export const PT_BR_OVERRIDES = {
   'Delete {0}': 'Excluir {0}',
   'Build your loop in Plan': 'Monte seu ciclo no Plano',
   'Finish and save': 'Terminar e salvar',
+  'That looks too heavy. Keep it at {0} or less.': 'Isso parece pesado demais. No máximo {0}.',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

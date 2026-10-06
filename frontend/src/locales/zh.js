@@ -1893,4 +1893,5 @@ export default {
   'Finish and save': '结束并保存',
   'Make it a warm-up set': '改为热身组',
   'Count it as a working set': '算作正式组',
+  'That looks too heavy. Keep it at {0} or less.': '这好像太重了。最多 {0}。',
 }

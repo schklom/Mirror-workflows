@@ -1893,4 +1893,5 @@ export default {
   'Finish and save': 'Termina e salva',
   'Make it a warm-up set': 'Rendila serie di riscaldamento',
   'Count it as a working set': 'Conta come serie allenante',
+  'That looks too heavy. Keep it at {0} or less.': 'Sembra troppo. Al massimo {0}.',
 }

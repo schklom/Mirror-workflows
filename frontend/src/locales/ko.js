@@ -1893,4 +1893,5 @@ export default {
   'Finish and save': '마치고 저장',
   'Make it a warm-up set': '워밍업 세트로 바꾸기',
   'Count it as a working set': '본 세트로 세기',
+  'That looks too heavy. Keep it at {0} or less.': '너무 무거워 보여요. 최대 {0}까지예요.',
 }

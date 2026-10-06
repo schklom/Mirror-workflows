@@ -221,6 +221,14 @@ export const starterPlanSheet = () => ui().openSheet(close => <StarterPlanChoose
 // below an everyday squat.
 const W_LO = 1
 const wHi = unit => (unit === 'lb' ? 660 : 300)
+// A typed body weight may sit past the slider (a 320 kg lifter is real), but not past any
+// person: 9999 saved, drew the chart from -0 to 10,000 and set a goal 9,922 kg away.
+const bwMax = unit => (unit === 'lb' ? 1500 : 700)
+const bwTooHeavy = (n, unit) => {
+  if (n <= bwMax(unit)) return false
+  toast(t('That looks too heavy. Keep it at {0} or less.', fmtNum(bwMax(unit)) + ' ' + unit))
+  return true
+}
 function WeightInput({ value, setValue, unit }) {
   const W_HI = wHi(unit)
   const clamp = x => Math.max(W_LO, Math.min(W_HI, Math.round((x || 0) * 10) / 10))
@@ -257,6 +265,7 @@ function BwSheet({ required, onDone, close }) {
   const save = () => {
     const n = Math.round((v || 0) * 10) / 10
     if (!n || n <= 0) { toast(t('Enter a valid weight')); return }
+    if (bwTooHeavy(n, unit)) return
     update(s => {
       const iso = todayISO()
       const ex = s.bodyweight.find(b => b.d === iso)
@@ -674,6 +683,7 @@ function GoalSheet({ close }) {
     <Button variant="primary" onClick={() => {
       const n = Math.round((v || 0) * 10) / 10
       if (!n || n <= 0) { toast(t('Enter a valid weight')); return }
+      if (bwTooHeavy(n, st.unit)) return
       update(s => { s.targetW = n }); close()
       const b = lastBW(S()); toast(t('Goal set: {0}', fmtNum(n) + ' ' + st.unit) + (b ? ' (' + t('{0} to go', fmtNum(Math.abs(n - b.w))) + ')' : ''))
     }}>{t('Save goal')}</Button>

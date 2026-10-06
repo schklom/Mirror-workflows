@@ -1893,4 +1893,5 @@ export default {
   'Finish and save': 'Zakończ i zapisz',
   'Make it a warm-up set': 'Zamień na serię rozgrzewkową',
   'Count it as a working set': 'Licz jako serię roboczą',
+  'That looks too heavy. Keep it at {0} or less.': 'To wygląda na za dużo. Maksymalnie {0}.',
 }

@@ -1896,4 +1896,5 @@ export default {
   'Finish and save': 'Befejezés és mentés',
   'Make it a warm-up set': 'Legyen bemelegítő sorozat',
   'Count it as a working set': 'Számítson munkasorozatnak',
+  'That looks too heavy. Keep it at {0} or less.': 'Ez túl soknak tűnik. Legfeljebb {0}.',
 }

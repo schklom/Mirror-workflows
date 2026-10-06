@@ -1890,4 +1890,5 @@ export default {
   'Finish and save': 'Завершити й зберегти',
   'Make it a warm-up set': 'Зробити розминковим підходом',
   'Count it as a working set': 'Рахувати робочим підходом',
+  'That looks too heavy. Keep it at {0} or less.': 'Це забагато. Не більше {0}.',
 }

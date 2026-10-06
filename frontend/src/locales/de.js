@@ -1913,4 +1913,5 @@ export default {
   'Finish and save': 'Beenden und speichern',
   'Make it a warm-up set': 'Zum Aufwärmsatz machen',
   'Count it as a working set': 'Als Arbeitssatz zählen',
+  'That looks too heavy. Keep it at {0} or less.': 'Das wirkt zu schwer. Höchstens {0}, bitte.',
 }

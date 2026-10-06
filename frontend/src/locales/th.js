@@ -1904,4 +1904,5 @@ export default {
   'Finish and save': 'จบและบันทึก',
   'Make it a warm-up set': 'เปลี่ยนเป็นเซ็ตวอร์มอัพ',
   'Count it as a working set': 'นับเป็นเซ็ตจริง',
+  'That looks too heavy. Keep it at {0} or less.': 'ดูหนักเกินไปนะ ใส่ได้ไม่เกิน {0}',
 }

@@ -1897,4 +1897,5 @@ export default {
   'Finish and save': 'Завершить и сохранить',
   'Make it a warm-up set': 'Сделать разминочным подходом',
   'Count it as a working set': 'Считать рабочим подходом',
+  'That looks too heavy. Keep it at {0} or less.': 'Это слишком много. Не больше {0}.',
 }

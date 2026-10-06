@@ -1946,4 +1946,5 @@ export default {
   'Finish and save': 'إنهاء وحفظ',
   'Make it a warm-up set': 'اجعلها مجموعة إحماء',
   'Count it as a working set': 'احسبها مجموعة عمل',
+  'That looks too heavy. Keep it at {0} or less.': 'يبدو هذا ثقيلًا جدًا. الحد الأقصى {0}.',
 }

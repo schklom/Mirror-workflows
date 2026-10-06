@@ -1893,4 +1893,5 @@ export default {
   'Finish and save': 'Bitir ve kaydet',
   'Make it a warm-up set': 'Isınma setine çevir',
   'Count it as a working set': 'Çalışma seti say',
+  'That looks too heavy. Keep it at {0} or less.': 'Bu fazla ağır görünüyor. En fazla {0}.',
 }

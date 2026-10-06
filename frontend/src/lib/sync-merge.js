@@ -70,6 +70,7 @@
 import { beatsWeight } from './exercises.js'
 import { bestWeightForEntry } from './history.js'
 import { convertStateUnit, convertBodyWeight } from './units.js'
+import { sanitizeAccent } from './accent.js'
 
 const clone = o => JSON.parse(JSON.stringify(o))
 const list = v => (Array.isArray(v) ? v : [])
@@ -612,6 +613,8 @@ export function mergeStates(a0, b0, { prefer } = {}) {
   if (resetIds) out.resetIds = resetIds
   else delete out.resetIds
   delete out._rev
+  // The accent fields end up in CSS: whatever either copy brought, only a clean value goes on.
+  sanitizeAccent(out)
   return out
 }
 

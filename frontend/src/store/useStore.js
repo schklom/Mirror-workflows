@@ -23,6 +23,7 @@ import { RTL_LANGS } from '../lib/i18n-core.js'
 import { DEFAULT_TEMPLATE_ID } from '../lib/structuralBalanceTemplates.js'
 
 import { WC_DEFAULT } from '../lib/workout-controls.js'
+import { sanitizeAccent } from '../lib/accent.js'
 
 const KEY = 'gym_state_v1'
 // Where the saved copy stands with the server: the revision it descends from, and its own `_ts`
@@ -241,7 +242,7 @@ function loadState() {
     const raw = localStorage.getItem(KEY)
     if (raw) {
       const saved = JSON.parse(raw)
-      const s = Object.assign(clone(DEF), saved)
+      const s = sanitizeAccent(Object.assign(clone(DEF), saved))
       if (!saved.lang) s.lang = detectedLang()
       return s
     }
@@ -260,7 +261,7 @@ const hasData = st => !!((st.workouts || []).length || (st.routines || []).lengt
 // session belongs to the device that is currently running it.
 export function restoredStateFor(local, remote, dirty = false) {
   if (!remote || (hasData(local) && (dirty || (remote._ts || 0) < (local._ts || 0)))) return null
-  const next = Object.assign(clone(DEF), remote)
+  const next = sanitizeAccent(Object.assign(clone(DEF), remote))
   if (local.active) next.active = local.active
   return next
 }
@@ -1118,7 +1119,7 @@ export const useStore = create((set, get) => {
     // preferred, in the backup's unit), pushed against that revision like any other change, so a
     // workout logged meanwhile elsewhere, or here, is not lost either.
     importBackup(backup, { mergeWith } = {}) {
-      const next = Object.assign(clone(DEF), backup)
+      const next = sanitizeAccent(Object.assign(clone(DEF), backup))
       if (!mergeWith?.state || !get().user) { get().replaceState(next, !!get().user); return }
       const others = mergeWith.local ? mergeStates(get().S, mergeWith.state) : mergeWith.state
       const merged = keepReset(get().S, Object.assign(clone(DEF), mergeStates(next, others, { prefer: 'a' })))
@@ -1279,7 +1280,7 @@ export const useStore = create((set, get) => {
           const changed = dirty || localChanged(S)
           if (!serverMoved) { if (changed) await get().pushState(); else confirmed(S); return }
           if (!state) { writeSync(rev, 0); if (hasData(S)) await get().pushState(); return }
-          if (!changed) { const next = Object.assign(clone(DEF), state); next.active = carryActive(S, next); adopt(next, rev); confirmed(get().S); return }
+          if (!changed) { const next = sanitizeAccent(Object.assign(clone(DEF), state)); next.active = carryActive(S, next); adopt(next, rev); confirmed(get().S); return }
           mergeInto(S, state, rev)
           pushPending = false
           await get().pushState()

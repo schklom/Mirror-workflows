@@ -10,10 +10,10 @@ import { bindUI } from '../components/ui.jsx'
 globalThis.IS_REACT_ACT_ENVIRONMENT = true
 
 const mocks = vi.hoisted(() => {
-  const state = { S: null, MOBILE: false }
+  const state = { S: null, MOBILE: false, user: null }
   state.snapshot = () => ({
     S: state.S,
-    user: null,
+    user: state.user,
     update: mut => {
       const next = structuredClone(state.S)
       mut(next)
@@ -63,6 +63,7 @@ beforeEach(() => {
     gifSize: 'full', workouts: [], routines: [], exWeights: {},
   }
   mocks.MOBILE = false
+  mocks.user = null
   host = document.createElement('div')
   document.body.appendChild(host)
   root = createRoot(host)
@@ -92,5 +93,25 @@ describe('Show connection status', () => {
     expect(row().querySelector('[role="switch"]').getAttribute('aria-checked')).toBe('false')
     act(() => { row().querySelector('[role="switch"]').click() })
     expect(mocks.S.connStatus).toBe(true)
+  })
+})
+
+describe('guest footers', () => {
+  const footers = () => [...host.querySelectorAll('.sect-f')].map(f => f.textContent)
+
+  it('Look & Home does not promise a guest that anything syncs with a profile', () => {
+    mount()
+    expect(host.textContent).not.toContain('synced with your profile')
+    mocks.user = { id: 'u1' }
+    act(() => root.render(<Settings key="in" page="look" />))
+    expect(host.textContent).toContain('synced with your profile')
+  })
+
+  it('Account says guest mode once: the banner says it, the footer only when the banner is off', () => {
+    act(() => root.render(<Settings page="account" />))
+    expect(footers().filter(f => f.includes('Guest mode'))).toEqual([])
+    mocks.S = { ...mocks.S, connStatus: false }
+    act(() => root.render(<Settings key="off" page="account" />))
+    expect(footers().filter(f => f.includes('Guest mode'))).toHaveLength(1)
   })
 })

@@ -31,6 +31,7 @@ import { REST_MAX, REST_PAUSE_MIN, REST_PAUSE_MAX, fmtRest, fmtDuration } from '
 import { starterPlanSheet, confirmSheet, importFromApp, importFromHevy, equipmentProfileSheet, plateInventorySheet, menuSheet } from '../sheets.jsx'
 import Icon from '../components/Icon.jsx'
 import { durationSheet } from '../components/DurationWheel.jsx'
+import { showsConnection } from '../components/SyncBanner.jsx'
 import BackupFolderRow, { useBackupFolder, autoBackupSubtitle } from '../components/BackupFolderRow.jsx'
 import { ServerSyncSection, KeptChangesRows, leaveServer, connectServer, passkeySignIn } from '../components/ServerSync.jsx'
 import { passwordOn, PasswordRow, openPasswordSignIn, openPasswordRegister } from '../components/PasswordAuth.jsx'
@@ -679,7 +680,7 @@ export default function Settings({ page = null, find = null, via = null }) {
     equipment: () => <EquipmentCard S={S} update={update} />,
 
     look: () => <>
-      <Section footer={DEMO || MOBILE ? undefined : t('synced with your profile')}>
+      <Section footer={DEMO || MOBILE || !user ? undefined : t('synced with your profile')}>
         <Row icon="moon" iconTint="var(--indigo)" title={t('Theme')}>
           <Segmented
             className="seg-inline"
@@ -849,7 +850,8 @@ export default function Settings({ page = null, find = null, via = null }) {
           <KeptChangesRows />
         </>}
       </Section>}
-      {!user && !DEMO && !MOBILE && <p className="sect-f" style={{ marginTop: -18, marginBottom: 22 }}>{t('Guest mode: your data lives only in this browser.')}</p>}
+      {/* The connection banner already says this to a guest; the line is for when it is switched off. */}
+      {!user && !DEMO && !MOBILE && !showsConnection(S) && <p className="sect-f" style={{ marginTop: -18, marginBottom: 22 }}>{t('Guest mode: your data lives only in this browser.')}</p>}
     </>,
   }
 

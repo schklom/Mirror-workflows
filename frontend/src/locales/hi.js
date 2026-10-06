@@ -1941,4 +1941,12 @@ export default {
   '{0} routines were made on this device while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': '{0} रूटीन इस डिवाइस पर बिना साइन इन किए बनाए गए। इन्हें अपनी प्रोफ़ाइल में जोड़ें, या प्रोफ़ाइल को ठीक वैसा ही रखें जैसा सर्वर पर है।',
   'This device, before signing in': 'यह डिवाइस, साइन इन से पहले',
   'This device, before the update': 'यह डिवाइस, अपडेट से पहले',
+  'Your own color': 'आपका अपना रंग',
+  'Pick your own color': 'अपना रंग चुनें',
+  'Change your own color': 'अपना रंग बदलें',
+  'A touch lighter in dark mode, so you can still read it.': 'डार्क मोड में थोड़ा हल्का, ताकि पढ़ने में आए।',
+  'A touch darker in light mode, so you can still read it.': 'लाइट मोड में थोड़ा गहरा, ताकि पढ़ने में आए।',
+  'Greys show lighter in dark mode, so buttons don’t look switched off.': 'डार्क मोड में ग्रे रंग हल्के दिखते हैं, ताकि बटन बंद जैसे न लगें।',
+  'Greys show darker in light mode, so buttons don’t look switched off.': 'लाइट मोड में ग्रे रंग गहरे दिखते हैं, ताकि बटन बंद जैसे न लगें।',
+  'custom color picker': 'अपना रंग कस्टम रंग चुनने वाला',
 }

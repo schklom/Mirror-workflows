@@ -1952,4 +1952,12 @@ export default {
   '{0} routines were made on this device while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': 'มีการสร้างรูทีน {0} รายการบนอุปกรณ์นี้ขณะไม่ได้ลงชื่อเข้าใช้ เพิ่มลงในโปรไฟล์ของคุณ หรือคงโปรไฟล์ไว้ตามที่อยู่บนเซิร์ฟเวอร์',
   'This device, before signing in': 'อุปกรณ์นี้ ก่อนลงชื่อเข้าใช้',
   'This device, before the update': 'อุปกรณ์นี้ ก่อนอัปเดต',
+  'Your own color': 'สีของคุณเอง',
+  'Pick your own color': 'เลือกสีของคุณเอง',
+  'Change your own color': 'เปลี่ยนสีของคุณเอง',
+  'A touch lighter in dark mode, so you can still read it.': 'ในโหมดมืดจะสว่างขึ้นนิดหน่อย จะได้ยังอ่านออก',
+  'A touch darker in light mode, so you can still read it.': 'ในโหมดสว่างจะเข้มขึ้นนิดหน่อย จะได้ยังอ่านออก',
+  'Greys show lighter in dark mode, so buttons don’t look switched off.': 'สีเทาจะสว่างขึ้นในโหมดมืด ปุ่มจะได้ไม่ดูเหมือนถูกปิดอยู่',
+  'Greys show darker in light mode, so buttons don’t look switched off.': 'สีเทาจะเข้มขึ้นในโหมดสว่าง ปุ่มจะได้ไม่ดูเหมือนถูกปิดอยู่',
+  'custom color picker': 'สีเอง กำหนดเอง ตัวเลือกสี',
 }

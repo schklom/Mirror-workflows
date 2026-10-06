@@ -1941,4 +1941,12 @@ export default {
   '{0} routines were made on this device while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': 'Bu cihazda oturum açılmadan {0} rutin oluşturuldu. Bunları profiline ekle ya da profili sunucudaki hâliyle bırak.',
   'This device, before signing in': 'Bu cihaz, oturum açmadan önce',
   'This device, before the update': 'Bu cihaz, güncellemeden önce',
+  'Your own color': 'Kendi rengin',
+  'Pick your own color': 'Kendi rengini seç',
+  'Change your own color': 'Kendi rengini değiştir',
+  'A touch lighter in dark mode, so you can still read it.': 'Karanlık modda biraz daha açık, hâlâ okunabilsin diye.',
+  'A touch darker in light mode, so you can still read it.': 'Aydınlık modda biraz daha koyu, hâlâ okunabilsin diye.',
+  'Greys show lighter in dark mode, so buttons don’t look switched off.': 'Griler karanlık modda daha açık görünür, düğmeler kapalıymış gibi durmasın diye.',
+  'Greys show darker in light mode, so buttons don’t look switched off.': 'Griler aydınlık modda daha koyu görünür, düğmeler kapalıymış gibi durmasın diye.',
+  'custom color picker': 'kendi renk özel renk seçici',
 }

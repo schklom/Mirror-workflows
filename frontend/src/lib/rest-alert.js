@@ -9,7 +9,8 @@
 //
 // The web build keeps Web Push (useUI). This file no-ops there; MOBILE is a build-time flag.
 import { t } from './i18n-core.js'
-import { ACCENTS, ACCENT_INK, argb } from './format.js'
+import { argb } from './format.js'
+import { accentPair } from './accent.js'
 import { MOBILE, isAndroid } from './mobile.js'
 
 export const REST_ALERT_ID = 42
@@ -21,9 +22,10 @@ export const REST_QUIET_CHANNEL_ID = 'rest-over-quiet'
 
 // One object the native side schedules. Public + high is what the notification shade can show.
 // The lock screen follows the user's notification settings.
+// `key` is a preset's key or the user's own colour as '#rrggbb' (lib/accent.js accentValue).
 export function accentColors(key) {
-  const k = ACCENTS[key] ? key : 'lime'
-  return { accent: argb(ACCENTS[k]), ink: argb(ACCENT_INK[k]) }
+  const { accent, ink } = accentPair(key)
+  return { accent: argb(accent), ink: argb(ink) }
 }
 
 export function buildRestAlert({ at, title, countdownTitle, totalSec, accent, sound = true, vibrate = true, alarmBuzz = false, now = Date.now() } = {}) {

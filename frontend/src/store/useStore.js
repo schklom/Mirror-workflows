@@ -24,6 +24,7 @@ import { RTL_LANGS } from '../lib/i18n-core.js'
 import { DEFAULT_TEMPLATE_ID } from '../lib/structuralBalanceTemplates.js'
 
 import { WC_DEFAULT } from '../lib/workout-controls.js'
+import { sanitizeAccent } from '../lib/accent.js'
 
 const KEY = 'gym_state_v1'
 // Where the saved copy stands with the server: the revision it descends from, and its own `_ts`
@@ -247,7 +248,7 @@ function loadState() {
     const raw = localStorage.getItem(KEY)
     if (raw) {
       const saved = JSON.parse(raw)
-      const s = Object.assign(clone(DEF), saved)
+      const s = sanitizeAccent(Object.assign(clone(DEF), saved))
       if (!saved.lang) s.lang = detectedLang()
       return s
     }
@@ -266,7 +267,7 @@ const hasData = st => !!((st.workouts || []).length || (st.routines || []).lengt
 // session belongs to the device that is currently running it.
 export function restoredStateFor(local, remote, dirty = false) {
   if (!remote || (hasData(local) && (dirty || (remote._ts || 0) < (local._ts || 0)))) return null
-  const next = Object.assign(clone(DEF), remote)
+  const next = sanitizeAccent(Object.assign(clone(DEF), remote))
   if (local.active) next.active = local.active
   return next
 }
@@ -1023,7 +1024,7 @@ export const useStore = create((set, get) => {
       try { const r = await api('/api/data'); if (r && r.state) ({ state, rev } = r) } catch { /* the first read */ }
     }
     const takeServer = () => {
-      const copy = Object.assign(clone(DEF), state)
+      const copy = sanitizeAccent(Object.assign(clone(DEF), state))
       copy.active = carryActive(get().S, copy)
       if (rev != null) adopt(copy, rev)
       else { dropSync(); persist(copy, false, false); markOwed(false) }
@@ -1148,7 +1149,7 @@ export const useStore = create((set, get) => {
     try { owner = localStorage.getItem('gym_owner') } catch { /* evicted along with the copy */ }
     if (!who || of?.owner !== who || (owner && owner !== who) || of.ts !== (saved._ts || 0)) return
     try { if (!owner) localStorage.setItem('gym_owner', who) } catch { /* setUser writes it again */ }
-    persist(Object.assign(clone(DEF), saved), false, false)
+    persist(sanitizeAccent(Object.assign(clone(DEF), saved)), false, false)
     dropSync()
     markOwed(true)
   }
@@ -1300,7 +1301,7 @@ export const useStore = create((set, get) => {
       importRead = null
       const server = read?.state || null
       const now = Math.max(Date.now(), highestStamp(cur) + 1, highestStamp(server) + 1, highestStamp(backup) + 1)
-      const next = Object.assign(clone(DEF), backup)
+      const next = sanitizeAccent(Object.assign(clone(DEF), backup))
       if (!mergeWith?.state || !uid) {
         stampRestore(next, [cur, server], now)
         next._ts = now
@@ -1492,7 +1493,7 @@ export const useStore = create((set, get) => {
           if (!serverMoved) { if (changed) await get().pushState(); else confirmed(S); return }
           if (!state) { writeSync(rev, 0); if (hasData(S)) await get().pushState(); return }
           if (!descends) { mergeInto(S, state, rev); pushPending = false; await get().pushState(); return }
-          if (!changed) { const next = Object.assign(clone(DEF), state); next.active = carryActive(S, next); adopt(next, rev); confirmed(get().S); return }
+          if (!changed) { const next = sanitizeAccent(Object.assign(clone(DEF), state)); next.active = carryActive(S, next); adopt(next, rev); confirmed(get().S); return }
           mergeInto(S, state, rev)
           pushPending = false
           await get().pushState()
@@ -1737,7 +1738,7 @@ export const useStore = create((set, get) => {
         const saved = await nativeLoad()
         const S = get().S
         if (saved && (!hasData(S) || (saved._ts || 0) >= (S._ts || 0))) {
-          persist(Object.assign(clone(DEF), saved), false, false)
+          persist(sanitizeAccent(Object.assign(clone(DEF), saved)), false, false)
         } else if (hasData(S)) {
           nativePersist(true)   // first run after an update from a file-less version: seed the mirror
         }

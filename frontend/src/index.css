@@ -99,7 +99,7 @@
 :root[data-accent="pink"]  { --acc:var(--pink);   --acc-2:#d70036; --on-acc:#fff }
 :root[data-accent="red"]   { --acc:var(--red);    --acc-2:#d70015; --on-acc:#fff }
 :root[data-accent="teal"]  { --acc:var(--teal);   --acc-2:#0071a4; --on-acc:#000 }
-:root[data-accent="gold"]  { --acc:var(--yellow); --acc-2:#b25000; --on-acc:#000 }
+:root[data-accent="gold"]  { --acc:var(--yellow); --acc-2:#b25000; --on-acc:#000; --knob-ring:rgba(0,0,0,.28) }
 /* Label colour on a filled accent button is picked per accent by measured contrast,
    not by taste. Button text is 17px/600, so the AA bar is 3:1 (large text). White on
    the light-theme green is 2.22:1 and on teal 2.57:1 — both fail, and green is the
@@ -659,6 +659,10 @@ body.chips-dragging *{cursor:inherit}
   transition:transform var(--med) var(--ease),width var(--fast) var(--ease);
 }
 .sw.on{background:var(--acc)}
+/* On an accent nearly as light as the knob (an own white or pale yellow, the gold preset) the
+   knob gets a hairline ring so it does not vanish into the track. lib/accent.js sets --knob-ring
+   for an own colour; it is transparent everywhere else. */
+.sw.on .knob{box-shadow:0 0 0 1px var(--knob-ring,transparent),0 3px 8px rgba(0,0,0,.15),0 1px 1px rgba(0,0,0,.16)}
 .sw.on .knob{transform:translateX(20px)}
 .sw:active .knob{width:31px}
 .sw.on:active .knob{transform:translateX(16px)}
@@ -1691,6 +1695,16 @@ body.no-tabbar.resting #toast{bottom:calc(100px + var(--sab))}
 .swatch{width:32px;height:32px;border-radius:50%;flex:none;position:relative;transition:transform var(--fast)}
 .swatch:active{transform:scale(.9)}
 .swatch.on::after{content:'';position:absolute;inset:-4px;border-radius:50%;box-shadow:0 0 0 2px var(--label)}
+/* The user's own colour (Settings → Accent color): a rainbow ring until there is one, then filled
+   with it. The native colour input lies over it, invisible, so the tap lands on the input itself. */
+.swatch-own{display:inline-flex;align-items:center;justify-content:center;font-size:15px;--icon-stroke:2.4}
+.swatch-own.unset{
+  background:radial-gradient(circle,var(--surface) 0 52%,transparent 54%),
+    conic-gradient(#ff453a,#ff9f0a,#ffd60a,#30d158,#40c8e0,#0a84ff,#bf5af2,#ff375f,#ff453a);
+  color:var(--label-2);
+}
+.swatch-input{position:absolute;inset:0;width:100%;height:100%;opacity:0;border:0;padding:0;margin:0;border-radius:50%;cursor:pointer;-webkit-appearance:none;appearance:none}
+.swatch-note{margin-top:-4px}
 
 /* --- supersets --- */
 .ss-label{

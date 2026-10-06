@@ -1945,4 +1945,12 @@ export default {
   '{0} routines were made on this device while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': '{0} программ создано на этом устройстве без входа. Добавьте их в профиль или оставьте профиль ровно таким, как на сервере.',
   'This device, before signing in': 'Это устройство, до входа',
   'This device, before the update': 'Это устройство, до обновления',
+  'Your own color': 'Свой цвет',
+  'Pick your own color': 'Выбрать свой цвет',
+  'Change your own color': 'Изменить свой цвет',
+  'A touch lighter in dark mode, so you can still read it.': 'В тёмной теме чуть светлее, чтобы его было видно.',
+  'A touch darker in light mode, so you can still read it.': 'В светлой теме чуть темнее, чтобы его было видно.',
+  'Greys show lighter in dark mode, so buttons don’t look switched off.': 'Серые оттенки в тёмной теме светлее, чтобы кнопки не казались выключенными.',
+  'Greys show darker in light mode, so buttons don’t look switched off.': 'Серые оттенки в светлой теме темнее, чтобы кнопки не казались выключенными.',
+  'custom color picker': 'свой цвет пользовательский палитра выбор цвета',
 }

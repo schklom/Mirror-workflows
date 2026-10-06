@@ -1941,4 +1941,12 @@ export default {
   '{0} routines were made on this device while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': '{0} rutyn powstało na tym urządzeniu bez logowania. Dodaj je do profilu albo zostaw profil dokładnie taki, jaki jest na serwerze.',
   'This device, before signing in': 'To urządzenie, przed zalogowaniem',
   'This device, before the update': 'To urządzenie, przed aktualizacją',
+  'Your own color': 'Twój własny kolor',
+  'Pick your own color': 'Wybierz własny kolor',
+  'Change your own color': 'Zmień własny kolor',
+  'A touch lighter in dark mode, so you can still read it.': 'Odrobinę jaśniejszy w trybie ciemnym, żeby dało się go przeczytać.',
+  'A touch darker in light mode, so you can still read it.': 'Odrobinę ciemniejszy w trybie jasnym, żeby dało się go przeczytać.',
+  'Greys show lighter in dark mode, so buttons don’t look switched off.': 'Szarości są jaśniejsze w trybie ciemnym, żeby przyciski nie wyglądały na wyłączone.',
+  'Greys show darker in light mode, so buttons don’t look switched off.': 'Szarości są ciemniejsze w trybie jasnym, żeby przyciski nie wyglądały na wyłączone.',
+  'custom color picker': 'własny kolor niestandardowy próbnik wybór koloru',
 }

@@ -1934,4 +1934,12 @@ export default {
   '{0} routines were made on this device while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': '此裝置在未登入狀態下建立了 {0} 個訓練菜單。是否將其加入你的個人檔案，或是維持伺服器上的原本紀錄？',
   'This device, before signing in': '此裝置（登入前）',
   'This device, before the update': '此裝置（更新前）',
+  'Your own color': '你自己的顏色',
+  'Pick your own color': '選擇你自己的顏色',
+  'Change your own color': '更改你自己的顏色',
+  'A touch lighter in dark mode, so you can still read it.': '深色模式下會稍微調亮一點，讓你看得清楚。',
+  'A touch darker in light mode, so you can still read it.': '淺色模式下會稍微調暗一點，讓你看得清楚。',
+  'Greys show lighter in dark mode, so buttons don’t look switched off.': '深色模式下灰色會調亮一些，免得按鈕看起來像被停用了。',
+  'Greys show darker in light mode, so buttons don’t look switched off.': '淺色模式下灰色會調暗一些，免得按鈕看起來像被停用了。',
+  'custom color picker': '自訂顏色 自己的顏色 取色器 調色盤',
 }

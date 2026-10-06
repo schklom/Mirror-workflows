@@ -1204,6 +1204,13 @@ export const PT_BR_OVERRIDES = {
   '{0} routine was made on this device while signed out. Add it to your profile, or keep the profile exactly as it is on the server.': '{0} rotina foi criada neste dispositivo sem login. Adicione-a ao seu perfil ou mantenha o perfil exatamente como está no servidor.',
   '{0} routines were made on this device while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': '{0} rotinas foram criadas neste dispositivo sem login. Adicione-as ao seu perfil ou mantenha o perfil exatamente como está no servidor.',
   'This device, before signing in': 'Este dispositivo, antes do login',
+  'Your own color': 'Sua própria cor',
+  'Pick your own color': 'Escolha sua própria cor',
+  'Change your own color': 'Mude sua própria cor',
+  'A touch lighter in dark mode, so you can still read it.': 'Um pouco mais clara no modo escuro, para você continuar lendo.',
+  'A touch darker in light mode, so you can still read it.': 'Um pouco mais escura no modo claro, para você continuar lendo.',
+  'Greys show lighter in dark mode, so buttons don’t look switched off.': 'Os cinzas ficam mais claros no modo escuro, para os botões não parecerem desligados.',
+  'Greys show darker in light mode, so buttons don’t look switched off.': 'Os cinzas ficam mais escuros no modo claro, para os botões não parecerem desligados.',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

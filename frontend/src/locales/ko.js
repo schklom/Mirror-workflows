@@ -1941,4 +1941,12 @@ export default {
   '{0} routines were made on this device while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': '로그인하지 않은 상태에서 이 기기에 루틴 {0}개가 만들어졌습니다. 프로필에 추가하거나 서버에 있는 프로필을 그대로 유지하세요.',
   'This device, before signing in': '로그인 전의 이 기기',
   'This device, before the update': '업데이트 전의 이 기기',
+  'Your own color': '나만의 색상',
+  'Pick your own color': '나만의 색상 고르기',
+  'Change your own color': '나만의 색상 바꾸기',
+  'A touch lighter in dark mode, so you can still read it.': '다크 모드에서는 잘 보이도록 살짝 밝게 표시돼요.',
+  'A touch darker in light mode, so you can still read it.': '라이트 모드에서는 잘 보이도록 살짝 어둡게 표시돼요.',
+  'Greys show lighter in dark mode, so buttons don’t look switched off.': '다크 모드에서는 버튼이 꺼진 것처럼 보이지 않게 회색을 밝게 표시해요.',
+  'Greys show darker in light mode, so buttons don’t look switched off.': '라이트 모드에서는 버튼이 꺼진 것처럼 보이지 않게 회색을 어둡게 표시해요.',
+  'custom color picker': '나만의 색상 사용자 지정 색상 선택기',
 }

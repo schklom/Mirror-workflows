@@ -547,6 +547,33 @@ h4.sec{
 /* One long word (a German custom name) wraps instead of pushing the star off the screen. */
 .exdetail-name{min-width:0;overflow-wrap:anywhere}
 .fav-btn.on{color:var(--yellow)}
+/* Exercise cards (S.exerciseView 'cards', ExerciseViewToggle): the Library, the picker and the
+   muscle explorer as a grid of pictures with the name underneath — two across on a phone, more
+   as the page or sheet widens. The id-prefixed selectors outrank the desktop rules further down
+   that make every #app list two columns and every sheet list one. The catalogue pictures are
+   180px, which is why a card stays near that size instead of filling a phone's width. */
+.list.ex-grid,#app .list.ex-grid,#modal-root .list.ex-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.ex-grid .item{position:relative;flex-direction:column;align-items:stretch;gap:8px;padding:8px}
+.ex-grid .item .thumb{width:100%;height:auto;aspect-ratio:1;border-radius:12px}
+.ex-grid .item .thumb-x{font-size:36px}
+.ex-grid .item .tt{font-size:15px}
+/* The badges ride on the picture's top corners and "+ Plan" spans the foot of the card. The
+   picker's "+" carries an inline padding/margin that widens its hit area in a row; on a card it
+   sits on the picture, so those give way here. */
+.ex-grid .item>.tag{position:absolute;top:14px;inset-inline-start:14px}
+.ex-grid .item:not(.ex-new)>.chev{position:absolute;top:14px;inset-inline-end:14px;width:32px;height:32px;margin:0 !important;padding:7px !important;border-radius:50%;background:var(--surface)}
+.ex-grid .item>.btn{width:100%}
+/* "Create your own exercise" stays a row across the top of the grid */
+.ex-grid .item.ex-new{grid-column:1/-1;flex-direction:row;align-items:center;gap:12px;padding:10px 12px}
+.ex-grid .item.ex-new .thumb{width:50px;height:50px;border-radius:9px}
+.ex-grid .item.ex-new .thumb-x{font-size:21px}
+/* The list/cards button (ExerciseViewToggle) at the end of the search field, as tall as it and
+   dressed like it; pressed while the cards are on. */
+.search-row{display:flex;gap:8px}
+.search-row>.search{flex:1;min-width:0}
+.search-row>.ex-view-btn{width:46px;height:auto;border-radius:10px;background:var(--surface-2);font-size:20px}
+:root[data-theme="light"] .search-row>.ex-view-btn{background:rgba(118,118,128,.12)}
+.search-row>.ex-view-btn.on,:root[data-theme="light"] .search-row>.ex-view-btn.on{background:var(--acc-soft);color:var(--acc)}
 
 /* ---------------------------------------------------------------- chips -- */
 .chips{

@@ -102,22 +102,34 @@ describe('swiping an exercise out of a routine', () => {
     expect(ex().map(e => e.id)).toEqual(['1001', '1002', '1003', '1004'])
   })
 
-  it('the row stays a keyboard button, and the sheet’s Remove has the same Undo', () => {
-    mount([configured('1001'), configured('1002')])
+  it('the name is the keyboard’s button (no button inside a button), and the sheet’s Remove has the same Undo', () => {
+    mount([configured('1001', { sg: 'g1' }), configured('1002', { sg: 'g1' })])
+    // The row holds the superset link and the Move buttons, so it is no button itself: a screen
+    // reader reads a button's insides as plain text (axe nested-interactive).
+    for (const el of host.querySelectorAll('.routine-list [role="button"], .routine-list button')) {
+      expect(el.parentElement.closest('[role="button"], button')).toBeNull()
+    }
     const item = swrows()[1].querySelector('.item')
-    expect(item.getAttribute('role')).toBe('button')
-    act(() => { item.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })) })
+    expect(item.hasAttribute('role')).toBe(false)
+    expect(item.querySelector('button[aria-label="Move up"]')).toBeTruthy()
+    const open = item.querySelector('button.item-open')
+    expect(open.type).toBe('button')
+    click(open)                              // Enter or Space on a <button> is this click
     expect(sheets.exConfigSheet).toHaveBeenCalledOnce()
+    click(item.querySelector('[data-thumb]')) // a tap elsewhere on the row opens it too
+    expect(sheets.exConfigSheet).toHaveBeenCalledTimes(2)
     const onDelete = sheets.exConfigSheet.mock.calls[0][3]
     act(() => onDelete())
     expect(ex().map(e => e.id)).toEqual(['1001'])
     undo()
     expect(ex().map(e => e.id)).toEqual(['1001', '1002'])
+    click(swrows()[1].querySelector('button[aria-label="Move up"]'))   // its own job, no sheet
+    expect(sheets.exConfigSheet).toHaveBeenCalledTimes(2)
   })
 
-  it('a row the long press has picked up does not swipe', () => {
+  it('a long press on the name picks the row up, and a row it has picked up does not swipe', () => {
     mount([configured('1001'), configured('1002')])
-    const item = swrows()[0].querySelector('.item')
+    const item = swrows()[0].querySelector('.item-open')
     pointer(item, 'pointerdown', 200)
     act(() => vi.advanceTimersByTime(ROUTINE_LONG_PRESS_MS))
     expect(host.querySelector('.is-dragging')).toBeTruthy()

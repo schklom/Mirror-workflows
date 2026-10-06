@@ -14,7 +14,6 @@ import { glyphOf } from '../lib/glyphs.js'
 import { Button, Row, SelectRow, Switch } from '../components/ui.jsx'
 import SwipeRow from '../components/SwipeRow.jsx'
 import { workoutControls } from '../lib/workout-controls.js'
-import { tappable } from '../lib/use-sheet-keyboard.js'
 import { copyRoutine, deleteRoutine, replaceSlotExercise } from '../lib/routines.js'
 import { planPrintHTML, printPlan } from '../lib/plan-share.js'
 import { MOBILE, printHtml } from '../lib/mobile.js'
@@ -214,7 +213,7 @@ function useRoutineReorder(routineIdentity, exercises, onDrop) {
       }
       if (event.isPrimary === false || (event.pointerType === 'mouse' && event.button !== 0)) return
       const target = event.target
-      if (!target?.closest || target.closest('button,a,input,textarea,select,[data-nodrag]')) return
+      if (!target?.closest || target.closest('button:not([data-row-open]),a,input,textarea,select,[data-nodrag]')) return
       const row = target.closest('[data-routine-row]')
       if (!row || !list.contains(row)) return
       const sourceIndex = Number(row.dataset.exIndex)
@@ -504,17 +503,19 @@ export default function RoutineEdit() {
       const leavesDown = inSS.has(i) && r.ex[i + 1]?.sg !== e.sg
       const isDragging = reorder.drag && i >= reorder.drag.first && i <= reorder.drag.last
       const removeHere = () => removeRoutineExercise(id, i)
-      // A keyboard button too (tappable): with the swipe's delete button gone from the tab order,
-      // Enter opens the exercise's sheet, and its Remove is the keyboard's way to take it out.
-      const item = <div className={'item' + (inSS.has(i) ? ' in-ss' : '')} {...tappable(() => {
+      // A tap anywhere on the row opens the exercise's sheet; its Remove is the keyboard's way
+      // to take it out. The row itself is no button (it holds the link and Move buttons, which a
+      // screen reader would lose inside one): the name is, a real <button> a click bubbles up
+      // from. The long press treats it as the row (data-row-open, useRoutineReorder).
+      const item = <div className={'item' + (inSS.has(i) ? ' in-ss' : '')} onClick={() => {
           exConfigSheet(ex, e, cfg => edit(x => { x[i] = { id: x[i].id, sg: x[i].sg, ...cfg } }), removeHere, r, null, () => replace(i))
-        })}>
+        }}>
           {/* Shown on pointer devices only (index.css .routine-grip); the Move buttons and the
               long press stay the way in for a keyboard and a finger. */}
           <span className="routine-grip" data-drag-handle aria-hidden="true" title={t('Reorder exercises')}><Icon name="grip" /></span>
           <Thumb ex={ex} />
-          <div className="grow"><div className={`tt ${exerciseNameClass(ex)}`}>{exerciseNameFor(ex)}</div><div className="ss">{exLine(e, S.unit, speedUnitOf(S))}</div>
-            {e.note && <div className="small dim" style={{ marginTop: 2 }}>{e.note}</div>}</div>
+          <button type="button" className="grow item-open" data-row-open><span className={`tt ${exerciseNameClass(ex)}`}>{exerciseNameFor(ex)}</span><span className="ss">{exLine(e, S.unit, speedUnitOf(S))}</span>
+            {e.note && <span className="small dim" style={{ marginTop: 2 }}>{e.note}</span>}</button>
           {noEquip && <span className="tag" style={{ color: 'var(--orange)', borderColor: 'var(--orange)' }} title={t('Needs {0}, which isn’t in your active profile', t(ex.eq))}><Icon name="warning" /></span>}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 2, flex: 'none', alignItems: 'center' }}>
             {i > 0 && <button className={'iconbtn' + (linkedPrev ? ' on-ss' : '')} title={t('Superset with exercise above')} style={{ width: 32, height: 28, borderRadius: 8, fontSize: 15 }} onClick={ev => { ev.stopPropagation(); toggleLink(i) }}><Icon name="link" /></button>}

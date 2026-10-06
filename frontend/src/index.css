@@ -523,6 +523,10 @@ h4.sec{
 .item .tt{font-size:16px;font-weight:400;line-height:1.25;letter-spacing:-.009em}
 .item .ss{color:var(--label-2);font-size:13px;margin-top:2px}
 .item .grow{flex:1;min-width:0}
+/* A row's opener as a real button (the routine editor's exercise name), so a row holding other
+   buttons is no button itself. Reads as the plain text it replaced. */
+.item .item-open{display:flex;flex-direction:column;justify-content:center;align-self:stretch;text-align:start}
+.item .item-open>span{display:block}
 .chev{color:var(--label);flex:none;font-size:15px;--icon-stroke:2.4}
 .tag{
   display:inline-flex;align-items:center;gap:3px;background:var(--surface-2);

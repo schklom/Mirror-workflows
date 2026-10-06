@@ -258,11 +258,13 @@ function pushEndpointError(raw) {
 }
 
 // `deviceId` narrows the send to the subscriptions one browser registered (the rest-timer alert
-// belongs to the device that started the rest); a subscription stored without one — an older
-// client — still gets everything, as before.
+// belongs to the device that started the rest, #348); a subscription stored without one (an
+// older client) still gets everything, as before. A resting device with no subscription of its
+// own gets nothing: the phone in the bag must not ring for a rest timed on the desktop. The
+// client re-sends its subscription with its id on every boot, so an id that changed heals there.
 async function sendPush(userId, payload, deviceId) {
   let subs = db.subs.filter(s => s.userId === userId);
-  if (deviceId && subs.some(s => s.deviceId === deviceId)) subs = subs.filter(s => s.deviceId === deviceId);
+  if (deviceId) subs = subs.filter(s => !s.deviceId || s.deviceId === deviceId);
   if (!subs.length) return;
   const body = JSON.stringify(payload);
   let dirty = false;

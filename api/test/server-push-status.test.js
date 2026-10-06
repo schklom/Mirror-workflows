@@ -115,7 +115,7 @@ test('a re-send without a usable device id keeps the id the row has', async t =>
   assert.deepEqual(await status(h, endpoint), { subscribed: true, deviceId: 'dev_phone001' });
 });
 
-test('a rest started on a device whose row has no id goes to every device; once repaired, to its own only', async t => {
+test('a rest started on a device whose row has no id rings that row, never another device\'s (#348)', async t => {
   // Same method as the rest-timer test below: every send to localhost fails and is logged.
   const phone = { userId: 'u_test_1', endpoint: 'https://localhost/phone', keys, created: new Date().toISOString() };
   const desk = { userId: 'u_test_1', endpoint: 'https://localhost/desk', keys, deviceId: 'dev_desk0000', created: new Date().toISOString() };
@@ -124,12 +124,12 @@ test('a rest started on a device whose row has no id goes to every device; once 
 
   assert.equal((await post(h, '/api/push/rest-timer', { seconds: 1, deviceId: 'dev_phone000' })).status, 200);
   await new Promise(r => setTimeout(r, 2500));
-  assert.equal(sent(), 2, `no row carries the phone's id, so the desk got the phone's alert too:\n${h.log}`);
+  assert.equal(sent(), 1, `no row carries the phone's id: the id-less row (an older client) rings, the desk does not:\n${h.log}`);
 
   assert.equal((await post(h, '/api/push/subscribe', { subscription: { endpoint: phone.endpoint, keys }, deviceId: 'dev_phone000' })).status, 200);
   assert.equal((await post(h, '/api/push/rest-timer', { seconds: 1, deviceId: 'dev_phone000' })).status, 200);
   await new Promise(r => setTimeout(r, 2500));
-  assert.equal(sent(), 3, `after the repair the phone's alert goes to the phone alone:\n${h.log}`);
+  assert.equal(sent(), 2, `after the repair the phone's alert goes to the phone alone:\n${h.log}`);
 });
 
 test('a rest timer belongs to the device that set it: another device cancelling does not silence it', async t => {

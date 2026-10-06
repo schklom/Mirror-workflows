@@ -9,6 +9,7 @@
 import { describe, expect, it } from 'vitest'
 import * as M from './sync-merge.js'
 import * as U from './units.js'
+import { stampPut } from '../../../api/sync-stamps.js'
 
 const { mergeStates, stampWorkout, keepReset } = M
 const unitOps = []
@@ -75,6 +76,7 @@ function run(seed, opts = {}) {
     delete st.active
     const storedReset = Number(cur?.resetAt) || 0
     if (storedReset > (Number(st.resetAt) || 0)) { st.resetAt = cur.resetAt; if (cur.resetIds) st.resetIds = cur.resetIds; else delete st.resetIds }
+    stampPut(cur, st, { overRead: body.baseRev != null && body.baseRev === curRev, stamped: true, now: T })
     st._rev = curRev + 1
     server.doc = st; server.rev = st._rev
     return { status: 200, rev: st._rev }

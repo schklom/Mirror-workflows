@@ -1952,4 +1952,6 @@ export default {
   'That file isn’t an openGym backup.': 'هذا الملف ليس نسخة احتياطية من openGym.',
   'That zip was repacked. Import the original backup file.': 'أُعيد ضغط ملف zip هذا. استورد ملف النسخة الاحتياطية الأصلي.',
   'Couldn’t read that file.': 'تعذّرت قراءة هذا الملف.',
+  'This server doesn’t know that passkey. Make a profile first.': 'هذا الخادم لا يعرف مفتاح المرور هذا. أنشئ ملفًا شخصيًا أولًا.',
+  'That took a little too long. Give it another go.': 'استغرق ذلك وقتًا أطول قليلًا من اللازم. جرّب مرة أخرى.',
 }

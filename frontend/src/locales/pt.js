@@ -1899,4 +1899,6 @@ export default {
   'That file isn’t an openGym backup.': 'Esse ficheiro não é uma cópia de segurança do openGym.',
   'That zip was repacked. Import the original backup file.': 'Esse zip foi recompactado. Importa o ficheiro de cópia original.',
   'Couldn’t read that file.': 'Não foi possível ler esse ficheiro.',
+  'This server doesn’t know that passkey. Make a profile first.': 'Este servidor não conhece essa passkey. Cria primeiro um perfil.',
+  'That took a little too long. Give it another go.': 'Demorou um bocadinho demais. Tenta outra vez.',
 }

@@ -1899,4 +1899,6 @@ export default {
   'That file isn’t an openGym backup.': 'Bu dosya bir openGym yedeği değil.',
   'That zip was repacked. Import the original backup file.': 'Bu zip yeniden paketlenmiş. Orijinal yedek dosyasını içe aktar.',
   'Couldn’t read that file.': 'Bu dosya okunamadı.',
+  'This server doesn’t know that passkey. Make a profile first.': 'Bu sunucu o geçiş anahtarını tanımıyor. Önce bir profil oluştur.',
+  'That took a little too long. Give it another go.': 'Bu biraz fazla uzun sürdü. Bir kez daha dene.',
 }

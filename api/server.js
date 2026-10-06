@@ -1497,7 +1497,7 @@ const passkeyRoutes = {
     const c = takeChallenge(text(body.cid));
     if (!c || c.kind !== 'add' || c.uid !== user.id) {
       audit(req, 'auth.passkey.fail', { ok: false, user, msg: 'challenge-expired' });
-      return json(res, 400, { error: 'challenge expired, try again' });
+      return json(res, 400, { error: 'challenge expired, try again', code: 'challenge-expired' });
     }
     const cred = await newPasskey(req, res, c, body, 'auth.passkey.fail', user);
     if (!cred) return;
@@ -1610,7 +1610,7 @@ const passkeyRoutes = {
     }
     if (!c || c.kind !== 'link' || c.lh !== link.h || c.uid !== link.userId) {
       audit(req, 'auth.link.fail', { ok: false, uid: link.userId, msg: 'challenge-expired' });
-      return json(res, 400, { error: 'challenge expired, try again' });
+      return json(res, 400, { error: 'challenge expired, try again', code: 'challenge-expired' });
     }
     const owner = db.users.find(u => u.id === link.userId);
     const cred = await newPasskey(req, res, c, body, 'auth.link.fail', owner || { id: link.userId });
@@ -1815,7 +1815,7 @@ const routes = {
     if (INVITE_ONLY && !db.invites.some(i => i.code === code && !i.usedBy && !i.revoked)) {
       // The rejected code itself is never recorded — a near-miss guess in the log is a liability.
       audit(req, 'auth.register.denied', { ok: false, name, msg: 'invite-rejected' });
-      return json(res, 403, { error: 'a valid invite code is required' });
+      return json(res, 403, { error: 'a valid invite code is required', code: 'invite' });
     }
     const uid = crypto.randomBytes(12).toString('base64url');
     const options = await generateRegistrationOptions({
@@ -1834,7 +1834,7 @@ const routes = {
     const c = takeChallenge(body.cid);
     if (!c || c.kind !== 'register' || !c.uid) {
       audit(req, 'auth.register.fail', { ok: false, msg: 'challenge-expired' });
-      return json(res, 400, { error: 'challenge expired, try again' });
+      return json(res, 400, { error: 'challenge expired, try again', code: 'challenge-expired' });
     }
     let verification;
     try {
@@ -1865,7 +1865,7 @@ const routes = {
       invite = db.invites.find(i => i.code === c.code && !i.usedBy && !i.revoked);
       if (!invite) {
         audit(req, 'auth.register.fail', { ok: false, name: c.name, msg: 'invite-invalid' });
-        return json(res, 403, { error: 'invite code is no longer valid, ask for a new one' });
+        return json(res, 403, { error: 'invite code is no longer valid, ask for a new one', code: 'invite' });
       }
     }
     const user = { id: c.uid, name: c.name, created: new Date().toISOString() };
@@ -1898,7 +1898,7 @@ const routes = {
     const c = takeChallenge(body.cid);
     if (c?.kind !== 'login') {
       audit(req, 'auth.login.fail', { ok: false, msg: 'challenge-expired' });
-      return json(res, 400, { error: 'challenge expired, try again' });
+      return json(res, 400, { error: 'challenge expired, try again', code: 'challenge-expired' });
     }
     const cred = db.creds.find(x => x.id === body.credential?.id);
     if (!cred) {
@@ -1906,7 +1906,7 @@ const routes = {
       // would let an admin correlate an unknown device across attempts. Nothing here identifies
       // the caller beyond the timestamp (and the network, if AUDIT_IP is on).
       audit(req, 'auth.login.fail', { ok: false, msg: 'unknown-credential' });
-      return json(res, 404, { error: 'unknown passkey, create a profile first' });
+      return json(res, 404, { error: 'unknown passkey, create a profile first', code: 'unknown-credential' });
     }
     let verification;
     try {
@@ -1941,7 +1941,7 @@ const routes = {
     }
     if (user.disabled) {
       audit(req, 'auth.login.fail', { ok: false, user, msg: 'account-disabled' });
-      return json(res, 403, { error: 'this account has been disabled' });
+      return json(res, 403, { error: 'this account has been disabled', code: 'disabled' });
     }
     audit(req, 'auth.login.ok', { user });
     json(res, 200, { user: { id: user.id, name: user.name, admin: isAdmin(user) } }, { 'Set-Cookie': sessionCookie(user) });

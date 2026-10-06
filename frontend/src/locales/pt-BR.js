@@ -1178,6 +1178,8 @@ export const PT_BR_OVERRIDES = {
   'That file isn’t an openGym backup.': 'Esse arquivo não é um backup do openGym.',
   'That zip was repacked. Import the original backup file.': 'Esse zip foi recompactado. Importe o arquivo de backup original.',
   'Couldn’t read that file.': 'Não foi possível ler esse arquivo.',
+  'This server doesn’t know that passkey. Make a profile first.': 'Este servidor não conhece essa chave de acesso. Crie um perfil primeiro.',
+  'That took a little too long. Give it another go.': 'Demorou um pouquinho demais. Tente de novo.',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

@@ -1903,4 +1903,6 @@ export default {
   'That file isn’t an openGym backup.': 'Этот файл не резервная копия openGym.',
   'That zip was repacked. Import the original backup file.': 'Этот zip перепаковали. Импортируй исходный файл резервной копии.',
   'Couldn’t read that file.': 'Не удалось прочитать этот файл.',
+  'This server doesn’t know that passkey. Make a profile first.': 'Этот сервер не знает такой ключ доступа. Сначала создайте профиль.',
+  'That took a little too long. Give it another go.': 'Это заняло слишком много времени. Попробуйте ещё раз.',
 }

@@ -1899,4 +1899,6 @@ export default {
   'That file isn’t an openGym backup.': '이 파일은 openGym 백업이 아니에요.',
   'That zip was repacked. Import the original backup file.': '이 zip은 다시 압축됐어요. 원본 백업 파일을 가져오세요.',
   'Couldn’t read that file.': '이 파일을 읽을 수 없어요.',
+  'This server doesn’t know that passkey. Make a profile first.': '이 서버는 이 패스키를 몰라요. 먼저 프로필을 만들어 주세요.',
+  'That took a little too long. Give it another go.': '조금 너무 오래 걸렸어요. 다시 해 보세요.',
 }

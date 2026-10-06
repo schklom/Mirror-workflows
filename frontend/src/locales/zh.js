@@ -1899,4 +1899,6 @@ export default {
   'That file isn’t an openGym backup.': '这个文件不是 openGym 备份。',
   'That zip was repacked. Import the original backup file.': '这个 zip 被重新打包过。请导入原始备份文件。',
   'Couldn’t read that file.': '无法读取这个文件。',
+  'This server doesn’t know that passkey. Make a profile first.': '这个服务器不认识这个通行密钥。请先创建个人资料。',
+  'That took a little too long. Give it another go.': '花的时间有点太长了。再试一次吧。',
 }

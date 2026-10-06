@@ -1910,4 +1910,6 @@ export default {
   'That file isn’t an openGym backup.': 'ไฟล์นี้ไม่ใช่ข้อมูลสำรองของ openGym',
   'That zip was repacked. Import the original backup file.': 'zip นี้ถูกบีบอัดใหม่ นำเข้าไฟล์สำรองต้นฉบับแทน',
   'Couldn’t read that file.': 'อ่านไฟล์นี้ไม่ได้',
+  'This server doesn’t know that passkey. Make a profile first.': 'เซิร์ฟเวอร์นี้ไม่รู้จักพาสคีย์นี้ สร้างโปรไฟล์ก่อนนะ',
+  'That took a little too long. Give it another go.': 'ใช้เวลานานไปหน่อย ลองอีกครั้งนะ',
 }

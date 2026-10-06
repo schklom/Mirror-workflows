@@ -350,7 +350,7 @@ paths:
           content:
             application/json:
               schema: { $ref: '#/components/schemas/Error' }
-              example: { error: "a valid invite code is required" }
+              example: { error: "a valid invite code is required", code: "invite" }
 
   /api/register/verify:
     post:
@@ -398,13 +398,13 @@ paths:
           content:
             application/json:
               schema: { $ref: '#/components/schemas/Error' }
-              example: { error: "challenge expired, try again" }
+              example: { error: "challenge expired, try again", code: "challenge-expired" }
         '403':
           description: Invite-only and the code became invalid since step 1.
           content:
             application/json:
               schema: { $ref: '#/components/schemas/Error' }
-              example: { error: "invite code is no longer valid, ask for a new one" }
+              example: { error: "invite code is no longer valid, ask for a new one", code: "invite" }
         '409':
           description: This credential id is already registered.
           content:
@@ -482,13 +482,13 @@ paths:
           content:
             application/json:
               schema: { $ref: '#/components/schemas/Error' }
-              example: { error: "this account has been disabled" }
+              example: { error: "this account has been disabled", code: "disabled" }
         '404':
           description: The passkey's credential id is unknown to this instance.
           content:
             application/json:
               schema: { $ref: '#/components/schemas/Error' }
-              example: { error: "unknown passkey, create a profile first" }
+              example: { error: "unknown passkey, create a profile first", code: "unknown-credential" }
         '500':
           description: Credential exists but its user record is missing (corrupt db).
           content:
@@ -1207,7 +1207,7 @@ paths:
           content:
             application/json:
               schema: { $ref: '#/components/schemas/Error' }
-              example: { error: "challenge expired, try again" }
+              example: { error: "challenge expired, try again", code: "challenge-expired" }
         '401':
           description: >-
             Not signed in — including a session that was ended ("sign out everywhere", a

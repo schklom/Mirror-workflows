@@ -1899,4 +1899,6 @@ export default {
   'That file isn’t an openGym backup.': 'यह फ़ाइल openGym बैकअप नहीं है।',
   'That zip was repacked. Import the original backup file.': 'यह zip दोबारा पैक की गई है। मूल बैकअप फ़ाइल इम्पोर्ट करें।',
   'Couldn’t read that file.': 'यह फ़ाइल पढ़ी नहीं जा सकी।',
+  'This server doesn’t know that passkey. Make a profile first.': 'यह सर्वर इस पासकी को नहीं पहचानता। पहले एक प्रोफ़ाइल बनाएँ।',
+  'That took a little too long. Give it another go.': 'इसमें थोड़ा ज़्यादा समय लग गया। एक बार फिर कोशिश करें।',
 }

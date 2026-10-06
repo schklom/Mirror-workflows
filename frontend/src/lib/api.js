@@ -343,6 +343,18 @@ function credToJSON(cred) {
   }
   return out
 }
+// A passkey sign-in or sign-up the server refused, in the UI language. The routes send a stable
+// `code` beside their English message; an answer without one (an older server, a verify error)
+// is shown as it came.
+export function passkeyError(e, fallback) {
+  switch (e?.data?.code) {
+    case 'invite': return t('That invite code is not valid.')
+    case 'unknown-credential': return t('This server doesn’t know that passkey. Make a profile first.')
+    case 'disabled': return t('This account has been disabled.')
+    case 'challenge-expired': return t('That took a little too long. Give it another go.')
+  }
+  return e?.message || fallback
+}
 export async function passkeyRegister(name, code) {
   const { cid, options } = await api('/api/register/options', { method: 'POST', body: JSON.stringify({ name, code: code || '' }) })
   const cred = await navigator.credentials.create({ publicKey: toCreationOptions(options) })

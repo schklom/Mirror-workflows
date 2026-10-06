@@ -7,7 +7,7 @@ import { useStore } from '../store/useStore.js'
 import { useUI } from '../store/useUI.js'
 import { t, tn } from '../lib/i18n.js'
 import { fmtAgo, changeCount } from '../lib/format.js'
-import { passkeyLogin, webauthnOK } from '../lib/api.js'
+import { passkeyLogin, passkeyError, webauthnOK } from '../lib/api.js'
 import { MOBILE } from '../lib/mobile.js'
 import { syncMedia } from '../lib/media-sync.js'
 import { DEMO } from '../lib/demo.js'
@@ -136,7 +136,7 @@ export async function passkeySignIn() {
     st.setUser(u, { adopt: true })
     await st.adoptProfile(askAddDeviceData)
     toast(t('Welcome back, {0}', u.name))
-  } catch (e) { if (e.name !== 'NotAllowedError' && e.name !== 'AbortError') toast(e.message || t('Sign-in failed')) }
+  } catch (e) { if (e.name !== 'NotAllowedError' && e.name !== 'AbortError') toast(passkeyError(e, t('Sign-in failed'))) }
 }
 
 /* ---------------------------------------------------------- leaving the server ---------------

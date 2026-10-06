@@ -1902,4 +1902,6 @@ export default {
   'That file isn’t an openGym backup.': 'Ez a fájl nem openGym-mentés.',
   'That zip was repacked. Import the original backup file.': 'Ezt a zipet újracsomagolták. Az eredeti mentésfájlt importáld.',
   'Couldn’t read that file.': 'Ezt a fájlt nem sikerült beolvasni.',
+  'This server doesn’t know that passkey. Make a profile first.': 'Ez a szerver nem ismeri ezt a jelszókulcsot. Előbb hozz létre egy profilt.',
+  'That took a little too long. Give it another go.': 'Ez egy kicsit túl sokáig tartott. Próbáld újra.',
 }

@@ -53,12 +53,16 @@ export function sessionEnd(active, now = Date.now(), gap = FORGOTTEN_GAP_MS) {
     .map(s => ({ at: s.at, len: rowLengthMs(s) }))
     .sort((a, b) => a.at - b.at)
   if (!ticks.length) return now
-  let end = ticks[0].at
+  // A row may have been ticked when it was done or when it was started (a treadmill row ticked,
+  // then run for 30 minutes before Finish, QA 10-06), so the session reaches to the later of the
+  // two: its tick plus its own length. That reach, not the bare tick, is what the next tick and
+  // the Finish tap are measured against, and where a forgotten session ends.
+  let reach = ticks[0].at + ticks[0].len
   for (const { at, len } of ticks.slice(1)) {
-    if (at - len - end > gap) break
-    end = at
+    if (at - len - reach > gap) break
+    reach = Math.max(reach, at + len)
   }
-  return now - end > gap ? end : now
+  return now - reach > gap ? reach : now
 }
 
 export function buildCompletedWorkout(active, { end = Date.now(), prs = [], snapshotFor } = {}) {

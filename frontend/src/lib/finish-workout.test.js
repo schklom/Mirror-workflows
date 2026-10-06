@@ -308,6 +308,20 @@ describe('sessionEnd: a workout finished long after its last set', () => {
     expect(sessionEnd(hold, T0 + 31 * MIN)).toBe(T0 + 31 * MIN)
   })
 
+  it('does not cut a cardio row ticked when it started and finished more than the gap later', () => {
+    // Bench 0 and 20, a 30-minute run ticked at 25 when it began, Finish at 56 after it.
+    const active = { entries: [
+      { id: 'x', sets: [0, 20].map(m => ({ done: true, w: 50, r: 8, at: T0 + m * MIN })) },
+      { id: 'run', sets: [{ done: true, min: 30, speed: 10, at: T0 + 25 * MIN }] },
+    ] }
+    expect(sessionEnd(active, T0 + 56 * MIN)).toBe(T0 + 56 * MIN)
+    // The same session left open overnight ends where the run could have, not at its tick.
+    expect(sessionEnd(active, T0 + 24 * 60 * MIN)).toBe(T0 + 55 * MIN)
+    // A hold started and ticked before a 25-minute stretch is the same.
+    const hold = { entries: [{ id: 'plank', sets: [{ done: true, sec: 300, at: T0 }] }] }
+    expect(sessionEnd(hold, T0 + 25 * MIN)).toBe(T0 + 25 * MIN)
+  })
+
   it('counts a per-side set once one side is done', () => {
     const active = { entries: [{ id: 'x', sets: [{
       w: 20, r: 8, done: false, at: T0,

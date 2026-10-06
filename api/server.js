@@ -128,6 +128,9 @@ function atomicWrite(file, content, mode) {
   fs.writeFileSync(tmp, content, mode ? { mode } : undefined);
   fs.renameSync(tmp, file);
 }
+// How many earlier write ids a document keeps (`_wids`, see PUT /api/data): a device that last
+// synced more writes ago than this merges on its next pull instead of taking the server's copy.
+const WID_KEEP = 50;
 const stateFile = uid => path.join(DATA, 'state-' + uid.replace(/[^a-zA-Z0-9_-]/g, '') + '.json');
 // When a profile last fetched its document (GET /api/data). The document's own `_ts` moves only
 // on a push, so a device that only ever read — a second phone, a profile that trains elsewhere
@@ -2055,7 +2058,8 @@ const routes = {
   'GET /api/data/rev': async (req, res) => {
     const user = readSession(req);
     if (!user) return json(res, 401, { error: 'not signed in' });
-    json(res, 200, { rev: readStateCached(user.id)?._rev || 0 });
+    const doc = readStateCached(user.id);
+    json(res, 200, { rev: doc?._rev || 0, ...(doc?._wid ? { wid: doc._wid } : {}) });
   },
 
   'PUT /api/data': async (req, res) => {
@@ -2095,7 +2099,13 @@ const routes = {
     // compare-and-write is atomic for this process.
     const cur = readState(user.id);
     const curRev = cur?._rev || 0;
-    if (body.baseRev != null && body.baseRev !== curRev) {
+    // `_rev` is a counter, so after the data directory went back in time (a restored backup, a
+    // write lost to a power cut) the same number names a different document. Every write also gets
+    // a write id (`_wid`) and keeps its ancestors' (`_wids`): a client quoting the id it last saw
+    // (`baseWid`) is refused when the stored document is not that one, whatever the numbers say,
+    // and a client reading a document can tell whether it descends from its own (useStore pullState).
+    if ((body.baseRev != null && body.baseRev !== curRev) ||
+        (body.baseRev != null && typeof body.baseWid === 'string' && cur?._wid && body.baseWid !== cur._wid)) {
       return json(res, 409, { error: 'conflict', rev: curRev, state: cur });
     }
     delete body.state.active;              // in-progress workouts stay device-local
@@ -2117,6 +2127,9 @@ const routes = {
     try { stampPut(cur, body.state, { overRead: body.baseRev != null && body.baseRev === curRev, stamped: body.stamped === true }); }
     catch (e) { if (e instanceof RangeError) return json(res, 400, { error: 'invalid state' }); throw e; }
     body.state._rev = curRev + 1;          // server-owned; whatever the client sent is ignored
+    body.state._wids = [...(Array.isArray(cur?._wids) ? cur._wids : []), ...(cur?._wid ? [cur._wid] : [])]
+      .filter(x => typeof x === 'string').slice(-WID_KEEP);
+    body.state._wid = crypto.randomBytes(8).toString('hex');
     // JSON.parse takes any nesting, JSON.stringify recurses and runs out of stack on a document
     // nested some thousands deep. No client builds one; it is a bad request, not a server error.
     let text;
@@ -2136,7 +2149,7 @@ const routes = {
     if (MEDIA_ON) {
       try { MEDIA.noteState(user.id, body.state); } catch (e) { console.error('media noteState', e); }
     }
-    json(res, 200, { ok: true, ts: body.state._ts || null, rev: body.state._rev });
+    json(res, 200, { ok: true, ts: body.state._ts || null, rev: body.state._rev, wid: body.state._wid });
   },
 
   'GET /api/push/public-key': async (req, res) => json(res, 200, { key: vapid.publicKey }),

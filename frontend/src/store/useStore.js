@@ -329,8 +329,10 @@ export const useStore = create((set, get) => {
     } catch { /* storage refused — the copy in memory still knows */ }
   }
   const saveOwed = owed => { try { if (owed) localStorage.setItem(DIRTY_KEY, '1'); else localStorage.removeItem(DIRTY_KEY) } catch { /* as above */ } }
-  const writeSync = (rev, ts) => {
-    const base = { rev, ts: ts || 0 }
+  // `wid`: the write id of the server's document at that revision (api/server.js PUT /api/data):
+  // the same `rev` after the server went back in time names a different document.
+  const writeSync = (rev, ts, wid) => {
+    const base = { rev, ts: ts || 0, ...(typeof wid === 'string' ? { wid } : {}) }
     meta.set(get().S, { ...metaOf(), base })
     saveMarker(base)
   }
@@ -502,8 +504,8 @@ export const useStore = create((set, get) => {
     const { base } = metaOf()
     if (!base || owes()) return get().pullState()
     try {
-      const { rev } = await api('/api/data/rev')
-      if (rev !== base.rev) return get().pullState()
+      const { rev, wid } = await api('/api/data/rev')
+      if (rev !== base.rev || (base.wid && wid && wid !== base.wid)) return get().pullState()
       confirmed(get().S)   // nothing moved on either side
     } catch (e) {
       if (isNetworkError(e) || refused(e)) failed(e)
@@ -536,7 +538,7 @@ export const useStore = create((set, get) => {
     if (refillIfComplete(merged)) merged.edited = { ...(merged.edited || {}), queue: Math.max(Date.now(), highestStamp(merged) + 1) }
     persist(merged, false)
     if (rev == null) dropSync()
-    else writeSync(rev, ts)
+    else writeSync(rev, ts, remote?._wid)
   }
   // The workout running on this device, carried from its copy into the one replacing it — in that
   // copy's unit: a merge or a pull can bring the other device's switch to lb along, and a session
@@ -548,7 +550,7 @@ export const useStore = create((set, get) => {
     return !a || fu === tu ? a : inUnitOf({ unit: fu, active: a }, to).active
   }
   // Take the server's copy as this device's own, timestamp and all (see persist).
-  const adopt = (next, rev) => { persist(next, false, false); writeSync(rev, next._ts); markOwed(false) }
+  const adopt = (next, rev) => { persist(next, false, false); writeSync(rev, next._ts, next._wid); markOwed(false) }
 
   const doPush = async (attempt = 0) => {
     const S = get().S
@@ -563,14 +565,14 @@ export const useStore = create((set, get) => {
     // `stamped`: this client stamps its own changes; the server stamps only for one that does not
     // (api/sync-stamps.js).
     const body = { state: S, stamped: true }
-    if (asReplace != null) body.baseRev = asReplace
-    else if (!force && base) body.baseRev = base.rev
+    if (asReplace != null) { body.baseRev = asReplace.rev; if (asReplace.wid) body.baseWid = asReplace.wid }
+    else if (!force && base) { body.baseRev = base.rev; if (base.wid) body.baseWid = base.wid }
     try {
       const r = await api('/api/data', { method: 'PUT', body: JSON.stringify(body) })
       // A server from before revisions answers without one — then there is nothing to hold the
       // next push to, and the marker must not pretend otherwise.
       if (r.rev == null) dropSync()
-      else writeSync(r.rev, S._ts)
+      else writeSync(r.rev, S._ts, r.wid)
       markOwed(false)
       toldTooLarge = false
       confirmed(S)
@@ -656,7 +658,7 @@ export const useStore = create((set, get) => {
     if (!user || localStorage.getItem('gym_owner') !== user.id) return
     let theirs = null
     try { theirs = JSON.parse(e.newValue) } catch { return }
-    if (theirs?.rev == null || theirs.rev === metaOf().base?.rev) return
+    if (theirs?.rev == null || (theirs.rev === metaOf().base?.rev && theirs.wid === metaOf().base?.wid)) return
     checkRev(true)
   })
 
@@ -928,7 +930,7 @@ export const useStore = create((set, get) => {
       const merged = Object.assign(clone(DEF), mergeStates(state, S, { prefer: 'a' }))
       merged.active = carryActive(S, merged)
       persist(merged, false)
-      if (rev != null) writeSync(rev, 0)
+      if (rev != null) writeSync(rev, 0, state?._wid)
       else dropSync()
       await get().pushState()
       await applyStash()
@@ -941,7 +943,7 @@ export const useStore = create((set, get) => {
       const merged = Object.assign(clone(DEF), mergeStates(S, later, { prefer: 'a' }))
       merged.active = S.active || null
       persist(merged, false)
-      if (rev != null) writeSync(rev, 0)
+      if (rev != null) writeSync(rev, 0, state?._wid)
       else dropSync()
       await get().pushState()
     }
@@ -1147,7 +1149,8 @@ export const useStore = create((set, get) => {
       if (!mergeWith?.state || !uid) {
         stampRestore(next, [cur, server], now)
         next._ts = now
-        get().replaceState(next, !!uid, { baseRev: read?.rev ?? metaOf().base?.rev ?? null })
+        const at = read?.rev != null ? { rev: read.rev, wid: read.state?._wid } : metaOf().base
+        get().replaceState(next, !!uid, { baseRev: at?.rev ?? null, baseWid: at?.wid })
         return
       }
       const others = mergeWith.local ? mergeStates(cur, mergeWith.state) : mergeWith.state
@@ -1158,14 +1161,14 @@ export const useStore = create((set, get) => {
       merged._ts = now
       merged.active = next.active || null
       persist(merged, true)
-      if (mergeWith.rev != null) writeSync(mergeWith.rev, 0)
+      if (mergeWith.rev != null) writeSync(mergeWith.rev, 0, mergeWith.state?._wid)
     },
     // A replace that is meant to reach the server (backup import, reset) is a deliberate
     // overwrite, not a change to merge: the push it arms goes without a baseRev — or, given one
     // (an import), against that revision, so a 409 merges what another device wrote since. It
     // never takes the reset stamp back (keepReset).
-    replaceState(S, push = false, { baseRev = null } = {}) {
-      if (push) { if (baseRev != null) replaceRev = baseRev; else forceNext = true }
+    replaceState(S, push = false, { baseRev = null, baseWid } = {}) {
+      if (push) { if (baseRev != null) replaceRev = { rev: baseRev, wid: baseWid }; else forceNext = true }
       persist(keepReset(get().S, clone(S)), push)
     },
 
@@ -1309,14 +1312,23 @@ export const useStore = create((set, get) => {
             if (dirty && state) { mergeInto(S, state, rev); pushPending = false; await get().pushState(); return }
             const restored = restoredStateFor(S, state, false)
             if (restored) { adopt(restored, rev); confirmed(get().S) }
-            else if (hasData(S)) { writeSync(rev, 0); await get().pushState() }
-            else { writeSync(rev, state?._ts || 0); confirmed(get().S) }
+            else if (hasData(S)) { writeSync(rev, 0, state?._wid); await get().pushState() }
+            else { writeSync(rev, state?._ts || 0, state?._wid); confirmed(get().S) }
             return
           }
-          const serverMoved = rev !== base.rev
+          // The document the server holds now, and whether it descends from the one this copy last
+          // synced: one it does not (the server's data went back in time — a restored backup, a
+          // write lost to a power cut — or an answer that left before this device's own push
+          // landed) is never taken as it is. It is merged, and pushed: what this device had
+          // confirmed would otherwise vanish here too, and the same revision number can name a
+          // different document, which a push would have overwritten without a 409.
+          const wid = state?._wid
+          const serverMoved = rev !== base.rev || (!!base.wid && !!wid && wid !== base.wid)
+          const descends = !base.wid || !wid || wid === base.wid || (Array.isArray(state?._wids) && state._wids.includes(base.wid))
           const changed = dirty || localChanged(S)
           if (!serverMoved) { if (changed) await get().pushState(); else confirmed(S); return }
           if (!state) { writeSync(rev, 0); if (hasData(S)) await get().pushState(); return }
+          if (!descends) { mergeInto(S, state, rev); pushPending = false; await get().pushState(); return }
           if (!changed) { const next = Object.assign(clone(DEF), state); next.active = carryActive(S, next); adopt(next, rev); confirmed(get().S); return }
           mergeInto(S, state, rev)
           pushPending = false

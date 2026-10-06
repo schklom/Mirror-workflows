@@ -1459,6 +1459,12 @@ paths:
                   description: >-
                     The revision this client last read or wrote. Omit or null for an
                     unconditional overwrite.
+                baseWid:
+                  type: string
+                  description: >-
+                    The write id (`_wid`) of the document this client last read or wrote. With
+                    `baseRev`, a write over a different document at the same revision (the data
+                    directory went back in time and the number was reached again) answers 409.
                 stamped:
                   type: boolean
                   description: >-
@@ -1480,6 +1486,9 @@ paths:
                   rev:
                     type: integer
                     description: The revision the write produced.
+                  wid:
+                    type: string
+                    description: The write id (`_wid`) of the stored document.
         '409':
           description: >-
             `baseRev` is not the current revision — another client wrote since this one
@@ -1527,6 +1536,7 @@ paths:
                 type: object
                 properties:
                   rev: { type: integer }
+                  wid: { type: string, description: 'The write id (`_wid`) of the stored document; absent before its first write.' }
         '401': { $ref: '#/components/responses/Unauthorized' }
 
   /api/media/{hash}:
@@ -3212,6 +3222,15 @@ components:
           type: integer
           readOnly: true
           description: Server-set revision, incremented on every accepted PUT. Ignored when sent by a client.
+        _wid:
+          type: string
+          readOnly: true
+          description: Server-set id of this write (16 hex characters), new on every accepted PUT.
+        _wids:
+          type: array
+          readOnly: true
+          items: { type: string }
+          description: The write ids of the documents this one descends from, oldest first (up to 50).
         deleted:
           type: object
           description: >-

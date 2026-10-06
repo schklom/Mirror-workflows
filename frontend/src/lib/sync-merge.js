@@ -686,6 +686,8 @@ export function mergeStates(a0, b0, { prefer } = {}) {
   if (resetIds) out.resetIds = resetIds
   else delete out.resetIds
   delete out._rev
+  delete out._wid
+  delete out._wids
   return out
 }
 

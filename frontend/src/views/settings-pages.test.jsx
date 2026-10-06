@@ -4,6 +4,8 @@
 import React, { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { PAGES, PAGE_IDS, ROOT_GROUPS, SEARCH, pageVisible, searchSettings, pageTrail, fold } from './settings-pages.js'
 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true
@@ -94,6 +96,22 @@ describe('the root', () => {
     expect(rowTitled('Units & language').querySelector('.lrow-v').textContent).toBe('kg · English')
     expect(rowTitled('Equipment').querySelector('.lrow-v').textContent).toBe('Everything')
     expect(rowTitled('About & updates').querySelector('.lrow-v').textContent).toMatch(/^v\d|^vtest/)
+  })
+
+  it('marks the page rows so a long preview wraps instead of losing its second half', () => {
+    mount()
+    const rows = ['Workout', 'Timer alerts', 'Plan & schedule', 'Units & language', 'Look & Home'].map(rowTitled)
+    for (const r of rows) expect(r.classList.contains('sp-root-row')).toBe(true)
+    // index.css: the marked rows' value may wrap, and never shrinks below its longest word
+    const css = readFileSync(resolve(process.cwd(), 'src/index.css'), 'utf8')
+    const rule = css.match(/^\.lrow\.sp-root-row \.lrow-v\{([^}]*)\}/m)?.[1] || ''
+    expect(rule).toMatch(/white-space:normal/)
+    expect(rule).toMatch(/line-clamp:3/)
+    expect(rule).toMatch(/min-width:min-content/)
+    // the sub-page title takes a second line rather than an ellipsis ("Alertas do temporizador")
+    const title = css.match(/^\.sp-title\{([^}]*)\}/m)?.[1] || ''
+    expect(title).not.toMatch(/nowrap/)
+    expect(title).toMatch(/line-clamp:2/)
   })
 
   it('previews a rest that was never on the old list, and no timer at all', () => {

@@ -1910,7 +1910,10 @@ body.no-tabbar.resting #toast{bottom:calc(100px + var(--sab))}
   min-width:0;max-width:50vw;justify-self:start}
 .sp-back span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sp-back .icn{font-size:22px;--icon-stroke:2.2;flex:none}
-.sp-title{text-align:center;font-weight:600;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:0}
+/* A long title ("Alertas do temporizador", "Megjelenés és Kezdőlap") takes a second line rather
+   than lose its end to an ellipsis next to a whole back label. */
+.sp-title{text-align:center;font-weight:600;font-size:17px;line-height:1.2;margin:0;overflow:hidden;overflow-wrap:anywhere;-webkit-hyphens:auto;hyphens:auto;
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;text-wrap:balance}
 .sp-root-title{font-size:34px;line-height:1.06;font-weight:700;letter-spacing:-.028em;margin:2px 0 10px}
 @media (max-width:420px){.sp-root-title{font-size:30px}}
 .sp-search{margin-bottom:18px}
@@ -1921,6 +1924,19 @@ body.no-tabbar.resting #toast{bottom:calc(100px + var(--sab))}
 .sp-acct .lrow-t{font-size:19px;font-weight:600}
 .sp-avatar.on{background:var(--acc-soft);color:var(--acc);font-size:24px;font-weight:700}
 .sp-version{text-align:center;margin-top:4px;line-height:1.6}
+/* The root rows' previews ("2:00 de descanso · Tarjetas", "Som · Vibração") are two or three facts, and a
+   one-line ellipsis cut all but the first. They wrap instead, up to three lines, and never below
+   their longest word (min-content, since overflow:hidden would make auto mean 0). On the narrowest phones there is no room beside
+   the title at all, so the preview moves under it, like a subtitle. */
+.lrow.sp-root-row .lrow-v{white-space:normal;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;line-clamp:3;
+  min-width:min-content;max-width:62%;line-height:1.25;text-wrap:balance}
+@media (max-width:360px){
+  .lrow.sp-root-row:has(.lrow-v){display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;column-gap:12px;row-gap:1px}
+  .lrow.sp-root-row:has(.lrow-v) .lrow-i{grid-column:1;grid-row:1 / span 2}
+  .lrow.sp-root-row:has(.lrow-v) .lrow-m{grid-column:2;grid-row:1}
+  .lrow.sp-root-row .lrow-v{grid-column:2;grid-row:2;min-width:0;max-width:none;text-align:start;font-size:15px;-webkit-line-clamp:2;line-clamp:2}
+  .lrow.sp-root-row:has(.lrow-v) .lrow-c{grid-column:3;grid-row:1 / span 2}
+}
 .lrow.dis .lrow-i,.lrow.dis .lrow-t,.lrow.dis .sw{opacity:.45}
 /* a row a search result jumped to: a short accent wash that fades out */
 .lrow.sp-flash,.btn.sp-flash{animation:spflash 1.8s ease}

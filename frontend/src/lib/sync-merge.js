@@ -22,7 +22,8 @@
  *     copies' lists (the kept version's in its order, then the other's extras), so a photo added
  *     on one device survives the other's edit of the same workout — or its own photo
  *     (mergeWorkoutMedia)
- *   - routines: union by id in the newer copy's order; of an id that both have, the version
+ *   - routines: union by id in the newer copy's order, a routine only the older copy has next to
+ *     its neighbour there (unionByNeighbours); of an id that both have, the version
  *     edited last by its own `_ts` (stampRoutines), the newer copy's on a tie
  *   - bodyweight: union by day, the later-edited (`t`) entry of a day that both have
  *   - favEx: ordered set union, the newer copy first
@@ -92,6 +93,30 @@ export function unionById(newer = [], older = [], key = x => x?.id) {
     out.push(x)
   }
   return out
+}
+
+/**
+ * unionById for a list whose order the user set (routines): `newer`'s entries in their order, and
+ * each entry only `older` has goes in right after its nearest earlier neighbour in `older` (at
+ * the start when it has none there). Appending them sent a routine that one device put back
+ * (Plan's Undo) to the end of the list whenever the other device's copy was the newer one.
+ */
+export function unionByNeighbours(newer = [], older = [], key = x => x?.id) {
+  const out = unionById(newer, [], key)
+  const at = new Set(out.map(key).filter(k => k != null))
+  const keyless = []
+  let prev = null
+  for (const x of list(older)) {
+    const k = key(x)
+    if (k == null) { keyless.push(x); continue }
+    if (!at.has(k)) {
+      const i = prev == null ? -1 : out.findIndex(y => key(y) === prev)
+      out.splice(i + 1, 0, x)
+      at.add(k)
+    }
+    prev = k
+  }
+  return out.concat(keyless)
 }
 
 const workoutKey = w => (w?.id != null ? w.id : `${w?.d}|${w?.start}`)
@@ -545,7 +570,7 @@ export function mergeStates(a0, b0, { prefer } = {}) {
   }
   out.workouts.sort(byDayStart)
   for (const f of ['routines', 'customEx', 'equipProfiles', 'gymCards']) {
-    if (list(n[f]).length || list(o[f]).length) out[f] = unionById(n[f], o[f]).map(clone)
+    if (list(n[f]).length || list(o[f]).length) out[f] = (f === 'routines' ? unionByNeighbours : unionById)(n[f], o[f]).map(clone)
   }
   // A routine edited on both sides keeps the version edited last. Taking the newer copy's
   // version dropped a plan edit made on one device whenever the other had since logged a set or

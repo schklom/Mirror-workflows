@@ -272,6 +272,18 @@ describe('routines keep the version edited last', () => {
     expect(mergeStates(desk, phone).routines).toEqual(m.routines)
   })
 
+  it('a routine only the older copy has comes back next to its old neighbour, not at the end', () => {
+    // Device A deleted Pull and then undid it; B, which had pulled the delete, duplicated Leg
+    // meanwhile and is the newer copy.
+    const a = base({ _ts: 100, routines: [r('push', 5, 1), r('pull', 5, 90), r('leg', 5, 1), r('cond', 5, 1)] })
+    const b = base({ _ts: 200, routines: [r('push', 5, 1), r('leg', 5, 1), r('leg2', 5, 150), r('cond', 5, 1)] })
+    expect(ids(mergeStates(a, b).routines)).toEqual(['push', 'pull', 'leg', 'leg2', 'cond'])
+    // first in the older copy: first in the merge; two in a row keep their order
+    const c = base({ _ts: 100, routines: [r('x', 5, 1), r('y', 5, 1), r('push', 5, 1)] })
+    const d = base({ _ts: 200, routines: [r('push', 5, 1), r('leg', 5, 1)] })
+    expect(ids(mergeStates(c, d).routines)).toEqual(['x', 'y', 'push', 'leg'])
+  })
+
   it('without stamps, or on a tie, the newer copy\'s version stays', () => {
     const a = base({ _ts: 100, routines: [r('push', 15)] })
     const b = base({ _ts: 200, routines: [r('push', 10)] })

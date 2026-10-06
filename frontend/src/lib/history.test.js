@@ -77,6 +77,17 @@ describe('setLabel', () => {
     expect(setLabel(CARDIO, { sec: 45, w: 0 }, { mode: 'time' })).toBe('0:45')
   })
 
+  // QA 1.3.11: a custom exercise moved to Cardio after months of rep sets read its history as
+  // "0 min @ 0 km/h" next to the volume those sets still count. A target with no mode of its own
+  // follows the set's fields; one that names a mode still decides.
+  it('reads a rep set as reps when its exercise has become cardio since', () => {
+    expect(setLabel(CARDIO, { w: 50, r: 10 }, { sets: 3, reps: 10, weight: 50, bodyweight: false })).toBe('50×10')
+    // no target at all: the catalogue's cardio entry is body weight, so the load reads as added
+    expect(setLabel(CARDIO, { w: 50, r: 10 })).toBe('+50 × 10')
+    expect(setLabel(CARDIO, { min: 20, speed: 9, r: 0 }, { sets: 1 })).toBe('20 min @ 9 km/h')
+    expect(setLabel(CARDIO, { w: 50, r: 10 }, { mode: 'cardio' })).toBe('0 min @ 0 km/h')
+  })
+
   it('appends RIR when present, including a valid 0', () => {
     expect(setLabel(LIFT, { w: 60, r: 10, rir: 2 })).toBe('60×10 (RIR 2)')
     expect(setLabel(LIFT, { w: 60, r: 10, rir: 1.5 })).toBe('60×10 (RIR 1.5)')

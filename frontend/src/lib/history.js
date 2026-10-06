@@ -117,6 +117,7 @@ const effortTail = s => {
 // One-line summary of a logged set. `cfg` carries the mode when the caller has it (a routine
 // entry or a workout entry); passing an id alone keeps the old body-part behaviour.
 // `speedUnit` is the profile's (lib/speed.js speedUnitOf); without one a cardio set reads km/h.
+const EXPLICIT_MODES = new Set(['reps', 'time', 'cardio'])
 export function setLabel(id, s, cfg, speedUnit) {
   // The id is the caller's when the config does not carry one: a freestyle target is built
   // without it, and modeOf would then fall back to 'reps' and print a run as "0×0".
@@ -125,6 +126,10 @@ export function setLabel(id, s, cfg, speedUnit) {
   // A set saved by an older build carries no target with it; the set's own fields still say what
   // it was — seconds for a timed set, minutes for cardio — so those are not read back as "0 reps".
   if (!cfg && !(s.r > 0)) { if (s.min > 0 || s.speed > 0) mode = 'cardio'; else if (s.sec > 0) mode = 'time' }
+  // A target with no mode of its own takes it from the exercise, and an exercise can change: a
+  // custom one moved to Cardio after months of rep sets read them all as "0 min @ 0 km/h", next
+  // to the volume those same sets still count. A set with reps and nothing cardio was a rep set.
+  if (!EXPLICIT_MODES.has(cfg?.mode) && mode !== 'reps' && s.r > 0 && !(s.min > 0 || s.speed > 0 || s.sec > 0)) mode = 'reps'
   if (mode === 'cardio') return `${s.min || 0} min @ ${fmtSpeed(s.speed || 0, speedUnit)}`
   if (mode === 'time') return fmtSec(s.sec) + (s.w > 0 ? ` · ${fmtNum(s.w)}` : '')
   const bw = isBw(c)

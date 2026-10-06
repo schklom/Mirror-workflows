@@ -392,9 +392,9 @@ a LAN-only address, see [SELF_HOSTING_HTTPS.md](./SELF_HOSTING_HTTPS.md).
   with a copy of `./data` can try guesses offline, slowly; a passkey's public key gives them
   nothing to try.
 - Guessing online is throttled. Five wrong passwords for an account — named by its name or its
-  e-mail — pause password sign-in for that account for a minute, doubling up to an hour, whoever
+  e-mail — are free; the sixth pauses password sign-in for that account for a minute, doubling up to an hour, whoever
   sends them — names and addresses that do not exist pause the same way, so a pause reveals
-  nothing about whether they exist. Twenty wrong answers from one address pause that
+  nothing about whether they exist. Twenty wrong answers from one address are free; the 21st pauses that
   address for 30 seconds, doubling up to 15 minutes, and every address gets 60 requests a minute
   to the password routes. Guesses sent all at once count the same as guesses sent one by one.
   Passkey sign-in, passkey signup and phone pairing are not throttled at all, so they are never

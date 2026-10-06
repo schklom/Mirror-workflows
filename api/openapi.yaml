@@ -30,9 +30,9 @@ info:
     ### Throttling
     The `password` routes are counted per client address: at most 60 requests a minute
     across them, and wrong answers (a password, a reset code, an invite code on password
-    signup, an e-mail address already in use) pause the address after 20 for 30 s,
+    signup, an e-mail address already in use) pause the address from the 21st on, for 30 s,
     doubling up to 15 min. Wrong passwords also pause the *account* they were tried
-    against after 5, for 1 min doubling up to 1 h — the same pause whether the account
+    against from the 6th on, for 1 min doubling up to 1 h — the same pause whether the account
     was named by its name or its e-mail — and an identifier that names no account is
     paused the same way, as typed. A password check counts from the moment it
     starts, so checks sent at once get no more tries than checks sent one by one. A
@@ -41,7 +41,7 @@ info:
     throttled (their failures reach the audit log at most ten a minute per address).
     The two routes that redeem a one-time device link (tag `passkeys`) share
     the per-address budget, and wrong codes pause the address for link redemption only,
-    after 20, the way wrong reset codes do. Adding or removing a passkey in Settings
+    from the 21st on, the way wrong reset codes do. Adding or removing a passkey in Settings
     (`POST /api/account/passkeys/options`, `DELETE /api/account/passkeys`) and making a
     device code (`POST /api/account/device-link`) spend the per-address budget too, and a
     current password given there as proof counts like one given at sign-in.
@@ -625,7 +625,7 @@ paths:
         the same `401` after the same scrypt work, so neither the answer nor its timing says
         which names exist. So does a password that was right when its check started but
         was changed, reset or removed before the check finished. Five wrong passwords for an
-        account pause it, whichever identifier they named it by (see *Throttling*); passkey
+        account are free and the sixth pauses it, whichever identifier they named it by (see *Throttling*); passkey
         sign-in is never paused by this. Sets the
         same session cookie as `/api/login/verify`. **Not** CSRF-exempt.
       security: []

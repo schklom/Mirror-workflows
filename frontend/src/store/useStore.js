@@ -883,7 +883,8 @@ export const useStore = create((set, get) => {
     const key = stashKey(server, user.id)
     const prev = all[key]?.state
     const state = prev ? mergeStates(get().S, prev) : clone(get().S)
-    state.active = get().S.active || prev?.active || null
+    // Each running workout in the kept copy's unit (carryActive), never a kg session under lb.
+    state.active = carryActive(get().S, state) || carryActive(prev, state) || null
     // Kept while a sign-in's question was open: a copy that was never this account's, added back
     // like an answered "Add them" (applyStash), the account's settings and history first.
     const adopt = adoptHold || !!all[key]?.adopt
@@ -903,7 +904,7 @@ export const useStore = create((set, get) => {
     const key = stashKey(server, user.id)
     const prev = all[key]?.state
     const state = prev ? clone(prev) : Object.assign(clone(DEF), { _ts: 0, unit: get().S.unit || 'kg' })
-    state.active = clone(a)
+    state.active = clone(carryActive(get().S, state))
     all[key] = { server: server || null, uid: user.id, name: user.name || '', at: Date.now(), state }
     return writeStashes(all)
   }
@@ -932,7 +933,9 @@ export const useStore = create((set, get) => {
     let merged = S
     for (const k of keys) merged = all[k].adopt ? mergeStates(merged, all[k].state, { prefer: 'a' }) : mergeStates(merged, all[k].state)
     merged = Object.assign(clone(DEF), merged)
-    merged.active = S.active || keys.map(k => all[k].state?.active).find(Boolean) || null
+    // A kept running workout comes back in the unit of the copy it joins: the account may have
+    // switched to lb (converting every weight) since it was kept in kg.
+    merged.active = S.active || keys.map(k => carryActive(all[k].state, merged)).find(Boolean) || null
     persist(merged, false)
     markOwed(true)
     if (MOBILE) await nativePersist(true)   // the durable copy holds it before the stash goes

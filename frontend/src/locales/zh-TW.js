@@ -1899,4 +1899,16 @@ export default {
   'Create profile with a password': '用密碼建立個人檔案',
   'Set {0} done': '第 {0} 組完成',
   'Set {0} ({1}) done': '第 {0} 組（{1}）完成',
+  // Swipe on sets (v1.3.11)
+  'Copy this set': '複製這一組',
+  'Set {0} gone.': '第 {0} 組已刪除。',
+  'Set {0} gone. Its timer stopped too.': '第 {0} 組已刪除，它的計時器也停了。',
+  'Warm-up gone.': '熱身組已刪除。',
+  'Copied. One more like that one.': '已複製。再來一組一樣的。',
+  'Keep at least one set, champ': '至少留一組吧，冠軍',
+  'Too late, that one’s gone': '太晚了，那組已經沒了',
+  'Psst: swipe a set. Left deletes, right copies.': '偷偷告訴你：滑動一組。左滑刪除，右滑複製。',
+  'Swipe on sets': '在組上滑動',
+  'Left deletes, right copies': '左滑刪除，右滑複製',
+  'Options: copy, remove': '選項：複製、刪除',
 }

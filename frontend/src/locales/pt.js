@@ -1906,4 +1906,16 @@ export default {
   'Create profile with a password': 'Criar perfil com palavra-passe',
   'Set {0} done': 'Série {0} concluída',
   'Set {0} ({1}) done': 'Série {0} ({1}) concluída',
+  // Swipe on sets (v1.3.11)
+  'Copy this set': 'Copiar esta série',
+  'Set {0} gone.': 'Série {0} foi-se.',
+  'Set {0} gone. Its timer stopped too.': 'Série {0} foi-se. O temporizador também.',
+  'Warm-up gone.': 'Aquecimento foi-se.',
+  'Copied. One more like that one.': 'Copiada. Mais uma igual.',
+  'Keep at least one set, champ': 'Fica pelo menos uma série, campeão',
+  'Too late, that one’s gone': 'Tarde demais, já foi',
+  'Psst: swipe a set. Left deletes, right copies.': 'Psst: desliza uma série. Esquerda elimina, direita copia.',
+  'Swipe on sets': 'Deslizar nas séries',
+  'Left deletes, right copies': 'Esquerda elimina, direita copia',
+  'Options: copy, remove': 'Opções: copiar, remover',
 }

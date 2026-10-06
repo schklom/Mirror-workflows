@@ -1906,4 +1906,16 @@ export default {
   'Create profile with a password': '비밀번호로 프로필 만들기',
   'Set {0} done': '{0}세트 완료',
   'Set {0} ({1}) done': '{0}세트({1}) 완료',
+  // Swipe on sets (v1.3.11)
+  'Copy this set': '이 세트 복사',
+  'Set {0} gone.': '{0}세트 삭제됨.',
+  'Set {0} gone. Its timer stopped too.': '{0}세트 삭제됨. 타이머도 멈췄어요.',
+  'Warm-up gone.': '워밍업 삭제됨.',
+  'Copied. One more like that one.': '복사됨. 같은 걸로 하나 더.',
+  'Keep at least one set, champ': '세트는 하나는 남겨야죠, 챔피언',
+  'Too late, that one’s gone': '너무 늦었어요, 이미 사라졌어요',
+  'Psst: swipe a set. Left deletes, right copies.': '쉿: 세트를 밀어 보세요. 왼쪽은 삭제, 오른쪽은 복사.',
+  'Swipe on sets': '세트 스와이프',
+  'Left deletes, right copies': '왼쪽은 삭제, 오른쪽은 복사',
+  'Options: copy, remove': '옵션: 복사, 삭제',
 }

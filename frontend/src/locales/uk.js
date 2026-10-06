@@ -1903,4 +1903,16 @@ export default {
   'Create profile with a password': 'Створити профіль з паролем',
   'Set {0} done': 'Підхід {0} виконано',
   'Set {0} ({1}) done': 'Підхід {0} ({1}) виконано',
+  // Swipe on sets (v1.3.11)
+  'Copy this set': 'Скопіювати цей підхід',
+  'Set {0} gone.': 'Підхід {0} видалено.',
+  'Set {0} gone. Its timer stopped too.': 'Підхід {0} видалено. Його таймер теж.',
+  'Warm-up gone.': 'Розминку видалено.',
+  'Copied. One more like that one.': 'Скопійовано. Ще один такий самий.',
+  'Keep at least one set, champ': 'Залиш хоча б один підхід, чемпіоне',
+  'Too late, that one’s gone': 'Запізно, його вже нема',
+  'Psst: swipe a set. Left deletes, right copies.': 'Пс: змахни підхід. Ліворуч видаляє, праворуч копіює.',
+  'Swipe on sets': 'Свайп по підходах',
+  'Left deletes, right copies': 'Ліворуч видаляє, праворуч копіює',
+  'Options: copy, remove': 'Дії: копіювати, видалити',
 }

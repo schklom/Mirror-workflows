@@ -1085,6 +1085,42 @@ body.chips-dragging *{cursor:inherit}
 .setrow.done .n{background:var(--acc);color:var(--on-acc)}
 .setrow.done{opacity:.45}
 
+/* Swipe on sets (v1.3.11, components/SwipeRow.jsx). The row slides over two panes: Copy at the
+   start of the line, Delete at its end, each as wide as the swipe has gone and zero wide at rest.
+   pan-y leaves vertical scroll to the browser and hands sideways moves to the row. */
+.swrow{position:relative;overflow:hidden;border-radius:10px;touch-action:pan-y;-webkit-touch-callout:none}
+.swrow.dragging{-webkit-user-select:none;user-select:none}
+.swfront{position:relative;z-index:1;background:var(--surface);will-change:transform}
+.swpane{position:absolute;top:0;bottom:0;width:0;overflow:hidden;z-index:0}
+.swpane.del{inset-inline-end:0;background:color-mix(in srgb,var(--red) 22%,var(--surface))}
+.swpane.cp{inset-inline-start:0;background:var(--acc-soft)}
+.swpane button{position:absolute;top:0;bottom:0;width:76px;padding:0;color:#fff;transition:width .16s var(--ease)}
+.swpane.del button{inset-inline-end:0;background:var(--red)}
+.swpane.cp button{inset-inline-start:0;background:var(--acc);color:var(--on-acc)}
+.swpane.armed button{width:100%}
+.swpane .lab{position:absolute;top:0;bottom:0;width:76px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:12px}
+.swpane.del .lab{inset-inline-start:0}
+.swpane.cp .lab{inset-inline-end:0}
+.swpane .lab .icn{font-size:21px;transform:scale(.8);transition:transform .16s var(--ease)}
+.swpane .lab b{font-weight:500}
+.swpane.armed .lab .icn{transform:scale(1)}
+.swpane.armed .lab b{font-weight:800}
+/* The last set cannot go: the delete side shows grey and never fills. */
+.swpane.del.dis{background:var(--surface-2)}
+.swpane.del.dis button{background:var(--surface-3);color:var(--label-3)}
+.swpane.del.dis.armed button{width:76px}
+.swrow.flash .swfront{animation:swflash .4s ease}
+@keyframes swflash{0%,35%{background:color-mix(in srgb,var(--acc) 28%,var(--surface))}100%{background:var(--surface)}}
+.swrow.flash-red .swfront{animation:swflashr .5s ease}
+@keyframes swflashr{0%,35%{background:color-mix(in srgb,var(--red) 22%,var(--surface))}100%{background:var(--surface)}}
+/* The first-use hint under the row it nudged. */
+.swhint{display:flex;justify-content:center;padding:4px 0 6px}
+.swhint button{display:inline-flex;align-items:center;gap:8px;background:var(--acc-soft);color:var(--acc);border-radius:99px;padding:7px 12px;font-size:13px;font-weight:600;animation:swhintin .3s var(--ease);text-align:start}
+.swhint .icn{font-size:15px;flex:none}
+.swhint .icn:last-child{opacity:.7}
+@keyframes swhintin{from{opacity:0;transform:translateY(-4px)}}
+.vh{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
 /* one-sided (unilateral) sets (issue #60): the set number sits beside a two-row L/R stack, each
    side its own weight/reps/effort + done tick. The two inner rows reuse .setrow so their columns
    line up with the header exactly like a straight set — only the leading .n circle is replaced by
@@ -1607,6 +1643,12 @@ body.no-tabbar #timer.working{box-shadow:inset 0 var(--hair) 0 var(--acc),0 -10p
   width:max-content;max-width:88vw;text-align:center;
 }
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+/* With an action (Undo): the message, then the button at the end, and the toast takes taps. */
+#toast.has-action{pointer-events:auto;display:flex;align-items:center;gap:6px;padding:4px 6px 4px 18px;text-align:start}
+#toast.has-action .toast-msg{flex:1;min-width:0;padding:7px 0}
+#toast .toast-act{flex:none;display:inline-flex;align-items:center;gap:5px;color:var(--acc);font-weight:700;padding:8px 12px;border-radius:14px;min-height:36px}
+#toast .toast-act:active{background:color-mix(in srgb,var(--label) 10%,transparent)}
+#toast .toast-act .icn{font-size:16px}
 body.no-tabbar #toast{bottom:calc(24px + var(--sab))}
 body.no-tabbar.resting #toast{bottom:calc(100px + var(--sab))}
 

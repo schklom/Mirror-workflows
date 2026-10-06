@@ -1183,6 +1183,14 @@ export const PT_BR_OVERRIDES = {
   'That took a little too long. Give it another go.': 'Demorou um pouquinho demais. Tente de novo.',
   'That code didn’t work. Codes last 5 minutes and work once, so grab a fresh one.': 'Esse código não funcionou. Os códigos duram 5 minutos e só valem uma vez, então pegue um novo.',
   'Create profile with a password': 'Criar perfil com senha',
+  // Swipe on sets (v1.3.11)
+  'Set {0} gone.': 'Série {0} já era.',
+  'Set {0} gone. Its timer stopped too.': 'Série {0} já era. O timer também.',
+  'Warm-up gone.': 'Aquecimento já era.',
+  'Keep at least one set, champ': 'Deixe pelo menos uma série, campeão',
+  'Too late, that one’s gone': 'Tarde demais, já era',
+  'Psst: swipe a set. Left deletes, right copies.': 'Psiu: deslize uma série. Esquerda exclui, direita copia.',
+  'Left deletes, right copies': 'Esquerda exclui, direita copia',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

@@ -1959,4 +1959,16 @@ export default {
   'Create profile with a password': 'إنشاء ملف شخصي بكلمة مرور',
   'Set {0} done': 'المجموعة {0} مكتملة',
   'Set {0} ({1}) done': 'المجموعة {0} ({1}) مكتملة',
+  // Swipe on sets (v1.3.11)
+  'Copy this set': 'نسخ هذه المجموعة',
+  'Set {0} gone.': 'حُذفت المجموعة {0}.',
+  'Set {0} gone. Its timer stopped too.': 'حُذفت المجموعة {0}، وتوقف مؤقتها أيضًا.',
+  'Warm-up gone.': 'حُذف الإحماء.',
+  'Copied. One more like that one.': 'تم النسخ. واحدة أخرى مثلها.',
+  'Keep at least one set, champ': 'أبقِ مجموعة واحدة على الأقل يا بطل',
+  'Too late, that one’s gone': 'فات الأوان، لقد ذهبت',
+  'Psst: swipe a set. Left deletes, right copies.': 'نصيحة: اسحب مجموعة. لليمين حذف، لليسار نسخ.',
+  'Swipe on sets': 'السحب على المجموعات',
+  'Left deletes, right copies': 'لليمين حذف، لليسار نسخ',
+  'Options: copy, remove': 'خيارات: نسخ، إزالة',
 }

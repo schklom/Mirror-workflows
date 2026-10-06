@@ -99,6 +99,9 @@ export const DEF = {
   // lean layout: one "more" button per exercise and a menu on each set number. Every switch
   // brings one of the old always-visible button groups back (Settings → During a workout).
   wc: { ...WC_DEFAULT },
+  // One-time hints already shown to this profile, synced so each shows once per person rather
+  // than once per device: { swipeSets: true } after the first swipe-on-sets nudge (Workout.jsx).
+  hints: {},
   // effort: which per-set effort scale is logged — 'none' | 'rir' | 'rpe'. null, not 'none', so
   // that a profile which never chose (loaded state is overlaid on DEF, on every path: local,
   // server pull, backup import) still falls back to the `showRir` boolean this replaced and

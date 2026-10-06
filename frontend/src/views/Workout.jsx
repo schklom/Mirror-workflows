@@ -1,5 +1,6 @@
-import { Fragment, useEffect, useRef, useState } from 'react'
+import { Fragment, useEffect, useId, useRef, useState } from 'react'
 import SwipeCards from '../components/SwipeCards.jsx'
+import SwipeRow from '../components/SwipeRow.jsx'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/useStore.js'
 import { workoutControls } from '../lib/workout-controls.js'
@@ -7,7 +8,7 @@ import { useUI } from '../store/useUI.js'
 import { exOr, betterWeight } from '../lib/exercises.js'
 import { usesBar } from '../lib/bar.js'
 import { loadKindFor, baseWeightFor, inventoryFor, rowLoad, sameLoad, plateDelta, dropGrid } from '../lib/plates.js'
-import { effectiveRoutines, effectiveRoutineIds, lastEntryFor, bestWeightFor, bestWeightForEntry, buildSets, freestyleConfig, defaultConfig, setsDoneActive, setUnitsTotal, supersetUnits, unitOf, setLabel, modeOf, isBw, isPerSide, repStep, EFFORT, effortOf, stepEffort, capEffort, cascadeWeight, insertWarmupRow, makeWarmupAt, canBeWarmup, makeWorkAt, removeRowAt, removeLastSet, setSpanAt, pairAdjacent, unpairSuperset, cleanupSg, applyIntensifierPlan, pinnedNoteFor, exNoteFor, setsRepsOf } from '../lib/history.js'
+import { effectiveRoutines, effectiveRoutineIds, lastEntryFor, bestWeightFor, bestWeightForEntry, buildSets, freestyleConfig, defaultConfig, setsDoneActive, setUnitsTotal, supersetUnits, unitOf, setLabel, modeOf, isBw, isPerSide, repStep, EFFORT, effortOf, stepEffort, capEffort, cascadeWeight, insertWarmupRow, makeWarmupAt, canBeWarmup, makeWorkAt, removeRowAt, removeLastSet, setSpanAt, copyRowAt, copySpanAt, insertRowAt, pairAdjacent, unpairSuperset, cleanupSg, applyIntensifierPlan, pinnedNoteFor, exNoteFor, setsRepsOf } from '../lib/history.js'
 import { fmtNum, fmtPlate, exerciseNameText, fmtDate, fmtDaysAgo, todayISO, exCount, DAYN } from '../lib/format.js'
 import { speedUnitOf, toSpeed, fromSpeed } from '../lib/speed.js'
 import { beep, vibrate, unlock } from '../lib/sound.js'
@@ -96,10 +97,14 @@ const RTL_LETTER = /[֐-ࣿיִ-﷿ﹰ-﻿]/
 // enough to turn over, far shorter than the rest the set earns once both sides are held.
 const SWITCH_SIDES_SEC = 10
 
-function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSide, onField, onAddSet, onRemoveSet, onAddWarmup, onRemoveSetAt, onStartTimed, onPairPrev, onPairNext, onSetRowRef, onProgressionSettings, onRest, onNoProg, routineUpdate, onSwap, onMoveUp, onMoveDown, canMoveUp, canMoveDown, onRemoveExercise, busy }) {
+function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSide, onField, onAddSet, onRemoveSet, onAddWarmup, onRemoveSetAt, onCopySetAt, onStartTimed, onPairPrev, onPairNext, onSetRowRef, onProgressionSettings, onRest, onNoProg, routineUpdate, onSwap, onMoveUp, onMoveDown, canMoveUp, canMoveDown, onRemoveExercise, busy }) {
   const S = useStore(s => s.S)
   const update = useStore(s => s.update)
   const working = useUI(s => s.work)
+  const restEnds = useUI(s => s.timer?.endsAt)
+  const swipeHint = useUI(s => (s.swipeHint?.idx === entryIdx ? s.swipeHint : null))
+  const setFlash = useUI(s => (s.setFlash?.idx === entryIdx ? s.setFlash : null))
+  const optsId = useId()
   const entry = S.active.entries[entryIdx]
   // Drops/bursts mutate the row in place — same card, not a new set with its own long rest.
   // A planned exercise (see the exercise's "Intensifier" config) arrives with these already
@@ -400,11 +405,7 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
   // A timed per-side exercise plans in L/R pairs (buildWorkSets, addSet below), so the two
   // halves of a pair read as one set number — "Set 1 — Left" then "Set 1 — Right" — rather than
   // counting every row and making the second half look like an extra set.
-  const setNumOf = (s, i) => {
-    const warm = isWarmupRow(s)
-    const phaseNum = entry.sets.slice(0, i + 1).filter(x => isWarmupRow(x) === warm).length
-    return s.side ? Math.ceil(phaseNum / 2) : phaseNum
-  }
+  const setNumOf = (s, i) => setNumberAt(entry.sets, i)
   const sideTagOf = s => s.side === 'L' ? t('Left') : s.side === 'R' ? t('Right') : null
   const openSetMenu = (s, i) => {
     const warm = isWarmupRow(s)
@@ -425,6 +426,7 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
           !warm && mode === 'reps' && !isDropSet(s) && { icon: 'bolt', label: t('Rest-pause burst'), sub: t('+ Burst'), onClick: () => addBurstRow(i) },
         ] },
         { items: [
+          onCopySetAt && { icon: 'copy', label: t('Copy this set'), onClick: () => onCopySetAt(i) },
           { icon: 'trash', label: t('Remove this set'), danger: true, disabled: !editing && entry.sets.length <= setSpanAt(entry.sets, i)[1], onClick: () => onRemoveSetAt(i) },
         ] },
       ],
@@ -550,6 +552,24 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
       <button aria-label={t('Increase')} onClick={() => onChange(snapWeightStep ? stepWeight(value, step, 1) : Math.max(0, Math.round(((value || 0) + step) * 100) / 100))}><Icon name="plus" /></button>
     </div>
   )
+  // Swipe on sets (v1.3.11, Settings → Workout): a set row swiped toward the start of the line is
+  // removed with an Undo, toward the end copied below itself. Off, the row is the plain row it
+  // was, and the Cards swipe works from it again. The row closes whenever its exercise's rows
+  // change, the row is ticked, or a rest or hold starts: rows are keyed by index, so an open row
+  // could otherwise end up showing another set.
+  const swipeOn = !!(wc.swipeSets && onCopySetAt && onRemoveSetAt)
+  const dismissHint = () => { if (useUI.getState().swipeHint) setUI({ swipeHint: null }) }
+  const swipeRow = (s, i, row) => !swipeOn ? row : (
+    <SwipeRow canDelete={editing || entry.sets.length > setSpanAt(entry.sets, i)[1]}
+      onDelete={() => onRemoveSetAt(i)} onCopy={() => onCopySetAt(i)}
+      onBlocked={() => useUI.getState().toast(t('Keep at least one set, champ'))}
+      onStart={dismissHint}
+      closeKey={[entry.sets.length, s.done ? 1 : 0, s.sides?.L?.done ? 1 : 0, s.sides?.R?.done ? 1 : 0, restEnds || 0, working?.endsAt || 0, S.active.cur].join('|')}
+      flash={setFlash && setFlash.i === i ? setFlash.id : 0}
+      peek={swipeHint && swipeHint.i === i ? swipeHint.id : 0}>
+      {row}
+    </SwipeRow>
+  )
   return <>
     {/* Animations set to Small: a thumbnail beside the name instead of a strip above it, so the
         first set is on screen without scrolling; a tap brings the full animation back. */}
@@ -613,6 +633,7 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
       {/* the header carries the same eff3/timed sizing as the rows, or the labels drift off their
           columns; over L/R rows it also has to skip the side badge that sits in front of the weight cell */}
       <div className={'sethead' + (col3 ? ' eff3' : '') + (timed ? ' timed' : '') + (perSide ? ' per-side' : '') + (wc.steppers ? '' : ' plain')}><span className="n-sp" /><span className="w-sp">{col1.hd}</span>{col2 && <span className="r-sp">{col2.hd}</span>}{col3 && <span className="eff-sp">{col3.hd}</span>}{timed && <span className="ck-sp" />}<span className="ck-sp" /></div>
+      <span id={optsId} className="vh">{t('Options: copy, remove')}</span>
       {entry.sets.map((s, i) => {
         const warm = isWarmupRow(s)
         const warmBefore = i > 0 && isWarmupRow(entry.sets[i - 1])
@@ -629,11 +650,11 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
             if (!rec) return null
             return ' · ' + (rec.w > 0 ? tn('Record: {0} rep at {1}', 'Record: {0} reps at {1}', rec.r, fmtNum(rec.w) + ' ' + S.unit) : tn('Record: {0} rep', 'Record: {0} reps', rec.r))
           })()}</div>}
-          {perSide && !warm && isSideSet(s) ? (
+          {swipeRow(s, i, perSide && !warm && isSideSet(s) ? (
             // Unilateral work set: the number sits beside a two-row L/R stack, each side logged
             // and ticked on its own (issue #60).
             <div ref={el => onSetRowRef?.(i, el)} className={'setrow-side' + (s.done ? ' done' : '')}>
-              <button type="button" className="n" aria-label={t('Set {0}', phaseNum)} title={t('More')} onClick={() => openSetMenu(s, i)}>{phaseNum}</button>
+              <button type="button" className="n" aria-label={t('Set {0}', phaseNum)} aria-describedby={optsId} title={t('More')} onClick={() => openSetMenu(s, i)}>{phaseNum}</button>
               <div className="side-rows">
                 {sideRow(s, i, 'L', col1, col2, col3)}
                 {sideExtras(s, i, 'L')}
@@ -643,7 +664,7 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
             </div>
           ) : (
           <div ref={el => onSetRowRef?.(i, el)} className={'setrow' + (s.done ? ' done' : '') + (col3 ? ' eff3' : '') + (timed ? ' timed' : '')}>
-            <button type="button" className="n" aria-label={sideTagOf(s) ? t('Set {0} ({1})', setNumOf(s, i), sideTagOf(s)) : t('Set {0}', setNumOf(s, i))} title={t('More')} onClick={() => openSetMenu(s, i)}>{setNumOf(s, i)}</button>
+            <button type="button" className="n" aria-label={sideTagOf(s) ? t('Set {0} ({1})', setNumOf(s, i), sideTagOf(s)) : t('Set {0}', setNumOf(s, i))} aria-describedby={optsId} title={t('More')} onClick={() => openSetMenu(s, i)}>{setNumOf(s, i)}</button>
             {/* Both words sit in the pill's one grid cell (::before/::after, hidden), so Left and
                 Right are as wide as the longer of the two in every language and the inputs
                 after them line up (#322). */}
@@ -657,7 +678,12 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
               onClick={() => onStartTimed(i)}><Icon name="play" /></button>}
             <Check checked={s.done} label={sideTagOf(s) ? t('Set {0} ({1}) done', setNumOf(s, i), sideTagOf(s)) : t('Set {0} done', setNumOf(s, i))} onChange={() => onToggle(i)} />
           </div>
-          )}
+          ))}
+          {swipeHint && swipeHint.i === i && swipeOn && <div className="swhint">
+            <button type="button" onClick={() => setUI({ swipeHint: null })}>
+              <Icon name="swap" /><span>{t('Psst: swipe a set. Left deletes, right copies.')}</span><Icon name="xmark" />
+            </button>
+          </div>}
           {loadLine(String(i))}
           {/* Drop-sets and rest-pause bursts extend this same row — no long rest, no new set.
               A planned exercise arrives with these already filled in (applyIntensifierPlan);
@@ -694,6 +720,103 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
       </div> : <Button size="sm" icon="plus" onClick={onAddSet}>{t('Add set')}</Button>}
     </div>
   </>
+}
+
+/* ---------- swipe on sets: delete, undo, copy (v1.3.11) ---------- */
+// The swipe, the set-number menu and the Undo on the toast all come through here, so a set is
+// removed, put back and copied the same way whichever you used, and always through the store's
+// normal update: the sync sees an ordinary edit (with its _rev/baseRev), never an old snapshot
+// written back over newer state.
+//
+// Rows have no id of their own, so whatever points at a row by its index has to move with it:
+// the running hold (its callback writes the seconds to a row) and the rest a set started
+// (timer.forSet). Removing the set either one belongs to stops it first; Undo does not start it
+// again. Rows above or below just shift.
+let holdAt = null    // { owner, idx, i }: the row a running hold will write to (startTimed)
+let flashSeq = 0
+// UI state written from here and from effects; a test that stubs the UI store without setState
+// simply does not see it.
+const setUI = patch => useUI.setState?.(patch)
+const shiftRowRefs = (idx, from, by) => {
+  if (holdAt && holdAt.idx === idx && holdAt.i >= from) holdAt = { ...holdAt, i: holdAt.i + by }
+  // The hold's saved owner (useUI.work.owner, what a reload brings it back to) moves with it.
+  const wk = useUI.getState().work
+  if (wk?.owner && wk.owner.idx === idx && wk.owner.i >= from) setUI({ work: { ...wk, owner: { ...wk.owner, i: wk.owner.i + by } } })
+  const rest = useUI.getState().timer
+  if (rest && rest.forIdx === idx && rest.forSet != null && rest.forSet >= from) setUI({ timer: { ...rest, forSet: rest.forSet + by } })
+}
+/** The number a set row shows: counted per phase (warm-ups and work sets each from 1), and a
+ *  timed per-side L/R pair as one set. */
+export function setNumberAt(sets, i) {
+  const s = sets[i]
+  const warm = isWarmupRow(s)
+  const phaseNum = sets.slice(0, i + 1).filter(x => isWarmupRow(x) === warm).length
+  return s?.side ? Math.ceil(phaseNum / 2) : phaseNum
+}
+/** Removes set `i` of active entry `idx`, with an Undo on the toast. In a live session one set
+ *  always stays (removeRowAt); the editor of a saved workout may take them all. */
+export function deleteActiveSet(idx, i, { editing = false } = {}) {
+  const A = useStore.getState().S.active
+  const e = A?.entries?.[idx]
+  const row = e?.sets?.[i]
+  if (!row) return false
+  const ui = useUI.getState()
+  // A timed per-side hold is an L row and an R row that read as one set: both go, and both come back.
+  const [start, count] = setSpanAt(e.sets, i)
+  if (!editing && e.sets.length <= count) { ui.toast(t('Keep at least one set, champ')); return false }
+  const inSpan = j => j != null && j >= start && j < start + count
+  let stopped = false
+  const holdHere = ui.work && ((holdAt && holdAt.idx === idx && inSpan(holdAt.i)) || (ui.work.owner && ui.work.owner.idx === idx && inSpan(ui.work.owner.i)))
+  if (holdHere) { holdAt = null; ui.stopWork(); stopped = true }
+  const rest = ui.timer
+  if (rest && rest.forIdx === idx && inSpan(rest.forSet)) { ui.stopRest(); stopped = !rest.ready || stopped }
+  shiftRowRefs(idx, start + count, -count)
+  const n = setNumberAt(e.sets, i)
+  const warm = isWarmupRow(row)
+  const token = { activeId: A.id, idx, entryId: e.id, i: start, rows: structuredClone(e.sets.slice(start, start + count)) }
+  useStore.getState().update(s => {
+    const en = s.active?.entries?.[idx]
+    if (!en) return
+    if (editing) en.sets.splice(start, count)
+    else en.sets = removeRowAt(en.sets, i)
+  }, true)
+  const msg = warm ? t('Warm-up gone.') : stopped ? t('Set {0} gone. Its timer stopped too.', n) : t('Set {0} gone.', n)
+  ui.toast(msg, { action: t('Undo'), onAction: () => undoDeleteSet(token) })
+  return true
+}
+/** Puts a removed set back exactly as it was, at its old place in the same exercise. If the
+ *  exercise moved, it is found by its id; if it is gone, or the workout is, there is nothing to
+ *  put it back into. */
+export function undoDeleteSet(token) {
+  const A = useStore.getState().S.active
+  const ui = useUI.getState()
+  const at = !A || A.id !== token.activeId ? -1
+    : A.entries[token.idx]?.id === token.entryId ? token.idx
+      : A.entries.findIndex(en => en.id === token.entryId)
+  if (at < 0) { ui.toast(t('Too late, that one’s gone')); return false }
+  const rows = token.rows || [token.row]
+  const i = Math.min(token.i, A.entries[at].sets.length)
+  shiftRowRefs(at, i, rows.length)
+  useStore.getState().update(s => {
+    const en = s.active.entries[at]
+    en.sets = rows.reduce((acc, r, k) => insertRowAt(acc, i + k, r), en.sets)
+  }, true)
+  setUI({ setFlash: { idx: at, i, id: ++flashSeq } })
+  return true
+}
+/** "One more like this one": a copy of set `i` right below it (lib/history.js copyRowAt). */
+export function copyActiveSet(idx, i) {
+  const e = useStore.getState().S.active?.entries?.[idx]
+  if (!e?.sets?.[i]) return false
+  const { start, end } = copySpanAt(e.sets, i)
+  shiftRowRefs(idx, end + 1, end - start + 1)
+  useStore.getState().update(s => {
+    const en = s.active?.entries?.[idx]
+    if (en) en.sets = copyRowAt(en.sets, i)
+  }, true)
+  setUI({ setFlash: { idx, i: end + 1, id: ++flashSeq } })
+  useUI.getState().toast(t('Copied. One more like that one.'))
+  return true
 }
 
 /* ---------- active workout ---------- */
@@ -805,6 +928,47 @@ function ActiveWorkout() {
   useEffect(() => {
     progressHighWater.current = A.entries.map(e => e.sets.filter(s => s.done).length)
   }, [A.entries.length])
+  // A removed set takes its tick with it (deleteActiveSet): the exercise's mark comes down to what
+  // is ticked now, or ticking the next set would read as a re-check and start no rest. Only on the
+  // way down; a set added or put back by Undo leaves the mark where it is.
+  const setCounts = A.entries.map(e => e.sets.length)
+  const lastCounts = useRef(setCounts)
+  useEffect(() => {
+    const was = lastCounts.current
+    lastCounts.current = setCounts
+    if (was.length !== setCounts.length) return
+    setCounts.forEach((n, k) => {
+      if (n < was[k]) progressHighWater.current[k] = Math.min(progressHighWater.current[k] || 0, A.entries[k].sets.filter(s => s.done).length)
+    })
+  }, [setCounts.join(',')])
+  // The one-time swipe hint (v1.3.11): the first time the screen shows an unticked set with swiping
+  // on, that row nudges toward delete and toward copy, with a chip under it saying so. Seen once
+  // per person (S.hints, synced), not per device. In Cards only the exercise on screen qualifies.
+  const hintSeen = !!(S.hints && S.hints.swipeSets)
+  const hintTm = useRef(null)
+  useEffect(() => {
+    if (!wc.swipeSets || hintSeen || !A.entries.length) return
+    const tm = setTimeout(() => {
+      const A2 = useStore.getState().S.active
+      if (!A2 || useStore.getState().S.hints?.swipeSets) return
+      const c = Math.min(Math.max(A2.cur || 0, 0), A2.entries.length - 1)
+      const shownUnit = unitOf(supersetUnits(A2.entries), c)
+      const order = listMode ? [c, ...A2.entries.keys()] : shownUnit
+      let at = null
+      for (const k of order) {
+        const j = A2.entries[k]?.sets.findIndex(x => !x.done) ?? -1
+        if (j >= 0) { at = { idx: k, i: j }; break }
+      }
+      if (!at) return
+      update(s => { s.hints = { ...(s.hints || {}), swipeSets: true } })
+      const id = Date.now()
+      setUI({ swipeHint: { ...at, id } })
+      clearTimeout(hintTm.current)
+      hintTm.current = setTimeout(() => { if (useUI.getState().swipeHint?.id === id) setUI({ swipeHint: null }) }, 6000)
+    }, 600)
+    return () => clearTimeout(tm)
+  }, [wc.swipeSets, hintSeen, A.entries.length, cur, listMode])
+  useEffect(() => () => { clearTimeout(hintTm.current); setUI({ swipeHint: null, setFlash: null }) }, [])
   useEffect(() => {
     const liveEntries = new Set(A.entries)
     for (const entry of exRefs.current.keys()) {
@@ -941,10 +1105,8 @@ function ActiveWorkout() {
     const m = modeOf({ ...(e.target || {}), id: e.id })
     e.sets = insertWarmupRow(e.sets, m, e.target || {}, defaultIncrement(e.id, S.unit))
   })
-  const removeSetAt = (idx, i) => mutEntry(idx, e => {
-    if (editing) e.sets.splice(...setSpanAt(e.sets, i))
-    else e.sets = removeRowAt(e.sets, i)
-  })
+  // The set-number menu's Remove and the swipe both go through deleteActiveSet, Undo and all.
+  const removeSetAt = (idx, i) => deleteActiveSet(idx, i, { editing })
   const pairAt = (first, second) => update(s => {
     s.active.entries = pairAdjacent(s.active.entries, first, second)
   })
@@ -1048,6 +1210,7 @@ function ActiveWorkout() {
     onRemoveSet: () => removeSet(idx),
     onAddWarmup: () => addWarmup(idx),
     onRemoveSetAt: i => removeSetAt(idx, i),
+    onCopySetAt: i => copyActiveSet(idx, i),
     onStartTimed: i => startTimed(idx, i),
     onProgressionSettings: editing ? null : () => openProgressionSettings(idx),
     onRest: editing ? null : () => openExerciseRest(idx),
@@ -1311,31 +1474,46 @@ function ActiveWorkout() {
     // the row is held to the end, ticked, or given a duration you typed yourself, and it never
     // reaches S.workouts (lib/finish-workout.js).
     const plan = (!e.sets[i].done && e.sets[i].planSec) || e.sets[i].sec || 45
-    useUI.getState().startWork(plan, exerciseNameText(exOr(e.id)), holdDone(idx, i, plan), { idx, i, id: e.id })
+    const owner = { idx, i }
+    useUI.getState().startWork(plan, exerciseNameText(exOr(e.id)), holdDone(owner, plan), { idx, i, id: e.id })
+    // After startWork: a hold it displaced has already written its seconds to its own row.
+    holdAt = { owner, idx, i }
   }
   // What a hold hands back to its row: on its end, its Done, or a rest displacing it. Also bound
   // again to a hold restored after a reload (useUI.bindWork, below).
-  const holdDone = (idx, i, plan) => (elapsed, { abandoned = false, chimed = false } = {}) => {
+  const holdDone = (owner, plan) => (elapsed, { abandoned = false, chimed = false } = {}) => {
+    const { idx } = owner
+    // The row may have moved while the hold ran (a set copied or removed above it): write to
+    // where it is now. holdAt is that place (deleteActiveSet, copyActiveSet).
+    const mine = holdAt?.owner === owner
+    const i = mine ? holdAt.i : owner.i
+    if (mine) holdAt = null
     // A hold a rest displaced (useUI.abandonWork: a set ticked on another row, or another
-      // exercise) keeps its seconds and nothing else. It is not a finish: the row stays unticked
-      // and starts no rest, because the rest that displaced the hold is already counting down —
-      // and the plan it was held against is put aside so the row still knows what it is asking for.
-      if (abandoned) {
-        // A row ticked by hand while its hold ran comes through here too — toggle starts the rest
-        // that displaces the hold, so the hand-back lands on a row that is already ticked. It
-        // still wants the seconds (that is what was held, not the target), but a finished row has
-        // no use for a plan set aside.
-        mutEntry(idx, en => { if (en.sets[i].planSec == null && !en.sets[i].done) en.sets[i].planSec = plan; en.sets[i].sec = elapsed })
-        return
-      }
-      mutEntry(idx, en => { en.sets[i].sec = elapsed; delete en.sets[i].planSec })
+    // exercise) keeps its seconds and nothing else. It is not a finish: the row stays unticked
+    // and starts no rest, because the rest that displaced the hold is already counting down —
+    // and the plan it was held against is put aside so the row still knows what it is asking for.
+    if (abandoned) {
+      // A row ticked by hand while its hold ran comes through here too — toggle starts the rest
+      // that displaces the hold, so the hand-back lands on a row that is already ticked. It
+      // still wants the seconds (that is what was held, not the target), but a finished row has
+      // no use for a plan set aside.
+      mutEntry(idx, en => { if (en.sets[i].planSec == null && !en.sets[i].done) en.sets[i].planSec = plan; en.sets[i].sec = elapsed })
+      return
+    }
+    mutEntry(idx, en => { en.sets[i].sec = elapsed; delete en.sets[i].planSec })
       if (!useStore.getState().S.active.entries[idx].sets[i].done) toggle(idx, i, undefined, { quiet: chimed })
   }
   // A hold that came back from a reload has no handler yet: this screen gives it its own.
   const holdDoneRef = useRef(holdDone)
   holdDoneRef.current = holdDone
   useEffect(() => {
-    useUI.getState().bindWork?.(wk => (...a) => holdDoneRef.current(wk.owner.idx, wk.owner.i, wk.total)(...a))
+    useUI.getState().bindWork?.(wk => {
+      // From here on it is tracked like a hold started on this screen (holdAt), so a set copied or
+      // removed above it moves it along.
+      const owner = { idx: wk.owner.idx, i: wk.owner.i }
+      holdAt = { owner, idx: owner.idx, i: owner.i }
+      return (...a) => holdDoneRef.current(owner, wk.total)(...a)
+    })
   }, [])
 
   // `quiet`: the hold that ticks this set has just ended with the chime and its buzz pattern
@@ -1413,7 +1591,7 @@ function ActiveWorkout() {
       // still the rest you are in, held on purpose, and a re-check leaves it as it is.
       if (!progress.isNew) {
         const rest = useUI.getState().timer
-        if (!restBeforeWarmup && restOnRecheck({ timerRunning: !!(rest && !rest.ready), unitDone: freshUnitDone, lastUnit: freshWorkoutDone })) startRest(restAfter, idx)
+        if (!restBeforeWarmup && restOnRecheck({ timerRunning: !!(rest && !rest.ready), unitDone: freshUnitDone, lastUnit: freshWorkoutDone })) startRest(restAfter, idx, { forSet: i })
         return
       }
 
@@ -1425,7 +1603,7 @@ function ActiveWorkout() {
       const partner = sideOf(rows[i]) === 'L' && sideOf(rows[i + 1]) === 'R' ? rows[i + 1]
         : sideOf(rows[i]) === 'R' && sideOf(rows[i - 1]) === 'L' ? rows[i - 1] : null
       if (m === 'time' && partner && !partner.done && restAfter > 0) {
-        startRest(Math.min(SWITCH_SIDES_SEC, restAfter), idx, { kind: 'switch' })
+        startRest(Math.min(SWITCH_SIDES_SEC, restAfter), idx, { kind: 'switch', forSet: i })
         return
       }
 
@@ -1434,17 +1612,17 @@ function ActiveWorkout() {
       // stopRest() first so a rest that belongs after this set replaces the one that was running.
       if (freshUnitDone) stopRest()
       if (!freshUnit || freshUnit.length <= 1) {
-        if (!restBeforeWarmup && restAfterSet({ unitDone: freshUnitDone, lastUnit: freshWorkoutDone })) startRest(restAfter, idx)
+        if (!restBeforeWarmup && restAfterSet({ unitDone: freshUnitDone, lastUnit: freshWorkoutDone })) startRest(restAfter, idx, { forSet: i })
         return
       }
 
       const step = supersetFlowStep(fresh.entries, freshUnit, idx)
       if (!step) return
       if (step.unitDone) {
-        if (nextUnit?.length && !restBeforeWarmup) startRest(restAfter, idx)
+        if (nextUnit?.length && !restBeforeWarmup) startRest(restAfter, idx, { forSet: i })
       } else {
         if (step.nextIdx != null) update(s => { if (s.active) s.active.cur = step.nextIdx })
-        if (step.roundDone) startRest(restAfter, idx)
+        if (step.roundDone) startRest(restAfter, idx, { forSet: i })
       }
     }
   }

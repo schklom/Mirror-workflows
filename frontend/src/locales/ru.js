@@ -1910,4 +1910,16 @@ export default {
   'Create profile with a password': 'Создать профиль с паролем',
   'Set {0} done': 'Подход {0} выполнен',
   'Set {0} ({1}) done': 'Подход {0} ({1}) выполнен',
+  // Swipe on sets (v1.3.11)
+  'Copy this set': 'Скопировать этот подход',
+  'Set {0} gone.': 'Подход {0} удалён.',
+  'Set {0} gone. Its timer stopped too.': 'Подход {0} удалён. Его таймер тоже.',
+  'Warm-up gone.': 'Разминка удалена.',
+  'Copied. One more like that one.': 'Скопировано. Ещё один такой же.',
+  'Keep at least one set, champ': 'Хотя бы один подход оставь, чемпион',
+  'Too late, that one’s gone': 'Поздно, его уже нет',
+  'Psst: swipe a set. Left deletes, right copies.': 'Псс: смахни подход. Влево удаляет, вправо копирует.',
+  'Swipe on sets': 'Свайп по подходам',
+  'Left deletes, right copies': 'Влево удаляет, вправо копирует',
+  'Options: copy, remove': 'Действия: копировать, удалить',
 }

@@ -148,6 +148,20 @@ describe('editing the sequence', () => {
     expect(effectiveRoutineIds(fresh, TODAY, TODAY)).toEqual(['b'])
   })
 
+  it('Start the loop over during a running workout on a loop routine: that workout counts once finished', () => {
+    const s = S({ rotation: { id: 'r1', sequence: ['a', 'b', 'c'], label: 'My split' }, queue: pass(['a', 'b', 'c'], { rotationId: 'r1' }) })
+    s.active = { id: 'live', d: TODAY, start: NOW - 600_000, routineIds: ['a'], name: 'A', entries: [] }
+    startNewPass(s, TODAY, NOW)
+    expect(s.queue.since).toBe(NOW - 600_000)
+    s.workouts.push({ ...s.active, end: NOW + 60_000 }); s.active = null
+    expect(queueView(s, TODAY).items.map(i => i.state)).toEqual(['done', 'next', 'later'])
+    // a past-workout backfill is not a running session: the strict start stays now
+    const b = S({ rotation: { id: 'r1', sequence: ['a', 'b'], label: 'My split' }, queue: pass(['a', 'b'], { rotationId: 'r1' }) })
+    b.active = { id: 'bf', d: '2026-09-11', start: NOW - 86400000, routineIds: ['a'], backfill: { durationMin: 60 } }
+    startNewPass(b, TODAY, NOW)
+    expect(b.queue.since).toBe(NOW)
+  })
+
   it('an edit keeps a new pass strict', () => {
     const s = S({ rotation: { id: 'r1', sequence: ['a', 'b'], label: 'My split' }, queue: pass(['a', 'b'], { rotationId: 'r1' }), workouts: [w('a', TODAY)] })
     startNewPass(s, TODAY, NOW)

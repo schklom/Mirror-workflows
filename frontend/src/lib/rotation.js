@@ -166,7 +166,13 @@ export function startNewPass(s, today = todayISO(), now = Date.now()) {
   if (!ids.length) return
   const q = queueOf(s)
   if (q) sweepPins(s, q.ids, today)
-  s.queue = { ...newPass(ids, s.rotation.label || '', s.rotation.id, today, q ? sinceAfter(s, q, now) : now), strict: true }
+  // A live workout on one of the loop's routines, already running when the loop is started over,
+  // belongs to the new pass: otherwise `strict` + since=now means it never counts once finished.
+  // Still never earlier than the old pass's own workouts (sinceAfter's floor).
+  const a = s.active
+  const running = a && !a.backfill && Number.isFinite(a.start) && a.start <= now && routineIdsOf(a).some(id => ids.includes(id))
+  const since = running ? (q ? sinceAfter(s, q, a.start) : a.start) : (q ? sinceAfter(s, q, now) : now)
+  s.queue = { ...newPass(ids, s.rotation.label || '', s.rotation.id, today, since), strict: true }
 }
 
 /** Is `ids` some circular ordering of `seq`? (Both already normalized, so ids are unique.) */

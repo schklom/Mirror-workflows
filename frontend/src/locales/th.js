@@ -1945,4 +1945,5 @@ export default {
   '{0} routine was made on this device while signed out. Add it to your profile, or keep the profile exactly as it is on the server.': 'มีการสร้างรูทีน {0} รายการบนอุปกรณ์นี้ขณะไม่ได้ลงชื่อเข้าใช้ เพิ่มลงในโปรไฟล์ของคุณ หรือคงโปรไฟล์ไว้ตามที่อยู่บนเซิร์ฟเวอร์',
   '{0} routines were made on this device while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': 'มีการสร้างรูทีน {0} รายการบนอุปกรณ์นี้ขณะไม่ได้ลงชื่อเข้าใช้ เพิ่มลงในโปรไฟล์ของคุณ หรือคงโปรไฟล์ไว้ตามที่อยู่บนเซิร์ฟเวอร์',
   'This device, before signing in': 'อุปกรณ์นี้ ก่อนลงชื่อเข้าใช้',
+  'This device, before the update': 'อุปกรณ์นี้ ก่อนอัปเดต',
 }

@@ -1934,4 +1934,5 @@ export default {
   '{0} routine was made on this device while signed out. Add it to your profile, or keep the profile exactly as it is on the server.': '此设备在未登录时创建了 {0} 个训练计划。把它加入你的个人资料，或保持个人资料与服务器上的完全一致。',
   '{0} routines were made on this device while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': '此设备在未登录时创建了 {0} 个训练计划。把它们加入你的个人资料，或保持个人资料与服务器上的完全一致。',
   'This device, before signing in': '此设备（登录前）',
+  'This device, before the update': '此设备（更新前）',
 }

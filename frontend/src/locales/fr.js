@@ -1934,4 +1934,5 @@ export default {
   '{0} routine was made on this device while signed out. Add it to your profile, or keep the profile exactly as it is on the server.': '{0} routine a été créée sur cet appareil sans connexion. Ajoutez-la à votre profil ou gardez le profil exactement tel qu’il est sur le serveur.',
   '{0} routines were made on this device while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': '{0} routines ont été créées sur cet appareil sans connexion. Ajoutez-les à votre profil ou gardez le profil exactement tel qu’il est sur le serveur.',
   'This device, before signing in': 'Cet appareil, avant la connexion',
+  'This device, before the update': 'Cet appareil, avant la mise à jour',
 }

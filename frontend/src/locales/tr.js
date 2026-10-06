@@ -1934,4 +1934,5 @@ export default {
   '{0} routine was made on this device while signed out. Add it to your profile, or keep the profile exactly as it is on the server.': 'Bu cihazda oturum açılmadan {0} rutin oluşturuldu. Onu profiline ekle ya da profili sunucudaki hâliyle bırak.',
   '{0} routines were made on this device while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': 'Bu cihazda oturum açılmadan {0} rutin oluşturuldu. Bunları profiline ekle ya da profili sunucudaki hâliyle bırak.',
   'This device, before signing in': 'Bu cihaz, oturum açmadan önce',
+  'This device, before the update': 'Bu cihaz, güncellemeden önce',
 }

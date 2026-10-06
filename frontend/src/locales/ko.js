@@ -1934,4 +1934,5 @@ export default {
   '{0} routine was made on this device while signed out. Add it to your profile, or keep the profile exactly as it is on the server.': '로그인하지 않은 상태에서 이 기기에 루틴 {0}개가 만들어졌습니다. 프로필에 추가하거나 서버에 있는 프로필을 그대로 유지하세요.',
   '{0} routines were made on this device while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': '로그인하지 않은 상태에서 이 기기에 루틴 {0}개가 만들어졌습니다. 프로필에 추가하거나 서버에 있는 프로필을 그대로 유지하세요.',
   'This device, before signing in': '로그인 전의 이 기기',
+  'This device, before the update': '업데이트 전의 이 기기',
 }

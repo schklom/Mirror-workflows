@@ -1934,4 +1934,5 @@ export default {
   '{0} routine was made on this device while signed out. Add it to your profile, or keep the profile exactly as it is on the server.': '{0} routine è stata creata su questo dispositivo senza accesso. Aggiungila al tuo profilo o lascia il profilo esattamente com’è sul server.',
   '{0} routines were made on this device while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': '{0} routine sono state create su questo dispositivo senza accesso. Aggiungile al tuo profilo o lascia il profilo esattamente com’è sul server.',
   'This device, before signing in': 'Questo dispositivo, prima dell’accesso',
+  'This device, before the update': 'Questo dispositivo, prima dell’aggiornamento',
 }

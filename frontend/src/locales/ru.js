@@ -1938,4 +1938,5 @@ export default {
   '{0} routine was made on this device while signed out. Add it to your profile, or keep the profile exactly as it is on the server.': '{0} программа создана на этом устройстве без входа. Добавьте её в профиль или оставьте профиль ровно таким, как на сервере.',
   '{0} routines were made on this device while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': '{0} программ создано на этом устройстве без входа. Добавьте их в профиль или оставьте профиль ровно таким, как на сервере.',
   'This device, before signing in': 'Это устройство, до входа',
+  'This device, before the update': 'Это устройство, до обновления',
 }

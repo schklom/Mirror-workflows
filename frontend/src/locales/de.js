@@ -1954,4 +1954,5 @@ export default {
   '{0} routine was made on this device while signed out. Add it to your profile, or keep the profile exactly as it is on the server.': '{0} Routine wurde auf diesem Gerät ohne Anmeldung erstellt. Zum Profil hinzufügen oder das Profil genau so lassen, wie es auf dem Server ist.',
   '{0} routines were made on this device while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': '{0} Routinen wurden auf diesem Gerät ohne Anmeldung erstellt. Zum Profil hinzufügen oder das Profil genau so lassen, wie es auf dem Server ist.',
   'This device, before signing in': 'Dieses Gerät, vor der Anmeldung',
+  'This device, before the update': 'Dieses Gerät, vor dem Update',
 }

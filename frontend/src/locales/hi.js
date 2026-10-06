@@ -1934,4 +1934,5 @@ export default {
   '{0} routine was made on this device while signed out. Add it to your profile, or keep the profile exactly as it is on the server.': '{0} रूटीन इस डिवाइस पर बिना साइन इन किए बनाया गया। इसे अपनी प्रोफ़ाइल में जोड़ें, या प्रोफ़ाइल को ठीक वैसा ही रखें जैसा सर्वर पर है।',
   '{0} routines were made on this device while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': '{0} रूटीन इस डिवाइस पर बिना साइन इन किए बनाए गए। इन्हें अपनी प्रोफ़ाइल में जोड़ें, या प्रोफ़ाइल को ठीक वैसा ही रखें जैसा सर्वर पर है।',
   'This device, before signing in': 'यह डिवाइस, साइन इन से पहले',
+  'This device, before the update': 'यह डिवाइस, अपडेट से पहले',
 }

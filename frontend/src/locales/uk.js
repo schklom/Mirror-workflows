@@ -1931,4 +1931,5 @@ export default {
   '{0} routine was made on this device while signed out. Add it to your profile, or keep the profile exactly as it is on the server.': 'На цьому пристрої без входу створено програм: {0}. Додай її в профіль або лиши профіль точно таким, як на сервері.',
   '{0} routines were made on this device while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': 'На цьому пристрої без входу створено програм: {0}. Додай їх у профіль або лиши профіль точно таким, як на сервері.',
   'This device, before signing in': 'Цей пристрій, до входу',
+  'This device, before the update': 'Цей пристрій, до оновлення',
 }

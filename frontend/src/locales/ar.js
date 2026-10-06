@@ -1987,4 +1987,5 @@ export default {
   '{0} routine was made on this device while signed out. Add it to your profile, or keep the profile exactly as it is on the server.': 'أُنشئ {0} روتين على هذا الجهاز أثناء تسجيل الخروج. أضفه إلى ملفك، أو أبقِ الملف كما هو على الخادم.',
   '{0} routines were made on this device while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': 'أُنشئت {0} روتينات على هذا الجهاز أثناء تسجيل الخروج. أضفها إلى ملفك، أو أبقِ الملف كما هو على الخادم.',
   'This device, before signing in': 'هذا الجهاز قبل تسجيل الدخول',
+  'This device, before the update': 'هذا الجهاز قبل التحديث',
 }

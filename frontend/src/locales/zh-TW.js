@@ -1927,4 +1927,5 @@ export default {
   '{0} routine was made on this device while signed out. Add it to your profile, or keep the profile exactly as it is on the server.': '此裝置在未登入狀態下建立了 {0} 個訓練菜單。是否將其加入你的個人檔案，或是維持伺服器上的原本紀錄？',
   '{0} routines were made on this device while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': '此裝置在未登入狀態下建立了 {0} 個訓練菜單。是否將其加入你的個人檔案，或是維持伺服器上的原本紀錄？',
   'This device, before signing in': '此裝置（登入前）',
+  'This device, before the update': '此裝置（更新前）',
 }

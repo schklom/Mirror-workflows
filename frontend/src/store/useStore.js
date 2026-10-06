@@ -8,6 +8,7 @@ import { rememberDefaultLang } from '../lib/default-lang.js'
 import { guestAllowed } from '../lib/guest.js'
 import { MOBILE, initReminderSync, nativeLoad, nativeSave, onAppActive, readJsonFile, syncReminder, writeAutoBackup, writeJsonFile } from '../lib/mobile.js'
 import { refillIfComplete } from '../lib/rotation.js'
+import { liftLegacy } from '../lib/sync-legacy.js'
 import { mergeStates, localExtras, stampChange, highestStamp, stampRestore, inUnitOf, keepReset, resetIdsOf, mergeResetIds, entryKey } from '../lib/sync-merge.js'
 import { convertStateUnit } from '../lib/units.js'
 import { pendingRefCount, settleMedia, loadPending } from '../lib/media-owed.js'
@@ -35,6 +36,9 @@ const SYNC_KEY = 'gym_sync'
 // Which write of the saved copy this is: a tab finds another tab's write by it (persist, joinSaved).
 const WID_KEY = 'gym_state_wid'
 const DIRTY_KEY = 'gym_dirty'          // the saved copy owes the server a change
+// An owed copy an older app (v1.3.9) left behind: its first sync stamps what it changed
+// (lib/sync-legacy.js), holding the fingerprint that app last agreed on with the server.
+const LEGACY_KEY = 'gym_legacy_owed'
 const SYNCED_AT_KEY = 'gym_synced_at'  // when this device and the server last held the same copy
 const SYNCED_FP_KEY = 'gym_synced_fp'  // a fingerprint of that copy (lib/sync-changes.js)
 // Changes a forced sign-out or disconnect kept on this device, by server and account, until it
@@ -296,6 +300,18 @@ export const useStore = create((set, get) => {
   // The write of the saved copy this tab last read or made, and whose copy it was (joinSaved).
   let seenWid = (() => { try { return localStorage.getItem(WID_KEY) } catch { return null } })()
   let seenOwner = (() => { try { return localStorage.getItem('gym_owner') } catch { return null } })()
+  // A copy that owes the server a change and was never written with a write id was last saved by
+  // an app from before this one (v1.3.9), which stamped none of its settings, plan days or notes.
+  // Noted now, before this app's first save writes a write id beside it.
+  try {
+    if (!seenWid && seenOwner && localStorage.getItem(DIRTY_KEY) === '1' && localStorage.getItem(KEY) && !localStorage.getItem(LEGACY_KEY)) {
+      let fp = null
+      try { fp = JSON.parse(localStorage.getItem(SYNCED_FP_KEY)) } catch { /* no fingerprint: the copy is kept aside instead */ }
+      localStorage.setItem(LEGACY_KEY, JSON.stringify({ fp, owner: seenOwner }))
+    }
+  } catch { /* storage refused: the first sync merges it as before */ }
+  const readLegacy = () => { try { return JSON.parse(localStorage.getItem(LEGACY_KEY)) || null } catch { return null } }
+  const clearLegacy = () => { try { localStorage.removeItem(LEGACY_KEY) } catch { /* the next sync tries again */ } }
 
   const readAdopt = () => { try { return JSON.parse(localStorage.getItem(ADOPT_KEY)) || null } catch { return null } }
   const writeAdopt = v => { try { if (v) localStorage.setItem(ADOPT_KEY, JSON.stringify(v)); else localStorage.removeItem(ADOPT_KEY) } catch { /* the hold in memory still stands */ } }
@@ -588,6 +604,16 @@ export const useStore = create((set, get) => {
   // happens before the push lands still sees it as unsent.
   const mergeInto = (local, remote, rev) => {
     const ts = metaOf().base?.ts || 0
+    // The first merge of an older app's owed copy: what that app changed besides its lists is
+    // stamped so the merge keeps it (lib/sync-legacy.js). When that cannot be told, the copy as
+    // it was is kept aside before the merge, to be saved from Settings, so nothing is lost.
+    const legacy = readLegacy()
+    if (legacy && legacy.owner === get().user?.id) {
+      const lifted = liftLegacy(local, remote, legacy.fp, Math.max(Date.now(), highestStamp(local) + 1, highestStamp(remote) + 1))
+      if (!lifted.resolved) keepAside(local, t('This device, before the update'))
+      local = Object.assign(clone(DEF), lifted.state)
+    }
+    if (legacy) clearLegacy()
     const merged = Object.assign(clone(DEF), mergeStates(local, remote))
     merged.active = carryActive(local, merged)
     // A pass of this app's rotation that the merge left complete (each copy finished a session of
@@ -622,7 +648,10 @@ export const useStore = create((set, get) => {
     replaceRev = null
     // `stamped`: this client stamps its own changes; the server stamps only for one that does not
     // (api/sync-stamps.js).
-    const body = { state: S, stamped: true }
+    // An older app's owed copy over the revision it read: the server stamps what that app changed
+    // against the copy it holds, exactly as it would for that app (api/sync-stamps.js).
+    const legacy = readLegacy()
+    const body = { state: S, stamped: !(legacy && legacy.owner === get().user?.id) }
     if (asReplace != null) { body.baseRev = asReplace.rev; if (asReplace.wid) body.baseWid = asReplace.wid }
     else if (!force && base) { body.baseRev = base.rev; if (base.wid) body.baseWid = base.wid }
     try {
@@ -631,6 +660,7 @@ export const useStore = create((set, get) => {
       // next push to, and the marker must not pretend otherwise.
       if (r.rev == null) dropSync()
       else writeSync(r.rev, S._ts, r.wid)
+      if (legacy) clearLegacy()
       markOwed(false)
       toldTooLarge = false
       confirmed(S)
@@ -948,14 +978,16 @@ export const useStore = create((set, get) => {
   // "Keep profile as is": what this device held before the sign-in leaves the screen, but not the
   // device. It is kept aside like a kept change (its own key, never added back on its own) and can
   // be saved as a backup file from Settings, in case the answer was the wrong one.
-  const keepDeviceCopy = async () => {
-    const S = get().S
+  const keepAside = async (S, name) => {
     if (!hasData(S)) return
+    const state = clone(S)
     const all = await readStashes()
     const uid = 'device-' + Date.now().toString(36)
-    all[stashKey(serverBase(), uid)] = { server: serverBase() || null, uid, name: t('This device, before signing in'), at: Date.now(), state: clone(S) }
+    all[stashKey(serverBase(), uid)] = { server: serverBase() || null, uid, name, at: Date.now(), state }
     await writeStashes(all)
+    set({ keptRev: get().keptRev + 1 })
   }
+  const keepDeviceCopy = () => keepAside(get().S, t('This device, before signing in'))
 
   // adoptProfile's work (see there). Every way out answers the question — releaseAdopt — before
   // the decision is written and pushed; only a server that could not be reached leaves it owed.

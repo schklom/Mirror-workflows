@@ -1937,4 +1937,5 @@ export default {
   '{0} routine was made on this device while signed out. Add it to your profile, or keep the profile exactly as it is on the server.': '{0} rutin készült ezen az eszközön bejelentkezés nélkül. Add hozzá a profilodhoz, vagy hagyd a profilt pontosan úgy, ahogy a szerveren van.',
   '{0} routines were made on this device while signed out. Add them to your profile, or keep the profile exactly as it is on the server.': '{0} rutin készült ezen az eszközön bejelentkezés nélkül. Add hozzá őket a profilodhoz, vagy hagyd a profilt pontosan úgy, ahogy a szerveren van.',
   'This device, before signing in': 'Ez az eszköz, bejelentkezés előtt',
+  'This device, before the update': 'Ez az eszköz, a frissítés előtt',
 }

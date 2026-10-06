@@ -1190,8 +1190,13 @@ export const PT_BR_OVERRIDES = {
   'Warm-up gone.': 'Aquecimento já era.',
   'Keep at least one set, champ': 'Deixe pelo menos uma série, campeão',
   'Too late, that one’s gone': 'Tarde demais, já era',
+  'Copied as “{0}”.': 'Copiada como “{0}”.',
+  '“{0}” gone.': '“{0}” já era.',
+  '“{0}” is out of the loop.': '“{0}” saiu do ciclo.',
+  '“{0}” left the routine.': '“{0}” saiu da rotina.',
+  'Swipe actions': 'Ações de deslizar',
+  'Sets, routines and the loop: left removes, right copies': 'Séries, rotinas e o ciclo: esquerda remove, direita copia',
   'Psst: swipe a set. Left deletes, right copies.': 'Psiu: deslize uma série. Esquerda exclui, direita copia.',
-  'Left deletes, right copies': 'Esquerda exclui, direita copia',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

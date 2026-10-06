@@ -204,8 +204,8 @@ describe('the search lands on a row', () => {
     expect(searchSettings('server', web, tr).map(h => h.title)).toContain('Sync now')
     expect(searchSettings('sync', web, tr).map(h => h.title)).toContain('Sync now')
     expect(searchSettings('loop', web, tr).map(h => h.title)).toContain('How you train')
-    expect(searchSettings('swipe', web, tr)[0].title).toBe('Swipe on sets')
-    expect(searchSettings('gesture', web, tr).map(h => h.title)).toEqual(['Swipe on sets'])
+    expect(searchSettings('swipe', web, tr)[0].title).toBe('Swipe actions')
+    expect(searchSettings('gesture', web, tr).map(h => h.title)).toEqual(['Swipe actions'])
     expect(searchSettings('home screen', web, tr).map(h => h.title)).toEqual(['In Safari: Share → Add to Home Screen'])
     expect(searchSettings('install', { ...web, androidWeb: true }, tr).map(h => h.title)).toEqual(['In Chrome: ⋮ menu → Add to Home screen'])
     expect(searchSettings('backup folder', { ...guestWeb, mobile: true, android: true, autoBackup: true }, tr).map(h => h.title)).toEqual(['Backup folder'])
@@ -283,7 +283,7 @@ describe('the pages', () => {
     expect([...host.querySelectorAll('.sect-f')].some(f => /screen stays on/.test(f.textContent))).toBe(false)
     mount('advanced')
     expect(titles()).toEqual(['Planned sessions start from', 'Keep timing after target', 'Weight and reps buttons',
-      'Drop and burst shortcuts on every set', 'Swipe on sets', 'Superset buttons in the exercise header', 'Move, swap and remove buttons below the exercise'])
+      'Drop and burst shortcuts on every set', 'Swipe actions', 'Superset buttons in the exercise header', 'Move, swap and remove buttons below the exercise'])
   })
 
   it('the Fine-tuning switches write S.wc as the old Workout controls sheet did', () => {
@@ -400,8 +400,8 @@ describe('searchSettings', () => {
       expect(first('Feste Woche')).toBe('How you train')
       expect(first('Wochenstart')).toBe('Week starts on')
       expect(first('kompakt')).toBe('Layout')
-      expect(first('wischen')).toBe('Swipe on sets')
-      expect(first('Geste')).toBe('Swipe on sets')
+      expect(first('wischen')).toBe('Swipe actions')
+      expect(first('Geste')).toBe('Swipe actions')
       await setLang('ar')
       expect(searchSettings('تناوب', guestWeb, t).map(h => h.title)).toContain('How you train')
     } finally { await setLang('en') }

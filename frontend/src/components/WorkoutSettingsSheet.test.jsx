@@ -54,7 +54,7 @@ describe('the in-workout settings sheet', () => {
   it('has the rows people change at the gym, then All settings', () => {
     expect([...host.querySelectorAll('.lrow-t')].map(e => e.textContent)).toEqual([
       'Rest timer', 'Play a sound', 'Vibrate', 'Flash the screen', 'Keep screen awake',
-      'Layout', 'Effort per set', 'Swipe on sets', 'Exercise animations', 'All settings',
+      'Layout', 'Effort per set', 'Swipe actions', 'Exercise animations', 'All settings',
     ])
     expect(row('Rest timer').querySelector('.lrow-v').textContent).toBe('1:30')
     expect(row('Keep screen awake').querySelector('.lrow-s').textContent).toMatch(/^The screen stays on/)

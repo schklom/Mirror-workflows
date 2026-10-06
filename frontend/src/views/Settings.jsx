@@ -583,12 +583,12 @@ export default function Settings({ page = null, find = null, via = null }) {
             subtitle={canVibrate ? null : iPhone ? t('Not on iPhone') : t('Not supported in this browser.')}>
             <Switch checked={canVibrate && S.vibrate !== false} disabled={!canVibrate} onChange={v => update(s => { s.vibrate = v })} />
           </Row>
-          {/* Android app only (#375): silent mode mutes the ordinary buzz and the notification's,
+          {/* Android app only (#375), and only shown there, so it needs no "Android app only" hint: silent mode mutes the ordinary buzz and the notification's,
               so the end of a rest or a hold can buzz as an alarm instead. Opt-in, like the iOS row
               above: an alarm-class buzz is the most insistent thing an app can do on some phones. */}
           {MOBILE && android && canVibrate && S.vibrate !== false && (
             <Row icon="vibrate" iconTint="var(--indigo)" title={t('Vibrate on silent too')}
-              subtitle={<>{t('The end of a rest or a hold buzzes like an alarm, even in silent mode.')}<br />{t('Android app only')}</>}>
+              subtitle={t('The end of a rest or a hold buzzes like an alarm, even in silent mode.')}>
               <Switch checked={!!S.vibrateOnSilent} onChange={v => update(s => { s.vibrateOnSilent = v })} />
             </Row>
           )}

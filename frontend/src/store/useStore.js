@@ -354,7 +354,10 @@ export const useStore = create((set, get) => {
   // the debounce or in flight, a change made while boot was pulling, or a copy changed since the
   // revision it descends from.
   const localChanged = (S = get().S) => { const { base } = metaOf(S); return !!base && (S._ts || 0) > (base.ts || 0) }
-  const owes = () => metaOf().owed || pushPending || pushTm !== null || !!pushing || localChanged()
+  // A sign-in whose question is still open (adoptHold, e.g. its GET failed) holds a copy that has
+  // reached no server yet: with any data in it, it is owed, so a sign-out asks and keeps it aside
+  // instead of wiping the guest's history and what was logged during the hold.
+  const owes = () => metaOf().owed || pushPending || pushTm !== null || !!pushing || localChanged() || (adoptHold && hasData(get().S))
 
   /* The connection as the screens show it (components/SyncBanner.jsx, Settings). The flags are set
      where each outcome is known; `status` is derived from them here, once, so no screen has to
@@ -872,7 +875,10 @@ export const useStore = create((set, get) => {
     const prev = all[key]?.state
     const state = prev ? mergeStates(get().S, prev) : clone(get().S)
     state.active = get().S.active || prev?.active || null
-    all[key] = { server: server || null, uid: user.id, name: user.name || '', at: Date.now(), state }
+    // Kept while a sign-in's question was open: a copy that was never this account's, added back
+    // like an answered "Add them" (applyStash), the account's settings and history first.
+    const adopt = adoptHold || !!all[key]?.adopt
+    all[key] = { server: server || null, uid: user.id, name: user.name || '', at: Date.now(), state, ...(adopt ? { adopt: true } : {}) }
     return writeStashes(all)
   }
   // A workout running here is never on the server (a push leaves `active` out), so a sign-out
@@ -915,7 +921,7 @@ export const useStore = create((set, get) => {
     if (!keys.length) return
     const S = get().S
     let merged = S
-    for (const k of keys) merged = mergeStates(merged, all[k].state)
+    for (const k of keys) merged = all[k].adopt ? mergeStates(merged, all[k].state, { prefer: 'a' }) : mergeStates(merged, all[k].state)
     merged = Object.assign(clone(DEF), merged)
     merged.active = S.active || keys.map(k => all[k].state?.active).find(Boolean) || null
     persist(merged, false)

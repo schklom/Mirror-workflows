@@ -1835,7 +1835,10 @@ body.no-tabbar.resting #toast{bottom:calc(100px + var(--sab))}
 .plan-mode .seg-inline{flex:1 1 200px;min-width:0}
 .plan-mode .seg-inline button{white-space:nowrap}
 .plan-mode-locked{margin-inline-start:auto;text-align:end}
-.plan-sec-h{margin:22px 0 8px;gap:8px}
+.plan-sec-h{margin:22px 0 8px;gap:8px;flex-wrap:wrap}
+/* Long words (German "Hinzufügen") push the loop's buttons off a 320 px screen; they drop
+   to their own line instead and stay on the trailing edge. */
+.plan-sec-h>.plan-sec-acts{margin-inline-start:auto}
 .plan-sec-h h4.sec{margin:0}
 .plan-routines-bar{margin-top:0}
 .plan-textbtn{color:var(--acc);font-size:16px;padding:6px 4px;position:relative}

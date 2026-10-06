@@ -93,6 +93,17 @@ describe('Plan — How you train', () => {
     expect(subtitle()).toBe('Your routines in a loop')
   })
 
+  it('the loop header can wrap so Add never runs off a 320 px screen', async () => {
+    mount({ scheduleMode: 'rotation' })
+    const acts = host.querySelector('.rotation .plan-sec-h > .plan-sec-acts')
+    expect(acts).toBeTruthy()
+    expect(acts.querySelector('button[aria-label="Add routine to the rotation"]')).toBeTruthy()
+    const { readFileSync } = await import('node:fs')
+    const css = readFileSync(process.cwd() + '/src/index.css', 'utf8')
+    expect(css).toMatch(/^\.plan-sec-h\{[^}]*flex-wrap:wrap/m)
+    expect(css).toMatch(/^\.plan-sec-h>\.plan-sec-acts\{[^}]*margin-inline-start:auto/m)
+  })
+
   it('back to Fixed Week with nothing running needs no confirmation', () => {
     mount({ scheduleMode: 'rotation' })
     pickMode('Fixed Week')

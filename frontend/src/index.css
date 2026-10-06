@@ -538,7 +538,9 @@ h4.sec{
 /* favourite marker (issue #6): a small yellow star glued to the exercise name — distinct from
    the accent "chosen" tag at the row's end, which means "already in a routine or the log" */
 .fav-star{color:var(--yellow);font-size:12px;display:inline-block;margin-inline-end:5px;vertical-align:-1px}
-.fav-btn{margin-top:-4px}
+.fav-btn{margin-top:-4px;flex:none}
+/* One long word (a German custom name) wraps instead of pushing the star off the screen. */
+.exdetail-name{min-width:0;overflow-wrap:anywhere}
 .fav-btn.on{color:var(--yellow)}
 
 /* ---------------------------------------------------------------- chips -- */

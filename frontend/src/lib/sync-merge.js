@@ -11,7 +11,10 @@
  *     the copy that changed it last by its own stamp in `edited` (stampEdits; `week`, `dayPlan`,
  *     exNotes and barWeights per day or per exercise), from the copy with the newer `_ts` when
  *     neither side stamped it or on a tie
- *   - equipProfiles, gymCards: union by id, the newer copy's version of an id that both have
+ *   - equipProfiles, gymCards: union by id; of an id that both have, field by field as below
+ *   - workouts, routines, customEx, equipProfiles, gymCards: of an id that both have, each field
+ *     from the side that changed it last by its own stamp (`_f`, stampEntry / mergeEntry), the
+ *     version edited last for every field neither side stamped
  *   - customEx: union by id; of an id that both have, the version edited last by its own `_ts`
  *     (stampCustomEx), the newer copy's on a tie — a photo or link added on one device must not
  *     be lost to the other's copy just because that one logged a set since
@@ -182,6 +185,55 @@ export function stampWorkout(w, now = Date.now()) {
 const stampOf = v => (v && typeof v === 'object' ? Number(v._ts) || 0 : 0)
 const isMap = v => !!v && typeof v === 'object' && !Array.isArray(v)
 
+// ---- Entries merged field by field ----------------------------------------------------------
+//
+// A workout, routine, custom exercise, equipment profile or gym card edited on two devices kept
+// the version edited last as a whole: a set corrected from 100 to 110 on one device was reverted
+// by a note added on the other, a routine's 3 sets turned 5 lost to a rename, a custom exercise's
+// photo to a rename. Each edit now records, per field, when it changed it (`_f`, stampEntry), and
+// the merge takes every field from the side that changed it last (mergeEntry). A field neither
+// side stamped follows the version edited last, as before.
+const ENTRY_META = new Set(['id', '_ts', '_f'])
+const fieldTime = (x, k) => Number(x?._f?.[k]) || 0
+const sameJSON = (x, y) => JSON.stringify(x) === JSON.stringify(y)
+
+/**
+ * Stamps `x`, the new version of an entry whose previous version is `old`, as edited at `now`:
+ * its `_ts`, and in `_f` every field that differs from `old`. A new entry gets its `_ts` only.
+ * Mutates and returns `x`.
+ */
+export function stampEntry(old, x, now) {
+  if (!x || typeof x !== 'object') return x
+  x._ts = now
+  if (!old || typeof old !== 'object') return x
+  const f = isMap(old._f) ? { ...old._f } : {}
+  for (const k of new Set([...Object.keys(old), ...Object.keys(x)])) {
+    if (ENTRY_META.has(k)) continue
+    if ((k in old) !== (k in x) || !sameJSON(old[k], x[k])) f[k] = now
+  }
+  if (Object.keys(f).length) x._f = f; else delete x._f
+  return x
+}
+
+/**
+ * Two versions of one entry: the version edited last (`_ts`; `a` on a tie), with every field the
+ * other side changed later (`_f`) taken from that side, removal included. Returns a new object.
+ */
+export function mergeEntry(a, b) {
+  const [n, o] = (Number(b?._ts) || 0) > (Number(a?._ts) || 0) ? [b, a] : [a, b]
+  const out = clone(n)
+  for (const k of new Set([...Object.keys(n), ...Object.keys(o)])) {
+    if (ENTRY_META.has(k)) continue
+    if (fieldTime(o, k) > fieldTime(n, k)) { if (k in o) out[k] = clone(o[k]); else delete out[k] }
+  }
+  const f = { ...(isMap(o._f) ? o._f : {}) }
+  for (const [k, v] of Object.entries(isMap(n._f) ? n._f : {})) if (!((Number(f[k]) || 0) > (Number(v) || 0))) f[k] = v
+  if (Object.keys(f).length) out._f = f; else delete out._f
+  const ts = Math.max(Number(a?._ts) || 0, Number(b?._ts) || 0)
+  if (ts) out._ts = ts
+  return out
+}
+
 /**
  * A settings map whose entries carry their own edit time (`{ …, _ts }`), such as the Structural
  * Balance overrides or the plate-loading choices: every key of either side, and of a key both have, the entry set last — the
@@ -317,10 +369,11 @@ const DEL_LISTS = {
   gymCards: x => x?.id, equipProfiles: x => x?.id, favEx: x => x,
 }
 // When an entry was last edited, to hold against a removal. Entries with no time of their own
-// (cards, profiles, favourites) count as older than any removal.
+// (favourites, and cards and profiles saved before they were stamped) count as older than any
+// removal.
 const DEL_TIME = {
   workouts: workoutTime, routines: x => Number(x?._ts) || 0, customEx: x => Number(x?._ts) || 0,
-  bodyweight: e => Number(e?.t) || 0,
+  bodyweight: e => Number(e?.t) || 0, gymCards: x => Number(x?._ts) || 0, equipProfiles: x => Number(x?._ts) || 0,
 }
 // Per field, the most stamps kept; past it the oldest go first.
 export const DELETED_MAX = 5000
@@ -539,9 +592,13 @@ export function mergeStates(a0, b0, { prefer } = {}) {
       const key = workoutKey(w)
       const alt = mine.has(key) ? other.get(key) : null
       if (!alt) return w
-      const [kept, lost, by] = (alt._ts || 0) > (w._ts || 0) ? [clone(alt), w, o] : [w, alt, n]
-      if ((kept._ts || 0) > (lost._ts || 0) && JSON.stringify(kept.entries) !== JSON.stringify(lost.entries)) {
-        for (const e of [...list(kept.entries), ...list(lost.entries)]) {
+      // Field by field (mergeEntry): the sets from the side that edited them last, the note from
+      // the side that edited it last.
+      const kept = mergeEntry(w, alt)
+      const [last, first, byLast, byFirst] = (alt._ts || 0) > (w._ts || 0) ? [alt, w, o, n] : [w, alt, n, o]
+      if ((last._ts || 0) !== (first._ts || 0) && JSON.stringify(last.entries) !== JSON.stringify(first.entries)) {
+        const by = JSON.stringify(kept.entries) === JSON.stringify(first.entries) ? byFirst : byLast
+        for (const e of [...list(kept.entries), ...list(w.entries), ...list(alt.entries)]) {
           if (e?.id == null) continue
           if (!editedBy.has(e.id)) editedBy.set(e.id, new Set())
           editedBy.get(e.id).add(by.exWeights)
@@ -570,23 +627,18 @@ export function mergeStates(a0, b0, { prefer } = {}) {
   // version dropped a plan edit made on one device whenever the other had since logged a set or
   // flipped a setting — its whole copy was newer, its version of that routine was not. `prefer`
   // (sign-in) keeps the preferred side's plan as it is.
-  if (!prefer && out.routines) {
-    const other = new Map(list(o.routines).filter(r => r?.id != null).map(r => [r.id, r]))
-    out.routines = out.routines.map(r => {
-      const alt = r?.id != null && other.get(r.id)
-      return alt && (alt._ts || 0) > (r._ts || 0) ? clone(alt) : r
-    })
-  }
-  // A custom exercise edited on both sides keeps the version edited last, the same rule and for
-  // the same reason. The merge is whole-entry: a device that later renames an exercise whose
-  // media it never saw change brings its old media back (the old file outlives the grace period
-  // on the server, so nothing breaks, it is only the older picture).
-  if (!prefer && out.customEx) {
-    const other = new Map(list(o.customEx).filter(c => c?.id != null).map(c => [c.id, c]))
-    out.customEx = out.customEx.map(c => {
-      const alt = c?.id != null && other.get(c.id)
-      return alt && (alt._ts || 0) > (c._ts || 0) ? clone(alt) : c
-    })
+  // Field by field (mergeEntry): a routine's sets changed on one device and its name on the other
+  // are both kept. The same for a custom exercise (a photo added on one device survives a rename
+  // on the other), an equipment profile and a gym card.
+  if (!prefer) {
+    for (const f of ['routines', 'customEx', 'equipProfiles', 'gymCards']) {
+      if (!out[f]) continue
+      const other = new Map(list(o[f]).filter(x => x?.id != null).map(x => [x.id, x]))
+      out[f] = out[f].map(x => {
+        const alt = x?.id != null && other.get(x.id)
+        return alt ? mergeEntry(x, alt) : x
+      })
+    }
   }
   out.bodyweight = mergeBodyweight(n.bodyweight, o.bodyweight).map(clone)
   if (list(n.favEx).length || list(o.favEx).length) out.favEx = [...new Set([...list(n.favEx), ...list(o.favEx)])]
@@ -734,7 +786,7 @@ export function stampChange(prev, next, wall = Date.now()) {
   for (const w of list(next.workouts)) {
     if (!w || typeof w !== 'object' || w.id == null || w._ts == null) continue
     const old = before.get(w.id)
-    if (old && w._ts !== old._ts) w._ts = now
+    if (old && w._ts !== old._ts) stampEntry(old, w, now)
   }
   // Settings maps whose entries carry their own stamp (mergeStampedMap): an entry the change
   // re-stamped takes the change's time.
@@ -745,12 +797,14 @@ export function stampChange(prev, next, wall = Date.now()) {
   }
   stampRoutines(prev?.routines, next.routines, now)
   stampCustomEx(prev?.customEx, next.customEx, now)
+  stampEntries(prev?.equipProfiles, next.equipProfiles, now)
+  stampEntries(prev?.gymCards, next.gymCards, now)
   stampDeletions(prev, next, now)
   stampEdits(prev, next, now)
   return now
 }
 
-const sameRoutine = (a, b) => JSON.stringify({ ...a, _ts: 0 }) === JSON.stringify({ ...b, _ts: 0 })
+const sameRoutine = (a, b) => JSON.stringify({ ...a, _ts: 0, _f: 0 }) === JSON.stringify({ ...b, _ts: 0, _f: 0 })
 
 /**
  * Stamps `_ts` on every routine of `next` that is new or differs from its version in `prev` — the
@@ -762,12 +816,12 @@ export function stampRoutines(prev = [], next = [], now = Date.now()) {
   for (const r of list(next)) {
     if (!r || r.id == null) continue
     const old = before.get(r.id)
-    if (!old || (old !== r && !sameRoutine(old, r))) r._ts = now
+    if (!old || (old !== r && !sameRoutine(old, r))) stampEntry(old, r, now)
   }
   return next
 }
 
-const sameEntry = (a, b) => JSON.stringify({ ...a, _ts: 0 }) === JSON.stringify({ ...b, _ts: 0 })
+const sameEntry = (a, b) => JSON.stringify({ ...a, _ts: 0, _f: 0 }) === JSON.stringify({ ...b, _ts: 0, _f: 0 })
 
 /**
  * Stamps `_ts` on every custom exercise of `next` that is new or differs from its version in
@@ -780,10 +834,13 @@ export function stampCustomEx(prev = [], next = [], now = Date.now()) {
   for (const c of list(next)) {
     if (!c || typeof c !== 'object' || c.id == null) continue
     const old = before.get(c.id)
-    if (!old || (old !== c && !sameEntry(old, c))) c._ts = now
+    if (!old || (old !== c && !sameEntry(old, c))) stampEntry(old, c, now)
   }
   return next
 }
+
+/** stampCustomEx for any list of entries with ids: equipment profiles, gym cards. */
+export function stampEntries(prev = [], next = [], now = Date.now()) { return stampCustomEx(prev, next, now) }
 
 // What `local` holds that `server` does not: the workouts and weigh-ins a device logged while it
 // was signed out, and the custom exercises they use. Sign-in asks about these before the server's

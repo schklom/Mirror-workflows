@@ -804,6 +804,56 @@ describe('a change is stamped after everything the copy it was made on carries (
   })
 })
 
+
+describe('an entry edited on two devices keeps both edits, field by field', () => {
+  const change = (prev, wall, mut) => { const n = clone(prev); mut(n); n._ts = stampChange(prev, n, wall); return n }
+  const S0 = base({ _ts: 100,
+    workouts: [{ id: 'w1', d: '2026-09-30', start: 1, end: 2, entries: [{ id: 'bench', sets: [{ w: 100, r: 5 }] }] }],
+    routines: [{ id: 'r1', name: 'Push', ex: [{ id: 'bench', sets: 3 }], _ts: 50 }],
+    customEx: [{ id: 'c1', n: 'Landmine press', custom: true, _ts: 50 }],
+    equipProfiles: [{ id: 'eq1', name: 'Home', equipment: ['dumbbell'] }],
+    gymCards: [{ id: 'g1', name: 'FitX', code: '' }] })
+
+  it('a corrected set and a note, a plan change and a rename, a photo and a rename all survive', () => {
+    const A = change(S0, 1000, S => {
+      S.workouts[0].entries[0].sets[0].w = 110; stampWorkout(S.workouts[0], 1000)
+      S.routines[0].ex[0].sets = 5
+      S.customEx[0].media = { hash: 'abc', kind: 'img' }
+      S.equipProfiles[0].equipment.push('barbell')
+      S.gymCards[0].code = '4006381333931'
+    })
+    const B = change(S0, 2000, S => {
+      S.workouts[0].note = 'shoulder hurt'; stampWorkout(S.workouts[0], 2000)
+      S.routines[0].name = 'Push heavy'
+      S.customEx[0].n = 'Landmine press (1 arm)'
+      S.gymCards[0].name = 'FitX Mitte'
+      S.bodyweight = [{ d: '2026-10-06', w: 80, t: 2000 }]
+    })
+    for (const m of [mergeStates(A, B), mergeStates(B, A)]) {
+      expect(m.workouts[0].entries[0].sets[0].w).toBe(110)
+      expect(m.workouts[0].note).toBe('shoulder hurt')
+      expect(m.routines[0]).toMatchObject({ name: 'Push heavy', ex: [{ id: 'bench', sets: 5 }] })
+      expect(m.customEx[0]).toMatchObject({ n: 'Landmine press (1 arm)', media: { hash: 'abc' } })
+      expect(m.equipProfiles[0].equipment).toEqual(['dumbbell', 'barbell'])
+      expect(m.gymCards[0]).toMatchObject({ name: 'FitX Mitte', code: '4006381333931' })
+    }
+  })
+
+  it('the same field edited on both: the later edit wins, a removal included', () => {
+    const A = change(S0, 1000, S => { S.workouts[0].note = 'first'; stampWorkout(S.workouts[0], 1000) })
+    const B = change(A, 2000, S => { delete S.workouts[0].note; stampWorkout(S.workouts[0], 2000) })
+    const A2 = change(A, 3000, S => { S.bodyweight = [{ d: '2026-10-06', w: 80, t: 3000 }] })
+    expect(mergeStates(A2, B).workouts[0].note).toBeUndefined()
+    expect(mergeStates(B, A2).workouts[0].note).toBeUndefined()
+  })
+
+  it('a card or profile edited after a delete elsewhere is kept, as other entries are', () => {
+    const del = change(S0, 1000, S => { S.gymCards = [] })
+    const ed = change(S0, 2000, S => { S.gymCards[0].code = '1' })
+    expect(ids(mergeStates(del, ed).gymCards)).toEqual(['g1'])
+  })
+})
+
 describe('settings and plan days keep the change made last', () => {
   // B, offline, sets Wednesday and the rest timer; A logs a weigh-in later and flips the sound.
   const start = () => base({ _ts: 100, week: { 1: ['r1'] }, restSec: 90, sound: true, exNotes: { '0025': 'seat 4' } })

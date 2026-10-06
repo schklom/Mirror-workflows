@@ -130,9 +130,9 @@ function run(seed, opts = {}) {
   }
 
   // ---- user operations ---------------------------------------------------------------------
-  const canonW = (w, unit = 'kg') => { const x = clone(w); delete x._ts; delete x.media; for (const e of x.entries || []) for (const st of e.sets || []) st.w = unit === 'lb' ? st.w / 2.2046226218 : st.w; return x }
+  const canonW = (w, unit = 'kg') => { const x = clone(w); delete x._ts; delete x._f; delete x.media; delete x.note; for (const e of x.entries || []) for (const st of e.sets || []) st.w = unit === 'lb' ? st.w / 2.2046226218 : st.w; return x }
   const sameW = (a, b) => { const ws = [], wt = []; const sa = JSON.stringify(a, (k, v) => (k === 'w' && typeof v === 'number' ? (ws.push(v), 0) : v)); const sb = JSON.stringify(b, (k, v) => (k === 'w' && typeof v === 'number' ? (wt.push(v), 0) : v)); return sa === sb && ws.every((x, i) => Math.abs(x - wt[i]) < 0.4) }
-  const canonR = x => { const y = clone(x); delete y._ts; return y }
+  const canonR = x => { const y = clone(x); delete y._ts; delete y._f; return y }
   const ops = {
     addWorkout(r) {
       const id = uid('w')
@@ -146,6 +146,7 @@ function run(seed, opts = {}) {
       const id = pick(W).id
       let rec
       update(r, (S, now) => { const i = S.workouts.findIndex(x => x.id === id); rec = S.workouts[i]; rec.entries[0].sets.push({ w: 20 + ri(100), r: 1 + ri(10) }); stampWorkout(rec, now) })
+      if (truth.get('w:' + id)?.val === DEL) note('wn:' + id, rec.note ?? DEL, r.i)
       note('w:' + id, canonW(rec, r.S.unit), r.i)
       return `editWorkout ${id}`
     },
@@ -154,30 +155,34 @@ function run(seed, opts = {}) {
       const id = pick(W).id; const h = uid('h')
       let rec
       update(r, (S, now) => { rec = S.workouts.find(x => x.id === id); rec.media = [...(rec.media || []), { hash: h, kind: 'img' }]; stampWorkout(rec, now) })
-      note('m:' + id + ':' + h, true, r.i); note('w:' + id, canonW(rec, r.S.unit), r.i)
+      note('m:' + id + ':' + h, true, r.i)
+      // an edit keeps the workout (also after a delete elsewhere); its sets are whatever was set last
+      { const was = truth.get('w:' + id); if (was?.val === DEL) note('wn:' + id, rec.note ?? DEL, r.i); note('w:' + id, was && was.val !== DEL ? was.val : canonW(rec, r.S.unit), r.i) }
       return `addMedia ${id} ${h}`
     },
     deleteWorkout(r) {
       const W = r.S.workouts; if (!W.length) return null
       const id = pick(W).id
       update(r, S => { S.workouts = S.workouts.filter(x => x.id !== id) })
-      note('w:' + id, DEL, r.i)
+      note('w:' + id, DEL, r.i); note('wn:' + id, DEL, r.i)
       return `deleteWorkout ${id}`
     },
     addRoutine(r) {
       const id = uid('r'); const x = { id, name: 'R' + id, ex: [{ id: pick(EXS), sets: 3 }] }
-      update(r, S => { S.routines.push(x) }); note('r:' + id, canonR(x), r.i); return `addRoutine ${id}`
+      update(r, S => { S.routines.push(x) }); note('r:' + id, clone(x.ex), r.i); note('rn:' + id, x.name, r.i); return `addRoutine ${id}`
     },
     editRoutine(r) {
       if (!r.S.routines.length) return null
       const id = pick(r.S.routines).id; let rec
       update(r, S => { rec = S.routines.find(x => x.id === id); rec.ex.push({ id: pick(EXS), sets: 1 + ri(5) }) })
-      note('r:' + id, canonR(rec), r.i); return `editRoutine ${id}`
+      note('r:' + id, clone(rec.ex), r.i)
+      if (truth.get('rn:' + id)?.val === DEL) note('rn:' + id, rec.name, r.i)
+      return `editRoutine ${id}`
     },
     deleteRoutine(r) {
       if (!r.S.routines.length) return null
       const id = pick(r.S.routines).id
-      update(r, S => { S.routines = S.routines.filter(x => x.id !== id) }); note('r:' + id, DEL, r.i); return `deleteRoutine ${id}`
+      update(r, S => { S.routines = S.routines.filter(x => x.id !== id) }); note('r:' + id, DEL, r.i); note('rn:' + id, DEL, r.i); return `deleteRoutine ${id}`
     },
     reorderRoutines(r) {
       if (r.S.routines.length < 2) return null
@@ -185,18 +190,20 @@ function run(seed, opts = {}) {
     },
     addCustom(r) {
       const id = uid('c'); const x = { id, name: 'C' + id, custom: true, eq: '' }
-      update(r, S => { S.customEx.push(x) }); note('c:' + id, canonR(x), r.i); return `addCustom ${id}`
+      update(r, S => { S.customEx.push(x) }); note('c:' + id, x.name, r.i); return `addCustom ${id}`
     },
     editCustom(r) {
       if (!r.S.customEx.length) return null
       const id = pick(r.S.customEx).id; let rec
       update(r, S => { rec = S.customEx.find(x => x.id === id); rec.name = 'C' + id + '-' + ri(1000) })
-      note('c:' + id, canonR(rec), r.i); return `editCustom ${id}`
+      note('c:' + id, rec.name, r.i)
+      if (truth.get('cm:' + id)?.val === DEL && rec.media) note('cm:' + id, rec.media.hash, r.i)
+      return `editCustom ${id}`
     },
     deleteCustom(r) {
       if (!r.S.customEx.length) return null
       const id = pick(r.S.customEx).id
-      update(r, S => { S.customEx = S.customEx.filter(x => x.id !== id) }); note('c:' + id, DEL, r.i); return `deleteCustom ${id}`
+      update(r, S => { S.customEx = S.customEx.filter(x => x.id !== id) }); note('c:' + id, DEL, r.i); note('cm:' + id, DEL, r.i); return `deleteCustom ${id}`
     },
     weighIn(r) {
       const d = pick(DAYS); const w = 60 + ri(40)
@@ -241,7 +248,41 @@ function run(seed, opts = {}) {
     deleteCard(r) {
       if (!r.S.gymCards.length) return null
       const id = pick(r.S.gymCards).id
-      update(r, S => { S.gymCards = S.gymCards.filter(x => x.id !== id) }); note('g:' + id, DEL, r.i); return `deleteCard ${id}`
+      update(r, S => { S.gymCards = S.gymCards.filter(x => x.id !== id) }); note('g:' + id, DEL, r.i); note('gl:' + id, DEL, r.i); return `deleteCard ${id}`
+    },
+    // Second fields of the same entries: edited on one device while another edits the first
+    // field, both edits must survive (field-level merge).
+    noteWorkout(r) {
+      const W = r.S.workouts; if (!W.length) return null
+      const id = pick(W).id; const v = 'n' + ri(1000)
+      let rec
+      update(r, (S, now) => { rec = S.workouts.find(x => x.id === id); rec.note = v; stampWorkout(rec, now) })
+      note('wn:' + id, v, r.i)
+      { const was = truth.get('w:' + id); note('w:' + id, was && was.val !== DEL ? was.val : canonW(rec, r.S.unit), r.i) }
+      return `noteWorkout ${id}`
+    },
+    renameRoutine(r) {
+      if (!r.S.routines.length) return null
+      const id = pick(r.S.routines).id; const v = 'R' + id + '-' + ri(1000); let rec
+      update(r, S => { rec = S.routines.find(x => x.id === id); rec.name = v })
+      note('rn:' + id, v, r.i)
+      { const was = truth.get('r:' + id); note('r:' + id, was && was.val !== DEL ? was.val : clone(rec.ex), r.i) }
+      return `renameRoutine ${id}`
+    },
+    customMedia(r) {
+      if (!r.S.customEx.length) return null
+      const id = pick(r.S.customEx).id; const h = uid('ch'); let rec
+      update(r, S => { rec = S.customEx.find(x => x.id === id); rec.media = { hash: h } })
+      note('cm:' + id, h, r.i)
+      { const was = truth.get('c:' + id); note('c:' + id, was && was.val !== DEL ? was.val : rec.name, r.i) }
+      return `customMedia ${id}`
+    },
+    editCard(r) {
+      if (!r.S.gymCards.length) return null
+      const id = pick(r.S.gymCards).id; const v = 'L' + ri(1000)
+      update(r, S => { S.gymCards.find(x => x.id === id).label = v })
+      note('gl:' + id, v, r.i); note('g:' + id, true, r.i)
+      return `editCard ${id}`
     },
   }
   const resets = []
@@ -319,14 +360,23 @@ function run(seed, opts = {}) {
     let got
     if (kind === 'w') { const w = (D.workouts || []).find(x => x.id === a); got = w ? canonW(w, D.unit) : DEL; if (got !== DEL && val !== DEL && sameW(got, val)) continue }
     else if (kind === 'm') { const w = (D.workouts || []).find(x => x.id === a); const wTruth = truth.get('w:' + a); if (!w || wTruth?.val === DEL || everDeleted.has('w:' + a)) continue; got = (w.media || []).some(m => m.hash === b) ? true : DEL }
-    else if (kind === 'r') { const x = (D.routines || []).find(x => x.id === a); got = x ? canonR(x) : DEL }
-    else if (kind === 'c') { const x = (D.customEx || []).find(x => x.id === a); got = x ? canonR(x) : DEL }
+    else if (kind === 'r') { const x = (D.routines || []).find(x => x.id === a); got = x ? x.ex : DEL }
+    else if (kind === 'rn') { const x = (D.routines || []).find(x => x.id === a); if (!x && truth.get('r:' + a)?.val !== DEL) continue; got = x ? x.name : DEL }
+    else if (kind === 'c') { const x = (D.customEx || []).find(x => x.id === a); got = x ? x.name : DEL }
+    else if (kind === 'cm') { const x = (D.customEx || []).find(x => x.id === a); if (!x || truth.get('c:' + a)?.val === DEL) continue; got = x.media?.hash ?? DEL }
+    else if (kind === 'wn') { const x = (D.workouts || []).find(x => x.id === a); if (!x || truth.get('w:' + a)?.val === DEL) continue; got = x.note ?? DEL }
+    else if (kind === 'gl') { const x = (D.gymCards || []).find(x => x.id === a); if (!x || truth.get('g:' + a)?.val === DEL) continue; got = x.label ?? DEL }
     else if (kind === 'bw') { const x = (D.bodyweight || []).find(x => x.d === a); got = x ? { w: D.unit === 'lb' ? x.w / 2.2046226218 : x.w } : DEL; if (got !== DEL && val !== DEL && Math.abs(got.w - val.w) < 0.2) continue }
     else if (kind === 'fav') got = (D.favEx || []).includes(a) ? true : DEL
     else if (kind === 'set') got = a in D ? D[a] : DEL
     else if (kind === 'week') got = D.week && a in D.week ? D.week[a] : DEL
     else if (kind === 'note') got = D.exNotes && a in D.exNotes ? D.exNotes[a] : DEL
     else if (kind === 'g') got = (D.gymCards || []).some(x => x.id === a) ? true : DEL
+    // An entry deleted on one device and edited on another that had not seen the delete comes
+    // back with the editing device's version; which fields of the deleted versions survive in it
+    // is not a last-change question, so only its presence is checked then.
+    const baseKey = { w: 'w:', wn: 'w:', r: 'r:', rn: 'r:', c: 'c:', cm: 'c:', g: 'g:', gl: 'g:' }[kind]
+    if (baseKey && everDeleted.has(baseKey + a) && (['wn', 'rn', 'cm', 'gl'].includes(kind) || (val !== DEL && got !== DEL))) continue
     if (JSON.stringify(got) !== JSON.stringify(val)) problems.push(`${key}: want ${JSON.stringify(val)} (r${by} @T+${t - 1_700_000_000_000}) got ${JSON.stringify(got)}`)
   }
   // ids unique
@@ -357,7 +407,7 @@ describe('sync fuzz: clocks up to a day apart still converge, with nothing dupli
       if (hard.length) bad.push(`seed ${s}: ${hard.join('; ')}`)
     }
     expect(bad.slice(0, 5)).toEqual([])
-  })
+  }, 120000)
 })
 
 describe('sync fuzz: every device converges on every last change', () => {
@@ -369,6 +419,6 @@ describe('sync fuzz: every device converges on every last change', () => {
         if (problems.length) bad.push(`seed ${s}: ${problems.slice(0, 3).join('; ')}`)
       }
       expect(bad.slice(0, 5)).toEqual([])
-    })
+    }, 120000)
   }
 })

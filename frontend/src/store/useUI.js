@@ -82,6 +82,63 @@ let workTick = null
 let workDone = null
 const MAX_WORK_OVERTIME_SEC = 15 * 60
 
+// The hold's countdown tick, from a start or from a restore after a reload.
+const runWork = (set, get) => {
+  stopWorkTicking()
+  workTick = () => {
+    const wk = get().work
+    if (!wk) return
+    const left = Math.max(wk.overtime ? -MAX_WORK_OVERTIME_SEC : 0, Math.round((wk.endsAt - Date.now()) / 1000))
+    const seenLive = !document.hidden && pageHiddenAt === null
+    if (!document.hidden) pageHiddenAt = null
+    if (left === wk.left) return
+    const { sound: snd, classicChime } = useStore.getState().S
+    if (left <= 0) {
+      if (seenLive && !wk.alerted) {
+        chime(snd, classicChime)
+        alertBuzz([200, 100, 200]); get().flashTimer()
+      }
+      if (wk.overtime && left > -MAX_WORK_OVERTIME_SEC) { set({ work: { ...wk, left, alerted: true } }); return }
+      const done = workDone || ownerDone(wk)
+      get().stopWork()
+      // `chimed` tells the set's own tick that this end has already sounded and buzzed — not
+      // so when overtime ran out, whose end chime played when the target was reached.
+      if (done) done(wk.total - left, { chimed: seenLive && !wk.alerted })
+      return
+    }
+    if (left <= 3) beep(snd, 660, 0.1)
+    set({ work: { ...wk, left } })
+  }
+  workInt = setInterval(workTick, 1000)
+  document.addEventListener('visibilitychange', workTick)
+}
+const stopWorkTicking = () => {
+  if (workInt) clearInterval(workInt); workInt = null
+  if (workTick) document.removeEventListener('visibilitychange', workTick); workTick = null
+}
+// The set a hold belongs to, while it still is that one: the same exercise at that place in the
+// running workout, not ticked off yet.
+const ownerSet = o => {
+  const e = useStore.getState().S?.active?.entries?.[o?.idx]
+  const st = e && e.id === o.id ? e.sets?.[o.i] : null
+  return st && !st.done ? st : null
+}
+// A restored hold that ends before the workout screen is back to bind its handler: the time still
+// goes to its set, and a hold that ran out (or got its Done) ticks the set off. No rest follows:
+// that is the workout screen's to start, and the hold mostly ended while the app was away.
+const ownerDone = wk => !wk?.owner ? null : (elapsed, { abandoned = false } = {}) => {
+  if (!ownerSet(wk.owner)) return
+  const { idx, i } = wk.owner
+  useStore.getState().update(s => {
+    const st = s.active.entries[idx].sets[i]
+    st.sec = elapsed
+    if (abandoned) { if (st.planSec == null) st.planSec = wk.total; return }
+    delete st.planSec
+    if (st.sides) return   // a per-side row is ticked side by side, on the workout screen
+    st.done = true
+    st.at = Date.now()
+  }, true)
+}
 const stopRestTicking = () => {
   if (timerInt) clearInterval(timerInt); timerInt = null
   if (timerTick) document.removeEventListener('visibilitychange', timerTick); timerTick = null
@@ -277,41 +334,26 @@ export const useUI = create((set, get) => ({
      on an early finish; the elapsed time is what actually gets logged, so stopping at 0:38 of a
      0:45 hold records 0:38 rather than crediting the full target. `chimed` is true when the
      countdown ran out in front of you and the end chime and buzz have just played; `abandoned`
-     when a rest displaced the hold (abandonWork). */
-  startWork(sec, label, onDone) {
+     when a rest displaced the hold (abandonWork).
+     `owner` ({ idx, i, id }: the active entry and set being held) lets a hold outlive a reload or
+     the app being killed (restoreWork below). onDone is a closure and cannot be kept, so the owner
+     says where the time goes, and the workout screen binds its handler again (bindWork). */
+  startWork(sec, label, onDone, owner = null) {
     get().abandonWork()   // a hold this one replaces keeps what it held, same as a rest replacing one
     get().stopRest()
     const total = Math.max(1, Math.round(sec) || 1)
     const endsAt = Date.now() + total * 1000
     workDone = onDone
     pageHiddenAt = document.hidden ? Date.now() : null   // see startRest: a stale hide is not a catch-up
-    set({ work: { left: total, total, endsAt, label, overtime: useStore.getState().S.timedSetOvertime === true } })
-    workTick = () => {
-      const wk = get().work
-      if (!wk) return
-      const left = Math.max(wk.overtime ? -MAX_WORK_OVERTIME_SEC : 0, Math.round((wk.endsAt - Date.now()) / 1000))
-      const seenLive = !document.hidden && pageHiddenAt === null
-      if (!document.hidden) pageHiddenAt = null
-      if (left === wk.left) return
-      const { sound: snd, classicChime } = useStore.getState().S
-      if (left <= 0) {
-        if (seenLive && !wk.alerted) {
-          chime(snd, classicChime)
-          alertBuzz([200, 100, 200]); get().flashTimer()
-        }
-        if (wk.overtime && left > -MAX_WORK_OVERTIME_SEC) { set({ work: { ...wk, left, alerted: true } }); return }
-        const done = workDone
-        get().stopWork()
-        // `chimed` tells the set's own tick that this end has already sounded and buzzed — not
-        // so when overtime ran out, whose end chime played when the target was reached.
-        if (done) done(wk.total - left, { chimed: seenLive && !wk.alerted })
-        return
-      }
-      if (left <= 3) beep(snd, 660, 0.1)
-      set({ work: { ...wk, left } })
-    }
-    workInt = setInterval(workTick, 1000)
-    document.addEventListener('visibilitychange', workTick)
+    set({ work: { left: total, total, endsAt, label, overtime: useStore.getState().S.timedSetOvertime === true, ...(owner ? { owner } : {}) } })
+    runWork(set, get)
+  },
+  // The workout screen, back on a hold restored after a reload: `make(work)` gives it the handler
+  // its own start would have. Nothing to do for a hold that has one, or whose set is gone.
+  bindWork(make) {
+    const wk = get().work
+    if (!wk?.owner || workDone || !ownerSet(wk.owner)) return
+    workDone = make(wk)
   },
   // Ended the hold early — log what was actually held.
   finishWorkEarly() {
@@ -319,7 +361,7 @@ export const useUI = create((set, get) => ({
     if (!wk) return
     const startedAt = wk.endsAt - wk.total * 1000
     const elapsed = Math.max(1, Math.min(wk.total + (wk.overtime ? MAX_WORK_OVERTIME_SEC : 0), Math.round((Date.now() - startedAt) / 1000)))
-    const done = workDone
+    const done = workDone || ownerDone(wk)
     vibrate(30)
     get().stopWork()
     if (done) done(elapsed)
@@ -334,7 +376,7 @@ export const useUI = create((set, get) => ({
     const wk = get().work
     if (!wk) { get().stopWork(); return }
     const elapsed = wk.total - wk.left
-    const done = workDone
+    const done = workDone || ownerDone(wk)
     get().stopWork()
     // Under two seconds there is nothing to keep: that is a play button tapped by accident, or
     // tapped and thought better of, and rounding it up to one second the way an early finish does
@@ -344,8 +386,7 @@ export const useUI = create((set, get) => ({
   },
   // Abandon without logging anything.
   stopWork() {
-    if (workInt) clearInterval(workInt); workInt = null
-    if (workTick) document.removeEventListener('visibilitychange', workTick); workTick = null
+    stopWorkTicking()
     workDone = null
     set({ work: null })
   }
@@ -393,6 +434,46 @@ export function restoreRest(now = Date.now()) {
 }
 useUI.subscribe((s, prev) => { if (s.timer !== prev.timer) saveRest(s.timer) })
 restoreRest()
+
+// The hold (a timed set) the same way: a reload or the app being killed mid-plank used to drop
+// the bar and the seconds with it. Kept beside the rest, with the set it belongs to (`owner`);
+// at boot it carries on while its end is ahead, and one that ended meanwhile is written to its set
+// as held to the end. The workout screen binds its own handler again (bindWork), and until it
+// does the time still lands on the set (ownerDone). Only the start, total and owner are kept:
+// the tick reads `endsAt`, so what it shows after the reload is what the clock says.
+export const WORK_KEY = 'gym_work'
+const saveWork = wk => {
+  const ls = restStore()
+  if (!ls) return
+  try {
+    if (!wk?.owner) ls.removeItem(WORK_KEY)
+    else ls.setItem(WORK_KEY, JSON.stringify({ endsAt: wk.endsAt, total: wk.total, label: wk.label || '', overtime: !!wk.overtime, alerted: !!wk.alerted, owner: wk.owner }))
+  } catch { /* the hold just does not outlive a reload */ }
+}
+export function restoreWork(now = Date.now()) {
+  const ls = restStore()
+  let saved = null
+  try { saved = JSON.parse(ls?.getItem(WORK_KEY) || 'null') } catch { saved = null }
+  if (!saved || useUI.getState().work) return false
+  const total = Math.round(Number(saved.total))
+  const drop = () => { try { ls.removeItem(WORK_KEY) } catch { /* nothing to drop */ } return false }
+  if (!(total > 0) || !(saved.endsAt > 0) || !ownerSet(saved.owner)) return drop()
+  const wk = { left: total, total, endsAt: saved.endsAt, label: saved.label || '', overtime: !!saved.overtime, ...(saved.alerted ? { alerted: true } : {}), owner: saved.owner }
+  const left = Math.round((saved.endsAt - now) / 1000)
+  // Over while the app was away: held to the end (overtime past the target is not known, and
+  // the target is what was planned), with no chime for an end nobody was there for.
+  if (left <= 0 && !(wk.overtime && left > -MAX_WORK_OVERTIME_SEC)) {
+    drop()
+    ownerDone(wk)(total)
+    return true
+  }
+  pageHiddenAt = typeof document !== 'undefined' && document.hidden ? now : null
+  useUI.setState({ work: { ...wk, left, ...(left <= 0 ? { alerted: true } : {}) } })
+  runWork(useUI.setState, useUI.getState)
+  return true
+}
+useUI.subscribe((s, prev) => { if (s.work !== prev.work && (!s.work || !prev.work || s.work.owner !== prev.work.owner || s.work.endsAt !== prev.work.endsAt || s.work.alerted !== prev.work.alerted)) saveWork(s.work) })
+restoreWork()
 
 // Buttons on the rest notification (pause, ±15s, skip) change the countdown in the
 // service first, then mirror that into the in-app timer. skip ends it. Seconds round up, as the

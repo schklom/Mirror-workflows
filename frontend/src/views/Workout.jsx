@@ -1311,8 +1311,12 @@ function ActiveWorkout() {
     // the row is held to the end, ticked, or given a duration you typed yourself, and it never
     // reaches S.workouts (lib/finish-workout.js).
     const plan = (!e.sets[i].done && e.sets[i].planSec) || e.sets[i].sec || 45
-    useUI.getState().startWork(plan, exerciseNameText(exOr(e.id)), (elapsed, { abandoned = false, chimed = false } = {}) => {
-      // A hold a rest displaced (useUI.abandonWork: a set ticked on another row, or another
+    useUI.getState().startWork(plan, exerciseNameText(exOr(e.id)), holdDone(idx, i, plan), { idx, i, id: e.id })
+  }
+  // What a hold hands back to its row: on its end, its Done, or a rest displacing it. Also bound
+  // again to a hold restored after a reload (useUI.bindWork, below).
+  const holdDone = (idx, i, plan) => (elapsed, { abandoned = false, chimed = false } = {}) => {
+    // A hold a rest displaced (useUI.abandonWork: a set ticked on another row, or another
       // exercise) keeps its seconds and nothing else. It is not a finish: the row stays unticked
       // and starts no rest, because the rest that displaced the hold is already counting down —
       // and the plan it was held against is put aside so the row still knows what it is asking for.
@@ -1326,8 +1330,13 @@ function ActiveWorkout() {
       }
       mutEntry(idx, en => { en.sets[i].sec = elapsed; delete en.sets[i].planSec })
       if (!useStore.getState().S.active.entries[idx].sets[i].done) toggle(idx, i, undefined, { quiet: chimed })
-    })
   }
+  // A hold that came back from a reload has no handler yet: this screen gives it its own.
+  const holdDoneRef = useRef(holdDone)
+  holdDoneRef.current = holdDone
+  useEffect(() => {
+    useUI.getState().bindWork?.(wk => (...a) => holdDoneRef.current(wk.owner.idx, wk.owner.i, wk.total)(...a))
+  }, [])
 
   // `quiet`: the hold that ticks this set has just ended with the chime and its buzz pattern
   // (store/useUI.js). The tick's own beep would sound over the chime's first note and clip it,

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { nextTrainingDay, modeOf, isTimed, fmtSec, setLabel, defaultConfig, buildSets, freestyleConfig, exLine, workoutVolume, bestWeightFor, bestWeightForEntry, completedRepsOf, metricRowsForEntry, effortOf, stepEffort, capEffort, isBw, isPerSide, sideReps, repStep, cascadeWeight, insertWarmupRow, makeWarmupAt, canBeWarmup, makeWorkAt, removeRowAt, workSetsDone, setsDone, setsDoneActive, setUnits, doneUnits, setUnitsTotal, pairAdjacent, unpairSuperset, supersetUnits, sessionSections, applyIntensifierPlan, pinnedNoteFor, exNoteFor, effectiveRoutineIds, effectiveRoutines, effectiveRoutineId, effectiveRoutine, lastEntryFor, entryExcluded, entryRoutineId, setsRepsOf } from './history.js'
+import { nextTrainingDay, modeOf, isTimed, fmtSec, setLabel, defaultConfig, buildSets, freestyleConfig, exLine, workoutVolume, bestWeightFor, bestWeightForEntry, completedRepsOf, metricRowsForEntry, effortOf, stepEffort, capEffort, isBw, isPerSide, sideReps, repStep, cascadeWeight, insertWarmupRow, makeWarmupAt, canBeWarmup, makeWorkAt, removeRowAt, removeLastSet, setSpanAt, workSetsDone, setsDone, setsDoneActive, setUnits, doneUnits, setUnitsTotal, pairAdjacent, unpairSuperset, supersetUnits, sessionSections, applyIntensifierPlan, pinnedNoteFor, exNoteFor, effectiveRoutineIds, effectiveRoutines, effectiveRoutineId, effectiveRoutine, lastEntryFor, entryExcluded, entryRoutineId, setsRepsOf } from './history.js'
 import { makeSideSet, setSideField, toggleSide, WEIGHT_ORIGIN_MANUAL } from './workout-model.js'
 import { EXDB } from './exercises.js'
 import { todayISO, isoOf } from './format.js'
@@ -1565,5 +1565,22 @@ describe('switching a row between warm-up and work', () => {
     const rows = [{ w: 40, r: 8, phase: 'warmup', warmup: true }, { w: 60, r: 8, phase: 'warmup', warmup: true, done: true }, { w: 100, r: 5 }]
     expect(makeWorkAt(rows, 0)).toEqual([rows[1], { w: 40, r: 8 }, rows[2]])
     expect(makeWorkAt(rows, 2)).toBe(rows)
+  })
+})
+
+describe('timed per-side pairs come off as a pair', () => {
+  const pairs = n => Array.from({ length: n }, (_, k) => [{ sec: 30, side: 'L', k }, { sec: 30, side: 'R', k }]).flat()
+
+  it('removeLastSet pops the last L/R pair, so a later add keeps the pairs in step', () => {
+    const next = removeLastSet(pairs(3))
+    expect(next.map(r => r.side + r.k)).toEqual(['L0', 'R0', 'L1', 'R1'])
+    expect(removeLastSet(pairs(1))).toEqual(pairs(1))
+    expect(removeLastSet([{ w: 50, r: 5 }, { w: 50, r: 5 }])).toEqual([{ w: 50, r: 5 }])
+  })
+
+  it('removeRowAt takes a half out together with its partner', () => {
+    expect(removeRowAt(pairs(3), 2).map(r => r.side + r.k)).toEqual(['L0', 'R0', 'L2', 'R2'])
+    expect(removeRowAt(pairs(3), 3).map(r => r.side + r.k)).toEqual(['L0', 'R0', 'L2', 'R2'])
+    expect(setSpanAt([{ sec: 30, side: 'L' }, { sec: 30 }], 0)).toEqual([0, 1])
   })
 })

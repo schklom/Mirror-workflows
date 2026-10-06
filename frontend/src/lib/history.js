@@ -949,13 +949,27 @@ const placeRow = (rows, i, row) => {
   return next
 }
 
-/** Remove the row at `i`, never emptying the entry below one row. */
+/** The rows one set takes up at `i`: a timed per-side hold is an L row and an R row that read
+ *  as one set number (addSet pushes them as a pair), so taking one out takes its partner too.
+ *  Anything else is the row alone. Returns [start, count]. */
+export function setSpanAt(rows, i) {
+  const row = rows[i]
+  if (row?.side === 'L' && rows[i + 1]?.side === 'R') return [i, 2]
+  if (row?.side === 'R' && rows[i - 1]?.side === 'L') return [i - 1, 2]
+  return [i, 1]
+}
+
+/** Remove the set at `i` (both halves of a per-side pair), never emptying the entry. */
 export function removeRowAt(rows, i) {
-  if (rows.length <= 1) return rows.slice()
+  const [start, count] = setSpanAt(rows, i)
+  if (rows.length <= count) return rows.slice()
   const next = rows.slice()
-  next.splice(i, 1)
+  next.splice(start, count)
   return next
 }
+
+/** "Remove set": the last set, which for a timed per-side exercise is its last L/R pair. */
+export const removeLastSet = rows => rows.length ? removeRowAt(rows, rows.length - 1) : rows.slice()
 
 /** Completed non-warm-up sets across a workout's entries, counted the way setsDone counts them —
  *  each side of a unilateral row on its own — so "22 sets · 19 work" never reads as three

@@ -57,13 +57,19 @@ const PER_KEY = new Set(['week', 'dayPlan', 'exNotes', 'barWeights']);
 const ENTRY_META = new Set(['id', '_ts', '_f']);
 const ENTRY_LISTS = ['routines', 'customEx', 'equipProfiles', 'gymCards', 'workouts'];
 
+// Whether removal record `v` replaces `cur`: the later stamp, and on a tie the add-back.
+const laterDel = (v, cur) => {
+  const x = Number(v) || 0, y = Number(cur) || 0;
+  return Math.abs(x) > Math.abs(y) || (Math.abs(x) === Math.abs(y) && x < y);
+};
 /** Both records of removals: per entry, the later stamp. */
 export function mergeDeletions(a, b) {
   const out = {};
   for (const f of Object.keys(DEL_LISTS)) {
     const x = isMap(a?.[f]) ? a[f] : {}, y = isMap(b?.[f]) ? b[f] : {};
     const m = { ...x };
-    for (const [k, v] of Object.entries(y)) if (!(k in m) || Math.abs(Number(v) || 0) > Math.abs(Number(m[k]) || 0)) m[k] = v;
+    // On equal stamps the add-back (negative) wins, whichever copy is first (as the app's).
+    for (const [k, v] of Object.entries(y)) if (!(k in m) || laterDel(v, m[k])) m[k] = v;
     if (Object.keys(m).length) out[f] = capStamps(m);
   }
   return Object.keys(out).length ? out : null;

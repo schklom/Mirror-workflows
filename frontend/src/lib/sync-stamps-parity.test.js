@@ -27,6 +27,30 @@ describe('api/sync-stamps.js matches sync-merge.js', () => {
   })
 })
 
+describe('a removal and an add-back with the same stamp', () => {
+  // QA round 2 (2026-10-06): two phones lifted their clocks from one highest stamp, so one's Undo
+  // (-H-2) and the other's removal (+H-2) tied, and the first argument won: the device (local
+  // first) and the server (stored first) kept opposite records.
+  const H = 1_800_000_000_000
+  it('merges the same in either order, on both sides: the add-back wins', () => {
+    const a = { routines: { R: -(H + 2) } }, b = { routines: { R: H + 2 } }
+    for (const f of [mergeDeletions, S.mergeDeletions]) {
+      expect(f(a, b)).toEqual({ routines: { R: -(H + 2) } })
+      expect(f(b, a)).toEqual({ routines: { R: -(H + 2) } })
+    }
+  })
+  it('the routine put back with Undo is kept whichever phone merges first', () => {
+    const R = { id: 'R', name: 'Push', ex: [], _ts: H - 10 }
+    const base = { _ts: H, unit: 'kg', workouts: [], routines: [R], week: { 1: ['R'] } }
+    const A = { ...clone(base), routines: [{ ...R, _ts: H + 2 }], deleted: { routines: { R: -(H + 2) } } }
+    const B = { ...clone(base), routines: [], week: {}, deleted: { routines: { R: H + 2 } } }
+    const ab = mergeStates(A, B), ba = mergeStates(B, A)
+    expect(ab.deleted).toEqual(ba.deleted)
+    expect(ab.routines.map(r => r.id)).toEqual(['R'])
+    expect(ba.routines.map(r => r.id)).toEqual(['R'])
+  })
+})
+
 describe('what the server stamps holds in the merge', () => {
   const T = 1_800_000_000_000
   const change = (prev, wall, mut) => { const n = clone(prev); mut(n); n._ts = stampChange(prev, n, wall); return n }

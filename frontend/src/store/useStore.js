@@ -36,6 +36,9 @@ const KEY = 'gym_state_v1'
 const SYNC_KEY = 'gym_sync'
 // Which write of the saved copy this is: a tab finds another tab's write by it (persist, joinSaved).
 const WID_KEY = 'gym_state_wid'
+// Whose copy that write was: the owner (gym_owner) the writing tab held, '' for a guest's. A tab
+// joins only a copy written under the owner it holds itself (joinSaved, syncFromSaved).
+const WID_OWNER_KEY = 'gym_state_owner'
 const DIRTY_KEY = 'gym_dirty'          // the saved copy owes the server a change
 // An owed copy an older app (v1.3.9) left behind: its first sync stamps what it changed
 // (lib/sync-legacy.js), holding the fingerprint that app last agreed on with the server.
@@ -301,6 +304,11 @@ export const useStore = create((set, get) => {
   // The write of the saved copy this tab last read or made, and whose copy it was (joinSaved).
   let seenWid = (() => { try { return localStorage.getItem(WID_KEY) } catch { return null } })()
   let seenOwner = (() => { try { return localStorage.getItem('gym_owner') } catch { return null } })()
+  // Another tab signed in or out under this one (the gym_owner storage event below): what this
+  // tab holds is no copy of the new owner's, so it writes nothing until it has taken that owner's
+  // saved copy as it is (takeSaved).
+  let handedOver = false
+  const staleUid = 'device-tab-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6)
   // A copy that owes the server a change and was never written with a write id was last saved by
   // an app from before this one (v1.3.9), which stamped none of its settings, plan days or notes.
   // Noted now, before this app's first save writes a write id beside it.
@@ -479,6 +487,17 @@ export const useStore = create((set, get) => {
   const sameCopy = (a, b) => JSON.stringify({ ...a, _ts: 0 }) === JSON.stringify({ ...b, _ts: 0 })
   const readWid = () => { try { return localStorage.getItem(WID_KEY) } catch { return null } }
   const readOwner = () => { try { return localStorage.getItem('gym_owner') } catch { return null } }
+  // The owner the saved copy was written under; null for a copy saved before this was recorded.
+  const readWidOwner = () => { try { return localStorage.getItem(WID_OWNER_KEY) } catch { return null } }
+  // The saved copy is the one this tab may join: written under the owner this tab holds. QA
+  // 2026-10-06: a sign-out (or another account signing in) wrote its wiped copy while the owner
+  // key still named the previous account, a second tab joined its whole in-memory copy into it,
+  // and the next guest, or the next profile created there, got the previous account's history.
+  const savedIsMine = () => {
+    if (readOwner() !== seenOwner) return false
+    const tag = readWidOwner()
+    return tag === null || tag === (seenOwner || '')
+  }
   const readSaved = () => {
     try { const raw = localStorage.getItem(KEY); return raw ? Object.assign(clone(DEF), JSON.parse(raw)) : null } catch { return null }
   }
@@ -491,7 +510,7 @@ export const useStore = create((set, get) => {
   // `S` with what another tab saved since this one last read or wrote the copy; null when there is
   // nothing to join (the same write, no saved copy, or a copy another account's sign-in replaced).
   const joinSaved = (S, prev) => {
-    if (readWid() === seenWid || readOwner() !== seenOwner) return null
+    if (readWid() === seenWid || !savedIsMine()) return null
     const theirs = readSaved()
     if (!theirs) return null
     const touched = JSON.stringify(prev?.active ?? null) !== JSON.stringify(S?.active ?? null)
@@ -499,7 +518,21 @@ export const useStore = create((set, get) => {
     return sameCopy(merged, S) ? null : merged
   }
 
+  // A tab whose owner changed under it (another tab signed in or out) does not write: its copy is
+  // not the new owner's, and written, it went into that owner's copy, settings and all, and on to
+  // the server (QA 2026-10-06). Once the new owner's copy is saved it takes that copy as it is.
+  // What it was asked to save was made on the empty copy it holds meanwhile, never on the previous
+  // owner's: that small change is kept aside, as "Keep profile as is" keeps a device's copy.
+  const refuseStale = S => {
+    if (!handedOver) return false
+    takeSaved()
+    clearTimeout(pushTm)
+    pushTm = null
+    if (hasData(S)) keepAside(S, t('This device, before signing in'), staleUid).catch(() => {})
+    return true
+  }
   const persist = (S, push = true, stamp = true) => {
+    if (refuseStale(S)) return
     const { base, owed } = metaOf()   // the copy being replaced; the new one stands where it stood
     const joined = joinSaved(S, get()?.S)
     if (joined) S = joined
@@ -520,6 +553,7 @@ export const useStore = create((set, get) => {
       // copy's, which costs one merge at worst — never a newer one, which would lose data.
       saveMarker(base)
       localStorage.setItem(KEY, JSON.stringify(S))
+      localStorage.setItem(WID_OWNER_KEY, seenOwner || '')
       const wid = Date.now().toString(36) + Math.random().toString(36).slice(2, 8)
       localStorage.setItem(WID_KEY, wid)
       seenWid = wid
@@ -719,23 +753,28 @@ export const useStore = create((set, get) => {
   window.addEventListener('pagehide', flush)   // Safari kills the home-screen app without a visibilitychange at times
 
   // The owner check in setUser only runs in the tab that signs in. Another tab of the same
-  // browser still holding the previous profile would keep writing that profile's data over the
-  // shared copy and push it under the new session's cookie — so it drops the profile, and
-  // whoever signs in there passes the same check. The owner key is written last on both a
-  // sign-in and a sign-out, so on a new owner the copy in storage is already the wiped one; with
-  // no owner (a sign-out) this tab falls back to defaults rather than read the key at all — the
-  // previous profile's data must not stay here whichever key's event lands first.
+  // browser still holding the previous profile, or a guest's copy, would keep writing it over the
+  // shared copy and push it under the new session's cookie, or join it into the new owner's copy
+  // the moment that one is saved (QA 2026-10-06: a guest tab left open put its workout, routine
+  // and default settings into the account after "Keep profile as is"). So any tab whose owner
+  // changes under it drops what it holds, signed in or not, and takes the new owner's copy as it
+  // is once that is saved (takeSaved); until then it writes nothing (refuseStale). Whoever signs in
+  // there passes the same check. The owner key goes first on both a sign-in and a sign-out, so
+  // this runs before the new owner's copy reaches this tab.
   window.addEventListener('storage', e => {
     if (e.key !== 'gym_owner') return
-    const user = get().user
-    if (!user || e.newValue === user.id) return
+    const owner = readOwner()
+    if (owner === seenOwner) return
     clearTimeout(pushTm)
     pushTm = null
-    const S = e.newValue ? loadState() : freshState()
-    meta.set(S, e.newValue ? { base: readStoredSync(), owed: storedOwed() } : { base: null, owed: false })
+    const S = restartedState(get().S)
+    meta.set(S, { base: null, owed: false })
     seenWid = readWid()
-    seenOwner = readOwner()
-    set({ user: null, S })
+    seenOwner = owner
+    handedOver = true
+    const user = get().user
+    set({ ...(user && user.id !== owner ? { user: null } : {}), S })
+    takeSaved()
   })
   // Another tab of this browser synced — its marker moved to a revision this tab's copy does not
   // descend from. Rather than take that tab's saved copy (storage holds the copy and its marker
@@ -757,9 +796,28 @@ export const useStore = create((set, get) => {
   // over it. When the saved copy holds everything this tab has, this tab takes it as it is, with
   // where it stands with the server (its marker and dirty flag); otherwise the join is saved and
   // pushed like any change.
+  // A tab the owner changed under takes the new owner's saved copy as it is, with where it stands
+  // with the server: it has no changes of its own to join, only the previous owner's copy, or a
+  // guest's, which must not go into it.
+  const takeSaved = () => {
+    if (!handedOver) return false
+    // Only a copy known to be written under the new owner: one saved before the owner was
+    // recorded beside it is most likely the guest's copy the sign-in is still asking about.
+    if (readOwner() !== seenOwner || readWidOwner() !== (seenOwner || '')) return false
+    const theirs = readSaved()
+    if (!theirs) return false
+    const S = sanitizeAccent(theirs)
+    seenWid = readWid()
+    handedOver = false
+    meta.set(S, { base: readStoredSync(), owed: storedOwed() })
+    registerCustom(S.customEx)
+    set({ S })
+    return true
+  }
   const syncFromSaved = () => {
+    if (handedOver) { takeSaved(); return }
     const wid = readWid()
-    if (wid === seenWid || readOwner() !== seenOwner) return
+    if (wid === seenWid || !savedIsMine()) return
     const theirs = readSaved()
     if (!theirs) return
     const mine = get().S
@@ -802,7 +860,8 @@ export const useStore = create((set, get) => {
   }
 
   // Everything a sign-out leaves behind on this device, whichever way it was triggered. The owner
-  // goes last, after the wiped copy is written — the storage listener above relies on the order.
+  // goes before the wiped copy is written: another tab must learn that the copy is nobody's before
+  // it sees the new copy, or it joins its own copy of the account into it (QA 2026-10-06).
   const clearLocalSession = () => {
     const hadMedia = referencedHashes(get().S).size > 0
     get().setUser(null)
@@ -810,11 +869,12 @@ export const useStore = create((set, get) => {
     forgetSync()
     releaseAdopt()   // the copy it was about is gone
     localStorage.removeItem(KEY)
-    // Signed out, this device is nobody's: the sign-in screen is in the instance's language.
-    persist(freshState(), false)
     localStorage.removeItem('gym_owner_name')
     localStorage.removeItem('gym_owner')
     seenOwner = null   // a guest's tab now: it joins what other signed-out tabs save (as setUser)
+    handedOver = false
+    // Signed out, this device is nobody's: the sign-in screen is in the instance's language.
+    persist(freshState(), false)
     setSync({ offline: false, auth: false, lastError: null, pending: false, lastSynced: 0 })
     // On a phone the file is wiped with it, now rather than after the usual wait: a start in
     // between would open in local mode on the signed-out account's data, since that boot takes
@@ -979,11 +1039,11 @@ export const useStore = create((set, get) => {
   // "Keep profile as is": what this device held before the sign-in leaves the screen, but not the
   // device. It is kept aside like a kept change (its own key, never added back on its own) and can
   // be saved as a backup file from Settings, in case the answer was the wrong one.
-  const keepAside = async (S, name) => {
+  const keepAside = async (S, name, keepUid) => {
     if (!hasData(S)) return
     const state = clone(S)
     const all = await readStashes()
-    const uid = 'device-' + Date.now().toString(36)
+    const uid = keepUid || 'device-' + Date.now().toString(36)
     all[stashKey(serverBase(), uid)] = { server: serverBase() || null, uid, name, at: Date.now(), state }
     await writeStashes(all)
     set({ keptRev: get().keptRev + 1 })
@@ -1149,6 +1209,7 @@ export const useStore = create((set, get) => {
     try { owner = localStorage.getItem('gym_owner') } catch { /* evicted along with the copy */ }
     if (!who || of?.owner !== who || (owner && owner !== who) || of.ts !== (saved._ts || 0)) return
     try { if (!owner) localStorage.setItem('gym_owner', who) } catch { /* setUser writes it again */ }
+    seenOwner = readOwner()
     persist(sanitizeAccent(Object.assign(clone(DEF), saved)), false, false)
     dropSync()
     markOwed(true)
@@ -1400,6 +1461,11 @@ export const useStore = create((set, get) => {
           keepForPrevious(owner)
           forgetSync()
           localStorage.removeItem(KEY)
+          // The new owner before the new copy, as on a sign-out: another tab still holding the
+          // previous account's copy must not join it into this one (QA 2026-10-06).
+          localStorage.setItem('gym_owner_name', u.name || '')
+          localStorage.setItem('gym_owner', u.id)
+          seenOwner = u.id
           persist(restartedState(get().S), false)
           setSync({ pending: false, lastSynced: 0, lastError: null })
         }
@@ -1412,6 +1478,7 @@ export const useStore = create((set, get) => {
         // sign-in saves under the new owner, and a tab still comparing against the old one took
         // no part until it had saved itself, then wrote its copy over theirs (joinSaved).
         seenOwner = u.id
+        handedOver = false
         localStorage.setItem('gym_user', JSON.stringify(u)); localStorage.removeItem('gym_guest')
         logoutOwed(false)   // this sign-in's cookie replaced the one a failed sign-out left behind
         // The file follows at once, as the new account's: until then it holds the previous one's.

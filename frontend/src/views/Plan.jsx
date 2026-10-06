@@ -177,7 +177,9 @@ function Schedule({ S, update, nav, mode }) {
      `startsOn` carry over, so progress already logged survives a reorder. */
   const liveQ = queueOf(S)
   const seq = liveQ?.ids ?? rotationIds(S)
-  const seqLabel = liveQ?.label || S.rotation?.label || t('Rotation')
+  // A loop the app makes has no name of its own: Home shows it as 'Rotation' in the language on
+  // screen. Stored as text, it stayed in the language it was made in (QA 2026-10-06).
+  const seqLabel = liveQ?.label || S.rotation?.label || ''
   // Ownership, not presence: a planner's queue has no rotationId, or one that does not match the
   // saved rotation here — that's what makes it someone else's to write, not this app's.
   const managed = !!liveQ && !!S.rotation && liveQ.rotationId === S.rotation.id
@@ -233,7 +235,7 @@ function Schedule({ S, update, nav, mode }) {
     message: t('Your coach gives up control of this week: openGym owns the queue from here on and repeats these sessions by itself once they are all done. A new week from the coach’s app would replace this rotation.')
       + (replacesOwn ? ' ' + t('Your own loop gets replaced.') : ''),
     confirmText: t('Use this rotation'),
-    onConfirm: () => update(s => saveRotation(s, seq, t('Rotation'))),
+    onConfirm: () => update(s => saveRotation(s, seq, '')),
   })
 
   const ws = weekStartOf(S)

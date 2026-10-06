@@ -221,6 +221,15 @@ describe('Plan — the loop', () => {
     expect(mocks.S.queue.ids).toEqual(['b'])
   })
 
+  it('a loop built here saves no name of its own, so it follows the language on screen', () => {
+    mount({ scheduleMode: 'rotation' })
+    click(byLabel('Add routine to the rotation'))
+    act(() => menuSheet.mock.calls.at(-1)[0].items.find(i => i.label === 'A').onClick())
+    expect(mocks.S.rotation.sequence).toEqual(['a'])
+    expect(mocks.S.rotation.label).toBe('')
+    expect(mocks.S.queue.label).toBe('')
+  })
+
   it('Start the loop over rewinds the current round, strictly from now', () => {
     mount({
       queue: live({ since: Date.now() - 5 * 86400000, startsOn: '2026-09-01', rotationId: 'r1' }),
@@ -264,10 +273,11 @@ describe('Plan — someone else’s queue, and a broken one', () => {
     act(() => confirmSheet.mock.calls.at(-1)[0].onConfirm())
     expect(mocks.S.rotation.sequence).toEqual(['a', 'b'])
     expect(mocks.S.queue.rotationId).toBe(mocks.S.rotation.id)
-    // Adopting takes a name of its own rather than the planner's ("My split") — refillAfter would
-    // otherwise repeat that name on every pass this app generates on its own from here on.
-    expect(mocks.S.rotation.label).toBe('Rotation')
-    expect(mocks.S.queue.label).toBe('Rotation')
+    // Adopting drops the planner's name ("My split"): refillAfter would otherwise repeat it on
+    // every pass this app generates on its own. It saves no name at all, so Home shows the word
+    // in whatever language is on screen (QA 2026-10-06: a saved 'Rotation' stayed English).
+    expect(mocks.S.rotation.label).toBe('')
+    expect(mocks.S.queue.label).toBe('')
     remount()
     expect(host.textContent).not.toContain('Externally managed')
     expect(selectedMode()).toBe('Rotation')

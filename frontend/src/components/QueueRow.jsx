@@ -32,7 +32,9 @@ export default function QueueRow({ S, today, onStart, managed }) {
     : t('Next: {0}', pinned.name + ' · ' + fmtDate(pinned.on, true))
   return <div className="queue">
     <div className="row between" style={{ marginBottom: 8 }}>
-      <div className="small muted" style={{ fontWeight: 500 }}>{v.label}</div>
+      {/* Your own loop is called 'Rotation' in the language on screen: its saved name is only ever
+          the word itself, which older saves kept in the language the loop was made in. */}
+      <div className="small muted" style={{ fontWeight: 500 }}>{managed ? t('Rotation') : v.label}</div>
       {/* Your own loop speaks in rounds, as Plan does; a coach's week keeps its plain count. */}
       <div className="small muted">{managed ? t('{0} of {1} done this round.', v.items.length - v.remaining.length, v.items.length) : `${v.items.length - v.remaining.length} / ${v.items.length}`}</div>
     </div>

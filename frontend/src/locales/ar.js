@@ -4,6 +4,7 @@ export default {
   'Cancel': 'إلغاء',
   'Press back again to exit': 'اضغط زر الرجوع مرة أخرى للخروج',
   'Delete': 'حذف',
+  'Copy set': 'نسخ',
   'Save': 'حفظ',
   'Import': 'استيراد',
   'Discard': 'تجاهل',

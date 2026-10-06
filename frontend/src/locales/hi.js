@@ -4,6 +4,7 @@ export default {
   'Cancel': 'रद्द करें',
   'Press back again to exit': 'बाहर निकलने के लिए फिर से बैक दबाएँ',
   'Delete': 'हटाएँ',
+  'Copy set': 'कॉपी करें',
   'Import': 'आयात करें',
   'Discard': 'छोड़ें',
   'All': 'सभी',

@@ -35,7 +35,8 @@ const SwipeRow = forwardRef(function SwipeRow({ children, canDelete = true, onDe
   return <div ref={sw.outerRef} className="swrow" data-swipe-ignore="" {...sw.handlers}>
     <div ref={sw.cpRef} className="swpane cp" aria-hidden={shut('copy') || undefined} inert={shut('copy') ? true : undefined}>
       <button type="button" tabIndex={shut('copy') ? -1 : 0} onClick={sw.pressCopy}>
-        <span className="lab"><Icon name="copy" /><b>{t('Copy')}</b></span>
+        {/* 'Copy set', not 'Copy': that key is the noun a copied routine is named with ("Kopie"). */}
+        <span className="lab"><Icon name="copy" /><b>{t('Copy set')}</b></span>
       </button>
     </div>
     <div ref={sw.delRef} className={'swpane del' + (canDelete ? '' : ' dis')} aria-hidden={shut('delete') || undefined} inert={shut('delete') ? true : undefined}>

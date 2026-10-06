@@ -5,6 +5,7 @@ export default {
   'Cancel': 'Mégse',
   'Press back again to exit': 'Nyomd meg újra a vissza gombot a kilépéshez',
   'Delete': 'Törlés',
+  'Copy set': 'Másolás',
   'Save': 'Mentés',
   'Import': 'Importálás',
   'Discard': 'Elvetés',

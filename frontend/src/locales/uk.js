@@ -4,6 +4,7 @@ export default {
   'Cancel': 'Скасувати',
   'Press back again to exit': 'Натисни «Назад» ще раз, щоб вийти',
   'Delete': 'Видалити',
+  'Copy set': 'Копіювати',
   'Import': 'Імпорт',
   'Discard': 'Скасувати',
   'All': 'Усі',

@@ -4,6 +4,7 @@ export default {
   'Cancel': '取消',
   'Press back again to exit': '再按一次返回退出',
   'Delete': '删除',
+  'Copy set': '复制',
   'Import': '导入',
   'Discard': '放弃',
   'All': '全部',

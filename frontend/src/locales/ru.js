@@ -4,6 +4,7 @@ export default {
   'Cancel': 'Отмена',
   'Press back again to exit': 'Нажмите «Назад» ещё раз, чтобы выйти',
   'Delete': 'Удалить',
+  'Copy set': 'Копировать',
   'Import': 'Импорт',
   'Discard': 'Отменить',
   'All': 'Все',

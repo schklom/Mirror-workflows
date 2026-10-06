@@ -4,6 +4,7 @@ export default {
   'Cancel': 'İptal',
   'Press back again to exit': 'Çıkmak için geri tuşuna tekrar basın',
   'Delete': 'Sil',
+  'Copy set': 'Kopyala',
   'Import': 'İçe aktar',
   'Discard': 'Vazgeç',
   'All': 'Tümü',

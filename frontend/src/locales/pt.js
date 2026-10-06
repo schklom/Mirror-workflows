@@ -4,6 +4,7 @@ export default {
   'Cancel': 'Cancelar',
   'Press back again to exit': 'Prima novamente para sair',
   'Delete': 'Eliminar',
+  'Copy set': 'Copiar',
   'Import': 'Importar',
   'Discard': 'Descartar',
   'All': 'Todos',

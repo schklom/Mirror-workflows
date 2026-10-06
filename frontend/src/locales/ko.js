@@ -4,6 +4,7 @@ export default {
   'Cancel': '취소',
   'Press back again to exit': '뒤로를 한 번 더 누르면 종료됩니다',
   'Delete': '삭제',
+  'Copy set': '복사',
   'Import': '가져오기',
   'Discard': '버리기',
   'All': '전체',

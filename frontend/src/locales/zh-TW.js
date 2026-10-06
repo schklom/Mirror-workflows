@@ -3,6 +3,7 @@ export default {
   'Cancel': '取消',
   'Press back again to exit': '再按一次返回以退出',
   'Delete': '刪除',
+  'Copy set': '複製',
   'Import': '匯入',
   'Discard': '捨棄',
   'All': '全部',

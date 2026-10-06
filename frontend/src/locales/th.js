@@ -5,6 +5,7 @@ export default {
   'Cancel': 'ยกเลิก',
   'Press back again to exit': 'กดย้อนกลับอีกครั้งเพื่อออก',
   'Delete': 'ลบ',
+  'Copy set': 'คัดลอก',
   'Save': 'บันทึก',
   'Import': 'นำเข้า',
   'Discard': 'ทิ้ง',

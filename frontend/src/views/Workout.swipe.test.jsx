@@ -372,6 +372,21 @@ describe('the swipe on a timed per-side pair', () => {
   })
 })
 
+describe('the swipe panes’ words', () => {
+  // QA 10-06: the Copy pane used the noun a copied routine is named with ("Kopie", "Copie").
+  const packs = import.meta.glob('../locales/*.js', { eager: true, import: 'default' })
+  it('the copy pane says the verb in every pack where the noun is another word', () => {
+    const verb = { de: 'Kopieren', fr: 'Copier', es: 'Copiar', pt: 'Copiar', pl: 'Kopiuj', ru: 'Копировать', uk: 'Копіювати', tr: 'Kopyala' }
+    for (const [lang, want] of Object.entries(verb)) expect(packs[`../locales/${lang}.js`]['Copy set'], lang).toBe(want)
+    for (const [path, pack] of Object.entries(packs)) if (!/(ar|hi|it)\.js$/.test(path) && pack['Copy set']) expect(pack['Copy set'], path).not.toBe(pack.Copy)
+  })
+  it('renders the copy pane with that key', () => {
+    setActive([entry('1001', [row(80), row(80)])])
+    render()
+    expect(container.querySelector('.swpane.cp b').textContent).toBe('Copy set')
+  })
+})
+
 describe('the one-time hint', () => {
   it('nudges the first unticked set once per person, with a chip', () => {
     setActive([entry('1001', [row(80, true), row(80)])], { hints: {} })

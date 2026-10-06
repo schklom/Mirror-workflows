@@ -5,6 +5,7 @@ export default {
   'Cancel': 'Abbrechen',
   'Press back again to exit': 'Zum Beenden erneut zurück drücken',
   'Delete': 'Löschen',
+  'Copy set': 'Kopieren',
   'Import': 'Importieren',
   'Discard': 'Verwerfen',
   'All': 'Alle',

@@ -8,10 +8,10 @@ import { useUI } from '../store/useUI.js'
 import { t, tn } from '../lib/i18n.js'
 import { fmtAgo, changeCount } from '../lib/format.js'
 import { passkeyLogin, passkeyError, webauthnOK } from '../lib/api.js'
-import { MOBILE } from '../lib/mobile.js'
+import { MOBILE, shareExport } from '../lib/mobile.js'
 import { syncMedia } from '../lib/media-sync.js'
 import { DEMO } from '../lib/demo.js'
-import { askAddDeviceData } from '../sheets.jsx'
+import { askAddDeviceData, menuSheet } from '../sheets.jsx'
 import { ConnectSheet } from '../views/MobileOnboarding.jsx'
 import { passwordOn, openPasswordSignIn } from './PasswordAuth.jsx'
 import { Section, Row, Button } from './ui.jsx'
@@ -292,7 +292,21 @@ export function KeptChangesRows() {
     return () => { gone = true }
   }, [kept, user?.id, rev])
   if (DEMO) return null
+  // A copy kept for an account that may never come back here (its server lost it, or it was
+  // deleted) is saved as a backup file, to import into another profile with "Merge them in".
+  const save = async k => {
+    const state = await useStore.getState().keptState(k.server, k.uid)
+    if (!state) return
+    const json = JSON.stringify(state, null, 2)
+    const name = 'opengym-kept-' + String(k.name || k.uid).replace(/[^\w-]+/g, '_') + '-' + new Date().toISOString().slice(0, 10) + '.json'
+    if (MOBILE) { try { await shareExport(json, name); useUI.getState().toast(t('Backup exported')) } catch { /* share sheet dismissed */ } return }
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([json], { type: 'application/json' })); a.download = name; a.click()
+    setTimeout(() => URL.revokeObjectURL(a.href), 60000)
+    useUI.getState().toast(t('Backup exported'))
+  }
   return rows.map(k => <Row key={(k.server || '') + '|' + k.uid} icon="history" iconTint="var(--orange)"
     title={t('Changes kept for {0}', k.name || k.uid)}
-    subtitle={(k.server ? hostOf(k.server) + ' · ' : '') + t('Added back when this device connects as that account again.')} />)
+    subtitle={(k.server ? hostOf(k.server) + ' · ' : '') + t('Added back when this device connects as that account again.')}
+    accessory="chevron"
+    onClick={() => menuSheet({ title: t('Changes kept for {0}', k.name || k.uid), items: [{ icon: 'download', label: t('Save as a backup file'), onClick: () => save(k) }] })} />)
 }

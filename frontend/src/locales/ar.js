@@ -1981,4 +1981,5 @@ export default {
   'Left deletes, right copies': 'لليمين حذف، لليسار نسخ',
   'Options: copy, remove': 'خيارات: نسخ، إزالة',
   'Another device synced while you were importing, so its changes were kept next to the backup.': 'زامن جهاز آخر أثناء الاستيراد، فاحتفظنا بتغييراته إلى جانب النسخة الاحتياطية.',
+  'Save as a backup file': 'حفظ كملف نسخة احتياطية',
 }

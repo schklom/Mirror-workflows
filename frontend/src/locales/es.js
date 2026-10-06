@@ -1928,4 +1928,5 @@ export default {
   'Left deletes, right copies': 'Izquierda borra, derecha copia',
   'Options: copy, remove': 'Opciones: copiar, quitar',
   'Another device synced while you were importing, so its changes were kept next to the backup.': 'Otro dispositivo se sincronizó mientras importabas, así que sus cambios se quedan junto a la copia.',
+  'Save as a backup file': 'Guardar como archivo de copia',
 }

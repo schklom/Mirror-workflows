@@ -1928,4 +1928,5 @@ export default {
   'Left deletes, right copies': '왼쪽은 삭제, 오른쪽은 복사',
   'Options: copy, remove': '옵션: 복사, 삭제',
   'Another device synced while you were importing, so its changes were kept next to the backup.': '가져오는 동안 다른 기기가 동기화해서, 그 변경 사항도 백업과 함께 남겨 뒀어요.',
+  'Save as a backup file': '백업 파일로 저장',
 }

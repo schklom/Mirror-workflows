@@ -830,25 +830,32 @@ export const useStore = create((set, get) => {
     set({ keptRev: get().keptRev + 1 })
     return ok || empty
   }
-  // A different account signing in on a copy that still owes its own: the copy goes, as it always
-  // has — it must not be pushed into the new account — but what it owed is kept aside first, the
-  // way a forced sign-out keeps it, for when that account comes back. Written to localStorage
-  // right here, since setUser wipes the copy straight after; on a phone the file follows, and
-  // pairing waits for it (`keeping`) before it goes on.
-  // Photos or videos that never reached that account's server count as owed on their own, even on
-  // a copy with no workouts or routines yet — the custom exercise they belong to is all there is.
+  // A different account signing in on a copy whose session ended without a sign-out (it expired,
+  // was revoked, the server no longer knows the account) — or on a live one that still owes it or
+  // runs a workout: the copy goes, as it always has — it
+  // must not be pushed into the new account — but it is kept aside first, the way a forced
+  // sign-out keeps what it owed, for when that account comes back. Not only what it owed: a copy
+  // in step with a server that has since lost the account (rebuilt, the account deleted, the data
+  // directory gone) is the last one there is, and a workout running here never reached any server.
+  // A proper sign-out clears the owner first, so a shared device keeps nothing after one. Written
+  // to localStorage right here, since setUser wipes the copy straight after; on a phone the file
+  // follows, and pairing waits for it (`keeping`) before it goes on. Kept changes can be saved as a
+  // backup file from Settings (keptState), to import into another profile.
   const keepForPrevious = uid => {
     syncFromSaved()
     const S = get().S
-    // (owesOwn: the hold set for the account signing in now says nothing about this copy)
-    if (!(owesOwn() && hasData(S)) && !pendingRefCount(S)) return
+    if (!hasData(S) && !S.active && !pendingRefCount(S)) return
+    // Still signed in (an account switch on a live session): its server has the copy, so only
+    // what it owes and a running workout are kept, as before.
+    const live = get().user?.id === uid
+    if (live && !(owesOwn() && hasData(S)) && !pendingRefCount(S) && !S.active) return
     const server = serverBase()
     const key = stashKey(server, uid)
     let all = {}
     try { all = JSON.parse(localStorage.getItem(STASH_KEY)) || {} } catch { /* none */ }
     const prev = all[key]?.state
     const state = prev ? mergeStates(S, prev) : clone(S)
-    state.active = S.active || prev?.active || null
+    state.active = carryActive(S, state) || carryActive(prev, state) || null
     // The name comes from beside the owner when the account is no longer signed in here (its
     // session ended), so the screens say whose changes these are rather than an id.
     let name = get().user?.id === uid ? get().user.name || '' : ''
@@ -1468,6 +1475,11 @@ export const useStore = create((set, get) => {
     async keptChanges() {
       const all = await readStashes()
       return Object.values(all).map(({ server, uid, name, at }) => ({ server: server || null, uid, name, at }))
+    },
+    // The copy kept for one account (keptChanges' server and uid), to save as a backup file.
+    async keptState(server, uid) {
+      const all = await readStashes()
+      return all[stashKey(server, uid)]?.state || null
     },
     // Every photo and video file the stashes refer to: they are kept on this device for as long
     // as the stash is (lib/media-sync.js localMediaGc, Reset everything).

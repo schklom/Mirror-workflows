@@ -1931,4 +1931,5 @@ export default {
   'Left deletes, right copies': 'Balra töröl, jobbra másol',
   'Options: copy, remove': 'Lehetőségek: másolás, eltávolítás',
   'Another device synced while you were importing, so its changes were kept next to the backup.': 'Egy másik eszköz szinkronizált importálás közben, így a változásai megmaradtak a mentés mellett.',
+  'Save as a backup file': 'Mentés biztonsági fájlként',
 }

@@ -1193,6 +1193,7 @@ export const PT_BR_OVERRIDES = {
   'Psst: swipe a set. Left deletes, right copies.': 'Psiu: deslize uma série. Esquerda exclui, direita copia.',
   'Left deletes, right copies': 'Esquerda exclui, direita copia',
   'Another device synced while you were importing, so its changes were kept next to the backup.': 'Outro dispositivo sincronizou durante a importação, então as alterações dele ficaram junto com o backup.',
+  'Save as a backup file': 'Salvar como arquivo de backup',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

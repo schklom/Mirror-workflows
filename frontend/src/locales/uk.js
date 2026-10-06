@@ -1925,4 +1925,5 @@ export default {
   'Left deletes, right copies': 'Ліворуч видаляє, праворуч копіює',
   'Options: copy, remove': 'Дії: копіювати, видалити',
   'Another device synced while you were importing, so its changes were kept next to the backup.': 'Інший пристрій синхронізувався під час імпорту, тож його зміни збережено поруч із копією.',
+  'Save as a backup file': 'Зберегти як файл копії',
 }

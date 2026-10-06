@@ -1161,6 +1161,18 @@ describe('pinnedNoteFor', () => {
     expect(pinnedNoteFor({ workouts: [{ d: '2026-08-08', entries: [{ id: '0025', note: 'diary' }] }] }, '0025')).toBeNull()
   })
 
+  it('skips the workout being edited, whose note the editor already shows', () => {
+    const ws = [
+      { id: 'w1', d: '2026-08-01', entries: [{ id: '0025', note: 'older pin', notePin: true }] },
+      { id: 'w2', d: '2026-08-15', entries: [{ id: '0025', note: 'its own pin', notePin: true }] },
+    ]
+    expect(pinnedNoteFor({ workouts: ws, active: { editingWorkoutId: 'w2' } }, '0025')).toEqual({ note: 'older pin', d: '2026-08-01' })
+    expect(pinnedNoteFor({ workouts: ws, active: { editingWorkoutId: 'w1' } }, '0025')).toEqual({ note: 'its own pin', d: '2026-08-15' })
+    // a workout logged before ids is keyed by day and start
+    const legacy = [{ d: '2026-08-15', start: 1000, entries: [{ id: '0025', note: 'its own pin', notePin: true }] }]
+    expect(pinnedNoteFor({ workouts: legacy, active: { editingWorkoutId: '2026-08-15|1000' } }, '0025')).toBeNull()
+  })
+
   it('is null for an exercise with no notes, and safe on empty state', () => {
     expect(pinnedNoteFor(S, '9999')).toBeNull()
     expect(pinnedNoteFor({}, '0025')).toBeNull()

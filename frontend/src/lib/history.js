@@ -367,8 +367,14 @@ export const NOTE_MAX = 500
  */
 export function pinnedNoteFor(S, exId) {
   const workouts = S?.workouts || []
+  // Editing a logged workout: its own pinned note is already in the editor, as that entry's
+  // note, so it is not shown a second time as the note from last time. The key is the one
+  // session-edit.js gives the editor (id, or day|start for a workout logged before ids).
+  const editing = S?.active?.editingWorkoutId
   for (let i = workouts.length - 1; i >= 0; i--) {
-    const en = (workouts[i].entries || []).find(e => e.id === exId)
+    const w = workouts[i]
+    if (editing != null && (w.id != null ? w.id : `${w.d}|${w.start}`) === editing) continue
+    const en = (w.entries || []).find(e => e.id === exId)
     const note = (en?.note || '').trim()
     if (note && en.notePin) return { note, d: workouts[i].d }
   }

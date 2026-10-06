@@ -5,7 +5,7 @@ import { effortOf } from '../lib/history.js'
 import { unlock, vibrateSupported, appleTouchDevice } from '../lib/sound.js'
 import { wakeLockSupported } from '../lib/wakelock.js'
 import { MOBILE } from '../lib/mobile.js'
-import { nav } from '../lib/nav.js'
+import { closeThenNav } from '../lib/nav.js'
 import { REST_MAX, fmtRest } from '../lib/duration.js'
 import { durationSheet } from './DurationWheel.jsx'
 import { Section, Row, Switch, Segmented, Button } from './ui.jsx'
@@ -24,7 +24,7 @@ export function WorkoutSettings({ close }) {
   const wakeOK = wakeLockSupported()
   const layout = ['list', 'compact'].includes(S.active?.workoutView || S.workoutView) ? (S.active?.workoutView || S.workoutView) : 'cards'
   const gif = S.gifSize === 'mini' || S.gifSize === 'off' ? S.gifSize : 'full'
-  const allSettings = () => { close(); nav('/settings/workout') }
+  const allSettings = () => closeThenNav(close, '/settings/workout')
   return <div className="ws-sheet">
     <div className="row between" style={{ marginBottom: 2 }}>
       <h3 style={{ margin: 0 }}>{t('Workout settings')}</h3>

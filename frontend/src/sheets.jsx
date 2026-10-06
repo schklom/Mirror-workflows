@@ -10,7 +10,7 @@ import { PLATE_SIZES, pairsOf, ownsPlates, withPlatePairs, withStandardPlates, w
 import { toScale, rirOf, EFFORT_PRESETS, effortColor } from './lib/effort.js'
 import { beep, vibrate } from './lib/sound.js'
 import { t, tn, dateLocale, instrFor, exerciseNameFor, exerciseNameClass, getLang, INSTR_LANGS } from './lib/i18n.js'
-import { nav } from './lib/nav.js'
+import { nav, closeThenNav, navToWorkout } from './lib/nav.js'
 import { buildStarterPlan, starterPlanDays, starterPlanOptions } from './lib/starter.js'
 import Media, { Thumb } from './components/Media.jsx'
 import CustomMediaField from './components/CustomMediaField.jsx'
@@ -295,7 +295,7 @@ function BwSheet({ required, onDone, close }) {
     <Button variant="primary" onClick={save}>{required ? t('Save & start workout') : t('Save')}</Button>
     {required && <>
       <div style={{ height: 8 }} /><Button variant="ghost" className="dim" onClick={() => { close(); onDone && onDone(null) }}>{t('Start without weighing in')}</Button>
-      <div style={{ height: 2 }} /><Button variant="ghost" className="dim" icon="swap" onClick={() => { close(); nav('/workout') }}>{t('Choose a different workout')}</Button>
+      <div style={{ height: 2 }} /><Button variant="ghost" className="dim" icon="swap" onClick={() => closeThenNav(close, '/workout')}>{t('Choose a different workout')}</Button>
     </>}
     {!required && recent.length > 0 && <>
       <h4 className="sec">{t('Recent weigh-ins')}</h4>
@@ -2214,7 +2214,7 @@ function WorkoutDetail({ w, close }) {
     <Button icon="pencil" disabled={!!st.active} onClick={() => {
       saveNote()
       initial.current = latest.current.trim().slice(0, NOTE_MAX)
-      try { update(state => { editCompletedSession(state, w) }); close(); nav('/workout') }
+      try { update(state => { editCompletedSession(state, w) }); closeThenNav(close, '/workout') }
       catch (error) { toast(t(error.message)) }
     }}>{t('Edit workout')}</Button>
     <div style={{ height: 8 }} />
@@ -2354,7 +2354,7 @@ export function beginWorkout(routineIds, bw) {
     }
   })
   useUI.getState().stopRest()
-  nav('/workout')
+  navToWorkout()
 }
 
 // "Repeat today" (#58): a saved workout's exercises as a new freestyle session dated today, each
@@ -2375,8 +2375,7 @@ export function repeatWorkout(w, close) {
       }
     })
     useUI.getState().stopRest()
-    if (close) close()
-    nav('/workout')
+    if (close) closeThenNav(close, '/workout'); else navToWorkout()
     if (skipped) toast(tn('{0} exercise no longer exists and was left out.', '{0} exercises no longer exist and were left out.', skipped))
   }
   if (st.weighIn === false) { go(null); return }
@@ -2486,7 +2485,7 @@ function beginBackfill({ iso, time, durationMin, routineIds, replaceId }) {
     }
   })
   useUI.getState().stopRest()
-  nav('/workout')
+  navToWorkout()
 }
 
 /* ============================ add a routine mid-session ============================ */
@@ -2769,7 +2768,7 @@ function FinishSummary({ w, prs, e1prs = [], close }) {
     {/* The moment for a progress photo or the clip of a set: the workout is already saved, so
         what is added here goes straight onto its record. */}
     <div style={{ textAlign: 'start' }}><WorkoutMediaSection w={w} hint /></div>
-    <Button variant="primary" onClick={() => { close(); nav('/home') }}>{t('Nice!')}</Button>
+    <Button variant="primary" onClick={() => closeThenNav(close, '/home')}>{t('Nice!')}</Button>
   </div>
 }
 export function finishWorkout() {

@@ -15,7 +15,11 @@ vi.mock('../lib/sound.js', () => ({
 }))
 vi.mock('../lib/wakelock.js', () => ({ wakeLockSupported: () => true }))
 const navTo = vi.hoisted(() => vi.fn())
-vi.mock('../lib/nav.js', () => ({ nav: navTo }))
+vi.mock('../lib/nav.js', async importOriginal => {
+  const real = await importOriginal()
+  real.setNav(navTo)
+  return real
+})
 
 let host, root, originalS, close
 
@@ -100,5 +104,14 @@ describe('the in-workout settings sheet', () => {
     act(() => row('All settings').click())
     expect(close).toHaveBeenCalled()
     expect(navTo).toHaveBeenCalledWith('/settings/workout')
+  })
+
+  // The sheet's own history entry used to stay behind: back from Settings went to the workout, and
+  // the next back landed on the same workout again and seemed to do nothing.
+  it('Settings takes the sheet\'s history entry instead of leaving it behind', () => {
+    history.pushState({ openGymSheet: true }, '')
+    act(() => row('All settings').click())
+    expect(navTo).toHaveBeenCalledWith('/settings/workout', { replace: true })
+    history.replaceState(null, '')
   })
 })

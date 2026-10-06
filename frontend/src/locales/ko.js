@@ -1932,5 +1932,7 @@ export default {
   'Change your own color': '나만의 색상 바꾸기',
   'A touch lighter in dark mode, so you can still read it.': '다크 모드에서는 잘 보이도록 살짝 밝게 표시돼요.',
   'A touch darker in light mode, so you can still read it.': '라이트 모드에서는 잘 보이도록 살짝 어둡게 표시돼요.',
+  'Greys show lighter in dark mode, so buttons don’t look switched off.': '다크 모드에서는 버튼이 꺼진 것처럼 보이지 않게 회색을 밝게 표시해요.',
+  'Greys show darker in light mode, so buttons don’t look switched off.': '라이트 모드에서는 버튼이 꺼진 것처럼 보이지 않게 회색을 어둡게 표시해요.',
   'custom color picker': '나만의 색상 사용자 지정 색상 선택기',
 }

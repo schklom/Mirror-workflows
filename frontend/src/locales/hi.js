@@ -1932,5 +1932,7 @@ export default {
   'Change your own color': 'अपना रंग बदलें',
   'A touch lighter in dark mode, so you can still read it.': 'डार्क मोड में थोड़ा हल्का, ताकि पढ़ने में आए।',
   'A touch darker in light mode, so you can still read it.': 'लाइट मोड में थोड़ा गहरा, ताकि पढ़ने में आए।',
+  'Greys show lighter in dark mode, so buttons don’t look switched off.': 'डार्क मोड में ग्रे रंग हल्के दिखते हैं, ताकि बटन बंद जैसे न लगें।',
+  'Greys show darker in light mode, so buttons don’t look switched off.': 'लाइट मोड में ग्रे रंग गहरे दिखते हैं, ताकि बटन बंद जैसे न लगें।',
   'custom color picker': 'अपना रंग कस्टम रंग चुनने वाला',
 }

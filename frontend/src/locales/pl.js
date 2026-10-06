@@ -1932,5 +1932,7 @@ export default {
   'Change your own color': 'Zmień własny kolor',
   'A touch lighter in dark mode, so you can still read it.': 'Odrobinę jaśniejszy w trybie ciemnym, żeby dało się go przeczytać.',
   'A touch darker in light mode, so you can still read it.': 'Odrobinę ciemniejszy w trybie jasnym, żeby dało się go przeczytać.',
+  'Greys show lighter in dark mode, so buttons don’t look switched off.': 'Szarości są jaśniejsze w trybie ciemnym, żeby przyciski nie wyglądały na wyłączone.',
+  'Greys show darker in light mode, so buttons don’t look switched off.': 'Szarości są ciemniejsze w trybie jasnym, żeby przyciski nie wyglądały na wyłączone.',
   'custom color picker': 'własny kolor niestandardowy próbnik wybór koloru',
 }

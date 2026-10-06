@@ -1932,5 +1932,7 @@ export default {
   'Change your own color': '更改你自己的颜色',
   'A touch lighter in dark mode, so you can still read it.': '深色模式下会稍微调亮一点，好让你看得清。',
   'A touch darker in light mode, so you can still read it.': '浅色模式下会稍微调暗一点，好让你看得清。',
+  'Greys show lighter in dark mode, so buttons don’t look switched off.': '深色模式下灰色会调亮一些，免得按钮看起来像被停用了。',
+  'Greys show darker in light mode, so buttons don’t look switched off.': '浅色模式下灰色会调暗一些，免得按钮看起来像被停用了。',
   'custom color picker': '自定义颜色 自己的颜色 取色器 调色板',
 }

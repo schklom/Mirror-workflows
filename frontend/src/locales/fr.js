@@ -1932,5 +1932,7 @@ export default {
   'Change your own color': 'Change ta propre couleur',
   'A touch lighter in dark mode, so you can still read it.': 'Un poil plus claire en mode sombre, pour rester lisible.',
   'A touch darker in light mode, so you can still read it.': 'Un poil plus foncée en mode clair, pour rester lisible.',
+  'Greys show lighter in dark mode, so buttons don’t look switched off.': 'Les gris s’éclaircissent en mode sombre, pour que les boutons n’aient pas l’air éteints.',
+  'Greys show darker in light mode, so buttons don’t look switched off.': 'Les gris foncent en mode clair, pour que les boutons n’aient pas l’air éteints.',
   'custom color picker': 'couleur perso personnalisée sélecteur nuancier',
 }

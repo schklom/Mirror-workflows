@@ -1985,5 +1985,7 @@ export default {
   'Change your own color': 'غيّر لونك الخاص',
   'A touch lighter in dark mode, so you can still read it.': 'أفتح قليلًا في الوضع الداكن حتى تبقى قراءته سهلة.',
   'A touch darker in light mode, so you can still read it.': 'أغمق قليلًا في الوضع الفاتح حتى تبقى قراءته سهلة.',
+  'Greys show lighter in dark mode, so buttons don’t look switched off.': 'تظهر الألوان الرمادية أفتح في الوضع الداكن، حتى لا تبدو الأزرار مُعطّلة.',
+  'Greys show darker in light mode, so buttons don’t look switched off.': 'تظهر الألوان الرمادية أغمق في الوضع الفاتح، حتى لا تبدو الأزرار مُعطّلة.',
   'custom color picker': 'لون خاص مخصص منتقي الألوان',
 }

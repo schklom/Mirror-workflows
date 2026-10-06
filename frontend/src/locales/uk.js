@@ -1929,5 +1929,7 @@ export default {
   'Change your own color': 'Змінити свій колір',
   'A touch lighter in dark mode, so you can still read it.': 'У темній темі трохи світліший, щоб його було видно.',
   'A touch darker in light mode, so you can still read it.': 'У світлій темі трохи темніший, щоб його було видно.',
+  'Greys show lighter in dark mode, so buttons don’t look switched off.': 'Сірі відтінки в темній темі світліші, щоб кнопки не здавалися вимкненими.',
+  'Greys show darker in light mode, so buttons don’t look switched off.': 'Сірі відтінки у світлій темі темніші, щоб кнопки не здавалися вимкненими.',
   'custom color picker': 'свій колір власний палітра вибір кольору',
 }

@@ -1952,5 +1952,7 @@ export default {
   'Change your own color': 'Eigene Farbe ändern',
   'A touch lighter in dark mode, so you can still read it.': 'Im dunklen Modus etwas heller, damit du sie noch lesen kannst.',
   'A touch darker in light mode, so you can still read it.': 'Im hellen Modus etwas dunkler, damit du sie noch lesen kannst.',
+  'Greys show lighter in dark mode, so buttons don’t look switched off.': 'Grautöne werden im dunklen Modus heller, damit Buttons nicht ausgeschaltet wirken.',
+  'Greys show darker in light mode, so buttons don’t look switched off.': 'Grautöne werden im hellen Modus dunkler, damit Buttons nicht ausgeschaltet wirken.',
   'custom color picker': 'eigene Farbe benutzerdefiniert Farbwähler Farbauswahl',
 }

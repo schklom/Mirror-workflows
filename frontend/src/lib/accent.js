@@ -13,8 +13,7 @@
 // A preset has a dark and a light shade of its own (index.css). The user's colour is one colour,
 // so for each theme it is checked against that theme's backgrounds and, when it would vanish into
 // them (navy on black, pale yellow on white), made lighter or darker just far enough to be read.
-// The bars come from the presets: each one clears them as shipped, all but yellow in light mode
-// (THEMES below, accent.test.js).
+// A grey goes further, so it never looks like a switched-off button (THEMES below, accent.test.js).
 import { ACCENTS, ACCENT_INK } from './format.js'
 
 export const DEFAULT_ACCENT = 'lime'
@@ -88,15 +87,24 @@ export function inkOn(hex) {
   return contrast(hex, '#000000') >= contrast(hex, '#ffffff') ? '#000000' : '#ffffff'
 }
 
-// Each theme's page and card fill (index.css --bg / --surface), and how far the accent has to
-// stand out from the weaker of the two. Dark: the bluest presets sit at 4.7:1 on a card, so 3:1
-// (the WCAG bar for large text and controls) leaves them all untouched. Light: Apple's own green
-// and orange stand at about 2:1 on the light page, so 1.8:1 keeps every preset but yellow (1.35,
-// the one preset that is hard to read there) and turns a pastel that would be invisible darker.
+// Each theme's page and card fill (index.css --bg / --surface), how far the user's colour has to
+// stand out from the weaker of the two, and the theme's secondary label (index.css --label-2,
+// laid over each fill). 3:1 is the WCAG bar for large text and controls: in dark mode the bluest
+// presets sit at 4.7:1 on a card and stay untouched; in light mode a pastel or a bright yellow
+// turns a darker shade of itself, so accent-coloured links and labels stay readable. The presets
+// are not run through this: they keep their own index.css shades.
+//
+// A grey has no hue to keep, so lightening or darkening it only gives another grey, and one near
+// --label-2 makes every button look switched off. A grey goes further: to text contrast (4.5:1)
+// on the theme, and at least 2:1 away from --label-2.
 export const THEMES = {
-  dark: { bgs: ['#000000', '#1c1c1e'], min: 3, toward: '#ffffff' },
-  light: { bgs: ['#f2f2f7', '#ffffff'], min: 1.8, toward: '#000000' },
+  dark: { bgs: ['#000000', '#1c1c1e'], min: 3, toward: '#ffffff', label2: ['#8d8d93', '#98989f'] },
+  light: { bgs: ['#f2f2f7', '#ffffff'], min: 3, toward: '#000000', label2: ['#85858b', '#8a8a8e'] },
 }
+// Below this HSL saturation a colour counts as a grey (white, black, #808080, near-whites).
+export const GREY_SAT = 0.25
+export const GREY_TEXT = 4.5
+export const GREY_GAP = 2
 
 const worst = (hex, bgs) => Math.min(...bgs.map(b => contrast(hex, b)))
 
@@ -116,19 +124,30 @@ function fromHsl([h, s, l]) {
   return toHex([r, g, b].map(v => (v + m) * 255))
 }
 
+/** Whether `hex` is a grey for readableIn (see GREY_SAT). */
+export const isGrey = hex => toHsl(hex)[1] < GREY_SAT
+
 /**
  * `hex` as drawn in `theme`: unchanged when it already stands out enough, otherwise made lighter
  * (dark theme) or darker (light theme) in small steps of HSL lightness until it does, hue and
- * saturation kept.
+ * saturation kept. A grey has to clear the stricter grey bar (THEMES above).
  */
 export function readableIn(hex, theme) {
   const th = THEMES[theme] || THEMES.dark
-  if (worst(hex, th.bgs) >= th.min) return hex
+  const grey = isGrey(hex)
+  const ok = c => grey
+    ? worst(c, th.bgs) >= GREY_TEXT && worst(c, th.label2) >= GREY_GAP
+    : worst(c, th.bgs) >= th.min
+  if (ok(hex)) return hex
   const [h, s, l] = toHsl(hex)
   const up = th.toward === '#ffffff'
+  const hue = h < 0 ? h + 360 : h
+  // A yellow darkened at its own hue turns olive; drifting it a little towards orange on the way
+  // down gives the gold a light theme uses for yellow (#ffff00 ends as a dark gold, not khaki).
+  const yellow = !up && hue >= 48 && hue <= 72
   for (let i = 1; i <= 50; i++) {
-    const c = fromHsl([h < 0 ? h + 360 : h, s, up ? Math.min(1, l + i * 0.02) : Math.max(0, l - i * 0.02)])
-    if (worst(c, th.bgs) >= th.min) return c
+    const c = fromHsl([yellow ? Math.max(42, hue - i * 1.5) : hue, s, up ? Math.min(1, l + i * 0.02) : Math.max(0, l - i * 0.02)])
+    if (ok(c)) return c
   }
   return th.toward
 }
@@ -137,15 +156,38 @@ export function readableIn(hex, theme) {
 export const adjustedIn = (hex, theme) => readableIn(hex, theme) !== hex
 
 /**
+ * The text colour for a button that is `acc` at rest and `acc2` while pressed: the one that reads
+ * better on `acc` (inkOn), unless it drops under 3:1 (large text) on the pressed shade and the
+ * other one holds up better across both. Over the whole sRGB cube that keeps at least 3:1 pressed
+ * and about 4.35:1 at rest (accent.test.js).
+ */
+export function inkOnBoth(acc, acc2) {
+  const ink = inkOn(acc)
+  if (contrast(acc2, ink) >= 3) return ink
+  const other = ink === '#000000' ? '#ffffff' : '#000000'
+  const score = k => Math.min(contrast(acc, k), contrast(acc2, k))
+  return score(other) > score(ink) ? other : ink
+}
+
+// A switch knob is white. On an accent nearly as light (white, pale yellow in dark mode) it would
+// vanish into the track, so it gets a hairline ring there (index.css .sw.on .knob).
+const KNOB_RING = 'rgba(0,0,0,.28)'
+
+/**
  * The CSS custom properties for the user's colour in `theme`, the same set a preset defines in
- * index.css: the accent, its pressed shade and the text on it. The soft and line tints are
- * mixed from --acc in index.css and follow on their own. null for anything but a valid hex.
+ * index.css: the accent, its pressed shade, the text on it, and the switch knob's ring. The soft
+ * and line tints are mixed from --acc in index.css and follow on their own. null for anything
+ * but a valid hex.
  */
 export function customAccentVars(hex, theme) {
   const c = cleanHex(hex)
   if (!c) return null
   const acc = readableIn(c, theme)
-  return { '--acc': acc, '--acc-2': mix(acc, '#000000', 0.25), '--on-acc': inkOn(acc) }
+  const acc2 = mix(acc, '#000000', 0.25)
+  return {
+    '--acc': acc, '--acc-2': acc2, '--on-acc': inkOnBoth(acc, acc2),
+    '--knob-ring': contrast('#ffffff', acc) < 1.5 ? KNOB_RING : 'transparent',
+  }
 }
 
 /** The colour and its text colour for a preset key or a '#rrggbb' value (native notification). */
@@ -156,7 +198,7 @@ export function accentPair(v) {
   return { accent: ACCENTS[k], ink: ACCENT_INK[k] }
 }
 
-const CUSTOM_VARS = ['--acc', '--acc-2', '--on-acc']
+const CUSTOM_VARS = ['--acc', '--acc-2', '--on-acc', '--knob-ring']
 
 /**
  * Puts the accent on the page root: a preset by `data-accent` (index.css does the rest), the

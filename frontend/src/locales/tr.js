@@ -1932,5 +1932,7 @@ export default {
   'Change your own color': 'Kendi rengini değiştir',
   'A touch lighter in dark mode, so you can still read it.': 'Karanlık modda biraz daha açık, hâlâ okunabilsin diye.',
   'A touch darker in light mode, so you can still read it.': 'Aydınlık modda biraz daha koyu, hâlâ okunabilsin diye.',
+  'Greys show lighter in dark mode, so buttons don’t look switched off.': 'Griler karanlık modda daha açık görünür, düğmeler kapalıymış gibi durmasın diye.',
+  'Greys show darker in light mode, so buttons don’t look switched off.': 'Griler aydınlık modda daha koyu görünür, düğmeler kapalıymış gibi durmasın diye.',
   'custom color picker': 'kendi renk özel renk seçici',
 }

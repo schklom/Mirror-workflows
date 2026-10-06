@@ -1932,5 +1932,7 @@ export default {
   'Change your own color': 'Cambia il tuo colore',
   'A touch lighter in dark mode, so you can still read it.': 'Un filo più chiaro in modalità scura, così resta leggibile.',
   'A touch darker in light mode, so you can still read it.': 'Un filo più scuro in modalità chiara, così resta leggibile.',
+  'Greys show lighter in dark mode, so buttons don’t look switched off.': 'I grigi diventano più chiari in modalità scura, così i pulsanti non sembrano spenti.',
+  'Greys show darker in light mode, so buttons don’t look switched off.': 'I grigi diventano più scuri in modalità chiara, così i pulsanti non sembrano spenti.',
   'custom color picker': 'colore personalizzato proprio selettore colore',
 }

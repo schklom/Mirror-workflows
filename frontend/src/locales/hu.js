@@ -1935,5 +1935,7 @@ export default {
   'Change your own color': 'Saját szín módosítása',
   'A touch lighter in dark mode, so you can still read it.': 'Sötét módban kicsit világosabb, hogy olvasható maradjon.',
   'A touch darker in light mode, so you can still read it.': 'Világos módban kicsit sötétebb, hogy olvasható maradjon.',
+  'Greys show lighter in dark mode, so buttons don’t look switched off.': 'A szürkék sötét módban világosabbak, hogy a gombok ne tűnjenek kikapcsoltnak.',
+  'Greys show darker in light mode, so buttons don’t look switched off.': 'A szürkék világos módban sötétebbek, hogy a gombok ne tűnjenek kikapcsoltnak.',
   'custom color picker': 'saját szín egyéni színválasztó',
 }

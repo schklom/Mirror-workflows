@@ -1932,5 +1932,7 @@ export default {
   'Change your own color': 'Muda a tua própria cor',
   'A touch lighter in dark mode, so you can still read it.': 'Um pouco mais clara no modo escuro, para continuares a ler.',
   'A touch darker in light mode, so you can still read it.': 'Um pouco mais escura no modo claro, para continuares a ler.',
+  'Greys show lighter in dark mode, so buttons don’t look switched off.': 'Os cinzentos ficam mais claros no modo escuro, para os botões não parecerem desligados.',
+  'Greys show darker in light mode, so buttons don’t look switched off.': 'Os cinzentos ficam mais escuros no modo claro, para os botões não parecerem desligados.',
   'custom color picker': 'cor própria personalizada seletor de cor',
 }

@@ -25,7 +25,7 @@ import { syncMedia, fetchToStore } from '../lib/media-sync.js'
 import { getMediaStatus, subscribeMediaStatus, pendingRefCount } from '../lib/media-owed.js'
 import { limitsFrom, fmtMB, MB } from '../lib/media-limits.js'
 import { setRestAccent } from '../lib/rest-alert.js'
-import { CUSTOM, accentKey, adjustedIn, cleanHex, inkOn } from '../lib/accent.js'
+import { CUSTOM, accentKey, adjustedIn, applyAccent, cleanHex, inkOn, isGrey } from '../lib/accent.js'
 import { checkForUpdate, downloadAndInstall } from '../lib/update.js'
 import { forgetCoach } from '../lib/coach-api.js'
 import { REST_MAX, REST_PAUSE_MIN, REST_PAUSE_MAX, fmtRest, fmtDuration } from '../lib/duration.js'
@@ -1129,6 +1129,10 @@ function accentLabel(S) {
  * the native <input type="color"> laid over the swatch, so the tap that opens it is the user's
  * own, which iOS Safari and the Android WebView both want.
  */
+// How long the colour picker has to rest before a colour is saved, when the browser sends no
+// `change` at the end (it should, once the picker closes).
+const OWN_COLOR_SETTLE_MS = 400
+
 function AccentSwatches({ S, update }) {
   const key = accentKey(S)
   const own = cleanHex(S.accentCustom)
@@ -1136,14 +1140,52 @@ function AccentSwatches({ S, update }) {
   const pickPreset = k => { update(s => { s.accent = k }); setRestAccent(k) }
   const pickOwn = hex => {
     const c = cleanHex(hex)
-    if (!c) return
+    if (!c || (onCustom && c === own)) return
     update(s => { s.accent = CUSTOM; s.accentCustom = c })
     setRestAccent(c)
   }
+  // The picker sends a colour for every step of a drag (React's onChange is the `input` event).
+  // Those only repaint the page; the colour is saved, synced and sent to the native countdown
+  // once: on the picker's `change`, after it has rested a moment, or when Settings closes.
+  const inputRef = useRef(null)
+  const pending = useRef(null)
+  const timer = useRef(0)
+  const pickOwnRef = useRef(pickOwn)
+  pickOwnRef.current = pickOwn
+  const commit = () => {
+    clearTimeout(timer.current)
+    const c = pending.current
+    pending.current = null
+    if (c) pickOwnRef.current(c)
+  }
+  const preview = hex => {
+    const c = cleanHex(hex)
+    if (!c) return
+    const de = document.documentElement
+    applyAccent(de, c, de.dataset.theme)
+    pending.current = c
+    clearTimeout(timer.current)
+    timer.current = setTimeout(commit, OWN_COLOR_SETTLE_MS)
+  }
+  const hasInput = !(own && !onCustom)
+  useEffect(() => {
+    const el = inputRef.current
+    if (!el) return
+    const onChange = () => { pending.current = cleanHex(el.value) || pending.current; commit() }
+    el.addEventListener('change', onChange)
+    return () => el.removeEventListener('change', onChange)
+  }, [hasInput]) // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => commit, []) // eslint-disable-line react-hooks/exhaustive-deps
+  // The input is not controlled (React would put the saved colour back after every drag step);
+  // a colour changed elsewhere (sync, another tab) is put in by hand.
+  useEffect(() => {
+    if (!pending.current && inputRef.current) inputRef.current.value = own || '#30d158'
+  }, [own])
   const ownLabel = t('Your own color')
+  const grey = own && isGrey(own)
   const notes = own && onCustom ? [
-    adjustedIn(own, 'dark') && t('A touch lighter in dark mode, so you can still read it.'),
-    adjustedIn(own, 'light') && t('A touch darker in light mode, so you can still read it.'),
+    adjustedIn(own, 'dark') && (grey ? t('Greys show lighter in dark mode, so buttons don’t look switched off.') : t('A touch lighter in dark mode, so you can still read it.')),
+    adjustedIn(own, 'light') && (grey ? t('Greys show darker in light mode, so buttons don’t look switched off.') : t('A touch darker in light mode, so you can still read it.')),
   ].filter(Boolean) : []
   return <>
     <div className="swatches" style={{ flexBasis: '100%', paddingInlineStart: 41 }}>
@@ -1151,12 +1193,12 @@ function AccentSwatches({ S, update }) {
         <button key={k} className={'swatch' + (key === k ? ' on' : '')}
           style={{ background: c }} onClick={() => pickPreset(k)} aria-label={t(ACCENT_NAMES[k] || k)} />
       ))}
-      {own && !onCustom
+      {!hasInput
         ? <button className="swatch swatch-own" style={{ background: own }} onClick={() => pickOwn(own)} aria-label={ownLabel} />
         : <span className={'swatch swatch-own' + (own ? ' on' : ' unset')} style={own ? { background: own, color: inkOn(own) } : undefined}>
           {own ? <Icon name="pencil" /> : <Icon name="plus" />}
-          <input type="color" className="swatch-input" value={own || '#30d158'}
-            onChange={e => pickOwn(e.target.value)}
+          <input ref={inputRef} type="color" className="swatch-input" defaultValue={own || '#30d158'}
+            onChange={e => preview(e.target.value)}
             aria-label={own ? t('Change your own color') : t('Pick your own color')} />
         </span>}
     </div>

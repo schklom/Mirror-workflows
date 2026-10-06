@@ -99,7 +99,7 @@
 :root[data-accent="pink"]  { --acc:var(--pink);   --acc-2:#d70036; --on-acc:#fff }
 :root[data-accent="red"]   { --acc:var(--red);    --acc-2:#d70015; --on-acc:#fff }
 :root[data-accent="teal"]  { --acc:var(--teal);   --acc-2:#0071a4; --on-acc:#000 }
-:root[data-accent="gold"]  { --acc:var(--yellow); --acc-2:#b25000; --on-acc:#000 }
+:root[data-accent="gold"]  { --acc:var(--yellow); --acc-2:#b25000; --on-acc:#000; --knob-ring:rgba(0,0,0,.28) }
 /* Label colour on a filled accent button is picked per accent by measured contrast,
    not by taste. Button text is 17px/600, so the AA bar is 3:1 (large text). White on
    the light-theme green is 2.22:1 and on teal 2.57:1 — both fail, and green is the
@@ -655,6 +655,10 @@ body.chips-dragging *{cursor:inherit}
   transition:transform var(--med) var(--ease),width var(--fast) var(--ease);
 }
 .sw.on{background:var(--acc)}
+/* On an accent nearly as light as the knob (an own white or pale yellow, the gold preset) the
+   knob gets a hairline ring so it does not vanish into the track. lib/accent.js sets --knob-ring
+   for an own colour; it is transparent everywhere else. */
+.sw.on .knob{box-shadow:0 0 0 1px var(--knob-ring,transparent),0 3px 8px rgba(0,0,0,.15),0 1px 1px rgba(0,0,0,.16)}
 .sw.on .knob{transform:translateX(20px)}
 .sw:active .knob{width:31px}
 .sw.on:active .knob{transform:translateX(16px)}

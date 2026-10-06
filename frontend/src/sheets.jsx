@@ -2656,6 +2656,9 @@ function WorkoutComplete({ close }) {
 export const workoutCompleteSheet = () => ui().openSheet(close => <WorkoutComplete close={close} />, { kind: 'center' })
 
 export function saveWorkoutEdits(onExit = () => nav('/history')) {
+  // A save decision left open after the editor already closed (a second prompt from a route
+  // exit that raced the first save) has nothing to save or delete: it only finishes leaving.
+  if (!S().active?.editingWorkoutId) { onExit(); return }
   // An edit that unticked or removed every set would save a workout with nothing in it, which
   // the history would still list and count as a training day. Deleting it is what that edit
   // means; Keep editing goes back to the sets.
@@ -2686,7 +2689,10 @@ export function saveWorkoutEdits(onExit = () => nav('/history')) {
 }
 
 export function exitWorkoutEdit(onExit = () => nav('/history')) {
+  if (!S().active?.editingWorkoutId) { onExit(); return }
   const leave = () => {
+    // A stale prompt's Don't save must not throw away whatever is in S.active by now.
+    if (!S().active?.editingWorkoutId) { onExit(); return }
     useStore.getState().discardHistoryEdit()
     useUI.getState().stopRest()
     useUI.getState().stopWork()

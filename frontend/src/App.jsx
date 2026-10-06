@@ -85,7 +85,9 @@ function Shell() {
   useEffect(() => {
     const previous = lastEditPath.current
     lastEditPath.current = loc.pathname
-    if (previous !== '/workout' || !S.active?.editingWorkoutId || loc.pathname === '/workout') return
+    // The live store, not this render's S: a save that just closed the editor may not have
+    // reached this render yet, and asking again would offer to delete the workout it saved.
+    if (previous !== '/workout' || !useStore.getState().S.active?.editingWorkoutId || loc.pathname === '/workout') return
     const destination = loc.pathname + loc.search
     navigate('/workout', { replace: true })
     exitWorkoutEdit(() => navigate(destination, { replace: true }))

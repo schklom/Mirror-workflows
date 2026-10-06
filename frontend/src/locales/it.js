@@ -411,6 +411,7 @@ export default {
   'Sign out?': 'Uscire?',
   'Sign out': 'Esci',
   'Sign out everywhere?': 'Uscire ovunque?',
+  'You have a workout running. It waits on this device until you’re back on this account.': 'Hai un allenamento in corso. Ti aspetta su questo dispositivo finché non torni su questo account.',
   'Sign out everywhere': 'Esci ovunque',
   'Account ID': 'ID account',
   'Account ID copied': 'ID account copiato',

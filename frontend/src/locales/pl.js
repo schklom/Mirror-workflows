@@ -411,6 +411,7 @@ export default {
   'Sign out?': 'Wylogować?',
   'Sign out': 'Wyloguj',
   'Sign out everywhere?': 'Wylogować wszędzie?',
+  'You have a workout running. It waits on this device until you’re back on this account.': 'Masz trwający trening. Poczeka na tym urządzeniu, aż wrócisz na to konto.',
   'Sign out everywhere': 'Wyloguj wszędzie',
   'Account ID': 'ID konta',
   'Account ID copied': 'Skopiowano ID konta',

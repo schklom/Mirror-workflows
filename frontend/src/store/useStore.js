@@ -765,6 +765,34 @@ export const useStore = create((set, get) => {
     all[key] = { server: server || null, uid: user.id, name: user.name || '', at: Date.now(), state }
     return writeStashes(all)
   }
+  // A workout running here is never on the server (a push leaves `active` out), so a sign-out
+  // with nothing owed used to wipe it. It is kept aside the way owed changes are, on its own:
+  // the rest of the copy is the server's already, and a shared device keeps no more of the
+  // account than it has to. It comes back on the next sign-in here as this account (applyStash).
+  const stashActive = async () => {
+    const user = get().user
+    const a = get().S.active
+    if (!user || !a) return true
+    const all = await readStashes()
+    const server = serverBase()
+    const key = stashKey(server, user.id)
+    const prev = all[key]?.state
+    const state = prev ? clone(prev) : Object.assign(clone(DEF), { _ts: 0, unit: get().S.unit || 'kg' })
+    state.active = clone(a)
+    all[key] = { server: server || null, uid: user.id, name: user.name || '', at: Date.now(), state }
+    return writeStashes(all)
+  }
+  // A sign-out ends the rest and the hold running on this device: the countdown must not go on
+  // over the sign-in screen, or ring for an account that has left. Before the logout request,
+  // while the session can still call the server push off. A hold hands back what it held first.
+  const stopTimers = async () => {
+    try {
+      const ui = (await import('./useUI.js')).useUI.getState()
+      ui.abandonWork?.()
+      ui.stopRest?.()
+    } catch { /* no timers to stop */ }
+  }
+
   // Back on the server and account a forced sign-out or disconnect left: the kept changes are
   // merged in like a conflict (lib/sync-merge.js), marked owed and pushed, and the stash goes.
   // If the push does not land, the copy itself owes them from here and nothing wipes it.
@@ -1343,12 +1371,15 @@ export const useStore = create((set, get) => {
        export, or going ahead anyway. `force` goes ahead: the owed copy is kept aside on this
        device (stashOwed) and comes back when it next reaches this server as this account. If
        even that cannot be written, nothing is wiped ({ owed, count, stashed: false }).
-       Otherwise { owed: false } or { owed: true, count, stashed: true }, signed out. */
+       Otherwise { owed: false } or { owed: true, count, stashed: true }, signed out. A workout
+       running here is kept aside either way (stashActive), and the rest and hold timers stop. */
     async signOut({ force = false } = {}) {
       await settle()
       const left = get().unsyncedChanges()
       if (left.owed && !force) return owedResult(left)
+      await stopTimers()
       if (left.owed && !(await stashOwed())) return owedResult(left, { stashed: false })
+      if (!left.owed && !(await stashActive())) return { owed: true, count: 0, stashed: false }
       // The device is signed out either way. A request that did not get through leaves the cookie
       // behind, still valid, so the logout is owed until the server answers it (see boot).
       try { await api('/api/logout', { method: 'POST', body: '{}' }) } catch (e) { if (!MOBILE) logoutOwed(true) }
@@ -1403,8 +1434,10 @@ export const useStore = create((set, get) => {
       await settle()
       const left = get().unsyncedChanges()
       if (left.owed && !force) return owedResult(left)
+      await stopTimers()
       await api('/api/logout/all', { method: 'POST', body: '{}' })
       if (left.owed && !(await stashOwed())) return owedResult(left, { stashed: false })
+      if (!left.owed && !(await stashActive())) return { owed: true, count: 0, stashed: false }
       await clearLocalSession()
       return left.owed ? owedResult(left, { stashed: true }) : { owed: false }
     },

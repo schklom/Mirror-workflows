@@ -411,6 +411,7 @@ export default {
   'Sign out?': '退出登录？',
   'Sign out': '退出登录',
   'Sign out everywhere?': '在所有设备上退出登录？',
+  'You have a workout running. It waits on this device until you’re back on this account.': '你有一个正在进行的训练。它会留在这台设备上，等你回到这个账户。',
   'Sign out everywhere': '在所有设备上退出登录',
   'Account ID': '账号 ID',
   'Account ID copied': '已复制账号 ID',

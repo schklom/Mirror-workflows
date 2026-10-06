@@ -411,6 +411,7 @@ export default {
   'Sign out?': '로그아웃할까요?',
   'Sign out': '로그아웃',
   'Sign out everywhere?': '모든 기기에서 로그아웃할까요?',
+  'You have a workout running. It waits on this device until you’re back on this account.': '진행 중인 운동이 있습니다. 이 계정으로 돌아올 때까지 이 기기에서 기다립니다.',
   'Sign out everywhere': '모든 기기에서 로그아웃',
   'Account ID': '계정 ID',
   'Account ID copied': '계정 ID를 복사했습니다',

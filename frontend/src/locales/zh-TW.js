@@ -407,6 +407,7 @@ export default {
   'Sign out?': '確定要登出嗎？',
   'Sign out': '登出',
   'Sign out everywhere?': '在所有裝置上登出？',
+  'You have a workout running. It waits on this device until you’re back on this account.': '你有一個進行中的訓練。它會留在這台裝置上，等你回到這個帳號。',
   'Sign out everywhere': '所有裝置全部登出',
   'Account ID': '帳號 ID',
   'Account ID copied': '已複製帳號 ID',

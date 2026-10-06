@@ -411,6 +411,7 @@ export default {
   'Sign out?': 'साइन आउट करें?',
   'Sign out': 'साइन आउट',
   'Sign out everywhere?': 'हर जगह साइन आउट करें?',
+  'You have a workout running. It waits on this device until you’re back on this account.': 'आपका एक वर्कआउट चल रहा है। यह इस डिवाइस पर तब तक इंतज़ार करेगा जब तक आप इस अकाउंट में वापस नहीं आते।',
   'Sign out everywhere': 'हर जगह साइन आउट करें',
   'Account ID': 'खाता ID',
   'Account ID copied': 'खाता ID कॉपी हो गया',

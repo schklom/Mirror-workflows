@@ -417,6 +417,7 @@ export default {
   'Sign out?': 'ออกจากระบบ?',
   'Sign out': 'ออกจากระบบ',
   'Sign out everywhere?': 'ออกจากระบบทุกอุปกรณ์?',
+  'You have a workout running. It waits on this device until you’re back on this account.': 'คุณมีการออกกำลังกายที่กำลังดำเนินอยู่ ซึ่งจะรออยู่บนอุปกรณ์นี้จนกว่าคุณจะกลับมาที่บัญชีนี้',
   'Sign out everywhere': 'ออกจากระบบทุกอุปกรณ์',
   'Account ID': 'ID บัญชี',
   'Account ID copied': 'คัดลอก ID บัญชีแล้ว',

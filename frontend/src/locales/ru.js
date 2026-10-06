@@ -401,6 +401,7 @@ export default {
   'Sign out?': 'Выйти?',
   'Sign out': 'Выйти',
   'Sign out everywhere?': 'Выйти на всех устройствах?',
+  'You have a workout running. It waits on this device until you’re back on this account.': 'У тебя идёт тренировка. Она подождёт на этом устройстве, пока ты не вернёшься в этот аккаунт.',
   'Sign out everywhere': 'Выйти на всех устройствах',
   'Account ID': 'ID аккаунта',
   'Account ID copied': 'ID аккаунта скопирован',

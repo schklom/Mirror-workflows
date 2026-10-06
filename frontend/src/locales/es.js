@@ -411,6 +411,7 @@ export default {
   'Sign out?': '¿Cerrar sesión?',
   'Sign out': 'Cerrar sesión',
   'Sign out everywhere?': '¿Cerrar sesión en todos los dispositivos?',
+  'You have a workout running. It waits on this device until you’re back on this account.': 'Tienes un entrenamiento en curso. Te espera en este dispositivo hasta que vuelvas a esta cuenta.',
   'Sign out everywhere': 'Cerrar sesión en todos los dispositivos',
   'Account ID': 'ID de la cuenta',
   'Account ID copied': 'ID de la cuenta copiado',

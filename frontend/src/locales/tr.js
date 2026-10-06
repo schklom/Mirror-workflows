@@ -411,6 +411,7 @@ export default {
   'Sign out?': 'Çıkış yapılsın mı?',
   'Sign out': 'Çıkış yap',
   'Sign out everywhere?': 'Her yerden çıkış yapılsın mı?',
+  'You have a workout running. It waits on this device until you’re back on this account.': 'Devam eden bir antrenmanın var. Bu hesaba geri dönene kadar bu cihazda seni bekler.',
   'Sign out everywhere': 'Her yerden çıkış yap',
   'Account ID': 'Hesap kimliği',
   'Account ID copied': 'Hesap kimliği kopyalandı',

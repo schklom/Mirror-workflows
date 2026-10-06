@@ -411,6 +411,7 @@ export default {
   'Sign out?': 'Se déconnecter ?',
   'Sign out': 'Se déconnecter',
   'Sign out everywhere?': 'Se déconnecter partout ?',
+  'You have a workout running. It waits on this device until you’re back on this account.': 'Tu as une séance en cours. Elle t’attend sur cet appareil jusqu’à ton retour sur ce compte.',
   'Sign out everywhere': 'Se déconnecter partout',
   'Account ID': 'Identifiant du compte',
   'Account ID copied': 'Identifiant du compte copié',

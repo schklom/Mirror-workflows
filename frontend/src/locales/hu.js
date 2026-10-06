@@ -417,6 +417,7 @@ export default {
   'Sign out?': 'Kijelentkezel?',
   'Sign out': 'Kijelentkezés',
   'Sign out everywhere?': 'Kijelentkezel mindenhonnan?',
+  'You have a workout running. It waits on this device until you’re back on this account.': 'Fut egy edzésed. Ezen az eszközön vár rád, amíg vissza nem jössz ezzel a fiókkal.',
   'Sign out everywhere': 'Kijelentkezés mindenhonnan',
   'Account ID': 'Fiókazonosító',
   'Account ID copied': 'Fiókazonosító kimásolva',

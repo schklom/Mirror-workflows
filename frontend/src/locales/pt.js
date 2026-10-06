@@ -411,6 +411,7 @@ export default {
   'Sign out?': 'Terminar sessão?',
   'Sign out': 'Terminar sessão',
   'Sign out everywhere?': 'Terminar sessão em todos os dispositivos?',
+  'You have a workout running. It waits on this device until you’re back on this account.': 'Tens um treino a decorrer. Fica à tua espera neste dispositivo até voltares a esta conta.',
   'Sign out everywhere': 'Terminar sessão em todos os dispositivos',
   'Account ID': 'ID da conta',
   'Account ID copied': 'ID da conta copiado',

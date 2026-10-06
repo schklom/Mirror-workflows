@@ -267,6 +267,7 @@ export default {
   'Sign out?': 'Вийти?',
   'Sign out': 'Вийти',
   'Sign out everywhere?': 'Вийти на всіх пристроях?',
+  'You have a workout running. It waits on this device until you’re back on this account.': 'У тебе триває тренування. Воно чекатиме на цьому пристрої, доки ти не повернешся в цей акаунт.',
   'Sign out everywhere': 'Вийти на всіх пристроях',
   'Ends this profile’s sessions on all your devices.': 'Завершує сеанси цього профілю на всіх твоїх пристроях.',
   'Signed out on all devices': 'Вихід виконано на всіх пристроях',

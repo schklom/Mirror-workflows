@@ -285,6 +285,7 @@ export default {
   'Sign out?': 'تسجيل الخروج؟',
   'Sign out': 'تسجيل الخروج',
   'Sign out everywhere?': 'تسجيل الخروج من كل الأجهزة؟',
+  'You have a workout running. It waits on this device until you’re back on this account.': 'لديك تمرين قيد التشغيل. سينتظرك على هذا الجهاز حتى تعود إلى هذا الحساب.',
   'Sign out everywhere': 'تسجيل الخروج من كل الأجهزة',
   'Ends this profile’s sessions on all your devices.': 'ينهي جلسات هذا الملف الشخصي على جميع أجهزتك.',
   'Signed out on all devices': 'تم تسجيل الخروج من جميع الأجهزة',

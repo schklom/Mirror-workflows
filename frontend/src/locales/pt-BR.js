@@ -130,6 +130,7 @@ export const PT_BR_OVERRIDES = {
   'Sign out?': 'Sair?',
   'Sign out': 'Sair',
   'Sign out everywhere?': 'Sair de todos os dispositivos?',
+  'You have a workout running. It waits on this device until you’re back on this account.': 'Você tem um treino em andamento. Ele fica esperando neste dispositivo até você voltar para esta conta.',
   'Sign out everywhere': 'Sair de todos os dispositivos',
   'Ends this profile’s sessions on all your devices.': 'Encerra as sessões deste perfil em todos os seus dispositivos.',
   'Signed out on all devices': 'Sessão encerrada em todos os dispositivos',

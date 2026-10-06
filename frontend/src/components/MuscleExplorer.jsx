@@ -11,6 +11,7 @@ import { Thumb } from './Media.jsx'
 import Icon from './Icon.jsx'
 import { Button } from './ui.jsx'
 import { tappable } from '../lib/use-sheet-keyboard.js'
+import { useAutoMore } from '../lib/use-auto-more.js'
 import { isFav, sortFavouritesFirst } from '../lib/favourites.js'
 
 // One explorer for the Library and every catalogue picker. Supplying `onPick` turns
@@ -23,6 +24,7 @@ export default function MuscleExplorer({ onPick, onDetail, onPlan }) {
   const [eq, setEq] = useState('')
   const [shown, setShown] = useState(40)
   const [showAll, setShowAll] = useState(false)   // ignore the active equipment profile for this session
+  const moreRef = useAutoMore(() => setShown(s => s + 40))
   // Same rule as the Library and the picker: the active equipment profile narrows the catalogue
   // (and the per-muscle counts) unless the user asks for everything.
   const profile = activeProfile(S)
@@ -93,7 +95,7 @@ export default function MuscleExplorer({ onPick, onDetail, onPlan }) {
         })}
         {exercises.length === 0 && <div className="empty"><div className="ico"><Icon name="magnifier" /></div>{t('No match')}</div>}
       </div>
-      {exercises.length > shown && <><div style={{ height: 10 }} /><Button onClick={() => setShown(s => s + 40)}>{t('Show more')}</Button></>}
+      {exercises.length > shown && <><div style={{ height: 10 }} /><Button ref={moreRef} onClick={() => setShown(s => s + 40)}>{t('Show more')}</Button></>}
     </>}
   </>
 }

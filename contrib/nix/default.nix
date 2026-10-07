@@ -4,12 +4,16 @@
 }:
 
 let
-  versions = import ./version.nix;
+  # The release version is whatever api/package.json says — the same file release:preflight
+  # checks a v* tag against, so the Nix packages can never drift from the release they ship.
+  version = (builtins.fromJSON (builtins.readFile ../../api/package.json)).version;
+
+  datasetRev = import ./dataset.nix;
 in
 {
-  opengym-frontend = callPackage ./frontend.nix { inherit (versions) version; };
-  opengym-api = callPackage ./api.nix { inherit (versions) version; };
-  opengym-mcp = callPackage ./mcp.nix { inherit (versions) version; };
-  opengym-media = callPackage ./media.nix { inherit (versions) datasetRev; };
-  opengym-fetch-media = callPackage ./media-script.nix { inherit (versions) datasetRev; };
+  opengym-frontend = callPackage ./frontend.nix { inherit version; };
+  opengym-api = callPackage ./api.nix { inherit version; };
+  opengym-mcp = callPackage ./mcp.nix { inherit version; };
+  opengym-media = callPackage ./media.nix { inherit datasetRev; };
+  opengym-fetch-media = callPackage ./media-script.nix { inherit datasetRev; };
 }

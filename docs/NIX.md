@@ -73,8 +73,9 @@ contrib/nix/
   mcp.nix            buildNpmPackage → bin/opengym-mcp
   media.nix          fetchFromGitHub pin of the exercise dataset (build-time)
   media-script.nix   runtime media-fetch shell script
-  version.nix        version = "1.2.14" + pinned dataset commit (single source of truth)
-  default.nix        package-set aggregator (used by both the flake and the module)
+  dataset.nix        pinned exercise-dataset commit (both media packages share it)
+  default.nix        package-set aggregator (used by both the flake and the module); reads the
+                     release version from api/package.json
 ```
 
 Everything Nix lives under `contrib/nix/` so the flake stays out of the way of the project's own

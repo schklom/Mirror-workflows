@@ -1836,7 +1836,6 @@ export default {
   'Your muscles filed a missing-person report. Show up for {0}!': 'عضلاتك أبلغت عن فقدانك. احضر إلى {0}!',
   'That address answers, but it isn’t an openGym server. Check the URL.': 'هذا العنوان يستجيب، لكنه ليس خادم openGym. تحقّق من الرابط.',
   'That address answers, but a login page or proxy rule replied instead of openGym. Let /api/ through to openGym unchanged. See “Phone app and CORS” in docs/SELF_HOSTING.md.': 'هذا العنوان يستجيب، لكن صفحة تسجيل دخول أو قاعدة في البروكسي ردّت بدلًا من openGym. اترك /api/ يصل إلى openGym دون تغيير. راجع “Phone app and CORS” في docs/SELF_HOSTING.md.',
-  'The app can only pair with an https:// address. Your phone blocks plain http:// before anything is even sent.': 'لا يمكن للتطبيق الاقتران إلا بعنوان https://. هاتفك يحظر http:// العادي قبل إرسال أي شيء.',
   'Switch sides': 'بدّل الجهة',
   'Saves a dated copy to “{0}” after finishing a workout or editing a routine, and keeps the newest {1}.': 'يحفظ نسخة مؤرّخة في «{0}» بعد إنهاء تمرين أو تعديل روتين، ويحتفظ بأحدث {1}.',
   'Saves a dated copy to the folder you chose after finishing a workout or editing a routine, and keeps the newest {0}.': 'يحفظ نسخة مؤرّخة في المجلد الذي اخترته بعد إنهاء تمرين أو تعديل روتين، ويحتفظ بأحدث {0}.',
@@ -2003,4 +2002,6 @@ export default {
   'Greys show darker in light mode, so buttons don’t look switched off.': 'تظهر الألوان الرمادية أغمق في الوضع الفاتح، حتى لا تبدو الأزرار مُعطّلة.',
   'custom color picker': 'لون خاص مخصص منتقي الألوان',
   'Signed in from another tab. Your workout came along, keep going here.': 'تم تسجيل الدخول من علامة تبويب أخرى. تمرينك انتقل معك، تابعه هنا.',
+  'Plain http:// isn’t encrypted. Fine on your home network, but use https:// if your server is reachable from the internet.': 'اتصال http:// العادي غير مشفّر. لا بأس به على شبكة منزلك، لكن استخدم https:// إذا كان خادمك متاحًا من الإنترنت.',
+  'Could not reach {0} over https://. If your server runs on plain http (common at home), type http://{0} instead.': 'تعذّر الوصول إلى {0} عبر https://. إذا كان خادمك يعمل بـ http عادي (شائع في المنزل)، فاكتب http://{0} بدلًا من ذلك.',
 }

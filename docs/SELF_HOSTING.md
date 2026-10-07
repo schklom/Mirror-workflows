@@ -188,8 +188,10 @@ https://localhost` line. A `200` with no CORS headers, a `30x` or `401`, an HTML
 
 The app tells these cases apart since v1.3.10: when the server is reachable but the request is
 refused, pairing says so instead of "Failed to fetch", and when a login page or proxy rule
-answered in openGym's place, it says that too. The app also only pairs with an `https://` address:
-its WebView is an https page, so the phone blocks a plain `http://` server before anything is sent.
+answered in openGym's place, it says that too. Since v1.3.11 the Android app also pairs with a
+plain `http://` address on your LAN (type the `http://`; #428). Sign in on the web with a password
+to make the code, since passkeys need https. Over http the code and the app's token cross your
+network unencrypted, so keep it to a network you trust.
 
 ## 4. Multiple users
 

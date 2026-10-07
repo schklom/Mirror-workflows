@@ -1783,7 +1783,6 @@ export default {
   'Your muscles filed a missing-person report. Show up for {0}!': 'Os teus músculos deram-te como desaparecido. Apresenta-te para {0}!',
   'That address answers, but it isn’t an openGym server. Check the URL.': 'Esse endereço responde, mas não é um servidor openGym. Verifica o URL.',
   'That address answers, but a login page or proxy rule replied instead of openGym. Let /api/ through to openGym unchanged. See “Phone app and CORS” in docs/SELF_HOSTING.md.': 'Esse endereço responde, mas foi uma página de login ou uma regra do proxy que respondeu em vez do openGym. Deixa o /api/ chegar ao openGym sem alterações. Vê “Phone app and CORS” em docs/SELF_HOSTING.md.',
-  'The app can only pair with an https:// address. Your phone blocks plain http:// before anything is even sent.': 'A app só consegue emparelhar com um endereço https://. O telemóvel bloqueia http:// simples antes de enviar seja o que for.',
   'Switch sides': 'Troca de lado',
   'Saves a dated copy to “{0}” after finishing a workout or editing a routine, and keeps the newest {1}.': 'Guarda uma cópia datada em «{0}» depois de terminares um treino ou editares uma rotina, e mantém as {1} mais recentes.',
   'Saves a dated copy to the folder you chose after finishing a workout or editing a routine, and keeps the newest {0}.': 'Guarda uma cópia datada na pasta que escolheste depois de terminares um treino ou editares uma rotina, e mantém as {0} mais recentes.',
@@ -1950,4 +1949,6 @@ export default {
   'Greys show darker in light mode, so buttons don’t look switched off.': 'Os cinzentos ficam mais escuros no modo claro, para os botões não parecerem desligados.',
   'custom color picker': 'cor própria personalizada seletor de cor',
   'Signed in from another tab. Your workout came along, keep going here.': 'Sessão iniciada noutro separador. O teu treino veio junto, continua aqui.',
+  'Plain http:// isn’t encrypted. Fine on your home network, but use https:// if your server is reachable from the internet.': 'O http:// simples não é encriptado. Serve na tua rede de casa, mas usa https:// se o teu servidor estiver acessível pela internet.',
+  'Could not reach {0} over https://. If your server runs on plain http (common at home), type http://{0} instead.': 'Não foi possível alcançar {0} por https://. Se o teu servidor usa http simples (comum em casa), escreve http://{0}.',
 }

@@ -1783,7 +1783,6 @@ export default {
   'Your muscles filed a missing-person report. Show up for {0}!': 'I tuoi muscoli hanno denunciato la tua scomparsa. Presentati a {0}!',
   'That address answers, but it isn’t an openGym server. Check the URL.': 'Quell’indirizzo risponde, ma non è un server openGym. Controlla l’URL.',
   'That address answers, but a login page or proxy rule replied instead of openGym. Let /api/ through to openGym unchanged. See “Phone app and CORS” in docs/SELF_HOSTING.md.': 'Quell’indirizzo risponde, ma al posto di openGym ha risposto una pagina di login o una regola del proxy. Lascia passare /api/ fino a openGym senza modifiche. Vedi “Phone app and CORS” in docs/SELF_HOSTING.md.',
-  'The app can only pair with an https:// address. Your phone blocks plain http:// before anything is even sent.': 'L’app può collegarsi solo a un indirizzo https://. Il telefono blocca il semplice http:// prima ancora di inviare qualcosa.',
   'Switch sides': 'Cambia lato',
   'Saves a dated copy to “{0}” after finishing a workout or editing a routine, and keeps the newest {1}.': 'Salva una copia datata in “{0}” dopo ogni allenamento finito o routine modificata, e tiene le {1} più recenti.',
   'Saves a dated copy to the folder you chose after finishing a workout or editing a routine, and keeps the newest {0}.': 'Salva una copia datata nella cartella che hai scelto dopo ogni allenamento finito o routine modificata, e tiene le {0} più recenti.',
@@ -1950,4 +1949,6 @@ export default {
   'Greys show darker in light mode, so buttons don’t look switched off.': 'I grigi diventano più scuri in modalità chiara, così i pulsanti non sembrano spenti.',
   'custom color picker': 'colore personalizzato proprio selettore colore',
   'Signed in from another tab. Your workout came along, keep going here.': 'Accesso fatto da un’altra scheda. Il tuo allenamento è venuto con te, continua qui.',
+  'Plain http:// isn’t encrypted. Fine on your home network, but use https:// if your server is reachable from the internet.': 'Il semplice http:// non è cifrato. Va bene sulla rete di casa, ma usa https:// se il tuo server è raggiungibile da internet.',
+  'Could not reach {0} over https://. If your server runs on plain http (common at home), type http://{0} instead.': 'Impossibile raggiungere {0} via https://. Se il tuo server usa http semplice (comune in casa), scrivi http://{0}.',
 }

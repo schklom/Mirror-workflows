@@ -970,7 +970,7 @@ export default {
   'secondary': 'secundário',
   'No exercises with an estimated 1RM yet.': 'Ainda não há exercícios com 1RM estimado.',
   'Tap a muscle to see its exercises.': 'Toque num músculo para ver os seus exercícios.',
-  'Unpair': 'Desfazer',
+  'Unpair': 'Separar',
 
   // --- equipment profiles ---
   'Showing all equipment': 'A mostrar todo o equipamento',

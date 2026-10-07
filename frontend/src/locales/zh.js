@@ -1714,6 +1714,7 @@ export default {
   'Max reps': '力竭次数',
   'Most reps in a Max set per workout': '每次训练中力竭组的最多次数',
   'A set left at 0 rest uses the exercise’s rest.': '休息为 0 的组使用该动作的休息时间。',
+  'A set left at 0 weight starts from that set’s weight last time.': '重量为 0 的组从上次同一组的重量开始。',
   // --- update a routine from a running workout ---
   'Update routine': '更新训练日',
   'Update “{0}”?': '更新训练日「{0}」？',

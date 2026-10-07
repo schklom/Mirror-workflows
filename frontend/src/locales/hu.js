@@ -1717,6 +1717,7 @@ export default {
   'Max reps': 'Max ism.',
   'Most reps in a Max set per workout': 'A legtöbb ismétlés egy Max sorozatban edzésenként',
   'A set left at 0 rest uses the exercise’s rest.': 'A 0 pihenőjű sorozat a gyakorlat pihenőjét használja.',
+  'A set left at 0 weight starts from that set’s weight last time.': 'A 0 súlyú sorozat az előző alkalommal ugyanennél a sorozatnál használt súlyról indul.',
   // --- update a routine from a running workout ---
   'Update routine': 'Rutin frissítése',
   'Update “{0}”?': 'Frissíted a(z) „{0}” rutint?',

@@ -1711,6 +1711,7 @@ export default {
   'Max reps': 'Повт. Макс',
   'Most reps in a Max set per workout': 'Найбільше повторів у підході Макс за тренування',
   'A set left at 0 rest uses the exercise’s rest.': 'Підхід із відпочинком 0 використовує відпочинок вправи.',
+  'A set left at 0 weight starts from that set’s weight last time.': 'Підхід із вагою 0 починається з ваги цього підходу минулого разу.',
   // --- update a routine from a running workout ---
   'Update routine': 'Оновити програму',
   'Update “{0}”?': 'Оновити програму «{0}»?',

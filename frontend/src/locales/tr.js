@@ -1714,6 +1714,7 @@ export default {
   'Max reps': 'Maks tekrar',
   'Most reps in a Max set per workout': 'Antrenman başına bir Maks setteki en çok tekrar',
   'A set left at 0 rest uses the exercise’s rest.': 'Dinlenmesi 0 olan set, egzersizin dinlenmesini kullanır.',
+  'A set left at 0 weight starts from that set’s weight last time.': 'Ağırlığı 0 olan set, aynı setin geçen seferki ağırlığıyla başlar.',
   // --- update a routine from a running workout ---
   'Update routine': 'Rutini güncelle',
   'Update “{0}”?': '“{0}” rutini güncellensin mi?',

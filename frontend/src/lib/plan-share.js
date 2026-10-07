@@ -12,7 +12,7 @@ import { EXIDX, isBodyweightEq } from './exercises.js'
 import { cleanUrl } from './media-refs.js'
 import { modeOf, exLine, MAX_PLANNED_WARMUPS } from './history.js'
 import { deriveSessionName } from './session-merge.js'
-import { isPyramid, normalizePyramid, normalizePyramidRest } from './pyramid.js'
+import { isPyramid, normalizePyramid, normalizePyramidRest, normalizePyramidWeight } from './pyramid.js'
 import { uid, todayISO, DAYN, weekOrder, weekStartOf, exCount } from './format.js'
 import { t, exerciseNameFor, exerciseNameClass, getLang, RTL_LANGS } from './i18n-core.js'
 import { convertWeight } from './units.js'
@@ -46,6 +46,7 @@ function convertedExercise(e, sourceUnit, destinationUnit) {
   if (out.weight != null) out.weight = convertWeight(out.weight, sourceUnit, destinationUnit)
   // A timed increment is seconds, not a load. Rep-mode increments are load overrides.
   if (modeOf(out) === 'reps' && out.inc > 0) out.inc = convertWeight(out.inc, sourceUnit, destinationUnit)
+  if (Array.isArray(out.pyramidWeight)) out.pyramidWeight = out.pyramidWeight.map(w => (w > 0 ? convertWeight(w, sourceUnit, destinationUnit) : w))
   return out
 }
 
@@ -83,6 +84,8 @@ function cleanEx(e) {
       o.pyramid = normalizePyramid(e.pyramid)
       const rest = normalizePyramidRest(e.pyramidRest, o.pyramid.length)
       if (rest.length) o.pyramidRest = rest
+      const weight = normalizePyramidWeight(e.pyramidWeight, o.pyramid.length)
+      if (weight.length) o.pyramidWeight = weight
     }
   }
   // How the exercise is logged travels too (issues #31/#32) — the bodyweight flag only when
@@ -232,8 +235,9 @@ export function parsePlan(raw, destinationUnit = 'kg') {
       const warmRest = cleanRestSec(e.warmupRestSec)
       const pyramid = normalizePyramid(e.pyramid)
       const pyramidRest = pyramid.length ? normalizePyramidRest(e.pyramidRest, pyramid.length) : []
-      const { warmupSets, intensifier, restSec, warmupRestSec, pyramid: _pyramid, pyramidRest: _pyramidRest, ...passthrough } = e
-      return convertedExercise({ ...passthrough, ...(pyramid.length ? { pyramid } : {}), ...(pyramidRest.length ? { pyramidRest } : {}), ...(warm ? { warmupSets: warm } : {}), ...(intens ? { intensifier: intens } : {}), ...(rest ? { restSec: rest } : {}), ...(warmRest ? { warmupRestSec: warmRest } : {}) }, sourceUnit || destination, destination)
+      const pyramidWeight = pyramid.length ? normalizePyramidWeight(e.pyramidWeight, pyramid.length) : []
+      const { warmupSets, intensifier, restSec, warmupRestSec, pyramid: _pyramid, pyramidRest: _pyramidRest, pyramidWeight: _pyramidWeight, ...passthrough } = e
+      return convertedExercise({ ...passthrough, ...(pyramid.length ? { pyramid } : {}), ...(pyramidRest.length ? { pyramidRest } : {}), ...(pyramidWeight.length ? { pyramidWeight } : {}), ...(warm ? { warmupSets: warm } : {}), ...(intens ? { intensifier: intens } : {}), ...(rest ? { restSec: rest } : {}), ...(warmRest ? { warmupRestSec: warmRest } : {}) }, sourceUnit || destination, destination)
     })
   }))
   return {

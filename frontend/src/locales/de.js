@@ -1734,6 +1734,7 @@ export default {
   'Max reps': 'Max-Wdh.',
   'Most reps in a Max set per workout': 'Meiste Wiederholungen in einem Max-Satz pro Training',
   'A set left at 0 rest uses the exercise’s rest.': 'Ein Satz mit 0 Pause nutzt die Pause der Übung.',
+  'A set left at 0 weight starts from that set’s weight last time.': 'Ein Satz mit 0 Gewicht startet mit dem Gewicht dieses Satzes vom letzten Mal.',
   // --- update a routine from a running workout ---
   'Update routine': 'Routine aktualisieren',
   'Update “{0}”?': 'Routine „{0}“ aktualisieren?',

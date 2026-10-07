@@ -1767,6 +1767,7 @@ export default {
   'Max reps': 'تكرارات أقصى',
   'Most reps in a Max set per workout': 'أكبر عدد تكرارات في مجموعة أقصى لكل تمرين',
   'A set left at 0 rest uses the exercise’s rest.': 'المجموعة ذات الراحة 0 تستخدم راحة التمرين.',
+  'A set left at 0 weight starts from that set’s weight last time.': 'المجموعة ذات الوزن 0 تبدأ من وزن المجموعة نفسها في المرة السابقة.',
   // --- update a routine from a running workout ---
   'Update routine': 'تحديث الروتين',
   'Update “{0}”?': 'تحديث «{0}»؟',

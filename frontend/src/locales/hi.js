@@ -1714,6 +1714,7 @@ export default {
   'Max reps': 'मैक्स रेप',
   'Most reps in a Max set per workout': 'हर वर्कआउट में मैक्स सेट के सबसे ज़्यादा रेप',
   'A set left at 0 rest uses the exercise’s rest.': '0 आराम वाला सेट एक्सरसाइज़ का आराम इस्तेमाल करता है।',
+  'A set left at 0 weight starts from that set’s weight last time.': '0 वज़न वाला सेट पिछली बार उसी सेट के वज़न से शुरू होता है।',
   // --- update a routine from a running workout ---
   'Update routine': 'रूटीन अपडेट करें',
   'Update “{0}”?': 'रूटीन “{0}” अपडेट करें?',

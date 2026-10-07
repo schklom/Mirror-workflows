@@ -25,10 +25,12 @@
 //      entries removed, settings and plan days changed, entries edited. A setting, plan day or
 //      entry field whose stored stamp is later than the one the writer sent back (it never saw
 //      that change) keeps the stored value: an older app back from a dead spot no longer sets
-//      them back. What remains: such a writer's own change of that same field in the meantime
-//      loses to the stamped one (two changes, neither saw the other), one that sends no record of
-//      edits at all (it never read a copy from an updated app) still wins as before, and the older
-//      app shows its own value until it next reads the profile;
+//      them back. Only a value the field held before is put back (its old copy coming back, see
+//      notePrior): one the field never held is that writer's own new choice and goes through. What
+//      remains: such a writer changing a field back to exactly an earlier value after another
+//      device changed it loses to that change, one that sends no record of edits at all (it never
+//      read a copy from an updated app) still wins as before, and the older app shows its own
+//      value until it next reads the profile;
 //   3. for every writer: an entry the document holds while a removal on record says it was
 //      deleted after its last edit is kept, and marked as added back. An updated app never sends
 //      such a document, so this is an older app's merge (or its Coach undo, or a backup it
@@ -59,7 +61,7 @@ const capStamps = m => {
   return m;
 };
 const OWN_MERGE = new Set([
-  '_ts', '_rev', '_wid', '_wids', '_unstamped', 'active', 'unit', 'unitSet', 'resetAt', 'resetIds', 'deleted', 'edited', 'undone', 'routineOrder',
+  '_ts', '_rev', '_wid', '_wids', '_unstamped', '_prior', 'active', 'unit', 'unitSet', 'resetAt', 'resetIds', 'deleted', 'edited', 'undone', 'routineOrder',
   'workouts', 'routines', 'customEx', 'equipProfiles', 'gymCards', 'bodyweight', 'favEx',
   'exWeights', 'balanceOverrides', 'loadKind', 'plates',
 ]);
@@ -181,8 +183,67 @@ function ownRecord(next, now, own, fp) {
   return { fp, ...(Object.keys(ed).length ? { ed } : {}), ...(Object.keys(f).length ? { f } : {}) };
 }
 
+// What each setting, plan day and entry field held before (`_prior` on the stored document, never
+// sent to a client): per field, short hashes of its last PRIOR_KEEP values before each change. A
+// writer that does not stamp keeps the record of edits it last read and never gets the stamps the
+// server gave its own pushes (it reads the profile again only once the revision moves, and its
+// whole-document merge after a 409 keeps its own older record), so "a later stamp than the one it
+// sent" alone also caught its own next change of that field, and put back a workout set it had just
+// logged (RC item-3 analysis 2026-10-07). With this, a field changed after the writer's copy is put
+// back only when what it sends is a value the field held before: its old copy coming back. A value
+// the field never held is its own new choice and goes through, stamped. A field with no history yet
+// (stamped before `_prior` was kept) is put back as before.
+// The limit: an older app changing a field back to exactly a value it held before, after another
+// device changed it, looks like its old copy and loses to that change.
+const PRIOR_KEEP = 6;
+const PRIOR_MAX = 5000;
+function valueHash(v) {
+  const str = v === undefined ? 'u' : JSON.stringify(v);
+  let a = 0x811c9dc5;
+  for (let i = 0; i < str.length; i++) a = Math.imul(a ^ str.charCodeAt(i), 0x01000193) >>> 0;
+  return `${str.length}.${a.toString(36)}`;
+}
+// `next._prior`: the stored one, with every field this write changes noted, for every writer.
+function notePrior(cur, next) {
+  const pr = isMap(cur?._prior) ? clone(cur._prior) : {};
+  const note = (key, b, a) => {
+    if (same(b, a)) return;
+    const h = valueHash(b);
+    delete pr[key];                                   // re-added last: the most recently changed go last
+    pr[key] = [...list(cur?._prior?.[key]).filter(x => x !== h), h].slice(-PRIOR_KEEP);
+  };
+  for (const k of new Set([...Object.keys(cur || {}), ...Object.keys(next)])) {
+    if (OWN_MERGE.has(k)) continue;
+    if (PER_KEY.has(k)) {
+      const pm = isMap(cur[k]) ? cur[k] : {}, nm = isMap(next[k]) ? next[k] : {};
+      for (const s of new Set([...Object.keys(pm), ...Object.keys(nm)])) note(`${k}.${s}`, pm[s], nm[s]);
+    } else if (k in next) note(k, cur[k], next[k]);
+  }
+  const live = new Set();
+  for (const f of ENTRY_LISTS) {
+    const before = new Map(list(cur?.[f]).filter(x => isMap(x) && x.id != null).map(x => [x.id, x]));
+    for (const x of list(next[f])) {
+      if (!isMap(x) || x.id == null) continue;
+      live.add(`${f}|${x.id}`);
+      const o = before.get(x.id);
+      if (!o || sameEntry(o, x)) continue;
+      for (const k of new Set([...Object.keys(o), ...Object.keys(x)])) if (!ENTRY_META.has(k)) note(`${f}|${x.id}|${k}`, o[k], x[k]);
+    }
+  }
+  // An entry that is gone takes its history with it; the oldest changed fields go past PRIOR_MAX.
+  for (const key of Object.keys(pr)) {
+    if (!ENTRY_LISTS.some(f => key.startsWith(`${f}|`))) continue;
+    if (!live.has(key.slice(0, key.lastIndexOf('|')))) delete pr[key];
+  }
+  const ks = Object.keys(pr);
+  for (const key of ks.slice(0, Math.max(0, ks.length - PRIOR_MAX))) delete pr[key];
+  if (Object.keys(pr).length) next._prior = pr; else delete next._prior;
+}
 // Step 2: what a writer that does not stamp changed against the copy it read, stamped at `now`.
 function stampUnstamped(cur, next, sent, now, own = null) {
+  // Whether `v` is a value the field held before (see notePrior); a field with no history: yes.
+  const pr = isMap(cur?._prior) ? cur._prior : {};
+  const wasBefore = (key, v) => !Array.isArray(pr[key]) || pr[key].includes(valueHash(v));
   // Removals: every entry the stored copy had and this one lacks, unless already on record.
   const del = isMap(next.deleted) ? next.deleted : {};
   for (const [f, key] of Object.entries(DEL_LISTS)) {
@@ -219,13 +280,13 @@ function stampUnstamped(cur, next, sent, now, own = null) {
       for (const s of new Set([...Object.keys(pm), ...Object.keys(nm)])) {
         const sk = `${k}.${s}`;
         if ((s in pm) === (s in nm) && same(pm[s], nm[s])) continue;
-        if (stale(sk)) {
+        if (stale(sk) && wasBefore(sk, nm[s])) {
           const into = isMap(next[k]) ? next[k] : (next[k] = {});
           if (s in pm) into[s] = clone(pm[s]); else delete into[s];
         } else if (!moved(sk)) ed[sk] = now;
       }
     } else if (n !== undefined && !same(p, n)) {   // absent: a field the writer does not know
-      if (stale(k)) { if (k in cur) next[k] = clone(p); else delete next[k]; }
+      if (stale(k) && wasBefore(k, n)) { if (k in cur) next[k] = clone(p); else delete next[k]; }
       else if (!moved(k)) ed[k] = now;
     }
   }
@@ -254,6 +315,7 @@ function stampUnstamped(cur, next, sent, now, own = null) {
           if (ENTRY_META.has(k) || !((Number(of[k]) || 0) > (Number(base[k]) || 0))) continue;
           if (ownStamp(own?.f?.[`${f}|${x.id}`], k, of[k])) continue;
           if ((k in old) === (k in x) && same(old[k], x[k])) continue;
+          if (!wasBefore(`${f}|${x.id}|${k}`, x[k])) continue;
           if (k in old) x[k] = clone(old[k]); else delete x[k];
         }
         const fx = { ...base };
@@ -320,7 +382,7 @@ const V139_DROPS = {
 // The lists inside an entry that are walked too, and how their items are matched.
 const NESTED = { routines: ['ex'], workouts: ['entries'], 'workouts.entries': ['sets'] };
 // Server bookkeeping and the records merged on their own: never put back from the stored copy.
-const NOT_KEPT = new Set(['_rev', '_wid', '_wids', '_unstamped', 'active', 'resetAt', 'resetIds', 'deleted', 'edited']);
+const NOT_KEPT = new Set(['_rev', '_wid', '_wids', '_unstamped', '_prior', 'active', 'resetAt', 'resetIds', 'deleted', 'edited']);
 
 // `x` with every key of `old` it lacks and the writer cannot have dropped on purpose. Mutates `x`.
 function keepKeys(old, x, place) {
@@ -404,7 +466,7 @@ function keepHeld(next, now) {
  */
 // What a document says, without its stamps and the server's bookkeeping: whether the server put
 // back anything of what a writer sent (stampPut's `report`).
-const BOOKKEEPING = new Set(['_ts', '_f', '_u', '_rev', '_wid', '_wids', '_unstamped', 'edited', 'deleted', 'undone']);
+const BOOKKEEPING = new Set(['_ts', '_f', '_u', '_rev', '_wid', '_wids', '_unstamped', '_prior', 'edited', 'deleted', 'undone']);
 const content = S => JSON.stringify(S, (k, v) => (BOOKKEEPING.has(k) ? undefined : v));
 
 export function stampPut(cur, next, { overRead = false, stamped = false, now = Date.now(), report = null } = {}) {
@@ -412,8 +474,13 @@ export function stampPut(cur, next, { overRead = false, stamped = false, now = D
   const t = Math.max(Number(now) || 0, highestStamp(cur) + 1, highestStamp(next) + 1);
   const reset = (Number(next.resetAt) || 0) > (Number(cur?.resetAt) || 0);
   const sent = isMap(next.edited) ? { ...next.edited } : null;
-  // Only the push that made it may use it (see ownRecord); whatever a writer sent back goes.
+  // The note of what the server stamped for an older app outlives the writes in between (an updated
+  // app's, or one not over the revision it read), for as long as each stamp is still the stored one:
+  // the older app's merge after the 409 such a write causes keeps its own record of edits, so its
+  // next push still matches the fingerprint, and its own change is still its own.
+  const prevOwn = isMap(cur?._unstamped) ? cur._unstamped : null;
   delete next._unstamped;
+  delete next._prior;
   if (cur && !reset) {
     const d = mergeDeletions(cur.deleted, next.deleted);
     if (d) next.deleted = d; else delete next.deleted;
@@ -430,9 +497,13 @@ export function stampPut(cur, next, { overRead = false, stamped = false, now = D
       stampUnstamped(cur, next, sent, t, own);
       const rec = ownRecord(next, t, own, fp);
       if (rec) next._unstamped = rec;
+    } else if (prevOwn && !reset) {
+      const rec = ownRecord(next, NaN, prevOwn, prevOwn.fp);
+      if (rec) next._unstamped = rec;
     }
     if (before != null && content(next) !== before) report.changed = true;
   }
   keepHeld(next, t);
+  if (cur && !reset) notePrior(cur, next);
   return next;
 }

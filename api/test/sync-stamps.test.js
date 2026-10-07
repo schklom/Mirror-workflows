@@ -328,11 +328,56 @@ test('a stamp the server gave one older app still holds against another that rea
   other.restSec = 90;
   stampPut(clone(cur), other, { overRead: true, stamped: false, now: NOW + 1000 });
   assert.equal(other.restSec, 120);
-  // and an updated app's write in between ends the run: the older app's next push is a 409 anyway,
-  // and nothing of the record is left for it
+  // and an updated app's write in between keeps the record of the stamp still stored: the older
+  // app's merge after the 409 keeps its own record of edits, so its next change is still its own
   const app = clone(one); app.theme = 'x';
   stampPut(clone(one), app, { overRead: true, stamped: true, now: NOW + 2000 });
-  assert.equal('_unstamped' in app, false);
+  assert.equal(app._unstamped?.ed?.restSec, one.edited.restSec);
+});
+
+test('an older app\'s own next change goes through after another device wrote in between; its old copy coming back does not', () => {
+  let cur = stored();
+  const put = (doc, now, stamped = false) => { const next = clone(doc); stampPut(clone(cur), next, { overRead: true, stamped, now }); cur = next; return next; };
+  const old = clone(cur);                            // what v1.3.9 read, record and all
+  old.restSec = 180;
+  old.workouts.push({ id: 'w3', d: '2026-10-03', start: 5, end: 6, entries: [{ id: 'bench', sets: [{ w: 60, r: 5 }] }], _ts: NOW - 50 });
+  put(old, NOW);
+  old.workouts[2].entries[0].sets.push({ w: 70, r: 5 });
+  put(old, NOW + 1000);
+  assert.equal(cur.workouts[2].entries[0].sets.length, 2);
+  // an updated app changes the queue (and reads the server's copy, so it sends the stamps)
+  const app = clone(cur); delete app._unstamped; delete app._prior;
+  app.queue = { ids: ['b'] }; app.edited = { ...app.edited, queue: NOW + 2000 };
+  put(app, NOW + 2000, true);
+  assert.equal('_prior' in app, false);
+  // the older app, on its own copy (its merge after the 409 keeps its older record and the queue
+  // from before): a 3rd logged set and a second change of the rest time are its own and land, the
+  // queue it still holds is the one from before and stays set back
+  old.restSec = 270; old.workouts[2].entries[0].sets.push({ w: 80, r: 3 });
+  put(old, NOW + 3000);
+  assert.equal(cur.restSec, 270);
+  assert.deepEqual(cur.workouts[2].entries[0].sets.map(x => x.w), [60, 70, 80]);
+  assert.deepEqual(cur.queue, { ids: ['b'] });
+  // a new pick of the queue it makes before it reads the profile again is its own choice
+  old.queue = { ids: ['c'] };
+  put(old, NOW + 4000);
+  assert.deepEqual(cur.queue, { ids: ['c'] });
+  assert.ok(cur.edited.queue >= NOW + 4000);
+  // a workout that is removed takes its history with it
+  assert.ok(Object.keys(cur._prior).some(k => k.startsWith('workouts|w3|')));
+  old.workouts = old.workouts.filter(w => w.id !== 'w3');
+  put(old, NOW + 5000);
+  assert.ok(!Object.keys(cur._prior || {}).some(k => k.startsWith('workouts|w3|')));
+  assert.ok(cur.deleted.workouts.w3 > 0);
+});
+
+test('a field with no history of its earlier values (stamped before it was kept) is put back as before', () => {
+  const cur = stored();
+  cur.edited = { restSec: NOW - 1000 };              // changed on an updated app since the old copy
+  const old = clone(cur); old.edited = { restSec: NOW - 8000 };
+  old.restSec = 45;                                   // a value it never held: without `_prior`, still put back
+  stampPut(clone(cur), old, { overRead: true, stamped: false, now: NOW });
+  assert.equal(old.restSec, 90);
 });
 
 test('PUT /api/data: an older app\'s two changes of one setting in a row both land, and the note stays on the server', async t => {
@@ -361,6 +406,8 @@ test('PUT /api/data: an older app\'s two changes of one setting in a row both la
   assert.equal(now.state.restSec, 150);
   assert.equal(now.rev, r.body.rev);                 // nothing set back, so nothing to read again
   assert.equal('_unstamped' in now.state, false);
+  assert.equal('_prior' in now.state, false);
   const onDisk = JSON.parse(fs.readFileSync(path.join(dataDir, 'state-u1.json'), 'utf8'));
   assert.ok(onDisk._unstamped?.ed?.restSec > 0);
+  assert.equal(onDisk._prior?.restSec?.length, 2);   // 100, then 120
 });

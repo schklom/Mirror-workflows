@@ -14,6 +14,8 @@ import { stampPut } from '../../../api/sync-stamps.js'
 const { mergeStates, stampWorkout, keepReset } = M
 const unitOps = []
 const clone = o => (o === undefined ? undefined : JSON.parse(JSON.stringify(o)))
+// What server.js sends a client: the stored document without the server's own notes.
+const forClient = S => { const x = clone(S); if (x) { delete x._unstamped; delete x._prior } return x }
 const DEL = '__DELETED__'
 
 function rng(seed) { let s = seed >>> 0 || 1; return () => { s ^= s << 13; s >>>= 0; s ^= s >> 17; s ^= s << 5; s >>>= 0; return s / 4294967296 } }
@@ -71,7 +73,7 @@ function run(seed, opts = {}) {
   function serverPut(body) {
     const cur = server.doc
     const curRev = server.rev
-    if (body.baseRev != null && body.baseRev !== curRev) return { status: 409, state: clone(cur), rev: curRev }
+    if (body.baseRev != null && body.baseRev !== curRev) return { status: 409, state: forClient(cur), rev: curRev }
     const st = clone(body.state)
     delete st.active
     const storedReset = Number(cur?.resetAt) || 0
@@ -110,7 +112,7 @@ function run(seed, opts = {}) {
     if (!r.online) return
     if (r.inflight) pushRecv(r)
     if (r.pushTm) push(r)
-    const state = clone(server.doc), rev = server.rev
+    const state = forClient(server.doc), rev = server.rev
     const S = r.S
     const dirty = r.owed
     if (!r.base) {
@@ -341,7 +343,7 @@ function run(seed, opts = {}) {
   for (let round = 0; round < 6; round++) for (const r of reps) { T += 1000; pull(r) }
   const strip = S => { const x = clone(S); for (const k of ['_ts', '_rev', 'active']) delete x[k]; return JSON.stringify(sortKeys(x)) }
   const problems = []
-  const sv = strip(server.doc || DEF())
+  const sv = strip(forClient(server.doc) || DEF())
   for (const r of reps) if (strip(r.S) !== sv) problems.push(`no-converge r${r.i}`)
   // ---- oracle -----------------------------------------------------------------------------
   const D = server.doc || DEF()

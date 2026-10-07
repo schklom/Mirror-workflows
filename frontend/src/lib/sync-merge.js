@@ -600,7 +600,7 @@ function applyDeletions(S, deleted) {
 // a rotation pass refilled on the phone survives a setting flipped on the desktop. Fields with a
 // merge of their own are not stamped here; a field nobody stamped follows the newer copy, as before.
 const OWN_MERGE = new Set([
-  '_ts', '_rev', '_wid', '_wids', '_unstamped', 'active', 'unit', 'unitSet', 'resetAt', 'resetIds', 'deleted', 'edited', 'undone', 'routineOrder',
+  '_ts', '_rev', '_wid', '_wids', '_unstamped', '_prior', 'active', 'unit', 'unitSet', 'resetAt', 'resetIds', 'deleted', 'edited', 'undone', 'routineOrder',
   'workouts', 'routines', 'customEx', 'equipProfiles', 'gymCards', 'bodyweight', 'favEx',
   'exWeights', 'balanceOverrides', 'loadKind', 'plates',
 ])
@@ -861,7 +861,8 @@ export function mergeStates(a0, b0, { prefer } = {}) {
   delete out._rev
   delete out._wid
   delete out._wids
-  delete out._unstamped   // the server's own note (api/sync-stamps.js), never a client's
+  delete out._unstamped   // the server's own notes (api/sync-stamps.js), never a client's
+  delete out._prior
   // The accent fields end up in CSS: whatever either copy brought, only a clean value goes on.
   sanitizeAccent(out)
   return out

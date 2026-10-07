@@ -191,10 +191,10 @@ function readStateStrict(uid) {
   catch (e) { return e.code === 'ENOENT' ? null : UNREADABLE; }
   try { return JSON.parse(raw); } catch { return UNREADABLE; }
 }
-// A stored document as a client gets it: without the server's own note `_unstamped`.
+// A stored document as a client gets it: without the server's own notes `_unstamped` and `_prior`.
 function forClient(S) {
-  if (!S || typeof S !== 'object' || !('_unstamped' in S)) return S;
-  const { _unstamped, ...rest } = S;
+  if (!S || typeof S !== 'object' || !('_unstamped' in S || '_prior' in S)) return S;
+  const { _unstamped, _prior, ...rest } = S;
   return rest;
 }
 // An entry is an object a reader can dereference, and `records` is every entry of a stored
@@ -2093,7 +2093,8 @@ const routes = {
   // `_rev`, so every other reader of the file — reminder tick, admin, Coach, MCP — is unaffected).
   // A client pushes it back as `baseRev`, and a write over a document it never saw is refused.
   // `_unstamped` is the server's note of what it stamped for an older app's last push
-  // (sync-stamps.js ownRecord): read back only by the next PUT, never sent to a client.
+  // (sync-stamps.js ownRecord), `_prior` what each field held before (notePrior): read back only
+  // by the next PUT, never sent to a client.
   'GET /api/data': async (req, res) => {
     const user = readSession(req);
     if (!user) return json(res, 401, { error: 'not signed in' });

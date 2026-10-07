@@ -41,6 +41,16 @@ const hostOf = url => { try { return new URL(url).host; } catch { return url; } 
 const schemeOf = url => { try { return new URL(url).protocol === 'http:' ? 'HTTP' : 'HTTPS'; } catch { return 'HTTPS'; } };
 const trim = (s, n = 300) => String(s == null ? '' : s).slice(0, n);
 
+// A base that already names its API version (OpenRouter's …/api/v1, Zhipu's …/paas/v4, Gemini's
+// …/v1beta/openai) is the whole prefix, so the spec's own leading version is dropped instead of
+// doubled into …/v4/v1/chat/completions (#437). A bare host still gets the spec's version.
+const VERSION_SEGMENT = /\/v\d+(?:(?:alpha|beta)\d*)?(?=\/|$)/i;
+export function endpointUrl(base, path) {
+  const basePath = base.replace(/^[a-z][a-z0-9+.-]*:\/\/[^/]*/i, '');
+  if (!VERSION_SEGMENT.test(basePath)) return base + path;
+  return base + path.replace(new RegExp('^' + VERSION_SEGMENT.source, 'i'), '');
+}
+
 /** A fetch, bounded by AbortController. Never throws for HTTP status; throws for transport. */
 async function call(fetchImpl, url, init, timeoutMs, signal) {
   const ctl = new AbortController();
@@ -101,7 +111,7 @@ export function httpAdapter(spec) {
       if (!key && !meta.keyOptional) return { ok: false, error: 'no API key configured', models: [] };
       let res;
       try {
-        res = await call(fetchImpl, base + spec.modelsPath, { method: 'GET', headers: spec.headers(key) }, timeoutMs, signal);
+        res = await call(fetchImpl, endpointUrl(base, spec.modelsPath), { method: 'GET', headers: spec.headers(key) }, timeoutMs, signal);
       } catch (e) {
         return { ok: false, error: e.name === 'AbortError' ? 'timed out' : `could not reach ${hostOf(base)}: ${trim(e.message, 120)}`, models: [] };
       }
@@ -133,7 +143,7 @@ export function httpAdapter(spec) {
       for (;;) {
         let res;
         try {
-          res = await call(fetchImpl, base + spec.path(chosen), {
+          res = await call(fetchImpl, endpointUrl(base, spec.path(chosen)), {
             method: 'POST',
             headers: { 'content-type': 'application/json', ...spec.headers(key) },
             body: JSON.stringify(body)

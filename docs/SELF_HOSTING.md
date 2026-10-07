@@ -631,6 +631,30 @@ Push services like a contact address for whoever runs the server, in case they e
 you about your pushes. openGym sends your `ORIGIN` by default; set `VAPID_SUBJECT=mailto:you@example.com`
 in `.env` if you would rather they had an inbox.
 
+### Push endpoints on private addresses (`ALLOWED_PRIVATE_IPS`)
+
+The api container connects out to the push service address each browser registers. To protect the
+other services on your network, it refuses any address that is private, loopback, link-local,
+CGNAT or reserved — for a hostname, after DNS resolution. Some DNS setups resolve public push
+services to private addresses on purpose, for example FakeDNS, a DNS-based proxy or a
+split-horizon resolver. Push then fails and the api log shows `refusing to connect to a private
+address`.
+
+Set `ALLOWED_PRIVATE_IPS` in `.env` to the private addresses that are safe to reach:
+
+```
+ALLOWED_PRIVATE_IPS=198.18.0.0/15
+ALLOWED_PRIVATE_IPS=10.0.0.0/8, 192.168.1.50, 172.16.0.1-172.16.0.9, fd00::/8
+```
+
+- Separate entries with commas or spaces.
+- An entry is a single IP address, a range (`first-last`) or a CIDR block. IPv4 and IPv6 both work.
+- An IPv4 entry also covers the same address written as IPv4-mapped IPv6 (`::ffff:10.1.2.3`).
+- An entry that is not valid prints a warning in the api log and is ignored.
+- The list is read once at start. Restart the api container after you change it.
+- The default is empty: every private address stays blocked. Keep the list as small as you can —
+  each address you allow is an address that a signed-in user can make the server connect to.
+
 ## 8. Updating
 
 Running prebuilt images:

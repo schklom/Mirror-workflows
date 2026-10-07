@@ -1734,6 +1734,7 @@ export default {
   'Where you most often drop off: set {0} ({1} of {2} workouts)': '最常掉的组：第 {0} 组（{2} 次训练中 {1} 次）',
   'Only the first {0} sets are drawn.': '只绘制前 {0} 组。',
   'A set left at 0 rest uses the exercise’s rest.': '休息为 0 的组使用该动作的休息时间。',
+  'A set left at 0 weight starts from that set’s weight last time.': '重量为 0 的组从上次同一组的重量开始。',
   // --- update a routine from a running workout ---
   'Update routine': '更新训练日',
   'Update “{0}”?': '更新训练日「{0}」？',

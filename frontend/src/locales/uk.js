@@ -1731,6 +1731,7 @@ export default {
   'Where you most often drop off: set {0} ({1} of {2} workouts)': 'Де ти найчастіше здаєш: підхід {0} ({1} з {2} тренувань)',
   'Only the first {0} sets are drawn.': 'Показано лише перші {0} підходів.',
   'A set left at 0 rest uses the exercise’s rest.': 'Підхід із відпочинком 0 використовує відпочинок вправи.',
+  'A set left at 0 weight starts from that set’s weight last time.': 'Підхід із вагою 0 починається з ваги цього підходу минулого разу.',
   // --- update a routine from a running workout ---
   'Update routine': 'Оновити програму',
   'Update “{0}”?': 'Оновити програму «{0}»?',

@@ -1789,6 +1789,7 @@ export default {
   'Where you most often drop off: set {0} ({1} of {2} workouts)': 'أكثر مكان تتراجع فيه: المجموعة {0} ({1} من {2} تمارين)',
   'Only the first {0} sets are drawn.': 'تُرسم أول {0} مجموعات فقط.',
   'A set left at 0 rest uses the exercise’s rest.': 'المجموعة ذات الراحة 0 تستخدم راحة التمرين.',
+  'A set left at 0 weight starts from that set’s weight last time.': 'المجموعة ذات الوزن 0 تبدأ من وزن المجموعة نفسها في المرة السابقة.',
   // --- update a routine from a running workout ---
   'Update routine': 'تحديث الروتين',
   'Update “{0}”?': 'تحديث «{0}»؟',

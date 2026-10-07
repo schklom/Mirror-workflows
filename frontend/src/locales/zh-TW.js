@@ -1707,6 +1707,7 @@ export default {
   'Where you most often drop off: set {0} ({1} of {2} workouts)': '最常掉的組：第 {0} 組（{2} 次訓練中 {1} 次）',
   'Only the first {0} sets are drawn.': '只繪製前 {0} 組。',
   'A set left at 0 rest uses the exercise’s rest.': '休息設為 0 的組會使用該動作的休息時間。',
+  'A set left at 0 weight starts from that set’s weight last time.': '重量設為 0 的組會從上次同一組的重量開始。',
   'Show less': '顯示更少',
   'Completed': '已完成',
   'Weekly muscle volume': '每週肌肉訓練量',

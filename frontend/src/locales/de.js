@@ -1754,6 +1754,7 @@ export default {
   'Where you most often drop off: set {0} ({1} of {2} workouts)': 'Wo du am häufigsten nachlässt: Satz {0} ({1} von {2} Trainings)',
   'Only the first {0} sets are drawn.': 'Nur die ersten {0} Sätze werden gezeichnet.',
   'A set left at 0 rest uses the exercise’s rest.': 'Ein Satz mit 0 Pause nutzt die Pause der Übung.',
+  'A set left at 0 weight starts from that set’s weight last time.': 'Ein Satz mit 0 Gewicht startet mit dem Gewicht dieses Satzes vom letzten Mal.',
   // --- update a routine from a running workout ---
   'Update routine': 'Routine aktualisieren',
   'Update “{0}”?': 'Routine „{0}“ aktualisieren?',

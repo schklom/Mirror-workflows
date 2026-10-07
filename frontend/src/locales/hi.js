@@ -1734,6 +1734,7 @@ export default {
   'Where you most often drop off: set {0} ({1} of {2} workouts)': 'आप सबसे ज़्यादा कहाँ पीछे रह जाते हैं: सेट {0} ({2} में से {1} वर्कआउट)',
   'Only the first {0} sets are drawn.': 'सिर्फ़ पहले {0} सेट दिखाए गए हैं।',
   'A set left at 0 rest uses the exercise’s rest.': '0 आराम वाला सेट एक्सरसाइज़ का आराम इस्तेमाल करता है।',
+  'A set left at 0 weight starts from that set’s weight last time.': '0 वज़न वाला सेट पिछली बार उसी सेट के वज़न से शुरू होता है।',
   // --- update a routine from a running workout ---
   'Update routine': 'रूटीन अपडेट करें',
   'Update “{0}”?': 'रूटीन “{0}” अपडेट करें?',

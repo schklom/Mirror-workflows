@@ -1737,6 +1737,7 @@ export default {
   'Where you most often drop off: set {0} ({1} of {2} workouts)': 'Ahol a leggyakrabban visszaesel: {0}. sorozat ({2} edzésből {1})',
   'Only the first {0} sets are drawn.': 'Csak az első {0} sorozat látható.',
   'A set left at 0 rest uses the exercise’s rest.': 'A 0 pihenőjű sorozat a gyakorlat pihenőjét használja.',
+  'A set left at 0 weight starts from that set’s weight last time.': 'A 0 súlyú sorozat az előző alkalommal ugyanennél a sorozatnál használt súlyról indul.',
   // --- update a routine from a running workout ---
   'Update routine': 'Rutin frissítése',
   'Update “{0}”?': 'Frissíted a(z) „{0}” rutint?',

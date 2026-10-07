@@ -1734,6 +1734,7 @@ export default {
   'Where you most often drop off: set {0} ({1} of {2} workouts)': '가장 자주 떨어지는 세트: {0}세트 ({2}번 중 {1}번)',
   'Only the first {0} sets are drawn.': '처음 {0}세트만 표시됩니다.',
   'A set left at 0 rest uses the exercise’s rest.': '휴식이 0인 세트는 운동의 휴식 시간을 사용합니다.',
+  'A set left at 0 weight starts from that set’s weight last time.': '무게가 0인 세트는 지난번 같은 세트의 무게로 시작합니다.',
   // --- update a routine from a running workout ---
   'Update routine': '루틴 업데이트',
   'Update “{0}”?': '“{0}” 루틴을 업데이트할까요?',

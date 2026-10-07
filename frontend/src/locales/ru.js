@@ -1738,6 +1738,7 @@ export default {
   'Where you most often drop off: set {0} ({1} of {2} workouts)': 'Где вы чаще всего сдаёте: подход {0} ({1} из {2} тренировок)',
   'Only the first {0} sets are drawn.': 'Показаны только первые {0} подходов.',
   'A set left at 0 rest uses the exercise’s rest.': 'Подход с отдыхом 0 использует отдых упражнения.',
+  'A set left at 0 weight starts from that set’s weight last time.': 'Подход с весом 0 начинается с веса этого подхода в прошлый раз.',
   // --- update a routine from a running workout ---
   'Update routine': 'Обновить программу',
   'Update “{0}”?': 'Обновить программу «{0}»?',

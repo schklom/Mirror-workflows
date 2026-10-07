@@ -1734,6 +1734,7 @@ export default {
   'Where you most often drop off: set {0} ({1} of {2} workouts)': 'Onde a quebra é mais frequente: série {0} ({1} de {2} treinos)',
   'Only the first {0} sets are drawn.': 'Só são desenhadas as primeiras {0} séries.',
   'A set left at 0 rest uses the exercise’s rest.': 'Uma série com descanso 0 usa o descanso do exercício.',
+  'A set left at 0 weight starts from that set’s weight last time.': 'Uma série com peso 0 começa com o peso dessa série da última vez.',
   // --- update a routine from a running workout ---
   'Update routine': 'Atualizar rotina',
   'Update “{0}”?': 'Atualizar «{0}»?',

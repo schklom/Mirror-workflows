@@ -42,6 +42,8 @@ const convTarget = (cfg, from, to) => {
   // A per-exercise increment is a load too — 2.5 kg is 5 lb, not 2.5 lb.
   if (out.inc > 0 && (out.mode == null || out.mode === 'reps')) out.inc = convertWeight(out.inc, from, to)
   if (Array.isArray(out.warmup)) out.warmup = out.warmup.map(w => (w && w.weight != null ? { ...w, weight: convertWeight(w.weight, from, to) } : w))
+  // A pyramid's own weight per set; 0 ("no plan for this set") stays 0.
+  if (Array.isArray(out.pyramidWeight)) out.pyramidWeight = out.pyramidWeight.map(w => (w > 0 ? convertWeight(w, from, to) : w))
   return out
 }
 // A bar is a stamped object, not a number: the 45 lb bar IS the 20 kg bar (44.1 lb), so an

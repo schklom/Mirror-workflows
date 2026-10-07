@@ -143,6 +143,15 @@ describe('get_routine', () => {
     expect(r.exercises[0]).toMatchObject({ pyramid: [12, 8, 6, 'max', 12], policy: 'off', summary: '12 · 8 · 6 · Max · 12' })
   })
 
+  test('reports a pyramid\'s planned weight per set, and leaves it out when none is planned (#445)', () => {
+    const cfg = S.routines[0].ex[0]
+    Object.assign(cfg, { mode: 'reps', sets: 3, reps: 12, weight: 0, pyramid: [12, 8, 6], pyramidWeight: [40, 0, 60] })
+    delete cfg.repsMin
+    expect(call('get_routine', { routine_id: S.routines[0].id }).exercises[0].pyramid_weight).toEqual([40, 0, 60])
+    delete cfg.pyramidWeight
+    expect(call('get_routine', { routine_id: S.routines[0].id }).exercises[0].pyramid_weight).toBeUndefined()
+  })
+
   test('reports an exercise\'s own rest, and leaves it out when it inherits the timer', () => {
     S.routines[0].ex[0].restSec = 180
     delete S.routines[0].ex[1]?.restSec

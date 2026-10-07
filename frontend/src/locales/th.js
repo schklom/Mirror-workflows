@@ -1745,6 +1745,7 @@ export default {
   'Where you most often drop off: set {0} ({1} of {2} workouts)': 'จุดที่คุณแผ่วบ่อยที่สุด: เซ็ต {0} ({1} จาก {2} ครั้ง)',
   'Only the first {0} sets are drawn.': 'แสดงเฉพาะ {0} เซ็ตแรกเท่านั้น',
   'A set left at 0 rest uses the exercise’s rest.': 'เซ็ตที่พัก 0 จะใช้เวลาพักของท่านั้น',
+  'A set left at 0 weight starts from that set’s weight last time.': 'เซ็ตที่น้ำหนัก 0 จะเริ่มจากน้ำหนักของเซ็ตเดียวกันครั้งก่อน',
   // --- update a routine from a running workout ---
   'Update routine': 'อัปเดตรูทีน',
   'Update “{0}”?': 'อัปเดตรูทีน “{0}” ไหม?',

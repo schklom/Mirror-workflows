@@ -1734,6 +1734,7 @@ export default {
   'Where you most often drop off: set {0} ({1} of {2} workouts)': 'En sık düştüğün set: {0}. set ({2} antrenmanın {1} tanesinde)',
   'Only the first {0} sets are drawn.': 'Yalnızca ilk {0} set çiziliyor.',
   'A set left at 0 rest uses the exercise’s rest.': 'Dinlenmesi 0 olan set, egzersizin dinlenmesini kullanır.',
+  'A set left at 0 weight starts from that set’s weight last time.': 'Ağırlığı 0 olan set, aynı setin geçen seferki ağırlığıyla başlar.',
   // --- update a routine from a running workout ---
   'Update routine': 'Rutini güncelle',
   'Update “{0}”?': '“{0}” rutini güncellensin mi?',

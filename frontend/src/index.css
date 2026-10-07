@@ -1128,7 +1128,9 @@ body.chips-dragging *{cursor:inherit}
 .swrow.dragging{-webkit-user-select:none;user-select:none}
 /* Plan's lists (v1.3.11): the row is a whole .item card, so the swipe clips to the card's corners */
 .swrow.swrow-item{border-radius:var(--r-card)}
-.swfront{position:relative;z-index:1;background:var(--surface);will-change:transform}
+.swfront{position:relative;z-index:1;background:var(--surface)}
+/* Its own layer only while it moves: on every row it was a layer per set (#431). */
+.swrow.dragging .swfront,.swrow.go-del .swfront,.swrow.go-cp .swfront{will-change:transform}
 .swpane{position:absolute;top:0;bottom:0;width:0;overflow:hidden;z-index:0}
 .swpane.del{inset-inline-end:0;background:color-mix(in srgb,var(--red) 22%,var(--surface))}
 .swpane.cp{inset-inline-start:0;background:var(--acc-soft)}

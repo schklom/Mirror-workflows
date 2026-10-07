@@ -1433,6 +1433,12 @@ export default {
   'Copy as text': 'نسخ كنص',
   'Copied': 'تم النسخ',
   'Could not copy': 'تعذّر النسخ',
+  // --- a past workout shared as an image (#453) ---
+  'Share as image': 'مشاركة كصورة',
+  'Could not create the image': 'تعذّر إنشاء الصورة',
+  'Image saved': 'تم حفظ الصورة',
+  'New personal records': 'أرقام شخصية جديدة',
+  'and {0} more': 'و{0} أخرى',
   'Log this workout': 'سجّل هذا التمرين',
   'Mark all sets done': 'تحديد كل المجموعات كمكتملة',
   'All weigh-ins': 'كل قياسات الوزن',

@@ -1514,6 +1514,12 @@ export default {
   'Copy as text': 'Másolás szövegként',
   'Copied': 'Kimásolva',
   'Could not copy': 'Nem sikerült másolni',
+  // --- a past workout shared as an image (#453) ---
+  'Share as image': 'Megosztás képként',
+  'Could not create the image': 'Nem sikerült létrehozni a képet',
+  'Image saved': 'Kép mentve',
+  'New personal records': 'Új egyéni csúcsok',
+  'and {0} more': 'és még {0}',
   // --- a missed day logged afterwards (#284) ---
   'Log this workout': 'Az edzés rögzítése',
   'Mark all sets done': 'Összes sorozat késznek jelölése',

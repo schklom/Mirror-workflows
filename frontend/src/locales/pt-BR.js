@@ -1212,6 +1212,12 @@ export const PT_BR_OVERRIDES = {
   'Greys show lighter in dark mode, so buttons don’t look switched off.': 'Os cinzas ficam mais claros no modo escuro, para os botões não parecerem desligados.',
   'Greys show darker in light mode, so buttons don’t look switched off.': 'Os cinzas ficam mais escuros no modo claro, para os botões não parecerem desligados.',
   'Signed in from another tab. Your workout came along, keep going here.': 'Login feito em outra aba. Seu treino veio junto, continue por aqui.',
+  // --- a past workout shared as an image (#453) ---
+  'Share as image': 'Compartilhar como imagem',
+  'Could not create the image': 'Não foi possível criar a imagem',
+  'Image saved': 'Imagem salva',
+  'New personal records': 'Novos recordes pessoais',
+  'and {0} more': 'e mais {0}',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

@@ -600,7 +600,7 @@ function applyDeletions(S, deleted) {
 // a rotation pass refilled on the phone survives a setting flipped on the desktop. Fields with a
 // merge of their own are not stamped here; a field nobody stamped follows the newer copy, as before.
 const OWN_MERGE = new Set([
-  '_ts', '_rev', 'active', 'unit', 'unitSet', 'resetAt', 'resetIds', 'deleted', 'edited', 'undone', 'routineOrder',
+  '_ts', '_rev', '_wid', '_wids', 'active', 'unit', 'unitSet', 'resetAt', 'resetIds', 'deleted', 'edited', 'undone', 'routineOrder',
   'workouts', 'routines', 'customEx', 'equipProfiles', 'gymCards', 'bodyweight', 'favEx',
   'exWeights', 'balanceOverrides', 'loadKind', 'plates',
 ])

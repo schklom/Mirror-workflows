@@ -59,7 +59,7 @@ const capStamps = m => {
   return m;
 };
 const OWN_MERGE = new Set([
-  '_ts', '_rev', 'active', 'unit', 'unitSet', 'resetAt', 'resetIds', 'deleted', 'edited', 'undone', 'routineOrder',
+  '_ts', '_rev', '_wid', '_wids', 'active', 'unit', 'unitSet', 'resetAt', 'resetIds', 'deleted', 'edited', 'undone', 'routineOrder',
   'workouts', 'routines', 'customEx', 'equipProfiles', 'gymCards', 'bodyweight', 'favEx',
   'exWeights', 'balanceOverrides', 'loadKind', 'plates',
 ]);
@@ -356,7 +356,10 @@ export function stampPut(cur, next, { overRead = false, stamped = false, now = D
     const d = mergeDeletions(cur.deleted, next.deleted);
     if (d) next.deleted = d; else delete next.deleted;
     const e = mergeEdits(cur.edited, next.edited);
-    if (e) next.edited = e; else delete next.edited;
+    // The write ids are the server's bookkeeping, never a setting: an older app's push used to get
+    // them stamped as one it changed (QA 2026-10-07), and such a stamp is dropped here.
+    if (e) { delete e._wid; delete e._wids; }
+    if (e && Object.keys(e).length) next.edited = e; else delete next.edited;
     if (!stamped) keepUnknown(cur, next);
     if (!stamped && overRead) stampUnstamped(cur, next, sent, t);
   }

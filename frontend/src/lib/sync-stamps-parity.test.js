@@ -3,7 +3,7 @@
    its own changes (an older app, an API planner) must hold in this side's merge. */
 import { describe, expect, it } from 'vitest'
 import * as S from '../../../api/sync-stamps.js'
-import { highestStamp, mergeDeletions, mergeEdits, mergeStates, stampChange, stampEntry } from './sync-merge.js'
+import { highestStamp, mergeDeletions, mergeEdits, mergeStates, stampChange, stampEntry, stampEdits, stampRestore } from './sync-merge.js'
 
 const clone = v => JSON.parse(JSON.stringify(v))
 function rng(seed) { let s = seed >>> 0 || 1; return () => { s ^= s << 13; s >>>= 0; s ^= s >> 17; s ^= s << 5; s >>>= 0; return s / 4294967296 } }
@@ -125,3 +125,13 @@ describe('what the server stamps holds in the merge', () => {
     }
   })
 })
+
+describe('the write ids are no setting', () => {
+  it('neither a change nor a restored backup stamps them', () => {
+    const prev = { _ts: 1, _wid: 'a', _wids: ['x'], restSec: 90 }
+    const next = { ...clone(prev), _wid: 'b', _wids: ['x', 'a'] }
+    expect(stampEdits(prev, next, 5).edited).toBeUndefined()
+    expect(Object.keys(stampRestore({ _wid: 'b', _wids: ['a'], restSec: 60 }, [], 9).edited)).not.toContain('_wid')
+  })
+})
+

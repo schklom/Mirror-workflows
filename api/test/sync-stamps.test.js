@@ -223,3 +223,18 @@ test('an older app that read the latest change still changes it, and one that se
   stampPut(cur, replace, { overRead: false, stamped: false, now: NOW });
   assert.equal(replace.restSec, 120);
 });
+
+// RC review 2026-10-07: an older app sends back the write ids it read, and the server took the
+// difference to the stored ones for a setting it changed: `edited._wid`, `edited._wids`.
+test('an older app\'s push never gets the write ids stamped as settings, and an old such stamp goes', () => {
+  const cur = stored();
+  cur._wid = 'new'; cur._wids = ['a', 'b'];
+  cur.edited = { ...cur.edited, _wid: NOW - 7000 };
+  const old = clone(cur);
+  old._wid = 'older'; old._wids = ['a'];
+  delete old.edited;
+  old.edited = { restSec: NOW - 4000 };
+  stampPut(cur, old, { overRead: true, stamped: false, now: NOW });
+  assert.equal('_wid' in old.edited, false);
+  assert.equal('_wids' in old.edited, false);
+});

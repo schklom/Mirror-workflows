@@ -804,18 +804,21 @@ export function streakWeeks(S) {
 }
 
 /**
- * Cascade an explicit load edit through later inherited rows in the same phase.
+ * Cascade an explicit work-set load edit through the later inherited work sets.
  *
  * Missing `weightOrigin` is inherited for compatibility with existing sessions. A row or side
  * marked `manual` is an explicit exception, so it stays put even when it is heavier or lighter.
  * `side` narrows a per-side edit to one limb; without it both limbs are eligible independently.
  * Completed rows (and completed limbs) never get rewritten. Clearing an inherited load removes
  * its `w` key just like a direct edit.
+ *
+ * Only a work-set edit cascades, and only onto work sets. Warm-ups are a ramp (buildSets), each
+ * rung its own load, so editing one rung leaves the rungs after it where they were (setting
+ * warm-up 1 of a 60/90/105 ramp to 65 used to turn it into 65/65/65).
  */
 export function cascadeWeight(rows, from, value, side) {
   const source = rows[from]
-  if (!source) return rows.slice()
-  const warm = isWarmupRow(source)
+  if (!source || isWarmupRow(source)) return rows.slice()
   const sides = isSideSet(source) ? (side ? [side] : ['L', 'R']) : null
   const next = rows.slice()
   const setWeight = row => {
@@ -832,7 +835,7 @@ export function cascadeWeight(rows, from, value, side) {
   }
   for (let j = from + 1; j < next.length; j++) {
     const row = next[j]
-    if (isWarmupRow(row) !== warm) continue
+    if (isWarmupRow(row)) continue
     if (sides) {
       if (!isSideSet(row)) continue
       let out = row

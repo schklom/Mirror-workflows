@@ -156,9 +156,9 @@ reading one row:
 
 - `workoutVolume` (`history.js`) — adds `extraVolumeOf(s)` on top of `w×r` per row. Drop-set
   drops count; rest-pause clusters don't (see above — they're already inside the row's own `r`).
-- `setTonnage` (`recovery.js`) — same split: `extraTonnage(...)` prices a drop-set's drops with
-  the same intensity-weighted formula (`load × reps × min(1, load/1RM)^1.5`) as the main set, and
-  is a no-op for rest-pause for the same double-counting reason.
+- `sessionSets` (`recovery.js`) — same split: each drop-set drop counts as an extra
+  set at its own session-local relative intensity (`(load/best)^1.5`), and
+  rest-pause is a no-op for the same double-counting reason.
 - `applyPrescription` (`progression.js`) — when a policy grows the set count (bodyweight double
   progression, issue #33), the newly appended row keeps the seed's `type` (that's the exercise's
   plan) but never its already-logged `drops`/`clusters` (that's specific work the new row never

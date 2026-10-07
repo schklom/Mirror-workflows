@@ -5,7 +5,7 @@ import { Window } from 'happy-dom'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { EXIDX } from '../lib/exercises.js'
 import { MUSCLES, levelsOf } from '../lib/muscles.js'
-import { FATIGUE_STATES, STRENGTH_FLOOR } from '../lib/recovery.js'
+import { FATIGUE_STATES, STRENGTH_FLOOR, fatigueHalfLifeOf, FATIGUE_SETS_PER_UNIT } from '../lib/recovery.js'
 import { fatigueStateOf } from '../lib/recovery-view.js'
 import Stats from './Stats.jsx'
 import Modals from '../components/Modals.jsx'
@@ -85,12 +85,10 @@ function entry(id, sets) {
 }
 
 function lifecycleWorkouts(now = BASE_NOW) {
-  // The old one-set session lowers the causal reference seen by the six-set session. Position
-  // that newer stimulus 30 seconds before its .5 crossing so the real interval update flips it.
-  const weightedSet = 640 * (30 / 38) ** 1.5
-  const referenceAfterOldSession = 2000 + (weightedSet - 2000) / 3
+  // Six same-load sets on the chest score 6/8 of a full session. Position that stimulus
+  // 30 seconds before its .5 crossing so the real interval update flips it.
   const fatigueEdge = now - (
-    36 * Math.log2((6 * weightedSet / referenceAfterOldSession) / Math.LN2) * HOUR - 30000
+    fatigueHalfLifeOf('chest') * Math.log2(6 / FATIGUE_SETS_PER_UNIT / Math.LN2) - 30000
   )
   const balanceEdge = now - (30 * DAY - 30000)
   const strengthEdge = now - (14 * DAY - 30000)
@@ -289,13 +287,17 @@ describe('Stats muscle recovery view runtime', () => {
     await mountStats()
     await click(viewButton('Fatigue'))
 
-    // 220.462262 lb ~= 100 kg; ten reps score 1000 kg against the initial 2000 kg reference.
-    expect(lastMap().load.abs).toBeCloseTo(1 - Math.exp(-0.5), 6)
+    // One unloaded set is one effective set whatever the profile unit or body mass:
+    // intensity is session-local and relative, so the 220 lb bodyweight only travels
+    // through opts while the score stays 1 - exp(-1/8).
+    expect(lastMap().load.abs).toBeCloseTo(1 - Math.exp(-1 / 8), 6)
     expect(lastMap().thresholds).toBeTruthy()
   })
 
   it('renders fixed absolute bands through the actual Fatigue and Strength views', async () => {
-    resetFixture([allFatiguedWorkout()])
+    // Two back-to-back full sessions: even 0.4-weighted secondary movers accumulate
+    // 2 x 12 x 0.4 / 8 = 1.2 raw units, clearing the top band everywhere.
+    resetFixture([allFatiguedWorkout(), allFatiguedWorkout()])
     await mountStats()
     await click(viewButton('Fatigue'))
     const fatigueMap = lastMap()

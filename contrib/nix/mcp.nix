@@ -11,10 +11,10 @@ buildNpmPackage rec {
   pname = "opengym-mcp";
   inherit version;
 
-  src = ./../mcp;
+  src = ./../../mcp;
 
   # The MCP server reads shared domain helpers from the sibling frontend/src/lib; include them.
-  frontendSrc = ./../frontend;
+  frontendSrc = ./../../frontend;
 
   nodejs = nodejs_22;
 

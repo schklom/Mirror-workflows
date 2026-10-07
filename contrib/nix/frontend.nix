@@ -12,7 +12,7 @@ buildNpmPackage rec {
 
   # The frontend imports api/coach/core/* (../../../api/coach/core/…), so the build
   # needs the repo root — same layout the Dockerfile uses (see web/Dockerfile).
-  src = ./..;
+  src = ./../..;
   npmRoot = "frontend";
 
   nodejs = nodejs_22;

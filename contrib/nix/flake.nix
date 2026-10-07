@@ -18,7 +18,7 @@
       let
         pkgs = nixpkgs.legacyPackages.${system};
 
-        opengymPackages = import ./nix/default.nix { inherit pkgs; };
+        opengymPackages = import ./default.nix { inherit pkgs; };
 
         opengymNixOSModule = self.nixosModules.opengym;
 
@@ -32,7 +32,9 @@
                 rpId = "localhost";
                 origin = "http://localhost:8080";
                 apiPort = 3000;
-                environment = { MY_FLAG = "1"; };
+                environment = {
+                  MY_FLAG = "1";
+                };
                 media.fetchAtBuild = true;
               };
               system.stateVersion = "25.05";
@@ -68,19 +70,35 @@
           echo "services.opengym.origin = ${cfg.origin}"
 
           # Verify systemd service exists
-          echo "systemd.services.opengym-api exists = ${if testConfig.config.systemd.services ? opengym-api then "true" else "false"}"
+          echo "systemd.services.opengym-api exists = ${
+            if testConfig.config.systemd.services ? opengym-api then "true" else "false"
+          }"
 
           # Verify extra environment is applied to the API unit
-          echo "opengym-api env MY_FLAG = ${if testConfig.config.systemd.services.opengym-api.environment ? MY_FLAG then testConfig.config.systemd.services.opengym-api.environment.MY_FLAG else "missing"}"
+          echo "opengym-api env MY_FLAG = ${
+            if testConfig.config.systemd.services.opengym-api.environment ? MY_FLAG then
+              testConfig.config.systemd.services.opengym-api.environment.MY_FLAG
+            else
+              "missing"
+          }"
 
           # Verify nginx is disabled by default (system uses Caddy)
           echo "services.nginx.enable (default) = ${if nginxEnabled then "true" else "false"}"
 
           # Verify the optional managed nginx vhost gets configured
-          echo "services.nginx.enable (nginx.enable) = ${if nginxTestConfig.config.services.nginx.enable then "true" else "false"}"
-          echo "nginx vhost for 'localhost' = ${if nginxTestConfig.config.services.nginx.virtualHosts ? localhost then "true" else "false"}"
-          echo "nginx /api proxyPass = ${nginxTestConfig.config.services.nginx.virtualHosts."localhost".locations."/api/".proxyPass or "missing"}"
-          echo "nginx /img alias = ${nginxTestConfig.config.services.nginx.virtualHosts."localhost".locations."/img/".alias or "missing"}"
+          echo "services.nginx.enable (nginx.enable) = ${
+            if nginxTestConfig.config.services.nginx.enable then "true" else "false"
+          }"
+          echo "nginx vhost for 'localhost' = ${
+            if nginxTestConfig.config.services.nginx.virtualHosts ? localhost then "true" else "false"
+          }"
+          echo "nginx /api proxyPass = ${
+            nginxTestConfig.config.services.nginx.virtualHosts."localhost".locations."/api/".proxyPass
+              or "missing"
+          }"
+          echo "nginx /img alias = ${
+            nginxTestConfig.config.services.nginx.virtualHosts."localhost".locations."/img/".alias or "missing"
+          }"
 
           # Verify frontend/media store paths are exposed for a web server
           echo "services.opengym.web.root = ${cfg.web.root}"
@@ -88,7 +106,9 @@
           echo "services.opengym.media.gifRoot = ${cfg.media.gifRoot}"
 
           # Verify user exists
-          echo "users.users.opengym exists = ${if testConfig.config.users.users ? opengym then "true" else "false"}"
+          echo "users.users.opengym exists = ${
+            if testConfig.config.users.users ? opengym then "true" else "false"
+          }"
 
           # All checks passed
           touch $out
@@ -164,9 +184,10 @@
 
         checks = {
           nixos-module-eval = check;
-        } // (pkgs.lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
+        }
+        // (pkgs.lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
           # Boots a NixOS VM and exercises the full HTTP contract (API + nginx vhost + SPA).
-          opengym-nixos-test = import ./nix/tests.nix {
+          opengym-nixos-test = import ./tests.nix {
             inherit pkgs;
             modules = [ opengymNixOSModule ];
           };
@@ -188,18 +209,18 @@
     )
     // {
       # Wraps the module so NixOS configurations using it get openGym packages built from this
-      # flake's LOCKED nixpkgs input. Importing nix/opengym.nix directly falls back to the
-      # importing system's nixpkgs.
+      # flake's LOCKED nixpkgs input. Importing contrib/nix/opengym.nix directly falls back to
+      # the importing system's nixpkgs.
       nixosModules.opengym =
         { pkgs, ... }:
         {
-          imports = [ ./nix/opengym.nix ];
+          imports = [ ./opengym.nix ];
           _module.args.opengymPkgs = self.packages.${pkgs.system} or null;
         };
       nixosModules.default = self.nixosModules.opengym;
 
       # Conventional NixOS test output (boots a VM; also wired into checks on Linux).
-      nixosTests.opengym = import ./nix/tests.nix {
+      nixosTests.opengym = import ./tests.nix {
         pkgs = nixpkgs.legacyPackages.x86_64-linux;
         modules = [ self.nixosModules.opengym ];
       };

@@ -9,7 +9,8 @@ managed by your NixOS configuration. This document covers both.
 
 ### What the flake provides
 
-`flake.nix` (inputs: `nixpkgs` on `nixos-unstable`, `flake-utils`) exposes, per supported system:
+`contrib/nix/flake.nix` (inputs: `nixpkgs` on `nixos-unstable`, `flake-utils`) exposes, per
+supported system:
 
 | Output | What it is |
 | --- | --- |
@@ -63,24 +64,32 @@ browser ── HTTPS ──▶ your web server (Caddy / nginx / …)         eve
 ## 2. Repository layout
 
 ```text
-flake.nix              Flake entry point — packages, apps, devShell, module alias
-nix/
-  opengym.nix          The NixOS module (options + systemd/nginx wiring)
-  frontend.nix         buildNpmPackage → $out/share/opengym
-  api.nix              buildNpmPackage → bin/opengym-api
-  mcp.nix              buildNpmPackage → bin/opengym-mcp
-  media.nix            fetchFromGitHub pin of the exercise dataset (build-time)
-  media-script.nix     runtime media-fetch shell script
-  version.nix          version = "1.2.14" + pinned dataset commit (single source of truth)
-  default.nix          package-set aggregator (used by both the flake and the module)
+contrib/nix/
+  flake.nix          Flake entry point — packages, apps, devShell, module alias
+  flake.lock         Locked inputs
+  opengym.nix        The NixOS module (options + systemd/nginx wiring)
+  frontend.nix       buildNpmPackage → $out/share/opengym
+  api.nix            buildNpmPackage → bin/opengym-api
+  mcp.nix            buildNpmPackage → bin/opengym-mcp
+  media.nix          fetchFromGitHub pin of the exercise dataset (build-time)
+  media-script.nix   runtime media-fetch shell script
+  version.nix        version = "1.2.14" + pinned dataset commit (single source of truth)
+  default.nix        package-set aggregator (used by both the flake and the module)
 ```
+
+Everything Nix lives under `contrib/nix/` so the flake stays out of the way of the project's own
+build (Docker, CI, the Node packages). The flake reads its sources — `api/`, `frontend/`, `mcp/`
+— from the repository root two levels up, so it must be evaluated *from a checkout of the whole
+repo*, never from a sparse copy of `contrib/nix` alone.
 
 ## 3. Building and using the packages
 
 Requirements: Nix with flakes enabled (`nix.conf`: `experimental-features = nix-command flakes`).
 
 ```bash
-# from a checkout of the repo
+# the flake lives in contrib/nix — start there (from the repo root: nix build ./contrib/nix#… )
+cd contrib/nix
+
 nix build .#opengym-frontend         # static site → result/share/opengym
 nix build .#opengym-api              # API → result/bin/opengym-api
 nix build .#opengym-mcp
@@ -221,7 +230,8 @@ word-for-word.
 {
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    opengym.url = "git+https://gitlab.com/DuarteSantos8/opengym";
+    # the flake lives in a subdirectory — ?dir= points at it
+    opengym.url = "github:DuarteSantos8/openGym?dir=contrib/nix";
   };
 
   outputs = { self, nixpkgs, opengym, ... }: {
@@ -236,22 +246,26 @@ word-for-word.
 }
 ```
 
+On the GitLab mirror the same input is
+`"git+https://gitlab.com/DuarteSantos8/opengym?dir=contrib/nix"`.
+
 Then `sudo nixos-rebuild switch --flake .#myhost`.
 
 Not using flakes in your NixOS config? You can also `imports` the module file directly from a
 checkout of the repo:
 
 ```nix
-{ imports = [ "/path/to/opengym/nix/opengym.nix" ]; }
+{ imports = [ "/path/to/opengym/contrib/nix/opengym.nix" ]; }
 ```
 
 #### Package provenance
 
 When you load the module *through the flake* (`opengym.nixosModules.default`), the default
 `services.opengym.package` set is the one built by this flake — from the flake's **locked**
-`nixpkgs` input. Importing `nix/opengym.nix` directly instead falls back to building the packages
-from *your system's* nixpkgs, which may differ slightly. If you ever need a specific set, override
-`services.opengym.package` explicitly (e.g. `opengym.packages.x86_64-linux` from your flake inputs).
+`nixpkgs` input. Importing `contrib/nix/opengym.nix` directly instead falls back to building the
+packages from *your system's* nixpkgs, which may differ slightly. If you ever need a specific set,
+override `services.opengym.package` explicitly (e.g. `opengym.packages.x86_64-linux` from your flake
+inputs).
 
 ### Minimal enable (works on `localhost`)
 

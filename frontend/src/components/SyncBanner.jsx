@@ -12,11 +12,11 @@ export const PENDING_GRACE_MS = 5000
 
 /* The connection, always in view while the app is not connected to a server: offline, the server
    unreachable or answering with an error (its HTTP code, for whoever runs it), a server that no
-   longer accepts this device, an answer that is not openGym's, and no server at all — a phone
-   kept local, a guest in a browser. It cannot be dismissed; it goes when the condition does — or
-   when Settings → "Show connection status" is off, and then a dot on Home says a problem is there.
-   The first ones say what is wrong and that the changes are kept here, with the one thing to do
-   about it (retry, pair again, sign in); the deliberate local setup only says so, quietly.
+   longer accepts this device, an answer that is not openGym's, and a guest in a browser. It
+   cannot be dismissed; it goes when the condition does — or when Settings → "Show connection
+   status" is off, and then a dot on Home says a problem is there. Each says what is wrong and
+   that the changes are kept here, with the one thing to do about it (retry, pair again, sign in).
+   A phone kept local never sees it (#454): no server is a choice there, not a problem.
 
    Pinned under the status bar, above the page and the pinned workout and chat headers, below the
    tab bar, the timer and every sheet. Its height goes into --conn on the root, which the page's

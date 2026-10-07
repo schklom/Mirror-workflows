@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/useStore.js'
-import { EXIDX, matchExercise, betterWeight } from '../lib/exercises.js'
+import { EXIDX, matchExercise, betterWeight, isAssisted } from '../lib/exercises.js'
 import { lastBW, streakWeeks, setLabel, modeOf, effortOf, entriesForExercise, metricEntriesForExercise, metricModeForEntry, bestWeightForEntry, completedRepsOf, workoutDay } from '../lib/history.js'
 import { fmtNum, fmtDate, fmtVol, todayISO, isoOf, weekKey, weekStartOf, exerciseNameText } from '../lib/format.js'
 import { speedUnitOf, speedLabel, toSpeed } from '../lib/speed.js'
@@ -17,6 +17,7 @@ import { strengthExerciseRowsForMuscle } from '../lib/strength-exercises.js'
 import { fatigueStateOf } from '../lib/recovery-view.js'
 import { e1rmSeries, best1RM } from '../lib/onerm.js'
 import { maxRepsSeries } from '../lib/pyramid.js'
+import { perSetSessions, perSetLines, dropOffSet } from '../lib/per-set.js'
 import {
   hasEffort, displayScale, scaleName, toScale, avgRir, effortSummary, effortWeeks,
   effortHistogram, isHardSet, HARD_RIR
@@ -24,6 +25,9 @@ import {
 import { Button, Segmented, SelectRow } from '../components/ui.jsx'
 import { tappable } from '../lib/use-sheet-keyboard.js'
 import { isWarmupRow } from '../lib/workout-model.js'
+
+// Set 1 to 5 on the per-set chart — system colours, so each line keeps its hue in dark mode.
+const SET_COLORS = ['var(--blue)', 'var(--green)', 'var(--orange)', 'var(--purple)', 'var(--pink)']
 
 // Which muscles the training in a window actually hit — and, the point of the card,
 // which ones it keeps missing. Shading is relative within the window (lib/muscles.js).
@@ -538,6 +542,34 @@ export default function Stats() {
   )
   const showMax = maxPts.length > 0
   const maxBest = showMax ? Math.max(...maxPts.map(p => p.y)) : 0
+  // Per set (issue #145): one line per set number, to see which set you drop off on — often not
+  // the last. Offered once two sessions are logged and one of them has two sets or more.
+  // Memoised like e1Pts: LineChart drops its hover whenever `points` changes identity.
+  // Loaded work is drawn as each set's estimated 1RM, so straight sets at one weight still part
+  // where reps were lost. Reps instead for unloaded work, an assistance machine (where a 1RM
+  // reads backwards), or a history of sets all past the estimate's rep cap.
+  const perSet = useMemo(() => {
+    if (!curEx || curMode !== 'reps') return null
+    const usable = list => list.length >= 2 && list.some(s => s.sets.length >= 2)
+    let metric = repsOnly || isAssisted(curEx) ? 'reps' : 'e1rm'
+    let sessions = perSetSessions(workouts, curEx, { metric })
+    if (metric === 'e1rm' && !usable(sessions)) sessions = perSetSessions(workouts, curEx, { metric: metric = 'reps' })
+    if (!usable(sessions)) return null
+    const { lines, hidden } = perSetLines(sessions)
+    const shown = new Set(lines.map(l => l.n))
+    return {
+      series: lines.map(l => ({ points: l.points, color: SET_COLORS[l.n - 1] })),
+      anchors: sessions.map(s => ({
+        t: s.t, d: s.d, y: Math.max(...s.sets.map(x => x.y)),
+        note: s.sets.filter(x => shown.has(x.n)).map(x => x.n + ': ' + (repsOnly ? x.r : fmtNum(x.w) + '×' + x.r)).join(' · '),
+      })),
+      ns: lines.map(l => l.n),
+      hidden,
+      metric,
+      drop: dropOffSet(sessions),
+    }
+  }, [workouts, curEx, curMode, repsOnly])
+  const onSets = !!perSet && exMetric === 'sets'
   const onE1 = showE1 && exMetric === 'e1rm'
   const onEff = showEff && exMetric === 'effort'
   const onMax = showMax && exMetric === 'max'
@@ -548,6 +580,7 @@ export default function Stats() {
     note: exRir[i] == null ? undefined : hd + ' ' + fmtNum(toScale(kind, exRir[i]))
   }))
   const exOpts = [{ value: 'top', label: t('Top set') }]
+  if (perSet) exOpts.push({ value: 'sets', label: t('Per set') })
   if (showE1) exOpts.push({ value: 'e1rm', label: t('Est. 1RM') })
   if (showEff) exOpts.push({ value: 'effort', label: t('Effort') })
   if (showMax) exOpts.push({ value: 'max', label: t('Max reps') })
@@ -619,24 +652,36 @@ export default function Stats() {
                 match: (option, query) => matchExercise(matcherOf(option.value), query),
               }} />
           </div>
-          {exOpts.length > 1 && <Segmented className="seg-range" value={onMax ? 'max' : onEff ? 'effort' : onE1 ? 'e1rm' : 'top'} onChange={setExMetric} options={exOpts} />}
+          {exOpts.length > 1 && <Segmented className="seg-range" value={onMax ? 'max' : onEff ? 'effort' : onE1 ? 'e1rm' : onSets ? 'sets' : 'top'} onChange={setExMetric} options={exOpts} />}
           <div className="chart">
-            {onMax
+            {onSets
+              ? <LineChart points={perSet.anchors} series={perSet.series} h={150} unit={perSet.metric === 'reps' ? t('reps') : S.unit} />
+              : onMax
               ? <LineChart points={maxPts} h={150} unit={t('reps')} color="var(--blue)" />
               : onEff
               ? <LineChart points={effPts} h={150} unit={hd} color="var(--yellow)" invert={kind === 'rir'} />
               : <LineChart points={onE1 ? e1ChartPts : topPts} h={150} unit={exUnit} color="var(--blue)" />}
           </div>
+          {onSets && <div className="row small" style={{ gap: 12, flexWrap: 'wrap', marginTop: 6 }}>
+            {perSet.ns.map(n => <span key={n} className="row" style={{ gap: 5, alignItems: 'center' }}>
+              <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: 4, background: SET_COLORS[n - 1] }} />{t('Set {0}', n)}
+            </span>)}
+          </div>}
           <div style={{ marginTop: 8 }}>{exList.map((p, i) => <div key={i} className="row between small" style={{ padding: '6px 0', borderBottom: 'var(--hair) solid var(--sep)' }}>
             <span className="muted">{fmtDate(p.d, true)}</span><span>{p.sets.map(s => setLabel(curEx, s, p.target, speedUnit)).join('  ')}</span></div>)}</div>
           <div className="small dim" style={{ marginTop: 8 }}>
-            {onMax ? <>{t('Most reps in a Max set per workout')} · {t('Best:')}{' '}<b className="accent">{maxBest} {t('reps')}</b></> : onEff ? t('Average effort per workout') : onE1 ? t('Estimated 1RM per workout') : curCardio ? t('Top speed per workout') : curTimed ? t('Longest hold per workout') : repsOnly ? t('Most reps in a set per workout') : t('Best set weight per workout')}
-            {onEff || onMax ? '' : <> · {t('Best:')}{' '}<b className="accent">{fmtNum(onE1 ? e1Best.est : exBest)} {onE1 ? S.unit : exUnit}</b></>}
+            {onSets ? (perSet.metric === 'reps' ? t('Reps in each working set, one line per set number') : t('Estimated 1RM of each working set, one line per set number')) : onMax ? <>{t('Most reps in a Max set per workout')} · {t('Best:')}{' '}<b className="accent">{maxBest} {t('reps')}</b></> : onEff ? t('Average effort per workout') : onE1 ? t('Estimated 1RM per workout') : curCardio ? t('Top speed per workout') : curTimed ? t('Longest hold per workout') : repsOnly ? t('Most reps in a set per workout') : t('Best set weight per workout')}
+            {onEff || onMax || onSets ? '' : <> · {t('Best:')}{' '}<b className="accent">{fmtNum(onE1 ? e1Best.est : exBest)} {onE1 ? S.unit : exUnit}</b></>}
           </div>
+          {onSets && (perSet.drop || perSet.hidden > 0) && <div className="small dim" style={{ marginTop: 4 }}>
+            {perSet.drop && t('Where you most often drop off: set {0} ({1} of {2} workouts)', perSet.drop.n, perSet.drop.count, perSet.drop.of)}
+            {perSet.drop && perSet.hidden > 0 ? ' · ' : ''}
+            {perSet.hidden > 0 && t('Only the first {0} sets are drawn.', perSet.ns.length)}
+          </div>}
           {onE1 && <div className="small dim" style={{ marginTop: 4 }}>
             {t('Best estimate from {0} on {1}. An estimate, not a tested max.', fmtNum(e1Best.w) + ' ' + S.unit + ' × ' + e1Best.r, fmtDate(e1Best.d, true))}
           </div>}
-          {!onEff && !onE1 && !onMax && showEff && <div className="small dim" style={{ marginTop: 4 }}>
+          {!onEff && !onE1 && !onMax && !onSets && showEff && <div className="small dim" style={{ marginTop: 4 }}>
             {t('A fuller dot means less left in the tank. The same weight at a lower {0} is progress the line alone doesn’t show.', hd)}
           </div>}
         </> : <div className="muted small">{t('Finish your first workout and your progress curves will show up here.')}</div>}

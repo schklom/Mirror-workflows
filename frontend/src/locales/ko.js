@@ -1713,6 +1713,11 @@ export default {
   'Record: {0} rep': '기록: {0}회',
   'Max reps': '최대 반복',
   'Most reps in a Max set per workout': '운동마다 최대 세트의 최다 반복 수',
+  'Per set': '세트별',
+  'Estimated 1RM of each working set, one line per set number': '각 본세트의 추정 1RM, 세트 번호마다 선 하나',
+  'Reps in each working set, one line per set number': '각 본세트의 반복 수, 세트 번호마다 선 하나',
+  'Where you most often drop off: set {0} ({1} of {2} workouts)': '가장 자주 떨어지는 세트: {0}세트 ({2}번 중 {1}번)',
+  'Only the first {0} sets are drawn.': '처음 {0}세트만 표시됩니다.',
   'A set left at 0 rest uses the exercise’s rest.': '휴식이 0인 세트는 운동의 휴식 시간을 사용합니다.',
   // --- update a routine from a running workout ---
   'Update routine': '루틴 업데이트',

@@ -1766,6 +1766,11 @@ export default {
   'Record: {0} rep': 'الرقم القياسي: {0} تكرار',
   'Max reps': 'تكرارات أقصى',
   'Most reps in a Max set per workout': 'أكبر عدد تكرارات في مجموعة أقصى لكل تمرين',
+  'Per set': 'لكل مجموعة',
+  'Estimated 1RM of each working set, one line per set number': '1RM المقدّر لكل مجموعة عمل، خط لكل رقم مجموعة',
+  'Reps in each working set, one line per set number': 'تكرارات كل مجموعة عمل، خط لكل رقم مجموعة',
+  'Where you most often drop off: set {0} ({1} of {2} workouts)': 'أكثر مكان تتراجع فيه: المجموعة {0} ({1} من {2} تمارين)',
+  'Only the first {0} sets are drawn.': 'تُرسم أول {0} مجموعات فقط.',
   'A set left at 0 rest uses the exercise’s rest.': 'المجموعة ذات الراحة 0 تستخدم راحة التمرين.',
   // --- update a routine from a running workout ---
   'Update routine': 'تحديث الروتين',

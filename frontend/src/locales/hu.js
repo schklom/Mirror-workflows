@@ -1716,6 +1716,11 @@ export default {
   'Record: {0} rep': 'Rekord: {0} ism.',
   'Max reps': 'Max ism.',
   'Most reps in a Max set per workout': 'A legtöbb ismétlés egy Max sorozatban edzésenként',
+  'Per set': 'Sorozatonként',
+  'Estimated 1RM of each working set, one line per set number': 'Minden munkasorozat becsült 1RM-je, sorozatszámonként egy vonal',
+  'Reps in each working set, one line per set number': 'Minden munkasorozat ismétlései, sorozatszámonként egy vonal',
+  'Where you most often drop off: set {0} ({1} of {2} workouts)': 'Ahol a leggyakrabban visszaesel: {0}. sorozat ({2} edzésből {1})',
+  'Only the first {0} sets are drawn.': 'Csak az első {0} sorozat látható.',
   'A set left at 0 rest uses the exercise’s rest.': 'A 0 pihenőjű sorozat a gyakorlat pihenőjét használja.',
   // --- update a routine from a running workout ---
   'Update routine': 'Rutin frissítése',

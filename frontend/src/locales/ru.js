@@ -1717,6 +1717,11 @@ export default {
   'Record: {0} rep': 'Рекорд: {0} повт.',
   'Max reps': 'Повт. Макс',
   'Most reps in a Max set per workout': 'Больше всего повторов в подходе Макс за тренировку',
+  'Per set': 'По подходам',
+  'Estimated 1RM of each working set, one line per set number': 'Расчётный 1ПМ каждого рабочего подхода, одна линия на номер подхода',
+  'Reps in each working set, one line per set number': 'Повторы в каждом рабочем подходе, одна линия на номер подхода',
+  'Where you most often drop off: set {0} ({1} of {2} workouts)': 'Где вы чаще всего сдаёте: подход {0} ({1} из {2} тренировок)',
+  'Only the first {0} sets are drawn.': 'Показаны только первые {0} подходов.',
   'A set left at 0 rest uses the exercise’s rest.': 'Подход с отдыхом 0 использует отдых упражнения.',
   // --- update a routine from a running workout ---
   'Update routine': 'Обновить программу',

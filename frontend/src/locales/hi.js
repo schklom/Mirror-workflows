@@ -1713,6 +1713,11 @@ export default {
   'Record: {0} rep': 'रिकॉर्ड: {0} रेप',
   'Max reps': 'मैक्स रेप',
   'Most reps in a Max set per workout': 'हर वर्कआउट में मैक्स सेट के सबसे ज़्यादा रेप',
+  'Per set': 'प्रति सेट',
+  'Estimated 1RM of each working set, one line per set number': 'हर वर्किंग सेट का अनुमानित 1RM, हर सेट नंबर की एक लाइन',
+  'Reps in each working set, one line per set number': 'हर वर्किंग सेट के रेप, हर सेट नंबर की एक लाइन',
+  'Where you most often drop off: set {0} ({1} of {2} workouts)': 'आप सबसे ज़्यादा कहाँ पीछे रह जाते हैं: सेट {0} ({2} में से {1} वर्कआउट)',
+  'Only the first {0} sets are drawn.': 'सिर्फ़ पहले {0} सेट दिखाए गए हैं।',
   'A set left at 0 rest uses the exercise’s rest.': '0 आराम वाला सेट एक्सरसाइज़ का आराम इस्तेमाल करता है।',
   // --- update a routine from a running workout ---
   'Update routine': 'रूटीन अपडेट करें',

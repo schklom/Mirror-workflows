@@ -1059,6 +1059,11 @@ export const PT_BR_OVERRIDES = {
   'Max: as many reps as you can': 'Máx: o máximo de repetições que você conseguir',
   'Weight is up to you: pyramid sets are not progressed automatically.': 'Você escolhe o peso: as séries em pirâmide não progridem automaticamente.',
   'Most reps in a Max set per workout': 'Mais repetições em uma série Máx por treino',
+  'Per set': 'Por série',
+  'Estimated 1RM of each working set, one line per set number': '1RM estimado de cada série de trabalho, uma linha por número de série',
+  'Reps in each working set, one line per set number': 'Repetições de cada série de trabalho, uma linha por número de série',
+  'Where you most often drop off: set {0} ({1} of {2} workouts)': 'Onde você mais cai de rendimento: série {0} ({1} de {2} treinos)',
+  'Only the first {0} sets are drawn.': 'Só as primeiras {0} séries são desenhadas.',
   // --- update a routine from a running workout ---
   'Update routine': 'Atualizar rotina',
   'Update “{0}”?': 'Atualizar “{0}”?',

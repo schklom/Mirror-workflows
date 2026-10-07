@@ -506,7 +506,7 @@ export default {
   'assisted': 'assisté', 'band': 'élastique', 'barbell': 'barre', 'body weight': 'poids du corps',
   'bosu ball': 'bosu', 'cable': 'poulie', 'dumbbell': 'haltère',
   'elliptical machine': 'vélo elliptique', 'ez barbell': 'barre EZ', 'hammer': 'marteau',
-  'kettlebell': 'kettlebell', 'leverage machine': 'machine à levier', 'medicine ball': 'médecine-ball',
+  'kettlebell': 'kettlebell', 'clubbell': 'clubbell', 'macebell': 'macebell', 'leverage machine': 'machine à levier', 'medicine ball': 'médecine-ball',
   'olympic barbell': 'barre olympique', 'resistance band': 'bande de résistance', 'roller': 'rouleau',
   'rope': 'corde', 'skierg machine': 'SkiErg', 'sled machine': 'traîneau',
   'smith machine': 'machine Smith', 'stability ball': 'swiss ball', 'stationary bike': 'vélo stationnaire',

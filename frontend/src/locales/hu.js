@@ -509,7 +509,7 @@ export default {
   'assisted': 'segített', 'band': 'gumiszalag', 'barbell': 'rúd', 'body weight': 'testsúly',
   'bosu ball': 'bosu labda', 'cable': 'kábel', 'dumbbell': 'súlyzó',
   'elliptical machine': 'elliptikus tréner', 'ez barbell': 'EZ-rúd', 'hammer': 'kalapácsfogás',
-  'kettlebell': 'kettlebell', 'leverage machine': 'emelőkaros gép', 'medicine ball': 'medicinlabda',
+  'kettlebell': 'kettlebell', 'clubbell': 'clubbell', 'macebell': 'macebell', 'leverage machine': 'emelőkaros gép', 'medicine ball': 'medicinlabda',
   'olympic barbell': 'olimpiai rúd', 'resistance band': 'ellenállószalag', 'roller': 'henger',
   'rope': 'kötél', 'skierg machine': 'SkiErg', 'sled machine': 'szán',
   'smith machine': 'Smith-gép', 'stability ball': 'fitneszlabda', 'stationary bike': 'szobabicikli',

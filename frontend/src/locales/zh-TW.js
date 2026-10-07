@@ -501,7 +501,7 @@ export default {
   'assisted': '機械輔助', 'band': '彈力帶', 'barbell': '槓鈴', 'body weight': '自身體重 / 徒手',
   'bosu ball': 'BOSU 半圓平衡球', 'cable': '滑輪纜繩', 'dumbbell': '啞鈴',
   'elliptical machine': '滑步機', 'ez barbell': 'W槓 / 曲槓', 'hammer': '鐵鎚',
-  'kettlebell': '壺鈴', 'leverage machine': '槓桿機械式器材', 'medicine ball': '藥球',
+  'kettlebell': '壺鈴', 'clubbell': '棍鈴', 'macebell': '錘鈴', 'leverage machine': '槓桿機械式器材', 'medicine ball': '藥球',
   'olympic barbell': '奧林匹克槓', 'resistance band': '阻力帶', 'roller': '滾筒',
   'rope': '戰繩 / 繩索', 'skierg machine': '滑雪機', 'sled machine': '雪橇車',
   'smith machine': '史密斯機', 'stability ball': '抗力球', 'stationary bike': '飛輪車 / 健身車',

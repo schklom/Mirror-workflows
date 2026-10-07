@@ -178,7 +178,7 @@ export const isBodyweightEq = idOrEx =>
 // bodyweight — an ab wheel, a stability ball, a bosu, a rope, a roller, the "assisted" straps —
 // often has no load to enter at all, so 0 there is the honest number and progression moves the
 // reps instead (lib/progression.js).
-const LOADED_EQ = new Set(['barbell', 'ez barbell', 'olympic barbell', 'trap bar', 'dumbbell', 'kettlebell', 'cable', 'leverage machine', 'smith machine', 'sled machine', 'weighted'])
+const LOADED_EQ = new Set(['barbell', 'ez barbell', 'olympic barbell', 'trap bar', 'dumbbell', 'kettlebell', 'clubbell', 'macebell', 'cable', 'leverage machine', 'smith machine', 'sled machine', 'weighted'])
 export const isLoadedEq = idOrEx =>
   LOADED_EQ.has((typeof idOrEx === 'string' ? EXIDX[idOrEx] : idOrEx)?.eq)
 

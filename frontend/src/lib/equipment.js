@@ -6,7 +6,11 @@ import { EXDB } from './exercises-data.js'
 export const ALL_EQUIPMENT = (() => {
   const c = {}
   EXDB.forEach(e => { if (e.eq) c[e.eq] = (c[e.eq] || 0) + 1 })
-  return Object.keys(c).sort((a, b) => c[b] - c[a] || (a < b ? -1 : 1))
+  const ranked = Object.keys(c).sort((a, b) => c[b] - c[a] || (a < b ? -1 : 1))
+  // Clubbell and macebell have no catalogue entries yet (issue #393). They still belong on the
+  // profile checklist and the custom-exercise chips, after everything the catalogue already uses.
+  for (const extra of ['clubbell', 'macebell']) if (!ranked.includes(extra)) ranked.push(extra)
+  return ranked
 })()
 
 // Body weight is never gated by a profile — no gym or home setup can take it away from you,

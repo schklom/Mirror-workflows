@@ -506,7 +506,7 @@ export default {
   'assisted': 'z asystą', 'band': 'guma', 'barbell': 'sztanga', 'body weight': 'masa ciała',
   'bosu ball': 'bosu', 'cable': 'wyciąg', 'dumbbell': 'hantla',
   'elliptical machine': 'orbitrek', 'ez barbell': 'sztanga łamana', 'hammer': 'młot',
-  'kettlebell': 'kettlebell', 'leverage machine': 'maszyna dźwigniowa', 'medicine ball': 'piłka lekarska',
+  'kettlebell': 'kettlebell', 'clubbell': 'clubbell', 'macebell': 'macebell', 'leverage machine': 'maszyna dźwigniowa', 'medicine ball': 'piłka lekarska',
   'olympic barbell': 'sztanga olimpijska', 'resistance band': 'guma oporowa', 'roller': 'wałek',
   'rope': 'lina', 'skierg machine': 'SkiErg', 'sled machine': 'sanie',
   'smith machine': 'maszyna Smitha', 'stability ball': 'piłka gimnastyczna', 'stationary bike': 'rower stacjonarny',

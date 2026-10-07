@@ -506,7 +506,7 @@ export default {
   'assisted': 'destekli', 'band': 'bant', 'barbell': 'halter', 'body weight': 'vücut ağırlığı',
   'bosu ball': 'bosu topu', 'cable': 'kablo', 'dumbbell': 'dambıl',
   'elliptical machine': 'eliptik bisiklet', 'ez barbell': 'EZ bar', 'hammer': 'çekiç',
-  'kettlebell': 'kettlebell', 'leverage machine': 'kaldıraçlı makine', 'medicine ball': 'sağlık topu',
+  'kettlebell': 'kettlebell', 'clubbell': 'clubbell', 'macebell': 'macebell', 'leverage machine': 'kaldıraçlı makine', 'medicine ball': 'sağlık topu',
   'olympic barbell': 'olimpik halter', 'resistance band': 'direnç bandı', 'roller': 'silindir',
   'rope': 'ip', 'skierg machine': 'SkiErg', 'sled machine': 'kızak',
   'smith machine': 'Smith makinesi', 'stability ball': 'pilates topu', 'stationary bike': 'kondisyon bisikleti',

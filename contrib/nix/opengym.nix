@@ -373,7 +373,9 @@ in
                     tryFiles = "$uri $uri/ /index.html";
                   };
                   "/api/" = {
-                    proxyPass = "http://127.0.0.1:${toString cfg.apiPort};";
+                    # services.nginx renders this as `proxy_pass <value>;`, so the value
+                    # must not carry its own semicolon (nginx rejects `;;`).
+                    proxyPass = "http://127.0.0.1:${toString cfg.apiPort}";
                     extraConfig = ''
                       proxy_http_version 1.1;
                       proxy_set_header Host $host;

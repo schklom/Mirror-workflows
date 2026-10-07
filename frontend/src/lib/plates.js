@@ -111,8 +111,9 @@ const q = w => Math.round(w * Q)
  *   → { plates: [w, …] heaviest first, missing: number }   (missing 0 = exact)
  */
 export function plateStack(weight, inv) {
-  const target = q(Math.max(0, num(weight)))
-  if (target === 0) return { plates: [], missing: 0 }
+  const requested = Math.max(0, num(weight))
+  const target = Math.floor(requested * Q)
+  if (target === 0) return { plates: [], missing: requested }
   const items = (inv || []).filter(p => p.w > 0 && p.n > 0).sort((a, b) => b.w - a.w)
   // 1. greedy
   const greedy = []
@@ -126,7 +127,7 @@ export function plateStack(weight, inv) {
   // missing. The search below would only find that again, with a table as long as the target:
   // a typo like 9999 in a weight field built it on every keystroke.
   const all = items.reduce((sum, p) => sum + q(p.w) * p.n, 0)
-  if (left === 0 || target >= all) return { plates: greedy, missing: left / Q }
+  if (left === 0 || target >= all) return { plates: greedy, missing: requested - (target - left) / Q }
   // 2. exact fit with the fewest plates: f[i][s] = min plates using sizes i.. to make s
   const n = items.length
   const INF = 1e9
@@ -159,7 +160,7 @@ export function plateStack(weight, inv) {
       }
     }
   }
-  return { plates, missing: (target - sum) / Q }
+  return { plates, missing: requested - sum / Q }
 }
 
 /**

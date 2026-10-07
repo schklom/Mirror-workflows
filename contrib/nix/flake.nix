@@ -2,7 +2,10 @@
   description = "openGym — self-hosted gym & body-weight tracker";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    # A release branch, not nixos-unstable: this flake is contributed packaging that has to
+    # keep evaluating for self-hosters on a channel. unstable has moved on to 26.11, which
+    # already dropped x86_64-darwin — one of the systems eachDefaultSystem evaluates.
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
     flake-utils.url = "github:numtide/flake-utils";
   };
 
@@ -215,7 +218,7 @@
         { pkgs, ... }:
         {
           imports = [ ./opengym.nix ];
-          _module.args.opengymPkgs = self.packages.${pkgs.system} or null;
+          _module.args.opengymPkgs = self.packages.${pkgs.stdenv.hostPlatform.system} or null;
         };
       nixosModules.default = self.nixosModules.opengym;
 

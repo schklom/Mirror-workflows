@@ -9,8 +9,8 @@ managed by your NixOS configuration. This document covers both.
 
 ### What the flake provides
 
-`contrib/nix/flake.nix` (inputs: `nixpkgs` on `nixos-unstable`, `flake-utils`) exposes, per
-supported system:
+`contrib/nix/flake.nix` (inputs: `nixpkgs` pinned to the `nixos-26.05` release branch,
+`flake-utils`) exposes, per supported system:
 
 | Output | What it is |
 | --- | --- |

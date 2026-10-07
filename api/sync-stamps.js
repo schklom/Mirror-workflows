@@ -22,7 +22,13 @@
 //      a reset, which starts the profile over, keeps its own);
 //   2. for a writer that does not stamp (no `stamped: true` in the body) and wrote over the
 //      revision it read: stamps what it changed against the stored copy, at the server's time —
-//      entries removed, settings and plan days changed, entries edited;
+//      entries removed, settings and plan days changed, entries edited. A setting, plan day or
+//      entry field whose stored stamp is later than the one the writer sent back (it never saw
+//      that change) keeps the stored value: an older app back from a dead spot no longer sets
+//      them back. What remains: such a writer's own change of that same field in the meantime
+//      loses to the stamped one (two changes, neither saw the other), one that sends no record of
+//      edits at all (it never read a copy from an updated app) still wins as before, and the older
+//      app shows its own value until it next reads the profile;
 //   3. for every writer: an entry the document holds while a removal on record says it was
 //      deleted after its last edit is kept, and marked as added back. An updated app never sends
 //      such a document, so this is an older app's merge (or its Coach undo, or a backup it
@@ -141,9 +147,17 @@ function stampUnstamped(cur, next, sent, now) {
   }
   if (Object.keys(del).length) next.deleted = del;
   // Settings and plan days changed, whose stamp the writer did not move past the stored one.
+  //
+  // Unless the stored value was changed, by its own stamp, after the copy this writer worked on:
+  // the stamps it sends back are the ones it last read (v1.3.9 keeps the record it does not know),
+  // so a stamp of the stored copy later than the writer's own means it never saw that change.
+  // Then what it sends is the value from before (a phone back from a dead spot, whose merge kept
+  // its whole older copy) or a change made at the same time without seeing the other: the stamped
+  // change stays. A writer that sends no record at all cannot be placed and goes through as before.
   const ed = isMap(next.edited) ? next.edited : {};
   const mine = isMap(sent) ? sent : {}, theirs = isMap(cur.edited) ? cur.edited : {};
   const moved = k => (Number(mine[k]) || 0) > (Number(theirs[k]) || 0);
+  const stale = k => isMap(sent) && (Number(theirs[k]) || 0) > (Number(mine[k]) || 0);
   for (const k of new Set([...Object.keys(cur), ...Object.keys(next)])) {
     if (OWN_MERGE.has(k)) continue;
     const p = cur[k], n = next[k];
@@ -151,20 +165,42 @@ function stampUnstamped(cur, next, sent, now) {
       const pm = isMap(p) ? p : {}, nm = isMap(n) ? n : {};
       for (const s of new Set([...Object.keys(pm), ...Object.keys(nm)])) {
         const sk = `${k}.${s}`;
-        if (((s in pm) !== (s in nm) || !same(pm[s], nm[s])) && !moved(sk)) ed[sk] = now;
+        if ((s in pm) === (s in nm) && same(pm[s], nm[s])) continue;
+        if (stale(sk)) {
+          const into = isMap(next[k]) ? next[k] : (next[k] = {});
+          if (s in pm) into[s] = clone(pm[s]); else delete into[s];
+        } else if (!moved(sk)) ed[sk] = now;
       }
-    } else if (n !== undefined && !same(p, n) && !moved(k)) ed[k] = now;   // absent: a field the writer does not know
+    } else if (n !== undefined && !same(p, n)) {   // absent: a field the writer does not know
+      if (stale(k)) { if (k in cur) next[k] = clone(p); else delete next[k]; }
+      else if (!moved(k)) ed[k] = now;
+    }
   }
   if (Object.keys(ed).length) next.edited = ed;
-  // Entries edited without a stamp of their own: a routine, a custom exercise, a profile, a card,
-  // a workout whose content changed while its `_ts` did not move.
+  // Entries edited without stamps of their own: a routine, a custom exercise, a profile, a card,
+  // a workout whose content changed. The same rule per field: one the stored entry changed (`_f`)
+  // after the version this writer worked on (its `_f`, as last read) keeps the stored value. An
+  // older app keeps the version of an entry edited last as a whole, so its edit of the name used to
+  // bring back the sets as they were before another device changed them.
   for (const f of ENTRY_LISTS) {
     const before = new Map(list(cur[f]).filter(x => x && x.id != null).map(x => [x.id, x]));
     for (const x of list(next[f])) {
       if (!x || typeof x !== 'object' || x.id == null) continue;
       const old = before.get(x.id);
       if (!old) { if (f !== 'workouts' && x._ts == null) x._ts = now; continue; }
-      if ((Number(x._ts) || 0) > (Number(old._ts) || 0) || sameEntry(old, x)) continue;
+      if (sameEntry(old, x)) continue;
+      if (isMap(sent) || isMap(x._f)) {
+        const base = isMap(x._f) ? x._f : {}, of = isMap(old._f) ? old._f : {};
+        for (const k of new Set([...Object.keys(old), ...Object.keys(x)])) {
+          if (ENTRY_META.has(k) || !((Number(of[k]) || 0) > (Number(base[k]) || 0))) continue;
+          if ((k in old) === (k in x) && same(old[k], x[k])) continue;
+          if (k in old) x[k] = clone(old[k]); else delete x[k];
+        }
+        const fx = { ...base };
+        for (const [k, v] of Object.entries(of)) if (!((Number(fx[k]) || 0) >= (Number(v) || 0))) fx[k] = v;
+        if (Object.keys(fx).length) x._f = fx; else delete x._f;
+        if (sameEntry(old, x)) { x._ts = Math.max(Number(x._ts) || 0, Number(old._ts) || 0); continue; }
+      }
       stampEntry(old, x, now);
     }
   }

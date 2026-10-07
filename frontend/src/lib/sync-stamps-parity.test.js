@@ -110,4 +110,18 @@ describe('what the server stamps holds in the merge', () => {
       expect(m.restSec).toBe(75)
     }
   })
+
+  // RC review 2026-10-07: an older app back from offline set the rest timer back on every device.
+  it('an older app\'s older copy after a dead spot does not undo a setting the updated phone changed since', () => {
+    const cur = change(doc0(), T + 1000, S2 => { S2.restSec = 60 })     // the updated phone, pushed
+    const old = clone(doc0()); old.restSec = 90; old._ts = T + 9000         // v1.3.9 merged its older copy
+    old.workouts.push({ id: 'w9', d: '2026-10-07', start: T + 8000, end: T + 9000 })
+    S.stampPut(cur, old, { overRead: true, now: T + 9000 })
+    expect(old.restSec).toBe(60)
+    const later = change(cur, T + 2000, S2 => { S2.queue = { label: 'US W3' } })   // the phone, offline meanwhile
+    for (const m of [mergeStates(later, old), mergeStates(old, later)]) {
+      expect(m.restSec).toBe(60)
+      expect(m.workouts.map(w => w.id).sort()).toEqual(['w1', 'w9'])
+    }
+  })
 })

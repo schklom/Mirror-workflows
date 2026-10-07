@@ -180,3 +180,46 @@ test('a reset from an older app is not refilled from the profile it wiped', () =
   stampPut(cur, next, { overRead: true, stamped: false, now: NOW });
   assert.equal('accentCustom' in next, false);
 });
+
+// RC review 2026-10-07: a v1.3.9 phone back from a dead spot got the 409, its merge kept its
+// whole older copy (newer `_ts`), and its push set the rest timer, the plan day and the routine's
+// sets back to what they were before an updated phone changed them.
+test('an older app back from offline does not set back settings, plan days or entry fields changed after its copy', () => {
+  const cur = stored();
+  cur.restSec = 60; cur.week = { 1: 'r2' }; cur.edited = { restSec: NOW - 1000, 'week.1': NOW - 1000, theme: NOW - 9000 };
+  cur.theme = 'dark';
+  cur.routines[0] = { id: 'r1', name: 'Push', ex: [{ id: 'bench', sets: 5 }], _ts: NOW - 1000, _f: { ex: NOW - 1000 } };
+  const old = clone(cur);
+  old.edited = { restSec: NOW - 8000, theme: NOW - 9000 };         // the record it read before going offline
+  old.restSec = 90; old.week = { 1: 'r1' };                        // its older copy
+  old.theme = 'light';                                              // its own change, of a setting nobody changed since
+  old.routines[0] = { id: 'r1', name: 'Push A', ex: [{ id: 'bench', sets: 3 }], _ts: NOW - 500 };   // renamed offline, older sets
+  old._ts = NOW - 500;
+  stampPut(cur, old, { overRead: true, stamped: false, now: NOW });
+  assert.equal(old.restSec, 60);
+  assert.deepEqual(old.week, { 1: 'r2' });
+  assert.equal(old.theme, 'light');
+  assert.ok(old.edited.theme >= NOW);
+  assert.equal(old.routines[0].name, 'Push A');
+  assert.deepEqual(old.routines[0].ex, [{ id: 'bench', sets: 5 }]);
+  assert.ok(old.routines[0]._f.name >= NOW);
+  assert.equal(old.routines[0]._f.ex, NOW - 1000);
+});
+
+test('an older app that read the latest change still changes it, and one that sends no record goes through', () => {
+  const cur = stored();
+  cur.edited = { restSec: NOW - 1000 };
+  const seen = clone(cur);
+  seen.restSec = 45;
+  stampPut(cur, seen, { overRead: true, stamped: false, now: NOW });
+  assert.equal(seen.restSec, 45);
+  assert.ok(seen.edited.restSec >= NOW);
+  const blind = clone(cur); delete blind.edited;
+  blind.restSec = 30;
+  stampPut(cur, blind, { overRead: true, stamped: false, now: NOW });
+  assert.equal(blind.restSec, 30);
+  // a replace (no baseRev: an older app's backup import) is not held against the record either
+  const replace = clone(cur); replace.edited = {}; replace.restSec = 120;
+  stampPut(cur, replace, { overRead: false, stamped: false, now: NOW });
+  assert.equal(replace.restSec, 120);
+});

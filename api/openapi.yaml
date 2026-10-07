@@ -1438,7 +1438,10 @@ paths:
         profile or favourite), every setting and plan day it changed (`queue`,
         `week.<day>`, …), and every entry it edited (`_ts`, per field `_f`). That keeps a
         planner's new week, or a routine it removed, from being undone by a phone that
-        reconnects later with an older change. An entry the document holds while a
+        reconnects later with an older change. A setting, plan day or entry field whose
+        stored stamp (`edited`, `_f`) is later than the one the writer sends back keeps the
+        stored value: the writer never saw that change, so send back the `edited` and `_f`
+        you read. A writer that sends no `edited` at all is not held to it. An entry the document holds while a
         removal on record says it was deleted after its last edit is kept and marked as
         added back.
 

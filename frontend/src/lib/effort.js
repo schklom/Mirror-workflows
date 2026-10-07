@@ -6,7 +6,7 @@
 // half-empty series. So everything aggregates in RIR and is converted back for display.
 // RIR is the internal unit because it has a real zero — a set taken to failure — where RPE's
 // floor of 6 is only a convention about which sets are worth rating. RPE 8 == RIR 2.
-import { EFFORT, effortOf } from './history.js'
+import { EFFORT, effortOf, workoutAt } from './history.js'
 import { weekKey, weekStartOf, startOfWeek } from './format.js'
 import { isWarmupRow } from './workout-model.js'
 
@@ -51,7 +51,7 @@ function eachDoneSet(S, fn) {
 // A window in days, counted back from now. 0 = everything, which is also what an empty
 // history means for every caller here.
 const inWindow = (w, days) =>
-  !days || (w.start || new Date(w.d).getTime()) > Date.now() - days * 86400000
+  !days || workoutAt(w) > Date.now() - days * 86400000
 
 export const avgRir = sets => {
   const vs = (sets || []).map(rirOf).filter(v => v != null)

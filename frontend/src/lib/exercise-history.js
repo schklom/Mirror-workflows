@@ -1,4 +1,4 @@
-import { metricEntriesForExercise, metricRowsForEntry, bestWeightForEntry, completedRepsOf, modeOf } from './history.js'
+import { metricEntriesForExercise, metricRowsForEntry, bestWeightForEntry, completedRepsOf, modeOf, workoutAt } from './history.js'
 import { completedVolumeOf } from './workout-model.js'
 import { bestSetOf } from './onerm.js'
 import { beatsWeight } from './exercises.js'
@@ -21,8 +21,6 @@ import { beatsWeight } from './exercises.js'
 
 export const HISTORY_SESSIONS = 10
 
-const startOf = w => (Number.isFinite(w.start) ? w.start : new Date(w.d + 'T12:00:00').getTime())
-
 // Volume of the exercise in one session: main set plus its drops/bursts, reps mode only —
 // there is no honest tonnage for a hold or a run.
 const entryVolume = rows => rows.reduce((v, s) => v + completedVolumeOf(s), 0)
@@ -43,7 +41,7 @@ export function exerciseHistory(S, exId, { limit = HISTORY_SESSIONS } = {}) {
     const en = { ...sameMode.at(-1).entry, sets: rows }
     if (rows.length) logged.push({ w, en, mode, rows })
   })
-  logged.sort((a, b) => startOf(a.w) - startOf(b.w))
+  logged.sort((a, b) => workoutAt(a.w) - workoutAt(b.w))
 
   const empty = { mode: modeOf({ id: exId }), metric: 'weight', best: 0, prId: null, total: 0, sessions: [], points: [], e1rmPoints: [] }
   if (!logged.length) return empty
@@ -64,7 +62,7 @@ export function exerciseHistory(S, exId, { limit = HISTORY_SESSIONS } = {}) {
     const same = m === mode
     const value = same ? valueOf({ en, rows }) : null
     const e1rm = m === 'reps' ? (bestSetOf(en)?.est ?? null) : null
-    const t = startOf(w)
+    const t = workoutAt(w)
     // "PR" goes on the session that first reached the all-time best, not on every session
     // that later matched it — one marker says where the record was set.
     if (value != null && value > best) { best = value; prId = w.id }
@@ -120,7 +118,7 @@ export function bestSetFor(S, exId, mode = modeOf({ id: exId })) {
     for (const en of w.entries || []) {
       if (en.id !== exId) continue
       for (const set of metricRowsForEntry(en, mode)) {
-        t ??= startOf(w)
+        t ??= workoutAt(w)
         if (!best || better(set, best.set) || (!better(best.set, set) && t < best.t)) best = { d: w.d, set, target: en.target || null, t }
       }
     }

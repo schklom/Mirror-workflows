@@ -8,6 +8,48 @@ import { t } from '../lib/i18n.js'
 import Icon from '../components/Icon.jsx'
 import { Button } from '../components/ui.jsx'
 import { askAddDeviceData } from '../sheets.jsx'
+import { loadCfAccess, saveCfAccess } from '../lib/cf-access.js'
+
+const openCfAccess = () => useUI.getState().openSheet(close => <CfAccessSheet close={close} />)
+
+// A server behind Cloudflare Access (lib/cf-access.js): the service token that lets this phone
+// through, entered before pairing because the pairing request has to get through as well.
+export function CfAccessSheet({ close }) {
+  const [clientId, setClientId] = useState('')
+  const [clientSecret, setClientSecret] = useState('')
+  const [had, setHad] = useState(false)
+  const [busy, setBusy] = useState(false)
+  useEffect(() => {
+    loadCfAccess().then(c => { if (c) { setClientId(c.clientId); setClientSecret(c.clientSecret); setHad(true) } })
+  }, [])
+  const save = async (id, secret) => {
+    if (!!id.trim() !== !!secret.trim()) { useUI.getState().toast(t('Enter both the Client ID and the Client Secret')); return }
+    setBusy(true)
+    try {
+      const saved = await saveCfAccess({ clientId: id, clientSecret: secret })
+      close()
+      useUI.getState().toast(saved ? t('Saved') : t('Removed'))
+    } catch (e) { useUI.getState().toast(e.message || t('Could not save')) }
+    finally { setBusy(false) }
+  }
+  return <>
+    <h3>{t('Cloudflare Access')}</h3>
+    <div className="muted small" style={{ marginBottom: 14 }}>
+      {t('Only if your server is behind Cloudflare Access: the service token this phone sends with every request to it. Kept in this phone’s secure storage.')}
+    </div>
+    <input className="input" placeholder="CF-Access-Client-Id" value={clientId}
+      onChange={e => setClientId(e.target.value)} autoCapitalize="none" autoCorrect="off" spellCheck={false} />
+    <div style={{ height: 10 }} />
+    <input className="input" type="password" placeholder="CF-Access-Client-Secret" value={clientSecret}
+      onChange={e => setClientSecret(e.target.value)} autoCapitalize="none" autoCorrect="off" spellCheck={false} autoComplete="off" />
+    <div style={{ height: 12 }} />
+    <Button variant="primary" onClick={() => save(clientId, clientSecret)} disabled={busy}>{t('Save')}</Button>
+    {had && <>
+      <div style={{ height: 10 }} />
+      <Button icon="trash" onClick={() => save('', '')} disabled={busy}>{t('Remove')}</Button>
+    </>}
+  </>
+}
 
 // `again`: a phone whose server stopped accepting it (components/ServerSync.jsx pairAgain) — the
 // address it had is filled in when it still has one, so only the new code is left to type, and
@@ -46,6 +88,8 @@ export function ConnectSheet({ close, initialUrl = '', again = false }) {
     {error && <div className="small" role="alert" style={{ color: 'var(--red)', marginTop: 10, lineHeight: 1.45, overflowWrap: 'anywhere' }}>{error}</div>}
     <div style={{ height: 12 }} />
     <Button variant="primary" onClick={go} disabled={busy}>{busy ? t('Connecting…') : t('Connect')}</Button>
+    <div style={{ height: 10 }} />
+    <Button icon="key" onClick={openCfAccess} disabled={busy}>{t('Cloudflare Access')}</Button>
   </>
 }
 
@@ -66,6 +110,8 @@ export default function MobileOnboarding() {
       <div className="dim small" style={{ marginTop: 26, lineHeight: 1.5 }}>
         {t('Local keeps everything on this phone. Connecting syncs to your own openGym server instead. You can switch later in Settings.')}
       </div>
+      <div style={{ height: 18 }} />
+      <Button icon="gear" onClick={openCfAccess}>{t('Connection settings')}</Button>
     </div>
   )
 }

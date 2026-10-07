@@ -64,6 +64,28 @@ or Settings → Account → **"Connect to my server"** later) to finish. Notes:
   changes on the phone and adds them back the next time it is paired with the same server
   and account.
 
+### A server behind Cloudflare Access
+
+If your server sits behind [Cloudflare Access](https://developers.cloudflare.com/cloudflare-one/policies/access/)
+(Zero Trust), the app can't do Access's interactive sign-in from inside its WebView. Use a
+**service token** instead:
+
+1. In Zero Trust → Access → Service Auth, create a service token and note its Client ID and
+   Client Secret.
+2. In the Access application for your openGym host, add a policy with the **Service Auth**
+   action that includes that token.
+3. In the application's **CORS settings**, enable **Bypass OPTIONS requests to origin**. The
+   app runs on its own origin, so every request is preceded by a CORS preflight, and a
+   preflight never carries the token — without the bypass, Access refuses it and nothing
+   gets through. The openGym API answers the preflight itself and allows both headers.
+4. In the app, before connecting: first-launch screen → **Connection settings** (or the
+   **Cloudflare Access** button in the Connect sheet), enter the two values, then pair as usual.
+   They can be changed later under Settings → **Server & sync** → **Cloudflare Access**.
+
+The app then sends `CF-Access-Client-Id` and `CF-Access-Client-Secret` with every request to
+the paired server, including the pairing itself, and with nothing else. Both are kept in the
+phone's secure storage (Android Keystore / iOS Keychain), never in synced data or backups.
+
 ### Connection states
 
 Settings → Account → **Server & sync** shows the server, the account, how things stand, when the phone

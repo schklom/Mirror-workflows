@@ -1227,17 +1227,21 @@ body.chips-dragging *{cursor:inherit}
   .setrow.side .effcell-stp>button[aria-label="Increase"]{min-width:12px}
 }
 /* An L/R row with an effort column inside a superset in the list view sits behind three insets
-   (unit, superset card, sets card): at 412 px the row is 260 px wide, and with the logged
-   effort's −/+ its cells want 277 (badge, tick and gaps, weight 77, reps 66, effort 64). The
-   −/+ give way; the value stays, still opens the picker on tap, and the picker's exact row steps
-   in halves as before. The header's effort slot follows the cell's floor.
-   Only while the row is that narrow — the insets are fixed, so it is 1 px short at 428 px and
-   fits from 430 px up, where it keeps the −/+ like the plain row above it. The 34 px floor
-   belongs to the same query: on its own it clips the cell by 27 px. */
+   (unit, superset card, sets card). It used to drop the RIR −/+ here and hand the width to an
+   oversized weight cell — but the rating is the field you reach for most on a unilateral set, so
+   it keeps the same −/+ stepper a normal row has, just shrunk, and the weight cell pays for it
+   instead. The effort cell reserves its 28 px value plus two 12 px button floors (≈54 px); the
+   weight column gives up the matching width (a per-side weight is one limb's load, so its 48 px
+   reserve was generous), so the row's total is unchanged and everything still fits at 412 px. */
 @media (max-width:429px){
   .wl-unit .ss-card .setrow.side .effcell-stp>button[aria-label="Decrease"],
-  .wl-unit .ss-card .setrow.side .effcell-stp>button[aria-label="Increase"]{display:none}
-  .wl-unit .ss-card .setrow.side .effcell,.wl-unit .ss-card .setrow.side .effcell-stp,.wl-unit .ss-card .sethead.per-side .eff-sp{min-width:34px}
+  .wl-unit .ss-card .setrow.side .effcell-stp>button[aria-label="Increase"]{min-width:12px}
+  .wl-unit .ss-card .setrow.side .effcell,.wl-unit .ss-card .setrow.side .effcell-stp,.wl-unit .ss-card .sethead.per-side .eff-sp{min-width:54px}
+  /* reclaim the +/-'s room from the weight column: a slimmer number reserve and tighter button
+     floors, the same shape the 320 px step-down below already gives weight on these rows */
+  .wl-unit .ss-card .setrow.side.eff3 .stp.w:not(.plain),.wl-unit .ss-card .sethead.per-side.eff3:not(.plain) .w-sp{--btn-floor:12px}
+  .wl-unit .ss-card .setrow.side.eff3 .stp.w,.wl-unit .ss-card .sethead.per-side.eff3 .w-sp{--num:33px}
+  .wl-unit .ss-card .setrow.side.eff3 .stp.w button{width:18px}
 }
 /* Below 360 px a row with an effort column cannot hold three numbers and six buttons: with the
    set number, tick and gaps gone a card leaves ~178 px, and 102.5 / 12 / 8.5 at their floors need

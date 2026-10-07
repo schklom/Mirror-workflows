@@ -10,7 +10,7 @@ import {
   modeOf, workoutVolume, setsDone, effectiveRoutine, effectiveRoutineIds, lastEntryFor
 } from '../../frontend/src/lib/history.js'
 import { queueView, queueNext, pinState } from '../../frontend/src/lib/queue.js'
-import { exOr } from '../../frontend/src/lib/exercises.js'
+import { exOr, registerCustom } from '../../frontend/src/lib/exercises.js'
 import { isWarmupRow } from '../../frontend/src/lib/workout-model.js'
 import {
   bestSetOf, best1RM, e1rmSeries, DEFAULT_FORMULA, REP_CAP
@@ -41,6 +41,15 @@ const customOf = (id, S) => (S.customEx || []).find(ex => ex.id === id)
 // exOr's miss is a placeholder object, not null — callers that only need a name are fine
 // with it, callers feeding muscle resolution are NOT. Use customOf directly there.
 const exerciseOf = (id, S) => customOf(id, S) || exOr(id)
+// The session builder, though, reads each exercise's equipment and body part from that global
+// index, so preview_session built a custom leg lift with the small load step where the app (which
+// registers its customs) takes the larger one. It registers the profile's customs for the length
+// of one synchronous build and takes them back out in the same call: nothing else, and no other
+// profile's read, can run in between.
+function withCustomsIndexed(S, build) {
+  registerCustom(Array.isArray(S.customEx) ? S.customEx : [])
+  try { return build() } finally { registerCustom([]) }
+}
 
 function entryView(e, S) {
   const ex = exerciseOf(e.id, S)
@@ -555,7 +564,7 @@ export const previewSession = {
     // The same builder the app starts a session with (sheets.jsx beginWorkout → session-start.js):
     // prescription, step, progression-off targets, deload routines and warm-up ramps all come from
     // there, so the preview cannot drift from what the screen shows.
-    const built = buildSessionEntries(S, r)
+    const built = withCustomsIndexed(S, () => buildSessionEntries(S, r))
     const exercises = (r.ex || []).map((cfg, i) => {
       const ex = exerciseOf(cfg.id, S)
       const mode = modeOf({ ...cfg, id: cfg.id })

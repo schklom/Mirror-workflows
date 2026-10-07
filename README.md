@@ -262,16 +262,11 @@ A release roughly every two weeks, each small and themed. The full plan is in
 [GitHub milestones](https://github.com/DuarteSantos8/openGym/milestones). The next release is a
 new exercise database; the plan after it is being reshuffled around that.
 
-| Release | Planned | Theme |
+| Release | When | Theme |
 |---|---|---|
 | v1.3.10 | released Oct 2026 | New design, rotation, swipe actions, safer sync |
 | v1.4.0 | next | A new exercise database |
-| v1.3.11 | Nov 2026 | Programmes and phases |
-| v1.3.12–13 | Nov–Dec 2026 | Progression engine: AMRAP, %1RM, 5/3/1 |
-| v1.3.14 | Dec 2026 | Cardio, exercise alternatives, groups |
-| v1.4.0 | Jan 2027 | Database storage (the one compatibility break) |
-| v1.4.1–3 | Jan–Feb 2027 | Search, OIDC login, trainer role |
-| v1.4.4–7 | Mar–Apr 2027 | iOS app, Health Connect, catalogue, skins |
+| later | | Google Play and an iOS app, programmes, the progression engine, cardio, database storage |
 
 ## Community
 

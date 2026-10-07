@@ -8,7 +8,7 @@ theme, so a version is out before the branch has drifted and every fix reaches p
 fortnight. Whatever is not merged and tested on gym-test by the Friday before rolls into the next
 block, the date does not move. Version numbers follow the release rule, not the size of the change:
 the next release is the last published one plus one patch (1.3.7 → 1.3.8), and a minor bump is
-reserved for something that breaks compatibility — that is v1.4.0, the database.
+reserved for something that breaks compatibility, like the new exercise database (v1.4.0).
 
 - Milestones: https://github.com/DuarteSantos8/openGym/milestones — every open issue sits in exactly one
 - Tracks, in order: promised items → history editing → queue and programmes → the progression
@@ -124,8 +124,8 @@ the full list.
 
 ## Next: v1.4.0, a new exercise database
 
-The next release brings a new exercise database. Details follow once it is ready. The milestones
-below are being reshuffled around it; until then they stand as they were.
+The next release brings a new exercise database. Details follow once it is ready. The blocks
+below keep their themes, but their version numbers and dates move once it is out.
 
 ## v1.3.11 — Programmes & phases  (2026-11-08)
 
@@ -157,7 +157,7 @@ below are being reshuffled around it; until then they stand as they were.
   (#110)
 - Complexes and interval groups beside supersets (Discord)
 
-## v1.4.0 — Foundation: database  (2027-01-10)
+## Later: database storage
 
 **The one compatibility break.** Storage moves from one JSON file per profile to a database (#191):
 tables for workouts, sets, routines, weigh-ins, custom exercises, favourites, credentials, push

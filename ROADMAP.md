@@ -103,20 +103,29 @@ Structural Balance, Ukrainian and Arabic. Thirty-nine community pull requests. S
   focus (#133); extra passkeys and the device link (PR #95); body measurements (PR #82) move
   to v1.3.10
 
-## v1.3.10 — Session queue & rotation  (2026-10-25)
+## v1.3.10: New design, rotation & safer sync  (released 2026-10-07)
 
-Next up.
+Bigger than planned, on purpose: the queue and rotation from this block, the redesign that was
+pencilled in for v1.3.11, and a sync rework so no device loses data again. See the changelog for
+the full list.
 
-- A free-running session queue beside the fixed week — the next session is the next undone one,
-  whatever the weekday — with an in-app editor and automatic refill (#158, #69; PR #167 and the
-  editor on top of it; Discord "not forced into a weekly plan")
-- Swipe between exercise cards during a workout (#113, GitLab !114) — the swipe preview landed in
-  v1.3.9 (#202)
-- Drag-and-drop exercise order that survives touch (#114 — the first version came out again on
-  2026-09-07; a drag handle on computers came in v1.3.9, #277); the Start/Resume button as "next"
-  during a workout (Discord)
-- Rolled over from v1.3.9: repeat a past workout from History and undo finish (#58, GitLab !130),
-  relabel an "Unknown" exercise after an import without losing its sets, body measurements (PR #82)
+- A rotation beside the fixed week: the next session is the next one you haven't done, whatever
+  the weekday, with an editor in Plan (#158, #69; PR #167 and kurktchiev/openGym#1)
+- A calmer app: Settings on one screen with search, Plan as Schedule and Routines, a workout screen
+  without the tab bar, a docked rest bar and a rest-time wheel up to 15:00, one icon per idea
+- Swipe actions on sets, routines and the loop, with Undo; a colour of your own as the accent
+- Safer sync: every change stamped down to the field, deletions that stay deleted, two tabs that no
+  longer overwrite each other, durable writes and `db.json.bak` on the server
+- Repeat a past workout today (#58), pyramid sets (#362, PR #367), progress photos (PR #361), per
+  side on timed holds (PR #322), the backup folder on Android (#161), FIRST_USER_ADMIN (#328),
+  the connection line can be hidden (#330, #369), Traditional Chinese (PR #368)
+- Still to come from the old block: undo finish (GitLab !130), relabelling an "Unknown" exercise
+  after an import, body measurements (PR #82), drag-and-drop on touch (#114)
+
+## Next: v1.4.0, a new exercise database
+
+The next release brings a new exercise database. Details follow once it is ready. The milestones
+below are being reshuffled around it; until then they stand as they were.
 
 ## v1.3.11 — Programmes & phases  (2026-11-08)
 

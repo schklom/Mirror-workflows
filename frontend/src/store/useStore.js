@@ -105,6 +105,10 @@ export const DEF = {
   // 'cards' behaviour. beginWorkout copies the value onto s.active, so the header ⋮ menu can
   // override it for the running session without touching this saved default.
   workoutView: 'cards',
+  // How the Library, the exercise picker and the muscle explorer show exercises — 'list' (rows
+  // with a small thumbnail) or 'cards' (a grid of pictures with the name underneath). Switched
+  // by the button in those headers (ExerciseViewToggle); older profiles overlay onto the list.
+  exerciseView: 'list',
   // Which controls the workout screen shows besides the sets themselves. The default is the
   // lean layout: one "more" button per exercise and a menu on each set number. Every switch
   // brings one of the old always-visible button groups back (Settings → During a workout).

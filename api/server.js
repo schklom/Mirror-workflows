@@ -235,8 +235,33 @@ const PUSH_TIMEOUT_MS = 10000;
 const PUSH_CONCURRENCY = 6;
 const MAX_SUBS_PER_USER = 20;
 
+function parseAllowedPrivateIps(raw) {
+  const list = new net.BlockList();
+  for (const entry of String(raw || '').split(/[\s,]+/).filter(Boolean)) {
+    const [from, to] = entry.split('-');
+    const [addr, prefix] = entry.split('/');
+    const family = net.isIPv6(addr) || net.isIPv6(from) ? 'ipv6' : 'ipv4';
+    try {
+      if (to !== undefined) list.addRange(from, to, family);
+      else if (prefix !== undefined && /^\d{1,3}$/.test(prefix)) list.addSubnet(addr, +prefix, family);
+      else if (net.isIP(entry)) list.addAddress(entry, family);
+      else throw new Error('not an address, range or CIDR block');
+    } catch {
+      console.warn(`ALLOWED_PRIVATE_IPS entry "${entry.slice(0, 60)}" is not a valid address, range or CIDR block — ignored`);
+    }
+  }
+  return list;
+}
+const ALLOWED_PRIVATE_IPS = parseAllowedPrivateIps(process.env.ALLOWED_PRIVATE_IPS);
+
+function isAllowedPrivateAddr(v) {
+  const family = net.isIPv6(v) ? 'ipv6' : net.isIPv4(v) ? 'ipv4' : null;
+  return family !== null && ALLOWED_PRIVATE_IPS.check(v.replace(/%.*$/, ''), family);
+}
+
 function isPrivateAddr(ip) {
   const v = String(ip).toLowerCase();
+  if (isAllowedPrivateAddr(v)) return false;
   const m4 = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/.exec(v);
   if (m4) {
     const a = +m4[1], b = +m4[2];

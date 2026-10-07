@@ -219,9 +219,94 @@ const isMap = v => !!v && typeof v === 'object' && !Array.isArray(v)
 // photo to a rename. Each edit now records, per field, when it changed it (`_f`, stampEntry), and
 // the merge takes every field from the side that changed it last (mergeEntry). A field neither
 // side stamped follows the version edited last, as before.
-const ENTRY_META = new Set(['id', '_ts', '_f'])
+const ENTRY_META = new Set(['id', '_ts', '_f', '_u'])
 const fieldTime = (x, k) => Number(x?._f?.[k]) || 0
 const sameJSON = (x, y) => JSON.stringify(x) === JSON.stringify(y)
+
+// ---- Undo ---------------------------------------------------------------------------------------
+//
+// An Undo that puts a field back exactly as it was before one change (a swipe's removal) is itself
+// a change, stamped after the removal so it beats it on every device that already took the
+// removal. But it also beat a change another device made to the same field before the removal
+// and never saw: a set count edited offline in the routine whose exercise was swiped away and put
+// back, a loop reordered offline while one routine was taken out of it and put back. The Undo
+// meant "as if nothing happened", and that edit was lost.
+//
+// So such an Undo marks the field with what it undid: `[base, del, at]`, the field's stamp before
+// the removal, the removal's stamp and the Undo's own (in an entry's `_u`, per field; in the
+// copy's `undone`, per setting or plan day, as `edited` is). A merge then lets the other side's
+// value win when its stamp falls strictly between `base` and `del`: a change made after the value
+// the Undo put back, and before the removal it took back, which this device never saw. The value
+// that wins is stamped just after the Undo, so every copy settles on it. A removal or edit seen
+// after the removal (a stamp from `del` on) still loses to the Undo, as before.
+
+// The marker of field `k` (`marks` is `_u` or `undone`) when it still describes the value stamped `at`.
+const undoOf = (marks, k, at) => {
+  const u = isMap(marks) ? marks[k] : null
+  return Array.isArray(u) && u.length === 3 && at > 0 && Number(u[2]) === at ? u : null
+}
+// Between two stamps of one field, `x` (marked `ux`) and `y` (marked `uy`): which side's value
+// stays ('x', 'y' or '' on a tie) and the stamp it carries. See above.
+function undoPick(tx, ux, ty, uy) {
+  if (tx > ty) return ux && ty > Number(ux[0]) && ty < Number(ux[1]) ? ['y', tx + 1] : ['x', tx]
+  if (ty > tx) return uy && tx > Number(uy[0]) && tx < Number(uy[1]) ? ['x', ty + 1] : ['y', ty]
+  return ['', tx]
+}
+// `marks` brought up to date with `stamps` after a change stamped `now`: a pending marker
+// (`[base, del]`, set by the Undo itself) of a field this change stamped gets `now`; one whose field
+// has moved on since is dropped. Returns the markers left, or null.
+function settleMarks(marks, stamps, now) {
+  if (!isMap(marks)) return null
+  const out = {}
+  for (const [k, m] of Object.entries(marks)) {
+    if (!Array.isArray(m)) continue
+    const at = Number(stamps?.[k]) || 0
+    if (m.length === 2 && at === now) out[k] = [Number(m[0]) || 0, Number(m[1]) || 0, now]
+    else if (m.length === 3 && at > 0 && Number(m[2]) === at) out[k] = m
+  }
+  return Object.keys(out).length ? out : null
+}
+
+/**
+ * What an Undo needs to mark what it put back (see above), taken right after the change it may
+ * undo: for every stamped setting or plan day that change moved, its stamp before and after, and
+ * its value before. `before` and `after` are the copies around the change.
+ */
+export function undoMarks(before, after) {
+  const eb = isMap(before?.edited) ? before.edited : {}, ea = isMap(after?.edited) ? after.edited : {}
+  const out = {}
+  for (const [k, at] of Object.entries(ea)) {
+    if (Number(at) === Number(eb[k] || 0)) continue
+    out[k] = [Number(eb[k]) || 0, Number(at) || 0, JSON.stringify(editedValue(before, k) ?? null)]
+  }
+  return out
+}
+const editedValue = (S, k) => {
+  const dot = k.indexOf('.')
+  return dot < 0 ? S?.[k] : (isMap(S?.[k.slice(0, dot)]) ? S[k.slice(0, dot)][k.slice(dot + 1)] : undefined)
+}
+/**
+ * In an Undo's draft `s`, after it put things back: marks every setting and plan day of `marks`
+ * (undoMarks) that is now exactly what it was before the change, and that nothing changed since.
+ */
+export function markUndone(s, marks) {
+  if (!s || !isMap(marks)) return s
+  const ed = isMap(s.edited) ? s.edited : {}
+  for (const [k, [base, del, was]] of Object.entries(marks)) {
+    if ((Number(ed[k]) || 0) !== del || JSON.stringify(editedValue(s, k) ?? null) !== was) continue
+    s.undone = { ...(isMap(s.undone) ? s.undone : {}), [k]: [base, del] }
+  }
+  return s
+}
+/**
+ * The same for one field `k` of an entry `x` in an Undo's draft: `base` and `del` are the field's
+ * stamps before and after the change it undid. Only when nothing changed the field since.
+ */
+export function markEntryUndone(x, k, base, del) {
+  if (!x || typeof x !== 'object' || !(del > 0) || fieldTime(x, k) !== del) return x
+  x._u = { ...(isMap(x._u) ? x._u : {}), [k]: [Number(base) || 0, del] }
+  return x
+}
 
 /**
  * Stamps `x`, the new version of an entry whose previous version is `old`, as edited at `now`:
@@ -238,6 +323,8 @@ export function stampEntry(old, x, now) {
     if ((k in old) !== (k in x) || !sameJSON(old[k], x[k])) f[k] = now
   }
   if (Object.keys(f).length) x._f = f; else delete x._f
+  const u = settleMarks(x._u, f, now)
+  if (u) x._u = u; else delete x._u
   return x
 }
 
@@ -248,14 +335,22 @@ export function stampEntry(old, x, now) {
 export function mergeEntry(a, b) {
   const [n, o] = (Number(b?._ts) || 0) > (Number(a?._ts) || 0) ? [b, a] : [a, b]
   const out = clone(n)
-  for (const k of new Set([...Object.keys(n), ...Object.keys(o)])) {
-    if (ENTRY_META.has(k)) continue
-    if (fieldTime(o, k) > fieldTime(n, k)) { if (k in o) out[k] = clone(o[k]); else delete out[k] }
-  }
   const f = { ...(isMap(o._f) ? o._f : {}) }
   for (const [k, v] of Object.entries(isMap(n._f) ? n._f : {})) if (!((Number(f[k]) || 0) > (Number(v) || 0))) f[k] = v
+  const u = {}
+  let bumped = 0
+  for (const k of new Set([...Object.keys(n), ...Object.keys(o), ...Object.keys(f)])) {
+    if (ENTRY_META.has(k)) continue
+    const tn = fieldTime(n, k), to = fieldTime(o, k)
+    const [side, at] = undoPick(tn, undoOf(n._u, k, tn), to, undoOf(o._u, k, to))
+    if (side === 'y') { if (k in o) out[k] = clone(o[k]); else delete out[k] }
+    if (at > Math.max(tn, to)) { f[k] = at; bumped = Math.max(bumped, at) }
+    const kept = side === 'y' ? undoOf(o._u, k, at) : side === 'x' ? undoOf(n._u, k, at) : undoOf(n._u, k, at) || undoOf(o._u, k, at)
+    if (kept) u[k] = clone(kept)
+  }
   if (Object.keys(f).length) out._f = f; else delete out._f
-  const ts = Math.max(Number(a?._ts) || 0, Number(b?._ts) || 0)
+  if (Object.keys(u).length) out._u = u; else delete out._u
+  const ts = Math.max(Number(a?._ts) || 0, Number(b?._ts) || 0, bumped)
   if (ts) out._ts = ts
   return out
 }
@@ -375,6 +470,7 @@ export function sinceReset(S, at, ids) {
   // header): stamps from before the reset would otherwise outrank the fresh profile's defaults,
   // a unit switch made long ago would bring the old unit back over the reset's.
   delete out.edited
+  delete out.undone
   delete out.unitSet
   return out
 }
@@ -504,7 +600,7 @@ function applyDeletions(S, deleted) {
 // a rotation pass refilled on the phone survives a setting flipped on the desktop. Fields with a
 // merge of their own are not stamped here; a field nobody stamped follows the newer copy, as before.
 const OWN_MERGE = new Set([
-  '_ts', '_rev', 'active', 'unit', 'unitSet', 'resetAt', 'resetIds', 'deleted', 'edited',
+  '_ts', '_rev', 'active', 'unit', 'unitSet', 'resetAt', 'resetIds', 'deleted', 'edited', 'undone',
   'workouts', 'routines', 'customEx', 'equipProfiles', 'gymCards', 'bodyweight', 'favEx',
   'exWeights', 'balanceOverrides', 'loadKind', 'plates',
 ])
@@ -549,6 +645,12 @@ export function stampEdits(prev, next, now = Date.now()) {
     }
     next.edited = ed
   }
+  // An Undo's markers (see "Undo" above): completed with this change's stamp, or dropped once
+  // their setting moved on.
+  if ('undone' in next) {
+    const u = settleMarks(next.undone, ed, now)
+    if (u) next.undone = u; else delete next.undone
+  }
   return next
 }
 
@@ -566,10 +668,14 @@ export function mergeEdits(a, b) {
  */
 function applyEdits(out, n, o) {
   const en = isMap(n.edited) ? n.edited : {}, eo = isMap(o.edited) ? o.edited : {}
+  const bumps = {}
   for (const k of new Set([...Object.keys(en), ...Object.keys(eo)])) {
     const tn = Number(en[k]) || 0, to = Number(eo[k]) || 0
     if (tn === to) continue
-    const src = to > tn ? o : n
+    // An Undo's marker can hand the field to the side whose stamp is older (see "Undo" above).
+    const [side, at] = undoPick(tn, undoOf(n.undone, k, tn), to, undoOf(o.undone, k, to))
+    if (at > Math.max(tn, to)) bumps[k] = at
+    const src = side === 'y' ? o : n
     const dot = k.indexOf('.')
     if (dot < 0) {
       if (OWN_MERGE.has(k) || PER_KEY.has(k)) continue
@@ -582,6 +688,7 @@ function applyEdits(out, n, o) {
     const into = isMap(out[f]) ? out[f] : (out[f] = {})
     if (s in from) into[s] = clone(from[s]); else delete into[s]
   }
+  return bumps
 }
 
 // `prefer` names the side whose settings, plan and per-exercise config win regardless of `_ts`:
@@ -717,9 +824,17 @@ export function mergeStates(a0, b0, { prefer } = {}) {
   // Each stamped setting and plan day from the copy that changed it last (the `edited` section
   // above). `prefer` (sign-in) keeps the preferred side's, stamps and all.
   if (!prefer) {
-    applyEdits(out, n, o)
+    const bumps = applyEdits(out, n, o)
     const edited = mergeEdits(n.edited, o.edited)
-    if (edited) out.edited = edited; else delete out.edited
+    if (edited) { Object.assign(edited, bumps); out.edited = edited } else delete out.edited
+    // An Undo's markers that still describe the merged stamp of their setting.
+    const undone = {}
+    for (const k of new Set([...Object.keys(isMap(n.undone) ? n.undone : {}), ...Object.keys(isMap(o.undone) ? o.undone : {})])) {
+      const at = Number(edited?.[k]) || 0
+      const m = undoOf(n.undone, k, at) || undoOf(o.undone, k, at)
+      if (m && !(k in bumps)) undone[k] = clone(m)
+    }
+    if (Object.keys(undone).length) out.undone = undone; else delete out.undone
   }
   if (deleted) out.deleted = deleted; else delete out.deleted
   out._ts = Math.max(a._ts || 0, b._ts || 0)
@@ -850,7 +965,14 @@ export function stampChange(prev, next, wall = Date.now()) {
     const old = bwBefore.get(e.d)
     if (!old || old.t !== e.t) e.t = Math.max(Number(e.t) || 0, now)
   }
-  stampRoutines(prev?.routines, next.routines, now)
+  // A routine put back by an Undo keeps the edit time it had: what puts it back is the add-back
+  // on record (stampDeletions), not an edit of it. Stamped as edited now, it was the newer version
+  // to an older app's merge (v1.3.9 keeps a routine whole, by `_ts`), and a rename made there
+  // offline was lost to the Undo. Only a routine removed after its last edit counts.
+  const gone = isMap(prev?.deleted?.routines) ? prev.deleted.routines : {}
+  const putBack = r => Number(gone[r.id]) > 0 && Number(r._ts) > 0 && Number(r._ts) < Number(gone[r.id]) &&
+    !list(prev?.routines).some(x => x?.id === r.id)
+  stampRoutines(prev?.routines, next.routines, now, putBack)
   stampCustomEx(prev?.customEx, next.customEx, now)
   stampEntries(prev?.equipProfiles, next.equipProfiles, now)
   stampEntries(prev?.gymCards, next.gymCards, now)
@@ -859,24 +981,25 @@ export function stampChange(prev, next, wall = Date.now()) {
   return now
 }
 
-const sameRoutine = (a, b) => JSON.stringify({ ...a, _ts: 0, _f: 0 }) === JSON.stringify({ ...b, _ts: 0, _f: 0 })
+const sameRoutine = (a, b) => JSON.stringify({ ...a, _ts: 0, _f: 0, _u: 0 }) === JSON.stringify({ ...b, _ts: 0, _f: 0, _u: 0 })
 
 /**
  * Stamps `_ts` on every routine of `next` that is new or differs from its version in `prev` — the
  * edit time mergeStates needs to keep the routine edited last. The store runs it on every change
  * (useStore update), so no screen that edits a plan has to remember to. Mutates and returns `next`.
  */
-export function stampRoutines(prev = [], next = [], now = Date.now()) {
+export function stampRoutines(prev = [], next = [], now = Date.now(), putBack = () => false) {
   const before = new Map(list(prev).filter(r => r?.id != null).map(r => [r.id, r]))
   for (const r of list(next)) {
     if (!r || r.id == null) continue
     const old = before.get(r.id)
+    if (!old && putBack(r)) continue
     if (!old || (old !== r && !sameRoutine(old, r))) stampEntry(old, r, now)
   }
   return next
 }
 
-const sameEntry = (a, b) => JSON.stringify({ ...a, _ts: 0, _f: 0 }) === JSON.stringify({ ...b, _ts: 0, _f: 0 })
+const sameEntry = (a, b) => JSON.stringify({ ...a, _ts: 0, _f: 0, _u: 0 }) === JSON.stringify({ ...b, _ts: 0, _f: 0, _u: 0 })
 
 /**
  * Stamps `_ts` on every custom exercise of `next` that is new or differs from its version in

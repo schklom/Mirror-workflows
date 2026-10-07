@@ -21,6 +21,7 @@ import { MOBILE } from '../lib/mobile.js'
 import { coachAvailable } from '../lib/coach.js'
 import { queueOf, queueView } from '../lib/queue.js'
 import { deriveSessionName } from '../lib/session-merge.js'
+import { markUndone, undoMarks } from '../lib/sync-merge.js'
 import {
   scheduleModeOf, queueRecovery, rotationIds, saveRotation, startNewPass, startPass, stopPass,
   chooseRotation, chooseFixedWeek,
@@ -43,13 +44,17 @@ export function deleteRoutineWithUndo(id) {
   const st = useStore.getState()
   const snap = routineSnapshot(st.S, id)
   if (!snap) return false
+  const before = st.S
   st.update(s => { deleteRoutine(s, id) })
+  // What the removal moved (weekdays, reschedules, the loop), for the Undo to mark as put back:
+  // a change another device made to one of them before it saw the removal then still wins.
+  snap.marks = undoMarks(before, useStore.getState().S)
   useUI.getState().toast(t('“{0}” gone.', snap.routine.name), { action: t('Undo'), onAction: () => undoDeleteRoutine(snap) })
   return true
 }
 export function undoDeleteRoutine(snap) {
   let ok = false
-  useStore.getState().update(s => { ok = restoreRoutine(s, snap) })
+  useStore.getState().update(s => { ok = restoreRoutine(s, snap); if (ok && snap.marks) markUndone(s, snap.marks) })
   // False when a sync brought it back first (another device's Undo, or its later edit).
   if (!ok) useUI.getState().toast(t('It’s already back.'))
   return ok
@@ -68,13 +73,14 @@ export function takeOutOfLoop(id, setSeq, seq, label) {
   setSeq(seq.filter(x => x !== id))
   const after = useStore.getState().S
   const mark = loopMark(after)
+  const marks = undoMarks(before, after)
   const name = before.routines.find(r => r.id === id)?.name ?? id
-  useUI.getState().toast(t('“{0}” is out of the loop.', name), { action: t('Undo'), onAction: () => undoTakeOut({ id, at, label, snap, mark }) })
+  useUI.getState().toast(t('“{0}” is out of the loop.', name), { action: t('Undo'), onAction: () => undoTakeOut({ id, at, label, snap, mark, marks }) })
   return true
 }
 // What the loop looked like right after a removal: the saved loop, the pass and the mode switch.
 const loopMark = S => JSON.stringify([S.rotation ?? null, S.queue ?? null, S.scheduleMode ?? null])
-export function undoTakeOut({ id, at, label, snap, mark }) {
+export function undoTakeOut({ id, at, label, snap, mark, marks }) {
   if (!useStore.getState().S.routines.some(r => r.id === id)) {
     useUI.getState().toast(t('Too late, that one’s gone'))
     return false
@@ -85,6 +91,8 @@ export function undoTakeOut({ id, at, label, snap, mark }) {
       s.queue = snap.queue
       const pins = Object.entries(snap.dayPlan).filter(([iso]) => s.dayPlan?.[iso] == null)
       if (pins.length) s.dayPlan = { ...(s.dayPlan || {}), ...Object.fromEntries(pins) }
+      // Put back exactly: a reorder another device made before it saw the removal still wins.
+      if (marks) markUndone(s, marks)
       return
     }
     // Only a loop that is still this app's and still running gets a pass written. After "Fixed

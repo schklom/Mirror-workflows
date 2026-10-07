@@ -59,12 +59,12 @@ const capStamps = m => {
   return m;
 };
 const OWN_MERGE = new Set([
-  '_ts', '_rev', 'active', 'unit', 'unitSet', 'resetAt', 'resetIds', 'deleted', 'edited',
+  '_ts', '_rev', 'active', 'unit', 'unitSet', 'resetAt', 'resetIds', 'deleted', 'edited', 'undone',
   'workouts', 'routines', 'customEx', 'equipProfiles', 'gymCards', 'bodyweight', 'favEx',
   'exWeights', 'balanceOverrides', 'loadKind', 'plates',
 ]);
 const PER_KEY = new Set(['week', 'dayPlan', 'exNotes', 'barWeights']);
-const ENTRY_META = new Set(['id', '_ts', '_f']);
+const ENTRY_META = new Set(['id', '_ts', '_f', '_u']);
 const ENTRY_LISTS = ['routines', 'customEx', 'equipProfiles', 'gymCards', 'workouts'];
 
 // Whether removal record `v` replaces `cur`: the later stamp, and on a tie the add-back.
@@ -125,9 +125,24 @@ export function stampEntry(old, x, now) {
     if ((k in old) !== (k in x) || !same(old[k], x[k])) f[k] = now;
   }
   if (Object.keys(f).length) x._f = f; else delete x._f;
+  const u = settleMarks(x._u, f, now);
+  if (u) x._u = u; else delete x._u;
   return x;
 }
-const sameEntry = (a, b) => same({ ...a, _ts: 0, _f: 0 }, { ...b, _ts: 0, _f: 0 });
+// An Undo's markers (`_u`, sync-merge.js "Undo"): completed with this edit's stamp, or dropped
+// once their field moved on.
+function settleMarks(marks, stamps, now) {
+  if (!isMap(marks)) return null;
+  const out = {};
+  for (const [k, m] of Object.entries(marks)) {
+    if (!Array.isArray(m)) continue;
+    const at = Number(stamps?.[k]) || 0;
+    if (m.length === 2 && at === now) out[k] = [Number(m[0]) || 0, Number(m[1]) || 0, now];
+    else if (m.length === 3 && at > 0 && Number(m[2]) === at) out[k] = m;
+  }
+  return Object.keys(out).length ? out : null;
+}
+const sameEntry = (a, b) => same({ ...a, _ts: 0, _f: 0, _u: 0 }, { ...b, _ts: 0, _f: 0, _u: 0 });
 
 // Step 2: what a writer that does not stamp changed against the copy it read, stamped at `now`.
 function stampUnstamped(cur, next, sent, now) {

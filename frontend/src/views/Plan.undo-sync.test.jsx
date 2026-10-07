@@ -45,7 +45,9 @@ describe('Undo after a removal the other device has already pulled', () => {
     const here = S()
     const back = here.routines.find(r => r.id === 'b')
     expect(back).toBeTruthy()
-    expect(back._ts).toBeGreaterThan(deleted.deleted.routines.b)
+    // It keeps the edit time it had: the add-back on record puts it back, not an edit of it (an
+    // older app keeps the routine edited last as a whole, and a rename there would lose to it).
+    expect(back._ts).toBe(900)
     expect(here.deleted.routines.b).toBeLessThan(0)   // marked as added back
     for (const m of [mergeStates(here, other), mergeStates(other, here)]) {
       expect(ids(m.routines)).toEqual(['a', 'b', 'c'])

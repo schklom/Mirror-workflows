@@ -16,6 +16,7 @@ import SwipeRow from '../components/SwipeRow.jsx'
 import { workoutControls } from '../lib/workout-controls.js'
 import { copyRoutine, deleteRoutine, replaceSlotExercise } from '../lib/routines.js'
 import { planPrintHTML, printPlan } from '../lib/plan-share.js'
+import { markEntryUndone } from '../lib/sync-merge.js'
 import { MOBILE, printHtml } from '../lib/mobile.js'
 import { speedUnitOf } from '../lib/speed.js'
 import { POLICIES_FOR, POLICY_NAME, POLICY_DESC } from '../lib/progression.js'
@@ -330,24 +331,29 @@ export function removeRoutineExercise(routineId, i) {
   const slot = routine?.ex?.[i]
   if (!slot) return false
   const before = structuredClone(routine.ex)
+  const base = Number(routine._f?.ex) || 0
   st.update(s => {
     const ex = s.routines.find(x => x.id === routineId)?.ex
     if (!ex) return
     ex.splice(i, 1); cleanupSg(ex)
   })
-  const after = JSON.stringify(useStore.getState().S.routines.find(x => x.id === routineId)?.ex)
+  const now = useStore.getState().S.routines.find(x => x.id === routineId)
+  const after = JSON.stringify(now?.ex)
+  const del = Number(now?._f?.ex) || 0
   useUI.getState().toast(t('“{0}” left the routine.', exerciseNameText(exOr(slot.id))),
-    { action: t('Undo'), onAction: () => undoRemoveRoutineExercise({ routineId, i, before, after }) })
+    { action: t('Undo'), onAction: () => undoRemoveRoutineExercise({ routineId, i, before, after, base, del }) })
   return true
 }
-export function undoRemoveRoutineExercise({ routineId, i, before, after }) {
+export function undoRemoveRoutineExercise({ routineId, i, before, after, base, del }) {
   if (!useStore.getState().S.routines.some(x => x.id === routineId)) {
     useUI.getState().toast(t('Too late, that one’s gone'))
     return false
   }
   useStore.getState().update(s => {
     const routine = s.routines.find(x => x.id === routineId)
-    if (JSON.stringify(routine.ex) === after) { routine.ex = structuredClone(before); return }
+    // Put back exactly, so a change another device made to these exercises before it saw the
+    // removal still wins (lib/sync-merge.js, "Undo").
+    if (JSON.stringify(routine.ex) === after) { routine.ex = structuredClone(before); if (del) markEntryUndone(routine, 'ex', base, del); return }
     routine.ex.splice(Math.min(i, routine.ex.length), 0, structuredClone(before[i]))
     cleanupSg(routine.ex)
   })

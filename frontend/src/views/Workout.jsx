@@ -1080,8 +1080,9 @@ function ActiveWorkout() {
     // hold put aside must not outrank what you just typed, or the field would read 45 and the ▶
     // would still hold the 30 the row was asking for before.
     if (field === 'sec') delete e.sets[i].planSec
-    // Changing a weight cascades to following inherited sets of the same phase, so a correction
-    // carries through without retyping every row while explicit manual exceptions stay put.
+    // Changing a work set's weight cascades to the following inherited work sets, so a correction
+    // carries through without retyping every row while explicit manual exceptions stay put. A
+    // warm-up edit stays on its own row, and the later rungs keep their ramp loads.
     if (field === 'w') {
       e.sets[i].weightOrigin = WEIGHT_ORIGIN_MANUAL
       e.sets = cascadeWeight(e.sets, i, v)

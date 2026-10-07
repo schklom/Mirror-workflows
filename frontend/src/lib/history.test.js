@@ -989,6 +989,32 @@ describe('session row helpers', () => {
     expect(next[1].w).toBe(20)             // different flag (warm-up) untouched
   })
 
+  // Editing warm-up 1 of an incline bench ramp used to copy the new load onto the later
+  // warm-ups, so each one had to be put back by hand. Each rung keeps its own load.
+  it('cascadeWeight leaves the later warm-up rungs on their ramp loads', () => {
+    const S = { unit: 'lb', exWeights: {}, workouts: [] }
+    const rows = buildSets(S, { id: '0047', mode: 'reps', sets: 4, reps: 8, weight: 125, warmupSets: 3 }, { step: 5 })
+    expect(rows.map(r => r.w)).toEqual([60, 90, 105, 125, 125, 125, 125])
+    const next = cascadeWeight(rows, 0, 70)   // the caller writes the edited row itself
+    expect(next.map(r => r.w)).toEqual([60, 90, 105, 125, 125, 125, 125])
+    const later = cascadeWeight(rows, 1, 100)
+    expect(later.map(r => r.w)).toEqual([60, 90, 105, 125, 125, 125, 125])
+    // a work-set edit still carries through the work sets and never reaches back into the ramp
+    expect(cascadeWeight(rows, 3, 130).map(r => r.w)).toEqual([60, 90, 105, 125, 130, 130, 130])
+  })
+
+  it('cascadeWeight leaves later one-side warm-up rungs alone too', () => {
+    const rows = [
+      { ...makeSideSet({ w: 10, r: 16 }), phase: 'warmup' },
+      { ...makeSideSet({ w: 15, r: 16 }), phase: 'warmup' },
+      makeSideSet({ w: 25, r: 16 }),
+    ]
+    const next = cascadeWeight(rows, 0, 5, 'L')
+    expect(next[1].sides.L.w).toBe(15)
+    expect(next[1].sides.R.w).toBe(15)
+    expect(next[2].sides.L.w).toBe(25)
+  })
+
   it('cascadeWeight deleting the weight removes the key from following undone rows only', () => {
     const rows = [
       { w: 60, done: true },
@@ -1093,14 +1119,14 @@ describe('warm-up rows identified by phase alone', () => {
     expect(workSetsDone({ entries: [{ sets: [imported, work] }] })).toBe(1)
   })
 
-  it('cascadeWeight keeps phase-only warm-ups in their own lane', () => {
+  it('cascadeWeight treats a phase-only warm-up as a warm-up: the edit stays on its row', () => {
     const rows = [
       { w: 40, r: 10, phase: 'warmup' },
       { w: 45, r: 10, phase: 'warmup' },
       { w: 100, r: 5 },
     ]
     const next = cascadeWeight(rows, 0, 50)
-    expect(next[1].w).toBe(50)
+    expect(next[1].w).toBe(45)
     expect(next[2].w).toBe(100)
   })
 })

@@ -31,6 +31,14 @@ describe('buildRestAlert', () => {
     expect(buildRestAlert({ at: now + 1000, sound: false, now }).sound).toBe(false)
   })
 
+  // Discord "Rest Timer Sound Notification too Quiet": the locked phone played the old beeps
+  // whatever Settings → Sound said. The chime is the default; only `true` picks the classic beeps.
+  it('carries Settings → Sound to the native tone, chime by default', () => {
+    expect(buildRestAlert({ at: now + 1000, now }).classic).toBe(false)
+    expect(buildRestAlert({ at: now + 1000, classic: true, now }).classic).toBe(true)
+    expect(buildRestAlert({ at: now + 1000, classic: 'kind', now }).classic).toBe(false)
+  })
+
   // A channel keeps the vibration it was created with, so Vibrate off cannot switch 'rest-over'
   // off: that end goes out on a channel that never buzzes.
   it('buzzes on the rest channel by default, and uses the quiet one when Vibrate is off', () => {

@@ -102,6 +102,8 @@ export function beep(enabled, freq, dur, when) {
 // sound" (S.classicChime) picks between the two without reviving the three separate beep() calls
 // this replaced: CLASSIC is the exact same three tones, just driven through the same tone() path
 // as the chime below, so both share one gating/try-catch and one sleepAfter bookkeeping.
+// The Android app plays this end tone natively while the app is in the background or the screen
+// is off (android/.../RestTone.java). Change the notes or the shape here, change them there too.
 export const CHIME_PEAK = 0.9
 const CHIME = [[1319, 0.16, 0], [988, 0.16, 0.22], [1319, 0.5, 0.44]]
 const CLASSIC = [[880, 0.15, 0], [880, 0.15, 0.25], [1320, 0.4, 0.5]]

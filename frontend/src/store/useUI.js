@@ -26,7 +26,7 @@ const bookRestEnd = (endsAt, totalSec, kind) => {
   const switching = kind === 'switch'
   if (!MOBILE) { if (!switching) pushRestTimer(Math.max(1, Math.round((endsAt - Date.now()) / 1000))); return }
   const { S } = useStore.getState()
-  armRestAlert(endsAt, { title: switching ? t('Switch sides') : t('Rest’s over. Next set!'), countdownTitle: switching ? t('Switch sides') : t('Rest'), totalSec, accent: accentValue(S), sound: !!S.sound, vibrate: S.vibrate !== false, alarmBuzz: S.vibrate !== false && !!S.vibrateOnSilent })
+  armRestAlert(endsAt, { title: switching ? t('Switch sides') : t('Rest’s over. Next set!'), countdownTitle: switching ? t('Switch sides') : t('Rest'), totalSec, accent: accentValue(S), sound: !!S.sound, classic: S.classicChime === true, vibrate: S.vibrate !== false, alarmBuzz: S.vibrate !== false && !!S.vibrateOnSilent })
     .then(ok => {
       // Only for the rest that asked: one skipped or moved since then has booked its own end.
       const tm = useUI.getState().timer
@@ -324,12 +324,13 @@ export const useUI = create((set, get) => ({
     // taking off more than is left means "I'm ready now" — same as skipping, and it keeps a
     // negative duration out of both the progress bar and the server-side push schedule
     if (left <= 0) { get().stopRest(); return }
+    const total = Math.max(tm.total || left, left)
     // Paused, there is no end to move and nothing booked on the server: the time is simply held,
     // and the notification holds the new figure.
-    if (tm.paused) { set({ timer: { ...tm, left, total: tm.total + sec } }); holdRestAlert(left, tm.total + sec); return }
+    if (tm.paused) { set({ timer: { ...tm, left, total } }); holdRestAlert(left, total); return }
     const endsAt = tm.endsAt + sec * 1000
-    set({ timer: { ...tm, left, total: tm.total + sec, endsAt } })
-    bookRestEnd(endsAt, tm.total + sec, tm.kind)
+    set({ timer: { ...tm, left, total, endsAt } })
+    bookRestEnd(endsAt, total, tm.kind)
   },
   // The active list changed shape (an exercise removed or inserted at `at`): keep the rest
   // pointing at the same exercise. Returns nothing; the caller decides whether to stop instead.

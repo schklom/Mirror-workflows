@@ -1949,5 +1949,5 @@ export default {
   'Greys show lighter in dark mode, so buttons don’t look switched off.': '다크 모드에서는 버튼이 꺼진 것처럼 보이지 않게 회색을 밝게 표시해요.',
   'Greys show darker in light mode, so buttons don’t look switched off.': '라이트 모드에서는 버튼이 꺼진 것처럼 보이지 않게 회색을 어둡게 표시해요.',
   'custom color picker': '나만의 색상 사용자 지정 색상 선택기',
-  'Signed in from another tab. Your workout came along, pick it up there.': '다른 탭에서 로그인했어요. 운동도 함께 넘어갔으니 거기서 이어서 하세요.',
+  'Signed in from another tab. Your workout came along, keep going here.': '다른 탭에서 로그인했어요. 운동도 함께 넘어왔으니 여기서 이어서 하세요.',
 }

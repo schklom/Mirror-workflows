@@ -1952,5 +1952,5 @@ export default {
   'Greys show lighter in dark mode, so buttons don’t look switched off.': 'A szürkék sötét módban világosabbak, hogy a gombok ne tűnjenek kikapcsoltnak.',
   'Greys show darker in light mode, so buttons don’t look switched off.': 'A szürkék világos módban sötétebbek, hogy a gombok ne tűnjenek kikapcsoltnak.',
   'custom color picker': 'saját szín egyéni színválasztó',
-  'Signed in from another tab. Your workout came along, pick it up there.': 'Bejelentkeztél egy másik lapon. Az edzésed is átment, ott folytasd.',
+  'Signed in from another tab. Your workout came along, keep going here.': 'Bejelentkeztél egy másik lapon. Az edzésed is jött vele, folytasd itt.',
 }

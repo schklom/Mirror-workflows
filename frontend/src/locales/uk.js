@@ -1946,5 +1946,5 @@ export default {
   'Greys show lighter in dark mode, so buttons don’t look switched off.': 'Сірі відтінки в темній темі світліші, щоб кнопки не здавалися вимкненими.',
   'Greys show darker in light mode, so buttons don’t look switched off.': 'Сірі відтінки у світлій темі темніші, щоб кнопки не здавалися вимкненими.',
   'custom color picker': 'свій колір власний палітра вибір кольору',
-  'Signed in from another tab. Your workout came along, pick it up there.': 'Вхід виконано в іншій вкладці. Тренування перейшло туди, продовжуй там.',
+  'Signed in from another tab. Your workout came along, keep going here.': 'Вхід виконано в іншій вкладці. Тренування збережено, продовжуй тут.',
 }

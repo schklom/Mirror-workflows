@@ -769,10 +769,11 @@ export const useStore = create((set, get) => {
     pushTm = null
     // A guest's workout running here went along with the sign-in in the other tab (it joined this
     // browser's saved copy first, setUser), and this tab shows it again once that tab is done
-    // (followSignIn). Said, so a workout that leaves the screen mid-set is not taken for lost.
-    if (!seenOwner && owner && get().S.active) {
+    // (followSignIn). Said, so a workout that leaves the screen mid-set is not taken for lost; only
+    // where the workout is on screen (a tab on Stats never showed it), and it goes on right here.
+    if (!seenOwner && owner && get().S.active && /^#\/workout(?:[/?]|$)/.test(location.hash || '')) {
       import('./useUI.js')
-        .then(({ useUI }) => useUI.getState().toast(t('Signed in from another tab. Your workout came along, pick it up there.')))
+        .then(({ useUI }) => useUI.getState().toast(t('Signed in from another tab. Your workout came along, keep going here.')))
         .catch(() => {})
     }
     const S = restartedState(get().S)

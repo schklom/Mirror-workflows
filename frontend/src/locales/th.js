@@ -1960,5 +1960,5 @@ export default {
   'Greys show lighter in dark mode, so buttons don’t look switched off.': 'สีเทาจะสว่างขึ้นในโหมดมืด ปุ่มจะได้ไม่ดูเหมือนถูกปิดอยู่',
   'Greys show darker in light mode, so buttons don’t look switched off.': 'สีเทาจะเข้มขึ้นในโหมดสว่าง ปุ่มจะได้ไม่ดูเหมือนถูกปิดอยู่',
   'custom color picker': 'สีเอง กำหนดเอง ตัวเลือกสี',
-  'Signed in from another tab. Your workout came along, pick it up there.': 'ลงชื่อเข้าใช้จากแท็บอื่นแล้ว การออกกำลังกายของคุณย้ายไปด้วย ไปทำต่อที่นั่นได้เลย',
+  'Signed in from another tab. Your workout came along, keep going here.': 'ลงชื่อเข้าใช้จากแท็บอื่นแล้ว การออกกำลังกายของคุณมาด้วย ทำต่อที่นี่ได้เลย',
 }

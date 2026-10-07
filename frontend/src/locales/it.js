@@ -1949,5 +1949,5 @@ export default {
   'Greys show lighter in dark mode, so buttons don’t look switched off.': 'I grigi diventano più chiari in modalità scura, così i pulsanti non sembrano spenti.',
   'Greys show darker in light mode, so buttons don’t look switched off.': 'I grigi diventano più scuri in modalità chiara, così i pulsanti non sembrano spenti.',
   'custom color picker': 'colore personalizzato proprio selettore colore',
-  'Signed in from another tab. Your workout came along, pick it up there.': 'Accesso fatto da un’altra scheda. Il tuo allenamento è andato con lei, riprendilo lì.',
+  'Signed in from another tab. Your workout came along, keep going here.': 'Accesso fatto da un’altra scheda. Il tuo allenamento è venuto con te, continua qui.',
 }

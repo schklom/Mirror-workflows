@@ -216,6 +216,10 @@ describe('a second tab while the first one changes owner', () => {
 describe('a guest tab while the other tab signs in or creates a profile', () => {
   const running = () => ({ id: 'act1', start: Date.now() - 600000, entries: [{ id: 'bench', sets: [{ w: 60, r: 5, done: true }] }] })
   const guestCopy = active => ({ ...clone(DEF), _ts: Date.now(), workouts: [w('gW1', '2026-09-04')], active })
+  // The tab shows the workout (HashRouter). RC verify 2026-10-07: the toast also came up in a tab
+  // on another screen that never showed it, and told the workout tab to go elsewhere.
+  beforeEach(() => { location.hash = '#/workout' })
+  afterEach(() => { location.hash = '' })
 
   it('a profile created in the other tab shows in the guest tab at once, and the workout with it', async () => {
     DEF = (await import('./useStore.js')).DEF
@@ -231,7 +235,7 @@ describe('a guest tab while the other tab signs in or creates a profile', () => 
     expect(ids(B.getState().S)).toEqual(['gW1'])          // not blank
     expect(B.getState().S.active?.id).toBe('act1')
     await new Promise(r => setTimeout(r, 0))   // the toast comes through a lazy import
-    expect(h.toasts.some(m => /another tab/.test(m))).toBe(true)
+    expect(h.toasts).toContain('Signed in from another tab. Your workout came along, keep going here.')
     await act(A, () => A.getState().pushState())
     expect(ids(srv.doc)).toEqual(['gW1'])
     // B follows the sign-in once the copy is the account's and in step with the server.
@@ -249,7 +253,7 @@ describe('a guest tab while the other tab signs in or creates a profile', () => 
     h.toasts = []
     await act(A, () => A.getState().setUser({ id: OWNER, name: 'Xavi' }, { adopt: true }))
     await new Promise(r => setTimeout(r, 0))   // the toast comes through a lazy import
-    expect(h.toasts.some(m => /another tab/.test(m))).toBe(true)
+    expect(h.toasts).toContain('Signed in from another tab. Your workout came along, keep going here.')
     expect(B.getState().user).toBe(null)                      // nothing taken while the question is open
     await act(A, () => A.getState().adoptProfile(async () => false))   // "Keep profile as is"
     expect(ids(srv.doc)).toEqual(['x1', 'x2', 'x3'])
@@ -257,6 +261,21 @@ describe('a guest tab while the other tab signs in or creates a profile', () => 
     expect(ids(B.getState().S)).toEqual(['x1', 'x2', 'x3'])
     expect(B.getState().S.active?.id).toBe('act1')
     expect(B.getState().user?.id).toBe(OWNER)
+  })
+
+  it('a guest tab on another screen is not told about a workout it does not show', async () => {
+    DEF = (await import('./useStore.js')).DEF
+    server(null)
+    localStorage.setItem('gym_state_v1', JSON.stringify(guestCopy(running())))
+    localStorage.setItem('gym_guest', '1')
+    location.hash = '#/stats'
+    const A = await openTab(null)
+    const B = await openTab(null)
+    h.toasts = []
+    await act(A, () => A.getState().setUser({ id: OWNER, name: 'Nova' }))
+    await new Promise(r => setTimeout(r, 0))
+    expect(h.toasts.some(m => /another tab/.test(m))).toBe(false)
+    expect(B.getState().S.active?.id).toBe('act1')
   })
 
   it('a new profile with nothing in it: the other tab takes it without waiting for a save', async () => {

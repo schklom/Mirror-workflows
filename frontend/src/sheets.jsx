@@ -34,7 +34,7 @@ import { estimate1RM, best1RM, is1RMRecord, REP_CAP } from './lib/onerm.js'
 import { exerciseHistory } from './lib/exercise-history.js'
 import { policyFor, defaultIncrement, POLICIES_FOR, POLICY_NAME, POLICY_DESC, MAX_BW_SETS, weightIncrement } from './lib/progression.js'
 import { normalizeRepRange } from './lib/rep-range.js'
-import { isPyramid, normalizePyramid, normalizePyramidRest, pyramidFromFlat, flatFromPyramid, pyramidLabel, PYRAMID_MAX, MAX_PYRAMID_SETS, PYRAMID_PRESETS } from './lib/pyramid.js'
+import { isPyramid, normalizePyramid, normalizePyramidRest, normalizePyramidWeight, pyramidFromFlat, flatFromPyramid, pyramidLabel, PYRAMID_MAX, MAX_PYRAMID_SETS, PYRAMID_PRESETS } from './lib/pyramid.js'
 import { MOBILE, shareExport, printHtml } from './lib/mobile.js'
 import { speedUnitOf, toSpeed, fromSpeed } from './lib/speed.js'
 import { buildCompletedWorkout, sessionEnd } from './lib/finish-workout.js'
@@ -1544,6 +1544,8 @@ function ExConfig({ ex, existing, onSave, onDelete, onReplace, close, routine, i
       if (list.length) Object.assign(out, flatFromPyramid(list), { pyramid: list })
       const pyramidRest = list.length ? normalizePyramidRest(c.pyramidRest, list.length) : []
       if (pyramidRest.length) out.pyramidRest = pyramidRest
+      const pyramidWeight = list.length && !bw ? normalizePyramidWeight(c.pyramidWeight, list.length) : []
+      if (pyramidWeight.length) out.pyramidWeight = pyramidWeight
       if (double) out.repsMin = range.repsMin
       // A ceiling below the working reps would tell you to add a set on day one.
       if (bw && !(out.weight > 0) && c.repsMax > 0) out.repsMax = Math.max(reps, Math.round(c.repsMax))
@@ -1596,13 +1598,14 @@ function ExConfig({ ex, existing, onSave, onDelete, onReplace, close, routine, i
         {!bw && !pyramid && <Stepper label={t('Weight ({0})', st.unit)} value={c.weight} step={2.5} onChange={v => setC(x => ({ ...x, weight: v }))} />}
       </>}
     </div>
-    {/* Pyramid sets: a row per set, each with its own reps or Max. No weight — that is picked
-        set by set while training, seeded from the same set last time (buildSets). */}
+    {/* Pyramid sets: a row per set, each with its own reps or Max, rest and weight. A set left
+        at 0 weight starts from that same set last time (buildSets). */}
     {pyramid && <div style={{ marginTop: -10, marginBottom: 18 }}>
-      {/* Presets replace the list (and its rests) in one tap; the sheet is not saved until Save. */}
+      {/* Presets replace the list (and its rests and weights) in one tap; the sheet is not saved
+          until Save. */}
       <div className="chips" style={{ marginBottom: 10 }}>
         {PYRAMID_PRESETS.map((preset, k) => <button key={k} type="button" className="chip"
-          onClick={() => setC(x => ({ ...x, pyramid: [...preset], pyramidRest: undefined }))}>{pyramidLabel(preset)}</button>)}
+          onClick={() => setC(x => ({ ...x, pyramid: [...preset], pyramidRest: undefined, pyramidWeight: undefined }))}>{pyramidLabel(preset)}</button>)}
       </div>
       {c.pyramid.map((p, i) => <div key={i} style={{ marginBottom: 10 }}>
         <div className="row cfgrow" style={{ marginBottom: 4 }}>
@@ -1616,11 +1619,20 @@ function ExConfig({ ex, existing, onSave, onDelete, onReplace, close, routine, i
               return { ...x, pyramidRest: rest }
             })} />
         </div>
+        {/* Bodyweight work has its one "Added" load below instead. */}
+        {!bw && <div className="row cfgrow" style={{ marginBottom: 4 }}>
+          <Stepper label={t('Weight ({0})', st.unit)} value={(c.pyramidWeight || [])[i] || 0} step={2.5}
+            onChange={v => setC(x => {
+              const weight = Array.from({ length: x.pyramid.length }, (_, j) => (x.pyramidWeight || [])[j] || 0)
+              weight[i] = v
+              return { ...x, pyramidWeight: weight }
+            })} />
+        </div>}
         <div className="row" style={{ justifyContent: 'flex-end', gap: 8 }}>
           <Button size="sm" variant={p === PYRAMID_MAX ? 'primary' : 'plain'} aria-pressed={p === PYRAMID_MAX}
             onClick={() => setPyramidAt(i, p === PYRAMID_MAX ? (c.reps || 10) : PYRAMID_MAX)}>{t('Max')}</Button>
           {c.pyramid.length > 1 && <Button size="sm" icon="trash" aria-label={t('Remove set')} title={t('Remove set')}
-            onClick={() => setC(x => ({ ...x, pyramid: x.pyramid.filter((_, j) => j !== i), pyramidRest: x.pyramidRest?.filter((_, j) => j !== i) }))} />}
+            onClick={() => setC(x => ({ ...x, pyramid: x.pyramid.filter((_, j) => j !== i), pyramidRest: x.pyramidRest?.filter((_, j) => j !== i), pyramidWeight: x.pyramidWeight?.filter((_, j) => j !== i) }))} />}
         </div>
       </div>)}
       <Button size="sm" icon="plus" disabled={c.pyramid.length >= MAX_PYRAMID_SETS}
@@ -1629,8 +1641,10 @@ function ExConfig({ ex, existing, onSave, onDelete, onReplace, close, routine, i
           pyramid: [...x.pyramid, x.pyramid[x.pyramid.length - 1]],
           // The new set copies the last one's rest too, like its target.
           pyramidRest: x.pyramidRest?.length ? [...x.pyramid.map((_, j) => x.pyramidRest[j] || 0), x.pyramidRest[x.pyramid.length - 1] || 0] : x.pyramidRest,
+          pyramidWeight: x.pyramidWeight?.length ? [...x.pyramid.map((_, j) => x.pyramidWeight[j] || 0), x.pyramidWeight[x.pyramid.length - 1] || 0] : x.pyramidWeight,
         }))}>{t('Add set')}</Button>
       <div className="small dim" style={{ marginTop: 8 }}>{t('A set left at 0 rest uses the exercise’s rest.')}</div>
+      {!bw && <div className="small dim" style={{ marginTop: 4 }}>{t('A set left at 0 weight starts from that set’s weight last time.')}</div>}
     </div>}
     {c.intensifier?.type === 'restpause' && <div className="small dim" style={{ marginTop: -10, marginBottom: 18 }}>
       {t('Rest-pause always trains as one warm-up set at this rep count, then one rest-pause work set. "Sets" isn’t used here.')}

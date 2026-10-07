@@ -18,7 +18,7 @@ const workRowsForMode = (entry = {}, mode = 'reps') => {
 // gets dragged along behind it.
 import { t } from './i18n-core.js'
 import { queueNext, pinState, queueLiveOn } from './queue.js'
-import { isPyramid, pyramidLabel, pyramidTargetAt, PYRAMID_MAX } from './pyramid.js'
+import { isPyramid, pyramidLabel, pyramidTargetAt, pyramidWeightAt, PYRAMID_MAX } from './pyramid.js'
 
 // How an exercise is logged (issue #16). This used to be derived from the body part alone,
 // which meant a plank or a farmer's carry could only be timed by filing it under cardio.
@@ -564,6 +564,13 @@ function buildWorkSets(S, cfg, options = {}) {
       const seed = usable || (lastRegular && lastRegular.r > 0 ? lastRegular : null)
       if (target === PYRAMID_MAX) { row.r = seed ? seed.r : 0; row.max = true }
       else row.r = target
+      // Each set's weight is the plan's own for that set, else what that same set lifted last
+      // time. The flat `weight` is no pyramid field the editor shows, so it is only the first
+      // session's fallback — ahead of history it handed every set one hidden number (#445).
+      // Freestyle keeps reproducing what you did (preferLast) once there is something to copy.
+      const planned = pyramidWeightAt(cfg, i)
+      if (planned > 0 && !(preferLast && usable)) row.w = planned
+      else if (useTarget && seed) row.w = seed.w
     }
     // A unilateral exercise logs each side on its own (issue #60): the row splits into L/R,
     // each seeded with half the total reps at the same weight. When "last time" was itself a

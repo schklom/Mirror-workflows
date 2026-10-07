@@ -1725,6 +1725,7 @@ export default {
   'Max reps': 'ครั้งสูงสุด',
   'Most reps in a Max set per workout': 'จำนวนครั้งมากที่สุดในเซ็ตสูงสุดต่อการฝึก',
   'A set left at 0 rest uses the exercise’s rest.': 'เซ็ตที่พัก 0 จะใช้เวลาพักของท่านั้น',
+  'A set left at 0 weight starts from that set’s weight last time.': 'เซ็ตที่น้ำหนัก 0 จะเริ่มจากน้ำหนักของเซ็ตเดียวกันครั้งก่อน',
   // --- update a routine from a running workout ---
   'Update routine': 'อัปเดตรูทีน',
   'Update “{0}”?': 'อัปเดตรูทีน “{0}” ไหม?',

@@ -1714,6 +1714,7 @@ export default {
   'Max reps': 'Rip Max',
   'Most reps in a Max set per workout': 'Più ripetizioni in una serie Max per allenamento',
   'A set left at 0 rest uses the exercise’s rest.': 'Una serie con riposo 0 usa il riposo dell’esercizio.',
+  'A set left at 0 weight starts from that set’s weight last time.': 'Una serie con peso 0 parte dal peso di quella serie l’ultima volta.',
   // --- update a routine from a running workout ---
   'Update routine': 'Aggiorna la routine',
   'Update “{0}”?': 'Aggiornare la routine «{0}»?',

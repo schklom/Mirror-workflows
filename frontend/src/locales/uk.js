@@ -1800,7 +1800,6 @@ export default {
   'Your muscles filed a missing-person report. Show up for {0}!': 'Твої м’язи заявили про твоє зникнення. З’явитися на «{0}»!',
   'That address answers, but it isn’t an openGym server. Check the URL.': 'Ця адреса відповідає, але це не сервер openGym. Перевір URL.',
   'That address answers, but a login page or proxy rule replied instead of openGym. Let /api/ through to openGym unchanged. See “Phone app and CORS” in docs/SELF_HOSTING.md.': 'Ця адреса відповідає, але замість openGym відповіла сторінка входу або правило проксі. Пропусти /api/ до openGym без змін. Див. “Phone app and CORS” у docs/SELF_HOSTING.md.',
-  'The app can only pair with an https:// address. Your phone blocks plain http:// before anything is even sent.': 'Застосунок може підключитися лише до адреси https://. Телефон блокує звичайний http:// ще до того, як щось буде надіслано.',
   'Switch sides': 'Зміни сторону',
   'Saves a dated copy to “{0}” after finishing a workout or editing a routine, and keeps the newest {1}.': 'Зберігає копію з датою в «{0}» після кожного тренування чи зміни програми й тримає {1} найновіших.',
   'Saves a dated copy to the folder you chose after finishing a workout or editing a routine, and keeps the newest {0}.': 'Зберігає копію з датою у вибрану теку після кожного тренування чи зміни програми й тримає {0} найновіших.',
@@ -1967,4 +1966,6 @@ export default {
   'Greys show darker in light mode, so buttons don’t look switched off.': 'Сірі відтінки у світлій темі темніші, щоб кнопки не здавалися вимкненими.',
   'custom color picker': 'свій колір власний палітра вибір кольору',
   'Signed in from another tab. Your workout came along, keep going here.': 'Вхід виконано в іншій вкладці. Тренування збережено, продовжуй тут.',
+  'Plain http:// isn’t encrypted. Fine on your home network, but use https:// if your server is reachable from the internet.': 'Звичайний http:// не шифрується. Для домашньої мережі це нормально, але якщо сервер доступний з інтернету, використовуй https://.',
+  'Could not reach {0} over https://. If your server runs on plain http (common at home), type http://{0} instead.': 'Не вдалося зв’язатися з {0} через https://. Якщо твій сервер працює на звичайному http (вдома так часто буває), введи http://{0}.',
 }

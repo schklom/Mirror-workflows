@@ -8,6 +8,17 @@ import { t } from '../lib/i18n.js'
 import Icon from '../components/Icon.jsx'
 import { Button } from '../components/ui.jsx'
 import { askAddDeviceData } from '../sheets.jsx'
+import { normalizeServerUrl } from '../lib/remote.js'
+
+// A plain http:// server works (#428), but whatever the app sends, the pairing code and then its
+// token, crosses the network readable. Said once under the field, not in the way: on a home
+// network that is often a fine trade. localhost is the phone itself and needs no warning.
+export function plainHttp(raw) {
+  const base = /^\s*http:\/\//i.test(String(raw || '')) ? normalizeServerUrl(raw) : null
+  if (!base) return false
+  const host = new URL(base).hostname
+  return !/^(localhost|127\.\d+\.\d+\.\d+|\[::1\])$/i.test(host)
+}
 
 // `again`: a phone whose server stopped accepting it (components/ServerSync.jsx pairAgain) — the
 // address it had is filled in when it still has one, so only the new code is left to type, and
@@ -40,6 +51,9 @@ export function ConnectSheet({ close, initialUrl = '', again = false }) {
     </div>
     <input ref={ref} className="input" placeholder={t('Server address (e.g. gym.example.com)')} value={url}
       onChange={e => setUrl(e.target.value)} autoCapitalize="none" autoCorrect="off" inputMode="url" />
+    {plainHttp(url) && <div className="dim small" role="note" style={{ marginTop: 8, lineHeight: 1.45 }}>
+      {t('Plain http:// isn’t encrypted. Fine on your home network, but use https:// if your server is reachable from the internet.')}
+    </div>}
     <div style={{ height: 10 }} />
     <input ref={codeRef} className="input" placeholder={t('Pairing code')} maxLength={8} value={code}
       onChange={e => setCode(e.target.value.toUpperCase())} style={{ letterSpacing: '.14em', fontWeight: 600, textAlign: 'center' }} />

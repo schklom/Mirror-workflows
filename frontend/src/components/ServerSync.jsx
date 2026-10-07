@@ -92,9 +92,12 @@ export function connectionView(sync, { mobile = MOBILE, online = isOnline() } = 
       return err.code === 'not-paired'
         ? { tone: 'bad', icon: 'lock', action: 'pair', line: t('This phone is not connected to a server.'), banner: t('This phone is no longer paired with your server. Your changes are kept here.') }
         : { tone: 'bad', icon: 'lock', action: 'pair', line: t('The server refuses this phone'), banner: t('Your server no longer accepts this phone. Your changes are kept here.') }
-    default:   // 'local': no server at all — chosen, so it is said quietly, but it is said
+    // 'local': no server at all. On a phone that is a choice that needs no reminder (#454, #369):
+    // Settings still says it and offers Connect, the bar stays away. A guest in a browser is on a
+    // server it could sign in to, so it still hears that its data stays in this browser.
+    default:
       return mobile
-        ? { tone: 'quiet', icon: 'lock', action: 'connect', line: t('On this phone only, not connected to a server'), banner: t('On this phone only, not connected to a server') }
+        ? { tone: 'quiet', icon: 'lock', action: 'connect', line: t('On this phone only, not connected to a server'), banner: null }
         : { tone: 'quiet', icon: 'lock', action: canSignIn() ? 'signin' : null, line: t('Guest mode: your data lives only in this browser.'), banner: t('Guest mode: your data lives only in this browser.') }
   }
 }

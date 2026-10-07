@@ -1803,7 +1803,6 @@ export default {
   'Your muscles filed a missing-person report. Show up for {0}!': 'Tes muscles ont signalé ta disparition. Présente-toi pour {0} !',
   'That address answers, but it isn’t an openGym server. Check the URL.': 'Cette adresse répond, mais ce n’est pas un serveur openGym. Vérifie l’URL.',
   'That address answers, but a login page or proxy rule replied instead of openGym. Let /api/ through to openGym unchanged. See “Phone app and CORS” in docs/SELF_HOSTING.md.': 'Cette adresse répond, mais c’est une page de connexion ou une règle du proxy qui a répondu à la place d’openGym. Laisse passer /api/ vers openGym sans modification. Voir “Phone app and CORS” dans docs/SELF_HOSTING.md.',
-  'The app can only pair with an https:// address. Your phone blocks plain http:// before anything is even sent.': 'L’app ne peut s’associer qu’à une adresse https://. Ton téléphone bloque le simple http:// avant même que quoi que ce soit parte.',
   'Switch sides': 'Change de côté',
   'Saves a dated copy to “{0}” after finishing a workout or editing a routine, and keeps the newest {1}.': 'Enregistre une copie datée dans « {0} » après chaque séance terminée ou routine modifiée, et garde les {1} plus récentes.',
   'Saves a dated copy to the folder you chose after finishing a workout or editing a routine, and keeps the newest {0}.': 'Enregistre une copie datée dans le dossier choisi après chaque séance terminée ou routine modifiée, et garde les {0} plus récentes.',
@@ -1970,4 +1969,6 @@ export default {
   'Greys show darker in light mode, so buttons don’t look switched off.': 'Les gris foncent en mode clair, pour que les boutons n’aient pas l’air éteints.',
   'custom color picker': 'couleur perso personnalisée sélecteur nuancier',
   'Signed in from another tab. Your workout came along, keep going here.': 'Connecté depuis un autre onglet. Ta séance a suivi, continue ici.',
+  'Plain http:// isn’t encrypted. Fine on your home network, but use https:// if your server is reachable from the internet.': 'Le http:// simple n’est pas chiffré. Ça passe sur ton réseau domestique, mais utilise https:// si ton serveur est accessible depuis Internet.',
+  'Could not reach {0} over https://. If your server runs on plain http (common at home), type http://{0} instead.': 'Impossible de joindre {0} en https://. Si ton serveur tourne en http simple (courant à la maison), tape plutôt http://{0}.',
 }

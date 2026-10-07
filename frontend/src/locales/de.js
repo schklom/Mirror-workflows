@@ -1823,7 +1823,6 @@ export default {
   'Your muscles filed a missing-person report. Show up for {0}!': 'Deine Muskeln haben eine Vermisstenanzeige aufgegeben. Antreten zu {0}!',
   'That address answers, but it isn’t an openGym server. Check the URL.': 'Unter dieser Adresse antwortet etwas, aber kein openGym-Server. Prüf die URL.',
   'That address answers, but a login page or proxy rule replied instead of openGym. Let /api/ through to openGym unchanged. See “Phone app and CORS” in docs/SELF_HOSTING.md.': 'Unter dieser Adresse antwortet etwas, aber eine Login-Seite oder Proxy-Regel statt openGym. Lass /api/ unverändert zu openGym durch. Siehe “Phone app and CORS” in docs/SELF_HOSTING.md.',
-  'The app can only pair with an https:// address. Your phone blocks plain http:// before anything is even sent.': 'Die App kann sich nur mit einer https://-Adresse verbinden. Dein Handy blockiert einfaches http://, bevor überhaupt etwas gesendet wird.',
   'Switch sides': 'Seite wechseln',
   'Saves a dated copy to “{0}” after finishing a workout or editing a routine, and keeps the newest {1}.': 'Speichert nach jedem beendeten Training oder jeder bearbeiteten Routine eine datierte Kopie in „{0}“ und behält die neuesten {1}.',
   'Saves a dated copy to the folder you chose after finishing a workout or editing a routine, and keeps the newest {0}.': 'Speichert nach jedem beendeten Training oder jeder bearbeiteten Routine eine datierte Kopie im gewählten Ordner und behält die neuesten {0}.',
@@ -1990,4 +1989,6 @@ export default {
   'Greys show darker in light mode, so buttons don’t look switched off.': 'Grautöne werden im hellen Modus dunkler, damit Buttons nicht ausgeschaltet wirken.',
   'custom color picker': 'eigene Farbe benutzerdefiniert Farbwähler Farbauswahl',
   'Signed in from another tab. Your workout came along, keep going here.': 'In einem anderen Tab angemeldet. Dein Training ist mitgekommen, mach hier weiter.',
+  'Plain http:// isn’t encrypted. Fine on your home network, but use https:// if your server is reachable from the internet.': 'Einfaches http:// ist nicht verschlüsselt. Im Heimnetz okay, aber nimm https://, wenn dein Server aus dem Internet erreichbar ist.',
+  'Could not reach {0} over https://. If your server runs on plain http (common at home), type http://{0} instead.': '{0} ist über https:// nicht erreichbar. Läuft dein Server mit einfachem http (zu Hause üblich), gib stattdessen http://{0} ein.',
 }

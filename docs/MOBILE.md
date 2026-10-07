@@ -40,9 +40,13 @@ or Settings → Account → **"Connect to my server"** later) to finish. Notes:
 
 - Works offline too: the phone keeps its copy (and the file mirror) while connected, and
   changes made without a network go to the server as soon as it is reachable again.
-- Use an `https://` address. The app's WebView is an https page, so the phone blocks a plain
-  `http://` server before anything is sent, and pairing says so. It also keeps the bearer token
-  (the connection carries one instead of a cookie) off the network in plain text.
+- `https://` is best: it keeps the pairing code and the bearer token (the connection carries one
+  instead of a cookie) off the network in plain text. A plain `http://` server on your home
+  network works too since v1.3.11 (Android; #428): type the address with `http://` in front, for
+  example `http://192.168.1.20:8080`. An address without a scheme is tried as `https://`, and when
+  that gets nowhere on a home address, pairing tells you to add `http://`. The app also reminds
+  you that http is not encrypted, so keep it to your own network. Your browser still needs a
+  password to sign in there and make the code: passkeys only work over https (or `localhost`).
 - Pairing says your server "refused the app's request (CORS)", or that "a login page or proxy
   rule replied instead of openGym", or fails with "Failed to fetch" on an older version, while
   the browser works? Something in front of openGym is answering the app instead: a reverse proxy

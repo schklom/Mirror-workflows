@@ -726,7 +726,7 @@ export default function Settings({ page = null, find = null, via = null }) {
           subtitle={t('Show the body weight card on Home.')}>
           <Switch checked={S.showWeightCard !== false} onChange={v => update(s => { s.showWeightCard = v })} />
         </Row>
-        {/* The bar at the top that says the app is offline, kept local, or not synced (#369, #330).
+        {/* The bar at the top that says the app is offline, refused or not synced (#369, #330, #454).
             Here and not under Server & sync, which a phone kept local never shows. */}
         {!DEMO && <Row icon="cloud" iconTint="var(--blue)" title={t('Show connection status')}
           subtitle={t('Off: the bar at the top is hidden. A dot on Home still warns when syncing is stuck.')}>

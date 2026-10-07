@@ -1796,7 +1796,6 @@ export default {
   'Your muscles filed a missing-person report. Show up for {0}!': '你的肌肉已經報案協尋你了。馬上來練 {0}！',
   'That address answers, but it isn’t an openGym server. Check the URL.': '這個位址有回應，但不是 openGym 伺服器。請檢查網址。',
   'That address answers, but a login page or proxy rule replied instead of openGym. Let /api/ through to openGym unchanged. See “Phone app and CORS” in docs/SELF_HOSTING.md.': '這個位址有回應，但回應的是登入頁面或代理規則，而不是 openGym。請讓 /api/ 原封不動地通到 openGym。參見 docs/SELF_HOSTING.md 中的“Phone app and CORS”。',
-  'The app can only pair with an https:// address. Your phone blocks plain http:// before anything is even sent.': 'App 只能與 https:// 位址配對。手機會在送出任何內容之前就擋下一般的 http://。',
   'Switch sides': '換邊',
   'Saves a dated copy to “{0}” after finishing a workout or editing a routine, and keeps the newest {1}.': '每次完成訓練或修改課表後，在「{0}」中儲存一份附日期的副本，並保留最新的 {1} 份。',
   'Saves a dated copy to the folder you chose after finishing a workout or editing a routine, and keeps the newest {0}.': '每次完成訓練或修改課表後，在你選擇的資料夾中儲存一份附日期的副本，並保留最新的 {0} 份。',
@@ -1963,4 +1962,6 @@ export default {
   'Greys show darker in light mode, so buttons don’t look switched off.': '淺色模式下灰色會調暗一些，免得按鈕看起來像被停用了。',
   'custom color picker': '自訂顏色 自己的顏色 取色器 調色盤',
   'Signed in from another tab. Your workout came along, keep going here.': '已在另一個分頁登入。你的訓練也一起帶過去了，在這裡繼續吧。',
+  'Plain http:// isn’t encrypted. Fine on your home network, but use https:// if your server is reachable from the internet.': '一般 http:// 沒有加密。在家用網路裡沒問題，但如果你的伺服器可以從網際網路連到，請用 https://。',
+  'Could not reach {0} over https://. If your server runs on plain http (common at home), type http://{0} instead.': '無法透過 https:// 連到 {0}。如果你的伺服器使用一般 http（在家裡很常見），請改輸入 http://{0}。',
 }

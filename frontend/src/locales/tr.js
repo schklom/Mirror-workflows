@@ -1803,7 +1803,6 @@ export default {
   'Your muscles filed a missing-person report. Show up for {0}!': 'Kasların kayıp ilanı verdi. {0} için içtimaya gel!',
   'That address answers, but it isn’t an openGym server. Check the URL.': 'Bu adres yanıt veriyor ama bir openGym sunucusu değil. URL’yi kontrol et.',
   'That address answers, but a login page or proxy rule replied instead of openGym. Let /api/ through to openGym unchanged. See “Phone app and CORS” in docs/SELF_HOSTING.md.': 'Bu adres yanıt veriyor ama openGym yerine bir giriş sayfası ya da proxy kuralı yanıt verdi. /api/ yolunu openGym’e değiştirmeden geçir. docs/SELF_HOSTING.md içinde “Phone app and CORS” bölümüne bak.',
-  'The app can only pair with an https:// address. Your phone blocks plain http:// before anything is even sent.': 'Uygulama yalnızca https:// adresiyle eşleşebilir. Telefonun düz http:// isteğini daha hiçbir şey gönderilmeden engelliyor.',
   'Switch sides': 'Taraf değiştir',
   'Saves a dated copy to “{0}” after finishing a workout or editing a routine, and keeps the newest {1}.': 'Her antrenman bitince veya rutin düzenlenince «{0}» klasörüne tarihli bir kopya kaydeder ve en yeni {1} kopyayı tutar.',
   'Saves a dated copy to the folder you chose after finishing a workout or editing a routine, and keeps the newest {0}.': 'Her antrenman bitince veya rutin düzenlenince seçtiğin klasöre tarihli bir kopya kaydeder ve en yeni {0} kopyayı tutar.',
@@ -1970,4 +1969,6 @@ export default {
   'Greys show darker in light mode, so buttons don’t look switched off.': 'Griler aydınlık modda daha koyu görünür, düğmeler kapalıymış gibi durmasın diye.',
   'custom color picker': 'kendi renk özel renk seçici',
   'Signed in from another tab. Your workout came along, keep going here.': 'Başka bir sekmede giriş yapıldı. Antrenmanın da geldi, buradan devam et.',
+  'Plain http:// isn’t encrypted. Fine on your home network, but use https:// if your server is reachable from the internet.': 'Düz http:// şifreli değildir. Ev ağında sorun değil, ama sunucun internetten erişilebiliyorsa https:// kullan.',
+  'Could not reach {0} over https://. If your server runs on plain http (common at home), type http://{0} instead.': '{0} adresine https:// üzerinden ulaşılamadı. Sunucun düz http ile çalışıyorsa (evde yaygın), bunun yerine http://{0} yaz.',
 }

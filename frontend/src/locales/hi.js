@@ -1803,7 +1803,6 @@ export default {
   'Your muscles filed a missing-person report. Show up for {0}!': 'आपकी मांसपेशियों ने गुमशुदगी की रिपोर्ट लिखाई है। {0} के लिए हाज़िर हो!',
   'That address answers, but it isn’t an openGym server. Check the URL.': 'यह पता जवाब देता है, लेकिन यह openGym सर्वर नहीं है। URL जाँचें।',
   'That address answers, but a login page or proxy rule replied instead of openGym. Let /api/ through to openGym unchanged. See “Phone app and CORS” in docs/SELF_HOSTING.md.': 'यह पता जवाब देता है, लेकिन openGym की जगह किसी लॉगिन पेज या प्रॉक्सी नियम ने जवाब दिया। /api/ को बिना बदलाव openGym तक जाने दें। docs/SELF_HOSTING.md में “Phone app and CORS” देखें।',
-  'The app can only pair with an https:// address. Your phone blocks plain http:// before anything is even sent.': 'ऐप सिर्फ़ https:// पते से ही जुड़ सकता है। आपका फ़ोन सादे http:// को कुछ भी भेजे जाने से पहले ही रोक देता है।',
   'Switch sides': 'साइड बदलें',
   'Saves a dated copy to “{0}” after finishing a workout or editing a routine, and keeps the newest {1}.': 'हर वर्कआउट पूरा होने या रूटीन बदलने के बाद “{0}” में तारीख वाली कॉपी सेव करता है और सबसे नई {1} रखता है।',
   'Saves a dated copy to the folder you chose after finishing a workout or editing a routine, and keeps the newest {0}.': 'हर वर्कआउट पूरा होने या रूटीन बदलने के बाद आपके चुने फ़ोल्डर में तारीख वाली कॉपी सेव करता है और सबसे नई {0} रखता है।',
@@ -1970,4 +1969,6 @@ export default {
   'Greys show darker in light mode, so buttons don’t look switched off.': 'लाइट मोड में ग्रे रंग गहरे दिखते हैं, ताकि बटन बंद जैसे न लगें।',
   'custom color picker': 'अपना रंग कस्टम रंग चुनने वाला',
   'Signed in from another tab. Your workout came along, keep going here.': 'दूसरे टैब से साइन इन हुआ। आपका वर्कआउट साथ आ गया, यहीं जारी रखें।',
+  'Plain http:// isn’t encrypted. Fine on your home network, but use https:// if your server is reachable from the internet.': 'सादा http:// एन्क्रिप्टेड नहीं है। घर के नेटवर्क पर ठीक है, लेकिन अगर आपका सर्वर इंटरनेट से पहुँचा जा सकता है तो https:// इस्तेमाल करें।',
+  'Could not reach {0} over https://. If your server runs on plain http (common at home), type http://{0} instead.': 'https:// से {0} तक नहीं पहुँच सके। अगर आपका सर्वर सादे http पर चलता है (घर पर आम है), तो इसकी जगह http://{0} लिखें।',
 }

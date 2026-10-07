@@ -59,7 +59,7 @@ const capStamps = m => {
   return m;
 };
 const OWN_MERGE = new Set([
-  '_ts', '_rev', 'active', 'unit', 'unitSet', 'resetAt', 'resetIds', 'deleted', 'edited', 'undone',
+  '_ts', '_rev', 'active', 'unit', 'unitSet', 'resetAt', 'resetIds', 'deleted', 'edited', 'undone', 'routineOrder',
   'workouts', 'routines', 'customEx', 'equipProfiles', 'gymCards', 'bodyweight', 'favEx',
   'exWeights', 'balanceOverrides', 'loadKind', 'plates',
 ]);
@@ -191,6 +191,12 @@ function stampUnstamped(cur, next, sent, now) {
       else if (!moved(k)) ed[k] = now;
     }
   }
+  // The order of the routines (sync-merge.js ORDER_KEY), the same way: a reorder is stamped, an
+  // older copy's order of routines another device reordered since is put back as stored.
+  if (Array.isArray(next.routines) && orderMoved(cur.routines, next.routines)) {
+    if (stale(ORDER_KEY)) next.routines = inOrderOf(cur.routines, next.routines);
+    else if (!moved(ORDER_KEY)) ed[ORDER_KEY] = now;
+  }
   if (Object.keys(ed).length) next.edited = ed;
   // Entries edited without stamps of their own: a routine, a custom exercise, a profile, a card,
   // a workout whose content changed. The same rule per field: one the stored entry changed (`_f`)
@@ -219,6 +225,32 @@ function stampUnstamped(cur, next, sent, now) {
       stampEntry(old, x, now);
     }
   }
+}
+
+const ORDER_KEY = 'routineOrder';
+/** Whether two lists hold the routines both have in a different order (sync-merge.js orderMoved). */
+export function orderMoved(a, b) {
+  const ida = list(a).map(r => r?.id).filter(id => id != null), idb = list(b).map(r => r?.id).filter(id => id != null);
+  const inA = new Set(ida), inB = new Set(idb);
+  return JSON.stringify(ida.filter(id => inB.has(id))) !== JSON.stringify(idb.filter(id => inA.has(id)));
+}
+// `xs` with the routines `order` also has in its order, each other one after its nearest earlier
+// neighbour in `xs` (sync-merge.js unionByNeighbours).
+function inOrderOf(order, xs) {
+  const by = new Map(list(xs).filter(x => x?.id != null).map(x => [x.id, x]));
+  const out = list(order).filter(x => x?.id != null && by.has(x.id)).map(x => by.get(x.id));
+  const at = new Set(out.map(x => x.id));
+  let prev = null;
+  for (const x of list(xs)) {
+    if (x?.id == null) { out.push(x); continue; }
+    if (!at.has(x.id)) {
+      const i = prev == null ? -1 : out.findIndex(y => y?.id === prev);
+      out.splice(i + 1, 0, x);
+      at.add(x.id);
+    }
+    prev = x.id;
+  }
+  return out;
 }
 
 // Step 0, for a writer that does not stamp: what it left out because it does not know it comes

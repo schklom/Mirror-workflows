@@ -600,12 +600,21 @@ function applyDeletions(S, deleted) {
 // a rotation pass refilled on the phone survives a setting flipped on the desktop. Fields with a
 // merge of their own are not stamped here; a field nobody stamped follows the newer copy, as before.
 const OWN_MERGE = new Set([
-  '_ts', '_rev', 'active', 'unit', 'unitSet', 'resetAt', 'resetIds', 'deleted', 'edited', 'undone',
+  '_ts', '_rev', 'active', 'unit', 'unitSet', 'resetAt', 'resetIds', 'deleted', 'edited', 'undone', 'routineOrder',
   'workouts', 'routines', 'customEx', 'equipProfiles', 'gymCards', 'bodyweight', 'favEx',
   'exWeights', 'balanceOverrides', 'loadKind', 'plates',
 ])
 // Stamped per key instead of whole: one day of the plan, one exercise's note or bar.
 const PER_KEY = new Set(['week', 'dayPlan', 'exNotes', 'barWeights'])
+// The order of the routines, as the list shows them, is a choice of its own (`edited.routineOrder`):
+// a reorder on one device was lost to the other's whole copy whenever that one was newer.
+export const ORDER_KEY = 'routineOrder'
+// Whether two lists hold the routines both have in a different order (added or removed ones aside).
+export function orderMoved(a, b) {
+  const ida = list(a).map(r => r?.id).filter(id => id != null), idb = list(b).map(r => r?.id).filter(id => id != null)
+  const inA = new Set(ida), inB = new Set(idb)
+  return JSON.stringify(ida.filter(id => inB.has(id))) !== JSON.stringify(idb.filter(id => inA.has(id)))
+}
 // A per-key stamp of a key neither copy holds any more is dropped after this long.
 const EDIT_KEEP_MS = 180 * 86400000
 const same = (x, y) => JSON.stringify(x) === JSON.stringify(y)
@@ -629,6 +638,7 @@ export function stampEdits(prev, next, now = Date.now()) {
       }
     } else if (p !== n && !same(p, n)) { ed[k] = now; touched = true }
   }
+  if (prev && prev.routines !== next.routines && orderMoved(prev.routines, next.routines)) { ed[ORDER_KEY] = now; touched = true }
   // An own accent colour is one choice made in two fields: picking a new colour while the own
   // colour is already on changes only accentCustom, and a preset picked earlier on another device
   // then kept `accent` and won (QA 2026-10-06). Either one changed to an own colour stamps both.
@@ -771,6 +781,13 @@ export function mergeStates(a0, b0, { prefer } = {}) {
   for (const f of ['routines', 'customEx', 'equipProfiles', 'gymCards']) {
     if (list(n[f]).length || list(o[f]).length) out[f] = (f === 'routines' ? unionByNeighbours : unionById)(n[f], o[f]).map(clone)
   }
+  // The routines in the order chosen last (`edited.routineOrder`), the newer copy's without a
+  // stamp to tell; one only the other copy has still goes next to its neighbour there. Each entry
+  // is still the newer copy's version here, merged with the other's below.
+  if (!prefer && out.routines && (Number(o.edited?.[ORDER_KEY]) || 0) > (Number(n.edited?.[ORDER_KEY]) || 0)) {
+    const mine = new Map(list(n.routines).filter(r => r?.id != null).map(r => [r.id, r]))
+    out.routines = unionByNeighbours(o.routines, n.routines).map(r => clone(r?.id != null && mine.has(r.id) ? mine.get(r.id) : r))
+  }
   // A routine edited on both sides keeps the version edited last. Taking the newer copy's
   // version dropped a plan edit made on one device whenever the other had since logged a set or
   // flipped a setting — its whole copy was newer, its version of that routine was not. `prefer`
@@ -898,6 +915,7 @@ export function stampRestore(next, others = [], now = Date.now()) {
   for (const f of PER_KEY) {
     for (const S of [next, ...others]) for (const s of Object.keys(isMap(S?.[f]) ? S[f] : {})) ed[`${f}.${s}`] = now
   }
+  ed[ORDER_KEY] = now
   next.edited = ed
   for (const f of ['routines', 'customEx']) for (const x of list(next[f])) if (x && typeof x === 'object') x._ts = now
   return next

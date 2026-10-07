@@ -480,7 +480,7 @@ export const PT_BR_OVERRIDES = {
 
   // --- workout notes and planned warm-ups ---
   'Most reps in a set per workout': 'Mais reps em uma série por treino',
-  'Added before your work sets and left out of volume, records and progression. Each one closes half the gap to the work weight, and you can still change any of them mid-session.': 'Entram antes das suas séries de trabalho e ficam de fora do volume, dos recordes e da progressão. Cada uma fecha metade da distância até o peso de trabalho, e você ainda pode mudar qualquer uma no meio do treino.',
+  'Added before your work sets and left out of volume, records and progression. Each one closes half the gap to the work weight, never below the bar on a barbell lift, and you can still change any of them mid-session.': 'Entram antes das suas séries de trabalho e ficam de fora do volume, dos recordes e da progressão. Cada uma fecha metade da distância até o peso de trabalho, nunca abaixo da barra vazia em um exercício com barra, e você ainda pode mudar qualquer uma no meio do treino.',
   'Ramp-up sets added before the work sets, so you do not have to add them by hand each session.': 'Séries de aproximação antes das séries de trabalho, para você não precisar adicioná-las na mão a cada treino.',
   'How it went, what to change. Saved with today’s workout.': 'Como foi, o que mudar. Fica salvo com o treino de hoje.',
   'Brings it up again the next time you train this exercise.': 'Aparece de novo na próxima vez que você treinar este exercício.',

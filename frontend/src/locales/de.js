@@ -1042,7 +1042,7 @@ export default {
   'reps': 'Wdh.',
   'Most reps in a set per workout': 'Meiste Wdh. in einem Satz pro Training',
   'Warm-up sets': 'Aufwärmsätze',
-  'Added before your work sets and left out of volume, records and progression. Each one closes half the gap to the work weight, and you can still change any of them mid-session.': 'Kommen vor deine Arbeitssätze und zählen nicht für Volumen, Rekorde und Progression. Jeder halbiert den Abstand zum Arbeitsgewicht, und im Training kannst du jeden davon trotzdem ändern.',
+  'Added before your work sets and left out of volume, records and progression. Each one closes half the gap to the work weight, never below the bar on a barbell lift, and you can still change any of them mid-session.': 'Kommen vor deine Arbeitssätze und zählen nicht für Volumen, Rekorde und Progression. Jeder halbiert den Abstand zum Arbeitsgewicht, bei Langhantelübungen nie leichter als die leere Stange, und im Training kannst du jeden davon trotzdem ändern.',
   'Ramp-up sets added before the work sets, so you do not have to add them by hand each session.': 'Aufwärmsätze vor den Arbeitssätzen, damit du sie nicht jedes Mal von Hand hinzufügen musst.',
   'Note': 'Notiz',
   'This session': 'Dieses Training',

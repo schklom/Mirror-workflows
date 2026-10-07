@@ -834,7 +834,7 @@ export default {
   'reps': 'повт.',
   'Most reps in a set per workout': 'Найбільше повт. в підході за тренування',
   'Warm-up sets': 'Розминкові підходи',
-  'Added before your work sets and left out of volume, records and progression. Each one closes half the gap to the work weight, and you can still change any of them mid-session.': 'Додаються перед робочими підходами і не враховуються в обсязі, рекордах і прогресії. Кожен удвічі скорочує розрив до робочої ваги, і будь-який із них можна змінити під час тренування.',
+  'Added before your work sets and left out of volume, records and progression. Each one closes half the gap to the work weight, never below the bar on a barbell lift, and you can still change any of them mid-session.': 'Додаються перед робочими підходами і не враховуються в обсязі, рекордах і прогресії. Кожен удвічі скорочує розрив до робочої ваги, але у вправах зі штангою ніколи не легший за порожній гриф, і будь-який із них можна змінити під час тренування.',
   'Ramp-up sets added before the work sets, so you do not have to add them by hand each session.': 'Підвідні підходи перед робочими, щоб не додавати їх вручну щоразу.',
   'Note': 'Нотатка',
   'This session': 'Це тренування',

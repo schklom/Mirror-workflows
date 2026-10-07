@@ -2,6 +2,7 @@
 import { todayISO, isoOf, weekKey, weekStartOf, fmtNum } from './format.js'
 import { fmtSpeed } from './speed.js'
 import { isCardio, isBodyweightEq, isAssisted, betterWeight } from './exercises.js'
+import { barWeightFor } from './bar.js'
 import { phaseForSet, modeForSet, modeForEntry, isWarmupRow, isDropSet, isRestPauseSet, normalizeMode, completedVolumeOf, hasCompletedWork, nextDropWeight, splitBurstReps, makeSideSet, isSideSet, syncSideAggregate, WEIGHT_ORIGIN_MANUAL, dropsOf, clustersOf } from './workout-model.js'
 const objectOf = value => value && typeof value === 'object' && !Array.isArray(value) ? value : {}
 // Completed-state-independent work rows whose authoritative mode matches the requested mode.
@@ -477,8 +478,9 @@ export function nextTrainingDay(S, iso) {
  *
  * The warm-ups are stacked with insertWarmupRow, one call each, so the ramp is the same one
  * the in-session "Add warm-up set" button produces: each row halves the gap left to the work
- * weight, giving 50% / 75% / 87.5% for three. `options.step` is the exercise's loading step,
- * passed in by the caller (see insertWarmupRow for why this module cannot read it itself).
+ * weight, giving 50% / 75% / 87.5% for three, and never under the bar on a barbell lift
+ * (barFloor). `options.step` is the exercise's loading step, passed in by the caller (see
+ * insertWarmupRow for why this module cannot read it itself).
  */
 export function buildSets(S, cfg, options = {}) {
   const rows = buildWorkSets(S, cfg, options)
@@ -486,12 +488,20 @@ export function buildSets(S, cfg, options = {}) {
   if (!warm) return rows
   const mode = modeOf(cfg)
   let out = rows
-  for (let i = 0; i < warm; i++) out = insertWarmupRow(out, mode, cfg, options.step)
+  const floor = barFloor(S, cfg.id)
+  for (let i = 0; i < warm; i++) out = insertWarmupRow(out, mode, cfg, options.step, floor)
   return out
 }
 
 /** Beyond this a "warm-up" is its own workout; the config stepper stops here too. */
 export const MAX_PLANNED_WARMUPS = 5
+
+/**
+ * The lightest warm-up a lift can have: the bar it is done with (bar.js barWeightFor, the
+ * athlete's own bar weight included), 0 for anything without one. Half of a 55 lb press is
+ * 25 lb, which no one can load onto a 45 lb bar, so a warm-up rung never goes under it.
+ */
+export const barFloor = (S, exId) => barWeightFor(S, exId) || 0
 
 function buildWorkSets(S, cfg, options = {}) {
   const preferLast = !!options.preferLast
@@ -869,9 +879,10 @@ export function cascadeWeight(rows, from, value, side) {
  *
  * A warm-up already logged keeps its weight and becomes what the next one ramps from: it
  * happened, and rewriting performed work is data loss. Entries with nothing to ramp toward
- * — cardio, bodyweight, an unloaded hold — are returned untouched.
+ * — cardio, bodyweight, an unloaded hold — are returned untouched. `floor` is the lift's bar
+ * (barFloor): no open warm-up is ramped under it.
  */
-export function rerampWarmups(rows, step = 2.5) {
+export function rerampWarmups(rows, step = 2.5, floor = 0) {
   const firstWork = rows.findIndex(x => !isWarmupRow(x))
   if (firstWork <= 0) return rows
   const target = rows[firstWork].w || 0
@@ -881,7 +892,7 @@ export function rerampWarmups(rows, step = 2.5) {
   for (let i = 0; i < firstWork; i++) {
     if (out[i].done) { from = out[i].w || 0; continue }
     const w = target > from
-      ? Math.max(0, Math.min(target, Math.floor((from + (target - from) / 2) / step) * step))
+      ? Math.min(target, Math.max(0, floor, Math.floor((from + (target - from) / 2) / step) * step))
       : target
     out[i] = { ...out[i], w }
     from = w
@@ -889,7 +900,7 @@ export function rerampWarmups(rows, step = 2.5) {
   return out
 }
 
-export function insertWarmupRow(rows, mode, target, step = 2.5) {
+export function insertWarmupRow(rows, mode, target, step = 2.5, floor = 0) {
   const firstWork = rows.findIndex(x => !isWarmupRow(x))
   const at = firstWork === -1 ? rows.length : firstWork
   const prev = at > 0 ? rows[at - 1] : null            // the warm-up this one ramps from
@@ -903,8 +914,9 @@ export function insertWarmupRow(rows, mode, target, step = 2.5) {
     // let it propagate down the block. A warm-up is never heavier than the set it warms up for.
     if (to <= from) return to
     // Rounded DOWN to the step: a warm-up that lands a notch light costs nothing, one that
-    // lands a notch heavy is a set you have to strip plates off before you can use it.
-    return Math.max(0, Math.min(to, Math.floor((from + (to - from) / 2) / step) * step))
+    // lands a notch heavy is a set you have to strip plates off before you can use it. Never
+    // under `floor` (barFloor), and never over the work weight even when the bar is heavier.
+    return Math.min(to, Math.max(0, floor, Math.floor((from + (to - from) / 2) / step) * step))
   }
   const warm = mode === 'cardio'
     ? {

@@ -3,7 +3,7 @@
 // to identical entries, or the two paths drift apart the first time a prescription rule changes.
 // Imports both history.js and progression.js (which itself imports history.js); nothing in
 // either imports this file, so there is no cycle.
-import { buildSets, applyIntensifierPlan, modeOf } from './history.js'
+import { buildSets, applyIntensifierPlan, modeOf, barFloor } from './history.js'
 import { isWarmupRow } from './workout-model.js'
 import { nextPrescription, applyPrescription, defaultIncrement, weightIncrement, plannedOf } from './progression.js'
 import { dropGrid } from './plates.js'
@@ -33,7 +33,7 @@ export function buildPlannedEntry(st, cfg, routine, { noProg = false } = {}) {
   // default for its optional load.
   const step = modeOf(cfg) === 'reps' ? weightIncrement(cfg, st.unit) : defaultIncrement(cfg.id, st.unit)
   const planReps = !startsFromLast(st)
-  const rows = applyPrescription(buildSets(st, cfg, { step, rid: routine?.id, useTarget: plan.kind === 'off', planReps }), plan, step)
+  const rows = applyPrescription(buildSets(st, cfg, { step, rid: routine?.id, useTarget: plan.kind === 'off', planReps }), plan, step, barFloor(st, cfg.id))
   const sets = applyIntensifierPlan(rows, cfg, dropGrid(st, cfg))
   const target = { ...cfg }
   if (plan.weight != null) target.weight = plan.weight

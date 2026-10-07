@@ -1024,7 +1024,7 @@ export default {
   'reps': 'powt.',
   'Most reps in a set per workout': 'Najwięcej powt. w serii na trening',
   'Warm-up sets': 'Serie rozgrzewkowe',
-  'Added before your work sets and left out of volume, records and progression. Each one closes half the gap to the work weight, and you can still change any of them mid-session.': 'Dodawane przed seriami roboczymi i pomijane w objętości, rekordach i progresji. Każda zmniejsza o połowę dystans do ciężaru roboczego, a w trakcie treningu nadal możesz każdą zmienić.',
+  'Added before your work sets and left out of volume, records and progression. Each one closes half the gap to the work weight, never below the bar on a barbell lift, and you can still change any of them mid-session.': 'Dodawane przed seriami roboczymi i pomijane w objętości, rekordach i progresji. Każda zmniejsza o połowę dystans do ciężaru roboczego, przy sztandze nigdy nie schodzi poniżej pustego gryfu, a w trakcie treningu nadal możesz każdą zmienić.',
   'Ramp-up sets added before the work sets, so you do not have to add them by hand each session.': 'Serie wprowadzające przed seriami roboczymi, żeby nie dodawać ich ręcznie za każdym razem.',
   'Note': 'Notatka',
   'This session': 'Ta sesja',

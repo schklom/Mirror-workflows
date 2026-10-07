@@ -1024,7 +1024,7 @@ export default {
   'reps': 'rip.',
   'Most reps in a set per workout': 'Più rip. in una serie per allenamento',
   'Warm-up sets': 'Serie di riscaldamento',
-  'Added before your work sets and left out of volume, records and progression. Each one closes half the gap to the work weight, and you can still change any of them mid-session.': 'Vengono aggiunte prima delle serie di lavoro e non contano per volume, record e progressione. Ognuna dimezza la distanza dal peso di lavoro, e puoi comunque modificarle durante la sessione.',
+  'Added before your work sets and left out of volume, records and progression. Each one closes half the gap to the work weight, never below the bar on a barbell lift, and you can still change any of them mid-session.': 'Vengono aggiunte prima delle serie di lavoro e non contano per volume, record e progressione. Ognuna dimezza la distanza dal peso di lavoro, senza mai scendere sotto il bilanciere scarico negli esercizi con bilanciere, e puoi comunque modificarle durante la sessione.',
   'Ramp-up sets added before the work sets, so you do not have to add them by hand each session.': 'Serie di avvicinamento prima delle serie di lavoro, così non devi aggiungerle a mano ogni volta.',
   'Note': 'Nota',
   'This session': 'Questa sessione',

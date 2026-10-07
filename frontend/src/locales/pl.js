@@ -1949,4 +1949,5 @@ export default {
   'Greys show lighter in dark mode, so buttons don’t look switched off.': 'Szarości są jaśniejsze w trybie ciemnym, żeby przyciski nie wyglądały na wyłączone.',
   'Greys show darker in light mode, so buttons don’t look switched off.': 'Szarości są ciemniejsze w trybie jasnym, żeby przyciski nie wyglądały na wyłączone.',
   'custom color picker': 'własny kolor niestandardowy próbnik wybór koloru',
+  'Signed in from another tab. Your workout came along, pick it up there.': 'Zalogowano w innej karcie. Twój trening poszedł razem z nią, kontynuuj tam.',
 }

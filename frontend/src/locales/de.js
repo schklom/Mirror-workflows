@@ -1969,4 +1969,5 @@ export default {
   'Greys show lighter in dark mode, so buttons don’t look switched off.': 'Grautöne werden im dunklen Modus heller, damit Buttons nicht ausgeschaltet wirken.',
   'Greys show darker in light mode, so buttons don’t look switched off.': 'Grautöne werden im hellen Modus dunkler, damit Buttons nicht ausgeschaltet wirken.',
   'custom color picker': 'eigene Farbe benutzerdefiniert Farbwähler Farbauswahl',
+  'Signed in from another tab. Your workout came along, pick it up there.': 'In einem anderen Tab angemeldet. Dein Training ist mitgekommen, mach dort weiter.',
 }

@@ -1949,4 +1949,5 @@ export default {
   'Greys show lighter in dark mode, so buttons don’t look switched off.': 'Griler karanlık modda daha açık görünür, düğmeler kapalıymış gibi durmasın diye.',
   'Greys show darker in light mode, so buttons don’t look switched off.': 'Griler aydınlık modda daha koyu görünür, düğmeler kapalıymış gibi durmasın diye.',
   'custom color picker': 'kendi renk özel renk seçici',
+  'Signed in from another tab. Your workout came along, pick it up there.': 'Başka bir sekmede giriş yapıldı. Antrenmanın da oraya geçti, oradan devam et.',
 }

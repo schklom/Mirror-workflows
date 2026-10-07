@@ -1949,4 +1949,5 @@ export default {
   'Greys show lighter in dark mode, so buttons don’t look switched off.': 'Les gris s’éclaircissent en mode sombre, pour que les boutons n’aient pas l’air éteints.',
   'Greys show darker in light mode, so buttons don’t look switched off.': 'Les gris foncent en mode clair, pour que les boutons n’aient pas l’air éteints.',
   'custom color picker': 'couleur perso personnalisée sélecteur nuancier',
+  'Signed in from another tab. Your workout came along, pick it up there.': 'Connecté depuis un autre onglet. Ta séance a suivi, reprends-la là-bas.',
 }

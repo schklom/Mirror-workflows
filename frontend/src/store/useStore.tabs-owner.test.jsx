@@ -9,9 +9,9 @@
    storage events are replayed in the order the writes happened, as the browser delivers them. */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-const h = vi.hoisted(() => ({ api: null }))
+const h = vi.hoisted(() => ({ api: null, toasts: [] }))
 vi.mock('../lib/api.js', () => ({ api: (...a) => h.api(...a), setRemoteAuth: () => {} }))
-vi.mock('./useUI.js', () => ({ useUI: { getState: () => ({ toast: () => {}, stopRest: () => {}, abandonWork: () => {} }) } }))
+vi.mock('./useUI.js', () => ({ useUI: { getState: () => ({ toast: m => h.toasts.push(m), stopRest: () => {}, abandonWork: () => {} }) } }))
 
 const clone = v => JSON.parse(JSON.stringify(v))
 const w = (id, d = '2026-09-01') => ({ id, d, start: 1, end: 2, entries: [] })
@@ -209,3 +209,66 @@ describe('a second tab while the first one changes owner', () => {
     expect(Object.values(stash).some(e => (e.state.bodyweight || []).some(b => b.w === 60))).toBe(true)
   })
 })
+
+// RC review 2026-10-07: a guest tab left open while the other tab created a profile went blank
+// until that tab saved something, and one mid-workout jumped to the sign-in screen with its
+// workout gone from view (it had gone into the account) and nothing said.
+describe('a guest tab while the other tab signs in or creates a profile', () => {
+  const running = () => ({ id: 'act1', start: Date.now() - 600000, entries: [{ id: 'bench', sets: [{ w: 60, r: 5, done: true }] }] })
+  const guestCopy = active => ({ ...clone(DEF), _ts: Date.now(), workouts: [w('gW1', '2026-09-04')], active })
+
+  it('a profile created in the other tab shows in the guest tab at once, and the workout with it', async () => {
+    DEF = (await import('./useStore.js')).DEF
+    const srv = server(null)
+    localStorage.setItem('gym_state_v1', JSON.stringify(guestCopy(running())))
+    localStorage.setItem('gym_guest', '1')
+    const A = await openTab(null)
+    const B = await openTab(null)
+    expect(B.getState().S.active?.id).toBe('act1')
+    h.toasts = []
+    // Register (views/Login.jsx): setUser without a question, then the push of this copy.
+    await act(A, () => A.getState().setUser({ id: OWNER, name: 'Nova' }))
+    expect(ids(B.getState().S)).toEqual(['gW1'])          // not blank
+    expect(B.getState().S.active?.id).toBe('act1')
+    await new Promise(r => setTimeout(r, 0))   // the toast comes through a lazy import
+    expect(h.toasts.some(m => /another tab/.test(m))).toBe(true)
+    await act(A, () => A.getState().pushState())
+    expect(ids(srv.doc)).toEqual(['gW1'])
+    // B follows the sign-in once the copy is the account's and in step with the server.
+    expect(B.getState().user?.id).toBe(OWNER)
+    expect(B.getState().S.active?.id).toBe('act1')
+  })
+
+  it('a sign-in to an existing account: the guest tab gets the account, the running workout included, once it is answered', async () => {
+    DEF = (await import('./useStore.js')).DEF
+    const srv = server({ ...account(), _rev: 3 })
+    localStorage.setItem('gym_state_v1', JSON.stringify(guestCopy(running())))
+    localStorage.setItem('gym_guest', '1')
+    const A = await openTab(null)
+    const B = await openTab(null)
+    h.toasts = []
+    await act(A, () => A.getState().setUser({ id: OWNER, name: 'Xavi' }, { adopt: true }))
+    await new Promise(r => setTimeout(r, 0))   // the toast comes through a lazy import
+    expect(h.toasts.some(m => /another tab/.test(m))).toBe(true)
+    expect(B.getState().user).toBe(null)                      // nothing taken while the question is open
+    await act(A, () => A.getState().adoptProfile(async () => false))   // "Keep profile as is"
+    expect(ids(srv.doc)).toEqual(['x1', 'x2', 'x3'])
+    expect(A.getState().S.active?.id).toBe('act1')
+    expect(ids(B.getState().S)).toEqual(['x1', 'x2', 'x3'])
+    expect(B.getState().S.active?.id).toBe('act1')
+    expect(B.getState().user?.id).toBe(OWNER)
+  })
+
+  it('a new profile with nothing in it: the other tab takes it without waiting for a save', async () => {
+    DEF = (await import('./useStore.js')).DEF
+    server(null)
+    localStorage.setItem('gym_state_v1', JSON.stringify({ ...clone(DEF), _ts: Date.now(), restSec: 75 }))
+    const A = await openTab(null)
+    const B = await openTab(null)
+    await act(A, () => A.getState().setUser({ id: OWNER, name: 'Empty' }, { adopt: true }))
+    await act(A, () => A.getState().adoptProfile(async () => true))
+    expect(B.getState().S.restSec).toBe(75)
+    expect(localStorage.getItem('gym_state_owner')).toBe(OWNER)
+  })
+})
+

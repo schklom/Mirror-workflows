@@ -767,6 +767,14 @@ export const useStore = create((set, get) => {
     if (owner === seenOwner) return
     clearTimeout(pushTm)
     pushTm = null
+    // A guest's workout running here went along with the sign-in in the other tab (it joined this
+    // browser's saved copy first, setUser), and this tab shows it again once that tab is done
+    // (followSignIn). Said, so a workout that leaves the screen mid-set is not taken for lost.
+    if (!seenOwner && owner && get().S.active) {
+      import('./useUI.js')
+        .then(({ useUI }) => useUI.getState().toast(t('Signed in from another tab. Your workout came along, pick it up there.')))
+        .catch(() => {})
+    }
     const S = restartedState(get().S)
     meta.set(S, { base: null, owed: false })
     seenWid = readWid()
@@ -784,6 +792,7 @@ export const useStore = create((set, get) => {
   // guards the push either way: a copy this tab has not refreshed gets a 409 and a merge.
   window.addEventListener('storage', e => {
     if (e.key !== SYNC_KEY || !e.newValue) return
+    if (!get().user && !followSignIn()) return
     const user = get().user
     if (!user || localStorage.getItem('gym_owner') !== user.id) return
     let theirs = null
@@ -812,7 +821,35 @@ export const useStore = create((set, get) => {
     meta.set(S, { base: readStoredSync(), owed: storedOwed() })
     registerCustom(S.customEx)
     set({ S })
+    followSignIn()
     return true
+  }
+  // A tab signed out, or a guest's, whose browser another tab signed in: once that sign-in is
+  // settled (its question answered, its copy saved under the account and in step with a revision),
+  // this tab is signed in too, as a tab opened now would be. The session cookie is the browser's.
+  // A guest's workout carried into the account shows here again.
+  const followSignIn = () => {
+    if (get()?.user || handedOver) return false
+    const owner = readOwner()
+    if (!owner || owner !== seenOwner || readWidOwner() !== owner || readWid() !== seenWid) return false
+    let u = null
+    try { u = JSON.parse(localStorage.getItem('gym_user')) } catch { return false }
+    if (!u || u.id !== owner) return false
+    const m = readAdopt()
+    if (m && m.uid === owner) return false
+    const base = readStoredSync()
+    if (!base) return false
+    meta.set(get().S, { base, owed: storedOwed() })
+    set({ user: u })
+    setSync({ held: false })
+    return true
+  }
+  // The answered sign-in's copy saved under its account once, whatever the answer did: an answer
+  // that changed nothing here ("Add them" with nothing to add, a profile with no copy yet) wrote
+  // no save, and another tab waited on one (takeSaved).
+  const claimSaved = () => {
+    const u = get().user
+    if (u && readOwner() === u.id && readWidOwner() !== u.id) persist(get().S, false, false)
   }
   const syncFromSaved = () => {
     if (handedOver) { takeSaved(); return }
@@ -1486,6 +1523,10 @@ export const useStore = create((set, get) => {
         handedOver = false
         localStorage.setItem('gym_user', JSON.stringify(u)); localStorage.removeItem('gym_guest')
         logoutOwed(false)   // this sign-in's cookie replaced the one a failed sign-out left behind
+        // A profile created here (no question: this copy becomes it) is saved once under its owner
+        // now. Another tab of this browser takes only a copy saved under the new owner, and went
+        // blank until this one happened to save something (takeSaved).
+        if (!adopt && !other && owner !== u.id) persist(get().S, false, false)
         // The file follows at once, as the new account's: until then it holds the previous one's.
         if (other && MOBILE) nativePersist(true)
         // The server answers /api/config with a `coach` key only to a session — the block, or
@@ -1650,6 +1691,7 @@ export const useStore = create((set, get) => {
       // stays held, and the next check or "Sync now" runs it again; a bare call has nothing to
       // hold for and lets go.
       adopting = runAdopt(ask, opts)
+        .then(r => { claimSaved(); return r })
         .catch(e => { if (!adoptOwed()) releaseAdopt(); throw e })
         .finally(() => { adopting = null })
       return adopting

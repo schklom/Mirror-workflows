@@ -1834,8 +1834,45 @@ const mediaRoutes = {
 };
 
 /* ---------- routes ---------- */
+// A health check that only proves the port answers is the one that lies on the day it matters:
+// a full disk, or a bind mount that came back read-only, leaves every write path in here broken
+// — no sync, no sign-in, no audit line — while the process sits there perfectly alive and the
+// container stays "healthy". So the check writes: one empty file under DATA, removed again.
+// Cheap next to what it proves, and it is the same directory every real write goes to.
+// One probe per window, not one per request: this route is unauthenticated, so a create and an
+// unlink on every call is a disk write anyone who can reach the port may ask for as fast as they
+// like. The container polls every five minutes (api/Dockerfile), so a five-second window is free
+// to the check that matters and caps a flood at one probe per five seconds. The cost is that a
+// poll can be up to five seconds stale — a mount that went read-only a second ago still reads
+// healthy, and the poll after that does not.
+const DATA_PROBE_MS = 5000;
+let dataProbe = { at: 0, ok: false };
+function dataWritable() {
+  const now = Date.now();
+  if (dataProbe.at && now - dataProbe.at < DATA_PROBE_MS) return dataProbe.ok;
+  const probe = path.join(DATA, '.health-' + process.pid);
+  let ok;
+  try {
+    fs.writeFileSync(probe, '');
+    ok = true;
+  } catch (e) {
+    console.error('health: cannot write to', DATA + ':', e.message);
+    ok = false;
+  } finally {
+    try { fs.unlinkSync(probe); } catch { /* never got created */ }
+  }
+  dataProbe = { at: now, ok };
+  return ok;
+}
+
 const routes = {
-  'GET /api/health': async (req, res) => json(res, 200, { ok: true, users: db.users.length }),
+  // 503 rather than a flag in a 200: the container healthcheck is `wget --spider`, which reads
+  // the status and nothing else, and an instance that cannot write its data directory is exactly
+  // what "unhealthy" is for. The 200 keeps the shape it had, plus the flag it is now asserting.
+  'GET /api/health': async (req, res) => {
+    if (!dataWritable()) return json(res, 503, { ok: false, writable: false });
+    json(res, 200, { ok: true, users: db.users.length, writable: true });
+  },
 
   // Public config the login screen needs before anyone is signed in. `coach` is absent unless
   // the instance has both switched the Coach on and successfully connected a provider — the

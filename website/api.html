@@ -303,6 +303,8 @@ main.api-main .lead { color: var(--fg-2); max-width: 58ch; margin: 14px 0 0; fon
   </summary>
   <div class="ep-body">
 <p>Always public. Also reports how many user accounts exist.</p>
+<p>The check writes: it creates and removes one empty file under <code>DATA_DIR</code>, because a server whose data directory is full or read-only has every write path broken while the port still answers. It is a 503 when that fails — the container healthcheck (<code>wget --spider</code>) reads the status and nothing else.</p>
+<p>The probe runs at most once every five seconds and the answer in between is the last one, so a poll can be that stale. The route is unauthenticated, and one disk write per request is not something to leave open to anyone.</p>
     <p class="ep-auth"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2.5"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span>Public — no authentication required.</span></p>
 
 
@@ -310,7 +312,11 @@ main.api-main .lead { color: var(--fg-2); max-width: 58ch; margin: 14px 0 0; fon
     <div class="ptab">
   <div class="prow rrow">
     <span class="r-code s2">200</span>
-    <span class="p-desc">The server is up.<span class="r-sig">{ ok: always true, users: integer }</span></span>
+    <span class="p-desc">The server is up and its data directory is writable.<span class="r-sig">{ ok: always true, users: integer, writable: always true }</span></span>
+  </div>
+  <div class="prow rrow">
+    <span class="r-code s5">503</span>
+    <span class="p-desc">The data directory could not be written — a full disk, or a mount that came back read-only. Nothing that stores anything will work until it is fixed; the reason is in the container log.</span>
   </div>
     </div>
   </div>

@@ -2791,9 +2791,10 @@ paths:
         the shape that comes back — the whole path a job takes, on nobody's profile.
 
         Always 200: the outcome is in the body, because "the provider refused" is an
-        answer to the question the button asks, not a failure of the request. It brings
-        the two short upstream retry pauses rather than `COACH_RETRY_DELAYS_MS`, since
-        an admin is watching it through a proxy with a timeout of its own.
+        answer to the question the button asks, not a failure of the request. An HTTPS
+        provider gets the same retries as a job: a 429, 500, 502, 503, 504 or 529 is
+        tried twice more, after pauses of 2 and 5 seconds, and only then reported. A
+        runtime provider is asked once.
       responses:
         '200':
           description: The result of the round trip.

@@ -4,6 +4,9 @@ import { parseHTML } from 'linkedom'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import CoachChat from './CoachChat.jsx'
 import { CONSENT_VERSION } from '../lib/coach.js'   // the consent a fixture grants is the current one, whatever its number
+// Loaded up front: coach-api.js imports it on first use, and a cold load (transform, file reads)
+// outlasted `flush` below on a fast runner (Node 22 on CI), so the first ask was not in yet.
+import '../lib/coach-demo.js'
 
 // The demo Coach's failure state, end to end. Every other CoachChat test mocks lib/coach-api.js;
 // this one runs the real thing with DEMO forced on, so the chain under test is exactly what the

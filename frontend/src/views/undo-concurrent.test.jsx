@@ -40,9 +40,13 @@ const shared = () => {
   return change(base, s => { s.restSec = 100 }, T0 - 9_000)
 }
 const both = (x, y) => [mergeStates(x, y), mergeStates(y, x)]
+// The device's clock, set per step: with the real one, steps a fast machine runs in the same
+// millisecond got equal stamps (Node 22 on CI), and the order these tests are about was a tie.
+const T1 = Date.now()
+const clockAt = ms => { vi.useFakeTimers({ toFake: ['Date'] }); vi.setSystemTime(ms) }
 
 beforeEach(() => { localStorage.clear(); useStore.setState({ S: shared(), user: null }) })
-afterEach(() => { localStorage.clear() })
+afterEach(() => { vi.useRealTimers(); localStorage.clear() })
 
 describe('Undo of an exercise swiped out of a routine', () => {
   it('a set count changed offline on another device before it saw the removal survives', () => {
@@ -62,10 +66,22 @@ describe('Undo of an exercise swiped out of a routine', () => {
     for (const m of both(mergeStates(here, removed), other)) expect(m.routines[0].ex[2].sets).toBe(6)
   })
   it('a change made after the other device saw the removal still loses to the Undo', () => {
+    clockAt(T1)
     removeRoutineExercise('a', 0)
     const removed = clone(S())
-    const other = change(removed, s => { s.routines[0].ex[1].sets = 9 }, Date.now())   // on the list without it
+    const other = change(removed, s => { s.routines[0].ex[1].sets = 9 }, T1 + 1000)   // on the list without it
+    clockAt(T1 + 2000)
     undo()
+    for (const m of both(S(), other)) expect(m.routines[0].ex.map(e => `${e.id}x${e.sets}`)).toEqual(['0025x3', '0198x3', '0586x3'])
+  })
+  it('a change on the removal stamped the same as the Undo loses to it on every device', () => {
+    // both clocks behind, so both lifted to one past the removal's stamp (stampChange)
+    clockAt(T1)
+    removeRoutineExercise('a', 0)
+    const removed = clone(S())
+    const other = change(removed, s => { s.routines[0].ex[1].sets = 9 }, T1 - 5000)
+    undo()
+    expect(S().routines[0]._ts).toBe(other.routines[0]._ts)
     for (const m of both(S(), other)) expect(m.routines[0].ex.map(e => `${e.id}x${e.sets}`)).toEqual(['0025x3', '0198x3', '0586x3'])
   })
   it('an Undo after another edit of the routine puts the exercise back without claiming the rest', () => {
@@ -80,20 +96,35 @@ describe('Undo of an exercise swiped out of a routine', () => {
 describe('Undo of a routine swiped out of the loop', () => {
   const loop = s => s.queue?.ids?.join(',')
   const setSeq = ids => useStore.getState().update(s => { saveRotation(s, ids, 'Loop') })
+  const reorder = s => { const ids = ['c', 'a', 'b']; s.rotation = { ...s.rotation, sequence: ids }; s.queue = { ...s.queue, ids } }
   beforeEach(() => {
+    clockAt(T1)
     useStore.getState().update(s => { s.scheduleMode = 'rotation'; saveRotation(s, ['a', 'b', 'c'], 'Loop') })
   })
   it('a reorder made offline on another device before it saw the removal survives', () => {
     const base = clone(S())
-    const other = change(base, s => { const ids = ['c', 'a', 'b']; s.rotation = { ...s.rotation, sequence: ids }; s.queue = { ...s.queue, ids } }, Date.now() - 1000)
+    const other = change(base, reorder, T1 + 1000)
+    clockAt(T1 + 2000)
     expect(takeOutOfLoop('b', setSeq, ['a', 'b', 'c'], 'Loop')).toBe(true)
     const removed = clone(S())
+    clockAt(T1 + 3000)
     undo()
     expect(loop(S())).toBe('a,b,c')
     for (const m of both(S(), other)) {
       expect(loop(m)).toBe('c,a,b')
       expect(m.rotation.sequence.join(',')).toBe('c,a,b')
       for (const n of both(m, removed)) expect(loop(n)).toBe('c,a,b')
+    }
+  })
+  it('a reorder on the removal stamped the same as the Undo loses to it on every device', () => {
+    clockAt(T1 + 2000)
+    expect(takeOutOfLoop('b', setSeq, ['a', 'b', 'c'], 'Loop')).toBe(true)
+    const other = change(clone(S()), reorder, T1)   // clock behind: lifted past the removal
+    undo()
+    expect(S().edited.queue).toBe(other.edited.queue)
+    for (const m of both(S(), other)) {
+      expect(loop(m)).toBe('a,b,c')
+      expect(m.rotation.sequence.join(',')).toBe('a,b,c')
     }
   })
 })

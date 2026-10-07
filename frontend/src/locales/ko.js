@@ -419,6 +419,8 @@ export default {
   'Ends this profile’s sessions on all your devices.': '모든 기기에서 이 프로필의 세션을 종료합니다.',
   'Signed out on all devices': '모든 기기에서 로그아웃했습니다',
   'Couldn’t sign out everywhere. You’re still signed in.': '모든 기기에서 로그아웃하지 못했습니다. 아직 로그인 상태입니다.',
+  'Couldn’t sign out. You’re still signed in.': '로그아웃하지 못했습니다. 아직 로그인 상태입니다.',
+  'Couldn’t disconnect. You’re still connected.': '연결을 해제하지 못했습니다. 아직 연결된 상태입니다.',
   'Create passkey profile': '패스키 프로필 만들기',
   'Passkeys not supported in this browser.': '이 브라우저는 패스키를 지원하지 않습니다.',
   'synced with your profile': '프로필과 동기화됨',

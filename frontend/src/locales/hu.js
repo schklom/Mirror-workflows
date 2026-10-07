@@ -425,6 +425,8 @@ export default {
   'Ends this profile’s sessions on all your devices.': 'Lezárja ennek a profilnak a munkameneteit minden eszközödön.',
   'Signed out on all devices': 'Kijelentkezve minden eszközön',
   'Couldn’t sign out everywhere. You’re still signed in.': 'Nem sikerült mindenhonnan kijelentkezni. Továbbra is be vagy jelentkezve.',
+  'Couldn’t sign out. You’re still signed in.': 'Nem sikerült kijelentkezni. Továbbra is be vagy jelentkezve.',
+  'Couldn’t disconnect. You’re still connected.': 'Nem sikerült leválasztani. Továbbra is csatlakozva vagy.',
   'Create passkey profile': 'Jelszókulcs-profil létrehozása',
   'Passkeys not supported in this browser.': 'A jelszókulcsok nem támogatottak ebben a böngészőben.',
   'synced with your profile': 'szinkronizálva a profiloddal',

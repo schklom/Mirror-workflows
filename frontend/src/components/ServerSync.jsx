@@ -146,14 +146,14 @@ export async function passkeySignIn() {
    the device until it reaches this server as this account again. `done(result)` runs once the
    device has actually left. */
 const LEAVE = {
-  disconnect: { run: (st, o) => st.disconnectServer(o), anyway: () => t('Disconnect anyway') },
-  signout: { run: (st, o) => st.signOut(o), anyway: () => t('Sign out anyway') },
-  everywhere: { run: (st, o) => st.signOutAll(o), anyway: () => t('Sign out anyway') },
+  disconnect: { run: (st, o) => st.disconnectServer(o), anyway: () => t('Disconnect anyway'), failed: () => t('Couldn’t disconnect. You’re still connected.') },
+  signout: { run: (st, o) => st.signOut(o), anyway: () => t('Sign out anyway'), failed: () => t('Couldn’t sign out. You’re still signed in.') },
+  everywhere: { run: (st, o) => st.signOutAll(o), anyway: () => t('Sign out anyway'), failed: () => t('Couldn’t sign out everywhere. You’re still signed in.') },
 }
 async function attempt(kind, opts) {
   try { return await LEAVE[kind].run(useStore.getState(), opts) }
-  catch (e) {   // only "sign out everywhere" throws: the other sessions are all still valid
-    toast(t('Couldn’t sign out everywhere. You’re still signed in.'))
+  catch (e) {   // only a local failure lands here (signOut swallows a failed logout request); each says which action it was
+    toast(LEAVE[kind].failed())
     return null
   }
 }

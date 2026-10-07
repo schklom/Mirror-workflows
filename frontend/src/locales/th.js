@@ -425,6 +425,8 @@ export default {
   'Ends this profile’s sessions on all your devices.': 'จะยุติเซสชันของโปรไฟล์นี้ในทุกอุปกรณ์ของคุณ',
   'Signed out on all devices': 'ออกจากระบบทุกอุปกรณ์แล้ว',
   'Couldn’t sign out everywhere. You’re still signed in.': 'ออกจากระบบทุกอุปกรณ์ไม่สำเร็จ คุณยังเข้าสู่ระบบอยู่',
+  'Couldn’t sign out. You’re still signed in.': 'ออกจากระบบไม่สำเร็จ คุณยังเข้าสู่ระบบอยู่',
+  'Couldn’t disconnect. You’re still connected.': 'ยกเลิกการเชื่อมต่อไม่สำเร็จ คุณยังเชื่อมต่ออยู่',
   'Create passkey profile': 'สร้างโปรไฟล์พาสคีย์',
   'Passkeys not supported in this browser.': 'เบราว์เซอร์นี้ไม่รองรับพาสคีย์',
   'synced with your profile': 'ซิงค์กับโปรไฟล์ของคุณ',

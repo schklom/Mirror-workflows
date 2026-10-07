@@ -419,6 +419,8 @@ export default {
   'Ends this profile’s sessions on all your devices.': 'आपके सभी डिवाइस पर इस प्रोफ़ाइल के सेशन खत्म करता है।',
   'Signed out on all devices': 'सभी डिवाइस पर साइन आउट हो गया',
   'Couldn’t sign out everywhere. You’re still signed in.': 'हर जगह साइन आउट नहीं हो सका। आप अभी भी साइन इन हैं।',
+  'Couldn’t sign out. You’re still signed in.': 'साइन आउट नहीं हो सका। आप अभी भी साइन इन हैं।',
+  'Couldn’t disconnect. You’re still connected.': 'डिस्कनेक्ट नहीं हो सका। आप अभी भी कनेक्ट हैं।',
   'Create passkey profile': 'पासकी प्रोफ़ाइल बनाएँ',
   'Passkeys not supported in this browser.': 'इस ब्राउज़र में पासकी समर्थित नहीं।',
   'synced with your profile': 'प्रोफ़ाइल से सिंक',

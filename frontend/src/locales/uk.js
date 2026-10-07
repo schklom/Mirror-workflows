@@ -273,6 +273,8 @@ export default {
   'Ends this profile’s sessions on all your devices.': 'Завершує сеанси цього профілю на всіх твоїх пристроях.',
   'Signed out on all devices': 'Вихід виконано на всіх пристроях',
   'Couldn’t sign out everywhere. You’re still signed in.': 'Не вдалося вийти на всіх пристроях. Ти все ще в системі.',
+  'Couldn’t sign out. You’re still signed in.': 'Не вдалося вийти. Ти все ще в системі.',
+  'Couldn’t disconnect. You’re still connected.': 'Не вдалося відключитися. З’єднання з сервером досі активне.',
   'Create passkey profile': 'Створити профіль із ключем доступу',
   'Passkeys not supported in this browser.': 'Ключі доступу не підтримуються в цьому браузері.',
   'synced with your profile': 'синхронізується з профілем',

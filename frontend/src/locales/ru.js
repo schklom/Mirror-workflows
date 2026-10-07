@@ -409,6 +409,8 @@ export default {
   'Ends this profile’s sessions on all your devices.': 'Завершает сеансы этого профиля на всех твоих устройствах.',
   'Signed out on all devices': 'Выход выполнен на всех устройствах',
   'Couldn’t sign out everywhere. You’re still signed in.': 'Не удалось выйти на всех устройствах. Ты всё ещё в системе.',
+  'Couldn’t sign out. You’re still signed in.': 'Не удалось выйти. Ты всё ещё в системе.',
+  'Couldn’t disconnect. You’re still connected.': 'Не удалось отключиться. Соединение с сервером всё ещё активно.',
   'Create passkey profile': 'Создать профиль с ключом доступа',
   'Passkeys not supported in this browser.': 'Ключи доступа не поддерживаются в этом браузере.',
   'synced with your profile': 'синхронизируется с профилем',

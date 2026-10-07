@@ -85,10 +85,13 @@ function entry(id, sets) {
 }
 
 function lifecycleWorkouts(now = BASE_NOW) {
-  // Six same-load sets on the chest score 6/8 of a full session. Position that stimulus
-  // 30 seconds before its .5 crossing so the real interval update flips it.
+  // Six same-load sets on the chest score 6/8 of a full session, amplified by the
+  // acute:chronic gain of a lone recent session ((6+4)/(1.5+4)). Position that
+  // stimulus 30 seconds before its .5 crossing so the real interval update flips it.
+  // (The 30-day-old balance session sits outside the 28-day chronic window.)
+  const loneGain = (6 + 4) / (6 / 4 + 4)
   const fatigueEdge = now - (
-    fatigueHalfLifeOf('chest') * Math.log2(6 / FATIGUE_SETS_PER_UNIT / Math.LN2) - 30000
+    fatigueHalfLifeOf('chest') * Math.log2(6 / FATIGUE_SETS_PER_UNIT * loneGain / Math.LN2) - 30000
   )
   const balanceEdge = now - (30 * DAY - 30000)
   const strengthEdge = now - (14 * DAY - 30000)
@@ -289,8 +292,8 @@ describe('Stats muscle recovery view runtime', () => {
 
     // One unloaded set is one effective set whatever the profile unit or body mass:
     // intensity is session-local and relative, so the 220 lb bodyweight only travels
-    // through opts while the score stays 1 - exp(-1/8).
-    expect(lastMap().load.abs).toBeCloseTo(1 - Math.exp(-1 / 8), 6)
+    // through opts while the score stays 1 - exp(-1/8 x novice gain of 5/4.25).
+    expect(lastMap().load.abs).toBeCloseTo(1 - Math.exp(-5 / 34), 6)
     expect(lastMap().thresholds).toBeTruthy()
   })
 

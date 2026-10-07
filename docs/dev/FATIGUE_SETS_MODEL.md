@@ -84,23 +84,57 @@ Jefit rotation; upper last hit 1.9d ago, legs 1.2d ago), `fatigueOf(workouts, no
 The split now diverges: legs red after leg day, upper green — the complaint is
 fixed while 3x/week full-body demo histories barely move.
 
-## Files touched
+## Phase 2 (this change): RIR quality + acute:chronic gain
 
-- `frontend/src/lib/recovery.js` — new stimulus + per-muscle HL.
+Two orthogonal multipliers on top of the phase-1 sets, both causal and bounded:
+
+- **RIR weight per set** (`rirWeightFor`, `estimateSetRir`): logged `rir`/`rpe`
+  (via `effort.js`, `HARD_RIR = 3`) always wins; otherwise RIR is estimated by
+  Epley inverse against the exercise's 90-day rolling best anchor
+  (`30*(anchor/w-1)-r`, clamped 0..10, null above `REP_CAP = 12`, for
+  load-less rows, or assisted work). Weight is 1.0 at RIR <= 3, linear down to
+  the 0.3 floor at RIR >= 6. Loads canonicalise to kg through the
+  set -> target -> entry -> workout -> opts chain, so mixed-unit imports anchor
+  correctly (176 lb anchors like 80 kg). A ramp-up row therefore costs a
+  fraction of a set; a deload week of half-weight work reads RIR 10 instead of
+  8 phantom hard sets (the case session-local intensity could never see).
+- **Acute:chronic gain per session and muscle**: `clamp((acute7+4)/(chronicW+4),
+  0.5, 2)` with a 4-sets/week novice prior (repeated-bout effect as arithmetic:
+  first sessions score amplified, maintained veterans ~1.0 reproduce phase 1).
+  Maintenance preserves the phase-1 calibration by construction.
+
+**Contract change (deliberate, probe updated):** anchors and gains are
+history-dependent, so deleting a mid-history workout may re-score later sessions
+(removing a PR lowers their anchors). What still holds, and is now probed:
+rest never increases fatigue, out-of-pool imports stay irrelevant, and deleting
+the *chronologically latest* session never increases anything. A subtle
+correctness point the probe caught twice during development: the info pool must
+span scan + anchor window (120d), otherwise sessions age out of anchors as `now`
+advances and rest would raise fatigue; and "latest" means max timestamp, not
+array order.
+
+Measured on the same state: gluteal 0.533 fatigued, hamstring/quads/calves
+0.31-0.46 recovering (heavy legs 1.2d ago - pyramid ramp sets now correctly
+discounted), chest 0.156 ready (upper 1.9d ago). Phase 1 read 0.54-0.66/0.251
+on the same day; the direction is the same, the magnitudes now respect quality.
+
+## Files touched (phase 2 adds)
+
+- `frontend/src/lib/recovery.js` — phase 1: sets stimulus + per-muscle HL; phase 2:
+  RIR weighting, 90-day anchors (kg-canonical), acute:chronic gain, 120d info pool.
 - `frontend/src/lib/recovery.test.js`, `recovery-view.test.js`,
   `src/views/Stats.recovery.test.jsx` — re-pinned expectations (same
-  structure, sets-based numbers).
-- `frontend/scripts/fatigue-monotonic-probe.mjs` — unchanged (still passes).
+  structure, sets-based numbers) + RIR/deload/deletion-contract tests.
+- `frontend/scripts/fatigue-monotonic-probe.mjs` — latest-session (max timestamp)
+  deletion contract (mid-history rescoring is intended, not a violation).
 
 ## Validation
 
-- `cd frontend && npm test` — recovery suites green (54); full suite: only 3
-  pre-existing failures, each reproduced on the clean tree via `git stash`:
-  `import-hevy` (TZ-sensitive, same +07 class as the MCP case),
-  `CoachChat.demo-failure` (timer), `useStore.media` (flaky waitFor — fails
-  ~25% on clean tree too, no import path to `recovery.js`).
-- `npm run test:fatigue-probe` — PASS unchanged (108000 time + 14076 deletion
-  comparisons).
+- `cd frontend && npm test` — recovery suites green (59); full suite: only 2-3
+  pre-existing failures (see phase-1 notes; `useStore.media` is flaky on clean
+  tree too).
+- `npm run test:fatigue-probe` — PASS (108000 time + 1800 latest-deletion
+  comparisons; contract changed, see above).
 - `node scripts/check-locales.mjs` — clean (no UI strings changed).
 - `cd api && npm test` — 471 pass / 2 fail, identical on clean tree
   (password-hash timing tests, unrelated).

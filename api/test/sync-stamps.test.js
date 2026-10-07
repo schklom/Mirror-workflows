@@ -238,3 +238,43 @@ test('an older app\'s push never gets the write ids stamped as settings, and an 
   assert.equal('_wid' in old.edited, false);
   assert.equal('_wids' in old.edited, false);
 });
+
+// An older app takes the revision it is told for the copy it sent and reads the profile again only
+// once the revision moves (v1.3.9 pullState). When the server put back what it left out, the
+// stored document goes one revision further, so that app's next check reads it.
+test('PUT /api/data: a document the server corrected for an older app is one revision further than it was told', async t => {
+  const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gym-stamps-'));
+  fs.writeFileSync(path.join(dataDir, 'secret'), SECRET, { mode: 0o600 });
+  fs.writeFileSync(path.join(dataDir, 'db.json'), JSON.stringify({ users: [{ id: 'u1', name: 'One', created: new Date().toISOString() }], creds: [], subs: [], invites: [] }));
+  const child = spawn(process.execPath, ['server.js'], { cwd: API, stdio: ['ignore', 'pipe', 'pipe'],
+    env: { ...process.env, PORT: '0', DATA_DIR: dataDir, ORIGIN: 'http://localhost:8080', RP_ID: 'localhost' } });
+  let log = '';
+  child.stdout.on('data', d => log += d); child.stderr.on('data', d => log += d);
+  t.after(() => { child.kill('SIGKILL'); fs.rmSync(dataDir, { recursive: true, force: true }); });
+  const base = `http://127.0.0.1:${await boundPort(child, () => log)}`;
+  const headers = { Cookie: `gymsid=${mintSession('u1')}`, 'Content-Type': 'application/json' };
+  const put = async body => { const r = await fetch(`${base}/api/data`, { method: 'PUT', headers, body: JSON.stringify(body) }); return { status: r.status, body: await r.json() }; };
+  const rev = async () => (await (await fetch(`${base}/api/data/rev`, { headers })).json()).rev;
+  const pyr = { id: 'r1', name: 'P', ex: [{ id: 'sq', sets: 4, pyramid: [12, 10, 8, 6] }], _ts: 5 };
+  let r = await put({ state: { _ts: 1, workouts: [], routines: [pyr] }, stamped: true });
+  assert.equal(r.body.rev, 1);
+  // an older app saves the routine without the pyramid it does not know
+  r = await put({ state: { _ts: 2, workouts: [], routines: [{ id: 'r1', name: 'P', ex: [{ id: 'sq', sets: 4 }], _ts: 6 }] }, baseRev: 1 });
+  assert.equal(r.status, 200);
+  assert.equal(r.body.rev, 2);
+  assert.equal(await rev(), 3);
+  // the same old app with nothing to put back: one revision, as always
+  r = await put({ state: { _ts: 3, workouts: [], routines: [{ id: 'r1', name: 'P2', ex: [{ id: 'sq', sets: 4, pyramid: [12, 10, 8, 6] }], _ts: 7 }] }, baseRev: 3 });
+  assert.equal(r.body.rev, 4);
+  assert.equal(await rev(), 4);
+});
+
+test('an older app that adds an exercise to a routine with one of them twice keeps the pyramids of the others', () => {
+  const cur = stored();
+  cur.routines[0].ex = [{ id: 'sq', sets: 4, pyramid: [12, 10, 8, 6] }, { id: 'bench', sets: 3 }, { id: 'sq', sets: 3, pyramid: [5, 5, 3] }];
+  const next = clone(cur);
+  delete next.edited;
+  next.routines[0].ex = [{ id: 'sq', sets: 4 }, { id: 'row', sets: 3 }, { id: 'bench', sets: 3 }, { id: 'sq', sets: 3 }, { id: 'curl', sets: 2 }];
+  stampPut(cur, next, { overRead: true, stamped: false, now: NOW });
+  assert.deepEqual(next.routines[0].ex.map(e => e.pyramid || null), [[12, 10, 8, 6], null, null, [5, 5, 3], null]);
+});

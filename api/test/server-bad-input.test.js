@@ -149,7 +149,7 @@ test('PUT /api/data: an array is not a document, and null entries never reach th
   // Null and other non-object entries are dropped: every server-side reader of the document
   // (reminder tick, admin drill-down) dereferences the entries, and a 400 would strand a client
   // whose own copy is already malformed.
-  r = await put({ state: { workouts: [null, { id: 'w2', d: '2026-09-02' }, 7, 'x', [], { id: 'w3', d: '2026-09-03' }], routines: [null, { id: 'r1', name: 'A', ex: [] }] }, baseRev: 1 });
+  r = await put({ state: { workouts: [null, { id: 'w2', d: '2026-09-02' }, 7, 'x', [], { id: 'w3', d: '2026-09-03' }], routines: [null, { id: 'r1', name: 'A', ex: [] }], unit: 'kg' }, baseRev: 1 });
   assert.equal(r.status, 200);
   assert.equal(r.body.rev, 2);
   assert.deepEqual(onDisk().workouts.map(w => w.id), ['w2', 'w3']);
@@ -160,7 +160,12 @@ test('PUT /api/data: an array is not a document, and null entries never reach th
   r = await put({ state: { unit: 'kg' }, baseRev: 2 });
   assert.equal(r.status, 200);
   assert.deepEqual(onDisk().workouts.map(w => w.id), ['w2', 'w3']);
+  // What it was told is not what is stored, so the revision moves on past the one it was told.
+  assert.equal(r.body.rev, 3);
+  assert.equal(onDisk()._rev, 4);
   r = await put({ state: { unit: 'kg' }, baseRev: 3, stamped: true });
+  assert.equal(r.status, 409);
+  r = await put({ state: { unit: 'kg' }, baseRev: 4, stamped: true });
   assert.equal(r.status, 200);
   assert.equal('workouts' in onDisk(), false);
   assert.equal(h.stackFrames(), 0, `stack traces in the log:\n${h.log}`);

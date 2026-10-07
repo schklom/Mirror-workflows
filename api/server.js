@@ -2170,9 +2170,16 @@ const routes = {
     // changes (an older app, an API script) changed is stamped here, so it is neither wiped nor
     // undone by the next device that merges (sync-stamps.js).
     // A document nested too deep to compare is the bad request the stringify below refuses too.
-    try { stampPut(cur, body.state, { overRead: body.baseRev != null && body.baseRev === curRev, stamped: body.stamped === true }); }
+    const report = {};
+    try { stampPut(cur, body.state, { overRead: body.baseRev != null && body.baseRev === curRev, stamped: body.stamped === true, report }); }
     catch (e) { if (e instanceof RangeError) return json(res, 400, { error: 'invalid state' }); throw e; }
     body.state._rev = curRev + 1;          // server-owned; whatever the client sent is ignored
+    // A writer that does not stamp (an older app) takes the revision it is told for the document it
+    // sent, and only reads the profile again once the revision moves. When the server put back
+    // something it left out or set back (sync-stamps.js), the document stored is not that one: it
+    // goes in one revision further, so the writer's next check of the revision (every half minute)
+    // finds it moved and reads it, and its next push over the one it was told is a conflict to merge.
+    if (report.changed) body.state._rev = curRev + 2;
     body.state._wids = [...(Array.isArray(cur?._wids) ? cur._wids : []), ...(cur?._wid ? [cur._wid] : [])]
       .filter(x => typeof x === 'string').slice(-WID_KEEP);
     body.state._wid = crypto.randomBytes(8).toString('hex');
@@ -2195,7 +2202,7 @@ const routes = {
     if (MEDIA_ON) {
       try { MEDIA.noteState(user.id, body.state); } catch (e) { console.error('media noteState', e); }
     }
-    json(res, 200, { ok: true, ts: body.state._ts || null, rev: body.state._rev, wid: body.state._wid });
+    json(res, 200, { ok: true, ts: body.state._ts || null, rev: curRev + 1, wid: body.state._wid });
   },
 
   'GET /api/push/public-key': async (req, res) => json(res, 200, { key: vapid.publicKey }),

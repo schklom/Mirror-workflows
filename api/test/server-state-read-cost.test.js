@@ -151,7 +151,7 @@ test('the poll really is reading through the stat cache', async t => {
 
   // And a PUT evicts, so the poll is back in step with the file immediately.
   const put = await fetch(`${h.api}/api/data`, {
-    method: 'PUT', headers, body: JSON.stringify({ state: { _ts: 1, workouts: [], routines: [] } })
+    method: 'PUT', headers, body: JSON.stringify({ state: { _ts: 1, workouts: [], routines: [] }, stamped: true })
   }).then(r => r.json());
   assert.equal(await rev(), put.rev, 'a write through the app is on the very next poll');
 });

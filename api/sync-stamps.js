@@ -297,9 +297,11 @@ function keepKeys(old, x, place) {
     for (const [o, n] of pairItems(a, b)) keepKeys(o, n, `${place}.${f}`);
   }
 }
-// Which item of `a` each item of `b` is: by `id` when every id is there and once per list, by
-// position when the lists are as long as each other and no item moved to another id. Anything
-// else (a set taken out of the middle, a reorder of repeats) is not guessed at.
+// Which item of `a` each item of `b` is: by `id` when every id is there and once per list; with
+// ids that repeat (the same exercise twice in a routine), along the longest run of ids both lists
+// share in order, so an exercise added, taken out or moved leaves the others paired; without ids
+// (the sets of an exercise), by position only when the lists are as long as each other. Anything
+// else (a set taken out of the middle) is not guessed at.
 function pairItems(a, b) {
   const ids = xs => xs.map(x => (isMap(x) ? x.id : undefined));
   const ia = ids(a), ib = ids(b);
@@ -307,6 +309,17 @@ function pairItems(a, b) {
   if (unique(ia) && unique(ib)) {
     const by = new Map(a.map(x => [x.id, x]));
     return b.filter(x => by.has(x.id)).map(x => [by.get(x.id), x]);
+  }
+  if (ia.every(k => k != null) && ib.every(k => k != null) && a.length * b.length <= 40000) {
+    const L = Array.from({ length: a.length + 1 }, () => new Array(b.length + 1).fill(0));
+    for (let i = a.length - 1; i >= 0; i--) {
+      for (let j = b.length - 1; j >= 0; j--) L[i][j] = same(ia[i], ib[j]) ? L[i + 1][j + 1] + 1 : Math.max(L[i + 1][j], L[i][j + 1]);
+    }
+    const out = [];
+    for (let i = 0, j = 0; i < a.length && j < b.length;) {
+      if (same(ia[i], ib[j])) { out.push([a[i], b[j]]); i++; j++; } else if (L[i + 1][j] >= L[i][j + 1]) i++; else j++;
+    }
+    return out;
   }
   if (a.length !== b.length || ia.some((k, i) => k !== ib[i])) return [];
   return b.map((x, i) => [a[i], x]);
@@ -342,12 +355,20 @@ function keepHeld(next, now) {
 }
 
 /**
- * PUT /api/data's stamping (see the top of this file). `cur` is the stored document (or null),
+ * PUT /api/data's stamping (see the top of this file). With `report`, `report.changed` says whether
+ * the document stored differs from what a writer that does not stamp sent, beyond stamps: a field
+ * it did not know or a newer value was put back (server.js then makes sure it reads the result).
+ * `cur` is the stored document (or null),
  * `next` the one being written (mutated in place), `opts.overRead` true when the writer sent the
  * revision it read and it is the current one, `opts.stamped` true for a writer that stamps its own
  * changes (the app), `opts.now` the server's clock.
  */
-export function stampPut(cur, next, { overRead = false, stamped = false, now = Date.now() } = {}) {
+// What a document says, without its stamps and the server's bookkeeping: whether the server put
+// back anything of what a writer sent (stampPut's `report`).
+const BOOKKEEPING = new Set(['_ts', '_f', '_u', '_rev', '_wid', '_wids', 'edited', 'deleted', 'undone']);
+const content = S => JSON.stringify(S, (k, v) => (BOOKKEEPING.has(k) ? undefined : v));
+
+export function stampPut(cur, next, { overRead = false, stamped = false, now = Date.now(), report = null } = {}) {
   if (!next || typeof next !== 'object') return next;
   const t = Math.max(Number(now) || 0, highestStamp(cur) + 1, highestStamp(next) + 1);
   const reset = (Number(next.resetAt) || 0) > (Number(cur?.resetAt) || 0);
@@ -360,8 +381,10 @@ export function stampPut(cur, next, { overRead = false, stamped = false, now = D
     // them stamped as one it changed (QA 2026-10-07), and such a stamp is dropped here.
     if (e) { delete e._wid; delete e._wids; }
     if (e && Object.keys(e).length) next.edited = e; else delete next.edited;
+    const before = !stamped && report ? content(next) : null;
     if (!stamped) keepUnknown(cur, next);
     if (!stamped && overRead) stampUnstamped(cur, next, sent, t);
+    if (before != null && content(next) !== before) report.changed = true;
   }
   keepHeld(next, t);
   return next;

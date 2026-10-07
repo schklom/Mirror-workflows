@@ -1496,7 +1496,11 @@ paths:
                     description: Echo of the pushed state's `_ts`, if present.
                   rev:
                     type: integer
-                    description: The revision the write produced.
+                    description: >-
+                      The revision the write produced. For a writer that does not stamp, when the
+                      server put back something it left out or set back, the document is stored one
+                      revision further, so the writer's next check of the revision reads it again.
+                      `wid` is the stored document's either way.
                   wid:
                     type: string
                     description: The write id (`_wid`) of the stored document.

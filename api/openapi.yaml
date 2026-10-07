@@ -1442,6 +1442,14 @@ paths:
         removal on record says it was deleted after its last edit is kept and marked as
         added back.
 
+        Such a writer also cannot delete what it does not know: a field of the stored
+        document, of a stored routine, workout, custom exercise, card or profile, of a
+        routine's exercise, or of a logged exercise or set that its copy leaves out comes
+        back from the stored copy (an older app rebuilds an exercise from the fields it
+        knows, which dropped pyramid sets made on an updated device). Only the fields
+        v1.3.9 itself removes (a superset link, a note, a cleared set value, …) can be
+        removed this way. Send `stamped: true` to remove anything else.
+
         Every accepted write also starts the grace period of each stored file (tag `media`)
         the new state no longer references, and stops it for each one it references again.
         That bookkeeping never changes the answer.

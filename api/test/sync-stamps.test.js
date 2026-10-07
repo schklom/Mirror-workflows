@@ -119,3 +119,64 @@ test('PUT /api/data: an older app\'s push does not wipe the records, and its del
   assert.equal(doc.deleted.workouts.w1, 1000);
   assert.ok(doc.deleted.workouts.w2 > 1000);
 });
+
+// RC review 2026-10-07: a v1.3.9 phone saving a routine rebuilt each exercise from the fields it
+// knows, and the pyramid made on an updated phone was deleted on every device.
+test('an older app saving a routine keeps the pyramid it does not know', () => {
+  const cur = stored();
+  cur.routines[0].ex = [
+    { id: '0025', sets: 4, mode: 'reps', reps: 12, weight: 40, pyramid: [12, 10, 8, 'max'], pyramidRest: [60, 90, 120, 0] },
+    { id: '0032', sets: 3, mode: 'reps', reps: 8, weight: 100, sg: 'g1' },
+  ];
+  const next = clone(cur);
+  delete next.edited; delete next.deleted;
+  next.routines[0].ex = [
+    { id: '0025', sets: 4, mode: 'reps', reps: 12, weight: 45 },   // its sheet: the weight changed, the pyramid gone
+    { id: '0032', sets: 3, mode: 'reps', reps: 8, weight: 100 },  // it took the superset apart: that stays
+  ];
+  stampPut(cur, next, { overRead: true, stamped: false, now: NOW });
+  assert.deepEqual(next.routines[0].ex[0], { id: '0025', sets: 4, mode: 'reps', reps: 12, weight: 45, pyramid: [12, 10, 8, 'max'], pyramidRest: [60, 90, 120, 0] });
+  assert.equal('sg' in next.routines[0].ex[1], false);
+  assert.ok(next.routines[0]._f.ex >= NOW);   // its weight change is still an edit of its own
+});
+
+test('an older app keeps the fields it does not know everywhere: settings, entries, sets', () => {
+  const cur = stored();
+  cur.accentCustom = '#ff00aa'; cur.showRir = true;
+  cur.customEx = [{ id: 'c1', n: 'Curl', media: { hash: 'h' }, future: 1 }];
+  cur.workouts[0].entries = [{ id: 'bench', sets: [{ w: 100, r: 5, done: true, max: true }, { w: 90, r: 8, done: true }] }];
+  cur.workouts[0].newer = 'x';
+  const next = clone(cur);
+  delete next.accentCustom; delete next.showRir;
+  delete next.customEx[0].media; delete next.customEx[0].future;
+  next.workouts[0].entries[0].sets = [{ w: 100, r: 6, done: true }, { w: 90, r: 8 }];
+  delete next.workouts[0].newer;
+  stampPut(cur, next, { overRead: true, stamped: false, now: NOW });
+  assert.equal(next.accentCustom, '#ff00aa');
+  assert.equal('showRir' in next, false);                     // v1.3.9 removes that one itself
+  assert.deepEqual(next.customEx[0], { id: 'c1', n: 'Curl', future: 1, _ts: next.customEx[0]._ts, _f: next.customEx[0]._f });
+  assert.deepEqual(next.workouts[0].entries[0].sets, [{ w: 100, r: 6, done: true, max: true }, { w: 90, r: 8 }]);
+  assert.equal(next.workouts[0].newer, 'x');
+});
+
+test('a set taken out of the middle is not guessed at, and the app\'s own pushes are left as sent', () => {
+  const cur = stored();
+  cur.workouts[0].entries = [{ id: 'bench', sets: [{ w: 1, max: true }, { w: 2 }, { w: 3, max: true }] }];
+  const old = clone(cur);
+  old.workouts[0].entries[0].sets = [{ w: 1 }, { w: 3 }];
+  stampPut(cur, old, { overRead: true, stamped: false, now: NOW });
+  assert.deepEqual(old.workouts[0].entries[0].sets, [{ w: 1 }, { w: 3 }]);
+  const app = clone(cur);
+  delete app.routines[0].name; delete app.queue;
+  stampPut(cur, app, { overRead: true, stamped: true, now: NOW });
+  assert.equal('name' in app.routines[0], false);
+  assert.equal('queue' in app, false);
+});
+
+test('a reset from an older app is not refilled from the profile it wiped', () => {
+  const cur = stored();
+  cur.accentCustom = '#ff00aa';
+  const next = { _ts: NOW, resetAt: NOW, workouts: [], routines: [] };
+  stampPut(cur, next, { overRead: true, stamped: false, now: NOW });
+  assert.equal('accentCustom' in next, false);
+});

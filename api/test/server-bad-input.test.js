@@ -154,8 +154,13 @@ test('PUT /api/data: an array is not a document, and null entries never reach th
   assert.equal(r.body.rev, 2);
   assert.deepEqual(onDisk().workouts.map(w => w.id), ['w2', 'w3']);
   assert.deepEqual(onDisk().routines.map(x => x.id), ['r1']);
-  // Absent lists stay absent — every client fills its own defaults.
+  // Absent lists stay absent from a client that stamps its own changes: every client fills its
+  // own defaults. From one that does not, a list it left out is one it never knew, and the stored
+  // one stays (sync-stamps.js keepUnknown).
   r = await put({ state: { unit: 'kg' }, baseRev: 2 });
+  assert.equal(r.status, 200);
+  assert.deepEqual(onDisk().workouts.map(w => w.id), ['w2', 'w3']);
+  r = await put({ state: { unit: 'kg' }, baseRev: 3, stamped: true });
   assert.equal(r.status, 200);
   assert.equal('workouts' in onDisk(), false);
   assert.equal(h.stackFrames(), 0, `stack traces in the log:\n${h.log}`);

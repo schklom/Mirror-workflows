@@ -15,6 +15,9 @@
 //     lost to any phone that reconnected with an older, unrelated change.
 //
 // So PUT /api/data (stampPut):
+//   0. for a writer that does not stamp: puts back every field it left out that it cannot have
+//      removed on purpose, since it never knew it (keepUnknown): a v1.3.9 phone saving a routine
+//      no longer deletes the pyramid sets made on an updated one;
 //   1. never lets the records shrink: `deleted` and `edited` are joined with the stored ones (but
 //      a reset, which starts the profile over, keeps its own);
 //   2. for a writer that does not stamp (no `stamped: true` in the body) and wrote over the
@@ -29,6 +32,7 @@
 const isMap = v => !!v && typeof v === 'object' && !Array.isArray(v);
 const list = v => (Array.isArray(v) ? v : []);
 const same = (x, y) => JSON.stringify(x) === JSON.stringify(y);
+const clone = v => (v === undefined ? v : JSON.parse(JSON.stringify(v)));
 
 const workoutKey = w => (w?.id != null ? w.id : `${w?.d}|${w?.start}`);
 const workoutTime = w => Number(w?._ts) || Number(w?.end) || Number(w?.start) || 0;
@@ -166,6 +170,76 @@ function stampUnstamped(cur, next, sent, now) {
   }
 }
 
+// Step 0, for a writer that does not stamp: what it left out because it does not know it comes
+// back from the stored copy. An app from before a field existed rebuilds what it edits from the
+// fields it knows: v1.3.9's exercise sheet saved a routine's exercise as sets, reps and weight,
+// and the pyramid built on an updated phone (`pyramid`, `pyramidRest`) was gone on every device.
+// The same for a setting, a routine, a workout, a custom exercise, card or profile, an exercise
+// of a routine, an exercise and a set of a logged workout.
+//
+// What such a writer can drop on purpose is what it knows: `V139_DROPS` lists, per place, every
+// key v1.3.9 (the last app that does not stamp) removes or rebuilds itself. A missing key there
+// is a removal and goes through; any other missing key is one it never knew and is put back.
+// A key put back that it had in fact cleared is one tap to clear again; a dropped one was lost.
+// API planners send back what they read, so for them this changes nothing.
+const V139_DROPS = {
+  state: new Set(['showRir']),
+  routines: new Set(['excludeFromProgression']),
+  'routines.ex': new Set(['id', 'sg', 'sets', 'min', 'speed', 'mode', 'sec', 'weight', 'bodyweight', 'prog',
+    'inc', 'deloadFactor', 'note', 'warmupSets', 'restSec', 'reps', 'side', 'repsMin', 'repsMax', 'intensifier']),
+  customEx: new Set(['media', 'url']),
+  equipProfiles: new Set(),
+  gymCards: new Set(),
+  workouts: new Set(['media', 'note', 'name', 'bw', 'prs', 'vol', 'routineIds']),
+  'workouts.entries': new Set(['sg', 'note', 'notePin', 'noProg', 'topW']),
+  'workouts.entries.sets': new Set(['w', 'r', 'sec', 'min', 'km', 'dist', 'speed', 'rir', 'rpe', 'planSec', 'note',
+    'done', 'weightOrigin', 'at', 'sides', 'type', 'drops', 'clusters', 'warmup']),
+};
+// The lists inside an entry that are walked too, and how their items are matched.
+const NESTED = { routines: ['ex'], workouts: ['entries'], 'workouts.entries': ['sets'] };
+// Server bookkeeping and the records merged on their own: never put back from the stored copy.
+const NOT_KEPT = new Set(['_rev', '_wid', '_wids', 'active', 'resetAt', 'resetIds', 'deleted', 'edited']);
+
+// `x` with every key of `old` it lacks and the writer cannot have dropped on purpose. Mutates `x`.
+function keepKeys(old, x, place) {
+  if (!isMap(old) || !isMap(x)) return;
+  const drops = V139_DROPS[place] || new Set();
+  for (const k of Object.keys(old)) {
+    if (k in x || drops.has(k) || ENTRY_META.has(k) || (place === 'state' && NOT_KEPT.has(k))) continue;
+    x[k] = clone(old[k]);
+  }
+  for (const f of NESTED[place] || []) {
+    const a = old[f], b = x[f];
+    if (!Array.isArray(a) || !Array.isArray(b)) continue;
+    for (const [o, n] of pairItems(a, b)) keepKeys(o, n, `${place}.${f}`);
+  }
+}
+// Which item of `a` each item of `b` is: by `id` when every id is there and once per list, by
+// position when the lists are as long as each other and no item moved to another id. Anything
+// else (a set taken out of the middle, a reorder of repeats) is not guessed at.
+function pairItems(a, b) {
+  const ids = xs => xs.map(x => (isMap(x) ? x.id : undefined));
+  const ia = ids(a), ib = ids(b);
+  const unique = xs => xs.every(k => k != null) && new Set(xs).size === xs.length;
+  if (unique(ia) && unique(ib)) {
+    const by = new Map(a.map(x => [x.id, x]));
+    return b.filter(x => by.has(x.id)).map(x => [by.get(x.id), x]);
+  }
+  if (a.length !== b.length || ia.some((k, i) => k !== ib[i])) return [];
+  return b.map((x, i) => [a[i], x]);
+}
+/** Step 0 (above): put back into `next` what a writer that does not stamp left out of `cur`. */
+export function keepUnknown(cur, next) {
+  if (!isMap(cur) || !isMap(next)) return next;
+  keepKeys(cur, next, 'state');
+  for (const f of ENTRY_LISTS) {
+    if (!Array.isArray(cur[f]) || !Array.isArray(next[f])) continue;
+    const before = new Map(cur[f].filter(x => isMap(x) && x.id != null).map(x => [x.id, x]));
+    for (const x of next[f]) if (isMap(x) && x.id != null && before.has(x.id)) keepKeys(before.get(x.id), x, f);
+  }
+  return next;
+}
+
 // Step 3: an entry held while a removal on record says it was deleted after its last edit is
 // kept, and marked as added back.
 function keepHeld(next, now) {
@@ -200,6 +274,7 @@ export function stampPut(cur, next, { overRead = false, stamped = false, now = D
     if (d) next.deleted = d; else delete next.deleted;
     const e = mergeEdits(cur.edited, next.edited);
     if (e) next.edited = e; else delete next.edited;
+    if (!stamped) keepUnknown(cur, next);
     if (!stamped && overRead) stampUnstamped(cur, next, sent, t);
   }
   keepHeld(next, t);

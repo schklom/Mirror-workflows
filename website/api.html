@@ -1485,6 +1485,8 @@ main.api-main .lead { color: var(--fg-2); max-width: 58ch; margin: 14px 0 0; fon
   <div class="ep-body">
 <p>Replaces the stored state wholesale (atomic write; there is no merge on the server). The <code>active</code> field — an in-progress workout — is stripped before saving: a running session belongs to the device running it. Body limit 5 MiB.</p>
 <p>With <code>baseRev</code> the write is conditional: it goes through only when <code>baseRev</code> equals the document's current revision, and answers 409 with the current document otherwise — the client merges the two and pushes again with the revision it was given. Without <code>baseRev</code> the write is unconditional (clients from before revisions, and deliberate replaces such as a backup import). The server stamps the new revision into the document as <code>_rev</code>; a <code>_rev</code> sent by the client is ignored.</p>
+<p>The records of removals (<code>deleted</code>) and of edits (<code>edited</code>) never shrink: the stored ones are joined into the write (a reset keeps its own). A writer that does not stamp its own changes (no <code>stamped: true</code>; an API script, an older app) and sends the current <code>baseRev</code> gets them stamped by the server, at the server's time: every entry it removed (a workout, routine, custom exercise, weigh-in, card, profile or favourite), every setting and plan day it changed (<code>queue</code>, <code>week.&lt;day&gt;</code>, …), and every entry it edited (<code>_ts</code>, per field <code>_f</code>). That keeps a planner's new week, or a routine it removed, from being undone by a phone that reconnects later with an older change. An entry the document holds while a removal on record says it was deleted after its last edit is kept and marked as added back.</p>
+<p>Such a writer also cannot delete what it does not know: a field of the stored document, of a stored routine, workout, custom exercise, card or profile, of a routine's exercise, or of a logged exercise or set that its copy leaves out comes back from the stored copy (an older app rebuilds an exercise from the fields it knows, which dropped pyramid sets made on an updated device). Only the fields v1.3.9 itself removes (a superset link, a note, a cleared set value, …) can be removed this way. Send <code>stamped: true</code> to remove anything else.</p>
 <p>Every accepted write also starts the grace period of each stored file (tag <code>media</code>) the new state no longer references, and stops it for each one it references again. That bookkeeping never changes the answer.</p>
     <p class="ep-auth"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2.5"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span>Requires a session — the cookie set at sign-in, or <code>Authorization: Bearer &lt;token&gt;</code> from mobile-app pairing.</span></p>
 
@@ -1499,12 +1501,22 @@ main.api-main .lead { color: var(--fg-2); max-width: 58ch; margin: 14px 0 0; fon
     <span class="p-type">integer | null</span>
     <span class="p-desc">The revision this client last read or wrote. Omit or null for an unconditional overwrite.</span>
   </div>
+  <div class="prow">
+    <span class="p-name">baseWid</span>
+    <span class="p-type">string</span>
+    <span class="p-desc">The write id (<code>_wid</code>) of the document this client last read or wrote. With <code>baseRev</code>, a write over a different document at the same revision (the data directory went back in time and the number was reached again) answers 409.</span>
+  </div>
+  <div class="prow">
+    <span class="p-name">stamped</span>
+    <span class="p-type">boolean</span>
+    <span class="p-desc">True when the client stamps its own changes in <code>deleted</code>, <code>edited</code> and each entry's <code>_ts</code>/<code>_f</code>, as the app does. Omit it to have the server stamp what changed against the stored document.</span>
+  </div>
 </div>
     <p class="ep-h">Responses</p>
     <div class="ptab">
   <div class="prow rrow">
     <span class="r-code s2">200</span>
-    <span class="p-desc">Saved.<span class="r-sig">{ ok: always true, ts: number | null, rev: integer }</span></span>
+    <span class="p-desc">Saved.<span class="r-sig">{ ok: always true, ts: number | null, rev: integer, wid: string }</span></span>
   </div>
   <div class="prow rrow">
     <span class="r-code s4">400</span>
@@ -1538,7 +1550,7 @@ main.api-main .lead { color: var(--fg-2); max-width: 58ch; margin: 14px 0 0; fon
     <div class="ptab">
   <div class="prow rrow">
     <span class="r-code s2">200</span>
-    <span class="p-desc">The current revision (0 when the profile has no state yet).<span class="r-sig">{ rev: integer }</span></span>
+    <span class="p-desc">The current revision (0 when the profile has no state yet).<span class="r-sig">{ rev: integer, wid: string }</span></span>
   </div>
   <div class="prow rrow">
     <span class="r-code s4">401</span>
@@ -3528,6 +3540,26 @@ main.api-main .lead { color: var(--fg-2); max-width: 58ch; margin: 14px 0 0; fon
     <span class="p-desc">Server-set revision, incremented on every accepted PUT. Ignored when sent by a client.</span>
   </div>
   <div class="prow">
+    <span class="p-name">_wid</span>
+    <span class="p-type">string</span>
+    <span class="p-desc">Server-set id of this write (16 hex characters), new on every accepted PUT.</span>
+  </div>
+  <div class="prow">
+    <span class="p-name">_wids</span>
+    <span class="p-type">string[]</span>
+    <span class="p-desc">The write ids of the documents this one descends from, oldest first (up to 50).</span>
+  </div>
+  <div class="prow">
+    <span class="p-name">deleted</span>
+    <span class="p-type">object</span>
+    <span class="p-desc">When entries were removed, per list and entry key ({ workouts: { &lt;id&gt;: ms } }, weigh-ins by day, favourites by exercise id). A negative stamp is an add-back after a removal. Never shrinks on the server; stamped for writers that do not stamp (see PUT /api/data).</span>
+  </div>
+  <div class="prow">
+    <span class="p-name">edited</span>
+    <span class="p-type">object</span>
+    <span class="p-desc">When each setting and plan day was last changed, ms ({ queue: ms, 'week.3': ms, … }). Never shrinks on the server; stamped for writers that do not stamp (see PUT /api/data).</span>
+  </div>
+  <div class="prow">
     <span class="p-name">unit</span>
     <span class="p-type">&quot;kg&quot; | &quot;lb&quot;</span>
     <span class="p-desc"></span>
@@ -3560,7 +3592,7 @@ main.api-main .lead { color: var(--fg-2); max-width: 58ch; margin: 14px 0 0; fon
   <div class="prow">
     <span class="p-name">queue</span>
     <span class="p-type">object</span>
-    <span class="p-desc">A planner's floating week {ids, since, startsOn, label} — the week's sessions as an ordered queue, the first undone one is today's. Written only by an API client (never by the app), read by the reminder tick.</span>
+    <span class="p-desc">A planner's floating week {ids, since, startsOn, label} — the week's sessions as an ordered queue, the first undone one is today's. Written by an API client or by the app's own rotation feature, read by the reminder tick.</span>
   </div>
   <div class="prow">
     <span class="p-name">week</span>

@@ -95,4 +95,19 @@ describe('what the server stamps holds in the merge', () => {
     expect(mergeStates(rcAgain, old).workouts.map(w => w.id)).toEqual(['w1'])
     expect(mergeStates(old, rcAgain).workouts.map(w => w.id)).toEqual(['w1'])
   })
+
+  // RC review 2026-10-07: v1.3.9's exercise sheet saved a routine without the pyramid it does not
+  // know, and the updated phone took that on its next merge.
+  it('an older app\'s routine save keeps the pyramid on the updated phone too', () => {
+    const cur = doc0()
+    cur.routines[0].ex = [{ id: 'sq', sets: 4, reps: 12, weight: 40, pyramid: [12, 10, 8, 'max'] }]
+    const rc = change(cur, T + 5000, S2 => { S2.restSec = 75 })   // the updated phone, not pushed yet
+    const old = clone(cur); delete old.edited
+    old.routines[0].ex = [{ id: 'sq', sets: 4, reps: 12, weight: 45 }]; old._ts = T + 9000
+    S.stampPut(cur, old, { overRead: true, now: T + 9000 })
+    for (const m of [mergeStates(rc, old), mergeStates(old, rc)]) {
+      expect(m.routines[0].ex).toEqual([{ id: 'sq', sets: 4, reps: 12, weight: 45, pyramid: [12, 10, 8, 'max'] }])
+      expect(m.restSec).toBe(75)
+    }
+  })
 })

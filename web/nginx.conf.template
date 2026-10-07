@@ -70,6 +70,11 @@ server {
         # CF_CONNECTING_IP=$http_cf_connecting_ip to let the real one through — correct only when
         # Cloudflare is genuinely in front, because that is what overwrites a client-supplied one.
         proxy_set_header CF-Connecting-IP "${CF_CONNECTING_IP}";
+        # A Coach call waits on a model, not on a database: the admin's connection test and a
+        # manual review can both take minutes on a slow endpoint. nginx's 60 s default answered
+        # 504 here while the API was still working on it, which told the admin the wrong thing.
+        proxy_read_timeout 300s;
+        proxy_send_timeout 300s;
     }
 
     # Photos and videos of custom exercises (PUT and GET under api/media/). Nginx picks the

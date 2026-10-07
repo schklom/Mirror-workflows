@@ -615,8 +615,7 @@ export function parseBodyweight(text, { unit = 'kg' } = {}) {
       if (!val || !dt) continue
       const when = parseWhen(dt[1])
       if (!when) continue
-      if (u) fileUnit = /lb/i.test(u[1]) ? 'lb' : 'kg'
-      out.set(when.d, { w: parseFloat(val[1]), t: new Date(dt[1]).getTime() || null })
+      out.set(when.d, { w: parseFloat(val[1]), unit: u && /lb/i.test(u[1]) ? 'lb' : 'kg', t: new Date(dt[1]).getTime() || null })
     }
   } else {
     const rows = parseCSV(s)
@@ -637,14 +636,20 @@ export function parseBodyweight(text, { unit = 'kg' } = {}) {
   }
 
   if (!out.size) return { error: 'unrecognised' }
-  const converted = !!fileUnit && fileUnit !== unit
-  const conv = converted
-    ? (fileUnit === 'lb' ? x => Math.round(x * LB_TO_KG * 10) / 10 : x => Math.round(x / LB_TO_KG * 10) / 10)
-    : x => Math.round(x * 10) / 10
+  const units = new Set([...out.values()].map(b => b.unit || fileUnit).filter(Boolean))
+  fileUnit = [...units].sort().join(' / ')
+  const converted = [...units].some(sourceUnit => sourceUnit !== unit)
+  const conv = b => {
+    const sourceUnit = b.unit || fileUnit
+    const w = sourceUnit && sourceUnit !== unit
+      ? (sourceUnit === 'lb' ? b.w * LB_TO_KG : b.w / LB_TO_KG)
+      : b.w
+    return Math.round(w * 10) / 10
+  }
   const dates = [...out.keys()].sort()
   return {
     kind: 'bodyweight', source: 'Apple Health',
-    bodyweight: dates.map(d => ({ d, w: conv(out.get(d).w), t: out.get(d).t || new Date(d).getTime() })),
+    bodyweight: dates.map(d => ({ d, w: conv(out.get(d)), t: out.get(d).t || new Date(d).getTime() })),
     fileUnit, converted, from: dates[0], to: dates[dates.length - 1],
   }
 }

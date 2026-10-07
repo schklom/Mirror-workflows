@@ -800,6 +800,8 @@ export default {
   'average effort': 'esforço médio',
   'at {0} {1} or harder': 'a {0} {1} ou mais duro',
   '{0} of {1} finished sets rated': '{0} de {1} séries concluídas avaliadas',
+  'estimated': 'estimado',
+  '{0} rated · {1} estimated of {2} sets': '{0} avaliadas · {1} estimadas de {2} séries',
   'Effort per set is switched off — turn it on in Settings to keep rating.': 'O esforço por série está desligado — liga-o nas Definições para continuares a avaliar.',
   'Week by week': 'Semana a semana',
   'Where the sets land': 'Onde caem as séries',

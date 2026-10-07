@@ -14,11 +14,13 @@ import {
   STRENGTH_FULL_MS,
   STRENGTH_HALF_LIFE_MS,
   detrainedMuscles,
+  anchorsByWorkout,
   estimateSetRir,
   fatiguedMuscles,
   fatigueHalfLifeOf,
   fatigueOf,
   halfLifeDecay,
+  resolveSetRir,
   rirWeightFor,
   strengthOf,
 } from './recovery.js'
@@ -667,5 +669,34 @@ describe('loads are relative, units are irrelevant', () => {
     } finally {
       registerCustom([])
     }
+  })
+})
+
+describe('anchorsByWorkout and resolveSetRir', () => {
+  const at = (id, start, sets) => ({
+    d: new Date(start).toISOString(), start, entries: [{ id, sets }],
+  })
+
+  it('anchors each workout at the 90-day rolling best, never from the future', () => {
+    const old = at(SINGLE.id, NOW - 100 * DAY, [{ done: true, w: 120, r: 5 }])
+    const mid = at(SINGLE.id, NOW - 10 * DAY, [{ done: true, w: 100, r: 5 }])
+    const now = at(SINGLE.id, NOW, [{ done: true, w: 90, r: 5 }])
+    const anchors = anchorsByWorkout([old, mid, now])
+    // The 100-day-old PR is outside the window; the mid session anchors at its own
+    // best, today at the mid session's best.
+    expect(anchors.get(old).get(SINGLE.id)).toBeCloseTo(120 * (1 + 5 / 30), 1)
+    expect(anchors.get(mid).get(SINGLE.id)).toBeCloseTo(100 * (1 + 5 / 30), 1)
+    expect(anchors.get(now).get(SINGLE.id)).toBeCloseTo(100 * (1 + 5 / 30), 1)
+  })
+
+  it('resolves logged effort first, estimates second, null when unknowable', () => {
+    const anchors = new Map([['e1', 110]])
+    const entry = { id: 'e1' }
+    const workout = {}
+    expect(resolveSetRir({ done: true, w: 40, r: 8, rir: 7 }, null, entry, workout, anchors, {}))
+      .toEqual({ rir: 7, source: 'logged' })
+    expect(resolveSetRir({ done: true, w: 80, r: 8 }, null, entry, workout, anchors, {}).source).toBe('estimated')
+    expect(resolveSetRir({ done: true, w: 80, r: 8 }, null, { id: 'unknown' }, workout, anchors, {}))
+      .toBeNull()
   })
 })

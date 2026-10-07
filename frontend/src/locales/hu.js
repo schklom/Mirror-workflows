@@ -773,6 +773,8 @@ export default {
   'average effort': 'átlagos megerőltetés',
   'at {0} {1} or harder': '{0} {1} vagy nehezebb szinten',
   '{0} of {1} finished sets rated': '{1}-ből {0} befejezett sorozat értékelve',
+  'estimated': 'becsült',
+  '{0} rated · {1} estimated of {2} sets': '{2} sorozatból {0} értékelt · {1} becsült',
   'Effort per set is switched off — turn it on in Settings to keep rating.': 'A Megerőltetés sorozatonként ki van kapcsolva — kapcsold be a Beállításokban a további értékeléshez.',
   'Week by week': 'Hétről hétre',
   'Where the sets land': 'Hova esnek a sorozatok',

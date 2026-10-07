@@ -800,6 +800,8 @@ export default {
   'average effort': '평균 강도',
   'at {0} {1} or harder': '{0} {1} 이상',
   '{0} of {1} finished sets rated': '완료한 {1}세트 중 {0}세트 평가됨',
+  'estimated': '추정치',
+  '{0} rated · {1} estimated of {2} sets': '{2}세트 중 {0} 평가됨 · {1} 추정치',
   'Effort per set is switched off — turn it on in Settings to keep rating.': '세트당 강도가 꺼져 있습니다 — 계속 평가하려면 설정에서 켜세요.',
   'Week by week': '주별 변화',
   'Where the sets land': '세트가 몰리는 곳',

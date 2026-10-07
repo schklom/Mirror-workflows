@@ -800,6 +800,8 @@ export default {
   'average effort': '平均强度',
   'at {0} {1} or harder': '{0} {1} 或更硬',
   '{0} of {1} finished sets rated': '{1} 个已完成组中有 {0} 个已评分',
+  'estimated': '估算',
+  '{0} rated · {1} estimated of {2} sets': '已评分 {0} · 估算 {1}，共 {2} 组',
   'Effort per set is switched off — turn it on in Settings to keep rating.': '每组强度已关闭——在设置中打开即可继续评分。',
   'Week by week': '逐周变化',
   'Where the sets land': '组都落在哪里',

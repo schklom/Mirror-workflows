@@ -319,6 +319,33 @@ describe('Stats muscle recovery view runtime', () => {
   })
 })
 
+describe('Stats estimated effort', () => {
+  const effortHead = () => [...container.querySelectorAll('.card h2')]
+    .find(h => h.textContent.trim().startsWith('Effort'))
+
+  it('badges estimated numbers on unrated import history', async () => {
+    resetFixture([workout('unrated', BASE_NOW, [
+      entry('0025', Array.from({ length: 6 }, () => set(true, { w: 80, r: 8 }))),
+    ])])
+    await mountStats()
+    const head = effortHead()
+    expect(head, 'expected an Effort card for estimable history').toBeTruthy()
+    // Six self-anchored sets estimate RIR 0: a real average with an honest badge.
+    expect(head.textContent).toContain('estimated')
+    expect(container.textContent).toContain('0 rated')
+  })
+
+  it('keeps the logged view badge-free on rated history', async () => {
+    resetFixture([workout('rated', BASE_NOW, [
+      entry('0025', Array.from({ length: 6 }, () => set(true, { w: 80, r: 8, rir: 2 }))),
+    ])])
+    await mountStats()
+    const head = effortHead()
+    expect(head, 'expected an Effort card for rated history').toBeTruthy()
+    expect(head.textContent).not.toContain('estimated')
+  })
+})
+
 describe('Stats strength exercise rows', () => {
   // The rows under "Exercises · <muscle>" are presented as buttons (role, tabIndex, pointer
   // cursor) but for a year called a handler that never existed, so every tap threw

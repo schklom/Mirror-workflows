@@ -189,12 +189,9 @@ export function estimateSetRir(set, anchorKg, unit) {
 // from the 90-day window ending at this session, never from its future.
 function sessionEffSets(workout, anchors, opts = {}) {
   const sums = emptyMuscleMap(0)
-  const score = (row, set, entry, weights, anchorKg, requireDone = true) => {
+  const score = (row, set, entry, weights, requireDone = true) => {
     if (requireDone && row?.done !== true) return
-    const unit = unitOf(row, set, entry?.target, entry, workout, opts)
-    const logged = rirOf(row)
-    const estimated = logged == null ? estimateSetRir(row, anchorKg, unit) : null
-    const count = rirWeightFor(logged ?? estimated?.rir)
+    const count = rirWeightFor(resolveSetRir(row, set, entry, workout, anchors, opts)?.rir)
     for (const [slug, weight] of Object.entries(weights)) {
       if (Object.prototype.hasOwnProperty.call(MUSCLES_BY_SLUG, slug)) sums[slug] += count * weight
     }
@@ -202,13 +199,12 @@ function sessionEffSets(workout, anchors, opts = {}) {
   for (const entry of workout?.entries || []) {
     const ex = exerciseFor(entry)
     const weights = musclesOf(ex)
-    const anchorKg = anchors?.get(entry.id)
     for (const set of entry.sets || []) {
-      score(set, set, entry, weights, anchorKg)
+      score(set, set, entry, weights)
       // Drop-set drops carry their own load against the same anchor - extra work at
       // a discount, never double-counted. Drops carry no done flag of their own;
       // performed as part of a done set, they count unconditionally.
-      if (set?.done === true) for (const drop of dropsOf(set)) score(drop, set, entry, weights, anchorKg, false)
+      if (set?.done === true) for (const drop of dropsOf(set)) score(drop, set, entry, weights, false)
     }
   }
   for (const slug of MUSCLES) sums[slug] = Math.min(sums[slug], FATIGUE_MAX_SETS_PER_SESSION)
@@ -236,6 +232,48 @@ function sessionBests(workout, opts = {}) {
   return best
 }
 
+/**
+ * Capacity anchors per workout: the 90-day rolling best 1RM estimate per exercise,
+ * in kg, keyed by the workout object. One chronological pass - later sessions never
+ * leak into earlier anchors. Powers both fatigue scoring and estimated-effort stats;
+ * unrated histories without any estimable set simply get empty maps (full credit).
+ *
+ * @param {Array<object>} workouts Workout history.
+ * @param {{unit?: string}} opts Profile unit for unit-stamped loads.
+ * @returns {Map<object, Map<string, number>>} Workout -> exercise id -> anchor.
+ */
+export function anchorsByWorkout(workouts, opts = {}) {
+  const ordered = (workouts || [])
+    .map((workout, index) => ({ workout, index, timestamp: workoutTimestamp(workout) }))
+    .filter(item => Number.isFinite(item.timestamp))
+    .sort((a, b) => a.timestamp - b.timestamp || a.index - b.index)
+  const bests = ordered.map(item => sessionBests(item.workout, opts))
+  const out = new Map()
+  ordered.forEach((item, i) => {
+    const anchors = new Map()
+    for (let j = 0; j <= i; j += 1) {
+      if (ordered[j].timestamp <= item.timestamp - FATIGUE_RIR_WINDOW_MS) continue
+      for (const [exId, est] of bests[j]) {
+        if (!anchors.has(exId) || est > anchors.get(exId)) anchors.set(exId, est)
+      }
+    }
+    out.set(item.workout, anchors)
+  })
+  return out
+}
+
+/**
+ * One set's RIR with its provenance: logged effort first, Epley-inverse estimate
+ * against the workout's anchors second, null when intensity is unknowable. The same
+ * precedence fatigue scoring uses, so stats and the map never disagree about a set.
+ */
+export function resolveSetRir(row, set, entry, workout, anchors, opts = {}) {
+  const logged = rirOf(row)
+  if (logged != null) return { rir: logged, source: 'logged' }
+  const unit = unitOf(row, set, entry?.target, entry, workout, opts)
+  return estimateSetRir(row, anchors?.get(entry?.id), unit)
+}
+
 // Build normalised stimuli in workout order. Each session is scored from its own
 // quality-weighted sets against the fixed full-session unit, multiplied by the
 // acute:chronic gain left by strictly earlier exposure: a session that doubles the
@@ -258,17 +296,8 @@ function fatigueStimuli(workouts, current, opts = {}) {
     .filter(item => Number.isFinite(item.timestamp) && item.timestamp > poolCutoff)
     .sort((a, b) => a.timestamp - b.timestamp || a.index - b.index)
   const scored = pool.filter(item => item.timestamp > scanCutoff)
-  const bests = pool.map(item => sessionBests(item.workout, opts))
-  const effSets = pool.map((item, i) => {
-    const anchors = new Map()
-    for (let j = 0; j <= i; j += 1) {
-      if (pool[j].timestamp <= item.timestamp - FATIGUE_RIR_WINDOW_MS) continue
-      for (const [exId, est] of bests[j]) {
-        if (!anchors.has(exId) || est > anchors.get(exId)) anchors.set(exId, est)
-      }
-    }
-    return sessionEffSets(item.workout, anchors, opts)
-  })
+  const byWorkout = anchorsByWorkout(pool.map(item => item.workout), opts)
+  const effSets = pool.map(item => sessionEffSets(item.workout, byWorkout.get(item.workout), opts))
   const byMuscle = Object.fromEntries(MUSCLES.map(slug => [slug, []]))
 
   for (const item of scored) {

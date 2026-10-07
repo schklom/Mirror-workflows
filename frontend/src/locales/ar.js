@@ -640,6 +640,8 @@ export default {
   'average effort': 'متوسط الجهد',
   'at {0} {1} or harder': 'عند {0} {1} أو أعلى',
   '{0} of {1} finished sets rated': '{0} من {1} مجموعات منتهية مُقيّمة',
+  'estimated': 'تقديري',
+  '{0} rated · {1} estimated of {2} sets': '{0} مُقيّمة · {1} تقديرية من {2} مجموعات',
   'Effort per set is switched off — turn it on in Settings to keep rating.': 'الجهد لكل مجموعة متوقف — فعّله في الإعدادات لمواصلة التقييم.',
   'Week by week': 'أسبوعًا بأسبوع',
   'Where the sets land': 'أين تقع المجموعات',

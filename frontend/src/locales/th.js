@@ -773,6 +773,8 @@ export default {
   'average effort': 'ความหนักเฉลี่ย',
   'at {0} {1} or harder': 'ที่ {0} {1} ขึ้นไป',
   '{0} of {1} finished sets rated': 'ให้คะแนนแล้ว {0} จาก {1} เซ็ตที่ทำเสร็จ',
+  'estimated': 'โดยประมาณ',
+  '{0} rated · {1} estimated of {2} sets': 'ให้คะแนนแล้ว {0} · ประมาณ {1} จาก {2} เซ็ต',
   'Effort per set is switched off — turn it on in Settings to keep rating.': 'ปิด “ความหนักต่อเซ็ต” อยู่ — เปิดในตั้งค่าเพื่อให้คะแนนต่อ',
   'Week by week': 'รายสัปดาห์',
   'Where the sets land': 'เซ็ตส่วนใหญ่อยู่ระดับไหน',

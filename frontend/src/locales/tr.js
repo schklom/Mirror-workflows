@@ -800,6 +800,8 @@ export default {
   'average effort': 'ortalama zorluk',
   'at {0} {1} or harder': '{0} {1} veya daha zor',
   '{0} of {1} finished sets rated': '{1} tamamlanan setin {0} tanesi puanlandı',
+  'estimated': 'tahmini',
+  '{0} rated · {1} estimated of {2} sets': '{2} setin {0} tanesi puanlı · {1} tanesi tahmini',
   'Effort per set is switched off — turn it on in Settings to keep rating.': 'Set başına zorluk kapalı — puanlamaya devam etmek için Ayarlar’dan aç.',
   'Week by week': 'Hafta hafta',
   'Where the sets land': 'Setler nereye düşüyor',

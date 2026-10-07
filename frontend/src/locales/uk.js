@@ -609,6 +609,8 @@ export default {
   'average effort': 'середнє зусилля',
   'at {0} {1} or harder': 'при {0} {1} або важче',
   '{0} of {1} finished sets rated': 'оцінено {0} з {1} виконаних підходів',
+  'estimated': 'орієнтовно',
+  '{0} rated · {1} estimated of {2} sets': '{0} оцінено · {1} за розрахунком з {2} підходів',
   'Effort per set is switched off — turn it on in Settings to keep rating.': 'Зусилля в підході вимкнено — увімкни його в налаштуваннях, щоб продовжувати оцінювати.',
   'Week by week': 'Тиждень за тижнем',
   'Where the sets land': 'Куди потрапляють підходи',

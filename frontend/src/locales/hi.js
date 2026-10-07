@@ -800,6 +800,8 @@ export default {
   'average effort': 'औसत मेहनत',
   'at {0} {1} or harder': '{0} {1} या उससे कठिन',
   '{0} of {1} finished sets rated': '{1} पूरे किए सेट में से {0} आँके गए',
+  'estimated': 'अनुमानित',
+  '{0} rated · {1} estimated of {2} sets': '{2} सेटों में से {0} रेटेड · {1} अनुमानित',
   'Effort per set is switched off — turn it on in Settings to keep rating.': 'हर सेट की मेहनत बंद है — आँकना जारी रखने के लिए सेटिंग्स में चालू करें।',
   'Week by week': 'हफ़्ते दर हफ़्ते',
   'Where the sets land': 'सेट कहाँ गिरते हैं',

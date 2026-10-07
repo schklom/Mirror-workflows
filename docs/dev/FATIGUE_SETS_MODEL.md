@@ -118,7 +118,19 @@ Measured on the same state: gluteal 0.533 fatigued, hamstring/quads/calves
 discounted), chest 0.156 ready (upper 1.9d ago). Phase 1 read 0.54-0.66/0.251
 on the same day; the direction is the same, the magnitudes now respect quality.
 
-## Files touched (phase 2 adds)
+## Follow-up: estimated effort in the Stats Effort card
+
+`EffortCard` only rendered on logged ratings, so import histories saw nothing.
+It now falls back to estimates with the same precedence fatigue uses (logged >
+Epley-inverse vs 90-day anchor > nothing), sharing `anchorsByWorkout` /
+`resolveSetRir` from `recovery.js` (no import cycle: the view wires both,
+`effort.js` takes an injected resolver defaulting to logged-only, so default-path
+numbers are byte-identical). Well-rated windows (`rated >= MIN_RATED`) keep
+logged numbers; the badge `· estimated` plus the `{rated} · {estimated} of
+{sets}` denominator keep estimates labeled. Two new locale strings in all 16
+packs, pt-BR fingerprint refreshed. Measured on the reporter's history (30d):
+358 estimated of 407 sets, avg RIR ~5.3, 37% hard — the Jefit pyramids read
+exactly as trained: heavy top sets plus light ramp volume.
 
 - `frontend/src/lib/recovery.js` — phase 1: sets stimulus + per-muscle HL; phase 2:
   RIR weighting, 90-day anchors (kg-canonical), acute:chronic gain, 120d info pool.
@@ -135,7 +147,8 @@ on the same day; the direction is the same, the magnitudes now respect quality.
   tree too).
 - `npm run test:fatigue-probe` — PASS (108000 time + 1800 latest-deletion
   comparisons; contract changed, see above).
-- `node scripts/check-locales.mjs` — clean (no UI strings changed).
+- `node scripts/check-locales.mjs` — clean (2 new strings in all 16 packs,
+  pt-BR fingerprint refreshed).
 - `cd api && npm test` — 471 pass / 2 fail, identical on clean tree
   (password-hash timing tests, unrelated).
 - `cd mcp && TZ=UTC npm test` — 63/63 (bare `npm test` fails on +07 machines

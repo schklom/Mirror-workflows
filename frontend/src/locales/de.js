@@ -819,6 +819,8 @@ export default {
   'average effort': 'durchschnittliche Anstrengung',
   'at {0} {1} or harder': 'bei {0} {1} oder härter',
   '{0} of {1} finished sets rated': '{0} von {1} erledigten Sätzen bewertet',
+  'estimated': 'geschätzt',
+  '{0} rated · {1} estimated of {2} sets': '{0} bewertet · {1} geschätzt von {2} Sätzen',
   'Effort per set is switched off — turn it on in Settings to keep rating.': 'Anstrengung pro Satz ist ausgeschaltet — schalte sie in den Einstellungen ein, um weiter zu bewerten.',
   'Week by week': 'Woche für Woche',
   'Where the sets land': 'Wo die Sätze landen',

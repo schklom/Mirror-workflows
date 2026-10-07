@@ -800,6 +800,8 @@ export default {
   'average effort': 'среднее усилие',
   'at {0} {1} or harder': 'при {0} {1} или тяжелее',
   '{0} of {1} finished sets rated': 'оценено {0} из {1} выполненных подходов',
+  'estimated': 'оценочно',
+  '{0} rated · {1} estimated of {2} sets': '{0} оценено · {1} по расчёту из {2} подходов',
   'Effort per set is switched off — turn it on in Settings to keep rating.': 'Усилие в подходе выключено — включи его в настройках, чтобы продолжать оценивать.',
   'Week by week': 'Неделя за неделей',
   'Where the sets land': 'Куда попадают подходы',

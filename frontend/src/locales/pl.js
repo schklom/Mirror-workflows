@@ -800,6 +800,8 @@ export default {
   'average effort': 'średni wysiłek',
   'at {0} {1} or harder': 'przy {0} {1} lub ciężej',
   '{0} of {1} finished sets rated': 'ocenione serie: {0} z {1} ukończonych',
+  'estimated': 'szacunkowo',
+  '{0} rated · {1} estimated of {2} sets': '{0} oceniono · {1} oszacowano z {2} serii',
   'Effort per set is switched off — turn it on in Settings to keep rating.': 'Wysiłek na serię jest wyłączony — włącz go w Ustawieniach, aby dalej oceniać.',
   'Week by week': 'Tydzień po tygodniu',
   'Where the sets land': 'Gdzie lądują serie',

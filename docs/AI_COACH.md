@@ -77,6 +77,9 @@ answers on instead, and a key only if it wants one.
   (`http://ollama.lan:11434`) gets `/v1` added, and a base that already carries its version
   (`https://openrouter.ai/api/v1`, Zhipu's `…/paas/v4`, Gemini's `…/v1beta/openai`) is used
   as it is.
+- A gateway that demands extra headers gets them under **Extra headers**: one `Name: value`
+  per line (e.g. opencode Go's `x-opencode-session`), sent with the list, test and job
+  calls. `Authorization` and `Content-Type` are refused there — auth framing always wins.
 - **Use an API key** → paste it. It is encrypted into `./data/coach.json` and is never shown
   again.
 - **List models** asks the endpoint what it serves and turns the model field into a picker.

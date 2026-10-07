@@ -1032,9 +1032,10 @@ export function stampChange(prev, next, wall = Date.now()) {
   // A routine put back by an Undo keeps the edit time it had: what puts it back is the add-back
   // on record (stampDeletions), not an edit of it. Stamped as edited now, it was the newer version
   // to an older app's merge (v1.3.9 keeps a routine whole, by `_ts`), and a rename made there
-  // offline was lost to the Undo. Only a routine removed after its last edit counts.
+  // offline was lost to the Undo. Only a routine removed after its last edit counts, and one that
+  // never had an edit time (the seed's, a template's, one from before stamps) stays without one.
   const gone = isMap(prev?.deleted?.routines) ? prev.deleted.routines : {}
-  const putBack = r => Number(gone[r.id]) > 0 && Number(r._ts) > 0 && Number(r._ts) < Number(gone[r.id]) &&
+  const putBack = r => Number(gone[r.id]) > 0 && (!(Number(r._ts) > 0) || Number(r._ts) < Number(gone[r.id])) &&
     !list(prev?.routines).some(x => x?.id === r.id)
   stampRoutines(prev?.routines, next.routines, now, putBack)
   stampCustomEx(prev?.customEx, next.customEx, now)

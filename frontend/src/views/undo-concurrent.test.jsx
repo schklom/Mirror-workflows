@@ -127,6 +127,26 @@ describe('Undo of a routine swiped away in Plan, with an older app (v1.3.9) on t
       expect(m.week[3]).toEqual(['b'])
     }
   })
+  // RC verify 2026-10-07: a routine with no edit time (the seed's, a template's, one from before
+  // stamps and never edited since) was stamped "now" by the Undo, the newer version to v1.3.9.
+  it('a rename made there offline survives the Undo of a routine that had no edit time', () => {
+    useStore.setState({ S: (() => { const s = clone(S()); delete s.routines[1]._ts; return s })() })
+    const base = S()
+    const old = clone(base)
+    old.routines[1].name = 'Pull heavy'; old.routines[1]._ts = T0; old._ts = T0   // v1.3.9, offline
+    deleteRoutineWithUndo('b')
+    undo()
+    expect(S().routines.find(r => r.id === 'b')._ts).toBeUndefined()
+    const server = clone(S())
+    const pushed = v139Merge(old, server)
+    stampPut(server, pushed, { overRead: true, stamped: false, now: Date.now() + 1 })
+    expect(pushed.routines.find(r => r.id === 'b').name).toBe('Pull heavy')
+    for (const m of both(S(), pushed)) {
+      expect(m.routines.map(r => r.id)).toEqual(['a', 'b', 'c'])
+      expect(m.routines.find(r => r.id === 'b').name).toBe('Pull heavy')
+      expect(m.week[3]).toEqual(['b'])
+    }
+  })
   it('a weekday another device changed before it saw the removal survives the Undo', () => {
     const other = change(S(), s => { s.week[3] = ['b', 'c'] }, Date.now() - 1000)
     deleteRoutineWithUndo('b')

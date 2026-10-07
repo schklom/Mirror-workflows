@@ -106,9 +106,9 @@ describe('the routines list', () => {
     expect(nav).not.toHaveBeenCalled()
 
     undo()
-    // the same routines in the same order; the store stamps the one put back as an edit (_ts)
-    expect(S().routines.map(({ _ts, ...r }) => r)).toEqual(before.routines)
-    expect(S().routines[1]._ts).toBeGreaterThan(0)
+    // the same routines in the same order, the one put back without an edit time it never had
+    // (stamped "now", it beat a rename an older app made offline before the swipe)
+    expect(S().routines).toEqual(before.routines)
     expect(S().week).toEqual(before.week)
     expect(S().dayPlan).toEqual(before.dayPlan)
     expect(rowOf('Pull A')).toBeTruthy()

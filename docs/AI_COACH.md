@@ -73,7 +73,10 @@ answers on instead, and a key only if it wants one.
 - Pick the provider chip.
 - For a compatible endpoint, enter the **Endpoint** — `http://` or `https://`, no username or
   password in it, no query string. The host is written into the job log so you can see where
-  jobs went.
+  jobs went. Paste the base the way the provider documents it: a bare host
+  (`http://ollama.lan:11434`) gets `/v1` added, and a base that already carries its version
+  (`https://openrouter.ai/api/v1`, Zhipu's `…/paas/v4`, Gemini's `…/v1beta/openai`) is used
+  as it is.
 - **Use an API key** → paste it. It is encrypted into `./data/coach.json` and is never shown
   again.
 - **List models** asks the endpoint what it serves and turns the model field into a picker.

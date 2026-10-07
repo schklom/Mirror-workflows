@@ -107,6 +107,31 @@ test('compatible: the configured base URL, max_tokens, and no Authorization head
   assert.equal(g.calls[0].headers.authorization, 'Bearer compat-1');
 });
 
+test('compatible: a base that already names its API version is used as the full prefix (#437)', async () => {
+  const answer = ok({ choices: [{ message: { content: ANSWER }, finish_reason: 'stop' }] });
+  const at = baseUrl => ({ provider: 'compatible', providerOptions: { compatible: { baseUrl } } });
+  const cases = [
+    // Zhipu GLM serves Chat Completions only under v4; there is no /v1 alias.
+    ['https://open.bigmodel.cn/api/coding/paas/v4', 'https://open.bigmodel.cn/api/coding/paas/v4'],
+    // OpenRouter, Groq and most gateways document their base with /v1 on it.
+    ['https://openrouter.ai/api/v1', 'https://openrouter.ai/api/v1'],
+    // Gemini's OpenAI-compatible endpoint has its version mid-path.
+    ['https://generativelanguage.googleapis.com/v1beta/openai/', 'https://generativelanguage.googleapis.com/v1beta/openai'],
+    // A bare host keeps getting /v1, as before.
+    ['http://ollama.lan:11434', 'http://ollama.lan:11434/v1'],
+    // A version-looking word that is not a version segment is left alone.
+    ['http://gw.lan/v2ray', 'http://gw.lan/v2ray/v1']
+  ];
+  for (const [base, prefix] of cases) {
+    const f = fakeFetch([answer]);
+    await compatible.invoke({ cfg: at(base), prompt: 'P', env: {}, model: 'm', fetch: f });
+    assert.equal(f.calls[0].url, prefix + '/chat/completions', base);
+    const m = fakeFetch([ok({ data: [] })]);
+    await compatible.models(at(base), {}, { fetch: m });
+    assert.equal(m.calls[0].url, prefix + '/models', base);
+  }
+});
+
 test('compatible: no endpoint configured, or no model chosen, is a clean failure rather than a request', async () => {
   const f = fakeFetch([]);
   const none = await compatible.invoke({ cfg: {}, prompt: 'P', env: {}, model: 'x', fetch: f });

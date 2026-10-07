@@ -188,7 +188,7 @@ export default function AdminCoach() {
 
       {/* ---------- endpoint (compatible only) ---------- */}
       {needsEndpoint && <Step n={num()} title="Endpoint" hint={d.baseUrl || 'Where the model runs'} done={step2Done} {...stepAt()}>
-        <div className="adm-hint">The address of any server that speaks OpenAI's chat API: <b>Ollama</b>, <b>LM Studio</b>, <b>vLLM</b>, <b>OpenRouter</b>, or a gateway of your own. Just the base: no <code>/v1</code>, no key in the URL.</div>
+        <div className="adm-hint">The address of any server that speaks OpenAI's chat API: <b>Ollama</b>, <b>LM Studio</b>, <b>vLLM</b>, <b>OpenRouter</b>, or a gateway of your own. The base as your provider documents it, with or without its version (<code>/v1</code>, <code>/v4</code>), and no key in the URL.</div>
         <div className="adm-field">
           <label>Base URL</label>
           <TextField key={d.baseUrl || ''} defaultValue={d.baseUrl || ''} placeholder="http://ollama:11434  or  https://openrouter.ai/api" inputMode="url" autoCapitalize="none" autoCorrect="off"

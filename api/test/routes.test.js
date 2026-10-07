@@ -254,3 +254,23 @@ test('the Coach-off guard names its class beside the words, on every guarded use
     }
   }
 });
+
+/* ---------- configurable max output tokens (reasoning models) ---------- */
+test('an admin can raise the Coach output cap for a reasoning model, clamped to a sane range', async () => {
+  fresh();
+  const { call } = harness();
+
+  // The old hard-coded constant, for an instance that has never touched the setting.
+  assert.equal((await call('GET /api/admin/coach')).body.maxOutputTokens, 16000);
+
+  const set = await call('POST /api/admin/coach/config', { maxOutputTokens: 48000 });
+  assert.equal(set.status, 200);
+  assert.equal((await call('GET /api/admin/coach')).body.maxOutputTokens, 48000);
+  assert.equal(cfg.load().maxOutputTokens, 48000, 'persists with the rest of the Coach config');
+
+  // Clamped, not trusted outright — a reasoning model needs more than 16000, but not a million.
+  await call('POST /api/admin/coach/config', { maxOutputTokens: 999999 });
+  assert.equal((await call('GET /api/admin/coach')).body.maxOutputTokens, 65536, 'ceiling');
+  await call('POST /api/admin/coach/config', { maxOutputTokens: 1 });
+  assert.equal((await call('GET /api/admin/coach')).body.maxOutputTokens, 1024, 'floor');
+});

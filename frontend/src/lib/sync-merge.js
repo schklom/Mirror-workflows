@@ -247,10 +247,13 @@ const undoOf = (marks, k, at) => {
 }
 // Between two stamps of one field, `x` (marked `ux`) and `y` (marked `uy`): which side's value
 // stays ('x', 'y' or '' on a tie) and the stamp it carries. See above.
+// An Undo and a change made on the removal can carry the same stamp when both clocks were lifted
+// from the removal's (stampChange: one past the highest stamp). The Undo wins that tie, whichever
+// copy is first: a first-wins tie kept a different value on each device, for good.
 function undoPick(tx, ux, ty, uy) {
   if (tx > ty) return ux && ty > Number(ux[0]) && ty < Number(ux[1]) ? ['y', tx + 1] : ['x', tx]
   if (ty > tx) return uy && tx > Number(uy[0]) && tx < Number(uy[1]) ? ['x', ty + 1] : ['y', ty]
-  return ['', tx]
+  return ux && !uy ? ['x', tx] : uy && !ux ? ['y', ty] : ['', tx]
 }
 // `marks` brought up to date with `stamps` after a change stamped `now`: a pending marker
 // (`[base, del]`, set by the Undo itself) of a field this change stamped gets `now`; one whose field
@@ -674,16 +677,18 @@ export function mergeEdits(a, b) {
 
 /**
  * Into `out` (a merge built from `n`, the newer copy), every stamped field and plan day from the
- * copy that changed it last, removal included. A tie or a field nobody stamped stays as it is.
+ * copy that changed it last, removal included. A tie (but one an Undo wins, undoPick) or a field
+ * nobody stamped stays as it is.
  */
 function applyEdits(out, n, o) {
   const en = isMap(n.edited) ? n.edited : {}, eo = isMap(o.edited) ? o.edited : {}
   const bumps = {}
   for (const k of new Set([...Object.keys(en), ...Object.keys(eo)])) {
     const tn = Number(en[k]) || 0, to = Number(eo[k]) || 0
-    if (tn === to) continue
+    const un = undoOf(n.undone, k, tn), uo = undoOf(o.undone, k, to)
+    if (tn === to && !un === !uo) continue
     // An Undo's marker can hand the field to the side whose stamp is older (see "Undo" above).
-    const [side, at] = undoPick(tn, undoOf(n.undone, k, tn), to, undoOf(o.undone, k, to))
+    const [side, at] = undoPick(tn, un, to, uo)
     if (at > Math.max(tn, to)) bumps[k] = at
     const src = side === 'y' ? o : n
     const dot = k.indexOf('.')

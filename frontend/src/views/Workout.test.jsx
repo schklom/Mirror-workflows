@@ -69,6 +69,12 @@ vi.mock('../store/useStore.js', () => {
 vi.mock('../store/useUI.js', () => {
   const useUI = selector => selector ? selector(mocks.uiSnapshot()) : mocks.uiSnapshot()
   useUI.getState = mocks.uiSnapshot
+  // A move hands the running rest to its exercise's new index (Workout.jsx moveUnitAt).
+  useUI.setState = patch => {
+    const next = typeof patch === 'function' ? patch(mocks.uiSnapshot()) : patch
+    if ('timer' in next) mocks.timer = next.timer
+    if ('work' in next) mocks.work = next.work
+  }
   return { useUI }
 })
 vi.mock('react-router-dom', () => ({ useNavigate: () => mocks.nav }))
@@ -1762,6 +1768,91 @@ describe('workout controls: the more menu and the set menu', () => {
 
     await act(async () => { item('Remove exercise').onClick() })
     expect(mocks.confirmSheet).toHaveBeenCalled()
+  })
+
+  // Move down on a superset member's More menu moved the whole superset and left the member next
+  // to the same partner (#377 reports it in the routine editor). It now swaps inside the superset.
+  it('moves a superset member inside its superset from that member\'s More menu', async () => {
+    await mount([
+      exercise('bench', [true]),
+      exercise('pull-up', [false], { sg: 'm' }),
+      exercise('leg-raise', [false], { sg: 'm' }),
+      exercise('plank', [false], { sg: 'm' }),
+    ], 1)
+    const more = container.querySelector('.ss-ex[data-exidx="2"] button[aria-label="More"]')
+    expect(more).toBeTruthy()
+    await act(async () => { more.dispatchEvent(new dom.Event('click', { bubbles: true })) })
+    expect(item('Move up').disabled).toBe(false)
+    expect(item('Move down').disabled).toBe(false)
+    await act(async () => { item('Move down').onClick() })
+
+    expect(mocks.S.active.entries.map(entry => entry.id)).toEqual(['bench', 'pull-up', 'plank', 'leg-raise'])
+    expect(mocks.S.active.entries.slice(1).map(entry => entry.sg)).toEqual(['m', 'm', 'm'])
+    expect(mocks.S.active.entries[mocks.S.active.cur].id).toBe('pull-up')
+  })
+
+  // A move reorders the entries, and two things the screen keeps by index have to follow their
+  // exercise: the running rest (timer.forIdx) and how many sets of each exercise have already
+  // counted as progress (the mark a tick is compared against to tell new work from a re-check).
+  const openMore = async exIdx => {
+    const more = container.querySelector(`.ss-ex[data-exidx="${exIdx}"] button[aria-label="More"]`)
+      || container.querySelector('button[aria-label="More"]')
+    await act(async () => { more.dispatchEvent(new dom.Event('click', { bubbles: true })) })
+  }
+  const restFor = forIdx => ({ left: 60, total: 60, endsAt: Date.now() + 60_000, forIdx, kind: 'set' })
+
+  it('a member swap during a rest hands the rest to the moved exercise\'s new place', async () => {
+    await mount([
+      exercise('bench', [true]),
+      exercise('pull-up', [true, false], { sg: 'm' }),
+      exercise('leg-raise', [true, false], { sg: 'm' }),
+      exercise('plank', [false, false], { sg: 'm' }),
+    ], 1)
+    mocks.timer = restFor(2)
+    await openMore(2)
+    await act(async () => { item('Move down').onClick() })
+
+    expect(mocks.S.active.entries.map(entry => entry.id)).toEqual(['bench', 'pull-up', 'plank', 'leg-raise'])
+    expect(mocks.timer.forIdx).toBe(3)
+    expect(mocks.S.active.entries[mocks.timer.forIdx].id).toBe('leg-raise')
+    expect(mocks.timer.endsAt).toBeGreaterThan(Date.now())
+    expect(mocks.stopRest).not.toHaveBeenCalled()
+  })
+
+  it('a whole-superset move during a rest hands the rest to the resting exercise\'s new place', async () => {
+    await mount([
+      exercise('bench', [true, false]),
+      exercise('pull-up', [false], { sg: 'm' }),
+      exercise('leg-raise', [false], { sg: 'm' }),
+    ], 1)
+    mocks.timer = restFor(0)
+    await openMore(1)
+    await act(async () => { item('Move up').onClick() })
+
+    expect(mocks.S.active.entries.map(entry => entry.id)).toEqual(['pull-up', 'leg-raise', 'bench'])
+    expect(mocks.timer.forIdx).toBe(2)
+    expect(mocks.S.active.entries[mocks.timer.forIdx].id).toBe('bench')
+  })
+
+  it('a member swap keeps each exercise\'s counted sets with it, so its next tick still counts', async () => {
+    // pull-up has two sets counted, leg-raise none. After the swap, the leg raise's first tick
+    // is new work and moves on through the superset; read against the pull-up's two it would be
+    // taken for a re-check and go nowhere.
+    await mount([
+      exercise('bench', [true]),
+      exercise('pull-up', [true, true, false], { sg: 'm' }),
+      exercise('leg-raise', [false, false, false], { sg: 'm' }),
+      exercise('plank', [false, false, false], { sg: 'm' }),
+    ], 1)
+    await openMore(1)
+    await act(async () => { item('Move down').onClick() })
+    expect(mocks.S.active.entries.map(entry => entry.id)).toEqual(['bench', 'leg-raise', 'pull-up', 'plank'])
+    expect(mocks.S.active.cur).toBe(1)
+
+    const tick = container.querySelector('.ss-ex[data-exidx="1"] [role="checkbox"]')
+    await act(async () => { tick.dispatchEvent(new dom.Event('click', { bubbles: true })) })
+    expect(mocks.S.active.entries[1].sets.filter(set => set.done)).toHaveLength(1)
+    expect(mocks.S.active.cur).toBe(2)
   })
 
   it('opens the exercise history sheet from the More menu, for the tapped exercise', async () => {

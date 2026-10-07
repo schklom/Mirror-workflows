@@ -37,7 +37,7 @@ import { glyphOf } from '../lib/glyphs.js'
 import { markAllSetsDone, sessionHistory } from '../lib/backfill.js'
 import { bestSetFor } from '../lib/exercise-history.js'
 import { isWarmupRow, isDropSet, isRestPauseSet, dropsOf, clustersOf, addDrop, addCluster, removeDropAt, removeClusterAt, setDropAt, setClusterAt, nextDropWeight, nextBurstReps, isSideSet, makeSideSet, setSideField, toggleSide, addSideDrop, removeSideDropAt, setSideDropAt, addSideCluster, removeSideClusterAt, setSideClusterAt, WEIGHT_ORIGIN_MANUAL } from '../lib/workout-model.js'
-import { canMoveActiveWorkoutUnit, moveActiveWorkoutUnit } from '../lib/active-workout-order.js'
+import { canMoveActiveWorkoutUnit, moveActiveWorkoutUnit, canMoveActiveWorkoutEntry, moveActiveWorkoutEntry } from '../lib/active-workout-order.js'
 import { nextOpenSet, workoutKeyAction } from '../lib/workout-keys.js'
 import { MUSCLE_NAME } from '../lib/muscles.js'
 
@@ -1127,15 +1127,19 @@ function ActiveWorkout() {
   })
   const onPairPrev = !isSuperset && cur > 0 ? () => pairAt(cur - 1, cur) : null
   const onPairNext = !isSuperset && cur < A.entries.length - 1 ? () => pairAt(cur, cur + 1) : null
-  const moveUnitAt = (at, direction) => {
+  // `member`: the exercise ⋯ menu's move, which reorders a superset member inside its superset
+  // (lib/active-workout-order.js moveActiveWorkoutEntry). The buttons below the exercise move the
+  // whole unit. Both return the same index permutation, so everything below remaps the same way.
+  const moveUnitAt = (at, direction, member = false) => {
     const ui = useUI.getState()
     const active = useStore.getState().S.active
-    if (ui.work || !canMoveActiveWorkoutUnit(active, at, direction)) return
+    const canMove = member ? canMoveActiveWorkoutEntry : canMoveActiveWorkoutUnit
+    if (ui.work || !canMove(active, at, direction)) return
     // Invalidate an old timed callback before indexes shift. A running rest is not cancelled:
     // it belongs to an exercise (timer.forIdx), and that exercise only changes position.
     ui.stopWork()
     update(s => {
-      const moved = moveActiveWorkoutUnit(s.active, at, direction)
+      const moved = (member ? moveActiveWorkoutEntry : moveActiveWorkoutUnit)(s.active, at, direction)
       if (!moved) return
       // The marker follows its unit: the superset card's scroll must not read that as a move.
       lastCur.current = s.active.cur
@@ -1209,10 +1213,10 @@ function ActiveWorkout() {
   const blockProps = idx => ({
     editing,
     onSwap: () => swapActiveWorkoutExercise(idx),
-    onMoveUp: () => moveUnitAt(idx, -1),
-    onMoveDown: () => moveUnitAt(idx, 1),
-    canMoveUp: canMoveActiveWorkoutUnit(A, idx, -1),
-    canMoveDown: canMoveActiveWorkoutUnit(A, idx, 1),
+    onMoveUp: () => moveUnitAt(idx, -1, true),
+    onMoveDown: () => moveUnitAt(idx, 1, true),
+    canMoveUp: canMoveActiveWorkoutEntry(A, idx, -1),
+    canMoveDown: canMoveActiveWorkoutEntry(A, idx, 1),
     onRemoveExercise: () => confirmRemoveExercise(idx),
     busy: !!work,
     onToggle: i => toggle(idx, i),

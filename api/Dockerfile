@@ -76,7 +76,7 @@ RUN npm ci --omit=dev && npm cache clean --force
 # bubblewrap is its sandbox — a Codex requirement, which is why neither appears in the default
 # target or anywhere in this tree until now.
 RUN apk add --no-cache bubblewrap \
- && npm install -g @openai/codex \
+ && npm install -g @openai/codex@0.160.0 \
  && npm cache clean --force
 
 # Where Codex keeps its refreshable login cache. Deliberately a sibling of /data rather than a

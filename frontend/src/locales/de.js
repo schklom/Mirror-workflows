@@ -1748,6 +1748,11 @@ export default {
   'Record: {0} rep': 'Rekord: {0} Wdh.',
   'Max reps': 'Max-Wdh.',
   'Most reps in a Max set per workout': 'Meiste Wiederholungen in einem Max-Satz pro Training',
+  'Per set': 'Pro Satz',
+  'Estimated 1RM of each working set, one line per set number': 'Geschätztes 1RM jedes Arbeitssatzes, eine Linie pro Satznummer',
+  'Reps in each working set, one line per set number': 'Wiederholungen jedes Arbeitssatzes, eine Linie pro Satznummer',
+  'Where you most often drop off: set {0} ({1} of {2} workouts)': 'Wo du am häufigsten nachlässt: Satz {0} ({1} von {2} Trainings)',
+  'Only the first {0} sets are drawn.': 'Nur die ersten {0} Sätze werden gezeichnet.',
   'A set left at 0 rest uses the exercise’s rest.': 'Ein Satz mit 0 Pause nutzt die Pause der Übung.',
   // --- update a routine from a running workout ---
   'Update routine': 'Routine aktualisieren',

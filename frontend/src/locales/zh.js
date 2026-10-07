@@ -1728,6 +1728,11 @@ export default {
   'Record: {0} rep': '纪录：{0} 次',
   'Max reps': '力竭次数',
   'Most reps in a Max set per workout': '每次训练中力竭组的最多次数',
+  'Per set': '每组',
+  'Estimated 1RM of each working set, one line per set number': '每个正式组的预估 1RM，每个组号一条线',
+  'Reps in each working set, one line per set number': '每个正式组的次数，每个组号一条线',
+  'Where you most often drop off: set {0} ({1} of {2} workouts)': '最常掉的组：第 {0} 组（{2} 次训练中 {1} 次）',
+  'Only the first {0} sets are drawn.': '只绘制前 {0} 组。',
   'A set left at 0 rest uses the exercise’s rest.': '休息为 0 的组使用该动作的休息时间。',
   // --- update a routine from a running workout ---
   'Update routine': '更新训练日',

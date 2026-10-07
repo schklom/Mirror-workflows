@@ -1728,6 +1728,11 @@ export default {
   'Record: {0} rep': 'Recorde: {0} rep',
   'Max reps': 'Reps Máx',
   'Most reps in a Max set per workout': 'Mais repetições numa série Máx por treino',
+  'Per set': 'Por série',
+  'Estimated 1RM of each working set, one line per set number': '1RM estimado de cada série de trabalho, uma linha por número de série',
+  'Reps in each working set, one line per set number': 'Repetições de cada série de trabalho, uma linha por número de série',
+  'Where you most often drop off: set {0} ({1} of {2} workouts)': 'Onde a quebra é mais frequente: série {0} ({1} de {2} treinos)',
+  'Only the first {0} sets are drawn.': 'Só são desenhadas as primeiras {0} séries.',
   'A set left at 0 rest uses the exercise’s rest.': 'Uma série com descanso 0 usa o descanso do exercício.',
   // --- update a routine from a running workout ---
   'Update routine': 'Atualizar rotina',

@@ -1,6 +1,6 @@
 import { isAssisted } from './exercises.js'
 import { isSideSet } from './workout-model.js'
-import { entriesForExercise, metricRowsForEntry } from './history.js'
+import { entriesForExercise, metricRowsForEntry, workoutAt } from './history.js'
 // Estimated one-rep max (issue #18).
 //
 // Deliberately knows nothing about the exercise database: an estimate needs a weight AND a
@@ -78,7 +78,7 @@ export function e1rmSeries(S, exId, formula = DEFAULT_FORMULA) {
   const pts = []
   ;(S.workouts || []).forEach(w => {
     const best = bestSetOfEntries(entriesForExercise(w, exId), formula)
-    if (best) pts.push({ t: w.start, d: w.d, y: best.est, w: best.w, r: best.r })
+    if (best) pts.push({ t: workoutAt(w), d: w.d, y: best.est, w: best.w, r: best.r })
   })
   return pts
 }

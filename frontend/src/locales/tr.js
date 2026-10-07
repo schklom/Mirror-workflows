@@ -1728,6 +1728,11 @@ export default {
   'Record: {0} rep': 'Rekor: {0} tekrar',
   'Max reps': 'Maks tekrar',
   'Most reps in a Max set per workout': 'Antrenman başına bir Maks setteki en çok tekrar',
+  'Per set': 'Set bazında',
+  'Estimated 1RM of each working set, one line per set number': 'Her çalışma setinin tahmini 1RM değeri, her set numarası için bir çizgi',
+  'Reps in each working set, one line per set number': 'Her çalışma setindeki tekrar sayısı, her set numarası için bir çizgi',
+  'Where you most often drop off: set {0} ({1} of {2} workouts)': 'En sık düştüğün set: {0}. set ({2} antrenmanın {1} tanesinde)',
+  'Only the first {0} sets are drawn.': 'Yalnızca ilk {0} set çiziliyor.',
   'A set left at 0 rest uses the exercise’s rest.': 'Dinlenmesi 0 olan set, egzersizin dinlenmesini kullanır.',
   // --- update a routine from a running workout ---
   'Update routine': 'Rutini güncelle',

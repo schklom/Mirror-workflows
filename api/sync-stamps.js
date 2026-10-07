@@ -59,7 +59,7 @@ const capStamps = m => {
   return m;
 };
 const OWN_MERGE = new Set([
-  '_ts', '_rev', '_wid', '_wids', 'active', 'unit', 'unitSet', 'resetAt', 'resetIds', 'deleted', 'edited', 'undone', 'routineOrder',
+  '_ts', '_rev', '_wid', '_wids', '_unstamped', 'active', 'unit', 'unitSet', 'resetAt', 'resetIds', 'deleted', 'edited', 'undone', 'routineOrder',
   'workouts', 'routines', 'customEx', 'equipProfiles', 'gymCards', 'bodyweight', 'favEx',
   'exWeights', 'balanceOverrides', 'loadKind', 'plates',
 ]);
@@ -144,8 +144,45 @@ function settleMarks(marks, stamps, now) {
 }
 const sameEntry = (a, b) => same({ ...a, _ts: 0, _f: 0, _u: 0 }, { ...b, _ts: 0, _f: 0, _u: 0 });
 
+// What the server stamped for the last push of a writer that does not stamp (`_unstamped` on the
+// stored document): an older app takes the revision it is told for its own push and reads the
+// profile again only once that moves, so the stamps given to its change never reach it, and its
+// next push still carries the record from before. Without this, its second change of the same
+// setting, plan day or routine field looked like a stale copy of the first and was set back to it
+// (RC verify 2026-10-07). `fp` is that writer's record of edits as sent: the same writer pushing
+// again over the revision its push made sends the same one. `ed` and `f` hold the stamps it was
+// given, per setting and per entry field, as long as they are still the stored ones.
+const ownStamp = (m, k, v) => isMap(m) && Number(m[k]) > 0 && Number(m[k]) === Number(v);
+function fingerprint(sent) {
+  if (!isMap(sent)) return 'none';
+  const str = JSON.stringify(Object.keys(sent).sort().map(k => [k, sent[k]]));
+  let a = 0x811c9dc5, b = 5381;
+  for (let i = 0; i < str.length; i++) {
+    const c = str.charCodeAt(i);
+    a = Math.imul(a ^ c, 0x01000193) >>> 0;
+    b = (Math.imul(b, 33) + c) >>> 0;
+  }
+  return `${str.length}.${a.toString(36)}.${b.toString(36)}`;
+}
+function ownRecord(next, now, own, fp) {
+  const ed = {}, f = {};
+  for (const [k, v] of Object.entries(isMap(next.edited) ? next.edited : {})) {
+    if (Number(v) === now || ownStamp(own?.ed, k, v)) ed[k] = Number(v);
+  }
+  for (const l of ENTRY_LISTS) {
+    for (const x of list(next[l])) {
+      if (!isMap(x) || x.id == null || !isMap(x._f)) continue;
+      const key = `${l}|${x.id}`, m = {};
+      for (const [k, v] of Object.entries(x._f)) if (Number(v) === now || ownStamp(own?.f?.[key], k, v)) m[k] = Number(v);
+      if (Object.keys(m).length) f[key] = m;
+    }
+  }
+  if (!Object.keys(ed).length && !Object.keys(f).length) return null;
+  return { fp, ...(Object.keys(ed).length ? { ed } : {}), ...(Object.keys(f).length ? { f } : {}) };
+}
+
 // Step 2: what a writer that does not stamp changed against the copy it read, stamped at `now`.
-function stampUnstamped(cur, next, sent, now) {
+function stampUnstamped(cur, next, sent, now, own = null) {
   // Removals: every entry the stored copy had and this one lacks, unless already on record.
   const del = isMap(next.deleted) ? next.deleted : {};
   for (const [f, key] of Object.entries(DEL_LISTS)) {
@@ -172,7 +209,8 @@ function stampUnstamped(cur, next, sent, now) {
   const ed = isMap(next.edited) ? next.edited : {};
   const mine = isMap(sent) ? sent : {}, theirs = isMap(cur.edited) ? cur.edited : {};
   const moved = k => (Number(mine[k]) || 0) > (Number(theirs[k]) || 0);
-  const stale = k => isMap(sent) && (Number(theirs[k]) || 0) > (Number(mine[k]) || 0);
+  // A stamp the server gave this same writer's previous push is its own change, not one it missed.
+  const stale = k => isMap(sent) && (Number(theirs[k]) || 0) > (Number(mine[k]) || 0) && !ownStamp(own?.ed, k, theirs[k]);
   for (const k of new Set([...Object.keys(cur), ...Object.keys(next)])) {
     if (OWN_MERGE.has(k)) continue;
     const p = cur[k], n = next[k];
@@ -214,6 +252,7 @@ function stampUnstamped(cur, next, sent, now) {
         const base = isMap(x._f) ? x._f : {}, of = isMap(old._f) ? old._f : {};
         for (const k of new Set([...Object.keys(old), ...Object.keys(x)])) {
           if (ENTRY_META.has(k) || !((Number(of[k]) || 0) > (Number(base[k]) || 0))) continue;
+          if (ownStamp(own?.f?.[`${f}|${x.id}`], k, of[k])) continue;
           if ((k in old) === (k in x) && same(old[k], x[k])) continue;
           if (k in old) x[k] = clone(old[k]); else delete x[k];
         }
@@ -281,7 +320,7 @@ const V139_DROPS = {
 // The lists inside an entry that are walked too, and how their items are matched.
 const NESTED = { routines: ['ex'], workouts: ['entries'], 'workouts.entries': ['sets'] };
 // Server bookkeeping and the records merged on their own: never put back from the stored copy.
-const NOT_KEPT = new Set(['_rev', '_wid', '_wids', 'active', 'resetAt', 'resetIds', 'deleted', 'edited']);
+const NOT_KEPT = new Set(['_rev', '_wid', '_wids', '_unstamped', 'active', 'resetAt', 'resetIds', 'deleted', 'edited']);
 
 // `x` with every key of `old` it lacks and the writer cannot have dropped on purpose. Mutates `x`.
 function keepKeys(old, x, place) {
@@ -365,7 +404,7 @@ function keepHeld(next, now) {
  */
 // What a document says, without its stamps and the server's bookkeeping: whether the server put
 // back anything of what a writer sent (stampPut's `report`).
-const BOOKKEEPING = new Set(['_ts', '_f', '_u', '_rev', '_wid', '_wids', 'edited', 'deleted', 'undone']);
+const BOOKKEEPING = new Set(['_ts', '_f', '_u', '_rev', '_wid', '_wids', '_unstamped', 'edited', 'deleted', 'undone']);
 const content = S => JSON.stringify(S, (k, v) => (BOOKKEEPING.has(k) ? undefined : v));
 
 export function stampPut(cur, next, { overRead = false, stamped = false, now = Date.now(), report = null } = {}) {
@@ -373,6 +412,8 @@ export function stampPut(cur, next, { overRead = false, stamped = false, now = D
   const t = Math.max(Number(now) || 0, highestStamp(cur) + 1, highestStamp(next) + 1);
   const reset = (Number(next.resetAt) || 0) > (Number(cur?.resetAt) || 0);
   const sent = isMap(next.edited) ? { ...next.edited } : null;
+  // Only the push that made it may use it (see ownRecord); whatever a writer sent back goes.
+  delete next._unstamped;
   if (cur && !reset) {
     const d = mergeDeletions(cur.deleted, next.deleted);
     if (d) next.deleted = d; else delete next.deleted;
@@ -383,7 +424,13 @@ export function stampPut(cur, next, { overRead = false, stamped = false, now = D
     if (e && Object.keys(e).length) next.edited = e; else delete next.edited;
     const before = !stamped && report ? content(next) : null;
     if (!stamped) keepUnknown(cur, next);
-    if (!stamped && overRead) stampUnstamped(cur, next, sent, t);
+    if (!stamped && overRead) {
+      const fp = fingerprint(sent);
+      const own = isMap(cur._unstamped) && cur._unstamped.fp === fp ? cur._unstamped : null;
+      stampUnstamped(cur, next, sent, t, own);
+      const rec = ownRecord(next, t, own, fp);
+      if (rec) next._unstamped = rec;
+    }
     if (before != null && content(next) !== before) report.changed = true;
   }
   keepHeld(next, t);

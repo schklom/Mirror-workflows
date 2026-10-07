@@ -191,6 +191,12 @@ function readStateStrict(uid) {
   catch (e) { return e.code === 'ENOENT' ? null : UNREADABLE; }
   try { return JSON.parse(raw); } catch { return UNREADABLE; }
 }
+// A stored document as a client gets it: without the server's own note `_unstamped`.
+function forClient(S) {
+  if (!S || typeof S !== 'object' || !('_unstamped' in S)) return S;
+  const { _unstamped, ...rest } = S;
+  return rest;
+}
 // An entry is an object a reader can dereference, and `records` is every entry of a stored
 // list. PUT /api/data drops the rest on the way in — a null workout, a routine that is a
 // number — and refuses a list that is not an array at all, but a file written before it did
@@ -2086,13 +2092,15 @@ const routes = {
   // `rev` is the server's own count of writes to this profile (also stored inside the document as
   // `_rev`, so every other reader of the file — reminder tick, admin, Coach, MCP — is unaffected).
   // A client pushes it back as `baseRev`, and a write over a document it never saw is refused.
+  // `_unstamped` is the server's note of what it stamped for an older app's last push
+  // (sync-stamps.js ownRecord): read back only by the next PUT, never sent to a client.
   'GET /api/data': async (req, res) => {
     const user = readSession(req);
     if (!user) return json(res, 401, { error: 'not signed in' });
     const state = readStateStrict(user.id);
     if (state === UNREADABLE) { console.error('state file unreadable for', user.id); return json(res, 503, { error: 'state unreadable' }); }
     notePull(user);
-    json(res, 200, { state, rev: state?._rev || 0 });
+    json(res, 200, { state: forClient(state), rev: state?._rev || 0 });
   },
   // Just the revision: the client asks this every half minute while it is open and on every
   // return to the foreground, and fetches the document only when the number moved — a signed-in
@@ -2152,7 +2160,7 @@ const routes = {
     // and a client reading a document can tell whether it descends from its own (useStore pullState).
     if ((body.baseRev != null && body.baseRev !== curRev) ||
         (body.baseRev != null && typeof body.baseWid === 'string' && cur?._wid && body.baseWid !== cur._wid)) {
-      return json(res, 409, { error: 'conflict', rev: curRev, state: cur });
+      return json(res, 409, { error: 'conflict', rev: curRev, state: forClient(cur) });
     }
     delete body.state.active;              // in-progress workouts stay device-local
     // "Reset everything" stamps the profile (`resetAt`, with `resetIds`: what it wiped). The stamp

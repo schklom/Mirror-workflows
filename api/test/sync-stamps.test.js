@@ -278,3 +278,89 @@ test('an older app that adds an exercise to a routine with one of them twice kee
   stampPut(cur, next, { overRead: true, stamped: false, now: NOW });
   assert.deepEqual(next.routines[0].ex.map(e => e.pyramid || null), [[12, 10, 8, 6], null, null, [5, 5, 3], null]);
 });
+
+// RC verify 2026-10-07: an older app that changed the same setting, plan day or routine field twice
+// in a row had its second change set back to its first. Its own push does not move the revision it
+// knows, so it never reads the stamp the server gave its first change, and the copy it sends still
+// carries the record from before it: the server took its second change for a stale copy.
+test('an older app changing the same setting, plan day and routine field twice in a row keeps the second change', () => {
+  let cur = stored();
+  cur.edited = { restSec: NOW - 4000, 'week.1': NOW - 4000 };
+  cur.routines[0] = { id: 'r1', name: 'Legs', ex: [{ id: 'a', sets: 3 }], _ts: NOW - 4000, _f: { name: NOW - 4000, ex: NOW - 4000 } };
+  const old = clone(cur);                            // what v1.3.9 read, record and all
+  const put = (doc, now) => { const next = clone(doc); stampPut(clone(cur), next, { overRead: true, stamped: false, now }); cur = next; return next; };
+  // 1st change
+  old.restSec = 120; old.week = { 1: ['r1'] };
+  old.routines[0].name = 'Legs B'; old.routines[0].ex.push({ id: 'b', sets: 3 }); old.routines[0]._ts = NOW - 100;
+  old.routines.reverse(); old._ts = NOW - 100;
+  put(old, NOW);
+  assert.equal(cur.restSec, 120);
+  // 2nd change of the same fields, on the same copy (it never read the one it wrote)
+  old.restSec = 150; old.week = { 1: ['r1', 'r2'] };
+  const r1 = old.routines.find(r => r.id === 'r1');
+  r1.name = 'Legs C'; r1.ex.push({ id: 'c', sets: 3 }); r1._ts = NOW + 900;
+  old.routines.reverse(); old._ts = NOW + 900;
+  put(old, NOW + 1000);
+  assert.equal(cur.restSec, 150);
+  assert.deepEqual(cur.week, { 1: ['r1', 'r2'] });
+  assert.equal(cur.routines.find(r => r.id === 'r1').name, 'Legs C');
+  assert.deepEqual(cur.routines.find(r => r.id === 'r1').ex.map(e => e.id), ['a', 'b', 'c']);
+  assert.deepEqual(cur.routines.map(r => r.id), ['r1', 'r2']);
+  assert.ok(cur.edited.restSec >= NOW + 1000);
+  // a 3rd write of something else, then a 4th of the first field again: still its own
+  old.theme = 'dark'; put(old, NOW + 2000);
+  old.restSec = 75; put(old, NOW + 3000);
+  assert.equal(cur.restSec, 75);
+  assert.equal(cur.theme, 'dark');
+  assert.equal(cur.routines.find(r => r.id === 'r1').name, 'Legs C');
+});
+
+test('a stamp the server gave one older app still holds against another that read an older copy', () => {
+  let cur = stored();
+  cur.edited = { restSec: NOW - 4000 };
+  const before = clone(cur);
+  before.edited = { restSec: NOW - 8000 };          // the other phone read an earlier copy
+  const one = clone(cur);
+  one.restSec = 120;
+  stampPut(clone(cur), one, { overRead: true, stamped: false, now: NOW });
+  cur = one;
+  const other = clone(before);                      // back from a dead spot: its merge kept its own
+  other.restSec = 90;
+  stampPut(clone(cur), other, { overRead: true, stamped: false, now: NOW + 1000 });
+  assert.equal(other.restSec, 120);
+  // and an updated app's write in between ends the run: the older app's next push is a 409 anyway,
+  // and nothing of the record is left for it
+  const app = clone(one); app.theme = 'x';
+  stampPut(clone(one), app, { overRead: true, stamped: true, now: NOW + 2000 });
+  assert.equal('_unstamped' in app, false);
+});
+
+test('PUT /api/data: an older app\'s two changes of one setting in a row both land, and the note stays on the server', async t => {
+  const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gym-stamps-'));
+  fs.writeFileSync(path.join(dataDir, 'secret'), SECRET, { mode: 0o600 });
+  fs.writeFileSync(path.join(dataDir, 'db.json'), JSON.stringify({ users: [{ id: 'u1', name: 'One', created: new Date().toISOString() }], creds: [], subs: [], invites: [] }));
+  const child = spawn(process.execPath, ['server.js'], { cwd: API, stdio: ['ignore', 'pipe', 'pipe'],
+    env: { ...process.env, PORT: '0', DATA_DIR: dataDir, ORIGIN: 'http://localhost:8080', RP_ID: 'localhost' } });
+  let log = '';
+  child.stdout.on('data', d => log += d); child.stderr.on('data', d => log += d);
+  t.after(() => { child.kill('SIGKILL'); fs.rmSync(dataDir, { recursive: true, force: true }); });
+  const base = `http://127.0.0.1:${await boundPort(child, () => log)}`;
+  const headers = { Cookie: `gymsid=${mintSession('u1')}`, 'Content-Type': 'application/json' };
+  const put = async body => { const r = await fetch(`${base}/api/data`, { method: 'PUT', headers, body: JSON.stringify(body) }); return { status: r.status, body: await r.json() }; };
+  const get = async () => (await (await fetch(`${base}/api/data`, { headers })).json());
+  // an updated app wrote last: the copy carries a record of edits
+  let r = await put({ state: { _ts: 1, restSec: 100, edited: { restSec: 1 }, workouts: [], routines: [] }, stamped: true });
+  const old = (await get()).state;                   // v1.3.9 reads it once
+  old.restSec = 120;
+  r = await put({ state: old, baseRev: r.body.rev });
+  assert.equal(r.status, 200);
+  old.restSec = 150;                                 // and changes it again, on the copy it has
+  r = await put({ state: old, baseRev: r.body.rev });
+  assert.equal(r.status, 200);
+  const now = await get();
+  assert.equal(now.state.restSec, 150);
+  assert.equal(now.rev, r.body.rev);                 // nothing set back, so nothing to read again
+  assert.equal('_unstamped' in now.state, false);
+  const onDisk = JSON.parse(fs.readFileSync(path.join(dataDir, 'state-u1.json'), 'utf8'));
+  assert.ok(onDisk._unstamped?.ed?.restSec > 0);
+});

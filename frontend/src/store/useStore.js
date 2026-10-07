@@ -1363,9 +1363,14 @@ export const useStore = create((set, get) => {
       const server = read?.state || null
       const now = Math.max(Date.now(), highestStamp(cur) + 1, highestStamp(server) + 1, highestStamp(backup) + 1)
       const next = sanitizeAccent(Object.assign(clone(DEF), backup))
+      // A workout running here lives on this device only: no backup and no server copy holds it,
+      // so the import keeps it (in the backup's unit). Only with none running does a backup taken
+      // mid-workout bring its own session back. Both the replace and "Merge them in" dropped it.
+      const running = carryActive(cur, next) || next.active || null
       if (!mergeWith?.state || !uid) {
         stampRestore(next, [cur, server], now)
         next._ts = now
+        next.active = running
         const at = read?.rev != null ? { rev: read.rev, wid: read.state?._wid } : metaOf().base
         get().replaceState(next, !!uid, { baseRev: at?.rev ?? null, baseWid: at?.wid })
         return
@@ -1376,7 +1381,7 @@ export const useStore = create((set, get) => {
       const merged = keepReset(others, keepReset(cur, Object.assign(clone(DEF), mergeStates(next, others, { prefer: 'a' }))))
       stampRestore(merged, [cur, mergeWith.state, next], now)
       merged._ts = now
-      merged.active = next.active || null
+      merged.active = carryActive({ unit: next.unit, active: running }, merged)
       persist(merged, true)
       if (mergeWith.rev != null) writeSync(mergeWith.rev, 0, mergeWith.state?._wid)
     },

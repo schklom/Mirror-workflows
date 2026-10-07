@@ -9,7 +9,7 @@ import { guestAllowed } from '../lib/guest.js'
 import { MOBILE, initReminderSync, nativeLoad, nativeSave, onAppActive, readJsonFile, syncReminder, writeAutoBackup, writeJsonFile } from '../lib/mobile.js'
 import { refillIfComplete } from '../lib/rotation.js'
 import { liftLegacy } from '../lib/sync-legacy.js'
-import { mergeStates, localExtras, stampChange, highestStamp, stampRestore, inUnitOf, keepReset, resetIdsOf, mergeResetIds, entryKey } from '../lib/sync-merge.js'
+import { mergeStates, localExtras, stampChange, highestStamp, stampRestore, stampReplace, inUnitOf, keepReset, resetIdsOf, mergeResetIds, entryKey } from '../lib/sync-merge.js'
 import { convertStateUnit } from '../lib/units.js'
 import { pendingRefCount, settleMedia, loadPending } from '../lib/media-owed.js'
 import { referencedHashes } from '../lib/media-refs.js'
@@ -1406,6 +1406,9 @@ export const useStore = create((set, get) => {
       const running = carryActive(cur, next) || next.active || null
       if (!mergeWith?.state || !uid) {
         stampRestore(next, [cur, server], now)
+        // …and like a reset of what it replaces: an unsent change of another device from before it
+        // no longer brings the replaced workouts back (lib/sync-merge.js stampReplace).
+        stampReplace(next, [cur, server].filter(Boolean), now)
         next._ts = now
         next.active = running
         const at = read?.rev != null ? { rev: read.rev, wid: read.state?._wid } : metaOf().base

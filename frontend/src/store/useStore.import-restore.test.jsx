@@ -67,9 +67,29 @@ describe('a restored backup brings back what it holds, and it stays', () => {
     useStore.getState().importBackup(backup)
     await useStore.getState().pushState()
     expect(ids(doc.workouts)).toEqual(['w1', 'w2', 'w3'])
-    // w4, which the replace dropped without a record, is still on B and comes back: kept, not lost
-    expect(ids(mergeStates(other, doc).workouts)).toEqual(['w1', 'w2', 'w3', 'w4', 'w5'])
-    expect(ids(mergeStates(doc, other).workouts)).toEqual(['w1', 'w2', 'w3', 'w4', 'w5'])
+    // RC review 2026-10-07: w4, which the replace dropped, came back from B's unsent change. The
+    // replace now records what it replaced, like a reset: w4 stays gone, while w5, which only B
+    // knew of, stays.
+    expect(ids(mergeStates(other, doc).workouts)).toEqual(['w1', 'w2', 'w3', 'w5'])
+    expect(ids(mergeStates(doc, other).workouts)).toEqual(['w1', 'w2', 'w3', 'w5'])
+  })
+
+  it('"Replace" wins over another device\'s older unsent edit of an entry it replaces, not over a later one', async () => {
+    // the server's w3 was corrected after the backup was made; B, offline, changed its note too
+    doc.workouts = doc.workouts.map(w => (w.id === 'w3' ? { ...w, note: 'server', _ts: T + 10, _f: { note: T + 10 } } : w))
+    other = change(other, S => { const w = S.workouts.find(x => x.id === 'w3'); w.note = 'B before'; w._ts = Date.now() })
+    await useStore.getState().importConflict(backup)
+    useStore.getState().importBackup(backup)
+    await useStore.getState().pushState()
+    let m = mergeStates(other, doc)
+    expect(m.workouts.find(w => w.id === 'w3').note).toBeUndefined()   // the backup's w3, as it was
+    // a change B makes after the replace, and a workout it logs then, still win
+    const later = change(other, S => { S.workouts.find(x => x.id === 'w3').note = 'B after'; S.workouts.find(x => x.id === 'w3')._ts = Date.now() + 60000
+      S.workouts.push(workout('w7', Date.now() + 60000)) }, Date.now() + 60000)
+    for (m of [mergeStates(later, doc), mergeStates(doc, later)]) {
+      expect(m.workouts.find(w => w.id === 'w3').note).toBe('B after')
+      expect(ids(m.workouts)).toEqual(['w1', 'w2', 'w3', 'w5', 'w7'])
+    }
   })
 
   it('the backup\'s settings win over an older unsent setting change on another device', async () => {

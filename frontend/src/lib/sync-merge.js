@@ -903,6 +903,51 @@ export function stampRestore(next, others = [], now = Date.now()) {
   return next
 }
 
+/**
+ * A backup that replaces the profile ("Replace anyway", or an import with nothing to ask about) is
+ * stamped like a reset of what it replaced, on top of stampRestore: every entry this device or the
+ * server held that the backup lacks is recorded as removed at `now`, and every field of an entry
+ * the backup holds in another version is stamped at `now`, and so is a stamped settings entry
+ * (balance, loading, plates) it sets differently. A device that still had an unsent change from
+ * before the replace used to bring the replaced workouts back with its merge, and its older edit
+ * of an entry won over the backup's version. A change made after the replace (a later stamp) still
+ * wins, and an entry only that device knew of is not named, so it stays. `others` are the copies
+ * the replace knew: this device's and the server's. Mutates and returns `next`.
+ */
+export function stampReplace(next, others = [], now = Date.now()) {
+  if (!next || typeof next !== 'object') return next
+  const known = {}
+  for (const f of Object.keys(DEL_LISTS)) known[f] = others.flatMap(o => list(o?.[f])).filter(x => x != null)
+  stampDeletions(known, next, now)
+  for (const f of ['workouts', 'routines', 'customEx', 'equipProfiles', 'gymCards']) {
+    const versions = new Map()
+    for (const o of others) for (const x of list(o?.[f])) if (x && typeof x === 'object' && x.id != null) versions.set(x.id, [...(versions.get(x.id) || []), x])
+    for (const x of list(next[f])) {
+      if (!x || typeof x !== 'object' || x.id == null || !versions.has(x.id)) continue
+      const fields = isMap(x._f) ? { ...x._f } : {}
+      let moved = false
+      for (const old of versions.get(x.id)) {
+        for (const k of new Set([...Object.keys(old), ...Object.keys(x)])) {
+          if (ENTRY_META.has(k)) continue
+          if ((k in old) !== (k in x) || !sameJSON(old[k], x[k])) { fields[k] = now; moved = true }
+        }
+      }
+      if (!moved) continue
+      x._f = fields
+      delete x._u
+      x._ts = Math.max(Number(x._ts) || 0, now)
+    }
+  }
+  for (const f of ['balanceOverrides', 'loadKind', 'plates']) {
+    if (!isMap(next[f])) continue
+    for (const [k, v] of Object.entries(next[f])) {
+      if (!isMap(v)) continue
+      if (others.some(o => isMap(o?.[f]) && k in o[f] && !sameJSON({ ...o[f][k], _ts: 0 }, { ...v, _ts: 0 }))) v._ts = Math.max(stampOf(v), now)
+    }
+  }
+  return next
+}
+
 // ---- One causal time per change ---------------------------------------------------------------
 //
 // Every stamp above is a wall-clock time, compared between devices. A phone whose clock runs

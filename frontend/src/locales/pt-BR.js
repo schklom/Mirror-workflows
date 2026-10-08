@@ -1262,6 +1262,25 @@ export const PT_BR_OVERRIDES = {
   'Stop, keep what it wrote': 'Parar e manter o que gravou',
   'Stop and remove what it wrote': 'Parar e remover o que gravou',
   'Could not remove it from Health Connect': 'Não foi possível remover do Conexão Saúde',
+  // --- v1.3.11 round 10-08: 1RM formula, supersets, measurements, Coach, pairing ---
+  'e.g. “swap the squats for split squats, and Mondays are short”': 'ex.: “troque os agachamentos por afundos, e na segunda-feira o treino é curto”',
+  'Added before your work sets and left out of volume, records and progression. Each one closes half the gap to the work weight, and you can still change any of them mid-session.': 'Feitas antes das suas séries de trabalho e fora do volume, dos recordes e da progressão. Cada uma fecha metade da distância até a carga de trabalho, e você ainda pode mudar qualquer uma no meio do treino.',
+  'The app can only pair with an https:// address. Your phone blocks plain http:// before anything is even sent.': 'O aplicativo só consegue parear com um endereço https://. Seu celular bloqueia http:// simples antes de enviar qualquer coisa.',
+  'Averages seven formulas and reads your RIR when you log it.': 'Faz a média de sete fórmulas e lê seu RIR quando você o registra.',
+  'Last check-in {0}': 'Último registro {0}',
+  'Name, e.g. Arm finisher': 'Nome, ex.: Final de braços',
+  'Rest after each round': 'Descanso após cada rodada',
+  'Waist, arms, body fat and anything else you measure, each with its own curve.': 'Cintura, braços, gordura corporal e tudo o que mais você medir, cada um com sua curva.',
+  '{0} rest after each round': '{0} de descanso após cada rodada',
+  '{0} · back-to-back, {1} rest after each round': '{0} · seguidos, {1} de descanso após cada rodada',
+  '{0} · do these back-to-back, rest when done': '{0} · faça estes seguidos e descanse no fim',
+  'Measurements deleted': 'Medidas excluídas',
+  'Deletes the measurements logged on {0}.': 'Exclui as medidas registradas em {0}.',
+  'Abdomen': 'Abdômen',
+  'Deletes your plan, workouts, body weight and measurements on this device. This cannot be undone.': 'Exclui seu plano, treinos, peso corporal e medidas neste dispositivo. Não dá para desfazer.',
+  'Choose the measurements you want to track, then log your first check-in.': 'Escolha as medidas que você quer acompanhar e faça sua primeira medição.',
+  'Choose at least one measurement first.': 'Escolha pelo menos uma medida primeiro.',
+  'Choose a valid date': 'Escolha uma data válida',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

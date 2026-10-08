@@ -1824,18 +1824,26 @@ function ActiveWorkout() {
           // The card slid in shows what the card itself will: in the editor, no hold to start
           // and no plates to load; in a session, the progression line, or the card grows by it
           // the moment it lands. It gets the card's own wiring for that — the preview is inert,
-          // so none of it can be pressed.
+          // so none of it can be pressed. That includes a superset's header with its Unpair, and a
+          // lone exercise's "Make superset" buttons when Settings shows them: without them the
+          // header's words moved over, or the card grew by a row, as it landed.
           const adjacent = units[unitIdx + direction] || []
           if (!adjacent.length) return null
           return adjacent.length > 1 ? (
             <div className="ss-card">
-              <div className="ss-hd"><Icon name="link" />{t('Superset · do these back-to-back, rest when done')}</div>
-              {adjacent.map((idx, k) => <div key={idx} className="ss-ex">
+              <div className="ss-hd" style={{ justifyContent: 'space-between' }}>
+                <span className="row" style={{ gap: 5 }}><Icon name="link" />{t('Superset · do these back-to-back, rest when done')}</span>
+                <Button size="xs" variant="ghost" icon="link" title={t('Unpair')} onClick={() => unpairAt(adjacent[0])}>{t('Unpair')}</Button>
+              </div>
+              {adjacent.map((idx, k) => <div key={idx} className="ss-ex" data-exidx={idx}>
                 {k > 0 && <div className="ss-amp">+</div>}
                 <ExerciseBlock entryIdx={idx} compact {...blockProps(idx)} />
               </div>)}
             </div>
-          ) : <ExerciseBlock entryIdx={adjacent[0]} {...blockProps(adjacent[0])} />
+          ) : <ExerciseBlock entryIdx={adjacent[0]}
+            onPairPrev={adjacent[0] > 0 ? () => pairAt(adjacent[0] - 1, adjacent[0]) : null}
+            onPairNext={adjacent[0] < A.entries.length - 1 ? () => pairAt(adjacent[0], adjacent[0] + 1) : null}
+            {...blockProps(adjacent[0])} />
         }}>
       {isSuperset ? (
         <div className="ss-card">

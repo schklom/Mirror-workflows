@@ -1723,6 +1723,54 @@ it('shows the progression line on the card a swipe slides in, as the card itself
   await pointer('pointercancel', 150)
 })
 
+// A swipe to the next card, held half way and then let go past the commit distance: the card it
+// slid in, and the card that landed. Compared as markup, but for the ids React makes up per
+// element (useId): the landed card is mounted anew, so each exercise's set-menu hint id is
+// numbered afresh. Renumbered in order of first appearance, so which button points at which hint
+// is still compared.
+async function swipeToNext() {
+  const surface = container.querySelector('[data-testid="workout-swipe-surface"]')
+  const pointer = (type, x) => {
+    const event = new dom.Event(type, { bubbles: true })
+    Object.assign(event, { pointerId: 1, pointerType: 'touch', clientX: x, clientY: 20 })
+    return act(async () => { surface.dispatchEvent(event) })
+  }
+  const markup = el => {
+    const ids = new Map()
+    return el.innerHTML.replace(/_r_[0-9a-z]+_/g, m => { if (!ids.has(m)) ids.set(m, 'id' + ids.size); return ids.get(m) })
+  }
+  await pointer('pointerdown', 250)
+  await pointer('pointermove', 150)
+  const preview = container.querySelector('.workout-swipe-preview')
+  const slidIn = markup(preview)
+  await pointer('pointerup', 150)
+  await act(async () => { await new Promise(r => setTimeout(r, 260)) })   // SwipeCards' 200 ms slide
+  await act(async () => { root.render(React.createElement(Workout)) })
+  return { preview, slidIn, landed: markup(container.querySelector('.workout-swipe-card')) }
+}
+
+// The same for a superset: its card slid in without the header's Unpair button, and the header's
+// words moved over as the card landed and the button appeared.
+it('slides a superset in exactly as it lands, Unpair and all', async () => {
+  await mount([exercise('plain-bench', [false]), exercise('plain-row', [false, false], { sg: 'g' }), exercise('plain-press', [false, false], { sg: 'g' })])
+  const { preview, slidIn, landed } = await swipeToNext()
+  expect(preview.querySelector('.ss-card')).toBeTruthy()
+  expect(preview.querySelector('.ss-hd button')?.textContent).toBe('Unpair')
+  expect(mocks.S.active.cur).toBe(1)
+  expect(landed).toBe(slidIn)
+})
+
+// And for a lone exercise with Settings' "Make superset" buttons on: it slid in without them, and
+// they appeared, pushing the card down, as it landed.
+it('slides a lone exercise in with its Make superset buttons, as it lands', async () => {
+  await mount([exercise('plain-bench', [false]), exercise('plain-row', [false]), exercise('plain-press', [false])], 0, { wc: { pairButtons: true } })
+  const { preview, slidIn, landed } = await swipeToNext()
+  expect([...preview.querySelectorAll('button')].map(b => b.textContent).filter(x => x.startsWith('Make superset')))
+    .toEqual(['Make superset with previous', 'Make superset with next'])
+  expect(mocks.S.active.cur).toBe(1)
+  expect(landed).toBe(slidIn)
+})
+
 describe('workout compact view', () => {
   const units = () => [...container.querySelectorAll('.wl-unit')]
   const withExtras = done => exercise('plain-bench', done, {

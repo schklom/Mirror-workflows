@@ -323,9 +323,13 @@ export function anchorsByWorkout(workouts, opts = {}) {
     .sort((a, b) => a.timestamp - b.timestamp || a.index - b.index)
   const bests = ordered.map(item => sessionBests(item.workout, opts))
   const out = new Map()
+  // `ordered` is sorted by time, so the window's first workout only ever moves forward: each
+  // workout looks back over its own 90 days instead of visiting the whole history to skip it.
+  let lo = 0
   ordered.forEach((item, i) => {
     const anchors = new Map()
-    for (let j = 0; j <= i; j += 1) {
+    while (lo < i && ordered[lo].timestamp <= item.timestamp - FATIGUE_RIR_WINDOW_MS) lo += 1
+    for (let j = lo; j <= i; j += 1) {
       if (ordered[j].timestamp <= item.timestamp - FATIGUE_RIR_WINDOW_MS) continue
       for (const [exId, est] of bests[j]) {
         if (!anchors.has(exId) || est > anchors.get(exId)) anchors.set(exId, est)

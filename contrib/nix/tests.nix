@@ -50,5 +50,8 @@ pkgs.testers.runNixOSTest {
 
     # The exercise media ship inside the frontend package (catalogue/media), no download involved.
     machine.succeed("curl -fsS -o /dev/null http://localhost/exercise-media/NOTICE.md")
+    # Licensed for openGym only: another site cannot embed them.
+    corp = machine.succeed("curl -fsSI http://localhost/exercise-media/NOTICE.md")
+    assert "cross-origin-resource-policy: same-origin" in corp.lower(), f"no CORP header: {corp}"
   '';
 }

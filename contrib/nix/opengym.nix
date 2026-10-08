@@ -362,11 +362,13 @@ in
                   };
                   # exercise-media/ is served from root like the rest of the app. The files
                   # are named after the exercise and never change within a build, so let
-                  # browsers keep them.
+                  # browsers keep them. They are licensed for openGym only (NOTICE.md):
+                  # Cross-Origin-Resource-Policy keeps other sites from embedding them.
                   "/exercise-media/" = {
                     extraConfig = ''
                       expires 30d;
                       add_header Cache-Control "public";
+                      add_header Cross-Origin-Resource-Policy "same-origin" always;
                     '';
                   };
                 };

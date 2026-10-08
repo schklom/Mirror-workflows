@@ -27,7 +27,8 @@ const descPacks = import.meta.glob('../exercise-desc/*.js')
 // the descriptions whenever the language changes after that.
 let detailsLoaded = false
 async function loadDetails() {
-  const base = baseLang(getLang())
+  const l = getLang()
+  const base = baseLang(l)
   const load = async (packs, key) => { try { return packs[key] ? (await packs[key]()).default : null } catch (e) { return null } }
   const [en, enDesc, desc] = await Promise.all([
     load(instrPacks, '../instr/en.js'),
@@ -36,9 +37,12 @@ async function loadDetails() {
   ])
   // Either English pack missing is a failed load (both always exist): core asks again later.
   if (en && enDesc) detailsLoaded = true
-  _setDetails(en, enDesc, derivePack(getLang(), desc))
+  // The language changed while this loaded (setLang only reloads once a load has finished): the
+  // descriptions are the old language's, so the new one's are loaded instead.
+  const current = _setDetails(en, enDesc, derivePack(l, desc), l)
   if (!en || !enDesc) _detailsFailed()
   notify()
+  if (!current) return loadDetails()
 }
 _setDetailsLoader(loadDetails)
 

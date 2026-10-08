@@ -182,14 +182,18 @@ export function _setDetailsLoader(fn) { detailsLoader = fn; detailsAsked = false
 
 // Called once the English packs (and the language's descriptions, if any) have loaded. A pack
 // that did not come (offline, before the worker had it) stays missing, not empty: an empty one
-// would show no steps until the next reload.
-export function _setDetails(newEnInstr, newEnDescs, newDescs) {
+// would show no steps until the next reload. `forLang` is the language the descriptions were
+// loaded for: switched away from while they loaded, they are not this language's and are not
+// kept (the English packs are the same for every language). False then, and the caller loads
+// the current language's own.
+export function _setDetails(newEnInstr, newEnDescs, newDescs, forLang = lang) {
   enInstr = newEnInstr || enInstr
   enDescs = newEnDescs || enDescs
   if (enInstr && enDescs) clearRetry()
-  descs = lang === 'en' ? null : (newDescs || null)
+  const current = forLang === lang
+  if (current) descs = lang === 'en' ? null : (newDescs || null)
   version++
-  return version
+  return current
 }
 
 // Built-in catalogue names are bilingual when a translated name pack is active. A pack need not
@@ -244,7 +248,10 @@ export const exerciseNameSearchText = ex => {
 // exported as setLang because loading packs requires import.meta.glob, which is Vite-only.
 // `dict`, `instr` and `exerciseNames` may be null to reset to their English fallbacks.
 export function _setLangState(newLang, newDict, newInstr, newExerciseNames, showEn = true, enOnlyFlag = false) {
+  const was = lang
   lang = LANGS[newLang] ? newLang : 'en'
+  // The old language's descriptions are not this one's: English until its own have loaded.
+  if (lang !== was) descs = null
   dict = lang === 'en' ? {} : (newDict || {})
   instr = lang === 'en' || !INSTR_LANGS.includes(baseLang(lang)) ? null : (newInstr || null)
   exerciseNames = lang === 'en' || !EXERCISE_NAME_LANGS.includes(baseLang(lang))

@@ -67,8 +67,11 @@ spec:
           image: ghcr.io/duartesantos8/opengym-web:1.3.10   # same version as the api container
           imagePullPolicy: IfNotPresent
           env:
+            # Not the image's default 80: the image runs as uid 101, which can bind a port below
+            # 1024 only where the runtime sets net.ipv4.ip_unprivileged_port_start=0 (Docker
+            # does, most Kubernetes runtimes do not). The Service targets this port by name.
             - name: NGINX_PORT
-              value: "80"
+              value: "8080"
             # Both containers share the pod's network, so the API is on localhost. An IP here
             # also means nginx never needs RESOLVER (Docker's DNS by default) to find it.
             - name: BACKEND
@@ -76,17 +79,17 @@ spec:
             - name: PORT
               value: "3000"
           ports:
-            - containerPort: 80
+            - containerPort: 8080
               name: web
               protocol: TCP
           readinessProbe:
             httpGet:
               path: /
-              port: 80
+              port: web
           livenessProbe:
             httpGet:
               path: /
-              port: 80
+              port: web
             initialDelaySeconds: 30
           # No volume: the exercise stills and animations (180 px) are part of the web image since
           # v1.4.0. They are licensed from Gym visual for openGym only; see NOTICE.md.

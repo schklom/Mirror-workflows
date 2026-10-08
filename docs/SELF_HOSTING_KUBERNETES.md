@@ -25,6 +25,11 @@ kubectl apply -k kubernetes/
 
 Notes:
 
+- The web container listens on 8080 (`NGINX_PORT`), not on the image's default 80: it runs as
+  uid 101, which can bind a port below 1024 only where the runtime sets
+  `net.ipv4.ip_unprivileged_port_start=0`, as Docker does and most Kubernetes runtimes do not.
+  The Service still answers on port 80 and targets the container's `web` port by name. Writing
+  your own manifests, keep `NGINX_PORT` at 1024 or higher, or set that sysctl on the pod.
 - The manifests create and use the `fitness` namespace (`kubernetes/namespace.yaml`, set on every
   resource by `kubernetes/kustomization.yaml`; rename it in both), and a Gateway
   called `eg` in `envoy-gateway-system` with an `https` listener; change both to match your

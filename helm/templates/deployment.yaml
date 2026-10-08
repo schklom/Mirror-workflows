@@ -66,6 +66,8 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ include "helm.fullname" . }}-web
+          # NGINX_PORT (the ConfigMap) is the same web.service.port, 8080 unless changed: uid 101
+          # cannot bind 80 here. The probes and the Service's targetPort name this port.
           ports:
             - name: web
               containerPort: {{ .Values.web.service.port }}

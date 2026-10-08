@@ -449,6 +449,11 @@ BASE_PATH=                 # subpath openGym is served under, e.g. /gym — see 
 SESSION_DAYS=90            # how long a sign-in lasts
 ```
 
+`NGINX_PORT` stays 80 under Docker. The web container runs as an unprivileged user (uid 101),
+which can bind a port below 1024 only because Docker sets `net.ipv4.ip_unprivileged_port_start=0`
+in the container. On another runtime (Kubernetes, rootless Podman) set `NGINX_PORT` to 1024 or
+higher, e.g. 8080, or set that sysctl yourself; the Helm chart and `kubernetes/` use 8080.
+
 `RESOLVER` only matters off Docker. nginx re-resolves `BACKEND` on every `/api` request so a
 recreated API container does not leave it proxying to a dead IP, and `127.0.0.11` is where
 Docker answers those lookups. Nothing listens there on another runtime, and an unreachable

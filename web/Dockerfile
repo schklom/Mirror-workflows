@@ -30,8 +30,10 @@ FROM nginxinc/nginx-unprivileged:alpine
 # Same reason as in api/Dockerfile: alpine fixes land faster than the nginx image is rebuilt.
 # The base's last instruction is USER 101, and apk then exits 99 — it cannot open its log as
 # that user. Upgrade as root, then switch back. 101 has to be the last USER in this file so
-# the entrypoint and the nginx master both stay uid 101. It can bind port 80; the base
-# image's EXPOSE 8080 is metadata, and nothing here listens on it.
+# the entrypoint and the nginx master both stay uid 101. It can bind port 80 under Docker,
+# which sets net.ipv4.ip_unprivileged_port_start=0; the base image's EXPOSE 8080 is metadata,
+# and nothing here listens on it. Another runtime (most Kubernetes ones, Podman rootless)
+# needs NGINX_PORT=1024 or higher, or that sysctl: helm/ and kubernetes/ use 8080.
 #
 # An upgrade can put the packaged nginx.conf back (a `user` directive, pid under /run) and
 # recreate /var/cache/nginx as root, which is the mkdir a non-root master dies on. Restore

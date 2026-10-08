@@ -153,7 +153,11 @@ web:
     pullPolicy: IfNotPresent
     tag: 1.3.9
   service:
-    port: 80
+    # The port nginx listens on inside the pod: NGINX_PORT and the container's `web` port, which
+    # the Service and the probes follow by name. Not the image's default 80: the image runs as
+    # uid 101, which can bind a port below 1024 only where the runtime sets
+    # net.ipv4.ip_unprivileged_port_start=0. Docker does; most Kubernetes runtimes do not.
+    port: 8080
   # Rendered into the web ConfigMap. NGINX_PORT, PORT and BACKEND (127.0.0.1, same pod) are set
   # by the chart.
   env:

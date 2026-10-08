@@ -104,7 +104,7 @@ Browsers allow passkeys over plain `http://` only on `localhost`.
 |---|---|---|
 | `api.env.*` | ConfigMap `<release>-api` | Every setting from `.env.example`, under the same name. An empty value is left out, so the app default applies. `PORT` comes from `api.service.port`. |
 | `api.secretEnv.*` | Secret `<release>-api` | `ADMIN_UIDS`. You can add more keys; each becomes an env var. |
-| `web.env.*` | ConfigMap `<release>-web` | `BASE_PATH`, `MEDIA_UPLOAD_MAX`, `CF_CONNECTING_IP`. The chart sets `NGINX_PORT`, `PORT` and `BACKEND=127.0.0.1` itself. |
+| `web.env.*` | ConfigMap `<release>-web` | `BASE_PATH`, `MEDIA_UPLOAD_MAX`, `CF_CONNECTING_IP`. The chart sets `NGINX_PORT`, `PORT` and `BACKEND=127.0.0.1` itself; `NGINX_PORT` is `web.service.port`, 8080 (the image runs as uid 101, which cannot bind 80 on most Kubernetes runtimes). |
 
 `TRUST_PROXY` stays off on purpose. The web container overwrites `X-Forwarded-For` with the
 address it was reached from, which here is the ingress or gateway pod. Turning `TRUST_PROXY` on

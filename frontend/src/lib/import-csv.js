@@ -459,7 +459,19 @@ export function importId(prefix, text) {
   return prefix + (4294967296 * (2097151 & h2) + (h1 >>> 0)).toString(36)
 }
 
-export function parseWorkoutCSV(text, { unit = 'kg' } = {}) {
+// The custom exercise the user already has for what an import names: the one an earlier import
+// made under the same id, else one with the same name. A name the catalogue did not know when it
+// was first imported became a custom exercise, and the catalogue may know it now; matched afresh,
+// the next import would put its new days on the catalogue id and split the history in two. So an
+// exercise the user already has keeps its id, and only a name that is new is matched.
+const nameKey = n => String(n || '').toLowerCase().replace(/\s+/g, ' ').trim()
+export function priorCustom(customEx, id, name) {
+  const list = Array.isArray(customEx) ? customEx.filter(c => c && c.id) : []
+  return list.find(c => c.id === id) || list.find(c => nameKey(c.n) === nameKey(name)) || null
+}
+
+// `customEx`: the custom exercises already in state (priorCustom above).
+export function parseWorkoutCSV(text, { unit = 'kg', customEx = [] } = {}) {
   const rows = parseCSV(text)
   if (rows.length < 2) return { error: 'empty' }
   const map = mapHeader(rows[0])
@@ -479,6 +491,7 @@ export function parseWorkoutCSV(text, { unit = 'kg' } = {}) {
   }
 
   const resolved = new Map()          // exercise name -> dataset id | null, resolved once
+  const prior = new Map()             // exercise name -> the user's own custom exercise for it
   const byDate = new Map()
   const created = new Map()
   const unmatched = new Set()
@@ -525,9 +538,11 @@ export function parseWorkoutCSV(text, { unit = 'kg' } = {}) {
     const key = keyOf(name)
     let id = resolved.get(key)
     if (id === undefined) {
+      const own = priorCustom(customEx, importId('im', source + '|' + name.toLowerCase()), name)
+      if (own) prior.set(key, own)
       // Hevy CSV: prefer the generated English-title map (same table as the API import).
       // Localized titles still fall through to the word-bag matcher.
-      id = (source === 'Hevy' ? matchHevyTitle(name) : null) || matchExercise(name)
+      id = own ? own.id : (source === 'Hevy' ? matchHevyTitle(name) : null) || matchExercise(name)
       resolved.set(key, id)
     }
     if (id) matched++
@@ -554,7 +569,7 @@ export function parseWorkoutCSV(text, { unit = 'kg' } = {}) {
     // catalogue match decides; any other file also needs the name to say what it is, because a
     // loose match ("Walking" → walking lunge) would turn a walk into a hold.
     const nameBp = bpFromName(name.toLowerCase())
-    const exCardio = isCardioEx(id) || created.get(key)?.bp === 'cardio' || nameBp === 'cardio'
+    const exCardio = isCardioEx(id) || (created.get(key) || prior.get(key))?.bp === 'cardio' || nameBp === 'cardio'
     const timed = secs > 0 && !km && !reps && !exCardio && (source === 'Strong' || !!nameBp)
     const isCardio = !timed && (km > 0 || mins > 0) && !reps
     // `u` carries the row's own unit into the conversion pass below and is dropped there —
@@ -763,7 +778,6 @@ export function mergeImport(S, parsed) {
   // the way mergeHevyRoutines and mergePlan do; otherwise the Library lists "Grip Trainer" twice,
   // each with half the history. Only a name with no match becomes a new exercise.
   S.customEx = S.customEx || []
-  const nameKey = n => String(n || '').toLowerCase().replace(/\s+/g, ' ').trim()
   const exIdMap = {}
   parsed.customEx.forEach(c => {
     const same = S.customEx.find(x => x.id !== c.id && nameKey(x.n) === nameKey(c.n))

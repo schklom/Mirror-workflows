@@ -491,7 +491,7 @@ export function importFromApp(file, onDone) {
   const rd = new FileReader()
   rd.onload = () => {
     let parsed
-    try { parsed = parseImport(String(rd.result), { unit: S().unit }) }
+    try { parsed = parseImport(String(rd.result), { unit: S().unit, customEx: S().customEx }) }
     catch (e) { toast(t('Could not read that file')); return }
     if (parsed.error === 'empty') { toast(t('That file is empty')); return }
     if (parsed.error) { toast(t("We don't recognise that file's columns. Check the docs for supported apps.")); return }
@@ -547,7 +547,7 @@ function HevyImportSheet({ close }) {
     setProgress({ stage: 'templates', page: 1, pageCount: 1 })
     setPayload(null)
     try {
-      const data = await importHevyData(key, { unit: st.unit, onProgress: setProgress })
+      const data = await importHevyData(key, { unit: st.unit, customEx: st.customEx, onProgress: setProgress })
       wipeKey()
       const empty = !data.workouts.workouts.length && !data.routines.routines.length && !data.bodyweight.bodyweight.length
       if (empty) {

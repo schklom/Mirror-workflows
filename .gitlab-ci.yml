@@ -703,7 +703,7 @@ verify:stack:
           pull_policy: always
       EOF
       docker compose -f docker-compose.yml -f ci-images.override.yml config --quiet
-      # --no-deps skips the `media` service (a 140 MB clone the smoke test does not need).
+      # --no-deps: start api and web only, from the images just built, nothing else from the file.
       docker compose -f docker-compose.yml -f ci-images.override.yml up -d --no-deps --no-build api web
       NET="$(docker network ls --filter name=opengym --format '{{.Name}}' | head -1)"
       curl() { docker run --rm --network "$NET" curlimages/curl:8.12.1 "$@"; }

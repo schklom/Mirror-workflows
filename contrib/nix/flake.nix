@@ -38,7 +38,6 @@
                 environment = {
                   MY_FLAG = "1";
                 };
-                media.fetchAtBuild = true;
               };
               system.stateVersion = "25.05";
             }
@@ -99,14 +98,16 @@
             nginxTestConfig.config.services.nginx.virtualHosts."localhost".locations."/api/".proxyPass
               or "missing"
           }"
-          echo "nginx /img alias = ${
-            nginxTestConfig.config.services.nginx.virtualHosts."localhost".locations."/img/".alias or "missing"
+          echo "nginx /exercise-media location = ${
+            if nginxTestConfig.config.services.nginx.virtualHosts."localhost".locations ? "/exercise-media/" then
+              "true"
+            else
+              "false"
           }"
 
           # Verify frontend/media store paths are exposed for a web server
           echo "services.opengym.web.root = ${cfg.web.root}"
-          echo "services.opengym.media.imageRoot = ${cfg.media.imageRoot}"
-          echo "services.opengym.media.gifRoot = ${cfg.media.gifRoot}"
+          echo "services.opengym.media.root = ${cfg.media.root}"
 
           # Verify user exists
           echo "users.users.opengym exists = ${
@@ -124,7 +125,7 @@
 
         apps.opengym = {
           type = "app";
-          # Runs the full local stack: API + frontend + build-time media behind a throwaway
+          # Runs the full local stack: API + frontend (exercise media included) behind a throwaway
           # Caddy. Defaults to http://localhost:8080; env vars override ports/data/rp.
           program = "${pkgs.writeShellScript "opengym" ''
             set -euo pipefail
@@ -161,14 +162,6 @@
 
               handle /api/* {
                 reverse_proxy 127.0.0.1:$API_PORT
-              }
-              handle_path /img/* {
-                root * ${opengymPackages.opengym-media}/images
-                file_server
-              }
-              handle_path /gif/* {
-                root * ${opengymPackages.opengym-media}/videos
-                file_server
               }
               handle {
                 root * ${opengymPackages.opengym-frontend}/share/opengym

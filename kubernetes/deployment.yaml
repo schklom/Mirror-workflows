@@ -16,29 +16,6 @@ spec:
       labels:
         app: opengym
     spec:
-      initContainers:
-        # The exercise images and GIFs, one time (~140 MB) — the same download as the media
-        # service in docker-compose.yml. They are © Gym visual (https://gymvisual.com/), used
-        # under the exercises-dataset's terms and fetched from upstream, not redistributed by
-        # openGym; see NOTICE.md.
-        - name: media-download
-          image: alpine/git:2.52.0
-          command: ["/bin/sh", "-c"]
-          args:
-            - |
-              mkdir -p /out/img /out/gif
-              if [ -z "$(ls -A /out/img 2>/dev/null)" ]; then
-                git clone --depth 1 https://github.com/hasaneyldrm/exercises-dataset /tmp/ds
-                cp /tmp/ds/images/*.jpg /out/img/ && cp /tmp/ds/videos/*.gif /out/gif/
-              fi
-          volumeMounts:
-            - name: opengym-media
-              mountPath: /out
-          resources:
-            requests:
-              memory: 128Mi
-            limits:
-              memory: 256Mi
       containers:
         - name: api
           # Pin both images to one release and move them together: a tag names what you run and
@@ -111,13 +88,8 @@ spec:
               path: /
               port: 80
             initialDelaySeconds: 30
-          volumeMounts:
-            - name: opengym-media
-              mountPath: /usr/share/nginx/html/img
-              subPath: img
-            - name: opengym-media
-              mountPath: /usr/share/nginx/html/gif
-              subPath: gif
+          # No volume: the exercise stills and animations (180 px) are part of the web image since
+          # v1.4.0. They are licensed from Gym visual for openGym only; see NOTICE.md.
           resources:
             requests:
               memory: 32Mi
@@ -127,6 +99,3 @@ spec:
         - name: opengym-data
           persistentVolumeClaim:
             claimName: opengym-data
-        - name: opengym-media
-          persistentVolumeClaim:
-            claimName: opengym-media

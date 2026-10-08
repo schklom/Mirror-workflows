@@ -6,8 +6,8 @@
 #
 # Pages serves static files only, so this build has no backend — VITE_DEMO=1 makes the app
 # boot straight into guest mode with a seeded example history (see frontend/src/lib/demo.js).
-# The exercise images/GIFs (~140 MB) are never committed here; the demo build points at the
-# upstream dataset on jsDelivr instead, pinned to a commit so the CDN can cache it forever.
+# The exercise stills and animations (180 px) come from catalogue/media and are staged next to
+# the build by scripts/catalogue/stage-media.mjs, so the demo serves them from its own origin.
 name: Deploy demo to GitHub Pages
 
 on:

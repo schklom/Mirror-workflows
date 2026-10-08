@@ -1,6 +1,6 @@
 # openGym Helm chart
 
-Installs openGym on Kubernetes: the API and the web container in a single pod, two PVCs, a
+Installs openGym on Kubernetes: the API and the web container in a single pod, a PVC for the data, a
 Service, and optionally an Ingress or a Gateway API HTTPRoute with a cert-manager certificate. It
 deploys the same thing as the plain manifests in [`kubernetes/`](../kubernetes), but lets you set
 everything from values.
@@ -116,12 +116,15 @@ choose the address that gets recorded.
 | Key | Default | |
 |---|---|---|
 | `persistence.data.size` | `2Gi` | Accounts, passkeys, workouts, uploads, session secret. **Back this up.** |
-| `persistence.media.size` | `2Gi` | Exercise images and GIFs (~140 MB). The init container downloads them again if they are lost. |
-| `persistence.*.storageClass` | `""` | `""` uses the cluster default. |
-| `persistence.*.existingClaim` | `""` | Uses a PVC you already have instead of creating one. |
+| `persistence.data.storageClass` | `""` | `""` uses the cluster default. |
+| `persistence.data.existingClaim` | `""` | Uses a PVC you already have instead of creating one. |
 
-The chart keeps both PVCs on `helm uninstall` (`helm.sh/resource-policy: keep`). To get rid of
-the data, delete them by hand.
+The chart keeps the PVC on `helm uninstall` (`helm.sh/resource-policy: keep`). To get rid of
+the data, delete it by hand.
+
+The exercise stills and animations are part of the web image, so there is no media volume. Charts
+before openGym 1.4.0 created a `<release>-media` PVC for a download; after upgrading it is no
+longer mounted, and since Helm keeps it, delete it by hand once the new pod runs.
 
 ### Images
 
@@ -131,9 +134,8 @@ image from different releases aren't meant to run side by side.
 ### Other values
 
 `imagePullSecrets`, `serviceAccount`, `podAnnotations`, `podLabels`, `podSecurityContext`,
-`securityContext`, `nodeSelector`, `tolerations`, `affinity`, `api/web.resources`,
-`api/web.livenessProbe`/`readinessProbe` and `mediaDownload.image`/`resources` work the way they
-do in any Helm chart. See [`values.yaml`](values.yaml) for the full list.
+`securityContext`, `nodeSelector`, `tolerations`, `affinity`, `api/web.resources`
+and `api/web.livenessProbe`/`readinessProbe` work the way they do in any Helm chart. See [`values.yaml`](values.yaml) for the full list.
 
 ## Always one replica
 
@@ -144,15 +146,16 @@ a second writer to the same files.
 ## Moving from `kubectl apply -k kubernetes/`
 
 Helm refuses to take over resources it didn't create. Remove the old Deployment, Service,
-HTTPRoute, Certificate and ReferenceGrant, but **keep the PVCs**: deleting them deletes the data.
-Point the chart at the existing claims instead:
+HTTPRoute, Certificate and ReferenceGrant, but **keep the `opengym-data` PVC**: deleting it deletes
+the data. Point the chart at the existing claim instead:
 
 ```bash
 kubectl -n fitness delete deployment/opengym service/opengym httproute/opengym \
   certificate/opengym-tls referencegrant/allow-gateway
 helm install opengym ./helm -n fitness -f my-values.yaml \
-  --set persistence.data.existingClaim=opengym-data \
-  --set persistence.media.existingClaim=opengym-media
+  --set persistence.data.existingClaim=opengym-data
 ```
+
+The old `opengym-media` claim is not needed any more; delete it after the move.
 
 The site is unreachable between the delete and the moment the new pod is ready.

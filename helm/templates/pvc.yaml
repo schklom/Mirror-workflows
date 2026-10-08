@@ -1,4 +1,4 @@
-{{- range $name := list "data" "media" }}
+{{- range $name := list "data" }}
 {{- $p := index $.Values.persistence $name }}
 {{- if not $p.existingClaim }}
 ---

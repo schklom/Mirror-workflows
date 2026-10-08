@@ -5,11 +5,10 @@ cert-manager. Read [SELF_HOSTING.md](SELF_HOSTING.md) first: the passkey require
 `RP_ID`, `ORIGIN`), the settings in `.env.example` and the backup advice apply here unchanged.
 
 openGym is pretty simple — a frontend and an API backend. The API keeps everything in plain JSON
-files on a volume. The Docker Compose file also has a third container that downloads the exercise
-media once; here that is an initContainer. There are only a few resources to create:
+files on a volume. The exercise pictures and animations are part of the web image, so nothing is
+downloaded at start-up. There are only a few resources to create:
 
-- 2 PVCs: `opengym-data` (users, passkeys, workouts, uploads — **back this one up**) and
-  `opengym-media` (the exercise images, downloaded again if lost).
+- 1 PVC: `opengym-data` (users, passkeys, workouts, uploads, **back this one up**).
 - 1 Deployment running the API and the web container in a single pod, for simplicity. It stays at
   one replica with the `Recreate` strategy: the API's data is files on a `ReadWriteOnce` volume,
   and two API processes must never write them at once.
@@ -38,6 +37,9 @@ Notes:
 - The images are pinned to a release (`1.3.10`), the API and the web image always to the same
   one. To update, read the release notes, set the new version on both and apply again; pinning
   to `latest` instead means a restarted pod can come back on a version you never chose.
+- Coming from a version before 1.4.0: the `media-download` initContainer and the `opengym-media`
+  PVC are gone, since the media now ship in the web image. Once the new pod runs, delete the old
+  claim with `kubectl delete pvc opengym-media -n fitness` (`kubectl apply -k` leaves it in place).
 - Settings are environment variables on the `api` container, named as in `.env.example`. Keep
   secrets such as the push keys in a Kubernetes Secret and load them with `envFrom`.
 - **Client addresses.** The web container overwrites `X-Forwarded-For` with the address it was

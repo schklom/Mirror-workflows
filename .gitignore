@@ -1,4 +1,5 @@
-# Exercise media — fetched on first `docker compose up` (or via scripts/fetch-media.sh)
+# Exercise media downloaded by installs before v1.4.0 (now in catalogue/media); kept ignored so an
+# old folder never gets committed by accident
 media/img/
 media/gif/
 

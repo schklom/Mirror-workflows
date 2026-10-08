@@ -1,8 +1,8 @@
 # openGym on NixOS — Flake & NixOS Module
 
 openGym can run natively on NixOS through its **Nix flake** and **NixOS module** — no Docker, no
-`docker compose`. The flake builds every openGym component (frontend, API, MCP server, exercise
-media) as reproducible Nix packages; the module declares the whole stack as systemd services
+`docker compose`. The flake builds every openGym component (frontend with the exercise media, API,
+MCP server) as reproducible Nix packages; the module declares the whole stack as systemd services
 managed by your NixOS configuration. This document covers both.
 
 ## 1. Technical introduction
@@ -14,17 +14,15 @@ managed by your NixOS configuration. This document covers both.
 
 | Output | What it is |
 | --- | --- |
-| `packages.opengym-frontend` | The React/Vite PWA, built with `buildNpmPackage`. Static files land in `$out/share/opengym`. |
+| `packages.opengym-frontend` | The React/Vite PWA, built with `buildNpmPackage`. Static files land in `$out/share/opengym`, with the exercise stills and animations from `catalogue/media` in `exercise-media/` next to them. |
 | `packages.opengym-api` | The Node.js API (`node server.js`, wrapped as `bin/opengym-api`). |
 | `packages.opengym-mcp` | The read-only MCP server for LLM clients (`bin/opengym-mcp`). |
-| `packages.opengym-media` | The exercise image/GIF dataset, pinned via `fetchFromGitHub`. Only fetched when `media.fetchAtBuild = true`. |
-| `packages.opengym-fetch-media` | A shell script that downloads the pinned dataset at **runtime** (used by default). |
 | `packages.default` | Alias for `opengym-frontend`. |
-| `apps.opengym` | Runs the **full local stack** — API + frontend + pinned media behind a throwaway Caddy (`nix run .#opengym`, default `http://localhost:8080`). |
+| `apps.opengym` | Runs the **full local stack** — API + frontend (exercise media included) behind a throwaway Caddy (`nix run .#opengym`, default `http://localhost:8080`). |
 | `apps.default` | Alias for `opengym`. |
 | `devShells.default` | Development shell: Node.js 22, coreutils, git. |
 | `checks.nixos-module-eval` | Evaluates the module against a smoke-test config and asserts the resulting services/users/nginx state and extra environment. |
-| `checks.opengym-nixos-test` *(Linux)* | Boots a NixOS VM and exercises the HTTP contract end to end (API health, nginx vhost proxy, SPA fallback). |
+| `checks.opengym-nixos-test` *(Linux)* | Boots a NixOS VM and exercises the HTTP contract end to end (API health, nginx vhost proxy, SPA, exercise media). |
 | `nixosTests.opengym` | The same VM test under the conventional `nixosTests` output. |
 | `nixosModules.opengym` | The NixOS module (`nixosModules.default` aliases it). |
 
@@ -34,15 +32,14 @@ managed by your NixOS configuration. This document covers both.
 
 - a system `opengym` user/group and the data directory (`/var/lib/opengym` by default),
 - `systemd.services.opengym-api` — a **hardened** API unit (see [Systemd hardening](#systemd-hardening)),
-- `systemd.services.opengym-media` — a one-shot media downloader (only in runtime-media mode),
 - `systemd.services.opengym-mcp` — the MCP server, **only if `mcp.enable` is set**,
 - read-only options exposing the built frontend and media directories so *your* web server can
   serve them (or `nginx.enable = true` for the module to manage one — see §4),
 - `environment` / `environmentFile` — escape hatches to pass extra environment variables to the
   API (for variables openGym doesn't know about yet). See [Module options reference](#6-module-options-reference).
 
-The module **does not own a web server by default**: it hands you the `web.root`, `media.imageRoot`
-and `media.gifRoot` store paths to wire into your own reverse proxy (Caddy, nginx, Traefik, …).
+The module **does not own a web server by default**: it hands you the `web.root` store path (the
+exercise media are inside it) to wire into your own reverse proxy (Caddy, nginx, Traefik, …).
 openGym needs everything on **one origin** (passkeys require it), and NixOS deployments already run
 a proxy — so the module integrates openGym into *yours* instead of re-implementing a web server
 itself. See §4. If you'd rather have openGym's web server managed for you, set
@@ -53,10 +50,9 @@ itself. See §4. If you'd rather have openGym's web server managed for you, set
 
 ```text
 browser ── HTTPS ──▶ your web server (Caddy / nginx / …)         everything on ONE origin
-                     ├─ /         → web.root            (built SPA, SPA fallback to /index.html)
-                     ├─ /api/*    → opengym-api          (systemd, hardened, :3000 internally)
-                     ├─ /img/*    → media.imageRoot       (exercise images)
-                     └─ /gif/*    → media.gifRoot         (exercise GIFs)
+                     ├─ /         → web.root            (built SPA, SPA fallback to /index.html;
+                     │                                   exercise media under /exercise-media/)
+                     └─ /api/*    → opengym-api          (systemd, hardened, :3000 internally)
                                                     │
                               opengym-api ──reads/writes──▶ dataDir (/var/lib/opengym)
 ```
@@ -68,20 +64,17 @@ contrib/nix/
   flake.nix          Flake entry point — packages, apps, devShell, module alias
   flake.lock         Locked inputs
   opengym.nix        The NixOS module (options + systemd/nginx wiring)
-  frontend.nix       buildNpmPackage → $out/share/opengym
+  frontend.nix       buildNpmPackage → $out/share/opengym (+ exercise-media/ from catalogue/media)
   api.nix            buildNpmPackage → bin/opengym-api
   mcp.nix            buildNpmPackage → bin/opengym-mcp
-  media.nix          fetchFromGitHub pin of the exercise dataset (build-time)
-  media-script.nix   runtime media-fetch shell script
-  dataset.nix        pinned exercise-dataset commit (both media packages share it)
   default.nix        package-set aggregator (used by both the flake and the module); reads the
                      release version from api/package.json
 ```
 
 Everything Nix lives under `contrib/nix/` so the flake stays out of the way of the project's own
-build (Docker, CI, the Node packages). The flake reads its sources — `api/`, `frontend/`, `mcp/`
-— from the repository root two levels up, so it must be evaluated *from a checkout of the whole
-repo*, never from a sparse copy of `contrib/nix` alone.
+build (Docker, CI, the Node packages). The flake reads its sources — `api/`, `frontend/`, `mcp/`,
+`catalogue/` — from the repository root two levels up, so it must be evaluated *from a checkout of
+the whole repo*, never from a sparse copy of `contrib/nix` alone.
 
 ## 3. Building and using the packages
 
@@ -91,7 +84,7 @@ Requirements: Nix with flakes enabled (`nix.conf`: `experimental-features = nix-
 # the flake lives in contrib/nix — start there (from the repo root: nix build ./contrib/nix#… )
 cd contrib/nix
 
-nix build .#opengym-frontend         # static site → result/share/opengym
+nix build .#opengym-frontend         # static site + exercise media → result/share/opengym
 nix build .#opengym-api              # API → result/bin/opengym-api
 nix build .#opengym-mcp
 nix run .#opengym                    # full local stack on http://localhost:8080 (see below)
@@ -100,8 +93,8 @@ nix flake check                      # eval check + (on Linux) the VM integratio
 nix build .#nixosTests.opengym       # run just the VM integration test
 ```
 
-`nix run .#opengym` starts the API, the built frontend and the pinned media behind a throwaway
-Caddy — open `http://localhost:8080` and use it (passkeys work on `localhost`). Overrides via env
+`nix run .#opengym` starts the API and the built frontend (exercise media included) behind a
+throwaway Caddy — open `http://localhost:8080` and use it (passkeys work on `localhost`). Overrides via env
 vars: `OPENGYM_DATA_DIR` (default `/tmp/opengym-data`), `OPENGYM_API_PORT` (3000),
 `OPENGYM_WEB_PORT` (8080), `OPENGYM_RP_ID`/`OPENGYM_ORIGIN` (local defaults). Bear in mind the API
 and frontend ports are just defaults — like any local dev server, don't point it at the internet.
@@ -122,9 +115,8 @@ always on a **single origin** — at the store paths the module exposes:
 
 | Read-only option | Value | Contains |
 | --- | --- | --- |
-| `config.services.opengym.web.root` | `…-opengym-frontend/share/opengym` | the built SPA |
-| `config.services.opengym.media.imageRoot` | `…/opengym-media/images` (build) **or** `…/media/img` (runtime) | `.jpg` images |
-| `config.services.opengym.media.gifRoot` | `…/opengym-media/videos` (build) **or** `…/media/gif` (runtime) | `.gif` animations |
+| `config.services.opengym.web.root` | `…-opengym-frontend/share/opengym` | the built SPA, exercise media included |
+| `config.services.opengym.media.root` | `${web.root}/exercise-media` | `still/<id>.webp` and `clip/<id>.mp4`, 180 px |
 
 The URL contract the frontend expects ([`frontend/src/lib/exercises.js`](../frontend/src/lib/exercises.js)):
 
@@ -132,8 +124,12 @@ The URL contract the frontend expects ([`frontend/src/lib/exercises.js`](../fron
 | --- | --- | --- |
 | `/` | `web.root` | SPA — any unknown path falls back to `/index.html` |
 | `/api/*` | `opengym-api` (the `apiPort` you configured) | reverse proxy, keep `/api` on the URL |
-| `/img/*` | `media.imageRoot` | strip the `/img/` prefix |
-| `/gif/*` | `media.gifRoot` | strip the `/gif/` prefix |
+| `/exercise-media/*` | `web.root` | plain static files; nothing extra to map |
+
+The exercise media come from `catalogue/media` in the source tree, copied next to the app at build
+time by `scripts/catalogue/stage-media.mjs` (the same step the demo and app builds use). Nothing is
+downloaded, at build time or at runtime. They are licensed from Gym visual for openGym only and
+stay at 180 px; don't publish that directory on its own (see [`NOTICE.md`](../NOTICE.md)).
 
 ### Caddy
 
@@ -151,14 +147,6 @@ module (where `config` is in scope) so the store paths resolve from the module's
         handle /api/* {
           reverse_proxy 127.0.0.1:${toString config.services.opengym.apiPort}
         }
-        handle_path /img/* {
-          root * ${config.services.opengym.media.imageRoot}
-          file_server
-        }
-        handle_path /gif/* {
-          root * ${config.services.opengym.media.gifRoot}
-          file_server
-        }
         handle {
           root * ${config.services.opengym.web.root}
           try_files {path} /index.html
@@ -170,10 +158,10 @@ module (where `config` is in scope) so the store paths resolve from the module's
 }
 ```
 
-`handle_path` strips the matched prefix, so `/gif/bench.gif` resolves to
-`${gifRoot}/bench.gif`. The API must **keep** its `/api` prefix (openGym routes on it), so `/api`
-uses a plain `handle` that passes the full URI through. Order matters: `/api`, `/img` and `/gif`
-must be handled before the catch-all `handle` that serves the SPA.
+The API must **keep** its `/api` prefix (openGym routes on it), so `/api` uses a plain `handle`
+that passes the full URI through. Order matters: `/api` must be handled before the catch-all
+`handle` that serves the SPA. The exercise media are files under `web.root`, so `file_server`
+serves them; `try_files` only falls back to `/index.html` for paths that don't exist.
 
 ### nginx
 
@@ -197,7 +185,7 @@ manage one:
 ```
 
 That renders a `services.nginx.virtualHosts."gym.example.com"` with the SPA root + fallback, the
-`/api` proxy, `/img` and `/gif` aliases, gzip/optimisation settings, and — when `enableACME` — TLS.
+`/api` proxy, a cache header on `/exercise-media/`, gzip/optimisation settings, and — when `enableACME` — TLS.
 It's ordinary `services.nginx` config afterwards, so you can still extend the vhost or add your own
 virtualHosts alongside it.
 
@@ -281,10 +269,9 @@ inputs).
 ```
 
 This gives you the `opengym` system user, `/var/lib/opengym` (created via `StateDirectory` +
-tmpfiles — the default `dataDir`), the `opengym-api` service listening on `:3000`, and — since
-`media.fetchAtBuild` defaults to `false` — the `opengym-media` one-shot that downloads the exercise
-dataset (~140 MB, once) into `/var/lib/opengym/media`. Pair it with the Caddy or nginx config from
-§4 pointing at the exposed roots.
+tmpfiles — the default `dataDir`) and the `opengym-api` service listening on `:3000`. The exercise
+media are already in the frontend package. Pair it with the Caddy or nginx config from §4 pointing
+at `web.root`.
 
 ### A realistic production example
 
@@ -303,10 +290,6 @@ dataset (~140 MB, once) into `/var/lib/opengym/media`. Pair it with the Caddy or
 
     auditLog = true;
     auditIp  = "net";                 # record masked network address only
-
-    media = {
-      fetchAtBuild = true;            # bake media into the Nix store instead of runtime download
-    };
 
     mcp.enable = false;               # off unless you use an LLM client
   };
@@ -349,11 +332,10 @@ variables, so entries there can still override).
 | Piece | When | Details |
 | --- | --- | --- |
 | `users.users.opengym`, `users.groups.opengym` | always | system user/group |
-| tmpfiles rules | always | `dataDir` (`0750`), `media.dataDir` (`0755`) |
+| tmpfiles rules | always | `dataDir` (`0750`) |
 | `systemd.services.opengym-api` | always | `Restart=on-failure`, runs as `opengym`, hardened |
-| `systemd.services.opengym-media` | only when `media.fetchAtBuild = false` | one-shot (`Type=oneshot`, `RemainAfterExit`) media downloader |
 | `systemd.services.opengym-mcp` | only when `mcp.enable = true` | stdio bridge, runs as `opengym`, same sandbox as the API |
-| `services.nginx` vhost | only when `nginx.enable = true` | managed virtualHost (SPA + `/api` + `/img` + `/gif`) |
+| `services.nginx` vhost | only when `nginx.enable = true` | managed virtualHost (SPA + `/api`, exercise media from the SPA root) |
 | `services.nginx.enable = false` | only when `nginx.enable = false` | force-disabled — bring your own web server |
 
 <span id="systemd-hardening"></span>
@@ -375,7 +357,7 @@ for other modules to consume — setting them yourself is an error.
 | Option | Type | Default | Description |
 | --- | --- | --- | --- |
 | `enable` | `bool` | `false` | Enable openGym (user, services, directories). |
-| `package` | `attrsOf package` | packages built from source | The package set: `{ opengym-frontend, opengym-api, opengym-mcp, opengym-media, opengym-fetch-media }`. Override to serve pre-built binaries (e.g. from a cache). |
+| `package` | `attrsOf package` | packages built from source | The package set: `{ opengym-frontend, opengym-api, opengym-mcp }`. Override to serve pre-built binaries (e.g. from a cache). |
 | `dataDir` | `path` | `/var/lib/opengym` | Persistent data directory — `db.json`, per-user `state-<uid>.json`, `secret`, `vapid.json`, `audit.log`. With the default `/var/lib/opengym`, systemd's `StateDirectory` creates (and cleans up) it; a custom path is created by a tmpfiles rule and `ReadWritePaths` points at it instead. |
 | `apiPort` | `port` | `3000` | Port the API listens on (internal — reachable via your reverse proxy, front it yourself if you open the firewall). |
 | `rpId` | `str` | `localhost` | WebAuthn Relying Party ID. Bare hostname, must match the address bar exactly. |
@@ -397,7 +379,7 @@ for other modules to consume — setting them yourself is an error.
 
 | Option | Type | Default | Description |
 | --- | --- | --- | --- |
-| `nginx.enable` | `bool` | `false` | Have the module configure an nginx virtualHost for openGym via `services.nginx` (SPA root + fallback, `/api` proxy, `/img` + `/gif` aliases, gzip/optimisation). When `false` (Caddy-native default) the module force-disables `services.nginx`. |
+| `nginx.enable` | `bool` | `false` | Have the module configure an nginx virtualHost for openGym via `services.nginx` (SPA root + fallback, `/api` proxy, cache header on `/exercise-media/`, gzip/optimisation). When `false` (Caddy-native default) the module force-disables `services.nginx`. |
 | `nginx.hostName` | `str` | `"${rpId}"` | Server name the virtualHost listens on. |
 | `nginx.enableACME` | `bool` | `false` | Serve over TLS: `enableACME` + `forceSSL` on the vhost. Requires `security.acme.acceptTerms = true`. |
 
@@ -405,10 +387,13 @@ for other modules to consume — setting them yourself is an error.
 
 | Option | Type | Default | Description |
 | --- | --- | --- | --- |
-| `media.fetchAtBuild` | `bool` | `false` | Fetch the exercise dataset **at build time** into the Nix store (pinned, offline-capable). `false` = fetch at runtime with the `opengym-media` one-shot. |
-| `media.dataDir` | `path` | `"${dataDir}/media"` | Directory for runtime-fetched media (`img/` + `gif/` inside). |
-| `media.imageRoot` *(read-only)* | `path` | — | Directory of `.jpg` images. `…/opengym-media/images` when `fetchAtBuild`, else `…/media/img`. Serve at `/img/`. |
-| `media.gifRoot` *(read-only)* | `path` | — | Directory of `.gif` animations. `…/opengym-media/videos` when `fetchAtBuild`, else `…/media/gif`. Serve at `/gif/`. |
+| `media.root` *(read-only)* | `path` | — | `${web.root}/exercise-media`: the stills (`still/<id>.webp`) and animations (`clip/<id>.mp4`). Serving `web.root` already serves it; the option is there for setups that need the path on its own. |
+
+`media.fetchAtBuild`, `media.dataDir`, `media.imageRoot` and `media.gifRoot` were removed in
+v1.4.0, when the media moved into the repository. A configuration that still sets one fails to
+evaluate with a message saying what to do: delete `fetchAtBuild` and `dataDir`, and replace
+`imageRoot`/`gifRoot` (and the `/img/`, `/gif/` routes built on them) with `web.root` alone. An
+old `/var/lib/opengym/media` directory is no longer used and can be deleted.
 
 ### `web.*` suboptions
 
@@ -460,7 +445,7 @@ nix flake update opengym
 sudo nixos-rebuild switch --flake .#myhost
 ```
 
-Your data and the runtime media directory are untouched. Changing `rpId`/`origin` is *not* a
+Your data is untouched; the exercise media come with the new frontend package. Changing `rpId`/`origin` is *not* a
 routine update — see the passkey caveat in §4.
 
 ## 8. Troubleshooting
@@ -468,25 +453,14 @@ routine update — see the passkey caveat in §4.
 | Symptom | Fix |
 | --- | --- |
 | No passkey prompt / "verification failed" | `rpId`/`origin` don't match the address bar. Ask the server what it loaded: `journalctl -u opengym-api -b \| grep 'gym-api on'`.  See §4 and `docs/SELF_HOSTING.md`. |
-| App loads but exercises show no image/animation | The `/img` and `/gif` routes aren't mapped to `imageRoot`/`gifRoot` in your web server, or runtime media hasn't downloaded yet — check `systemctl status opengym-media` / `journalctl -u opengym-media`. |
+| App loads but exercises show no image/animation | Your web server doesn't serve `web.root` for `/exercise-media/*`, for example because an older config still routes `/img/` and `/gif/` or sends everything unknown to `index.html` without trying the file first. `curl -I https://your-host/exercise-media/NOTICE.md` should answer 200. |
 | `/api` returns 502/404 | Your proxy's `apiPort` (`services.opengym.apiPort`) differs from what `reverse_proxy`/`proxy_pass` targets. |
 | `nginx` is silently gone after enabling the module | Expected on the Caddy-native default (`nginx.enable = false`): the module sets `services.nginx.enable = false`. Set `services.opengym.nginx.enable = true` to have the module configure nginx for openGym (or `lib.mkForce true` to manage it yourself). |
 | Service won't start | `journalctl -u opengym-api -xe`. Common: custom `dataDir` not created/owned correctly (the tmpfiles rule should handle it; check `systemd-tmpfiles --create`). |
 | Eval fails: `environment and environmentFile are mutually exclusive` | Pick one. Set extra vars either as a Nix attrset (`environment`) or in a file (`environmentFile`), never both. |
 | You expected a binary cache | The flake builds from source; override `services.opengym.package` (or `packages.*` via a cache/overlay) to substitute binaries. |
-| Exercise media licensing | openGym ships none of it; it's fetched from [hasaneyldrm/exercises-dataset](https://github.com/hasaneyldrm/exercises-dataset) (third-party, ownership disputed). See [`NOTICE.md`](../NOTICE.md) |
+| Exercise media licensing | © Aliaksandr Makatserchyk, Gym visual, licensed for use in openGym only and not covered by the AGPL. They ship at 180 px; don't re-host them on their own. See [`NOTICE.md`](../NOTICE.md) |
 | `nix run .#opengym` serves a blank site | The app now serves frontend + API + media behind a local Caddy. If something's off, check the log line it prints (ports/`DATA_DIR`) and that nothing else already binds `:3000`/`:8080` — pass `OPENGYM_API_PORT`/`OPENGYM_WEB_PORT` to move them. |
-
-### Media modes in detail
-
-- **`media.fetchAtBuild = true`** — the dataset is fetched once via `fetchFromGitHub` (pinned to
-  the same commit the Docker build uses) and stored in the Nix store. `imageRoot`/`gifRoot` point
-  into `/nix/store`. No `opengym-media` service is created. Ideal for air-gapped/immutable systems;
-  you pay the ~140 MB fetch on every switch that rebuilds the media derivation.
-- **`media.fetchAtBuild = false`** (default) — the `opengym-media` one-shot downloads the pinned
-  dataset tarball (a GitHub `/archive/<rev>.tar.gz` of the **same commit** `media.nix` pins) on first
-  boot into `media.dataDir`, then skips while files are present. `imageRoot`/`gifRoot` point under
-  `dataDir`, so backups cover media too.
 
 ## See also
 
@@ -494,4 +468,4 @@ routine update — see the passkey caveat in §4.
   passkey and admin/audit details apply unchanged).
 - [`docs/MOBILE.md`](MOBILE.md) — the stand-alone Android app, an alternative to self-hosting.
 - [`docs/DATA_IMPORTS.md`](DATA_IMPORTS.md) — importing from FitNotes/Strong/Hevy/Apple Health.
-- [`NOTICE.md`](../NOTICE.md) — third-party notices, including the exercise-media situation.
+- [`NOTICE.md`](../NOTICE.md) — third-party notices, including the exercise-media licence.

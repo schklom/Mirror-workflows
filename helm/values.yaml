@@ -29,7 +29,7 @@ service:
   type: ClusterIP
   port: 80
 
-# Both PVCs are kept on `helm uninstall` (helm.sh/resource-policy: keep). Delete them by hand
+# The PVC is kept on `helm uninstall` (helm.sh/resource-policy: keep). Delete it by hand
 # if you really mean to.
 persistence:
   # Accounts, passkeys, per-user state, session secret, uploads. BACK THIS UP.
@@ -38,12 +38,8 @@ persistence:
     storageClass: ""         # "" = cluster default
     accessModes: [ReadWriteOnce]
     size: 2Gi
-  # Exercise images and GIFs (~140 MB), downloaded once by the init container.
-  media:
-    existingClaim: ""
-    storageClass: ""
-    accessModes: [ReadWriteOnce]
-    size: 2Gi
+  # There is no media volume any more: the exercise stills and animations ship in the web image
+  # since v1.4.0. A `media` block left here from an older values file is ignored.
 
 # Classic Ingress. Passkeys need HTTPS and a host equal to api.env.RP_ID.
 ingress:
@@ -95,15 +91,6 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
-
-# Init container that fetches the exercise media once into the media volume.
-mediaDownload:
-  image: alpine/git:2.52.0
-  resources:
-    requests:
-      memory: 128Mi
-    limits:
-      memory: 256Mi
 
 api:
   image:

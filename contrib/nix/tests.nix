@@ -1,5 +1,6 @@
 # Integration test: boots a NixOS VM with the openGym module (full stack: API + optional
-# module-managed nginx vhost + build-time media) and exercises the HTTP contract end to end.
+# module-managed nginx vhost + the exercise media shipped in the frontend package) and
+# exercises the HTTP contract end to end.
 #
 # Used through the flake's `checks.opengym-nixos-test` (runs on `nix flake check`) and the
 # conventional `nixosTests.opengym` output.
@@ -20,7 +21,6 @@ pkgs.testers.runNixOSTest {
         enable = true;
         rpId = "localhost";
         origin = "http://localhost:8080";
-        media.fetchAtBuild = true; # media baked into the store — no network needed in the VM
         nginx.enable = true; # exercise the module-managed vhost path
       };
 
@@ -47,5 +47,8 @@ pkgs.testers.runNixOSTest {
 
     spa = machine.succeed("curl -fsS http://localhost/")
     assert 'id="root"' in spa, "SPA index.html not served by nginx root"
+
+    # The exercise media ship inside the frontend package (catalogue/media), no download involved.
+    machine.succeed("curl -fsS -o /dev/null http://localhost/exercise-media/NOTICE.md")
   '';
 }

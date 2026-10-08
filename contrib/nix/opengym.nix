@@ -35,11 +35,6 @@ let
     ADMIN_UIDS = if cfg.adminUids != "" then cfg.adminUids else null;
   };
 
-  mediaRoot =
-    if cfg.media.fetchAtBuild then "${packages.opengym-media}/images" else "${cfg.media.dataDir}/img";
-  mediaGifRoot =
-    if cfg.media.fetchAtBuild then "${packages.opengym-media}/videos" else "${cfg.media.dataDir}/gif";
-
   # Hardening shared by the API and MCP units. The MCP server reads the same data files,
   # so it gets the same sandbox.
   serviceHardening = {
@@ -60,8 +55,27 @@ let
     ];
   };
 
+  # Options that only made sense while the exercise media were downloaded from a third-party
+  # dataset. Since v1.4.0 the media ship in the source tree (catalogue/media) and inside the
+  # frontend package, so there is nothing left to fetch or point a web server at separately.
+  removedMedia =
+    name: why:
+    lib.mkRemovedOptionModule [
+      "services"
+      "opengym"
+      "media"
+      name
+    ] why;
+
 in
 {
+  imports = [
+    (removedMedia "fetchAtBuild" "The exercise media are part of the frontend package now; nothing is fetched.")
+    (removedMedia "dataDir" "The exercise media are part of the frontend package now; there is no runtime media directory.")
+    (removedMedia "imageRoot" "Use services.opengym.media.root (stills in still/, animations in clip/).")
+    (removedMedia "gifRoot" "Use services.opengym.media.root (stills in still/, animations in clip/).")
+  ];
+
   options.services.opengym = {
     enable = lib.mkEnableOption "openGym self-hosted gym tracker";
 
@@ -198,28 +212,14 @@ in
     };
 
     media = {
-      fetchAtBuild = lib.mkOption {
-        type = lib.types.bool;
-        default = false;
-        description = "Fetch exercise media at build time (into Nix store). If false, fetch at runtime.";
-      };
-
-      dataDir = lib.mkOption {
-        type = lib.types.path;
-        default = "${cfg.dataDir}/media";
-        description = "Directory for runtime-fetched exercise media.";
-      };
-
-      imageRoot = lib.mkOption {
+      root = lib.mkOption {
         type = lib.types.path;
         readOnly = true;
-        description = "Directory containing exercise images (jpg). For use by a web server.";
-      };
-
-      gifRoot = lib.mkOption {
-        type = lib.types.path;
-        readOnly = true;
-        description = "Directory containing exercise GIFs. For use by a web server.";
+        description = ''
+          Directory with the exercise stills (still/<id>.webp) and animations (clip/<id>.mp4).
+          It is the exercise-media/ directory inside web.root, so a web server serving web.root
+          already serves it; the option is only there for setups that need the path on its own.
+        '';
       };
     };
 
@@ -282,7 +282,6 @@ in
 
           systemd.tmpfiles.rules = [
             "d ${cfg.dataDir} 0750 opengym opengym - -"
-            "d ${cfg.media.dataDir} 0755 opengym opengym - -"
           ];
 
           systemd.services.opengym-api = {
@@ -310,31 +309,8 @@ in
             ];
           };
 
-          systemd.services.opengym-media = lib.mkIf (!cfg.media.fetchAtBuild) {
-            description = "Download exercise media for openGym";
-            after = [ "network-online.target" ];
-            wants = [ "network-online.target" ];
-            wantedBy = [ "multi-user.target" ];
-            serviceConfig = lib.mkMerge [
-              {
-                ExecStart = "${packages.opengym-fetch-media}/bin/opengym-fetch-media ${cfg.media.dataDir}";
-                Type = "oneshot";
-                RemainAfterExit = true;
-                User = "opengym";
-                Group = "opengym";
-              }
-              (lib.mkIf (builtins.toString cfg.dataDir == "/var/lib/opengym") {
-                StateDirectory = "opengym";
-              })
-            ];
-          };
-
-          services.opengym.media = {
-            imageRoot = mediaRoot;
-            gifRoot = mediaGifRoot;
-          };
-
           services.opengym.web.root = "${packages.opengym-frontend}/share/opengym";
+          services.opengym.media.root = "${cfg.web.root}/exercise-media";
 
           systemd.services.opengym-mcp = lib.mkIf cfg.mcp.enable {
             description = "openGym MCP server";
@@ -384,11 +360,14 @@ in
                       proxy_set_header X-Forwarded-Proto $scheme;
                     '';
                   };
-                  "/img/" = {
-                    alias = "${cfg.media.imageRoot}/";
-                  };
-                  "/gif/" = {
-                    alias = "${cfg.media.gifRoot}/";
+                  # exercise-media/ is served from root like the rest of the app. The files
+                  # are named after the exercise and never change within a build, so let
+                  # browsers keep them.
+                  "/exercise-media/" = {
+                    extraConfig = ''
+                      expires 30d;
+                      add_header Cache-Control "public";
+                    '';
                   };
                 };
               }

@@ -670,8 +670,8 @@ git pull
 docker compose up -d --build
 ```
 
-The app shell is versioned (`?v=N`) so clients pick up changes on next load. Your `./data` and the
-downloaded media are untouched.
+The app shell is versioned (`?v=N`) so clients pick up changes on next load. Your `./data` is
+untouched; the exercise media come with the new image.
 
 ## Passkeys fail even though `RP_ID` looks right
 
@@ -803,7 +803,7 @@ browser (see section 2).
 | The app says "Your server answered with an error (HTTP …)" | The code is what the server or its proxy sent: 502/504 usually means the API container is down or unreachable from `web`, 413 that the proxy's upload limit is too small. Changes stay on the device and go through once the server answers. |
 | `docker compose pull` fails with "denied" / "unauthorized" | The prebuilt images aren't published yet, or need to be, or the GHCR package is still private — build from source instead (`docker compose up -d --build`). |
 | Exercise images/GIFs blank when a routine is open | Fixed in current images (issue #79). On an older build, see the note below. |
-| An exercise shows a plain tile instead of its animation when offline | The web app installed on the home screen keeps the media of every exercise in your plan and your current workout, fetched in the background once the app has settled (not on a cellular or Data Saver connection, where the browser says so), plus everything it has shown you, up to 150 MB, across updates. In an ordinary browser tab nothing is fetched ahead: only what it has shown you is kept. An exercise outside your plan that was never shown while online has nothing to show offline. The phone app loads media from a CDN and is not covered by this. |
+| An exercise shows a plain tile instead of its animation when offline | The web app installed on the home screen keeps the media of every exercise in your plan and your current workout, fetched in the background once the app has settled (not on a cellular or Data Saver connection, where the browser says so), plus everything it has shown you, up to 150 MB, across updates. In an ordinary browser tab nothing is fetched ahead: only what it has shown you is kept. An exercise outside your plan that was never shown while online has nothing to show offline. The phone app carries its exercise media inside the package, so it has them offline anyway. |
 
 ### `VITE_IMG_BASE` / `VITE_GIF_BASE` are build-time, not run-time
 

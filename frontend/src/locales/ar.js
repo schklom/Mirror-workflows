@@ -2156,4 +2156,16 @@ export default {
   'Skip set': 'تخطي المجموعة',
   'Superset:': 'سوبرست:',
   '{0}s hold': 'ثبات لمدة {0} ث',
+  // --- finish summary: last time and next time ---
+  'Details': 'التفاصيل',
+  'Progression settings': 'إعدادات التدرّج',
+  'Last time and next time': 'المرة السابقة والمرة القادمة',
+  'Up on last time': 'أعلى من المرة السابقة',
+  'Down on last time': 'أقل من المرة السابقة',
+  'Same as last time': 'مثل المرة السابقة',
+  'First time': 'أول مرة',
+  'step up': 'زيادة',
+  'same again': 'نفس الشيء مجددًا',
+  'lighter': 'أخف قليلًا',
+  'deload': 'تفريغ',
 }

@@ -2101,4 +2101,16 @@ export default {
   'Skip set': 'सेट छोड़ें',
   'Superset:': 'सुपरसेट:',
   '{0}s hold': '{0} सेकंड होल्ड',
+  // --- finish summary: last time and next time ---
+  'Details': 'विवरण',
+  'Progression settings': 'प्रोग्रेशन सेटिंग',
+  'Last time and next time': 'पिछली बार और अगली बार',
+  'Up on last time': 'पिछली बार से ज़्यादा',
+  'Down on last time': 'पिछली बार से कम',
+  'Same as last time': 'पिछली बार जितना ही',
+  'First time': 'पहली बार',
+  'step up': 'एक कदम ऊपर',
+  'same again': 'फिर से वही',
+  'lighter': 'थोड़ा हल्का',
+  'deload': 'डीलोड',
 }

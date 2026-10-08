@@ -2112,4 +2112,16 @@ export default {
   'Skip set': 'ข้ามเซ็ต',
   'Superset:': 'ซูเปอร์เซ็ต:',
   '{0}s hold': 'ค้างไว้ {0} วินาที',
+  // --- finish summary: last time and next time ---
+  'Details': 'รายละเอียด',
+  'Progression settings': 'ตั้งค่าการเพิ่มระดับ',
+  'Last time and next time': 'ครั้งก่อนและครั้งหน้า',
+  'Up on last time': 'มากกว่าครั้งก่อน',
+  'Down on last time': 'น้อยกว่าครั้งก่อน',
+  'Same as last time': 'เท่ากับครั้งก่อน',
+  'First time': 'ครั้งแรก',
+  'step up': 'ขยับขึ้นอีกขั้น',
+  'same again': 'เหมือนเดิมอีกรอบ',
+  'lighter': 'เบาลงหน่อย',
+  'deload': 'ดีโหลด',
 }

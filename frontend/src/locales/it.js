@@ -2101,4 +2101,16 @@ export default {
   'Skip set': 'Salta serie',
   'Superset:': 'Superset:',
   '{0}s hold': 'Tenuta di {0}s',
+  // --- finish summary: last time and next time ---
+  'Details': 'Dettagli',
+  'Progression settings': 'Impostazioni di progressione',
+  'Last time and next time': 'L’ultima volta e la prossima',
+  'Up on last time': 'In crescita rispetto all’ultima volta',
+  'Down on last time': 'In calo rispetto all’ultima volta',
+  'Same as last time': 'Come l’ultima volta',
+  'First time': 'Prima volta',
+  'step up': 'si sale di un gradino',
+  'same again': 'di nuovo uguale',
+  'lighter': 'un po’ più leggero',
+  'deload': 'scarico',
 }

@@ -2121,4 +2121,16 @@ export default {
   'Skip set': 'Satz überspringen',
   'Superset:': 'Supersatz:',
   '{0}s hold': '{0}s halten',
+  // --- finish summary: last time and next time ---
+  'Details': 'Details',
+  'Progression settings': 'Progressionseinstellungen',
+  'Last time and next time': 'Letztes Mal und nächstes Mal',
+  'Up on last time': 'Mehr als letztes Mal',
+  'Down on last time': 'Weniger als letztes Mal',
+  'Same as last time': 'Gleich wie letztes Mal',
+  'First time': 'Zum ersten Mal',
+  'step up': 'eine Stufe rauf',
+  'same again': 'nochmal dasselbe',
+  'lighter': 'etwas leichter',
+  'deload': 'Deload',
 }

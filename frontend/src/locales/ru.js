@@ -2105,4 +2105,16 @@ export default {
   'Skip set': 'Пропустить подход',
   'Superset:': 'Суперсет:',
   '{0}s hold': 'Удержание {0} с',
+  // --- finish summary: last time and next time ---
+  'Details': 'Подробнее',
+  'Progression settings': 'Настройки прогрессии',
+  'Last time and next time': 'В прошлый раз и в следующий',
+  'Up on last time': 'Больше, чем в прошлый раз',
+  'Down on last time': 'Меньше, чем в прошлый раз',
+  'Same as last time': 'Как в прошлый раз',
+  'First time': 'Впервые',
+  'step up': 'шаг вверх',
+  'same again': 'ещё раз так же',
+  'lighter': 'чуть полегче',
+  'deload': 'разгрузка',
 }

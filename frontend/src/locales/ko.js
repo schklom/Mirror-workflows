@@ -2101,4 +2101,16 @@ export default {
   'Skip set': '세트 건너뛰기',
   'Superset:': '슈퍼세트:',
   '{0}s hold': '{0}초 유지',
+  // --- finish summary: last time and next time ---
+  'Details': '세부 정보',
+  'Progression settings': '점진적 증가 설정',
+  'Last time and next time': '지난번과 다음번',
+  'Up on last time': '지난번보다 늘었어요',
+  'Down on last time': '지난번보다 줄었어요',
+  'Same as last time': '지난번과 같아요',
+  'First time': '첫 기록',
+  'step up': '한 단계 올리기',
+  'same again': '한 번 더 그대로',
+  'lighter': '조금 가볍게',
+  'deload': '디로딩',
 }

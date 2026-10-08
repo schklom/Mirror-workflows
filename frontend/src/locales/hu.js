@@ -2104,4 +2104,16 @@ export default {
   'Skip set': 'Sorozat kihagyása',
   'Superset:': 'Szuperszett:',
   '{0}s hold': '{0} mp tartás',
+  // --- finish summary: last time and next time ---
+  'Details': 'Részletek',
+  'Progression settings': 'Progresszió beállításai',
+  'Last time and next time': 'Legutóbb és legközelebb',
+  'Up on last time': 'Több, mint legutóbb',
+  'Down on last time': 'Kevesebb, mint legutóbb',
+  'Same as last time': 'Ugyanaz, mint legutóbb',
+  'First time': 'Első alkalom',
+  'step up': 'egy szinttel feljebb',
+  'same again': 'ugyanez még egyszer',
+  'lighter': 'kicsit könnyebben',
+  'deload': 'deload',
 }

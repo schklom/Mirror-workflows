@@ -2098,4 +2098,16 @@ export default {
   'Skip set': 'Пропустити підхід',
   'Superset:': 'Суперсет:',
   '{0}s hold': 'Утримання {0} с',
+  // --- finish summary: last time and next time ---
+  'Details': 'Докладніше',
+  'Progression settings': 'Налаштування прогресії',
+  'Last time and next time': 'Минулого разу і наступного',
+  'Up on last time': 'Більше, ніж минулого разу',
+  'Down on last time': 'Менше, ніж минулого разу',
+  'Same as last time': 'Як минулого разу',
+  'First time': 'Уперше',
+  'step up': 'крок угору',
+  'same again': 'ще раз так само',
+  'lighter': 'трохи легше',
+  'deload': 'розвантаження',
 }

@@ -266,6 +266,15 @@ function pump() {
   }
 }
 
+/* Why an answer was rejected, for the admin card. "Couldn't use" with no reason left people
+   guessing whether the model, the key or the app was at fault. The validator's own lines say
+   which rule broke; quoted values are cut out, because they can carry a routine name or other
+   words from the person's plan, and the instance log carries outcomes, not content (FR-12/42). */
+export function whyUnusable(errors) {
+  if (!Array.isArray(errors) || !errors.length) return null;
+  return errors.slice(0, 3).map(e => String(e).replace(/"[^"]*"/g, '"…"')).join('; ').slice(0, 300);
+}
+
 function finish(job, result) {
   cfgStore.logJob({
     at: new Date().toISOString(), uid: job.uid, kind: job.kind, trigger: job.trigger,
@@ -363,7 +372,7 @@ async function execute(job) {
     if (!attempt.ok) {
       // Cancelled by a forget, not failed by the provider: the log must not blame the job budget.
       const errorClass = ctl.signal.aborted ? 'forgotten' : attempt.errorClass;
-      return finish(job, { outcome: 'failed', errorClass, detail: attempt.detail });
+      return finish(job, { outcome: 'failed', errorClass, detail: attempt.detail || whyUnusable(attempt.errors) });
     }
     if (attempt.nochange) {
       return finish(job, { outcome: 'nochange', pending: null, detail: null, reading: attempt.reading });

@@ -59,12 +59,14 @@ export async function attemptOnce({ adapter, cfg, kind, payload, model, timeoutM
   // The user's own exercises are in the library slice the model was given (flagged `custom`),
   // so they are a legitimate thing for it to name back — the validator has to agree.
   const customIds = (payload.library || []).filter(e => e && e.custom).map(e => e.id);
+  const equipment = payload.coachProfile?.equipment || [];
+  const offered = new Set((payload.library || []).map(e => e && e.id));
   const checked = kind === 'review'
-    ? validateReview(parsed.value, payload.plan, { customIds })
+    ? validateReview(parsed.value, payload.plan, { customIds, equipment, offered })
     : kind === 'debrief'
       ? validateDebrief(parsed.value)
       : validatePlan(parsed.value, {
-      customIds,
+      customIds, equipment, offered,
       workingWeights: payload.history?.workingWeights,
       daysPerWeek: payload.coachProfile?.daysPerWeek
     });

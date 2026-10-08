@@ -89,6 +89,12 @@ const num = v => ((typeof v === 'number' && Number.isFinite(v)) || (typeof v ===
 // A date is the ISO day every screen writes; anything else is not a date.
 const day = v => (typeof v === 'string' && /^\d{4}-\d{2}-\d{2}/.test(v) ? v.slice(0, 10) : null);
 const list = v => (Array.isArray(v) ? v : []);
+// The equipment of the profile the app is filtering by, or nothing when filtering is off.
+function activeEquipment(S) {
+  if (!S.equipFilterOn) return [];
+  const prof = list(S.equipProfiles).find(x => x && x.id === S.activeEquipId);
+  return list(prof?.equipment);
+}
 function cleanProfile(profile) {
   const days = Array.isArray(profile.preferredDays) ? profile.preferredDays : [];
   const equipment = Array.isArray(profile.equipment) ? profile.equipment : [];
@@ -486,6 +492,12 @@ export function build(S, opts = {}) {
     coachProfile: profile && typeof profile === 'object' ? cleanProfile(profile) : null,
     plan: cleanPlan(S)
   };
+  // Someone who set up a home gym under Settings → Equipment and left the Coach's own equipment
+  // question empty was handed the whole catalogue, leverage machines and all. The profile they
+  // are filtering the app with is the better answer than "everything".
+  if (p.coachProfile && !p.coachProfile.equipment.length) {
+    p.coachProfile.equipment = cleanProfile({ equipment: activeEquipment(S) }).equipment;
+  }
 
   // What the user already turned down, so the Coach does not re-propose it without new
   // evidence (FR-26). Summaries only — the log's full before/after stays on the device.

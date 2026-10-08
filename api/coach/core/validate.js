@@ -14,7 +14,15 @@
  * model verbatim for the one repair round (FR-48) — and a list of six problems produces a
  * better second attempt than the first of them does.
  */
-import { libraryHas, libraryName } from './library.js';
+import { libraryHas, libraryName, equipmentAllows } from './library.js';
+
+// A catalogue exercise the person's equipment does not reach, and that was not in the library
+// slice they were offered (which already pins what they train). The prompt says "their
+// equipment"; a model that names a leverage machine anyway is told so on the repair round
+// instead of the plan arriving with a machine they do not own.
+const offEquipment = (ctx, id) => !!ctx.equipment?.length && libraryHas(id)
+  && !(ctx.offered && ctx.offered.has(id)) && !equipmentAllows(ctx.equipment, id);
+const OFF_EQUIPMENT = (where, id) => `${where} "${id}" needs equipment the user does not have — use an exercise from the library provided in the payload`;
 import { glyphStr } from './glyphs.js';
 
 // The closed list (FR-23 / C3). Adding a member here is a deliberate act with an apply
@@ -109,6 +117,7 @@ export function validatePlan(data, ctx = {}) {
         errors.push(`${where}.id "${e.id}" is not in the exercise library and is not one of your own customEx entries — use an id from the library provided in the payload`);
         return;
       }
+      if (offEquipment(ctx, e.id)) { errors.push(OFF_EQUIPMENT(`${where}.id`, e.id)); return; }
       const clean = { id: e.id, sets: isInt(e.sets, 1, 10) ? e.sets : 3 };
       const mode = MODES.includes(e.mode) ? e.mode : 'reps';
       const perSide = !!e.side;
@@ -318,6 +327,7 @@ export function validateReview(data, plan, ctx = {}) {
         }
         const a = c.after || {};
         if (!isStr(a.id) || !knownEx(a.id)) { errors.push(`${where}.after.id must be an exercise id from the library`); return; }
+        if (offEquipment(ctx, a.id)) { errors.push(OFF_EQUIPMENT(`${where}.after.id`, a.id)); return; }
         const perSide = !!a.side;
         if (perSide && isInt(a.reps, 1, 100) && a.reps % 2) { errors.push(ODD_PER_SIDE(`${where}.after.reps`)); return; }
         if (isInt(a.repsMax, 1, 100) && isInt(a.repsMin, 1, 100) && a.repsMax < a.repsMin) { errors.push(INVERTED_RANGE(`${where}.after`)); return; }
@@ -345,6 +355,7 @@ export function validateReview(data, plan, ctx = {}) {
         }
         const a = c.after || {};
         if (!isStr(a.id) || !knownEx(a.id)) { errors.push(`${where}.after.id must be an exercise id from the library`); return; }
+        if (offEquipment(ctx, a.id)) { errors.push(OFF_EQUIPMENT(`${where}.after.id`, a.id)); return; }
         if (a.id === target.exId) { errors.push(`${where} swaps an exercise for itself`); return; }
         out.after = {
           id: a.id, name: libraryName(a.id),
@@ -419,6 +430,8 @@ export function validateReview(data, plan, ctx = {}) {
         const listed = Array.isArray(a.ex) ? a.ex : [];
         const bad = listed.find(e => !e || !isStr(e.id) || !knownEx(e.id));
         if (bad) { errors.push(`${where}.after.ex "${bad.id}" is not in the exercise library — use an id from the library provided in the payload`); return; }
+        const offEq = listed.find(e => offEquipment(ctx, e.id));
+        if (offEq) { errors.push(OFF_EQUIPMENT(`${where}.after.ex`, offEq.id)); return; }
         const ex = listed.slice(0, MAX_EX_PER_ROUTINE);
         if (!ex.length) { errors.push(`${where}.after.ex must list at least one exercise from the library`); return; }
         const odd = ex.find(e => e.side && isInt(e.reps, 1, 100) && e.reps % 2);

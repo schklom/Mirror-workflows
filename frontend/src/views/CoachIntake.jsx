@@ -19,6 +19,7 @@ import { emptyCoach, coachAvailable, hasConsent, CONSENT_VERSION, CATEGORY_TEXT,
 import { requestPlan, disclosure, JOB_ERRORS } from '../lib/coach-api.js'
 import { DEMO } from '../lib/demo.js'
 import { MOBILE } from '../lib/mobile.js'
+import { activeProfile } from '../lib/equipment.js'
 import Icon from '../components/Icon.jsx'
 import { Button, TextArea } from '../components/ui.jsx'
 import '../coach.css'
@@ -72,7 +73,8 @@ export default function CoachIntake() {
   const [busy, setBusy] = useState(false)
   const [p, setP] = useState(() => ({
     goal: null, experience: null, daysPerWeek: 3, preferredDays: [1, 3, 5],
-    sessionMin: 60, equipment: [], limitations: '', likes: '', dislikes: '', notes: '',
+    // A home gym already set up under Settings → Equipment is the best first guess here.
+    sessionMin: 60, equipment: (activeProfile(S)?.equipment || []).filter(e => EQUIPMENT.includes(e)), limitations: '', likes: '', dislikes: '', notes: '',
     ...(S.coach?.profile || {})
   }))
   const set = patch => setP(v => ({ ...v, ...patch }))

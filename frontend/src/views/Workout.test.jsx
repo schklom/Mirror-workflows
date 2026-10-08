@@ -654,6 +654,22 @@ describe('active workout weight controls', () => {
     expect(mocks.S.active.entries[0].sets[0].w).toBe(62.5)
   })
 
+  it.each(['list', 'cards', 'compact'])('keeps added weight editable at zero in %s view', async workoutView => {
+    await mount([exercise('bodyweight-pull-up', [false], {
+      target: { mode: 'reps', reps: 8, weight: 0, bodyweight: true, inc: 1 },
+      sets: [{ w: 0, r: 8, done: false }],
+    })], 0, { workoutView })
+
+    expect(container.querySelector('.sethead').textContent).toContain('Added (kg)')
+    await press('Increase', '.setrow .stp.w')
+    expect(mocks.S.active.entries[0].sets[0]).toMatchObject({ w: 1, r: 8 })
+    await press('Decrease', '.setrow .stp.w')
+    expect(mocks.S.active.entries[0].sets[0].w).toBe(0)
+    expect(container.querySelector('.sethead').textContent).toContain('Added (kg)')
+    await press('Increase', '.setrow .stp.w')
+    expect(mocks.S.active.entries[0].sets[0]).toMatchObject({ w: 1, r: 8 })
+  })
+
   it('matches automatic progression rounding for a fractional configured step', async () => {
     const target = { mode: 'reps', sets: 1, reps: 5, weight: 60, bodyweight: false, inc: 1.25 }
     const automatic = nextPrescription({

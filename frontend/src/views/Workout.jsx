@@ -244,15 +244,13 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
     <span>{ref ? <>{refLabel} (<time dateTime={ref.d} title={fmtDate(ref.d, true, true)}>{refAgo}</time>): {refSets.map((l, i) => <Fragment key={i}>{i ? ', ' : ''}<bdi dir={RTL_LETTER.test(l) ? 'auto' : 'ltr'}>{l}</bdi></Fragment>)}</> : refText}</span>
     <Icon name="history" />
   </button> : null
-  // A bodyweight set has no weight to type, so the column is not there (issue #32) — one
-  // stepper instead of two, which is the whole point of the flag. Adding a belt weight in the
-  // config brings it back, now labelled as the addition it is.
+  // Zero added weight must stay editable: a bodyweight set can become weighted
+  // later, or return to zero without losing its load control (issue #460).
   const cfg = { ...(entry.target || {}), id: entry.id }
   const bw = !cardio && isBw(cfg)
   // A unilateral exercise logs each side on its own (issue #60): work rows render as an L and an
   // R sub-row, each with its own weight/reps/effort and done tick. Warm-ups stay single.
   const perSide = mode === 'reps' && isPerSide(cfg)
-  const added = bw && entry.sets.some(s => s.w > 0)
   const loadStep = mode === 'reps' ? weightIncrement(cfg, S.unit) : 2.5
   const loadCol = { f: 'w', step: loadStep, dec: true, hd: bw ? t('Added ({0})', S.unit) : t('Weight ({0})', S.unit) }
   // The reps column is the total in every mode, unilateral included — the stepper walks in
@@ -260,14 +258,13 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
   const repCol = { f: 'r', step: repStep(cfg), dec: false, hd: t('Reps') }
   const col1 = cardio ? { f: 'min', step: 1, dec: false, hd: t('Duration (min)') }
     : timed ? { f: 'sec', step: 5, dec: false, hd: t('Seconds') }
-      : (bw && !added) ? repCol : loadCol
+      : loadCol
   // Speed is stored in km/h and shown in the profile's unit (lib/speed.js): `view` turns the
   // stored number into the one on screen, `store` the one typed or stepped back into km/h.
   const speedUnit = speedUnitOf(S)
   const col2 = cardio ? { f: 'speed', step: 0.5, dec: true, hd: speedUnit === 'mph' ? t('Speed (mph)') : t('Speed (km/h)'),
     view: v => toSpeed(v, speedUnit), store: v => fromSpeed(v, speedUnit) }
-    : timed ? ((bw && !added) ? null : loadCol)
-      : (bw && !added) ? null : repCol
+    : timed ? loadCol : repCol
   // Effort (RIR or RPE, whichever the profile logs) only makes sense for weighted rep sets,
   // not cardio/timed holds, and is opt-in since it adds a third stepper to every row. `opt`
   // because an unlogged effort is not the same as 0 — RIR 0 says the set went to failure.

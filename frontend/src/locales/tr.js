@@ -419,6 +419,8 @@ export default {
   'Ends this profile’s sessions on all your devices.': 'Bu profilin tüm cihazlarındaki oturumlarını sonlandırır.',
   'Signed out on all devices': 'Tüm cihazlarda çıkış yapıldı',
   'Couldn’t sign out everywhere. You’re still signed in.': 'Her yerden çıkış yapılamadı. Hâlâ giriş yapmış durumdasın.',
+  'Couldn’t sign out. You’re still signed in.': 'Çıkış yapılamadı. Hâlâ giriş yapmış durumdasın.',
+  'Couldn’t disconnect. You’re still connected.': 'Bağlantı kesilemedi. Hâlâ bağlısın.',
   'Create passkey profile': 'Geçiş anahtarlı profil oluştur',
   'Passkeys not supported in this browser.': 'Bu tarayıcıda geçiş anahtarları desteklenmiyor.',
   'synced with your profile': 'profilinle eşitlenir',

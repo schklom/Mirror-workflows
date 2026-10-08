@@ -419,6 +419,8 @@ export default {
   'Ends this profile’s sessions on all your devices.': '结束此档案在你所有设备上的会话。',
   'Signed out on all devices': '已在所有设备上退出登录',
   'Couldn’t sign out everywhere. You’re still signed in.': '无法在所有设备上退出登录。你仍处于登录状态。',
+  'Couldn’t sign out. You’re still signed in.': '无法退出登录。你仍处于登录状态。',
+  'Couldn’t disconnect. You’re still connected.': '无法断开连接。你仍处于连接状态。',
   'Create passkey profile': '创建通行密钥档案',
   'Passkeys not supported in this browser.': '此浏览器不支持通行密钥。',
   'synced with your profile': '与档案同步',

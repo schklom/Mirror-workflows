@@ -419,6 +419,8 @@ export default {
   'Ends this profile’s sessions on all your devices.': 'Met fin aux sessions de ce profil sur tous tes appareils.',
   'Signed out on all devices': 'Déconnecté sur tous les appareils',
   'Couldn’t sign out everywhere. You’re still signed in.': 'Impossible de se déconnecter partout. Tu es toujours connecté.',
+  'Couldn’t sign out. You’re still signed in.': 'Impossible de se déconnecter. Tu es toujours connecté.',
+  'Couldn’t disconnect. You’re still connected.': 'Impossible de se déconnecter du serveur. Tu es toujours connecté au serveur.',
   'Create passkey profile': 'Créer un profil passkey',
   'Passkeys not supported in this browser.': 'Passkeys non prises en charge par ce navigateur.',
   'synced with your profile': 'synchronisé avec ton profil',

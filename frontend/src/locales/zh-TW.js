@@ -415,6 +415,8 @@ export default {
   'Ends this profile’s sessions on all your devices.': '結束此個人檔案在所有裝置上的登入階段。',
   'Signed out on all devices': '已在所有裝置上登出',
   'Couldn’t sign out everywhere. You’re still signed in.': '無法在所有裝置上登出。你目前仍保持登入狀態。',
+  'Couldn’t sign out. You’re still signed in.': '無法登出。你目前仍保持登入狀態。',
+  'Couldn’t disconnect. You’re still connected.': '無法中斷連線。你目前仍保持連線狀態。',
   'Create passkey profile': '建立通行密鑰個人檔案',
   'Passkeys not supported in this browser.': '此瀏覽器不支援通行密鑰。',
   'synced with your profile': '已與個人檔案同步',

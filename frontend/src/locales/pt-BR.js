@@ -136,6 +136,8 @@ export const PT_BR_OVERRIDES = {
   'Ends this profile’s sessions on all your devices.': 'Encerra as sessões deste perfil em todos os seus dispositivos.',
   'Signed out on all devices': 'Sessão encerrada em todos os dispositivos',
   'Couldn’t sign out everywhere. You’re still signed in.': 'Não foi possível sair de todos os dispositivos. Sua sessão continua ativa.',
+  'Couldn’t sign out. You’re still signed in.': 'Não foi possível sair. Sua sessão continua ativa.',
+  'Couldn’t disconnect. You’re still connected.': 'Não foi possível desconectar. Você continua conectado.',
   'Create passkey profile': 'Criar perfil com chave de acesso',
   'synced with your profile': 'sincronizado com seu perfil',
   'The screen stays on while a workout is running, so you don’t have to unlock your phone between sets.': 'A tela permanece ligada durante o treino, para você não precisar desbloquear o celular entre as séries.',

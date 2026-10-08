@@ -7,7 +7,8 @@
   "secondaryMuscles": [
     "obliques"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "Seated and leaning back, you rotate your torso from side to side. Works the obliques and abs.",
   "instructions": [
     "Sit on the ground with your knees bent and feet flat on the floor.",
     "Lean back slightly while keeping your back straight and your core engaged.",
@@ -17,5 +18,6 @@
     "Pause for a moment, then twist your torso to the left, bringing your hands or weight towards the left side of your body.",
     "Continue alternating sides for the desired number of repetitions."
   ],
+  "femaleVariant": "2538",
   "textSource": "exercisedb"
 }

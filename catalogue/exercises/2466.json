@@ -11,7 +11,8 @@
     "shoulders",
     "triceps"
   ],
-  "description": "",
+  "category": "calisthenics",
+  "description": "A plank-position mountain climber driving knee across the body. Works the abs and obliques, and raises your heart rate.",
   "instructions": [
     "Start in a high plank position with your hands directly under your shoulders and your body in a straight line.",
     "Engage your core and lift your right foot off the ground, bringing your right knee towards your left elbow.",
@@ -21,5 +22,6 @@
     "Maintain a steady breathing pattern throughout the exercise.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "0141",
   "textSource": "exercisedb"
 }

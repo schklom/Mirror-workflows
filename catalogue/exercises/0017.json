@@ -8,7 +8,8 @@
     "biceps",
     "forearms"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A pull-up on an assisted machine that takes some of your weight, so you can build up to full pull-ups.",
   "instructions": [
     "Adjust the machine to your desired weight and height settings.",
     "Grasp the handles with an overhand grip, slightly wider than shoulder-width apart.",
@@ -35,5 +36,6 @@
       "triceps": 0
     }
   },
+  "femaleVariant": "2529",
   "textSource": "exercisedb"
 }

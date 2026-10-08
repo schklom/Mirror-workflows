@@ -8,7 +8,8 @@
     "shoulders",
     "triceps"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A bench press with a wide grip. Emphasises the chest.",
   "instructions": [
     "Lie flat on a bench with your feet flat on the ground and your back pressed against the bench.",
     "Grasp the barbell with a wide grip, slightly wider than shoulder-width apart.",
@@ -33,5 +34,6 @@
       "biceps": 0
     }
   },
+  "femaleVariant": "7069",
   "textSource": "exercisedb"
 }

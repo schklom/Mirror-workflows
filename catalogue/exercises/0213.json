@@ -9,7 +9,8 @@
     "rhomboids",
     "rear deltoids"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A seated cable row from a high position using a v-bar. You pull toward the torso to work the lats and the middle back.",
   "instructions": [
     "Sit on the cable machine with your feet flat on the floor and your knees slightly bent.",
     "Grasp the v-bar attachment with an overhand grip, palms facing each other, and your hands shoulder-width apart.",
@@ -28,5 +29,6 @@
       "forearm"
     ]
   },
+  "femaleVariant": "3063",
   "textSource": "exercisedb"
 }

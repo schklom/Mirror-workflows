@@ -8,7 +8,8 @@
     "obliques",
     "hip flexors"
   ],
-  "description": "",
+  "category": "mobility",
+  "description": "A lying twist with the knees bent, lowering them to each side. It loosens the lower back and hips.",
   "instructions": [
     "Lie flat on your back with your knees bent and feet flat on the ground.",
     "Extend your arms out to the sides, perpendicular to your body.",
@@ -17,5 +18,6 @@
     "Repeat the movement to the other side.",
     "Continue alternating sides for the desired number of repetitions."
   ],
+  "femaleVariant": "0132",
   "textSource": "exercisedb"
 }

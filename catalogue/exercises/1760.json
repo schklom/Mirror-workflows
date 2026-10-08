@@ -9,7 +9,8 @@
     "hamstrings",
     "calves"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A squat holding one dumbbell at your chest. Trains the quads and glutes while keeping your torso upright.",
   "instructions": [
     "Stand with your feet shoulder-width apart, holding a dumbbell vertically against your chest with both hands.",
     "Keeping your chest up and core engaged, lower your body down into a squat position by pushing your hips back and bending your knees.",
@@ -31,5 +32,6 @@
       "obliques"
     ]
   },
+  "femaleVariant": "2281",
   "textSource": "exercisedb"
 }

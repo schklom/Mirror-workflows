@@ -8,7 +8,8 @@
     "soleus",
     "ankle stabilizers"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "Seated on a machine, you press through the balls of your feet to raise your heels. Isolates the calves, especially the soleus.",
   "instructions": [
     "Adjust the seat height so that your knees are slightly bent and your feet are flat on the footplate.",
     "Place your toes on the footplate with your heels hanging off the edge.",
@@ -23,5 +24,6 @@
     ],
     "secondaries": []
   },
+  "femaleVariant": "3106",
   "textSource": "exercisedb"
 }

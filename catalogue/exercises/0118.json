@@ -8,7 +8,8 @@
     "biceps",
     "forearms"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A bent-over row with an underhand grip. Targets the upper back and biceps.",
   "instructions": [
     "Stand with your feet shoulder-width apart and knees slightly bent.",
     "Hold a barbell with an overhand grip, palms facing down, and hands slightly wider than shoulder-width apart.",
@@ -27,5 +28,6 @@
       "forearm"
     ]
   },
+  "femaleVariant": "2467",
   "textSource": "exercisedb"
 }

@@ -8,7 +8,8 @@
     "glutes",
     "hamstrings"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "Seated on a machine, you push your knees apart against pads. Works the outer hips and glutes.",
   "instructions": [
     "Adjust the seat height so that your knees are at a 90-degree angle.",
     "Sit on the machine with your back against the backrest and your feet on the footrests.",
@@ -29,5 +30,6 @@
       "hamstring": 0
     }
   },
+  "femaleVariant": "3611",
   "textSource": "exercisedb"
 }

@@ -8,7 +8,8 @@
     "chest",
     "shoulders"
   ],
-  "description": "",
+  "category": "calisthenics",
+  "description": "A close-grip push-up done on your knees. An easier way to train the triceps and chest.",
   "instructions": [
     "Start by getting on your hands and knees, with your hands shoulder-width apart and your knees hip-width apart.",
     "Lower your upper body towards the ground by bending your elbows, keeping them close to your sides.",
@@ -16,5 +17,6 @@
     "Push through your palms to straighten your arms and return to the starting position.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "2613",
   "textSource": "exercisedb"
 }

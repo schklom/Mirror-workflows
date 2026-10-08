@@ -8,7 +8,8 @@
     "biceps",
     "shoulders"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A seated one-arm row with a band and a torso twist. It trains the back and obliques.",
   "instructions": [
     "Sit on a bench or chair with your feet flat on the ground and your back straight.",
     "Hold the band with one hand and extend your arm fully in front of you.",
@@ -27,5 +28,6 @@
       "forearm"
     ]
   },
+  "femaleVariant": "3843",
   "textSource": "exercisedb"
 }

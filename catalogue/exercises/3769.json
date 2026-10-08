@@ -9,7 +9,8 @@
     "hamstrings",
     "calves"
   ],
-  "description": "",
+  "category": "calisthenics",
+  "description": "A squat where the leg steps diagonally behind and across the body, like a curtsy. It trains the glutes and outer thighs.",
   "instructions": [
     "Stand with your feet shoulder-width apart.",
     "Take a step diagonally behind and across your body with your right foot, crossing it behind your left leg.",
@@ -18,5 +19,6 @@
     "Push through your front foot to return to the starting position.",
     "Repeat on the other side, stepping diagonally behind and across your body with your left foot."
   ],
+  "femaleVariant": "5177",
   "textSource": "exercisedb"
 }

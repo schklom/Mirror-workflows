@@ -8,7 +8,8 @@
     "biceps",
     "forearms"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A seated cable row with a wide grip handle. The wide hold puts more emphasis on the upper back and rear shoulders.",
   "instructions": [
     "Sit on the cable row machine with your feet flat on the footrests and your knees slightly bent.",
     "Grasp the handle with a wide overhand grip, palms facing down.",
@@ -28,5 +29,6 @@
       "forearm"
     ]
   },
+  "femaleVariant": "3598",
   "textSource": "exercisedb"
 }

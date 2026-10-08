@@ -9,7 +9,8 @@
     "rhomboids",
     "rear deltoids"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A squat combined with a cable row, using a rope. It trains the lats and legs together.",
   "instructions": [
     "Attach a rope to a cable machine at waist height.",
     "Stand facing the cable machine with your feet shoulder-width apart.",
@@ -20,5 +21,6 @@
     "Pause for a moment at the top of the movement, then slowly release the rope and extend your arms back to the starting position.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "2550",
   "textSource": "exercisedb"
 }

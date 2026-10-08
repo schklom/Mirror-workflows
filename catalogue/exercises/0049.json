@@ -8,7 +8,8 @@
     "biceps",
     "forearms"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "Chest supported on an incline bench, you row the bar toward your chest. Works the upper back with little lower back stress.",
   "instructions": [
     "Set up an incline bench at a 45-degree angle.",
     "Lie face down on the bench with your chest against the pad and your feet flat on the ground.",
@@ -28,5 +29,6 @@
       "forearm"
     ]
   },
+  "femaleVariant": "2503",
   "textSource": "exercisedb"
 }

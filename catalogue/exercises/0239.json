@@ -9,7 +9,8 @@
     "forearms",
     "shoulders"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A seated cable row with a straight back and an overhand grip. It builds the muscles of the mid and upper back.",
   "instructions": [
     "Sit on the cable row machine with your feet flat on the footrests and your knees slightly bent.",
     "Grasp the cable handles with an overhand grip, palms facing down.",
@@ -31,5 +32,6 @@
       "triceps"
     ]
   },
+  "femaleVariant": "3069",
   "textSource": "exercisedb"
 }

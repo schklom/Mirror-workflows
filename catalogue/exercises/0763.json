@@ -7,7 +7,8 @@
   "secondaryMuscles": [
     "hamstrings"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A calf raise done with the smith bar for support and the toes on a raised edge. It trains the calves through a full range of motion.",
   "instructions": [
     "Adjust the smith machine bar to a height just below your shoulders.",
     "Stand facing the bar with your feet hip-width apart and toes pointing forward.",
@@ -23,5 +24,6 @@
     ],
     "secondaries": []
   },
+  "femaleVariant": "2667",
   "textSource": "exercisedb"
 }

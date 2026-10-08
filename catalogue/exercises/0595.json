@@ -7,7 +7,8 @@
   "secondaryMuscles": [
     "obliques"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "Seated on a machine with a chest pad, you curl your torso forward against resistance. Works the abs.",
   "instructions": [
     "Adjust the seat height and chest pad position according to your comfort.",
     "Sit on the machine with your back against the chest pad and your feet flat on the floor.",
@@ -17,5 +18,6 @@
     "Slowly return to the starting position by contracting your abs and pulling yourself back up.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "3753",
   "textSource": "exercisedb"
 }

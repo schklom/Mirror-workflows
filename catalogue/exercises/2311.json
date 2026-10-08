@@ -10,7 +10,8 @@
     "glutes",
     "calves"
   ],
-  "description": "",
+  "category": "cardio",
+  "description": "Stepping on a stepmill at a steady pace. A tough, low-impact cardio workout for legs and glutes.",
   "instructions": [
     "Adjust the stepmill machine to a comfortable level.",
     "Step onto the machine and place your hands on the handrails for support.",
@@ -20,5 +21,6 @@
     "Gradually increase the intensity or speed as you become more comfortable with the exercise.",
     "Remember to cool down and stretch after completing the exercise."
   ],
+  "femaleVariant": "2490",
   "textSource": "exercisedb"
 }

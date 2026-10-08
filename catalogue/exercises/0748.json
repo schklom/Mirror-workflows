@@ -8,7 +8,8 @@
     "triceps",
     "shoulders"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "Lying on a bench, you press a smith machine bar up from your chest. Works the chest, shoulders and triceps.",
   "instructions": [
     "Adjust the height of the smith machine bar to chest level.",
     "Lie flat on the bench with your feet firmly planted on the ground.",
@@ -34,5 +35,6 @@
       "biceps": 0
     }
   },
+  "femaleVariant": "7002",
   "textSource": "exercisedb"
 }

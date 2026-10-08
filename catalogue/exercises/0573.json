@@ -8,7 +8,8 @@
     "glutes",
     "hamstrings"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "On a machine, you extend your torso against a pad to work the lower back. Also brings in the glutes and hamstrings.",
   "instructions": [
     "Adjust the machine to fit your body size and range of motion.",
     "Sit on the machine with your back against the pad and your feet secured.",
@@ -27,5 +28,6 @@
       "hamstring"
     ]
   },
+  "femaleVariant": "3607",
   "textSource": "exercisedb"
 }

@@ -7,7 +7,8 @@
   "secondaryMuscles": [
     "hip flexors"
   ],
-  "description": "",
+  "category": "calisthenics",
+  "description": "Hanging from a bar, you raise your straight legs in front of you. It builds the abs and hip flexors.",
   "instructions": [
     "Hang from a pull-up bar with your arms fully extended and your palms facing away from you.",
     "Engage your core and lift your legs up in front of you, keeping them straight.",
@@ -15,5 +16,6 @@
     "Pause for a moment at the top, then slowly lower your legs back down to the starting position.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "2530",
   "textSource": "exercisedb"
 }

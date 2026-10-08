@@ -8,7 +8,8 @@
     "chest",
     "shoulders"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A close grip bench press on an incline. It targets the triceps and the upper chest.",
   "instructions": [
     "Set up an incline bench at a 45-degree angle.",
     "Lie down on the bench with your feet flat on the ground.",
@@ -18,5 +19,6 @@
     "Push the barbell back up to the starting position, fully extending your arms.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "2519",
   "textSource": "exercisedb"
 }

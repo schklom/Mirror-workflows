@@ -8,7 +8,8 @@
     "biceps",
     "forearms"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A seated cable row, pulling the handles toward the torso. It trains the back and biceps.",
   "instructions": [
     "Sit on the cable row machine with your feet flat on the footrests and your knees slightly bent.",
     "Grasp the handles with an overhand grip, keeping your back straight and your shoulders relaxed.",
@@ -26,5 +27,6 @@
       "forearm"
     ]
   },
+  "femaleVariant": "2245",
   "textSource": "exercisedb"
 }

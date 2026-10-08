@@ -8,7 +8,8 @@
     "biceps",
     "forearms"
   ],
-  "description": "",
+  "category": "calisthenics",
+  "description": "A bodyweight bench pull-up variation hanging beneath a bar. Works the lats and biceps.",
   "instructions": [
     "Position yourself under a bar or a sturdy horizontal surface that is at chest height.",
     "Grab the bar or surface with an overhand grip, slightly wider than shoulder-width apart.",
@@ -18,5 +19,6 @@
     "Lower yourself back down to the starting position with control.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "3020",
   "textSource": "exercisedb"
 }

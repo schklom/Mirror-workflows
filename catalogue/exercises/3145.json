@@ -8,7 +8,8 @@
     "triceps",
     "shoulders"
   ],
-  "description": "",
+  "category": "calisthenics",
+  "description": "A push-up finished with an extra shove that spreads the shoulder blades at the top. It trains the chest and the serratus muscles that stabilise the shoulder blades.",
   "instructions": [
     "Start in a high plank position with your hands slightly wider than shoulder-width apart and your body in a straight line from head to heels.",
     "Lower your body towards the ground by bending your elbows, keeping them close to your sides.",
@@ -17,5 +18,6 @@
     "Pause for a moment, then reverse the movement by retracting your shoulder blades and lowering your body back down to the starting position.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "3146",
   "textSource": "exercisedb"
 }

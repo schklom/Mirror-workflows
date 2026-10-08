@@ -8,7 +8,8 @@
     "biceps",
     "shoulders"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "Forearms rest on your thighs with palms up, and you curl the dumbbells with your wrists. It builds the underside of the forearms.",
   "instructions": [
     "Sit on a bench with your feet flat on the ground and hold a dumbbell in each hand, palms facing up.",
     "Rest your forearms on your thighs, allowing your wrists to hang off the edge.",
@@ -16,5 +17,6 @@
     "Pause for a moment, then lower your wrists back down to the starting position.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "2633",
   "textSource": "exercisedb"
 }

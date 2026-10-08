@@ -9,7 +9,8 @@
     "hamstrings",
     "calves"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A lunge variation on the smith machine, stepping back and lowering into a lunge. It works the glutes and thighs and challenges balance.",
   "instructions": [
     "Set up the smith machine with the barbell at hip height.",
     "Stand facing away from the machine with your feet shoulder-width apart.",
@@ -30,5 +31,6 @@
       "calves"
     ]
   },
+  "femaleVariant": "3111",
   "textSource": "exercisedb"
 }

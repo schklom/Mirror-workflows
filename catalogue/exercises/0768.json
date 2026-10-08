@@ -8,7 +8,8 @@
     "glutes",
     "hamstrings"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A single-leg split squat using the smith bar for balance, with the back foot raised. It trains the quads and glutes one side at a time.",
   "instructions": [
     "Stand in front of the smith machine with your feet shoulder-width apart.",
     "Place one foot behind you on a bench or step, with your toes pointing forward.",
@@ -28,5 +29,6 @@
       "calves"
     ]
   },
+  "femaleVariant": "2670",
   "textSource": "exercisedb"
 }

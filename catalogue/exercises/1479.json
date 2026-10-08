@@ -8,7 +8,8 @@
     "triceps",
     "shoulders"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A lever machine chest press with an inclined path, version 2. It builds the upper chest, front delts and triceps.",
   "instructions": [
     "Adjust the seat height and backrest angle on the leverage machine to a comfortable position.",
     "Sit on the machine with your back against the backrest and your feet flat on the floor.",
@@ -33,5 +34,6 @@
       "biceps": 0
     }
   },
+  "femaleVariant": "2455",
   "textSource": "exercisedb"
 }

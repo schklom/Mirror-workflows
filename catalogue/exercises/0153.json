@@ -9,7 +9,8 @@
     "rhomboids",
     "rear deltoids"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A cable pulldown with arms crossing over. Trains the lats.",
   "instructions": [
     "Attach a cable handle to each side of a cable machine at shoulder height.",
     "Stand in the middle of the machine with your feet shoulder-width apart.",
@@ -39,5 +40,6 @@
       "triceps": 0
     }
   },
+  "femaleVariant": "3044",
   "textSource": "exercisedb"
 }

@@ -7,7 +7,8 @@
   "secondaryMuscles": [
     "calves"
   ],
-  "description": "",
+  "category": "stretching",
+  "description": "Standing with a strap around your foot, you pull your toes toward you to stretch the hamstring and calf.",
   "instructions": [
     "Stand upright with your feet shoulder-width apart.",
     "Hold the strap with both hands and place it around the ball of your foot.",
@@ -17,5 +18,6 @@
     "Release the stretch and repeat with the other leg.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "4317",
   "textSource": "exercisedb"
 }

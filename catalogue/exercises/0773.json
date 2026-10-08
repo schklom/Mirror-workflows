@@ -8,7 +8,8 @@
     "hamstrings",
     "glutes"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A standing calf raise with the smith bar resting across the shoulders. It loads the calves for strength and size.",
   "instructions": [
     "Adjust the smith machine bar to a height that allows you to stand with your feet flat on the ground and your shoulders under the bar.",
     "Position yourself under the bar with your feet shoulder-width apart and your toes pointing forward.",
@@ -23,5 +24,6 @@
     ],
     "secondaries": []
   },
+  "femaleVariant": "2655",
   "textSource": "exercisedb"
 }

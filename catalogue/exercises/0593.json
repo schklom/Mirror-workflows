@@ -8,7 +8,8 @@
     "hamstrings",
     "lower back"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "Lying on a machine, you swing your legs up behind you. Works the glutes and lower back.",
   "instructions": [
     "Adjust the leverage machine to fit your body and secure your feet in the foot pads.",
     "Lie face down on the machine with your upper body hanging off the edge and your hips resting on the pad.",
@@ -26,5 +27,6 @@
       "lower-back"
     ]
   },
+  "femaleVariant": "3177",
   "textSource": "exercisedb"
 }

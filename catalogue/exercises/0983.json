@@ -8,7 +8,8 @@
     "biceps",
     "rhomboids"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A kneeling one-arm pulldown with a band, driving the elbow toward the ribs. It trains the lats.",
   "instructions": [
     "Attach the band to a sturdy anchor point above your head.",
     "Kneel down and hold the band with one hand, palm facing down.",
@@ -17,5 +18,6 @@
     "Pause for a moment at the bottom, then slowly release the tension and return to the starting position.",
     "Repeat for the desired number of repetitions, then switch sides."
   ],
+  "femaleVariant": "3842",
   "textSource": "exercisedb"
 }

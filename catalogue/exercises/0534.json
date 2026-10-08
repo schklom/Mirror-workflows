@@ -9,7 +9,8 @@
     "hamstrings",
     "calves"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "Hold a kettlebell close to your chest and squat down between your hips. A friendly squat variation for legs, glutes and core.",
   "instructions": [
     "Stand with your feet shoulder-width apart, holding a kettlebell close to your chest with both hands.",
     "Keeping your chest up and core engaged, lower your body down into a squat position by bending at the knees and hips.",
@@ -31,5 +32,6 @@
       "obliques"
     ]
   },
+  "femaleVariant": "2356",
   "textSource": "exercisedb"
 }

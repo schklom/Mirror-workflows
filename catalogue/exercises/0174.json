@@ -8,7 +8,8 @@
     "obliques",
     "shoulders"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A rotational cable move where you sweep the handle across the body and up over the shoulder. It builds twisting power and trains the core and obliques.",
   "instructions": [
     "Stand facing the cable machine with your feet shoulder-width apart.",
     "Hold the cable handle with both hands at chest level, palms facing down.",
@@ -19,5 +20,6 @@
     "Repeat the movement on the opposite side.",
     "Continue alternating sides for the desired number of repetitions."
   ],
+  "femaleVariant": "3053",
   "textSource": "exercisedb"
 }

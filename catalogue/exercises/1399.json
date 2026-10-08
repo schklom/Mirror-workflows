@@ -8,7 +8,8 @@
     "chest",
     "shoulders"
   ],
-  "description": "",
+  "category": "calisthenics",
+  "description": "With your hands on a bench behind you and your feet on the floor, you bend and straighten your elbows. It builds the triceps, chest and shoulders.",
   "instructions": [
     "Sit on the edge of a bench or chair with your hands gripping the edge, fingers pointing forward.",
     "Slide your butt off the bench, supporting your weight with your hands.",
@@ -16,5 +17,6 @@
     "Push yourself back up to the starting position by straightening your arms.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "2546",
   "textSource": "exercisedb"
 }

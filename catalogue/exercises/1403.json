@@ -8,7 +8,8 @@
     "trapezius",
     "sternocleidomastoid"
   ],
-  "description": "",
+  "category": "stretching",
+  "description": "Gently tilt your head sideways to stretch the side of your neck. It eases tension in the neck and upper shoulder.",
   "instructions": [
     "Stand or sit up straight with your shoulders relaxed.",
     "Tilt your head to one side, bringing your ear towards your shoulder.",
@@ -16,5 +17,6 @@
     "Repeat on the other side.",
     "Perform 2-4 sets on each side."
   ],
+  "femaleVariant": "4289",
   "textSource": "exercisedb"
 }

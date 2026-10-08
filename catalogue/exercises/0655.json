@@ -9,7 +9,8 @@
     "shoulders",
     "core"
   ],
-  "description": "",
+  "category": "calisthenics",
+  "description": "A push-up with your hands on a stability ball. The unstable surface adds core and shoulder stability work to the chest effort.",
   "instructions": [
     "Place the stability ball on the ground and position yourself facing down with your hands on the ball, shoulder-width apart.",
     "Extend your legs straight out behind you, balancing on your toes.",
@@ -17,5 +18,6 @@
     "Pause for a moment at the bottom, then push yourself back up to the starting position by straightening your arms.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "2679",
   "textSource": "exercisedb"
 }

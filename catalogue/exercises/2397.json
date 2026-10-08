@@ -8,7 +8,8 @@
     "triceps",
     "chest"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A seated dumbbell press from shoulder height. Builds the shoulders and triceps.",
   "instructions": [
     "Sit on a bench with a dumbbell in each hand, palms facing forward.",
     "Raise the dumbbells to shoulder height, with your elbows bent and palms facing forward.",
@@ -16,5 +17,6 @@
     "Pause for a moment at the top, then slowly lower the dumbbells back to the starting position.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "3430",
   "textSource": "exercisedb"
 }

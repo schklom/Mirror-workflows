@@ -8,7 +8,8 @@
     "ankles",
     "feet"
   ],
-  "description": "",
+  "category": "stretching",
+  "description": "A seated stretch where you turn your foot to open the outer side of your lower leg. It targets the peroneal muscles beside the calf.",
   "instructions": [
     "Sit on the ground with your legs extended in front of you.",
     "Loop the rope around the ball of your foot and hold the ends of the rope with your hands.",
@@ -17,5 +18,6 @@
     "Release the tension on the rope and repeat the stretch on the other leg.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "4325",
   "textSource": "exercisedb"
 }

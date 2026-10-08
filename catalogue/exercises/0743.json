@@ -9,7 +9,8 @@
     "hamstrings",
     "calves"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "On a sled machine, you squat with your back against the pad. Works the quads and glutes.",
   "instructions": [
     "Adjust the sled machine to a comfortable position for your height.",
     "Stand with your feet shoulder-width apart on the platform, toes slightly pointed outwards.",
@@ -37,5 +38,6 @@
       "calves": 0
     }
   },
+  "femaleVariant": "2384",
   "textSource": "exercisedb"
 }

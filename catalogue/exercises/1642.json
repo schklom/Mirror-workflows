@@ -7,7 +7,8 @@
   "secondaryMuscles": [
     "forearms"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A seated one-arm concentration curl using a cable. It isolates the biceps on one side at a time.",
   "instructions": [
     "Sit on a bench with your feet flat on the floor and your back straight.",
     "Hold a cable handle with one hand and place your elbow on the inside of your thigh, just above the knee.",
@@ -16,5 +17,6 @@
     "Slowly lower the cable handle back to the starting position while inhaling.",
     "Repeat for the desired number of repetitions, then switch arms."
   ],
+  "femaleVariant": "3064",
   "textSource": "exercisedb"
 }

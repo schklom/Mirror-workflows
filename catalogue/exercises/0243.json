@@ -7,7 +7,8 @@
   "secondaryMuscles": [
     "obliques"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A standing cable twist with the handle held at the chest. You rotate the torso side to side to work the abs and obliques.",
   "instructions": [
     "Stand with your feet shoulder-width apart, facing the cable machine.",
     "Hold the cable handle with both hands in front of your chest, keeping your arms slightly bent.",
@@ -17,5 +18,6 @@
     "Repeat the movement to the left side.",
     "Continue alternating sides for the desired number of repetitions."
   ],
+  "femaleVariant": "2451",
   "textSource": "exercisedb"
 }

@@ -7,7 +7,8 @@
   "secondaryMuscles": [
     "obliques"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A seated cable crunch with the handle behind the head. You curl the torso forward against the pull to work the abs.",
   "instructions": [
     "Sit on a cable machine with your feet flat on the ground and your knees bent.",
     "Hold the cable handle with both hands and position it behind your head.",
@@ -15,5 +16,6 @@
     "Pause for a moment at the top, then slowly return to the starting position.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "2700",
   "textSource": "exercisedb"
 }

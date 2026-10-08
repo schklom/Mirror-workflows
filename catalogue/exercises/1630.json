@@ -7,7 +7,8 @@
   "secondaryMuscles": [
     "forearms"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A cable curl with a close grip. It keeps constant tension on the biceps.",
   "instructions": [
     "Attach a straight bar to a low pulley cable machine.",
     "Stand facing the machine with your feet shoulder-width apart and your knees slightly bent.",
@@ -18,5 +19,6 @@
     "Inhale and slowly lower the bar back to the starting position, fully extending your arms.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "3041",
   "textSource": "exercisedb"
 }

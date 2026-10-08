@@ -9,7 +9,8 @@
     "hamstrings",
     "calves"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A barbell squat with a bench behind you as a depth target. Trains the quads and glutes.",
   "instructions": [
     "Set up a barbell on a squat rack at chest height.",
     "Stand facing away from the rack, with your feet shoulder-width apart.",
@@ -20,5 +21,6 @@
     "Pause for a moment at the bottom, then push through your heels to return to the starting position.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "2225",
   "textSource": "exercisedb"
 }

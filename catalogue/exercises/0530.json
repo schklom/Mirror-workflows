@@ -8,7 +8,8 @@
     "shoulders",
     "hamstrings"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "Holding two kettlebells, you hinge sideways with one overhead. It trains the obliques, shoulders and hips.",
   "instructions": [
     "Stand with your feet shoulder-width apart, holding a kettlebell in your right hand.",
     "Extend your right arm overhead, keeping your eyes on the kettlebell.",
@@ -18,5 +19,6 @@
     "Pause for a moment, then engage your core and push through your right foot to return to the starting position.",
     "Repeat for the desired number of repetitions, then switch sides."
   ],
+  "femaleVariant": "4520",
   "textSource": "exercisedb"
 }

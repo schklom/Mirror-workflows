@@ -8,7 +8,8 @@
     "hamstrings",
     "glutes"
   ],
-  "description": "",
+  "category": "stretching",
+  "description": "Stand facing a wall and step one foot back with the heel down. It stretches the calf of the back leg.",
   "instructions": [
     "Stand facing a wall or sturdy object, about an arm's length away.",
     "Place your hands on the wall or object at shoulder height.",
@@ -18,5 +19,6 @@
     "Hold the stretch for 20-30 seconds.",
     "Repeat on the other leg."
   ],
+  "femaleVariant": "4319",
   "textSource": "exercisedb"
 }

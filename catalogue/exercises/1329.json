@@ -8,7 +8,8 @@
     "biceps",
     "forearms"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A bent over dumbbell row where your palms rotate as you pull. It works the upper back, lats and biceps through a varied path.",
   "instructions": [
     "Stand with your feet shoulder-width apart, holding a dumbbell in each hand with an overhand grip.",
     "Bend forward at the hips, keeping your back straight and your knees slightly bent.",
@@ -19,5 +20,6 @@
     "Slowly lower the dumbbells back down to the starting position, rotating your palms back to the starting position.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "2622",
   "textSource": "exercisedb"
 }

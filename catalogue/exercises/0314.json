@@ -8,7 +8,8 @@
     "shoulders",
     "triceps"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "An incline dumbbell bench press. The raised bench shifts the work toward the upper chest.",
   "instructions": [
     "Set up an incline bench at a 45-degree angle.",
     "Sit on the bench with your feet flat on the ground and your back pressed firmly against the bench.",
@@ -33,5 +34,6 @@
       "biceps": 0
     }
   },
+  "femaleVariant": "2441",
   "textSource": "exercisedb"
 }

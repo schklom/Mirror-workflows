@@ -8,7 +8,8 @@
     "biceps",
     "forearms"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A seated row on a lever machine with chest support. It works the upper back and lats with minimal lower back strain.",
   "instructions": [
     "Adjust the seat height and footrests to a comfortable position.",
     "Sit on the machine with your chest against the pad and your feet on the footrests.",
@@ -32,5 +33,6 @@
       "triceps"
     ]
   },
+  "femaleVariant": "2246",
   "textSource": "exercisedb"
 }

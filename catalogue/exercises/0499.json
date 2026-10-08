@@ -8,7 +8,8 @@
     "biceps",
     "forearms"
   ],
-  "description": "",
+  "category": "calisthenics",
+  "description": "Lying beneath a bar with a straight body, you pull your chest to the bar. It builds the upper back and biceps.",
   "instructions": [
     "Set up a bar at waist height or use a suspension trainer.",
     "Stand facing the bar or suspension trainer, with your feet shoulder-width apart.",
@@ -28,5 +29,6 @@
       "forearm"
     ]
   },
+  "femaleVariant": "2299",
   "textSource": "exercisedb"
 }

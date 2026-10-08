@@ -8,7 +8,8 @@
     "traps",
     "biceps"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "You pull one dumbbell up along your body toward chin height with the elbow leading. It trains the side shoulders and upper traps.",
   "instructions": [
     "Stand with your feet shoulder-width apart, holding a dumbbell in one hand with an overhand grip.",
     "Let the dumbbell hang at arm's length in front of your thighs, with your palm facing your body.",
@@ -16,5 +17,6 @@
     "Pause for a moment at the top, then inhale and slowly lower the dumbbell back down to the starting position.",
     "Repeat for the desired number of repetitions, then switch to the other arm."
   ],
+  "femaleVariant": "2600",
   "textSource": "exercisedb"
 }

@@ -8,7 +8,8 @@
     "quadriceps",
     "calves"
   ],
-  "description": "",
+  "category": "yoga",
+  "description": "A seated sequence with legs wide that stretches the inner thighs and hamstrings. Move slowly with the breath.",
   "instructions": [
     "Sit on the ground with your legs extended in a wide angle.",
     "Flex your feet and engage your quadriceps.",
@@ -19,5 +20,6 @@
     "Slowly release the stretch and return to the starting position.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "4306",
   "textSource": "exercisedb"
 }

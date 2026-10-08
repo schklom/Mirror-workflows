@@ -9,7 +9,8 @@
     "hamstrings",
     "calves"
   ],
-  "description": "",
+  "category": "plyometrics",
+  "description": "A bodyweight squat finished with an explosive jump. It builds leg power and conditioning.",
   "instructions": [
     "Stand with your feet shoulder-width apart.",
     "Lower your body into a squat position by bending your knees and pushing your hips back.",
@@ -18,5 +19,6 @@
     "Land softly on the balls of your feet and immediately go into the next repetition.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "2374",
   "textSource": "exercisedb"
 }

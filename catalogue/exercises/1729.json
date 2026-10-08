@@ -7,7 +7,8 @@
   "secondaryMuscles": [
     "shoulders"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "Alternating dumbbell triceps extensions while lying down. It isolates each arm in turn.",
   "instructions": [
     "Lie flat on a bench with a dumbbell in each hand, palms facing each other.",
     "Extend your arms straight up over your chest, keeping a slight bend in your elbows.",
@@ -15,5 +16,6 @@
     "Pause for a moment at the bottom, then raise the dumbbell back up to the starting position.",
     "Repeat with the other arm, alternating sides for the desired number of repetitions."
   ],
+  "femaleVariant": "3940",
   "textSource": "exercisedb"
 }

@@ -9,7 +9,8 @@
     "hamstrings",
     "calves"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A split squat with the rear foot raised and a bar on your back. Strong work for the quads and glutes.",
   "instructions": [
     "Stand with your feet shoulder-width apart, holding a barbell across your upper back.",
     "Take a large step forward with one leg, keeping your torso upright.",
@@ -32,5 +33,6 @@
       "obliques"
     ]
   },
+  "femaleVariant": "2227",
   "textSource": "exercisedb"
 }

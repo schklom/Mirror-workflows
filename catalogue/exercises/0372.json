@@ -7,7 +7,8 @@
   "secondaryMuscles": [
     "forearms"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "You curl a dumbbell with the upper arm braced on a preacher pad. The pad stops swinging so the biceps do the work.",
   "instructions": [
     "Sit on a preacher curl bench with your upper arms resting on the pad and your chest against it.",
     "Hold a dumbbell in each hand with your palms facing up and your arms fully extended.",
@@ -17,5 +18,6 @@
     "Inhale and slowly begin to lower the dumbbells back to the starting position.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "2385",
   "textSource": "exercisedb"
 }

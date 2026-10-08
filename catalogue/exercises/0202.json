@@ -9,7 +9,8 @@
     "rhomboids",
     "biceps"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A one-arm cable row with a stirrup handle, aimed at the rear delts. You pull back and squeeze the shoulder blade, then switch sides.",
   "instructions": [
     "Attach a stirrup handle to a low cable pulley and stand facing the machine.",
     "Grasp the handle with your left hand and take a step back with your right foot, positioning your body at a slight angle.",
@@ -28,5 +29,6 @@
       "upper-back"
     ]
   },
+  "femaleVariant": "3058",
   "textSource": "exercisedb"
 }

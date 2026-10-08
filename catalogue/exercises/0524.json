@@ -9,7 +9,8 @@
     "triceps",
     "obliques"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A kettlebell press that takes you from standing to leaning back while the bell stays overhead. It trains the shoulders, trunk and hips.",
   "instructions": [
     "Stand with your feet shoulder-width apart, holding a kettlebell in your right hand.",
     "Bend your knees slightly and press the kettlebell overhead with your right arm, keeping your elbow locked.",
@@ -20,5 +21,6 @@
     "As you drive your hips forward, use your core and right arm to press the kettlebell back up to the starting position.",
     "Repeat for the desired number of repetitions, then switch sides."
   ],
+  "femaleVariant": "2654",
   "textSource": "exercisedb"
 }

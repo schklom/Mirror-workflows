@@ -7,7 +7,8 @@
   "secondaryMuscles": [
     "forearms"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "Alternating dumbbell curls seated on an exercise ball. It trains the biceps while the core keeps you upright.",
   "instructions": [
     "Sit on an exercise ball with your feet flat on the ground and your back straight.",
     "Hold a dumbbell in each hand with your palms facing forward and your arms fully extended.",
@@ -16,5 +17,6 @@
     "Repeat the curl with the other arm.",
     "Continue alternating curls for the desired number of repetitions."
   ],
+  "femaleVariant": "2698",
   "textSource": "exercisedb"
 }

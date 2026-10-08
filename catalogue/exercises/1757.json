@@ -8,7 +8,8 @@
     "hamstrings",
     "lower back"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A one-leg hip hinge holding a dumbbell. Works the glutes and hamstrings and improves balance.",
   "instructions": [
     "Stand with your feet hip-width apart, holding a dumbbell in your right hand.",
     "Shift your weight onto your left leg and lift your right foot slightly off the ground.",
@@ -30,5 +31,6 @@
       "calves"
     ]
   },
+  "femaleVariant": "2635",
   "textSource": "exercisedb"
 }

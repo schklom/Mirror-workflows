@@ -9,7 +9,8 @@
     "hamstrings",
     "calves"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A full-depth back squat on the smith machine, where the fixed bar path gives extra stability. It trains the glutes, quads and thighs.",
   "instructions": [
     "Set up the smith machine with the barbell at shoulder height.",
     "Stand with your feet shoulder-width apart, toes slightly turned out.",
@@ -32,5 +33,6 @@
       "calves"
     ]
   },
+  "femaleVariant": "11305",
   "textSource": "exercisedb"
 }

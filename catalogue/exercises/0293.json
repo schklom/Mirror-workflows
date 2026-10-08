@@ -8,7 +8,8 @@
     "biceps",
     "forearms"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A two-arm dumbbell row done bent over. You pull the weights to the chest to build the upper back.",
   "instructions": [
     "Stand with your feet shoulder-width apart, knees slightly bent, and hold a dumbbell in each hand with your palms facing your body.",
     "Bend forward at the hips, keeping your back straight and your core engaged.",
@@ -27,5 +28,6 @@
       "forearm"
     ]
   },
+  "femaleVariant": "2482",
   "textSource": "exercisedb"
 }

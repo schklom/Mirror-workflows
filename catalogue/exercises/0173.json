@@ -7,7 +7,8 @@
   "secondaryMuscles": [
     "shoulders"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "Overhead cable triceps extension from a low pulley with a straight bar. It isolates the triceps, especially the long head, through a deep stretch behind the head.",
   "instructions": [
     "Adjust the cable machine to a low pulley position.",
     "Attach a straight bar to the cable.",
@@ -18,5 +19,6 @@
     "Pause for a moment, then extend your arms back to the starting position.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "3052",
   "textSource": "exercisedb"
 }

@@ -7,7 +7,8 @@
   "secondaryMuscles": [
     "forearms"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A hammer curl while sitting on an exercise ball. It trains the brachialis, biceps and core.",
   "instructions": [
     "Sit on an exercise ball with your feet flat on the ground and your back straight.",
     "Hold a dumbbell in each hand with your palms facing your body and your arms fully extended.",
@@ -17,5 +18,6 @@
     "Inhale and slowly begin to lower the dumbbells back to the starting position.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "2647",
   "textSource": "exercisedb"
 }

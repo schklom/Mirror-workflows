@@ -7,7 +7,8 @@
   "secondaryMuscles": [
     "hip flexors"
   ],
-  "description": "",
+  "category": "calisthenics",
+  "description": "A crunch done on a stability ball. The ball adds a wider range and demands balance, working the abs.",
   "instructions": [
     "Sit on the stability ball with your feet flat on the ground and your knees bent at a 90-degree angle.",
     "Lie back on the ball until your lower back is supported and your upper body is parallel to the floor.",
@@ -16,5 +17,6 @@
     "Pause for a moment at the top of the movement, then slowly lower your upper body back down to the starting position.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "2701",
   "textSource": "exercisedb"
 }

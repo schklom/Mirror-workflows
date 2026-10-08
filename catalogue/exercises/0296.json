@@ -8,7 +8,8 @@
     "chest",
     "shoulders"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A close-grip dumbbell press with the weights held together. It places the load on the triceps.",
   "instructions": [
     "Sit on a flat bench with a dumbbell in each hand, resting on your thighs.",
     "Using your thighs to help raise the dumbbells, lift the dumbbells one at a time so that you can hold them in front of you at shoulder width.",
@@ -17,5 +18,6 @@
     "As you exhale, use your triceps to lift the dumbbells back to the starting position.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "2645",
   "textSource": "exercisedb"
 }

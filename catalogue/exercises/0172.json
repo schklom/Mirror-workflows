@@ -8,7 +8,8 @@
     "triceps",
     "shoulders"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "An incline cable pushdown with straight arms. Targets the lats.",
   "instructions": [
     "Attach a straight bar to a high pulley cable machine.",
     "Stand facing away from the machine with your feet shoulder-width apart.",
@@ -18,5 +19,6 @@
     "Pause for a moment at the bottom, then slowly return the bar to the starting position.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "3051",
   "textSource": "exercisedb"
 }

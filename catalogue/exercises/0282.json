@@ -8,7 +8,8 @@
     "hip flexors",
     "lower back"
   ],
-  "description": "",
+  "category": "calisthenics",
+  "description": "A sit-up on a decline bench with the feet secured. The slope makes it harder and works the abs and hip flexors.",
   "instructions": [
     "Lie on a decline bench with your feet secured and your knees bent.",
     "Place your hands behind your head or across your chest.",
@@ -16,5 +17,6 @@
     "Pause for a moment at the top, then slowly lower your upper body back down to the starting position.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "2449",
   "textSource": "exercisedb"
 }

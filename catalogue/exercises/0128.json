@@ -8,7 +8,8 @@
     "forearms",
     "core"
   ],
-  "description": "",
+  "category": "cardio",
+  "description": "Wave the heavy ropes rhythmically to raise heart rate and challenge the shoulders and arms.",
   "instructions": [
     "Stand with your feet shoulder-width apart and knees slightly bent.",
     "Hold one end of the rope in each hand, with your palms facing each other.",
@@ -16,5 +17,6 @@
     "Begin making alternating waves with the ropes by rapidly raising and lowering each arm.",
     "Continue for the desired duration or number of repetitions."
   ],
+  "femaleVariant": "2565",
   "textSource": "exercisedb"
 }

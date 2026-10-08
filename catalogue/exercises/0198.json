@@ -8,7 +8,8 @@
     "biceps",
     "forearms"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A classic seated cable pulldown with a wide bar. You pull to the chest to train the lats and the muscles around the shoulder blades.",
   "instructions": [
     "Adjust the cable pulldown machine so that the seat is at a comfortable height and the knee pad is secured.",
     "Sit on the seat with your back straight and your feet flat on the ground.",
@@ -38,5 +39,6 @@
       "triceps": 0
     }
   },
+  "femaleVariant": "2243",
   "textSource": "exercisedb"
 }

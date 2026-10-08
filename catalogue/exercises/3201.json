@@ -7,7 +7,8 @@
   "secondaryMuscles": [
     "hip flexors"
   ],
-  "description": "",
+  "category": "calisthenics",
+  "description": "A short-range sit-up where you curl only partway up. It keeps tension on the abs and is easier on the lower back than a full sit-up.",
   "instructions": [
     "Lie flat on your back with your knees bent and feet flat on the ground.",
     "Place your hands behind your head with your elbows pointing outwards.",
@@ -15,5 +16,6 @@
     "Pause for a moment at the top, then slowly lower your upper body back down to the starting position.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "3261",
   "textSource": "exercisedb"
 }

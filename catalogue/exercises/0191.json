@@ -8,7 +8,8 @@
     "deltoids",
     "trapezius"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A one-arm cable raise done bent over, moving the arm out to the side. It works the upper back and rear shoulder with a controlled sweep.",
   "instructions": [
     "Stand with your feet shoulder-width apart, facing a cable machine.",
     "Grasp the handle with one hand and step back to create tension on the cable.",
@@ -17,5 +18,6 @@
     "Slowly bring your arm back to the starting position, maintaining control throughout the movement.",
     "Repeat for the desired number of repetitions, then switch sides."
   ],
+  "femaleVariant": "2513",
   "textSource": "exercisedb"
 }

@@ -7,7 +7,8 @@
   "secondaryMuscles": [
     "calves"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "Lying face down on a machine, you curl your heels toward your glutes. Isolates the hamstrings.",
   "instructions": [
     "Adjust the machine to fit your body and select the desired weight.",
     "Lie face down on the machine with your legs straight and your heels against the padded lever.",
@@ -25,5 +26,6 @@
       "calves"
     ]
   },
+  "femaleVariant": "2223",
   "textSource": "exercisedb"
 }

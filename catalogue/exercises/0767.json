@@ -7,7 +7,8 @@
   "secondaryMuscles": [
     "shoulders"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A shrug with the smith bar, lifting the shoulders straight up toward the ears. It builds the upper traps.",
   "instructions": [
     "Stand with your feet shoulder-width apart and your knees slightly bent.",
     "Grasp the barbell with an overhand grip, hands slightly wider than shoulder-width apart.",
@@ -16,5 +17,6 @@
     "Hold for a moment, then slowly lower your shoulders back down to the starting position.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "11306",
   "textSource": "exercisedb"
 }

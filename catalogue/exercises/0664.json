@@ -9,7 +9,8 @@
     "chest",
     "triceps"
   ],
-  "description": "",
+  "category": "calisthenics",
+  "description": "You do a push-up, then rotate into a side plank. Works the chest, arms, shoulders and obliques.",
   "instructions": [
     "Start in a push-up position with your hands shoulder-width apart and your body in a straight line.",
     "Lower your body towards the ground by bending your elbows, keeping your core engaged.",
@@ -19,5 +20,6 @@
     "Repeat the push-up and side plank on the opposite side.",
     "Continue alternating sides for the desired number of repetitions."
   ],
+  "femaleVariant": "0682",
   "textSource": "exercisedb"
 }

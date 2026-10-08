@@ -8,7 +8,8 @@
     "deltoids",
     "triceps"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A standing cable fly at chest height. You bring the handles together in front of you to squeeze the chest.",
   "instructions": [
     "Attach cables to both sides of a cable machine at chest height.",
     "Stand in the center of the machine with one foot slightly in front of the other.",
@@ -27,5 +28,6 @@
       "trapezius"
     ]
   },
+  "femaleVariant": "2439",
   "textSource": "exercisedb"
 }

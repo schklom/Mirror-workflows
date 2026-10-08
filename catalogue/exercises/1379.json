@@ -7,7 +7,8 @@
   "secondaryMuscles": [
     "hamstrings"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "Seated calf raise with a dumbbell resting on your knees. The bent knee focuses on the soleus beneath the calf.",
   "instructions": [
     "Sit on a bench or chair with your feet flat on the ground and a dumbbell resting on your thighs.",
     "Place the balls of your feet on a raised surface such as a step or block, with your heels hanging off the edge.",
@@ -16,5 +17,6 @@
     "Pause for a moment at the top, then slowly lower your heels back down to the starting position.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "3082",
   "textSource": "exercisedb"
 }

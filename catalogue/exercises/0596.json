@@ -8,7 +8,8 @@
     "deltoids",
     "trapezius"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "Seated on a machine, you bring the handles together in front of you with arms nearly straight. Isolates the chest.",
   "instructions": [
     "Adjust the seat height and position yourself on the machine with your back against the pad.",
     "Grasp the handles with a pronated grip and keep your elbows slightly bent.",
@@ -33,5 +34,6 @@
       "biceps": 0
     }
   },
+  "femaleVariant": "2255",
   "textSource": "exercisedb"
 }

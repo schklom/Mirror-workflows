@@ -8,7 +8,8 @@
     "deltoids",
     "triceps"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "Cable crossovers aimed at the upper chest. It trains the upper pecs.",
   "instructions": [
     "Attach the handles to the cables at chest height.",
     "Stand in the center of the cable machine with one foot slightly in front of the other.",
@@ -28,5 +29,6 @@
       "trapezius"
     ]
   },
+  "femaleVariant": "2442",
   "textSource": "exercisedb"
 }

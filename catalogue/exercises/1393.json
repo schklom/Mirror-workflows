@@ -8,7 +8,8 @@
     "hamstrings",
     "glutes"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A one-leg calf raise lifting a smith machine bar from the floor. It works each calf on its own under a guided bar path.",
   "instructions": [
     "Position yourself on the floor under the smith machine bar, facing away from the machine.",
     "Place the balls of your feet on a raised surface, such as a weight plate or block.",
@@ -24,5 +25,6 @@
     ],
     "secondaries": []
   },
+  "femaleVariant": "2672",
   "textSource": "exercisedb"
 }

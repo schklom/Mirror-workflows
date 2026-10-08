@@ -8,7 +8,8 @@
     "obliques",
     "shoulders"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "With a kettlebell held overhead, you push your hips out and reach down toward your foot. Builds shoulder stability, flexibility and core strength.",
   "instructions": [
     "Stand with your feet shoulder-width apart, holding a kettlebell in your right hand overhead.",
     "Rotate your left foot outwards about 45 degrees and keep your right foot pointing forward.",
@@ -17,5 +18,6 @@
     "Pause for a moment, then return to the starting position by pushing through your right foot and engaging your obliques.",
     "Repeat for the desired number of repetitions, then switch sides."
   ],
+  "femaleVariant": "4519",
   "textSource": "exercisedb"
 }

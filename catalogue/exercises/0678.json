@@ -8,7 +8,8 @@
     "biceps",
     "forearms"
   ],
-  "description": "",
+  "category": "calisthenics",
+  "description": "A pull-up bar move that mixes a pull-up with a controlled pulldown. Builds the lats, upper back and arms.",
   "instructions": [
     "Stand in front of a pull-up bar with your feet shoulder-width apart.",
     "Reach up and grab the bar with an overhand grip, slightly wider than shoulder-width apart.",
@@ -17,5 +18,6 @@
     "Pause for a moment at the top, then slowly lower your body back down to the starting position.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "2704",
   "textSource": "exercisedb"
 }

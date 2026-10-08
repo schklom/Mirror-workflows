@@ -8,7 +8,8 @@
     "chest",
     "shoulders"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A kneeling machine-assisted triceps dip that lowers the load, so you can build pressing strength in the triceps.",
   "instructions": [
     "Adjust the machine to your desired weight and height.",
     "Kneel down on the pad facing the machine, with your hands gripping the handles.",
@@ -28,5 +29,6 @@
       "biceps"
     ]
   },
+  "femaleVariant": "2575",
   "textSource": "exercisedb"
 }

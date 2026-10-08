@@ -8,7 +8,8 @@
     "biceps",
     "forearms"
   ],
-  "description": "",
+  "category": "calisthenics",
+  "description": "A pull-up with an underhand grip. Puts extra emphasis on the biceps along with the lats.",
   "instructions": [
     "Grab the pull-up bar with an underhand grip, hands shoulder-width apart.",
     "Hang from the bar with your arms fully extended and your body straight.",
@@ -17,5 +18,6 @@
     "Pause for a moment at the top, then slowly lower your body back down to the starting position.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "3895",
   "textSource": "exercisedb"
 }

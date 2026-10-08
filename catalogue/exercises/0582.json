@@ -7,7 +7,8 @@
   "secondaryMuscles": [
     "glutes"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "Kneeling on a machine, you curl your lower legs up against a pad. Isolates the hamstrings.",
   "instructions": [
     "Adjust the machine to fit your body and select the desired weight.",
     "Kneel on the machine facing downwards, with your knees resting on the pad and your feet secured under the footpads.",
@@ -25,5 +26,6 @@
       "calves"
     ]
   },
+  "femaleVariant": "3609",
   "textSource": "exercisedb"
 }

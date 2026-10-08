@@ -8,7 +8,8 @@
     "glutes",
     "lower back"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A deadlift with nearly straight legs, which targets the hamstrings.",
   "instructions": [
     "Stand with your feet shoulder-width apart and your toes pointing forward.",
     "Hold the barbell with an overhand grip, hands slightly wider than shoulder-width apart.",
@@ -29,5 +30,6 @@
       "calves"
     ]
   },
+  "femaleVariant": "3594",
   "textSource": "exercisedb"
 }

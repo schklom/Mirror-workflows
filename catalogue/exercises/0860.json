@@ -7,7 +7,8 @@
   "secondaryMuscles": [
     "shoulders"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A cable triceps kickback, hinging forward and extending the forearm back. It isolates the triceps.",
   "instructions": [
     "Stand facing a cable machine with your feet shoulder-width apart.",
     "Hold the cable handle with your right hand and step back to create tension in the cable.",
@@ -17,5 +18,6 @@
     "Pause for a moment, then slowly return to the starting position.",
     "Repeat for the desired number of repetitions, then switch sides."
   ],
+  "femaleVariant": "2640",
   "textSource": "exercisedb"
 }

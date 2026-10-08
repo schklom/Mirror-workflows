@@ -8,7 +8,8 @@
     "biceps",
     "forearms"
   ],
-  "description": "",
+  "category": "calisthenics",
+  "description": "A chin-up with your hands close together on an underhand grip. It works the lats and puts extra load on the biceps.",
   "instructions": [
     "Grab the pull-up bar with your palms facing towards you and your hands shoulder-width apart.",
     "Hang from the bar with your arms fully extended and your feet off the ground.",
@@ -27,5 +28,6 @@
       "forearm"
     ]
   },
+  "femaleVariant": "2382",
   "textSource": "exercisedb"
 }

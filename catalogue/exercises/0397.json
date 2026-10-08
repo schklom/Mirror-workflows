@@ -7,7 +7,8 @@
   "secondaryMuscles": [
     "forearms"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "Seated with forearms on your thighs and palms facing in, you move the dumbbells with your wrists. It builds forearm strength and grip.",
   "instructions": [
     "Sit on a bench with your feet flat on the ground and hold a dumbbell in each hand, palms facing each other.",
     "Rest your forearms on your thighs, allowing the dumbbells to hang down.",
@@ -15,5 +16,6 @@
     "Pause for a moment at the top, then slowly lower the dumbbells back down to the starting position.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "2632",
   "textSource": "exercisedb"
 }

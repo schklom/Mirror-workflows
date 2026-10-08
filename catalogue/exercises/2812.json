@@ -9,7 +9,8 @@
     "hamstrings",
     "calves"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A dumbbell step-up combined with a knee drive. Builds the quads and glutes.",
   "instructions": [
     "Stand in front of a bench or step with a dumbbell in each hand, palms facing your body.",
     "Place your right foot on the bench or step, ensuring your entire foot is in contact with the surface.",
@@ -19,5 +20,6 @@
     "Repeat the movement with your left foot on the bench or step.",
     "Continue alternating between your right and left foot for the desired number of repetitions."
   ],
+  "femaleVariant": "2813",
   "textSource": "exercisedb"
 }

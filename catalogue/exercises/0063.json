@@ -9,7 +9,8 @@
     "hamstrings",
     "calves"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A back squat with a narrower stance, shifting more work to the quads.",
   "instructions": [
     "Stand with your feet shoulder-width apart and toes pointing slightly outward.",
     "Hold the barbell across your upper back, resting it on your traps or rear delts.",
@@ -32,5 +33,6 @@
       "obliques"
     ]
   },
+  "femaleVariant": "2389",
   "textSource": "exercisedb"
 }

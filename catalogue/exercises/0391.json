@@ -7,7 +7,8 @@
   "secondaryMuscles": [
     "forearms"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "Seated with an upright back, you curl dumbbells toward your shoulders. Sitting limits cheating so the biceps work harder.",
   "instructions": [
     "Sit on a bench with your feet flat on the ground and a dumbbell in each hand, palms facing forward.",
     "Keep your back straight and your elbows close to your torso.",
@@ -15,5 +16,6 @@
     "Pause for a moment at the top, then inhale and slowly lower the dumbbells back down to the starting position.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "2240",
   "textSource": "exercisedb"
 }

@@ -7,7 +7,8 @@
   "secondaryMuscles": [
     "shoulders"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A lying triceps extension with a close grip, lowering the bar toward the forehead and pressing it back.",
   "instructions": [
     "Lie flat on a bench with your feet flat on the ground and your head at the end of the bench.",
     "Grasp the barbell with a close grip, hands shoulder-width apart, palms facing up.",
@@ -16,5 +17,6 @@
     "Pause for a moment at the bottom, then extend your arms back to the starting position.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "2607",
   "textSource": "exercisedb"
 }

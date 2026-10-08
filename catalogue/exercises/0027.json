@@ -8,7 +8,8 @@
     "biceps",
     "forearms"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A hip-hinged row pulling the bar to your lower chest. A staple for the upper back and lats.",
   "instructions": [
     "Stand with your feet shoulder-width apart and knees slightly bent.",
     "Bend forward at the hips while keeping your back straight and chest up.",
@@ -27,5 +28,6 @@
       "forearm"
     ]
   },
+  "femaleVariant": "2242",
   "textSource": "exercisedb"
 }

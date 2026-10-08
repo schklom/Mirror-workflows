@@ -8,7 +8,8 @@
     "hip flexors",
     "quadriceps"
   ],
-  "description": "",
+  "category": "calisthenics",
+  "description": "A sit-up with the arms straight. It works the abs and hip flexors.",
   "instructions": [
     "Lie flat on your back with your legs extended and arms straight above your head.",
     "Engaging your abs, lift your upper body off the ground while simultaneously lifting your legs towards your chest.",
@@ -16,5 +17,6 @@
     "Pause for a moment at the top, then slowly lower your upper body and legs back down to the starting position.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "4284",
   "textSource": "exercisedb"
 }

@@ -8,7 +8,8 @@
     "biceps",
     "forearms"
   ],
-  "description": "",
+  "category": "calisthenics",
+  "description": "Hang from a bar with an underhand grip and pull until your chin clears it. A classic builder of the lats and biceps.",
   "instructions": [
     "Hang from a pull-up bar with your palms facing towards you and your hands shoulder-width apart.",
     "Engage your core and pull your body up towards the bar, leading with your chest.",
@@ -26,5 +27,6 @@
       "forearm"
     ]
   },
+  "femaleVariant": "2379",
   "textSource": "exercisedb"
 }

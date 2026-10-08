@@ -8,7 +8,8 @@
     "triceps",
     "upper back"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "Seated, you press dumbbells overhead with palms facing each other. A shoulder-friendly press for the shoulders and triceps.",
   "instructions": [
     "Sit on a bench with a dumbbell in each hand, palms facing inward.",
     "Raise the dumbbells to shoulder height, elbows bent and palms facing forward.",
@@ -27,5 +28,6 @@
       "serratus"
     ]
   },
+  "femaleVariant": "2593",
   "textSource": "exercisedb"
 }

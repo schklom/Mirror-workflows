@@ -8,7 +8,8 @@
     "biceps",
     "brachialis"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "Forearm supported and palm up, you curl a dumbbell with only the wrist. It builds the muscles on the underside of the forearm.",
   "instructions": [
     "Sit on a bench or chair with your feet flat on the ground.",
     "Hold a dumbbell in one hand with an underhand grip, resting your forearm on your thigh.",
@@ -16,5 +17,6 @@
     "Slowly curl your wrist back up, bringing the dumbbell towards your forearm.",
     "Repeat for the desired number of repetitions, then switch to the other hand."
   ],
+  "femaleVariant": "2686",
   "textSource": "exercisedb"
 }

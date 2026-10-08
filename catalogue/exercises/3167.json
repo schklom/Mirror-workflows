@@ -8,7 +8,8 @@
     "biceps",
     "shoulders"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A squat combined with a towel row, so legs and upper back work together. You pull the towel toward your chest as you sink down.",
   "instructions": [
     "Stand with your feet shoulder-width apart, holding a towel in front of you with your palms facing down.",
     "Bend your knees and lower your body into a squat position, keeping your back straight and your chest up.",
@@ -16,5 +17,6 @@
     "Pause for a moment at the bottom of the squat, then slowly return to the starting position while extending your arms.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "3169",
   "textSource": "exercisedb"
 }

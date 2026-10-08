@@ -9,7 +9,8 @@
     "hamstrings",
     "calves"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A leg press done on a smith machine setup, pushing the footplate away with both legs. It builds the thighs and glutes with a guided path.",
   "instructions": [
     "Adjust the seat and footplate of the smith machine to a comfortable position.",
     "Sit on the machine with your back against the backrest and your feet shoulder-width apart on the footplate.",
@@ -37,5 +38,6 @@
       "calves": 0
     }
   },
+  "femaleVariant": "3619",
   "textSource": "exercisedb"
 }

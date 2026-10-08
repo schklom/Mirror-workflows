@@ -8,7 +8,8 @@
     "shoulders",
     "triceps"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A seated cable press pushing the handles away from your chest. Builds the chest, shoulders and triceps.",
   "instructions": [
     "Adjust the seat height and cable handles to a comfortable position.",
     "Sit on the bench with your back straight and feet flat on the floor.",
@@ -33,5 +34,6 @@
       "biceps": 0
     }
   },
+  "femaleVariant": "3061",
   "textSource": "exercisedb"
 }

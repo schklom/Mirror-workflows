@@ -7,7 +7,8 @@
   "secondaryMuscles": [
     "forearms"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A standing curl using a cable and an underhand grip. It keeps constant tension on the biceps.",
   "instructions": [
     "Stand facing the cable machine with your feet shoulder-width apart.",
     "Grasp the cable attachment with an underhand grip, palms facing up.",
@@ -17,5 +18,6 @@
     "Inhale and slowly lower the cable attachment back to the starting position.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "0156",
   "textSource": "exercisedb"
 }

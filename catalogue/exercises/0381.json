@@ -9,7 +9,8 @@
     "hamstrings",
     "calves"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "You step back into a lunge while holding dumbbells. It works the glutes and thighs with less knee strain than a forward lunge.",
   "instructions": [
     "Stand with your feet shoulder-width apart, holding a dumbbell in each hand.",
     "Take a step backward with your right foot, lowering your body into a lunge position.",
@@ -17,5 +18,6 @@
     "Pause for a moment, then push through your left heel to return to the starting position.",
     "Repeat on the other side, stepping back with your left foot."
   ],
+  "femaleVariant": "2219",
   "textSource": "exercisedb"
 }

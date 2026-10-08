@@ -7,7 +7,8 @@
   "secondaryMuscles": [
     "hamstrings"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A leg extension with a resistance band around your ankle. Builds the quads.",
   "instructions": [
     "Attach the resistance band to a sturdy anchor point and secure it around your ankle.",
     "Stand facing the anchor point with your feet shoulder-width apart.",
@@ -15,5 +16,6 @@
     "Pause for a moment at the top, then slowly return your leg to the starting position.",
     "Repeat for the desired number of repetitions, then switch legs."
   ],
+  "femaleVariant": "3008",
   "textSource": "exercisedb"
 }

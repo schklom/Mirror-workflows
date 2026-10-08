@@ -8,7 +8,8 @@
     "triceps",
     "deltoids"
   ],
-  "description": "",
+  "category": "calisthenics",
+  "description": "A push-up against a wall, a gentle version for beginners. Works the chest, shoulders and triceps.",
   "instructions": [
     "Stand facing a wall, about arm's length away.",
     "Place your hands on the wall at shoulder height, slightly wider than shoulder-width apart.",
@@ -17,5 +18,6 @@
     "Push back up to the starting position, straightening your arms.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "2614",
   "textSource": "exercisedb"
 }

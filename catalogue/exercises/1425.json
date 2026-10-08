@@ -9,7 +9,8 @@
     "hamstrings",
     "calves"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A one-leg press on a sled machine set at a 45 degree angle. It trains the glutes, quads and hamstrings one side at a time.",
   "instructions": [
     "Adjust the sled machine to a 45-degree angle.",
     "Sit on the sled machine with your back against the pad and your feet on the footplate.",
@@ -36,5 +37,6 @@
       "calves": 0
     }
   },
+  "femaleVariant": "2609",
   "textSource": "exercisedb"
 }

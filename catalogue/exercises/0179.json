@@ -8,7 +8,8 @@
     "deltoids",
     "triceps"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A cable fly from low pulleys, sweeping the arms up and together in front of you. It emphasises the upper chest with constant tension.",
   "instructions": [
     "Attach the handles to the low pulleys of a cable machine and select an appropriate weight.",
     "Stand in the middle of the machine with your feet shoulder-width apart and a slight bend in your knees.",
@@ -27,5 +28,6 @@
       "trapezius"
     ]
   },
+  "femaleVariant": "2252",
   "textSource": "exercisedb"
 }

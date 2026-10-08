@@ -7,7 +7,8 @@
   "secondaryMuscles": [
     "forearms"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A seated one-arm curl with the elbow braced on the inner thigh. The brace stops cheating and focuses on the biceps.",
   "instructions": [
     "Sit on a bench with your legs spread apart and a dumbbell in one hand, resting your elbow on the inside of your thigh.",
     "Fully extend your arm and hold the dumbbell with an underhand grip.",
@@ -17,5 +18,6 @@
     "Inhale and slowly lower the dumbbell back to the starting position.",
     "Repeat for the desired number of repetitions, then switch arms."
   ],
+  "femaleVariant": "2372",
   "textSource": "exercisedb"
 }

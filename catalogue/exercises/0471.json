@@ -9,7 +9,8 @@
     "chest",
     "core"
   ],
-  "description": "",
+  "category": "calisthenics",
+  "description": "You press your body upward while inverted against a wall. It builds the shoulders and triceps.",
   "instructions": [
     "Find a wall and face away from it, standing a few feet away.",
     "Place your hands on the ground shoulder-width apart and kick your feet up against the wall, coming into a handstand position.",
@@ -17,5 +18,6 @@
     "Push through your hands and extend your arms to return to the starting position.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "2383",
   "textSource": "exercisedb"
 }

@@ -8,7 +8,8 @@
     "biceps",
     "shoulders"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "Sit with your forearms on a bench, palms up, and curl a barbell with your wrists. It strengthens the front of the forearms and grip.",
   "instructions": [
     "Sit on a bench with your feet flat on the ground and hold a barbell with an underhand grip, palms facing up.",
     "Rest your forearms on the bench, allowing your wrists to hang off the edge.",
@@ -16,5 +17,6 @@
     "Hold the contracted position for a brief pause, then inhale and slowly lower the barbell back to the starting position.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "2682",
   "textSource": "exercisedb"
 }

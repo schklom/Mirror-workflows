@@ -9,7 +9,8 @@
     "rhomboids",
     "rear deltoids"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A lat pulldown on the cable machine with a straight bar. Builds the lats.",
   "instructions": [
     "Adjust the cable pulley to a high position and attach a straight bar.",
     "Sit facing the cable machine with your feet flat on the ground and your knees slightly bent.",
@@ -39,5 +40,6 @@
       "triceps": 0
     }
   },
+  "femaleVariant": "2247",
   "textSource": "exercisedb"
 }

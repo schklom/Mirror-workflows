@@ -52,5 +52,5 @@ for (const f of fs.existsSync(MEDIA) ? fs.readdirSync(MEDIA) : []) {
   if (!['still', 'clip', 'NOTICE.md'].includes(f)) problems.push(`catalogue/media/${f}: only still/, clip/ and NOTICE.md belong here`)
 }
 if (!fs.existsSync(path.join(MEDIA, 'NOTICE.md'))) problems.push('catalogue/media/NOTICE.md is missing (the licence requires it)')
-if (problems.length) { console.error(problems.join('\n')); process.exit(1) }
+if (problems.length) { console.error(problems.slice(0, 40).join('\n') + (problems.length > 40 ? `\n...and ${problems.length - 40} more` : '')); process.exit(1) }
 console.log(`media OK: ${n} files, all within ${MAX}x${MAX}`)

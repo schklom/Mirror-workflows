@@ -7,7 +7,8 @@
   "secondaryMuscles": [
     "forearms"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A curl at a high pulley that begins with a pulldown. It builds the biceps and also the lats.",
   "instructions": [
     "Attach a straight bar to the cable machine at the highest setting.",
     "Stand facing the machine with your feet shoulder-width apart.",
@@ -18,5 +19,6 @@
     "Inhale and slowly return the bar to the starting position, fully extending your arms.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "3057",
   "textSource": "exercisedb"
 }

@@ -8,7 +8,8 @@
     "hamstrings",
     "glutes"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "Seated on a machine, you squeeze your knees together against pads. Trains the inner thighs.",
   "instructions": [
     "Adjust the seat height and position yourself on the machine with your back against the backrest.",
     "Place your feet on the footrests and grasp the handles for stability.",
@@ -25,5 +26,6 @@
       "hamstring"
     ]
   },
+  "femaleVariant": "3612",
   "textSource": "exercisedb"
 }

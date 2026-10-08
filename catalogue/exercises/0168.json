@@ -8,7 +8,8 @@
     "glutes",
     "quadriceps"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A cable hip adduction, bringing the leg across the body. Works the inner thighs.",
   "instructions": [
     "Attach the ankle cuff to your ankle and stand facing the cable machine.",
     "Position yourself far enough away from the machine so that there is tension on the cable.",
@@ -26,5 +27,6 @@
       "hamstring"
     ]
   },
+  "femaleVariant": "2313",
   "textSource": "exercisedb"
 }

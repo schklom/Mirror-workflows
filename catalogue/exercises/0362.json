@@ -7,7 +7,8 @@
   "secondaryMuscles": [
     "shoulders"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "With one arm supported on a bench, you extend the other arm to work the back of the upper arm. A strict triceps isolation move.",
   "instructions": [
     "Sit on a bench with your back straight and feet flat on the ground.",
     "Hold a dumbbell in one hand and place your other hand on the bench for support.",
@@ -16,5 +17,6 @@
     "Extend your arm back up to the starting position, fully straightening your elbow.",
     "Repeat for the desired number of repetitions, then switch arms."
   ],
+  "femaleVariant": "2601",
   "textSource": "exercisedb"
 }

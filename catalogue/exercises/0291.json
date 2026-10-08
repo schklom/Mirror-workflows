@@ -9,7 +9,8 @@
     "hamstrings",
     "calves"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A dumbbell squat to a bench. Touching the bench gives a consistent depth and works the glutes and thighs.",
   "instructions": [
     "Place a dumbbell on the ground in front of a bench.",
     "Stand facing away from the bench with your feet shoulder-width apart.",
@@ -17,5 +18,6 @@
     "Once your glutes touch the bench, push through your heels to stand back up to the starting position.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "2217",
   "textSource": "exercisedb"
 }

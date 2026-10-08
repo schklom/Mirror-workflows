@@ -7,7 +7,8 @@
   "secondaryMuscles": [
     "forearms"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "Standing beside an incline bench, you curl one dumbbell with the upper arm braced on the pad. It keeps the biceps working without swing.",
   "instructions": [
     "Stand with your feet shoulder-width apart, holding a dumbbell in one hand with your palm facing forward.",
     "Place your other hand on an incline bench for support.",
@@ -15,5 +16,6 @@
     "Pause for a moment at the top, then inhale and slowly lower the dumbbell back to the starting position.",
     "Repeat for the desired number of repetitions, then switch arms."
   ],
+  "femaleVariant": "3085",
   "textSource": "exercisedb"
 }

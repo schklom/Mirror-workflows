@@ -8,7 +8,8 @@
     "traps",
     "rotator cuff"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A lateral raise with the thumbs up, as if holding full cans. It works the side delts and the rotator cuff.",
   "instructions": [
     "Stand with your feet shoulder-width apart, holding a dumbbell in each hand with your palms facing your body.",
     "Keep your back straight and engage your core.",
@@ -16,5 +17,6 @@
     "Pause for a moment at the top, then slowly lower your arms back down to the starting position.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "2583",
   "textSource": "exercisedb"
 }

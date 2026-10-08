@@ -7,7 +7,8 @@
   "secondaryMuscles": [
     "obliques"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A seated twist with a band around the waist. It trains the abs and obliques.",
   "instructions": [
     "Sit on the ground with your legs extended in front of you and your back straight.",
     "Wrap the band around your waist and hold the ends with both hands.",
@@ -16,5 +17,6 @@
     "Repeat the twist to the other side.",
     "Continue alternating sides for the desired number of repetitions."
   ],
+  "femaleVariant": "2446",
   "textSource": "exercisedb"
 }

@@ -8,7 +8,8 @@
     "deltoids",
     "triceps"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "An incline cable press. Emphasises the upper chest.",
   "instructions": [
     "Adjust the bench to a 45-degree incline.",
     "Attach the cable handles to the high pulleys.",
@@ -34,5 +35,6 @@
       "biceps": 0
     }
   },
+  "femaleVariant": "3049",
   "textSource": "exercisedb"
 }

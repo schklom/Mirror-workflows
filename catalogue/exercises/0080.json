@@ -7,7 +7,8 @@
   "secondaryMuscles": [
     "forearms"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A curl with an overhand grip. Trains the biceps, brachialis and forearms.",
   "instructions": [
     "Stand up straight with your feet shoulder-width apart and hold a barbell with an overhand grip, palms facing down.",
     "Keep your upper arms stationary and exhale as you curl the barbell upward, contracting your biceps.",
@@ -16,5 +17,6 @@
     "Inhale as you slowly lower the barbell back to the starting position, keeping your upper arms stationary.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "2479",
   "textSource": "exercisedb"
 }

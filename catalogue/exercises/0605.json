@@ -8,7 +8,8 @@
     "soleus",
     "ankle stabilizers"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "Standing with pads on your shoulders, you rise onto your toes and lower back down. Isolates the calves.",
   "instructions": [
     "Adjust the machine to your height and stand with your feet shoulder-width apart.",
     "Place your shoulders under the pads and hold onto the handles for stability.",
@@ -22,5 +23,6 @@
     ],
     "secondaries": []
   },
+  "femaleVariant": "2211",
   "textSource": "exercisedb"
 }

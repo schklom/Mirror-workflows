@@ -7,12 +7,14 @@
   "secondaryMuscles": [
     "shoulders"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A single-arm dumbbell triceps extension lying down. It isolates one triceps at a time.",
   "instructions": [
     "Lie flat on a bench with a dumbbell in one hand and your arm fully extended above your chest.",
     "Lower the dumbbell in a controlled manner towards your forehead, keeping your upper arm stationary.",
     "Pause briefly at the bottom of the movement, then extend your arm back to the starting position.",
     "Repeat for the desired number of repetitions, then switch arms."
   ],
+  "femaleVariant": "3080",
   "textSource": "exercisedb"
 }

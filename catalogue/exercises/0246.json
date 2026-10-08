@@ -8,7 +8,8 @@
     "traps",
     "biceps"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "An upright row using a cable. You pull the handle up toward the chin, leading with the elbows, to work the shoulders and traps.",
   "instructions": [
     "Stand with your feet shoulder-width apart, knees slightly bent, and hold the cable attachment with an overhand grip.",
     "Keep your back straight and your core engaged throughout the exercise.",
@@ -17,5 +18,6 @@
     "Slowly lower the cable attachment back down to the starting position.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "2232",
   "textSource": "exercisedb"
 }

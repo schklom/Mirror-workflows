@@ -8,7 +8,8 @@
     "shoulders",
     "triceps"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A dumbbell fly done lying back on a stability ball. The unstable surface makes your core work while the chest does the opening and closing.",
   "instructions": [
     "Sit on an exercise ball and hold a dumbbell in each hand.",
     "Walk your feet forward and roll your body down until your head, neck, and upper back are supported by the ball.",
@@ -17,5 +18,6 @@
     "Pause for a moment, then reverse the movement and squeeze your chest muscles as you bring the dumbbells back to the starting position.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "2620",
   "textSource": "exercisedb"
 }

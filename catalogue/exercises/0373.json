@@ -7,7 +7,8 @@
   "secondaryMuscles": [
     "forearms"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A triceps extension with a palms-down grip. It loads the back of the upper arm in a slightly different way.",
   "instructions": [
     "Sit on a bench or chair with your back straight and feet flat on the ground.",
     "Hold a dumbbell with both hands, palms facing down, and extend your arms straight up overhead.",
@@ -15,5 +16,6 @@
     "Pause for a moment, then extend your arms back up to the starting position.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "3941",
   "textSource": "exercisedb"
 }

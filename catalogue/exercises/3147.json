@@ -7,7 +7,8 @@
   "secondaryMuscles": [
     "lower back"
   ],
-  "description": "",
+  "category": "mobility",
+  "description": "A small rocking movement of the pelvis while lying on your back. It wakes up the abs and teaches you to control the position of your lower back.",
   "instructions": [
     "Lie flat on your back with your knees bent and feet flat on the ground.",
     "Place your hands by your sides.",
@@ -16,5 +17,6 @@
     "Release the tilt and return to the starting position.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "3148",
   "textSource": "exercisedb"
 }

@@ -9,7 +9,8 @@
     "hamstrings",
     "calves"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A squat with a kettlebell held at chest height. The front load builds the quads and glutes and keeps your torso upright.",
   "instructions": [
     "Stand with your feet shoulder-width apart, toes slightly turned out.",
     "Hold the kettlebell with both hands in front of your chest, close to your body.",
@@ -32,5 +33,6 @@
       "obliques"
     ]
   },
+  "femaleVariant": "2639",
   "textSource": "exercisedb"
 }

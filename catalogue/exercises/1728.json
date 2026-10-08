@@ -7,7 +7,8 @@
   "secondaryMuscles": [
     "shoulders"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A two-arm triceps kickback with cables. It gives constant tension to the triceps.",
   "instructions": [
     "Stand with your feet shoulder-width apart and knees slightly bent.",
     "Hold the cable handle in each hand with your palms facing inwards and your arms bent at a 90-degree angle.",
@@ -15,5 +16,6 @@
     "Pause for a moment, then slowly return to the starting position.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "3070",
   "textSource": "exercisedb"
 }

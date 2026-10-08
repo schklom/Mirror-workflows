@@ -8,7 +8,8 @@
     "shoulders",
     "triceps"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A decline fly with a twist of the wrists. The rotating action adds a squeeze to the chest.",
   "instructions": [
     "Lie down on a decline bench with your head lower than your hips.",
     "Hold a dumbbell in each hand with your palms facing each other and your arms extended straight up over your chest.",
@@ -17,5 +18,6 @@
     "Reverse the motion and bring the dumbbells back up to the starting position, squeezing your chest muscles at the top.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "2585",
   "textSource": "exercisedb"
 }

@@ -8,7 +8,8 @@
     "obliques",
     "lower back"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A standing torso twist with the bar on your shoulders. Works the obliques.",
   "instructions": [
     "Stand with your feet shoulder-width apart and hold a barbell in front of your chest with both hands, palms facing down.",
     "Engage your core and keep your back straight throughout the exercise.",
@@ -17,5 +18,6 @@
     "Repeat the twist to the left side.",
     "Continue alternating twists for the desired number of repetitions."
   ],
+  "femaleVariant": "2320",
   "textSource": "exercisedb"
 }

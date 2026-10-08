@@ -8,7 +8,8 @@
     "triceps",
     "shoulders"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A cable press from a bench. Trains the chest, shoulders and triceps.",
   "instructions": [
     "Adjust the cable machine to chest height and attach the handles.",
     "Stand facing away from the machine with your feet shoulder-width apart.",
@@ -35,5 +36,6 @@
       "biceps": 0
     }
   },
+  "femaleVariant": "2678",
   "textSource": "exercisedb"
 }

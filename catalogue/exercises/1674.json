@@ -7,7 +7,8 @@
   "secondaryMuscles": [
     "forearms"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A hammer curl lying chest down on an incline bench. It trains the brachialis and biceps.",
   "instructions": [
     "Adjust the bench to a 45-degree incline.",
     "Lie face down on the bench with a dumbbell in each hand, palms facing each other.",
@@ -18,5 +19,6 @@
     "Inhale and slowly begin to lower the dumbbells back to the starting position.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "2495",
   "textSource": "exercisedb"
 }

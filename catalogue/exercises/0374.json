@@ -7,7 +7,8 @@
   "secondaryMuscles": [
     "forearms"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "Chest down on an incline bench, you curl dumbbells from a hanging position. It stretches and works the biceps hard.",
   "instructions": [
     "Adjust the bench to a 45-degree incline.",
     "Lie face down on the bench with your chest and stomach resting against it.",
@@ -18,5 +19,6 @@
     "Inhale and slowly begin to lower the dumbbells back to the starting position.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "2496",
   "textSource": "exercisedb"
 }

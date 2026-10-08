@@ -8,7 +8,8 @@
     "traps",
     "biceps"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "Standing, you pull dumbbells up along your body toward chin height. It builds the side shoulders and upper traps.",
   "instructions": [
     "Stand with your feet shoulder-width apart, holding a dumbbell in each hand with an overhand grip.",
     "Let the dumbbells hang in front of your thighs, with your arms fully extended.",
@@ -16,5 +17,6 @@
     "Pause for a moment at the top, then inhale and slowly lower the dumbbells back down to the starting position.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "3431",
   "textSource": "exercisedb"
 }

@@ -8,7 +8,8 @@
     "glutes",
     "hamstrings"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A stability ball back extension with your hands behind your head. It strengthens the lower back, glutes and upper back.",
   "instructions": [
     "Place the stability ball on the ground and lie face down on top of it with your hips resting on the ball.",
     "Position your feet against a wall or other stable surface for support.",
@@ -17,5 +18,6 @@
     "Pause for a moment at the top of the movement, then slowly lower your upper body back down to the starting position.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "2821",
   "textSource": "exercisedb"
 }

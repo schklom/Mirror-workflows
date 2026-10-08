@@ -8,7 +8,8 @@
     "glutes",
     "hamstrings"
   ],
-  "description": "",
+  "category": "calisthenics",
+  "description": "Using a hyperextension bench, you lower and raise your torso. It strengthens the lower back, glutes and hamstrings.",
   "instructions": [
     "Adjust the hyperextension bench so that your upper thighs are resting on the pad and your feet are secured.",
     "Cross your arms over your chest or place your hands behind your head.",
@@ -16,5 +17,6 @@
     "Pause for a moment at the bottom, then raise your upper body back up until it is in line with your legs.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "2531",
   "textSource": "exercisedb"
 }

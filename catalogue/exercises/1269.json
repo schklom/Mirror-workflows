@@ -8,7 +8,8 @@
     "deltoids",
     "triceps"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "Standing cable crossovers with the hands crossing in front. It trains the chest.",
   "instructions": [
     "Stand in the middle of a cable machine with your feet shoulder-width apart.",
     "Hold the handles of the cables with your palms facing down and your arms extended straight out to the sides.",
@@ -25,5 +26,6 @@
       "trapezius"
     ]
   },
+  "femaleVariant": "2387",
   "textSource": "exercisedb"
 }

@@ -9,7 +9,8 @@
     "hamstrings",
     "calves"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "Holding dumbbells, you step up onto a bench or box and step down. It builds the glutes and thighs, one leg at a time.",
   "instructions": [
     "Stand in front of a bench or step with a dumbbell in each hand, palms facing your body.",
     "Place your right foot on the bench or step, ensuring your entire foot is in contact with the surface.",
@@ -18,5 +19,6 @@
     "Step back down with your left foot, followed by your right foot, returning to the starting position.",
     "Repeat for the desired number of repetitions, then switch legs."
   ],
+  "femaleVariant": "2221",
   "textSource": "exercisedb"
 }

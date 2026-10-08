@@ -8,7 +8,8 @@
     "chest",
     "shoulders"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A seated dip on a lever machine that mimics the dip motion with guided support. It targets the triceps and also works the chest and front delts.",
   "instructions": [
     "Adjust the seat height so that your feet are flat on the ground and your knees are at a 90-degree angle.",
     "Grasp the handles of the leverage machine with your palms facing down and your arms fully extended.",
@@ -28,5 +29,6 @@
       "biceps"
     ]
   },
+  "femaleVariant": "2250",
   "textSource": "exercisedb"
 }

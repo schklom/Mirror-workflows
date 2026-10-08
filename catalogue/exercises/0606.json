@@ -8,7 +8,8 @@
     "biceps",
     "forearms"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "Chest on the pad, you row a T-bar style handle toward your torso. Works the lats, mid back and rear delts.",
   "instructions": [
     "Adjust the seat height and footplate position to ensure proper alignment.",
     "Sit on the machine with your chest against the pad and your feet flat on the footplate.",
@@ -40,5 +41,6 @@
       "triceps": 0
     }
   },
+  "femaleVariant": "2885",
   "textSource": "exercisedb"
 }

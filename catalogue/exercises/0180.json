@@ -8,7 +8,8 @@
     "biceps",
     "forearms"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "Seated cable row from a low pulley. You pull the handles to your torso and squeeze the shoulder blades, building the mid back.",
   "instructions": [
     "Sit on the machine with your feet flat on the footrests and your knees slightly bent.",
     "Grasp the handles with an overhand grip, palms facing down.",
@@ -27,5 +28,6 @@
       "forearm"
     ]
   },
+  "femaleVariant": "5964",
   "textSource": "exercisedb"
 }

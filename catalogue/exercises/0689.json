@@ -7,7 +7,8 @@
   "secondaryMuscles": [
     "hip flexors"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "Seated on a bench, you lift your legs and lower them again. Works the lower abs and hip flexors.",
   "instructions": [
     "Sit on a flat bench with your back straight and your feet flat on the ground.",
     "Place your hands on the sides of the bench for support.",
@@ -15,5 +16,6 @@
     "Pause for a moment at the top, then slowly lower your legs back down to the starting position.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "2539",
   "textSource": "exercisedb"
 }

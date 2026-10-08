@@ -8,7 +8,8 @@
     "traps",
     "rhomboids"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "Bent over, you raise the bar with straight arms to shoulder height. Targets the rear delts.",
   "instructions": [
     "Stand with your feet shoulder-width apart and hold a barbell with an overhand grip, palms facing down.",
     "Bend your knees slightly and hinge forward at the hips, keeping your back straight.",
@@ -16,5 +17,6 @@
     "Pause for a moment at the top, then slowly lower the barbell back to the starting position.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "2637",
   "textSource": "exercisedb"
 }

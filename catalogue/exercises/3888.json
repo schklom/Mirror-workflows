@@ -9,7 +9,8 @@
     "quadriceps",
     "core"
   ],
-  "description": "",
+  "category": "olympic",
+  "description": "A one-armed dumbbell snatch, pulling the weight from the floor to overhead in one explosive movement. It trains the hips, legs and shoulders.",
   "instructions": [
     "Stand with your feet shoulder-width apart, holding a dumbbell in one hand with an overhand grip.",
     "Bend your knees slightly and hinge forward at the hips, keeping your back straight and chest up.",
@@ -38,5 +39,6 @@
       "obliques"
     ]
   },
+  "femaleVariant": "5786",
   "textSource": "exercisedb"
 }

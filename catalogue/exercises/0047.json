@@ -8,7 +8,8 @@
     "shoulders",
     "triceps"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A barbell press on an incline bench, favouring the upper chest and front delts.",
   "instructions": [
     "Set up an incline bench at a 45-degree angle.",
     "Lie down on the bench with your feet flat on the ground.",
@@ -33,5 +34,6 @@
       "biceps": 0
     }
   },
+  "femaleVariant": "2388",
   "textSource": "exercisedb"
 }

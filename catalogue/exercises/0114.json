@@ -9,7 +9,8 @@
     "hamstrings",
     "calves"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "Step up onto a box with the bar on your back. Works the glutes and quads, one leg at a time.",
   "instructions": [
     "Stand in front of a bench or step with a barbell resting on your upper back.",
     "Place one foot on the bench or step, ensuring your entire foot is in contact with the surface.",
@@ -18,5 +19,6 @@
     "Repeat with the opposite leg.",
     "Continue alternating legs for the desired number of repetitions."
   ],
+  "femaleVariant": "2501",
   "textSource": "exercisedb"
 }

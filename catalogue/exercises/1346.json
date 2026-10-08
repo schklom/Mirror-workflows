@@ -8,7 +8,8 @@
     "shoulders",
     "triceps"
   ],
-  "description": "",
+  "category": "stretching",
+  "description": "Kneel and reach your arms overhead, then lean to one side. It stretches the lat and the side of your torso.",
   "instructions": [
     "Kneel on the ground with your knees hip-width apart and your toes pointing back.",
     "Extend your arms overhead and interlace your fingers.",
@@ -17,5 +18,6 @@
     "Repeat the stretch on the left side, leaning to the left and feeling a stretch in your right lat muscle.",
     "Continue alternating sides for the desired number of repetitions."
   ],
+  "femaleVariant": "4298",
   "textSource": "exercisedb"
 }

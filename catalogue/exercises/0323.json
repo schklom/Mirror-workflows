@@ -8,7 +8,8 @@
     "trapezius",
     "triceps"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A one-arm lateral raise on an incline bench. It isolates the side delt, one arm at a time.",
   "instructions": [
     "Sit on an incline bench with a dumbbell in one hand, resting it on your thigh.",
     "Lean forward and position your upper arm against the inside of your thigh.",
@@ -17,5 +18,6 @@
     "Pause for a moment at the top, then slowly lower the dumbbell back to the starting position.",
     "Repeat for the desired number of repetitions, then switch to the other arm."
   ],
+  "femaleVariant": "2818",
   "textSource": "exercisedb"
 }

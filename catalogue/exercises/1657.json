@@ -7,7 +7,8 @@
   "secondaryMuscles": [
     "forearms"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A hammer curl across the body toward the opposite shoulder, version 2. It hits the brachialis and biceps.",
   "instructions": [
     "Stand up straight with a dumbbell in each hand, palms facing your body.",
     "Keep your elbows close to your torso and your upper arms stationary.",
@@ -16,5 +17,6 @@
     "Inhale and slowly begin to lower the dumbbells back to the starting position.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "2646",
   "textSource": "exercisedb"
 }

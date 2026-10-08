@@ -8,7 +8,8 @@
     "biceps",
     "brachialis"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A standing cable wrist curl with the arms hanging behind or at the sides. It builds the forearms and grip.",
   "instructions": [
     "Stand facing a cable machine with your feet shoulder-width apart.",
     "Hold the cable handle with an overhand grip, palms facing down.",
@@ -17,5 +18,6 @@
     "Pause for a moment at the top, then slowly lower the cable handle back to the starting position.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "11301",
   "textSource": "exercisedb"
 }

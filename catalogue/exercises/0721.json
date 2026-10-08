@@ -8,7 +8,8 @@
     "wrists",
     "hands"
   ],
-  "description": "",
+  "category": "stretching",
+  "description": "You pull your wrist gently with the other hand to stretch the forearm. Hold on each side.",
   "instructions": [
     "Stand with your feet shoulder-width apart and your arms extended in front of you.",
     "Extend your right arm out to the side, parallel to the ground, with your palm facing down.",
@@ -16,5 +17,6 @@
     "Hold the stretch for 15-30 seconds, then release.",
     "Repeat on the other side."
   ],
+  "femaleVariant": "4308",
   "textSource": "exercisedb"
 }

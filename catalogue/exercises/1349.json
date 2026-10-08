@@ -8,7 +8,8 @@
     "biceps",
     "forearms"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A reverse grip row on a t-bar style machine, chest supported. It builds the upper back and lats with a strict path.",
   "instructions": [
     "Adjust the seat height and footplate position on the leverage machine.",
     "Sit on the machine with your chest against the pad and your feet flat on the footplate.",
@@ -40,5 +41,6 @@
       "triceps": 0
     }
   },
+  "femaleVariant": "3104",
   "textSource": "exercisedb"
 }

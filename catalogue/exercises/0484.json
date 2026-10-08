@@ -8,7 +8,8 @@
     "glutes",
     "hamstrings"
   ],
-  "description": "",
+  "category": "calisthenics",
+  "description": "Lying on your back with bent knees, you raise your hips toward the ceiling. It works the lower abs and glutes.",
   "instructions": [
     "Lie flat on your back with your knees bent and feet flat on the ground.",
     "Place your hands by your sides, palms facing down.",
@@ -16,5 +17,6 @@
     "Pause for a moment at the top, then slowly lower your hips back down to the starting position.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "2653",
   "textSource": "exercisedb"
 }

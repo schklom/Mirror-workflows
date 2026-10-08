@@ -8,7 +8,8 @@
     "shoulders",
     "triceps"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "On an incline bench, you press the smith machine bar up. Works the upper chest, shoulders and triceps.",
   "instructions": [
     "Adjust the bench to a 30-45 degree incline.",
     "Sit on the bench with your back flat against the pad and feet firmly on the ground.",
@@ -17,5 +18,6 @@
     "Pause for a moment at the bottom, then push the barbell back up to the starting position, fully extending your arms.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "7003",
   "textSource": "exercisedb"
 }

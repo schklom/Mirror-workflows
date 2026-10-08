@@ -8,7 +8,8 @@
     "glutes",
     "hamstrings"
   ],
-  "description": "",
+  "category": "stretching",
+  "description": "Seated on a chair, you lean forward to stretch the lower back. Hold it gently and breathe slowly.",
   "instructions": [
     "Sit on the edge of a chair with your feet flat on the ground.",
     "Place your hands on your thighs or on the sides of the chair for support.",
@@ -16,5 +17,6 @@
     "Feel the stretch in your lower back and hold for 20-30 seconds.",
     "Slowly return to the starting position and repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "4305",
   "textSource": "exercisedb"
 }

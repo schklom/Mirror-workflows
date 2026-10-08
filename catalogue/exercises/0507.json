@@ -7,12 +7,14 @@
   "secondaryMuscles": [
     "hip flexors"
   ],
-  "description": "",
+  "category": "calisthenics",
+  "description": "You lie flat and fold your body, bringing hands and feet together. It strongly trains the abs.",
   "instructions": [
     "Lie flat on your back with your legs extended and your arms overhead.",
     "Engage your core and lift your legs and upper body simultaneously, reaching your hands towards your toes.",
     "Pause for a moment at the top, then slowly lower your legs and upper body back down to the starting position.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "3884",
   "textSource": "exercisedb"
 }

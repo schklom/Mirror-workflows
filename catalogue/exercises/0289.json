@@ -8,7 +8,8 @@
     "triceps",
     "shoulders"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "The classic dumbbell press on a flat bench. It builds the chest, shoulders and triceps with a good range of motion.",
   "instructions": [
     "Lie flat on a bench with your feet flat on the ground and your back pressed against the bench.",
     "Hold a dumbbell in each hand, with your palms facing forward and your arms extended above your chest.",
@@ -32,5 +33,6 @@
       "biceps": 0
     }
   },
+  "femaleVariant": "2254",
   "textSource": "exercisedb"
 }

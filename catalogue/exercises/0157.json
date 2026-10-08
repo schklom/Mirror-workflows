@@ -9,7 +9,8 @@
     "quadriceps",
     "lower back"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A deadlift using the cable stack. Trains the glutes, hamstrings and lower back.",
   "instructions": [
     "Stand facing the cable machine with your feet shoulder-width apart.",
     "Bend at the hips and knees, lowering your torso until your back is parallel to the ground.",
@@ -33,5 +34,6 @@
       "obliques"
     ]
   },
+  "femaleVariant": "3045",
   "textSource": "exercisedb"
 }

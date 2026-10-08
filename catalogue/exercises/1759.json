@@ -9,7 +9,8 @@
     "hamstrings",
     "calves"
   ],
-  "description": "",
+  "category": "calisthenics",
+  "description": "A deep single-leg squat with the other leg held out in front. Builds leg strength, balance and mobility.",
   "instructions": [
     "Stand with your feet shoulder-width apart and arms extended in front of you.",
     "Lift your right foot off the ground and extend it forward.",
@@ -19,5 +20,6 @@
     "Pause for a moment at the bottom, then push through your left heel to return to the starting position.",
     "Repeat for the desired number of repetitions, then switch legs."
   ],
+  "femaleVariant": "0732",
   "textSource": "exercisedb"
 }

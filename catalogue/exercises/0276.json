@@ -8,7 +8,8 @@
     "hip flexors",
     "lower back"
   ],
-  "description": "",
+  "category": "calisthenics",
+  "description": "A core drill where you extend opposite arm and leg while keeping the lower back pressed to the floor. It builds stability in the abs.",
   "instructions": [
     "Lie flat on your back with your arms extended towards the ceiling.",
     "Bend your knees and lift your legs off the ground, creating a 90-degree angle at your hips and knees.",
@@ -18,5 +19,6 @@
     "Repeat the movement with your left arm and right leg.",
     "Continue alternating sides for the desired number of repetitions."
   ],
+  "femaleVariant": "3071",
   "textSource": "exercisedb"
 }

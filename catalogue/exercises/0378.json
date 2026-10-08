@@ -8,7 +8,8 @@
     "trapezius",
     "rhomboids"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "Bent forward, you swing dumbbells out to the sides with a soft elbow bend. It builds the rear shoulders and upper back.",
   "instructions": [
     "Stand with your feet shoulder-width apart and hold a dumbbell in each hand.",
     "Bend your knees slightly and hinge forward at the hips, keeping your back straight.",
@@ -17,5 +18,6 @@
     "Pause for a moment at the top, then slowly lower your arms back down to the starting position.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "2392",
   "textSource": "exercisedb"
 }

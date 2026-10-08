@@ -7,7 +7,8 @@
   "secondaryMuscles": [
     "glutes"
   ],
-  "description": "",
+  "category": "stretching",
+  "description": "A stretch for the back of the thigh. You reach toward your toes with a long spine and feel the hamstrings lengthen.",
   "instructions": [
     "Stand with your feet shoulder-width apart.",
     "Step forward with your right foot and shift your weight onto your right leg.",
@@ -15,5 +16,6 @@
     "Hold the stretch for 20-30 seconds, then return to the starting position.",
     "Repeat on the other side."
   ],
+  "femaleVariant": "4285",
   "textSource": "exercisedb"
 }

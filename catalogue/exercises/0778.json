@@ -9,7 +9,8 @@
     "chest",
     "shoulders"
   ],
-  "description": "",
+  "category": "calisthenics",
+  "description": "A push-up combined with a knee drive toward the elbow, like a crawling spider. It trains the chest, core and hips together.",
   "instructions": [
     "Start in a push-up position with your hands slightly wider than shoulder-width apart and your feet together.",
     "Bring your right knee towards your right elbow, keeping it off the ground.",
@@ -17,5 +18,6 @@
     "Push back up to the starting position and repeat with your left knee towards your left elbow.",
     "Continue alternating sides for the desired number of repetitions."
   ],
+  "femaleVariant": "3437",
   "textSource": "exercisedb"
 }

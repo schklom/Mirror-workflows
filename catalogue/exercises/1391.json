@@ -8,7 +8,8 @@
     "hamstrings",
     "quadriceps"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A calf press done on a leg press sled using only your toes. It builds the calves under a supported load.",
   "instructions": [
     "Adjust the seat of the leg press machine so that your knees are slightly bent when your feet are on the sled.",
     "Place your feet shoulder-width apart on the sled, with your toes pointing forward.",
@@ -23,5 +24,6 @@
       "hamstring": 0
     }
   },
+  "femaleVariant": "2212",
   "textSource": "exercisedb"
 }

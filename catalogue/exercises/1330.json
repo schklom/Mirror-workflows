@@ -8,7 +8,8 @@
     "biceps",
     "shoulders"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A one-arm row with an underhand grip, supported on an incline bench. It works the upper back and biceps one side at a time.",
   "instructions": [
     "Set up an incline bench at a 45-degree angle.",
     "Place a dumbbell on the floor next to the bench.",
@@ -22,5 +23,6 @@
     "Repeat for the desired number of repetitions.",
     "Switch sides and repeat the exercise with your left arm."
   ],
+  "femaleVariant": "2623",
   "textSource": "exercisedb"
 }

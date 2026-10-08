@@ -9,7 +9,8 @@
     "quadriceps",
     "lower back"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A deadlift with a wide stance and narrow grip. Works the glutes, hamstrings and inner thighs.",
   "instructions": [
     "Stand with your feet wider than shoulder-width apart, toes pointing outwards.",
     "Place a barbell on the ground in front of you, centered between your feet.",
@@ -34,5 +35,6 @@
       "obliques"
     ]
   },
+  "femaleVariant": "2517",
   "textSource": "exercisedb"
 }

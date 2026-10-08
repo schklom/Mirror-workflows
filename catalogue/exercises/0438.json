@@ -8,7 +8,8 @@
     "triceps",
     "chest"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "You press dumbbells overhead in a W-shaped path. It trains the shoulders and the muscles that stabilise them.",
   "instructions": [
     "Sit on a bench with a dumbbell in each hand, palms facing forward.",
     "Raise the dumbbells to shoulder height, elbows bent and palms facing forward.",
@@ -16,5 +17,6 @@
     "Lower the dumbbells back to shoulder height.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "3432",
   "textSource": "exercisedb"
 }

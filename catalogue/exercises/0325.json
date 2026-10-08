@@ -8,7 +8,8 @@
     "trapezius",
     "triceps"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "An incline dumbbell raise pressing overhead from shoulder height. It works the shoulders and the triceps.",
   "instructions": [
     "Sit on an incline bench with a dumbbell in each hand, resting on your thighs.",
     "Lean back on the bench and raise the dumbbells to shoulder height, palms facing forward.",
@@ -16,5 +17,6 @@
     "Pause for a moment at the top, then inhale and slowly lower the dumbbells back to shoulder height.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "2516",
   "textSource": "exercisedb"
 }

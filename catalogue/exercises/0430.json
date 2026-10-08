@@ -7,7 +7,8 @@
   "secondaryMuscles": [
     "shoulders"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "Standing, you lower a dumbbell behind your head and press it back up. It builds the back of the upper arm.",
   "instructions": [
     "Stand with your feet shoulder-width apart and hold a dumbbell in one hand.",
     "Raise the dumbbell overhead, keeping your arm straight.",
@@ -15,5 +16,6 @@
     "Extend your arm back up to the starting position.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "2390",
   "textSource": "exercisedb"
 }

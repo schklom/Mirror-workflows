@@ -8,7 +8,8 @@
     "biceps",
     "forearms"
   ],
-  "description": "",
+  "category": "calisthenics",
+  "description": "A pull-up on a wide overhand grip, pulling your chin above the bar. It targets the lats and upper back.",
   "instructions": [
     "Hang from a pull-up bar with your palms facing away from you and your hands wider than shoulder-width apart.",
     "Engage your core and squeeze your shoulder blades together.",
@@ -33,5 +34,6 @@
       "triceps": 0
     }
   },
+  "femaleVariant": "3627",
   "textSource": "exercisedb"
 }

@@ -9,7 +9,8 @@
     "hamstrings",
     "calves"
   ],
-  "description": "",
+  "category": "plyometrics",
+  "description": "A jump where arms and legs spread wide like a star at the top. It is a full-body cardio move that raises your pulse fast.",
   "instructions": [
     "Stand with your feet shoulder-width apart and your arms by your sides.",
     "Bend your knees slightly and jump up explosively.",
@@ -17,5 +18,6 @@
     "Land softly on the balls of your feet with your knees slightly bent.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "0797",
   "textSource": "exercisedb"
 }

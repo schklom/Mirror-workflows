@@ -8,7 +8,8 @@
     "triceps",
     "shoulders"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A decline cable press for the lower chest. It trains the chest, shoulders and triceps.",
   "instructions": [
     "Adjust the cable machine to a decline position.",
     "Sit on the decline bench facing the cable machine.",
@@ -19,5 +20,6 @@
     "Inhale and slowly return the handles back to the starting position.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "3046",
   "textSource": "exercisedb"
 }

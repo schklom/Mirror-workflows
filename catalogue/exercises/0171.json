@@ -8,7 +8,8 @@
     "deltoids",
     "triceps"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "An incline cable fly. Targets the upper chest.",
   "instructions": [
     "Adjust the cable machine to a low position and attach the handles.",
     "Sit on an incline bench with your back against the pad and feet flat on the floor.",
@@ -26,5 +27,6 @@
       "trapezius"
     ]
   },
+  "femaleVariant": "3050",
   "textSource": "exercisedb"
 }

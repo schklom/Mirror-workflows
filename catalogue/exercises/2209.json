@@ -8,7 +8,8 @@
     "deltoids",
     "triceps"
   ],
-  "description": "",
+  "category": "mobility",
+  "description": "A seated single-leg roller drill for shoulder control. Helps with shoulder mobility and posture.",
   "instructions": [
     "Sit on a flat surface with your legs extended in front of you.",
     "Hold the roller with both hands, palms facing down, and place it on your thighs.",
@@ -17,5 +18,6 @@
     "Slowly lower the roller back down to your thighs.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "5439",
   "textSource": "exercisedb"
 }

@@ -8,7 +8,8 @@
     "biceps",
     "shoulders"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A wrist curl with the bar held behind the back, building the grip and forearms.",
   "instructions": [
     "Stand up straight with your feet shoulder-width apart and hold a barbell with an overhand grip.",
     "Rest the barbell on the back of your hands with your palms facing down and your fingers pointing towards your body.",
@@ -16,5 +17,6 @@
     "Hold the contracted position for a brief pause, then inhale and slowly lower the barbell back to the starting position.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "2481",
   "textSource": "exercisedb"
 }

@@ -9,7 +9,8 @@
     "quadriceps",
     "lower back"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "On the smith machine, you lift the bar from hip height or lower with a hip hinge. Works the glutes, hamstrings and lower back.",
   "instructions": [
     "Set up the smith machine with the bar at hip height.",
     "Stand with your feet shoulder-width apart, toes pointing slightly outward.",
@@ -34,5 +35,6 @@
       "obliques"
     ]
   },
+  "femaleVariant": "3618",
   "textSource": "exercisedb"
 }

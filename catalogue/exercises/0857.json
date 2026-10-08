@@ -7,7 +7,8 @@
   "secondaryMuscles": [
     "lower back"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "An ab wheel rollout from the knees, rolling forward and back with control. It builds a strong core and abs.",
   "instructions": [
     "Kneel on the floor and place the wheel roller in front of you.",
     "Place your hands on the handles of the wheel roller and extend your arms straight out in front of you.",
@@ -16,5 +17,6 @@
     "Pause for a moment, then slowly roll the wheel back towards your knees, maintaining control and keeping your abs engaged.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "2332",
   "textSource": "exercisedb"
 }

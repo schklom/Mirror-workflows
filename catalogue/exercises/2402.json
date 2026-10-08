@@ -7,7 +7,8 @@
   "secondaryMuscles": [
     "forearms"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A standing hammer curl with an arm blaster to prevent swinging. Targets the biceps and brachialis.",
   "instructions": [
     "Stand up straight with a dumbbell in each hand, palms facing your torso.",
     "Keep your elbows close to your torso and rotate the palms of your hands until they are facing forward.",
@@ -18,5 +19,6 @@
     "Then, inhale and slowly begin to lower the dumbbells back to the starting position.",
     "Repeat for the recommended amount of repetitions."
   ],
+  "femaleVariant": "3077",
   "textSource": "exercisedb"
 }

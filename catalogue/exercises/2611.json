@@ -9,7 +9,8 @@
     "hamstrings",
     "calves"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A horizontal machine leg press done one leg at a time. Builds the glutes and quads.",
   "instructions": [
     "Adjust the seat of the machine so that your knees are at a 90-degree angle when your feet are on the footplate.",
     "Sit on the machine with your back against the backrest and your feet shoulder-width apart on the footplate.",
@@ -36,5 +37,6 @@
       "calves": 0
     }
   },
+  "femaleVariant": "0883",
   "textSource": "exercisedb"
 }

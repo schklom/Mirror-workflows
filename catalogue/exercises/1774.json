@@ -8,7 +8,8 @@
     "glutes",
     "obliques"
   ],
-  "description": "",
+  "category": "calisthenics",
+  "description": "A side bridge with a top leg lift. Works the outer hips and glutes plus the core.",
   "instructions": [
     "Lie on your side with your legs extended and stacked on top of each other.",
     "Prop yourself up on your forearm, keeping your elbow directly below your shoulder.",
@@ -17,5 +18,6 @@
     "Pause for a moment at the top, then lower your leg back down.",
     "Repeat for the desired number of repetitions, then switch sides."
   ],
+  "femaleVariant": "0704",
   "textSource": "exercisedb"
 }

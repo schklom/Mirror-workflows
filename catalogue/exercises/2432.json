@@ -8,7 +8,8 @@
     "chest",
     "shoulders"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A close-grip bench press with an EZ bar. Targets the triceps with less wrist strain.",
   "instructions": [
     "Lie flat on a bench with your feet flat on the ground and your back pressed against the bench.",
     "Grasp the ez barbell with a close grip, hands shoulder-width apart, palms facing forward.",
@@ -18,5 +19,6 @@
     "Push the barbell back up to the starting position, fully extending your arms.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "2433",
   "textSource": "exercisedb"
 }

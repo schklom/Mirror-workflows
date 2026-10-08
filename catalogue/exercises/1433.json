@@ -10,7 +10,8 @@
     "calves",
     "core"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A front squat on a smith machine with a clean grip. The bar path is guided so you can focus on the quads and glutes.",
   "instructions": [
     "Set up the smith machine with the barbell at shoulder height.",
     "Stand facing the barbell with your feet shoulder-width apart.",
@@ -22,5 +23,6 @@
     "Pause for a moment, then push through your heels to return to the starting position.",
     "Repeat for the desired number of repetitions."
   ],
+  "femaleVariant": "2824",
   "textSource": "exercisedb"
 }

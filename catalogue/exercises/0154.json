@@ -8,7 +8,8 @@
     "rhomboids",
     "trapezius"
   ],
-  "description": "",
+  "category": "strength",
+  "description": "A reverse fly using crossed cables. Targets the rear delts and upper back.",
   "instructions": [
     "Attach a D-handle to each low pulley cable and stand in the middle of the cable crossover machine.",
     "Grasp the handles with a pronated grip (palms facing down) and take a step forward, positioning your feet shoulder-width apart.",
@@ -26,5 +27,6 @@
       "upper-back"
     ]
   },
+  "femaleVariant": "2492",
   "textSource": "exercisedb"
 }

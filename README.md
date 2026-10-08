@@ -105,7 +105,7 @@ if you want to try it before installing anything.
   everything as one JSON file whenever you like.
 - Share a plan as a small file or print it as a PDF.
 - Optional admin dashboard with invite-only signup and an activity log.
-- 18 languages, including right-to-left Arabic and Traditional Chinese. Exercise names and
+- 19 languages, including right-to-left Arabic and Traditional Chinese. Exercise names and
   instructions are translated for most of them.
 
 **Optional extras, off by default**

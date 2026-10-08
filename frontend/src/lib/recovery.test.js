@@ -26,13 +26,16 @@ const DAY = 24 * HOUR
 const NOW = Date.UTC(2026, 0, 1, 12)
 
 // Keep fixtures tied to the shipped catalogue while making the expected stimulus explicit.
+// Drawable only: a cardio drill's primary is the "cardiovascular system" pseudo-muscle, which
+// carries no fatigue, and since v1.4 such drills also sit outside the cardio body part.
+const drawable = ex => ex.bp !== 'cardio' && Object.keys(musclesOf(ex)).every(slug => MUSCLES.includes(slug))
 const SINGLE = EXDB.find(ex => {
   const weights = musclesOf(ex)
-  return ex.bp !== 'cardio' && Object.keys(weights).length === 1 && Object.values(weights)[0] === 1
+  return drawable(ex) && Object.keys(weights).length === 1 && Object.values(weights)[0] === 1
 })
 const WEIGHTED = EXDB.find(ex => {
   const weights = musclesOf(ex)
-  return ex.bp !== 'cardio' && Object.values(weights).includes(0.4)
+  return drawable(ex) && Object.values(weights).includes(0.4)
 })
 if (!SINGLE || !WEIGHTED) throw new Error('recovery tests require single- and secondary-weight fixtures')
 
@@ -363,7 +366,7 @@ describe('causal fatigue reference', () => {
   })
 
   it('uses the last registered bodyweight for bodyweight exercises', () => {
-    const bwEx = EXDB.find(ex => ex.eq === 'body weight' && ex.bp !== 'cardio')
+    const bwEx = EXDB.find(ex => ex.eq === 'body weight' && drawable(ex))
     if (!bwEx) throw new Error('test requires a bodyweight exercise fixture')
     const slug = Object.keys(musclesOf(bwEx))[0]
     const workout = { d: new Date(NOW).toISOString(), start: NOW, entries: [{ id: bwEx.id, sets: [{ done: true, r: 10 }] }] }
@@ -503,10 +506,10 @@ describe('a rest-pause row\'s clusters add no extra fatigue tonnage', () => {
 describe('canonical loads and configured bodyweight', () => {
   const loaded = EXDB.find(ex => {
     const weights = musclesOf(ex)
-    return ex.bp !== 'cardio' && ex.eq !== 'body weight'
+    return drawable(ex) && ex.eq !== 'body weight'
       && Object.keys(weights).length === 1 && Object.values(weights)[0] === 1
   })
-  const bodyweight = EXDB.find(ex => ex.bp !== 'cardio' && ex.eq === 'body weight')
+  const bodyweight = EXDB.find(ex => drawable(ex) && ex.eq === 'body weight')
   if (!loaded || !bodyweight) throw new Error('recovery tests require loaded and bodyweight fixtures')
   const loadedSlug = Object.keys(musclesOf(loaded))[0]
   const bodyweightSlug = Object.keys(musclesOf(bodyweight))[0]

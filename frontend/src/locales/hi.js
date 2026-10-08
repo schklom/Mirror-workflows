@@ -1980,4 +1980,6 @@ export default {
   'Signed in from another tab. Your workout came along, keep going here.': 'दूसरे टैब से साइन इन हुआ। आपका वर्कआउट साथ आ गया, यहीं जारी रखें।',
   'Plain http:// isn’t encrypted. Fine on your home network, but use https:// if your server is reachable from the internet.': 'सादा http:// एन्क्रिप्टेड नहीं है। घर के नेटवर्क पर ठीक है, लेकिन अगर आपका सर्वर इंटरनेट से पहुँचा जा सकता है तो https:// इस्तेमाल करें।',
   'Could not reach {0} over https://. If your server runs on plain http (common at home), type http://{0} instead.': 'https:// से {0} तक नहीं पहुँच सके। अगर आपका सर्वर सादे http पर चलता है (घर पर आम है), तो इसकी जगह http://{0} लिखें।',
+  'Collapse completed exercises': 'पूरे हुए व्यायाम समेटें',
+  'Keep the current exercise open': 'वर्तमान व्यायाम खुला रखें',
 }

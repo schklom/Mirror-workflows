@@ -1980,4 +1980,6 @@ export default {
   'Signed in from another tab. Your workout came along, keep going here.': '已在另一个标签页登录。你的训练也一起带过去了，在这里继续吧。',
   'Plain http:// isn’t encrypted. Fine on your home network, but use https:// if your server is reachable from the internet.': '普通 http:// 不加密。在家庭网络里没问题，但如果你的服务器能从互联网访问，请用 https://。',
   'Could not reach {0} over https://. If your server runs on plain http (common at home), type http://{0} instead.': '无法通过 https:// 连接 {0}。如果你的服务器使用普通 http（在家里很常见），请改为输入 http://{0}。',
+  'Collapse completed exercises': '折叠已完成的动作',
+  'Keep the current exercise open': '保持当前动作展开',
 }

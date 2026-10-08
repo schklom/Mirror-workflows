@@ -1243,6 +1243,8 @@ export const PT_BR_OVERRIDES = {
   'Image saved': 'Imagem salva',
   'New personal records': 'Novos recordes pessoais',
   'and {0} more': 'e mais {0}',
+  'Collapse completed exercises': 'Recolher exercícios concluídos',
+  'Keep the current exercise open': 'Manter o exercício atual aberto',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

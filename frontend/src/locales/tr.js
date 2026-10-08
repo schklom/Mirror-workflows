@@ -1980,4 +1980,6 @@ export default {
   'Signed in from another tab. Your workout came along, keep going here.': 'Başka bir sekmede giriş yapıldı. Antrenmanın da geldi, buradan devam et.',
   'Plain http:// isn’t encrypted. Fine on your home network, but use https:// if your server is reachable from the internet.': 'Düz http:// şifreli değildir. Ev ağında sorun değil, ama sunucun internetten erişilebiliyorsa https:// kullan.',
   'Could not reach {0} over https://. If your server runs on plain http (common at home), type http://{0} instead.': '{0} adresine https:// üzerinden ulaşılamadı. Sunucun düz http ile çalışıyorsa (evde yaygın), bunun yerine http://{0} yaz.',
+  'Collapse completed exercises': 'Tamamlanan egzersizleri daralt',
+  'Keep the current exercise open': 'Geçerli egzersizi açık tut',
 }

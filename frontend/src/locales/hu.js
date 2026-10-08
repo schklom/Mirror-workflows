@@ -1983,4 +1983,6 @@ export default {
   'Signed in from another tab. Your workout came along, keep going here.': 'Bejelentkeztél egy másik lapon. Az edzésed is jött vele, folytasd itt.',
   'Plain http:// isn’t encrypted. Fine on your home network, but use https:// if your server is reachable from the internet.': 'A sima http:// nem titkosított. Otthoni hálózaton rendben van, de használj https://-t, ha a szervered elérhető az internetről.',
   'Could not reach {0} over https://. If your server runs on plain http (common at home), type http://{0} instead.': 'A(z) {0} nem érhető el https://-en. Ha a szervered sima http-n fut (otthon gyakori), írd be inkább: http://{0}.',
+  'Collapse completed exercises': 'Befejezett gyakorlatok összecsukása',
+  'Keep the current exercise open': 'Az aktuális gyakorlat maradjon nyitva',
 }

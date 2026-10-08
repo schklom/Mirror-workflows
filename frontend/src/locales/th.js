@@ -1991,4 +1991,6 @@ export default {
   'Signed in from another tab. Your workout came along, keep going here.': 'ลงชื่อเข้าใช้จากแท็บอื่นแล้ว การออกกำลังกายของคุณมาด้วย ทำต่อที่นี่ได้เลย',
   'Plain http:// isn’t encrypted. Fine on your home network, but use https:// if your server is reachable from the internet.': 'http:// ธรรมดาไม่ได้เข้ารหัส ใช้ในเครือข่ายที่บ้านได้ แต่ถ้าเซิร์ฟเวอร์ของคุณเข้าถึงได้จากอินเทอร์เน็ต ให้ใช้ https://',
   'Could not reach {0} over https://. If your server runs on plain http (common at home), type http://{0} instead.': 'เชื่อมต่อ {0} ผ่าน https:// ไม่ได้ ถ้าเซิร์ฟเวอร์ของคุณใช้ http ธรรมดา (พบบ่อยที่บ้าน) ให้พิมพ์ http://{0} แทน',
+  'Collapse completed exercises': 'ย่อท่าฝึกที่เสร็จแล้ว',
+  'Keep the current exercise open': 'เปิดท่าฝึกปัจจุบันไว้',
 }

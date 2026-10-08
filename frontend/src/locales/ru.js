@@ -1984,4 +1984,6 @@ export default {
   'Signed in from another tab. Your workout came along, keep going here.': 'Вход выполнен в другой вкладке. Тренировка сохранилась, продолжайте здесь.',
   'Plain http:// isn’t encrypted. Fine on your home network, but use https:// if your server is reachable from the internet.': 'Обычный http:// не шифруется. Для домашней сети это нормально, но если сервер доступен из интернета, используйте https://.',
   'Could not reach {0} over https://. If your server runs on plain http (common at home), type http://{0} instead.': 'Не удалось связаться с {0} по https://. Если ваш сервер работает на обычном http (дома так часто бывает), введите http://{0}.',
+  'Collapse completed exercises': 'Сворачивать завершённые упражнения',
+  'Keep the current exercise open': 'Оставлять текущее упражнение открытым',
 }

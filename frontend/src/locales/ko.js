@@ -1980,4 +1980,6 @@ export default {
   'Signed in from another tab. Your workout came along, keep going here.': '다른 탭에서 로그인했어요. 운동도 함께 넘어왔으니 여기서 이어서 하세요.',
   'Plain http:// isn’t encrypted. Fine on your home network, but use https:// if your server is reachable from the internet.': '일반 http://는 암호화되지 않아요. 집 네트워크에서는 괜찮지만, 서버가 인터넷에서 접속 가능하다면 https://를 쓰세요.',
   'Could not reach {0} over https://. If your server runs on plain http (common at home), type http://{0} instead.': 'https://로 {0}에 연결할 수 없습니다. 서버가 일반 http로 돌아간다면(집에서는 흔해요) 대신 http://{0}를 입력하세요.',
+  'Collapse completed exercises': '완료한 운동 접기',
+  'Keep the current exercise open': '현재 운동은 펼쳐 두기',
 }

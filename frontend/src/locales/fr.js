@@ -1980,4 +1980,6 @@ export default {
   'Signed in from another tab. Your workout came along, keep going here.': 'Connecté depuis un autre onglet. Ta séance a suivi, continue ici.',
   'Plain http:// isn’t encrypted. Fine on your home network, but use https:// if your server is reachable from the internet.': 'Le http:// simple n’est pas chiffré. Ça passe sur ton réseau domestique, mais utilise https:// si ton serveur est accessible depuis Internet.',
   'Could not reach {0} over https://. If your server runs on plain http (common at home), type http://{0} instead.': 'Impossible de joindre {0} en https://. Si ton serveur tourne en http simple (courant à la maison), tape plutôt http://{0}.',
+  'Collapse completed exercises': 'Replier les exercices terminés',
+  'Keep the current exercise open': 'Garder l’exercice actuel ouvert',
 }

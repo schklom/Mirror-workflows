@@ -878,7 +878,7 @@ body.chips-dragging *{cursor:inherit}
 .wprog{height:4px;background:var(--surface-2);border-radius:99px;overflow:hidden;margin-bottom:16px}
 .wprog i{display:block;height:100%;background:var(--acc);border-radius:99px;transition:width var(--med) var(--ease)}
 .exmedia{position:relative;border-radius:var(--r-lg);overflow:hidden;background:#fff;margin-bottom:12px}
-.exmedia img,.exmedia video{width:100%;height:320px;object-fit:contain;display:block;background:#fff}
+.exmedia img{width:100%;height:320px;object-fit:contain;display:block}
 .exmedia .gifhint,.exmedia .giftoggle{
   position:absolute;bottom:9px;display:inline-flex;align-items:center;gap:4px;
   background:rgba(0,0,0,.45);color:#fff;border-radius:99px;padding:5px 11px;
@@ -904,6 +904,8 @@ body.chips-dragging *{cursor:inherit}
 .exmedia.compact video{height:120px}
 .exmedia.mini video{height:84px}
 .exmedia:has(> video){background:#000}
+/* a catalogue animation: drawn on white, like the stills next to it */
+.exmedia video.catvid,.exmedia:has(> video.catvid){background:#fff}
 
 /* the link to a video or a guide (#246): a quiet action tile under the picture, or in its place.
    A <button>, so the reset of the browser's button look comes first. */

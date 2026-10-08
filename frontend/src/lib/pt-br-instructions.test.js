@@ -3,6 +3,8 @@ import { readFileSync } from 'node:fs'
 import ptBR from '../instr/pt-BR.js'
 import { EXDB } from './exercises-data.js'
 import { INSTR_LANGS } from './i18n-core.js'
+// English steps live in their own pack since the catalogue moved to catalogue/ (v1.4.0)
+import EN from '../instr/en.js'
 
 describe('Brazilian Portuguese exercise instructions', () => {
   const exercises = new Map(EXDB.map(exercise => [exercise.id, exercise]))
@@ -27,10 +29,10 @@ describe('Brazilian Portuguese exercise instructions', () => {
     for (const [id, steps] of Object.entries(ptBR)) {
       const exercise = exercises.get(id)
       expect(exercise, `unknown exercise ${id}`).toBeDefined()
-      expect(steps, id).toHaveLength(exercise.st.length)
+      expect(steps, id).toHaveLength(EN[id].length)
       steps.forEach((step, index) => {
         expect(step.trim(), `${id} step ${index + 1}`).not.toBe('')
-        expect(step, `${id} step ${index + 1}`).not.toBe(exercise.st[index])
+        expect(step, `${id} step ${index + 1}`).not.toBe(EN[id][index])
         expect(step, `${id} step ${index + 1}`).not.toMatch(/(?:^|[^\p{L}])(?:the|your|with|from|towards?|repeat|desired|starting|slowly|hold|while|then|back|straight|ground|feet|hands|body|legs|arms|knees|shoulders)(?=$|[^\p{L}])/iu)
         expect(step, `${id} step ${index + 1}`).not.toMatch(/(?:^|[^\p{L}])(?:ginásio|anca|abdómen|gémeos|ecrã|core|banda|piso|omoplata|peso de mão|barra de elevações|pegada por cima|pegada invertida|pegada inversa|bola suíça)(?=$|[^\p{L}])/iu)
         expect(step, `${id} step ${index + 1}`).not.toMatch(/flexion\p{L}*\s+(?:a\s+|o\s+|os\s+|um\s+|uma\s+)?(?:barra|pesos?|halter(?:es)?|mão)(?=$|[^\p{L}])/iu)
@@ -40,7 +42,8 @@ describe('Brazilian Portuguese exercise instructions', () => {
 
   test('does not replace kettlebells with dumbbells', () => {
     for (const exercise of EXDB) {
-      exercise.st.forEach((step, index) => {
+      if (!ptBR[exercise.id]) continue
+      EN[exercise.id].forEach((step, index) => {
         if (/kettlebells?/iu.test(step)) {
           expect(ptBR[exercise.id][index], `${exercise.id} step ${index + 1}`).toMatch(/kettlebells?/iu)
         }

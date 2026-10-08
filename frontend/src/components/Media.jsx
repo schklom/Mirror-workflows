@@ -45,7 +45,7 @@ function BuiltinMedia({ ex, id, compact, minimizable }) {
       {failed === 'all'
         ? <div className="exmedia-x"><Icon name="dumbbell" /></div>
         : showGif && isVideoSrc(gifSrc(ex, body))
-          ? <video src={gifSrc(ex, body)} poster={imgSrc(ex, body)} autoPlay muted loop playsInline disablePictureInPicture
+          ? <video className="catvid" src={gifSrc(ex, body)} poster={imgSrc(ex, body)} autoPlay muted loop playsInline disablePictureInPicture
               aria-label={exerciseNameFor(ex)} onError={onError} />
           : <img decoding="async" draggable={false} src={showGif ? gifSrc(ex, body) : imgSrc(ex, body)} alt={exerciseNameFor(ex)} onError={onError} />}
       {minimizable && (

@@ -142,10 +142,10 @@ server {
         add_header Content-Security-Policy "frame-ancestors 'none'" always;
     }
 
-    # Exercise images/GIFs never change → cache hard.
+    # Exercise stills and animations never change → cache hard.
     # `expires` would add a second Cache-Control of its own (plus an Expires header) on top of the
     # explicit one below, so the header is set once, here, where `immutable` can be part of it.
-    location ~* \.(png|jpg|jpeg|gif|ico|svg|woff|woff2|webp|avif)$ {
+    location ~* \.(png|jpg|jpeg|gif|ico|svg|woff|woff2|webp|avif|mp4)$ {
         # A regex location wins over the prefix block above, so it never saw its rewrite and
         # looked for the file under the prefix on disk. Same identity-when-empty rewrite here.
         rewrite ^\Q${BASE_PATH}\E/(.*)$ /$1 break;

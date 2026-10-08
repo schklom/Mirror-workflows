@@ -4,8 +4,8 @@ import { isLoadedEq } from './exercises.js'
 
 // Issue #393: clubbell and macebell are real loaded tools with no catalogue entries yet.
 describe('clubbell and macebell', () => {
-  it('appends both to the equipment list when the catalogue does not use them', () => {
-    expect(ALL_EQUIPMENT.slice(-2)).toEqual(['clubbell', 'macebell'])
+  it('keeps both on the equipment list, whether the catalogue uses them or not', () => {
+    expect(ALL_EQUIPMENT).toEqual(expect.arrayContaining(['clubbell', 'macebell']))
   })
 
   it('treats a set on either as a loaded set', () => {

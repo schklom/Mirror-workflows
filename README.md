@@ -130,8 +130,8 @@ docker compose pull      # prebuilt images, amd64 + arm64 (skip this to build fr
 docker compose up -d
 ```
 
-Open <http://localhost:8080>, tap **Create profile**, and you're in. The first start downloads
-the exercise media (about 140 MB) once.
+Open <http://localhost:8080>, tap **Create profile**, and you're in. The exercise animations are
+part of the image, so there's nothing else to download.
 
 To reach it from your phone with passkeys you need HTTPS on a domain; that's a two-line change in
 `.env`. The [self-hosting guide](docs/SELF_HOSTING.md) walks through Cloudflare Tunnel, Caddy,
@@ -336,13 +336,10 @@ modify and share it; if you run a modified version as a network service, you hav
 version's source under the same license.
 
 > [!IMPORTANT]
-> **The exercise media is not covered by that license.** Exercise metadata and instruction text come
-> from [ExerciseDB v1](https://exercisedb.dev/) through
-> [hasaneyldrm/exercises-dataset](https://github.com/hasaneyldrm/exercises-dataset) under MIT. The
-> images and animations are third-party content under neither MIT nor the AGPL, and their ownership
-> is disputed: the dataset attributes them to [Gym visual](https://gymvisual.com/), while
-> [ExerciseDB/AscendAPI](https://exercisedb.io/faq) claims to own them. openGym doesn't redistribute
-> them (your instance downloads them on first start) and doesn't relicense them. To reuse that
-> media, clear it with the rights holder first.
+> **The exercise media is not covered by that license.** The stills and animations are
+> © Aliaksandr Makatserchyk, [Gym visual](https://gymvisual.com/), licensed for use in openGym only:
+> 180 px in this repository and on self-hosted servers, larger only inside the app packages. A
+> non-commercial fork may keep them unmodified with the notice; anything else needs your own licence
+> from gymvisual.com. The exercise text in `catalogue/` is openGym's and open to contributions.
 
 Full third-party notices, including the body-diagram geometry, are in [NOTICE.md](NOTICE.md).

@@ -149,8 +149,10 @@ export function matchesExerciseSearch(exercise, query) {
 // shipping ~140 MB of images into the deployment. `import.meta.env` is undefined in plain
 // Node; the guard keeps this module loadable without Vite.
 const ENV = import.meta.env || {}
-const IMG_BASE = ENV.VITE_IMG_BASE || 'img/'
-const GIF_BASE = ENV.VITE_GIF_BASE || 'gif/'
+// Under their own folder since v1.4.0: a docker-compose.yml from before then still mounts the old
+// dataset's media over img/ and gif/, and would hide the catalogue's files if they lived there.
+const IMG_BASE = ENV.VITE_IMG_BASE || 'exercise-media/still/'
+const GIF_BASE = ENV.VITE_GIF_BASE || 'exercise-media/clip/'
 // Many exercises are drawn twice, on a male and on a female figure (`fv`, the female drawing's
 // id). The body chosen for the muscle map (Settings, S.body) picks which one shows; the exercise,
 // its id and everything logged against it stay the same either way.

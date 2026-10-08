@@ -2,6 +2,8 @@ import { describe, expect, test } from 'vitest'
 import zhTW from '../instr/zh-TW.js'
 import { EXDB } from './exercises-data.js'
 import { INSTR_LANGS } from './i18n-core.js'
+// English steps live in their own pack since the catalogue moved to catalogue/ (v1.4.0)
+import EN from '../instr/en.js'
 
 describe('Traditional Chinese (zh-TW) exercise instructions', () => {
   const exercises = new Map(EXDB.map(exercise => [exercise.id, exercise]))
@@ -21,7 +23,7 @@ describe('Traditional Chinese (zh-TW) exercise instructions', () => {
       expect(steps.length, `${id} steps empty`).toBeGreaterThan(0)
       steps.forEach((step, index) => {
         expect(step.trim(), `${id} step ${index + 1}`).not.toBe('')
-        expect(step, `${id} step ${index + 1}`).not.toBe(exercise.st[index])
+        expect(step, `${id} step ${index + 1}`).not.toBe(EN[id][index])
       })
     }
   })

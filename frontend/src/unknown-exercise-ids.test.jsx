@@ -28,7 +28,9 @@ vi.mock('./lib/sound.js', () => ({ beep: vi.fn(), vibrate: vi.fn(), alertBuzz: v
 vi.mock('./lib/api.js', async importOriginal => ({ ...(await importOriginal()), api: vi.fn(() => Promise.resolve({})), beacon: vi.fn() }))
 
 const clone = v => JSON.parse(JSON.stringify(v))
-const UNK = '4321'     // a v1.4.0 id: not in this build's catalogue
+// An id no catalogue of this build knows: v1.3.11 shipped this test with '4321', which v1.4.0 made a
+// real exercise, so it has to be one past every id the pack can have.
+const UNK = '99999'
 const SQUAT = '0043'   // barbell full squat, one this build does know
 const DAY = 86400000
 

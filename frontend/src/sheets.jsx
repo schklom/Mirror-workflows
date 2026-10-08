@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { useStore } from './store/useStore.js'
 import { useUI } from './store/useUI.js'
 import { EXDB, EXIDX, BODYPARTS, isCardio, isBodyweightEq, allExercises, equipmentOf, smOf, searchExercises, exOr, isAssisted, betterWeight, beatsWeight, isCustomEx } from './lib/exercises.js'
-import { activeProfile, exAvailable, ALL_EQUIPMENT, newProfile } from './lib/equipment.js'
+import { activeProfile, exAvailable, ALL_EQUIPMENT, newProfile, profileEquipment, ACC_V } from './lib/equipment.js'
 import { fmtDate, fmtDateRange, fmtNum, fmtPlate, exerciseNameText, fmtVol, fmtDur, durPart, todayISO, isoOf, uid, exCount, routineCount, setsWorkCount, DAYN, DAYS, weekOrder, weekStartOf, weekDayOffset, MONTHS_LONG, ACCENTS } from './lib/format.js'
 import { lastEntryFor, bestWeightFor, bestWeightForEntry, buildSets, effectiveRoutineIds, workoutDay, workoutVolume, setsDone, setsDoneActive, setUnitsTotal, lastBW, sessionSections, setLabel, defaultConfig, cleanupSg, modeOf, effortOf, EFFORT, capEffort, stepEffort, isBw, isPerSide, sideReps, workSetsDone, applyIntensifierPlan, MAX_PLANNED_WARMUPS, NOTE_MAX } from './lib/history.js'
 import { usesBar, defaultBarWeight, hasBarOverride, isNoBar } from './lib/bar.js'
@@ -171,7 +171,7 @@ const PLAN_COPY = {
 // nothing at all. planId is deliberately required — a default invites `onClick={loadStarterPlan}`,
 // which hands the click event in as the plan and silently loads nothing.
 export function loadStarterPlan(planId, profile) {
-  const plan = buildStarterPlan(planId, profile?.equipment)
+  const plan = buildStarterPlan(planId, profile ? profileEquipment(profile) : undefined)
   if (!plan) return false
   update(st => {
     // Loading the same plan again reuses the routines it added last time (same name, same
@@ -1371,7 +1371,7 @@ export function swapActiveWorkoutExercise(index) {
 function EquipmentProfileSheet({ profile, close }) {
   const update = useStore(s => s.update)
   const nameRef = useRef(null)
-  const [checked, setChecked] = useState(new Set(profile?.equipment || []))
+  const [checked, setChecked] = useState(new Set(profile ? profileEquipment(profile) : []))
   const toggle = k => setChecked(s => { const n = new Set(s); n.has(k) ? n.delete(k) : n.add(k); return n })
   const save = () => {
     const name = (nameRef.current.value || '').trim()
@@ -1381,7 +1381,7 @@ function EquipmentProfileSheet({ profile, close }) {
       const equipment = [...checked]
       if (profile) {
         const p = s.equipProfiles.find(x => x.id === profile.id)
-        if (p) { p.name = name; p.equipment = equipment }
+        if (p) { p.name = name; p.equipment = equipment; p.accV = ACC_V }
       } else {
         const p = newProfile(name); p.equipment = equipment
         s.equipProfiles.push(p)
@@ -1403,7 +1403,7 @@ function EquipmentProfileSheet({ profile, close }) {
       ))}
     </div>
     <div className="dim small" style={{ marginTop: 10 }}>
-      {t('Body-weight exercises are always available, in every profile.')}
+      {t('Body-weight exercises are always available, unless they need a pull-up bar or a bench.')}
     </div>
     <div style={{ height: 14 }} /><Button variant="primary" onClick={save}>{t('Save')}</Button>
   </>

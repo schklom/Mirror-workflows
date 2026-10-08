@@ -1,5 +1,17 @@
 # Changelog
 
+## Unreleased
+
+**Languages**
+
+- 🇵🇱 **Polish exercise names**: all 1,324 of them, with the same switch to show the English name
+  beside them or only the English name. Polish is the eighth language with translated exercise
+  names.
+- **Polish reviewed end to end**: one word for a routine ("plan treningowy") and for a passkey
+  ("klucz dostępu", as Apple and Google say it), the Coach is always "Trener", gender-neutral
+  wording where the text assumed a man, and a dozen smaller fixes, among them a hint that pointed
+  to a setting by the wrong name.
+
 ## v1.3.10 (2026-10-07)
 
 This one grew. The plan was a queue and a rotation; along the way the whole app got a calmer look,

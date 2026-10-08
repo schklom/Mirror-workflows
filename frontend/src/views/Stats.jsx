@@ -19,9 +19,10 @@ import { e1rmSeries, best1RM, formulaOf } from '../lib/onerm.js'
 import { maxRepsSeries } from '../lib/pyramid.js'
 import { perSetSessions, perSetLines, dropOffSet } from '../lib/per-set.js'
 import {
-  hasEffort, displayScale, scaleName, toScale, avgRir, effortSummary, effortWeeks,
-  effortHistogram, isHardSet, HARD_RIR
+  hasEffort, hasEstimableEffort, displayScale, scaleName, toScale, avgRir, effortSummary, effortWeeks,
+  effortHistogram, isHardSet, HARD_RIR, MIN_RATED
 } from '../lib/effort.js'
+import { anchorsByWorkout, resolveSetRir } from '../lib/recovery.js'
 import { Button, Segmented, SelectRow } from '../components/ui.jsx'
 import { tappable } from '../lib/use-sheet-keyboard.js'
 import { isWarmupRow } from '../lib/workout-model.js'
@@ -103,6 +104,16 @@ function fatigueLabel(value) {
   return t(state === 'ready' ? 'Ready' : state === 'recovering' ? 'Recovering' : 'Fatigued')
 }
 
+// The user's own last registered bodyweight, in kg: the body-mass part of a bodyweight
+// exercise's load for fatigue and for estimated effort, so both read the same set the same way.
+function profileBodyweightKg(S) {
+  const entries = S.bodyweight || []
+  if (!entries.length) return null
+  const last = entries.slice().sort((a, b) => String(a.d).localeCompare(String(b.d))).at(-1)
+  if (!last || !(last.w > 0)) return null
+  return S.unit === 'lb' ? last.w * LB_TO_KG : last.w
+}
+
 function MuscleBalance({ S }) {
   const [view, setView] = useState('balance')
   const [win, setWin] = useState(7)
@@ -113,14 +124,7 @@ function MuscleBalance({ S }) {
   const now = useNow()
   const lang = getLang()
   const workouts = S.workouts
-  // The user's own last registered bodyweight drives bodyweight-exercise tonnage.
-  const bodyweightKg = useMemo(() => {
-    const entries = S.bodyweight || []
-    if (!entries.length) return null
-    const last = entries.slice().sort((a, b) => String(a.d).localeCompare(String(b.d))).at(-1)
-    if (!last || !(last.w > 0)) return null
-    return S.unit === 'lb' ? last.w * LB_TO_KG : last.w
-  }, [S.bodyweight, S.unit])
+  const bodyweightKg = useMemo(() => profileBodyweightKg(S), [S.bodyweight, S.unit])
   const fatigue = useMemo(() => fatigueOf(workouts, now, { bodyweightKg, unit: S.unit }), [workouts, now, bodyweightKg, S.unit])
   const strength = useMemo(() => strengthOf(workouts, now, { bodyweightKg, unit: S.unit }), [workouts, now, bodyweightKg, S.unit])
   const muscleExercises = useMemo(() => (sel ? strengthExerciseRowsForMuscle(S, now, sel) : []), [S, now, sel, lang])
@@ -303,9 +307,23 @@ function EffortCard({ S }) {
   const [win, setWin] = useState(90)
   const kind = displayScale(S)
   const hd = scaleName(kind)
-  const sum = effortSummary(S, win)
-  const weeks = effortWeeks(S, win)
-  const hist = effortHistogram(S, win)
+  const logged = effortSummary(S, win)
+  // Thin or missing ratings fall back to estimates (same precedence fatigue scoring
+  // uses), so imported histories get an effort card too. Well-rated windows keep
+  // their logged numbers untouched - estimates never dilute a real average.
+  const blend = logged.rated < MIN_RATED
+  // Same options as the fatigue map (unit + profile bodyweight), so a bodyweight set is
+  // estimated against the same body-mass-inclusive anchor in both places.
+  const opts = useMemo(() => ({ unit: S.unit, bodyweightKg: profileBodyweightKg(S) }), [S.unit, S.bodyweight])
+  const anchors = useMemo(
+    () => (blend ? anchorsByWorkout(S.workouts, opts) : new Map()),
+    [blend, S.workouts, opts],
+  )
+  const resolve = (s, w, e) => resolveSetRir(s, s, e, w, anchors.get(w), opts)
+  const sum = blend ? effortSummary(S, win, resolve) : logged
+  const weeks = blend ? effortWeeks(S, win, resolve) : effortWeeks(S, win)
+  const hist = blend ? effortHistogram(S, win, resolve) : effortHistogram(S, win)
+  const estimated = blend && sum.est > 0
   const maxBin = Math.max(1, ...hist.map(b => b.n))
   // The week's set count rides along in the tooltip, because the pair is the reading:
   // volume up with effort up is fatigue piling up, volume up with effort flat is adaptation.
@@ -314,10 +332,10 @@ function EffortCard({ S }) {
   const binLabel = b => kind === 'rpe' ? (b.tail ? '≤ 6' : String(10 - b.rir)) : (b.tail ? b.rir + '+' : String(b.rir))
 
   return <div className="card">
-    <h2>{t('Effort')} <span className="dim" style={{ textTransform: 'none', letterSpacing: 0 }}>· {t('how close to failure')}</span></h2>
+    <h2>{t('Effort')} <span className="dim" style={{ textTransform: 'none', letterSpacing: 0 }}>· {t('how close to failure')}{estimated ? ' · ' + t('estimated') : ''}</span></h2>
     <Segmented className="seg-range" value={win} onChange={setWin}
       options={[{ value: 30, label: '30d' }, { value: 90, label: '90d' }, { value: 365, label: '1Y' }, { value: 0, label: t('All') }]} />
-    {sum.rated === 0 ? <div className="muted small">{t('No rated sets in this period.')}</div> : <>
+    {sum.rated === 0 && sum.est === 0 ? <div className="muted small">{t('No rated sets in this period.')}</div> : <>
       <div className="row between" style={{ alignItems: 'flex-end', gap: 12 }}>
         <div>
           <div className="stat-v">{sum.avg == null ? '–' : fmtNum(toScale(kind, sum.avg)) + ' ' + hd}</div>
@@ -328,7 +346,9 @@ function EffortCard({ S }) {
           <div className="small dim">{t('at {0} {1} or harder', hd, fmtNum(toScale(kind, HARD_RIR)))}</div>
         </div>
       </div>
-      <div className="small dim" style={{ marginTop: 8 }}>{t('{0} of {1} finished sets rated', sum.rated, sum.done)}</div>
+      <div className="small dim" style={{ marginTop: 8 }}>{estimated
+        ? t('{0} rated · {1} estimated of {2} sets', sum.rated, sum.est, sum.done)
+        : t('{0} of {1} finished sets rated', sum.rated, sum.done)}</div>
       {effortOf(S) === 'none' && <div className="small" style={{ color: 'var(--yellow)', marginTop: 4 }}>
         {t('Effort per set is off. Turn it on in Settings → Workout to keep rating.')}
       </div>}
@@ -627,7 +647,7 @@ export default function Stats() {
           : t('Waist, arms, body fat and anything else you measure, each with its own curve.')}</div></div>
       <Button size="sm" variant="tinted" trailingIcon="chevronRight" style={{ flexShrink: 0 }} onClick={() => nav('/measurements')}>{t('Open')}</Button>
     </div>
-    {hasEffort(S) && <EffortCard S={S} />}
+    {(hasEffort(S) || hasEstimableEffort(S)) && <EffortCard S={S} />}
 
     <div className="cols">
       <div className="card">

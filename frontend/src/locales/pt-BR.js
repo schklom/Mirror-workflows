@@ -1313,6 +1313,9 @@ export const PT_BR_OVERRIDES = {
   'Superset:': 'Superset:',
   '{0}s hold': 'Segurar por {0}s',
   'Progression settings': 'Configurações de progressão',
+  // --- exercise library: types ---
+  'stretching': 'alongamento',
+  'olympic': 'halterofilia',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

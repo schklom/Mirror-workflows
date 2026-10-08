@@ -136,6 +136,25 @@ const askDetails = () => {
   detailsLoader()
 }
 
+// A load that failed: the next reader to ask after a pause tries again, and so does the browser
+// coming back online. Not at once: every render asks, and offline every try fails at once.
+let retryTimer = null
+let onOnline = null
+function clearRetry() {
+  clearTimeout(retryTimer)
+  retryTimer = null
+  if (onOnline && typeof globalThis.removeEventListener === 'function') globalThis.removeEventListener('online', onOnline)
+  onOnline = null
+}
+export function _detailsFailed(retryMs = 20000) {
+  clearRetry()
+  retryTimer = setTimeout(() => { clearRetry(); detailsAsked = false }, retryMs)
+  if (typeof globalThis.addEventListener === 'function') {
+    onOnline = () => { clearRetry(); detailsAsked = false; askDetails() }
+    globalThis.addEventListener('online', onOnline)
+  }
+}
+
 // Instructions for an exercise in the current language (English steps as fallback). `st` on the
 // exercise itself still wins over nothing: a custom exercise or an older plan file carries its own.
 export const instrFor = ex => {
@@ -159,12 +178,15 @@ export const descFor = ex => {
 }
 
 // i18n.js hands over the loader here; core itself never imports a chunk.
-export function _setDetailsLoader(fn) { detailsLoader = fn; detailsAsked = false }
+export function _setDetailsLoader(fn) { detailsLoader = fn; detailsAsked = false; clearRetry() }
 
-// Called once the English packs (and the language's descriptions, if any) have loaded.
+// Called once the English packs (and the language's descriptions, if any) have loaded. A pack
+// that did not come (offline, before the worker had it) stays missing, not empty: an empty one
+// would show no steps until the next reload.
 export function _setDetails(newEnInstr, newEnDescs, newDescs) {
-  enInstr = newEnInstr || enInstr || {}
-  enDescs = newEnDescs || enDescs || {}
+  enInstr = newEnInstr || enInstr
+  enDescs = newEnDescs || enDescs
+  if (enInstr && enDescs) clearRetry()
   descs = lang === 'en' ? null : (newDescs || null)
   version++
   return version

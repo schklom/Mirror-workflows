@@ -7,7 +7,7 @@ import { useSyncExternalStore } from 'react'
 import {
   LANGS, INSTR_LANGS, EXERCISE_NAME_LANGS, DATE_LOCALES, DERIVED_LOCALES, RTL_LANGS,
   getLang, dateLocale, t, tn, instrFor, exerciseNameFor, exerciseNameSearchText, getVersion,
-  baseLang, derivePack, _setLangState, exerciseNameClass, descFor, instrTranslated, _setDetailsLoader, _setDetails
+  baseLang, derivePack, _setLangState, exerciseNameClass, descFor, instrTranslated, _setDetailsLoader, _setDetails, _detailsFailed
 } from './i18n-core.js'
 
 export {
@@ -34,8 +34,10 @@ async function loadDetails() {
     load(descPacks, '../exercise-desc/en.js'),
     base === 'en' ? null : load(descPacks, '../exercise-desc/' + base + '.js'),
   ])
-  detailsLoaded = true
+  // Either English pack missing is a failed load (both always exist): core asks again later.
+  if (en && enDesc) detailsLoaded = true
   _setDetails(en, enDesc, derivePack(getLang(), desc))
+  if (!en || !enDesc) _detailsFailed()
   notify()
 }
 _setDetailsLoader(loadDetails)

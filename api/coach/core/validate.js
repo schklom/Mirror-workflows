@@ -87,7 +87,13 @@ export function validatePlan(data, ctx = {}) {
   const errors = [];
   if (!data || typeof data !== 'object') return fail(['the answer was not an object']);
   if (data.nochange) return fail(['a plan was requested but the answer said "no change"']);
-  if (!Array.isArray(data.routines) || !data.routines.length) errors.push('routines must be a non-empty array');
+  if (!Array.isArray(data.routines) || !data.routines.length) {
+    // A review-style change list where a plan was asked for (#471): say what the task wants,
+    // so the repair round sends the plan rather than the same list again.
+    errors.push(Array.isArray(data.changes)
+      ? 'this task needs the complete plan (week and every routine with its ex), not a list of changes — start from refine.previous when revising, apply what was asked, and send the whole plan'
+      : 'routines must be a non-empty array');
+  }
 
   // A custom id that shadows a library id is the one case where the screen and the plan
   // disagree: the approval card resolves the id against the catalogue and shows that exercise,

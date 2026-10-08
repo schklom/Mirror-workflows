@@ -1,0 +1,21 @@
+{
+  "id": "0387",
+  "name": "dumbbell seated alternate front raise",
+  "bodyPart": "shoulders",
+  "equipment": "dumbbell",
+  "target": "delts",
+  "secondaryMuscles": [
+    "trapezius",
+    "biceps"
+  ],
+  "description": "",
+  "instructions": [
+    "Sit on a bench with your back straight and feet flat on the ground.",
+    "Hold a dumbbell in each hand with your palms facing your body and arms extended down by your sides.",
+    "Keeping your arms straight, raise one dumbbell in front of you until it is parallel to the ground.",
+    "Pause for a moment at the top, then slowly lower the dumbbell back down to the starting position.",
+    "Repeat with the other arm.",
+    "Alternate between arms for the desired number of repetitions."
+  ],
+  "textSource": "exercisedb"
+}

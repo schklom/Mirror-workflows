@@ -1,0 +1,19 @@
+{
+  "id": "0044",
+  "name": "barbell good morning",
+  "bodyPart": "upper legs",
+  "equipment": "barbell",
+  "target": "hamstrings",
+  "secondaryMuscles": [
+    "lower back"
+  ],
+  "description": "",
+  "instructions": [
+    "Start by standing with your feet shoulder-width apart and the barbell resting on your upper back.",
+    "Keeping your back straight and your core engaged, hinge forward at the hips, pushing your buttocks back as if you were trying to touch the wall behind you with your glutes.",
+    "Lower your torso until it is parallel to the ground, feeling a stretch in your hamstrings.",
+    "Pause for a moment, then return to the starting position by squeezing your glutes and pushing your hips forward.",
+    "Repeat for the desired number of repetitions."
+  ],
+  "textSource": "exercisedb"
+}

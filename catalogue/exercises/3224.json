@@ -1,0 +1,19 @@
+{
+  "id": "3224",
+  "name": "jack jump (male)",
+  "bodyPart": "cardio",
+  "equipment": "body weight",
+  "target": "cardiovascular system",
+  "secondaryMuscles": [
+    "quadriceps",
+    "calves"
+  ],
+  "description": "",
+  "instructions": [
+    "Stand with your feet together and your arms by your sides.",
+    "Jump up, spreading your feet apart and raising your arms above your head.",
+    "As you land, quickly jump back to the starting position.",
+    "Repeat for the desired number of repetitions."
+  ],
+  "textSource": "exercisedb"
+}

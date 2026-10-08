@@ -1,0 +1,28 @@
+{
+  "id": "0196",
+  "name": "cable pull through (with rope)",
+  "bodyPart": "upper legs",
+  "equipment": "cable",
+  "target": "glutes",
+  "secondaryMuscles": [
+    "hamstrings",
+    "lower back"
+  ],
+  "description": "",
+  "instructions": [
+    "Stand facing away from the cable machine with your feet shoulder-width apart.",
+    "Grab the rope attachment with both hands and step forward, creating tension in the cable.",
+    "Bend at the hips and lower your upper body until it is parallel to the ground, keeping your back straight.",
+    "Engage your glutes and hamstrings to pull your body back up to the starting position.",
+    "Repeat for the desired number of repetitions."
+  ],
+  "muscleMap": {
+    "primaries": [
+      "gluteal"
+    ],
+    "secondaries": [
+      "hamstring"
+    ]
+  },
+  "textSource": "exercisedb"
+}

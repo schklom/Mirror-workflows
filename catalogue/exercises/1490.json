@@ -1,0 +1,20 @@
+{
+  "id": "1490",
+  "name": "standing calf raise (on a staircase)",
+  "bodyPart": "lower legs",
+  "equipment": "body weight",
+  "target": "calves",
+  "secondaryMuscles": [
+    "ankles",
+    "feet"
+  ],
+  "description": "",
+  "instructions": [
+    "Stand on the edge of a step or a sturdy platform with your heels hanging off and your toes on the step.",
+    "Hold onto a railing or wall for balance if needed.",
+    "Slowly raise your heels as high as possible, lifting your body weight onto the balls of your feet.",
+    "Pause for a moment at the top, then slowly lower your heels back down to the starting position.",
+    "Repeat for the desired number of repetitions."
+  ],
+  "textSource": "exercisedb"
+}

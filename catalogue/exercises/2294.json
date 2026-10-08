@@ -1,0 +1,19 @@
+{
+  "id": "2294",
+  "name": "dumbbell zottman preacher curl",
+  "bodyPart": "upper arms",
+  "equipment": "dumbbell",
+  "target": "biceps",
+  "secondaryMuscles": [
+    "forearms"
+  ],
+  "description": "",
+  "instructions": [
+    "Sit on a preacher bench with a dumbbell in each hand, palms facing up and elbows resting on the pad.",
+    "Curl the dumbbells up towards your shoulders, keeping your upper arms stationary and your palms facing up.",
+    "At the top of the curl, rotate your wrists so that your palms are facing down.",
+    "Slowly lower the dumbbells back down to the starting position, rotating your wrists back to the starting position as you do so.",
+    "Repeat for the desired number of repetitions."
+  ],
+  "textSource": "exercisedb"
+}

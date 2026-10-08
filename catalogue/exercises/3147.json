@@ -1,0 +1,20 @@
+{
+  "id": "3147",
+  "name": "pelvic tilt",
+  "bodyPart": "waist",
+  "equipment": "body weight",
+  "target": "abs",
+  "secondaryMuscles": [
+    "lower back"
+  ],
+  "description": "",
+  "instructions": [
+    "Lie flat on your back with your knees bent and feet flat on the ground.",
+    "Place your hands by your sides.",
+    "Engage your abs and tilt your pelvis upward, pressing your lower back into the ground.",
+    "Hold this position for a few seconds, focusing on contracting your abs.",
+    "Release the tilt and return to the starting position.",
+    "Repeat for the desired number of repetitions."
+  ],
+  "textSource": "exercisedb"
+}

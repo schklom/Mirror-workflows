@@ -1,0 +1,21 @@
+{
+  "id": "3644",
+  "name": "weighted lunge with swing",
+  "bodyPart": "upper legs",
+  "equipment": "weighted",
+  "target": "glutes",
+  "secondaryMuscles": [
+    "quadriceps",
+    "hamstrings",
+    "calves"
+  ],
+  "description": "",
+  "instructions": [
+    "Stand with your feet shoulder-width apart, holding a weight in each hand.",
+    "Take a step forward with your right foot, lowering your body into a lunge position.",
+    "As you lunge forward, swing the weights forward and upward, keeping your arms straight.",
+    "Push off with your right foot and return to the starting position, swinging the weights back down.",
+    "Repeat with your left foot and continue alternating legs for the desired number of repetitions."
+  ],
+  "textSource": "exercisedb"
+}

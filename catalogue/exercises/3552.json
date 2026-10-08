@@ -1,0 +1,19 @@
+{
+  "id": "3552",
+  "name": "quick feet v. 2",
+  "bodyPart": "upper legs",
+  "equipment": "body weight",
+  "target": "quads",
+  "secondaryMuscles": [
+    "calves",
+    "hamstrings"
+  ],
+  "description": "",
+  "instructions": [
+    "Stand with your feet shoulder-width apart and your arms by your sides.",
+    "Begin by rapidly moving your feet up and down, as if you were running in place.",
+    "Keep your movements quick and light, focusing on staying on the balls of your feet.",
+    "Continue for the desired duration or number of repetitions."
+  ],
+  "textSource": "exercisedb"
+}

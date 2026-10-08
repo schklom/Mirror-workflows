@@ -1,0 +1,25 @@
+{
+  "id": "1160",
+  "name": "burpee",
+  "bodyPart": "cardio",
+  "equipment": "body weight",
+  "target": "cardiovascular system",
+  "secondaryMuscles": [
+    "quadriceps",
+    "hamstrings",
+    "calves",
+    "shoulders",
+    "chest"
+  ],
+  "description": "",
+  "instructions": [
+    "Start in a standing position with your feet shoulder-width apart.",
+    "Lower your body into a squat position by bending your knees and placing your hands on the floor in front of you.",
+    "Kick your feet back into a push-up position.",
+    "Perform a push-up, keeping your body in a straight line.",
+    "Jump your feet back into the squat position.",
+    "Jump up explosively, reaching your arms overhead.",
+    "Land softly and immediately lower back into a squat position to begin the next repetition."
+  ],
+  "textSource": "exercisedb"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "0364",
+  "name": "dumbbell one arm wrist curl",
+  "bodyPart": "lower arms",
+  "equipment": "dumbbell",
+  "target": "forearms",
+  "secondaryMuscles": [
+    "biceps",
+    "brachialis"
+  ],
+  "description": "",
+  "instructions": [
+    "Sit on a bench or chair with your feet flat on the ground.",
+    "Hold a dumbbell in one hand with an underhand grip, resting your forearm on your thigh.",
+    "Allow your wrist to extend, letting the dumbbell roll down towards your fingers.",
+    "Slowly curl your wrist back up, bringing the dumbbell towards your forearm.",
+    "Repeat for the desired number of repetitions, then switch to the other hand."
+  ],
+  "textSource": "exercisedb"
+}

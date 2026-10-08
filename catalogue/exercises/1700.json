@@ -1,0 +1,19 @@
+{
+  "id": "1700",
+  "name": "dumbbell push press",
+  "bodyPart": "shoulders",
+  "equipment": "dumbbell",
+  "target": "delts",
+  "secondaryMuscles": [
+    "triceps",
+    "core"
+  ],
+  "description": "",
+  "instructions": [
+    "Stand with your feet shoulder-width apart, holding a dumbbell in each hand at shoulder level.",
+    "Bend your knees slightly and dip your body down, then explosively extend your legs and press the dumbbells overhead.",
+    "Lock out your arms at the top of the movement, then lower the dumbbells back to shoulder level.",
+    "Repeat for the desired number of repetitions."
+  ],
+  "textSource": "exercisedb"
+}

@@ -1,0 +1,19 @@
+{
+  "id": "1428",
+  "name": "wrist circles",
+  "bodyPart": "lower arms",
+  "equipment": "body weight",
+  "target": "forearms",
+  "secondaryMuscles": [
+    "hands",
+    "wrists"
+  ],
+  "description": "",
+  "instructions": [
+    "Extend your arms straight out in front of you.",
+    "Make a fist with both hands.",
+    "Rotate your wrists in a circular motion, keeping your arms still.",
+    "Continue the wrist circles for the desired number of repetitions."
+  ],
+  "textSource": "exercisedb"
+}

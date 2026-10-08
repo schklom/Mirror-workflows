@@ -7,12 +7,12 @@ import { useSyncExternalStore } from 'react'
 import {
   LANGS, INSTR_LANGS, EXERCISE_NAME_LANGS, DATE_LOCALES, DERIVED_LOCALES, RTL_LANGS,
   getLang, dateLocale, t, tn, instrFor, exerciseNameFor, exerciseNameSearchText, getVersion,
-  baseLang, derivePack, _setLangState, exerciseNameClass
+  baseLang, derivePack, _setLangState, exerciseNameClass, descFor, _setDetailsLoader, _setDetails
 } from './i18n-core.js'
 
 export {
   LANGS, INSTR_LANGS, EXERCISE_NAME_LANGS, DATE_LOCALES, DERIVED_LOCALES, RTL_LANGS,
-  getLang, dateLocale, t, tn, instrFor, exerciseNameFor, exerciseNameSearchText, exerciseNameClass, baseLang
+  getLang, dateLocale, t, tn, instrFor, descFor, exerciseNameFor, exerciseNameSearchText, exerciseNameClass, baseLang
 }
 
 // Vite code-splits locale, instruction and exercise-name packs via import.meta.glob. They are
@@ -20,6 +20,25 @@ export {
 const localePacks = import.meta.glob('../locales/*.js')
 const instrPacks = import.meta.glob('../instr/*.js')
 const exerciseNamePacks = import.meta.glob('../exercise-names/*.js')
+const descPacks = import.meta.glob('../exercise-desc/*.js')
+
+// English steps and descriptions, plus the language's own descriptions where it has some: fetched
+// the first time any screen asks for an exercise's details (i18n-core askDetails), and again for
+// the descriptions whenever the language changes after that.
+let detailsLoaded = false
+async function loadDetails() {
+  const base = baseLang(getLang())
+  const load = async (packs, key) => { try { return packs[key] ? (await packs[key]()).default : null } catch (e) { return null } }
+  const [en, enDesc, desc] = await Promise.all([
+    load(instrPacks, '../instr/en.js'),
+    load(descPacks, '../exercise-desc/en.js'),
+    base === 'en' ? null : load(descPacks, '../exercise-desc/' + base + '.js'),
+  ])
+  detailsLoaded = true
+  _setDetails(en, enDesc, derivePack(getLang(), desc))
+  notify()
+}
+_setDetailsLoader(loadDetails)
 
 // React subscription bookkeeping — kept here, not in core, so core has zero React coupling.
 const subs = new Set()
@@ -49,6 +68,7 @@ export async function setLang(l, showEn, enOnly) {
       : (await exerciseNamePacks['../exercise-names/' + base + '.js']()).default
   } catch (e) { exerciseNames = null }
   _setLangState(l, derivePack(l, dict), derivePack(l, instr), derivePack(l, exerciseNames), show, only)
+  if (detailsLoaded) loadDetails()
   document.documentElement.lang = l
   document.documentElement.dir = RTL_LANGS.has(l) ? 'rtl' : 'ltr'
   notify()

@@ -1,0 +1,19 @@
+{
+  "id": "1390",
+  "name": "seated calf stretch (male)",
+  "bodyPart": "lower legs",
+  "equipment": "body weight",
+  "target": "calves",
+  "secondaryMuscles": [
+    "hamstrings"
+  ],
+  "description": "",
+  "instructions": [
+    "Sit on the edge of a chair or bench with your feet flat on the ground.",
+    "Extend one leg straight out in front of you, keeping your heel on the ground.",
+    "Lean forward slightly, feeling a stretch in your calf muscle.",
+    "Hold the stretch for 20-30 seconds.",
+    "Switch legs and repeat the stretch."
+  ],
+  "textSource": "exercisedb"
+}

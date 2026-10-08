@@ -1,0 +1,19 @@
+{
+  "id": "0221",
+  "name": "cable side bend crunch (bosu ball)",
+  "bodyPart": "waist",
+  "equipment": "cable",
+  "target": "abs",
+  "secondaryMuscles": [
+    "obliques"
+  ],
+  "description": "",
+  "instructions": [
+    "Stand with your feet shoulder-width apart, holding a cable handle in one hand.",
+    "Place the other hand on your hip.",
+    "Engage your core and slowly bend sideways towards the hand holding the cable, keeping your back straight.",
+    "Pause for a moment at the bottom of the movement, then slowly return to the starting position.",
+    "Repeat for the desired number of repetitions, then switch sides."
+  ],
+  "textSource": "exercisedb"
+}

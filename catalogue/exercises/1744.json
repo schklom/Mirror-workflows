@@ -1,0 +1,20 @@
+{
+  "id": "1744",
+  "name": "exercise ball dip",
+  "bodyPart": "upper arms",
+  "equipment": "stability ball",
+  "target": "triceps",
+  "secondaryMuscles": [
+    "chest",
+    "shoulders"
+  ],
+  "description": "",
+  "instructions": [
+    "Sit on the stability ball with your feet flat on the ground and your knees bent at a 90-degree angle.",
+    "Place your hands on the ball beside your hips, fingers pointing forward.",
+    "Engage your triceps and push through your hands to lift your body off the ball, straightening your arms.",
+    "Lower your body back down by bending your elbows, keeping them close to your sides.",
+    "Repeat for the desired number of repetitions."
+  ],
+  "textSource": "exercisedb"
+}

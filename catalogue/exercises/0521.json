@@ -1,0 +1,20 @@
+{
+  "id": "0521",
+  "name": "kettlebell alternating renegade row",
+  "bodyPart": "back",
+  "equipment": "kettlebell",
+  "target": "upper back",
+  "secondaryMuscles": [
+    "core",
+    "shoulders"
+  ],
+  "description": "",
+  "instructions": [
+    "Start in a high plank position with your hands gripping the kettlebells and your feet hip-width apart.",
+    "Engage your core and keep your body in a straight line from head to heels.",
+    "Pull one kettlebell up towards your chest, keeping your elbow close to your body.",
+    "Lower the kettlebell back down to the starting position and repeat with the other arm.",
+    "Continue alternating arms for the desired number of repetitions."
+  ],
+  "textSource": "exercisedb"
+}

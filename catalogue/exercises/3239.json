@@ -1,0 +1,20 @@
+{
+  "id": "3239",
+  "name": "kneeling plank tap shoulder (male)",
+  "bodyPart": "waist",
+  "equipment": "body weight",
+  "target": "abs",
+  "secondaryMuscles": [
+    "shoulders",
+    "triceps"
+  ],
+  "description": "",
+  "instructions": [
+    "Start in a kneeling position with your hands on the ground, shoulder-width apart.",
+    "Extend your legs behind you, resting on your toes, and lift your body into a plank position.",
+    "Keeping your core engaged and your hips stable, lift one hand off the ground and tap the opposite shoulder.",
+    "Return the hand to the ground and repeat with the other hand.",
+    "Continue alternating sides for the desired number of repetitions."
+  ],
+  "textSource": "exercisedb"
+}

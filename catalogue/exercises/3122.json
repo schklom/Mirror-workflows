@@ -1,0 +1,20 @@
+{
+  "id": "3122",
+  "name": "resistance band seated shoulder press",
+  "bodyPart": "shoulders",
+  "equipment": "resistance band",
+  "target": "delts",
+  "secondaryMuscles": [
+    "triceps",
+    "upper back"
+  ],
+  "description": "",
+  "instructions": [
+    "Sit on a chair or bench with your back straight and feet flat on the ground.",
+    "Hold the resistance band with both hands, palms facing forward, and bring it up to shoulder level.",
+    "Press the band overhead, extending your arms fully.",
+    "Pause for a moment at the top, then slowly lower the band back down to shoulder level.",
+    "Repeat for the desired number of repetitions."
+  ],
+  "textSource": "exercisedb"
+}

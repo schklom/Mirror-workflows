@@ -1,0 +1,20 @@
+{
+  "id": "0662",
+  "name": "push-up",
+  "bodyPart": "chest",
+  "equipment": "body weight",
+  "target": "pectorals",
+  "secondaryMuscles": [
+    "triceps",
+    "deltoids",
+    "core"
+  ],
+  "description": "",
+  "instructions": [
+    "Start in a high plank position with your hands slightly wider than shoulder-width apart and your feet together.",
+    "Engage your core and lower your body towards the ground by bending your elbows, keeping your body in a straight line.",
+    "Pause for a moment when your chest is just above the ground, then push yourself back up to the starting position by straightening your arms.",
+    "Repeat for the desired number of repetitions."
+  ],
+  "textSource": "exercisedb"
+}

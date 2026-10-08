@@ -1,0 +1,20 @@
+{
+  "id": "1741",
+  "name": "dumbbell standing bent over two arm triceps extension",
+  "bodyPart": "upper arms",
+  "equipment": "dumbbell",
+  "target": "triceps",
+  "secondaryMuscles": [
+    "shoulders",
+    "back"
+  ],
+  "description": "",
+  "instructions": [
+    "Stand with your feet shoulder-width apart and hold a dumbbell in each hand.",
+    "Bend forward at the waist, keeping your back straight and your knees slightly bent.",
+    "Extend your arms straight back, keeping your elbows close to your body.",
+    "Slowly lower the dumbbells back down to the starting position.",
+    "Repeat for the desired number of repetitions."
+  ],
+  "textSource": "exercisedb"
+}

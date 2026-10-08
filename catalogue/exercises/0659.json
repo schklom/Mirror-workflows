@@ -1,0 +1,21 @@
+{
+  "id": "0659",
+  "name": "push-up (wall)",
+  "bodyPart": "chest",
+  "equipment": "body weight",
+  "target": "pectorals",
+  "secondaryMuscles": [
+    "triceps",
+    "deltoids"
+  ],
+  "description": "",
+  "instructions": [
+    "Stand facing a wall, about arm's length away.",
+    "Place your hands on the wall at shoulder height, slightly wider than shoulder-width apart.",
+    "Step back a few feet, keeping your body straight and your feet hip-width apart.",
+    "Bend your elbows and lower your chest towards the wall, keeping your body in a straight line.",
+    "Push back up to the starting position, straightening your arms.",
+    "Repeat for the desired number of repetitions."
+  ],
+  "textSource": "exercisedb"
+}

@@ -1,0 +1,19 @@
+{
+  "id": "2333",
+  "name": "arm slingers hanging straight legs",
+  "bodyPart": "waist",
+  "equipment": "body weight",
+  "target": "abs",
+  "secondaryMuscles": [
+    "shoulders",
+    "back"
+  ],
+  "description": "",
+  "instructions": [
+    "Hang from a pull-up bar with your arms fully extended and your legs straight down.",
+    "Engage your core and lift your legs up in front of you until they are parallel to the ground.",
+    "Hold for a moment at the top, then slowly lower your legs back down to the starting position.",
+    "Repeat for the desired number of repetitions."
+  ],
+  "textSource": "exercisedb"
+}

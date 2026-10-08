@@ -1,0 +1,20 @@
+{
+  "id": "0669",
+  "name": "rear deltoid stretch",
+  "bodyPart": "shoulders",
+  "equipment": "body weight",
+  "target": "delts",
+  "secondaryMuscles": [
+    "trapezius",
+    "rhomboids"
+  ],
+  "description": "",
+  "instructions": [
+    "Stand tall with your feet shoulder-width apart.",
+    "Extend your right arm across your chest, placing your left hand on your right elbow.",
+    "Gently pull your right arm towards your left shoulder, feeling a stretch in your right shoulder.",
+    "Hold the stretch for 15-30 seconds, then release.",
+    "Repeat on the other side."
+  ],
+  "textSource": "exercisedb"
+}

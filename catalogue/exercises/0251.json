@@ -1,0 +1,19 @@
+{
+  "id": "0251",
+  "name": "chest dip",
+  "bodyPart": "chest",
+  "equipment": "body weight",
+  "target": "pectorals",
+  "secondaryMuscles": [
+    "triceps",
+    "shoulders"
+  ],
+  "description": "",
+  "instructions": [
+    "Position yourself on parallel bars with your arms fully extended and your body straight.",
+    "Lower your body by bending your elbows until your shoulders are below your elbows.",
+    "Push yourself back up to the starting position by straightening your arms.",
+    "Repeat for the desired number of repetitions."
+  ],
+  "textSource": "exercisedb"
+}

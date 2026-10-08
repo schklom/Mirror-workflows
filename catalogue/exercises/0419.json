@@ -1,0 +1,19 @@
+{
+  "id": "0419",
+  "name": "dumbbell standing front raise above head",
+  "bodyPart": "shoulders",
+  "equipment": "dumbbell",
+  "target": "delts",
+  "secondaryMuscles": [
+    "trapezius",
+    "biceps"
+  ],
+  "description": "",
+  "instructions": [
+    "Stand with your feet shoulder-width apart, holding a dumbbell in each hand with an overhand grip.",
+    "Keep your arms straight and lift the dumbbells in front of you, raising them above your head.",
+    "Pause for a moment at the top, then slowly lower the dumbbells back to the starting position.",
+    "Repeat for the desired number of repetitions."
+  ],
+  "textSource": "exercisedb"
+}

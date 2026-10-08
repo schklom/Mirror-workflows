@@ -59,6 +59,11 @@ let lang = 'en'                 // set only by _setLangState, called from i18n.j
 let dict = {}                   // current locale pack (empty = English fallback)
 let instr = null                // { exId: [steps] } for the current language, null = English
 let exerciseNames = null        // { exId: translated name }, null = original catalogue name
+let enInstr = null              // { exId: [steps] } in English, loaded on first need (instr/en.js)
+let descs = null                // { exId: description } for the current language, when it has any
+let enDescs = null              // { exId: description } in English (exercise-desc/en.js)
+let detailsLoader = null        // registered by i18n.js; fetches the two English packs above
+let detailsAsked = false
 let enParens = true               // whether translated names show the English original in parentheses
 let enOnly = false                // whether translated names are replaced entirely by the English original
 let version = 0                 // bumped on every setLang; drives the React subscription selector
@@ -120,8 +125,45 @@ export function tn(one, other, n, ...rest) {
   return t(n === 1 ? one : other, n, ...rest)
 }
 
-// Instructions for an exercise in the current language (English steps as fallback).
-export const instrFor = ex => (instr && instr[ex.id]) || ex.st || []
+// The English steps and descriptions of 5,000+ exercises are too big to sit in the bundle every
+// screen loads, so they come in their own chunk the first time an exercise's details are shown.
+// Until it lands the readers return nothing, and the loader's notify re-renders whoever asked.
+const askDetails = () => {
+  if (detailsAsked || !detailsLoader) return
+  detailsAsked = true
+  detailsLoader()
+}
+
+// Instructions for an exercise in the current language (English steps as fallback). `st` on the
+// exercise itself still wins over nothing: a custom exercise or an older plan file carries its own.
+export const instrFor = ex => {
+  const own = instr && instr[ex.id]
+  if (own) return own
+  if (!enInstr) askDetails()
+  return (enInstr && enInstr[ex.id]) || ex.st || []
+}
+
+// A sentence or two on what the exercise is, in the current language when someone has written
+// it, otherwise in English. Empty for exercises nobody has described yet and for custom ones.
+export const descFor = ex => {
+  if (!ex) return ''
+  const own = descs && descs[ex.id]
+  if (own) return own
+  if (!enDescs) askDetails()
+  return (enDescs && enDescs[ex.id]) || ex.desc || ''
+}
+
+// i18n.js hands over the loader here; core itself never imports a chunk.
+export function _setDetailsLoader(fn) { detailsLoader = fn; detailsAsked = false }
+
+// Called once the English packs (and the language's descriptions, if any) have loaded.
+export function _setDetails(newEnInstr, newEnDescs, newDescs) {
+  enInstr = newEnInstr || enInstr || {}
+  enDescs = newEnDescs || enDescs || {}
+  descs = lang === 'en' ? null : (newDescs || null)
+  version++
+  return version
+}
 
 // Built-in catalogue names are bilingual when a translated name pack is active. A pack need not
 // be complete: German covers the equipment exercises and not the body-weight ones, and an

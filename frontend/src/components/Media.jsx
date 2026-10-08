@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { imgSrc, gifSrc, isCustomEx } from '../lib/exercises.js'
+import { imgSrc, gifSrc, isVideoSrc, isCustomEx } from '../lib/exercises.js'
 import { useStore } from '../store/useStore.js'
 import { t, exerciseNameFor } from '../lib/i18n.js'
 import Icon from './Icon.jsx'
@@ -28,6 +28,7 @@ function BuiltinMedia({ ex, id, compact, minimizable }) {
   // both, and a tap tries again — no text, so nothing new to translate.
   const [failed, setFailed] = useState(null)
   const gifSize = useStore(s => s.S.gifSize)
+  const body = useStore(s => s.S.body)
   const update = useStore(s => s.update)
   if (!ex.gif) return null
   if (minimizable && gifSize === 'off') return null
@@ -43,7 +44,10 @@ function BuiltinMedia({ ex, id, compact, minimizable }) {
     <div className={'exmedia' + (compact ? ' compact' : '') + (mini ? ' mini' : '') + (failed === 'all' ? ' broken' : '')} id={id} onClick={onTap}>
       {failed === 'all'
         ? <div className="exmedia-x"><Icon name="dumbbell" /></div>
-        : <img decoding="async" draggable={false} src={showGif ? gifSrc(ex) : imgSrc(ex)} alt={exerciseNameFor(ex)} onError={onError} />}
+        : showGif && isVideoSrc(gifSrc(ex, body))
+          ? <video src={gifSrc(ex, body)} poster={imgSrc(ex, body)} autoPlay muted loop playsInline disablePictureInPicture
+              aria-label={exerciseNameFor(ex)} onError={onError} />
+          : <img decoding="async" draggable={false} src={showGif ? gifSrc(ex, body) : imgSrc(ex, body)} alt={exerciseNameFor(ex)} onError={onError} />}
       {minimizable && (
         <button className="giftoggle" onClick={toggleSize}>
           <Icon name={mini ? 'expand' : 'minimize'} />{mini ? t('Expand') : t('Minimize')}
@@ -66,7 +70,8 @@ export function Thumb(p) {
   return isCustomEx(p.ex) ? <CustomThumb {...p} /> : <BuiltinThumb {...p} />
 }
 function BuiltinThumb({ ex }) {
-  const src = ex.img ? imgSrc(ex) : null
+  const body = useStore(s => s.S.body)
+  const src = ex.img ? imgSrc(ex, body) : null
   const [broken, setBroken] = useState(null)
   if (!src || broken === src) return <div className="thumb thumb-x"><Icon name="dumbbell" /></div>
   return <img className="thumb" loading="lazy" decoding="async" draggable={false} src={src} alt="" onError={() => setBroken(src)} />

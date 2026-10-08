@@ -1,0 +1,20 @@
+{
+  "id": "1438",
+  "name": "kettlebell seated two arm military press",
+  "bodyPart": "shoulders",
+  "equipment": "kettlebell",
+  "target": "delts",
+  "secondaryMuscles": [
+    "triceps",
+    "upper back"
+  ],
+  "description": "",
+  "instructions": [
+    "Sit on a bench with your back straight and feet flat on the ground.",
+    "Hold a kettlebell in each hand at shoulder level with your palms facing forward.",
+    "Press the kettlebells overhead by extending your arms fully.",
+    "Pause for a moment at the top, then slowly lower the kettlebells back to shoulder level.",
+    "Repeat for the desired number of repetitions."
+  ],
+  "textSource": "exercisedb"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "3231",
+  "name": "two toe touch (male)",
+  "bodyPart": "back",
+  "equipment": "body weight",
+  "target": "spine",
+  "secondaryMuscles": [
+    "hamstrings",
+    "glutes"
+  ],
+  "description": "",
+  "instructions": [
+    "Stand with your feet shoulder-width apart and your arms extended out to the sides.",
+    "Bend forward at the waist, keeping your back straight and your knees slightly bent.",
+    "Reach down towards your toes with both hands, keeping your legs straight.",
+    "Pause for a moment at the bottom, then slowly return to the starting position.",
+    "Repeat for the desired number of repetitions."
+  ],
+  "textSource": "exercisedb"
+}

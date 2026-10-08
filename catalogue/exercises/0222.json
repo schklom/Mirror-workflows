@@ -1,0 +1,20 @@
+{
+  "id": "0222",
+  "name": "cable side bend",
+  "bodyPart": "waist",
+  "equipment": "cable",
+  "target": "abs",
+  "secondaryMuscles": [
+    "obliques"
+  ],
+  "description": "",
+  "instructions": [
+    "Stand with your feet shoulder-width apart and grasp the cable handle with one hand.",
+    "Keep your back straight and your core engaged.",
+    "Slowly bend sideways at the waist, lowering the cable handle towards your knee.",
+    "Pause for a moment, then return to the starting position.",
+    "Repeat on the other side.",
+    "Alternate sides for the desired number of repetitions."
+  ],
+  "textSource": "exercisedb"
+}

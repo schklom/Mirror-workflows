@@ -1,0 +1,21 @@
+{
+  "id": "1284",
+  "name": "dumbbell lying pullover on exercise ball",
+  "bodyPart": "chest",
+  "equipment": "dumbbell",
+  "target": "pectorals",
+  "secondaryMuscles": [
+    "triceps",
+    "shoulders",
+    "back"
+  ],
+  "description": "",
+  "instructions": [
+    "Sit on an exercise ball and roll forward until your upper back is resting on the ball.",
+    "Hold a dumbbell with both hands and extend your arms straight up over your chest.",
+    "Slowly lower the dumbbell behind your head while keeping your arms straight.",
+    "Pause for a moment, then raise the dumbbell back to the starting position.",
+    "Repeat for the desired number of repetitions."
+  ],
+  "textSource": "exercisedb"
+}

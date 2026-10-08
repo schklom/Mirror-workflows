@@ -1,0 +1,21 @@
+{
+  "id": "3433",
+  "name": "swimmer kicks v. 2 (male)",
+  "bodyPart": "upper legs",
+  "equipment": "body weight",
+  "target": "glutes",
+  "secondaryMuscles": [
+    "hamstrings",
+    "quadriceps",
+    "calves"
+  ],
+  "description": "",
+  "instructions": [
+    "Lie face down on a mat with your arms extended overhead.",
+    "Engage your core and lift your chest and legs off the ground simultaneously.",
+    "Kick your legs up and down in a fluttering motion, as if you were swimming.",
+    "Continue kicking for the desired number of repetitions.",
+    "Lower your chest and legs back down to the starting position."
+  ],
+  "textSource": "exercisedb"
+}

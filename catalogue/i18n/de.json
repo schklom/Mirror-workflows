@@ -1,0 +1,2282 @@
+{
+  "1000": {
+    "name": "Wadenheben einbeinig rückwärts mit Band"
+  },
+  "1002": {
+    "name": "Liegendes gerades Beinheben mit Band"
+  },
+  "1003": {
+    "name": "Rudern in der Kniebeuge mit Band"
+  },
+  "1004": {
+    "name": "Kniebeuge mit Band"
+  },
+  "1005": {
+    "name": "Stehender Crunch mit Band"
+  },
+  "1007": {
+    "name": "Stehender gedrehter Crunch mit Band"
+  },
+  "1009": {
+    "name": "Steifbeiniges Kreuzheben mit Band"
+  },
+  "1010": {
+    "name": "Kreuzheben mit Band und gestreckten Beinen"
+  },
+  "1011": {
+    "name": "Sitzender Twist mit Band"
+  },
+  "1012": {
+    "name": "Gedrehtes Überkopfdrücken mit Band"
+  },
+  "1014": {
+    "name": "V-Up mit Band"
+  },
+  "1018": {
+    "name": "Shrugs mit Band"
+  },
+  "1023": {
+    "name": "Kreuzheben mit gestreckten Beinen und geradem Rücken mit Band"
+  },
+  "1253": {
+    "name": "Wadenheben im Donkey-Stil an der Hebelmaschine"
+  },
+  "1254": {
+    "name": "Bankdrücken mit Band"
+  },
+  "1255": {
+    "name": "Überzüge an der Negativbank mit Langhantel"
+  },
+  "1258": {
+    "name": "Bankdrücken mit Langhantel, weitem Griff und Umkehrgriff"
+  },
+  "1259": {
+    "name": "Assistierte Brustdehnung hinter dem Kopf"
+  },
+  "1260": {
+    "name": "Einarmiges Drücken an der Negativbank am Kabelzug"
+  },
+  "1261": {
+    "name": "Drücken an der Negativbank am Kabelzug"
+  },
+  "1262": {
+    "name": "Einarmige Fliegende an der Negativbank am Kabelzug"
+  },
+  "1263": {
+    "name": "Einarmige Fliegende am Gymnastikball am Kabelzug"
+  },
+  "1264": {
+    "name": "Einarmige Fliegende an der Schrägbank am Gymnastikball am Kabelzug"
+  },
+  "1265": {
+    "name": "Einarmiges Drücken an der Schrägbank am Kabelzug"
+  },
+  "1266": {
+    "name": "Einarmiges Drücken an der Schrägbank am Gymnastikball am Kabelzug"
+  },
+  "1267": {
+    "name": "Einarmiges Drücken am Kabelzug auf Gymnastikball"
+  },
+  "1268": {
+    "name": "Drücken am Kabelzug auf Gymnastikball"
+  },
+  "1269": {
+    "name": "Aufrechte Überkreuzungen am Kabelzug stehend"
+  },
+  "1270": {
+    "name": "Überkreuzungen für die obere Brust am Kabelzug"
+  },
+  "1272": {
+    "name": "Brust-Dehnung mit Gymnastikball"
+  },
+  "1274": {
+    "name": "Tiefer Liegestütz mit Kurzhantel"
+  },
+  "1276": {
+    "name": "Einarmige Fliegende auf der Negativbank mit Kurzhantel"
+  },
+  "1277": {
+    "name": "Fliegende auf dem Gymnastikball mit Kurzhantel"
+  },
+  "1278": {
+    "name": "Fliegende auf der Schrägbank auf dem Gymnastikball mit Kurzhantel"
+  },
+  "1279": {
+    "name": "Einarmige Fliegende auf der Schrägbank mit Kurzhantel"
+  },
+  "1280": {
+    "name": "Einarmige Fliegende auf der Schrägbank auf dem Gymnastikball mit Kurzhantel"
+  },
+  "1281": {
+    "name": "Einarmiges Drücken auf der Schrägbank mit Kurzhantel"
+  },
+  "1284": {
+    "name": "Überzüge liegend auf dem Gymnastikball mit Kurzhantel"
+  },
+  "1285": {
+    "name": "Einarmige Fliegende mit Kurzhantel"
+  },
+  "1286": {
+    "name": "Einarmige Brust-Fliegende auf dem Gymnastikball mit Kurzhantel"
+  },
+  "1287": {
+    "name": "Einarmiges Brustdrücken an der Negativbank mit Kurzhantel"
+  },
+  "1288": {
+    "name": "Einarmige Fliegende auf dem Gymnastikball mit Kurzhantel"
+  },
+  "1289": {
+    "name": "Einarmiges Brustdrücken an der Schrägbank mit Kurzhantel"
+  },
+  "1290": {
+    "name": "Einarmiges Drücken auf dem Gymnastikball mit Kurzhantel"
+  },
+  "1292": {
+    "name": "Einbeinige Kurzhantel-Fliegende auf Gymnastikball"
+  },
+  "1293": {
+    "name": "Kurzhanteldrücken auf Gymnastikball"
+  },
+  "1294": {
+    "name": "Überzüge mit Hüftstreckung auf Gymnastikball mit Kurzhantel"
+  },
+  "1295": {
+    "name": "Überzüge auf Gymnastikball mit Kurzhantel"
+  },
+  "1298": {
+    "name": "Einarmiges Boden-Drücken mit Kettlebell"
+  },
+  "1299": {
+    "name": "Schrägbank-Brustdrücken an der Hebelmaschine"
+  },
+  "1300": {
+    "name": "Brustpresse an der Negativbank der Hebelmaschine"
+  },
+  "1301": {
+    "name": "Innenbrustdrücken an der Hebelmaschine"
+  },
+  "1302": {
+    "name": "Brustpass mit Medizinball"
+  },
+  "1303": {
+    "name": "Brustdrücken aus dem 3-Punkt-Stand mit Medizinball"
+  },
+  "1304": {
+    "name": "Mehrfaches Brustdrücken mit Medizinball"
+  },
+  "1305": {
+    "name": "Einzelnes Brustdrücken mit Medizinball"
+  },
+  "1307": {
+    "name": "Liegestütz auf Bosu-Ball"
+  },
+  "1308": {
+    "name": "Bankdrücken mit weitem Griff an der Multipresse"
+  },
+  "1309": {
+    "name": "Bankdrücken an der Negativbank mit weitem Griff an der Multipresse"
+  },
+  "1310": {
+    "name": "Abfallender Liegestütz mit Zusatzgewicht"
+  },
+  "1313": {
+    "name": "Unilaterales Rudern an der Hebelmaschine"
+  },
+  "1314": {
+    "name": "Rückenstreckung auf Gymnastikball"
+  },
+  "1318": {
+    "name": "Rudern an der Schrägbank am Kabelzug"
+  },
+  "1319": {
+    "name": "Handflächen-Rotationsrudern am Kabelzug"
+  },
+  "1320": {
+    "name": "Sitzendes Rudern mit Seil am Kabelzug"
+  },
+  "1321": {
+    "name": "Erhöhtes sitzendes Rudern mit Seil am Kabelzug"
+  },
+  "1322": {
+    "name": "Rudern auf der Schrägbank mit Seil am Kabelzug"
+  },
+  "1323": {
+    "name": "Sitzendes Rudern mit Seil am Kabelzug"
+  },
+  "1324": {
+    "name": "Oberes Rudern am Kabelzug"
+  },
+  "1325": {
+    "name": "Latzug hinter dem Nacken mit weitem Griff am Kabelzug"
+  },
+  "1328": {
+    "name": "Hinteres Schulter-Rudern liegend mit Kurzhantel"
+  },
+  "1329": {
+    "name": "Kurzhantelrudern mit Handflächenrotation vorgebeugt"
+  },
+  "1330": {
+    "name": "Einarmiges Rudern mit Umkehrgriff auf der Schrägbank mit Kurzhantel"
+  },
+  "1331": {
+    "name": "Rudern mit Umkehrgriff auf der Schrägbank mit Kurzhantel"
+  },
+  "1332": {
+    "name": "Abwechselndes Arm-Heben auf dem Gymnastikball"
+  },
+  "1333": {
+    "name": "Rückenstreckung mit gestreckten Armen auf dem Gymnastikball"
+  },
+  "1334": {
+    "name": "Rückenstreckung mit Händen hinter dem Kopf auf dem Gymnastikball"
+  },
+  "1335": {
+    "name": "Rückenstreckung mit den Knien in der Luft auf dem Gymnastikball"
+  },
+  "1336": {
+    "name": "Rückenstreckung mit Rotation auf dem Gymnastikball"
+  },
+  "1338": {
+    "name": "Umarmung auf dem Gymnastikball"
+  },
+  "1343": {
+    "name": "Beinheben liegend auf dem Gymnastikball"
+  },
+  "1344": {
+    "name": "Rudern mit Umkehrgriff an der SZ-Stange"
+  },
+  "1345": {
+    "name": "Rudern mit zwei Armen und Kettlebell"
+  },
+  "1347": {
+    "name": "Einarmiger weiter Latzug an der Hebelmaschine"
+  },
+  "1348": {
+    "name": "Vertikales Rudern an der Hebelmaschine mit Umkehrgriff"
+  },
+  "1349": {
+    "name": "T-Bar Rudern an der Hebelmaschine mit Umkehrgriff"
+  },
+  "1350": {
+    "name": "Sitzendes Rudern an der Hebelmaschine"
+  },
+  "1351": {
+    "name": "T-Bar Rudern Umkehrgriff an der Hebelmaschine"
+  },
+  "1353": {
+    "name": "Über Kopf werfen und fangen mit Medizinball"
+  },
+  "1356": {
+    "name": "Einarmiges hohes Rudern an der Hebelmaschine"
+  },
+  "1359": {
+    "name": "Vorgebeugtes Rudern in der Multipresse"
+  },
+  "1360": {
+    "name": "Einarmiges Rudern an der Multipresse"
+  },
+  "1369": {
+    "name": "Wadenheben mit zwei Beinen - Band unter beiden Beinen v. 2"
+  },
+  "1370": {
+    "name": "Wadenheben am Boden mit Langhantel"
+  },
+  "1371": {
+    "name": "Sitzendes Wadenheben mit Langhantel"
+  },
+  "1372": {
+    "name": "Wadenheben stehend mit Langhantel"
+  },
+  "1375": {
+    "name": "Wadenheben am Kabelzug stehend"
+  },
+  "1376": {
+    "name": "Einbeiniges Wadenheben am Kabelzug stehend"
+  },
+  "1378": {
+    "name": "Waden-Dehnung mit Seil"
+  },
+  "1379": {
+    "name": "Sitzendes Wadenheben mit Kurzhantel"
+  },
+  "1381": {
+    "name": "Sitzendes einbeiniges Wadenheben mit Kurzhantel - Handfläche oben"
+  },
+  "1382": {
+    "name": "Wadenheben an der Wand auf dem Gymnastikball mit Kurzhantel"
+  },
+  "1385": {
+    "name": "Sitzendes Wadenheben an der Beinpresse Hebelmaschine"
+  },
+  "1391": {
+    "name": "Wadenpresse auf der Beinpresse mit Schlitten"
+  },
+  "1392": {
+    "name": "Einbeinige Wadenpresse auf der Beinpresse mit Schlitten"
+  },
+  "1393": {
+    "name": "Einbeiniges Wadenheben am Boden an der Multipresse"
+  },
+  "1395": {
+    "name": "Sitzendes einbeiniges Wadenheben an der Multipresse"
+  },
+  "1396": {
+    "name": "Zehenheben an der Multipresse"
+  },
+  "1408": {
+    "name": "Beckenheben mit Band"
+  },
+  "1409": {
+    "name": "Beckenheben mit Langhantel"
+  },
+  "1410": {
+    "name": "Seitlicher Ausfallschritt mit Langhantel"
+  },
+  "1413": {
+    "name": "Einarmiger umgekehrter Curl am Kabelzug"
+  },
+  "1415": {
+    "name": "Einarmiger sitzender Kurzhantel-Neutral-Handgelenk-Curl"
+  },
+  "1416": {
+    "name": "Einbeinige Unterkörperrotation liegend auf dem Gymnastikball"
+  },
+  "1420": {
+    "name": "Kniebeuge-Sprung kniend mit Langhantel"
+  },
+  "1425": {
+    "name": "Einbeinige Beinpresse in 45 Grad mit Schlitten"
+  },
+  "1426": {
+    "name": "Sitzender Handgelenk-Curl an der Multipresse"
+  },
+  "1431": {
+    "name": "Assistiertes stehendes Klimmzug mit umgreifendem Griff an der Hebelmaschine"
+  },
+  "1432": {
+    "name": "Assistierter stehender Klimmzug an der Hebelmaschine"
+  },
+  "1434": {
+    "name": "Kniebeuge mit niedriger Stange in der Multipresse"
+  },
+  "1437": {
+    "name": "Finger-Curls mit Kurzhantel"
+  },
+  "1438": {
+    "name": "Sitzendes militärisches Drücken mit zwei Armen und Kettlebell"
+  },
+  "1439": {
+    "name": "Shrugs ohne Griff an der Hebelmaschine v. 2"
+  },
+  "1441": {
+    "name": "Einarmiger umgekehrter Handgelenk-Curl mit Kurzhantel über Bank"
+  },
+  "1451": {
+    "name": "Sitzendes Dip an der Hebelmaschine"
+  },
+  "1452": {
+    "name": "Sitzender Crunch an der Hebelmaschine"
+  },
+  "1458": {
+    "name": "Sitzender Bizeps-Curl mit SZ-Stange"
+  },
+  "1463": {
+    "name": "Beinpresse in 45 Grad mit Schlitten, Seitenansicht"
+  },
+  "1464": {
+    "name": "Beinpresse in 45 Grad mit Schlitten Rückenansicht"
+  },
+  "1479": {
+    "name": "Schrägbank-Brustdrücken an der Hebelmaschine v. 2"
+  },
+  "1559": {
+    "name": "Hüftbeuger-Dehnung auf dem Gymnastikball"
+  },
+  "1560": {
+    "name": "Sitzende Beinbeuger-Dehnung am Gymnastikball"
+  },
+  "1564": {
+    "name": "Fortgeschrittene Dehnung von Hüftbeuger und Beinstrecker mit Seil"
+  },
+  "1599": {
+    "name": "Stehende Dehnung der Beinbeuger und Waden mit dem Seil"
+  },
+  "1614": {
+    "name": "Scott-Curl an der Hebelmaschine v. 2"
+  },
+  "1615": {
+    "name": "Hammer-Scott-Curl an der Hebelmaschine"
+  },
+  "1616": {
+    "name": "Scott-Curl im Umkehrgriff an der Hebelmaschine"
+  },
+  "1617": {
+    "name": "Einarmiges Hammer-Drücken auf der Negativbank mit Kurzhantel"
+  },
+  "1622": {
+    "name": "Einarmiges Kurzhantel-Drücken mit Umkehrgriff"
+  },
+  "1623": {
+    "name": "Kurzhanteldrücken auf Schrägbank mit Handflächen nach innen"
+  },
+  "1624": {
+    "name": "Umgekehrtes Bankdrücken mit Kurzhantel"
+  },
+  "1625": {
+    "name": "Bankdrücken mit engem Griff an der Negativbank in der Multipresse"
+  },
+  "1626": {
+    "name": "Enges Bankdrücken an der Multipresse auf Negativbank"
+  },
+  "1627": {
+    "name": "Enger Scott-Curl mit SZ-Stange"
+  },
+  "1628": {
+    "name": "Spider-Curl mit SZ-Stange"
+  },
+  "1630": {
+    "name": "Enger Curl am Kabelzug"
+  },
+  "1631": {
+    "name": "Konzentrations-Curl am Kabelzug"
+  },
+  "1632": {
+    "name": "Drag Curl am Kabelzug"
+  },
+  "1633": {
+    "name": "Einarmiger Scott-Curl am Kabelzug"
+  },
+  "1634": {
+    "name": "Liegender Bizeps-Curl am Kabelzug"
+  },
+  "1636": {
+    "name": "Überkopf-Curl am Kabelzug"
+  },
+  "1637": {
+    "name": "Überkopf-Curl am Kabelzug auf Gymnastikball"
+  },
+  "1638": {
+    "name": "Latzug-Bizeps-Curl am Kabelzug"
+  },
+  "1641": {
+    "name": "Sitzender Curl am Kabelzug"
+  },
+  "1642": {
+    "name": "Einarmiger Konzentrations-Curl am Kabelzug sitzend"
+  },
+  "1643": {
+    "name": "Überkopf-Curl am Kabelzug sitzend"
+  },
+  "1644": {
+    "name": "Curl im Kniebeugen-Stand am Kabelzug"
+  },
+  "1646": {
+    "name": "Abwechselnder Hammer-Scott-Curl mit Kurzhantel"
+  },
+  "1647": {
+    "name": "Abwechselnder Scott-Curl mit Kurzhantel"
+  },
+  "1648": {
+    "name": "Abwechselnder sitzender Hammer-Curl mit Kurzhantel"
+  },
+  "1649": {
+    "name": "Abwechselnder Bizeps-Curl mit Kurzhantel und erhobenem Bein auf Gymnastikball"
+  },
+  "1650": {
+    "name": "Abwechselnder sitzender Bizeps-Curl mit Kurzhantel auf Gymnastikball"
+  },
+  "1651": {
+    "name": "Bizeps-Curl Ausfallschritt mit Kurzhanteln und Bowling-Bewegung"
+  },
+  "1652": {
+    "name": "Bizeps-Curl mit Kurzhanteln auf Gymnastikball mit erhobenem Bein"
+  },
+  "1653": {
+    "name": "Bizeps-Curl mit Kurzhantel im Reiherstand"
+  },
+  "1654": {
+    "name": "Umgekehrter Bizeps-Curl mit Kurzhantel"
+  },
+  "1655": {
+    "name": "Bizeps-Curl mit Kurzhantel in der Kniebeuge"
+  },
+  "1656": {
+    "name": "Bizeps-Curl mit Kurzhantel im V-Sit auf dem Bosu-Ball"
+  },
+  "1657": {
+    "name": "Hammer-Curl über den Körper mit Kurzhantel v. 2"
+  },
+  "1658": {
+    "name": "Ausfallschritt mit Bizeps-Curl und Kurzhantel"
+  },
+  "1659": {
+    "name": "Hammer-Curl auf dem Gymnastikball mit Kurzhantel"
+  },
+  "1661": {
+    "name": "Liegender Bizeps-Curl mit Kurzhantel"
+  },
+  "1662": {
+    "name": "Liegender breiter Bizeps-Curl mit Kurzhantel"
+  },
+  "1663": {
+    "name": "Einarmiger Hammer-Scott-Curl mit Kurzhantel"
+  },
+  "1664": {
+    "name": "Hoher Curl mit Kurzhantel"
+  },
+  "1665": {
+    "name": "Einarmiger liegender Bizeps-Curl mit Kurzhantel"
+  },
+  "1666": {
+    "name": "Einarmiger Hammer-Curl in Bauchlage mit Kurzhantel"
+  },
+  "1668": {
+    "name": "Einarmiger sitzender Kurzhantel-Bizeps-Curl auf Gymnastikball"
+  },
+  "1669": {
+    "name": "Einarmiger sitzender Kurzhantel-Hammer-Curl"
+  },
+  "1670": {
+    "name": "Einarmiger stehender Kurzhantel-Curl"
+  },
+  "1671": {
+    "name": "Einarmiger stehender Kurzhantel-Hammer-Curl"
+  },
+  "1672": {
+    "name": "Einarmiger Kurzhantel-Zottman-Scott-Curl"
+  },
+  "1673": {
+    "name": "Scott-Curl über Gymnastikball mit Kurzhantel"
+  },
+  "1674": {
+    "name": "Hammer-Curl in Bauchlage auf der Schrägbank mit Kurzhantel"
+  },
+  "1675": {
+    "name": "Spider-Curl mit Umkehrgriff mit Kurzhantel"
+  },
+  "1676": {
+    "name": "Abwechselnder Hammer-Curl im Sitzen auf dem Gymnastikball mit Kurzhantel"
+  },
+  "1677": {
+    "name": "Bizeps-Curl im Sitzen mit Kurzhantel"
+  },
+  "1678": {
+    "name": "Sitzender Hammer-Curl mit Kurzhantel"
+  },
+  "1679": {
+    "name": "Sitzender einarmiger Bizeps-Curl mit Kurzhantel auf Gymnastikball mit erhobenem Bein"
+  },
+  "1680": {
+    "name": "Einarmiger Curl über Schrägbank stehend mit Kurzhantel"
+  },
+  "1682": {
+    "name": "Sitzender enger Konzentrations-Curl mit SZ-Stange"
+  },
+  "1683": {
+    "name": "Bizeps-Curl in der Multipresse"
+  },
+  "1684": {
+    "name": "Step-up einbeinig mit Gleichgewicht und Bizeps-Curl mit Kurzhantel"
+  },
+  "1701": {
+    "name": "Liegestütz mit engem Griff und Medizinball"
+  },
+  "1705": {
+    "name": "Kniebeuge auf dem Bosu-Ball"
+  },
+  "1708": {
+    "name": "Assistierte liegende Waden-Dehnung"
+  },
+  "1709": {
+    "name": "Assistierte liegende Gesäß-Dehnung"
+  },
+  "1712": {
+    "name": "Assistierte seitlich liegende Adduktoren-Dehnung"
+  },
+  "1713": {
+    "name": "Assistierte liegende Beinstrecker-Dehnung"
+  },
+  "1716": {
+    "name": "Assistierte sitzende Brustmuskel-Dehnung mit Gymnastikball"
+  },
+  "1717": {
+    "name": "Kniebeugen-Rudern am Kabelzug mit Seilansatz"
+  },
+  "1718": {
+    "name": "Sitzendes enges Trizeps-Strecken hinter den Kopf mit Langhantel"
+  },
+  "1719": {
+    "name": "Schrägbankdrücken mit engem Griff und Langhantel"
+  },
+  "1720": {
+    "name": "Liegendes Trizeps-Strecken hinter den Kopf mit Langhantel"
+  },
+  "1721": {
+    "name": "Stirndrücken mit Langhantel"
+  },
+  "1722": {
+    "name": "Überkopf-Trizeps-Strecken am hohen Kabelzug"
+  },
+  "1723": {
+    "name": "Einarmiges Trizeps-Drücken am Kabelzug"
+  },
+  "1724": {
+    "name": "Überkopf-Trizeps-Strecken am hohen Kabelzug mit Seil"
+  },
+  "1725": {
+    "name": "Trizeps-Strecken auf der Schrägbank mit Seil am Kabelzug"
+  },
+  "1726": {
+    "name": "Liegendes Trizeps-Strecken am Kabelzug mit Seil"
+  },
+  "1727": {
+    "name": "Einarmiges Überkopf-Trizeps-Strecken mit Umkehrgriff am Kabelzug stehend"
+  },
+  "1729": {
+    "name": "Abwechselndes Strecken liegend mit Kurzhantel"
+  },
+  "1730": {
+    "name": "Abwechselndes Kickback im Sitzen mit gebeugtem Oberkörper mit Kurzhantel"
+  },
+  "1731": {
+    "name": "Enges Drücken mit Kurzhantel"
+  },
+  "1732": {
+    "name": "Vorwärts-Ausfallschritt mit Trizeps-Strecken und Kurzhantel"
+  },
+  "1734": {
+    "name": "Kickbacks auf dem Gymnastikball mit Kurzhantel"
+  },
+  "1735": {
+    "name": "Einzelnes Strecken liegend mit Kurzhantel"
+  },
+  "1736": {
+    "name": "Einarmiges Überkopfdrücken auf dem Gymnastikball mit Kurzhantel"
+  },
+  "1737": {
+    "name": "Trizeps-Strecken im Sitzen mit gebeugtem Oberkörper mit Kurzhantel"
+  },
+  "1739": {
+    "name": "Abwechselndes Trizeps-Kickback im Stehen mit Kurzhantel"
+  },
+  "1740": {
+    "name": "Einarmiges Trizeps-Strecken im vorgebeugten Stand mit Kurzhantel"
+  },
+  "1741": {
+    "name": "Zweihändiges Trizeps-Strecken im vorgebeugten Stand mit Kurzhantel"
+  },
+  "1742": {
+    "name": "Trizeps-Kickback im Reiherstand mit Kurzhantel"
+  },
+  "1745": {
+    "name": "Sitzende Trizeps-Dehnung am Gymnastikball"
+  },
+  "1746": {
+    "name": "Liegendes Trizeps-Strecken mit Kurzhantel auf dem Gymnastikball"
+  },
+  "1747": {
+    "name": "Überkopfdrücken mit SZ-Stange auf dem Gymnastikball"
+  },
+  "1748": {
+    "name": "Liegendes enges Trizeps-Strecken hinter dem Kopf mit SZ-Stange"
+  },
+  "1749": {
+    "name": "Stehendes Überkopfdrücken mit SZ-Stange"
+  },
+  "1750": {
+    "name": "Brustwurf in Rückenlage mit Medizinball"
+  },
+  "1756": {
+    "name": "Einbeiniges Kreuzheben mit Langhantel"
+  },
+  "1757": {
+    "name": "Einbeiniges Kreuzheben mit Kurzhantel"
+  },
+  "1758": {
+    "name": "Assistiertes Sit-up"
+  },
+  "1765": {
+    "name": "Aufrechtes Rudern mit Kurzhantel"
+  },
+  "2135": {
+    "name": "Vordere Plank mit Zusatzgewicht"
+  },
+  "2141": {
+    "name": "Gehen auf dem Crosstrainer"
+  },
+  "2144": {
+    "name": "Sitzendes Brustdrücken am Kabelzug"
+  },
+  "2186": {
+    "name": "Trizeps-Strecken an der Negativbank mit SZ-Stange"
+  },
+  "2188": {
+    "name": "Sitzendes Trizeps-Strecken mit Kurzhantel"
+  },
+  "2189": {
+    "name": "Sitzendes Trizeps-Strecken mit Kurzhanteln"
+  },
+  "2202": {
+    "name": "Hüftdehnung mit Rolle"
+  },
+  "2205": {
+    "name": "Hüft-Lat-Dehnung mit Rolle"
+  },
+  "2206": {
+    "name": "Umgekehrter Crunch mit Rolle"
+  },
+  "2207": {
+    "name": "Seitliche Lat-Dehnung mit Rolle"
+  },
+  "2208": {
+    "name": "Rückenstreckung mit Rolle"
+  },
+  "2285": {
+    "name": "Überzüge an der Hebelmaschine"
+  },
+  "2286": {
+    "name": "Hüftstrecken an der Hebelmaschine v. 2"
+  },
+  "2287": {
+    "name": "Abwechselnde Beinpresse an der Hebelmaschine"
+  },
+  "2288": {
+    "name": "Greifübungen für die Hände an der Hebelmaschine"
+  },
+  "2289": {
+    "name": "Wadenpresse an der Hebelmaschine"
+  },
+  "2292": {
+    "name": "Hintere Schulterheben mit Kurzhantel"
+  },
+  "2293": {
+    "name": "Zottman-Scott-Curl stehend mit Kurzhantel"
+  },
+  "2294": {
+    "name": "Zottman-Scott-Curl mit Kurzhantel"
+  },
+  "2297": {
+    "name": "Crunch auf Gymnastikball mit Händen hinter dem Kopf"
+  },
+  "2311": {
+    "name": "Gehen auf Treppenmaschine"
+  },
+  "2315": {
+    "name": "Rotierendes Wadenheben an der Hebelmaschine"
+  },
+  "2317": {
+    "name": "Seitliches Heben im Sitzen mit gebeugtem Arm mit Kurzhantel"
+  },
+  "2318": {
+    "name": "Schulterdrücken an der Hebelmaschine v. 3"
+  },
+  "2321": {
+    "name": "Innerer Bizeps-Curl stehend mit Kurzhantel v. 2"
+  },
+  "2327": {
+    "name": "Rudern mit Umkehrgriff mit Kurzhantel"
+  },
+  "2328": {
+    "name": "Enger Liegestütz auf Gymnastikball"
+  },
+  "2330": {
+    "name": "Latzug mit vollem Bewegungsumfang am Kabelzug"
+  },
+  "2331": {
+    "name": "Fahrrad-Crosstrainer an der Hebelmaschine"
+  },
+  "2334": {
+    "name": "Liegende Wadenpresse mit Schlitten"
+  },
+  "2335": {
+    "name": "Sitzendes Wadenpressen an der Hebelmaschine"
+  },
+  "2364": {
+    "name": "Assistiertes breites Brust-Dip kniend an der Hebelmaschine"
+  },
+  "2371": {
+    "name": "Russian Twist mit Zusatzgewicht v. 2"
+  },
+  "2399": {
+    "name": "Sitzender Twist am Kabelzug"
+  },
+  "2403": {
+    "name": "Abwechselnder Bizeps-Curl mit Kurzhantel mit Arm-Verstärker"
+  },
+  "2404": {
+    "name": "Bizeps-Curl mit SZ-Stange mit Arm-Verstärker"
+  },
+  "2406": {
+    "name": "Trizeps-Drücken mit Umkehrgriff am Kabelzug mit SZ-Stange und Arm-Verstärker"
+  },
+  "2432": {
+    "name": "Enges Bankdrücken mit SZ-Stange"
+  },
+  "2470": {
+    "name": "Hintere Schulterheben liegend auf dem Boden mit Kurzhantel"
+  },
+  "2611": {
+    "name": "Horizontale einbeinige Beinpresse an der Hebelmaschine"
+  },
+  "2612": {
+    "name": "Seilspringen"
+  },
+  "2616": {
+    "name": "Latzug am Kabelzug mit V-Bar"
+  },
+  "2736": {
+    "name": "Latzug an der Hebelmaschine mit Umkehrgriff"
+  },
+  "2741": {
+    "name": "Stehender Bizeps-Curl mit weitem Griff an der SZ-Stange"
+  },
+  "2798": {
+    "name": "Kniebeuge-Sprung-Ausfallschritt nach hinten mit Langhantel"
+  },
+  "2799": {
+    "name": "Abwechselndes Beinheben sitzend mit Langhantel"
+  },
+  "2800": {
+    "name": "Abwechselndes Beinheben sitzend weiblich mit Langhantel"
+  },
+  "2803": {
+    "name": "Unterstützte Kniebeuge mit Kurzhantel"
+  },
+  "2810": {
+    "name": "Ausfallschritt mit Langhantel v. 2"
+  },
+  "3006": {
+    "name": "Sitzende Hüftabduktion mit Widerstandsband"
+  },
+  "3007": {
+    "name": "Beinstrecken mit Widerstandsband"
+  },
+  "3010": {
+    "name": "Liegende Überzüge mit gebeugten Armen an der SZ-Stange"
+  },
+  "3116": {
+    "name": "Fixierter Latzug mit Untergriff mit Band"
+  },
+  "3117": {
+    "name": "Fixierter Latzug mit engem Griff mit Band"
+  },
+  "3122": {
+    "name": "Sitzendes Schulterdrücken mit Widerstandsband"
+  },
+  "3123": {
+    "name": "Sitzender Bizeps-Curl mit Widerstandsband"
+  },
+  "3124": {
+    "name": "Sitzendes Brustdrücken mit Widerstandsband"
+  },
+  "3144": {
+    "name": "Sitzendes Rudern mit geradem Rücken am Widerstandsband"
+  },
+  "3195": {
+    "name": "Liegendes Zwei-zu-Eins-Beinstrecken einbeinig an der Hebelmaschine"
+  },
+  "3200": {
+    "name": "Vorgebeugtes Rudern mit V-Bar an der Hebelmaschine"
+  },
+  "3234": {
+    "name": "Hyght Kurzhantel-Fliegende"
+  },
+  "3236": {
+    "name": "Beckenheben mit Widerstandsband auf Knien weiblich"
+  },
+  "3240": {
+    "name": "Wadenheben am Gymnastikball an der Wand mit Kurzhantel"
+  },
+  "3241": {
+    "name": "Wadenheben an der Wand auf dem Gymnastikball mit Kurzhantel"
+  },
+  "3281": {
+    "name": "Vollständige Kniebeuge in der Multipresse"
+  },
+  "3286": {
+    "name": "Muskelaufzug mit Zusatzgewicht"
+  },
+  "3290": {
+    "name": "Einarmiger Klimmzug mit Zusatzgewicht"
+  },
+  "3312": {
+    "name": "Muskelaufzug an der Stange mit Zusatzgewicht"
+  },
+  "3545": {
+    "name": "Abwechselndes Drücken auf der Schrägbank mit Kurzhantel"
+  },
+  "3546": {
+    "name": "Abwechselndes Schulterheben im Sitzen mit Kurzhantel"
+  },
+  "3547": {
+    "name": "Bizeps-Curl mit Schulterdrücken im Sitzen mit Kurzhantel"
+  },
+  "3548": {
+    "name": "Einarmiges Überkopf-Tragen mit Kurzhantel"
+  },
+  "3560": {
+    "name": "Abwechselnder Hammer-Curl und Drücken im Stehen mit Kurzhantel"
+  },
+  "3562": {
+    "name": "Beckenheben mit Langhantel auf der Bank männlich"
+  },
+  "3563": {
+    "name": "Einarmiger Latzug am Kabelzug"
+  },
+  "3641": {
+    "name": "Kniender Schritt mit Schwung und Zusatzgewicht"
+  },
+  "3642": {
+    "name": "Dehnungs-Ausfallschritt mit Zusatzgewicht"
+  },
+  "3644": {
+    "name": "Ausfallschritt mit Schwung und Zusatzgewicht"
+  },
+  "3664": {
+    "name": "Seitliche Plank mit hinterer Fliegender und Kurzhantel"
+  },
+  "3666": {
+    "name": "Gehen auf Schräglaufband an der Hebelmaschine"
+  },
+  "3670": {
+    "name": "Sit-ups an der Negativbank mit Zusatzgewicht"
+  },
+  "3697": {
+    "name": "Rudern für die hintere Schulter kniend am Kabelzug mit Seil männlich"
+  },
+  "3758": {
+    "name": "Stehendes Brustdrücken an der Hebelmaschine"
+  },
+  "3759": {
+    "name": "Sitzendes Good Morning an der Hebelmaschine"
+  },
+  "3760": {
+    "name": "Sitzender Crunch an der Hebelmaschine v. 2"
+  },
+  "5201": {
+    "name": "Waiter-Bizeps-Curl mit Kurzhantel"
+  },
+  "0007": {
+    "name": "Abwechselnder Latzug am Kabelzug"
+  },
+  "0011": {
+    "name": "Assistiertes hängendes Knieheben"
+  },
+  "0010": {
+    "name": "Assistiertes hängendes Knieheben mit Abwurf"
+  },
+  "0012": {
+    "name": "Assistiertes liegendes Beinheben mit seitlichem Abwurf"
+  },
+  "0013": {
+    "name": "Assistiertes liegendes Beinheben mit Abwurf"
+  },
+  "0015": {
+    "name": "Assistierter paralleler enger Klimmzug an der Hebelmaschine"
+  },
+  "0016": {
+    "name": "Assistierte liegende Beinbeuger-Dehnung"
+  },
+  "0017": {
+    "name": "Assistierter Klimmzug an der Hebelmaschine"
+  },
+  "0018": {
+    "name": "Assistiertes stehendes Trizeps-Strecken mit Handtuch"
+  },
+  "0019": {
+    "name": "Assistiertes Trizeps-Dip kniend an der Hebelmaschine"
+  },
+  "0970": {
+    "name": "Assistierter Klimmzug mit Band"
+  },
+  "0980": {
+    "name": "Hüftstrecken vorgebeugt mit Band"
+  },
+  "0972": {
+    "name": "Fahrrad-Crunch mit Band"
+  },
+  "0974": {
+    "name": "Latzug mit engem Griff mit Band"
+  },
+  "0975": {
+    "name": "Liegestütz mit engem Griff mit Band"
+  },
+  "0977": {
+    "name": "Vorderes Seitheben mit Band"
+  },
+  "0983": {
+    "name": "Einarmiger Latzug kniend mit Band"
+  },
+  "0985": {
+    "name": "Twisting Crunch kniend mit Band"
+  },
+  "0984": {
+    "name": "Liegende Hüftinnenrotation mit Band"
+  },
+  "0987": {
+    "name": "Einarmige einbeinige Split-Kniebeuge mit Band"
+  },
+  "0988": {
+    "name": "Einarmiges niedriges Rudern stehend mit Band"
+  },
+  "0989": {
+    "name": "Einarmiges Twisting Brustdrücken mit Band"
+  },
+  "0990": {
+    "name": "Einarmiges Twisting Rudern sitzend mit Band"
+  },
+  "0993": {
+    "name": "Rückwärtige Fliegende mit Band"
+  },
+  "0996": {
+    "name": "Sitzende Hüftinnenrotation mit Band"
+  },
+  "0997": {
+    "name": "Schulterdrücken mit Band"
+  },
+  "0998": {
+    "name": "Seitliche Trizeps-Streckung mit Band"
+  },
+  "0999": {
+    "name": "Einbeiniges Wadenheben mit Band"
+  },
+  "0025": {
+    "name": "Bankdrücken mit Langhantel"
+  },
+  "0026": {
+    "name": "Kniebeuge über der Bank mit Langhantel"
+  },
+  "0027": {
+    "name": "Langhantelrudern vorgebeugt"
+  },
+  "0030": {
+    "name": "Bankdrücken mit Langhantel und engem Griff"
+  },
+  "0032": {
+    "name": "Kreuzheben mit Langhantel"
+  },
+  "0033": {
+    "name": "Bankdrücken an der Negativbank mit Langhantel"
+  },
+  "0039": {
+    "name": "Frontkniebeuge mit Langhantel"
+  },
+  "0041": {
+    "name": "Frontheben mit Langhantel"
+  },
+  "0040": {
+    "name": "Frontheben und Überzüge mit Langhantel"
+  },
+  "0042": {
+    "name": "Frontkniebeuge mit Langhantel"
+  },
+  "0043": {
+    "name": "Volle Kniebeuge mit Langhantel"
+  },
+  "0044": {
+    "name": "Good Morning mit Langhantel"
+  },
+  "0045": {
+    "name": "Guillotine-Bankdrücken mit Langhantel"
+  },
+  "0047": {
+    "name": "Schrägbankdrücken mit Langhantel"
+  },
+  "0049": {
+    "name": "Schrägbankrudern mit Langhantel"
+  },
+  "0050": {
+    "name": "Schrägbank-Schulterheben mit Langhantel"
+  },
+  "0053": {
+    "name": "Sprungkniebeuge mit Langhantel"
+  },
+  "0054": {
+    "name": "Ausfallschritt mit Langhantel"
+  },
+  "0055": {
+    "name": "Liegendes enges Drücken mit Langhantel"
+  },
+  "0056": {
+    "name": "Liegendes enges Trizeps-Strecken mit Langhantel"
+  },
+  "0057": {
+    "name": "Liegendes Strecken mit Langhantel"
+  },
+  "0058": {
+    "name": "Liegendes Heben auf der Hüfte mit Langhantel"
+  },
+  "0061": {
+    "name": "Liegendes Trizeps-Strecken mit Langhantel"
+  },
+  "0063": {
+    "name": "Kniebeuge mit Langhantel und engem Stand"
+  },
+  "0064": {
+    "name": "Einarmiges vorgebeugtes Rudern mit Langhantel"
+  },
+  "0065": {
+    "name": "Einarmiges Boden-Drücken mit Langhantel"
+  },
+  "0066": {
+    "name": "Einarmiges seitliches Kreuzheben mit Langhantel"
+  },
+  "0067": {
+    "name": "Einarmiges Reißen mit Langhantel"
+  },
+  "0068": {
+    "name": "Einbeinige Kniebeuge mit Langhantel"
+  },
+  "0069": {
+    "name": "Überkopf-Kniebeuge mit Langhantel"
+  },
+  "0071": {
+    "name": "Sit-up mit Langhantel-Drücken"
+  },
+  "0073": {
+    "name": "Überzüge mit Langhantel"
+  },
+  "0022": {
+    "name": "Überzüge zum Drücken mit Langhantel"
+  },
+  "0075": {
+    "name": "Hinteres Schulterheben mit Langhantel"
+  },
+  "0076": {
+    "name": "Hinteres Schulterrudern mit Langhantel"
+  },
+  "0078": {
+    "name": "Hinterer Ausfallschritt mit Langhantel"
+  },
+  "0077": {
+    "name": "Hinterer Ausfallschritt mit Langhantel v. 2"
+  },
+  "0118": {
+    "name": "Vorgebeugtes Rudern im Untergriff mit Langhantel"
+  },
+  "0084": {
+    "name": "Ausrollen mit Langhantel"
+  },
+  "0083": {
+    "name": "Ausrollen von der Bank mit Langhantel"
+  },
+  "0086": {
+    "name": "Sitzendes militärisches Drücken hinter den Kopf mit Langhantel"
+  },
+  "0088": {
+    "name": "Sitzendes Wadenheben mit Langhantel"
+  },
+  "0090": {
+    "name": "Sitzendes Good Morning mit Langhantel"
+  },
+  "0091": {
+    "name": "Sitzendes Überkopfdrücken mit Langhantel"
+  },
+  "0092": {
+    "name": "Sitzendes Überkopf-Trizeps-Strecken mit Langhantel"
+  },
+  "0094": {
+    "name": "Sitzende Drehung mit Langhantel"
+  },
+  "0096": {
+    "name": "Seitneigung mit Langhantel v. 2"
+  },
+  "0100": {
+    "name": "Skifahren mit Langhantel"
+  },
+  "0101": {
+    "name": "Schnelle Kniebeuge mit Langhantel"
+  },
+  "0102": {
+    "name": "Kniebeuge auf die Knie mit Langhantel"
+  },
+  "0108": {
+    "name": "Bein-Wadenheben stehend mit Langhantel"
+  },
+  "0109": {
+    "name": "Trizeps-Strecken über Kopf stehend mit Langhantel"
+  },
+  "0115": {
+    "name": "Good Morning mit gestreckten Beinen und Langhantel"
+  },
+  "0116": {
+    "name": "Kreuzheben mit gestreckten Beinen und Langhantel"
+  },
+  "0117": {
+    "name": "Sumo-Kreuzheben mit Langhantel"
+  },
+  "0120": {
+    "name": "Aufrechtes Rudern mit Langhantel"
+  },
+  "0119": {
+    "name": "Aufrechtes Rudern mit Langhantel v. 2"
+  },
+  "0121": {
+    "name": "Aufrechtes Rudern mit Langhantel v. 3"
+  },
+  "0122": {
+    "name": "Bankdrücken mit Langhantel und weitem Griff"
+  },
+  "0124": {
+    "name": "Kniebeuge mit Langhantel und weitem Stand"
+  },
+  "0123": {
+    "name": "Aufrechtes Rudern mit Langhantel und weitem Griff"
+  },
+  "0148": {
+    "name": "Abwechselndes Schulterdrücken am Kabelzug"
+  },
+  "0149": {
+    "name": "Abwechselndes Trizeps-Strecken am Kabelzug"
+  },
+  "0150": {
+    "name": "Latzug mit Stange am Kabelzug"
+  },
+  "0151": {
+    "name": "Bankdrücken am Kabelzug"
+  },
+  "0152": {
+    "name": "Konzentrationsstrecken am Kabelzug auf dem Knie"
+  },
+  "0153": {
+    "name": "Überkreuzter Latzug am Kabelzug"
+  },
+  "0154": {
+    "name": "Überkreuztes Rückwärtsheben am Kabelzug"
+  },
+  "0155": {
+    "name": "Überkreuzen am Kabelzug, Variante"
+  },
+  "0868": {
+    "name": "Curl am Kabelzug"
+  },
+  "0157": {
+    "name": "Kreuzheben am Kabelzug"
+  },
+  "0158": {
+    "name": "Fliegende an der Negativbank am Kabelzug"
+  },
+  "0159": {
+    "name": "Sitzendes Rudern mit weitem Griff an der Negativbank am Kabelzug"
+  },
+  "0160": {
+    "name": "Sitzendes Rudern mit weitem Griff auf dem Boden am Kabelzug"
+  },
+  "0161": {
+    "name": "Vorwärtsheben am Kabelzug"
+  },
+  "0165": {
+    "name": "Hammer-Curl am Kabelzug mit Seil"
+  },
+  "0167": {
+    "name": "Hohes Rudern kniend am Kabelzug"
+  },
+  "0168": {
+    "name": "Hüftadduktion am Kabelzug"
+  },
+  "0169": {
+    "name": "Schrägbankdrücken am Kabelzug"
+  },
+  "0171": {
+    "name": "Fliegende an der Schrägbank am Kabelzug"
+  },
+  "0170": {
+    "name": "Fliegende an der Schrägbank am Kabelzug auf dem Gymnastikball"
+  },
+  "0173": {
+    "name": "Trizeps-Strecken an der Schrägbank am Kabelzug"
+  },
+  "0860": {
+    "name": "Kickback am Kabelzug"
+  },
+  "0175": {
+    "name": "Crunch kniend am Kabelzug"
+  },
+  "0176": {
+    "name": "Trizeps-Strecken kniend am Kabelzug"
+  },
+  "0177": {
+    "name": "Latzug am Kabelzug mit Seil"
+  },
+  "0178": {
+    "name": "Seitheben am Kabelzug"
+  },
+  "0179": {
+    "name": "Fliegende am Kabelzug unten"
+  },
+  "0180": {
+    "name": "Sitzendes Rudern am Kabelzug unten"
+  },
+  "0182": {
+    "name": "Liegender enger Bizeps-Curl am Kabelzug"
+  },
+  "0184": {
+    "name": "Liegendes Überzug-Strecken am Kabelzug mit Seil"
+  },
+  "0185": {
+    "name": "Liegende Fliegende am Kabelzug"
+  },
+  "0186": {
+    "name": "Liegendes Trizeps-Strecken am Kabelzug v. 2"
+  },
+  "0189": {
+    "name": "Einarmiges vorgebeugtes Rudern am Kabelzug"
+  },
+  "0190": {
+    "name": "Einarmiger Curl am Kabelzug"
+  },
+  "0191": {
+    "name": "Einarmiges seitliches Rudern vorgebeugt am Kabelzug"
+  },
+  "0192": {
+    "name": "Einarmiges Seitheben am Kabelzug"
+  },
+  "0193": {
+    "name": "Einarmiges hohes Rudern nach hinten kniend am Kabelzug"
+  },
+  "0194": {
+    "name": "Überkopf-Trizeps-Strecken mit Seilzug am Kabelzug"
+  },
+  "0196": {
+    "name": "Durchziehen am Kabelzug mit Seil"
+  },
+  "0201": {
+    "name": "Trizeps-Drücken am Kabelzug"
+  },
+  "0199": {
+    "name": "Trizeps-Drücken gerader Arm am Kabelzug v. 2"
+  },
+  "0202": {
+    "name": "Rudern für hintere Schulter mit Trittbügeln am Kabelzug"
+  },
+  "0203": {
+    "name": "Rudern für hintere Schulter mit Seil am Kabelzug"
+  },
+  "0204": {
+    "name": "Trizeps-Drücken nach hinten am Kabelzug"
+  },
+  "0873": {
+    "name": "Umgekehrter Crunch am Kabelzug"
+  },
+  "0206": {
+    "name": "Umgekehrter Curl am Kabelzug"
+  },
+  "0210": {
+    "name": "Umgekehrter Handgelenk-Curl am Kabelzug"
+  },
+  "0207": {
+    "name": "Trizeps-Drücken mit Umkehrgriff am Kabelzug"
+  },
+  "0208": {
+    "name": "Sitzendes hohes Rudern mit Umkehrgriff am Kabelzug"
+  },
+  "0212": {
+    "name": "Sitzender Crunch am Kabelzug"
+  },
+  "0213": {
+    "name": "Hohes Rudern am Kabelzug V-Bar sitzend"
+  },
+  "0214": {
+    "name": "Abwechselndes einarmiges Rudern am Kabelzug sitzend"
+  },
+  "0215": {
+    "name": "Hinteres seitliches Heben am Kabelzug sitzend"
+  },
+  "0861": {
+    "name": "Rudern am Kabelzug sitzend"
+  },
+  "0216": {
+    "name": "Interne Schulterrotation am Kabelzug sitzend"
+  },
+  "0218": {
+    "name": "Rudern mit weitem Griff am Kabelzug sitzend"
+  },
+  "0219": {
+    "name": "Schulterdrücken am Kabelzug"
+  },
+  "0220": {
+    "name": "Shrugs am Kabelzug"
+  },
+  "0222": {
+    "name": "Seitneigung am Kabelzug"
+  },
+  "0226": {
+    "name": "Crunch am Kabelzug stehend"
+  },
+  "0874": {
+    "name": "Crunch am Kabelzug stehend mit Seilansatz"
+  },
+  "0227": {
+    "name": "Fliegende am Kabelzug stehend"
+  },
+  "0228": {
+    "name": "Hüftstrecken am Kabelzug stehend"
+  },
+  "0229": {
+    "name": "Innerer Curl am Kabelzug stehend"
+  },
+  "0230": {
+    "name": "Heben am Kabelzug stehend"
+  },
+  "0231": {
+    "name": "Einarmiges Trizeps-Strecken am Kabelzug stehend"
+  },
+  "0232": {
+    "name": "Latzug am Kabelzug stehend mit Seil"
+  },
+  "0233": {
+    "name": "Rudern für hintere Schulter am Kabelzug stehend mit Seil"
+  },
+  "0234": {
+    "name": "Rudern am Kabelzug stehend V-Bar"
+  },
+  "0235": {
+    "name": "Externe Schulterrotation am Kabelzug stehend"
+  },
+  "0236": {
+    "name": "Twist-Rudern am Kabelzug stehend V-Bar"
+  },
+  "0239": {
+    "name": "Gerades Rudern sitzend am Kabelzug"
+  },
+  "0240": {
+    "name": "Fliegende am Kabelzug in Rückenlage"
+  },
+  "0243": {
+    "name": "Twist am Kabelzug"
+  },
+  "0862": {
+    "name": "Twist am Kabelzug auf und ab"
+  },
+  "0244": {
+    "name": "Twisting Ziehen am Kabelzug"
+  },
+  "0245": {
+    "name": "Latzug im Untergriff am Kabelzug"
+  },
+  "0246": {
+    "name": "Aufrechtes Rudern am Kabelzug"
+  },
+  "0248": {
+    "name": "Liegendes Rudern mit gebogener Langhantel"
+  },
+  "0271": {
+    "name": "Crunch auf Gymnastikball"
+  },
+  "0272": {
+    "name": "Crunch auf Gymnastikball mit gestreckten Armen"
+  },
+  "0285": {
+    "name": "Abwechselnder Bizeps-Curl mit Kurzhantel"
+  },
+  "0286": {
+    "name": "Abwechselndes seitliches Drücken mit Kurzhantel"
+  },
+  "0289": {
+    "name": "Bankdrücken mit Kurzhanteln"
+  },
+  "0290": {
+    "name": "Sitzendes Drücken mit Kurzhanteln auf der Bank"
+  },
+  "0291": {
+    "name": "Kniebeuge mit Kurzhanteln auf der Bank"
+  },
+  "0293": {
+    "name": "Vorgebeugtes Rudern mit Kurzhanteln"
+  },
+  "0294": {
+    "name": "Bizeps-Curl mit Kurzhantel"
+  },
+  "0295": {
+    "name": "Umsetzen mit Kurzhantel"
+  },
+  "0296": {
+    "name": "Enges Drücken mit Kurzhantel"
+  },
+  "0297": {
+    "name": "Konzentrations-Curl mit Kurzhantel"
+  },
+  "0298": {
+    "name": "Hammer-Curl über den Körper mit Kurzhantel"
+  },
+  "0300": {
+    "name": "Kreuzheben mit Kurzhantel"
+  },
+  "0301": {
+    "name": "Negativbankdrücken mit Kurzhantel"
+  },
+  "0302": {
+    "name": "Fliegende auf der Negativbank mit Kurzhantel"
+  },
+  "0303": {
+    "name": "Hammer-Drücken auf der Negativbank mit Kurzhantel"
+  },
+  "0305": {
+    "name": "Shrugs auf der Negativbank mit Kurzhantel"
+  },
+  "0304": {
+    "name": "Shrugs auf der Negativbank mit Kurzhantel v. 2"
+  },
+  "0306": {
+    "name": "Trizeps-Strecken auf der Negativbank mit Kurzhantel"
+  },
+  "0307": {
+    "name": "Twist-Fliegende auf der Negativbank mit Kurzhantel"
+  },
+  "0308": {
+    "name": "Fliegende mit Kurzhantel"
+  },
+  "0313": {
+    "name": "Hammer-Curl mit Kurzhantel"
+  },
+  "0312": {
+    "name": "Hammer-Curl mit Kurzhantel v. 2"
+  },
+  "0314": {
+    "name": "Bankdrücken auf der Schrägbank mit Kurzhantel"
+  },
+  "0315": {
+    "name": "Bizeps-Curl auf der Schrägbank mit Kurzhantel"
+  },
+  "0316": {
+    "name": "Brustdrücken auf der Schrägbank mit Kurzhantel"
+  },
+  "0318": {
+    "name": "Schrägbank-Bizeps-Curl mit Kurzhantel"
+  },
+  "0317": {
+    "name": "Curl auf der Schrägbank mit Kurzhantel v. 2"
+  },
+  "0319": {
+    "name": "Fliegende auf der Schrägbank mit Kurzhantel"
+  },
+  "0320": {
+    "name": "Hammer-Curl auf der Schrägbank mit Kurzhantel"
+  },
+  "0322": {
+    "name": "Innerer Bizeps-Curl auf der Schrägbank mit Kurzhantel"
+  },
+  "0323": {
+    "name": "Einarmiges Seitheben auf der Schrägbank mit Kurzhantel"
+  },
+  "0325": {
+    "name": "Schrägbankheben mit Kurzhantel"
+  },
+  "0326": {
+    "name": "Schrägbank-hinteres seitliches Heben mit Kurzhantel"
+  },
+  "0327": {
+    "name": "Schrägbankrudern mit Kurzhantel"
+  },
+  "0328": {
+    "name": "Schrägbank-Schulterheben mit Kurzhantel"
+  },
+  "0329": {
+    "name": "Schrägbank-Shrugs mit Kurzhantel"
+  },
+  "0330": {
+    "name": "Schrägbank-Trizeps-Strecken mit Kurzhantel"
+  },
+  "0331": {
+    "name": "Schrägbank-Twisted-Fliegende mit Kurzhantel"
+  },
+  "0332": {
+    "name": "Eisernes Kreuz mit Kurzhantel"
+  },
+  "0333": {
+    "name": "Kickbacks mit Kurzhantel"
+  },
+  "0334": {
+    "name": "Seitliches Heben mit Kurzhantel"
+  },
+  "0336": {
+    "name": "Ausfallschritt mit Kurzhantel"
+  },
+  "0337": {
+    "name": "Liegendes Strecken über das Gesicht mit Kurzhantel"
+  },
+  "0338": {
+    "name": "Ellbogen-Drücken liegend mit Kurzhantel"
+  },
+  "0863": {
+    "name": "Externe Schulterrotation liegend mit Kurzhantel"
+  },
+  "0339": {
+    "name": "Beinbeugen liegend mit Kurzhantel"
+  },
+  "0340": {
+    "name": "Hammer-Drücken liegend mit Kurzhantel"
+  },
+  "0341": {
+    "name": "Einarmiges hinteres Schulterheben liegend mit Kurzhantel"
+  },
+  "0343": {
+    "name": "Einarmiges Drücken liegend mit Kurzhantel"
+  },
+  "0342": {
+    "name": "Einarmiges Drücken liegend mit Kurzhantel v. 2"
+  },
+  "0345": {
+    "name": "Einarmiges hinteres seitliches Schulterheben liegend mit Kurzhantel"
+  },
+  "0348": {
+    "name": "Hinteres seitliches Schulterheben liegend mit Kurzhantel"
+  },
+  "0350": {
+    "name": "Liegender Curl mit Kurzhantel"
+  },
+  "0351": {
+    "name": "Liegendes Trizeps-Strecken mit Kurzhantel"
+  },
+  "0352": {
+    "name": "Bankdrücken mit neutralem Griff und Kurzhanteln"
+  },
+  "0292": {
+    "name": "Einarmiges vorgebeugtes Rudern mit Kurzhantel"
+  },
+  "0353": {
+    "name": "Einarmiger Konzentrations-Curl auf dem Gymnastikball mit Kurzhantel"
+  },
+  "0354": {
+    "name": "Einarmiger Kickback mit Kurzhantel"
+  },
+  "0355": {
+    "name": "Einarmiges Seitheben mit Kurzhantel"
+  },
+  "0356": {
+    "name": "Einarmiges Seitheben mit Unterstützung und Kurzhantel"
+  },
+  "0361": {
+    "name": "Einarmiges Kurzhantel-Schulterdrücken"
+  },
+  "0360": {
+    "name": "Einarmiges Kurzhantel-Schulterdrücken v. 2"
+  },
+  "0362": {
+    "name": "Einarmiges Kurzhantel-Trizeps-Strecken auf Bank"
+  },
+  "0363": {
+    "name": "Einarmiges aufrechtes Rudern mit Kurzhantel"
+  },
+  "0364": {
+    "name": "Einarmiger Kurzhantel-Handgelenk-Curl"
+  },
+  "0365": {
+    "name": "Kurzhantel-Neutral-Handgelenk-Curl über Bank"
+  },
+  "0366": {
+    "name": "Einarmiger neutraler Handgelenk-Curl mit Kurzhantel über Bank"
+  },
+  "0367": {
+    "name": "Einarmiger Handgelenk-Curl mit Kurzhantel über Bank"
+  },
+  "0368": {
+    "name": "Umgekehrter Handgelenk-Curl mit Kurzhantel über Bank"
+  },
+  "0369": {
+    "name": "Handgelenk-Curl mit Kurzhantel über Bank"
+  },
+  "0370": {
+    "name": "Scott-Hammer-Curl mit Kurzhantel"
+  },
+  "0372": {
+    "name": "Scott-Curl mit Kurzhantel"
+  },
+  "0374": {
+    "name": "Curl in Bauchlage auf der Schrägbank mit Kurzhantel"
+  },
+  "0375": {
+    "name": "Überzüge mit Kurzhantel"
+  },
+  "0376": {
+    "name": "Kurzhantelheben"
+  },
+  "0378": {
+    "name": "Hintere Fliegende mit Kurzhantel"
+  },
+  "0380": {
+    "name": "Hinteres seitliches Schulterheben mit Kurzhantel"
+  },
+  "0379": {
+    "name": "Hinteres seitliches Schulterheben mit Kopfstütze und Kurzhantel"
+  },
+  "0382": {
+    "name": "Bizeps-Curl im Obergriff mit Kurzhantel"
+  },
+  "0383": {
+    "name": "Umgekehrte Fliegende mit Kurzhantel"
+  },
+  "0384": {
+    "name": "Scott-Curl mit Umkehrgriff mit Kurzhantel"
+  },
+  "0385": {
+    "name": "Handgelenk-Curl mit Umkehrgriff mit Kurzhantel"
+  },
+  "0386": {
+    "name": "Rotierende Fliegende mit Umkehrgriff mit Kurzhantel"
+  },
+  "0387": {
+    "name": "Abwechselndes vorderes Heben im Sitzen mit Kurzhantel"
+  },
+  "0388": {
+    "name": "Abwechselndes Drücken im Sitzen mit Kurzhantel"
+  },
+  "0389": {
+    "name": "Trizeps-Strecken im Sitzen mit Kurzhantel"
+  },
+  "0390": {
+    "name": "Bizeps-Curl im Sitzen auf dem Gymnastikball mit Kurzhantel"
+  },
+  "0391": {
+    "name": "Sitzender Curl mit Kurzhantel"
+  },
+  "0392": {
+    "name": "Sitzendes vorderes Heben mit Kurzhantel"
+  },
+  "0393": {
+    "name": "Sitzender innerer Bizeps-Curl mit Kurzhantel"
+  },
+  "0394": {
+    "name": "Sitzendes Kickback mit Kurzhantel"
+  },
+  "0396": {
+    "name": "Sitzendes seitliches Heben mit Kurzhantel"
+  },
+  "0395": {
+    "name": "Sitzendes seitliches Heben mit Kurzhantel v. 2"
+  },
+  "0397": {
+    "name": "Sitzender neutraler Handgelenk-Curl mit Kurzhantel"
+  },
+  "0398": {
+    "name": "Sitzendes einarmiges Kickback mit Kurzhantel"
+  },
+  "0399": {
+    "name": "Sitzende einarmige Rotation mit Kurzhantel"
+  },
+  "0400": {
+    "name": "Sitzendes einbeiniges Wadenheben mit Kurzhantel"
+  },
+  "0401": {
+    "name": "Sitzendes Handgelenk-Curl mit Kurzhantel, Handfläche oben"
+  },
+  "0402": {
+    "name": "Sitzender Scott-Curl mit Kurzhantel"
+  },
+  "0403": {
+    "name": "Sitzender Konzentrations-Curl mit Kurzhantel und Obergriff"
+  },
+  "0405": {
+    "name": "Sitzendes Schulterdrücken mit Kurzhantel"
+  },
+  "0404": {
+    "name": "Sitzendes Schulterdrücken mit parallelem Griff mit Kurzhantel"
+  },
+  "0406": {
+    "name": "Shrugs mit Kurzhantel"
+  },
+  "0407": {
+    "name": "Seitneigung mit Kurzhantel"
+  },
+  "0408": {
+    "name": "Seitliegendes einhändiges Heben mit Kurzhantel"
+  },
+  "0409": {
+    "name": "Einbeiniges Wadenheben mit Kurzhantel"
+  },
+  "0411": {
+    "name": "Einbeinige Kniebeuge mit Kurzhantel"
+  },
+  "0413": {
+    "name": "Kniebeuge mit Kurzhantel"
+  },
+  "0414": {
+    "name": "Abwechselndes Überkopfdrücken im Stehen mit Kurzhantel"
+  },
+  "0415": {
+    "name": "Abwechselndes Heben im Stehen mit Kurzhantel"
+  },
+  "0416": {
+    "name": "Bizeps-Curl stehend mit Kurzhantel"
+  },
+  "0417": {
+    "name": "Wadenheben stehend mit Kurzhantel"
+  },
+  "0418": {
+    "name": "Konzentrations-Curl stehend mit Kurzhantel"
+  },
+  "0419": {
+    "name": "Frontheben über Kopf stehend mit Kurzhantel"
+  },
+  "0420": {
+    "name": "Kickback stehend mit Kurzhantel"
+  },
+  "0421": {
+    "name": "Einarmiger Konzentrations-Curl stehend mit Kurzhantel"
+  },
+  "0422": {
+    "name": "Einarmiger Curl über Schrägbank stehend mit Kurzhantel"
+  },
+  "0423": {
+    "name": "Einarmiges Strecken stehend mit Kurzhantel"
+  },
+  "0424": {
+    "name": "Einarmiges Drücken mit Handflächen nach innen stehend mit Kurzhantel"
+  },
+  "0425": {
+    "name": "Einarmiger Rückwärts-Curl stehend mit Kurzhantel"
+  },
+  "0426": {
+    "name": "Überkopfdrücken stehend mit Kurzhantel"
+  },
+  "0427": {
+    "name": "Drücken mit Handflächen nach innen stehend mit Kurzhantel"
+  },
+  "0428": {
+    "name": "Scott-Curl stehend mit Kurzhantel"
+  },
+  "0429": {
+    "name": "Rückwärts-Curl stehend mit Kurzhantel"
+  },
+  "0430": {
+    "name": "Trizeps-Strecken stehend mit Kurzhantel"
+  },
+  "0432": {
+    "name": "Steifbeiniges Kreuzheben mit Kurzhantel"
+  },
+  "0433": {
+    "name": "Überzüge mit geradem Arm mit Kurzhantel"
+  },
+  "0434": {
+    "name": "Kreuzheben mit Kurzhantel und gestreckten Beinen"
+  },
+  "0437": {
+    "name": "Aufrechtes Rudern mit Kurzhantel"
+  },
+  "0864": {
+    "name": "Aufrechte externe Schulterrotation mit Kurzhantel"
+  },
+  "0439": {
+    "name": "Zottman-Curl mit Kurzhantel"
+  },
+  "0446": {
+    "name": "Enger Curl mit SZ-Stange"
+  },
+  "0447": {
+    "name": "Curl mit SZ-Stange"
+  },
+  "0448": {
+    "name": "Enges Gesichtsdrucken an der Negativbank mit SZ-Stange"
+  },
+  "0449": {
+    "name": "Trizeps-Strecken an der Schrägbank mit SZ-Stange"
+  },
+  "0451": {
+    "name": "Bizeps-Curl mit Umkehrgriff an der SZ-Stange"
+  },
+  "0452": {
+    "name": "Bizeps-Scott-Curl mit Umkehrgriff an der SZ-Stange"
+  },
+  "0453": {
+    "name": "Sitzendes Trizeps-Strecken mit SZ-Stange"
+  },
+  "0454": {
+    "name": "Spider-Curl mit SZ-Stange"
+  },
+  "0458": {
+    "name": "Fliegende am Boden mit Langhantel"
+  },
+  "0517": {
+    "name": "Fortgeschrittene Windmühle mit Kettlebell"
+  },
+  "0518": {
+    "name": "Abwechselndes Umsetzen aus dem Hang mit Kettlebell"
+  },
+  "0520": {
+    "name": "Abwechselndes Drücken mit Kettlebell"
+  },
+  "0519": {
+    "name": "Abwechselndes Drücken am Boden mit Kettlebell"
+  },
+  "0521": {
+    "name": "Abwechselndes Rudern in der Plank-Position mit Kettlebell"
+  },
+  "0522": {
+    "name": "Abwechselndes Rudern mit Kettlebell"
+  },
+  "0523": {
+    "name": "Arnold-Drücken mit Kettlebell"
+  },
+  "0524": {
+    "name": "Gebeugtes Drücken mit Kettlebell"
+  },
+  "0526": {
+    "name": "Doppeltes abwechselndes Umsetzen aus dem Hang mit Kettlebell"
+  },
+  "0527": {
+    "name": "Doppeltes Stoßen mit Kettlebell"
+  },
+  "0528": {
+    "name": "Doppeltes Ausstoßen mit Kettlebell"
+  },
+  "0529": {
+    "name": "Doppeltes Reißen mit Kettlebell"
+  },
+  "0530": {
+    "name": "Doppelte Windmühle mit Kettlebell"
+  },
+  "0531": {
+    "name": "Einarmiges Drücken am Boden mit erweitertem Bewegungsumfang mit Kettlebell"
+  },
+  "0532": {
+    "name": "Figure-8 mit Kettlebell"
+  },
+  "0533": {
+    "name": "Frontkniebeuge mit Kettlebell"
+  },
+  "0534": {
+    "name": "Goblet Kniebeuge mit Kettlebell"
+  },
+  "0535": {
+    "name": "Umsetzen aus dem Hang mit Kettlebell"
+  },
+  "0536": {
+    "name": "Ausfallschritt mit Durchführung mit Kettlebell"
+  },
+  "0537": {
+    "name": "Einarmiges Umsetzen und Stoßen mit Kettlebell"
+  },
+  "0538": {
+    "name": "Einarmiges Stoßen mit Kettlebell"
+  },
+  "0539": {
+    "name": "Einarmiges militärisches Drücken zur Seite mit Kettlebell"
+  },
+  "0540": {
+    "name": "Einarmiges Drücken mit Schwung mit Kettlebell"
+  },
+  "0541": {
+    "name": "Einarmiges Rudern mit Kettlebell"
+  },
+  "0542": {
+    "name": "Einarmiges Reißen mit Kettlebell"
+  },
+  "0543": {
+    "name": "Piraten-Suppe mit Kettlebell"
+  },
+  "0544": {
+    "name": "Einbeinige Kniebeuge mit Kettlebell"
+  },
+  "0545": {
+    "name": "Plyometrischer Liegestütz mit Kettlebell"
+  },
+  "0546": {
+    "name": "Sitzendes Drücken mit Kettlebell"
+  },
+  "0547": {
+    "name": "Wippen-Drücken mit Kettlebell"
+  },
+  "0548": {
+    "name": "Sumo Hochziehen mit Kettlebell"
+  },
+  "0549": {
+    "name": "Swing mit Kettlebell"
+  },
+  "0550": {
+    "name": "Thruster mit Kettlebell"
+  },
+  "0551": {
+    "name": "Türkischer Aufsteh mit Kettlebell im Kniebeuge-Stil"
+  },
+  "0552": {
+    "name": "Umsetzen mit zwei Armen und Kettlebell"
+  },
+  "0553": {
+    "name": "Militärisches Drücken mit zwei Armen und Kettlebell"
+  },
+  "0554": {
+    "name": "Windmühle mit Kettlebell"
+  },
+  "0571": {
+    "name": "Abwechselndes sitzendes Rudern mit engem Griff an der Hebelmaschine"
+  },
+  "0572": {
+    "name": "Assistierter Klimmzug im Untergriff an der Hebelmaschine"
+  },
+  "0573": {
+    "name": "Rückenstrecken an der Hebelmaschine"
+  },
+  "0574": {
+    "name": "Vorgebeugtes Rudern mit Langhantel"
+  },
+  "0575": {
+    "name": "Bizeps-Curl an der Hebelmaschine"
+  },
+  "0577": {
+    "name": "Brustpresse an der Hebelmaschine"
+  },
+  "0576": {
+    "name": "Brustpresse an der Hebelmaschine"
+  },
+  "0578": {
+    "name": "Kreuzheben an der Hebelmaschine"
+  },
+  "0579": {
+    "name": "Latzug von vorne an der Hebelmaschine"
+  },
+  "0580": {
+    "name": "Shrugs ohne Griff an der Hebelmaschine"
+  },
+  "0581": {
+    "name": "Hohes Rudern an der Hebelmaschine"
+  },
+  "0582": {
+    "name": "Kniendes Beinstrecken an der Hebelmaschine"
+  },
+  "0583": {
+    "name": "Kniender Twist an der Hebelmaschine"
+  },
+  "0584": {
+    "name": "Seitheben an der Hebelmaschine"
+  },
+  "0585": {
+    "name": "Beinstrecken an der Hebelmaschine"
+  },
+  "0586": {
+    "name": "Liegendes Beinstrecken an der Hebelmaschine"
+  },
+  "0587": {
+    "name": "Militärisches Drücken an der Hebelmaschine"
+  },
+  "0588": {
+    "name": "Sitzendes Rudern mit engem Griff an der Hebelmaschine"
+  },
+  "0589": {
+    "name": "Einarmiges vorgebeugtes Rudern mit Langhantel"
+  },
+  "0590": {
+    "name": "Einarmiges Schulterdrücken an der Hebelmaschine"
+  },
+  "0591": {
+    "name": "Trizeps-Dips an der Hebelmaschine mit Überhandgriff"
+  },
+  "0592": {
+    "name": "Scott-Curl an der Hebelmaschine"
+  },
+  "0593": {
+    "name": "Umgekehrte Hyperextension an der Hebelmaschine"
+  },
+  "0594": {
+    "name": "Sitzendes Wadenheben an der Hebelmaschine"
+  },
+  "0595": {
+    "name": "Sitzender Crunch am Brustpolster der Hebelmaschine"
+  },
+  "0596": {
+    "name": "Sitzende Fliegende an der Hebelmaschine"
+  },
+  "0597": {
+    "name": "Sitzende Hüftabduktion an der Hebelmaschine"
+  },
+  "0598": {
+    "name": "Sitzende Hüftadduktion an der Hebelmaschine"
+  },
+  "0599": {
+    "name": "Sitzendes Beinbeugen an der Hebelmaschine"
+  },
+  "0600": {
+    "name": "Sitzender Beinheben Crunch an der Hebelmaschine"
+  },
+  "0602": {
+    "name": "Sitzende rückwärtige Fliegende an der Hebelmaschine"
+  },
+  "0601": {
+    "name": "Sitzende rückwärtige Fliegende im Parallelgriff an der Hebelmaschine"
+  },
+  "0603": {
+    "name": "Schulterdrücken an der Hebelmaschine"
+  },
+  "0869": {
+    "name": "Schulterdrücken an der Hebelmaschine v. 2"
+  },
+  "0604": {
+    "name": "Shrugs an der Hebelmaschine"
+  },
+  "0605": {
+    "name": "Stehendes Wadenheben an der Hebelmaschine"
+  },
+  "0606": {
+    "name": "T-Bar Rudern an der Hebelmaschine"
+  },
+  "0607": {
+    "name": "Trizeps-Strecken an der Hebelmaschine"
+  },
+  "0636": {
+    "name": "Hammer-Curl mit Olympia-Langhantel"
+  },
+  "0637": {
+    "name": "Trizeps-Strecken mit Olympia-Langhantel"
+  },
+  "0648": {
+    "name": "Power-Umsetzen mit Langhantel"
+  },
+  "0650": {
+    "name": "Einziehen auf Gymnastikball"
+  },
+  "0653": {
+    "name": "Liegestütz auf dem Bosu-Ball"
+  },
+  "0655": {
+    "name": "Liegestütz auf Gymnastikball"
+  },
+  "0656": {
+    "name": "Liegestütz auf Gymnastikball"
+  },
+  "0660": {
+    "name": "Liegestütz mit engem Griff an Kurzhantel"
+  },
+  "0663": {
+    "name": "Liegestütz am Medizinball"
+  },
+  "0673": {
+    "name": "Latzug mit Umkehrgriff an Hebelmaschine"
+  },
+  "0675": {
+    "name": "Umgekehrte Hyperstreckung auf Gymnastikball"
+  },
+  "0680": {
+    "name": "Seilklettern"
+  },
+  "0727": {
+    "name": "Einbeiniges Wadenheben mit Kurzhantel"
+  },
+  "0738": {
+    "name": "Wadenpresse in 45 Grad mit Schlitten"
+  },
+  "0739": {
+    "name": "Beinpresse in 45 Grad mit Schlitten"
+  },
+  "0740": {
+    "name": "Beinpresse mit weitem Stand in 45 Grad mit Schlitten"
+  },
+  "0744": {
+    "name": "Liegende Kniebeuge mit Schlitten"
+  },
+  "0746": {
+    "name": "Shrugs am Rücken in der Multipresse"
+  },
+  "0747": {
+    "name": "Nackendrücken hinter dem Kopf in der Multipresse"
+  },
+  "0748": {
+    "name": "Bankdrücken in der Multipresse"
+  },
+  "0751": {
+    "name": "Bankdrücken mit engem Griff in der Multipresse"
+  },
+  "0752": {
+    "name": "Kreuzheben in der Multipresse"
+  },
+  "0753": {
+    "name": "Bankdrücken an der Negativbank in der Multipresse"
+  },
+  "0754": {
+    "name": "Drücken mit umgekehrtem Griff an der Negativbank in der Multipresse"
+  },
+  "0756": {
+    "name": "Hüftheben in der Multipresse"
+  },
+  "0758": {
+    "name": "Drücken mit umgekehrtem Griff an der Schrägbank in der Multipresse"
+  },
+  "0760": {
+    "name": "Beinpresse in der Multipresse"
+  },
+  "0761": {
+    "name": "Enges Rudern an der Multipresse"
+  },
+  "0765": {
+    "name": "Sitzendes Schulterdrücken an der Multipresse"
+  },
+  "0766": {
+    "name": "Schulterdrücken an der Multipresse"
+  },
+  "0767": {
+    "name": "Shrugs an der Multipresse"
+  },
+  "0769": {
+    "name": "Sprint-Ausfallschritt an der Multipresse"
+  },
+  "0770": {
+    "name": "Kniebeuge an der Multipresse"
+  },
+  "0771": {
+    "name": "Stehender Handgelenk-Curl hinter dem Kopf an der Multipresse"
+  },
+  "0773": {
+    "name": "Stehendes Wadenheben an der Multipresse"
+  },
+  "0775": {
+    "name": "Aufrechtes Rudern an der Multipresse"
+  },
+  "0776": {
+    "name": "Reißzug mit Langhantel"
+  },
+  "0786": {
+    "name": "Kniebeuge-Stoßen mit Langhantel"
+  },
+  "0788": {
+    "name": "Stehendes Nackendrücken mit Langhantel"
+  },
+  "0796": {
+    "name": "Stehender Bauchroller"
+  },
+  "0798": {
+    "name": "Gehen an der Hebelmaschine"
+  },
+  "0832": {
+    "name": "Crunch mit Zusatzgewicht"
+  },
+  "0834": {
+    "name": "Vorderes Heben mit Zusatzgewicht"
+  },
+  "0866": {
+    "name": "Hängendes Bein-Hüftheben mit Zusatzgewicht"
+  },
+  "0835": {
+    "name": "Hyperextension auf Gymnastikball mit Zusatzgewicht"
+  },
+  "0840": {
+    "name": "Überkopf-Crunch auf Gymnastikball mit Zusatzgewicht"
+  },
+  "0841": {
+    "name": "Klimmzug mit Zusatzgewicht"
+  },
+  "0846": {
+    "name": "Russian Twist mit Zusatzgewicht"
+  },
+  "0845": {
+    "name": "Russian Twist mit Zusatzgewicht Beine hoch"
+  },
+  "0847": {
+    "name": "Sitzender Bizeps-Curl mit Zusatzgewicht am Medizinball"
+  },
+  "0849": {
+    "name": "Sitzender Twist mit Zusatzgewicht am Gymnastikball"
+  },
+  "0850": {
+    "name": "Seitneigung mit Zusatzgewicht am Gymnastikball"
+  },
+  "0852": {
+    "name": "Kniebeuge mit Zusatzgewicht"
+  },
+  "0853": {
+    "name": "Stehender Curl mit Zusatzgewicht"
+  },
+  "0854": {
+    "name": "Stehendes Handdrücken mit Zusatzgewicht"
+  },
+  "0857": {
+    "name": "Bauchroller"
+  }
+}

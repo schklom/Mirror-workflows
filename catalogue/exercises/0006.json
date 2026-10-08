@@ -1,0 +1,19 @@
+{
+  "id": "0006",
+  "name": "alternate heel touchers",
+  "bodyPart": "waist",
+  "equipment": "body weight",
+  "target": "abs",
+  "secondaryMuscles": [
+    "obliques"
+  ],
+  "description": "",
+  "instructions": [
+    "Lie flat on your back with your knees bent and feet flat on the ground.",
+    "Extend your arms straight out to the sides, parallel to the ground.",
+    "Engaging your abs, lift your shoulders off the ground and reach your right hand towards your right heel.",
+    "Return to the starting position and repeat on the left side, reaching your left hand towards your left heel.",
+    "Continue alternating sides for the desired number of repetitions."
+  ],
+  "textSource": "exercisedb"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "3699",
+  "name": "shoulder tap",
+  "bodyPart": "waist",
+  "equipment": "body weight",
+  "target": "abs",
+  "secondaryMuscles": [
+    "shoulders",
+    "triceps"
+  ],
+  "description": "",
+  "instructions": [
+    "Start in a high plank position with your hands directly under your shoulders and your body in a straight line.",
+    "Engage your core and lift your right hand off the ground, reaching across to tap your left shoulder.",
+    "Place your right hand back on the ground and repeat with your left hand tapping your right shoulder.",
+    "Continue alternating shoulder taps while keeping your hips and torso stable.",
+    "Repeat for the desired number of repetitions."
+  ],
+  "textSource": "exercisedb"
+}

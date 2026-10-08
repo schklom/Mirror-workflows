@@ -1,0 +1,21 @@
+{
+  "id": "0191",
+  "name": "cable one arm lateral bent-over",
+  "bodyPart": "chest",
+  "equipment": "cable",
+  "target": "pectorals",
+  "secondaryMuscles": [
+    "deltoids",
+    "trapezius"
+  ],
+  "description": "",
+  "instructions": [
+    "Stand with your feet shoulder-width apart, facing a cable machine.",
+    "Grasp the handle with one hand and step back to create tension on the cable.",
+    "Bend forward at the waist, keeping your back straight and your core engaged.",
+    "Extend your arm out to the side, parallel to the ground, with a slight bend in your elbow.",
+    "Slowly bring your arm back to the starting position, maintaining control throughout the movement.",
+    "Repeat for the desired number of repetitions, then switch sides."
+  ],
+  "textSource": "exercisedb"
+}

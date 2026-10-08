@@ -1,22 +1,17 @@
 import { EXDB } from './exercises-data.js'
-import { USER_EXERCISE_MUSCLE_OVERRIDES, exerciseMuscleMetadataFor } from './exercise-muscle-batch-1.js'
+import MUSCLE_MAP from './exercise-muscle-map.json' with { type: 'json' }
 import { t, getVersion, exerciseNameSearchText } from './i18n-core.js'
 
 export { EXDB }
 
-// The generated dataset remains the compatibility/raw export. The runtime catalogue applies
-// owner-approved muscle metadata as a narrow overlay, so imports and historical tests that rely
-// on the upstream shape keep working while EXIDX and pickers see the corrected model.
+// EXDB carries each exercise as the catalogue describes it in words (target, secondary muscles).
+// Where someone has drawn the muscles more precisely (catalogue "muscleMap": the compound lifts,
+// machines and Olympic lifts, ExRx-informed and owner-approved), that layer is applied here, so
+// the pickers and every muscle map see the corrected model while EXDB stays the plain list.
 const catalogueExercise = ex => {
-  const metadata = exerciseMuscleMetadataFor(ex?.id)
-  if (!Object.keys(metadata).length) return ex
+  const metadata = MUSCLE_MAP[ex?.id]
+  if (!metadata) return ex
   const out = { ...ex, ...metadata }
-  const user = USER_EXERCISE_MUSCLE_OVERRIDES[ex?.id] || {}
-  // A future dataset row may carry explicit arrays of its own; preserve those over generated
-  // defaults unless the owner has deliberately supplied a correction for the same field.
-  for (const key of ['primaries', 'secondaries']) {
-    if (Object.prototype.hasOwnProperty.call(ex, key) && !Object.prototype.hasOwnProperty.call(user, key)) out[key] = ex[key]
-  }
   if (Array.isArray(out.primaries)) out.primaries = [...out.primaries]
   if (Array.isArray(out.secondaries)) out.secondaries = [...out.secondaries]
   return out
@@ -156,8 +151,14 @@ export function matchesExerciseSearch(exercise, query) {
 const ENV = import.meta.env || {}
 const IMG_BASE = ENV.VITE_IMG_BASE || 'img/'
 const GIF_BASE = ENV.VITE_GIF_BASE || 'gif/'
-export const imgSrc = ex => IMG_BASE + ex.img
-export const gifSrc = ex => GIF_BASE + ex.gif
+// Many exercises are drawn twice, on a male and on a female figure (`fv`, the female drawing's
+// id). The body chosen for the muscle map (Settings, S.body) picks which one shows; the exercise,
+// its id and everything logged against it stay the same either way.
+const drawing = (ex, body) => (body === 'female' && ex.fv ? ex.fv : null)
+export const imgSrc = (ex, body) => IMG_BASE + (drawing(ex, body) ? drawing(ex, body) + '.webp' : ex.img)
+export const gifSrc = (ex, body) => GIF_BASE + (drawing(ex, body) ? drawing(ex, body) + '.mp4' : ex.gif)
+// The catalogue's animations are short MP4 loops; a fork's or an older build's may still be GIFs.
+export const isVideoSrc = src => /\.(mp4|webm)(\?|$)/i.test(src || '')
 
 // Cardio exercises log time + speed instead of weight × reps.
 export const isCardio = idOrEx => (typeof idOrEx === 'string' ? EXIDX[idOrEx] : idOrEx)?.bp === 'cardio'

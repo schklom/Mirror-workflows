@@ -1,0 +1,18 @@
+{
+  "id": "0407",
+  "name": "dumbbell side bend",
+  "bodyPart": "waist",
+  "equipment": "dumbbell",
+  "target": "abs",
+  "secondaryMuscles": [
+    "obliques"
+  ],
+  "description": "",
+  "instructions": [
+    "Stand up straight with your feet shoulder-width apart and hold a dumbbell in one hand, letting it hang down by your side.",
+    "Keeping your back straight and your core engaged, slowly bend sideways at the waist towards the opposite side of the dumbbell, lowering the weight as far as you comfortably can.",
+    "Pause for a moment, then slowly return to the starting position.",
+    "Repeat for the desired number of repetitions, then switch sides and repeat."
+  ],
+  "textSource": "exercisedb"
+}

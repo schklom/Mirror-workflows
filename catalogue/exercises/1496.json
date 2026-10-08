@@ -1,0 +1,20 @@
+{
+  "id": "1496",
+  "name": "sledge hammer",
+  "bodyPart": "waist",
+  "equipment": "hammer",
+  "target": "abs",
+  "secondaryMuscles": [
+    "forearms",
+    "shoulders"
+  ],
+  "description": "",
+  "instructions": [
+    "Stand with your feet shoulder-width apart and hold the sledge hammer with both hands.",
+    "Engage your core and keep your back straight.",
+    "Swing the sledge hammer down towards the ground, using your core and upper body strength.",
+    "As you swing down, pivot your hips and transfer the force to the hammer.",
+    "Repeat for the desired number of repetitions."
+  ],
+  "textSource": "exercisedb"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "0325",
+  "name": "dumbbell incline raise",
+  "bodyPart": "shoulders",
+  "equipment": "dumbbell",
+  "target": "delts",
+  "secondaryMuscles": [
+    "trapezius",
+    "triceps"
+  ],
+  "description": "",
+  "instructions": [
+    "Sit on an incline bench with a dumbbell in each hand, resting on your thighs.",
+    "Lean back on the bench and raise the dumbbells to shoulder height, palms facing forward.",
+    "Keeping your back against the bench, exhale and raise the dumbbells above your head, fully extending your arms.",
+    "Pause for a moment at the top, then inhale and slowly lower the dumbbells back to shoulder height.",
+    "Repeat for the desired number of repetitions."
+  ],
+  "textSource": "exercisedb"
+}

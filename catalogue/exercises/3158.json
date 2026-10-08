@@ -1,0 +1,21 @@
+{
+  "id": "3158",
+  "name": "bodyweight standing close-grip row",
+  "bodyPart": "back",
+  "equipment": "body weight",
+  "target": "upper back",
+  "secondaryMuscles": [
+    "biceps",
+    "forearms"
+  ],
+  "description": "",
+  "instructions": [
+    "Stand with your feet shoulder-width apart and knees slightly bent.",
+    "Bend forward at the waist, keeping your back straight and your core engaged.",
+    "Extend your arms straight in front of you, gripping the bar or handles with a close grip.",
+    "Pull the bar or handles towards your body, squeezing your shoulder blades together.",
+    "Pause for a moment at the top of the movement, then slowly release and return to the starting position.",
+    "Repeat for the desired number of repetitions."
+  ],
+  "textSource": "exercisedb"
+}

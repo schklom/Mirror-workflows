@@ -1,0 +1,19 @@
+{
+  "id": "0398",
+  "name": "dumbbell seated one arm kickback",
+  "bodyPart": "upper arms",
+  "equipment": "dumbbell",
+  "target": "triceps",
+  "secondaryMuscles": [
+    "shoulders"
+  ],
+  "description": "",
+  "instructions": [
+    "Sit on a bench with your feet flat on the ground and hold a dumbbell in one hand.",
+    "Bend your torso forward at the waist, keeping your back straight and parallel to the ground.",
+    "Extend your arm straight back, keeping your elbow close to your body.",
+    "Pause for a moment at the top, then slowly lower the dumbbell back to the starting position.",
+    "Repeat for the desired number of repetitions, then switch arms."
+  ],
+  "textSource": "exercisedb"
+}

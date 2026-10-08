@@ -1,0 +1,22 @@
+{
+  "id": "1476",
+  "name": "one leg squat",
+  "bodyPart": "upper legs",
+  "equipment": "body weight",
+  "target": "glutes",
+  "secondaryMuscles": [
+    "quadriceps",
+    "hamstrings",
+    "calves"
+  ],
+  "description": "",
+  "instructions": [
+    "Stand with your feet shoulder-width apart.",
+    "Extend one leg forward, keeping it off the ground.",
+    "Bend your standing leg and lower your body down as if sitting back into a chair.",
+    "Keep your chest up and your back straight.",
+    "Push through your heel to return to the starting position.",
+    "Repeat with the other leg."
+  ],
+  "textSource": "exercisedb"
+}

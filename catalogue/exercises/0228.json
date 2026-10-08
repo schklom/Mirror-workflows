@@ -1,0 +1,30 @@
+{
+  "id": "0228",
+  "name": "cable standing hip extension",
+  "bodyPart": "upper legs",
+  "equipment": "cable",
+  "target": "glutes",
+  "secondaryMuscles": [
+    "hamstrings",
+    "quadriceps"
+  ],
+  "description": "",
+  "instructions": [
+    "Attach a cable to a low pulley and stand facing away from the machine.",
+    "Place the cable around your ankle and stand with your feet shoulder-width apart.",
+    "Keep your core engaged and your back straight throughout the exercise.",
+    "Slowly extend your leg straight back, squeezing your glutes at the top of the movement.",
+    "Pause for a moment, then return to the starting position.",
+    "Repeat for the desired number of repetitions.",
+    "Switch sides and repeat with the other leg."
+  ],
+  "muscleMap": {
+    "primaries": [
+      "gluteal"
+    ],
+    "secondaries": [
+      "hamstring"
+    ]
+  },
+  "textSource": "exercisedb"
+}

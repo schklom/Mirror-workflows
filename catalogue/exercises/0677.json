@@ -1,0 +1,19 @@
+{
+  "id": "0677",
+  "name": "ring dips",
+  "bodyPart": "upper arms",
+  "equipment": "body weight",
+  "target": "triceps",
+  "secondaryMuscles": [
+    "chest",
+    "shoulders"
+  ],
+  "description": "",
+  "instructions": [
+    "Start by hanging from the rings with your arms fully extended and your body straight.",
+    "Lower your body by bending your elbows until your shoulders are below your elbows.",
+    "Push yourself back up to the starting position by straightening your arms.",
+    "Repeat for the desired number of repetitions."
+  ],
+  "textSource": "exercisedb"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "1642",
+  "name": "cable seated one arm concentration curl",
+  "bodyPart": "upper arms",
+  "equipment": "cable",
+  "target": "biceps",
+  "secondaryMuscles": [
+    "forearms"
+  ],
+  "description": "",
+  "instructions": [
+    "Sit on a bench with your feet flat on the floor and your back straight.",
+    "Hold a cable handle with one hand and place your elbow on the inside of your thigh, just above the knee.",
+    "Keep your upper arm stationary and curl the cable handle towards your shoulder while exhaling.",
+    "Pause for a moment at the top of the movement, squeezing your biceps.",
+    "Slowly lower the cable handle back to the starting position while inhaling.",
+    "Repeat for the desired number of repetitions, then switch arms."
+  ],
+  "textSource": "exercisedb"
+}

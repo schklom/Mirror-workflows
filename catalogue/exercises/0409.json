@@ -1,0 +1,19 @@
+{
+  "id": "0409",
+  "name": "dumbbell single leg calf raise",
+  "bodyPart": "lower legs",
+  "equipment": "dumbbell",
+  "target": "calves",
+  "secondaryMuscles": [
+    "ankles"
+  ],
+  "description": "",
+  "instructions": [
+    "Stand on the edge of a step or platform with your heels hanging off and your toes on the step.",
+    "Hold a dumbbell in one hand and place your other hand on a wall or railing for support.",
+    "Raise your heel as high as possible, lifting your body up onto your toes.",
+    "Pause for a moment at the top, then slowly lower your heel back down below the step.",
+    "Repeat for the desired number of repetitions, then switch to the other leg."
+  ],
+  "textSource": "exercisedb"
+}

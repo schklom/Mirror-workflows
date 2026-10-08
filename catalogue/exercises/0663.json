@@ -1,0 +1,20 @@
+{
+  "id": "0663",
+  "name": "push-up medicine ball",
+  "bodyPart": "chest",
+  "equipment": "medicine ball",
+  "target": "pectorals",
+  "secondaryMuscles": [
+    "triceps",
+    "shoulders",
+    "core"
+  ],
+  "description": "",
+  "instructions": [
+    "Start in a high plank position with your hands on the medicine ball, shoulder-width apart.",
+    "Engage your core and lower your body towards the ground by bending your elbows, keeping your back straight.",
+    "Push through your palms to extend your arms and return to the starting position.",
+    "Repeat for the desired number of repetitions."
+  ],
+  "textSource": "exercisedb"
+}

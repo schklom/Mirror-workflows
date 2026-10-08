@@ -43,7 +43,7 @@ export function planMediaUrls(S, base = globalThis.location?.href, index = EXIDX
     // A custom exercise's photo or video is not a file of the shipped dataset: it lives in the
     // local media store and has its own prefetch (lib/media-sync.js). An unknown id has nothing.
     if (!ex || isCustomEx(ex)) continue
-    for (const src of [ex.gif && gifSrc(ex), ex.img && imgSrc(ex)]) {
+    for (const src of [ex.gif && gifSrc(ex, S?.body), ex.img && imgSrc(ex, S?.body)]) {
       if (!src) continue
       const u = new URL(src, base)
       // Media on another origin (a build that points at a CDN) never passes through this

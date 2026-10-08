@@ -1,0 +1,18 @@
+{
+  "id": "2799",
+  "name": "barbell sitted alternate leg raise",
+  "bodyPart": "waist",
+  "equipment": "barbell",
+  "target": "abs",
+  "secondaryMuscles": [
+    "hip flexors"
+  ],
+  "description": "",
+  "instructions": [
+    "Sit on a bench with your back straight and hold a barbell across your thighs.",
+    "Keeping your legs straight, lift one leg up as high as possible while keeping the other leg on the ground.",
+    "Lower the raised leg back down and repeat with the other leg.",
+    "Continue alternating legs for the desired number of repetitions."
+  ],
+  "textSource": "exercisedb"
+}

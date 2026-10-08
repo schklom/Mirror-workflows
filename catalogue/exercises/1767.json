@@ -1,0 +1,19 @@
+{
+  "id": "1767",
+  "name": "weighted triceps dip on high parallel bars",
+  "bodyPart": "upper arms",
+  "equipment": "weighted",
+  "target": "triceps",
+  "secondaryMuscles": [
+    "chest",
+    "shoulders"
+  ],
+  "description": "",
+  "instructions": [
+    "Position yourself between two parallel bars with your hands gripping the bars and your arms fully extended.",
+    "Bend your elbows and lower your body until your upper arms are parallel to the ground.",
+    "Pause for a moment, then push through your palms to straighten your arms and return to the starting position.",
+    "Repeat for the desired number of repetitions."
+  ],
+  "textSource": "exercisedb"
+}

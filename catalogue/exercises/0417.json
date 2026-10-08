@@ -1,0 +1,18 @@
+{
+  "id": "0417",
+  "name": "dumbbell standing calf raise",
+  "bodyPart": "lower legs",
+  "equipment": "dumbbell",
+  "target": "calves",
+  "secondaryMuscles": [
+    "ankles"
+  ],
+  "description": "",
+  "instructions": [
+    "Stand with your feet shoulder-width apart, holding a dumbbell in each hand.",
+    "Raise your heels off the ground as high as possible, using your calves.",
+    "Pause for a moment at the top, then slowly lower your heels back down to the starting position.",
+    "Repeat for the desired number of repetitions."
+  ],
+  "textSource": "exercisedb"
+}

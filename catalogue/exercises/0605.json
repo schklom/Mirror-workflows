@@ -1,0 +1,26 @@
+{
+  "id": "0605",
+  "name": "lever standing calf raise",
+  "bodyPart": "lower legs",
+  "equipment": "leverage machine",
+  "target": "calves",
+  "secondaryMuscles": [
+    "soleus",
+    "ankle stabilizers"
+  ],
+  "description": "",
+  "instructions": [
+    "Adjust the machine to your height and stand with your feet shoulder-width apart.",
+    "Place your shoulders under the pads and hold onto the handles for stability.",
+    "Raise your heels as high as possible by extending your ankles.",
+    "Pause for a moment at the top, then slowly lower your heels back down to the starting position.",
+    "Repeat for the desired number of repetitions."
+  ],
+  "muscleMap": {
+    "primaries": [
+      "calves"
+    ],
+    "secondaries": []
+  },
+  "textSource": "exercisedb"
+}

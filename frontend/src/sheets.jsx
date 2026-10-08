@@ -20,6 +20,7 @@ import { syncMedia } from './lib/media-sync.js'
 import LineChart from './components/LineChart.jsx'
 import Stepper from './components/Stepper.jsx'
 import { durationSheet } from './components/DurationWheel.jsx'
+import { SG_NAME_MAX } from './lib/superset-meta.js'
 import { REST_MAX, fmtRest } from './lib/duration.js'
 import Icon from './components/Icon.jsx'
 import { Button, Slider, Switch, Segmented, SelectRow, Row, TextField, NumberField, MultiSelectRow } from './components/ui.jsx'
@@ -2766,6 +2767,31 @@ function RenameWorkout({ close }) {
   </>
 }
 export const renameWorkoutSheet = () => ui().openSheet(close => <RenameWorkout close={close} />)
+
+// A superset's own name and rest between rounds (#292), from the routine editor.
+function SupersetSettings({ meta, onSave, close }) {
+  const inputRef = useRef(null)
+  const onFocus = useSheetKeyboard(inputRef)
+  const [name, setName] = useState(meta.name || '')
+  const [rest, setRest] = useState(meta.rest || 0)
+  const save = () => { onSave({ name: name.trim().slice(0, SG_NAME_MAX), rest }); close() }
+  return <>
+    <h3>{t('Superset')}</h3>
+    <input ref={inputRef} className="input" type="text" maxLength={SG_NAME_MAX} value={name}
+      placeholder={t('Name, e.g. Arm finisher')} onFocus={onFocus} onChange={e => setName(e.target.value)}
+      onKeyDown={e => { if (e.key === 'Enter') save() }} />
+    <div style={{ height: 12 }} />
+    <div className="list">
+      <Row icon="timer" iconTint="var(--orange)" title={t('Rest after each round')}
+        value={rest > 0 ? fmtRest(rest) : t('Longest exercise rest')} accessory="chevron"
+        onClick={() => durationSheet({ title: t('Rest after each round'), value: rest, max: REST_MAX, off: t('Longest exercise rest'),
+          footer: t('Without one, the superset rests as long as its longest exercise rest.'), onDone: setRest })} />
+    </div>
+    <div style={{ height: 18 }} />
+    <Button variant="primary" onClick={save}>{t('Save')}</Button>
+  </>
+}
+export const supersetSheet = (meta, onSave) => ui().openSheet(close => <SupersetSettings meta={meta} onSave={onSave} close={close} />)
 
 /* Drop-set drops and rest-pause bursts are edited inline on the set row itself (Workout.jsx) —
    no sheet, no timer. A planned exercise (see the "Intensifier" config below) arrives with them

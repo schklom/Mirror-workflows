@@ -19,6 +19,7 @@ import { pyramidRestFor, maxRecordAt, isPyramid, pyramidLabel } from '../lib/pyr
 import { insertionIndexAfterCurrentUnit, nextUnfinishedUnit, setProgressHighWater, supersetFlowStep, restAfterSet, restOnRecheck, restSecFor, warmupRestSecFor } from '../lib/supersetFlow.js'
 import Media from '../components/Media.jsx'
 import WorkoutScrollAnchor from '../components/WorkoutScrollAnchor.jsx'
+import { supersetMeta } from '../lib/superset-meta.js'
 import WorkoutThumb, { hasWorkoutMedia } from '../components/WorkoutThumb.jsx'
 import { workoutSettingsSheet } from '../components/WorkoutSettingsSheet.jsx'
 import { durationSheet } from '../components/DurationWheel.jsx'
@@ -909,6 +910,12 @@ function ActiveWorkout() {
   const workoutView = A.workoutView || S.workoutView
   const listMode = workoutView === 'list' || workoutView === 'compact'
   const dense = workoutView === 'compact'
+  // A superset's heading: its own name and rest between rounds when it has them (#292).
+  const ssTitle = u => {
+    const m = supersetMeta(A.entries, u, { onTarget: true })
+    if (m.rest > 0) return t('{0} · back-to-back, {1} rest after each round', m.name || t('Superset'), fmtRest(m.rest))
+    return m.name ? t('{0} · do these back-to-back, rest when done', m.name) : t('Superset · do these back-to-back, rest when done')
+  }
   // Collapse finished exercises in the list (#241). The current unit stays open, superset
   // members included, until you move on; an empty exercise or a half-done warm-up or side does too.
   const collapsed = new Set(listMode && A.collapseCompleted ? units.filter(u =>
@@ -1812,7 +1819,7 @@ function ActiveWorkout() {
             </div> : multi ? (
               <div className="ss-card">
                 <div className="ss-hd" style={{ justifyContent: 'space-between' }}>
-                  <span className="row" style={{ gap: 5 }}><Icon name="link" />{t('Superset · do these back-to-back, rest when done')}</span>
+                  <span className="row" style={{ gap: 5 }}><Icon name="link" />{ssTitle(u)}</span>
                   <Button size="xs" variant="ghost" icon="link" title={t('Unpair')} onClick={() => unpairAt(u[0])}>{t('Unpair')}</Button>
                 </div>
                 {u.map((idx, k) => {
@@ -1850,7 +1857,7 @@ function ActiveWorkout() {
           return adjacent.length > 1 ? (
             <div className="ss-card">
               <div className="ss-hd" style={{ justifyContent: 'space-between' }}>
-                <span className="row" style={{ gap: 5 }}><Icon name="link" />{t('Superset · do these back-to-back, rest when done')}</span>
+                <span className="row" style={{ gap: 5 }}><Icon name="link" />{ssTitle(adjacent)}</span>
                 <Button size="xs" variant="ghost" icon="link" title={t('Unpair')} onClick={() => unpairAt(adjacent[0])}>{t('Unpair')}</Button>
               </div>
               {adjacent.map((idx, k) => <div key={idx} className="ss-ex" data-exidx={idx}>
@@ -1866,7 +1873,7 @@ function ActiveWorkout() {
       {isSuperset ? (
         <div className="ss-card">
           <div className="ss-hd" style={{ justifyContent: 'space-between' }}>
-            <span className="row" style={{ gap: 5 }}><Icon name="link" />{t('Superset · do these back-to-back, rest when done')}</span>
+            <span className="row" style={{ gap: 5 }}><Icon name="link" />{ssTitle(unit)}</span>
             <Button size="xs" variant="ghost" icon="link" title={t('Unpair')} onClick={() => unpairAt(cur)}>{t('Unpair')}</Button>
           </div>
           {unit.map((idx, k) => {

@@ -1,4 +1,5 @@
 // Pure helpers over the state object S (ported 1:1 from the vanilla app).
+import { syncSupersetMeta } from './superset-meta.js'
 import { todayISO, isoOf, weekKey, weekStartOf, fmtNum } from './format.js'
 import { fmtSpeed } from './speed.js'
 import { isCardio, isBodyweightEq, isAssisted, betterWeight } from './exercises.js'
@@ -235,6 +236,8 @@ export function cleanupSg(ex) {
   ex.forEach((e, i) => {
     if (e.sg && !(ex[i - 1]?.sg === e.sg || ex[i + 1]?.sg === e.sg)) delete e.sg
   })
+  // A superset's name and rest (#292) follow its members in and out of the group.
+  syncSupersetMeta(ex)
 }
 
 // Return the contiguous run around an entry that shares its superset id. A repeated id in a

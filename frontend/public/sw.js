@@ -148,9 +148,34 @@ async function trimMedia() {
   }
 }
 
+// A <video> asks for its clip in byte ranges. The network's 206 cannot be cached (cache.put
+// refuses a partial answer), so a clip was never kept; and a whole 200 handed to a range request
+// is a clip iOS Safari will not play. So the cache holds the whole file, fetched without a Range,
+// and a range request is answered with a 206 cut from it. One range, the only kind a player asks
+// for; anything else gets the whole file.
+const rangeOf = req => (req.headers && typeof req.headers.get === 'function' && req.headers.get('range')) || ''
+async function slice(res, range) {
+  const m = /^bytes=(\d*)-(\d*)$/.exec(range.trim())
+  const type = res.headers.get('content-type') || 'application/octet-stream'
+  const body = await res.arrayBuffer()
+  const size = body.byteLength
+  let start = m && m[1] !== '' ? Number(m[1]) : NaN
+  let end = m && m[2] !== '' ? Number(m[2]) : size - 1
+  if (m && m[1] === '' && m[2] !== '') { start = Math.max(0, size - Number(m[2])); end = size - 1 }
+  if (!m || !Number.isFinite(start)) return new Response(body, { status: 200, headers: { 'content-type': type, 'content-length': String(size), 'accept-ranges': 'bytes' } })
+  if (start >= size || end < start) return new Response(null, { status: 416, headers: { 'content-range': 'bytes */' + size } })
+  end = Math.min(end, size - 1)
+  return new Response(body.slice(start, end + 1), {
+    status: 206,
+    statusText: 'Partial Content',
+    headers: { 'content-type': type, 'content-length': String(end - start + 1), 'content-range': `bytes ${start}-${end}/${size}`, 'accept-ranges': 'bytes' }
+  })
+}
+
 // URLs written back this worker lifetime; see MEDIA above.
 const touched = new Set()
 function media(e) {
+  const range = rangeOf(e.request)
   return caches.open(MEDIA).then(c => c.match(e.request).then(hit => {
     if (hit) {
       if (!touched.has(e.request.url)) {
@@ -158,13 +183,16 @@ function media(e) {
         const copy = hit.clone()
         e.waitUntil(c.put(e.request, copy).catch(() => {}))
       }
-      return hit
+      return range ? slice(hit, range) : hit
     }
-    return fetch(e.request).then(res => {
-      if (realMedia(res)) {
+    // The whole file for a range request: the one answer that can be kept.
+    return fetch(range ? e.request.url : e.request).then(res => {
+      const whole = range ? res.status === 200 : true
+      if (whole && realMedia(res)) {
         touched.add(e.request.url)
         const copy = res.clone()
-        e.waitUntil(c.put(e.request, copy).then(() => { if (++mediaPuts >= MEDIA_TRIM_EVERY) { mediaPuts = 0; return trimMedia() } }).catch(() => {}))
+        e.waitUntil(c.put(e.request.url, copy).then(() => { if (++mediaPuts >= MEDIA_TRIM_EVERY) { mediaPuts = 0; return trimMedia() } }).catch(() => {}))
+        if (range) return slice(res, range)
       }
       return res
     })

@@ -46,6 +46,10 @@ CATALOGUE.forEach(e => { EXIDX[e.id] = e })
 for (const [id, to] of Object.entries(EXALIAS)) {
   if (EXIDX[to]) Object.defineProperty(EXIDX, id, { value: EXIDX[to], enumerable: false, configurable: true })
 }
+// The exercise a drawing's id stands for; any other id as it is. For ids on their way in (a plan
+// file, an import, the Coach's output), so the app goes on storing only exercise ids. An id
+// already in state is left alone: rewriting it would move history behind the user's back.
+export const canonicalExId = id => (typeof id === 'string' && Object.hasOwn(EXALIAS, id) && EXIDX[EXALIAS[id]] ? EXALIAS[id] : id)
 export const BODYPARTS = [...new Set(CATALOGUE.map(e => e.bp))].sort()
 
 // Equipment options present in a given list of exercises, most common first (issue #6).

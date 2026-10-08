@@ -5,7 +5,7 @@
 // with `node scripts/build-hevy-id-map.mjs`. The API key never leaves this module's
 // callers: nothing here stores it.
 
-import { EXIDX } from './exercises.js'
+import { EXIDX, canonicalExId } from './exercises.js'
 import { uid } from './format.js'
 import { isWarmupRow } from './workout-model.js'
 import { HEVY_ID_MAP, HEVY_TITLE_MAP } from './hevy-id-map.js'
@@ -175,7 +175,7 @@ function makeResolver(templates, customEx) {
     const t = templateId ? byId.get(templateId) : null
     const own = priorCustom(customEx, importId('im', 'Hevy|' + key), t?.title || fallbackTitle)
     if (own) return own.id
-    const pinned = templateId && HEVY_ID_MAP[templateId]
+    const pinned = templateId && canonicalExId(HEVY_ID_MAP[templateId])
     if (pinned && EXIDX[pinned]) {
       matchedIds.add(pinned)
       return pinned

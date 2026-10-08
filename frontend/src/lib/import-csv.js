@@ -18,7 +18,7 @@
 // body-weight records are interesting here. parseBodyweight() scans for those without
 // building a DOM.
 
-import { EXDB, EXIDX, isCardio as isCardioEx } from './exercises.js'
+import { EXDB, EXIDX, canonicalExId, isCardio as isCardioEx } from './exercises.js'
 import { uid } from './format.js'
 import { isWarmupRow } from './workout-model.js'
 import { HEVY_TITLE_MAP } from './hevy-id-map.js'
@@ -542,7 +542,7 @@ export function parseWorkoutCSV(text, { unit = 'kg', customEx = [] } = {}) {
       if (own) prior.set(key, own)
       // Hevy CSV: prefer the generated English-title map (same table as the API import).
       // Localized titles still fall through to the word-bag matcher.
-      id = own ? own.id : (source === 'Hevy' ? matchHevyTitle(name) : null) || matchExercise(name)
+      id = own ? own.id : canonicalExId((source === 'Hevy' ? matchHevyTitle(name) : null) || matchExercise(name))
       resolved.set(key, id)
     }
     if (id) matched++

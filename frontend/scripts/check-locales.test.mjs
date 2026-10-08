@@ -63,6 +63,19 @@ describe('check-locales.mjs', () => {
     expect(r.out).toContain('blank')
   })
 
+  it('accepts plural forms, and fails ones that hang off no number or carry too many', () => {
+    const src = '{0} sets'
+    const ok = run({ pl: { [src]: '{0} {0|seria|serie|serii}' }, fr: { [src]: '{0} {0|série|séries}' } })
+    expect(ok.code).toBe(0)
+    const wrongIndex = run({ pl: { [src]: '{0} {1|seria|serie|serii}' }, fr: { [src]: '{0} séries' } })
+    expect(wrongIndex.code).toBe(1)
+    expect(wrongIndex.out).toContain('plural forms')
+    // French has one, many and other — five forms is a typo, not a language.
+    const tooMany = run({ pl: { [src]: '{0} séries' }, fr: { [src]: '{0} {0|a|b|c|d|e}' } })
+    expect(tooMany.code).toBe(1)
+    expect(tooMany.out).toContain('plural forms')
+  })
+
   it('still fails a key one pack does not carry', () => {
     const r = run({ de, fr: { Save: 'Enregistrer' } })
     expect(r.code).toBe(1)

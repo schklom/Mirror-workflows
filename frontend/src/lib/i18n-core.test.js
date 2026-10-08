@@ -213,3 +213,39 @@ describe('English-name switches with every exercise-name pack', () => {
     _setLangState('en', {}, null, null)
   })
 })
+
+describe('plural forms in a translation', () => {
+  const pl = {
+    '{0} sets': '{0} {0|seria|serie|serii}',
+    '{0} workouts and {1} weigh-ins': '{0} {0|trening|treningi|treningów} i {1} {1|ważenie|ważenia|ważeń}',
+  }
+
+  it('picks the Polish form for one, few and many', () => {
+    _setLangState('pl', pl, null, null)
+    const cases = [[1, 'seria'], [2, 'serie'], [4, 'serie'], [5, 'serii'], [12, 'serii'], [22, 'serie'], [25, 'serii'], [0, 'serii'], [112, 'serii']]
+    for (const [n, word] of cases) expect(t('{0} sets', n)).toBe(`${n} ${word}`)
+    _setLangState('en', {}, null, null)
+  })
+
+  it('agrees each count with its own placeholder', () => {
+    _setLangState('pl', pl, null, null)
+    expect(t('{0} workouts and {1} weigh-ins', 3, 7)).toBe('3 treningi i 7 ważeń')
+    expect(t('{0} workouts and {1} weigh-ins', 5, 1)).toBe('5 treningów i 1 ważenie')
+    _setLangState('en', {}, null, null)
+  })
+
+  it('reads formatted counts, and anything else as "other"', () => {
+    _setLangState('pl', pl, null, null)
+    expect(t('{0} sets', '3')).toBe('3 serie')
+    expect(t('{0} sets', '1 324')).toBe('1 324 serie')
+    expect(t('{0} sets', '3/5')).toBe('3/5 serii')
+    expect(t('{0} sets', 1.5)).toBe('1.5 serii')
+    _setLangState('en', {}, null, null)
+  })
+
+  it('leaves English and strings without the syntax alone', () => {
+    _setLangState('en', {}, null, null)
+    expect(t('{0} sets', 3)).toBe('3 sets')
+    expect(t('a | b {0}', 1)).toBe('a | b 1')
+  })
+})

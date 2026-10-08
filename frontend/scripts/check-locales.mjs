@@ -53,7 +53,15 @@ for (const [lang, dict] of locales) {
   // is ABSENT, so an empty string reaches the screen as an empty screen.
   const blank = Object.entries(dict).filter(([, v]) => typeof v !== 'string' || !v.trim()).map(([k]) => k)
   const mangled = Object.entries(dict).filter(([k, v]) => typeof v === 'string' && marks(v) !== marks(k))
-  if (missing.length || orphans.length || blank.length || mangled.length) {
+  // {n|form|form…} plural forms (see t() in i18n-core.js) must hang off a number the key passes,
+  // and carry at least two and at most as many forms as the language has plural categories.
+  const categories = new Intl.PluralRules(lang).resolvedOptions().pluralCategories.length
+  const badPlurals = Object.entries(dict).filter(([k, v]) => typeof v === 'string' &&
+    [...v.matchAll(/\{(\d+)\|([^{}]*)\}/g)].some(([, i, forms]) => {
+      const n = forms.split('|')
+      return !k.includes('{' + i + '}') || n.length < 2 || n.length > categories || n.some(f => !f.trim())
+    }))
+  if (missing.length || orphans.length || blank.length || mangled.length || badPlurals.length) {
     failed = true
     console.error(`\n${lang}.js: ${keys.size}/${union.length} keys`)
     for (const k of missing) console.error(`  missing:   ${JSON.stringify(k)}`)
@@ -61,6 +69,8 @@ for (const [lang, dict] of locales) {
     for (const k of blank) console.error(`  blank:     ${JSON.stringify(k)}`)
     for (const [k, v] of mangled)
       console.error(`  placeholders: ${JSON.stringify(k)} has [${marks(k) || '—'}], ${JSON.stringify(v)} has [${marks(v) || '—'}]`)
+    for (const [k, v] of badPlurals)
+      console.error(`  plural forms: ${JSON.stringify(v)} (for ${JSON.stringify(k)}) — {n|…} needs a {n} of the key and 2–${categories} non-empty forms`)
   }
 }
 

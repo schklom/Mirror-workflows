@@ -10,7 +10,7 @@ export const LANGS = {
   ko: '한국어', hi: 'हिन्दी', th: 'ไทย', hu: 'Magyar', ar: 'العربية'
 }
 export const INSTR_LANGS = ['en', 'es', 'fr', 'it', 'tr', 'ru', 'zh', 'hi', 'pl', 'ko', 'pt-BR', 'hu', 'ar']
-export const EXERCISE_NAME_LANGS = ['pt-BR', 'hu', 'de', 'es', 'ru', 'it', 'fr']
+export const EXERCISE_NAME_LANGS = ['pt-BR', 'hu', 'de', 'es', 'ru', 'it', 'fr', 'pl']
 // Languages rendered right-to-left; i18n.js setLang applies the direction from this.
 export const RTL_LANGS = new Set(['ar'])
 export const DATE_LOCALES = {
@@ -67,9 +67,41 @@ export const getLang = () => lang
 export const dateLocale = () => DATE_LOCALES[lang] || 'en-GB'
 export const getVersion = () => version
 
+// Plural agreement. English only ever needs a singular and a plural, and the call site picks
+// between two keys for that ('{0} workout' / '{0} workouts'). Polish, Russian, Arabic… need more:
+// 1 seria, 3 serie, 5 serii. A translation writes {0|form|form|…} next to the number — one form per
+// plural category the language has, in CLDR order (zero, one, two, few, many, other), so Polish is
+// {0|seria|serie|serii} for one, few, many. Trailing categories may be left out and reuse the last
+// form given (Polish "other", fractions, reads like "many"). An argument that is not a plain whole
+// number — "3/5", "1.5" — takes the "other" form.
+const PLURAL_ORDER = ['zero', 'one', 'two', 'few', 'many', 'other']
+const pluralCategories = new Map()
+const categoriesFor = l => {
+  if (!pluralCategories.has(l)) {
+    const rules = new Intl.PluralRules(DATE_LOCALES[l] || l)
+    const has = new Set(rules.resolvedOptions().pluralCategories)
+    pluralCategories.set(l, { rules, order: PLURAL_ORDER.filter(c => has.has(c)) })
+  }
+  return pluralCategories.get(l)
+}
+// Counts reach t() as numbers or already formatted ("1 324", "1,324"); grouping is dropped,
+// anything else (a fraction, "3/5") is not a count.
+const asCount = v => {
+  if (typeof v === 'number') return Number.isInteger(v) ? v : NaN
+  const s = String(v).replace(/[\s  ]/g, '')
+  return /^\d+$/.test(s) || /^\d{1,3}([.,']\d{3})+$/.test(s) ? Number(s.replace(/[.,']/g, '')) : NaN
+}
+export function pluralPick(l, n, forms) {
+  const { rules, order } = categoriesFor(l)
+  const count = asCount(n)
+  const cat = Number.isNaN(count) ? 'other' : rules.select(count)
+  return forms[Math.min(order.indexOf(cat), forms.length - 1)]
+}
+
 // Translate a source string; {0},{1}… are replaced with args (also on the English fallback).
 export function t(s, ...args) {
   let v = dict[s] || s
+  if (v.includes('|')) v = v.replace(/\{(\d+)\|([^{}]*)\}/g, (_, i, forms) => pluralPick(lang, args[i], forms.split('|')))
   for (let i = 0; i < args.length; i++) v = v.replaceAll('{' + i + '}', args[i])
   return v
 }

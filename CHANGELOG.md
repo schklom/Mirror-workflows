@@ -1,5 +1,20 @@
 # Changelog
 
+## Unreleased
+
+**Languages**
+
+- 🇵🇱 **Polish exercise names** — all 1,324, with the same switch to show the English name beside
+  them or only the English name; Polish is the eighth language with translated exercise names.
+- **Plural forms that agree with the number**: a translation can write `{0|seria|serie|serii}` and
+  gets the form for 1, 2–4 and 5+ from the browser's own plural rules, no new dependency. Polish
+  uses it everywhere a count is shown — "3 serie", not "3 serii". `check-locales` validates the
+  syntax.
+- **Polish reviewed end to end**: one word for a routine ("plan treningowy") and for a passkey
+  ("klucz dostępu", as Apple and Google say it), the Coach is always "Trener", gender-neutral
+  wording where the text assumed a man, and a dozen smaller fixes — among them a hint that pointed
+  to a setting by the wrong name.
+
 ## v1.3.9 — 2026-09-28
 
 The milestone was "edit your history", and it is in: fix a saved workout after the fact, move it to

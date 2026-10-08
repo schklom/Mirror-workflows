@@ -25,11 +25,16 @@ export function activeProfile(S) {
 export function exAvailable(S, ex) {
   const p = activeProfile(S)
   if (!p) return true
+  return eqAvailable(p.equipment, ex)
+}
+
+// The same test against a bare equipment list, for callers that hold a profile rather than S.
+export function eqAvailable(equipment, ex) {
   if (!ex.eq || ex.eq === ALWAYS_AVAILABLE) return true
   // Equipment no profile can tick (an imported exercise's "custom") would hide the user's own
   // exercise under every profile, with no way to bring it back. It stays, like body weight.
   if (!ALL_EQUIPMENT.includes(ex.eq)) return true
-  return (p.equipment || []).includes(ex.eq)
+  return (equipment || []).includes(ex.eq)
 }
 
 export function newProfile(name) {

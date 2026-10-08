@@ -19,5 +19,6 @@
     "Press through your front foot to rise.",
     "Finish all reps, then switch legs."
   ],
-  "textSource": "opengym"
+  "textSource": "opengym",
+  "femaleVariant": "2810"
 }

@@ -19,5 +19,6 @@
     "Drive through your heels to stand, keeping your chest up.",
     "Switch the dumbbell hand halfway through if needed."
   ],
-  "textSource": "opengym"
+  "textSource": "opengym",
+  "femaleVariant": "2803"
 }

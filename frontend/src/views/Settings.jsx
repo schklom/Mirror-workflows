@@ -10,6 +10,7 @@ import { useUI } from '../store/useUI.js'
 import { ACCENTS, ACCENT_NAMES, todayISO, localTZ, weekStartOf, MONDAY, SUNDAY, fmtPlate } from '../lib/format.js'
 import { inventoryFor, ownsPlates } from '../lib/plates.js'
 import { effortOf } from '../lib/history.js'
+import { figureOf } from '../lib/exercises.js'
 import { unlock, playOnSilentSupported, vibrateSupported, appleTouchDevice } from '../lib/sound.js'
 import { scheduleModeOf, chooseFixedWeek, chooseRotation } from '../lib/rotation.js'
 import { queueOf } from '../lib/queue.js'
@@ -721,13 +722,25 @@ export default function Settings({ page = null, find = null, via = null }) {
           <span className="lrow-v">{accentLabel(S)}</span>
           <AccentSwatches S={S} update={update} />
         </div>
-        {/* Purely how the muscle map is drawn; nothing else in the app reads this. */}
+        {/* How the muscle map is drawn. The exercise drawings follow it until they are set below. */}
         <Row icon="figureStrength" iconTint="var(--teal)" title={t('Body diagram')}>
           <Segmented
             className="seg-inline"
             options={[{ value: 'male', label: t('Male') }, { value: 'female', label: t('Female') }]}
             value={S.body === 'female' ? 'female' : 'male'}
             onChange={v => update(s => { s.body = v })}
+          />
+        </Row>
+        {/* Which figure the exercise animations show where both exist (about 940 exercises; the
+            rest are drawn once). Only the picture changes: the exercise and its id stay the same,
+            so nothing logged is touched, on this device or any other. */}
+        <Row icon="figureStrength" iconTint="var(--teal)" title={t('Exercise drawings')}
+          subtitle={t('Where an exercise is drawn on both figures. Your workouts stay exactly as they are.')}>
+          <Segmented
+            className="seg-inline"
+            options={[{ value: 'male', label: t('Male') }, { value: 'female', label: t('Female') }]}
+            value={figureOf(S)}
+            onChange={v => update(s => { s.exFigure = v })}
           />
         </Row>
       </Section>

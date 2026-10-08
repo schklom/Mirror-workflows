@@ -19,5 +19,6 @@
     "Push back up to the start, keeping your torso upright.",
     "Finish all reps on one leg, then switch sides."
   ],
-  "textSource": "opengym"
+  "textSource": "opengym",
+  "femaleVariant": "2796"
 }

@@ -15,7 +15,11 @@ describe('catalogue continuity', () => {
     expect(new Set(EXDB.map(e => e.id)).size).toBe(EXDB.length)
   })
 
-  it('points every female drawing at an id that is not an exercise of its own', () => {
-    for (const e of EXDB) if (e.fv) expect(EXIDX[e.fv], e.id).toBeUndefined()
+  it('links every second drawing both ways, never to an unrelated exercise', () => {
+    for (const e of EXDB) {
+      // a hidden drawing resolves to this very exercise; a visible one points back with `mv`
+      if (e.fv) expect(EXIDX[e.fv]?.id === e.id || EXIDX[e.fv]?.mv === e.id, e.id).toBe(true)
+      if (e.mv) expect(EXIDX[e.mv]?.fv, e.id).toBe(e.id)
+    }
   })
 })

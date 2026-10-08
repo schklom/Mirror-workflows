@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { imgSrc, gifSrc, isVideoSrc, isCustomEx } from '../lib/exercises.js'
+import { imgSrc, gifSrc, isVideoSrc, isCustomEx, figureOf } from '../lib/exercises.js'
 import { useStore } from '../store/useStore.js'
 import { t, exerciseNameFor } from '../lib/i18n.js'
 import Icon from './Icon.jsx'
@@ -28,7 +28,7 @@ function BuiltinMedia({ ex, id, compact, minimizable }) {
   // both, and a tap tries again — no text, so nothing new to translate.
   const [failed, setFailed] = useState(null)
   const gifSize = useStore(s => s.S.gifSize)
-  const body = useStore(s => s.S.body)
+  const body = useStore(s => figureOf(s.S))
   const update = useStore(s => s.update)
   if (!ex.gif) return null
   if (minimizable && gifSize === 'off') return null
@@ -70,7 +70,7 @@ export function Thumb(p) {
   return isCustomEx(p.ex) ? <CustomThumb {...p} /> : <BuiltinThumb {...p} />
 }
 function BuiltinThumb({ ex }) {
-  const body = useStore(s => s.S.body)
+  const body = useStore(s => figureOf(s.S))
   const src = ex.img ? imgSrc(ex, body) : null
   const [broken, setBroken] = useState(null)
   if (!src || broken === src) return <div className="thumb thumb-x"><Icon name="dumbbell" /></div>

@@ -1,4 +1,4 @@
-import { EXDB } from './exercises-data.js'
+import { EXDB, EXALIAS } from './exercises-data.js'
 import MUSCLE_MAP from './exercise-muscle-map.json' with { type: 'json' }
 import { t, getVersion, exerciseNameSearchText } from './i18n-core.js'
 
@@ -40,6 +40,12 @@ export const smOf = ex => {
 
 export const EXIDX = {}
 CATALOGUE.forEach(e => { EXIDX[e.id] = e })
+// The id of a drawing that is no exercise of its own (the female figure of a male exercise) looks
+// up the exercise it draws. Never stored by the app, but a plan file or an import may carry one.
+// Not enumerable, so anything that walks the index still sees every exercise once.
+for (const [id, to] of Object.entries(EXALIAS)) {
+  if (EXIDX[to]) Object.defineProperty(EXIDX, id, { value: EXIDX[to], enumerable: false, configurable: true })
+}
 export const BODYPARTS = [...new Set(CATALOGUE.map(e => e.bp))].sort()
 
 // Equipment options present in a given list of exercises, most common first (issue #6).
@@ -161,12 +167,17 @@ const ENV = import.meta.env || {}
 // dataset's media over img/ and gif/, and would hide the catalogue's files if they lived there.
 const IMG_BASE = ENV.VITE_IMG_BASE || 'exercise-media/still/'
 const GIF_BASE = ENV.VITE_GIF_BASE || 'exercise-media/clip/'
-// Many exercises are drawn twice, on a male and on a female figure (`fv`, the female drawing's
-// id). The body chosen for the muscle map (Settings, S.body) picks which one shows; the exercise,
-// its id and everything logged against it stay the same either way.
-const drawing = (ex, body) => (body === 'female' && ex.fv ? ex.fv : null)
-export const imgSrc = (ex, body) => IMG_BASE + (drawing(ex, body) ? drawing(ex, body) + '.webp' : ex.img)
-export const gifSrc = (ex, body) => GIF_BASE + (drawing(ex, body) ? drawing(ex, body) + '.mp4' : ex.gif)
+// About 940 exercises are drawn twice, on a male and on a female figure: `fv` names the female
+// drawing of a male exercise, `mv` the male drawing of a female one. Which figure shows is a
+// setting (figureOf); the exercise, its id and everything logged against it stay the same either
+// way, so switching back and forth is only ever a different picture. An exercise drawn once shows
+// that drawing whatever the setting.
+export const figureOf = S => (S?.exFigure === 'female' || S?.exFigure === 'male')
+  ? S.exFigure
+  : (S?.body === 'female' ? 'female' : 'male')
+const drawing = (ex, figure) => (figure === 'female' ? ex.fv : figure === 'male' ? ex.mv : null) || null
+export const imgSrc = (ex, figure) => IMG_BASE + (drawing(ex, figure) ? drawing(ex, figure) + '.webp' : ex.img)
+export const gifSrc = (ex, figure) => GIF_BASE + (drawing(ex, figure) ? drawing(ex, figure) + '.mp4' : ex.gif)
 // The catalogue's animations are short MP4 loops; a fork's or an older build's may still be GIFs.
 export const isVideoSrc = src => /\.(mp4|webm)(\?|$)/i.test(src || '')
 

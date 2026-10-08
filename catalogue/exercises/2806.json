@@ -19,5 +19,6 @@
     "Drive your hips forward to stand tall.",
     "Complete all reps, then switch legs."
   ],
-  "textSource": "opengym"
+  "textSource": "opengym",
+  "femaleVariant": "2805"
 }

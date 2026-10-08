@@ -20,7 +20,7 @@ export const SECONDARY = list('shoulders, deltoids, rear deltoids, rotator cuff,
 export const CATEGORIES = list('strength, stretching, mobility, plyometrics, cardio, olympic, calisthenics, pilates, yoga, combat, isometric, rehab')
 export const MUSCLES = list('trapezius, deltoids, chest, upper-back, serratus, biceps, triceps, forearm, abs, obliques, lower-back, gluteal, quadriceps, hamstring, adductors, hip-flexors, calves, tibialis')
 export const LANGS = list('ar, bn, de, es, fr, hi, hu, it, ko, pl, pt, pt-BR, ru, th, tr, uk, zh, zh-TW')
-const KEYS = ['id', 'name', 'bodyPart', 'equipment', 'target', 'secondaryMuscles', 'category', 'description', 'instructions', 'muscleMap', 'femaleVariant', 'variantOf', 'textSource']
+const KEYS = ['id', 'name', 'bodyPart', 'equipment', 'target', 'secondaryMuscles', 'category', 'description', 'instructions', 'muscleMap', 'femaleVariant', 'maleVariant', 'variantOf', 'textSource']
 const I18N_KEYS = ['name', 'description', 'instructions']
 
 export function validateCatalogue(dir) {
@@ -64,7 +64,11 @@ export function validateCatalogue(dir) {
   const ids = new Map(exercises.map(e => [e.id, e]))
   for (const e of exercises) {
     const file = `catalogue/exercises/${e.id}.json`
-    if (e.femaleVariant && ids.get(e.femaleVariant)?.variantOf !== e.id) say(file, `"femaleVariant" ${e.femaleVariant} must be an entry with "variantOf": "${e.id}"`)
+    // A female drawing is either a hidden entry of this exercise ("variantOf") or, for two
+    // exercises that both shipped before v1.4.0 and keep their own ids, the other one pointing back.
+    const fem = e.femaleVariant && ids.get(e.femaleVariant)
+    if (e.femaleVariant && fem?.variantOf !== e.id && fem?.maleVariant !== e.id) say(file, `"femaleVariant" ${e.femaleVariant} must be an entry with "variantOf": "${e.id}" or "maleVariant": "${e.id}"`)
+    if (e.maleVariant && ids.get(e.maleVariant)?.femaleVariant !== e.id) say(file, `"maleVariant" ${e.maleVariant} must name this entry as its "femaleVariant"`)
     if (e.variantOf && ids.get(e.variantOf)?.femaleVariant !== e.id) say(file, `"variantOf" ${e.variantOf} must name this entry as its "femaleVariant"`)
   }
   const seen = new Map()

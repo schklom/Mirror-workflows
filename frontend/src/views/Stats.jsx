@@ -620,6 +620,13 @@ export default function Stats() {
         <div className="muted small" style={{ marginTop: 4 }}>{t('Every photo you kept with a workout, lined up by date. Plus a before/after slider.')}</div></div>
       <Button size="sm" variant="tinted" trailingIcon="chevronRight" style={{ flexShrink: 0 }} onClick={() => nav('/progress-photos')}>{t('Open')}</Button>
     </div>}
+    <div className="card row between" style={{ alignItems: 'center', gap: 12 }}>
+      <div style={{ minWidth: 0 }}><h2 style={{ margin: 0 }}>{t('Body measurements')}</h2>
+        <div className="muted small" style={{ marginTop: 4 }}>{(S.measurements || []).length
+          ? t('Last check-in {0}', fmtDate(S.measurements[S.measurements.length - 1].d, true))
+          : t('Waist, arms, body fat and anything else you measure, each with its own curve.')}</div></div>
+      <Button size="sm" variant="tinted" trailingIcon="chevronRight" style={{ flexShrink: 0 }} onClick={() => nav('/measurements')}>{t('Open')}</Button>
+    </div>
     {hasEffort(S) && <EffortCard S={S} />}
 
     <div className="cols">

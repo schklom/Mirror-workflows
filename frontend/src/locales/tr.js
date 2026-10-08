@@ -1542,6 +1542,11 @@ export default {
   'Image saved': 'Görsel kaydedildi',
   'New personal records': 'Yeni kişisel rekorlar',
   'and {0} more': 've {0} tane daha',
+  'Share workout': 'Antrenmanı paylaş',
+  'Share': 'Paylaş',
+  'Muscle map': 'Kas haritası',
+  'Show which muscles this workout trained.': 'Bu antrenmanın hangi kasları çalıştırdığını gösterir.',
+  'Preview of the image to share': 'Paylaşılacak görselin önizlemesi',
   // --- a missed day logged afterwards (#284) ---
   'Log this workout': 'Bu antrenmanı kaydet',
   'Mark all sets done': 'Tüm setleri tamamlandı olarak işaretle',

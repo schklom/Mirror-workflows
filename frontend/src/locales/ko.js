@@ -1542,6 +1542,11 @@ export default {
   'Image saved': '이미지를 저장했습니다',
   'New personal records': '새 개인 기록',
   'and {0} more': '외 {0}개',
+  'Share workout': '운동 공유',
+  'Share': '공유',
+  'Muscle map': '근육 지도',
+  'Show which muscles this workout trained.': '이번 운동에서 사용한 근육을 보여 줍니다.',
+  'Preview of the image to share': '공유할 이미지 미리보기',
   // --- a missed day logged afterwards (#284) ---
   'Log this workout': '이 운동 기록',
   'Mark all sets done': '모든 세트 완료로 표시',

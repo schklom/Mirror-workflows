@@ -191,6 +191,9 @@ export const DEF = {
   // stuck sync then shows as a dot on Home instead. Defaults on; an older profile without the
   // key reads as on (`!== false`).
   connStatus: true,
+  // Whether "Share as image" puts this session's muscle map on the card (sheets.jsx
+  // ShareWorkoutImage, #453). On by default; absent reads as on (`!== false`).
+  shareMap: true,
   // Where a planned session's reps come from (Settings → During a workout, lib/session-start.js):
   // 'plan' opens at the routine's own sets × reps and lets history and progression decide the
   // weight; 'last' carries the reps over from the last session, the way it always worked before.

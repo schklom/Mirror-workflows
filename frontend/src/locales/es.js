@@ -2136,4 +2136,9 @@ export default {
   'rehab': 'rehabilitación',
   'Any type': 'Cualquier tipo',
   'Suggest a fix for this exercise': 'Sugerir una corrección para este ejercicio',
+  'Back-off sets': 'Series descendentes',
+  'Each set one step lighter than the one before. The weight above is the first set.': 'Cada serie un paso más ligera que la anterior. El peso de arriba es la primera serie.',
+  'Sets open at {0}. The first set goes up when every set reaches its reps, and the rest follow it.': 'Las series empiezan en {0}. La primera serie sube cuando todas las series alcanzan sus repeticiones, y el resto la sigue.',
+  'The first set goes up when every set reaches its reps, and the rest follow it.': 'La primera serie sube cuando todas las series alcanzan sus repeticiones, y el resto la sigue.',
+  'All sets at the same weight.': 'Todas las series con el mismo peso.',
 }

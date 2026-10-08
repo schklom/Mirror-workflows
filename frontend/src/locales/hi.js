@@ -2136,4 +2136,9 @@ export default {
   'rehab': 'रिहैब',
   'Any type': 'कोई भी प्रकार',
   'Suggest a fix for this exercise': 'इस व्यायाम में सुधार सुझाएँ',
+  'Back-off sets': 'बैक-ऑफ़ सेट',
+  'Each set one step lighter than the one before. The weight above is the first set.': 'हर सेट पिछले वाले से एक स्टेप हल्का। ऊपर वाला वज़न पहला सेट है।',
+  'Sets open at {0}. The first set goes up when every set reaches its reps, and the rest follow it.': 'सेट {0} से शुरू होते हैं। जब हर सेट अपने रेप्स पूरे कर ले तो पहला सेट बढ़ता है, और बाकी उसके साथ चलते हैं।',
+  'The first set goes up when every set reaches its reps, and the rest follow it.': 'जब हर सेट अपने रेप्स पूरे कर ले तो पहला सेट बढ़ता है, और बाकी उसके साथ चलते हैं।',
+  'All sets at the same weight.': 'सभी सेट एक ही वज़न पर।',
 }

@@ -2147,4 +2147,9 @@ export default {
   'rehab': 'ฟื้นฟูร่างกาย',
   'Any type': 'ทุกประเภท',
   'Suggest a fix for this exercise': 'แนะนำการแก้ไขท่านี้',
+  'Back-off sets': 'เซ็ตลดน้ำหนัก',
+  'Each set one step lighter than the one before. The weight above is the first set.': 'แต่ละเซ็ตเบากว่าเซ็ตก่อนหน้าหนึ่งขั้น น้ำหนักด้านบนคือเซ็ตแรก',
+  'Sets open at {0}. The first set goes up when every set reaches its reps, and the rest follow it.': 'เซ็ตเริ่มที่ {0} เซ็ตแรกจะเพิ่มเมื่อทุกเซ็ตทำครบจำนวนครั้ง และเซ็ตที่เหลือจะเพิ่มตาม',
+  'The first set goes up when every set reaches its reps, and the rest follow it.': 'เซ็ตแรกจะเพิ่มเมื่อทุกเซ็ตทำครบจำนวนครั้ง และเซ็ตที่เหลือจะเพิ่มตาม',
+  'All sets at the same weight.': 'ทุกเซ็ตใช้น้ำหนักเท่ากัน',
 }

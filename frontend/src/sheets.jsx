@@ -36,6 +36,7 @@ import { estimate1RM, best1RM, is1RMRecord, REP_CAP, formulaOf, FORMULA_NAMES } 
 import { exerciseHistory } from './lib/exercise-history.js'
 import { policyFor, defaultIncrement, POLICIES_FOR, POLICY_NAME, POLICY_DESC, MAX_BW_SETS, weightIncrement } from './lib/progression.js'
 import { normalizeRepRange } from './lib/rep-range.js'
+import { isBackoff, backoffWeights } from './lib/backoff.js'
 import { isPyramid, normalizePyramid, normalizePyramidRest, normalizePyramidWeight, pyramidFromFlat, flatFromPyramid, pyramidLabel, PYRAMID_MAX, MAX_PYRAMID_SETS, PYRAMID_PRESETS } from './lib/pyramid.js'
 import { MOBILE, shareExport, shareExportBlob, printHtml } from './lib/mobile.js'
 import { speedUnitOf, toSpeed, fromSpeed } from './lib/speed.js'
@@ -1423,16 +1424,28 @@ export const equipmentProfileSheet = profile => ui().openSheet(close => <Equipme
 // on "follow the routine" it inherits, so most people never touch it.
 const progressionStepOf = (c, mode, ex, unit) =>
   c.inc >= 0 ? c.inc : (mode === 'time' ? 5 : defaultIncrement(ex.id, unit))
-const progressionStepIsValid = (step, policy) =>
-  policy === 'off' || (Number.isFinite(step) && step > 0)
+// Back-off sets step down by the same Step, so a plan using them needs one even with no rule.
+const progressionStepIsValid = (step, policy, backoff = false) =>
+  (policy === 'off' && !backoff) || (Number.isFinite(step) && step > 0)
+// Back-off sets (lib/backoff.js) are offered where there is a load to step down: rep work on a
+// loaded exercise, not a pyramid (it owns each set), not a rest-pause (one work set), not an
+// assistance machine (less load is harder there).
+const backoffOffered = (c, mode, ex, bw) => mode === 'reps' && !bw && !isAssisted({ ...c, id: ex.id })
+  && !(Array.isArray(c.pyramid) && c.pyramid.length) && c.intensifier?.type !== 'restpause'
 
-function ProgressionFields({ ex, mode, c, setC, routine, unit, perSide }) {
+function ProgressionFields({ ex, mode, c, setC, routine, unit, perSide, bw }) {
   const options = POLICIES_FOR[mode] || ['off']
   if (options.length < 2) return null
   const inherited = policyFor({ id: ex.id }, routine, mode)
   const active = policyFor({ ...c, id: ex.id }, routine, mode)
   const inc = progressionStepOf(c, mode, ex, unit)
-  const invalid = !progressionStepIsValid(inc, active)
+  const canBackoff = backoffOffered(c, mode, ex, bw)
+  const backoff = canBackoff && c.backoff === true
+  const invalid = !progressionStepIsValid(inc, active, backoff)
+  // "26 → 24 → 22 kg": what the sets will open at, from the weight and step typed above.
+  const preview = backoff && c.weight > 0 && inc > 0
+    ? backoffWeights(c.weight, Math.max(1, Math.round(c.sets) || 1), inc).map(fmtNum).join(' → ') + ' ' + unit
+    : ''
   const stride = mode === 'reps' && perSide ? 2 : 1
   const range = active === 'double' ? normalizeRepRange(c.reps, c.repsMin, stride) : null
   const epleyEligible = mode === 'reps' && !isBw({ ...c, id: ex.id }) && (active === 'linear' || active === 'double')
@@ -1455,7 +1468,7 @@ function ProgressionFields({ ex, mode, c, setC, routine, unit, perSide }) {
     <div className="small dim" style={{ marginBottom: active === 'off' ? 18 : 10 }}>{t(POLICY_DESC[active])}</div>
     {/* Double progression on a weighted exercise fills this row with four steppers; `cfgrow-4`
         lets it wrap into two pairs on phones, where four abreast left the inputs a few px wide. */}
-    {active !== 'off' && <div className={'row cfgrow' + (active === 'double' && epleyEligible ? ' cfgrow-4' : '')} style={{ marginBottom: 18 }}>
+    {(active !== 'off' || backoff) && <div className={'row cfgrow' + (active === 'double' && epleyEligible ? ' cfgrow-4' : '')} style={{ marginBottom: 18 }}>
       <Stepper label={mode === 'time' ? t('Step (seconds)') : t('Step ({0})', unit)} value={inc}
         step={mode === 'time' ? 5 : 1.25} decimal={mode !== 'time'} invalid={invalid} className={invalid ? 'invalid' : ''}
         onChange={v => setC(x => ({ ...x, inc: v }))} />
@@ -1473,6 +1486,21 @@ function ProgressionFields({ ex, mode, c, setC, routine, unit, perSide }) {
     {invalid && <div className="small" role="alert" style={{ color: 'var(--red)', marginTop: -10, marginBottom: 18 }}>
       {t('Enter a positive step to use this progression rule.')}
     </div>}
+    {/* Off by default and only written when on, so every plan saved before it stays the shape
+        it was. The step is the one above: the gear's own increment, set once per exercise. */}
+    {canBackoff && <>
+      <div className="sect-b" style={{ marginBottom: 8 }}>
+        <Row icon="steps" iconTint="var(--acc)" title={t('Back-off sets')}
+          subtitle={t('Each set one step lighter than the one before. The weight above is the first set.')}>
+          <Switch checked={backoff} onChange={v => setC(x => ({ ...x, backoff: v || undefined }))} />
+        </Row>
+      </div>
+      <div className="small dim" style={{ marginBottom: 18 }}>
+        {backoff
+          ? (preview ? t('Sets open at {0}. The first set goes up when every set reaches its reps, and the rest follow it.', preview) : t('The first set goes up when every set reaches its reps, and the rest follow it.'))
+          : t('All sets at the same weight.')}
+      </div>
+    </>}
   </>
 }
 
@@ -1506,7 +1534,7 @@ function ExConfig({ ex, existing, onSave, onDelete, onReplace, close, routine, i
   const pyramid = mode === 'reps' && isPyramid({ ...c, mode })
   const setPyramidAt = (i, v) => setC(x => ({ ...x, pyramid: x.pyramid.map((p, j) => (j === i ? v : p)) }))
   const progressionPolicy =policyFor({ ...c, id: ex.id }, routine, mode)
-  const progressionStepInvalid = !progressionStepIsValid(progressionStepOf(c, mode, ex, st.unit), progressionPolicy)
+  const progressionStepInvalid = !progressionStepIsValid(progressionStepOf(c, mode, ex, st.unit), progressionPolicy, c.backoff === true && backoffOffered(c, mode, ex, bw))
   const activePolicy = policyFor({ ...c, id: ex.id }, routine, mode)
   const double = mode === 'reps' && activePolicy === 'double'
   // Keep whatever the other mode already had (sets, weight) and fill only what is missing.
@@ -1581,6 +1609,8 @@ function ExConfig({ ex, existing, onSave, onDelete, onReplace, close, routine, i
       // Every set in this exercise becomes a drop-set/rest-pause (buildSets stamps the rows) —
       // decided here, in the plan, not re-decided live each time you train it.
       if (!list.length && c.intensifier && c.intensifier.type) out.intensifier = intensifierToSave(c.intensifier)
+      // Back-off sets: written only when on, and only where the sheet offered them.
+      if (c.backoff === true && backoffOffered(out, 'reps', ex, bw) && isBackoff({ ...out, backoff: true })) out.backoff = true
       onSave(out)
     }
   }
@@ -1813,7 +1843,7 @@ function ExConfig({ ex, existing, onSave, onDelete, onReplace, close, routine, i
     </>}
     {pyramid
       ? <div className="small dim" style={{ marginBottom: 18 }}>{t('Weight is up to you: pyramid sets are not progressed automatically.')}</div>
-      : <ProgressionFields ex={ex} mode={mode} c={c} setC={setC} routine={routine} unit={st.unit} perSide={perSide} />}
+      : <ProgressionFields ex={ex} mode={mode} c={c} setC={setC} routine={routine} unit={st.unit} perSide={perSide} bw={bw} />}
     <textarea className="input" rows={3} maxLength={500} style={{ marginBottom: 18 }}
       placeholder={t('Note (optional): loading cues, "bar only, then +1 plate/side each set", anything worth remembering')}
       value={c.note || ''} onChange={e => setC(x => ({ ...x, note: e.target.value }))} />

@@ -215,6 +215,19 @@ const assistedName = n => /\bassist(ed)?\b/i.test(String(n || ''))
 // then the shape is read directly.
 const assistedShape = ex => (typeof ex?.assisted === 'boolean' ? ex.assisted : ex?.eq === ASSISTED_EQ && assistedName(ex?.n))
 
+// Body parts where a 5 kg jump is normal rather than brutal.
+const HEAVY_BP = ['upper legs', 'lower legs', 'back', 'hips', 'glutes']
+
+// Default load step. Lower-body lifts take the bigger jump — that is the "lift-specific
+// increment" a linear program lives on; an exercise can override it with cfg.inc.
+// (progression.js re-exports this; it lives here so history.js can reach it without a cycle.)
+export function defaultIncrement(exId, unit) {
+  const ex = EXIDX[exId]
+  const heavy = ex && HEAVY_BP.includes(ex.bp)
+  if (unit === 'lb') return heavy ? 10 : 5
+  return heavy ? 5 : 2.5
+}
+
 export function isAssisted(idOrEx) {
   if (!idOrEx) return false
   if (typeof idOrEx === 'string') return !!assistedShape(EXIDX[idOrEx])

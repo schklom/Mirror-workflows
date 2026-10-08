@@ -2136,4 +2136,9 @@ export default {
   'rehab': '康复',
   'Any type': '所有类型',
   'Suggest a fix for this exercise': '为此动作提出修改建议',
+  'Back-off sets': '递减组',
+  'Each set one step lighter than the one before. The weight above is the first set.': '每组比上一组轻一个步长。上面的重量是第一组。',
+  'Sets open at {0}. The first set goes up when every set reaches its reps, and the rest follow it.': '各组从 {0} 开始。每组都达到目标次数时，第一组加重，其余各组随之调整。',
+  'The first set goes up when every set reaches its reps, and the rest follow it.': '每组都达到目标次数时，第一组加重，其余各组随之调整。',
+  'All sets at the same weight.': '所有组使用相同重量。',
 }

@@ -2129,4 +2129,9 @@ export default {
   'rehab': '復健',
   'Any type': '不限類型',
   'Suggest a fix for this exercise': '為此動作提出修正建議',
+  'Back-off sets': '遞減組',
+  'Each set one step lighter than the one before. The weight above is the first set.': '每組比上一組輕一個級距。上面的重量是第一組。',
+  'Sets open at {0}. The first set goes up when every set reaches its reps, and the rest follow it.': '各組從 {0} 開始。每組都達到目標次數時，第一組加重，其餘各組隨之調整。',
+  'The first set goes up when every set reaches its reps, and the rest follow it.': '每組都達到目標次數時，第一組加重，其餘各組隨之調整。',
+  'All sets at the same weight.': '所有組使用相同重量。',
 }

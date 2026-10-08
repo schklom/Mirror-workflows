@@ -5,6 +5,7 @@ import { fmtSpeed } from './speed.js'
 import { isCardio, isBodyweightEq, isAssisted, betterWeight } from './exercises.js'
 import { barWeightFor } from './bar.js'
 import { phaseForSet, modeForSet, modeForEntry, isWarmupRow, isDropSet, isRestPauseSet, normalizeMode, completedVolumeOf, hasCompletedWork, nextDropWeight, splitBurstReps, makeSideSet, isSideSet, syncSideAggregate, WEIGHT_ORIGIN_MANUAL, dropsOf, clustersOf } from './workout-model.js'
+import { backoffAt, backoffStepOf, backoffWeights } from './backoff.js'
 const objectOf = value => value && typeof value === 'object' && !Array.isArray(value) ? value : {}
 // Completed-state-independent work rows whose authoritative mode matches the requested mode.
 const workRowsForMode = (entry = {}, mode = 'reps') => {
@@ -221,7 +222,11 @@ export function exLine(cfg, unit, speedUnit) {
   const mode = modeOf(cfg)
   const n = cfg.sets || 1
   // Added weight reads as added: "+10 kg" on a dip belt, "60 kg" on a barbell.
-  const load = cfg.weight ? ' · ' + (isBw(cfg) ? '+' : '') + fmtNum(cfg.weight) + ' ' + unit : ''
+  // Back-off sets read as the sequence they open at: "3 × 6 · 26 → 24 → 22 kg".
+  const backoff = mode === 'reps' && cfg.weight > 0 ? backoffStepOf(cfg, unit) : 0
+  const load = !cfg.weight ? ''
+    : backoff ? ' · ' + (isBw(cfg) ? '+' : '') + backoffWeights(cfg.weight, n, backoff).map(fmtNum).join(' → ') + ' ' + unit
+      : ' · ' + (isBw(cfg) ? '+' : '') + fmtNum(cfg.weight) + ' ' + unit
   if (mode === 'cardio') return `${n} × ${cfg.min || 20} min @ ${fmtSpeed(cfg.speed || 8, speedUnit)}`
   // A timed hold has no rep count to spell a split out of ("8/side" below) — "per side" says it
   // happens twice, once each side (buildWorkSets), rather than trying to divide a duration.
@@ -852,16 +857,22 @@ export function streakWeeks(S) {
  * Only a work-set edit cascades, and only onto work sets. Warm-ups are a ramp (buildSets), each
  * rung its own load, so editing one rung leaves the rungs after it where they were (setting
  * warm-up 1 of a 60/90/105 ramp to 65 used to turn it into 65/65/65).
+ *
+ * `backoffStep` (an entry built with back-off sets, lib/backoff.js): each later work row lands
+ * one more step below the edited one rather than at the same load, so 26 → 27.5 on the top set
+ * makes the back-off sets 25.5 and 23.5, not 27.5 three times.
  */
-export function cascadeWeight(rows, from, value, side) {
+export function cascadeWeight(rows, from, value, side, backoffStep = 0) {
   const source = rows[from]
   if (!source || isWarmupRow(source)) return rows.slice()
   const sides = isSideSet(source) ? (side ? [side] : ['L', 'R']) : null
   const next = rows.slice()
+  const stepDown = backoffStep > 0 && value != null
+  let k = 0
   const setWeight = row => {
     const out = { ...row }
     if (value == null) delete out.w
-    else out.w = value
+    else out.w = stepDown ? backoffAt(value, k, backoffStep) : value
     return out
   }
   const setSideWeight = (row, key) => {
@@ -873,6 +884,9 @@ export function cascadeWeight(rows, from, value, side) {
   for (let j = from + 1; j < next.length; j++) {
     const row = next[j]
     if (isWarmupRow(row)) continue
+    // How many work sets below the edited one this row sits, done or not: a logged set in
+    // between still holds its place in the sequence.
+    k++
     if (sides) {
       if (!isSideSet(row)) continue
       let out = row

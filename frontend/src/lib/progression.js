@@ -17,10 +17,11 @@
 // So a session that fell apart can never advance the load as though it had succeeded.
 
 import { modeOf, repStep, rerampWarmups, isBw, isPerSide, entryExcluded, entryRoutineId } from './history.js'
-import { EXIDX, isAssisted, isLoadedEq } from './exercises.js'
+import { EXIDX, isAssisted, isLoadedEq, defaultIncrement } from './exercises.js'
 import { isWarmupRow, isSideSet, syncSideAggregate, makeSideSet } from './workout-model.js'
 import { normalizeRepRange } from './rep-range.js'
 import { isPyramid } from './pyramid.js'
+import { backoffAt } from './backoff.js'
 
 export const POLICIES = ['off', 'linear', 'greyskull', 'double', 'time']
 
@@ -76,17 +77,9 @@ export function deloadTarget1RM(weight, reps, factor = DELOAD_FACTOR, perSide = 
   return base == null ? null : round1(base * f)
 }
 
-// Body parts where a 5 kg jump is normal rather than brutal.
-const HEAVY_BP = ['upper legs', 'lower legs', 'back', 'hips', 'glutes']
-
-// Default load step. Lower-body lifts take the bigger jump — that is the "lift-specific
-// increment" a linear program lives on; an exercise can override it with cfg.inc.
-export function defaultIncrement(exId, unit) {
-  const ex = EXIDX[exId]
-  const heavy = ex && HEAVY_BP.includes(ex.bp)
-  if (unit === 'lb') return heavy ? 10 : 5
-  return heavy ? 5 : 2.5
-}
+// The default load step lives in exercises.js (it reads only the catalogue), so history.js can
+// use it too without importing this module; re-exported here, where every caller looks for it.
+export { defaultIncrement }
 // Resolve the load step for reps-mode weight controls and progression. Timed exercises use
 // `inc` for seconds, so their optional weight column must not call this helper.
 export function weightIncrement(cfg, unit) {
@@ -296,7 +289,14 @@ export function readSession(entry, fallback) {
     }
   }
   const goal = target.reps || 0
-  const reps = sets.map(s => (s.done ? (s.r || 0) : 0))
+  // Back-off sets (lib/backoff.js): each planned set after the first is held to its own weight,
+  // stepped down from the top set as logged. Taking a back-off set lighter to get its reps is
+  // not the sequence done, so it reads like a set short of its reps. Only a session that was
+  // built with back-off sets carries the step; every other session reads exactly as before.
+  const step = entry && entry.target ? Number(entry.target.backoffStep) || 0 : 0
+  const top = step > 0 && sets.length ? Number(sets[0].w) || 0 : 0
+  const heavyEnough = (s, k) => !(top > 0) || k === 0 || (Number(s.w) || 0) >= backoffAt(top, k, step) - 0.05
+  const reps = sets.map((s, k) => (s.done && heavyEnough(s, k) ? (s.r || 0) : 0))
   return {
     mode, target, goal, reps,
     weight: loadOf(entry, sets),

@@ -2133,4 +2133,9 @@ export default {
   'rehab': 'реабілітація',
   'Any type': 'Будь-який тип',
   'Suggest a fix for this exercise': 'Запропонувати виправлення для цієї вправи',
+  'Back-off sets': 'Підходи зі зниженням ваги',
+  'Each set one step lighter than the one before. The weight above is the first set.': 'Кожен підхід на один крок легший за попередній. Вага вище — це перший підхід.',
+  'Sets open at {0}. The first set goes up when every set reaches its reps, and the rest follow it.': 'Підходи починаються з {0}. Перший підхід зростає, коли кожен підхід виконано на всі повтори, решта йдуть за ним.',
+  'The first set goes up when every set reaches its reps, and the rest follow it.': 'Перший підхід зростає, коли кожен підхід виконано на всі повтори, решта йдуть за ним.',
+  'All sets at the same weight.': 'Усі підходи з однаковою вагою.',
 }

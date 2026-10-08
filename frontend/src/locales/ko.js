@@ -2136,4 +2136,9 @@ export default {
   'rehab': '재활',
   'Any type': '모든 유형',
   'Suggest a fix for this exercise': '이 운동 수정 제안하기',
+  'Back-off sets': '백오프 세트',
+  'Each set one step lighter than the one before. The weight above is the first set.': '각 세트가 이전 세트보다 한 단계 가볍습니다. 위의 무게가 첫 세트입니다.',
+  'Sets open at {0}. The first set goes up when every set reaches its reps, and the rest follow it.': '세트는 {0}(으)로 시작합니다. 모든 세트가 목표 반복수에 도달하면 첫 세트가 올라가고 나머지도 따라갑니다.',
+  'The first set goes up when every set reaches its reps, and the rest follow it.': '모든 세트가 목표 반복수에 도달하면 첫 세트가 올라가고 나머지도 따라갑니다.',
+  'All sets at the same weight.': '모든 세트를 같은 무게로.',
 }

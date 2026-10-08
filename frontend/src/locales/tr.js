@@ -2136,4 +2136,9 @@ export default {
   'rehab': 'rehabilitasyon',
   'Any type': 'Tüm türler',
   'Suggest a fix for this exercise': 'Bu egzersiz için düzeltme öner',
+  'Back-off sets': 'Azalan setler',
+  'Each set one step lighter than the one before. The weight above is the first set.': 'Her set bir öncekinden bir adım daha hafif. Yukarıdaki ağırlık ilk settir.',
+  'Sets open at {0}. The first set goes up when every set reaches its reps, and the rest follow it.': 'Setler {0} ile başlar. Her set tekrarlarına ulaştığında ilk set artar, diğerleri onu izler.',
+  'The first set goes up when every set reaches its reps, and the rest follow it.': 'Her set tekrarlarına ulaştığında ilk set artar, diğerleri onu izler.',
+  'All sets at the same weight.': 'Tüm setler aynı ağırlıkta.',
 }

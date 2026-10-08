@@ -2156,4 +2156,9 @@ export default {
   'rehab': 'Reha',
   'Any type': 'Alle Typen',
   'Suggest a fix for this exercise': 'Korrektur für diese Übung vorschlagen',
+  'Back-off sets': 'Back-off-Sätze',
+  'Each set one step lighter than the one before. The weight above is the first set.': 'Jeder Satz eine Stufe leichter als der davor. Das Gewicht oben ist der erste Satz.',
+  'Sets open at {0}. The first set goes up when every set reaches its reps, and the rest follow it.': 'Sätze starten mit {0}. Der erste Satz steigt, wenn jeder Satz seine Wiederholungen erreicht, und die anderen ziehen mit.',
+  'The first set goes up when every set reaches its reps, and the rest follow it.': 'Der erste Satz steigt, wenn jeder Satz seine Wiederholungen erreicht, und die anderen ziehen mit.',
+  'All sets at the same weight.': 'Alle Sätze mit demselben Gewicht.',
 }

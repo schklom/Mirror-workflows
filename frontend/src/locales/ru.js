@@ -2140,4 +2140,9 @@ export default {
   'rehab': 'реабилитация',
   'Any type': 'Любой тип',
   'Suggest a fix for this exercise': 'Предложить исправление для этого упражнения',
+  'Back-off sets': 'Сеты со снижением веса',
+  'Each set one step lighter than the one before. The weight above is the first set.': 'Каждый подход на один шаг легче предыдущего. Вес выше — это первый подход.',
+  'Sets open at {0}. The first set goes up when every set reaches its reps, and the rest follow it.': 'Подходы начинаются с {0}. Первый подход растёт, когда каждый подход выполнен на все повторения, остальные следуют за ним.',
+  'The first set goes up when every set reaches its reps, and the rest follow it.': 'Первый подход растёт, когда каждый подход выполнен на все повторения, остальные следуют за ним.',
+  'All sets at the same weight.': 'Все подходы с одним весом.',
 }

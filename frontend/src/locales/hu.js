@@ -1520,6 +1520,11 @@ export default {
   'Image saved': 'Kép mentve',
   'New personal records': 'Új egyéni csúcsok',
   'and {0} more': 'és még {0}',
+  'Share workout': 'Edzés megosztása',
+  'Share': 'Megosztás',
+  'Muscle map': 'Izomtérkép',
+  'Show which muscles this workout trained.': 'Megmutatja, mely izmokat dolgoztatta meg ez az edzés.',
+  'Preview of the image to share': 'A megosztandó kép előnézete',
   // --- a missed day logged afterwards (#284) ---
   'Log this workout': 'Az edzés rögzítése',
   'Mark all sets done': 'Összes sorozat késznek jelölése',

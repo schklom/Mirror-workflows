@@ -1537,6 +1537,11 @@ export default {
   'Image saved': 'Bild gespeichert',
   'New personal records': 'Neue persönliche Rekorde',
   'and {0} more': 'und {0} weitere',
+  'Share workout': 'Training teilen',
+  'Share': 'Teilen',
+  'Muscle map': 'Muskelkarte',
+  'Show which muscles this workout trained.': 'Zeigt, welche Muskeln dieses Training beansprucht hat.',
+  'Preview of the image to share': 'Vorschau des Bildes zum Teilen',
   // --- a missed day logged afterwards (#284) ---
   'Log this workout': 'Dieses Training eintragen',
   'Mark all sets done': 'Alle Sätze abhaken',

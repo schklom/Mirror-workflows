@@ -1218,6 +1218,11 @@ export const PT_BR_OVERRIDES = {
   'Image saved': 'Imagem salva',
   'New personal records': 'Novos recordes pessoais',
   'and {0} more': 'e mais {0}',
+  'Share workout': 'Compartilhar treino',
+  'Share': 'Compartilhar',
+  'Muscle map': 'Mapa muscular',
+  'Show which muscles this workout trained.': 'Mostra quais músculos este treino trabalhou.',
+  'Preview of the image to share': 'Prévia da imagem para compartilhar',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

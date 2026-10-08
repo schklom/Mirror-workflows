@@ -1528,6 +1528,11 @@ export default {
   'Image saved': 'บันทึกรูปภาพแล้ว',
   'New personal records': 'สถิติส่วนตัวใหม่',
   'and {0} more': 'และอีก {0} รายการ',
+  'Share workout': 'แชร์การออกกำลังกาย',
+  'Share': 'แชร์',
+  'Muscle map': 'แผนที่กล้ามเนื้อ',
+  'Show which muscles this workout trained.': 'แสดงว่าการออกกำลังกายนี้ฝึกกล้ามเนื้อส่วนใดบ้าง',
+  'Preview of the image to share': 'ตัวอย่างรูปภาพที่จะแชร์',
   // --- a missed day logged afterwards (#284) ---
   'Log this workout': 'บันทึกการฝึกนี้',
   'Mark all sets done': 'ทำเครื่องหมายทุกเซ็ตว่าเสร็จแล้ว',

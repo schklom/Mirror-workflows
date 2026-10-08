@@ -54,7 +54,7 @@ import { editCompletedSession, editLeftEmpty, editedRecord, editChangesNothing }
 import { stampWorkout } from './lib/sync-merge.js'
 import { weeklyWeights } from './lib/bodyweight.js'
 import { workoutText } from './lib/workout-text.js'
-import { workoutCardModel, layoutWorkoutCard, drawWorkoutCard, CARD_FONT } from './lib/workout-card.js'
+import { workoutCardModel, layoutWorkoutCard, drawWorkoutCard, viewAspect, CARD_FONT } from './lib/workout-card.js'
 import { copyText } from './lib/clipboard.js'
 import { queueRemaining, pinState } from './lib/queue.js'
 
@@ -2214,12 +2214,9 @@ function WorkoutDetail({ w, close }) {
     const rec = { ...(st.workouts.find(x => sameWorkout(x, w)) || w), note: note.trim() }
     toast(await copyText(workoutText(rec, { unit: st.unit, nameOf, speedUnit: speedUnitOf(st) })) ? t('Copied') : t('Could not copy'))
   }
-  const shareAsImage = async () => {
+  const shareAsImage = () => {
     const rec = st.workouts.find(x => sameWorkout(x, w)) || w
-    let blob
-    try { blob = await workoutCardImage(rec, { unit: st.unit, nameOf }) } catch (e) { blob = null }
-    if (!blob) { toast(t('Could not create the image')); return }
-    await shareImage(blob, 'opengym-workout-' + (workoutDay(rec) || todayISO()) + '.png', rec.name || 'openGym')
+    ui().openSheet(c2 => <ShareWorkoutImage w={rec} nameOf={nameOf} close={c2} />)
   }
   // A combined session's entries carry a `rid`; group them into per-routine sections in merge
   // order, with each section's supersets paired inside it (sessionSections, which "Copy as text"
@@ -2304,19 +2301,69 @@ function WorkoutDetail({ w, close }) {
   </>
 }
 // "Share as image" (#453): the card lib/workout-card.js lays out, painted in the theme and accent
-// the app is showing right now, as a PNG.
-async function workoutCardImage(w, opts) {
+// the app is showing right now, previewed before it goes anywhere. The muscle map is the finish
+// summary's, for this one session; whether the card carries it is remembered with the profile.
+function ShareWorkoutImage({ w, nameOf, close }) {
+  const st = useStore(s => s.S)
+  const update = useStore(s => s.update)
+  const withMap = st.shareMap !== false
+  const model = useMemo(() => workoutCardModel(w, { unit: st.unit, nameOf }), [w, st.unit])
+  // The last picture stays up while the next one is drawn, so the toggle never blanks the sheet.
+  const [img, setImg] = useState(null)
+  const [busy, setBusy] = useState(false)
+  const shown = useRef(null)
+  useEffect(() => {
+    let alive = true
+    workoutCardImage(model, { map: withMap, body: st.body })
+      .then(blob => {
+        if (!alive) return
+        if (!blob) { setImg(prev => ({ ...prev, failed: true })); return }
+        if (shown.current) URL.revokeObjectURL(shown.current)
+        shown.current = URL.createObjectURL(blob)
+        setImg({ blob, url: shown.current })
+      })
+      .catch(() => { if (alive) setImg(prev => ({ ...prev, failed: true })) })
+    return () => { alive = false }
+  }, [model, withMap, st.body])
+  useEffect(() => () => { if (shown.current) URL.revokeObjectURL(shown.current) }, [])
+  const name = 'opengym-workout-' + (workoutDay(w) || todayISO()) + '.png'
+  const share = async () => {
+    setBusy(true)
+    await shareImage(img.blob, name, w.name || 'openGym')
+    setBusy(false)
+    close()
+  }
+  return <>
+    <h3>{t('Share workout')}</h3>
+    <div className="share-card">
+      {img?.url
+        ? <img src={img.url} alt={t('Preview of the image to share')} />
+        : img?.failed ? <div className="share-card-ph small muted">{t('Could not create the image')}</div>
+          : <div className="share-card-ph" aria-hidden="true" />}
+    </div>
+    {model.levels && <div className="sect-b" style={{ marginBottom: 12 }}>
+      <Row icon="figureStrength" iconTint="var(--acc)" title={t('Muscle map')} subtitle={t('Show which muscles this workout trained.')}>
+        <Switch checked={withMap} aria-label={t('Muscle map')} onChange={v => update(s => { s.shareMap = v })} />
+      </Row>
+    </div>}
+    <Button variant="primary" icon="share" disabled={!img?.blob || busy} onClick={share}>{t('Share')}</Button>
+  </>
+}
+async function workoutCardImage(model, { map, body }) {
   const root = getComputedStyle(document.documentElement)
   const css = (name, fallback) => root.getPropertyValue(name).trim() || fallback
-  const colors = { bg: css('--bg', '#000'), surface: css('--surface', '#1c1c1e'), label: css('--label', '#fff'), label2: css('--label-2', '#999'), acc: css('--acc', '#30d158') }
+  const colors = { bg: css('--bg', '#000'), surface: css('--surface', '#1c1c1e'), tile: css('--surface-2', '#2c2c2e'), label: css('--label', '#fff'), label2: css('--label-2', '#999'), acc: css('--acc', '#30d158') }
+  // The body geometry is ~90 KB and lazy everywhere else too (components/BodyMap.jsx).
+  const geometry = map && model.levels ? (await import('./lib/body-paths.js')).default : null
+  const shape = geometry && (geometry[body] || geometry.male)
   const canvas = document.createElement('canvas')
   const ctx = canvas.getContext('2d')
   if (!ctx) return null
   const measure = (text, weight, size) => { ctx.font = `${weight} ${size}px ${CARD_FONT}`; return ctx.measureText(text).width }
-  const layout = layoutWorkoutCard(workoutCardModel(w, opts), { measure, rtl: document.documentElement.dir === 'rtl' })
+  const layout = layoutWorkoutCard(model, { measure, rtl: document.documentElement.dir === 'rtl', map: shape ? { aspect: viewAspect(shape.front) } : null })
   canvas.width = layout.width
   canvas.height = layout.height
-  drawWorkoutCard(ctx, layout, colors)
+  drawWorkoutCard(ctx, layout, colors, shape ? { body: shape, levels: model.levels } : null)
   return new Promise(resolve => canvas.toBlob(resolve, 'image/png'))
 }
 // The phone app goes through the OS share sheet the way a backup does; a browser that can share

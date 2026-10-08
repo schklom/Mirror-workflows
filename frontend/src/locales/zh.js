@@ -1517,6 +1517,11 @@ export default {
   'Image saved': '图片已保存',
   'New personal records': '新个人纪录',
   'and {0} more': '以及另外 {0} 项',
+  'Share workout': '分享训练',
+  'Share': '分享',
+  'Muscle map': '肌肉图',
+  'Show which muscles this workout trained.': '显示本次训练锻炼了哪些肌肉。',
+  'Preview of the image to share': '待分享图片的预览',
   // --- a missed day logged afterwards (#284) ---
   'Log this workout': '补记这次训练',
   'Mark all sets done': '将所有组标为完成',

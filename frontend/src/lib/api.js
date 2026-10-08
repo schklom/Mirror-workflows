@@ -24,6 +24,11 @@ export const webauthnOK = () => typeof window.PublicKeyCredential !== 'undefined
 let remoteBase = ''
 let remoteToken = null
 export function setRemoteAuth(base, token) { remoteBase = base || ''; remoteToken = token || null }
+// A Cloudflare Access service token (lib/cf-access.js): sent only to the paired server, never on
+// a same-origin request, where the browser's own Access session cookie already does the job.
+let accessHeaders = {}
+export function setAccessHeaders(h) { accessHeaders = Object.assign({}, h) }
+const remoteHeaders = () => Object.assign({}, remoteBase ? accessHeaders : {}, remoteToken ? { Authorization: 'Bearer ' + remoteToken } : {})
 
 export { appBase }
 
@@ -46,8 +51,7 @@ export async function api(path, opts) {
   // there and the change was marked as synced while the server never saw it. status 0, not
   // undefined: this is not "offline", and the store must not show it as such.
   if (MOBILE && !remoteBase) throw failure(t('This phone is not connected to a server.'), 'not-paired', 0)
-  const headers = Object.assign({ 'Content-Type': 'application/json' }, init.headers)
-  if (remoteToken) headers.Authorization = 'Bearer ' + remoteToken
+  const headers = Object.assign({ 'Content-Type': 'application/json' }, init.headers, remoteHeaders())
   // A paired phone has an absolute base of its own; everyone else is relative to where the app
   // is served, so a subpath deployment reaches its own API instead of the proxy's root.
   const url = remoteBase ? remoteBase + path : appBase().replace(/\/$/, '') + path
@@ -106,7 +110,7 @@ export function beacon(path, body) {
    answer allows it for GET and PUT); both refuse to run on a phone without a server, like api(). */
 
 const mediaUrl = path => (remoteBase ? remoteBase + path : appBase().replace(/\/$/, '') + path)
-const mediaHeaders = () => (remoteToken ? { Authorization: 'Bearer ' + remoteToken } : {})
+const mediaHeaders = remoteHeaders
 const notPaired = () => failure(t('This phone is not connected to a server.'), 'not-paired', 0)
 const timedOut = () => failure(t('The server did not answer in time.'), 'timeout')
 
@@ -300,12 +304,13 @@ export function looksLocal(hostname) {
 }
 
 // Bootstraps the connection itself: the base isn't configured yet (that's what this call decides),
-// so it talks straight to the server the user typed in, no Authorization header.
+// so it talks straight to the server the user typed in, no Authorization header. A Cloudflare
+// Access token goes along all the same: without it Access never lets the code through.
 export async function pairRedeem(serverBase, code, { probeMs = PROBE_MS } = {}) {
   let data
   try {
     data = await request(serverBase + '/api/pair/redeem', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code })
+      method: 'POST', headers: Object.assign({ 'Content-Type': 'application/json' }, accessHeaders), body: JSON.stringify({ code })
     }, TIMEOUT_GET_MS)
   } catch (e) {
     // A wrong, spent or expired code is the one refusal a person can fix, and the server says it

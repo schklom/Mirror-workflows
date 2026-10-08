@@ -12,7 +12,7 @@ import { MOBILE, shareExport } from '../lib/mobile.js'
 import { syncMedia } from '../lib/media-sync.js'
 import { DEMO } from '../lib/demo.js'
 import { askAddDeviceData, menuSheet } from '../sheets.jsx'
-import { ConnectSheet } from '../views/MobileOnboarding.jsx'
+import { ConnectSheet, CfAccessSheet } from '../views/MobileOnboarding.jsx'
 import { passwordOn, openPasswordSignIn } from './PasswordAuth.jsx'
 import { Section, Row, Button } from './ui.jsx'
 
@@ -271,6 +271,8 @@ export function ServerSyncSection({ children }) {
       subtitle={t('Signed in as {0}', user.name)} />
     <Row icon={view.icon} iconTint={TINT[view.tone]} title={view.line} subtitle={sub} className="sync-status" />
     <Row icon="reset" iconTint="var(--acc)" title={busy ? t('Syncing…') : t('Sync now')} onClick={now} />
+    {MOBILE && <Row icon="key" iconTint="var(--orange)" title={t('Cloudflare Access')} accessory="chevron"
+      onClick={() => ui().openSheet(close => <CfAccessSheet close={close} />)} />}
     {sync.status === 'auth' && (MOBILE
       ? <Row icon="qr" iconTint="var(--indigo)" title={t('Pair again')} subtitle={t('Your changes are kept here, and merged into your account once it is paired again.')} accessory="chevron" onClick={pairAgain} />
       : canSignIn() && <Row icon={pwOn() ? 'person' : 'fingerprint'} iconTint="var(--blue)" title={pwOn() ? t('Sign in') : t('Sign in with passkey')} subtitle={t('Your changes are kept here, and merged into your account once you are signed in again.')} accessory="chevron" onClick={signInAgain} />)}

@@ -2639,7 +2639,9 @@ const server = http.createServer(async (req, res) => {
       && APP_ORIGINS.has(origin);
     res.writeHead(204, {
       'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE,OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      // The CF-Access-* pair: a phone's Cloudflare Access service token (frontend lib/cf-access.js),
+      // for an Access application that passes OPTIONS through to the origin.
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization, CF-Access-Client-Id, CF-Access-Client-Secret',
       'Access-Control-Max-Age': '86400',
       ...(pna ? { 'Access-Control-Allow-Private-Network': 'true' } : {})
     });

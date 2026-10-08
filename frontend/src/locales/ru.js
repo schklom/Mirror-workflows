@@ -2157,4 +2157,6 @@ export default {
   'Where an exercise is drawn on both figures. Your workouts stay exactly as they are.': 'Какая фигура показывается там, где упражнение нарисовано на обеих. Ваши тренировки останутся ровно такими, как есть.',
   'estimated': 'оценочно',
   '{0} rated · {1} estimated of {2} sets': '{0} с оценкой · {1} расчётных из {2} подходов',
+  'Enter the address of the server this token is for': 'Введите адрес сервера, к которому относится этот токен',
+  'Sent only to {0}, never to another server.': 'Отправляется только на {0} и никогда на другой сервер.',
 }

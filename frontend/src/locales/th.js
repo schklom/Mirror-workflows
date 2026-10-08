@@ -2164,4 +2164,6 @@ export default {
   'Where an exercise is drawn on both figures. Your workouts stay exactly as they are.': 'เลือกว่าท่าที่วาดไว้ทั้งสองรูปร่างจะแสดงรูปแบบไหน การออกกำลังกายของคุณยังเหมือนเดิมทุกอย่าง',
   'estimated': 'ประมาณ',
   '{0} rated · {1} estimated of {2} sets': 'ให้คะแนนแล้ว {0} · ประมาณ {1} จาก {2} เซ็ต',
+  'Enter the address of the server this token is for': 'กรอกที่อยู่ของเซิร์ฟเวอร์ที่โทเค็นนี้ใช้ด้วย',
+  'Sent only to {0}, never to another server.': 'ส่งไปที่ {0} เท่านั้น ไม่ส่งไปเซิร์ฟเวอร์อื่นเลย',
 }

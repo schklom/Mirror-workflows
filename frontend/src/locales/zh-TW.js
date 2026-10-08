@@ -2146,4 +2146,6 @@ export default {
   'Where an exercise is drawn on both figures. Your workouts stay exactly as they are.': '動作在兩種人體圖上都有繪製時，顯示哪一種。你的訓練紀錄保持原樣。',
   'estimated': '估算',
   '{0} rated · {1} estimated of {2} sets': '{0} 組已評分 · {1} 組為估算，共 {2} 組',
+  'Enter the address of the server this token is for': '輸入這個權杖所屬伺服器的位址',
+  'Sent only to {0}, never to another server.': '只會傳送到 {0}，絕不會傳給其他伺服器。',
 }

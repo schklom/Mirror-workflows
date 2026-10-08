@@ -2153,4 +2153,6 @@ export default {
   'Where an exercise is drawn on both figures. Your workouts stay exactly as they are.': '动作在两种人体图上都有绘制时，显示哪一种。你的训练记录保持原样。',
   'estimated': '估算',
   '{0} rated · {1} estimated of {2} sets': '{0} 组已评分 · {1} 组为估算，共 {2} 组',
+  'Enter the address of the server this token is for': '输入这个令牌所属服务器的地址',
+  'Sent only to {0}, never to another server.': '只发送到 {0}，绝不会发给其他服务器。',
 }

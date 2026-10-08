@@ -1828,7 +1828,7 @@ export const useStore = create((set, get) => {
       if (MOBILE) {
         const remote = await loadRemote()
         // Before the first request: a server behind Cloudflare Access answers nothing without it.
-        await loadCfAccess()
+        await loadCfAccess({ pairedBase: remote?.mode === 'remote' ? remote.base : '' })
         set({ coachLocal: coachDeviceSettings(await loadCoachDevice()) })
         if (remote?.mode === 'remote') {
           setRemoteAuth(remote.base, remote.token)

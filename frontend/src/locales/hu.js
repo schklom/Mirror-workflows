@@ -2156,4 +2156,6 @@ export default {
   'Where an exercise is drawn on both figures. Your workouts stay exactly as they are.': 'Melyik alakot mutatja egy gyakorlat, ha mindkettőn le van rajzolva. Az edzéseid pontosan úgy maradnak, ahogy vannak.',
   'estimated': 'becsült',
   '{0} rated · {1} estimated of {2} sets': '{0} értékelt · {1} becsült ({2} sorozatból)',
+  'Enter the address of the server this token is for': 'Add meg annak a szervernek a címét, amelyhez ez a token tartozik',
+  'Sent only to {0}, never to another server.': 'Csak ide megy: {0}, más szerverre soha.',
 }

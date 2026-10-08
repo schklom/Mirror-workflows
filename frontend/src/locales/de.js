@@ -2173,4 +2173,6 @@ export default {
   'Where an exercise is drawn on both figures. Your workouts stay exactly as they are.': 'Welche Figur eine Übung zeigt, wenn sie für beide gezeichnet ist. Deine Trainings bleiben genau, wie sie sind.',
   'estimated': 'geschätzt',
   '{0} rated · {1} estimated of {2} sets': '{0} bewertet · {1} geschätzt, von {2} Sätzen',
+  'Enter the address of the server this token is for': 'Trag die Adresse des Servers ein, zu dem dieser Token gehört',
+  'Sent only to {0}, never to another server.': 'Geht nur an {0}, nie an einen anderen Server.',
 }

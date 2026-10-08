@@ -83,12 +83,15 @@ If your server sits behind [Cloudflare Access](https://developers.cloudflare.com
    preflight never carries the token — without the bypass, Access refuses it and nothing
    gets through. The openGym API answers the preflight itself and allows both headers.
 4. In the app, before connecting: first-launch screen → **Connection settings** (or the
-   **Cloudflare Access** button in the Connect sheet), enter the two values, then pair as usual.
-   They can be changed later under Settings → **Server & sync** → **Cloudflare Access**.
+   **Cloudflare Access** button in the Connect sheet), enter your server's address and the two
+   values, then pair as usual. They can be changed later under Settings → **Server & sync** →
+   **Cloudflare Access**.
 
 The app then sends `CF-Access-Client-Id` and `CF-Access-Client-Secret` with every request to
-the paired server, including the pairing itself, and with nothing else. Both are kept in the
-phone's secure storage (Android Keystore / iOS Keychain), never in synced data or backups.
+the server address they were entered for (scheme, host and port), including the pairing itself,
+and with nothing else: a pairing with any other address goes without them. Disconnecting from
+the server removes them. Both are kept in the phone's secure storage (Android Keystore / iOS
+Keychain), never in synced data or backups.
 
 ### Connection states
 

@@ -24,11 +24,15 @@ export const webauthnOK = () => typeof window.PublicKeyCredential !== 'undefined
 let remoteBase = ''
 let remoteToken = null
 export function setRemoteAuth(base, token) { remoteBase = base || ''; remoteToken = token || null }
-// A Cloudflare Access service token (lib/cf-access.js): sent only to the paired server, never on
-// a same-origin request, where the browser's own Access session cookie already does the job.
+// A Cloudflare Access service token (lib/cf-access.js): sent only to the origin it was entered
+// for, never on a same-origin request, where the browser's own Access session cookie already
+// does the job, and never to a server that merely happens to be paired or typed in.
 let accessHeaders = {}
-export function setAccessHeaders(h) { accessHeaders = Object.assign({}, h) }
-const remoteHeaders = () => Object.assign({}, remoteBase ? accessHeaders : {}, remoteToken ? { Authorization: 'Bearer ' + remoteToken } : {})
+let accessOrigin = ''
+export function setAccessHeaders(h, origin) { accessHeaders = Object.assign({}, h); accessOrigin = origin || '' }
+const originOf = base => { try { return new URL(base).origin } catch { return '' } }
+const accessFor = base => (base && accessOrigin && originOf(base) === accessOrigin ? accessHeaders : {})
+const remoteHeaders = () => Object.assign({}, accessFor(remoteBase), remoteToken ? { Authorization: 'Bearer ' + remoteToken } : {})
 
 export { appBase }
 
@@ -305,12 +309,13 @@ export function looksLocal(hostname) {
 
 // Bootstraps the connection itself: the base isn't configured yet (that's what this call decides),
 // so it talks straight to the server the user typed in, no Authorization header. A Cloudflare
-// Access token goes along all the same: without it Access never lets the code through.
+// Access token goes along when it was entered for that server: without it Access never lets
+// the code through, and to any other server it would be handed to a stranger.
 export async function pairRedeem(serverBase, code, { probeMs = PROBE_MS } = {}) {
   let data
   try {
     data = await request(serverBase + '/api/pair/redeem', {
-      method: 'POST', headers: Object.assign({ 'Content-Type': 'application/json' }, accessHeaders), body: JSON.stringify({ code })
+      method: 'POST', headers: Object.assign({ 'Content-Type': 'application/json' }, accessFor(serverBase)), body: JSON.stringify({ code })
     }, TIMEOUT_GET_MS)
   } catch (e) {
     // A wrong, spent or expired code is the one refusal a person can fix, and the server says it

@@ -2153,4 +2153,6 @@ export default {
   'Where an exercise is drawn on both figures. Your workouts stay exactly as they are.': '운동이 두 인체 그림 모두에 그려져 있을 때 어느 쪽을 보여 줄지 정합니다. 기록한 운동은 그대로 유지됩니다.',
   'estimated': '추정',
   '{0} rated · {1} estimated of {2} sets': '총 {2}세트 중 {0}개 평가 · {1}개 추정',
+  'Enter the address of the server this token is for': '이 토큰을 쓸 서버 주소를 입력하세요',
+  'Sent only to {0}, never to another server.': '{0}에만 보내고 다른 서버에는 절대 보내지 않아요.',
 }

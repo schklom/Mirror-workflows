@@ -2153,4 +2153,6 @@ export default {
   'Where an exercise is drawn on both figures. Your workouts stay exactly as they are.': 'जहाँ कोई एक्सरसाइज़ दोनों फ़िगर पर बनी है, वहाँ कौन-सा फ़िगर दिखे। आपके वर्कआउट बिल्कुल जैसे हैं वैसे ही रहेंगे।',
   'estimated': 'अनुमानित',
   '{0} rated · {1} estimated of {2} sets': '{0} रेट किए · {1} अनुमानित, कुल {2} सेट में से',
+  'Enter the address of the server this token is for': 'जिस सर्वर का यह टोकन है, उसका पता डालें',
+  'Sent only to {0}, never to another server.': 'सिर्फ़ {0} को भेजा जाता है, किसी दूसरे सर्वर को कभी नहीं।',
 }

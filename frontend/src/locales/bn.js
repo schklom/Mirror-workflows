@@ -2232,4 +2232,6 @@ export default {
   'Sets open at {0}. The first set goes up when every set reaches its reps, and the rest follow it.': 'সেট শুরু হয় {0} দিয়ে। প্রতিটি সেট তার রেপ ছুঁলে প্রথম সেটের ওজন বাড়ে, বাকিগুলো তার সাথে চলে।',
   'The first set goes up when every set reaches its reps, and the rest follow it.': 'প্রতিটি সেট তার রেপ ছুঁলে প্রথম সেটের ওজন বাড়ে, বাকিগুলো তার সাথে চলে।',
   'All sets at the same weight.': 'সব সেট একই ওজনে।',
+  'Enter the address of the server this token is for': 'এই টোকেন যে সার্ভারের, তার ঠিকানা দিন',
+  'Sent only to {0}, never to another server.': 'শুধু {0}-এ পাঠানো হয়, অন্য কোনো সার্ভারে কখনো নয়।',
 }

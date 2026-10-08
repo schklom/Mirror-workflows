@@ -2153,4 +2153,6 @@ export default {
   'Where an exercise is drawn on both figures. Your workouts stay exactly as they are.': 'Bir egzersiz iki figürde de çizilmişse hangisinin gösterileceği. Antrenmanların olduğu gibi kalır.',
   'estimated': 'tahmini',
   '{0} rated · {1} estimated of {2} sets': '{0} puanlandı · {1} tahmini, toplam {2} set',
+  'Enter the address of the server this token is for': 'Bu token’ın ait olduğu sunucunun adresini gir',
+  'Sent only to {0}, never to another server.': 'Yalnızca {0} adresine gider, asla başka bir sunucuya gitmez.',
 }

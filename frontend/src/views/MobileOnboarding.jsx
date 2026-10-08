@@ -22,23 +22,29 @@ export function plainHttp(raw) {
 }
 
 
-const openCfAccess = () => useUI.getState().openSheet(close => <CfAccessSheet close={close} />)
+// `server`: the address the token is most likely for (the one being typed into ConnectSheet).
+const openCfAccess = server => useUI.getState().openSheet(close => <CfAccessSheet close={close} server={server} />)
 
 // A server behind Cloudflare Access (lib/cf-access.js): the service token that lets this phone
-// through, entered before pairing because the pairing request has to get through as well.
-export function CfAccessSheet({ close }) {
+// through, entered before pairing because the pairing request has to get through as well. It is
+// saved with the address of its server and only ever sent there, so the sheet asks for that
+// address too and says it: a stored token shows the server it belongs to, not `server`.
+export function CfAccessSheet({ close, server = '' }) {
+  const [addr, setAddr] = useState(typeof server === 'string' ? server : '')
   const [clientId, setClientId] = useState('')
   const [clientSecret, setClientSecret] = useState('')
   const [had, setHad] = useState(false)
   const [busy, setBusy] = useState(false)
+  const origin = normalizeServerUrl(addr)
   useEffect(() => {
-    loadCfAccess().then(c => { if (c) { setClientId(c.clientId); setClientSecret(c.clientSecret); setHad(true) } })
+    loadCfAccess().then(c => { if (c) { setClientId(c.clientId); setClientSecret(c.clientSecret); setHad(true); if (c.origin) setAddr(c.origin) } })
   }, [])
   const save = async (id, secret) => {
     if (!!id.trim() !== !!secret.trim()) { useUI.getState().toast(t('Enter both the Client ID and the Client Secret')); return }
+    if (id.trim() && !origin) { useUI.getState().toast(t('Enter the address of the server this token is for')); return }
     setBusy(true)
     try {
-      const saved = await saveCfAccess({ clientId: id, clientSecret: secret })
+      const saved = await saveCfAccess({ clientId: id, clientSecret: secret, server: origin })
       close()
       useUI.getState().toast(saved ? t('Saved') : t('Removed'))
     } catch (e) { useUI.getState().toast(e.message || t('Could not save')) }
@@ -49,6 +55,12 @@ export function CfAccessSheet({ close }) {
     <div className="muted small" style={{ marginBottom: 14 }}>
       {t('Only if your server is behind Cloudflare Access: the service token this phone sends with every request to it. Kept in this phone’s secure storage.')}
     </div>
+    <input className="input" placeholder={t('Server address (e.g. gym.example.com)')} value={addr} aria-label={t('Server address (e.g. gym.example.com)')}
+      onChange={e => setAddr(e.target.value)} autoCapitalize="none" autoCorrect="off" inputMode="url" />
+    {origin && <div className="dim small" role="note" style={{ marginTop: 8, lineHeight: 1.45, overflowWrap: 'anywhere' }}>
+      {t('Sent only to {0}, never to another server.', new URL(origin).host)}
+    </div>}
+    <div style={{ height: 10 }} />
     <input className="input" placeholder="CF-Access-Client-Id" value={clientId}
       onChange={e => setClientId(e.target.value)} autoCapitalize="none" autoCorrect="off" spellCheck={false} />
     <div style={{ height: 10 }} />
@@ -104,7 +116,7 @@ export function ConnectSheet({ close, initialUrl = '', again = false }) {
     <div style={{ height: 12 }} />
     <Button variant="primary" onClick={go} disabled={busy}>{busy ? t('Connecting…') : t('Connect')}</Button>
     <div style={{ height: 10 }} />
-    <Button icon="key" onClick={openCfAccess} disabled={busy}>{t('Cloudflare Access')}</Button>
+    <Button icon="key" onClick={() => openCfAccess(normalizeServerUrl(url) || '')} disabled={busy}>{t('Cloudflare Access')}</Button>
   </>
 }
 
@@ -126,7 +138,7 @@ export default function MobileOnboarding() {
         {t('Local keeps everything on this phone. Connecting syncs to your own openGym server instead. You can switch later in Settings.')}
       </div>
       <div style={{ height: 18 }} />
-      <Button icon="gear" onClick={openCfAccess}>{t('Connection settings')}</Button>
+      <Button icon="gear" onClick={() => openCfAccess()}>{t('Connection settings')}</Button>
     </div>
   )
 }

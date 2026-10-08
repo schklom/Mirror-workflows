@@ -2208,4 +2208,6 @@ export default {
   'Where an exercise is drawn on both figures. Your workouts stay exactly as they are.': 'أي شكل يظهر عندما يكون التمرين مرسومًا على الشكلين. تمريناتك تبقى كما هي تمامًا.',
   'estimated': 'تقديري',
   '{0} rated · {1} estimated of {2} sets': '{0} مُقيَّمة · {1} تقديرية من أصل {2} مجموعة',
+  'Enter the address of the server this token is for': 'أدخل عنوان الخادم الذي يخصّه هذا الرمز',
+  'Sent only to {0}, never to another server.': 'يُرسل إلى {0} فقط، ولا يُرسل إلى أي خادم آخر.',
 }

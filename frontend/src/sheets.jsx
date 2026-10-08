@@ -1381,7 +1381,7 @@ function EquipmentProfileSheet({ profile, close }) {
       ))}
     </div>
     <div className="dim small" style={{ marginTop: 10 }}>
-      {t('Body-weight exercises are always available, in every profile.')}
+      {t('Body-weight exercises are always available, unless they need a pull-up bar or a bench.')}
     </div>
     <div style={{ height: 14 }} /><Button variant="primary" onClick={save}>{t('Save')}</Button>
   </>

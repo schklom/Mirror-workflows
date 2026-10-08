@@ -49,6 +49,7 @@ import { useSheetKeyboard, useRevealActiveChip, tappable } from './lib/use-sheet
 import { useAutoMore } from './lib/use-auto-more.js'
 import { isFav, toggleFav, sortFavouritesFirst } from './lib/favourites.js'
 import { buildSessionEntries, buildPlannedEntry, builtOutOfProgression } from './lib/session-start.js'
+import { finishCompare } from './lib/finish-compare.js'
 import { joinSessionNoProg } from './lib/session-noprog.js'
 import { buildCombinedEntries, deriveSessionName } from './lib/session-merge.js'
 import { workoutsOn, backfillStart, backfillEnd, completeBackfill, historyAsOf, sessionHistory } from './lib/backfill.js'
@@ -2926,6 +2927,40 @@ export function exitWorkoutEdit(onExit = () => nav('/history')) {
   savePrompt = prompt
 }
 
+// "60 kg × 5, 5, 4", or "60×5 · 62.5×5" when the weight changed between sets; a bodyweight lift
+// without load is just its reps.
+function setsLine(sets, unit) {
+  const ws = new Set(sets.map(s => s.w))
+  if (ws.size === 1) {
+    const w0 = sets[0].w
+    return (w0 > 0 ? fmtNum(w0) + ' ' + unit + ' × ' : '') + sets.map(s => s.r).join(', ')
+  }
+  return sets.map(s => (s.w > 0 ? fmtNum(s.w) + '×' : '') + s.r).join(' · ')
+}
+const TREND = { 1: ['arrowUp', 'var(--green)'], 0: ['minus', 'var(--text-2)'], [-1]: ['arrowDown', 'var(--orange)'] }
+function LastAndNext({ st, w }) {
+  const rows = finishCompare(st, w)
+  if (!rows.length) return null
+  const nextWord = { up: t('step up'), hold: t('same again'), down: t('lighter'), deload: t('deload') }
+  return <div style={{ textAlign: 'start', marginBottom: 14 }}>
+    <h4 className="sec">{t('Last time and next time')}</h4>
+    <div className="list">{rows.map(row => {
+      const ex = EXIDX[row.id]
+      const tr = row.trend == null ? null : TREND[row.trend]
+      return <div key={row.id} className="item" style={{ display: 'block' }}>
+        <div className="row between" style={{ gap: 8 }}>
+          <span className={'tt ' + exerciseNameClass(ex)} style={{ fontWeight: 600 }}>{ex ? exerciseNameFor(ex) : row.id}</span>
+          {tr ? <span style={{ color: tr[1], display: 'inline-flex' }} aria-label={row.trend > 0 ? t('Up on last time') : row.trend < 0 ? t('Down on last time') : t('Same as last time')}><Icon name={tr[0]} /></span>
+            : <span className="tag nocap">{t('First time')}</span>}
+        </div>
+        <div className="small">{t('Today')}: {setsLine(row.today, st.unit)}</div>
+        {row.last && <div className="small dim">{t('Last time')}: {setsLine(row.last, st.unit)}</div>}
+        {row.next && <div className="small accent">{t('Next time')}: {row.next.w != null ? fmtNum(row.next.w) + ' ' + st.unit : ''}{row.next.w != null && row.next.r != null ? ' × ' : ''}{row.next.r != null ? row.next.r : ''} · {nextWord[row.next.kind]}</div>}
+      </div>
+    })}</div>
+  </div>
+}
+
 function FinishSummary({ w, prs, e1prs = [], close }) {
   const st = useStore(s => s.S)
   return <div style={{ textAlign: 'center', padding: '8px 0' }}>
@@ -2944,6 +2979,7 @@ function FinishSummary({ w, prs, e1prs = [], close }) {
     <h4 className="sec" style={{ textAlign: 'start' }}>{t('What you just trained')}</h4>
     <BodyMap load={loadOfWorkouts([w])} body={st.body} />
     <div style={{ height: 14 }} />
+    <LastAndNext st={st} w={w} />
     {/* The moment for a progress photo or the clip of a set: the workout is already saved, so
         what is added here goes straight onto its record. */}
     <div style={{ textAlign: 'start' }}><WorkoutMediaSection w={w} hint /></div>

@@ -183,6 +183,10 @@ export const DEF = {
   // stuck sync then shows as a dot on Home instead. Defaults on; an older profile without the
   // key reads as on (`!== false`).
   connStatus: true,
+  // The quiet line a device with no server shows ("On this phone only…", "Guest mode…", #454).
+  // That is a choice, not a fault, so its × hides it for good; a real problem still shows the bar.
+  // Defaults on; an older profile without the key reads as on (`!== false`).
+  connLocal: true,
   // Where a planned session's reps come from (Settings → During a workout, lib/session-start.js):
   // 'plan' opens at the routine's own sets × reps and lets history and progression decide the
   // weight; 'last' carries the reps over from the last session, the way it always worked before.

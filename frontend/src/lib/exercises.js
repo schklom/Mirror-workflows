@@ -51,6 +51,14 @@ export function equipmentOf(list) {
   return Object.keys(c).sort((a, b) => c[b] - c[a] || (a < b ? -1 : 1))
 }
 
+// Kinds of exercise (catalogue "category") present in a list, in a fixed order that reads from
+// lifting to everything around it. Custom exercises carry none and only show under "Any type".
+export const CATEGORIES = ['strength', 'calisthenics', 'olympic', 'plyometrics', 'isometric', 'cardio', 'stretching', 'mobility', 'yoga', 'pilates', 'combat', 'rehab']
+export function categoriesOf(list) {
+  const have = new Set(list.map(e => e.cat).filter(Boolean))
+  return CATEGORIES.filter(c => have.has(c))
+}
+
 // Custom (user-created) exercises live in synced state S.customEx (issue #11) and are
 // merged into the id index here so every EXIDX[id] lookup keeps working unchanged.
 let customIds = new Set()

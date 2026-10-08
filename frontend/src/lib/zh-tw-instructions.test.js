@@ -12,8 +12,8 @@ describe('Traditional Chinese (zh-TW) exercise instructions', () => {
     expect(Object.keys(zhTW)).toHaveLength(EXDB.length)
   })
 
-  test('enables zh-TW in INSTR_LANGS when the pack is complete', () => {
-    expect(INSTR_LANGS.includes('zh-TW')).toBe(Object.keys(zhTW).length === EXDB.length)
+  test('enables zh-TW in INSTR_LANGS when there is a pack', () => {
+    expect(INSTR_LANGS.includes('zh-TW')).toBe(Object.keys(zhTW).length > 0)
   })
 
   test('contains only known exercises with complete, non-empty step lists', () => {

@@ -76,6 +76,13 @@ for (const [lang, rowsOf] of Object.entries(i18n)) {
   if (Object.keys(desc).length) files[`frontend/src/exercise-desc/${lang}.js`] = pack(desc)
 }
 
+// Which languages have instruction and name packs, for i18n-core (a pack may be partial: anything
+// it lacks falls back to English one exercise at a time).
+const packLangs = dir => ['en', ...Object.keys(files).filter(f => f.startsWith(`frontend/src/${dir}/`)).map(f => f.slice(`frontend/src/${dir}/`.length, -3)).filter(l => l !== 'en').sort()]
+files['frontend/src/lib/catalogue-langs.js'] = header +
+  `export const INSTR_LANGS = ${JSON.stringify(packLangs('instr'))}\n` +
+  `export const EXERCISE_NAME_LANGS = ${JSON.stringify(packLangs('exercise-names').filter(l => l !== 'en'))}\n`
+
 // catalogue/browse/: one page per body part with each exercise's still, so contributors can see
 // what an id is without running the app. GitHub renders these Markdown tables with the pictures.
 const slug = s => s.replace(/\s+/g, '-')

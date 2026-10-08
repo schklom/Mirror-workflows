@@ -9,8 +9,10 @@ export const LANGS = {
   tr: 'Türkçe', ru: 'Русский', uk: 'Українська', zh: '简体中文', 'zh-TW': '繁體中文',
   ko: '한국어', hi: 'हिन्दी', bn: 'বাংলা', th: 'ไทย', hu: 'Magyar', ar: 'العربية'
 }
-export const INSTR_LANGS = ['en', 'es', 'fr', 'it', 'tr', 'ru', 'zh', 'zh-TW', 'hi', 'pl', 'ko', 'pt-BR', 'hu', 'ar']
-export const EXERCISE_NAME_LANGS = ['pt-BR', 'hu', 'de', 'es', 'ru', 'it', 'fr', 'pl']
+// Languages with exercise instructions / names, generated from catalogue/i18n by
+// scripts/catalogue/build.mjs. A pack can be partial; what it lacks shows in English.
+import { INSTR_LANGS, EXERCISE_NAME_LANGS } from './catalogue-langs.js'
+export { INSTR_LANGS, EXERCISE_NAME_LANGS }
 // Languages rendered right-to-left; i18n.js setLang applies the direction from this.
 export const RTL_LANGS = new Set(['ar'])
 export const DATE_LOCALES = {
@@ -142,6 +144,9 @@ export const instrFor = ex => {
   if (!enInstr) askDetails()
   return (enInstr && enInstr[ex.id]) || ex.st || []
 }
+
+// Whether the steps instrFor shows are in the current language rather than the English fallback.
+export const instrTranslated = ex => !!(instr && ex && instr[ex.id])
 
 // A sentence or two on what the exercise is, in the current language when someone has written
 // it, otherwise in English. Empty for exercises nobody has described yet and for custom ones.

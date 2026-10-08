@@ -17,6 +17,10 @@ node_modules
 .claude/
 .agents/
 
+# Nix build result symlinks
+result
+result-*
+
 # CI reports (test:* jobs write these next to the suites)
 junit.xml
 coverage/

@@ -2101,4 +2101,16 @@ export default {
   'Skip set': 'Seti atla',
   'Superset:': 'Süperset:',
   '{0}s hold': '{0} sn tutuş',
+  // --- finish summary: last time and next time ---
+  'Details': 'Ayrıntılar',
+  'Progression settings': 'İlerleme ayarları',
+  'Last time and next time': 'Geçen sefer ve bir dahaki sefer',
+  'Up on last time': 'Geçen seferden fazla',
+  'Down on last time': 'Geçen seferden az',
+  'Same as last time': 'Geçen seferle aynı',
+  'First time': 'İlk kez',
+  'step up': 'bir kademe yukarı',
+  'same again': 'aynısı bir daha',
+  'lighter': 'biraz daha hafif',
+  'deload': 'deload',
 }

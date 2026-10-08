@@ -2101,4 +2101,16 @@ export default {
   'Skip set': '跳过本组',
   'Superset:': '超级组：',
   '{0}s hold': '保持 {0} 秒',
+  // --- finish summary: last time and next time ---
+  'Details': '详情',
+  'Progression settings': '进阶设置',
+  'Last time and next time': '上次与下次',
+  'Up on last time': '比上次多',
+  'Down on last time': '比上次少',
+  'Same as last time': '和上次一样',
+  'First time': '第一次',
+  'step up': '加一档',
+  'same again': '原样再来',
+  'lighter': '减轻一点',
+  'deload': '减载',
 }

@@ -15,7 +15,7 @@ import { loadOfWeeklyPlan, loadOfWorkouts, muscleBalanceWindow, rankOf, MUSCLES,
 import { fatigueOf, strengthOf, STRENGTH_FLOOR, LB_TO_KG } from '../lib/recovery.js'
 import { strengthExerciseRowsForMuscle } from '../lib/strength-exercises.js'
 import { fatigueStateOf } from '../lib/recovery-view.js'
-import { e1rmSeries, best1RM } from '../lib/onerm.js'
+import { e1rmSeries, best1RM, formulaOf } from '../lib/onerm.js'
 import { maxRepsSeries } from '../lib/pyramid.js'
 import { perSetSessions, perSetLines, dropOffSet } from '../lib/per-set.js'
 import {
@@ -548,11 +548,12 @@ export default function Stats() {
   // Loaded work is drawn as each set's estimated 1RM, so straight sets at one weight still part
   // where reps were lost. Reps instead for unloaded work, an assistance machine (where a 1RM
   // reads backwards), or a history of sets all past the estimate's rep cap.
+  const oneRmFormula = formulaOf(S)
   const perSet = useMemo(() => {
     if (!curEx || curMode !== 'reps') return null
     const usable = list => list.length >= 2 && list.some(s => s.sets.length >= 2)
     let metric = repsOnly || isAssisted(curEx) ? 'reps' : 'e1rm'
-    let sessions = perSetSessions(workouts, curEx, { metric })
+    let sessions = perSetSessions(workouts, curEx, { metric, formula: oneRmFormula })
     if (metric === 'e1rm' && !usable(sessions)) sessions = perSetSessions(workouts, curEx, { metric: metric = 'reps' })
     if (!usable(sessions)) return null
     const { lines, hidden } = perSetLines(sessions)
@@ -568,7 +569,7 @@ export default function Stats() {
       metric,
       drop: dropOffSet(sessions),
     }
-  }, [workouts, curEx, curMode, repsOnly])
+  }, [workouts, curEx, curMode, repsOnly, oneRmFormula])
   const onSets = !!perSet && exMetric === 'sets'
   const onE1 = showE1 && exMetric === 'e1rm'
   const onEff = showEff && exMetric === 'effort'

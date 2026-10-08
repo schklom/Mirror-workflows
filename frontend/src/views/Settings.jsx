@@ -3,6 +3,7 @@ import { useNavigate, useParams, useLocation, Navigate } from 'react-router-dom'
 import { useStore, DEF, hasData } from '../store/useStore.js'
 import { workoutControls } from '../lib/workout-controls.js'
 import { speedUnitOf } from '../lib/speed.js'
+import { formulaOf, FORMULA_NAMES } from '../lib/onerm.js'
 import { copyText } from '../lib/clipboard.js'
 import { useUI } from '../store/useUI.js'
 import { ACCENTS, ACCENT_NAMES, todayISO, localTZ, weekStartOf, MONDAY, SUNDAY, fmtPlate } from '../lib/format.js'
@@ -680,6 +681,20 @@ export default function Settings({ page = null, find = null, via = null }) {
             options={[{ value: 'kmh', label: 'km/h' }, { value: 'mph', label: 'mph' }]}
             value={speedUnitOf(S)} onChange={v => update(s => { s.speedUnit = v })} />
         </Row>
+        {/* Which formula turns a set into an estimated 1RM (Discord, #155): the exercise page,
+            the 1RM chart and records all follow it. Formula names are people, not words. */}
+        <SelectRow icon="chart" iconTint="var(--teal)" title={t('1RM formula')}
+          value={formulaOf(S)} onChange={v => update(s => { s.oneRmFormula = v })}
+          options={[
+            { value: 'epley', label: 'Epley', subtitle: t('The common one. A bit generous at higher reps.') },
+            { value: 'brzycki', label: 'Brzycki', subtitle: t('More conservative above five reps.') },
+            { value: 'lombardi', label: 'Lombardi', subtitle: t('Generous, especially at high reps.') },
+            { value: 'oconner', label: FORMULA_NAMES.oconner, subtitle: t('The most conservative of the classics.') },
+            { value: 'mayhew', label: 'Mayhew' },
+            { value: 'wathan', label: 'Wathan' },
+            { value: 'lander', label: 'Lander' },
+            { value: 'weighted', label: t('Blend of all'), subtitle: t('Averages seven formulas and reads your RIR when you log it.') },
+          ]} />
       </Section>
     </>,
 

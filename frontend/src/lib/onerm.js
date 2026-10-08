@@ -35,6 +35,18 @@ export const FORMULAS = {
 }
 export const DEFAULT_FORMULA = 'epley'
 
+// The formula a profile picked in Settings (Discord "toggle which 1RM formula to use"). Anything
+// this build does not know reads as the default, so an older or newer device can't break it.
+// Names as the formulas' authors are known, so not translated. 'weighted' blends all seven.
+export const FORMULA_NAMES = {
+  epley: 'Epley', brzycki: 'Brzycki', lombardi: 'Lombardi', oconner: 'O’Conner',
+  mayhew: 'Mayhew', wathan: 'Wathan', lander: 'Lander',
+}
+export const formulaOf = S => {
+  const f = S?.oneRmFormula
+  return f === 'weighted' || Object.hasOwn(FORMULAS, f) ? f : DEFAULT_FORMULA
+}
+
 // ── RIR %1RM map (Mike Tuchscherer / RTS scale) ─────────────────────────────────
 // Index 0 = 1 rep to failure, index 14 = 15 reps to failure.
 const RIR_PCT = [
@@ -134,7 +146,7 @@ export function bestSetOf(entry, formula = DEFAULT_FORMULA) {
       ? [s.sides.L, s.sides.R].filter(side => side?.done === true)
       : [s]
     sets.forEach(set => {
-      const est = estimate1RM(set.w, set.r, formula)
+      const est = estimate1RM(set.w, set.r, formula, set.rir ?? null)
       if (est !== null && (!best || est > best.est)) best = { est, w: Number(set.w), r: Math.round(Number(set.r)) }
     })
   })
@@ -152,7 +164,7 @@ function bestSetOfEntries(entries, formula = DEFAULT_FORMULA) {
 
 // One point per workout in which the exercise produced an estimate — feeds the trend chart.
 // Chronological, matching the order workouts are appended in.
-export function e1rmSeries(S, exId, formula = DEFAULT_FORMULA) {
+export function e1rmSeries(S, exId, formula = formulaOf(S)) {
   if (isAssisted(exId)) return []
   const pts = []
   ;(S.workouts || []).forEach(w => {
@@ -164,7 +176,7 @@ export function e1rmSeries(S, exId, formula = DEFAULT_FORMULA) {
 
 // All-time best estimate for an exercise, with the set and date it came from — the source
 // matters, because "142.5 kg est. from 100×10" is a very different claim from "from 140×1".
-export function best1RM(S, exId, formula = DEFAULT_FORMULA) {
+export function best1RM(S, exId, formula = formulaOf(S)) {
   let best = null
   e1rmSeries(S, exId, formula).forEach(p => { if (!best || p.y > best.est) best = { est: p.y, w: p.w, r: p.r, d: p.d, t: p.t } })
   return best
@@ -172,7 +184,7 @@ export function best1RM(S, exId, formula = DEFAULT_FORMULA) {
 
 // Did this workout beat every estimate that came before it? Used for the finish summary,
 // so it compares against history that does not yet contain `w`.
-export function is1RMRecord(S, exId, entry, formula = DEFAULT_FORMULA) {
+export function is1RMRecord(S, exId, entry, formula = formulaOf(S)) {
   const now = bestSetOf(entry, formula)
   if (!now) return null
   const prev = best1RM(S, exId, formula)

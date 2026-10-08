@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { estimate1RM, bestSetOf, e1rmSeries, best1RM, is1RMRecord, REP_CAP, WEIGHTED_REP_CAP, FORMULAS, calculate1RMAccuracy } from './onerm.js'
+import { estimate1RM, bestSetOf, e1rmSeries, best1RM, is1RMRecord, REP_CAP, WEIGHTED_REP_CAP, FORMULAS, calculate1RMAccuracy, formulaOf } from './onerm.js'
 
 describe('estimate1RM', () => {
   it('returns the load unchanged for a single rep', () => {
@@ -348,5 +348,20 @@ describe('warm-up sets and 1RM', () => {
     expect(best1RM({ workouts: [{ entries: [ENTRY] }] }, 'warm-test')).toEqual(
       best1RM({ workouts: [{ entries: [working] }] }, 'warm-test'),
     )
+  })
+})
+
+describe('the formula a profile picked (Settings, Discord request)', () => {
+  const S = { workouts: [{ d: '2026-10-01', entries: [{ id: 'x', sets: [{ w: 100, r: 8, done: true }] }] }] }
+  it('reads the default when nothing or something unknown is stored', () => {
+    expect(formulaOf({})).toBe('epley')
+    expect(formulaOf({ oneRmFormula: 'toString' })).toBe('epley')
+    expect(formulaOf({ oneRmFormula: 'brzycki' })).toBe('brzycki')
+    expect(formulaOf({ oneRmFormula: 'weighted' })).toBe('weighted')
+  })
+  it('the stored formula drives best1RM without every caller passing it', () => {
+    expect(best1RM(S, 'x').est).toBe(estimate1RM(100, 8, 'epley'))
+    expect(best1RM({ ...S, oneRmFormula: 'brzycki' }, 'x').est).toBe(estimate1RM(100, 8, 'brzycki'))
+    expect(best1RM({ ...S, oneRmFormula: 'brzycki' }, 'x').est).toBeLessThan(best1RM(S, 'x').est)
   })
 })

@@ -31,7 +31,7 @@ import { exerciseMuscleSnapshot, loadOfWorkouts, MUSCLES, MUSCLE_NAME, muscleWei
 import { parseImport, mergeImport } from './lib/import-csv.js'
 import { importHevyData, HevyApiError, HEVY_DEV_SETTINGS, mergeHevyRoutines } from './lib/import-hevy.js'
 import { buildPlanBundle, parsePlan, mergePlan, printPlan, planPrintHTML } from './lib/plan-share.js'
-import { estimate1RM, best1RM, is1RMRecord, REP_CAP } from './lib/onerm.js'
+import { estimate1RM, best1RM, is1RMRecord, REP_CAP, formulaOf, FORMULA_NAMES } from './lib/onerm.js'
 import { exerciseHistory } from './lib/exercise-history.js'
 import { policyFor, defaultIncrement, POLICIES_FOR, POLICY_NAME, POLICY_DESC, MAX_BW_SETS, weightIncrement } from './lib/progression.js'
 import { normalizeRepRange } from './lib/rep-range.js'
@@ -838,7 +838,7 @@ function OneRM({ ex }) {
   const best = best1RM(st, ex.id)
   const [w, setW] = useState(best ? best.w : (st.exWeights[ex.id] || {}).w || 20)
   const [r, setR] = useState(best ? best.r : 5)
-  const est = estimate1RM(w, r)
+  const est = estimate1RM(w, r, formulaOf(st))
   return <>
     <h4 className="sec">{t('Estimated 1RM')}</h4>
     {best && <div className="small" style={{ marginBottom: 8 }}>
@@ -855,7 +855,9 @@ function OneRM({ ex }) {
     </div>
     <div className="small dim">{est === null
       ? t('Enter a weight and 1–{0} reps. Beyond that it’s basically guesswork.', REP_CAP)
-      : t('Epley formula: calculated from one set, not a tested max.')}</div>
+      : formulaOf(st) === 'weighted'
+        ? t('A blend of seven formulas: calculated from one set, not a tested max.')
+        : t('{0} formula: calculated from one set, not a tested max.', FORMULA_NAMES[formulaOf(st)])}</div>
   </>
 }
 

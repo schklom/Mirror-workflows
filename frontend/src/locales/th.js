@@ -1539,6 +1539,12 @@ export default {
   'Copy as text': 'คัดลอกเป็นข้อความ',
   'Copied': 'คัดลอกแล้ว',
   'Could not copy': 'คัดลอกไม่ได้',
+  // --- a past workout shared as an image (#453) ---
+  'Share as image': 'แชร์เป็นรูปภาพ',
+  'Could not create the image': 'สร้างรูปภาพไม่ได้',
+  'Image saved': 'บันทึกรูปภาพแล้ว',
+  'New personal records': 'สถิติส่วนตัวใหม่',
+  'and {0} more': 'และอีก {0} รายการ',
   // --- a missed day logged afterwards (#284) ---
   'Log this workout': 'บันทึกการฝึกนี้',
   'Mark all sets done': 'ทำเครื่องหมายทุกเซ็ตว่าเสร็จแล้ว',

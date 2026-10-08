@@ -1512,6 +1512,12 @@ export default {
   'Copy as text': '複製為純文字',
   'Copied': '已複製',
   'Could not copy': '無法複製',
+  // --- a past workout shared as an image (#453) ---
+  'Share as image': '分享為圖片',
+  'Could not create the image': '無法產生圖片',
+  'Image saved': '圖片已儲存',
+  'New personal records': '新個人紀錄',
+  'and {0} more': '以及另外 {0} 項',
   // --- a missed day logged afterwards (#284) ---
   'Log this workout': '補記本次訓練',
   'Mark all sets done': '將所有組數標記為已完成',

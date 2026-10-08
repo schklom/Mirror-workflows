@@ -36,7 +36,7 @@ import { exerciseHistory } from './lib/exercise-history.js'
 import { policyFor, defaultIncrement, POLICIES_FOR, POLICY_NAME, POLICY_DESC, MAX_BW_SETS, weightIncrement } from './lib/progression.js'
 import { normalizeRepRange } from './lib/rep-range.js'
 import { isPyramid, normalizePyramid, normalizePyramidRest, normalizePyramidWeight, pyramidFromFlat, flatFromPyramid, pyramidLabel, PYRAMID_MAX, MAX_PYRAMID_SETS, PYRAMID_PRESETS } from './lib/pyramid.js'
-import { MOBILE, shareExport, printHtml } from './lib/mobile.js'
+import { MOBILE, shareExport, shareExportBlob, printHtml } from './lib/mobile.js'
 import { speedUnitOf, toSpeed, fromSpeed } from './lib/speed.js'
 import { buildCompletedWorkout, sessionEnd } from './lib/finish-workout.js'
 import { refillAfter } from './lib/rotation.js'
@@ -56,6 +56,7 @@ import { editCompletedSession, editLeftEmpty, editedRecord, editChangesNothing }
 import { stampWorkout } from './lib/sync-merge.js'
 import { weeklyWeights } from './lib/bodyweight.js'
 import { workoutText } from './lib/workout-text.js'
+import { workoutCardModel, layoutWorkoutCard, drawWorkoutCard, CARD_FONT } from './lib/workout-card.js'
 import { copyText } from './lib/clipboard.js'
 import { queueRemaining, pinState } from './lib/queue.js'
 
@@ -2231,6 +2232,13 @@ function WorkoutDetail({ w, close }) {
     const rec = { ...(st.workouts.find(x => sameWorkout(x, w)) || w), note: note.trim() }
     toast(await copyText(workoutText(rec, { unit: st.unit, nameOf, speedUnit: speedUnitOf(st) })) ? t('Copied') : t('Could not copy'))
   }
+  const shareAsImage = async () => {
+    const rec = st.workouts.find(x => sameWorkout(x, w)) || w
+    let blob
+    try { blob = await workoutCardImage(rec, { unit: st.unit, nameOf }) } catch (e) { blob = null }
+    if (!blob) { toast(t('Could not create the image')); return }
+    await shareImage(blob, 'opengym-workout-' + (workoutDay(rec) || todayISO()) + '.png', rec.name || 'openGym')
+  }
   // A combined session's entries carry a `rid`; group them into per-routine sections in merge
   // order, with each section's supersets paired inside it (sessionSections, which "Copy as text"
   // reads the workout through too). A legacy single-routine workout (one routineIds, or no rid
@@ -2305,11 +2313,41 @@ function WorkoutDetail({ w, close }) {
     })}>{t('Save as routine')}</Button>
     <div style={{ height: 8 }} />
     <Button icon="copy" onClick={copyAsText}>{t('Copy as text')}</Button>
+    <div style={{ height: 8 }} />
+    <Button icon="share" onClick={shareAsImage}>{t('Share as image')}</Button>
     <div style={{ height: 10 }} />
     {/* Matched the way the edits above are, not by id: a workout from before ids has none, and
         filtering on `x.id !== undefined` took every other one of them with it. */}
     <Button variant="danger" onClick={() => confirmSheet({ title: t('Delete workout?'), message: t('This removes it from your history for good.') + mediaGoesToo(S().workouts.find(x => sameWorkout(x, w))), confirmText: t('Delete'), danger: true, onConfirm: () => { update(s => { s.workouts = s.workouts.filter(x => !sameWorkout(x, w)) }); close(); toast(t('Workout deleted')) } })}>{t('Delete workout')}</Button>
   </>
+}
+// "Share as image" (#453): the card lib/workout-card.js lays out, painted in the theme and accent
+// the app is showing right now, as a PNG.
+async function workoutCardImage(w, opts) {
+  const root = getComputedStyle(document.documentElement)
+  const css = (name, fallback) => root.getPropertyValue(name).trim() || fallback
+  const colors = { bg: css('--bg', '#000'), surface: css('--surface', '#1c1c1e'), label: css('--label', '#fff'), label2: css('--label-2', '#999'), acc: css('--acc', '#30d158') }
+  const canvas = document.createElement('canvas')
+  const ctx = canvas.getContext('2d')
+  if (!ctx) return null
+  const measure = (text, weight, size) => { ctx.font = `${weight} ${size}px ${CARD_FONT}`; return ctx.measureText(text).width }
+  const layout = layoutWorkoutCard(workoutCardModel(w, opts), { measure, rtl: document.documentElement.dir === 'rtl' })
+  canvas.width = layout.width
+  canvas.height = layout.height
+  drawWorkoutCard(ctx, layout, colors)
+  return new Promise(resolve => canvas.toBlob(resolve, 'image/png'))
+}
+// The phone app goes through the OS share sheet the way a backup does; a browser that can share
+// files (most phones) opens its own; anything else saves the picture as a download.
+async function shareImage(blob, name, title) {
+  if (MOBILE) { try { await shareExportBlob(blob, name) } catch (e) { /* share sheet dismissed */ } return }
+  const file = typeof File === 'function' ? new File([blob], name, { type: 'image/png' }) : null
+  if (file && navigator.canShare?.({ files: [file] })) {
+    try { await navigator.share({ files: [file], title }) } catch (e) { /* dismissed */ }
+    return
+  }
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.click(); URL.revokeObjectURL(a.href)
+  toast(t('Image saved'))
 }
 // The sentence a workout's Delete adds when its photos and videos go with it — every file the
 // record lists, shown or not. Empty when it has none.

@@ -1394,6 +1394,12 @@ export default {
   'Copy as text': 'Скопіювати як текст',
   'Copied': 'Скопійовано',
   'Could not copy': 'Не вдалося скопіювати',
+  // --- a past workout shared as an image (#453) ---
+  'Share as image': 'Поділитися зображенням',
+  'Could not create the image': 'Не вдалося створити зображення',
+  'Image saved': 'Зображення збережено',
+  'New personal records': 'Нові особисті рекорди',
+  'and {0} more': 'і ще {0}',
   'Log this workout': 'Записати це тренування',
   'Mark all sets done': 'Позначити всі підходи виконаними',
   'All weigh-ins': 'Усі зважування',

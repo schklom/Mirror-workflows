@@ -1528,6 +1528,12 @@ export default {
   'Copy as text': 'Copia come testo',
   'Copied': 'Copiato',
   'Could not copy': 'Impossibile copiare',
+  // --- a past workout shared as an image (#453) ---
+  'Share as image': 'Condividi come immagine',
+  'Could not create the image': 'Impossibile creare l’immagine',
+  'Image saved': 'Immagine salvata',
+  'New personal records': 'Nuovi record personali',
+  'and {0} more': 'e altri {0}',
   // --- a missed day logged afterwards (#284) ---
   'Log this workout': 'Registra questo allenamento',
   'Mark all sets done': 'Segna tutte le serie come fatte',

@@ -1237,6 +1237,12 @@ export const PT_BR_OVERRIDES = {
   'macebell': 'macebell',
   'Plain http:// isn’t encrypted. Fine on your home network, but use https:// if your server is reachable from the internet.': 'O http:// simples não é criptografado. Tudo bem na sua rede de casa, mas use https:// se o seu servidor estiver acessível pela internet.',
   'Could not reach {0} over https://. If your server runs on plain http (common at home), type http://{0} instead.': 'Não foi possível alcançar {0} por https://. Se o seu servidor usa http simples (comum em casa), digite http://{0}.',
+  // --- a past workout shared as an image (#453) ---
+  'Share as image': 'Compartilhar como imagem',
+  'Could not create the image': 'Não foi possível criar a imagem',
+  'Image saved': 'Imagem salva',
+  'New personal records': 'Novos recordes pessoais',
+  'and {0} more': 'e mais {0}',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

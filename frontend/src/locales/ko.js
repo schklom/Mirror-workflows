@@ -1528,6 +1528,12 @@ export default {
   'Copy as text': '텍스트로 복사',
   'Copied': '복사됨',
   'Could not copy': '복사할 수 없음',
+  // --- a past workout shared as an image (#453) ---
+  'Share as image': '이미지로 공유',
+  'Could not create the image': '이미지를 만들 수 없습니다',
+  'Image saved': '이미지를 저장했습니다',
+  'New personal records': '새 개인 기록',
+  'and {0} more': '외 {0}개',
   // --- a missed day logged afterwards (#284) ---
   'Log this workout': '이 운동 기록',
   'Mark all sets done': '모든 세트 완료로 표시',

@@ -223,4 +223,25 @@ describe('the web container refuses a BASE_PATH it cannot serve', () => {
     const dockerfile = readFileSync(join(WEB, 'Dockerfile'), 'utf8')
     expect(dockerfile).toMatch(/^COPY --chmod=755 web\/05-check-base-path\.sh \/docker-entrypoint\.d\/$/m)
   })
+
+  it('runs nginx as uid 101 and still listens on port 80', () => {
+    // nginx:alpine starts its master as root so it can create /var/cache/nginx, and a non-root
+    // master there dies on mkdir. The unprivileged base is uid 101, but apk cannot upgrade as
+    // that user, so the upgrade runs as root and 101 is the last USER — the entrypoint and the
+    // master both stay there. The listen port stays 80: compose, the probes and the healthcheck
+    // all address NGINX_PORT. The base image's EXPOSE 8080 is only metadata.
+    const dockerfile = readFileSync(join(WEB, 'Dockerfile'), 'utf8')
+    expect(dockerfile).toMatch(/^FROM --platform=\$BUILDPLATFORM node:22-alpine AS build$/m)
+    expect(dockerfile).toMatch(/^FROM nginxinc\/nginx-unprivileged:alpine$/m)
+    const users = [...dockerfile.matchAll(/^USER \S+$/gm)].map(m => m[0])
+    expect(users.at(-1)).toBe('USER 101')
+    const root = dockerfile.search(/^USER root$/m)
+    const upgrade = dockerfile.search(/^RUN apk upgrade --no-cache/m)
+    const finalUser = dockerfile.lastIndexOf('USER 101')
+    expect(root).toBeGreaterThanOrEqual(0)
+    expect(upgrade).toBeGreaterThan(root)
+    expect(finalUser).toBeGreaterThan(upgrade)
+    expect(dockerfile).toMatch(/^ENV NGINX_PORT=80$/m)
+    expect(dockerfile).toMatch(/^COPY web\/nginx\.conf\.template \/etc\/nginx\/templates\/default\.conf\.template$/m)
+  })
 })

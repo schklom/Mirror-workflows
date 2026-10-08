@@ -478,10 +478,13 @@ build:web-check:
   script:
     - docker build -f web/Dockerfile -t opengym-web:check .
     # It serves the app shell, and the shell is this build (the Coach setup is in the bundle).
+    # The master is uid 101, on port 80 — not the base image's EXPOSE 8080.
     - |
       set -eu
       docker run -d --name web-check -e BACKEND=127.0.0.1 -e PORT=3000 opengym-web:check
       sleep 2
+      [ "$(docker exec web-check id -u)" = 101 ]
+      docker exec web-check grep -q '^Uid:[[:space:]]*101[[:space:]]' /proc/1/status
       docker exec web-check wget -qO- http://127.0.0.1/ | grep -q '<div id="root">'
       docker exec web-check sh -c 'grep -l "coach" /usr/share/nginx/html/assets/index-*.js >/dev/null'
       docker rm -f web-check

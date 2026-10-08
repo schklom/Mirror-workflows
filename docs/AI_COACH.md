@@ -40,12 +40,13 @@ enabling the Coach is a decision you make in the app.
 
 ### Where people find it
 
-The Coach has one door: a **Coach** card at the top of the **Plan** tab (*Plan design and
-reviews, from your own training*), which opens the chat. The phone app also has
+The Coach has one door: the **Coach** entry in the **Plan** menu (the button in the top-right
+corner of the Plan header, last entry: *Plan design and reviews, from your own training*), which
+opens the chat. Up to v1.3.9 it was a card at the top of Plan. The phone app also has
 **Settings → AI Coach**, where the phone chooses between your server's Coach and a key of its
 own (see [On the phone](#on-the-phone)).
 
-The card appears only when all of these hold:
+The entry appears only when all of these hold:
 
 - **The master switch is on.** That is **Set up the Coach** on the admin card
   (**Settings → Account → Admin dashboard**, the **AI Coach** card), and afterwards the toggle at the top

@@ -15,6 +15,8 @@ on:
     branches: [main]
     paths:
       - 'frontend/**'
+      - 'catalogue/**'
+      - 'scripts/catalogue/**'
       - '.github/workflows/pages.yml'
   workflow_dispatch:
 

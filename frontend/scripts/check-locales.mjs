@@ -51,17 +51,21 @@ for (const [lang, dict] of locales) {
   const orphans = union.filter(k => keys.has(k) && seen.get(k) === 1)
   // A blank value is worse than no translation: the English fallback only runs for a key that
   // is ABSENT, so an empty string reaches the screen as an empty screen.
-  const blank = Object.entries(dict).filter(([, v]) => typeof v !== 'string' || !v.trim()).map(([k]) => k)
-  const mangled = Object.entries(dict).filter(([k, v]) => typeof v === 'string' && marks(v) !== marks(k))
-  // {n|form|form…} plural forms (see t() in i18n-core.js) must hang off a number the key passes,
-  // and carry at least two and at most as many forms as the language has plural categories.
-  const categories = new Intl.PluralRules(lang).resolvedOptions().pluralCategories.length
-  const badPlurals = Object.entries(dict).filter(([k, v]) => typeof v === 'string' &&
-    [...v.matchAll(/\{(\d+)\|([^{}]*)\}/g)].some(([, i, forms]) => {
-      const n = forms.split('|')
-      return !k.includes('{' + i + '}') || n.length < 2 || n.length > categories || n.some(f => !f.trim())
-    }))
-  if (missing.length || orphans.length || blank.length || mangled.length || badPlurals.length) {
+  // A plural entry (tn()) answers with the forms of a language that needs more than two —
+  // { one, few, many } for Russian — instead of one string. Every form is held to the same
+  // rules a plain string is: present, not blank, same placeholders as the English key.
+  const formsOf = v => (v && typeof v === 'object' && !Array.isArray(v) ? Object.values(v) : null)
+  const blank = Object.entries(dict).filter(([, v]) => {
+    const forms = formsOf(v)
+    if (forms) return !forms.length || forms.some(f => typeof f !== 'string' || !f.trim())
+    return typeof v !== 'string' || !v.trim()
+  }).map(([k]) => k)
+  const mangled = Object.entries(dict).flatMap(([k, v]) => {
+    const forms = formsOf(v)
+    if (forms) return forms.filter(f => typeof f === 'string' && marks(f) !== marks(k)).map(f => [k, f])
+    return typeof v === 'string' && marks(v) !== marks(k) ? [[k, v]] : []
+  })
+  if (missing.length || orphans.length || blank.length || mangled.length) {
     failed = true
     console.error(`\n${lang}.js: ${keys.size}/${union.length} keys`)
     for (const k of missing) console.error(`  missing:   ${JSON.stringify(k)}`)
@@ -69,8 +73,6 @@ for (const [lang, dict] of locales) {
     for (const k of blank) console.error(`  blank:     ${JSON.stringify(k)}`)
     for (const [k, v] of mangled)
       console.error(`  placeholders: ${JSON.stringify(k)} has [${marks(k) || '—'}], ${JSON.stringify(v)} has [${marks(v) || '—'}]`)
-    for (const [k, v] of badPlurals)
-      console.error(`  plural forms: ${JSON.stringify(v)} (for ${JSON.stringify(k)}) — {n|…} needs a {n} of the key and 2–${categories} non-empty forms`)
   }
 }
 

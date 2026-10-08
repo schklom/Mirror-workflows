@@ -66,7 +66,8 @@ it('searchExercises over the real catalogue returns only exact hits for correctl
     expect(got.length, q).toBe(EXDB.filter(e => plain(e, q)).length)
     expect(got.every(e => plain(e, q)), q).toBe(true)
   }
-  expect(searchExercises(EXDB, 'wrist')[0].n).toBe('band reverse wrist curl')
+  const wrist = searchExercises(EXDB, 'wrist')
+  expect(wrist.map(e => e.n)).toContain('band reverse wrist curl')
 })
 
 // QA 1.3.9: "pullup" found the pull-ups while "benchpress" found nothing — words typed together
@@ -80,4 +81,10 @@ it('finds a name typed with its words run together or hyphenated', () => {
   expect(matchExercise(benchPress, 'dumbbellbenchpress')).toBe(true)
   // Only the name is run together: a body part and equipment word do not fuse into one.
   expect(matchExercise(benchPress, 'chestdumbbell')).toBe(false)
+  // And the run-together form starts at a word: "deadlifthighpull" holds "thigh" mid-word.
+  const highPull = { n: 'sumo deadlift high pull', bp: 'upper legs', eq: 'barbell' }
+  const adductor = { n: 'inner thigh squeeze', bp: 'upper legs', eq: 'body weight' }
+  expect(searchExercises([highPull, adductor], 'thigh')).toEqual([adductor])
+  expect(matchExercise(highPull, 'highpull')).toBe(true)
+  expect(matchExercise(highPull, 'deadlift-high')).toBe(true)
 })

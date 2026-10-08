@@ -276,7 +276,9 @@ function corpusOf(e) {
   // The name run together, so "benchpress" or "bench-press" finds "bench press" the way "pullup"
   // already found the names that spell it that way (QA 1.3.9). Name only: joined across fields,
   // a body part and an equipment word would start matching as one.
-  const entry = { v, s, joined: joinWords(name), nameWords: name.split(/\s+/).filter(Boolean) }
+  // The joined form only counts from the start of a name word, or "thigh" would find "sumo
+  // deadlift high pull" through "deadlifthighpull".
+  const entry = { v, s, ...joinedOf(name), nameWords: name.split(/\s+/).filter(Boolean) }
   corpusCache.set(e, entry)
   return entry
 }
@@ -302,10 +304,33 @@ function nearWord(a, b) {
 }
 
 const queryTokens = query => normalizeStr(query || '').split(/\s+/).filter(Boolean)
+const SEPARATOR = /[\s\-‐-―]/
+const WORD_CHAR = /[\p{L}\p{N}]/u
 const joinWords = str => str.replace(/[\s\-‐-―]+/g, '')
 
-// A token appears in the corpus as typed, or in the name with its spaces and hyphens left out.
-const hits = (entry, tok) => entry.s.includes(tok) || (tok.length >= 4 && entry.joined.includes(joinWords(tok)))
+// The name with its spaces and hyphens left out, and where each of its words starts in that.
+function joinedOf(name) {
+  let joined = ''
+  const starts = new Set()
+  for (let i = 0; i < name.length; i++) {
+    if (SEPARATOR.test(name[i])) continue
+    if (i === 0 || !WORD_CHAR.test(name[i - 1])) starts.add(joined.length)
+    joined += name[i]
+  }
+  return { joined, starts }
+}
+
+function joinedHit(entry, tok) {
+  const needle = joinWords(tok)
+  for (let at = entry.joined.indexOf(needle); at !== -1; at = entry.joined.indexOf(needle, at + 1)) {
+    if (entry.starts.has(at)) return true
+  }
+  return false
+}
+
+// A token appears in the corpus as typed, or in the name with its spaces and hyphens left out,
+// starting at a word.
+const hits = (entry, tok) => entry.s.includes(tok) || (tok.length >= 4 && joinedHit(entry, tok))
 
 // Every token has to appear in the corpus; a token listed in `fuzzy` may instead be one edit
 // away from a name word.

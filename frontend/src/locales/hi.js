@@ -1950,4 +1950,9 @@ export default {
   'Greys show darker in light mode, so buttons don’t look switched off.': 'लाइट मोड में ग्रे रंग गहरे दिखते हैं, ताकि बटन बंद जैसे न लगें।',
   'custom color picker': 'अपना रंग कस्टम रंग चुनने वाला',
   'Signed in from another tab. Your workout came along, keep going here.': 'दूसरे टैब से साइन इन हुआ। आपका वर्कआउट साथ आ गया, यहीं जारी रखें।',
+  'Back-off sets': 'बैक-ऑफ़ सेट',
+  'Each set one step lighter than the one before. The weight above is the first set.': 'हर सेट पिछले वाले से एक स्टेप हल्का। ऊपर वाला वज़न पहला सेट है।',
+  'Sets open at {0}. The first set goes up when every set reaches its reps, and the rest follow it.': 'सेट {0} से शुरू होते हैं। जब हर सेट अपने रेप्स पूरे कर ले तो पहला सेट बढ़ता है, और बाकी उसके साथ चलते हैं।',
+  'The first set goes up when every set reaches its reps, and the rest follow it.': 'जब हर सेट अपने रेप्स पूरे कर ले तो पहला सेट बढ़ता है, और बाकी उसके साथ चलते हैं।',
+  'All sets at the same weight.': 'सभी सेट एक ही वज़न पर।',
 }

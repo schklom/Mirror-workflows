@@ -149,7 +149,7 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
       const row = setSideField(e.sets[i], side, field, v)
       row.sides[side].weightOrigin = WEIGHT_ORIGIN_MANUAL
       e.sets[i] = row
-      e.sets = cascadeWeight(e.sets, i, v, side)
+      e.sets = cascadeWeight(e.sets, i, v, side, e.target?.backoffStep)
     }, true)
   }
   // Drop/burst edits accept an optional `side` ('L'|'R'): present for a per-side row (edits that
@@ -1084,7 +1084,7 @@ function ActiveWorkout() {
     // carries through without retyping every row while explicit manual exceptions stay put.
     if (field === 'w') {
       e.sets[i].weightOrigin = WEIGHT_ORIGIN_MANUAL
-      e.sets = cascadeWeight(e.sets, i, v)
+      e.sets = cascadeWeight(e.sets, i, v, undefined, e.target?.backoffStep)
     }
   })
   const modeAt = idx => modeOf({ ...(A.entries[idx].target || {}), id: A.entries[idx].id })

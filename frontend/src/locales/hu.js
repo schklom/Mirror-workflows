@@ -1953,4 +1953,9 @@ export default {
   'Greys show darker in light mode, so buttons don’t look switched off.': 'A szürkék világos módban sötétebbek, hogy a gombok ne tűnjenek kikapcsoltnak.',
   'custom color picker': 'saját szín egyéni színválasztó',
   'Signed in from another tab. Your workout came along, keep going here.': 'Bejelentkeztél egy másik lapon. Az edzésed is jött vele, folytasd itt.',
+  'Back-off sets': 'Csökkenő sorozatok',
+  'Each set one step lighter than the one before. The weight above is the first set.': 'Minden sorozat egy lépéssel könnyebb az előzőnél. A fenti súly az első sorozaté.',
+  'Sets open at {0}. The first set goes up when every set reaches its reps, and the rest follow it.': 'A sorozatok kezdősúlya: {0}. Az első sorozat akkor nő, ha minden sorozat eléri az ismétlésszámát, és a többi követi.',
+  'The first set goes up when every set reaches its reps, and the rest follow it.': 'Az első sorozat akkor nő, ha minden sorozat eléri az ismétlésszámát, és a többi követi.',
+  'All sets at the same weight.': 'Minden sorozat ugyanazzal a súllyal.',
 }

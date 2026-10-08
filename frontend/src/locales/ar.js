@@ -2003,4 +2003,9 @@ export default {
   'Greys show darker in light mode, so buttons don’t look switched off.': 'تظهر الألوان الرمادية أغمق في الوضع الفاتح، حتى لا تبدو الأزرار مُعطّلة.',
   'custom color picker': 'لون خاص مخصص منتقي الألوان',
   'Signed in from another tab. Your workout came along, keep going here.': 'تم تسجيل الدخول من علامة تبويب أخرى. تمرينك انتقل معك، تابعه هنا.',
+  'Back-off sets': 'مجموعات تنازلية',
+  'Each set one step lighter than the one before. The weight above is the first set.': 'كل مجموعة أخف بخطوة واحدة من التي قبلها. الوزن أعلاه هو المجموعة الأولى.',
+  'Sets open at {0}. The first set goes up when every set reaches its reps, and the rest follow it.': 'تبدأ المجموعات عند {0}. يرتفع وزن المجموعة الأولى عندما تبلغ كل مجموعة تكراراتها، وتتبعها البقية.',
+  'The first set goes up when every set reaches its reps, and the rest follow it.': 'يرتفع وزن المجموعة الأولى عندما تبلغ كل مجموعة تكراراتها، وتتبعها البقية.',
+  'All sets at the same weight.': 'كل المجموعات بالوزن نفسه.',
 }

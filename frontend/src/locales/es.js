@@ -1950,4 +1950,9 @@ export default {
   'Greys show darker in light mode, so buttons don’t look switched off.': 'Los grises se ven más oscuros en modo claro, para que los botones no parezcan apagados.',
   'custom color picker': 'color propio personalizado selector de color',
   'Signed in from another tab. Your workout came along, keep going here.': 'Sesión iniciada en otra pestaña. Tu entreno vino contigo, sigue aquí.',
+  'Back-off sets': 'Series descendentes',
+  'Each set one step lighter than the one before. The weight above is the first set.': 'Cada serie un paso más ligera que la anterior. El peso de arriba es la primera serie.',
+  'Sets open at {0}. The first set goes up when every set reaches its reps, and the rest follow it.': 'Las series empiezan en {0}. La primera serie sube cuando todas las series alcanzan sus repeticiones, y el resto la sigue.',
+  'The first set goes up when every set reaches its reps, and the rest follow it.': 'La primera serie sube cuando todas las series alcanzan sus repeticiones, y el resto la sigue.',
+  'All sets at the same weight.': 'Todas las series con el mismo peso.',
 }

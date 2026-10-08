@@ -1950,4 +1950,9 @@ export default {
   'Greys show darker in light mode, so buttons don’t look switched off.': 'Griler aydınlık modda daha koyu görünür, düğmeler kapalıymış gibi durmasın diye.',
   'custom color picker': 'kendi renk özel renk seçici',
   'Signed in from another tab. Your workout came along, keep going here.': 'Başka bir sekmede giriş yapıldı. Antrenmanın da geldi, buradan devam et.',
+  'Back-off sets': 'Azalan setler',
+  'Each set one step lighter than the one before. The weight above is the first set.': 'Her set bir öncekinden bir adım daha hafif. Yukarıdaki ağırlık ilk settir.',
+  'Sets open at {0}. The first set goes up when every set reaches its reps, and the rest follow it.': 'Setler {0} ile başlar. Her set tekrarlarına ulaştığında ilk set artar, diğerleri onu izler.',
+  'The first set goes up when every set reaches its reps, and the rest follow it.': 'Her set tekrarlarına ulaştığında ilk set artar, diğerleri onu izler.',
+  'All sets at the same weight.': 'Tüm setler aynı ağırlıkta.',
 }

@@ -7,6 +7,7 @@ import { buildSets, applyIntensifierPlan, modeOf } from './history.js'
 import { isWarmupRow } from './workout-model.js'
 import { nextPrescription, applyPrescription, defaultIncrement, weightIncrement, plannedOf } from './progression.js'
 import { dropGrid } from './plates.js'
+import { backoffStepOf, applyBackoff } from './backoff.js'
 
 /**
  * Where a planned session's reps come from (Settings → During a workout). 'plan', the default:
@@ -33,13 +34,20 @@ export function buildPlannedEntry(st, cfg, routine, { noProg = false } = {}) {
   // default for its optional load.
   const step = modeOf(cfg) === 'reps' ? weightIncrement(cfg, st.unit) : defaultIncrement(cfg.id, st.unit)
   const planReps = !startsFromLast(st)
-  const rows = applyPrescription(buildSets(st, cfg, { step, rid: routine?.id, useTarget: plan.kind === 'off', planReps }), plan, step)
+  // Back-off sets step down from the top set by the exercise's own step (lib/backoff.js).
+  const backoffStep = modeOf(cfg) === 'reps' && backoffStepOf(cfg, st.unit) ? step : 0
+  const built = applyPrescription(buildSets(st, cfg, { step, rid: routine?.id, useTarget: plan.kind === 'off', planReps }), plan, step)
+  const rows = backoffStep ? applyBackoff(built, backoffStep) : built
   const sets = applyIntensifierPlan(rows, cfg, dropGrid(st, cfg))
   const target = { ...cfg }
   if (plan.weight != null) target.weight = plan.weight
   if (plan.reps != null) target.reps = plan.reps
   if (plan.sec != null) target.sec = plan.sec
   if (plan.sets != null) target.sets = plan.sets
+  // The step the back-off sets were built with, kept on the session so reading it back
+  // (progression.js readSession) holds each set to its own weight even after the plan changes.
+  if (backoffStep) target.backoffStep = backoffStep
+  else delete target.backoffStep
   // Rows that opened at last session's reps rather than the plan's ("Your last session", and no
   // policy that decided reps), so the workout card can say where the number came from. Written
   // only when true, and never saved with the finished workout.

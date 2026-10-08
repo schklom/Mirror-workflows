@@ -1950,4 +1950,9 @@ export default {
   'Greys show darker in light mode, so buttons don’t look switched off.': '라이트 모드에서는 버튼이 꺼진 것처럼 보이지 않게 회색을 어둡게 표시해요.',
   'custom color picker': '나만의 색상 사용자 지정 색상 선택기',
   'Signed in from another tab. Your workout came along, keep going here.': '다른 탭에서 로그인했어요. 운동도 함께 넘어왔으니 여기서 이어서 하세요.',
+  'Back-off sets': '백오프 세트',
+  'Each set one step lighter than the one before. The weight above is the first set.': '각 세트가 이전 세트보다 한 단계 가볍습니다. 위의 무게가 첫 세트입니다.',
+  'Sets open at {0}. The first set goes up when every set reaches its reps, and the rest follow it.': '세트는 {0}(으)로 시작합니다. 모든 세트가 목표 반복수에 도달하면 첫 세트가 올라가고 나머지도 따라갑니다.',
+  'The first set goes up when every set reaches its reps, and the rest follow it.': '모든 세트가 목표 반복수에 도달하면 첫 세트가 올라가고 나머지도 따라갑니다.',
+  'All sets at the same weight.': '모든 세트를 같은 무게로.',
 }

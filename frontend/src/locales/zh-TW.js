@@ -1943,4 +1943,9 @@ export default {
   'Greys show darker in light mode, so buttons don’t look switched off.': '淺色模式下灰色會調暗一些，免得按鈕看起來像被停用了。',
   'custom color picker': '自訂顏色 自己的顏色 取色器 調色盤',
   'Signed in from another tab. Your workout came along, keep going here.': '已在另一個分頁登入。你的訓練也一起帶過去了，在這裡繼續吧。',
+  'Back-off sets': '遞減組',
+  'Each set one step lighter than the one before. The weight above is the first set.': '每組比上一組輕一個級距。上面的重量是第一組。',
+  'Sets open at {0}. The first set goes up when every set reaches its reps, and the rest follow it.': '各組從 {0} 開始。每組都達到目標次數時，第一組加重，其餘各組隨之調整。',
+  'The first set goes up when every set reaches its reps, and the rest follow it.': '每組都達到目標次數時，第一組加重，其餘各組隨之調整。',
+  'All sets at the same weight.': '所有組使用相同重量。',
 }

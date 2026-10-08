@@ -3,6 +3,7 @@ import { todayISO, isoOf, weekKey, weekStartOf, fmtNum } from './format.js'
 import { fmtSpeed } from './speed.js'
 import { isCardio, isBodyweightEq, isAssisted, betterWeight } from './exercises.js'
 import { phaseForSet, modeForSet, modeForEntry, isWarmupRow, isDropSet, isRestPauseSet, normalizeMode, completedVolumeOf, hasCompletedWork, nextDropWeight, splitBurstReps, makeSideSet, isSideSet, syncSideAggregate, WEIGHT_ORIGIN_MANUAL, dropsOf, clustersOf } from './workout-model.js'
+import { backoffAt, backoffStepOf, backoffWeights } from './backoff.js'
 const objectOf = value => value && typeof value === 'object' && !Array.isArray(value) ? value : {}
 // Completed-state-independent work rows whose authoritative mode matches the requested mode.
 const workRowsForMode = (entry = {}, mode = 'reps') => {
@@ -204,7 +205,11 @@ export function exLine(cfg, unit, speedUnit) {
   const mode = modeOf(cfg)
   const n = cfg.sets || 1
   // Added weight reads as added: "+10 kg" on a dip belt, "60 kg" on a barbell.
-  const load = cfg.weight ? ' · ' + (isBw(cfg) ? '+' : '') + fmtNum(cfg.weight) + ' ' + unit : ''
+  // Back-off sets read as the sequence they open at: "3 × 6 · 26 → 24 → 22 kg".
+  const backoff = mode === 'reps' && cfg.weight > 0 ? backoffStepOf(cfg, unit) : 0
+  const load = !cfg.weight ? ''
+    : backoff ? ' · ' + (isBw(cfg) ? '+' : '') + backoffWeights(cfg.weight, n, backoff).map(fmtNum).join(' → ') + ' ' + unit
+      : ' · ' + (isBw(cfg) ? '+' : '') + fmtNum(cfg.weight) + ' ' + unit
   if (mode === 'cardio') return `${n} × ${cfg.min || 20} min @ ${fmtSpeed(cfg.speed || 8, speedUnit)}`
   // A timed hold has no rep count to spell a split out of ("8/side" below) — "per side" says it
   // happens twice, once each side (buildWorkSets), rather than trying to divide a duration.
@@ -811,17 +816,23 @@ export function streakWeeks(S) {
  * `side` narrows a per-side edit to one limb; without it both limbs are eligible independently.
  * Completed rows (and completed limbs) never get rewritten. Clearing an inherited load removes
  * its `w` key just like a direct edit.
+ *
+ * `backoffStep` (an entry built with back-off sets, lib/backoff.js): each later work row lands
+ * one more step below the edited one rather than at the same load, so 26 → 27.5 on the top set
+ * makes the back-off sets 25.5 and 23.5, not 27.5 three times.
  */
-export function cascadeWeight(rows, from, value, side) {
+export function cascadeWeight(rows, from, value, side, backoffStep = 0) {
   const source = rows[from]
   if (!source) return rows.slice()
   const warm = isWarmupRow(source)
   const sides = isSideSet(source) ? (side ? [side] : ['L', 'R']) : null
   const next = rows.slice()
+  const stepDown = !warm && backoffStep > 0 && value != null
+  let k = 0
   const setWeight = row => {
     const out = { ...row }
     if (value == null) delete out.w
-    else out.w = value
+    else out.w = stepDown ? backoffAt(value, k, backoffStep) : value
     return out
   }
   const setSideWeight = (row, key) => {
@@ -833,6 +844,9 @@ export function cascadeWeight(rows, from, value, side) {
   for (let j = from + 1; j < next.length; j++) {
     const row = next[j]
     if (isWarmupRow(row) !== warm) continue
+    // How many work sets below the edited one this row sits, done or not: a logged set in
+    // between still holds its place in the sequence.
+    k++
     if (sides) {
       if (!isSideSet(row)) continue
       let out = row

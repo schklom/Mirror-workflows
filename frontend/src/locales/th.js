@@ -2152,4 +2152,16 @@ export default {
   'Sets open at {0}. The first set goes up when every set reaches its reps, and the rest follow it.': 'เซ็ตเริ่มที่ {0} เซ็ตแรกจะเพิ่มเมื่อทุกเซ็ตทำครบจำนวนครั้ง และเซ็ตที่เหลือจะเพิ่มตาม',
   'The first set goes up when every set reaches its reps, and the rest follow it.': 'เซ็ตแรกจะเพิ่มเมื่อทุกเซ็ตทำครบจำนวนครั้ง และเซ็ตที่เหลือจะเพิ่มตาม',
   'All sets at the same weight.': 'ทุกเซ็ตใช้น้ำหนักเท่ากัน',
+
+  // v1.4.0 additions
+  'Cloudflare Access': 'Cloudflare Access',
+  'Connection settings': 'การตั้งค่าการเชื่อมต่อ',
+  'Enter both the Client ID and the Client Secret': 'กรอกทั้ง Client ID และ Client Secret',
+  'Exercise drawings': 'ภาพท่าออกกำลังกาย',
+  'Only if your server is behind Cloudflare Access: the service token this phone sends with every request to it. Kept in this phone’s secure storage.': 'ใช้เฉพาะเมื่อเซิร์ฟเวอร์ของคุณอยู่หลัง Cloudflare Access: โทเค็นบริการที่โทรศัพท์เครื่องนี้ส่งไปพร้อมทุกคำขอ เก็บไว้ในที่เก็บข้อมูลที่ปลอดภัยของโทรศัพท์',
+  'Removed': 'ลบออกแล้ว',
+  'Same muscle: {0}': 'กล้ามเนื้อเดียวกัน: {0}',
+  'Where an exercise is drawn on both figures. Your workouts stay exactly as they are.': 'เลือกว่าท่าที่วาดไว้ทั้งสองรูปร่างจะแสดงรูปแบบไหน การออกกำลังกายของคุณยังเหมือนเดิมทุกอย่าง',
+  'estimated': 'ประมาณ',
+  '{0} rated · {1} estimated of {2} sets': 'ให้คะแนนแล้ว {0} · ประมาณ {1} จาก {2} เซ็ต',
 }

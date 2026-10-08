@@ -2196,4 +2196,16 @@ export default {
   'Sets open at {0}. The first set goes up when every set reaches its reps, and the rest follow it.': 'تبدأ المجموعات عند {0}. يرتفع وزن المجموعة الأولى عندما تبلغ كل مجموعة تكراراتها، وتتبعها البقية.',
   'The first set goes up when every set reaches its reps, and the rest follow it.': 'يرتفع وزن المجموعة الأولى عندما تبلغ كل مجموعة تكراراتها، وتتبعها البقية.',
   'All sets at the same weight.': 'كل المجموعات بالوزن نفسه.',
+
+  // v1.4.0 additions
+  'Cloudflare Access': 'Cloudflare Access',
+  'Connection settings': 'إعدادات الاتصال',
+  'Enter both the Client ID and the Client Secret': 'أدخل معرّف العميل (Client ID) وسرّ العميل (Client Secret) معًا',
+  'Exercise drawings': 'رسومات التمارين',
+  'Only if your server is behind Cloudflare Access: the service token this phone sends with every request to it. Kept in this phone’s secure storage.': 'فقط إذا كان خادمك خلف Cloudflare Access: رمز الخدمة الذي يرسله هذا الهاتف مع كل طلب. يُحفظ في التخزين الآمن للهاتف.',
+  'Removed': 'تمت الإزالة',
+  'Same muscle: {0}': 'نفس العضلة: {0}',
+  'Where an exercise is drawn on both figures. Your workouts stay exactly as they are.': 'أي شكل يظهر عندما يكون التمرين مرسومًا على الشكلين. تمريناتك تبقى كما هي تمامًا.',
+  'estimated': 'تقديري',
+  '{0} rated · {1} estimated of {2} sets': '{0} مُقيَّمة · {1} تقديرية من أصل {2} مجموعة',
 }

@@ -2141,4 +2141,16 @@ export default {
   'Sets open at {0}. The first set goes up when every set reaches its reps, and the rest follow it.': 'Serie zaczynają od {0}. Pierwsza seria idzie w górę, gdy każda seria osiągnie swoje powtórzenia, a pozostałe idą za nią.',
   'The first set goes up when every set reaches its reps, and the rest follow it.': 'Pierwsza seria idzie w górę, gdy każda seria osiągnie swoje powtórzenia, a pozostałe idą za nią.',
   'All sets at the same weight.': 'Wszystkie serie z tym samym ciężarem.',
+
+  // v1.4.0 additions
+  'Cloudflare Access': 'Cloudflare Access',
+  'Connection settings': 'Ustawienia połączenia',
+  'Enter both the Client ID and the Client Secret': 'Podaj zarówno Client ID, jak i Client Secret',
+  'Exercise drawings': 'Rysunki ćwiczeń',
+  'Only if your server is behind Cloudflare Access: the service token this phone sends with every request to it. Kept in this phone’s secure storage.': 'Tylko jeśli serwer jest za Cloudflare Access: token usługi, który ten telefon wysyła z każdym żądaniem. Jest przechowywany w bezpiecznej pamięci telefonu.',
+  'Removed': 'Usunięto',
+  'Same muscle: {0}': 'Ten sam mięsień: {0}',
+  'Where an exercise is drawn on both figures. Your workouts stay exactly as they are.': 'Którą sylwetkę pokazują ćwiczenia narysowane na obu. Twoje treningi zostają dokładnie takie, jakie są.',
+  'estimated': 'szacowane',
+  '{0} rated · {1} estimated of {2} sets': 'Ocenione: {0} · szacowane: {1} z {2} serii',
 }

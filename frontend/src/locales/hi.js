@@ -2141,4 +2141,16 @@ export default {
   'Sets open at {0}. The first set goes up when every set reaches its reps, and the rest follow it.': 'सेट {0} से शुरू होते हैं। जब हर सेट अपने रेप्स पूरे कर ले तो पहला सेट बढ़ता है, और बाकी उसके साथ चलते हैं।',
   'The first set goes up when every set reaches its reps, and the rest follow it.': 'जब हर सेट अपने रेप्स पूरे कर ले तो पहला सेट बढ़ता है, और बाकी उसके साथ चलते हैं।',
   'All sets at the same weight.': 'सभी सेट एक ही वज़न पर।',
+
+  // v1.4.0 additions
+  'Cloudflare Access': 'Cloudflare Access',
+  'Connection settings': 'कनेक्शन सेटिंग्स',
+  'Enter both the Client ID and the Client Secret': 'Client ID और Client Secret दोनों दर्ज करें',
+  'Exercise drawings': 'एक्सरसाइज़ ड्रॉइंग',
+  'Only if your server is behind Cloudflare Access: the service token this phone sends with every request to it. Kept in this phone’s secure storage.': 'सिर्फ़ तब जब आपका सर्वर Cloudflare Access के पीछे हो: वह सर्विस टोकन जो यह फ़ोन हर रिक्वेस्ट के साथ भेजता है। यह फ़ोन की सुरक्षित स्टोरेज में रखा जाता है।',
+  'Removed': 'हटाया गया',
+  'Same muscle: {0}': 'वही मांसपेशी: {0}',
+  'Where an exercise is drawn on both figures. Your workouts stay exactly as they are.': 'जहाँ कोई एक्सरसाइज़ दोनों फ़िगर पर बनी है, वहाँ कौन-सा फ़िगर दिखे। आपके वर्कआउट बिल्कुल जैसे हैं वैसे ही रहेंगे।',
+  'estimated': 'अनुमानित',
+  '{0} rated · {1} estimated of {2} sets': '{0} रेट किए · {1} अनुमानित, कुल {2} सेट में से',
 }

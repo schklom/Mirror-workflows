@@ -2141,4 +2141,16 @@ export default {
   'Sets open at {0}. The first set goes up when every set reaches its reps, and the rest follow it.': 'Setler {0} ile başlar. Her set tekrarlarına ulaştığında ilk set artar, diğerleri onu izler.',
   'The first set goes up when every set reaches its reps, and the rest follow it.': 'Her set tekrarlarına ulaştığında ilk set artar, diğerleri onu izler.',
   'All sets at the same weight.': 'Tüm setler aynı ağırlıkta.',
+
+  // v1.4.0 additions
+  'Cloudflare Access': 'Cloudflare Access',
+  'Connection settings': 'Bağlantı ayarları',
+  'Enter both the Client ID and the Client Secret': 'Hem Client ID’yi hem Client Secret’ı gir',
+  'Exercise drawings': 'Egzersiz çizimleri',
+  'Only if your server is behind Cloudflare Access: the service token this phone sends with every request to it. Kept in this phone’s secure storage.': 'Yalnızca sunucun Cloudflare Access arkasındaysa: bu telefonun her isteğe eklediği servis jetonu. Telefonun güvenli depolamasında tutulur.',
+  'Removed': 'Kaldırıldı',
+  'Same muscle: {0}': 'Aynı kas: {0}',
+  'Where an exercise is drawn on both figures. Your workouts stay exactly as they are.': 'Bir egzersiz iki figürde de çizilmişse hangisinin gösterileceği. Antrenmanların olduğu gibi kalır.',
+  'estimated': 'tahmini',
+  '{0} rated · {1} estimated of {2} sets': '{0} puanlandı · {1} tahmini, toplam {2} set',
 }

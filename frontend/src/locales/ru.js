@@ -2145,4 +2145,16 @@ export default {
   'Sets open at {0}. The first set goes up when every set reaches its reps, and the rest follow it.': 'Подходы начинаются с {0}. Первый подход растёт, когда каждый подход выполнен на все повторения, остальные следуют за ним.',
   'The first set goes up when every set reaches its reps, and the rest follow it.': 'Первый подход растёт, когда каждый подход выполнен на все повторения, остальные следуют за ним.',
   'All sets at the same weight.': 'Все подходы с одним весом.',
+
+  // v1.4.0 additions
+  'Cloudflare Access': 'Cloudflare Access',
+  'Connection settings': 'Настройки подключения',
+  'Enter both the Client ID and the Client Secret': 'Введите и Client ID, и Client Secret',
+  'Exercise drawings': 'Рисунки упражнений',
+  'Only if your server is behind Cloudflare Access: the service token this phone sends with every request to it. Kept in this phone’s secure storage.': 'Только если ваш сервер стоит за Cloudflare Access: сервисный токен, который этот телефон отправляет с каждым запросом. Хранится в защищённом хранилище телефона.',
+  'Removed': 'Удалено',
+  'Same muscle: {0}': 'Та же мышца: {0}',
+  'Where an exercise is drawn on both figures. Your workouts stay exactly as they are.': 'Какая фигура показывается там, где упражнение нарисовано на обеих. Ваши тренировки останутся ровно такими, как есть.',
+  'estimated': 'оценочно',
+  '{0} rated · {1} estimated of {2} sets': '{0} с оценкой · {1} расчётных из {2} подходов',
 }

@@ -2134,4 +2134,16 @@ export default {
   'Sets open at {0}. The first set goes up when every set reaches its reps, and the rest follow it.': '各組從 {0} 開始。每組都達到目標次數時，第一組加重，其餘各組隨之調整。',
   'The first set goes up when every set reaches its reps, and the rest follow it.': '每組都達到目標次數時，第一組加重，其餘各組隨之調整。',
   'All sets at the same weight.': '所有組使用相同重量。',
+
+  // v1.4.0 additions
+  'Cloudflare Access': 'Cloudflare Access',
+  'Connection settings': '連線設定',
+  'Enter both the Client ID and the Client Secret': '請同時填寫 Client ID 與 Client Secret',
+  'Exercise drawings': '動作圖示',
+  'Only if your server is behind Cloudflare Access: the service token this phone sends with every request to it. Kept in this phone’s secure storage.': '僅當你的伺服器位於 Cloudflare Access 之後才需要：這支手機會在每個請求中附帶的服務權杖。儲存在這支手機的安全儲存空間中。',
+  'Removed': '已移除',
+  'Same muscle: {0}': '同一肌群：{0}',
+  'Where an exercise is drawn on both figures. Your workouts stay exactly as they are.': '動作在兩種人體圖上都有繪製時，顯示哪一種。你的訓練紀錄保持原樣。',
+  'estimated': '估算',
+  '{0} rated · {1} estimated of {2} sets': '{0} 組已評分 · {1} 組為估算，共 {2} 組',
 }

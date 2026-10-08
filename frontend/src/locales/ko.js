@@ -2141,4 +2141,16 @@ export default {
   'Sets open at {0}. The first set goes up when every set reaches its reps, and the rest follow it.': '세트는 {0}(으)로 시작합니다. 모든 세트가 목표 반복수에 도달하면 첫 세트가 올라가고 나머지도 따라갑니다.',
   'The first set goes up when every set reaches its reps, and the rest follow it.': '모든 세트가 목표 반복수에 도달하면 첫 세트가 올라가고 나머지도 따라갑니다.',
   'All sets at the same weight.': '모든 세트를 같은 무게로.',
+
+  // v1.4.0 additions
+  'Cloudflare Access': 'Cloudflare Access',
+  'Connection settings': '연결 설정',
+  'Enter both the Client ID and the Client Secret': 'Client ID와 Client Secret을 둘 다 입력하세요',
+  'Exercise drawings': '운동 그림',
+  'Only if your server is behind Cloudflare Access: the service token this phone sends with every request to it. Kept in this phone’s secure storage.': '서버가 Cloudflare Access 뒤에 있을 때만 사용합니다: 이 휴대폰이 모든 요청과 함께 보내는 서비스 토큰입니다. 휴대폰의 보안 저장소에 보관됩니다.',
+  'Removed': '삭제됨',
+  'Same muscle: {0}': '같은 근육: {0}',
+  'Where an exercise is drawn on both figures. Your workouts stay exactly as they are.': '운동이 두 인체 그림 모두에 그려져 있을 때 어느 쪽을 보여 줄지 정합니다. 기록한 운동은 그대로 유지됩니다.',
+  'estimated': '추정',
+  '{0} rated · {1} estimated of {2} sets': '총 {2}세트 중 {0}개 평가 · {1}개 추정',
 }

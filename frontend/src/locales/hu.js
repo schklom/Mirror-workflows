@@ -2144,4 +2144,16 @@ export default {
   'Sets open at {0}. The first set goes up when every set reaches its reps, and the rest follow it.': 'A sorozatok kezdősúlya: {0}. Az első sorozat akkor nő, ha minden sorozat eléri az ismétlésszámát, és a többi követi.',
   'The first set goes up when every set reaches its reps, and the rest follow it.': 'Az első sorozat akkor nő, ha minden sorozat eléri az ismétlésszámát, és a többi követi.',
   'All sets at the same weight.': 'Minden sorozat ugyanazzal a súllyal.',
+
+  // v1.4.0 additions
+  'Cloudflare Access': 'Cloudflare Access',
+  'Connection settings': 'Kapcsolati beállítások',
+  'Enter both the Client ID and the Client Secret': 'Add meg a Client ID-t és a Client Secretet is',
+  'Exercise drawings': 'Gyakorlatrajzok',
+  'Only if your server is behind Cloudflare Access: the service token this phone sends with every request to it. Kept in this phone’s secure storage.': 'Csak ha a szervered Cloudflare Access mögött van: az a szolgáltatási token, amelyet ez a telefon minden kéréssel elküld. A telefon biztonságos tárhelyén marad.',
+  'Removed': 'Eltávolítva',
+  'Same muscle: {0}': 'Ugyanaz az izom: {0}',
+  'Where an exercise is drawn on both figures. Your workouts stay exactly as they are.': 'Melyik alakot mutatja egy gyakorlat, ha mindkettőn le van rajzolva. Az edzéseid pontosan úgy maradnak, ahogy vannak.',
+  'estimated': 'becsült',
+  '{0} rated · {1} estimated of {2} sets': '{0} értékelt · {1} becsült ({2} sorozatból)',
 }

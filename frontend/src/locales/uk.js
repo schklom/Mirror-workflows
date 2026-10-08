@@ -2138,4 +2138,16 @@ export default {
   'Sets open at {0}. The first set goes up when every set reaches its reps, and the rest follow it.': 'Підходи починаються з {0}. Перший підхід зростає, коли кожен підхід виконано на всі повтори, решта йдуть за ним.',
   'The first set goes up when every set reaches its reps, and the rest follow it.': 'Перший підхід зростає, коли кожен підхід виконано на всі повтори, решта йдуть за ним.',
   'All sets at the same weight.': 'Усі підходи з однаковою вагою.',
+
+  // v1.4.0 additions
+  'Cloudflare Access': 'Cloudflare Access',
+  'Connection settings': 'Налаштування підключення',
+  'Enter both the Client ID and the Client Secret': 'Введи і Client ID, і Client Secret',
+  'Exercise drawings': 'Малюнки вправ',
+  'Only if your server is behind Cloudflare Access: the service token this phone sends with every request to it. Kept in this phone’s secure storage.': 'Лише якщо твій сервер за Cloudflare Access: сервісний токен, який цей телефон надсилає з кожним запитом. Зберігається в захищеному сховищі телефона.',
+  'Removed': 'Видалено',
+  'Same muscle: {0}': 'Той самий м’яз: {0}',
+  'Where an exercise is drawn on both figures. Your workouts stay exactly as they are.': 'Яка фігура показується там, де вправу намальовано на обох. Твої тренування залишаються точно такими, як були.',
+  'estimated': 'оціночно',
+  '{0} rated · {1} estimated of {2} sets': '{0} з оцінкою · {1} орієнтовних із {2} підходів',
 }

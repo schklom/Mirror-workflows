@@ -1323,6 +1323,12 @@ export const PT_BR_OVERRIDES = {
   'Preview of the image to share': 'Prévia da imagem para compartilhar',
   'Sets open at {0}. The first set goes up when every set reaches its reps, and the rest follow it.': 'As séries começam em {0}. A primeira série sobe quando todas as séries atingem suas repetições, e as demais acompanham.',
   'The first set goes up when every set reaches its reps, and the rest follow it.': 'A primeira série sobe quando todas as séries atingem suas repetições, e as demais acompanham.',
+
+  // v1.4.0 additions
+  'Connection settings': 'Configurações de conexão',
+  'Enter both the Client ID and the Client Secret': 'Informe o Client ID e o Client Secret',
+  'Only if your server is behind Cloudflare Access: the service token this phone sends with every request to it. Kept in this phone’s secure storage.': 'Só se o seu servidor estiver atrás do Cloudflare Access: o token de serviço que este celular envia a cada requisição. Fica guardado no armazenamento seguro do celular.',
+  'Where an exercise is drawn on both figures. Your workouts stay exactly as they are.': 'Que figura mostra um exercício quando está desenhado nas duas. Seus treinos ficam exatamente como estão.',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

@@ -19,9 +19,10 @@ const mocks = vi.hoisted(() => {
   state.toast = vi.fn()
   state.syncNow = vi.fn(async () => state.sync)
   state.passkeyLogin = vi.fn(async () => ({ id: 'u1', name: 'andi' }))
+  state.update = vi.fn(mut => { state.S = { ...state.S }; mut(state.S) })
   state.snapshot = () => ({
     S: state.S, user: state.user, sync: state.sync, needsMobileOnboarding: state.onboarding,
-    isGuest: () => state.guest, syncNow: state.syncNow,
+    isGuest: () => state.guest, syncNow: state.syncNow, update: state.update,
     setUser: vi.fn(), adoptProfile: vi.fn(async () => ({})),
   })
   return state
@@ -60,7 +61,7 @@ beforeEach(() => {
   Object.assign(mocks, { MOBILE: false, DEMO: false, webauthn: true, user: { id: 'u1', name: 'andi' }, guest: false, onboarding: false, sync: sync('ok'), S: {} })
   mocks.sheets.length = 0
   mocks.navs.length = 0
-  mocks.toast.mockClear(); mocks.syncNow.mockClear(); mocks.passkeyLogin.mockClear()
+  mocks.toast.mockClear(); mocks.syncNow.mockClear(); mocks.passkeyLogin.mockClear(); mocks.update.mockClear()
   host = document.createElement('div')
   document.body.appendChild(host)
   root = createRoot(host)
@@ -256,6 +257,49 @@ describe('no server at all', () => {
     mocks.sync = sync('local')
     render()
     expect(bar()).toBeNull()
+  })
+})
+
+// #454: a device kept local on purpose read "not connected to a server" on every screen, for good.
+// The quiet line has an × that hides it; a problem with a server never gets one.
+describe('hiding the no-server line', () => {
+  const close = () => host.querySelector('.conn-x')
+
+  it('a phone kept local never shows the line, so there is nothing to close (#454)', () => {
+    mocks.MOBILE = true
+    mocks.user = null
+    mocks.guest = true
+    mocks.sync = sync('local', { server: null })
+    render()
+    expect(bar()).toBeNull()
+    expect(conn()).toBe('')
+  })
+
+  it('a guest in a browser: the × hides the line, and Settings is not opened by it', () => {
+    mocks.user = null
+    mocks.guest = true
+    mocks.sync = sync('local')
+    render()
+    act(() => close().click())
+    expect(mocks.navs).toEqual([])
+    render()
+    expect(bar()).toBeNull()
+  })
+
+  it('a profile without the key still shows the line', () => {
+    Object.assign(mocks, { user: null, guest: true, sync: sync('local'), S: {} })
+    render()
+    expect(bar()).not.toBeNull()
+  })
+
+  it('hidden, a problem with a server still shows, and has no × of its own', () => {
+    mocks.S = { connLocal: false }
+    for (const [st, extra] of [['offline', { pending: true }], ['error', { lastError: { status: 502 } }], ['auth', {}], ['held', {}]]) {
+      mocks.sync = sync(st, extra)
+      render()
+      expect(bar(), st).not.toBeNull()
+      expect(close(), st).toBeNull()
+    }
   })
 })
 

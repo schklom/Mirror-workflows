@@ -211,6 +211,10 @@ button.conn:active{filter:brightness(1.12)}
 .conn-bar.quiet .conn{min-height:26px;padding-block:2px;padding-inline:4px 2px;background:none;color:var(--label-2);font-size:12px;gap:6px}
 .conn-bar.quiet .conn .icn{font-size:13px;color:var(--label-3)}
 .conn-bar.quiet .conn-a{padding:2px 9px;font-size:12px;color:var(--acc);background:var(--acc-soft)}
+/* its × (#454): beside the line, not inside its button, so hiding it never also connects */
+.conn-bar.quiet .conn-row{display:flex;align-items:center;gap:2px}
+.conn-x{flex:none;display:grid;place-items:center;width:26px;height:26px;border-radius:99px;color:var(--label-3);font-size:12px}
+.conn-x:active{background:var(--surface-2)}
 :root[data-theme="light"] .conn-bar:not(.quiet) .conn-a{background:var(--surface)}
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
   .conn-bar{background:var(--bg)}

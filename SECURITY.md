@@ -55,7 +55,7 @@ in the thread; there's no objection, and no request to sit on it indefinitely.
   expired, or for a profile it was not made for (`api/passkeys-store.js`, `api/device-link.js`).
 - **Frontend** — XSS in the React app, or anything that lets a page on another origin read or
   change a signed-in user's data.
-- **Shipped deployment config** — `docker-compose.yml`, `web/nginx.conf`, the two Dockerfiles:
+- **Shipped deployment config** — `docker-compose.yml`, `web/nginx.conf.template`, the two Dockerfiles:
   a default that exposes something a self-hoster wouldn't expect to be exposed.
 - **The published images** `registry.gitlab.com/duartesantos8/opengym/{api,web}` and
   `ghcr.io/duartesantos8/opengym-{api,web}`.
@@ -284,7 +284,7 @@ Read this before hosting openGym for anyone other than yourself.
   account is refused at the session check, so nothing it does produces an entry except the failed
   sign-ins it keeps attempting.
 - **HTTPS is required and the app doesn't provide it.** The API container speaks plain HTTP and
-  nginx listens on `:80` (`web/nginx.conf`); TLS is your reverse proxy's job. Without it,
+  nginx listens on `:80` (`web/nginx.conf.template`); TLS is your reverse proxy's job. Without it,
   browsers won't do passkeys at all (except on `http://localhost`) and the session cookie is sent
   in the clear.
 - **Rate limiting covers password sign-in and device codes only.** The throttle above applies to

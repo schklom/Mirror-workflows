@@ -13,6 +13,7 @@ import {
   setDropAt, setSideClusterAt, setSideDropAt, setSideField,
 } from '../lib/workout-model.js'
 import { weightIncrement, stepWeight } from '../lib/progression.js'
+import { speedUnitOf, toSpeed, fromSpeed } from '../lib/speed.js'
 import { effortPickerSheet, exerciseDetailSheet, exerciseHistorySheet, exerciseNoteSheet, menuSheet, barWeightSheet } from '../sheets.jsx'
 import { baseWeightFor, inventoryFor, loadKindFor, rowLoad } from '../lib/plates.js'
 import Icon from '../components/Icon.jsx'
@@ -104,6 +105,7 @@ export default function FocusView({
   onNoProg, busy, onSelectEntry, onAdvanceUnit, onPairPrev, onPairNext, onUnpair, pointerEpoch,
 }) {
   const S = useStore(state => state.S)
+  const speedUnit = speedUnitOf(S)
   const entry = S.active.entries[entryIdx]
   const ex = exOr(entry.id)
   const last = lastEntryFor(S, entry.id)
@@ -277,8 +279,10 @@ export default function FocusView({
           {mode === 'cardio' ? <>
             <Stepper label={t('Duration (min)')} ariaLabel="duration" value={set.min || 0} step={1} decimal={false} disabled={readOnly}
               onChange={value => onField(setIdx, 'min', value)} />
-            <Stepper label={t('Speed (km/h)')} ariaLabel="speed" value={set.speed || 0} step={0.5} disabled={readOnly}
-              onChange={value => onField(setIdx, 'speed', value)} />
+            {/* Stored in km/h, shown and typed in the profile's speed unit, as on every other
+                cardio input (lib/speed.js). */}
+            <Stepper label={speedUnit === 'mph' ? t('Speed (mph)') : t('Speed (km/h)')} ariaLabel="speed" value={toSpeed(set.speed || 0, speedUnit)} step={0.5} disabled={readOnly}
+              onChange={value => onField(setIdx, 'speed', fromSpeed(value, speedUnit))} />
           </> : <>
             <Stepper label={t('Load ({0})', S.unit)} ariaLabel="load" value={set.w || 0} step={loadStep} onStep={stepWeight} disabled={readOnly}
               onChange={value => onField(setIdx, 'w', value)} />

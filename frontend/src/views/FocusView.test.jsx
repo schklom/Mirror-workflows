@@ -16,9 +16,10 @@ const SQUAT = '0043'
 
 let root, container, sheetRoot, sheetContainer
 
-function mount(entry) {
+function mount(entry, over = {}) {
   const S = clone(DEF)
   S.unit = 'lb'
+  Object.assign(S, over)
   S.active = {
     id: 'focus-test', d: '2026-09-28', start: Date.now(), routineId: null,
     name: 'Focus', bw: null, cur: 0, workoutView: 'focus', entries: [entry],
@@ -121,5 +122,42 @@ describe('Focus workout view', () => {
     act(() => item.click())
 
     expect(useStore.getState().S.active.entries[0].sets[0].clusters[0].restSec).toBe(7)
+  })
+})
+
+// The speed stepper follows the profile's speed unit like the set row does (lib/speed.js): shown,
+// stepped and typed in mph, stored in km/h. It used to say km/h whatever the setting.
+describe('Focus view cardio speed', () => {
+  const BIKE = '2138'   // stationary bike, cardio
+  const bike = () => ({ id: BIKE, target: { sets: 1, min: 20, speed: 8 }, sets: [{ min: 20, speed: 8, done: false }] })
+  const cell = () => container.querySelector('button[aria-label="Increase speed"]').closest('.stp-w')
+  const stored = () => useStore.getState().S.active.entries[0].sets[0].speed
+  const type = value => {
+    const input = cell().querySelector('input')
+    act(() => {
+      Object.getOwnPropertyDescriptor(input.constructor.prototype, 'value').set.call(input, value)
+      input.dispatchEvent(new Event('input', { bubbles: true }))
+    })
+  }
+
+  it('reads, steps and takes typing in mph for a profile in pounds, and stores km/h', () => {
+    mount(bike())
+    expect(cell().querySelector('.stp-l').textContent).toBe('Speed (mph)')
+    expect(cell().querySelector('input').value).toBe('4.97')   // 8 km/h
+    act(() => container.querySelector('button[aria-label="Increase speed"]').click())
+    expect(stored()).toBe(8.8)
+    type('6')
+    expect(stored()).toBe(9.66)
+  })
+
+  it('follows a chosen unit over the weight unit, and leaves km/h as it was', () => {
+    mount(bike(), { unit: 'kg', speedUnit: 'mph' })
+    expect(cell().querySelector('.stp-l').textContent).toBe('Speed (mph)')
+    act(() => root.unmount()); container.remove()
+    mount(bike(), { speedUnit: 'kmh' })
+    expect(cell().querySelector('.stp-l').textContent).toBe('Speed (km/h)')
+    expect(cell().querySelector('input').value).toBe('8')
+    act(() => container.querySelector('button[aria-label="Increase speed"]').click())
+    expect(stored()).toBe(8.5)
   })
 })

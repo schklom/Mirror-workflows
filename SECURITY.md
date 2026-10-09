@@ -55,7 +55,7 @@ in the thread; there's no objection, and no request to sit on it indefinitely.
   expired, or for a profile it was not made for (`api/passkeys-store.js`, `api/device-link.js`).
 - **Frontend** — XSS in the React app, or anything that lets a page on another origin read or
   change a signed-in user's data.
-- **Shipped deployment config** — `docker-compose.yml`, `web/nginx.conf.template`, `api/Dockerfile` and `web/Dockerfile`:
+- **Shipped deployment config** — `docker-compose.yml`, `web/nginx.conf.template`, the two Dockerfiles:
   a default that exposes something a self-hoster wouldn't expect to be exposed.
 - **The published images** `registry.gitlab.com/duartesantos8/opengym/{api,web}` and
   `ghcr.io/duartesantos8/opengym-{api,web}`.

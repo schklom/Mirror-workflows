@@ -2162,4 +2162,11 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': 'Похожие упражнения',
   'No exact match. These come close:': 'Точного совпадения нет. Вот что близко:',
+  // --- sets to failure (v1.4.0) ---
+  'F': 'F',
+  'Taken to failure': 'До отказа',
+  'Nothing left in the tank': 'Бак пуст',
+  'Last set to failure': 'Последний подход до отказа',
+  'The last set goes until nothing is left, and counts as all-out effort unless you rate it.': 'Последний подход идёт, пока не останется сил, и считается максимальным усилием, если вы не оцените его сами.',
+  'Plan the final set as an all-out one.': 'Запланируйте последний подход на максимум.',
 }

@@ -2158,4 +2158,11 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': '비슷한 운동',
   'No exact match. These come close:': '정확히 일치하는 항목이 없어요. 이건 비슷해요:',
+  // --- sets to failure (v1.4.0) ---
+  'F': 'F',
+  'Taken to failure': '실패 지점까지',
+  'Nothing left in the tank': '남은 힘 없음',
+  'Last set to failure': '마지막 세트는 실패 지점까지',
+  'The last set goes until nothing is left, and counts as all-out effort unless you rate it.': '마지막 세트는 힘이 남지 않을 때까지 하고, 직접 평가하지 않으면 최대 노력으로 계산돼요.',
+  'Plan the final set as an all-out one.': '마지막 세트를 전력으로 계획해요.',
 }

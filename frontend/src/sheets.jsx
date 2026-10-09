@@ -1482,6 +1482,10 @@ function ProgressionFields({ ex, mode, c, setC, routine, unit, perSide, bw }) {
   const deloadPercent = Math.round((c.deloadFactor != null && Number.isFinite(Number(c.deloadFactor)) ? Number(c.deloadFactor) : 0.9) * 100)
   const setRule = v => setC(x => {
     const next = { ...x, prog: v || undefined }
+    // Greyskull's final set is taken to failure by design, so choosing it here switches "Last set
+    // to failure" on too, unless it was already decided. Only the sheet's draft: nothing is
+    // written until Save, and a plan saved before stays what it was.
+    if (v === 'greyskull' && next.lastToFailure == null) next.lastToFailure = true
     return policyFor({ ...next, id: ex.id }, routine, mode) === 'double'
       ? { ...next, ...normalizeRepRange(next.reps, next.repsMin, stride) }
       : next
@@ -1609,8 +1613,10 @@ function ExConfig({ ex, existing, onSave, onDelete, onReplace, close, routine, i
     // was. Mode-independent — a heavy triple, a plank and a cardio interval all rest.
     const restSec = Math.max(0, Math.round(c.restSec) || 0)
     const withRest = restSec ? { restSec } : {}
+    // "Last set to failure": written only when on, so a plan that never asked keeps its shape.
+    const withFailure = c.lastToFailure === true ? { lastToFailure: true } : {}
     if (cardio) onSave({ sets, min: Math.max(1, Math.round(c.min) || 20), speed: Math.max(0, c.speed || 8), ...withNote, ...withRest })
-    else if (mode === 'time') onSave({ sets, mode: 'time', sec: Math.max(1, Math.round(c.sec) || 45), weight: Math.max(0, c.weight || 0), ...flags, ...(perSide ? { side: true } : {}), ...prog, ...withNote, ...withWarmups, ...withRest })
+    else if (mode === 'time') onSave({ sets, mode: 'time', sec: Math.max(1, Math.round(c.sec) || 45), weight: Math.max(0, c.weight || 0), ...flags, ...(perSide ? { side: true } : {}), ...prog, ...withNote, ...withWarmups, ...withRest, ...withFailure })
     else {
       // A unilateral target is stored even: the split has to divide, and a typed 15 would
       // otherwise plan seven reps on one side and eight on the other, every session.
@@ -1639,6 +1645,8 @@ function ExConfig({ ex, existing, onSave, onDelete, onReplace, close, routine, i
       if (!list.length && c.intensifier && c.intensifier.type) out.intensifier = intensifierToSave(c.intensifier)
       // Back-off sets: written only when on, and only where the sheet offered them.
       if (c.backoff === true && backoffOffered(out, 'reps', ex, bw) && isBackoff({ ...out, backoff: true })) out.backoff = true
+      // A pyramid has its own Max set for this, so the flag is not offered (or kept) there.
+      if (!list.length) Object.assign(out, withFailure)
       onSave(out)
     }
   }
@@ -1796,6 +1804,13 @@ function ExConfig({ ex, existing, onSave, onDelete, onReplace, close, routine, i
       </Row>}
       {/* Off keeps the list as `pyramidDraft`, so a stray tap does not lose it before Save
           (save writes neither field unless the toggle is on). */}
+      {/* The last work set of every session is marked as taken to failure, like Greyskull's
+          final AMRAP set (workout-model isFailureSet, history.js applyFailurePlan). A pyramid
+          already has its Max set for that. */}
+      {!pyramid && <Row icon="gauge" iconTint="var(--purple)" title={t('Last set to failure')}
+        subtitle={c.lastToFailure ? t('The last set goes until nothing is left, and counts as all-out effort unless you rate it.') : t('Plan the final set as an all-out one.')}>
+        <Switch checked={c.lastToFailure === true} onChange={v => setC(x => ({ ...x, lastToFailure: v || undefined }))} />
+      </Row>}
       {mode === 'reps' && <Row icon="steps" iconTint="var(--acc)" title={t('Pyramid sets')}
         subtitle={t('A different rep target for each set, e.g. 12 · 8 · 6 · Max · 12.')}>
         <Switch checked={pyramid} onChange={v => setC(x => (v
@@ -3039,14 +3054,15 @@ export function exitWorkoutEdit(onExit = () => nav('/history')) {
 }
 
 // "60 kg × 5, 5, 4", or "60×5 · 62.5×5" when the weight changed between sets; a bodyweight lift
-// without load is just its reps.
-function setsLine(sets, unit) {
+// without load is just its reps. A set taken to failure keeps its "F", as it does in the history.
+export function setsLine(sets, unit) {
   const ws = new Set(sets.map(s => s.w))
+  const reps = s => s.r + (s.f ? ' ' + t('F') : '')
   if (ws.size === 1) {
     const w0 = sets[0].w
-    return (w0 > 0 ? fmtNum(w0) + ' ' + unit + ' × ' : '') + sets.map(s => s.r).join(', ')
+    return (w0 > 0 ? fmtNum(w0) + ' ' + unit + ' × ' : '') + sets.map(reps).join(', ')
   }
-  return sets.map(s => (s.w > 0 ? fmtNum(s.w) + '×' : '') + s.r).join(' · ')
+  return sets.map(s => (s.w > 0 ? fmtNum(s.w) + '×' : '') + reps(s)).join(' · ')
 }
 const TREND = { 1: ['arrowUp', 'var(--green)'], 0: ['minus', 'var(--text-2)'], [-1]: ['arrowDown', 'var(--orange)'] }
 function LastAndNext({ st, w }) {

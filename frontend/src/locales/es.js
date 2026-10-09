@@ -2158,4 +2158,11 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': 'Ejercicios parecidos',
   'No exact match. These come close:': 'Nada exacto. Estos se acercan:',
+  // --- sets to failure (v1.4.0) ---
+  'F': 'F',
+  'Taken to failure': 'Al fallo',
+  'Nothing left in the tank': 'No queda nada en el depósito',
+  'Last set to failure': 'Última serie al fallo',
+  'The last set goes until nothing is left, and counts as all-out effort unless you rate it.': 'La última serie va hasta que no quede nada y cuenta como esfuerzo máximo, salvo que la valores tú.',
+  'Plan the final set as an all-out one.': 'Planea la última serie a tope.',
 }

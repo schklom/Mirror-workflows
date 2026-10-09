@@ -2169,4 +2169,11 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': 'ท่าที่คล้ายกัน',
   'No exact match. These come close:': 'ไม่พบที่ตรงทั้งหมด ท่าเหล่านี้ใกล้เคียง:',
+  // --- sets to failure (v1.4.0) ---
+  'F': 'F',
+  'Taken to failure': 'จนหมดแรง',
+  'Nothing left in the tank': 'หมดถังแล้ว',
+  'Last set to failure': 'เซ็ตสุดท้ายจนหมดแรง',
+  'The last set goes until nothing is left, and counts as all-out effort unless you rate it.': 'เซ็ตสุดท้ายเล่นจนไม่เหลือแรง และนับเป็นความพยายามเต็มที่ เว้นแต่คุณจะให้คะแนนเอง',
+  'Plan the final set as an all-out one.': 'วางแผนเซ็ตสุดท้ายแบบสุดแรง',
 }

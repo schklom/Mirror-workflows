@@ -1331,6 +1331,12 @@ export const PT_BR_OVERRIDES = {
   'Where an exercise is drawn on both figures. Your workouts stay exactly as they are.': 'Que figura mostra um exercício quando está desenhado nas duas. Seus treinos ficam exatamente como estão.',
   'Enter the address of the server this token is for': 'Informe o endereço do servidor a que este token pertence',
   'No exact match. These come close:': 'Nada exato. Estes chegam perto:',
+  // --- sets to failure (v1.4.0) ---
+  'Taken to failure': 'Até a falha',
+  'Nothing left in the tank': 'Tanque vazio',
+  'Last set to failure': 'Última série até a falha',
+  'The last set goes until nothing is left, and counts as all-out effort unless you rate it.': 'A última série vai até não sobrar nada e conta como esforço máximo, a menos que você dê uma nota.',
+  'Plan the final set as an all-out one.': 'Planeje a última série com tudo.',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

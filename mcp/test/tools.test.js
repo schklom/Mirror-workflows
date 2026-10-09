@@ -536,6 +536,19 @@ describe('get_workout', () => {
     expect(w.entries[3].sets[0].label).toBe('20 min @ 8 km/h')   // cardio
   })
 
+  test('a set taken to failure says so, in its label and as a flag', () => {
+    S.workouts = [{
+      id: 'synth-f', d: '2026-07-25', start: 0, end: 1800000, routineId: 'x', name: 'Synth',
+      bw: 78, vol: 0, prs: [],
+      entries: [{ id: 'squat', target: { mode: 'reps' }, sets: [{ w: 60, r: 5, done: true }, { w: 60, r: 9, done: true, failure: true }] }]
+    }]
+    const [plain, failed] = call('get_workout', { date: '2026-07-25' }).entries[0].sets
+    expect(plain.label).toBe('60×5')
+    expect('failure' in plain).toBe(false)
+    expect(failed.label).toBe('60×9 F')
+    expect(failed.failure).toBe(true)
+  })
+
   test('infers cardio mode from the exercise id when the target has no mode key', () => {
     // Reproduces the review bug: the sheet saves a cardio target as {sets, min, speed} with
     // no mode and no id. modeOf must fall through to isCardio(id), which needs the id on the

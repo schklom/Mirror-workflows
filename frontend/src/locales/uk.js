@@ -2155,4 +2155,11 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': 'Схожі вправи',
   'No exact match. These come close:': 'Точного збігу немає. Ось що близько:',
+  // --- sets to failure (v1.4.0) ---
+  'F': 'F',
+  'Taken to failure': 'До відмови',
+  'Nothing left in the tank': 'Бак порожній',
+  'Last set to failure': 'Останній підхід до відмови',
+  'The last set goes until nothing is left, and counts as all-out effort unless you rate it.': 'Останній підхід триває, доки не залишиться сил, і рахується як максимальне зусилля, якщо ти не оціниш його.',
+  'Plan the final set as an all-out one.': 'Заплануй останній підхід на максимум.',
 }

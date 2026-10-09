@@ -2158,4 +2158,11 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': 'Benzer egzersizler',
   'No exact match. These come close:': 'Tam eşleşme yok. Bunlar yakın:',
+  // --- sets to failure (v1.4.0) ---
+  'F': 'F',
+  'Taken to failure': 'Tükenişe kadar',
+  'Nothing left in the tank': 'Depoda bir şey kalmadı',
+  'Last set to failure': 'Son set tükenişe kadar',
+  'The last set goes until nothing is left, and counts as all-out effort unless you rate it.': 'Son set hiçbir şey kalmayana kadar sürer ve sen puanlamadıkça tam efor sayılır.',
+  'Plan the final set as an all-out one.': 'Son seti tam gaz planla.',
 }

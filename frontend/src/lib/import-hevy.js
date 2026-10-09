@@ -265,6 +265,8 @@ export function parseHevyWorkouts(workouts, templates, { unit = 'kg', customEx =
         const set = isCardio
           ? { min: mins, speed: mins > 0 ? Math.round(km / (mins / 60) * 10) / 10 : 0, done: true, ...(warmup ? { phase: 'warmup' } : {}) }
           : { w: wgt, r: reps || 0, done: true, ...(warmup ? { phase: 'warmup' } : {}) }
+        // Hevy's "failure" set type is the app's set taken to failure (workout-model isFailureSet).
+        if (!isCardio && !warmup && /fail/i.test(String(s.type || ''))) set.failure = true
 
         if (!isCardio && s.rpe != null && isFinite(Number(s.rpe)) && Number(s.rpe) > 0) {
           set.rpe = Math.min(10, Math.round(Number(s.rpe) * 100) / 100)

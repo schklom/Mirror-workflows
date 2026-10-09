@@ -8,7 +8,7 @@
 // floor of 6 is only a convention about which sets are worth rating. RPE 8 == RIR 2.
 import { EFFORT, effortOf, workoutAt } from './history.js'
 import { weekKey, weekStartOf, startOfWeek } from './format.js'
-import { isWarmupRow } from './workout-model.js'
+import { isWarmupRow, isFailureSet } from './workout-model.js'
 import { isAssisted } from './exercises.js'
 
 // At or below this a set is close enough to failure to be the kind that drives adaptation.
@@ -19,9 +19,13 @@ export const HARD_RIR = 3
 // like a finding when it is one tap, so the callers show a dash instead.
 export const MIN_RATED = 5
 
-/** A set's effort in RIR, or null when it was never rated. 0 is a rating, not "empty". */
+/**
+ * A set's effort in RIR, or null when it was never rated. 0 is a rating, not "empty". A set
+ * marked as taken to failure (workout-model isFailureSet) is RIR 0 by definition, so it reads as
+ * one when nothing was rated; a rating typed in by hand still wins, it is the more exact of the two.
+ */
 export const rirOf = s =>
-  !s ? null : s.rir != null ? s.rir : s.rpe != null ? 10 - s.rpe : null
+  !s ? null : s.rir != null ? s.rir : s.rpe != null ? 10 - s.rpe : isFailureSet(s) ? 0 : null
 
 /** RIR → the scale being displayed. The reverse of rirOf, for one number. */
 export const toScale = (kind, rir) =>

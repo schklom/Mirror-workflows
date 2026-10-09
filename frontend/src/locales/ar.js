@@ -2213,4 +2213,11 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': 'تمارين مشابهة',
   'No exact match. These come close:': 'لا تطابق تام. هذه قريبة:',
+  // --- sets to failure (v1.4.0) ---
+  'F': 'F',
+  'Taken to failure': 'حتى الفشل العضلي',
+  'Nothing left in the tank': 'لم يبقَ شيء في الخزان',
+  'Last set to failure': 'المجموعة الأخيرة حتى الفشل',
+  'The last set goes until nothing is left, and counts as all-out effort unless you rate it.': 'تستمر المجموعة الأخيرة حتى لا يبقى شيء، وتُحسب كأقصى جهد ما لم تقيّمها بنفسك.',
+  'Plan the final set as an all-out one.': 'خطّط للمجموعة الأخيرة بكل ما لديك.',
 }

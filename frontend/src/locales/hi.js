@@ -2158,4 +2158,11 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': 'मिलते-जुलते व्यायाम',
   'No exact match. These come close:': 'सटीक मेल नहीं मिला। ये करीब हैं:',
+  // --- sets to failure (v1.4.0) ---
+  'F': 'F',
+  'Taken to failure': 'फेलियर तक',
+  'Nothing left in the tank': 'टंकी में कुछ नहीं बचा',
+  'Last set to failure': 'आख़िरी सेट फेलियर तक',
+  'The last set goes until nothing is left, and counts as all-out effort unless you rate it.': 'आख़िरी सेट तब तक चलता है जब तक कुछ न बचे, और जब तक आप ख़ुद रेट न करें, इसे पूरी ताक़त वाला प्रयास माना जाता है।',
+  'Plan the final set as an all-out one.': 'आख़िरी सेट को पूरी ताक़त वाला बनाएँ।',
 }

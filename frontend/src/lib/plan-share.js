@@ -100,6 +100,8 @@ function cleanEx(e) {
   if (e.inc > 0) o.inc = e.inc
   // Back-off sets step down by that same step; written only when on (lib/backoff.js).
   if (isBackoff(e)) o.backoff = true
+  // "Last set to failure" is how the exercise is prescribed too; only when on, never on cardio.
+  if (e.lastToFailure === true && mode !== 'cardio') o.lastToFailure = true
   // Epley deload factor is a per-occurrence progression setting. Omit the default so older
   // exports remain compact and importing them preserves the default 90% behaviour.
   if (e.deloadFactor != null && Number(e.deloadFactor) !== 0.9) o.deloadFactor = e.deloadFactor
@@ -328,8 +330,8 @@ function scheme(e, unit, speedUnit) {
     return sets > 1 ? `${sets} × ${body}` : body
   }
   const line = exLine({ ...e, reps: e.reps ?? 10 }, unit, speedUnit)
-  const intens = intensifierLine(e.intensifier)
-  return intens ? `${line} · ${intens}` : line
+  const extras = [intensifierLine(e.intensifier), e.lastToFailure === true ? t('Last set to failure') : ''].filter(Boolean)
+  return [line, ...extras].join(' · ')
 }
 
 // A drop-set or rest-pause is how the exercise is prescribed, so the printout names it — the

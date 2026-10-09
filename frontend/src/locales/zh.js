@@ -2158,4 +2158,11 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': '相似动作',
   'No exact match. These come close:': '没有完全匹配，这些比较接近：',
+  // --- sets to failure (v1.4.0) ---
+  'F': 'F',
+  'Taken to failure': '做到力竭',
+  'Nothing left in the tank': '油箱见底了',
+  'Last set to failure': '最后一组做到力竭',
+  'The last set goes until nothing is left, and counts as all-out effort unless you rate it.': '最后一组做到一点不剩，除非你自己打分，否则按全力计算。',
+  'Plan the final set as an all-out one.': '把最后一组安排成全力组。',
 }

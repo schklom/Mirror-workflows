@@ -11,7 +11,7 @@ import {
 } from '../../frontend/src/lib/history.js'
 import { queueView, queueNext, pinState } from '../../frontend/src/lib/queue.js'
 import { exOr, registerCustom } from '../../frontend/src/lib/exercises.js'
-import { isWarmupRow } from '../../frontend/src/lib/workout-model.js'
+import { isWarmupRow, isFailureSet } from '../../frontend/src/lib/workout-model.js'
 import {
   bestSetOf, best1RM, e1rmSeries, DEFAULT_FORMULA, REP_CAP
 } from '../../frontend/src/lib/onerm.js'
@@ -67,6 +67,8 @@ function entryView(e, S) {
     sets: (e.sets || []).map(s => ({
       done: !!s.done,
       label: setLabel(e.id, { ...s, done: undefined }, cfg),
+      // Taken to failure (the app's "F"): RIR 0 for effort when nothing was rated by hand.
+      ...(isFailureSet(s) ? { failure: true } : {}),
       w: Number(s.w) || 0,
       r: Number(s.r) || 0,
       sec: Number(s.sec) || 0,
@@ -605,6 +607,7 @@ export const previewSession = {
         opening_sets: rows.map(s => ({
           phase: isWarmupRow(s) ? 'warmup' : 'work',
           type: s.type || 'straight',
+          ...(isFailureSet(s) ? { failure: true } : {}),
           label: setLabel(cfg.id, { ...s, done: undefined }, { ...cfg, id: cfg.id }),
           w: Number(s.w) || 0,
           r: Number(s.r) || 0,

@@ -2,13 +2,14 @@
 // previous session of the same exercise, and what the next session will open at. "Next" has no
 // rule of its own: it is buildPlannedEntry, the same call Start makes, run on the state right
 // after this workout was saved, so the summary cannot promise a number the next session won't.
-import { isWarmupRow } from './workout-model.js'
+import { isWarmupRow, isFailureSet } from './workout-model.js'
 import { buildPlannedEntry } from './session-start.js'
 import { workoutAt, modeOf } from './history.js'
 
 const workSets = entry => (Array.isArray(entry?.sets) ? entry.sets : [])
   .filter(s => s && s.done && !isWarmupRow(s) && Number(s.r) > 0)
-  .map(s => ({ w: Number(s.w) || 0, r: Math.round(Number(s.r)) }))
+  // `f`: taken to failure, so the summary can mark it; written only when true.
+  .map(s => ({ w: Number(s.w) || 0, r: Math.round(Number(s.r)), ...(isFailureSet(s) ? { f: true } : {}) }))
 
 const top = sets => sets.reduce((m, s) => Math.max(m, s.w), 0)
 const reps = sets => sets.reduce((n, s) => n + s.r, 0)

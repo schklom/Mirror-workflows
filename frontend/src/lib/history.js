@@ -4,7 +4,7 @@ import { todayISO, isoOf, weekKey, weekStartOf, fmtNum } from './format.js'
 import { fmtSpeed } from './speed.js'
 import { isCardio, isBodyweightEq, isAssisted, betterWeight } from './exercises.js'
 import { barWeightFor } from './bar.js'
-import { phaseForSet, modeForSet, modeForEntry, isWarmupRow, isDropSet, isRestPauseSet, normalizeMode, completedVolumeOf, hasCompletedWork, nextDropWeight, splitBurstReps, makeSideSet, isSideSet, syncSideAggregate, WEIGHT_ORIGIN_MANUAL, dropsOf, clustersOf } from './workout-model.js'
+import { phaseForSet, modeForSet, modeForEntry, isWarmupRow, isFailureSet, isDropSet, isRestPauseSet, normalizeMode, completedVolumeOf, hasCompletedWork, nextDropWeight, splitBurstReps, makeSideSet, isSideSet, syncSideAggregate, WEIGHT_ORIGIN_MANUAL, dropsOf, clustersOf } from './workout-model.js'
 import { backoffAt, backoffStepOf, backoffWeights } from './backoff.js'
 const objectOf = value => value && typeof value === 'object' && !Array.isArray(value) ? value : {}
 // Completed-state-independent work rows whose authoritative mode matches the requested mode.
@@ -149,7 +149,10 @@ export function setLabel(id, s, cfg, speedUnit) {
   // to the volume those same sets still count. A set with reps and nothing cardio was a rep set.
   if (!EXPLICIT_MODES.has(cfg?.mode) && mode !== 'reps' && s.r > 0 && !(s.min > 0 || s.speed > 0 || s.sec > 0)) mode = 'reps'
   if (mode === 'cardio') return `${s.min || 0} min @ ${fmtSpeed(s.speed || 0, speedUnit)}`
-  if (mode === 'time') return fmtSec(s.sec) + (s.w > 0 ? ` · ${fmtNum(s.w)}` : '')
+  // A set taken to failure carries its "F" behind the numbers, the mark lifting logs use for it;
+  // the history, the text export and the set menu all read it from here.
+  const fail = isFailureSet(s) ? ' ' + t('F') : ''
+  if (mode === 'time') return fmtSec(s.sec) + (s.w > 0 ? ` · ${fmtNum(s.w)}` : '') + fail
   const bw = isBw(c)
   const load = (w, reps) => (bw ? (w > 0 ? `+${fmtNum(w)} × ` : '') + reps : `${fmtNum(w || 0)}×${reps}`)
   // A rest-pause set's reps read as its bursts, "60×10+4+2", the way the protocol is written
@@ -184,11 +187,11 @@ export function setLabel(id, s, cfg, speedUnit) {
     return ['L', 'R'].map(key => {
       const side = s.sides[key]
       return `${t(key)} ${partial && !side.done ? '–' : oneSide(side) + effortTail(side)}`
-    }).join(' · ')
+    }).join(' · ') + fail
   }
   // Bodyweight reads as what you did — "12", or "+10 × 12" once there is a belt involved —
   // rather than "0×12", which says a set was performed with no weight and means nothing.
-  return oneSide(s) + effortTail(s)
+  return oneSide(s) + fail + effortTail(s)
 }
 // Default config for a freshly added exercise.
 export function defaultConfig(id, mode) {
@@ -636,6 +639,27 @@ function seedSideFromLast(row, prev, planReps) {
  * drops sitting underneath it. `grid` puts each drop on a loadable weight (nextDropWeight).
  */
 export function applyIntensifierPlan(sets, cfg, grid) {
+  return applyFailurePlan(shapeRows(sets, cfg, grid), cfg)
+}
+
+/**
+ * "Last set to failure" (`cfg.lastToFailure`, written only when on): the last work row of a
+ * freshly built exercise is marked as taken to failure, the way Greyskull's final set is an
+ * AMRAP. Only that one row, and only a row not logged yet; every other row keeps what it had, so
+ * a plan without the flag builds exactly the rows it always did. Runs inside applyIntensifierPlan,
+ * the step every way of building an exercise's rows ends with, so none of them can forget it.
+ */
+export function applyFailurePlan(sets, cfg) {
+  if (!cfg || cfg.lastToFailure !== true || modeOf(cfg) === 'cardio') return sets
+  let last = -1
+  sets.forEach((s, i) => { if (!isWarmupRow(s)) last = i })
+  // A timed per-side hold is an L row and an R row that read as one set: both halves are the set.
+  const from = last > 0 && sets[last]?.side === 'R' && sets[last - 1]?.side === 'L' ? last - 1 : last
+  if (last < 0) return sets
+  return sets.map((s, i) => (i >= from && i <= last && !s.done ? { ...s, failure: true } : s))
+}
+
+function shapeRows(sets, cfg, grid) {
   const kind = cfg && cfg.intensifier && cfg.intensifier.type
   if (kind !== 'dropset' && kind !== 'restpause') return sets
   if (kind === 'dropset') {

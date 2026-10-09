@@ -2237,4 +2237,11 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': 'একই ধরনের ব্যায়াম',
   'No exact match. These come close:': 'হুবহু মিল নেই। এগুলো কাছাকাছি:',
+  // --- sets to failure (v1.4.0) ---
+  'F': 'F',
+  'Taken to failure': 'ফেইলিওর পর্যন্ত',
+  'Nothing left in the tank': 'ট্যাঙ্কে আর কিছু নেই',
+  'Last set to failure': 'শেষ সেট ফেইলিওর পর্যন্ত',
+  'The last set goes until nothing is left, and counts as all-out effort unless you rate it.': 'শেষ সেট চলবে যতক্ষণ না আর কিছু বাকি থাকে, আর আপনি নিজে রেট না করলে এটি সর্বোচ্চ প্রচেষ্টা হিসেবে গণ্য হবে।',
+  'Plan the final set as an all-out one.': 'শেষ সেটটি পুরো শক্তি দিয়ে পরিকল্পনা করুন।',
 }

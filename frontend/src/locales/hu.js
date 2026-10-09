@@ -2161,4 +2161,11 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': 'Hasonló gyakorlatok',
   'No exact match. These come close:': 'Nincs pontos találat. Ezek közel állnak:',
+  // --- sets to failure (v1.4.0) ---
+  'F': 'F',
+  'Taken to failure': 'Bukásig',
+  'Nothing left in the tank': 'Üres a tank',
+  'Last set to failure': 'Utolsó sorozat bukásig',
+  'The last set goes until nothing is left, and counts as all-out effort unless you rate it.': 'Az utolsó sorozat addig tart, amíg semmi sem marad, és teljes erőbedobásnak számít, hacsak nem értékeled magad.',
+  'Plan the final set as an all-out one.': 'Tervezd az utolsó sorozatot teljes erővel.',
 }

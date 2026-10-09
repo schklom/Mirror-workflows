@@ -349,8 +349,9 @@ function trainedIds(S, workouts) {
 // while stalls and trends already live in `aggregates`, computed over the full window.
 export const FULL_DETAIL_SESSIONS = 3;
 
+// A set taken to failure (the app's "F", `failure: true`) is RIR 0 when nothing was rated.
 const fmtSet = s => {
-  const eff = s.rir != null ? '@RIR' + s.rir : s.rpe != null ? '@RPE' + s.rpe : '';
+  const eff = s.rir != null ? '@RIR' + s.rir : s.rpe != null ? '@RPE' + s.rpe : s.failure === true && !isWarmupSet(s) ? '@failure' : '';
   if (s.sec != null) return s.sec + 's' + eff;
   if (s.min != null) return s.min + 'min' + (s.speed != null ? '/' + s.speed : '') + eff;
   return (s.w != null ? s.w + 'x' : '') + (s.r != null ? s.r : '?') + eff;
@@ -360,6 +361,7 @@ const fmtSet = s => {
 function cleanSet(s) {
   const o = { done: !!s.done };
   if (isWarmupSet(s)) o.warmup = true;
+  else if (s.failure === true) o.failure = true;
   for (const k of ['w', 'r', 'sec', 'min', 'speed', 'rir', 'rpe']) if (num(s[k]) !== undefined) o[k] = s[k];
   return o;
 }

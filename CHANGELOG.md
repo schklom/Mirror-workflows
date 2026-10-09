@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+**Training**
+
+- **Sets to failure**: mark any set as taken to failure from its set menu and it gets a little
+  purple "F". It counts as RIR 0 in your effort stats and the fatigue map (unless you rated it
+  yourself) and stays a normal work set for volume and records. Plan it too: "Last set to failure"
+  in an exercise's settings makes the final set an all-out one every session, and Greyskull
+  switches it on for you. The "F" shows in history, the finish summary and Copy as text, and Hevy
+  and CSV imports keep it.
+
 **Languages**
 
 - 🇵🇱 **Polish exercise names**: all 1,324 of them, with the same switch to show the English name

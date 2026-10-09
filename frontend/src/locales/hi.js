@@ -2158,4 +2158,15 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': 'मिलते-जुलते व्यायाम',
   'No exact match. These come close:': 'सटीक मेल नहीं मिला। ये करीब हैं:',
+  // --- day notes (#261) ---
+  'Sick': 'बीमार',
+  'Travelling': 'सफ़र में',
+  'Injured': 'चोटिल',
+  'Day note': 'दिन का नोट',
+  'Add a note for this day': 'इस दिन के लिए नोट जोड़ें',
+  'Noted. See you next session!': 'नोट हो गया। अगले सेशन में मिलते हैं!',
+  'Note removed': 'नोट हटाया गया',
+  'Remove note': 'नोट हटाएँ',
+  'Life happens. Leave yourself a note, and the missed-day nudge lets this one go.': 'ज़िंदगी है, होता है। अपने लिए एक नोट छोड़ दें, और छूटे दिन की याद दिलाने वाला इस दिन को छोड़ देगा।',
+  'Anything else? (optional)': 'और कुछ? (वैकल्पिक)',
 }

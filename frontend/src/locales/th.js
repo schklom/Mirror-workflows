@@ -2169,4 +2169,15 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': 'ท่าที่คล้ายกัน',
   'No exact match. These come close:': 'ไม่พบที่ตรงทั้งหมด ท่าเหล่านี้ใกล้เคียง:',
+  // --- day notes (#261) ---
+  'Sick': 'ป่วย',
+  'Travelling': 'เดินทาง',
+  'Injured': 'บาดเจ็บ',
+  'Day note': 'บันทึกประจำวัน',
+  'Add a note for this day': 'เพิ่มบันทึกสำหรับวันนี้',
+  'Noted. See you next session!': 'จดไว้แล้ว เจอกันเซสชันหน้า!',
+  'Note removed': 'ลบบันทึกแล้ว',
+  'Remove note': 'ลบบันทึก',
+  'Life happens. Leave yourself a note, and the missed-day nudge lets this one go.': 'ชีวิตก็แบบนี้ ทิ้งบันทึกไว้ให้ตัวเอง แล้วการเตือนวันที่พลาดจะปล่อยวันนี้ไป',
+  'Anything else? (optional)': 'มีอะไรอีกไหม (ไม่บังคับ)',
 }

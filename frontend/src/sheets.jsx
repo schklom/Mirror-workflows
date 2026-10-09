@@ -63,6 +63,7 @@ import { workoutText } from './lib/workout-text.js'
 import { workoutCardModel, layoutWorkoutCard, drawWorkoutCard, viewAspect, CARD_FONT } from './lib/workout-card.js'
 import { copyText } from './lib/clipboard.js'
 import { queueRemaining, pinState } from './lib/queue.js'
+import { DAY_NOTE_TAGS, DAY_NOTE_LABEL, DAY_NOTE_ICON, dayNoteOf, dayNoteLine, canNoteDay, withDayNote } from './lib/day-notes.js'
 
 const S = () => useStore.getState().S
 const update = (...a) => useStore.getState().update(...a)
@@ -2103,6 +2104,10 @@ function DayOverride({ iso, close }) {
   // that date with the day's routines picked, where the time and the duration can still change.
   const missed = iso < todayISO() && effIds.length > 0 && !workoutsOn(st, iso).length
   const logIt = () => { close(); logPastWorkoutSheet({ iso, routineIds: effIds }) }
+  // A note on a day off (#261, lib/day-notes.js): offered on today and past days with nothing
+  // logged, kept in view on any day that already has one. Quiet on purpose: a row, not a button.
+  const note = dayNoteOf(st, iso)
+  const canNote = !!note || (canNoteDay(iso) && !workoutsOn(st, iso).length)
   // The coach week's sessions still to do come first, in slot order: picking one here pins it
   // to this day — the same per-date override, read back by queueNext (lib/queue.js). A session
   // already pinned to another day says so in place of its exercise count. Done sessions and
@@ -2128,6 +2133,15 @@ function DayOverride({ iso, close }) {
     <h3>{fmtDate(iso, true)}</h3>
     <div className="muted small" style={{ marginBottom: 12 }}>{t('Weekly plan:')} {weeklyNames.length ? deriveSessionName(weeklyNames) : t('Rest')}{changed && <span style={{ color: 'var(--orange)' }}> · {t('changed for this day')}</span>}<br />{t('Sick, missed a day or want a different session? Pick what to train instead.')}</div>
     {missed && <div style={{ marginBottom: 14 }}><Button variant="primary" icon="checkCircle" onClick={logIt}>{t('Log this workout')}</Button></div>}
+    {canNote && <div className="day-note" style={{ marginBottom: 14 }}>
+      <div className="item day-note-row" {...tappable(() => dayNoteSheet(iso))}>
+        <span className="lrow-i" style={{ background: 'var(--surface-3)' }}><Icon name={note?.tag ? DAY_NOTE_ICON[note.tag] : 'note'} /></span>
+        <div className="grow">{note
+          ? <><div className="tt">{note.tag ? t(DAY_NOTE_LABEL[note.tag]) : t('Day note')}</div>{note.text && <div className="ss" style={{ whiteSpace: 'pre-wrap' }}>{note.text}</div>}</>
+          : <div className="tt">{t('Add a note for this day')}</div>}</div>
+        <Icon name={note ? 'pencil' : 'plus'} className="chev" />
+      </div>
+    </div>}
     {coach.length > 0 && <>
       <h4 className="sec" style={{ marginTop: 0 }}>{ownLoop ? t('Your loop') : t('Coach week')}</h4>
       <div className="list" style={{ marginBottom: 8 }}>{coach.map(row)}</div>
@@ -2140,6 +2154,43 @@ function DayOverride({ iso, close }) {
   </>
 }
 export const dayOverrideSheet = iso => ui().openSheet(close => <DayOverride iso={iso} close={close} />)
+
+// Why a day went without training (#261): one quick pick, a line of text, or both. Saving an
+// empty note takes it away (a stamped clear, lib/day-notes.js withDayNote), and so does Remove.
+function DayNote({ iso, close }) {
+  const noteRef = useRef(null)
+  const onNoteFocus = useSheetKeyboard(noteRef)
+  const st = useStore(s => s.S)
+  const had = dayNoteOf(st, iso)
+  const [tag, setTag] = useState(had?.tag || null)
+  const [text, setText] = useState(had?.text || '')
+  const write = v => {
+    update(s => { s.dayNotes = withDayNote(s.dayNotes, iso, v) })
+    close()
+  }
+  const save = () => {
+    const clean = text.trim().slice(0, NOTE_MAX)
+    if (!tag && !clean && !had) { close(); return }
+    write({ tag, text: clean })
+    toast(tag || clean ? t('Noted. See you next session!') : t('Note removed'))
+  }
+  const remove = () => { write(null); toast(t('Note removed')) }
+  return <>
+    <h3>{fmtDate(iso, true)}</h3>
+    <div className="muted small" style={{ marginBottom: 12 }}>{t('Life happens. Leave yourself a note, and the missed-day nudge lets this one go.')}</div>
+    <div className="chips" style={{ margin: '0 0 12px' }}>
+      {DAY_NOTE_TAGS.map(k => <button key={k} className={'chip nocap' + (tag === k ? ' on' : '')} aria-pressed={tag === k}
+        onClick={() => setTag(tag === k ? null : k)}><Icon name={DAY_NOTE_ICON[k]} /> {t(DAY_NOTE_LABEL[k])}</button>)}
+    </div>
+    <textarea ref={noteRef} className="input" rows={3} maxLength={NOTE_MAX} value={text}
+      placeholder={t('Anything else? (optional)')}
+      onFocus={onNoteFocus} onChange={e => setText(e.target.value)} />
+    <div style={{ height: 18 }} />
+    <Button variant="primary" onClick={save}>{t('Save')}</Button>
+    {had && <><div style={{ height: 10 }} /><Button variant="ghost" icon="trash" onClick={remove}>{t('Remove note')}</Button></>}
+  </>
+}
+export const dayNoteSheet = iso => ui().openSheet(close => <DayNote iso={iso} close={close} />)
 
 // Plan → Schedule → a weekday. One sheet for the whole day: tap routines to put them on it or
 // take them off (two or more make a combined day, docs/dev/COMBINE_ROUTINES.md), in the order
@@ -2509,8 +2560,12 @@ function Calendar({ start, close }) {
     const iso = y + '-' + String(mo + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0')
     // A fulfilled pin (a coach session pinned here and since done) reads as no override, as it does everywhere else.
     const ws = byDay[iso], planned = effectiveRoutineIds(st, iso).length > 0, ovr = st.dayPlan[iso] !== undefined && pinState(st, st.dayPlan[iso]) !== 'done'
-    const dotCls = ws ? 'done' : ovr && planned ? 'ovr' : planned ? 'plan' : ''
-    cells.push(<button key={d} className={'cal-d' + (ws ? ' has' : '') + (iso === todayISO() ? ' today' : '')} onClick={() => {
+    // A day off with a note on it (#261) shows the note's dot instead of the plan's, and its
+    // note as the tooltip; tapping it opens the day sheet, where the note is.
+    const note = !ws && dayNoteOf(st, iso)
+    const dotCls = ws ? 'done' : note ? 'noted' : ovr && planned ? 'ovr' : planned ? 'plan' : ''
+    cells.push(<button key={d} className={'cal-d' + (ws ? ' has' : '') + (note ? ' noted' : '') + (iso === todayISO() ? ' today' : '')}
+      title={note ? dayNoteLine(note, t) : undefined} onClick={() => {
       if (!ws) { close(); dayOverrideSheet(iso); return }
       if (ws.length === 1) { close(); workoutDetailSheet(ws[0]); return }
       close(); ui().openSheet(c2 => <><h3>{fmtDate(iso, true)}</h3><div className="list">{ws.map(w => <WorkoutRow key={w.id} w={w} onClick={() => { c2(); workoutDetailSheet(w) }} />)}</div></>)
@@ -2528,6 +2583,8 @@ function Calendar({ start, close }) {
       <span><i style={{ background: 'var(--acc)' }} />{t('Trained')}</span>
       <span><i style={{ background: 'var(--label-3)' }} />{t('Planned')}</span>
       <span><i style={{ background: 'var(--orange)' }} />{t('Rescheduled')}</span>
+      {Object.keys(st.dayNotes || {}).some(k => k.startsWith(y + '-' + String(mo + 1).padStart(2, '0')) && dayNoteOf(st, k)) &&
+        <span><i style={{ background: 'var(--indigo)' }} />{t('Day note')}</span>}
     </div>
     <div className="small dim" style={{ textAlign: 'center', marginTop: 10 }}>{t('Tap a trained day for details · tap any other day to plan a session')}</div>
   </>
@@ -2545,6 +2602,16 @@ export function WorkoutRow({ w, onClick }) {
       <div className="ss">{[fmtDate(w.d, true), ...durPart(w.end - w.start), tn('{0} set', '{0} sets', setsDone(w)), fmtVol(w.vol, st.unit)].join(' · ')}</div></div>
     {mediaN > 0 && <span className="wrow-media" title={tn('{0} photo or video', '{0} photos or videos', mediaN)} aria-label={tn('{0} photo or video', '{0} photos or videos', mediaN)}><Icon name="image" />{mediaN}</span>}
     {w.prs && w.prs.length > 0 && <span className="pr"><Icon name="trophy" />{w.prs.length} PR</span>}
+    <Icon name="chevronRight" className="chev" />
+  </div>
+}
+
+/* a day off with a note (#261), as History lists it between the workouts */
+export function DayNoteRow({ iso, note }) {
+  return <div className="item day-note-row" {...tappable(() => dayNoteSheet(iso))}>
+    <span className="lrow-i" style={{ width: 34, height: 34, borderRadius: 8, fontSize: 19, background: 'var(--surface-3)' }}><Icon name={note.tag ? DAY_NOTE_ICON[note.tag] : 'note'} /></span>
+    <div className="grow"><div className="tt">{note.tag ? t(DAY_NOTE_LABEL[note.tag]) : t('Day note')}</div>
+      <div className="ss">{[fmtDate(iso, true), note.text].filter(Boolean).join(' · ')}</div></div>
     <Icon name="chevronRight" className="chev" />
   </div>
 }

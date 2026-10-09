@@ -34,7 +34,7 @@ import { createMediaStore, mediaLimits, mediaConfig, MediaError, HASH_RE } from 
 import { effectiveRoutineId } from './queue.js';
 import { stampPut } from './sync-stamps.js';
 import { atomicWrite as durableWrite } from './durable.js';
-import { nudgeFor, nudgeWindowOpen, toneOf } from './nudge.js';
+import { excusedOn, nudgeFor, nudgeWindowOpen, toneOf } from './nudge.js';
 
 const PORT = +(process.env.PORT || 3000);
 const DATA = process.env.DATA_DIR || '/data';
@@ -513,6 +513,7 @@ setInterval(() => {
       if (!(late >= 0 && late <= REMINDER_WINDOW_MIN)) continue;
       if (user.lastReminder === now.date) continue;
       if ((S.workouts || []).some(w => w?.d === now.date)) continue;
+      if (excusedOn(S, now.date)) continue; // noted as sick, away, … (nudge.js excusedOn)
       const rid = effectiveRoutineId(S, now.date);
       if (!rid) continue; // rest day — nothing planned
       const routine = (S.routines || []).find(r => r?.id === rid);

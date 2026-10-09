@@ -2158,4 +2158,15 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': '비슷한 운동',
   'No exact match. These come close:': '정확히 일치하는 항목이 없어요. 이건 비슷해요:',
+  // --- day notes (#261) ---
+  'Sick': '아픔',
+  'Travelling': '여행 중',
+  'Injured': '부상',
+  'Day note': '하루 메모',
+  'Add a note for this day': '이 날에 메모 추가',
+  'Noted. See you next session!': '기록했어요. 다음 세션에서 만나요!',
+  'Note removed': '메모를 삭제했어요',
+  'Remove note': '메모 삭제',
+  'Life happens. Leave yourself a note, and the missed-day nudge lets this one go.': '그런 날도 있죠. 메모를 남겨 두면 놓친 날 알림이 이 날은 그냥 넘어가요.',
+  'Anything else? (optional)': '더 남길 말이 있나요? (선택)',
 }

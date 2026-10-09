@@ -2161,4 +2161,15 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': 'Hasonló gyakorlatok',
   'No exact match. These come close:': 'Nincs pontos találat. Ezek közel állnak:',
+  // --- day notes (#261) ---
+  'Sick': 'Beteg',
+  'Travelling': 'Úton',
+  'Injured': 'Sérült',
+  'Day note': 'Napi jegyzet',
+  'Add a note for this day': 'Jegyzet ehhez a naphoz',
+  'Noted. See you next session!': 'Feljegyezve. Találkozunk a következő edzésen!',
+  'Note removed': 'Jegyzet törölve',
+  'Remove note': 'Jegyzet törlése',
+  'Life happens. Leave yourself a note, and the missed-day nudge lets this one go.': 'Az élet közbeszól. Hagyj magadnak egy jegyzetet, és a kihagyott napok emlékeztetője ezt a napot békén hagyja.',
+  'Anything else? (optional)': 'Még valami? (nem kötelező)',
 }

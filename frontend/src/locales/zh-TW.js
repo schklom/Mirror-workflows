@@ -2151,4 +2151,15 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': '相似動作',
   'No exact match. These come close:': '沒有完全符合，這些比較接近：',
+  // --- day notes (#261) ---
+  'Sick': '生病',
+  'Travelling': '旅行中',
+  'Injured': '受傷',
+  'Day note': '當日備註',
+  'Add a note for this day': '為這一天新增備註',
+  'Noted. See you next session!': '記下了，下次訓練見！',
+  'Note removed': '備註已刪除',
+  'Remove note': '刪除備註',
+  'Life happens. Leave yourself a note, and the missed-day nudge lets this one go.': '生活總有意外。給自己留個備註，錯過訓練的提醒就會放過這一天。',
+  'Anything else? (optional)': '還有別的嗎？（選填）',
 }

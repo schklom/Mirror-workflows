@@ -2158,4 +2158,15 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': 'Esercizi simili',
   'No exact match. These come close:': 'Niente di esatto. Questi ci vanno vicino:',
+  // --- day notes (#261) ---
+  'Sick': 'Malato',
+  'Travelling': 'In viaggio',
+  'Injured': 'Infortunato',
+  'Day note': 'Nota del giorno',
+  'Add a note for this day': 'Aggiungi una nota per questo giorno',
+  'Noted. See you next session!': 'Annotato. Alla prossima sessione!',
+  'Note removed': 'Nota rimossa',
+  'Remove note': 'Rimuovi nota',
+  'Life happens. Leave yourself a note, and the missed-day nudge lets this one go.': 'Capita. Lasciati una nota e il promemoria dei giorni saltati lascerà stare questo.',
+  'Anything else? (optional)': 'Altro? (facoltativo)',
 }

@@ -2158,4 +2158,15 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': 'Benzer egzersizler',
   'No exact match. These come close:': 'Tam eşleşme yok. Bunlar yakın:',
+  // --- day notes (#261) ---
+  'Sick': 'Hasta',
+  'Travelling': 'Seyahatte',
+  'Injured': 'Sakat',
+  'Day note': 'Gün notu',
+  'Add a note for this day': 'Bu güne not ekle',
+  'Noted. See you next session!': 'Not edildi. Bir sonraki antrenmanda görüşürüz!',
+  'Note removed': 'Not silindi',
+  'Remove note': 'Notu sil',
+  'Life happens. Leave yourself a note, and the missed-day nudge lets this one go.': 'Hayat bu. Kendine bir not bırak, kaçırılan gün hatırlatıcısı bu günü rahat bıraksın.',
+  'Anything else? (optional)': 'Başka bir şey? (isteğe bağlı)',
 }

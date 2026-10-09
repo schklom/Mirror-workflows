@@ -2155,4 +2155,15 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': 'Схожі вправи',
   'No exact match. These come close:': 'Точного збігу немає. Ось що близько:',
+  // --- day notes (#261) ---
+  'Sick': 'Хворію',
+  'Travelling': 'У подорожі',
+  'Injured': 'Травма',
+  'Day note': 'Нотатка дня',
+  'Add a note for this day': 'Додати нотатку до цього дня',
+  'Noted. See you next session!': 'Записано. До наступного тренування!',
+  'Note removed': 'Нотатку видалено',
+  'Remove note': 'Видалити нотатку',
+  'Life happens. Leave yourself a note, and the missed-day nudge lets this one go.': 'Всяке буває. Залиште собі нотатку, і нагадування про пропущені дні дасть цьому дню спокій.',
+  'Anything else? (optional)': 'Щось іще? (необов’язково)',
 }

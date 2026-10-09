@@ -2158,4 +2158,15 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': '相似动作',
   'No exact match. These come close:': '没有完全匹配，这些比较接近：',
+  // --- day notes (#261) ---
+  'Sick': '生病',
+  'Travelling': '出行',
+  'Injured': '受伤',
+  'Day note': '当日备注',
+  'Add a note for this day': '为这一天添加备注',
+  'Noted. See you next session!': '记下了，下次训练见！',
+  'Note removed': '备注已删除',
+  'Remove note': '删除备注',
+  'Life happens. Leave yourself a note, and the missed-day nudge lets this one go.': '生活总有意外。给自己留个备注，错过训练的提醒就会放过这一天。',
+  'Anything else? (optional)': '还有别的吗？（可选）',
 }

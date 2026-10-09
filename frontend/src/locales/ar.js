@@ -2213,4 +2213,15 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': 'تمارين مشابهة',
   'No exact match. These come close:': 'لا تطابق تام. هذه قريبة:',
+  // --- day notes (#261) ---
+  'Sick': 'مريض',
+  'Travelling': 'مسافر',
+  'Injured': 'مصاب',
+  'Day note': 'ملاحظة اليوم',
+  'Add a note for this day': 'أضف ملاحظة لهذا اليوم',
+  'Noted. See you next session!': 'تم التسجيل. نراك في الحصة القادمة!',
+  'Note removed': 'تمت إزالة الملاحظة',
+  'Remove note': 'إزالة الملاحظة',
+  'Life happens. Leave yourself a note, and the missed-day nudge lets this one go.': 'الحياة تحدث. اترك لنفسك ملاحظة، وسيترك تذكير الأيام الفائتة هذا اليوم وشأنه.',
+  'Anything else? (optional)': 'أي شيء آخر؟ (اختياري)',
 }

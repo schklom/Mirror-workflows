@@ -2162,4 +2162,15 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': 'Похожие упражнения',
   'No exact match. These come close:': 'Точного совпадения нет. Вот что близко:',
+  // --- day notes (#261) ---
+  'Sick': 'Болею',
+  'Travelling': 'В поездке',
+  'Injured': 'Травма',
+  'Day note': 'Заметка дня',
+  'Add a note for this day': 'Добавить заметку к этому дню',
+  'Noted. See you next session!': 'Записано. До следующей тренировки!',
+  'Note removed': 'Заметка удалена',
+  'Remove note': 'Удалить заметку',
+  'Life happens. Leave yourself a note, and the missed-day nudge lets this one go.': 'Всякое бывает. Оставьте себе заметку, и напоминание о пропущенных днях оставит этот день в покое.',
+  'Anything else? (optional)': 'Что-нибудь ещё? (необязательно)',
 }

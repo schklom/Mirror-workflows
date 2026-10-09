@@ -2237,4 +2237,15 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': 'একই ধরনের ব্যায়াম',
   'No exact match. These come close:': 'হুবহু মিল নেই। এগুলো কাছাকাছি:',
+  // --- day notes (#261) ---
+  'Sick': 'অসুস্থ',
+  'Travelling': 'ভ্রমণে',
+  'Injured': 'আহত',
+  'Day note': 'দিনের নোট',
+  'Add a note for this day': 'এই দিনের জন্য একটি নোট যোগ করুন',
+  'Noted. See you next session!': 'নোট হলো। পরের সেশনে দেখা হবে!',
+  'Note removed': 'নোট সরানো হয়েছে',
+  'Remove note': 'নোট সরান',
+  'Life happens. Leave yourself a note, and the missed-day nudge lets this one go.': 'জীবনে এমন হয়। নিজের জন্য একটি নোট রাখুন, আর মিস করা দিনের রিমাইন্ডার এই দিনটিকে ছেড়ে দেবে।',
+  'Anything else? (optional)': 'আর কিছু? (ঐচ্ছিক)',
 }

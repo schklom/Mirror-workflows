@@ -2155,4 +2155,13 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': 'Схожі вправи',
   'No exact match. These come close:': 'Точного збігу немає. Ось що близько:',
+  // --- exercise chips (#323) ---
+  'Exercises in this workout': 'Вправи цього тренування',
+  'Exercise {0}: {1} ({2})': 'Вправа {0}: {1} ({2})',
+  'Superset {0}: {1} ({2})': 'Суперсет {0}: {1} ({2})',
+  'Finished': 'Готово',
+  'Started': 'Розпочато',
+  'Not started yet': 'Ще не розпочато',
+  'Exercise chips at the top': 'Позначки вправ угорі',
+  'A numbered dot per exercise, filled as you go. Tap one to jump there.': 'Пронумерована крапка для кожної вправи, заповнюється по ходу. Торкніться її, щоб перейти до вправи.',
 }

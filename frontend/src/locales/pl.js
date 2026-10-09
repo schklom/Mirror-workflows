@@ -2158,4 +2158,13 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': 'Podobne ćwiczenia',
   'No exact match. These come close:': 'Brak dokładnego dopasowania. Te są blisko:',
+  // --- exercise chips (#323) ---
+  'Exercises in this workout': 'Ćwiczenia w tym treningu',
+  'Exercise {0}: {1} ({2})': 'Ćwiczenie {0}: {1} ({2})',
+  'Superset {0}: {1} ({2})': 'Superseria {0}: {1} ({2})',
+  'Finished': 'Ukończone',
+  'Started': 'Rozpoczęte',
+  'Not started yet': 'Jeszcze nie rozpoczęte',
+  'Exercise chips at the top': 'Znaczniki ćwiczeń na górze',
+  'A numbered dot per exercise, filled as you go. Tap one to jump there.': 'Ponumerowana kropka dla każdego ćwiczenia, wypełnia się w trakcie. Stuknij jedną, aby tam przejść.',
 }

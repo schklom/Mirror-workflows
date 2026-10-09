@@ -283,13 +283,18 @@ describe('the pages', () => {
     expect([...host.querySelectorAll('.sect-f')].some(f => /screen stays on/.test(f.textContent))).toBe(false)
     mount('advanced')
     expect(titles()).toEqual(['Planned sessions start from', 'Keep timing after target', 'Weight and reps buttons',
-      'Drop and burst shortcuts on every set', 'Swipe actions', 'Superset buttons in the exercise header', 'Move, swap and remove buttons below the exercise'])
+      'Drop and burst shortcuts on every set', 'Swipe actions', 'Exercise chips at the top', 'Superset buttons in the exercise header', 'Move, swap and remove buttons below the exercise'])
   })
 
   it('the Fine-tuning switches write S.wc as the old Workout controls sheet did', () => {
     mount('advanced')
     act(() => rowTitled('Superset buttons in the exercise header').querySelector('[role="switch"]').click())
     expect(mocks.S.wc.pairButtons).toBe(true)
+    // the chip row at the top of a workout (#323) is on by default; its switch turns it off
+    const chips = rowTitled('Exercise chips at the top').querySelector('[role="switch"]')
+    expect(chips.getAttribute('aria-checked')).toBe('true')
+    act(() => chips.click())
+    expect(mocks.S.wc.exerciseChips).toBe(false)
   })
 
   it('a sub-page names where back goes; Fine-tuning goes back to Workout', () => {

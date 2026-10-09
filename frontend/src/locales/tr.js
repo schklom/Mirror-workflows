@@ -2158,4 +2158,13 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': 'Benzer egzersizler',
   'No exact match. These come close:': 'Tam eşleşme yok. Bunlar yakın:',
+  // --- exercise chips (#323) ---
+  'Exercises in this workout': 'Bu antrenmandaki egzersizler',
+  'Exercise {0}: {1} ({2})': 'Egzersiz {0}: {1} ({2})',
+  'Superset {0}: {1} ({2})': 'Süperset {0}: {1} ({2})',
+  'Finished': 'Bitti',
+  'Started': 'Başlandı',
+  'Not started yet': 'Henüz başlanmadı',
+  'Exercise chips at the top': 'Üstte egzersiz çipleri',
+  'A numbered dot per exercise, filled as you go. Tap one to jump there.': 'Her egzersiz için numaralı bir nokta, ilerledikçe dolar. Birine dokun, oraya atla.',
 }

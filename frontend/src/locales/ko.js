@@ -2158,4 +2158,13 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': '비슷한 운동',
   'No exact match. These come close:': '정확히 일치하는 항목이 없어요. 이건 비슷해요:',
+  // --- exercise chips (#323) ---
+  'Exercises in this workout': '이 운동의 종목',
+  'Exercise {0}: {1} ({2})': '운동 {0}: {1} ({2})',
+  'Superset {0}: {1} ({2})': '슈퍼세트 {0}: {1} ({2})',
+  'Finished': '완료',
+  'Started': '진행 중',
+  'Not started yet': '아직 시작 안 함',
+  'Exercise chips at the top': '위쪽 운동 칩',
+  'A numbered dot per exercise, filled as you go. Tap one to jump there.': '운동마다 번호 점이 하나씩 있고, 진행할수록 채워져요. 누르면 바로 그 운동으로 가요.',
 }

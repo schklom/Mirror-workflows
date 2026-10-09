@@ -1846,6 +1846,25 @@ body.no-tabbar.resting #toast{bottom:calc(100px + var(--sab))}
 .wl-unit.cur{box-shadow:inset 0 0 0 1.5px var(--acc-line)}
 .wl-hd{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
 .wl-summary{display:grid;gap:8px;padding-bottom:10px}
+
+/* --- the chip per exercise at the top of a running workout (#323) --- */
+/* One numbered chip per unit, filled as far as it is done: an outline waiting, half full started,
+   full when every work set is ticked, so the state reads without the colour. The current one has
+   the accent ring. Every chip is the same height whatever its state, and the row scrolls sideways
+   (.chips), so nothing here can move the page while you type. 28px chips with the strip's own
+   padding keep the row at about the height of the line it replaces. */
+.chips.wchips{gap:6px;padding:4px 5px 5px;margin-bottom:2px}   /* room for the current chip's ring: the strip clips */
+.wchip{
+  flex:none;position:relative;display:inline-flex;align-items:center;justify-content:center;gap:2px;
+  min-width:28px;height:28px;padding:0 8px;border-radius:99px;
+  font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--label-2);
+  background:var(--surface);box-shadow:inset 0 0 0 1.5px var(--sep);
+}
+.wchip .icn{width:12px;height:12px}
+.wchip.partial{background:linear-gradient(to top,color-mix(in srgb,var(--orange) 45%,var(--surface)) 50%,var(--surface) 50%);box-shadow:inset 0 0 0 1.5px var(--orange);color:var(--label)}
+.wchip.done{background:color-mix(in srgb,var(--green) 70%,var(--surface));box-shadow:none;color:var(--label)}
+.wchip.cur{box-shadow:0 0 0 2px var(--bg),0 0 0 3.5px var(--acc);color:var(--label)}
+.wchip.partial.cur{box-shadow:inset 0 0 0 1.5px var(--orange),0 0 0 2px var(--bg),0 0 0 3.5px var(--acc)}
 /* part of the give-back above — one edge for all three insets of a row in the list view */
 @media (max-width:404px){
   .wl-unit{padding:10px 8px 2px}

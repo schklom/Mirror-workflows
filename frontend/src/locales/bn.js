@@ -2237,4 +2237,13 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': 'একই ধরনের ব্যায়াম',
   'No exact match. These come close:': 'হুবহু মিল নেই। এগুলো কাছাকাছি:',
+  // --- exercise chips (#323) ---
+  'Exercises in this workout': 'এই ওয়ার্কআউটের ব্যায়ামগুলো',
+  'Exercise {0}: {1} ({2})': 'ব্যায়াম {0}: {1} ({2})',
+  'Superset {0}: {1} ({2})': 'সুপারসেট {0}: {1} ({2})',
+  'Finished': 'শেষ',
+  'Started': 'শুরু হয়েছে',
+  'Not started yet': 'এখনও শুরু হয়নি',
+  'Exercise chips at the top': 'উপরে ব্যায়ামের চিপ',
+  'A numbered dot per exercise, filled as you go. Tap one to jump there.': 'প্রতিটি ব্যায়ামের জন্য একটি নম্বরওয়ালা বিন্দু, এগোতে এগোতে ভরে ওঠে। ট্যাপ করলেই সেখানে চলে যাবেন।',
 }

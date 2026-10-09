@@ -2162,4 +2162,13 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': 'Похожие упражнения',
   'No exact match. These come close:': 'Точного совпадения нет. Вот что близко:',
+  // --- exercise chips (#323) ---
+  'Exercises in this workout': 'Упражнения этой тренировки',
+  'Exercise {0}: {1} ({2})': 'Упражнение {0}: {1} ({2})',
+  'Superset {0}: {1} ({2})': 'Суперсет {0}: {1} ({2})',
+  'Finished': 'Готово',
+  'Started': 'Начато',
+  'Not started yet': 'Ещё не начато',
+  'Exercise chips at the top': 'Метки упражнений сверху',
+  'A numbered dot per exercise, filled as you go. Tap one to jump there.': 'По пронумерованной точке на каждое упражнение, заполняется по ходу. Нажмите на точку, чтобы перейти к упражнению.',
 }

@@ -2161,4 +2161,13 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': 'Hasonló gyakorlatok',
   'No exact match. These come close:': 'Nincs pontos találat. Ezek közel állnak:',
+  // --- exercise chips (#323) ---
+  'Exercises in this workout': 'Az edzés gyakorlatai',
+  'Exercise {0}: {1} ({2})': '{0}. gyakorlat: {1} ({2})',
+  'Superset {0}: {1} ({2})': '{0}. szuperszett: {1} ({2})',
+  'Finished': 'Kész',
+  'Started': 'Elkezdve',
+  'Not started yet': 'Még nincs elkezdve',
+  'Exercise chips at the top': 'Gyakorlatjelölők felül',
+  'A numbered dot per exercise, filled as you go. Tap one to jump there.': 'Minden gyakorlatnak egy számozott pötty, ami menet közben telik meg. Koppints rá, és ott vagy.',
 }

@@ -1331,6 +1331,15 @@ export const PT_BR_OVERRIDES = {
   'Where an exercise is drawn on both figures. Your workouts stay exactly as they are.': 'Que figura mostra um exercício quando está desenhado nas duas. Seus treinos ficam exatamente como estão.',
   'Enter the address of the server this token is for': 'Informe o endereço do servidor a que este token pertence',
   'No exact match. These come close:': 'Nada exato. Estes chegam perto:',
+  // --- exercise chips (#323) ---
+  'Exercises in this workout': 'Exercícios deste treino',
+  'Exercise {0}: {1} ({2})': 'Exercício {0}: {1} ({2})',
+  'Superset {0}: {1} ({2})': 'Superset {0}: {1} ({2})',
+  'Finished': 'Concluído',
+  'Started': 'Começado',
+  'Not started yet': 'Ainda não começou',
+  'Exercise chips at the top': 'Marcadores de exercícios no topo',
+  'A numbered dot per exercise, filled as you go. Tap one to jump there.': 'Um ponto numerado por exercício, que vai enchendo conforme você treina. Toque em um para ir até lá.',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

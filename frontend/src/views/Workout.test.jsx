@@ -2467,6 +2467,100 @@ describe('collapsing completed workout exercises', () => {
   })
 })
 
+describe('exercise chips at the top of the workout (#323)', () => {
+  const chips = () => [...container.querySelectorAll('.wchip')]
+  const chip = n => chips()[n - 1]
+  const session = () => [exercise('bench', [true, true]), exercise('fly', [true, false], { sg: 'pair' }), exercise('row', [false], { sg: 'pair' }), exercise('squat', [false])]
+
+  it('shows one chip per unit with its state in Cards, a superset as one, in place of "Exercise N / M"', async () => {
+    await mount(session(), 3)
+    expect(chips().map(c => c.className)).toEqual(['wchip done', 'wchip partial', 'wchip todo cur'])
+    expect(chip(3).getAttribute('aria-current')).toBe('step')
+    expect(chip(1).getAttribute('aria-current')).toBeNull()
+    // test ids are not in the catalogue, so each name reads as the unknown-exercise fallback
+    expect(chip(1).getAttribute('aria-label')).toMatch(/^Exercise 1: .+ \(Finished\)$/)
+    expect(chip(2).getAttribute('aria-label')).toMatch(/^Superset 2: .+ \+ .+ \(Started\)$/)
+    expect(chip(3).getAttribute('aria-label')).toMatch(/^Exercise 3: .+ \(Not started yet\)$/)
+    expect(chip(2).querySelector('[data-icon="link"]')).toBeTruthy()
+    expect(container.querySelector('nav.wchips').getAttribute('aria-label')).toBe('Exercises in this workout')
+    expect(container.textContent).not.toContain('Exercise 3 / 3')
+  })
+
+  it('jumps to the tapped exercise in Cards, and only on a tap', async () => {
+    await mount(session(), 3)
+    await click(chip(2))
+    expect(mocks.S.active.cur).toBe(1)
+    await rerender()
+    expect(chip(2).getAttribute('aria-current')).toBe('step')
+    expect(container.querySelectorAll('.ss-card').length).toBe(1)
+    // the current chip is a no-op, not a write
+    const before = mocks.S
+    await click(chip(2))
+    expect(mocks.S).toBe(before)
+  })
+
+  it('follows the ticks: waiting, then started, then finished', async () => {
+    await mount([exercise('bench', [false, false]), exercise('row', [false])], 0)
+    expect(chip(1).className).toBe('wchip todo cur')
+    await toggleSet(0)
+    await rerender()
+    expect(chip(1).className).toBe('wchip partial cur')
+    await toggleSet(1)
+    await rerender()
+    expect(chip(1).className).toBe('wchip done cur')
+    // ticking never moved the marker, so the chip did not either
+    expect(mocks.S.active.cur).toBe(0)
+  })
+
+  it('switches the exercise in Focus', async () => {
+    await mount(session(), 3, { active: { workoutView: 'focus' } })
+    await click(chip(1))
+    expect(mocks.S.active.cur).toBe(0)
+    await rerender()
+    expect(chip(1).getAttribute('aria-current')).toBe('step')
+  })
+
+  it.each(['list', 'compact'])('rides in the pinned header in %s and scrolls to the unit without moving Current', async workoutView => {
+    await mount(session(), 0, { active: { workoutView } })
+    expect(container.querySelector('.whdr .wchips')).toBeTruthy()
+    await flushFrame()   // the list's own open-at-current scroll
+    mocks.scrollCalls.length = 0
+    mocks.headerHeight = 150
+    await click(chip(3))
+    expect(mocks.scrollCalls).toEqual([])   // waits for the frame, like opening the list
+    await flushFrame()
+    expect(mocks.scrollCalls).toHaveLength(1)
+    expect(mocks.scrollCalls[0].node.dataset.unitKey).toBe('3')
+    expect(mocks.scrollCalls[0].options).toEqual({ block: 'start', behavior: 'smooth' })
+    expect(container.querySelector('.workout-list').style.getPropertyValue('--whdr-h')).toBe('150px')
+    expect(mocks.S.active.cur).toBe(0)
+  })
+
+  it('jumps without the glide when the system asks for less motion', async () => {
+    await mount(session(), 0, { active: { workoutView: 'list' } })
+    dom.matchMedia = q => ({ matches: q.includes('reduce') })
+    await flushFrame()
+    mocks.scrollCalls.length = 0
+    await click(chip(2))
+    await flushFrame()
+    expect(mocks.scrollCalls[0].options).toEqual({ block: 'start' })
+  })
+
+  it('goes away with its switch, and the old line comes back', async () => {
+    await mount(session(), 3, { wc: { exerciseChips: false } })
+    expect(container.querySelector('.wchips')).toBeNull()
+    expect(container.textContent).toContain('Exercise 3 / 3')
+    await unmount()
+    await mount(session(), 0, { wc: { exerciseChips: false }, active: { workoutView: 'list' } })
+    expect(container.querySelector('.wchips')).toBeNull()
+  })
+
+  it('has nothing to show in an empty freestyle session', async () => {
+    await mount([], 0)
+    expect(container.querySelector('.wchips')).toBeNull()
+  })
+})
+
 describe('workout controls: the more menu and the set menu', () => {
   const lastMenu = () => mocks.menuSheet.mock.calls.at(-1)[0]
   const item = label => menuItemsOf(lastMenu()).find(it => it.label === label)

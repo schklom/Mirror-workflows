@@ -545,6 +545,11 @@ export default function Settings({ page = null, find = null, via = null }) {
           <Row icon="swap" iconTint="var(--indigo)" title={t('Swipe actions')} subtitle={t('Sets, routines and the loop: left removes, right copies')}>
             <Switch aria-label={t('Swipe actions')} checked={wc.swipeSets} onChange={v => setWc('swipeSets', v)} />
           </Row>
+          {/* The chip row at the top of a workout (#323): not a button row, but the same question of
+              what the workout screen shows. On by default, it is about one line tall. */}
+          <Row icon="more" iconTint="var(--mint)" title={t('Exercise chips at the top')} subtitle={t('A numbered dot per exercise, filled as you go. Tap one to jump there.')}>
+            <Switch aria-label={t('Exercise chips at the top')} checked={wc.exerciseChips} onChange={v => setWc('exerciseChips', v)} />
+          </Row>
           <Row icon="link" iconTint="var(--blue)" title={t('Superset buttons in the exercise header')}>
             <Switch checked={wc.pairButtons} onChange={v => setWc('pairButtons', v)} />
           </Row>

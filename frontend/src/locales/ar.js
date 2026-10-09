@@ -2213,4 +2213,13 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': 'تمارين مشابهة',
   'No exact match. These come close:': 'لا تطابق تام. هذه قريبة:',
+  // --- exercise chips (#323) ---
+  'Exercises in this workout': 'التمارين في هذه الحصة',
+  'Exercise {0}: {1} ({2})': 'التمرين {0}: {1} ({2})',
+  'Superset {0}: {1} ({2})': 'سوبر سِت {0}: {1} ({2})',
+  'Finished': 'انتهى',
+  'Started': 'بدأ',
+  'Not started yet': 'لم يبدأ بعد',
+  'Exercise chips at the top': 'شارات التمارين في الأعلى',
+  'A numbered dot per exercise, filled as you go. Tap one to jump there.': 'نقطة مرقّمة لكل تمرين تمتلئ كلما تقدّمت. اضغط على واحدة للانتقال إليه.',
 }

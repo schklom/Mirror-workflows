@@ -19,6 +19,7 @@ import { pyramidRestFor, maxRecordAt, isPyramid, pyramidLabel } from '../lib/pyr
 import { insertionIndexAfterCurrentUnit, nextUnfinishedUnit, setProgressHighWater, supersetFlowStep, restAfterSet, restOnRecheck, restSecFor, warmupRestSecFor } from '../lib/supersetFlow.js'
 import Media from '../components/Media.jsx'
 import WorkoutScrollAnchor from '../components/WorkoutScrollAnchor.jsx'
+import WorkoutChips from '../components/WorkoutChips.jsx'
 import { supersetMeta } from '../lib/superset-meta.js'
 import WorkoutThumb, { hasWorkoutMedia } from '../components/WorkoutThumb.jsx'
 import { workoutSettingsSheet } from '../components/WorkoutSettingsSheet.jsx'
@@ -1070,16 +1071,8 @@ function ActiveWorkout() {
     const cancel = frame => window.cancelAnimationFrame
       ? window.cancelAnimationFrame(frame)
       : window.clearTimeout(frame)
-    const frame = schedule(() => {
-      const list = listRef.current
-      const el = list?.querySelector('.wl-unit.cur')
-      if (!el || typeof el.scrollIntoView !== 'function') return
-      // The sticky header grows when the workout name wraps; the unit's scroll margin (index.css)
-      // clears whatever height it has right now, with a one-line height as the fallback.
-      const hdrH = hdrRef.current?.offsetHeight
-      if (hdrH) list.style.setProperty('--whdr-h', hdrH + 'px')
-      el.scrollIntoView({ block: 'start' })
-    })
+    // scrollToUnit (below) clears the sticky header at whatever height it has right now.
+    const frame = schedule(() => scrollToUnit(listRef.current?.querySelector('.wl-unit.cur')))
     return () => cancel(frame)
   }, [workoutView])
 
@@ -1687,6 +1680,34 @@ function ActiveWorkout() {
     }
   }
 
+  // Brings a list unit to the top of the screen, under the pinned header. The header grows when
+  // the name wraps and by the chip row, so the unit's scroll margin (index.css) is fed its height
+  // as it is right now. A jump the eye should follow glides, unless the system asks for less motion.
+  const scrollToUnit = (el, glide) => {
+    if (!el || typeof el.scrollIntoView !== 'function') return
+    const hdrH = hdrRef.current?.offsetHeight
+    if (hdrH) listRef.current?.style.setProperty('--whdr-h', hdrH + 'px')
+    const still = typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    el.scrollIntoView(glide && !still ? { block: 'start', behavior: 'smooth' } : { block: 'start' })
+  }
+  // A tap on a chip at the top (#323). Cards and Focus show one unit, so the chip makes it the one
+  // on screen: the marker moves because you asked it to, never on its own. The list already shows
+  // every unit, so there the chip only scrolls to it and leaves "Current" where it was, the same
+  // as scrolling there by hand; the frame wait is the one opening the list uses (above).
+  const pickChip = chip => {
+    if (listMode) {
+      const go = () => scrollToUnit(listRef.current?.querySelector(`.wl-unit[data-unit-key="${chip.key}"]`), true)
+      if (window.requestAnimationFrame) window.requestAnimationFrame(go)
+      else window.setTimeout(go, 0)
+      return
+    }
+    if (chip.unit.includes(cur)) return
+    update(s => { if (s.active) s.active.cur = chip.unit[0] })
+  }
+  const chipRow = wc.exerciseChips && A.entries.length > 0
+    ? <WorkoutChips entries={A.entries} cur={cur} onPick={pickChip} />
+    : null
+
   // Hardware keys (issue #133, lib/workout-keys.js): Space or Enter ticks the next set, ← and →
   // switch exercise. The listener is added once and calls the handler of the latest render, so
   // toggle() and navigateUnit() always see the session as it is now.
@@ -1696,10 +1717,7 @@ function ActiveWorkout() {
   // view the way opening the list does; ticking and tapping never scroll it (see above).
   const showCurrent = () => {
     if (!listMode) return
-    const scroll = () => {
-      const el = listRef.current?.querySelector('.wl-unit.cur')
-      if (el && typeof el.scrollIntoView === 'function') el.scrollIntoView({ block: 'start' })
-    }
+    const scroll = () => scrollToUnit(listRef.current?.querySelector('.wl-unit.cur'))
     // After the render that moves the marker, as the effect above waits for its frame.
     if (window.requestAnimationFrame) window.requestAnimationFrame(scroll)
     else window.setTimeout(scroll, 0)
@@ -1821,6 +1839,9 @@ function ActiveWorkout() {
         onClick={() => (editing ? finishWorkout() : finishWorkoutSheet({ onDiscard: discardWorkout }))}>{editing ? t('Save') : t('Finish')}</button>
     </div>
     <div className="wprog"><i style={{ width: (total ? done / total * 100 : 0) + '%' }} /></div>
+    {/* In the list the chips ride in the pinned header, so any exercise is one tap away from
+        anywhere in a long stack. */}
+    {listMode && chipRow}
     </div>
     {editing && <p className="muted small">{t('Editing a saved workout. Date and duration stay unchanged.')}</p>}
     {A.backfill && <div className="muted small" style={{ marginBottom: 8 }}>{t('Logging a past workout, so no rest timers.')}</div>}
@@ -1871,7 +1892,9 @@ function ActiveWorkout() {
         })}
       </div>
     ) : <>
-      <div className="muted small" style={{ marginBottom: 6 }}>{isSuperset ? t('Superset {0} / {1}', unitIdx + 1, units.length) : t('Exercise {0} / {1}', unitIdx + 1, units.length)}</div>
+      {/* The chips stand in for "Exercise 2 / 5": the number is on the current chip, and the
+          others say what is done and what is waiting (#323). */}
+      {chipRow || <div className="muted small" style={{ marginBottom: 6 }}>{isSuperset ? t('Superset {0} / {1}', unitIdx + 1, units.length) : t('Exercise {0} / {1}', unitIdx + 1, units.length)}</div>}
       <SwipeCards index={unitIdx} count={units.length} revision={A}
         timerKey={timer && `${timer.endsAt}:${timer.forIdx ?? ''}`} workKey={work?.endsAt}
         onNavigate={navigateUnit} renderPreview={direction => {

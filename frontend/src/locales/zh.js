@@ -2158,4 +2158,13 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': '相似动作',
   'No exact match. These come close:': '没有完全匹配，这些比较接近：',
+  // --- exercise chips (#323) ---
+  'Exercises in this workout': '本次训练的动作',
+  'Exercise {0}: {1} ({2})': '动作 {0}：{1}（{2}）',
+  'Superset {0}: {1} ({2})': '超级组 {0}：{1}（{2}）',
+  'Finished': '已完成',
+  'Started': '已开始',
+  'Not started yet': '还没开始',
+  'Exercise chips at the top': '顶部动作圆点',
+  'A numbered dot per exercise, filled as you go. Tap one to jump there.': '每个动作一个带编号的圆点，练着练着就填满了。点一下就能跳过去。',
 }

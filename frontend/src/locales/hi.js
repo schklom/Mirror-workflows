@@ -2158,4 +2158,13 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': 'मिलते-जुलते व्यायाम',
   'No exact match. These come close:': 'सटीक मेल नहीं मिला। ये करीब हैं:',
+  // --- exercise chips (#323) ---
+  'Exercises in this workout': 'इस वर्कआउट के व्यायाम',
+  'Exercise {0}: {1} ({2})': 'व्यायाम {0}: {1} ({2})',
+  'Superset {0}: {1} ({2})': 'सुपरसेट {0}: {1} ({2})',
+  'Finished': 'पूरा',
+  'Started': 'शुरू हुआ',
+  'Not started yet': 'अभी शुरू नहीं हुआ',
+  'Exercise chips at the top': 'ऊपर व्यायाम चिप्स',
+  'A numbered dot per exercise, filled as you go. Tap one to jump there.': 'हर व्यायाम के लिए एक नंबर वाला बिंदु, जो आगे बढ़ते हुए भरता है। किसी पर टैप करें और वहीं पहुँच जाएँ।',
 }

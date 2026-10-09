@@ -2151,4 +2151,13 @@ export default {
   // --- search: similar exercises ---
   'Similar exercises': '相似動作',
   'No exact match. These come close:': '沒有完全符合，這些比較接近：',
+  // --- exercise chips (#323) ---
+  'Exercises in this workout': '這次訓練的動作',
+  'Exercise {0}: {1} ({2})': '動作 {0}：{1}（{2}）',
+  'Superset {0}: {1} ({2})': '超級組 {0}：{1}（{2}）',
+  'Finished': '已完成',
+  'Started': '已開始',
+  'Not started yet': '還沒開始',
+  'Exercise chips at the top': '頂部動作圓點',
+  'A numbered dot per exercise, filled as you go. Tap one to jump there.': '每個動作一個帶編號的圓點，練著練著就填滿了。點一下就能跳過去。',
 }

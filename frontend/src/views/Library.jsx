@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/useStore.js'
-import { EXDB, BODYPARTS, allExercises, equipmentOf, categoriesOf, searchExercises } from '../lib/exercises.js'
+import { EXDB, BODYPARTS, allExercises, equipmentOf, categoriesOf, searchExercises, similarExercises } from '../lib/exercises.js'
 import { MUSCLE_NAME } from '../lib/muscles.js'
 import { activeProfile, exAvailable } from '../lib/equipment.js'
 import { bestWeightFor } from '../lib/history.js'
@@ -49,6 +49,20 @@ export default function Library() {
   // A live count at the end of the search field while a search or filter narrows the list
   // (idea and first version: GitLab !31) — how many are left, before scrolling to find out.
   const narrowed = !!(q.trim() || bp || eqOn || catOn)
+  // Close but not exact (a typo too many, most of the words, a similar name), under the results
+  // once they are all on screen, so a search almost never ends on "No match".
+  const similar = q.trim() && f.length <= shown
+    ? similarExercises(allExercises(S).filter(e => (!bp || e.bp === bp) && (!profile || showAll || exAvailable(S, e))), q, f, f.length ? 12 : 30)
+    : []
+  const row = e => {
+    const best = bestWeightFor(S, e.id)
+    return <div key={e.id} className="item" {...tappable(() => exerciseDetailSheet(e))}>
+      <Thumb ex={e} />
+      <div className="grow"><div className={`tt ${exerciseNameClass(e)}`}>{isFav(S, e.id) && <Icon name="starFill" className="fav-star" />}{exerciseNameFor(e)}</div><div className="ss capitalize">{t(MUSCLE_NAME[e.tg] || e.tg || e.bp)} · {t(e.eq)}</div></div>
+      {best > 0 && <span className="tag acc">{fmtNum(best)}</span>}
+      <Button size="sm" variant="tinted" icon="plus" onClick={ev => { ev.stopPropagation(); addToRoutineSheet(e) }}>{t('Plan')}</Button>
+    </div>
+  }
 
   return <>
     <div className="hdr lib-hdr"><div><h1>{t('Exercises')}</h1></div>
@@ -89,16 +103,10 @@ export default function Library() {
         <div className="thumb thumb-x"><Icon name="plusCircle" /></div>
         <div className="grow"><div className="tt">{t('Create your own exercise')}</div><div className="ss">{t('name + body part, and a photo or video if you like')}</div></div><Icon name="plus" className="chev" />
       </div>
-      {f.slice(0, shown).map(e => {
-        const best = bestWeightFor(S, e.id)
-        return <div key={e.id} className="item" {...tappable(() => exerciseDetailSheet(e))}>
-          <Thumb ex={e} />
-          <div className="grow"><div className={`tt ${exerciseNameClass(e)}`}>{isFav(S, e.id) && <Icon name="starFill" className="fav-star" />}{exerciseNameFor(e)}</div><div className="ss capitalize">{t(MUSCLE_NAME[e.tg] || e.tg || e.bp)} · {t(e.eq)}</div></div>
-          {best > 0 && <span className="tag acc">{fmtNum(best)}</span>}
-          <Button size="sm" variant="tinted" icon="plus" onClick={ev => { ev.stopPropagation(); addToRoutineSheet(e) }}>{t('Plan')}</Button>
-        </div>
-      })}
-      {f.length === 0 && <div className="empty"><div className="ico"><Icon name="magnifier" /></div>{t('No match')}</div>}
+      {f.slice(0, shown).map(row)}
+      {f.length === 0 && !similar.length && <div className="empty"><div className="ico"><Icon name="magnifier" /></div>{t('No match')}</div>}
+      {similar.length > 0 && <h4 className="sec similar-label">{f.length ? t('Similar exercises') : t('No exact match. These come close:')}</h4>}
+      {similar.map(row)}
     </div>
     {f.length > shown && <><div style={{ height: 10 }} /><Button ref={moreRef} onClick={() => setShown(s => s + 40)}>{t('Show more')}</Button></>}
   </>

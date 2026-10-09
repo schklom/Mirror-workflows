@@ -2105,3 +2105,4 @@ body.no-tabbar.resting #toast{bottom:calc(100px + var(--sab))}
 /* Tight tracking is tuned for Latin; Arabic is a connected script and gets none. */
 [dir="rtl"] *{letter-spacing:0}
 .exfix-link{display:inline-flex;align-items:center;gap:5px;margin:14px 0 4px;color:var(--label-3);text-decoration:none}
+.list .similar-label{margin:16px 2px 6px;grid-column:1/-1}

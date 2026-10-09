@@ -2155,4 +2155,7 @@ export default {
   '{0} rated · {1} estimated of {2} sets': '{0} notées · {1} estimées sur {2} séries',
   'Enter the address of the server this token is for': 'Saisis l’adresse du serveur auquel appartient ce jeton',
   'Sent only to {0}, never to another server.': 'Envoyé uniquement à {0}, jamais à un autre serveur.',
+  // --- search: similar exercises ---
+  'Similar exercises': 'Exercices similaires',
+  'No exact match. These come close:': 'Rien d’exact. Ceux-ci s’en approchent :',
 }

@@ -2158,4 +2158,7 @@ export default {
   '{0} rated · {1} estimated of {2} sets': '{0} értékelt · {1} becsült ({2} sorozatból)',
   'Enter the address of the server this token is for': 'Add meg annak a szervernek a címét, amelyhez ez a token tartozik',
   'Sent only to {0}, never to another server.': 'Csak ide megy: {0}, más szerverre soha.',
+  // --- search: similar exercises ---
+  'Similar exercises': 'Hasonló gyakorlatok',
+  'No exact match. These come close:': 'Nincs pontos találat. Ezek közel állnak:',
 }

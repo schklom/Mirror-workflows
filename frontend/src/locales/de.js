@@ -2175,4 +2175,7 @@ export default {
   '{0} rated · {1} estimated of {2} sets': '{0} bewertet · {1} geschätzt, von {2} Sätzen',
   'Enter the address of the server this token is for': 'Trag die Adresse des Servers ein, zu dem dieser Token gehört',
   'Sent only to {0}, never to another server.': 'Geht nur an {0}, nie an einen anderen Server.',
+  // --- search: similar exercises ---
+  'Similar exercises': 'Ähnliche Übungen',
+  'No exact match. These come close:': 'Kein genauer Treffer. Die hier kommen nah ran:',
 }

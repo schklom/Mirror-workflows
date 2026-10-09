@@ -1,5 +1,5 @@
 import { expect, it } from 'vitest'
-import { EXDB, matchExercise, normalizeStr, searchExercises } from './exercises.js'
+import { EXDB, matchExercise, normalizeStr, searchExercises, similarExercises } from './exercises.js'
 
 const benchPress = {
   n: 'dumbbell bench press', bp: 'chest', tg: 'pectorals', eq: 'dumbbell',
@@ -12,11 +12,24 @@ it('allows one edit or adjacent transposition in long query tokens', () => {
   }
 })
 
-it('keeps short tokens and multiple edits out of fuzzy matching', () => {
+it('allows one typo from four letters and two from seven, none in shorter words', () => {
   const squat = { n: 'barbell squat', bp: 'legs', eq: 'barbell' }
-  for (const [exercise, query] of [[squat, 'sqat'], [squat, 'roww'], [benchPress, 'dunbell'], [benchPress, 'dumbell unrelated'], [benchPress, 'bn ech']]) {
+  for (const [exercise, query] of [[squat, 'sqat'], [squat, 'squta'], [benchPress, 'dunbell'], [benchPress, 'dumbelll prss']]) {
+    expect(matchExercise(exercise, query), query).toBe(true)
+  }
+  for (const [exercise, query] of [[squat, 'roww'], [squat, 'sqt'], [benchPress, 'dmbll'], [benchPress, 'dumbell unrelated'], [benchPress, 'bn ech']]) {
     expect(matchExercise(exercise, query), query).toBe(false)
   }
+})
+
+it('reads gym shorthand and plurals as the catalogue words', () => {
+  const rdl = { n: 'barbell romanian deadlift', bp: 'upper legs', eq: 'barbell' }
+  const curl = { n: 'dumbbell hammer curl', bp: 'upper arms', eq: 'dumbbell' }
+  expect(matchExercise(rdl, 'rdl')).toBe(true)
+  expect(matchExercise(rdl, 'bb rdl')).toBe(true)
+  expect(matchExercise(curl, 'db curls')).toBe(true)
+  expect(matchExercise(curl, 'hammer curls')).toBe(true)
+  expect(matchExercise(benchPress, 'db bp')).toBe(true)
 })
 
 it('keeps existing exact substring and all-token behavior', () => {
@@ -55,7 +68,7 @@ it('searchExercises takes a word literally when it hits anything exactly, and on
   expect(names('wirst')).toEqual(['band wrist curl'])
   expect(names('bnech press')).toEqual(['dumbbell bench press'])
   expect(names('dumbell bench')).toEqual(['dumbbell bench press'])
-  expect(names('sqat')).toEqual([])
+  expect(names('sqat')).toEqual(['barbell squat'])
   expect(searchExercises(list, '  ')).toBe(list)
 })
 
@@ -87,4 +100,30 @@ it('finds a name typed with its words run together or hyphenated', () => {
   expect(searchExercises([highPull, adductor], 'thigh')).toEqual([adductor])
   expect(matchExercise(highPull, 'highpull')).toBe(true)
   expect(matchExercise(highPull, 'deadlift-high')).toBe(true)
+})
+
+// v1.4.0: results come best first, and what is close but not exact is offered separately.
+it('ranks the plain, common exercise first among the matches', () => {
+  const first = q => searchExercises(EXDB, q)[0]?.n
+  expect(first('bench press')).toBe('barbell bench press')
+  expect(first('deadlift')).toBe('barbell deadlift')
+  expect(first('benchpres')).toMatch(/bench press$/)
+  expect(first('dumbel curl')).toMatch(/^dumbbell .*curl/)
+})
+
+it('offers similar exercises under the results, never repeating one', () => {
+  const exact = searchExercises(EXDB, 'machine shoulder press')
+  const close = similarExercises(EXDB, 'machine shoulder press', exact)
+  expect(close.length).toBeGreaterThan(0)
+  expect(close.some(e => exact.includes(e))).toBe(false)
+  expect(close.every(e => /shoulder|press/.test(e.n))).toBe(true)
+})
+
+it('finds something close when nothing matches exactly', () => {
+  // Heavy typos alone are still an exact hit now; one word that matches nothing is not.
+  expect(searchExercises(EXDB, 'dumbbellll bicepz curlz').length).toBeGreaterThan(0)
+  expect(searchExercises(EXDB, 'dumbbell curl qwxz')).toEqual([])
+  const close = similarExercises(EXDB, 'dumbbell curl qwxz')
+  expect(close.slice(0, 5).some(e => /dumbbell.*curl/.test(e.n))).toBe(true)
+  expect(similarExercises(EXDB, '   ')).toEqual([])
 })

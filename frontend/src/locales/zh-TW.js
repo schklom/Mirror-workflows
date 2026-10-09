@@ -2148,4 +2148,7 @@ export default {
   '{0} rated · {1} estimated of {2} sets': '{0} 組已評分 · {1} 組為估算，共 {2} 組',
   'Enter the address of the server this token is for': '輸入這個權杖所屬伺服器的位址',
   'Sent only to {0}, never to another server.': '只會傳送到 {0}，絕不會傳給其他伺服器。',
+  // --- search: similar exercises ---
+  'Similar exercises': '相似動作',
+  'No exact match. These come close:': '沒有完全符合，這些比較接近：',
 }

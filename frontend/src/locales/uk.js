@@ -2152,4 +2152,7 @@ export default {
   '{0} rated · {1} estimated of {2} sets': '{0} з оцінкою · {1} орієнтовних із {2} підходів',
   'Enter the address of the server this token is for': 'Введи адресу сервера, до якого належить цей токен',
   'Sent only to {0}, never to another server.': 'Надсилається лише на {0}, ніколи на інший сервер.',
+  // --- search: similar exercises ---
+  'Similar exercises': 'Схожі вправи',
+  'No exact match. These come close:': 'Точного збігу немає. Ось що близько:',
 }

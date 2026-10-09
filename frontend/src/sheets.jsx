@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useStore } from './store/useStore.js'
 import { useUI } from './store/useUI.js'
-import { EXDB, EXIDX, BODYPARTS, isCardio, isBodyweightEq, allExercises, equipmentOf, smOf, searchExercises, exOr, isAssisted, betterWeight, beatsWeight, isCustomEx } from './lib/exercises.js'
+import { EXDB, EXIDX, BODYPARTS, isCardio, isBodyweightEq, allExercises, equipmentOf, smOf, searchExercises, similarExercises, exOr, isAssisted, betterWeight, beatsWeight, isCustomEx } from './lib/exercises.js'
 import { activeProfile, exAvailable, ALL_EQUIPMENT, newProfile, profileEquipment, ACC_V } from './lib/equipment.js'
 import { fmtDate, fmtDateRange, fmtNum, fmtPlate, exerciseNameText, fmtVol, fmtDur, durPart, todayISO, isoOf, uid, exCount, routineCount, setsWorkCount, DAYN, DAYS, weekOrder, weekStartOf, weekDayOffset, MONTHS_LONG, ACCENTS } from './lib/format.js'
 import { lastEntryFor, bestWeightFor, bestWeightForEntry, buildSets, effectiveRoutineIds, workoutDay, workoutVolume, setsDone, setsDoneActive, setUnitsTotal, lastBW, sessionSections, setLabel, defaultConfig, cleanupSg, modeOf, effortOf, EFFORT, capEffort, stepEffort, isBw, isPerSide, sideReps, workSetsDone, applyIntensifierPlan, MAX_PLANNED_WARMUPS, NOTE_MAX } from './lib/history.js'
@@ -1246,6 +1246,23 @@ function ExercisePicker({ onPick, title, close, like }) {
   const narrowed = !!(q.trim() || bp || eqOn)
   useRevealActiveChip(bpStrip, bp)
   useRevealActiveChip(eqStrip, eqOn)
+  // Close but not exact (a typo too many, most of the words, a similar name), listed under the
+  // results once you have scrolled to their end, so a search almost never ends on nothing.
+  const similar = q.trim() && !special && f.length <= shown
+    ? similarExercises((profile && !showAll ? all.filter(e => exAvailable(st, e)) : all).filter(e => bp === SAME || !bp || e.bp === bp), q, f, f.length ? 12 : 30)
+    : []
+  const pickRow = e => <div key={e.id} className="item" {...tappable(() => onPick(e))}>
+        <Thumb ex={e} /><div className="grow"><div className={`tt ${exerciseNameClass(e)}`}>{isFav(st, e.id) && <Icon name="starFill" className="fav-star" />}{exerciseNameFor(e)}</div><div className="ss capitalize">{t(MUSCLE_NAME[e.tg] || e.tg || e.bp)} · {t(e.eq)}</div></div>
+        {/* Accent tag = already in a routine/log ("Chosen"); the yellow star by the name = favourite. */}
+        {usage[e.id] && <span className="tag acc"><Icon name="starFill" /></span>}
+        {/* A "+" glyph reads as "add this now" — it used to just open the same detail sheet as
+            tapping the row, so it added nothing until you'd scrolled past the sets/reps config
+            and found the real button. Now it does what it looks like: adds with the default
+            config right away. Tapping the row itself still opens the detail/config sheet, for
+            when you want to set sets/reps before adding. */}
+        <button className="iconbtn chev" aria-label={t('Add “{0}”', exerciseNameFor(e))} style={{ padding: 8, margin: -8 }}
+          onClick={ev => { ev.stopPropagation(); onPick(e, true) }}><Icon name="plus" /></button>
+      </div>
   if (byMuscle) return <>
     <div className="row between" style={{ marginBottom: 10 }}><h3>{title || t('Add exercise')}</h3>
       <Button size="sm" variant="ghost" onClick={() => setByMuscle(false)}>{t('All')}</Button>
@@ -1291,20 +1308,11 @@ function ExercisePicker({ onPick, title, close, like }) {
         <div className="thumb thumb-x"><Icon name="plusCircle" /></div>
         <div className="grow"><div className="tt">{t('Create your own exercise')}</div><div className="ss">{t('name + body part, and a photo or video if you like')}</div></div><Icon name="plus" className="chev" />
       </div>}
-      {f.slice(0, shown).map(e => <div key={e.id} className="item" {...tappable(() => onPick(e))}>
-        <Thumb ex={e} /><div className="grow"><div className={`tt ${exerciseNameClass(e)}`}>{isFav(st, e.id) && <Icon name="starFill" className="fav-star" />}{exerciseNameFor(e)}</div><div className="ss capitalize">{t(MUSCLE_NAME[e.tg] || e.tg || e.bp)} · {t(e.eq)}</div></div>
-        {/* Accent tag = already in a routine/log ("Chosen"); the yellow star by the name = favourite. */}
-        {usage[e.id] && <span className="tag acc"><Icon name="starFill" /></span>}
-        {/* A "+" glyph reads as "add this now" — it used to just open the same detail sheet as
-            tapping the row, so it added nothing until you'd scrolled past the sets/reps config
-            and found the real button. Now it does what it looks like: adds with the default
-            config right away. Tapping the row itself still opens the detail/config sheet, for
-            when you want to set sets/reps before adding. */}
-        <button className="iconbtn chev" aria-label={t('Add “{0}”', exerciseNameFor(e))} style={{ padding: 8, margin: -8 }}
-          onClick={ev => { ev.stopPropagation(); onPick(e, true) }}><Icon name="plus" /></button>
-      </div>)}
+      {f.slice(0, shown).map(pickRow)}
       {f.length === 0 && bp === '★' && <div className="empty">{t('Nothing picked yet. Add some exercises and they’ll show up here.')}</div>}
       {f.length === 0 && bp === '☆' && <div className="empty">{t('No favourites yet. Tap the star on an exercise to add one.')}</div>}
+      {similar.length > 0 && <h4 className="sec similar-label">{f.length ? t('Similar exercises') : t('No exact match. These come close:')}</h4>}
+      {similar.map(pickRow)}
     </div>
     {f.length > shown && <><div style={{ height: 8 }} /><Button ref={moreRef} onClick={() => setShown(s => s + 50)}>{t('Show more')}</Button></>}
   </>

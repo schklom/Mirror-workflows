@@ -2210,4 +2210,7 @@ export default {
   '{0} rated · {1} estimated of {2} sets': '{0} مُقيَّمة · {1} تقديرية من أصل {2} مجموعة',
   'Enter the address of the server this token is for': 'أدخل عنوان الخادم الذي يخصّه هذا الرمز',
   'Sent only to {0}, never to another server.': 'يُرسل إلى {0} فقط، ولا يُرسل إلى أي خادم آخر.',
+  // --- search: similar exercises ---
+  'Similar exercises': 'تمارين مشابهة',
+  'No exact match. These come close:': 'لا تطابق تام. هذه قريبة:',
 }

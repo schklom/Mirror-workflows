@@ -2155,4 +2155,7 @@ export default {
   '{0} rated · {1} estimated of {2} sets': '{0} 组已评分 · {1} 组为估算，共 {2} 组',
   'Enter the address of the server this token is for': '输入这个令牌所属服务器的地址',
   'Sent only to {0}, never to another server.': '只发送到 {0}，绝不会发给其他服务器。',
+  // --- search: similar exercises ---
+  'Similar exercises': '相似动作',
+  'No exact match. These come close:': '没有完全匹配，这些比较接近：',
 }

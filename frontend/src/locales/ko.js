@@ -2155,4 +2155,7 @@ export default {
   '{0} rated · {1} estimated of {2} sets': '총 {2}세트 중 {0}개 평가 · {1}개 추정',
   'Enter the address of the server this token is for': '이 토큰을 쓸 서버 주소를 입력하세요',
   'Sent only to {0}, never to another server.': '{0}에만 보내고 다른 서버에는 절대 보내지 않아요.',
+  // --- search: similar exercises ---
+  'Similar exercises': '비슷한 운동',
+  'No exact match. These come close:': '정확히 일치하는 항목이 없어요. 이건 비슷해요:',
 }

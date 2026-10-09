@@ -2166,4 +2166,7 @@ export default {
   '{0} rated · {1} estimated of {2} sets': 'ให้คะแนนแล้ว {0} · ประมาณ {1} จาก {2} เซ็ต',
   'Enter the address of the server this token is for': 'กรอกที่อยู่ของเซิร์ฟเวอร์ที่โทเค็นนี้ใช้ด้วย',
   'Sent only to {0}, never to another server.': 'ส่งไปที่ {0} เท่านั้น ไม่ส่งไปเซิร์ฟเวอร์อื่นเลย',
+  // --- search: similar exercises ---
+  'Similar exercises': 'ท่าที่คล้ายกัน',
+  'No exact match. These come close:': 'ไม่พบที่ตรงทั้งหมด ท่าเหล่านี้ใกล้เคียง:',
 }

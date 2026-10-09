@@ -2234,4 +2234,7 @@ export default {
   'All sets at the same weight.': 'সব সেট একই ওজনে।',
   'Enter the address of the server this token is for': 'এই টোকেন যে সার্ভারের, তার ঠিকানা দিন',
   'Sent only to {0}, never to another server.': 'শুধু {0}-এ পাঠানো হয়, অন্য কোনো সার্ভারে কখনো নয়।',
+  // --- search: similar exercises ---
+  'Similar exercises': 'একই ধরনের ব্যায়াম',
+  'No exact match. These come close:': 'হুবহু মিল নেই। এগুলো কাছাকাছি:',
 }

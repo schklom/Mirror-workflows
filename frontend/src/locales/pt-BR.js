@@ -1330,6 +1330,7 @@ export const PT_BR_OVERRIDES = {
   'Only if your server is behind Cloudflare Access: the service token this phone sends with every request to it. Kept in this phone’s secure storage.': 'Só se o seu servidor estiver atrás do Cloudflare Access: o token de serviço que este celular envia a cada requisição. Fica guardado no armazenamento seguro do celular.',
   'Where an exercise is drawn on both figures. Your workouts stay exactly as they are.': 'Que figura mostra um exercício quando está desenhado nas duas. Seus treinos ficam exatamente como estão.',
   'Enter the address of the server this token is for': 'Informe o endereço do servidor a que este token pertence',
+  'No exact match. These come close:': 'Nada exato. Estes chegam perto:',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

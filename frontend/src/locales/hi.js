@@ -2155,4 +2155,7 @@ export default {
   '{0} rated · {1} estimated of {2} sets': '{0} रेट किए · {1} अनुमानित, कुल {2} सेट में से',
   'Enter the address of the server this token is for': 'जिस सर्वर का यह टोकन है, उसका पता डालें',
   'Sent only to {0}, never to another server.': 'सिर्फ़ {0} को भेजा जाता है, किसी दूसरे सर्वर को कभी नहीं।',
+  // --- search: similar exercises ---
+  'Similar exercises': 'मिलते-जुलते व्यायाम',
+  'No exact match. These come close:': 'सटीक मेल नहीं मिला। ये करीब हैं:',
 }

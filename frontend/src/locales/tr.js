@@ -2155,4 +2155,7 @@ export default {
   '{0} rated · {1} estimated of {2} sets': '{0} puanlandı · {1} tahmini, toplam {2} set',
   'Enter the address of the server this token is for': 'Bu token’ın ait olduğu sunucunun adresini gir',
   'Sent only to {0}, never to another server.': 'Yalnızca {0} adresine gider, asla başka bir sunucuya gitmez.',
+  // --- search: similar exercises ---
+  'Similar exercises': 'Benzer egzersizler',
+  'No exact match. These come close:': 'Tam eşleşme yok. Bunlar yakın:',
 }

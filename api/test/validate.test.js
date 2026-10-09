@@ -140,6 +140,16 @@ test('a created plan carries the rep ceiling and the two flags through unchanged
   assert.equal(bw.side, undefined, 'a flag nobody set stays absent, so the catalogue still decides');
 });
 
+test('triple progression and its set ceiling survive a created plan', () => {
+  const r = validatePlan({ routines: [{ id: 'r1', name: 'A', ex: [{ id: '0043', sets: 3, setsMax: 5, reps: 12, repsMin: 8, prog: 'triple' }] }] });
+  assert.equal(r.ok, true);
+  assert.equal(r.bundle.routines[0].ex[0].prog, 'triple');
+  assert.equal(r.bundle.routines[0].ex[0].setsMax, 5);
+  // A ceiling past what a plan holds is not one.
+  const wild = validatePlan({ routines: [{ id: 'r1', name: 'A', ex: [{ id: '0043', sets: 3, setsMax: 40, reps: 12, prog: 'triple' }] }] });
+  assert.equal(wild.bundle.routines[0].ex[0].setsMax, undefined);
+});
+
 test('unilateral reps are a total across both sides, so an odd one is refused', () => {
   const odd = validatePlan({ routines: [{ id: 'r1', name: 'A', ex: [{ id: '0043', sets: 3, reps: 15, side: true }] }] });
   assert.equal(odd.ok, false);

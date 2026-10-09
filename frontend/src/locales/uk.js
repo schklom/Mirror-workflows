@@ -2162,4 +2162,18 @@ export default {
   'Last set to failure': 'Останній підхід до відмови',
   'The last set goes until nothing is left, and counts as all-out effort unless you rate it.': 'Останній підхід триває, доки не залишиться сил, і рахується як максимальне зусилля, якщо ти не оціниш його.',
   'Plan the final set as an all-out one.': 'Заплануй останній підхід на максимум.',
+  // --- triple progression (issue #179) ---
+  'Triple progression': 'Потрійна прогресія',
+  'Reps climb to the top of the range, then a set is added, up to your most sets. All of them at the top and the weight goes up, back to your first sets and reps.': 'Повторення ростуть до верху діапазону, потім додається підхід, до твого максимуму підходів. Усі на верху, і вага росте, а підходи й повторення повертаються до початку.',
+  'Same weight, aim for {0} reps in every set.': 'Та сама вага, ціль {0} повторень у кожному підході.',
+  'Same weight, aim for {0} reps on the last set.': 'Та сама вага, ціль {0} повторень в останньому підході.',
+  '{0} reps in every set! Add a set at {1} reps.': '{0} повторень у кожному підході! Додай підхід на {1} повторень.',
+  'Top of the range on all {0} sets. {1} {2} more, back to {3} sets of {4}.': 'Верх діапазону в усіх {0} підходах. На {1} {2} більше, назад до {3} підходів по {4}.',
+  'Top of the range on all {0} sets. {1} {2} less help, back to {3} sets of {4}.': 'Верх діапазону в усіх {0} підходах. На {1} {2} менше допомоги, назад до {3} підходів по {4}.',
+  'Short of the target, but more reps than before. Same sets and reps again.': 'До цілі трохи не вистачило, але повторень більше, ніж раніше. Ті самі підходи й повторення ще раз.',
+  'Missed reps last time. Same sets and reps again ({0} of {1} to go).': 'Минулого разу повторення не далися. Ті самі підходи й повторення ще раз (лишилось {0} з {1}).',
+  'Stuck for {0} sessions. Deload to {1} {2} and start again at {3} sets of {4}.': 'Застій уже {0} тренування. Розвантаження до {1} {2} і знову з {3} підходів по {4}.',
+  'Stuck for {0} sessions. Back to {1} {2} of help, start again at {3} sets of {4}.': 'Застій уже {0} тренування. Знову {1} {2} допомоги і знову з {3} підходів по {4}.',
+  'Sets from': 'Підходів від',
+  'Sets up to': 'Підходів до',
 }

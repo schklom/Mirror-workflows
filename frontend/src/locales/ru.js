@@ -2169,4 +2169,18 @@ export default {
   'Last set to failure': 'Последний подход до отказа',
   'The last set goes until nothing is left, and counts as all-out effort unless you rate it.': 'Последний подход идёт, пока не останется сил, и считается максимальным усилием, если вы не оцените его сами.',
   'Plan the final set as an all-out one.': 'Запланируйте последний подход на максимум.',
+  // --- triple progression (issue #179) ---
+  'Triple progression': 'Тройная прогрессия',
+  'Reps climb to the top of the range, then a set is added, up to your most sets. All of them at the top and the weight goes up, back to your first sets and reps.': 'Повторения растут до верха диапазона, потом добавляется подход, до вашего максимума подходов. Все на верху, и вес растёт, а подходы и повторения возвращаются к началу.',
+  'Same weight, aim for {0} reps in every set.': 'Тот же вес, цельтесь на {0} повторений в каждом подходе.',
+  'Same weight, aim for {0} reps on the last set.': 'Тот же вес, цельтесь на {0} повторений в последнем подходе.',
+  '{0} reps in every set! Add a set at {1} reps.': '{0} повторений в каждом подходе! Добавьте подход на {1} повторений.',
+  'Top of the range on all {0} sets. {1} {2} more, back to {3} sets of {4}.': 'Верх диапазона во всех {0} подходах. На {1} {2} больше, обратно к {3} подходам по {4}.',
+  'Top of the range on all {0} sets. {1} {2} less help, back to {3} sets of {4}.': 'Верх диапазона во всех {0} подходах. На {1} {2} меньше помощи, обратно к {3} подходам по {4}.',
+  'Short of the target, but more reps than before. Same sets and reps again.': 'Немного не дотянули, но повторений больше, чем раньше. Те же подходы и повторения ещё раз.',
+  'Missed reps last time. Same sets and reps again ({0} of {1} to go).': 'В прошлый раз повторения не дались. Те же подходы и повторения ещё раз (осталось {0} из {1}).',
+  'Stuck for {0} sessions. Deload to {1} {2} and start again at {3} sets of {4}.': 'Застой {0} тренировки. Разгрузка до {1} {2} и заново с {3} подходов по {4}.',
+  'Stuck for {0} sessions. Back to {1} {2} of help, start again at {3} sets of {4}.': 'Застой {0} тренировки. Снова {1} {2} помощи и заново с {3} подходов по {4}.',
+  'Sets from': 'Подходов от',
+  'Sets up to': 'Подходов до',
 }

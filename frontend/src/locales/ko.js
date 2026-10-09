@@ -2165,4 +2165,18 @@ export default {
   'Last set to failure': '마지막 세트는 실패 지점까지',
   'The last set goes until nothing is left, and counts as all-out effort unless you rate it.': '마지막 세트는 힘이 남지 않을 때까지 하고, 직접 평가하지 않으면 최대 노력으로 계산돼요.',
   'Plan the final set as an all-out one.': '마지막 세트를 전력으로 계획해요.',
+  // --- triple progression (issue #179) ---
+  'Triple progression': '삼중 점증',
+  'Reps climb to the top of the range, then a set is added, up to your most sets. All of them at the top and the weight goes up, back to your first sets and reps.': '횟수를 범위 꼭대기까지 올린 뒤 세트를 하나 더해요. 최대 세트까지요. 모두 꼭대기에 닿으면 무게가 오르고 처음 세트와 횟수로 돌아가요.',
+  'Same weight, aim for {0} reps in every set.': '같은 무게로, 모든 세트에서 {0}회를 노려 보세요.',
+  'Same weight, aim for {0} reps on the last set.': '같은 무게로, 마지막 세트에서 {0}회를 노려 보세요.',
+  '{0} reps in every set! Add a set at {1} reps.': '모든 세트 {0}회! {1}회짜리 세트를 하나 추가해요.',
+  'Top of the range on all {0} sets. {1} {2} more, back to {3} sets of {4}.': '{0}세트 모두 범위 꼭대기. {1} {2} 올리고 {3}세트 × {4}회로 돌아가요.',
+  'Top of the range on all {0} sets. {1} {2} less help, back to {3} sets of {4}.': '{0}세트 모두 범위 꼭대기. 보조를 {1} {2} 줄이고 {3}세트 × {4}회로 돌아가요.',
+  'Short of the target, but more reps than before. Same sets and reps again.': '목표엔 조금 못 미쳤지만 지난번보다 횟수가 늘었어요. 같은 세트와 횟수로 한 번 더.',
+  'Missed reps last time. Same sets and reps again ({0} of {1} to go).': '지난번 목표 횟수 미달. 같은 세트와 횟수로 한 번 더({1}회 중 {0}회 남음).',
+  'Stuck for {0} sessions. Deload to {1} {2} and start again at {3} sets of {4}.': '{0}번의 세션 동안 정체. {1} {2}(으)로 디로드하고 {3}세트 × {4}회부터 다시 시작해요.',
+  'Stuck for {0} sessions. Back to {1} {2} of help, start again at {3} sets of {4}.': '{0}번의 세션 동안 정체. 보조를 {1} {2}(으)로 되돌리고 {3}세트 × {4}회부터 다시 시작해요.',
+  'Sets from': '최소 세트',
+  'Sets up to': '최대 세트',
 }

@@ -2220,4 +2220,18 @@ export default {
   'Last set to failure': 'المجموعة الأخيرة حتى الفشل',
   'The last set goes until nothing is left, and counts as all-out effort unless you rate it.': 'تستمر المجموعة الأخيرة حتى لا يبقى شيء، وتُحسب كأقصى جهد ما لم تقيّمها بنفسك.',
   'Plan the final set as an all-out one.': 'خطّط للمجموعة الأخيرة بكل ما لديك.',
+  // --- triple progression (issue #179) ---
+  'Triple progression': 'التدرّج الثلاثي',
+  'Reps climb to the top of the range, then a set is added, up to your most sets. All of them at the top and the weight goes up, back to your first sets and reps.': 'ترتفع التكرارات حتى أعلى النطاق، ثم تُضاف مجموعة، حتى أقصى عدد مجموعاتك. عندما تبلغ كلها الأعلى يرتفع الوزن وتعود إلى مجموعاتك وتكراراتك الأولى.',
+  'Same weight, aim for {0} reps in every set.': 'نفس الوزن، استهدف {0} تكرارات في كل مجموعة.',
+  'Same weight, aim for {0} reps on the last set.': 'نفس الوزن، استهدف {0} تكرارات في المجموعة الأخيرة.',
+  '{0} reps in every set! Add a set at {1} reps.': '{0} تكرارات في كل مجموعة! أضف مجموعة من {1} تكرارات.',
+  'Top of the range on all {0} sets. {1} {2} more, back to {3} sets of {4}.': 'أعلى النطاق في كل المجموعات الـ{0}. {1} {2} إضافية، والعودة إلى {3} مجموعات من {4}.',
+  'Top of the range on all {0} sets. {1} {2} less help, back to {3} sets of {4}.': 'أعلى النطاق في كل المجموعات الـ{0}. مساعدة أقل بمقدار {1} {2}، والعودة إلى {3} مجموعات من {4}.',
+  'Short of the target, but more reps than before. Same sets and reps again.': 'لم تبلغ الهدف تمامًا، لكن تكراراتك أكثر من قبل. نفس المجموعات والتكرارات مجددًا.',
+  'Missed reps last time. Same sets and reps again ({0} of {1} to go).': 'تكرارات ناقصة في المرة السابقة. نفس المجموعات والتكرارات مجددًا ({0} من {1} متبقية).',
+  'Stuck for {0} sessions. Deload to {1} {2} and start again at {3} sets of {4}.': 'تعثّر التقدم {0} جلسات. خفّف الحمل إلى {1} {2} وابدأ من جديد بـ{3} مجموعات من {4}.',
+  'Stuck for {0} sessions. Back to {1} {2} of help, start again at {3} sets of {4}.': 'تعثّر التقدم {0} جلسات. عُد إلى مساعدة {1} {2} وابدأ من جديد بـ{3} مجموعات من {4}.',
+  'Sets from': 'المجموعات من',
+  'Sets up to': 'المجموعات حتى',
 }

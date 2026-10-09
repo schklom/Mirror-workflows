@@ -2185,4 +2185,18 @@ export default {
   'Last set to failure': 'Letzter Satz bis zum Versagen',
   'The last set goes until nothing is left, and counts as all-out effort unless you rate it.': 'Der letzte Satz geht, bis nichts mehr geht, und zählt als volle Anstrengung, solange du ihn nicht selbst bewertest.',
   'Plan the final set as an all-out one.': 'Plane den letzten Satz als Vollgas-Satz.',
+  // --- triple progression (issue #179) ---
+  'Triple progression': 'Dreifache Progression',
+  'Reps climb to the top of the range, then a set is added, up to your most sets. All of them at the top and the weight goes up, back to your first sets and reps.': 'Die Wiederholungen steigen bis zum oberen Ende, dann kommt ein Satz dazu, bis zu deinen meisten Sätzen. Alle oben angekommen, geht das Gewicht hoch und es geht zurück zu deinen ersten Sätzen und Wiederholungen.',
+  'Same weight, aim for {0} reps in every set.': 'Gleiches Gewicht, {0} Wiederholungen in jedem Satz anpeilen.',
+  'Same weight, aim for {0} reps on the last set.': 'Gleiches Gewicht, {0} Wiederholungen im letzten Satz anpeilen.',
+  '{0} reps in every set! Add a set at {1} reps.': '{0} Wiederholungen in jedem Satz! Ein Satz mehr, mit {1} Wiederholungen.',
+  'Top of the range on all {0} sets. {1} {2} more, back to {3} sets of {4}.': 'Oberes Ende in allen {0} Sätzen. {1} {2} mehr, zurück auf {3} Sätze à {4}.',
+  'Top of the range on all {0} sets. {1} {2} less help, back to {3} sets of {4}.': 'Oberes Ende in allen {0} Sätzen. {1} {2} weniger Hilfe, zurück auf {3} Sätze à {4}.',
+  'Short of the target, but more reps than before. Same sets and reps again.': 'Ziel knapp verfehlt, aber mehr Wiederholungen als zuvor. Gleiche Sätze und Wiederholungen noch einmal.',
+  'Missed reps last time. Same sets and reps again ({0} of {1} to go).': 'Letztes Mal Wiederholungen verfehlt. Gleiche Sätze und Wiederholungen noch einmal (noch {0} von {1}).',
+  'Stuck for {0} sessions. Deload to {1} {2} and start again at {3} sets of {4}.': '{0} Einheiten festgefahren. Deload auf {1} {2}, neu anfangen mit {3} Sätzen à {4}.',
+  'Stuck for {0} sessions. Back to {1} {2} of help, start again at {3} sets of {4}.': '{0} Einheiten festgefahren. Zurück auf {1} {2} Hilfe, neu anfangen mit {3} Sätzen à {4}.',
+  'Sets from': 'Sätze ab',
+  'Sets up to': 'Sätze bis',
 }

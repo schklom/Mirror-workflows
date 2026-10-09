@@ -601,6 +601,8 @@ export const previewSession = {
           weight: plan.weight != null ? plan.weight : undefined,
           reps: plan.reps != null ? plan.reps : undefined,
           sets: plan.sets != null ? plan.sets : undefined,
+          // Triple progression aims each set on its own ("12, 12, 12, 9"); `reps` is the first set's.
+          row_reps: Array.isArray(plan.rowReps) ? plan.rowReps : undefined,
           sec: plan.sec != null ? plan.sec : undefined,
           why: plan.why ? fmt(plan.why[0], plan.why.slice(1)) : null
         },

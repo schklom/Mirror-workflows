@@ -993,6 +993,15 @@ describe('preview_session', () => {
     }
   })
 
+  test('triple progression previews its per-set aims and failure plan', () => {
+    only({ id: '0025', sets: 3, setsMax: 5, reps: 12, repsMin: 8, weight: 50, lastToFailure: true }, { prog: 'triple' })
+    const e = call('preview_session').exercises[0]
+    expect(e.prescription).toMatchObject({ kind: 'first', sets: 3, reps: 8, row_reps: [8, 8, 8] })
+    expect(e.opening_sets.map(s => s.r)).toEqual([8, 8, 8])
+    expect(e.opening_sets.map(s => !!s.failure)).toEqual([false, false, true])
+    expect(e.planned.summary).toBe('3–5 × 8–12 · 50 kg')
+  })
+
   test('defaults to the routine scheduled for today', () => {
     only({ id: '0025', sets: 3, reps: 8, weight: 50 })
     const r = call('preview_session')

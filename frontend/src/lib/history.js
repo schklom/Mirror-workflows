@@ -216,7 +216,9 @@ export function setsRepsOf(cfg) {
   if (mode === 'cardio') return `${n} × ${cfg.min || 20} min`
   if (mode === 'time') return `${n} × ${fmtSec(cfg.sec || 45)}`
   if (isPyramid(cfg)) return pyramidLabel(cfg.pyramid)
-  return `${n} × ${repsOf(cfg)}`
+  // Triple progression's set range reads as a range too: "3–5 × 8–12".
+  const sets = cfg.setsMax > n ? `${n}–${cfg.setsMax}` : n
+  return `${sets} × ${repsOf(cfg)}`
 }
 
 // One-line summary of a planned exercise ("3 × 10 · 60 kg"), shared by the routine editor

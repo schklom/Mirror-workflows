@@ -2165,4 +2165,18 @@ export default {
   'Last set to failure': 'आख़िरी सेट फेलियर तक',
   'The last set goes until nothing is left, and counts as all-out effort unless you rate it.': 'आख़िरी सेट तब तक चलता है जब तक कुछ न बचे, और जब तक आप ख़ुद रेट न करें, इसे पूरी ताक़त वाला प्रयास माना जाता है।',
   'Plan the final set as an all-out one.': 'आख़िरी सेट को पूरी ताक़त वाला बनाएँ।',
+  // --- triple progression (issue #179) ---
+  'Triple progression': 'ट्रिपल प्रोग्रेशन',
+  'Reps climb to the top of the range, then a set is added, up to your most sets. All of them at the top and the weight goes up, back to your first sets and reps.': 'रेप्स रेंज के शीर्ष तक बढ़ते हैं, फिर एक सेट जुड़ता है, आपके सबसे ज़्यादा सेट तक। सब शीर्ष पर पहुँचें तो वज़न बढ़ता है और आप पहले सेट और रेप्स पर लौटते हैं।',
+  'Same weight, aim for {0} reps in every set.': 'वही वज़न, हर सेट में {0} रेप्स का लक्ष्य रखें।',
+  'Same weight, aim for {0} reps on the last set.': 'वही वज़न, आख़िरी सेट में {0} रेप्स का लक्ष्य रखें।',
+  '{0} reps in every set! Add a set at {1} reps.': 'हर सेट में {0} रेप्स! {1} रेप्स का एक सेट जोड़ें।',
+  'Top of the range on all {0} sets. {1} {2} more, back to {3} sets of {4}.': 'सभी {0} सेट में रेंज का शीर्ष। {1} {2} और, वापस {3} सेट × {4} पर।',
+  'Top of the range on all {0} sets. {1} {2} less help, back to {3} sets of {4}.': 'सभी {0} सेट में रेंज का शीर्ष। {1} {2} कम मदद, वापस {3} सेट × {4} पर।',
+  'Short of the target, but more reps than before. Same sets and reps again.': 'लक्ष्य से थोड़ा पीछे, पर पहले से ज़्यादा रेप्स। वही सेट और रेप्स दोबारा।',
+  'Missed reps last time. Same sets and reps again ({0} of {1} to go).': 'पिछली बार रेप्स चूके। वही सेट और रेप्स दोबारा ({1} में से {0} बाक़ी)।',
+  'Stuck for {0} sessions. Deload to {1} {2} and start again at {3} sets of {4}.': '{0} सेशन से अटके हुए। {1} {2} पर डीलोड, फिर {3} सेट × {4} से शुरू।',
+  'Stuck for {0} sessions. Back to {1} {2} of help, start again at {3} sets of {4}.': '{0} सेशन से अटके हुए। फिर से {1} {2} मदद, {3} सेट × {4} से शुरू।',
+  'Sets from': 'सेट से',
+  'Sets up to': 'सेट तक',
 }

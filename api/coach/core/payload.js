@@ -160,7 +160,10 @@ function readSession(entry, fallback) {
   const mode = modeOf(target, ex);
   const bw = isBw(target, ex);
   const logged = ((entry && entry.sets) || []).filter(s => !isWarmupSet(s));
-  const planned = target.sets || logged.length;
+  // Triple progression's per-set aims (frontend readSession): only on the session's own target.
+  const rowGoals = mode === 'reps' && entry && entry.target && Array.isArray(target.rowReps) && target.rowReps.length
+    ? target.rowReps.map(r => Math.max(0, Number(r) || 0)) : null;
+  const planned = rowGoals ? rowGoals.length : (target.sets || logged.length);
   const enough = logged.length >= planned;
   // Only the sets the plan asked for decide whether the session was hit, exactly as
   // frontend/src/lib/progression.js readSession has done since issue #233. This copy graded
@@ -177,12 +180,12 @@ function readSession(entry, fallback) {
     const held = sets.map(s => (s.done ? (s.sec || 0) : 0));
     return { mode, bw, goal, ok: goal > 0 && enough && held.length > 0 && held.every(h => h >= goal) };
   }
-  const goal = target.reps || 0;
+  const goal = rowGoals ? Math.max(...rowGoals) : (target.reps || 0);
   const reps = sets.map(s => (s.done ? (s.r || 0) : 0));
   // Set count is the dimension bodyweight work grows once reps hit their ceiling (upstream
   // #33), so it travels alongside the reps rather than being inferred from them downstream.
   const done = logged.filter(s => s.done).length;
-  return { mode, bw, goal, count: done, ok: goal > 0 && enough && reps.length > 0 && reps.every(r => r >= goal) };
+  return { mode, bw, goal, count: done, ok: goal > 0 && enough && reps.length > 0 && reps.every((r, k) => r >= (rowGoals ? rowGoals[k] ?? goal : goal)) };
 }
 /** Consecutive misses counting back from the most recent session. */
 export function stallCount(sessions) {
@@ -206,6 +209,8 @@ function cleanEx(e) {
   // repsMax is the ceiling that turns "+1 rep forever" into "add a set and start over"; without
   // it the Coach cannot see, or propose, how a bodyweight exercise is meant to progress.
   put('repsMax', e.repsMax);
+  // Triple progression's set ceiling: `sets` is where its cycle starts, `setsMax` where it ends.
+  put('setsMax', e.setsMax);
   // Written out only when they disagree with the catalogue, matching plan-share.js — an
   // absent flag has always meant "whatever the exercise says", and still does.
   if (e.bodyweight != null) o.bodyweight = !!e.bodyweight;

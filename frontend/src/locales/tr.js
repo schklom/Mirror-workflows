@@ -2165,4 +2165,18 @@ export default {
   'Last set to failure': 'Son set tükenişe kadar',
   'The last set goes until nothing is left, and counts as all-out effort unless you rate it.': 'Son set hiçbir şey kalmayana kadar sürer ve sen puanlamadıkça tam efor sayılır.',
   'Plan the final set as an all-out one.': 'Son seti tam gaz planla.',
+  // --- triple progression (issue #179) ---
+  'Triple progression': 'Üçlü ilerleme',
+  'Reps climb to the top of the range, then a set is added, up to your most sets. All of them at the top and the weight goes up, back to your first sets and reps.': 'Tekrarlar aralığın tepesine kadar çıkar, sonra bir set eklenir, en fazla set sayına kadar. Hepsi tepede olunca ağırlık artar, ilk setlerine ve tekrarlarına geri dönersin.',
+  'Same weight, aim for {0} reps in every set.': 'Aynı ağırlık, her sette {0} tekrarı hedefle.',
+  'Same weight, aim for {0} reps on the last set.': 'Aynı ağırlık, son sette {0} tekrarı hedefle.',
+  '{0} reps in every set! Add a set at {1} reps.': 'Her sette {0} tekrar! {1} tekrarlık bir set ekle.',
+  'Top of the range on all {0} sets. {1} {2} more, back to {3} sets of {4}.': '{0} setin hepsinde aralığın tepesi. {1} {2} daha fazla, {3} set × {4} tekrara dönüş.',
+  'Top of the range on all {0} sets. {1} {2} less help, back to {3} sets of {4}.': '{0} setin hepsinde aralığın tepesi. {1} {2} daha az destek, {3} set × {4} tekrara dönüş.',
+  'Short of the target, but more reps than before. Same sets and reps again.': 'Hedefin biraz gerisinde, ama öncekinden fazla tekrar. Aynı setler ve tekrarlar yine.',
+  'Missed reps last time. Same sets and reps again ({0} of {1} to go).': 'Geçen sefer tekrarlar eksikti. Aynı setler ve tekrarlar yine ({1} denemeden {0} kaldı).',
+  'Stuck for {0} sessions. Deload to {1} {2} and start again at {3} sets of {4}.': '{0} seanstır takıldın. {1} {2} ağırlığa deload, {3} set × {4} tekrarla yeniden başla.',
+  'Stuck for {0} sessions. Back to {1} {2} of help, start again at {3} sets of {4}.': '{0} seanstır takıldın. {1} {2} desteğe geri dön, {3} set × {4} tekrarla yeniden başla.',
+  'Sets from': 'Set en az',
+  'Sets up to': 'Set en çok',
 }

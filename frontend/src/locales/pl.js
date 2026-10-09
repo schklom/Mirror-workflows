@@ -2165,4 +2165,18 @@ export default {
   'Last set to failure': 'Ostatnia seria do upadku',
   'The last set goes until nothing is left, and counts as all-out effort unless you rate it.': 'Ostatnia seria trwa, aż nic nie zostanie, i liczy się jako maksymalny wysiłek, chyba że dasz jej własną ocenę.',
   'Plan the final set as an all-out one.': 'Zaplanuj ostatnią serię na maksa.',
+  // --- triple progression (issue #179) ---
+  'Triple progression': 'Potrójna progresja',
+  'Reps climb to the top of the range, then a set is added, up to your most sets. All of them at the top and the weight goes up, back to your first sets and reps.': 'Powtórzenia rosną do górnej granicy zakresu, potem dochodzi seria, aż do maksymalnej liczby serii. Wszystkie na górze i ciężar idzie w górę, z powrotem do pierwszych serii i powtórzeń.',
+  'Same weight, aim for {0} reps in every set.': 'Ten sam ciężar, celuj w {0} powtórzeń w każdej serii.',
+  'Same weight, aim for {0} reps on the last set.': 'Ten sam ciężar, celuj w {0} powtórzeń w ostatniej serii.',
+  '{0} reps in every set! Add a set at {1} reps.': '{0} powtórzeń w każdej serii! Dodaj serię po {1} powtórzeń.',
+  'Top of the range on all {0} sets. {1} {2} more, back to {3} sets of {4}.': 'Górna granica we wszystkich {0} seriach. {1} {2} więcej, z powrotem do {3} serii po {4}.',
+  'Top of the range on all {0} sets. {1} {2} less help, back to {3} sets of {4}.': 'Górna granica we wszystkich {0} seriach. {1} {2} mniej pomocy, z powrotem do {3} serii po {4}.',
+  'Short of the target, but more reps than before. Same sets and reps again.': 'Trochę zabrakło do celu, ale powtórzeń jest więcej niż wcześniej. Te same serie i powtórzenia jeszcze raz.',
+  'Missed reps last time. Same sets and reps again ({0} of {1} to go).': 'Ostatnio zabrakło powtórzeń. Te same serie i powtórzenia jeszcze raz (zostało {0} z {1}).',
+  'Stuck for {0} sessions. Deload to {1} {2} and start again at {3} sets of {4}.': 'Zastój od {0} sesji. Deload do {1} {2} i start od nowa z {3} seriami po {4}.',
+  'Stuck for {0} sessions. Back to {1} {2} of help, start again at {3} sets of {4}.': 'Zastój od {0} sesji. Z powrotem do {1} {2} pomocy, start od nowa z {3} seriami po {4}.',
+  'Sets from': 'Serie od',
+  'Sets up to': 'Serie do',
 }

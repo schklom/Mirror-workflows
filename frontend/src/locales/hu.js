@@ -2168,4 +2168,18 @@ export default {
   'Last set to failure': 'Utolsó sorozat bukásig',
   'The last set goes until nothing is left, and counts as all-out effort unless you rate it.': 'Az utolsó sorozat addig tart, amíg semmi sem marad, és teljes erőbedobásnak számít, hacsak nem értékeled magad.',
   'Plan the final set as an all-out one.': 'Tervezd az utolsó sorozatot teljes erővel.',
+  // --- triple progression (issue #179) ---
+  'Triple progression': 'Tripla progresszió',
+  'Reps climb to the top of the range, then a set is added, up to your most sets. All of them at the top and the weight goes up, back to your first sets and reps.': 'Az ismétlések a tartomány tetejéig nőnek, aztán jön egy új sorozat, egészen a legtöbb sorozatodig. Mind a tetején, és nő a súly, vissza az első sorozatokhoz és ismétlésekhez.',
+  'Same weight, aim for {0} reps in every set.': 'Ugyanaz a súly, minden sorozatban {0} ismétlés a cél.',
+  'Same weight, aim for {0} reps on the last set.': 'Ugyanaz a súly, az utolsó sorozatban {0} ismétlés a cél.',
+  '{0} reps in every set! Add a set at {1} reps.': '{0} ismétlés minden sorozatban! Jöhet egy új sorozat {1} ismétléssel.',
+  'Top of the range on all {0} sets. {1} {2} more, back to {3} sets of {4}.': 'Tartomány teteje mind a(z) {0} sorozatban. {1} {2} több, vissza {3} sorozat × {4}-re.',
+  'Top of the range on all {0} sets. {1} {2} less help, back to {3} sets of {4}.': 'Tartomány teteje mind a(z) {0} sorozatban. {1} {2} kevesebb segítség, vissza {3} sorozat × {4}-re.',
+  'Short of the target, but more reps than before. Same sets and reps again.': 'Kicsit elmaradt a cél, de több ismétlés, mint korábban. Ugyanazok a sorozatok és ismétlések megint.',
+  'Missed reps last time. Same sets and reps again ({0} of {1} to go).': 'Legutóbb hiányoztak ismétlések. Ugyanazok a sorozatok és ismétlések megint (még {0} van hátra {1}-ból).',
+  'Stuck for {0} sessions. Deload to {1} {2} and start again at {3} sets of {4}.': '{0} edzés óta megrekedtél. Deload erre: {1} {2}, újrakezdés {3} sorozat × {4}-gyel.',
+  'Stuck for {0} sessions. Back to {1} {2} of help, start again at {3} sets of {4}.': '{0} edzés óta megrekedtél. Vissza {1} {2} segítségre, újrakezdés {3} sorozat × {4}-gyel.',
+  'Sets from': 'Sorozat ettől',
+  'Sets up to': 'Sorozat legfeljebb',
 }

@@ -10,6 +10,11 @@
   in an exercise's settings makes the final set an all-out one every session, and Greyskull
   switches it on for you. The "F" shows in history, the finish summary and Copy as text, and Hevy
   and CSV imports keep it.
+- **Triple progression** (#179): reps climb to the top of the range, then a set is added (one at a
+  time, each climbing on its own), up to the most sets you allow. When every set sits at the top,
+  the weight goes up and you start over at your first sets and reps. Pick it like any other rule
+  in an exercise's settings and set "Sets up to". Misses repeat the same sets and reps, more reps
+  than last time still counts as progress, and three real stalls deload you back to the start.
 
 **Languages**
 

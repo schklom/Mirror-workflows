@@ -2165,4 +2165,18 @@ export default {
   'Last set to failure': 'Ultima serie a cedimento',
   'The last set goes until nothing is left, and counts as all-out effort unless you rate it.': 'L’ultima serie va finché non resta niente e conta come sforzo massimo, a meno che tu non la valuti.',
   'Plan the final set as an all-out one.': 'Pianifica l’ultima serie a tutta.',
+  // --- triple progression (issue #179) ---
+  'Triple progression': 'Tripla progressione',
+  'Reps climb to the top of the range, then a set is added, up to your most sets. All of them at the top and the weight goes up, back to your first sets and reps.': 'Le ripetizioni salgono fino al massimo dell’intervallo, poi si aggiunge una serie, fino al tuo massimo di serie. Tutte al massimo e il peso sale, si torna alle prime serie e ripetizioni.',
+  'Same weight, aim for {0} reps in every set.': 'Stesso peso, punta a {0} ripetizioni in ogni serie.',
+  'Same weight, aim for {0} reps on the last set.': 'Stesso peso, punta a {0} ripetizioni nell’ultima serie.',
+  '{0} reps in every set! Add a set at {1} reps.': '{0} ripetizioni in ogni serie! Aggiungi una serie da {1} ripetizioni.',
+  'Top of the range on all {0} sets. {1} {2} more, back to {3} sets of {4}.': 'Massimo dell’intervallo in tutte le {0} serie. {1} {2} in più, si torna a {3} serie da {4}.',
+  'Top of the range on all {0} sets. {1} {2} less help, back to {3} sets of {4}.': 'Massimo dell’intervallo in tutte le {0} serie. {1} {2} di aiuto in meno, si torna a {3} serie da {4}.',
+  'Short of the target, but more reps than before. Same sets and reps again.': 'Obiettivo mancato di poco, ma più ripetizioni di prima. Stesse serie e ripetizioni ancora.',
+  'Missed reps last time. Same sets and reps again ({0} of {1} to go).': 'Ripetizioni mancate l’ultima volta. Stesse serie e ripetizioni ancora ({0} di {1} rimasti).',
+  'Stuck for {0} sessions. Deload to {1} {2} and start again at {3} sets of {4}.': 'Fermo da {0} sessioni. Scarico a {1} {2} e si riparte da {3} serie da {4}.',
+  'Stuck for {0} sessions. Back to {1} {2} of help, start again at {3} sets of {4}.': 'Fermo da {0} sessioni. Di nuovo {1} {2} di aiuto, si riparte da {3} serie da {4}.',
+  'Sets from': 'Serie da',
+  'Sets up to': 'Serie fino a',
 }
